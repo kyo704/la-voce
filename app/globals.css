@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #F6F1E7;
+  color: #241914;
+  font-family: var(--font-body), "Work Sans", sans-serif;
+}
+
+.ff-display {
+  font-family: var(--font-display), "Cormorant Garamond", serif;
+}
+
+.ff-mono {
+  font-family: var(--font-mono), "IBM Plex Mono", monospace;
+}
+
+button {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.tab-panel {
+  animation: fadeIn 0.3s ease-out;
+}
+
+::selection {
+  background: #B8863B;
+  color: #fff;
+}

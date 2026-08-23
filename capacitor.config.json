@@ -1,0 +1,15 @@
+{
+  "appId": "com.example.lavoce",
+  "appName": "La Voce",
+  "webDir": "capacitor-www",
+  "server": {
+    "url": "https://REPLACE-WITH-YOUR-DEPLOYED-URL.vercel.app",
+    "cleartext": false
+  },
+  "ios": {
+    "appendUserAgent": "LaVoceNativeApp/1.0"
+  },
+  "android": {
+    "appendUserAgent": "LaVoceNativeApp/1.0"
+  }
+}
