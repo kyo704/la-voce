@@ -197,6 +197,22 @@ function sumMacro(meals, key) {
 function newMealItem(slot = "朝食") {
   return { id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, slot, name: "", carbs: "", protein: "", fat: "", fiber: "" };
 }
+function buildFoodLibrary(entries, currentMeals) {
+  const map = new Map();
+  const consider = (meals, date) => {
+    (meals || []).forEach((m) => {
+      const key = (m.name || "").trim();
+      if (!key) return;
+      const existing = map.get(key);
+      if (!existing || date >= existing.date) {
+        map.set(key, { name: key, carbs: m.carbs, protein: m.protein, fat: m.fat, fiber: m.fiber, date: date || "9999-99-99" });
+      }
+    });
+  };
+  Object.entries(entries || {}).forEach(([date, e]) => consider(e.meals, date));
+  consider(currentMeals, "9999-99-99");
+  return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name, "ja"));
+}
 function newExerciseItem() {
   return { id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, type: "有酸素運動", minutes: "", intensity: 3, memo: "" };
 }
@@ -254,34 +270,37 @@ function rowToEntry(row) {
     waterBySlot: row.water_by_slot || {}
   };
 }
+function numOrNull(v) {
+  return v === "" || v === undefined ? null : v;
+}
 function entryToRow(userId, e) {
   return {
     user_id: userId,
     date: e.date,
-    throat_condition: e.throatCondition,
-    voice_quality: e.voiceQuality,
+    throat_condition: numOrNull(e.throatCondition),
+    voice_quality: numOrNull(e.voiceQuality),
     throat_symptoms: e.throatSymptoms || [],
-    sleep_hours: e.sleepHours,
-    sleep_quality: e.sleepQuality,
+    sleep_hours: numOrNull(e.sleepHours),
+    sleep_quality: numOrNull(e.sleepQuality),
     meal_notes: e.mealNotes,
     location: e.location,
-    temperature: e.temperature,
-    humidity: e.humidity,
+    temperature: numOrNull(e.temperature),
+    humidity: numOrNull(e.humidity),
     activity_type: e.activityType,
-    activity_duration: e.activityDuration,
+    activity_duration: numOrNull(e.activityDuration),
     repertoire: e.repertoire,
-    performance_quality: e.performanceQuality,
-    ease: e.ease,
+    performance_quality: numOrNull(e.performanceQuality),
+    ease: numOrNull(e.ease),
     notes: e.notes,
-    weight_kg: e.weightKg === "" ? null : e.weightKg,
+    weight_kg: numOrNull(e.weightKg),
     water_intake: Object.values(e.waterBySlot || {}).reduce((total, v) => total + (Number(v) || 0), 0),
     carbs_g: sumMacro(e.meals, "carbs"),
     protein_g: sumMacro(e.meals, "protein"),
     fat_g: sumMacro(e.meals, "fat"),
     fiber_g: sumMacro(e.meals, "fiber"),
     exercise_minutes: (e.exercises || []).reduce((total, x) => total + (Number(x.minutes) || 0), 0),
-    meals: e.meals || [],
-    exercises: e.exercises || [],
+    meals: (e.meals || []).map((m) => ({ ...m, carbs: numOrNull(m.carbs), protein: numOrNull(m.protein), fat: numOrNull(m.fat), fiber: numOrNull(m.fiber) })),
+    exercises: (e.exercises || []).map((x) => ({ ...x, minutes: numOrNull(x.minutes) })),
     voice_checkins: e.voiceCheckins || {},
     water_by_slot: e.waterBySlot || {}
   };
@@ -414,7 +433,8 @@ function SectionCard({ title, icon: Icon, children }) {
 }
 
 function NumberField({ label, value, onChange, step = 1, min = -Infinity, max = Infinity, suffix, icon: Icon }) {
-  const clamp = (n) => Math.max(min, Math.min(max, n));
+  const round = (n) => Math.round(n * 100) / 100;
+  const clamp = (n) => round(Math.max(min, Math.min(max, n)));
   return (
     <div>
       <div className="flex items-center gap-1.5 mb-1.5">
@@ -429,7 +449,8 @@ function NumberField({ label, value, onChange, step = 1, min = -Infinity, max = 
         <input
           type="number"
           value={value}
-          onChange={(e) => onChange(e.target.value === "" ? "" : clamp(Number(e.target.value)))}
+          onChange={(e) => onChange(e.target.value === "" ? "" : Number(e.target.value))}
+          onBlur={(e) => { if (e.target.value !== "") onChange(clamp(Number(e.target.value))); }}
           className="w-full text-center rounded-lg border py-1.5 ff-mono"
           style={{ borderColor: C.line, background: C.paper, color: C.ink }}
         />
@@ -469,18 +490,31 @@ function MiniNumber({ value, onChange, placeholder }) {
   );
 }
 
-function MealItemRow({ item, onChange, onRemove }) {
+function MealItemRow({ item, onChange, onRemove, foodLibrary }) {
+  const listId = `food-options-${item.id}`;
+  function handleNameChange(name) {
+    const match = (foodLibrary || []).find((f) => f.name === name);
+    if (match) {
+      onChange({ ...item, name, carbs: match.carbs, protein: match.protein, fat: match.fat, fiber: match.fiber });
+    } else {
+      onChange({ ...item, name });
+    }
+  }
   return (
     <div className="rounded-xl border p-3" style={{ borderColor: C.line, background: C.paper }}>
       <div className="flex items-center gap-2 mb-2">
         <input
           type="text"
           value={item.name}
-          placeholder="食品名（例：白米、鶏むね肉）"
-          onChange={(e) => onChange({ ...item, name: e.target.value })}
+          list={listId}
+          placeholder="食品名（入力すると過去の記録から候補が出ます）"
+          onChange={(e) => handleNameChange(e.target.value)}
           className="flex-1 rounded-lg border text-xs px-2 py-1.5"
           style={{ borderColor: C.line, background: C.card, color: C.ink }}
         />
+        <datalist id={listId}>
+          {(foodLibrary || []).map((f) => <option key={f.name} value={f.name} />)}
+        </datalist>
         <button type="button" onClick={onRemove} className="shrink-0" style={{ color: C.inkSoft }}>
           <X size={15} />
         </button>
@@ -551,6 +585,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [selectedDate, setSelectedDate] = useState(todayISO());
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
+  const [saveError, setSaveError] = useState("");
   const [viewMonth, setViewMonth] = useState(() => {
     const d = new Date();
     return { year: d.getFullYear(), month: d.getMonth() };
@@ -610,6 +645,10 @@ export default function VocalTracker({ userId, userEmail }) {
       fiber: sumMacro(meals, "fiber")
     };
   }, [formData]);
+  const foodLibrary = useMemo(
+    () => buildFoodLibrary(entries, formData ? formData.meals : []),
+    [entries, formData]
+  );
   const waterTotal = useMemo(() => {
     const bySlot = formData ? formData.waterBySlot || {} : {};
     return Object.values(bySlot).reduce((total, v) => total + (Number(v) || 0), 0);
@@ -700,16 +739,17 @@ export default function VocalTracker({ userId, userEmail }) {
   async function handleSave() {
     if (!formData) return;
     setSaveStatus("saving");
+    setSaveError("");
     const clean = { ...formData };
     if (clean.activityType !== "本番") clean.performanceQuality = null;
-    ["temperature", "humidity", "activityDuration"].forEach((k) => { if (clean[k] === "") clean[k] = null; });
     const supabase = createClient();
     const { error } = await supabase
       .from("entries")
       .upsert(entryToRow(userId, clean), { onConflict: "user_id,date" });
     if (error) {
       setSaveStatus("error");
-      setTimeout(() => setSaveStatus("idle"), 2500);
+      setSaveError(error.message || "不明なエラー");
+      setTimeout(() => setSaveStatus("idle"), 4000);
       return;
     }
     setEntries((prev) => ({ ...prev, [clean.date]: clean }));
@@ -935,7 +975,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>{slot}</p>
                           <div className="space-y-2">
                             {(formData.meals || []).filter((m) => m.slot === slot).map((m) => (
-                              <MealItemRow key={m.id} item={m} onChange={(next) => updateMeal(m.id, next)} onRemove={() => removeMeal(m.id)} />
+                              <MealItemRow key={m.id} item={m} foodLibrary={foodLibrary} onChange={(next) => updateMeal(m.id, next)} onRemove={() => removeMeal(m.id)} />
                             ))}
                           </div>
                           <button type="button" onClick={() => addMeal(slot)}
@@ -1066,6 +1106,9 @@ export default function VocalTracker({ userId, userEmail }) {
                       {saveStatus === "saved" && <Check size={16} />}
                       {saveStatus === "saving" ? "保存中…" : saveStatus === "saved" ? "保存しました" : saveStatus === "error" ? "保存に失敗しました" : "この日の記録を保存"}
                     </button>
+                    {saveStatus === "error" && saveError && (
+                      <p className="text-xs text-center" style={{ color: C.curtain }}>{saveError}</p>
+                    )}
                   </>
                 )}
               </div>
