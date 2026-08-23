@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import { createClient } from "@/lib/supabase/client";
 import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC } from "@/lib/tokens";
+import { FOOD_PRESETS } from "@/lib/foodPresets";
 import HealthInfo from "@/components/HealthInfo";
 
 /* ---------- constants ---------- */
@@ -35,6 +36,10 @@ const VOICE_TIME_SLOTS = [
   { key: "昼", icon: Sun },
   { key: "晩", icon: Sunset }
 ];
+const WEATHER_OPTIONS = ["晴れ", "曇り", "雨", "雪", "その他"];
+const NUTRITION_PHASES = ["維持", "増量", "減量"];
+const REST_METHODS = ["睡眠・休息", "入浴", "マッサージ", "読書", "散歩", "瞑想", "趣味の時間", "その他"];
+const AI_ADVICE_ENABLED = false; // 準備中。有効にする場合は true にしてください（ANTHROPIC_API_KEYの設定も必要です）
 
 const FACTORS = [
   { key: "sleepHours", label: "睡眠時間", unit: "時間" },
@@ -151,10 +156,15 @@ function buildFormData(date, entries) {
     return {
       ...existing,
       throatSymptoms: existing.throatSymptoms || [],
+      throatSymptomsOther: existing.throatSymptomsOther || "",
+      voiceMemo: existing.voiceMemo || "",
+      weather: existing.weather || "",
+      mentalReason: existing.mentalReason || "",
       meals: existing.meals || [],
       exercises: existing.exercises || [],
       voiceCheckins: existing.voiceCheckins || {},
-      waterBySlot: existing.waterBySlot || {}
+      waterBySlot: existing.waterBySlot || {},
+      activityDetail: existing.activityDetail || {}
     };
   }
   return {
@@ -162,19 +172,24 @@ function buildFormData(date, entries) {
     throatCondition: 3,
     voiceQuality: 3,
     throatSymptoms: [],
+    throatSymptomsOther: "",
+    voiceMemo: "",
     voiceCheckins: {},
     sleepHours: 7,
     sleepQuality: 3,
     waterBySlot: {},
     mealNotes: "",
     location: getLastLocation(entries, date),
+    weather: "",
     temperature: "",
     humidity: "",
     activityType: "自主練習",
     activityDuration: "",
+    activityDetail: {},
     repertoire: "",
     performanceQuality: null,
     ease: 3,
+    mentalReason: "",
     notes: "",
     weightKg: "",
     meals: [],
@@ -195,7 +210,72 @@ function sumMacro(meals, key) {
   return (meals || []).reduce((total, m) => total + (Number(m[key]) || 0), 0);
 }
 function newMealItem(slot = "朝食") {
-  return { id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, slot, name: "", carbs: "", protein: "", fat: "", fiber: "" };
+  return {
+    id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    slot, name: "", isPreset: false, grams: "",
+    carbs: "", protein: "", fat: "", fiber: ""
+  };
+}
+function buildFoodLibrary(entries, currentMeals) {
+  const map = new Map();
+  FOOD_PRESETS.forEach((f) => {
+    map.set(f.name, { name: f.name, carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber, isPreset: true, date: "0000-00-00" });
+  });
+  const consider = (meals, date) => {
+    (meals || []).forEach((m) => {
+      const key = (m.name || "").trim();
+      if (!key) return;
+      if (m.isPreset) return; // プリセットは上で登録済みなので、量だけ違う履歴で上書きしない
+      const existing = map.get(key);
+      if (!existing || existing.isPreset || date >= existing.date) {
+        map.set(key, { name: key, carbs: m.carbs, protein: m.protein, fat: m.fat, fiber: m.fiber, isPreset: false, date: date || "9999-99-99" });
+      }
+    });
+  };
+  Object.entries(entries || {}).forEach(([date, e]) => consider(e.meals, date));
+  consider(currentMeals, "9999-99-99");
+  return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name, "ja"));
+}
+function getLatestWeight(entries, uptoDate) {
+  const dates = Object.keys(entries || {}).filter((d) => d <= uptoDate && entries[d].weightKg).sort();
+  if (dates.length === 0) return null;
+  return Number(entries[dates[dates.length - 1]].weightKg);
+}
+function computeNutritionTargets(weightKg, heightCm, age, sex, phase, proteinCoefficient) {
+  if (!weightKg) return null;
+  const w = Number(weightKg);
+  const coefficient = Number(proteinCoefficient) || 1.6;
+  const proteinTarget = w * coefficient;
+
+  const usedPreciseFormula = !!(heightCm && age && (sex === "男性" || sex === "女性"));
+  let calorieTarget;
+  if (usedPreciseFormula) {
+    const h = Number(heightCm);
+    const a = Number(age);
+    // Mifflin-St Jeor式（栄養学でよく使われる基礎代謝の推定式）
+    const bmr = sex === "男性" ? 10 * w + 6.25 * h - 5 * a + 5 : 10 * w + 6.25 * h - 5 * a - 161;
+    const activityFactor = 1.55; // 週3〜5日の練習・運動がある「中程度の活動量」を仮定した係数
+    const tdee = bmr * activityFactor;
+    calorieTarget = phase === "増量" ? tdee + 350 : phase === "減量" ? tdee - 350 : tdee;
+  } else {
+    const kcalPerKg = phase === "増量" ? 38 : phase === "減量" ? 28 : 33;
+    calorieTarget = w * kcalPerKg;
+  }
+
+  const proteinKcal = proteinTarget * 4;
+  const fatTarget = (calorieTarget * 0.25) / 9;
+  const fatKcal = fatTarget * 9;
+  const carbsTarget = Math.max(0, (calorieTarget - proteinKcal - fatKcal) / 4);
+  const fiberTarget = sex === "男性" ? 21 : sex === "女性" ? 18 : 20;
+  return { calorieTarget, proteinTarget, fatTarget, carbsTarget, fiberTarget, usedPreciseFormula };
+}
+function evaluateIntake(actual, target) {
+  if (!target || target <= 0) return null;
+  const ratio = actual / target;
+  if (ratio < 0.8) return { label: "不足", color: C.curtain };
+  if (ratio <= 1.1) return { label: "適正", color: C.sage };
+  if (ratio <= 1.3) return { label: "やや過剰", color: C.gold };
+  return { label: "過剰", color: C.rust };
 }
 function buildFoodLibrary(entries, currentMeals) {
   const map = new Map();
@@ -267,7 +347,12 @@ function rowToEntry(row) {
     meals: row.meals || [],
     exercises: row.exercises || [],
     voiceCheckins: row.voice_checkins || {},
-    waterBySlot: row.water_by_slot || {}
+    waterBySlot: row.water_by_slot || {},
+    weather: row.weather || "",
+    mentalReason: row.mental_reason || "",
+    throatSymptomsOther: row.throat_symptoms_other || "",
+    voiceMemo: row.voice_memo || "",
+    activityDetail: row.activity_detail || {}
   };
 }
 function numOrNull(v) {
@@ -302,7 +387,12 @@ function entryToRow(userId, e) {
     meals: (e.meals || []).map((m) => ({ ...m, carbs: numOrNull(m.carbs), protein: numOrNull(m.protein), fat: numOrNull(m.fat), fiber: numOrNull(m.fiber) })),
     exercises: (e.exercises || []).map((x) => ({ ...x, minutes: numOrNull(x.minutes) })),
     voice_checkins: e.voiceCheckins || {},
-    water_by_slot: e.waterBySlot || {}
+    water_by_slot: e.waterBySlot || {},
+    weather: e.weather || null,
+    mental_reason: e.mentalReason || "",
+    throat_symptoms_other: e.throatSymptomsOther || "",
+    voice_memo: e.voiceMemo || "",
+    activity_detail: e.activityDetail || {}
   };
 }
 
@@ -490,6 +580,9 @@ function MiniNumber({ value, onChange, placeholder }) {
   );
 }
 
+function roundTo1(n) {
+  return Math.round(n * 10) / 10;
+}
 function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood }) {
   const [open, setOpen] = useState(false);
   const q = (value || "").trim().toLowerCase();
@@ -501,7 +594,7 @@ function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood }
       <input
         type="text"
         value={value}
-        placeholder="食品名（入力すると過去の記録から候補が出ます）"
+        placeholder="食品名（プリセットや過去の記録から候補が出ます）"
         onChange={(e) => {
           const v = e.target.value;
           onNameChange(v);
@@ -516,7 +609,7 @@ function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood }
       />
       {open && matches.length > 0 && (
         <div
-          className="absolute left-0 right-0 mt-1 rounded-lg border overflow-hidden"
+          className="absolute left-0 right-0 mt-1 rounded-lg border overflow-hidden max-h-60 overflow-y-auto"
           style={{ background: C.card, borderColor: C.line, zIndex: 20, boxShadow: "0 6px 16px rgba(36,25,20,0.15)" }}
         >
           {matches.map((f, i) => (
@@ -527,9 +620,12 @@ function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood }
               className="w-full text-left px-2.5 py-2 text-xs"
               style={{ color: C.ink, borderTop: i > 0 ? `1px solid ${C.line}` : "none" }}
             >
+              {f.isPreset && <span className="ff-mono mr-1" style={{ color: C.gold }}>[プリセット]</span>}
               {f.name}
               <span className="ml-1.5" style={{ color: C.inkSoft }}>
-                （炭{f.carbs || 0}・蛋{f.protein || 0}・脂{f.fat || 0}・繊{f.fiber || 0}g）
+                {f.isPreset
+                  ? `（100gあたり 炭${f.carbs}・蛋${f.protein}・脂${f.fat}・繊${f.fiber}g）`
+                  : `（炭${f.carbs || 0}・蛋${f.protein || 0}・脂${f.fat || 0}・繊${f.fiber || 0}g）`}
               </span>
             </button>
           ))}
@@ -540,37 +636,76 @@ function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood }
 }
 
 function MealItemRow({ item, onChange, onRemove, foodLibrary }) {
+  function handleSelectFood(f) {
+    if (f.isPreset) {
+      onChange({
+        ...item, name: f.name, isPreset: true,
+        presetBase: { carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber },
+        grams: 100, carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber
+      });
+    } else {
+      onChange({ ...item, name: f.name, isPreset: false, presetBase: null, grams: "", carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber });
+    }
+  }
+  function handleGramsChange(grams) {
+    const base = item.presetBase || { carbs: 0, protein: 0, fat: 0, fiber: 0 };
+    const factor = (Number(grams) || 0) / 100;
+    onChange({
+      ...item, grams,
+      carbs: roundTo1(base.carbs * factor), protein: roundTo1(base.protein * factor),
+      fat: roundTo1(base.fat * factor), fiber: roundTo1(base.fiber * factor)
+    });
+  }
   return (
     <div className="rounded-xl border p-3" style={{ borderColor: C.line, background: C.paper }}>
       <div className="flex items-center gap-2 mb-2">
         <FoodNameAutocomplete
           value={item.name}
           foodLibrary={foodLibrary}
-          onNameChange={(name) => onChange({ ...item, name })}
-          onSelectFood={(f) => onChange({ ...item, name: f.name, carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber })}
+          onNameChange={(name) => onChange({ ...item, name, isPreset: false, presetBase: null })}
+          onSelectFood={handleSelectFood}
         />
         <button type="button" onClick={onRemove} className="shrink-0" style={{ color: C.inkSoft }}>
           <X size={15} />
         </button>
       </div>
-      <div className="grid grid-cols-4 gap-2">
-        <div>
-          <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Wheat size={11} />炭水化物g</div>
-          <MiniNumber value={item.carbs} onChange={(v) => onChange({ ...item, carbs: v })} />
+
+      {item.isPreset ? (
+        <>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xs shrink-0" style={{ color: C.inkSoft }}>量</span>
+            <MiniNumber value={item.grams} onChange={handleGramsChange} placeholder="g" />
+            <span className="text-xs shrink-0" style={{ color: C.inkSoft }}>g（100gあたりの値から自動計算）</span>
+            <button type="button" onClick={() => onChange({ ...item, isPreset: false, presetBase: null })}
+              className="text-xs shrink-0 underline" style={{ color: C.inkSoft }}>手動編集</button>
+          </div>
+          <div className="grid grid-cols-4 gap-2 text-center">
+            <div><div className="text-xs" style={{ color: C.inkSoft }}>炭水化物</div><div className="ff-mono text-xs font-medium">{item.carbs}g</div></div>
+            <div><div className="text-xs" style={{ color: C.inkSoft }}>タンパク質</div><div className="ff-mono text-xs font-medium">{item.protein}g</div></div>
+            <div><div className="text-xs" style={{ color: C.inkSoft }}>脂質</div><div className="ff-mono text-xs font-medium">{item.fat}g</div></div>
+            <div><div className="text-xs" style={{ color: C.inkSoft }}>食物繊維</div><div className="ff-mono text-xs font-medium">{item.fiber}g</div></div>
+          </div>
+        </>
+      ) : (
+        <div className="grid grid-cols-4 gap-2">
+          <div>
+            <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Wheat size={11} />炭水化物g</div>
+            <MiniNumber value={item.carbs} onChange={(v) => onChange({ ...item, carbs: v })} />
+          </div>
+          <div>
+            <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Egg size={11} />タンパク質g</div>
+            <MiniNumber value={item.protein} onChange={(v) => onChange({ ...item, protein: v })} />
+          </div>
+          <div>
+            <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Droplet size={11} />脂質g</div>
+            <MiniNumber value={item.fat} onChange={(v) => onChange({ ...item, fat: v })} />
+          </div>
+          <div>
+            <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Leaf size={11} />食物繊維g</div>
+            <MiniNumber value={item.fiber} onChange={(v) => onChange({ ...item, fiber: v })} />
+          </div>
         </div>
-        <div>
-          <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Egg size={11} />タンパク質g</div>
-          <MiniNumber value={item.protein} onChange={(v) => onChange({ ...item, protein: v })} />
-        </div>
-        <div>
-          <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Droplet size={11} />脂質g</div>
-          <MiniNumber value={item.fat} onChange={(v) => onChange({ ...item, fat: v })} />
-        </div>
-        <div>
-          <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Leaf size={11} />食物繊維g</div>
-          <MiniNumber value={item.fiber} onChange={(v) => onChange({ ...item, fiber: v })} />
-        </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -588,7 +723,7 @@ function ExerciseItemRow({ item, onChange, onRemove }) {
           <X size={15} />
         </button>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 mb-2">
         <span className="text-xs shrink-0" style={{ color: C.inkSoft }}>強度</span>
         <div className="flex gap-1.5">
           {[1, 2, 3, 4, 5].map((v) => (
@@ -607,6 +742,14 @@ function ExerciseItemRow({ item, onChange, onRemove }) {
           ))}
         </div>
       </div>
+      <input
+        type="text"
+        value={item.memo || ""}
+        placeholder={item.type === "その他" ? "内容を記入してください（例：バレエレッスン）" : "メモ（任意）"}
+        onChange={(e) => onChange({ ...item, memo: e.target.value })}
+        className="w-full rounded-lg border text-xs px-2 py-1.5"
+        style={{ borderColor: C.line, background: C.card, color: C.ink }}
+      />
     </div>
   );
 }
@@ -631,7 +774,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "" });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "" });
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileSaveStatus, setProfileSaveStatus] = useState("idle");
 
@@ -654,9 +797,16 @@ export default function VocalTracker({ userId, userEmail }) {
     let mounted = true;
     (async () => {
       const supabase = createClient();
-      const { data } = await supabase.from("profiles").select("height_cm, voice_type").eq("id", userId).single();
+      const { data } = await supabase.from("profiles").select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex").eq("id", userId).single();
       if (mounted && data) {
-        setProfile({ height_cm: data.height_cm ?? "", voice_type: data.voice_type ?? "" });
+        setProfile({
+          height_cm: data.height_cm ?? "",
+          voice_type: data.voice_type ?? "",
+          nutrition_phase: data.nutrition_phase || "維持",
+          protein_coefficient: data.protein_coefficient ?? 1.6,
+          age: data.age ?? "",
+          sex: data.sex ?? ""
+        });
       }
       if (mounted) setProfileLoading(false);
     })();
@@ -699,6 +849,10 @@ export default function VocalTracker({ userId, userEmail }) {
     () => healthyWeightRange(profile.height_cm ? Number(profile.height_cm) : null),
     [profile.height_cm]
   );
+  const nutritionTargets = useMemo(() => {
+    const w = (formData && formData.weightKg) ? Number(formData.weightKg) : getLatestWeight(entries, selectedDate);
+    return computeNutritionTargets(w, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient);
+  }, [formData, entries, selectedDate, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient]);
   const sortedDates = useMemo(() => Object.keys(entries).sort().reverse(), [entries]);
   const monthEntries = useMemo(() => {
     const prefix = `${viewMonth.year}-${String(viewMonth.month + 1).padStart(2, "0")}`;
@@ -736,6 +890,46 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [correlationResults]);
 
   const scatterInfo = useMemo(() => correlationResults.find((r) => r.key === selectedFactorKey) || null, [correlationResults, selectedFactorKey]);
+  const timeOfDayStats = useMemo(() => {
+    const sums = {};
+    VOICE_TIME_SLOTS.forEach(({ key }) => { sums[key] = { throatSum: 0, throatN: 0, voiceSum: 0, voiceN: 0 }; });
+    Object.values(entries).forEach((e) => {
+      const checkins = e.voiceCheckins || {};
+      VOICE_TIME_SLOTS.forEach(({ key }) => {
+        const c = checkins[key];
+        if (c && typeof c.throat === "number") { sums[key].throatSum += c.throat; sums[key].throatN += 1; }
+        if (c && typeof c.voice === "number") { sums[key].voiceSum += c.voice; sums[key].voiceN += 1; }
+      });
+    });
+    return VOICE_TIME_SLOTS.map(({ key, icon }) => ({
+      key, icon,
+      avgThroat: sums[key].throatN ? sums[key].throatSum / sums[key].throatN : null,
+      avgVoice: sums[key].voiceN ? sums[key].voiceSum / sums[key].voiceN : null,
+      n: Math.max(sums[key].throatN, sums[key].voiceN)
+    }));
+  }, [entries]);
+  const restMethodStats = useMemo(() => {
+    const byMethod = {};
+    Object.values(entries).forEach((e) => {
+      if (e.activityType !== "休養") return;
+      const methods = (e.activityDetail && e.activityDetail.restMethods) || [];
+      methods.forEach((m) => {
+        if (!byMethod[m]) byMethod[m] = { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 };
+        if (typeof e.throatCondition === "number") byMethod[m].throatSum += e.throatCondition;
+        if (typeof e.voiceQuality === "number") byMethod[m].voiceSum += e.voiceQuality;
+        if (typeof e.ease === "number") byMethod[m].easeSum += e.ease;
+        byMethod[m].n += 1;
+      });
+    });
+    return Object.entries(byMethod)
+      .map(([method, s]) => ({
+        method, n: s.n,
+        avgThroat: s.n ? s.throatSum / s.n : null,
+        avgVoice: s.n ? s.voiceSum / s.n : null,
+        avgEase: s.n ? s.easeSum / s.n : null
+      }))
+      .sort((a, b) => (b.avgVoice || 0) - (a.avgVoice || 0));
+  }, [entries]);
 
   async function handleSaveProfile() {
     setProfileSaveStatus("saving");
@@ -744,11 +938,19 @@ export default function VocalTracker({ userId, userEmail }) {
       .from("profiles")
       .update({
         height_cm: profile.height_cm === "" ? null : Number(profile.height_cm),
-        voice_type: profile.voice_type || null
+        voice_type: profile.voice_type || null,
+        nutrition_phase: profile.nutrition_phase || "維持",
+        protein_coefficient: profile.protein_coefficient === "" ? null : Number(profile.protein_coefficient),
+        age: profile.age === "" ? null : Number(profile.age),
+        sex: profile.sex || null
       })
       .eq("id", userId);
     setProfileSaveStatus(error ? "error" : "saved");
     setTimeout(() => setProfileSaveStatus("idle"), 1800);
+  }
+
+  function updateDetail(patch) {
+    setFormData((f) => ({ ...f, activityDetail: { ...(f.activityDetail || {}), ...patch } }));
   }
 
   function addMeal(slot) {
@@ -904,6 +1106,15 @@ export default function VocalTracker({ userId, userEmail }) {
                               }))} />
                           ))}
                         </div>
+                        <input type="text" value={formData.throatSymptomsOther} placeholder="その他の症状（自由記述）"
+                          onChange={(e) => setFormData((f) => ({ ...f, throatSymptomsOther: e.target.value }))}
+                          className="w-full rounded-lg border p-2 text-sm mt-2" style={{ borderColor: C.line, background: C.paper }} />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium block mb-1.5">一口メモ</label>
+                        <input type="text" value={formData.voiceMemo} placeholder="声について気づいたことを一言"
+                          onChange={(e) => setFormData((f) => ({ ...f, voiceMemo: e.target.value }))}
+                          className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                       </div>
                       <div className="pt-2 border-t" style={{ borderColor: C.line }}>
                         <p className="text-sm font-medium mb-1">時間帯別に記録（任意）</p>
@@ -956,10 +1167,55 @@ export default function VocalTracker({ userId, userEmail }) {
                             {VOICE_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
                           </select>
                         </div>
+                        <div>
+                          <label className="text-sm font-medium block mb-1.5">目標フェーズ（栄養目標の計算に使用）</label>
+                          <select
+                            value={profile.nutrition_phase}
+                            onChange={(e) => setProfile((p) => ({ ...p, nutrition_phase: e.target.value }))}
+                            className="w-full rounded-lg border p-2 text-sm"
+                            style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                          >
+                            {NUTRITION_PHASES.map((v) => <option key={v} value={v}>{v}</option>)}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="text-sm font-medium block mb-1.5">タンパク質係数（g／体重kg）</label>
+                          <input
+                            type="number" step="0.1"
+                            value={profile.protein_coefficient}
+                            onChange={(e) => setProfile((p) => ({ ...p, protein_coefficient: e.target.value === "" ? "" : Number(e.target.value) }))}
+                            className="w-full rounded-lg border p-2 text-sm ff-mono"
+                            style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                          />
+                          <p className="text-xs mt-1" style={{ color: C.inkSoft }}>目安：維持1.2〜1.6、増量1.6〜2.2</p>
+                        </div>
+                        <div>
+                          <label className="text-sm font-medium block mb-1.5">年齢（任意・栄養計算の精度が上がります）</label>
+                          <input
+                            type="number"
+                            value={profile.age}
+                            onChange={(e) => setProfile((p) => ({ ...p, age: e.target.value === "" ? "" : Number(e.target.value) }))}
+                            className="w-full rounded-lg border p-2 text-sm ff-mono"
+                            style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                          />
+                        </div>
+                        <div>
+                          <label className="text-sm font-medium block mb-1.5">性別（任意）</label>
+                          <select
+                            value={profile.sex}
+                            onChange={(e) => setProfile((p) => ({ ...p, sex: e.target.value }))}
+                            className="w-full rounded-lg border p-2 text-sm"
+                            style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                          >
+                            <option value="">回答しない</option>
+                            <option value="男性">男性</option>
+                            <option value="女性">女性</option>
+                          </select>
+                        </div>
                       </div>
                       <button onClick={handleSaveProfile} disabled={profileSaveStatus === "saving"}
                         className="text-xs px-4 py-2 rounded-full font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
-                        {profileSaveStatus === "saving" ? "保存中…" : profileSaveStatus === "saved" ? "保存しました" : "身長・声種を保存"}
+                        {profileSaveStatus === "saving" ? "保存中…" : profileSaveStatus === "saved" ? "保存しました" : "身体データ設定を保存"}
                       </button>
 
                       <NumberField label="今日の体重" icon={Scale} value={formData.weightKg ?? ""} step={0.1} min={20} max={200} suffix="kg"
@@ -1046,6 +1302,43 @@ export default function VocalTracker({ userId, userEmail }) {
                           <div className="ff-mono text-sm font-medium">{mealTotals.fiber.toFixed(0)}g</div>
                         </div>
                       </div>
+
+                      {nutritionTargets ? (
+                        <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                          <p className="text-xs font-medium mb-2">栄養評価（目安）</p>
+                          <div className="space-y-1.5">
+                            {[
+                              { label: "タンパク質", actual: mealTotals.protein, target: nutritionTargets.proteinTarget },
+                              { label: "炭水化物", actual: mealTotals.carbs, target: nutritionTargets.carbsTarget },
+                              { label: "脂質", actual: mealTotals.fat, target: nutritionTargets.fatTarget },
+                              { label: "食物繊維", actual: mealTotals.fiber, target: nutritionTargets.fiberTarget }
+                            ].map(({ label, actual, target }) => {
+                              const ev = evaluateIntake(actual, target);
+                              return (
+                                <div key={label} className="flex items-center justify-between text-xs">
+                                  <span style={{ color: C.inkSoft }}>{label}</span>
+                                  <span className="ff-mono">{actual.toFixed(0)}g / 目安{target.toFixed(0)}g</span>
+                                  {ev && <span className="font-medium" style={{ color: ev.color }}>{ev.label}</span>}
+                                </div>
+                              );
+                            })}
+                            <div className="flex items-center justify-between text-xs pt-1 border-t" style={{ borderColor: C.line }}>
+                              <span style={{ color: C.inkSoft }}>推定カロリー</span>
+                              <span className="ff-mono">
+                                {(mealTotals.carbs * 4 + mealTotals.protein * 4 + mealTotals.fat * 9).toFixed(0)}kcal / 目安{nutritionTargets.calorieTarget.toFixed(0)}kcal
+                              </span>
+                            </div>
+                          </div>
+                          <p className="text-xs mt-2 leading-relaxed" style={{ color: C.inkSoft }}>
+                            ※ {nutritionTargets.usedPreciseFormula
+                              ? "年齢・性別・身長・体重をもとにした基礎代謝の推定値（Mifflin-St Jeor式）と、活動量の仮定（週3〜5日の運動を想定）から算出した目安です。"
+                              : "年齢・性別・身長を登録すると、より精度の高い計算（Mifflin-St Jeor式）に切り替わります。今は体重のみをもとにした簡易的な目安です。"}
+                            {" "}あくまで一般的な目安であり、正確な数値が必要な場合は管理栄養士にご相談ください。
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="text-xs" style={{ color: C.inkSoft }}>体重を記録すると、栄養目標との比較が表示されます。</p>
+                      )}
                     </SectionCard>
 
                     <SectionCard title="気候・滞在地" icon={Thermometer}>
@@ -1063,6 +1356,18 @@ export default function VocalTracker({ userId, userEmail }) {
                           onChange={(v) => setFormData((f) => ({ ...f, temperature: v }))} />
                         <NumberField label="湿度" icon={Wind} value={formData.humidity ?? ""} step={5} min={0} max={100} suffix="%"
                           onChange={(v) => setFormData((f) => ({ ...f, humidity: v }))} />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium block mb-1.5">天気</label>
+                        <select
+                          value={formData.weather}
+                          onChange={(e) => setFormData((f) => ({ ...f, weather: e.target.value }))}
+                          className="w-full rounded-lg border p-2 text-sm"
+                          style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                        >
+                          <option value="">選択してください</option>
+                          {WEATHER_OPTIONS.map((w) => <option key={w} value={w}>{w}</option>)}
+                        </select>
                       </div>
                     </SectionCard>
 
@@ -1099,9 +1404,85 @@ export default function VocalTracker({ userId, userEmail }) {
                             className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                         </div>
                       </div>
+
+                      {formData.activityType === "休養" && (
+                        <div className="pt-2 border-t" style={{ borderColor: C.line }}>
+                          <p className="text-sm font-medium mb-2">試した休養方法（複数選択可）</p>
+                          <div className="flex flex-wrap gap-2">
+                            {REST_METHODS.map((m) => (
+                              <Chip key={m} label={m} active={((formData.activityDetail || {}).restMethods || []).includes(m)}
+                                onClick={() => {
+                                  const current = (formData.activityDetail || {}).restMethods || [];
+                                  updateDetail({ restMethods: current.includes(m) ? current.filter((x) => x !== m) : [...current, m] });
+                                }} />
+                            ))}
+                          </div>
+                          <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                            この日の「声・喉」「メンタル」の評価とあわせて記録され、分析タブで休養方法ごとの傾向を見られます。
+                          </p>
+                        </div>
+                      )}
+
+                      {formData.activityType === "自主練習" && (
+                        <div className="pt-2 border-t space-y-3" style={{ borderColor: C.line }}>
+                          <div>
+                            <label className="text-sm font-medium block mb-1.5">練習メニュー</label>
+                            <textarea value={(formData.activityDetail || {}).practiceMenu || ""} rows={2}
+                              placeholder="例：ロングトーン15分、音階練習、該当曲の通し2回"
+                              onChange={(e) => updateDetail({ practiceMenu: e.target.value })}
+                              className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium block mb-1.5">成果・気づき</label>
+                            <textarea value={(formData.activityDetail || {}).practiceResult || ""} rows={2}
+                              placeholder="今日できるようになったこと、次回への課題など"
+                              onChange={(e) => updateDetail({ practiceResult: e.target.value })}
+                              className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                          </div>
+                        </div>
+                      )}
+
+                      {formData.activityType === "レッスン" && (
+                        <div className="pt-2 border-t space-y-3" style={{ borderColor: C.line }}>
+                          <div>
+                            <label className="text-sm font-medium block mb-1.5">先生が言ったこと</label>
+                            <textarea value={(formData.activityDetail || {}).teacherNotes || ""} rows={3}
+                              placeholder="レッスンで指摘・アドバイスされた内容"
+                              onChange={(e) => updateDetail({ teacherNotes: e.target.value })}
+                              className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium block mb-1.5">自分のまとめ</label>
+                            <textarea value={(formData.activityDetail || {}).lessonSummary || ""} rows={3}
+                              placeholder="次回までに取り組むこと、自分なりの解釈など"
+                              onChange={(e) => updateDetail({ lessonSummary: e.target.value })}
+                              className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                          </div>
+                        </div>
+                      )}
+
+                      {formData.activityType === "リハーサル" && (
+                        <p className="text-xs pt-2 border-t" style={{ borderColor: C.line, color: C.inkSoft }}>
+                          このページ上部「声・喉」の評価と、下部「メンタル」の評価に、リハーサルでの客観的な声・メンタルの状態を記録してください。
+                        </p>
+                      )}
+
                       {formData.activityType === "本番" && (
-                        <DynamicsSelector label="公演の出来" icon={Sparkles} value={formData.performanceQuality || 3}
-                          onChange={(v) => setFormData((f) => ({ ...f, performanceQuality: v }))} />
+                        <div className="pt-2 border-t space-y-4" style={{ borderColor: C.line }}>
+                          <DynamicsSelector label="公演の出来" icon={Sparkles} value={formData.performanceQuality || 3}
+                            onChange={(v) => setFormData((f) => ({ ...f, performanceQuality: v }))} />
+                          <DynamicsSelector label="トーク" icon={Sparkles} value={(formData.activityDetail || {}).talkQuality || 3}
+                            onChange={(v) => updateDetail({ talkQuality: v })} />
+                          <DynamicsSelector label="振る舞い" icon={Sparkles} value={(formData.activityDetail || {}).stageManner || 3}
+                            onChange={(v) => updateDetail({ stageManner: v })} />
+                          <div>
+                            <label className="text-sm font-medium block mb-1.5">コメント</label>
+                            <textarea value={(formData.activityDetail || {}).performanceComment || ""} rows={3}
+                              placeholder="公演を振り返って気づいたこと。後日、日付を戻って編集・追記もできます"
+                              onChange={(e) => updateDetail({ performanceComment: e.target.value })}
+                              className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                          </div>
+                        </div>
                       )}
                     </SectionCard>
 
@@ -1125,6 +1506,12 @@ export default function VocalTracker({ userId, userEmail }) {
                     <SectionCard title="メンタル" icon={HeartHandshake}>
                       <DotSelector label="心の余裕" icon={HeartHandshake} value={formData.ease} lowLabel="緊張" highLabel="穏やか"
                         onChange={(v) => setFormData((f) => ({ ...f, ease: v }))} />
+                      <div>
+                        <label className="text-sm font-medium block mb-1.5">今日の心境（日記）</label>
+                        <textarea value={formData.mentalReason} rows={3} placeholder="なぜその評価にしたか、今日感じたことを書き残せます"
+                          onChange={(e) => setFormData((f) => ({ ...f, mentalReason: e.target.value }))}
+                          className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                      </div>
                     </SectionCard>
 
                     <SectionCard title="メモ" icon={NotebookPen}>
@@ -1218,6 +1605,12 @@ export default function VocalTracker({ userId, userEmail }) {
                                 {e.activityType === "本番" && e.performanceQuality && <span>・公演の出来 {levelDynamic(e.performanceQuality)}</span>}
                                 {e.location && <span>・{e.location}</span>}
                               </div>
+                              {e.mentalReason && (
+                                <p className="text-xs mt-1 line-clamp-1" style={{ color: C.inkSoft }}>
+                                  <HeartHandshake size={10} className="inline mr-1" style={{ verticalAlign: "middle" }} />
+                                  {e.mentalReason}
+                                </p>
+                              )}
                             </div>
                             <button onClick={() => setConfirmDeleteDate(date)} className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ color: C.inkSoft }}>
                               <Trash2 size={15} />
@@ -1233,6 +1626,51 @@ export default function VocalTracker({ userId, userEmail }) {
 
             {activeTab === "analysis" && (
               <div className="space-y-5">
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">時間帯別の声の傾向</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>「時間帯別に記録」した内容の平均値です。件数が少ないうちは参考程度にご覧ください。</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {timeOfDayStats.map(({ key, icon: SlotIcon, avgThroat, avgVoice, n }) => {
+                      const best = timeOfDayStats
+                        .filter((s) => s.avgThroat != null)
+                        .reduce((a, b) => (a && a.avgThroat >= b.avgThroat ? a : b), null);
+                      const isBest = best && best.key === key && n > 0;
+                      return (
+                        <div key={key} className="rounded-xl p-3 text-center" style={{ background: C.paper, border: isBest ? `1.5px solid ${C.gold}` : "none" }}>
+                          <div className="flex items-center justify-center gap-1 mb-1">
+                            <SlotIcon size={13} style={{ color: C.gold }} />
+                            <span className="text-xs font-medium">{key}</span>
+                          </div>
+                          <div className="ff-display italic text-xl" style={{ color: avgThroat != null ? levelColor(avgThroat) : C.inkSoft }}>
+                            {levelDynamic(avgThroat)}
+                          </div>
+                          <div className="text-xs ff-mono mt-0.5" style={{ color: C.inkSoft }}>
+                            {n > 0 ? `声${avgVoice != null ? avgVoice.toFixed(1) : "-"} / 喉${avgThroat != null ? avgThroat.toFixed(1) : "-"}` : "記録なし"}
+                          </div>
+                          {isBest && <div className="text-xs mt-1" style={{ color: C.gold }}>調子が良い傾向</div>}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {restMethodStats.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">休養方法ごとの声・メンタルの傾向</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>「休養」の日に選んだ方法別の平均値です（件数が少ないうちは参考程度に）。</p>
+                    <div className="space-y-2">
+                      {restMethodStats.map((s) => (
+                        <div key={s.method} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                          <span className="font-medium">{s.method}</span>
+                          <span className="ff-mono" style={{ color: C.inkSoft }}>
+                            喉{s.avgThroat != null ? s.avgThroat.toFixed(1) : "-"} ・ 声{s.avgVoice != null ? s.avgVoice.toFixed(1) : "-"} ・ 心の余裕{s.avgEase != null ? s.avgEase.toFixed(1) : "-"}（{s.n}件）
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
                   <button onClick={() => setAnalysisTarget("performance")}
                     className="flex-1 py-2 rounded-full text-sm font-medium transition-all"
@@ -1310,30 +1748,40 @@ export default function VocalTracker({ userId, userEmail }) {
                     <Bot size={18} style={{ color: C.curtain }} />
                     <h3 className="ff-display italic text-lg">AIアドバイス</h3>
                   </div>
-                  <p className="text-xs mb-4" style={{ color: C.inkSoft }}>
-                    直近2週間の記録（食事メモ・自由メモを含む）をもとに、AIが傾向を読み取ってアドバイスします。
-                  </p>
-                  <button onClick={handleGenerateAdvice} disabled={adviceLoading}
-                    className="rounded-full px-5 py-2.5 text-sm font-medium flex items-center gap-2"
-                    style={{ background: C.curtain, color: "#FFFDF8" }}>
-                    {adviceLoading && <Loader2 size={14} className="animate-spin" />}
-                    {adviceLoading ? "分析中…" : "アドバイスを生成する"}
-                  </button>
-                  {adviceError && <p className="text-xs mt-3" style={{ color: C.curtain }}>{adviceError}</p>}
-                  {adviceText && (
-                    <div className="mt-4 rounded-xl p-4 text-sm leading-relaxed whitespace-pre-wrap" style={{ background: C.paper, border: `1px solid ${C.line}` }}>
-                      {adviceText}
+                  {!AI_ADVICE_ENABLED ? (
+                    <div className="rounded-xl p-4 text-sm" style={{ background: C.paper, color: C.inkSoft }}>
+                      この機能は現在準備中です。近日公開予定ですので、もうしばらくお待ちください。
                     </div>
-                  )}
-                  {adviceGeneratedAt && (
-                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                      生成日時: {adviceGeneratedAt.toLocaleString("ja-JP")}
-                    </p>
+                  ) : (
+                    <>
+                      <p className="text-xs mb-4" style={{ color: C.inkSoft }}>
+                        直近2週間の記録（食事メモ・自由メモを含む）をもとに、AIが傾向を読み取ってアドバイスします。
+                      </p>
+                      <button onClick={handleGenerateAdvice} disabled={adviceLoading}
+                        className="rounded-full px-5 py-2.5 text-sm font-medium flex items-center gap-2"
+                        style={{ background: C.curtain, color: "#FFFDF8" }}>
+                        {adviceLoading && <Loader2 size={14} className="animate-spin" />}
+                        {adviceLoading ? "分析中…" : "アドバイスを生成する"}
+                      </button>
+                      {adviceError && <p className="text-xs mt-3" style={{ color: C.curtain }}>{adviceError}</p>}
+                      {adviceText && (
+                        <div className="mt-4 rounded-xl p-4 text-sm leading-relaxed whitespace-pre-wrap" style={{ background: C.paper, border: `1px solid ${C.line}` }}>
+                          {adviceText}
+                        </div>
+                      )}
+                      {adviceGeneratedAt && (
+                        <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                          生成日時: {adviceGeneratedAt.toLocaleString("ja-JP")}
+                        </p>
+                      )}
+                    </>
                   )}
                 </div>
-                <p className="text-xs leading-relaxed px-1" style={{ color: C.inkSoft }}>
-                  ※ このアドバイスはAIによる一般的な提案であり、医学的な診断ではありません。体調に不安がある場合は医療専門家にご相談ください。
-                </p>
+                {AI_ADVICE_ENABLED && (
+                  <p className="text-xs leading-relaxed px-1" style={{ color: C.inkSoft }}>
+                    ※ このアドバイスはAIによる一般的な提案であり、医学的な診断ではありません。体調に不安がある場合は医療専門家にご相談ください。
+                  </p>
+                )}
               </div>
             )}
 
