@@ -490,31 +490,65 @@ function MiniNumber({ value, onChange, placeholder }) {
   );
 }
 
+function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood }) {
+  const [open, setOpen] = useState(false);
+  const q = (value || "").trim().toLowerCase();
+  const matches = q
+    ? (foodLibrary || []).filter((f) => f.name.toLowerCase().includes(q)).slice(0, 6)
+    : [];
+  return (
+    <div className="relative flex-1">
+      <input
+        type="text"
+        value={value}
+        placeholder="食品名（入力すると過去の記録から候補が出ます）"
+        onChange={(e) => {
+          const v = e.target.value;
+          onNameChange(v);
+          setOpen(true);
+          const exact = (foodLibrary || []).find((f) => f.name === v);
+          if (exact) onSelectFood(exact);
+        }}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setTimeout(() => setOpen(false), 150)}
+        className="w-full rounded-lg border text-xs px-2 py-1.5"
+        style={{ borderColor: C.line, background: C.card, color: C.ink }}
+      />
+      {open && matches.length > 0 && (
+        <div
+          className="absolute left-0 right-0 mt-1 rounded-lg border overflow-hidden"
+          style={{ background: C.card, borderColor: C.line, zIndex: 20, boxShadow: "0 6px 16px rgba(36,25,20,0.15)" }}
+        >
+          {matches.map((f, i) => (
+            <button
+              key={f.name}
+              type="button"
+              onMouseDown={(e) => { e.preventDefault(); onSelectFood(f); setOpen(false); }}
+              className="w-full text-left px-2.5 py-2 text-xs"
+              style={{ color: C.ink, borderTop: i > 0 ? `1px solid ${C.line}` : "none" }}
+            >
+              {f.name}
+              <span className="ml-1.5" style={{ color: C.inkSoft }}>
+                （炭{f.carbs || 0}・蛋{f.protein || 0}・脂{f.fat || 0}・繊{f.fiber || 0}g）
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function MealItemRow({ item, onChange, onRemove, foodLibrary }) {
-  const listId = `food-options-${item.id}`;
-  function handleNameChange(name) {
-    const match = (foodLibrary || []).find((f) => f.name === name);
-    if (match) {
-      onChange({ ...item, name, carbs: match.carbs, protein: match.protein, fat: match.fat, fiber: match.fiber });
-    } else {
-      onChange({ ...item, name });
-    }
-  }
   return (
     <div className="rounded-xl border p-3" style={{ borderColor: C.line, background: C.paper }}>
       <div className="flex items-center gap-2 mb-2">
-        <input
-          type="text"
+        <FoodNameAutocomplete
           value={item.name}
-          list={listId}
-          placeholder="食品名（入力すると過去の記録から候補が出ます）"
-          onChange={(e) => handleNameChange(e.target.value)}
-          className="flex-1 rounded-lg border text-xs px-2 py-1.5"
-          style={{ borderColor: C.line, background: C.card, color: C.ink }}
+          foodLibrary={foodLibrary}
+          onNameChange={(name) => onChange({ ...item, name })}
+          onSelectFood={(f) => onChange({ ...item, name: f.name, carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber })}
         />
-        <datalist id={listId}>
-          {(foodLibrary || []).map((f) => <option key={f.name} value={f.name} />)}
-        </datalist>
         <button type="button" onClick={onRemove} className="shrink-0" style={{ color: C.inkSoft }}>
           <X size={15} />
         </button>
