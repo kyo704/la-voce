@@ -277,22 +277,6 @@ function evaluateIntake(actual, target) {
   if (ratio <= 1.3) return { label: "やや過剰", color: C.gold };
   return { label: "過剰", color: C.rust };
 }
-function buildFoodLibrary(entries, currentMeals) {
-  const map = new Map();
-  const consider = (meals, date) => {
-    (meals || []).forEach((m) => {
-      const key = (m.name || "").trim();
-      if (!key) return;
-      const existing = map.get(key);
-      if (!existing || date >= existing.date) {
-        map.set(key, { name: key, carbs: m.carbs, protein: m.protein, fat: m.fat, fiber: m.fiber, date: date || "9999-99-99" });
-      }
-    });
-  };
-  Object.entries(entries || {}).forEach(([date, e]) => consider(e.meals, date));
-  consider(currentMeals, "9999-99-99");
-  return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name, "ja"));
-}
 function newExerciseItem() {
   return { id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, type: "有酸素運動", minutes: "", intensity: 3, memo: "" };
 }
