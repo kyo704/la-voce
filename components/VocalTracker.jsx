@@ -4,7 +4,8 @@ import { useState, useEffect, useMemo } from "react";
 import {
   Mic2, Moon, Droplets, Thermometer, Wind, MapPin, Music2, HeartHandshake,
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
-  Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot
+  Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot,
+  Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -12,6 +13,7 @@ import {
 } from "recharts";
 import { createClient } from "@/lib/supabase/client";
 import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC } from "@/lib/tokens";
+import HealthInfo from "@/components/HealthInfo";
 
 /* ---------- constants ---------- */
 const SYMPTOM_OPTIONS = ["乾燥", "嗄れ", "痛み", "違和感", "鼻づまり", "咳"];
@@ -25,6 +27,15 @@ const ACTIVITY_OPTIONS = [
   { key: "本番", icon: Sparkles }
 ];
 
+const VOICE_TYPES = ["ソプラノ", "メゾソプラノ", "アルト", "カウンターテナー", "テノール", "バリトン", "バス", "その他"];
+const MEAL_SLOTS = ["朝食", "昼食", "夕食", "間食"];
+const EXERCISE_TYPES = ["有酸素運動", "筋力トレーニング", "ストレッチ", "ウォーキング", "ヨガ", "その他"];
+const VOICE_TIME_SLOTS = [
+  { key: "朝", icon: Sunrise },
+  { key: "昼", icon: Sun },
+  { key: "晩", icon: Sunset }
+];
+
 const FACTORS = [
   { key: "sleepHours", label: "睡眠時間", unit: "時間" },
   { key: "sleepQuality", label: "睡眠の質", unit: "" },
@@ -33,14 +44,21 @@ const FACTORS = [
   { key: "humidity", label: "湿度", unit: "%" },
   { key: "ease", label: "心の余裕", unit: "" },
   { key: "throatCondition", label: "喉の状態", unit: "" },
-  { key: "voiceQuality", label: "声の調子", unit: "" }
+  { key: "voiceQuality", label: "声の調子", unit: "" },
+  { key: "weightKg", label: "体重", unit: "kg" },
+  { key: "carbs", label: "炭水化物", unit: "g" },
+  { key: "protein", label: "タンパク質", unit: "g" },
+  { key: "fat", label: "脂質", unit: "g" },
+  { key: "fiber", label: "食物繊維", unit: "g" },
+  { key: "exerciseMinutes", label: "運動時間", unit: "分" }
 ];
 
 const TABS = [
   { key: "today", label: "今日の記録", icon: Mic2 },
   { key: "history", label: "履歴", icon: CalendarDays },
   { key: "analysis", label: "分析", icon: BarChart3 },
-  { key: "advice", label: "AIアドバイス", icon: Bot }
+  { key: "advice", label: "AIアドバイス", icon: Bot },
+  { key: "info", label: "健康情報", icon: BookOpen }
 ];
 
 /* ---------- helpers ---------- */
@@ -129,15 +147,25 @@ function getLastLocation(entries, beforeDate) {
 }
 function buildFormData(date, entries) {
   const existing = entries[date];
-  if (existing) return { ...existing, throatSymptoms: existing.throatSymptoms || [] };
+  if (existing) {
+    return {
+      ...existing,
+      throatSymptoms: existing.throatSymptoms || [],
+      meals: existing.meals || [],
+      exercises: existing.exercises || [],
+      voiceCheckins: existing.voiceCheckins || {},
+      waterBySlot: existing.waterBySlot || {}
+    };
+  }
   return {
     date,
     throatCondition: 3,
     voiceQuality: 3,
     throatSymptoms: [],
+    voiceCheckins: {},
     sleepHours: 7,
     sleepQuality: 3,
-    waterIntake: 1000,
+    waterBySlot: {},
     mealNotes: "",
     location: getLastLocation(entries, date),
     temperature: "",
@@ -147,7 +175,41 @@ function buildFormData(date, entries) {
     repertoire: "",
     performanceQuality: null,
     ease: 3,
-    notes: ""
+    notes: "",
+    weightKg: "",
+    meals: [],
+    exercises: []
+  };
+}
+function computeBMI(weightKg, heightCm) {
+  if (!weightKg || !heightCm) return null;
+  const h = heightCm / 100;
+  return weightKg / (h * h);
+}
+function healthyWeightRange(heightCm) {
+  if (!heightCm) return null;
+  const h = heightCm / 100;
+  return { min: 18.5 * h * h, max: 24.9 * h * h };
+}
+function sumMacro(meals, key) {
+  return (meals || []).reduce((total, m) => total + (Number(m[key]) || 0), 0);
+}
+function newMealItem(slot = "朝食") {
+  return { id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, slot, name: "", carbs: "", protein: "", fat: "", fiber: "" };
+}
+function newExerciseItem() {
+  return { id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, type: "有酸素運動", minutes: "", intensity: 3, memo: "" };
+}
+function updateVoiceCheckin(f, slotKey, field, value) {
+  const checkins = { ...(f.voiceCheckins || {}) };
+  checkins[slotKey] = { ...(checkins[slotKey] || {}), [field]: value };
+  const throatVals = Object.values(checkins).map((c) => c && c.throat).filter((v) => typeof v === "number");
+  const voiceVals = Object.values(checkins).map((c) => c && c.voice).filter((v) => typeof v === "number");
+  return {
+    ...f,
+    voiceCheckins: checkins,
+    throatCondition: throatVals.length ? Math.round(throatVals.reduce((a, b) => a + b, 0) / throatVals.length) : f.throatCondition,
+    voiceQuality: voiceVals.length ? Math.round(voiceVals.reduce((a, b) => a + b, 0) / voiceVals.length) : f.voiceQuality
   };
 }
 function polarPoint(cx, cy, r, angleDeg) {
@@ -179,7 +241,17 @@ function rowToEntry(row) {
     repertoire: row.repertoire || "",
     performanceQuality: row.performance_quality,
     ease: row.ease,
-    notes: row.notes || ""
+    notes: row.notes || "",
+    weightKg: row.weight_kg,
+    carbs: row.carbs_g,
+    protein: row.protein_g,
+    fat: row.fat_g,
+    fiber: row.fiber_g,
+    exerciseMinutes: row.exercise_minutes,
+    meals: row.meals || [],
+    exercises: row.exercises || [],
+    voiceCheckins: row.voice_checkins || {},
+    waterBySlot: row.water_by_slot || {}
   };
 }
 function entryToRow(userId, e) {
@@ -191,7 +263,6 @@ function entryToRow(userId, e) {
     throat_symptoms: e.throatSymptoms || [],
     sleep_hours: e.sleepHours,
     sleep_quality: e.sleepQuality,
-    water_intake: e.waterIntake,
     meal_notes: e.mealNotes,
     location: e.location,
     temperature: e.temperature,
@@ -201,7 +272,18 @@ function entryToRow(userId, e) {
     repertoire: e.repertoire,
     performance_quality: e.performanceQuality,
     ease: e.ease,
-    notes: e.notes
+    notes: e.notes,
+    weight_kg: e.weightKg === "" ? null : e.weightKg,
+    water_intake: Object.values(e.waterBySlot || {}).reduce((total, v) => total + (Number(v) || 0), 0),
+    carbs_g: sumMacro(e.meals, "carbs"),
+    protein_g: sumMacro(e.meals, "protein"),
+    fat_g: sumMacro(e.meals, "fat"),
+    fiber_g: sumMacro(e.meals, "fiber"),
+    exercise_minutes: (e.exercises || []).reduce((total, x) => total + (Number(x.minutes) || 0), 0),
+    meals: e.meals || [],
+    exercises: e.exercises || [],
+    voice_checkins: e.voiceCheckins || {},
+    water_by_slot: e.waterBySlot || {}
   };
 }
 
@@ -361,6 +443,106 @@ function NumberField({ label, value, onChange, step = 1, min = -Infinity, max = 
   );
 }
 
+function MiniSelect({ value, onChange, options }) {
+  return (
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="rounded-lg border text-xs px-2 py-1.5"
+      style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+    >
+      {options.map((o) => <option key={o} value={o}>{o}</option>)}
+    </select>
+  );
+}
+
+function MiniNumber({ value, onChange, placeholder }) {
+  return (
+    <input
+      type="number"
+      value={value}
+      placeholder={placeholder}
+      onChange={(e) => onChange(e.target.value === "" ? "" : Number(e.target.value))}
+      className="w-full rounded-lg border text-xs px-2 py-1.5 ff-mono text-center"
+      style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+    />
+  );
+}
+
+function MealItemRow({ item, onChange, onRemove }) {
+  return (
+    <div className="rounded-xl border p-3" style={{ borderColor: C.line, background: C.paper }}>
+      <div className="flex items-center gap-2 mb-2">
+        <input
+          type="text"
+          value={item.name}
+          placeholder="食品名（例：白米、鶏むね肉）"
+          onChange={(e) => onChange({ ...item, name: e.target.value })}
+          className="flex-1 rounded-lg border text-xs px-2 py-1.5"
+          style={{ borderColor: C.line, background: C.card, color: C.ink }}
+        />
+        <button type="button" onClick={onRemove} className="shrink-0" style={{ color: C.inkSoft }}>
+          <X size={15} />
+        </button>
+      </div>
+      <div className="grid grid-cols-4 gap-2">
+        <div>
+          <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Wheat size={11} />炭水化物g</div>
+          <MiniNumber value={item.carbs} onChange={(v) => onChange({ ...item, carbs: v })} />
+        </div>
+        <div>
+          <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Egg size={11} />タンパク質g</div>
+          <MiniNumber value={item.protein} onChange={(v) => onChange({ ...item, protein: v })} />
+        </div>
+        <div>
+          <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Droplet size={11} />脂質g</div>
+          <MiniNumber value={item.fat} onChange={(v) => onChange({ ...item, fat: v })} />
+        </div>
+        <div>
+          <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Leaf size={11} />食物繊維g</div>
+          <MiniNumber value={item.fiber} onChange={(v) => onChange({ ...item, fiber: v })} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ExerciseItemRow({ item, onChange, onRemove }) {
+  return (
+    <div className="rounded-xl border p-3" style={{ borderColor: C.line, background: C.paper }}>
+      <div className="flex items-center gap-2 mb-2">
+        <MiniSelect value={item.type} onChange={(v) => onChange({ ...item, type: v })} options={EXERCISE_TYPES} />
+        <div className="flex items-center gap-1 flex-1">
+          <MiniNumber value={item.minutes} placeholder="時間(分)" onChange={(v) => onChange({ ...item, minutes: v })} />
+          <span className="text-xs shrink-0" style={{ color: C.inkSoft }}>分</span>
+        </div>
+        <button type="button" onClick={onRemove} className="shrink-0" style={{ color: C.inkSoft }}>
+          <X size={15} />
+        </button>
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="text-xs shrink-0" style={{ color: C.inkSoft }}>強度</span>
+        <div className="flex gap-1.5">
+          {[1, 2, 3, 4, 5].map((v) => (
+            <button
+              key={v}
+              type="button"
+              onClick={() => onChange({ ...item, intensity: v })}
+              className="rounded-full"
+              style={{
+                width: item.intensity === v ? 20 : 15,
+                height: item.intensity === v ? 20 : 15,
+                background: v <= item.intensity ? C.curtain : C.card,
+                border: `1.5px solid ${v <= item.intensity ? C.curtain : C.line}`
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ---------- main component ---------- */
 export default function VocalTracker({ userId, userEmail }) {
   const [loading, setLoading] = useState(true);
@@ -380,6 +562,9 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "" });
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [profileSaveStatus, setProfileSaveStatus] = useState("idle");
 
   useEffect(() => {
     let mounted = true;
@@ -397,12 +582,50 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [userId]);
 
   useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const supabase = createClient();
+      const { data } = await supabase.from("profiles").select("height_cm, voice_type").eq("id", userId).single();
+      if (mounted && data) {
+        setProfile({ height_cm: data.height_cm ?? "", voice_type: data.voice_type ?? "" });
+      }
+      if (mounted) setProfileLoading(false);
+    })();
+    return () => { mounted = false; };
+  }, [userId]);
+
+  useEffect(() => {
     if (loading) return;
     setFormData(buildFormData(selectedDate, entries));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDate, loading]);
 
   const currentScore = useMemo(() => computeOverallScore(formData), [formData]);
+  const mealTotals = useMemo(() => {
+    const meals = formData ? formData.meals || [] : [];
+    return {
+      carbs: sumMacro(meals, "carbs"),
+      protein: sumMacro(meals, "protein"),
+      fat: sumMacro(meals, "fat"),
+      fiber: sumMacro(meals, "fiber")
+    };
+  }, [formData]);
+  const waterTotal = useMemo(() => {
+    const bySlot = formData ? formData.waterBySlot || {} : {};
+    return Object.values(bySlot).reduce((total, v) => total + (Number(v) || 0), 0);
+  }, [formData]);
+  const exerciseTotalMinutes = useMemo(() => {
+    const exercises = formData ? formData.exercises || [] : [];
+    return exercises.reduce((total, x) => total + (Number(x.minutes) || 0), 0);
+  }, [formData]);
+  const currentBMI = useMemo(
+    () => computeBMI(formData && formData.weightKg ? Number(formData.weightKg) : null, profile.height_cm ? Number(profile.height_cm) : null),
+    [formData, profile.height_cm]
+  );
+  const weightRange = useMemo(
+    () => healthyWeightRange(profile.height_cm ? Number(profile.height_cm) : null),
+    [profile.height_cm]
+  );
   const sortedDates = useMemo(() => Object.keys(entries).sort().reverse(), [entries]);
   const monthEntries = useMemo(() => {
     const prefix = `${viewMonth.year}-${String(viewMonth.month + 1).padStart(2, "0")}`;
@@ -440,6 +663,39 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [correlationResults]);
 
   const scatterInfo = useMemo(() => correlationResults.find((r) => r.key === selectedFactorKey) || null, [correlationResults, selectedFactorKey]);
+
+  async function handleSaveProfile() {
+    setProfileSaveStatus("saving");
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        height_cm: profile.height_cm === "" ? null : Number(profile.height_cm),
+        voice_type: profile.voice_type || null
+      })
+      .eq("id", userId);
+    setProfileSaveStatus(error ? "error" : "saved");
+    setTimeout(() => setProfileSaveStatus("idle"), 1800);
+  }
+
+  function addMeal(slot) {
+    setFormData((f) => ({ ...f, meals: [...(f.meals || []), newMealItem(slot)] }));
+  }
+  function updateMeal(id, next) {
+    setFormData((f) => ({ ...f, meals: (f.meals || []).map((m) => (m.id === id ? next : m)) }));
+  }
+  function removeMeal(id) {
+    setFormData((f) => ({ ...f, meals: (f.meals || []).filter((m) => m.id !== id) }));
+  }
+  function addExercise() {
+    setFormData((f) => ({ ...f, exercises: [...(f.exercises || []), newExerciseItem()] }));
+  }
+  function updateExercise(id, next) {
+    setFormData((f) => ({ ...f, exercises: (f.exercises || []).map((x) => (x.id === id ? next : x)) }));
+  }
+  function removeExercise(id) {
+    setFormData((f) => ({ ...f, exercises: (f.exercises || []).filter((x) => x.id !== id) }));
+  }
 
   async function handleSave() {
     if (!formData) return;
@@ -557,9 +813,9 @@ export default function VocalTracker({ userId, userEmail }) {
                 {formData && (
                   <>
                     <SectionCard title="声・喉" icon={Mic2}>
-                      <DynamicsSelector label="喉の状態" icon={Mic2} value={formData.throatCondition}
+                      <DynamicsSelector label="喉の状態（総合）" icon={Mic2} value={formData.throatCondition}
                         onChange={(v) => setFormData((f) => ({ ...f, throatCondition: v }))} />
-                      <DynamicsSelector label="声の調子" icon={Music2} value={formData.voiceQuality}
+                      <DynamicsSelector label="声の調子（総合）" icon={Music2} value={formData.voiceQuality}
                         onChange={(v) => setFormData((f) => ({ ...f, voiceQuality: v }))} />
                       <div>
                         <span className="text-sm font-medium block mb-2">症状</span>
@@ -575,25 +831,146 @@ export default function VocalTracker({ userId, userEmail }) {
                           ))}
                         </div>
                       </div>
+                      <div className="pt-2 border-t" style={{ borderColor: C.line }}>
+                        <p className="text-sm font-medium mb-1">時間帯別に記録（任意）</p>
+                        <p className="text-xs mb-3" style={{ color: C.inkSoft }}>入力すると「総合」の欄は自動的に平均値へ更新されます。</p>
+                        <div className="space-y-4">
+                          {VOICE_TIME_SLOTS.map(({ key, icon: SlotIcon }) => (
+                            <div key={key} className="rounded-xl p-3" style={{ background: C.paper }}>
+                              <div className="flex items-center gap-1.5 mb-2">
+                                <SlotIcon size={14} style={{ color: C.gold }} />
+                                <span className="text-sm font-medium">{key}</span>
+                              </div>
+                              <div className="space-y-3">
+                                <DynamicsSelector label="喉の状態" icon={Mic2}
+                                  value={((formData.voiceCheckins || {})[key] || {}).throat || 3}
+                                  onChange={(v) => setFormData((f) => updateVoiceCheckin(f, key, "throat", v))} />
+                                <DynamicsSelector label="声の調子" icon={Music2}
+                                  value={((formData.voiceCheckins || {})[key] || {}).voice || 3}
+                                  onChange={(v) => setFormData((f) => updateVoiceCheckin(f, key, "voice", v))} />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </SectionCard>
 
-                    <SectionCard title="睡眠・水分・食事" icon={Moon}>
+                    <SectionCard title="身体データ" icon={Scale}>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <NumberField label="睡眠時間" icon={Moon} value={formData.sleepHours} step={0.5} min={0} max={16} suffix="時間"
-                          onChange={(v) => setFormData((f) => ({ ...f, sleepHours: v }))} />
-                        <NumberField label="水分摂取量" icon={Droplets} value={formData.waterIntake} step={250} min={0} max={6000} suffix="ml"
-                          onChange={(v) => setFormData((f) => ({ ...f, waterIntake: v }))} />
+                        <div>
+                          <div className="flex items-center gap-1.5 mb-1.5">
+                            <Ruler size={14} style={{ color: C.gold }} />
+                            <label className="text-sm font-medium">身長(cm)</label>
+                          </div>
+                          <input
+                            type="number"
+                            value={profile.height_cm}
+                            onChange={(e) => setProfile((p) => ({ ...p, height_cm: e.target.value === "" ? "" : Number(e.target.value) }))}
+                            className="w-full rounded-lg border p-2 text-sm ff-mono"
+                            style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                          />
+                        </div>
+                        <div>
+                          <label className="text-sm font-medium block mb-1.5">声種</label>
+                          <select
+                            value={profile.voice_type}
+                            onChange={(e) => setProfile((p) => ({ ...p, voice_type: e.target.value }))}
+                            className="w-full rounded-lg border p-2 text-sm"
+                            style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                          >
+                            <option value="">選択してください</option>
+                            {VOICE_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
+                          </select>
+                        </div>
                       </div>
+                      <button onClick={handleSaveProfile} disabled={profileSaveStatus === "saving"}
+                        className="text-xs px-4 py-2 rounded-full font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                        {profileSaveStatus === "saving" ? "保存中…" : profileSaveStatus === "saved" ? "保存しました" : "身長・声種を保存"}
+                      </button>
+
+                      <NumberField label="今日の体重" icon={Scale} value={formData.weightKg ?? ""} step={0.1} min={20} max={200} suffix="kg"
+                        onChange={(v) => setFormData((f) => ({ ...f, weightKg: v }))} />
+
+                      {profile.height_cm ? (
+                        <div className="rounded-xl p-3 text-xs leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
+                          {currentBMI && <p>現在のBMI：{currentBMI.toFixed(1)}</p>}
+                          {weightRange && <p>参考体重レンジ（一般的なBMI 18.5〜24.9基準）：{weightRange.min.toFixed(1)}kg 〜 {weightRange.max.toFixed(1)}kg</p>}
+                          <p className="mt-1">※ 声楽家専用の計算式ではなく、一般的な健康指標に基づく参考値です。詳しくは「健康情報」タブをご覧ください。</p>
+                        </div>
+                      ) : (
+                        <p className="text-xs" style={{ color: C.inkSoft }}>身長を登録すると、参考体重レンジが表示されます。</p>
+                      )}
+                    </SectionCard>
+
+                    <SectionCard title="睡眠・水分" icon={Moon}>
+                      <NumberField label="睡眠時間" icon={Moon} value={formData.sleepHours} step={0.5} min={0} max={16} suffix="時間"
+                        onChange={(v) => setFormData((f) => ({ ...f, sleepHours: v }))} />
                       <DotSelector label="睡眠の質" icon={Moon} value={formData.sleepQuality} lowLabel="悪い" highLabel="良い"
                         onChange={(v) => setFormData((f) => ({ ...f, sleepQuality: v }))} />
                       <div>
-                        <div className="flex items-center gap-1.5 mb-1.5">
+                        <div className="flex items-center gap-1.5 mb-2">
+                          <Droplets size={14} style={{ color: C.gold }} />
+                          <label className="text-sm font-medium">水分補給（時間帯別）</label>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                          {MEAL_SLOTS.map((slot) => (
+                            <div key={slot}>
+                              <div className="text-xs mb-1" style={{ color: C.inkSoft }}>{slot}</div>
+                              <MiniNumber
+                                value={(formData.waterBySlot || {})[slot] ?? ""}
+                                placeholder="ml"
+                                onChange={(v) => setFormData((f) => ({ ...f, waterBySlot: { ...(f.waterBySlot || {}), [slot]: v } }))}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-xs text-right mt-2 ff-mono" style={{ color: C.inkSoft }}>合計 {waterTotal}ml</p>
+                      </div>
+                    </SectionCard>
+
+                    <SectionCard title="食事の詳細記録" icon={Wheat}>
+                      <p className="text-xs" style={{ color: C.inkSoft }}>時間帯ごとに食品を追加すると、下に1日の合計が自動計算されます。</p>
+                      {MEAL_SLOTS.map((slot) => (
+                        <div key={slot}>
+                          <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>{slot}</p>
+                          <div className="space-y-2">
+                            {(formData.meals || []).filter((m) => m.slot === slot).map((m) => (
+                              <MealItemRow key={m.id} item={m} onChange={(next) => updateMeal(m.id, next)} onRemove={() => removeMeal(m.id)} />
+                            ))}
+                          </div>
+                          <button type="button" onClick={() => addMeal(slot)}
+                            className="w-full rounded-xl border py-1.5 text-xs font-medium flex items-center justify-center gap-1.5 mt-2"
+                            style={{ borderColor: C.line, color: C.inkSoft }}>
+                            <Plus size={12} />{slot}に食品を追加
+                          </button>
+                        </div>
+                      ))}
+                      <div>
+                        <div className="flex items-center gap-1.5 mb-1.5 mt-1">
                           <Utensils size={14} style={{ color: C.gold }} />
-                          <label className="text-sm font-medium">食事内容</label>
+                          <label className="text-sm font-medium">食事メモ</label>
                         </div>
                         <textarea value={formData.mealNotes} rows={2} placeholder="例：消化に良いものを中心に、公演前は控えめに"
                           onChange={(e) => setFormData((f) => ({ ...f, mealNotes: e.target.value }))}
                           className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+                        <div className="rounded-xl p-2.5 text-center" style={{ background: C.paper }}>
+                          <div className="text-xs" style={{ color: C.inkSoft }}>炭水化物</div>
+                          <div className="ff-mono text-sm font-medium">{mealTotals.carbs.toFixed(0)}g</div>
+                        </div>
+                        <div className="rounded-xl p-2.5 text-center" style={{ background: C.paper }}>
+                          <div className="text-xs" style={{ color: C.inkSoft }}>タンパク質</div>
+                          <div className="ff-mono text-sm font-medium">{mealTotals.protein.toFixed(0)}g</div>
+                        </div>
+                        <div className="rounded-xl p-2.5 text-center" style={{ background: C.paper }}>
+                          <div className="text-xs" style={{ color: C.inkSoft }}>脂質</div>
+                          <div className="ff-mono text-sm font-medium">{mealTotals.fat.toFixed(0)}g</div>
+                        </div>
+                        <div className="rounded-xl p-2.5 text-center" style={{ background: C.paper }}>
+                          <div className="text-xs" style={{ color: C.inkSoft }}>食物繊維</div>
+                          <div className="ff-mono text-sm font-medium">{mealTotals.fiber.toFixed(0)}g</div>
+                        </div>
                       </div>
                     </SectionCard>
 
@@ -651,6 +1028,23 @@ export default function VocalTracker({ userId, userEmail }) {
                       {formData.activityType === "本番" && (
                         <DynamicsSelector label="公演の出来" icon={Sparkles} value={formData.performanceQuality || 3}
                           onChange={(v) => setFormData((f) => ({ ...f, performanceQuality: v }))} />
+                      )}
+                    </SectionCard>
+
+                    <SectionCard title="運動記録" icon={Dumbbell}>
+                      <p className="text-xs" style={{ color: C.inkSoft }}>その日行った運動を追加してください。合計時間は自動計算され、分析にも反映されます。</p>
+                      <div className="space-y-2">
+                        {(formData.exercises || []).map((x) => (
+                          <ExerciseItemRow key={x.id} item={x} onChange={(next) => updateExercise(x.id, next)} onRemove={() => removeExercise(x.id)} />
+                        ))}
+                      </div>
+                      <button type="button" onClick={addExercise}
+                        className="w-full rounded-xl border py-2 text-xs font-medium flex items-center justify-center gap-1.5"
+                        style={{ borderColor: C.line, color: C.inkSoft }}>
+                        <Plus size={13} />運動を追加
+                      </button>
+                      {exerciseTotalMinutes > 0 && (
+                        <p className="text-xs text-right ff-mono" style={{ color: C.inkSoft }}>合計 {exerciseTotalMinutes}分</p>
                       )}
                     </SectionCard>
 
@@ -865,6 +1259,8 @@ export default function VocalTracker({ userId, userEmail }) {
                 </p>
               </div>
             )}
+
+            {activeTab === "info" && <HealthInfo />}
           </div>
         )}
       </main>
