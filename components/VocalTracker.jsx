@@ -44,17 +44,23 @@ const TABS = [
 ];
 
 /* ---------- helpers ---------- */
-function todayISO() {
-  return new Date().toISOString().slice(0, 10);
+function toISODate(d) {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
-function formatDateLabel(iso) {
-  const d = new Date(iso + "T00:00:00");
-  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日(${WEEKDAYS[d.getDay()]})`;
+function todayISO() {
+  return toISODate(new Date());
 }
 function addDays(iso, delta) {
   const d = new Date(iso + "T00:00:00");
   d.setDate(d.getDate() + delta);
-  return d.toISOString().slice(0, 10);
+  return toISODate(d);
+}
+function formatDateLabel(iso) {
+  const d = new Date(iso + "T00:00:00");
+  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日(${WEEKDAYS[d.getDay()]})`;
 }
 function monthMeta(year, month) {
   const first = new Date(year, month, 1);
