@@ -19,19 +19,37 @@ const MATERIAL_COLORS = {
 };
 
 // ===== 羊のキャラクター（チビ体型・二頭身） =====
-function SheepCharacter({ equipped, size = 120 }) {
+function SheepCharacter({ equipped, size = 120, isWalking = false }) {
   const bodyColor = "#F6EFDF";
   const bodyShade = "#EAE0C8";
   return (
     <svg viewBox="0 0 160 200" style={{ width: size, height: size * 1.25, overflow: "visible" }}>
+      <style>{`
+        @keyframes sheepBlink { 0%, 88%, 100% { transform: scaleY(1); } 92% { transform: scaleY(0.12); } }
+        .sheep-eye { transform-box: fill-box; transform-origin: center; animation: sheepBlink 4.6s ease-in-out infinite; }
+        @keyframes legSwingL { 0%, 100% { transform: rotate(20deg); } 50% { transform: rotate(-20deg); } }
+        @keyframes legSwingR { 0%, 100% { transform: rotate(-20deg); } 50% { transform: rotate(20deg); } }
+        @keyframes armSwingL { 0%, 100% { transform: rotate(-14deg); } 50% { transform: rotate(14deg); } }
+        @keyframes armSwingR { 0%, 100% { transform: rotate(14deg); } 50% { transform: rotate(-14deg); } }
+        @keyframes idleBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
+        .leg-l { transform-box: fill-box; transform-origin: top center; ${isWalking ? "animation: legSwingL 0.62s ease-in-out infinite;" : ""} }
+        .leg-r { transform-box: fill-box; transform-origin: top center; ${isWalking ? "animation: legSwingR 0.62s ease-in-out infinite;" : ""} }
+        .arm-l { transform-box: fill-box; transform-origin: top center; ${isWalking ? "animation: armSwingL 0.62s ease-in-out infinite;" : "animation: idleBob 2.4s ease-in-out infinite;"} }
+        .arm-r { transform-box: fill-box; transform-origin: top center; ${isWalking ? "animation: armSwingR 0.62s ease-in-out infinite;" : "animation: idleBob 2.4s ease-in-out infinite;"} }
+      `}</style>
+
       {/* 接地シャドウ（立体感・奥行きを出すための影） */}
       <ellipse cx="80" cy="192" rx="34" ry="8" fill="#3D2E12" opacity="0.14" />
 
-      {/* 足 */}
-      <ellipse cx="62" cy="180" rx="14" ry="8" fill="#EDE4CE" />
-      <ellipse cx="98" cy="180" rx="14" ry="8" fill="#EDE4CE" />
-      <rect x="52" y="150" width="20" height="34" rx="10" fill={bodyColor} />
-      <rect x="88" y="150" width="20" height="34" rx="10" fill={bodyColor} />
+      {/* 足（脚全体を回転させて歩行アニメーション） */}
+      <g className="leg-l">
+        <rect x="52" y="150" width="20" height="34" rx="10" fill={bodyColor} />
+        <ellipse cx="62" cy="180" rx="14" ry="8" fill="#EDE4CE" />
+      </g>
+      <g className="leg-r">
+        <rect x="88" y="150" width="20" height="34" rx="10" fill={bodyColor} />
+        <ellipse cx="98" cy="180" rx="14" ry="8" fill="#EDE4CE" />
+      </g>
 
       {/* もこもこボディ（重なる円で質感を出す） */}
       <circle cx="80" cy="130" r="42" fill={bodyColor} />
@@ -41,9 +59,9 @@ function SheepCharacter({ equipped, size = 120 }) {
       {/* 立体感を出す陰影（右下をわずかに暗く） */}
       <ellipse cx="98" cy="145" rx="30" ry="34" fill="#D8CBA8" opacity="0.35" />
 
-      {/* 腕 */}
-      <ellipse cx="35" cy="128" rx="13" ry="10" fill={bodyColor} />
-      <ellipse cx="125" cy="128" rx="13" ry="10" fill={bodyColor} />
+      {/* 腕（歩行時に脚と逆位相で振れる） */}
+      <g className="arm-l"><ellipse cx="35" cy="128" rx="13" ry="10" fill={bodyColor} /></g>
+      <g className="arm-r"><ellipse cx="125" cy="128" rx="13" ry="10" fill={bodyColor} /></g>
 
       {/* 服（体） */}
       {equipped.outfit === "outfit_scarf" && (
@@ -84,8 +102,28 @@ function SheepCharacter({ equipped, size = 120 }) {
       {/* 帽子 */}
       {equipped.hat === "hat_straw" && (
         <g>
+          {/* つばの影 */}
+          <ellipse cx="80" cy="41" rx="40" ry="9" fill="#C79A46" opacity="0.55" />
+          {/* つば（麦わらの網目を放射状の線で表現） */}
           <ellipse cx="80" cy="38" rx="38" ry="8" fill="#E8C979" />
-          <path d="M56,38 Q80,10 104,38 Q80,26 56,38 Z" fill="#F0D68F" />
+          {Array.from({ length: 13 }).map((_, i) => {
+            const t = i / 12;
+            const x = 44 + t * 72;
+            return <line key={`brim-${i}`} x1={x} y1="34" x2={x} y2="42" stroke="#C79A46" strokeWidth="0.8" opacity="0.55" />;
+          })}
+          <ellipse cx="80" cy="35" rx="37" ry="4" fill="#F3DFA0" opacity="0.6" />
+          {/* 山（ドーム部分） */}
+          <path d="M54,39 Q80,8 106,39 Q80,25 54,39 Z" fill="#F0D68F" />
+          {/* 編み目の質感（斜線を重ねて織り模様に） */}
+          {[
+            "M58,37 Q68,22 80,14", "M64,38 Q74,24 86,15", "M70,38 Q80,25 92,17",
+            "M76,38 Q86,26 98,19", "M82,38 Q92,27 102,22", "M60,36 Q70,32 80,30"
+          ].map((d, i) => (
+            <path key={`weave-${i}`} d={d} stroke="#C79A46" strokeWidth="0.9" fill="none" opacity="0.5" />
+          ))}
+          {/* 帽子バンド */}
+          <path d="M56,35 Q80,28 104,35" stroke="#96323A" strokeWidth="3.5" fill="none" strokeLinecap="round" />
+          <path d="M56,35 Q80,28 104,35" stroke="#C0454B" strokeWidth="1.6" fill="none" strokeLinecap="round" />
         </g>
       )}
       {equipped.hat === "hat_knit" && (
@@ -101,10 +139,11 @@ function SheepCharacter({ equipped, size = 120 }) {
         </g>
       )}
 
-      {/* 目・鼻・頬 */}
-      <circle cx="66" cy="76" r="4" fill="#3D3226" />
-      <circle cx="94" cy="76" r="4" fill="#3D3226" />
+      {/* 目（まばたきする）・鼻・口・頬 */}
+      <ellipse className="sheep-eye" cx="66" cy="76" rx="4" ry="4" fill="#3D3226" />
+      <ellipse className="sheep-eye" cx="94" cy="76" rx="4" ry="4" fill="#3D3226" />
       <ellipse cx="80" cy="88" rx="5" ry="3.5" fill="#C98A6E" />
+      <path d="M72,94 Q80,99 88,94" stroke="#8A5A42" strokeWidth="1.8" fill="none" strokeLinecap="round" />
       <circle cx="58" cy="88" r="6" fill="#F0B7A4" opacity="0.6" />
       <circle cx="102" cy="88" r="6" fill="#F0B7A4" opacity="0.6" />
     </svg>
@@ -115,10 +154,12 @@ function SheepCharacter({ equipped, size = 120 }) {
 function useWander(centerX, centerY, rangeX, rangeY) {
   const [pos, setPos] = useState([centerX, centerY]);
   const [facingLeft, setFacingLeft] = useState(false);
+  const [isWalking, setIsWalking] = useState(false);
+  const MOVE_DURATION = 2600;
 
   useEffect(() => {
     let cancelled = false;
-    let timer;
+    let timer, walkTimer;
     function pickNext() {
       const delay = 2800 + Math.random() * 2400;
       timer = setTimeout(() => {
@@ -135,28 +176,30 @@ function useWander(centerX, centerY, rangeX, rangeY) {
           tries += 1;
         } while (tries < 20);
         if (nx === undefined) { nx = centerX; ny = centerY; }
+        setIsWalking(true);
         setPos((prev) => {
           setFacingLeft(nx < prev[0] - 2);
           return [nx, ny];
         });
+        walkTimer = setTimeout(() => { if (!cancelled) setIsWalking(false); }, MOVE_DURATION);
         pickNext();
       }, delay);
     }
     pickNext();
-    return () => { cancelled = true; clearTimeout(timer); };
+    return () => { cancelled = true; clearTimeout(timer); clearTimeout(walkTimer); };
   }, [centerX, centerY, rangeX, rangeY]);
 
-  return [pos, facingLeft];
+  return [pos, facingLeft, isWalking];
 }
 
 // キャラクターを部屋・庭の中で滑らかに動かして表示する
-function AnimatedCharacter({ equipped, size, pos, facingLeft }) {
+function AnimatedCharacter({ equipped, size, pos, facingLeft, isWalking }) {
   const halfW = size / 2;
   const footOffset = size * 1.15;
   return (
     <g style={{ transition: "transform 2.6s ease-in-out", transform: `translate(${pos[0]}px, ${pos[1]}px)` }}>
       <g transform={`translate(${-halfW},${-footOffset}) ${facingLeft ? `translate(${size},0) scale(-1,1)` : ""}`}>
-        <SheepCharacter equipped={equipped} size={size} />
+        <SheepCharacter equipped={equipped} size={size} isWalking={isWalking} />
       </g>
     </g>
   );
@@ -278,7 +321,7 @@ function RoomScene({ equipped, owned }) {
   const winMidV1 = [wallPoint(left, top, 0.42, 0.46, wallH), wallPoint(left, top, 0.42, 0.82, wallH)];
   const winMidH = [wallPoint(left, top, 0.26, 0.64, wallH), wallPoint(left, top, 0.58, 0.64, wallH)];
 
-  const [wanderPos, facingLeft] = useWander(cx, cy + 12, 85, 38);
+  const [wanderPos, facingLeft, isWalking] = useWander(cx, cy + 12, 85, 38);
 
   return (
     <svg viewBox="0 0 400 340" style={{ width: "100%", maxWidth: 460 }}>
@@ -302,7 +345,7 @@ function RoomScene({ equipped, owned }) {
       {placedFurniture.includes("furniture_rug") && <Rug x={cx} y={cy + 10} />}
 
       {/* キャラクター（自動でうろうろ歩き回る） */}
-      <AnimatedCharacter equipped={equipped} size={80} pos={wanderPos} facingLeft={facingLeft} />
+      <AnimatedCharacter equipped={equipped} size={80} pos={wanderPos} facingLeft={facingLeft} isWalking={isWalking} />
 
       {/* 家具（ラグ以外） */}
       {placedFurniture.filter((k) => k !== "furniture_rug").map((k, i) => {
@@ -318,7 +361,7 @@ function RoomScene({ equipped, owned }) {
 // ===== 庭のシーン =====
 function GardenScene({ equipped, owned }) {
   const placedOrnaments = (owned || []).filter((k) => GARDEN_RENDER[k]);
-  const [wanderPos, facingLeft] = useWander(200, 235, 130, 30);
+  const [wanderPos, facingLeft, isWalking] = useWander(200, 235, 130, 30);
 
   return (
     <svg viewBox="0 0 400 300" style={{ width: "100%", maxWidth: 460 }}>
@@ -340,7 +383,7 @@ function GardenScene({ equipped, owned }) {
         return <Comp key={k} x={px} y={py} />;
       })}
 
-      <AnimatedCharacter equipped={equipped} size={90} pos={wanderPos} facingLeft={facingLeft} />
+      <AnimatedCharacter equipped={equipped} size={90} pos={wanderPos} facingLeft={facingLeft} isWalking={isWalking} />
     </svg>
   );
 }
@@ -363,7 +406,11 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
           {t("characterIntro")}
         </p>
 
-        <div className="flex rounded-full border p-1 mb-3" style={{ borderColor: C.line, width: "fit-content" }}>
+        <div className="flex justify-center py-2 mb-1">
+          <SheepCharacter equipped={equipped} size={150} isWalking={false} />
+        </div>
+
+        <div className="flex rounded-full border p-1 mb-3 mx-auto" style={{ borderColor: C.line, width: "fit-content" }}>
           <button type="button" onClick={() => setView("room")}
             className="px-4 py-1.5 rounded-full text-xs font-medium"
             style={{ background: view === "room" ? C.curtain : "transparent", color: view === "room" ? "#FFFDF8" : C.inkSoft }}>
