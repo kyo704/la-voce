@@ -67,9 +67,6 @@ export default function HealthInfo({ language = "ja" }) {
   const t = (key) => h(key, language);
   return (
     <div className="space-y-4">
-      <p style={{ background: "#ffe066", color: "#000", padding: "10px", fontWeight: "bold", fontSize: "16px", border: "3px solid red" }}>
-        DEBUG: HealthInfo received language = "{language}" (typeof: {typeof language})
-      </p>
       <p className="text-xs leading-relaxed px-1" style={{ color: C.inkSoft }}>
         {t("disclaimer")}
       </p>
