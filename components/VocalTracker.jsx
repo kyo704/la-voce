@@ -966,6 +966,30 @@ export default function VocalTracker({ userId, userEmail }) {
   const t = useMemo(() => createTranslator(language), [language]);
   const weekdayLabels = useMemo(() => getWeekdayLabels(language), [language]);
   const currentScore = useMemo(() => computeOverallScore(formData), [formData]);
+  const yesterdayContext = useMemo(() => {
+    const yDate = addDays(selectedDate, -1);
+    const y = entries[yDate];
+    if (!y) return null;
+    const dinnerGap = computeTimeGapHours(y.dinnerTime, y.bedtime);
+    const flags = [];
+    if (dinnerGap != null && dinnerGap < 3) flags.push("flagDinnerGap");
+    if (typeof y.sleepHours === "number" && y.sleepHours < 6) flags.push("flagShortSleep");
+    if (y.activityType === "本番" || y.activityType === "リハーサル") flags.push("flagHeavyVoiceUse");
+    if ((y.dinnerTags || []).includes("アルコール")) flags.push("flagAlcohol");
+    if ((y.dinnerTags || []).includes("カフェイン")) flags.push("flagCaffeine");
+    return {
+      date: yDate,
+      sleepHours: y.sleepHours,
+      sleepQuality: y.sleepQuality,
+      bedtime: y.bedtime,
+      dinnerTime: y.dinnerTime,
+      dinnerGap,
+      dinnerTags: y.dinnerTags || [],
+      activityType: y.activityType,
+      weather: y.weather,
+      flags
+    };
+  }, [entries, selectedDate]);
   const mealTotals = useMemo(() => {
     const meals = formData ? formData.meals || [] : [];
     return {
@@ -1363,6 +1387,47 @@ export default function VocalTracker({ userId, userEmail }) {
                 <div className="rounded-2xl p-5 border flex justify-center" style={{ background: C.card, borderColor: C.line }}>
                   <Gauge score={currentScore} t={t} />
                 </div>
+
+                {yesterdayContext && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">{t("titleYesterdayContext")}</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteYesterdayContext")}</p>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="rounded-lg p-2" style={{ background: C.paper }}>
+                        <span style={{ color: C.inkSoft }}>{t("labelSleepHours")}</span>
+                        <div className="font-medium ff-mono">{yesterdayContext.sleepHours != null ? `${yesterdayContext.sleepHours}${t("unitHours")}` : "-"}</div>
+                      </div>
+                      <div className="rounded-lg p-2" style={{ background: C.paper }}>
+                        <span style={{ color: C.inkSoft }}>{t("labelDinnerToBedGap")}</span>
+                        <div className="font-medium ff-mono">{yesterdayContext.dinnerGap != null ? `${yesterdayContext.dinnerGap}${t("unitHours")}` : "-"}</div>
+                      </div>
+                      <div className="rounded-lg p-2" style={{ background: C.paper }}>
+                        <span style={{ color: C.inkSoft }}>{t("sectionPractice")}</span>
+                        <div className="font-medium">{yesterdayContext.activityType ? t((ACTIVITY_OPTIONS.find((a) => a.key === yesterdayContext.activityType) || {}).labelKey) : "-"}</div>
+                      </div>
+                      <div className="rounded-lg p-2" style={{ background: C.paper }}>
+                        <span style={{ color: C.inkSoft }}>{t("labelWeather")}</span>
+                        <div className="font-medium">{yesterdayContext.weather ? t(WEATHER_KEYS[yesterdayContext.weather] || "optionOther") : "-"}</div>
+                      </div>
+                    </div>
+                    {yesterdayContext.dinnerTags.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-2">
+                        {yesterdayContext.dinnerTags.map((tag) => (
+                          <span key={tag} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>{t(DINNER_TAG_KEYS[tag])}</span>
+                        ))}
+                      </div>
+                    )}
+                    {yesterdayContext.flags.length > 0 && (
+                      <div className="mt-3 space-y-1.5">
+                        {yesterdayContext.flags.map((flagKey) => (
+                          <div key={flagKey} className="text-xs rounded-lg p-2" style={{ background: "rgba(184,49,49,0.08)", color: C.curtain }}>
+                            ⚠ {t(flagKey)}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {formData && (
                   <>
