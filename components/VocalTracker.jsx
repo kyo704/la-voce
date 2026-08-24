@@ -916,6 +916,10 @@ export default function VocalTracker({ userId, userEmail }) {
   const [confirmDeleteDate, setConfirmDeleteDate] = useState(null);
   const [selectedFactorKey, setSelectedFactorKey] = useState(null);
   const [analysisTarget, setAnalysisTarget] = useState("performance");
+  // 分析対象の期間（週・月・年・全期間・任意の期間から選べる）
+  const [analysisPeriod, setAnalysisPeriod] = useState("all"); // "week" | "month" | "year" | "all" | "custom"
+  const [analysisCustomStart, setAnalysisCustomStart] = useState("");
+  const [analysisCustomEnd, setAnalysisCustomEnd] = useState("");
   const [adviceText, setAdviceText] = useState("");
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
@@ -1071,15 +1075,43 @@ export default function VocalTracker({ userId, userEmail }) {
     }
     return cells;
   }, [viewMonth, entries]);
+  // 分析期間で絞り込んだ記録データ。分析タブの計算だけがこれを使い、
+  // 「今日」「履歴」「羊」タブなどが参照する entries 本体には一切手を加えない。
+  const filteredEntries = useMemo(() => {
+    if (analysisPeriod === "all") return entries;
+    const today = new Date();
+    let startISO, endISO;
+    if (analysisPeriod === "week") {
+      const start = new Date(today); start.setDate(start.getDate() - 6);
+      startISO = toISODate(start); endISO = toISODate(today);
+    } else if (analysisPeriod === "month") {
+      const start = new Date(today); start.setDate(start.getDate() - 29);
+      startISO = toISODate(start); endISO = toISODate(today);
+    } else if (analysisPeriod === "year") {
+      const start = new Date(today); start.setFullYear(start.getFullYear() - 1);
+      startISO = toISODate(start); endISO = toISODate(today);
+    } else if (analysisPeriod === "custom") {
+      startISO = analysisCustomStart || "0000-01-01";
+      endISO = analysisCustomEnd || "9999-12-31";
+    } else {
+      return entries;
+    }
+    const result = {};
+    Object.keys(entries).forEach((d) => {
+      if (d >= startISO && d <= endISO) result[d] = entries[d];
+    });
+    return result;
+  }, [entries, analysisPeriod, analysisCustomStart, analysisCustomEnd]);
+
   const correlationResults = useMemo(() => {
     if (analysisTarget === "performance") {
-      return getCorrelationData(entries, "performanceQuality", (e) => e.activityType === "本番" && typeof e.performanceQuality === "number", t);
+      return getCorrelationData(filteredEntries, "performanceQuality", (e) => e.activityType === "本番" && typeof e.performanceQuality === "number", t);
     }
     if (analysisTarget === "ease") {
-      return getCorrelationData(entries, "ease", (e) => typeof e.ease === "number", t);
+      return getCorrelationData(filteredEntries, "ease", (e) => typeof e.ease === "number", t);
     }
-    return getCorrelationData(entries, "throatCondition", (e) => typeof e.throatCondition === "number", t);
-  }, [entries, analysisTarget, t]);
+    return getCorrelationData(filteredEntries, "throatCondition", (e) => typeof e.throatCondition === "number", t);
+  }, [filteredEntries, analysisTarget, t]);
   const chartData = useMemo(
     () => correlationResults.filter((r) => r.r != null).sort((a, b) => Math.abs(b.r) - Math.abs(a.r)).map(({ key, label, r, n }) => ({ key, label, r, n })),
     [correlationResults]
@@ -1101,17 +1133,17 @@ export default function VocalTracker({ userId, userEmail }) {
     return generateInsights(correlationResults, targetLabel, t);
   }, [correlationResults, analysisTarget, t]);
   const voiceMemoEntries = useMemo(() => {
-    return Object.keys(entries)
-      .filter((d) => (entries[d].voiceMemo || "").trim())
+    return Object.keys(filteredEntries)
+      .filter((d) => (filteredEntries[d].voiceMemo || "").trim())
       .sort()
       .reverse()
       .slice(0, 10)
-      .map((d) => ({ date: d, ...entries[d] }));
-  }, [entries]);
+      .map((d) => ({ date: d, ...filteredEntries[d] }));
+  }, [filteredEntries]);
   const timeOfDayStats = useMemo(() => {
     const sums = {};
     VOICE_TIME_SLOTS.forEach(({ key }) => { sums[key] = { throatSum: 0, throatN: 0, voiceSum: 0, voiceN: 0 }; });
-    Object.values(entries).forEach((e) => {
+    Object.values(filteredEntries).forEach((e) => {
       const checkins = e.voiceCheckins || {};
       VOICE_TIME_SLOTS.forEach(({ key }) => {
         const c = checkins[key];
@@ -1125,10 +1157,10 @@ export default function VocalTracker({ userId, userEmail }) {
       avgVoice: sums[key].voiceN ? sums[key].voiceSum / sums[key].voiceN : null,
       n: Math.max(sums[key].throatN, sums[key].voiceN)
     }));
-  }, [entries]);
+  }, [filteredEntries]);
   const restMethodStats = useMemo(() => {
     const byMethod = {};
-    Object.values(entries).forEach((e) => {
+    Object.values(filteredEntries).forEach((e) => {
       if (e.activityType !== "休養") return;
       const methods = (e.activityDetail && e.activityDetail.restMethods) || [];
       const otherText = (e.activityDetail && e.activityDetail.restMethodOther || "").trim();
@@ -1213,8 +1245,18 @@ export default function VocalTracker({ userId, userEmail }) {
   async function handleSaveCharacter() {
     setCharacterSaveStatus("saving");
     const supabase = createClient();
-    const { error } = await supabase.from("profiles").update({ character_equipped: characterEquipped }).eq("id", userId);
+    // .select() を付けて、実際に更新された行を明示的に取得する。
+    // これが無いと、対象の行が0件だった場合（RLSの制限やID不一致など）でも
+    // Supabaseはエラーを返さず「成功」扱いにしてしまうため、
+    // 見た目上は保存できたように見えて実際には何も保存されない、という不具合が起きうる。
+    const { data, error } = await supabase.from("profiles").update({ character_equipped: characterEquipped }).eq("id", userId).select();
     if (error) {
+      console.error("キャラクターの保存に失敗しました:", error);
+      setCharacterSaveStatus("error");
+      return;
+    }
+    if (!data || data.length === 0) {
+      console.error("キャラクターの保存対象が見つかりませんでした（該当する行が0件）。userId:", userId);
       setCharacterSaveStatus("error");
       return;
     }
@@ -1252,7 +1294,10 @@ export default function VocalTracker({ userId, userEmail }) {
       return;
     }
     const newSpent = characterPointsSpent + item.cost;
-    await supabase.from("profiles").update({ character_points_spent: newSpent }).eq("id", userId);
+    const { data: spentData, error: spentError } = await supabase.from("profiles").update({ character_points_spent: newSpent }).eq("id", userId).select();
+    if (spentError || !spentData || spentData.length === 0) {
+      console.error("ポイント消費の保存に失敗しました:", spentError, "userId:", userId);
+    }
     if (SINGLE_SLOT_CATEGORIES.includes(item.category)) {
       handleEquipItem(item.category, item.key);
     } else if (MULTI_SLOT_CATEGORIES.includes(item.category)) {
@@ -2288,6 +2333,35 @@ export default function VocalTracker({ userId, userEmail }) {
 
             {activeTab === "analysis" && (
               <div className="space-y-5">
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-3">{t("titleAnalysisPeriod")}</h3>
+                  <div className="flex gap-2 flex-wrap">
+                    {["week", "month", "year", "all", "custom"].map((p) => (
+                      <button key={p} type="button" onClick={() => setAnalysisPeriod(p)}
+                        className="px-3.5 py-1.5 rounded-full text-xs font-medium"
+                        style={{
+                          background: analysisPeriod === p ? C.curtain : C.paper,
+                          color: analysisPeriod === p ? "#FFFDF8" : C.inkSoft,
+                          border: `1px solid ${analysisPeriod === p ? C.curtain : C.line}`
+                        }}>
+                        {t(p === "week" ? "periodWeek" : p === "month" ? "periodMonth" : p === "year" ? "periodYear" : p === "all" ? "periodAll" : "periodCustom")}
+                      </button>
+                    ))}
+                  </div>
+                  {analysisPeriod === "custom" && (
+                    <div className="flex items-center gap-2 mt-3 flex-wrap">
+                      <input type="date" value={analysisCustomStart} onChange={(e) => setAnalysisCustomStart(e.target.value)}
+                        className="rounded-lg border px-2.5 py-1.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                      <span className="text-xs" style={{ color: C.inkSoft }}>〜</span>
+                      <input type="date" value={analysisCustomEnd} onChange={(e) => setAnalysisCustomEnd(e.target.value)}
+                        className="rounded-lg border px-2.5 py-1.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                    </div>
+                  )}
+                  <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                    {t("noteAnalysisPeriodCount").replace("{count}", Object.keys(filteredEntries).length)}
+                  </p>
+                </div>
+
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleTimeOfDayTrend")}</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteTimeOfDayTrend")}</p>
