@@ -1204,14 +1204,33 @@ export default function VocalTracker({ userId, userEmail }) {
   // 順番の保証なしに複数の保存リクエストが同時に飛んでしまい、
   // ネットワークの都合で古い状態が新しい状態を上書きしてしまうことがあった（アイテムが消えて見えるバグの原因）。
   // ここで直列化することで、常に「最後に行った操作」が最後にデータベースへ反映されるようにする。
+  //
+  // さらに、保存が完全に終わる"前"にページを閉じたりリロードしたりすると、
+  // ブラウザが通信そのものを打ち切ってしまい、変更が失われることがある。
+  // これを防ぐため、保存中の件数を数えておき、①画面に「保存中」を表示する②
+  // 保存中にページを離れようとしたらブラウザ標準の確認ダイアログを出す、の2段構えで対策する。
   const equippedSaveQueueRef = useRef(Promise.resolve());
+  const [pendingSaveCount, setPendingSaveCount] = useState(0);
   function persistEquipped(next) {
     const supabase = createClient();
+    setPendingSaveCount((c) => c + 1);
     equippedSaveQueueRef.current = equippedSaveQueueRef.current
       .then(() => supabase.from("profiles").update({ character_equipped: next }).eq("id", userId))
-      .catch(() => {}); // 個別の保存が失敗しても、後続の保存が止まらないようにする
+      .catch(() => {}) // 個別の保存が失敗しても、後続の保存が止まらないようにする
+      .finally(() => setPendingSaveCount((c) => Math.max(0, c - 1)));
     return equippedSaveQueueRef.current;
   }
+
+  useEffect(() => {
+    function handleBeforeUnload(e) {
+      if (pendingSaveCount > 0) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    }
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [pendingSaveCount]);
 
   function countPlacedOfSize(list, size) {
     return (list || []).filter((k) => {
@@ -2175,6 +2194,7 @@ export default function VocalTracker({ userId, userEmail }) {
                 onEquip={handleEquipItem}
                 onTogglePlacement={handleTogglePlacement}
                 onUpdatePosition={handleUpdatePosition}
+                isSaving={pendingSaveCount > 0}
                 t={t}
               />
             )}

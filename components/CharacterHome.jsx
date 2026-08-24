@@ -2045,7 +2045,7 @@ function GardenScene({ equipped, owned, onUpdatePosition, t }) {
   );
 }
 
-export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, onUpdatePosition, t }) {
+export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, onUpdatePosition, isSaving, t }) {
   const [view, setView] = useState("room");
   const [shopCategory, setShopCategory] = useState("hat");
 
@@ -2082,6 +2082,12 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
         {(equipped.furniture || []).length > 0 || (equipped.garden || []).length > 0 ? (
           <p className="text-xs mt-2 text-center" style={{ color: C.inkSoft }}>{t("noteDragToArrange")}</p>
         ) : null}
+        {isSaving && (
+          <p className="text-xs mt-2 text-center font-medium flex items-center justify-center gap-1.5" style={{ color: C.gold }}>
+            <span className="inline-block w-2 h-2 rounded-full animate-pulse" style={{ background: C.gold }} />
+            {t("noteSavingInProgress")}
+          </p>
+        )}
       </div>
 
       <div className="grid grid-cols-3 gap-3">
