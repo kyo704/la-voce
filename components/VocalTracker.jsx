@@ -1244,6 +1244,15 @@ export default function VocalTracker({ userId, userEmail }) {
     const { flags } = computeConditionFlags(y);
     return { hasData: true, date: yDate, flags };
   }, [entries]);
+  // メンタル（こころの落ち着き度=ease）が低かった日を、選んだ分析期間の中から集める。
+  // 診断や原因の断定はせず、本人が実際に書いた理由をそのまま並べて振り返れるようにするだけに留める。
+  const lowEaseEntries = useMemo(() => {
+    return Object.keys(filteredEntries)
+      .filter((d) => typeof filteredEntries[d].ease === "number" && filteredEntries[d].ease <= 2)
+      .sort()
+      .reverse()
+      .map((d) => ({ date: d, ease: filteredEntries[d].ease, mentalReason: filteredEntries[d].mentalReason || "" }));
+  }, [filteredEntries]);
   const mealTotals = useMemo(() => {
     const meals = formData ? formData.meals || [] : [];
     return {
@@ -2028,26 +2037,28 @@ export default function VocalTracker({ userId, userEmail }) {
                             className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
                         </div>
                       </div>
-                      <div className="rounded-xl p-3" style={{ background: C.paper }}>
-                        <p className="text-xs font-medium mb-2">{t("labelVoiceRangeRefTitle")}</p>
-                        <div className="space-y-1">
-                          {[
-                            ["voiceSoprano", "C4 – C6"],
-                            ["voiceMezzo", "A3 – A5"],
-                            ["voiceAlto", "F3 – F5"],
-                            ["voiceCountertenor", "G3 – E5"],
-                            ["voiceTenor", "C3 – C5"],
-                            ["voiceBaritone", "A2 – A4"],
-                            ["voiceBass", "E2 – E4"]
-                          ].map(([key, range]) => (
-                            <div key={key} className="flex items-center justify-between text-xs">
-                              <span style={{ color: C.inkSoft }}>{t(key)}</span>
-                              <span className="ff-mono">{range}</span>
-                            </div>
-                          ))}
+                      {(profile.vocal_profession || "singer") === "singer" && (
+                        <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                          <p className="text-xs font-medium mb-2">{t("labelVoiceRangeRefTitle")}</p>
+                          <div className="space-y-1">
+                            {[
+                              ["voiceSoprano", "C4 – C6"],
+                              ["voiceMezzo", "A3 – A5"],
+                              ["voiceAlto", "F3 – F5"],
+                              ["voiceCountertenor", "G3 – E5"],
+                              ["voiceTenor", "C3 – C5"],
+                              ["voiceBaritone", "A2 – A4"],
+                              ["voiceBass", "E2 – E4"]
+                            ].map(([key, range]) => (
+                              <div key={key} className="flex items-center justify-between text-xs">
+                                <span style={{ color: C.inkSoft }}>{t(key)}</span>
+                                <span className="ff-mono">{range}</span>
+                              </div>
+                            ))}
+                          </div>
+                          <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("noteVoiceRangeRef")}</p>
                         </div>
-                        <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("noteVoiceRangeRef")}</p>
-                      </div>
+                      )}
                       <div>
                         <label className="text-sm font-medium block mb-1.5">{t("labelTechnicalGoal")}</label>
                         <input type="text" value={profile.technical_goal}
@@ -2726,6 +2737,41 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   </div>
                 )}
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleMentalTrend")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteMentalTrend")}</p>
+                  <div style={{ width: "100%", height: 200 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 11, fill: C.inkSoft }} />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <Line type="monotone" dataKey="ease" name={t("labelMentalEase")} stroke={C.rust} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                  {lowEaseEntries.length > 0 && (
+                    <div className="mt-4 pt-3 border-t" style={{ borderColor: C.line }}>
+                      <p className="text-xs font-medium mb-2">{t("labelLowEaseReview")}</p>
+                      <div>
+                        {lowEaseEntries.slice(0, 10).map((e) => (
+                          <div key={e.date} className="text-xs py-2 border-t first:border-t-0" style={{ borderColor: C.line }}>
+                            <div className="flex items-center justify-between">
+                              <span className="ff-mono cursor-pointer" style={{ color: C.inkSoft }} onClick={() => { setSelectedDate(e.date); setActiveTab("today"); }}>
+                                {formatDateLabel(e.date, language)}
+                              </span>
+                              <span className="ff-mono" style={{ color: C.rust }}>{t("labelMentalEase")} {e.ease}</span>
+                            </div>
+                            {e.mentalReason && <p className="mt-1" style={{ color: C.ink }}>{e.mentalReason}</p>}
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-xs mt-3" style={{ color: C.inkSoft }}>{t("noteLowEaseReviewCare")}</p>
+                    </div>
+                  )}
+                </div>
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleWeightTrend")}</h3>
