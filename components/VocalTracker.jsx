@@ -1895,7 +1895,12 @@ export default function VocalTracker({ userId, userEmail }) {
                 ) : (
                   <>
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                      <h3 className="ff-display italic text-lg mb-3">相関の強さ</h3>
+                      <h3 className="ff-display italic text-lg mb-2">相関の強さ</h3>
+                      <p className="text-xs mb-3 leading-relaxed rounded-xl p-2.5" style={{ color: C.inkSoft, background: C.paper }}>
+                        棒が<span style={{ color: C.sage, fontWeight: 500 }}>右</span>に伸びるほど「多いほど良くなる」正の相関、
+                        <span style={{ color: C.curtain, fontWeight: 500 }}>左</span>に伸びるほど「多いほど悪くなる」負の相関です。
+                        棒が長いほど関連が強く、0に近い（短い）ほど関連は弱いことを示します。
+                      </p>
                       <div style={{ width: "100%", height: 260 }}>
                         <ResponsiveContainer>
                           <BarChart data={chartData} layout="vertical" margin={{ left: 8, right: 16, top: 4, bottom: 4 }}>
@@ -1920,7 +1925,11 @@ export default function VocalTracker({ userId, userEmail }) {
                           <h3 className="ff-display italic text-lg">{scatterInfo.label}の散布図</h3>
                           <span className="text-xs ff-mono" style={{ color: C.inkSoft }}>r = {scatterInfo.r.toFixed(2)}（n={scatterInfo.n}）</span>
                         </div>
-                        <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{correlationLabel(scatterInfo.r)}</p>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{correlationLabel(scatterInfo.r)}</p>
+                        <p className="text-xs mb-3 leading-relaxed rounded-xl p-2.5" style={{ color: C.inkSoft, background: C.paper }}>
+                          点1つが記録した1日分です。右上がりに点が並ぶほど正の関係、右下がりなら負の関係。
+                          点がバラバラなら、はっきりした関係はなさそうです。
+                        </p>
                         <div style={{ width: "100%", height: 220 }}>
                           <ResponsiveContainer>
                             <ScatterChart margin={{ left: 8, right: 16, top: 8, bottom: 8 }}>
