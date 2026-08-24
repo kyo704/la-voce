@@ -15,6 +15,7 @@ const LANGS = [
 ];
 
 const T = {
+  heroEyebrow: { ja: "FOR VOICE PROFESSIONALS", en: "FOR VOICE PROFESSIONALS", zh: "FOR VOICE PROFESSIONALS", it: "FOR VOICE PROFESSIONALS", de: "FOR VOICE PROFESSIONALS", fr: "FOR VOICE PROFESSIONALS", es: "FOR VOICE PROFESSIONALS", ko: "FOR VOICE PROFESSIONALS" },
   heroIntro: { ja: "声を使って働くすべての人にとって、声そのものが、かけがえのない仕事の道具です。\nけれど多くの人は、その道具の調子を「なんとなく」でしか把握していません。", en: "For everyone who works with their voice, the voice itself is an irreplaceable tool of the trade.\nYet most people only have a vague sense of how that tool is doing.", zh: "对所有以声音为业的人而言，声音本身就是不可替代的工作工具。\n然而大多数人，对这件工具的状态，只有一种模糊的感觉。", it: "Per chiunque lavori con la propria voce, la voce stessa è uno strumento di lavoro insostituibile.\nEppure la maggior parte delle persone ne conosce solo vagamente lo stato.", de: "Für alle, die beruflich mit ihrer Stimme arbeiten, ist die Stimme selbst ein unersetzliches Arbeitswerkzeug.\nDoch die meisten Menschen haben nur ein vages Gefühl dafür, wie es diesem Werkzeug gerade geht.", fr: "Pour toutes celles et ceux qui travaillent avec leur voix, la voix elle-même est un outil de travail irremplaçable.\nPourtant, la plupart des gens n'en ont qu'une idée vague de son état du moment.", es: "Para todas las personas que trabajan con su voz, la voz misma es una herramienta de trabajo insustituible.\nSin embargo, la mayoría solo tiene una idea vaga de cómo está esa herramienta.", ko: "목소리로 일하는 모든 사람에게, 목소리 그 자체가 무엇과도 바꿀 수 없는 일의 도구입니다.\n하지만 대부분의 사람들은 그 도구의 상태를 그저 막연하게만 파악하고 있습니다." },
   btnStart: { ja: "無料で始める", en: "Start for free", zh: "免费开始", it: "Inizia gratis", de: "Kostenlos starten", fr: "Commencer gratuitement", es: "Empezar gratis", ko: "무료로 시작하기" },
   btnLogin: { ja: "ログイン", en: "Log in", zh: "登录", it: "Accedi", de: "Anmelden", fr: "Se connecter", es: "Iniciar sesión", ko: "로그인" },
@@ -126,7 +127,7 @@ export default async function LandingPage({ searchParams }) {
       {/* ヒーロー */}
       <section style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", padding: "40px 24px 40px" }}>
         <p style={{ color: C.gold, fontSize: 12.5, letterSpacing: "0.14em", fontWeight: 600, marginBottom: 10 }}>
-          VOICE HEALTH JOURNAL FOR SINGERS
+          {tr("heroEyebrow", lang)}
         </p>
         <h1 className="ff-display italic" style={{ fontSize: "3.4rem", color: C.curtain, margin: 0, lineHeight: 1.15 }}>
           La Voce
