@@ -647,6 +647,29 @@ function MiniNumber({ value, onChange, placeholder }) {
 function roundTo1(n) {
   return Math.round(n * 10) / 10;
 }
+// 音名（国際式、例: "C4", "G#3", "Bb4"）を MIDI ノート番号に変換する。パースできなければ null。
+function noteToMidi(noteStr) {
+  if (!noteStr || typeof noteStr !== "string") return null;
+  const match = noteStr.trim().match(/^([A-Ga-g])([#♯b♭]?)(-?\d+)$/);
+  if (!match) return null;
+  const letter = match[1].toUpperCase();
+  const accidental = match[2];
+  const octave = parseInt(match[3], 10);
+  const base = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[letter];
+  let semitone = base;
+  if (accidental === "#" || accidental === "♯") semitone += 1;
+  if (accidental === "b" || accidental === "♭") semitone -= 1;
+  return (octave + 1) * 12 + semitone;
+}
+// MIDI ノート番号を音名表記（国際式）に戻す。
+function midiToNoteLabel(midi) {
+  if (midi == null || Number.isNaN(midi)) return "-";
+  const names = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+  const octave = Math.floor(midi / 12) - 1;
+  const name = names[((midi % 12) + 12) % 12];
+  return `${name}${octave}`;
+}
+const ACTIVITY_CHART_COLORS = { "休養": C.sageSoft, "自主練習": C.sage, "レッスン": C.gold, "リハーサル": C.rust, "本番": C.curtain };
 function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood, t }) {
   const [open, setOpen] = useState(false);
   const q = (value || "").trim().toLowerCase();
@@ -1087,7 +1110,13 @@ export default function VocalTracker({ userId, userEmail }) {
         calorieActual: calorieActual > 0 ? Math.round(calorieActual) : null,
         calorieTarget: targets ? Math.round(targets.calorieTarget) : null,
         ease: typeof e.ease === "number" ? e.ease : null,
-        resonanceScore: typeof e.resonanceScore === "number" ? e.resonanceScore : null
+        resonanceScore: typeof e.resonanceScore === "number" ? e.resonanceScore : null,
+        wakeMidi: noteToMidi(e.wakeNote),
+        routineMidi: noteToMidi(e.routineNote),
+        wakeNoteLabel: e.wakeNote || null,
+        routineNoteLabel: e.routineNote || null,
+        activityType: e.activityType || null,
+        activityColor: ACTIVITY_CHART_COLORS[e.activityType] || C.line
       };
     });
   }, [entries, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient]);
@@ -2173,6 +2202,60 @@ export default function VocalTracker({ userId, userEmail }) {
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titlePitchChart")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("notePitchChart")}</p>
+                  <div style={{ width: "100%", height: 220 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis
+                          domain={["dataMin - 2", "dataMax + 2"]}
+                          tickFormatter={(v) => midiToNoteLabel(v)}
+                          tick={{ fontSize: 10, fill: C.inkSoft }}
+                          width={38}
+                        />
+                        <Tooltip
+                          contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }}
+                          formatter={(value, name, entry) => {
+                            const isWake = entry && entry.dataKey === "wakeMidi";
+                            const label = isWake ? entry.payload.wakeNoteLabel : entry.payload.routineNoteLabel;
+                            return [label || "-", name];
+                          }}
+                        />
+                        <Line
+                          type="monotone" dataKey="wakeMidi" name={t("labelWakeNote")} stroke={C.gold} strokeWidth={2}
+                          connectNulls
+                          dot={(dotProps) => {
+                            const { cx, cy, payload, index } = dotProps;
+                            if (payload.wakeMidi == null) return null;
+                            return <circle key={`wake-${index}`} cx={cx} cy={cy} r={5} fill={payload.activityColor} stroke={C.gold} strokeWidth={1.5} />;
+                          }}
+                        />
+                        <Line
+                          type="monotone" dataKey="routineMidi" name={t("labelRoutineNote")} stroke={C.sage} strokeWidth={2}
+                          connectNulls
+                          dot={(dotProps) => {
+                            const { cx, cy, payload, index } = dotProps;
+                            if (payload.routineMidi == null) return null;
+                            return <circle key={`routine-${index}`} cx={cx} cy={cy} r={5} fill={payload.activityColor} stroke={C.sage} strokeWidth={1.5} />;
+                          }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {Object.entries(ACTIVITY_CHART_COLORS).map(([key, color]) => (
+                      <span key={key} className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                        <span style={{ width: 9, height: 9, borderRadius: 999, background: color, display: "inline-block" }} />
+                        {t((ACTIVITY_OPTIONS.find((a) => a.key === key) || {}).labelKey) || key}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("notePitchChartLegend")}</p>
                 </div>
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
