@@ -727,7 +727,11 @@ function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood, 
     ? (foodLibrary || []).filter((f) => {
         const nameNorm = normalizeForSearch(f.name);
         const readingNorm = f.reading ? normalizeForSearch(f.reading) : "";
-        if (nameNorm.includes(q) || (readingNorm && readingNorm.includes(q))) return true;
+        // 現在の表示言語での多言語名（i18n）も検索対象にする。
+        // これにより、例えば英語表示中に "chicken" と入力しても、
+        // 日本語名や読み仮名にその文字が無い品目でも見つかるようになる。
+        const i18nNorm = f.i18n && language && f.i18n[language] ? normalizeForSearch(f.i18n[language]) : "";
+        if (nameNorm.includes(q) || (readingNorm && readingNorm.includes(q)) || (i18nNorm && i18nNorm.includes(q))) return true;
         if (f.category && matchedCategories.includes(f.category)) return true;
         return groupKeywords.some((kw) => nameNorm.includes(kw) || (readingNorm && readingNorm.includes(kw)));
       }).slice(0, 8)
