@@ -9,7 +9,7 @@ import {
 
 const CATEGORY_LABEL_KEYS = {
   hat: "catHat", outfit: "catOutfit", accessory: "catAccessory", floor: "catFloor", wall: "catWall",
-  window: "catWindow", scenery: "catScenery", backdrop: "catBackdrop", furniture: "catFurniture", garden: "catGarden"
+  window: "catWindow", scenery: "catScenery", backdrop: "catBackdrop", furniture: "catFurniture", garden: "catGarden", wallhang: "catWallhang"
 };
 const MATERIAL_COLORS = {
   floor_default: "#D8C9A8", floor_tile: "#C9C2B4", floor_carpet: "#C98A9E",
@@ -24,7 +24,7 @@ const MATERIAL_COLORS = {
 };
 
 // ===== 羊のキャラクター（チビ体型・二頭身） =====
-function SheepCharacter({ equipped, size = 120, isWalking = false, isFarming = false, showBook = false }) {
+function SheepCharacter({ equipped, size = 120, isWalking = false, isFarming = false, showBook = false, isSweating = false, isCelebrating = false }) {
   const bodyColor = "#F6EFDF";
   const bodyShade = "#EAE0C8";
   return (
@@ -38,10 +38,14 @@ function SheepCharacter({ equipped, size = 120, isWalking = false, isFarming = f
         @keyframes armSwingR { 0%, 100% { transform: rotate(14deg); } 50% { transform: rotate(-14deg); } }
         @keyframes idleBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
         @keyframes digBob { 0%, 100% { transform: rotate(-32deg); } 50% { transform: rotate(12deg); } }
+        @keyframes armsUpL { 0%, 100% { transform: rotate(-155deg); } 50% { transform: rotate(-172deg); } }
+        @keyframes armsUpR { 0%, 100% { transform: rotate(155deg); } 50% { transform: rotate(172deg); } }
+        @keyframes sweatDrop { 0% { transform: translateY(0); opacity: 0.9; } 100% { transform: translateY(10px); opacity: 0; } }
+        .sweat-drop { animation: sweatDrop 1.3s ease-in infinite; }
         .leg-l { transform-box: fill-box; transform-origin: top center; ${isWalking ? "animation: legSwingL 0.62s ease-in-out infinite;" : ""} }
         .leg-r { transform-box: fill-box; transform-origin: top center; ${isWalking ? "animation: legSwingR 0.62s ease-in-out infinite;" : ""} }
-        .arm-l { transform-box: fill-box; transform-origin: top center; ${isFarming ? "animation: digBob 0.5s ease-in-out infinite;" : isWalking ? "animation: armSwingL 0.62s ease-in-out infinite;" : "animation: idleBob 2.4s ease-in-out infinite;"} }
-        .arm-r { transform-box: fill-box; transform-origin: top center; ${isFarming ? "animation: digBob 0.5s ease-in-out infinite reverse;" : isWalking ? "animation: armSwingR 0.62s ease-in-out infinite;" : "animation: idleBob 2.4s ease-in-out infinite;"} }
+        .arm-l { transform-box: fill-box; transform-origin: 80% 15%; ${isCelebrating ? "animation: armsUpL 0.45s ease-in-out infinite;" : isFarming ? "animation: digBob 0.5s ease-in-out infinite;" : isWalking ? "animation: armSwingL 0.62s ease-in-out infinite;" : "animation: idleBob 2.4s ease-in-out infinite;"} }
+        .arm-r { transform-box: fill-box; transform-origin: 20% 15%; ${isCelebrating ? "animation: armsUpR 0.45s ease-in-out infinite;" : isFarming ? "animation: digBob 0.5s ease-in-out infinite reverse;" : isWalking ? "animation: armSwingR 0.62s ease-in-out infinite;" : "animation: idleBob 2.4s ease-in-out infinite;"} }
       `}</style>
 
       <ellipse cx="80" cy="192" rx="34" ry="8" fill="#3D2E12" opacity="0.14" />
@@ -380,12 +384,35 @@ function SheepCharacter({ equipped, size = 120, isWalking = false, isFarming = f
         </g>
       )}
 
-      <ellipse className="sheep-eye" cx="66" cy="76" rx="4" ry="4" fill="#3D3226" />
-      <ellipse className="sheep-eye" cx="94" cy="76" rx="4" ry="4" fill="#3D3226" />
-      <ellipse cx="80" cy="88" rx="5" ry="3.5" fill="#C98A6E" />
-      <path d="M72,94 Q80,99 88,94" stroke="#8A5A42" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-      <circle cx="58" cy="88" r="6" fill="#F0B7A4" opacity="0.6" />
-      <circle cx="102" cy="88" r="6" fill="#F0B7A4" opacity="0.6" />
+      {isCelebrating ? (
+        <>
+          {/* 目を瞑って笑う表情（喜び） */}
+          <path d="M59,77 Q66,70 73,77" stroke="#3D3226" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+          <path d="M87,77 Q94,70 101,77" stroke="#3D3226" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+          <ellipse cx="80" cy="88" rx="5" ry="3.5" fill="#C98A6E" />
+          {/* 大きく開けて笑う口 */}
+          <path d="M66,92 Q80,110 94,92 Q80,104 66,92 Z" fill="#8A1428" opacity="0.9" />
+          <path d="M69,93 Q80,99 91,93" fill="#FBF6EA" opacity="0.95" />
+          <circle cx="55" cy="90" r="7" fill="#F0B7A4" opacity="0.75" />
+          <circle cx="105" cy="90" r="7" fill="#F0B7A4" opacity="0.75" />
+        </>
+      ) : (
+        <>
+          <ellipse className="sheep-eye" cx="66" cy="76" rx="4" ry="4" fill="#3D3226" />
+          <ellipse className="sheep-eye" cx="94" cy="76" rx="4" ry="4" fill="#3D3226" />
+          <ellipse cx="80" cy="88" rx="5" ry="3.5" fill="#C98A6E" />
+          <path d="M72,94 Q80,99 88,94" stroke="#8A5A42" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+          <circle cx="58" cy="88" r="6" fill="#F0B7A4" opacity="0.6" />
+          <circle cx="102" cy="88" r="6" fill="#F0B7A4" opacity="0.6" />
+        </>
+      )}
+
+      {isSweating && (
+        <g>
+          <path className="sweat-drop" d="M46,58 Q41,67 46,74 Q51,67 46,58 Z" fill="#9FC9E8" opacity="0.9" />
+          <path className="sweat-drop" style={{ animationDelay: "0.5s" }} d="M116,56 Q121,65 116,72 Q111,65 116,56 Z" fill="#9FC9E8" opacity="0.85" />
+        </g>
+      )}
     </svg>
   );
 }
@@ -548,6 +575,8 @@ function useGardenLife(centerLeft, centerTop, rangeLeft, rangeTop, hasField) {
   const [facingLeft, setFacingLeft] = useState(false);
   const [isWalking, setIsWalking] = useState(false);
   const [isFarming, setIsFarming] = useState(false);
+  const [isSweating, setIsSweating] = useState(false);
+  const [isCelebrating, setIsCelebrating] = useState(false);
   const [birds, setBirds] = useState([]);
   const [pkg, setPkg] = useState(null); // { left, top, stage: "waiting" | "collected" } | null
   const leftRef = useRef(centerLeft);
@@ -630,9 +659,11 @@ function useGardenLife(centerLeft, centerTop, rangeLeft, rangeTop, hasField) {
         addTimer(() => {
           if (cancelled) return;
           setIsFarming(true);
+          setIsSweating(true);
           addTimer(() => {
             if (cancelled) return;
             setIsFarming(false);
+            setIsSweating(false);
             busyRef.current = false;
           }, 3400);
         }, 2300);
@@ -640,14 +671,32 @@ function useGardenLife(centerLeft, centerTop, rangeLeft, rangeTop, hasField) {
       }, delay);
     }
 
+    // ときどき、両手を上げて目を瞑って笑う「喜びの動作」を見せる
+    function scheduleCelebrate() {
+      const delay = 25000 + Math.random() * 25000;
+      addTimer(() => {
+        if (cancelled) return;
+        if (busyRef.current) { scheduleCelebrate(); return; }
+        busyRef.current = true;
+        setIsCelebrating(true);
+        addTimer(() => {
+          if (cancelled) return;
+          setIsCelebrating(false);
+          busyRef.current = false;
+        }, 2800);
+        scheduleCelebrate();
+      }, delay);
+    }
+
     scheduleWander();
     scheduleBird();
     schedulePackage();
     scheduleFarming();
+    scheduleCelebrate();
     return () => { cancelled = true; timers.forEach(clearTimeout); };
   }, [centerLeft, centerTop, rangeLeft, rangeTop, hasField]);
 
-  return { leftPct, topPct, facingLeft, isWalking, isFarming, birds, pkg };
+  return { leftPct, topPct, facingLeft, isWalking, isFarming, isSweating, isCelebrating, birds, pkg };
 }
 
 function BirdShape() {
@@ -692,7 +741,7 @@ function SheepSleepingHead({ size }) {
   );
 }
 
-function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWalking, isFarming, isSitting, isLying }) {
+function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWalking, isFarming, isSitting, isLying, isSweating, isCelebrating }) {
   if (isLying) {
     return (
       <div
@@ -721,7 +770,7 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
       }}
     >
       <div style={{ transform: facingLeft ? "scaleX(-1)" : "none" }}>
-        <SheepCharacter equipped={equipped} size={size} isWalking={isWalking} isFarming={isFarming} showBook={isSitting} />
+        <SheepCharacter equipped={equipped} size={size} isWalking={isWalking} isFarming={isFarming} showBook={isSitting} isSweating={isSweating} isCelebrating={isCelebrating} />
       </div>
     </div>
   );
@@ -913,6 +962,22 @@ function PondIcon() {
     </svg>
   );
 }
+function HayBaleIcon() {
+  return (
+    <svg viewBox="0 0 50 50" width="100%" height="100%">
+      <circle cx="25" cy="27" r="21" fill="#D9AE6E" />
+      <path d="M25,6 A21,21 0 0,1 46,27" stroke="#C99A5E" strokeWidth="1.2" fill="none" opacity="0.6" />
+      <path d="M25,10 A17,17 0 0,1 42,27" stroke="#C99A5E" strokeWidth="1" fill="none" opacity="0.5" />
+      <path d="M25,14 A13,13 0 0,1 38,27" stroke="#C99A5E" strokeWidth="1" fill="none" opacity="0.5" />
+      {Array.from({ length: 16 }).map((_, i) => {
+        const a = (Math.PI / 8) * i;
+        return <line key={i} x1={25 + Math.cos(a) * 10} y1={27 + Math.sin(a) * 10} x2={25 + Math.cos(a) * 20} y2={27 + Math.sin(a) * 20} stroke="#B8863B" strokeWidth="0.5" opacity="0.35" />;
+      })}
+      <ellipse cx="25" cy="27" rx="21" ry="6" fill="none" stroke="#8B6529" strokeWidth="1.5" opacity="0.5" />
+      <circle cx="25" cy="27" r="21" fill="none" stroke="#B8863B" strokeWidth="1" />
+    </svg>
+  );
+}
 function PaintingIcon() {
   return (
     <svg viewBox="0 0 50 60" width="100%" height="100%">
@@ -926,9 +991,60 @@ function PaintingIcon() {
     </svg>
   );
 }
+function WallLampIcon() {
+  return (
+    <svg viewBox="0 0 30 40" width="100%" height="100%">
+      <rect x="12" y="4" width="6" height="14" rx="2" fill="#8B6529" />
+      <path d="M15,14 Q22,16 24,24" stroke="#8B6529" strokeWidth="2.5" fill="none" />
+      <circle cx="24" cy="27" r="9" fill="#F6D46A" opacity="0.2" />
+      <path d="M18,22 L30,20 L28,32 L20,34 Z" fill="#F0DFA8" opacity="0.92" stroke="#D9AE6E" strokeWidth="0.6" />
+      <ellipse cx="24" cy="27" rx="6" ry="3" fill="#F6D46A" opacity="0.55" />
+    </svg>
+  );
+}
+function WallCandleIcon() {
+  return (
+    <svg viewBox="0 0 24 34" width="100%" height="100%">
+      <path d="M8,2 Q12,0 16,2 L16,20 Q12,22 8,20 Z" fill="#D9AE6E" stroke="#8B6529" strokeWidth="1" />
+      <ellipse cx="12" cy="18" rx="7" ry="2.5" fill="#B8863B" />
+      <rect x="10" y="6" width="4" height="12" fill="#FBF6EA" />
+      <path d="M12,2 Q9,5 12,8 Q15,5 12,2 Z" fill="#F6D46A" />
+      <path d="M12,3.5 Q10.5,5 12,6.5 Q13.5,5 12,3.5 Z" fill="#E8985F" opacity="0.8" />
+    </svg>
+  );
+}
+function WallHangerIcon() {
+  return (
+    <svg viewBox="0 0 60 20" width="100%" height="100%">
+      <rect x="0" y="4" width="60" height="6" rx="2" fill="#B98A5E" stroke="#8B6529" strokeWidth="0.6" />
+      {[10, 30, 50].map((x, i) => (
+        <g key={i}>
+          <circle cx={x} cy="10" r="1.5" fill="#5A4A3D" />
+          <path d={`M${x},10 Q${x + 4},14 ${x + 2},18`} stroke="#5A4A3D" strokeWidth="2" fill="none" strokeLinecap="round" />
+        </g>
+      ))}
+    </svg>
+  );
+}
+function WallClockIcon() {
+  return (
+    <svg viewBox="0 0 40 40" width="100%" height="100%">
+      <circle cx="20" cy="20" r="17" fill="#F6EFDF" stroke="#8B6529" strokeWidth="2.5" />
+      <circle cx="20" cy="20" r="13" fill="none" stroke="#D9C9AE" strokeWidth="0.5" />
+      {Array.from({ length: 12 }).map((_, i) => {
+        const a = (Math.PI / 6) * i;
+        return <circle key={i} cx={20 + Math.cos(a) * 13} cy={20 + Math.sin(a) * 13} r="0.6" fill="#3D2E12" />;
+      })}
+      <line x1="20" y1="20" x2="20" y2="10" stroke="#3D2E12" strokeWidth="1.6" strokeLinecap="round" />
+      <line x1="20" y1="20" x2="27" y2="22" stroke="#3D2E12" strokeWidth="1.3" strokeLinecap="round" />
+      <circle cx="20" cy="20" r="1.3" fill="#3D2E12" />
+    </svg>
+  );
+}
 
-const FURNITURE_ICON = { furniture_bed: BedIcon, furniture_shelf: ShelfIcon, furniture_plant: PlantIcon, furniture_rug: RugIcon, furniture_chair: ChairIcon, furniture_piano: PianoIcon, furniture_painting: PaintingIcon };
-const GARDEN_ICON = { garden_bench: BenchIcon, garden_fountain: FountainIcon, garden_lantern: LanternIcon, garden_flowerbed: FlowerBedIcon, garden_field: FieldIcon, garden_gazebo: GazeboIcon, garden_pond: PondIcon };
+const FURNITURE_ICON = { furniture_bed: BedIcon, furniture_shelf: ShelfIcon, furniture_plant: PlantIcon, furniture_rug: RugIcon, furniture_chair: ChairIcon, furniture_piano: PianoIcon };
+const GARDEN_ICON = { garden_bench: BenchIcon, garden_fountain: FountainIcon, garden_lantern: LanternIcon, garden_flowerbed: FlowerBedIcon, garden_field: FieldIcon, garden_gazebo: GazeboIcon, garden_pond: PondIcon, garden_hay_bale: HayBaleIcon };
+const WALLHANG_ICON = { wallhang_painting: PaintingIcon, wallhang_lamp: WallLampIcon, wallhang_candle: WallCandleIcon, wallhang_hanger: WallHangerIcon, wallhang_clock: WallClockIcon };
 
 // ===== ショップ内のアイテムプレビュー（種類ごとに見た目を切り替える） =====
 function ShopItemPreview({ item }) {
@@ -977,7 +1093,7 @@ function ShopItemPreview({ item }) {
       </div>
     );
   }
-  const Icon = FURNITURE_ICON[item.key] || GARDEN_ICON[item.key];
+  const Icon = FURNITURE_ICON[item.key] || GARDEN_ICON[item.key] || WALLHANG_ICON[item.key];
   if (Icon) {
     return (
       <div style={boxStyle}>
@@ -990,37 +1106,63 @@ function ShopItemPreview({ item }) {
 
 // 家具は全て同じ「接地ライン」(top=98)に足元を揃え、横幅ぶん間隔を空けて重ならないように配置。
 // ラグだけは床に敷く別レイヤー（家具の手前・足元の空きスペースに独立して配置）。
+// aspect は各アイコンの viewBox（幅/高さ）と一致させ、部屋の形が変わっても絵が歪まないようにする。
 const FURNITURE_FLOOR_TOP = 98;
 const FURNITURE_LAYOUT = {
-  furniture_bed: { left: 13, top: FURNITURE_FLOOR_TOP, width: 26, z: 2 },
-  furniture_piano: { left: 41, top: FURNITURE_FLOOR_TOP, width: 26, z: 2 },
-  furniture_shelf: { left: 63, top: FURNITURE_FLOOR_TOP, width: 15, z: 2 },
-  furniture_chair: { left: 79, top: FURNITURE_FLOOR_TOP, width: 15, z: 2 },
-  furniture_plant: { left: 93, top: FURNITURE_FLOOR_TOP, width: 11, z: 2 },
-  furniture_rug: { left: 50, top: 82, width: 26, z: 1 },
-  // 絵画だけは床に接地せず、壁の高い位置に固定（窓のない右手のスペースに掛ける）
-  furniture_painting: { left: 84, top: 32, width: 11, z: 3 }
+  furniture_bed: { left: 13, top: FURNITURE_FLOOR_TOP, width: 26, z: 2, aspect: 60 / 46 },
+  furniture_piano: { left: 41, top: FURNITURE_FLOOR_TOP, width: 26, z: 2, aspect: 90 / 60 },
+  furniture_shelf: { left: 63, top: FURNITURE_FLOOR_TOP, width: 15, z: 2, aspect: 40 / 45 },
+  furniture_chair: { left: 79, top: FURNITURE_FLOOR_TOP, width: 15, z: 2, aspect: 45 / 50 },
+  furniture_plant: { left: 93, top: FURNITURE_FLOOR_TOP, width: 11, z: 2, aspect: 40 / 50 },
+  furniture_rug: { left: 50, top: 82, width: 26, z: 1, aspect: 100 / 40 }
+};
+// 壁掛けアイテムは床ではなく壁の帯（窓のない右手のスペース）にのみ、横一列に重ならないよう配置。
+const WALL_BAND_MIN_TOP = 14;
+const WALL_BAND_MAX_TOP = 58;
+const WALLHANG_LAYOUT = {
+  wallhang_clock: { left: 54, top: 22, width: 8, z: 3, aspect: 40 / 40 },
+  wallhang_lamp: { left: 64, top: 26, width: 7, z: 3, aspect: 30 / 40 },
+  wallhang_candle: { left: 73, top: 34, width: 5, z: 3, aspect: 24 / 34 },
+  wallhang_painting: { left: 82, top: 32, width: 9, z: 3, aspect: 50 / 60 },
+  wallhang_hanger: { left: 93, top: 46, width: 11, z: 3, aspect: 60 / 20 }
 };
 // 庭は奥行きのある2列（奥列・手前列）で、それぞれの列内で足元のラインを揃えて重ならないように配置。
 // 柵より手前に置かれるアイテムは柵を隠してよい。
 const GARDEN_BACK_TOP = 76;
 const GARDEN_FRONT_TOP = 98;
 const GARDEN_LAYOUT = {
-  garden_gazebo: { left: 18, top: GARDEN_BACK_TOP, width: 26, z: 1 },
-  garden_lantern: { left: 50, top: GARDEN_BACK_TOP, width: 10, z: 1 },
-  garden_pond: { left: 80, top: GARDEN_BACK_TOP, width: 24, z: 1 },
-  garden_bench: { left: 12, top: GARDEN_FRONT_TOP, width: 20, z: 2 },
-  garden_fountain: { left: 34, top: GARDEN_FRONT_TOP, width: 16, z: 2 },
-  garden_field: { left: 58, top: GARDEN_FRONT_TOP, width: 26, z: 2 },
-  garden_flowerbed: { left: 86, top: GARDEN_FRONT_TOP, width: 20, z: 2 }
+  garden_gazebo: { left: 15, top: GARDEN_BACK_TOP, width: 26, z: 1, aspect: 70 / 60 },
+  garden_lantern: { left: 38, top: GARDEN_BACK_TOP, width: 10, z: 1, aspect: 30 / 45 },
+  garden_hay_bale: { left: 52, top: GARDEN_BACK_TOP, width: 14, z: 1, aspect: 50 / 50 },
+  garden_pond: { left: 76, top: GARDEN_BACK_TOP, width: 24, z: 1, aspect: 70 / 40 },
+  garden_bench: { left: 12, top: GARDEN_FRONT_TOP, width: 20, z: 2, aspect: 60 / 40 },
+  garden_fountain: { left: 34, top: GARDEN_FRONT_TOP, width: 16, z: 2, aspect: 50 / 50 },
+  garden_field: { left: 58, top: GARDEN_FRONT_TOP, width: 26, z: 2, aspect: 70 / 40 },
+  garden_flowerbed: { left: 86, top: GARDEN_FRONT_TOP, width: 20, z: 2, aspect: 60 / 30 }
 };
 
 // アイテムを左右方向にドラッグして位置を自由に決められるようにするラッパー。
 // 縦方向（top）は接地ラインに固定したまま、横方向だけ自由に動かせる。
-function DraggableItem({ left, top, width, z, editMode, minLeft = 3, maxLeft = 97, onDragEnd, transform, children }) {
+// 部屋・庭それぞれの「地面の奥行き」の範囲（この中でだけ縦にも動かせる。空や壁の中には置けない）
+const ROOM_FLOOR_MIN_TOP = 70;
+const ROOM_FLOOR_MAX_TOP = 99;
+const GARDEN_FLOOR_MIN_TOP = 74;
+const GARDEN_FLOOR_MAX_TOP = 99;
+
+// 保存済みの位置情報を読み取る。新形式は {left, top}、旧形式は数値（leftのみ）だったため、
+// 数値の場合はレイアウトのデフォルトtopと組み合わせて後方互換を保つ。
+function resolvePos(saved, layout) {
+  if (saved == null) return { left: layout.left, top: layout.top };
+  if (typeof saved === "number") return { left: saved, top: layout.top };
+  return { left: saved.left ?? layout.left, top: saved.top ?? layout.top };
+}
+
+function DraggableItem({ left, top, width, z, editMode, minLeft = 3, maxLeft = 97, minTop, maxTop, aspect, onDragEnd, transform, children }) {
   const wrapRef = useRef(null);
   const [dragLeft, setDragLeft] = useState(null);
+  const [dragTop, setDragTop] = useState(null);
   const draggingRef = useRef(false);
+  const allowVertical = minTop != null && maxTop != null;
 
   function handlePointerDown(e) {
     if (!editMode) return;
@@ -1033,18 +1175,25 @@ function DraggableItem({ left, top, width, z, editMode, minLeft = 3, maxLeft = 9
     const container = wrapRef.current.parentElement;
     if (!container) return;
     const rect = container.getBoundingClientRect();
-    let pct = ((e.clientX - rect.left) / rect.width) * 100;
-    pct = Math.max(minLeft, Math.min(maxLeft, pct));
-    setDragLeft(pct);
+    let pctX = ((e.clientX - rect.left) / rect.width) * 100;
+    pctX = Math.max(minLeft, Math.min(maxLeft, pctX));
+    setDragLeft(pctX);
+    if (allowVertical) {
+      let pctY = ((e.clientY - rect.top) / rect.height) * 100;
+      pctY = Math.max(minTop, Math.min(maxTop, pctY));
+      setDragTop(pctY);
+    }
   }
   function handlePointerUp() {
     if (!draggingRef.current) return;
     draggingRef.current = false;
-    if (dragLeft !== null) onDragEnd(dragLeft);
+    if (dragLeft !== null) onDragEnd(dragLeft, dragTop !== null ? dragTop : undefined);
     setDragLeft(null);
+    setDragTop(null);
   }
 
   const effectiveLeft = dragLeft !== null ? dragLeft : left;
+  const effectiveTop = dragTop !== null ? dragTop : top;
 
   return (
     <div
@@ -1054,7 +1203,8 @@ function DraggableItem({ left, top, width, z, editMode, minLeft = 3, maxLeft = 9
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
       style={{
-        position: "absolute", left: `${effectiveLeft}%`, top: `${top}%`, width: `${width}%`,
+        position: "absolute", left: `${effectiveLeft}%`, top: `${effectiveTop}%`, width: `${width}%`,
+        aspectRatio: aspect || undefined,
         transform: transform || "translate(-50%, -100%)", zIndex: z,
         cursor: editMode ? "grab" : "default", touchAction: editMode ? "none" : "auto"
       }}
@@ -1272,6 +1422,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
   const sceneryColor = MATERIAL_COLORS[equipped.scenery || "scenery_default"] || MATERIAL_COLORS.scenery_default;
   const placedList = equipped.furniture || [];
   const placedFurniture = placedList.filter((k) => FURNITURE_ICON[k]);
+  const placedWallhang = (equipped.wallhang || []).filter((k) => WALLHANG_ICON[k]);
 
   const windowKey = equipped.window || "window_default";
   const windowShape =
@@ -1300,7 +1451,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
   );
 
   return (
-    <div style={{ position: "relative", width: "100%", maxWidth: isRoomExpanded ? 720 : 480, margin: "0 auto", aspectRatio: isRoomExpanded ? "16 / 7" : "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor, transition: "max-width 0.4s ease, aspect-ratio 0.4s ease" }}>
+    <div style={{ position: "relative", width: "100%", maxWidth: isRoomExpanded ? 700 : 480, margin: "0 auto", aspectRatio: isRoomExpanded ? "7 / 5" : "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor, transition: "max-width 0.4s ease, aspect-ratio 0.4s ease" }}>
       <WallTexture material={wallKey} />
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", background: floorColor, zIndex: 0, overflow: "hidden" }}>
         <FloorTexture material={floorKey} />
@@ -1574,10 +1725,13 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
 
       {placedFurniture.includes("furniture_rug") && (
         <DraggableItem
-          left={(equipped.furniturePositions || {}).furniture_rug ?? FURNITURE_LAYOUT.furniture_rug.left}
-          top={FURNITURE_LAYOUT.furniture_rug.top} width={FURNITURE_LAYOUT.furniture_rug.width} z={FURNITURE_LAYOUT.furniture_rug.z}
+          left={resolvePos((equipped.furniturePositions || {}).furniture_rug, FURNITURE_LAYOUT.furniture_rug).left}
+          top={resolvePos((equipped.furniturePositions || {}).furniture_rug, FURNITURE_LAYOUT.furniture_rug).top}
+          width={FURNITURE_LAYOUT.furniture_rug.width} z={FURNITURE_LAYOUT.furniture_rug.z}
+          aspect={FURNITURE_LAYOUT.furniture_rug.aspect}
           editMode={editMode} transform="translate(-50%, -50%)"
-          onDragEnd={(nl) => onUpdatePosition && onUpdatePosition("furniture", "furniture_rug", nl)}
+          minTop={ROOM_FLOOR_MIN_TOP} maxTop={ROOM_FLOOR_MAX_TOP}
+          onDragEnd={(nl, nt) => onUpdatePosition && onUpdatePosition("furniture", "furniture_rug", nl, nt)}
         >
           <RugIcon />
         </DraggableItem>
@@ -1588,19 +1742,38 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
       {placedFurniture.filter((k) => k !== "furniture_rug").map((k) => {
         const Icon = FURNITURE_ICON[k];
         const layout = FURNITURE_LAYOUT[k];
-        const customLeft = (equipped.furniturePositions || {})[k];
+        const resolved = resolvePos((equipped.furniturePositions || {})[k], layout);
         return (
           <DraggableItem key={k}
-            left={customLeft ?? layout.left} top={layout.top} width={layout.width} z={layout.z}
+            left={resolved.left} top={resolved.top} width={layout.width} z={layout.z}
+            aspect={layout.aspect}
             editMode={editMode}
-            onDragEnd={(nl) => onUpdatePosition && onUpdatePosition("furniture", k, nl)}
+            minTop={ROOM_FLOOR_MIN_TOP} maxTop={ROOM_FLOOR_MAX_TOP}
+            onDragEnd={(nl, nt) => onUpdatePosition && onUpdatePosition("furniture", k, nl, nt)}
           >
             <Icon />
           </DraggableItem>
         );
       })}
 
-      {placedFurniture.length > 0 && (
+      {placedWallhang.map((k) => {
+        const Icon = WALLHANG_ICON[k];
+        const layout = WALLHANG_LAYOUT[k];
+        const resolved = resolvePos((equipped.wallhangPositions || {})[k], layout);
+        return (
+          <DraggableItem key={k}
+            left={resolved.left} top={resolved.top} width={layout.width} z={layout.z}
+            aspect={layout.aspect}
+            editMode={editMode}
+            minTop={WALL_BAND_MIN_TOP} maxTop={WALL_BAND_MAX_TOP}
+            onDragEnd={(nl, nt) => onUpdatePosition && onUpdatePosition("wallhang", k, nl, nt)}
+          >
+            <Icon />
+          </DraggableItem>
+        );
+      })}
+
+      {(placedFurniture.length > 0 || placedWallhang.length > 0) && (
         <button type="button" onClick={() => setEditMode((v) => !v)}
           className="absolute bottom-2 right-2 text-xs px-3 py-1.5 rounded-full font-medium"
           style={{ background: editMode ? C.curtain : "rgba(255,253,248,0.9)", color: editMode ? "#FFFDF8" : C.ink, border: `1px solid ${C.line}`, zIndex: 10 }}>
@@ -1612,18 +1785,164 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
 }
 
 // ===== 庭のシーン =====
+const SPECIAL_BACKDROP_KEYS = ["backdrop_western_castle", "backdrop_japanese_castle", "backdrop_bamboo_grove", "backdrop_forest", "backdrop_sheep_pasture", "backdrop_big_man"];
+
+function SpecialBackdropScene({ sceneKey }) {
+  const wrapStyle = { position: "absolute", left: 0, right: 0, bottom: "22%", height: "58%", zIndex: 0 };
+  if (sceneKey === "backdrop_western_castle") {
+    return (
+      <div style={wrapStyle}>
+        <svg viewBox="0 0 400 130" width="100%" height="100%" preserveAspectRatio="none">
+          <path d="M0,130 L40,70 L90,95 L140,55 L190,90 L240,60 L290,92 L340,58 L400,80 L400,130 Z" fill="#9FBFA0" opacity="0.55" />
+          {/* 丘の上の西洋の城 */}
+          <rect x="140" y="55" width="120" height="65" fill="#C9C2B0" />
+          <rect x="130" y="35" width="18" height="85" fill="#B8B0A0" />
+          <path d="M130,35 L139,20 L148,35 Z" fill="#7A4A3D" />
+          <rect x="252" y="30" width="18" height="90" fill="#B8B0A0" />
+          <path d="M252,30 L261,15 L270,30 Z" fill="#7A4A3D" />
+          <rect x="185" y="15" width="30" height="105" fill="#C9C2B0" />
+          <path d="M185,15 L200,0 L215,15 Z" fill="#8B5E3C" />
+          <rect x="196" y="60" width="8" height="14" fill="#7A1F2B" />
+          {Array.from({ length: 5 }).map((_, i) => <rect key={i} x={148 + i * 22} y="50" width="10" height="10" fill="#7A6A56" opacity="0.6" />)}
+          <rect x="192" y="90" width="16" height="30" fill="#5A4A3D" />
+          <path d="M136,20 L136,10 M262,15 L262,5" stroke="#8B5E3C" strokeWidth="1.5" />
+          <path d="M133,10 Q138,6 143,10 L143,16 L133,16 Z" fill="#C0454B" />
+          <path d="M259,5 Q264,1 269,5 L269,11 L259,11 Z" fill="#C0454B" />
+        </svg>
+      </div>
+    );
+  }
+  if (sceneKey === "backdrop_japanese_castle") {
+    return (
+      <div style={wrapStyle}>
+        <svg viewBox="0 0 400 130" width="100%" height="100%" preserveAspectRatio="none">
+          <path d="M0,130 L40,70 L90,95 L140,55 L190,90 L240,60 L290,92 L340,58 L400,80 L400,130 Z" fill="#9FBFA0" opacity="0.55" />
+          {/* 石垣 */}
+          <path d="M150,120 L160,80 L240,80 L250,120 Z" fill="#8A8272" />
+          {/* 天守（層になった屋根） */}
+          <rect x="175" y="60" width="50" height="24" fill="#F6F1E7" />
+          <path d="M168,60 L200,44 L232,60 Z" fill="#3D3A34" />
+          <rect x="182" y="38" width="36" height="18" fill="#F6F1E7" />
+          <path d="M177,38 L200,26 L223,38 Z" fill="#3D3A34" />
+          <rect x="189" y="18" width="22" height="16" fill="#F6F1E7" />
+          <path d="M185,18 L200,6 L215,18 Z" fill="#3D3A34" />
+          <circle cx="200" cy="8" r="2" fill="#D9A054" />
+          {[[186, 66], [206, 66], [190, 44]].map(([x, y], i) => <rect key={i} x={x} y={y} width="6" height="8" fill="#5A6B7A" opacity="0.7" />)}
+        </svg>
+      </div>
+    );
+  }
+  if (sceneKey === "backdrop_bamboo_grove") {
+    return (
+      <div style={wrapStyle}>
+        <svg viewBox="0 0 400 130" width="100%" height="100%" preserveAspectRatio="none">
+          {Array.from({ length: 14 }).map((_, i) => {
+            const x = i * 29 + 8;
+            const h = 100 + (i % 3) * 12;
+            return (
+              <g key={i} opacity={0.75 + (i % 3) * 0.08}>
+                <rect x={x - 3} y={130 - h} width="6" height={h} fill="#7FA05A" />
+                {Array.from({ length: 5 }).map((_, j) => (
+                  <line key={j} x1={x - 3} y1={130 - h + j * (h / 5)} x2={x + 3} y2={130 - h + j * (h / 5)} stroke="#5E8040" strokeWidth="1.2" opacity="0.6" />
+                ))}
+                <path d={`M${x},${130 - h} Q${x - 14},${130 - h - 10} ${x - 20},${130 - h - 4}`} stroke="#5E8A46" strokeWidth="2" fill="none" opacity="0.7" />
+                <path d={`M${x},${130 - h} Q${x + 14},${130 - h - 8} ${x + 18},${130 - h - 2}`} stroke="#5E8A46" strokeWidth="2" fill="none" opacity="0.7" />
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+    );
+  }
+  if (sceneKey === "backdrop_forest") {
+    return (
+      <div style={wrapStyle}>
+        <svg viewBox="0 0 400 130" width="100%" height="100%" preserveAspectRatio="none">
+          <path d="M0,130 L40,70 L90,95 L140,55 L190,90 L240,60 L290,92 L340,58 L400,80 L400,130 Z" fill="#8FAE84" opacity="0.4" />
+          {Array.from({ length: 11 }).map((_, i) => {
+            const x = i * 38 + 15;
+            const h = 60 + (i % 4) * 14;
+            return (
+              <g key={i}>
+                <rect x={x - 3} y={130 - h * 0.3} width="6" height={h * 0.3} fill="#5A4A3D" />
+                <ellipse cx={x} cy={130 - h * 0.6} rx={h * 0.32} ry={h * 0.42} fill={i % 2 === 0 ? "#3E5A46" : "#4A6B4A"} opacity="0.9" />
+                <ellipse cx={x - h * 0.12} cy={130 - h * 0.75} rx={h * 0.22} ry={h * 0.28} fill={i % 2 === 0 ? "#4A6B4A" : "#5E8A5E"} opacity="0.85" />
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+    );
+  }
+  if (sceneKey === "backdrop_sheep_pasture") {
+    const flock = [[12, 88, 10], [26, 92, 9], [70, 84, 11], [88, 90, 8], [50, 94, 10]];
+    return (
+      <div style={wrapStyle}>
+        <svg viewBox="0 0 400 130" width="100%" height="100%" preserveAspectRatio="none">
+          <path d="M0,130 Q100,90 200,100 Q300,110 400,85 L400,130 Z" fill="#8FAE84" opacity="0.55" />
+          <path d="M0,130 Q100,105 200,112 Q300,118 400,100 L400,130 Z" fill="#A0C08F" opacity="0.7" />
+          {flock.map(([xp, yp, r], i) => (
+            <g key={i} transform={`translate(${xp * 4},${yp})`}>
+              <ellipse cx="0" cy="0" rx={r} ry={r * 0.72} fill="#F6EFDF" />
+              <circle cx={r * 0.9} cy={-r * 0.15} r={r * 0.42} fill="#EDE4CE" />
+              {[[-r * 0.5, r * 0.5], [r * 0.3, r * 0.55]].map(([lx, ly], j) => (
+                <rect key={j} x={lx} y={ly} width={r * 0.22} height={r * 0.4} fill="#EDE4CE" rx="2" />
+              ))}
+            </g>
+          ))}
+        </svg>
+      </div>
+    );
+  }
+  if (sceneKey === "backdrop_big_man") {
+    return (
+      <div style={{ ...wrapStyle, bottom: "24%", height: "56%" }}>
+        <svg viewBox="0 0 400 130" width="100%" height="100%" preserveAspectRatio="none">
+          <path d="M0,130 L40,70 L90,95 L140,55 L190,90 L240,60 L290,92 L340,58 L400,80 L400,130 Z" fill="#9FBFA0" opacity="0.5" />
+          {/* 柵の外から覗く大きな男 */}
+          <g transform="translate(230,10)">
+            {/* 体（赤い半袖シャツ） */}
+            <path d="M-26,60 L26,60 L22,120 L-22,120 Z" fill="#C0454B" />
+            {/* 腕（半袖から出る肌） */}
+            <ellipse cx="-30" cy="72" rx="9" ry="20" fill="#E8B48A" />
+            <ellipse cx="30" cy="72" rx="9" ry="20" fill="#E8B48A" />
+            <rect x="-34" y="58" width="16" height="18" rx="4" fill="#C0454B" />
+            <rect x="18" y="58" width="16" height="18" rx="4" fill="#C0454B" />
+            {/* ジーンズ（腰から下がのぞく） */}
+            <rect x="-22" y="118" width="44" height="14" fill="#5B7FA6" />
+            {/* 首・顔 */}
+            <rect x="-9" y="42" width="18" height="16" fill="#E8B48A" />
+            <circle cx="0" cy="30" r="20" fill="#E8B48A" />
+            <circle cx="-7" cy="28" r="2" fill="#2A2018" />
+            <circle cx="7" cy="28" r="2" fill="#2A2018" />
+            <path d="M-6,38 Q0,41 6,38" stroke="#2A2018" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+            {/* 青い帽子 */}
+            <path d="M-21,20 Q0,-4 21,20 Q10,14 0,14 Q-10,14 -21,20 Z" fill="#5B7FA6" />
+            <ellipse cx="0" cy="20" rx="23" ry="5" fill="#3E5A78" />
+            <ellipse cx="14" cy="19" rx="9" ry="3" fill="#3E5A78" />
+          </g>
+        </svg>
+      </div>
+    );
+  }
+  return null;
+}
+
 function GardenScene({ equipped, owned, onUpdatePosition, t }) {
   const [editMode, setEditMode] = useState(false);
   const placedList = equipped.garden || [];
   const placedOrnaments = placedList.filter((k) => GARDEN_ICON[k]);
   const hasField = placedOrnaments.includes("garden_field");
-  const { leftPct, topPct, facingLeft, isWalking, isFarming, birds, pkg } = useGardenLife(50, 80, 22, 6, hasField);
-  const mountainTier = equipped.backdrop === "backdrop_mountains_huge" ? "huge" : equipped.backdrop === "backdrop_mountains_near" ? "near" : "default";
+  const { leftPct, topPct, facingLeft, isWalking, isFarming, isSweating, isCelebrating, birds, pkg } = useGardenLife(50, 80, 22, 6, hasField);
+  const backdropKey = equipped.backdrop;
+  const isGardenExpanded = backdropKey === "backdrop_garden_expand";
+  const mountainTier = backdropKey === "backdrop_mountains_huge" ? "huge" : backdropKey === "backdrop_mountains_near" ? "near" : "default";
+  const specialScene = SPECIAL_BACKDROP_KEYS.includes(backdropKey) ? backdropKey : null;
 
   return (
     <div style={{
-      position: "relative", width: "100%", maxWidth: 480, margin: "0 auto", aspectRatio: "4 / 3",
-      borderRadius: 18, overflow: "hidden",
+      position: "relative", width: "100%", maxWidth: isGardenExpanded ? 700 : 480, margin: "0 auto", aspectRatio: isGardenExpanded ? "7 / 5" : "4 / 3",
+      borderRadius: 18, overflow: "hidden", transition: "max-width 0.4s ease, aspect-ratio 0.4s ease",
       background: "linear-gradient(to bottom, #7EB8E0 0%, #A8D4EC 35%, #D9EDDB 72%, #D9EDDB 100%)"
     }}>
       <style>{`
@@ -1633,30 +1952,34 @@ function GardenScene({ equipped, owned, onUpdatePosition, t }) {
 
       <div style={{ position: "absolute", right: "8%", top: "9%", width: "13%", aspectRatio: "1/1", borderRadius: "50%", background: "#F6D46A", opacity: 0.9 }} />
 
-      {/* 遠くの緑の山々（backdrop_mountains_near / huge を装備すると、大きく・近く見える） */}
-      <div style={{
-        position: "absolute", left: 0, right: 0,
-        bottom: mountainTier === "huge" ? "8%" : mountainTier === "near" ? "18%" : "22%",
-        height: mountainTier === "huge" ? "88%" : mountainTier === "near" ? "46%" : "24%",
-        zIndex: 0, transition: "height 0.4s ease, bottom 0.4s ease"
-      }}>
-        <svg viewBox="0 0 400 90" width="100%" height="100%" preserveAspectRatio="none">
-          <path d="M0,90 L40,30 L90,60 L140,15 L190,55 L240,25 L290,58 L340,20 L400,50 L400,90 Z" fill="#9FBFA0" opacity="0.6" />
-          <path d="M0,90 L60,50 L120,70 L180,40 L250,68 L320,42 L400,65 L400,90 Z" fill="#7FA582" opacity="0.8" />
-          {(mountainTier === "near" || mountainTier === "huge") && (
-            <path d="M0,90 L50,44 L100,66 L160,38 L220,64 L280,40 L340,62 L400,48 L400,90 Z" fill="#5E8A5E" opacity="0.92" />
-          )}
-          {mountainTier === "huge" && (
-            <>
-              <path d="M0,90 L30,20 L70,50 L110,10 L150,46 L190,18 L230,52 L270,16 L310,48 L350,14 L400,40 L400,90 Z" fill="#4A6B4A" opacity="0.96" />
-              {/* 岩肌の質感（すぐそばまで迫った山の地肌を思わせる筋） */}
-              {Array.from({ length: 10 }).map((_, i) => (
-                <path key={i} d={`M${i * 42 + 10},90 L${i * 42 + 4},${40 + (i % 3) * 8}`} stroke="#3A5238" strokeWidth="2" opacity="0.35" />
-              ))}
-            </>
-          )}
-        </svg>
-      </div>
+      {specialScene ? (
+        <SpecialBackdropScene sceneKey={specialScene} />
+      ) : (
+        /* 遠くの緑の山々（backdrop_mountains_near / huge を装備すると、大きく・近く見える） */
+        <div style={{
+          position: "absolute", left: 0, right: 0,
+          bottom: mountainTier === "huge" ? "8%" : mountainTier === "near" ? "18%" : "22%",
+          height: mountainTier === "huge" ? "88%" : mountainTier === "near" ? "46%" : "24%",
+          zIndex: 0, transition: "height 0.4s ease, bottom 0.4s ease"
+        }}>
+          <svg viewBox="0 0 400 90" width="100%" height="100%" preserveAspectRatio="none">
+            <path d="M0,90 L40,30 L90,60 L140,15 L190,55 L240,25 L290,58 L340,20 L400,50 L400,90 Z" fill="#9FBFA0" opacity="0.6" />
+            <path d="M0,90 L60,50 L120,70 L180,40 L250,68 L320,42 L400,65 L400,90 Z" fill="#7FA582" opacity="0.8" />
+            {(mountainTier === "near" || mountainTier === "huge") && (
+              <path d="M0,90 L50,44 L100,66 L160,38 L220,64 L280,40 L340,62 L400,48 L400,90 Z" fill="#5E8A5E" opacity="0.92" />
+            )}
+            {mountainTier === "huge" && (
+              <>
+                <path d="M0,90 L30,20 L70,50 L110,10 L150,46 L190,18 L230,52 L270,16 L310,48 L350,14 L400,40 L400,90 Z" fill="#4A6B4A" opacity="0.96" />
+                {/* 岩肌の質感（すぐそばまで迫った山の地肌を思わせる筋） */}
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <path key={i} d={`M${i * 42 + 10},90 L${i * 42 + 4},${40 + (i % 3) * 8}`} stroke="#3A5238" strokeWidth="2" opacity="0.35" />
+                ))}
+              </>
+            )}
+          </svg>
+        </div>
+      )}
 
       {/* 鳥（ランダムに飛んでくる） */}
       {birds.map((b) => (
@@ -1695,19 +2018,21 @@ function GardenScene({ equipped, owned, onUpdatePosition, t }) {
       {placedOrnaments.map((k) => {
         const Icon = GARDEN_ICON[k];
         const layout = GARDEN_LAYOUT[k];
-        const customLeft = (equipped.gardenPositions || {})[k];
+        const resolved = resolvePos((equipped.gardenPositions || {})[k], layout);
         return (
           <DraggableItem key={k}
-            left={customLeft ?? layout.left} top={layout.top} width={layout.width} z={layout.z}
+            left={resolved.left} top={resolved.top} width={layout.width} z={layout.z}
+            aspect={layout.aspect}
             editMode={editMode}
-            onDragEnd={(nl) => onUpdatePosition && onUpdatePosition("garden", k, nl)}
+            minTop={GARDEN_FLOOR_MIN_TOP} maxTop={GARDEN_FLOOR_MAX_TOP}
+            onDragEnd={(nl, nt) => onUpdatePosition && onUpdatePosition("garden", k, nl, nt)}
           >
             <Icon />
           </DraggableItem>
         );
       })}
 
-      <PositionedCharacter equipped={equipped} size={100} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isFarming={isFarming} />
+      <PositionedCharacter equipped={equipped} size={100} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isFarming={isFarming} isSweating={isSweating} isCelebrating={isCelebrating} />
 
       {placedOrnaments.length > 0 && (
         <button type="button" onClick={() => setEditMode((v) => !v)}
