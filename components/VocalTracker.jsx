@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import {
   Mic2, Moon, Droplets, Thermometer, Wind, MapPin, Music2, HeartHandshake,
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
@@ -607,6 +607,7 @@ function NumberField({ label, value, onChange, step = 1, min = -Infinity, max = 
           value={value}
           onChange={(e) => onChange(e.target.value === "" ? "" : Number(e.target.value))}
           onBlur={(e) => { if (e.target.value !== "") onChange(clamp(Number(e.target.value))); }}
+          onWheel={(e) => e.target.blur()}
           className="w-full text-center rounded-lg border py-1.5 ff-mono"
           style={{ borderColor: C.line, background: C.paper, color: C.ink }}
         />
@@ -640,6 +641,7 @@ function MiniNumber({ value, onChange, placeholder }) {
       value={value}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value === "" ? "" : Number(e.target.value))}
+      onWheel={(e) => e.target.blur()}
       className="w-full rounded-lg border text-xs px-2 py-1.5 ff-mono text-center"
       style={{ borderColor: C.line, background: C.paper, color: C.ink }}
     />
@@ -1197,6 +1199,20 @@ export default function VocalTracker({ userId, userEmail }) {
       .sort((a, b) => b.n - a.n);
   }, [entries]);
 
+  // character_equipped への保存を「必ず前の保存が終わってから次を送る」順番待ちにする。
+  // 帽子を装備した直後に家具を素早く配置する、といった連続操作をすると、
+  // 順番の保証なしに複数の保存リクエストが同時に飛んでしまい、
+  // ネットワークの都合で古い状態が新しい状態を上書きしてしまうことがあった（アイテムが消えて見えるバグの原因）。
+  // ここで直列化することで、常に「最後に行った操作」が最後にデータベースへ反映されるようにする。
+  const equippedSaveQueueRef = useRef(Promise.resolve());
+  function persistEquipped(next) {
+    const supabase = createClient();
+    equippedSaveQueueRef.current = equippedSaveQueueRef.current
+      .then(() => supabase.from("profiles").update({ character_equipped: next }).eq("id", userId))
+      .catch(() => {}); // 個別の保存が失敗しても、後続の保存が止まらないようにする
+    return equippedSaveQueueRef.current;
+  }
+
   function countPlacedOfSize(list, size) {
     return (list || []).filter((k) => {
       const other = SHOP_ITEMS.find((i) => i.key === k);
@@ -1226,7 +1242,7 @@ export default function VocalTracker({ userId, userEmail }) {
         const withinLimit = !item.size || countPlacedOfSize(currentList, item.size) < limit;
         if (!withinLimit) return prev;
         const next = { ...prev, [item.category]: [...currentList, item.key] };
-        supabase.from("profiles").update({ character_equipped: next }).eq("id", userId);
+        persistEquipped(next);
         return next;
       });
     }
@@ -1235,8 +1251,7 @@ export default function VocalTracker({ userId, userEmail }) {
   function handleEquipItem(category, itemKey) {
     setCharacterEquipped((prev) => {
       const next = { ...prev, [category]: itemKey };
-      const supabase = createClient();
-      supabase.from("profiles").update({ character_equipped: next }).eq("id", userId);
+      persistEquipped(next);
       return next;
     });
   }
@@ -1253,20 +1268,25 @@ export default function VocalTracker({ userId, userEmail }) {
       }
       const nextList = isPlaced ? currentList.filter((k) => k !== itemKey) : [...currentList, itemKey];
       const next = { ...prev, [category]: nextList };
-      const supabase = createClient();
-      supabase.from("profiles").update({ character_equipped: next }).eq("id", userId);
+      persistEquipped(next);
       return next;
     });
   }
 
   // ドラッグで決めた配置アイテムの横位置（left%）を保存する
-  function handleUpdatePosition(category, itemKey, leftPct) {
+  function handleUpdatePosition(category, itemKey, leftPct, topPct) {
     setCharacterEquipped((prev) => {
       const posKey = `${category}Positions`;
-      const nextPositions = { ...(prev[posKey] || {}), [itemKey]: Math.round(leftPct * 10) / 10 };
+      const currentPositions = prev[posKey] || {};
+      const existing = currentPositions[itemKey];
+      const existingTop = existing && typeof existing === "object" ? existing.top : undefined;
+      const entry = {
+        left: Math.round(leftPct * 10) / 10,
+        top: topPct !== undefined ? Math.round(topPct * 10) / 10 : existingTop
+      };
+      const nextPositions = { ...currentPositions, [itemKey]: entry };
       const next = { ...prev, [posKey]: nextPositions };
-      const supabase = createClient();
-      supabase.from("profiles").update({ character_equipped: next }).eq("id", userId);
+      persistEquipped(next);
       return next;
     });
   }
@@ -1566,6 +1586,13 @@ export default function VocalTracker({ userId, userEmail }) {
                       <p className="text-xs rounded-xl p-2.5 leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
                         {t("noteNotationRule")}
                       </p>
+                      <p className="text-xs rounded-xl p-2.5 leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
+                        {t("noteChestVoiceRule")}
+                      </p>
+                      <details className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
+                        <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>{t("labelRecommendedRoutineToggle")}</summary>
+                        <p className="mt-2 leading-relaxed">{t("noteRecommendedRoutine")}</p>
+                      </details>
                       <NumberField label={t("labelResonanceScore")} value={formData.resonanceScore} step={1} min={0} max={10}
                         onChange={(v) => setFormData((f) => ({ ...f, resonanceScore: v }))} />
                       <div>
@@ -1626,6 +1653,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             type="number"
                             value={profile.height_cm}
                             onChange={(e) => setProfile((p) => ({ ...p, height_cm: e.target.value === "" ? "" : Number(e.target.value) }))}
+                            onWheel={(e) => e.target.blur()}
                             className="w-full rounded-lg border p-2 text-sm ff-mono"
                             style={{ borderColor: C.line, background: C.paper, color: C.ink }}
                           />
@@ -1659,6 +1687,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             type="number" step="0.1"
                             value={profile.protein_coefficient}
                             onChange={(e) => setProfile((p) => ({ ...p, protein_coefficient: e.target.value === "" ? "" : Number(e.target.value) }))}
+                            onWheel={(e) => e.target.blur()}
                             className="w-full rounded-lg border p-2 text-sm ff-mono"
                             style={{ borderColor: C.line, background: C.paper, color: C.ink }}
                           />
@@ -1670,6 +1699,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             type="number"
                             value={profile.age}
                             onChange={(e) => setProfile((p) => ({ ...p, age: e.target.value === "" ? "" : Number(e.target.value) }))}
+                            onWheel={(e) => e.target.blur()}
                             className="w-full rounded-lg border p-2 text-sm ff-mono"
                             style={{ borderColor: C.line, background: C.paper, color: C.ink }}
                           />
