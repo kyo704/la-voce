@@ -84,6 +84,14 @@ const TABS = [
   { key: "info", labelKey: "tabInfo", icon: BookOpen },
   { key: "voicetheory", labelKey: "tabVoiceTheory", icon: Music2, href: "/vocal-theory" }
 ];
+// 職業ごとに専用の理論ページへ切り替える
+const PROFESSION_THEORY_PAGES = {
+  singer: "/vocal-theory",
+  announcer: "/announcer-theory",
+  voice_actor: "/voice-actor-theory",
+  pop_musical: "/performer-theory"
+};
+const VOCAL_PROFESSIONS = ["singer", "announcer", "voice_actor", "pop_musical"];
 
 /* ---------- helpers ---------- */
 function toISODate(d) {
@@ -963,7 +971,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", technical_goal: "", health_notes: "" });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer" });
   const [ownedItemKeys, setOwnedItemKeys] = useState([]);
   const [characterEquipped, setCharacterEquipped] = useState({});
   const [characterPointsSpent, setCharacterPointsSpent] = useState(0);
@@ -1006,7 +1014,7 @@ export default function VocalTracker({ userId, userEmail }) {
     let mounted = true;
     (async () => {
       const supabase = createClient();
-      const { data, error } = await supabase.from("profiles").select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, technical_goal, health_notes").eq("id", userId).single();
+      const { data, error } = await supabase.from("profiles").select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, technical_goal, health_notes, vocal_profession").eq("id", userId).single();
       if (error) {
         console.error("プロフィール（羊の装備を含む）の読み込みに失敗しました:", error, "userId:", userId);
       }
@@ -1022,7 +1030,8 @@ export default function VocalTracker({ userId, userEmail }) {
           vocal_range_low: data.vocal_range_low || "",
           vocal_range_high: data.vocal_range_high || "",
           technical_goal: data.technical_goal || "",
-          health_notes: data.health_notes || ""
+          health_notes: data.health_notes || "",
+          vocal_profession: data.vocal_profession || "singer"
         });
         setCharacterPointsSpent(data.character_points_spent || 0);
         setCharacterEquipped(data.character_equipped || {});
@@ -1417,7 +1426,8 @@ export default function VocalTracker({ userId, userEmail }) {
         vocal_range_low: profile.vocal_range_low || null,
         vocal_range_high: profile.vocal_range_high || null,
         technical_goal: profile.technical_goal || null,
-        health_notes: profile.health_notes || null
+        health_notes: profile.health_notes || null,
+        vocal_profession: profile.vocal_profession || "singer"
       })
       .eq("id", userId);
     setProfileSaveStatus(error ? "error" : "saved");
@@ -1572,7 +1582,7 @@ export default function VocalTracker({ userId, userEmail }) {
             tab.href ? (
               <a
                 key={tab.key}
-                href={tab.href}
+                href={tab.key === "voicetheory" ? (PROFESSION_THEORY_PAGES[profile.vocal_profession] || tab.href) : tab.href}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
@@ -1821,6 +1831,24 @@ export default function VocalTracker({ userId, userEmail }) {
                             <option value="男性">{t("sexMale")}</option>
                             <option value="女性">{t("sexFemale")}</option>
                           </select>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-sm font-medium block mb-1.5">{t("labelVocalProfession")}</label>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("noteVocalProfession")}</p>
+                        <div className="flex gap-2 flex-wrap">
+                          {VOCAL_PROFESSIONS.map((p) => (
+                            <button key={p} type="button" onClick={() => setProfile((prev) => ({ ...prev, vocal_profession: p }))}
+                              className="px-3.5 py-1.5 rounded-full text-xs font-medium"
+                              style={{
+                                background: profile.vocal_profession === p ? C.curtain : C.paper,
+                                color: profile.vocal_profession === p ? "#FFFDF8" : C.inkSoft,
+                                border: `1px solid ${profile.vocal_profession === p ? C.curtain : C.line}`
+                              }}>
+                              {t(p === "singer" ? "professionSinger" : p === "announcer" ? "professionAnnouncer" : p === "voice_actor" ? "professionVoiceActor" : "professionPopMusical")}
+                            </button>
+                          ))}
                         </div>
                       </div>
 
