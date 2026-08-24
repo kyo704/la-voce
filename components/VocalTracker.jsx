@@ -20,8 +20,10 @@ import HealthInfo from "@/components/HealthInfo";
 import CharacterHome from "@/components/CharacterHome";
 
 /* ---------- constants ---------- */
-const SYMPTOM_OPTIONS = ["乾燥", "嗄れ", "痛み", "違和感", "鼻づまり", "咳"];
-const SYMPTOM_KEYS = { "乾燥": "symptomDry", "嗄れ": "symptomHoarse", "痛み": "symptomPain", "違和感": "symptomDiscomfort", "鼻づまり": "symptomStuffyNose", "咳": "symptomCough" };
+const SYMPTOM_OPTIONS = ["乾燥", "嗄れ", "痛み", "違和感", "鼻づまり", "咳", "裏返り", "喉の張り感"];
+const SYMPTOM_KEYS = { "乾燥": "symptomDry", "嗄れ": "symptomHoarse", "痛み": "symptomPain", "違和感": "symptomDiscomfort", "鼻づまり": "symptomStuffyNose", "咳": "symptomCough", "裏返り": "symptomBreak", "喉の張り感": "symptomTightness" };
+const DINNER_TAGS = ["揚げ物", "あっさり", "炭酸", "トマト系", "カフェイン", "アルコール"];
+const DINNER_TAG_KEYS = { "揚げ物": "dinnerFried", "あっさり": "dinnerLight", "炭酸": "dinnerCarbonated", "トマト系": "dinnerTomato", "カフェイン": "dinnerCaffeine", "アルコール": "dinnerAlcohol" };
 
 const ACTIVITY_OPTIONS = [
   { key: "休養", icon: Moon, labelKey: "activityRest" },
@@ -63,6 +65,7 @@ const FACTORS = [
   { key: "ease", labelKey: "labelMentalEase", unit: "" },
   { key: "throatCondition", labelKey: "labelThroatCondition", unit: "" },
   { key: "voiceQuality", labelKey: "labelVoiceQuality", unit: "" },
+  { key: "resonanceScore", labelKey: "labelResonanceScore", unit: "" },
   { key: "weightKg", labelKey: "labelWeight", unit: "kg" },
   { key: "carbs", labelKey: "macroCarbs", unit: "g" },
   { key: "protein", labelKey: "macroProtein", unit: "g" },
@@ -207,7 +210,13 @@ function buildFormData(date, entries) {
       exercises: existing.exercises || [],
       voiceCheckins: existing.voiceCheckins || {},
       waterBySlot: existing.waterBySlot || {},
-      activityDetail: existing.activityDetail || {}
+      activityDetail: existing.activityDetail || {},
+      wakeNote: existing.wakeNote || "",
+      routineNote: existing.routineNote || "",
+      resonanceScore: existing.resonanceScore ?? "",
+      bedtime: existing.bedtime || "",
+      dinnerTime: existing.dinnerTime || "",
+      dinnerTags: existing.dinnerTags || []
     };
   }
   return {
@@ -218,10 +227,16 @@ function buildFormData(date, entries) {
     throatSymptomsOther: "",
     voiceMemo: "",
     voiceCheckins: {},
+    wakeNote: "",
+    routineNote: "",
+    resonanceScore: "",
     sleepHours: 7,
     sleepQuality: 3,
+    bedtime: "",
     waterBySlot: {},
     mealNotes: "",
+    dinnerTime: "",
+    dinnerTags: [],
     location: getLastLocation(entries, date),
     weather: "",
     temperature: "",
@@ -379,11 +394,26 @@ function rowToEntry(row) {
     mentalReason: row.mental_reason || "",
     throatSymptomsOther: row.throat_symptoms_other || "",
     voiceMemo: row.voice_memo || "",
-    activityDetail: row.activity_detail || {}
+    activityDetail: row.activity_detail || {},
+    wakeNote: row.wake_note || "",
+    routineNote: row.routine_note || "",
+    resonanceScore: row.resonance_score,
+    bedtime: row.bedtime || "",
+    dinnerTime: row.dinner_time || "",
+    dinnerTags: row.dinner_tags || []
   };
 }
 function numOrNull(v) {
   return v === "" || v === undefined ? null : v;
+}
+function computeTimeGapHours(startTime, endTime) {
+  if (!startTime || !endTime) return null;
+  const [sh, sm] = startTime.split(":").map(Number);
+  const [eh, em] = endTime.split(":").map(Number);
+  if ([sh, sm, eh, em].some((n) => Number.isNaN(n))) return null;
+  let diff = (eh * 60 + em) - (sh * 60 + sm);
+  if (diff < 0) diff += 24 * 60; // 日をまたぐ場合（例: 夕食19:00→就寝1:00）
+  return roundTo1(diff / 60);
 }
 function entryToRow(userId, e) {
   return {
@@ -419,7 +449,13 @@ function entryToRow(userId, e) {
     mental_reason: e.mentalReason || "",
     throat_symptoms_other: e.throatSymptomsOther || "",
     voice_memo: e.voiceMemo || "",
-    activity_detail: e.activityDetail || {}
+    activity_detail: e.activityDetail || {},
+    wake_note: e.wakeNote || "",
+    routine_note: e.routineNote || "",
+    resonance_score: numOrNull(e.resonanceScore),
+    bedtime: e.bedtime || "",
+    dinner_time: e.dinnerTime || "",
+    dinner_tags: e.dinnerTags || []
   };
 }
 
@@ -828,7 +864,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose" });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", technical_goal: "", health_notes: "" });
   const [ownedItemKeys, setOwnedItemKeys] = useState([]);
   const [characterEquipped, setCharacterEquipped] = useState({});
   const [characterPointsSpent, setCharacterPointsSpent] = useState(0);
@@ -871,7 +907,7 @@ export default function VocalTracker({ userId, userEmail }) {
     let mounted = true;
     (async () => {
       const supabase = createClient();
-      const { data } = await supabase.from("profiles").select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped").eq("id", userId).single();
+      const { data } = await supabase.from("profiles").select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, technical_goal, health_notes").eq("id", userId).single();
       if (mounted && data) {
         setProfile({
           height_cm: data.height_cm ?? "",
@@ -880,7 +916,11 @@ export default function VocalTracker({ userId, userEmail }) {
           protein_coefficient: data.protein_coefficient ?? 1.6,
           age: data.age ?? "",
           sex: data.sex ?? "",
-          garden_theme: data.garden_theme || "rose"
+          garden_theme: data.garden_theme || "rose",
+          vocal_range_low: data.vocal_range_low || "",
+          vocal_range_high: data.vocal_range_high || "",
+          technical_goal: data.technical_goal || "",
+          health_notes: data.health_notes || ""
         });
         setCharacterPointsSpent(data.character_points_spent || 0);
         setCharacterEquipped(data.character_equipped || {});
@@ -1046,7 +1086,8 @@ export default function VocalTracker({ userId, userEmail }) {
         sleepQuality: typeof e.sleepQuality === "number" ? e.sleepQuality : null,
         calorieActual: calorieActual > 0 ? Math.round(calorieActual) : null,
         calorieTarget: targets ? Math.round(targets.calorieTarget) : null,
-        ease: typeof e.ease === "number" ? e.ease : null
+        ease: typeof e.ease === "number" ? e.ease : null,
+        resonanceScore: typeof e.resonanceScore === "number" ? e.resonanceScore : null
       };
     });
   }, [entries, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient]);
@@ -1115,7 +1156,11 @@ export default function VocalTracker({ userId, userEmail }) {
         nutrition_phase: profile.nutrition_phase || "維持",
         protein_coefficient: profile.protein_coefficient === "" ? null : Number(profile.protein_coefficient),
         age: profile.age === "" ? null : Number(profile.age),
-        sex: profile.sex || null
+        sex: profile.sex || null,
+        vocal_range_low: profile.vocal_range_low || null,
+        vocal_range_high: profile.vocal_range_high || null,
+        technical_goal: profile.technical_goal || null,
+        health_notes: profile.health_notes || null
       })
       .eq("id", userId);
     setProfileSaveStatus(error ? "error" : "saved");
@@ -1297,6 +1342,22 @@ export default function VocalTracker({ userId, userEmail }) {
                         onChange={(v) => setFormData((f) => ({ ...f, throatCondition: v }))} />
                       <DynamicsSelector t={t} label={t("labelVoiceOverall")} icon={Music2} value={formData.voiceQuality}
                         onChange={(v) => setFormData((f) => ({ ...f, voiceQuality: v }))} />
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-sm font-medium block mb-1.5">{t("labelWakeNote")}</label>
+                          <input type="text" value={formData.wakeNote} placeholder={t("placeholderNoteExample")}
+                            onChange={(e) => setFormData((f) => ({ ...f, wakeNote: e.target.value }))}
+                            className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                        </div>
+                        <div>
+                          <label className="text-sm font-medium block mb-1.5">{t("labelRoutineNote")}</label>
+                          <input type="text" value={formData.routineNote} placeholder={t("placeholderNoteExample")}
+                            onChange={(e) => setFormData((f) => ({ ...f, routineNote: e.target.value }))}
+                            className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                        </div>
+                      </div>
+                      <NumberField label={t("labelResonanceScore")} value={formData.resonanceScore} step={1} min={0} max={10}
+                        onChange={(v) => setFormData((f) => ({ ...f, resonanceScore: v }))} />
                       <div>
                         <span className="text-sm font-medium block mb-2">{t("labelSymptoms")}</span>
                         <div className="flex flex-wrap gap-2">
@@ -1417,6 +1478,34 @@ export default function VocalTracker({ userId, userEmail }) {
                           </select>
                         </div>
                       </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-sm font-medium block mb-1.5">{t("labelVocalRangeLow")}</label>
+                          <input type="text" value={profile.vocal_range_low} placeholder={t("placeholderNoteExample")}
+                            onChange={(e) => setProfile((p) => ({ ...p, vocal_range_low: e.target.value }))}
+                            className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+                        </div>
+                        <div>
+                          <label className="text-sm font-medium block mb-1.5">{t("labelVocalRangeHigh")}</label>
+                          <input type="text" value={profile.vocal_range_high} placeholder={t("placeholderNoteExample")}
+                            onChange={(e) => setProfile((p) => ({ ...p, vocal_range_high: e.target.value }))}
+                            className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium block mb-1.5">{t("labelTechnicalGoal")}</label>
+                        <input type="text" value={profile.technical_goal}
+                          onChange={(e) => setProfile((p) => ({ ...p, technical_goal: e.target.value }))}
+                          className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium block mb-1.5">{t("labelHealthNotes")}</label>
+                        <textarea rows={2} value={profile.health_notes}
+                          onChange={(e) => setProfile((p) => ({ ...p, health_notes: e.target.value }))}
+                          className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                      </div>
+
                       <button onClick={handleSaveProfile} disabled={profileSaveStatus === "saving"}
                         className="text-xs px-4 py-2 rounded-full font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
                         {profileSaveStatus === "saving" ? t("saveButtonSaving") : profileSaveStatus === "saved" ? t("saveButtonSaved") : t("btnSaveProfileSettings")}
@@ -1437,8 +1526,16 @@ export default function VocalTracker({ userId, userEmail }) {
                     </SectionCard>
 
                     <SectionCard title={t("sectionSleepWater")} icon={Moon}>
-                      <NumberField label={t("labelSleepHours")} icon={Moon} value={formData.sleepHours} step={0.5} min={0} max={16} suffix={t("unitHours")}
-                        onChange={(v) => setFormData((f) => ({ ...f, sleepHours: v }))} />
+                      <div className="grid grid-cols-2 gap-3">
+                        <NumberField label={t("labelSleepHours")} icon={Moon} value={formData.sleepHours} step={0.5} min={0} max={16} suffix={t("unitHours")}
+                          onChange={(v) => setFormData((f) => ({ ...f, sleepHours: v }))} />
+                        <div>
+                          <label className="text-sm font-medium block mb-1.5">{t("labelBedtime")}</label>
+                          <input type="time" value={formData.bedtime}
+                            onChange={(e) => setFormData((f) => ({ ...f, bedtime: e.target.value }))}
+                            className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                        </div>
+                      </div>
                       <DotSelector label={t("labelSleepQuality")} icon={Moon} value={formData.sleepQuality} lowLabel={t("lowSleepQuality")} highLabel={t("highSleepQuality")}
                         onChange={(v) => setFormData((f) => ({ ...f, sleepQuality: v }))} />
                       <div>
@@ -1464,6 +1561,40 @@ export default function VocalTracker({ userId, userEmail }) {
 
                     <SectionCard title={t("sectionMealDetail")} icon={Wheat}>
                       <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteMealAutoCalc")}</p>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-sm font-medium block mb-1.5">{t("labelDinnerTime")}</label>
+                          <input type="time" value={formData.dinnerTime}
+                            onChange={(e) => setFormData((f) => ({ ...f, dinnerTime: e.target.value }))}
+                            className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                        </div>
+                        <div className="flex flex-col justify-end">
+                          {(() => {
+                            const gap = computeTimeGapHours(formData.dinnerTime, formData.bedtime);
+                            return gap != null ? (
+                              <p className="text-xs rounded-lg p-2" style={{ background: gap < 3 ? "rgba(184,49,49,0.08)" : C.paper, color: gap < 3 ? C.curtain : C.inkSoft }}>
+                                {t("labelDinnerToBedGap")}: {gap}{t("unitHours")}
+                              </p>
+                            ) : (
+                              <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteDinnerGapHint")}</p>
+                            );
+                          })()}
+                        </div>
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium block mb-2">{t("labelDinnerTags")}</span>
+                        <div className="flex flex-wrap gap-2">
+                          {DINNER_TAGS.map((tag) => (
+                            <Chip key={tag} label={t(DINNER_TAG_KEYS[tag])} active={(formData.dinnerTags || []).includes(tag)}
+                              onClick={() => setFormData((f) => ({
+                                ...f,
+                                dinnerTags: (f.dinnerTags || []).includes(tag)
+                                  ? f.dinnerTags.filter((x) => x !== tag)
+                                  : [...(f.dinnerTags || []), tag]
+                              }))} />
+                          ))}
+                        </div>
+                      </div>
                       {MEAL_SLOTS.map((slot) => (
                         <div key={slot}>
                           <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>{t(MEAL_SLOT_KEYS[slot])}</p>
@@ -2001,6 +2132,22 @@ export default function VocalTracker({ userId, userEmail }) {
                           ))}
                         </Bar>
                       </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleResonanceChart")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteResonanceChart")}</p>
+                  <div style={{ width: "100%", height: 180 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis domain={[0, 10]} tick={{ fontSize: 11, fill: C.inkSoft }} />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <Line type="monotone" dataKey="resonanceScore" name={t("labelResonanceScore")} stroke={C.gold} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      </LineChart>
                     </ResponsiveContainer>
                   </div>
                 </div>
