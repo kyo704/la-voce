@@ -999,8 +999,8 @@ export default function VocalTracker({ userId, userEmail }) {
         if (c && typeof c.voice === "number") { sums[key].voiceSum += c.voice; sums[key].voiceN += 1; }
       });
     });
-    return VOICE_TIME_SLOTS.map(({ key, icon }) => ({
-      key, icon,
+    return VOICE_TIME_SLOTS.map(({ key, icon, labelKey }) => ({
+      key, icon, labelKey,
       avgThroat: sums[key].throatN ? sums[key].throatSum / sums[key].throatN : null,
       avgVoice: sums[key].voiceN ? sums[key].voiceSum / sums[key].voiceN : null,
       n: Math.max(sums[key].throatN, sums[key].voiceN)
@@ -1868,7 +1868,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   <h3 className="ff-display italic text-lg mb-1">{t("titleTimeOfDayTrend")}</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteTimeOfDayTrend")}</p>
                   <div className="grid grid-cols-3 gap-2">
-                    {timeOfDayStats.map(({ key, icon: SlotIcon, avgThroat, avgVoice, n }) => {
+                    {timeOfDayStats.map(({ key, icon: SlotIcon, labelKey, avgThroat, avgVoice, n }) => {
                       const best = timeOfDayStats
                         .filter((s) => s.avgThroat != null)
                         .reduce((a, b) => (a && a.avgThroat >= b.avgThroat ? a : b), null);
@@ -1877,7 +1877,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         <div key={key} className="rounded-xl p-3 text-center" style={{ background: C.paper, border: isBest ? `1.5px solid ${C.gold}` : "none" }}>
                           <div className="flex items-center justify-center gap-1 mb-1">
                             <SlotIcon size={13} style={{ color: C.gold }} />
-                            <span className="text-xs font-medium">{key}</span>
+                            <span className="text-xs font-medium">{t(labelKey)}</span>
                           </div>
                           <div className="ff-display italic text-xl" style={{ color: avgThroat != null ? levelColor(avgThroat) : C.inkSoft }}>
                             {levelDynamic(avgThroat)}
