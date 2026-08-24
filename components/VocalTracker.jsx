@@ -1287,9 +1287,10 @@ export default function VocalTracker({ userId, userEmail }) {
   async function handleSaveCharacter() {
     setCharacterSaveStatus("saving");
     const supabase = createClient();
-    // upsert を使うことで、万が一 profiles 行がまだ存在しない場合でも確実に保存する。
-    // さらに .select() を付けて、実際に反映された行を明示的に確認する。
-    const { data, error } = await supabase.from("profiles").upsert({ id: userId, character_equipped: characterEquipped }).select();
+    // upsert は「無ければ追加」の権限（RLSのINSERTポリシー）まで必要になり、
+    // 通常はUPDATEより厳しく制限されているため、403で拒否されることがあった。
+    // profiles行は既に存在するので、updateに戻す。
+    const { data, error } = await supabase.from("profiles").update({ character_equipped: characterEquipped }).eq("id", userId).select();
     if (error) {
       console.error("キャラクターの保存に失敗しました:", error);
       setCharacterSaveStatus("error");
