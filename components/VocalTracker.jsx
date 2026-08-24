@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import {
   Mic2, Moon, Droplets, Thermometer, Wind, MapPin, Music2, HeartHandshake,
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
-  Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot,
+  Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot, MessageCircle,
   Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe
 } from "lucide-react";
 import {
@@ -19,27 +19,34 @@ import HealthInfo from "@/components/HealthInfo";
 
 /* ---------- constants ---------- */
 const SYMPTOM_OPTIONS = ["乾燥", "嗄れ", "痛み", "違和感", "鼻づまり", "咳"];
+const SYMPTOM_KEYS = { "乾燥": "symptomDry", "嗄れ": "symptomHoarse", "痛み": "symptomPain", "違和感": "symptomDiscomfort", "鼻づまり": "symptomStuffyNose", "咳": "symptomCough" };
 const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
 
 const ACTIVITY_OPTIONS = [
-  { key: "休養", icon: Moon },
-  { key: "自主練習", icon: Music2 },
-  { key: "レッスン", icon: NotebookPen },
-  { key: "リハーサル", icon: Mic2 },
-  { key: "本番", icon: Sparkles }
+  { key: "休養", icon: Moon, labelKey: "activityRest" },
+  { key: "自主練習", icon: Music2, labelKey: "activitySelfPractice" },
+  { key: "レッスン", icon: NotebookPen, labelKey: "activityLesson" },
+  { key: "リハーサル", icon: Mic2, labelKey: "activityRehearsal" },
+  { key: "本番", icon: Sparkles, labelKey: "activityPerformance" }
 ];
 
 const VOICE_TYPES = ["ソプラノ", "メゾソプラノ", "アルト", "カウンターテナー", "テノール", "バリトン", "バス", "その他"];
+const VOICE_TYPE_KEYS = { "ソプラノ": "voiceSoprano", "メゾソプラノ": "voiceMezzo", "アルト": "voiceAlto", "カウンターテナー": "voiceCountertenor", "テノール": "voiceTenor", "バリトン": "voiceBaritone", "バス": "voiceBass", "その他": "optionOther" };
 const MEAL_SLOTS = ["朝食", "昼食", "夕食", "間食"];
+const MEAL_SLOT_KEYS = { "朝食": "mealBreakfast", "昼食": "mealLunch", "夕食": "mealDinner", "間食": "mealSnack" };
 const EXERCISE_TYPES = ["有酸素運動", "筋力トレーニング", "ストレッチ", "ウォーキング", "ヨガ", "その他"];
+const EXERCISE_TYPE_KEYS = { "有酸素運動": "exerciseCardio", "筋力トレーニング": "exerciseStrength", "ストレッチ": "exerciseStretch", "ウォーキング": "exerciseWalk", "ヨガ": "exerciseYoga", "その他": "optionOther" };
 const VOICE_TIME_SLOTS = [
-  { key: "朝", icon: Sunrise },
-  { key: "昼", icon: Sun },
-  { key: "晩", icon: Sunset }
+  { key: "朝", icon: Sunrise, labelKey: "timeMorning" },
+  { key: "昼", icon: Sun, labelKey: "timeNoon" },
+  { key: "晩", icon: Sunset, labelKey: "timeEvening" }
 ];
 const WEATHER_OPTIONS = ["晴れ", "曇り", "雨", "雪", "その他"];
+const WEATHER_KEYS = { "晴れ": "weatherSunny", "曇り": "weatherCloudy", "雨": "weatherRainy", "雪": "weatherSnowy", "その他": "optionOther" };
 const NUTRITION_PHASES = ["維持", "増量", "減量"];
+const NUTRITION_PHASE_KEYS = { "維持": "phaseMaintain", "増量": "phaseBulk", "減量": "phaseCut" };
 const REST_METHODS = ["睡眠・休息", "入浴", "マッサージ", "読書", "散歩", "瞑想", "趣味の時間", "その他"];
+const REST_METHOD_KEYS = { "睡眠・休息": "restSleep", "入浴": "restBath", "マッサージ": "restMassage", "読書": "restReading", "散歩": "restWalk", "瞑想": "restMeditate", "趣味の時間": "restHobby", "その他": "optionOther" };
 const AI_ADVICE_ENABLED = false; // 準備中。有効にする場合は true にしてください（ANTHROPIC_API_KEYの設定も必要です）
 const CARING_MESSAGES = [
   "今日も記録、お疲れさまでした",
@@ -157,6 +164,19 @@ function correlationLabel(r) {
   if (abs >= 0.2) return `弱い${dir}相関があります。`;
   return "ほとんど相関は見られません。";
 }
+function generateInsights(correlationResults, targetLabel) {
+  return correlationResults
+    .filter((r) => r.r != null && Math.abs(r.r) >= 0.4 && r.n >= 5)
+    .sort((a, b) => Math.abs(b.r) - Math.abs(a.r))
+    .slice(0, 3)
+    .map((r) => {
+      const strength = Math.abs(r.r) >= 0.7 ? "はっきりとした" : "ある程度の";
+      const action = r.r >= 0
+        ? `${r.label}を意識して増やす・整えると、${targetLabel}にも良い影響がありそうです。`
+        : `${r.label}が多い日は${targetLabel}が下がる傾向があるので、控えめにする・対策を取るのが良さそうです。`;
+      return { key: r.key, text: `「${r.label}」と${strength}関連が見られます（r=${r.r.toFixed(2)}、${r.n}件）。${action}` };
+    });
+}
 function getLastLocation(entries, beforeDate) {
   const dates = Object.keys(entries).filter((d) => d < beforeDate).sort();
   if (dates.length === 0) return "";
@@ -232,7 +252,7 @@ function newMealItem(slot = "朝食") {
 function buildFoodLibrary(entries, currentMeals) {
   const map = new Map();
   FOOD_PRESETS.forEach((f) => {
-    map.set(f.name, { name: f.name, carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber, isPreset: true, date: "0000-00-00" });
+    map.set(f.name, { name: f.name, carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber, isPreset: true, unit: f.unit || null, unitWeight: f.unitWeight || null, date: "0000-00-00" });
   });
   const consider = (meals, date) => {
     (meals || []).forEach((m) => {
@@ -551,7 +571,7 @@ function NumberField({ label, value, onChange, step = 1, min = -Infinity, max = 
   );
 }
 
-function MiniSelect({ value, onChange, options }) {
+function MiniSelect({ value, onChange, options, labels }) {
   return (
     <select
       value={value}
@@ -559,7 +579,7 @@ function MiniSelect({ value, onChange, options }) {
       className="rounded-lg border text-xs px-2 py-1.5"
       style={{ borderColor: C.line, background: C.paper, color: C.ink }}
     >
-      {options.map((o) => <option key={o} value={o}>{o}</option>)}
+      {options.map((o) => <option key={o} value={o}>{labels ? labels[o] : o}</option>)}
     </select>
   );
 }
@@ -617,7 +637,7 @@ function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood }
               className="w-full text-left px-2.5 py-2 text-xs"
               style={{ color: C.ink, borderTop: i > 0 ? `1px solid ${C.line}` : "none" }}
             >
-              {f.isPreset && <span className="ff-mono mr-1" style={{ color: C.gold }}>[プリセット]</span>}
+              {f.isPreset && <span className="ff-mono mr-1" style={{ color: C.gold }}>[プリセット{f.unit ? `・1${f.unit}あり` : ""}]</span>}
               {f.name}
               <span className="ml-1.5" style={{ color: C.inkSoft }}>
                 {f.isPreset
@@ -632,26 +652,36 @@ function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood }
   );
 }
 
-function MealItemRow({ item, onChange, onRemove, foodLibrary }) {
-  function handleSelectFood(f) {
-    if (f.isPreset) {
-      onChange({
-        ...item, name: f.name, isPreset: true,
-        presetBase: { carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber },
-        grams: 100, carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber
-      });
-    } else {
-      onChange({ ...item, name: f.name, isPreset: false, presetBase: null, grams: "", carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber });
-    }
-  }
-  function handleGramsChange(grams) {
+function MealItemRow({ item, onChange, onRemove, foodLibrary, t }) {
+  function setQty(qtyMode, qtyInput) {
     const base = item.presetBase || { carbs: 0, protein: 0, fat: 0, fiber: 0 };
-    const factor = (Number(grams) || 0) / 100;
+    const grams = qtyMode === "unit" ? (Number(qtyInput) || 0) * (item.presetUnitWeight || 0) : (Number(qtyInput) || 0);
+    const factor = grams / 100;
     onChange({
-      ...item, grams,
+      ...item, qtyMode, qtyInput, grams,
       carbs: roundTo1(base.carbs * factor), protein: roundTo1(base.protein * factor),
       fat: roundTo1(base.fat * factor), fiber: roundTo1(base.fiber * factor)
     });
+  }
+  function handleSelectFood(f) {
+    if (f.isPreset) {
+      const hasUnit = !!f.unit;
+      const qtyMode = hasUnit ? "unit" : "g";
+      const qtyInput = hasUnit ? 1 : 100;
+      const grams = hasUnit ? f.unitWeight : 100;
+      const factor = grams / 100;
+      onChange({
+        ...item, name: f.name, isPreset: true,
+        presetBase: { carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber },
+        presetUnit: f.unit || null,
+        presetUnitWeight: f.unitWeight || null,
+        qtyMode, qtyInput, grams,
+        carbs: roundTo1(f.carbs * factor), protein: roundTo1(f.protein * factor),
+        fat: roundTo1(f.fat * factor), fiber: roundTo1(f.fiber * factor)
+      });
+    } else {
+      onChange({ ...item, name: f.name, isPreset: false, presetBase: null, presetUnit: null, presetUnitWeight: null, grams: "", carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber });
+    }
   }
   return (
     <div className="rounded-xl border p-3" style={{ borderColor: C.line, background: C.paper }}>
@@ -669,36 +699,48 @@ function MealItemRow({ item, onChange, onRemove, foodLibrary }) {
 
       {item.isPreset ? (
         <>
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
             <span className="text-xs shrink-0" style={{ color: C.inkSoft }}>量</span>
-            <MiniNumber value={item.grams} onChange={handleGramsChange} placeholder="g" />
-            <span className="text-xs shrink-0" style={{ color: C.inkSoft }}>g（100gあたりの値から自動計算）</span>
+            <MiniNumber value={item.qtyInput ?? item.grams} onChange={(v) => setQty(item.qtyMode || "g", v)} placeholder={item.qtyMode === "unit" ? item.presetUnit : "g"} />
+            {item.presetUnit ? (
+              <div className="flex rounded-lg border overflow-hidden shrink-0" style={{ borderColor: C.line }}>
+                <button type="button" onClick={() => setQty("g", item.grams || 0)}
+                  className="px-2 py-1 text-xs" style={{ background: item.qtyMode !== "unit" ? C.curtain : C.card, color: item.qtyMode !== "unit" ? "#FFFDF8" : C.inkSoft }}>g</button>
+                <button type="button" onClick={() => setQty("unit", roundTo1((item.grams || 0) / (item.presetUnitWeight || 1)))}
+                  className="px-2 py-1 text-xs" style={{ background: item.qtyMode === "unit" ? C.curtain : C.card, color: item.qtyMode === "unit" ? "#FFFDF8" : C.inkSoft }}>{item.presetUnit}</button>
+              </div>
+            ) : (
+              <span className="text-xs shrink-0" style={{ color: C.inkSoft }}>g</span>
+            )}
             <button type="button" onClick={() => onChange({ ...item, isPreset: false, presetBase: null })}
-              className="text-xs shrink-0 underline" style={{ color: C.inkSoft }}>手動編集</button>
+              className="text-xs shrink-0 underline ml-auto" style={{ color: C.inkSoft }}>手動編集</button>
           </div>
+          {item.qtyMode === "unit" && (
+            <p className="text-xs mb-2" style={{ color: C.inkSoft }}>1{item.presetUnit}あたり約{item.presetUnitWeight}g換算・合計{item.grams}g</p>
+          )}
           <div className="grid grid-cols-4 gap-2 text-center">
-            <div><div className="text-xs" style={{ color: C.inkSoft }}>炭水化物</div><div className="ff-mono text-xs font-medium">{item.carbs}g</div></div>
-            <div><div className="text-xs" style={{ color: C.inkSoft }}>タンパク質</div><div className="ff-mono text-xs font-medium">{item.protein}g</div></div>
-            <div><div className="text-xs" style={{ color: C.inkSoft }}>脂質</div><div className="ff-mono text-xs font-medium">{item.fat}g</div></div>
-            <div><div className="text-xs" style={{ color: C.inkSoft }}>食物繊維</div><div className="ff-mono text-xs font-medium">{item.fiber}g</div></div>
+            <div><div className="text-xs" style={{ color: C.inkSoft }}>{t("macroCarbs")}</div><div className="ff-mono text-xs font-medium">{item.carbs}g</div></div>
+            <div><div className="text-xs" style={{ color: C.inkSoft }}>{t("macroProtein")}</div><div className="ff-mono text-xs font-medium">{item.protein}g</div></div>
+            <div><div className="text-xs" style={{ color: C.inkSoft }}>{t("macroFat")}</div><div className="ff-mono text-xs font-medium">{item.fat}g</div></div>
+            <div><div className="text-xs" style={{ color: C.inkSoft }}>{t("macroFiber")}</div><div className="ff-mono text-xs font-medium">{item.fiber}g</div></div>
           </div>
         </>
       ) : (
         <div className="grid grid-cols-4 gap-2">
           <div>
-            <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Wheat size={11} />炭水化物g</div>
+            <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Wheat size={11} />{t("macroCarbs")}g</div>
             <MiniNumber value={item.carbs} onChange={(v) => onChange({ ...item, carbs: v })} />
           </div>
           <div>
-            <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Egg size={11} />タンパク質g</div>
+            <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Egg size={11} />{t("macroProtein")}g</div>
             <MiniNumber value={item.protein} onChange={(v) => onChange({ ...item, protein: v })} />
           </div>
           <div>
-            <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Droplet size={11} />脂質g</div>
+            <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Droplet size={11} />{t("macroFat")}g</div>
             <MiniNumber value={item.fat} onChange={(v) => onChange({ ...item, fat: v })} />
           </div>
           <div>
-            <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Leaf size={11} />食物繊維g</div>
+            <div className="text-xs mb-1 flex items-center gap-1" style={{ color: C.inkSoft }}><Leaf size={11} />{t("macroFiber")}g</div>
             <MiniNumber value={item.fiber} onChange={(v) => onChange({ ...item, fiber: v })} />
           </div>
         </div>
@@ -707,11 +749,12 @@ function MealItemRow({ item, onChange, onRemove, foodLibrary }) {
   );
 }
 
-function ExerciseItemRow({ item, onChange, onRemove }) {
+function ExerciseItemRow({ item, onChange, onRemove, t }) {
   return (
     <div className="rounded-xl border p-3" style={{ borderColor: C.line, background: C.paper }}>
       <div className="flex items-center gap-2 mb-2">
-        <MiniSelect value={item.type} onChange={(v) => onChange({ ...item, type: v })} options={EXERCISE_TYPES} />
+        <MiniSelect value={item.type} onChange={(v) => onChange({ ...item, type: v })} options={EXERCISE_TYPES}
+          labels={Object.fromEntries(EXERCISE_TYPES.map((o) => [o, t(EXERCISE_TYPE_KEYS[o])]))} />
         <div className="flex items-center gap-1 flex-1">
           <MiniNumber value={item.minutes} placeholder="時間(分)" onChange={(v) => onChange({ ...item, minutes: v })} />
           <span className="text-xs shrink-0" style={{ color: C.inkSoft }}>分</span>
@@ -910,6 +953,18 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [correlationResults]);
 
   const scatterInfo = useMemo(() => correlationResults.find((r) => r.key === selectedFactorKey) || null, [correlationResults, selectedFactorKey]);
+  const insights = useMemo(() => {
+    const targetLabel = analysisTarget === "performance" ? "公演の出来" : analysisTarget === "ease" ? "心の余裕" : "喉のコンディション";
+    return generateInsights(correlationResults, targetLabel);
+  }, [correlationResults, analysisTarget]);
+  const voiceMemoEntries = useMemo(() => {
+    return Object.keys(entries)
+      .filter((d) => (entries[d].voiceMemo || "").trim())
+      .sort()
+      .reverse()
+      .slice(0, 10)
+      .map((d) => ({ date: d, ...entries[d] }));
+  }, [entries]);
   const timeOfDayStats = useMemo(() => {
     const sums = {};
     VOICE_TIME_SLOTS.forEach(({ key }) => { sums[key] = { throatSum: 0, throatN: 0, voiceSum: 0, voiceN: 0 }; });
@@ -933,7 +988,9 @@ export default function VocalTracker({ userId, userEmail }) {
     Object.values(entries).forEach((e) => {
       if (e.activityType !== "休養") return;
       const methods = (e.activityDetail && e.activityDetail.restMethods) || [];
-      methods.forEach((m) => {
+      const otherText = (e.activityDetail && e.activityDetail.restMethodOther || "").trim();
+      methods.forEach((rawM) => {
+        const m = (rawM === "その他" && otherText) ? otherText : rawM;
         if (!byMethod[m]) byMethod[m] = { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 };
         if (typeof e.throatCondition === "number") byMethod[m].throatSum += e.throatCondition;
         if (typeof e.voiceQuality === "number") byMethod[m].voiceSum += e.voiceQuality;
@@ -961,7 +1018,7 @@ export default function VocalTracker({ userId, userEmail }) {
         date: date.slice(5),
         fullDate: date,
         weightKg: e.weightKg || null,
-        proteinPerKg: (e.weightKg && e.protein) ? roundTo1(e.protein / e.weightKg) : null,
+        proteinPerKg: (w && e.protein) ? roundTo1(e.protein / w) : null,
         sleepHours: typeof e.sleepHours === "number" ? e.sleepHours : null,
         sleepQuality: typeof e.sleepQuality === "number" ? e.sleepQuality : null,
         calorieActual: calorieActual > 0 ? Math.round(calorieActual) : null,
@@ -1122,6 +1179,9 @@ export default function VocalTracker({ userId, userEmail }) {
                 {LANGUAGES.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
               </select>
             </div>
+            <a href="/feedback" title="ご意見・不具合の報告" className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line, color: C.inkSoft }}>
+              <MessageCircle size={14} />
+            </a>
             <a href="/billing" title={t("navPlan")} className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line, color: C.inkSoft }}>
               <CreditCard size={14} />
             </a>
@@ -1178,15 +1238,15 @@ export default function VocalTracker({ userId, userEmail }) {
                 {formData && (
                   <>
                     <SectionCard title={t("sectionVoiceThroat")} icon={Mic2}>
-                      <DynamicsSelector label="喉の状態（総合）" icon={Mic2} value={formData.throatCondition}
+                      <DynamicsSelector label={t("labelThroatOverall")} icon={Mic2} value={formData.throatCondition}
                         onChange={(v) => setFormData((f) => ({ ...f, throatCondition: v }))} />
-                      <DynamicsSelector label="声の調子（総合）" icon={Music2} value={formData.voiceQuality}
+                      <DynamicsSelector label={t("labelVoiceOverall")} icon={Music2} value={formData.voiceQuality}
                         onChange={(v) => setFormData((f) => ({ ...f, voiceQuality: v }))} />
                       <div>
-                        <span className="text-sm font-medium block mb-2">症状</span>
+                        <span className="text-sm font-medium block mb-2">{t("labelSymptoms")}</span>
                         <div className="flex flex-wrap gap-2">
                           {SYMPTOM_OPTIONS.map((s) => (
-                            <Chip key={s} label={s} active={(formData.throatSymptoms || []).includes(s)}
+                            <Chip key={s} label={t(SYMPTOM_KEYS[s])} active={(formData.throatSymptoms || []).includes(s)}
                               onClick={() => setFormData((f) => ({
                                 ...f,
                                 throatSymptoms: (f.throatSymptoms || []).includes(s)
@@ -1195,12 +1255,12 @@ export default function VocalTracker({ userId, userEmail }) {
                               }))} />
                           ))}
                         </div>
-                        <input type="text" value={formData.throatSymptomsOther} placeholder="その他の症状（自由記述）"
+                        <input type="text" value={formData.throatSymptomsOther} placeholder={t("labelSymptomsOther")}
                           onChange={(e) => setFormData((f) => ({ ...f, throatSymptomsOther: e.target.value }))}
                           className="w-full rounded-lg border p-2 text-sm mt-2" style={{ borderColor: C.line, background: C.paper }} />
                       </div>
                       <div>
-                        <label className="text-sm font-medium block mb-1.5">一口メモ</label>
+                        <label className="text-sm font-medium block mb-1.5">{t("labelVoiceMemo")}</label>
                         <input type="text" value={formData.voiceMemo} placeholder="声について気づいたことを一言"
                           onChange={(e) => setFormData((f) => ({ ...f, voiceMemo: e.target.value }))}
                           className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
@@ -1209,17 +1269,17 @@ export default function VocalTracker({ userId, userEmail }) {
                         <p className="text-sm font-medium mb-1">時間帯別に記録（任意）</p>
                         <p className="text-xs mb-3" style={{ color: C.inkSoft }}>入力すると「総合」の欄は自動的に平均値へ更新されます。</p>
                         <div className="space-y-4">
-                          {VOICE_TIME_SLOTS.map(({ key, icon: SlotIcon }) => (
+                          {VOICE_TIME_SLOTS.map(({ key, icon: SlotIcon, labelKey }) => (
                             <div key={key} className="rounded-xl p-3" style={{ background: C.paper }}>
                               <div className="flex items-center gap-1.5 mb-2">
                                 <SlotIcon size={14} style={{ color: C.gold }} />
-                                <span className="text-sm font-medium">{key}</span>
+                                <span className="text-sm font-medium">{t(labelKey)}</span>
                               </div>
                               <div className="space-y-3">
-                                <DynamicsSelector label="喉の状態" icon={Mic2}
+                                <DynamicsSelector label={t("labelThroatCondition")} icon={Mic2}
                                   value={((formData.voiceCheckins || {})[key] || {}).throat || 3}
                                   onChange={(v) => setFormData((f) => updateVoiceCheckin(f, key, "throat", v))} />
-                                <DynamicsSelector label="声の調子" icon={Music2}
+                                <DynamicsSelector label={t("labelVoiceQuality")} icon={Music2}
                                   value={((formData.voiceCheckins || {})[key] || {}).voice || 3}
                                   onChange={(v) => setFormData((f) => updateVoiceCheckin(f, key, "voice", v))} />
                               </div>
@@ -1234,7 +1294,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         <div>
                           <div className="flex items-center gap-1.5 mb-1.5">
                             <Ruler size={14} style={{ color: C.gold }} />
-                            <label className="text-sm font-medium">身長(cm)</label>
+                            <label className="text-sm font-medium">{t("labelHeight")}(cm)</label>
                           </div>
                           <input
                             type="number"
@@ -1245,7 +1305,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           />
                         </div>
                         <div>
-                          <label className="text-sm font-medium block mb-1.5">声種</label>
+                          <label className="text-sm font-medium block mb-1.5">{t("labelVoiceType")}</label>
                           <select
                             value={profile.voice_type}
                             onChange={(e) => setProfile((p) => ({ ...p, voice_type: e.target.value }))}
@@ -1253,22 +1313,22 @@ export default function VocalTracker({ userId, userEmail }) {
                             style={{ borderColor: C.line, background: C.paper, color: C.ink }}
                           >
                             <option value="">選択してください</option>
-                            {VOICE_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
+                            {VOICE_TYPES.map((v) => <option key={v} value={v}>{t(VOICE_TYPE_KEYS[v])}</option>)}
                           </select>
                         </div>
                         <div>
-                          <label className="text-sm font-medium block mb-1.5">目標フェーズ（栄養目標の計算に使用）</label>
+                          <label className="text-sm font-medium block mb-1.5">{t("labelPhase")}</label>
                           <select
                             value={profile.nutrition_phase}
                             onChange={(e) => setProfile((p) => ({ ...p, nutrition_phase: e.target.value }))}
                             className="w-full rounded-lg border p-2 text-sm"
                             style={{ borderColor: C.line, background: C.paper, color: C.ink }}
                           >
-                            {NUTRITION_PHASES.map((v) => <option key={v} value={v}>{v}</option>)}
+                            {NUTRITION_PHASES.map((v) => <option key={v} value={v}>{t(NUTRITION_PHASE_KEYS[v])}</option>)}
                           </select>
                         </div>
                         <div>
-                          <label className="text-sm font-medium block mb-1.5">タンパク質係数（g／体重kg）</label>
+                          <label className="text-sm font-medium block mb-1.5">{t("labelProteinCoefficient")}</label>
                           <input
                             type="number" step="0.1"
                             value={profile.protein_coefficient}
@@ -1279,7 +1339,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           <p className="text-xs mt-1" style={{ color: C.inkSoft }}>目安：維持1.2〜1.6、増量1.6〜2.2</p>
                         </div>
                         <div>
-                          <label className="text-sm font-medium block mb-1.5">年齢（任意・栄養計算の精度が上がります）</label>
+                          <label className="text-sm font-medium block mb-1.5">{t("labelAge")}</label>
                           <input
                             type="number"
                             value={profile.age}
@@ -1289,7 +1349,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           />
                         </div>
                         <div>
-                          <label className="text-sm font-medium block mb-1.5">性別（任意）</label>
+                          <label className="text-sm font-medium block mb-1.5">{t("labelSex")}</label>
                           <select
                             value={profile.sex}
                             onChange={(e) => setProfile((p) => ({ ...p, sex: e.target.value }))}
@@ -1307,7 +1367,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         {profileSaveStatus === "saving" ? t("saveButtonSaving") : profileSaveStatus === "saved" ? t("saveButtonSaved") : "身体データ設定を保存"}
                       </button>
 
-                      <NumberField label="今日の体重" icon={Scale} value={formData.weightKg ?? ""} step={0.1} min={20} max={200} suffix="kg"
+                      <NumberField label={t("labelTodayWeight")} icon={Scale} value={formData.weightKg ?? ""} step={0.1} min={20} max={200} suffix="kg"
                         onChange={(v) => setFormData((f) => ({ ...f, weightKg: v }))} />
 
                       {profile.height_cm ? (
@@ -1322,19 +1382,19 @@ export default function VocalTracker({ userId, userEmail }) {
                     </SectionCard>
 
                     <SectionCard title={t("sectionSleepWater")} icon={Moon}>
-                      <NumberField label="睡眠時間" icon={Moon} value={formData.sleepHours} step={0.5} min={0} max={16} suffix="時間"
+                      <NumberField label={t("labelSleepHours")} icon={Moon} value={formData.sleepHours} step={0.5} min={0} max={16} suffix="時間"
                         onChange={(v) => setFormData((f) => ({ ...f, sleepHours: v }))} />
-                      <DotSelector label="睡眠の質" icon={Moon} value={formData.sleepQuality} lowLabel="悪い" highLabel="良い"
+                      <DotSelector label={t("labelSleepQuality")} icon={Moon} value={formData.sleepQuality} lowLabel="悪い" highLabel="良い"
                         onChange={(v) => setFormData((f) => ({ ...f, sleepQuality: v }))} />
                       <div>
                         <div className="flex items-center gap-1.5 mb-2">
                           <Droplets size={14} style={{ color: C.gold }} />
-                          <label className="text-sm font-medium">水分補給（時間帯別）</label>
+                          <label className="text-sm font-medium">{t("labelWaterBySlot")}</label>
                         </div>
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                           {MEAL_SLOTS.map((slot) => (
                             <div key={slot}>
-                              <div className="text-xs mb-1" style={{ color: C.inkSoft }}>{slot}</div>
+                              <div className="text-xs mb-1" style={{ color: C.inkSoft }}>{t(MEAL_SLOT_KEYS[slot])}</div>
                               <MiniNumber
                                 value={(formData.waterBySlot || {})[slot] ?? ""}
                                 placeholder="ml"
@@ -1343,7 +1403,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             </div>
                           ))}
                         </div>
-                        <p className="text-xs text-right mt-2 ff-mono" style={{ color: C.inkSoft }}>合計 {waterTotal}ml</p>
+                        <p className="text-xs text-right mt-2 ff-mono" style={{ color: C.inkSoft }}>{t("labelTotal")} {waterTotal}ml</p>
                       </div>
                     </SectionCard>
 
@@ -1351,23 +1411,23 @@ export default function VocalTracker({ userId, userEmail }) {
                       <p className="text-xs" style={{ color: C.inkSoft }}>時間帯ごとに食品を追加すると、下に1日の合計が自動計算されます。</p>
                       {MEAL_SLOTS.map((slot) => (
                         <div key={slot}>
-                          <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>{slot}</p>
+                          <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>{t(MEAL_SLOT_KEYS[slot])}</p>
                           <div className="space-y-2">
                             {(formData.meals || []).filter((m) => m.slot === slot).map((m) => (
-                              <MealItemRow key={m.id} item={m} foodLibrary={foodLibrary} onChange={(next) => updateMeal(m.id, next)} onRemove={() => removeMeal(m.id)} />
+                              <MealItemRow key={m.id} item={m} foodLibrary={foodLibrary} t={t} onChange={(next) => updateMeal(m.id, next)} onRemove={() => removeMeal(m.id)} />
                             ))}
                           </div>
                           <button type="button" onClick={() => addMeal(slot)}
                             className="w-full rounded-xl border py-1.5 text-xs font-medium flex items-center justify-center gap-1.5 mt-2"
                             style={{ borderColor: C.line, color: C.inkSoft }}>
-                            <Plus size={12} />{slot}に食品を追加
+                            <Plus size={12} />{t(MEAL_SLOT_KEYS[slot])}
                           </button>
                         </div>
                       ))}
                       <div>
                         <div className="flex items-center gap-1.5 mb-1.5 mt-1">
                           <Utensils size={14} style={{ color: C.gold }} />
-                          <label className="text-sm font-medium">食事メモ</label>
+                          <label className="text-sm font-medium">{t("labelMealNotes")}</label>
                         </div>
                         <textarea value={formData.mealNotes} rows={2} placeholder="例：消化に良いものを中心に、公演前は控えめに"
                           onChange={(e) => setFormData((f) => ({ ...f, mealNotes: e.target.value }))}
@@ -1375,32 +1435,37 @@ export default function VocalTracker({ userId, userEmail }) {
                       </div>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
                         <div className="rounded-xl p-2.5 text-center" style={{ background: C.paper }}>
-                          <div className="text-xs" style={{ color: C.inkSoft }}>炭水化物</div>
+                          <div className="text-xs" style={{ color: C.inkSoft }}>{t("macroCarbs")}</div>
                           <div className="ff-mono text-sm font-medium">{mealTotals.carbs.toFixed(0)}g</div>
                         </div>
                         <div className="rounded-xl p-2.5 text-center" style={{ background: C.paper }}>
-                          <div className="text-xs" style={{ color: C.inkSoft }}>タンパク質</div>
+                          <div className="text-xs" style={{ color: C.inkSoft }}>{t("macroProtein")}</div>
                           <div className="ff-mono text-sm font-medium">{mealTotals.protein.toFixed(0)}g</div>
                         </div>
                         <div className="rounded-xl p-2.5 text-center" style={{ background: C.paper }}>
-                          <div className="text-xs" style={{ color: C.inkSoft }}>脂質</div>
+                          <div className="text-xs" style={{ color: C.inkSoft }}>{t("macroFat")}</div>
                           <div className="ff-mono text-sm font-medium">{mealTotals.fat.toFixed(0)}g</div>
                         </div>
                         <div className="rounded-xl p-2.5 text-center" style={{ background: C.paper }}>
-                          <div className="text-xs" style={{ color: C.inkSoft }}>食物繊維</div>
+                          <div className="text-xs" style={{ color: C.inkSoft }}>{t("macroFiber")}</div>
                           <div className="ff-mono text-sm font-medium">{mealTotals.fiber.toFixed(0)}g</div>
                         </div>
                       </div>
 
                       {nutritionTargets ? (
                         <div className="rounded-xl p-3" style={{ background: C.paper }}>
-                          <p className="text-xs font-medium mb-2">栄養評価（目安）</p>
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="text-xs font-medium">栄養評価（目安）</p>
+                            <span className="text-xs ff-mono rounded-full px-2 py-0.5" style={{ background: C.card, color: C.inkSoft, border: `1px solid ${C.line}` }}>
+                              {t(NUTRITION_PHASE_KEYS[profile.nutrition_phase] || "phaseMaintain")}
+                            </span>
+                          </div>
                           <div className="space-y-1.5">
                             {[
-                              { label: "タンパク質", actual: mealTotals.protein, target: nutritionTargets.proteinTarget },
-                              { label: "炭水化物", actual: mealTotals.carbs, target: nutritionTargets.carbsTarget },
-                              { label: "脂質", actual: mealTotals.fat, target: nutritionTargets.fatTarget },
-                              { label: "食物繊維", actual: mealTotals.fiber, target: nutritionTargets.fiberTarget }
+                              { label: t("macroProtein"), actual: mealTotals.protein, target: nutritionTargets.proteinTarget },
+                              { label: t("macroCarbs"), actual: mealTotals.carbs, target: nutritionTargets.carbsTarget },
+                              { label: t("macroFat"), actual: mealTotals.fat, target: nutritionTargets.fatTarget },
+                              { label: t("macroFiber"), actual: mealTotals.fiber, target: nutritionTargets.fiberTarget }
                             ].map(({ label, actual, target }) => {
                               const ev = evaluateIntake(actual, target);
                               return (
@@ -1432,7 +1497,7 @@ export default function VocalTracker({ userId, userEmail }) {
 
                     <SectionCard title={t("sectionClimate")} icon={Thermometer}>
                       <div>
-                        <label className="text-sm font-medium block mb-1.5">滞在地・公演地</label>
+                        <label className="text-sm font-medium block mb-1.5">{t("labelLocation")}</label>
                         <div className="flex items-center gap-2 rounded-lg border p-2" style={{ borderColor: C.line, background: C.paper }}>
                           <MapPin size={16} style={{ color: C.inkSoft }} />
                           <input type="text" value={formData.location} placeholder="例：ミラノ"
@@ -1441,13 +1506,13 @@ export default function VocalTracker({ userId, userEmail }) {
                         </div>
                       </div>
                       <div className="grid grid-cols-2 gap-4">
-                        <NumberField label="気温" icon={Thermometer} value={formData.temperature ?? ""} step={1} min={-30} max={50} suffix="℃"
+                        <NumberField label={t("labelTemperature")} icon={Thermometer} value={formData.temperature ?? ""} step={1} min={-30} max={50} suffix="℃"
                           onChange={(v) => setFormData((f) => ({ ...f, temperature: v }))} />
-                        <NumberField label="湿度" icon={Wind} value={formData.humidity ?? ""} step={5} min={0} max={100} suffix="%"
+                        <NumberField label={t("labelHumidity")} icon={Wind} value={formData.humidity ?? ""} step={5} min={0} max={100} suffix="%"
                           onChange={(v) => setFormData((f) => ({ ...f, humidity: v }))} />
                       </div>
                       <div>
-                        <label className="text-sm font-medium block mb-1.5">天気</label>
+                        <label className="text-sm font-medium block mb-1.5">{t("labelWeather")}</label>
                         <select
                           value={formData.weather}
                           onChange={(e) => setFormData((f) => ({ ...f, weather: e.target.value }))}
@@ -1455,14 +1520,14 @@ export default function VocalTracker({ userId, userEmail }) {
                           style={{ borderColor: C.line, background: C.paper, color: C.ink }}
                         >
                           <option value="">選択してください</option>
-                          {WEATHER_OPTIONS.map((w) => <option key={w} value={w}>{w}</option>)}
+                          {WEATHER_OPTIONS.map((w) => <option key={w} value={w}>{t(WEATHER_KEYS[w])}</option>)}
                         </select>
                       </div>
                     </SectionCard>
 
                     <SectionCard title={t("sectionPractice")} icon={Music2}>
                       <div>
-                        <span className="text-sm font-medium block mb-2">今日の活動</span>
+                        <span className="text-sm font-medium block mb-2">{t("labelTodayActivity")}</span>
                         <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
                           {ACTIVITY_OPTIONS.map((a) => {
                             const active = formData.activityType === a.key;
@@ -1477,17 +1542,17 @@ export default function VocalTracker({ userId, userEmail }) {
                                 style={{ background: active ? C.curtain : C.paper, color: active ? "#FFFDF8" : C.inkSoft, borderColor: active ? C.curtain : C.line }}
                               >
                                 <a.icon size={16} />
-                                {a.key}
+                                {t(a.labelKey)}
                               </button>
                             );
                           })}
                         </div>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <NumberField label="活動時間" value={formData.activityDuration ?? ""} step={0.5} min={0} max={24} suffix="時間"
+                        <NumberField label={t("labelActivityDuration")} value={formData.activityDuration ?? ""} step={0.5} min={0} max={24} suffix="時間"
                           onChange={(v) => setFormData((f) => ({ ...f, activityDuration: v }))} />
                         <div>
-                          <label className="text-sm font-medium block mb-1.5">曲目・演目(任意)</label>
+                          <label className="text-sm font-medium block mb-1.5">{t("labelRepertoire")}</label>
                           <input type="text" value={formData.repertoire} placeholder="例：椿姫"
                             onChange={(e) => setFormData((f) => ({ ...f, repertoire: e.target.value }))}
                             className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
@@ -1499,15 +1564,26 @@ export default function VocalTracker({ userId, userEmail }) {
                           <p className="text-sm font-medium mb-2">試した休養方法（複数選択可）</p>
                           <div className="flex flex-wrap gap-2">
                             {REST_METHODS.map((m) => (
-                              <Chip key={m} label={m} active={((formData.activityDetail || {}).restMethods || []).includes(m)}
+                              <Chip key={m} label={t(REST_METHOD_KEYS[m])} active={((formData.activityDetail || {}).restMethods || []).includes(m)}
                                 onClick={() => {
                                   const current = (formData.activityDetail || {}).restMethods || [];
                                   updateDetail({ restMethods: current.includes(m) ? current.filter((x) => x !== m) : [...current, m] });
                                 }} />
                             ))}
                           </div>
+                          {((formData.activityDetail || {}).restMethods || []).includes("その他") && (
+                            <input
+                              type="text"
+                              value={(formData.activityDetail || {}).restMethodOther || ""}
+                              placeholder="その他の内容を記入（例：ヨガ、サウナ）"
+                              onChange={(e) => updateDetail({ restMethodOther: e.target.value })}
+                              className="w-full rounded-lg border p-2 text-sm mt-2"
+                              style={{ borderColor: C.line, background: C.paper }}
+                            />
+                          )}
                           <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
                             この日の「声・喉」「メンタル」の評価とあわせて記録され、分析タブで休養方法ごとの傾向を見られます。
+                            「その他」に記入した内容は、同じ言葉で書くと同じ方法として集計されます。
                           </p>
                         </div>
                       )}
@@ -1579,16 +1655,16 @@ export default function VocalTracker({ userId, userEmail }) {
                       <p className="text-xs" style={{ color: C.inkSoft }}>その日行った運動を追加してください。合計時間は自動計算され、分析にも反映されます。</p>
                       <div className="space-y-2">
                         {(formData.exercises || []).map((x) => (
-                          <ExerciseItemRow key={x.id} item={x} onChange={(next) => updateExercise(x.id, next)} onRemove={() => removeExercise(x.id)} />
+                          <ExerciseItemRow key={x.id} item={x} t={t} onChange={(next) => updateExercise(x.id, next)} onRemove={() => removeExercise(x.id)} />
                         ))}
                       </div>
                       <button type="button" onClick={addExercise}
                         className="w-full rounded-xl border py-2 text-xs font-medium flex items-center justify-center gap-1.5"
                         style={{ borderColor: C.line, color: C.inkSoft }}>
-                        <Plus size={13} />運動を追加
+                        <Plus size={13} />{t("btnAddExercise")}
                       </button>
                       {exerciseTotalMinutes > 0 && (
-                        <p className="text-xs text-right ff-mono" style={{ color: C.inkSoft }}>合計 {exerciseTotalMinutes}分</p>
+                        <p className="text-xs text-right ff-mono" style={{ color: C.inkSoft }}>{t("labelTotal")} {exerciseTotalMinutes}分</p>
                       )}
                       <div className="rounded-xl p-3 text-xs leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
                         <p className="font-medium mb-1" style={{ color: C.ink }}>おすすめの運動（参考）</p>
@@ -1603,7 +1679,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       <DotSelector label="心の余裕" icon={HeartHandshake} value={formData.ease} lowLabel="緊張" highLabel="穏やか"
                         onChange={(v) => setFormData((f) => ({ ...f, ease: v }))} />
                       <div>
-                        <label className="text-sm font-medium block mb-1.5">今日の心境（日記）</label>
+                        <label className="text-sm font-medium block mb-1.5">{t("labelMentalReason")}</label>
                         <textarea value={formData.mentalReason} rows={3} placeholder="なぜその評価にしたか、今日感じたことを書き残せます"
                           onChange={(e) => setFormData((f) => ({ ...f, mentalReason: e.target.value }))}
                           className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
@@ -1697,7 +1773,7 @@ export default function VocalTracker({ userId, userEmail }) {
                               <div className="text-sm font-medium">{formatDateLabel(date)}</div>
                               <div className="flex items-center gap-1.5 text-xs mt-0.5 flex-wrap" style={{ color: C.inkSoft }}>
                                 <ActIcon size={12} />
-                                <span>{e.activityType}</span>
+                                <span>{t((ACTIVITY_OPTIONS.find((a) => a.key === e.activityType) || {}).labelKey) || e.activityType}</span>
                                 {e.activityType === "本番" && e.performanceQuality && <span>・公演の出来 {levelDynamic(e.performanceQuality)}</span>}
                                 {e.location && <span>・{e.location}</span>}
                               </div>
@@ -1749,6 +1825,29 @@ export default function VocalTracker({ userId, userEmail }) {
                     })}
                   </div>
                 </div>
+
+                {voiceMemoEntries.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">声のメモ振り返り</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>「声・喉」の一口メモを書いた日の一覧です（直近10件）。その日の状態とあわせて見返せます。</p>
+                    <div className="space-y-2">
+                      {voiceMemoEntries.map((e) => (
+                        <div key={e.date} className="rounded-xl p-2.5" style={{ background: C.paper }}>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs ff-mono" style={{ color: C.inkSoft }}>{e.date}</span>
+                            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: levelColor(e.throatCondition), color: "#FFFDF8" }}>
+                              喉{levelDynamic(e.throatCondition)}
+                            </span>
+                            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: levelColor(e.voiceQuality), color: "#FFFDF8" }}>
+                              声{levelDynamic(e.voiceQuality)}
+                            </span>
+                          </div>
+                          <p className="text-xs" style={{ color: C.ink }}>{e.voiceMemo}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {restMethodStats.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
@@ -1918,6 +2017,20 @@ export default function VocalTracker({ userId, userEmail }) {
                         </ResponsiveContainer>
                       </div>
                     </div>
+
+                    {insights.length > 0 && (
+                      <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                        <h3 className="ff-display italic text-lg mb-2">気づき</h3>
+                        <div className="space-y-2">
+                          {insights.map((ins) => (
+                            <p key={ins.key} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                              {ins.text}
+                            </p>
+                          ))}
+                        </div>
+                        <p className="text-xs mt-2" style={{ color: C.inkSoft }}>※ あくまで記録上の傾向であり、因果関係を断定するものではありません。</p>
+                      </div>
+                    )}
 
                     {scatterInfo && scatterInfo.r != null && (
                       <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
