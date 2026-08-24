@@ -14,7 +14,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC } from "@/lib/tokens";
 import { FOOD_PRESETS } from "@/lib/foodPresets";
-import { SINGLE_SLOT_CATEGORIES } from "@/lib/character";
+import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES } from "@/lib/character";
 import { LANGUAGES, createTranslator } from "@/lib/translations";
 import HealthInfo from "@/components/HealthInfo";
 import CharacterHome from "@/components/CharacterHome";
@@ -1210,12 +1210,33 @@ export default function VocalTracker({ userId, userEmail }) {
     await supabase.from("profiles").update({ character_points_spent: newSpent }).eq("id", userId);
     if (SINGLE_SLOT_CATEGORIES.includes(item.category)) {
       handleEquipItem(item.category, item.key);
+    } else if (MULTI_SLOT_CATEGORIES.includes(item.category)) {
+      // 購入時は自動的に配置状態にする
+      setCharacterEquipped((prev) => {
+        const currentList = prev[item.category] || [];
+        const next = { ...prev, [item.category]: [...currentList, item.key] };
+        supabase.from("profiles").update({ character_equipped: next }).eq("id", userId);
+        return next;
+      });
     }
   }
 
   function handleEquipItem(category, itemKey) {
     setCharacterEquipped((prev) => {
       const next = { ...prev, [category]: itemKey };
+      const supabase = createClient();
+      supabase.from("profiles").update({ character_equipped: next }).eq("id", userId);
+      return next;
+    });
+  }
+
+  // 家具・庭アイテム（複数設置可）を「置く」⇔「しまう」で切り替える
+  function handleTogglePlacement(category, itemKey) {
+    setCharacterEquipped((prev) => {
+      const currentList = prev[category] || [];
+      const isPlaced = currentList.includes(itemKey);
+      const nextList = isPlaced ? currentList.filter((k) => k !== itemKey) : [...currentList, itemKey];
+      const next = { ...prev, [category]: nextList };
       const supabase = createClient();
       supabase.from("profiles").update({ character_equipped: next }).eq("id", userId);
       return next;
@@ -2080,6 +2101,7 @@ export default function VocalTracker({ userId, userEmail }) {
                 pointsSpent={characterPointsSpent}
                 onPurchase={handlePurchaseItem}
                 onEquip={handleEquipItem}
+                onTogglePlacement={handleTogglePlacement}
                 t={t}
               />
             )}

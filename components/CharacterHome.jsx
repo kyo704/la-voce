@@ -9,7 +9,7 @@ import {
 
 const CATEGORY_LABEL_KEYS = {
   hat: "catHat", outfit: "catOutfit", accessory: "catAccessory", floor: "catFloor", wall: "catWall",
-  window: "catWindow", scenery: "catScenery", furniture: "catFurniture", garden: "catGarden"
+  window: "catWindow", scenery: "catScenery", backdrop: "catBackdrop", furniture: "catFurniture", garden: "catGarden"
 };
 const MATERIAL_COLORS = {
   floor_default: "#D8C9A8", floor_tile: "#C9C2B4", floor_carpet: "#C98A9E",
@@ -18,8 +18,9 @@ const MATERIAL_COLORS = {
   wall_washi: "#EDE6D3", wall_mediterranean: "#F2ECDD", wall_indian: "#E8985F", wall_american: "#C9836A", wall_chinese: "#C0454B",
   window_default: "#FFFDF8", window_wood: "#8B5E3C", window_blue: "#5C7599",
   window_shoji: "#EDE6D3", window_mediterranean: "#8FA9C9", window_indian: "#D9A054", window_american: "#FFFDF8", window_chinese: "#C0454B",
-  window_stained_glass: "#8B6529", window_porthole: "#9FB0BA",
-  scenery_default: "#BFE0E8", scenery_night: "#2E3A5C", scenery_sakura: "#F2C9D3", scenery_aurora: "#2E3A5C", scenery_ocean: "#5C9AC9"
+  window_stained_glass: "#8B6529", window_porthole: "#9FB0BA", window_bamboo_washi: "#C9B87C", window_grand: "#8B5E3C",
+  scenery_default: "#BFE0E8", scenery_night: "#2E3A5C", scenery_sakura: "#F2C9D3", scenery_aurora: "#2E3A5C", scenery_ocean: "#5C9AC9",
+  scenery_italy: "#F6C97A", scenery_germany: "#BFE0E8", scenery_france: "#E8D9E8"
 };
 
 // ===== 羊のキャラクター（チビ体型・二頭身） =====
@@ -78,6 +79,32 @@ function SheepCharacter({ equipped, size = 120, isWalking = false, isFarming = f
           <circle cx="128" cy="132" r="1.3" fill="#D9AE6E" transform="rotate(-16 128 132)" />
         </g>
       )}
+      {equipped.accessory === "accessory_chopsticks" && (
+        <g className="arm-r">
+          <rect x="128" y="90" width="2" height="50" rx="1" fill="#D9AE6E" transform="rotate(8 129 115)" />
+          <rect x="132" y="92" width="2" height="48" rx="1" fill="#C99A5E" transform="rotate(8 133 116)" />
+        </g>
+      )}
+      {equipped.accessory === "accessory_fork" && (
+        <g className="arm-r">
+          <rect x="129" y="100" width="3" height="38" rx="1.5" fill="#C7CDD3" transform="rotate(-10 130 118)" />
+          <path d="M125,88 L125.5,98 M128.5,86 L128.5,98 M131.5,86 L131.5,98 M134.5,88 L134,98" stroke="#C7CDD3" strokeWidth="1.6" fill="none" transform="rotate(-10 130 94)" />
+        </g>
+      )}
+      {equipped.accessory === "accessory_bottle" && (
+        <g className="arm-r">
+          <rect x="124" y="98" width="14" height="34" rx="4" fill="#7FB577" opacity="0.88" transform="rotate(6 131 115)" />
+          <rect x="128" y="90" width="6" height="10" fill="#5E9450" transform="rotate(6 131 95)" />
+          <rect x="126" y="106" width="10" height="12" fill="#FBF6EA" opacity="0.65" transform="rotate(6 131 112)" />
+        </g>
+      )}
+      {equipped.accessory === "accessory_pet_bottle" && (
+        <g className="arm-r">
+          <path d="M126,132 L136,132 L136,102 Q136,95 131,93 Q126,95 126,102 Z" fill="#9FC9E8" opacity="0.5" stroke="#6C9BC4" strokeWidth="0.6" transform="rotate(6 131 112)" />
+          <rect x="128" y="88" width="6" height="6" rx="1" fill="#5C9AC9" transform="rotate(6 131 91)" />
+          <rect x="124" y="112" width="14" height="11" fill="#F6D46A" opacity="0.85" transform="rotate(6 131 117)" />
+        </g>
+      )}
 
       {equipped.outfit === "outfit_scarf" && (
         <g>
@@ -114,16 +141,72 @@ function SheepCharacter({ equipped, size = 120, isWalking = false, isFarming = f
           <path d="M56,109 L53,150 M104,109 L107,150" stroke="#6B4526" strokeWidth="2" opacity="0.5" fill="none" />
         </g>
       )}
-      {equipped.outfit === "outfit_kimono" && (
+      {equipped.outfit === "outfit_kimono_male" && (
         <g>
-          <path d="M50,106 Q52,100 62,104 L60,170 Q80,180 100,170 L98,104 Q108,100 110,106 L108,172 Q80,184 52,172 Z" fill="#5B7FA6" opacity="0.94" />
-          <path d="M62,104 L80,120 L98,104 L94,110 L80,124 L66,110 Z" fill="#FBF6EA" opacity="0.9" />
-          {[112, 128, 144, 160].map((y, i) => (
-            <circle key={i} cx={i % 2 === 0 ? 68 : 92} cy={y} r="2.6" fill="#F2C9D3" opacity="0.85" />
+          <path d="M50,104 Q50,98 58,100 L54,178 Q80,188 106,178 L102,100 Q110,98 110,104 L108,180 Q80,192 52,180 Z" fill="#3D5266" opacity="0.96" />
+          <path d="M50,106 Q30,110 25,131 Q27,141 38,138 L52,116 Z" fill="#3D5266" opacity="0.96" />
+          <path d="M110,106 Q130,110 135,131 Q133,141 122,138 L108,116 Z" fill="#3D5266" opacity="0.96" />
+          <path d="M62,102 L80,130 L98,102 L92,109 L80,134 L68,109 Z" fill="#FBF6EA" opacity="0.9" />
+          <rect x="64" y="126" width="32" height="19" fill="#1A2530" opacity="0.92" />
+          <rect x="70" y="129" width="20" height="13" fill="#8B6529" opacity="0.75" />
+          <circle cx="58" cy="112" r="3.2" fill="#FBF6EA" opacity="0.8" stroke="#2A3A48" strokeWidth="0.5" />
+          <circle cx="102" cy="112" r="3.2" fill="#FBF6EA" opacity="0.8" stroke="#2A3A48" strokeWidth="0.5" />
+        </g>
+      )}
+      {equipped.outfit === "outfit_kimono_female" && (
+        <g>
+          <path d="M50,104 Q50,98 58,100 L56,176 Q80,186 104,176 L102,100 Q110,98 110,104 L106,178 Q80,190 54,178 Z" fill="#E896C4" opacity="0.94" />
+          <path d="M50,106 Q30,110 25,131 Q27,141 38,138 L52,116 Z" fill="#E896C4" opacity="0.94" />
+          <path d="M110,106 Q130,110 135,131 Q133,141 122,138 L108,116 Z" fill="#E896C4" opacity="0.94" />
+          <path d="M62,102 L80,128 L98,102 L92,109 L80,132 L68,109 Z" fill="#FBF6EA" opacity="0.92" />
+          {[[63, 150], [97, 150], [69, 165], [91, 165]].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r="2.6" fill="#FFFBEA" opacity="0.85" />
           ))}
-          <rect x="70" y="118" width="20" height="46" fill="#C0454B" opacity="0.92" />
-          <path d="M70,130 L90,130 M70,140 L90,140" stroke="#96323A" strokeWidth="1.2" opacity="0.6" />
-          <path d="M72,118 Q80,112 88,118 L86,124 Q80,120 74,124 Z" fill="#96323A" />
+          <rect x="64" y="122" width="32" height="21" fill="#F6D98A" opacity="0.95" />
+          <path d="M64,128 L96,128 M64,138 L96,138" stroke="#B8863B" strokeWidth="1" opacity="0.6" />
+          <path d="M58,128 Q68,116 78,128 Q68,136 58,128 Z" fill="#E896C4" stroke="#C0619A" strokeWidth="0.6" />
+          <path d="M102,128 Q92,116 82,128 Q92,136 102,128 Z" fill="#E896C4" stroke="#C0619A" strokeWidth="0.6" />
+          <circle cx="80" cy="128" r="3.4" fill="#C0619A" />
+        </g>
+      )}
+      {equipped.outfit === "outfit_tailcoat" && (
+        <g>
+          <path d="M62,140 L58,182 L70,178 L70,140 Z" fill="#14141A" />
+          <path d="M98,140 L102,182 L90,178 L90,140 Z" fill="#14141A" />
+          <path d="M52,106 L108,106 L104,142 Q80,148 56,142 Z" fill="#14141A" opacity="0.96" />
+          <path d="M64,108 Q80,102 96,108 L92,140 Q80,144 68,140 Z" fill="#FBF6EA" />
+          <path d="M64,108 L78,124 L69,132 L58,112 Z" fill="#14141A" />
+          <path d="M96,108 L82,124 L91,132 L102,112 Z" fill="#14141A" />
+          <path d="M74,110 L80,118 L86,110 L83,115 L80,120 L77,115 Z" fill="#FBF6EA" stroke="#D9CFC0" strokeWidth="0.6" />
+          {[120, 130].map((y, i) => <circle key={i} cx="80" cy={y} r="1.4" fill="#14141A" />)}
+        </g>
+      )}
+      {equipped.outfit === "outfit_dress" && (
+        <g>
+          <path d="M60,106 Q80,100 100,106 L106,140 Q120,150 122,178 Q80,190 38,178 Q40,150 54,140 Z" fill="#7A3F6E" opacity="0.94" />
+          <path d="M64,108 Q80,104 96,108 L94,138 Q80,142 66,138 Z" fill="#8F5482" opacity="0.5" />
+          <path d="M56,140 Q80,150 104,140" stroke="#F0C955" strokeWidth="2.4" fill="none" opacity="0.85" />
+          <circle cx="80" cy="140" r="3" fill="#F0C955" />
+          {[[50, -6], [64, -6], [96, 6], [110, 6]].map(([x, dx], i) => (
+            <path key={i} d={`M${x},150 Q${x + dx},165 ${x},180`} stroke="#5B2A50" strokeWidth="1" opacity="0.4" fill="none" />
+          ))}
+        </g>
+      )}
+      {equipped.outfit === "outfit_king_robe" && (
+        <g>
+          <path d="M40,100 Q80,90 120,100 L128,180 Q80,190 32,180 Z" fill="#5B2A6E" opacity="0.95" />
+          <path d="M56,104 Q80,98 104,104 L100,178 Q80,186 60,178 Z" fill="#8A1428" opacity="0.95" />
+          <path d="M56,104 Q80,98 104,104" stroke="#F0C955" strokeWidth="3" fill="none" />
+          <path d="M60,178 Q80,186 100,178" stroke="#F0C955" strokeWidth="3" fill="none" />
+          {[64, 96].map((x, i) => <path key={i} d={`M${x},110 L${x},170`} stroke="#F0C955" strokeWidth="2" opacity="0.7" />)}
+          <path d="M38,100 Q80,88 122,100 L122,110 Q80,98 38,110 Z" fill="#FBF6EA" stroke="#D9CFC0" strokeWidth="1" />
+          {[46, 58, 70, 90, 102, 114].map((x, i) => <circle key={i} cx={x} cy="104" r="2" fill="#241914" />)}
+          <circle cx="56" cy="106" r="5" fill="#F0C955" stroke="#C99A2E" strokeWidth="1" />
+          <circle cx="56" cy="106" r="2.4" fill="#5B7FA6" />
+          <circle cx="104" cy="106" r="5" fill="#F0C955" stroke="#C99A2E" strokeWidth="1" />
+          <circle cx="104" cy="106" r="2.4" fill="#5B7FA6" />
+          <path d="M62,112 Q80,124 98,112" stroke="#F0C955" strokeWidth="2" fill="none" />
+          <circle cx="80" cy="122" r="3.5" fill="#C0454B" stroke="#F0C955" strokeWidth="1" />
         </g>
       )}
       {equipped.outfit === "outfit_tuxedo" && (
@@ -332,15 +415,20 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, hasChair, hasBe
       addTimer(() => {
         if (cancelled) return;
         if (!hasChair) { scheduleSitting(); return; }
-        const chairLeft = 66, chairTop = 66;
+        const chairLeft = 79, chairFloorTop = 98, chairSeatTop = 89;
         busyRef.current = true;
-        moveTo(chairLeft, chairTop, 2000);
+        moveTo(chairLeft, chairFloorTop, 2000);
         addTimer(() => {
           if (cancelled) return;
+          setLeftPct(chairLeft);
+          setTopPct(chairSeatTop);
           setIsSitting(true);
           addTimer(() => {
             if (cancelled) return;
             setIsSitting(false);
+            setLeftPct(chairLeft);
+            setTopPct(chairFloorTop);
+            leftRef.current = chairLeft;
             busyRef.current = false;
           }, 5500);
         }, 2100);
@@ -353,17 +441,23 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, hasChair, hasBe
       addTimer(() => {
         if (cancelled) return;
         if (!hasBed) { scheduleLying(); return; }
-        const bedLeft = 17, bedTop = 66;
+        const bedApproachLeft = 13, bedFloorTop = 98, pillowLeft = 7, pillowTop = 82;
         busyRef.current = true;
-        moveTo(bedLeft, bedTop, 2000);
+        moveTo(bedApproachLeft, bedFloorTop, 2000);
         addTimer(() => {
           if (cancelled) return;
-          setLeftPct(17);
-          setTopPct(57);
+          setLeftPct(pillowLeft);
+          setTopPct(pillowTop);
           setIsLying(true);
           addTimer(() => {
             if (cancelled) return;
             setIsLying(false);
+            // 寝転び終わったら、必ず「立った状態の正しい足元座標」に戻してから次の行動に移る
+            // （ここでリセットしないと、寝ている間の中央基準の座標がそのまま足元基準として解釈され、
+            //   次に椅子へ歩く際に宙に浮いたように見えるバグが起きていた）
+            setLeftPct(bedApproachLeft);
+            setTopPct(bedFloorTop);
+            leftRef.current = bedApproachLeft;
             busyRef.current = false;
           }, 6000);
         }, 2100);
@@ -442,12 +536,12 @@ function useGardenLife(centerLeft, centerTop, rangeLeft, rangeTop, hasField) {
       const delay = 28000 + Math.random() * 27000;
       addTimer(() => {
         if (cancelled) return;
-        const gateLeft = 88, gateTop = 80;
+        const gateLeft = 95, gateTop = 98;
         setPkg({ left: gateLeft, top: gateTop, stage: "waiting" });
         busyRef.current = true;
         addTimer(() => {
           if (cancelled) return;
-          moveTo(gateLeft, gateTop - 2, 2600);
+          moveTo(gateLeft, gateTop, 2600);
           addTimer(() => {
             if (cancelled) return;
             setPkg((p) => (p ? { ...p, stage: "collected" } : p));
@@ -463,9 +557,9 @@ function useGardenLife(centerLeft, centerTop, rangeLeft, rangeTop, hasField) {
       addTimer(() => {
         if (cancelled) return;
         if (!hasField) { scheduleFarming(); return; }
-        const fieldLeft = 30, fieldTop = 88;
+        const fieldLeft = 58, fieldTop = 98;
         busyRef.current = true;
-        moveTo(fieldLeft, fieldTop - 1, 2200);
+        moveTo(fieldLeft, fieldTop, 2200);
         addTimer(() => {
           if (cancelled) return;
           setIsFarming(true);
@@ -510,32 +604,23 @@ function PackageIcon() {
 
 // キャラクターを部屋・庭の中に配置する。
 // left/top はパーセント指定でアニメーション（CSSトランジション）、transformは常に固定値（アンカー・反転のみ）。
-function SheepSleepingIllustration({ size }) {
+function SheepSleepingHead({ size }) {
   return (
-    <svg viewBox="0 0 140 80" style={{ width: size * 1.3, height: size * 0.75, display: "block" }}>
-      {/* 掛け布団 */}
-      <ellipse cx="70" cy="55" rx="65" ry="22" fill="#C0838F" />
-      <path d="M8,50 Q70,38 132,50 L132,58 Q70,46 8,58 Z" fill="#A5606E" opacity="0.4" />
-      {/* 布団から頭だけ出ている（もこもこ頭・簡略版） */}
-      <g transform="translate(30,10)">
-        <circle cx="30" cy="30" r="26" fill="#F6EFDF" />
-        {[[10, 22, 9], [50, 22, 9], [8, 38, 7], [52, 38, 7], [20, 12, 7], [40, 12, 7], [30, 8, 8]].map(([cx, cy, r], i) => (
-          <circle key={i} cx={cx} cy={cy} r={r} fill="#F6EFDF" />
-        ))}
-        <ellipse cx="30" cy="34" rx="16" ry="14" fill="#FBF6EA" />
-        {/* 閉じた目 */}
-        <path d="M20,34 Q24,37 28,34" stroke="#3D3226" strokeWidth="2" fill="none" strokeLinecap="round" />
-        <path d="M32,34 Q36,37 40,34" stroke="#3D3226" strokeWidth="2" fill="none" strokeLinecap="round" />
-        <ellipse cx="30" cy="42" rx="3" ry="2" fill="#C98A6E" />
-        <circle cx="12" cy="40" r="4" fill="#F0B7A4" opacity="0.55" />
-        <circle cx="48" cy="40" r="4" fill="#F0B7A4" opacity="0.55" />
-        {/* 小さいツノ */}
-        <path d="M14,14 Q10,6 15,2 Q18,8 16,15 Z" fill="#D9AE6E" stroke="#A87D45" strokeWidth="0.8" />
-        <path d="M46,14 Q50,6 45,2 Q42,8 44,15 Z" fill="#D9AE6E" stroke="#A87D45" strokeWidth="0.8" />
-      </g>
-      {/* Zzz（すやすや） */}
-      <text x="92" y="20" fontSize="15" fill="#B8863B" opacity="0.75" fontFamily="Georgia, serif" fontStyle="italic">z</text>
-      <text x="102" y="11" fontSize="10" fill="#B8863B" opacity="0.6" fontFamily="Georgia, serif" fontStyle="italic">z</text>
+    <svg viewBox="0 0 60 60" style={{ width: size, height: size, display: "block", overflow: "visible" }}>
+      <circle cx="30" cy="32" r="24" fill="#F6EFDF" />
+      {[[12, 22, 8], [48, 22, 8], [10, 38, 6.5], [50, 38, 6.5], [21, 12, 6.5], [39, 12, 6.5], [30, 8, 7.5]].map(([cx, cy, r], i) => (
+        <circle key={i} cx={cx} cy={cy} r={r} fill="#F6EFDF" />
+      ))}
+      <ellipse cx="30" cy="35" rx="15" ry="13" fill="#FBF6EA" />
+      <path d="M21,35 Q25,38 29,35" stroke="#3D3226" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+      <path d="M31,35 Q35,38 39,35" stroke="#3D3226" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+      <ellipse cx="30" cy="42" rx="2.8" ry="1.8" fill="#C98A6E" />
+      <circle cx="13" cy="40" r="3.6" fill="#F0B7A4" opacity="0.55" />
+      <circle cx="47" cy="40" r="3.6" fill="#F0B7A4" opacity="0.55" />
+      <path d="M15,15 Q11,7 16,3 Q19,9 17,16 Z" fill="#D9AE6E" stroke="#A87D45" strokeWidth="0.8" />
+      <path d="M45,15 Q49,7 44,3 Q41,9 43,16 Z" fill="#D9AE6E" stroke="#A87D45" strokeWidth="0.8" />
+      <text x="48" y="14" fontSize="12" fill="#B8863B" opacity="0.75" fontFamily="Georgia, serif" fontStyle="italic">z</text>
+      <text x="56" y="6" fontSize="8" fill="#B8863B" opacity="0.6" fontFamily="Georgia, serif" fontStyle="italic">z</text>
     </svg>
   );
 }
@@ -549,11 +634,11 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
           left: `${leftPct}%`,
           top: `${topPct}%`,
           transform: "translate(-50%, -50%)",
-          transition: "left 2.2s ease-in-out, top 2.2s ease-in-out",
-          zIndex: 5
+          transition: "left 1.6s ease-in-out, top 1.6s ease-in-out",
+          zIndex: 6
         }}
       >
-        <SheepSleepingIllustration size={size} />
+        <SheepSleepingHead size={size * 0.62} />
       </div>
     );
   }
@@ -578,13 +663,15 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
 // ===== 家具・置物のミニアイコン（固定サイズのSVG、位置は呼び出し側のdivで指定） =====
 function BedIcon() {
   return (
-    <svg viewBox="0 0 60 40" width="100%" height="100%">
-      <rect x="0" y="6" width="6" height="30" rx="3" fill="#B98A5E" />
-      <rect x="2" y="12" width="56" height="24" rx="7" fill="#D9C9AE" />
+    <svg viewBox="0 0 60 46" width="100%" height="100%">
+      <rect x="0" y="4" width="7" height="34" rx="3" fill="#B98A5E" />
+      <rect x="2" y="12" width="56" height="24" rx="6" fill="#D9C9AE" />
       <rect x="2" y="12" width="56" height="9" rx="4" fill="#F0E6D2" />
       <rect x="7" y="15" width="15" height="6" rx="3" fill="#FFFDF8" />
       <circle cx="14.5" cy="18" r="1.3" fill="#E8B7C4" opacity="0.7" />
       <path d="M4,28 Q30,24 56,28" stroke="#C9B896" strokeWidth="1.5" fill="none" opacity="0.5" />
+      <rect x="3" y="38" width="4" height="7" fill="#8B6529" />
+      <rect x="52" y="38" width="4" height="7" fill="#8B6529" />
     </svg>
   );
 }
@@ -711,15 +798,25 @@ function ChairIcon() {
 }
 function PianoIcon() {
   return (
-    <svg viewBox="0 0 70 45" width="100%" height="100%">
-      <path d="M4,10 Q10,4 30,4 L60,4 Q66,4 66,12 L66,30 L20,30 Q4,30 4,18 Z" fill="#2E2118" />
-      <path d="M8,12 Q14,8 30,8 L58,8 Q62,8 62,14 L62,26 L22,26 Q8,26 8,16 Z" fill="#4A362A" opacity="0.5" />
-      <rect x="18" y="30" width="34" height="7" fill="#F6EFDF" />
-      {Array.from({ length: 11 }).map((_, i) => (
-        <rect key={i} x={18 + i * 3.1} y="30" width="2.5" height="7" fill="#1A1410" opacity={i % 2 === 0 ? 0 : 0.85} />
+    <svg viewBox="0 0 90 60" width="100%" height="100%">
+      {/* 大屋根（グランドピアノの曲線ボディ） */}
+      <path d="M8,20 Q6,10 22,8 L62,8 Q78,8 78,20 L78,30 Q78,36 68,38 L46,44 L22,38 Q8,35 8,28 Z" fill="#2E2118" />
+      <path d="M12,20 Q11,14 23,12 L60,12 Q73,12 73,20 L73,28 Q73,32 66,34 L46,39 L24,34 Q12,32 12,26 Z" fill="#4A362A" opacity="0.4" />
+      {/* 開いた蓋（支え棒付き） */}
+      <path d="M20,10 L46,4 L70,14 L66,17 L46,9 L23,15 Z" fill="#1A1410" opacity="0.9" />
+      <line x1="46" y1="9" x2="46" y2="30" stroke="#4A362A" strokeWidth="1.2" opacity="0.6" />
+      {/* 鍵盤側の面 */}
+      <path d="M22,38 L46,44 L68,38 L68,46 L46,52 L22,46 Z" fill="#1A1410" />
+      <path d="M26,39 L46,44 L64,39 L64,45 L46,49.5 L26,45 Z" fill="#F6EFDF" />
+      {Array.from({ length: 13 }).map((_, i) => (
+        <rect key={i} x={27 + i * 2.85} y="39.5" width="2.1" height="9" fill="#1A1410" opacity={i % 2 === 0 ? 0 : 0.9} transform={`skewX(${(i - 6) * 0.4})`} />
       ))}
-      <rect x="10" y="37" width="4" height="8" fill="#2E2118" />
-      <rect x="45" y="37" width="4" height="8" fill="#2E2118" />
+      {/* 譜面立て */}
+      <rect x="38" y="16" width="16" height="9" fill="#1A1410" opacity="0.55" />
+      {/* 脚（3本） */}
+      <rect x="14" y="35" width="4.5" height="14" fill="#2E2118" />
+      <rect x="72" y="27" width="4.5" height="16" fill="#2E2118" />
+      <rect x="44" y="50" width="4.5" height="10" fill="#2E2118" />
     </svg>
   );
 }
@@ -790,6 +887,16 @@ function ShopItemPreview({ item }) {
       </div>
     );
   }
+  if (item.category === "backdrop") {
+    return (
+      <div style={boxStyle}>
+        <svg viewBox="0 0 40 30" width="34" height="26">
+          <rect width="40" height="30" fill="#A8D4EC" />
+          <path d="M0,30 L10,12 L20,22 L28,8 L40,18 L40,30 Z" fill="#5E8A5E" />
+        </svg>
+      </div>
+    );
+  }
   const Icon = FURNITURE_ICON[item.key] || GARDEN_ICON[item.key];
   if (Icon) {
     return (
@@ -801,31 +908,176 @@ function ShopItemPreview({ item }) {
   return <div style={boxStyle} />;
 }
 
+// 家具は全て同じ「接地ライン」(top=98)に足元を揃え、横幅ぶん間隔を空けて重ならないように配置。
+// ラグだけは床に敷く別レイヤー（家具の手前・足元の空きスペースに独立して配置）。
+const FURNITURE_FLOOR_TOP = 98;
 const FURNITURE_LAYOUT = {
-  furniture_bed: { left: 16, top: 66, width: 26, z: 2 },
-  furniture_shelf: { left: 82, top: 52, width: 15, z: 2 },
-  furniture_plant: { left: 90, top: 74, width: 11, z: 2 },
-  furniture_rug: { left: 50, top: 86, width: 34, z: 1 },
-  furniture_chair: { left: 66, top: 74, width: 15, z: 2 },
-  furniture_piano: { left: 32, top: 66, width: 26, z: 2 }
+  furniture_bed: { left: 13, top: FURNITURE_FLOOR_TOP, width: 26, z: 2 },
+  furniture_piano: { left: 41, top: FURNITURE_FLOOR_TOP, width: 26, z: 2 },
+  furniture_shelf: { left: 63, top: FURNITURE_FLOOR_TOP, width: 15, z: 2 },
+  furniture_chair: { left: 79, top: FURNITURE_FLOOR_TOP, width: 15, z: 2 },
+  furniture_plant: { left: 93, top: FURNITURE_FLOOR_TOP, width: 11, z: 2 },
+  furniture_rug: { left: 50, top: 82, width: 26, z: 1 }
 };
+// 庭は奥行きのある2列（奥列・手前列）で、それぞれの列内で足元のラインを揃えて重ならないように配置。
+// 柵より手前に置かれるアイテムは柵を隠してよい。
+const GARDEN_BACK_TOP = 76;
+const GARDEN_FRONT_TOP = 98;
 const GARDEN_LAYOUT = {
-  garden_bench: { left: 14, top: 76, width: 20, z: 2 },
-  garden_fountain: { left: 84, top: 68, width: 16, z: 2 },
-  garden_lantern: { left: 24, top: 46, width: 10, z: 1 },
-  garden_flowerbed: { left: 72, top: 84, width: 20, z: 1 },
-  garden_field: { left: 30, top: 90, width: 26, z: 1 },
-  garden_gazebo: { left: 58, top: 40, width: 26, z: 1 },
-  garden_pond: { left: 46, top: 93, width: 24, z: 1 }
+  garden_gazebo: { left: 18, top: GARDEN_BACK_TOP, width: 26, z: 1 },
+  garden_lantern: { left: 50, top: GARDEN_BACK_TOP, width: 10, z: 1 },
+  garden_pond: { left: 80, top: GARDEN_BACK_TOP, width: 24, z: 1 },
+  garden_bench: { left: 12, top: GARDEN_FRONT_TOP, width: 20, z: 2 },
+  garden_fountain: { left: 34, top: GARDEN_FRONT_TOP, width: 16, z: 2 },
+  garden_field: { left: 58, top: GARDEN_FRONT_TOP, width: 26, z: 2 },
+  garden_flowerbed: { left: 86, top: GARDEN_FRONT_TOP, width: 20, z: 2 }
 };
 
 // ===== 部屋のシーン（正面から見たシンプルな部屋。中央寄せはCSSのleft/topで固定） =====
-function RoomScene({ equipped, owned }) {
-  const floorColor = MATERIAL_COLORS[equipped.floor || "floor_default"] || MATERIAL_COLORS.floor_default;
-  const wallColor = MATERIAL_COLORS[equipped.wall || "wall_default"] || MATERIAL_COLORS.wall_default;
+function FloorTexture({ material }) {
+  const box = { position: "absolute", inset: 0, width: "100%", height: "100%" };
+  const line = "rgba(60,40,20,0.16)";
+  if (material === "floor_tile") {
+    return (
+      <svg viewBox="0 0 200 68" preserveAspectRatio="none" style={box}>
+        {[25, 50, 75, 100, 125, 150, 175].map((x, i) => <line key={i} x1={x} y1="0" x2={x} y2="68" stroke={line} strokeWidth="1" />)}
+        <line x1="0" y1="34" x2="200" y2="34" stroke={line} strokeWidth="1" />
+      </svg>
+    );
+  }
+  if (material === "floor_terracotta") {
+    return (
+      <svg viewBox="0 0 200 68" preserveAspectRatio="none" style={box}>
+        {[33, 66, 99, 132, 165].map((x, i) => <line key={i} x1={x} y1="0" x2={x} y2="68" stroke="rgba(90,40,10,0.22)" strokeWidth="1.4" />)}
+        <line x1="0" y1="22" x2="200" y2="22" stroke="rgba(90,40,10,0.22)" strokeWidth="1.4" />
+        <line x1="0" y1="46" x2="200" y2="46" stroke="rgba(90,40,10,0.22)" strokeWidth="1.4" />
+      </svg>
+    );
+  }
+  if (material === "floor_tatami") {
+    return (
+      <svg viewBox="0 0 200 68" preserveAspectRatio="none" style={box}>
+        {[2, 68, 134].map((x, i) => (
+          <g key={i}>
+            <rect x={x} y="4" width="64" height="60" fill="none" stroke="#8B6529" strokeWidth="2" opacity="0.55" rx="2" />
+            {[20, 34, 48].map((yy, j) => <line key={j} x1={x + 5} y1={yy} x2={x + 59} y2={yy} stroke="#8B6529" strokeWidth="0.7" opacity="0.35" />)}
+          </g>
+        ))}
+      </svg>
+    );
+  }
+  if (material === "floor_american") {
+    return (
+      <svg viewBox="0 0 200 68" preserveAspectRatio="none" style={box}>
+        {[14, 28, 42, 56].map((y, i) => <line key={i} x1="0" y1={y} x2="200" y2={y} stroke={line} strokeWidth="1" />)}
+        {[15, 55, 95, 135, 175].map((x, i) => <path key={i} d={`M${x},0 Q${x + 4},14 ${x},28`} stroke={line} strokeWidth="0.7" fill="none" opacity="0.7" />)}
+      </svg>
+    );
+  }
+  if (material === "floor_chinese") {
+    return (
+      <svg viewBox="0 0 200 68" preserveAspectRatio="none" style={box}>
+        {Array.from({ length: 7 }).map((_, i) => (
+          <path key={i} d={`M${i * 30},68 L${i * 30 + 15},34 L${i * 30 + 30},68`} fill="none" stroke="#F0C955" strokeWidth="1.2" opacity="0.5" />
+        ))}
+      </svg>
+    );
+  }
+  if (material === "floor_indian") {
+    return (
+      <svg viewBox="0 0 200 68" preserveAspectRatio="none" style={box}>
+        {Array.from({ length: 9 }).map((_, i) => (
+          <rect key={i} x={i * 24} y="16" width="24" height="24" fill={i % 2 === 0 ? "#E8985F" : "#D9A054"} opacity="0.3" transform={`rotate(45 ${i * 24 + 12} 28)`} />
+        ))}
+      </svg>
+    );
+  }
+  if (material === "floor_carpet") {
+    return (
+      <svg viewBox="0 0 200 68" preserveAspectRatio="none" style={box}>
+        {Array.from({ length: 45 }).map((_, i) => (
+          <circle key={i} cx={(i % 15) * 14 + 5} cy={Math.floor(i / 15) * 22 + 10} r="0.9" fill="rgba(255,255,255,0.35)" />
+        ))}
+      </svg>
+    );
+  }
+  return null;
+}
+
+function WallTexture({ material }) {
+  const box = { position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0 };
+  if (material === "wall_stripe") {
+    return (
+      <svg viewBox="0 0 200 150" preserveAspectRatio="none" style={box}>
+        {Array.from({ length: 10 }).map((_, i) => <rect key={i} x={i * 20} y="0" width="10" height="150" fill="rgba(184,138,94,0.4)" />)}
+      </svg>
+    );
+  }
+  if (material === "wall_wood") {
+    return (
+      <svg viewBox="0 0 200 150" preserveAspectRatio="none" style={box}>
+        {Array.from({ length: 8 }).map((_, i) => <line key={i} x1={i * 26} y1="0" x2={i * 26} y2="150" stroke="rgba(0,0,0,0.2)" strokeWidth="1.5" />)}
+        {Array.from({ length: 6 }).map((_, i) => <path key={i} d={`M${10 + i * 33},10 Q${16 + i * 33},60 ${10 + i * 33},140`} stroke="rgba(0,0,0,0.12)" strokeWidth="1" fill="none" />)}
+      </svg>
+    );
+  }
+  if (material === "wall_washi") {
+    return (
+      <svg viewBox="0 0 200 150" preserveAspectRatio="none" style={box}>
+        {[50, 100, 150].map((x, i) => <line key={i} x1={x} y1="0" x2={x} y2="150" stroke="rgba(139,101,41,0.4)" strokeWidth="2" />)}
+        {[38, 76, 114].map((y, i) => <line key={i} x1="0" y1={y} x2="200" y2={y} stroke="rgba(139,101,41,0.4)" strokeWidth="2" />)}
+      </svg>
+    );
+  }
+  if (material === "wall_american") {
+    return (
+      <svg viewBox="0 0 200 150" preserveAspectRatio="none" style={box}>
+        {Array.from({ length: 8 }).map((_, row) => (
+          <g key={row}>
+            {Array.from({ length: 7 }).map((_, col) => (
+              <rect key={col} x={col * 36 - (row % 2) * 18} y={row * 19} width="34" height="17" fill="none" stroke="rgba(90,50,30,0.4)" strokeWidth="1" />
+            ))}
+          </g>
+        ))}
+      </svg>
+    );
+  }
+  if (material === "wall_indian") {
+    return (
+      <svg viewBox="0 0 200 150" preserveAspectRatio="none" style={box}>
+        {Array.from({ length: 10 }).map((_, i) => <path key={i} d={`M${i * 20},12 L${i * 20 + 10},2 L${i * 20 + 20},12`} fill="none" stroke="#C0454B" strokeWidth="1.5" opacity="0.6" />)}
+        {Array.from({ length: 10 }).map((_, i) => <path key={`b${i}`} d={`M${i * 20},140 L${i * 20 + 10},150 L${i * 20 + 20},140`} fill="none" stroke="#C0454B" strokeWidth="1.5" opacity="0.6" />)}
+      </svg>
+    );
+  }
+  if (material === "wall_chinese") {
+    return (
+      <svg viewBox="0 0 200 150" preserveAspectRatio="none" style={box}>
+        {[40, 100, 160].map((x, i) => <line key={i} x1={x} y1="0" x2={x} y2="150" stroke="#F0C955" strokeWidth="2" opacity="0.75" />)}
+      </svg>
+    );
+  }
+  if (material === "wall_mediterranean") {
+    return (
+      <svg viewBox="0 0 200 150" preserveAspectRatio="none" style={box}>
+        {Array.from({ length: 60 }).map((_, i) => (
+          <circle key={i} cx={(i % 12) * 17 + 5} cy={Math.floor(i / 12) * 30 + 10} r="4" fill="rgba(200,190,170,0.18)" />
+        ))}
+      </svg>
+    );
+  }
+  return null;
+}
+
+function RoomScene({ equipped, owned, onTogglePlacement }) {
+  const floorKey = equipped.floor || "floor_default";
+  const wallKey = equipped.wall || "wall_default";
+  const floorColor = MATERIAL_COLORS[floorKey] || MATERIAL_COLORS.floor_default;
+  const wallColor = MATERIAL_COLORS[wallKey] || MATERIAL_COLORS.wall_default;
   const windowFrameColor = MATERIAL_COLORS[equipped.window || "window_default"] || MATERIAL_COLORS.window_default;
   const sceneryColor = MATERIAL_COLORS[equipped.scenery || "scenery_default"] || MATERIAL_COLORS.scenery_default;
-  const placedFurniture = (owned || []).filter((k) => FURNITURE_ICON[k]);
+  const placedList = equipped.furniture || [];
+  const placedFurniture = placedList.filter((k) => FURNITURE_ICON[k]);
 
   const windowKey = equipped.window || "window_default";
   const windowShape =
@@ -834,22 +1086,35 @@ function RoomScene({ equipped, owned }) {
     : windowKey === "window_shoji" ? { borderRadius: 4, muntin: "grid" }
     : windowKey === "window_porthole" ? { borderRadius: "50%", muntin: "rivets" }
     : windowKey === "window_stained_glass" ? { borderRadius: 4, muntin: "stainedglass" }
+    : windowKey === "window_bamboo_washi" ? { borderRadius: "50%", muntin: "washi" }
+    : windowKey === "window_grand" ? { borderRadius: 6, muntin: "cross" }
     : { borderRadius: 4, muntin: "cross" };
+  const isBamboo = windowKey === "window_bamboo_washi";
+  const isGrand = windowKey === "window_grand";
+  const boxWidth = isGrand ? "46%" : "32%";
+  const boxHeight = isGrand ? "44%" : "34%";
 
   const sceneryKey = equipped.scenery || "scenery_default";
 
   const [leftPct, topPct, facingLeft, isWalking, isSitting, isLying] = useRoomLife(
     50, 78, 18, 6,
-    (owned || []).includes("furniture_chair"),
-    (owned || []).includes("furniture_bed")
+    placedFurniture.includes("furniture_chair"),
+    placedFurniture.includes("furniture_bed")
   );
 
   return (
     <div style={{ position: "relative", width: "100%", maxWidth: 480, margin: "0 auto", aspectRatio: "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor }}>
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", background: floorColor, zIndex: 0 }} />
+      <WallTexture material={wallKey} />
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", background: floorColor, zIndex: 0, overflow: "hidden" }}>
+        <FloorTexture material={floorKey} />
+      </div>
 
-      <div style={{ position: "absolute", left: "6%", top: "8%", width: "32%", height: "34%", background: windowFrameColor, borderRadius: windowShape.borderRadius === 4 ? 8 : windowShape.borderRadius, padding: "2.5%", boxSizing: "border-box", zIndex: 1 }}>
-        <div style={{ position: "relative", width: "100%", height: "100%", background: sceneryColor, borderRadius: windowShape.borderRadius, overflow: "hidden" }}>
+      <div style={{
+        position: "absolute", left: "6%", top: "8%", width: boxWidth, height: boxHeight,
+        background: isBamboo ? "repeating-conic-gradient(from 0deg, #C9B87C 0deg 7deg, #A8934F 7deg 14deg)" : windowFrameColor,
+        borderRadius: windowShape.borderRadius === 4 ? 8 : windowShape.borderRadius, padding: isBamboo ? "5%" : "2.5%", boxSizing: "border-box", zIndex: 1
+      }}>
+        <div style={{ position: "relative", width: "100%", height: "100%", background: isBamboo ? "#F0E9D6" : sceneryColor, borderRadius: windowShape.borderRadius, overflow: "hidden" }}>
           {sceneryKey === "scenery_aurora" && (
             <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
               <rect width="100" height="100" fill="#1A2340" />
@@ -871,10 +1136,67 @@ function RoomScene({ equipped, owned }) {
               <path d="M20,50 L30,50 L27,44 Q34,44 34,50 L44,50 L38,56 L14,56 Z" fill="#F6EFDF" opacity="0.85" />
             </svg>
           )}
+          {sceneryKey === "scenery_italy" && (
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+              <rect width="100" height="100" fill="#F6C97A" />
+              <circle cx="80" cy="20" r="10" fill="#FFE9A8" opacity="0.85" />
+              <rect y="60" width="100" height="40" fill="#7A9AC9" opacity="0.4" />
+              {/* コロッセオ風の建物 */}
+              <rect x="10" y="55" width="46" height="24" fill="#E8B87A" />
+              {Array.from({ length: 8 }).map((_, i) => <rect key={i} x={13 + i * 5.5} y="58" width="3" height="18" fill="#C9945A" opacity="0.7" />)}
+              <rect x="8" y="52" width="50" height="5" fill="#D9A468" />
+              {/* 運河とゴンドラ */}
+              <rect y="80" width="100" height="20" fill="#6C9BC4" />
+              <path d="M62,88 Q70,84 84,88 L82,92 L64,92 Z" fill="#3D2E12" />
+              <path d="M84,80 L84,88" stroke="#3D2E12" strokeWidth="1.5" />
+            </svg>
+          )}
+          {sceneryKey === "scenery_germany" && (
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+              <rect width="100" height="100" fill="#BFE0E8" />
+              <path d="M0,70 Q30,55 55,66 Q75,75 100,62 L100,100 L0,100 Z" fill="#7A9C70" />
+              {/* 尖塔のあるお城（ノイシュヴァンシュタイン風） */}
+              <rect x="38" y="40" width="24" height="30" fill="#E8E2D4" />
+              <rect x="33" y="30" width="9" height="40" fill="#D9D2C0" />
+              <path d="M33,30 L37.5,20 L42,30 Z" fill="#7A4A3D" />
+              <rect x="58" y="26" width="9" height="44" fill="#D9D2C0" />
+              <path d="M58,26 L62.5,16 L67,26 Z" fill="#7A4A3D" />
+              <path d="M38,40 L50,28 L62,40 Z" fill="#8B5E3C" />
+              <rect x="46" y="50" width="8" height="20" fill="#5A4A3D" opacity="0.8" />
+            </svg>
+          )}
+          {sceneryKey === "scenery_france" && (
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+              <rect width="100" height="100" fill="#E8D9E8" />
+              <rect y="70" width="100" height="30" fill="#8FAE84" opacity="0.7" />
+              <circle cx="72" cy="18" r="8" fill="#FFE9A8" opacity="0.85" />
+              {/* エッフェル塔風のシルエット */}
+              <path d="M50,20 L58,60 L64,60 L54,20 Z" fill="#3D2E12" opacity="0.85" />
+              <path d="M50,20 L42,60 L36,60 L46,20 Z" fill="#3D2E12" opacity="0.85" />
+              <path d="M38,60 L62,60 L58,72 L42,72 Z" fill="#3D2E12" opacity="0.85" />
+              <path d="M42,72 L58,72 L55,90 L45,90 Z" fill="#3D2E12" opacity="0.85" />
+              <line x1="40" y1="40" x2="60" y2="40" stroke="#3D2E12" strokeWidth="1.4" opacity="0.7" />
+              <line x1="37" y1="55" x2="63" y2="55" stroke="#3D2E12" strokeWidth="1.4" opacity="0.7" />
+            </svg>
+          )}
+          {isBamboo && (
+            <svg viewBox="0 0 100 100" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+              {[[20, 15, 70, 30], [75, 20, 30, 65], [15, 78, 65, 92], [10, 40, 25, 88]].map((d, i) => (
+                <line key={i} x1={d[0]} y1={d[1]} x2={d[2]} y2={d[3]} stroke="#D9CFB0" strokeWidth="0.8" opacity="0.6" />
+              ))}
+              <circle cx="50" cy="50" r="46" fill="none" stroke="#D9CFB0" strokeWidth="1" opacity="0.4" />
+            </svg>
+          )}
           {windowShape.muntin === "cross" && (
             <>
               <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 2, background: windowFrameColor, opacity: 0.8, transform: "translateX(-50%)" }} />
               <div style={{ position: "absolute", top: "50%", left: 0, right: 0, height: 2, background: windowFrameColor, opacity: 0.8, transform: "translateY(-50%)" }} />
+              {isGrand && (
+                <>
+                  <div style={{ position: "absolute", left: "25%", top: 0, bottom: 0, width: 1.5, background: windowFrameColor, opacity: 0.6 }} />
+                  <div style={{ position: "absolute", left: "75%", top: 0, bottom: 0, width: 1.5, background: windowFrameColor, opacity: 0.6 }} />
+                </>
+              )}
             </>
           )}
           {windowShape.muntin === "grid" && (
@@ -935,9 +1257,11 @@ function RoomScene({ equipped, owned }) {
 
 // ===== 庭のシーン =====
 function GardenScene({ equipped, owned }) {
-  const placedOrnaments = (owned || []).filter((k) => GARDEN_ICON[k]);
-  const hasField = (owned || []).includes("garden_field");
+  const placedList = equipped.garden || [];
+  const placedOrnaments = placedList.filter((k) => GARDEN_ICON[k]);
+  const hasField = placedOrnaments.includes("garden_field");
   const { leftPct, topPct, facingLeft, isWalking, isFarming, birds, pkg } = useGardenLife(50, 80, 22, 6, hasField);
+  const hasNearMountains = equipped.backdrop === "backdrop_mountains_near";
 
   return (
     <div style={{
@@ -952,11 +1276,14 @@ function GardenScene({ equipped, owned }) {
 
       <div style={{ position: "absolute", right: "8%", top: "9%", width: "13%", aspectRatio: "1/1", borderRadius: "50%", background: "#F6D46A", opacity: 0.9 }} />
 
-      {/* 遠くの緑の山々 */}
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: "22%", height: "24%", zIndex: 0 }}>
+      {/* 遠くの緑の山々（backdrop_mountains_near を装備すると、大きく・近く見える） */}
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: hasNearMountains ? "18%" : "22%", height: hasNearMountains ? "46%" : "24%", zIndex: 0, transition: "height 0.4s ease, bottom 0.4s ease" }}>
         <svg viewBox="0 0 400 90" width="100%" height="100%" preserveAspectRatio="none">
           <path d="M0,90 L40,30 L90,60 L140,15 L190,55 L240,25 L290,58 L340,20 L400,50 L400,90 Z" fill="#9FBFA0" opacity="0.6" />
           <path d="M0,90 L60,50 L120,70 L180,40 L250,68 L320,42 L400,65 L400,90 Z" fill="#7FA582" opacity="0.8" />
+          {hasNearMountains && (
+            <path d="M0,90 L50,44 L100,66 L160,38 L220,64 L280,40 L340,62 L400,48 L400,90 Z" fill="#5E8A5E" opacity="0.92" />
+          )}
         </svg>
       </div>
 
@@ -989,7 +1316,7 @@ function GardenScene({ equipped, owned }) {
 
       {/* 宅配便（ときどき門のあたりに届き、羊が取りに行く） */}
       {pkg && pkg.stage === "waiting" && (
-        <div style={{ position: "absolute", left: "88%", top: "80%", width: "9%", transform: "translate(-50%, -100%)", zIndex: 4 }}>
+        <div style={{ position: "absolute", left: "95%", top: "98%", width: "9%", transform: "translate(-50%, -100%)", zIndex: 4 }}>
           <PackageIcon />
         </div>
       )}
@@ -1009,7 +1336,7 @@ function GardenScene({ equipped, owned }) {
   );
 }
 
-export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, t }) {
+export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, t }) {
   const [view, setView] = useState("room");
   const [shopCategory, setShopCategory] = useState("hat");
 
@@ -1079,7 +1406,8 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
         <div className="space-y-2">
           {itemsInCategory.map((item) => {
             const owned = ownedKeys.includes(item.key);
-            const isEquipped = isMultiSlot ? owned : equipped[item.category] === item.key;
+            const isPlaced = isMultiSlot ? (equipped[item.category] || []).includes(item.key) : false;
+            const isEquipped = isMultiSlot ? isPlaced : equipped[item.category] === item.key;
             const canAfford = balance >= item.cost;
             return (
               <div key={item.key} className="flex items-center justify-between rounded-xl p-2.5" style={{ background: C.paper }}>
@@ -1092,7 +1420,11 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
                 </div>
                 {owned ? (
                   isMultiSlot ? (
-                    <span className="text-xs px-3 py-1.5 rounded-full" style={{ background: C.sage, color: "#FFFDF8" }}>{t("labelPlaced")}</span>
+                    <button type="button" onClick={() => onTogglePlacement(item.category, item.key)}
+                      className="text-xs px-3 py-1.5 rounded-full font-medium"
+                      style={{ background: isPlaced ? C.sage : C.card, color: isPlaced ? "#FFFDF8" : C.inkSoft, border: `1px solid ${isPlaced ? C.sage : C.line}` }}>
+                      {isPlaced ? t("btnPutAway") : t("btnPlace")}
+                    </button>
                   ) : (
                     <button type="button" onClick={() => onEquip(item.category, isEquipped ? null : item.key)}
                       className="text-xs px-3 py-1.5 rounded-full font-medium"
