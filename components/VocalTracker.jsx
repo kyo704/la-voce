@@ -1356,6 +1356,9 @@ export default function VocalTracker({ userId, userEmail }) {
                             className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                         </div>
                       </div>
+                      <p className="text-xs rounded-xl p-2.5 leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
+                        {t("noteNotationRule")}
+                      </p>
                       <NumberField label={t("labelResonanceScore")} value={formData.resonanceScore} step={1} min={0} max={10}
                         onChange={(v) => setFormData((f) => ({ ...f, resonanceScore: v }))} />
                       <div>
@@ -1492,6 +1495,26 @@ export default function VocalTracker({ userId, userEmail }) {
                             onChange={(e) => setProfile((p) => ({ ...p, vocal_range_high: e.target.value }))}
                             className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
                         </div>
+                      </div>
+                      <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                        <p className="text-xs font-medium mb-2">{t("labelVoiceRangeRefTitle")}</p>
+                        <div className="space-y-1">
+                          {[
+                            ["voiceSoprano", "C4 – C6"],
+                            ["voiceMezzo", "A3 – A5"],
+                            ["voiceAlto", "F3 – F5"],
+                            ["voiceCountertenor", "G3 – E5"],
+                            ["voiceTenor", "C3 – C5"],
+                            ["voiceBaritone", "A2 – A4"],
+                            ["voiceBass", "E2 – E4"]
+                          ].map(([key, range]) => (
+                            <div key={key} className="flex items-center justify-between text-xs">
+                              <span style={{ color: C.inkSoft }}>{t(key)}</span>
+                              <span className="ff-mono">{range}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("noteVoiceRangeRef")}</p>
                       </div>
                       <div>
                         <label className="text-sm font-medium block mb-1.5">{t("labelTechnicalGoal")}</label>
