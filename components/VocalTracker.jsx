@@ -92,6 +92,37 @@ const PROFESSION_THEORY_PAGES = {
   pop_musical: "/performer-theory"
 };
 const VOCAL_PROFESSIONS = ["singer", "announcer", "voice_actor", "pop_musical"];
+// 「今日の負荷」の抽象スキーマ。type はログの種類、durationMin/intensity は職業共通、
+// それ以外は職業ごとに意味のある追加項目（分析エンジン側は type を見て解釈する）。
+const LOAD_TYPE_BY_PROFESSION = {
+  singer: "sustained_singing",
+  announcer: "live_broadcast",
+  voice_actor: "character_switching",
+  pop_musical: "loud_venue_performance"
+};
+const LOAD_FIELDS_BY_PROFESSION = {
+  singer: [
+    { key: "vocalRangeLowUsed", type: "text", labelKey: "loadVocalRangeLowUsed", placeholderKey: "placeholderNoteExample" },
+    { key: "vocalRangeHighUsed", type: "text", labelKey: "loadVocalRangeHighUsed", placeholderKey: "placeholderNoteExample" },
+    { key: "dynamicsRange", type: "select", labelKey: "loadDynamicsRange", options: ["pp-mp", "mp-mf", "mf-f", "f-ff", "pp-ff"] },
+    { key: "passaggioCrossings", type: "number", labelKey: "loadPassaggioCrossings" }
+  ],
+  announcer: [
+    { key: "onAirMinutes", type: "number", labelKey: "loadOnAirMinutes" },
+    { key: "isLive", type: "boolean", labelKey: "loadIsLive" },
+    { key: "consecutiveSegments", type: "number", labelKey: "loadConsecutiveSegments" }
+  ],
+  voice_actor: [
+    { key: "sessionMinutes", type: "number", labelKey: "loadSessionMinutes" },
+    { key: "characterCount", type: "number", labelKey: "loadCharacterCount" },
+    { key: "hasExtremeVocalization", type: "boolean", labelKey: "loadHasExtremeVocalization" }
+  ],
+  pop_musical: [
+    { key: "venueVolume", type: "scale5", labelKey: "loadVenueVolume" },
+    { key: "monitorVolume", type: "scale5", labelKey: "loadMonitorVolume" },
+    { key: "consecutivePerformanceDay", type: "number", labelKey: "loadConsecutivePerformanceDay" }
+  ]
+};
 
 /* ---------- helpers ---------- */
 function toISODate(d) {
@@ -226,7 +257,8 @@ function buildFormData(date, entries) {
       resonanceScore: existing.resonanceScore ?? "",
       bedtime: existing.bedtime || "",
       dinnerTime: existing.dinnerTime || "",
-      dinnerTags: existing.dinnerTags || []
+      dinnerTags: existing.dinnerTags || [],
+      loadDetail: existing.loadDetail || {}
     };
   }
   return {
@@ -261,7 +293,8 @@ function buildFormData(date, entries) {
     notes: "",
     weightKg: "",
     meals: [],
-    exercises: []
+    exercises: [],
+    loadDetail: {}
   };
 }
 function computeBMI(weightKg, heightCm) {
@@ -410,7 +443,8 @@ function rowToEntry(row) {
     resonanceScore: row.resonance_score,
     bedtime: row.bedtime || "",
     dinnerTime: row.dinner_time || "",
-    dinnerTags: row.dinner_tags || []
+    dinnerTags: row.dinner_tags || [],
+    loadDetail: row.load_detail || {}
   };
 }
 function numOrNull(v) {
@@ -477,7 +511,8 @@ function entryToRow(userId, e) {
     resonance_score: numOrNull(e.resonanceScore),
     bedtime: e.bedtime || "",
     dinner_time: e.dinnerTime || "",
-    dinner_tags: e.dinnerTags || []
+    dinner_tags: e.dinnerTags || [],
+    load_detail: e.loadDetail || {}
   };
 }
 
@@ -636,6 +671,97 @@ function NumberField({ label, value, onChange, step = 1, min = -Infinity, max = 
           <Plus size={14} />
         </button>
         {suffix && <span className="text-xs ff-mono shrink-0 w-8" style={{ color: C.inkSoft }}>{suffix}</span>}
+      </div>
+    </div>
+  );
+}
+
+// 「今日の負荷」——職業ごとに意味のある指標だけを、共通の抽象スキーマ（type/durationMin/intensity + 職業別の追加項目）で記録する。
+// 分析エンジン側は type を見て解釈するため、ここは「どの項目を見せるか」の設定だけを担う。
+function LoadTracker({ profession, loadDetail, onChange, t }) {
+  const fields = LOAD_FIELDS_BY_PROFESSION[profession] || LOAD_FIELDS_BY_PROFESSION.singer;
+  const update = (patch) => onChange({ ...loadDetail, ...patch });
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-3">
+        <NumberField label={t("loadDurationMin")} value={loadDetail.durationMin ?? ""} step={5} min={0} max={600}
+          suffix={t("unitMinutes")} onChange={(v) => update({ durationMin: v })} />
+        <div>
+          <label className="text-sm font-medium block mb-1.5">{t("loadIntensity")}</label>
+          <div className="flex gap-1.5">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <button key={n} type="button" onClick={() => update({ intensity: n })}
+                className="flex-1 h-10 rounded-lg border text-sm font-medium"
+                style={{
+                  background: (loadDetail.intensity || 0) >= n ? C.curtain : C.paper,
+                  color: (loadDetail.intensity || 0) >= n ? "#FFFDF8" : C.inkSoft,
+                  borderColor: (loadDetail.intensity || 0) >= n ? C.curtain : C.line
+                }}>
+                {n}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {fields.map((f) => {
+          if (f.type === "text") {
+            return (
+              <div key={f.key}>
+                <label className="text-sm font-medium block mb-1.5">{t(f.labelKey)}</label>
+                <input type="text" value={loadDetail[f.key] || ""} placeholder={f.placeholderKey ? t(f.placeholderKey) : ""}
+                  onChange={(e) => update({ [f.key]: e.target.value })}
+                  className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+              </div>
+            );
+          }
+          if (f.type === "number") {
+            return (
+              <NumberField key={f.key} label={t(f.labelKey)} value={loadDetail[f.key] ?? ""} step={1} min={0} max={200}
+                onChange={(v) => update({ [f.key]: v })} />
+            );
+          }
+          if (f.type === "boolean") {
+            return (
+              <div key={f.key}>
+                <label className="text-sm font-medium block mb-1.5">{t(f.labelKey)}</label>
+                <div className="flex gap-2">
+                  <Chip label={t("labelYes")} active={loadDetail[f.key] === true} onClick={() => update({ [f.key]: true })} />
+                  <Chip label={t("labelNo")} active={loadDetail[f.key] === false} onClick={() => update({ [f.key]: false })} />
+                </div>
+              </div>
+            );
+          }
+          if (f.type === "select") {
+            return (
+              <div key={f.key}>
+                <label className="text-sm font-medium block mb-1.5">{t(f.labelKey)}</label>
+                <MiniSelect value={loadDetail[f.key] || f.options[0]} onChange={(v) => update({ [f.key]: v })} options={f.options} />
+              </div>
+            );
+          }
+          if (f.type === "scale5") {
+            return (
+              <div key={f.key}>
+                <label className="text-sm font-medium block mb-1.5">{t(f.labelKey)}</label>
+                <div className="flex gap-1.5">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <button key={n} type="button" onClick={() => update({ [f.key]: n })}
+                      className="flex-1 h-9 rounded-lg border text-xs font-medium"
+                      style={{
+                        background: (loadDetail[f.key] || 0) >= n ? C.gold : C.paper,
+                        color: (loadDetail[f.key] || 0) >= n ? "#FFFDF8" : C.inkSoft,
+                        borderColor: (loadDetail[f.key] || 0) >= n ? C.gold : C.line
+                      }}>
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          return null;
+        })}
       </div>
     </div>
   );
@@ -1072,6 +1198,42 @@ export default function VocalTracker({ userId, userEmail }) {
       flags: flags.map((f) => f.flagKey)
     };
   }, [entries, selectedDate]);
+  // 職業ごとに、危険信号を検知する時間軸としきい値を変える。
+  // 声優＝急性（その日のセッション単体）、アナウンサー＝本番前（直近数日の累積）、
+  // ポップス/ミュージカル歌手＝慢性（連続公演日数）。声楽家は既存の yesterdayContext が担う。
+  const loadWarnings = useMemo(() => {
+    const profession = profile.vocal_profession || "singer";
+    const today = formData ? formData.loadDetail || {} : {};
+    const warnings = [];
+
+    if (profession === "voice_actor") {
+      const mins = Number(today.sessionMinutes) || 0;
+      if (today.hasExtremeVocalization === true && mins >= 120) {
+        warnings.push("loadWarnVoiceActorAcute");
+      }
+    }
+
+    if (profession === "announcer") {
+      const recentDates = [addDays(selectedDate, -1), addDays(selectedDate, -2)];
+      const recentMinutes = recentDates.reduce((sum, d) => {
+        const e = entries[d];
+        const m = e && e.loadDetail ? Number(e.loadDetail.onAirMinutes) || 0 : 0;
+        return sum + m;
+      }, 0);
+      if (recentMinutes >= 180) {
+        warnings.push("loadWarnAnnouncerPreBroadcast");
+      }
+    }
+
+    if (profession === "pop_musical") {
+      const day = Number(today.consecutivePerformanceDay) || 0;
+      if (day >= 3) {
+        warnings.push("loadWarnPopMusicalConsecutive");
+      }
+    }
+
+    return warnings;
+  }, [profile.vocal_profession, formData, entries, selectedDate]);
   // 分析タブ用の「声の状態の予測」。selectedDate（今日タブでの表示中の日）とは独立して、
   // 常に実際の「今日」から見た前日の記録をもとに、理論的な根拠つきで解説する。
   const voicePrediction = useMemo(() => {
@@ -2240,6 +2402,21 @@ export default function VocalTracker({ userId, userEmail }) {
                           </div>
                         </div>
                       )}
+                    </SectionCard>
+
+                    <SectionCard title={t("sectionLoad")} icon={Sparkles}>
+                      <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteLoadTracker")}</p>
+                      {loadWarnings.length > 0 && (
+                        <div className="space-y-1.5">
+                          {loadWarnings.map((wKey) => (
+                            <div key={wKey} className="text-xs rounded-lg p-2.5" style={{ background: "rgba(184,49,49,0.08)", color: C.curtain }}>
+                              ⚠ {t(wKey)}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      <LoadTracker profession={profile.vocal_profession || "singer"} loadDetail={formData.loadDetail || {}} t={t}
+                        onChange={(next) => setFormData((f) => ({ ...f, loadDetail: next }))} />
                     </SectionCard>
 
                     <SectionCard title={t("sectionExercise")} icon={Dumbbell}>
