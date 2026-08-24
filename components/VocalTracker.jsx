@@ -278,7 +278,7 @@ function newMealItem(slot = "朝食") {
 function buildFoodLibrary(entries, currentMeals) {
   const map = new Map();
   FOOD_PRESETS.forEach((f) => {
-    map.set(f.name, { name: f.name, carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber, isPreset: true, unit: f.unit || null, unitWeight: f.unitWeight || null, date: "0000-00-00" });
+    map.set(f.name, { name: f.name, reading: f.reading || null, i18n: f.i18n || null, carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber, isPreset: true, unit: f.unit || null, unitWeight: f.unitWeight || null, date: "0000-00-00" });
   });
   const consider = (meals, date) => {
     (meals || []).forEach((m) => {
@@ -678,7 +678,15 @@ function toHiragana(str) {
 function normalizeForSearch(str) {
   return toHiragana((str || "").trim().toLowerCase());
 }
-function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood, t }) {
+// 食品名を現在の表示言語で返す（翻訳が無ければ日本語名のまま）
+function foodDisplayName(foodItem, language) {
+  if (!foodItem) return "";
+  if (language && language !== "ja" && foodItem.i18n && foodItem.i18n[language]) {
+    return foodItem.i18n[language];
+  }
+  return foodItem.name;
+}
+function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood, t, language }) {
   const [open, setOpen] = useState(false);
   const q = normalizeForSearch(value);
   const matches = q
@@ -711,30 +719,35 @@ function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood, 
           className="absolute left-0 right-0 mt-1 rounded-lg border overflow-hidden max-h-60 overflow-y-auto"
           style={{ background: C.card, borderColor: C.line, zIndex: 20, boxShadow: "0 6px 16px rgba(36,25,20,0.15)" }}
         >
-          {matches.map((f, i) => (
-            <button
-              key={f.name}
-              type="button"
-              onMouseDown={(e) => { e.preventDefault(); onSelectFood(f); setOpen(false); }}
-              className="w-full text-left px-2.5 py-2 text-xs"
-              style={{ color: C.ink, borderTop: i > 0 ? `1px solid ${C.line}` : "none" }}
-            >
-              {f.isPreset && <span className="ff-mono mr-1" style={{ color: C.gold }}>[{t("labelPreset")}{f.unit ? `・1${f.unit}${t("labelUnitAvailable")}` : ""}]</span>}
-              {f.name}
-              <span className="ml-1.5" style={{ color: C.inkSoft }}>
-                {f.isPreset
-                  ? `（100gあたり 炭${f.carbs}・蛋${f.protein}・脂${f.fat}・繊${f.fiber}g）`
-                  : `（炭${f.carbs || 0}・蛋${f.protein || 0}・脂${f.fat || 0}・繊${f.fiber || 0}g）`}
-              </span>
-            </button>
-          ))}
+          {matches.map((f, i) => {
+            const displayName = foodDisplayName(f, language);
+            const showJapaneseSuffix = language && language !== "ja" && f.i18n && f.i18n[language];
+            return (
+              <button
+                key={f.name}
+                type="button"
+                onMouseDown={(e) => { e.preventDefault(); onSelectFood(f); setOpen(false); }}
+                className="w-full text-left px-2.5 py-2 text-xs"
+                style={{ color: C.ink, borderTop: i > 0 ? `1px solid ${C.line}` : "none" }}
+              >
+                {f.isPreset && <span className="ff-mono mr-1" style={{ color: C.gold }}>[{t("labelPreset")}{f.unit ? `・1${f.unit}${t("labelUnitAvailable")}` : ""}]</span>}
+                {displayName}
+                {showJapaneseSuffix && <span className="ml-1" style={{ color: C.inkSoft, fontSize: "0.85em" }}>（{f.name}）</span>}
+                <span className="ml-1.5" style={{ color: C.inkSoft }}>
+                  {f.isPreset
+                    ? `（100gあたり 炭${f.carbs}・蛋${f.protein}・脂${f.fat}・繊${f.fiber}g）`
+                    : `（炭${f.carbs || 0}・蛋${f.protein || 0}・脂${f.fat || 0}・繊${f.fiber || 0}g）`}
+                </span>
+              </button>
+            );
+          })}
         </div>
       )}
     </div>
   );
 }
 
-function MealItemRow({ item, onChange, onRemove, foodLibrary, t }) {
+function MealItemRow({ item, onChange, onRemove, foodLibrary, t, language }) {
   function setQty(qtyMode, qtyInput) {
     const base = item.presetBase || { carbs: 0, protein: 0, fat: 0, fiber: 0 };
     const grams = qtyMode === "unit" ? (Number(qtyInput) || 0) * (item.presetUnitWeight || 0) : (Number(qtyInput) || 0);
@@ -753,7 +766,7 @@ function MealItemRow({ item, onChange, onRemove, foodLibrary, t }) {
       const grams = hasUnit ? f.unitWeight : 100;
       const factor = grams / 100;
       onChange({
-        ...item, name: f.name, isPreset: true,
+        ...item, name: f.name, isPreset: true, presetI18n: f.i18n || null,
         presetBase: { carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber },
         presetUnit: f.unit || null,
         presetUnitWeight: f.unitWeight || null,
@@ -762,9 +775,10 @@ function MealItemRow({ item, onChange, onRemove, foodLibrary, t }) {
         fat: roundTo1(f.fat * factor), fiber: roundTo1(f.fiber * factor)
       });
     } else {
-      onChange({ ...item, name: f.name, isPreset: false, presetBase: null, presetUnit: null, presetUnitWeight: null, grams: "", carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber });
+      onChange({ ...item, name: f.name, isPreset: false, presetBase: null, presetI18n: null, presetUnit: null, presetUnitWeight: null, grams: "", carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber });
     }
   }
+  const translatedLabel = item.isPreset && language && language !== "ja" && item.presetI18n && item.presetI18n[language];
   return (
     <div className="rounded-xl border p-3" style={{ borderColor: C.line, background: C.paper }}>
       <div className="flex items-center gap-2 mb-2">
@@ -772,13 +786,17 @@ function MealItemRow({ item, onChange, onRemove, foodLibrary, t }) {
           value={item.name}
           foodLibrary={foodLibrary}
           t={t}
-          onNameChange={(name) => onChange({ ...item, name, isPreset: false, presetBase: null })}
+          language={language}
+          onNameChange={(name) => onChange({ ...item, name, isPreset: false, presetBase: null, presetI18n: null })}
           onSelectFood={handleSelectFood}
         />
         <button type="button" onClick={onRemove} className="shrink-0" style={{ color: C.inkSoft }}>
           <X size={15} />
         </button>
       </div>
+      {translatedLabel && (
+        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>🌐 {translatedLabel}</p>
+      )}
 
       {item.isPreset ? (
         <>
@@ -1249,7 +1267,7 @@ export default function VocalTracker({ userId, userEmail }) {
     const factor = grams / 100;
     const item = {
       ...newMealItem(slot),
-      name: preset.name, isPreset: true,
+      name: preset.name, isPreset: true, presetI18n: preset.i18n || null,
       presetBase: { carbs: preset.carbs, protein: preset.protein, fat: preset.fat, fiber: preset.fiber },
       presetUnit: preset.unit || null,
       presetUnitWeight: preset.unitWeight || null,
@@ -1748,17 +1766,21 @@ export default function VocalTracker({ userId, userEmail }) {
                         <div key={slot}>
                           <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>{t(MEAL_SLOT_KEYS[slot])}</p>
                           <div className="flex flex-wrap gap-1.5 mb-2">
-                            {QUICK_ADD_FOODS.map((name) => (
-                              <button key={name} type="button" onClick={() => quickAddFood(slot, name)}
-                                className="px-2.5 py-1 rounded-full text-xs font-medium border"
-                                style={{ borderColor: C.line, color: C.inkSoft, background: C.card }}>
-                                + {name}
-                              </button>
-                            ))}
+                            {QUICK_ADD_FOODS.map((name) => {
+                              const preset = FOOD_PRESETS.find((p) => p.name === name);
+                              const label = preset ? foodDisplayName(preset, language) : name;
+                              return (
+                                <button key={name} type="button" onClick={() => quickAddFood(slot, name)}
+                                  className="px-2.5 py-1 rounded-full text-xs font-medium border"
+                                  style={{ borderColor: C.line, color: C.inkSoft, background: C.card }}>
+                                  + {label}
+                                </button>
+                              );
+                            })}
                           </div>
                           <div className="space-y-2">
                             {(formData.meals || []).filter((m) => m.slot === slot).map((m) => (
-                              <MealItemRow key={m.id} item={m} foodLibrary={foodLibrary} t={t} onChange={(next) => updateMeal(m.id, next)} onRemove={() => removeMeal(m.id)} />
+                              <MealItemRow key={m.id} item={m} foodLibrary={foodLibrary} t={t} language={language} onChange={(next) => updateMeal(m.id, next)} onRemove={() => removeMeal(m.id)} />
                             ))}
                           </div>
                           <button type="button" onClick={() => addMeal(slot)}

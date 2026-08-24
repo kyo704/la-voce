@@ -18,11 +18,12 @@ const MATERIAL_COLORS = {
   wall_washi: "#EDE6D3", wall_mediterranean: "#F2ECDD", wall_indian: "#E8985F", wall_american: "#C9836A", wall_chinese: "#C0454B",
   window_default: "#FFFDF8", window_wood: "#8B5E3C", window_blue: "#5C7599",
   window_shoji: "#EDE6D3", window_mediterranean: "#8FA9C9", window_indian: "#D9A054", window_american: "#FFFDF8", window_chinese: "#C0454B",
-  scenery_default: "#BFE0E8", scenery_night: "#2E3A5C", scenery_sakura: "#F2C9D3"
+  window_stained_glass: "#8B6529", window_porthole: "#9FB0BA",
+  scenery_default: "#BFE0E8", scenery_night: "#2E3A5C", scenery_sakura: "#F2C9D3", scenery_aurora: "#2E3A5C", scenery_ocean: "#5C9AC9"
 };
 
 // ===== 羊のキャラクター（チビ体型・二頭身） =====
-function SheepCharacter({ equipped, size = 120, isWalking = false, isFarming = false }) {
+function SheepCharacter({ equipped, size = 120, isWalking = false, isFarming = false, showBook = false }) {
   const bodyColor = "#F6EFDF";
   const bodyShade = "#EAE0C8";
   return (
@@ -113,6 +114,28 @@ function SheepCharacter({ equipped, size = 120, isWalking = false, isFarming = f
           <path d="M56,109 L53,150 M104,109 L107,150" stroke="#6B4526" strokeWidth="2" opacity="0.5" fill="none" />
         </g>
       )}
+      {equipped.outfit === "outfit_kimono" && (
+        <g>
+          <path d="M50,106 Q52,100 62,104 L60,170 Q80,180 100,170 L98,104 Q108,100 110,106 L108,172 Q80,184 52,172 Z" fill="#5B7FA6" opacity="0.94" />
+          <path d="M62,104 L80,120 L98,104 L94,110 L80,124 L66,110 Z" fill="#FBF6EA" opacity="0.9" />
+          {[112, 128, 144, 160].map((y, i) => (
+            <circle key={i} cx={i % 2 === 0 ? 68 : 92} cy={y} r="2.6" fill="#F2C9D3" opacity="0.85" />
+          ))}
+          <rect x="70" y="118" width="20" height="46" fill="#C0454B" opacity="0.92" />
+          <path d="M70,130 L90,130 M70,140 L90,140" stroke="#96323A" strokeWidth="1.2" opacity="0.6" />
+          <path d="M72,118 Q80,112 88,118 L86,124 Q80,120 74,124 Z" fill="#96323A" />
+        </g>
+      )}
+      {equipped.outfit === "outfit_tuxedo" && (
+        <g>
+          <path d="M52,106 L108,106 L102,172 Q80,180 58,172 Z" fill="#1A1A1E" opacity="0.95" />
+          <path d="M62,108 Q80,102 98,108 L92,168 Q80,174 68,168 Z" fill="#FBF6EA" />
+          <path d="M62,108 L78,124 L69,132 L58,112 Z" fill="#1A1A1E" />
+          <path d="M98,108 L82,124 L91,132 L102,112 Z" fill="#1A1A1E" />
+          <path d="M74,110 L80,120 L86,110 L83,116 L80,122 L77,116 Z" fill="#7A1F2B" />
+          {[126, 138, 150].map((y, i) => <circle key={i} cx="80" cy={y} r="1.6" fill="#2E2E33" />)}
+        </g>
+      )}
 
       <circle cx="80" cy="70" r="46" fill={bodyColor} />
       {[[40, 55, 15], [120, 55, 15], [36, 80, 13], [124, 80, 13], [50, 34, 13], [110, 34, 13], [80, 26, 15]].map(([cx, cy, r], i) => (
@@ -199,6 +222,14 @@ function SheepCharacter({ equipped, size = 120, isWalking = false, isFarming = f
         </g>
       )}
 
+      {showBook && (
+        <g>
+          <path d="M58,118 L80,124 L102,118 L102,138 L80,144 L58,138 Z" fill="#FBF6EA" stroke="#C9B896" strokeWidth="1" />
+          <path d="M80,124 L80,144" stroke="#C9B896" strokeWidth="1" />
+          <path d="M62,122 L76,127 M62,128 L76,133 M84,127 L98,122 M84,133 L98,128" stroke="#D9C7A8" strokeWidth="0.8" opacity="0.6" fill="none" />
+        </g>
+      )}
+
       <ellipse className="sheep-eye" cx="66" cy="76" rx="4" ry="4" fill="#3D3226" />
       <ellipse className="sheep-eye" cx="94" cy="76" rx="4" ry="4" fill="#3D3226" />
       <ellipse cx="80" cy="88" rx="5" ry="3.5" fill="#C98A6E" />
@@ -251,6 +282,102 @@ function useWanderPercent(centerLeft, centerTop, rangeLeft, rangeTop) {
   }, [centerLeft, centerTop, rangeLeft, rangeTop]);
 
   return [leftPct, topPct, facingLeft, isWalking];
+}
+
+// ===== 部屋専用：椅子に座って本を読んだり、ベッドで眠ったりする「生活感」フック =====
+function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, hasChair, hasBed) {
+  const [leftPct, setLeftPct] = useState(centerLeft);
+  const [topPct, setTopPct] = useState(centerTop);
+  const [facingLeft, setFacingLeft] = useState(false);
+  const [isWalking, setIsWalking] = useState(false);
+  const [isSitting, setIsSitting] = useState(false);
+  const [isLying, setIsLying] = useState(false);
+  const leftRef = useRef(centerLeft);
+  const busyRef = useRef(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const timers = [];
+    const addTimer = (fn, ms) => { const id = setTimeout(fn, ms); timers.push(id); return id; };
+
+    function moveTo(nl, nt, duration) {
+      setFacingLeft(nl < leftRef.current - 1);
+      leftRef.current = nl;
+      setIsWalking(true);
+      setLeftPct(nl);
+      setTopPct(nt);
+      addTimer(() => { if (!cancelled) setIsWalking(false); }, duration);
+    }
+
+    function scheduleWander() {
+      const delay = 3000 + Math.random() * 2500;
+      addTimer(() => {
+        if (cancelled) return;
+        if (busyRef.current) { scheduleWander(); return; }
+        let nl, nt, tries = 0;
+        do {
+          const u = Math.random() * 2 - 1;
+          const v = Math.random() * 2 - 1;
+          if (u * u + v * v <= 1) { nl = centerLeft + u * rangeLeft; nt = centerTop + v * rangeTop; break; }
+          tries += 1;
+        } while (tries < 20);
+        if (nl === undefined) { nl = centerLeft; nt = centerTop; }
+        moveTo(nl, nt, 2200);
+        scheduleWander();
+      }, delay);
+    }
+
+    function scheduleSitting() {
+      const delay = 20000 + Math.random() * 20000;
+      addTimer(() => {
+        if (cancelled) return;
+        if (!hasChair) { scheduleSitting(); return; }
+        const chairLeft = 66, chairTop = 66;
+        busyRef.current = true;
+        moveTo(chairLeft, chairTop, 2000);
+        addTimer(() => {
+          if (cancelled) return;
+          setIsSitting(true);
+          addTimer(() => {
+            if (cancelled) return;
+            setIsSitting(false);
+            busyRef.current = false;
+          }, 5500);
+        }, 2100);
+        scheduleSitting();
+      }, delay);
+    }
+
+    function scheduleLying() {
+      const delay = 26000 + Math.random() * 24000;
+      addTimer(() => {
+        if (cancelled) return;
+        if (!hasBed) { scheduleLying(); return; }
+        const bedLeft = 17, bedTop = 66;
+        busyRef.current = true;
+        moveTo(bedLeft, bedTop, 2000);
+        addTimer(() => {
+          if (cancelled) return;
+          setLeftPct(17);
+          setTopPct(57);
+          setIsLying(true);
+          addTimer(() => {
+            if (cancelled) return;
+            setIsLying(false);
+            busyRef.current = false;
+          }, 6000);
+        }, 2100);
+        scheduleLying();
+      }, delay);
+    }
+
+    scheduleWander();
+    scheduleSitting();
+    scheduleLying();
+    return () => { cancelled = true; timers.forEach(clearTimeout); };
+  }, [centerLeft, centerTop, rangeLeft, rangeTop, hasChair, hasBed]);
+
+  return [leftPct, topPct, facingLeft, isWalking, isSitting, isLying];
 }
 
 // ===== 庭専用：鳥が飛んだり、宅配便が届いて羊が取りに行ったりする「生活感」フック =====
@@ -383,7 +510,53 @@ function PackageIcon() {
 
 // キャラクターを部屋・庭の中に配置する。
 // left/top はパーセント指定でアニメーション（CSSトランジション）、transformは常に固定値（アンカー・反転のみ）。
-function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWalking, isFarming }) {
+function SheepSleepingIllustration({ size }) {
+  return (
+    <svg viewBox="0 0 140 80" style={{ width: size * 1.3, height: size * 0.75, display: "block" }}>
+      {/* 掛け布団 */}
+      <ellipse cx="70" cy="55" rx="65" ry="22" fill="#C0838F" />
+      <path d="M8,50 Q70,38 132,50 L132,58 Q70,46 8,58 Z" fill="#A5606E" opacity="0.4" />
+      {/* 布団から頭だけ出ている（もこもこ頭・簡略版） */}
+      <g transform="translate(30,10)">
+        <circle cx="30" cy="30" r="26" fill="#F6EFDF" />
+        {[[10, 22, 9], [50, 22, 9], [8, 38, 7], [52, 38, 7], [20, 12, 7], [40, 12, 7], [30, 8, 8]].map(([cx, cy, r], i) => (
+          <circle key={i} cx={cx} cy={cy} r={r} fill="#F6EFDF" />
+        ))}
+        <ellipse cx="30" cy="34" rx="16" ry="14" fill="#FBF6EA" />
+        {/* 閉じた目 */}
+        <path d="M20,34 Q24,37 28,34" stroke="#3D3226" strokeWidth="2" fill="none" strokeLinecap="round" />
+        <path d="M32,34 Q36,37 40,34" stroke="#3D3226" strokeWidth="2" fill="none" strokeLinecap="round" />
+        <ellipse cx="30" cy="42" rx="3" ry="2" fill="#C98A6E" />
+        <circle cx="12" cy="40" r="4" fill="#F0B7A4" opacity="0.55" />
+        <circle cx="48" cy="40" r="4" fill="#F0B7A4" opacity="0.55" />
+        {/* 小さいツノ */}
+        <path d="M14,14 Q10,6 15,2 Q18,8 16,15 Z" fill="#D9AE6E" stroke="#A87D45" strokeWidth="0.8" />
+        <path d="M46,14 Q50,6 45,2 Q42,8 44,15 Z" fill="#D9AE6E" stroke="#A87D45" strokeWidth="0.8" />
+      </g>
+      {/* Zzz（すやすや） */}
+      <text x="92" y="20" fontSize="15" fill="#B8863B" opacity="0.75" fontFamily="Georgia, serif" fontStyle="italic">z</text>
+      <text x="102" y="11" fontSize="10" fill="#B8863B" opacity="0.6" fontFamily="Georgia, serif" fontStyle="italic">z</text>
+    </svg>
+  );
+}
+
+function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWalking, isFarming, isSitting, isLying }) {
+  if (isLying) {
+    return (
+      <div
+        style={{
+          position: "absolute",
+          left: `${leftPct}%`,
+          top: `${topPct}%`,
+          transform: "translate(-50%, -50%)",
+          transition: "left 2.2s ease-in-out, top 2.2s ease-in-out",
+          zIndex: 5
+        }}
+      >
+        <SheepSleepingIllustration size={size} />
+      </div>
+    );
+  }
   return (
     <div
       style={{
@@ -396,7 +569,7 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
       }}
     >
       <div style={{ transform: facingLeft ? "scaleX(-1)" : "none" }}>
-        <SheepCharacter equipped={equipped} size={size} isWalking={isWalking} isFarming={isFarming} />
+        <SheepCharacter equipped={equipped} size={size} isWalking={isWalking} isFarming={isFarming} showBook={isSitting} />
       </div>
     </div>
   );
@@ -523,9 +696,62 @@ function FieldIcon() {
     </svg>
   );
 }
+function ChairIcon() {
+  return (
+    <svg viewBox="0 0 45 50" width="100%" height="100%">
+      <rect x="5" y="6" width="35" height="26" rx="6" fill="#8B5E3C" />
+      <rect x="8" y="9" width="29" height="20" rx="4" fill="#C0454B" />
+      <path d="M9,12 Q22,8 36,12" stroke="#96323A" strokeWidth="1.2" opacity="0.5" fill="none" />
+      <rect x="2" y="26" width="41" height="14" rx="5" fill="#8B5E3C" />
+      <rect x="5" y="29" width="35" height="9" rx="3" fill="#C0454B" />
+      <rect x="4" y="38" width="5" height="10" fill="#6B4526" />
+      <rect x="36" y="38" width="5" height="10" fill="#6B4526" />
+    </svg>
+  );
+}
+function PianoIcon() {
+  return (
+    <svg viewBox="0 0 70 45" width="100%" height="100%">
+      <path d="M4,10 Q10,4 30,4 L60,4 Q66,4 66,12 L66,30 L20,30 Q4,30 4,18 Z" fill="#2E2118" />
+      <path d="M8,12 Q14,8 30,8 L58,8 Q62,8 62,14 L62,26 L22,26 Q8,26 8,16 Z" fill="#4A362A" opacity="0.5" />
+      <rect x="18" y="30" width="34" height="7" fill="#F6EFDF" />
+      {Array.from({ length: 11 }).map((_, i) => (
+        <rect key={i} x={18 + i * 3.1} y="30" width="2.5" height="7" fill="#1A1410" opacity={i % 2 === 0 ? 0 : 0.85} />
+      ))}
+      <rect x="10" y="37" width="4" height="8" fill="#2E2118" />
+      <rect x="45" y="37" width="4" height="8" fill="#2E2118" />
+    </svg>
+  );
+}
+function GazeboIcon() {
+  return (
+    <svg viewBox="0 0 70 60" width="100%" height="100%">
+      <path d="M35,4 L64,26 L58,26 L35,10 L12,26 L6,26 Z" fill="#8B5E3C" />
+      <rect x="10" y="24" width="50" height="4" fill="#6B4526" />
+      <rect x="12" y="28" width="4" height="26" fill="#B98A5E" />
+      <rect x="54" y="28" width="4" height="26" fill="#B98A5E" />
+      <rect x="33" y="28" width="4" height="26" fill="#B98A5E" opacity="0.7" />
+      <rect x="8" y="52" width="54" height="4" fill="#8B6529" />
+      <path d="M16,32 Q35,26 54,32" stroke="#D9C9AE" strokeWidth="1.5" opacity="0.6" fill="none" />
+    </svg>
+  );
+}
+function PondIcon() {
+  return (
+    <svg viewBox="0 0 70 40" width="100%" height="100%">
+      <ellipse cx="35" cy="22" rx="32" ry="15" fill="#6C9BC4" />
+      <ellipse cx="35" cy="20" rx="28" ry="12" fill="#84B0D4" opacity="0.7" />
+      <ellipse cx="20" cy="16" rx="7" ry="4" fill="#5E9450" />
+      <ellipse cx="48" cy="26" rx="6" ry="3.5" fill="#5E9450" />
+      <path d="M30,22 Q34,18 38,22 Q34,20 30,22 Z" fill="#E8985F" />
+      <path d="M40,16 Q44,13 47,17 Q43,15 40,16 Z" fill="#F0DFA8" />
+      <circle cx="38" cy="22" r="1" fill="#1A0E0F" />
+    </svg>
+  );
+}
 
-const FURNITURE_ICON = { furniture_bed: BedIcon, furniture_shelf: ShelfIcon, furniture_plant: PlantIcon, furniture_rug: RugIcon };
-const GARDEN_ICON = { garden_bench: BenchIcon, garden_fountain: FountainIcon, garden_lantern: LanternIcon, garden_flowerbed: FlowerBedIcon, garden_field: FieldIcon };
+const FURNITURE_ICON = { furniture_bed: BedIcon, furniture_shelf: ShelfIcon, furniture_plant: PlantIcon, furniture_rug: RugIcon, furniture_chair: ChairIcon, furniture_piano: PianoIcon };
+const GARDEN_ICON = { garden_bench: BenchIcon, garden_fountain: FountainIcon, garden_lantern: LanternIcon, garden_flowerbed: FlowerBedIcon, garden_field: FieldIcon, garden_gazebo: GazeboIcon, garden_pond: PondIcon };
 
 // ===== ショップ内のアイテムプレビュー（種類ごとに見た目を切り替える） =====
 function ShopItemPreview({ item }) {
@@ -579,14 +805,18 @@ const FURNITURE_LAYOUT = {
   furniture_bed: { left: 16, top: 66, width: 26, z: 2 },
   furniture_shelf: { left: 82, top: 52, width: 15, z: 2 },
   furniture_plant: { left: 90, top: 74, width: 11, z: 2 },
-  furniture_rug: { left: 50, top: 86, width: 34, z: 1 }
+  furniture_rug: { left: 50, top: 86, width: 34, z: 1 },
+  furniture_chair: { left: 66, top: 74, width: 15, z: 2 },
+  furniture_piano: { left: 32, top: 66, width: 26, z: 2 }
 };
 const GARDEN_LAYOUT = {
   garden_bench: { left: 14, top: 76, width: 20, z: 2 },
   garden_fountain: { left: 84, top: 68, width: 16, z: 2 },
   garden_lantern: { left: 24, top: 46, width: 10, z: 1 },
   garden_flowerbed: { left: 72, top: 84, width: 20, z: 1 },
-  garden_field: { left: 30, top: 90, width: 26, z: 1 }
+  garden_field: { left: 30, top: 90, width: 26, z: 1 },
+  garden_gazebo: { left: 58, top: 40, width: 26, z: 1 },
+  garden_pond: { left: 46, top: 93, width: 24, z: 1 }
 };
 
 // ===== 部屋のシーン（正面から見たシンプルな部屋。中央寄せはCSSのleft/topで固定） =====
@@ -602,16 +832,45 @@ function RoomScene({ equipped, owned }) {
     windowKey === "window_chinese" ? { borderRadius: "50%", muntin: "none" }
     : (windowKey === "window_mediterranean" || windowKey === "window_indian") ? { borderRadius: "50% 50% 6px 6px", muntin: "none" }
     : windowKey === "window_shoji" ? { borderRadius: 4, muntin: "grid" }
+    : windowKey === "window_porthole" ? { borderRadius: "50%", muntin: "rivets" }
+    : windowKey === "window_stained_glass" ? { borderRadius: 4, muntin: "stainedglass" }
     : { borderRadius: 4, muntin: "cross" };
 
-  const [leftPct, topPct, facingLeft, isWalking] = useWanderPercent(50, 78, 18, 6);
+  const sceneryKey = equipped.scenery || "scenery_default";
+
+  const [leftPct, topPct, facingLeft, isWalking, isSitting, isLying] = useRoomLife(
+    50, 78, 18, 6,
+    (owned || []).includes("furniture_chair"),
+    (owned || []).includes("furniture_bed")
+  );
 
   return (
     <div style={{ position: "relative", width: "100%", maxWidth: 480, margin: "0 auto", aspectRatio: "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor }}>
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", background: floorColor, zIndex: 0 }} />
 
       <div style={{ position: "absolute", left: "6%", top: "8%", width: "32%", height: "34%", background: windowFrameColor, borderRadius: windowShape.borderRadius === 4 ? 8 : windowShape.borderRadius, padding: "2.5%", boxSizing: "border-box", zIndex: 1 }}>
-        <div style={{ position: "relative", width: "100%", height: "100%", background: sceneryColor, borderRadius: windowShape.borderRadius }}>
+        <div style={{ position: "relative", width: "100%", height: "100%", background: sceneryColor, borderRadius: windowShape.borderRadius, overflow: "hidden" }}>
+          {sceneryKey === "scenery_aurora" && (
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+              <rect width="100" height="100" fill="#1A2340" />
+              {[0, 1, 2].map((i) => (
+                <circle key={i} cx={20 + i * 30} cy={15 + (i % 2) * 10} r="1.4" fill="#FFFDF0" opacity="0.8" />
+              ))}
+              <path d="M0,55 Q25,30 50,50 Q75,70 100,45 L100,100 L0,100 Z" fill="#6FD9A8" opacity="0.55" />
+              <path d="M0,65 Q30,45 55,62 Q80,78 100,58 L100,100 L0,100 Z" fill="#9F7FD9" opacity="0.45" />
+              <path d="M0,75 Q35,60 60,72 Q85,84 100,70 L100,100 L0,100 Z" fill="#5CA9D9" opacity="0.4" />
+            </svg>
+          )}
+          {sceneryKey === "scenery_ocean" && (
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+              <rect width="100" height="55" fill="#BFE0E8" />
+              <rect y="55" width="100" height="45" fill="#5C9AC9" />
+              <circle cx="78" cy="18" r="9" fill="#F6D46A" opacity="0.9" />
+              <path d="M0,60 Q15,55 30,60 Q45,65 60,60 Q75,55 100,60" stroke="#FFFDF8" strokeWidth="2" fill="none" opacity="0.5" />
+              <path d="M0,72 Q15,67 30,72 Q45,77 60,72 Q75,67 100,72" stroke="#FFFDF8" strokeWidth="2" fill="none" opacity="0.4" />
+              <path d="M20,50 L30,50 L27,44 Q34,44 34,50 L44,50 L38,56 L14,56 Z" fill="#F6EFDF" opacity="0.85" />
+            </svg>
+          )}
           {windowShape.muntin === "cross" && (
             <>
               <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 2, background: windowFrameColor, opacity: 0.8, transform: "translateX(-50%)" }} />
@@ -626,6 +885,30 @@ function RoomScene({ equipped, owned }) {
               <div style={{ position: "absolute", top: "50%", left: 0, right: 0, height: 1.5, background: windowFrameColor, opacity: 0.7, transform: "translateY(-50%)" }} />
             </>
           )}
+          {windowShape.muntin === "rivets" && (
+            <svg viewBox="0 0 100 100" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+              <circle cx="50" cy="50" r="46" fill="none" stroke={windowFrameColor} strokeWidth="4" opacity="0.5" />
+              {Array.from({ length: 10 }).map((_, i) => {
+                const a = (i / 10) * Math.PI * 2;
+                return <circle key={i} cx={50 + Math.cos(a) * 44} cy={50 + Math.sin(a) * 44} r="2.6" fill={windowFrameColor} opacity="0.85" />;
+              })}
+            </svg>
+          )}
+          {windowShape.muntin === "stainedglass" && (
+            <svg viewBox="0 0 100 100" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+              <circle cx="50" cy="50" r="30" fill="#E8985F" opacity="0.55" />
+              {Array.from({ length: 8 }).map((_, i) => {
+                const a1 = (i / 8) * Math.PI * 2;
+                const a2 = ((i + 1) / 8) * Math.PI * 2;
+                const colors = ["#C0454B", "#5B7FA6", "#E8B84B", "#7FB577", "#C79ED9", "#F2C9D3", "#8FA9C9", "#D9AE6E"];
+                return (
+                  <path key={i} d={`M50,50 L${50 + Math.cos(a1) * 48},${50 + Math.sin(a1) * 48} L${50 + Math.cos(a2) * 48},${50 + Math.sin(a2) * 48} Z`}
+                    fill={colors[i]} opacity="0.55" stroke="#3D2E12" strokeWidth="1" />
+                );
+              })}
+              <circle cx="50" cy="50" r="9" fill="#FBF6EA" opacity="0.85" stroke="#3D2E12" strokeWidth="1" />
+            </svg>
+          )}
         </div>
       </div>
 
@@ -635,7 +918,7 @@ function RoomScene({ equipped, owned }) {
         </div>
       )}
 
-      <PositionedCharacter equipped={equipped} size={92} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} />
+      <PositionedCharacter equipped={equipped} size={92} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isSitting={isSitting} isLying={isLying} />
 
       {placedFurniture.filter((k) => k !== "furniture_rug").map((k) => {
         const Icon = FURNITURE_ICON[k];
@@ -804,7 +1087,7 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
                   <ShopItemPreview item={item} />
                   <div>
                     <div className="text-sm font-medium">{t(item.nameKey)}</div>
-                    {!owned && <div className="text-xs ff-mono" style={{ color: C.inkSoft }}>{item.cost}pt</div>}
+                    {!owned && <div className="text-xs ff-mono" style={{ color: item.cost === 0 ? C.sage : C.inkSoft, fontWeight: item.cost === 0 ? 600 : 400 }}>{item.cost === 0 ? t("labelFreeNow") : `${item.cost}pt`}</div>}
                   </div>
                 </div>
                 {owned ? (
