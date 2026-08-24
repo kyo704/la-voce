@@ -13,7 +13,7 @@ import {
 } from "recharts";
 import { createClient } from "@/lib/supabase/client";
 import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC } from "@/lib/tokens";
-import { FOOD_PRESETS, DISH_GROUP_ALIASES } from "@/lib/foodPresets";
+import { FOOD_PRESETS, DISH_GROUP_ALIASES, CATEGORY_SEARCH_ALIASES } from "@/lib/foodPresets";
 import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, SHOP_ITEMS, PLACEMENT_LIMITS } from "@/lib/character";
 import { LANGUAGES, createTranslator } from "@/lib/translations";
 import HealthInfo from "@/components/HealthInfo";
@@ -279,7 +279,7 @@ function newMealItem(slot = "朝食") {
 function buildFoodLibrary(entries, currentMeals) {
   const map = new Map();
   FOOD_PRESETS.forEach((f) => {
-    map.set(f.name, { name: f.name, reading: f.reading || null, i18n: f.i18n || null, carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber, isPreset: true, unit: f.unit || null, unitWeight: f.unitWeight || null, date: "0000-00-00" });
+    map.set(f.name, { name: f.name, reading: f.reading || null, i18n: f.i18n || null, category: f.category || null, carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber, isPreset: true, unit: f.unit || null, unitWeight: f.unitWeight || null, date: "0000-00-00" });
   });
   const consider = (meals, date) => {
     (meals || []).forEach((m) => {
@@ -714,11 +714,21 @@ function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood, 
         })
         .flatMap((key) => DISH_GROUP_ALIASES[key])
     : [];
+  // クエリが「イタリアン」「和食」「中華」のような料理ジャンル名に一致する場合、
+  // そのジャンルに属する食品をカテゴリで直接まとめて候補に出す。
+  const matchedCategories = q
+    ? Object.keys(CATEGORY_SEARCH_ALIASES).filter((cat) => {
+        const catNorm = normalizeForSearch(cat);
+        if (catNorm.includes(q) || q.includes(catNorm)) return true;
+        return CATEGORY_SEARCH_ALIASES[cat].some((alias) => alias.includes(q) || q.includes(alias));
+      })
+    : [];
   const matches = q
     ? (foodLibrary || []).filter((f) => {
         const nameNorm = normalizeForSearch(f.name);
         const readingNorm = f.reading ? normalizeForSearch(f.reading) : "";
         if (nameNorm.includes(q) || (readingNorm && readingNorm.includes(q))) return true;
+        if (f.category && matchedCategories.includes(f.category)) return true;
         return groupKeywords.some((kw) => nameNorm.includes(kw) || (readingNorm && readingNorm.includes(kw)));
       }).slice(0, 8)
     : [];
@@ -761,8 +771,8 @@ function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood, 
                 {showJapaneseSuffix && <span className="ml-1" style={{ color: C.inkSoft, fontSize: "0.85em" }}>（{f.name}）</span>}
                 <span className="ml-1.5" style={{ color: C.inkSoft }}>
                   {f.isPreset
-                    ? `（100gあたり 炭${f.carbs}・蛋${f.protein}・脂${f.fat}・繊${f.fiber}g）`
-                    : `（炭${f.carbs || 0}・蛋${f.protein || 0}・脂${f.fat || 0}・繊${f.fiber || 0}g）`}
+                    ? t("labelNutrientAbbrPer100g").replace("{carbs}", f.carbs).replace("{protein}", f.protein).replace("{fat}", f.fat).replace("{fiber}", f.fiber)
+                    : t("labelNutrientAbbr").replace("{carbs}", f.carbs || 0).replace("{protein}", f.protein || 0).replace("{fat}", f.fat || 0).replace("{fiber}", f.fiber || 0)}
                 </span>
               </button>
             );
@@ -843,7 +853,9 @@ function MealItemRow({ item, onChange, onRemove, foodLibrary, t, language }) {
               className="text-xs shrink-0 underline ml-auto" style={{ color: C.inkSoft }}>{t("btnManualEdit")}</button>
           </div>
           {item.qtyMode === "unit" && (
-            <p className="text-xs mb-2" style={{ color: C.inkSoft }}>1{item.presetUnit}あたり約{item.presetUnitWeight}g換算・合計{item.grams}g</p>
+            <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+              {t("labelUnitConversion").replace("{unit}", item.presetUnit).replace("{weight}", item.presetUnitWeight).replace("{total}", item.grams)}
+            </p>
           )}
           <div className="grid grid-cols-4 gap-2 text-center">
             <div><div className="text-xs" style={{ color: C.inkSoft }}>{t("macroCarbs")}</div><div className="ff-mono text-xs font-medium">{item.carbs}g</div></div>
@@ -2018,7 +2030,7 @@ export default function VocalTracker({ userId, userEmail }) {
                               return (
                                 <div key={label} className="flex items-center justify-between text-xs">
                                   <span style={{ color: C.inkSoft }}>{label}</span>
-                                  <span className="ff-mono">{actual.toFixed(0)}g / 目安{target.toFixed(0)}g</span>
+                                  <span className="ff-mono">{actual.toFixed(0)}g / {t("labelTargetPrefix")}{target.toFixed(0)}g</span>
                                   {ev && <span className="font-medium" style={{ color: ev.color }}>{t(ev.labelKey)}</span>}
                                 </div>
                               );
@@ -2026,7 +2038,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             <div className="flex items-center justify-between text-xs pt-1 border-t" style={{ borderColor: C.line }}>
                               <span style={{ color: C.inkSoft }}>{t("labelEstimatedCalorie")}</span>
                               <span className="ff-mono">
-                                {(mealTotals.carbs * 4 + mealTotals.protein * 4 + mealTotals.fat * 9).toFixed(0)}kcal / 目安{nutritionTargets.calorieTarget.toFixed(0)}kcal
+                                {(mealTotals.carbs * 4 + mealTotals.protein * 4 + mealTotals.fat * 9).toFixed(0)}kcal / {t("labelTargetPrefix")}{nutritionTargets.calorieTarget.toFixed(0)}kcal
                               </span>
                             </div>
                           </div>
