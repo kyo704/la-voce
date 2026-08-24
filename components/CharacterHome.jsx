@@ -112,17 +112,17 @@ function SheepCharacter({ equipped, size = 120, isWalking = false }) {
             return <line key={`brim-${i}`} x1={x} y1="34" x2={x} y2="42" stroke="#C79A46" strokeWidth="0.8" opacity="0.55" />;
           })}
           <ellipse cx="80" cy="35" rx="37" ry="4" fill="#F3DFA0" opacity="0.6" />
-          {/* 山（ドーム部分） */}
-          <path d="M54,39 Q80,8 106,39 Q80,25 54,39 Z" fill="#F0D68F" />
+          {/* 山（ドーム部分）— 頭のてっぺんの毛（y≈11）より確実に高く覆う */}
+          <path d="M48,40 Q48,8 80,2 Q112,8 112,40 Q80,24 48,40 Z" fill="#F0D68F" />
           {/* 編み目の質感（斜線を重ねて織り模様に） */}
           {[
-            "M58,37 Q68,22 80,14", "M64,38 Q74,24 86,15", "M70,38 Q80,25 92,17",
-            "M76,38 Q86,26 98,19", "M82,38 Q92,27 102,22", "M60,36 Q70,32 80,30"
+            "M55,38 Q66,20 80,6", "M62,39 Q73,22 86,7", "M69,39 Q80,23 93,9",
+            "M76,39 Q87,24 100,12", "M83,39 Q94,25 104,17", "M58,37 Q69,33 80,31"
           ].map((d, i) => (
             <path key={`weave-${i}`} d={d} stroke="#C79A46" strokeWidth="0.9" fill="none" opacity="0.5" />
           ))}
           {/* 帽子バンド */}
-          <path d="M56,35 Q80,28 104,35" stroke="#96323A" strokeWidth="3.5" fill="none" strokeLinecap="round" />
+          <path d="M52,36 Q80,29 108,36" stroke="#96323A" strokeWidth="3.5" fill="none" strokeLinecap="round" />
           <path d="M56,35 Q80,28 104,35" stroke="#C0454B" strokeWidth="1.6" fill="none" strokeLinecap="round" />
         </g>
       )}
@@ -321,7 +321,7 @@ function RoomScene({ equipped, owned }) {
   const winMidV1 = [wallPoint(left, top, 0.42, 0.46, wallH), wallPoint(left, top, 0.42, 0.82, wallH)];
   const winMidH = [wallPoint(left, top, 0.26, 0.64, wallH), wallPoint(left, top, 0.58, 0.64, wallH)];
 
-  const [wanderPos, facingLeft, isWalking] = useWander(cx, cy + 14, 58, 26);
+  const [wanderPos, facingLeft, isWalking] = useWander(cx, cy + 14, 50, 22);
 
   return (
     <svg viewBox="0 0 400 340" style={{ width: "100%", maxWidth: 580 }}>
@@ -345,7 +345,7 @@ function RoomScene({ equipped, owned }) {
       {placedFurniture.includes("furniture_rug") && <Rug x={cx} y={cy + 10} />}
 
       {/* キャラクター（自動でうろうろ歩き回る） */}
-      <AnimatedCharacter equipped={equipped} size={112} pos={wanderPos} facingLeft={facingLeft} isWalking={isWalking} />
+      <AnimatedCharacter equipped={equipped} size={85} pos={wanderPos} facingLeft={facingLeft} isWalking={isWalking} />
 
       {/* 家具（ラグ以外） */}
       {placedFurniture.filter((k) => k !== "furniture_rug").map((k, i) => {
@@ -361,7 +361,7 @@ function RoomScene({ equipped, owned }) {
 // ===== 庭のシーン =====
 function GardenScene({ equipped, owned }) {
   const placedOrnaments = (owned || []).filter((k) => GARDEN_RENDER[k]);
-  const [wanderPos, facingLeft, isWalking] = useWander(200, 232, 95, 24);
+  const [wanderPos, facingLeft, isWalking] = useWander(200, 232, 90, 22);
 
   return (
     <svg viewBox="0 0 400 300" style={{ width: "100%", maxWidth: 580 }}>
@@ -383,7 +383,7 @@ function GardenScene({ equipped, owned }) {
         return <Comp key={k} x={px} y={py} />;
       })}
 
-      <AnimatedCharacter equipped={equipped} size={125} pos={wanderPos} facingLeft={facingLeft} isWalking={isWalking} />
+      <AnimatedCharacter equipped={equipped} size={100} pos={wanderPos} facingLeft={facingLeft} isWalking={isWalking} />
     </svg>
   );
 }
