@@ -134,6 +134,16 @@ function toISODate(d) {
 function todayISO() {
   return toISODate(new Date());
 }
+// サーバー（UTC基準）とブラウザ（日本時間など）で「今日」の計算結果がずれることがあり、
+// これが React のハイドレーション不一致（サーバーとクライアントの初回描画結果の食い違い）の原因になっていた。
+// 初回描画は必ずUTC基準の値で揃え、マウント後に useEffect で現地時間の正しい「今日」へ補正する。
+function todayISOUTC() {
+  const d = new Date();
+  const year = d.getUTCFullYear();
+  const month = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(d.getUTCDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 function addDays(iso, delta) {
   const d = new Date(iso + "T00:00:00");
   d.setDate(d.getDate() + delta);
@@ -1076,7 +1086,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [loading, setLoading] = useState(true);
   const [entries, setEntries] = useState({});
   const [activeTab, setActiveTab] = useState("today");
-  const [selectedDate, setSelectedDate] = useState(todayISO());
+  const [selectedDate, setSelectedDate] = useState(todayISOUTC());
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
   const [saveError, setSaveError] = useState("");
@@ -1084,7 +1094,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [language, setLanguage] = useState("ja");
   const [viewMonth, setViewMonth] = useState(() => {
     const d = new Date();
-    return { year: d.getFullYear(), month: d.getMonth() };
+    return { year: d.getUTCFullYear(), month: d.getUTCMonth() };
   });
   const [confirmDeleteDate, setConfirmDeleteDate] = useState(null);
   const [selectedFactorKey, setSelectedFactorKey] = useState(null);
@@ -1103,6 +1113,24 @@ export default function VocalTracker({ userId, userEmail }) {
   const [characterPointsSpent, setCharacterPointsSpent] = useState(0);
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileSaveStatus, setProfileSaveStatus] = useState("idle");
+
+  // selectedDate / viewMonth は、サーバーとクライアントのハイドレーション不一致を避けるため
+  // UTC基準の値で初期化している。マウント後（＝ハイドレーションが安全に完了した後）に、
+  // ブラウザの現地時間で計算した正しい「今日」へ補正する。
+  useEffect(() => {
+    const localToday = todayISO();
+    const utcToday = todayISOUTC();
+    if (localToday !== utcToday) {
+      setSelectedDate((prev) => (prev === utcToday ? localToday : prev));
+      const d = new Date();
+      setViewMonth((prev) =>
+        (prev.year === d.getUTCFullYear() && prev.month === d.getUTCMonth())
+          ? { year: d.getFullYear(), month: d.getMonth() }
+          : prev
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     try {
