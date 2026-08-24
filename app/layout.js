@@ -19,9 +19,9 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata = {
-  title: "La Voce | 声楽家のための体調記録",
+  title: "La Voce | 声を使う人のための体調記録",
   description:
-    "声楽家のための体調管理アプリ。喉・声のコンディション、睡眠、気候、公演の出来までを記録し、傾向を分析します。"
+    "声楽家・アナウンサー・声優・ポップス/ミュージカル歌手など、声を使う人のための体調管理アプリ。喉・声のコンディション、睡眠、気候、本番の出来までを記録し、傾向を分析します。"
 };
 
 export const viewport = {
