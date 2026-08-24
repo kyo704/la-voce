@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import {
   Mic2, Moon, Droplets, Thermometer, Wind, MapPin, Music2, HeartHandshake,
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
-  Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot, MessageCircle, Flower2,
+  Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot, MessageCircle, Home,
   Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe
 } from "lucide-react";
 import {
@@ -14,9 +14,10 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC } from "@/lib/tokens";
 import { FOOD_PRESETS } from "@/lib/foodPresets";
+import { SINGLE_SLOT_CATEGORIES } from "@/lib/character";
 import { LANGUAGES, createTranslator } from "@/lib/translations";
 import HealthInfo from "@/components/HealthInfo";
-import Garden from "@/components/Garden";
+import CharacterHome from "@/components/CharacterHome";
 
 /* ---------- constants ---------- */
 const SYMPTOM_OPTIONS = ["乾燥", "嗄れ", "痛み", "違和感", "鼻づまり", "咳"];
@@ -72,7 +73,7 @@ const FACTORS = [
 
 const TABS = [
   { key: "today", labelKey: "tabToday", icon: Mic2 },
-  { key: "garden", labelKey: "tabGarden", icon: Flower2 },
+  { key: "garden", labelKey: "tabCharacter", icon: Home },
   { key: "history", labelKey: "tabHistory", icon: CalendarDays },
   { key: "analysis", labelKey: "tabAnalysis", icon: BarChart3 },
   { key: "advice", labelKey: "tabAdvice", icon: Bot },
@@ -828,6 +829,9 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
   const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose" });
+  const [ownedItemKeys, setOwnedItemKeys] = useState([]);
+  const [characterEquipped, setCharacterEquipped] = useState({});
+  const [characterPointsSpent, setCharacterPointsSpent] = useState(0);
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileSaveStatus, setProfileSaveStatus] = useState("idle");
 
@@ -867,7 +871,7 @@ export default function VocalTracker({ userId, userEmail }) {
     let mounted = true;
     (async () => {
       const supabase = createClient();
-      const { data } = await supabase.from("profiles").select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme").eq("id", userId).single();
+      const { data } = await supabase.from("profiles").select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped").eq("id", userId).single();
       if (mounted && data) {
         setProfile({
           height_cm: data.height_cm ?? "",
@@ -878,6 +882,12 @@ export default function VocalTracker({ userId, userEmail }) {
           sex: data.sex ?? "",
           garden_theme: data.garden_theme || "rose"
         });
+        setCharacterPointsSpent(data.character_points_spent || 0);
+        setCharacterEquipped(data.character_equipped || {});
+      }
+      const { data: inventoryRows } = await supabase.from("character_inventory").select("item_key").eq("user_id", userId);
+      if (mounted && inventoryRows) {
+        setOwnedItemKeys(inventoryRows.map((r) => r.item_key));
       }
       if (mounted) setProfileLoading(false);
     })();
@@ -1061,6 +1071,32 @@ export default function VocalTracker({ userId, userEmail }) {
       }))
       .sort((a, b) => b.n - a.n);
   }, [entries]);
+
+  async function handlePurchaseItem(item) {
+    const supabase = createClient();
+    setOwnedItemKeys((prev) => [...prev, item.key]);
+    setCharacterPointsSpent((prev) => prev + item.cost);
+    const { error } = await supabase.from("character_inventory").insert({ user_id: userId, item_key: item.key });
+    if (error) {
+      setOwnedItemKeys((prev) => prev.filter((k) => k !== item.key));
+      setCharacterPointsSpent((prev) => prev - item.cost);
+      return;
+    }
+    const newSpent = characterPointsSpent + item.cost;
+    await supabase.from("profiles").update({ character_points_spent: newSpent }).eq("id", userId);
+    if (SINGLE_SLOT_CATEGORIES.includes(item.category)) {
+      handleEquipItem(item.category, item.key);
+    }
+  }
+
+  function handleEquipItem(category, itemKey) {
+    setCharacterEquipped((prev) => {
+      const next = { ...prev, [category]: itemKey };
+      const supabase = createClient();
+      supabase.from("profiles").update({ character_equipped: next }).eq("id", userId);
+      return next;
+    });
+  }
 
   async function handleThemeChange(themeKey) {
     setProfile((p) => ({ ...p, garden_theme: themeKey }));
@@ -1726,7 +1762,15 @@ export default function VocalTracker({ userId, userEmail }) {
             )}
 
             {activeTab === "garden" && (
-              <Garden entries={entries} gardenTheme={profile.garden_theme} onThemeChange={handleThemeChange} t={t} />
+              <CharacterHome
+                entries={entries}
+                ownedKeys={ownedItemKeys}
+                equipped={characterEquipped}
+                pointsSpent={characterPointsSpent}
+                onPurchase={handlePurchaseItem}
+                onEquip={handleEquipItem}
+                t={t}
+              />
             )}
 
             {activeTab === "history" && (

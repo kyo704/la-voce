@@ -1,0 +1,373 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { C } from "@/lib/tokens";
+import {
+  SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES,
+  computeTotalEarned, computeStreaks, computeBalance
+} from "@/lib/character";
+
+const CATEGORY_LABEL_KEYS = {
+  hat: "catHat", outfit: "catOutfit", floor: "catFloor", wall: "catWall",
+  window: "catWindow", scenery: "catScenery", furniture: "catFurniture", garden: "catGarden"
+};
+const MATERIAL_COLORS = {
+  floor_default: "#D8C9A8", floor_tile: "#C9C2B4", floor_carpet: "#C98A9E",
+  wall_default: "#F3E9D8", wall_stripe: "#E9D9C0", wall_wood: "#B98A5E",
+  window_default: "#FFFDF8", window_wood: "#8B5E3C", window_blue: "#5C7599",
+  scenery_default: "#BFE0E8", scenery_night: "#2E3A5C", scenery_sakura: "#F2C9D3"
+};
+
+// ===== 羊のキャラクター（チビ体型・二頭身） =====
+function SheepCharacter({ equipped, size = 120 }) {
+  const bodyColor = "#F6EFDF";
+  const bodyShade = "#EAE0C8";
+  return (
+    <svg viewBox="0 0 160 200" style={{ width: size, height: size * 1.25 }}>
+      {/* 足 */}
+      <ellipse cx="62" cy="180" rx="14" ry="8" fill="#EDE4CE" />
+      <ellipse cx="98" cy="180" rx="14" ry="8" fill="#EDE4CE" />
+      <rect x="52" y="150" width="20" height="34" rx="10" fill={bodyColor} />
+      <rect x="88" y="150" width="20" height="34" rx="10" fill={bodyColor} />
+
+      {/* もこもこボディ（重なる円で質感を出す） */}
+      <circle cx="80" cy="130" r="42" fill={bodyColor} />
+      {[[45, 110, 16], [115, 110, 16], [40, 140, 14], [120, 140, 14], [55, 160, 14], [105, 160, 14], [80, 168, 16]].map(([cx, cy, r], i) => (
+        <circle key={i} cx={cx} cy={cy} r={r} fill={bodyColor} />
+      ))}
+
+      {/* 腕 */}
+      <ellipse cx="35" cy="128" rx="13" ry="10" fill={bodyColor} />
+      <ellipse cx="125" cy="128" rx="13" ry="10" fill={bodyColor} />
+
+      {/* 服（体） */}
+      {equipped.outfit === "outfit_scarf" && (
+        <path d="M56,108 Q80,124 104,108 L100,120 Q80,132 60,120 Z" fill="#C0454B" />
+      )}
+      {equipped.outfit === "outfit_overall" && (
+        <g>
+          <path d="M58,112 L102,112 L98,168 Q80,176 62,168 Z" fill="#5B7FA6" opacity="0.92" />
+          <rect x="64" y="100" width="10" height="18" fill="#5B7FA6" />
+          <rect x="86" y="100" width="10" height="18" fill="#5B7FA6" />
+          <circle cx="69" cy="130" r="3" fill="#3E5A78" />
+          <circle cx="91" cy="130" r="3" fill="#3E5A78" />
+        </g>
+      )}
+      {equipped.outfit === "outfit_sweater" && (
+        <path d="M50,105 Q80,96 110,105 Q114,140 104,166 Q80,176 56,166 Q46,140 50,105 Z" fill="#C98A56" opacity="0.92" />
+      )}
+
+      {/* もこもこ頭（大きめ、二頭身） */}
+      <circle cx="80" cy="70" r="46" fill={bodyColor} />
+      {[[40, 55, 15], [120, 55, 15], [36, 80, 13], [124, 80, 13], [50, 34, 13], [110, 34, 13], [80, 26, 15]].map(([cx, cy, r], i) => (
+        <circle key={i} cx={cx} cy={cy} r={r} fill={bodyColor} />
+      ))}
+
+      {/* 顔まわり（毛を少し短めにした肌色っぽい部分） */}
+      <ellipse cx="80" cy="76" rx="30" ry="26" fill="#FBF6EA" />
+
+      {/* 小さいツノ */}
+      <path d="M56,42 Q50,28 60,24 Q56,36 62,44 Z" fill="#D8CBA8" />
+      <path d="M104,42 Q110,28 100,24 Q104,36 98,44 Z" fill="#D8CBA8" />
+
+      {/* 耳 */}
+      <ellipse cx="42" cy="72" rx="8" ry="12" fill={bodyShade} transform="rotate(-20 42 72)" />
+      <ellipse cx="118" cy="72" rx="8" ry="12" fill={bodyShade} transform="rotate(20 118 72)" />
+
+      {/* 帽子 */}
+      {equipped.hat === "hat_straw" && (
+        <g>
+          <ellipse cx="80" cy="38" rx="38" ry="8" fill="#E8C979" />
+          <path d="M56,38 Q80,10 104,38 Q80,26 56,38 Z" fill="#F0D68F" />
+        </g>
+      )}
+      {equipped.hat === "hat_knit" && (
+        <g>
+          <path d="M50,42 Q52,4 80,4 Q108,4 110,42 Q80,32 50,42 Z" fill="#C0454B" />
+          <circle cx="80" cy="6" r="7" fill="#F6EFDF" />
+        </g>
+      )}
+      {equipped.hat === "hat_ribbon" && (
+        <g>
+          <path d="M56,36 Q66,20 80,30 Q94,20 104,36 Q90,32 80,38 Q70,32 56,36 Z" fill="#C0454B" />
+          <circle cx="80" cy="34" r="5" fill="#96323A" />
+        </g>
+      )}
+
+      {/* 目・鼻・頬 */}
+      <circle cx="66" cy="76" r="4" fill="#3D3226" />
+      <circle cx="94" cy="76" r="4" fill="#3D3226" />
+      <ellipse cx="80" cy="88" rx="5" ry="3.5" fill="#C98A6E" />
+      <circle cx="58" cy="88" r="6" fill="#F0B7A4" opacity="0.6" />
+      <circle cx="102" cy="88" r="6" fill="#F0B7A4" opacity="0.6" />
+    </svg>
+  );
+}
+
+function Bed({ x, y }) {
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <rect x="-30" y="-16" width="60" height="30" rx="6" fill="#D9C9AE" />
+      <rect x="-30" y="-16" width="60" height="10" rx="5" fill="#F0E6D2" />
+      <rect x="-24" y="-13" width="16" height="8" rx="3" fill="#FFFDF8" />
+    </g>
+  );
+}
+function Shelf({ x, y }) {
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <rect x="-18" y="-40" width="36" height="40" fill="#B98A5E" />
+      <rect x="-18" y="-28" width="36" height="3" fill="#8B6529" />
+      <rect x="-18" y="-14" width="36" height="3" fill="#8B6529" />
+      <rect x="-13" y="-38" width="8" height="8" fill="#C0454B" />
+      <rect x="-1" y="-38" width="8" height="8" fill="#5B7FA6" />
+    </g>
+  );
+}
+function PottedPlant({ x, y }) {
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <path d="M-10,0 L10,0 L7,-14 L-7,-14 Z" fill="#C98A56" />
+      <ellipse cx="0" cy="-18" rx="12" ry="14" fill="#6FA566" />
+      <ellipse cx="-6" cy="-26" rx="8" ry="10" fill="#7FB577" />
+      <ellipse cx="6" cy="-24" rx="8" ry="10" fill="#5E9450" />
+    </g>
+  );
+}
+function Rug({ x, y }) {
+  return <ellipse cx={x} cy={y} rx="34" ry="16" fill="#C98A9E" opacity="0.75" />;
+}
+function Bench({ x, y }) {
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <rect x="-18" y="-4" width="36" height="4" fill="#8B5E3C" rx="1" />
+      <rect x="-18" y="-14" width="36" height="4" fill="#8B5E3C" rx="1" />
+      <rect x="-16" y="-14" width="3" height="14" fill="#6B4526" />
+      <rect x="13" y="-14" width="3" height="14" fill="#6B4526" />
+    </g>
+  );
+}
+function Fountain({ x, y }) {
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <ellipse cx="0" cy="8" rx="20" ry="6" fill="#B8C4CC" />
+      <rect x="-3" y="-14" width="6" height="20" fill="#9FB0BA" />
+      <circle cx="0" cy="-16" r="5" fill="#CFE0E8" />
+    </g>
+  );
+}
+function Lantern({ x, y }) {
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <rect x="-8" y="-4" width="16" height="5" fill="#8B6529" rx="1" />
+      <rect x="-6" y="0" width="12" height="16" fill="#B8863B" rx="2" />
+      <circle cx="0" cy="8" r="3" fill="#F6D98A" />
+    </g>
+  );
+}
+function FlowerBed({ x, y }) {
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <ellipse cx="0" cy="4" rx="24" ry="10" fill="#7A9C70" />
+      {[-14, -4, 8, 16].map((dx, i) => (
+        <circle key={i} cx={dx} cy={-2 + (i % 2) * 3} r="5" fill={["#D98A9E", "#E8B84B", "#8FA9C9", "#F6C6D0"][i]} />
+      ))}
+    </g>
+  );
+}
+
+const FURNITURE_RENDER = { furniture_bed: Bed, furniture_shelf: Shelf, furniture_plant: PottedPlant, furniture_rug: Rug };
+const GARDEN_RENDER = { garden_bench: Bench, garden_fountain: Fountain, garden_lantern: Lantern, garden_flowerbed: FlowerBed };
+
+// ===== アイソメトリック風の部屋 =====
+function RoomScene({ equipped, owned }) {
+  const floorColor = MATERIAL_COLORS[equipped.floor || "floor_default"] || MATERIAL_COLORS.floor_default;
+  const wallColor = MATERIAL_COLORS[equipped.wall || "wall_default"] || MATERIAL_COLORS.wall_default;
+  const windowFrameColor = MATERIAL_COLORS[equipped.window || "window_default"] || MATERIAL_COLORS.window_default;
+  const sceneryColor = MATERIAL_COLORS[equipped.scenery || "scenery_default"] || MATERIAL_COLORS.scenery_default;
+  const placedFurniture = (owned || []).filter((k) => FURNITURE_RENDER[k]);
+
+  // アイソメの床（ひし形）と左右の壁
+  const cx = 200, cy = 210;
+  const fw = 150, fh = 75; // floor half-width / half-height (isometric)
+  const wallH = 130;
+  const top = [cx, cy - fh];
+  const right = [cx + fw, cy];
+  const bottom = [cx, cy + fh];
+  const left = [cx - fw, cy];
+
+  return (
+    <svg viewBox="0 0 400 340" style={{ width: "100%", maxWidth: 460 }}>
+      <rect x="0" y="0" width="400" height="340" fill="#FBF6EA" />
+
+      {/* 左壁 */}
+      <polygon points={`${left[0]},${left[1]} ${top[0]},${top[1]} ${top[0]},${top[1] - wallH} ${left[0]},${left[1] - wallH}`} fill={wallColor} />
+      {/* 右壁 */}
+      <polygon points={`${top[0]},${top[1]} ${right[0]},${right[1]} ${right[0]},${right[1] - wallH} ${top[0]},${top[1] - wallH}`} fill={wallColor} opacity="0.88" />
+
+      {/* 窓（左壁に設置） */}
+      <g transform={`translate(${(left[0] + top[0]) / 2 - 8}, ${(left[1] + top[1]) / 2 - wallH / 2 - 6})`}>
+        <rect x="-30" y="-26" width="60" height="46" rx="4" fill={windowFrameColor} />
+        <rect x="-24" y="-20" width="48" height="34" fill={sceneryColor} />
+        <line x1="0" y1="-20" x2="0" y2="14" stroke={windowFrameColor} strokeWidth="2" />
+        <line x1="-24" y1="-3" x2="24" y2="-3" stroke={windowFrameColor} strokeWidth="2" />
+      </g>
+
+      {/* 床（ひし形） */}
+      <polygon points={`${top[0]},${top[1]} ${right[0]},${right[1]} ${bottom[0]},${bottom[1]} ${left[0]},${left[1]}`} fill={floorColor} />
+
+      {/* ラグは床の上に敷く */}
+      {placedFurniture.includes("furniture_rug") && <Rug x={cx} y={cy + 10} />}
+
+      {/* キャラクター */}
+      <g transform={`translate(${cx - 40}, ${cy - 90})`}>
+        <SheepCharacter equipped={equipped} size={80} />
+      </g>
+
+      {/* 家具（ラグ以外） */}
+      {placedFurniture.filter((k) => k !== "furniture_rug").map((k, i) => {
+        const Comp = FURNITURE_RENDER[k];
+        const positions = [[cx - 110, cy - 10], [cx + 90, cy - 30], [cx + 60, cy + 30]];
+        const [px, py] = positions[i % positions.length];
+        return <Comp key={k} x={px} y={py} />;
+      })}
+    </svg>
+  );
+}
+
+// ===== 庭のシーン =====
+function GardenScene({ equipped, owned }) {
+  const placedOrnaments = (owned || []).filter((k) => GARDEN_RENDER[k]);
+  return (
+    <svg viewBox="0 0 400 300" style={{ width: "100%", maxWidth: 460 }}>
+      <defs>
+        <linearGradient id="charSky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#FFFBF2" />
+          <stop offset="100%" stopColor="#F6E9D8" />
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width="400" height="300" fill="url(#charSky)" />
+      <circle cx="345" cy="42" r="22" fill="#F3D48A" opacity="0.55" />
+      <path d="M0,220 Q200,204 400,220 L400,300 L0,300 Z" fill="#8FAE84" />
+      <path d="M0,226 Q200,210 400,226 L400,300 L0,300 Z" fill="#7A9C70" />
+
+      {placedOrnaments.map((k, i) => {
+        const Comp = GARDEN_RENDER[k];
+        const positions = [[70, 220], [320, 216], [130, 90], [300, 250]];
+        const [px, py] = positions[i % positions.length];
+        return <Comp key={k} x={px} y={py} />;
+      })}
+
+      <g transform="translate(160, 140)">
+        <SheepCharacter equipped={equipped} size={90} />
+      </g>
+    </svg>
+  );
+}
+
+export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, t }) {
+  const [view, setView] = useState("room");
+  const [shopCategory, setShopCategory] = useState("hat");
+
+  const totalEarned = useMemo(() => computeTotalEarned(entries), [entries]);
+  const { currentStreak, longestStreak } = useMemo(() => computeStreaks(entries), [entries]);
+  const balance = computeBalance(entries, pointsSpent);
+
+  const itemsInCategory = SHOP_ITEMS.filter((i) => i.category === shopCategory);
+  const isMultiSlot = MULTI_SLOT_CATEGORIES.includes(shopCategory);
+
+  return (
+    <div className="space-y-5">
+      <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+        <p className="text-xs leading-relaxed rounded-xl p-2.5 mb-3" style={{ color: C.inkSoft, background: C.paper }}>
+          {t("characterIntro")}
+        </p>
+
+        <div className="flex rounded-full border p-1 mb-3" style={{ borderColor: C.line, width: "fit-content" }}>
+          <button type="button" onClick={() => setView("room")}
+            className="px-4 py-1.5 rounded-full text-xs font-medium"
+            style={{ background: view === "room" ? C.curtain : "transparent", color: view === "room" ? "#FFFDF8" : C.inkSoft }}>
+            {t("viewRoom")}
+          </button>
+          <button type="button" onClick={() => setView("garden")}
+            className="px-4 py-1.5 rounded-full text-xs font-medium"
+            style={{ background: view === "garden" ? C.curtain : "transparent", color: view === "garden" ? "#FFFDF8" : C.inkSoft }}>
+            {t("viewGarden")}
+          </button>
+        </div>
+
+        {view === "room"
+          ? <RoomScene equipped={equipped} owned={ownedKeys} />
+          : <GardenScene equipped={equipped} owned={ownedKeys} />}
+      </div>
+
+      <div className="grid grid-cols-3 gap-3">
+        <div className="rounded-2xl p-3 border text-center" style={{ background: C.card, borderColor: C.line }}>
+          <div className="ff-display italic text-xl" style={{ color: C.gold }}>{balance}</div>
+          <div className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("labelPointsBalance")}</div>
+        </div>
+        <div className="rounded-2xl p-3 border text-center" style={{ background: C.card, borderColor: C.line }}>
+          <div className="ff-display italic text-xl" style={{ color: C.curtain }}>{currentStreak}</div>
+          <div className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("labelCurrentStreak")}</div>
+        </div>
+        <div className="rounded-2xl p-3 border text-center" style={{ background: C.card, borderColor: C.line }}>
+          <div className="ff-display italic text-xl" style={{ color: C.curtain }}>{longestStreak}</div>
+          <div className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("labelLongestStreak")}</div>
+        </div>
+      </div>
+
+      <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+        <h3 className="ff-display italic text-lg mb-3">{t("labelShop")}</h3>
+        <div className="flex flex-wrap gap-1.5 mb-3">
+          {Object.keys(CATEGORY_LABEL_KEYS).map((cat) => (
+            <button key={cat} type="button" onClick={() => setShopCategory(cat)}
+              className="px-3 py-1.5 rounded-full text-xs font-medium border"
+              style={{
+                background: shopCategory === cat ? C.curtain : C.paper,
+                color: shopCategory === cat ? "#FFFDF8" : C.inkSoft,
+                borderColor: shopCategory === cat ? C.curtain : C.line
+              }}>
+              {t(CATEGORY_LABEL_KEYS[cat])}
+            </button>
+          ))}
+        </div>
+
+        <div className="space-y-2">
+          {itemsInCategory.map((item) => {
+            const owned = ownedKeys.includes(item.key);
+            const isEquipped = isMultiSlot ? owned : equipped[item.category] === item.key;
+            const canAfford = balance >= item.cost;
+            return (
+              <div key={item.key} className="flex items-center justify-between rounded-xl p-2.5" style={{ background: C.paper }}>
+                <div>
+                  <div className="text-sm font-medium">{t(item.nameKey)}</div>
+                  {!owned && <div className="text-xs ff-mono" style={{ color: C.inkSoft }}>{item.cost}pt</div>}
+                </div>
+                {owned ? (
+                  isMultiSlot ? (
+                    <span className="text-xs px-3 py-1.5 rounded-full" style={{ background: C.sage, color: "#FFFDF8" }}>{t("labelPlaced")}</span>
+                  ) : (
+                    <button type="button" onClick={() => onEquip(item.category, isEquipped ? null : item.key)}
+                      className="text-xs px-3 py-1.5 rounded-full font-medium"
+                      style={{ background: isEquipped ? C.curtain : C.card, color: isEquipped ? "#FFFDF8" : C.inkSoft, border: `1px solid ${C.line}` }}>
+                      {isEquipped ? t("labelEquipped") : t("btnEquip")}
+                    </button>
+                  )
+                ) : (
+                  <button type="button" disabled={!canAfford} onClick={() => onPurchase(item)}
+                    className="text-xs px-3 py-1.5 rounded-full font-medium"
+                    style={{ background: canAfford ? C.gold : C.line, color: canAfford ? "#3D2E12" : C.inkSoft }}>
+                    {t("btnBuy")}
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+        {!isMultiSlot && (
+          <p className="text-xs mt-3" style={{ color: C.inkSoft }}>{t("noteSingleSlot")}</p>
+        )}
+      </div>
+    </div>
+  );
+}
