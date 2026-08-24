@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import {
   Mic2, Moon, Droplets, Thermometer, Wind, MapPin, Music2, HeartHandshake,
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
-  Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot, MessageCircle,
+  Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot, MessageCircle, Flower2,
   Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe
 } from "lucide-react";
 import {
@@ -16,11 +16,11 @@ import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC } from "@/lib/token
 import { FOOD_PRESETS } from "@/lib/foodPresets";
 import { LANGUAGES, createTranslator } from "@/lib/translations";
 import HealthInfo from "@/components/HealthInfo";
+import Garden from "@/components/Garden";
 
 /* ---------- constants ---------- */
 const SYMPTOM_OPTIONS = ["乾燥", "嗄れ", "痛み", "違和感", "鼻づまり", "咳"];
 const SYMPTOM_KEYS = { "乾燥": "symptomDry", "嗄れ": "symptomHoarse", "痛み": "symptomPain", "違和感": "symptomDiscomfort", "鼻づまり": "symptomStuffyNose", "咳": "symptomCough" };
-const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
 
 const ACTIVITY_OPTIONS = [
   { key: "休養", icon: Moon, labelKey: "activityRest" },
@@ -48,21 +48,13 @@ const NUTRITION_PHASE_KEYS = { "維持": "phaseMaintain", "増量": "phaseBulk",
 const REST_METHODS = ["睡眠・休息", "入浴", "マッサージ", "読書", "散歩", "瞑想", "趣味の時間", "その他"];
 const REST_METHOD_KEYS = { "睡眠・休息": "restSleep", "入浴": "restBath", "マッサージ": "restMassage", "読書": "restReading", "散歩": "restWalk", "瞑想": "restMeditate", "趣味の時間": "restHobby", "その他": "optionOther" };
 const AI_ADVICE_ENABLED = false; // 準備中。有効にする場合は true にしてください（ANTHROPIC_API_KEYの設定も必要です）
-const CARING_MESSAGES = [
-  "今日も記録、お疲れさまでした",
-  "無理せず、自分のペースで大丈夫です",
-  "声も心も、大切にしてくださいね",
-  "今日という日を、ちゃんと見つめられましたね",
-  "小さな積み重ねが、きっと力になります",
-  "今日もよく頑張りました",
-  "ゆっくり休んで、また明日",
-  "自分を労わる時間、大事にしてくださいね",
-  "続けているあなたを、ちゃんと見ています",
-  "記録、ありがとうございます"
+const CARING_MESSAGE_KEYS = [
+  "caringMsg1", "caringMsg2", "caringMsg3", "caringMsg4", "caringMsg5",
+  "caringMsg6", "caringMsg7", "caringMsg8", "caringMsg9", "caringMsg10"
 ];
 
 const FACTORS = [
-  { key: "sleepHours", labelKey: "labelSleepHours", unit: "時間" },
+  { key: "sleepHours", labelKey: "labelSleepHours", unitKey: "unitHours" },
   { key: "sleepQuality", labelKey: "labelSleepQuality", unit: "" },
   { key: "waterIntake", labelKey: "labelWaterBySlot", unit: "ml" },
   { key: "temperature", labelKey: "labelTemperature", unit: "℃" },
@@ -75,11 +67,12 @@ const FACTORS = [
   { key: "protein", labelKey: "macroProtein", unit: "g" },
   { key: "fat", labelKey: "macroFat", unit: "g" },
   { key: "fiber", labelKey: "macroFiber", unit: "g" },
-  { key: "exerciseMinutes", labelKey: "labelExerciseMinutes", unit: "分" }
+  { key: "exerciseMinutes", labelKey: "labelExerciseMinutes", unitKey: "unitMinutesFactor" }
 ];
 
 const TABS = [
   { key: "today", labelKey: "tabToday", icon: Mic2 },
+  { key: "garden", labelKey: "tabGarden", icon: Flower2 },
   { key: "history", labelKey: "tabHistory", icon: CalendarDays },
   { key: "analysis", labelKey: "tabAnalysis", icon: BarChart3 },
   { key: "advice", labelKey: "tabAdvice", icon: Bot },
@@ -101,9 +94,21 @@ function addDays(iso, delta) {
   d.setDate(d.getDate() + delta);
   return toISODate(d);
 }
-function formatDateLabel(iso) {
+const LOCALE_MAP = { ja: "ja-JP", en: "en-US", zh: "zh-CN", it: "it-IT", de: "de-DE", fr: "fr-FR", es: "es-ES", ko: "ko-KR" };
+function getWeekdayLabels(language) {
+  const locale = LOCALE_MAP[language] || "ja-JP";
+  const base = new Date(2023, 0, 1); // 2023-01-01 は日曜日
+  const fmt = new Intl.DateTimeFormat(locale, { weekday: "short" });
+  return Array.from({ length: 7 }).map((_, i) => {
+    const d = new Date(base);
+    d.setDate(base.getDate() + i);
+    return fmt.format(d);
+  });
+}
+function formatDateLabel(iso, language) {
   const d = new Date(iso + "T00:00:00");
-  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日(${WEEKDAYS[d.getDay()]})`;
+  const locale = LOCALE_MAP[language] || "ja-JP";
+  return new Intl.DateTimeFormat(locale, { year: "numeric", month: "long", day: "numeric", weekday: "short" }).format(d);
 }
 function monthMeta(year, month) {
   const first = new Date(year, month, 1);
@@ -153,7 +158,7 @@ function getCorrelationData(entries, targetKey, targetFilter, t) {
       .map((e) => ({ x: e[f.key], y: e[targetKey] }))
       .filter((p) => typeof p.x === "number" && typeof p.y === "number");
     const r = pairs.length >= 3 ? pearson(pairs.map((p) => p.x), pairs.map((p) => p.y)) : null;
-    return { key: f.key, label: t(f.labelKey), unit: f.unit, r, n: pairs.length, pairs };
+    return { key: f.key, label: t(f.labelKey), unit: f.unitKey ? t(f.unitKey) : f.unit, r, n: pairs.length, pairs };
   });
 }
 function correlationLabel(r, t) {
@@ -642,7 +647,7 @@ function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood, 
               className="w-full text-left px-2.5 py-2 text-xs"
               style={{ color: C.ink, borderTop: i > 0 ? `1px solid ${C.line}` : "none" }}
             >
-              {f.isPreset && <span className="ff-mono mr-1" style={{ color: C.gold }}>[プリセット{f.unit ? `・1${f.unit}あり` : ""}]</span>}
+              {f.isPreset && <span className="ff-mono mr-1" style={{ color: C.gold }}>[{t("labelPreset")}{f.unit ? `・1${f.unit}${t("labelUnitAvailable")}` : ""}]</span>}
               {f.name}
               <span className="ml-1.5" style={{ color: C.inkSoft }}>
                 {f.isPreset
@@ -791,7 +796,7 @@ function ExerciseItemRow({ item, onChange, onRemove, t }) {
       <input
         type="text"
         value={item.memo || ""}
-        placeholder={item.type === "その他" ? "内容を記入してください（例：バレエレッスン）" : "メモ（任意）"}
+        placeholder={item.type === "その他" ? t("placeholderExerciseOtherType") : t("placeholderExerciseMemo")}
         onChange={(e) => onChange({ ...item, memo: e.target.value })}
         className="w-full rounded-lg border text-xs px-2 py-1.5"
         style={{ borderColor: C.line, background: C.card, color: C.ink }}
@@ -822,7 +827,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "" });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose" });
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileSaveStatus, setProfileSaveStatus] = useState("idle");
 
@@ -862,7 +867,7 @@ export default function VocalTracker({ userId, userEmail }) {
     let mounted = true;
     (async () => {
       const supabase = createClient();
-      const { data } = await supabase.from("profiles").select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex").eq("id", userId).single();
+      const { data } = await supabase.from("profiles").select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme").eq("id", userId).single();
       if (mounted && data) {
         setProfile({
           height_cm: data.height_cm ?? "",
@@ -870,7 +875,8 @@ export default function VocalTracker({ userId, userEmail }) {
           nutrition_phase: data.nutrition_phase || "維持",
           protein_coefficient: data.protein_coefficient ?? 1.6,
           age: data.age ?? "",
-          sex: data.sex ?? ""
+          sex: data.sex ?? "",
+          garden_theme: data.garden_theme || "rose"
         });
       }
       if (mounted) setProfileLoading(false);
@@ -885,6 +891,7 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [selectedDate, loading]);
 
   const t = useMemo(() => createTranslator(language), [language]);
+  const weekdayLabels = useMemo(() => getWeekdayLabels(language), [language]);
   const currentScore = useMemo(() => computeOverallScore(formData), [formData]);
   const mealTotals = useMemo(() => {
     const meals = formData ? formData.meals || [] : [];
@@ -1055,6 +1062,12 @@ export default function VocalTracker({ userId, userEmail }) {
       .sort((a, b) => b.n - a.n);
   }, [entries]);
 
+  async function handleThemeChange(themeKey) {
+    setProfile((p) => ({ ...p, garden_theme: themeKey }));
+    const supabase = createClient();
+    await supabase.from("profiles").update({ garden_theme: themeKey }).eq("id", userId);
+  }
+
   async function handleSaveProfile() {
     setProfileSaveStatus("saving");
     const supabase = createClient();
@@ -1115,7 +1128,7 @@ export default function VocalTracker({ userId, userEmail }) {
     setEntries((prev) => ({ ...prev, [clean.date]: clean }));
     setSaveStatus("saved");
     setTimeout(() => setSaveStatus("idle"), 1800);
-    const msg = CARING_MESSAGES[Math.floor(Math.random() * CARING_MESSAGES.length)];
+    const msg = t(CARING_MESSAGE_KEYS[Math.floor(Math.random() * CARING_MESSAGE_KEYS.length)]);
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3200);
   }
@@ -1134,13 +1147,13 @@ export default function VocalTracker({ userId, userEmail }) {
       const res = await fetch("/api/advice", { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
-        setAdviceError(data.error || "アドバイスの生成に失敗しました。");
+        setAdviceError(data.error || t("errorAdviceGeneration"));
       } else {
         setAdviceText(data.advice);
         setAdviceGeneratedAt(new Date());
       }
     } catch (e) {
-      setAdviceError("アドバイスの生成に失敗しました。");
+      setAdviceError(t("errorAdviceGeneration"));
     }
     setAdviceLoading(false);
   }
@@ -1227,7 +1240,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     <ChevronLeft size={16} />
                   </button>
                   <div className="text-center">
-                    <div className="font-medium text-sm">{formatDateLabel(selectedDate)}</div>
+                    <div className="font-medium text-sm">{formatDateLabel(selectedDate, language)}</div>
                     <input type="date" value={selectedDate} max={todayISO()} onChange={(e) => setSelectedDate(e.target.value)}
                       className="text-xs ff-mono mt-1 bg-transparent border-none" style={{ color: C.inkSoft }} />
                   </div>
@@ -1370,7 +1383,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       </div>
                       <button onClick={handleSaveProfile} disabled={profileSaveStatus === "saving"}
                         className="text-xs px-4 py-2 rounded-full font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
-                        {profileSaveStatus === "saving" ? t("saveButtonSaving") : profileSaveStatus === "saved" ? t("saveButtonSaved") : "身体データ設定を保存"}
+                        {profileSaveStatus === "saving" ? t("saveButtonSaving") : profileSaveStatus === "saved" ? t("saveButtonSaved") : t("btnSaveProfileSettings")}
                       </button>
 
                       <NumberField label={t("labelTodayWeight")} icon={Scale} value={formData.weightKg ?? ""} step={0.1} min={20} max={200} suffix="kg"
@@ -1378,8 +1391,8 @@ export default function VocalTracker({ userId, userEmail }) {
 
                       {profile.height_cm ? (
                         <div className="rounded-xl p-3 text-xs leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
-                          {currentBMI && <p>現在のBMI：{currentBMI.toFixed(1)}</p>}
-                          {weightRange && <p>参考体重レンジ（一般的なBMI 18.5〜24.9基準）：{weightRange.min.toFixed(1)}kg 〜 {weightRange.max.toFixed(1)}kg</p>}
+                          {currentBMI && <p>{t("labelCurrentBMI")}{currentBMI.toFixed(1)}</p>}
+                          {weightRange && <p>{t("labelWeightRangeBasis")}{weightRange.min.toFixed(1)}kg 〜 {weightRange.max.toFixed(1)}kg</p>}
                           <p className="mt-1">{t("noteBMIDisclaimer")}</p>
                         </div>
                       ) : (
@@ -1388,7 +1401,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     </SectionCard>
 
                     <SectionCard title={t("sectionSleepWater")} icon={Moon}>
-                      <NumberField label={t("labelSleepHours")} icon={Moon} value={formData.sleepHours} step={0.5} min={0} max={16} suffix="時間"
+                      <NumberField label={t("labelSleepHours")} icon={Moon} value={formData.sleepHours} step={0.5} min={0} max={16} suffix={t("unitHours")}
                         onChange={(v) => setFormData((f) => ({ ...f, sleepHours: v }))} />
                       <DotSelector label={t("labelSleepQuality")} icon={Moon} value={formData.sleepQuality} lowLabel={t("lowSleepQuality")} highLabel={t("highSleepQuality")}
                         onChange={(v) => setFormData((f) => ({ ...f, sleepQuality: v }))} />
@@ -1491,9 +1504,9 @@ export default function VocalTracker({ userId, userEmail }) {
                           </div>
                           <p className="text-xs mt-2 leading-relaxed" style={{ color: C.inkSoft }}>
                             ※ {nutritionTargets.usedPreciseFormula
-                              ? "年齢・性別・身長・体重をもとにした基礎代謝の推定値（Mifflin-St Jeor式）と、活動量の仮定（週3〜5日の運動を想定）から算出した目安です。"
-                              : "年齢・性別・身長を登録すると、より精度の高い計算（Mifflin-St Jeor式）に切り替わります。今は体重のみをもとにした簡易的な目安です。"}
-                            {" "}あくまで一般的な目安であり、正確な数値が必要な場合は管理栄養士にご相談ください。
+                              ? t("noteBMIFormulaPrecise")
+                              : t("noteBMIFormulaSimple")}
+                            {" "}{t("noteNutritionAdvice")}
                           </p>
                         </div>
                       ) : (
@@ -1555,7 +1568,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         </div>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <NumberField label={t("labelActivityDuration")} value={formData.activityDuration ?? ""} step={0.5} min={0} max={24} suffix="時間"
+                        <NumberField label={t("labelActivityDuration")} value={formData.activityDuration ?? ""} step={0.5} min={0} max={24} suffix={t("unitHours")}
                           onChange={(v) => setFormData((f) => ({ ...f, activityDuration: v }))} />
                         <div>
                           <label className="text-sm font-medium block mb-1.5">{t("labelRepertoire")}</label>
@@ -1588,8 +1601,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             />
                           )}
                           <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                            この日の「声・喉」「メンタル」の評価とあわせて記録され、分析タブで休養方法ごとの傾向を見られます。
-                            「その他」に記入した内容は、同じ言葉で書くと同じ方法として集計されます。
+                            {t("noteRestMethodsFull")}
                           </p>
                         </div>
                       )}
@@ -1713,6 +1725,10 @@ export default function VocalTracker({ userId, userEmail }) {
               </div>
             )}
 
+            {activeTab === "garden" && (
+              <Garden entries={entries} gardenTheme={profile.garden_theme} onThemeChange={handleThemeChange} t={t} />
+            )}
+
             {activeTab === "history" && (
               <div className="space-y-5">
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
@@ -1728,8 +1744,8 @@ export default function VocalTracker({ userId, userEmail }) {
                     </button>
                   </div>
                   <div className="grid grid-cols-7 gap-1 text-center">
-                    {WEEKDAYS.map((w) => (
-                      <div key={w} className="text-xs ff-mono py-1" style={{ color: C.inkSoft }}>{w}</div>
+                    {weekdayLabels.map((w, i) => (
+                      <div key={i} className="text-xs ff-mono py-1" style={{ color: C.inkSoft }}>{w}</div>
                     ))}
                     {calendarCells.map((c, i) =>
                       c === null ? (
@@ -1776,11 +1792,11 @@ export default function VocalTracker({ userId, userEmail }) {
                               {levelDynamic(e.throatCondition)}
                             </div>
                             <div className="flex-1 min-w-0 cursor-pointer" onClick={() => { setSelectedDate(date); setActiveTab("today"); }}>
-                              <div className="text-sm font-medium">{formatDateLabel(date)}</div>
+                              <div className="text-sm font-medium">{formatDateLabel(date, language)}</div>
                               <div className="flex items-center gap-1.5 text-xs mt-0.5 flex-wrap" style={{ color: C.inkSoft }}>
                                 <ActIcon size={12} />
                                 <span>{t((ACTIVITY_OPTIONS.find((a) => a.key === e.activityType) || {}).labelKey) || e.activityType}</span>
-                                {e.activityType === "本番" && e.performanceQuality && <span>・公演の出来 {levelDynamic(e.performanceQuality)}</span>}
+                                {e.activityType === "本番" && e.performanceQuality && <span>・{t("targetPerformance")} {levelDynamic(e.performanceQuality)}</span>}
                                 {e.location && <span>・{e.location}</span>}
                               </div>
                               {e.mentalReason && (
@@ -1823,7 +1839,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             {levelDynamic(avgThroat)}
                           </div>
                           <div className="text-xs ff-mono mt-0.5" style={{ color: C.inkSoft }}>
-                            {n > 0 ? `声${avgVoice != null ? avgVoice.toFixed(1) : "-"} / 喉${avgThroat != null ? avgThroat.toFixed(1) : "-"}` : "記録なし"}
+                            {n > 0 ? t("timeOfDayStatLine").replace("{voice}", avgVoice != null ? avgVoice.toFixed(1) : "-").replace("{throat}", avgThroat != null ? avgThroat.toFixed(1) : "-") : t("labelNoRecordShort")}
                           </div>
                           {isBest && <div className="text-xs mt-1" style={{ color: C.gold }}>{t("labelGoodTrend")}</div>}
                         </div>
@@ -1862,9 +1878,9 @@ export default function VocalTracker({ userId, userEmail }) {
                     <div className="space-y-2">
                       {restMethodStats.map((s) => (
                         <div key={s.method} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
-                          <span className="font-medium">{s.method}</span>
+                          <span className="font-medium">{REST_METHOD_KEYS[s.method] ? t(REST_METHOD_KEYS[s.method]) : s.method}</span>
                           <span className="ff-mono" style={{ color: C.inkSoft }}>
-                            喉{s.avgThroat != null ? s.avgThroat.toFixed(1) : "-"} ・ 声{s.avgVoice != null ? s.avgVoice.toFixed(1) : "-"} ・ 心の余裕{s.avgEase != null ? s.avgEase.toFixed(1) : "-"}（{s.n}件）
+                            {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
                           </span>
                         </div>
                       ))}
@@ -1881,7 +1897,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         <div key={s.location} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
                           <span className="font-medium">{s.location}</span>
                           <span className="ff-mono" style={{ color: C.inkSoft }}>
-                            喉{s.avgThroat != null ? s.avgThroat.toFixed(1) : "-"} ・ 声{s.avgVoice != null ? s.avgVoice.toFixed(1) : "-"} ・ 心の余裕{s.avgEase != null ? s.avgEase.toFixed(1) : "-"}（{s.n}件）
+                            {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
                           </span>
                         </div>
                       ))}
@@ -1899,7 +1915,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
                         <YAxis domain={["auto", "auto"]} tick={{ fontSize: 11, fill: C.inkSoft }} unit="kg" />
                         <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <Line type="monotone" dataKey="weightKg" name="体重" stroke={C.curtain} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                        <Line type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={C.curtain} strokeWidth={2} dot={{ r: 3 }} connectNulls />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -1916,7 +1932,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         <YAxis domain={["auto", "auto"]} tick={{ fontSize: 11, fill: C.inkSoft }} unit="g/kg" />
                         <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
                         <ReferenceLine y={Number(profile.protein_coefficient) || 1.6} stroke={C.gold} strokeDasharray="4 4" />
-                        <Line type="monotone" dataKey="proteinPerKg" name="実際の係数" stroke={C.sage} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                        <Line type="monotone" dataKey="proteinPerKg" name={t("chartNameActualCoefficient")} stroke={C.sage} strokeWidth={2} dot={{ r: 3 }} connectNulls />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -1933,9 +1949,9 @@ export default function VocalTracker({ userId, userEmail }) {
                         <YAxis tick={{ fontSize: 11, fill: C.inkSoft }} unit="h" />
                         <Tooltip
                           contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }}
-                          formatter={(v, n, p) => [`${v}時間（質${p.payload.sleepQuality ?? "-"}）`, "睡眠"]}
+                          formatter={(v, n, p) => [t("chartSleepTooltip").replace("{h}", v).replace("{q}", p.payload.sleepQuality ?? "-"), t("chartNameSleepHours")]}
                         />
-                        <Bar dataKey="sleepHours" name="睡眠時間" radius={4}>
+                        <Bar dataKey="sleepHours" name={t("chartNameSleepHours")} radius={4}>
                           {timeSeries.map((d, i) => (
                             <Cell key={i} fill={levelColor(d.sleepQuality)} />
                           ))}
@@ -1955,8 +1971,8 @@ export default function VocalTracker({ userId, userEmail }) {
                         <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
                         <YAxis tick={{ fontSize: 10, fill: C.inkSoft }} unit="kcal" />
                         <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <Bar dataKey="calorieActual" name="摂取カロリー" fill={C.gold} radius={3} />
-                        <Line type="monotone" dataKey="calorieTarget" name="目標カロリー" stroke={C.curtain} strokeDasharray="4 4" dot={false} connectNulls />
+                        <Bar dataKey="calorieActual" name={t("chartNameCalorieActual")} fill={C.gold} radius={3} />
+                        <Line type="monotone" dataKey="calorieTarget" name={t("chartNameCalorieTarget")} stroke={C.curtain} strokeDasharray="4 4" dot={false} connectNulls />
                       </ComposedChart>
                     </ResponsiveContainer>
                   </div>
@@ -1967,7 +1983,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
                         <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="kg" />
                         <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <Line type="monotone" dataKey="weightKg" name="体重" stroke={C.sage} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                        <Line type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={C.sage} strokeWidth={2} dot={{ r: 2 }} connectNulls />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -2002,9 +2018,11 @@ export default function VocalTracker({ userId, userEmail }) {
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-2">{t("titleCorrelationStrength")}</h3>
                       <p className="text-xs mb-3 leading-relaxed rounded-xl p-2.5" style={{ color: C.inkSoft, background: C.paper }}>
-                        棒が<span style={{ color: C.sage, fontWeight: 500 }}>{t("wordRight")}</span>に伸びるほど「多いほど良くなる」正の相関、
-                        <span style={{ color: C.curtain, fontWeight: 500 }}>{t("wordLeft")}</span>に伸びるほど「多いほど悪くなる」負の相関です。
-                        棒が長いほど関連が強く、0に近い（短い）ほど関連は弱いことを示します。
+                        {t("noteCorrDirection").split(/(\{right\}|\{left\})/g).map((part, i) => {
+                          if (part === "{right}") return <span key={i} style={{ color: C.sage, fontWeight: 500 }}>{t("wordRight")}</span>;
+                          if (part === "{left}") return <span key={i} style={{ color: C.curtain, fontWeight: 500 }}>{t("wordLeft")}</span>;
+                          return <span key={i}>{part}</span>;
+                        })}
                       </p>
                       <div style={{ width: "100%", height: 260 }}>
                         <ResponsiveContainer>
@@ -2012,7 +2030,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             <CartesianGrid horizontal={false} stroke={C.line} />
                             <XAxis type="number" domain={[-1, 1]} tick={{ fontSize: 11, fill: C.inkSoft }} />
                             <YAxis type="category" dataKey="label" width={110} tick={{ fontSize: 12, fill: C.ink }} />
-                            <Tooltip formatter={(v) => [Number(v).toFixed(2), "相関係数"]} contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                            <Tooltip formatter={(v) => [Number(v).toFixed(2), t("chartNameCorrelation")]} contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
                             <ReferenceLine x={0} stroke={C.inkSoft} />
                             <Bar dataKey="r" radius={4} onClick={(d) => setSelectedFactorKey(d.key)} cursor="pointer">
                               {chartData.map((r) => (
@@ -2046,8 +2064,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         </div>
                         <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{correlationLabel(scatterInfo.r, t)}</p>
                         <p className="text-xs mb-3 leading-relaxed rounded-xl p-2.5" style={{ color: C.inkSoft, background: C.paper }}>
-                          点1つが記録した1日分です。右上がりに点が並ぶほど正の関係、右下がりなら負の関係。
-                          点がバラバラなら、はっきりした関係はなさそうです。
+                          {t("noteScatterExplain")}
                         </p>
                         <div style={{ width: "100%", height: 220 }}>
                           <ResponsiveContainer>
@@ -2064,7 +2081,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     )}
 
                     <p className="text-xs leading-relaxed px-1" style={{ color: C.inkSoft }}>
-                      ※ 相関は関連の強さを示すものであり、因果関係を証明するものではありません。記録件数が少ないうちは参考程度にご覧ください。
+                      {t("noteCorrelationCaveat")}
                     </p>
                   </>
                 )}
@@ -2091,7 +2108,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         className="rounded-full px-5 py-2.5 text-sm font-medium flex items-center gap-2"
                         style={{ background: C.curtain, color: "#FFFDF8" }}>
                         {adviceLoading && <Loader2 size={14} className="animate-spin" />}
-                        {adviceLoading ? "分析中…" : "アドバイスを生成する"}
+                        {adviceLoading ? t("labelAnalyzing") : t("labelGenerateAdvice")}
                       </button>
                       {adviceError && <p className="text-xs mt-3" style={{ color: C.curtain }}>{adviceError}</p>}
                       {adviceText && (
@@ -2115,7 +2132,7 @@ export default function VocalTracker({ userId, userEmail }) {
               </div>
             )}
 
-            {activeTab === "info" && <HealthInfo />}
+            {activeTab === "info" && <HealthInfo language={language} />}
           </div>
         )}
       </main>
