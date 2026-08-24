@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { C } from "@/lib/tokens";
 import {
   SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES,
@@ -151,15 +151,45 @@ function SheepCharacter({ equipped, size = 120, isWalking = false }) {
 }
 
 // ===== 自動でうろうろ歩き回るためのフック =====
+// ブラウザ間の解釈差が出やすいCSSトランジションではなく、
+// requestAnimationFrameで毎フレームJS側で位置を計算する方式（挙動が確実）。
 function useWander(centerX, centerY, rangeX, rangeY) {
   const [pos, setPos] = useState([centerX, centerY]);
   const [facingLeft, setFacingLeft] = useState(false);
   const [isWalking, setIsWalking] = useState(false);
+  const posRef = useRef([centerX, centerY]);
   const MOVE_DURATION = 2600;
 
   useEffect(() => {
     let cancelled = false;
-    let timer, walkTimer;
+    let timer;
+    let rafId;
+
+    function easeInOut(t) {
+      return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    }
+
+    function animateTo(target) {
+      const start = posRef.current;
+      const startTime = performance.now();
+      function step(now) {
+        if (cancelled) return;
+        const elapsed = now - startTime;
+        const t = Math.min(1, elapsed / MOVE_DURATION);
+        const eased = easeInOut(t);
+        const nx = start[0] + (target[0] - start[0]) * eased;
+        const ny = start[1] + (target[1] - start[1]) * eased;
+        posRef.current = [nx, ny];
+        setPos([nx, ny]);
+        if (t < 1) {
+          rafId = requestAnimationFrame(step);
+        } else {
+          setIsWalking(false);
+        }
+      }
+      rafId = requestAnimationFrame(step);
+    }
+
     function pickNext() {
       const delay = 2800 + Math.random() * 2400;
       timer = setTimeout(() => {
@@ -176,28 +206,25 @@ function useWander(centerX, centerY, rangeX, rangeY) {
           tries += 1;
         } while (tries < 20);
         if (nx === undefined) { nx = centerX; ny = centerY; }
+        setFacingLeft(nx < posRef.current[0] - 2);
         setIsWalking(true);
-        setPos((prev) => {
-          setFacingLeft(nx < prev[0] - 2);
-          return [nx, ny];
-        });
-        walkTimer = setTimeout(() => { if (!cancelled) setIsWalking(false); }, MOVE_DURATION);
+        animateTo([nx, ny]);
         pickNext();
       }, delay);
     }
     pickNext();
-    return () => { cancelled = true; clearTimeout(timer); clearTimeout(walkTimer); };
+    return () => { cancelled = true; clearTimeout(timer); if (rafId) cancelAnimationFrame(rafId); };
   }, [centerX, centerY, rangeX, rangeY]);
 
   return [pos, facingLeft, isWalking];
 }
 
-// キャラクターを部屋・庭の中で滑らかに動かして表示する
+// キャラクターを部屋・庭の中で表示する（位置はuseWanderが毎フレーム計算した値をそのまま反映）
 function AnimatedCharacter({ equipped, size, pos, facingLeft, isWalking }) {
   const halfW = size / 2;
   const footOffset = size * 1.15;
   return (
-    <g transform={`translate(${pos[0]},${pos[1]})`} style={{ transition: "transform 2.6s ease-in-out" }}>
+    <g transform={`translate(${pos[0]},${pos[1]})`}>
       <g transform={`translate(${-halfW},${-footOffset}) ${facingLeft ? `translate(${size},0) scale(-1,1)` : ""}`}>
         <SheepCharacter equipped={equipped} size={size} isWalking={isWalking} />
       </g>
