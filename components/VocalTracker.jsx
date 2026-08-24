@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  Cell, ScatterChart, Scatter, ReferenceLine
+  Cell, ScatterChart, Scatter, ReferenceLine, LineChart, Line, ComposedChart
 } from "recharts";
 import { createClient } from "@/lib/supabase/client";
 import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC } from "@/lib/tokens";
@@ -40,6 +40,18 @@ const WEATHER_OPTIONS = ["晴れ", "曇り", "雨", "雪", "その他"];
 const NUTRITION_PHASES = ["維持", "増量", "減量"];
 const REST_METHODS = ["睡眠・休息", "入浴", "マッサージ", "読書", "散歩", "瞑想", "趣味の時間", "その他"];
 const AI_ADVICE_ENABLED = false; // 準備中。有効にする場合は true にしてください（ANTHROPIC_API_KEYの設定も必要です）
+const CARING_MESSAGES = [
+  "今日も記録、お疲れさまでした",
+  "無理せず、自分のペースで大丈夫です",
+  "声も心も、大切にしてくださいね",
+  "今日という日を、ちゃんと見つめられましたね",
+  "小さな積み重ねが、きっと力になります",
+  "今日もよく頑張りました",
+  "ゆっくり休んで、また明日",
+  "自分を労わる時間、大事にしてくださいね",
+  "続けているあなたを、ちゃんと見ています",
+  "記録、ありがとうございます"
+];
 
 const FACTORS = [
   { key: "sleepHours", label: "睡眠時間", unit: "時間" },
@@ -747,6 +759,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
   const [saveError, setSaveError] = useState("");
+  const [toastMessage, setToastMessage] = useState(null);
   const [viewMonth, setViewMonth] = useState(() => {
     const d = new Date();
     return { year: d.getFullYear(), month: d.getMonth() };
@@ -856,6 +869,9 @@ export default function VocalTracker({ userId, userEmail }) {
     if (analysisTarget === "performance") {
       return getCorrelationData(entries, "performanceQuality", (e) => e.activityType === "本番" && typeof e.performanceQuality === "number");
     }
+    if (analysisTarget === "ease") {
+      return getCorrelationData(entries, "ease", (e) => typeof e.ease === "number");
+    }
     return getCorrelationData(entries, "throatCondition", (e) => typeof e.throatCondition === "number");
   }, [entries, analysisTarget]);
   const chartData = useMemo(
@@ -913,6 +929,47 @@ export default function VocalTracker({ userId, userEmail }) {
         avgEase: s.n ? s.easeSum / s.n : null
       }))
       .sort((a, b) => (b.avgVoice || 0) - (a.avgVoice || 0));
+  }, [entries]);
+  const timeSeries = useMemo(() => {
+    const dates = Object.keys(entries).sort().slice(-30);
+    return dates.map((date) => {
+      const e = entries[date];
+      const w = e.weightKg || getLatestWeight(entries, date);
+      const targets = computeNutritionTargets(w, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient);
+      const calorieActual = (e.carbs || 0) * 4 + (e.protein || 0) * 4 + (e.fat || 0) * 9;
+      return {
+        date: date.slice(5),
+        fullDate: date,
+        weightKg: e.weightKg || null,
+        proteinPerKg: (e.weightKg && e.protein) ? roundTo1(e.protein / e.weightKg) : null,
+        sleepHours: typeof e.sleepHours === "number" ? e.sleepHours : null,
+        sleepQuality: typeof e.sleepQuality === "number" ? e.sleepQuality : null,
+        calorieActual: calorieActual > 0 ? Math.round(calorieActual) : null,
+        calorieTarget: targets ? Math.round(targets.calorieTarget) : null,
+        ease: typeof e.ease === "number" ? e.ease : null
+      };
+    });
+  }, [entries, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient]);
+  const locationStats = useMemo(() => {
+    const byLoc = {};
+    Object.values(entries).forEach((e) => {
+      const loc = (e.location || "").trim();
+      if (!loc) return;
+      if (!byLoc[loc]) byLoc[loc] = { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 };
+      if (typeof e.throatCondition === "number") byLoc[loc].throatSum += e.throatCondition;
+      if (typeof e.voiceQuality === "number") byLoc[loc].voiceSum += e.voiceQuality;
+      if (typeof e.ease === "number") byLoc[loc].easeSum += e.ease;
+      byLoc[loc].n += 1;
+    });
+    return Object.entries(byLoc)
+      .filter(([, s]) => s.n >= 2)
+      .map(([location, s]) => ({
+        location, n: s.n,
+        avgThroat: s.n ? s.throatSum / s.n : null,
+        avgVoice: s.n ? s.voiceSum / s.n : null,
+        avgEase: s.n ? s.easeSum / s.n : null
+      }))
+      .sort((a, b) => b.n - a.n);
   }, [entries]);
 
   async function handleSaveProfile() {
@@ -975,6 +1032,9 @@ export default function VocalTracker({ userId, userEmail }) {
     setEntries((prev) => ({ ...prev, [clean.date]: clean }));
     setSaveStatus("saved");
     setTimeout(() => setSaveStatus("idle"), 1800);
+    const msg = CARING_MESSAGES[Math.floor(Math.random() * CARING_MESSAGES.length)];
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3200);
   }
 
   async function handleDelete(date) {
@@ -1010,6 +1070,16 @@ export default function VocalTracker({ userId, userEmail }) {
 
   return (
     <div style={{ background: C.paper, color: C.ink, minHeight: "100vh" }}>
+      {toastMessage && (
+        <div className="fixed left-1/2 z-50 tab-panel" style={{ bottom: 24, transform: "translateX(-50%)" }}>
+          <div
+            className="rounded-full px-5 py-3 ff-display italic text-sm"
+            style={{ background: C.curtain, color: "#FFFDF8", boxShadow: "0 8px 24px rgba(36,25,20,0.25)" }}
+          >
+            {toastMessage}
+          </div>
+        </div>
+      )}
       <header className="px-4 sm:px-6 pt-6 pb-4 sticky top-0 z-10" style={{ background: C.paper, borderBottom: `1px solid ${C.line}` }}>
         <div className="max-w-3xl mx-auto flex items-start justify-between gap-3">
           <div>
@@ -1485,6 +1555,13 @@ export default function VocalTracker({ userId, userEmail }) {
                       {exerciseTotalMinutes > 0 && (
                         <p className="text-xs text-right ff-mono" style={{ color: C.inkSoft }}>合計 {exerciseTotalMinutes}分</p>
                       )}
+                      <div className="rounded-xl p-3 text-xs leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
+                        <p className="font-medium mb-1" style={{ color: C.ink }}>おすすめの運動（参考）</p>
+                        <p>・呼吸支持のために：横隔膜呼吸、プランク、ピラティス</p>
+                        <p>・姿勢・喉頭の安定のために：肩甲骨まわりのストレッチ、首肩のストレッチ</p>
+                        <p>・全身持久力のために：ウォーキング、軽いジョギング</p>
+                        <p className="mt-1">詳しい理由は「健康情報」タブをご覧ください。</p>
+                      </div>
                     </SectionCard>
 
                     <SectionCard title="メンタル" icon={HeartHandshake}>
@@ -1655,16 +1732,122 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                 )}
 
+                {locationStats.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">滞在地ごとの声・メンタルの傾向</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>2件以上記録のある滞在地のみ表示しています。</p>
+                    <div className="space-y-2">
+                      {locationStats.map((s) => (
+                        <div key={s.location} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                          <span className="font-medium">{s.location}</span>
+                          <span className="ff-mono" style={{ color: C.inkSoft }}>
+                            喉{s.avgThroat != null ? s.avgThroat.toFixed(1) : "-"} ・ 声{s.avgVoice != null ? s.avgVoice.toFixed(1) : "-"} ・ 心の余裕{s.avgEase != null ? s.avgEase.toFixed(1) : "-"}（{s.n}件）
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">体重の推移</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>直近30日分の記録です。</p>
+                  <div style={{ width: "100%", height: 200 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 11, fill: C.inkSoft }} unit="kg" />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <Line type="monotone" dataKey="weightKg" name="体重" stroke={C.curtain} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">タンパク質摂取量（体重1kgあたり）の推移</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>破線が「身体データ」で設定した目標係数です。</p>
+                  <div style={{ width: "100%", height: 200 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 11, fill: C.inkSoft }} unit="g/kg" />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <ReferenceLine y={Number(profile.protein_coefficient) || 1.6} stroke={C.gold} strokeDasharray="4 4" />
+                        <Line type="monotone" dataKey="proteinPerKg" name="実際の係数" stroke={C.sage} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">睡眠時間と質</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>棒の高さが時間、色の濃さが質の高さを表します。</p>
+                  <div style={{ width: "100%", height: 200 }}>
+                    <ResponsiveContainer>
+                      <BarChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis tick={{ fontSize: 11, fill: C.inkSoft }} unit="h" />
+                        <Tooltip
+                          contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }}
+                          formatter={(v, n, p) => [`${v}時間（質${p.payload.sleepQuality ?? "-"}）`, "睡眠"]}
+                        />
+                        <Bar dataKey="sleepHours" name="睡眠時間" radius={4}>
+                          {timeSeries.map((d, i) => (
+                            <Cell key={i} fill={levelColor(d.sleepQuality)} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">栄養摂取と体重の変化</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>上：摂取カロリー（棒）と目標カロリー（破線）。下：体重の推移。</p>
+                  <div style={{ width: "100%", height: 170 }}>
+                    <ResponsiveContainer>
+                      <ComposedChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis tick={{ fontSize: 10, fill: C.inkSoft }} unit="kcal" />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <Bar dataKey="calorieActual" name="摂取カロリー" fill={C.gold} radius={3} />
+                        <Line type="monotone" dataKey="calorieTarget" name="目標カロリー" stroke={C.curtain} strokeDasharray="4 4" dot={false} connectNulls />
+                      </ComposedChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div style={{ width: "100%", height: 130, marginTop: 8 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="kg" />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <Line type="monotone" dataKey="weightKg" name="体重" stroke={C.sage} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
                 <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
                   <button onClick={() => setAnalysisTarget("performance")}
-                    className="flex-1 py-2 rounded-full text-sm font-medium transition-all"
+                    className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
                     style={{ background: analysisTarget === "performance" ? C.curtain : "transparent", color: analysisTarget === "performance" ? "#FFFDF8" : C.inkSoft }}>
-                    公演の出来との相関
+                    公演の出来
                   </button>
                   <button onClick={() => setAnalysisTarget("throat")}
-                    className="flex-1 py-2 rounded-full text-sm font-medium transition-all"
+                    className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
                     style={{ background: analysisTarget === "throat" ? C.curtain : "transparent", color: analysisTarget === "throat" ? "#FFFDF8" : C.inkSoft }}>
-                    喉のコンディションとの相関
+                    喉のコンディション
+                  </button>
+                  <button onClick={() => setAnalysisTarget("ease")}
+                    className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                    style={{ background: analysisTarget === "ease" ? C.curtain : "transparent", color: analysisTarget === "ease" ? "#FFFDF8" : C.inkSoft }}>
+                    心の余裕
                   </button>
                 </div>
 
@@ -1708,7 +1891,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             <ScatterChart margin={{ left: 8, right: 16, top: 8, bottom: 8 }}>
                               <CartesianGrid stroke={C.line} />
                               <XAxis type="number" dataKey="x" name={scatterInfo.label} unit={scatterInfo.unit} tick={{ fontSize: 11, fill: C.inkSoft }} />
-                              <YAxis type="number" dataKey="y" name={analysisTarget === "performance" ? "公演の出来" : "喉の状態"} domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 11, fill: C.inkSoft }} />
+                              <YAxis type="number" dataKey="y" name={analysisTarget === "performance" ? "公演の出来" : analysisTarget === "ease" ? "心の余裕" : "喉の状態"} domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 11, fill: C.inkSoft }} />
                               <Tooltip cursor={{ strokeDasharray: "3 3" }} contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
                               <Scatter data={scatterInfo.pairs} fill={C.gold} />
                             </ScatterChart>
