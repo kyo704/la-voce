@@ -275,6 +275,50 @@ const T = {
     ko: "한편 독일 가곡과 프랑스 멜로디의 기술은, \"어느 유파에 속하는가\"라기보다는 \"어느 홀에서, 어떤 반주 편성으로, 어느 언어의 시를 노래하는가\"라는 레퍼토리 자체의 요구에서 도출된 실천적 적응으로 볼 수 있습니다. 오페라로 단련된 목소리의 토대 위에, 각 언어와 레퍼토리가 요구하는 섬세함을 겹쳐 쌓아간다——많은 성악가에게 이것들은 서로 대립하는 선택지가 아니라, 서로 겹쳐지는 기술의 층인 것입니다.",
   },
   // ===== 用語集 =====
+  s7eyebrow: { ja: "PHYSICAL MECHANICS", en: "PHYSICAL MECHANICS" },
+  s7title: { ja: "発声を支える身体の力学", en: "The Body Mechanics Behind the Voice" },
+  s7subtitle: { ja: "喉頭・舌・呼吸・声道——結果としての声を決める9つの要素", en: "Larynx, Tongue, Breath, Vocal Tract — Nine Elements That Shape the Resulting Sound" },
+  s7intro: { ja: "ここまでの流派ごとの様式論とは少し視点を変えて、どの流派にも共通して関わってくる「身体の物理的な仕組み」を、9つの観点からまとめます。それぞれは独立した項目ではなく、喉頭の位置は舌の状態に、舌の状態は呼吸の支えに、呼吸の支えは声道の長さに——というように、互いに影響し合う一つのシステムです。", en: "Shifting focus slightly from the stylistic differences between schools above, this section covers nine aspects of the physical mechanics that underlie vocal technique across virtually every tradition. None of these stand alone — laryngeal position affects tongue state, tongue state affects breath support, breath support affects vocal tract length, and so on. They form a single interconnected system." },
+  s7t1title: { ja: "① 喉頭の位置", en: "① Laryngeal Position" },
+  s7t1p1: { ja: "喉頭（声帯を収めている軟骨の器官、いわゆる「喉仏」の部分）は、発声時にどの高さにあるかで、声の性質が大きく変わります。クラシック発声で一般的に目指されるのは、力で押し下げた低さではなく、リラックスした状態で自然に落ち着く「低め〜中間の安定した位置」です。喉頭を引き上げる筋肉（舌骨上筋群など）と引き下げる筋肉（舌骨下筋群など）のバランスが取れている状態が理想で、どちらかに偏ると声の自由度が失われます。", en: "The larynx — the cartilage structure housing the vocal folds, roughly the \"Adam's apple\" area — has a major effect on vocal quality depending on its height during phonation. What classical technique generally aims for isn't a forcibly pressed-down low position, but a low-to-neutral position that settles there naturally through relaxation. The ideal is a balance between the muscles that raise the larynx (the suprahyoid group) and those that lower it (the infrahyoid group); leaning too far toward either compromises the voice's freedom." },
+  s7t1p2: { ja: "喉頭が浮き上がった状態（未訓練の話し声や、力んだ高音でよく起こる）は、声道を短くし、声を薄く・締まった響きにしがちです。逆に、あくびの始まりのような感覚で息を吸うと、喉頭は自然に低く落ち着き、喉の奥に空間ができます。この「あくびの入り口」の感覚を、発声中も保ち続けること（無理に固定するのではなく）が、多くの流派で共通して重視されているポイントです。", en: "A raised larynx — common in untrained speech or strained high notes — shortens the vocal tract and tends to make the voice thin and pinched. Conversely, inhaling with the sensation of the start of a yawn lets the larynx settle low naturally, opening space at the back of the throat. Maintaining that \"beginning-of-a-yawn\" sensation throughout phonation — without forcibly locking it in place — is a point emphasized across many schools of technique." },
+  s7t2title: { ja: "② 舌の位置", en: "② Tongue Position" },
+  s7t2p1: { ja: "理想的な舌の状態は、舌先が下の前歯の裏に軽く触れ、舌の中央が平らに近く、そして舌根（舌の付け根）がリラックスして前方にある状態です。舌根が緊張して喉の奥に引き込まれると、喉頭が不安定になったり、共鳴のための空間が狭まったりする、発声上の緊張の中でも特に頻度の高い原因の一つになります。", en: "The ideal tongue state has the tip lightly touching behind the lower front teeth, the middle of the tongue relatively flat, and the tongue root relaxed and positioned forward. A tense tongue root pulled back toward the throat is one of the single most common causes of vocal tension — it can destabilize the larynx and narrow the space available for resonance." },
+  s7t2p2: { ja: "母音によって舌の形は当然変化します（「イ」では舌の前方が高く盛り上がり、「ア」では平らに近づくなど）が、どの母音であっても、舌根そのものは自由でいる必要があります。舌根の緊張は本人には気づきにくいことが多く、鏡で喉の奥を覗いたり、指で舌の下側の柔らかさを確認したりすることが、セルフチェックの一つの方法になります。", en: "The shape of the tongue naturally changes from vowel to vowel — high and bunched toward the front for \"ee,\" flatter for \"ah\" — but regardless of vowel, the tongue root itself needs to stay free. Tension there is often hard to notice on your own; checking in a mirror at the back of the throat, or feeling the softness under the tongue with a finger, are simple ways to self-check." },
+  s7t3title: { ja: "③ 腹圧（アッポッジョの実際の力学）", en: "③ Abdominal Pressure (The Actual Mechanics of Appoggio)" },
+  s7t3p1: { ja: "「腹圧で支える」という言葉は、しばしば「お腹に力を入れて押し出す」と誤解されますが、実際に求められているのはその逆に近い動きです。下腹部の筋肉（腹横筋・内外腹斜筋）は、息を吐き出す力を作り出すと同時に、吸気筋（横隔膜・外肋間筋）がその動きにゆっくりと「抵抗」し続けることで、声帯にかかる息の圧力を一定に保ちます。伸ばしたゴムを急に離さず、少しずつコントロールしながら戻していくイメージに近いものです。", en: "The phrase \"support with the abdomen\" is often misunderstood as \"tighten your belly and push out.\" What's actually required is closer to the opposite. The lower abdominal muscles (transverse abdominis, internal and external obliques) generate the force of exhalation, while the inspiratory muscles (diaphragm, external intercostals) continue to slowly \"resist\" that motion, keeping the air pressure on the vocal folds steady. It's closer to controlling a stretched rubber band as it's released gradually, rather than letting go of it suddenly." },
+  s7t3p2: { ja: "腹部を強く握りしめるような力み方は、かえって息の圧力を不安定にし、喉頭を押し上げる原因にもなります。適切な支えができている時、喉頭はむしろ自由に低い位置を保ちやすくなります。「お腹の力み」と「喉の自由」は、一見別々の話に思えて、実際には表裏一体の関係にあります。", en: "Gripping the abdomen tightly, by contrast, tends to destabilize breath pressure and can actually push the larynx upward. When support is working correctly, the larynx tends to stay low and free more easily, not less. \"Abdominal tension\" and \"throat freedom\" may seem like separate topics, but they're really two sides of the same coin." },
+  s7t4title: { ja: "④ 横隔膜の動き", en: "④ Diaphragm Movement" },
+  s7t4p1: { ja: "横隔膜は、息を吸う時に収縮して平らになり下方向へ動くことで、肺に空気を引き込みます。問題は、息を吐く（歌う）時にどう動くかです。何もしなければ、横隔膜は弾性によってすぐに元の位置へ戻ろうとし、息が一気に抜けてしまいます。熟練した歌手は、横隔膜と外肋間筋の働きを完全には止めず、ゆっくりと、コントロールしながら戻していきます。この「ゆっくり戻る動き」こそが、③で説明した腹圧の支えの、身体内部での実体です。", en: "The diaphragm contracts and flattens, moving downward, to draw air into the lungs on inhalation. The question is what it does during exhalation — that is, while singing. Left alone, its elastic recoil would pull it back to its resting position quickly, releasing the breath all at once. Skilled singers don't fully stop the diaphragm and external intercostals from working; instead, they let those muscles slowly, deliberately relax their engagement. This slow return is, physically, what the abdominal support described in ③ actually consists of inside the body." },
+  s7t4p2: { ja: "また、息の吸い方自体も重要です。肩だけを上げる浅い呼吸ではなく、下部の肋骨が左右に広がるような、横隔膜と肋骨を連動させた呼吸（肋骨呼吸）を行うことで、より多くの息を、より効率よく使える態勢が整います。", en: "How the breath is taken in the first place matters too. Rather than a shallow breath that only raises the shoulders, breathing that engages the diaphragm together with the lower ribs — letting them expand outward to the sides (costal breathing) — sets up a state where more air can be used more efficiently." },
+  s7t5title: { ja: "⑤ 声道の長さ", en: "⑤ Vocal Tract Length" },
+  s7t5p1: { ja: "声道とは、声帯から唇までの空間全体を指します。この空間の長さと形が、音のどの周波数帯が強調されるか（フォルマント）を決め、それが声の色そのものを大きく左右します。声道が長いほど、フォルマントの周波数は全体的に低くなり、聴感上「深み」「豊かさ」として感じられる音色になります。訓練された声楽家の声が、話し声と同じ高さの音でもまったく違って聴こえるのは、この声道の使い方の違いが大きな理由の一つです。", en: "The vocal tract refers to the entire space from the vocal folds to the lips. The length and shape of this space determine which frequency bands get emphasized (formants), which in turn shapes the color of the voice itself. A longer vocal tract generally lowers the formant frequencies overall, which is perceived as depth and richness in the tone. One major reason a trained singer's voice sounds completely different from a speaking voice, even at the same pitch, is precisely this difference in how the vocal tract is used." },
+  s7t5p2: { ja: "声道を長くする方法は主に2つあります。1つは①で述べた喉頭を低く保つこと（声道を下から伸ばす）、もう1つは唇をわずかに丸めて前に出すこと（声道を上から伸ばす）です。オペラ歌手が用いる「歌手のフォルマント」（オーケストラを突き抜けて聴こえる、2800〜3400Hz付近に生まれる響きの集中）も、こうした声道の使い方と、安定して低い喉頭位置が土台になって生まれるものです。", en: "There are two main ways to lengthen the vocal tract: keeping the larynx low, as discussed in ①, which extends it from below, and slightly rounding and protruding the lips, which extends it from above. The \"singer's formant\" that opera singers rely on — a concentration of resonance around 2800-3400 Hz that lets the voice cut through an orchestra — is built on this kind of vocal tract usage, resting on a stable, low laryngeal position." },
+  s7t6title: { ja: "⑥ 関連するマッサージ方法", en: "⑥ Associated Massage Techniques" },
+  s7t6p1: { ja: "喉頭・舌根・呼吸のいずれも、周辺の筋肉に余分な緊張があると、思うように機能しません。発声前や練習の合間に取り入れられる、代表的なセルフマッサージをいくつか挙げます。", en: "None of the larynx, tongue root, or breath mechanics described above can function well if the surrounding muscles are carrying excess tension. Here are a few common self-massage techniques that can be worked into warm-ups or breaks between practice." },
+  s7t6item1term: { ja: "顎関節まわりのマッサージ", en: "Jaw joint (TMJ) massage" },
+  s7t6item1desc: { ja: "耳の少し前、口を開閉すると動く部分を指の腹で小さな円を描くようにほぐします。顎の余計な力みが取れると、舌や喉の自由度も上がります。", en: "Use your fingertips to make small circles just in front of the ears, at the point that moves when you open and close your mouth. Releasing excess jaw tension also frees up the tongue and throat." },
+  s7t6item2term: { ja: "舌骨上筋群（あご下）のマッサージ", en: "Suprahyoid muscle massage (under the chin)" },
+  s7t6item2desc: { ja: "あごの下、舌の付け根を支えている筋肉を、指の腹で下から上へ優しく押し上げるようにマッサージします。舌根の緊張をほぐすのに役立ちます。", en: "Gently massage the muscles under the chin that support the base of the tongue, pressing upward from below with your fingertips. This helps release tension in the tongue root." },
+  s7t6item3term: { ja: "甲状軟骨（喉仏）の優しい左右の揺らし", en: "Gentle side-to-side rocking of the thyroid cartilage (Adam's apple)" },
+  s7t6item3desc: { ja: "喉仏を指で挟むように軽く持ち、ごく小さく左右にゆっくり揺らします。力を入れすぎないことが重要で、筋緊張性発声障害のケアでも使われる手法です。", en: "Lightly hold the thyroid cartilage between your fingers and rock it very gently, slowly, from side to side. It's important not to press too hard — this technique is also used in the care of muscle tension dysphonia." },
+  s7t6item4term: { ja: "胸鎖乳突筋・首すじのマッサージ", en: "Sternocleidomastoid and neck-line massage" },
+  s7t6item4desc: { ja: "耳の後ろから鎖骨に向かって斜めに走る筋肉を、指の腹でゆっくりなでるようにほぐします。首全体の緊張が緩むと、喉頭の自由度にも良い影響があります。", en: "Slowly stroke and loosen the muscle that runs diagonally from behind the ear down to the collarbone, using your fingertips. Releasing overall neck tension has a positive effect on laryngeal freedom as well." },
+  s7t7title: { ja: "⑦ 筋トレ方法——どの部位を鍛えるべきか", en: "⑦ Strength Training — Which Muscles to Develop" },
+  s7t7p1: { ja: "重要な前提として、喉や首そのものの筋肉は「鍛える」対象ではなく、むしろリラックスさせ続ける対象です。筋力トレーニングの対象になるのは、あくまで呼吸の支えと姿勢を担う、喉から離れた部位です。", en: "An important premise first: the muscles of the throat and neck themselves are not something to \"train\" — if anything, they need to stay relaxed. What strength training should target are the muscles, away from the throat, responsible for breath support and posture." },
+  s7t7item1term: { ja: "腹横筋・内外腹斜筋（体幹の支え）", en: "Transverse abdominis and obliques (core support)" },
+  s7t7item1desc: { ja: "③で説明した「ゆっくり戻す」動きをコントロールする筋肉です。強く締め付ける腹筋運動よりも、ゆっくりとした呼気コントロールを伴うプランクや、息を細く長く吐き続ける練習の方が、発声に活きる強さがつきます。", en: "These are the muscles that control the \"slow release\" motion described in ③. Rather than forceful, gripping ab exercises, planks combined with slow, controlled exhalation, or practice sustaining a thin, long exhale, build the kind of strength that actually carries over to singing." },
+  s7t7item2term: { ja: "脊柱起立筋・姿勢を支える背筋", en: "Erector spinae and postural back muscles" },
+  s7t7item2desc: { ja: "胸を潰さず、開いた状態を保つための土台になります。背中が丸まると胸郭の拡張が制限され、結果として呼吸の効率も下がります。", en: "These form the foundation for keeping the chest open rather than collapsed. A rounded back restricts rib cage expansion, which in turn reduces breathing efficiency." },
+  s7t7item3term: { ja: "肋間筋（肋骨まわりの筋肉）", en: "Intercostal muscles (around the rib cage)" },
+  s7t7item3desc: { ja: "直接的な筋トレというより、肋骨を大きく左右に広げてキープする呼吸練習を繰り返すことで、徐々に強化されていきます。", en: "Rather than direct strength training, these are gradually strengthened through repeated breathing exercises that expand the ribs widely to the sides and hold that expansion." },
+  s7t7p2: { ja: "目指すべきは、瞬発的な最大筋力ではなく、長いフレーズを支え続けられる持久力と、微細なコントロール能力です。全身の有酸素運動も、長いフレーズや本番全体を通した息の持久力に間接的に貢献します。", en: "The goal isn't explosive maximum strength, but endurance that can sustain long phrases, along with fine-grained control. General cardiovascular fitness also contributes indirectly to the breath endurance needed for long phrases and a full performance." },
+  s7t8title: { ja: "⑧ 水分・栄養学の観点から見た食事の重要性", en: "⑧ Why Diet Matters, from a Hydration and Nutrition Perspective" },
+  s7t8p1: { ja: "声帯の粘膜を潤すために摂った水分は、実際に粘膜表面に届くまでに数時間かかるとされています。つまり「本番の直前にたくさん飲む」ことよりも、日常的に、こまめに水分を摂り続けることの方が、声帯の潤いという観点では効果的です。蒸気の吸入は、これとは逆に、比較的短時間で表面を潤す即効性のあるケア方法として補完的に使えます。", en: "Water consumed to hydrate the vocal fold mucosa is thought to take several hours to actually reach the surface of that tissue. In other words, drinking a lot right before a performance matters less, for mucosal hydration specifically, than maintaining steady, frequent hydration throughout the day. Steam inhalation works the opposite way — a faster-acting, complementary method that moistens the surface over a shorter timeframe." },
+  s7t8p2: { ja: "栄養面では、筋肉の回復に関わるタンパク質はもちろんですが、粘膜組織の健康を支えるビタミンA・C・Eといった抗酸化系の栄養素や、炎症を抑える働きが期待されるオメガ3系脂肪酸も、間接的に声のコンディションに関わってきます。「乳製品が痰を増やす」という説もよく聞かれますが、これは科学的にはまだ一致した結論が出ておらず、個人差が大きいというのが実情です。断定せず、自分の体の反応を観察する姿勢が現実的です。", en: "Nutritionally, protein matters for muscle recovery, of course, but antioxidant nutrients like vitamins A, C, and E that support mucosal tissue health, and omega-3 fatty acids with their potential anti-inflammatory effects, also play an indirect role in vocal condition. The claim that dairy increases mucus is commonly repeated, but the science on it isn't actually settled — individual variation appears to be significant. Rather than treating it as established fact, it's more realistic to observe your own body's response." },
+  s7t9title: { ja: "⑨「鳩胸」のような姿勢は必要か", en: "⑨ Is a \"Pigeon-Chest\" Posture Necessary?" },
+  s7t9p1: { ja: "クラシック発声の指導でよく見られる「胸を高く」という指示は、骨格そのものを変える話ではなく、発声中も胸をつぶさずに保つ、姿勢の習慣についての話です。多くの人は、フレーズが進み息が減っていくにつれて、無意識に胸が沈んでいきます。胸が沈むと、肋骨が閉じて呼吸のスペースが狭まり、③④で説明した「ゆっくり戻す」支えの動きも難しくなります。", en: "The \"lift the chest\" cue commonly heard in classical vocal instruction isn't about changing the skeleton itself — it's about the postural habit of keeping the chest from collapsing during phonation. Most people's chest unconsciously sinks as a phrase goes on and breath runs low. When the chest sinks, the ribs close in, breathing space narrows, and the \"slow release\" support motion described in ③ and ④ becomes harder to maintain." },
+  s7t9p2: { ja: "適度に高く保たれた胸は、呼吸のためのスペースを一定に保ち、アッポッジョの土台を支えます。ただし、これは力で固定する「反り返った」姿勢ではありません。過度に胸を張ろうとすると、今度は上半身や肩に余計な緊張が生まれ、かえって逆効果になります。目指すのは、力みのない、自然な姿勢の結果として胸が開いている状態——「固定する」のではなく「保たれている」状態です。結論としては、ある程度は必要とされる感覚ですが、それ自体を目的化しない方がよいものです。", en: "A moderately elevated chest keeps consistent space available for breathing and supports the foundation of appoggio. But this isn't a rigid, arched-back posture held by force. Overly forcing the chest up creates unnecessary tension in the upper body and shoulders, which works against you. What you're aiming for is a chest that stays open as the natural result of relaxed, good overall alignment — a state that's \"maintained,\" not \"locked in place.\" In short: some sense of this is needed, but it shouldn't become a goal in itself." },
   glossaryEyebrow: { ja: "GLOSSARY", en: "GLOSSARY", zh: "GLOSSARY", it: "GLOSSARY", de: "GLOSSARY", fr: "GLOSSARY", es: "GLOSSARY", ko: "GLOSSARY" },
   glossaryTitle: { ja: "専門用語まとめ", en: "Glossary of Terms", zh: "术语汇总", it: "Glossario dei termini", de: "Glossar der Begriffe", fr: "Glossaire des termes", es: "Glosario de términos", ko: "전문 용어 정리" },
   g1term: { ja: "アッポッジョ", en: "Appoggio", zh: "支持法（Appoggio）", it: "Appoggio", de: "Appoggio", fr: "Appoggio", es: "Appoggio", ko: "아포조" },
@@ -521,6 +565,56 @@ export default function VocalTheoryPage({ searchParams }) {
       <Section eyebrow={tr("s6eyebrow", lang)} title={tr("s6title", lang)} accent={C.gold}>
         <p>{tr("s6p1", lang)}</p>
         <p>{tr("s6p2", lang)}</p>
+      </Section>
+
+      {/* 発声を支える身体の力学（9項目） */}
+      <Section eyebrow={tr("s7eyebrow", lang)} title={tr("s7title", lang)} subtitle={tr("s7subtitle", lang)} accent={C.rust}>
+        <p>{tr("s7intro", lang)}</p>
+
+        <h3 className="ff-display italic" style={{ fontSize: "1.3rem", color: C.ink, margin: "28px 0 10px" }}>{tr("s7t1title", lang)}</h3>
+        <p>{tr("s7t1p1", lang)}</p>
+        <p>{tr("s7t1p2", lang)}</p>
+
+        <h3 className="ff-display italic" style={{ fontSize: "1.3rem", color: C.ink, margin: "28px 0 10px" }}>{tr("s7t2title", lang)}</h3>
+        <p>{tr("s7t2p1", lang)}</p>
+        <p>{tr("s7t2p2", lang)}</p>
+
+        <h3 className="ff-display italic" style={{ fontSize: "1.3rem", color: C.ink, margin: "28px 0 10px" }}>{tr("s7t3title", lang)}</h3>
+        <p>{tr("s7t3p1", lang)}</p>
+        <p>{tr("s7t3p2", lang)}</p>
+
+        <h3 className="ff-display italic" style={{ fontSize: "1.3rem", color: C.ink, margin: "28px 0 10px" }}>{tr("s7t4title", lang)}</h3>
+        <p>{tr("s7t4p1", lang)}</p>
+        <p>{tr("s7t4p2", lang)}</p>
+
+        <h3 className="ff-display italic" style={{ fontSize: "1.3rem", color: C.ink, margin: "28px 0 10px" }}>{tr("s7t5title", lang)}</h3>
+        <p>{tr("s7t5p1", lang)}</p>
+        <p>{tr("s7t5p2", lang)}</p>
+
+        <h3 className="ff-display italic" style={{ fontSize: "1.3rem", color: C.ink, margin: "28px 0 10px" }}>{tr("s7t6title", lang)}</h3>
+        <p>{tr("s7t6p1", lang)}</p>
+        <div>
+          {[1, 2, 3, 4].map((n) => (
+            <GlossaryItem key={n} term={tr(`s7t6item${n}term`, lang)}>{tr(`s7t6item${n}desc`, lang)}</GlossaryItem>
+          ))}
+        </div>
+
+        <h3 className="ff-display italic" style={{ fontSize: "1.3rem", color: C.ink, margin: "28px 0 10px" }}>{tr("s7t7title", lang)}</h3>
+        <p>{tr("s7t7p1", lang)}</p>
+        <div>
+          {[1, 2, 3].map((n) => (
+            <GlossaryItem key={n} term={tr(`s7t7item${n}term`, lang)}>{tr(`s7t7item${n}desc`, lang)}</GlossaryItem>
+          ))}
+        </div>
+        <p style={{ marginTop: 14 }}>{tr("s7t7p2", lang)}</p>
+
+        <h3 className="ff-display italic" style={{ fontSize: "1.3rem", color: C.ink, margin: "28px 0 10px" }}>{tr("s7t8title", lang)}</h3>
+        <p>{tr("s7t8p1", lang)}</p>
+        <p>{tr("s7t8p2", lang)}</p>
+
+        <h3 className="ff-display italic" style={{ fontSize: "1.3rem", color: C.ink, margin: "28px 0 10px" }}>{tr("s7t9title", lang)}</h3>
+        <p>{tr("s7t9p1", lang)}</p>
+        <Callout>{tr("s7t9p2", lang)}</Callout>
       </Section>
 
       {/* 用語集 */}
