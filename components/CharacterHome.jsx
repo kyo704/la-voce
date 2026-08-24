@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useEffect, useRef } from "react";
+import { Loader2, Check } from "lucide-react";
 import { C } from "@/lib/tokens";
 import {
   SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, PLACEMENT_LIMITS,
@@ -487,7 +488,7 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, hasChair, hasBe
     }
 
     function scheduleWander() {
-      const delay = 3000 + Math.random() * 2500;
+      const delay = 800 + Math.random() * 1200;
       addTimer(() => {
         if (cancelled) return;
         if (busyRef.current) { scheduleWander(); return; }
@@ -597,7 +598,7 @@ function useGardenLife(centerLeft, centerTop, rangeLeft, rangeTop, hasField) {
     }
 
     function scheduleWander() {
-      const delay = 3000 + Math.random() * 2500;
+      const delay = 800 + Math.random() * 1200;
       addTimer(() => {
         if (cancelled) return;
         if (busyRef.current) { scheduleWander(); return; }
@@ -1141,12 +1142,12 @@ const GARDEN_LAYOUT = {
   garden_flowerbed: { left: 86, top: GARDEN_FRONT_TOP, width: 20, z: 2, aspect: 60 / 30 }
 };
 
-// アイテムを左右方向にドラッグして位置を自由に決められるようにするラッパー。
-// 縦方向（top）は接地ラインに固定したまま、横方向だけ自由に動かせる。
-// 部屋・庭それぞれの「地面の奥行き」の範囲（この中でだけ縦にも動かせる。空や壁の中には置けない）
-const ROOM_FLOOR_MIN_TOP = 70;
+// アイテムを左右・上下にドラッグして位置を自由に決められるようにするラッパー。
+// 部屋・庭それぞれの「地面の奥行き」の範囲（この中でだけ縦にも動かせる。空や壁の中には置けない）。
+// 壁際（部屋の奥、画面の上の方）にも寄せられるよう、範囲を広めにとってある。
+const ROOM_FLOOR_MIN_TOP = 45;
 const ROOM_FLOOR_MAX_TOP = 99;
-const GARDEN_FLOOR_MIN_TOP = 74;
+const GARDEN_FLOOR_MIN_TOP = 58;
 const GARDEN_FLOOR_MAX_TOP = 99;
 
 // 保存済みの位置情報を読み取る。新形式は {left, top}、旧形式は数値（leftのみ）だったため、
@@ -2045,7 +2046,7 @@ function GardenScene({ equipped, owned, onUpdatePosition, t }) {
   );
 }
 
-export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, onUpdatePosition, isSaving, t }) {
+export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, onUpdatePosition, isDirty, saveStatus, onSave, t }) {
   const [view, setView] = useState("room");
   const [shopCategory, setShopCategory] = useState("hat");
 
@@ -2082,11 +2083,24 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
         {(equipped.furniture || []).length > 0 || (equipped.garden || []).length > 0 ? (
           <p className="text-xs mt-2 text-center" style={{ color: C.inkSoft }}>{t("noteDragToArrange")}</p>
         ) : null}
-        {isSaving && (
-          <p className="text-xs mt-2 text-center font-medium flex items-center justify-center gap-1.5" style={{ color: C.gold }}>
-            <span className="inline-block w-2 h-2 rounded-full animate-pulse" style={{ background: C.gold }} />
-            {t("noteSavingInProgress")}
-          </p>
+
+        <button type="button" onClick={onSave} disabled={!isDirty || saveStatus === "saving"}
+          className="w-full mt-3 rounded-2xl py-3 font-medium flex items-center justify-center gap-2 transition-all"
+          style={{
+            background: isDirty ? C.curtain : C.paper,
+            color: isDirty ? "#FFFDF8" : C.inkSoft,
+            border: isDirty ? "none" : `1px solid ${C.line}`,
+            opacity: saveStatus === "saving" ? 0.85 : 1
+          }}>
+          {saveStatus === "saving" && <Loader2 size={16} className="animate-spin" />}
+          {saveStatus === "saved" && <Check size={16} />}
+          {saveStatus === "saving" ? t("saveButtonSaving")
+            : saveStatus === "saved" ? t("saveButtonSaved")
+            : saveStatus === "error" ? t("saveButtonError")
+            : isDirty ? t("btnSaveCharacter") : t("labelCharacterUpToDate")}
+        </button>
+        {isDirty && saveStatus !== "saving" && (
+          <p className="text-xs mt-2 text-center" style={{ color: C.rust }}>{t("noteCharacterUnsaved")}</p>
         )}
       </div>
 

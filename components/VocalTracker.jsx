@@ -1199,38 +1199,40 @@ export default function VocalTracker({ userId, userEmail }) {
       .sort((a, b) => b.n - a.n);
   }, [entries]);
 
-  // character_equipped への保存を「必ず前の保存が終わってから次を送る」順番待ちにする。
-  // 帽子を装備した直後に家具を素早く配置する、といった連続操作をすると、
-  // 順番の保証なしに複数の保存リクエストが同時に飛んでしまい、
-  // ネットワークの都合で古い状態が新しい状態を上書きしてしまうことがあった（アイテムが消えて見えるバグの原因）。
-  // ここで直列化することで、常に「最後に行った操作」が最後にデータベースへ反映されるようにする。
-  //
-  // さらに、保存が完全に終わる"前"にページを閉じたりリロードしたりすると、
-  // ブラウザが通信そのものを打ち切ってしまい、変更が失われることがある。
-  // これを防ぐため、保存中の件数を数えておき、①画面に「保存中」を表示する②
-  // 保存中にページを離れようとしたらブラウザ標準の確認ダイアログを出す、の2段構えで対策する。
-  const equippedSaveQueueRef = useRef(Promise.resolve());
-  const [pendingSaveCount, setPendingSaveCount] = useState(0);
-  function persistEquipped(next) {
+  // 装備・配置・ドラッグ移動は、その場ではデータベースに保存しない。
+  // 「保存中」の表示に気づかれにくかったこと、また保存されたかどうかが分かりにくいという指摘を受けて、
+  // 「今日の記録」ページと同じ、明示的な保存ボタン方式に変更した。
+  // 画面上の操作はすべてローカルの状態（characterEquipped）だけを更新し、
+  // 「未保存の変更あり」フラグを立てる。実際にデータベースへ送るのは、
+  // ユーザーが保存ボタンを押した時の一度だけ。これにより、
+  // 「いつ保存されたか分からない」問題と、以前あった「保存の順番が入れ替わって
+  // 古い状態で上書きされる」問題の両方を、根本からまとめて解消できる。
+  const [characterDirty, setCharacterDirty] = useState(false);
+  const [characterSaveStatus, setCharacterSaveStatus] = useState("idle"); // idle | saving | saved | error
+
+  async function handleSaveCharacter() {
+    setCharacterSaveStatus("saving");
     const supabase = createClient();
-    setPendingSaveCount((c) => c + 1);
-    equippedSaveQueueRef.current = equippedSaveQueueRef.current
-      .then(() => supabase.from("profiles").update({ character_equipped: next }).eq("id", userId))
-      .catch(() => {}) // 個別の保存が失敗しても、後続の保存が止まらないようにする
-      .finally(() => setPendingSaveCount((c) => Math.max(0, c - 1)));
-    return equippedSaveQueueRef.current;
+    const { error } = await supabase.from("profiles").update({ character_equipped: characterEquipped }).eq("id", userId);
+    if (error) {
+      setCharacterSaveStatus("error");
+      return;
+    }
+    setCharacterDirty(false);
+    setCharacterSaveStatus("saved");
+    setTimeout(() => setCharacterSaveStatus((s) => (s === "saved" ? "idle" : s)), 2000);
   }
 
   useEffect(() => {
     function handleBeforeUnload(e) {
-      if (pendingSaveCount > 0) {
+      if (characterDirty) {
         e.preventDefault();
         e.returnValue = "";
       }
     }
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [pendingSaveCount]);
+  }, [characterDirty]);
 
   function countPlacedOfSize(list, size) {
     return (list || []).filter((k) => {
@@ -1260,19 +1262,15 @@ export default function VocalTracker({ userId, userEmail }) {
         const limit = item.size ? PLACEMENT_LIMITS[item.size] : Infinity;
         const withinLimit = !item.size || countPlacedOfSize(currentList, item.size) < limit;
         if (!withinLimit) return prev;
-        const next = { ...prev, [item.category]: [...currentList, item.key] };
-        persistEquipped(next);
-        return next;
+        return { ...prev, [item.category]: [...currentList, item.key] };
       });
+      setCharacterDirty(true);
     }
   }
 
   function handleEquipItem(category, itemKey) {
-    setCharacterEquipped((prev) => {
-      const next = { ...prev, [category]: itemKey };
-      persistEquipped(next);
-      return next;
-    });
+    setCharacterEquipped((prev) => ({ ...prev, [category]: itemKey }));
+    setCharacterDirty(true);
   }
 
   // 家具・庭アイテム（複数設置可）を「置く」⇔「しまう」で切り替える（sizeごとの上限を超える配置は行わない）
@@ -1286,13 +1284,12 @@ export default function VocalTracker({ userId, userEmail }) {
         if (item && item.size && countPlacedOfSize(currentList, item.size) >= limit) return prev;
       }
       const nextList = isPlaced ? currentList.filter((k) => k !== itemKey) : [...currentList, itemKey];
-      const next = { ...prev, [category]: nextList };
-      persistEquipped(next);
-      return next;
+      return { ...prev, [category]: nextList };
     });
+    setCharacterDirty(true);
   }
 
-  // ドラッグで決めた配置アイテムの横位置（left%）を保存する
+  // ドラッグで決めた配置アイテムの位置（left/top%）をローカルの状態に反映する
   function handleUpdatePosition(category, itemKey, leftPct, topPct) {
     setCharacterEquipped((prev) => {
       const posKey = `${category}Positions`;
@@ -1304,10 +1301,9 @@ export default function VocalTracker({ userId, userEmail }) {
         top: topPct !== undefined ? Math.round(topPct * 10) / 10 : existingTop
       };
       const nextPositions = { ...currentPositions, [itemKey]: entry };
-      const next = { ...prev, [posKey]: nextPositions };
-      persistEquipped(next);
-      return next;
+      return { ...prev, [posKey]: nextPositions };
     });
+    setCharacterDirty(true);
   }
 
   async function handleThemeChange(themeKey) {
@@ -2194,7 +2190,9 @@ export default function VocalTracker({ userId, userEmail }) {
                 onEquip={handleEquipItem}
                 onTogglePlacement={handleTogglePlacement}
                 onUpdatePosition={handleUpdatePosition}
-                isSaving={pendingSaveCount > 0}
+                isDirty={characterDirty}
+                saveStatus={characterSaveStatus}
+                onSave={handleSaveCharacter}
                 t={t}
               />
             )}
