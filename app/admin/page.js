@@ -56,6 +56,11 @@ export default async function AdminPage() {
     .order("created_at", { ascending: false });
   const { data: subs } = await admin.from("subscriptions").select("*");
   const { data: entryRows } = await admin.from("entries").select("user_id");
+  const { data: feedbackRows } = await admin
+    .from("feedback")
+    .select("id, email, category, message, created_at")
+    .order("created_at", { ascending: false })
+    .limit(30);
 
   const subByUser = {};
   (subs || []).forEach((s) => { subByUser[s.user_id] = s; });
@@ -153,6 +158,25 @@ export default async function AdminPage() {
       <p style={{ fontSize: 12, color: C.inkSoft, marginTop: 16 }}>
         管理者権限の付与や、契約状況の手動変更はSupabaseのTable Editorから行ってください。
       </p>
+
+      <h2 className="ff-display italic" style={{ fontSize: "1.5rem", color: C.curtain, marginTop: 40, marginBottom: 12 }}>
+        フィードバック（直近30件）
+      </h2>
+      <div className="space-y-2">
+        {(feedbackRows || []).map((f) => (
+          <div key={f.id} className="rounded-xl p-3 border" style={{ background: C.card, borderColor: C.line }}>
+            <div className="flex items-center gap-2 flex-wrap" style={{ fontSize: 12, color: C.inkSoft }}>
+              <span style={{ color: C.gold, fontWeight: 500 }}>{f.category}</span>
+              <span>{f.email}</span>
+              <span>{formatDate(f.created_at)}</span>
+            </div>
+            <p style={{ fontSize: 13, marginTop: 6, whiteSpace: "pre-wrap" }}>{f.message}</p>
+          </div>
+        ))}
+        {(!feedbackRows || feedbackRows.length === 0) && (
+          <p style={{ fontSize: 13, color: C.inkSoft }}>まだフィードバックはありません。</p>
+        )}
+      </div>
     </main>
   );
 }
