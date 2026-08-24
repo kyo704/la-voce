@@ -13,7 +13,7 @@ import {
 } from "recharts";
 import { createClient } from "@/lib/supabase/client";
 import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC } from "@/lib/tokens";
-import { FOOD_PRESETS } from "@/lib/foodPresets";
+import { FOOD_PRESETS, DISH_GROUP_ALIASES } from "@/lib/foodPresets";
 import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, SHOP_ITEMS, PLACEMENT_LIMITS } from "@/lib/character";
 import { LANGUAGES, createTranslator } from "@/lib/translations";
 import HealthInfo from "@/components/HealthInfo";
@@ -704,12 +704,23 @@ function foodDisplayName(foodItem, language) {
 function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood, t, language }) {
   const [open, setOpen] = useState(false);
   const q = normalizeForSearch(value);
+  // クエリが「料理グループ」の同義語辞書のキー（例：パスタ、米）に一致するか調べ、
+  // 一致していれば、そのグループに属するキーワードを含む食品名も検索対象に加える。
+  const groupKeywords = q
+    ? Object.keys(DISH_GROUP_ALIASES)
+        .filter((key) => {
+          const keyNorm = normalizeForSearch(key);
+          return keyNorm.includes(q) || q.includes(keyNorm);
+        })
+        .flatMap((key) => DISH_GROUP_ALIASES[key])
+    : [];
   const matches = q
     ? (foodLibrary || []).filter((f) => {
         const nameNorm = normalizeForSearch(f.name);
         const readingNorm = f.reading ? normalizeForSearch(f.reading) : "";
-        return nameNorm.includes(q) || (readingNorm && readingNorm.includes(q));
-      }).slice(0, 6)
+        if (nameNorm.includes(q) || (readingNorm && readingNorm.includes(q))) return true;
+        return groupKeywords.some((kw) => nameNorm.includes(kw) || (readingNorm && readingNorm.includes(kw)));
+      }).slice(0, 8)
     : [];
   return (
     <div className="relative flex-1">
@@ -979,7 +990,10 @@ export default function VocalTracker({ userId, userEmail }) {
     let mounted = true;
     (async () => {
       const supabase = createClient();
-      const { data } = await supabase.from("profiles").select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, technical_goal, health_notes").eq("id", userId).single();
+      const { data, error } = await supabase.from("profiles").select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, technical_goal, health_notes").eq("id", userId).single();
+      if (error) {
+        console.error("プロフィール（羊の装備を含む）の読み込みに失敗しました:", error, "userId:", userId);
+      }
       if (mounted && data) {
         setProfile({
           height_cm: data.height_cm ?? "",
@@ -1261,11 +1275,9 @@ export default function VocalTracker({ userId, userEmail }) {
   async function handleSaveCharacter() {
     setCharacterSaveStatus("saving");
     const supabase = createClient();
-    // .select() を付けて、実際に更新された行を明示的に取得する。
-    // これが無いと、対象の行が0件だった場合（RLSの制限やID不一致など）でも
-    // Supabaseはエラーを返さず「成功」扱いにしてしまうため、
-    // 見た目上は保存できたように見えて実際には何も保存されない、という不具合が起きうる。
-    const { data, error } = await supabase.from("profiles").update({ character_equipped: characterEquipped }).eq("id", userId).select();
+    // upsert を使うことで、万が一 profiles 行がまだ存在しない場合でも確実に保存する。
+    // さらに .select() を付けて、実際に反映された行を明示的に確認する。
+    const { data, error } = await supabase.from("profiles").upsert({ id: userId, character_equipped: characterEquipped }).select();
     if (error) {
       console.error("キャラクターの保存に失敗しました:", error);
       setCharacterSaveStatus("error");
