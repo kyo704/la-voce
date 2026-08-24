@@ -417,6 +417,18 @@ function computeTimeGapHours(startTime, endTime) {
   if (diff < 0) diff += 24 * 60; // 日をまたぐ場合（例: 夕食19:00→就寝1:00）
   return roundTo1(diff / 60);
 }
+// 前日の記録から、声のコンディションに影響しやすい要因を抽出する。
+// flagKey は「今日」タブの短い警告表示に、explainKey は分析タブの理論的な解説文に対応する。
+function computeConditionFlags(y) {
+  const dinnerGap = computeTimeGapHours(y.dinnerTime, y.bedtime);
+  const flags = [];
+  if (dinnerGap != null && dinnerGap < 3) flags.push({ flagKey: "flagDinnerGap", explainKey: "explainDinnerGap" });
+  if (typeof y.sleepHours === "number" && y.sleepHours < 6) flags.push({ flagKey: "flagShortSleep", explainKey: "explainShortSleep" });
+  if (y.activityType === "本番" || y.activityType === "リハーサル") flags.push({ flagKey: "flagHeavyVoiceUse", explainKey: "explainHeavyVoiceUse" });
+  if ((y.dinnerTags || []).includes("アルコール")) flags.push({ flagKey: "flagAlcohol", explainKey: "explainAlcohol" });
+  if ((y.dinnerTags || []).includes("カフェイン")) flags.push({ flagKey: "flagCaffeine", explainKey: "explainCaffeine" });
+  return { dinnerGap, flags };
+}
 function entryToRow(userId, e) {
   return {
     user_id: userId,
@@ -1007,13 +1019,7 @@ export default function VocalTracker({ userId, userEmail }) {
     const yDate = addDays(selectedDate, -1);
     const y = entries[yDate];
     if (!y) return null;
-    const dinnerGap = computeTimeGapHours(y.dinnerTime, y.bedtime);
-    const flags = [];
-    if (dinnerGap != null && dinnerGap < 3) flags.push("flagDinnerGap");
-    if (typeof y.sleepHours === "number" && y.sleepHours < 6) flags.push("flagShortSleep");
-    if (y.activityType === "本番" || y.activityType === "リハーサル") flags.push("flagHeavyVoiceUse");
-    if ((y.dinnerTags || []).includes("アルコール")) flags.push("flagAlcohol");
-    if ((y.dinnerTags || []).includes("カフェイン")) flags.push("flagCaffeine");
+    const { dinnerGap, flags } = computeConditionFlags(y);
     return {
       date: yDate,
       sleepHours: y.sleepHours,
@@ -1024,9 +1030,19 @@ export default function VocalTracker({ userId, userEmail }) {
       dinnerTags: y.dinnerTags || [],
       activityType: y.activityType,
       weather: y.weather,
-      flags
+      flags: flags.map((f) => f.flagKey)
     };
   }, [entries, selectedDate]);
+  // 分析タブ用の「声の状態の予測」。selectedDate（今日タブでの表示中の日）とは独立して、
+  // 常に実際の「今日」から見た前日の記録をもとに、理論的な根拠つきで解説する。
+  const voicePrediction = useMemo(() => {
+    const realToday = todayISO();
+    const yDate = addDays(realToday, -1);
+    const y = entries[yDate];
+    if (!y) return { hasData: false, date: yDate, flags: [] };
+    const { flags } = computeConditionFlags(y);
+    return { hasData: true, date: yDate, flags };
+  }, [entries]);
   const mealTotals = useMemo(() => {
     const meals = formData ? formData.meals || [] : [];
     return {
@@ -2360,6 +2376,36 @@ export default function VocalTracker({ userId, userEmail }) {
                   <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
                     {t("noteAnalysisPeriodCount").replace("{count}", Object.keys(filteredEntries).length)}
                   </p>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleVoicePrediction")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteVoicePrediction")}</p>
+                  {!voicePrediction.hasData ? (
+                    <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
+                      {t("notePredictionNoData")}
+                    </p>
+                  ) : (
+                    <>
+                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                        {t("labelBasedOnDate").replace("{date}", formatDateLabel(voicePrediction.date, language))}
+                      </p>
+                      {voicePrediction.flags.length === 0 ? (
+                        <p className="text-xs rounded-xl p-3" style={{ background: "rgba(122,150,109,0.12)", color: C.sage }}>
+                          ✓ {t("notePredictionNoFlags")}
+                        </p>
+                      ) : (
+                        <div className="space-y-2.5">
+                          {voicePrediction.flags.map(({ flagKey, explainKey }) => (
+                            <div key={flagKey} className="rounded-xl p-3" style={{ background: "rgba(184,49,49,0.06)" }}>
+                              <p className="text-xs font-medium" style={{ color: C.curtain }}>⚠ {t(flagKey)}</p>
+                              <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>{t(explainKey)}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
