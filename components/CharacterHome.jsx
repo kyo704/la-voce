@@ -59,19 +59,29 @@ function SheepCharacter({ equipped, size = 120, isWalking = false }) {
       <g className="arm-r"><ellipse cx="125" cy="128" rx="13" ry="10" fill={bodyColor} /></g>
 
       {equipped.outfit === "outfit_scarf" && (
-        <path d="M56,108 Q80,124 104,108 L100,120 Q80,132 60,120 Z" fill="#C0454B" />
+        <g>
+          <path d="M56,108 Q80,124 104,108 L100,120 Q80,132 60,120 Z" fill="#C0454B" />
+          <path d="M58,116 Q80,127 102,116" stroke="#96323A" strokeWidth="1.2" fill="none" opacity="0.6" />
+          {[63, 71, 79, 87, 95].map((x, i) => <circle key={i} cx={x} cy={116 + ((i % 2) * 3)} r="1.6" fill="#F6EFDF" opacity="0.85" />)}
+          <path d="M60,120 L58,126 M64,122 L62,128 M96,122 L98,128 M100,120 L102,126" stroke="#96323A" strokeWidth="1.6" strokeLinecap="round" />
+        </g>
       )}
       {equipped.outfit === "outfit_overall" && (
         <g>
           <path d="M58,112 L102,112 L98,168 Q80,176 62,168 Z" fill="#5B7FA6" opacity="0.92" />
           <rect x="64" y="100" width="10" height="18" fill="#5B7FA6" />
           <rect x="86" y="100" width="10" height="18" fill="#5B7FA6" />
-          <circle cx="69" cy="130" r="3" fill="#3E5A78" />
-          <circle cx="91" cy="130" r="3" fill="#3E5A78" />
+          <path d="M80,138 Q76,133 72,137 Q70,142 80,150 Q90,142 88,137 Q84,133 80,138 Z" fill="#F6EFDF" opacity="0.9" />
+          <circle cx="69" cy="130" r="3" fill="#F6D98A" stroke="#3E5A78" strokeWidth="0.8" />
+          <circle cx="91" cy="130" r="3" fill="#F6D98A" stroke="#3E5A78" strokeWidth="0.8" />
         </g>
       )}
       {equipped.outfit === "outfit_sweater" && (
-        <path d="M50,105 Q80,96 110,105 Q114,140 104,166 Q80,176 56,166 Q46,140 50,105 Z" fill="#C98A56" opacity="0.92" />
+        <g>
+          <path d="M50,105 Q80,96 110,105 Q114,140 104,166 Q80,176 56,166 Q46,140 50,105 Z" fill="#C98A56" opacity="0.92" />
+          <path d="M64,102 Q80,108 96,102 L94,110 Q80,115 66,110 Z" fill="#B87740" />
+          <path d="M74,128 Q80,122 86,128 Q86,134 80,140 Q74,134 74,128 Z" fill="#F6EFDF" opacity="0.85" />
+        </g>
       )}
 
       <circle cx="80" cy="70" r="46" fill={bodyColor} />
@@ -112,13 +122,22 @@ function SheepCharacter({ equipped, size = 120, isWalking = false }) {
       {equipped.hat === "hat_knit" && (
         <g>
           <path d="M50,42 Q52,4 80,4 Q108,4 110,42 Q80,32 50,42 Z" fill="#C0454B" />
-          <circle cx="80" cy="6" r="7" fill="#F6EFDF" />
+          {[56, 64, 72, 80, 88, 96, 104].map((x, i) => (
+            <path key={i} d={`M${x},40 Q${x},20 ${x - 2 + (i % 2) * 4},6`} stroke="#96323A" strokeWidth="1" fill="none" opacity="0.45" />
+          ))}
+          <path d="M50,40 Q80,30 110,40" stroke="#96323A" strokeWidth="2.5" fill="none" opacity="0.5" />
+          <circle cx="80" cy="6" r="8" fill="#F6EFDF" />
+          <circle cx="77" cy="3" r="2" fill="#FFFDF8" opacity="0.7" />
+          <circle cx="83" cy="8" r="2" fill="#FFFDF8" opacity="0.7" />
         </g>
       )}
       {equipped.hat === "hat_ribbon" && (
         <g>
           <path d="M56,36 Q66,20 80,30 Q94,20 104,36 Q90,32 80,38 Q70,32 56,36 Z" fill="#C0454B" />
-          <circle cx="80" cy="34" r="5" fill="#96323A" />
+          <path d="M60,35 Q68,24 78,31" stroke="#E87680" strokeWidth="1.5" fill="none" opacity="0.6" />
+          <path d="M100,35 Q92,24 82,31" stroke="#E87680" strokeWidth="1.5" fill="none" opacity="0.6" />
+          <circle cx="80" cy="34" r="5.5" fill="#96323A" />
+          <circle cx="78" cy="32" r="1.8" fill="#C0454B" opacity="0.8" />
         </g>
       )}
 
@@ -201,37 +220,50 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
 function BedIcon() {
   return (
     <svg viewBox="0 0 60 40" width="100%" height="100%">
-      <rect x="2" y="10" width="56" height="26" rx="6" fill="#D9C9AE" />
-      <rect x="2" y="10" width="56" height="10" rx="4" fill="#F0E6D2" />
-      <rect x="8" y="13" width="16" height="7" rx="3" fill="#FFFDF8" />
+      <rect x="0" y="6" width="6" height="30" rx="3" fill="#B98A5E" />
+      <rect x="2" y="12" width="56" height="24" rx="7" fill="#D9C9AE" />
+      <rect x="2" y="12" width="56" height="9" rx="4" fill="#F0E6D2" />
+      <rect x="7" y="15" width="15" height="6" rx="3" fill="#FFFDF8" />
+      <circle cx="14.5" cy="18" r="1.3" fill="#E8B7C4" opacity="0.7" />
+      <path d="M4,28 Q30,24 56,28" stroke="#C9B896" strokeWidth="1.5" fill="none" opacity="0.5" />
     </svg>
   );
 }
 function ShelfIcon() {
   return (
     <svg viewBox="0 0 40 45" width="100%" height="100%">
-      <rect x="2" y="4" width="36" height="41" fill="#B98A5E" />
+      <rect x="2" y="4" width="36" height="41" rx="2" fill="#B98A5E" />
       <rect x="2" y="17" width="36" height="3" fill="#8B6529" />
       <rect x="2" y="31" width="36" height="3" fill="#8B6529" />
-      <rect x="7" y="6" width="9" height="9" fill="#C0454B" />
-      <rect x="19" y="6" width="9" height="9" fill="#5B7FA6" />
+      <rect x="6" y="6" width="5" height="10" fill="#C0454B" />
+      <rect x="12" y="6" width="5" height="10" fill="#5B7FA6" />
+      <rect x="18" y="6" width="5" height="10" fill="#E8B84B" />
+      <rect x="24" y="6" width="5" height="10" fill="#7FB577" />
+      <circle cx="20" cy="24" r="4" fill="#F6D98A" />
+      <rect x="7" y="34" width="26" height="8" rx="2" fill="#8FA9C9" />
     </svg>
   );
 }
 function PlantIcon() {
   return (
     <svg viewBox="0 0 40 50" width="100%" height="100%">
-      <path d="M10,48 L30,48 L26,32 L14,32 Z" fill="#C98A56" />
-      <ellipse cx="20" cy="26" rx="16" ry="18" fill="#6FA566" />
-      <ellipse cx="12" cy="16" rx="10" ry="12" fill="#7FB577" />
-      <ellipse cx="28" cy="18" rx="10" ry="12" fill="#5E9450" />
+      <path d="M10,48 L30,48 L27,32 L13,32 Z" fill="#C98A56" />
+      <rect x="11" y="32" width="18" height="3" fill="#B87740" />
+      <ellipse cx="20" cy="24" rx="17" ry="19" fill="#6FA566" />
+      <ellipse cx="11" cy="14" rx="10" ry="12" fill="#7FB577" />
+      <ellipse cx="29" cy="16" rx="10" ry="12" fill="#5E9450" />
+      <ellipse cx="20" cy="8" rx="9" ry="10" fill="#7FB577" />
+      <circle cx="15" cy="20" r="2" fill="#8FC580" opacity="0.7" />
+      <circle cx="26" cy="24" r="2.5" fill="#8FC580" opacity="0.7" />
     </svg>
   );
 }
 function RugIcon() {
   return (
     <svg viewBox="0 0 100 40" width="100%" height="100%">
-      <ellipse cx="50" cy="20" rx="48" ry="18" fill="#C98A9E" opacity="0.75" />
+      <ellipse cx="50" cy="20" rx="48" ry="18" fill="#C98A9E" opacity="0.8" />
+      <ellipse cx="50" cy="20" rx="36" ry="12" fill="none" stroke="#F6EFDF" strokeWidth="2" opacity="0.5" />
+      <ellipse cx="50" cy="20" rx="22" ry="7" fill="none" stroke="#F6EFDF" strokeWidth="2" opacity="0.5" />
     </svg>
   );
 }
@@ -240,26 +272,38 @@ function BenchIcon() {
     <svg viewBox="0 0 60 40" width="100%" height="100%">
       <rect x="4" y="14" width="52" height="6" fill="#8B5E3C" rx="2" />
       <rect x="4" y="2" width="52" height="6" fill="#8B5E3C" rx="2" />
-      <rect x="7" y="2" width="5" height="30" fill="#6B4526" />
-      <rect x="48" y="2" width="5" height="30" fill="#6B4526" />
+      <line x1="8" y1="4" x2="52" y2="4" stroke="#6B4526" strokeWidth="0.8" opacity="0.5" />
+      <line x1="8" y1="16" x2="52" y2="16" stroke="#6B4526" strokeWidth="0.8" opacity="0.5" />
+      <rect x="7" y="2" width="5" height="30" fill="#6B4526" rx="1" />
+      <rect x="48" y="2" width="5" height="30" fill="#6B4526" rx="1" />
+      <circle cx="9.5" cy="8" r="1" fill="#4E3018" opacity="0.6" />
+      <circle cx="50.5" cy="8" r="1" fill="#4E3018" opacity="0.6" />
     </svg>
   );
 }
 function FountainIcon() {
   return (
     <svg viewBox="0 0 50 50" width="100%" height="100%">
-      <ellipse cx="25" cy="42" rx="22" ry="7" fill="#B8C4CC" />
-      <rect x="21" y="14" width="8" height="26" fill="#9FB0BA" />
-      <circle cx="25" cy="12" r="7" fill="#CFE0E8" />
+      <ellipse cx="25" cy="44" rx="23" ry="6" fill="#B8C4CC" />
+      <ellipse cx="25" cy="40" rx="18" ry="5" fill="#CFE0E8" />
+      <rect x="22" y="16" width="6" height="24" fill="#9FB0BA" />
+      <ellipse cx="25" cy="16" rx="10" ry="4" fill="#B8C4CC" />
+      <circle cx="25" cy="10" r="7" fill="#CFE0E8" />
+      <circle cx="22" cy="7" r="1.5" fill="#FFFDF8" opacity="0.8" />
+      <circle cx="27" cy="9" r="1" fill="#FFFDF8" opacity="0.7" />
     </svg>
   );
 }
 function LanternIcon() {
   return (
     <svg viewBox="0 0 30 45" width="100%" height="100%">
+      <circle cx="15" cy="24" r="12" fill="#F6D98A" opacity="0.25" />
       <rect x="6" y="4" width="18" height="6" fill="#8B6529" rx="1.5" />
+      <path d="M12,4 L18,4 L18,0 L12,0 Z" fill="#8B6529" />
       <rect x="8" y="10" width="14" height="26" fill="#B8863B" rx="3" />
-      <circle cx="15" cy="24" r="4.5" fill="#F6D98A" />
+      <rect x="10" y="14" width="10" height="18" rx="2" fill="#8B6529" opacity="0.3" />
+      <circle cx="15" cy="24" r="5" fill="#F6D98A" />
+      <circle cx="15" cy="24" r="2.5" fill="#FFFBEA" />
     </svg>
   );
 }
@@ -267,8 +311,12 @@ function FlowerBedIcon() {
   return (
     <svg viewBox="0 0 60 30" width="100%" height="100%">
       <ellipse cx="30" cy="18" rx="28" ry="11" fill="#7A9C70" />
-      {[10, 24, 36, 48].map((dx, i) => (
-        <circle key={i} cx={dx} cy={12 + (i % 2) * 4} r="6" fill={["#D98A9E", "#E8B84B", "#8FA9C9", "#F6C6D0"][i]} />
+      <ellipse cx="30" cy="16" rx="26" ry="9" fill="#8FAE84" opacity="0.6" />
+      {[8, 20, 32, 44, 52].map((dx, i) => (
+        <g key={i}>
+          <circle cx={dx} cy={11 + (i % 2) * 4} r="5" fill={["#D98A9E", "#E8B84B", "#8FA9C9", "#F6C6D0", "#C79ED9"][i]} />
+          <circle cx={dx} cy={11 + (i % 2) * 4} r="1.6" fill="#FFFBEA" />
+        </g>
       ))}
     </svg>
   );
@@ -276,6 +324,45 @@ function FlowerBedIcon() {
 
 const FURNITURE_ICON = { furniture_bed: BedIcon, furniture_shelf: ShelfIcon, furniture_plant: PlantIcon, furniture_rug: RugIcon };
 const GARDEN_ICON = { garden_bench: BenchIcon, garden_fountain: FountainIcon, garden_lantern: LanternIcon, garden_flowerbed: FlowerBedIcon };
+
+// ===== ショップ内のアイテムプレビュー（種類ごとに見た目を切り替える） =====
+function ShopItemPreview({ item }) {
+  const boxStyle = { width: 46, height: 46, borderRadius: 10, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: C.card, border: `1px solid ${C.line}`, overflow: "hidden" };
+  if (item.category === "hat") {
+    return (
+      <div style={boxStyle}>
+        <div style={{ transform: "translateY(30%)" }}>
+          <SheepCharacter equipped={{ hat: item.key }} size={46} />
+        </div>
+      </div>
+    );
+  }
+  if (item.category === "outfit") {
+    return (
+      <div style={boxStyle}>
+        <div style={{ transform: "translateY(8%)" }}>
+          <SheepCharacter equipped={{ outfit: item.key }} size={40} />
+        </div>
+      </div>
+    );
+  }
+  if (["floor", "wall", "window", "scenery"].includes(item.category)) {
+    return (
+      <div style={boxStyle}>
+        <div style={{ width: 30, height: 30, borderRadius: 7, background: MATERIAL_COLORS[item.key] || C.line }} />
+      </div>
+    );
+  }
+  const Icon = FURNITURE_ICON[item.key] || GARDEN_ICON[item.key];
+  if (Icon) {
+    return (
+      <div style={boxStyle}>
+        <div style={{ width: 34, height: 34 }}><Icon /></div>
+      </div>
+    );
+  }
+  return <div style={boxStyle} />;
+}
 
 const FURNITURE_LAYOUT = {
   furniture_bed: { left: 16, top: 66, width: 26, z: 2 },
@@ -304,8 +391,11 @@ function RoomScene({ equipped, owned }) {
     <div style={{ position: "relative", width: "100%", maxWidth: 480, margin: "0 auto", aspectRatio: "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor }}>
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", background: floorColor, zIndex: 0 }} />
 
-      <div style={{ position: "absolute", left: "8%", top: "9%", width: "26%", height: "28%", background: windowFrameColor, borderRadius: 8, padding: "6%", boxSizing: "border-box", zIndex: 1 }}>
-        <div style={{ width: "100%", height: "100%", background: sceneryColor, borderRadius: 4 }} />
+      <div style={{ position: "absolute", left: "6%", top: "8%", width: "32%", height: "34%", background: windowFrameColor, borderRadius: 8, padding: "2.5%", boxSizing: "border-box", zIndex: 1 }}>
+        <div style={{ position: "relative", width: "100%", height: "100%", background: sceneryColor, borderRadius: 4 }}>
+          <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 2, background: windowFrameColor, opacity: 0.8, transform: "translateX(-50%)" }} />
+          <div style={{ position: "absolute", top: "50%", left: 0, right: 0, height: 2, background: windowFrameColor, opacity: 0.8, transform: "translateY(-50%)" }} />
+        </div>
       </div>
 
       {placedFurniture.includes("furniture_rug") && (
@@ -343,6 +433,17 @@ function GardenScene({ equipped, owned }) {
       <div style={{ position: "absolute", right: "8%", top: "10%", width: "12%", aspectRatio: "1/1", borderRadius: "50%", background: "#F3D48A", opacity: 0.55 }} />
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "30%", background: "#7A9C70" }} />
       <div style={{ position: "absolute", left: 0, right: 0, bottom: "26%", height: "6%", background: "#8FAE84" }} />
+
+      {/* 柵（常設・購入不要） */}
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: "25%", height: "9%", zIndex: 1 }}>
+        <svg viewBox="0 0 400 36" width="100%" height="100%" preserveAspectRatio="none">
+          {Array.from({ length: 18 }).map((_, i) => (
+            <rect key={i} x={i * 22 + 4} y="4" width="9" height="30" rx="2" fill="#E8DCC4" stroke="#C4B592" strokeWidth="1" />
+          ))}
+          <rect x="0" y="10" width="400" height="4" fill="#D4C6A4" />
+          <rect x="0" y="22" width="400" height="4" fill="#D4C6A4" />
+        </svg>
+      </div>
 
       {placedOrnaments.map((k) => {
         const Icon = GARDEN_ICON[k];
@@ -433,9 +534,12 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
             const canAfford = balance >= item.cost;
             return (
               <div key={item.key} className="flex items-center justify-between rounded-xl p-2.5" style={{ background: C.paper }}>
-                <div>
-                  <div className="text-sm font-medium">{t(item.nameKey)}</div>
-                  {!owned && <div className="text-xs ff-mono" style={{ color: C.inkSoft }}>{item.cost}pt</div>}
+                <div className="flex items-center gap-3">
+                  <ShopItemPreview item={item} />
+                  <div>
+                    <div className="text-sm font-medium">{t(item.nameKey)}</div>
+                    {!owned && <div className="text-xs ff-mono" style={{ color: C.inkSoft }}>{item.cost}pt</div>}
+                  </div>
                 </div>
                 {owned ? (
                   isMultiSlot ? (
