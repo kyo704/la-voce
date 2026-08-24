@@ -1244,15 +1244,6 @@ export default function VocalTracker({ userId, userEmail }) {
     const { flags } = computeConditionFlags(y);
     return { hasData: true, date: yDate, flags };
   }, [entries]);
-  // メンタル（こころの落ち着き度=ease）が低かった日を、選んだ分析期間の中から集める。
-  // 診断や原因の断定はせず、本人が実際に書いた理由をそのまま並べて振り返れるようにするだけに留める。
-  const lowEaseEntries = useMemo(() => {
-    return Object.keys(filteredEntries)
-      .filter((d) => typeof filteredEntries[d].ease === "number" && filteredEntries[d].ease <= 2)
-      .sort()
-      .reverse()
-      .map((d) => ({ date: d, ease: filteredEntries[d].ease, mentalReason: filteredEntries[d].mentalReason || "" }));
-  }, [filteredEntries]);
   const mealTotals = useMemo(() => {
     const meals = formData ? formData.meals || [] : [];
     return {
@@ -1328,6 +1319,15 @@ export default function VocalTracker({ userId, userEmail }) {
     });
     return result;
   }, [entries, analysisPeriod, analysisCustomStart, analysisCustomEnd]);
+  // メンタル（こころの落ち着き度=ease）が低かった日を、選んだ分析期間の中から集める。
+  // 診断や原因の断定はせず、本人が実際に書いた理由をそのまま並べて振り返れるようにするだけに留める。
+  const lowEaseEntries = useMemo(() => {
+    return Object.keys(filteredEntries)
+      .filter((d) => typeof filteredEntries[d].ease === "number" && filteredEntries[d].ease <= 2)
+      .sort()
+      .reverse()
+      .map((d) => ({ date: d, ease: filteredEntries[d].ease, mentalReason: filteredEntries[d].mentalReason || "" }));
+  }, [filteredEntries]);
 
   const correlationResults = useMemo(() => {
     if (analysisTarget === "performance") {
