@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  /* iPhone/iPadでの慣性スクロールを滑らかにする */
+  -webkit-overflow-scrolling: touch;
+}
+
+body {
+  margin: 0;
+  background: #F6F1E7;
+  color: #241914;
+  font-family: var(--font-body), "Work Sans", sans-serif;
+  /* iPhoneのノッチ・ホームインジケーター分の余白を確保 */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.ff-display {
+  font-family: var(--font-display), "Cormorant Garamond", serif;
+}
+
+.ff-mono {
+  font-family: var(--font-mono), "IBM Plex Mono", monospace;
+}
+
+button {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* iOS Safariは16px未満のフォントサイズを持つ入力欄にフォーカスすると自動的に画面を拡大してしまうため、
+   全ての入力系要素を16px以上にして防止する（見た目のサイズはpaddingやline-heightで調整） */
+input, select, textarea {
+  font-size: 16px;
+}
+@media (min-width: 640px) {
+  input, select, textarea {
+    font-size: inherit;
+  }
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* スクロールバーの見た目を軽く整える（iPadでの横スクロールタブなど） */
+.overflow-x-auto {
+  scrollbar-width: thin;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.tab-panel {
+  animation: fadeIn 0.3s ease-out;
+}
+
+::selection {
+  background: #B8863B;
+  color: #fff;
+}
