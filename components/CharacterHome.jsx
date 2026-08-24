@@ -3,7 +3,7 @@
 import { useMemo, useState, useEffect, useRef } from "react";
 import { C } from "@/lib/tokens";
 import {
-  SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES,
+  SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, PLACEMENT_LIMITS,
   computeTotalEarned, computeStreaks, computeBalance
 } from "@/lib/character";
 
@@ -15,7 +15,7 @@ const MATERIAL_COLORS = {
   floor_default: "#D8C9A8", floor_tile: "#C9C2B4", floor_carpet: "#C98A9E",
   floor_tatami: "#C9B87C", floor_terracotta: "#C97C4E", floor_indian: "#D9A054", floor_american: "#B98A5E", floor_chinese: "#B8453F",
   wall_default: "#F3E9D8", wall_stripe: "#E9D9C0", wall_wood: "#B98A5E",
-  wall_washi: "#EDE6D3", wall_mediterranean: "#F2ECDD", wall_indian: "#E8985F", wall_american: "#C9836A", wall_chinese: "#C0454B",
+  wall_washi: "#EDE6D3", wall_mediterranean: "#F2ECDD", wall_indian: "#E8985F", wall_american: "#C9836A", wall_chinese: "#C0454B", wall_wainscoting: "#F0E9D8",
   window_default: "#FFFDF8", window_wood: "#8B5E3C", window_blue: "#5C7599",
   window_shoji: "#EDE6D3", window_mediterranean: "#8FA9C9", window_indian: "#D9A054", window_american: "#FFFDF8", window_chinese: "#C0454B",
   window_stained_glass: "#8B6529", window_porthole: "#9FB0BA", window_bamboo_washi: "#C9B87C", window_grand: "#8B5E3C",
@@ -994,6 +994,58 @@ const GARDEN_LAYOUT = {
   garden_flowerbed: { left: 86, top: GARDEN_FRONT_TOP, width: 20, z: 2 }
 };
 
+// アイテムを左右方向にドラッグして位置を自由に決められるようにするラッパー。
+// 縦方向（top）は接地ラインに固定したまま、横方向だけ自由に動かせる。
+function DraggableItem({ left, top, width, z, editMode, minLeft = 3, maxLeft = 97, onDragEnd, transform, children }) {
+  const wrapRef = useRef(null);
+  const [dragLeft, setDragLeft] = useState(null);
+  const draggingRef = useRef(false);
+
+  function handlePointerDown(e) {
+    if (!editMode) return;
+    e.preventDefault();
+    draggingRef.current = true;
+    e.currentTarget.setPointerCapture(e.pointerId);
+  }
+  function handlePointerMove(e) {
+    if (!draggingRef.current || !wrapRef.current) return;
+    const container = wrapRef.current.parentElement;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    let pct = ((e.clientX - rect.left) / rect.width) * 100;
+    pct = Math.max(minLeft, Math.min(maxLeft, pct));
+    setDragLeft(pct);
+  }
+  function handlePointerUp() {
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
+    if (dragLeft !== null) onDragEnd(dragLeft);
+    setDragLeft(null);
+  }
+
+  const effectiveLeft = dragLeft !== null ? dragLeft : left;
+
+  return (
+    <div
+      ref={wrapRef}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+      style={{
+        position: "absolute", left: `${effectiveLeft}%`, top: `${top}%`, width: `${width}%`,
+        transform: transform || "translate(-50%, -100%)", zIndex: z,
+        cursor: editMode ? "grab" : "default", touchAction: editMode ? "none" : "auto"
+      }}
+    >
+      {editMode && (
+        <div style={{ position: "absolute", inset: -4, border: `2px dashed ${C.gold}`, borderRadius: 8, pointerEvents: "none" }} />
+      )}
+      {children}
+    </div>
+  );
+}
+
 // ===== 部屋のシーン（正面から見たシンプルな部屋。中央寄せはCSSのleft/topで固定） =====
 function FloorTexture({ material }) {
   const box = { position: "absolute", inset: 0, width: "100%", height: "100%" };
@@ -1171,10 +1223,26 @@ function WallTexture({ material }) {
       </svg>
     );
   }
+  if (material === "wall_wainscoting") {
+    return (
+      <svg viewBox="0 0 200 150" preserveAspectRatio="none" style={box}>
+        {/* 腰壁（木製パネル部分） */}
+        <rect x="0" y="75" width="200" height="24" fill="#C9A26B" />
+        {Array.from({ length: 8 }).map((_, i) => (
+          <rect key={i} x={i * 25 + 2} y="78" width="21" height="18" rx="1" fill="none" stroke="#8B6529" strokeWidth="1.2" opacity="0.65" />
+        ))}
+        {/* 見切り材（チェアレール） */}
+        <rect x="0" y="72.5" width="200" height="3.5" fill="#8B6529" />
+        <rect x="0" y="76" width="200" height="1" fill="#F0DFA8" opacity="0.5" />
+        <rect x="0" y="98.5" width="200" height="2.5" fill="#6B4E1E" opacity="0.65" />
+      </svg>
+    );
+  }
   return null;
 }
 
-function RoomScene({ equipped, owned, onTogglePlacement }) {
+function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) {
+  const [editMode, setEditMode] = useState(false);
   const floorKey = equipped.floor || "floor_default";
   const wallKey = equipped.wall || "wall_default";
   const floorColor = MATERIAL_COLORS[floorKey] || MATERIAL_COLORS.floor_default;
@@ -1196,10 +1264,11 @@ function RoomScene({ equipped, owned, onTogglePlacement }) {
     : { borderRadius: 4, muntin: "cross" };
   const isBamboo = windowKey === "window_bamboo_washi";
   const isGrand = windowKey === "window_grand";
-  const boxWidth = isGrand ? "82%" : "32%";
-  const boxHeight = isGrand ? "62%" : "34%";
-  const boxLeft = isGrand ? "9%" : "6%";
+  const boxWidth = isGrand ? "95%" : "32%";
+  const boxHeight = isGrand ? "64%" : "34%";
+  const boxLeft = isGrand ? "2.5%" : "6%";
   const boxTop = isGrand ? "5%" : "8%";
+  const isRoomExpanded = equipped.backdrop === "backdrop_room_expand";
 
   const sceneryKey = equipped.scenery || "scenery_default";
 
@@ -1210,7 +1279,7 @@ function RoomScene({ equipped, owned, onTogglePlacement }) {
   );
 
   return (
-    <div style={{ position: "relative", width: "100%", maxWidth: 480, margin: "0 auto", aspectRatio: "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor }}>
+    <div style={{ position: "relative", width: "100%", maxWidth: isRoomExpanded ? 720 : 480, margin: "0 auto", aspectRatio: isRoomExpanded ? "16 / 7" : "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor, transition: "max-width 0.4s ease, aspect-ratio 0.4s ease" }}>
       <WallTexture material={wallKey} />
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", background: floorColor, zIndex: 0, overflow: "hidden" }}>
         <FloorTexture material={floorKey} />
@@ -1390,9 +1459,14 @@ function RoomScene({ equipped, owned, onTogglePlacement }) {
       </div>
 
       {placedFurniture.includes("furniture_rug") && (
-        <div style={{ position: "absolute", left: `${FURNITURE_LAYOUT.furniture_rug.left}%`, top: `${FURNITURE_LAYOUT.furniture_rug.top}%`, width: `${FURNITURE_LAYOUT.furniture_rug.width}%`, transform: "translate(-50%, -50%)", zIndex: FURNITURE_LAYOUT.furniture_rug.z }}>
+        <DraggableItem
+          left={(equipped.furniturePositions || {}).furniture_rug ?? FURNITURE_LAYOUT.furniture_rug.left}
+          top={FURNITURE_LAYOUT.furniture_rug.top} width={FURNITURE_LAYOUT.furniture_rug.width} z={FURNITURE_LAYOUT.furniture_rug.z}
+          editMode={editMode} transform="translate(-50%, -50%)"
+          onDragEnd={(nl) => onUpdatePosition && onUpdatePosition("furniture", "furniture_rug", nl)}
+        >
           <RugIcon />
-        </div>
+        </DraggableItem>
       )}
 
       <PositionedCharacter equipped={equipped} size={92} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isSitting={isSitting} isLying={isLying} />
@@ -1400,23 +1474,37 @@ function RoomScene({ equipped, owned, onTogglePlacement }) {
       {placedFurniture.filter((k) => k !== "furniture_rug").map((k) => {
         const Icon = FURNITURE_ICON[k];
         const layout = FURNITURE_LAYOUT[k];
+        const customLeft = (equipped.furniturePositions || {})[k];
         return (
-          <div key={k} style={{ position: "absolute", left: `${layout.left}%`, top: `${layout.top}%`, width: `${layout.width}%`, transform: "translate(-50%, -100%)", zIndex: layout.z }}>
+          <DraggableItem key={k}
+            left={customLeft ?? layout.left} top={layout.top} width={layout.width} z={layout.z}
+            editMode={editMode}
+            onDragEnd={(nl) => onUpdatePosition && onUpdatePosition("furniture", k, nl)}
+          >
             <Icon />
-          </div>
+          </DraggableItem>
         );
       })}
+
+      {placedFurniture.length > 0 && (
+        <button type="button" onClick={() => setEditMode((v) => !v)}
+          className="absolute bottom-2 right-2 text-xs px-3 py-1.5 rounded-full font-medium"
+          style={{ background: editMode ? C.curtain : "rgba(255,253,248,0.9)", color: editMode ? "#FFFDF8" : C.ink, border: `1px solid ${C.line}`, zIndex: 10 }}>
+          {editMode ? t("btnDoneArranging") : t("btnArrangeItems")}
+        </button>
+      )}
     </div>
   );
 }
 
 // ===== 庭のシーン =====
-function GardenScene({ equipped, owned }) {
+function GardenScene({ equipped, owned, onUpdatePosition, t }) {
+  const [editMode, setEditMode] = useState(false);
   const placedList = equipped.garden || [];
   const placedOrnaments = placedList.filter((k) => GARDEN_ICON[k]);
   const hasField = placedOrnaments.includes("garden_field");
   const { leftPct, topPct, facingLeft, isWalking, isFarming, birds, pkg } = useGardenLife(50, 80, 22, 6, hasField);
-  const hasNearMountains = equipped.backdrop === "backdrop_mountains_near";
+  const mountainTier = equipped.backdrop === "backdrop_mountains_huge" ? "huge" : equipped.backdrop === "backdrop_mountains_near" ? "near" : "default";
 
   return (
     <div style={{
@@ -1431,13 +1519,27 @@ function GardenScene({ equipped, owned }) {
 
       <div style={{ position: "absolute", right: "8%", top: "9%", width: "13%", aspectRatio: "1/1", borderRadius: "50%", background: "#F6D46A", opacity: 0.9 }} />
 
-      {/* 遠くの緑の山々（backdrop_mountains_near を装備すると、大きく・近く見える） */}
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: hasNearMountains ? "18%" : "22%", height: hasNearMountains ? "46%" : "24%", zIndex: 0, transition: "height 0.4s ease, bottom 0.4s ease" }}>
+      {/* 遠くの緑の山々（backdrop_mountains_near / huge を装備すると、大きく・近く見える） */}
+      <div style={{
+        position: "absolute", left: 0, right: 0,
+        bottom: mountainTier === "huge" ? "8%" : mountainTier === "near" ? "18%" : "22%",
+        height: mountainTier === "huge" ? "88%" : mountainTier === "near" ? "46%" : "24%",
+        zIndex: 0, transition: "height 0.4s ease, bottom 0.4s ease"
+      }}>
         <svg viewBox="0 0 400 90" width="100%" height="100%" preserveAspectRatio="none">
           <path d="M0,90 L40,30 L90,60 L140,15 L190,55 L240,25 L290,58 L340,20 L400,50 L400,90 Z" fill="#9FBFA0" opacity="0.6" />
           <path d="M0,90 L60,50 L120,70 L180,40 L250,68 L320,42 L400,65 L400,90 Z" fill="#7FA582" opacity="0.8" />
-          {hasNearMountains && (
+          {(mountainTier === "near" || mountainTier === "huge") && (
             <path d="M0,90 L50,44 L100,66 L160,38 L220,64 L280,40 L340,62 L400,48 L400,90 Z" fill="#5E8A5E" opacity="0.92" />
+          )}
+          {mountainTier === "huge" && (
+            <>
+              <path d="M0,90 L30,20 L70,50 L110,10 L150,46 L190,18 L230,52 L270,16 L310,48 L350,14 L400,40 L400,90 Z" fill="#4A6B4A" opacity="0.96" />
+              {/* 岩肌の質感（すぐそばまで迫った山の地肌を思わせる筋） */}
+              {Array.from({ length: 10 }).map((_, i) => (
+                <path key={i} d={`M${i * 42 + 10},90 L${i * 42 + 4},${40 + (i % 3) * 8}`} stroke="#3A5238" strokeWidth="2" opacity="0.35" />
+              ))}
+            </>
           )}
         </svg>
       </div>
@@ -1479,19 +1581,32 @@ function GardenScene({ equipped, owned }) {
       {placedOrnaments.map((k) => {
         const Icon = GARDEN_ICON[k];
         const layout = GARDEN_LAYOUT[k];
+        const customLeft = (equipped.gardenPositions || {})[k];
         return (
-          <div key={k} style={{ position: "absolute", left: `${layout.left}%`, top: `${layout.top}%`, width: `${layout.width}%`, transform: "translate(-50%, -100%)", zIndex: layout.z }}>
+          <DraggableItem key={k}
+            left={customLeft ?? layout.left} top={layout.top} width={layout.width} z={layout.z}
+            editMode={editMode}
+            onDragEnd={(nl) => onUpdatePosition && onUpdatePosition("garden", k, nl)}
+          >
             <Icon />
-          </div>
+          </DraggableItem>
         );
       })}
 
       <PositionedCharacter equipped={equipped} size={100} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isFarming={isFarming} />
+
+      {placedOrnaments.length > 0 && (
+        <button type="button" onClick={() => setEditMode((v) => !v)}
+          className="absolute bottom-2 right-2 text-xs px-3 py-1.5 rounded-full font-medium"
+          style={{ background: editMode ? C.curtain : "rgba(255,253,248,0.9)", color: editMode ? "#FFFDF8" : C.ink, border: `1px solid ${C.line}`, zIndex: 10 }}>
+          {editMode ? t("btnDoneArranging") : t("btnArrangeItems")}
+        </button>
+      )}
     </div>
   );
 }
 
-export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, t }) {
+export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, onUpdatePosition, t }) {
   const [view, setView] = useState("room");
   const [shopCategory, setShopCategory] = useState("hat");
 
@@ -1523,8 +1638,11 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
         </div>
 
         {view === "room"
-          ? <RoomScene equipped={equipped} owned={ownedKeys} />
-          : <GardenScene equipped={equipped} owned={ownedKeys} />}
+          ? <RoomScene equipped={equipped} owned={ownedKeys} onTogglePlacement={onTogglePlacement} onUpdatePosition={onUpdatePosition} t={t} />
+          : <GardenScene equipped={equipped} owned={ownedKeys} onUpdatePosition={onUpdatePosition} t={t} />}
+        {(equipped.furniture || []).length > 0 || (equipped.garden || []).length > 0 ? (
+          <p className="text-xs mt-2 text-center" style={{ color: C.inkSoft }}>{t("noteDragToArrange")}</p>
+        ) : null}
       </div>
 
       <div className="grid grid-cols-3 gap-3">
@@ -1564,6 +1682,14 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
             const isPlaced = isMultiSlot ? (equipped[item.category] || []).includes(item.key) : false;
             const isEquipped = isMultiSlot ? isPlaced : equipped[item.category] === item.key;
             const canAfford = balance >= item.cost;
+            const sizeLimit = item.size ? PLACEMENT_LIMITS[item.size] : null;
+            const placedOfSameSize = isMultiSlot && item.size
+              ? (equipped[item.category] || []).filter((k) => {
+                  const other = SHOP_ITEMS.find((i) => i.key === k);
+                  return other && other.size === item.size;
+                }).length
+              : 0;
+            const limitReached = isMultiSlot && item.size && !isPlaced && placedOfSameSize >= sizeLimit;
             return (
               <div key={item.key} className="flex items-center justify-between rounded-xl p-2.5" style={{ background: C.paper }}>
                 <div className="flex items-center gap-3">
@@ -1571,13 +1697,14 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
                   <div>
                     <div className="text-sm font-medium">{t(item.nameKey)}</div>
                     {!owned && <div className="text-xs ff-mono" style={{ color: item.cost === 0 ? C.sage : C.inkSoft, fontWeight: item.cost === 0 ? 600 : 400 }}>{item.cost === 0 ? t("labelFreeNow") : `${item.cost}pt`}</div>}
+                    {owned && limitReached && <div className="text-xs" style={{ color: C.rust }}>{t("noteLimitReached")}</div>}
                   </div>
                 </div>
                 {owned ? (
                   isMultiSlot ? (
-                    <button type="button" onClick={() => onTogglePlacement(item.category, item.key)}
+                    <button type="button" disabled={limitReached} onClick={() => onTogglePlacement(item.category, item.key)}
                       className="text-xs px-3 py-1.5 rounded-full font-medium"
-                      style={{ background: isPlaced ? C.sage : C.card, color: isPlaced ? "#FFFDF8" : C.inkSoft, border: `1px solid ${isPlaced ? C.sage : C.line}` }}>
+                      style={{ background: isPlaced ? C.sage : (limitReached ? C.line : C.card), color: isPlaced ? "#FFFDF8" : C.inkSoft, border: `1px solid ${isPlaced ? C.sage : C.line}`, opacity: limitReached ? 0.6 : 1 }}>
                       {isPlaced ? t("btnPutAway") : t("btnPlace")}
                     </button>
                   ) : (
