@@ -195,6 +195,111 @@ function useWanderPercent(centerLeft, centerTop, rangeLeft, rangeTop) {
   return [leftPct, topPct, facingLeft, isWalking];
 }
 
+// ===== 庭専用：鳥が飛んだり、宅配便が届いて羊が取りに行ったりする「生活感」フック =====
+function useGardenLife(centerLeft, centerTop, rangeLeft, rangeTop) {
+  const [leftPct, setLeftPct] = useState(centerLeft);
+  const [topPct, setTopPct] = useState(centerTop);
+  const [facingLeft, setFacingLeft] = useState(false);
+  const [isWalking, setIsWalking] = useState(false);
+  const [birds, setBirds] = useState([]);
+  const [pkg, setPkg] = useState(null); // { left, top, stage: "waiting" | "collected" } | null
+  const leftRef = useRef(centerLeft);
+  const busyRef = useRef(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const timers = [];
+    const addTimer = (fn, ms) => { const id = setTimeout(fn, ms); timers.push(id); return id; };
+
+    function moveTo(nl, nt, duration) {
+      setFacingLeft(nl < leftRef.current - 1);
+      leftRef.current = nl;
+      setIsWalking(true);
+      setLeftPct(nl);
+      setTopPct(nt);
+      addTimer(() => { if (!cancelled) setIsWalking(false); }, duration);
+    }
+
+    function scheduleWander() {
+      const delay = 3000 + Math.random() * 2500;
+      addTimer(() => {
+        if (cancelled) return;
+        if (busyRef.current) { scheduleWander(); return; }
+        let nl, nt, tries = 0;
+        do {
+          const u = Math.random() * 2 - 1;
+          const v = Math.random() * 2 - 1;
+          if (u * u + v * v <= 1) { nl = centerLeft + u * rangeLeft; nt = centerTop + v * rangeTop; break; }
+          tries += 1;
+        } while (tries < 20);
+        if (nl === undefined) { nl = centerLeft; nt = centerTop; }
+        moveTo(nl, nt, 2200);
+        scheduleWander();
+      }, delay);
+    }
+
+    function scheduleBird() {
+      const delay = 9000 + Math.random() * 13000;
+      addTimer(() => {
+        if (cancelled) return;
+        const id = `${Date.now()}-${Math.random()}`;
+        const top = 8 + Math.random() * 20;
+        const dir = Math.random() < 0.5 ? "ltr" : "rtl";
+        const duration = 6 + Math.random() * 3;
+        setBirds((prev) => [...prev, { id, top, dir, duration }]);
+        addTimer(() => { setBirds((prev) => prev.filter((b) => b.id !== id)); }, duration * 1000 + 200);
+        scheduleBird();
+      }, delay);
+    }
+
+    function schedulePackage() {
+      const delay = 28000 + Math.random() * 27000;
+      addTimer(() => {
+        if (cancelled) return;
+        const gateLeft = 88, gateTop = 80;
+        setPkg({ left: gateLeft, top: gateTop, stage: "waiting" });
+        busyRef.current = true;
+        addTimer(() => {
+          if (cancelled) return;
+          moveTo(gateLeft, gateTop - 2, 2600);
+          addTimer(() => {
+            if (cancelled) return;
+            setPkg((p) => (p ? { ...p, stage: "collected" } : p));
+            addTimer(() => { if (!cancelled) { setPkg(null); busyRef.current = false; } }, 900);
+          }, 2700);
+        }, 600);
+        schedulePackage();
+      }, delay);
+    }
+
+    scheduleWander();
+    scheduleBird();
+    schedulePackage();
+    return () => { cancelled = true; timers.forEach(clearTimeout); };
+  }, [centerLeft, centerTop, rangeLeft, rangeTop]);
+
+  return { leftPct, topPct, facingLeft, isWalking, birds, pkg };
+}
+
+function BirdShape() {
+  return (
+    <svg viewBox="0 0 24 14" width="26" height="15">
+      <path d="M1,8 Q6,1 12,7 Q18,1 23,8" stroke="#6B7F8F" strokeWidth="2.2" fill="none" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function PackageIcon() {
+  return (
+    <svg viewBox="0 0 30 30" width="100%" height="100%">
+      <rect x="3" y="10" width="24" height="17" rx="2" fill="#C98A56" />
+      <rect x="3" y="10" width="24" height="5" fill="#B87740" />
+      <rect x="12" y="10" width="6" height="17" fill="#8B5E3C" opacity="0.65" />
+      <path d="M8,10 L14,4 L20,10" stroke="#8B5E3C" strokeWidth="2" fill="none" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 // キャラクターを部屋・庭の中に配置する。
 // left/top はパーセント指定でアニメーション（CSSトランジション）、transformは常に固定値（アンカー・反転のみ）。
 function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWalking }) {
@@ -422,7 +527,7 @@ function RoomScene({ equipped, owned }) {
 // ===== 庭のシーン =====
 function GardenScene({ equipped, owned }) {
   const placedOrnaments = (owned || []).filter((k) => GARDEN_ICON[k]);
-  const [leftPct, topPct, facingLeft, isWalking] = useWanderPercent(50, 80, 22, 6);
+  const { leftPct, topPct, facingLeft, isWalking, birds, pkg } = useGardenLife(50, 80, 22, 6);
 
   return (
     <div style={{
@@ -430,7 +535,26 @@ function GardenScene({ equipped, owned }) {
       borderRadius: 18, overflow: "hidden",
       background: "linear-gradient(to bottom, #FFFBF2 0%, #F6E9D8 60%, #F6E9D8 100%)"
     }}>
+      <style>{`
+        @keyframes birdFlyLTR { from { left: -10%; } to { left: 110%; } }
+        @keyframes birdFlyRTL { from { left: 110%; } to { left: -10%; } }
+      `}</style>
+
       <div style={{ position: "absolute", right: "8%", top: "10%", width: "12%", aspectRatio: "1/1", borderRadius: "50%", background: "#F3D48A", opacity: 0.55 }} />
+
+      {/* 鳥（ランダムに飛んでくる） */}
+      {birds.map((b) => (
+        <div key={b.id} style={{
+          position: "absolute", top: `${b.top}%`,
+          animation: `${b.dir === "ltr" ? "birdFlyLTR" : "birdFlyRTL"} ${b.duration}s linear forwards`,
+          zIndex: 3
+        }}>
+          <div style={{ transform: b.dir === "rtl" ? "scaleX(-1)" : "none" }}>
+            <BirdShape />
+          </div>
+        </div>
+      ))}
+
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "30%", background: "#7A9C70" }} />
       <div style={{ position: "absolute", left: 0, right: 0, bottom: "26%", height: "6%", background: "#8FAE84" }} />
 
@@ -444,6 +568,13 @@ function GardenScene({ equipped, owned }) {
           <rect x="0" y="22" width="400" height="4" fill="#D4C6A4" />
         </svg>
       </div>
+
+      {/* 宅配便（ときどき門のあたりに届き、羊が取りに行く） */}
+      {pkg && pkg.stage === "waiting" && (
+        <div style={{ position: "absolute", left: "88%", top: "80%", width: "9%", transform: "translate(-50%, -100%)", zIndex: 4 }}>
+          <PackageIcon />
+        </div>
+      )}
 
       {placedOrnaments.map((k) => {
         const Icon = GARDEN_ICON[k];
