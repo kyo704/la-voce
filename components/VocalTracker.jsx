@@ -37,6 +37,7 @@ const VOICE_TYPES = ["ソプラノ", "メゾソプラノ", "アルト", "カウ�
 const VOICE_TYPE_KEYS = { "ソプラノ": "voiceSoprano", "メゾソプラノ": "voiceMezzo", "アルト": "voiceAlto", "カウンターテナー": "voiceCountertenor", "テノール": "voiceTenor", "バリトン": "voiceBaritone", "バス": "voiceBass", "その他": "optionOther" };
 const MEAL_SLOTS = ["朝食", "昼食", "夕食", "間食"];
 const MEAL_SLOT_KEYS = { "朝食": "mealBreakfast", "昼食": "mealLunch", "夕食": "mealDinner", "間食": "mealSnack" };
+const QUICK_ADD_FOODS = ["白米（ご飯）", "味噌汁", "卵（全卵）", "納豆", "鮭（焼き）", "豆腐（木綿）", "ヨーグルト（無糖）", "鶏むね肉（皮なし）"];
 const EXERCISE_TYPES = ["有酸素運動", "筋力トレーニング", "ストレッチ", "ウォーキング", "ヨガ", "その他"];
 const EXERCISE_TYPE_KEYS = { "有酸素運動": "exerciseCardio", "筋力トレーニング": "exerciseStrength", "ストレッチ": "exerciseStretch", "ウォーキング": "exerciseWalk", "ヨガ": "exerciseYoga", "その他": "optionOther" };
 const VOICE_TIME_SLOTS = [
@@ -670,11 +671,22 @@ function midiToNoteLabel(midi) {
   return `${name}${octave}`;
 }
 const ACTIVITY_CHART_COLORS = { "休養": C.sageSoft, "自主練習": C.sage, "レッスン": C.gold, "リハーサル": C.rust, "本番": C.curtain };
+// カタカナをひらがなに変換する（読み仮名検索のための正規化）
+function toHiragana(str) {
+  return (str || "").replace(/[\u30a1-\u30f6]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0x60));
+}
+function normalizeForSearch(str) {
+  return toHiragana((str || "").trim().toLowerCase());
+}
 function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood, t }) {
   const [open, setOpen] = useState(false);
-  const q = (value || "").trim().toLowerCase();
+  const q = normalizeForSearch(value);
   const matches = q
-    ? (foodLibrary || []).filter((f) => f.name.toLowerCase().includes(q)).slice(0, 6)
+    ? (foodLibrary || []).filter((f) => {
+        const nameNorm = normalizeForSearch(f.name);
+        const readingNorm = f.reading ? normalizeForSearch(f.reading) : "";
+        return nameNorm.includes(q) || (readingNorm && readingNorm.includes(q));
+      }).slice(0, 6)
     : [];
   return (
     <div className="relative flex-1">
@@ -1227,6 +1239,26 @@ export default function VocalTracker({ userId, userEmail }) {
   function addMeal(slot) {
     setFormData((f) => ({ ...f, meals: [...(f.meals || []), newMealItem(slot)] }));
   }
+  function quickAddFood(slot, presetName) {
+    const preset = FOOD_PRESETS.find((p) => p.name === presetName);
+    if (!preset) return;
+    const hasUnit = !!preset.unit;
+    const qtyMode = hasUnit ? "unit" : "g";
+    const qtyInput = hasUnit ? 1 : 100;
+    const grams = hasUnit ? preset.unitWeight : 100;
+    const factor = grams / 100;
+    const item = {
+      ...newMealItem(slot),
+      name: preset.name, isPreset: true,
+      presetBase: { carbs: preset.carbs, protein: preset.protein, fat: preset.fat, fiber: preset.fiber },
+      presetUnit: preset.unit || null,
+      presetUnitWeight: preset.unitWeight || null,
+      qtyMode, qtyInput, grams,
+      carbs: roundTo1(preset.carbs * factor), protein: roundTo1(preset.protein * factor),
+      fat: roundTo1(preset.fat * factor), fiber: roundTo1(preset.fiber * factor)
+    };
+    setFormData((f) => ({ ...f, meals: [...(f.meals || []), item] }));
+  }
   function updateMeal(id, next) {
     setFormData((f) => ({ ...f, meals: (f.meals || []).map((m) => (m.id === id ? next : m)) }));
   }
@@ -1715,6 +1747,15 @@ export default function VocalTracker({ userId, userEmail }) {
                       {MEAL_SLOTS.map((slot) => (
                         <div key={slot}>
                           <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>{t(MEAL_SLOT_KEYS[slot])}</p>
+                          <div className="flex flex-wrap gap-1.5 mb-2">
+                            {QUICK_ADD_FOODS.map((name) => (
+                              <button key={name} type="button" onClick={() => quickAddFood(slot, name)}
+                                className="px-2.5 py-1 rounded-full text-xs font-medium border"
+                                style={{ borderColor: C.line, color: C.inkSoft, background: C.card }}>
+                                + {name}
+                              </button>
+                            ))}
+                          </div>
                           <div className="space-y-2">
                             {(formData.meals || []).filter((m) => m.slot === slot).map((m) => (
                               <MealItemRow key={m.id} item={m} foodLibrary={foodLibrary} t={t} onChange={(next) => updateMeal(m.id, next)} onRemove={() => removeMeal(m.id)} />
