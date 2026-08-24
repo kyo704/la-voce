@@ -5,7 +5,7 @@ import {
   Mic2, Moon, Droplets, Thermometer, Wind, MapPin, Music2, HeartHandshake,
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
   Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot,
-  Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset
+  Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -14,6 +14,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC } from "@/lib/tokens";
 import { FOOD_PRESETS } from "@/lib/foodPresets";
+import { LANGUAGES, createTranslator } from "@/lib/translations";
 import HealthInfo from "@/components/HealthInfo";
 
 /* ---------- constants ---------- */
@@ -71,11 +72,11 @@ const FACTORS = [
 ];
 
 const TABS = [
-  { key: "today", label: "今日の記録", icon: Mic2 },
-  { key: "history", label: "履歴", icon: CalendarDays },
-  { key: "analysis", label: "分析", icon: BarChart3 },
-  { key: "advice", label: "AIアドバイス", icon: Bot },
-  { key: "info", label: "健康情報", icon: BookOpen }
+  { key: "today", labelKey: "tabToday", icon: Mic2 },
+  { key: "history", labelKey: "tabHistory", icon: CalendarDays },
+  { key: "analysis", labelKey: "tabAnalysis", icon: BarChart3 },
+  { key: "advice", labelKey: "tabAdvice", icon: Bot },
+  { key: "info", labelKey: "tabInfo", icon: BookOpen }
 ];
 
 /* ---------- helpers ---------- */
@@ -393,7 +394,7 @@ function entryToRow(userId, e) {
 }
 
 /* ---------- small components ---------- */
-function Gauge({ score }) {
+function Gauge({ score, t }) {
   const cx = 100, cy = 100, r = 78, sw = 16;
   const segs = [0, 1, 2, 3, 4].map((i) => ({
     d: describeArc(cx, cy, r, 180 - i * 36, 180 - (i + 1) * 36),
@@ -416,7 +417,7 @@ function Gauge({ score }) {
       <div className="text-center -mt-2">
         <div className="ff-display italic leading-none" style={{ fontSize: "2.75rem", color }}>{dyn}</div>
         <div className="ff-mono text-xs tracking-widest uppercase mt-1" style={{ color: C.inkSoft }}>
-          {score == null ? "記録なし" : `総合コンディション ${score.toFixed(1)} / 5`}
+          {score == null ? t("noRecord") : `${t("overallLabel")} ${score.toFixed(1)} / 5`}
         </div>
       </div>
     </div>
@@ -529,7 +530,7 @@ function NumberField({ label, value, onChange, step = 1, min = -Infinity, max = 
       </div>
       <div className="flex items-center gap-2">
         <button type="button" onClick={() => onChange(clamp((Number(value) || 0) - step))}
-          className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line }}>
+          className="w-10 h-10 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line }}>
           <Minus size={14} />
         </button>
         <input
@@ -541,7 +542,7 @@ function NumberField({ label, value, onChange, step = 1, min = -Infinity, max = 
           style={{ borderColor: C.line, background: C.paper, color: C.ink }}
         />
         <button type="button" onClick={() => onChange(clamp((Number(value) || 0) + step))}
-          className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line }}>
+          className="w-10 h-10 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line }}>
           <Plus size={14} />
         </button>
         {suffix && <span className="text-xs ff-mono shrink-0 w-8" style={{ color: C.inkSoft }}>{suffix}</span>}
@@ -760,6 +761,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [saveStatus, setSaveStatus] = useState("idle");
   const [saveError, setSaveError] = useState("");
   const [toastMessage, setToastMessage] = useState(null);
+  const [language, setLanguage] = useState("ja");
   const [viewMonth, setViewMonth] = useState(() => {
     const d = new Date();
     return { year: d.getFullYear(), month: d.getMonth() };
@@ -774,6 +776,23 @@ export default function VocalTracker({ userId, userEmail }) {
   const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "" });
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileSaveStatus, setProfileSaveStatus] = useState("idle");
+
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("la-voce-language");
+      if (saved && LANGUAGES.some((l) => l.code === saved)) setLanguage(saved);
+    } catch (e) {
+      /* localStorageが使えない環境では無視 */
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem("la-voce-language", language);
+    } catch (e) {
+      /* ignore */
+    }
+  }, [language]);
 
   useEffect(() => {
     let mounted = true;
@@ -816,6 +835,7 @@ export default function VocalTracker({ userId, userEmail }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDate, loading]);
 
+  const t = useMemo(() => createTranslator(language), [language]);
   const currentScore = useMemo(() => computeOverallScore(formData), [formData]);
   const mealTotals = useMemo(() => {
     const meals = formData ? formData.meals || [] : [];
@@ -1080,31 +1100,46 @@ export default function VocalTracker({ userId, userEmail }) {
           </div>
         </div>
       )}
-      <header className="px-4 sm:px-6 pt-6 pb-4 sticky top-0 z-10" style={{ background: C.paper, borderBottom: `1px solid ${C.line}` }}>
+      <header
+        className="px-4 sm:px-6 pb-4 sticky top-0 z-10"
+        style={{ background: C.paper, borderBottom: `1px solid ${C.line}`, paddingTop: "calc(env(safe-area-inset-top) + 1.5rem)" }}
+      >
         <div className="max-w-3xl mx-auto flex items-start justify-between gap-3">
           <div>
             <h1 className="ff-display italic text-3xl sm:text-4xl" style={{ color: C.curtain }}>La Voce</h1>
-            <p className="ff-mono text-xs tracking-widest uppercase mt-1" style={{ color: C.inkSoft }}>声楽家のための体調記録</p>
+            <p className="ff-mono text-xs tracking-widest uppercase mt-1" style={{ color: C.inkSoft }}>{t("appTagline")}</p>
           </div>
           <div className="flex items-center gap-1 shrink-0 mt-1">
-            <a href="/billing" title="ご利用プラン" className="w-8 h-8 rounded-full border flex items-center justify-center" style={{ borderColor: C.line, color: C.inkSoft }}>
+            <div className="relative flex items-center">
+              <Globe size={13} style={{ color: C.inkSoft, position: "absolute", left: 8, pointerEvents: "none" }} />
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                aria-label={t("languageLabel")}
+                className="rounded-full border text-xs pl-7 pr-2 py-1.5 appearance-none"
+                style={{ borderColor: C.line, color: C.inkSoft, background: C.card }}
+              >
+                {LANGUAGES.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
+              </select>
+            </div>
+            <a href="/billing" title={t("navPlan")} className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line, color: C.inkSoft }}>
               <CreditCard size={14} />
             </a>
-            <button onClick={handleSignOut} title="ログアウト" className="w-8 h-8 rounded-full border flex items-center justify-center" style={{ borderColor: C.line, color: C.inkSoft }}>
+            <button onClick={handleSignOut} title={t("navSignOut")} className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line, color: C.inkSoft }}>
               <LogOut size={14} />
             </button>
           </div>
         </div>
         <nav className="max-w-3xl mx-auto flex gap-1 mt-5 overflow-x-auto">
-          {TABS.map((t) => (
+          {TABS.map((tab) => (
             <button
-              key={t.key}
-              onClick={() => setActiveTab(t.key)}
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
               className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
-              style={{ background: activeTab === t.key ? C.curtain : "transparent", color: activeTab === t.key ? "#FFFDF8" : C.inkSoft }}
+              style={{ background: activeTab === tab.key ? C.curtain : "transparent", color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
             >
-              <t.icon size={15} />
-              {t.label}
+              <tab.icon size={15} />
+              {t(tab.labelKey)}
             </button>
           ))}
         </nav>
@@ -1114,7 +1149,7 @@ export default function VocalTracker({ userId, userEmail }) {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-3">
             <Loader2 size={22} className="animate-spin" style={{ color: C.curtain }} />
-            <span className="text-sm" style={{ color: C.inkSoft }}>読み込み中…</span>
+            <span className="text-sm" style={{ color: C.inkSoft }}>{t("loadingText")}</span>
           </div>
         ) : (
           <div key={activeTab} className="tab-panel">
@@ -1137,12 +1172,12 @@ export default function VocalTracker({ userId, userEmail }) {
                 </div>
 
                 <div className="rounded-2xl p-5 border flex justify-center" style={{ background: C.card, borderColor: C.line }}>
-                  <Gauge score={currentScore} />
+                  <Gauge score={currentScore} t={t} />
                 </div>
 
                 {formData && (
                   <>
-                    <SectionCard title="声・喉" icon={Mic2}>
+                    <SectionCard title={t("sectionVoiceThroat")} icon={Mic2}>
                       <DynamicsSelector label="喉の状態（総合）" icon={Mic2} value={formData.throatCondition}
                         onChange={(v) => setFormData((f) => ({ ...f, throatCondition: v }))} />
                       <DynamicsSelector label="声の調子（総合）" icon={Music2} value={formData.voiceQuality}
@@ -1194,7 +1229,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       </div>
                     </SectionCard>
 
-                    <SectionCard title="身体データ" icon={Scale}>
+                    <SectionCard title={t("sectionBodyData")} icon={Scale}>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                           <div className="flex items-center gap-1.5 mb-1.5">
@@ -1269,7 +1304,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       </div>
                       <button onClick={handleSaveProfile} disabled={profileSaveStatus === "saving"}
                         className="text-xs px-4 py-2 rounded-full font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
-                        {profileSaveStatus === "saving" ? "保存中…" : profileSaveStatus === "saved" ? "保存しました" : "身体データ設定を保存"}
+                        {profileSaveStatus === "saving" ? t("saveButtonSaving") : profileSaveStatus === "saved" ? t("saveButtonSaved") : "身体データ設定を保存"}
                       </button>
 
                       <NumberField label="今日の体重" icon={Scale} value={formData.weightKg ?? ""} step={0.1} min={20} max={200} suffix="kg"
@@ -1286,7 +1321,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       )}
                     </SectionCard>
 
-                    <SectionCard title="睡眠・水分" icon={Moon}>
+                    <SectionCard title={t("sectionSleepWater")} icon={Moon}>
                       <NumberField label="睡眠時間" icon={Moon} value={formData.sleepHours} step={0.5} min={0} max={16} suffix="時間"
                         onChange={(v) => setFormData((f) => ({ ...f, sleepHours: v }))} />
                       <DotSelector label="睡眠の質" icon={Moon} value={formData.sleepQuality} lowLabel="悪い" highLabel="良い"
@@ -1312,7 +1347,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       </div>
                     </SectionCard>
 
-                    <SectionCard title="食事の詳細記録" icon={Wheat}>
+                    <SectionCard title={t("sectionMealDetail")} icon={Wheat}>
                       <p className="text-xs" style={{ color: C.inkSoft }}>時間帯ごとに食品を追加すると、下に1日の合計が自動計算されます。</p>
                       {MEAL_SLOTS.map((slot) => (
                         <div key={slot}>
@@ -1395,7 +1430,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       )}
                     </SectionCard>
 
-                    <SectionCard title="気候・滞在地" icon={Thermometer}>
+                    <SectionCard title={t("sectionClimate")} icon={Thermometer}>
                       <div>
                         <label className="text-sm font-medium block mb-1.5">滞在地・公演地</label>
                         <div className="flex items-center gap-2 rounded-lg border p-2" style={{ borderColor: C.line, background: C.paper }}>
@@ -1425,7 +1460,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       </div>
                     </SectionCard>
 
-                    <SectionCard title="練習・公演" icon={Music2}>
+                    <SectionCard title={t("sectionPractice")} icon={Music2}>
                       <div>
                         <span className="text-sm font-medium block mb-2">今日の活動</span>
                         <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
@@ -1540,7 +1575,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       )}
                     </SectionCard>
 
-                    <SectionCard title="運動記録" icon={Dumbbell}>
+                    <SectionCard title={t("sectionExercise")} icon={Dumbbell}>
                       <p className="text-xs" style={{ color: C.inkSoft }}>その日行った運動を追加してください。合計時間は自動計算され、分析にも反映されます。</p>
                       <div className="space-y-2">
                         {(formData.exercises || []).map((x) => (
@@ -1564,7 +1599,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       </div>
                     </SectionCard>
 
-                    <SectionCard title="メンタル" icon={HeartHandshake}>
+                    <SectionCard title={t("sectionMental")} icon={HeartHandshake}>
                       <DotSelector label="心の余裕" icon={HeartHandshake} value={formData.ease} lowLabel="緊張" highLabel="穏やか"
                         onChange={(v) => setFormData((f) => ({ ...f, ease: v }))} />
                       <div>
@@ -1575,7 +1610,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       </div>
                     </SectionCard>
 
-                    <SectionCard title="メモ" icon={NotebookPen}>
+                    <SectionCard title={t("sectionMemo")} icon={NotebookPen}>
                       <textarea value={formData.notes} rows={3} placeholder="自由に記録を残せます"
                         onChange={(e) => setFormData((f) => ({ ...f, notes: e.target.value }))}
                         className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
@@ -1586,7 +1621,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       style={{ background: C.curtain, color: "#FFFDF8" }}>
                       {saveStatus === "saving" && <Loader2 size={16} className="animate-spin" />}
                       {saveStatus === "saved" && <Check size={16} />}
-                      {saveStatus === "saving" ? "保存中…" : saveStatus === "saved" ? "保存しました" : saveStatus === "error" ? "保存に失敗しました" : "この日の記録を保存"}
+                      {saveStatus === "saving" ? t("saveButtonSaving") : saveStatus === "saved" ? t("saveButtonSaved") : saveStatus === "error" ? t("saveButtonError") : t("saveButton")}
                     </button>
                     {saveStatus === "error" && saveError && (
                       <p className="text-xs text-center" style={{ color: C.curtain }}>{saveError}</p>
@@ -1837,17 +1872,17 @@ export default function VocalTracker({ userId, userEmail }) {
                   <button onClick={() => setAnalysisTarget("performance")}
                     className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
                     style={{ background: analysisTarget === "performance" ? C.curtain : "transparent", color: analysisTarget === "performance" ? "#FFFDF8" : C.inkSoft }}>
-                    公演の出来
+                    {t("targetPerformance")}
                   </button>
                   <button onClick={() => setAnalysisTarget("throat")}
                     className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
                     style={{ background: analysisTarget === "throat" ? C.curtain : "transparent", color: analysisTarget === "throat" ? "#FFFDF8" : C.inkSoft }}>
-                    喉のコンディション
+                    {t("targetThroat")}
                   </button>
                   <button onClick={() => setAnalysisTarget("ease")}
                     className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
                     style={{ background: analysisTarget === "ease" ? C.curtain : "transparent", color: analysisTarget === "ease" ? "#FFFDF8" : C.inkSoft }}>
-                    心の余裕
+                    {t("targetEase")}
                   </button>
                 </div>
 
