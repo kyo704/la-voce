@@ -147,10 +147,13 @@ function SheepCharacter({ equipped, size = 120, isWalking = false, isFarming = f
           {Array.from({ length: 9 }).map((_, i) => (
             <line key={i} x1={54 + i * 6} y1="108" x2={50 + i * 6} y2="176" stroke="#2E3D4E" strokeWidth="0.4" opacity="0.35" />
           ))}
-          <path d="M50,106 Q30,110 25,131 Q27,141 38,138 L52,116 Z" fill="#3D5266" opacity="0.97" />
-          <path d="M110,106 Q130,110 135,131 Q133,141 122,138 L108,116 Z" fill="#3D5266" opacity="0.97" />
-          <path d="M32,120 Q30,128 32,136" stroke="#2E3D4E" strokeWidth="0.6" fill="none" opacity="0.4" />
-          <path d="M128,120 Q130,128 128,136" stroke="#2E3D4E" strokeWidth="0.6" fill="none" opacity="0.4" />
+          {/* 広袖（腕全体を覆う、たっぷりとした袂） */}
+          <path d="M50,104 L14,109 Q7,124 11,147 Q15,155 30,151 L52,138 L52,110 Z" fill="#3D5266" opacity="0.98" />
+          <path d="M110,104 L146,109 Q153,124 149,147 Q145,155 130,151 L108,138 L108,110 Z" fill="#3D5266" opacity="0.98" />
+          <path d="M16,120 Q11,132 15,144" stroke="#2E3D4E" strokeWidth="0.6" fill="none" opacity="0.4" />
+          <path d="M144,120 Q149,132 145,144" stroke="#2E3D4E" strokeWidth="0.6" fill="none" opacity="0.4" />
+          <path d="M14,109 L52,110" stroke="#2E3D4E" strokeWidth="0.5" opacity="0.35" />
+          <path d="M146,109 L108,110" stroke="#2E3D4E" strokeWidth="0.5" opacity="0.35" />
           <path d="M66,112 Q64,150 68,180" stroke="#2A3A48" strokeWidth="1" fill="none" opacity="0.5" />
           <path d="M62,102 L80,130 L98,102 L92,109 L80,134 L68,109 Z" fill="#FBF6EA" opacity="0.92" />
           <path d="M62,102 L80,130 M98,102 L80,130" stroke="#D9CFB8" strokeWidth="0.6" opacity="0.6" />
@@ -172,19 +175,22 @@ function SheepCharacter({ equipped, size = 120, isWalking = false, isFarming = f
         <g>
           <path d="M50,104 Q50,98 58,100 L56,176 Q80,186 104,176 L102,100 Q110,98 110,104 L106,178 Q80,190 54,178 Z" fill="#E896C4" opacity="0.95" />
           <path d="M56,150 Q80,158 104,150 L102,176 Q80,186 58,176 Z" fill="#F2B6D6" opacity="0.4" />
-          <path d="M50,106 Q28,112 22,136 Q24,150 40,146 L52,116 Z" fill="#E896C4" opacity="0.95" />
-          <path d="M110,106 Q132,112 138,136 Q136,150 120,146 L108,116 Z" fill="#E896C4" opacity="0.95" />
-          <path d="M24,128 Q30,140 38,144" stroke="#C0619A" strokeWidth="0.7" fill="none" opacity="0.5" />
-          <path d="M136,128 Q130,140 122,144" stroke="#C0619A" strokeWidth="0.7" fill="none" opacity="0.5" />
+          {/* 振袖（腕全体を覆い、下にたっぷりと長く垂れる袂） */}
+          <path d="M50,106 L18,112 Q9,132 13,162 Q17,170 34,165 L52,142 L52,112 Z" fill="#E896C4" opacity="0.96" />
+          <path d="M110,106 L142,112 Q151,132 147,162 Q143,170 126,165 L108,142 L108,112 Z" fill="#E896C4" opacity="0.96" />
+          <path d="M20,124 Q13,144 17,158" stroke="#C0619A" strokeWidth="0.7" fill="none" opacity="0.5" />
+          <path d="M140,124 Q147,144 143,158" stroke="#C0619A" strokeWidth="0.7" fill="none" opacity="0.5" />
+          <path d="M18,112 L52,112" stroke="#C0619A" strokeWidth="0.5" opacity="0.4" />
+          <path d="M142,112 L108,112" stroke="#C0619A" strokeWidth="0.5" opacity="0.4" />
           <path d="M62,102 L80,128 L98,102 L92,109 L80,132 L68,109 Z" fill="#FBF6EA" opacity="0.94" />
           <path d="M65,104 L80,124 L95,104 L91,109 L80,126 L69,109 Z" fill="none" stroke="#F2C9D3" strokeWidth="1.2" opacity="0.7" />
-          {[[63, 118], [97, 118], [58, 145], [102, 145], [30, 128], [130, 128], [64, 168], [96, 168]].map(([x, y], i) => (
+          {[[63, 118], [97, 118], [58, 145], [102, 145], [20, 130], [140, 130], [24, 152], [136, 152]].map(([x, y], i) => (
             <g key={i}>
               <circle cx={x} cy={y} r="3.4" fill="#FFFBEA" opacity="0.9" />
               <circle cx={x} cy={y} r="1.3" fill="#E8B84B" opacity="0.85" />
             </g>
           ))}
-          {[[70, 128], [90, 128], [48, 155], [112, 155], [80, 172]].map(([x, y], i) => (
+          {[[70, 128], [90, 128], [30, 140], [130, 140], [28, 158], [132, 158]].map(([x, y], i) => (
             <path key={i} d={`M${x - 3},${y} Q${x},${y - 5} ${x + 3},${y} Q${x},${y + 4} ${x - 3},${y} Z`} fill="#7FB577" opacity="0.6" />
           ))}
           <rect x="64" y="122" width="32" height="21" fill="#F6D98A" opacity="0.96" />
@@ -907,8 +913,21 @@ function PondIcon() {
     </svg>
   );
 }
+function PaintingIcon() {
+  return (
+    <svg viewBox="0 0 50 60" width="100%" height="100%">
+      <path d="M20,4 Q25,0 30,4" stroke="#8B6529" strokeWidth="1" fill="none" opacity="0.6" />
+      <rect x="4" y="6" width="42" height="48" fill="#D9AE6E" stroke="#8B6529" strokeWidth="1.5" />
+      <rect x="7" y="9" width="36" height="42" fill="#F6EFDF" />
+      <rect x="7" y="9" width="36" height="26" fill="#BFE0E8" />
+      <path d="M7,30 Q16,20 25,28 Q34,18 43,26 L43,35 L7,35 Z" fill="#7A9C70" />
+      <circle cx="34" cy="15" r="4" fill="#F6D46A" opacity="0.8" />
+      <rect x="7" y="35" width="36" height="16" fill="#8FAE84" opacity="0.5" />
+    </svg>
+  );
+}
 
-const FURNITURE_ICON = { furniture_bed: BedIcon, furniture_shelf: ShelfIcon, furniture_plant: PlantIcon, furniture_rug: RugIcon, furniture_chair: ChairIcon, furniture_piano: PianoIcon };
+const FURNITURE_ICON = { furniture_bed: BedIcon, furniture_shelf: ShelfIcon, furniture_plant: PlantIcon, furniture_rug: RugIcon, furniture_chair: ChairIcon, furniture_piano: PianoIcon, furniture_painting: PaintingIcon };
 const GARDEN_ICON = { garden_bench: BenchIcon, garden_fountain: FountainIcon, garden_lantern: LanternIcon, garden_flowerbed: FlowerBedIcon, garden_field: FieldIcon, garden_gazebo: GazeboIcon, garden_pond: PondIcon };
 
 // ===== ショップ内のアイテムプレビュー（種類ごとに見た目を切り替える） =====
@@ -978,7 +997,9 @@ const FURNITURE_LAYOUT = {
   furniture_shelf: { left: 63, top: FURNITURE_FLOOR_TOP, width: 15, z: 2 },
   furniture_chair: { left: 79, top: FURNITURE_FLOOR_TOP, width: 15, z: 2 },
   furniture_plant: { left: 93, top: FURNITURE_FLOOR_TOP, width: 11, z: 2 },
-  furniture_rug: { left: 50, top: 82, width: 26, z: 1 }
+  furniture_rug: { left: 50, top: 82, width: 26, z: 1 },
+  // 絵画だけは床に接地せず、壁の高い位置に固定（窓のない右手のスペースに掛ける）
+  furniture_painting: { left: 84, top: 32, width: 11, z: 3 }
 };
 // 庭は奥行きのある2列（奥列・手前列）で、それぞれの列内で足元のラインを揃えて重ならないように配置。
 // 柵より手前に置かれるアイテムは柵を隠してよい。
@@ -1300,6 +1321,12 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
               <path d="M0,55 Q25,30 50,50 Q75,70 100,45 L100,100 L0,100 Z" fill="#6FD9A8" opacity="0.55" />
               <path d="M0,65 Q30,45 55,62 Q80,78 100,58 L100,100 L0,100 Z" fill="#9F7FD9" opacity="0.45" />
               <path d="M0,75 Q35,60 60,72 Q85,84 100,70 L100,100 L0,100 Z" fill="#5CA9D9" opacity="0.4" />
+              {isGrand && (
+                <>
+                  <path d="M0,92 L15,78 L30,90 L45,72 L60,88 L75,76 L90,90 L100,80 L100,100 L0,100 Z" fill="#0F1A30" opacity="0.75" />
+                  <line x1="14" y1="6" x2="24" y2="14" stroke="#FFFDF0" strokeWidth="1.2" opacity="0.7" />
+                </>
+              )}
             </svg>
           )}
           {sceneryKey === "scenery_ocean" && (
@@ -1310,6 +1337,13 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
               <path d="M0,60 Q15,55 30,60 Q45,65 60,60 Q75,55 100,60" stroke="#FFFDF8" strokeWidth="2" fill="none" opacity="0.5" />
               <path d="M0,72 Q15,67 30,72 Q45,77 60,72 Q75,67 100,72" stroke="#FFFDF8" strokeWidth="2" fill="none" opacity="0.4" />
               <path d="M20,50 L30,50 L27,44 Q34,44 34,50 L44,50 L38,56 L14,56 Z" fill="#F6EFDF" opacity="0.85" />
+              {isGrand && (
+                <>
+                  <path d="M65,48 L68,48 L67,38 Q72,40 72,48 L78,48 L74,52 L62,52 Z" fill="#3D2E12" opacity="0.6" />
+                  <path d="M8,20 Q12,17 16,20" stroke="#3D2E12" strokeWidth="1" fill="none" opacity="0.5" />
+                  <path d="M20,26 Q24,23 28,26" stroke="#3D2E12" strokeWidth="1" fill="none" opacity="0.4" />
+                </>
+              )}
             </svg>
           )}
           {sceneryKey === "scenery_night" && (
@@ -1321,6 +1355,17 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
                 <circle key={i} cx={x} cy={y} r={i % 3 === 0 ? 1.2 : 0.7} fill="#FFFDF0" opacity="0.85" />
               ))}
               <path d="M0,80 Q30,68 55,78 Q75,86 100,72 L100,100 L0,100 Z" fill="#1A2340" opacity="0.7" />
+              {isGrand && (
+                <>
+                  {[10, 20, 32, 44, 60, 72, 84].map((x, i) => (
+                    <rect key={i} x={x} y={90 - (i % 3) * 4} width="4" height={6 + (i % 3) * 4} fill="#0F1830" opacity="0.85" />
+                  ))}
+                  {[[10, 88], [22, 86], [46, 90], [62, 87], [86, 89]].map(([x, y], i) => (
+                    <circle key={i} cx={x} cy={y} r="0.6" fill="#F6D46A" opacity="0.7" />
+                  ))}
+                  <path d="M78,10 L88,18" stroke="#FFFDF0" strokeWidth="1" opacity="0.6" />
+                </>
+              )}
             </svg>
           )}
           {sceneryKey === "scenery_sakura" && (
@@ -1338,6 +1383,20 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
               {[[20, 30], [45, 20], [60, 35], [75, 25], [35, 45]].map(([x, y], i) => (
                 <circle key={i} cx={x} cy={y} r="1" fill="#F2C9D3" opacity="0.8" />
               ))}
+              {isGrand && (
+                <>
+                  <path d="M40,68 L50,30 L60,68 Z" fill="#8FA9C9" opacity="0.5" />
+                  <path d="M46,40 L50,32 L54,40 Z" fill="#FBF6EA" opacity="0.7" />
+                  {[[50, 62, 9], [58, 68, 8]].map(([x, y, r], i) => (
+                    <g key={i}>
+                      <circle cx={x} cy={y - r * 0.5} r={r} fill="#F6D9E2" opacity="0.85" />
+                    </g>
+                  ))}
+                  {[[8, 15], [90, 22], [55, 8], [15, 40], [85, 45]].map(([x, y], i) => (
+                    <circle key={i} cx={x} cy={y} r="1" fill="#F2C9D3" opacity="0.75" />
+                  ))}
+                </>
+              )}
             </svg>
           )}
           {sceneryKey === "scenery_italy" && (
@@ -1365,6 +1424,18 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
               <rect y="84" width="100" height="16" fill="#6C9BC4" opacity="0.9" />
               <path d="M55,90 Q63,86 77,90 L75,94 L57,94 Z" fill="#3D2E12" />
               <path d="M77,82 L77,90" stroke="#3D2E12" strokeWidth="1.5" />
+              {isGrand && (
+                <>
+                  <g>
+                    <rect x="88" y="66" width="9" height="8" rx="1" fill="#F6F1E7" stroke="#D9CFB8" strokeWidth="0.4" />
+                    <path d="M87,66 Q92.5,60 98,66 Z" fill="#9FA8A0" />
+                  </g>
+                  <ellipse cx="20" cy="20" rx="7" ry="9" fill="#C0454B" opacity="0.8" />
+                  <path d="M16,27 L24,27 L22,32 L18,32 Z" fill="#8B6529" opacity="0.7" />
+                  <line x1="17" y1="27" x2="18" y2="32" stroke="#8B6529" strokeWidth="0.4" />
+                  <line x1="23" y1="27" x2="22" y2="32" stroke="#8B6529" strokeWidth="0.4" />
+                </>
+              )}
             </svg>
           )}
           {sceneryKey === "scenery_germany" && (
@@ -1387,20 +1458,63 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
               <path d="M58,26 L62.5,16 L67,26 Z" fill="#7A4A3D" />
               <path d="M38,40 L50,28 L62,40 Z" fill="#8B5E3C" />
               <rect x="46" y="50" width="8" height="20" fill="#5A4A3D" opacity="0.8" />
+              {isGrand && (
+                <>
+                  <path d="M0,62 L20,48 L40,58 L58,44 L80,56 L100,46 L100,60 L0,66 Z" fill="#9FB0BA" opacity="0.5" />
+                  <ellipse cx="50" cy="88" rx="46" ry="6" fill="#8FA9C9" opacity="0.35" />
+                  <path d="M38,70 Q50,66 62,70" stroke="#FFFDF8" strokeWidth="1" opacity="0.4" fill="none" />
+                </>
+              )}
             </svg>
           )}
           {sceneryKey === "scenery_france" && (
             <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
-              <rect width="100" height="100" fill="#E8D9E8" />
-              <rect y="70" width="100" height="30" fill="#8FAE84" opacity="0.7" />
-              <circle cx="72" cy="18" r="8" fill="#FFE9A8" opacity="0.85" />
-              {/* エッフェル塔風のシルエット */}
-              <path d="M50,20 L58,60 L64,60 L54,20 Z" fill="#3D2E12" opacity="0.85" />
-              <path d="M50,20 L42,60 L36,60 L46,20 Z" fill="#3D2E12" opacity="0.85" />
-              <path d="M38,60 L62,60 L58,72 L42,72 Z" fill="#3D2E12" opacity="0.85" />
-              <path d="M42,72 L58,72 L55,90 L45,90 Z" fill="#3D2E12" opacity="0.85" />
-              <line x1="40" y1="40" x2="60" y2="40" stroke="#3D2E12" strokeWidth="1.4" opacity="0.7" />
-              <line x1="37" y1="55" x2="63" y2="55" stroke="#3D2E12" strokeWidth="1.4" opacity="0.7" />
+              {/* 夕焼け空 */}
+              <rect width="100" height="62" fill="#F2C9A8" />
+              <rect width="100" height="62" fill="#E896C4" opacity="0.14" />
+              <circle cx="76" cy="20" r="10" fill="#FFDCA0" opacity="0.92" />
+              {/* セーヌ川 */}
+              <rect y="72" width="100" height="28" fill="#8FA9C9" />
+              <path d="M0,75 Q25,72 50,75 Q75,78 100,74" stroke="#FFFDF8" strokeWidth="1" fill="none" opacity="0.4" />
+              {/* オスマン様式の建物（マンサード屋根） */}
+              {[[3, 48, 17], [70, 50, 19], [86, 53, 13]].map(([x, y, w], i) => (
+                <g key={i}>
+                  <rect x={x} y={y} width={w} height={72 - y} fill="#E8D9C4" />
+                  <path d={`M${x - 1},${y} L${x + w / 2},${y - 8} L${x + w + 1},${y} Z`} fill="#5A6B7A" />
+                  {Array.from({ length: 3 }).map((_, r) => (
+                    <rect key={r} x={x + 3} y={y + 6 + r * 9} width="4" height="6" fill="#7A8FA6" opacity="0.6" />
+                  ))}
+                </g>
+              ))}
+              {/* 石造りのアーチ橋 */}
+              <path d="M25,72 Q50,58 75,72" stroke="#D9CFB8" strokeWidth="5" fill="none" />
+              <path d="M25,72 Q50,62 75,72" stroke="#C4B896" strokeWidth="2" fill="none" opacity="0.6" />
+              {Array.from({ length: 5 }).map((_, i) => <line key={i} x1={30 + i * 10} y1="68" x2={30 + i * 10} y2="72" stroke="#B8AA88" strokeWidth="1" opacity="0.5" />)}
+              {/* エッフェル塔（装飾的なシルエット） */}
+              <g transform="translate(46,8)">
+                <path d="M4,10 L8,50 L11,50 L6,10 Z" fill="#3D2E12" opacity="0.9" />
+                <path d="M4,10 L0,50 L-3,50 L2,10 Z" fill="#3D2E12" opacity="0.9" />
+                <path d="M-2,50 L10,50 L7,62 L1,62 Z" fill="#3D2E12" opacity="0.9" />
+                <path d="M1,62 L7,62 L5,80 L3,80 Z" fill="#3D2E12" opacity="0.9" />
+                <line x1="-1" y1="28" x2="9" y2="28" stroke="#3D2E12" strokeWidth="1.2" opacity="0.7" />
+                <line x1="-2.5" y1="46" x2="10.5" y2="46" stroke="#3D2E12" strokeWidth="1.2" opacity="0.7" />
+                <circle cx="4" cy="8" r="1.2" fill="#F6D46A" opacity="0.85" />
+              </g>
+              {/* 並木道 */}
+              {[9, 91].map((x, i) => (
+                <g key={i}>
+                  <rect x={x - 1} y="78" width="2" height="14" fill="#5A4A3D" />
+                  <circle cx={x} cy="76" r="6" fill="#7A9C70" />
+                </g>
+              ))}
+              {isGrand && (
+                <>
+                  <ellipse cx="18" cy="16" rx="6" ry="8" fill="#C0454B" opacity="0.8" />
+                  <path d="M14,23 L22,23 L20,28 L16,28 Z" fill="#8B6529" opacity="0.7" />
+                  <rect x="60" y="52" width="10" height="20" fill="#E8D9C4" opacity="0.7" />
+                  <path d="M59,52 L65,45 L71,52 Z" fill="#5A6B7A" opacity="0.7" />
+                </>
+              )}
             </svg>
           )}
           {isBamboo && (
