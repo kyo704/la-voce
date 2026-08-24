@@ -346,7 +346,7 @@ function newMealItem(slot = "朝食") {
 function buildFoodLibrary(entries, currentMeals) {
   const map = new Map();
   FOOD_PRESETS.forEach((f) => {
-    map.set(f.name, { name: f.name, reading: f.reading || null, i18n: f.i18n || null, category: f.category || null, carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber, isPreset: true, unit: f.unit || null, unitWeight: f.unitWeight || null, date: "0000-00-00" });
+    map.set(f.name, { name: f.name, reading: f.reading || null, i18n: f.i18n || null, category: f.category || null, nativeTerm: f.nativeTerm || null, carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber, isPreset: true, unit: f.unit || null, unitWeight: f.unitWeight || null, date: "0000-00-00" });
   });
   const consider = (meals, date) => {
     (meals || []).forEach((m) => {
@@ -893,7 +893,9 @@ function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood, 
         // これにより、例えば英語表示中に "chicken" と入力しても、
         // 日本語名や読み仮名にその文字が無い品目でも見つかるようになる。
         const i18nNorm = f.i18n && language && f.i18n[language] ? normalizeForSearch(f.i18n[language]) : "";
-        if (nameNorm.includes(q) || (readingNorm && readingNorm.includes(q)) || (i18nNorm && i18nNorm.includes(q))) return true;
+        // 原語表記（中国語の簡体字、イタリア語など）は、表示言語に関わらず常に検索対象にする。
+        const nativeNorm = f.nativeTerm ? normalizeForSearch(f.nativeTerm) : "";
+        if (nameNorm.includes(q) || (readingNorm && readingNorm.includes(q)) || (i18nNorm && i18nNorm.includes(q)) || (nativeNorm && nativeNorm.includes(q))) return true;
         if (f.category && matchedCategories.includes(f.category)) return true;
         return groupKeywords.some((kw) => nameNorm.includes(kw) || (readingNorm && readingNorm.includes(kw)));
       }).slice(0, 8)
