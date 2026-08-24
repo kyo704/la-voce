@@ -91,9 +91,9 @@ function SheepCharacter({ equipped, size = 120, isWalking = false }) {
       {/* 顔まわり（毛を少し短めにした肌色っぽい部分） */}
       <ellipse cx="80" cy="76" rx="30" ry="26" fill="#FBF6EA" />
 
-      {/* 小さいツノ */}
-      <path d="M56,42 Q50,28 60,24 Q56,36 62,44 Z" fill="#D8CBA8" />
-      <path d="M104,42 Q110,28 100,24 Q104,36 98,44 Z" fill="#D8CBA8" />
+      {/* 小さいツノ（はっきり見えるように色とアウトラインを強調） */}
+      <path d="M52,40 Q42,26 52,14 Q60,24 56,34 Q62,30 62,38 Q58,44 52,40 Z" fill="#D9AE6E" stroke="#A87D45" strokeWidth="1.2" />
+      <path d="M108,40 Q118,26 108,14 Q100,24 104,34 Q98,30 98,38 Q102,44 108,40 Z" fill="#D9AE6E" stroke="#A87D45" strokeWidth="1.2" />
 
       {/* 耳 */}
       <ellipse cx="42" cy="72" rx="8" ry="12" fill={bodyShade} transform="rotate(-20 42 72)" />
@@ -321,10 +321,10 @@ function RoomScene({ equipped, owned }) {
   const winMidV1 = [wallPoint(left, top, 0.42, 0.46, wallH), wallPoint(left, top, 0.42, 0.82, wallH)];
   const winMidH = [wallPoint(left, top, 0.26, 0.64, wallH), wallPoint(left, top, 0.58, 0.64, wallH)];
 
-  const [wanderPos, facingLeft, isWalking] = useWander(cx, cy + 12, 85, 38);
+  const [wanderPos, facingLeft, isWalking] = useWander(cx, cy + 14, 58, 26);
 
   return (
-    <svg viewBox="0 0 400 340" style={{ width: "100%", maxWidth: 460 }}>
+    <svg viewBox="0 0 400 340" style={{ width: "100%", maxWidth: 580 }}>
       <rect x="0" y="0" width="400" height="340" fill="#FBF6EA" />
 
       {/* 左壁 */}
@@ -345,7 +345,7 @@ function RoomScene({ equipped, owned }) {
       {placedFurniture.includes("furniture_rug") && <Rug x={cx} y={cy + 10} />}
 
       {/* キャラクター（自動でうろうろ歩き回る） */}
-      <AnimatedCharacter equipped={equipped} size={80} pos={wanderPos} facingLeft={facingLeft} isWalking={isWalking} />
+      <AnimatedCharacter equipped={equipped} size={112} pos={wanderPos} facingLeft={facingLeft} isWalking={isWalking} />
 
       {/* 家具（ラグ以外） */}
       {placedFurniture.filter((k) => k !== "furniture_rug").map((k, i) => {
@@ -361,10 +361,10 @@ function RoomScene({ equipped, owned }) {
 // ===== 庭のシーン =====
 function GardenScene({ equipped, owned }) {
   const placedOrnaments = (owned || []).filter((k) => GARDEN_RENDER[k]);
-  const [wanderPos, facingLeft, isWalking] = useWander(200, 235, 130, 30);
+  const [wanderPos, facingLeft, isWalking] = useWander(200, 232, 95, 24);
 
   return (
-    <svg viewBox="0 0 400 300" style={{ width: "100%", maxWidth: 460 }}>
+    <svg viewBox="0 0 400 300" style={{ width: "100%", maxWidth: 580 }}>
       <defs>
         <linearGradient id="charSky" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#FFFBF2" />
@@ -383,7 +383,7 @@ function GardenScene({ equipped, owned }) {
         return <Comp key={k} x={px} y={py} />;
       })}
 
-      <AnimatedCharacter equipped={equipped} size={90} pos={wanderPos} facingLeft={facingLeft} isWalking={isWalking} />
+      <AnimatedCharacter equipped={equipped} size={125} pos={wanderPos} facingLeft={facingLeft} isWalking={isWalking} />
     </svg>
   );
 }
@@ -405,10 +405,6 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
         <p className="text-xs leading-relaxed rounded-xl p-2.5 mb-3" style={{ color: C.inkSoft, background: C.paper }}>
           {t("characterIntro")}
         </p>
-
-        <div className="flex justify-center py-2 mb-1">
-          <SheepCharacter equipped={equipped} size={150} isWalking={false} />
-        </div>
 
         <div className="flex rounded-full border p-1 mb-3 mx-auto" style={{ borderColor: C.line, width: "fit-content" }}>
           <button type="button" onClick={() => setView("room")}
