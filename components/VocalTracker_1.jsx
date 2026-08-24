@@ -1454,6 +1454,68 @@ export default function VocalTracker({ userId, userEmail }) {
       }))
       .sort((a, b) => (b.avgVoice || 0) - (a.avgVoice || 0));
   }, [entries]);
+  // 声の調子スコア（過去2週間の平均から算出する、100点満点の参考指標）。
+  // 医学的な診断値ではなく、これまで記録してきた項目を独自の重み付けで統合したもの。
+  // 各項目の内訳も併せて返し、ブラックボックスにしない。
+  const vocalConditionScore = useMemo(() => {
+    const realToday = todayISO();
+    const startDate = addDays(realToday, -13);
+    const days = [];
+    for (let i = 0; i < 14; i++) {
+      const d = addDays(startDate, i);
+      if (entries[d]) days.push(entries[d]);
+    }
+    if (days.length < 3) return { hasEnoughData: false, daysCount: days.length };
+
+    const avg = (arr) => (arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null);
+
+    const throatVals = days.map((e) => e.throatCondition).filter((v) => typeof v === "number");
+    const voiceVals = days.map((e) => e.voiceQuality).filter((v) => typeof v === "number");
+    const easeVals = days.map((e) => e.ease).filter((v) => typeof v === "number");
+    const sleepHoursVals = days.map((e) => e.sleepHours).filter((v) => typeof v === "number");
+    const sleepQualityVals = days.map((e) => e.sleepQuality).filter((v) => typeof v === "number");
+    const waterVals = days
+      .map((e) => Object.values(e.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0))
+      .filter((v) => v > 0);
+
+    const throatScore = throatVals.length ? (avg(throatVals) / 5) * 100 : null;
+    const voiceScore = voiceVals.length ? (avg(voiceVals) / 5) * 100 : null;
+    const easeScore = easeVals.length ? (avg(easeVals) / 5) * 100 : null;
+
+    let sleepHoursScore = null;
+    if (sleepHoursVals.length) {
+      const h = avg(sleepHoursVals);
+      if (h >= 7 && h <= 9) sleepHoursScore = 100;
+      else if (h < 7) sleepHoursScore = Math.max(0, 100 - (7 - h) * 20);
+      else sleepHoursScore = Math.max(0, 100 - (h - 9) * 15);
+    }
+    const sleepQualityScore = sleepQualityVals.length ? (avg(sleepQualityVals) / 5) * 100 : null;
+    let sleepScore = null;
+    if (sleepHoursScore != null && sleepQualityScore != null) sleepScore = (sleepHoursScore + sleepQualityScore) / 2;
+    else sleepScore = sleepHoursScore ?? sleepQualityScore;
+
+    const symptomDays = days.filter((e) => (e.throatSymptoms || []).length > 0).length;
+    const symptomScore = 100 - (symptomDays / days.length) * 100;
+
+    const waterScore = waterVals.length ? Math.min(100, (avg(waterVals) / 2000) * 100) : null;
+
+    const components = [
+      { key: "throat", labelKey: "scoreCompThroat", score: throatScore, weight: 25 },
+      { key: "voice", labelKey: "scoreCompVoice", score: voiceScore, weight: 20 },
+      { key: "sleep", labelKey: "scoreCompSleep", score: sleepScore, weight: 20 },
+      { key: "mental", labelKey: "scoreCompMental", score: easeScore, weight: 15 },
+      { key: "symptom", labelKey: "scoreCompSymptom", score: symptomScore, weight: 10 },
+      { key: "water", labelKey: "scoreCompWater", score: waterScore, weight: 10 }
+    ];
+
+    const validComponents = components.filter((c) => c.score != null);
+    const totalWeight = validComponents.reduce((s, c) => s + c.weight, 0);
+    if (totalWeight === 0) return { hasEnoughData: false, daysCount: days.length };
+    const weightedSum = validComponents.reduce((s, c) => s + c.score * c.weight, 0);
+    const total = Math.round(weightedSum / totalWeight);
+
+    return { hasEnoughData: true, total, components, daysCount: days.length };
+  }, [entries]);
   const timeSeries = useMemo(() => {
     const dates = Object.keys(entries).sort().slice(-30);
     return dates.map((date) => {
@@ -2640,6 +2702,41 @@ export default function VocalTracker({ userId, userEmail }) {
 
             {activeTab === "analysis" && (
               <div className="space-y-5">
+                <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleVocalScore")}</h3>
+                  <p className="text-xs mb-4" style={{ color: C.inkSoft }}>{t("noteVocalScore")}</p>
+                  {!vocalConditionScore.hasEnoughData ? (
+                    <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
+                      {t("noteVocalScoreNotEnough").replace("{count}", vocalConditionScore.daysCount)}
+                    </p>
+                  ) : (
+                    <>
+                      <div className="flex items-end gap-2 mb-4">
+                        <span className="ff-display italic" style={{ fontSize: "3.4rem", lineHeight: 1, color: levelColor(vocalConditionScore.total / 20) }}>
+                          {vocalConditionScore.total}
+                        </span>
+                        <span className="text-sm mb-1.5" style={{ color: C.inkSoft }}>/ 100</span>
+                      </div>
+                      <div className="space-y-2">
+                        {vocalConditionScore.components.map((c) => (
+                          <div key={c.key}>
+                            <div className="flex items-center justify-between text-xs mb-1">
+                              <span style={{ color: C.inkSoft }}>{t(c.labelKey)}</span>
+                              <span className="ff-mono" style={{ color: C.ink }}>{Math.round(c.score)}</span>
+                            </div>
+                            <div className="h-1.5 rounded-full overflow-hidden" style={{ background: C.paper }}>
+                              <div className="h-full rounded-full" style={{ width: `${c.score}%`, background: C.gold }} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-xs mt-4" style={{ color: C.inkSoft }}>
+                        {t("noteVocalScoreDisclaimer")}
+                      </p>
+                    </>
+                  )}
+                </div>
+
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-3">{t("titleAnalysisPeriod")}</h3>
                   <div className="flex gap-2 flex-wrap">
