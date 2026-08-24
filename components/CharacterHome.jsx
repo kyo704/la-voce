@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { C } from "@/lib/tokens";
 import {
   SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES,
@@ -23,7 +23,10 @@ function SheepCharacter({ equipped, size = 120 }) {
   const bodyColor = "#F6EFDF";
   const bodyShade = "#EAE0C8";
   return (
-    <svg viewBox="0 0 160 200" style={{ width: size, height: size * 1.25 }}>
+    <svg viewBox="0 0 160 200" style={{ width: size, height: size * 1.25, overflow: "visible" }}>
+      {/* 接地シャドウ（立体感・奥行きを出すための影） */}
+      <ellipse cx="80" cy="192" rx="34" ry="8" fill="#3D2E12" opacity="0.14" />
+
       {/* 足 */}
       <ellipse cx="62" cy="180" rx="14" ry="8" fill="#EDE4CE" />
       <ellipse cx="98" cy="180" rx="14" ry="8" fill="#EDE4CE" />
@@ -35,6 +38,8 @@ function SheepCharacter({ equipped, size = 120 }) {
       {[[45, 110, 16], [115, 110, 16], [40, 140, 14], [120, 140, 14], [55, 160, 14], [105, 160, 14], [80, 168, 16]].map(([cx, cy, r], i) => (
         <circle key={i} cx={cx} cy={cy} r={r} fill={bodyColor} />
       ))}
+      {/* 立体感を出す陰影（右下をわずかに暗く） */}
+      <ellipse cx="98" cy="145" rx="30" ry="34" fill="#D8CBA8" opacity="0.35" />
 
       {/* 腕 */}
       <ellipse cx="35" cy="128" rx="13" ry="10" fill={bodyColor} />
@@ -62,6 +67,8 @@ function SheepCharacter({ equipped, size = 120 }) {
       {[[40, 55, 15], [120, 55, 15], [36, 80, 13], [124, 80, 13], [50, 34, 13], [110, 34, 13], [80, 26, 15]].map(([cx, cy, r], i) => (
         <circle key={i} cx={cx} cy={cy} r={r} fill={bodyColor} />
       ))}
+      {/* 頭の陰影 */}
+      <ellipse cx="102" cy="82" rx="26" ry="30" fill="#D8CBA8" opacity="0.3" />
 
       {/* 顔まわり（毛を少し短めにした肌色っぽい部分） */}
       <ellipse cx="80" cy="76" rx="30" ry="26" fill="#FBF6EA" />
@@ -101,6 +108,57 @@ function SheepCharacter({ equipped, size = 120 }) {
       <circle cx="58" cy="88" r="6" fill="#F0B7A4" opacity="0.6" />
       <circle cx="102" cy="88" r="6" fill="#F0B7A4" opacity="0.6" />
     </svg>
+  );
+}
+
+// ===== 自動でうろうろ歩き回るためのフック =====
+function useWander(centerX, centerY, rangeX, rangeY) {
+  const [pos, setPos] = useState([centerX, centerY]);
+  const [facingLeft, setFacingLeft] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    let timer;
+    function pickNext() {
+      const delay = 2800 + Math.random() * 2400;
+      timer = setTimeout(() => {
+        if (cancelled) return;
+        let nx, ny, tries = 0;
+        do {
+          const u = Math.random() * 2 - 1;
+          const v = Math.random() * 2 - 1;
+          if (u * u + v * v <= 1) {
+            nx = centerX + u * rangeX;
+            ny = centerY + v * rangeY;
+            break;
+          }
+          tries += 1;
+        } while (tries < 20);
+        if (nx === undefined) { nx = centerX; ny = centerY; }
+        setPos((prev) => {
+          setFacingLeft(nx < prev[0] - 2);
+          return [nx, ny];
+        });
+        pickNext();
+      }, delay);
+    }
+    pickNext();
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [centerX, centerY, rangeX, rangeY]);
+
+  return [pos, facingLeft];
+}
+
+// キャラクターを部屋・庭の中で滑らかに動かして表示する
+function AnimatedCharacter({ equipped, size, pos, facingLeft }) {
+  const halfW = size / 2;
+  const footOffset = size * 1.15;
+  return (
+    <g style={{ transition: "transform 2.6s ease-in-out", transform: `translate(${pos[0]}px, ${pos[1]}px)` }}>
+      <g transform={`translate(${-halfW},${-footOffset}) ${facingLeft ? `translate(${size},0) scale(-1,1)` : ""}`}>
+        <SheepCharacter equipped={equipped} size={size} />
+      </g>
+    </g>
   );
 }
 
@@ -179,6 +237,14 @@ function FlowerBed({ x, y }) {
 const FURNITURE_RENDER = { furniture_bed: Bed, furniture_shelf: Shelf, furniture_plant: PottedPlant, furniture_rug: Rug };
 const GARDEN_RENDER = { garden_bench: Bench, garden_fountain: Fountain, garden_lantern: Lantern, garden_flowerbed: FlowerBed };
 
+// アイソメの壁面上の点を計算する（底辺2点を補間し、壁の高さ方向にずらす）
+// baseP1→baseP2 が壁の底辺。t=0〜1で底辺上の位置、heightFrac=0〜1で壁の高さ方向の位置。
+function wallPoint(baseP1, baseP2, t, heightFrac, wallH) {
+  const bx = baseP1[0] + (baseP2[0] - baseP1[0]) * t;
+  const by = baseP1[1] + (baseP2[1] - baseP1[1]) * t;
+  return [bx, by - wallH * heightFrac];
+}
+
 // ===== アイソメトリック風の部屋 =====
 function RoomScene({ equipped, owned }) {
   const floorColor = MATERIAL_COLORS[equipped.floor || "floor_default"] || MATERIAL_COLORS.floor_default;
@@ -196,6 +262,24 @@ function RoomScene({ equipped, owned }) {
   const bottom = [cx, cy + fh];
   const left = [cx - fw, cy];
 
+  // 窓枠・ガラス・格子を、左壁の傾きに正しく沿わせて計算する
+  const winOuter = [
+    wallPoint(left, top, 0.22, 0.40, wallH),
+    wallPoint(left, top, 0.62, 0.40, wallH),
+    wallPoint(left, top, 0.62, 0.88, wallH),
+    wallPoint(left, top, 0.22, 0.88, wallH)
+  ];
+  const winInner = [
+    wallPoint(left, top, 0.26, 0.46, wallH),
+    wallPoint(left, top, 0.58, 0.46, wallH),
+    wallPoint(left, top, 0.58, 0.82, wallH),
+    wallPoint(left, top, 0.26, 0.82, wallH)
+  ];
+  const winMidV1 = [wallPoint(left, top, 0.42, 0.46, wallH), wallPoint(left, top, 0.42, 0.82, wallH)];
+  const winMidH = [wallPoint(left, top, 0.26, 0.64, wallH), wallPoint(left, top, 0.58, 0.64, wallH)];
+
+  const [wanderPos, facingLeft] = useWander(cx, cy + 12, 85, 38);
+
   return (
     <svg viewBox="0 0 400 340" style={{ width: "100%", maxWidth: 460 }}>
       <rect x="0" y="0" width="400" height="340" fill="#FBF6EA" />
@@ -205,13 +289,11 @@ function RoomScene({ equipped, owned }) {
       {/* 右壁 */}
       <polygon points={`${top[0]},${top[1]} ${right[0]},${right[1]} ${right[0]},${right[1] - wallH} ${top[0]},${top[1] - wallH}`} fill={wallColor} opacity="0.88" />
 
-      {/* 窓（左壁に設置） */}
-      <g transform={`translate(${(left[0] + top[0]) / 2 - 8}, ${(left[1] + top[1]) / 2 - wallH / 2 - 6})`}>
-        <rect x="-30" y="-26" width="60" height="46" rx="4" fill={windowFrameColor} />
-        <rect x="-24" y="-20" width="48" height="34" fill={sceneryColor} />
-        <line x1="0" y1="-20" x2="0" y2="14" stroke={windowFrameColor} strokeWidth="2" />
-        <line x1="-24" y1="-3" x2="24" y2="-3" stroke={windowFrameColor} strokeWidth="2" />
-      </g>
+      {/* 窓（左壁と平行・同じ傾きで設置） */}
+      <polygon points={winOuter.map((p) => p.join(",")).join(" ")} fill={windowFrameColor} />
+      <polygon points={winInner.map((p) => p.join(",")).join(" ")} fill={sceneryColor} />
+      <line x1={winMidV1[0][0]} y1={winMidV1[0][1]} x2={winMidV1[1][0]} y2={winMidV1[1][1]} stroke={windowFrameColor} strokeWidth="2" />
+      <line x1={winMidH[0][0]} y1={winMidH[0][1]} x2={winMidH[1][0]} y2={winMidH[1][1]} stroke={windowFrameColor} strokeWidth="2" />
 
       {/* 床（ひし形） */}
       <polygon points={`${top[0]},${top[1]} ${right[0]},${right[1]} ${bottom[0]},${bottom[1]} ${left[0]},${left[1]}`} fill={floorColor} />
@@ -219,10 +301,8 @@ function RoomScene({ equipped, owned }) {
       {/* ラグは床の上に敷く */}
       {placedFurniture.includes("furniture_rug") && <Rug x={cx} y={cy + 10} />}
 
-      {/* キャラクター */}
-      <g transform={`translate(${cx - 40}, ${cy - 90})`}>
-        <SheepCharacter equipped={equipped} size={80} />
-      </g>
+      {/* キャラクター（自動でうろうろ歩き回る） */}
+      <AnimatedCharacter equipped={equipped} size={80} pos={wanderPos} facingLeft={facingLeft} />
 
       {/* 家具（ラグ以外） */}
       {placedFurniture.filter((k) => k !== "furniture_rug").map((k, i) => {
@@ -238,6 +318,8 @@ function RoomScene({ equipped, owned }) {
 // ===== 庭のシーン =====
 function GardenScene({ equipped, owned }) {
   const placedOrnaments = (owned || []).filter((k) => GARDEN_RENDER[k]);
+  const [wanderPos, facingLeft] = useWander(200, 235, 130, 30);
+
   return (
     <svg viewBox="0 0 400 300" style={{ width: "100%", maxWidth: 460 }}>
       <defs>
@@ -258,9 +340,7 @@ function GardenScene({ equipped, owned }) {
         return <Comp key={k} x={px} y={py} />;
       })}
 
-      <g transform="translate(160, 140)">
-        <SheepCharacter equipped={equipped} size={90} />
-      </g>
+      <AnimatedCharacter equipped={equipped} size={90} pos={wanderPos} facingLeft={facingLeft} />
     </svg>
   );
 }
