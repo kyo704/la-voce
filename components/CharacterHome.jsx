@@ -8,18 +8,21 @@ import {
 } from "@/lib/character";
 
 const CATEGORY_LABEL_KEYS = {
-  hat: "catHat", outfit: "catOutfit", floor: "catFloor", wall: "catWall",
+  hat: "catHat", outfit: "catOutfit", accessory: "catAccessory", floor: "catFloor", wall: "catWall",
   window: "catWindow", scenery: "catScenery", furniture: "catFurniture", garden: "catGarden"
 };
 const MATERIAL_COLORS = {
   floor_default: "#D8C9A8", floor_tile: "#C9C2B4", floor_carpet: "#C98A9E",
+  floor_tatami: "#C9B87C", floor_terracotta: "#C97C4E", floor_indian: "#D9A054", floor_american: "#B98A5E", floor_chinese: "#B8453F",
   wall_default: "#F3E9D8", wall_stripe: "#E9D9C0", wall_wood: "#B98A5E",
+  wall_washi: "#EDE6D3", wall_mediterranean: "#F2ECDD", wall_indian: "#E8985F", wall_american: "#C9836A", wall_chinese: "#C0454B",
   window_default: "#FFFDF8", window_wood: "#8B5E3C", window_blue: "#5C7599",
+  window_shoji: "#EDE6D3", window_mediterranean: "#8FA9C9", window_indian: "#D9A054", window_american: "#FFFDF8", window_chinese: "#C0454B",
   scenery_default: "#BFE0E8", scenery_night: "#2E3A5C", scenery_sakura: "#F2C9D3"
 };
 
 // ===== 羊のキャラクター（チビ体型・二頭身） =====
-function SheepCharacter({ equipped, size = 120, isWalking = false }) {
+function SheepCharacter({ equipped, size = 120, isWalking = false, isFarming = false }) {
   const bodyColor = "#F6EFDF";
   const bodyShade = "#EAE0C8";
   return (
@@ -32,10 +35,11 @@ function SheepCharacter({ equipped, size = 120, isWalking = false }) {
         @keyframes armSwingL { 0%, 100% { transform: rotate(-14deg); } 50% { transform: rotate(14deg); } }
         @keyframes armSwingR { 0%, 100% { transform: rotate(14deg); } 50% { transform: rotate(-14deg); } }
         @keyframes idleBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
+        @keyframes digBob { 0%, 100% { transform: rotate(-32deg); } 50% { transform: rotate(12deg); } }
         .leg-l { transform-box: fill-box; transform-origin: top center; ${isWalking ? "animation: legSwingL 0.62s ease-in-out infinite;" : ""} }
         .leg-r { transform-box: fill-box; transform-origin: top center; ${isWalking ? "animation: legSwingR 0.62s ease-in-out infinite;" : ""} }
-        .arm-l { transform-box: fill-box; transform-origin: top center; ${isWalking ? "animation: armSwingL 0.62s ease-in-out infinite;" : "animation: idleBob 2.4s ease-in-out infinite;"} }
-        .arm-r { transform-box: fill-box; transform-origin: top center; ${isWalking ? "animation: armSwingR 0.62s ease-in-out infinite;" : "animation: idleBob 2.4s ease-in-out infinite;"} }
+        .arm-l { transform-box: fill-box; transform-origin: top center; ${isFarming ? "animation: digBob 0.5s ease-in-out infinite;" : isWalking ? "animation: armSwingL 0.62s ease-in-out infinite;" : "animation: idleBob 2.4s ease-in-out infinite;"} }
+        .arm-r { transform-box: fill-box; transform-origin: top center; ${isFarming ? "animation: digBob 0.5s ease-in-out infinite reverse;" : isWalking ? "animation: armSwingR 0.62s ease-in-out infinite;" : "animation: idleBob 2.4s ease-in-out infinite;"} }
       `}</style>
 
       <ellipse cx="80" cy="192" rx="34" ry="8" fill="#3D2E12" opacity="0.14" />
@@ -57,6 +61,22 @@ function SheepCharacter({ equipped, size = 120, isWalking = false }) {
 
       <g className="arm-l"><ellipse cx="35" cy="128" rx="13" ry="10" fill={bodyColor} /></g>
       <g className="arm-r"><ellipse cx="125" cy="128" rx="13" ry="10" fill={bodyColor} /></g>
+      {equipped.accessory === "accessory_staff" && (
+        <g className="arm-r">
+          <rect x="128" y="88" width="5" height="56" rx="2.5" fill="#8B6529" transform="rotate(10 130 116)" />
+          <circle cx="134" cy="84" r="8" fill="#9FC9E8" opacity="0.85" />
+          <circle cx="134" cy="84" r="4" fill="#F6FBFF" />
+          <circle cx="132" cy="82" r="1.5" fill="#FFFFFF" opacity="0.9" />
+        </g>
+      )}
+      {equipped.accessory === "accessory_sword" && (
+        <g className="arm-r">
+          <rect x="126" y="94" width="4.5" height="48" rx="1.5" fill="#D8DEE4" stroke="#A8B2BA" strokeWidth="0.6" transform="rotate(-16 128 118)" />
+          <rect x="122" y="128" width="12" height="8" rx="2" fill="#3D2E12" transform="rotate(-16 128 132)" />
+          <rect x="122" y="136" width="12" height="16" rx="3" fill="#7A1F2B" transform="rotate(-16 128 144)" />
+          <circle cx="128" cy="132" r="1.3" fill="#D9AE6E" transform="rotate(-16 128 132)" />
+        </g>
+      )}
 
       {equipped.outfit === "outfit_scarf" && (
         <g>
@@ -81,6 +101,16 @@ function SheepCharacter({ equipped, size = 120, isWalking = false }) {
           <path d="M50,105 Q80,96 110,105 Q114,140 104,166 Q80,176 56,166 Q46,140 50,105 Z" fill="#C98A56" opacity="0.92" />
           <path d="M64,102 Q80,108 96,102 L94,110 Q80,115 66,110 Z" fill="#B87740" />
           <path d="M74,128 Q80,122 86,128 Q86,134 80,140 Q74,134 74,128 Z" fill="#F6EFDF" opacity="0.85" />
+        </g>
+      )}
+      {equipped.outfit === "outfit_western" && (
+        <g>
+          <path d="M54,108 L106,108 L100,170 Q80,178 60,170 Z" fill="#8B5E3C" opacity="0.92" />
+          <path d="M60,112 Q80,108 100,112 L96,166 Q80,173 64,166 Z" fill="#F6EFDF" opacity="0.12" />
+          <path d="M56,104 Q80,116 104,104 L100,114 Q80,124 60,114 Z" fill="#C0454B" />
+          <circle cx="70" cy="130" r="2" fill="#F6D98A" />
+          <circle cx="90" cy="130" r="2" fill="#F6D98A" />
+          <path d="M56,109 L53,150 M104,109 L107,150" stroke="#6B4526" strokeWidth="2" opacity="0.5" fill="none" />
         </g>
       )}
 
@@ -140,6 +170,34 @@ function SheepCharacter({ equipped, size = 120, isWalking = false }) {
           <circle cx="78" cy="32" r="1.8" fill="#C0454B" opacity="0.8" />
         </g>
       )}
+      {equipped.hat === "hat_western" && (
+        <g>
+          <ellipse cx="80" cy="41" rx="44" ry="8" fill="#A9784F" />
+          <ellipse cx="80" cy="40" rx="43" ry="6.5" fill="#BC8A5D" opacity="0.5" />
+          <path d="M52,40 Q54,14 80,12 Q106,14 108,40 Q94,31 80,33 Q66,31 52,40 Z" fill="#BC8A5D" />
+          <path d="M56,36 Q80,29 104,36" stroke="#7A5537" strokeWidth="3" fill="none" strokeLinecap="round" />
+        </g>
+      )}
+      {equipped.hat === "hat_crown_king" && (
+        <g>
+          <path d="M50,40 L54,16 L64,32 L74,12 L80,20 L86,12 L96,32 L106,16 L110,40 Z" fill="#F0C955" stroke="#C99A2E" strokeWidth="1.5" strokeLinejoin="round" />
+          <rect x="50" y="38" width="60" height="7" rx="1.5" fill="#F0C955" stroke="#C99A2E" strokeWidth="1" />
+          <circle cx="64" cy="30" r="3" fill="#C0454B" stroke="#8A2E33" strokeWidth="0.6" />
+          <circle cx="80" cy="22" r="3.5" fill="#5B7FA6" stroke="#3E5A78" strokeWidth="0.6" />
+          <circle cx="96" cy="30" r="3" fill="#5E9450" stroke="#3E6636" strokeWidth="0.6" />
+          <circle cx="58" cy="41" r="1.4" fill="#FFFBEA" opacity="0.9" />
+          <circle cx="102" cy="41" r="1.4" fill="#FFFBEA" opacity="0.9" />
+        </g>
+      )}
+      {equipped.hat === "hat_tiara_princess" && (
+        <g>
+          <path d="M54,40 Q58,20 68,26 Q74,14 80,24 Q86,14 92,26 Q102,20 106,40 Z" fill="#F6E9C9" stroke="#D9B968" strokeWidth="1.3" strokeLinejoin="round" />
+          <circle cx="80" cy="24" r="4.2" fill="#E896C4" stroke="#C0619A" strokeWidth="1" />
+          <circle cx="66" cy="31" r="2.2" fill="#9FC9E8" stroke="#6C9BC4" strokeWidth="0.6" />
+          <circle cx="94" cy="31" r="2.2" fill="#9FC9E8" stroke="#6C9BC4" strokeWidth="0.6" />
+          <circle cx="80" cy="24" r="1.6" fill="#FFFBEA" opacity="0.9" />
+        </g>
+      )}
 
       <ellipse className="sheep-eye" cx="66" cy="76" rx="4" ry="4" fill="#3D3226" />
       <ellipse className="sheep-eye" cx="94" cy="76" rx="4" ry="4" fill="#3D3226" />
@@ -196,11 +254,12 @@ function useWanderPercent(centerLeft, centerTop, rangeLeft, rangeTop) {
 }
 
 // ===== 庭専用：鳥が飛んだり、宅配便が届いて羊が取りに行ったりする「生活感」フック =====
-function useGardenLife(centerLeft, centerTop, rangeLeft, rangeTop) {
+function useGardenLife(centerLeft, centerTop, rangeLeft, rangeTop, hasField) {
   const [leftPct, setLeftPct] = useState(centerLeft);
   const [topPct, setTopPct] = useState(centerTop);
   const [facingLeft, setFacingLeft] = useState(false);
   const [isWalking, setIsWalking] = useState(false);
+  const [isFarming, setIsFarming] = useState(false);
   const [birds, setBirds] = useState([]);
   const [pkg, setPkg] = useState(null); // { left, top, stage: "waiting" | "collected" } | null
   const leftRef = useRef(centerLeft);
@@ -272,13 +331,35 @@ function useGardenLife(centerLeft, centerTop, rangeLeft, rangeTop) {
       }, delay);
     }
 
+    function scheduleFarming() {
+      const delay = 22000 + Math.random() * 22000;
+      addTimer(() => {
+        if (cancelled) return;
+        if (!hasField) { scheduleFarming(); return; }
+        const fieldLeft = 30, fieldTop = 88;
+        busyRef.current = true;
+        moveTo(fieldLeft, fieldTop - 1, 2200);
+        addTimer(() => {
+          if (cancelled) return;
+          setIsFarming(true);
+          addTimer(() => {
+            if (cancelled) return;
+            setIsFarming(false);
+            busyRef.current = false;
+          }, 3400);
+        }, 2300);
+        scheduleFarming();
+      }, delay);
+    }
+
     scheduleWander();
     scheduleBird();
     schedulePackage();
+    scheduleFarming();
     return () => { cancelled = true; timers.forEach(clearTimeout); };
-  }, [centerLeft, centerTop, rangeLeft, rangeTop]);
+  }, [centerLeft, centerTop, rangeLeft, rangeTop, hasField]);
 
-  return { leftPct, topPct, facingLeft, isWalking, birds, pkg };
+  return { leftPct, topPct, facingLeft, isWalking, isFarming, birds, pkg };
 }
 
 function BirdShape() {
@@ -302,7 +383,7 @@ function PackageIcon() {
 
 // キャラクターを部屋・庭の中に配置する。
 // left/top はパーセント指定でアニメーション（CSSトランジション）、transformは常に固定値（アンカー・反転のみ）。
-function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWalking }) {
+function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWalking, isFarming }) {
   return (
     <div
       style={{
@@ -315,7 +396,7 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
       }}
     >
       <div style={{ transform: facingLeft ? "scaleX(-1)" : "none" }}>
-        <SheepCharacter equipped={equipped} size={size} isWalking={isWalking} />
+        <SheepCharacter equipped={equipped} size={size} isWalking={isWalking} isFarming={isFarming} />
       </div>
     </div>
   );
@@ -426,9 +507,25 @@ function FlowerBedIcon() {
     </svg>
   );
 }
+function FieldIcon() {
+  return (
+    <svg viewBox="0 0 70 40" width="100%" height="100%">
+      <rect x="2" y="6" width="66" height="30" rx="3" fill="#8B6529" />
+      {[0, 1, 2, 3, 4].map((i) => (
+        <path key={i} d={`M${6 + i * 13},8 Q${10 + i * 13},20 ${6 + i * 13},34`} stroke="#6B4E1E" strokeWidth="2" fill="none" opacity="0.6" />
+      ))}
+      {[10, 24, 38, 52].map((x, i) => (
+        <g key={i}>
+          <rect x={x} y="10" width="2" height="8" fill="#5E9450" />
+          <circle cx={x + 1} cy="9" r="2.5" fill="#7FB577" />
+        </g>
+      ))}
+    </svg>
+  );
+}
 
 const FURNITURE_ICON = { furniture_bed: BedIcon, furniture_shelf: ShelfIcon, furniture_plant: PlantIcon, furniture_rug: RugIcon };
-const GARDEN_ICON = { garden_bench: BenchIcon, garden_fountain: FountainIcon, garden_lantern: LanternIcon, garden_flowerbed: FlowerBedIcon };
+const GARDEN_ICON = { garden_bench: BenchIcon, garden_fountain: FountainIcon, garden_lantern: LanternIcon, garden_flowerbed: FlowerBedIcon, garden_field: FieldIcon };
 
 // ===== ショップ内のアイテムプレビュー（種類ごとに見た目を切り替える） =====
 function ShopItemPreview({ item }) {
@@ -447,6 +544,15 @@ function ShopItemPreview({ item }) {
       <div style={boxStyle}>
         <div style={{ transform: "translateY(8%)" }}>
           <SheepCharacter equipped={{ outfit: item.key }} size={40} />
+        </div>
+      </div>
+    );
+  }
+  if (item.category === "accessory") {
+    return (
+      <div style={boxStyle}>
+        <div style={{ transform: "translateY(8%)" }}>
+          <SheepCharacter equipped={{ accessory: item.key }} size={40} />
         </div>
       </div>
     );
@@ -479,7 +585,8 @@ const GARDEN_LAYOUT = {
   garden_bench: { left: 14, top: 76, width: 20, z: 2 },
   garden_fountain: { left: 84, top: 68, width: 16, z: 2 },
   garden_lantern: { left: 24, top: 46, width: 10, z: 1 },
-  garden_flowerbed: { left: 72, top: 84, width: 20, z: 1 }
+  garden_flowerbed: { left: 72, top: 84, width: 20, z: 1 },
+  garden_field: { left: 30, top: 90, width: 26, z: 1 }
 };
 
 // ===== 部屋のシーン（正面から見たシンプルな部屋。中央寄せはCSSのleft/topで固定） =====
@@ -490,16 +597,35 @@ function RoomScene({ equipped, owned }) {
   const sceneryColor = MATERIAL_COLORS[equipped.scenery || "scenery_default"] || MATERIAL_COLORS.scenery_default;
   const placedFurniture = (owned || []).filter((k) => FURNITURE_ICON[k]);
 
+  const windowKey = equipped.window || "window_default";
+  const windowShape =
+    windowKey === "window_chinese" ? { borderRadius: "50%", muntin: "none" }
+    : (windowKey === "window_mediterranean" || windowKey === "window_indian") ? { borderRadius: "50% 50% 6px 6px", muntin: "none" }
+    : windowKey === "window_shoji" ? { borderRadius: 4, muntin: "grid" }
+    : { borderRadius: 4, muntin: "cross" };
+
   const [leftPct, topPct, facingLeft, isWalking] = useWanderPercent(50, 78, 18, 6);
 
   return (
     <div style={{ position: "relative", width: "100%", maxWidth: 480, margin: "0 auto", aspectRatio: "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor }}>
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", background: floorColor, zIndex: 0 }} />
 
-      <div style={{ position: "absolute", left: "6%", top: "8%", width: "32%", height: "34%", background: windowFrameColor, borderRadius: 8, padding: "2.5%", boxSizing: "border-box", zIndex: 1 }}>
-        <div style={{ position: "relative", width: "100%", height: "100%", background: sceneryColor, borderRadius: 4 }}>
-          <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 2, background: windowFrameColor, opacity: 0.8, transform: "translateX(-50%)" }} />
-          <div style={{ position: "absolute", top: "50%", left: 0, right: 0, height: 2, background: windowFrameColor, opacity: 0.8, transform: "translateY(-50%)" }} />
+      <div style={{ position: "absolute", left: "6%", top: "8%", width: "32%", height: "34%", background: windowFrameColor, borderRadius: windowShape.borderRadius === 4 ? 8 : windowShape.borderRadius, padding: "2.5%", boxSizing: "border-box", zIndex: 1 }}>
+        <div style={{ position: "relative", width: "100%", height: "100%", background: sceneryColor, borderRadius: windowShape.borderRadius }}>
+          {windowShape.muntin === "cross" && (
+            <>
+              <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 2, background: windowFrameColor, opacity: 0.8, transform: "translateX(-50%)" }} />
+              <div style={{ position: "absolute", top: "50%", left: 0, right: 0, height: 2, background: windowFrameColor, opacity: 0.8, transform: "translateY(-50%)" }} />
+            </>
+          )}
+          {windowShape.muntin === "grid" && (
+            <>
+              {[33, 66].map((pct) => (
+                <div key={`v${pct}`} style={{ position: "absolute", left: `${pct}%`, top: 0, bottom: 0, width: 1.5, background: windowFrameColor, opacity: 0.7 }} />
+              ))}
+              <div style={{ position: "absolute", top: "50%", left: 0, right: 0, height: 1.5, background: windowFrameColor, opacity: 0.7, transform: "translateY(-50%)" }} />
+            </>
+          )}
         </div>
       </div>
 
@@ -527,20 +653,29 @@ function RoomScene({ equipped, owned }) {
 // ===== 庭のシーン =====
 function GardenScene({ equipped, owned }) {
   const placedOrnaments = (owned || []).filter((k) => GARDEN_ICON[k]);
-  const { leftPct, topPct, facingLeft, isWalking, birds, pkg } = useGardenLife(50, 80, 22, 6);
+  const hasField = (owned || []).includes("garden_field");
+  const { leftPct, topPct, facingLeft, isWalking, isFarming, birds, pkg } = useGardenLife(50, 80, 22, 6, hasField);
 
   return (
     <div style={{
       position: "relative", width: "100%", maxWidth: 480, margin: "0 auto", aspectRatio: "4 / 3",
       borderRadius: 18, overflow: "hidden",
-      background: "linear-gradient(to bottom, #FFFBF2 0%, #F6E9D8 60%, #F6E9D8 100%)"
+      background: "linear-gradient(to bottom, #7EB8E0 0%, #A8D4EC 35%, #D9EDDB 72%, #D9EDDB 100%)"
     }}>
       <style>{`
         @keyframes birdFlyLTR { from { left: -10%; } to { left: 110%; } }
         @keyframes birdFlyRTL { from { left: 110%; } to { left: -10%; } }
       `}</style>
 
-      <div style={{ position: "absolute", right: "8%", top: "10%", width: "12%", aspectRatio: "1/1", borderRadius: "50%", background: "#F3D48A", opacity: 0.55 }} />
+      <div style={{ position: "absolute", right: "8%", top: "9%", width: "13%", aspectRatio: "1/1", borderRadius: "50%", background: "#F6D46A", opacity: 0.9 }} />
+
+      {/* 遠くの緑の山々 */}
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: "22%", height: "24%", zIndex: 0 }}>
+        <svg viewBox="0 0 400 90" width="100%" height="100%" preserveAspectRatio="none">
+          <path d="M0,90 L40,30 L90,60 L140,15 L190,55 L240,25 L290,58 L340,20 L400,50 L400,90 Z" fill="#9FBFA0" opacity="0.6" />
+          <path d="M0,90 L60,50 L120,70 L180,40 L250,68 L320,42 L400,65 L400,90 Z" fill="#7FA582" opacity="0.8" />
+        </svg>
+      </div>
 
       {/* 鳥（ランダムに飛んでくる） */}
       {birds.map((b) => (
@@ -586,7 +721,7 @@ function GardenScene({ equipped, owned }) {
         );
       })}
 
-      <PositionedCharacter equipped={equipped} size={100} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} />
+      <PositionedCharacter equipped={equipped} size={100} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isFarming={isFarming} />
     </div>
   );
 }
