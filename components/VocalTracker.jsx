@@ -81,7 +81,8 @@ const TABS = [
   { key: "history", labelKey: "tabHistory", icon: CalendarDays },
   { key: "analysis", labelKey: "tabAnalysis", icon: BarChart3 },
   { key: "advice", labelKey: "tabAdvice", icon: Bot },
-  { key: "info", labelKey: "tabInfo", icon: BookOpen }
+  { key: "info", labelKey: "tabInfo", icon: BookOpen },
+  { key: "voicetheory", labelKey: "tabVoiceTheory", icon: Music2, href: "/vocal-theory" }
 ];
 
 /* ---------- helpers ---------- */
@@ -1416,15 +1417,29 @@ export default function VocalTracker({ userId, userEmail }) {
         </div>
         <nav className="max-w-3xl mx-auto flex gap-1 mt-5 overflow-x-auto">
           {TABS.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
-              style={{ background: activeTab === tab.key ? C.curtain : "transparent", color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
-            >
-              <tab.icon size={15} />
-              {t(tab.labelKey)}
-            </button>
+            tab.href ? (
+              <a
+                key={tab.key}
+                href={tab.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
+                style={{ background: "transparent", color: C.inkSoft }}
+              >
+                <tab.icon size={15} />
+                {t(tab.labelKey)}
+              </a>
+            ) : (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
+                style={{ background: activeTab === tab.key ? C.curtain : "transparent", color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
+              >
+                <tab.icon size={15} />
+                {t(tab.labelKey)}
+              </button>
+            )
           ))}
         </nav>
       </header>

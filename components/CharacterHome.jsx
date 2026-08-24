@@ -143,70 +143,131 @@ function SheepCharacter({ equipped, size = 120, isWalking = false, isFarming = f
       )}
       {equipped.outfit === "outfit_kimono_male" && (
         <g>
-          <path d="M50,104 Q50,98 58,100 L54,178 Q80,188 106,178 L102,100 Q110,98 110,104 L108,180 Q80,192 52,180 Z" fill="#3D5266" opacity="0.96" />
-          <path d="M50,106 Q30,110 25,131 Q27,141 38,138 L52,116 Z" fill="#3D5266" opacity="0.96" />
-          <path d="M110,106 Q130,110 135,131 Q133,141 122,138 L108,116 Z" fill="#3D5266" opacity="0.96" />
-          <path d="M62,102 L80,130 L98,102 L92,109 L80,134 L68,109 Z" fill="#FBF6EA" opacity="0.9" />
-          <rect x="64" y="126" width="32" height="19" fill="#1A2530" opacity="0.92" />
-          <rect x="70" y="129" width="20" height="13" fill="#8B6529" opacity="0.75" />
-          <circle cx="58" cy="112" r="3.2" fill="#FBF6EA" opacity="0.8" stroke="#2A3A48" strokeWidth="0.5" />
-          <circle cx="102" cy="112" r="3.2" fill="#FBF6EA" opacity="0.8" stroke="#2A3A48" strokeWidth="0.5" />
+          <path d="M50,104 Q50,98 58,100 L54,178 Q80,188 106,178 L102,100 Q110,98 110,104 L108,180 Q80,192 52,180 Z" fill="#3D5266" opacity="0.97" />
+          {Array.from({ length: 9 }).map((_, i) => (
+            <line key={i} x1={54 + i * 6} y1="108" x2={50 + i * 6} y2="176" stroke="#2E3D4E" strokeWidth="0.4" opacity="0.35" />
+          ))}
+          <path d="M50,106 Q30,110 25,131 Q27,141 38,138 L52,116 Z" fill="#3D5266" opacity="0.97" />
+          <path d="M110,106 Q130,110 135,131 Q133,141 122,138 L108,116 Z" fill="#3D5266" opacity="0.97" />
+          <path d="M32,120 Q30,128 32,136" stroke="#2E3D4E" strokeWidth="0.6" fill="none" opacity="0.4" />
+          <path d="M128,120 Q130,128 128,136" stroke="#2E3D4E" strokeWidth="0.6" fill="none" opacity="0.4" />
+          <path d="M66,112 Q64,150 68,180" stroke="#2A3A48" strokeWidth="1" fill="none" opacity="0.5" />
+          <path d="M62,102 L80,130 L98,102 L92,109 L80,134 L68,109 Z" fill="#FBF6EA" opacity="0.92" />
+          <path d="M62,102 L80,130 M98,102 L80,130" stroke="#D9CFB8" strokeWidth="0.6" opacity="0.6" />
+          <path d="M74,104 Q80,110 86,104" stroke="#8B6529" strokeWidth="1.4" fill="none" />
+          <circle cx="74" cy="104" r="1.6" fill="#8B6529" />
+          <circle cx="86" cy="104" r="1.6" fill="#8B6529" />
+          <rect x="64" y="126" width="32" height="19" fill="#1A2530" opacity="0.94" />
+          <rect x="70" y="129" width="20" height="13" fill="#8B6529" opacity="0.8" />
+          <path d="M70,132 L90,132 M70,138 L90,138" stroke="#6B4E1E" strokeWidth="0.6" opacity="0.5" />
+          <ellipse cx="62" cy="134" rx="4" ry="6" fill="#1A2530" opacity="0.7" />
+          <ellipse cx="98" cy="134" rx="4" ry="6" fill="#1A2530" opacity="0.7" />
+          <circle cx="58" cy="112" r="3.4" fill="#FBF6EA" opacity="0.85" stroke="#2A3A48" strokeWidth="0.5" />
+          <path d="M58,109.5 L59,111.5 L58,113.5 L57,111.5 Z" fill="#2A3A48" opacity="0.6" />
+          <circle cx="102" cy="112" r="3.4" fill="#FBF6EA" opacity="0.85" stroke="#2A3A48" strokeWidth="0.5" />
+          <path d="M102,109.5 L103,111.5 L102,113.5 L101,111.5 Z" fill="#2A3A48" opacity="0.6" />
         </g>
       )}
       {equipped.outfit === "outfit_kimono_female" && (
         <g>
-          <path d="M50,104 Q50,98 58,100 L56,176 Q80,186 104,176 L102,100 Q110,98 110,104 L106,178 Q80,190 54,178 Z" fill="#E896C4" opacity="0.94" />
-          <path d="M50,106 Q30,110 25,131 Q27,141 38,138 L52,116 Z" fill="#E896C4" opacity="0.94" />
-          <path d="M110,106 Q130,110 135,131 Q133,141 122,138 L108,116 Z" fill="#E896C4" opacity="0.94" />
-          <path d="M62,102 L80,128 L98,102 L92,109 L80,132 L68,109 Z" fill="#FBF6EA" opacity="0.92" />
-          {[[63, 150], [97, 150], [69, 165], [91, 165]].map(([x, y], i) => (
-            <circle key={i} cx={x} cy={y} r="2.6" fill="#FFFBEA" opacity="0.85" />
+          <path d="M50,104 Q50,98 58,100 L56,176 Q80,186 104,176 L102,100 Q110,98 110,104 L106,178 Q80,190 54,178 Z" fill="#E896C4" opacity="0.95" />
+          <path d="M56,150 Q80,158 104,150 L102,176 Q80,186 58,176 Z" fill="#F2B6D6" opacity="0.4" />
+          <path d="M50,106 Q28,112 22,136 Q24,150 40,146 L52,116 Z" fill="#E896C4" opacity="0.95" />
+          <path d="M110,106 Q132,112 138,136 Q136,150 120,146 L108,116 Z" fill="#E896C4" opacity="0.95" />
+          <path d="M24,128 Q30,140 38,144" stroke="#C0619A" strokeWidth="0.7" fill="none" opacity="0.5" />
+          <path d="M136,128 Q130,140 122,144" stroke="#C0619A" strokeWidth="0.7" fill="none" opacity="0.5" />
+          <path d="M62,102 L80,128 L98,102 L92,109 L80,132 L68,109 Z" fill="#FBF6EA" opacity="0.94" />
+          <path d="M65,104 L80,124 L95,104 L91,109 L80,126 L69,109 Z" fill="none" stroke="#F2C9D3" strokeWidth="1.2" opacity="0.7" />
+          {[[63, 118], [97, 118], [58, 145], [102, 145], [30, 128], [130, 128], [64, 168], [96, 168]].map(([x, y], i) => (
+            <g key={i}>
+              <circle cx={x} cy={y} r="3.4" fill="#FFFBEA" opacity="0.9" />
+              <circle cx={x} cy={y} r="1.3" fill="#E8B84B" opacity="0.85" />
+            </g>
           ))}
-          <rect x="64" y="122" width="32" height="21" fill="#F6D98A" opacity="0.95" />
+          {[[70, 128], [90, 128], [48, 155], [112, 155], [80, 172]].map(([x, y], i) => (
+            <path key={i} d={`M${x - 3},${y} Q${x},${y - 5} ${x + 3},${y} Q${x},${y + 4} ${x - 3},${y} Z`} fill="#7FB577" opacity="0.6" />
+          ))}
+          <rect x="64" y="122" width="32" height="21" fill="#F6D98A" opacity="0.96" />
           <path d="M64,128 L96,128 M64,138 L96,138" stroke="#B8863B" strokeWidth="1" opacity="0.6" />
-          <path d="M58,128 Q68,116 78,128 Q68,136 58,128 Z" fill="#E896C4" stroke="#C0619A" strokeWidth="0.6" />
-          <path d="M102,128 Q92,116 82,128 Q92,136 102,128 Z" fill="#E896C4" stroke="#C0619A" strokeWidth="0.6" />
-          <circle cx="80" cy="128" r="3.4" fill="#C0619A" />
+          {[70, 80, 90].map((x, i) => <circle key={i} cx={x} cy="133" r="1.6" fill="#C0619A" opacity="0.6" />)}
+          <path d="M64,132 L96,132" stroke="#C0454B" strokeWidth="1.6" opacity="0.85" />
+          <circle cx="80" cy="132" r="2.4" fill="#F0C955" stroke="#C0454B" strokeWidth="0.8" />
+          <path d="M58,128 Q68,112 80,126 Q68,134 58,128 Z" fill="#E896C4" stroke="#C0619A" strokeWidth="0.6" />
+          <path d="M102,128 Q92,112 80,126 Q92,134 102,128 Z" fill="#E896C4" stroke="#C0619A" strokeWidth="0.6" />
+          <circle cx="80" cy="126" r="3.6" fill="#C0619A" />
         </g>
       )}
       {equipped.outfit === "outfit_tailcoat" && (
         <g>
-          <path d="M62,140 L58,182 L70,178 L70,140 Z" fill="#14141A" />
-          <path d="M98,140 L102,182 L90,178 L90,140 Z" fill="#14141A" />
-          <path d="M52,106 L108,106 L104,142 Q80,148 56,142 Z" fill="#14141A" opacity="0.96" />
+          <path d="M62,140 L57,184 L70,179 L70,140 Z" fill="#14141A" />
+          <path d="M98,140 L103,184 L90,179 L90,140 Z" fill="#14141A" />
+          <path d="M64,144 L61,180" stroke="#2A2A30" strokeWidth="0.6" opacity="0.5" />
+          <path d="M96,144 L99,180" stroke="#2A2A30" strokeWidth="0.6" opacity="0.5" />
+          <path d="M52,106 L108,106 L104,142 Q80,148 56,142 Z" fill="#14141A" opacity="0.97" />
           <path d="M64,108 Q80,102 96,108 L92,140 Q80,144 68,140 Z" fill="#FBF6EA" />
+          <path d="M68,112 L92,112 M68,120 L92,120" stroke="#E4DCC9" strokeWidth="0.5" opacity="0.5" />
+          {[118, 126, 134].map((y, i) => <circle key={i} cx="80" cy={y} r="1.5" fill="#D9AE6E" stroke="#8B6529" strokeWidth="0.4" />)}
           <path d="M64,108 L78,124 L69,132 L58,112 Z" fill="#14141A" />
           <path d="M96,108 L82,124 L91,132 L102,112 Z" fill="#14141A" />
+          <path d="M66,111 L76,122" stroke="#3A3A42" strokeWidth="1" opacity="0.6" />
+          <path d="M94,111 L84,122" stroke="#3A3A42" strokeWidth="1" opacity="0.6" />
+          <path d="M60,116 L66,113 L64,120 L58,120 Z" fill="#FBF6EA" stroke="#D9CFC0" strokeWidth="0.5" />
           <path d="M74,110 L80,118 L86,110 L83,115 L80,120 L77,115 Z" fill="#FBF6EA" stroke="#D9CFC0" strokeWidth="0.6" />
-          {[120, 130].map((y, i) => <circle key={i} cx="80" cy={y} r="1.4" fill="#14141A" />)}
+          <circle cx="38" cy="128" r="1.6" fill="#D9AE6E" stroke="#8B6529" strokeWidth="0.4" />
+          <circle cx="122" cy="128" r="1.6" fill="#D9AE6E" stroke="#8B6529" strokeWidth="0.4" />
         </g>
       )}
       {equipped.outfit === "outfit_dress" && (
         <g>
-          <path d="M60,106 Q80,100 100,106 L106,140 Q120,150 122,178 Q80,190 38,178 Q40,150 54,140 Z" fill="#7A3F6E" opacity="0.94" />
-          <path d="M64,108 Q80,104 96,108 L94,138 Q80,142 66,138 Z" fill="#8F5482" opacity="0.5" />
-          <path d="M56,140 Q80,150 104,140" stroke="#F0C955" strokeWidth="2.4" fill="none" opacity="0.85" />
-          <circle cx="80" cy="140" r="3" fill="#F0C955" />
-          {[[50, -6], [64, -6], [96, 6], [110, 6]].map(([x, dx], i) => (
-            <path key={i} d={`M${x},150 Q${x + dx},165 ${x},180`} stroke="#5B2A50" strokeWidth="1" opacity="0.4" fill="none" />
+          <path d="M60,106 Q80,100 100,106 L106,140 Q120,150 122,178 Q80,190 38,178 Q40,150 54,140 Z" fill="#7A3F6E" opacity="0.95" />
+          <path d="M48,150 Q80,162 112,150 Q116,168 108,180 Q80,188 52,180 Q44,168 48,150 Z" fill="#8F5482" opacity="0.55" />
+          <path d="M44,164 Q80,176 116,164" stroke="#5B2A50" strokeWidth="1" fill="none" opacity="0.4" />
+          {Array.from({ length: 7 }).map((_, i) => (
+            <path key={i} d={`M${44 + i * 12},150 Q${47 + i * 12},166 ${44 + i * 12},182`} stroke="#5B2A50" strokeWidth="0.8" opacity="0.35" fill="none" />
+          ))}
+          <path d="M64,108 Q80,104 96,108 L94,138 Q80,142 66,138 Z" fill="#8F5482" opacity="0.6" />
+          <path d="M66,112 Q80,109 94,112" stroke="#5B2A50" strokeWidth="0.7" opacity="0.5" fill="none" />
+          <path d="M68,108 Q64,100 58,102" stroke="#7A3F6E" strokeWidth="4" fill="none" strokeLinecap="round" />
+          <path d="M92,108 Q96,100 102,102" stroke="#7A3F6E" strokeWidth="4" fill="none" strokeLinecap="round" />
+          <path d="M56,140 Q80,150 104,140" stroke="#F0C955" strokeWidth="2.6" fill="none" opacity="0.9" />
+          <circle cx="80" cy="140" r="3.6" fill="#F0C955" stroke="#C99A2E" strokeWidth="0.8" />
+          <circle cx="80" cy="140" r="1.6" fill="#C0454B" />
+          {[[68, 120], [92, 120], [72, 132], [88, 132]].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r="1" fill="#F0C955" opacity="0.8" />
           ))}
         </g>
       )}
       {equipped.outfit === "outfit_king_robe" && (
         <g>
-          <path d="M40,100 Q80,90 120,100 L128,180 Q80,190 32,180 Z" fill="#5B2A6E" opacity="0.95" />
-          <path d="M56,104 Q80,98 104,104 L100,178 Q80,186 60,178 Z" fill="#8A1428" opacity="0.95" />
+          <path d="M40,100 Q80,90 120,100 L128,180 Q80,190 32,180 Z" fill="#5B2A6E" opacity="0.96" />
+          {Array.from({ length: 5 }).map((_, row) =>
+            Array.from({ length: 4 }).map((_, col) => (
+              <path key={`${row}-${col}`}
+                d={`M${44 + col * 18},${106 + row * 15} L${53 + col * 18},${112 + row * 15} L${44 + col * 18},${118 + row * 15} L${35 + col * 18},${112 + row * 15} Z`}
+                fill="#F0C955" opacity="0.08" />
+            ))
+          )}
+          <path d="M56,104 Q80,98 104,104 L100,178 Q80,186 60,178 Z" fill="#8A1428" opacity="0.96" />
           <path d="M56,104 Q80,98 104,104" stroke="#F0C955" strokeWidth="3" fill="none" />
           <path d="M60,178 Q80,186 100,178" stroke="#F0C955" strokeWidth="3" fill="none" />
-          {[64, 96].map((x, i) => <path key={i} d={`M${x},110 L${x},170`} stroke="#F0C955" strokeWidth="2" opacity="0.7" />)}
-          <path d="M38,100 Q80,88 122,100 L122,110 Q80,98 38,110 Z" fill="#FBF6EA" stroke="#D9CFC0" strokeWidth="1" />
-          {[46, 58, 70, 90, 102, 114].map((x, i) => <circle key={i} cx={x} cy="104" r="2" fill="#241914" />)}
-          <circle cx="56" cy="106" r="5" fill="#F0C955" stroke="#C99A2E" strokeWidth="1" />
-          <circle cx="56" cy="106" r="2.4" fill="#5B7FA6" />
-          <circle cx="104" cy="106" r="5" fill="#F0C955" stroke="#C99A2E" strokeWidth="1" />
-          <circle cx="104" cy="106" r="2.4" fill="#5B7FA6" />
+          {[64, 96].map((x, i) => <path key={i} d={`M${x},110 L${x},170`} stroke="#F0C955" strokeWidth="2" opacity="0.75" />)}
+          {[72, 88].map((x, i) => (
+            <g key={i}>
+              {[118, 138, 158].map((y, j) => <circle key={j} cx={x} cy={y} r="2" fill="#F0C955" opacity="0.5" />)}
+            </g>
+          ))}
+          <path d="M38,100 Q80,88 122,100 L122,112 Q80,98 38,112 Z" fill="#FBF6EA" stroke="#D9CFC0" strokeWidth="1" />
+          {[44, 54, 64, 74, 86, 96, 106, 116].map((x, i) => <circle key={i} cx={x} cy="104" r="2" fill="#241914" />)}
+          <circle cx="56" cy="106" r="5.5" fill="#F0C955" stroke="#C99A2E" strokeWidth="1" />
+          <circle cx="56" cy="106" r="2.6" fill="#5B7FA6" />
+          <circle cx="55" cy="104.5" r="0.9" fill="#FFFFFF" opacity="0.8" />
+          <circle cx="104" cy="106" r="5.5" fill="#F0C955" stroke="#C99A2E" strokeWidth="1" />
+          <circle cx="104" cy="106" r="2.6" fill="#5B7FA6" />
+          <circle cx="103" cy="104.5" r="0.9" fill="#FFFFFF" opacity="0.8" />
           <path d="M62,112 Q80,124 98,112" stroke="#F0C955" strokeWidth="2" fill="none" />
-          <circle cx="80" cy="122" r="3.5" fill="#C0454B" stroke="#F0C955" strokeWidth="1" />
+          <path d="M66,113 Q80,132 94,113" stroke="#F0C955" strokeWidth="1.3" fill="none" opacity="0.7" />
+          <circle cx="80" cy="122" r="4" fill="#C0454B" stroke="#F0C955" strokeWidth="1.2" />
+          <circle cx="80" cy="122" r="1.6" fill="#E87F8A" opacity="0.7" />
         </g>
       )}
       {equipped.outfit === "outfit_tuxedo" && (
@@ -940,17 +1001,33 @@ function FloorTexture({ material }) {
   if (material === "floor_tile") {
     return (
       <svg viewBox="0 0 200 68" preserveAspectRatio="none" style={box}>
-        {[25, 50, 75, 100, 125, 150, 175].map((x, i) => <line key={i} x1={x} y1="0" x2={x} y2="68" stroke={line} strokeWidth="1" />)}
-        <line x1="0" y1="34" x2="200" y2="34" stroke={line} strokeWidth="1" />
+        {Array.from({ length: 8 }).map((_, row) =>
+          Array.from({ length: 8 }).map((_, col) => (
+            <rect key={`${row}-${col}`} x={col * 25} y={row * 8.5} width="24" height="7.5"
+              fill={(row + col) % 2 === 0 ? "rgba(255,255,255,0.12)" : "rgba(60,40,20,0.05)"}
+              stroke={line} strokeWidth="1" />
+          ))
+        )}
       </svg>
     );
   }
   if (material === "floor_terracotta") {
+    const hexPts = (cx, cy, r) => Array.from({ length: 6 }).map((_, i) => {
+      const a = (Math.PI / 180) * (60 * i);
+      return `${cx + r * Math.cos(a)},${cy + r * Math.sin(a)}`;
+    }).join(" ");
+    const hexes = [];
+    const r = 13, dx = r * 1.5, dy = r * 1.73;
+    for (let row = 0; row < 4; row++) {
+      for (let col = -1; col < 8; col++) {
+        hexes.push([col * dx + (row % 2 ? dx / 2 : 0), row * dy * 0.5 + 6]);
+      }
+    }
     return (
       <svg viewBox="0 0 200 68" preserveAspectRatio="none" style={box}>
-        {[33, 66, 99, 132, 165].map((x, i) => <line key={i} x1={x} y1="0" x2={x} y2="68" stroke="rgba(90,40,10,0.22)" strokeWidth="1.4" />)}
-        <line x1="0" y1="22" x2="200" y2="22" stroke="rgba(90,40,10,0.22)" strokeWidth="1.4" />
-        <line x1="0" y1="46" x2="200" y2="46" stroke="rgba(90,40,10,0.22)" strokeWidth="1.4" />
+        {hexes.map(([cx, cy], i) => (
+          <polygon key={i} points={hexPts(cx, cy, r)} fill="none" stroke="rgba(90,40,10,0.3)" strokeWidth="1" />
+        ))}
       </svg>
     );
   }
@@ -959,8 +1036,13 @@ function FloorTexture({ material }) {
       <svg viewBox="0 0 200 68" preserveAspectRatio="none" style={box}>
         {[2, 68, 134].map((x, i) => (
           <g key={i}>
-            <rect x={x} y="4" width="64" height="60" fill="none" stroke="#8B6529" strokeWidth="2" opacity="0.55" rx="2" />
-            {[20, 34, 48].map((yy, j) => <line key={j} x1={x + 5} y1={yy} x2={x + 59} y2={yy} stroke="#8B6529" strokeWidth="0.7" opacity="0.35" />)}
+            {Array.from({ length: 14 }).map((_, j) => (
+              <line key={j} x1={x + 5 + j * 4.2} y1="8" x2={x + 5 + j * 4.2} y2="60" stroke="#A8934F" strokeWidth="0.6" opacity="0.45" />
+            ))}
+            {[24, 44].map((yy, j) => <line key={j} x1={x + 4} y1={yy} x2={x + 60} y2={yy} stroke="#8B6529" strokeWidth="0.8" opacity="0.35" />)}
+            <rect x={x} y="4" width="64" height="60" fill="none" stroke="#2E4A2E" strokeWidth="4" opacity="0.88" />
+            {Array.from({ length: 8 }).map((_, j) => <circle key={`t${j}`} cx={x + 8 + j * 7} cy="6" r="0.9" fill="#F0C955" opacity="0.75" />)}
+            {Array.from({ length: 8 }).map((_, j) => <circle key={`b${j}`} cx={x + 8 + j * 7} cy="62" r="0.9" fill="#F0C955" opacity="0.75" />)}
           </g>
         ))}
       </svg>
@@ -977,32 +1059,40 @@ function FloorTexture({ material }) {
   if (material === "floor_chinese") {
     return (
       <svg viewBox="0 0 200 68" preserveAspectRatio="none" style={box}>
-        {Array.from({ length: 7 }).map((_, i) => (
-          <path key={i} d={`M${i * 30},68 L${i * 30 + 15},34 L${i * 30 + 30},68`} fill="none" stroke="#F0C955" strokeWidth="1.2" opacity="0.5" />
-        ))}
+        {Array.from({ length: 9 }).map((_, i) => <path key={`a${i}`} d={`M${i * 28 - 20},0 L${i * 28 + 34},68`} stroke="#F0C955" strokeWidth="1" opacity="0.4" />)}
+        {Array.from({ length: 9 }).map((_, i) => <path key={`b${i}`} d={`M${i * 28 + 34},0 L${i * 28 - 20},68`} stroke="#F0C955" strokeWidth="1" opacity="0.4" />)}
       </svg>
     );
   }
   if (material === "floor_indian") {
+    const colors = ["#5B7FA6", "#E8985F", "#7FB577", "#C0454B", "#D9A054"];
     return (
       <svg viewBox="0 0 200 68" preserveAspectRatio="none" style={box}>
         {Array.from({ length: 9 }).map((_, i) => (
-          <rect key={i} x={i * 24} y="16" width="24" height="24" fill={i % 2 === 0 ? "#E8985F" : "#D9A054"} opacity="0.3" transform={`rotate(45 ${i * 24 + 12} 28)`} />
+          <g key={i} transform={`translate(${i * 24 + 12},34)`}>
+            <rect x="-10" y="-10" width="20" height="20" fill={colors[i % colors.length]} opacity="0.3" transform="rotate(45)" />
+            <circle r="4" fill={colors[(i + 2) % colors.length]} opacity="0.4" />
+          </g>
         ))}
       </svg>
     );
   }
   if (material === "floor_carpet") {
+    const spots = [[10, 14], [38, 20], [70, 12], [95, 22], [130, 14], [160, 20], [185, 12], [22, 42], [55, 48], [85, 40], [115, 50], [145, 42], [175, 48]];
     return (
       <svg viewBox="0 0 200 68" preserveAspectRatio="none" style={box}>
-        {Array.from({ length: 45 }).map((_, i) => (
-          <circle key={i} cx={(i % 15) * 14 + 5} cy={Math.floor(i / 15) * 22 + 10} r="0.9" fill="rgba(255,255,255,0.35)" />
+        {spots.map(([cx, cy], i) => (
+          <ellipse key={i} cx={cx} cy={cy} rx="8" ry="5.5" fill={i % 2 === 0 ? "rgba(255,255,255,0.45)" : "rgba(233,180,203,0.4)"} />
+        ))}
+        {Array.from({ length: 70 }).map((_, i) => (
+          <circle key={`d${i}`} cx={(i % 20) * 10 + 3} cy={Math.floor(i / 20) * 24 + 6} r="0.7" fill="rgba(255,255,255,0.3)" />
         ))}
       </svg>
     );
   }
   return null;
 }
+
 
 function WallTexture({ material }) {
   const box = { position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0 };
@@ -1035,7 +1125,9 @@ function WallTexture({ material }) {
         {Array.from({ length: 8 }).map((_, row) => (
           <g key={row}>
             {Array.from({ length: 7 }).map((_, col) => (
-              <rect key={col} x={col * 36 - (row % 2) * 18} y={row * 19} width="34" height="17" fill="none" stroke="rgba(90,50,30,0.4)" strokeWidth="1" />
+              <rect key={col} x={col * 36 - (row % 2) * 18} y={row * 19} width="34" height="17"
+                fill={(row + col) % 2 === 0 ? "rgba(140,60,40,0.28)" : "rgba(120,50,32,0.22)"}
+                stroke="rgba(90,50,30,0.45)" strokeWidth="1" />
             ))}
           </g>
         ))}
@@ -1047,6 +1139,13 @@ function WallTexture({ material }) {
       <svg viewBox="0 0 200 150" preserveAspectRatio="none" style={box}>
         {Array.from({ length: 10 }).map((_, i) => <path key={i} d={`M${i * 20},12 L${i * 20 + 10},2 L${i * 20 + 20},12`} fill="none" stroke="#C0454B" strokeWidth="1.5" opacity="0.6" />)}
         {Array.from({ length: 10 }).map((_, i) => <path key={`b${i}`} d={`M${i * 20},140 L${i * 20 + 10},150 L${i * 20 + 20},140`} fill="none" stroke="#C0454B" strokeWidth="1.5" opacity="0.6" />)}
+        <g transform="translate(100,75)">
+          <circle r="20" fill="none" stroke="#C0454B" strokeWidth="1.2" opacity="0.4" />
+          {Array.from({ length: 8 }).map((_, i) => {
+            const a = (Math.PI / 4) * i;
+            return <circle key={i} cx={Math.cos(a) * 20} cy={Math.sin(a) * 20} r="2.5" fill="#D9A054" opacity="0.4" />;
+          })}
+        </g>
       </svg>
     );
   }
@@ -1054,6 +1153,12 @@ function WallTexture({ material }) {
     return (
       <svg viewBox="0 0 200 150" preserveAspectRatio="none" style={box}>
         {[40, 100, 160].map((x, i) => <line key={i} x1={x} y1="0" x2={x} y2="150" stroke="#F0C955" strokeWidth="2" opacity="0.75" />)}
+        {Array.from({ length: 3 }).map((_, row) =>
+          Array.from({ length: 6 }).map((_, col) => (
+            <rect key={`${row}-${col}`} x={12 + col * 32} y={12 + row * 45} width="20" height="20"
+              fill="none" stroke="#F0C955" strokeWidth="1" opacity="0.45" transform={`rotate(45 ${22 + col * 32} ${22 + row * 45})`} />
+          ))
+        )}
       </svg>
     );
   }
@@ -1091,8 +1196,10 @@ function RoomScene({ equipped, owned, onTogglePlacement }) {
     : { borderRadius: 4, muntin: "cross" };
   const isBamboo = windowKey === "window_bamboo_washi";
   const isGrand = windowKey === "window_grand";
-  const boxWidth = isGrand ? "46%" : "32%";
-  const boxHeight = isGrand ? "44%" : "34%";
+  const boxWidth = isGrand ? "82%" : "32%";
+  const boxHeight = isGrand ? "62%" : "34%";
+  const boxLeft = isGrand ? "9%" : "6%";
+  const boxTop = isGrand ? "5%" : "8%";
 
   const sceneryKey = equipped.scenery || "scenery_default";
 
@@ -1110,9 +1217,9 @@ function RoomScene({ equipped, owned, onTogglePlacement }) {
       </div>
 
       <div style={{
-        position: "absolute", left: "6%", top: "8%", width: boxWidth, height: boxHeight,
+        position: "absolute", left: boxLeft, top: boxTop, width: boxWidth, height: boxHeight,
         background: isBamboo ? "repeating-conic-gradient(from 0deg, #C9B87C 0deg 7deg, #A8934F 7deg 14deg)" : windowFrameColor,
-        borderRadius: windowShape.borderRadius === 4 ? 8 : windowShape.borderRadius, padding: isBamboo ? "5%" : "2.5%", boxSizing: "border-box", zIndex: 1
+        borderRadius: windowShape.borderRadius === 4 ? 8 : windowShape.borderRadius, padding: isBamboo ? "5%" : (isGrand ? "1.5%" : "2.5%"), boxSizing: "border-box", zIndex: 1
       }}>
         <div style={{ position: "relative", width: "100%", height: "100%", background: isBamboo ? "#F0E9D6" : sceneryColor, borderRadius: windowShape.borderRadius, overflow: "hidden" }}>
           {sceneryKey === "scenery_aurora" && (
@@ -1136,25 +1243,73 @@ function RoomScene({ equipped, owned, onTogglePlacement }) {
               <path d="M20,50 L30,50 L27,44 Q34,44 34,50 L44,50 L38,56 L14,56 Z" fill="#F6EFDF" opacity="0.85" />
             </svg>
           )}
+          {sceneryKey === "scenery_night" && (
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+              <rect width="100" height="100" fill="#2E3A5C" />
+              <circle cx="72" cy="24" r="12" fill="#F6F1DC" opacity="0.92" />
+              <circle cx="68" cy="20" r="10" fill="#2E3A5C" opacity="0.3" />
+              {[[15, 15], [30, 10], [45, 22], [60, 8], [85, 15], [20, 35], [50, 40], [90, 42], [10, 50], [35, 55], [58, 30]].map(([x, y], i) => (
+                <circle key={i} cx={x} cy={y} r={i % 3 === 0 ? 1.2 : 0.7} fill="#FFFDF0" opacity="0.85" />
+              ))}
+              <path d="M0,80 Q30,68 55,78 Q75,86 100,72 L100,100 L0,100 Z" fill="#1A2340" opacity="0.7" />
+            </svg>
+          )}
+          {sceneryKey === "scenery_sakura" && (
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+              <rect width="100" height="70" fill="#BFE0E8" />
+              <rect y="70" width="100" height="30" fill="#8FAE84" opacity="0.6" />
+              {[[12, 60, 14], [32, 50, 10], [68, 50, 10], [88, 60, 14]].map(([x, y, r], i) => (
+                <g key={i}>
+                  <rect x={x - 1.5} y={y} width="3" height={70 - y} fill="#6B4E3D" />
+                  <circle cx={x} cy={y - r * 0.5} r={r} fill="#F2C9D3" />
+                  <circle cx={x - r * 0.5} cy={y - r * 0.7} r={r * 0.7} fill="#F6D9E2" opacity="0.9" />
+                  <circle cx={x + r * 0.5} cy={y - r * 0.7} r={r * 0.7} fill="#EDB8C9" opacity="0.9" />
+                </g>
+              ))}
+              {[[20, 30], [45, 20], [60, 35], [75, 25], [35, 45]].map(([x, y], i) => (
+                <circle key={i} cx={x} cy={y} r="1" fill="#F2C9D3" opacity="0.8" />
+              ))}
+            </svg>
+          )}
           {sceneryKey === "scenery_italy" && (
             <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
               <rect width="100" height="100" fill="#F6C97A" />
-              <circle cx="80" cy="20" r="10" fill="#FFE9A8" opacity="0.85" />
-              <rect y="60" width="100" height="40" fill="#7A9AC9" opacity="0.4" />
-              {/* コロッセオ風の建物 */}
-              <rect x="10" y="55" width="46" height="24" fill="#E8B87A" />
-              {Array.from({ length: 8 }).map((_, i) => <rect key={i} x={13 + i * 5.5} y="58" width="3" height="18" fill="#C9945A" opacity="0.7" />)}
-              <rect x="8" y="52" width="50" height="5" fill="#D9A468" />
+              <circle cx="84" cy="16" r="9" fill="#FFE9A8" opacity="0.85" />
+              <rect y="62" width="100" height="38" fill="#7A9AC9" opacity="0.35" />
+              {/* トゥルッリ（円錐の石屋根の白い家） */}
+              {[[10, 68, 17], [36, 62, 21], [64, 70, 16]].map(([x, y, w], i) => (
+                <g key={i}>
+                  <rect x={x} y={y} width={w} height={w * 0.85} rx="2" fill="#F6F1E7" stroke="#D9CFB8" strokeWidth="0.6" />
+                  <path d={`M${x - 2},${y} Q${x + w / 2},${y - w * 0.9} ${x + w + 2},${y} Z`} fill="#9FA8A0" />
+                  {Array.from({ length: 4 }).map((_, j) => (
+                    <path key={j} d={`M${x + 2 + j * (w / 12)},${y - 2 - j * (w / 5)} Q${x + w / 2},${y - w * 0.85 + j * (w / 7)} ${x + w - 2 - j * (w / 12)},${y - 2 - j * (w / 5)}`} stroke="#7A8580" strokeWidth="0.5" fill="none" opacity="0.6" />
+                  ))}
+                  <circle cx={x + w / 2} cy={y - w * 0.88} r="1.2" fill="#5B7FA6" />
+                  <rect x={x + w / 2 - 2} y={y + w * 0.42} width="4" height={w * 0.4} fill="#8B6529" opacity="0.75" />
+                </g>
+              ))}
+              {/* 糸杉 */}
+              {[86, 92].map((x, i) => (
+                <path key={i} d={`M${x},96 L${x},74 Q${x - 2.5},72 ${x},70 Q${x + 2.5},72 ${x},74`} fill="#4A6B4A" opacity="0.85" />
+              ))}
               {/* 運河とゴンドラ */}
-              <rect y="80" width="100" height="20" fill="#6C9BC4" />
-              <path d="M62,88 Q70,84 84,88 L82,92 L64,92 Z" fill="#3D2E12" />
-              <path d="M84,80 L84,88" stroke="#3D2E12" strokeWidth="1.5" />
+              <rect y="84" width="100" height="16" fill="#6C9BC4" opacity="0.9" />
+              <path d="M55,90 Q63,86 77,90 L75,94 L57,94 Z" fill="#3D2E12" />
+              <path d="M77,82 L77,90" stroke="#3D2E12" strokeWidth="1.5" />
             </svg>
           )}
           {sceneryKey === "scenery_germany" && (
             <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
               <rect width="100" height="100" fill="#BFE0E8" />
               <path d="M0,70 Q30,55 55,66 Q75,75 100,62 L100,100 L0,100 Z" fill="#7A9C70" />
+              {/* 針葉樹の森（お城の手前） */}
+              {[[12, 78, 12], [22, 82, 10], [78, 80, 11], [90, 84, 9]].map(([x, y, h], i) => (
+                <g key={i}>
+                  <rect x={x - 1} y={y} width="2" height={h * 0.3} fill="#5A4A3D" />
+                  <path d={`M${x - h * 0.35},${y} L${x},${y - h} L${x + h * 0.35},${y} Z`} fill="#3E5A46" opacity="0.85" />
+                  <path d={`M${x - h * 0.26},${y - h * 0.3} L${x},${y - h * 0.75} L${x + h * 0.26},${y - h * 0.3} Z`} fill="#4A6B4A" opacity="0.85" />
+                </g>
+              ))}
               {/* 尖塔のあるお城（ノイシュヴァンシュタイン風） */}
               <rect x="38" y="40" width="24" height="30" fill="#E8E2D4" />
               <rect x="33" y="30" width="9" height="40" fill="#D9D2C0" />
