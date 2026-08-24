@@ -197,7 +197,7 @@ function AnimatedCharacter({ equipped, size, pos, facingLeft, isWalking }) {
   const halfW = size / 2;
   const footOffset = size * 1.15;
   return (
-    <g style={{ transition: "transform 2.6s ease-in-out", transform: `translate(${pos[0]}px, ${pos[1]}px)` }}>
+    <g transform={`translate(${pos[0]},${pos[1]})`} style={{ transition: "transform 2.6s ease-in-out" }}>
       <g transform={`translate(${-halfW},${-footOffset}) ${facingLeft ? `translate(${size},0) scale(-1,1)` : ""}`}>
         <SheepCharacter equipped={equipped} size={size} isWalking={isWalking} />
       </g>
