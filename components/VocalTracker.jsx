@@ -1663,6 +1663,53 @@ function noteToMidi(noteStr) {
   if (accidental === "b" || accidental === "♭") semitone -= 1;
   return (octave + 1) * 12 + semitone;
 }
+// ---- lavoce-レパートリー負荷パッチ.md 用の純関数群 ----
+// §2.2 曲目名の正規化：表示は必ずtitleRaw、照合にだけtitleNormalizedを使う。
+function normalizeTitle(raw) {
+  if (!raw) return "";
+  return raw
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[\s　]+/g, " ")
+    .replace(/[・･]/g, "")
+    .replace(/[「」『』"'"']/g, "")
+    .replace(/[（(][^）)]*[）)]/g, "")
+    .trim();
+}
+// §2.4 近い名前の警告に使うレーベンシュタイン距離
+function levenshteinDistance(a, b) {
+  const m = a.length, n = b.length;
+  if (m === 0) return n;
+  if (n === 0) return m;
+  const dp = Array.from({ length: m + 1 }, (_, i) => [i, ...new Array(n).fill(0)]);
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] = a[i - 1] === b[j - 1]
+        ? dp[i - 1][j - 1]
+        : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+    }
+  }
+  return dp[m][n];
+}
+// §1.2 負荷計算式の修正。較正（§6）で書き換えられるよう定数を分離してある。
+const REPERTOIRE_GAMMA = 1.7;
+const REPERTOIRE_KAPPA = 0.6;
+const REPERTOIRE_TESSITURA_OFFSET = 5; // 最高音からテッシトゥーラを推定する際の初期オフセット（半音）
+function computeSongFactor(tessMidi, lowMidi, highMidi) {
+  if (lowMidi == null || highMidi == null || highMidi <= lowMidi || tessMidi == null) return null;
+  const center = (lowMidi + highMidi) / 2;
+  const half = (highMidi - lowMidi) / 2;
+  const d = (tessMidi - center) / half;
+  return { d, songFactor: songFactorFromD(d) };
+}
+function songFactorFromD(d) {
+  const strainRaw = Math.pow(Math.abs(d) / 0.85, REPERTOIRE_GAMMA);
+  let strain = d >= 0 ? strainRaw : strainRaw * REPERTOIRE_KAPPA;
+  strain = Math.max(0, Math.min(1.5, strain));
+  return 1.0 + 1.5 * strain;
+}
+// ---- レパートリー負荷パッチ 用純関数群 ここまで ----
 // MIDI ノート番号を音名表記（国際式）に戻す。
 function midiToNoteLabel(midi) {
   if (midi == null || Number.isNaN(midi)) return "-";
@@ -1946,8 +1993,13 @@ export default function VocalTracker({ userId, userEmail }) {
   const [questionnaireSaving, setQuestionnaireSaving] = useState(false);
   const [questionnaireError, setQuestionnaireError] = useState("");
   const [repertoireTessituraMap, setRepertoireTessituraMap] = useState({});
-  const [tessituraInput, setTessituraInput] = useState("");
   const [tessituraSaving, setTessituraSaving] = useState(false);
+  const [topNoteInput, setTopNoteInput] = useState("");
+  const [tessituraOptionalInput, setTessituraOptionalInput] = useState("");
+  const [showTessituraAccordion, setShowTessituraAccordion] = useState(false);
+  const [dOverrideChoice, setDOverrideChoice] = useState(null);
+  const [duplicateWarning, setDuplicateWarning] = useState(null);
+  const [repertoireSkipped, setRepertoireSkipped] = useState({});
   const [language, setLanguage] = useState("ja");
   const [viewMonth, setViewMonth] = useState(() => {
     const d = new Date();
@@ -1964,7 +2016,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer" });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer" });
   const [ownedItemKeys, setOwnedItemKeys] = useState([]);
   const [characterEquipped, setCharacterEquipped] = useState({});
   const [characterPointsSpent, setCharacterPointsSpent] = useState(0);
@@ -2059,7 +2111,15 @@ export default function VocalTracker({ userId, userEmail }) {
       }
       if (mounted && data) {
         const map = {};
-        data.forEach((row) => { map[row.repertoire_name] = row.tessitura_note; });
+        data.forEach((row) => {
+          map[row.repertoire_name] = {
+            tessituraNote: row.tessitura_note || null,
+            topNote: row.top_note || null,
+            dOverride: row.d_override,
+            confidence: row.confidence || "entered",
+            usageCount: row.usage_count || 0
+          };
+        });
         setRepertoireTessituraMap(map);
       }
     })();
@@ -2075,7 +2135,7 @@ export default function VocalTracker({ userId, userEmail }) {
         () =>
           supabase
             .from("profiles")
-            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, technical_goal, health_notes, vocal_profession, track_cycle")
+            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle")
             .eq("id", userId)
             .single(),
         "プロフィール（羊の装備を含む）の取得"
@@ -2094,6 +2154,8 @@ export default function VocalTracker({ userId, userEmail }) {
           garden_theme: data.garden_theme || "rose",
           vocal_range_low: data.vocal_range_low || "",
           vocal_range_high: data.vocal_range_high || "",
+          comfort_range_low: data.comfort_range_low || "",
+          comfort_range_high: data.comfort_range_high || "",
           technical_goal: data.technical_goal || "",
           health_notes: data.health_notes || "",
           vocal_profession: data.vocal_profession || "singer",
@@ -3061,15 +3123,58 @@ export default function VocalTracker({ userId, userEmail }) {
   const hasCycleData = useMemo(() => Object.values(entries).some((e) => e.cycleStart), [entries]);
   // ---- 周期と声・メンタルの傾向 用データ ここまで ----
 
-  // ---- lavoce-収集データ拡張案.md E節: 曲目ごとの負荷（テッシトゥーラ×時間）用データ ----
-  // 役の負荷 = 演奏時間(分) × 声種の快適音域からの逸脱度
-  // 逸脱度 = |役の平均音高 − 本人の快適音域の中心| / 本人の音域幅
+  // ---- lavoce-収集データ拡張案.md E節 + レパートリー負荷パッチ.md: 曲目ごとの負荷 用データ ----
+  // §1.4: 「無理なく出せる音域」（任意）があればそちらを優先し、なければ全音域を使う。
   const comfortableRangeMidi = useMemo(() => {
-    const low = noteToMidi(profile.vocal_range_low);
-    const high = noteToMidi(profile.vocal_range_high);
+    const low = noteToMidi(profile.comfort_range_low) ?? noteToMidi(profile.vocal_range_low);
+    const high = noteToMidi(profile.comfort_range_high) ?? noteToMidi(profile.vocal_range_high);
+    const isEstimatedRange = !profile.comfort_range_low || !profile.comfort_range_high;
     if (low == null || high == null || high <= low) return null;
-    return { low, high, center: (low + high) / 2, width: high - low };
-  }, [profile.vocal_range_low, profile.vocal_range_high]);
+    return { low, high, center: (low + high) / 2, half: (high - low) / 2, isEstimatedRange };
+  }, [profile.comfort_range_low, profile.comfort_range_high, profile.vocal_range_low, profile.vocal_range_high]);
+
+  // §2: 曲目名の正規化と、既存登録に対する使用回数（サジェストの並び順・繰り返し登録抑制に使う）
+  const repertoireUsageCounts = useMemo(() => {
+    const counts = {};
+    Object.values(entries).forEach((e) => {
+      const raw = (e.repertoire || "").trim();
+      if (!raw) return;
+      const norm = normalizeTitle(raw);
+      if (!counts[norm]) counts[norm] = { count: 0, displayName: raw };
+      counts[norm].count += 1;
+    });
+    return counts;
+  }, [entries]);
+  // §3.2: 両方（最高音・テッシトゥーラ）が入力済みの曲が5件以上あれば、個人の実測差に置き換える。
+  const personalTessituraOffset = useMemo(() => {
+    const diffs = Object.values(repertoireTessituraMap)
+      .filter((r) => r.topNote && r.tessituraNote)
+      .map((r) => noteToMidi(r.topNote) - noteToMidi(r.tessituraNote))
+      .filter((v) => Number.isFinite(v));
+    return diffs.length >= 5 ? median(diffs) : REPERTOIRE_TESSITURA_OFFSET;
+  }, [repertoireTessituraMap]);
+  // 登録レコードから d（快適音域中心からの正規化位置、-1〜+1）を解決する。
+  // 優先順位：テッシトゥーラ実測 > 最高音からの推定 > 3択フォールバック。
+  function resolveRepertoireD(record) {
+    if (!record || !comfortableRangeMidi) return null;
+    if (record.tessituraNote) {
+      const midi = noteToMidi(record.tessituraNote);
+      if (midi != null) return { d: (midi - comfortableRangeMidi.center) / comfortableRangeMidi.half, confidence: "entered" };
+    }
+    if (record.topNote) {
+      const topMidi = noteToMidi(record.topNote);
+      if (topMidi != null) {
+        const estTess = topMidi - personalTessituraOffset;
+        return { d: (estTess - comfortableRangeMidi.center) / comfortableRangeMidi.half, confidence: "estimated" };
+      }
+    }
+    if (record.dOverride != null) return { d: record.dOverride, confidence: "coarse" };
+    return null;
+  }
+  const overallThroatBaseline = useMemo(() => {
+    const vals = Object.values(entries).map((e) => e.throatCondition).filter((v) => typeof v === "number");
+    return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+  }, [entries]);
   const roleLoadStats = useMemo(() => {
     if (!comfortableRangeMidi) return [];
     const byRole = {};
@@ -3077,34 +3182,46 @@ export default function VocalTracker({ userId, userEmail }) {
     sortedDates.forEach((date, i) => {
       const e = entries[date];
       const name = (e.repertoire || "").trim();
-      const tessituraNote = name && repertoireTessituraMap[name];
-      if (!tessituraNote) return;
-      const tessituraMidi = noteToMidi(tessituraNote);
-      if (tessituraMidi == null) return;
-      const deviation = Math.abs(tessituraMidi - comfortableRangeMidi.center) / comfortableRangeMidi.width;
+      if (!name) return;
+      const record = repertoireTessituraMap[name];
+      if (!record) return;
+      const resolved = resolveRepertoireD(record);
+      if (!resolved) return;
+      const songFactor = songFactorFromD(resolved.d);
+      const actW = ACTIVITY_LOAD_WEIGHT[e.activityType] ?? 1.0;
       const minutes = typeof e.activityDuration === "number" ? e.activityDuration * 60 : 0;
-      const load = minutes * deviation;
-      if (!byRole[name]) byRole[name] = { name, tessituraNote, loads: [], nextDayThroat: [], nextDayVoice: [] };
+      // §1.2: L_song = 演奏時間 × 活動係数 × songFactor（既存の発声負荷ACWRと単位が揃う）
+      const load = minutes * actW * songFactor;
+      if (!byRole[name]) byRole[name] = { name, record, loads: [], nextDayThroatDeviation: [] };
       byRole[name].loads.push(load);
       const nextDate = sortedDates[i + 1];
       if (nextDate && addDays(date, 1) === nextDate) {
         const nextEntry = entries[nextDate];
-        if (typeof nextEntry.throatCondition === "number") byRole[name].nextDayThroat.push(nextEntry.throatCondition);
-        if (typeof nextEntry.voiceQuality === "number") byRole[name].nextDayVoice.push(nextEntry.voiceQuality);
+        // §4.3: 翌日の落ち込みは、生の平均ではなく「その人の平常値との偏差」で見る。
+        if (typeof nextEntry.throatCondition === "number" && overallThroatBaseline != null) {
+          byRole[name].nextDayThroatDeviation.push(nextEntry.throatCondition - overallThroatBaseline);
+        }
       }
     });
-    return Object.values(byRole)
-      .map((r) => ({
-        name: r.name,
-        tessituraNote: r.tessituraNote,
-        count: r.loads.length,
-        avgLoad: r.loads.reduce((a, b) => a + b, 0) / r.loads.length,
-        avgNextDayThroat: r.nextDayThroat.length ? r.nextDayThroat.reduce((a, b) => a + b, 0) / r.nextDayThroat.length : null,
-        avgNextDayVoice: r.nextDayVoice.length ? r.nextDayVoice.reduce((a, b) => a + b, 0) / r.nextDayVoice.length : null,
-        nextDayCount: r.nextDayThroat.length
-      }))
-      .sort((a, b) => b.avgLoad - a.avgLoad);
-  }, [entries, repertoireTessituraMap, comfortableRangeMidi]);
+    const list = Object.values(byRole).map((r) => ({
+      name: r.name,
+      record: r.record,
+      count: r.loads.length,
+      avgLoad: r.loads.reduce((a, b) => a + b, 0) / r.loads.length,
+      avgNextDayDeviation: r.nextDayThroatDeviation.length ? r.nextDayThroatDeviation.reduce((a, b) => a + b, 0) / r.nextDayThroatDeviation.length : null,
+      nextDayCount: r.nextDayThroatDeviation.length
+    }));
+    // §4.1/§4.3: n≥3を本表示の下限にし、実測の落ち込みが大きい順（＝deviationが低い順）に並べる。
+    const confident = list.filter((r) => r.count >= 3 && r.avgNextDayDeviation != null).sort((a, b) => a.avgNextDayDeviation - b.avgNextDayDeviation);
+    const lowN = list.filter((r) => r.count < 3 || r.avgNextDayDeviation == null).sort((a, b) => b.count - a.count);
+    // §4.4: 実測順位と計算負荷順位の乖離（大きいほど「音域以外の要因」のサイン）
+    const loadRanked = [...confident].sort((a, b) => b.avgLoad - a.avgLoad);
+    confident.forEach((r, actualRank) => {
+      const loadRank = loadRanked.findIndex((x) => x.name === r.name);
+      r.rankGap = loadRank - actualRank; // 正: 計算より実際の落ち込みが大きい（見落とされがちな重い役）
+    });
+    return { confident, lowN };
+  }, [entries, repertoireTessituraMap, comfortableRangeMidi, overallThroatBaseline, personalTessituraOffset]);
   // ---- 曲目ごとの負荷 用データ ここまで ----
 
   // ---- lavoce-指標設計図.md 05. 効いた習慣ランキング 用データ ----
@@ -3550,6 +3667,8 @@ export default function VocalTracker({ userId, userEmail }) {
         sex: profile.sex || null,
         vocal_range_low: profile.vocal_range_low || null,
         vocal_range_high: profile.vocal_range_high || null,
+        comfort_range_low: profile.comfort_range_low || null,
+        comfort_range_high: profile.comfort_range_high || null,
         technical_goal: profile.technical_goal || null,
         health_notes: profile.health_notes || null,
         vocal_profession: profile.vocal_profession || "singer",
@@ -3599,22 +3718,38 @@ export default function VocalTracker({ userId, userEmail }) {
     setTimeout(() => setToastMessage(null), 3200);
   }
 
-  // lavoce-収集データ拡張案.md E節: 曲目・役に「テッシトゥーラ（音域の中心）」を1回だけ紐づける。
-  // 一度登録すれば、以後同じ曲目名を使うすべての記録で自動的に負荷計算に使われる。
-  async function handleSaveTessitura(repertoireName, noteText) {
-    if (!repertoireName || !noteText) return;
+  // lavoce-レパートリー負荷パッチ.md §3: 曲目・役に「最高音」（主質問）を1回だけ紐づける。
+  // テッシトゥーラ（任意）や3択フォールバックも受け付け、confidenceとして記録する。
+  async function handleSaveRepertoire(repertoireName, { topNote, tessituraNote, dOverride } = {}) {
+    if (!repertoireName) return;
+    if (!topNote && !tessituraNote && dOverride == null) return;
     setTessituraSaving(true);
+    const confidence = tessituraNote ? "entered" : topNote ? "estimated" : "coarse";
     const supabase = createClient();
     const { error } = await supabase
       .from("repertoire_tessitura")
-      .upsert({ user_id: userId, repertoire_name: repertoireName, tessitura_note: noteText }, { onConflict: "user_id,repertoire_name" });
+      .upsert({
+        user_id: userId,
+        repertoire_name: repertoireName,
+        top_note: topNote || null,
+        tessitura_note: tessituraNote || null,
+        d_override: dOverride != null ? dOverride : null,
+        confidence
+      }, { onConflict: "user_id,repertoire_name" });
     setTessituraSaving(false);
     if (error) {
-      console.error("テッシトゥーラの登録に失敗しました:", error);
+      console.error("レパートリーの登録に失敗しました:", error);
       return;
     }
-    setRepertoireTessituraMap((prev) => ({ ...prev, [repertoireName]: noteText }));
-    setTessituraInput("");
+    setRepertoireTessituraMap((prev) => ({
+      ...prev,
+      [repertoireName]: { topNote: topNote || null, tessituraNote: tessituraNote || null, dOverride: dOverride != null ? dOverride : null, confidence, usageCount: (prev[repertoireName] && prev[repertoireName].usageCount) || 0 }
+    }));
+    setTopNoteInput("");
+    setTessituraOptionalInput("");
+    setDOverrideChoice(null);
+    setShowTessituraAccordion(false);
+    setDuplicateWarning(null);
   }
 
   function updateDetail(patch) {
@@ -4142,6 +4277,20 @@ export default function VocalTracker({ userId, userEmail }) {
                             className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
                         </div>
                       </div>
+                      <details className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
+                        <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>無理なく出せる音域（任意）</summary>
+                        <p className="mt-1.5 mb-2 leading-relaxed">
+                          上の音域は「出せる限界」です。曲目ごとの負荷計算では、本来はもっと狭い「無理なく出せる音域」を使うのが正確です。空欄のままなら、上の音域をそのまま使います。
+                        </p>
+                        <div className="grid grid-cols-2 gap-3">
+                          <input type="text" value={profile.comfort_range_low} placeholder={t("placeholderNoteExample")}
+                            onChange={(e) => setProfile((p) => ({ ...p, comfort_range_low: e.target.value }))}
+                            className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.card }} />
+                          <input type="text" value={profile.comfort_range_high} placeholder={t("placeholderNoteExample")}
+                            onChange={(e) => setProfile((p) => ({ ...p, comfort_range_high: e.target.value }))}
+                            className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.card }} />
+                        </div>
+                      </details>
                       {(profile.vocal_profession || "singer") === "singer" && (
                         <div className="rounded-xl p-3" style={{ background: C.paper }}>
                           <p className="text-xs font-medium mb-2">{t("labelVoiceRangeRefTitle")}</p>
@@ -4521,35 +4670,141 @@ export default function VocalTracker({ userId, userEmail }) {
                         <div>
                           <label className="text-sm font-medium block mb-1.5">{t("labelRepertoire")}</label>
                           <input type="text" value={formData.repertoire} placeholder={t("placeholderRepertoireExample")}
-                            onChange={(e) => setFormData((f) => ({ ...f, repertoire: e.target.value }))}
+                            onChange={(e) => { setFormData((f) => ({ ...f, repertoire: e.target.value })); setDuplicateWarning(null); }}
                             className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                          {formData.repertoire && !repertoireTessituraMap[formData.repertoire] && (() => {
+                            const norm = normalizeTitle(formData.repertoire);
+                            const suggestions = Object.entries(repertoireTessituraMap)
+                              .filter(([name]) => name !== formData.repertoire && normalizeTitle(name).includes(norm))
+                              .sort((a, b) => (repertoireUsageCounts[normalizeTitle(b[0])]?.count || 0) - (repertoireUsageCounts[normalizeTitle(a[0])]?.count || 0))
+                              .slice(0, 4);
+                            if (suggestions.length === 0) return null;
+                            return (
+                              <div className="mt-1.5 rounded-lg border overflow-hidden" style={{ borderColor: C.line }}>
+                                {suggestions.map(([name, record]) => (
+                                  <button key={name} type="button"
+                                    onClick={() => { setFormData((f) => ({ ...f, repertoire: name })); setDuplicateWarning(null); }}
+                                    className="w-full text-left px-3 py-2 text-xs flex items-center justify-between"
+                                    style={{ background: C.card, borderBottom: `1px solid ${C.line}` }}>
+                                    <span>{name}</span>
+                                    <span className="ff-mono flex-shrink-0 ml-2" style={{ color: C.inkSoft }}>
+                                      {record.topNote || record.tessituraNote || ""}・{repertoireUsageCounts[normalizeTitle(name)]?.count || 0}回
+                                    </span>
+                                  </button>
+                                ))}
+                              </div>
+                            );
+                          })()}
                         </div>
                       </div>
 
-                      {formData.repertoire && !repertoireTessituraMap[formData.repertoire] && (
-                        <div className="rounded-xl p-3" style={{ background: C.paper }}>
-                          <p className="text-xs font-medium mb-1">「{formData.repertoire}」のテッシトゥーラ（音域の中心）を登録しますか？（任意・1回だけ）</p>
-                          <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
-                            登録すると、以後この曲目を記録するたびに、あなたの快適音域からどれだけ離れているかを自動で計算し、「重い役ランキング」に使えるようになります。
-                          </p>
-                          <div className="flex gap-2">
-                            <input type="text" value={tessituraInput} placeholder={t("placeholderNoteExample")}
-                              onChange={(e) => setTessituraInput(e.target.value)}
-                              className="flex-1 rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.card }} />
-                            <button type="button" disabled={tessituraSaving || !tessituraInput}
-                              onClick={() => handleSaveTessitura(formData.repertoire, tessituraInput)}
-                              className="px-3.5 py-1.5 rounded-full text-xs font-medium flex-shrink-0"
-                              style={{ background: C.curtain, color: "#FFFDF8", opacity: tessituraSaving || !tessituraInput ? 0.5 : 1 }}>
-                              登録
-                            </button>
-                          </div>
-                        </div>
-                      )}
                       {formData.repertoire && repertoireTessituraMap[formData.repertoire] && (
                         <p className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
-                          「{formData.repertoire}」のテッシトゥーラ: <span className="ff-mono">{repertoireTessituraMap[formData.repertoire]}</span> として登録済みです。
+                          「{formData.repertoire}」は登録済みです：
+                          {repertoireTessituraMap[formData.repertoire].topNote && <> 最高音 <span className="ff-mono">{repertoireTessituraMap[formData.repertoire].topNote}</span></>}
+                          {repertoireTessituraMap[formData.repertoire].tessituraNote && <> ・テッシトゥーラ <span className="ff-mono">{repertoireTessituraMap[formData.repertoire].tessituraNote}</span></>}
                         </p>
                       )}
+
+                      {formData.repertoire && !repertoireTessituraMap[formData.repertoire] && (() => {
+                        const norm = normalizeTitle(formData.repertoire);
+                        const usageSoFar = (repertoireUsageCounts[norm] && repertoireUsageCounts[norm].count) || 0;
+                        // §3.4-③: 一度スキップした曲に繰り返し登録を促さない（1回目・3回目の使用時だけ提示）
+                        const shouldPrompt = usageSoFar === 0 || usageSoFar === 2;
+                        if (!shouldPrompt || repertoireSkipped[norm]) return null;
+
+                        if (duplicateWarning && duplicateWarning.forName === formData.repertoire) {
+                          return (
+                            <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                              <p className="text-xs font-medium mb-2">似た曲目が登録されています</p>
+                              <p className="text-xs mb-2" style={{ color: C.ink }}>
+                                「{duplicateWarning.existingName}」（{duplicateWarning.existingRecord.topNote || duplicateWarning.existingRecord.tessituraNote}・{repertoireUsageCounts[normalizeTitle(duplicateWarning.existingName)]?.count || 0}回）
+                              </p>
+                              <div className="flex gap-2">
+                                <button type="button" onClick={() => { setFormData((f) => ({ ...f, repertoire: duplicateWarning.existingName })); setDuplicateWarning(null); }}
+                                  className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                                  同じ曲です
+                                </button>
+                                <button type="button" onClick={() => setDuplicateWarning({ ...duplicateWarning, confirmed: true })}
+                                  className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                                  別の曲です
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        }
+
+                        return (
+                          <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                            <p className="text-xs font-medium mb-1">「{formData.repertoire}」を登録（1回だけ。あとから変えられます）</p>
+                            <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                              この曲の最高音は？（登録すると、次回から自動で「重い役ランキング」に使われます）
+                            </p>
+                            <input type="text" value={topNoteInput} placeholder={t("placeholderNoteExample")}
+                              onChange={(e) => setTopNoteInput(e.target.value)}
+                              className="w-full rounded-lg border p-2 text-sm mb-2" style={{ borderColor: C.line, background: C.card }} />
+
+                            <details className="text-xs mb-2" open={showTessituraAccordion} onToggle={(e) => setShowTessituraAccordion(e.target.open)}>
+                              <summary className="cursor-pointer" style={{ color: C.inkSoft }}>テッシトゥーラも入力する（任意）</summary>
+                              <input type="text" value={tessituraOptionalInput} placeholder={t("placeholderNoteExample")}
+                                onChange={(e) => setTessituraOptionalInput(e.target.value)}
+                                className="w-full rounded-lg border p-2 text-sm mt-1.5" style={{ borderColor: C.line, background: C.card }} />
+                            </details>
+
+                            {dOverrideChoice === null && !topNoteInput && (
+                              <button type="button" onClick={() => setDOverrideChoice(0)} className="text-xs underline mb-2" style={{ color: C.inkSoft }}>
+                                音名で答えられない場合はこちら
+                              </button>
+                            )}
+                            {dOverrideChoice !== null && !topNoteInput && (
+                              <div className="mb-2">
+                                <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>自分の音域の中で、この曲はどのあたり？</p>
+                                <div className="flex gap-2">
+                                  {[["低め", -0.5], ["真ん中", 0], ["高め", 0.5]].map(([label, val]) => (
+                                    <button key={label} type="button" onClick={() => setDOverrideChoice(val)}
+                                      className="flex-1 py-1.5 rounded-full text-xs font-medium"
+                                      style={{ background: dOverrideChoice === val ? C.curtain : C.card, color: dOverrideChoice === val ? "#FFFDF8" : C.inkSoft, border: `1px solid ${dOverrideChoice === val ? C.curtain : C.line}` }}>
+                                      {label}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            <div className="flex gap-2">
+                              <button type="button" disabled={tessituraSaving || (!topNoteInput && dOverrideChoice == null)}
+                                onClick={() => {
+                                  const norm2 = normalizeTitle(formData.repertoire);
+                                  if (!duplicateWarning || !duplicateWarning.confirmed) {
+                                    const nearMatch = Object.keys(repertoireTessituraMap).find((existingName) => {
+                                      if (existingName === formData.repertoire) return false;
+                                      const existingNorm = normalizeTitle(existingName);
+                                      return existingNorm.includes(norm2) || norm2.includes(existingNorm) || levenshteinDistance(existingNorm, norm2) <= 2;
+                                    });
+                                    if (nearMatch) {
+                                      setDuplicateWarning({ forName: formData.repertoire, existingName: nearMatch, existingRecord: repertoireTessituraMap[nearMatch], confirmed: false });
+                                      return;
+                                    }
+                                  }
+                                  handleSaveRepertoire(formData.repertoire, {
+                                    topNote: topNoteInput || null,
+                                    tessituraNote: tessituraOptionalInput || null,
+                                    dOverride: !topNoteInput && dOverrideChoice != null ? dOverrideChoice : null
+                                  });
+                                }}
+                                className="flex-1 py-1.5 rounded-full text-xs font-medium"
+                                style={{ background: C.curtain, color: "#FFFDF8", opacity: tessituraSaving || (!topNoteInput && dOverrideChoice == null) ? 0.5 : 1 }}>
+                                登録する
+                              </button>
+                              <button type="button" onClick={() => setRepertoireSkipped((prev) => ({ ...prev, [norm]: true }))}
+                                className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                                あとで
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })()}
+
 
                       <div>
                         <span className="text-sm font-medium block mb-2">話し声の使用量（歌以外でどれだけ喋ったか）</span>
@@ -5707,30 +5962,58 @@ export default function VocalTracker({ userId, userEmail }) {
                     </p>
                   </div>
                 )}
-                {roleLoadStats.length > 0 && (
+                {(roleLoadStats.confident.length > 0 || roleLoadStats.lowN.length > 0) && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">あなたにとって重い役ランキング</h3>
+                    <h3 className="ff-display italic text-lg mb-1">あなたにとって重い役</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      演奏時間 × あなたの快適音域からの逸脱度で、曲目ごとの負荷を計算しています。テッシトゥーラを登録した曲目のみ表示されます。
+                      翌日の落ち込みが大きい順に並んでいます（その人の平常値との偏差）。計算上の負荷は横に添えているだけで、順位には使っていません。
                     </p>
-                    <div className="space-y-2">
-                      {roleLoadStats.slice(0, 8).map((r, i) => (
-                        <div key={r.name} className="rounded-xl p-2.5" style={{ background: C.paper }}>
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium">{i + 1}. {r.name}</span>
-                            <span className="ff-mono text-xs" style={{ color: C.inkSoft }}>負荷指数 {r.avgLoad.toFixed(0)}</span>
-                          </div>
-                          <p className="text-xs mt-1" style={{ color: C.inkSoft }}>
-                            テッシトゥーラ {r.tessituraNote}・{r.count}回の記録
-                            {r.avgNextDayThroat != null && (
-                              <>　翌日の喉コンディション平均 {r.avgNextDayThroat.toFixed(1)}（{r.nextDayCount}件）</>
-                            )}
-                          </p>
+                    {roleLoadStats.confident.length > 0 && (
+                      <div className="space-y-3">
+                        {roleLoadStats.confident.slice(0, 8).map((r, i) => {
+                          const dropPct = Math.max(0, Math.min(100, (-r.avgNextDayDeviation / 2) * 100));
+                          const isHeavierThanExpected = r.rankGap >= 2;
+                          const isLighterThanExpected = r.rankGap <= -2;
+                          return (
+                            <div key={r.name} className="rounded-xl p-2.5" style={{ background: C.paper }}>
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium">{i + 1}. {r.name}</span>
+                                <span className="ff-mono text-xs" style={{ color: r.avgNextDayDeviation < 0 ? C.curtain : C.sage }}>
+                                  翌日 {r.avgNextDayDeviation >= 0 ? "+" : ""}{r.avgNextDayDeviation.toFixed(1)}
+                                </span>
+                              </div>
+                              <div className="h-1.5 rounded-full overflow-hidden mt-1.5" style={{ background: C.card }}>
+                                <div className="h-full rounded-full" style={{ width: `${dropPct}%`, background: C.curtain }} />
+                              </div>
+                              <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
+                                計算上の負荷 {r.avgLoad.toFixed(0)}・{r.count}回
+                                {r.record.confidence !== "entered" && "（推定値）"}
+                              </p>
+                              {isHeavierThanExpected && (
+                                <p className="text-xs mt-1" style={{ color: C.curtain }}>⚠ 計算より重い（音域以外の要因があるかもしれません）</p>
+                              )}
+                              {isLighterThanExpected && (
+                                <p className="text-xs mt-1" style={{ color: C.sage }}>この役はあなたに合っているのかもしれません</p>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                    {roleLoadStats.lowN.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>まだ3回未満（記録数のみ表示）</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {roleLoadStats.lowN.map((r) => (
+                            <span key={r.name} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>
+                              {r.name}（{r.count}回、あと{Math.max(0, 3 - r.count)}回でランキングに入ります）
+                            </span>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    )}
                     <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
-                      ※ あくまで記録上の傾向であり、件数が少ないうちは参考程度にご覧ください。「この役の翌日は必ず落ちる」といった判断は、記録が積み重なってから行ってください。
+                      ※ あくまで記録上の傾向です。「この役は喉を痛める」といった断定ではなく、「翌日の落ち込みが大きい」という観測にとどめています。
                     </p>
                   </div>
                 )}
