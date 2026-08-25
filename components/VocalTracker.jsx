@@ -1769,10 +1769,10 @@ export default function VocalTracker({ userId, userEmail }) {
     });
     const outcomeText = (stats) => {
       const parts = [];
-      if (stats.throat != null) parts.push(`喉のコンディションは平均${stats.throat.toFixed(1)}`);
-      if (stats.voice != null) parts.push(`声の質は平均${stats.voice.toFixed(1)}`);
-      if (stats.resonance != null) parts.push(`響きスコアは平均${stats.resonance.toFixed(1)}`);
-      return parts.length ? parts.join("、") : null;
+      if (stats.throat != null) parts.push(t("compositeOutcomeThroat").replace("{value}", stats.throat.toFixed(1)));
+      if (stats.voice != null) parts.push(t("compositeOutcomeVoice").replace("{value}", stats.voice.toFixed(1)));
+      if (stats.resonance != null) parts.push(t("compositeOutcomeResonance").replace("{value}", stats.resonance.toFixed(1)));
+      return parts.length ? parts.join(t("listSeparatorComma")) : null;
     };
 
     const good = describe(goodDays);
@@ -1782,22 +1782,37 @@ export default function VocalTracker({ userId, userEmail }) {
     if (!goodText || !poorText) return null;
 
     const sentences = [
-      `タンパク質が多く摂取され、摂取カロリーが目標に届いており、心の余裕も十分にあり、睡眠時間も十分にとれていた日（${good.n}日）は、${goodText}でした。`,
-      `しかし反対に、これらの条件があまり揃っていなかった日（${poor.n}日）は、${poorText}でした。`
+      t("compositeGoodDaysSentence").replace("{n}", good.n).replace("{outcome}", goodText),
+      t("compositePoorDaysSentence").replace("{n}", poor.n).replace("{outcome}", poorText)
     ];
 
     const { bestRest } = mentalTopGroups;
     if (bestRest) {
       const label = REST_METHOD_KEYS[bestRest.method] ? t(REST_METHOD_KEYS[bestRest.method]) : bestRest.method;
-      sentences.push(`なお、休養方法では「${label}」を選んだ日の心の余裕が平均${bestRest.avgEase.toFixed(1)}と高めでした（${bestRest.n}件）。`);
+      sentences.push(
+        t("compositeRestMethodSentence")
+          .replace("{method}", label)
+          .replace("{avg}", bestRest.avgEase.toFixed(1))
+          .replace("{n}", bestRest.n)
+      );
     }
     const topGoodFood = dietGoodBadFoodStats.good[0] || null;
     const topBadFood = dietGoodBadFoodStats.bad[0] || null;
     if (topGoodFood) {
-      sentences.push(`食事では、喉の調子が良かった日（${dietGoodBadFoodStats.goodTotal}日）に「${topGoodFood.name}」を食べていることが多いです（${topGoodFood.count}日）。`);
+      sentences.push(
+        t("compositeGoodFoodSentence")
+          .replace("{n}", dietGoodBadFoodStats.goodTotal)
+          .replace("{food}", topGoodFood.name)
+          .replace("{count}", topGoodFood.count)
+      );
     }
     if (topBadFood) {
-      sentences.push(`反対に、喉の調子が悪かった日（${dietGoodBadFoodStats.badTotal}日）には「${topBadFood.name}」を食べていることが多いです（${topBadFood.count}日）。`);
+      sentences.push(
+        t("compositeBadFoodSentence")
+          .replace("{n}", dietGoodBadFoodStats.badTotal)
+          .replace("{food}", topBadFood.name)
+          .replace("{count}", topBadFood.count)
+      );
     }
 
     return sentences;
@@ -3006,9 +3021,9 @@ export default function VocalTracker({ userId, userEmail }) {
                   </p>
                 </div>
                 <div className="pt-2">
-                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>声</h2>
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderVoice")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                    声の状態・喉のコンディション・響きに関する記録をまとめています。
+                    {t("groupHeaderVoiceDesc")}
                   </p>
                 </div>
 
@@ -3182,16 +3197,16 @@ export default function VocalTracker({ userId, userEmail }) {
                   <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("notePitchChartLegend")}</p>
                 </div>
                 <div className="pt-2">
-                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>身体</h2>
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderBody")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                    体重・食事・タンパク質・栄養摂取など、身体に関する記録をまとめています。
+                    {t("groupHeaderBodyDesc")}
                   </p>
                 </div>
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">体重・摂取カロリー・タンパク質のまとめ</h3>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleBodySummaryChart")}</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                    体重・摂取カロリー・タンパク質摂取量（体重1kgあたり）を1つのグラフで見比べられるようにしています。
+                    {t("noteBodySummaryChart")}
                   </p>
                   <div style={{ width: "100%", height: 260 }}>
                     <ResponsiveContainer>
@@ -3211,19 +3226,19 @@ export default function VocalTracker({ userId, userEmail }) {
                   <div className="flex flex-wrap gap-3 mt-2">
                     <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
                       <span style={{ width: 9, height: 9, borderRadius: 999, background: C.gold, display: "inline-block" }} />
-                      摂取カロリー（kcal・左軸）
+                      {t("legendCalorieAxis")}
                     </span>
                     <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
                       <span style={{ width: 9, height: 2, background: C.curtain, display: "inline-block" }} />
-                      体重（kg・右軸）
+                      {t("legendWeightAxis")}
                     </span>
                     <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
                       <span style={{ width: 9, height: 2, background: C.sage, display: "inline-block" }} />
-                      タンパク質（g/kg・軸は非表示、ツールチップで確認可）
+                      {t("legendProteinAxis")}
                     </span>
                   </div>
                   <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                    タンパク質はスケールが大きく異なるため軸は表示していませんが、線にカーソルを合わせると数値を確認できます。
+                    {t("noteBodySummaryChartScale")}
                   </p>
                 </div>
 
@@ -3286,9 +3301,9 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                 </div>
                 <div className="pt-2">
-                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>メンタル</h2>
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("sectionMental")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                    心の余裕に関する記録を、ここにまとめて振り返れるようにしています。
+                    {t("groupHeaderMentalDesc")}
                   </p>
                 </div>
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
@@ -3336,15 +3351,15 @@ export default function VocalTracker({ userId, userEmail }) {
                 </div>
                 {(mentalTagStats.low.length > 0 || mentalTagStats.high.length > 0) && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">気持ちタグの傾向</h3>
+                    <h3 className="ff-display italic text-lg mb-1">{t("titleMentalTagStats")}</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      「今の気持ちに近いもの」で選んだタグを、心の余裕が低かった日・高かった日それぞれで集計しています。
+                      {t("noteMentalTagStats")}
                     </p>
                     <div className="space-y-3">
                       {mentalTagStats.low.length > 0 && (
                         <div>
                           <p className="text-xs font-medium mb-1.5" style={{ color: C.rust }}>
-                            心の余裕が低かった日（{mentalTagStats.lowTotal}日）でよく選ばれたタグ
+                            {t("labelLowEaseTagsHeader").replace("{n}", mentalTagStats.lowTotal)}
                           </p>
                           <div className="flex flex-wrap gap-1.5">
                             {mentalTagStats.low.map(({ tag, count }) => (
@@ -3358,7 +3373,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       {mentalTagStats.high.length > 0 && (
                         <div>
                           <p className="text-xs font-medium mb-1.5" style={{ color: C.inkSoft }}>
-                            心の余裕が高かった日（{mentalTagStats.highTotal}日）でよく選ばれたタグ
+                            {t("labelHighEaseTagsHeader").replace("{n}", mentalTagStats.highTotal)}
                           </p>
                           <div className="flex flex-wrap gap-1.5">
                             {mentalTagStats.high.map(({ tag, count }) => (
@@ -3373,9 +3388,9 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                 )}
                 <div className="pt-2">
-                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>全体を関連づけた分析</h2>
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderOverall")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                    体重・メンタル・食事・声の調子など、グループをまたいだ関連をまとめて見ていきます。
+                    {t("groupHeaderOverallDesc")}
                   </p>
                 </div>
                 {restMethodStats.length > 0 && (
@@ -3508,9 +3523,9 @@ export default function VocalTracker({ userId, userEmail }) {
                 )}
                 {compositePatternInsight && compositePatternInsight.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">複数の条件を組み合わせて見えてきたこと</h3>
+                    <h3 className="ff-display italic text-lg mb-1">{t("titleCompositeInsight")}</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      タンパク質摂取量・摂取カロリー・心の余裕・睡眠時間、これらの条件が同時に揃っているかどうかで日を分けて比較しています。
+                      {t("noteCompositeInsight")}
                     </p>
                     <div className="space-y-2">
                       {compositePatternInsight.map((s, i) => (
@@ -3520,7 +3535,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       ))}
                     </div>
                     <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
-                      ※ あくまで記録上の傾向であり、因果関係を断定するものではありません。件数が少ないうちは参考程度にご覧ください。
+                      {t("noteCompositeInsightDisclaimer")}
                     </p>
                   </div>
                 )}
