@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  Cell, ScatterChart, Scatter, ReferenceLine, LineChart, Line, ComposedChart
+  Cell, ScatterChart, Scatter, ReferenceLine, LineChart, Line, ComposedChart, Area
 } from "recharts";
 import { createClient } from "@/lib/supabase/client";
 import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC } from "@/lib/tokens";
@@ -272,6 +272,92 @@ function computeOverallScore(entry) {
   );
   if (parts.length === 0) return null;
   return parts.reduce((a, b) => a + b, 0) / parts.length;
+}
+// 「声の調子スコア」（100点満点）と同じ重み付けを、1日分の記録に対して計算する版。
+// 偏差値（自分比の分布）を出すには、14日平均1つではなく日ごとの値の並びが必要なため。
+function computeDailyScore100(entry) {
+  if (!entry) return null;
+  const throatScore = typeof entry.throatCondition === "number" ? (entry.throatCondition / 5) * 100 : null;
+  const voiceScore = typeof entry.voiceQuality === "number" ? (entry.voiceQuality / 5) * 100 : null;
+  const easeScore = typeof entry.ease === "number" ? (entry.ease / 5) * 100 : null;
+  let sleepHoursScore = null;
+  if (typeof entry.sleepHours === "number") {
+    const h = entry.sleepHours;
+    if (h >= 7 && h <= 9) sleepHoursScore = 100;
+    else if (h < 7) sleepHoursScore = Math.max(0, 100 - (7 - h) * 20);
+    else sleepHoursScore = Math.max(0, 100 - (h - 9) * 15);
+  }
+  const sleepQualityScore = typeof entry.sleepQuality === "number" ? (entry.sleepQuality / 5) * 100 : null;
+  const sleepScore = (sleepHoursScore != null && sleepQualityScore != null)
+    ? (sleepHoursScore + sleepQualityScore) / 2
+    : (sleepHoursScore ?? sleepQualityScore);
+  const hasSymptoms = (entry.throatSymptoms || []).length > 0;
+  const symptomScore = hasSymptoms ? 0 : 100;
+  const waterMl = Object.values(entry.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0);
+  const waterScore = waterMl > 0 ? Math.min(100, (waterMl / 2000) * 100) : null;
+  const components = [
+    { score: throatScore, weight: 25 },
+    { score: voiceScore, weight: 20 },
+    { score: sleepScore, weight: 20 },
+    { score: easeScore, weight: 15 },
+    { score: symptomScore, weight: 10 },
+    { score: waterScore, weight: 10 }
+  ];
+  const valid = components.filter((c) => c.score != null);
+  const totalWeight = valid.reduce((s, c) => s + c.weight, 0);
+  if (totalWeight === 0) return null;
+  return valid.reduce((s, c) => s + c.score * c.weight, 0) / totalWeight;
+}
+// Magnus式による絶対湿度（g/m³）への換算。相対湿度は気温が変わると同じ%でも
+// 実際の水分量が変わってしまうため、予報モデルでは絶対湿度を使う。
+function computeAbsoluteHumidity(tempC, rhPercent) {
+  if (typeof tempC !== "number" || typeof rhPercent !== "number") return null;
+  const es = 6.112 * Math.exp((17.67 * tempC) / (tempC + 243.5));
+  return (216.7 * es * rhPercent / 100) / (273.15 + tempC);
+}
+// 声の予報（一般知見版）：活動種別ごとの発声負荷の重み
+const ACTIVITY_LOAD_WEIGHT = { "休養": 0, "自主練習": 1.0, "レッスン": 1.2, "リハーサル": 1.3, "本番": 1.6 };
+// 事前値 β₀（lavoce-指標設計図.md 01節より）。一般知見版なので、記録が少ないうちも
+// この係数だけで予報が成立する（個人化のリッジ回帰は将来のフェーズで追加）。
+const FORECAST_PRIORS = {
+  sleepHours: 0.25, dinnerGap: 0.10, waterL: 0.15, ease: 0.20,
+  alcohol: -0.40, prevLoad: -0.15, absHumidity: 0.02, prevThroat: 0.35
+};
+const FORECAST_FACTOR_LABELS = {
+  sleepHours: "睡眠時間", dinnerGap: "夕食から就寝までの間隔", waterL: "水分量", ease: "心の余裕",
+  alcohol: "アルコール", prevLoad: "前日の発声負荷", absHumidity: "絶対湿度", prevThroat: "前日の喉の状態"
+};
+// 前日の記録から、予報モデルの説明変数を取り出す
+function extractForecastPredictors(prevEntry) {
+  if (!prevEntry) return null;
+  const sleepHours = typeof prevEntry.sleepHours === "number" ? prevEntry.sleepHours : null;
+  const dinnerGap = computeTimeGapHours(prevEntry.dinnerTime, prevEntry.bedtime);
+  const waterMl = Object.values(prevEntry.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0);
+  const waterL = waterMl > 0 ? waterMl / 1000 : null;
+  const ease = typeof prevEntry.ease === "number" ? prevEntry.ease : null;
+  const alcohol = (prevEntry.dinnerTags || []).includes("アルコール") ? 1 : 0;
+  const loadWeight = ACTIVITY_LOAD_WEIGHT[prevEntry.activityType];
+  const prevLoad = (typeof prevEntry.activityDuration === "number" && loadWeight != null)
+    ? (prevEntry.activityDuration * loadWeight) / 1.5 // 1.5時間 ≒ 1正規化単位の目安
+    : null;
+  const absHumidity = computeAbsoluteHumidity(prevEntry.temperature, prevEntry.humidity);
+  const prevThroat = typeof prevEntry.throatCondition === "number" ? prevEntry.throatCondition : null;
+  return { sleepHours, dinnerGap, waterL, ease, alcohol, prevLoad, absHumidity, prevThroat };
+}
+// ŷ = μ + Σ βⱼ(xⱼ − x̄ⱼ)。欠損した説明変数はその項を0（＝平均値で埋めたのと同じ）として無視する。
+function predictThroat(predictors, means, mu) {
+  if (!predictors) return null;
+  let yhat = mu;
+  let missingCount = 0;
+  Object.keys(FORECAST_PRIORS).forEach((k) => {
+    const x = predictors[k];
+    if (typeof x === "number" && typeof means[k] === "number") {
+      yhat += FORECAST_PRIORS[k] * (x - means[k]);
+    } else {
+      missingCount += 1;
+    }
+  });
+  return { yhat: Math.max(1, Math.min(5, yhat)), missingCount };
 }
 function pearson(xs, ys) {
   const n = xs.length;
@@ -2073,6 +2159,125 @@ export default function VocalTracker({ userId, userEmail }) {
   const symptomGridDates = useMemo(() => symptomDatesSorted.slice(-30), [symptomDatesSorted]);
   // ---- lavoce-指標設計図.md フェーズ1の3指標用データ ここまで ----
 
+  // ---- ここから、lavoce-指標設計図.md フェーズ2（02偏差値・01予報）用データ ----
+  // 02. コンディション偏差値：直近28日分の「声の調子スコア」を日ごとに並べ、自分の分布の中で今日がどこにいるかを見る。
+  const dailyScoreSeries = useMemo(() => {
+    const realToday = todayISO();
+    const dates = [];
+    for (let i = 27; i >= 0; i--) dates.push(addDays(realToday, -i));
+    return dates
+      .map((d) => ({ date: d, score: computeDailyScore100(entries[d]) }))
+      .filter((x) => x.score != null);
+  }, [entries]);
+  const deviationScore = useMemo(() => {
+    if (dailyScoreSeries.length < 7) return null;
+    const values = dailyScoreSeries.map((d) => d.score);
+    const n = values.length;
+    const mean = values.reduce((a, b) => a + b, 0) / n;
+    let sigma;
+    if (n < 14) {
+      const sorted = [...values].sort((a, b) => a - b);
+      const median = n % 2 === 1 ? sorted[(n - 1) / 2] : (sorted[n / 2 - 1] + sorted[n / 2]) / 2;
+      const absDevs = values.map((v) => Math.abs(v - median)).sort((a, b) => a - b);
+      const mad = absDevs.length % 2 === 1 ? absDevs[(absDevs.length - 1) / 2] : (absDevs[absDevs.length / 2 - 1] + absDevs[absDevs.length / 2]) / 2;
+      sigma = 1.4826 * mad;
+    } else {
+      const variance = values.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / (n - 1);
+      sigma = Math.sqrt(variance);
+    }
+    sigma = Math.max(sigma, 0.5);
+    const todayEntry = dailyScoreSeries[dailyScoreSeries.length - 1];
+    const z = (todayEntry.score - mean) / sigma;
+    const T = Math.min(80, Math.max(20, Math.round(50 + 10 * z)));
+    const position = values.filter((v) => v > todayEntry.score).length + 1; // 1位＝この期間でいちばん良い日
+    const topPercentPct = Math.max(1, Math.round((position / n) * 100));
+    return { z, T, n, position, topPercentPct, today: Math.round(todayEntry.score) };
+  }, [dailyScoreSeries]);
+
+  // 01. 声の予報（一般知見版）：前夜の行動から翌朝の喉スコアを予測する。まだ個人化せず、
+  // 生理学的な一般知見（事前値 β₀）だけで予報する。記録が増えるほどの個人化は将来のフェーズで追加。
+  const forecastTrainingSet = useMemo(() => {
+    const realToday = todayISO();
+    const rows = [];
+    for (let i = 35; i >= 0; i--) {
+      const d = addDays(realToday, -i);
+      const prevD = addDays(d, -1);
+      const prevEntry = entries[prevD];
+      if (!prevEntry) continue;
+      const todayEntry = entries[d];
+      const actual = todayEntry && typeof todayEntry.throatCondition === "number" ? todayEntry.throatCondition : null;
+      rows.push({ date: d, predictors: extractForecastPredictors(prevEntry), actual });
+    }
+    return rows;
+  }, [entries]);
+  const predictorMeans = useMemo(() => {
+    const keys = Object.keys(FORECAST_PRIORS);
+    const means = {};
+    keys.forEach((k) => {
+      const vals = forecastTrainingSet.map((r) => r.predictors && r.predictors[k]).filter((v) => typeof v === "number");
+      means[k] = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+    });
+    return means;
+  }, [forecastTrainingSet]);
+  const throatMu = useMemo(() => {
+    const vals = Object.keys(entries).sort().slice(-28).map((d) => entries[d].throatCondition).filter((v) => typeof v === "number");
+    return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 3;
+  }, [entries]);
+  const forecastResiduals = useMemo(() => {
+    return forecastTrainingSet
+      .map((r) => {
+        if (r.actual == null) return null;
+        const pred = predictThroat(r.predictors, predictorMeans, throatMu);
+        if (!pred) return null;
+        return { date: r.date, actual: r.actual, yhat: pred.yhat, residual: r.actual - pred.yhat };
+      })
+      .filter((x) => x != null);
+  }, [forecastTrainingSet, predictorMeans, throatMu]);
+  const forecastResidualSD = useMemo(() => {
+    if (forecastResiduals.length < 3) return 0.8; // データが少ないうちの初期の目安幅
+    const vals = forecastResiduals.map((r) => r.residual);
+    const n = vals.length;
+    const mean = vals.reduce((a, b) => a + b, 0) / n;
+    const variance = vals.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / (n - 1);
+    return Math.sqrt(variance) || 0.8;
+  }, [forecastResiduals]);
+  const forecastHitRate = useMemo(() => {
+    const recent = forecastResiduals.slice(-30);
+    if (recent.length === 0) return null;
+    const hits = recent.filter((r) => Math.abs(r.residual) <= 0.5).length;
+    return { rate: Math.round((hits / recent.length) * 100), n: recent.length };
+  }, [forecastResiduals]);
+  const todayForecast = useMemo(() => {
+    const realToday = todayISO();
+    const yDate = addDays(realToday, -1);
+    const prevEntry = entries[yDate];
+    if (!prevEntry) return { hasData: false, yesterdayDate: yDate };
+    const predictors = extractForecastPredictors(prevEntry);
+    const pred = predictThroat(predictors, predictorMeans, throatMu);
+    if (!pred) return { hasData: false, yesterdayDate: yDate };
+    const intervalWidth = forecastResidualSD * (pred.missingCount > 0 ? 1.2 : 1);
+    const contributions = Object.keys(FORECAST_PRIORS)
+      .filter((k) => typeof predictors[k] === "number" && typeof predictorMeans[k] === "number")
+      .map((k) => ({ key: k, label: FORECAST_FACTOR_LABELS[k], contribution: FORECAST_PRIORS[k] * (predictors[k] - predictorMeans[k]) }))
+      .sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution));
+    return {
+      hasData: true,
+      yesterdayDate: yDate,
+      yhat: pred.yhat,
+      low: Math.max(1, pred.yhat - intervalWidth),
+      high: Math.min(5, pred.yhat + intervalWidth),
+      topFactor: contributions[0] || null
+    };
+  }, [entries, predictorMeans, throatMu, forecastResidualSD]);
+  const forecastChartData = useMemo(() => {
+    return forecastResiduals.slice(-14).map((r) => {
+      const low = Math.max(1, r.yhat - forecastResidualSD);
+      const high = Math.min(5, r.yhat + forecastResidualSD);
+      return { date: r.date.slice(5), actual: r.actual, yhat: Math.round(r.yhat * 10) / 10, low, bandWidth: Math.max(0, high - low) };
+    });
+  }, [forecastResiduals, forecastResidualSD]);
+  // ---- フェーズ2（02偏差値・01予報）用データ ここまで ----
+
 
   // 装備・配置・ドラッグ移動は、その場ではデータベースに保存しない。
   // 「保存中」の表示に気づかれにくかったこと、また保存されたかどうかが分かりにくいという指摘を受けて、
@@ -3246,6 +3451,49 @@ export default function VocalTracker({ userId, userEmail }) {
                     </>
                   )}
                 </div>
+
+                {recordedDaysTotal >= 7 ? (
+                  deviationScore && (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <h3 className="ff-display italic text-lg mb-1">コンディション偏差値</h3>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        100点満点の絶対評価だと、良い日も悪い日も似た点数に集まりがちです。自分の直近{deviationScore.n}日の分布の中で、今日がどこにいるかで見ます。
+                      </p>
+                      <div className="flex items-center gap-5">
+                        <div style={{ position: "relative", width: 96, height: 96, flexShrink: 0 }}>
+                          <svg viewBox="0 0 100 100" style={{ transform: "rotate(-90deg)" }}>
+                            <circle cx="50" cy="50" r="42" fill="none" stroke={C.paper} strokeWidth="10" />
+                            <circle
+                              cx="50" cy="50" r="42" fill="none"
+                              stroke={deviationScore.T >= 60 ? C.sage : deviationScore.T <= 40 ? C.curtain : C.gold}
+                              strokeWidth="10" strokeLinecap="round"
+                              strokeDasharray={`${(Math.min(100, Math.max(0, (deviationScore.T - 20) / 60 * 100)) / 100) * 264} 264`}
+                            />
+                          </svg>
+                          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                            <span className="ff-display italic" style={{ fontSize: "1.7rem", color: C.ink }}>{deviationScore.T}</span>
+                            <span className="text-xs" style={{ color: C.inkSoft }}>偏差値</span>
+                          </div>
+                        </div>
+                        <p className="text-xs" style={{ color: C.ink }}>
+                          今日は<strong>偏差値{deviationScore.T}</strong>。この{deviationScore.n}日間で上から{deviationScore.topPercentPct}%、
+                          <strong>{deviationScore.position}番目に良い日</strong>です。
+                        </p>
+                      </div>
+                      <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                        ※ 絶対値ではなく、自分自身の記録の中での相対的な位置を示す参考値です。
+                      </p>
+                    </div>
+                  )
+                ) : (
+                  <LockedCard
+                    title="コンディション偏差値"
+                    teaser="今日が「自分比でどのくらい良い日か」を偏差値で見られます"
+                    current={recordedDaysTotal}
+                    required={7}
+                  />
+                )}
+
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-3">{t("titleAnalysisPeriod")}</h3>
                   <div className="flex gap-2 flex-wrap">
@@ -3309,6 +3557,72 @@ export default function VocalTracker({ userId, userEmail }) {
                       )}
                     </>
                   )}
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">声の予報</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    前夜の行動から、今日の喉の状態（1〜5）を数値で予報します。まだ一般知見だけの予報ですが、記録が増えるほど精度が上がっていきます。
+                  </p>
+                  {!todayForecast.hasData ? (
+                    <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
+                      前日の記録がまだ無いため、予報を組み立てられません。
+                    </p>
+                  ) : (
+                    <>
+                      <div className="flex items-end justify-between mb-3">
+                        <div>
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="ff-display italic" style={{ fontSize: "2.4rem", color: levelColor(Math.round(todayForecast.yhat)) }}>
+                              {todayForecast.yhat.toFixed(1)}
+                            </span>
+                            <span className="text-sm" style={{ color: C.inkSoft }}>/ 5</span>
+                          </div>
+                          <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
+                            予測区間 {todayForecast.low.toFixed(1)}〜{todayForecast.high.toFixed(1)}
+                          </p>
+                        </div>
+                        {forecastHitRate && (
+                          <div className="text-right">
+                            <div className="ff-mono" style={{ fontSize: "1.2rem", color: C.ink }}>{forecastHitRate.rate}%</div>
+                            <p className="text-xs" style={{ color: C.inkSoft }}>直近{forecastHitRate.n}日の的中率</p>
+                          </div>
+                        )}
+                      </div>
+                      {todayForecast.topFactor && (
+                        <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
+                          {todayForecast.topFactor.label}が{todayForecast.topFactor.contribution >= 0 ? "良い方向に" : "厳しい方向に"}いちばん効いています。
+                        </p>
+                      )}
+                      {forecastChartData.length > 0 && (
+                        <div style={{ width: "100%", height: 180 }}>
+                          <ResponsiveContainer>
+                            <ComposedChart data={forecastChartData} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                              <CartesianGrid stroke={C.line} />
+                              <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                              <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 11, fill: C.inkSoft }} />
+                              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                              <Area dataKey="low" stackId="band" stroke="none" fill="transparent" />
+                              <Area dataKey="bandWidth" stackId="band" stroke="none" fill={C.gold} fillOpacity={0.15} />
+                              <Line type="monotone" dataKey="yhat" name="予報" stroke={C.gold} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                              <Line type="monotone" dataKey="actual" name="実測" stroke={C.curtain} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                            </ComposedChart>
+                          </ResponsiveContainer>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-3 mt-2">
+                        <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                          <span style={{ width: 8, height: 2, background: C.gold, display: "inline-block" }} />予報
+                        </span>
+                        <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                          <span style={{ width: 8, height: 2, background: C.curtain, display: "inline-block" }} />実測
+                        </span>
+                      </div>
+                    </>
+                  )}
+                  <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                    ※ 生理学的な一般知見にもとづく参考値であり、医学的な予測ではありません。
+                  </p>
                 </div>
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
