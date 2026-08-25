@@ -6,7 +6,7 @@ import {
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
   Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot, MessageCircle, Home,
   Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe, Lock,
-  Volume2, Plane, AudioWaveform, Timer, MessageSquare, ClipboardList
+  Volume2, Plane, AudioWaveform, Timer, MessageSquare, ClipboardList, GraduationCap, FileText
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -270,6 +270,7 @@ const TABS = [
   { key: "history", labelKey: "tabHistory", icon: CalendarDays },
   { key: "analysis", labelKey: "tabAnalysis", icon: BarChart3 },
   { key: "questionnaires", labelKey: "tabQuestionnaires", icon: ClipboardList },
+  { key: "clinicSummary", labelKey: "tabClinicSummary", icon: FileText },
   { key: "advice", labelKey: "tabAdvice", icon: Bot },
   { key: "info", labelKey: "tabInfo", icon: BookOpen },
   { key: "voicetheory", labelKey: "tabVoiceTheory", icon: Music2, href: "/vocal-theory" }
@@ -1978,6 +1979,13 @@ export default function VocalTracker({ userId, userEmail }) {
   const [loading, setLoading] = useState(true);
   const [entries, setEntries] = useState({});
   const [activeTab, setActiveTab] = useState("today");
+  const [lessonMode, setLessonMode] = useState(false);
+  const lessonExitTimerRef = useRef(null);
+  const [lessonExitProgress, setLessonExitProgress] = useState(0);
+  const [clinicPeriodMode, setClinicPeriodMode] = useState("auto");
+  const [clinicCustomStart, setClinicCustomStart] = useState("");
+  const [clinicCustomEnd, setClinicCustomEnd] = useState("");
+  const [clinicFreeNote, setClinicFreeNote] = useState("");
   const [selectedDate, setSelectedDate] = useState(todayISOUTC());
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
@@ -3502,30 +3510,109 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [pastPerformanceDates, entries, acwrSeries]);
   // ---- 本番ピーキング曲線 用データ ここまで ----
 
-  // ---- lavoce-指標設計図.md「週次ボイスカルテ」用データ ----
-  // 1週間ぶんを、先生・ボイストレーナー・耳鼻科に見せられる1枚にまとめる。
-  const weeklyVoiceChart = useMemo(() => {
+  // ---- lavoce-週次カルテ見直しパッチ.md §4: レッスンモード 用データ ----
+  // 先生に画面をそのまま見せるための読み取り専用ビュー。メンタルの日記・気持ちタグ・
+  // 体重・体組成・食事の詳細・既往症は、意図的にここでは一切参照しない。
+  const lessonModeData = useMemo(() => {
     const realToday = todayISO();
-    const weekDates = [];
-    for (let i = 6; i >= 0; i--) weekDates.push(addDays(realToday, -i));
+    const dates4w = [];
+    for (let i = 27; i >= 0; i--) dates4w.push(addDays(realToday, -i));
+    const scoreTrend = dates4w.map((d) => ({ date: d.slice(5), score: entries[d] ? computeDailyScore100(entries[d]) : null }));
+    const symptomWeeks = dates4w.map((d) => ({ date: d, symptoms: entries[d] ? (entries[d].throatSymptoms || []) : null }));
+    const loadTrend = dates4w.map((d) => ({ date: d.slice(5), acwr: acwrSeries[d] ? roundTo1(acwrSeries[d].acwr) : null }));
+    const allMidis = [];
+    dates4w.forEach((d) => {
+      const e = entries[d];
+      if (!e) return;
+      const w = noteToMidi(e.wakeNote), r = noteToMidi(e.routineNote);
+      if (w != null) allMidis.push(w);
+      if (r != null) allMidis.push(r);
+    });
+    const rangeInWindow = allMidis.length ? { low: Math.min(...allMidis), high: Math.max(...allMidis) } : null;
+    return { scoreTrend, symptomWeeks, loadTrend, rangeInWindow, recordedCount: dates4w.filter((d) => entries[d]).length };
+  }, [entries, acwrSeries]);
+  // ---- レッスンモード 用データ ここまで ----
 
-    const deviationTrend = weekDates.map((d) => ({ date: d, score: computeDailyScore100(entries[d]) }));
-    const symptomWeek = weekDates.map((d) => ({ date: d, symptoms: entries[d] ? (entries[d].throatSymptoms || []) : null }));
-    const loadWeek = weekDates.map((d) => ({ date: d, acwr: acwrSeries[d] ? acwrSeries[d].acwr : null }));
-
-    // 今週わかったこと1つ：声の時差マップの発見 → なければ効いた習慣ランキングの最上位 → なければ該当なし
-    let keyFinding = null;
-    if (topLagFinding) {
-      keyFinding = `${topLagFinding.variableLabel}の「${topLagFinding.lag}日後」に、声への関係が最も強く出ています（ρ=${topLagFinding.rho.toFixed(2)}）。`;
-    } else if (effectiveHabitRanking.length > 0 && effectiveHabitRanking[0].stars >= 2) {
-      const top = effectiveHabitRanking[0];
-      keyFinding = `${top.label}日は、翌日の声が平均で${top.g >= 0 ? "良く" : "悪く"}記録されています（効果量 g=${top.g.toFixed(2)}）。`;
-    }
-
-    const recordedCount = weekDates.filter((d) => entries[d]).length;
-    return { weekDates, deviationTrend, symptomWeek, loadWeek, keyFinding, recordedCount };
-  }, [entries, acwrSeries, topLagFinding, effectiveHabitRanking]);
-  // ---- 週次ボイスカルテ 用データ ここまで ----
+  // ---- lavoce-週次カルテ見直しパッチ.md §5: 受診用サマリー 用データ ----
+  // 医師に見せる想定のため、偏差値・ACWR・ラグ相関・効果量・CPPSなどアプリ独自の指標は
+  // 意図的に一切含めない（§5.4）。記録した項目名をそのまま使い、病名は書かない。
+  const symptomContinuousRanges = useMemo(() => {
+    const dates = Object.keys(entries).sort();
+    const ranges = {};
+    SYMPTOM_OPTIONS.forEach((symptom) => {
+      let currentStart = null, prevDate = null;
+      const list = [];
+      dates.forEach((date) => {
+        const has = (entries[date].throatSymptoms || []).includes(symptom);
+        if (has) {
+          if (!(currentStart && prevDate && addDays(prevDate, 1) === date)) currentStart = date;
+        } else if (currentStart) {
+          list.push({ start: currentStart, end: prevDate });
+          currentStart = null;
+        }
+        prevDate = date;
+      });
+      if (currentStart) list.push({ start: currentStart, end: prevDate });
+      ranges[symptom] = list;
+    });
+    return ranges;
+  }, [entries]);
+  // §5.2: 現在まで続いている症状の連続区間のうち、開始日がいちばん早いものを自動検出する
+  const clinicAutoDetectedStart = useMemo(() => {
+    const dates = Object.keys(entries).sort();
+    if (dates.length === 0) return null;
+    const latestDate = dates[dates.length - 1];
+    let earliest = null;
+    Object.values(symptomContinuousRanges).forEach((ranges) => {
+      ranges.forEach((r) => {
+        if (r.end === latestDate && (!earliest || r.start < earliest)) earliest = r.start;
+      });
+    });
+    return earliest;
+  }, [symptomContinuousRanges, entries]);
+  const clinicPeriodRange = useMemo(() => {
+    const realToday = todayISO();
+    if (clinicPeriodMode === "month") return { start: addDays(realToday, -29), end: realToday };
+    if (clinicPeriodMode === "3months") return { start: addDays(realToday, -89), end: realToday };
+    if (clinicPeriodMode === "custom") return { start: clinicCustomStart || addDays(realToday, -29), end: clinicCustomEnd || realToday };
+    return { start: clinicAutoDetectedStart || addDays(realToday, -29), end: realToday }; // "auto"
+  }, [clinicPeriodMode, clinicAutoDetectedStart, clinicCustomStart, clinicCustomEnd]);
+  const clinicSymptomSummary = useMemo(() => {
+    const { start, end } = clinicPeriodRange;
+    const datesInRange = Object.keys(entries).filter((d) => d >= start && d <= end).sort();
+    return SYMPTOM_OPTIONS.map((symptom) => {
+      const symptomDates = datesInRange.filter((d) => (entries[d].throatSymptoms || []).includes(symptom));
+      if (symptomDates.length === 0) return null;
+      return { symptom, firstDate: symptomDates[0], lastDate: symptomDates[symptomDates.length - 1], count: symptomDates.length, dates: symptomDates };
+    }).filter(Boolean);
+  }, [entries, clinicPeriodRange]);
+  // §5.3-③: 週あたりの発声時間（グラフは1つだけ、というルールに沿う）
+  const clinicWeeklyVoiceUsage = useMemo(() => {
+    const { start, end } = clinicPeriodRange;
+    const weeks = {};
+    Object.keys(entries).filter((d) => d >= start && d <= end).forEach((d) => {
+      const e = entries[d];
+      if (typeof e.activityDuration !== "number") return;
+      const dayOfWeek = new Date(d + "T00:00:00").getDay();
+      const weekStart = addDays(d, -dayOfWeek);
+      weeks[weekStart] = (weeks[weekStart] || 0) + e.activityDuration;
+    });
+    return Object.entries(weeks).sort(([a], [b]) => a.localeCompare(b)).map(([weekStart, hours]) => ({ week: weekStart.slice(5), hours: roundTo1(hours) }));
+  }, [entries, clinicPeriodRange]);
+  const clinicSleepAverage = useMemo(() => {
+    const { start, end } = clinicPeriodRange;
+    const vals = Object.keys(entries).filter((d) => d >= start && d <= end).map((d) => entries[d].sleepHours).filter((v) => typeof v === "number");
+    return vals.length ? roundTo1(vals.reduce((a, b) => a + b, 0) / vals.length) : null;
+  }, [entries, clinicPeriodRange]);
+  const clinicMedications = useMemo(() => {
+    const { start, end } = clinicPeriodRange;
+    const meds = new Set();
+    Object.keys(entries).filter((d) => d >= start && d <= end).forEach((d) => {
+      (entries[d].medicationTags || []).forEach((m) => meds.add(m));
+    });
+    return Array.from(meds);
+  }, [entries, clinicPeriodRange]);
+  // ---- 受診用サマリー 用データ ここまで ----
 
 
   // 装備・配置・ドラッグ移動は、その場ではデータベースに保存しない。
@@ -3884,6 +3971,9 @@ export default function VocalTracker({ userId, userEmail }) {
                 {LANGUAGES.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
               </select>
             </div>
+            <button onClick={() => setLessonMode(true)} title="レッスンモード" className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line, color: C.inkSoft }}>
+              <GraduationCap size={14} />
+            </button>
             <a href="/feedback" title={t("navFeedback")} className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line, color: C.inkSoft }}>
               <MessageCircle size={14} />
             </a>
@@ -3895,37 +3985,158 @@ export default function VocalTracker({ userId, userEmail }) {
             </button>
           </div>
         </div>
-        <nav className="max-w-3xl mx-auto flex gap-1 mt-5 overflow-x-auto">
-          {TABS.map((tab) => (
-            tab.href ? (
-              <a
-                key={tab.key}
-                href={tab.key === "voicetheory" ? (PROFESSION_THEORY_PAGES[profile.vocal_profession] || tab.href) : tab.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
-                style={{ background: "transparent", color: C.inkSoft }}
-              >
-                <tab.icon size={15} />
-                {t(tab.labelKey)}
-              </a>
-            ) : (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
-                style={{ background: activeTab === tab.key ? C.curtain : "transparent", color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
-              >
-                <tab.icon size={15} />
-                {t(tab.labelKey)}
-              </button>
-            )
-          ))}
-        </nav>
+        {!lessonMode && (
+          <nav className="max-w-3xl mx-auto flex gap-1 mt-5 overflow-x-auto">
+            {TABS.map((tab) => (
+              tab.href ? (
+                <a
+                  key={tab.key}
+                  href={tab.key === "voicetheory" ? (PROFESSION_THEORY_PAGES[profile.vocal_profession] || tab.href) : tab.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
+                  style={{ background: "transparent", color: C.inkSoft }}
+                >
+                  <tab.icon size={15} />
+                  {t(tab.labelKey)}
+                </a>
+              ) : (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
+                  style={{ background: activeTab === tab.key ? C.curtain : "transparent", color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
+                >
+                  <tab.icon size={15} />
+                  {t(tab.labelKey)}
+                </button>
+              )
+            ))}
+          </nav>
+        )}
       </header>
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 pb-16">
-        {loading ? (
+        {lessonMode ? (
+          <div className="space-y-5">
+            <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+              <div className="flex items-center gap-2 mb-1">
+                <GraduationCap size={18} style={{ color: C.curtain }} />
+                <h2 className="ff-display italic text-xl">レッスンモード</h2>
+              </div>
+              <p className="text-xs" style={{ color: C.inkSoft }}>
+                この画面をそのまま先生・ボイストレーナーにお見せいただけます。
+              </p>
+              <p className="text-xs mt-2 rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                🔒 先生には見えません：メンタルの日記・気持ちタグ・体重・食事の詳細・既往症
+              </p>
+            </div>
+
+            <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+              <h3 className="ff-display italic text-lg mb-1">直近4週の推移</h3>
+              <p className="text-xs mb-3" style={{ color: C.inkSoft }}>記録{lessonModeData.recordedCount}/28日</p>
+              <div style={{ width: "100%", height: 130 }}>
+                <ResponsiveContainer>
+                  <LineChart data={lessonModeData.scoreTrend} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                    <CartesianGrid stroke={C.line} />
+                    <XAxis dataKey="date" tick={{ fontSize: 9, fill: C.inkSoft }} />
+                    <YAxis domain={[0, 100]} tick={{ fontSize: 9, fill: C.inkSoft }} />
+                    <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, borderColor: C.line }} />
+                    <Line type="monotone" dataKey="score" stroke={C.gold} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+              <h3 className="ff-display italic text-lg mb-1">症状カレンダー</h3>
+              <div className="space-y-1 mt-2" style={{ overflowX: "auto" }}>
+                {SYMPTOM_OPTIONS.map((symptom) => (
+                  <div key={symptom} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                    <span className="text-xs" style={{ width: 76, flexShrink: 0, color: C.inkSoft }}>{t(SYMPTOM_KEYS[symptom])}</span>
+                    <div style={{ display: "flex", gap: 2 }}>
+                      {lessonModeData.symptomWeeks.map((d) => {
+                        const has = d.symptoms && d.symptoms.includes(symptom);
+                        return <div key={d.date} title={d.date} style={{ width: 10, height: 10, borderRadius: 2, background: has ? C.curtain : C.paper, flexShrink: 0 }} />;
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+              <h3 className="ff-display italic text-lg mb-1">発声負荷（ACWR）</h3>
+              <div style={{ width: "100%", height: 110 }}>
+                <ResponsiveContainer>
+                  <LineChart data={lessonModeData.loadTrend} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                    <CartesianGrid stroke={C.line} />
+                    <XAxis dataKey="date" tick={{ fontSize: 9, fill: C.inkSoft }} />
+                    <YAxis domain={[0, "auto"]} tick={{ fontSize: 9, fill: C.inkSoft }} />
+                    <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, borderColor: C.line }} />
+                    <Line type="monotone" dataKey="acwr" stroke={C.sage} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {lessonModeData.rangeInWindow && (
+              <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                <h3 className="ff-display italic text-lg mb-1">音域マップ</h3>
+                <PianoKeyboard
+                  lowMidi={lessonModeData.rangeInWindow.low - 1}
+                  highMidi={lessonModeData.rangeInWindow.high + 1}
+                  bestLow={null}
+                  bestHigh={null}
+                  currentLow={lessonModeData.rangeInWindow.low}
+                  currentHigh={lessonModeData.rangeInWindow.high}
+                  newRecord={false}
+                />
+                <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                  {midiToNoteLabel(lessonModeData.rangeInWindow.low)} 〜 {midiToNoteLabel(lessonModeData.rangeInWindow.high)}（直近4週）
+                </p>
+              </div>
+            )}
+
+            <button
+              type="button"
+              onMouseDown={() => {
+                setLessonExitProgress(0);
+                const start = Date.now();
+                lessonExitTimerRef.current = setInterval(() => {
+                  const elapsed = Date.now() - start;
+                  setLessonExitProgress(Math.min(100, (elapsed / 3000) * 100));
+                  if (elapsed >= 3000) {
+                    clearInterval(lessonExitTimerRef.current);
+                    setLessonMode(false);
+                    setLessonExitProgress(0);
+                  }
+                }, 50);
+              }}
+              onMouseUp={() => { clearInterval(lessonExitTimerRef.current); setLessonExitProgress(0); }}
+              onMouseLeave={() => { clearInterval(lessonExitTimerRef.current); setLessonExitProgress(0); }}
+              onTouchStart={() => {
+                setLessonExitProgress(0);
+                const start = Date.now();
+                lessonExitTimerRef.current = setInterval(() => {
+                  const elapsed = Date.now() - start;
+                  setLessonExitProgress(Math.min(100, (elapsed / 3000) * 100));
+                  if (elapsed >= 3000) {
+                    clearInterval(lessonExitTimerRef.current);
+                    setLessonMode(false);
+                    setLessonExitProgress(0);
+                  }
+                }, 50);
+              }}
+              onTouchEnd={() => { clearInterval(lessonExitTimerRef.current); setLessonExitProgress(0); }}
+              className="w-full py-3 rounded-full text-sm font-medium relative overflow-hidden"
+              style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}
+            >
+              <span style={{ position: "absolute", inset: 0, left: 0, width: `${lessonExitProgress}%`, background: "rgba(184,49,49,0.15)" }} />
+              <span style={{ position: "relative" }}>終了（3秒長押し）</span>
+            </button>
+          </div>
+        ) : loading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-3">
             <Loader2 size={22} className="animate-spin" style={{ color: C.curtain }} />
             <span className="text-sm" style={{ color: C.inkSoft }}>{t("loadingText")}</span>
@@ -6336,76 +6547,6 @@ export default function VocalTracker({ userId, userEmail }) {
                   />
                 )}
 
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }} id="weekly-voice-chart">
-                  <div className="flex items-center justify-between mb-1">
-                    <h3 className="ff-display italic text-lg">週次ボイスカルテ</h3>
-                    <button
-                      type="button"
-                      onClick={() => window.print()}
-                      className="px-3 py-1.5 rounded-full text-xs font-medium flex-shrink-0"
-                      style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}
-                    >
-                      印刷・PDF保存
-                    </button>
-                  </div>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                    直近1週間ぶんを1枚にまとめています。先生・ボイストレーナー・耳鼻咽喉科に見せる時にお使いください。
-                  </p>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                    {weeklyVoiceChart.weekDates[0].slice(5)} 〜 {weeklyVoiceChart.weekDates[6].slice(5)}（記録{weeklyVoiceChart.recordedCount}/7日）
-                  </p>
-
-                  <p className="text-xs font-medium mb-1.5">コンディションの推移</p>
-                  <div style={{ width: "100%", height: 100 }}>
-                    <ResponsiveContainer>
-                      <LineChart data={weeklyVoiceChart.deviationTrend.map((d) => ({ date: d.date.slice(5), score: d.score != null ? Math.round(d.score) : null }))} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                        <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 9, fill: C.inkSoft }} />
-                        <YAxis domain={[0, 100]} tick={{ fontSize: 9, fill: C.inkSoft }} />
-                        <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, borderColor: C.line }} />
-                        <Line type="monotone" dataKey="score" stroke={C.gold} strokeWidth={2} dot={{ r: 3 }} connectNulls />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-
-                  <p className="text-xs font-medium mb-1.5 mt-4">症状カレンダー</p>
-                  <div className="space-y-1">
-                    {SYMPTOM_OPTIONS.map((symptom) => (
-                      <div key={symptom} style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                        <span className="text-xs" style={{ width: 76, flexShrink: 0, color: C.inkSoft }}>{t(SYMPTOM_KEYS[symptom])}</span>
-                        <div style={{ display: "flex", gap: 3 }}>
-                          {weeklyVoiceChart.symptomWeek.map((d) => {
-                            const has = d.symptoms && d.symptoms.includes(symptom);
-                            return <div key={d.date} title={d.date} style={{ width: 14, height: 14, borderRadius: 3, background: has ? C.curtain : C.paper, flexShrink: 0 }} />;
-                          })}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <p className="text-xs font-medium mb-1.5 mt-4">発声負荷（ACWR）</p>
-                  <div style={{ width: "100%", height: 90 }}>
-                    <ResponsiveContainer>
-                      <LineChart data={weeklyVoiceChart.loadWeek.map((d) => ({ date: d.date.slice(5), acwr: d.acwr != null ? roundTo1(d.acwr) : null }))} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                        <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 9, fill: C.inkSoft }} />
-                        <YAxis domain={[0, "auto"]} tick={{ fontSize: 9, fill: C.inkSoft }} />
-                        <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, borderColor: C.line }} />
-                        <Line type="monotone" dataKey="acwr" stroke={C.sage} strokeWidth={2} dot={{ r: 3 }} connectNulls />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-
-                  <p className="text-xs font-medium mb-1.5 mt-4">今週わかったこと</p>
-                  <p className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
-                    {weeklyVoiceChart.keyFinding || "まだ十分な記録がなく、確かな発見は出ていません。記録が増えると、ここに自動で表示されます。"}
-                  </p>
-
-                  <p className="text-xs mt-4" style={{ color: C.inkSoft }}>
-                    ※ ここに書かれている内容は記録にもとづく参考情報であり、医学的な診断ではありません。「印刷・PDF保存」はブラウザの印刷機能を使った簡易的なものです。
-                  </p>
-                </div>
-
                 <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
                   <button onClick={() => setAnalysisTarget("performance")}
                     className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
@@ -6661,6 +6802,111 @@ export default function VocalTracker({ userId, userEmail }) {
                 })()}
               </div>
             )}
+            {activeTab === "clinicSummary" && (() => {
+              // §5.4: ここには絶対に載せない（あとから「便利だから」と足されがちなので明記しておく）
+              // 偏差値／ACWR／ラグ相関（声の時差マップ）／効果量（効いた習慣ランキング）／CPPS／エネルギー可用性
+              const { start, end } = clinicPeriodRange;
+              return (
+                <div className="space-y-5">
+                  <style>{`@media print { header, nav, .no-print { display: none !important; } }`}</style>
+                  <div className="rounded-2xl p-4 border no-print" style={{ background: C.card, borderColor: C.line }}>
+                    <h2 className="ff-display italic text-xl mb-1">受診用サマリー</h2>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      耳鼻咽喉科など受診の際にお使いください。独自の指標(偏差値・発声負荷など)は含めず、記録した内容をそのまま整理しています。
+                    </p>
+                    <p className="text-xs font-medium mb-1.5">期間</p>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        ["auto", clinicAutoDetectedStart ? `症状が出てから（${clinicAutoDetectedStart.slice(5)}〜）` : "症状が出てから（自動検出）"],
+                        ["month", "過去1ヶ月"],
+                        ["3months", "過去3ヶ月"],
+                        ["custom", "期間を指定"]
+                      ].map(([key, label]) => (
+                        <button key={key} type="button" onClick={() => setClinicPeriodMode(key)}
+                          className="px-3 py-1.5 rounded-full text-xs font-medium"
+                          style={{ background: clinicPeriodMode === key ? C.curtain : C.paper, color: clinicPeriodMode === key ? "#FFFDF8" : C.inkSoft, border: `1px solid ${clinicPeriodMode === key ? C.curtain : C.line}` }}>
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                    {clinicPeriodMode === "custom" && (
+                      <div className="flex items-center gap-2 mt-3">
+                        <input type="date" value={clinicCustomStart} onChange={(e) => setClinicCustomStart(e.target.value)}
+                          className="rounded-lg border px-2.5 py-1.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                        <span className="text-xs" style={{ color: C.inkSoft }}>〜</span>
+                        <input type="date" value={clinicCustomEnd} onChange={(e) => setClinicCustomEnd(e.target.value)}
+                          className="rounded-lg border px-2.5 py-1.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                      </div>
+                    )}
+                    <button type="button" onClick={() => window.print()}
+                      className="mt-3 px-3.5 py-1.5 rounded-full text-xs font-medium"
+                      style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                      印刷 / PDFで保存
+                    </button>
+                  </div>
+
+                  <div id="clinic-summary-content" className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-xs mb-4 rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
+                      本書はご本人の自己申告に基づく記録です。医学的な診断や検査結果ではありません。
+                    </p>
+                    <p className="text-xs mb-4" style={{ color: C.inkSoft }}>期間：{start} 〜 {end}</p>
+
+                    <h3 className="text-sm font-medium mb-1.5">基本情報</h3>
+                    <p className="text-xs mb-4" style={{ color: C.ink }}>
+                      年齢：{profile.age || "未登録"}　性別：{profile.sex ? t(profile.sex === "男性" ? "sexMale" : profile.sex === "女性" ? "sexFemale" : "sexNotAnswer") : "未登録"}
+                      　職業：{t(profile.vocal_profession === "singer" ? "professionSinger" : profile.vocal_profession === "announcer" ? "professionAnnouncer" : profile.vocal_profession === "voice_actor" ? "professionVoiceActor" : "professionPopMusical")}
+                      {clinicWeeklyVoiceUsage.length > 0 && <>　1日あたりの平均発声時間：約{roundTo1(clinicWeeklyVoiceUsage.reduce((a, w) => a + w.hours, 0) / (clinicWeeklyVoiceUsage.length * 7))}時間</>}
+                    </p>
+
+                    <h3 className="text-sm font-medium mb-1.5">症状の経過</h3>
+                    {clinicSymptomSummary.length > 0 ? (
+                      <div className="mb-4 space-y-1">
+                        {clinicSymptomSummary.map((s) => (
+                          <p key={s.symptom} className="text-xs" style={{ color: C.ink }}>
+                            {t(SYMPTOM_KEYS[s.symptom])}　{s.firstDate.slice(5)} 〜 {s.lastDate.slice(5)}（{s.count}日）
+                          </p>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-xs mb-4" style={{ color: C.inkSoft }}>この期間に記録された症状はありません。</p>
+                    )}
+
+                    <h3 className="text-sm font-medium mb-1.5">声の使用量（週あたり）</h3>
+                    {clinicWeeklyVoiceUsage.length > 0 ? (
+                      <div style={{ width: "100%", height: 140 }} className="mb-4">
+                        <ResponsiveContainer>
+                          <BarChart data={clinicWeeklyVoiceUsage} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                            <CartesianGrid stroke={C.line} />
+                            <XAxis dataKey="week" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                            <YAxis tick={{ fontSize: 10, fill: C.inkSoft }} unit="h" />
+                            <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                            <Bar dataKey="hours" fill={C.gold} radius={3} />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    ) : (
+                      <p className="text-xs mb-4" style={{ color: C.inkSoft }}>この期間に活動時間の記録はありません。</p>
+                    )}
+
+                    <h3 className="text-sm font-medium mb-1.5">睡眠時間の平均</h3>
+                    <p className="text-xs mb-4" style={{ color: C.ink }}>
+                      {clinicSleepAverage != null ? `${clinicSleepAverage}時間` : "記録なし"}
+                    </p>
+
+                    <h3 className="text-sm font-medium mb-1.5">既往・服薬</h3>
+                    <p className="text-xs mb-4" style={{ color: C.ink }}>
+                      {clinicMedications.length > 0 ? clinicMedications.join("・") : "この期間の登録はありません"}
+                    </p>
+
+                    <h3 className="text-sm font-medium mb-1.5">自由記入欄</h3>
+                    <textarea value={clinicFreeNote} onChange={(e) => setClinicFreeNote(e.target.value)}
+                      placeholder="受診時に手書きで書き足す場合は、このまま余白としてご利用いただけます。"
+                      className="w-full rounded-lg border p-2 text-xs no-print" rows={4} style={{ borderColor: C.line, background: C.paper }} />
+                    <div className="hidden print:block" style={{ borderBottom: `1px solid ${C.line}`, height: 80 }} />
+                  </div>
+                </div>
+              );
+            })()}
             {activeTab === "advice" && (
               <div className="space-y-5">
                 <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
