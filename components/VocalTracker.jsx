@@ -6,7 +6,7 @@ import {
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
   Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot, MessageCircle, Home,
   Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe, Lock,
-  Volume2, Plane, AudioWaveform, Timer, MessageSquare
+  Volume2, Plane, AudioWaveform, Timer, MessageSquare, ClipboardList
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -27,6 +27,149 @@ const DINNER_TAGS = ["揚げ物", "あっさり", "炭酸", "トマト系", "カ
 const DINNER_TAG_KEYS = { "揚げ物": "dinnerFried", "あっさり": "dinnerLight", "炭酸": "dinnerCarbonated", "トマト系": "dinnerTomato", "カフェイン": "dinnerCaffeine", "アルコール": "dinnerAlcohol" };
 // lavoce-収集データ拡張案.md C-2: 服薬タグ。DINNER_TAGSと同じ複数選択タグの形式。
 const MEDICATION_OPTIONS = ["抗ヒスタミン薬", "吸入ステロイド", "経口避妊薬", "NSAIDs", "利尿薬"];
+
+// lavoce-収集データ拡張案.md B節: 標準化された質問票（週1・月1でよいもの）。
+// 重要な注意: ここに書いた項目文は、公表されている各尺度の構成（項目数・因子・尺度幅・
+// カットオフ値）にもとづいて作成した簡易版であり、原論文（英語）の項目文を一字一句
+// 翻訳・再現したものではありません。そのため、算出される点数を論文の基準値と厳密に
+// 比較できることは保証できません。あくまで自分自身の推移を追うためのスクリーニング
+// 参考ツールとして使うことを想定しています。
+const QUESTIONNAIRES = {
+  rsi: {
+    key: "rsi",
+    name: "RSI（逆流症状インデックス）",
+    fullName: "Reflux Symptom Index",
+    citation: "Belafsky et al., 2002",
+    frequency: "月1回の記録を推奨",
+    scaleMax: 5,
+    scaleLabels: ["問題なし", "軽度", "やや軽度", "中程度", "やや重度", "重度の問題"],
+    cutoff: 13,
+    cutoffNote: "13点を超えると、喉頭咽頭逆流症（LPR）の疑いの目安とされています。",
+    items: [
+      "声のかすれ、または声の問題",
+      "咳払いをする",
+      "喉に痰がからむ、または鼻水がのどに落ちる感じがする",
+      "食べ物・飲み物・錠剤の飲み込みにくさ",
+      "食後や横になった後の咳",
+      "呼吸のしづらさ、息が詰まる感じ",
+      "厄介な、または気になる咳",
+      "喉に何かがくっついている感じ、喉のつかえ感",
+      "胸焼け、胸の痛み、消化不良、酸っぱいものが上がってくる感じ"
+    ],
+    factors: null
+  },
+  vfi: {
+    key: "vfi",
+    name: "VFI（声の疲労インデックス）",
+    fullName: "Vocal Fatigue Index",
+    citation: "Nanjundeswaran et al., 2015",
+    frequency: "週1回の記録を推奨",
+    scaleMax: 4,
+    scaleLabels: ["まったくない", "ほとんどない", "時々", "たいてい", "常に"],
+    cutoff: null,
+    cutoffNote: "総合点よりも、3つの因子（疲労・回避／身体的な不快感／休息による回復）ごとの傾向を見る尺度です。",
+    items: [
+      "声を使った後、話す気になれない",
+      "たくさん話すと声が疲れる",
+      "話すのに、より努力が必要だと感じる",
+      "声を出すのに以前より努力が必要になったと感じる",
+      "声を使うのが仕事のように感じる",
+      "声を使った後は、あまり話さないようにしている",
+      "たくさん話す必要があるとき、人との集まりを避ける",
+      "仕事の後、家族と話す気になれない",
+      "声を使った後、声を出すのに努力がいる",
+      "声を使うと、声を通す（響かせる）のが難しく感じる",
+      "声を使った後、声が弱く感じる",
+      "話すと喉が痛くなる",
+      "話すと喉に違和感がある",
+      "話した後、喉に痛みを感じる",
+      "話すと喉が乾いた感じがする",
+      "話すと首や喉のあたりが張る感じがする",
+      "声を少し休ませると、声を出す努力が減る",
+      "一晩眠ると、声の調子が良くなる",
+      "声を使うのをしばらく控えると、症状が良くなる"
+    ],
+    factors: [
+      { name: "疲労・回避", start: 0, end: 10 },
+      { name: "身体的な不快感", start: 11, end: 15 },
+      { name: "休息による回復", start: 16, end: 18 }
+    ]
+  },
+  svhi10: {
+    key: "svhi10",
+    name: "SVHI-10（歌声支障インデックス）",
+    fullName: "Singing Voice Handicap Index-10",
+    citation: "Cohen et al., 2009",
+    frequency: "月1回の記録を推奨",
+    scaleMax: 4,
+    scaleLabels: ["まったくない", "ほとんどない", "時々", "たいてい", "常に"],
+    cutoff: 20,
+    cutoffNote: "20点以上で、歌声への支障が大きくなっている可能性の目安とされています。",
+    items: [
+      "自分の歌声のせいで、人前で歌う機会を避けている",
+      "自分の歌声のせいで、収入や仕事に影響が出ている",
+      "声域が以前より狭くなったと感じる",
+      "歌っている途中で声が出なくなることがある",
+      "歌った後、声が疲れていると感じる",
+      "自分の歌声の調子が予測できないと感じる",
+      "自分の歌声のことで落ち込んだり不安になったりする",
+      "他の人が自分の歌声の変化に気づいていると感じる",
+      "練習や本番の前に、自分の声がどうなるか心配になる",
+      "歌声のせいで、音楽活動そのものを楽しめなくなっている"
+    ],
+    factors: null
+  },
+  ease: {
+    key: "ease",
+    name: "EASE（歌いやすさ評価）",
+    fullName: "Evaluation of the Ability to Sing Easily",
+    citation: "Phyland et al., 2013",
+    frequency: "本番・リハ直後の記録を推奨",
+    scaleMax: 3,
+    scaleLabels: ["なし", "軽度", "中程度", "強度"],
+    cutoff: 12.5,
+    cutoffNote: "12.5点を超えると、歌声機能の低下が疑われる目安とされています。",
+    items: [
+      "声がかすれている",
+      "声が乾いた・こすれた感じがする",
+      "喉の筋肉が疲れている感じがする",
+      "声が出るまでに時間がかかる、または息漏れがある",
+      "声に張りがない感じがする",
+      "声が疲れている",
+      "高音を出すのが難しい",
+      "音域を変える（チェンジ）のが難しい",
+      "歌うことが大変な作業に感じる",
+      "自分の歌声が本番に向けて準備できている感じがしない",
+      "声が裏返る、または割れる",
+      "息が漏れている感じがする",
+      "長いフレーズで息が続きにくい",
+      "高音で息が漏れる",
+      "一部の音で声が途切れる",
+      "小さい声で歌うのが難しい",
+      "音を長く伸ばすのが難しい",
+      "声を通す（響かせる）のが難しい",
+      "自分の声のことが心配だ",
+      "自分の声のことが気になる"
+    ],
+    factors: [
+      { name: "声の疲労（VF）", start: 0, end: 9 },
+      { name: "病的リスク指標（PRI）", start: 10, end: 17 },
+      { name: "声への不安（VC）", start: 18, end: 19 }
+    ]
+  }
+};
+function computeQuestionnaireScore(type, itemScores) {
+  const def = QUESTIONNAIRES[type];
+  if (!def) return null;
+  const total = itemScores.reduce((a, b) => a + (Number(b) || 0), 0);
+  const factorScores = def.factors
+    ? def.factors.map((f) => ({
+        name: f.name,
+        score: itemScores.slice(f.start, f.end + 1).reduce((a, b) => a + (Number(b) || 0), 0)
+      }))
+    : null;
+  return { total, factorScores };
+}
 // メンタルの大まかな枠（タップで選べる簡易入力）。自由記述の代わりではなく、併用できる選択肢として用意する。
 // 「心の余裕」の数値（1〜5）に応じて、表示する語群を切り替える。
 // low（1〜2・緊張寄り）／mid（3・ふつう）／high（4〜5・落ち着き寄り）の3段階。
@@ -126,6 +269,7 @@ const TABS = [
   { key: "garden", labelKey: "tabCharacter", icon: Home },
   { key: "history", labelKey: "tabHistory", icon: CalendarDays },
   { key: "analysis", labelKey: "tabAnalysis", icon: BarChart3 },
+  { key: "questionnaires", labelKey: "tabQuestionnaires", icon: ClipboardList },
   { key: "advice", labelKey: "tabAdvice", icon: Bot },
   { key: "info", labelKey: "tabInfo", icon: BookOpen },
   { key: "voicetheory", labelKey: "tabVoiceTheory", icon: Music2, href: "/vocal-theory" }
@@ -1674,6 +1818,11 @@ export default function VocalTracker({ userId, userEmail }) {
   const [noiseError, setNoiseError] = useState("");
   const [cppsRecording, setCppsRecording] = useState(false);
   const [cppsError, setCppsError] = useState("");
+  const [questionnaireResponses, setQuestionnaireResponses] = useState([]);
+  const [activeQuestionnaire, setActiveQuestionnaire] = useState(null);
+  const [questionnaireAnswers, setQuestionnaireAnswers] = useState({});
+  const [questionnaireSaving, setQuestionnaireSaving] = useState(false);
+  const [questionnaireError, setQuestionnaireError] = useState("");
   const [language, setLanguage] = useState("ja");
   const [viewMonth, setViewMonth] = useState(() => {
     const d = new Date();
@@ -1750,6 +1899,23 @@ export default function VocalTracker({ userId, userEmail }) {
         setEntries(map);
       }
       if (mounted) setLoading(false);
+    })();
+    return () => { mounted = false; };
+  }, [userId]);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const supabase = createClient();
+      const { data, error } = await runQueryWithAuthRetry(
+        supabase,
+        () => supabase.from("questionnaire_responses").select("*").eq("user_id", userId).order("response_date", { ascending: true }),
+        "質問票の回答の取得"
+      );
+      if (error) {
+        console.error("質問票の回答の読み込みに失敗しました:", error, "userId:", userId);
+      }
+      if (mounted && data) setQuestionnaireResponses(data);
     })();
     return () => { mounted = false; };
   }, [userId]);
@@ -2879,6 +3045,45 @@ export default function VocalTracker({ userId, userEmail }) {
     setTimeout(() => setProfileSaveStatus("idle"), 1800);
   }
 
+  // lavoce-収集データ拡張案.md B節: 質問票（EASE / VFI / SVHI-10 / RSI）の回答を保存する
+  async function handleSubmitQuestionnaire(type) {
+    const def = QUESTIONNAIRES[type];
+    if (!def) return;
+    if (def.items.some((_, i) => questionnaireAnswers[i] == null)) {
+      setQuestionnaireError("すべての項目に回答してください。");
+      return;
+    }
+    const itemScores = def.items.map((_, i) => Number(questionnaireAnswers[i]) || 0);
+    const { total, factorScores } = computeQuestionnaireScore(type, itemScores);
+    setQuestionnaireSaving(true);
+    setQuestionnaireError("");
+    const supabase = createClient();
+    const todayDate = todayISO();
+    const { data, error } = await supabase
+      .from("questionnaire_responses")
+      .insert({
+        user_id: userId,
+        questionnaire_type: type,
+        response_date: todayDate,
+        item_scores: itemScores,
+        total_score: total,
+        factor_scores: factorScores
+      })
+      .select()
+      .single();
+    setQuestionnaireSaving(false);
+    if (error) {
+      console.error("質問票の保存に失敗しました:", error);
+      setQuestionnaireError("保存に失敗しました。もう一度お試しください。");
+      return;
+    }
+    setQuestionnaireResponses((prev) => [...prev, data]);
+    setActiveQuestionnaire(null);
+    setQuestionnaireAnswers({});
+    setToastMessage("記録しました。");
+    setTimeout(() => setToastMessage(null), 3200);
+  }
+
   function updateDetail(patch) {
     setFormData((f) => ({ ...f, activityDetail: { ...(f.activityDetail || {}), ...patch } }));
   }
@@ -3175,6 +3380,16 @@ export default function VocalTracker({ userId, userEmail }) {
                           <Mic2 size={14} style={{ color: C.gold }} />
                           <span className="text-sm font-medium">客観測定（CPPS）</span>
                         </div>
+                        <details className="text-xs rounded-lg p-2.5 mb-2" style={{ background: C.card, color: C.inkSoft }}>
+                          <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>これで何が分かるの？</summary>
+                          <div className="mt-2 space-y-1.5 leading-relaxed">
+                            <p>声の音を細かく分解すると、「倍音」と呼ばれる整った成分が、雑音にどれだけ埋もれずくっきり出ているかが分かります。CPPSはその「くっきり度合い」を1つの数字にしたものです。</p>
+                            <p><strong>数値が高い日</strong>：声帯がきれいに閉じて振動できていて、声にノイズ（息漏れ・かすれ）が少ない状態を示唆します。</p>
+                            <p><strong>数値が低い日</strong>：息漏れ・かすれ・声の立ち上がりの弱さなど、声帯の閉じが甘くなっている可能性を示唆します。むくみや疲労で声がかすれ始めても、自分では気づきにくいことがあります。</p>
+                            <p><strong>できないこと</strong>：病名の診断はできません。あくまで「声のノイズっぽさ」を映す一つの物差しです。また、このアプリ独自の簡易計算のため、数値そのものを論文の基準値と比べることはできません。</p>
+                            <p><strong>使い方のコツ</strong>：毎日同じような発声（力まず「あー」と伸ばす）で測ることで、自分自身の中での「今日は高い／低い」という変化を追いかけるのに向いています。上の「響きスコア」（自分の感覚）とズレがある日は、自覚より先に変化が出ている可能性があります。</p>
+                          </div>
+                        </details>
                         <div className="flex items-center gap-3">
                           <button
                             type="button"
@@ -5023,6 +5238,144 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                 )}
 
+              </div>
+            )}
+            {activeTab === "questionnaires" && (
+              <div className="space-y-5">
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h2 className="ff-display italic text-xl mb-1">標準化された質問票</h2>
+                  <p className="text-xs" style={{ color: C.inkSoft }}>
+                    自己流の5段階評価と違い、学術論文で検証された尺度の構成にもとづいています。同じものさしで記録を重ねることで、自分の変化を追いかけやすくなります。
+                  </p>
+                  <p className="text-xs mt-2 rounded-xl p-2.5 leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
+                    ※ ここに出す点数は、いずれもスクリーニング（ふるい分け）目的の参考値であり、医学的な診断ではありません。基準値を超えた場合も、診断名ではなく「受診を検討する目安」として捉えてください。項目文は各尺度の構成（項目数・因子・カットオフ値）にもとづいて作成した簡易版で、原論文（英語）の一字一句の翻訳ではないため、点数を論文の基準値と厳密に比較できることは保証できません。
+                  </p>
+                </div>
+
+                {!activeQuestionnaire ? (
+                  <div className="space-y-3">
+                    {Object.values(QUESTIONNAIRES).map((def) => {
+                      const history = questionnaireResponses
+                        .filter((r) => r.questionnaire_type === def.key)
+                        .sort((a, b) => a.response_date.localeCompare(b.response_date));
+                      const latest = history[history.length - 1];
+                      return (
+                        <div key={def.key} className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                          <div className="flex items-center justify-between gap-3">
+                            <div>
+                              <h3 className="ff-display italic text-lg">{def.name}</h3>
+                              <p className="text-xs" style={{ color: C.inkSoft }}>{def.fullName}（{def.citation}）・{def.frequency}</p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => { setActiveQuestionnaire(def.key); setQuestionnaireAnswers({}); setQuestionnaireError(""); }}
+                              className="px-3.5 py-1.5 rounded-full text-xs font-medium flex-shrink-0"
+                              style={{ background: C.curtain, color: "#FFFDF8" }}
+                            >
+                              回答する
+                            </button>
+                          </div>
+                          {latest ? (
+                            <div className="mt-3 rounded-xl p-3" style={{ background: C.paper }}>
+                              <p className="text-xs" style={{ color: C.inkSoft }}>直近の記録（{latest.response_date}）</p>
+                              <p className="text-sm mt-1">
+                                合計 <span className="ff-mono font-medium">{latest.total_score}</span>点
+                                {def.cutoff != null && (
+                                  <span className="text-xs ml-2" style={{ color: latest.total_score >= def.cutoff ? C.curtain : C.inkSoft }}>
+                                    （基準値 {def.cutoff}）
+                                  </span>
+                                )}
+                              </p>
+                              {def.cutoffNote && (
+                                <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{def.cutoffNote}</p>
+                              )}
+                              {latest.factor_scores && (
+                                <div className="flex flex-wrap gap-2 mt-1.5">
+                                  {latest.factor_scores.map((f) => (
+                                    <span key={f.name} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.card, color: C.ink }}>
+                                      {f.name}: {f.score}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                              {history.length > 1 && (
+                                <div style={{ width: "100%", height: 110 }} className="mt-2">
+                                  <ResponsiveContainer>
+                                    <LineChart data={history.map((h) => ({ date: h.response_date.slice(5), score: h.total_score }))} margin={{ left: 0, right: 8, top: 4, bottom: 0 }}>
+                                      <XAxis dataKey="date" tick={{ fontSize: 9, fill: C.inkSoft }} />
+                                      <YAxis hide domain={["auto", "auto"]} />
+                                      <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, borderColor: C.line }} />
+                                      <Line type="monotone" dataKey="score" stroke={C.gold} strokeWidth={2} dot={{ r: 3 }} />
+                                    </LineChart>
+                                  </ResponsiveContainer>
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <p className="text-xs mt-3 rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>まだ記録がありません。</p>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (() => {
+                  const def = QUESTIONNAIRES[activeQuestionnaire];
+                  const answeredCount = def.items.filter((_, i) => questionnaireAnswers[i] != null).length;
+                  return (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <div className="flex items-center justify-between mb-1">
+                        <h3 className="ff-display italic text-lg">{def.name}</h3>
+                        <button
+                          type="button"
+                          onClick={() => { setActiveQuestionnaire(null); setQuestionnaireAnswers({}); setQuestionnaireError(""); }}
+                          className="text-xs" style={{ color: C.inkSoft }}
+                        >
+                          やめる
+                        </button>
+                      </div>
+                      <p className="text-xs mb-4" style={{ color: C.inkSoft }}>{answeredCount}/{def.items.length}問 回答済み</p>
+                      <div className="space-y-4">
+                        {def.items.map((item, i) => (
+                          <div key={i}>
+                            <p className="text-sm mb-1.5">{i + 1}. {item}</p>
+                            <div className="flex gap-1.5">
+                              {Array.from({ length: def.scaleMax + 1 }).map((_, v) => (
+                                <button
+                                  key={v}
+                                  type="button"
+                                  onClick={() => setQuestionnaireAnswers((a) => ({ ...a, [i]: v }))}
+                                  className="flex-1 py-1.5 rounded-lg text-xs font-medium border"
+                                  style={{
+                                    background: questionnaireAnswers[i] === v ? C.curtain : C.paper,
+                                    color: questionnaireAnswers[i] === v ? "#FFFDF8" : C.inkSoft,
+                                    borderColor: questionnaireAnswers[i] === v ? C.curtain : C.line
+                                  }}
+                                >
+                                  {v}
+                                </button>
+                              ))}
+                            </div>
+                            <div className="flex justify-between text-xs mt-1" style={{ color: C.inkSoft }}>
+                              <span>{def.scaleLabels[0]}</span>
+                              <span>{def.scaleLabels[def.scaleLabels.length - 1]}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {questionnaireError && <p className="text-xs mt-3" style={{ color: C.curtain }}>{questionnaireError}</p>}
+                      <button
+                        type="button"
+                        disabled={questionnaireSaving}
+                        onClick={() => handleSubmitQuestionnaire(def.key)}
+                        className="w-full mt-4 py-2.5 rounded-full text-sm font-medium flex items-center justify-center gap-1.5"
+                        style={{ background: C.curtain, color: "#FFFDF8" }}
+                      >
+                        {questionnaireSaving && <Loader2 size={14} className="animate-spin" />}
+                        記録する
+                      </button>
+                    </div>
+                  );
+                })()}
               </div>
             )}
             {activeTab === "advice" && (
