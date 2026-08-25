@@ -25,17 +25,46 @@ const SYMPTOM_KEYS = { "乾燥": "symptomDry", "嗄れ": "symptomHoarse", "痛�
 const DINNER_TAGS = ["揚げ物", "あっさり", "炭酸", "トマト系", "カフェイン", "アルコール"];
 const DINNER_TAG_KEYS = { "揚げ物": "dinnerFried", "あっさり": "dinnerLight", "炭酸": "dinnerCarbonated", "トマト系": "dinnerTomato", "カフェイン": "dinnerCaffeine", "アルコール": "dinnerAlcohol" };
 // メンタルの大まかな枠（タップで選べる簡易入力）。自由記述の代わりではなく、併用できる選択肢として用意する。
-const MENTAL_TAG_OPTIONS = ["本番前の緊張", "疲労・過労", "睡眠不足", "人間関係", "体調不良", "準備不足への不安", "評価・期待のプレッシャー", "環境の変化", "私生活の悩み", "特に理由なし・良い状態"];
+// 「心の余裕」の数値（1〜5）に応じて、表示する語群を切り替える。
+// low（1〜2・緊張寄り）／mid（3・ふつう）／high（4〜5・落ち着き寄り）の3段階。
+// 舞台・本番に限らず、悲しい／怒り／嬉しいといった一般的な感情語も含める。
+const MENTAL_TAG_GROUPS = {
+  low: ["本番前の緊張", "疲労・過労", "睡眠不足", "体調不良", "準備不足への不安", "評価・期待のプレッシャー", "悲しい", "怒り・イライラ", "不安", "人間関係の悩み"],
+  mid: ["環境の変化", "私生活のこと", "少し疲れ気味", "ぼんやり・無気力", "特に大きな変化なし", "集中できている", "落ち着いている"],
+  high: ["良い睡眠が取れた", "練習・準備が順調", "嬉しい・楽しい", "達成感", "人との良い時間", "リラックスできている", "体調が良い", "特に理由なし・良い状態"]
+};
+// ease（1〜5）から、表示する語群を判定する
+function mentalTagGroupForEase(ease) {
+  const e = Number(ease) || 3;
+  if (e <= 2) return "low";
+  if (e >= 4) return "high";
+  return "mid";
+}
 const MENTAL_TAG_KEYS = {
   "本番前の緊張": "mentalTagPrePerformance",
   "疲労・過労": "mentalTagFatigue",
   "睡眠不足": "mentalTagSleepLack",
-  "人間関係": "mentalTagRelationships",
   "体調不良": "mentalTagPhysicalUnwell",
   "準備不足への不安": "mentalTagUnderprepared",
   "評価・期待のプレッシャー": "mentalTagPressure",
+  "悲しい": "mentalTagSad",
+  "怒り・イライラ": "mentalTagAngry",
+  "不安": "mentalTagAnxious",
+  "人間関係の悩み": "mentalTagRelationshipTrouble",
   "環境の変化": "mentalTagEnvironmentChange",
-  "私生活の悩み": "mentalTagPersonalLife",
+  "私生活のこと": "mentalTagPersonalLife",
+  "少し疲れ気味": "mentalTagSlightlyTired",
+  "ぼんやり・無気力": "mentalTagLowMotivation",
+  "特に大きな変化なし": "mentalTagNoParticularChange",
+  "集中できている": "mentalTagFocused",
+  "落ち着いている": "mentalTagSettled",
+  "良い睡眠が取れた": "mentalTagGoodSleep",
+  "練習・準備が順調": "mentalTagPracticeGoingWell",
+  "嬉しい・楽しい": "mentalTagHappy",
+  "達成感": "mentalTagAccomplishment",
+  "人との良い時間": "mentalTagGoodTimeWithPeople",
+  "リラックスできている": "mentalTagRelaxed",
+  "体調が良い": "mentalTagFeelingWell",
   "特に理由なし・良い状態": "mentalTagGoodState"
 };
 
@@ -2554,8 +2583,9 @@ export default function VocalTracker({ userId, userEmail }) {
                         onChange={(v) => setFormData((f) => ({ ...f, ease: v }))} />
                       <div>
                         <span className="text-sm font-medium block mb-2">{t("labelMentalTags")}</span>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("noteMentalTagsFollowEase")}</p>
                         <div className="flex flex-wrap gap-2">
-                          {MENTAL_TAG_OPTIONS.map((tag) => (
+                          {MENTAL_TAG_GROUPS[mentalTagGroupForEase(formData.ease)].map((tag) => (
                             <Chip key={tag} label={t(MENTAL_TAG_KEYS[tag])} active={(formData.mentalTags || []).includes(tag)}
                               onClick={() => setFormData((f) => ({
                                 ...f,
