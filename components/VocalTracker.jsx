@@ -168,6 +168,38 @@ const LOAD_FIELDS_BY_PROFESSION = {
 };
 
 /* ---------- helpers ---------- */
+// Supabase側の一時的な認証エラー（JWT関連の401/PGRST303など）かどうかを判定する。
+// ネットワークの瞬断やインフラ側のクロックずれなど、こちらのコードのバグではなく
+// 一時的に起きる種類のエラーを見分けるためのもの。
+function isTransientAuthError(error) {
+  if (!error) return false;
+  const code = error.code || "";
+  const status = error.status || error.statusCode || 0;
+  const message = (error.message || "").toLowerCase();
+  return (
+    code === "PGRST303" ||
+    status === 401 ||
+    message.includes("jwt") ||
+    message.includes("unauthorized")
+  );
+}
+// queryFn: () => Promise<{data, error}> を返す関数（クエリを毎回組み立て直せるように関数で受け取る）。
+// 一時的な認証エラーが出た場合のみ、セッションを更新してから1回だけ再試行する。
+// それ以外のエラー（権限不足や入力ミスなど）はそのまま返し、無限にリトライしない。
+async function runQueryWithAuthRetry(supabase, queryFn, label) {
+  let result = await queryFn();
+  if (result.error && isTransientAuthError(result.error)) {
+    console.warn(`${label || "クエリ"}で一時的な認証エラーを検知。セッションを更新して再試行します。`, result.error);
+    try {
+      await supabase.auth.refreshSession();
+    } catch (e) {
+      /* リフレッシュ自体が失敗しても、下のリトライで最終的なエラーを拾う */
+    }
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    result = await queryFn();
+  }
+  return result;
+}
 function toISODate(d) {
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -1202,7 +1234,14 @@ export default function VocalTracker({ userId, userEmail }) {
     let mounted = true;
     (async () => {
       const supabase = createClient();
-      const { data, error } = await supabase.from("entries").select("*").eq("user_id", userId);
+      const { data, error } = await runQueryWithAuthRetry(
+        supabase,
+        () => supabase.from("entries").select("*").eq("user_id", userId),
+        "記録データの取得"
+      );
+      if (error) {
+        console.error("記録データの読み込みに失敗しました:", error, "userId:", userId);
+      }
       if (mounted && data) {
         const map = {};
         data.forEach((row) => { map[row.date] = rowToEntry(row); });
@@ -1217,7 +1256,16 @@ export default function VocalTracker({ userId, userEmail }) {
     let mounted = true;
     (async () => {
       const supabase = createClient();
-      const { data, error } = await supabase.from("profiles").select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, technical_goal, health_notes, vocal_profession").eq("id", userId).single();
+      const { data, error } = await runQueryWithAuthRetry(
+        supabase,
+        () =>
+          supabase
+            .from("profiles")
+            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, technical_goal, health_notes, vocal_profession")
+            .eq("id", userId)
+            .single(),
+        "プロフィール（羊の装備を含む）の取得"
+      );
       if (error) {
         console.error("プロフィール（羊の装備を含む）の読み込みに失敗しました:", error, "userId:", userId);
       }
