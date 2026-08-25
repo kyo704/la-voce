@@ -224,7 +224,7 @@ function addDays(iso, delta) {
   d.setDate(d.getDate() + delta);
   return toISODate(d);
 }
-const LOCALE_MAP = { ja: "ja-JP", en: "en-US", zh: "zh-CN", it: "it-IT", de: "de-DE", fr: "fr-FR", es: "es-ES", ko: "ko-KR" };
+const LOCALE_MAP = { ja: "ja-JP", en: "en-US", zh: "zh-CN", it: "it-IT", de: "de-DE", fr: "fr-FR", es: "es-ES", ko: "ko-KR", ru: "ru-RU" };
 function getWeekdayLabels(language) {
   const locale = LOCALE_MAP[language] || "ja-JP";
   const base = new Date(2023, 0, 1); // 2023-01-01 は日曜日
@@ -239,6 +239,11 @@ function formatDateLabel(iso, language) {
   const d = new Date(iso + "T00:00:00");
   const locale = LOCALE_MAP[language] || "ja-JP";
   return new Intl.DateTimeFormat(locale, { year: "numeric", month: "long", day: "numeric", weekday: "short" }).format(d);
+}
+function formatMonthLabel(year, month, language) {
+  const d = new Date(year, month, 1);
+  const locale = LOCALE_MAP[language] || "ja-JP";
+  return new Intl.DateTimeFormat(locale, { year: "numeric", month: "long" }).format(d);
 }
 function monthMeta(year, month) {
   const first = new Date(year, month, 1);
@@ -2875,7 +2880,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       className="w-8 h-8 rounded-full border flex items-center justify-center" style={{ borderColor: C.line }}>
                       <ChevronLeft size={14} />
                     </button>
-                    <span className="ff-display italic text-lg">{viewMonth.year}年 {viewMonth.month + 1}月</span>
+                    <span className="ff-display italic text-lg">{formatMonthLabel(viewMonth.year, viewMonth.month, language)}</span>
                     <button onClick={() => setViewMonth((m) => shiftMonth(m, 1))}
                       className="w-8 h-8 rounded-full border flex items-center justify-center" style={{ borderColor: C.line }}>
                       <ChevronRight size={14} />
