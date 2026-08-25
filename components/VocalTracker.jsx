@@ -833,6 +833,36 @@ function hannWindow(n) {
   for (let i = 0; i < n; i++) w[i] = 0.5 - 0.5 * Math.cos((2 * Math.PI * i) / (n - 1));
   return w;
 }
+// 頑健な直線回帰（IRLS: 反復重み付け最小二乗法、Huber重み）。
+// Praatの仕様書は「通常の最小二乗法はピーク自身に直線が引っ張られて精度が落ちる」として
+// デフォルトでTheilの頑健回帰を使うと明記しているため、それに準じた近似をここで行う。
+// 通常のOLSで初期直線を引いた後、残差の大きい点（＝ピーク自身など）の重みを下げて再フィットする。
+function robustLinearFitPredict(xs, ys, predictAtX) {
+  const n = xs.length;
+  if (n < 2) return ys[0] || 0;
+  let weights = new Array(n).fill(1);
+  let slope = 0, intercept = 0;
+  for (let iter = 0; iter < 4; iter++) {
+    let sw = 0, swx = 0, swy = 0, swxx = 0, swxy = 0;
+    for (let i = 0; i < n; i++) {
+      const w = weights[i];
+      sw += w; swx += w * xs[i]; swy += w * ys[i];
+      swxx += w * xs[i] * xs[i]; swxy += w * xs[i] * ys[i];
+    }
+    const denom = sw * swxx - swx * swx;
+    if (Math.abs(denom) < 1e-9) break;
+    slope = (sw * swxy - swx * swy) / denom;
+    intercept = (swy - slope * swx) / sw;
+    // 残差からHuber重みを再計算（残差が大きい点＝外れ値ほど重みを下げる）
+    const residuals = xs.map((x, i) => ys[i] - (intercept + slope * x));
+    const absRes = residuals.map(Math.abs).sort((a, b) => a - b);
+    const mad = absRes[Math.floor(n / 2)] || 1e-6;
+    const scale = Math.max(1.4826 * mad, 1e-6);
+    const k = 1.345 * scale;
+    weights = residuals.map((r) => (Math.abs(r) <= k ? 1 : k / Math.abs(r)));
+  }
+  return intercept + slope * predictAtX;
+}
 // 1フレーム分のCPP（ケプストラムピーク突出度、dB）を計算する。
 // ①窓かけ済みフレームをFFT → 対数振幅スペクトル(dB) → それを再度FFTしてケプストラムを得る
 // ②ケプストラム上で、想定F0範囲（60〜400Hz）に対応するクフレンシー区間の最大値を探す
@@ -860,18 +890,13 @@ function computeCPPForFrame(windowedFrame, sampleRate, fftSize) {
   for (let i = minQuefBin; i <= maxQuefBin; i++) {
     if (cepReal[i] > peakVal) { peakVal = cepReal[i]; peakIdx = i; }
   }
-  const n = maxQuefBin - minQuefBin + 1;
-  let xMean = 0, yMean = 0;
-  for (let i = minQuefBin; i <= maxQuefBin; i++) { xMean += i; yMean += cepReal[i]; }
-  xMean /= n; yMean /= n;
-  let num = 0, den = 0;
-  for (let i = minQuefBin; i <= maxQuefBin; i++) {
-    num += (i - xMean) * (cepReal[i] - yMean);
-    den += (i - xMean) * (i - xMean);
-  }
-  const slope = den !== 0 ? num / den : 0;
-  const intercept = yMean - slope * xMean;
-  const baselineAtPeak = intercept + slope * peakIdx;
+  // トレンド直線（背景ノイズの傾向線）は、Praatの仕様書に倣いピーク探索範囲より広い
+  // クフレンシー0.001〜0.05秒相当の範囲全体で当てはめる（狭い範囲だとピーク自身に直線が引っ張られやすい）。
+  const trendLoBin = Math.max(2, Math.round(sampleRate * 0.001));
+  const trendHiBin = Math.min(Math.floor(fftSize / 2) - 1, Math.round(sampleRate * 0.05));
+  const xs = [], ys = [];
+  for (let i = trendLoBin; i <= trendHiBin; i++) { xs.push(i); ys.push(cepReal[i]); }
+  const baselineAtPeak = robustLinearFitPredict(xs, ys, peakIdx);
   return peakVal - baselineAtPeak;
 }
 // 録音全体からCPPS（フレームごとのCPPを時間方向に平滑化=平均した値）を求める。
