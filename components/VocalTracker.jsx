@@ -283,6 +283,19 @@ const PROFESSION_THEORY_PAGES = {
   pop_musical: "/performer-theory"
 };
 const VOCAL_PROFESSIONS = ["singer", "announcer", "voice_actor", "pop_musical"];
+// lavoce-記録項目の再設計v2.md §3.6: 既往症を自由記述から選択式に構造化。
+// 目的：診断済みの人には専用分析を出し、未診断の人には「疑い」を一切示さない（§7.1）。
+const CONDITION_OPTIONS = [
+  { key: "gerd", label: "逆流性食道炎" },
+  { key: "lpr", label: "咽喉頭酸逆流" },
+  { key: "allergic_rhinitis", label: "アレルギー性鼻炎・花粉症" },
+  { key: "asthma", label: "喘息" },
+  { key: "sinusitis", label: "副鼻腔炎" },
+  { key: "thyroid", label: "甲状腺疾患" },
+  { key: "anemia", label: "貧血" },
+  { key: "sleep_apnea", label: "睡眠時無呼吸症候群" },
+  { key: "vocal_lesion", label: "声帯結節・ポリープの既往" }
+];
 // 「今日の負荷」の抽象スキーマ。type はログの種類、durationMin/intensity は職業共通、
 // それ以外は職業ごとに意味のある追加項目（分析エンジン側は type を見て解釈する）。
 const LOAD_TYPE_BY_PROFESSION = {
@@ -2414,7 +2427,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer" });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [] });
   const [ownedItemKeys, setOwnedItemKeys] = useState([]);
   const [characterEquipped, setCharacterEquipped] = useState({});
   const [characterPointsSpent, setCharacterPointsSpent] = useState(0);
@@ -2533,7 +2546,7 @@ export default function VocalTracker({ userId, userEmail }) {
         () =>
           supabase
             .from("profiles")
-            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle")
+            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions")
             .eq("id", userId)
             .single(),
         "プロフィール（羊の装備を含む）の取得"
@@ -2556,6 +2569,7 @@ export default function VocalTracker({ userId, userEmail }) {
           comfort_range_high: data.comfort_range_high || "",
           technical_goal: data.technical_goal || "",
           health_notes: data.health_notes || "",
+          conditions: data.conditions || [],
           vocal_profession: data.vocal_profession || "singer",
           track_cycle: data.track_cycle || false
         });
@@ -4018,6 +4032,50 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [entries, clinicPeriodRange]);
   // ---- 受診用サマリー 用データ ここまで ----
 
+  // ---- lavoce-記録項目の再設計v2.md §3.6: 逆流専用の分析 用データ ----
+  // conditions に gerd（逆流性食道炎）か lpr（咽喉頭酸逆流）を登録した人にだけ表示する。
+  // 未診断の人には「疑い」を一切示さない（§7.1）。
+  const hasRefluxCondition = (profile.conditions || []).some((c) => c === "gerd" || c === "lpr");
+  const refluxDinnerGapBins = useMemo(() => {
+    if (!hasRefluxCondition) return [];
+    const sortedDates = Object.keys(entries).sort();
+    const bins = { "〜1時間": { n: 0, hit: 0 }, "1〜2時間": { n: 0, hit: 0 }, "2〜3時間": { n: 0, hit: 0 }, "3時間〜": { n: 0, hit: 0 } };
+    sortedDates.forEach((date, i) => {
+      const e = entries[date];
+      const gap = computeTimeGapHours(e.dinnerTime, e.bedtime);
+      if (gap == null) return;
+      const nextDate = sortedDates[i + 1];
+      if (!nextDate || addDays(date, 1) !== nextDate) return;
+      const nextEntry = entries[nextDate];
+      const hasDiscomfort = (nextEntry.throatSymptoms || []).includes("違和感");
+      const binKey = gap <= 1 ? "〜1時間" : gap <= 2 ? "1〜2時間" : gap <= 3 ? "2〜3時間" : "3時間〜";
+      bins[binKey].n += 1;
+      if (hasDiscomfort) bins[binKey].hit += 1;
+    });
+    // §7.3: 件数を必ず添える。各ビンn≥5で表示。
+    return Object.entries(bins).map(([label, s]) => ({ label, n: s.n, rate: s.n > 0 ? (s.hit / s.n) * 100 : null }));
+  }, [entries, hasRefluxCondition]);
+  const refluxDinnerTagEffects = useMemo(() => {
+    if (!hasRefluxCondition) return [];
+    const tags = ["揚げ物", "炭酸", "カフェイン", "アルコール", "トマト系"];
+    const sortedDates = Object.keys(entries).sort();
+    return tags.map((tag) => {
+      const group1 = [], group0 = [];
+      sortedDates.forEach((date, i) => {
+        const e = entries[date];
+        const nextDate = sortedDates[i + 1];
+        if (!nextDate || addDays(date, 1) !== nextDate) return;
+        const nextEntry = entries[nextDate];
+        const hasDiscomfort = (nextEntry.throatSymptoms || []).includes("違和感") ? 1 : 0;
+        ((e.dinnerTags || []).includes(tag) ? group1 : group0).push(hasDiscomfort);
+      });
+      const res = computeHedgesG(group1, group0);
+      if (!res) return null;
+      return { tag, ...res, stars: starRatingForEffect(res) };
+    }).filter((r) => r != null && r.n1 >= 3 && r.n0 >= 3);
+  }, [entries, hasRefluxCondition]);
+  // ---- 逆流専用の分析 用データ ここまで ----
+
 
   // 装備・配置・ドラッグ移動は、その場ではデータベースに保存しない。
   // 「保存中」の表示に気づかれにくかったこと、また保存されたかどうかが分かりにくいという指摘を受けて、
@@ -4162,6 +4220,7 @@ export default function VocalTracker({ userId, userEmail }) {
         comfort_range_high: profile.comfort_range_high || null,
         technical_goal: profile.technical_goal || null,
         health_notes: profile.health_notes || null,
+        conditions: profile.conditions || [],
         vocal_profession: profile.vocal_profession || "singer",
         track_cycle: !!profile.track_cycle
       })
@@ -4996,6 +5055,21 @@ export default function VocalTracker({ userId, userEmail }) {
                         <input type="text" value={profile.technical_goal}
                           onChange={(e) => setProfile((p) => ({ ...p, technical_goal: e.target.value }))}
                           className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium block mb-1.5">既往症・診断済みの症状（任意）</label>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                          選ぶと、その症状に関する専用の分析が「分析」タブに表示されるようになります。ここは診断を受けている項目だけを選ぶ場所で、疑いの有無を判定するものではありません。
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {CONDITION_OPTIONS.map((c) => (
+                            <Chip key={c.key} label={c.label} active={(profile.conditions || []).includes(c.key)}
+                              onClick={() => setProfile((p) => {
+                                const current = p.conditions || [];
+                                return { ...p, conditions: current.includes(c.key) ? current.filter((x) => x !== c.key) : [...current, c.key] };
+                              })} />
+                          ))}
+                        </div>
                       </div>
                       <div>
                         <label className="text-sm font-medium block mb-1.5">{t("labelHealthNotes")}</label>
@@ -6289,6 +6363,46 @@ export default function VocalTracker({ userId, userEmail }) {
                     current={recordedDaysTotal}
                     required={3}
                   />
+                )}
+
+                {hasRefluxCondition && (refluxDinnerGapBins.some((b) => b.n >= 5) || refluxDinnerTagEffects.length > 0) && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">逆流と喉の違和感の傾向</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      既往症に登録されている方にだけ表示しています。夕食の内容・時刻と、翌朝の喉の違和感の記録上の関係です。
+                    </p>
+                    {refluxDinnerGapBins.some((b) => b.n >= 5) && (
+                      <div className="mb-3">
+                        <p className="text-xs font-medium mb-1.5">夕食から就寝までの間隔別・翌朝の違和感の出現率</p>
+                        <div className="space-y-1.5">
+                          {refluxDinnerGapBins.filter((b) => b.n >= 5).map((b) => (
+                            <div key={b.label} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                              <span>{b.label}</span>
+                              <span className="ff-mono" style={{ color: C.inkSoft }}>{Math.round(b.rate)}%（{b.n}日）</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {refluxDinnerTagEffects.length > 0 && (
+                      <div>
+                        <p className="text-xs font-medium mb-1.5">夕食タグ別の効果</p>
+                        <div className="space-y-1.5">
+                          {refluxDinnerTagEffects.map((r) => (
+                            <div key={r.tag} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                              <span>{r.tag}</span>
+                              <span className="ff-mono" style={{ color: C.inkSoft }}>
+                                {r.stars <= 1 ? "まだ判断できません" : `g=${r.g.toFixed(2)}（${"★".repeat(r.stars)}${"☆".repeat(4 - r.stars)}）`}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向であり、因果関係を断定するものではありません。診断・治療のご判断は主治医にご相談ください。
+                    </p>
+                  </div>
                 )}
 
                 <div className="pt-2">
