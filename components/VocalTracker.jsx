@@ -2552,9 +2552,6 @@ export default function VocalTracker({ userId, userEmail }) {
                     <SectionCard title={t("sectionMental")} icon={HeartHandshake}>
                       <DotSelector label={t("labelMentalEase")} icon={HeartHandshake} value={formData.ease} lowLabel={t("lowTension")} highLabel={t("highCalm")}
                         onChange={(v) => setFormData((f) => ({ ...f, ease: v }))} />
-                      <div style={{ background: "#ffe066", color: "#000", padding: "10px", fontWeight: "bold", fontSize: "14px", border: "3px solid red" }}>
-                        DEBUG: タグ数={MENTAL_TAG_OPTIONS.length} / formData.mentalTags={JSON.stringify(formData.mentalTags)}
-                      </div>
                       <div>
                         <span className="text-sm font-medium block mb-2">{t("labelMentalTags")}</span>
                         <div className="flex flex-wrap gap-2">
