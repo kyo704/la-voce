@@ -1823,6 +1823,9 @@ export default function VocalTracker({ userId, userEmail }) {
   const [questionnaireAnswers, setQuestionnaireAnswers] = useState({});
   const [questionnaireSaving, setQuestionnaireSaving] = useState(false);
   const [questionnaireError, setQuestionnaireError] = useState("");
+  const [repertoireTessituraMap, setRepertoireTessituraMap] = useState({});
+  const [tessituraInput, setTessituraInput] = useState("");
+  const [tessituraSaving, setTessituraSaving] = useState(false);
   const [language, setLanguage] = useState("ja");
   const [viewMonth, setViewMonth] = useState(() => {
     const d = new Date();
@@ -1916,6 +1919,27 @@ export default function VocalTracker({ userId, userEmail }) {
         console.error("質問票の回答の読み込みに失敗しました:", error, "userId:", userId);
       }
       if (mounted && data) setQuestionnaireResponses(data);
+    })();
+    return () => { mounted = false; };
+  }, [userId]);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const supabase = createClient();
+      const { data, error } = await runQueryWithAuthRetry(
+        supabase,
+        () => supabase.from("repertoire_tessitura").select("*").eq("user_id", userId),
+        "曲目のテッシトゥーラ登録の取得"
+      );
+      if (error) {
+        console.error("曲目のテッシトゥーラ登録の読み込みに失敗しました:", error, "userId:", userId);
+      }
+      if (mounted && data) {
+        const map = {};
+        data.forEach((row) => { map[row.repertoire_name] = row.tessitura_note; });
+        setRepertoireTessituraMap(map);
+      }
     })();
     return () => { mounted = false; };
   }, [userId]);
@@ -2895,6 +2919,52 @@ export default function VocalTracker({ userId, userEmail }) {
   const hasCycleData = useMemo(() => Object.values(entries).some((e) => e.cycleStart), [entries]);
   // ---- 周期と声・メンタルの傾向 用データ ここまで ----
 
+  // ---- lavoce-収集データ拡張案.md E節: 曲目ごとの負荷（テッシトゥーラ×時間）用データ ----
+  // 役の負荷 = 演奏時間(分) × 声種の快適音域からの逸脱度
+  // 逸脱度 = |役の平均音高 − 本人の快適音域の中心| / 本人の音域幅
+  const comfortableRangeMidi = useMemo(() => {
+    const low = noteToMidi(profile.vocal_range_low);
+    const high = noteToMidi(profile.vocal_range_high);
+    if (low == null || high == null || high <= low) return null;
+    return { low, high, center: (low + high) / 2, width: high - low };
+  }, [profile.vocal_range_low, profile.vocal_range_high]);
+  const roleLoadStats = useMemo(() => {
+    if (!comfortableRangeMidi) return [];
+    const byRole = {};
+    const sortedDates = Object.keys(entries).sort();
+    sortedDates.forEach((date, i) => {
+      const e = entries[date];
+      const name = (e.repertoire || "").trim();
+      const tessituraNote = name && repertoireTessituraMap[name];
+      if (!tessituraNote) return;
+      const tessituraMidi = noteToMidi(tessituraNote);
+      if (tessituraMidi == null) return;
+      const deviation = Math.abs(tessituraMidi - comfortableRangeMidi.center) / comfortableRangeMidi.width;
+      const minutes = typeof e.activityDuration === "number" ? e.activityDuration * 60 : 0;
+      const load = minutes * deviation;
+      if (!byRole[name]) byRole[name] = { name, tessituraNote, loads: [], nextDayThroat: [], nextDayVoice: [] };
+      byRole[name].loads.push(load);
+      const nextDate = sortedDates[i + 1];
+      if (nextDate && addDays(date, 1) === nextDate) {
+        const nextEntry = entries[nextDate];
+        if (typeof nextEntry.throatCondition === "number") byRole[name].nextDayThroat.push(nextEntry.throatCondition);
+        if (typeof nextEntry.voiceQuality === "number") byRole[name].nextDayVoice.push(nextEntry.voiceQuality);
+      }
+    });
+    return Object.values(byRole)
+      .map((r) => ({
+        name: r.name,
+        tessituraNote: r.tessituraNote,
+        count: r.loads.length,
+        avgLoad: r.loads.reduce((a, b) => a + b, 0) / r.loads.length,
+        avgNextDayThroat: r.nextDayThroat.length ? r.nextDayThroat.reduce((a, b) => a + b, 0) / r.nextDayThroat.length : null,
+        avgNextDayVoice: r.nextDayVoice.length ? r.nextDayVoice.reduce((a, b) => a + b, 0) / r.nextDayVoice.length : null,
+        nextDayCount: r.nextDayThroat.length
+      }))
+      .sort((a, b) => b.avgLoad - a.avgLoad);
+  }, [entries, repertoireTessituraMap, comfortableRangeMidi]);
+  // ---- 曲目ごとの負荷 用データ ここまで ----
+
 
   // 装備・配置・ドラッグ移動は、その場ではデータベースに保存しない。
   // 「保存中」の表示に気づかれにくかったこと、また保存されたかどうかが分かりにくいという指摘を受けて、
@@ -3082,6 +3152,24 @@ export default function VocalTracker({ userId, userEmail }) {
     setQuestionnaireAnswers({});
     setToastMessage("記録しました。");
     setTimeout(() => setToastMessage(null), 3200);
+  }
+
+  // lavoce-収集データ拡張案.md E節: 曲目・役に「テッシトゥーラ（音域の中心）」を1回だけ紐づける。
+  // 一度登録すれば、以後同じ曲目名を使うすべての記録で自動的に負荷計算に使われる。
+  async function handleSaveTessitura(repertoireName, noteText) {
+    if (!repertoireName || !noteText) return;
+    setTessituraSaving(true);
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("repertoire_tessitura")
+      .upsert({ user_id: userId, repertoire_name: repertoireName, tessitura_note: noteText }, { onConflict: "user_id,repertoire_name" });
+    setTessituraSaving(false);
+    if (error) {
+      console.error("テッシトゥーラの登録に失敗しました:", error);
+      return;
+    }
+    setRepertoireTessituraMap((prev) => ({ ...prev, [repertoireName]: noteText }));
+    setTessituraInput("");
   }
 
   function updateDetail(patch) {
@@ -3992,6 +4080,31 @@ export default function VocalTracker({ userId, userEmail }) {
                             className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                         </div>
                       </div>
+
+                      {formData.repertoire && !repertoireTessituraMap[formData.repertoire] && (
+                        <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                          <p className="text-xs font-medium mb-1">「{formData.repertoire}」のテッシトゥーラ（音域の中心）を登録しますか？（任意・1回だけ）</p>
+                          <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                            登録すると、以後この曲目を記録するたびに、あなたの快適音域からどれだけ離れているかを自動で計算し、「重い役ランキング」に使えるようになります。
+                          </p>
+                          <div className="flex gap-2">
+                            <input type="text" value={tessituraInput} placeholder={t("placeholderNoteExample")}
+                              onChange={(e) => setTessituraInput(e.target.value)}
+                              className="flex-1 rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.card }} />
+                            <button type="button" disabled={tessituraSaving || !tessituraInput}
+                              onClick={() => handleSaveTessitura(formData.repertoire, tessituraInput)}
+                              className="px-3.5 py-1.5 rounded-full text-xs font-medium flex-shrink-0"
+                              style={{ background: C.curtain, color: "#FFFDF8", opacity: tessituraSaving || !tessituraInput ? 0.5 : 1 }}>
+                              登録
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                      {formData.repertoire && repertoireTessituraMap[formData.repertoire] && (
+                        <p className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
+                          「{formData.repertoire}」のテッシトゥーラ: <span className="ff-mono">{repertoireTessituraMap[formData.repertoire]}</span> として登録済みです。
+                        </p>
+                      )}
 
                       <div>
                         <span className="text-sm font-medium block mb-2">話し声の使用量（歌以外でどれだけ喋ったか）</span>
@@ -5120,6 +5233,33 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                     <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
                       ※ あくまで記録上の傾向であり、医学的な診断ではありません。件数が少ないうちは参考程度にご覧ください。
+                    </p>
+                  </div>
+                )}
+                {roleLoadStats.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">あなたにとって重い役ランキング</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      演奏時間 × あなたの快適音域からの逸脱度で、曲目ごとの負荷を計算しています。テッシトゥーラを登録した曲目のみ表示されます。
+                    </p>
+                    <div className="space-y-2">
+                      {roleLoadStats.slice(0, 8).map((r, i) => (
+                        <div key={r.name} className="rounded-xl p-2.5" style={{ background: C.paper }}>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium">{i + 1}. {r.name}</span>
+                            <span className="ff-mono text-xs" style={{ color: C.inkSoft }}>負荷指数 {r.avgLoad.toFixed(0)}</span>
+                          </div>
+                          <p className="text-xs mt-1" style={{ color: C.inkSoft }}>
+                            テッシトゥーラ {r.tessituraNote}・{r.count}回の記録
+                            {r.avgNextDayThroat != null && (
+                              <>　翌日の喉コンディション平均 {r.avgNextDayThroat.toFixed(1)}（{r.nextDayCount}件）</>
+                            )}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向であり、件数が少ないうちは参考程度にご覧ください。「この役の翌日は必ず落ちる」といった判断は、記録が積み重なってから行ってください。
                     </p>
                   </div>
                 )}
