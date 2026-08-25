@@ -5,7 +5,8 @@ import {
   Mic2, Moon, Droplets, Thermometer, Wind, MapPin, Music2, HeartHandshake,
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
   Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot, MessageCircle, Home,
-  Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe, Lock
+  Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe, Lock,
+  Volume2, Plane
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -518,7 +519,10 @@ function buildFormData(date, entries) {
       dinnerTags: existing.dinnerTags || [],
       loadDetail: existing.loadDetail || {},
       cycleStart: existing.cycleStart || false,
-      medicationTags: existing.medicationTags || []
+      medicationTags: existing.medicationTags || [],
+      ambientNoiseDb: existing.ambientNoiseDb ?? "",
+      flightHours: existing.flightHours ?? "",
+      jetlagHours: existing.jetlagHours ?? ""
     };
   }
   return {
@@ -557,7 +561,10 @@ function buildFormData(date, entries) {
     exercises: [],
     loadDetail: {},
     cycleStart: false,
-    medicationTags: []
+    medicationTags: [],
+    ambientNoiseDb: "",
+    flightHours: "",
+    jetlagHours: ""
   };
 }
 function computeBMI(weightKg, heightCm) {
@@ -710,7 +717,10 @@ function rowToEntry(row) {
     dinnerTags: row.dinner_tags || [],
     loadDetail: row.load_detail || {},
     cycleStart: row.cycle_start || false,
-    medicationTags: row.medication_tags || []
+    medicationTags: row.medication_tags || [],
+    ambientNoiseDb: row.ambient_noise_db,
+    flightHours: row.flight_hours,
+    jetlagHours: row.jetlag_hours
   };
 }
 function numOrNull(v) {
@@ -724,6 +734,48 @@ function computeTimeGapHours(startTime, endTime) {
   let diff = (eh * 60 + em) - (sh * 60 + sm);
   if (diff < 0) diff += 24 * 60; // 日をまたぐ場合（例: 夕食19:00→就寝1:00）
   return roundTo1(diff / 60);
+}
+// lavoce-収集データ拡張案.md D節: スマホのマイクで環境騒音レベルを測定する（A-2の自動版）。
+// キャリブレーションされたマイクではないため、あくまで「参考値」としての推定dB。
+// マイクの音声データ自体は端末内で処理するだけで、サーバーには送らない・保存しない。
+async function measureAmbientNoise(durationMs = 2000) {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    throw new Error("このブラウザではマイクを使用できません");
+  }
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const audioContext = new AudioCtx();
+    const source = audioContext.createMediaStreamSource(stream);
+    const analyser = audioContext.createAnalyser();
+    analyser.fftSize = 2048;
+    source.connect(analyser);
+    const dataArray = new Float32Array(analyser.fftSize);
+    const samples = [];
+    const start = Date.now();
+    await new Promise((resolve) => {
+      function sample() {
+        analyser.getFloatTimeDomainData(dataArray);
+        let sumSquares = 0;
+        for (let i = 0; i < dataArray.length; i++) sumSquares += dataArray[i] * dataArray[i];
+        samples.push(Math.sqrt(sumSquares / dataArray.length));
+        if (Date.now() - start < durationMs) {
+          requestAnimationFrame(sample);
+        } else {
+          resolve();
+        }
+      }
+      sample();
+    });
+    await audioContext.close();
+    const avgRms = samples.length ? samples.reduce((a, b) => a + b, 0) / samples.length : 0;
+    const dbfs = avgRms > 0 ? 20 * Math.log10(avgRms) : -100;
+    // dBFS（デジタル満杯を0とする相対値）を、体感的に馴染みのある実世界のdB表示に近づけるための
+    // ざっくりした補正。正式な音圧レベル（dB SPL）ではなく、あくまで日ごとの相対比較用の目安。
+    return Math.round(Math.max(30, Math.min(110, 90 + dbfs)));
+  } finally {
+    stream.getTracks().forEach((track) => track.stop());
+  }
 }
 // 前日の記録から、声のコンディションに影響しやすい要因を抽出する。
 // flagKey は「今日」タブの短い警告表示に、explainKey は分析タブの理論的な解説文に対応する。
@@ -781,7 +833,10 @@ function entryToRow(userId, e) {
     dinner_tags: e.dinnerTags || [],
     load_detail: e.loadDetail || {},
     cycle_start: !!e.cycleStart,
-    medication_tags: e.medicationTags || []
+    medication_tags: e.medicationTags || [],
+    ambient_noise_db: numOrNull(e.ambientNoiseDb),
+    flight_hours: numOrNull(e.flightHours),
+    jetlag_hours: numOrNull(e.jetlagHours)
   };
 }
 
@@ -1425,6 +1480,8 @@ export default function VocalTracker({ userId, userEmail }) {
   const [saveStatus, setSaveStatus] = useState("idle");
   const [saveError, setSaveError] = useState("");
   const [toastMessage, setToastMessage] = useState(null);
+  const [noiseMeasuring, setNoiseMeasuring] = useState(false);
+  const [noiseError, setNoiseError] = useState("");
   const [language, setLanguage] = useState("ja");
   const [viewMonth, setViewMonth] = useState(() => {
     const d = new Date();
@@ -3387,6 +3444,54 @@ export default function VocalTracker({ userId, userEmail }) {
                           {WEATHER_OPTIONS.map((w) => <option key={w} value={w}>{t(WEATHER_KEYS[w])}</option>)}
                         </select>
                       </div>
+
+                      <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <Volume2 size={14} style={{ color: C.gold }} />
+                          <span className="text-sm font-medium">環境騒音レベル</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            disabled={noiseMeasuring}
+                            onClick={async () => {
+                              setNoiseError("");
+                              setNoiseMeasuring(true);
+                              try {
+                                const db = await measureAmbientNoise(2000);
+                                setFormData((f) => ({ ...f, ambientNoiseDb: db }));
+                              } catch (err) {
+                                setNoiseError("マイクを使用できませんでした。ブラウザの権限設定をご確認ください。");
+                              } finally {
+                                setNoiseMeasuring(false);
+                              }
+                            }}
+                            className="px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5"
+                            style={{ background: noiseMeasuring ? C.line : C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}
+                          >
+                            {noiseMeasuring ? <Loader2 size={12} className="animate-spin" /> : <Mic2 size={12} />}
+                            {noiseMeasuring ? "測定中（2秒）…" : "騒音レベルを測定する"}
+                          </button>
+                          {formData.ambientNoiseDb !== "" && formData.ambientNoiseDb != null && (
+                            <span className="ff-mono text-sm" style={{ color: C.ink }}>約{formData.ambientNoiseDb} dB</span>
+                          )}
+                        </div>
+                        {noiseError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{noiseError}</p>}
+                        <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
+                          今いる場所にスマホを置いて測定すると、2秒間の音を録音データに残さず、その場で数値化します。校正されたマイクではないため、あくまで日々の相対的な比較のための参考値です。
+                        </p>
+                      </div>
+
+                      <details className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
+                        <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>移動・時差の記録（任意）</summary>
+                        <div className="grid grid-cols-2 gap-3 mt-2">
+                          <NumberField label="フライト時間" icon={Plane} value={formData.flightHours ?? ""} step={0.5} min={0} max={30} suffix={t("unitHours")}
+                            onChange={(v) => setFormData((f) => ({ ...f, flightHours: v }))} />
+                          <NumberField label="時差" value={formData.jetlagHours ?? ""} step={1} min={-12} max={12} suffix={t("unitHours")}
+                            onChange={(v) => setFormData((f) => ({ ...f, jetlagHours: v }))} />
+                        </div>
+                        <p className="mt-2 leading-relaxed">機内の乾燥と時差ぼけは、どちらも喉と体調に影響しやすいとされています。遠征のあった日だけ記録してください。</p>
+                      </details>
                     </SectionCard>
 
                     <SectionCard title={t("sectionPractice")} icon={Music2}>
