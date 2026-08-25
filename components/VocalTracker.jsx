@@ -1666,9 +1666,10 @@ function noteToMidi(noteStr) {
 // MIDI ノート番号を音名表記（国際式）に戻す。
 function midiToNoteLabel(midi) {
   if (midi == null || Number.isNaN(midi)) return "-";
+  const rounded = Math.round(midi); // パーセンタイル計算などで小数のMIDI値が来ても崩れないようにする
   const names = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-  const octave = Math.floor(midi / 12) - 1;
-  const name = names[((midi % 12) + 12) % 12];
+  const octave = Math.floor(rounded / 12) - 1;
+  const name = names[((rounded % 12) + 12) % 12];
   return `${name}${octave}`;
 }
 const ACTIVITY_CHART_COLORS = { "休養": C.sageSoft, "自主練習": C.sage, "レッスン": C.gold, "リハーサル": C.rust, "本番": C.curtain };
