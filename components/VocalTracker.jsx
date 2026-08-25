@@ -1642,6 +1642,13 @@ function MiniNumber({ value, onChange, placeholder }) {
 function roundTo1(n) {
   return Math.round(n * 10) / 10;
 }
+// 配列の中央値を求める（本番ピーキング曲線の逆算プランで使用）
+function median(arr) {
+  if (arr.length === 0) return null;
+  const sorted = [...arr].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+}
 // 音名（国際式、例: "C4", "G#3", "Bb4"）を MIDI ノート番号に変換する。パースできなければ null。
 function noteToMidi(noteStr) {
   if (!noteStr || typeof noteStr !== "string") return null;
@@ -3302,6 +3309,105 @@ export default function VocalTracker({ userId, userEmail }) {
     return { ah: roundTo1(ah), temp: e.temperature, rh: e.humidity, location: e.location || null };
   }, [entries]);
   // ---- 環境の快適帯 用データ ここまで ----
+
+  // ---- lavoce-指標設計図.md 08. 本番ピーキング曲線 用データ ----
+  const performanceDates = useMemo(() => Object.keys(entries).filter((d) => entries[d].activityType === "本番").sort(), [entries]);
+  const nextPerformanceDate = useMemo(() => {
+    const realToday = todayISO();
+    return performanceDates.find((d) => d > realToday) || null;
+  }, [performanceDates]);
+  const pastPerformanceDates = useMemo(() => {
+    const realToday = todayISO();
+    return performanceDates.filter((d) => d <= realToday);
+  }, [performanceDates]);
+  // 本番日をゼロ点にして、過去のすべての本番を重ね合わせる（イベント整列平均）。
+  const peakingCurve = useMemo(() => {
+    if (pastPerformanceDates.length < 3) return null;
+    const tauMin = -7, tauMax = 3;
+    const tauData = {};
+    for (let tau = tauMin; tau <= tauMax; tau++) tauData[tau] = [];
+    pastPerformanceDates.forEach((perfDate) => {
+      for (let tau = tauMin; tau <= tauMax; tau++) {
+        const targetDate = addDays(perfDate, tau);
+        // 本番が連日で重なる期間は、targetDateにとって「最寄りの本番」にだけ紐づけ、二重計上を防ぐ。
+        let nearest = null, nearestDist = Infinity;
+        pastPerformanceDates.forEach((pd) => {
+          const dist = Math.abs((new Date(targetDate) - new Date(pd)) / 86400000);
+          if (dist < nearestDist) { nearestDist = dist; nearest = pd; }
+        });
+        if (nearest !== perfDate) continue;
+        const entry = entries[targetDate];
+        if (!entry || typeof entry.throatCondition !== "number") continue;
+        tauData[tau].push(entry.throatCondition);
+      }
+    });
+    const curve = [];
+    for (let tau = tauMin; tau <= tauMax; tau++) {
+      const vals = tauData[tau];
+      if (vals.length < 2) { curve.push({ tau, mean: null, sd: null, n: vals.length }); continue; }
+      const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+      const variance = vals.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / (vals.length - 1);
+      curve.push({ tau, mean: roundTo1(mean), sd: Math.sqrt(variance), n: vals.length });
+    }
+    const validPoints = curve.filter((c) => c.mean != null);
+    const dips = validPoints.filter((c) => c.tau < 0);
+    const lowestDip = dips.length ? dips.reduce((a, b) => (b.mean < a.mean ? b : a)) : null;
+    return { curve, count: pastPerformanceDates.length, lowestDip };
+  }, [pastPerformanceDates, entries]);
+  // 逆算プラン：本番当日のスコアが4以上だった回だけを使い、τ日目の行動の中央値を目標値として提示する。
+  const peakingReversePlan = useMemo(() => {
+    if (pastPerformanceDates.length < 3) return null;
+    const goodPerfs = pastPerformanceDates.filter((d) => typeof entries[d].throatCondition === "number" && entries[d].throatCondition >= 4);
+    const usePerfs = goodPerfs.length >= 2 ? goodPerfs : pastPerformanceDates;
+    const isGeneral = goodPerfs.length < 2;
+    const tauMin = -7, tauMax = 0;
+    const plan = [];
+    for (let tau = tauMin; tau <= tauMax; tau++) {
+      const sleepVals = [], loadVals = [], waterVals = [];
+      usePerfs.forEach((perfDate) => {
+        const targetDate = addDays(perfDate, tau);
+        const e = entries[targetDate];
+        if (!e) return;
+        if (typeof e.sleepHours === "number") sleepVals.push(e.sleepHours);
+        if (acwrSeries[targetDate] && acwrSeries[targetDate].acwr != null) loadVals.push(acwrSeries[targetDate].acwr);
+        const waterMl = Object.values(e.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0);
+        if (waterMl > 0) waterVals.push(waterMl);
+      });
+      plan.push({
+        tau,
+        sleepHours: median(sleepVals),
+        load: median(loadVals),
+        waterL: waterVals.length ? median(waterVals) / 1000 : null
+      });
+    }
+    return { plan, isGeneral, basedOnCount: usePerfs.length };
+  }, [pastPerformanceDates, entries, acwrSeries]);
+  // ---- 本番ピーキング曲線 用データ ここまで ----
+
+  // ---- lavoce-指標設計図.md「週次ボイスカルテ」用データ ----
+  // 1週間ぶんを、先生・ボイストレーナー・耳鼻科に見せられる1枚にまとめる。
+  const weeklyVoiceChart = useMemo(() => {
+    const realToday = todayISO();
+    const weekDates = [];
+    for (let i = 6; i >= 0; i--) weekDates.push(addDays(realToday, -i));
+
+    const deviationTrend = weekDates.map((d) => ({ date: d, score: computeDailyScore100(entries[d]) }));
+    const symptomWeek = weekDates.map((d) => ({ date: d, symptoms: entries[d] ? (entries[d].throatSymptoms || []) : null }));
+    const loadWeek = weekDates.map((d) => ({ date: d, acwr: acwrSeries[d] ? acwrSeries[d].acwr : null }));
+
+    // 今週わかったこと1つ：声の時差マップの発見 → なければ効いた習慣ランキングの最上位 → なければ該当なし
+    let keyFinding = null;
+    if (topLagFinding) {
+      keyFinding = `${topLagFinding.variableLabel}の「${topLagFinding.lag}日後」に、声への関係が最も強く出ています（ρ=${topLagFinding.rho.toFixed(2)}）。`;
+    } else if (effectiveHabitRanking.length > 0 && effectiveHabitRanking[0].stars >= 2) {
+      const top = effectiveHabitRanking[0];
+      keyFinding = `${top.label}日は、翌日の声が平均で${top.g >= 0 ? "良く" : "悪く"}記録されています（効果量 g=${top.g.toFixed(2)}）。`;
+    }
+
+    const recordedCount = weekDates.filter((d) => entries[d]).length;
+    return { weekDates, deviationTrend, symptomWeek, loadWeek, keyFinding, recordedCount };
+  }, [entries, acwrSeries, topLagFinding, effectiveHabitRanking]);
+  // ---- 週次ボイスカルテ 用データ ここまで ----
 
 
   // 装備・配置・ドラッグ移動は、その場ではデータベースに保存しない。
@@ -5880,6 +5986,139 @@ export default function VocalTracker({ userId, userEmail }) {
                     required={7}
                   />
                 )}
+                {peakingCurve ? (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">本番ピーキング曲線</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      過去{peakingCurve.count}回の本番日を「当日＝0」にそろえて重ね合わせた平均です。谷の位置が、あなた固有の仕上がり方の型です。
+                    </p>
+                    {peakingCurve.lowestDip && (
+                      <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
+                        あなたは<strong>本番の{Math.abs(peakingCurve.lowestDip.tau)}日前にいちど沈む</strong>型です（過去{peakingCurve.count}回の平均）。
+                      </p>
+                    )}
+                    <div style={{ width: "100%", height: 200 }}>
+                      <ResponsiveContainer>
+                        <ComposedChart data={peakingCurve.curve.map((c) => ({
+                          tau: c.tau === 0 ? "当日" : c.tau > 0 ? `+${c.tau}` : `${c.tau}`,
+                          mean: c.mean,
+                          low: c.mean != null && c.sd != null ? roundTo1(c.mean - c.sd) : null,
+                          bandWidth: c.mean != null && c.sd != null ? roundTo1(c.sd * 2) : null
+                        }))} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                          <CartesianGrid stroke={C.line} />
+                          <XAxis dataKey="tau" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                          <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 10, fill: C.inkSoft }} />
+                          <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                          <Area dataKey="low" stackId="band" stroke="none" fill="transparent" />
+                          <Area dataKey="bandWidth" stackId="band" stroke="none" fill={C.gold} fillOpacity={0.15} />
+                          <Line type="monotone" dataKey="mean" stroke={C.curtain} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                        </ComposedChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>横軸は本番日を0とした相対日、帯は±1SDです。件数2未満の日は表示していません。</p>
+
+                    {nextPerformanceDate && peakingReversePlan && (
+                      <div className="mt-4 pt-3 border-t" style={{ borderColor: C.line }}>
+                        <p className="text-sm font-medium mb-2">逆算プラン：次の本番は{nextPerformanceDate.slice(5)}</p>
+                        <div className="space-y-1.5">
+                          {peakingReversePlan.plan.map((p) => (
+                            <div key={p.tau} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                              <span className="font-medium">{addDays(nextPerformanceDate, p.tau).slice(5)}（{p.tau === 0 ? "当日" : `${p.tau}日前`}）</span>
+                              <span className="ff-mono" style={{ color: C.inkSoft }}>
+                                {p.sleepHours != null ? `睡眠${p.sleepHours}h` : "-"}
+                                {p.load != null ? `　負荷${p.load.toFixed(1)}` : ""}
+                                {p.waterL != null ? `　水分${p.waterL.toFixed(1)}L` : ""}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                          {peakingReversePlan.isGeneral
+                            ? `声の調子が良かった本番がまだ2回未満のため、全体の中央値（${peakingReversePlan.basedOnCount}回分）を目安として出しています。`
+                            : `声の調子が良かった本番${peakingReversePlan.basedOnCount}回の、各日の行動の中央値です。`}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <LockedCard
+                    title="本番ピーキング曲線"
+                    teaser="本番前後の仕上がり方の、あなた固有の型が分かります"
+                    current={pastPerformanceDates.length}
+                    required={3}
+                  />
+                )}
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }} id="weekly-voice-chart">
+                  <div className="flex items-center justify-between mb-1">
+                    <h3 className="ff-display italic text-lg">週次ボイスカルテ</h3>
+                    <button
+                      type="button"
+                      onClick={() => window.print()}
+                      className="px-3 py-1.5 rounded-full text-xs font-medium flex-shrink-0"
+                      style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}
+                    >
+                      印刷・PDF保存
+                    </button>
+                  </div>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    直近1週間ぶんを1枚にまとめています。先生・ボイストレーナー・耳鼻咽喉科に見せる時にお使いください。
+                  </p>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    {weeklyVoiceChart.weekDates[0].slice(5)} 〜 {weeklyVoiceChart.weekDates[6].slice(5)}（記録{weeklyVoiceChart.recordedCount}/7日）
+                  </p>
+
+                  <p className="text-xs font-medium mb-1.5">コンディションの推移</p>
+                  <div style={{ width: "100%", height: 100 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={weeklyVoiceChart.deviationTrend.map((d) => ({ date: d.date.slice(5), score: d.score != null ? Math.round(d.score) : null }))} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 9, fill: C.inkSoft }} />
+                        <YAxis domain={[0, 100]} tick={{ fontSize: 9, fill: C.inkSoft }} />
+                        <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, borderColor: C.line }} />
+                        <Line type="monotone" dataKey="score" stroke={C.gold} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  <p className="text-xs font-medium mb-1.5 mt-4">症状カレンダー</p>
+                  <div className="space-y-1">
+                    {SYMPTOM_OPTIONS.map((symptom) => (
+                      <div key={symptom} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                        <span className="text-xs" style={{ width: 76, flexShrink: 0, color: C.inkSoft }}>{t(SYMPTOM_KEYS[symptom])}</span>
+                        <div style={{ display: "flex", gap: 3 }}>
+                          {weeklyVoiceChart.symptomWeek.map((d) => {
+                            const has = d.symptoms && d.symptoms.includes(symptom);
+                            return <div key={d.date} title={d.date} style={{ width: 14, height: 14, borderRadius: 3, background: has ? C.curtain : C.paper, flexShrink: 0 }} />;
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <p className="text-xs font-medium mb-1.5 mt-4">発声負荷（ACWR）</p>
+                  <div style={{ width: "100%", height: 90 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={weeklyVoiceChart.loadWeek.map((d) => ({ date: d.date.slice(5), acwr: d.acwr != null ? roundTo1(d.acwr) : null }))} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 9, fill: C.inkSoft }} />
+                        <YAxis domain={[0, "auto"]} tick={{ fontSize: 9, fill: C.inkSoft }} />
+                        <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, borderColor: C.line }} />
+                        <Line type="monotone" dataKey="acwr" stroke={C.sage} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  <p className="text-xs font-medium mb-1.5 mt-4">今週わかったこと</p>
+                  <p className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                    {weeklyVoiceChart.keyFinding || "まだ十分な記録がなく、確かな発見は出ていません。記録が増えると、ここに自動で表示されます。"}
+                  </p>
+
+                  <p className="text-xs mt-4" style={{ color: C.inkSoft }}>
+                    ※ ここに書かれている内容は記録にもとづく参考情報であり、医学的な診断ではありません。「印刷・PDF保存」はブラウザの印刷機能を使った簡易的なものです。
+                  </p>
+                </div>
+
                 <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
                   <button onClick={() => setAnalysisTarget("performance")}
                     className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
