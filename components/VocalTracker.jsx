@@ -591,6 +591,120 @@ function pearson(xs, ys) {
   if (dx2 === 0 || dy2 === 0) return null;
   return num / Math.sqrt(dx2 * dy2);
 }
+// ---- lavoce-指標設計図.md フェーズ4（05効いた習慣・04声の時差マップ）用の統計ヘルパー ----
+// 配列を順位に変換する（同値は平均順位）。スピアマン相関の下ごしらえ。
+function rankArray(arr) {
+  const indexed = arr.map((v, i) => ({ v, i })).sort((a, b) => a.v - b.v);
+  const ranks = new Array(arr.length);
+  let i = 0;
+  while (i < indexed.length) {
+    let j = i;
+    while (j + 1 < indexed.length && indexed[j + 1].v === indexed[i].v) j++;
+    const avgRank = (i + j) / 2 + 1;
+    for (let k = i; k <= j; k++) ranks[indexed[k].i] = avgRank;
+    i = j + 1;
+  }
+  return ranks;
+}
+// スピアマン順位相関 = 順位に変換した後のピアソン相関。外れ値に強く、5段階評価のような順序尺度に向く。
+function spearman(xs, ys) {
+  if (xs.length < 3) return null;
+  return pearson(rankArray(xs), rankArray(ys));
+}
+// 正則化不完全ベータ関数（連分数展開、Numerical Recipes準拠の実装）。t分布のp値の計算に使う。
+function incompleteBeta(x, a, b) {
+  if (x <= 0) return 0;
+  if (x >= 1) return 1;
+  const lbeta = logGamma(a) + logGamma(b) - logGamma(a + b);
+  const front = Math.exp(Math.log(x) * a + Math.log(1 - x) * b - lbeta);
+  const useContinuedFraction = x < (a + 1) / (a + b + 2);
+  const cf = (x, a, b) => {
+    const maxIter = 200, eps = 1e-10;
+    let c = 1, d = 1 - ((a + b) * x) / (a + 1);
+    if (Math.abs(d) < 1e-30) d = 1e-30;
+    d = 1 / d;
+    let h = d;
+    for (let m = 1; m <= maxIter; m++) {
+      const m2 = 2 * m;
+      let aa = (m * (b - m) * x) / ((a + m2 - 1) * (a + m2));
+      d = 1 + aa * d; if (Math.abs(d) < 1e-30) d = 1e-30;
+      c = 1 + aa / c; if (Math.abs(c) < 1e-30) c = 1e-30;
+      d = 1 / d; h *= d * c;
+      aa = (-(a + m) * (a + b + m) * x) / ((a + m2) * (a + m2 + 1));
+      d = 1 + aa * d; if (Math.abs(d) < 1e-30) d = 1e-30;
+      c = 1 + aa / c; if (Math.abs(c) < 1e-30) c = 1e-30;
+      d = 1 / d;
+      const del = d * c; h *= del;
+      if (Math.abs(del - 1) < eps) break;
+    }
+    return h;
+  };
+  if (useContinuedFraction) {
+    return (front * cf(x, a, b)) / a;
+  } else {
+    return 1 - (front * cf(1 - x, b, a)) / b;
+  }
+}
+function logGamma(x) {
+  const g = 7;
+  const c = [
+    0.99999999999980993, 676.5203681218851, -1259.1392167224028,
+    771.32342877765313, -176.61502916214059, 12.507343278686905,
+    -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7
+  ];
+  if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - logGamma(1 - x);
+  x -= 1;
+  let a = c[0];
+  const t = x + g + 0.5;
+  for (let i = 1; i < g + 2; i++) a += c[i] / (x + i);
+  return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a);
+}
+// t統計量とその自由度から、両側検定のp値を求める（t分布とベータ関数の関係を利用）。
+function tDistPValue(t, df) {
+  if (!Number.isFinite(t) || df <= 0) return 1;
+  const x = df / (df + t * t);
+  return incompleteBeta(x, df / 2, 0.5);
+}
+// Benjamini–Hochberg法によるFDR補正。複数の相関を同時に見るときに、偶然の「有意」を抑える。
+// 戻り値は、入力と同じ順序の boolean 配列（true = 補正後も有意）。
+function benjaminiHochberg(pValues, fdr) {
+  const indexed = pValues.map((p, i) => ({ p, i })).filter((x) => x.p != null).sort((a, b) => a.p - b.p);
+  const m = indexed.length;
+  const result = new Array(pValues.length).fill(false);
+  let cutoffRank = -1;
+  for (let k = 0; k < m; k++) {
+    if (indexed[k].p <= ((k + 1) / m) * fdr) cutoffRank = k;
+  }
+  for (let k = 0; k <= cutoffRank; k++) result[indexed[k].i] = true;
+  return result;
+}
+// Hedges' g（小標本バイアス補正つきの効果量）と95%信頼区間。
+function computeHedgesG(group1, group0) {
+  const n1 = group1.length, n0 = group0.length;
+  if (n1 < 2 || n0 < 2) return null;
+  const mean = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+  const variance = (arr, m) => arr.reduce((s, v) => s + Math.pow(v - m, 2), 0) / (arr.length - 1);
+  const m1 = mean(group1), m0 = mean(group0);
+  const s1 = variance(group1, m1), s0 = variance(group0, m0);
+  const sPooled = Math.sqrt(((n1 - 1) * s1 + (n0 - 1) * s0) / (n1 + n0 - 2));
+  if (sPooled === 0) return null;
+  const J = 1 - 3 / (4 * (n1 + n0) - 9);
+  const g = ((m1 - m0) / sPooled) * J;
+  const se = Math.sqrt((n1 + n0) / (n1 * n0) + (g * g) / (2 * (n1 + n0)));
+  return { g, ciLow: g - 1.96 * se, ciHigh: g + 1.96 * se, n1, n0, m1, m0 };
+}
+function starRatingForEffect(res) {
+  if (!res) return 0;
+  const { n1, n0, g, ciLow, ciHigh } = res;
+  if (n1 < 3 || n0 < 3) return 0;
+  let stars = 1;
+  const crossesZero = ciLow <= 0 && ciHigh >= 0;
+  if (!crossesZero) stars = 2;
+  if (!crossesZero && Math.abs(g) >= 0.5) stars = 3;
+  if (!crossesZero && Math.abs(g) >= 0.5 && n1 >= 10 && n0 >= 10) stars = 4;
+  return stars;
+}
+// ---- 統計ヘルパー ここまで ----
 function getCorrelationData(entries, targetKey, targetFilter, t) {
   const list = Object.values(entries).filter(targetFilter);
   return FACTORS.filter((f) => f.key !== targetKey).map((f) => {
@@ -2985,6 +3099,109 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [entries, repertoireTessituraMap, comfortableRangeMidi]);
   // ---- 曲目ごとの負荷 用データ ここまで ----
 
+  // ---- lavoce-指標設計図.md 05. 効いた習慣ランキング 用データ ----
+  // 前日の行動（二値）→翌日のスコア、という向きに必ず固定する（同日で見ると逆向きの因果を拾ってしまうため）。
+  const HABIT_DEFINITIONS = useMemo(() => [
+    { key: "sleep7h", label: "前夜の睡眠が7時間以上だった", test: (e) => typeof e.sleepHours === "number" ? e.sleepHours >= 7 : null },
+    { key: "water2L", label: "前夜の水分摂取が2.0L以上だった", test: (e) => {
+      const ml = Object.values(e.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0);
+      return ml > 0 ? ml >= 2000 : null;
+    } },
+    { key: "alcohol", label: "前夜、アルコールを摂取した", test: (e) => (e.dinnerTags || []).length ? (e.dinnerTags || []).includes("アルコール") : null },
+    { key: "fried", label: "前夜、揚げ物を食べた", test: (e) => (e.dinnerTags || []).length ? (e.dinnerTags || []).includes("揚げ物") : null },
+    { key: "caffeine", label: "前夜、カフェインを摂取した", test: (e) => (e.dinnerTags || []).length ? (e.dinnerTags || []).includes("カフェイン") : null },
+    { key: "carbonated", label: "前夜、炭酸飲料を飲んだ", test: (e) => (e.dinnerTags || []).length ? (e.dinnerTags || []).includes("炭酸") : null },
+    { key: "highEase", label: "前夜の心の余裕が高かった（4以上）", test: (e) => typeof e.ease === "number" ? e.ease >= 4 : null },
+    { key: "talkedALot", label: "前日、よく喋った", test: (e) => typeof e.speakingLevel === "number" ? e.speakingLevel === 2 : null }
+  ], []);
+  const effectiveHabitRanking = useMemo(() => {
+    const sortedDates = Object.keys(filteredEntries).sort();
+    const results = HABIT_DEFINITIONS.map((habit) => {
+      const group1 = [], group0 = [];
+      sortedDates.forEach((date, i) => {
+        const nextDate = sortedDates[i + 1];
+        if (!nextDate || addDays(date, 1) !== nextDate) return;
+        const e = filteredEntries[date];
+        const testResult = habit.test(e);
+        if (testResult == null) return;
+        const nextEntry = filteredEntries[nextDate];
+        const throatV = typeof nextEntry.throatCondition === "number" ? nextEntry.throatCondition : null;
+        const voiceV = typeof nextEntry.voiceQuality === "number" ? nextEntry.voiceQuality : null;
+        if (throatV == null && voiceV == null) return;
+        const score = throatV != null && voiceV != null ? (throatV + voiceV) / 2 : (throatV ?? voiceV);
+        (testResult ? group1 : group0).push(score);
+      });
+      const res = computeHedgesG(group1, group0);
+      if (!res) return null;
+      return { key: habit.key, label: habit.label, ...res, stars: starRatingForEffect(res) };
+    }).filter((r) => r != null && r.n1 >= 3 && r.n0 >= 3);
+    return results.sort((a, b) => Math.abs(b.g) - Math.abs(a.g));
+  }, [filteredEntries, HABIT_DEFINITIONS]);
+  // ---- 効いた習慣ランキング 用データ ここまで ----
+
+  // ---- lavoce-指標設計図.md 04. 声の時差マップ 用データ ----
+  // 生活変数を k 日ずらして、目的変数（声の調子＝喉・声の平均）とのスピアマン順位相関を取る。
+  const LAG_VARIABLES = useMemo(() => [
+    { key: "sleepHours", label: "睡眠時間", extract: (e) => typeof e.sleepHours === "number" ? e.sleepHours : null },
+    { key: "water", label: "水分量", extract: (e) => {
+      const ml = Object.values(e.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0);
+      return ml > 0 ? ml : null;
+    } },
+    { key: "ease", label: "心の余裕", extract: (e) => typeof e.ease === "number" ? e.ease : null },
+    { key: "dinnerGap", label: "夕食から就寝までの間隔", extract: (e) => computeTimeGapHours(e.dinnerTime, e.bedtime) },
+    { key: "absHumidity", label: "絶対湿度", extract: (e) => computeAbsoluteHumidity(e.temperature, e.humidity) },
+    { key: "alcohol", label: "アルコール摂取", extract: (e) => (e.dinnerTags || []).length ? ((e.dinnerTags || []).includes("アルコール") ? 1 : 0) : null },
+    { key: "load", label: "発声負荷（ACWR）", extract: (e, date) => acwrSeries[date] ? acwrSeries[date].acwr : null }
+  ], [acwrSeries]);
+  const lagCorrelationMap = useMemo(() => {
+    const sortedDates = Object.keys(filteredEntries).sort();
+    const dateIndex = {};
+    sortedDates.forEach((d, i) => { dateIndex[d] = i; });
+    const cells = [];
+    LAG_VARIABLES.forEach((variable) => {
+      for (let lag = 0; lag <= 3; lag++) {
+        const xs = [], ys = [];
+        sortedDates.forEach((date) => {
+          const targetIdx = dateIndex[date] + lag;
+          const targetDate = sortedDates[targetIdx];
+          if (!targetDate) return;
+          // lag日分すべて連続したカレンダー日であることを確認（記録の欠落をまたいだ比較を避ける）
+          let expected = date;
+          let ok = true;
+          for (let s = 0; s < lag; s++) {
+            expected = addDays(expected, 1);
+            if (sortedDates[dateIndex[date] + s + 1] !== expected) { ok = false; break; }
+          }
+          if (!ok) return;
+          const xVal = variable.extract(filteredEntries[date], date);
+          const targetEntry = filteredEntries[targetDate];
+          const throatV = typeof targetEntry.throatCondition === "number" ? targetEntry.throatCondition : null;
+          const voiceV = typeof targetEntry.voiceQuality === "number" ? targetEntry.voiceQuality : null;
+          if (xVal == null || (throatV == null && voiceV == null)) return;
+          const yVal = throatV != null && voiceV != null ? (throatV + voiceV) / 2 : (throatV ?? voiceV);
+          xs.push(xVal); ys.push(yVal);
+        });
+        const n = xs.length;
+        const rho = n >= 14 ? spearman(xs, ys) : null;
+        let pValue = null;
+        if (rho != null && Math.abs(rho) < 1) {
+          const tStat = rho * Math.sqrt((n - 2) / (1 - rho * rho));
+          pValue = tDistPValue(tStat, n - 2);
+        }
+        cells.push({ variableKey: variable.key, variableLabel: variable.label, lag, n, rho, pValue });
+      }
+    });
+    const significance = benjaminiHochberg(cells.map((c) => c.pValue), 0.10);
+    cells.forEach((c, i) => { c.significant = significance[i]; });
+    return cells;
+  }, [filteredEntries, LAG_VARIABLES]);
+  const topLagFinding = useMemo(() => {
+    const significant = lagCorrelationMap.filter((c) => c.significant);
+    if (significant.length === 0) return null;
+    return significant.sort((a, b) => Math.abs(b.rho) - Math.abs(a.rho))[0];
+  }, [lagCorrelationMap]);
+  // ---- 声の時差マップ 用データ ここまで ----
+
 
   // 装備・配置・ドラッグ移動は、その場ではデータベースに保存しない。
   // 「保存中」の表示に気づかれにくかったこと、また保存されたかどうかが分かりにくいという指摘を受けて、
@@ -5306,6 +5523,117 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                     <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
                       ※ あくまで記録上の傾向であり、件数が少ないうちは参考程度にご覧ください。「この役の翌日は必ず落ちる」といった判断は、記録が積み重なってから行ってください。
+                    </p>
+                  </div>
+                )}
+                {effectiveHabitRanking.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">効いた習慣ランキング</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      前日の行動があった日となかった日で、翌日の声のスコア（喉・声の平均）を比べています。件数が少ない項目は★が付かず「まだ判断できません」と表示されます。
+                    </p>
+                    <div className="space-y-3">
+                      {effectiveHabitRanking.slice(0, 8).map((r) => {
+                        const inconclusive = r.stars <= 1;
+                        const direction = r.g >= 0 ? "良く" : "悪く";
+                        return (
+                          <div key={r.key} className="rounded-xl p-3" style={{ background: C.paper }}>
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-sm font-medium">{r.label}</span>
+                              <span className="text-xs flex-shrink-0" style={{ color: C.gold }}>
+                                {"★".repeat(r.stars)}{"☆".repeat(4 - r.stars)}
+                              </span>
+                            </div>
+                            <div style={{ position: "relative", height: 22, marginTop: 8, marginBottom: 4 }}>
+                              {(() => {
+                                const scaleMin = -2, scaleMax = 2;
+                                const pct = (v) => Math.max(0, Math.min(100, ((v - scaleMin) / (scaleMax - scaleMin)) * 100));
+                                return (
+                                  <>
+                                    <div style={{ position: "absolute", left: 0, right: 0, top: 10, height: 1, background: C.line }} />
+                                    <div style={{ position: "absolute", left: `${pct(0)}%`, top: 2, width: 1, height: 18, background: C.line }} />
+                                    <div style={{ position: "absolute", left: `${pct(r.ciLow)}%`, width: `${pct(r.ciHigh) - pct(r.ciLow)}%`, top: 9, height: 3, borderRadius: 2, background: inconclusive ? C.line : (r.g >= 0 ? C.sage : C.curtain) }} />
+                                    <div style={{ position: "absolute", left: `calc(${pct(r.g)}% - 5px)`, top: 5, width: 10, height: 10, borderRadius: 999, background: inconclusive ? C.inkSoft : (r.g >= 0 ? C.sage : C.curtain) }} />
+                                  </>
+                                );
+                              })()}
+                            </div>
+                            <p className="text-xs" style={{ color: C.inkSoft }}>
+                              {inconclusive
+                                ? `まだ判断できません（あった日${r.n1}件・なかった日${r.n0}件。記録が増えると結論が出ます）`
+                                : `この行動があった日（${r.n1}件）は、翌日の声が平均で${direction}記録されています（効果量 g=${r.g.toFixed(2)}）。`}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※「◯◯すると声が良くなる」という保証ではなく、「◯◯した日の翌日は、平均して声が良く記録されている」という記録上の傾向です。
+                    </p>
+                  </div>
+                )}
+                {lagCorrelationMap.some((c) => c.n >= 14) && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">声の時差マップ</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      生活の変化は、当日より数日後に声へ出ることがあります。行が生活の変数、列が「何日後に効くか」。色が濃いほど関係が強く、枠のついたマスは統計的にも裏付けのある関係です。
+                    </p>
+                    {topLagFinding && (
+                      <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
+                        見つかりました。<strong>{topLagFinding.variableLabel}の「{topLagFinding.lag}日後」</strong>に、声への関係がいちばん強く出ています（ρ = {topLagFinding.rho.toFixed(2)}）。
+                      </p>
+                    )}
+                    <div style={{ overflowX: "auto" }}>
+                      <table style={{ borderCollapse: "collapse", width: "100%" }}>
+                        <thead>
+                          <tr>
+                            <th style={{ textAlign: "left", fontSize: 11, color: C.inkSoft, fontWeight: 500, padding: "2px 6px" }}></th>
+                            {[0, 1, 2, 3].map((lag) => (
+                              <th key={lag} style={{ fontSize: 11, color: C.inkSoft, fontWeight: 500, padding: "2px 6px" }}>{lag}日後</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {LAG_VARIABLES.map((v) => (
+                            <tr key={v.key}>
+                              <td style={{ fontSize: 11, color: C.ink, padding: "2px 6px", whiteSpace: "nowrap" }}>{v.label}</td>
+                              {[0, 1, 2, 3].map((lag) => {
+                                const cell = lagCorrelationMap.find((c) => c.variableKey === v.key && c.lag === lag);
+                                if (!cell || cell.n < 14) {
+                                  return (
+                                    <td key={lag} style={{ padding: 3 }}>
+                                      <div title={`記録${cell ? cell.n : 0}日分（14日で解放）`} style={{ width: 40, height: 28, borderRadius: 6, background: C.line, opacity: 0.35 }} />
+                                    </td>
+                                  );
+                                }
+                                const rho = cell.rho || 0;
+                                const intensity = Math.min(1, Math.abs(rho));
+                                const color = rho >= 0
+                                  ? `rgba(75,122,90,${0.15 + intensity * 0.7})`
+                                  : `rgba(184,49,49,${0.15 + intensity * 0.7})`;
+                                return (
+                                  <td key={lag} style={{ padding: 3 }}>
+                                    <div
+                                      title={`ρ=${rho.toFixed(2)}（n=${cell.n}）`}
+                                      style={{
+                                        width: 40, height: 28, borderRadius: 6, background: color,
+                                        border: cell.significant ? `2px solid ${C.ink}` : "2px solid transparent",
+                                        display: "flex", alignItems: "center", justifyContent: "center",
+                                        fontSize: 10, color: C.ink, fontFamily: "monospace"
+                                      }}
+                                    >
+                                      {rho.toFixed(1)}
+                                    </div>
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ 灰色のマスはまだ記録が14日分たまっていません。枠のついた濃い色のマスだけが、複数の比較を行った上でも統計的に裏付けのある関係です（それ以外は偶然の可能性があります）。
                     </p>
                   </div>
                 )}
