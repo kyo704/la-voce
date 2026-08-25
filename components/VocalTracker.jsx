@@ -2125,6 +2125,13 @@ export default function VocalTracker({ userId, userEmail }) {
     } else if (analysisPeriod === "year") {
       const start = new Date(today); start.setFullYear(start.getFullYear() - 1);
       startISO = toISODate(start); endISO = toISODate(today);
+    } else if (analysisPeriod === "aroundPerformance") {
+      // 数字の作法④: 暦の区切りではなく、声のプロの実感に合わせて「直近の本番」を基準にした期間。
+      const performanceDates = Object.keys(entries).filter((d) => entries[d].activityType === "本番").sort();
+      if (performanceDates.length === 0) return {};
+      const lastPerformance = performanceDates[performanceDates.length - 1];
+      startISO = addDays(lastPerformance, -14);
+      endISO = addDays(lastPerformance, 14);
     } else if (analysisPeriod === "custom") {
       startISO = analysisCustomStart || "0000-01-01";
       endISO = analysisCustomEnd || "9999-12-31";
@@ -2228,13 +2235,17 @@ export default function VocalTracker({ userId, userEmail }) {
         byMethod[m].n += 1;
       });
     });
-    return Object.entries(byMethod)
-      .map(([method, s]) => ({
-        method, n: s.n,
-        avgThroat: s.n ? s.throatSum / s.n : null,
-        avgVoice: s.n ? s.voiceSum / s.n : null,
-        avgEase: s.n ? s.easeSum / s.n : null
-      }))
+    const all = Object.entries(byMethod).map(([method, s]) => ({
+      method, n: s.n,
+      avgThroat: s.n ? s.throatSum / s.n : null,
+      avgVoice: s.n ? s.voiceSum / s.n : null,
+      avgEase: s.n ? s.easeSum / s.n : null
+    }));
+    // 数字の作法: n≥3を平均表示の下限にする。それ未満は記録数だけを見せて、貯める動機にする。
+    return {
+      confident: all.filter((s) => s.n >= 3),
+      lowN: all.filter((s) => s.n < 3).sort((a, b) => b.n - a.n)
+    };
   }, [filteredEntries]);
   // 声の調子スコア（過去2週間の平均から算出する、100点満点の参考指標）。
   // 医学的な診断値ではなく、これまで記録してきた項目を独自の重み付けで統合したもの。
@@ -2296,7 +2307,14 @@ export default function VocalTracker({ userId, userEmail }) {
     const weightedSum = validComponents.reduce((s, c) => s + c.score * c.weight, 0);
     const total = Math.round(weightedSum / totalWeight);
 
-    return { hasEnoughData: true, total, components, daysCount: days.length };
+    // 数字の作法③: 各サブスコアの「押し下げ量」= 全体に対する重みの割合 × (100点との差)。
+    // 総合点そのものより、「どの項目がいちばん効いているか」の方が行動につながる。
+    const withPullDown = validComponents
+      .map((c) => ({ ...c, pullDown: (c.weight / totalWeight) * (100 - c.score) }))
+      .sort((a, b) => b.pullDown - a.pullDown);
+    const topPullDown = withPullDown[0] && withPullDown[0].pullDown >= 1 ? withPullDown[0] : null;
+
+    return { hasEnoughData: true, total, components, pullDowns: withPullDown, topPullDown, daysCount: days.length };
   }, [entries]);
   const timeSeries = useMemo(() => {
     const dates = Object.keys(filteredEntries).sort();
@@ -2338,15 +2356,17 @@ export default function VocalTracker({ userId, userEmail }) {
       if (typeof e.ease === "number") byLoc[loc].easeSum += e.ease;
       byLoc[loc].n += 1;
     });
-    return Object.entries(byLoc)
-      .filter(([, s]) => s.n >= 2)
-      .map(([location, s]) => ({
-        location, n: s.n,
-        avgThroat: s.n ? s.throatSum / s.n : null,
-        avgVoice: s.n ? s.voiceSum / s.n : null,
-        avgEase: s.n ? s.easeSum / s.n : null
-      }))
-      .sort((a, b) => b.n - a.n);
+    const all = Object.entries(byLoc).map(([location, s]) => ({
+      location, n: s.n,
+      avgThroat: s.n ? s.throatSum / s.n : null,
+      avgVoice: s.n ? s.voiceSum / s.n : null,
+      avgEase: s.n ? s.easeSum / s.n : null
+    }));
+    // 数字の作法: n≥3を平均表示の下限にする。それ未満は記録数だけを見せて、貯める動機にする。
+    return {
+      confident: all.filter((s) => s.n >= 3).sort((a, b) => b.n - a.n),
+      lowN: all.filter((s) => s.n < 3).sort((a, b) => b.n - a.n)
+    };
   }, [filteredEntries]);
 
   // ---- ここから「メンタル」まとめセクション用のデータ ----
@@ -2377,11 +2397,11 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [filteredEntries]);
   // 休養方法・滞在地それぞれの中で、心の余裕の平均が最も高いものを1つずつ拾う（件数2件未満は参考にならないので除外）。
   const mentalTopGroups = useMemo(() => {
-    const bestRest = restMethodStats
-      .filter((s) => s.n >= 2 && typeof s.avgEase === "number")
+    const bestRest = restMethodStats.confident
+      .filter((s) => typeof s.avgEase === "number")
       .sort((a, b) => b.avgEase - a.avgEase)[0] || null;
-    const bestLocation = locationStats
-      .filter((s) => s.n >= 2 && typeof s.avgEase === "number")
+    const bestLocation = locationStats.confident
+      .filter((s) => typeof s.avgEase === "number")
       .sort((a, b) => b.avgEase - a.avgEase)[0] || null;
     return { bestRest, bestLocation };
   }, [restMethodStats, locationStats]);
@@ -4434,6 +4454,12 @@ export default function VocalTracker({ userId, userEmail }) {
                           </div>
                         ))}
                       </div>
+                      {vocalConditionScore.topPullDown && (
+                        <p className="text-xs mt-3 rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                          <strong>{t(vocalConditionScore.topPullDown.labelKey)}</strong>が{Math.round(vocalConditionScore.topPullDown.score)}点で、
+                          ここが全体を約{vocalConditionScore.topPullDown.pullDown.toFixed(1)}点押し下げています。
+                        </p>
+                      )}
                       <p className="text-xs mt-4" style={{ color: C.inkSoft }}>
                         {t("noteVocalScoreDisclaimer")}
                       </p>
@@ -4497,6 +4523,17 @@ export default function VocalTracker({ userId, userEmail }) {
                         {t(p === "week" ? "periodWeek" : p === "month" ? "periodMonth" : p === "year" ? "periodYear" : p === "all" ? "periodAll" : "periodCustom")}
                       </button>
                     ))}
+                    {Object.values(entries).some((e) => e.activityType === "本番") && (
+                      <button type="button" onClick={() => setAnalysisPeriod("aroundPerformance")}
+                        className="px-3.5 py-1.5 rounded-full text-xs font-medium"
+                        style={{
+                          background: analysisPeriod === "aroundPerformance" ? C.curtain : C.paper,
+                          color: analysisPeriod === "aroundPerformance" ? "#FFFDF8" : C.inkSoft,
+                          border: `1px solid ${analysisPeriod === "aroundPerformance" ? C.curtain : C.line}`
+                        }}>
+                        直近の本番前後
+                      </button>
+                    )}
                   </div>
                   {analysisPeriod === "custom" && (
                     <div className="flex items-center gap-2 mt-3 flex-wrap">
@@ -4506,6 +4543,11 @@ export default function VocalTracker({ userId, userEmail }) {
                       <input type="date" value={analysisCustomEnd} onChange={(e) => setAnalysisCustomEnd(e.target.value)}
                         className="rounded-lg border px-2.5 py-1.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                     </div>
+                  )}
+                  {analysisPeriod === "aroundPerformance" && (
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      暦の区切りではなく、直近の本番日を基準にした前後2週間で振り返ります。
+                    </p>
                   )}
                   <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
                     {t("noteAnalysisPeriodCount").replace("{count}", Object.keys(filteredEntries).length)}
@@ -4994,45 +5036,6 @@ export default function VocalTracker({ userId, userEmail }) {
                 </div>
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">{t("titleBodySummaryChart")}</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                    {t("noteBodySummaryChart")}
-                  </p>
-                  <div style={{ width: "100%", height: 260 }}>
-                    <ResponsiveContainer>
-                      <ComposedChart data={timeSeries} margin={{ left: 4, right: 4, top: 4, bottom: 4 }}>
-                        <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis yAxisId="calorie" tick={{ fontSize: 10, fill: C.inkSoft }} unit="kcal" />
-                        <YAxis yAxisId="weight" orientation="right" domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="kg" />
-                        <YAxis yAxisId="protein" domain={["auto", "auto"]} hide />
-                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <Bar yAxisId="calorie" dataKey="calorieActual" name={t("chartNameCalorieActual")} fill={C.gold} radius={3} opacity={0.7} />
-                        <Line yAxisId="weight" type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={C.curtain} strokeWidth={2} dot={{ r: 3 }} connectNulls />
-                        <Line yAxisId="protein" type="monotone" dataKey="proteinPerKg" name={t("chartNameActualCoefficient")} stroke={C.sage} strokeWidth={2} dot={{ r: 3 }} connectNulls />
-                      </ComposedChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div className="flex flex-wrap gap-3 mt-2">
-                    <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
-                      <span style={{ width: 9, height: 9, borderRadius: 999, background: C.gold, display: "inline-block" }} />
-                      {t("legendCalorieAxis")}
-                    </span>
-                    <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
-                      <span style={{ width: 9, height: 2, background: C.curtain, display: "inline-block" }} />
-                      {t("legendWeightAxis")}
-                    </span>
-                    <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
-                      <span style={{ width: 9, height: 2, background: C.sage, display: "inline-block" }} />
-                      {t("legendProteinAxis")}
-                    </span>
-                  </div>
-                  <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                    {t("noteBodySummaryChartScale")}
-                  </p>
-                </div>
-
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleWeightTrend")}</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteLast30Days")}</p>
                   <div style={{ width: "100%", height: 200 }}>
@@ -5066,7 +5069,7 @@ export default function VocalTracker({ userId, userEmail }) {
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleNutritionWeightChart")}</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteNutritionWeightChart")}</p>
-                  <div style={{ width: "100%", height: 170 }}>
+                  <div style={{ width: "100%", height: 150 }}>
                     <ResponsiveContainer>
                       <ComposedChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
@@ -5078,7 +5081,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       </ComposedChart>
                     </ResponsiveContainer>
                   </div>
-                  <div style={{ width: "100%", height: 130, marginTop: 8 }}>
+                  <div style={{ width: "100%", height: 110, marginTop: 8 }}>
                     <ResponsiveContainer>
                       <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
@@ -5089,6 +5092,21 @@ export default function VocalTracker({ userId, userEmail }) {
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
+                  <div style={{ width: "100%", height: 110, marginTop: 8 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="g/kg" />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <ReferenceLine y={Number(profile.protein_coefficient) || 1.6} stroke={C.gold} strokeDasharray="4 4" />
+                        <Line type="monotone" dataKey="proteinPerKg" name={t("chartNameActualCoefficient")} stroke={C.curtain} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                    3つの指標を、それぞれ実際のスケールのまま、x軸だけ揃えて上下に並べています。1枚のグラフに複数の軸を重ねると、交点の位置が軸の取り方次第で変わってしまうため、この形にしています。
+                  </p>
                 </div>
                 <div className="pt-2">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("sectionMental")}</h2>
@@ -5183,36 +5201,64 @@ export default function VocalTracker({ userId, userEmail }) {
                     {t("groupHeaderOverallDesc")}
                   </p>
                 </div>
-                {restMethodStats.length > 0 && (
+                {(restMethodStats.confident.length > 0 || restMethodStats.lowN.length > 0) && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">{t("titleRestMethodTrend")}</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteRestMethodTrend")}</p>
-                    <div className="space-y-2">
-                      {restMethodStats.map((s) => (
-                        <div key={s.method} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
-                          <span className="font-medium">{REST_METHOD_KEYS[s.method] ? t(REST_METHOD_KEYS[s.method]) : s.method}</span>
-                          <span className="ff-mono" style={{ color: C.inkSoft }}>
-                            {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
-                          </span>
+                    {restMethodStats.confident.length > 0 && (
+                      <div className="space-y-2">
+                        {restMethodStats.confident.map((s) => (
+                          <div key={s.method} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                            <span className="font-medium">{REST_METHOD_KEYS[s.method] ? t(REST_METHOD_KEYS[s.method]) : s.method}</span>
+                            <span className="ff-mono" style={{ color: C.inkSoft }}>
+                              {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {restMethodStats.lowN.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>まだ3件未満（記録数のみ表示。貯まると平均が出ます）</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {restMethodStats.lowN.map((s) => (
+                            <span key={s.method} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>
+                              {REST_METHOD_KEYS[s.method] ? t(REST_METHOD_KEYS[s.method]) : s.method}（{s.n}）
+                            </span>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    )}
                   </div>
                 )}
-                {locationStats.length > 0 && (
+                {(locationStats.confident.length > 0 || locationStats.lowN.length > 0) && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">{t("titleLocationTrend")}</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteLocationTrend")}</p>
-                    <div className="space-y-2">
-                      {locationStats.map((s) => (
-                        <div key={s.location} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
-                          <span className="font-medium">{s.location}</span>
-                          <span className="ff-mono" style={{ color: C.inkSoft }}>
-                            {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
-                          </span>
+                    {locationStats.confident.length > 0 && (
+                      <div className="space-y-2">
+                        {locationStats.confident.map((s) => (
+                          <div key={s.location} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                            <span className="font-medium">{s.location}</span>
+                            <span className="ff-mono" style={{ color: C.inkSoft }}>
+                              {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {locationStats.lowN.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>まだ3件未満（記録数のみ表示。貯まると平均が出ます）</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {locationStats.lowN.map((s) => (
+                            <span key={s.location} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>
+                              {s.location}（{s.n}）
+                            </span>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    )}
                   </div>
                 )}
                 {profile.track_cycle && hasCycleData && cycleGroupStats.length > 0 && (
