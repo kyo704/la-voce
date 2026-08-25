@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  Cell, ScatterChart, Scatter, ReferenceLine, LineChart, Line, ComposedChart, Area
+  Cell, ScatterChart, Scatter, ReferenceLine, ReferenceArea, LineChart, Line, ComposedChart, Area
 } from "recharts";
 import { createClient } from "@/lib/supabase/client";
 import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC } from "@/lib/tokens";
@@ -3202,6 +3202,107 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [lagCorrelationMap]);
   // ---- 声の時差マップ 用データ ここまで ----
 
+  // ---- lavoce-指標設計図.md 07. 発声負荷バランス（ACWR） 用データ ----
+  // acwrSeries（フェーズ2の予報モデルで既に計算済み）をそのまま使い、
+  // ゾーン判定・グラフ用の系列・「明日を休養にした場合」の1ステップ先予測を組み立てる。
+  function acwrZone(value) {
+    if (value == null) return null;
+    if (value < 0.8) return { key: "low", label: "積み足りない", color: C.gold };
+    if (value <= 1.3) return { key: "good", label: "ちょうどいい", color: C.sage };
+    if (value <= 1.5) return { key: "caution", label: "増やしすぎ注意", color: C.gold };
+    return { key: "high", label: "喉を痛めやすい急増", color: C.curtain };
+  }
+  const acwrChartData = useMemo(() => {
+    const dates = Object.keys(acwrSeries).sort().slice(-28);
+    return dates.map((d) => ({ date: d.slice(5), acwr: acwrSeries[d].acwr != null ? roundTo1(acwrSeries[d].acwr) : null }));
+  }, [acwrSeries]);
+  const acwrToday = useMemo(() => {
+    const dates = Object.keys(acwrSeries).sort();
+    if (dates.length === 0) return null;
+    const lastDate = dates[dates.length - 1];
+    const latest = acwrSeries[lastDate];
+    if (latest.acwr == null) return null;
+    const lambdaA = 2 / (7 + 1);
+    const lambdaC = 2 / (28 + 1);
+    // 明日を休養（発声負荷ゼロ）にした場合のEWMAをもう1ステップ進めた予測値
+    const restA = lambdaA * 0 + (1 - lambdaA) * latest.A;
+    const restC = lambdaC * 0 + (1 - lambdaC) * latest.C;
+    const restAcwr = restC > 0 ? restA / restC : null;
+    return { date: lastDate, value: roundTo1(latest.acwr), zone: acwrZone(latest.acwr), restProjection: restAcwr != null ? roundTo1(restAcwr) : null, restZone: acwrZone(restAcwr) };
+  }, [acwrSeries]);
+  // ---- 発声負荷バランス 用データ ここまで ----
+
+  // ---- lavoce-指標設計図.md 09. 環境の快適帯 用データ ----
+  // 相対湿度ではなく絶対湿度（AH）で見る。気温が変わると同じ%でも実際の水分量が変わるため。
+  const envEntries = useMemo(() => {
+    return Object.values(entries)
+      .map((e) => ({
+        ah: computeAbsoluteHumidity(e.temperature, e.humidity),
+        temp: typeof e.temperature === "number" ? e.temperature : null,
+        rh: typeof e.humidity === "number" ? e.humidity : null,
+        throat: typeof e.throatCondition === "number" ? e.throatCondition : null
+      }))
+      .filter((x) => x.ah != null && x.throat != null);
+  }, [entries]);
+  // ①絶対湿度を2g/m³刻みでビン分けし、②喉スコア平均が「全体平均+0.3」を超える連続区間を快適帯とする。
+  const comfortZone1D = useMemo(() => {
+    if (envEntries.length < 5) return null;
+    const overallAvg = envEntries.reduce((s, x) => s + x.throat, 0) / envEntries.length;
+    const binSize = 2;
+    const byBin = {};
+    envEntries.forEach((x) => {
+      const bin = Math.floor(x.ah / binSize) * binSize;
+      if (!byBin[bin]) byBin[bin] = { sum: 0, n: 0 };
+      byBin[bin].sum += x.throat; byBin[bin].n += 1;
+    });
+    const bins = Object.keys(byBin).map(Number).sort((a, b) => a - b);
+    const binStats = bins.map((b) => ({ bin: b, avg: byBin[b].sum / byBin[b].n, n: byBin[b].n }));
+    const threshold = overallAvg + 0.3;
+    // n≥2のビンの中で、閾値を超える連続区間のうち最長のものを快適帯とする
+    let bestRun = [], currentRun = [];
+    binStats.forEach((s, i) => {
+      const qualifies = s.n >= 2 && s.avg > threshold;
+      const isContiguous = currentRun.length === 0 || s.bin === currentRun[currentRun.length - 1].bin + binSize;
+      if (qualifies && isContiguous) {
+        currentRun.push(s);
+      } else if (qualifies) {
+        currentRun = [s];
+      } else {
+        currentRun = [];
+      }
+      if (currentRun.length > bestRun.length) bestRun = currentRun;
+    });
+    if (bestRun.length === 0) return { overallAvg, binStats, range: null };
+    return { overallAvg, binStats, range: { low: bestRun[0].bin, high: bestRun[bestRun.length - 1].bin + binSize } };
+  }, [envEntries]);
+  // ②気温4℃刻み×相対湿度10%刻みの2次元マップ
+  const comfortZone2D = useMemo(() => {
+    if (envEntries.length < 10) return null;
+    const cells = {};
+    envEntries.forEach((x) => {
+      if (x.temp == null || x.rh == null) return;
+      const tBin = Math.floor(x.temp / 4) * 4;
+      const rhBin = Math.floor(x.rh / 10) * 10;
+      const key = `${tBin}_${rhBin}`;
+      if (!cells[key]) cells[key] = { tBin, rhBin, sum: 0, n: 0 };
+      cells[key].sum += x.throat; cells[key].n += 1;
+    });
+    const list = Object.values(cells).map((c) => ({ ...c, avg: c.sum / c.n }));
+    if (list.length === 0) return null;
+    const tBins = [...new Set(list.map((c) => c.tBin))].sort((a, b) => a - b);
+    const rhBins = [...new Set(list.map((c) => c.rhBin))].sort((a, b) => a - b);
+    return { cells: list, tBins, rhBins };
+  }, [envEntries]);
+  const todayEnvPosition = useMemo(() => {
+    const realToday = todayISO();
+    const e = entries[realToday];
+    if (!e) return null;
+    const ah = computeAbsoluteHumidity(e.temperature, e.humidity);
+    if (ah == null) return null;
+    return { ah: roundTo1(ah), temp: e.temperature, rh: e.humidity, location: e.location || null };
+  }, [entries]);
+  // ---- 環境の快適帯 用データ ここまで ----
+
 
   // 装備・配置・ドラッグ移動は、その場ではデータベースに保存しない。
   // 「保存中」の表示に気づかれにくかったこと、また保存されたかどうかが分かりにくいという指摘を受けて、
@@ -5636,6 +5737,148 @@ export default function VocalTracker({ userId, userEmail }) {
                       ※ 灰色のマスはまだ記録が14日分たまっていません。枠のついた濃い色のマスだけが、複数の比較を行った上でも統計的に裏付けのある関係です（それ以外は偶然の可能性があります）。
                     </p>
                   </div>
+                )}
+                {recordedDaysTotal >= 28 ? (
+                  acwrToday && (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <h3 className="ff-display italic text-lg mb-1">発声負荷バランス（ACWR）</h3>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        直近1週間の発声負荷が、この1か月の平均に対して何倍かを見ます。歌い込みすぎと、積み足りない状態の両方を1つの数字で管理できます。
+                      </p>
+                      <div className="flex items-end gap-4 mb-3">
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="ff-display italic" style={{ fontSize: "2.6rem", color: acwrToday.zone ? acwrToday.zone.color : C.ink }}>
+                            {acwrToday.value}
+                          </span>
+                          {acwrToday.zone && (
+                            <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: C.paper, color: acwrToday.zone.color }}>
+                              {acwrToday.zone.label}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      {acwrToday.restProjection != null && (
+                        <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
+                          明日を休養にすると <span className="ff-mono font-medium">{acwrToday.restProjection}</span>
+                          {acwrToday.restZone && <>（{acwrToday.restZone.label}）</>}に戻ります。
+                        </p>
+                      )}
+                      {acwrChartData.length > 0 && (
+                        <div style={{ width: "100%", height: 180 }}>
+                          <ResponsiveContainer>
+                            <LineChart data={acwrChartData} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                              <CartesianGrid stroke={C.line} />
+                              <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                              <YAxis domain={[0, "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} />
+                              <ReferenceArea y1={0} y2={0.8} fill={C.gold} fillOpacity={0.08} />
+                              <ReferenceArea y1={0.8} y2={1.3} fill={C.sage} fillOpacity={0.1} />
+                              <ReferenceArea y1={1.3} y2={1.5} fill={C.gold} fillOpacity={0.12} />
+                              <ReferenceArea y1={1.5} y2={3} fill={C.curtain} fillOpacity={0.08} />
+                              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                              <Line type="monotone" dataKey="acwr" stroke={C.ink} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                            </LineChart>
+                          </ResponsiveContainer>
+                        </div>
+                      )}
+                      <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                        帯は目安のゾーン（下から積み足りない・ちょうどいい・増やしすぎ注意・急増）です。1.5を超える急な増やし方は、喉のトラブルと結びつくことが知られています。
+                      </p>
+                    </div>
+                  )
+                ) : (
+                  <LockedCard
+                    title="発声負荷バランス（ACWR）"
+                    teaser="歌い込みすぎ・積み足りないを1つの数字で管理できます"
+                    current={recordedDaysTotal}
+                    required={28}
+                  />
+                )}
+                {recordedDaysTotal >= 7 ? (
+                  comfortZone1D && (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <h3 className="ff-display italic text-lg mb-1">環境の快適帯</h3>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        相対湿度ではなく絶対湿度（空気中の実際の水分量）で見ています。気温が変わると、同じ％でも実際の水分量は変わるためです。
+                      </p>
+                      {comfortZone1D.range ? (
+                        <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
+                          あなたの喉の快適帯は <strong>絶対湿度 {comfortZone1D.range.low}〜{comfortZone1D.range.high} g/m³</strong>。
+                          {todayEnvPosition && (
+                            <>
+                              　今日{todayEnvPosition.location ? `の${todayEnvPosition.location}` : ""}
+                              （{todayEnvPosition.temp}℃/{todayEnvPosition.rh}%）は AH {todayEnvPosition.ah}
+                              で、{todayEnvPosition.ah >= comfortZone1D.range.low && todayEnvPosition.ah <= comfortZone1D.range.high ? "ちょうど快適帯の中です。" : "快適帯から外れています。"}
+                            </>
+                          )}
+                        </p>
+                      ) : (
+                        <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.inkSoft }}>
+                          まだ明確な快適帯は見えていません。気温・湿度・喉の記録が増えると精度が上がります。
+                        </p>
+                      )}
+                      <div style={{ width: "100%", height: 140 }}>
+                        <ResponsiveContainer>
+                          <BarChart data={comfortZone1D.binStats.map((s) => ({ bin: `${s.bin}`, avg: roundTo1(s.avg), n: s.n }))} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                            <CartesianGrid stroke={C.line} />
+                            <XAxis dataKey="bin" tick={{ fontSize: 9, fill: C.inkSoft }} label={{ value: "絶対湿度 g/m³", position: "insideBottom", offset: -2, fontSize: 10, fill: C.inkSoft }} />
+                            <YAxis domain={[1, 5]} tick={{ fontSize: 10, fill: C.inkSoft }} />
+                            <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} formatter={(v, n, entry) => [`${v}（${entry.payload.n}件）`, "喉スコア平均"]} />
+                            <Bar dataKey="avg" radius={3}>
+                              {comfortZone1D.binStats.map((s, i) => (
+                                <Cell key={i} fill={s.n >= 2 ? C.sage : C.line} opacity={s.n >= 2 ? 0.8 : 0.4} />
+                              ))}
+                            </Bar>
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                      {comfortZone2D && (
+                        <div className="mt-4">
+                          <p className="text-xs font-medium mb-2">気温×湿度の2次元マップ</p>
+                          <div style={{ overflowX: "auto" }}>
+                            <table style={{ borderCollapse: "collapse" }}>
+                              <thead>
+                                <tr>
+                                  <th></th>
+                                  {comfortZone2D.rhBins.map((rh) => (
+                                    <th key={rh} style={{ fontSize: 9, color: C.inkSoft, padding: "2px 4px" }}>{rh}%</th>
+                                  ))}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {comfortZone2D.tBins.map((t) => (
+                                  <tr key={t}>
+                                    <td style={{ fontSize: 9, color: C.inkSoft, padding: "2px 4px", whiteSpace: "nowrap" }}>{t}℃</td>
+                                    {comfortZone2D.rhBins.map((rh) => {
+                                      const cell = comfortZone2D.cells.find((c) => c.tBin === t && c.rhBin === rh);
+                                      if (!cell || cell.n < 2) {
+                                        return <td key={rh} style={{ padding: 2 }}><div style={{ width: 30, height: 24, borderRadius: 4, background: C.line, opacity: 0.3 }} /></td>;
+                                      }
+                                      const intensity = Math.max(0, Math.min(1, (cell.avg - 1) / 4));
+                                      return (
+                                        <td key={rh} style={{ padding: 2 }}>
+                                          <div title={`平均${cell.avg.toFixed(1)}（${cell.n}件）`} style={{ width: 30, height: 24, borderRadius: 4, background: `rgba(75,122,90,${0.15 + intensity * 0.7})` }} />
+                                        </td>
+                                      );
+                                    })}
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )}
+                      <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                        ※ 記録数が少ないマスは灰色にしています。あくまで記録上の傾向です。
+                      </p>
+                    </div>
+                  )
+                ) : (
+                  <LockedCard
+                    title="環境の快適帯"
+                    teaser="自分の喉が快適な気温・湿度のゾーンが分かります"
+                    current={recordedDaysTotal}
+                    required={7}
+                  />
                 )}
                 <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
                   <button onClick={() => setAnalysisTarget("performance")}
