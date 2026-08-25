@@ -13,18 +13,19 @@ const LOGIN_LANGS = [
   { code: "fr", label: "Français" },
   { code: "es", label: "Español" },
   { code: "ko", label: "한국어" },
+  { code: "ru", label: "Русский" },
 ];
 
 const LT = {
-  subtitle: { ja: "声を使う人のための体調管理アプリ", en: "A condition-tracking app for people who use their voice", zh: "为用嗓者打造的健康管理应用", it: "Un'app per il monitoraggio della condizione per chi usa la voce", de: "Eine App zur Verfassungsverfolgung für Stimmnutzer", fr: "Une application de suivi de la forme pour ceux qui utilisent leur voix", es: "Una app de seguimiento de la condición para quienes usan la voz", ko: "목소리를 쓰는 사람을 위한 컨디션 관리 앱" },
-  formTitle: { ja: "開幕まであと少し", en: "The curtain is about to rise", zh: "开幕在即", it: "Il sipario sta per alzarsi", de: "Der Vorhang hebt sich gleich", fr: "Le rideau va bientôt se lever", es: "El telón está a punto de levantarse", ko: "곧 막이 오릅니다" },
-  placeholderEmail: { ja: "メールアドレス", en: "Email address", zh: "电子邮箱", it: "Indirizzo e-mail", de: "E-Mail-Adresse", fr: "Adresse e-mail", es: "Correo electrónico", ko: "이메일 주소" },
-  placeholderPassword: { ja: "パスワード", en: "Password", zh: "密码", it: "Password", de: "Passwort", fr: "Mot de passe", es: "Contraseña", ko: "비밀번호" },
-  errorLogin: { ja: "メールアドレスまたはパスワードが正しくありません。", en: "The email address or password is incorrect.", zh: "邮箱地址或密码不正确。", it: "L'indirizzo e-mail o la password non sono corretti.", de: "E-Mail-Adresse oder Passwort ist falsch.", fr: "L'adresse e-mail ou le mot de passe est incorrect.", es: "El correo electrónico o la contraseña son incorrectos.", ko: "이메일 주소 또는 비밀번호가 올바르지 않습니다." },
-  btnLoading: { ja: "開演準備中…", en: "Preparing to begin…", zh: "开演准备中…", it: "Preparazione in corso…", de: "Vorbereitung läuft…", fr: "Préparation en cours…", es: "Preparando…", ko: "공연 준비 중…" },
-  btnLogin: { ja: "ログイン", en: "Log in", zh: "登录", it: "Accedi", de: "Anmelden", fr: "Se connecter", es: "Iniciar sesión", ko: "로그인" },
-  noAccountText: { ja: "アカウントをお持ちでない方は", en: "Don't have an account?", zh: "尚未拥有账户？", it: "Non hai un account?", de: "Noch kein Konto?", fr: "Vous n'avez pas de compte ?", es: "¿No tienes una cuenta?", ko: "계정이 없으신가요?" },
-  linkSignup: { ja: "新規登録", en: "Sign up", zh: "新用户注册", it: "Registrati", de: "Registrieren", fr: "S'inscrire", es: "Registrarse", ko: "회원가입" },
+  subtitle: { ja: "声を使う人のための体調管理アプリ", en: "A condition-tracking app for people who use their voice", zh: "为用嗓者打造的健康管理应用", it: "Un'app per il monitoraggio della condizione per chi usa la voce", de: "Eine App zur Verfassungsverfolgung für Stimmnutzer", fr: "Une application de suivi de la forme pour ceux qui utilisent leur voix", es: "Una app de seguimiento de la condición para quienes usan la voz", ko: "목소리를 쓰는 사람을 위한 컨디션 관리 앱", ru: "Приложение для отслеживания состояния для тех, кто использует свой голос" },
+  formTitle: { ja: "開幕まであと少し", en: "The curtain is about to rise", zh: "开幕在即", it: "Il sipario sta per alzarsi", de: "Der Vorhang hebt sich gleich", fr: "Le rideau va bientôt se lever", es: "El telón está a punto de levantarse", ko: "곧 막이 오릅니다", ru: "Скоро поднимется занавес" },
+  placeholderEmail: { ja: "メールアドレス", en: "Email address", zh: "电子邮箱", it: "Indirizzo e-mail", de: "E-Mail-Adresse", fr: "Adresse e-mail", es: "Correo electrónico", ko: "이메일 주소", ru: "Электронная почта" },
+  placeholderPassword: { ja: "パスワード", en: "Password", zh: "密码", it: "Password", de: "Passwort", fr: "Mot de passe", es: "Contraseña", ko: "비밀번호", ru: "Пароль" },
+  errorLogin: { ja: "メールアドレスまたはパスワードが正しくありません。", en: "The email address or password is incorrect.", zh: "邮箱地址或密码不正确。", it: "L'indirizzo e-mail o la password non sono corretti.", de: "E-Mail-Adresse oder Passwort ist falsch.", fr: "L'adresse e-mail ou le mot de passe est incorrect.", es: "El correo electrónico o la contraseña son incorrectos.", ko: "이메일 주소 또는 비밀번호가 올바르지 않습니다.", ru: "Неверный адрес электронной почты или пароль." },
+  btnLoading: { ja: "開演準備中…", en: "Preparing to begin…", zh: "开演准备中…", it: "Preparazione in corso…", de: "Vorbereitung läuft…", fr: "Préparation en cours…", es: "Preparando…", ko: "공연 준비 중…", ru: "Готовимся начать…" },
+  btnLogin: { ja: "ログイン", en: "Log in", zh: "登录", it: "Accedi", de: "Anmelden", fr: "Se connecter", es: "Iniciar sesión", ko: "로그인", ru: "Войти" },
+  noAccountText: { ja: "アカウントをお持ちでない方は", en: "Don't have an account?", zh: "尚未拥有账户？", it: "Non hai un account?", de: "Noch kein Konto?", fr: "Vous n'avez pas de compte ?", es: "¿No tienes una cuenta?", ko: "계정이 없으신가요?", ru: "Нет аккаунта?" },
+  linkSignup: { ja: "新規登録", en: "Sign up", zh: "新用户注册", it: "Registrati", de: "Registrieren", fr: "S'inscrire", es: "Registrarse", ko: "회원가입", ru: "Регистрация" },
 };
 
 function ltr(key, lang) { const e = LT[key]; if (!e) return ""; return e[lang] || e.en || e.ja || ""; }
