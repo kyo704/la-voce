@@ -281,6 +281,31 @@ function pearson(xs, ys) {
   if (dx2 === 0 || dy2 === 0) return null;
   return num / Math.sqrt(dx2 * dy2);
 }
+// 「声」「響き」「体重」「タンパク質」「栄養摂取・体重変化」など、グループをまたいだクロス分析用の汎用ヘルパー。
+// 日ごとのオブジェクトの配列から、任意の2つの数値キーの相関を計算する（データ5件未満は参考にならないためnull扱い）。
+function pairCorr(list, xKey, yKey) {
+  const pairs = list
+    .map((d) => ({ x: d[xKey], y: d[yKey] }))
+    .filter((p) => typeof p.x === "number" && typeof p.y === "number");
+  const r = pairs.length >= 5 ? pearson(pairs.map((p) => p.x), pairs.map((p) => p.y)) : null;
+  return { r, n: pairs.length };
+}
+// 相関の結果を、そのまま読める日本語の一文に組み立てる。
+function buildCorrSentence(labelX, labelY, r, n) {
+  if (r == null) return null;
+  const dir = r >= 0
+    ? `${labelX}が高い（多い）日ほど、${labelY}も高くなる傾向があります`
+    : `${labelX}が高い（多い）日ほど、${labelY}は下がる傾向があります`;
+  return `${dir}（r=${r.toFixed(2)}、${n}件）。`;
+}
+// 相関の候補一覧から、条件を満たすものだけ強い順に抜き出して文章化する。
+function topCorrSentences(candidates, maxCount) {
+  return candidates
+    .filter((c) => c.r != null && Math.abs(c.r) >= 0.4 && c.n >= 5)
+    .sort((a, b) => Math.abs(b.r) - Math.abs(a.r))
+    .slice(0, maxCount || 2)
+    .map((c) => ({ ...c, text: buildCorrSentence(c.labelX, c.labelY, c.r, c.n) }));
+}
 function getCorrelationData(entries, targetKey, targetFilter, t) {
   const list = Object.values(entries).filter(targetFilter);
   return FACTORS.filter((f) => f.key !== targetKey).map((f) => {
@@ -1728,6 +1753,132 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [easeCorrelationResults, mentalTopGroups, mentalTagStats, t]);
   // ---- 「メンタル」まとめセクション用データ ここまで ----
 
+  // ---- ここから、各グループ横断のクロス分析用データ ----
+  // timeSeries（体重・タンパク質・カロリー・心の余裕・響きスコアなど）に、
+  // filteredEntries側にしかない喉のコンディション・声の質を日付で突き合わせて1つにまとめる。
+  // これにより「声」「響き」「体重」「タンパク質」「栄養摂取」など、異なるカードの元データを横断して相関計算できるようにする。
+  const crossFactorDaily = useMemo(() => {
+    return timeSeries.map((row) => {
+      const e = filteredEntries[row.fullDate] || {};
+      return {
+        ...row,
+        throatCondition: typeof e.throatCondition === "number" ? e.throatCondition : null,
+        voiceQuality: typeof e.voiceQuality === "number" ? e.voiceQuality : null
+      };
+    });
+  }, [timeSeries, filteredEntries]);
+
+  // 「声」グループ用: 睡眠・心の余裕と、喉のコンディション／声の質の関係
+  const voiceCrossInsights = useMemo(() => {
+    const candidates = [
+      { labelX: "睡眠時間", labelY: "喉のコンディション", ...pairCorr(crossFactorDaily, "sleepHours", "throatCondition") },
+      { labelX: "睡眠の質", labelY: "喉のコンディション", ...pairCorr(crossFactorDaily, "sleepQuality", "throatCondition") },
+      { labelX: "睡眠時間", labelY: "声の質", ...pairCorr(crossFactorDaily, "sleepHours", "voiceQuality") },
+      { labelX: "心の余裕", labelY: "声の質", ...pairCorr(crossFactorDaily, "ease", "voiceQuality") }
+    ];
+    return topCorrSentences(candidates, 2);
+  }, [crossFactorDaily]);
+
+  // 「響き」グループ用: 喉のコンディション・睡眠・心の余裕と、響きスコアの関係
+  const resonanceCrossInsights = useMemo(() => {
+    const candidates = [
+      { labelX: "喉のコンディション", labelY: "響きスコア", ...pairCorr(crossFactorDaily, "throatCondition", "resonanceScore") },
+      { labelX: "睡眠の質", labelY: "響きスコア", ...pairCorr(crossFactorDaily, "sleepQuality", "resonanceScore") },
+      { labelX: "心の余裕", labelY: "響きスコア", ...pairCorr(crossFactorDaily, "ease", "resonanceScore") }
+    ];
+    return topCorrSentences(candidates, 2);
+  }, [crossFactorDaily]);
+
+  // 「体重」グループ用: カロリー・心の余裕と、体重の関係
+  const weightCrossInsights = useMemo(() => {
+    const candidates = [
+      { labelX: "摂取カロリー", labelY: "体重", ...pairCorr(crossFactorDaily, "calorieActual", "weightKg") },
+      { labelX: "心の余裕", labelY: "体重", ...pairCorr(crossFactorDaily, "ease", "weightKg") }
+    ];
+    return topCorrSentences(candidates, 2);
+  }, [crossFactorDaily]);
+
+  // 「タンパク質」グループ用: 体重1kgあたりのタンパク質量と、喉のコンディション／心の余裕の関係
+  const proteinCrossInsights = useMemo(() => {
+    const candidates = [
+      { labelX: "体重1kgあたりのタンパク質量", labelY: "喉のコンディション", ...pairCorr(crossFactorDaily, "proteinPerKg", "throatCondition") },
+      { labelX: "体重1kgあたりのタンパク質量", labelY: "心の余裕", ...pairCorr(crossFactorDaily, "proteinPerKg", "ease") }
+    ];
+    return topCorrSentences(candidates, 2);
+  }, [crossFactorDaily]);
+
+  // 「栄養摂取・体重変化」グループ用: 摂取カロリーと、体重／喉のコンディションの関係
+  const nutritionWeightCrossInsights = useMemo(() => {
+    const candidates = [
+      { labelX: "摂取カロリー", labelY: "体重", ...pairCorr(crossFactorDaily, "calorieActual", "weightKg") },
+      { labelX: "摂取カロリー", labelY: "喉のコンディション", ...pairCorr(crossFactorDaily, "calorieActual", "throatCondition") }
+    ];
+    return topCorrSentences(candidates, 2);
+  }, [crossFactorDaily]);
+
+  // 「食事」グループ用: 喉のコンディションが良かった日／悪かった日それぞれで、よく食べていたものを集計する。
+  // 診断や断定ではなく、記録上の傾向をそのまま見返せるようにするだけのもの。
+  const dietGoodBadFoodStats = useMemo(() => {
+    const goodCounts = {};
+    const badCounts = {};
+    let goodTotal = 0;
+    let badTotal = 0;
+    Object.values(filteredEntries).forEach((e) => {
+      if (typeof e.throatCondition !== "number") return;
+      const items = (e.meals || []).map((m) => (m.name || "").trim()).filter(Boolean);
+      if (e.throatCondition >= 4) {
+        goodTotal += 1;
+        items.forEach((name) => { goodCounts[name] = (goodCounts[name] || 0) + 1; });
+      } else if (e.throatCondition <= 2) {
+        badTotal += 1;
+        items.forEach((name) => { badCounts[name] = (badCounts[name] || 0) + 1; });
+      }
+    });
+    const toSorted = (counts) =>
+      Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([name, count]) => ({ name, count }));
+    return { good: toSorted(goodCounts), goodTotal, bad: toSorted(badCounts), badTotal };
+  }, [filteredEntries]);
+
+  // 体重・メンタル・食事・声の調子など、全グループの材料を1つにまとめた「全体を関連づけた分析」。
+  // 各グループで見つかった中で特に強い相関＋休養・滞在地・タグ・食事の傾向を組み合わせる。
+  // 現時点では日本語のみの文言（他7言語の翻訳は translations.js 側の対応が別途必要）。
+  const overallCrossInsight = useMemo(() => {
+    const allCandidates = [
+      { domain: "声", labelX: "睡眠時間", labelY: "喉のコンディション", ...pairCorr(crossFactorDaily, "sleepHours", "throatCondition") },
+      { domain: "声", labelX: "睡眠の質", labelY: "声の質", ...pairCorr(crossFactorDaily, "sleepQuality", "voiceQuality") },
+      { domain: "響き", labelX: "喉のコンディション", labelY: "響きスコア", ...pairCorr(crossFactorDaily, "throatCondition", "resonanceScore") },
+      { domain: "体重", labelX: "摂取カロリー", labelY: "体重", ...pairCorr(crossFactorDaily, "calorieActual", "weightKg") },
+      { domain: "タンパク質", labelX: "体重1kgあたりのタンパク質量", labelY: "喉のコンディション", ...pairCorr(crossFactorDaily, "proteinPerKg", "throatCondition") },
+      { domain: "メンタル", labelX: "心の余裕", labelY: "喉のコンディション", ...pairCorr(crossFactorDaily, "ease", "throatCondition") },
+      { domain: "メンタル", labelX: "心の余裕", labelY: "声の質", ...pairCorr(crossFactorDaily, "ease", "voiceQuality") },
+      { domain: "メンタル", labelX: "心の余裕", labelY: "体重", ...pairCorr(crossFactorDaily, "ease", "weightKg") }
+    ];
+    const topOverall = allCandidates
+      .filter((c) => c.r != null && Math.abs(c.r) >= 0.4 && c.n >= 5)
+      .sort((a, b) => Math.abs(b.r) - Math.abs(a.r))
+      .slice(0, 3);
+
+    const sentences = topOverall.map((c) => `【${c.domain}】${buildCorrSentence(c.labelX, c.labelY, c.r, c.n)}`);
+
+    const { bestRest, bestLocation } = mentalTopGroups;
+    if (bestRest) {
+      const label = REST_METHOD_KEYS[bestRest.method] ? t(REST_METHOD_KEYS[bestRest.method]) : bestRest.method;
+      sentences.push(`【休養】「${label}」を選んだ休養日は、心の余裕が平均${bestRest.avgEase.toFixed(1)}と高めです（${bestRest.n}件）。`);
+    }
+    const topGoodFood = dietGoodBadFoodStats.good[0] || null;
+    const topBadFood = dietGoodBadFoodStats.bad[0] || null;
+    if (topGoodFood) {
+      sentences.push(`【食事】喉の調子が良かった日（${dietGoodBadFoodStats.goodTotal}日）には「${topGoodFood.name}」を食べていることが多いです（${topGoodFood.count}日）。`);
+    }
+    if (topBadFood) {
+      sentences.push(`【食事】喉の調子が悪かった日（${dietGoodBadFoodStats.badTotal}日）には「${topBadFood.name}」を食べていることが多いです（${topBadFood.count}日）。`);
+    }
+
+    if (sentences.length === 0) return null;
+    return sentences;
+  }, [crossFactorDaily, mentalTopGroups, dietGoodBadFoodStats, t]);
+  // ---- 各グループ横断のクロス分析用データ ここまで ----
+
 
   // 装備・配置・ドラッグ移動は、その場ではデータベースに保存しない。
   // 「保存中」の表示に気づかれにくかったこと、また保存されたかどうかが分かりにくいという指摘を受けて、
@@ -2930,6 +3081,12 @@ export default function VocalTracker({ userId, userEmail }) {
                     {t("noteAnalysisPeriodCount").replace("{count}", Object.keys(filteredEntries).length)}
                   </p>
                 </div>
+                <div className="pt-2">
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>声</h2>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    声の状態・喉のコンディションに関する記録をまとめています。
+                  </p>
+                </div>
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleVoicePrediction")}</h3>
@@ -2988,7 +3145,6 @@ export default function VocalTracker({ userId, userEmail }) {
                     })}
                   </div>
                 </div>
-
                 {voiceMemoEntries.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">{t("titleVoiceMemoReview")}</h3>
@@ -3011,38 +3167,327 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   </div>
                 )}
-
-                {restMethodStats.length > 0 && (
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleSleepChart")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteSleepChart")}</p>
+                  <div style={{ width: "100%", height: 200 }}>
+                    <ResponsiveContainer>
+                      <BarChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis tick={{ fontSize: 11, fill: C.inkSoft }} unit="h" />
+                        <Tooltip
+                          contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }}
+                          formatter={(v, n, p) => [t("chartSleepTooltip").replace("{h}", v).replace("{q}", p.payload.sleepQuality ?? "-"), t("chartNameSleepHours")]}
+                        />
+                        <Bar dataKey="sleepHours" name={t("chartNameSleepHours")} radius={4}>
+                          {timeSeries.map((d, i) => (
+                            <Cell key={i} fill={levelColor(d.sleepQuality)} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                {voiceCrossInsights.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">{t("titleRestMethodTrend")}</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteRestMethodTrend")}</p>
+                    <h3 className="ff-display italic text-lg mb-1">声グループの関連分析</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      このグループ内の記録同士を関連づけて見つかった傾向です。
+                    </p>
                     <div className="space-y-2">
-                      {restMethodStats.map((s) => (
-                        <div key={s.method} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
-                          <span className="font-medium">{REST_METHOD_KEYS[s.method] ? t(REST_METHOD_KEYS[s.method]) : s.method}</span>
-                          <span className="ff-mono" style={{ color: C.inkSoft }}>
-                            {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
-                          </span>
-                        </div>
+                      {voiceCrossInsights.map((c, i) => (
+                        <p key={i} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                          {c.text}
+                        </p>
                       ))}
                     </div>
+                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向であり、因果関係を断定するものではありません。
+                    </p>
                   </div>
                 )}
 
-                {locationStats.length > 0 && (
+                <div className="pt-2">
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>響き</h2>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    響き・声の高さに関する記録をまとめています。
+                  </p>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleResonanceChart")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteResonanceChart")}</p>
+                  <div style={{ width: "100%", height: 180 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis domain={[0, 10]} tick={{ fontSize: 11, fill: C.inkSoft }} />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <Line type="monotone" dataKey="resonanceScore" name={t("labelResonanceScore")} stroke={C.gold} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titlePitchChart")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("notePitchChart")}</p>
+                  <div style={{ width: "100%", height: 220 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis
+                          domain={["dataMin - 2", "dataMax + 2"]}
+                          tickFormatter={(v) => midiToNoteLabel(v)}
+                          tick={{ fontSize: 10, fill: C.inkSoft }}
+                          width={38}
+                        />
+                        <Tooltip
+                          contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }}
+                          formatter={(value, name, entry) => {
+                            const isWake = entry && entry.dataKey === "wakeMidi";
+                            const label = isWake ? entry.payload.wakeNoteLabel : entry.payload.routineNoteLabel;
+                            return [label || "-", name];
+                          }}
+                        />
+                        <Line
+                          type="monotone" dataKey="wakeMidi" name={t("labelWakeNote")} stroke={C.gold} strokeWidth={2}
+                          connectNulls
+                          dot={(dotProps) => {
+                            const { cx, cy, payload, index } = dotProps;
+                            if (payload.wakeMidi == null) return null;
+                            return <circle key={`wake-${index}`} cx={cx} cy={cy} r={5} fill={payload.activityColor} stroke={C.gold} strokeWidth={1.5} />;
+                          }}
+                        />
+                        <Line
+                          type="monotone" dataKey="routineMidi" name={t("labelRoutineNote")} stroke={C.sage} strokeWidth={2}
+                          connectNulls
+                          dot={(dotProps) => {
+                            const { cx, cy, payload, index } = dotProps;
+                            if (payload.routineMidi == null) return null;
+                            return <circle key={`routine-${index}`} cx={cx} cy={cy} r={5} fill={payload.activityColor} stroke={C.sage} strokeWidth={1.5} />;
+                          }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {Object.entries(ACTIVITY_CHART_COLORS).map(([key, color]) => (
+                      <span key={key} className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                        <span style={{ width: 9, height: 9, borderRadius: 999, background: color, display: "inline-block" }} />
+                        {t((ACTIVITY_OPTIONS.find((a) => a.key === key) || {}).labelKey) || key}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("notePitchChartLegend")}</p>
+                </div>
+                {resonanceCrossInsights.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">{t("titleLocationTrend")}</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteLocationTrend")}</p>
+                    <h3 className="ff-display italic text-lg mb-1">響きグループの関連分析</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      このグループ内の記録同士を関連づけて見つかった傾向です。
+                    </p>
                     <div className="space-y-2">
-                      {locationStats.map((s) => (
-                        <div key={s.location} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
-                          <span className="font-medium">{s.location}</span>
-                          <span className="ff-mono" style={{ color: C.inkSoft }}>
-                            {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
-                          </span>
-                        </div>
+                      {resonanceCrossInsights.map((c, i) => (
+                        <p key={i} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                          {c.text}
+                        </p>
                       ))}
                     </div>
+                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向であり、因果関係を断定するものではありません。
+                    </p>
+                  </div>
+                )}
+
+                <div className="pt-2">
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>体重</h2>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    体重の変化に関する記録をまとめています。
+                  </p>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleWeightTrend")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteLast30Days")}</p>
+                  <div style={{ width: "100%", height: 200 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 11, fill: C.inkSoft }} unit="kg" />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <Line type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={C.curtain} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                {weightCrossInsights.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">体重グループの関連分析</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      このグループ内の記録同士を関連づけて見つかった傾向です。
+                    </p>
+                    <div className="space-y-2">
+                      {weightCrossInsights.map((c, i) => (
+                        <p key={i} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                          {c.text}
+                        </p>
+                      ))}
+                    </div>
+                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向であり、因果関係を断定するものではありません。
+                    </p>
+                  </div>
+                )}
+
+                <div className="pt-2">
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>食事</h2>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    食事の記録をまとめています。
+                  </p>
+                </div>
+
+                {(dietGoodBadFoodStats.good.length > 0 || dietGoodBadFoodStats.bad.length > 0) ? (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">食事内容の傾向</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      喉のコンディションが良かった日・悪かった日それぞれで、よく食べていたものを集計しています。
+                    </p>
+                    <div className="space-y-3">
+                      {dietGoodBadFoodStats.good.length > 0 && (
+                        <div>
+                          <p className="text-xs font-medium mb-1.5" style={{ color: C.sage }}>
+                            喉の調子が良かった日（{dietGoodBadFoodStats.goodTotal}日）でよく食べていたもの
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {dietGoodBadFoodStats.good.map(({ name, count }) => (
+                              <span key={name} className="px-2 py-0.5 rounded-full text-xs" style={{ background: C.paper, color: C.ink }}>
+                                {name}（{count}）
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {dietGoodBadFoodStats.bad.length > 0 && (
+                        <div>
+                          <p className="text-xs font-medium mb-1.5" style={{ color: C.curtain }}>
+                            喉の調子が悪かった日（{dietGoodBadFoodStats.badTotal}日）でよく食べていたもの
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {dietGoodBadFoodStats.bad.map(({ name, count }) => (
+                              <span key={name} className="px-2 py-0.5 rounded-full text-xs" style={{ background: C.paper, color: C.ink }}>
+                                {name}（{count}）
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向であり、因果関係を断定するものではありません。件数が少ないうちは参考程度にご覧ください。
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-xs rounded-2xl border p-4" style={{ color: C.inkSoft, borderColor: C.line, background: C.card }}>
+                    まだ食事内容と喉のコンディションを関連づけられるだけの記録がありません。記録が増えると、ここに傾向が表示されます。
+                  </p>
+                )}
+
+                <div className="pt-2">
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>タンパク質</h2>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    タンパク質摂取量に関する記録をまとめています。
+                  </p>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleProteinTrend")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteProteinTrendTarget")}</p>
+                  <div style={{ width: "100%", height: 200 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 11, fill: C.inkSoft }} unit="g/kg" />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <ReferenceLine y={Number(profile.protein_coefficient) || 1.6} stroke={C.gold} strokeDasharray="4 4" />
+                        <Line type="monotone" dataKey="proteinPerKg" name={t("chartNameActualCoefficient")} stroke={C.sage} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                {proteinCrossInsights.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">タンパク質グループの関連分析</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      このグループ内の記録同士を関連づけて見つかった傾向です。
+                    </p>
+                    <div className="space-y-2">
+                      {proteinCrossInsights.map((c, i) => (
+                        <p key={i} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                          {c.text}
+                        </p>
+                      ))}
+                    </div>
+                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向であり、因果関係を断定するものではありません。
+                    </p>
+                  </div>
+                )}
+
+                <div className="pt-2">
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>栄養摂取・体重変化</h2>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    摂取カロリーと体重の関係をまとめています。
+                  </p>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleNutritionWeightChart")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteNutritionWeightChart")}</p>
+                  <div style={{ width: "100%", height: 170 }}>
+                    <ResponsiveContainer>
+                      <ComposedChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis tick={{ fontSize: 10, fill: C.inkSoft }} unit="kcal" />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <Bar dataKey="calorieActual" name={t("chartNameCalorieActual")} fill={C.gold} radius={3} />
+                        <Line type="monotone" dataKey="calorieTarget" name={t("chartNameCalorieTarget")} stroke={C.curtain} strokeDasharray="4 4" dot={false} connectNulls />
+                      </ComposedChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div style={{ width: "100%", height: 130, marginTop: 8 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="kg" />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <Line type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={C.sage} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                {nutritionWeightCrossInsights.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">栄養摂取・体重変化グループの関連分析</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      このグループ内の記録同士を関連づけて見つかった傾向です。
+                    </p>
+                    <div className="space-y-2">
+                      {nutritionWeightCrossInsights.map((c, i) => (
+                        <p key={i} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                          {c.text}
+                        </p>
+                      ))}
+                    </div>
+                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向であり、因果関係を断定するものではありません。
+                    </p>
                   </div>
                 )}
 
@@ -3148,161 +3593,46 @@ export default function VocalTracker({ userId, userEmail }) {
                     </p>
                   </div>
                 )}
-
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">{t("titleWeightTrend")}</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteLast30Days")}</p>
-                  <div style={{ width: "100%", height: 200 }}>
-                    <ResponsiveContainer>
-                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                        <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 11, fill: C.inkSoft }} unit="kg" />
-                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <Line type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={C.curtain} strokeWidth={2} dot={{ r: 3 }} connectNulls />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
+                <div className="pt-2">
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>全体を関連づけた分析</h2>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    体重・メンタル・食事・声の調子など、グループをまたいだ関連をまとめて見ていきます。
+                  </p>
                 </div>
 
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">{t("titleProteinTrend")}</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteProteinTrendTarget")}</p>
-                  <div style={{ width: "100%", height: 200 }}>
-                    <ResponsiveContainer>
-                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                        <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 11, fill: C.inkSoft }} unit="g/kg" />
-                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <ReferenceLine y={Number(profile.protein_coefficient) || 1.6} stroke={C.gold} strokeDasharray="4 4" />
-                        <Line type="monotone" dataKey="proteinPerKg" name={t("chartNameActualCoefficient")} stroke={C.sage} strokeWidth={2} dot={{ r: 3 }} connectNulls />
-                      </LineChart>
-                    </ResponsiveContainer>
+                {restMethodStats.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">{t("titleRestMethodTrend")}</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteRestMethodTrend")}</p>
+                    <div className="space-y-2">
+                      {restMethodStats.map((s) => (
+                        <div key={s.method} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                          <span className="font-medium">{REST_METHOD_KEYS[s.method] ? t(REST_METHOD_KEYS[s.method]) : s.method}</span>
+                          <span className="ff-mono" style={{ color: C.inkSoft }}>
+                            {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">{t("titleSleepChart")}</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteSleepChart")}</p>
-                  <div style={{ width: "100%", height: 200 }}>
-                    <ResponsiveContainer>
-                      <BarChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                        <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis tick={{ fontSize: 11, fill: C.inkSoft }} unit="h" />
-                        <Tooltip
-                          contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }}
-                          formatter={(v, n, p) => [t("chartSleepTooltip").replace("{h}", v).replace("{q}", p.payload.sleepQuality ?? "-"), t("chartNameSleepHours")]}
-                        />
-                        <Bar dataKey="sleepHours" name={t("chartNameSleepHours")} radius={4}>
-                          {timeSeries.map((d, i) => (
-                            <Cell key={i} fill={levelColor(d.sleepQuality)} />
-                          ))}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
+                {locationStats.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">{t("titleLocationTrend")}</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteLocationTrend")}</p>
+                    <div className="space-y-2">
+                      {locationStats.map((s) => (
+                        <div key={s.location} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                          <span className="font-medium">{s.location}</span>
+                          <span className="ff-mono" style={{ color: C.inkSoft }}>
+                            {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">{t("titleResonanceChart")}</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteResonanceChart")}</p>
-                  <div style={{ width: "100%", height: 180 }}>
-                    <ResponsiveContainer>
-                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                        <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis domain={[0, 10]} tick={{ fontSize: 11, fill: C.inkSoft }} />
-                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <Line type="monotone" dataKey="resonanceScore" name={t("labelResonanceScore")} stroke={C.gold} strokeWidth={2} dot={{ r: 3 }} connectNulls />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">{t("titlePitchChart")}</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("notePitchChart")}</p>
-                  <div style={{ width: "100%", height: 220 }}>
-                    <ResponsiveContainer>
-                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                        <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis
-                          domain={["dataMin - 2", "dataMax + 2"]}
-                          tickFormatter={(v) => midiToNoteLabel(v)}
-                          tick={{ fontSize: 10, fill: C.inkSoft }}
-                          width={38}
-                        />
-                        <Tooltip
-                          contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }}
-                          formatter={(value, name, entry) => {
-                            const isWake = entry && entry.dataKey === "wakeMidi";
-                            const label = isWake ? entry.payload.wakeNoteLabel : entry.payload.routineNoteLabel;
-                            return [label || "-", name];
-                          }}
-                        />
-                        <Line
-                          type="monotone" dataKey="wakeMidi" name={t("labelWakeNote")} stroke={C.gold} strokeWidth={2}
-                          connectNulls
-                          dot={(dotProps) => {
-                            const { cx, cy, payload, index } = dotProps;
-                            if (payload.wakeMidi == null) return null;
-                            return <circle key={`wake-${index}`} cx={cx} cy={cy} r={5} fill={payload.activityColor} stroke={C.gold} strokeWidth={1.5} />;
-                          }}
-                        />
-                        <Line
-                          type="monotone" dataKey="routineMidi" name={t("labelRoutineNote")} stroke={C.sage} strokeWidth={2}
-                          connectNulls
-                          dot={(dotProps) => {
-                            const { cx, cy, payload, index } = dotProps;
-                            if (payload.routineMidi == null) return null;
-                            return <circle key={`routine-${index}`} cx={cx} cy={cy} r={5} fill={payload.activityColor} stroke={C.sage} strokeWidth={1.5} />;
-                          }}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    {Object.entries(ACTIVITY_CHART_COLORS).map(([key, color]) => (
-                      <span key={key} className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
-                        <span style={{ width: 9, height: 9, borderRadius: 999, background: color, display: "inline-block" }} />
-                        {t((ACTIVITY_OPTIONS.find((a) => a.key === key) || {}).labelKey) || key}
-                      </span>
-                    ))}
-                  </div>
-                  <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("notePitchChartLegend")}</p>
-                </div>
-
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">{t("titleNutritionWeightChart")}</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteNutritionWeightChart")}</p>
-                  <div style={{ width: "100%", height: 170 }}>
-                    <ResponsiveContainer>
-                      <ComposedChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                        <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis tick={{ fontSize: 10, fill: C.inkSoft }} unit="kcal" />
-                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <Bar dataKey="calorieActual" name={t("chartNameCalorieActual")} fill={C.gold} radius={3} />
-                        <Line type="monotone" dataKey="calorieTarget" name={t("chartNameCalorieTarget")} stroke={C.curtain} strokeDasharray="4 4" dot={false} connectNulls />
-                      </ComposedChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div style={{ width: "100%", height: 130, marginTop: 8 }}>
-                    <ResponsiveContainer>
-                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                        <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="kg" />
-                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <Line type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={C.sage} strokeWidth={2} dot={{ r: 2 }} connectNulls />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-
+                )}
                 <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
                   <button onClick={() => setAnalysisTarget("performance")}
                     className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
@@ -3399,6 +3729,25 @@ export default function VocalTracker({ userId, userEmail }) {
                     </p>
                   </>
                 )}
+                {overallCrossInsight && overallCrossInsight.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">体重・メンタル・食事・声の調子をまとめると</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      これまでの全グループを横断して見つかった、特に関連の強い傾向です。
+                    </p>
+                    <div className="space-y-2">
+                      {overallCrossInsight.map((s, i) => (
+                        <p key={i} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                          {s}
+                        </p>
+                      ))}
+                    </div>
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向であり、因果関係を断定するものではありません。件数が少ないうちは参考程度にご覧ください。
+                    </p>
+                  </div>
+                )}
+
               </div>
             )}
 
