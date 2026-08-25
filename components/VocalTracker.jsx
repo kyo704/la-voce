@@ -467,11 +467,10 @@ function computeAbsoluteHumidity(tempC, rhPercent) {
 // この正式な計算を使う（簡易プロキシではなく、指標設計図.md 07節の計算式そのもの）。
 const ACTIVITY_LOAD_WEIGHT = { "休養": 0, "自主練習": 1.0, "レッスン": 1.2, "リハーサル": 1.3, "本番": 1.6 };
 // 1日分の発声負荷 L_d = 活動時間(分) × 種別重み + 運動記録の負荷（0.3 × 分 × 強度/3）
-function computeDailyLoad(entry) {
+function computeDailyLoad(entry, songFactorResolver) {
   if (!entry) return 0;
-  const weight = ACTIVITY_LOAD_WEIGHT[entry.activityType] ?? 0;
-  const activityMinutes = typeof entry.activityDuration === "number" ? entry.activityDuration * 60 : 0;
-  const baseLoad = activityMinutes * weight;
+  // §4: L_day = Σ_a L_a（活動ブロックごとに係数・曲目のsongFactorを反映して合算する）
+  const baseLoad = computeDayLoadFromActivities(entry.activities, songFactorResolver);
   const exerciseLoad = (entry.exercises || []).reduce((sum, x) => {
     const minutes = Number(x.minutes) || 0;
     const intensity = typeof x.intensity === "number" ? x.intensity : 3;
@@ -790,7 +789,9 @@ function buildFormData(date, entries) {
       pianissimoOnsetDelay: existing.pianissimoOnsetDelay || false,
       speakingLevel: existing.speakingLevel ?? null,
       noisyEnvironment: existing.noisyEnvironment || false,
-      cppsValue: existing.cppsValue ?? ""
+      cppsValue: existing.cppsValue ?? "",
+      activities: existing.activities || [],
+      recovery: existing.recovery || null
     };
   }
   return {
@@ -815,10 +816,6 @@ function buildFormData(date, entries) {
     weather: "",
     temperature: "",
     humidity: "",
-    activityType: "自主練習",
-    activityDuration: "",
-    activityDetail: {},
-    repertoire: "",
     performanceQuality: null,
     ease: 3,
     mentalReason: "",
@@ -837,7 +834,11 @@ function buildFormData(date, entries) {
     pianissimoOnsetDelay: false,
     speakingLevel: null,
     noisyEnvironment: false,
-    cppsValue: ""
+    cppsValue: "",
+    // lavoce-曲目複数化パッチ.md: 活動は「1日1つ」ではなくブロックの配列。
+    // 既定は自主練習ブロック1つ（旧UXの「最初から自主練習が選ばれている」状態を踏襲）。
+    activities: [newActivityBlock("自主練習", 0)],
+    recovery: null
   };
 }
 function computeBMI(weightKg, heightCm) {
@@ -924,6 +925,22 @@ function evaluateIntake(actual, target) {
 function newExerciseItem() {
   return { id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, type: "有酸素運動", minutes: "", intensity: 3, memo: "" };
 }
+// lavoce-曲目複数化パッチ.md §2.0/§6: 活動ブロックと、その中の曲目アイテムのファクトリ関数
+const ACTIVITY_BLOCK_KINDS = ["自主練習", "レッスン", "リハーサル", "本番"]; // 休養は recovery 側で扱うためここには含めない
+function newActivityBlock(kind, order) {
+  return {
+    id: `act-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    kind: kind || "自主練習",
+    startAt: "",
+    minutes: "",
+    items: [],
+    order: order || 0,
+    detail: {}
+  };
+}
+function newActivityItem(order) {
+  return { repertoireName: "", minutesOverride: null, order: order || 0 };
+}
 function updateVoiceCheckin(f, slotKey, field, value) {
   const checkins = { ...(f.voiceCheckins || {}) };
   checkins[slotKey] = { ...(checkins[slotKey] || {}), [field]: value };
@@ -947,7 +964,43 @@ function describeArc(cx, cy, r, startAngle, endAngle) {
 }
 
 /* ---------- DB row <-> app-shape mapping ---------- */
+// lavoce-曲目複数化パッチ.md §8: 既存データ（単一の活動フィールド）を、読み込み時点で
+// 新しい activities[] 構造に合成する互換レイヤー。DBを一括で書き換えず、古い記録もそのまま動く。
+function migrateLegacyToActivities(row) {
+  if (row.activities && Array.isArray(row.activities) && row.activities.length > 0) {
+    return { activities: row.activities, recovery: row.recovery || null };
+  }
+  if (row.activity_type === "休養") {
+    return {
+      activities: [],
+      recovery: row.recovery || {
+        methods: (row.activity_detail && row.activity_detail.restMethods) || [],
+        note: (row.activity_detail && row.activity_detail.restMethodOther) || ""
+      }
+    };
+  }
+  if (row.activity_type) {
+    const items = row.repertoire && row.repertoire.trim()
+      ? [{ repertoireName: row.repertoire.trim(), minutesOverride: null, order: 0 }]
+      : [];
+    return {
+      activities: [{
+        id: `migrated-${row.date}`,
+        kind: row.activity_type,
+        startAt: "",
+        minutes: typeof row.activity_duration === "number" ? row.activity_duration : 0,
+        items,
+        order: 0,
+        detail: row.activity_detail || {},
+        source: "migrated"
+      }],
+      recovery: row.recovery || null
+    };
+  }
+  return { activities: row.activities || [], recovery: row.recovery || null };
+}
 function rowToEntry(row) {
+  const { activities, recovery } = migrateLegacyToActivities(row);
   return {
     date: row.date,
     throatCondition: row.throat_condition,
@@ -998,7 +1051,9 @@ function rowToEntry(row) {
     pianissimoOnsetDelay: row.pianissimo_onset_delay || false,
     speakingLevel: row.speaking_level,
     noisyEnvironment: row.noisy_environment || false,
-    cppsValue: row.cpps_value
+    cppsValue: row.cpps_value,
+    activities,
+    recovery
   };
 }
 function numOrNull(v) {
@@ -1228,12 +1283,34 @@ function computeConditionFlags(y) {
   const flags = [];
   if (dinnerGap != null && dinnerGap < 3) flags.push({ flagKey: "flagDinnerGap", explainKey: "explainDinnerGap" });
   if (typeof y.sleepHours === "number" && y.sleepHours < 6) flags.push({ flagKey: "flagShortSleep", explainKey: "explainShortSleep" });
-  if (y.activityType === "本番" || y.activityType === "リハーサル") flags.push({ flagKey: "flagHeavyVoiceUse", explainKey: "explainHeavyVoiceUse" });
+  if (entryHasActivityKind(y, "本番") || entryHasActivityKind(y, "リハーサル")) flags.push({ flagKey: "flagHeavyVoiceUse", explainKey: "explainHeavyVoiceUse" });
   if ((y.dinnerTags || []).includes("アルコール")) flags.push({ flagKey: "flagAlcohol", explainKey: "explainAlcohol" });
   if ((y.dinnerTags || []).includes("カフェイン")) flags.push({ flagKey: "flagCaffeine", explainKey: "explainCaffeine" });
   return { dinnerGap, flags };
 }
+// activities[] の中から「その日の主たる活動」（時間が最長のブロック）を導出する。
+// これは保存しない派生値であり、旧フィールド（後方互換用）を埋めるためだけに使う。
+function derivePrimaryActivityLegacy(activities) {
+  if (!activities || activities.length === 0) return null;
+  return activities.reduce((a, b) => ((Number(b.minutes) || 0) >= (Number(a.minutes) || 0) ? b : a));
+}
+// その日のactivities[]の中に、指定した種別のブロックが1つでもあるか（例: 本番があった日の判定）。
+// 「主たる活動（最長のブロック）」だけを見ると、短い本番を自主練の後に入れた日を見逃すため、
+// 配列全体を確認する。
+function entryHasActivityKind(entry, kind) {
+  if (entry && Array.isArray(entry.activities) && entry.activities.length > 0) {
+    return entry.activities.some((a) => a.kind === kind);
+  }
+  return entry && entry.activityType === kind;
+}
 function entryToRow(userId, e) {
+  const activities = e.activities || [];
+  const primary = derivePrimaryActivityLegacy(activities);
+  const legacyRepertoire = activities
+    .flatMap((a) => (a.items || []).map((it) => (it.repertoireName || "").trim()))
+    .filter(Boolean)
+    .join("、");
+  const isRecoveryDay = activities.length === 0 && !!e.recovery;
   return {
     user_id: userId,
     date: e.date,
@@ -1246,9 +1323,13 @@ function entryToRow(userId, e) {
     location: e.location,
     temperature: numOrNull(e.temperature),
     humidity: numOrNull(e.humidity),
-    activity_type: e.activityType,
-    activity_duration: numOrNull(e.activityDuration),
-    repertoire: e.repertoire,
+    // 以下4つは後方互換用の派生値。新しい読み込みはすべて activities / recovery を見る。
+    activity_type: primary ? primary.kind : (isRecoveryDay ? "休養" : (e.activityType || null)),
+    activity_duration: primary ? (Number(primary.minutes) || 0) : (isRecoveryDay ? 0 : numOrNull(e.activityDuration)),
+    repertoire: legacyRepertoire || null,
+    activity_detail: primary
+      ? (primary.detail || {})
+      : (isRecoveryDay ? { restMethods: e.recovery.methods || [], restMethodOther: e.recovery.note || "" } : (e.activityDetail || {})),
     performance_quality: numOrNull(e.performanceQuality),
     ease: numOrNull(e.ease),
     notes: e.notes,
@@ -1268,7 +1349,6 @@ function entryToRow(userId, e) {
     mental_tags: e.mentalTags || [],
     throat_symptoms_other: e.throatSymptomsOther || "",
     voice_memo: e.voiceMemo || "",
-    activity_detail: e.activityDetail || {},
     wake_note: e.wakeNote || "",
     routine_note: e.routineNote || "",
     resonance_score: numOrNull(e.resonanceScore),
@@ -1285,7 +1365,9 @@ function entryToRow(userId, e) {
     pianissimo_onset_delay: !!e.pianissimoOnsetDelay,
     speaking_level: numOrNull(e.speakingLevel),
     noisy_environment: !!e.noisyEnvironment,
-    cpps_value: numOrNull(e.cppsValue)
+    cpps_value: numOrNull(e.cppsValue),
+    activities,
+    recovery: e.recovery || null
   };
 }
 
@@ -1650,6 +1732,66 @@ function median(arr) {
   const mid = Math.floor(sorted.length / 2);
   return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
 }
+// ---- lavoce-曲目複数化パッチ.md 用の純関数群 ----
+// §3.1: 活動ブロック内の時間配分。①個別入力(override)を確定 → ②残りを標準演奏時間の比で按分
+// → ③標準演奏時間が1つもなければ等分。allocations は items と同じ並びの配列で返す。
+function allocateActivityMinutes(totalMinutes, items, standardMinutesLookup) {
+  const total = Number(totalMinutes) || 0;
+  const hasOverride = items.map((it) => it.minutesOverride != null && it.minutesOverride !== "" && !Number.isNaN(Number(it.minutesOverride)));
+  const overrideSum = items.reduce((s, it, i) => s + (hasOverride[i] ? Number(it.minutesOverride) : 0), 0);
+  const remaining = total - overrideSum;
+  const withoutIdx = items.map((_, i) => i).filter((i) => !hasOverride[i]);
+  const allocations = items.map((it, i) => (hasOverride[i] ? Number(it.minutesOverride) : 0));
+  if (withoutIdx.length > 0 && remaining > 0) {
+    const lookup = standardMinutesLookup || (() => null);
+    const standardVals = withoutIdx.map((i) => lookup(items[i].repertoireName)).filter((v) => typeof v === "number" && v > 0);
+    if (standardVals.length > 0) {
+      const med = median(standardVals);
+      const weights = withoutIdx.map((i) => {
+        const v = lookup(items[i].repertoireName);
+        return (typeof v === "number" && v > 0) ? v : med;
+      });
+      const sumW = weights.reduce((a, b) => a + b, 0);
+      withoutIdx.forEach((i, k) => { allocations[i] = sumW > 0 ? (remaining * weights[k]) / sumW : remaining / withoutIdx.length; });
+    } else {
+      const equalShare = remaining / withoutIdx.length;
+      withoutIdx.forEach((i) => { allocations[i] = equalShare; });
+    }
+  }
+  return { allocations, remaining, overflow: remaining < 0 };
+}
+// §4: 活動ブロック a の負荷 L_a = Σ_i (minutes_i × actW_a × songFactor_i)。曲が0件なら minutes×actW。
+// songFactorResolver(repertoireName) は songFactor（数値）または null を返す関数。
+function computeActivityBlockLoad(activity, songFactorResolver) {
+  const actW = ACTIVITY_LOAD_WEIGHT[activity.kind] ?? 1.0;
+  const minutes = Number(activity.minutes) || 0;
+  const items = activity.items || [];
+  if (items.length === 0) {
+    return { total: minutes * actW, perItem: [] };
+  }
+  const lookup = (name) => {
+    const rec = songFactorResolver && songFactorResolver.tessituraMap ? songFactorResolver.tessituraMap[name] : null;
+    if (!rec) return null;
+    return rec.standardMinutes || null;
+  };
+  const { allocations } = allocateActivityMinutes(minutes, items, lookup);
+  const perItem = items.map((it, i) => {
+    const rec = songFactorResolver && songFactorResolver.tessituraMap ? songFactorResolver.tessituraMap[it.repertoireName] : null;
+    let songFactor = 1.0;
+    if (rec && songFactorResolver.resolveD) {
+      const resolved = songFactorResolver.resolveD(rec);
+      if (resolved) songFactor = songFactorFromD(resolved.d);
+    }
+    const load = allocations[i] * actW * songFactor;
+    return { repertoireName: it.repertoireName, minutes: allocations[i], songFactor, load };
+  });
+  return { total: perItem.reduce((s, x) => s + x.load, 0), perItem };
+}
+// §4: その日の発声負荷 L_day = Σ_a L_a。既存ACWRのcomputeDailyLoadを置き換える、activities[]対応版。
+function computeDayLoadFromActivities(activities, songFactorResolver) {
+  return (activities || []).reduce((sum, a) => sum + computeActivityBlockLoad(a, songFactorResolver).total, 0);
+}
+// ---- 曲目複数化パッチ 用純関数群 ここまで ----
 // 音名（国際式、例: "C4", "G#3", "Bb4"）を MIDI ノート番号に変換する。パースできなければ null。
 function noteToMidi(noteStr) {
   if (!noteStr || typeof noteStr !== "string") return null;
@@ -1929,6 +2071,240 @@ function MealItemRow({ item, onChange, onRemove, foodLibrary, t, language }) {
   );
 }
 
+// lavoce-曲目複数化パッチ.md §2.1: 曲目1行分。サジェスト・登録フォーム・近似曲目警告を
+// 行ごとに自前で持つ（親でどの行が登録中かを追跡する必要がなく、状態管理がシンプルになる）。
+function RepertoireItemRow({
+  item, index, totalItems, onChange, onRemove, onMoveUp, onMoveDown,
+  repertoireTessituraMap, repertoireUsageCounts, repertoireSkipped, setRepertoireSkipped,
+  handleSaveRepertoire, tessituraSaving, t
+}) {
+  const [topNoteInput, setTopNoteInput] = useState("");
+  const [tessituraOptionalInput, setTessituraOptionalInput] = useState("");
+  const [showTessituraAccordion, setShowTessituraAccordion] = useState(false);
+  const [dOverrideChoice, setDOverrideChoice] = useState(null);
+  const [duplicateWarning, setDuplicateWarning] = useState(null);
+
+  const name = item.repertoireName || "";
+  const record = name ? repertoireTessituraMap[name] : null;
+  const norm = name ? normalizeTitle(name) : "";
+  const usageSoFar = norm ? ((repertoireUsageCounts[norm] && repertoireUsageCounts[norm].count) || 0) : 0;
+  const suggestions = name && !record
+    ? Object.entries(repertoireTessituraMap)
+        .filter(([n]) => n !== name && normalizeTitle(n).includes(norm))
+        .sort((a, b) => (repertoireUsageCounts[normalizeTitle(b[0])]?.count || 0) - (repertoireUsageCounts[normalizeTitle(a[0])]?.count || 0))
+        .slice(0, 3)
+    : [];
+
+  return (
+    <div className="rounded-xl border p-2.5" style={{ borderColor: C.line, background: C.paper }}>
+      <div className="flex items-center gap-1.5">
+        <div className="flex flex-col" style={{ gap: 1 }}>
+          <button type="button" disabled={index === 0} onClick={onMoveUp} style={{ opacity: index === 0 ? 0.3 : 1, color: C.inkSoft, lineHeight: 1 }}>▲</button>
+          <button type="button" disabled={index === totalItems - 1} onClick={onMoveDown} style={{ opacity: index === totalItems - 1 ? 0.3 : 1, color: C.inkSoft, lineHeight: 1 }}>▼</button>
+        </div>
+        <input type="text" value={name} placeholder={t("placeholderRepertoireExample")}
+          onChange={(e) => { onChange({ repertoireName: e.target.value }); setDuplicateWarning(null); }}
+          className="flex-1 rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.card }} />
+        <input type="number" value={item.minutesOverride ?? ""} placeholder="自動"
+          onChange={(e) => onChange({ minutesOverride: e.target.value === "" ? null : Number(e.target.value) })}
+          className="rounded-lg border p-1.5 text-xs ff-mono" style={{ width: 56, borderColor: C.line, background: C.card }} />
+        <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>分</span>
+        <button type="button" onClick={onRemove} className="flex-shrink-0" style={{ color: C.inkSoft }}><X size={14} /></button>
+      </div>
+
+      {suggestions.length > 0 && (
+        <div className="mt-1.5 rounded-lg border overflow-hidden" style={{ borderColor: C.line }}>
+          {suggestions.map(([n, rec]) => (
+            <button key={n} type="button" onClick={() => onChange({ repertoireName: n })}
+              className="w-full text-left px-2.5 py-1.5 text-xs flex items-center justify-between"
+              style={{ background: C.card, borderBottom: `1px solid ${C.line}` }}>
+              <span>{n}</span>
+              <span className="ff-mono flex-shrink-0 ml-2" style={{ color: C.inkSoft }}>{rec.topNote || rec.tessituraNote || ""}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {name && !record && (() => {
+        const shouldPrompt = usageSoFar === 0 || usageSoFar === 2;
+        if (!shouldPrompt || repertoireSkipped[norm]) return null;
+
+        if (duplicateWarning && duplicateWarning.forName === name) {
+          return (
+            <div className="mt-2 rounded-lg p-2" style={{ background: C.card }}>
+              <p className="text-xs font-medium mb-1.5">似た曲目が登録されています</p>
+              <p className="text-xs mb-1.5" style={{ color: C.ink }}>
+                「{duplicateWarning.existingName}」（{duplicateWarning.existingRecord.topNote || duplicateWarning.existingRecord.tessituraNote}）
+              </p>
+              <div className="flex gap-1.5">
+                <button type="button" onClick={() => { onChange({ repertoireName: duplicateWarning.existingName }); setDuplicateWarning(null); }}
+                  className="flex-1 py-1 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>同じ曲です</button>
+                <button type="button" onClick={() => setDuplicateWarning({ ...duplicateWarning, confirmed: true })}
+                  className="flex-1 py-1 rounded-full text-xs font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>別の曲です</button>
+              </div>
+            </div>
+          );
+        }
+
+        return (
+          <div className="mt-2 rounded-lg p-2" style={{ background: C.card }}>
+            <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>「{name}」の最高音は？（登録すると次回から自動で使われます）</p>
+            <input type="text" value={topNoteInput} placeholder={t("placeholderNoteExample")}
+              onChange={(e) => setTopNoteInput(e.target.value)}
+              className="w-full rounded-lg border p-1.5 text-xs mb-1.5" style={{ borderColor: C.line, background: C.paper }} />
+            <details className="text-xs mb-1.5" open={showTessituraAccordion} onToggle={(e) => setShowTessituraAccordion(e.target.open)}>
+              <summary className="cursor-pointer" style={{ color: C.inkSoft }}>テッシトゥーラも入力する（任意）</summary>
+              <p className="mt-1 mb-1" style={{ color: C.inkSoft }}>最高音とは別。曲全体で「だいたいこの高さ」という中心の音域です。</p>
+              <input type="text" value={tessituraOptionalInput} placeholder={t("placeholderNoteExample")}
+                onChange={(e) => setTessituraOptionalInput(e.target.value)}
+                className="w-full rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.paper }} />
+            </details>
+            {dOverrideChoice === null && !topNoteInput && (
+              <button type="button" onClick={() => setDOverrideChoice(0)} className="text-xs underline mb-1.5" style={{ color: C.inkSoft }}>
+                音名で答えられない場合はこちら
+              </button>
+            )}
+            {dOverrideChoice !== null && !topNoteInput && (
+              <div className="flex gap-1.5 mb-1.5">
+                {[["低め", -0.5], ["真ん中", 0], ["高め", 0.5]].map(([label, val]) => (
+                  <button key={label} type="button" onClick={() => setDOverrideChoice(val)}
+                    className="flex-1 py-1 rounded-full text-xs font-medium"
+                    style={{ background: dOverrideChoice === val ? C.curtain : C.paper, color: dOverrideChoice === val ? "#FFFDF8" : C.inkSoft, border: `1px solid ${dOverrideChoice === val ? C.curtain : C.line}` }}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
+            <div className="flex gap-1.5">
+              <button type="button" disabled={tessituraSaving || (!topNoteInput && dOverrideChoice == null)}
+                onClick={() => {
+                  if (!duplicateWarning || !duplicateWarning.confirmed) {
+                    const nearMatch = Object.keys(repertoireTessituraMap).find((existingName) => {
+                      const existingNorm = normalizeTitle(existingName);
+                      return existingNorm.includes(norm) || norm.includes(existingNorm) || levenshteinDistance(existingNorm, norm) <= 2;
+                    });
+                    if (nearMatch) {
+                      setDuplicateWarning({ forName: name, existingName: nearMatch, existingRecord: repertoireTessituraMap[nearMatch], confirmed: false });
+                      return;
+                    }
+                  }
+                  handleSaveRepertoire(name, {
+                    topNote: topNoteInput || null,
+                    tessituraNote: tessituraOptionalInput || null,
+                    dOverride: !topNoteInput && dOverrideChoice != null ? dOverrideChoice : null
+                  });
+                  setTopNoteInput(""); setTessituraOptionalInput(""); setDOverrideChoice(null); setDuplicateWarning(null);
+                }}
+                className="flex-1 py-1 rounded-full text-xs font-medium"
+                style={{ background: C.curtain, color: "#FFFDF8", opacity: tessituraSaving || (!topNoteInput && dOverrideChoice == null) ? 0.5 : 1 }}>
+                登録する
+              </button>
+              <button type="button" onClick={() => setRepertoireSkipped((prev) => ({ ...prev, [norm]: true }))}
+                className="flex-1 py-1 rounded-full text-xs font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                あとで
+              </button>
+            </div>
+          </div>
+        );
+      })()}
+      {name && record && (
+        <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
+          登録済み：{record.topNote ? `最高音${record.topNote}` : ""}{record.tessituraNote ? `・テッシトゥーラ${record.tessituraNote}` : ""}
+        </p>
+      )}
+    </div>
+  );
+}
+// lavoce-曲目複数化パッチ.md §2.0: 活動ブロック1つ分。種別・時間・曲目リスト・種別固有項目・
+// ブロックごとの負荷フィードバックをまとめる。
+function ActivityBlockEditor({
+  activity, onChange, onRemove, onDetailChange,
+  onAddItem, onUpdateItem, onRemoveItem, onMoveItem,
+  repertoireTessituraMap, repertoireUsageCounts, repertoireSkipped, setRepertoireSkipped,
+  handleSaveRepertoire, tessituraSaving, songFactorResolver, t
+}) {
+  const detail = activity.detail || {};
+  const items = activity.items || [];
+  const { total, perItem } = computeActivityBlockLoad(activity, songFactorResolver);
+  return (
+    <div className="rounded-xl border p-3" style={{ borderColor: C.line, background: C.card }}>
+      <div className="flex items-center gap-2 mb-2">
+        <MiniSelect value={activity.kind} onChange={(v) => onChange({ kind: v })} options={ACTIVITY_BLOCK_KINDS}
+          labels={Object.fromEntries(ACTIVITY_BLOCK_KINDS.map((k) => [k, t((ACTIVITY_OPTIONS.find((a) => a.key === k) || {}).labelKey) || k]))} />
+        <div className="flex items-center gap-1 flex-1">
+          <MiniNumber value={activity.minutes} placeholder="分" onChange={(v) => onChange({ minutes: v })} />
+          <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>分</span>
+        </div>
+        <button type="button" onClick={onRemove} className="flex-shrink-0" style={{ color: C.inkSoft }}><X size={16} /></button>
+      </div>
+
+      <div className="mt-2">
+        <span className="text-xs font-medium block mb-1.5">{activity.kind === "本番" ? "演目・曲目" : activity.kind === "リハーサル" ? "曲目・演目" : "曲目"}</span>
+        <div className="space-y-1.5">
+          {items.map((item, idx) => (
+            <RepertoireItemRow
+              key={idx} item={item} index={idx} totalItems={items.length}
+              onChange={(patch) => onUpdateItem(idx, patch)}
+              onRemove={() => onRemoveItem(idx)}
+              onMoveUp={() => onMoveItem(idx, -1)}
+              onMoveDown={() => onMoveItem(idx, 1)}
+              repertoireTessituraMap={repertoireTessituraMap}
+              repertoireUsageCounts={repertoireUsageCounts}
+              repertoireSkipped={repertoireSkipped}
+              setRepertoireSkipped={setRepertoireSkipped}
+              handleSaveRepertoire={handleSaveRepertoire}
+              tessituraSaving={tessituraSaving}
+              t={t}
+            />
+          ))}
+        </div>
+        {items.length < 50 && (
+          <button type="button" onClick={onAddItem} className="mt-1.5 text-xs font-medium flex items-center gap-1" style={{ color: C.curtain }}>
+            <Plus size={12} />曲を追加
+          </button>
+        )}
+      </div>
+
+      {activity.kind === "自主練習" && (
+        <div className="mt-3 pt-2 border-t space-y-2" style={{ borderColor: C.line }}>
+          <textarea value={detail.practiceMenu || ""} rows={2} placeholder={t("placeholderPracticeMenuExample")}
+            onChange={(e) => onDetailChange({ practiceMenu: e.target.value })}
+            className="w-full rounded-lg border p-2 text-xs" style={{ borderColor: C.line, background: C.paper }} />
+        </div>
+      )}
+      {activity.kind === "レッスン" && (
+        <div className="mt-3 pt-2 border-t space-y-2" style={{ borderColor: C.line }}>
+          <textarea value={detail.teacherNotes || ""} rows={2} placeholder={t("placeholderTeacherNotes")}
+            onChange={(e) => onDetailChange({ teacherNotes: e.target.value })}
+            className="w-full rounded-lg border p-2 text-xs" style={{ borderColor: C.line, background: C.paper }} />
+        </div>
+      )}
+      {activity.kind === "本番" && (
+        <div className="mt-3 pt-2 border-t space-y-3" style={{ borderColor: C.line }}>
+          <DynamicsSelector t={t} label={t("targetPerformance")} icon={Sparkles} value={detail.performanceQuality || 3}
+            onChange={(v) => onDetailChange({ performanceQuality: v })} />
+          <textarea value={detail.performanceComment || ""} rows={2} placeholder={t("placeholderPerformanceComment")}
+            onChange={(e) => onDetailChange({ performanceComment: e.target.value })}
+            className="w-full rounded-lg border p-2 text-xs" style={{ borderColor: C.line, background: C.paper }} />
+        </div>
+      )}
+
+      {items.length > 0 && total > 0 && (
+        <div className="mt-3 pt-2 border-t" style={{ borderColor: C.line }}>
+          <p className="text-xs font-medium mb-1">このブロックの負荷 {Math.round(total)}</p>
+          <div className="space-y-1">
+            {[...perItem].sort((a, b) => b.load - a.load).slice(0, 5).map((pi, i) => (
+              <div key={i} className="flex items-center justify-between text-xs" style={{ color: C.inkSoft }}>
+                <span>{pi.repertoireName || "（無題）"}</span>
+                <span className="ff-mono">{Math.round(pi.load)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 function ExerciseItemRow({ item, onChange, onRemove, t }) {
   return (
     <div className="rounded-xl border p-3" style={{ borderColor: C.line, background: C.paper }}>
@@ -2319,7 +2695,7 @@ export default function VocalTracker({ userId, userEmail }) {
       startISO = toISODate(start); endISO = toISODate(today);
     } else if (analysisPeriod === "aroundPerformance") {
       // 数字の作法④: 暦の区切りではなく、声のプロの実感に合わせて「直近の本番」を基準にした期間。
-      const performanceDates = Object.keys(entries).filter((d) => entries[d].activityType === "本番").sort();
+      const performanceDates = Object.keys(entries).filter((d) => entryHasActivityKind(entries[d], "本番")).sort();
       if (performanceDates.length === 0) return {};
       const lastPerformance = performanceDates[performanceDates.length - 1];
       startISO = addDays(lastPerformance, -14);
@@ -2359,7 +2735,7 @@ export default function VocalTracker({ userId, userEmail }) {
 
   const correlationResults = useMemo(() => {
     if (analysisTarget === "performance") {
-      return getCorrelationData(filteredEntries, "performanceQuality", (e) => e.activityType === "本番" && typeof e.performanceQuality === "number", t);
+      return getCorrelationData(filteredEntries, "performanceQuality", (e) => entryHasActivityKind(e, "本番") && typeof e.performanceQuality === "number", t);
     }
     if (analysisTarget === "ease") {
       return getCorrelationData(filteredEntries, "ease", (e) => typeof e.ease === "number", t);
@@ -2415,9 +2791,10 @@ export default function VocalTracker({ userId, userEmail }) {
   const restMethodStats = useMemo(() => {
     const byMethod = {};
     Object.values(filteredEntries).forEach((e) => {
-      if (e.activityType !== "休養") return;
-      const methods = (e.activityDetail && e.activityDetail.restMethods) || [];
-      const otherText = (e.activityDetail && e.activityDetail.restMethodOther || "").trim();
+      // 休養は活動ブロックではなく、日ごとの recovery として独立管理する（曲目複数化パッチ §2.0.1）
+      if (!e.recovery || (e.activities && e.activities.length > 0)) return;
+      const methods = e.recovery.methods || [];
+      const otherText = (e.recovery.note || "").trim();
       methods.forEach((rawM) => {
         const m = (rawM === "その他" && otherText) ? otherText : rawM;
         if (!byMethod[m]) byMethod[m] = { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 };
@@ -2937,6 +3314,47 @@ export default function VocalTracker({ userId, userEmail }) {
     return { z, T, n, position, topPercentPct, today: Math.round(todayEntry.score) };
   }, [dailyScoreSeries]);
 
+  // lavoce-レパートリー負荷パッチ.md §1.4: 「無理なく出せる音域」（任意）があればそちらを優先し、
+  // なければ全音域を使う。ACWR（発声負荷）の計算で曲のsongFactorを使うため、ACWRより前に置く。
+  const comfortableRangeMidi = useMemo(() => {
+    const low = noteToMidi(profile.comfort_range_low) ?? noteToMidi(profile.vocal_range_low);
+    const high = noteToMidi(profile.comfort_range_high) ?? noteToMidi(profile.vocal_range_high);
+    const isEstimatedRange = !profile.comfort_range_low || !profile.comfort_range_high;
+    if (low == null || high == null || high <= low) return null;
+    return { low, high, center: (low + high) / 2, half: (high - low) / 2, isEstimatedRange };
+  }, [profile.comfort_range_low, profile.comfort_range_high, profile.vocal_range_low, profile.vocal_range_high]);
+  // §3.2: 両方（最高音・テッシトゥーラ）が入力済みの曲が5件以上あれば、個人の実測差に置き換える。
+  const personalTessituraOffset = useMemo(() => {
+    const diffs = Object.values(repertoireTessituraMap)
+      .filter((r) => r.topNote && r.tessituraNote)
+      .map((r) => noteToMidi(r.topNote) - noteToMidi(r.tessituraNote))
+      .filter((v) => Number.isFinite(v));
+    return diffs.length >= 5 ? median(diffs) : REPERTOIRE_TESSITURA_OFFSET;
+  }, [repertoireTessituraMap]);
+  // 登録レコードから d（快適音域中心からの正規化位置、-1〜+1）を解決する。
+  // 優先順位：テッシトゥーラ実測 > 最高音からの推定 > 3択フォールバック。
+  function resolveRepertoireD(record) {
+    if (!record || !comfortableRangeMidi) return null;
+    if (record.tessituraNote) {
+      const midi = noteToMidi(record.tessituraNote);
+      if (midi != null) return { d: (midi - comfortableRangeMidi.center) / comfortableRangeMidi.half, confidence: "entered" };
+    }
+    if (record.topNote) {
+      const topMidi = noteToMidi(record.topNote);
+      if (topMidi != null) {
+        const estTess = topMidi - personalTessituraOffset;
+        return { d: (estTess - comfortableRangeMidi.center) / comfortableRangeMidi.half, confidence: "estimated" };
+      }
+    }
+    if (record.dOverride != null) return { d: record.dOverride, confidence: "coarse" };
+    return null;
+  }
+  // songFactorResolver: computeDailyLoad / computeActivityBlockLoad に渡す共通の解決器
+  const songFactorResolver = useMemo(() => ({
+    tessituraMap: repertoireTessituraMap,
+    resolveD: resolveRepertoireD
+  }), [repertoireTessituraMap, comfortableRangeMidi, personalTessituraOffset]);
+
   // 07. 発声負荷（ACWR）の日次系列。声の予報の「前日発声負荷」predictorにも使う。
   // 記録のない日は L=0 として扱わず、前日のEWMAをそのまま引き継ぐ（休んだのか未記録なのか区別できないため）。
   const acwrSeries = useMemo(() => {
@@ -2953,7 +3371,7 @@ export default function VocalTracker({ userId, userEmail }) {
     while (d <= realToday && guard < 3660) { // 約10年分で打ち切る安全弁
       const entry = entries[d];
       if (entry) {
-        const L = computeDailyLoad(entry);
+        const L = computeDailyLoad(entry, songFactorResolver);
         A = A == null ? L : lambdaA * L + (1 - lambdaA) * A;
         C = C == null ? L : lambdaC * L + (1 - lambdaC) * C;
         series[d] = { A, C, acwr: C > 0 ? A / C : null };
@@ -2964,7 +3382,7 @@ export default function VocalTracker({ userId, userEmail }) {
       guard += 1;
     }
     return series;
-  }, [entries]);
+  }, [entries, songFactorResolver]);
 
   // 01. 声の予報：前夜の行動から翌朝の喉スコアを予測する。
   // 記録14日未満は一般知見（β₀）だけで予報し、14日以上たまったらリッジ回帰で
@@ -3132,15 +3550,6 @@ export default function VocalTracker({ userId, userEmail }) {
   // ---- 周期と声・メンタルの傾向 用データ ここまで ----
 
   // ---- lavoce-収集データ拡張案.md E節 + レパートリー負荷パッチ.md: 曲目ごとの負荷 用データ ----
-  // §1.4: 「無理なく出せる音域」（任意）があればそちらを優先し、なければ全音域を使う。
-  const comfortableRangeMidi = useMemo(() => {
-    const low = noteToMidi(profile.comfort_range_low) ?? noteToMidi(profile.vocal_range_low);
-    const high = noteToMidi(profile.comfort_range_high) ?? noteToMidi(profile.vocal_range_high);
-    const isEstimatedRange = !profile.comfort_range_low || !profile.comfort_range_high;
-    if (low == null || high == null || high <= low) return null;
-    return { low, high, center: (low + high) / 2, half: (high - low) / 2, isEstimatedRange };
-  }, [profile.comfort_range_low, profile.comfort_range_high, profile.vocal_range_low, profile.vocal_range_high]);
-
   // §2: 曲目名の正規化と、既存登録に対する使用回数（サジェストの並び順・繰り返し登録抑制に使う）
   const repertoireUsageCounts = useMemo(() => {
     const counts = {};
@@ -3153,61 +3562,41 @@ export default function VocalTracker({ userId, userEmail }) {
     });
     return counts;
   }, [entries]);
-  // §3.2: 両方（最高音・テッシトゥーラ）が入力済みの曲が5件以上あれば、個人の実測差に置き換える。
-  const personalTessituraOffset = useMemo(() => {
-    const diffs = Object.values(repertoireTessituraMap)
-      .filter((r) => r.topNote && r.tessituraNote)
-      .map((r) => noteToMidi(r.topNote) - noteToMidi(r.tessituraNote))
-      .filter((v) => Number.isFinite(v));
-    return diffs.length >= 5 ? median(diffs) : REPERTOIRE_TESSITURA_OFFSET;
-  }, [repertoireTessituraMap]);
-  // 登録レコードから d（快適音域中心からの正規化位置、-1〜+1）を解決する。
-  // 優先順位：テッシトゥーラ実測 > 最高音からの推定 > 3択フォールバック。
-  function resolveRepertoireD(record) {
-    if (!record || !comfortableRangeMidi) return null;
-    if (record.tessituraNote) {
-      const midi = noteToMidi(record.tessituraNote);
-      if (midi != null) return { d: (midi - comfortableRangeMidi.center) / comfortableRangeMidi.half, confidence: "entered" };
-    }
-    if (record.topNote) {
-      const topMidi = noteToMidi(record.topNote);
-      if (topMidi != null) {
-        const estTess = topMidi - personalTessituraOffset;
-        return { d: (estTess - comfortableRangeMidi.center) / comfortableRangeMidi.half, confidence: "estimated" };
-      }
-    }
-    if (record.dOverride != null) return { d: record.dOverride, confidence: "coarse" };
-    return null;
-  }
   const overallThroatBaseline = useMemo(() => {
     const vals = Object.values(entries).map((e) => e.throatCondition).filter((v) => typeof v === "number");
     return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
   }, [entries]);
   const roleLoadStats = useMemo(() => {
-    if (!comfortableRangeMidi) return [];
+    if (!comfortableRangeMidi) return { confident: [], lowN: [] };
     const byRole = {};
     const sortedDates = Object.keys(entries).sort();
     sortedDates.forEach((date, i) => {
       const e = entries[date];
-      const name = (e.repertoire || "").trim();
-      if (!name) return;
-      const record = repertoireTessituraMap[name];
-      if (!record) return;
-      const resolved = resolveRepertoireD(record);
-      if (!resolved) return;
-      const songFactor = songFactorFromD(resolved.d);
-      const actW = ACTIVITY_LOAD_WEIGHT[e.activityType] ?? 1.0;
-      const minutes = typeof e.activityDuration === "number" ? e.activityDuration * 60 : 0;
-      // §1.2: L_song = 演奏時間 × 活動係数 × songFactor（既存の発声負荷ACWRと単位が揃う）
-      const load = minutes * actW * songFactor;
-      if (!byRole[name]) byRole[name] = { name, record, loads: [], nextDayThroatDeviation: [] };
-      byRole[name].loads.push(load);
+      const activities = e.activities || [];
+      // その日、同じ曲が複数ブロックにまたがっていても1日分としてまとめる
+      const dayNamesWithLoad = {};
+      activities.forEach((activity) => {
+        const { perItem } = computeActivityBlockLoad(activity, songFactorResolver);
+        perItem.forEach((pi) => {
+          const name = (pi.repertoireName || "").trim();
+          if (!name || !repertoireTessituraMap[name]) return; // 未登録の曲は負荷を計算できないので対象外
+          dayNamesWithLoad[name] = (dayNamesWithLoad[name] || 0) + pi.load;
+        });
+      });
+      Object.entries(dayNamesWithLoad).forEach(([name, load]) => {
+        if (!byRole[name]) byRole[name] = { name, record: repertoireTessituraMap[name], loads: [], nextDayThroatDeviation: [] };
+        byRole[name].loads.push(load);
+      });
+      // §5（帰属の按分・共起検出）は今回のフェーズでは実装せず、その日に歌った曲すべてに
+      // 翌日の落ち込みをそのまま計上する簡易版。同じ日によく一緒に歌われる曲は同じ値になる。
       const nextDate = sortedDates[i + 1];
       if (nextDate && addDays(date, 1) === nextDate) {
         const nextEntry = entries[nextDate];
-        // §4.3: 翌日の落ち込みは、生の平均ではなく「その人の平常値との偏差」で見る。
         if (typeof nextEntry.throatCondition === "number" && overallThroatBaseline != null) {
-          byRole[name].nextDayThroatDeviation.push(nextEntry.throatCondition - overallThroatBaseline);
+          const deviation = nextEntry.throatCondition - overallThroatBaseline;
+          Object.keys(dayNamesWithLoad).forEach((name) => {
+            byRole[name].nextDayThroatDeviation.push(deviation);
+          });
         }
       }
     });
@@ -3229,7 +3618,7 @@ export default function VocalTracker({ userId, userEmail }) {
       r.rankGap = loadRank - actualRank; // 正: 計算より実際の落ち込みが大きい（見落とされがちな重い役）
     });
     return { confident, lowN };
-  }, [entries, repertoireTessituraMap, comfortableRangeMidi, overallThroatBaseline, personalTessituraOffset]);
+  }, [entries, repertoireTessituraMap, comfortableRangeMidi, overallThroatBaseline, songFactorResolver]);
   // ---- 曲目ごとの負荷 用データ ここまで ----
 
   // ---- lavoce-指標設計図.md 05. 効いた習慣ランキング 用データ ----
@@ -3437,7 +3826,7 @@ export default function VocalTracker({ userId, userEmail }) {
   // ---- 環境の快適帯 用データ ここまで ----
 
   // ---- lavoce-指標設計図.md 08. 本番ピーキング曲線 用データ ----
-  const performanceDates = useMemo(() => Object.keys(entries).filter((d) => entries[d].activityType === "本番").sort(), [entries]);
+  const performanceDates = useMemo(() => Object.keys(entries).filter((d) => entryHasActivityKind(entries[d], "本番")).sort(), [entries]);
   const nextPerformanceDate = useMemo(() => {
     const realToday = todayISO();
     return performanceDates.find((d) => d > realToday) || null;
@@ -3592,10 +3981,11 @@ export default function VocalTracker({ userId, userEmail }) {
     const weeks = {};
     Object.keys(entries).filter((d) => d >= start && d <= end).forEach((d) => {
       const e = entries[d];
-      if (typeof e.activityDuration !== "number") return;
+      const dayMinutes = (e.activities || []).reduce((sum, a) => sum + (Number(a.minutes) || 0), 0);
+      if (dayMinutes <= 0) return;
       const dayOfWeek = new Date(d + "T00:00:00").getDay();
       const weekStart = addDays(d, -dayOfWeek);
-      weeks[weekStart] = (weeks[weekStart] || 0) + e.activityDuration;
+      weeks[weekStart] = (weeks[weekStart] || 0) + dayMinutes / 60;
     });
     return Object.entries(weeks).sort(([a], [b]) => a.localeCompare(b)).map(([weekStart, hours]) => ({ week: weekStart.slice(5), hours: roundTo1(hours) }));
   }, [entries, clinicPeriodRange]);
@@ -3839,8 +4229,71 @@ export default function VocalTracker({ userId, userEmail }) {
     setDuplicateWarning(null);
   }
 
-  function updateDetail(patch) {
-    setFormData((f) => ({ ...f, activityDetail: { ...(f.activityDetail || {}), ...patch } }));
+  // lavoce-曲目複数化パッチ.md §2.0/§2.1: 活動ブロック・曲目アイテムの操作関数
+  function addActivity() {
+    setFormData((f) => {
+      const activities = f.activities || [];
+      if (activities.length >= 10) return f;
+      return { ...f, recovery: null, activities: [...activities, newActivityBlock("自主練習", activities.length)] };
+    });
+  }
+  function removeActivityBlock(id) {
+    setFormData((f) => ({ ...f, activities: (f.activities || []).filter((a) => a.id !== id) }));
+  }
+  function updateActivityBlock(id, patch) {
+    setFormData((f) => ({ ...f, activities: (f.activities || []).map((a) => (a.id === id ? { ...a, ...patch } : a)) }));
+  }
+  function updateActivityBlockDetail(id, patch) {
+    setFormData((f) => ({
+      ...f,
+      activities: (f.activities || []).map((a) => (a.id === id ? { ...a, detail: { ...(a.detail || {}), ...patch } } : a))
+    }));
+  }
+  function addRepertoireItemToActivity(activityId) {
+    setFormData((f) => ({
+      ...f,
+      activities: (f.activities || []).map((a) => {
+        if (a.id !== activityId) return a;
+        if ((a.items || []).length >= 50) return a;
+        return { ...a, items: [...(a.items || []), newActivityItem((a.items || []).length)] };
+      })
+    }));
+  }
+  function updateRepertoireItemInActivity(activityId, index, patch) {
+    setFormData((f) => ({
+      ...f,
+      activities: (f.activities || []).map((a) => {
+        if (a.id !== activityId) return a;
+        const items = [...(a.items || [])];
+        items[index] = { ...items[index], ...patch };
+        return { ...a, items };
+      })
+    }));
+  }
+  function removeRepertoireItemFromActivity(activityId, index) {
+    setFormData((f) => ({
+      ...f,
+      activities: (f.activities || []).map((a) => {
+        if (a.id !== activityId) return a;
+        return { ...a, items: (a.items || []).filter((_, i) => i !== index).map((it, i) => ({ ...it, order: i })) };
+      })
+    }));
+  }
+  function moveRepertoireItemInActivity(activityId, index, direction) {
+    setFormData((f) => ({
+      ...f,
+      activities: (f.activities || []).map((a) => {
+        if (a.id !== activityId) return a;
+        const items = [...(a.items || [])];
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= items.length) return a;
+        [items[index], items[newIndex]] = [items[newIndex], items[index]];
+        return { ...a, items: items.map((it, i) => ({ ...it, order: i })) };
+      })
+    }));
+  }
+  function updateRecovery(patch) {
+    setFormData((f) => ({ ...f, recovery: { ...(f.recovery || { methods: [], note: "" }), ...patch } }));
   }
 
   function addMeal(slot) {
@@ -3887,7 +4340,7 @@ export default function VocalTracker({ userId, userEmail }) {
     setSaveStatus("saving");
     setSaveError("");
     const clean = { ...formData };
-    if (clean.activityType !== "本番") clean.performanceQuality = null;
+    if (!entryHasActivityKind(clean, "本番")) clean.performanceQuality = null;
     const supabase = createClient();
     const { error } = await supabase
       .from("entries")
@@ -4856,169 +5309,119 @@ export default function VocalTracker({ userId, userEmail }) {
                       <div>
                         <span className="text-sm font-medium block mb-2">{t("labelTodayActivity")}</span>
                         <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                          {ACTIVITY_OPTIONS.map((a) => {
-                            const active = formData.activityType === a.key;
+                          <button type="button"
+                            onClick={() => setFormData((f) => ({ ...f, activities: [], recovery: f.recovery || { methods: [], note: "" } }))}
+                            className="flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-medium transition-all"
+                            style={{
+                              background: (formData.activities || []).length === 0 && formData.recovery ? C.curtain : C.paper,
+                              color: (formData.activities || []).length === 0 && formData.recovery ? "#FFFDF8" : C.inkSoft,
+                              borderColor: (formData.activities || []).length === 0 && formData.recovery ? C.curtain : C.line
+                            }}>
+                            <Moon size={16} />
+                            {t("activityRest")}
+                          </button>
+                          {ACTIVITY_BLOCK_KINDS.map((kind) => {
+                            const opt = ACTIVITY_OPTIONS.find((a) => a.key === kind) || {};
+                            const isFirstBlockKind = (formData.activities || []).length === 0;
                             return (
-                              <button key={a.key} type="button"
-                                onClick={() => setFormData((f) => ({
-                                  ...f,
-                                  activityType: a.key,
-                                  performanceQuality: a.key === "本番" ? (f.performanceQuality ?? 3) : f.performanceQuality
-                                }))}
+                              <button key={kind} type="button"
+                                onClick={() => {
+                                  if (isFirstBlockKind) {
+                                    setFormData((f) => ({ ...f, recovery: null, activities: [newActivityBlock(kind, 0)] }));
+                                  }
+                                }}
                                 className="flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-medium transition-all"
-                                style={{ background: active ? C.curtain : C.paper, color: active ? "#FFFDF8" : C.inkSoft, borderColor: active ? C.curtain : C.line }}
-                              >
-                                <a.icon size={16} />
-                                {t(a.labelKey)}
+                                style={{
+                                  background: isFirstBlockKind ? C.paper : C.paper,
+                                  color: C.inkSoft,
+                                  borderColor: C.line,
+                                  opacity: isFirstBlockKind ? 1 : 0.4,
+                                  cursor: isFirstBlockKind ? "pointer" : "default"
+                                }}>
+                                {opt.icon ? <opt.icon size={16} /> : <Music2 size={16} />}
+                                {t(opt.labelKey) || kind}
                               </button>
                             );
                           })}
                         </div>
+                        <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
+                          {(formData.activities || []).length === 0 && formData.recovery
+                            ? "休養日として記録します。"
+                            : (formData.activities || []).length === 0
+                              ? "上のボタンから、1つ目の活動を選んでください。"
+                              : "活動は下のブロックごとに追加・編集できます。2つ以上の活動があった日は「＋活動を追加」で足してください。"}
+                        </p>
                       </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <NumberField label={t("labelActivityDuration")} value={formData.activityDuration ?? ""} step={0.5} min={0} max={24} suffix={t("unitHours")}
-                          onChange={(v) => setFormData((f) => ({ ...f, activityDuration: v }))} />
-                        <div>
-                          <label className="text-sm font-medium block mb-1.5">{t("labelRepertoire")}</label>
-                          <input type="text" value={formData.repertoire} placeholder={t("placeholderRepertoireExample")}
-                            onChange={(e) => { setFormData((f) => ({ ...f, repertoire: e.target.value })); setDuplicateWarning(null); }}
-                            className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                          {formData.repertoire && !repertoireTessituraMap[formData.repertoire] && (() => {
-                            const norm = normalizeTitle(formData.repertoire);
-                            const suggestions = Object.entries(repertoireTessituraMap)
-                              .filter(([name]) => name !== formData.repertoire && normalizeTitle(name).includes(norm))
-                              .sort((a, b) => (repertoireUsageCounts[normalizeTitle(b[0])]?.count || 0) - (repertoireUsageCounts[normalizeTitle(a[0])]?.count || 0))
-                              .slice(0, 4);
-                            if (suggestions.length === 0) return null;
+
+                      {(formData.activities || []).length === 0 && formData.recovery ? (
+                        <div className="pt-2 border-t" style={{ borderColor: C.line }}>
+                          <p className="text-sm font-medium mb-2">{t("labelRestMethodsHeader")}</p>
+                          <div className="flex flex-wrap gap-2">
+                            {REST_METHODS.map((m) => (
+                              <Chip key={m} label={t(REST_METHOD_KEYS[m])} active={((formData.recovery || {}).methods || []).includes(m)}
+                                onClick={() => {
+                                  const current = (formData.recovery || {}).methods || [];
+                                  updateRecovery({ methods: current.includes(m) ? current.filter((x) => x !== m) : [...current, m] });
+                                }} />
+                            ))}
+                          </div>
+                          {((formData.recovery || {}).methods || []).includes("その他") && (
+                            <input
+                              type="text"
+                              value={(formData.recovery || {}).note || ""}
+                              placeholder={t("placeholderRestOtherExample")}
+                              onChange={(e) => updateRecovery({ note: e.target.value })}
+                              className="w-full rounded-lg border p-2 text-sm mt-2"
+                              style={{ borderColor: C.line, background: C.paper }}
+                            />
+                          )}
+                          <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                            {t("noteRestMethodsFull")}
+                          </p>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="space-y-3">
+                            {(formData.activities || []).map((activity) => (
+                              <ActivityBlockEditor
+                                key={activity.id}
+                                activity={activity}
+                                onChange={(patch) => updateActivityBlock(activity.id, patch)}
+                                onRemove={() => removeActivityBlock(activity.id)}
+                                onDetailChange={(patch) => updateActivityBlockDetail(activity.id, patch)}
+                                onAddItem={() => addRepertoireItemToActivity(activity.id)}
+                                onUpdateItem={(idx, patch) => updateRepertoireItemInActivity(activity.id, idx, patch)}
+                                onRemoveItem={(idx) => removeRepertoireItemFromActivity(activity.id, idx)}
+                                onMoveItem={(idx, dir) => moveRepertoireItemInActivity(activity.id, idx, dir)}
+                                repertoireTessituraMap={repertoireTessituraMap}
+                                repertoireUsageCounts={repertoireUsageCounts}
+                                repertoireSkipped={repertoireSkipped}
+                                setRepertoireSkipped={setRepertoireSkipped}
+                                handleSaveRepertoire={handleSaveRepertoire}
+                                tessituraSaving={tessituraSaving}
+                                songFactorResolver={songFactorResolver}
+                                t={t}
+                              />
+                            ))}
+                          </div>
+                          {(formData.activities || []).length > 0 && (formData.activities || []).length < 10 && (
+                            <button type="button" onClick={addActivity}
+                              className="w-full rounded-xl border py-2 text-xs font-medium flex items-center justify-center gap-1.5"
+                              style={{ borderColor: C.line, color: C.inkSoft }}>
+                              <Plus size={13} />活動を追加
+                            </button>
+                          )}
+                          {(formData.activities || []).length > 0 && (() => {
+                            const totalMinutes = (formData.activities || []).reduce((s, a) => s + (Number(a.minutes) || 0), 0);
+                            const totalLoad = computeDayLoadFromActivities(formData.activities, songFactorResolver);
                             return (
-                              <div className="mt-1.5 rounded-lg border overflow-hidden" style={{ borderColor: C.line }}>
-                                {suggestions.map(([name, record]) => (
-                                  <button key={name} type="button"
-                                    onClick={() => { setFormData((f) => ({ ...f, repertoire: name })); setDuplicateWarning(null); }}
-                                    className="w-full text-left px-3 py-2 text-xs flex items-center justify-between"
-                                    style={{ background: C.card, borderBottom: `1px solid ${C.line}` }}>
-                                    <span>{name}</span>
-                                    <span className="ff-mono flex-shrink-0 ml-2" style={{ color: C.inkSoft }}>
-                                      {record.topNote || record.tessituraNote || ""}・{repertoireUsageCounts[normalizeTitle(name)]?.count || 0}回
-                                    </span>
-                                  </button>
-                                ))}
-                              </div>
+                              <p className="text-xs text-right ff-mono" style={{ color: C.inkSoft }}>
+                                今日の合計　{totalMinutes}分・負荷 {Math.round(totalLoad)}
+                              </p>
                             );
                           })()}
-                        </div>
-                      </div>
-
-                      {formData.repertoire && repertoireTessituraMap[formData.repertoire] && (
-                        <p className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
-                          「{formData.repertoire}」は登録済みです：
-                          {repertoireTessituraMap[formData.repertoire].topNote && <> 最高音 <span className="ff-mono">{repertoireTessituraMap[formData.repertoire].topNote}</span></>}
-                          {repertoireTessituraMap[formData.repertoire].tessituraNote && <> ・テッシトゥーラ <span className="ff-mono">{repertoireTessituraMap[formData.repertoire].tessituraNote}</span></>}
-                        </p>
+                        </>
                       )}
-
-                      {formData.repertoire && !repertoireTessituraMap[formData.repertoire] && (() => {
-                        const norm = normalizeTitle(formData.repertoire);
-                        const usageSoFar = (repertoireUsageCounts[norm] && repertoireUsageCounts[norm].count) || 0;
-                        // §3.4-③: 一度スキップした曲に繰り返し登録を促さない（1回目・3回目の使用時だけ提示）
-                        const shouldPrompt = usageSoFar === 0 || usageSoFar === 2;
-                        if (!shouldPrompt || repertoireSkipped[norm]) return null;
-
-                        if (duplicateWarning && duplicateWarning.forName === formData.repertoire) {
-                          return (
-                            <div className="rounded-xl p-3" style={{ background: C.paper }}>
-                              <p className="text-xs font-medium mb-2">似た曲目が登録されています</p>
-                              <p className="text-xs mb-2" style={{ color: C.ink }}>
-                                「{duplicateWarning.existingName}」（{duplicateWarning.existingRecord.topNote || duplicateWarning.existingRecord.tessituraNote}・{repertoireUsageCounts[normalizeTitle(duplicateWarning.existingName)]?.count || 0}回）
-                              </p>
-                              <div className="flex gap-2">
-                                <button type="button" onClick={() => { setFormData((f) => ({ ...f, repertoire: duplicateWarning.existingName })); setDuplicateWarning(null); }}
-                                  className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
-                                  同じ曲です
-                                </button>
-                                <button type="button" onClick={() => setDuplicateWarning({ ...duplicateWarning, confirmed: true })}
-                                  className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
-                                  別の曲です
-                                </button>
-                              </div>
-                            </div>
-                          );
-                        }
-
-                        return (
-                          <div className="rounded-xl p-3" style={{ background: C.paper }}>
-                            <p className="text-xs font-medium mb-1">「{formData.repertoire}」を登録（1回だけ。あとから変えられます）</p>
-                            <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
-                              この曲の最高音は？（登録すると、次回から自動で「重い役ランキング」に使われます）
-                            </p>
-                            <input type="text" value={topNoteInput} placeholder={t("placeholderNoteExample")}
-                              onChange={(e) => setTopNoteInput(e.target.value)}
-                              className="w-full rounded-lg border p-2 text-sm mb-2" style={{ borderColor: C.line, background: C.card }} />
-
-                            <details className="text-xs mb-2" open={showTessituraAccordion} onToggle={(e) => setShowTessituraAccordion(e.target.open)}>
-                              <summary className="cursor-pointer" style={{ color: C.inkSoft }}>テッシトゥーラも入力する（任意）</summary>
-                              <p className="mt-1.5 mb-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
-                                最高音とは別のものです。一瞬だけ出る高い音ではなく、<strong>曲全体を通して「だいたいこの高さで歌い続ける」中心の音域</strong>を指します。分かる場合だけで大丈夫です（空欄なら最高音から自動で推定します）。
-                              </p>
-                              <input type="text" value={tessituraOptionalInput} placeholder={t("placeholderNoteExample")}
-                                onChange={(e) => setTessituraOptionalInput(e.target.value)}
-                                className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.card }} />
-                            </details>
-
-                            {dOverrideChoice === null && !topNoteInput && (
-                              <button type="button" onClick={() => setDOverrideChoice(0)} className="text-xs underline mb-2" style={{ color: C.inkSoft }}>
-                                音名で答えられない場合はこちら
-                              </button>
-                            )}
-                            {dOverrideChoice !== null && !topNoteInput && (
-                              <div className="mb-2">
-                                <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>自分の音域の中で、この曲はどのあたり？</p>
-                                <div className="flex gap-2">
-                                  {[["低め", -0.5], ["真ん中", 0], ["高め", 0.5]].map(([label, val]) => (
-                                    <button key={label} type="button" onClick={() => setDOverrideChoice(val)}
-                                      className="flex-1 py-1.5 rounded-full text-xs font-medium"
-                                      style={{ background: dOverrideChoice === val ? C.curtain : C.card, color: dOverrideChoice === val ? "#FFFDF8" : C.inkSoft, border: `1px solid ${dOverrideChoice === val ? C.curtain : C.line}` }}>
-                                      {label}
-                                    </button>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-
-                            <div className="flex gap-2">
-                              <button type="button" disabled={tessituraSaving || (!topNoteInput && dOverrideChoice == null)}
-                                onClick={() => {
-                                  const norm2 = normalizeTitle(formData.repertoire);
-                                  if (!duplicateWarning || !duplicateWarning.confirmed) {
-                                    const nearMatch = Object.keys(repertoireTessituraMap).find((existingName) => {
-                                      if (existingName === formData.repertoire) return false;
-                                      const existingNorm = normalizeTitle(existingName);
-                                      return existingNorm.includes(norm2) || norm2.includes(existingNorm) || levenshteinDistance(existingNorm, norm2) <= 2;
-                                    });
-                                    if (nearMatch) {
-                                      setDuplicateWarning({ forName: formData.repertoire, existingName: nearMatch, existingRecord: repertoireTessituraMap[nearMatch], confirmed: false });
-                                      return;
-                                    }
-                                  }
-                                  handleSaveRepertoire(formData.repertoire, {
-                                    topNote: topNoteInput || null,
-                                    tessituraNote: tessituraOptionalInput || null,
-                                    dOverride: !topNoteInput && dOverrideChoice != null ? dOverrideChoice : null
-                                  });
-                                }}
-                                className="flex-1 py-1.5 rounded-full text-xs font-medium"
-                                style={{ background: C.curtain, color: "#FFFDF8", opacity: tessituraSaving || (!topNoteInput && dOverrideChoice == null) ? 0.5 : 1 }}>
-                                登録する
-                              </button>
-                              <button type="button" onClick={() => setRepertoireSkipped((prev) => ({ ...prev, [norm]: true }))}
-                                className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
-                                あとで
-                              </button>
-                            </div>
-                          </div>
-                        );
-                      })()}
-
 
                       <div>
                         <span className="text-sm font-medium block mb-2">話し声の使用量（歌以外でどれだけ喋ったか）</span>
@@ -5049,95 +5452,6 @@ export default function VocalTracker({ userId, userEmail }) {
                         </p>
                       </div>
 
-                      {formData.activityType === "休養" && (
-                        <div className="pt-2 border-t" style={{ borderColor: C.line }}>
-                          <p className="text-sm font-medium mb-2">{t("labelRestMethodsHeader")}</p>
-                          <div className="flex flex-wrap gap-2">
-                            {REST_METHODS.map((m) => (
-                              <Chip key={m} label={t(REST_METHOD_KEYS[m])} active={((formData.activityDetail || {}).restMethods || []).includes(m)}
-                                onClick={() => {
-                                  const current = (formData.activityDetail || {}).restMethods || [];
-                                  updateDetail({ restMethods: current.includes(m) ? current.filter((x) => x !== m) : [...current, m] });
-                                }} />
-                            ))}
-                          </div>
-                          {((formData.activityDetail || {}).restMethods || []).includes("その他") && (
-                            <input
-                              type="text"
-                              value={(formData.activityDetail || {}).restMethodOther || ""}
-                              placeholder={t("placeholderRestOtherExample")}
-                              onChange={(e) => updateDetail({ restMethodOther: e.target.value })}
-                              className="w-full rounded-lg border p-2 text-sm mt-2"
-                              style={{ borderColor: C.line, background: C.paper }}
-                            />
-                          )}
-                          <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                            {t("noteRestMethodsFull")}
-                          </p>
-                        </div>
-                      )}
-
-                      {formData.activityType === "自主練習" && (
-                        <div className="pt-2 border-t space-y-3" style={{ borderColor: C.line }}>
-                          <div>
-                            <label className="text-sm font-medium block mb-1.5">{t("labelPracticeMenu")}</label>
-                            <textarea value={(formData.activityDetail || {}).practiceMenu || ""} rows={2}
-                              placeholder={t("placeholderPracticeMenuExample")}
-                              onChange={(e) => updateDetail({ practiceMenu: e.target.value })}
-                              className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                          </div>
-                          <div>
-                            <label className="text-sm font-medium block mb-1.5">{t("labelPracticeResult")}</label>
-                            <textarea value={(formData.activityDetail || {}).practiceResult || ""} rows={2}
-                              placeholder={t("placeholderPracticeResult")}
-                              onChange={(e) => updateDetail({ practiceResult: e.target.value })}
-                              className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                          </div>
-                        </div>
-                      )}
-
-                      {formData.activityType === "レッスン" && (
-                        <div className="pt-2 border-t space-y-3" style={{ borderColor: C.line }}>
-                          <div>
-                            <label className="text-sm font-medium block mb-1.5">{t("labelTeacherNotes")}</label>
-                            <textarea value={(formData.activityDetail || {}).teacherNotes || ""} rows={3}
-                              placeholder={t("placeholderTeacherNotes")}
-                              onChange={(e) => updateDetail({ teacherNotes: e.target.value })}
-                              className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                          </div>
-                          <div>
-                            <label className="text-sm font-medium block mb-1.5">{t("labelLessonSummary")}</label>
-                            <textarea value={(formData.activityDetail || {}).lessonSummary || ""} rows={3}
-                              placeholder={t("placeholderLessonSummary")}
-                              onChange={(e) => updateDetail({ lessonSummary: e.target.value })}
-                              className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                          </div>
-                        </div>
-                      )}
-
-                      {formData.activityType === "リハーサル" && (
-                        <p className="text-xs pt-2 border-t" style={{ borderColor: C.line, color: C.inkSoft }}>
-                          {t("noteRehearsalHint")}
-                        </p>
-                      )}
-
-                      {formData.activityType === "本番" && (
-                        <div className="pt-2 border-t space-y-4" style={{ borderColor: C.line }}>
-                          <DynamicsSelector t={t} label={t("targetPerformance")} icon={Sparkles} value={formData.performanceQuality || 3}
-                            onChange={(v) => setFormData((f) => ({ ...f, performanceQuality: v }))} />
-                          <DynamicsSelector t={t} label={t("labelTalk")} icon={Sparkles} value={(formData.activityDetail || {}).talkQuality || 3}
-                            onChange={(v) => updateDetail({ talkQuality: v })} />
-                          <DynamicsSelector t={t} label={t("labelStageManner")} icon={Sparkles} value={(formData.activityDetail || {}).stageManner || 3}
-                            onChange={(v) => updateDetail({ stageManner: v })} />
-                          <div>
-                            <label className="text-sm font-medium block mb-1.5">{t("labelComment")}</label>
-                            <textarea value={(formData.activityDetail || {}).performanceComment || ""} rows={3}
-                              placeholder={t("placeholderPerformanceComment")}
-                              onChange={(e) => updateDetail({ performanceComment: e.target.value })}
-                              className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                          </div>
-                        </div>
-                      )}
                     </SectionCard>
 
                     <SectionCard title={t("sectionExercise")} icon={Dumbbell}>
@@ -5296,7 +5610,7 @@ export default function VocalTracker({ userId, userEmail }) {
                               <div className="flex items-center gap-1.5 text-xs mt-0.5 flex-wrap" style={{ color: C.inkSoft }}>
                                 <ActIcon size={12} />
                                 <span>{t((ACTIVITY_OPTIONS.find((a) => a.key === e.activityType) || {}).labelKey) || e.activityType}</span>
-                                {e.activityType === "本番" && e.performanceQuality && <span>・{t("targetPerformance")} {levelDynamic(e.performanceQuality)}</span>}
+                                {entryHasActivityKind(e, "本番") && e.performanceQuality && <span>・{t("targetPerformance")} {levelDynamic(e.performanceQuality)}</span>}
                                 {e.location && <span>・{e.location}</span>}
                               </div>
                               {e.mentalReason && (
@@ -5417,7 +5731,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         {t(p === "week" ? "periodWeek" : p === "month" ? "periodMonth" : p === "year" ? "periodYear" : p === "all" ? "periodAll" : "periodCustom")}
                       </button>
                     ))}
-                    {Object.values(entries).some((e) => e.activityType === "本番") && (
+                    {Object.values(entries).some((e) => entryHasActivityKind(e, "本番")) && (
                       <button type="button" onClick={() => setAnalysisPeriod("aroundPerformance")}
                         className="px-3.5 py-1.5 rounded-full text-xs font-medium"
                         style={{
