@@ -1606,9 +1606,9 @@ export default function VocalTracker({ userId, userEmail }) {
     return { hasEnoughData: true, total, components, daysCount: days.length };
   }, [entries]);
   const timeSeries = useMemo(() => {
-    const dates = Object.keys(entries).sort().slice(-30);
+    const dates = Object.keys(filteredEntries).sort();
     return dates.map((date) => {
-      const e = entries[date];
+      const e = filteredEntries[date];
       const w = e.weightKg || getLatestWeight(entries, date);
       const targets = computeNutritionTargets(w, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient);
       const calorieActual = (e.carbs || 0) * 4 + (e.protein || 0) * 4 + (e.fat || 0) * 9;
@@ -1631,7 +1631,7 @@ export default function VocalTracker({ userId, userEmail }) {
         activityColor: ACTIVITY_CHART_COLORS[e.activityType] || C.line
       };
     });
-  }, [entries, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient]);
+  }, [filteredEntries, entries, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient]);
   const locationStats = useMemo(() => {
     const byLoc = {};
     Object.values(filteredEntries).forEach((e) => {
