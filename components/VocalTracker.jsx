@@ -24,6 +24,8 @@ const SYMPTOM_OPTIONS = ["乾燥", "嗄れ", "痛み", "違和感", "鼻づま�
 const SYMPTOM_KEYS = { "乾燥": "symptomDry", "嗄れ": "symptomHoarse", "痛み": "symptomPain", "違和感": "symptomDiscomfort", "鼻づまり": "symptomStuffyNose", "咳": "symptomCough", "裏返り": "symptomBreak", "喉の張り感": "symptomTightness" };
 const DINNER_TAGS = ["揚げ物", "あっさり", "炭酸", "トマト系", "カフェイン", "アルコール"];
 const DINNER_TAG_KEYS = { "揚げ物": "dinnerFried", "あっさり": "dinnerLight", "炭酸": "dinnerCarbonated", "トマト系": "dinnerTomato", "カフェイン": "dinnerCaffeine", "アルコール": "dinnerAlcohol" };
+// lavoce-収集データ拡張案.md C-2: 服薬タグ。DINNER_TAGSと同じ複数選択タグの形式。
+const MEDICATION_OPTIONS = ["抗ヒスタミン薬", "吸入ステロイド", "経口避妊薬", "NSAIDs", "利尿薬"];
 // メンタルの大まかな枠（タップで選べる簡易入力）。自由記述の代わりではなく、併用できる選択肢として用意する。
 // 「心の余裕」の数値（1〜5）に応じて、表示する語群を切り替える。
 // low（1〜2・緊張寄り）／mid（3・ふつう）／high（4〜5・落ち着き寄り）の3段階。
@@ -315,20 +317,34 @@ function computeAbsoluteHumidity(tempC, rhPercent) {
   const es = 6.112 * Math.exp((17.67 * tempC) / (tempC + 243.5));
   return (216.7 * es * rhPercent / 100) / (273.15 + tempC);
 }
-// 声の予報（一般知見版）：活動種別ごとの発声負荷の重み
+// 07. 発声負荷バランス（ACWR）：活動種別ごとの重み。声の予報の「前日発声負荷」predictor でも
+// この正式な計算を使う（簡易プロキシではなく、指標設計図.md 07節の計算式そのもの）。
 const ACTIVITY_LOAD_WEIGHT = { "休養": 0, "自主練習": 1.0, "レッスン": 1.2, "リハーサル": 1.3, "本番": 1.6 };
-// 事前値 β₀（lavoce-指標設計図.md 01節より）。一般知見版なので、記録が少ないうちも
-// この係数だけで予報が成立する（個人化のリッジ回帰は将来のフェーズで追加）。
+// 1日分の発声負荷 L_d = 活動時間(分) × 種別重み + 運動記録の負荷（0.3 × 分 × 強度/3）
+function computeDailyLoad(entry) {
+  if (!entry) return 0;
+  const weight = ACTIVITY_LOAD_WEIGHT[entry.activityType] ?? 0;
+  const activityMinutes = typeof entry.activityDuration === "number" ? entry.activityDuration * 60 : 0;
+  const baseLoad = activityMinutes * weight;
+  const exerciseLoad = (entry.exercises || []).reduce((sum, x) => {
+    const minutes = Number(x.minutes) || 0;
+    const intensity = typeof x.intensity === "number" ? x.intensity : 3;
+    return sum + 0.3 * minutes * (intensity / 3);
+  }, 0);
+  return baseLoad + exerciseLoad;
+}
+// 事前値 β₀（lavoce-指標設計図.md 01節より）。記録が14日未満のときはこの値だけで予報する。
 const FORECAST_PRIORS = {
   sleepHours: 0.25, dinnerGap: 0.10, waterL: 0.15, ease: 0.20,
   alcohol: -0.40, prevLoad: -0.15, absHumidity: 0.02, prevThroat: 0.35
 };
+const FORECAST_KEYS = Object.keys(FORECAST_PRIORS);
 const FORECAST_FACTOR_LABELS = {
   sleepHours: "睡眠時間", dinnerGap: "夕食から就寝までの間隔", waterL: "水分量", ease: "心の余裕",
-  alcohol: "アルコール", prevLoad: "前日の発声負荷", absHumidity: "絶対湿度", prevThroat: "前日の喉の状態"
+  alcohol: "アルコール", prevLoad: "前日の発声負荷（ACWR）", absHumidity: "絶対湿度", prevThroat: "前日の喉の状態"
 };
-// 前日の記録から、予報モデルの説明変数を取り出す
-function extractForecastPredictors(prevEntry) {
+// 前日の記録から、予報モデルの説明変数を取り出す。prevAcwr は前日時点のACWR値（acwrSeriesから取得して渡す）。
+function extractForecastPredictors(prevEntry, prevAcwr) {
   if (!prevEntry) return null;
   const sleepHours = typeof prevEntry.sleepHours === "number" ? prevEntry.sleepHours : null;
   const dinnerGap = computeTimeGapHours(prevEntry.dinnerTime, prevEntry.bedtime);
@@ -336,29 +352,83 @@ function extractForecastPredictors(prevEntry) {
   const waterL = waterMl > 0 ? waterMl / 1000 : null;
   const ease = typeof prevEntry.ease === "number" ? prevEntry.ease : null;
   const alcohol = (prevEntry.dinnerTags || []).includes("アルコール") ? 1 : 0;
-  const loadWeight = ACTIVITY_LOAD_WEIGHT[prevEntry.activityType];
-  const prevLoad = (typeof prevEntry.activityDuration === "number" && loadWeight != null)
-    ? (prevEntry.activityDuration * loadWeight) / 1.5 // 1.5時間 ≒ 1正規化単位の目安
-    : null;
+  const prevLoad = typeof prevAcwr === "number" ? prevAcwr : null;
   const absHumidity = computeAbsoluteHumidity(prevEntry.temperature, prevEntry.humidity);
   const prevThroat = typeof prevEntry.throatCondition === "number" ? prevEntry.throatCondition : null;
   return { sleepHours, dinnerGap, waterL, ease, alcohol, prevLoad, absHumidity, prevThroat };
 }
-// ŷ = μ + Σ βⱼ(xⱼ − x̄ⱼ)。欠損した説明変数はその項を0（＝平均値で埋めたのと同じ）として無視する。
-function predictThroat(predictors, means, mu) {
+// ŷ = μ + Σ βⱼ(xⱼ − x̄ⱼ)。beta は β₀そのもの、または個人化後にブレンドした値を渡す。
+// 欠損した説明変数はその項を0（＝平均値で埋めたのと同じ）として無視する。
+function predictThroat(predictors, means, mu, beta) {
   if (!predictors) return null;
+  const coeffs = beta || FORECAST_PRIORS;
   let yhat = mu;
   let missingCount = 0;
-  Object.keys(FORECAST_PRIORS).forEach((k) => {
+  FORECAST_KEYS.forEach((k) => {
     const x = predictors[k];
     if (typeof x === "number" && typeof means[k] === "number") {
-      yhat += FORECAST_PRIORS[k] * (x - means[k]);
+      yhat += coeffs[k] * (x - means[k]);
     } else {
       missingCount += 1;
     }
   });
   return { yhat: Math.max(1, Math.min(5, yhat)), missingCount };
 }
+// ---- ここから、リッジ回帰（個人化）用の小さな行列演算ヘルパー ----
+function matTranspose(A) {
+  return A[0].map((_, j) => A.map((row) => row[j]));
+}
+function matMultiply(A, B) {
+  const result = [];
+  for (let i = 0; i < A.length; i++) {
+    const row = [];
+    for (let j = 0; j < B[0].length; j++) {
+      let sum = 0;
+      for (let k = 0; k < B.length; k++) sum += A[i][k] * B[k][j];
+      row.push(sum);
+    }
+    result.push(row);
+  }
+  return result;
+}
+function matVecMultiply(A, v) {
+  return A.map((row) => row.reduce((sum, val, j) => sum + val * v[j], 0));
+}
+// ガウス・ジョルダン法による正方行列の逆行列（部分ピボッティングつき）。
+// λ（リッジの正則化項）を対角に足した後に呼ぶため、実務上は特異行列になりにくい。
+function matInverse(A) {
+  const n = A.length;
+  const aug = A.map((row, i) => [...row, ...Array.from({ length: n }, (_, j) => (i === j ? 1 : 0))]);
+  for (let col = 0; col < n; col++) {
+    let pivotRow = col;
+    for (let r = col + 1; r < n; r++) {
+      if (Math.abs(aug[r][col]) > Math.abs(aug[pivotRow][col])) pivotRow = r;
+    }
+    [aug[col], aug[pivotRow]] = [aug[pivotRow], aug[col]];
+    const pivot = aug[col][col];
+    if (Math.abs(pivot) < 1e-9) return null;
+    for (let j = 0; j < 2 * n; j++) aug[col][j] /= pivot;
+    for (let r = 0; r < n; r++) {
+      if (r === col) continue;
+      const factor = aug[r][col];
+      for (let j = 0; j < 2 * n; j++) aug[r][j] -= factor * aug[col][j];
+    }
+  }
+  return aug.map((row) => row.slice(n));
+}
+// リッジ回帰: β̂ = (XᵀX + λI)⁻¹Xᵀy。X は標準化済み、y はセンタリング済みを渡すこと。
+function fitRidgeRegression(X, y, lambda) {
+  if (X.length === 0) return null;
+  const p = X[0].length;
+  const Xt = matTranspose(X);
+  const XtX = matMultiply(Xt, X);
+  for (let i = 0; i < p; i++) XtX[i][i] += lambda;
+  const XtXInv = matInverse(XtX);
+  if (!XtXInv) return null;
+  const Xty = Xt.map((row) => row.reduce((sum, val, k) => sum + val * y[k], 0));
+  return matVecMultiply(XtXInv, Xty);
+}
+// ---- リッジ回帰ヘルパー ここまで ----
 function pearson(xs, ys) {
   const n = xs.length;
   if (n < 3) return null;
@@ -413,6 +483,17 @@ function getLastLocation(entries, beforeDate) {
   const last = entries[dates[dates.length - 1]];
   return last && last.location ? last.location : "";
 }
+// lavoce-収集データ拡張案.md C-1: 指定した日が、直近の周期開始日から何日目かを計算する。
+// 周期開始日がまだ一度も記録されていなければ null を返す。
+function cycleDayForDate(dateISO, entries) {
+  const startDates = Object.keys(entries)
+    .filter((d) => d <= dateISO && entries[d] && entries[d].cycleStart)
+    .sort();
+  if (startDates.length === 0) return null;
+  const lastStart = startDates[startDates.length - 1];
+  const diffDays = Math.round((new Date(dateISO + "T00:00:00") - new Date(lastStart + "T00:00:00")) / 86400000);
+  return diffDays + 1;
+}
 function buildFormData(date, entries) {
   const existing = entries[date];
   if (existing) {
@@ -435,7 +516,9 @@ function buildFormData(date, entries) {
       bedtime: existing.bedtime || "",
       dinnerTime: existing.dinnerTime || "",
       dinnerTags: existing.dinnerTags || [],
-      loadDetail: existing.loadDetail || {}
+      loadDetail: existing.loadDetail || {},
+      cycleStart: existing.cycleStart || false,
+      medicationTags: existing.medicationTags || []
     };
   }
   return {
@@ -472,7 +555,9 @@ function buildFormData(date, entries) {
     weightKg: "",
     meals: [],
     exercises: [],
-    loadDetail: {}
+    loadDetail: {},
+    cycleStart: false,
+    medicationTags: []
   };
 }
 function computeBMI(weightKg, heightCm) {
@@ -623,7 +708,9 @@ function rowToEntry(row) {
     bedtime: row.bedtime || "",
     dinnerTime: row.dinner_time || "",
     dinnerTags: row.dinner_tags || [],
-    loadDetail: row.load_detail || {}
+    loadDetail: row.load_detail || {},
+    cycleStart: row.cycle_start || false,
+    medicationTags: row.medication_tags || []
   };
 }
 function numOrNull(v) {
@@ -692,7 +779,9 @@ function entryToRow(userId, e) {
     bedtime: e.bedtime || "",
     dinner_time: e.dinnerTime || "",
     dinner_tags: e.dinnerTags || [],
-    load_detail: e.loadDetail || {}
+    load_detail: e.loadDetail || {},
+    cycle_start: !!e.cycleStart,
+    medication_tags: e.medicationTags || []
   };
 }
 
@@ -1425,7 +1514,7 @@ export default function VocalTracker({ userId, userEmail }) {
         () =>
           supabase
             .from("profiles")
-            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, technical_goal, health_notes, vocal_profession")
+            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, technical_goal, health_notes, vocal_profession, track_cycle")
             .eq("id", userId)
             .single(),
         "プロフィール（羊の装備を含む）の取得"
@@ -1446,7 +1535,8 @@ export default function VocalTracker({ userId, userEmail }) {
           vocal_range_high: data.vocal_range_high || "",
           technical_goal: data.technical_goal || "",
           health_notes: data.health_notes || "",
-          vocal_profession: data.vocal_profession || "singer"
+          vocal_profession: data.vocal_profession || "singer",
+          track_cycle: data.track_cycle || false
         });
         setCharacterPointsSpent(data.character_points_spent || 0);
         setCharacterEquipped(data.character_equipped || {});
@@ -2194,8 +2284,38 @@ export default function VocalTracker({ userId, userEmail }) {
     return { z, T, n, position, topPercentPct, today: Math.round(todayEntry.score) };
   }, [dailyScoreSeries]);
 
-  // 01. 声の予報（一般知見版）：前夜の行動から翌朝の喉スコアを予測する。まだ個人化せず、
-  // 生理学的な一般知見（事前値 β₀）だけで予報する。記録が増えるほどの個人化は将来のフェーズで追加。
+  // 07. 発声負荷（ACWR）の日次系列。声の予報の「前日発声負荷」predictorにも使う。
+  // 記録のない日は L=0 として扱わず、前日のEWMAをそのまま引き継ぐ（休んだのか未記録なのか区別できないため）。
+  const acwrSeries = useMemo(() => {
+    const allDates = Object.keys(entries).sort();
+    const series = {};
+    if (allDates.length === 0) return series;
+    const firstDate = allDates[0];
+    const realToday = todayISO();
+    const lambdaA = 2 / (7 + 1);
+    const lambdaC = 2 / (28 + 1);
+    let A = null, C = null;
+    let d = firstDate;
+    let guard = 0;
+    while (d <= realToday && guard < 3660) { // 約10年分で打ち切る安全弁
+      const entry = entries[d];
+      if (entry) {
+        const L = computeDailyLoad(entry);
+        A = A == null ? L : lambdaA * L + (1 - lambdaA) * A;
+        C = C == null ? L : lambdaC * L + (1 - lambdaC) * C;
+        series[d] = { A, C, acwr: C > 0 ? A / C : null };
+      } else if (A != null && C != null) {
+        series[d] = { A, C, acwr: C > 0 ? A / C : null };
+      }
+      d = addDays(d, 1);
+      guard += 1;
+    }
+    return series;
+  }, [entries]);
+
+  // 01. 声の予報：前夜の行動から翌朝の喉スコアを予測する。
+  // 記録14日未満は一般知見（β₀）だけで予報し、14日以上たまったらリッジ回帰で
+  // その人自身の係数（β̂）を推定し、経験ベイズ縮約で β₀ とブレンドする（β = n/(n+k)·β̂ + k/(n+k)·β₀、k=20）。
   const forecastTrainingSet = useMemo(() => {
     const realToday = todayISO();
     const rows = [];
@@ -2206,33 +2326,78 @@ export default function VocalTracker({ userId, userEmail }) {
       if (!prevEntry) continue;
       const todayEntry = entries[d];
       const actual = todayEntry && typeof todayEntry.throatCondition === "number" ? todayEntry.throatCondition : null;
-      rows.push({ date: d, predictors: extractForecastPredictors(prevEntry), actual });
+      const prevAcwr = acwrSeries[prevD] ? acwrSeries[prevD].acwr : null;
+      rows.push({ date: d, predictors: extractForecastPredictors(prevEntry, prevAcwr), actual });
     }
     return rows;
-  }, [entries]);
+  }, [entries, acwrSeries]);
   const predictorMeans = useMemo(() => {
-    const keys = Object.keys(FORECAST_PRIORS);
     const means = {};
-    keys.forEach((k) => {
+    FORECAST_KEYS.forEach((k) => {
       const vals = forecastTrainingSet.map((r) => r.predictors && r.predictors[k]).filter((v) => typeof v === "number");
       means[k] = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
     });
     return means;
   }, [forecastTrainingSet]);
+  const predictorStds = useMemo(() => {
+    const stds = {};
+    FORECAST_KEYS.forEach((k) => {
+      const vals = forecastTrainingSet.map((r) => r.predictors && r.predictors[k]).filter((v) => typeof v === "number");
+      if (vals.length < 2) { stds[k] = 1; return; }
+      const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+      const variance = vals.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / vals.length;
+      stds[k] = Math.sqrt(variance) || 1;
+    });
+    return stds;
+  }, [forecastTrainingSet]);
   const throatMu = useMemo(() => {
     const vals = Object.keys(entries).sort().slice(-28).map((d) => entries[d].throatCondition).filter((v) => typeof v === "number");
     return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 3;
   }, [entries]);
+  // 個人化（リッジ回帰）。n（学習に使える件数）が14未満なら β̂=0（＝β₀のみ）とみなす。
+  const personalizedBeta = useMemo(() => {
+    const trainRows = forecastTrainingSet.filter((r) => r.actual != null && r.predictors);
+    const n = trainRows.length;
+    const k = 20;
+    const blendRatio = n / (n + k);
+    if (n < 14) {
+      return { beta: FORECAST_PRIORS, n, personalizationPct: 0 };
+    }
+    // 標準化: (x - 平均) / SD。欠損は0（＝平均で埋めたのと同じ）として扱う。
+    const X = trainRows.map((r) =>
+      FORECAST_KEYS.map((key) => {
+        const x = r.predictors[key];
+        if (typeof x !== "number" || predictorMeans[key] == null) return 0;
+        const std = predictorStds[key] > 1e-6 ? predictorStds[key] : 1;
+        return (x - predictorMeans[key]) / std;
+      })
+    );
+    const y = trainRows.map((r) => r.actual - throatMu);
+    const betaStd = fitRidgeRegression(X, y, 1.0);
+    if (!betaStd) {
+      return { beta: FORECAST_PRIORS, n, personalizationPct: 0 };
+    }
+    const betaHat = {};
+    FORECAST_KEYS.forEach((key, i) => {
+      const std = predictorStds[key] > 1e-6 ? predictorStds[key] : 1;
+      betaHat[key] = betaStd[i] / std;
+    });
+    const blended = {};
+    FORECAST_KEYS.forEach((key) => {
+      blended[key] = blendRatio * betaHat[key] + (1 - blendRatio) * FORECAST_PRIORS[key];
+    });
+    return { beta: blended, n, personalizationPct: Math.round(blendRatio * 100) };
+  }, [forecastTrainingSet, predictorMeans, predictorStds, throatMu]);
   const forecastResiduals = useMemo(() => {
     return forecastTrainingSet
       .map((r) => {
         if (r.actual == null) return null;
-        const pred = predictThroat(r.predictors, predictorMeans, throatMu);
+        const pred = predictThroat(r.predictors, predictorMeans, throatMu, personalizedBeta.beta);
         if (!pred) return null;
         return { date: r.date, actual: r.actual, yhat: pred.yhat, residual: r.actual - pred.yhat };
       })
       .filter((x) => x != null);
-  }, [forecastTrainingSet, predictorMeans, throatMu]);
+  }, [forecastTrainingSet, predictorMeans, throatMu, personalizedBeta]);
   const forecastResidualSD = useMemo(() => {
     if (forecastResiduals.length < 3) return 0.8; // データが少ないうちの初期の目安幅
     const vals = forecastResiduals.map((r) => r.residual);
@@ -2252,13 +2417,14 @@ export default function VocalTracker({ userId, userEmail }) {
     const yDate = addDays(realToday, -1);
     const prevEntry = entries[yDate];
     if (!prevEntry) return { hasData: false, yesterdayDate: yDate };
-    const predictors = extractForecastPredictors(prevEntry);
-    const pred = predictThroat(predictors, predictorMeans, throatMu);
+    const prevAcwr = acwrSeries[yDate] ? acwrSeries[yDate].acwr : null;
+    const predictors = extractForecastPredictors(prevEntry, prevAcwr);
+    const pred = predictThroat(predictors, predictorMeans, throatMu, personalizedBeta.beta);
     if (!pred) return { hasData: false, yesterdayDate: yDate };
     const intervalWidth = forecastResidualSD * (pred.missingCount > 0 ? 1.2 : 1);
-    const contributions = Object.keys(FORECAST_PRIORS)
+    const contributions = FORECAST_KEYS
       .filter((k) => typeof predictors[k] === "number" && typeof predictorMeans[k] === "number")
-      .map((k) => ({ key: k, label: FORECAST_FACTOR_LABELS[k], contribution: FORECAST_PRIORS[k] * (predictors[k] - predictorMeans[k]) }))
+      .map((k) => ({ key: k, label: FORECAST_FACTOR_LABELS[k], contribution: personalizedBeta.beta[k] * (predictors[k] - predictorMeans[k]) }))
       .sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution));
     return {
       hasData: true,
@@ -2266,9 +2432,11 @@ export default function VocalTracker({ userId, userEmail }) {
       yhat: pred.yhat,
       low: Math.max(1, pred.yhat - intervalWidth),
       high: Math.min(5, pred.yhat + intervalWidth),
-      topFactor: contributions[0] || null
+      topFactor: contributions[0] || null,
+      personalizationPct: personalizedBeta.personalizationPct,
+      trainN: personalizedBeta.n
     };
-  }, [entries, predictorMeans, throatMu, forecastResidualSD]);
+  }, [entries, acwrSeries, predictorMeans, throatMu, forecastResidualSD, personalizedBeta]);
   const forecastChartData = useMemo(() => {
     return forecastResiduals.slice(-14).map((r) => {
       const low = Math.max(1, r.yhat - forecastResidualSD);
@@ -2277,6 +2445,38 @@ export default function VocalTracker({ userId, userEmail }) {
     });
   }, [forecastResiduals, forecastResidualSD]);
   // ---- フェーズ2（02偏差値・01予報）用データ ここまで ----
+
+  // ---- lavoce-収集データ拡張案.md C-1: 周期と声・メンタルの傾向 用データ ----
+  // 周期日を4分割（1〜7/8〜14/15〜21/22日目以降）してグループ比較する。
+  const cycleGroupStats = useMemo(() => {
+    if (!profile.track_cycle) return [];
+    const buckets = {
+      "1〜7日目": { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 },
+      "8〜14日目": { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 },
+      "15〜21日目": { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 },
+      "22日目以降": { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 }
+    };
+    Object.keys(filteredEntries).forEach((d) => {
+      const day = cycleDayForDate(d, entries);
+      if (day == null) return;
+      const bucketKey = day <= 7 ? "1〜7日目" : day <= 14 ? "8〜14日目" : day <= 21 ? "15〜21日目" : "22日目以降";
+      const e = filteredEntries[d];
+      if (typeof e.throatCondition === "number") buckets[bucketKey].throatSum += e.throatCondition;
+      if (typeof e.voiceQuality === "number") buckets[bucketKey].voiceSum += e.voiceQuality;
+      if (typeof e.ease === "number") buckets[bucketKey].easeSum += e.ease;
+      buckets[bucketKey].n += 1;
+    });
+    return Object.entries(buckets)
+      .filter(([, s]) => s.n >= 2)
+      .map(([label, s]) => ({
+        label, n: s.n,
+        avgThroat: s.n ? s.throatSum / s.n : null,
+        avgVoice: s.n ? s.voiceSum / s.n : null,
+        avgEase: s.n ? s.easeSum / s.n : null
+      }));
+  }, [filteredEntries, entries, profile.track_cycle]);
+  const hasCycleData = useMemo(() => Object.values(entries).some((e) => e.cycleStart), [entries]);
+  // ---- 周期と声・メンタルの傾向 用データ ここまで ----
 
 
   // 装備・配置・ドラッグ移動は、その場ではデータベースに保存しない。
@@ -2420,7 +2620,8 @@ export default function VocalTracker({ userId, userEmail }) {
         vocal_range_high: profile.vocal_range_high || null,
         technical_goal: profile.technical_goal || null,
         health_notes: profile.health_notes || null,
-        vocal_profession: profile.vocal_profession || "singer"
+        vocal_profession: profile.vocal_profession || "singer",
+        track_cycle: !!profile.track_cycle
       })
       .eq("id", userId);
     setProfileSaveStatus(error ? "error" : "saved");
@@ -2827,6 +3028,33 @@ export default function VocalTracker({ userId, userEmail }) {
                         </div>
                       </div>
 
+                      {profile.sex === "女性" && (
+                        <div className="rounded-xl p-3 flex items-center justify-between gap-3" style={{ background: C.paper }}>
+                          <div>
+                            <p className="text-sm font-medium">月経周期を記録する</p>
+                            <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
+                              周期開始日を1タップで記録し、分析タブで声・メンタルとの関連を見られるようにします。任意（オプトイン）です。
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setProfile((p) => ({ ...p, track_cycle: !p.track_cycle }))}
+                            className="flex-shrink-0"
+                            style={{
+                              width: 44, height: 26, borderRadius: 999, position: "relative",
+                              background: profile.track_cycle ? C.curtain : C.line,
+                              transition: "background 0.15s"
+                            }}
+                          >
+                            <span style={{
+                              position: "absolute", top: 3, left: profile.track_cycle ? 21 : 3,
+                              width: 20, height: 20, borderRadius: 999, background: "#FFFDF8",
+                              transition: "left 0.15s"
+                            }} />
+                          </button>
+                        </div>
+                      )}
+
                       <div>
                         <label className="text-sm font-medium block mb-1.5">{t("labelVocalProfession")}</label>
                         <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("noteVocalProfession")}</p>
@@ -2901,6 +3129,55 @@ export default function VocalTracker({ userId, userEmail }) {
 
                       <NumberField label={t("labelTodayWeight")} icon={Scale} value={formData.weightKg ?? ""} step={0.1} min={20} max={200} suffix="kg"
                         onChange={(v) => setFormData((f) => ({ ...f, weightKg: v }))} />
+
+                      {profile.track_cycle && (
+                        <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                          <div className="flex items-center justify-between gap-3">
+                            <div>
+                              <p className="text-sm font-medium">月経周期</p>
+                              {(() => {
+                                const day = cycleDayForDate(selectedDate, entries);
+                                return (
+                                  <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
+                                    {formData.cycleStart
+                                      ? "この日を周期1日目として記録しています"
+                                      : day != null
+                                        ? `周期${day}日目`
+                                        : "まだ周期開始日が記録されていません"}
+                                  </p>
+                                );
+                              })()}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setFormData((f) => ({ ...f, cycleStart: !f.cycleStart }))}
+                              className="px-3 py-1.5 rounded-full text-xs font-medium flex-shrink-0"
+                              style={{
+                                background: formData.cycleStart ? C.curtain : C.card,
+                                color: formData.cycleStart ? "#FFFDF8" : C.inkSoft,
+                                border: `1px solid ${formData.cycleStart ? C.curtain : C.line}`
+                              }}
+                            >
+                              {formData.cycleStart ? "1日目を取り消す" : "今日を1日目にする"}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      <div>
+                        <span className="text-sm font-medium block mb-2">服薬（複数選択可）</span>
+                        <div className="flex flex-wrap gap-2">
+                          {MEDICATION_OPTIONS.map((m) => (
+                            <Chip key={m} label={m} active={(formData.medicationTags || []).includes(m)}
+                              onClick={() => setFormData((f) => ({
+                                ...f,
+                                medicationTags: (f.medicationTags || []).includes(m)
+                                  ? f.medicationTags.filter((x) => x !== m)
+                                  : [...(f.medicationTags || []), m]
+                              }))} />
+                          ))}
+                        </div>
+                      </div>
 
                       {profile.height_cm ? (
                         <div className="rounded-xl p-3 text-xs leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
@@ -3562,7 +3839,7 @@ export default function VocalTracker({ userId, userEmail }) {
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">声の予報</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                    前夜の行動から、今日の喉の状態（1〜5）を数値で予報します。まだ一般知見だけの予報ですが、記録が増えるほど精度が上がっていきます。
+                    前夜の行動から、今日の喉の状態（1〜5）を数値で予報します。記録が14日分たまると、あなた自身の傾向（回帰係数）を一般知見とブレンドして、少しずつ個人化していきます。
                   </p>
                   {!todayForecast.hasData ? (
                     <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
@@ -3589,6 +3866,11 @@ export default function VocalTracker({ userId, userEmail }) {
                           </div>
                         )}
                       </div>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        {todayForecast.personalizationPct > 0
+                          ? `記録${todayForecast.trainN}件をもとに、${todayForecast.personalizationPct}%個人化された式で予報しています。`
+                          : `まだ記録${todayForecast.trainN}件（14件で個人化が始まります）。一般知見のみの予報です。`}
+                      </p>
                       {todayForecast.topFactor && (
                         <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
                           {todayForecast.topFactor.label}が{todayForecast.topFactor.contribution >= 0 ? "良い方向に" : "厳しい方向に"}いちばん効いています。
@@ -4206,6 +4488,27 @@ export default function VocalTracker({ userId, userEmail }) {
                         </div>
                       ))}
                     </div>
+                  </div>
+                )}
+                {profile.track_cycle && hasCycleData && cycleGroupStats.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">周期と声・メンタルの傾向</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      記録した周期開始日をもとに、周期を4つに区切って声・メンタルの平均を比べています。
+                    </p>
+                    <div className="space-y-2">
+                      {cycleGroupStats.map((s) => (
+                        <div key={s.label} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                          <span className="font-medium">{s.label}</span>
+                          <span className="ff-mono" style={{ color: C.inkSoft }}>
+                            {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向であり、医学的な診断ではありません。件数が少ないうちは参考程度にご覧ください。
+                    </p>
                   </div>
                 )}
                 <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
