@@ -1311,6 +1311,10 @@ function entryToRow(userId, e) {
     .filter(Boolean)
     .join("、");
   const isRecoveryDay = activities.length === 0 && !!e.recovery;
+  // 本番ブロックはactivity.detail.performanceQualityに保存されるようになったため、
+  // 後方互換の日次フィールドはそこから導出する（複数の本番ブロックがあれば最初のものを採用）。
+  const performanceBlock = activities.find((a) => a.kind === "本番" && a.detail && a.detail.performanceQuality != null);
+  const derivedPerformanceQuality = performanceBlock ? performanceBlock.detail.performanceQuality : e.performanceQuality;
   return {
     user_id: userId,
     date: e.date,
@@ -1330,7 +1334,7 @@ function entryToRow(userId, e) {
     activity_detail: primary
       ? (primary.detail || {})
       : (isRecoveryDay ? { restMethods: e.recovery.methods || [], restMethodOther: e.recovery.note || "" } : (e.activityDetail || {})),
-    performance_quality: numOrNull(e.performanceQuality),
+    performance_quality: numOrNull(derivedPerformanceQuality),
     ease: numOrNull(e.ease),
     notes: e.notes,
     weight_kg: numOrNull(e.weightKg),
