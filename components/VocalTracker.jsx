@@ -24,6 +24,20 @@ const SYMPTOM_OPTIONS = ["乾燥", "嗄れ", "痛み", "違和感", "鼻づま�
 const SYMPTOM_KEYS = { "乾燥": "symptomDry", "嗄れ": "symptomHoarse", "痛み": "symptomPain", "違和感": "symptomDiscomfort", "鼻づまり": "symptomStuffyNose", "咳": "symptomCough", "裏返り": "symptomBreak", "喉の張り感": "symptomTightness" };
 const DINNER_TAGS = ["揚げ物", "あっさり", "炭酸", "トマト系", "カフェイン", "アルコール"];
 const DINNER_TAG_KEYS = { "揚げ物": "dinnerFried", "あっさり": "dinnerLight", "炭酸": "dinnerCarbonated", "トマト系": "dinnerTomato", "カフェイン": "dinnerCaffeine", "アルコール": "dinnerAlcohol" };
+// メンタルの大まかな枠（タップで選べる簡易入力）。自由記述の代わりではなく、併用できる選択肢として用意する。
+const MENTAL_TAG_OPTIONS = ["本番前の緊張", "疲労・過労", "睡眠不足", "人間関係", "体調不良", "準備不足への不安", "評価・期待のプレッシャー", "環境の変化", "私生活の悩み", "特に理由なし・良い状態"];
+const MENTAL_TAG_KEYS = {
+  "本番前の緊張": "mentalTagPrePerformance",
+  "疲労・過労": "mentalTagFatigue",
+  "睡眠不足": "mentalTagSleepLack",
+  "人間関係": "mentalTagRelationships",
+  "体調不良": "mentalTagPhysicalUnwell",
+  "準備不足への不安": "mentalTagUnderprepared",
+  "評価・期待のプレッシャー": "mentalTagPressure",
+  "環境の変化": "mentalTagEnvironmentChange",
+  "私生活の悩み": "mentalTagPersonalLife",
+  "特に理由なし・良い状態": "mentalTagGoodState"
+};
 
 const ACTIVITY_OPTIONS = [
   { key: "休養", icon: Moon, labelKey: "activityRest" },
@@ -257,6 +271,7 @@ function buildFormData(date, entries) {
       voiceMemo: existing.voiceMemo || "",
       weather: existing.weather || "",
       mentalReason: existing.mentalReason || "",
+      mentalTags: existing.mentalTags || [],
       meals: existing.meals || [],
       exercises: existing.exercises || [],
       voiceCheckins: existing.voiceCheckins || {},
@@ -300,6 +315,7 @@ function buildFormData(date, entries) {
     performanceQuality: null,
     ease: 3,
     mentalReason: "",
+    mentalTags: [],
     notes: "",
     weightKg: "",
     meals: [],
@@ -330,7 +346,7 @@ function newMealItem(slot = "朝食") {
 function buildFoodLibrary(entries, currentMeals) {
   const map = new Map();
   FOOD_PRESETS.forEach((f) => {
-    map.set(f.name, { name: f.name, reading: f.reading || null, i18n: f.i18n || null, category: f.category || null, carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber, isPreset: true, unit: f.unit || null, unitWeight: f.unitWeight || null, date: "0000-00-00" });
+    map.set(f.name, { name: f.name, reading: f.reading || null, i18n: f.i18n || null, category: f.category || null, nativeTerm: f.nativeTerm || null, carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber, isPreset: true, unit: f.unit || null, unitWeight: f.unitWeight || null, date: "0000-00-00" });
   });
   const consider = (meals, date) => {
     (meals || []).forEach((m) => {
@@ -445,6 +461,7 @@ function rowToEntry(row) {
     waterBySlot: row.water_by_slot || {},
     weather: row.weather || "",
     mentalReason: row.mental_reason || "",
+    mentalTags: row.mental_tags || [],
     throatSymptomsOther: row.throat_symptoms_other || "",
     voiceMemo: row.voice_memo || "",
     activityDetail: row.activity_detail || {},
@@ -513,6 +530,7 @@ function entryToRow(userId, e) {
     water_by_slot: e.waterBySlot || {},
     weather: e.weather || null,
     mental_reason: e.mentalReason || "",
+    mental_tags: e.mentalTags || [],
     throat_symptoms_other: e.throatSymptomsOther || "",
     voice_memo: e.voiceMemo || "",
     activity_detail: e.activityDetail || {},
@@ -875,7 +893,9 @@ function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood, 
         // これにより、例えば英語表示中に "chicken" と入力しても、
         // 日本語名や読み仮名にその文字が無い品目でも見つかるようになる。
         const i18nNorm = f.i18n && language && f.i18n[language] ? normalizeForSearch(f.i18n[language]) : "";
-        if (nameNorm.includes(q) || (readingNorm && readingNorm.includes(q)) || (i18nNorm && i18nNorm.includes(q))) return true;
+        // 原語表記（中国語の簡体字、イタリア語など）は、表示言語に関わらず常に検索対象にする。
+        const nativeNorm = f.nativeTerm ? normalizeForSearch(f.nativeTerm) : "";
+        if (nameNorm.includes(q) || (readingNorm && readingNorm.includes(q)) || (i18nNorm && i18nNorm.includes(q)) || (nativeNorm && nativeNorm.includes(q))) return true;
         if (f.category && matchedCategories.includes(f.category)) return true;
         return groupKeywords.some((kw) => nameNorm.includes(kw) || (readingNorm && readingNorm.includes(kw)));
       }).slice(0, 8)
@@ -1354,7 +1374,7 @@ export default function VocalTracker({ userId, userEmail }) {
       .filter((d) => typeof filteredEntries[d].ease === "number" && filteredEntries[d].ease <= 2)
       .sort()
       .reverse()
-      .map((d) => ({ date: d, ease: filteredEntries[d].ease, mentalReason: filteredEntries[d].mentalReason || "" }));
+      .map((d) => ({ date: d, ease: filteredEntries[d].ease, mentalReason: filteredEntries[d].mentalReason || "", mentalTags: filteredEntries[d].mentalTags || [] }));
   }, [filteredEntries]);
 
   const correlationResults = useMemo(() => {
@@ -1435,6 +1455,68 @@ export default function VocalTracker({ userId, userEmail }) {
         avgEase: s.n ? s.easeSum / s.n : null
       }))
       .sort((a, b) => (b.avgVoice || 0) - (a.avgVoice || 0));
+  }, [entries]);
+  // 声の調子スコア（過去2週間の平均から算出する、100点満点の参考指標）。
+  // 医学的な診断値ではなく、これまで記録してきた項目を独自の重み付けで統合したもの。
+  // 各項目の内訳も併せて返し、ブラックボックスにしない。
+  const vocalConditionScore = useMemo(() => {
+    const realToday = todayISO();
+    const startDate = addDays(realToday, -13);
+    const days = [];
+    for (let i = 0; i < 14; i++) {
+      const d = addDays(startDate, i);
+      if (entries[d]) days.push(entries[d]);
+    }
+    if (days.length < 3) return { hasEnoughData: false, daysCount: days.length };
+
+    const avg = (arr) => (arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null);
+
+    const throatVals = days.map((e) => e.throatCondition).filter((v) => typeof v === "number");
+    const voiceVals = days.map((e) => e.voiceQuality).filter((v) => typeof v === "number");
+    const easeVals = days.map((e) => e.ease).filter((v) => typeof v === "number");
+    const sleepHoursVals = days.map((e) => e.sleepHours).filter((v) => typeof v === "number");
+    const sleepQualityVals = days.map((e) => e.sleepQuality).filter((v) => typeof v === "number");
+    const waterVals = days
+      .map((e) => Object.values(e.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0))
+      .filter((v) => v > 0);
+
+    const throatScore = throatVals.length ? (avg(throatVals) / 5) * 100 : null;
+    const voiceScore = voiceVals.length ? (avg(voiceVals) / 5) * 100 : null;
+    const easeScore = easeVals.length ? (avg(easeVals) / 5) * 100 : null;
+
+    let sleepHoursScore = null;
+    if (sleepHoursVals.length) {
+      const h = avg(sleepHoursVals);
+      if (h >= 7 && h <= 9) sleepHoursScore = 100;
+      else if (h < 7) sleepHoursScore = Math.max(0, 100 - (7 - h) * 20);
+      else sleepHoursScore = Math.max(0, 100 - (h - 9) * 15);
+    }
+    const sleepQualityScore = sleepQualityVals.length ? (avg(sleepQualityVals) / 5) * 100 : null;
+    let sleepScore = null;
+    if (sleepHoursScore != null && sleepQualityScore != null) sleepScore = (sleepHoursScore + sleepQualityScore) / 2;
+    else sleepScore = sleepHoursScore ?? sleepQualityScore;
+
+    const symptomDays = days.filter((e) => (e.throatSymptoms || []).length > 0).length;
+    const symptomScore = 100 - (symptomDays / days.length) * 100;
+
+    const waterScore = waterVals.length ? Math.min(100, (avg(waterVals) / 2000) * 100) : null;
+
+    const components = [
+      { key: "throat", labelKey: "scoreCompThroat", score: throatScore, weight: 25 },
+      { key: "voice", labelKey: "scoreCompVoice", score: voiceScore, weight: 20 },
+      { key: "sleep", labelKey: "scoreCompSleep", score: sleepScore, weight: 20 },
+      { key: "mental", labelKey: "scoreCompMental", score: easeScore, weight: 15 },
+      { key: "symptom", labelKey: "scoreCompSymptom", score: symptomScore, weight: 10 },
+      { key: "water", labelKey: "scoreCompWater", score: waterScore, weight: 10 }
+    ];
+
+    const validComponents = components.filter((c) => c.score != null);
+    const totalWeight = validComponents.reduce((s, c) => s + c.weight, 0);
+    if (totalWeight === 0) return { hasEnoughData: false, daysCount: days.length };
+    const weightedSum = validComponents.reduce((s, c) => s + c.score * c.weight, 0);
+    const total = Math.round(weightedSum / totalWeight);
+
+    return { hasEnoughData: true, total, components, daysCount: days.length };
   }, [entries]);
   const timeSeries = useMemo(() => {
     const dates = Object.keys(entries).sort().slice(-30);
@@ -2470,8 +2552,26 @@ export default function VocalTracker({ userId, userEmail }) {
                     <SectionCard title={t("sectionMental")} icon={HeartHandshake}>
                       <DotSelector label={t("labelMentalEase")} icon={HeartHandshake} value={formData.ease} lowLabel={t("lowTension")} highLabel={t("highCalm")}
                         onChange={(v) => setFormData((f) => ({ ...f, ease: v }))} />
+                      <div style={{ background: "#ffe066", color: "#000", padding: "10px", fontWeight: "bold", fontSize: "14px", border: "3px solid red" }}>
+                        DEBUG: タグ数={MENTAL_TAG_OPTIONS.length} / formData.mentalTags={JSON.stringify(formData.mentalTags)}
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium block mb-2">{t("labelMentalTags")}</span>
+                        <div className="flex flex-wrap gap-2">
+                          {MENTAL_TAG_OPTIONS.map((tag) => (
+                            <Chip key={tag} label={t(MENTAL_TAG_KEYS[tag])} active={(formData.mentalTags || []).includes(tag)}
+                              onClick={() => setFormData((f) => ({
+                                ...f,
+                                mentalTags: (f.mentalTags || []).includes(tag)
+                                  ? f.mentalTags.filter((x) => x !== tag)
+                                  : [...(f.mentalTags || []), tag]
+                              }))} />
+                          ))}
+                        </div>
+                      </div>
                       <div>
                         <label className="text-sm font-medium block mb-1.5">{t("labelMentalReason")}</label>
+                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{t("noteMentalReasonOptional")}</p>
                         <textarea value={formData.mentalReason} rows={3} placeholder={t("placeholderMentalReasonText")}
                           onChange={(e) => setFormData((f) => ({ ...f, mentalReason: e.target.value }))}
                           className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
@@ -2607,6 +2707,41 @@ export default function VocalTracker({ userId, userEmail }) {
 
             {activeTab === "analysis" && (
               <div className="space-y-5">
+                <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleVocalScore")}</h3>
+                  <p className="text-xs mb-4" style={{ color: C.inkSoft }}>{t("noteVocalScore")}</p>
+                  {!vocalConditionScore.hasEnoughData ? (
+                    <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
+                      {t("noteVocalScoreNotEnough").replace("{count}", vocalConditionScore.daysCount)}
+                    </p>
+                  ) : (
+                    <>
+                      <div className="flex items-end gap-2 mb-4">
+                        <span className="ff-display italic" style={{ fontSize: "3.4rem", lineHeight: 1, color: levelColor(vocalConditionScore.total / 20) }}>
+                          {vocalConditionScore.total}
+                        </span>
+                        <span className="text-sm mb-1.5" style={{ color: C.inkSoft }}>/ 100</span>
+                      </div>
+                      <div className="space-y-2">
+                        {vocalConditionScore.components.map((c) => (
+                          <div key={c.key}>
+                            <div className="flex items-center justify-between text-xs mb-1">
+                              <span style={{ color: C.inkSoft }}>{t(c.labelKey)}</span>
+                              <span className="ff-mono" style={{ color: C.ink }}>{Math.round(c.score)}</span>
+                            </div>
+                            <div className="h-1.5 rounded-full overflow-hidden" style={{ background: C.paper }}>
+                              <div className="h-full rounded-full" style={{ width: `${c.score}%`, background: C.gold }} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-xs mt-4" style={{ color: C.inkSoft }}>
+                        {t("noteVocalScoreDisclaimer")}
+                      </p>
+                    </>
+                  )}
+                </div>
+
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-3">{t("titleAnalysisPeriod")}</h3>
                   <div className="flex gap-2 flex-wrap">
@@ -2750,6 +2885,50 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   </div>
                 )}
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleMentalTrend")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteMentalTrend")}</p>
+                  <div style={{ width: "100%", height: 200 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 11, fill: C.inkSoft }} />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <Line type="monotone" dataKey="ease" name={t("labelMentalEase")} stroke={C.rust} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                  {lowEaseEntries.length > 0 && (
+                    <div className="mt-4 pt-3 border-t" style={{ borderColor: C.line }}>
+                      <p className="text-xs font-medium mb-2">{t("labelLowEaseReview")}</p>
+                      <div>
+                        {lowEaseEntries.slice(0, 10).map((e) => (
+                          <div key={e.date} className="text-xs py-2 border-t first:border-t-0" style={{ borderColor: C.line }}>
+                            <div className="flex items-center justify-between">
+                              <span className="ff-mono cursor-pointer" style={{ color: C.inkSoft }} onClick={() => { setSelectedDate(e.date); setActiveTab("today"); }}>
+                                {formatDateLabel(e.date, language)}
+                              </span>
+                              <span className="ff-mono" style={{ color: C.rust }}>{t("labelMentalEase")} {e.ease}</span>
+                            </div>
+                            {(e.mentalTags || []).length > 0 && (
+                              <div className="flex flex-wrap gap-1 mt-1.5">
+                                {e.mentalTags.map((tag) => (
+                                  <span key={tag} className="px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.ink, fontSize: 11 }}>
+                                    {t(MENTAL_TAG_KEYS[tag]) || tag}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                            {e.mentalReason && <p className="mt-1.5" style={{ color: C.ink }}>{e.mentalReason}</p>}
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-xs mt-3" style={{ color: C.inkSoft }}>{t("noteLowEaseReviewCare")}</p>
+                    </div>
+                  )}
+                </div>
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleWeightTrend")}</h3>
