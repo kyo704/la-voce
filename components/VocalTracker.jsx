@@ -4746,9 +4746,12 @@ export default function VocalTracker({ userId, userEmail }) {
 
                             <details className="text-xs mb-2" open={showTessituraAccordion} onToggle={(e) => setShowTessituraAccordion(e.target.open)}>
                               <summary className="cursor-pointer" style={{ color: C.inkSoft }}>テッシトゥーラも入力する（任意）</summary>
+                              <p className="mt-1.5 mb-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
+                                最高音とは別のものです。一瞬だけ出る高い音ではなく、<strong>曲全体を通して「だいたいこの高さで歌い続ける」中心の音域</strong>を指します。分かる場合だけで大丈夫です（空欄なら最高音から自動で推定します）。
+                              </p>
                               <input type="text" value={tessituraOptionalInput} placeholder={t("placeholderNoteExample")}
                                 onChange={(e) => setTessituraOptionalInput(e.target.value)}
-                                className="w-full rounded-lg border p-2 text-sm mt-1.5" style={{ borderColor: C.line, background: C.card }} />
+                                className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.card }} />
                             </details>
 
                             {dOverrideChoice === null && !topNoteInput && (
