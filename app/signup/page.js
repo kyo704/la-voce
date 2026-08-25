@@ -3,7 +3,7 @@ import { C } from "@/lib/tokens";
 import SignupForm from "@/components/SignupForm";
 
 const NATIVE_T = {
-  title: { ja: "ご登録について", en: "About Signing Up", zh: "关于注册", it: "Informazioni sulla registrazione", de: "Zur Registrierung", fr: "À propos de l'inscription", es: "Sobre el registro", ko: "가입 안내" },
+  title: { ja: "ご登録について", en: "About Signing Up", zh: "关于注册", it: "Informazioni sulla registrazione", de: "Zur Registrierung", fr: "À propos de l'inscription", es: "Sobre el registro", ko: "가입 안내", ru: "О регистрации" },
   body: {
     ja: "新規のご登録はウェブサイトから行っていただけます。登録後、このアプリでログインしてご利用いただけます。",
     en: "New sign-ups can be completed on the website. After registering, you can log in and use this app.",
@@ -12,10 +12,10 @@ const NATIVE_T = {
     de: "Neuanmeldungen erfolgen über die Website. Nach der Registrierung kannst du dich in dieser App anmelden und sie nutzen.",
     fr: "Les nouvelles inscriptions se font sur le site web. Après votre inscription, vous pourrez vous connecter et utiliser cette application.",
     es: "Los nuevos registros se realizan en el sitio web. Después de registrarte, podrás iniciar sesión y usar esta aplicación.",
-    ko: "신규 가입은 웹사이트에서 진행해 주세요. 가입 후에는 이 앱에서 로그인하여 이용하실 수 있습니다."
+    ko: "신규 가입은 웹사이트에서 진행해 주세요. 가입 후에는 이 앱에서 로그인하여 이용하실 수 있습니다.", ru: "Новую регистрацию можно пройти на сайте. После регистрации вы сможете войти и пользоваться этим приложением."
   }
 };
-const NATIVE_LANG_CODES = ["ja", "en", "zh", "it", "de", "fr", "es", "ko"];
+const NATIVE_LANG_CODES = ["ja", "en", "zh", "it", "de", "fr", "es", "ko", "ru"];
 
 export default function SignupPage({ searchParams }) {
   // ネイティブアプリ内では新規登録フォームを表示しない
