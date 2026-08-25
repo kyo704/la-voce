@@ -1405,6 +1405,17 @@ export default function VocalTracker({ userId, userEmail }) {
       .reverse()
       .map((d) => ({ date: d, ease: filteredEntries[d].ease, mentalReason: filteredEntries[d].mentalReason || "", mentalTags: filteredEntries[d].mentalTags || [] }));
   }, [filteredEntries]);
+  // こころの落ち着き度の推移グラフ用: timeSeries（常に直近30日固定）ではなく、
+  // 分析タブで選んだ期間（週/月/年/カスタム）に合わせたease専用の時系列データ。
+  const easeTimeSeries = useMemo(() => {
+    return Object.keys(filteredEntries)
+      .sort()
+      .map((d) => ({
+        date: d.slice(5),
+        fullDate: d,
+        ease: typeof filteredEntries[d].ease === "number" ? filteredEntries[d].ease : null
+      }));
+  }, [filteredEntries]);
 
   const correlationResults = useMemo(() => {
     if (analysisTarget === "performance") {
@@ -2918,7 +2929,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteMentalTrend")}</p>
                   <div style={{ width: "100%", height: 200 }}>
                     <ResponsiveContainer>
-                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                      <LineChart data={easeTimeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
                         <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
                         <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 11, fill: C.inkSoft }} />
