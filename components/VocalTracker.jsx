@@ -6,7 +6,7 @@ import {
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
   Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot, MessageCircle, Home,
   Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe, Lock,
-  Volume2, Plane
+  Volume2, Plane, AudioWaveform, Timer, MessageSquare
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -332,7 +332,11 @@ function computeDailyLoad(entry) {
     const intensity = typeof x.intensity === "number" ? x.intensity : 3;
     return sum + 0.3 * minutes * (intensity / 3);
   }, 0);
-  return baseLoad + exerciseLoad;
+  // lavoce-収集データ拡張案.md A-2: 話し声の使用量。歌っていない時間の声の使用も発声負荷に加算する。
+  // 「話し声2（よく喋った）＝+45分相当」を基準に、レベルに比例させる。騒がしい場所では1.3倍。
+  const speakingLevel = typeof entry.speakingLevel === "number" ? entry.speakingLevel : 0;
+  const speakingLoad = speakingLevel * 22.5 * (entry.noisyEnvironment ? 1.3 : 1);
+  return baseLoad + exerciseLoad + speakingLoad;
 }
 // 事前値 β₀（lavoce-指標設計図.md 01節より）。記録が14日未満のときはこの値だけで予報する。
 const FORECAST_PRIORS = {
@@ -522,7 +526,12 @@ function buildFormData(date, entries) {
       medicationTags: existing.medicationTags || [],
       ambientNoiseDb: existing.ambientNoiseDb ?? "",
       flightHours: existing.flightHours ?? "",
-      jetlagHours: existing.jetlagHours ?? ""
+      jetlagHours: existing.jetlagHours ?? "",
+      pianissimoHighNote: existing.pianissimoHighNote || "",
+      pianissimoOnsetDelay: existing.pianissimoOnsetDelay || false,
+      speakingLevel: existing.speakingLevel ?? null,
+      noisyEnvironment: existing.noisyEnvironment || false,
+      cppsValue: existing.cppsValue ?? ""
     };
   }
   return {
@@ -564,7 +573,12 @@ function buildFormData(date, entries) {
     medicationTags: [],
     ambientNoiseDb: "",
     flightHours: "",
-    jetlagHours: ""
+    jetlagHours: "",
+    pianissimoHighNote: "",
+    pianissimoOnsetDelay: false,
+    speakingLevel: null,
+    noisyEnvironment: false,
+    cppsValue: ""
   };
 }
 function computeBMI(weightKg, heightCm) {
@@ -720,7 +734,12 @@ function rowToEntry(row) {
     medicationTags: row.medication_tags || [],
     ambientNoiseDb: row.ambient_noise_db,
     flightHours: row.flight_hours,
-    jetlagHours: row.jetlag_hours
+    jetlagHours: row.jetlag_hours,
+    pianissimoHighNote: row.pianissimo_high_note || "",
+    pianissimoOnsetDelay: row.pianissimo_onset_delay || false,
+    speakingLevel: row.speaking_level,
+    noisyEnvironment: row.noisy_environment || false,
+    cppsValue: row.cpps_value
   };
 }
 function numOrNull(v) {
@@ -777,6 +796,147 @@ async function measureAmbientNoise(durationMs = 2000) {
     stream.getTracks().forEach((track) => track.stop());
   }
 }
+// ---- lavoce-収集データ拡張案.md A-3: CPPS（平滑化ケプストラムピーク突出度）計算用のDSP一式 ----
+// 基数2クーリー・タッキーFFT（in-place）。fftSize は2の累乗である必要がある。
+function fftInPlace(real, imag) {
+  const n = real.length;
+  for (let i = 1, j = 0; i < n; i++) {
+    let bit = n >> 1;
+    for (; j & bit; bit >>= 1) j ^= bit;
+    j ^= bit;
+    if (i < j) {
+      [real[i], real[j]] = [real[j], real[i]];
+      [imag[i], imag[j]] = [imag[j], imag[i]];
+    }
+  }
+  for (let len = 2; len <= n; len <<= 1) {
+    const ang = (-2 * Math.PI) / len;
+    const wr0 = Math.cos(ang), wi0 = Math.sin(ang);
+    for (let i = 0; i < n; i += len) {
+      let curWr = 1, curWi = 0;
+      for (let j = 0; j < len / 2; j++) {
+        const ur = real[i + j], ui = imag[i + j];
+        const half = i + j + len / 2;
+        const vr = real[half] * curWr - imag[half] * curWi;
+        const vi = real[half] * curWi + imag[half] * curWr;
+        real[i + j] = ur + vr; imag[i + j] = ui + vi;
+        real[half] = ur - vr; imag[half] = ui - vi;
+        const nextWr = curWr * wr0 - curWi * wi0;
+        const nextWi = curWr * wi0 + curWi * wr0;
+        curWr = nextWr; curWi = nextWi;
+      }
+    }
+  }
+}
+function hannWindow(n) {
+  const w = new Float64Array(n);
+  for (let i = 0; i < n; i++) w[i] = 0.5 - 0.5 * Math.cos((2 * Math.PI * i) / (n - 1));
+  return w;
+}
+// 1フレーム分のCPP（ケプストラムピーク突出度、dB）を計算する。
+// ①窓かけ済みフレームをFFT → 対数振幅スペクトル(dB) → それを再度FFTしてケプストラムを得る
+// ②ケプストラム上で、想定F0範囲（60〜400Hz）に対応するクフレンシー区間の最大値を探す
+// ③その区間全体に回帰直線（ベースライン）をあてはめ、ピークとベースラインの差（突出度）を返す
+function computeCPPForFrame(windowedFrame, sampleRate, fftSize) {
+  const real = new Float64Array(fftSize);
+  const imag = new Float64Array(fftSize);
+  for (let i = 0; i < fftSize; i++) real[i] = windowedFrame[i];
+  fftInPlace(real, imag);
+  const logMag = new Float64Array(fftSize);
+  for (let i = 0; i < fftSize; i++) {
+    const mag = Math.sqrt(real[i] * real[i] + imag[i] * imag[i]);
+    logMag[i] = 20 * Math.log10(mag + 1e-6);
+  }
+  const cepReal = new Float64Array(fftSize);
+  const cepImag = new Float64Array(fftSize);
+  for (let i = 0; i < fftSize; i++) cepReal[i] = logMag[i];
+  fftInPlace(cepReal, cepImag);
+  // fftInPlace は正規化しない生のDFTのため、逆変換相当のここでは 1/N を掛けて正規化する。
+  for (let i = 0; i < fftSize; i++) cepReal[i] /= fftSize;
+  const minQuefBin = Math.max(2, Math.round(sampleRate / 400)); // 400Hzに相当する最短周期
+  const maxQuefBin = Math.min(Math.floor(fftSize / 2) - 1, Math.round(sampleRate / 60)); // 60Hzに相当する最長周期
+  if (maxQuefBin <= minQuefBin) return null;
+  let peakIdx = minQuefBin, peakVal = -Infinity;
+  for (let i = minQuefBin; i <= maxQuefBin; i++) {
+    if (cepReal[i] > peakVal) { peakVal = cepReal[i]; peakIdx = i; }
+  }
+  const n = maxQuefBin - minQuefBin + 1;
+  let xMean = 0, yMean = 0;
+  for (let i = minQuefBin; i <= maxQuefBin; i++) { xMean += i; yMean += cepReal[i]; }
+  xMean /= n; yMean /= n;
+  let num = 0, den = 0;
+  for (let i = minQuefBin; i <= maxQuefBin; i++) {
+    num += (i - xMean) * (cepReal[i] - yMean);
+    den += (i - xMean) * (i - xMean);
+  }
+  const slope = den !== 0 ? num / den : 0;
+  const intercept = yMean - slope * xMean;
+  const baselineAtPeak = intercept + slope * peakIdx;
+  return peakVal - baselineAtPeak;
+}
+// 録音全体からCPPS（フレームごとのCPPを時間方向に平滑化=平均した値）を求める。
+function computeCPPS(samples, sampleRate) {
+  const fftSize = 2048;
+  const hop = 1024;
+  const win = hannWindow(fftSize);
+  const cppValues = [];
+  for (let start = 0; start + fftSize <= samples.length; start += hop) {
+    const frame = new Float64Array(fftSize);
+    let energy = 0;
+    for (let i = 0; i < fftSize; i++) {
+      frame[i] = samples[start + i] * win[i];
+      energy += frame[i] * frame[i];
+    }
+    const rms = Math.sqrt(energy / fftSize);
+    if (rms < 0.005) continue; // 無音に近いフレームは声が乗っていないと判断して除外
+    const cpp = computeCPPForFrame(frame, sampleRate, fftSize);
+    if (cpp != null && Number.isFinite(cpp)) cppValues.push(cpp);
+  }
+  if (cppValues.length === 0) return null;
+  return cppValues.reduce((a, b) => a + b, 0) / cppValues.length;
+}
+// マイクからdurationMsぶん録音し、Blobとして返す。
+async function recordAudioBlob(durationMs) {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    throw new Error("このブラウザではマイクを使用できません");
+  }
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  try {
+    const recorder = new MediaRecorder(stream);
+    const chunks = [];
+    recorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) chunks.push(e.data); };
+    const stopped = new Promise((resolve) => { recorder.onstop = resolve; });
+    recorder.start();
+    await new Promise((resolve) => setTimeout(resolve, durationMs));
+    recorder.stop();
+    await stopped;
+    return new Blob(chunks, { type: recorder.mimeType || "audio/webm" });
+  } finally {
+    stream.getTracks().forEach((track) => track.stop());
+  }
+}
+// 録音Blobを、解析可能な生のPCMサンプル列（Float32Array）に変換する。
+async function decodeAudioBlob(blob) {
+  const arrayBuffer = await blob.arrayBuffer();
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  const audioContext = new AudioCtx();
+  try {
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+    return { samples: audioBuffer.getChannelData(0), sampleRate: audioBuffer.sampleRate };
+  } finally {
+    await audioContext.close();
+  }
+}
+// 「あー」を録音してCPPSを算出する、一連の流れをまとめた関数。
+// 録音データ自体（音声そのもの）はどこにも保存せず、数値化した後は破棄する。
+async function recordAndAnalyzeCPPS(durationMs = 5000) {
+  const blob = await recordAudioBlob(durationMs);
+  const { samples, sampleRate } = await decodeAudioBlob(blob);
+  const cpps = computeCPPS(samples, sampleRate);
+  if (cpps == null) throw new Error("声が十分に録音できませんでした。もう一度お試しください。");
+  return Math.round(cpps * 10) / 10;
+}
+// ---- CPPS計算用DSP ここまで ----
 // 前日の記録から、声のコンディションに影響しやすい要因を抽出する。
 // flagKey は「今日」タブの短い警告表示に、explainKey は分析タブの理論的な解説文に対応する。
 function computeConditionFlags(y) {
@@ -836,7 +996,12 @@ function entryToRow(userId, e) {
     medication_tags: e.medicationTags || [],
     ambient_noise_db: numOrNull(e.ambientNoiseDb),
     flight_hours: numOrNull(e.flightHours),
-    jetlag_hours: numOrNull(e.jetlagHours)
+    jetlag_hours: numOrNull(e.jetlagHours),
+    pianissimo_high_note: e.pianissimoHighNote || "",
+    pianissimo_onset_delay: !!e.pianissimoOnsetDelay,
+    speaking_level: numOrNull(e.speakingLevel),
+    noisy_environment: !!e.noisyEnvironment,
+    cpps_value: numOrNull(e.cppsValue)
   };
 }
 
@@ -1482,6 +1647,8 @@ export default function VocalTracker({ userId, userEmail }) {
   const [toastMessage, setToastMessage] = useState(null);
   const [noiseMeasuring, setNoiseMeasuring] = useState(false);
   const [noiseError, setNoiseError] = useState("");
+  const [cppsRecording, setCppsRecording] = useState(false);
+  const [cppsError, setCppsError] = useState("");
   const [language, setLanguage] = useState("ja");
   const [viewMonth, setViewMonth] = useState(() => {
     const d = new Date();
@@ -1936,8 +2103,10 @@ export default function VocalTracker({ userId, userEmail }) {
         resonanceScore: typeof e.resonanceScore === "number" ? e.resonanceScore : null,
         wakeMidi: noteToMidi(e.wakeNote),
         routineMidi: noteToMidi(e.routineNote),
+        pianissimoMidi: noteToMidi(e.pianissimoHighNote),
         wakeNoteLabel: e.wakeNote || null,
         routineNoteLabel: e.routineNote || null,
+        pianissimoNoteLabel: e.pianissimoHighNote || null,
         activityType: e.activityType || null,
         activityColor: ACTIVITY_CHART_COLORS[e.activityType] || C.line
       };
@@ -2949,6 +3118,20 @@ export default function VocalTracker({ userId, userEmail }) {
                             className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                         </div>
                       </div>
+                      <div>
+                        <label className="text-sm font-medium block mb-1.5">pp（極弱声）で出せた最高音</label>
+                        <input type="text" value={formData.pianissimoHighNote} placeholder={t("placeholderNoteExample")}
+                          onChange={(e) => setFormData((f) => ({ ...f, pianissimoHighNote: e.target.value }))}
+                          className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                        <label className="flex items-center gap-2 mt-2 text-xs" style={{ color: C.inkSoft }}>
+                          <input type="checkbox" checked={!!formData.pianissimoOnsetDelay}
+                            onChange={(e) => setFormData((f) => ({ ...f, pianissimoOnsetDelay: e.target.checked }))} />
+                          発声の立ち上がりが遅れた（すぐに声が出なかった）
+                        </label>
+                        <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
+                          「ハッピーバースデー」の出だしや5音下降を、できるだけ小さな声（囁くような弱声）で歌い、無理なく出せた最高音を記録します。大きな声より先に、むくみの兆候が出やすいとされています。
+                        </p>
+                      </div>
                       <p className="text-xs rounded-xl p-2.5 leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
                         {t("noteNotationRule")}
                       </p>
@@ -2961,6 +3144,48 @@ export default function VocalTracker({ userId, userEmail }) {
                       </details>
                       <NumberField label={t("labelResonanceScore")} value={formData.resonanceScore} step={1} min={0} max={10}
                         onChange={(v) => setFormData((f) => ({ ...f, resonanceScore: v }))} />
+
+                      <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <Mic2 size={14} style={{ color: C.gold }} />
+                          <span className="text-sm font-medium">客観測定（CPPS）</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            disabled={cppsRecording}
+                            onClick={async () => {
+                              setCppsError("");
+                              setCppsRecording(true);
+                              try {
+                                const value = await recordAndAnalyzeCPPS(5000);
+                                setFormData((f) => ({ ...f, cppsValue: value }));
+                              } catch (err) {
+                                setCppsError(err && err.message ? err.message : "マイクを使用できませんでした。ブラウザの権限設定をご確認ください。");
+                              } finally {
+                                setCppsRecording(false);
+                              }
+                            }}
+                            className="px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5"
+                            style={{ background: cppsRecording ? C.line : C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}
+                          >
+                            {cppsRecording ? <Loader2 size={12} className="animate-spin" /> : <Mic2 size={12} />}
+                            {cppsRecording ? "録音中（5秒）「あー」と伸ばしてください…" : "5秒録音して測定する"}
+                          </button>
+                        </div>
+                        {formData.cppsValue !== "" && formData.cppsValue != null && (
+                          <p className="text-sm mt-2" style={{ color: C.ink }}>
+                            CPPS: <span className="ff-mono font-medium">{formData.cppsValue} dB</span>
+                          </p>
+                        )}
+                        {cppsError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{cppsError}</p>}
+                        <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
+                          「あー」を5秒のばして録音すると、声のスペクトルの明瞭さ（CPPS）を自動で数値化します。上の「響きスコア」は自己申告、こちらは機械による客観値です。録音データ自体は保存せず、数値化した後にその場で破棄します。
+                        </p>
+                        <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
+                          ※ このアプリ独自の簡易計算のため、数値そのものを医学論文の基準値と比べることはできません。あくまで「自分自身がこれまでよりCPPSが高いか低いか」という、ご自身の推移で見るための参考値です。
+                        </p>
+                      </div>
                       <div>
                         <span className="text-sm font-medium block mb-2">{t("labelSymptoms")}</span>
                         <div className="flex flex-wrap gap-2">
@@ -3526,6 +3751,35 @@ export default function VocalTracker({ userId, userEmail }) {
                             onChange={(e) => setFormData((f) => ({ ...f, repertoire: e.target.value }))}
                             className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                         </div>
+                      </div>
+
+                      <div>
+                        <span className="text-sm font-medium block mb-2">話し声の使用量（歌以外でどれだけ喋ったか）</span>
+                        <div className="flex gap-2">
+                          {[
+                            { v: 0, label: "ほとんど喋っていない" },
+                            { v: 1, label: "ふつう" },
+                            { v: 2, label: "よく喋った" }
+                          ].map((opt) => (
+                            <button key={opt.v} type="button" onClick={() => setFormData((f) => ({ ...f, speakingLevel: opt.v }))}
+                              className="flex-1 py-2 rounded-xl text-xs font-medium border transition-all"
+                              style={{
+                                background: formData.speakingLevel === opt.v ? C.curtain : C.paper,
+                                color: formData.speakingLevel === opt.v ? "#FFFDF8" : C.inkSoft,
+                                borderColor: formData.speakingLevel === opt.v ? C.curtain : C.line
+                              }}>
+                              {opt.label}
+                            </button>
+                          ))}
+                        </div>
+                        <label className="flex items-center gap-2 mt-2 text-xs" style={{ color: C.inkSoft }}>
+                          <input type="checkbox" checked={!!formData.noisyEnvironment}
+                            onChange={(e) => setFormData((f) => ({ ...f, noisyEnvironment: e.target.checked }))} />
+                          騒がしい場所での会話が多かった（無意識に声が大きくなりやすい環境）
+                        </label>
+                        <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
+                          レッスンで喋る・騒がしい店での会話・電話など、歌っていない時間の声の使用も、発声負荷として発声負荷（ACWR）の計算に反映されます。
+                        </p>
                       </div>
 
                       {formData.activityType === "休養" && (
@@ -4116,7 +4370,8 @@ export default function VocalTracker({ userId, userEmail }) {
                           contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }}
                           formatter={(value, name, entry) => {
                             const isWake = entry && entry.dataKey === "wakeMidi";
-                            const label = isWake ? entry.payload.wakeNoteLabel : entry.payload.routineNoteLabel;
+                            const isPianissimo = entry && entry.dataKey === "pianissimoMidi";
+                            const label = isWake ? entry.payload.wakeNoteLabel : isPianissimo ? entry.payload.pianissimoNoteLabel : entry.payload.routineNoteLabel;
                             return [label || "-", name];
                           }}
                         />
@@ -4138,6 +4393,15 @@ export default function VocalTracker({ userId, userEmail }) {
                             return <circle key={`routine-${index}`} cx={cx} cy={cy} r={5} fill={payload.activityColor} stroke={C.sage} strokeWidth={1.5} />;
                           }}
                         />
+                        <Line
+                          type="monotone" dataKey="pianissimoMidi" name="pp最高音" stroke={C.curtain} strokeWidth={2} strokeDasharray="4 3"
+                          connectNulls
+                          dot={(dotProps) => {
+                            const { cx, cy, payload, index } = dotProps;
+                            if (payload.pianissimoMidi == null) return null;
+                            return <circle key={`pp-${index}`} cx={cx} cy={cy} r={4} fill={C.card} stroke={C.curtain} strokeWidth={1.5} />;
+                          }}
+                        />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -4150,6 +4414,9 @@ export default function VocalTracker({ userId, userEmail }) {
                     ))}
                   </div>
                   <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("notePitchChartLegend")}</p>
+                  <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
+                    点線（pp最高音）が下がり始めた日は、自覚より早く声帯のむくみが出ているサインかもしれません。
+                  </p>
                 </div>
 
                 {recordedDaysTotal >= 3 ? (
