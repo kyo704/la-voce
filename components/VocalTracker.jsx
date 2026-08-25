@@ -1542,8 +1542,7 @@ export default function VocalTracker({ userId, userEmail }) {
         avgVoice: s.n ? s.voiceSum / s.n : null,
         avgEase: s.n ? s.easeSum / s.n : null
       }))
-      .sort((a, b) => (b.avgVoice || 0) - (a.avgVoice || 0));
-  }, [entries]);
+  }, [filteredEntries]);
   // 声の調子スコア（過去2週間の平均から算出する、100点満点の参考指標）。
   // 医学的な診断値ではなく、これまで記録してきた項目を独自の重み付けで統合したもの。
   // 各項目の内訳も併せて返し、ブラックボックスにしない。
@@ -1635,7 +1634,7 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [entries, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient]);
   const locationStats = useMemo(() => {
     const byLoc = {};
-    Object.values(entries).forEach((e) => {
+    Object.values(filteredEntries).forEach((e) => {
       const loc = (e.location || "").trim();
       if (!loc) return;
       if (!byLoc[loc]) byLoc[loc] = { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 };
@@ -1653,7 +1652,82 @@ export default function VocalTracker({ userId, userEmail }) {
         avgEase: s.n ? s.easeSum / s.n : null
       }))
       .sort((a, b) => b.n - a.n);
-  }, [entries]);
+  }, [filteredEntries]);
+
+  // ---- ここから「メンタル」まとめセクション用のデータ ----
+  // 相関タブの選択状態（analysisTarget）に関わらず、常に「心の余裕」との相関を計算しておく。
+  const easeCorrelationResults = useMemo(() => {
+    return getCorrelationData(filteredEntries, "ease", (e) => typeof e.ease === "number", t);
+  }, [filteredEntries, t]);
+  const easeInsights = useMemo(() => {
+    return generateInsights(easeCorrelationResults, t("labelMentalEase"), t);
+  }, [easeCorrelationResults, t]);
+  // 「今の気持ちに近いもの」タグを、心の余裕が低かった日／高かった日で集計し、
+  // それぞれで多く選ばれているタグを見つける。診断ではなく、あくまで記録の傾向を見返すためのもの。
+  const mentalTagStats = useMemo(() => {
+    const lowCounts = {};
+    const highCounts = {};
+    let lowTotal = 0;
+    let highTotal = 0;
+    Object.values(filteredEntries).forEach((e) => {
+      if (typeof e.ease !== "number") return;
+      const tags = e.mentalTags || [];
+      if (e.ease <= 2) {
+        lowTotal += 1;
+        tags.forEach((tag) => { lowCounts[tag] = (lowCounts[tag] || 0) + 1; });
+      } else if (e.ease >= 4) {
+        highTotal += 1;
+        tags.forEach((tag) => { highCounts[tag] = (highCounts[tag] || 0) + 1; });
+      }
+    });
+    const toSorted = (counts) =>
+      Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(([tag, count]) => ({ tag, count }));
+    return { low: toSorted(lowCounts), lowTotal, high: toSorted(highCounts), highTotal };
+  }, [filteredEntries]);
+  // 休養方法・滞在地それぞれの中で、心の余裕の平均が最も高いものを1つずつ拾う（件数2件未満は参考にならないので除外）。
+  const mentalTopGroups = useMemo(() => {
+    const bestRest = restMethodStats
+      .filter((s) => s.n >= 2 && typeof s.avgEase === "number")
+      .sort((a, b) => b.avgEase - a.avgEase)[0] || null;
+    const bestLocation = locationStats
+      .filter((s) => s.n >= 2 && typeof s.avgEase === "number")
+      .sort((a, b) => b.avgEase - a.avgEase)[0] || null;
+    return { bestRest, bestLocation };
+  }, [restMethodStats, locationStats]);
+  // 相関・休養方法・滞在地・タグ、それぞれ別々のカードで出ている情報を、1つの文章に組み合わせる。
+  // データが少ない項目は無理に含めず、揃っている材料だけで文章を作る。
+  // 現時点では日本語のみの文言（他7言語の翻訳は translations.js 側の対応が別途必要）。
+  const mentalIntegratedInsight = useMemo(() => {
+    const topCorr = easeCorrelationResults
+      .filter((r) => r.r != null && Math.abs(r.r) >= 0.4 && r.n >= 5)
+      .sort((a, b) => Math.abs(b.r) - Math.abs(a.r))[0] || null;
+    const { bestRest, bestLocation } = mentalTopGroups;
+    const topTag = mentalTagStats.low[0] || null;
+
+    const sentences = [];
+    if (topCorr) {
+      const dir = topCorr.r >= 0 ? "多いほど心の余裕が高くなる" : "多いほど心の余裕が下がりやすい";
+      sentences.push(`${topCorr.label}は、${dir}傾向があります（r=${topCorr.r.toFixed(2)}、${topCorr.n}件）。`);
+    }
+    if (bestRest) {
+      const label = REST_METHOD_KEYS[bestRest.method] ? t(REST_METHOD_KEYS[bestRest.method]) : bestRest.method;
+      sentences.push(`休養方法では「${label}」を選んだ日の心の余裕が平均${bestRest.avgEase.toFixed(1)}と高めです（${bestRest.n}件）。`);
+    }
+    if (bestLocation) {
+      sentences.push(`滞在地では「${bestLocation.location}」にいるときの心の余裕が平均${bestLocation.avgEase.toFixed(1)}と高めです（${bestLocation.n}件）。`);
+    }
+    if (topTag) {
+      const label = t(MENTAL_TAG_KEYS[topTag.tag]) || topTag.tag;
+      sentences.push(`心の余裕が低かった日には「${label}」というタグが最も多く選ばれています（${mentalTagStats.lowTotal}日中${topTag.count}日）。`);
+    }
+    if (sentences.length === 0) return null;
+    return sentences.join("");
+  }, [easeCorrelationResults, mentalTopGroups, mentalTagStats, t]);
+  // ---- 「メンタル」まとめセクション用データ ここまで ----
+
 
   // 装備・配置・ドラッグ移動は、その場ではデータベースに保存しない。
   // 「保存中」の表示に気づかれにくかったこと、また保存されたかどうかが分かりにくいという指摘を受けて、
@@ -2972,6 +3046,13 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                 )}
 
+                <div className="pt-2">
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>メンタル</h2>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    心の余裕に関する記録を、ここにまとめて振り返れるようにしています。
+                  </p>
+                </div>
+
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleMentalTrend")}</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteMentalTrend")}</p>
@@ -3015,6 +3096,58 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   )}
                 </div>
+
+                {(mentalTagStats.low.length > 0 || mentalTagStats.high.length > 0) && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">気持ちタグの傾向</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      「今の気持ちに近いもの」で選んだタグを、心の余裕が低かった日・高かった日それぞれで集計しています。
+                    </p>
+                    <div className="space-y-3">
+                      {mentalTagStats.low.length > 0 && (
+                        <div>
+                          <p className="text-xs font-medium mb-1.5" style={{ color: C.rust }}>
+                            心の余裕が低かった日（{mentalTagStats.lowTotal}日）でよく選ばれたタグ
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {mentalTagStats.low.map(({ tag, count }) => (
+                              <span key={tag} className="px-2 py-0.5 rounded-full text-xs" style={{ background: C.paper, color: C.ink }}>
+                                {t(MENTAL_TAG_KEYS[tag]) || tag}（{count}）
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {mentalTagStats.high.length > 0 && (
+                        <div>
+                          <p className="text-xs font-medium mb-1.5" style={{ color: C.inkSoft }}>
+                            心の余裕が高かった日（{mentalTagStats.highTotal}日）でよく選ばれたタグ
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {mentalTagStats.high.map(({ tag, count }) => (
+                              <span key={tag} className="px-2 py-0.5 rounded-full text-xs" style={{ background: C.paper, color: C.ink }}>
+                                {t(MENTAL_TAG_KEYS[tag]) || tag}（{count}）
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {mentalIntegratedInsight && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">まとめて見えてきたこと</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      相関・休養方法・滞在地・タグなど、複数の記録を組み合わせた傾向です。
+                    </p>
+                    <p className="text-xs" style={{ color: C.ink }}>{mentalIntegratedInsight}</p>
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向であり、因果関係を断定するものではありません。件数が少ないうちは参考程度にご覧ください。
+                    </p>
+                  </div>
+                )}
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleWeightTrend")}</h3>
