@@ -5,7 +5,7 @@ import {
   Mic2, Moon, Droplets, Thermometer, Wind, MapPin, Music2, HeartHandshake,
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
   Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot, MessageCircle, Home,
-  Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe
+  Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe, Lock
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -733,6 +733,79 @@ function SectionCard({ title, icon: Icon, children }) {
         <h3 className="ff-display italic text-lg">{title}</h3>
       </div>
       <div className="space-y-4">{children}</div>
+    </div>
+  );
+}
+
+// 記録日数がまだ解放条件に届いていないときに表示する、進捗つきの「予告編」カード。
+// 灰色の空箱ではなく、うっすらとしたプレビューと「あと◯日」の進捗バーを見せることで、
+// 記録を続ける動機にする（lavoce-指標設計図.md の「ロックの見せ方」参照）。
+function LockedCard({ title, teaser, current, required }) {
+  const remaining = Math.max(0, required - current);
+  const pct = Math.min(100, Math.round((current / required) * 100));
+  return (
+    <div className="rounded-2xl p-4 border overflow-hidden relative" style={{ background: C.card, borderColor: C.line }}>
+      <div style={{ filter: "blur(3px)", opacity: 0.35, pointerEvents: "none", userSelect: "none" }}>
+        <h3 className="ff-display italic text-lg mb-2">{title}</h3>
+        <div className="flex items-end gap-1.5" style={{ height: 64 }}>
+          {[40, 65, 30, 80, 50, 90, 60].map((h, i) => (
+            <div key={i} style={{ width: 10, height: `${h}%`, background: C.gold, borderRadius: 3 }} />
+          ))}
+        </div>
+      </div>
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 px-6 text-center" style={{ background: "rgba(255,253,248,0.55)" }}>
+        <Lock size={18} style={{ color: C.inkSoft }} />
+        <p className="text-xs font-medium" style={{ color: C.ink }}>{title}</p>
+        <p className="text-xs" style={{ color: C.inkSoft }}>{teaser}</p>
+        <div className="w-full max-w-[220px] mt-1">
+          <div className="h-1.5 rounded-full overflow-hidden" style={{ background: C.line }}>
+            <div className="h-full rounded-full" style={{ width: `${pct}%`, background: C.gold }} />
+          </div>
+          <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
+            {remaining > 0 ? `あと${remaining}日で解放されます（${current}/${required}日）` : `${current}/${required}日`}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// 音域到達マップ用の簡易ピアノ鍵盤。白鍵を等幅で並べ、黒鍵を近似位置に重ねる。
+// 下段の帯で「自己ベスト（グレー）」と「選んだ期間の到達範囲（色つき）」を示す。
+function PianoKeyboard({ lowMidi, highMidi, bestLow, bestHigh, currentLow, currentHigh, newRecord }) {
+  const WHITE_OFFSET = { 0: 0, 2: 1, 4: 2, 5: 3, 7: 4, 9: 5, 11: 6 };
+  const BLACK_OFFSET = { 1: 0.68, 3: 1.68, 6: 3.68, 8: 4.68, 10: 5.68 };
+  const startOctave = Math.floor(lowMidi / 12);
+  const endOctave = Math.floor(highMidi / 12);
+  const numOctaves = Math.max(1, endOctave - startOctave + 1);
+  const totalWhite = numOctaves * 7;
+  const whiteKeyPct = 100 / totalWhite;
+  const xOf = (m) => {
+    const oct = Math.floor(m / 12) - startOctave;
+    const mod = ((m % 12) + 12) % 12;
+    return WHITE_OFFSET[mod] !== undefined ? oct * 7 + WHITE_OFFSET[mod] : oct * 7 + BLACK_OFFSET[mod];
+  };
+  const blackKeyMidis = [];
+  for (let o = 0; o < numOctaves; o++) {
+    [1, 3, 6, 8, 10].forEach((mod) => blackKeyMidis.push((startOctave + o) * 12 + mod));
+  }
+  return (
+    <div style={{ position: "relative", height: 76, marginTop: 4 }}>
+      <div style={{ display: "flex", height: 48 }}>
+        {Array.from({ length: totalWhite }).map((_, i) => (
+          <div key={i} style={{ flex: 1, border: `1px solid ${C.line}`, background: C.paper, borderRadius: "0 0 3px 3px" }} />
+        ))}
+      </div>
+      {blackKeyMidis.map((m) => (
+        <div key={m} style={{ position: "absolute", top: 0, left: `${xOf(m) * whiteKeyPct}%`, width: `${whiteKeyPct * 0.62}%`, height: 30, background: C.ink, borderRadius: "0 0 2px 2px" }} />
+      ))}
+      <div style={{ position: "absolute", left: 0, right: 0, top: 56, height: 5, borderRadius: 3, background: C.line, opacity: 0.4 }} />
+      {bestLow != null && bestHigh != null && (
+        <div style={{ position: "absolute", left: `${xOf(bestLow) * whiteKeyPct}%`, width: `${Math.max(2, (xOf(bestHigh) + 1 - xOf(bestLow)) * whiteKeyPct)}%`, top: 56, height: 5, borderRadius: 3, background: C.line }} />
+      )}
+      {currentLow != null && currentHigh != null && (
+        <div style={{ position: "absolute", left: `${xOf(currentLow) * whiteKeyPct}%`, width: `${Math.max(2, (xOf(currentHigh) + 1 - xOf(currentLow)) * whiteKeyPct)}%`, top: 64, height: 6, borderRadius: 3, background: newRecord ? C.gold : C.sage }} />
+      )}
     </div>
   );
 }
@@ -1823,6 +1896,182 @@ export default function VocalTracker({ userId, userEmail }) {
     return sentences;
   }, [compositeConditionDaily, mentalTopGroups, dietGoodBadFoodStats, t]);
   // ---- 各グループ横断のクロス分析用データ ここまで ----
+
+  // ---- ここから、lavoce-指標設計図.md フェーズ1の3指標用データ ----
+  // 段階解放の判定に使う「これまでの総記録日数」（選んだ分析期間ではなく、全期間で数える）。
+  const recordedDaysTotal = useMemo(() => Object.keys(entries).length, [entries]);
+
+  // 03. ウォームアップ効率（起き抜け→ルーティン後の半音差）
+  const warmupDaily = useMemo(() => {
+    return Object.keys(filteredEntries).sort().map((date) => {
+      const e = filteredEntries[date];
+      const wakeMidi = noteToMidi(e.wakeNote);
+      const routineMidi = noteToMidi(e.routineNote);
+      const deltaST = (wakeMidi != null && routineMidi != null) ? routineMidi - wakeMidi : null;
+      return { date, dateLabel: date.slice(5), wakeMidi, routineMidi, wakeNoteLabel: e.wakeNote || null, routineNoteLabel: e.routineNote || null, deltaST };
+    });
+  }, [filteredEntries]);
+  // 平常値は中央値とMAD（中央絶対偏差）による頑健統計。外れ値1件に振り回されにくい。
+  const warmupStats = useMemo(() => {
+    const values = warmupDaily.map((d) => d.deltaST).filter((v) => v != null).sort((a, b) => a - b);
+    const n = values.length;
+    if (n === 0) return null;
+    const median = n % 2 === 1 ? values[(n - 1) / 2] : (values[n / 2 - 1] + values[n / 2]) / 2;
+    const absDevs = values.map((v) => Math.abs(v - median)).sort((a, b) => a - b);
+    const madRaw = absDevs.length % 2 === 1 ? absDevs[(absDevs.length - 1) / 2] : (absDevs[absDevs.length / 2 - 1] + absDevs[absDevs.length / 2]) / 2;
+    const mad = madRaw > 0 ? madRaw : 0.5; // 0割り防止の下限
+    return { median, mad, n };
+  }, [warmupDaily]);
+  const warmupWithZ = useMemo(() => {
+    return warmupDaily.map((d, i) => {
+      if (d.deltaST == null || !warmupStats) return { ...d, z: null, efficiencyPct: null, wakeMidi7d: null };
+      const z = 0.6745 * (d.deltaST - warmupStats.median) / warmupStats.mad;
+      const efficiencyPct = warmupStats.median !== 0 ? Math.round((d.deltaST / warmupStats.median) * 100) : null;
+      const windowVals = warmupDaily.slice(Math.max(0, i - 6), i + 1).map((x) => x.wakeMidi).filter((v) => v != null);
+      const wakeMidi7d = windowVals.length ? windowVals.reduce((a, b) => a + b, 0) / windowVals.length : null;
+      return { ...d, z, efficiencyPct, wakeMidi7d };
+    });
+  }, [warmupDaily, warmupStats]);
+  const warmupLatest = useMemo(() => {
+    const withValue = warmupWithZ.filter((d) => d.deltaST != null);
+    return withValue.length ? withValue[withValue.length - 1] : null;
+  }, [warmupWithZ]);
+
+  // 10. 音域到達マップ
+  const allNoteMidisInPeriod = useMemo(() => {
+    const vals = [];
+    Object.values(filteredEntries).forEach((e) => {
+      const w = noteToMidi(e.wakeNote);
+      const r = noteToMidi(e.routineNote);
+      if (w != null) vals.push(w);
+      if (r != null) vals.push(r);
+    });
+    return vals;
+  }, [filteredEntries]);
+  const allNoteMidisAllTime = useMemo(() => {
+    const vals = [];
+    Object.values(entries).forEach((e) => {
+      const w = noteToMidi(e.wakeNote);
+      const r = noteToMidi(e.routineNote);
+      if (w != null) vals.push(w);
+      if (r != null) vals.push(r);
+    });
+    return vals;
+  }, [entries]);
+  const percentileOf = (sortedArr, p) => {
+    if (sortedArr.length === 0) return null;
+    const idx = (p / 100) * (sortedArr.length - 1);
+    const lo = Math.floor(idx), hi = Math.ceil(idx);
+    if (lo === hi) return sortedArr[lo];
+    return sortedArr[lo] + (sortedArr[hi] - sortedArr[lo]) * (idx - lo);
+  };
+  // 自己ベストは最大値・最小値そのものではなく、上位/下位5%点（95パーセンタイル）を採用する。
+  // 単発の外れ値1件でベストが動いて以後ずっと更新できなくなる、という事態を防ぐため。
+  const personalBestRange = useMemo(() => {
+    if (allNoteMidisAllTime.length < 3) return null;
+    const sorted = [...allNoteMidisAllTime].sort((a, b) => a - b);
+    const low = percentileOf(sorted, 5);
+    const high = percentileOf(sorted, 95);
+    return { low, high, width: high - low };
+  }, [allNoteMidisAllTime]);
+  const rangeThisPeriod = useMemo(() => {
+    if (allNoteMidisInPeriod.length === 0) return null;
+    return { low: Math.min(...allNoteMidisInPeriod), high: Math.max(...allNoteMidisInPeriod) };
+  }, [allNoteMidisInPeriod]);
+  const rangeFullnessPct = useMemo(() => {
+    if (!rangeThisPeriod || !personalBestRange || personalBestRange.width <= 0) return null;
+    const thisWidth = rangeThisPeriod.high - rangeThisPeriod.low;
+    return Math.round((thisWidth / personalBestRange.width) * 100);
+  }, [rangeThisPeriod, personalBestRange]);
+  const isNewRecord = useMemo(() => {
+    if (!rangeThisPeriod || !personalBestRange) return false;
+    return rangeThisPeriod.high > personalBestRange.high || rangeThisPeriod.low < personalBestRange.low;
+  }, [rangeThisPeriod, personalBestRange]);
+  // 起き抜け最低音の30日移動平均（下がり続けていたら疲労蓄積の目安）
+  const wakeLowNote30dTrend = useMemo(() => {
+    const dates = Object.keys(entries).sort().slice(-30);
+    const wakeVals = dates.map((d) => noteToMidi(entries[d].wakeNote)).filter((v) => v != null);
+    if (wakeVals.length < 4) return null;
+    const mid = Math.floor(wakeVals.length / 2);
+    const firstHalfAvg = wakeVals.slice(0, mid).reduce((a, b) => a + b, 0) / mid;
+    const secondHalfAvg = wakeVals.slice(mid).reduce((a, b) => a + b, 0) / (wakeVals.length - mid);
+    return { firstHalfAvg, secondHalfAvg, declining: secondHalfAvg < firstHalfAvg - 1 };
+  }, [entries]);
+
+  // 06. 症状カレンダーと連鎖
+  const symptomDatesSorted = useMemo(() => Object.keys(filteredEntries).sort(), [filteredEntries]);
+  // ①連続日数：各症状について、直近まで続いている連続記録日数（カレンダー上で連続した日のみ数える）
+  const symptomStreaks = useMemo(() => {
+    const result = {};
+    SYMPTOM_OPTIONS.forEach((symptom) => {
+      let current = 0;
+      let prevDate = null;
+      symptomDatesSorted.forEach((date) => {
+        const has = (filteredEntries[date].throatSymptoms || []).includes(symptom);
+        if (has) {
+          current = (prevDate && addDays(prevDate, 1) === date) ? current + 1 : 1;
+        } else {
+          current = 0;
+        }
+        prevDate = date;
+      });
+      if (current > 0) result[symptom] = current;
+    });
+    return result;
+  }, [filteredEntries, symptomDatesSorted]);
+  // ②連鎖確率：症状aの翌日に症状bが出る確率が、bの普段の出現率よりどれだけ高いか（lift）
+  const symptomChainStats = useMemo(() => {
+    const chains = [];
+    const totalDays = symptomDatesSorted.length;
+    if (totalDays < 2) return chains;
+    SYMPTOM_OPTIONS.forEach((a) => {
+      const bBaseCounts = {};
+      SYMPTOM_OPTIONS.forEach((s) => { bBaseCounts[s] = 0; });
+      symptomDatesSorted.forEach((d) => {
+        (filteredEntries[d].throatSymptoms || []).forEach((s) => { if (bBaseCounts[s] != null) bBaseCounts[s] += 1; });
+      });
+      SYMPTOM_OPTIONS.forEach((b) => {
+        if (a === b) return;
+        let countA = 0, countAB = 0;
+        for (let i = 0; i < symptomDatesSorted.length - 1; i++) {
+          const d1 = symptomDatesSorted[i], d2 = symptomDatesSorted[i + 1];
+          if (addDays(d1, 1) !== d2) continue;
+          const hasA = (filteredEntries[d1].throatSymptoms || []).includes(a);
+          if (!hasA) continue;
+          countA += 1;
+          if ((filteredEntries[d2].throatSymptoms || []).includes(b)) countAB += 1;
+        }
+        const pB = totalDays > 0 ? bBaseCounts[b] / totalDays : 0;
+        if (countA >= 5 && pB > 0) {
+          const pBGivenA = countAB / countA;
+          const lift = pBGivenA / pB;
+          if (lift >= 1.5) chains.push({ a, b, pBGivenA, pB, lift, countA });
+        }
+      });
+    });
+    return chains.sort((x, y) => y.lift - x.lift).slice(0, 5);
+  }, [filteredEntries, symptomDatesSorted]);
+  // ③よく一緒に出る組み合わせ：ジャッカード係数の上位3組
+  const symptomJaccardPairs = useMemo(() => {
+    const pairs = [];
+    for (let i = 0; i < SYMPTOM_OPTIONS.length; i++) {
+      for (let j = i + 1; j < SYMPTOM_OPTIONS.length; j++) {
+        const a = SYMPTOM_OPTIONS[i], b = SYMPTOM_OPTIONS[j];
+        let union = 0, inter = 0;
+        symptomDatesSorted.forEach((d) => {
+          const list = filteredEntries[d].throatSymptoms || [];
+          const hasA = list.includes(a), hasB = list.includes(b);
+          if (hasA || hasB) union += 1;
+          if (hasA && hasB) inter += 1;
+        });
+        if (inter > 0 && union > 0) pairs.push({ a, b, jaccard: inter / union, count: inter });
+      }
+    }
+    return pairs.sort((x, y) => y.jaccard - x.jaccard).slice(0, 3);
+  }, [filteredEntries, symptomDatesSorted]);
+  // カレンダーグリッド表示用（直近30日、症状×日付）
+  const symptomGridDates = useMemo(() => symptomDatesSorted.slice(-30), [symptomDatesSorted]);
+  // ---- lavoce-指標設計図.md フェーズ1の3指標用データ ここまで ----
 
 
   // 装備・配置・ドラッグ移動は、その場ではデータベースに保存しない。
@@ -3201,6 +3450,221 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                   <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("notePitchChartLegend")}</p>
                 </div>
+
+                {recordedDaysTotal >= 3 ? (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">ウォームアップ効率</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      起き抜けからルーティン後にかけて、声がどれだけ「戻った」かを半音数で見ます。長いほど、よく声が起きた日です。
+                    </p>
+                    {warmupLatest ? (
+                      <div className="rounded-xl p-3 mb-3" style={{ background: C.paper }}>
+                        <p className="text-xs" style={{ color: C.ink }}>
+                          今朝は <span className="ff-mono" style={{ fontWeight: 600 }}>{warmupLatest.deltaST >= 0 ? "+" : ""}{warmupLatest.deltaST}半音</span>
+                          {warmupStats && <>（ふだんは{warmupStats.median >= 0 ? "+" : ""}{warmupStats.median.toFixed(1)}半音）</>}
+                        </p>
+                        <p className="text-xs mt-1" style={{ color: C.inkSoft }}>
+                          {warmupLatest.z != null && warmupLatest.z <= -1.5 && "声が起きるのに、いつもより時間がかかる日です。"}
+                          {warmupLatest.z != null && warmupLatest.z >= 1.5 && "いつもよりよく声が起きています。"}
+                          {warmupLatest.z != null && warmupLatest.z > -1.5 && warmupLatest.z < 1.5 && "いつも通りの立ち上がりです。"}
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-xs rounded-xl p-3 mb-3" style={{ background: C.paper, color: C.inkSoft }}>
+                        起き抜けとルーティン後、両方の音名が記録された日がまだありません。
+                      </p>
+                    )}
+                    {warmupWithZ.filter((d) => d.deltaST != null).length > 0 && (() => {
+                      const visible = warmupWithZ.filter((d) => d.deltaST != null).slice(-14);
+                      const allMidis = visible.flatMap((x) => [x.wakeMidi, x.routineMidi]);
+                      const rMin = Math.min(...allMidis), rMax = Math.max(...allMidis);
+                      const span = Math.max(1, rMax - rMin);
+                      const pct = (v) => ((v - rMin) / span) * 100;
+                      return (
+                        <div className="space-y-1.5">
+                          {visible.map((d) => {
+                            const lo = Math.min(d.wakeMidi, d.routineMidi);
+                            const hi = Math.max(d.wakeMidi, d.routineMidi);
+                            const barColor = d.z >= 1.5 ? C.sage : d.z <= -1.5 ? C.curtain : C.gold;
+                            return (
+                              <div key={d.date} className="flex items-center gap-2">
+                                <span className="text-xs ff-mono" style={{ width: 44, color: C.inkSoft }}>{d.dateLabel}</span>
+                                <div style={{ position: "relative", flex: 1, height: 14 }}>
+                                  <div style={{ position: "absolute", top: 6, left: 0, right: 0, height: 2, background: C.line }} />
+                                  <div style={{ position: "absolute", top: 5, left: `${pct(lo)}%`, width: `${pct(hi) - pct(lo)}%`, height: 4, borderRadius: 2, background: barColor }} />
+                                  <div style={{ position: "absolute", top: 2, left: `calc(${pct(d.wakeMidi)}% - 5px)`, width: 10, height: 10, borderRadius: 999, background: C.gold, border: `1.5px solid ${C.card}` }} />
+                                  <div style={{ position: "absolute", top: 2, left: `calc(${pct(d.routineMidi)}% - 5px)`, width: 10, height: 10, borderRadius: 999, background: C.sage, border: `1.5px solid ${C.card}` }} />
+                                </div>
+                                <span className="text-xs ff-mono" style={{ width: 36, textAlign: "right", color: C.ink }}>{d.deltaST >= 0 ? "+" : ""}{d.deltaST}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
+                    <div className="flex items-center gap-3 mt-3">
+                      <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                        <span style={{ width: 8, height: 8, borderRadius: 999, background: C.gold, display: "inline-block" }} />起き抜け
+                      </span>
+                      <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                        <span style={{ width: 8, height: 8, borderRadius: 999, background: C.sage, display: "inline-block" }} />ルーティン後
+                      </span>
+                    </div>
+                    {wakeLowNote30dTrend && wakeLowNote30dTrend.declining && (
+                      <p className="text-xs mt-3 rounded-xl p-2.5" style={{ background: "rgba(184,49,49,0.06)", color: C.curtain }}>
+                        起き抜けの音の高さが、直近でじわじわ下がってきています。疲労が蓄積しているサインかもしれません。
+                      </p>
+                    )}
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ 平常値は中央値をもとにした参考値です。記録が増えるほど精度が上がります。
+                    </p>
+                  </div>
+                ) : (
+                  <LockedCard
+                    title="ウォームアップ効率"
+                    teaser="起き抜けとルーティン後の声の差を、半音数で毎朝チェックできます"
+                    current={recordedDaysTotal}
+                    required={3}
+                  />
+                )}
+
+                {recordedDaysTotal >= 3 ? (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">音域到達マップ</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      記録した地声の音を鍵盤の上に置いています。下段のグレーが自己ベスト、色つきが選んだ期間の到達範囲です。
+                    </p>
+                    {personalBestRange && rangeThisPeriod ? (
+                      <>
+                        <PianoKeyboard
+                          lowMidi={Math.min(personalBestRange.low, rangeThisPeriod.low) - 1}
+                          highMidi={Math.max(personalBestRange.high, rangeThisPeriod.high) + 1}
+                          bestLow={personalBestRange.low}
+                          bestHigh={personalBestRange.high}
+                          currentLow={rangeThisPeriod.low}
+                          currentHigh={rangeThisPeriod.high}
+                          newRecord={isNewRecord}
+                        />
+                        <div className="flex flex-wrap items-center gap-3 mt-3">
+                          <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                            <span style={{ width: 14, height: 4, borderRadius: 2, background: C.line, display: "inline-block" }} />
+                            自己ベスト（{midiToNoteLabel(personalBestRange.low)}〜{midiToNoteLabel(personalBestRange.high)}）
+                          </span>
+                          <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                            <span style={{ width: 14, height: 4, borderRadius: 2, background: isNewRecord ? C.gold : C.sage, display: "inline-block" }} />
+                            選んだ期間（{midiToNoteLabel(rangeThisPeriod.low)}〜{midiToNoteLabel(rangeThisPeriod.high)}）
+                          </span>
+                        </div>
+                        <p className="text-xs mt-3" style={{ color: C.ink }}>
+                          {isNewRecord
+                            ? "自己ベストを更新する記録が出ています。"
+                            : rangeFullnessPct != null
+                              ? <>選んだ期間の音域は、自己ベストの<span className="ff-mono" style={{ fontWeight: 600 }}> {rangeFullnessPct}%</span>まで戻ってきています。</>
+                              : null}
+                        </p>
+                      </>
+                    ) : (
+                      <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
+                        自己ベストを出すには、あと少し記録が必要です。
+                      </p>
+                    )}
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ 自己ベストは、単発の記録に振り回されないよう上位／下位5%点を採用しています。
+                    </p>
+                  </div>
+                ) : (
+                  <LockedCard
+                    title="音域到達マップ"
+                    teaser="記録した声の高さを鍵盤の上で確認できます"
+                    current={recordedDaysTotal}
+                    required={3}
+                  />
+                )}
+
+                {recordedDaysTotal >= 3 ? (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">症状カレンダーと連鎖</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      直近30日分の症状を、日付×症状の格子で振り返れます。
+                    </p>
+                    {symptomGridDates.length > 0 ? (
+                      <>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                          {symptomGridDates[0].slice(5)} 〜 {symptomGridDates[symptomGridDates.length - 1].slice(5)}
+                        </p>
+                        <div style={{ overflowX: "auto" }}>
+                          <div style={{ display: "inline-block", minWidth: "100%" }}>
+                            {SYMPTOM_OPTIONS.map((symptom) => (
+                              <div key={symptom} style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 3 }}>
+                                <div className="text-xs" style={{ width: 80, flexShrink: 0, color: C.inkSoft }}>{t(SYMPTOM_KEYS[symptom])}</div>
+                                <div style={{ display: "flex", gap: 2 }}>
+                                  {symptomGridDates.map((d) => {
+                                    const has = (filteredEntries[d].throatSymptoms || []).includes(symptom);
+                                    return (
+                                      <div
+                                        key={d}
+                                        onClick={() => { setSelectedDate(d); setActiveTab("today"); }}
+                                        title={d}
+                                        style={{ width: 12, height: 12, borderRadius: 3, background: has ? C.curtain : C.paper, cursor: "pointer", flexShrink: 0 }}
+                                      />
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>まだ症状の記録がありません。</p>
+                    )}
+                    {Object.keys(symptomStreaks).length > 0 && (
+                      <div className="mt-3 space-y-1.5">
+                        {Object.entries(symptomStreaks).map(([symptom, streak]) => (
+                          <p key={symptom} className="text-xs rounded-xl p-2.5" style={{ background: streak >= 7 ? "rgba(184,49,49,0.08)" : streak >= 3 ? "rgba(212,160,23,0.1)" : C.paper, color: C.ink }}>
+                            <strong>{t(SYMPTOM_KEYS[symptom])}が{streak}日続いています。</strong>
+                            {streak >= 7 && " ふだんより長い状態です。耳鼻咽喉科への相談も選択肢の一つです。"}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                    {symptomChainStats.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs font-medium mb-1.5" style={{ color: C.ink }}>症状の連鎖</p>
+                        <div className="space-y-1.5">
+                          {symptomChainStats.map((c, i) => (
+                            <p key={i} className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                              {t(SYMPTOM_KEYS[c.a])}の翌日に{t(SYMPTOM_KEYS[c.b])}が出る確率は<strong> {Math.round(c.pBGivenA * 100)}%</strong>です（ふだんは{Math.round(c.pB * 100)}%、{c.countA}件中）。
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {symptomJaccardPairs.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs font-medium mb-1.5" style={{ color: C.ink }}>よく一緒に出る症状</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {symptomJaccardPairs.map((p, i) => (
+                            <span key={i} className="px-2 py-0.5 rounded-full text-xs" style={{ background: C.paper, color: C.ink }}>
+                              {t(SYMPTOM_KEYS[p.a])} + {t(SYMPTOM_KEYS[p.b])}（{p.count}日）
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向であり、医学的な診断ではありません。症状が続く場合は耳鼻咽喉科にご相談ください。
+                    </p>
+                  </div>
+                ) : (
+                  <LockedCard
+                    title="症状カレンダーと連鎖"
+                    teaser="8種類の症状を、日付×症状の格子で振り返れます"
+                    current={recordedDaysTotal}
+                    required={3}
+                  />
+                )}
+
                 <div className="pt-2">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderBody")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
