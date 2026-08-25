@@ -471,11 +471,16 @@ function computeDailyLoad(entry, songFactorResolver) {
   if (!entry) return 0;
   // §4: L_day = Σ_a L_a（活動ブロックごとに係数・曲目のsongFactorを反映して合算する）
   const baseLoad = computeDayLoadFromActivities(entry.activities, songFactorResolver);
-  const exerciseLoad = (entry.exercises || []).reduce((sum, x) => {
+  let exerciseLoad = (entry.exercises || []).reduce((sum, x) => {
     const minutes = Number(x.minutes) || 0;
     const intensity = typeof x.intensity === "number" ? x.intensity : 3;
     return sum + 0.3 * minutes * (intensity / 3);
   }, 0);
+  // §3.11: 詳細記録（種目・分・強度）がない日は、簡易3択の換算値を使う。
+  if ((!entry.exercises || entry.exercises.length === 0) && typeof entry.exerciseLevel === "number" && entry.exerciseLevel > 0) {
+    const equiv = entry.exerciseLevel === 1 ? { minutes: 20, intensity: 2 } : { minutes: 40, intensity: 4 };
+    exerciseLoad = 0.3 * equiv.minutes * (equiv.intensity / 3);
+  }
   // lavoce-収集データ拡張案.md A-2: 話し声の使用量。歌っていない時間の声の使用も発声負荷に加算する。
   // 「話し声2（よく喋った）＝+45分相当」を基準に、レベルに比例させる。騒がしい場所では1.3倍。
   const speakingLevel = typeof entry.speakingLevel === "number" ? entry.speakingLevel : 0;
@@ -790,6 +795,7 @@ function buildFormData(date, entries) {
       speakingLevel: existing.speakingLevel ?? null,
       noisyEnvironment: existing.noisyEnvironment || false,
       cppsValue: existing.cppsValue ?? "",
+      exerciseLevel: existing.exerciseLevel ?? null,
       activities: existing.activities || [],
       recovery: existing.recovery || null
     };
@@ -835,6 +841,7 @@ function buildFormData(date, entries) {
     speakingLevel: null,
     noisyEnvironment: false,
     cppsValue: "",
+    exerciseLevel: null,
     // lavoce-曲目複数化パッチ.md: 活動は「1日1つ」ではなくブロックの配列。
     // 既定は自主練習ブロック1つ（旧UXの「最初から自主練習が選ばれている」状態を踏襲）。
     activities: [newActivityBlock("自主練習", 0)],
@@ -1052,6 +1059,7 @@ function rowToEntry(row) {
     speakingLevel: row.speaking_level,
     noisyEnvironment: row.noisy_environment || false,
     cppsValue: row.cpps_value,
+    exerciseLevel: row.exercise_level,
     activities,
     recovery
   };
@@ -1370,6 +1378,7 @@ function entryToRow(userId, e) {
     speaking_level: numOrNull(e.speakingLevel),
     noisy_environment: !!e.noisyEnvironment,
     cpps_value: numOrNull(e.cppsValue),
+    exercise_level: numOrNull(e.exerciseLevel),
     activities,
     recovery: e.recovery || null
   };
@@ -2366,6 +2375,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [clinicCustomStart, setClinicCustomStart] = useState("");
   const [clinicCustomEnd, setClinicCustomEnd] = useState("");
   const [clinicFreeNote, setClinicFreeNote] = useState("");
+  const [showExerciseDetail, setShowExerciseDetail] = useState(false);
   const [selectedDate, setSelectedDate] = useState(todayISOUTC());
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
@@ -2798,9 +2808,9 @@ export default function VocalTracker({ userId, userEmail }) {
       // 休養は活動ブロックではなく、日ごとの recovery として独立管理する（曲目複数化パッチ §2.0.1）
       if (!e.recovery || (e.activities && e.activities.length > 0)) return;
       const methods = e.recovery.methods || [];
-      const otherText = (e.recovery.note || "").trim();
-      methods.forEach((rawM) => {
-        const m = (rawM === "その他" && otherText) ? otherText : rawM;
+      // §3.10: 「その他」の自由記述は集計に使わない（表記ゆれで集計が壊れるため）。
+      // 選択肢のみを集計対象にし、自由記述は note として保持するだけに留める。
+      methods.forEach((m) => {
         if (!byMethod[m]) byMethod[m] = { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 };
         if (typeof e.throatCondition === "number") byMethod[m].throatSum += e.throatCondition;
         if (typeof e.voiceQuality === "number") byMethod[m].voiceSum += e.voiceQuality;
@@ -5080,19 +5090,32 @@ export default function VocalTracker({ userId, userEmail }) {
                           <Droplets size={14} style={{ color: C.gold }} />
                           <label className="text-sm font-medium">{t("labelWaterBySlot")}</label>
                         </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                          {MEAL_SLOTS.map((slot) => (
-                            <div key={slot}>
-                              <div className="text-xs mb-1" style={{ color: C.inkSoft }}>{t(MEAL_SLOT_KEYS[slot])}</div>
-                              <MiniNumber
-                                value={(formData.waterBySlot || {})[slot] ?? ""}
-                                placeholder="ml"
-                                onChange={(v) => setFormData((f) => ({ ...f, waterBySlot: { ...(f.waterBySlot || {}), [slot]: v } }))}
-                              />
-                            </div>
-                          ))}
+                        <div className="flex items-center gap-3">
+                          <button type="button"
+                            onClick={() => setFormData((f) => ({ ...f, waterBySlot: { total: Math.max(0, ((f.waterBySlot || {}).total || 0) - 200) } }))}
+                            className="w-10 h-10 rounded-full border flex items-center justify-center flex-shrink-0"
+                            style={{ borderColor: C.line, color: C.inkSoft }}>
+                            <Minus size={16} />
+                          </button>
+                          <div className="flex-1 text-center">
+                            <span className="ff-display italic text-2xl">{waterTotal}</span>
+                            <span className="text-xs ml-1" style={{ color: C.inkSoft }}>ml</span>
+                          </div>
+                          <button type="button"
+                            onClick={() => setFormData((f) => ({ ...f, waterBySlot: { total: ((f.waterBySlot || {}).total || 0) + 200 } }))}
+                            className="w-10 h-10 rounded-full border flex items-center justify-center flex-shrink-0"
+                            style={{ borderColor: C.line, color: C.inkSoft }}>
+                            <Plus size={16} />
+                          </button>
                         </div>
-                        <p className="text-xs text-right mt-2 ff-mono" style={{ color: C.inkSoft }}>{t("labelTotal")} {waterTotal}ml</p>
+                        <details className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                          <summary className="cursor-pointer">数値を直接入力する</summary>
+                          <MiniNumber
+                            value={waterTotal || ""}
+                            placeholder="ml"
+                            onChange={(v) => setFormData((f) => ({ ...f, waterBySlot: { total: Number(v) || 0 } }))}
+                          />
+                        </details>
                       </div>
                     </SectionCard>
 
@@ -5460,18 +5483,46 @@ export default function VocalTracker({ userId, userEmail }) {
 
                     <SectionCard title={t("sectionExercise")} icon={Dumbbell}>
                       <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteExerciseHelp")}</p>
-                      <div className="space-y-2">
-                        {(formData.exercises || []).map((x) => (
-                          <ExerciseItemRow key={x.id} item={x} t={t} onChange={(next) => updateExercise(x.id, next)} onRemove={() => removeExercise(x.id)} />
-                        ))}
-                      </div>
-                      <button type="button" onClick={addExercise}
-                        className="w-full rounded-xl border py-2 text-xs font-medium flex items-center justify-center gap-1.5"
-                        style={{ borderColor: C.line, color: C.inkSoft }}>
-                        <Plus size={13} />{t("btnAddExercise")}
-                      </button>
-                      {exerciseTotalMinutes > 0 && (
-                        <p className="text-xs text-right ff-mono" style={{ color: C.inkSoft }}>{t("labelTotal")} {exerciseTotalMinutes}分</p>
+                      {(formData.exercises || []).length === 0 && !showExerciseDetail ? (
+                        <>
+                          <div className="flex gap-2">
+                            {[
+                              { v: 0, label: "していない" },
+                              { v: 1, label: "軽め" },
+                              { v: 2, label: "しっかり" }
+                            ].map((opt) => (
+                              <button key={opt.v} type="button" onClick={() => setFormData((f) => ({ ...f, exerciseLevel: opt.v }))}
+                                className="flex-1 py-2 rounded-xl text-xs font-medium border transition-all"
+                                style={{
+                                  background: formData.exerciseLevel === opt.v ? C.curtain : C.paper,
+                                  color: formData.exerciseLevel === opt.v ? "#FFFDF8" : C.inkSoft,
+                                  borderColor: formData.exerciseLevel === opt.v ? C.curtain : C.line
+                                }}>
+                                {opt.label}
+                              </button>
+                            ))}
+                          </div>
+                          <button type="button" onClick={() => setShowExerciseDetail(true)}
+                            className="text-xs underline" style={{ color: C.inkSoft }}>
+                            +詳しく記録する（種目・時間・強度）
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <div className="space-y-2">
+                            {(formData.exercises || []).map((x) => (
+                              <ExerciseItemRow key={x.id} item={x} t={t} onChange={(next) => updateExercise(x.id, next)} onRemove={() => removeExercise(x.id)} />
+                            ))}
+                          </div>
+                          <button type="button" onClick={addExercise}
+                            className="w-full rounded-xl border py-2 text-xs font-medium flex items-center justify-center gap-1.5"
+                            style={{ borderColor: C.line, color: C.inkSoft }}>
+                            <Plus size={13} />{t("btnAddExercise")}
+                          </button>
+                          {exerciseTotalMinutes > 0 && (
+                            <p className="text-xs text-right ff-mono" style={{ color: C.inkSoft }}>{t("labelTotal")} {exerciseTotalMinutes}分</p>
+                          )}
+                        </>
                       )}
                       <div className="rounded-xl p-3 text-xs leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
                         <p className="font-medium mb-1" style={{ color: C.ink }}>{t("labelRecommendedExercise")}</p>
