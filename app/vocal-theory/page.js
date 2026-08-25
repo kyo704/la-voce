@@ -635,4 +635,3 @@ export default function VocalTheoryPage({ searchParams }) {
     </main>
   );
 }
-}
