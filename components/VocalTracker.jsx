@@ -281,31 +281,6 @@ function pearson(xs, ys) {
   if (dx2 === 0 || dy2 === 0) return null;
   return num / Math.sqrt(dx2 * dy2);
 }
-// 「声」「響き」「体重」「タンパク質」「栄養摂取・体重変化」など、グループをまたいだクロス分析用の汎用ヘルパー。
-// 日ごとのオブジェクトの配列から、任意の2つの数値キーの相関を計算する（データ5件未満は参考にならないためnull扱い）。
-function pairCorr(list, xKey, yKey) {
-  const pairs = list
-    .map((d) => ({ x: d[xKey], y: d[yKey] }))
-    .filter((p) => typeof p.x === "number" && typeof p.y === "number");
-  const r = pairs.length >= 5 ? pearson(pairs.map((p) => p.x), pairs.map((p) => p.y)) : null;
-  return { r, n: pairs.length };
-}
-// 相関の結果を、そのまま読める日本語の一文に組み立てる。
-function buildCorrSentence(labelX, labelY, r, n) {
-  if (r == null) return null;
-  const dir = r >= 0
-    ? `${labelX}が高い（多い）日ほど、${labelY}も高くなる傾向があります`
-    : `${labelX}が高い（多い）日ほど、${labelY}は下がる傾向があります`;
-  return `${dir}（r=${r.toFixed(2)}、${n}件）。`;
-}
-// 相関の候補一覧から、条件を満たすものだけ強い順に抜き出して文章化する。
-function topCorrSentences(candidates, maxCount) {
-  return candidates
-    .filter((c) => c.r != null && Math.abs(c.r) >= 0.4 && c.n >= 5)
-    .sort((a, b) => Math.abs(b.r) - Math.abs(a.r))
-    .slice(0, maxCount || 2)
-    .map((c) => ({ ...c, text: buildCorrSentence(c.labelX, c.labelY, c.r, c.n) }));
-}
 function getCorrelationData(entries, targetKey, targetFilter, t) {
   const list = Object.values(entries).filter(targetFilter);
   return FACTORS.filter((f) => f.key !== targetKey).map((f) => {
@@ -1680,13 +1655,6 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [filteredEntries]);
 
   // ---- ここから「メンタル」まとめセクション用のデータ ----
-  // 相関タブの選択状態（analysisTarget）に関わらず、常に「心の余裕」との相関を計算しておく。
-  const easeCorrelationResults = useMemo(() => {
-    return getCorrelationData(filteredEntries, "ease", (e) => typeof e.ease === "number", t);
-  }, [filteredEntries, t]);
-  const easeInsights = useMemo(() => {
-    return generateInsights(easeCorrelationResults, t("labelMentalEase"), t);
-  }, [easeCorrelationResults, t]);
   // 「今の気持ちに近いもの」タグを、心の余裕が低かった日／高かった日で集計し、
   // それぞれで多く選ばれているタグを見つける。診断ではなく、あくまで記録の傾向を見返すためのもの。
   const mentalTagStats = useMemo(() => {
@@ -1722,41 +1690,11 @@ export default function VocalTracker({ userId, userEmail }) {
       .sort((a, b) => b.avgEase - a.avgEase)[0] || null;
     return { bestRest, bestLocation };
   }, [restMethodStats, locationStats]);
-  // 相関・休養方法・滞在地・タグ、それぞれ別々のカードで出ている情報を、1つの文章に組み合わせる。
-  // データが少ない項目は無理に含めず、揃っている材料だけで文章を作る。
-  // 現時点では日本語のみの文言（他7言語の翻訳は translations.js 側の対応が別途必要）。
-  const mentalIntegratedInsight = useMemo(() => {
-    const topCorr = easeCorrelationResults
-      .filter((r) => r.r != null && Math.abs(r.r) >= 0.4 && r.n >= 5)
-      .sort((a, b) => Math.abs(b.r) - Math.abs(a.r))[0] || null;
-    const { bestRest, bestLocation } = mentalTopGroups;
-    const topTag = mentalTagStats.low[0] || null;
-
-    const sentences = [];
-    if (topCorr) {
-      const dir = topCorr.r >= 0 ? "多いほど心の余裕が高くなる" : "多いほど心の余裕が下がりやすい";
-      sentences.push(`${topCorr.label}は、${dir}傾向があります（r=${topCorr.r.toFixed(2)}、${topCorr.n}件）。`);
-    }
-    if (bestRest) {
-      const label = REST_METHOD_KEYS[bestRest.method] ? t(REST_METHOD_KEYS[bestRest.method]) : bestRest.method;
-      sentences.push(`休養方法では「${label}」を選んだ日の心の余裕が平均${bestRest.avgEase.toFixed(1)}と高めです（${bestRest.n}件）。`);
-    }
-    if (bestLocation) {
-      sentences.push(`滞在地では「${bestLocation.location}」にいるときの心の余裕が平均${bestLocation.avgEase.toFixed(1)}と高めです（${bestLocation.n}件）。`);
-    }
-    if (topTag) {
-      const label = t(MENTAL_TAG_KEYS[topTag.tag]) || topTag.tag;
-      sentences.push(`心の余裕が低かった日には「${label}」というタグが最も多く選ばれています（${mentalTagStats.lowTotal}日中${topTag.count}日）。`);
-    }
-    if (sentences.length === 0) return null;
-    return sentences.join("");
-  }, [easeCorrelationResults, mentalTopGroups, mentalTagStats, t]);
   // ---- 「メンタル」まとめセクション用データ ここまで ----
 
   // ---- ここから、各グループ横断のクロス分析用データ ----
   // timeSeries（体重・タンパク質・カロリー・心の余裕・響きスコアなど）に、
   // filteredEntries側にしかない喉のコンディション・声の質を日付で突き合わせて1つにまとめる。
-  // これにより「声」「響き」「体重」「タンパク質」「栄養摂取」など、異なるカードの元データを横断して相関計算できるようにする。
   const crossFactorDaily = useMemo(() => {
     return timeSeries.map((row) => {
       const e = filteredEntries[row.fullDate] || {};
@@ -1768,55 +1706,7 @@ export default function VocalTracker({ userId, userEmail }) {
     });
   }, [timeSeries, filteredEntries]);
 
-  // 「声」グループ用: 睡眠・心の余裕と、喉のコンディション／声の質の関係
-  const voiceCrossInsights = useMemo(() => {
-    const candidates = [
-      { labelX: "睡眠時間", labelY: "喉のコンディション", ...pairCorr(crossFactorDaily, "sleepHours", "throatCondition") },
-      { labelX: "睡眠の質", labelY: "喉のコンディション", ...pairCorr(crossFactorDaily, "sleepQuality", "throatCondition") },
-      { labelX: "睡眠時間", labelY: "声の質", ...pairCorr(crossFactorDaily, "sleepHours", "voiceQuality") },
-      { labelX: "心の余裕", labelY: "声の質", ...pairCorr(crossFactorDaily, "ease", "voiceQuality") }
-    ];
-    return topCorrSentences(candidates, 2);
-  }, [crossFactorDaily]);
-
-  // 「響き」グループ用: 喉のコンディション・睡眠・心の余裕と、響きスコアの関係
-  const resonanceCrossInsights = useMemo(() => {
-    const candidates = [
-      { labelX: "喉のコンディション", labelY: "響きスコア", ...pairCorr(crossFactorDaily, "throatCondition", "resonanceScore") },
-      { labelX: "睡眠の質", labelY: "響きスコア", ...pairCorr(crossFactorDaily, "sleepQuality", "resonanceScore") },
-      { labelX: "心の余裕", labelY: "響きスコア", ...pairCorr(crossFactorDaily, "ease", "resonanceScore") }
-    ];
-    return topCorrSentences(candidates, 2);
-  }, [crossFactorDaily]);
-
-  // 「体重」グループ用: カロリー・心の余裕と、体重の関係
-  const weightCrossInsights = useMemo(() => {
-    const candidates = [
-      { labelX: "摂取カロリー", labelY: "体重", ...pairCorr(crossFactorDaily, "calorieActual", "weightKg") },
-      { labelX: "心の余裕", labelY: "体重", ...pairCorr(crossFactorDaily, "ease", "weightKg") }
-    ];
-    return topCorrSentences(candidates, 2);
-  }, [crossFactorDaily]);
-
-  // 「タンパク質」グループ用: 体重1kgあたりのタンパク質量と、喉のコンディション／心の余裕の関係
-  const proteinCrossInsights = useMemo(() => {
-    const candidates = [
-      { labelX: "体重1kgあたりのタンパク質量", labelY: "喉のコンディション", ...pairCorr(crossFactorDaily, "proteinPerKg", "throatCondition") },
-      { labelX: "体重1kgあたりのタンパク質量", labelY: "心の余裕", ...pairCorr(crossFactorDaily, "proteinPerKg", "ease") }
-    ];
-    return topCorrSentences(candidates, 2);
-  }, [crossFactorDaily]);
-
-  // 「栄養摂取・体重変化」グループ用: 摂取カロリーと、体重／喉のコンディションの関係
-  const nutritionWeightCrossInsights = useMemo(() => {
-    const candidates = [
-      { labelX: "摂取カロリー", labelY: "体重", ...pairCorr(crossFactorDaily, "calorieActual", "weightKg") },
-      { labelX: "摂取カロリー", labelY: "喉のコンディション", ...pairCorr(crossFactorDaily, "calorieActual", "throatCondition") }
-    ];
-    return topCorrSentences(candidates, 2);
-  }, [crossFactorDaily]);
-
-  // 「食事」グループ用: 喉のコンディションが良かった日／悪かった日それぞれで、よく食べていたものを集計する。
+  // 「食事」用: 喉のコンディションが良かった日／悪かった日それぞれで、よく食べていたものを集計する。
   // 診断や断定ではなく、記録上の傾向をそのまま見返せるようにするだけのもの。
   const dietGoodBadFoodStats = useMemo(() => {
     const goodCounts = {};
@@ -1839,44 +1729,79 @@ export default function VocalTracker({ userId, userEmail }) {
     return { good: toSorted(goodCounts), goodTotal, bad: toSorted(badCounts), badTotal };
   }, [filteredEntries]);
 
-  // 体重・メンタル・食事・声の調子など、全グループの材料を1つにまとめた「全体を関連づけた分析」。
-  // 各グループで見つかった中で特に強い相関＋休養・滞在地・タグ・食事の傾向を組み合わせる。
+  // 1対1の相関ではなく、「タンパク質・カロリー・心の余裕・睡眠、複数の条件が同時に揃っているかどうか」で
+  // 日をグループ分けし、それぞれのグループで声の調子がどう違うかを比較する。
+  // 各条件の基準: タンパク質は「身体データ」で設定した目標係数以上／カロリーは目標カロリー以上／
+  // 心の余裕は5段階で4以上／睡眠時間は7時間以上、を「良い」とみなす。
+  const compositeConditionDaily = useMemo(() => {
+    const coefficient = Number(profile.protein_coefficient) || 1.6;
+    return crossFactorDaily.map((d) => {
+      const proteinGood = typeof d.proteinPerKg === "number" ? d.proteinPerKg >= coefficient : null;
+      const calorieGood = (typeof d.calorieActual === "number" && typeof d.calorieTarget === "number") ? d.calorieActual >= d.calorieTarget : null;
+      const easeGood = typeof d.ease === "number" ? d.ease >= 4 : null;
+      const sleepGood = typeof d.sleepHours === "number" ? d.sleepHours >= 7 : null;
+      const flags = [proteinGood, calorieGood, easeGood, sleepGood];
+      const known = flags.filter((f) => f !== null);
+      const goodCount = flags.filter((f) => f === true).length;
+      return { ...d, proteinGood, calorieGood, easeGood, sleepGood, goodCount, knownCount: known.length };
+    });
+  }, [crossFactorDaily, profile.protein_coefficient]);
+
+  // 「好条件が重なった日」（4項目中3つ以上）と「あまり重ならなかった日」（4項目中1つ以下）を比較して、
+  // 声の調子（喉のコンディション・声の質・響きスコア）がどう違うかを文章にする。
+  // どちらかの日数が2日未満のときは、参考にできるほどのデータがまだないと判断して表示しない。
   // 現時点では日本語のみの文言（他7言語の翻訳は translations.js 側の対応が別途必要）。
-  const overallCrossInsight = useMemo(() => {
-    const allCandidates = [
-      { domain: "声", labelX: "睡眠時間", labelY: "喉のコンディション", ...pairCorr(crossFactorDaily, "sleepHours", "throatCondition") },
-      { domain: "声", labelX: "睡眠の質", labelY: "声の質", ...pairCorr(crossFactorDaily, "sleepQuality", "voiceQuality") },
-      { domain: "響き", labelX: "喉のコンディション", labelY: "響きスコア", ...pairCorr(crossFactorDaily, "throatCondition", "resonanceScore") },
-      { domain: "体重", labelX: "摂取カロリー", labelY: "体重", ...pairCorr(crossFactorDaily, "calorieActual", "weightKg") },
-      { domain: "タンパク質", labelX: "体重1kgあたりのタンパク質量", labelY: "喉のコンディション", ...pairCorr(crossFactorDaily, "proteinPerKg", "throatCondition") },
-      { domain: "メンタル", labelX: "心の余裕", labelY: "喉のコンディション", ...pairCorr(crossFactorDaily, "ease", "throatCondition") },
-      { domain: "メンタル", labelX: "心の余裕", labelY: "声の質", ...pairCorr(crossFactorDaily, "ease", "voiceQuality") },
-      { domain: "メンタル", labelX: "心の余裕", labelY: "体重", ...pairCorr(crossFactorDaily, "ease", "weightKg") }
+  const compositePatternInsight = useMemo(() => {
+    const usable = compositeConditionDaily.filter((d) => d.knownCount >= 3);
+    const goodDays = usable.filter((d) => d.goodCount >= 3);
+    const poorDays = usable.filter((d) => d.goodCount <= 1);
+    if (goodDays.length < 2 || poorDays.length < 2) return null;
+
+    const avg = (arr, key) => {
+      const vals = arr.map((d) => d[key]).filter((v) => typeof v === "number");
+      return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+    };
+    const describe = (group) => ({
+      n: group.length,
+      throat: avg(group, "throatCondition"),
+      voice: avg(group, "voiceQuality"),
+      resonance: avg(group, "resonanceScore")
+    });
+    const outcomeText = (stats) => {
+      const parts = [];
+      if (stats.throat != null) parts.push(`喉のコンディションは平均${stats.throat.toFixed(1)}`);
+      if (stats.voice != null) parts.push(`声の質は平均${stats.voice.toFixed(1)}`);
+      if (stats.resonance != null) parts.push(`響きスコアは平均${stats.resonance.toFixed(1)}`);
+      return parts.length ? parts.join("、") : null;
+    };
+
+    const good = describe(goodDays);
+    const poor = describe(poorDays);
+    const goodText = outcomeText(good);
+    const poorText = outcomeText(poor);
+    if (!goodText || !poorText) return null;
+
+    const sentences = [
+      `タンパク質が多く摂取され、摂取カロリーが目標に届いており、心の余裕も十分にあり、睡眠時間も十分にとれていた日（${good.n}日）は、${goodText}でした。`,
+      `しかし反対に、これらの条件があまり揃っていなかった日（${poor.n}日）は、${poorText}でした。`
     ];
-    const topOverall = allCandidates
-      .filter((c) => c.r != null && Math.abs(c.r) >= 0.4 && c.n >= 5)
-      .sort((a, b) => Math.abs(b.r) - Math.abs(a.r))
-      .slice(0, 3);
 
-    const sentences = topOverall.map((c) => `【${c.domain}】${buildCorrSentence(c.labelX, c.labelY, c.r, c.n)}`);
-
-    const { bestRest, bestLocation } = mentalTopGroups;
+    const { bestRest } = mentalTopGroups;
     if (bestRest) {
       const label = REST_METHOD_KEYS[bestRest.method] ? t(REST_METHOD_KEYS[bestRest.method]) : bestRest.method;
-      sentences.push(`【休養】「${label}」を選んだ休養日は、心の余裕が平均${bestRest.avgEase.toFixed(1)}と高めです（${bestRest.n}件）。`);
+      sentences.push(`なお、休養方法では「${label}」を選んだ日の心の余裕が平均${bestRest.avgEase.toFixed(1)}と高めでした（${bestRest.n}件）。`);
     }
     const topGoodFood = dietGoodBadFoodStats.good[0] || null;
     const topBadFood = dietGoodBadFoodStats.bad[0] || null;
     if (topGoodFood) {
-      sentences.push(`【食事】喉の調子が良かった日（${dietGoodBadFoodStats.goodTotal}日）には「${topGoodFood.name}」を食べていることが多いです（${topGoodFood.count}日）。`);
+      sentences.push(`食事では、喉の調子が良かった日（${dietGoodBadFoodStats.goodTotal}日）に「${topGoodFood.name}」を食べていることが多いです（${topGoodFood.count}日）。`);
     }
     if (topBadFood) {
-      sentences.push(`【食事】喉の調子が悪かった日（${dietGoodBadFoodStats.badTotal}日）には「${topBadFood.name}」を食べていることが多いです（${topBadFood.count}日）。`);
+      sentences.push(`反対に、喉の調子が悪かった日（${dietGoodBadFoodStats.badTotal}日）には「${topBadFood.name}」を食べていることが多いです（${topBadFood.count}日）。`);
     }
 
-    if (sentences.length === 0) return null;
     return sentences;
-  }, [crossFactorDaily, mentalTopGroups, dietGoodBadFoodStats, t]);
+  }, [compositeConditionDaily, mentalTopGroups, dietGoodBadFoodStats, t]);
   // ---- 各グループ横断のクロス分析用データ ここまで ----
 
 
@@ -3052,7 +2977,6 @@ export default function VocalTracker({ userId, userEmail }) {
                     </>
                   )}
                 </div>
-
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-3">{t("titleAnalysisPeriod")}</h3>
                   <div className="flex gap-2 flex-wrap">
@@ -3084,7 +3008,7 @@ export default function VocalTracker({ userId, userEmail }) {
                 <div className="pt-2">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>声</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                    声の状態・喉のコンディションに関する記録をまとめています。
+                    声の状態・喉のコンディション・響きに関する記録をまとめています。
                   </p>
                 </div>
 
@@ -3189,32 +3113,6 @@ export default function VocalTracker({ userId, userEmail }) {
                     </ResponsiveContainer>
                   </div>
                 </div>
-                {voiceCrossInsights.length > 0 && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">声グループの関連分析</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      このグループ内の記録同士を関連づけて見つかった傾向です。
-                    </p>
-                    <div className="space-y-2">
-                      {voiceCrossInsights.map((c, i) => (
-                        <p key={i} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
-                          {c.text}
-                        </p>
-                      ))}
-                    </div>
-                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                      ※ あくまで記録上の傾向であり、因果関係を断定するものではありません。
-                    </p>
-                  </div>
-                )}
-
-                <div className="pt-2">
-                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>響き</h2>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                    響き・声の高さに関する記録をまとめています。
-                  </p>
-                </div>
-
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleResonanceChart")}</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteResonanceChart")}</p>
@@ -3283,29 +3181,49 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                   <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("notePitchChartLegend")}</p>
                 </div>
-                {resonanceCrossInsights.length > 0 && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">響きグループの関連分析</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      このグループ内の記録同士を関連づけて見つかった傾向です。
-                    </p>
-                    <div className="space-y-2">
-                      {resonanceCrossInsights.map((c, i) => (
-                        <p key={i} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
-                          {c.text}
-                        </p>
-                      ))}
-                    </div>
-                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                      ※ あくまで記録上の傾向であり、因果関係を断定するものではありません。
-                    </p>
-                  </div>
-                )}
-
                 <div className="pt-2">
-                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>体重</h2>
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>身体</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                    体重の変化に関する記録をまとめています。
+                    体重・食事・タンパク質・栄養摂取など、身体に関する記録をまとめています。
+                  </p>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">体重・摂取カロリー・タンパク質のまとめ</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    体重・摂取カロリー・タンパク質摂取量（体重1kgあたり）を1つのグラフで見比べられるようにしています。
+                  </p>
+                  <div style={{ width: "100%", height: 260 }}>
+                    <ResponsiveContainer>
+                      <ComposedChart data={timeSeries} margin={{ left: 4, right: 4, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis yAxisId="calorie" tick={{ fontSize: 10, fill: C.inkSoft }} unit="kcal" />
+                        <YAxis yAxisId="weight" orientation="right" domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="kg" />
+                        <YAxis yAxisId="protein" domain={["auto", "auto"]} hide />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <Bar yAxisId="calorie" dataKey="calorieActual" name={t("chartNameCalorieActual")} fill={C.gold} radius={3} opacity={0.7} />
+                        <Line yAxisId="weight" type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={C.curtain} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                        <Line yAxisId="protein" type="monotone" dataKey="proteinPerKg" name={t("chartNameActualCoefficient")} stroke={C.sage} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      </ComposedChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="flex flex-wrap gap-3 mt-2">
+                    <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                      <span style={{ width: 9, height: 9, borderRadius: 999, background: C.gold, display: "inline-block" }} />
+                      摂取カロリー（kcal・左軸）
+                    </span>
+                    <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                      <span style={{ width: 9, height: 2, background: C.curtain, display: "inline-block" }} />
+                      体重（kg・右軸）
+                    </span>
+                    <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                      <span style={{ width: 9, height: 2, background: C.sage, display: "inline-block" }} />
+                      タンパク質（g/kg・軸は非表示、ツールチップで確認可）
+                    </span>
+                  </div>
+                  <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                    タンパク質はスケールが大きく異なるため軸は表示していませんが、線にカーソルを合わせると数値を確認できます。
                   </p>
                 </div>
 
@@ -3324,85 +3242,6 @@ export default function VocalTracker({ userId, userEmail }) {
                     </ResponsiveContainer>
                   </div>
                 </div>
-                {weightCrossInsights.length > 0 && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">体重グループの関連分析</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      このグループ内の記録同士を関連づけて見つかった傾向です。
-                    </p>
-                    <div className="space-y-2">
-                      {weightCrossInsights.map((c, i) => (
-                        <p key={i} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
-                          {c.text}
-                        </p>
-                      ))}
-                    </div>
-                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                      ※ あくまで記録上の傾向であり、因果関係を断定するものではありません。
-                    </p>
-                  </div>
-                )}
-
-                <div className="pt-2">
-                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>食事</h2>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                    食事の記録をまとめています。
-                  </p>
-                </div>
-
-                {(dietGoodBadFoodStats.good.length > 0 || dietGoodBadFoodStats.bad.length > 0) ? (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">食事内容の傾向</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      喉のコンディションが良かった日・悪かった日それぞれで、よく食べていたものを集計しています。
-                    </p>
-                    <div className="space-y-3">
-                      {dietGoodBadFoodStats.good.length > 0 && (
-                        <div>
-                          <p className="text-xs font-medium mb-1.5" style={{ color: C.sage }}>
-                            喉の調子が良かった日（{dietGoodBadFoodStats.goodTotal}日）でよく食べていたもの
-                          </p>
-                          <div className="flex flex-wrap gap-1.5">
-                            {dietGoodBadFoodStats.good.map(({ name, count }) => (
-                              <span key={name} className="px-2 py-0.5 rounded-full text-xs" style={{ background: C.paper, color: C.ink }}>
-                                {name}（{count}）
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      {dietGoodBadFoodStats.bad.length > 0 && (
-                        <div>
-                          <p className="text-xs font-medium mb-1.5" style={{ color: C.curtain }}>
-                            喉の調子が悪かった日（{dietGoodBadFoodStats.badTotal}日）でよく食べていたもの
-                          </p>
-                          <div className="flex flex-wrap gap-1.5">
-                            {dietGoodBadFoodStats.bad.map(({ name, count }) => (
-                              <span key={name} className="px-2 py-0.5 rounded-full text-xs" style={{ background: C.paper, color: C.ink }}>
-                                {name}（{count}）
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
-                      ※ あくまで記録上の傾向であり、因果関係を断定するものではありません。件数が少ないうちは参考程度にご覧ください。
-                    </p>
-                  </div>
-                ) : (
-                  <p className="text-xs rounded-2xl border p-4" style={{ color: C.inkSoft, borderColor: C.line, background: C.card }}>
-                    まだ食事内容と喉のコンディションを関連づけられるだけの記録がありません。記録が増えると、ここに傾向が表示されます。
-                  </p>
-                )}
-
-                <div className="pt-2">
-                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>タンパク質</h2>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                    タンパク質摂取量に関する記録をまとめています。
-                  </p>
-                </div>
-
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleProteinTrend")}</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteProteinTrendTarget")}</p>
@@ -3419,32 +3258,6 @@ export default function VocalTracker({ userId, userEmail }) {
                     </ResponsiveContainer>
                   </div>
                 </div>
-                {proteinCrossInsights.length > 0 && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">タンパク質グループの関連分析</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      このグループ内の記録同士を関連づけて見つかった傾向です。
-                    </p>
-                    <div className="space-y-2">
-                      {proteinCrossInsights.map((c, i) => (
-                        <p key={i} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
-                          {c.text}
-                        </p>
-                      ))}
-                    </div>
-                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                      ※ あくまで記録上の傾向であり、因果関係を断定するものではありません。
-                    </p>
-                  </div>
-                )}
-
-                <div className="pt-2">
-                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>栄養摂取・体重変化</h2>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                    摂取カロリーと体重の関係をまとめています。
-                  </p>
-                </div>
-
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleNutritionWeightChart")}</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteNutritionWeightChart")}</p>
@@ -3472,32 +3285,12 @@ export default function VocalTracker({ userId, userEmail }) {
                     </ResponsiveContainer>
                   </div>
                 </div>
-                {nutritionWeightCrossInsights.length > 0 && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">栄養摂取・体重変化グループの関連分析</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      このグループ内の記録同士を関連づけて見つかった傾向です。
-                    </p>
-                    <div className="space-y-2">
-                      {nutritionWeightCrossInsights.map((c, i) => (
-                        <p key={i} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
-                          {c.text}
-                        </p>
-                      ))}
-                    </div>
-                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                      ※ あくまで記録上の傾向であり、因果関係を断定するものではありません。
-                    </p>
-                  </div>
-                )}
-
                 <div className="pt-2">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>メンタル</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                     心の余裕に関する記録を、ここにまとめて振り返れるようにしています。
                   </p>
                 </div>
-
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleMentalTrend")}</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteMentalTrend")}</p>
@@ -3541,7 +3334,6 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   )}
                 </div>
-
                 {(mentalTagStats.low.length > 0 || mentalTagStats.high.length > 0) && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">気持ちタグの傾向</h3>
@@ -3580,26 +3372,12 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   </div>
                 )}
-
-                {mentalIntegratedInsight && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">まとめて見えてきたこと</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      相関・休養方法・滞在地・タグなど、複数の記録を組み合わせた傾向です。
-                    </p>
-                    <p className="text-xs" style={{ color: C.ink }}>{mentalIntegratedInsight}</p>
-                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
-                      ※ あくまで記録上の傾向であり、因果関係を断定するものではありません。件数が少ないうちは参考程度にご覧ください。
-                    </p>
-                  </div>
-                )}
                 <div className="pt-2">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>全体を関連づけた分析</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                     体重・メンタル・食事・声の調子など、グループをまたいだ関連をまとめて見ていきます。
                   </p>
                 </div>
-
                 {restMethodStats.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">{t("titleRestMethodTrend")}</h3>
@@ -3616,7 +3394,6 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   </div>
                 )}
-
                 {locationStats.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">{t("titleLocationTrend")}</h3>
@@ -3729,14 +3506,14 @@ export default function VocalTracker({ userId, userEmail }) {
                     </p>
                   </>
                 )}
-                {overallCrossInsight && overallCrossInsight.length > 0 && (
+                {compositePatternInsight && compositePatternInsight.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">体重・メンタル・食事・声の調子をまとめると</h3>
+                    <h3 className="ff-display italic text-lg mb-1">複数の条件を組み合わせて見えてきたこと</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      これまでの全グループを横断して見つかった、特に関連の強い傾向です。
+                      タンパク質摂取量・摂取カロリー・心の余裕・睡眠時間、これらの条件が同時に揃っているかどうかで日を分けて比較しています。
                     </p>
                     <div className="space-y-2">
-                      {overallCrossInsight.map((s, i) => (
+                      {compositePatternInsight.map((s, i) => (
                         <p key={i} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
                           {s}
                         </p>
@@ -3750,7 +3527,6 @@ export default function VocalTracker({ userId, userEmail }) {
 
               </div>
             )}
-
             {activeTab === "advice" && (
               <div className="space-y-5">
                 <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
