@@ -810,6 +810,8 @@ function buildFormData(date, entries) {
       cppsValue: existing.cppsValue ?? "",
       exerciseLevel: existing.exerciseLevel ?? null,
       bodyFatPct: existing.bodyFatPct ?? "",
+      proteinLevel: existing.proteinLevel ?? null,
+      calorieLevel: existing.calorieLevel ?? null,
       activities: existing.activities || [],
       recovery: existing.recovery || null
     };
@@ -857,6 +859,8 @@ function buildFormData(date, entries) {
     cppsValue: "",
     exerciseLevel: null,
     bodyFatPct: "",
+    proteinLevel: null,
+    calorieLevel: null,
     // lavoce-曲目複数化パッチ.md: 活動は「1日1つ」ではなくブロックの配列。
     // 既定は自主練習ブロック1つ（旧UXの「最初から自主練習が選ばれている」状態を踏襲）。
     activities: [newActivityBlock("自主練習", 0)],
@@ -960,6 +964,24 @@ function computeNutritionTargets(weightKg, heightCm, age, sex, phase, proteinCoe
   const carbsTarget = Math.max(0, (calorieTarget - proteinKcal - fatKcal) / 4);
   const fiberTarget = sex === "男性" ? 21 : sex === "女性" ? 18 : 20;
   return { calorieTarget, proteinTarget, fatTarget, carbsTarget, fiberTarget, usedPreciseFormula };
+}
+// lavoce-記録項目の再設計v2.md §3.4: 食品を数えさせない簡易モード。
+// 「しっかり摂った／ふつう／少なめ」の3択から、体重と目標係数をもとにg/kgを推定する。
+// カロリーも同様に3択で、目標に対する比率として推定する。
+function estimateSimpleMealMacros(targets, proteinLevel, calorieLevel) {
+  if (!targets) return null;
+  const proteinMultiplier = [0.7, 1.0, 1.3][proteinLevel] ?? 1.0;
+  const calorieMultiplier = [0.85, 1.0, 1.15][calorieLevel] ?? 1.0;
+  const proteinG = targets.proteinTarget * proteinMultiplier;
+  const totalKcal = targets.calorieTarget * calorieMultiplier;
+  const proteinKcal = proteinG * 4;
+  const remainingKcal = Math.max(0, totalKcal - proteinKcal);
+  const carbsKcalTarget = targets.carbsTarget * 4;
+  const fatKcalTarget = targets.fatTarget * 9;
+  const remainingTargetKcal = carbsKcalTarget + fatKcalTarget;
+  const carbsG = remainingTargetKcal > 0 ? (remainingKcal * (carbsKcalTarget / remainingTargetKcal)) / 4 : 0;
+  const fatG = remainingTargetKcal > 0 ? (remainingKcal * (fatKcalTarget / remainingTargetKcal)) / 9 : 0;
+  return { proteinG, carbsG, fatG, fiberG: targets.fiberTarget || 0, totalKcal };
 }
 function evaluateIntake(actual, target) {
   if (!target || target <= 0) return null;
@@ -1068,6 +1090,8 @@ function rowToEntry(row) {
     notes: row.notes || "",
     weightKg: row.weight_kg,
     bodyFatPct: row.body_fat_pct,
+    proteinLevel: row.protein_level,
+    calorieLevel: row.calorie_level,
     carbs: row.carbs_g,
     protein: row.protein_g,
     fat: row.fat_g,
@@ -1364,6 +1388,9 @@ function entryToRow(userId, e) {
   // 後方互換の日次フィールドはそこから導出する（複数の本番ブロックがあれば最初のものを採用）。
   const performanceBlock = activities.find((a) => a.kind === "本番" && a.detail && a.detail.performanceQuality != null);
   const derivedPerformanceQuality = performanceBlock ? performanceBlock.detail.performanceQuality : e.performanceQuality;
+  // §3.4: 簡易モード（食品を1件も記録していない）のときは、3択から推定したマクロを使う。
+  const hasDetailedMeals = (e.meals || []).length > 0;
+  const simpleMacros = !hasDetailedMeals ? e.simpleMealMacros : null;
   return {
     user_id: userId,
     date: e.date,
@@ -1388,11 +1415,13 @@ function entryToRow(userId, e) {
     notes: e.notes,
     weight_kg: numOrNull(e.weightKg),
     body_fat_pct: numOrNull(e.bodyFatPct),
+    protein_level: numOrNull(e.proteinLevel),
+    calorie_level: numOrNull(e.calorieLevel),
     water_intake: Object.values(e.waterBySlot || {}).reduce((total, v) => total + (Number(v) || 0), 0),
-    carbs_g: sumMacro(e.meals, "carbs"),
-    protein_g: sumMacro(e.meals, "protein"),
-    fat_g: sumMacro(e.meals, "fat"),
-    fiber_g: sumMacro(e.meals, "fiber"),
+    carbs_g: simpleMacros ? simpleMacros.carbsG : sumMacro(e.meals, "carbs"),
+    protein_g: simpleMacros ? simpleMacros.proteinG : sumMacro(e.meals, "protein"),
+    fat_g: simpleMacros ? simpleMacros.fatG : sumMacro(e.meals, "fat"),
+    fiber_g: simpleMacros ? simpleMacros.fiberG : sumMacro(e.meals, "fiber"),
     exercise_minutes: (e.exercises || []).reduce((total, x) => total + (Number(x.minutes) || 0), 0),
     meals: (e.meals || []).map((m) => ({ ...m, carbs: numOrNull(m.carbs), protein: numOrNull(m.protein), fat: numOrNull(m.fat), fiber: numOrNull(m.fiber) })),
     exercises: (e.exercises || []).map((x) => ({ ...x, minutes: numOrNull(x.minutes) })),
@@ -2426,6 +2455,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [clinicCustomEnd, setClinicCustomEnd] = useState("");
   const [clinicFreeNote, setClinicFreeNote] = useState("");
   const [showExerciseDetail, setShowExerciseDetail] = useState(false);
+  const [showMealDetail, setShowMealDetail] = useState(false);
   const [selectedDate, setSelectedDate] = useState(todayISOUTC());
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
@@ -2695,15 +2725,6 @@ export default function VocalTracker({ userId, userEmail }) {
     const { flags } = computeConditionFlags(y);
     return { hasData: true, date: yDate, flags };
   }, [entries]);
-  const mealTotals = useMemo(() => {
-    const meals = formData ? formData.meals || [] : [];
-    return {
-      carbs: sumMacro(meals, "carbs"),
-      protein: sumMacro(meals, "protein"),
-      fat: sumMacro(meals, "fat"),
-      fiber: sumMacro(meals, "fiber")
-    };
-  }, [formData]);
   const foodLibrary = useMemo(
     () => buildFoodLibrary(entries, formData ? formData.meals : []),
     [entries, formData]
@@ -2728,6 +2749,24 @@ export default function VocalTracker({ userId, userEmail }) {
     const w = (formData && formData.weightKg) ? Number(formData.weightKg) : getLatestWeight(entries, selectedDate);
     return computeNutritionTargets(w, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient);
   }, [formData, entries, selectedDate, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient]);
+  // lavoce-記録項目の再設計v2.md §3.4: 食品を1件も記録していない日は、簡易3択からの推定値を使う。
+  const simpleMealMacros = useMemo(() => {
+    if (!formData || (formData.meals || []).length > 0) return null;
+    if (formData.proteinLevel == null && formData.calorieLevel == null) return null;
+    return estimateSimpleMealMacros(nutritionTargets, formData.proteinLevel ?? 1, formData.calorieLevel ?? 1);
+  }, [formData, nutritionTargets]);
+  const mealTotals = useMemo(() => {
+    const meals = formData ? formData.meals || [] : [];
+    if (meals.length === 0 && simpleMealMacros) {
+      return { carbs: simpleMealMacros.carbsG, protein: simpleMealMacros.proteinG, fat: simpleMealMacros.fatG, fiber: simpleMealMacros.fiberG };
+    }
+    return {
+      carbs: sumMacro(meals, "carbs"),
+      protein: sumMacro(meals, "protein"),
+      fat: sumMacro(meals, "fat"),
+      fiber: sumMacro(meals, "fiber")
+    };
+  }, [formData, simpleMealMacros]);
   const sortedDates = useMemo(() => Object.keys(entries).sort().reverse(), [entries]);
   const monthEntries = useMemo(() => {
     const prefix = `${viewMonth.year}-${String(viewMonth.month + 1).padStart(2, "0")}`;
@@ -4543,6 +4582,7 @@ export default function VocalTracker({ userId, userEmail }) {
     setSaveError("");
     const clean = { ...formData };
     if (!entryHasActivityKind(clean, "本番")) clean.performanceQuality = null;
+    clean.simpleMealMacros = simpleMealMacros;
     const supabase = createClient();
     const { error } = await supabase
       .from("entries")
@@ -5359,34 +5399,85 @@ export default function VocalTracker({ userId, userEmail }) {
                           ))}
                         </div>
                       </div>
-                      {MEAL_SLOTS.map((slot) => (
-                        <div key={slot}>
-                          <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>{t(MEAL_SLOT_KEYS[slot])}</p>
-                          <div className="flex flex-wrap gap-1.5 mb-2">
-                            {QUICK_ADD_FOODS.map((name) => {
-                              const preset = FOOD_PRESETS.find((p) => p.name === name);
-                              const label = preset ? foodDisplayName(preset, language) : name;
-                              return (
-                                <button key={name} type="button" onClick={() => quickAddFood(slot, name)}
-                                  className="px-2.5 py-1 rounded-full text-xs font-medium border"
-                                  style={{ borderColor: C.line, color: C.inkSoft, background: C.card }}>
-                                  + {label}
+                      {(formData.meals || []).length === 0 && !showMealDetail ? (
+                        <>
+                          <div>
+                            <span className="text-sm font-medium block mb-2">タンパク質は摂れましたか？</span>
+                            <div className="flex gap-2">
+                              {[
+                                { v: 0, label: "少なめ" },
+                                { v: 1, label: "ふつう" },
+                                { v: 2, label: "しっかり摂った" }
+                              ].map((opt) => (
+                                <button key={opt.v} type="button" onClick={() => setFormData((f) => ({ ...f, proteinLevel: opt.v }))}
+                                  className="flex-1 py-2 rounded-xl text-xs font-medium border transition-all"
+                                  style={{
+                                    background: formData.proteinLevel === opt.v ? C.curtain : C.paper,
+                                    color: formData.proteinLevel === opt.v ? "#FFFDF8" : C.inkSoft,
+                                    borderColor: formData.proteinLevel === opt.v ? C.curtain : C.line
+                                  }}>
+                                  {opt.label}
                                 </button>
-                              );
-                            })}
+                              ))}
+                            </div>
                           </div>
-                          <div className="space-y-2">
-                            {(formData.meals || []).filter((m) => m.slot === slot).map((m) => (
-                              <MealItemRow key={m.id} item={m} foodLibrary={foodLibrary} t={t} language={language} onChange={(next) => updateMeal(m.id, next)} onRemove={() => removeMeal(m.id)} />
-                            ))}
+                          <div>
+                            <span className="text-sm font-medium block mb-2">食事の量は全体的にどうでしたか？</span>
+                            <div className="flex gap-2">
+                              {[
+                                { v: 0, label: "少なめ" },
+                                { v: 1, label: "いつも通り" },
+                                { v: 2, label: "多め" }
+                              ].map((opt) => (
+                                <button key={opt.v} type="button" onClick={() => setFormData((f) => ({ ...f, calorieLevel: opt.v }))}
+                                  className="flex-1 py-2 rounded-xl text-xs font-medium border transition-all"
+                                  style={{
+                                    background: formData.calorieLevel === opt.v ? C.curtain : C.paper,
+                                    color: formData.calorieLevel === opt.v ? "#FFFDF8" : C.inkSoft,
+                                    borderColor: formData.calorieLevel === opt.v ? C.curtain : C.line
+                                  }}>
+                                  {opt.label}
+                                </button>
+                              ))}
+                            </div>
                           </div>
-                          <button type="button" onClick={() => addMeal(slot)}
-                            className="w-full rounded-xl border py-1.5 text-xs font-medium flex items-center justify-center gap-1.5 mt-2"
-                            style={{ borderColor: C.line, color: C.inkSoft }}>
-                            <Plus size={12} />{t(MEAL_SLOT_KEYS[slot])}
+                          <button type="button" onClick={() => setShowMealDetail(true)}
+                            className="text-xs underline" style={{ color: C.inkSoft }}>
+                            +食品ごとに詳しく記録する
                           </button>
-                        </div>
-                      ))}
+                        </>
+                      ) : (
+                        <>
+                          {MEAL_SLOTS.map((slot) => (
+                            <div key={slot}>
+                              <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>{t(MEAL_SLOT_KEYS[slot])}</p>
+                              <div className="flex flex-wrap gap-1.5 mb-2">
+                                {QUICK_ADD_FOODS.map((name) => {
+                                  const preset = FOOD_PRESETS.find((p) => p.name === name);
+                                  const label = preset ? foodDisplayName(preset, language) : name;
+                                  return (
+                                    <button key={name} type="button" onClick={() => quickAddFood(slot, name)}
+                                      className="px-2.5 py-1 rounded-full text-xs font-medium border"
+                                      style={{ borderColor: C.line, color: C.inkSoft, background: C.card }}>
+                                      + {label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <div className="space-y-2">
+                                {(formData.meals || []).filter((m) => m.slot === slot).map((m) => (
+                                  <MealItemRow key={m.id} item={m} foodLibrary={foodLibrary} t={t} language={language} onChange={(next) => updateMeal(m.id, next)} onRemove={() => removeMeal(m.id)} />
+                                ))}
+                              </div>
+                              <button type="button" onClick={() => addMeal(slot)}
+                                className="w-full rounded-xl border py-1.5 text-xs font-medium flex items-center justify-center gap-1.5 mt-2"
+                                style={{ borderColor: C.line, color: C.inkSoft }}>
+                                <Plus size={12} />{t(MEAL_SLOT_KEYS[slot])}
+                              </button>
+                            </div>
+                          ))}
+                        </>
+                      )}
                       <div>
                         <div className="flex items-center gap-1.5 mb-1.5 mt-1">
                           <Utensils size={14} style={{ color: C.gold }} />
@@ -5414,6 +5505,11 @@ export default function VocalTracker({ userId, userEmail }) {
                           <div className="ff-mono text-sm font-medium">{mealTotals.fiber.toFixed(0)}g</div>
                         </div>
                       </div>
+                      {simpleMealMacros && (formData.meals || []).length === 0 && (
+                        <p className="text-xs" style={{ color: C.inkSoft }}>
+                          ※ 上の数値は、選択した3択と目標値から推定した参考値です。実際に食べた食品を記録すると、より正確になります。
+                        </p>
+                      )}
 
                       {nutritionTargets ? (
                         <div className="rounded-xl p-3" style={{ background: C.paper }}>
