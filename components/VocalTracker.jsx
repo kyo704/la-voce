@@ -3049,6 +3049,14 @@ export default function VocalTracker({ userId, userEmail }) {
   // 記録と分析の順番設計 §5.3: 分析画面の「この分析を強くする」から記録画面へジャンプしたとき、
   // 該当セクションを2秒だけ淡くハイライトする（入力欄へのフォーカスは当てない）。
   const [highlightSection, setHighlightSection] = useState(null);
+  // ★重要：ホームタブの挨拶も、以前は new Date() をレンダリング中に直接使っており、
+  // recordViewと同じ原因（サーバー/ブラウザの時刻差）でハイドレーションエラー（React #423）を
+  // 起こしていた。ホームタブは既定タブのため、アプリを開くたび必ず発動する重大な不具合だった。
+  // 同じ安全なパターン（固定値→マウント後のuseEffectで補正）に統一する。
+  const [greetingHour, setGreetingHour] = useState(12);
+  useEffect(() => {
+    setGreetingHour(new Date().getHours());
+  }, []);
   // 記録と分析の順番設計 §3.1: 記録の入口を時間帯で2つに分ける。
   // 境界時刻（既定21時）より前は「声の記録」、以降は「一日の記録」を既定表示にする。
   // ユーザーはいつでも上部の切り替えで行き来できる（隠さない）。
@@ -3106,6 +3114,10 @@ export default function VocalTracker({ userId, userEmail }) {
   const [showCopiedNotice, setShowCopiedNotice] = useState(false);
   const [showDay7Survey, setShowDay7Survey] = useState(false);
   const [selectedDate, setSelectedDate] = useState(todayISOUTC());
+  // ★重要：ホームタブの「今日」判定（realToday）も、以前はレンダリング中に todayISO()（ローカル時刻）を
+  // 直接呼んでおり、selectedDateと同じ理由でハイドレーション不一致を起こしうる状態だった。
+  // 同じ安全なパターン（UTC基準で初期化→マウント後のuseEffectで現地時間へ補正）に統一する。
+  const [realTodayDate, setRealTodayDate] = useState(todayISOUTC());
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
   const [saveError, setSaveError] = useState("");
@@ -3159,6 +3171,7 @@ export default function VocalTracker({ userId, userEmail }) {
     const utcToday = todayISOUTC();
     if (localToday !== utcToday) {
       setSelectedDate((prev) => (prev === utcToday ? localToday : prev));
+      setRealTodayDate(localToday);
       const d = new Date();
       setViewMonth((prev) =>
         (prev.year === d.getUTCFullYear() && prev.month === d.getUTCMonth())
@@ -3440,13 +3453,13 @@ export default function VocalTracker({ userId, userEmail }) {
   // 分析タブ用の「声の状態の予測」。selectedDate（今日タブでの表示中の日）とは独立して、
   // 常に実際の「今日」から見た前日の記録をもとに、理論的な根拠つきで解説する。
   const voicePrediction = useMemo(() => {
-    const realToday = todayISO();
+    const realToday = realTodayDate;
     const yDate = addDays(realToday, -1);
     const y = entries[yDate];
     if (!y) return { hasData: false, date: yDate, flags: [] };
     const { flags } = computeConditionFlags(y);
     return { hasData: true, date: yDate, flags };
-  }, [entries]);
+  }, [entries, realTodayDate]);
   const foodLibrary = useMemo(
     () => buildFoodLibrary(entries, formData ? formData.meals : []),
     [entries, formData]
@@ -3656,7 +3669,7 @@ export default function VocalTracker({ userId, userEmail }) {
   // 医学的な診断値ではなく、これまで記録してきた項目を独自の重み付けで統合したもの。
   // 各項目の内訳も併せて返し、ブラックボックスにしない。
   const vocalConditionScore = useMemo(() => {
-    const realToday = todayISO();
+    const realToday = realTodayDate;
     const startDate = addDays(realToday, -13);
     const days = [];
     for (let i = 0; i < 14; i++) {
@@ -3720,7 +3733,7 @@ export default function VocalTracker({ userId, userEmail }) {
     const topPullDown = withPullDown[0] && withPullDown[0].pullDown >= 1 ? withPullDown[0] : null;
 
     return { hasEnoughData: true, total, components, pullDowns: withPullDown, topPullDown, daysCount: days.length };
-  }, [entries]);
+  }, [entries, realTodayDate]);
   const timeSeries = useMemo(() => {
     const dates = Object.keys(filteredEntries).sort();
     return dates.map((date) => {
@@ -3994,12 +4007,12 @@ export default function VocalTracker({ userId, userEmail }) {
 
   // ---- lavoce-画面レイアウト仕様_1.md §3: ホーム（今日の一枚） 用データ（前半） ----
   const recordStreak = useMemo(() => {
-    const realToday = todayISO();
+    const realToday = realTodayDate;
     let streak = 0;
     let d = entries[realToday] ? realToday : addDays(realToday, -1);
     while (entries[d]) { streak += 1; d = addDays(d, -1); }
     return streak;
-  }, [entries]);
+  }, [entries, realTodayDate]);
   // 次に解放される指標までの進捗（3/7/14/28日のうち、まだ届いていない最初のもの）
   const nextUnlock = useMemo(() => {
     const thresholds = [
@@ -4218,13 +4231,13 @@ export default function VocalTracker({ userId, userEmail }) {
   // ---- ここから、lavoce-指標設計図.md フェーズ2（02偏差値・01予報）用データ ----
   // 02. コンディション偏差値：直近28日分の「声の調子スコア」を日ごとに並べ、自分の分布の中で今日がどこにいるかを見る。
   const dailyScoreSeries = useMemo(() => {
-    const realToday = todayISO();
+    const realToday = realTodayDate;
     const dates = [];
     for (let i = 27; i >= 0; i--) dates.push(addDays(realToday, -i));
     return dates
       .map((d) => ({ date: d, score: computeDailyScore100(entries[d]) }))
       .filter((x) => x.score != null);
-  }, [entries]);
+  }, [entries, realTodayDate]);
   const deviationScore = useMemo(() => {
     if (dailyScoreSeries.length < 7) return null;
     const values = dailyScoreSeries.map((d) => d.score);
@@ -4298,7 +4311,7 @@ export default function VocalTracker({ userId, userEmail }) {
     const series = {};
     if (allDates.length === 0) return series;
     const firstDate = allDates[0];
-    const realToday = todayISO();
+    const realToday = realTodayDate;
     const lambdaA = 2 / (7 + 1);
     const lambdaC = 2 / (28 + 1);
     let A = null, C = null;
@@ -4318,13 +4331,13 @@ export default function VocalTracker({ userId, userEmail }) {
       guard += 1;
     }
     return series;
-  }, [entries, songFactorResolver]);
+  }, [entries, songFactorResolver, realTodayDate]);
 
   // 01. 声の予報：前夜の行動から翌朝の喉スコアを予測する。
   // 記録14日未満は一般知見（β₀）だけで予報し、14日以上たまったらリッジ回帰で
   // その人自身の係数（β̂）を推定し、経験ベイズ縮約で β₀ とブレンドする（β = n/(n+k)·β̂ + k/(n+k)·β₀、k=20）。
   const forecastTrainingSet = useMemo(() => {
-    const realToday = todayISO();
+    const realToday = realTodayDate;
     const rows = [];
     for (let i = 35; i >= 0; i--) {
       const d = addDays(realToday, -i);
@@ -4337,7 +4350,7 @@ export default function VocalTracker({ userId, userEmail }) {
       rows.push({ date: d, predictors: extractForecastPredictors(prevEntry, prevAcwr), actual });
     }
     return rows;
-  }, [entries, acwrSeries]);
+  }, [entries, acwrSeries, realTodayDate]);
   const predictorMeans = useMemo(() => {
     const means = {};
     FORECAST_KEYS.forEach((k) => {
@@ -4420,7 +4433,7 @@ export default function VocalTracker({ userId, userEmail }) {
     return { rate: Math.round((hits / recent.length) * 100), n: recent.length };
   }, [forecastResiduals]);
   const todayForecast = useMemo(() => {
-    const realToday = todayISO();
+    const realToday = realTodayDate;
     const yDate = addDays(realToday, -1);
     const prevEntry = entries[yDate];
     if (!prevEntry) return { hasData: false, yesterdayDate: yDate };
@@ -4444,7 +4457,7 @@ export default function VocalTracker({ userId, userEmail }) {
       personalizationPct: personalizedBeta.personalizationPct,
       trainN: personalizedBeta.n
     };
-  }, [entries, acwrSeries, predictorMeans, throatMu, forecastResidualSD, personalizedBeta]);
+  }, [entries, acwrSeries, predictorMeans, throatMu, forecastResidualSD, personalizedBeta, realTodayDate]);
   // lavoce-画面レイアウト仕様_1.md §3.3: 提案は必ず1つだけ。予報の寄与のうち、
   // いちばん改善余地が大きい「行動可能」な項目を選ぶ（環境・前日症状などは提案しない）。
   const HOME_SUGGESTION_TEXT = {
@@ -4867,25 +4880,25 @@ export default function VocalTracker({ userId, userEmail }) {
     return { cells: list, tBins, rhBins };
   }, [envEntries]);
   const todayEnvPosition = useMemo(() => {
-    const realToday = todayISO();
+    const realToday = realTodayDate;
     const e = entries[realToday];
     if (!e) return null;
     const ah = computeAbsoluteHumidity(e.temperature, e.humidity);
     if (ah == null) return null;
     return { ah: roundTo1(ah), temp: e.temperature, rh: e.humidity, location: e.location || null };
-  }, [entries]);
+  }, [entries, realTodayDate]);
   // ---- 環境の快適帯 用データ ここまで ----
 
   // ---- lavoce-指標設計図.md 08. 本番ピーキング曲線 用データ ----
   const performanceDates = useMemo(() => Object.keys(entries).filter((d) => entryHasActivityKind(entries[d], "本番")).sort(), [entries]);
   const nextPerformanceDate = useMemo(() => {
-    const realToday = todayISO();
+    const realToday = realTodayDate;
     return performanceDates.find((d) => d > realToday) || null;
-  }, [performanceDates]);
+  }, [performanceDates, realTodayDate]);
   const pastPerformanceDates = useMemo(() => {
-    const realToday = todayISO();
+    const realToday = realTodayDate;
     return performanceDates.filter((d) => d <= realToday);
-  }, [performanceDates]);
+  }, [performanceDates, realTodayDate]);
   // 本番日をゼロ点にして、過去のすべての本番を重ね合わせる（イベント整列平均）。
   const peakingCurve = useMemo(() => {
     if (pastPerformanceDates.length < 3) return null;
@@ -4954,7 +4967,7 @@ export default function VocalTracker({ userId, userEmail }) {
   // 先生に画面をそのまま見せるための読み取り専用ビュー。メンタルの日記・気持ちタグ・
   // 体重・体組成・食事の詳細・既往症は、意図的にここでは一切参照しない。
   const lessonModeData = useMemo(() => {
-    const realToday = todayISO();
+    const realToday = realTodayDate;
     const dates4w = [];
     for (let i = 27; i >= 0; i--) dates4w.push(addDays(realToday, -i));
     const scoreTrend = dates4w.map((d) => ({ date: d.slice(5), score: entries[d] ? computeDailyScore100(entries[d]) : null }));
@@ -4970,7 +4983,7 @@ export default function VocalTracker({ userId, userEmail }) {
     });
     const rangeInWindow = allMidis.length ? { low: Math.min(...allMidis), high: Math.max(...allMidis) } : null;
     return { scoreTrend, symptomWeeks, loadTrend, rangeInWindow, recordedCount: dates4w.filter((d) => entries[d]).length };
-  }, [entries, acwrSeries]);
+  }, [entries, acwrSeries, realTodayDate]);
   // ---- レッスンモード 用データ ここまで ----
 
   // ---- lavoce-週次カルテ見直しパッチ.md §5: 受診用サマリー 用データ ----
@@ -5011,12 +5024,12 @@ export default function VocalTracker({ userId, userEmail }) {
     return earliest;
   }, [symptomContinuousRanges, entries]);
   const clinicPeriodRange = useMemo(() => {
-    const realToday = todayISO();
+    const realToday = realTodayDate;
     if (clinicPeriodMode === "month") return { start: addDays(realToday, -29), end: realToday };
     if (clinicPeriodMode === "3months") return { start: addDays(realToday, -89), end: realToday };
     if (clinicPeriodMode === "custom") return { start: clinicCustomStart || addDays(realToday, -29), end: clinicCustomEnd || realToday };
     return { start: clinicAutoDetectedStart || addDays(realToday, -29), end: realToday }; // "auto"
-  }, [clinicPeriodMode, clinicAutoDetectedStart, clinicCustomStart, clinicCustomEnd]);
+  }, [clinicPeriodMode, clinicAutoDetectedStart, clinicCustomStart, clinicCustomEnd, realTodayDate]);
   const clinicSymptomSummary = useMemo(() => {
     const { start, end } = clinicPeriodRange;
     const datesInRange = Object.keys(entries).filter((d) => d >= start && d <= end).sort();
@@ -5102,7 +5115,7 @@ export default function VocalTracker({ userId, userEmail }) {
   // ---- lavoce-記録項目の再設計v2.md §3.5: エネルギー可用性（EA） 用データ ----
   // 日次では出さない（体重は水分でブレるため）。件数が十分溜まったときだけ、月1回のまとめとして表示する。
   const energyAvailabilityAnalysis = useMemo(() => {
-    const realToday = todayISO();
+    const realToday = realTodayDate;
     const dates28 = [];
     for (let i = 27; i >= 0; i--) dates28.push(addDays(realToday, -i));
     const nutritionTargets28 = dates28.map((d) => {
@@ -5158,7 +5171,7 @@ export default function VocalTracker({ userId, userEmail }) {
     // 月経周期の乱れ（signal4）は現状のデータでは信頼できる判定ができないため対象外とする
     const signalCount = [signal1, signal2, signal3, signal5].filter(Boolean).length;
     return { method: "composite", signalCount, isLow: signalCount >= 3, signals: { signal1, signal2, signal3, signal5 } };
-  }, [entries, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient, overallThroatBaseline]);
+  }, [entries, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient, overallThroatBaseline, realTodayDate]);
   // ---- エネルギー可用性 用データ ここまで ----
 
   // ---- lavoce-画面レイアウト仕様_1.md §5.3: 発見カード（今週の発見） 用データ ----
@@ -6149,8 +6162,8 @@ export default function VocalTracker({ userId, userEmail }) {
         ) : (
           <div key={activeTab} className="tab-panel">
             {activeTab === "home" && (() => {
-              const realToday = todayISO();
-              const hour = new Date().getHours();
+              const realToday = realTodayDate;
+              const hour = greetingHour;
               const greeting = hour < 5 ? "こんばんは" : hour < 11 ? "おはようございます" : hour < 18 ? "こんにちは" : "こんばんは";
               const todayEntry = entries[realToday];
               const isRecordedToday = !!todayEntry;
