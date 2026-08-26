@@ -306,8 +306,9 @@ const VOCAL_PROFESSIONS = ["singer", "announcer", "voice_actor", "pop_musical"];
 const FOLDABLE_GROUP_LABELS = {
   meal_detail: "食事の詳細記録",
   exercise_detail: "運動の詳細記録",
-  body_data: "体重・体脂肪率の記録",
+  body_fat: "体脂肪率の記録",
   environment: "気温・湿度の記録",
+  cpps: "CPPS客観測定",
   medication: "服薬タグの記録",
   mental_detail: "気持ちタグ・日記"
 };
@@ -3001,6 +3002,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [practiceReviewDraft, setPracticeReviewDraft] = useState("");
   const [dismissedFoldSuggestions, setDismissedFoldSuggestions] = useState([]);
   const [showFieldGroupManager, setShowFieldGroupManager] = useState(false);
+  const [showCopiedNotice, setShowCopiedNotice] = useState(false);
   const [selectedDate, setSelectedDate] = useState(todayISOUTC());
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
@@ -3796,9 +3798,13 @@ export default function VocalTracker({ userId, userEmail }) {
     if (!usedMealDetail && !folded.includes("meal_detail")) {
       suggestions.push({ key: "meal_detail", label: "食事の詳細記録（食品別のPFC）" });
     }
-    const usedBodyData = dates30.some((d) => typeof entries[d].weightKg === "number" || typeof entries[d].bodyFatPct === "number");
-    if (!usedBodyData && !folded.includes("body_data")) {
-      suggestions.push({ key: "body_data", label: "体重・体脂肪率の記録" });
+    const usedBodyFat = dates30.some((d) => typeof entries[d].bodyFatPct === "number");
+    if (!usedBodyFat && !folded.includes("body_fat")) {
+      suggestions.push({ key: "body_fat", label: "体脂肪率の記録" });
+    }
+    const usedCpps = dates30.some((d) => typeof entries[d].cppsValue === "number");
+    if (!usedCpps && !folded.includes("cpps")) {
+      suggestions.push({ key: "cpps", label: "CPPS客観測定" });
     }
     const usedEnvironment = dates30.some((d) => typeof entries[d].temperature === "number" || typeof entries[d].humidity === "number");
     if (!usedEnvironment && !folded.includes("environment")) {
@@ -5214,15 +5220,18 @@ export default function VocalTracker({ userId, userEmail }) {
   // 【対象】既存ユーザーには一切適用しない（onboarding_completedが既にtrueのため、この関数の
   // 分岐自体を通らない）。全新規ユーザーが対象（パッチ§2.1: 新規ユーザーには壊れる既存状態がなく、
   // 「戻すUI」で解消済みのため、対象を絞る追加の安全効果はない）。
-  // 【既定】声の記録・睡眠・活動・心の余裕だけを開き、それ以外（食事・運動の詳細、体重・体脂肪率、
-  // 環境、服薬、気持ちタグ）は畳んでおく（パッチ§2.3）。最初の記録画面を10項目前後にする。
-  // 【差分方式】ここにオンボーディング回答による差分を足す。ゼロから組み立てない（パッチ§2.4）。
-  const DEFAULT_PRESET_FOLDED_GROUPS = ["meal_detail", "exercise_detail", "body_data", "environment", "medication", "mental_detail"];
+  // 【既定：実行順マスター Stage 0-3の実データに基づき更新】
+  // 当初は食事・運動の詳細、体重・体脂肪率、環境、気持ちタグの6項目を畳む案だったが、
+  // 実際の入力率（直近7日）を見たところ、環境85.7%・食事詳細71.4%・気持ちタグ57.1%・
+  // 運動詳細42.9%と、いずれも実際にはよく使われていることが判明した（体重も71.4%）。
+  // 「削るつもりだった項目が実は使われている」という、実行順マスターが警告していた事態そのもの。
+  // 実際に使用率0%だった項目（服薬・体脂肪率・CPPS測定）だけを既定で畳む形に縮小した。
+  // ※ n=1（開発者本人）・7日分のみのデータであり、他のユーザーが増えたら見直すこと。
+  const DEFAULT_PRESET_FOLDED_GROUPS = ["medication", "body_fat", "cpps"];
   function computePresetFoldedGroups(goalFocus, professions) {
     let folded = [...DEFAULT_PRESET_FOLDED_GROUPS];
-    if (goalFocus === "train") folded = folded.filter((g) => g !== "body_data");
-    if (goalFocus === "peak") folded = folded.filter((g) => g !== "environment");
-    // goalFocus === 'log_only' は既定のまま（何も足さない）
+    if (goalFocus === "train") folded = folded.filter((g) => g !== "body_fat");
+    // goalFocus === 'log_only' / 'peak' / 'diagnose' は既定のまま（何も足さない）。
     // 職業に「声楽家」が含まれる場合の曲目欄の扱いは、現状すべての活動ブロックで常に表示されており、
     // 個別に畳む対象になっていないため、ここでの差分は対象外（パッチ§2.4の該当項目はまだ実装なし）。
     return folded;
@@ -5399,6 +5408,30 @@ export default function VocalTracker({ userId, userEmail }) {
   }
 
   // lavoce-曲目複数化パッチ.md §2.0/§2.1: 活動ブロック・曲目アイテムの操作関数
+  // lavoce-画面レイアウト仕様_1.md §4.7: 前日をコピーする。
+  // 変わりにくい項目（食事・身体データ・環境など）だけをコピーし、
+  // 声の記録・症状・メンタルはその日固有の情報のためコピーしない。
+  function handleCopyPreviousDay() {
+    const prevDate = addDays(selectedDate, -1);
+    const prevEntry = entries[prevDate];
+    if (!prevEntry) return;
+    setFormData((f) => ({
+      ...f,
+      dinnerTime: prevEntry.dinnerTime || f.dinnerTime,
+      dinnerTags: prevEntry.dinnerTags && prevEntry.dinnerTags.length > 0 ? prevEntry.dinnerTags : f.dinnerTags,
+      proteinLevel: prevEntry.proteinLevel ?? f.proteinLevel,
+      calorieLevel: prevEntry.calorieLevel ?? f.calorieLevel,
+      weightKg: prevEntry.weightKg ?? f.weightKg,
+      bodyFatPct: prevEntry.bodyFatPct ?? f.bodyFatPct,
+      temperature: prevEntry.temperature ?? f.temperature,
+      humidity: prevEntry.humidity ?? f.humidity,
+      weather: prevEntry.weather || f.weather,
+      location: prevEntry.location || f.location,
+      medicationTags: prevEntry.medicationTags && prevEntry.medicationTags.length > 0 ? prevEntry.medicationTags : f.medicationTags
+    }));
+    setShowCopiedNotice(true);
+    setTimeout(() => setShowCopiedNotice(false), 5000);
+  }
   function addActivity() {
     setFormData((f) => {
       const activities = f.activities || [];
@@ -5927,6 +5960,19 @@ export default function VocalTracker({ userId, userEmail }) {
                   </button>
                 </div>
 
+                {!!entries[addDays(selectedDate, -1)] && (
+                  <button type="button" onClick={handleCopyPreviousDay}
+                    className="w-full rounded-xl border py-2 text-xs font-medium flex items-center justify-center gap-1.5"
+                    style={{ borderColor: C.line, color: C.inkSoft, background: C.card }}>
+                    <NotebookPen size={12} />前日をコピー（食事・身体データ・環境）
+                  </button>
+                )}
+                {showCopiedNotice && (
+                  <p className="text-xs text-center rounded-lg p-2" style={{ background: "rgba(212,160,23,0.12)", color: C.ink }}>
+                    前日の内容をコピーしました。内容を確認・編集してください。
+                  </p>
+                )}
+
                 <div className="rounded-2xl p-5 border flex justify-center" style={{ background: C.card, borderColor: C.line }}>
                   <Gauge score={currentScore} t={t} />
                 </div>
@@ -6019,6 +6065,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         <p className="mt-2 leading-relaxed">{t("noteRecommendedRoutine")}</p>
                       </details>
 
+                      {!(profile.folded_groups || []).includes("cpps") && (
                       <div className="rounded-xl p-3" style={{ background: C.paper }}>
                         <div className="flex items-center gap-1.5 mb-1.5">
                           <Mic2 size={14} style={{ color: C.gold }} />
@@ -6070,6 +6117,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           ※ このアプリ独自の簡易計算のため、数値そのものを医学論文の基準値と比べることはできません。あくまで「自分自身がこれまでよりCPPSが高いか低いか」という、ご自身の推移で見るための参考値です。
                         </p>
                       </div>
+                      )}
                     </SectionCard>
 
                     <SectionCard title={t("sectionBodyData")} icon={Scale}>
@@ -6356,13 +6404,11 @@ export default function VocalTracker({ userId, userEmail }) {
                         </label>
                       </div>
 
-                      {!(profile.folded_groups || []).includes("body_data") && (
-                        <>
-                          <NumberField label={t("labelTodayWeight")} icon={Scale} value={formData.weightKg ?? ""} step={0.1} min={20} max={200} suffix="kg"
-                            onChange={(v) => setFormData((f) => ({ ...f, weightKg: v }))} />
-                          <NumberField label="体脂肪率（体組成計をお持ちの場合・任意）" icon={Scale} value={formData.bodyFatPct ?? ""} step={0.1} min={3} max={60} suffix="%"
-                            onChange={(v) => setFormData((f) => ({ ...f, bodyFatPct: v }))} />
-                        </>
+                      <NumberField label={t("labelTodayWeight")} icon={Scale} value={formData.weightKg ?? ""} step={0.1} min={20} max={200} suffix="kg"
+                        onChange={(v) => setFormData((f) => ({ ...f, weightKg: v }))} />
+                      {!(profile.folded_groups || []).includes("body_fat") && (
+                        <NumberField label="体脂肪率（体組成計をお持ちの場合・任意）" icon={Scale} value={formData.bodyFatPct ?? ""} step={0.1} min={3} max={60} suffix="%"
+                          onChange={(v) => setFormData((f) => ({ ...f, bodyFatPct: v }))} />
                       )}
 
                       {profile.track_cycle && (
