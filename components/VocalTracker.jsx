@@ -18,6 +18,7 @@ import { FOOD_PRESETS, DISH_GROUP_ALIASES, CATEGORY_SEARCH_ALIASES } from "@/lib
 import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, SHOP_ITEMS, PLACEMENT_LIMITS, computeBalance } from "@/lib/character";
 import { LANGUAGES, createTranslator } from "@/lib/translations";
 import HealthInfo from "@/components/HealthInfo";
+import { ARTICLES, CHAPTER_LABELS, PROFESSION_LABELS, getArticlesForProfession, getArticleById } from "@/lib/learnContent";
 import CharacterHome from "@/components/CharacterHome";
 
 /* ---------- constants ---------- */
@@ -904,6 +905,7 @@ function buildFormData(date, entries) {
       pianissimoOnsetDelay: existing.pianissimoOnsetDelay || false,
       speakingLevel: existing.speakingLevel ?? null,
       nonPerformanceSpeechMinutes: existing.nonPerformanceSpeechMinutes ?? null,
+      longestSpeechBlockMinutes: existing.longestSpeechBlockMinutes ?? null,
       environmentTags: existing.environmentTags || [],
       noisyEnvironment: existing.noisyEnvironment || false,
       cppsValue: existing.cppsValue ?? "",
@@ -956,6 +958,7 @@ function buildFormData(date, entries) {
     pianissimoOnsetDelay: false,
     speakingLevel: null,
     nonPerformanceSpeechMinutes: null,
+    longestSpeechBlockMinutes: null,
     environmentTags: [],
     noisyEnvironment: false,
     cppsValue: "",
@@ -1453,6 +1456,7 @@ function rowToEntry(row) {
     pianissimoOnsetDelay: row.pianissimo_onset_delay || false,
     speakingLevel: row.speaking_level,
     nonPerformanceSpeechMinutes: row.non_performance_speech_minutes ?? null,
+    longestSpeechBlockMinutes: row.longest_speech_block_minutes ?? null,
     environmentTags: row.environment_tags || [],
     noisyEnvironment: row.noisy_environment || false,
     cppsValue: row.cpps_value,
@@ -1843,6 +1847,7 @@ function entryToRow(userId, e) {
     pianissimo_onset_delay: !!e.pianissimoOnsetDelay,
     speaking_level: numOrNull(e.speakingLevel),
     non_performance_speech_minutes: numOrNull(e.nonPerformanceSpeechMinutes),
+    longest_speech_block_minutes: numOrNull(e.longestSpeechBlockMinutes),
     environment_tags: e.environmentTags || [],
     noisy_environment: !!e.noisyEnvironment,
     cpps_value: numOrNull(e.cppsValue),
@@ -2575,13 +2580,18 @@ function MealItemRow({ item, onChange, onRemove, foodLibrary, t, language }) {
 function RepertoireItemRow({
   item, index, totalItems, onChange, onRemove, onMoveUp, onMoveDown,
   repertoireTessituraMap, repertoireUsageCounts, repertoireSkipped, setRepertoireSkipped,
-  handleSaveRepertoire, tessituraSaving, t
+  handleSaveRepertoire, tessituraSaving, professions, roleMasterMap, projectMasterMap,
+  handleSaveRole, handleSaveProject, handleSaveSingingLanguage, t
 }) {
   const [topNoteInput, setTopNoteInput] = useState("");
   const [tessituraOptionalInput, setTessituraOptionalInput] = useState("");
   const [showTessituraAccordion, setShowTessituraAccordion] = useState(false);
   const [dOverrideChoice, setDOverrideChoice] = useState(null);
   const [duplicateWarning, setDuplicateWarning] = useState(null);
+  const [showExtraAccordion, setShowExtraAccordion] = useState(false);
+  const isSinger = (professions || []).includes("singer");
+  const isVoiceActor = (professions || []).includes("voice_actor");
+  const isAnnouncer = (professions || []).includes("announcer");
 
   const name = item.repertoireName || "";
   const record = name ? repertoireTessituraMap[name] : null;
@@ -2708,8 +2718,60 @@ function RepertoireItemRow({
       })()}
       {name && record && (
         <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
-          登録済み：{record.topNote ? `最高音${record.topNote}` : ""}{record.tessituraNote ? `・テッシトゥーラ${record.tessituraNote}` : ""}
+          登録済み：{record.topNote ? `最高音${record.topNote}` : ""}{record.tessituraNote ? `・テッシトゥーラ${record.tessituraNote}` : ""}{record.singingLanguage ? `・${record.singingLanguage}語` : ""}
         </p>
+      )}
+      {name && (isSinger || isVoiceActor || isAnnouncer) && (
+        <div className="mt-1.5">
+          <button type="button" onClick={() => setShowExtraAccordion((v) => !v)} className="text-xs underline" style={{ color: C.inkSoft }}>
+            {isSinger ? "歌唱言語を登録" : isVoiceActor ? "役の情報を登録" : "案件の情報を登録"}
+          </button>
+          {showExtraAccordion && isSinger && (
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {["伊", "独", "仏", "露", "英", "日", "西", "チェコ", "その他"].map((lang) => (
+                <Chip key={lang} label={lang} active={record && record.singingLanguage === lang}
+                  onClick={() => handleSaveSingingLanguage(name, lang)} />
+              ))}
+            </div>
+          )}
+          {showExtraAccordion && isVoiceActor && (() => {
+            const roleRec = roleMasterMap[name] || {};
+            return (
+              <div className="mt-1.5 space-y-1.5">
+                <input type="text" defaultValue={roleRec.workTitle || ""} placeholder="作品名"
+                  onBlur={(e) => handleSaveRole(name, { ...roleRec, workTitle: e.target.value })}
+                  className="w-full rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.card }} />
+                <div className="flex flex-wrap gap-1.5">
+                  {["地声寄り", "高め", "低め", "特殊"].map((vq) => (
+                    <Chip key={vq} label={vq} active={roleRec.voiceQuality === vq}
+                      onClick={() => handleSaveRole(name, { ...roleRec, voiceQuality: vq })} />
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
+          {showExtraAccordion && isAnnouncer && (() => {
+            const projRec = projectMasterMap[name] || {};
+            return (
+              <div className="mt-1.5 space-y-1.5">
+                <div className="flex flex-wrap gap-1.5">
+                  {["ニュース", "情報", "スポーツ実況", "ナレーション", "CM", "司会", "朗読"].map((st) => (
+                    <Chip key={st} label={st} active={projRec.scriptType === st}
+                      onClick={() => handleSaveProject(name, { ...projRec, scriptType: st })} />
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {["早口", "普通", "ゆっくり"].map((sp) => (
+                    <Chip key={sp} label={sp} active={projRec.speechSpeed === sp}
+                      onClick={() => handleSaveProject(name, { ...projRec, speechSpeed: sp })} />
+                  ))}
+                  <Chip label="生放送" active={!!projRec.isLive}
+                    onClick={() => handleSaveProject(name, { ...projRec, isLive: !projRec.isLive })} />
+                </div>
+              </div>
+            );
+          })()}
+        </div>
       )}
     </div>
   );
@@ -3057,7 +3119,8 @@ function ActivityBlockEditor({
   activity, onChange, onRemove, onDetailChange,
   onAddItem, onUpdateItem, onRemoveItem, onMoveItem,
   repertoireTessituraMap, repertoireUsageCounts, repertoireSkipped, setRepertoireSkipped,
-  handleSaveRepertoire, tessituraSaving, songFactorResolver, professions, t
+  handleSaveRepertoire, tessituraSaving, songFactorResolver, professions,
+  roleMasterMap, projectMasterMap, handleSaveRole, handleSaveProject, handleSaveSingingLanguage, t
 }) {
   const detail = activity.detail || {};
   const items = activity.items || [];
@@ -3093,6 +3156,12 @@ function ActivityBlockEditor({
               setRepertoireSkipped={setRepertoireSkipped}
               handleSaveRepertoire={handleSaveRepertoire}
               tessituraSaving={tessituraSaving}
+              professions={professions}
+              roleMasterMap={roleMasterMap}
+              projectMasterMap={projectMasterMap}
+              handleSaveRole={handleSaveRole}
+              handleSaveProject={handleSaveProject}
+              handleSaveSingingLanguage={handleSaveSingingLanguage}
               t={t}
             />
           ))}
@@ -3130,14 +3199,23 @@ function ActivityBlockEditor({
 
       {isVoiceActor && (
         <div className="mt-3 pt-2 border-t" style={{ borderColor: C.line }}>
-          <div className="flex items-center gap-1.5 mb-1.5">
-            <span className="text-xs font-medium">叫び・悲鳴のテイク数</span>
+          <span className="text-xs font-medium block mb-1.5">喉に負担のある演技（あてはまるものすべて）</span>
+          <div className="flex flex-wrap gap-1.5 mb-2">
+            {["叫び", "がなり・エッジ", "泣き・嗚咽", "咳・えずき・呼吸音", "ささやき", "悲鳴"].map((tag) => (
+              <Chip key={tag} label={tag} active={(detail.demandingActing || []).includes(tag)}
+                onClick={() => onDetailChange({
+                  demandingActing: (detail.demandingActing || []).includes(tag)
+                    ? detail.demandingActing.filter((x) => x !== tag)
+                    : [...(detail.demandingActing || []), tag]
+                })} />
+            ))}
           </div>
-          <div className="flex items-center gap-2">
-            <MiniNumber value={detail.screamTakes ?? ""} placeholder="0" onChange={(v) => onDetailChange({ screamTakes: v === "" ? null : Number(v) })} />
-            <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>テイク（概算でよい）</span>
-          </div>
-          <p className="text-xs mt-1" style={{ color: C.inkSoft }}>叫び・悲鳴が無い収録は空欄のままで構いません。</p>
+          {((detail.demandingActing || []).includes("叫び") || (detail.demandingActing || []).includes("悲鳴")) && (
+            <div className="flex items-center gap-2">
+              <MiniNumber value={detail.screamTakes ?? ""} placeholder="0" onChange={(v) => onDetailChange({ screamTakes: v === "" ? null : Number(v) })} />
+              <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>テイク（概算でよい）</span>
+            </div>
+          )}
         </div>
       )}
 
@@ -3188,6 +3266,11 @@ function ActivityBlockEditor({
               onChange={(e) => onDetailChange({ isTourStart: e.target.checked })} />
             このツアーの初日
           </label>
+          <label className="flex items-center gap-2 text-xs" style={{ color: C.inkSoft }}>
+            <input type="checkbox" checked={!!detail.isPlayingAndSinging}
+              onChange={(e) => onDetailChange({ isPlayingAndSinging: e.target.checked })} />
+            弾き語りだった（楽器を持って歌った）
+          </label>
         </div>
       )}
 
@@ -3236,6 +3319,22 @@ function ActivityBlockEditor({
                     background: detail.hallAcoustics === v ? C.curtain : C.paper,
                     color: detail.hallAcoustics === v ? "#FFFDF8" : C.inkSoft,
                     borderColor: detail.hallAcoustics === v ? C.curtain : C.line
+                  }}>
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <span className="text-xs font-medium block mb-1.5">伴奏</span>
+            <div className="flex gap-1.5">
+              {[["piano", "ピアノ"], ["orchestra", "オーケストラ"], ["none", "なし"]].map(([v, label]) => (
+                <button key={v} type="button" onClick={() => onDetailChange({ accompaniment: v })}
+                  className="flex-1 py-1.5 rounded-lg text-xs font-medium border"
+                  style={{
+                    background: detail.accompaniment === v ? C.curtain : C.paper,
+                    color: detail.accompaniment === v ? "#FFFDF8" : C.inkSoft,
+                    borderColor: detail.accompaniment === v ? C.curtain : C.line
                   }}>
                   {label}
                 </button>
@@ -3396,6 +3495,14 @@ export default function VocalTracker({ userId, userEmail }) {
   const [studentComments, setStudentComments] = useState({}); // date -> comments[]（個別ページで見ている生徒）
   const [newCommentDraft, setNewCommentDraft] = useState("");
   const [myRecentComments, setMyRecentComments] = useState([]); // 自分が生徒として受け取った、直近のコメント
+  // 職業別項目の再設計と学ぶ画面 §7: 学ぶ画面用のstate
+  const [learnProfession, setLearnProfession] = useState(null); // null=まだ選んでいない（初回はvocal_professionを既定にする）
+  const [learnOpenChapters, setLearnOpenChapters] = useState({}); // "professionKey:chapter" -> boolean
+  const [learnReadArticles, setLearnReadArticles] = useState({}); // articleId -> readAt
+  const [viewingArticleId, setViewingArticleId] = useState(null);
+  const [articleNotes, setArticleNotes] = useState({}); // articleId -> notes[]
+  const [newArticleNoteDraft, setNewArticleNoteDraft] = useState("");
+  const [learnSearchQuery, setLearnSearchQuery] = useState("");
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
   const [saveError, setSaveError] = useState("");
@@ -3411,6 +3518,8 @@ export default function VocalTracker({ userId, userEmail }) {
   const [questionnaireSaving, setQuestionnaireSaving] = useState(false);
   const [questionnaireError, setQuestionnaireError] = useState("");
   const [repertoireTessituraMap, setRepertoireTessituraMap] = useState({});
+  const [roleMasterMap, setRoleMasterMap] = useState({}); // 職業別項目の再設計と学ぶ画面 §5
+  const [projectMasterMap, setProjectMasterMap] = useState({});
   const [tessituraSaving, setTessituraSaving] = useState(false);
   const [topNoteInput, setTopNoteInput] = useState("");
   const [tessituraOptionalInput, setTessituraOptionalInput] = useState("");
@@ -3604,10 +3713,49 @@ export default function VocalTracker({ userId, userEmail }) {
             topNote: row.top_note || null,
             dOverride: row.d_override,
             confidence: row.confidence || "entered",
-            usageCount: row.usage_count || 0
+            usageCount: row.usage_count || 0,
+            singingLanguage: row.singing_language || null
           };
         });
         setRepertoireTessituraMap(map);
+      }
+    })();
+    return () => { mounted = false; };
+  }, [userId]);
+
+  // 職業別項目の再設計と学ぶ画面 §5: 役マスタ・案件マスタ（レパートリーと全く同じ仕組み）
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const supabase = createClient();
+      const { data, error } = await runQueryWithAuthRetry(
+        supabase, () => supabase.from("role_master").select("*").eq("user_id", userId), "役マスタの取得"
+      );
+      if (error) console.error("役マスタの読み込みに失敗しました:", error, "userId:", userId);
+      if (mounted && data) {
+        const map = {};
+        data.forEach((row) => {
+          map[row.role_name] = { workTitle: row.work_title || "", pitchLowNote: row.pitch_low_note || null, pitchHighNote: row.pitch_high_note || null, voiceQuality: row.voice_quality || null };
+        });
+        setRoleMasterMap(map);
+      }
+    })();
+    return () => { mounted = false; };
+  }, [userId]);
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const supabase = createClient();
+      const { data, error } = await runQueryWithAuthRetry(
+        supabase, () => supabase.from("project_master").select("*").eq("user_id", userId), "案件マスタの取得"
+      );
+      if (error) console.error("案件マスタの読み込みに失敗しました:", error, "userId:", userId);
+      if (mounted && data) {
+        const map = {};
+        data.forEach((row) => {
+          map[row.project_name] = { scriptType: row.script_type || null, speechSpeed: row.speech_speed || null, isLive: !!row.is_live };
+        });
+        setProjectMasterMap(map);
       }
     })();
     return () => { mounted = false; };
@@ -3689,6 +3837,7 @@ export default function VocalTracker({ userId, userEmail }) {
     fetchTeacherLinks();
     fetchMyUpcomingLessons();
     fetchMyRecentComments();
+    fetchLearnState();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
@@ -6336,6 +6485,67 @@ export default function VocalTracker({ userId, userEmail }) {
     setMyRecentComments(data || []);
   }
 
+  // 職業別項目の再設計と学ぶ画面 §7: 学ぶ画面。章の開閉状態は保存し、次に開いたときも前回のままにする。
+  async function fetchLearnState() {
+    const supabase = createClient();
+    const { data: chapters } = await supabase.from("chapter_state").select("*").eq("user_id", userId);
+    if (chapters) {
+      const map = {};
+      chapters.forEach((c) => { map[`${c.profession_key}:${c.chapter}`] = c.is_open; });
+      setLearnOpenChapters(map);
+    }
+    const { data: progress } = await supabase.from("article_progress").select("*").eq("user_id", userId);
+    if (progress) {
+      const map = {};
+      progress.forEach((p) => { if (p.read_at) map[p.article_id] = p.read_at; });
+      setLearnReadArticles(map);
+    }
+  }
+  async function handleToggleChapter(professionKey, chapter) {
+    const key = `${professionKey}:${chapter}`;
+    const nextOpen = !learnOpenChapters[key];
+    setLearnOpenChapters((prev) => ({ ...prev, [key]: nextOpen }));
+    const supabase = createClient();
+    await supabase.from("chapter_state").upsert(
+      { user_id: userId, profession_key: professionKey, chapter, is_open: nextOpen },
+      { onConflict: "user_id,profession_key,chapter" }
+    );
+  }
+  // §7.1: 既読は自動でつける（最後までスクロールしたら）。手動でも外せる。
+  async function handleMarkArticleRead(articleId, read) {
+    setLearnReadArticles((prev) => {
+      const next = { ...prev };
+      if (read) next[articleId] = new Date().toISOString(); else delete next[articleId];
+      return next;
+    });
+    const supabase = createClient();
+    await supabase.from("article_progress").upsert(
+      { user_id: userId, article_id: articleId, read_at: read ? new Date().toISOString() : null },
+      { onConflict: "user_id,article_id" }
+    );
+  }
+  // §7.3: 記事メモ。ハイライトメモと記事メモの両方をこの1関数でまとめて扱う。
+  async function fetchArticleNotes(articleId) {
+    const supabase = createClient();
+    const { data } = await supabase.from("article_notes").select("*").eq("user_id", userId).eq("article_id", articleId).is("deleted_at", null).order("created_at", { ascending: true });
+    setArticleNotes((prev) => ({ ...prev, [articleId]: data || [] }));
+  }
+  async function handleCreateArticleNote(articleId, kind, body, anchorText) {
+    if (!body || !body.trim()) return;
+    const supabase = createClient();
+    const { error } = await supabase.from("article_notes").insert({
+      user_id: userId, article_id: articleId, kind, anchor_text: anchorText || null, body: body.trim().slice(0, 500), shared_with_teacher: false
+    });
+    if (error) { console.error("メモの保存に失敗しました:", error); return; }
+    setNewArticleNoteDraft("");
+    fetchArticleNotes(articleId);
+  }
+  async function handleDeleteArticleNote(noteId, articleId) {
+    const supabase = createClient();
+    await supabase.from("article_notes").update({ deleted_at: new Date().toISOString() }).eq("id", noteId);
+    fetchArticleNotes(articleId);
+  }
+
   async function handleGenerateLineLinkCode() {
     const code = Array.from({ length: 6 }, () => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)]).join("");
     const supabase = createClient();
@@ -6428,6 +6638,40 @@ export default function VocalTracker({ userId, userEmail }) {
     setDOverrideChoice(null);
     setShowTessituraAccordion(false);
     setDuplicateWarning(null);
+  }
+
+  // 職業別項目の再設計と学ぶ画面 §5: 役マスタ・案件マスタ（レパートリーと全く同じ仕組み）。
+  async function handleSaveRole(roleName, { workTitle, pitchLowNote, pitchHighNote, voiceQuality } = {}) {
+    if (!roleName) return;
+    const supabase = createClient();
+    const { error } = await supabase.from("role_master").upsert({
+      user_id: userId, role_name: roleName, work_title: workTitle || "",
+      pitch_low_note: pitchLowNote || null, pitch_high_note: pitchHighNote || null, voice_quality: voiceQuality || null
+    }, { onConflict: "user_id,role_name" });
+    if (error) { console.error("役マスタの登録に失敗しました:", error); return; }
+    setRoleMasterMap((prev) => ({ ...prev, [roleName]: { workTitle: workTitle || "", pitchLowNote: pitchLowNote || null, pitchHighNote: pitchHighNote || null, voiceQuality: voiceQuality || null } }));
+  }
+  async function handleSaveProject(projectName, { scriptType, speechSpeed, isLive } = {}) {
+    if (!projectName) return;
+    const supabase = createClient();
+    const { error } = await supabase.from("project_master").upsert({
+      user_id: userId, project_name: projectName, script_type: scriptType || null, speech_speed: speechSpeed || null, is_live: !!isLive
+    }, { onConflict: "user_id,project_name" });
+    if (error) { console.error("案件マスタの登録に失敗しました:", error); return; }
+    setProjectMasterMap((prev) => ({ ...prev, [projectName]: { scriptType: scriptType || null, speechSpeed: speechSpeed || null, isLive: !!isLive } }));
+  }
+  // 職業別項目の再設計と学ぶ画面 §3.1: 歌唱言語をレパートリーに登録する（曲ごとに1回だけ）。
+  async function handleSaveSingingLanguage(repertoireName, language) {
+    if (!repertoireName) return;
+    const supabase = createClient();
+    const existing = repertoireTessituraMap[repertoireName] || {};
+    const { error } = await supabase.from("repertoire_tessitura").upsert({
+      user_id: userId, repertoire_name: repertoireName, singing_language: language,
+      top_note: existing.topNote || null, tessitura_note: existing.tessituraNote || null,
+      d_override: existing.dOverride != null ? existing.dOverride : null, confidence: existing.confidence || "coarse"
+    }, { onConflict: "user_id,repertoire_name" });
+    if (error) { console.error("歌唱言語の登録に失敗しました:", error); return; }
+    setRepertoireTessituraMap((prev) => ({ ...prev, [repertoireName]: { ...(prev[repertoireName] || {}), singingLanguage: language } }));
   }
 
   // lavoce-レパートリー負荷パッチ.md §2.5: 表記ゆれした曲目を2つ選んで統合する。
@@ -7981,6 +8225,11 @@ export default function VocalTracker({ userId, userEmail }) {
                                 tessituraSaving={tessituraSaving}
                                 songFactorResolver={songFactorResolver}
                                 professions={effectiveProfessions}
+                                roleMasterMap={roleMasterMap}
+                                projectMasterMap={projectMasterMap}
+                                handleSaveRole={handleSaveRole}
+                                handleSaveProject={handleSaveProject}
+                                handleSaveSingingLanguage={handleSaveSingingLanguage}
                                 t={t}
                               />
                             ))}
@@ -8046,6 +8295,18 @@ export default function VocalTracker({ userId, userEmail }) {
                         <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
                           「今日は歌っていない・収録していない」日でも、レッスンで教える・会議・電話などの発話は、発声負荷（ACWR）の計算に反映されます。
                         </p>
+                        {effectiveProfessions.includes("announcer") && (
+                          <details className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                            <summary className="cursor-pointer">＋詳しく記録する</summary>
+                            <div className="flex items-center gap-2 mt-1.5">
+                              <span className="flex-shrink-0">最長の連続発話ブロック</span>
+                              <MiniNumber value={formData.longestSpeechBlockMinutes ?? ""} placeholder="0"
+                                onChange={(v) => setFormData((f) => ({ ...f, longestSpeechBlockMinutes: v === "" ? null : Number(v) }))} />
+                              <span className="flex-shrink-0">分</span>
+                            </div>
+                            <p className="mt-1">合計時間より、休みなく話し続けた長さが効きます。</p>
+                          </details>
+                        )}
                       </div>
 
                     </SectionCard>
@@ -10864,6 +11125,162 @@ export default function VocalTracker({ userId, userEmail }) {
               </div>
             )}
 
+            {activeTab === "learn" && (() => {
+              const currentProfession = learnProfession || profile.vocal_profession || "singer";
+              // §7.4: 検索。記事タイトル・本文を職業をまたいで横断する。用語（第7章相当）は無いため、
+              // タイトル・本文の部分一致だけで簡易実装する。
+              const searchResults = learnSearchQuery.trim()
+                ? ARTICLES.filter((a) =>
+                    a.title.includes(learnSearchQuery.trim()) || a.bodyMd.includes(learnSearchQuery.trim()) || (a.terms || []).some((t) => t.includes(learnSearchQuery.trim()))
+                  )
+                : null;
+
+              if (viewingArticleId) {
+                // §7.2: 記事の画面
+                const article = getArticleById(viewingArticleId);
+                if (!article) return null;
+                const notes = articleNotes[article.id] || [];
+                const isRead = !!learnReadArticles[article.id];
+                const professionLabel = article.professions === "all" ? "からだ" : PROFESSION_LABELS[article.professions[0]];
+                return (
+                  <div className="space-y-4">
+                    <button type="button" onClick={() => setViewingArticleId(null)}
+                      className="flex items-center gap-1 text-sm font-medium" style={{ color: C.inkSoft }}>
+                      <ChevronLeft size={16} />戻る
+                    </button>
+                    <div>
+                      <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>{article.title}</h2>
+                      <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{professionLabel}・約{article.readMinutes}分</p>
+                    </div>
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <p className="text-sm font-medium mb-3" style={{ lineHeight: 1.7 }}>{article.lead}</p>
+                      <div className="text-sm" style={{ lineHeight: 1.8, whiteSpace: "pre-wrap" }}>{article.bodyMd}</div>
+                    </div>
+
+                    {article.relatedField && (
+                      <button type="button" onClick={() => { setActiveTab("today"); setRecordView("day"); }}
+                        className="w-full rounded-2xl p-3 border flex items-center justify-between" style={{ background: C.card, borderColor: C.line }}>
+                        <span className="text-sm">この項目を今日の分から記録する</span>
+                        <ChevronRight size={16} style={{ color: C.inkSoft }} />
+                      </button>
+                    )}
+
+                    {article.sources && article.sources.length > 0 && (
+                      <p className="text-xs" style={{ color: C.inkSoft }}>
+                        出典：{article.sources.map((s) => s.label).join("、")}
+                      </p>
+                    )}
+
+                    <label className="flex items-center gap-2 text-xs" style={{ color: C.inkSoft }}>
+                      <input type="checkbox" checked={isRead} onChange={(e) => handleMarkArticleRead(article.id, e.target.checked)} />
+                      既読にする
+                    </label>
+
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <h3 className="ff-display italic text-lg mb-1">あなたのメモ</h3>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>先生には既定で見せません。上限500字。</p>
+                      {notes.map((n) => (
+                        <div key={n.id} className="rounded-xl p-2.5 mb-2" style={{ background: C.paper }}>
+                          {n.anchor_text && <p className="text-xs mb-1" style={{ color: C.inkSoft }}>「{n.anchor_text}」について</p>}
+                          <p className="text-sm">{n.body}</p>
+                          <button type="button" onClick={() => handleDeleteArticleNote(n.id, article.id)} className="text-xs underline mt-1" style={{ color: C.inkSoft }}>削除</button>
+                        </div>
+                      ))}
+                      <textarea value={newArticleNoteDraft} rows={2} maxLength={500}
+                        onChange={(e) => setNewArticleNoteDraft(e.target.value)}
+                        placeholder="先生に聞きたいこと、気づいたことなど"
+                        className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                      <button type="button" onClick={() => handleCreateArticleNote(article.id, "article", newArticleNoteDraft, null)}
+                        className="mt-2 px-4 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                        メモする
+                      </button>
+                    </div>
+                  </div>
+                );
+              }
+
+              // §7.1: 一覧
+              return (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>学ぶ</h2>
+                  </div>
+                  <select value={currentProfession} onChange={(e) => setLearnProfession(e.target.value)}
+                    className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }}>
+                    {VOCAL_PROFESSIONS.map((p) => <option key={p} value={p}>{PROFESSION_LABELS[p]}</option>)}
+                  </select>
+                  <input type="text" value={learnSearchQuery} onChange={(e) => setLearnSearchQuery(e.target.value)}
+                    placeholder="記事を検索（例：パッサッジョ）"
+                    className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+
+                  {searchResults ? (
+                    <div className="space-y-1.5">
+                      {searchResults.length === 0 && <p className="text-xs" style={{ color: C.inkSoft }}>見つかりませんでした。</p>}
+                      {searchResults.map((a) => (
+                        <button key={a.id} type="button" onClick={() => { setViewingArticleId(a.id); fetchArticleNotes(a.id); }}
+                          className="w-full text-left rounded-xl border p-3" style={{ background: C.card, borderColor: C.line }}>
+                          <p className="text-sm font-medium">{learnReadArticles[a.id] ? "✓ " : ""}{a.title}</p>
+                          <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>{a.professions === "all" ? "からだ" : PROFESSION_LABELS[a.professions[0]]}</p>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <>
+                      {[1, 2, 3, 4, 5, 6, 7].map((chapter) => {
+                        const articles = getArticlesForProfession(currentProfession).filter((a) => a.chapter === chapter);
+                        const isOpen = learnOpenChapters[`${currentProfession}:${chapter}`] !== false; // 既定は開く
+                        const readCount = articles.filter((a) => learnReadArticles[a.id]).length;
+                        return (
+                          <div key={chapter}>
+                            <button type="button" onClick={() => handleToggleChapter(currentProfession, chapter)}
+                              className="w-full flex items-center justify-between py-2 text-sm font-medium" style={{ color: C.ink }}>
+                              <span>{isOpen ? "▾" : "▸"} {chapter}. {CHAPTER_LABELS[chapter]}</span>
+                              <span className="ff-mono text-xs" style={{ color: C.inkSoft }}>
+                                {articles.length > 0 ? `${readCount}/${articles.length}` : "—"}
+                              </span>
+                            </button>
+                            {isOpen && (
+                              <div className="rounded-xl border overflow-hidden ml-2" style={{ borderColor: C.line }}>
+                                {articles.length === 0 && (
+                                  <p className="text-xs p-3" style={{ color: C.inkSoft }}>まだ記事がありません。</p>
+                                )}
+                                {articles.map((a) => (
+                                  <button key={a.id} type="button" onClick={() => { setViewingArticleId(a.id); fetchArticleNotes(a.id); }}
+                                    className="w-full text-left px-3 py-2 text-sm flex items-center justify-between" style={{ background: C.card, borderBottom: `1px solid ${C.line}` }}>
+                                    <span>{learnReadArticles[a.id] ? "✓ " : ""}{a.title}</span>
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+
+                      <div className="pt-2 border-t" style={{ borderColor: C.line }}>
+                        <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>── からだ（全職業共通）──</p>
+                        <div className="rounded-xl border overflow-hidden" style={{ borderColor: C.line }}>
+                          {getArticlesForProfession("body").map((a) => (
+                            <button key={a.id} type="button" onClick={() => { setViewingArticleId(a.id); fetchArticleNotes(a.id); }}
+                              className="w-full text-left px-3 py-2 text-sm flex items-center justify-between" style={{ background: C.card, borderBottom: `1px solid ${C.line}` }}>
+                              <span>{learnReadArticles[a.id] ? "✓ " : ""}{a.title}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <button type="button" onClick={() => {
+                        const others = VOCAL_PROFESSIONS.filter((p) => p !== currentProfession);
+                        setLearnProfession(others[0]);
+                      }} className="w-full flex items-center justify-between py-2 text-sm" style={{ color: C.inkSoft }}>
+                        他の職業の記事も見る
+                        <ChevronRight size={14} />
+                      </button>
+                    </>
+                  )}
+                </div>
+              );
+            })()}
+
             {activeTab === "info" && <HealthInfo language={language} />}
 
             {activeTab === "more" && (
@@ -10871,11 +11288,11 @@ export default function VocalTracker({ userId, userEmail }) {
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>学ぶ</p>
                   <div className="space-y-1">
-                    <a href={PROFESSION_THEORY_PAGES[profile.vocal_profession] || "/vocal-theory"} target="_blank" rel="noopener noreferrer"
+                    <button type="button" onClick={() => { setActiveTab("learn"); setLearnProfession(learnProfession || profile.vocal_profession); }}
                       className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
-                      <span className="flex items-center gap-2"><Music2 size={16} style={{ color: C.gold }} />発声理論</span>
+                      <span className="flex items-center gap-2"><Music2 size={16} style={{ color: C.gold }} />学ぶ</span>
                       <span style={{ color: C.inkSoft }}>→</span>
-                    </a>
+                    </button>
                     <button type="button" onClick={() => setActiveTab("info")}
                       className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
                       <span className="flex items-center gap-2"><BookOpen size={16} style={{ color: C.gold }} />健康情報</span>
