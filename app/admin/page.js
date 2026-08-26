@@ -23,6 +23,13 @@ const STATUS_COLOR = {
   canceled: C.inkSoft,
   none: C.inkSoft
 };
+// 実行順マスター Stage 2-2で使った選択肢と対応させる
+const SURVEY_LABEL = {
+  morning30: "朝30秒の記録",
+  weekly_discovery: "週の振り返り・分析の発見",
+  performance_prep: "本番に向けた準備",
+  not_yet: "まだよく分からない"
+};
 
 export default async function AdminPage() {
   const supabase = createClient();
@@ -52,10 +59,13 @@ export default async function AdminPage() {
   const admin = createAdminClient();
   const { data: profiles } = await admin
     .from("profiles")
-    .select("id, name, email, occupation, school, created_at, is_admin")
+    .select("id, name, email, occupation, school, created_at, is_admin, survey_day7_response, pwa_install_prompted_at, pwa_installed_at, onboarding_completed")
     .order("created_at", { ascending: false });
   const { data: subs } = await admin.from("subscriptions").select("*");
-  const { data: entryRows } = await admin.from("entries").select("user_id");
+  // 実行順マスター Stage 0-3・Stage 2-1: 入力率の集計に必要な列を追加で取得する。
+  const { data: entryRows } = await admin
+    .from("entries")
+    .select("user_id, weight_kg, body_fat_pct, meals, exercises, temperature, humidity, medication_tags, mental_tags, mental_reason, cpps_value, voice_memo");
   const { data: feedbackRows } = await admin
     .from("feedback")
     .select("id, email, category, message, created_at")
@@ -92,6 +102,30 @@ export default async function AdminPage() {
     { label: "契約中", value: activeCount },
     { label: "解約済み", value: canceledCount }
   ];
+
+  // ---- ここから追加分：実行順マスター Stage 2-1（入力率・7日目調査・PWA導線） ----
+  const n = (entryRows || []).length || 1;
+  const pct = (count) => `${Math.round((count / n) * 1000) / 10}%`;
+  const inputRateRows = [
+    { label: "体重", count: (entryRows || []).filter((e) => typeof e.weight_kg === "number").length },
+    { label: "体脂肪率", count: (entryRows || []).filter((e) => typeof e.body_fat_pct === "number").length },
+    { label: "食事の詳細記録", count: (entryRows || []).filter((e) => Array.isArray(e.meals) && e.meals.length > 0).length },
+    { label: "運動の詳細記録", count: (entryRows || []).filter((e) => Array.isArray(e.exercises) && e.exercises.length > 0).length },
+    { label: "環境（気温・湿度）", count: (entryRows || []).filter((e) => typeof e.temperature === "number" || typeof e.humidity === "number").length },
+    { label: "服薬タグ", count: (entryRows || []).filter((e) => Array.isArray(e.medication_tags) && e.medication_tags.length > 0).length },
+    { label: "気持ちタグ・日記", count: (entryRows || []).filter((e) => (Array.isArray(e.mental_tags) && e.mental_tags.length > 0) || (e.mental_reason || "").trim()).length },
+    { label: "CPPS客観測定", count: (entryRows || []).filter((e) => typeof e.cpps_value === "number").length },
+    { label: "声のメモ", count: (entryRows || []).filter((e) => (e.voice_memo || "").trim()).length }
+  ];
+
+  const surveyCounts = {};
+  (profiles || []).forEach((p) => {
+    if (p.survey_day7_response) surveyCounts[p.survey_day7_response] = (surveyCounts[p.survey_day7_response] || 0) + 1;
+  });
+  const pwaPrompted = (profiles || []).filter((p) => p.pwa_install_prompted_at).length;
+  const pwaInstalled = (profiles || []).filter((p) => p.pwa_installed_at).length;
+  const onboardingIncomplete = (profiles || []).filter((p) => !p.onboarding_completed).length;
+  // ---- 追加分ここまで ----
 
   return (
     <main className="px-4 sm:px-6" style={{ maxWidth: 960, margin: "0 auto", padding: "48px 24px" }}>
@@ -159,7 +193,61 @@ export default async function AdminPage() {
         管理者権限の付与や、契約状況の手動変更はSupabaseのTable Editorから行ってください。
       </p>
 
+      {/* ---- ここから追加：実行順マスター Stage 2-1・2-2・1-4 ---- */}
       <h2 className="ff-display italic" style={{ fontSize: "1.5rem", color: C.curtain, marginTop: 40, marginBottom: 12 }}>
+        項目ごとの入力率
+      </h2>
+      <p style={{ fontSize: 12, color: C.inkSoft, marginBottom: 12 }}>
+        全ユーザー・総記録{n}件に対する割合です（実行順マスター Stage 0-3・判断ゲート①の材料）。
+      </p>
+      <div className="rounded-2xl border p-4" style={{ borderColor: C.line, background: C.card }}>
+        <div className="space-y-1.5">
+          {inputRateRows.map((r) => (
+            <div key={r.label} style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
+              <span style={{ color: C.inkSoft }}>{r.label}</span>
+              <span style={{ fontFamily: "monospace", fontWeight: 500 }}>{pct(r.count)}（{r.count}件）</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <h2 className="ff-display italic" style={{ fontSize: "1.5rem", color: C.curtain, marginTop: 32, marginBottom: 12 }}>
+        7日目マイクロ調査
+      </h2>
+      <div className="rounded-2xl border p-4" style={{ borderColor: C.line, background: C.card }}>
+        {Object.keys(surveyCounts).length === 0 ? (
+          <p style={{ fontSize: 13, color: C.inkSoft }}>まだ回答がありません。</p>
+        ) : (
+          <div className="space-y-1.5">
+            {Object.entries(surveyCounts).map(([key, count]) => (
+              <div key={key} style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
+                <span style={{ color: C.inkSoft }}>{SURVEY_LABEL[key] || key}</span>
+                <span style={{ fontFamily: "monospace", fontWeight: 500 }}>{count}件</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <h2 className="ff-display italic" style={{ fontSize: "1.5rem", color: C.curtain, marginTop: 32, marginBottom: 12 }}>
+        PWAインストール導線
+      </h2>
+      <div className="grid grid-cols-2 gap-3 mb-8">
+        <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+          <div className="ff-display italic" style={{ fontSize: "2rem", color: C.curtain }}>{pwaPrompted}</div>
+          <div className="text-xs mt-1" style={{ color: C.inkSoft }}>インストールを促した回数</div>
+        </div>
+        <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+          <div className="ff-display italic" style={{ fontSize: "2rem", color: C.curtain }}>{pwaInstalled}</div>
+          <div className="text-xs mt-1" style={{ color: C.inkSoft }}>実際にインストールされた数</div>
+        </div>
+      </div>
+      <p style={{ fontSize: 12, color: C.inkSoft, marginTop: -20, marginBottom: 32 }}>
+        オンボーディング未完了ユーザー: {onboardingIncomplete}人
+      </p>
+      {/* ---- 追加ここまで ---- */}
+
+      <h2 className="ff-display italic" style={{ fontSize: "1.5rem", color: C.curtain, marginTop: 8, marginBottom: 12 }}>
         フィードバック（直近30件）
       </h2>
       <div className="space-y-2">
