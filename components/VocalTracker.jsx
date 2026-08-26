@@ -5129,12 +5129,22 @@ export default function VocalTracker({ userId, userEmail }) {
     () => evaluateGate("forecast.hitRate", { n: forecastResiduals.slice(-30).length }, t),
     [forecastResiduals, t]
   );
+  // 統合実行ルートv4 G2-6 / P1-3: 「当たった」の定義を変える。
+  // 以前は「予報と実測の差が±0.5以内」という、画面のどこにも書いていない厳しい判定で、
+  // 記録6件で「的中率33%」と出ていた。数字が低いこと自体より、
+  // ユーザーが定義を確認できないことが問題だった。
+  // 新しい定義は「実測が、画面に出している予測区間（±1標準誤差）に入ったか」。
+  // 画面に描いている帯とそのまま一致するので、ユーザーが目で確かめられる。
   const forecastHitRate = useMemo(() => {
     if (!forecastHitRateGate.passed) return null;
     const recent = forecastResiduals.slice(-30);
-    const hits = recent.filter((r) => Math.abs(r.residual) <= 0.5).length;
+    const hits = recent.filter((r) => {
+      const low = Math.max(1, r.yhat - forecastResidualSD);
+      const high = Math.min(5, r.yhat + forecastResidualSD);
+      return r.actual >= low && r.actual <= high;
+    }).length;
     return { rate: Math.round((hits / recent.length) * 100), n: recent.length };
-  }, [forecastResiduals, forecastHitRateGate]);
+  }, [forecastResiduals, forecastResidualSD, forecastHitRateGate]);
   const todayForecast = useMemo(() => {
     const realToday = realTodayDate;
     const yDate = addDays(realToday, -1);
@@ -7850,9 +7860,13 @@ export default function VocalTracker({ userId, userEmail }) {
                           </p>
                         )}
                         {forecastHitRate ? (
-                          <p className="text-xs pt-2 border-t" style={{ borderColor: C.line, color: C.inkSoft }}>
-                            的中率 {forecastHitRate.rate}%（直近{forecastHitRate.n}日）
-                          </p>
+                          <div className="pt-2 border-t" style={{ borderColor: C.line }}>
+                            <p className="text-xs" style={{ color: C.inkSoft }}>
+                              的中率 {forecastHitRate.rate}%（直近{forecastHitRate.n}日）
+                            </p>
+                            <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("forecastHitDefinition")}</p>
+                            <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("forecastPurposeNote")}</p>
+                          </div>
                         ) : forecastHitRateGate.message ? (
                           <p className="text-xs pt-2 border-t" style={{ borderColor: C.line, color: C.inkSoft }}>{forecastHitRateGate.message}</p>
                         ) : null}
@@ -10468,9 +10482,10 @@ export default function VocalTracker({ userId, userEmail }) {
                           </p>
                         </div>
                         {forecastHitRate ? (
-                          <div className="text-right">
+                          <div className="text-right" style={{ maxWidth: 190 }}>
                             <div className="ff-mono" style={{ fontSize: "1.2rem", color: C.ink }}>{forecastHitRate.rate}%</div>
                             <p className="text-xs" style={{ color: C.inkSoft }}>直近{forecastHitRate.n}日の的中率</p>
+                            <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("forecastHitDefinition")}</p>
                           </div>
                         ) : forecastHitRateGate.message ? (
                           <p className="text-xs text-right" style={{ color: C.inkSoft, maxWidth: 180 }}>{forecastHitRateGate.message}</p>
