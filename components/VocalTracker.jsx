@@ -5586,6 +5586,16 @@ export default function VocalTracker({ userId, userEmail }) {
                               </button>
                             </div>
                           ))}
+                          <button type="button"
+                            onClick={() => {
+                              const hasItems = (formData.meals || []).length > 0;
+                              if (hasItems && !window.confirm("入力済みの食品の記録は消えます。簡易入力（3択）に戻しますか？")) return;
+                              setFormData((f) => ({ ...f, meals: [] }));
+                              setShowMealDetail(false);
+                            }}
+                            className="text-xs underline" style={{ color: C.inkSoft }}>
+                            簡易入力（3択）に戻す
+                          </button>
                         </>
                       )}
                       <div>
@@ -5932,6 +5942,16 @@ export default function VocalTracker({ userId, userEmail }) {
                           {exerciseTotalMinutes > 0 && (
                             <p className="text-xs text-right ff-mono" style={{ color: C.inkSoft }}>{t("labelTotal")} {exerciseTotalMinutes}分</p>
                           )}
+                          <button type="button"
+                            onClick={() => {
+                              const hasItems = (formData.exercises || []).length > 0;
+                              if (hasItems && !window.confirm("入力済みの運動の記録は消えます。簡易入力（3択）に戻しますか？")) return;
+                              setFormData((f) => ({ ...f, exercises: [] }));
+                              setShowExerciseDetail(false);
+                            }}
+                            className="text-xs underline" style={{ color: C.inkSoft }}>
+                            簡易入力（3択）に戻す
+                          </button>
                         </>
                       )}
                       <div className="rounded-xl p-3 text-xs leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
