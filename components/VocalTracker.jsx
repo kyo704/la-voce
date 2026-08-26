@@ -2912,11 +2912,12 @@ function ActivityBlockEditor({
   activity, onChange, onRemove, onDetailChange,
   onAddItem, onUpdateItem, onRemoveItem, onMoveItem,
   repertoireTessituraMap, repertoireUsageCounts, repertoireSkipped, setRepertoireSkipped,
-  handleSaveRepertoire, tessituraSaving, songFactorResolver, t
+  handleSaveRepertoire, tessituraSaving, songFactorResolver, professions, t
 }) {
   const detail = activity.detail || {};
   const items = activity.items || [];
   const { total, perItem } = computeActivityBlockLoad(activity, songFactorResolver);
+  const isVoiceActor = (professions || []).includes("voice_actor");
   return (
     <div className="rounded-xl border p-3" style={{ borderColor: C.line, background: C.card }}>
       <div className="flex items-center gap-2 mb-2">
@@ -2977,6 +2978,19 @@ function ActivityBlockEditor({
           <textarea value={detail.performanceComment || ""} rows={2} placeholder={t("placeholderPerformanceComment")}
             onChange={(e) => onDetailChange({ performanceComment: e.target.value })}
             className="w-full rounded-lg border p-2 text-xs" style={{ borderColor: C.line, background: C.paper }} />
+        </div>
+      )}
+
+      {isVoiceActor && (
+        <div className="mt-3 pt-2 border-t" style={{ borderColor: C.line }}>
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <span className="text-xs font-medium">叫び・悲鳴のテイク数</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <MiniNumber value={detail.screamTakes ?? ""} placeholder="0" onChange={(v) => onDetailChange({ screamTakes: v === "" ? null : Number(v) })} />
+            <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>テイク（概算でよい）</span>
+          </div>
+          <p className="text-xs mt-1" style={{ color: C.inkSoft }}>叫び・悲鳴が無い収録は空欄のままで構いません。</p>
         </div>
       )}
 
@@ -4590,6 +4604,44 @@ export default function VocalTracker({ userId, userEmail }) {
     return { confident, lowN };
   }, [entries, repertoireTessituraMap, comfortableRangeMidi, overallThroatBaseline, songFactorResolver]);
   // ---- 曲目ごとの負荷 用データ ここまで ----
+
+  // ---- lavoce-職業別データと分析の確定仕様.md §4.3: 声優の回復曲線（叫びテイク数） ----
+  // 「激しい収録日」の定義：その日の叫びテイク数合計が、その人の75パーセンタイル以上。
+  // その日をτ=0として、τ=+1/+2/+3の喉コンディションの平常値からの偏差を重ね合わせ平均する。
+  const screamRecoveryCurve = useMemo(() => {
+    const sortedDates = Object.keys(entries).sort();
+    const screamByDate = {};
+    sortedDates.forEach((date) => {
+      const activities = entries[date].activities || [];
+      const sum = activities.reduce((s, a) => s + (Number((a.detail || {}).screamTakes) || 0), 0);
+      if (sum > 0) screamByDate[date] = sum;
+    });
+    const screamValues = Object.values(screamByDate);
+    if (screamValues.length < 3 || overallThroatBaseline == null) return { hasEnoughData: false, n: screamValues.length };
+    const sorted = [...screamValues].sort((a, b) => a - b);
+    const p75 = sorted[Math.floor(sorted.length * 0.75)];
+    const heavyDates = Object.keys(screamByDate).filter((d) => screamByDate[d] >= p75 && screamByDate[d] > 0);
+    if (heavyDates.length < 3) return { hasEnoughData: false, n: heavyDates.length };
+    const tauDeviations = { 0: [], 1: [], 2: [], 3: [] };
+    heavyDates.forEach((d0) => {
+      [0, 1, 2, 3].forEach((tau) => {
+        const d = addDays(d0, tau);
+        const e = entries[d];
+        if (e && typeof e.throatCondition === "number") {
+          tauDeviations[tau].push(e.throatCondition - overallThroatBaseline);
+        }
+      });
+    });
+    const curve = [0, 1, 2, 3].map((tau) => ({
+      tau,
+      avgDeviation: tauDeviations[tau].length ? tauDeviations[tau].reduce((a, b) => a + b, 0) / tauDeviations[tau].length : null,
+      n: tauDeviations[tau].length
+    }));
+    // 完全回復＝偏差が0以上に戻った最初のτ（無ければ null＝まだデータの範囲内で戻っていない）
+    const recoveredAt = curve.find((c) => c.avgDeviation != null && c.avgDeviation >= 0);
+    return { hasEnoughData: true, n: heavyDates.length, p75, curve, recoveredDays: recoveredAt ? recoveredAt.tau : null };
+  }, [entries, overallThroatBaseline]);
+  // ---- 声優の回復曲線 用データ ここまで ----
 
   // ---- lavoce-指標設計図.md 05. 効いた習慣ランキング 用データ ----
   // 前日の行動（二値）→翌日のスコア、という向きに必ず固定する（同日で見ると逆向きの因果を拾ってしまうため）。
@@ -7155,6 +7207,7 @@ export default function VocalTracker({ userId, userEmail }) {
                                 handleSaveRepertoire={handleSaveRepertoire}
                                 tessituraSaving={tessituraSaving}
                                 songFactorResolver={songFactorResolver}
+                                professions={profile.professions}
                                 t={t}
                               />
                             ))}
@@ -7964,6 +8017,48 @@ export default function VocalTracker({ userId, userEmail }) {
                     current={recordedDaysTotal}
                     required={7}
                   />
+                )}
+
+                {(profile.professions || []).includes("voice_actor") && (
+                  screamRecoveryCurve.hasEnoughData ? (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <h3 className="ff-display italic text-lg mb-1">回復曲線（叫び・悲鳴の収録から）</h3>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        叫び・悲鳴のテイク数が多かった日（あなたの上位25%・{screamRecoveryCurve.p75}テイク以上）を基準に、
+                        その日から何日で平常値に戻るかを重ね合わせています（{screamRecoveryCurve.n}件のデータ）。
+                      </p>
+                      <div className="flex items-end gap-3" style={{ height: 90 }}>
+                        {screamRecoveryCurve.curve.map((c) => (
+                          <div key={c.tau} className="flex-1 flex flex-col items-center justify-end h-full">
+                            {c.avgDeviation != null ? (
+                              <div className="w-full rounded-t-lg" style={{
+                                height: `${Math.max(4, Math.min(100, 50 - c.avgDeviation * 20))}%`,
+                                background: c.avgDeviation >= 0 ? C.sage : C.curtain
+                              }} />
+                            ) : (
+                              <div className="w-full rounded-t-lg" style={{ height: "10%", background: C.line }} />
+                            )}
+                            <span className="text-xs mt-1" style={{ color: C.inkSoft }}>{c.tau === 0 ? "当日" : `+${c.tau}日`}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-sm font-medium mt-3">
+                        {screamRecoveryCurve.recoveredDays != null
+                          ? `あなたは叫び・悲鳴の収録から、完全に戻るまで平均${screamRecoveryCurve.recoveredDays}日かかります。`
+                          : "この範囲（3日後まで）では、まだ平常値に戻り切っていません。"}
+                      </p>
+                      <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                        ※ 自分の記録上の傾向であり、収録内容や体調によって変わります。
+                      </p>
+                    </div>
+                  ) : (
+                    <LockedCard
+                      title="回復曲線（叫び・悲鳴の収録から）"
+                      teaser="叫び・悲鳴のテイク数が多い日から、何日で戻るかが見られます"
+                      current={screamRecoveryCurve.n}
+                      required={3}
+                    />
+                  )
                 )}
 
                 {topDiscoveries.slice(1).length > 0 && (
