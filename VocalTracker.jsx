@@ -1999,6 +1999,60 @@ function SectionCard({ title, icon: Icon, children, id, highlighted }) {
 // 記録を続ける動機にする（lavoce-指標設計図.md の「ロックの見せ方」参照）。
 // 指導者プラン実装仕様 §7: レッスン日程をカレンダーで見せる。既存の月次カレンダー（記録閲覧用）と
 // 同じ月送りの仕組み（monthMeta/shiftMonth）を再利用する。先生用ページ・レッスンモードの両方で使う。
+// lavoce-カレンダー連携パッチ.md §4.2: 1件ずつ「カレンダーに追加」（即時）。
+// 外部連携（OAuth）は一切不要。テンプレートURLと.icsファイルの生成だけで成立する。
+function formatDateForGoogleCalendar(date) {
+  // Googleカレンダーのテンプレート URLはUTC基準の "YYYYMMDDTHHMMSSZ" 形式を期待する。
+  return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+}
+function buildGoogleCalendarUrl(lesson, title) {
+  const start = new Date(lesson.scheduled_at);
+  const end = new Date(start.getTime() + (lesson.duration_minutes || 60) * 60000);
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: title,
+    dates: `${formatDateForGoogleCalendar(start)}/${formatDateForGoogleCalendar(end)}`,
+    details: lesson.note || ""
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+function formatDateForICS(date) {
+  return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+}
+function downloadLessonICS(lesson, title) {
+  const start = new Date(lesson.scheduled_at);
+  const end = new Date(start.getTime() + (lesson.duration_minutes || 60) * 60000);
+  // §9: 外部カレンダーへの自動書き込み・双方向同期は作らない。1件だけの.icsダウンロードにとどめる。
+  const ics = [
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//La Voce//Lesson//JA",
+    "BEGIN:VEVENT",
+    `UID:${lesson.id}@lavoce`,
+    `DTSTAMP:${formatDateForICS(new Date())}`,
+    `DTSTART:${formatDateForICS(start)}`,
+    `DTEND:${formatDateForICS(end)}`,
+    `SUMMARY:${title}`,
+    lesson.note ? `DESCRIPTION:${lesson.note.replace(/\n/g, "\\n")}` : "",
+    "END:VEVENT", "END:VCALENDAR"
+  ].filter(Boolean).join("\r\n");
+  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `lesson-${lesson.id.slice(0, 8)}.ics`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+// レッスンの詳細に添える「カレンダーに追加」の小さなボタン群。
+function AddToCalendarButtons({ lesson, title }) {
+  return (
+    <div className="flex gap-2 mt-1">
+      <a href={buildGoogleCalendarUrl(lesson, title)} target="_blank" rel="noopener noreferrer"
+        className="text-xs underline" style={{ color: C.curtain }}>Googleカレンダーに追加</a>
+      <button type="button" onClick={() => downloadLessonICS(lesson, title)}
+        className="text-xs underline" style={{ color: C.curtain }}>.icsをダウンロード</button>
+    </div>
+  );
+}
 function LessonCalendar({ lessons, onDayClick, selectable, getTeacherName, getStudentName }) {
   const [viewMonth, setViewMonth] = useState(() => { const d = new Date(); return { year: d.getFullYear(), month: d.getMonth() }; });
   const [selectedDetailDate, setSelectedDetailDate] = useState(null);
@@ -2046,14 +2100,20 @@ function LessonCalendar({ lessons, onDayClick, selectable, getTeacherName, getSt
       </div>
       {!selectable && selectedDetailDate && lessonsByDate[selectedDetailDate] && (
         <div className="mt-3 space-y-1.5">
-          {lessonsByDate[selectedDetailDate].map((l) => (
-            <div key={l.id} className="rounded-lg p-2 text-xs" style={{ background: C.paper }}>
-              <span className="ff-mono">{new Date(l.scheduled_at).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</span>
-              {getTeacherName && l.teacher_id && <span>　{getTeacherName(l.teacher_id)}先生</span>}
-              {getStudentName && l.student_id && <span>　{getStudentName(l.student_id)}さん</span>}
-              {l.note && <span>　{l.note}</span>}
-            </div>
-          ))}
+          {lessonsByDate[selectedDetailDate].map((l) => {
+            const withWhom = (getTeacherName && l.teacher_id && `${getTeacherName(l.teacher_id)}先生`)
+              || (getStudentName && l.student_id && `${getStudentName(l.student_id)}さん`) || "";
+            const title = `レッスン${withWhom ? `（${withWhom}）` : ""}`;
+            return (
+              <div key={l.id} className="rounded-lg p-2 text-xs" style={{ background: C.paper }}>
+                <span className="ff-mono">{new Date(l.scheduled_at).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</span>
+                {getTeacherName && l.teacher_id && <span>　{getTeacherName(l.teacher_id)}先生</span>}
+                {getStudentName && l.student_id && <span>　{getStudentName(l.student_id)}さん</span>}
+                {l.note && <span>　{l.note}</span>}
+                <AddToCalendarButtons lesson={l} title={title} />
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
@@ -9046,6 +9106,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         {new Date(l.scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", weekday: "short", hour: "2-digit", minute: "2-digit" })}
                         {l.teacher_id && <span>　{orgDisplayName(l.teacher_id)}先生</span>}
                         {l.note ? `　${l.note}` : ""}
+                        <AddToCalendarButtons lesson={l} title={`レッスン${l.teacher_id ? `（${orgDisplayName(l.teacher_id)}先生）` : ""}`} />
                       </div>
                     ))}
                   </div>
