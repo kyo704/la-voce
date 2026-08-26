@@ -1418,10 +1418,10 @@ function entryToRow(userId, e) {
     protein_level: numOrNull(e.proteinLevel),
     calorie_level: numOrNull(e.calorieLevel),
     water_intake: Object.values(e.waterBySlot || {}).reduce((total, v) => total + (Number(v) || 0), 0),
-    carbs_g: simpleMacros ? simpleMacros.carbsG : sumMacro(e.meals, "carbs"),
-    protein_g: simpleMacros ? simpleMacros.proteinG : sumMacro(e.meals, "protein"),
-    fat_g: simpleMacros ? simpleMacros.fatG : sumMacro(e.meals, "fat"),
-    fiber_g: simpleMacros ? simpleMacros.fiberG : sumMacro(e.meals, "fiber"),
+    carbs_g: hasDetailedMeals ? sumMacro(e.meals, "carbs") : (simpleMacros ? simpleMacros.carbsG : numOrNull(e.carbs)),
+    protein_g: hasDetailedMeals ? sumMacro(e.meals, "protein") : (simpleMacros ? simpleMacros.proteinG : numOrNull(e.protein)),
+    fat_g: hasDetailedMeals ? sumMacro(e.meals, "fat") : (simpleMacros ? simpleMacros.fatG : numOrNull(e.fat)),
+    fiber_g: hasDetailedMeals ? sumMacro(e.meals, "fiber") : (simpleMacros ? simpleMacros.fiberG : numOrNull(e.fiber)),
     exercise_minutes: (e.exercises || []).reduce((total, x) => total + (Number(x.minutes) || 0), 0),
     meals: (e.meals || []).map((m) => ({ ...m, carbs: numOrNull(m.carbs), protein: numOrNull(m.protein), fat: numOrNull(m.fat), fiber: numOrNull(m.fiber) })),
     exercises: (e.exercises || []).map((x) => ({ ...x, minutes: numOrNull(x.minutes) })),
@@ -2456,6 +2456,11 @@ export default function VocalTracker({ userId, userEmail }) {
   const [clinicFreeNote, setClinicFreeNote] = useState("");
   const [showExerciseDetail, setShowExerciseDetail] = useState(false);
   const [showMealDetail, setShowMealDetail] = useState(false);
+  const [mergeSourceRepertoire, setMergeSourceRepertoire] = useState("");
+  const [mergeTargetRepertoire, setMergeTargetRepertoire] = useState("");
+  const [mergeConfirming, setMergeConfirming] = useState(false);
+  const [mergeInProgress, setMergeInProgress] = useState(false);
+  const [mergeResult, setMergeResult] = useState("");
   const [selectedDate, setSelectedDate] = useState(todayISOUTC());
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
@@ -4470,6 +4475,52 @@ export default function VocalTracker({ userId, userEmail }) {
     setDuplicateWarning(null);
   }
 
+  // lavoce-レパートリー負荷パッチ.md §2.5: 表記ゆれした曲目を2つ選んで統合する。
+  // 過去のすべての記録（activities[].items[]内のrepertoireName）を書き換え、
+  // 統合される側のrepertoire_tessituraは削除する。
+  function findAffectedDatesForRepertoire(name) {
+    return Object.keys(entries).filter((d) =>
+      (entries[d].activities || []).some((a) => (a.items || []).some((it) => it.repertoireName === name))
+    );
+  }
+  async function handleMergeRepertoire(sourceName, targetName) {
+    if (!sourceName || !targetName || sourceName === targetName) return;
+    setMergeInProgress(true);
+    setMergeResult("");
+    const affectedDates = findAffectedDatesForRepertoire(sourceName);
+    const supabase = createClient();
+    const updatedEntries = {};
+    try {
+      for (const date of affectedDates) {
+        const entry = entries[date];
+        const renamedActivities = (entry.activities || []).map((a) => ({
+          ...a,
+          items: (a.items || []).map((it) => (it.repertoireName === sourceName ? { ...it, repertoireName: targetName } : it))
+        }));
+        const updatedEntry = { ...entry, activities: renamedActivities };
+        const { error } = await supabase.from("entries").upsert(entryToRow(userId, updatedEntry), { onConflict: "user_id,date" });
+        if (error) throw error;
+        updatedEntries[date] = updatedEntry;
+      }
+      const { error: deleteError } = await supabase.from("repertoire_tessitura").delete().eq("user_id", userId).eq("repertoire_name", sourceName);
+      if (deleteError) throw deleteError;
+      setEntries((prev) => ({ ...prev, ...updatedEntries }));
+      setRepertoireTessituraMap((prev) => {
+        const next = { ...prev };
+        delete next[sourceName];
+        return next;
+      });
+      setMergeResult(`「${sourceName}」を「${targetName}」に統合しました（${affectedDates.length}件の記録を書き換えました）。`);
+      setMergeSourceRepertoire("");
+      setMergeTargetRepertoire("");
+      setMergeConfirming(false);
+    } catch (err) {
+      console.error("レパートリーの統合に失敗しました:", err);
+      setMergeResult("統合に失敗しました。もう一度お試しください。");
+    }
+    setMergeInProgress(false);
+  }
+
   // lavoce-曲目複数化パッチ.md §2.0/§2.1: 活動ブロック・曲目アイテムの操作関数
   function addActivity() {
     setFormData((f) => {
@@ -5251,6 +5302,65 @@ export default function VocalTracker({ userId, userEmail }) {
                         className="text-xs px-4 py-2 rounded-full font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
                         {profileSaveStatus === "saving" ? t("saveButtonSaving") : profileSaveStatus === "saved" ? t("saveButtonSaved") : t("btnSaveProfileSettings")}
                       </button>
+
+                      {Object.keys(repertoireTessituraMap).length >= 2 && (
+                        <div className="rounded-xl p-3 mt-2" style={{ background: C.paper }}>
+                          <p className="text-sm font-medium mb-1">レパートリーの整理</p>
+                          <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                            「蝶々夫人」と「蝶々夫人（第2幕）」のように、表記ゆれで別の曲として登録されてしまった場合、ここで1つに統合できます。統合すると、過去の記録もすべて書き換わります。
+                          </p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div>
+                              <label className="text-xs block mb-1" style={{ color: C.inkSoft }}>統合される曲（消える方）</label>
+                              <select value={mergeSourceRepertoire} onChange={(e) => { setMergeSourceRepertoire(e.target.value); setMergeConfirming(false); }}
+                                className="w-full rounded-lg border p-2 text-xs" style={{ borderColor: C.line, background: C.card }}>
+                                <option value="">選択してください</option>
+                                {Object.keys(repertoireTessituraMap).sort().map((name) => (
+                                  <option key={name} value={name} disabled={name === mergeTargetRepertoire}>{name}（{repertoireUsageCounts[normalizeTitle(name)]?.count || 0}回）</option>
+                                ))}
+                              </select>
+                            </div>
+                            <div>
+                              <label className="text-xs block mb-1" style={{ color: C.inkSoft }}>統合先（残る方）</label>
+                              <select value={mergeTargetRepertoire} onChange={(e) => { setMergeTargetRepertoire(e.target.value); setMergeConfirming(false); }}
+                                className="w-full rounded-lg border p-2 text-xs" style={{ borderColor: C.line, background: C.card }}>
+                                <option value="">選択してください</option>
+                                {Object.keys(repertoireTessituraMap).sort().map((name) => (
+                                  <option key={name} value={name} disabled={name === mergeSourceRepertoire}>{name}（{repertoireUsageCounts[normalizeTitle(name)]?.count || 0}回）</option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                          {mergeSourceRepertoire && mergeTargetRepertoire && (
+                            <>
+                              <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                                {findAffectedDatesForRepertoire(mergeSourceRepertoire).length}件の記録が「{mergeTargetRepertoire}」に書き換えられます。この操作は取り消せません。
+                              </p>
+                              {!mergeConfirming ? (
+                                <button type="button" onClick={() => setMergeConfirming(true)}
+                                  className="mt-2 px-3.5 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                                  統合する
+                                </button>
+                              ) : (
+                                <div className="flex gap-2 mt-2">
+                                  <button type="button" disabled={mergeInProgress}
+                                    onClick={() => handleMergeRepertoire(mergeSourceRepertoire, mergeTargetRepertoire)}
+                                    className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: mergeInProgress ? 0.6 : 1 }}>
+                                    {mergeInProgress ? "統合中…" : "本当に統合する（取り消せません）"}
+                                  </button>
+                                  <button type="button" onClick={() => setMergeConfirming(false)}
+                                    className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                                    やめる
+                                  </button>
+                                </div>
+                              )}
+                            </>
+                          )}
+                          {mergeResult && (
+                            <p className="text-xs mt-2 rounded-lg p-2" style={{ background: C.card, color: C.ink }}>{mergeResult}</p>
+                          )}
+                        </div>
+                      )}
 
                       <NumberField label={t("labelTodayWeight")} icon={Scale} value={formData.weightKg ?? ""} step={0.1} min={20} max={200} suffix="kg"
                         onChange={(v) => setFormData((f) => ({ ...f, weightKg: v }))} />
