@@ -6313,6 +6313,39 @@ export default function VocalTracker({ userId, userEmail }) {
                   </button>
                 </div>
 
+                {(() => {
+                  // 記録と分析の順番設計 §3.4: 進捗の見せ方。「未入力」「不足」「空欄」は使わない。
+                  // 満タンを目標に見せず、赤くしない（羊のおうち仕様 §1の「罰を作らない」を記録画面にも適用）。
+                  const filled = countFilledSections(formData);
+                  const total = 9;
+                  const dots = Array.from({ length: total }, (_, i) => i < filled);
+                  // 実際にまだ埋まっていない項目の中から1つだけ選び、それが加わると何につながるかを添える。
+                  const pendingBenefits = [
+                    { done: (formData.dinnerTime || (formData.dinnerTags || []).length > 0 || typeof formData.proteinLevel === "number"), label: "食事の影響" },
+                    { done: ((formData.activities || []).some((a) => (a.items || []).length > 0)), label: "曲目ごとの負荷" },
+                    { done: ((formData.symptoms || []).length > 0), label: "症状の推移" }
+                  ];
+                  const nextBenefit = (pendingBenefits.find((b) => !b.done) || {}).label;
+                  return (
+                    <div className="flex items-center justify-between px-1">
+                      <div className="flex items-center gap-2">
+                        <div className="flex gap-1">
+                          {dots.map((on, i) => (
+                            <span key={i} style={{
+                              display: "inline-block", width: 7, height: 7, borderRadius: "50%",
+                              background: on ? C.gold : C.line
+                            }} />
+                          ))}
+                        </div>
+                        <span className="text-xs" style={{ color: C.inkSoft }}>今日の記録　{filled}項目</span>
+                      </div>
+                      {nextBenefit && (
+                        <span className="text-xs" style={{ color: C.inkSoft }}>もう少しで「{nextBenefit}」が加わります</span>
+                      )}
+                    </div>
+                  );
+                })()}
+
                 {!!entries[addDays(selectedDate, -1)] && (
                   <button type="button" onClick={handleCopyPreviousDay}
                     className="w-full rounded-xl border py-2 text-xs font-medium flex items-center justify-center gap-1.5"
