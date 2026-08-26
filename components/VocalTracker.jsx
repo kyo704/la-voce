@@ -2922,6 +2922,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [practiceGoalDraft, setPracticeGoalDraft] = useState("");
   const [practiceGoalTagsDraft, setPracticeGoalTagsDraft] = useState([]);
   const [practiceReviewDraft, setPracticeReviewDraft] = useState("");
+  const [dismissedFoldSuggestions, setDismissedFoldSuggestions] = useState([]);
   const [selectedDate, setSelectedDate] = useState(todayISOUTC());
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
@@ -2960,7 +2961,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [] });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [] });
   const [ownedItemKeys, setOwnedItemKeys] = useState([]);
   const [characterEquipped, setCharacterEquipped] = useState({});
   const [characterPointsSpent, setCharacterPointsSpent] = useState(0);
@@ -3079,7 +3080,7 @@ export default function VocalTracker({ userId, userEmail }) {
         () =>
           supabase
             .from("profiles")
-            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus, practice_goal, practice_goal_tags, practice_goal_started_at, practice_reviews")
+            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus, practice_goal, practice_goal_tags, practice_goal_started_at, practice_reviews, folded_groups")
             .eq("id", userId)
             .single(),
         "プロフィール（羊の装備を含む）の取得"
@@ -3113,6 +3114,7 @@ export default function VocalTracker({ userId, userEmail }) {
           practice_goal_tags: data.practice_goal_tags || [],
           practice_goal_started_at: data.practice_goal_started_at || null,
           practice_reviews: data.practice_reviews || [],
+          folded_groups: data.folded_groups || [],
           vocal_profession: data.vocal_profession || "singer",
           track_cycle: data.track_cycle || false
         });
@@ -3696,6 +3698,30 @@ export default function VocalTracker({ userId, userEmail }) {
   // ---- ここから、lavoce-指標設計図.md フェーズ1の3指標用データ ----
   // 段階解放の判定に使う「これまでの総記録日数」（選んだ分析期間ではなく、全期間で数える）。
   const recordedDaysTotal = useMemo(() => Object.keys(entries).length, [entries]);
+  // ---- lavoce-記録項目の再設計v2.md §4.3: 使っていないものは、アプリから畳む提案をする ----
+  // 「設定でオンオフ」ではなく「使用実績からアプリが提案する」方式。30日間、記録が十分に
+  // 溜まっている（＝アプリを使い続けている）人だけを対象にする。
+  const unusedFieldGroupSuggestions = useMemo(() => {
+    if (recordedDaysTotal < 30) return [];
+    const dates30 = Object.keys(entries).sort().slice(-30);
+    if (dates30.length < 20) return []; // 直近30日のうち記録がまばらな人には提案しない
+    const folded = profile.folded_groups || [];
+    const suggestions = [];
+    const usedExercise = dates30.some((d) => (entries[d].exercises || []).length > 0 || (typeof entries[d].exerciseLevel === "number" && entries[d].exerciseLevel > 0));
+    if (!usedExercise && !folded.includes("exercise_detail")) {
+      suggestions.push({ key: "exercise_detail", label: "運動の詳細記録（種目・時間・強度）" });
+    }
+    const usedMentalDetail = dates30.some((d) => (entries[d].mentalTags || []).length > 0 || (entries[d].mentalReason || "").trim());
+    if (!usedMentalDetail && !folded.includes("mental_detail")) {
+      suggestions.push({ key: "mental_detail", label: "気持ちタグ・日記（心の余裕の詳細）" });
+    }
+    const usedMedication = dates30.some((d) => (entries[d].medicationTags || []).length > 0);
+    if (!usedMedication && !folded.includes("medication")) {
+      suggestions.push({ key: "medication", label: "服薬タグの記録" });
+    }
+    return suggestions;
+  }, [entries, recordedDaysTotal, profile.folded_groups]);
+
   // ---- lavoce-画面レイアウト仕様_1.md §3: ホーム（今日の一枚） 用データ（前半） ----
   const recordStreak = useMemo(() => {
     const realToday = todayISO();
@@ -5092,6 +5118,16 @@ export default function VocalTracker({ userId, userEmail }) {
     setProfile((p) => ({ ...p, practice_reviews: updatedReviews }));
   }
 
+  // lavoce-記録項目の再設計v2.md §4.3: 項目を畳む（非表示にする）。「続ける」はローカルの
+  // 一時的な非表示のみとし、DBには保存しない（毎月の見直しのたびに、また使われていなければ提案し直す）。
+  async function handleFoldGroup(key) {
+    const updated = [...(profile.folded_groups || []), key];
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update({ folded_groups: updated }).eq("id", userId);
+    if (error) { console.error("項目の設定保存に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, folded_groups: updated }));
+  }
+
   // lavoce-収集データ拡張案.md B節: 質問票（EASE / VFI / SVHI-10 / RSI）の回答を保存する
   async function handleSubmitQuestionnaire(type) {
     const def = QUESTIONNAIRES[type];
@@ -6208,20 +6244,22 @@ export default function VocalTracker({ userId, userEmail }) {
                         </div>
                       )}
 
-                      <div>
-                        <span className="text-sm font-medium block mb-2">服薬（複数選択可）</span>
-                        <div className="flex flex-wrap gap-2">
-                          {MEDICATION_OPTIONS.map((m) => (
-                            <Chip key={m} label={m} active={(formData.medicationTags || []).includes(m)}
-                              onClick={() => setFormData((f) => ({
-                                ...f,
-                                medicationTags: (f.medicationTags || []).includes(m)
-                                  ? f.medicationTags.filter((x) => x !== m)
-                                  : [...(f.medicationTags || []), m]
-                              }))} />
-                          ))}
+                      {!(profile.folded_groups || []).includes("medication") && (
+                        <div>
+                          <span className="text-sm font-medium block mb-2">服薬（複数選択可）</span>
+                          <div className="flex flex-wrap gap-2">
+                            {MEDICATION_OPTIONS.map((m) => (
+                              <Chip key={m} label={m} active={(formData.medicationTags || []).includes(m)}
+                                onClick={() => setFormData((f) => ({
+                                  ...f,
+                                  medicationTags: (f.medicationTags || []).includes(m)
+                                    ? f.medicationTags.filter((x) => x !== m)
+                                    : [...(f.medicationTags || []), m]
+                                }))} />
+                            ))}
+                          </div>
                         </div>
-                      </div>
+                      )}
 
                       {profile.height_cm ? (
                         <div className="rounded-xl p-3 text-xs leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
@@ -6729,10 +6767,12 @@ export default function VocalTracker({ userId, userEmail }) {
                               </button>
                             ))}
                           </div>
-                          <button type="button" onClick={() => setShowExerciseDetail(true)}
-                            className="text-xs underline" style={{ color: C.inkSoft }}>
-                            +詳しく記録する（種目・時間・強度）
-                          </button>
+                          {!(profile.folded_groups || []).includes("exercise_detail") && (
+                            <button type="button" onClick={() => setShowExerciseDetail(true)}
+                              className="text-xs underline" style={{ color: C.inkSoft }}>
+                              +詳しく記録する（種目・時間・強度）
+                            </button>
+                          )}
                         </>
                       ) : (
                         <>
@@ -6773,28 +6813,32 @@ export default function VocalTracker({ userId, userEmail }) {
                     <SectionCard title={t("sectionMental")} icon={HeartHandshake}>
                       <DotSelector label={t("labelMentalEase")} icon={HeartHandshake} value={formData.ease} lowLabel={t("lowTension")} highLabel={t("highCalm")}
                         onChange={(v) => setFormData((f) => ({ ...f, ease: v }))} />
-                      <div>
-                        <span className="text-sm font-medium block mb-2">{t("labelMentalTags")}</span>
-                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("noteMentalTagsFollowEase")}</p>
-                        <div className="flex flex-wrap gap-2">
-                          {MENTAL_TAG_GROUPS[mentalTagGroupForEase(formData.ease)].map((tag) => (
-                            <Chip key={tag} label={t(MENTAL_TAG_KEYS[tag])} active={(formData.mentalTags || []).includes(tag)}
-                              onClick={() => setFormData((f) => ({
-                                ...f,
-                                mentalTags: (f.mentalTags || []).includes(tag)
-                                  ? f.mentalTags.filter((x) => x !== tag)
-                                  : [...(f.mentalTags || []), tag]
-                              }))} />
-                          ))}
-                        </div>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium block mb-1.5">{t("labelMentalReason")}</label>
-                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{t("noteMentalReasonOptional")}</p>
-                        <textarea value={formData.mentalReason} rows={3} placeholder={t("placeholderMentalReasonText")}
-                          onChange={(e) => setFormData((f) => ({ ...f, mentalReason: e.target.value }))}
-                          className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                      </div>
+                      {!(profile.folded_groups || []).includes("mental_detail") && (
+                        <>
+                          <div>
+                            <span className="text-sm font-medium block mb-2">{t("labelMentalTags")}</span>
+                            <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("noteMentalTagsFollowEase")}</p>
+                            <div className="flex flex-wrap gap-2">
+                              {MENTAL_TAG_GROUPS[mentalTagGroupForEase(formData.ease)].map((tag) => (
+                                <Chip key={tag} label={t(MENTAL_TAG_KEYS[tag])} active={(formData.mentalTags || []).includes(tag)}
+                                  onClick={() => setFormData((f) => ({
+                                    ...f,
+                                    mentalTags: (f.mentalTags || []).includes(tag)
+                                      ? f.mentalTags.filter((x) => x !== tag)
+                                      : [...(f.mentalTags || []), tag]
+                                  }))} />
+                              ))}
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium block mb-1.5">{t("labelMentalReason")}</label>
+                            <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{t("noteMentalReasonOptional")}</p>
+                            <textarea value={formData.mentalReason} rows={3} placeholder={t("placeholderMentalReasonText")}
+                              onChange={(e) => setFormData((f) => ({ ...f, mentalReason: e.target.value }))}
+                              className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                          </div>
+                        </>
+                      )}
                     </SectionCard>
 
                     <SectionCard title={t("sectionMemo")} icon={NotebookPen}>
@@ -8874,6 +8918,29 @@ export default function VocalTracker({ userId, userEmail }) {
                     </p>
                   </div>
                 </div>
+
+                {unusedFieldGroupSuggestions.filter((s) => !dismissedFoldSuggestions.includes(s.key)).length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>使っていない項目</p>
+                    <div className="space-y-3">
+                      {unusedFieldGroupSuggestions.filter((s) => !dismissedFoldSuggestions.includes(s.key)).map((s) => (
+                        <div key={s.key} className="rounded-xl p-3" style={{ background: C.paper }}>
+                          <p className="text-sm mb-2">「{s.label}」を30日間記録していません。畳みますか？</p>
+                          <div className="flex gap-2">
+                            <button type="button" onClick={() => handleFoldGroup(s.key)}
+                              className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                              畳む
+                            </button>
+                            <button type="button" onClick={() => setDismissedFoldSuggestions((prev) => [...prev, s.key])}
+                              className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                              続ける
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>アカウント</p>
