@@ -2988,6 +2988,10 @@ export default function VocalTracker({ userId, userEmail }) {
   const [clinicFreeNote, setClinicFreeNote] = useState("");
   const [showExerciseDetail, setShowExerciseDetail] = useState(false);
   const [showMealDetail, setShowMealDetail] = useState(false);
+  // lavoce-アプリ配布と課金仕様.md §3・実行順マスター Stage 1-4: PWA化＋インストール導線＋計測
+  const [pwaInstallPrompt, setPwaInstallPrompt] = useState(null);
+  const [showInstallBanner, setShowInstallBanner] = useState(false);
+  const [isPwaInstalled, setIsPwaInstalled] = useState(false);
   const [mergeSourceRepertoire, setMergeSourceRepertoire] = useState("");
   const [mergeTargetRepertoire, setMergeTargetRepertoire] = useState("");
   const [mergeConfirming, setMergeConfirming] = useState(false);
@@ -3065,6 +3069,50 @@ export default function VocalTracker({ userId, userEmail }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // lavoce-アプリ配布と課金仕様.md §3・実行順マスター Stage 1-4: PWA化。
+  // Service Workerの登録、インストール導線（beforeinstallprompt）、インストール計測をまとめて行う。
+  useEffect(() => {
+    if (typeof window === "undefined" || !("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.register("/sw.js").catch((err) => {
+      console.error("Service Workerの登録に失敗しました:", err);
+    });
+    // 既にインストール済み（スタンドアロン表示）かどうかを判定する
+    const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+    setIsPwaInstalled(standalone);
+
+    function handleBeforeInstallPrompt(e) {
+      e.preventDefault();
+      setPwaInstallPrompt(e);
+      // 記録画面の邪魔をしないよう、少し操作した後にだけバナーを出す。
+      setTimeout(() => setShowInstallBanner(true), 3000);
+    }
+    function handleAppInstalled() {
+      setIsPwaInstalled(true);
+      setShowInstallBanner(false);
+      setPwaInstallPrompt(null);
+      // 計測：インストール完了をプロフィールに記録する（実行順マスター Stage 1-4の「計測」要件）。
+      const supabase = createClient();
+      supabase.from("profiles").update({ pwa_installed_at: new Date().toISOString() }).eq("id", userId).then(() => {});
+    }
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("appinstalled", handleAppInstalled);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      window.removeEventListener("appinstalled", handleAppInstalled);
+    };
+  }, [userId]);
+
+  async function handleInstallPwa() {
+    if (!pwaInstallPrompt) return;
+    // 計測：ボタンを押してプロンプトを表示した時点を記録する。
+    const supabase = createClient();
+    supabase.from("profiles").update({ pwa_install_prompted_at: new Date().toISOString() }).eq("id", userId).then(() => {});
+    pwaInstallPrompt.prompt();
+    await pwaInstallPrompt.userChoice;
+    setPwaInstallPrompt(null);
+    setShowInstallBanner(false);
+  }
 
   useEffect(() => {
     try {
@@ -5831,6 +5879,21 @@ export default function VocalTracker({ userId, userEmail }) {
               const isRecordedToday = !!todayEntry;
               return (
                 <div className="space-y-4">
+                  {!isPwaInstalled && showInstallBanner && pwaInstallPrompt && (
+                    <div className="rounded-2xl p-3 border flex items-center gap-3" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">ホーム画面に追加しませんか？</p>
+                        <p className="text-xs" style={{ color: C.inkSoft }}>ワンタップで記録を開けます。</p>
+                      </div>
+                      <button type="button" onClick={handleInstallPwa}
+                        className="px-3 py-1.5 rounded-full text-xs font-medium shrink-0" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                        追加する
+                      </button>
+                      <button type="button" onClick={() => setShowInstallBanner(false)} className="w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ color: C.inkSoft }}>
+                        <X size={14} />
+                      </button>
+                    </div>
+                  )}
                   <div>
                     <p className="text-sm" style={{ color: C.inkSoft }}>{greeting}</p>
                     <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
@@ -9196,6 +9259,19 @@ export default function VocalTracker({ userId, userEmail }) {
                     <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
                       変更は「今日の記録」タブに即座に反映されます。畳んでも、過去に入力した値が消えることはありません。
                     </p>
+                  </div>
+                )}
+
+                {!isPwaInstalled && pwaInstallPrompt && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                    <p className="text-sm font-medium mb-1">アプリとしてインストール</p>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      ホーム画面に追加すると、ブラウザを開かずワンタップで記録できます。
+                    </p>
+                    <button type="button" onClick={handleInstallPwa}
+                      className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                      インストールする
+                    </button>
                   </div>
                 )}
 
