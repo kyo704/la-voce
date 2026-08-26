@@ -2307,6 +2307,183 @@ function RepertoireItemRow({
     </div>
   );
 }
+// lavoce-画面レイアウト仕様_1.md §9: オンボーディングと同意（法的に必須）。
+// 既存ユーザー（既にentriesがある）は同意画面だけを出し、新規ユーザーは5画面のフルフローにする。
+const ONBOARDING_GOAL_OPTIONS = [
+  { key: "diagnose", label: "不調の原因を突き止めたい" },
+  { key: "peak", label: "本番に合わせたい" },
+  { key: "train", label: "長く鍛えたい" },
+  { key: "log_only", label: "記録だけしたい" }
+];
+const CONSENT_POLICY_VERSION = "2026-08-v1";
+const CONSENT_DATA_CATEGORIES = [
+  "喉のコンディション・声の状態（5段階評価、音の高さ）",
+  "睡眠時間・就寝時刻",
+  "体重・体脂肪率（入力した場合）",
+  "症状（乾燥・嗄れ・咳など）",
+  "心の余裕・気持ちのタグ",
+  "月経周期（記録を選んだ場合のみ）",
+  "既往症・診断済みの症状（登録した場合のみ）",
+  "食事・運動の記録"
+];
+function OnboardingFlow({ existingUser, onComplete }) {
+  const [step, setStep] = useState(0);
+  const [statsConsent, setStatsConsent] = useState(false);
+  const [professions, setProfessions] = useState([]);
+  const [goalFocus, setGoalFocus] = useState("");
+  const [rangeLow, setRangeLow] = useState("");
+  const [rangeHigh, setRangeHigh] = useState("");
+  const [saving, setSaving] = useState(false);
+  const totalSteps = existingUser ? 1 : 5;
+
+  async function handleFinish() {
+    setSaving(true);
+    const patch = {
+      onboarding_completed: true,
+      consent_health_data_at: new Date().toISOString(),
+      consent_stats_use_at: statsConsent ? new Date().toISOString() : null,
+      consent_policy_version: CONSENT_POLICY_VERSION
+    };
+    if (!existingUser) {
+      patch.professions = professions.length ? professions : ["singer"];
+      patch.vocal_profession = professions[0] || "singer";
+      patch.goal_focus = goalFocus || "log_only";
+      if (rangeLow) patch.vocal_range_low = rangeLow;
+      if (rangeHigh) patch.vocal_range_high = rangeHigh;
+    }
+    await onComplete(patch);
+    setSaving(false);
+  }
+
+  return (
+    <div style={{ background: C.paper, color: C.ink, minHeight: "100vh" }} className="flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <div className="flex items-center gap-1 mb-6 justify-center">
+          {Array.from({ length: totalSteps }).map((_, i) => (
+            <div key={i} style={{ width: 28, height: 3, borderRadius: 2, background: i <= step ? C.curtain : C.line }} />
+          ))}
+        </div>
+
+        {step === 0 && (
+          <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+            <h2 className="ff-display italic text-xl mb-3">記録データについて</h2>
+            <p className="text-sm mb-3">La Voceは、あなたの声や体調の記録を保存します。以下の項目を取得します。</p>
+            <ul className="text-xs space-y-1 mb-3" style={{ color: C.inkSoft }}>
+              {CONSENT_DATA_CATEGORIES.map((c) => <li key={c}>・{c}</li>)}
+            </ul>
+            <p className="text-sm mb-1 font-medium">何のために使うか</p>
+            <ul className="text-xs space-y-1 mb-4" style={{ color: C.inkSoft }}>
+              <li>・あなた自身が声の調子の傾向を振り返るため</li>
+              <li>・記録をもとに、あなた専用の分析（偏差値・発声負荷など）を表示するため</li>
+            </ul>
+            <div className="rounded-xl p-3 mb-3" style={{ background: C.paper }}>
+              <p className="text-xs font-medium mb-1">上記の記録・分析のための取得（必須）</p>
+              <p className="text-xs" style={{ color: C.inkSoft }}>この同意がないと、アプリの記録機能を使えません。</p>
+            </div>
+            <label className="flex items-start gap-2 rounded-xl p-3 mb-4" style={{ background: C.paper, cursor: "pointer" }}>
+              <input type="checkbox" checked={statsConsent} onChange={(e) => setStatsConsent(e.target.checked)} className="mt-0.5" />
+              <span className="text-xs" style={{ color: C.inkSoft }}>
+                <strong style={{ color: C.ink }}>（任意）</strong> 匿名化した統計として、La Voceの機能改善に役立てることに同意します。個人を特定できる形で第三者に提供されることはありません。
+              </span>
+            </label>
+            <p className="text-xs mb-4" style={{ color: C.inkSoft }}>
+              同意はいつでも「もっと ＞ 設定」から撤回できます。撤回すると新しい記録の保存が制限されます（既存データの書き出し・削除は同意状況に関わらずいつでも可能です）。
+            </p>
+            <button type="button"
+              onClick={() => { if (existingUser) { handleFinish(); } else { setStep(1); } }}
+              disabled={saving}
+              className="w-full py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: saving ? 0.6 : 1 }}>
+              {existingUser ? (saving ? "保存中…" : "同意して続ける") : "同意して次へ"}
+            </button>
+          </div>
+        )}
+
+        {step === 1 && !existingUser && (
+          <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+            <h2 className="ff-display italic text-xl mb-3">職業を選んでください</h2>
+            <p className="text-xs mb-3" style={{ color: C.inkSoft }}>複数選択できます。</p>
+            <div className="grid grid-cols-2 gap-2 mb-4">
+              {VOCAL_PROFESSIONS.map((p) => {
+                const label = p === "singer" ? "声楽家・ミュージカル" : p === "announcer" ? "アナウンサー" : p === "voice_actor" ? "声優" : "ポップス・ロック";
+                const active = professions.includes(p);
+                return (
+                  <button key={p} type="button"
+                    onClick={() => setProfessions((prev) => active ? prev.filter((x) => x !== p) : [...prev, p])}
+                    className="py-3 rounded-xl text-sm font-medium border"
+                    style={{ background: active ? C.curtain : C.paper, color: active ? "#FFFDF8" : C.inkSoft, borderColor: active ? C.curtain : C.line }}>
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+            <button type="button" onClick={() => setStep(2)} disabled={professions.length === 0}
+              className="w-full py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: professions.length === 0 ? 0.5 : 1 }}>
+              次へ
+            </button>
+          </div>
+        )}
+
+        {step === 2 && !existingUser && (
+          <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+            <h2 className="ff-display italic text-xl mb-3">いま知りたいことは？</h2>
+            <div className="space-y-2 mb-4">
+              {ONBOARDING_GOAL_OPTIONS.map((opt) => (
+                <button key={opt.key} type="button" onClick={() => setGoalFocus(opt.key)}
+                  className="w-full py-3 rounded-xl text-sm font-medium border text-left px-4"
+                  style={{ background: goalFocus === opt.key ? C.curtain : C.paper, color: goalFocus === opt.key ? "#FFFDF8" : C.inkSoft, borderColor: goalFocus === opt.key ? C.curtain : C.line }}>
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+            <button type="button" onClick={() => setStep(3)} disabled={!goalFocus}
+              className="w-full py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: !goalFocus ? 0.5 : 1 }}>
+              次へ
+            </button>
+          </div>
+        )}
+
+        {step === 3 && !existingUser && (
+          <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+            <h2 className="ff-display italic text-xl mb-3">声域（任意）</h2>
+            <p className="text-xs mb-3" style={{ color: C.inkSoft }}>あとから「もっと＞設定」でも入力できます。分からなければ飛ばして大丈夫です。</p>
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <input type="text" value={rangeLow} onChange={(e) => setRangeLow(e.target.value)} placeholder="最低音（例: A3）"
+                className="rounded-lg border p-2.5 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+              <input type="text" value={rangeHigh} onChange={(e) => setRangeHigh(e.target.value)} placeholder="最高音（例: C6）"
+                className="rounded-lg border p-2.5 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+            </div>
+            <div className="flex gap-2">
+              <button type="button" onClick={() => setStep(4)}
+                className="flex-1 py-3 rounded-full text-sm font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                あとで
+              </button>
+              <button type="button" onClick={() => setStep(4)}
+                className="flex-1 py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                次へ
+              </button>
+            </div>
+          </div>
+        )}
+
+        {step === 4 && !existingUser && (
+          <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+            <h2 className="ff-display italic text-xl mb-3">3日記録すると</h2>
+            <ul className="text-sm space-y-1.5 mb-4">
+              <li>✓ 声の立ち上がりの速さ（ウォームアップ効率）</li>
+              <li>✓ 症状のカレンダー</li>
+              <li>✓ 音域マップ</li>
+            </ul>
+            <p className="text-sm mb-4">が見られるようになります。<br />7日で「コンディション偏差値」、14日で「あなただけの法則」が出ます。</p>
+            <button type="button" onClick={handleFinish} disabled={saving}
+              className="w-full py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: saving ? 0.6 : 1 }}>
+              {saving ? "はじめています…" : "はじめる"}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 // lavoce-曲目複数化パッチ.md §2.0: 活動ブロック1つ分。種別・時間・曲目リスト・種別固有項目・
 // ブロックごとの負荷フィードバックをまとめる。
 function ActivityBlockEditor({
@@ -2499,7 +2676,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [] });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], onboarding_completed: null, professions: [], goal_focus: "" });
   const [ownedItemKeys, setOwnedItemKeys] = useState([]);
   const [characterEquipped, setCharacterEquipped] = useState({});
   const [characterPointsSpent, setCharacterPointsSpent] = useState(0);
@@ -2618,7 +2795,7 @@ export default function VocalTracker({ userId, userEmail }) {
         () =>
           supabase
             .from("profiles")
-            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions")
+            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus")
             .eq("id", userId)
             .single(),
         "プロフィール（羊の装備を含む）の取得"
@@ -2642,6 +2819,12 @@ export default function VocalTracker({ userId, userEmail }) {
           technical_goal: data.technical_goal || "",
           health_notes: data.health_notes || "",
           conditions: data.conditions || [],
+          onboarding_completed: data.onboarding_completed ?? false,
+          consent_health_data_at: data.consent_health_data_at || null,
+          consent_stats_use_at: data.consent_stats_use_at || null,
+          consent_policy_version: data.consent_policy_version || null,
+          professions: data.professions || [],
+          goal_focus: data.goal_focus || "",
           vocal_profession: data.vocal_profession || "singer",
           track_cycle: data.track_cycle || false
         });
@@ -4402,6 +4585,17 @@ export default function VocalTracker({ userId, userEmail }) {
     setTimeout(() => setProfileSaveStatus("idle"), 1800);
   }
 
+  // lavoce-画面レイアウト仕様_1.md §9: オンボーディング完了時に、同意日時・プロフィールをまとめて保存する。
+  async function handleCompleteOnboarding(patch) {
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update(patch).eq("id", userId);
+    if (error) {
+      console.error("オンボーディングの保存に失敗しました:", error);
+      return;
+    }
+    setProfile((p) => ({ ...p, ...patch }));
+  }
+
   // lavoce-収集データ拡張案.md B節: 質問票（EASE / VFI / SVHI-10 / RSI）の回答を保存する
   async function handleSubmitQuestionnaire(type) {
     const def = QUESTIONNAIRES[type];
@@ -4681,6 +4875,13 @@ export default function VocalTracker({ userId, userEmail }) {
     const supabase = createClient();
     await supabase.auth.signOut();
     window.location.href = "/";
+  }
+
+  // lavoce-画面レイアウト仕様_1.md §9: 同意・オンボーディングが未完了なら、本編より先にこちらを表示する。
+  // profile.onboarding_completedがnullの間（読み込み中）は判定を保留し、誤って一瞬表示されるのを防ぐ。
+  if (!loading && profile.onboarding_completed === false) {
+    const existingUser = Object.keys(entries).length > 0;
+    return <OnboardingFlow existingUser={existingUser} onComplete={handleCompleteOnboarding} />;
   }
 
   return (
@@ -5361,6 +5562,26 @@ export default function VocalTracker({ userId, userEmail }) {
                           )}
                         </div>
                       )}
+
+                      <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                        <p className="text-sm font-medium mb-1">記録データの同意状況</p>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                          記録・分析のための取得に{profile.consent_health_data_at ? `${new Date(profile.consent_health_data_at).toLocaleDateString("ja-JP")}に同意済み` : "未同意"}です。
+                        </p>
+                        <label className="flex items-start gap-2" style={{ cursor: "pointer" }}>
+                          <input type="checkbox" checked={!!profile.consent_stats_use_at} className="mt-0.5"
+                            onChange={async (e) => {
+                              const checked = e.target.checked;
+                              const supabase = createClient();
+                              const value = checked ? new Date().toISOString() : null;
+                              const { error } = await supabase.from("profiles").update({ consent_stats_use_at: value }).eq("id", userId);
+                              if (!error) setProfile((p) => ({ ...p, consent_stats_use_at: value }));
+                            }} />
+                          <span className="text-xs" style={{ color: C.inkSoft }}>
+                            （任意）匿名化した統計として、機能改善に役立てることに同意する
+                          </span>
+                        </label>
+                      </div>
 
                       <NumberField label={t("labelTodayWeight")} icon={Scale} value={formData.weightKg ?? ""} step={0.1} min={20} max={200} suffix="kg"
                         onChange={(v) => setFormData((f) => ({ ...f, weightKg: v }))} />
