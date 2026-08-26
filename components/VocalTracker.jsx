@@ -15,7 +15,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC } from "@/lib/tokens";
 import { FOOD_PRESETS, DISH_GROUP_ALIASES, CATEGORY_SEARCH_ALIASES } from "@/lib/foodPresets";
-import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, SHOP_ITEMS, PLACEMENT_LIMITS } from "@/lib/character";
+import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, SHOP_ITEMS, PLACEMENT_LIMITS, computeBalance } from "@/lib/character";
 import { LANGUAGES, createTranslator } from "@/lib/translations";
 import HealthInfo from "@/components/HealthInfo";
 import CharacterHome from "@/components/CharacterHome";
@@ -365,6 +365,42 @@ const LOAD_FIELDS_BY_PROFESSION = {
 };
 
 /* ---------- helpers ---------- */
+// Supabase側の一時的な認証エラー（JWT関連の401/PGRST303など）かどうかを判定する。
+// ネットワークの瞬断やインフラ側のクロックずれなど、こちらのコードのバグではなく
+// 一時的に起きる種類のエラーを見分けるためのもの。
+// 記録と分析の順番設計 §7: 「1日あたりの平均入力項目数」を計測するための、記入済みセクション数の
+// 概算カウント。DAY_RECORD_ORDER相当の主要セクションだけを対象にする（曲目の中身などは数えない）。
+function countFilledSections(entry) {
+  let n = 0;
+  if ((entry.voiceEntries || []).length > 0) n += 1;
+  if (typeof entry.temperature === "number" || typeof entry.humidity === "number") n += 1;
+  if (typeof entry.sleepHours === "number") n += 1;
+  if ((entry.activities || []).length > 0 || entry.recovery) n += 1;
+  if ((entry.waterBySlot || {}).total > 0) n += 1;
+  if (entry.dinnerTime || (entry.dinnerTags || []).length > 0 || typeof entry.proteinLevel === "number") n += 1;
+  if ((entry.symptoms || []).length > 0) n += 1;
+  if (typeof entry.mentalEase === "number") n += 1;
+  if ((entry.note || entry.mentalReason || "").trim()) n += 1;
+  return n;
+}
+// 記録と分析の順番設計 §3.5: 保存直後に「今日わかったこと」として出す、その日だけの簡単な発見。
+// 出せる日だけ出す（無ければnullを返し、カードには何も表示しない）。すべて自分比。
+function computeTodaysDiscovery(entries, today) {
+  const dates7 = Object.keys(entries).filter((d) => d <= today).sort().slice(-7);
+  if (dates7.length < 3 || dates7[dates7.length - 1] !== today) return null;
+  const todayEntry = entries[today];
+  const waterVals = dates7.map((d) => (entries[d].waterBySlot || {}).total).filter((v) => typeof v === "number" && v > 0);
+  const todayWater = (todayEntry.waterBySlot || {}).total;
+  if (typeof todayWater === "number" && todayWater > 0 && waterVals.length >= 3 && todayWater === Math.max(...waterVals)) {
+    return "水分が今週いちばん多い日です";
+  }
+  const sleepVals = dates7.map((d) => entries[d].sleepHours).filter((v) => typeof v === "number");
+  if (typeof todayEntry.sleepHours === "number" && sleepVals.length >= 3 && todayEntry.sleepHours === Math.max(...sleepVals)) {
+    return "睡眠時間が今週いちばん長い日です";
+  }
+  return null;
+}
+
 // Supabase側の一時的な認証エラー（JWT関連の401/PGRST303など）かどうかを判定する。
 // ネットワークの瞬断やインフラ側のクロックずれなど、こちらのコードのバグではなく
 // 一時的に起きる種類のエラーを見分けるためのもの。
@@ -3014,6 +3050,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [saveStatus, setSaveStatus] = useState("idle");
   const [saveError, setSaveError] = useState("");
   const [toastMessage, setToastMessage] = useState(null);
+  const [saveCardData, setSaveCardData] = useState(null);
   const [noiseMeasuring, setNoiseMeasuring] = useState(false);
   const [noiseError, setNoiseError] = useState("");
   const [cppsRecording, setCppsRecording] = useState(false);
@@ -5672,6 +5709,7 @@ export default function VocalTracker({ userId, userEmail }) {
 
   async function handleSave() {
     if (!formData) return;
+    const saveStartedAt = Date.now();
     setSaveStatus("saving");
     setSaveError("");
     const clean = { ...formData };
@@ -5687,12 +5725,35 @@ export default function VocalTracker({ userId, userEmail }) {
       setTimeout(() => setSaveStatus("idle"), 4000);
       return;
     }
+    // 記録と分析の順番設計 §3.5: 保存直後のカードに必要な数値を、保存の前後で計算する。
+    const balanceBefore = computeBalance(entries, characterPointsSpent);
+    const mergedEntries = { ...entries, [clean.date]: clean };
+    const balanceAfter = computeBalance(mergedEntries, characterPointsSpent);
+    let streakAfter = 0;
+    {
+      let d = clean.date;
+      while (mergedEntries[d]) { streakAfter += 1; d = addDays(d, -1); }
+    }
+    const discovery = computeTodaysDiscovery(mergedEntries, clean.date);
+    const filledCount = countFilledSections(clean);
+
     setEntries((prev) => ({ ...prev, [clean.date]: clean }));
     setSaveStatus("saved");
     setTimeout(() => setSaveStatus("idle"), 1800);
-    const msg = t(CARING_MESSAGE_KEYS[Math.floor(Math.random() * CARING_MESSAGE_KEYS.length)]);
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3200);
+    setSaveCardData({
+      pointsBefore: balanceBefore,
+      pointsAfter: balanceAfter,
+      streak: streakAfter,
+      totalDays: Object.keys(mergedEntries).length,
+      discovery
+    });
+
+    // §7: 計測。record_saveイベントを記録する（失敗しても記録自体は成立させるため、結果を待たない）。
+    supabase.from("events").insert({
+      user_id: userId,
+      event_type: "record_save",
+      payload: { filledCount, msTotal: Date.now() - saveStartedAt, mode: filledCount <= 3 ? "30s" : "full" }
+    }).then(() => {}, () => {});
   }
 
   async function handleDelete(date) {
@@ -5742,6 +5803,41 @@ export default function VocalTracker({ userId, userEmail }) {
             style={{ background: C.curtain, color: "#FFFDF8", boxShadow: "0 8px 24px rgba(36,25,20,0.25)" }}
           >
             {toastMessage}
+          </div>
+        </div>
+      )}
+      {saveCardData && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4" style={{ background: "rgba(36,25,20,0.35)" }}
+          onClick={() => setSaveCardData(null)}>
+          <div className="w-full sm:max-w-sm rounded-3xl p-6 text-center" style={{ background: C.paper }} onClick={(e) => e.stopPropagation()}>
+            <style>{`
+              @keyframes saveCardPointsPop { 0% { transform: scale(0.7); opacity: 0; } 60% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+              .save-card-points { animation: saveCardPointsPop 0.5s ease-out; }
+              @media (prefers-reduced-motion: reduce) { .save-card-points { animation: none; } }
+            `}</style>
+            <p className="ff-display italic text-xl mb-3" style={{ color: C.curtain }}>✓ {t("labelRecordedCheck")}</p>
+            <p className="ff-mono save-card-points" style={{ fontSize: 28, color: C.gold }}>
+              +{saveCardData.pointsAfter - saveCardData.pointsBefore}pt <span style={{ fontSize: 16, color: C.inkSoft }}>→ {saveCardData.pointsAfter}pt</span>
+            </p>
+            {saveCardData.streak > 1 && (
+              <p className="text-sm mt-2" style={{ color: C.inkSoft }}>{saveCardData.streak}日つづいています</p>
+            )}
+            {saveCardData.discovery && (
+              <div className="rounded-xl p-3 mt-4" style={{ background: C.card }}>
+                <p className="text-xs mb-1" style={{ color: C.inkSoft }}>今日わかったこと</p>
+                <p className="text-sm">{saveCardData.discovery}</p>
+              </div>
+            )}
+            <div className="flex gap-2 mt-5">
+              <button type="button" onClick={() => { setSaveCardData(null); setActiveTab("garden"); }}
+                className="flex-1 py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                おうちで羊を見る
+              </button>
+              <button type="button" onClick={() => setSaveCardData(null)}
+                className="flex-1 py-2.5 rounded-full text-sm font-medium border" style={{ borderColor: C.line, color: C.inkSoft }}>
+                閉じる
+              </button>
+            </div>
           </div>
         </div>
       )}
