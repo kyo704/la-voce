@@ -282,6 +282,17 @@ const PROFESSION_THEORY_PAGES = {
 const VOCAL_PROFESSIONS = ["singer", "announcer", "voice_actor", "pop_musical"];
 // lavoce-記録項目の再設計v2.md §3.6: 既往症を自由記述から選択式に構造化。
 // 目的：診断済みの人には専用分析を出し、未診断の人には「疑い」を一切示さない（§7.1）。
+// lavoce-記録項目の再設計v2.md §3.7: 稽古ノートの目標タグ。振り返り画面で、
+// タグに対応する客観データを自動で並べるために使う。
+const GOAL_TAGS = [
+  { key: "soft_high", label: "弱声の高音" },
+  { key: "high_range", label: "高音" },
+  { key: "range", label: "音域拡大" },
+  { key: "breath_support", label: "息の支え" },
+  { key: "articulation", label: "滑舌・明瞭度" },
+  { key: "stamina", label: "持久力" },
+  { key: "evenness", label: "音色の均一" }
+];
 const CONDITION_OPTIONS = [
   { key: "gerd", label: "逆流性食道炎" },
   { key: "lpr", label: "咽喉頭酸逆流" },
@@ -2905,8 +2916,12 @@ export default function VocalTracker({ userId, userEmail }) {
   const [mergeInProgress, setMergeInProgress] = useState(false);
   const [mergeResult, setMergeResult] = useState("");
   const [showQuickRecord, setShowQuickRecord] = useState(false);
-  const [notesSubTab, setNotesSubTab] = useState("calendar");
+  const [notesSubTab, setNotesSubTab] = useState("practice");
   const [editingVoiceEntryId, setEditingVoiceEntryId] = useState(null);
+  const [editingPracticeGoal, setEditingPracticeGoal] = useState(false);
+  const [practiceGoalDraft, setPracticeGoalDraft] = useState("");
+  const [practiceGoalTagsDraft, setPracticeGoalTagsDraft] = useState([]);
+  const [practiceReviewDraft, setPracticeReviewDraft] = useState("");
   const [selectedDate, setSelectedDate] = useState(todayISOUTC());
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
@@ -2945,7 +2960,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], onboarding_completed: null, professions: [], goal_focus: "" });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [] });
   const [ownedItemKeys, setOwnedItemKeys] = useState([]);
   const [characterEquipped, setCharacterEquipped] = useState({});
   const [characterPointsSpent, setCharacterPointsSpent] = useState(0);
@@ -3064,7 +3079,7 @@ export default function VocalTracker({ userId, userEmail }) {
         () =>
           supabase
             .from("profiles")
-            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus")
+            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus, practice_goal, practice_goal_tags, practice_goal_started_at, practice_reviews")
             .eq("id", userId)
             .single(),
         "プロフィール（羊の装備を含む）の取得"
@@ -3094,6 +3109,10 @@ export default function VocalTracker({ userId, userEmail }) {
           consent_policy_version: data.consent_policy_version || null,
           professions: data.professions || [],
           goal_focus: data.goal_focus || "",
+          practice_goal: data.practice_goal || "",
+          practice_goal_tags: data.practice_goal_tags || [],
+          practice_goal_started_at: data.practice_goal_started_at || null,
+          practice_reviews: data.practice_reviews || [],
           vocal_profession: data.vocal_profession || "singer",
           track_cycle: data.track_cycle || false
         });
@@ -4394,6 +4413,74 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [acwrSeries]);
   // ---- 発声負荷バランス 用データ ここまで ----
 
+  // ---- lavoce-記録項目の再設計v2.md §3.7: 稽古ノート（タグ別の自動添付データ） ----
+  // 「変わった気がしない」の横に、実は半音上がっているグラフを出すのがこの機能の肝。
+  const practiceGoalMetrics = useMemo(() => {
+    const tags = profile.practice_goal_tags || [];
+    if (tags.length === 0) return [];
+    const dates28 = Object.keys(entries).sort().slice(-28);
+    const metrics = [];
+    tags.forEach((tag) => {
+      if (tag === "soft_high") {
+        const vals = dates28.map((d) => ({ date: d, midi: noteToMidi(entries[d].pianissimoHighNote) })).filter((x) => x.midi != null);
+        if (vals.length >= 2) {
+          const first = vals[0], last = vals[vals.length - 1];
+          const diff = last.midi - first.midi;
+          metrics.push({
+            tag, label: "弱声の最高音", data: vals.map((v) => ({ date: v.date.slice(5), value: v.midi })),
+            summary: `${midiToNoteLabel(first.midi)} → ${midiToNoteLabel(last.midi)}（${diff >= 0 ? "+" : ""}${diff}半音）`
+          });
+        }
+      } else if (tag === "high_range") {
+        const vals = dates28.map((d) => ({ date: d, midi: noteToMidi(entries[d].routineNote) })).filter((x) => x.midi != null);
+        if (vals.length >= 2) {
+          const first = vals[0], last = vals[vals.length - 1];
+          const diff = last.midi - first.midi;
+          metrics.push({
+            tag, label: "ルーティン後の音名", data: vals.map((v) => ({ date: v.date.slice(5), value: v.midi })),
+            summary: `${midiToNoteLabel(first.midi)} → ${midiToNoteLabel(last.midi)}（${diff >= 0 ? "+" : ""}${diff}半音）`
+          });
+        }
+      } else if (tag === "range") {
+        const vals = dates28.map((d) => {
+          const wake = noteToMidi(entries[d].wakeNote);
+          const routine = noteToMidi(entries[d].routineNote);
+          const vs = [wake, routine].filter((v) => v != null);
+          return vs.length >= 2 ? { date: d, width: Math.max(...vs) - Math.min(...vs) } : null;
+        }).filter(Boolean);
+        if (vals.length >= 2) {
+          const first = vals[0], last = vals[vals.length - 1];
+          metrics.push({
+            tag, label: "音域幅（最高−最低、半音）", data: vals.map((v) => ({ date: v.date.slice(5), value: v.width })),
+            summary: `${first.width}半音 → ${last.width}半音（${last.width - first.width >= 0 ? "+" : ""}${last.width - first.width}半音）`
+          });
+        }
+      } else if (tag === "articulation") {
+        const vals = dates28.map((d) => ({ date: d, cpps: entries[d].cppsValue })).filter((x) => typeof x.cpps === "number");
+        if (vals.length >= 2) {
+          const first = vals[0], last = vals[vals.length - 1];
+          metrics.push({
+            tag, label: "CPPS（声の明瞭さ）の推移", data: vals.map((v) => ({ date: v.date.slice(5), value: v.cpps })),
+            summary: `${first.cpps.toFixed(1)}dB → ${last.cpps.toFixed(1)}dB`
+          });
+        }
+      } else if (tag === "stamina") {
+        const vals = dates28.map((d) => (acwrSeries[d] && acwrSeries[d].acwr != null ? { date: d, acwr: roundTo1(acwrSeries[d].acwr) } : null)).filter(Boolean);
+        if (vals.length >= 2) {
+          metrics.push({
+            tag, label: "発声負荷バランス（ACWR）の推移", data: vals.map((v) => ({ date: v.date.slice(5), value: v.acwr })),
+            summary: `直近: ${vals[vals.length - 1].acwr}`
+          });
+        }
+      } else {
+        // breath_support（MPT）・evenness は、対応する記録項目がまだ無いため準備中とする。
+        metrics.push({ tag, label: (GOAL_TAGS.find((g) => g.key === tag) || {}).label, data: null, summary: null, notYetAvailable: true });
+      }
+    });
+    return metrics;
+  }, [profile.practice_goal_tags, entries, acwrSeries]);
+  // ---- 稽古ノート 用データ ここまで ----
+
   // ---- lavoce-指標設計図.md 09. 環境の快適帯 用データ ----
   // 相対湿度ではなく絶対湿度（AH）で見る。気温が変わると同じ%でも実際の水分量が変わるため。
   const envEntries = useMemo(() => {
@@ -4984,6 +5071,25 @@ export default function VocalTracker({ userId, userEmail }) {
       return;
     }
     setProfile((p) => ({ ...p, ...patch }));
+  }
+
+  // lavoce-記録項目の再設計v2.md §3.7: 稽古ノートの目標を設定・更新する。目標は常に1つだけ。
+  async function handleSetPracticeGoal(goal, tags) {
+    const supabase = createClient();
+    const patch = { practice_goal: goal, practice_goal_tags: tags, practice_goal_started_at: todayISO() };
+    const { error } = await supabase.from("profiles").update(patch).eq("id", userId);
+    if (error) { console.error("目標の保存に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, ...patch }));
+  }
+  // 振り返りを1件追加する（週1想定）。過去の振り返りは時系列で読み返せるよう配列で保持する。
+  async function handleAddPracticeReview(text) {
+    if (!text || !text.trim()) return;
+    const newReview = { at: todayISO(), text: text.trim() };
+    const updatedReviews = [...(profile.practice_reviews || []), newReview];
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update({ practice_reviews: updatedReviews }).eq("id", userId);
+    if (error) { console.error("振り返りの保存に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, practice_reviews: updatedReviews }));
   }
 
   // lavoce-収集データ拡張案.md B節: 質問票（EASE / VFI / SVHI-10 / RSI）の回答を保存する
@@ -6731,6 +6837,11 @@ export default function VocalTracker({ userId, userEmail }) {
 
             {activeTab === "notes" && (
               <div className="flex rounded-full border p-1 mb-4" style={{ borderColor: C.line }}>
+                <button onClick={() => setNotesSubTab("practice")}
+                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                  style={{ background: notesSubTab === "practice" ? C.curtain : "transparent", color: notesSubTab === "practice" ? "#FFFDF8" : C.inkSoft }}>
+                  稽古ノート
+                </button>
                 <button onClick={() => setNotesSubTab("calendar")}
                   className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
                   style={{ background: notesSubTab === "calendar" ? C.curtain : "transparent", color: notesSubTab === "calendar" ? "#FFFDF8" : C.inkSoft }}>
@@ -6743,6 +6854,109 @@ export default function VocalTracker({ userId, userEmail }) {
                 </button>
               </div>
             )}
+            {activeTab === "notes" && notesSubTab === "practice" && (
+              <div className="space-y-5">
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-xs mb-2" style={{ color: C.inkSoft }}>いまの目標</p>
+                  {!editingPracticeGoal ? (
+                    profile.practice_goal ? (
+                      <>
+                        <p className="text-base font-medium">{profile.practice_goal}</p>
+                        <p className="text-xs mt-1" style={{ color: C.inkSoft }}>
+                          {(profile.practice_goal_tags || []).map((t) => `#${(GOAL_TAGS.find((g) => g.key === t) || {}).label}`).join("　")}
+                          {profile.practice_goal_started_at && (
+                            <>　{profile.practice_goal_started_at}〜（{Math.max(1, Math.floor((new Date(todayISO()) - new Date(profile.practice_goal_started_at)) / 86400000) + 1)}日目）</>
+                          )}
+                        </p>
+                        <button type="button" onClick={() => { setPracticeGoalDraft(profile.practice_goal); setPracticeGoalTagsDraft(profile.practice_goal_tags || []); setEditingPracticeGoal(true); }}
+                          className="text-xs underline mt-2" style={{ color: C.inkSoft }}>編集</button>
+                      </>
+                    ) : (
+                      <button type="button" onClick={() => { setPracticeGoalDraft(""); setPracticeGoalTagsDraft([]); setEditingPracticeGoal(true); }}
+                        className="w-full rounded-xl border-2 border-dashed py-3 text-sm font-medium" style={{ borderColor: C.line, color: C.inkSoft }}>
+                        ＋目標を設定する
+                      </button>
+                    )
+                  ) : (
+                    <>
+                      <input type="text" value={practiceGoalDraft} placeholder="例: 高音の弱声を安定させる" onChange={(e) => setPracticeGoalDraft(e.target.value)}
+                        className="w-full rounded-lg border p-2 text-sm mb-2" style={{ borderColor: C.line, background: C.paper }} />
+                      <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>タグ（振り返りに関連グラフが自動で並びます）</p>
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {GOAL_TAGS.map((g) => (
+                          <Chip key={g.key} label={g.label} active={practiceGoalTagsDraft.includes(g.key)}
+                            onClick={() => setPracticeGoalTagsDraft((prev) => prev.includes(g.key) ? prev.filter((x) => x !== g.key) : [...prev, g.key])} />
+                        ))}
+                      </div>
+                      <div className="flex gap-2">
+                        <button type="button" disabled={!practiceGoalDraft.trim()}
+                          onClick={async () => { await handleSetPracticeGoal(practiceGoalDraft.trim(), practiceGoalTagsDraft); setEditingPracticeGoal(false); }}
+                          className="flex-1 py-2 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: practiceGoalDraft.trim() ? 1 : 0.5 }}>
+                          保存
+                        </button>
+                        <button type="button" onClick={() => setEditingPracticeGoal(false)}
+                          className="flex-1 py-2 rounded-full text-sm font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                          キャンセル
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {profile.practice_goal && !editingPracticeGoal && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-sm font-medium mb-3">今週の振り返り</p>
+                    {practiceGoalMetrics.map((m) => (
+                      <div key={m.tag} className="mb-3">
+                        {m.notYetAvailable ? (
+                          <p className="text-xs rounded-lg p-2" style={{ background: C.paper, color: C.inkSoft }}>{m.label}：この指標はまだ記録機能がありません。</p>
+                        ) : m.data ? (
+                          <>
+                            <p className="text-xs mb-1" style={{ color: C.inkSoft }}>{m.label}</p>
+                            <div style={{ width: "100%", height: 100 }}>
+                              <ResponsiveContainer>
+                                <LineChart data={m.data} margin={{ left: 0, right: 8, top: 4, bottom: 0 }}>
+                                  <Line type="monotone" dataKey="value" stroke={C.curtain} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                                  <XAxis dataKey="date" tick={{ fontSize: 9, fill: C.inkSoft }} />
+                                  <YAxis hide domain={["auto", "auto"]} />
+                                  <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, borderColor: C.line }} />
+                                </LineChart>
+                              </ResponsiveContainer>
+                            </div>
+                            <p className="text-sm font-medium mt-1">{m.summary}</p>
+                          </>
+                        ) : (
+                          <p className="text-xs rounded-lg p-2" style={{ background: C.paper, color: C.inkSoft }}>{m.label}：まだデータが足りません。</p>
+                        )}
+                      </div>
+                    ))}
+                    <textarea value={practiceReviewDraft} rows={2} placeholder="感じたことを書く（「変わった気がしない」でも大丈夫です）"
+                      onChange={(e) => setPracticeReviewDraft(e.target.value)}
+                      className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                    <button type="button" disabled={!practiceReviewDraft.trim()}
+                      onClick={async () => { await handleAddPracticeReview(practiceReviewDraft); setPracticeReviewDraft(""); }}
+                      className="w-full mt-2 py-2 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: practiceReviewDraft.trim() ? 1 : 0.5 }}>
+                      書く
+                    </button>
+                  </div>
+                )}
+
+                {(profile.practice_reviews || []).length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-sm font-medium mb-3">これまでの振り返り</p>
+                    <div className="space-y-2">
+                      {[...(profile.practice_reviews || [])].reverse().map((r, i) => (
+                        <div key={i} className="rounded-xl p-2.5" style={{ background: C.paper }}>
+                          <p className="text-xs ff-mono mb-1" style={{ color: C.inkSoft }}>{r.at}</p>
+                          <p className="text-sm" style={{ color: C.ink }}>{r.text}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {(activeTab === "history" || (activeTab === "notes" && notesSubTab === "calendar")) && (
               <div className="space-y-5">
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
