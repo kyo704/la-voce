@@ -9120,7 +9120,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         const teacherIds = myAssignedTeachers[en.org_id] || [];
                         return (
                           <div key={en.id} className="rounded-xl p-3" style={{ background: C.paper }}>
-                            <p className="text-sm font-medium">{en.org.name}</p>
+                            <p className="text-sm font-medium">{en.org ? en.org.name : "（教室情報を読み込めませんでした）"}</p>
                             {teacherIds.map((tid) => (
                               <p key={tid} className="text-xs mt-0.5" style={{ color: C.inkSoft }}>{t("assignedTeacherLabel")}：{orgDisplayName(tid)}</p>
                             ))}
@@ -9522,7 +9522,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   return (
                     <details key={orgId} className="rounded-2xl border" style={{ background: C.card, borderColor: C.line }}
                       onToggle={(e) => { if (e.target.open) fetchOrgDetail(orgId); }}>
-                      <summary className="p-4 text-sm font-medium cursor-pointer">{m.org.name}（{m.role === "owner" ? "オーナー" : "管理者"}）</summary>
+                      <summary className="p-4 text-sm font-medium cursor-pointer">{m.org ? m.org.name : "（教室情報を読み込めませんでした）"}（{m.role === "owner" ? "オーナー" : "管理者"}）</summary>
                       <div className="px-4 pb-4 space-y-3">
                         <div>
                           <p className="text-xs font-medium mb-1.5">講師を招待する</p>
