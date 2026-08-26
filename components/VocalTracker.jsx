@@ -847,6 +847,24 @@ function cycleDayForDate(dateISO, entries) {
   const diffDays = Math.round((new Date(dateISO + "T00:00:00") - new Date(lastStart + "T00:00:00")) / 86400000);
   return diffDays + 1;
 }
+// 記録と分析の順番設計 §4: 新しい日の「今日は？」を、決断させずに推測して既に選んでおく。
+// 優先順位: 直近8週の「同じ曜日」で最も多かった種別 → それが無ければ「自主練習」。
+// （指導者プランのレッスン日程・稽古ノートの予定は、いずれも本アプリ未実装のため対象外）
+// 推測が外れても実害はない（表示される欄が変わるだけ）ため、間違えたときの取り消し表示は不要。
+function guessTodayActivityKind(date, entries) {
+  const targetWeekday = new Date(date + "T00:00:00Z").getUTCDay();
+  const counts = {}; // "休養" も含めてカウントする
+  for (let i = 1; i <= 56; i++) {
+    const d = addDays(date, -i);
+    const entry = entries[d];
+    if (!entry) continue;
+    if (new Date(d + "T00:00:00Z").getUTCDay() !== targetWeekday) continue;
+    const kind = (entry.activities || []).length === 0 && entry.recovery ? "休養" : (entry.activities || [])[0] && entry.activities[0].kind;
+    if (kind) counts[kind] = (counts[kind] || 0) + 1;
+  }
+  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  return sorted.length > 0 ? sorted[0][0] : "自主練習";
+}
 function buildFormData(date, entries) {
   const existing = entries[date];
   if (existing) {
@@ -938,9 +956,13 @@ function buildFormData(date, entries) {
     // 1件目はcontext:'wake'（起き抜け）を既定にする。
     voiceEntries: [newVoiceEntry(date, "wake")],
     // lavoce-曲目複数化パッチ.md: 活動は「1日1つ」ではなくブロックの配列。
-    // 既定は自主練習ブロック1つ（旧UXの「最初から自主練習が選ばれている」状態を踏襲）。
-    activities: [newActivityBlock("自主練習", 0)],
-    recovery: null
+    // 記録と分析の順番設計 §4: 既定は固定の「自主練習」ではなく、直近8週の同じ曜日の推測から選ぶ。
+    ...(() => {
+      const guessed = guessTodayActivityKind(date, entries);
+      return guessed === "休養"
+        ? { activities: [], recovery: { methods: [], note: "" } }
+        : { activities: [newActivityBlock(guessed, 0)], recovery: null };
+    })()
   };
 }
 function computeBMI(weightKg, heightCm) {
