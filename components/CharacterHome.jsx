@@ -1193,10 +1193,13 @@ function ShopItemPreview({ item }) {
 }
 
 // 羊のおうち仕様 §2.2: 奥行きを3層に固定する。層ごとに z-index とスケールを持つ。
+// z-indexは、ページのヘッダー等と競合しないよう、以前から問題なく動いていた小さい範囲(1〜6)に収める。
+// 指示書は 10/20/30 を例示しているが、絶対値よりも back < mid < front の相対順序が本質のため、
+// アプリ全体のヘッダーのz-indexと衝突しない値を優先する。
 const LAYER_CONFIG = {
-  back: { z: 10, scale: 0.85 },
-  mid: { z: 20, scale: 1.00 },
-  front: { z: 30, scale: 1.15 }
+  back: { z: 1, scale: 0.85 },
+  mid: { z: 2, scale: 1.00 },
+  front: { z: 6, scale: 1.15 }
 };
 // §2.4: 配置のスナップ。層の横幅を12分割したグリッドにスナップさせる。
 const GRID_COLUMNS = 12;
