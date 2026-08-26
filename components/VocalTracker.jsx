@@ -2992,6 +2992,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [pwaInstallPrompt, setPwaInstallPrompt] = useState(null);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [isPwaInstalled, setIsPwaInstalled] = useState(false);
+  const [isIosSafari, setIsIosSafari] = useState(false);
   const [mergeSourceRepertoire, setMergeSourceRepertoire] = useState("");
   const [mergeTargetRepertoire, setMergeTargetRepertoire] = useState("");
   const [mergeConfirming, setMergeConfirming] = useState(false);
@@ -3081,6 +3082,16 @@ export default function VocalTracker({ userId, userEmail }) {
     // 既にインストール済み（スタンドアロン表示）かどうかを判定する
     const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
     setIsPwaInstalled(standalone);
+    // iOS/iPadOSのSafari（および同エンジンを使う全ブラウザ）はbeforeinstallpromptを実装していないため、
+    // 別途ユーザーエージェントで判定し、手動での案内に切り替える。
+    const ua = window.navigator.userAgent;
+    const isIOSDevice = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const isIOS = isIOSDevice && !standalone;
+    setIsIosSafari(isIOS);
+    // iOSはbeforeinstallpromptが来ないので、同じ「少し操作した後に出す」タイミングを別途用意する。
+    if (isIOS) {
+      setTimeout(() => setShowInstallBanner(true), 3000);
+    }
 
     function handleBeforeInstallPrompt(e) {
       e.preventDefault();
@@ -5919,6 +5930,19 @@ export default function VocalTracker({ userId, userEmail }) {
                         className="px-3 py-1.5 rounded-full text-xs font-medium shrink-0" style={{ background: C.curtain, color: "#FFFDF8" }}>
                         追加する
                       </button>
+                      <button type="button" onClick={() => setShowInstallBanner(false)} className="w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ color: C.inkSoft }}>
+                        <X size={14} />
+                      </button>
+                    </div>
+                  )}
+                  {!isPwaInstalled && isIosSafari && showInstallBanner && (
+                    <div className="rounded-2xl p-3 border flex items-center gap-3" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">ホーム画面に追加しませんか？</p>
+                        <p className="text-xs" style={{ color: C.inkSoft }}>
+                          共有ボタン(<span style={{ fontWeight: 600 }}>□に↑</span>)→「ホーム画面に追加」で、ワンタップで開けるようになります。
+                        </p>
+                      </div>
                       <button type="button" onClick={() => setShowInstallBanner(false)} className="w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ color: C.inkSoft }}>
                         <X size={14} />
                       </button>
@@ -9326,6 +9350,14 @@ export default function VocalTracker({ userId, userEmail }) {
                       className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
                       インストールする
                     </button>
+                  </div>
+                )}
+                {!isPwaInstalled && isIosSafari && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                    <p className="text-sm font-medium mb-1">アプリとしてインストール</p>
+                    <p className="text-xs" style={{ color: C.inkSoft }}>
+                      画面下部(または上部)の共有ボタン(四角から矢印が出ているアイコン)をタップし、「ホーム画面に追加」を選んでください。
+                    </p>
                   </div>
                 )}
 
