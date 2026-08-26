@@ -1999,7 +1999,61 @@ function SectionCard({ title, icon: Icon, children, id, highlighted }) {
 // 記録を続ける動機にする（lavoce-指標設計図.md の「ロックの見せ方」参照）。
 // 指導者プラン実装仕様 §7: レッスン日程をカレンダーで見せる。既存の月次カレンダー（記録閲覧用）と
 // 同じ月送りの仕組み（monthMeta/shiftMonth）を再利用する。先生用ページ・レッスンモードの両方で使う。
-function LessonCalendar({ lessons, onDayClick, selectable, getTeacherName, getStudentName }) {
+// lavoce-カレンダー連携パッチ.md §4.2: 1件ずつ「カレンダーに追加」（即時）。
+// 外部連携（OAuth）は一切不要。テンプレートURLと.icsファイルの生成だけで成立する。
+function formatDateForGoogleCalendar(date) {
+  // Googleカレンダーのテンプレート URLはUTC基準の "YYYYMMDDTHHMMSSZ" 形式を期待する。
+  return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+}
+function buildGoogleCalendarUrl(lesson, title) {
+  const start = new Date(lesson.scheduled_at);
+  const end = new Date(start.getTime() + (lesson.duration_minutes || 60) * 60000);
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: title,
+    dates: `${formatDateForGoogleCalendar(start)}/${formatDateForGoogleCalendar(end)}`,
+    details: lesson.note || ""
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+function formatDateForICS(date) {
+  return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+}
+function downloadLessonICS(lesson, title) {
+  const start = new Date(lesson.scheduled_at);
+  const end = new Date(start.getTime() + (lesson.duration_minutes || 60) * 60000);
+  // §9: 外部カレンダーへの自動書き込み・双方向同期は作らない。1件だけの.icsダウンロードにとどめる。
+  const ics = [
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//La Voce//Lesson//JA",
+    "BEGIN:VEVENT",
+    `UID:${lesson.id}@lavoce`,
+    `DTSTAMP:${formatDateForICS(new Date())}`,
+    `DTSTART:${formatDateForICS(start)}`,
+    `DTEND:${formatDateForICS(end)}`,
+    `SUMMARY:${title}`,
+    lesson.note ? `DESCRIPTION:${lesson.note.replace(/\n/g, "\\n")}` : "",
+    "END:VEVENT", "END:VCALENDAR"
+  ].filter(Boolean).join("\r\n");
+  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `lesson-${lesson.id.slice(0, 8)}.ics`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+// レッスンの詳細に添える「カレンダーに追加」の小さなボタン群。
+function AddToCalendarButtons({ lesson, title, t }) {
+  return (
+    <div className="flex gap-2 mt-1">
+      <a href={buildGoogleCalendarUrl(lesson, title)} target="_blank" rel="noopener noreferrer"
+        className="text-xs underline" style={{ color: C.curtain }}>{t ? t("addToGoogleCalendar") : "Googleカレンダーに追加"}</a>
+      <button type="button" onClick={() => downloadLessonICS(lesson, title)}
+        className="text-xs underline" style={{ color: C.curtain }}>{t ? t("downloadICS") : ".icsをダウンロード"}</button>
+    </div>
+  );
+}
+function LessonCalendar({ lessons, onDayClick, selectable, getTeacherName, getStudentName, t }) {
   const [viewMonth, setViewMonth] = useState(() => { const d = new Date(); return { year: d.getFullYear(), month: d.getMonth() }; });
   const [selectedDetailDate, setSelectedDetailDate] = useState(null);
   const lessonsByDate = useMemo(() => {
@@ -2046,14 +2100,20 @@ function LessonCalendar({ lessons, onDayClick, selectable, getTeacherName, getSt
       </div>
       {!selectable && selectedDetailDate && lessonsByDate[selectedDetailDate] && (
         <div className="mt-3 space-y-1.5">
-          {lessonsByDate[selectedDetailDate].map((l) => (
-            <div key={l.id} className="rounded-lg p-2 text-xs" style={{ background: C.paper }}>
-              <span className="ff-mono">{new Date(l.scheduled_at).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</span>
-              {getTeacherName && l.teacher_id && <span>　{getTeacherName(l.teacher_id)}先生</span>}
-              {getStudentName && l.student_id && <span>　{getStudentName(l.student_id)}さん</span>}
-              {l.note && <span>　{l.note}</span>}
-            </div>
-          ))}
+          {lessonsByDate[selectedDetailDate].map((l) => {
+            const withWhom = (getTeacherName && l.teacher_id && `${getTeacherName(l.teacher_id)}先生`)
+              || (getStudentName && l.student_id && `${getStudentName(l.student_id)}さん`) || "";
+            const title = `レッスン${withWhom ? `（${withWhom}）` : ""}`;
+            return (
+              <div key={l.id} className="rounded-lg p-2 text-xs" style={{ background: C.paper }}>
+                <span className="ff-mono">{new Date(l.scheduled_at).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</span>
+                {getTeacherName && l.teacher_id && <span>　{getTeacherName(l.teacher_id)}先生</span>}
+                {getStudentName && l.student_id && <span>　{getStudentName(l.student_id)}さん</span>}
+                {l.note && <span>　{l.note}</span>}
+                <AddToCalendarButtons lesson={l} title={title} t={t} />
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
@@ -7355,8 +7415,8 @@ export default function VocalTracker({ userId, userEmail }) {
           const displayTabs = [];
           TABS.forEach((tab) => {
             if (tab.key === "garden") {
-              if (hasTeacherLessonTab) displayTabs.push({ key: "students", labelKey: null, label: "レッスン", icon: GraduationCap });
-              if (hasStudentLessonTab) displayTabs.push({ key: "mylessons", labelKey: null, label: "レッスン", icon: GraduationCap });
+              if (hasTeacherLessonTab) displayTabs.push({ key: "students", labelKey: null, label: t("tabLesson"), icon: GraduationCap });
+              if (hasStudentLessonTab) displayTabs.push({ key: "mylessons", labelKey: null, label: t("tabLesson"), icon: GraduationCap });
             }
             displayTabs.push(tab);
           });
@@ -7398,19 +7458,19 @@ export default function VocalTracker({ userId, userEmail }) {
             <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
               <div className="flex items-center gap-2 mb-1">
                 <GraduationCap size={18} style={{ color: C.curtain }} />
-                <h2 className="ff-display italic text-xl">レッスンモード</h2>
+                <h2 className="ff-display italic text-xl">{t("lessonModeTitle")}</h2>
               </div>
               <p className="text-xs" style={{ color: C.inkSoft }}>
-                この画面をそのまま先生・ボイストレーナーにお見せいただけます。
+                {t("lessonModeDesc")}
               </p>
               <p className="text-xs mt-2 rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
-                🔒 先生には見えません：メンタルの日記・気持ちタグ・体重・食事の詳細・既往症
+                {t("lessonModeHidden")}
               </p>
               {(() => {
                 const nextLesson = myUpcomingLessons.find((l) => new Date(l.scheduled_at) >= new Date());
                 return nextLesson && (
                   <p className="text-xs mt-2 rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
-                    次回のレッスン：{new Date(nextLesson.scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                    {t("nextLessonLabel")}：{new Date(nextLesson.scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                     {nextLesson.note ? `　${nextLesson.note}` : ""}
                   </p>
                 );
@@ -7428,14 +7488,14 @@ export default function VocalTracker({ userId, userEmail }) {
 
             {myUpcomingLessons.length > 0 && (
               <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                <h3 className="ff-display italic text-lg mb-1">レッスンカレンダー</h3>
-                <LessonCalendar lessons={myUpcomingLessons} selectable={false} getTeacherName={orgDisplayName} />
+                <h3 className="ff-display italic text-lg mb-1">{t("lessonCalendarTitle")}</h3>
+                <LessonCalendar lessons={myUpcomingLessons} selectable={false} getTeacherName={orgDisplayName} t={t} />
               </div>
             )}
 
             {lessonOverlaps.overlapPairs.filter(([a]) => new Date(a.scheduled_at) >= new Date()).length > 0 && (
               <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
-                <h3 className="ff-display italic text-lg mb-2">⚠ レッスンの重なり</h3>
+                <h3 className="ff-display italic text-lg mb-2">{t("lessonOverlapWarningTitle")}</h3>
                 <div className="space-y-2">
                   {lessonOverlaps.overlapPairs.filter(([a]) => new Date(a.scheduled_at) >= new Date()).map(([a, b], i) => (
                     <p key={i} className="text-sm">
@@ -7524,7 +7584,7 @@ export default function VocalTracker({ userId, userEmail }) {
               className="w-full py-3 rounded-full text-sm font-medium"
               style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}
             >
-              終了する
+              {t("lessonModeExitButton")}
             </button>
           </div>
         ) : loading ? (
@@ -9010,20 +9070,20 @@ export default function VocalTracker({ userId, userEmail }) {
 
             {activeTab === "mylessons" && (
               <div className="space-y-4">
-                <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>レッスン</h2>
+                <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>{t("tabLesson")}</h2>
                 <p className="text-xs" style={{ color: C.inkSoft }}>
-                  先生と共有しているのはレッスンの日程だけです。声・症状・睡眠などの記録は、別に許可した場合だけ共有されます。
+                  {t("lessonScheduleShareNotice")}
                 </p>
 
                 {myAllLessons.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <LessonCalendar lessons={myAllLessons} selectable={false} getTeacherName={orgDisplayName} />
+                    <LessonCalendar lessons={myAllLessons} selectable={false} getTeacherName={orgDisplayName} t={t} />
                   </div>
                 )}
 
                 {lessonOverlaps.overlapPairs.filter(([a]) => new Date(a.scheduled_at) >= new Date()).length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
-                    <h3 className="ff-display italic text-lg mb-2">⚠ レッスンの重なり</h3>
+                    <h3 className="ff-display italic text-lg mb-2">{t("lessonOverlapWarningTitle")}</h3>
                     <div className="space-y-2">
                       {lessonOverlaps.overlapPairs.filter(([a]) => new Date(a.scheduled_at) >= new Date()).map(([a, b], i) => (
                         <p key={i} className="text-sm">
@@ -9036,9 +9096,9 @@ export default function VocalTracker({ userId, userEmail }) {
                 )}
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-3">予定一覧</h3>
+                  <h3 className="ff-display italic text-lg mb-3">{t("upcomingScheduleTitle")}</h3>
                   {myAllLessons.filter((l) => new Date(l.scheduled_at) >= new Date()).length === 0 && (
-                    <p className="text-xs" style={{ color: C.inkSoft }}>今後のレッスンはまだありません。</p>
+                    <p className="text-xs" style={{ color: C.inkSoft }}>{t("noUpcomingLessons")}</p>
                   )}
                   <div className="space-y-1.5">
                     {myAllLessons.filter((l) => new Date(l.scheduled_at) >= new Date()).map((l) => (
@@ -9046,6 +9106,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         {new Date(l.scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", weekday: "short", hour: "2-digit", minute: "2-digit" })}
                         {l.teacher_id && <span>　{orgDisplayName(l.teacher_id)}先生</span>}
                         {l.note ? `　${l.note}` : ""}
+                        <AddToCalendarButtons lesson={l} title={`レッスン${l.teacher_id ? `（${orgDisplayName(l.teacher_id)}先生）` : ""}`} t={t} />
                       </div>
                     ))}
                   </div>
@@ -9053,7 +9114,7 @@ export default function VocalTracker({ userId, userEmail }) {
 
                 {myEnrollments.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-3">所属している教室</h3>
+                    <h3 className="ff-display italic text-lg mb-3">{t("myOrgsTitle")}</h3>
                     <div className="space-y-2">
                       {myEnrollments.map((en) => {
                         const teacherIds = myAssignedTeachers[en.org_id] || [];
@@ -9061,7 +9122,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           <div key={en.id} className="rounded-xl p-3" style={{ background: C.paper }}>
                             <p className="text-sm font-medium">{en.org.name}</p>
                             {teacherIds.map((tid) => (
-                              <p key={tid} className="text-xs mt-0.5" style={{ color: C.inkSoft }}>担当：{orgDisplayName(tid)}</p>
+                              <p key={tid} className="text-xs mt-0.5" style={{ color: C.inkSoft }}>{t("assignedTeacherLabel")}：{orgDisplayName(tid)}</p>
                             ))}
                           </div>
                         );
@@ -9164,7 +9225,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     )}
 
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                      <h3 className="ff-display italic text-lg mb-1">レッスン日程</h3>
+                      <h3 className="ff-display italic text-lg mb-1">{t("lessonScheduleTitle")}</h3>
                       <p className="text-xs mb-3" style={{ color: C.inkSoft }}>生徒にも表示されます。日付をタップすると、下の欄にその日が入ります。</p>
                       <LessonCalendar lessons={studentLessons} selectable onDayClick={(iso) => setNewLessonDate(iso)} />
                       {studentLessons.filter((l) => new Date(l.scheduled_at) >= new Date()).length > 0 && (
@@ -9193,8 +9254,8 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
 
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                      <h3 className="ff-display italic text-lg mb-1">先生用メモ</h3>
-                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>このメモは、あなた（先生）にだけ表示されます。生徒からは見えません。</p>
+                      <h3 className="ff-display italic text-lg mb-1">{t("teacherOnlyNoteTitle")}</h3>
+                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("teacherOnlyNoteDesc")}</p>
                       <textarea value={teacherNoteDraft} rows={4}
                         onChange={(e) => setTeacherNoteDraft(e.target.value)}
                         onBlur={() => handleSaveTeacherNote(link.id, teacherNoteDraft)}
@@ -9212,17 +9273,17 @@ export default function VocalTracker({ userId, userEmail }) {
                 );
               })() : (
               <div className="space-y-4">
-                <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>レッスン</h2>
+                <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>{t("tabLesson")}</h2>
 
                 {myTeachingLessons.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">全生徒のレッスンカレンダー</h3>
+                    <h3 className="ff-display italic text-lg mb-1">{t("allStudentsLessonCalendarTitle")}</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>担当する生徒すべてのレッスンを、1つのカレンダーにまとめています。</p>
-                    <LessonCalendar lessons={myTeachingLessons} selectable={false} getStudentName={orgDisplayName} />
+                    <LessonCalendar lessons={myTeachingLessons} selectable={false} getStudentName={orgDisplayName} t={t} />
                   </div>
                 )}
 
-                <h3 className="ff-display italic text-lg" style={{ color: C.ink }}>生徒一覧（{myStudentLinks.length}人）</h3>
+                <h3 className="ff-display italic text-lg" style={{ color: C.ink }}>{t("studentListTitle").replace("{n}", myStudentLinks.length)}</h3>
                 {myStudentLinks.map((link) => {
                   const scope = link.share_scope || {};
                   const studentEntries = studentEntriesCache[link.student_id];
@@ -11538,7 +11599,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   <div className="space-y-4">
                     <button type="button" onClick={() => setViewingArticleId(null)}
                       className="flex items-center gap-1 text-sm font-medium" style={{ color: C.inkSoft }}>
-                      <ChevronLeft size={16} />戻る
+                      <ChevronLeft size={16} />{t("backButton")}
                     </button>
                     <div>
                       <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>{article.title}</h2>
@@ -11552,39 +11613,39 @@ export default function VocalTracker({ userId, userEmail }) {
                     {article.relatedField && (
                       <button type="button" onClick={() => { setActiveTab("today"); setRecordView("day"); }}
                         className="w-full rounded-2xl p-3 border flex items-center justify-between" style={{ background: C.card, borderColor: C.line }}>
-                        <span className="text-sm">この項目を今日の分から記録する</span>
+                        <span className="text-sm">{t("recordThisFieldToday")}</span>
                         <ChevronRight size={16} style={{ color: C.inkSoft }} />
                       </button>
                     )}
 
                     {article.sources && article.sources.length > 0 && (
                       <p className="text-xs" style={{ color: C.inkSoft }}>
-                        出典：{article.sources.map((s) => s.label).join("、")}
+                        {t("sourcesLabel")}：{article.sources.map((s) => s.label).join("、")}
                       </p>
                     )}
 
                     <label className="flex items-center gap-2 text-xs" style={{ color: C.inkSoft }}>
                       <input type="checkbox" checked={isRead} onChange={(e) => handleMarkArticleRead(article.id, e.target.checked)} />
-                      既読にする
+                      {t("markAsReadLabel")}
                     </label>
 
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                      <h3 className="ff-display italic text-lg mb-1">あなたのメモ</h3>
-                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>先生には既定で見せません。上限500字。</p>
+                      <h3 className="ff-display italic text-lg mb-1">{t("yourNotesTitle")}</h3>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("yourNotesDesc")}</p>
                       {notes.map((n) => (
                         <div key={n.id} className="rounded-xl p-2.5 mb-2" style={{ background: C.paper }}>
                           {n.anchor_text && <p className="text-xs mb-1" style={{ color: C.inkSoft }}>「{n.anchor_text}」について</p>}
                           <p className="text-sm">{n.body}</p>
-                          <button type="button" onClick={() => handleDeleteArticleNote(n.id, article.id)} className="text-xs underline mt-1" style={{ color: C.inkSoft }}>削除</button>
+                          <button type="button" onClick={() => handleDeleteArticleNote(n.id, article.id)} className="text-xs underline mt-1" style={{ color: C.inkSoft }}>{t("deleteButton")}</button>
                         </div>
                       ))}
                       <textarea value={newArticleNoteDraft} rows={2} maxLength={500}
                         onChange={(e) => setNewArticleNoteDraft(e.target.value)}
-                        placeholder="先生に聞きたいこと、気づいたことなど"
+                        placeholder={t("articleNotePlaceholder")}
                         className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                       <button type="button" onClick={() => handleCreateArticleNote(article.id, "article", newArticleNoteDraft, null)}
                         className="mt-2 px-4 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
-                        メモする
+                        {t("addNoteButton")}
                       </button>
                     </div>
                   </div>
@@ -11595,19 +11656,19 @@ export default function VocalTracker({ userId, userEmail }) {
               return (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>学ぶ</h2>
+                    <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>{t("tabLearn")}</h2>
                   </div>
                   <select value={currentProfession} onChange={(e) => setLearnProfession(e.target.value)}
                     className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }}>
                     {VOCAL_PROFESSIONS.map((p) => <option key={p} value={p}>{PROFESSION_LABELS[p]}</option>)}
                   </select>
                   <input type="text" value={learnSearchQuery} onChange={(e) => setLearnSearchQuery(e.target.value)}
-                    placeholder="記事を検索（例：パッサッジョ）"
+                    placeholder={t("searchArticlesPlaceholder")}
                     className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
 
                   {searchResults ? (
                     <div className="space-y-1.5">
-                      {searchResults.length === 0 && <p className="text-xs" style={{ color: C.inkSoft }}>見つかりませんでした。</p>}
+                      {searchResults.length === 0 && <p className="text-xs" style={{ color: C.inkSoft }}>{t("noSearchResults")}</p>}
                       {searchResults.map((a) => (
                         <button key={a.id} type="button" onClick={() => { setViewingArticleId(a.id); fetchArticleNotes(a.id); }}
                           className="w-full text-left rounded-xl border p-3" style={{ background: C.card, borderColor: C.line }}>
@@ -11634,7 +11695,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             {isOpen && (
                               <div className="rounded-xl border overflow-hidden ml-2" style={{ borderColor: C.line }}>
                                 {articles.length === 0 && (
-                                  <p className="text-xs p-3" style={{ color: C.inkSoft }}>まだ記事がありません。</p>
+                                  <p className="text-xs p-3" style={{ color: C.inkSoft }}>{t("noArticlesYet")}</p>
                                 )}
                                 {articles.map((a) => (
                                   <button key={a.id} type="button" onClick={() => { setViewingArticleId(a.id); fetchArticleNotes(a.id); }}
@@ -11649,7 +11710,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       })}
 
                       <div className="pt-2 border-t" style={{ borderColor: C.line }}>
-                        <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>── からだ（全職業共通）──</p>
+                        <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>{t("bodyChapterHeading")}</p>
                         <div className="rounded-xl border overflow-hidden" style={{ borderColor: C.line }}>
                           {getArticlesForProfession("body").map((a) => (
                             <button key={a.id} type="button" onClick={() => { setViewingArticleId(a.id); fetchArticleNotes(a.id); }}
@@ -11664,7 +11725,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         const others = VOCAL_PROFESSIONS.filter((p) => p !== currentProfession);
                         setLearnProfession(others[0]);
                       }} className="w-full flex items-center justify-between py-2 text-sm" style={{ color: C.inkSoft }}>
-                        他の職業の記事も見る
+                        {t("viewOtherProfessionArticles")}
                         <ChevronRight size={14} />
                       </button>
                     </>
@@ -11682,7 +11743,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   <div className="space-y-1">
                     <button type="button" onClick={() => { setActiveTab("learn"); setLearnProfession(learnProfession || profile.vocal_profession); }}
                       className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
-                      <span className="flex items-center gap-2"><Music2 size={16} style={{ color: C.gold }} />学ぶ</span>
+                      <span className="flex items-center gap-2"><Music2 size={16} style={{ color: C.gold }} />{t("tabLearn")}</span>
                       <span style={{ color: C.inkSoft }}>→</span>
                     </button>
                     <button type="button" onClick={() => setActiveTab("info")}
@@ -11870,7 +11931,7 @@ export default function VocalTracker({ userId, userEmail }) {
                               <div className="mt-1 space-y-1">
                                 {teacherIds.map((tid) => (
                                   <p key={tid} className="text-xs" style={{ color: C.inkSoft }}>
-                                    担当：{orgDisplayName(tid)}
+                                    {t("assignedTeacherLabel")}：{orgDisplayName(tid)}
                                     {linkedTeacherIds.has(tid) ? "・声や記録も共有中" : "・レッスン日程のみ共有（声や記録は共有していません）"}
                                   </p>
                                 ))}
@@ -11891,14 +11952,14 @@ export default function VocalTracker({ userId, userEmail }) {
 
                 {/* 指導者プラン実装仕様 §3: 生徒側の招待コード入力。先生・生徒の役割は排他ではないため全員に表示する。 */}
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <p className="text-sm font-medium mb-1">先生とつながる</p>
+                  <p className="text-sm font-medium mb-1">{t("connectWithTeacherTitle")}</p>
                   {myTeacherLinks.length > 0 && (
                     <div className="space-y-2 mb-3">
                       {myTeacherLinks.map((link) => (
                         <div key={link.id} className="rounded-xl p-3 flex items-center justify-between" style={{ background: C.paper }}>
                           <span className="text-xs" style={{ color: C.inkSoft }}>連携中の先生が1名います</span>
                           <button type="button" onClick={() => handleRevokeLink(link.id, "student")}
-                            className="text-xs underline" style={{ color: C.curtain }}>解除する</button>
+                            className="text-xs underline" style={{ color: C.curtain }}>{t("disconnectButton")}</button>
                         </div>
                       ))}
                     </div>
@@ -11952,7 +12013,7 @@ export default function VocalTracker({ userId, userEmail }) {
                 {(profile.teacher_beta_access || profile.is_admin) && (
                   <>
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
-                    <p className="text-sm font-medium mb-1">生徒を招待する（テスト機能）</p>
+                    <p className="text-sm font-medium mb-1">{t("inviteStudentTitle")}</p>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                       発行したコードは7日間有効・1回だけ使えます。
                     </p>
@@ -11963,7 +12024,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           <div key={link.id} className="rounded-xl p-3 flex items-center justify-between" style={{ background: C.paper }}>
                             <span className="text-xs" style={{ color: C.inkSoft }}>生徒ID: {link.student_id.slice(0, 8)}…</span>
                             <button type="button" onClick={() => handleRevokeLink(link.id, "teacher")}
-                              className="text-xs underline" style={{ color: C.curtain }}>解除する</button>
+                              className="text-xs underline" style={{ color: C.curtain }}>{t("disconnectButton")}</button>
                           </div>
                         ))}
                       </div>
@@ -11985,15 +12046,15 @@ export default function VocalTracker({ userId, userEmail }) {
                 {/* 作業指示-教室プラン C-1: 他の先生の教室に参加する。招待コードを知っている人だけが
                     実際に使えるため、入力欄自体は全ユーザーに公開する（生徒向け「先生とつながる」と同じ考え方）。 */}
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <p className="text-sm font-medium mb-1">教室に参加する</p>
+                  <p className="text-sm font-medium mb-1">{t("joinClassroomTitle")}</p>
                   {pendingOrgInvitation ? (
                     <div>
                       <p className="text-sm mb-2">「{pendingOrgInvitation.org.name}」に参加しますか？</p>
                       <div className="flex gap-2">
                         <button type="button" onClick={handleAcceptOrgInvitation}
-                          className="flex-1 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>参加する</button>
+                          className="flex-1 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>{t("joinButton")}</button>
                         <button type="button" onClick={() => setPendingOrgInvitation(null)}
-                          className="flex-1 py-2 rounded-full text-xs font-medium border" style={{ borderColor: C.line, color: C.inkSoft }}>今はやめる</button>
+                          className="flex-1 py-2 rounded-full text-xs font-medium border" style={{ borderColor: C.line, color: C.inkSoft }}>{t("notNowButton")}</button>
                       </div>
                     </div>
                   ) : (
@@ -12001,10 +12062,10 @@ export default function VocalTracker({ userId, userEmail }) {
                       <p className="text-xs mb-2" style={{ color: C.inkSoft }}>他の先生の教室に、講師として参加できます。</p>
                       <div className="flex gap-2">
                         <input type="text" value={orgInviteCodeInput} onChange={(e) => setOrgInviteCodeInput(e.target.value)}
-                          placeholder="教室の招待コード" maxLength={8}
+                          placeholder={t("enterInvitationCodePlaceholder")} maxLength={8}
                           className="flex-1 rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
                         <button type="button" onClick={() => handleLookupOrgInviteCode(orgInviteCodeInput)}
-                          className="px-4 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>確認する</button>
+                          className="px-4 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>{t("confirmButton")}</button>
                       </div>
                       {orgInviteLookupError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{orgInviteLookupError}</p>}
                     </>
@@ -12015,13 +12076,13 @@ export default function VocalTracker({ userId, userEmail }) {
                     「鍵」ではなく、実際にowner/adminという役割を持つ人にだけ表示する（本来あるべき権限判定）。 */}
                 {(profile.teacher_beta_access || profile.is_admin) && myOrgs.filter((m) => m.role === "owner" || m.role === "admin").length === 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <p className="text-sm font-medium mb-2">教室を作る</p>
+                    <p className="text-sm font-medium mb-2">{t("createClassroomTitle")}</p>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      複数の先生・複数の生徒をまとめて管理する「教室」を作成します。
+                      {t("createClassroomDesc")}
                     </p>
                     <button type="button" onClick={async () => { await ensureOwnOrg(); fetchMyOrgs(); }}
                       className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
-                      教室を作る
+                      {t("createClassroomTitle")}
                     </button>
                   </div>
                 )}
