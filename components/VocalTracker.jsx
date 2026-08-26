@@ -808,6 +808,7 @@ function buildFormData(date, entries) {
       exerciseLevel: existing.exerciseLevel ?? null,
       bodyFatPct: existing.bodyFatPct ?? "",
       proteinLevel: existing.proteinLevel ?? null,
+      voiceEntries: existing.voiceEntries || [],
       calorieLevel: existing.calorieLevel ?? null,
       activities: existing.activities || [],
       recovery: existing.recovery || null
@@ -858,6 +859,9 @@ function buildFormData(date, entries) {
     bodyFatPct: "",
     proteinLevel: null,
     calorieLevel: null,
+    // lavoce-記録項目の再設計v2.md §3.1: 声の記録は1件でよい（総合欄は存在しない）。
+    // 1件目はcontext:'wake'（起き抜け）を既定にする。
+    voiceEntries: [newVoiceEntry(date, "wake")],
     // lavoce-曲目複数化パッチ.md: 活動は「1日1つ」ではなくブロックの配列。
     // 既定は自主練習ブロック1つ（旧UXの「最初から自主練習が選ばれている」状態を踏襲）。
     activities: [newActivityBlock("自主練習", 0)],
@@ -1006,6 +1010,32 @@ function newActivityBlock(kind, order) {
 }
 function newActivityItem(order) {
   return { repertoireName: "", minutesOverride: null, order: order || 0 };
+}
+// lavoce-記録項目の再設計v2.md §3.1: 声の記録を1件追加するときの初期値。
+// 既定の場面は「その他」。時刻は現在時刻を既定にする（記録項目v2の指定通り）。
+const VOICE_CONTEXT_OPTIONS = [
+  { key: "wake", label: "起き抜け" },
+  { key: "after_routine", label: "ルーティン後" },
+  { key: "before_work", label: "本番前" },
+  { key: "after_work", label: "本番後" },
+  { key: "other", label: "その他" }
+];
+function newVoiceEntry(date, context) {
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2, "0");
+  const mm = String(now.getMinutes()).padStart(2, "0");
+  return {
+    id: `voice-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    date,
+    at: `${hh}:${mm}`,
+    context: context || "other",
+    bodyFeel: 3,
+    quality: 5,
+    pitchChest: "",
+    pitchSoftMax: "",
+    symptoms: [],
+    note: ""
+  };
 }
 function updateVoiceCheckin(f, slotKey, field, value) {
   const checkins = { ...(f.voiceCheckins || {}) };
@@ -1187,6 +1217,44 @@ function deriveVoiceEntryRepresentatives(voiceEntries) {
     dayRange: (wakeEntry && lastEntry && wakeEntry !== lastEntry && typeof wakeEntry.bodyFeel === "number" && typeof lastEntry.bodyFeel === "number")
       ? lastEntry.bodyFeel - wakeEntry.bodyFeel
       : null
+  };
+}
+// quality（内部は常に0-10）を、既存の5段階表示に戻す（fiveScaleToQuality10の逆変換）。
+function quality10ToFiveScale(q) {
+  if (typeof q !== "number") return null;
+  return 1 + (q / 10) * 4;
+}
+// lavoce-作業計画v2-構造変更の分離.md §5 Step4: 新しい VoiceEntry[] から、
+// 既存の数十個の分析機能が読んでいる旧フィールド（throat_condition等）を逆算する。
+// これにより「書き込みを新構造に切り替える」段階でも、既存の分析コードを一切変更せずに動かし続けられる。
+// 新形式で入力されたエントリが1件でもあれば、旧フィールドはこの関数の結果で「上書き」される
+// （つまり新形式が唯一の真実のソースになり、旧フィールドは常にそこから導出される派生値になる）。
+function deriveLegacyVoiceFieldsFromEntries(voiceEntries) {
+  if (!voiceEntries || voiceEntries.length === 0) return null;
+  const rep = deriveVoiceEntryRepresentatives(voiceEntries);
+  const wakeEntry = voiceEntries.find((e) => e.context === "wake") || null;
+  const routineEntry = voiceEntries.find((e) => e.context === "after_routine") || null;
+  // 全エントリの症状・一口メモを合算する（どのエントリで書いても分析・記録に反映されるように）。
+  const allSymptoms = [...new Set(voiceEntries.flatMap((e) => e.symptoms || []))];
+  const firstNote = voiceEntries.map((e) => e.note).find((n) => n && n.trim()) || "";
+  // 朝/昼/晩の3枠（時間帯別分析用）。該当する場面のエントリがあれば、そこから再構成する。
+  const checkins = {};
+  const contextToSlot = { wake: "朝", before_work: "昼", after_work: "晩" };
+  voiceEntries.forEach((e) => {
+    const slot = contextToSlot[e.context];
+    if (!slot) return;
+    checkins[slot] = { throat: e.bodyFeel ?? null, voice: quality10ToFiveScale(e.quality) };
+  });
+  return {
+    throatCondition: rep.bodyFeel,
+    voiceQuality: quality10ToFiveScale(rep.quality),
+    resonanceScore: rep.quality, // resonance_scoreは元々0-10なので、qualityとそのまま対応する
+    wakeNote: wakeEntry ? wakeEntry.pitchChest || null : null,
+    routineNote: routineEntry ? routineEntry.pitchChest || null : null,
+    pianissimoHighNote: wakeEntry ? wakeEntry.pitchSoftMax || null : null,
+    throatSymptoms: allSymptoms,
+    voiceMemo: firstNote,
+    voiceCheckins: checkins
   };
 }
 function rowToEntry(row) {
@@ -1514,12 +1582,16 @@ function entryToRow(userId, e) {
   // §3.4: 簡易モード（食品を1件も記録していない）のときは、3択から推定したマクロを使う。
   const hasDetailedMeals = (e.meals || []).length > 0;
   const simpleMacros = !hasDetailedMeals ? e.simpleMealMacros : null;
+  // lavoce-作業計画v2-構造変更の分離.md §5 Step4: 声の記録を新しいVoiceEntry[]で
+  // 入力した日は、旧フィールド（throat_condition等）をそこから導出した値で保存する。
+  // 既存の数十個の分析機能はすべて旧フィールドを読むため、この導出だけで動き続ける。
+  const voiceLegacy = deriveLegacyVoiceFieldsFromEntries(e.voiceEntries);
   return {
     user_id: userId,
     date: e.date,
-    throat_condition: numOrNull(e.throatCondition),
-    voice_quality: numOrNull(e.voiceQuality),
-    throat_symptoms: e.throatSymptoms || [],
+    throat_condition: numOrNull(voiceLegacy ? voiceLegacy.throatCondition : e.throatCondition),
+    voice_quality: numOrNull(voiceLegacy ? voiceLegacy.voiceQuality : e.voiceQuality),
+    throat_symptoms: (voiceLegacy ? voiceLegacy.throatSymptoms : e.throatSymptoms) || [],
     sleep_hours: numOrNull(e.sleepHours),
     sleep_quality: numOrNull(e.sleepQuality),
     meal_notes: e.mealNotes,
@@ -1548,16 +1620,16 @@ function entryToRow(userId, e) {
     exercise_minutes: (e.exercises || []).reduce((total, x) => total + (Number(x.minutes) || 0), 0),
     meals: (e.meals || []).map((m) => ({ ...m, carbs: numOrNull(m.carbs), protein: numOrNull(m.protein), fat: numOrNull(m.fat), fiber: numOrNull(m.fiber) })),
     exercises: (e.exercises || []).map((x) => ({ ...x, minutes: numOrNull(x.minutes) })),
-    voice_checkins: e.voiceCheckins || {},
+    voice_checkins: (voiceLegacy ? voiceLegacy.voiceCheckins : e.voiceCheckins) || {},
     water_by_slot: e.waterBySlot || {},
     weather: e.weather || null,
     mental_reason: e.mentalReason || "",
     mental_tags: e.mentalTags || [],
     throat_symptoms_other: e.throatSymptomsOther || "",
-    voice_memo: e.voiceMemo || "",
-    wake_note: e.wakeNote || "",
-    routine_note: e.routineNote || "",
-    resonance_score: numOrNull(e.resonanceScore),
+    voice_memo: (voiceLegacy ? voiceLegacy.voiceMemo : e.voiceMemo) || "",
+    wake_note: (voiceLegacy ? voiceLegacy.wakeNote : e.wakeNote) || "",
+    routine_note: (voiceLegacy ? voiceLegacy.routineNote : e.routineNote) || "",
+    resonance_score: numOrNull(voiceLegacy ? voiceLegacy.resonanceScore : e.resonanceScore),
     bedtime: e.bedtime || "",
     dinner_time: e.dinnerTime || "",
     dinner_tags: e.dinnerTags || [],
@@ -1567,14 +1639,15 @@ function entryToRow(userId, e) {
     ambient_noise_db: numOrNull(e.ambientNoiseDb),
     flight_hours: numOrNull(e.flightHours),
     jetlag_hours: numOrNull(e.jetlagHours),
-    pianissimo_high_note: e.pianissimoHighNote || "",
+    pianissimo_high_note: (voiceLegacy ? voiceLegacy.pianissimoHighNote : e.pianissimoHighNote) || "",
     pianissimo_onset_delay: !!e.pianissimoOnsetDelay,
     speaking_level: numOrNull(e.speakingLevel),
     noisy_environment: !!e.noisyEnvironment,
     cpps_value: numOrNull(e.cppsValue),
     exercise_level: numOrNull(e.exerciseLevel),
     activities,
-    recovery: e.recovery || null
+    recovery: e.recovery || null,
+    voice_entries: e.voiceEntries || []
   };
 }
 
@@ -2609,6 +2682,76 @@ function OnboardingFlow({ existingUser, onComplete }) {
 }
 // lavoce-曲目複数化パッチ.md §2.0: 活動ブロック1つ分。種別・時間・曲目リスト・種別固有項目・
 // ブロックごとの負荷フィードバックをまとめる。
+// lavoce-記録項目の再設計v2.md §3.1・画面レイアウト仕様_1 §4.4: 声の記録シート。
+// 1件の声の記録（時刻・場面・喉の身体感覚・声の出来・音名・症状・ひとこと）を編集する。
+function VoiceEntryEditor({ entry, onChange, onRemove, onClose, t }) {
+  return (
+    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <input type="time" value={entry.at} onChange={(e) => onChange({ at: e.target.value })}
+            className="rounded-lg border px-2 py-1.5 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+          <select value={entry.context} onChange={(e) => onChange({ context: e.target.value })}
+            className="rounded-lg border px-2 py-1.5 text-sm" style={{ borderColor: C.line, background: C.paper }}>
+            {VOICE_CONTEXT_OPTIONS.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
+          </select>
+        </div>
+        <button type="button" onClick={onClose} className="w-7 h-7 rounded-full flex items-center justify-center" style={{ color: C.inkSoft }}>
+          <X size={16} />
+        </button>
+      </div>
+      <DynamicsSelector t={t} label="喉の身体感覚" icon={Mic2} value={entry.bodyFeel}
+        onChange={(v) => onChange({ bodyFeel: v })} />
+      <div className="mt-3">
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="text-sm font-medium">声の出来</span>
+          <span className="ff-mono text-sm" style={{ color: C.inkSoft }}>{(entry.quality ?? 5).toFixed(1)}</span>
+        </div>
+        <input type="range" min={0} max={10} step={0.5} value={entry.quality ?? 5}
+          onChange={(e) => onChange({ quality: Number(e.target.value) })}
+          className="w-full" />
+      </div>
+      <div className="grid grid-cols-2 gap-3 mt-3">
+        <div>
+          <label className="text-xs block mb-1" style={{ color: C.inkSoft }}>地声の音名</label>
+          <input type="text" value={entry.pitchChest || ""} placeholder={t("placeholderNoteExample")}
+            onChange={(e) => onChange({ pitchChest: e.target.value })}
+            className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+        </div>
+        <div>
+          <label className="text-xs block mb-1" style={{ color: C.inkSoft }}>弱声の最高音</label>
+          <input type="text" value={entry.pitchSoftMax || ""} placeholder={t("placeholderNoteExample")}
+            onChange={(e) => onChange({ pitchSoftMax: e.target.value })}
+            className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+        </div>
+      </div>
+      <div className="mt-3">
+        <span className="text-xs block mb-1.5" style={{ color: C.inkSoft }}>症状（あれば）</span>
+        <div className="flex flex-wrap gap-1.5">
+          {SYMPTOM_OPTIONS.map((s) => (
+            <Chip key={s} label={t(SYMPTOM_KEYS[s])} active={(entry.symptoms || []).includes(s)}
+              onClick={() => onChange({ symptoms: (entry.symptoms || []).includes(s) ? entry.symptoms.filter((x) => x !== s) : [...(entry.symptoms || []), s] })} />
+          ))}
+        </div>
+      </div>
+      <div className="mt-3">
+        <input type="text" value={entry.note || ""} placeholder="ひとこと（任意）"
+          onChange={(e) => onChange({ note: e.target.value })}
+          className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+      </div>
+      <div className="flex gap-2 mt-3">
+        <button type="button" onClick={onClose}
+          className="flex-1 py-2 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+          記録する
+        </button>
+        <button type="button" onClick={onRemove}
+          className="px-4 py-2 rounded-full text-sm" style={{ color: C.curtain }}>
+          <Trash2 size={16} />
+        </button>
+      </div>
+    </div>
+  );
+}
 function ActivityBlockEditor({
   activity, onChange, onRemove, onDetailChange,
   onAddItem, onUpdateItem, onRemoveItem, onMoveItem,
@@ -2763,6 +2906,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [mergeResult, setMergeResult] = useState("");
   const [showQuickRecord, setShowQuickRecord] = useState(false);
   const [notesSubTab, setNotesSubTab] = useState("calendar");
+  const [editingVoiceEntryId, setEditingVoiceEntryId] = useState(null);
   const [selectedDate, setSelectedDate] = useState(todayISOUTC());
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
@@ -4969,6 +5113,23 @@ export default function VocalTracker({ userId, userEmail }) {
       return { ...f, recovery: null, activities: [...activities, newActivityBlock("自主練習", activities.length)] };
     });
   }
+  // lavoce-記録項目の再設計v2.md §3.1: 声の記録は1日に何件でも追加できる。
+  function addVoiceEntry(context) {
+    setFormData((f) => {
+      const entries = f.voiceEntries || [];
+      if (entries.length >= 12) return f;
+      const newEntry = newVoiceEntry(f.date, context || (entries.length === 0 ? "wake" : "other"));
+      setEditingVoiceEntryId(newEntry.id);
+      return { ...f, voiceEntries: [...entries, newEntry] };
+    });
+  }
+  function updateVoiceEntry(id, patch) {
+    setFormData((f) => ({ ...f, voiceEntries: (f.voiceEntries || []).map((v) => (v.id === id ? { ...v, ...patch } : v)) }));
+  }
+  function removeVoiceEntry(id) {
+    setFormData((f) => ({ ...f, voiceEntries: (f.voiceEntries || []).filter((v) => v.id !== id) }));
+    setEditingVoiceEntryId((cur) => (cur === id ? null : cur));
+  }
   function removeActivityBlock(id) {
     setFormData((f) => ({ ...f, activities: (f.activities || []).filter((a) => a.id !== id) }));
   }
@@ -5412,11 +5573,19 @@ export default function VocalTracker({ userId, userEmail }) {
                       ) : (
                         <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                           <p className="text-sm font-medium mb-3">30秒で記録</p>
-                          <DotSelector label={t("labelThroatCondition")} icon={Mic2} value={formData.throatCondition} lowLabel="pp" highLabel="ff"
-                            onChange={(v) => setFormData((f) => ({ ...f, throatCondition: v }))} />
+                          <DotSelector label={t("labelThroatCondition")} icon={Mic2} value={(formData.voiceEntries || [])[0]?.bodyFeel ?? 3} lowLabel="pp" highLabel="ff"
+                            onChange={(v) => setFormData((f) => {
+                              const entries = f.voiceEntries && f.voiceEntries.length > 0 ? f.voiceEntries : [newVoiceEntry(f.date, "wake")];
+                              const updated = [{ ...entries[0], bodyFeel: v }, ...entries.slice(1)];
+                              return { ...f, voiceEntries: updated };
+                            })} />
                           <div className="mt-3">
-                            <DotSelector label={t("labelVoiceQuality")} icon={Sparkles} value={formData.voiceQuality} lowLabel="pp" highLabel="ff"
-                              onChange={(v) => setFormData((f) => ({ ...f, voiceQuality: v }))} />
+                            <DotSelector label={t("labelVoiceQuality")} icon={Sparkles} value={quality10ToFiveScale((formData.voiceEntries || [])[0]?.quality ?? 5) || 3} lowLabel="pp" highLabel="ff"
+                              onChange={(v) => setFormData((f) => {
+                                const entries = f.voiceEntries && f.voiceEntries.length > 0 ? f.voiceEntries : [newVoiceEntry(f.date, "wake")];
+                                const updated = [{ ...entries[0], quality: fiveScaleToQuality10(v) }, ...entries.slice(1)];
+                                return { ...f, voiceEntries: updated };
+                              })} />
                           </div>
                           <div className="mt-3">
                             <NumberField label="昨夜の睡眠" value={formData.sleepHours ?? ""} step={0.5} min={0} max={14} suffix={t("unitHours")}
@@ -5513,38 +5682,39 @@ export default function VocalTracker({ userId, userEmail }) {
                 {formData && (
                   <>
                     <SectionCard title={t("sectionVoiceThroat")} icon={Mic2}>
-                      <DynamicsSelector t={t} label={t("labelThroatOverall")} icon={Mic2} value={formData.throatCondition}
-                        onChange={(v) => setFormData((f) => ({ ...f, throatCondition: v }))} />
-                      <DynamicsSelector t={t} label={t("labelVoiceOverall")} icon={Music2} value={formData.voiceQuality}
-                        onChange={(v) => setFormData((f) => ({ ...f, voiceQuality: v }))} />
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="text-sm font-medium block mb-1.5">{t("labelWakeNote")}</label>
-                          <input type="text" value={formData.wakeNote} placeholder={t("placeholderNoteExample")}
-                            onChange={(e) => setFormData((f) => ({ ...f, wakeNote: e.target.value }))}
-                            className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium block mb-1.5">{t("labelRoutineNote")}</label>
-                          <input type="text" value={formData.routineNote} placeholder={t("placeholderNoteExample")}
-                            onChange={(e) => setFormData((f) => ({ ...f, routineNote: e.target.value }))}
-                            className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                        </div>
+                      <div className="space-y-2">
+                        {(formData.voiceEntries || []).slice().sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0)).map((entry) => (
+                          editingVoiceEntryId === entry.id ? (
+                            <VoiceEntryEditor key={entry.id} entry={entry} t={t}
+                              onChange={(patch) => updateVoiceEntry(entry.id, patch)}
+                              onRemove={() => removeVoiceEntry(entry.id)}
+                              onClose={() => setEditingVoiceEntryId(null)} />
+                          ) : (
+                            <button key={entry.id} type="button" onClick={() => setEditingVoiceEntryId(entry.id)}
+                              className="w-full text-left rounded-2xl p-3 border" style={{ background: C.paper, borderColor: C.line }}>
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium ff-mono">{entry.at}　{(VOICE_CONTEXT_OPTIONS.find((c) => c.key === entry.context) || {}).label}</span>
+                                <Sparkles size={14} style={{ color: C.gold }} />
+                              </div>
+                              <p className="text-xs mt-1" style={{ color: C.inkSoft }}>
+                                喉{levelDynamic(entry.bodyFeel)}・声{typeof entry.quality === "number" ? entry.quality.toFixed(1) : "-"}
+                                {entry.pitchChest && <>・{entry.pitchChest}</>}
+                                {(entry.symptoms || []).length > 0 && <>・{entry.symptoms.map((s) => t(SYMPTOM_KEYS[s])).join("/")}</>}
+                              </p>
+                            </button>
+                          )
+                        ))}
                       </div>
-                      <div>
-                        <label className="text-sm font-medium block mb-1.5">pp（極弱声）で出せた最高音</label>
-                        <input type="text" value={formData.pianissimoHighNote} placeholder={t("placeholderNoteExample")}
-                          onChange={(e) => setFormData((f) => ({ ...f, pianissimoHighNote: e.target.value }))}
-                          className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                        <label className="flex items-center gap-2 mt-2 text-xs" style={{ color: C.inkSoft }}>
-                          <input type="checkbox" checked={!!formData.pianissimoOnsetDelay}
-                            onChange={(e) => setFormData((f) => ({ ...f, pianissimoOnsetDelay: e.target.checked }))} />
-                          発声の立ち上がりが遅れた（すぐに声が出なかった）
-                        </label>
-                        <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
-                          「ハッピーバースデー」の出だしや5音下降を、できるだけ小さな声（囁くような弱声）で歌い、無理なく出せた最高音を記録します。大きな声より先に変化が出やすいとされる指標です。
+                      <button type="button" onClick={() => addVoiceEntry()}
+                        className="w-full rounded-xl border-2 border-dashed py-3 text-sm font-medium flex items-center justify-center gap-1.5"
+                        style={{ borderColor: C.line, color: C.inkSoft }}>
+                        <Plus size={14} />＋声の記録を追加
+                      </button>
+                      {(formData.voiceEntries || []).length === 0 && (
+                        <p className="text-xs text-center" style={{ color: C.inkSoft }}>
+                          1件記録すれば、それがその日の値になります。何度でも追加でき、3件以上あると時間帯別の推移も見られます。
                         </p>
-                      </div>
+                      )}
                       <p className="text-xs rounded-xl p-2.5 leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
                         {t("noteNotationRule")}
                       </p>
@@ -5555,8 +5725,6 @@ export default function VocalTracker({ userId, userEmail }) {
                         <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>{t("labelRecommendedRoutineToggle")}</summary>
                         <p className="mt-2 leading-relaxed">{t("noteRecommendedRoutine")}</p>
                       </details>
-                      <NumberField label={t("labelResonanceScore")} value={formData.resonanceScore} step={1} min={0} max={10}
-                        onChange={(v) => setFormData((f) => ({ ...f, resonanceScore: v }))} />
 
                       <div className="rounded-xl p-3" style={{ background: C.paper }}>
                         <div className="flex items-center gap-1.5 mb-1.5">
@@ -5568,9 +5736,9 @@ export default function VocalTracker({ userId, userEmail }) {
                           <div className="mt-2 space-y-1.5 leading-relaxed">
                             <p>声の音を細かく分解すると、「倍音」と呼ばれる整った成分が、雑音にどれだけ埋もれずくっきり出ているかが分かります。CPPSはその「くっきり度合い」を1つの数字にしたものです。</p>
                             <p><strong>数値が高い日</strong>：声帯がきれいに閉じて振動できていて、声にノイズ（息漏れ・かすれ）が少ない状態を示唆します。</p>
-                            <p><strong>数値が低い日</strong>：息漏れ・かすれ・声の立ち上がりの弱さなど、声帯の閉じが甘くなっている可能性を示唆します。むくみや疲労で声がかすれ始めても、自分では気づきにくいことがあります。</p>
+                            <p><strong>数値が低い日</strong>：息漏れ・かすれ・声の立ち上がりの弱さなど、声帯の閉じが甘くなっている可能性を示唆します。</p>
                             <p><strong>できないこと</strong>：病名の診断はできません。あくまで「声のノイズっぽさ」を映す一つの物差しです。また、このアプリ独自の簡易計算のため、数値そのものを論文の基準値と比べることはできません。</p>
-                            <p><strong>使い方のコツ</strong>：毎日同じような発声（力まず「あー」と伸ばす）で測ることで、自分自身の中での「今日は高い／低い」という変化を追いかけるのに向いています。上の「響きスコア」（自分の感覚）とズレがある日は、自覚より先に変化が出ている可能性があります。</p>
+                            <p><strong>使い方のコツ</strong>：毎日同じような発声（力まず「あー」と伸ばす）で測ることで、自分自身の中での「今日は高い／低い」という変化を追いかけるのに向いています。</p>
                           </div>
                         </details>
                         <div className="flex items-center gap-3">
@@ -5603,56 +5771,11 @@ export default function VocalTracker({ userId, userEmail }) {
                         )}
                         {cppsError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{cppsError}</p>}
                         <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
-                          「あー」を5秒のばして録音すると、声のスペクトルの明瞭さ（CPPS）を自動で数値化します。上の「響きスコア」は自己申告、こちらは機械による客観値です。録音データ自体は保存せず、数値化した後にその場で破棄します。
+                          「あー」を5秒のばして録音すると、声のスペクトルの明瞭さ（CPPS）を自動で数値化します。録音データ自体は保存せず、数値化した後にその場で破棄します。
                         </p>
                         <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
                           ※ このアプリ独自の簡易計算のため、数値そのものを医学論文の基準値と比べることはできません。あくまで「自分自身がこれまでよりCPPSが高いか低いか」という、ご自身の推移で見るための参考値です。
                         </p>
-                      </div>
-                      <div>
-                        <span className="text-sm font-medium block mb-2">{t("labelSymptoms")}</span>
-                        <div className="flex flex-wrap gap-2">
-                          {SYMPTOM_OPTIONS.map((s) => (
-                            <Chip key={s} label={t(SYMPTOM_KEYS[s])} active={(formData.throatSymptoms || []).includes(s)}
-                              onClick={() => setFormData((f) => ({
-                                ...f,
-                                throatSymptoms: (f.throatSymptoms || []).includes(s)
-                                  ? f.throatSymptoms.filter((x) => x !== s)
-                                  : [...(f.throatSymptoms || []), s]
-                              }))} />
-                          ))}
-                        </div>
-                        <input type="text" value={formData.throatSymptomsOther} placeholder={t("labelSymptomsOther")}
-                          onChange={(e) => setFormData((f) => ({ ...f, throatSymptomsOther: e.target.value }))}
-                          className="w-full rounded-lg border p-2 text-sm mt-2" style={{ borderColor: C.line, background: C.paper }} />
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium block mb-1.5">{t("labelVoiceMemo")}</label>
-                        <input type="text" value={formData.voiceMemo} placeholder={t("placeholderVoiceMemoQuick")}
-                          onChange={(e) => setFormData((f) => ({ ...f, voiceMemo: e.target.value }))}
-                          className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                      </div>
-                      <div className="pt-2 border-t" style={{ borderColor: C.line }}>
-                        <p className="text-sm font-medium mb-1">{t("titleTimeSlotRecord")}</p>
-                        <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteVoiceCheckinHelp")}</p>
-                        <div className="space-y-4">
-                          {VOICE_TIME_SLOTS.map(({ key, icon: SlotIcon, labelKey }) => (
-                            <div key={key} className="rounded-xl p-3" style={{ background: C.paper }}>
-                              <div className="flex items-center gap-1.5 mb-2">
-                                <SlotIcon size={14} style={{ color: C.gold }} />
-                                <span className="text-sm font-medium">{t(labelKey)}</span>
-                              </div>
-                              <div className="space-y-3">
-                                <DynamicsSelector t={t} label={t("labelThroatCondition")} icon={Mic2}
-                                  value={((formData.voiceCheckins || {})[key] || {}).throat || 3}
-                                  onChange={(v) => setFormData((f) => updateVoiceCheckin(f, key, "throat", v))} />
-                                <DynamicsSelector t={t} label={t("labelVoiceQuality")} icon={Music2}
-                                  value={((formData.voiceCheckins || {})[key] || {}).voice || 3}
-                                  onChange={(v) => setFormData((f) => updateVoiceCheckin(f, key, "voice", v))} />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
                       </div>
                     </SectionCard>
 
