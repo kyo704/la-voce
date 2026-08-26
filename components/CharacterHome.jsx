@@ -886,6 +886,91 @@ function FlowerBedIcon() {
     </svg>
   );
 }
+// 羊のおうち仕様 §4.5(作業指示 A-6): 累計記録日数で育つ木。購入不可・移動不可の固定オブジェクト。
+// 連続記録が途切れても、この段階は絶対に後退しない（累計ベースのため）。
+function growthTreeStage(totalDaysRecorded) {
+  if (totalDaysRecorded >= 365) return "great"; // 大樹
+  if (totalDaysRecorded >= 100) return "fruit"; // 実がなる
+  if (totalDaysRecorded >= 30) return "bloom"; // 花が咲く
+  if (totalDaysRecorded >= 7) return "sapling"; // 若木
+  return "sprout"; // 芽
+}
+function GrowthTree({ stage, justGrew }) {
+  const trunk = "#8B6529";
+  const trunkDark = "#6B4E1E";
+  return (
+    <svg viewBox="0 0 60 90" width="100%" height="100%" style={{ overflow: "visible" }}>
+      {justGrew && (
+        <style>{`
+          @keyframes treeGrowPulse { 0% { transform: scale(0.9); opacity: 0.6; } 60% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+          .tree-grow-anim { transform-box: fill-box; transform-origin: 50% 100%; animation: treeGrowPulse 0.9s ease-out; }
+          @media (prefers-reduced-motion: reduce) {
+            .tree-grow-anim { animation: none; }
+          }
+        `}</style>
+      )}
+      <g className={justGrew ? "tree-grow-anim" : undefined}>
+        {stage === "sprout" && (
+          <>
+            <rect x="28" y="76" width="4" height="12" rx="2" fill={trunk} />
+            <path d="M30,76 Q22,68 26,58 Q30,68 30,76 Z" fill="#7FB577" />
+            <path d="M30,76 Q38,70 36,60 Q30,68 30,76 Z" fill="#8FC587" />
+          </>
+        )}
+        {stage === "sapling" && (
+          <>
+            <rect x="27" y="60" width="6" height="28" rx="3" fill={trunk} />
+            <circle cx="30" cy="46" r="20" fill="#7FB577" />
+            <circle cx="20" cy="54" r="12" fill="#8FC587" opacity="0.9" />
+            <circle cx="40" cy="54" r="12" fill="#8FC587" opacity="0.9" />
+          </>
+        )}
+        {stage === "bloom" && (
+          <>
+            <rect x="26" y="58" width="8" height="30" rx="3" fill={trunk} />
+            <path d="M30,58 Q18,52 20,58" stroke={trunkDark} strokeWidth="2" fill="none" />
+            <path d="M30,58 Q42,52 40,58" stroke={trunkDark} strokeWidth="2" fill="none" />
+            <circle cx="30" cy="40" r="24" fill="#7FB577" />
+            <circle cx="16" cy="50" r="14" fill="#8FC587" opacity="0.9" />
+            <circle cx="44" cy="50" r="14" fill="#8FC587" opacity="0.9" />
+            {[[16, 30], [30, 18], [44, 30], [22, 44], [38, 44], [30, 34]].map(([x, y], i) => (
+              <circle key={i} cx={x} cy={y} r="3.4" fill="#F2C9D3" />
+            ))}
+          </>
+        )}
+        {stage === "fruit" && (
+          <>
+            <rect x="25" y="56" width="10" height="32" rx="4" fill={trunk} />
+            <path d="M30,56 Q14,48 17,56" stroke={trunkDark} strokeWidth="2.5" fill="none" />
+            <path d="M30,56 Q46,48 43,56" stroke={trunkDark} strokeWidth="2.5" fill="none" />
+            <circle cx="30" cy="36" r="26" fill="#6FA568" />
+            <circle cx="13" cy="46" r="15" fill="#7FB577" opacity="0.92" />
+            <circle cx="47" cy="46" r="15" fill="#7FB577" opacity="0.92" />
+            {[[15, 32], [30, 16], [45, 32], [20, 46], [40, 46], [30, 54], [12, 54], [48, 54]].map(([x, y], i) => (
+              <circle key={i} cx={x} cy={y} r="4" fill="#C0454B" />
+            ))}
+          </>
+        )}
+        {stage === "great" && (
+          <>
+            <rect x="22" y="50" width="16" height="38" rx="5" fill={trunk} />
+            <path d="M30,50 Q8,40 12,50" stroke={trunkDark} strokeWidth="3" fill="none" />
+            <path d="M30,50 Q52,40 48,50" stroke={trunkDark} strokeWidth="3" fill="none" />
+            <circle cx="30" cy="28" r="32" fill="#6FA568" />
+            <circle cx="8" cy="40" r="18" fill="#7FB577" opacity="0.92" />
+            <circle cx="52" cy="40" r="18" fill="#7FB577" opacity="0.92" />
+            {Array.from({ length: 10 }).map((_, i) => {
+              const x = 10 + (i * 41) % 42;
+              const y = 14 + ((i * 17) % 32);
+              return <circle key={i} cx={x} cy={y} r="4.2" fill="#C0454B" />;
+            })}
+          </>
+        )}
+      </g>
+      <ellipse cx="30" cy="88" rx="16" ry="4" fill="#3D2E12" opacity="0.16" />
+    </svg>
+  );
+}
 function FieldIcon() {
   return (
     <svg viewBox="0 0 70 40" width="100%" height="100%">
@@ -1990,7 +2075,7 @@ function SpecialBackdropScene({ sceneKey }) {
   return null;
 }
 
-function GardenScene({ equipped, owned, onUpdatePosition, t }) {
+function GardenScene({ equipped, owned, onUpdatePosition, totalDaysRecorded = 0, t }) {
   const [editMode, setEditMode] = useState(false);
   const placedList = equipped.garden || [];
   const placedOrnaments = placedList.filter((k) => GARDEN_ICON[k]);
@@ -2000,6 +2085,24 @@ function GardenScene({ equipped, owned, onUpdatePosition, t }) {
   const isGardenExpanded = backdropKey === "backdrop_garden_expand";
   const mountainTier = backdropKey === "backdrop_mountains_huge" ? "huge" : backdropKey === "backdrop_mountains_near" ? "near" : "default";
   const specialScene = SPECIAL_BACKDROP_KEYS.includes(backdropKey) ? backdropKey : null;
+
+  // 羊のおうち仕様 §4.5: 木の段階が「初めて」上がった瞬間だけ、控えめな演出を出す。
+  // 端末ローカルの記録（localStorage）で「前回見た段階」を覚えておく、軽量な方式。
+  const treeStage = growthTreeStage(totalDaysRecorded);
+  const [justGrew, setJustGrew] = useState(false);
+  useEffect(() => {
+    try {
+      const key = "la-voce-tree-stage-seen";
+      const lastSeen = window.localStorage.getItem(key);
+      if (lastSeen !== treeStage) {
+        if (lastSeen !== null) setJustGrew(true);
+        window.localStorage.setItem(key, treeStage);
+      }
+    } catch (e) {
+      /* localStorageが使えない環境では演出なしで表示するだけ */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [treeStage]);
 
   return (
     <div style={{
@@ -2060,7 +2163,7 @@ function GardenScene({ equipped, owned, onUpdatePosition, t }) {
       <div style={{ position: "absolute", left: 0, right: 0, bottom: "26%", height: "6%", background: "#8FAE84" }} />
 
       {/* 柵（常設・購入不要） */}
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: "25%", height: "9%", zIndex: 1 }}>
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: "25%", height: "9%", zIndex: LAYER_CONFIG.back.z }}>
         <svg viewBox="0 0 400 36" width="100%" height="100%" preserveAspectRatio="none">
           {Array.from({ length: 18 }).map((_, i) => (
             <rect key={i} x={i * 22 + 4} y="4" width="9" height="30" rx="2" fill="#E8DCC4" stroke="#C4B592" strokeWidth="1" />
@@ -2068,6 +2171,16 @@ function GardenScene({ equipped, owned, onUpdatePosition, t }) {
           <rect x="0" y="10" width="400" height="4" fill="#D4C6A4" />
           <rect x="0" y="22" width="400" height="4" fill="#D4C6A4" />
         </svg>
+      </div>
+
+      {/* 羊のおうち仕様 §4.5(作業指示A-6): 累計で育つ木。購入不可・移動不可の固定オブジェクト。
+          連続記録が途切れても、累計記録日数だけを見ているため絶対に後退しない。 */}
+      <div style={{
+        position: "absolute", left: "6%", top: `${GARDEN_BACK_TOP}%`, width: "13%",
+        transform: "translate(-50%, -100%)", zIndex: LAYER_CONFIG.mid.z,
+        transition: "width 0.4s ease"
+      }}>
+        <GrowthTree stage={treeStage} justGrew={justGrew} />
       </div>
 
       {/* 宅配便（ときどき門のあたりに届き、羊が取りに行く） */}
@@ -2119,6 +2232,9 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
 
   const totalEarned = useMemo(() => computeTotalEarned(entries), [entries]);
   const { currentStreak, longestStreak } = useMemo(() => computeStreaks(entries), [entries]);
+  // 羊のおうち仕様 §4.5・§4.7: 累計記録日数。連続記録が途切れても後退しない指標として、
+  // 記録が存在する日の総数（entriesのキー数）をそのまま使う。
+  const totalDaysRecorded = useMemo(() => Object.keys(entries || {}).length, [entries]);
   const balance = computeBalance(entries, pointsSpent);
 
   const itemsInCategory = SHOP_ITEMS.filter((i) => i.category === shopCategory);
@@ -2146,7 +2262,7 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
 
         {view === "room"
           ? <RoomScene equipped={equipped} owned={ownedKeys} onTogglePlacement={onTogglePlacement} onUpdatePosition={onUpdatePosition} t={t} />
-          : <GardenScene equipped={equipped} owned={ownedKeys} onUpdatePosition={onUpdatePosition} t={t} />}
+          : <GardenScene equipped={equipped} owned={ownedKeys} onUpdatePosition={onUpdatePosition} totalDaysRecorded={totalDaysRecorded} t={t} />}
         {(equipped.furniture || []).length > 0 || (equipped.garden || []).length > 0 ? (
           <p className="text-xs mt-2 text-center" style={{ color: C.inkSoft }}>{t("noteDragToArrange")}</p>
         ) : null}
@@ -2171,18 +2287,11 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
         )}
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
-        <div className="rounded-2xl p-3 border text-center" style={{ background: C.card, borderColor: C.line }}>
-          <div className="ff-display italic text-xl" style={{ color: C.gold }}>{balance}</div>
-          <div className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("labelPointsBalance")}</div>
-        </div>
-        <div className="rounded-2xl p-3 border text-center" style={{ background: C.card, borderColor: C.line }}>
-          <div className="ff-display italic text-xl" style={{ color: C.curtain }}>{currentStreak}</div>
-          <div className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("labelCurrentStreak")}</div>
-        </div>
-        <div className="rounded-2xl p-3 border text-center" style={{ background: C.card, borderColor: C.line }}>
-          <div className="ff-display italic text-xl" style={{ color: C.curtain }}>{longestStreak}</div>
-          <div className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("labelLongestStreak")}</div>
+      <div className="rounded-2xl p-4 border text-center" style={{ background: C.card, borderColor: C.line }}>
+        <div className="ff-display italic" style={{ fontSize: 32, color: C.gold, lineHeight: 1.2 }}>{balance}</div>
+        <div className="text-xs mt-0.5" style={{ color: C.inkSoft }}>{t("labelPointsBalance")}</div>
+        <div className="text-xs mt-2" style={{ color: C.inkSoft, opacity: 0.75 }}>
+          {t("labelCurrentStreak")} {currentStreak}日 ・ {t("labelLongestStreak")} {longestStreak}日 ・ {t("labelTotalDaysRecorded")} {totalDaysRecorded}日
         </div>
       </div>
 
