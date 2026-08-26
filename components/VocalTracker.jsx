@@ -3049,6 +3049,22 @@ export default function VocalTracker({ userId, userEmail }) {
   // 記録と分析の順番設計 §5.3: 分析画面の「この分析を強くする」から記録画面へジャンプしたとき、
   // 該当セクションを2秒だけ淡くハイライトする（入力欄へのフォーカスは当てない）。
   const [highlightSection, setHighlightSection] = useState(null);
+  // 記録と分析の順番設計 §3.1: 記録の入口を時間帯で2つに分ける。
+  // 境界時刻（既定21時）より前は「声の記録」、以降は「一日の記録」を既定表示にする。
+  // ユーザーはいつでも上部の切り替えで行き来できる（隠さない）。
+  const [recordView, setRecordView] = useState(() => {
+    const hour = new Date().getHours();
+    const boundary = 21; // 初回描画時はprofile未読込のため既定値を使い、profile読込後にuseEffectで補正する
+    return hour >= boundary || hour < 5 ? "day" : "voice";
+  });
+  const recordViewInitializedRef = useRef(false);
+  useEffect(() => {
+    if (recordViewInitializedRef.current || profile.day_record_boundary_hour == null) return;
+    recordViewInitializedRef.current = true;
+    const hour = new Date().getHours();
+    const boundary = profile.day_record_boundary_hour;
+    setRecordView(hour >= boundary || hour < 5 ? "day" : "voice");
+  }, [profile.day_record_boundary_hour]);
   useEffect(() => {
     if (!highlightSection) return;
     const timer = setTimeout(() => setHighlightSection(null), 2000);
@@ -3056,6 +3072,7 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [highlightSection]);
   function jumpToRecordSection(sectionId) {
     setActiveTab("today");
+    setRecordView("day"); // ジャンプ先(睡眠・水分・食事・活動・メンタル)はすべて「一日の記録」ビューにあるため
     setHighlightSection(sectionId);
   }
   const [lessonMode, setLessonMode] = useState(false);
@@ -3127,7 +3144,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21 });
   const [ownedItemKeys, setOwnedItemKeys] = useState([]);
   const [characterEquipped, setCharacterEquipped] = useState({});
   const [characterPointsSpent, setCharacterPointsSpent] = useState(0);
@@ -3300,7 +3317,7 @@ export default function VocalTracker({ userId, userEmail }) {
         () =>
           supabase
             .from("profiles")
-            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus, practice_goal, practice_goal_tags, practice_goal_started_at, practice_reviews, folded_groups, survey_day7_shown_at, survey_day7_response, line_user_id, line_link_code, line_linked_at, line_notification_enabled")
+            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus, practice_goal, practice_goal_tags, practice_goal_started_at, practice_reviews, folded_groups, survey_day7_shown_at, survey_day7_response, line_user_id, line_link_code, line_linked_at, line_notification_enabled, day_record_boundary_hour")
             .eq("id", userId)
             .single(),
         "プロフィール（羊の装備を含む）の取得"
@@ -3341,6 +3358,7 @@ export default function VocalTracker({ userId, userEmail }) {
           line_link_code: data.line_link_code || null,
           line_linked_at: data.line_linked_at || null,
           line_notification_enabled: data.line_notification_enabled ?? true,
+          day_record_boundary_hour: data.day_record_boundary_hour ?? 21,
           vocal_profession: data.vocal_profession || "singer",
           track_cycle: data.track_cycle || false
         });
@@ -5509,6 +5527,12 @@ export default function VocalTracker({ userId, userEmail }) {
 
   // 実行順マスター Stage 2-3: LINE通知。6文字の連携コードを発行し、
   // ユーザーがLINE公式アカウントにそのコードを送ると、Webhook側で紐付けが完了する。
+  async function handleChangeDayRecordBoundary(hour) {
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update({ day_record_boundary_hour: hour }).eq("id", userId);
+    if (error) { console.error("境界時刻の保存に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, day_record_boundary_hour: hour }));
+  }
   async function handleGenerateLineLinkCode() {
     const code = Array.from({ length: 6 }, () => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)]).join("");
     const supabase = createClient();
@@ -6406,8 +6430,23 @@ export default function VocalTracker({ userId, userEmail }) {
 
                 {formData && (
                   <>
-                    <SectionCard title={t("sectionVoiceThroat")} icon={Mic2}>
-                      <div className="space-y-2">
+                    <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
+                      <button type="button" onClick={() => setRecordView("voice")}
+                        className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                        style={{ background: recordView === "voice" ? C.curtain : "transparent", color: recordView === "voice" ? "#FFFDF8" : C.inkSoft }}>
+                        声の記録
+                      </button>
+                      <button type="button" onClick={() => setRecordView("day")}
+                        className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                        style={{ background: recordView === "day" ? C.curtain : "transparent", color: recordView === "day" ? "#FFFDF8" : C.inkSoft }}>
+                        一日の記録
+                      </button>
+                    </div>
+
+                    {recordView === "voice" && (
+                      <>
+                        <SectionCard title={t("sectionVoiceThroat")} icon={Mic2}>
+                          <div className="space-y-2">
                         {(formData.voiceEntries || []).slice().sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0)).map((entry) => (
                           editingVoiceEntryId === entry.id ? (
                             <VoiceEntryEditor key={entry.id} entry={entry} t={t}
@@ -6506,6 +6545,27 @@ export default function VocalTracker({ userId, userEmail }) {
                       )}
                     </SectionCard>
 
+                        <button type="button" onClick={handleSave} disabled={saveStatus === "saving"}
+                          className="w-full rounded-2xl py-3.5 font-medium flex items-center justify-center gap-2 transition-all"
+                          style={{ background: C.curtain, color: "#FFFDF8" }}>
+                          {saveStatus === "saving" && <Loader2 size={16} className="animate-spin" />}
+                          {saveStatus === "saved" && <Check size={16} />}
+                          {saveStatus === "saving" ? t("saveButtonSaving") : saveStatus === "saved" ? t("saveButtonSaved") : saveStatus === "error" ? t("saveButtonError") : t("saveButton")}
+                        </button>
+                        {saveStatus === "error" && saveError && (
+                          <p className="text-xs text-center" style={{ color: C.curtain }}>{saveError}</p>
+                        )}
+
+                        <button type="button" onClick={() => setRecordView("day")}
+                          className="w-full flex items-center justify-between rounded-xl p-3 text-sm" style={{ background: C.card, color: C.inkSoft }}>
+                          夜に、睡眠や食事をまとめて記録します
+                          <ChevronRight size={14} />
+                        </button>
+                      </>
+                    )}
+
+                    {recordView === "day" && (
+                      <>
                     <SectionCard title={t("sectionBodyData")} icon={Scale}>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
@@ -7516,6 +7576,8 @@ export default function VocalTracker({ userId, userEmail }) {
                     </button>
                     {saveStatus === "error" && saveError && (
                       <p className="text-xs text-center" style={{ color: C.curtain }}>{saveError}</p>
+                    )}
+                      </>
                     )}
                   </>
                 )}
@@ -9715,6 +9777,20 @@ export default function VocalTracker({ userId, userEmail }) {
                     </p>
                   </div>
                 )}
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-sm font-medium mb-1">記録画面の切り替え時刻</p>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    この時刻より前は「声の記録」、以降は「一日の記録」を最初に開きます。いつでも上部のタブで行き来できます。
+                  </p>
+                  <select value={profile.day_record_boundary_hour ?? 21}
+                    onChange={(e) => handleChangeDayRecordBoundary(Number(e.target.value))}
+                    className="rounded-lg border px-3 py-2 text-sm" style={{ borderColor: C.line, background: C.paper }}>
+                    {Array.from({ length: 24 }, (_, h) => (
+                      <option key={h} value={h}>{String(h).padStart(2, "0")}:00</option>
+                    ))}
+                  </select>
+                </div>
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-sm font-medium mb-1">LINE通知（毎朝のリマインド）</p>
