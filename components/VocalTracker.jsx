@@ -809,6 +809,7 @@ function buildFormData(date, entries) {
       noisyEnvironment: existing.noisyEnvironment || false,
       cppsValue: existing.cppsValue ?? "",
       exerciseLevel: existing.exerciseLevel ?? null,
+      bodyFatPct: existing.bodyFatPct ?? "",
       activities: existing.activities || [],
       recovery: existing.recovery || null
     };
@@ -855,6 +856,7 @@ function buildFormData(date, entries) {
     noisyEnvironment: false,
     cppsValue: "",
     exerciseLevel: null,
+    bodyFatPct: "",
     // lavoce-曲目複数化パッチ.md: 活動は「1日1つ」ではなくブロックの配列。
     // 既定は自主練習ブロック1つ（旧UXの「最初から自主練習が選ばれている」状態を踏襲）。
     activities: [newActivityBlock("自主練習", 0)],
@@ -865,6 +867,31 @@ function computeBMI(weightKg, heightCm) {
   if (!weightKg || !heightCm) return null;
   const h = heightCm / 100;
   return weightKg / (h * h);
+}
+// lavoce-記録項目の再設計v2.md §3.5: BMI・体重レンジ表示を廃止し、エネルギー可用性（EA）に置換する。
+// Deurenberg et al. (1991) の式による体脂肪率の推定。標準誤差は約4.1%BF（変動係数16%）で、
+// 鍛えている人・痩せている人ほど誤差が大きいため、推定値である旨を必ず画面に明示すること。
+function estimateBodyFatPct(bmi, age, sex) {
+  if (bmi == null || age == null || (sex !== "男性" && sex !== "女性")) return null;
+  const sexFactor = sex === "男性" ? 1 : 0;
+  return 1.20 * bmi + 0.23 * age - 10.8 * sexFactor - 5.4;
+}
+// 除脂肪体重 FFM。体組成計の実測（体脂肪率）があれば優先し、なければDeurenberg式で推定する。
+function computeFFM(weightKg, heightCm, age, sex, measuredBodyFatPct) {
+  if (!weightKg) return null;
+  if (typeof measuredBodyFatPct === "number") {
+    return { ffm: weightKg * (1 - measuredBodyFatPct / 100), isEstimated: false };
+  }
+  const bmi = computeBMI(weightKg, heightCm);
+  const estimated = estimateBodyFatPct(bmi, age, sex);
+  if (estimated == null) return null;
+  return { ffm: weightKg * (1 - estimated / 100), isEstimated: true };
+}
+// エネルギー可用性 EA = (摂取エネルギー − 運動によるエネルギー消費) / FFM(kg)。
+// 目安は45kcal/kgFFM/日前後が十分、30を下回る状態が継続すると低EA。単一日では断定しない。
+function computeEnergyAvailability(intakeKcal, exerciseKcal, ffmKg) {
+  if (!ffmKg || ffmKg <= 0 || intakeKcal == null) return null;
+  return (intakeKcal - (exerciseKcal || 0)) / ffmKg;
 }
 function healthyWeightRange(heightCm) {
   if (!heightCm) return null;
@@ -1040,6 +1067,7 @@ function rowToEntry(row) {
     ease: row.ease,
     notes: row.notes || "",
     weightKg: row.weight_kg,
+    bodyFatPct: row.body_fat_pct,
     carbs: row.carbs_g,
     protein: row.protein_g,
     fat: row.fat_g,
@@ -1359,6 +1387,7 @@ function entryToRow(userId, e) {
     ease: numOrNull(e.ease),
     notes: e.notes,
     weight_kg: numOrNull(e.weightKg),
+    body_fat_pct: numOrNull(e.bodyFatPct),
     water_intake: Object.values(e.waterBySlot || {}).reduce((total, v) => total + (Number(v) || 0), 0),
     carbs_g: sumMacro(e.meals, "carbs"),
     protein_g: sumMacro(e.meals, "protein"),
@@ -4076,6 +4105,68 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [entries, hasRefluxCondition]);
   // ---- 逆流専用の分析 用データ ここまで ----
 
+  // ---- lavoce-記録項目の再設計v2.md §3.5: エネルギー可用性（EA） 用データ ----
+  // 日次では出さない（体重は水分でブレるため）。件数が十分溜まったときだけ、月1回のまとめとして表示する。
+  const energyAvailabilityAnalysis = useMemo(() => {
+    const realToday = todayISO();
+    const dates28 = [];
+    for (let i = 27; i >= 0; i--) dates28.push(addDays(realToday, -i));
+    const nutritionTargets28 = dates28.map((d) => {
+      const e = entries[d];
+      if (!e) return null;
+      const w = e.weightKg || getLatestWeight(entries, d);
+      const targets = computeNutritionTargets(w, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient);
+      const intakeKcal = (e.carbs || 0) * 4 + (e.protein || 0) * 4 + (e.fat || 0) * 9;
+      const exerciseKcal = (e.exercises || []).reduce((s, x) => s + 0.1 * (w || 60) * (Number(x.minutes) || 0) * ((typeof x.intensity === "number" ? x.intensity : 3) / 3), 0);
+      const ffmResult = computeFFM(w, profile.height_cm ? Number(profile.height_cm) : null, profile.age ? Number(profile.age) : null, profile.sex, e.bodyFatPct);
+      const ea = ffmResult && intakeKcal > 0 ? computeEnergyAvailability(intakeKcal, exerciseKcal, ffmResult.ffm) : null;
+      return { date: d, intakeKcal, ea, isEstimatedFFM: ffmResult ? ffmResult.isEstimated : null };
+    });
+    const validEaCount = nutritionTargets28.filter((x) => x && x.ea != null).length;
+    // カロリー記録が十分に揃っている（28日中14日以上）場合はEAで判定する
+    if (validEaCount >= 14) {
+      const eaVals = nutritionTargets28.filter((x) => x && x.ea != null).map((x) => x.ea);
+      const recentAvg = eaVals.slice(-21).reduce((a, b) => a + b, 0) / Math.min(21, eaVals.length);
+      const earlierSlice = eaVals.slice(0, Math.max(0, eaVals.length - 13));
+      const earlierAvg = earlierSlice.length ? earlierSlice.reduce((a, b) => a + b, 0) / earlierSlice.length : recentAvg;
+      const isLow = recentAvg < 30 && earlierAvg < 30; // 2週間程度の継続を簡易的に確認（両端で判定）
+      const isEstimated = nutritionTargets28.some((x) => x && x.isEstimatedFFM);
+      return { method: "ea", recentAvg, isLow, isEstimated, validEaCount };
+    }
+    // カロリー記録が足りない場合は、既存データだけで組める複合サインにフォールバックする
+    const dates56 = [];
+    for (let i = 55; i >= 0; i--) dates56.push(addDays(realToday, -i));
+    const weightsRecent = dates56.slice(28).map((d) => entries[d] && entries[d].weightKg).filter((v) => typeof v === "number");
+    const weightsEarlier = dates56.slice(0, 28).map((d) => entries[d] && entries[d].weightKg).filter((v) => typeof v === "number");
+    const signal1 = weightsRecent.length >= 3 && weightsEarlier.length >= 3 &&
+      (weightsEarlier.reduce((a, b) => a + b, 0) / weightsEarlier.length - weightsRecent.reduce((a, b) => a + b, 0) / weightsRecent.length) /
+      (weightsEarlier.reduce((a, b) => a + b, 0) / weightsEarlier.length) >= 0.03;
+    const dates14 = dates28.slice(-14);
+    const symptomDayRatio = dates14.filter((d) => entries[d] && (entries[d].throatSymptoms || []).length > 0).length / 14;
+    const signal2 = symptomDayRatio > 0.5;
+    let recoveryNotBackCount = 0;
+    const sortedDates = Object.keys(entries).sort();
+    sortedDates.forEach((date, i) => {
+      const e = entries[date];
+      if (!(e.activities && e.activities.length === 0 && e.recovery)) return;
+      const nextDate = sortedDates[i + 1];
+      if (!nextDate || addDays(date, 1) !== nextDate) return;
+      const nextEntry = entries[nextDate];
+      if (typeof nextEntry.throatCondition === "number" && overallThroatBaseline != null && nextEntry.throatCondition < overallThroatBaseline) {
+        recoveryNotBackCount += 1;
+      }
+    });
+    const signal3 = recoveryNotBackCount >= 3;
+    const sleepVals14 = dates14.map((d) => entries[d] && entries[d].sleepHours).filter((v) => typeof v === "number");
+    const avgSleep14 = sleepVals14.length ? sleepVals14.reduce((a, b) => a + b, 0) / sleepVals14.length : null;
+    const fatigueDayCount = dates14.filter((d) => entries[d] && (entries[d].mentalTags || []).includes("疲労・過労")).length;
+    const signal5 = avgSleep14 != null && avgSleep14 >= 7 && fatigueDayCount >= 7;
+    // 月経周期の乱れ（signal4）は現状のデータでは信頼できる判定ができないため対象外とする
+    const signalCount = [signal1, signal2, signal3, signal5].filter(Boolean).length;
+    return { method: "composite", signalCount, isLow: signalCount >= 3, signals: { signal1, signal2, signal3, signal5 } };
+  }, [entries, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient, overallThroatBaseline]);
+  // ---- エネルギー可用性 用データ ここまで ----
+
 
   // 装備・配置・ドラッグ移動は、その場ではデータベースに保存しない。
   // 「保存中」の表示に気づかれにくかったこと、また保存されたかどうかが分かりにくいという指摘を受けて、
@@ -5085,6 +5176,8 @@ export default function VocalTracker({ userId, userEmail }) {
 
                       <NumberField label={t("labelTodayWeight")} icon={Scale} value={formData.weightKg ?? ""} step={0.1} min={20} max={200} suffix="kg"
                         onChange={(v) => setFormData((f) => ({ ...f, weightKg: v }))} />
+                      <NumberField label="体脂肪率（体組成計をお持ちの場合・任意）" icon={Scale} value={formData.bodyFatPct ?? ""} step={0.1} min={3} max={60} suffix="%"
+                        onChange={(v) => setFormData((f) => ({ ...f, bodyFatPct: v }))} />
 
                       {profile.track_cycle && (
                         <div className="rounded-xl p-3" style={{ background: C.paper }}>
@@ -5137,9 +5230,8 @@ export default function VocalTracker({ userId, userEmail }) {
 
                       {profile.height_cm ? (
                         <div className="rounded-xl p-3 text-xs leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
-                          {currentBMI && <p>{t("labelCurrentBMI")}{currentBMI.toFixed(1)}</p>}
-                          {weightRange && <p>{t("labelWeightRangeBasis")}{weightRange.min.toFixed(1)}kg 〜 {weightRange.max.toFixed(1)}kg</p>}
-                          <p className="mt-1">{t("noteBMIDisclaimer")}</p>
+                          <p>体組成計をお持ちの場合は、下の「体脂肪率」欄に入力すると、より正確な分析ができます。</p>
+                          <p className="mt-1">体重・体脂肪率の傾向は、月1回のまとめで「エネルギー可用性」としてお伝えします（BMIや体重の上限レンジは表示しません。声のプロにとってのリスクは主に下側だからです）。</p>
                         </div>
                       ) : (
                         <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteRegisterHeightForRange")}</p>
@@ -6427,9 +6519,44 @@ export default function VocalTracker({ userId, userEmail }) {
                     </ResponsiveContainer>
                   </div>
                 </div>
+
+                {(energyAvailabilityAnalysis.method === "ea"
+                  ? energyAvailabilityAnalysis.validEaCount >= 14
+                  : energyAvailabilityAnalysis.signalCount > 0) && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">エネルギー可用性（月次まとめ）</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      体重や体型ではなく、「消費に対して摂取が足りているか」を見る指標です。日々の変動は水分でブレるため、ここでは長期の傾向だけをお伝えします。
+                    </p>
+                    {energyAvailabilityAnalysis.method === "ea" ? (
+                      <>
+                        <p className="text-sm rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                          {energyAvailabilityAnalysis.isLow
+                            ? `摂取エネルギーが、直近3週間ほど推定の必要量を下回る状態が続いています（1kgの除脂肪体重あたり約${energyAvailabilityAnalysis.recentAvg.toFixed(0)}kcal/日）。支える力に影響が出ることがあります。気になる場合は管理栄養士や医師にご相談ください。`
+                            : `直近のエネルギー可用性は、1kgの除脂肪体重あたり約${energyAvailabilityAnalysis.recentAvg.toFixed(0)}kcal/日です（目安45kcal前後）。`}
+                        </p>
+                        {energyAvailabilityAnalysis.isEstimated && (
+                          <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                            ※ 体脂肪率は身長・年齢・性別から推定した値を使っています（推定誤差は標準で約4%）。体組成計をお持ちの場合は「身体データ」欄への入力で精度が上がります。
+                          </p>
+                        )}
+                      </>
+                    ) : (
+                      <p className="text-sm rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                        {energyAvailabilityAnalysis.isLow
+                          ? "体重の減少・症状の頻度・休養後の回復・睡眠と疲労感のバランスのうち、複数の項目で気になる傾向が同時に出ています。気になる場合は管理栄養士や医師にご相談ください。"
+                          : "現時点では、複数の項目が同時に気になる傾向を示してはいません。"}
+                      </p>
+                    )}
+                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向であり、医学的な診断ではありません。
+                    </p>
+                  </div>
+                )}
+
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">{t("titleProteinTrend")}</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteProteinTrendTarget")}</p>
+                  <h3 className="ff-display italic text-lg mb-1">タンパク質摂取量（体重1kgあたり）の推移</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>破線が「身体データ」で設定した目標係数です。</p>
                   <div style={{ width: "100%", height: 200 }}>
                     <ResponsiveContainer>
                       <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
