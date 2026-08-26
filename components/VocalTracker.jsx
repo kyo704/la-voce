@@ -267,15 +267,8 @@ const FACTORS = [
 const TABS = [
   { key: "home", labelKey: "tabHome", icon: Sun },
   { key: "today", labelKey: "tabToday", icon: Mic2 },
-  { key: "garden", labelKey: "tabCharacter", icon: Home },
-  { key: "history", labelKey: "tabHistory", icon: CalendarDays },
-  { key: "notes", labelKey: "tabNotes", icon: NotebookPen },
   { key: "analysis", labelKey: "tabAnalysis", icon: BarChart3 },
-  { key: "questionnaires", labelKey: "tabQuestionnaires", icon: ClipboardList },
-  { key: "clinicSummary", labelKey: "tabClinicSummary", icon: FileText },
-  { key: "advice", labelKey: "tabAdvice", icon: Bot },
-  { key: "info", labelKey: "tabInfo", icon: BookOpen },
-  { key: "voicetheory", labelKey: "tabVoiceTheory", icon: Music2, href: "/vocal-theory" },
+  { key: "notes", labelKey: "tabNotes", icon: NotebookPen },
   { key: "more", labelKey: "tabMore", icon: MoreHorizontal }
 ];
 // 職業ごとに専用の理論ページへ切り替える
@@ -4486,6 +4479,78 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [entries, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient, overallThroatBaseline]);
   // ---- エネルギー可用性 用データ ここまで ----
 
+  // ---- lavoce-画面レイアウト仕様_1.md §5.3: 発見カード（今週の発見） 用データ ----
+  // priority = |効果量（正規化）| × 確度係数 × 行動可能性。既存の各分析結果から候補を集め、
+  // 上位1〜3件だけを「今週の発見」として分析タブの先頭に出す。既存のカード群自体は変更しない。
+  const topDiscoveries = useMemo(() => {
+    const candidates = [];
+    if (topLagFinding) {
+      candidates.push({
+        id: "lag-" + topLagFinding.variableKey,
+        icon: "💡",
+        text: `あなたの声は、${topLagFinding.variableLabel}の「${topLagFinding.lag}日後」にいちばん関係が出ています。`,
+        detail: `ρ = ${topLagFinding.rho.toFixed(2)}`,
+        priority: Math.min(1, Math.abs(topLagFinding.rho)) * 1.0 * 0.6
+      });
+    }
+    if (effectiveHabitRanking.length > 0 && effectiveHabitRanking[0].stars >= 2) {
+      const top = effectiveHabitRanking[0];
+      candidates.push({
+        id: "habit-" + top.key,
+        icon: "✨",
+        text: `${top.label}日は、翌日の声が平均で${top.g >= 0 ? "良く" : "悪く"}記録されています。`,
+        detail: `効果量 g=${top.g.toFixed(2)}・${"★".repeat(top.stars)}${"☆".repeat(4 - top.stars)}`,
+        priority: Math.min(1, Math.abs(top.g) / 1.5) * (top.stars / 4) * 0.9
+      });
+    }
+    if (roleLoadStats.confident.length > 0) {
+      const divergent = [...roleLoadStats.confident].sort((a, b) => Math.abs(b.rankGap) - Math.abs(a.rankGap))[0];
+      if (divergent && Math.abs(divergent.rankGap) >= 2) {
+        candidates.push({
+          id: "role-" + divergent.name,
+          icon: divergent.rankGap > 0 ? "⚠️" : "✨",
+          text: divergent.rankGap > 0
+            ? `「${divergent.name}」は計算上そこまで重くありませんが、翌日の落ち込みは大きめです。`
+            : `「${divergent.name}」は計算上重い役ですが、翌日の落ち込みは平均的です。`,
+          detail: `${divergent.count}回の記録`,
+          priority: Math.min(1, Math.abs(divergent.rankGap) / 5) * Math.min(1, divergent.count / 8) * 0.4
+        });
+      }
+    }
+    if (acwrToday && acwrToday.zone && (acwrToday.zone.key === "caution" || acwrToday.zone.key === "high")) {
+      candidates.push({
+        id: "acwr-today",
+        icon: "⚠️",
+        text: `今日の発声負荷比は${acwrToday.value}。${acwrToday.zone.label}な状態です。`,
+        detail: acwrToday.restProjection != null ? `明日を休養にすると${acwrToday.restProjection}に戻ります` : "",
+        priority: Math.min(1, Math.abs(acwrToday.value - 1.1) / 1.0) * 1.0 * 0.8
+      });
+    }
+    if (refluxDinnerTagEffects.length > 0) {
+      const top = refluxDinnerTagEffects.sort((a, b) => Math.abs(b.g) - Math.abs(a.g))[0];
+      if (top && top.stars >= 2) {
+        candidates.push({
+          id: "reflux-" + top.tag,
+          icon: "💡",
+          text: `前夜の${top.tag}は、翌朝の喉の違和感と関係がありそうです。`,
+          detail: `効果量 g=${top.g.toFixed(2)}・${"★".repeat(top.stars)}${"☆".repeat(4 - top.stars)}`,
+          priority: Math.min(1, Math.abs(top.g) / 1.5) * (top.stars / 4) * 0.7
+        });
+      }
+    }
+    if (energyAvailabilityAnalysis && energyAvailabilityAnalysis.isLow) {
+      candidates.push({
+        id: "ea-low",
+        icon: "⚠️",
+        text: "摂取エネルギーが、推定の必要量を下回る状態が続いています。",
+        detail: "エネルギー可用性（月次まとめ）",
+        priority: 0.7 * 1.0 * 0.5
+      });
+    }
+    return candidates.sort((a, b) => b.priority - a.priority).slice(0, 3);
+  }, [topLagFinding, effectiveHabitRanking, roleLoadStats, acwrToday, refluxDinnerTagEffects, energyAvailabilityAnalysis]);
+  // ---- 発見カード 用データ ここまで ----
+
 
   // 装備・配置・ドラッグ移動は、その場ではデータベースに保存しない。
   // 「保存中」の表示に気づかれにくかったこと、また保存されたかどうかが分かりにくいという指摘を受けて、
@@ -6551,6 +6616,23 @@ export default function VocalTracker({ userId, userEmail }) {
 
             {activeTab === "analysis" && (
               <div className="space-y-5">
+                {topDiscoveries.length > 0 && (
+                  <div>
+                    <h2 className="ff-display italic text-xl mb-3" style={{ color: C.ink }}>今週の発見</h2>
+                    <div className="space-y-3">
+                      {topDiscoveries.map((d) => (
+                        <div key={d.id} className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                          <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{d.icon} 見つかりました</p>
+                          <p className="text-base font-medium mb-2" style={{ color: C.ink, lineHeight: 1.4 }}>{d.text}</p>
+                          {d.detail && <p className="text-xs" style={{ color: C.inkSoft }}>{d.detail}</p>}
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                      ※ その時点でいちばん優先度の高い発見だけを自動で選んで表示しています。詳しい内訳は下の各カードでご確認いただけます。
+                    </p>
+                  </div>
+                )}
                 <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleVocalScore")}</h3>
                   <p className="text-xs mb-4" style={{ color: C.inkSoft }}>{t("noteVocalScore")}</p>
@@ -8292,6 +8374,11 @@ export default function VocalTracker({ userId, userEmail }) {
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>ツール</p>
                   <div className="space-y-1">
+                    <button type="button" onClick={() => setActiveTab("garden")}
+                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
+                      <span className="flex items-center gap-2"><Home size={16} style={{ color: C.gold }} />キャラクター育成</span>
+                      <span style={{ color: C.inkSoft }}>→</span>
+                    </button>
                     <button type="button" onClick={() => setActiveTab("questionnaires")}
                       className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
                       <span className="flex items-center gap-2"><ClipboardList size={16} style={{ color: C.gold }} />質問票</span>
