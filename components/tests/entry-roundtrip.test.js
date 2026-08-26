@@ -118,7 +118,7 @@ function assertNoThrow(fn, label) {
 // ---------------------------------------------------------------------------
 // 実装の読み込み
 // ---------------------------------------------------------------------------
-const { numOrNull, sumMacro, derivePrimaryActivityLegacy, migrateLegacyToActivities, fiveScaleToQuality10, migrateLegacyToVoiceEntries, deriveVoiceEntryRepresentatives, rowToEntry, entryToRow } = loadFunctions([
+const { numOrNull, sumMacro, derivePrimaryActivityLegacy, migrateLegacyToActivities, fiveScaleToQuality10, migrateLegacyToVoiceEntries, deriveVoiceEntryRepresentatives, deriveLegacyVoiceFieldsFromEntries, rowToEntry, entryToRow } = loadFunctions([
   "numOrNull",
   "sumMacro",
   "derivePrimaryActivityLegacy",
@@ -126,6 +126,7 @@ const { numOrNull, sumMacro, derivePrimaryActivityLegacy, migrateLegacyToActivit
   "fiveScaleToQuality10",
   "migrateLegacyToVoiceEntries",
   "deriveVoiceEntryRepresentatives",
+  "deriveLegacyVoiceFieldsFromEntries",
   "rowToEntry",
   "entryToRow"
 ], [

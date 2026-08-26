@@ -17,6 +17,8 @@ import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC } from "@/lib/token
 import { FOOD_PRESETS, DISH_GROUP_ALIASES, CATEGORY_SEARCH_ALIASES } from "@/lib/foodPresets";
 import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, SHOP_ITEMS, PLACEMENT_LIMITS, computeBalance } from "@/lib/character";
 import { LANGUAGES, createTranslator } from "@/lib/translations";
+// 統合実行ルートv4 §6: 表示ゲートは必ずこのレイヤーを経由する。画面ごとに条件を書かないこと。
+import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q } from "@/lib/displayGates";
 import HealthInfo from "@/components/HealthInfo";
 import { ARTICLES, CHAPTER_LABELS, PROFESSION_LABELS, getArticlesForProfession, getArticleById } from "@/lib/learnContent";
 import CharacterHome from "@/components/CharacterHome";
@@ -821,9 +823,18 @@ function correlationLabel(r, t) {
   if (abs >= 0.2) return t(pos ? "corrWeakPos" : "corrWeakNeg");
   return t("corrNone");
 }
+// 統合実行ルートv4 §6-1: 相関を文章で語るには、件数・効果量・多重比較の3つを全部通すこと。
+// 以前は |r| ≥ 0.4 かつ n ≥ 5 だけで文章にしていたため、少数データで断定的な文が出ていた（P0-1）。
+// FACTORS を一斉に見ているので、多重比較の補正はここでまとめて行う。
 function generateInsights(correlationResults, targetLabel, t) {
-  return correlationResults
-    .filter((r) => r.r != null && Math.abs(r.r) >= 0.4 && r.n >= 5)
+  const withP = correlationResults.map((r) => {
+    if (r.r == null || r.n < 3 || Math.abs(r.r) >= 1) return { ...r, pValue: null };
+    const tStat = r.r * Math.sqrt((r.n - 2) / (1 - r.r * r.r));
+    return { ...r, pValue: tDistPValue(tStat, r.n - 2) };
+  });
+  const fdrPass = benjaminiHochberg(withP.map((x) => x.pValue), NARRATIVE_FDR_Q);
+  return withP
+    .filter((r, i) => evaluateGate("correlation.narrative", { n: r.n, rho: r.r, fdrPass: fdrPass[i] }, t).passed)
     .sort((a, b) => Math.abs(b.r) - Math.abs(a.r))
     .slice(0, 3)
     .map((r) => {
@@ -3615,7 +3626,8 @@ export default function VocalTracker({ userId, userEmail }) {
   const [pendingInvitation, setPendingInvitation] = useState(null);
   const [myStudentLinks, setMyStudentLinks] = useState([]); // 自分が「先生」として見られる生徒たち
   const [myTeacherLinks, setMyTeacherLinks] = useState([]); // 自分が「生徒」としてつながっている先生たち
-  const [studentEntriesCache, setStudentEntriesCache] = useState({}); // studentId -> entries（RLSでactiveな紐付けの分だけ取得できる）
+  const [studentEntriesCache, setStudentEntriesCache] = useState({}); // studentId -> entries（サーバー側の関数が、共有範囲の列だけを返す）
+  const [studentEntriesFetchError, setStudentEntriesFetchError] = useState({}); // studentId -> 取得に失敗したか
   const [studentEntriesLoading, setStudentEntriesLoading] = useState({});
   const [viewingStudentLink, setViewingStudentLink] = useState(null); // 生徒個別ページ(§6)で開いている生徒
   const [teacherNoteDraft, setTeacherNoteDraft] = useState("");
@@ -4261,10 +4273,11 @@ export default function VocalTracker({ userId, userEmail }) {
       avgVoice: s.n ? s.voiceSum / s.n : null,
       avgEase: s.n ? s.easeSum / s.n : null
     }));
-    // 数字の作法: n≥3を平均表示の下限にする。それ未満は記録数だけを見せて、貯める動機にする。
+    // 統合実行ルートv4 §6-2: 件数の下限は displayGates.js の rest.average に集約した。
+    // ここで直接 n≥3 と書かないこと（画面ごとに条件が散らばるのを防ぐため）。
     return {
-      confident: all.filter((s) => s.n >= 3),
-      lowN: all.filter((s) => s.n < 3).sort((a, b) => b.n - a.n)
+      confident: all.filter((s) => gateAllows("rest.average", { n: s.n })),
+      lowN: all.filter((s) => !gateAllows("rest.average", { n: s.n })).sort((a, b) => b.n - a.n)
     };
   }, [filteredEntries]);
   // 声の調子スコア（過去2週間の平均から算出する、100点満点の参考指標）。
@@ -4382,10 +4395,10 @@ export default function VocalTracker({ userId, userEmail }) {
       avgVoice: s.n ? s.voiceSum / s.n : null,
       avgEase: s.n ? s.easeSum / s.n : null
     }));
-    // 数字の作法: n≥3を平均表示の下限にする。それ未満は記録数だけを見せて、貯める動機にする。
+    // 統合実行ルートv4 §6-2: 件数の下限は displayGates.js の location.average に集約した。
     return {
-      confident: all.filter((s) => s.n >= 3).sort((a, b) => b.n - a.n),
-      lowN: all.filter((s) => s.n < 3).sort((a, b) => b.n - a.n)
+      confident: all.filter((s) => gateAllows("location.average", { n: s.n })).sort((a, b) => b.n - a.n),
+      lowN: all.filter((s) => !gateAllows("location.average", { n: s.n })).sort((a, b) => b.n - a.n)
     };
   }, [filteredEntries]);
 
@@ -4413,8 +4426,18 @@ export default function VocalTracker({ userId, userEmail }) {
         .sort((a, b) => b[1] - a[1])
         .slice(0, 5)
         .map(([tag, count]) => ({ tag, count }));
-    return { low: toSorted(lowCounts), lowTotal, high: toSorted(highCounts), highTotal };
-  }, [filteredEntries]);
+    // 統合実行ルートv4 §6-4: 気持ちタグの傾向も表示ゲートを経由する。
+    // 心の余裕が低かった日／高かった日のどちらかが少なすぎるうちは、比べて見せない。
+    const lowGate = evaluateGate("mentalTag.trend", { n: lowTotal }, t);
+    const highGate = evaluateGate("mentalTag.trend", { n: highTotal }, t);
+    return {
+      low: lowGate.passed ? toSorted(lowCounts) : [],
+      lowTotal,
+      high: highGate.passed ? toSorted(highCounts) : [],
+      highTotal,
+      gateMessage: (!lowGate.passed && !highGate.passed) ? lowGate.message : null
+    };
+  }, [filteredEntries, t]);
   // 休養方法・滞在地それぞれの中で、心の余裕の平均が最も高いものを1つずつ拾う（件数2件未満は参考にならないので除外）。
   const mentalTopGroups = useMemo(() => {
     const bestRest = restMethodStats.confident
@@ -4443,25 +4466,69 @@ export default function VocalTracker({ userId, userEmail }) {
 
   // 「食事」用: 喉のコンディションが良かった日／悪かった日それぞれで、よく食べていたものを集計する。
   // 診断や断定ではなく、記録上の傾向をそのまま見返せるようにするだけのもの。
-  const dietGoodBadFoodStats = useMemo(() => {
-    const goodCounts = {};
-    const badCounts = {};
-    let goodTotal = 0;
-    let badTotal = 0;
-    Object.values(filteredEntries).forEach((e) => {
-      if (typeof e.throatCondition !== "number") return;
-      const items = (e.meals || []).map((m) => (m.name || "").trim()).filter(Boolean);
-      if (e.throatCondition >= 4) {
-        goodTotal += 1;
-        items.forEach((name) => { goodCounts[name] = (goodCounts[name] || 0) + 1; });
-      } else if (e.throatCondition <= 2) {
-        badTotal += 1;
-        items.forEach((name) => { badCounts[name] = (badCounts[name] || 0) + 1; });
-      }
+  // ---- 統合実行ルートv4 §2 瞬間③ / P0-1: 食事の分析 ----
+  //
+  // ★以前ここは「調子が良かった日に食べたものの回数」と「悪かった日に食べたものの回数」を
+  //   並べているだけだった。その結果が「良い日も悪い日も白米」で、情報量がゼロなうえ、
+  //   矛盾した文章がそのまま出ていた。原因は3つあり、3つとも直す。
+  //
+  //   ① 回数で語っていた → 効果量（Hedges' g）で語る。
+  //      両方向に同じだけ出る食品は g が0付近になり、自動的に何も言わなくなる。
+  //   ② 同じ日どうしで比べていた → 「前夜に食べた → 翌日の声」に方向を固定する
+  //      （指標設計図.md §04）。同日だと「声が良かったからよく食べた」を拾ってしまう。
+  //   ③ 毎日食べる主食が交絡していた → ほぼ毎日食べているものは既定で比較から外す
+  //      （指標設計図.md §04 の「週の摂取頻度で層別」に対応する最小の実装）。
+  //      白米が両方に出ていたのは、まさにこれ。
+  const DIET_STAPLE_RATIO = 0.85; // これ以上の割合の日に登場する食品は「主食」とみなして除外
+  const dietFoodEffects = useMemo(() => {
+    const dates = Object.keys(filteredEntries).sort();
+    // 「前夜の食事 → 翌日の声」のペアだけを使う（連続した2日でなければ使わない）。
+    const pairs = [];
+    dates.forEach((date, i) => {
+      const nextDate = dates[i + 1];
+      if (!nextDate || addDays(date, 1) !== nextDate) return;
+      const nextEntry = filteredEntries[nextDate];
+      const throatV = typeof nextEntry.throatCondition === "number" ? nextEntry.throatCondition : null;
+      const voiceV = typeof nextEntry.voiceQuality === "number" ? nextEntry.voiceQuality : null;
+      if (throatV == null && voiceV == null) return;
+      const score = throatV != null && voiceV != null ? (throatV + voiceV) / 2 : (throatV ?? voiceV);
+      const foods = new Set((filteredEntries[date].meals || []).map((m) => (m.name || "").trim()).filter(Boolean));
+      pairs.push({ foods, score });
     });
-    const toSorted = (counts) =>
-      Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([name, count]) => ({ name, count }));
-    return { good: toSorted(goodCounts), goodTotal, bad: toSorted(badCounts), badTotal };
+    if (pairs.length === 0) return { effects: [], excludedStaples: [], pairCount: 0 };
+
+    const names = new Set();
+    pairs.forEach((p) => p.foods.forEach((n) => names.add(n)));
+
+    const excludedStaples = [];
+    const results = [];
+    names.forEach((name) => {
+      const group1 = [], group0 = [];
+      pairs.forEach((p) => (p.foods.has(name) ? group1 : group0).push(p.score));
+      // ③ ほぼ毎日食べているものは、比較そのものが成り立たないので外す。
+      if (group1.length / pairs.length >= DIET_STAPLE_RATIO) {
+        excludedStaples.push({ name, days: group1.length });
+        return;
+      }
+      const res = computeHedgesG(group1, group0);
+      if (!res) return;
+      results.push({ name, ...res, stars: starRatingForEffect(res) });
+    });
+
+    // 多くの食品を一斉に比べているので、文章にする前に多重比較を補正する（§6-1 ③）。
+    const pValues = results.map((r) => {
+      const J = 1 - 3 / (4 * (r.n1 + r.n0) - 9);
+      const tStat = (r.g / J) / Math.sqrt(1 / r.n1 + 1 / r.n0);
+      return tDistPValue(tStat, r.n1 + r.n0 - 2);
+    });
+    const passes = benjaminiHochberg(pValues, NARRATIVE_FDR_Q);
+    return {
+      effects: results
+        .map((r, i) => ({ ...r, fdrPass: passes[i] }))
+        .sort((a, b) => Math.abs(b.g) - Math.abs(a.g)),
+      excludedStaples: excludedStaples.sort((a, b) => b.days - a.days),
+      pairCount: pairs.length
+    };
   }, [filteredEntries]);
 
   // 1対1の相関ではなく、「タンパク質・カロリー・心の余裕・睡眠、複数の条件が同時に揃っているかどうか」で
@@ -4490,7 +4557,25 @@ export default function VocalTracker({ userId, userEmail }) {
     const usable = compositeConditionDaily.filter((d) => d.knownCount >= 3);
     const goodDays = usable.filter((d) => d.goodCount >= 3);
     const poorDays = usable.filter((d) => d.goodCount <= 1);
-    if (goodDays.length < 2 || poorDays.length < 2) return null;
+
+    // 統合実行ルートv4 §6-1: 文章で語るには、件数だけでなく効果量と多重比較も通すこと。
+    // 以前は「各群2日以上」だけで断定的な文を出していた（P0-1）。
+    // ここは1つの計画された比較なので、BH-FDR は p ≤ q（=0.10）と同値になる。
+    const throatOf = (group) => group.map((d) => d.throatCondition).filter((v) => typeof v === "number");
+    const effect = computeHedgesG(throatOf(goodDays), throatOf(poorDays));
+    let fdrPass = false;
+    if (effect) {
+      const J = 1 - 3 / (4 * (effect.n1 + effect.n0) - 9);
+      const tStat = (effect.g / J) / Math.sqrt(1 / effect.n1 + 1 / effect.n0);
+      fdrPass = tDistPValue(tStat, effect.n1 + effect.n0 - 2) <= NARRATIVE_FDR_Q;
+    }
+    const comboGate = evaluateGate("combo.narrative", {
+      n1: goodDays.length,
+      n0: poorDays.length,
+      effectSize: effect ? effect.g : null,
+      fdrPass
+    }, t);
+    if (!comboGate.passed) return { gateMessage: comboGate.message, sentences: [] };
 
     const avg = (arr, key) => {
       const vals = arr.map((d) => d[key]).filter((v) => typeof v === "number");
@@ -4531,27 +4616,29 @@ export default function VocalTracker({ userId, userEmail }) {
           .replace("{n}", bestRest.n)
       );
     }
-    const topGoodFood = dietGoodBadFoodStats.good[0] || null;
-    const topBadFood = dietGoodBadFoodStats.bad[0] || null;
-    if (topGoodFood) {
+    // 統合実行ルートv4 §2 瞬間③ / P0-1: 「良い日も悪い日も白米」が出ていた場所。
+    // 効果量・多重比較・前夜→翌日の方向・主食の除外を通ったものだけを文章にする。
+    // 条件を満たす食品が1つも無ければ、食事については何も言わない（それが正しい）。
+    const topDietEffect = dietFoodEffects.effects.find((r) =>
+      gateAllows("diet.narrative", { n1: r.n1, n0: r.n0, effectSize: r.g, fdrPass: r.fdrPass }));
+    if (topDietEffect) {
       sentences.push(
-        t("compositeGoodFoodSentence")
-          .replace("{n}", dietGoodBadFoodStats.goodTotal)
-          .replace("{food}", topGoodFood.name)
-          .replace("{count}", topGoodFood.count)
+        t("dietEffectSentence")
+          .replace("{food}", topDietEffect.name)
+          .replace("{n1}", topDietEffect.n1)
+          .replace("{n0}", topDietEffect.n0)
+          .replace("{direction}", t(topDietEffect.g >= 0 ? "dietDirectionBetter" : "dietDirectionWorse"))
+          .replace("{g}", topDietEffect.g.toFixed(2))
       );
     }
-    if (topBadFood) {
+    // 主食を外したことは黙っておかない。「白米はどこへ行った」に先回りして答える。
+    if (dietFoodEffects.excludedStaples.length > 0) {
       sentences.push(
-        t("compositeBadFoodSentence")
-          .replace("{n}", dietGoodBadFoodStats.badTotal)
-          .replace("{food}", topBadFood.name)
-          .replace("{count}", topBadFood.count)
+        t("dietStapleExcludedNote").replace("{foods}", dietFoodEffects.excludedStaples.slice(0, 3).map((x) => x.name).join("、"))
       );
     }
-
-    return sentences;
-  }, [compositeConditionDaily, mentalTopGroups, dietGoodBadFoodStats, t]);
+    return { gateMessage: null, sentences };
+  }, [compositeConditionDaily, mentalTopGroups, dietFoodEffects, t]);
   // ---- 各グループ横断のクロス分析用データ ここまで ----
 
   // ---- ここから、lavoce-指標設計図.md フェーズ1の3指標用データ ----
@@ -4803,7 +4890,8 @@ export default function VocalTracker({ userId, userEmail }) {
           if ((filteredEntries[d2].throatSymptoms || []).includes(b)) countAB += 1;
         }
         const pB = totalDays > 0 ? bBaseCounts[b] / totalDays : 0;
-        if (countA >= 5 && pB > 0) {
+        // 統合実行ルートv4 §6-2: 件数の下限はここに書かず、displayGates.js に集約する。
+        if (pB > 0 && gateAllows("symptom.cooccurrence", { days: totalDays, n: countA })) {
           const pBGivenA = countAB / countA;
           const lift = pBGivenA / pB;
           if (lift >= 1.5) chains.push({ a, b, pBGivenA, pB, lift, countA });
@@ -4825,7 +4913,10 @@ export default function VocalTracker({ userId, userEmail }) {
           if (hasA || hasB) union += 1;
           if (hasA && hasB) inter += 1;
         });
-        if (inter > 0 && union > 0) pairs.push({ a, b, jaccard: inter / union, count: inter });
+        // 統合実行ルートv4 §6-4: 1日重なっただけで「よく一緒に出る」と言わない。
+        if (union > 0 && gateAllows("symptom.cooccurrence", { days: symptomDatesSorted.length, n: inter })) {
+          pairs.push({ a, b, jaccard: inter / union, count: inter });
+        }
       }
     }
     return pairs.sort((x, y) => y.jaccard - x.jaccard).slice(0, 3);
@@ -5032,12 +5123,18 @@ export default function VocalTracker({ userId, userEmail }) {
     const variance = vals.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / (n - 1);
     return Math.sqrt(variance) || 0.8;
   }, [forecastResiduals]);
+  // 統合実行ルートv4 §6-4: 的中率は14件未満では出さない。
+  // 6件で「的中率33%」と出していたのが、信頼を損なっていた場所（P1-3）。
+  const forecastHitRateGate = useMemo(
+    () => evaluateGate("forecast.hitRate", { n: forecastResiduals.slice(-30).length }, t),
+    [forecastResiduals, t]
+  );
   const forecastHitRate = useMemo(() => {
+    if (!forecastHitRateGate.passed) return null;
     const recent = forecastResiduals.slice(-30);
-    if (recent.length === 0) return null;
     const hits = recent.filter((r) => Math.abs(r.residual) <= 0.5).length;
     return { rate: Math.round((hits / recent.length) * 100), n: recent.length };
-  }, [forecastResiduals]);
+  }, [forecastResiduals, forecastHitRateGate]);
   const todayForecast = useMemo(() => {
     const realToday = realTodayDate;
     const yDate = addDays(realToday, -1);
@@ -5574,7 +5671,17 @@ export default function VocalTracker({ userId, userEmail }) {
       if (!res) return null;
       return { key: habit.key, label: habit.label, ...res, stars: starRatingForEffect(res) };
     }).filter((r) => r != null && r.n1 >= 3 && r.n0 >= 3);
-    return results.sort((a, b) => Math.abs(b.g) - Math.abs(a.g));
+    // 統合実行ルートv4 §6-1 ③: 習慣を一斉に比べているので、文章にする前に多重比較を補正する。
+    // ★の付け方（指標設計図.md §04）はここでは変更していない。fdrPass を足すだけ。
+    const pValues = results.map((r) => {
+      const J = 1 - 3 / (4 * (r.n1 + r.n0) - 9);
+      const tStat = (r.g / J) / Math.sqrt(1 / r.n1 + 1 / r.n0);
+      return tDistPValue(tStat, r.n1 + r.n0 - 2);
+    });
+    const passes = benjaminiHochberg(pValues, NARRATIVE_FDR_Q);
+    return results
+      .map((r, i) => ({ ...r, fdrPass: passes[i] }))
+      .sort((a, b) => Math.abs(b.g) - Math.abs(a.g));
   }, [filteredEntries, HABIT_DEFINITIONS]);
   // ---- 効いた習慣ランキング 用データ ここまで ----
 
@@ -5655,7 +5762,12 @@ export default function VocalTracker({ userId, userEmail }) {
     const dates = Object.keys(acwrSeries).sort().slice(-28);
     return dates.map((d) => ({ date: d.slice(5), acwr: acwrSeries[d].acwr != null ? roundTo1(acwrSeries[d].acwr) : null }));
   }, [acwrSeries]);
+  // 統合実行ルートv4 §6-4 / P0-2: ACWRのパネルがロック中なのに、トップに警告だけが
+  // 出ていた。★ロックと警告は必ずこの同一フラグを見ること。ここで null にすることで、
+  // パネルも「今日の一言」も、同時にしか出られないようにする。
+  const acwrGate = useMemo(() => evaluateGate("acwr", { days: recordedDaysTotal }, t), [recordedDaysTotal, t]);
   const acwrToday = useMemo(() => {
+    if (!acwrGate.passed) return null;
     const dates = Object.keys(acwrSeries).sort();
     if (dates.length === 0) return null;
     const lastDate = dates[dates.length - 1];
@@ -5668,7 +5780,7 @@ export default function VocalTracker({ userId, userEmail }) {
     const restC = lambdaC * 0 + (1 - lambdaC) * latest.C;
     const restAcwr = restC > 0 ? restA / restC : null;
     return { date: lastDate, value: roundTo1(latest.acwr), zone: acwrZone(latest.acwr), restProjection: restAcwr != null ? roundTo1(restAcwr) : null, restZone: acwrZone(restAcwr) };
-  }, [acwrSeries]);
+  }, [acwrSeries, acwrGate]);
   // ---- 発声負荷バランス 用データ ここまで ----
 
   // ---- lavoce-記録項目の再設計v2.md §3.7: 稽古ノート（タグ別の自動添付データ） ----
@@ -6059,6 +6171,16 @@ export default function VocalTracker({ userId, userEmail }) {
       return { tag, ...res, stars: starRatingForEffect(res) };
     }).filter((r) => r != null && r.n1 >= 3 && r.n0 >= 3);
   }, [entries, hasRefluxCondition]);
+  // 統合実行ルートv4 §6-1 ③: 5つのタグを一斉に比べているので、文章にする前に多重比較を補正する。
+  const refluxDinnerTagEffectsWithFdr = useMemo(() => {
+    const pValues = refluxDinnerTagEffects.map((r) => {
+      const J = 1 - 3 / (4 * (r.n1 + r.n0) - 9);
+      const tStat = (r.g / J) / Math.sqrt(1 / r.n1 + 1 / r.n0);
+      return tDistPValue(tStat, r.n1 + r.n0 - 2);
+    });
+    const passes = benjaminiHochberg(pValues, NARRATIVE_FDR_Q);
+    return refluxDinnerTagEffects.map((r, i) => ({ ...r, fdrPass: passes[i] }));
+  }, [refluxDinnerTagEffects]);
   // ---- 逆流専用の分析 用データ ここまで ----
 
   // ---- lavoce-記録項目の再設計v2.md §3.5: エネルギー可用性（EA） 用データ ----
@@ -6128,7 +6250,9 @@ export default function VocalTracker({ userId, userEmail }) {
   // 上位1〜3件だけを「今週の発見」として分析タブの先頭に出す。既存のカード群自体は変更しない。
   const topDiscoveries = useMemo(() => {
     const candidates = [];
-    if (topLagFinding) {
+    // 統合実行ルートv4 §6-4: 「今日の一言」は、根拠となる指標がロック中でないかを
+    // 指標ごとに確認すること。ACWRで起きたことが、他の指標でも起きうるため。
+    if (topLagFinding && gateAllows("lag.narrative", { days: recordedDaysTotal, n: topLagFinding.n, rho: topLagFinding.rho, fdrPass: topLagFinding.significant })) {
       candidates.push({
         id: "lag-" + topLagFinding.variableKey,
         icon: "💡",
@@ -6137,7 +6261,8 @@ export default function VocalTracker({ userId, userEmail }) {
         priority: Math.min(1, Math.abs(topLagFinding.rho)) * 1.0 * 0.6
       });
     }
-    if (effectiveHabitRanking.length > 0 && effectiveHabitRanking[0].stars >= 2) {
+    if (effectiveHabitRanking.length > 0 && effectiveHabitRanking[0].stars >= 2
+        && gateAllows("habit.narrative", { days: recordedDaysTotal, n1: effectiveHabitRanking[0].n1, n0: effectiveHabitRanking[0].n0, effectSize: effectiveHabitRanking[0].g, fdrPass: effectiveHabitRanking[0].fdrPass })) {
       const top = effectiveHabitRanking[0];
       candidates.push({
         id: "habit-" + top.key,
@@ -6149,7 +6274,10 @@ export default function VocalTracker({ userId, userEmail }) {
     }
     if (roleLoadStats.confident.length > 0) {
       const divergent = [...roleLoadStats.confident].sort((a, b) => Math.abs(b.rankGap) - Math.abs(a.rankGap))[0];
-      if (divergent && Math.abs(divergent.rankGap) >= 2) {
+      // 役ごとの負荷には、まだ効果量も多重比較の補正も無い（順位の差だけ）。
+      // §6-1 に従い、3条件が揃わないものは文章にしない。効果量が入るまでは出ないのが正しい。
+      if (divergent && Math.abs(divergent.rankGap) >= 2
+          && gateAllows("role.narrative", { n1: divergent.count, n0: divergent.count })) {
         candidates.push({
           id: "role-" + divergent.name,
           icon: divergent.rankGap > 0 ? "⚠️" : "✨",
@@ -6170,9 +6298,10 @@ export default function VocalTracker({ userId, userEmail }) {
         priority: Math.min(1, Math.abs(acwrToday.value - 1.1) / 1.0) * 1.0 * 0.8
       });
     }
-    if (refluxDinnerTagEffects.length > 0) {
-      const top = refluxDinnerTagEffects.sort((a, b) => Math.abs(b.g) - Math.abs(a.g))[0];
-      if (top && top.stars >= 2) {
+    if (refluxDinnerTagEffectsWithFdr.length > 0) {
+      const top = [...refluxDinnerTagEffectsWithFdr].sort((a, b) => Math.abs(b.g) - Math.abs(a.g))[0];
+      if (top && top.stars >= 2
+          && gateAllows("reflux.narrative", { n1: top.n1, n0: top.n0, effectSize: top.g, fdrPass: top.fdrPass })) {
         candidates.push({
           id: "reflux-" + top.tag,
           icon: "💡",
@@ -6182,7 +6311,11 @@ export default function VocalTracker({ userId, userEmail }) {
         });
       }
     }
-    if (energyAvailabilityAnalysis && energyAvailabilityAnalysis.isLow) {
+    // §6-4: EAの警告も「今日の一言」に出るので、同じレイヤーで件数を確認する。
+    // 複合サインで判定した場合（method:"composite"）は EA の実測値が足りていないので、
+    // 警告としては出さない（パネル側の説明は従来どおり残る）。
+    if (energyAvailabilityAnalysis && energyAvailabilityAnalysis.isLow
+        && gateAllows("energyAvailability", { n: energyAvailabilityAnalysis.validEaCount })) {
       candidates.push({
         id: "ea-low",
         icon: "⚠️",
@@ -6192,7 +6325,7 @@ export default function VocalTracker({ userId, userEmail }) {
       });
     }
     return candidates.sort((a, b) => b.priority - a.priority).slice(0, 3);
-  }, [topLagFinding, effectiveHabitRanking, roleLoadStats, acwrToday, refluxDinnerTagEffects, energyAvailabilityAnalysis]);
+  }, [topLagFinding, effectiveHabitRanking, roleLoadStats, acwrToday, refluxDinnerTagEffectsWithFdr, energyAvailabilityAnalysis, recordedDaysTotal]);
   // ---- 発見カード 用データ ここまで ----
 
   // ---- lavoce-記録と分析の順番設計.md §5.3: 「この分析を強くする」カード 用データ ----
@@ -6594,18 +6727,34 @@ export default function VocalTracker({ userId, userEmail }) {
     setMyTeacherLinks(asStudent || []);
   }
   // 指導者プラン実装仕様 §5: 生徒一覧の各カードを開いたときに、その生徒の記録を取得する。
-  // RLS（teacher_student_linksでstatus='active'）により、権限が無い生徒のentriesは
-  // そもそもSupabase側で返ってこない。ここでは取得した行を、さらにshare_scopeでフィルタする
-  // （画面に何を出すかという表示レベルの制御。行を取得できることと、表示してよいことは別）。
+  //
+  // ★ここは以前 entries に対して select("*") をしていたが、それは誤りだった。
+  //   PostgreSQL の RLS は「行」単位の制御であり、「列」単位ではない。そのため
+  //   RLS が行を通した時点で、生徒が共有を許可していない項目（睡眠・心の余裕・
+  //   稽古ノート等）まで、先生のブラウザに届いていた。画面に描画していなかっただけで、
+  //   ネットワーク応答には含まれていた。
+  //
+  //   統合実行ルートv4 §11「RLS だけで守らない。サーバー側の canView() と二重にする」
+  //   に従い、列の絞り込みはサーバー側の SECURITY DEFINER 関数で行う。
+  //   関数の定義: supabase/migration_teacher_student_entries_rpc.sql
+  //   列と共有範囲の対応: lib/shareScope.js（SQL と1対1。テストでズレを検出する）
+  //
+  //   許可されていない列は null になって返ってくる。画面側の canViewHealth() は
+  //   「二重にする」ための2枚目として、これまでどおり残してある。
   async function fetchStudentEntries(studentId) {
     if (studentEntriesCache[studentId] || studentEntriesLoading[studentId]) return;
     setStudentEntriesLoading((s) => ({ ...s, [studentId]: true }));
     const supabase = createClient();
-    const { data, error } = await supabase.from("entries").select("*").eq("user_id", studentId).order("date", { ascending: false }).limit(60);
-    if (!error && data) {
+    const { data, error } = await supabase.rpc("get_student_entries", { p_student_id: studentId, p_limit: 60 });
+    if (error) {
+      // 取得できないときに entries への直接アクセスへ戻してはいけない（列が絞られなくなるため）。
+      console.error("生徒の記録を取得できませんでした。supabase/migration_teacher_student_entries_rpc.sql を実行済みか確認してください。", error);
+      setStudentEntriesFetchError((s) => ({ ...s, [studentId]: true }));
+    } else if (data) {
       const byDate = {};
       data.forEach((row) => { byDate[row.date] = rowToEntry(row); });
       setStudentEntriesCache((s) => ({ ...s, [studentId]: byDate }));
+      setStudentEntriesFetchError((s) => ({ ...s, [studentId]: false }));
     }
     setStudentEntriesLoading((s) => ({ ...s, [studentId]: false }));
   }
@@ -7700,11 +7849,13 @@ export default function VocalTracker({ userId, userEmail }) {
                             {todayForecast.topFactor.label}が{todayForecast.topFactor.contribution >= 0 ? "良い方向に" : "厳しい方向に"}いちばん効いています。
                           </p>
                         )}
-                        {forecastHitRate && (
+                        {forecastHitRate ? (
                           <p className="text-xs pt-2 border-t" style={{ borderColor: C.line, color: C.inkSoft }}>
                             的中率 {forecastHitRate.rate}%（直近{forecastHitRate.n}日）
                           </p>
-                        )}
+                        ) : forecastHitRateGate.message ? (
+                          <p className="text-xs pt-2 border-t" style={{ borderColor: C.line, color: C.inkSoft }}>{forecastHitRateGate.message}</p>
+                        ) : null}
                       </>
                     ) : (
                       <p className="text-sm" style={{ color: C.inkSoft }}>記録が増えると、ここに今日の声の予報が表示されます。</p>
@@ -9274,6 +9425,12 @@ export default function VocalTracker({ userId, userEmail }) {
                       <p className="text-xs" style={{ color: C.inkSoft }}>読み込み中…</p>
                     )}
 
+                    {studentEntriesFetchError[link.student_id] && (
+                      <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.rust }}>
+                        記録を読み込めませんでした。時間をおいて、もう一度お試しください。
+                      </p>
+                    )}
+
                     {summary && (
                       <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                         <p className="text-sm font-medium mb-1">記録日数（直近60日中）：{summary.totalDays}日</p>
@@ -9917,7 +10074,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   )}
                 </div>
 
-                {recordedDaysTotal >= 7 ? (
+                {gateAllows("deviation.card", { days: recordedDaysTotal }) ? (
                   deviationScore && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">コンディション偏差値</h3>
@@ -9936,15 +10093,33 @@ export default function VocalTracker({ userId, userEmail }) {
                             />
                           </svg>
                           <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                            <span className="ff-display italic" style={{ fontSize: "1.7rem", color: C.ink }}>{deviationScore.T}</span>
-                            <span className="text-xs" style={{ color: C.inkSoft }}>偏差値</span>
+                            {gateAllows("deviation.tScore", { n: deviationScore.n }) ? (
+                              <>
+                                <span className="ff-display italic" style={{ fontSize: "1.7rem", color: C.ink }}>{deviationScore.T}</span>
+                                <span className="text-xs" style={{ color: C.inkSoft }}>偏差値</span>
+                              </>
+                            ) : (
+                              <>
+                                <span className="ff-display italic" style={{ fontSize: "1.7rem", color: C.ink }}>{deviationScore.position}</span>
+                                <span className="text-xs" style={{ color: C.inkSoft }}>／{deviationScore.n}日中</span>
+                              </>
+                            )}
                           </div>
                         </div>
-                        <p className="text-xs" style={{ color: C.ink }}>
-                          今日は<strong>偏差値{deviationScore.T}</strong>。この{deviationScore.n}日間で上から{deviationScore.topPercentPct}%、
-                          <strong>{deviationScore.position}番目に良い日</strong>です。
-                        </p>
+                        {gateAllows("deviation.tScore", { n: deviationScore.n }) ? (
+                          <p className="text-xs" style={{ color: C.ink }}>
+                            今日は<strong>偏差値{deviationScore.T}</strong>。この{deviationScore.n}日間で上から{deviationScore.topPercentPct}%、
+                            <strong>{deviationScore.position}番目に良い日</strong>です。
+                          </p>
+                        ) : (
+                          <p className="text-xs" style={{ color: C.ink }}>
+                            この{deviationScore.n}日間で<strong>{deviationScore.position}番目に良い日</strong>です（上から{deviationScore.topPercentPct}%）。
+                          </p>
+                        )}
                       </div>
+                      {!gateAllows("deviation.tScore", { n: deviationScore.n }) && (
+                        <p className="text-xs mt-3" style={{ color: C.inkSoft }}>{t("gateRankOnlyNote")}</p>
+                      )}
                       <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
                         ※ 絶対値ではなく、自分自身の記録の中での相対的な位置を示す参考値です。
                       </p>
@@ -9955,7 +10130,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     title="コンディション偏差値"
                     teaser="今日が「自分比でどのくらい良い日か」を偏差値で見られます"
                     current={recordedDaysTotal}
-                    required={7}
+                    required={getGate("deviation.card").minDays}
                   />
                 )}
 
@@ -10292,12 +10467,14 @@ export default function VocalTracker({ userId, userEmail }) {
                             予測区間 {todayForecast.low.toFixed(1)}〜{todayForecast.high.toFixed(1)}
                           </p>
                         </div>
-                        {forecastHitRate && (
+                        {forecastHitRate ? (
                           <div className="text-right">
                             <div className="ff-mono" style={{ fontSize: "1.2rem", color: C.ink }}>{forecastHitRate.rate}%</div>
                             <p className="text-xs" style={{ color: C.inkSoft }}>直近{forecastHitRate.n}日の的中率</p>
                           </div>
-                        )}
+                        ) : forecastHitRateGate.message ? (
+                          <p className="text-xs text-right" style={{ color: C.inkSoft, maxWidth: 180 }}>{forecastHitRateGate.message}</p>
+                        ) : null}
                       </div>
                       <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                         {todayForecast.personalizationPct > 0
@@ -10345,10 +10522,11 @@ export default function VocalTracker({ userId, userEmail }) {
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteTimeOfDayTrend")}</p>
                   <div className="grid grid-cols-3 gap-2">
                     {timeOfDayStats.map(({ key, icon: SlotIcon, labelKey, avgThroat, avgVoice, n }) => {
-                      const best = timeOfDayStats
-                        .filter((s) => s.avgThroat != null)
-                        .reduce((a, b) => (a && a.avgThroat >= b.avgThroat ? a : b), null);
-                      const isBest = best && best.key === key && n > 0;
+                      // 統合実行ルートv4 §6-4: 「調子が良い傾向」バッジは、件数が
+                      // 足りている枠どうしでしか比べない。1件の記録で最上位にしない。
+                      const comparable = timeOfDayStats.filter((s) => s.avgThroat != null && gateAllows("timeOfDay.badge", { n: s.n }));
+                      const best = comparable.reduce((a, b) => (a && a.avgThroat >= b.avgThroat ? a : b), null);
+                      const isBest = !!best && best.key === key && comparable.length >= 2;
                       return (
                         <div key={key} className="rounded-xl p-3 text-center" style={{ background: C.paper, border: isBest ? `1.5px solid ${C.gold}` : "none" }}>
                           <div className="flex items-center justify-center gap-1 mb-1">
@@ -10926,7 +11104,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   )}
                 </div>
-                {(mentalTagStats.low.length > 0 || mentalTagStats.high.length > 0) && (
+                {(mentalTagStats.low.length > 0 || mentalTagStats.high.length > 0 || (mentalTagStats.gateMessage && (mentalTagStats.lowTotal + mentalTagStats.highTotal) > 0)) && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">{t("titleMentalTagStats")}</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -10960,6 +11138,9 @@ export default function VocalTracker({ userId, userEmail }) {
                             ))}
                           </div>
                         </div>
+                      )}
+                      {mentalTagStats.gateMessage && (
+                        <p className="text-xs" style={{ color: C.inkSoft }}>{mentalTagStats.gateMessage}</p>
                       )}
                     </div>
                   </div>
@@ -11217,7 +11398,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     </p>
                   </div>
                 )}
-                {recordedDaysTotal >= 28 ? (
+                {acwrGate.passed ? (
                   acwrToday && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">発声負荷バランス（ACWR）</h3>
@@ -11269,7 +11450,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     title="発声負荷バランス（ACWR）"
                     teaser="歌い込みすぎ・積み足りないを1つの数字で管理できます"
                     current={recordedDaysTotal}
-                    required={28}
+                    required={getGate("acwr").minDays}
                   />
                 )}
                 {recordedDaysTotal >= 7 ? (
@@ -11518,22 +11699,32 @@ export default function VocalTracker({ userId, userEmail }) {
                     </p>
                   </>
                 )}
-                {compositePatternInsight && compositePatternInsight.length > 0 && (
+                {compositePatternInsight && (compositePatternInsight.sentences.length > 0 || compositePatternInsight.gateMessage) && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">{t("titleCompositeInsight")}</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                       {t("noteCompositeInsight")}
                     </p>
-                    <div className="space-y-2">
-                      {compositePatternInsight.map((s, i) => (
-                        <p key={i} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
-                          {s}
+                    {/* 統合実行ルートv4 §6-3: 条件を満たさないときは、消すのではなく
+                        「あと◯で何が見えるか」に置き換える。 */}
+                    {compositePatternInsight.gateMessage ? (
+                      <p className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
+                        {compositePatternInsight.gateMessage}
+                      </p>
+                    ) : (
+                      <>
+                        <div className="space-y-2">
+                          {compositePatternInsight.sentences.map((s, i) => (
+                            <p key={i} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                              {s}
+                            </p>
+                          ))}
+                        </div>
+                        <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                          {t("noteCompositeInsightDisclaimer")}
                         </p>
-                      ))}
-                    </div>
-                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
-                      {t("noteCompositeInsightDisclaimer")}
-                    </p>
+                      </>
+                    )}
                   </div>
                 )}
 
