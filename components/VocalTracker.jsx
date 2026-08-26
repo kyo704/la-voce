@@ -269,6 +269,7 @@ const TABS = [
   { key: "today", labelKey: "tabToday", icon: Mic2 },
   { key: "garden", labelKey: "tabCharacter", icon: Home },
   { key: "history", labelKey: "tabHistory", icon: CalendarDays },
+  { key: "notes", labelKey: "tabNotes", icon: NotebookPen },
   { key: "analysis", labelKey: "tabAnalysis", icon: BarChart3 },
   { key: "questionnaires", labelKey: "tabQuestionnaires", icon: ClipboardList },
   { key: "clinicSummary", labelKey: "tabClinicSummary", icon: FileText },
@@ -2641,6 +2642,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [mergeInProgress, setMergeInProgress] = useState(false);
   const [mergeResult, setMergeResult] = useState("");
   const [showQuickRecord, setShowQuickRecord] = useState(false);
+  const [notesSubTab, setNotesSubTab] = useState("calendar");
   const [selectedDate, setSelectedDate] = useState(todayISOUTC());
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
@@ -3065,6 +3067,16 @@ export default function VocalTracker({ userId, userEmail }) {
       .slice(0, 10)
       .map((d) => ({ date: d, ...filteredEntries[d] }));
   }, [filteredEntries]);
+  // lavoce-画面レイアウト仕様_1.md §6.1: ノートタブの「メモ」は分析の期間セレクタと無関係に、
+  // 常に直近のメモを見せる（分析タブの期間設定次第で見えなくなるのを防ぐ）。
+  const voiceMemoEntriesAllTime = useMemo(() => {
+    return Object.keys(entries)
+      .filter((d) => (entries[d].voiceMemo || "").trim())
+      .sort()
+      .reverse()
+      .slice(0, 30)
+      .map((d) => ({ date: d, ...entries[d] }));
+  }, [entries]);
   const timeOfDayStats = useMemo(() => {
     const sums = {};
     VOICE_TIME_SLOTS.forEach(({ key }) => { sums[key] = { throatSum: 0, throatN: 0, voiceSum: 0, voiceN: 0 }; });
@@ -6402,7 +6414,21 @@ export default function VocalTracker({ userId, userEmail }) {
               />
             )}
 
-            {activeTab === "history" && (
+            {activeTab === "notes" && (
+              <div className="flex rounded-full border p-1 mb-4" style={{ borderColor: C.line }}>
+                <button onClick={() => setNotesSubTab("calendar")}
+                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                  style={{ background: notesSubTab === "calendar" ? C.curtain : "transparent", color: notesSubTab === "calendar" ? "#FFFDF8" : C.inkSoft }}>
+                  カレンダー
+                </button>
+                <button onClick={() => setNotesSubTab("memo")}
+                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                  style={{ background: notesSubTab === "memo" ? C.curtain : "transparent", color: notesSubTab === "memo" ? "#FFFDF8" : C.inkSoft }}>
+                  メモ
+                </button>
+              </div>
+            )}
+            {(activeTab === "history" || (activeTab === "notes" && notesSubTab === "calendar")) && (
               <div className="space-y-5">
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <div className="flex items-center justify-between mb-3">
@@ -6488,6 +6514,38 @@ export default function VocalTracker({ userId, userEmail }) {
                     );
                   })}
                 </div>
+              </div>
+            )}
+
+            {activeTab === "notes" && notesSubTab === "memo" && (
+              <div className="space-y-5">
+                {voiceMemoEntriesAllTime.length > 0 ? (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">{t("titleVoiceMemoReview")}</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteVoiceMemoReview")}</p>
+                    <div className="space-y-2">
+                      {voiceMemoEntriesAllTime.map((e) => (
+                        <div key={e.date} className="rounded-xl p-2.5 cursor-pointer" style={{ background: C.paper }}
+                          onClick={() => { setSelectedDate(e.date); setActiveTab("today"); }}>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs ff-mono" style={{ color: C.inkSoft }}>{e.date}</span>
+                            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: levelColor(e.throatCondition), color: "#FFFDF8" }}>
+                              喉{levelDynamic(e.throatCondition)}
+                            </span>
+                            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: levelColor(e.voiceQuality), color: "#FFFDF8" }}>
+                              声{levelDynamic(e.voiceQuality)}
+                            </span>
+                          </div>
+                          <p className="text-xs" style={{ color: C.ink }}>{e.voiceMemo}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm text-center py-10" style={{ color: C.inkSoft }}>
+                    「声・喉」欄の一口メモを書くと、ここに一覧が表示されます。
+                  </p>
+                )}
               </div>
             )}
 
