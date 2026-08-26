@@ -1,0 +1,12 @@
+# 依存関係とビルド成果物（リポジトリに入れない）
+node_modules/
+.next/
+out/
+
+# 環境変数（秘密鍵が入るため、絶対にコミットしないこと）
+.env
+.env.local
+.env*.local
+
+# macOS
+.DS_Store
