@@ -267,6 +267,7 @@ const FACTORS = [
 const TABS = [
   { key: "home", labelKey: "tabHome", icon: Sun },
   { key: "today", labelKey: "tabToday", icon: Mic2 },
+  { key: "garden", labelKey: "tabCharacter", icon: Home },
   { key: "analysis", labelKey: "tabAnalysis", icon: BarChart3 },
   { key: "notes", labelKey: "tabNotes", icon: NotebookPen },
   { key: "more", labelKey: "tabMore", icon: MoreHorizontal }
@@ -8374,11 +8375,6 @@ export default function VocalTracker({ userId, userEmail }) {
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>ツール</p>
                   <div className="space-y-1">
-                    <button type="button" onClick={() => setActiveTab("garden")}
-                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
-                      <span className="flex items-center gap-2"><Home size={16} style={{ color: C.gold }} />キャラクター育成</span>
-                      <span style={{ color: C.inkSoft }}>→</span>
-                    </button>
                     <button type="button" onClick={() => setActiveTab("questionnaires")}
                       className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
                       <span className="flex items-center gap-2"><ClipboardList size={16} style={{ color: C.gold }} />質問票</span>
