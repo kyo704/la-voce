@@ -1997,6 +1997,52 @@ function SectionCard({ title, icon: Icon, children, id, highlighted }) {
 // 記録日数がまだ解放条件に届いていないときに表示する、進捗つきの「予告編」カード。
 // 灰色の空箱ではなく、うっすらとしたプレビューと「あと◯日」の進捗バーを見せることで、
 // 記録を続ける動機にする（lavoce-指標設計図.md の「ロックの見せ方」参照）。
+// 指導者プラン実装仕様 §7: レッスン日程をカレンダーで見せる。既存の月次カレンダー（記録閲覧用）と
+// 同じ月送りの仕組み（monthMeta/shiftMonth）を再利用する。先生用ページ・レッスンモードの両方で使う。
+function LessonCalendar({ lessons, onDayClick, selectable }) {
+  const [viewMonth, setViewMonth] = useState(() => { const d = new Date(); return { year: d.getFullYear(), month: d.getMonth() }; });
+  const lessonsByDate = useMemo(() => {
+    const map = {};
+    (lessons || []).forEach((l) => {
+      const iso = toISODate(new Date(l.scheduled_at));
+      (map[iso] = map[iso] || []).push(l);
+    });
+    return map;
+  }, [lessons]);
+  const { daysInMonth, startWeekday } = monthMeta(viewMonth.year, viewMonth.month);
+  const cells = [];
+  for (let i = 0; i < startWeekday; i++) cells.push(null);
+  for (let d = 1; d <= daysInMonth; d++) {
+    const iso = `${viewMonth.year}-${String(viewMonth.month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    cells.push({ day: d, iso, lessons: lessonsByDate[iso] || [] });
+  }
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <button type="button" onClick={() => setViewMonth((m) => shiftMonth(m, -1))} style={{ color: C.inkSoft }}><ChevronLeft size={16} /></button>
+        <span className="text-sm font-medium">{viewMonth.year}年{viewMonth.month + 1}月</span>
+        <button type="button" onClick={() => setViewMonth((m) => shiftMonth(m, 1))} style={{ color: C.inkSoft }}><ChevronRight size={16} /></button>
+      </div>
+      <div className="grid grid-cols-7 gap-1 text-center">
+        {["日", "月", "火", "水", "木", "金", "土"].map((w) => (
+          <span key={w} className="text-xs" style={{ color: C.inkSoft }}>{w}</span>
+        ))}
+        {cells.map((c, i) => {
+          if (!c) return <div key={i} />;
+          const hasLesson = c.lessons.length > 0;
+          return (
+            <button key={i} type="button" disabled={!selectable}
+              onClick={() => onDayClick && onDayClick(c.iso)}
+              className="rounded-lg py-1.5 text-xs relative"
+              style={{ background: hasLesson ? C.curtain : "transparent", color: hasLesson ? "#FFFDF8" : C.ink }}>
+              {c.day}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 function LockedCard({ title, teaser, current, required }) {
   const remaining = Math.max(0, required - current);
   const pct = Math.min(100, Math.round((current / required) * 100));
@@ -3503,6 +3549,18 @@ export default function VocalTracker({ userId, userEmail }) {
   const [articleNotes, setArticleNotes] = useState({}); // articleId -> notes[]
   const [newArticleNoteDraft, setNewArticleNoteDraft] = useState("");
   const [learnSearchQuery, setLearnSearchQuery] = useState("");
+  // 作業指示-教室プラン §B・C・E: 教室プラン用のstate
+  const [myOrgs, setMyOrgs] = useState([]); // 自分がメンバーである組織一覧（role付き）
+  const [viewingOrgId, setViewingOrgId] = useState(null);
+  const [orgMembers, setOrgMembers] = useState({}); // orgId -> memberships[]
+  const [orgEnrollments, setOrgEnrollments] = useState({}); // orgId -> enrollments[]
+  const [orgAssignments, setOrgAssignments] = useState({}); // orgId -> assignments[]
+  const [orgLessons, setOrgLessons] = useState({}); // orgId -> lessons[]
+  const [generatedOrgInviteCode, setGeneratedOrgInviteCode] = useState(null);
+  const [orgInviteCodeInput, setOrgInviteCodeInput] = useState("");
+  const [orgInviteLookupError, setOrgInviteLookupError] = useState("");
+  const [pendingOrgInvitation, setPendingOrgInvitation] = useState(null);
+  const [myAllLessons, setMyAllLessons] = useState([]); // 生徒として、教室をまたいで統合した全レッスン
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
   const [saveError, setSaveError] = useState("");
@@ -3835,9 +3893,10 @@ export default function VocalTracker({ userId, userEmail }) {
   // この取得自体は全ユーザーに対して行う（表示するかどうかはUI側で絞る）。
   useEffect(() => {
     fetchTeacherLinks();
-    fetchMyUpcomingLessons();
+    fetchMyAllLessons();
     fetchMyRecentComments();
     fetchLearnState();
+    fetchMyOrgs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
@@ -5314,6 +5373,28 @@ export default function VocalTracker({ userId, userEmail }) {
   // ---- lavoce-職業別データと分析の確定仕様.md §4.1: 声楽家のパッサッジョの安定度 ----
   // 通過感の28日中央値とMADを見て、z<=-1.5が3日続いたら知らせる（頑健統計、指標設計図の
   // 「弱声の最高音」等と同じ考え方）。
+  // ---- 作業指示-教室プラン E-3: レッスンの重なり検出 ----
+  // 警告を出すだけ。自動でレッスンを動かさない・予約を拒否しない。
+  const lessonOverlaps = useMemo(() => {
+    const sorted = [...myAllLessons].sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
+    const overlapPairs = [];
+    for (let i = 0; i < sorted.length; i++) {
+      for (let j = i + 1; j < sorted.length; j++) {
+        const aStart = new Date(sorted[i].scheduled_at);
+        const aEnd = new Date(aStart.getTime() + (sorted[i].duration_minutes || 60) * 60000);
+        const bStart = new Date(sorted[j].scheduled_at);
+        if (bStart >= aEnd) break; // 時系列順なので、これ以降は重ならない
+        overlapPairs.push([sorted[i], sorted[j]]);
+      }
+    }
+    // 1日のレッスンが4件を超えた日（生徒本人にだけ、そっと知らせる）
+    const byDate = {};
+    sorted.forEach((l) => { const d = toISODate(new Date(l.scheduled_at)); (byDate[d] = byDate[d] || []).push(l); });
+    const busyDates = Object.entries(byDate).filter(([, list]) => list.length > 4).map(([d]) => d);
+    return { overlapPairs, busyDates };
+  }, [myAllLessons]);
+  // ---- レッスンの重なり検出 ここまで ----
+
   const passaggioStability = useMemo(() => {
     if (!(effectiveProfessions || []).includes("singer")) return { hasEnoughData: false, n: 0 };
     const sortedDates = Object.keys(entries).sort();
@@ -6334,7 +6415,19 @@ export default function VocalTracker({ userId, userEmail }) {
   }
   // 指導者プラン実装仕様 §3: 招待コードの発行（先生側）。1コード=1回限り、有効期限7日。
   // 紛らわしい文字（0/O/1/l/I）を除いた文字だけを使う。
+  // 作業指示-教室プラン: この先生がまだどの教室のownerでもなければ、solo組織を1つ作る。
+  // 既に持っていれば何もしない（何度呼んでも安全）。
+  async function ensureOwnOrg() {
+    const supabase = createClient();
+    const { data: existing } = await supabase.from("memberships").select("org_id").eq("user_id", userId).eq("role", "owner").maybeSingle();
+    if (existing) return existing.org_id;
+    const { data: org, error: orgError } = await supabase.from("organizations").insert({ name: "マイ教室", kind: "solo", created_by: userId }).select().single();
+    if (orgError || !org) { console.error("教室の作成に失敗しました:", orgError); return null; }
+    await supabase.from("memberships").insert({ org_id: org.id, user_id: userId, role: "owner" });
+    return org.id;
+  }
   async function handleGenerateTeacherInvite() {
+    await ensureOwnOrg();
     const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
     const code = Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
     const supabase = createClient();
@@ -6342,6 +6435,7 @@ export default function VocalTracker({ userId, userEmail }) {
     const { error } = await supabase.from("teacher_invitations").insert({ code, teacher_id: userId, expires_at: expiresAt });
     if (error) { console.error("招待コードの発行に失敗しました:", error); return; }
     setGeneratedInviteCode(code);
+    fetchMyOrgs();
   }
   // §3.1〜3.2: 生徒側が招待コードを入力すると、まず承認画面（公開範囲の選択）を表示する。
   // ここではまだ紐付けを作らない（「つながる」を押すまでは何も確定しない）。
@@ -6369,10 +6463,18 @@ export default function VocalTracker({ userId, userEmail }) {
     });
     if (linkError) { setInviteLookupError("連携に失敗しました。もう一度お試しください。"); return; }
     await supabase.from("teacher_invitations").update({ used_at: new Date().toISOString(), used_by_student_id: userId }).eq("code", pendingInvitation.code);
+    // 作業指示-教室プラン: この先生がownerである教室があれば、レッスン日程の運営面（在籍・担当）にも
+    // 自動的に組み込む。健康データの共有範囲(share_scope)には一切影響しない、別の仕組み。
+    const { data: ownerMembership } = await supabase.from("memberships").select("org_id").eq("user_id", pendingInvitation.teacher_id).eq("role", "owner").maybeSingle();
+    if (ownerMembership) {
+      await supabase.from("enrollments").upsert({ org_id: ownerMembership.org_id, student_id: userId, status: "active" }, { onConflict: "org_id,student_id" });
+      await supabase.from("assignments").insert({ org_id: ownerMembership.org_id, teacher_id: pendingInvitation.teacher_id, student_id: userId });
+    }
     setPendingInvitation(null);
     setInviteCodeInput("");
     setShareScopeDraft(DEFAULT_SHARE_SCOPE);
     fetchTeacherLinks();
+    fetchMyOrgs();
   }
   function handleDeclineInvitation() {
     setPendingInvitation(null);
@@ -6457,7 +6559,7 @@ export default function VocalTracker({ userId, userEmail }) {
   async function fetchMyUpcomingLessons() {
     const supabase = createClient();
     const { data } = await supabase.from("lessons").select("*, link:teacher_student_links!inner(student_id)")
-      .eq("link.student_id", userId).gte("scheduled_at", new Date().toISOString()).order("scheduled_at", { ascending: true }).limit(5);
+      .eq("link.student_id", userId).order("scheduled_at", { ascending: true }).limit(100);
     setMyUpcomingLessons(data || []);
   }
 
@@ -6545,6 +6647,109 @@ export default function VocalTracker({ userId, userEmail }) {
     await supabase.from("article_notes").update({ deleted_at: new Date().toISOString() }).eq("id", noteId);
     fetchArticleNotes(articleId);
   }
+
+  // ---- 作業指示-教室プラン §B・C・E ----
+  async function fetchMyOrgs() {
+    const supabase = createClient();
+    const { data } = await supabase.from("memberships").select("*, org:organizations(*)").eq("user_id", userId);
+    setMyOrgs(data || []);
+  }
+  async function fetchOrgDetail(orgId) {
+    const supabase = createClient();
+    const [{ data: members }, { data: enrollments }, { data: assignments }, { data: lessons }] = await Promise.all([
+      supabase.from("memberships").select("*").eq("org_id", orgId),
+      supabase.from("enrollments").select("*").eq("org_id", orgId).eq("status", "active"),
+      supabase.from("assignments").select("*").eq("org_id", orgId).is("ended_at", null),
+      supabase.from("lessons").select("*").eq("org_id", orgId).order("scheduled_at", { ascending: true })
+    ]);
+    setOrgMembers((prev) => ({ ...prev, [orgId]: members || [] }));
+    setOrgEnrollments((prev) => ({ ...prev, [orgId]: enrollments || [] }));
+    setOrgAssignments((prev) => ({ ...prev, [orgId]: assignments || [] }));
+    setOrgLessons((prev) => ({ ...prev, [orgId]: lessons || [] }));
+  }
+  // C-1: 先生を教室に招待する。招待コードの画面には必ず教室名を表示すること。
+  async function handleGenerateOrgInvite(orgId) {
+    const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+    const code = Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+    const supabase = createClient();
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    const { error } = await supabase.from("org_invitations").insert({ code, org_id: orgId, invited_by: userId, expires_at: expiresAt });
+    if (error) { console.error("教室招待コードの発行に失敗しました:", error); return; }
+    setGeneratedOrgInviteCode(code);
+  }
+  async function handleLookupOrgInviteCode(codeInput) {
+    setOrgInviteLookupError("");
+    const code = (codeInput || "").trim().toUpperCase();
+    if (!code) return;
+    const supabase = createClient();
+    const { data, error } = await supabase.from("org_invitations").select("*, org:organizations(name)").eq("code", code).maybeSingle();
+    if (error || !data) { setOrgInviteLookupError("コードが見つかりませんでした。"); return; }
+    if (data.used_at || new Date(data.expires_at) < new Date()) { setOrgInviteLookupError("このコードは使用済み、または期限切れです。"); return; }
+    setPendingOrgInvitation(data);
+  }
+  async function handleAcceptOrgInvitation() {
+    if (!pendingOrgInvitation) return;
+    const supabase = createClient();
+    const { error } = await supabase.from("memberships").insert({ org_id: pendingOrgInvitation.org_id, user_id: userId, role: "teacher" });
+    if (error) { setOrgInviteLookupError("参加に失敗しました。もう一度お試しください。"); return; }
+    await supabase.from("org_invitations").update({ used_at: new Date().toISOString(), used_by: userId }).eq("code", pendingOrgInvitation.code);
+    setPendingOrgInvitation(null);
+    setOrgInviteCodeInput("");
+    fetchMyOrgs();
+  }
+  // C-2: 役割の変更（最後のownerは降格・削除できない）
+  async function handleChangeRole(orgId, membershipId, targetUserId, newRole) {
+    const members = orgMembers[orgId] || [];
+    const owners = members.filter((m) => m.role === "owner");
+    if (owners.length === 1 && owners[0].user_id === targetUserId && newRole !== "owner") {
+      alert("最後のownerを降格することはできません。");
+      return;
+    }
+    const supabase = createClient();
+    await supabase.from("memberships").update({ role: newRole }).eq("id", membershipId);
+    fetchOrgDetail(orgId);
+  }
+  // C-2: 担当の割り当て・解除。担当が変わったら生徒に通知する（entry_commentsの仕組みは使わず、
+  // 今回はシンプルにログのみ。通知UIは今回のスコープ外とする）。
+  async function handleAssignTeacherToStudent(orgId, teacherId, studentId) {
+    const supabase = createClient();
+    const { error } = await supabase.from("assignments").insert({ org_id: orgId, teacher_id: teacherId, student_id: studentId });
+    if (error) { console.error("担当の割り当てに失敗しました:", error); return; }
+    fetchOrgDetail(orgId);
+  }
+  async function handleUnassignTeacher(orgId, assignmentId) {
+    const supabase = createClient();
+    await supabase.from("assignments").update({ ended_at: new Date().toISOString() }).eq("id", assignmentId);
+    fetchOrgDetail(orgId);
+  }
+  // E-1: 教室のレッスンを作成する。teacherNoteは先生専用（生徒に表示しない）。
+  async function handleCreateOrgLesson(orgId, teacherId, studentId, dateStr, timeStr, note, teacherNote) {
+    if (!dateStr) return;
+    const supabase = createClient();
+    const scheduledAt = new Date(`${dateStr}T${timeStr}:00`).toISOString();
+    const { error } = await supabase.from("lessons").insert({
+      org_id: orgId, teacher_id: teacherId, student_id: studentId,
+      scheduled_at: scheduledAt, note: note || "", teacher_note: teacherNote || "", created_by: userId
+    });
+    if (error) { console.error("レッスンの登録に失敗しました:", error); return; }
+    fetchOrgDetail(orgId);
+  }
+  // E-2: 生徒として、教室をまたいで統合した自分の全レッスンを取得する（既存の1:1レッスンと、
+  // 新しい教室ベースのレッスンの両方を1つに合わせる）。
+  async function fetchMyAllLessons() {
+    const supabase = createClient();
+    const [{ data: linkLessons }, { data: orgLessonsData }] = await Promise.all([
+      supabase.from("lessons").select("*, link:teacher_student_links!inner(student_id)").eq("link.student_id", userId).order("scheduled_at", { ascending: true }).limit(100),
+      supabase.from("lessons").select("*").eq("student_id", userId).order("scheduled_at", { ascending: true }).limit(100)
+    ]);
+    const combined = [...(linkLessons || []), ...(orgLessonsData || [])];
+    const seen = new Set();
+    const deduped = combined.filter((l) => (seen.has(l.id) ? false : (seen.add(l.id), true)));
+    deduped.sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
+    setMyAllLessons(deduped);
+    setMyUpcomingLessons(deduped); // 既存のレッスンモード表示もこの統合済みリストを使う
+  }
+  // ---- 作業指示-教室プラン ここまで ----
 
   async function handleGenerateLineLinkCode() {
     const code = Array.from({ length: 6 }, () => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)]).join("");
@@ -7089,12 +7294,15 @@ export default function VocalTracker({ userId, userEmail }) {
               <p className="text-xs mt-2 rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
                 🔒 先生には見えません：メンタルの日記・気持ちタグ・体重・食事の詳細・既往症
               </p>
-              {myUpcomingLessons.length > 0 && (
-                <p className="text-xs mt-2 rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
-                  次回のレッスン：{new Date(myUpcomingLessons[0].scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}
-                  {myUpcomingLessons[0].note ? `　${myUpcomingLessons[0].note}` : ""}
-                </p>
-              )}
+              {(() => {
+                const nextLesson = myUpcomingLessons.find((l) => new Date(l.scheduled_at) >= new Date());
+                return nextLesson && (
+                  <p className="text-xs mt-2 rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                    次回のレッスン：{new Date(nextLesson.scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                    {nextLesson.note ? `　${nextLesson.note}` : ""}
+                  </p>
+                );
+              })()}
               {myRecentComments.length > 0 && (
                 <div className="mt-2 space-y-1.5">
                   {myRecentComments.slice(0, 3).map((c) => (
@@ -7105,6 +7313,32 @@ export default function VocalTracker({ userId, userEmail }) {
                 </div>
               )}
             </div>
+
+            {myUpcomingLessons.length > 0 && (
+              <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                <h3 className="ff-display italic text-lg mb-1">レッスンカレンダー</h3>
+                <LessonCalendar lessons={myUpcomingLessons} selectable={false} />
+              </div>
+            )}
+
+            {lessonOverlaps.overlapPairs.filter(([a]) => new Date(a.scheduled_at) >= new Date()).length > 0 && (
+              <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                <h3 className="ff-display italic text-lg mb-2">⚠ レッスンの重なり</h3>
+                <div className="space-y-2">
+                  {lessonOverlaps.overlapPairs.filter(([a]) => new Date(a.scheduled_at) >= new Date()).map(([a, b], i) => (
+                    <p key={i} className="text-sm">
+                      {new Date(a.scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", weekday: "short", hour: "2-digit", minute: "2-digit" })}が2件重なっています
+                      {a.note && `　・${a.note}`}{b.note && `　・${b.note}`}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            )}
+            {lessonOverlaps.busyDates.filter((d) => d >= todayISO()).length > 0 && (
+              <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
+                {lessonOverlaps.busyDates.filter((d) => d >= todayISO())[0]}は、レッスンが4件を超えて入っています。
+              </p>
+            )}
 
             <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
               <h3 className="ff-display italic text-lg mb-1">直近4週の推移</h3>
@@ -8784,9 +9018,10 @@ export default function VocalTracker({ userId, userEmail }) {
 
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">レッスン日程</h3>
-                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>生徒にも表示されます。</p>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>生徒にも表示されます。日付をタップすると、下の欄にその日が入ります。</p>
+                      <LessonCalendar lessons={studentLessons} selectable onDayClick={(iso) => setNewLessonDate(iso)} />
                       {studentLessons.filter((l) => new Date(l.scheduled_at) >= new Date()).length > 0 && (
-                        <div className="space-y-1.5 mb-3">
+                        <div className="space-y-1.5 my-3">
                           {studentLessons.filter((l) => new Date(l.scheduled_at) >= new Date()).map((l) => (
                             <div key={l.id} className="rounded-lg p-2 flex items-center justify-between text-xs" style={{ background: C.paper }}>
                               <span>{new Date(l.scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}{l.note ? `　${l.note}` : ""}</span>
@@ -11520,6 +11755,7 @@ export default function VocalTracker({ userId, userEmail }) {
 
                 {/* §2〜§3: 先生機能。開発中のため、フラグを持つアカウントだけに表示する（鍵付き）。 */}
                 {(profile.teacher_beta_access || profile.is_admin) && (
+                  <>
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
                     <p className="text-sm font-medium mb-1">生徒を招待する（テスト機能）</p>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -11548,6 +11784,104 @@ export default function VocalTracker({ userId, userEmail }) {
                       </button>
                     )}
                   </div>
+
+                {/* 作業指示-教室プラン C-1: 他の先生の教室に参加する */}
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-sm font-medium mb-1">教室に参加する</p>
+                  {pendingOrgInvitation ? (
+                    <div>
+                      <p className="text-sm mb-2">「{pendingOrgInvitation.org.name}」に参加しますか？</p>
+                      <div className="flex gap-2">
+                        <button type="button" onClick={handleAcceptOrgInvitation}
+                          className="flex-1 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>参加する</button>
+                        <button type="button" onClick={() => setPendingOrgInvitation(null)}
+                          className="flex-1 py-2 rounded-full text-xs font-medium border" style={{ borderColor: C.line, color: C.inkSoft }}>今はやめる</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>他の先生の教室に、講師として参加できます。</p>
+                      <div className="flex gap-2">
+                        <input type="text" value={orgInviteCodeInput} onChange={(e) => setOrgInviteCodeInput(e.target.value)}
+                          placeholder="教室の招待コード" maxLength={8}
+                          className="flex-1 rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+                        <button type="button" onClick={() => handleLookupOrgInviteCode(orgInviteCodeInput)}
+                          className="px-4 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>確認する</button>
+                      </div>
+                      {orgInviteLookupError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{orgInviteLookupError}</p>}
+                    </>
+                  )}
+                </div>
+
+                {/* 作業指示-教室プラン C-2: 教室の管理（owner/adminのみ）。役割変更・担当割り当て */}
+                {myOrgs.filter((m) => m.role === "owner" || m.role === "admin").map((m) => {
+                  const orgId = m.org_id;
+                  const isViewing = viewingOrgId === orgId;
+                  const members = orgMembers[orgId] || [];
+                  const enrollments = orgEnrollments[orgId] || [];
+                  const assignments = orgAssignments[orgId] || [];
+                  return (
+                    <div key={orgId} className="rounded-2xl border overflow-hidden" style={{ background: C.card, borderColor: C.line }}>
+                      <button type="button" onClick={() => { setViewingOrgId(isViewing ? null : orgId); if (!isViewing) fetchOrgDetail(orgId); }}
+                        className="w-full text-left p-4 flex items-center justify-between">
+                        <span className="text-sm font-medium">{m.org.name}（{m.role === "owner" ? "オーナー" : "管理者"}）</span>
+                        <ChevronRight size={16} style={{ color: C.inkSoft, transform: isViewing ? "rotate(90deg)" : "none" }} />
+                      </button>
+                      {isViewing && (
+                        <div className="px-4 pb-4 space-y-3 border-t" style={{ borderColor: C.line }}>
+                          <div className="pt-3">
+                            <p className="text-xs font-medium mb-1.5">講師を招待する</p>
+                            {generatedOrgInviteCode ? (
+                              <p className="ff-mono text-center text-xl tracking-widest py-2 rounded-lg" style={{ background: C.paper, color: C.curtain }}>{generatedOrgInviteCode}</p>
+                            ) : (
+                              <button type="button" onClick={() => handleGenerateOrgInvite(orgId)}
+                                className="w-full py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>招待コードを発行する</button>
+                            )}
+                          </div>
+                          <div>
+                            <p className="text-xs font-medium mb-1.5">メンバー（{members.length}人）</p>
+                            {members.map((mem) => (
+                              <div key={mem.id} className="rounded-lg p-2 mb-1 flex items-center justify-between text-xs" style={{ background: C.paper }}>
+                                <span>{mem.user_id.slice(0, 8)}…</span>
+                                <select value={mem.role} onChange={(e) => handleChangeRole(orgId, mem.id, mem.user_id, e.target.value)}
+                                  className="rounded border text-xs p-1" style={{ borderColor: C.line, background: C.card }}>
+                                  <option value="owner">オーナー</option>
+                                  <option value="admin">管理者</option>
+                                  <option value="teacher">講師</option>
+                                </select>
+                              </div>
+                            ))}
+                          </div>
+                          <div>
+                            <p className="text-xs font-medium mb-1.5">在籍している生徒（{enrollments.length}人）と担当</p>
+                            {enrollments.map((en) => {
+                              const currentAssignments = assignments.filter((a) => a.student_id === en.student_id);
+                              return (
+                                <div key={en.id} className="rounded-lg p-2 mb-1.5" style={{ background: C.paper }}>
+                                  <p className="text-xs mb-1">生徒: {en.student_id.slice(0, 8)}…</p>
+                                  {currentAssignments.map((a) => (
+                                    <div key={a.id} className="flex items-center justify-between text-xs mb-1">
+                                      <span>担当: {a.teacher_id.slice(0, 8)}…</span>
+                                      <button type="button" onClick={() => handleUnassignTeacher(orgId, a.id)} className="underline" style={{ color: C.curtain }}>外す</button>
+                                    </div>
+                                  ))}
+                                  <select onChange={(e) => { if (e.target.value) { handleAssignTeacherToStudent(orgId, e.target.value, en.student_id); e.target.value = ""; } }}
+                                    className="w-full rounded border text-xs p-1 mt-1" style={{ borderColor: C.line, background: C.card }}>
+                                    <option value="">＋ 講師を割り当てる</option>
+                                    {members.filter((mm) => mm.role !== "owner" || true).map((mm) => (
+                                      <option key={mm.user_id} value={mm.user_id}>{mm.user_id.slice(0, 8)}…（{mm.role}）</option>
+                                    ))}
+                                  </select>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+                  </>
                 )}
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
