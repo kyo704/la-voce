@@ -1588,7 +1588,7 @@ function LockedCard({ title, teaser, current, required }) {
 
 // 音域到達マップ用の簡易ピアノ鍵盤。白鍵を等幅で並べ、黒鍵を近似位置に重ねる。
 // 下段の帯で「自己ベスト（グレー）」と「選んだ期間の到達範囲（色つき）」を示す。
-function PianoKeyboard({ lowMidi, highMidi, bestLow, bestHigh, currentLow, currentHigh, newRecord }) {
+function PianoKeyboard({ lowMidi, highMidi, bestLow, bestHigh, currentLow, currentHigh, newRecord, pianissimoMidi }) {
   const WHITE_OFFSET = { 0: 0, 2: 1, 4: 2, 5: 3, 7: 4, 9: 5, 11: 6 };
   const BLACK_OFFSET = { 1: 0.68, 3: 1.68, 6: 3.68, 8: 4.68, 10: 5.68 };
   const startOctave = Math.floor(lowMidi / 12);
@@ -1621,6 +1621,14 @@ function PianoKeyboard({ lowMidi, highMidi, bestLow, bestHigh, currentLow, curre
       )}
       {currentLow != null && currentHigh != null && (
         <div style={{ position: "absolute", left: `${xOf(currentLow) * whiteKeyPct}%`, width: `${Math.max(2, (xOf(currentHigh) + 1 - xOf(currentLow)) * whiteKeyPct)}%`, top: 64, height: 6, borderRadius: 3, background: newRecord ? C.gold : C.sage }} />
+      )}
+      {pianissimoMidi != null && (
+        <div title={`弱声の最高音: ${midiToNoteLabel(pianissimoMidi)}`}
+          style={{
+            position: "absolute", left: `${(xOf(pianissimoMidi) + 0.5) * whiteKeyPct}%`, top: 50,
+            width: 0, height: 0, transform: "translateX(-50%)",
+            borderLeft: "5px solid transparent", borderRight: "5px solid transparent", borderTop: `7px solid ${C.curtain}`
+          }} />
       )}
     </div>
   );
@@ -3250,6 +3258,36 @@ export default function VocalTracker({ userId, userEmail }) {
     if (!rangeThisPeriod || !personalBestRange) return false;
     return rangeThisPeriod.high > personalBestRange.high || rangeThisPeriod.low < personalBestRange.low;
   }, [rangeThisPeriod, personalBestRange]);
+  // 直近の弱声の最高音（音域マップのマーカー用）。最新の記録を優先。
+  const latestPianissimoMidi = useMemo(() => {
+    const dates = Object.keys(entries).sort().reverse();
+    for (const d of dates) {
+      const midi = noteToMidi(entries[d].pianissimoHighNote);
+      if (midi != null) return midi;
+    }
+    return null;
+  }, [entries]);
+  // lavoce-作業計画v2-構造変更の分離.md §3.4③: 平常値との比較。
+  // m=中央値, MAD=中央絶対偏差、z = 0.6745×(今日の値−m)/MAD。z≤−1.5が3日以上続いたら知らせる。
+  // むくみ・診断語は使わず「平常値よりN半音低い日がN日続いている」という事実提示に留める（§7.1）。
+  const pianissimoTrend = useMemo(() => {
+    const dates = Object.keys(entries).sort();
+    const vals = dates.map((d) => ({ date: d, midi: noteToMidi(entries[d].pianissimoHighNote) })).filter((x) => x.midi != null);
+    if (vals.length < 3) return null;
+    const last28 = vals.slice(-28);
+    const sortedMidis = last28.map((x) => x.midi).sort((a, b) => a - b);
+    const n = sortedMidis.length;
+    const m = n % 2 === 1 ? sortedMidis[(n - 1) / 2] : (sortedMidis[n / 2 - 1] + sortedMidis[n / 2]) / 2;
+    const absDevs = last28.map((x) => Math.abs(x.midi - m)).sort((a, b) => a - b);
+    const madRaw = absDevs.length % 2 === 1 ? absDevs[(absDevs.length - 1) / 2] : (absDevs[absDevs.length / 2 - 1] + absDevs[absDevs.length / 2]) / 2;
+    const mad = madRaw > 0 ? madRaw : 0.5;
+    const withZ = last28.map((x) => ({ ...x, z: 0.6745 * (x.midi - m) / mad }));
+    let streak = 0;
+    for (let i = withZ.length - 1; i >= 0; i--) {
+      if (withZ[i].z <= -1.5) streak += 1; else break;
+    }
+    return { median: m, latest: withZ[withZ.length - 1], streak, isLow: streak >= 3 };
+  }, [entries]);
   // 起き抜け最低音の30日移動平均（下がり続けていたら疲労蓄積の目安）
   const wakeLowNote30dTrend = useMemo(() => {
     const dates = Object.keys(entries).sort().slice(-30);
@@ -4855,7 +4893,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           発声の立ち上がりが遅れた（すぐに声が出なかった）
                         </label>
                         <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
-                          「ハッピーバースデー」の出だしや5音下降を、できるだけ小さな声（囁くような弱声）で歌い、無理なく出せた最高音を記録します。大きな声より先に、むくみの兆候が出やすいとされています。
+                          「ハッピーバースデー」の出だしや5音下降を、できるだけ小さな声（囁くような弱声）で歌い、無理なく出せた最高音を記録します。大きな声より先に変化が出やすいとされる指標です。
                         </p>
                       </div>
                       <p className="text-xs rounded-xl p-2.5 leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
@@ -6239,7 +6277,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                   <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("notePitchChartLegend")}</p>
                   <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
-                    点線（pp最高音）が下がり始めた日は、自覚より早く声帯のむくみが出ているサインかもしれません。
+                    点線（pp最高音）は、平常値と比べてどれくらい変化しているかを「音域到達マップ」でお知らせします。
                   </p>
                 </div>
 
@@ -6329,13 +6367,14 @@ export default function VocalTracker({ userId, userEmail }) {
                     {personalBestRange && rangeThisPeriod ? (
                       <>
                         <PianoKeyboard
-                          lowMidi={Math.min(personalBestRange.low, rangeThisPeriod.low) - 1}
-                          highMidi={Math.max(personalBestRange.high, rangeThisPeriod.high) + 1}
+                          lowMidi={Math.min(personalBestRange.low, rangeThisPeriod.low, latestPianissimoMidi ?? Infinity) - 1}
+                          highMidi={Math.max(personalBestRange.high, rangeThisPeriod.high, latestPianissimoMidi ?? -Infinity) + 1}
                           bestLow={personalBestRange.low}
                           bestHigh={personalBestRange.high}
                           currentLow={rangeThisPeriod.low}
                           currentHigh={rangeThisPeriod.high}
                           newRecord={isNewRecord}
+                          pianissimoMidi={latestPianissimoMidi}
                         />
                         <div className="flex flex-wrap items-center gap-3 mt-3">
                           <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
@@ -6346,6 +6385,12 @@ export default function VocalTracker({ userId, userEmail }) {
                             <span style={{ width: 14, height: 4, borderRadius: 2, background: isNewRecord ? C.gold : C.sage, display: "inline-block" }} />
                             選んだ期間（{midiToNoteLabel(rangeThisPeriod.low)}〜{midiToNoteLabel(rangeThisPeriod.high)}）
                           </span>
+                          {latestPianissimoMidi != null && (
+                            <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                              <span style={{ width: 0, height: 0, borderLeft: "5px solid transparent", borderRight: "5px solid transparent", borderTop: `7px solid ${C.curtain}`, display: "inline-block" }} />
+                              直近の弱声の最高音（{midiToNoteLabel(latestPianissimoMidi)}）
+                            </span>
+                          )}
                         </div>
                         <p className="text-xs mt-3" style={{ color: C.ink }}>
                           {isNewRecord
@@ -6354,6 +6399,11 @@ export default function VocalTracker({ userId, userEmail }) {
                               ? <>選んだ期間の音域は、自己ベストの<span className="ff-mono" style={{ fontWeight: 600 }}> {rangeFullnessPct}%</span>まで戻ってきています。</>
                               : null}
                         </p>
+                        {pianissimoTrend && pianissimoTrend.isLow && (
+                          <p className="text-xs mt-2 rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                            弱声の最高音が、あなたの平常値（直近28日の中央値 {midiToNoteLabel(pianissimoTrend.median)}）より低い日が{pianissimoTrend.streak}日続いています。
+                          </p>
+                        )}
                       </>
                     ) : (
                       <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
