@@ -214,6 +214,19 @@ const MENTAL_TAG_KEYS = {
   "特に理由なし・良い状態": "mentalTagGoodState"
 };
 
+// ============================================================
+// 【保留中のタスク】日別テンプレート（記録項目の再設計v2.md §4.4）
+//   状態：保留
+//   理由：本来は活動ブロックの複数化（実行順マスター Stage 5-2）に依存する
+//        （曲目複数化パッチ §2.0.1で、テンプレートは「1つ目の活動ブロックの
+//        種別を選ぶショートカット」に降格したため）
+//   【このアプリでの現状】上記の依存は既に解消済み。activities[]は本セッション
+//   序盤の曲目複数化パッチで既に複数化されている（下のACTIVITY_OPTIONS・
+//   newActivityBlock参照）。そのため着手自体は可能な状態にあるが、
+//   Stage4-2スコープ調整パッチの確定スコープにより今回は見送っている。
+//   再開：職業別の項目分岐（収録種別・叫びテイク数・番組名・セットリスト等、
+//        職業別設計.md）と合わせて実装するのが自然。
+// ============================================================
 const ACTIVITY_OPTIONS = [
   { key: "休養", icon: Moon, labelKey: "activityRest" },
   { key: "自主練習", icon: Music2, labelKey: "activitySelfPractice" },
@@ -284,6 +297,20 @@ const VOCAL_PROFESSIONS = ["singer", "announcer", "voice_actor", "pop_musical"];
 // 目的：診断済みの人には専用分析を出し、未診断の人には「疑い」を一切示さない（§7.1）。
 // lavoce-記録項目の再設計v2.md §3.7: 稽古ノートの目標タグ。振り返り画面で、
 // タグに対応する客観データを自動で並べるために使う。
+// lavoce-記録項目の再設計v2.md §4.3: 畳める項目グループの表示名の一覧。
+// lavoce-記録項目の再設計v2.md §4.3・Stage4-2スコープ調整パッチ §2.3: 畳める項目グループの一覧。
+// 【役割分担（Stage4-2パッチ §3）】既存ユーザーへの声かけは、この一覧を使った§4.3の「畳みますか？」
+// 提案（使用実績ベース、本人が選ぶ）が担当する。新規ユーザーへの初期状態は、同じfolded_groupsを
+// プリセット（handleCompleteOnboarding、§2.3-2.4）が担当する。両者は同じ状態を異なる入口から
+// 操作するだけで、二重管理にはならない。
+const FOLDABLE_GROUP_LABELS = {
+  meal_detail: "食事の詳細記録",
+  exercise_detail: "運動の詳細記録",
+  body_data: "体重・体脂肪率の記録",
+  environment: "気温・湿度の記録",
+  medication: "服薬タグの記録",
+  mental_detail: "気持ちタグ・日記"
+};
 const GOAL_TAGS = [
   { key: "soft_high", label: "弱声の高音" },
   { key: "high_range", label: "高音" },
@@ -1045,7 +1072,10 @@ function newVoiceEntry(date, context) {
     pitchChest: "",
     pitchSoftMax: "",
     symptoms: [],
-    note: ""
+    note: "",
+    // 稽古ノートの「息の支え」「音色の均一」タグに対応する任意項目（作業計画v2で「まだ記録機能がない」とされていたもの）
+    mptSeconds: null,
+    toneEvenness: null
   };
 }
 function updateVoiceCheckin(f, slotKey, field, value) {
@@ -2696,6 +2726,27 @@ function OnboardingFlow({ existingUser, onComplete }) {
 // lavoce-記録項目の再設計v2.md §3.1・画面レイアウト仕様_1 §4.4: 声の記録シート。
 // 1件の声の記録（時刻・場面・喉の身体感覚・声の出来・音名・症状・ひとこと）を編集する。
 function VoiceEntryEditor({ entry, onChange, onRemove, onClose, t }) {
+  const [mptRunning, setMptRunning] = useState(false);
+  const [mptElapsed, setMptElapsed] = useState(0);
+  const mptStartRef = useRef(null);
+  const mptIntervalRef = useRef(null);
+
+  function startMpt() {
+    setMptElapsed(0);
+    mptStartRef.current = Date.now();
+    setMptRunning(true);
+    mptIntervalRef.current = setInterval(() => {
+      setMptElapsed((Date.now() - mptStartRef.current) / 1000);
+    }, 100);
+  }
+  function stopMpt() {
+    clearInterval(mptIntervalRef.current);
+    const finalSeconds = Math.round(((Date.now() - mptStartRef.current) / 1000) * 10) / 10;
+    setMptRunning(false);
+    onChange({ mptSeconds: finalSeconds });
+  }
+  useEffect(() => () => clearInterval(mptIntervalRef.current), []);
+
   return (
     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
       <div className="flex items-center justify-between mb-3">
@@ -2750,6 +2801,32 @@ function VoiceEntryEditor({ entry, onChange, onRemove, onClose, t }) {
           onChange={(e) => onChange({ note: e.target.value })}
           className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
       </div>
+      <details className="mt-3 text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
+        <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>+詳しく記録する（最長発声時間・音色）</summary>
+        <div className="mt-3">
+          <p className="text-xs font-medium mb-1.5" style={{ color: C.ink }}>最長発声時間（MPT）</p>
+          <p className="text-xs mb-2">「あー」を、無理のない範囲で一息のばして測ります。「開始」を押して、声が止まったら「停止」を押してください。</p>
+          <div className="flex items-center gap-3">
+            <span className="ff-mono text-lg" style={{ color: C.ink }}>{mptRunning ? mptElapsed.toFixed(1) : (entry.mptSeconds != null ? entry.mptSeconds.toFixed(1) : "0.0")}秒</span>
+            {!mptRunning ? (
+              <button type="button" onClick={startMpt}
+                className="px-3.5 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                開始
+              </button>
+            ) : (
+              <button type="button" onClick={stopMpt}
+                className="px-3.5 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, border: `1px solid ${C.line}` }}>
+                停止
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="mt-3">
+          <DotSelector label="音色の均一感（音域全体で音色が揃っていたか）" icon={Music2}
+            value={entry.toneEvenness ?? 3} lowLabel="バラつく" highLabel="揃う"
+            onChange={(v) => onChange({ toneEvenness: v })} />
+        </div>
+      </details>
       <div className="flex gap-2 mt-3">
         <button type="button" onClick={onClose}
           className="flex-1 py-2 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
@@ -2923,6 +3000,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [practiceGoalTagsDraft, setPracticeGoalTagsDraft] = useState([]);
   const [practiceReviewDraft, setPracticeReviewDraft] = useState("");
   const [dismissedFoldSuggestions, setDismissedFoldSuggestions] = useState([]);
+  const [showFieldGroupManager, setShowFieldGroupManager] = useState(false);
   const [selectedDate, setSelectedDate] = useState(todayISOUTC());
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
@@ -3707,9 +3785,24 @@ export default function VocalTracker({ userId, userEmail }) {
     if (dates30.length < 20) return []; // 直近30日のうち記録がまばらな人には提案しない
     const folded = profile.folded_groups || [];
     const suggestions = [];
-    const usedExercise = dates30.some((d) => (entries[d].exercises || []).length > 0 || (typeof entries[d].exerciseLevel === "number" && entries[d].exerciseLevel > 0));
-    if (!usedExercise && !folded.includes("exercise_detail")) {
+    // バグ修正: 簡易3択（exerciseLevel）の利用を「詳細記録を使った」と誤判定していたため、
+    // 簡易3択だけ使い続けている人に永遠に提案が出なかった。判定を「詳細記録（exercises配列）を
+    // 使ったか」に絞る。
+    const usedExerciseDetail = dates30.some((d) => (entries[d].exercises || []).length > 0);
+    if (!usedExerciseDetail && !folded.includes("exercise_detail")) {
       suggestions.push({ key: "exercise_detail", label: "運動の詳細記録（種目・時間・強度）" });
+    }
+    const usedMealDetail = dates30.some((d) => (entries[d].meals || []).length > 0);
+    if (!usedMealDetail && !folded.includes("meal_detail")) {
+      suggestions.push({ key: "meal_detail", label: "食事の詳細記録（食品別のPFC）" });
+    }
+    const usedBodyData = dates30.some((d) => typeof entries[d].weightKg === "number" || typeof entries[d].bodyFatPct === "number");
+    if (!usedBodyData && !folded.includes("body_data")) {
+      suggestions.push({ key: "body_data", label: "体重・体脂肪率の記録" });
+    }
+    const usedEnvironment = dates30.some((d) => typeof entries[d].temperature === "number" || typeof entries[d].humidity === "number");
+    if (!usedEnvironment && !folded.includes("environment")) {
+      suggestions.push({ key: "environment", label: "気温・湿度の記録" });
     }
     const usedMentalDetail = dates30.some((d) => (entries[d].mentalTags || []).length > 0 || (entries[d].mentalReason || "").trim());
     if (!usedMentalDetail && !folded.includes("mental_detail")) {
@@ -4498,8 +4591,36 @@ export default function VocalTracker({ userId, userEmail }) {
             summary: `直近: ${vals[vals.length - 1].acwr}`
           });
         }
+      } else if (tag === "breath_support") {
+        // その日の声の記録のうち、MPTを測った中でいちばん長かった値を採用する。
+        const vals = dates28.map((d) => {
+          const mpts = ((entries[d].voiceEntries || [])).map((v) => v.mptSeconds).filter((v) => typeof v === "number");
+          return mpts.length > 0 ? { date: d, mpt: Math.max(...mpts) } : null;
+        }).filter(Boolean);
+        if (vals.length >= 2) {
+          const first = vals[0], last = vals[vals.length - 1];
+          metrics.push({
+            tag, label: "最長発声時間（MPT）の推移", data: vals.map((v) => ({ date: v.date.slice(5), value: v.mpt })),
+            summary: `${first.mpt.toFixed(1)}秒 → ${last.mpt.toFixed(1)}秒`
+          });
+        } else {
+          metrics.push({ tag, label: "最長発声時間（MPT）", data: null, summary: null, needsMoreData: true });
+        }
+      } else if (tag === "evenness") {
+        const vals = dates28.map((d) => {
+          const scores = ((entries[d].voiceEntries || [])).map((v) => v.toneEvenness).filter((v) => typeof v === "number");
+          return scores.length > 0 ? { date: d, score: scores.reduce((a, b) => a + b, 0) / scores.length } : null;
+        }).filter(Boolean);
+        if (vals.length >= 2) {
+          const first = vals[0], last = vals[vals.length - 1];
+          metrics.push({
+            tag, label: "音色の均一感の推移", data: vals.map((v) => ({ date: v.date.slice(5), value: v.score })),
+            summary: `${first.score.toFixed(1)} → ${last.score.toFixed(1)}（5点満点）`
+          });
+        } else {
+          metrics.push({ tag, label: "音色の均一感", data: null, summary: null, needsMoreData: true });
+        }
       } else {
-        // breath_support（MPT）・evenness は、対応する記録項目がまだ無いため準備中とする。
         metrics.push({ tag, label: (GOAL_TAGS.find((g) => g.key === tag) || {}).label, data: null, summary: null, notYetAvailable: true });
       }
     });
@@ -5089,14 +5210,37 @@ export default function VocalTracker({ userId, userEmail }) {
   }
 
   // lavoce-画面レイアウト仕様_1.md §9: オンボーディング完了時に、同意日時・プロフィールをまとめて保存する。
+  // lavoce-記録項目の再設計v2.md §4.1・Stage4-2スコープ調整パッチ §2: プリセット。
+  // 【対象】既存ユーザーには一切適用しない（onboarding_completedが既にtrueのため、この関数の
+  // 分岐自体を通らない）。全新規ユーザーが対象（パッチ§2.1: 新規ユーザーには壊れる既存状態がなく、
+  // 「戻すUI」で解消済みのため、対象を絞る追加の安全効果はない）。
+  // 【既定】声の記録・睡眠・活動・心の余裕だけを開き、それ以外（食事・運動の詳細、体重・体脂肪率、
+  // 環境、服薬、気持ちタグ）は畳んでおく（パッチ§2.3）。最初の記録画面を10項目前後にする。
+  // 【差分方式】ここにオンボーディング回答による差分を足す。ゼロから組み立てない（パッチ§2.4）。
+  const DEFAULT_PRESET_FOLDED_GROUPS = ["meal_detail", "exercise_detail", "body_data", "environment", "medication", "mental_detail"];
+  function computePresetFoldedGroups(goalFocus, professions) {
+    let folded = [...DEFAULT_PRESET_FOLDED_GROUPS];
+    if (goalFocus === "train") folded = folded.filter((g) => g !== "body_data");
+    if (goalFocus === "peak") folded = folded.filter((g) => g !== "environment");
+    // goalFocus === 'log_only' は既定のまま（何も足さない）
+    // 職業に「声楽家」が含まれる場合の曲目欄の扱いは、現状すべての活動ブロックで常に表示されており、
+    // 個別に畳む対象になっていないため、ここでの差分は対象外（パッチ§2.4の該当項目はまだ実装なし）。
+    return folded;
+  }
   async function handleCompleteOnboarding(patch) {
+    const finalPatch = { ...patch };
+    // patch.goal_focusは新規ユーザーのオンボーディング完了時のみ渡される
+    // （既存ユーザーは同意画面だけを通るため、goal_focusを含むpatchはこの関数に来ない）。
+    if (patch.goal_focus) {
+      finalPatch.folded_groups = computePresetFoldedGroups(patch.goal_focus, patch.professions || []);
+    }
     const supabase = createClient();
-    const { error } = await supabase.from("profiles").update(patch).eq("id", userId);
+    const { error } = await supabase.from("profiles").update(finalPatch).eq("id", userId);
     if (error) {
       console.error("オンボーディングの保存に失敗しました:", error);
       return;
     }
-    setProfile((p) => ({ ...p, ...patch }));
+    setProfile((p) => ({ ...p, ...finalPatch }));
   }
 
   // lavoce-記録項目の再設計v2.md §3.7: 稽古ノートの目標を設定・更新する。目標は常に1つだけ。
@@ -5122,6 +5266,13 @@ export default function VocalTracker({ userId, userEmail }) {
   // 一時的な非表示のみとし、DBには保存しない（毎月の見直しのたびに、また使われていなければ提案し直す）。
   async function handleFoldGroup(key) {
     const updated = [...(profile.folded_groups || []), key];
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update({ folded_groups: updated }).eq("id", userId);
+    if (error) { console.error("項目の設定保存に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, folded_groups: updated }));
+  }
+  async function handleUnfoldGroup(key) {
+    const updated = (profile.folded_groups || []).filter((k) => k !== key);
     const supabase = createClient();
     const { error } = await supabase.from("profiles").update({ folded_groups: updated }).eq("id", userId);
     if (error) { console.error("項目の設定保存に失敗しました:", error); return; }
@@ -6205,10 +6356,14 @@ export default function VocalTracker({ userId, userEmail }) {
                         </label>
                       </div>
 
-                      <NumberField label={t("labelTodayWeight")} icon={Scale} value={formData.weightKg ?? ""} step={0.1} min={20} max={200} suffix="kg"
-                        onChange={(v) => setFormData((f) => ({ ...f, weightKg: v }))} />
-                      <NumberField label="体脂肪率（体組成計をお持ちの場合・任意）" icon={Scale} value={formData.bodyFatPct ?? ""} step={0.1} min={3} max={60} suffix="%"
-                        onChange={(v) => setFormData((f) => ({ ...f, bodyFatPct: v }))} />
+                      {!(profile.folded_groups || []).includes("body_data") && (
+                        <>
+                          <NumberField label={t("labelTodayWeight")} icon={Scale} value={formData.weightKg ?? ""} step={0.1} min={20} max={200} suffix="kg"
+                            onChange={(v) => setFormData((f) => ({ ...f, weightKg: v }))} />
+                          <NumberField label="体脂肪率（体組成計をお持ちの場合・任意）" icon={Scale} value={formData.bodyFatPct ?? ""} step={0.1} min={3} max={60} suffix="%"
+                            onChange={(v) => setFormData((f) => ({ ...f, bodyFatPct: v }))} />
+                        </>
+                      )}
 
                       {profile.track_cycle && (
                         <div className="rounded-xl p-3" style={{ background: C.paper }}>
@@ -6396,10 +6551,12 @@ export default function VocalTracker({ userId, userEmail }) {
                               ))}
                             </div>
                           </div>
-                          <button type="button" onClick={() => setShowMealDetail(true)}
-                            className="text-xs underline" style={{ color: C.inkSoft }}>
-                            +食品ごとに詳しく記録する
-                          </button>
+                          {!(profile.folded_groups || []).includes("meal_detail") && (
+                            <button type="button" onClick={() => setShowMealDetail(true)}
+                              className="text-xs underline" style={{ color: C.inkSoft }}>
+                              +食品ごとに詳しく記録する
+                            </button>
+                          )}
                         </>
                       ) : (
                         <>
@@ -6529,24 +6686,28 @@ export default function VocalTracker({ userId, userEmail }) {
                             className="w-full text-sm bg-transparent border-none" />
                         </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <NumberField label={t("labelTemperature")} icon={Thermometer} value={formData.temperature ?? ""} step={1} min={-30} max={50} suffix="℃"
-                          onChange={(v) => setFormData((f) => ({ ...f, temperature: v }))} />
-                        <NumberField label={t("labelHumidity")} icon={Wind} value={formData.humidity ?? ""} step={5} min={0} max={100} suffix="%"
-                          onChange={(v) => setFormData((f) => ({ ...f, humidity: v }))} />
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium block mb-1.5">{t("labelWeather")}</label>
-                        <select
-                          value={formData.weather}
-                          onChange={(e) => setFormData((f) => ({ ...f, weather: e.target.value }))}
-                          className="w-full rounded-lg border p-2 text-sm"
-                          style={{ borderColor: C.line, background: C.paper, color: C.ink }}
-                        >
-                          <option value="">{t("labelSelectPlaceholder")}</option>
-                          {WEATHER_OPTIONS.map((w) => <option key={w} value={w}>{t(WEATHER_KEYS[w])}</option>)}
-                        </select>
-                      </div>
+                      {!(profile.folded_groups || []).includes("environment") && (
+                        <>
+                          <div className="grid grid-cols-2 gap-4">
+                            <NumberField label={t("labelTemperature")} icon={Thermometer} value={formData.temperature ?? ""} step={1} min={-30} max={50} suffix="℃"
+                              onChange={(v) => setFormData((f) => ({ ...f, temperature: v }))} />
+                            <NumberField label={t("labelHumidity")} icon={Wind} value={formData.humidity ?? ""} step={5} min={0} max={100} suffix="%"
+                              onChange={(v) => setFormData((f) => ({ ...f, humidity: v }))} />
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium block mb-1.5">{t("labelWeather")}</label>
+                            <select
+                              value={formData.weather}
+                              onChange={(e) => setFormData((f) => ({ ...f, weather: e.target.value }))}
+                              className="w-full rounded-lg border p-2 text-sm"
+                              style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                            >
+                              <option value="">{t("labelSelectPlaceholder")}</option>
+                              {WEATHER_OPTIONS.map((w) => <option key={w} value={w}>{t(WEATHER_KEYS[w])}</option>)}
+                            </select>
+                          </div>
+                        </>
+                      )}
 
                       <div className="rounded-xl p-3" style={{ background: C.paper }}>
                         <div className="flex items-center gap-1.5 mb-1.5">
@@ -8939,6 +9100,56 @@ export default function VocalTracker({ userId, userEmail }) {
                         </div>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                {(profile.folded_groups || []).length > 0 && (
+                  <p className="text-xs px-1" style={{ color: C.inkSoft }}>
+                    現在畳んでいる項目: {(profile.folded_groups || []).map((k) => FOLDABLE_GROUP_LABELS[k] || k).join("・")}
+                  </p>
+                )}
+                <button type="button" onClick={() => setShowFieldGroupManager(true)}
+                  className="w-full rounded-2xl border-2 border-dashed py-3 text-sm font-medium flex items-center justify-center gap-1.5"
+                  style={{ borderColor: C.line, color: C.inkSoft }}>
+                  <Plus size={14} />記録する項目を増やす
+                </button>
+                {showFieldGroupManager && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-sm font-medium">記録する項目</p>
+                      <button type="button" onClick={() => setShowFieldGroupManager(false)} className="w-7 h-7 rounded-full flex items-center justify-center" style={{ color: C.inkSoft }}>
+                        <X size={16} />
+                      </button>
+                    </div>
+                    <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>表示中</p>
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {Object.keys(FOLDABLE_GROUP_LABELS).filter((key) => !(profile.folded_groups || []).includes(key)).map((key) => (
+                        <button key={key} type="button" onClick={() => handleFoldGroup(key)}
+                          className="px-3 py-1.5 rounded-full text-xs font-medium border flex items-center gap-1.5"
+                          style={{ borderColor: C.line, color: C.ink, background: C.paper }}>
+                          <Check size={12} />{FOLDABLE_GROUP_LABELS[key]}
+                        </button>
+                      ))}
+                      {Object.keys(FOLDABLE_GROUP_LABELS).filter((key) => !(profile.folded_groups || []).includes(key)).length === 0 && (
+                        <p className="text-xs" style={{ color: C.inkSoft }}>すべて畳んでいます。</p>
+                      )}
+                    </div>
+                    <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>畳んでいる</p>
+                    <div className="flex flex-wrap gap-2">
+                      {(profile.folded_groups || []).map((key) => (
+                        <button key={key} type="button" onClick={() => handleUnfoldGroup(key)}
+                          className="px-3 py-1.5 rounded-full text-xs font-medium border flex items-center gap-1.5"
+                          style={{ borderColor: C.line, color: C.inkSoft, background: C.paper }}>
+                          <Plus size={12} />{FOLDABLE_GROUP_LABELS[key]}
+                        </button>
+                      ))}
+                      {(profile.folded_groups || []).length === 0 && (
+                        <p className="text-xs" style={{ color: C.inkSoft }}>畳んでいる項目はありません。</p>
+                      )}
+                    </div>
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      変更は「今日の記録」タブに即座に反映されます。畳んでも、過去に入力した値が消えることはありません。
+                    </p>
                   </div>
                 )}
 
