@@ -3388,6 +3388,14 @@ export default function VocalTracker({ userId, userEmail }) {
   const [viewingStudentLink, setViewingStudentLink] = useState(null); // 生徒個別ページ(§6)で開いている生徒
   const [teacherNoteDraft, setTeacherNoteDraft] = useState("");
   const [teacherNoteSaveStatus, setTeacherNoteSaveStatus] = useState("idle");
+  const [studentLessons, setStudentLessons] = useState([]); // 個別ページで見ている生徒のレッスン日程
+  const [newLessonDate, setNewLessonDate] = useState("");
+  const [newLessonTime, setNewLessonTime] = useState("19:00");
+  const [newLessonNote, setNewLessonNote] = useState("");
+  const [myUpcomingLessons, setMyUpcomingLessons] = useState([]); // 自分が生徒として持つ、直近のレッスン予定
+  const [studentComments, setStudentComments] = useState({}); // date -> comments[]（個別ページで見ている生徒）
+  const [newCommentDraft, setNewCommentDraft] = useState("");
+  const [myRecentComments, setMyRecentComments] = useState([]); // 自分が生徒として受け取った、直近のコメント
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
   const [saveError, setSaveError] = useState("");
@@ -3679,6 +3687,8 @@ export default function VocalTracker({ userId, userEmail }) {
   // この取得自体は全ユーザーに対して行う（表示するかどうかはUI側で絞る）。
   useEffect(() => {
     fetchTeacherLinks();
+    fetchMyUpcomingLessons();
+    fetchMyRecentComments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
@@ -6274,6 +6284,58 @@ export default function VocalTracker({ userId, userEmail }) {
     setTimeout(() => setTeacherNoteSaveStatus("idle"), 1800);
   }
 
+  // 指導者プラン実装仕様 §7: レッスン日程。先生・生徒どちらも見られる（teacher_notesとは違い秘匿しない）。
+  async function fetchLessonsForLink(linkId) {
+    const supabase = createClient();
+    const { data } = await supabase.from("lessons").select("*").eq("link_id", linkId).order("scheduled_at", { ascending: true });
+    setStudentLessons(data || []);
+  }
+  async function handleCreateLesson(linkId) {
+    if (!newLessonDate) return;
+    const supabase = createClient();
+    const scheduledAt = new Date(`${newLessonDate}T${newLessonTime}:00`).toISOString();
+    const { error } = await supabase.from("lessons").insert({ link_id: linkId, scheduled_at: scheduledAt, note: newLessonNote, created_by: userId });
+    if (error) { console.error("レッスン日程の登録に失敗しました:", error); return; }
+    setNewLessonDate(""); setNewLessonNote("");
+    fetchLessonsForLink(linkId);
+  }
+  async function handleDeleteLesson(lessonId, linkId) {
+    const supabase = createClient();
+    await supabase.from("lessons").delete().eq("id", lessonId);
+    fetchLessonsForLink(linkId);
+  }
+  // 生徒として、自分の直近のレッスン予定を取得する（複数の先生分をまとめて）。
+  async function fetchMyUpcomingLessons() {
+    const supabase = createClient();
+    const { data } = await supabase.from("lessons").select("*, link:teacher_student_links!inner(student_id)")
+      .eq("link.student_id", userId).gte("scheduled_at", new Date().toISOString()).order("scheduled_at", { ascending: true }).limit(5);
+    setMyUpcomingLessons(data || []);
+  }
+
+  // 指導者プラン実装仕様 §8: 記録へのコメント。teacher_notesと違い、生徒にも見える前提のもの。
+  async function fetchCommentsForLink(linkId) {
+    const supabase = createClient();
+    const { data } = await supabase.from("entry_comments").select("*").eq("link_id", linkId).order("entry_date", { ascending: false });
+    const byDate = {};
+    (data || []).forEach((c) => { (byDate[c.entry_date] = byDate[c.entry_date] || []).push(c); });
+    setStudentComments(byDate);
+  }
+  async function handleCreateComment(linkId, entryDate, body) {
+    if (!body || !body.trim()) return;
+    const supabase = createClient();
+    const { error } = await supabase.from("entry_comments").insert({ link_id: linkId, entry_date: entryDate, body: body.trim(), created_by: userId });
+    if (error) { console.error("コメントの投稿に失敗しました:", error); return; }
+    setNewCommentDraft("");
+    fetchCommentsForLink(linkId);
+  }
+  // 生徒として、自分が受け取った直近のコメントを取得する（複数の先生分をまとめて）。
+  async function fetchMyRecentComments() {
+    const supabase = createClient();
+    const { data } = await supabase.from("entry_comments").select("*, link:teacher_student_links!inner(student_id)")
+      .eq("link.student_id", userId).order("created_at", { ascending: false }).limit(10);
+    setMyRecentComments(data || []);
+  }
+
   async function handleGenerateLineLinkCode() {
     const code = Array.from({ length: 6 }, () => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)]).join("");
     const supabase = createClient();
@@ -6783,6 +6845,21 @@ export default function VocalTracker({ userId, userEmail }) {
               <p className="text-xs mt-2 rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
                 🔒 先生には見えません：メンタルの日記・気持ちタグ・体重・食事の詳細・既往症
               </p>
+              {myUpcomingLessons.length > 0 && (
+                <p className="text-xs mt-2 rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                  次回のレッスン：{new Date(myUpcomingLessons[0].scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                  {myUpcomingLessons[0].note ? `　${myUpcomingLessons[0].note}` : ""}
+                </p>
+              )}
+              {myRecentComments.length > 0 && (
+                <div className="mt-2 space-y-1.5">
+                  {myRecentComments.slice(0, 3).map((c) => (
+                    <p key={c.id} className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                      💬 {c.entry_date.slice(5)}の記録に：{c.body}
+                    </p>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
@@ -8392,34 +8469,85 @@ export default function VocalTracker({ userId, userEmail }) {
 
                     {(scope.voice || scope.symptoms || scope.sleep) && recentDates.length > 0 && (
                       <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                        <h3 className="ff-display italic text-lg mb-3">直近の記録</h3>
+                        <h3 className="ff-display italic text-lg mb-1">直近の記録</h3>
+                        <p className="text-xs mb-3" style={{ color: C.inkSoft }}>各日にコメントを残せます。生徒にも表示されます。</p>
                         <div className="space-y-2">
                           {recentDates.map((date) => {
                             const e = studentEntries[date];
+                            const comments = studentComments[date] || [];
                             return (
-                              <div key={date} className="rounded-xl p-2.5 flex items-center justify-between text-xs" style={{ background: C.paper }}>
-                                <span className="ff-mono" style={{ color: C.inkSoft }}>{date.slice(5)}</span>
-                                <div className="flex gap-3">
-                                  {scope.voice && (
-                                    <span style={{ color: C.ink }}>
-                                      喉{typeof e.throatCondition === "number" ? e.throatCondition.toFixed(1) : "-"}
-                                    </span>
-                                  )}
-                                  {scope.symptoms && (e.throatSymptoms || []).length > 0 && (
-                                    <span style={{ color: C.curtain }}>症状{e.throatSymptoms.length}件</span>
-                                  )}
-                                  {scope.sleep && (
-                                    <span style={{ color: C.ink }}>
-                                      睡眠{typeof e.sleepHours === "number" ? `${e.sleepHours}h` : "-"}
-                                    </span>
-                                  )}
+                              <div key={date} className="rounded-xl p-2.5" style={{ background: C.paper }}>
+                                <div className="flex items-center justify-between text-xs">
+                                  <span className="ff-mono" style={{ color: C.inkSoft }}>{date.slice(5)}</span>
+                                  <div className="flex gap-3">
+                                    {scope.voice && (
+                                      <span style={{ color: C.ink }}>
+                                        喉{typeof e.throatCondition === "number" ? e.throatCondition.toFixed(1) : "-"}
+                                      </span>
+                                    )}
+                                    {scope.symptoms && (e.throatSymptoms || []).length > 0 && (
+                                      <span style={{ color: C.curtain }}>症状{e.throatSymptoms.length}件</span>
+                                    )}
+                                    {scope.sleep && (
+                                      <span style={{ color: C.ink }}>
+                                        睡眠{typeof e.sleepHours === "number" ? `${e.sleepHours}h` : "-"}
+                                      </span>
+                                    )}
+                                  </div>
                                 </div>
+                                {comments.length > 0 && (
+                                  <div className="mt-2 space-y-1">
+                                    {comments.map((c) => (
+                                      <p key={c.id} className="text-xs rounded-lg p-1.5" style={{ background: C.card, color: C.ink }}>💬 {c.body}</p>
+                                    ))}
+                                  </div>
+                                )}
+                                <details className="mt-1.5">
+                                  <summary className="text-xs cursor-pointer" style={{ color: C.inkSoft }}>コメントする</summary>
+                                  <div className="flex gap-1.5 mt-1.5">
+                                    <input type="text" value={newCommentDraft} onChange={(ev) => setNewCommentDraft(ev.target.value)}
+                                      placeholder="この日の記録へのコメント" maxLength={500}
+                                      className="flex-1 rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.card }} />
+                                    <button type="button" onClick={() => handleCreateComment(link.id, date, newCommentDraft)}
+                                      className="px-3 py-1.5 rounded-lg text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                                      送信
+                                    </button>
+                                  </div>
+                                </details>
                               </div>
                             );
                           })}
                         </div>
                       </div>
                     )}
+
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <h3 className="ff-display italic text-lg mb-1">レッスン日程</h3>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>生徒にも表示されます。</p>
+                      {studentLessons.filter((l) => new Date(l.scheduled_at) >= new Date()).length > 0 && (
+                        <div className="space-y-1.5 mb-3">
+                          {studentLessons.filter((l) => new Date(l.scheduled_at) >= new Date()).map((l) => (
+                            <div key={l.id} className="rounded-lg p-2 flex items-center justify-between text-xs" style={{ background: C.paper }}>
+                              <span>{new Date(l.scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}{l.note ? `　${l.note}` : ""}</span>
+                              <button type="button" onClick={() => handleDeleteLesson(l.id, link.id)} style={{ color: C.inkSoft }}><X size={13} /></button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      <div className="flex gap-1.5">
+                        <input type="date" value={newLessonDate} onChange={(e) => setNewLessonDate(e.target.value)}
+                          className="rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.paper }} />
+                        <input type="time" value={newLessonTime} onChange={(e) => setNewLessonTime(e.target.value)}
+                          className="rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.paper }} />
+                      </div>
+                      <input type="text" value={newLessonNote} onChange={(e) => setNewLessonNote(e.target.value)}
+                        placeholder="メモ（任意）" maxLength={100}
+                        className="w-full rounded-lg border p-1.5 text-xs mt-1.5" style={{ borderColor: C.line, background: C.paper }} />
+                      <button type="button" onClick={() => handleCreateLesson(link.id)}
+                        className="w-full py-2 rounded-full text-xs font-medium mt-2" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                        レッスンを追加
+                      </button>
+                    </div>
 
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">先生用メモ</h3>
@@ -8457,6 +8585,8 @@ export default function VocalTracker({ userId, userEmail }) {
                           setViewingStudentLink(link);
                           fetchStudentEntries(link.student_id);
                           fetchTeacherNote(link.id);
+                          fetchLessonsForLink(link.id);
+                          fetchCommentsForLink(link.id);
                         }}
                         className="w-full text-left p-4 flex items-center justify-between">
                         <div>
