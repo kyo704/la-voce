@@ -3047,7 +3047,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "" });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true });
   const [ownedItemKeys, setOwnedItemKeys] = useState([]);
   const [characterEquipped, setCharacterEquipped] = useState({});
   const [characterPointsSpent, setCharacterPointsSpent] = useState(0);
@@ -3220,7 +3220,7 @@ export default function VocalTracker({ userId, userEmail }) {
         () =>
           supabase
             .from("profiles")
-            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus, practice_goal, practice_goal_tags, practice_goal_started_at, practice_reviews, folded_groups, survey_day7_shown_at, survey_day7_response")
+            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus, practice_goal, practice_goal_tags, practice_goal_started_at, practice_reviews, folded_groups, survey_day7_shown_at, survey_day7_response, line_user_id, line_link_code, line_linked_at, line_notification_enabled")
             .eq("id", userId)
             .single(),
         "プロフィール（羊の装備を含む）の取得"
@@ -3257,6 +3257,10 @@ export default function VocalTracker({ userId, userEmail }) {
           folded_groups: data.folded_groups || [],
           survey_day7_shown_at: data.survey_day7_shown_at || null,
           survey_day7_response: data.survey_day7_response || "",
+          line_user_id: data.line_user_id || null,
+          line_link_code: data.line_link_code || null,
+          line_linked_at: data.line_linked_at || null,
+          line_notification_enabled: data.line_notification_enabled ?? true,
           vocal_profession: data.vocal_profession || "singer",
           track_cycle: data.track_cycle || false
         });
@@ -5375,6 +5379,29 @@ export default function VocalTracker({ userId, userEmail }) {
       const { error } = await supabase.from("profiles").update({ survey_day7_shown_at: shownAt }).eq("id", userId);
       if (!error) setProfile((p) => ({ ...p, survey_day7_shown_at: shownAt }));
     }
+  }
+
+  // 実行順マスター Stage 2-3: LINE通知。6文字の連携コードを発行し、
+  // ユーザーがLINE公式アカウントにそのコードを送ると、Webhook側で紐付けが完了する。
+  async function handleGenerateLineLinkCode() {
+    const code = Array.from({ length: 6 }, () => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)]).join("");
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update({ line_link_code: code }).eq("id", userId);
+    if (error) { console.error("連携コードの発行に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, line_link_code: code }));
+  }
+  async function handleToggleLineNotification(enabled) {
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update({ line_notification_enabled: enabled }).eq("id", userId);
+    if (error) { console.error("通知設定の保存に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, line_notification_enabled: enabled }));
+  }
+  async function handleUnlinkLine() {
+    if (!window.confirm("LINE連携を解除しますか？通知が届かなくなります。")) return;
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update({ line_user_id: null, line_linked_at: null }).eq("id", userId);
+    if (error) { console.error("連携解除に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, line_user_id: null, line_linked_at: null }));
   }
 
   // lavoce-収集データ拡張案.md B節: 質問票（EASE / VFI / SVHI-10 / RSI）の回答を保存する
@@ -9360,6 +9387,44 @@ export default function VocalTracker({ userId, userEmail }) {
                     </p>
                   </div>
                 )}
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-sm font-medium mb-1">LINE通知（毎朝のリマインド）</p>
+                  {profile.line_user_id ? (
+                    <>
+                      <p className="text-xs mb-3" style={{ color: C.sage }}>連携済みです。{profile.line_linked_at && new Date(profile.line_linked_at).toLocaleDateString("ja-JP")}に連携しました。</p>
+                      <label className="flex items-center gap-2 mb-3" style={{ cursor: "pointer" }}>
+                        <input type="checkbox" checked={profile.line_notification_enabled}
+                          onChange={(e) => handleToggleLineNotification(e.target.checked)} />
+                        <span className="text-sm">毎朝、記録していない日にリマインドを受け取る</span>
+                      </label>
+                      <button type="button" onClick={handleUnlinkLine}
+                        className="text-xs underline" style={{ color: C.curtain }}>
+                        連携を解除する
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        LINEと連携すると、まだ記録していない日の朝に、LINEでリマインドが届きます。
+                      </p>
+                      {profile.line_link_code ? (
+                        <div className="rounded-xl p-3 mb-2" style={{ background: C.paper }}>
+                          <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>①LINEで「La Voce」を友だち追加</p>
+                          <p className="text-xs mb-2" style={{ color: C.inkSoft }}>②トーク画面に、下の連携コードをそのまま送信</p>
+                          <p className="ff-mono text-center text-2xl tracking-widest py-2 rounded-lg" style={{ background: C.card, color: C.curtain }}>
+                            {profile.line_link_code}
+                          </p>
+                        </div>
+                      ) : (
+                        <button type="button" onClick={handleGenerateLineLinkCode}
+                          className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                          連携コードを発行する
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>アカウント</p>
