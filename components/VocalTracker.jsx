@@ -1844,9 +1844,18 @@ function Chip({ label, active, onClick }) {
   );
 }
 
-function SectionCard({ title, icon: Icon, children }) {
+function SectionCard({ title, icon: Icon, children, id, highlighted }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (highlighted && ref.current) {
+      ref.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [highlighted]);
   return (
-    <div className="rounded-2xl p-4 sm:p-5 border" style={{ background: C.card, borderColor: C.line }}>
+    <div ref={ref} id={id} className="rounded-2xl p-4 sm:p-5 border" style={{
+      background: C.card, borderColor: highlighted ? C.gold : C.line, borderWidth: highlighted ? 2 : 1,
+      transition: "border-color 2s ease, border-width 2s ease"
+    }}>
       <div className="flex items-center gap-2 mb-4">
         <Icon size={18} style={{ color: C.curtain }} />
         <h3 className="ff-display italic text-lg">{title}</h3>
@@ -3015,6 +3024,18 @@ export default function VocalTracker({ userId, userEmail }) {
   const [loading, setLoading] = useState(true);
   const [entries, setEntries] = useState({});
   const [activeTab, setActiveTab] = useState("home");
+  // 記録と分析の順番設計 §5.3: 分析画面の「この分析を強くする」から記録画面へジャンプしたとき、
+  // 該当セクションを2秒だけ淡くハイライトする（入力欄へのフォーカスは当てない）。
+  const [highlightSection, setHighlightSection] = useState(null);
+  useEffect(() => {
+    if (!highlightSection) return;
+    const timer = setTimeout(() => setHighlightSection(null), 2000);
+    return () => clearTimeout(timer);
+  }, [highlightSection]);
+  function jumpToRecordSection(sectionId) {
+    setActiveTab("today");
+    setHighlightSection(sectionId);
+  }
   const [lessonMode, setLessonMode] = useState(false);
   const lessonExitTimerRef = useRef(null);
   const [lessonExitProgress, setLessonExitProgress] = useState(0);
@@ -5172,6 +5193,52 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [topLagFinding, effectiveHabitRanking, roleLoadStats, acwrToday, refluxDinnerTagEffects, energyAvailabilityAnalysis]);
   // ---- 発見カード 用データ ここまで ----
 
+  // ---- lavoce-記録と分析の順番設計.md §5.3: 「この分析を強くする」カード 用データ ----
+  // 習慣の内容から、記録画面のどのセクションへジャンプさせるかの対応表。
+  const HABIT_KEY_TO_SECTION = {
+    sleep7h: "sleep", water2L: "water", alcohol: "meal", fried: "meal",
+    caffeine: "meal", carbonated: "meal", highEase: "mental", talkedALot: "practice"
+  };
+  const analysisBoostCandidates = useMemo(() => {
+    const candidates = [];
+    // R5: score = 見込みの改善量 / 必要な追加記録日数。10日を超えるものは出さない。
+    // ①「効いた習慣」の確度：3→4つ星は、CI・効果量の条件は既に満たしており、
+    //   残る条件はサンプル数（n1・n0とも10以上）だけなので、日数の見積もりが立てやすい。
+    effectiveHabitRanking.forEach((h) => {
+      if (h.stars !== 3) return;
+      const minN = Math.min(h.n1, h.n0);
+      const daysNeeded = Math.max(1, 10 - minN);
+      if (daysNeeded > 10) return;
+      const section = HABIT_KEY_TO_SECTION[h.key];
+      if (!section) return;
+      candidates.push({
+        id: "habit-boost-" + h.key,
+        title: `「効いた習慣」の確度 ${"★".repeat(h.stars)}${"☆".repeat(4 - h.stars)}`,
+        body: `${h.label.replace(/^前夜の|^前夜、|^前日、/, "")}の記録を あと${daysNeeded}日 続けると ★★★★ になります`,
+        daysNeeded,
+        section,
+        score: 0.6 / daysNeeded
+      });
+    });
+    // ②ロックされた分析（既存のnextUnlockと同じ閾値）。改善量=1.0（解放）。
+    if (nextUnlock) {
+      const daysNeeded = nextUnlock.days - recordedDaysTotal;
+      if (daysNeeded > 0 && daysNeeded <= 10) {
+        candidates.push({
+          id: "unlock-boost-" + nextUnlock.label,
+          title: `🔒 ${nextUnlock.label}`,
+          body: `あと${daysNeeded}日記録すると開きます`,
+          daysNeeded,
+          section: null, // 特定のセクションではなく、記録全般を促す
+          score: 1.0 / daysNeeded
+        });
+      }
+    }
+    // R1: 1度に2枚まで。R5: スコアが高い順。
+    return candidates.sort((a, b) => b.score - a.score).slice(0, 2);
+  }, [effectiveHabitRanking, nextUnlock, recordedDaysTotal]);
+  // ---- 「この分析を強くする」用データ ここまで ----
+
 
   // 装備・配置・ドラッグ移動は、その場ではデータベースに保存しない。
   // 「保存中」の表示に気づかれにくかったこと、また保存されたかどうかが分かりにくいという指摘を受けて、
@@ -6818,7 +6885,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       </details>
                     </SectionCard>
 
-                    <SectionCard title={t("sectionSleep")} icon={Moon}>
+                    <SectionCard title={t("sectionSleep")} icon={Moon} id="record-section-sleep" highlighted={highlightSection === "sleep"}>
                       <div className="grid grid-cols-2 gap-3">
                         <NumberField label={t("labelSleepHours")} icon={Moon} value={formData.sleepHours} step={0.5} min={0} max={16} suffix={t("unitHours")}
                           onChange={(v) => setFormData((f) => ({ ...f, sleepHours: v }))} />
@@ -6833,7 +6900,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         onChange={(v) => setFormData((f) => ({ ...f, sleepQuality: v }))} />
                     </SectionCard>
 
-                    <SectionCard title={t("sectionPractice")} icon={Music2}>
+                    <SectionCard title={t("sectionPractice")} icon={Music2} id="record-section-practice" highlighted={highlightSection === "practice"}>
                       <div>
                         <span className="text-sm font-medium block mb-2">{t("labelTodayActivity")}</span>
                         <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
@@ -6982,7 +7049,7 @@ export default function VocalTracker({ userId, userEmail }) {
 
                     </SectionCard>
 
-                    <SectionCard title={t("sectionWater")} icon={Droplets}>
+                    <SectionCard title={t("sectionWater")} icon={Droplets} id="record-section-water" highlighted={highlightSection === "water"}>
                       <div>
                         <div className="flex items-center gap-3">
                           <button type="button"
@@ -7013,7 +7080,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       </div>
                     </SectionCard>
 
-                    <SectionCard title={t("sectionMealDetail")} icon={Wheat}>
+                    <SectionCard title={t("sectionMealDetail")} icon={Wheat} id="record-section-meal" highlighted={highlightSection === "meal"}>
                       <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteMealAutoCalc")}</p>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
@@ -7280,7 +7347,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       </div>
                     </SectionCard>
 
-                    <SectionCard title={t("sectionMental")} icon={HeartHandshake}>
+                    <SectionCard title={t("sectionMental")} icon={HeartHandshake} id="record-section-mental" highlighted={highlightSection === "mental"}>
                       <DotSelector label={t("labelMentalEase")} icon={HeartHandshake} value={formData.ease} lowLabel={t("lowTension")} highLabel={t("highCalm")}
                         onChange={(v) => setFormData((f) => ({ ...f, ease: v }))} />
                       {!(profile.folded_groups || []).includes("mental_detail") && (
@@ -9037,6 +9104,26 @@ export default function VocalTracker({ userId, userEmail }) {
                     <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
                       {t("noteCompositeInsightDisclaimer")}
                     </p>
+                  </div>
+                )}
+
+                {analysisBoostCandidates.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-3">この分析を強くする</h3>
+                    <div className="space-y-3">
+                      {analysisBoostCandidates.map((c) => (
+                        <div key={c.id} className="rounded-xl p-3" style={{ background: C.paper }}>
+                          <p className="text-sm font-medium mb-1">{c.title}</p>
+                          <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{c.body}</p>
+                          <button type="button"
+                            onClick={() => { if (c.section) jumpToRecordSection(c.section); else setActiveTab("today"); }}
+                            className="w-full py-2 rounded-full text-xs font-medium flex items-center justify-center gap-1"
+                            style={{ background: C.curtain, color: "#FFFDF8" }}>
+                            今日の分を入れる <ChevronRight size={13} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
 
