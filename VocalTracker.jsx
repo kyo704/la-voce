@@ -1,27 +1,232 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import {
   Mic2, Moon, Droplets, Thermometer, Wind, MapPin, Music2, HeartHandshake,
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
-  Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot,
-  Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe
+  Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot, MessageCircle, Home,
+  Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe, Lock,
+  Volume2, Plane, AudioWaveform, Timer, MessageSquare, ClipboardList, GraduationCap, FileText, MoreHorizontal
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  Cell, ScatterChart, Scatter, ReferenceLine, LineChart, Line, ComposedChart
+  Cell, ScatterChart, Scatter, ReferenceLine, ReferenceArea, LineChart, Line, ComposedChart, Area
 } from "recharts";
 import { createClient } from "@/lib/supabase/client";
 import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC } from "@/lib/tokens";
-import { FOOD_PRESETS } from "@/lib/foodPresets";
+import { FOOD_PRESETS, DISH_GROUP_ALIASES, CATEGORY_SEARCH_ALIASES } from "@/lib/foodPresets";
+import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, SHOP_ITEMS, PLACEMENT_LIMITS, computeBalance } from "@/lib/character";
 import { LANGUAGES, createTranslator } from "@/lib/translations";
 import HealthInfo from "@/components/HealthInfo";
+import CharacterHome from "@/components/CharacterHome";
 
 /* ---------- constants ---------- */
-const SYMPTOM_OPTIONS = ["乾燥", "嗄れ", "痛み", "違和感", "鼻づまり", "咳"];
-const SYMPTOM_KEYS = { "乾燥": "symptomDry", "嗄れ": "symptomHoarse", "痛み": "symptomPain", "違和感": "symptomDiscomfort", "鼻づまり": "symptomStuffyNose", "咳": "symptomCough" };
-const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
+const SYMPTOM_OPTIONS = ["乾燥", "嗄れ", "痛み", "違和感", "鼻づまり", "咳", "裏返り", "喉の張り感"];
+const SYMPTOM_KEYS = { "乾燥": "symptomDry", "嗄れ": "symptomHoarse", "痛み": "symptomPain", "違和感": "symptomDiscomfort", "鼻づまり": "symptomStuffyNose", "咳": "symptomCough", "裏返り": "symptomBreak", "喉の張り感": "symptomTightness" };
+const DINNER_TAGS = ["揚げ物", "あっさり", "炭酸", "トマト系", "カフェイン", "アルコール"];
+const DINNER_TAG_KEYS = { "揚げ物": "dinnerFried", "あっさり": "dinnerLight", "炭酸": "dinnerCarbonated", "トマト系": "dinnerTomato", "カフェイン": "dinnerCaffeine", "アルコール": "dinnerAlcohol" };
+// lavoce-収集データ拡張案.md C-2: 服薬タグ。DINNER_TAGSと同じ複数選択タグの形式。
+const MEDICATION_OPTIONS = ["抗ヒスタミン薬", "吸入ステロイド", "経口避妊薬", "NSAIDs", "利尿薬"];
 
+// lavoce-収集データ拡張案.md B節: 標準化された質問票（週1・月1でよいもの）。
+// 重要な注意: ここに書いた項目文は、公表されている各尺度の構成（項目数・因子・尺度幅・
+// カットオフ値）にもとづいて作成した簡易版であり、原論文（英語）の項目文を一字一句
+// 翻訳・再現したものではありません。そのため、算出される点数を論文の基準値と厳密に
+// 比較できることは保証できません。あくまで自分自身の推移を追うためのスクリーニング
+// 参考ツールとして使うことを想定しています。
+const QUESTIONNAIRES = {
+  rsi: {
+    key: "rsi",
+    name: "RSI（逆流症状インデックス）",
+    fullName: "Reflux Symptom Index",
+    citation: "Belafsky et al., 2002",
+    frequency: "月1回の記録を推奨",
+    scaleMax: 5,
+    scaleLabels: ["問題なし", "軽度", "やや軽度", "中程度", "やや重度", "重度の問題"],
+    cutoff: 13,
+    cutoffNote: "13点を超えると、喉頭咽頭逆流症（LPR）の疑いの目安とされています。",
+    items: [
+      "声のかすれ、または声の問題",
+      "咳払いをする",
+      "喉に痰がからむ、または鼻水がのどに落ちる感じがする",
+      "食べ物・飲み物・錠剤の飲み込みにくさ",
+      "食後や横になった後の咳",
+      "呼吸のしづらさ、息が詰まる感じ",
+      "厄介な、または気になる咳",
+      "喉に何かがくっついている感じ、喉のつかえ感",
+      "胸焼け、胸の痛み、消化不良、酸っぱいものが上がってくる感じ"
+    ],
+    factors: null
+  },
+  vfi: {
+    key: "vfi",
+    name: "VFI（声の疲労インデックス）",
+    fullName: "Vocal Fatigue Index",
+    citation: "Nanjundeswaran et al., 2015",
+    frequency: "週1回の記録を推奨",
+    scaleMax: 4,
+    scaleLabels: ["まったくない", "ほとんどない", "時々", "たいてい", "常に"],
+    cutoff: null,
+    cutoffNote: "総合点よりも、3つの因子（疲労・回避／身体的な不快感／休息による回復）ごとの傾向を見る尺度です。",
+    items: [
+      "声を使った後、話す気になれない",
+      "たくさん話すと声が疲れる",
+      "話すのに、より努力が必要だと感じる",
+      "声を出すのに以前より努力が必要になったと感じる",
+      "声を使うのが仕事のように感じる",
+      "声を使った後は、あまり話さないようにしている",
+      "たくさん話す必要があるとき、人との集まりを避ける",
+      "仕事の後、家族と話す気になれない",
+      "声を使った後、声を出すのに努力がいる",
+      "声を使うと、声を通す（響かせる）のが難しく感じる",
+      "声を使った後、声が弱く感じる",
+      "話すと喉が痛くなる",
+      "話すと喉に違和感がある",
+      "話した後、喉に痛みを感じる",
+      "話すと喉が乾いた感じがする",
+      "話すと首や喉のあたりが張る感じがする",
+      "声を少し休ませると、声を出す努力が減る",
+      "一晩眠ると、声の調子が良くなる",
+      "声を使うのをしばらく控えると、症状が良くなる"
+    ],
+    factors: [
+      { name: "疲労・回避", start: 0, end: 10 },
+      { name: "身体的な不快感", start: 11, end: 15 },
+      { name: "休息による回復", start: 16, end: 18 }
+    ]
+  },
+  svhi10: {
+    key: "svhi10",
+    name: "SVHI-10（歌声支障インデックス）",
+    fullName: "Singing Voice Handicap Index-10",
+    citation: "Cohen et al., 2009",
+    frequency: "月1回の記録を推奨",
+    scaleMax: 4,
+    scaleLabels: ["まったくない", "ほとんどない", "時々", "たいてい", "常に"],
+    cutoff: 20,
+    cutoffNote: "20点以上で、歌声への支障が大きくなっている可能性の目安とされています。",
+    items: [
+      "自分の歌声のせいで、人前で歌う機会を避けている",
+      "自分の歌声のせいで、収入や仕事に影響が出ている",
+      "声域が以前より狭くなったと感じる",
+      "歌っている途中で声が出なくなることがある",
+      "歌った後、声が疲れていると感じる",
+      "自分の歌声の調子が予測できないと感じる",
+      "自分の歌声のことで落ち込んだり不安になったりする",
+      "他の人が自分の歌声の変化に気づいていると感じる",
+      "練習や本番の前に、自分の声がどうなるか心配になる",
+      "歌声のせいで、音楽活動そのものを楽しめなくなっている"
+    ],
+    factors: null
+  },
+  ease: {
+    key: "ease",
+    name: "EASE（歌いやすさ評価）",
+    fullName: "Evaluation of the Ability to Sing Easily",
+    citation: "Phyland et al., 2013",
+    frequency: "本番・リハ直後の記録を推奨",
+    scaleMax: 3,
+    scaleLabels: ["なし", "軽度", "中程度", "強度"],
+    cutoff: 12.5,
+    cutoffNote: "12.5点を超えると、歌声機能の低下が疑われる目安とされています。",
+    items: [
+      "声がかすれている",
+      "声が乾いた・こすれた感じがする",
+      "喉の筋肉が疲れている感じがする",
+      "声が出るまでに時間がかかる、または息漏れがある",
+      "声に張りがない感じがする",
+      "声が疲れている",
+      "高音を出すのが難しい",
+      "音域を変える（チェンジ）のが難しい",
+      "歌うことが大変な作業に感じる",
+      "自分の歌声が本番に向けて準備できている感じがしない",
+      "声が裏返る、または割れる",
+      "息が漏れている感じがする",
+      "長いフレーズで息が続きにくい",
+      "高音で息が漏れる",
+      "一部の音で声が途切れる",
+      "小さい声で歌うのが難しい",
+      "音を長く伸ばすのが難しい",
+      "声を通す（響かせる）のが難しい",
+      "自分の声のことが心配だ",
+      "自分の声のことが気になる"
+    ],
+    factors: [
+      { name: "声の疲労（VF）", start: 0, end: 9 },
+      { name: "病的リスク指標（PRI）", start: 10, end: 17 },
+      { name: "声への不安（VC）", start: 18, end: 19 }
+    ]
+  }
+};
+function computeQuestionnaireScore(type, itemScores) {
+  const def = QUESTIONNAIRES[type];
+  if (!def) return null;
+  const total = itemScores.reduce((a, b) => a + (Number(b) || 0), 0);
+  const factorScores = def.factors
+    ? def.factors.map((f) => ({
+        name: f.name,
+        score: itemScores.slice(f.start, f.end + 1).reduce((a, b) => a + (Number(b) || 0), 0)
+      }))
+    : null;
+  return { total, factorScores };
+}
+// メンタルの大まかな枠（タップで選べる簡易入力）。自由記述の代わりではなく、併用できる選択肢として用意する。
+// 「心の余裕」の数値（1〜5）に応じて、表示する語群を切り替える。
+// low（1〜2・緊張寄り）／mid（3・ふつう）／high（4〜5・落ち着き寄り）の3段階。
+// 舞台・本番に限らず、悲しい／怒り／嬉しいといった一般的な感情語も含める。
+const MENTAL_TAG_GROUPS = {
+  low: ["本番前の緊張", "疲労・過労", "睡眠不足", "体調不良", "準備不足への不安", "評価・期待のプレッシャー", "悲しい", "怒り・イライラ", "不安", "人間関係の悩み"],
+  mid: ["環境の変化", "私生活のこと", "少し疲れ気味", "ぼんやり・無気力", "特に大きな変化なし", "集中できている", "落ち着いている"],
+  high: ["良い睡眠が取れた", "練習・準備が順調", "嬉しい・楽しい", "達成感", "人との良い時間", "リラックスできている", "体調が良い", "特に理由なし・良い状態"]
+};
+// ease（1〜5）から、表示する語群を判定する
+function mentalTagGroupForEase(ease) {
+  const e = Number(ease) || 3;
+  if (e <= 2) return "low";
+  if (e >= 4) return "high";
+  return "mid";
+}
+const MENTAL_TAG_KEYS = {
+  "本番前の緊張": "mentalTagPrePerformance",
+  "疲労・過労": "mentalTagFatigue",
+  "睡眠不足": "mentalTagSleepLack",
+  "体調不良": "mentalTagPhysicalUnwell",
+  "準備不足への不安": "mentalTagUnderprepared",
+  "評価・期待のプレッシャー": "mentalTagPressure",
+  "悲しい": "mentalTagSad",
+  "怒り・イライラ": "mentalTagAngry",
+  "不安": "mentalTagAnxious",
+  "人間関係の悩み": "mentalTagRelationshipTrouble",
+  "環境の変化": "mentalTagEnvironmentChange",
+  "私生活のこと": "mentalTagPersonalLife",
+  "少し疲れ気味": "mentalTagSlightlyTired",
+  "ぼんやり・無気力": "mentalTagLowMotivation",
+  "特に大きな変化なし": "mentalTagNoParticularChange",
+  "集中できている": "mentalTagFocused",
+  "落ち着いている": "mentalTagSettled",
+  "良い睡眠が取れた": "mentalTagGoodSleep",
+  "練習・準備が順調": "mentalTagPracticeGoingWell",
+  "嬉しい・楽しい": "mentalTagHappy",
+  "達成感": "mentalTagAccomplishment",
+  "人との良い時間": "mentalTagGoodTimeWithPeople",
+  "リラックスできている": "mentalTagRelaxed",
+  "体調が良い": "mentalTagFeelingWell",
+  "特に理由なし・良い状態": "mentalTagGoodState"
+};
+
+// ============================================================
+// 【保留中のタスク】日別テンプレート（記録項目の再設計v2.md §4.4）
+//   状態：保留
+//   理由：本来は活動ブロックの複数化（実行順マスター Stage 5-2）に依存する
+//        （曲目複数化パッチ §2.0.1で、テンプレートは「1つ目の活動ブロックの
+//        種別を選ぶショートカット」に降格したため）
+//   【このアプリでの現状】上記の依存は既に解消済み。activities[]は本セッション
+//   序盤の曲目複数化パッチで既に複数化されている（下のACTIVITY_OPTIONS・
+//   newActivityBlock参照）。そのため着手自体は可能な状態にあるが、
+//   Stage4-2スコープ調整パッチの確定スコープにより今回は見送っている。
+//   再開：職業別の項目分岐（収録種別・叫びテイク数・番組名・セットリスト等、
+//        職業別設計.md）と合わせて実装するのが自然。
+// ============================================================
 const ACTIVITY_OPTIONS = [
   { key: "休養", icon: Moon, labelKey: "activityRest" },
   { key: "自主練習", icon: Music2, labelKey: "activitySelfPractice" },
@@ -34,6 +239,7 @@ const VOICE_TYPES = ["ソプラノ", "メゾソプラノ", "アルト", "カウ�
 const VOICE_TYPE_KEYS = { "ソプラノ": "voiceSoprano", "メゾソプラノ": "voiceMezzo", "アルト": "voiceAlto", "カウンターテナー": "voiceCountertenor", "テノール": "voiceTenor", "バリトン": "voiceBaritone", "バス": "voiceBass", "その他": "optionOther" };
 const MEAL_SLOTS = ["朝食", "昼食", "夕食", "間食"];
 const MEAL_SLOT_KEYS = { "朝食": "mealBreakfast", "昼食": "mealLunch", "夕食": "mealDinner", "間食": "mealSnack" };
+const QUICK_ADD_FOODS = ["白米（ご飯）", "味噌汁", "卵（全卵）", "納豆", "鮭（焼き）", "豆腐（木綿）", "ヨーグルト（無糖）", "鶏むね肉（皮なし）"];
 const EXERCISE_TYPES = ["有酸素運動", "筋力トレーニング", "ストレッチ", "ウォーキング", "ヨガ", "その他"];
 const EXERCISE_TYPE_KEYS = { "有酸素運動": "exerciseCardio", "筋力トレーニング": "exerciseStrength", "ストレッチ": "exerciseStretch", "ウォーキング": "exerciseWalk", "ヨガ": "exerciseYoga", "その他": "optionOther" };
 const VOICE_TIME_SLOTS = [
@@ -48,45 +254,185 @@ const NUTRITION_PHASE_KEYS = { "維持": "phaseMaintain", "増量": "phaseBulk",
 const REST_METHODS = ["睡眠・休息", "入浴", "マッサージ", "読書", "散歩", "瞑想", "趣味の時間", "その他"];
 const REST_METHOD_KEYS = { "睡眠・休息": "restSleep", "入浴": "restBath", "マッサージ": "restMassage", "読書": "restReading", "散歩": "restWalk", "瞑想": "restMeditate", "趣味の時間": "restHobby", "その他": "optionOther" };
 const AI_ADVICE_ENABLED = false; // 準備中。有効にする場合は true にしてください（ANTHROPIC_API_KEYの設定も必要です）
-const CARING_MESSAGES = [
-  "今日も記録、お疲れさまでした",
-  "無理せず、自分のペースで大丈夫です",
-  "声も心も、大切にしてくださいね",
-  "今日という日を、ちゃんと見つめられましたね",
-  "小さな積み重ねが、きっと力になります",
-  "今日もよく頑張りました",
-  "ゆっくり休んで、また明日",
-  "自分を労わる時間、大事にしてくださいね",
-  "続けているあなたを、ちゃんと見ています",
-  "記録、ありがとうございます"
+const CARING_MESSAGE_KEYS = [
+  "caringMsg1", "caringMsg2", "caringMsg3", "caringMsg4", "caringMsg5",
+  "caringMsg6", "caringMsg7", "caringMsg8", "caringMsg9", "caringMsg10"
 ];
 
 const FACTORS = [
-  { key: "sleepHours", label: "睡眠時間", unit: "時間" },
-  { key: "sleepQuality", label: "睡眠の質", unit: "" },
-  { key: "waterIntake", label: "水分摂取量", unit: "ml" },
-  { key: "temperature", label: "気温", unit: "℃" },
-  { key: "humidity", label: "湿度", unit: "%" },
-  { key: "ease", label: "心の余裕", unit: "" },
-  { key: "throatCondition", label: "喉の状態", unit: "" },
-  { key: "voiceQuality", label: "声の調子", unit: "" },
-  { key: "weightKg", label: "体重", unit: "kg" },
-  { key: "carbs", label: "炭水化物", unit: "g" },
-  { key: "protein", label: "タンパク質", unit: "g" },
-  { key: "fat", label: "脂質", unit: "g" },
-  { key: "fiber", label: "食物繊維", unit: "g" },
-  { key: "exerciseMinutes", label: "運動時間", unit: "分" }
+  { key: "sleepHours", labelKey: "labelSleepHours", unitKey: "unitHours" },
+  { key: "sleepQuality", labelKey: "labelSleepQuality", unit: "" },
+  { key: "waterIntake", labelKey: "labelWaterBySlot", unit: "ml" },
+  { key: "temperature", labelKey: "labelTemperature", unit: "℃" },
+  { key: "humidity", labelKey: "labelHumidity", unit: "%" },
+  { key: "ease", labelKey: "labelMentalEase", unit: "" },
+  { key: "throatCondition", labelKey: "labelThroatCondition", unit: "" },
+  { key: "voiceQuality", labelKey: "labelVoiceQuality", unit: "" },
+  { key: "resonanceScore", labelKey: "labelResonanceScore", unit: "" },
+  { key: "weightKg", labelKey: "labelWeight", unit: "kg" },
+  { key: "carbs", labelKey: "macroCarbs", unit: "g" },
+  { key: "protein", labelKey: "macroProtein", unit: "g" },
+  { key: "fat", labelKey: "macroFat", unit: "g" },
+  { key: "fiber", labelKey: "macroFiber", unit: "g" },
+  { key: "exerciseMinutes", labelKey: "labelExerciseMinutes", unitKey: "unitMinutesFactor" }
 ];
 
 const TABS = [
+  { key: "home", labelKey: "tabHome", icon: Sun },
   { key: "today", labelKey: "tabToday", icon: Mic2 },
-  { key: "history", labelKey: "tabHistory", icon: CalendarDays },
+  { key: "garden", labelKey: "tabCharacter", icon: Home },
   { key: "analysis", labelKey: "tabAnalysis", icon: BarChart3 },
-  { key: "advice", labelKey: "tabAdvice", icon: Bot },
-  { key: "info", labelKey: "tabInfo", icon: BookOpen }
+  { key: "notes", labelKey: "tabNotes", icon: NotebookPen },
+  { key: "more", labelKey: "tabMore", icon: MoreHorizontal }
 ];
+// 職業ごとに専用の理論ページへ切り替える
+const PROFESSION_THEORY_PAGES = {
+  singer: "/vocal-theory",
+  announcer: "/announcer-theory",
+  voice_actor: "/voice-actor-theory",
+  pop_musical: "/performer-theory"
+};
+const VOCAL_PROFESSIONS = ["singer", "announcer", "voice_actor", "pop_musical"];
+// lavoce-記録項目の再設計v2.md §3.6: 既往症を自由記述から選択式に構造化。
+// 目的：診断済みの人には専用分析を出し、未診断の人には「疑い」を一切示さない（§7.1）。
+// lavoce-記録項目の再設計v2.md §3.7: 稽古ノートの目標タグ。振り返り画面で、
+// タグに対応する客観データを自動で並べるために使う。
+// lavoce-記録項目の再設計v2.md §4.3: 畳める項目グループの表示名の一覧。
+// lavoce-記録項目の再設計v2.md §4.3・Stage4-2スコープ調整パッチ §2.3: 畳める項目グループの一覧。
+// 【役割分担（Stage4-2パッチ §3）】既存ユーザーへの声かけは、この一覧を使った§4.3の「畳みますか？」
+// 提案（使用実績ベース、本人が選ぶ）が担当する。新規ユーザーへの初期状態は、同じfolded_groupsを
+// プリセット（handleCompleteOnboarding、§2.3-2.4）が担当する。両者は同じ状態を異なる入口から
+// 操作するだけで、二重管理にはならない。
+const FOLDABLE_GROUP_LABELS = {
+  meal_detail: "食事の詳細記録",
+  exercise_detail: "運動の詳細記録",
+  body_fat: "体脂肪率の記録",
+  environment: "気温・湿度の記録",
+  cpps: "CPPS客観測定",
+  medication: "服薬タグの記録",
+  mental_detail: "気持ちタグ・日記"
+};
+const GOAL_TAGS = [
+  { key: "soft_high", label: "弱声の高音" },
+  { key: "high_range", label: "高音" },
+  { key: "range", label: "音域拡大" },
+  { key: "breath_support", label: "息の支え" },
+  { key: "articulation", label: "滑舌・明瞭度" },
+  { key: "stamina", label: "持久力" },
+  { key: "evenness", label: "音色の均一" }
+];
+const CONDITION_OPTIONS = [
+  { key: "gerd", label: "逆流性食道炎" },
+  { key: "lpr", label: "咽喉頭酸逆流" },
+  { key: "allergic_rhinitis", label: "アレルギー性鼻炎・花粉症" },
+  { key: "asthma", label: "喘息" },
+  { key: "sinusitis", label: "副鼻腔炎" },
+  { key: "thyroid", label: "甲状腺疾患" },
+  { key: "anemia", label: "貧血" },
+  { key: "sleep_apnea", label: "睡眠時無呼吸症候群" },
+  { key: "vocal_lesion", label: "声帯結節・ポリープの既往" }
+];
+// 「今日の負荷」の抽象スキーマ。type はログの種類、durationMin/intensity は職業共通、
+// それ以外は職業ごとに意味のある追加項目（分析エンジン側は type を見て解釈する）。
+const LOAD_TYPE_BY_PROFESSION = {
+  singer: "sustained_singing",
+  announcer: "live_broadcast",
+  voice_actor: "character_switching",
+  pop_musical: "loud_venue_performance"
+};
+const LOAD_FIELDS_BY_PROFESSION = {
+  singer: [
+    { key: "vocalRangeLowUsed", type: "text", labelKey: "loadVocalRangeLowUsed", placeholderKey: "placeholderNoteExample" },
+    { key: "vocalRangeHighUsed", type: "text", labelKey: "loadVocalRangeHighUsed", placeholderKey: "placeholderNoteExample" },
+    { key: "dynamicsRange", type: "select", labelKey: "loadDynamicsRange", options: ["pp-mp", "mp-mf", "mf-f", "f-ff", "pp-ff"] },
+    { key: "passaggioCrossings", type: "number", labelKey: "loadPassaggioCrossings" }
+  ],
+  announcer: [
+    { key: "onAirMinutes", type: "number", labelKey: "loadOnAirMinutes" },
+    { key: "isLive", type: "boolean", labelKey: "loadIsLive" },
+    { key: "consecutiveSegments", type: "number", labelKey: "loadConsecutiveSegments" }
+  ],
+  voice_actor: [
+    { key: "sessionMinutes", type: "number", labelKey: "loadSessionMinutes" },
+    { key: "characterCount", type: "number", labelKey: "loadCharacterCount" },
+    { key: "hasExtremeVocalization", type: "boolean", labelKey: "loadHasExtremeVocalization" }
+  ],
+  pop_musical: [
+    { key: "venueVolume", type: "scale5", labelKey: "loadVenueVolume" },
+    { key: "monitorVolume", type: "scale5", labelKey: "loadMonitorVolume" },
+    { key: "consecutivePerformanceDay", type: "number", labelKey: "loadConsecutivePerformanceDay" }
+  ]
+};
 
 /* ---------- helpers ---------- */
+// Supabase側の一時的な認証エラー（JWT関連の401/PGRST303など）かどうかを判定する。
+// ネットワークの瞬断やインフラ側のクロックずれなど、こちらのコードのバグではなく
+// 一時的に起きる種類のエラーを見分けるためのもの。
+// 記録と分析の順番設計 §7: 「1日あたりの平均入力項目数」を計測するための、記入済みセクション数の
+// 概算カウント。DAY_RECORD_ORDER相当の主要セクションだけを対象にする（曲目の中身などは数えない）。
+function countFilledSections(entry) {
+  let n = 0;
+  if ((entry.voiceEntries || []).length > 0) n += 1;
+  if (typeof entry.temperature === "number" || typeof entry.humidity === "number") n += 1;
+  if (typeof entry.sleepHours === "number") n += 1;
+  if ((entry.activities || []).length > 0 || entry.recovery) n += 1;
+  if ((entry.waterBySlot || {}).total > 0) n += 1;
+  if (entry.dinnerTime || (entry.dinnerTags || []).length > 0 || typeof entry.proteinLevel === "number") n += 1;
+  if ((entry.symptoms || []).length > 0) n += 1;
+  if (typeof entry.mentalEase === "number") n += 1;
+  if ((entry.note || entry.mentalReason || "").trim()) n += 1;
+  return n;
+}
+// 記録と分析の順番設計 §3.5: 保存直後に「今日わかったこと」として出す、その日だけの簡単な発見。
+// 出せる日だけ出す（無ければnullを返し、カードには何も表示しない）。すべて自分比。
+function computeTodaysDiscovery(entries, today) {
+  const dates7 = Object.keys(entries).filter((d) => d <= today).sort().slice(-7);
+  if (dates7.length < 3 || dates7[dates7.length - 1] !== today) return null;
+  const todayEntry = entries[today];
+  const waterVals = dates7.map((d) => (entries[d].waterBySlot || {}).total).filter((v) => typeof v === "number" && v > 0);
+  const todayWater = (todayEntry.waterBySlot || {}).total;
+  if (typeof todayWater === "number" && todayWater > 0 && waterVals.length >= 3 && todayWater === Math.max(...waterVals)) {
+    return "水分が今週いちばん多い日です";
+  }
+  const sleepVals = dates7.map((d) => entries[d].sleepHours).filter((v) => typeof v === "number");
+  if (typeof todayEntry.sleepHours === "number" && sleepVals.length >= 3 && todayEntry.sleepHours === Math.max(...sleepVals)) {
+    return "睡眠時間が今週いちばん長い日です";
+  }
+  return null;
+}
+
+// Supabase側の一時的な認証エラー（JWT関連の401/PGRST303など）かどうかを判定する。
+// ネットワークの瞬断やインフラ側のクロックずれなど、こちらのコードのバグではなく
+// 一時的に起きる種類のエラーを見分けるためのもの。
+function isTransientAuthError(error) {
+  if (!error) return false;
+  const code = error.code || "";
+  const status = error.status || error.statusCode || 0;
+  const message = (error.message || "").toLowerCase();
+  return (
+    code === "PGRST303" ||
+    status === 401 ||
+    message.includes("jwt") ||
+    message.includes("unauthorized")
+  );
+}
+// queryFn: () => Promise<{data, error}> を返す関数（クエリを毎回組み立て直せるように関数で受け取る）。
+// 一時的な認証エラーが出た場合のみ、セッションを更新してから1回だけ再試行する。
+// それ以外のエラー（権限不足や入力ミスなど）はそのまま返し、無限にリトライしない。
+async function runQueryWithAuthRetry(supabase, queryFn, label) {
+  let result = await queryFn();
+  if (result.error && isTransientAuthError(result.error)) {
+    console.warn(`${label || "クエリ"}で一時的な認証エラーを検知。セッションを更新して再試行します。`, result.error);
+    try {
+      await supabase.auth.refreshSession();
+    } catch (e) {
+      /* リフレッシュ自体が失敗しても、下のリトライで最終的なエラーを拾う */
+    }
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    result = await queryFn();
+  }
+  return result;
+}
 function toISODate(d) {
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -96,14 +442,41 @@ function toISODate(d) {
 function todayISO() {
   return toISODate(new Date());
 }
+// サーバー（UTC基準）とブラウザ（日本時間など）で「今日」の計算結果がずれることがあり、
+// これが React のハイドレーション不一致（サーバーとクライアントの初回描画結果の食い違い）の原因になっていた。
+// 初回描画は必ずUTC基準の値で揃え、マウント後に useEffect で現地時間の正しい「今日」へ補正する。
+function todayISOUTC() {
+  const d = new Date();
+  const year = d.getUTCFullYear();
+  const month = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(d.getUTCDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 function addDays(iso, delta) {
   const d = new Date(iso + "T00:00:00");
   d.setDate(d.getDate() + delta);
   return toISODate(d);
 }
-function formatDateLabel(iso) {
+const LOCALE_MAP = { ja: "ja-JP", en: "en-US", zh: "zh-CN", it: "it-IT", de: "de-DE", fr: "fr-FR", es: "es-ES", ko: "ko-KR", ru: "ru-RU" };
+function getWeekdayLabels(language) {
+  const locale = LOCALE_MAP[language] || "ja-JP";
+  const base = new Date(2023, 0, 1); // 2023-01-01 は日曜日
+  const fmt = new Intl.DateTimeFormat(locale, { weekday: "short" });
+  return Array.from({ length: 7 }).map((_, i) => {
+    const d = new Date(base);
+    d.setDate(base.getDate() + i);
+    return fmt.format(d);
+  });
+}
+function formatDateLabel(iso, language) {
   const d = new Date(iso + "T00:00:00");
-  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日(${WEEKDAYS[d.getDay()]})`;
+  const locale = LOCALE_MAP[language] || "ja-JP";
+  return new Intl.DateTimeFormat(locale, { year: "numeric", month: "long", day: "numeric", weekday: "short" }).format(d);
+}
+function formatMonthLabel(year, month, language) {
+  const d = new Date(year, month, 1);
+  const locale = LOCALE_MAP[language] || "ja-JP";
+  return new Intl.DateTimeFormat(locale, { year: "numeric", month: "long" }).format(d);
 }
 function monthMeta(year, month) {
   const first = new Date(year, month, 1);
@@ -133,6 +506,168 @@ function computeOverallScore(entry) {
   if (parts.length === 0) return null;
   return parts.reduce((a, b) => a + b, 0) / parts.length;
 }
+// 「声の調子スコア」（100点満点）と同じ重み付けを、1日分の記録に対して計算する版。
+// 偏差値（自分比の分布）を出すには、14日平均1つではなく日ごとの値の並びが必要なため。
+function computeDailyScore100(entry) {
+  if (!entry) return null;
+  const throatScore = typeof entry.throatCondition === "number" ? (entry.throatCondition / 5) * 100 : null;
+  const voiceScore = typeof entry.voiceQuality === "number" ? (entry.voiceQuality / 5) * 100 : null;
+  const easeScore = typeof entry.ease === "number" ? (entry.ease / 5) * 100 : null;
+  let sleepHoursScore = null;
+  if (typeof entry.sleepHours === "number") {
+    const h = entry.sleepHours;
+    if (h >= 7 && h <= 9) sleepHoursScore = 100;
+    else if (h < 7) sleepHoursScore = Math.max(0, 100 - (7 - h) * 20);
+    else sleepHoursScore = Math.max(0, 100 - (h - 9) * 15);
+  }
+  const sleepQualityScore = typeof entry.sleepQuality === "number" ? (entry.sleepQuality / 5) * 100 : null;
+  const sleepScore = (sleepHoursScore != null && sleepQualityScore != null)
+    ? (sleepHoursScore + sleepQualityScore) / 2
+    : (sleepHoursScore ?? sleepQualityScore);
+  const hasSymptoms = (entry.throatSymptoms || []).length > 0;
+  const symptomScore = hasSymptoms ? 0 : 100;
+  const waterMl = Object.values(entry.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0);
+  const waterScore = waterMl > 0 ? Math.min(100, (waterMl / 2000) * 100) : null;
+  const components = [
+    { score: throatScore, weight: 25 },
+    { score: voiceScore, weight: 20 },
+    { score: sleepScore, weight: 20 },
+    { score: easeScore, weight: 15 },
+    { score: symptomScore, weight: 10 },
+    { score: waterScore, weight: 10 }
+  ];
+  const valid = components.filter((c) => c.score != null);
+  const totalWeight = valid.reduce((s, c) => s + c.weight, 0);
+  if (totalWeight === 0) return null;
+  return valid.reduce((s, c) => s + c.score * c.weight, 0) / totalWeight;
+}
+// Magnus式による絶対湿度（g/m³）への換算。相対湿度は気温が変わると同じ%でも
+// 実際の水分量が変わってしまうため、予報モデルでは絶対湿度を使う。
+function computeAbsoluteHumidity(tempC, rhPercent) {
+  if (typeof tempC !== "number" || typeof rhPercent !== "number") return null;
+  const es = 6.112 * Math.exp((17.67 * tempC) / (tempC + 243.5));
+  return (216.7 * es * rhPercent / 100) / (273.15 + tempC);
+}
+// 07. 発声負荷バランス（ACWR）：活動種別ごとの重み。声の予報の「前日発声負荷」predictor でも
+// この正式な計算を使う（簡易プロキシではなく、指標設計図.md 07節の計算式そのもの）。
+const ACTIVITY_LOAD_WEIGHT = { "休養": 0, "自主練習": 1.0, "レッスン": 1.2, "リハーサル": 1.3, "本番": 1.6 };
+// 1日分の発声負荷 L_d = 活動時間(分) × 種別重み + 運動記録の負荷（0.3 × 分 × 強度/3）
+function computeDailyLoad(entry, songFactorResolver) {
+  if (!entry) return 0;
+  // §4: L_day = Σ_a L_a（活動ブロックごとに係数・曲目のsongFactorを反映して合算する）
+  const baseLoad = computeDayLoadFromActivities(entry.activities, songFactorResolver);
+  let exerciseLoad = (entry.exercises || []).reduce((sum, x) => {
+    const minutes = Number(x.minutes) || 0;
+    const intensity = typeof x.intensity === "number" ? x.intensity : 3;
+    return sum + 0.3 * minutes * (intensity / 3);
+  }, 0);
+  // §3.11: 詳細記録（種目・分・強度）がない日は、簡易3択の換算値を使う。
+  if ((!entry.exercises || entry.exercises.length === 0) && typeof entry.exerciseLevel === "number" && entry.exerciseLevel > 0) {
+    const equiv = entry.exerciseLevel === 1 ? { minutes: 20, intensity: 2 } : { minutes: 40, intensity: 4 };
+    exerciseLoad = 0.3 * equiv.minutes * (equiv.intensity / 3);
+  }
+  // lavoce-収集データ拡張案.md A-2: 話し声の使用量。歌っていない時間の声の使用も発声負荷に加算する。
+  // 「話し声2（よく喋った）＝+45分相当」を基準に、レベルに比例させる。騒がしい場所では1.3倍。
+  const speakingLevel = typeof entry.speakingLevel === "number" ? entry.speakingLevel : 0;
+  const speakingLoad = speakingLevel * 22.5 * (entry.noisyEnvironment ? 1.3 : 1);
+  return baseLoad + exerciseLoad + speakingLoad;
+}
+// 事前値 β₀（lavoce-指標設計図.md 01節より）。記録が14日未満のときはこの値だけで予報する。
+const FORECAST_PRIORS = {
+  sleepHours: 0.25, dinnerGap: 0.10, waterL: 0.15, ease: 0.20,
+  alcohol: -0.40, prevLoad: -0.15, absHumidity: 0.02, prevThroat: 0.35
+};
+const FORECAST_KEYS = Object.keys(FORECAST_PRIORS);
+const FORECAST_FACTOR_LABELS = {
+  sleepHours: "睡眠時間", dinnerGap: "夕食から就寝までの間隔", waterL: "水分量", ease: "心の余裕",
+  alcohol: "アルコール", prevLoad: "前日の発声負荷（ACWR）", absHumidity: "絶対湿度", prevThroat: "前日の喉の状態"
+};
+// 前日の記録から、予報モデルの説明変数を取り出す。prevAcwr は前日時点のACWR値（acwrSeriesから取得して渡す）。
+function extractForecastPredictors(prevEntry, prevAcwr) {
+  if (!prevEntry) return null;
+  const sleepHours = typeof prevEntry.sleepHours === "number" ? prevEntry.sleepHours : null;
+  const dinnerGap = computeTimeGapHours(prevEntry.dinnerTime, prevEntry.bedtime);
+  const waterMl = Object.values(prevEntry.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0);
+  const waterL = waterMl > 0 ? waterMl / 1000 : null;
+  const ease = typeof prevEntry.ease === "number" ? prevEntry.ease : null;
+  const alcohol = (prevEntry.dinnerTags || []).includes("アルコール") ? 1 : 0;
+  const prevLoad = typeof prevAcwr === "number" ? prevAcwr : null;
+  const absHumidity = computeAbsoluteHumidity(prevEntry.temperature, prevEntry.humidity);
+  const prevThroat = typeof prevEntry.throatCondition === "number" ? prevEntry.throatCondition : null;
+  return { sleepHours, dinnerGap, waterL, ease, alcohol, prevLoad, absHumidity, prevThroat };
+}
+// ŷ = μ + Σ βⱼ(xⱼ − x̄ⱼ)。beta は β₀そのもの、または個人化後にブレンドした値を渡す。
+// 欠損した説明変数はその項を0（＝平均値で埋めたのと同じ）として無視する。
+function predictThroat(predictors, means, mu, beta) {
+  if (!predictors) return null;
+  const coeffs = beta || FORECAST_PRIORS;
+  let yhat = mu;
+  let missingCount = 0;
+  FORECAST_KEYS.forEach((k) => {
+    const x = predictors[k];
+    if (typeof x === "number" && typeof means[k] === "number") {
+      yhat += coeffs[k] * (x - means[k]);
+    } else {
+      missingCount += 1;
+    }
+  });
+  return { yhat: Math.max(1, Math.min(5, yhat)), missingCount };
+}
+// ---- ここから、リッジ回帰（個人化）用の小さな行列演算ヘルパー ----
+function matTranspose(A) {
+  return A[0].map((_, j) => A.map((row) => row[j]));
+}
+function matMultiply(A, B) {
+  const result = [];
+  for (let i = 0; i < A.length; i++) {
+    const row = [];
+    for (let j = 0; j < B[0].length; j++) {
+      let sum = 0;
+      for (let k = 0; k < B.length; k++) sum += A[i][k] * B[k][j];
+      row.push(sum);
+    }
+    result.push(row);
+  }
+  return result;
+}
+function matVecMultiply(A, v) {
+  return A.map((row) => row.reduce((sum, val, j) => sum + val * v[j], 0));
+}
+// ガウス・ジョルダン法による正方行列の逆行列（部分ピボッティングつき）。
+// λ（リッジの正則化項）を対角に足した後に呼ぶため、実務上は特異行列になりにくい。
+function matInverse(A) {
+  const n = A.length;
+  const aug = A.map((row, i) => [...row, ...Array.from({ length: n }, (_, j) => (i === j ? 1 : 0))]);
+  for (let col = 0; col < n; col++) {
+    let pivotRow = col;
+    for (let r = col + 1; r < n; r++) {
+      if (Math.abs(aug[r][col]) > Math.abs(aug[pivotRow][col])) pivotRow = r;
+    }
+    [aug[col], aug[pivotRow]] = [aug[pivotRow], aug[col]];
+    const pivot = aug[col][col];
+    if (Math.abs(pivot) < 1e-9) return null;
+    for (let j = 0; j < 2 * n; j++) aug[col][j] /= pivot;
+    for (let r = 0; r < n; r++) {
+      if (r === col) continue;
+      const factor = aug[r][col];
+      for (let j = 0; j < 2 * n; j++) aug[r][j] -= factor * aug[col][j];
+    }
+  }
+  return aug.map((row) => row.slice(n));
+}
+// リッジ回帰: β̂ = (XᵀX + λI)⁻¹Xᵀy。X は標準化済み、y はセンタリング済みを渡すこと。
+function fitRidgeRegression(X, y, lambda) {
+  if (X.length === 0) return null;
+  const p = X[0].length;
+  const Xt = matTranspose(X);
+  const XtX = matMultiply(Xt, X);
+  for (let i = 0; i < p; i++) XtX[i][i] += lambda;
+  const XtXInv = matInverse(XtX);
+  if (!XtXInv) return null;
+  const Xty = Xt.map((row) => row.reduce((sum, val, k) => sum + val * y[k], 0));
+  return matVecMultiply(XtXInv, Xty);
+}
+// ---- リッジ回帰ヘルパー ここまで ----
 function pearson(xs, ys) {
   const n = xs.length;
   if (n < 3) return null;
@@ -146,35 +681,153 @@ function pearson(xs, ys) {
   if (dx2 === 0 || dy2 === 0) return null;
   return num / Math.sqrt(dx2 * dy2);
 }
-function getCorrelationData(entries, targetKey, targetFilter) {
+// ---- lavoce-指標設計図.md フェーズ4（05効いた習慣・04声の時差マップ）用の統計ヘルパー ----
+// 配列を順位に変換する（同値は平均順位）。スピアマン相関の下ごしらえ。
+function rankArray(arr) {
+  const indexed = arr.map((v, i) => ({ v, i })).sort((a, b) => a.v - b.v);
+  const ranks = new Array(arr.length);
+  let i = 0;
+  while (i < indexed.length) {
+    let j = i;
+    while (j + 1 < indexed.length && indexed[j + 1].v === indexed[i].v) j++;
+    const avgRank = (i + j) / 2 + 1;
+    for (let k = i; k <= j; k++) ranks[indexed[k].i] = avgRank;
+    i = j + 1;
+  }
+  return ranks;
+}
+// スピアマン順位相関 = 順位に変換した後のピアソン相関。外れ値に強く、5段階評価のような順序尺度に向く。
+function spearman(xs, ys) {
+  if (xs.length < 3) return null;
+  return pearson(rankArray(xs), rankArray(ys));
+}
+// 正則化不完全ベータ関数（連分数展開、Numerical Recipes準拠の実装）。t分布のp値の計算に使う。
+function incompleteBeta(x, a, b) {
+  if (x <= 0) return 0;
+  if (x >= 1) return 1;
+  const lbeta = logGamma(a) + logGamma(b) - logGamma(a + b);
+  const front = Math.exp(Math.log(x) * a + Math.log(1 - x) * b - lbeta);
+  const useContinuedFraction = x < (a + 1) / (a + b + 2);
+  const cf = (x, a, b) => {
+    const maxIter = 200, eps = 1e-10;
+    let c = 1, d = 1 - ((a + b) * x) / (a + 1);
+    if (Math.abs(d) < 1e-30) d = 1e-30;
+    d = 1 / d;
+    let h = d;
+    for (let m = 1; m <= maxIter; m++) {
+      const m2 = 2 * m;
+      let aa = (m * (b - m) * x) / ((a + m2 - 1) * (a + m2));
+      d = 1 + aa * d; if (Math.abs(d) < 1e-30) d = 1e-30;
+      c = 1 + aa / c; if (Math.abs(c) < 1e-30) c = 1e-30;
+      d = 1 / d; h *= d * c;
+      aa = (-(a + m) * (a + b + m) * x) / ((a + m2) * (a + m2 + 1));
+      d = 1 + aa * d; if (Math.abs(d) < 1e-30) d = 1e-30;
+      c = 1 + aa / c; if (Math.abs(c) < 1e-30) c = 1e-30;
+      d = 1 / d;
+      const del = d * c; h *= del;
+      if (Math.abs(del - 1) < eps) break;
+    }
+    return h;
+  };
+  if (useContinuedFraction) {
+    return (front * cf(x, a, b)) / a;
+  } else {
+    return 1 - (front * cf(1 - x, b, a)) / b;
+  }
+}
+function logGamma(x) {
+  const g = 7;
+  const c = [
+    0.99999999999980993, 676.5203681218851, -1259.1392167224028,
+    771.32342877765313, -176.61502916214059, 12.507343278686905,
+    -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7
+  ];
+  if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - logGamma(1 - x);
+  x -= 1;
+  let a = c[0];
+  const t = x + g + 0.5;
+  for (let i = 1; i < g + 2; i++) a += c[i] / (x + i);
+  return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a);
+}
+// t統計量とその自由度から、両側検定のp値を求める（t分布とベータ関数の関係を利用）。
+function tDistPValue(t, df) {
+  if (!Number.isFinite(t) || df <= 0) return 1;
+  const x = df / (df + t * t);
+  return incompleteBeta(x, df / 2, 0.5);
+}
+// Benjamini–Hochberg法によるFDR補正。複数の相関を同時に見るときに、偶然の「有意」を抑える。
+// 戻り値は、入力と同じ順序の boolean 配列（true = 補正後も有意）。
+function benjaminiHochberg(pValues, fdr) {
+  const indexed = pValues.map((p, i) => ({ p, i })).filter((x) => x.p != null).sort((a, b) => a.p - b.p);
+  const m = indexed.length;
+  const result = new Array(pValues.length).fill(false);
+  let cutoffRank = -1;
+  for (let k = 0; k < m; k++) {
+    if (indexed[k].p <= ((k + 1) / m) * fdr) cutoffRank = k;
+  }
+  for (let k = 0; k <= cutoffRank; k++) result[indexed[k].i] = true;
+  return result;
+}
+// Hedges' g（小標本バイアス補正つきの効果量）と95%信頼区間。
+function computeHedgesG(group1, group0) {
+  const n1 = group1.length, n0 = group0.length;
+  if (n1 < 2 || n0 < 2) return null;
+  const mean = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+  const variance = (arr, m) => arr.reduce((s, v) => s + Math.pow(v - m, 2), 0) / (arr.length - 1);
+  const m1 = mean(group1), m0 = mean(group0);
+  const s1 = variance(group1, m1), s0 = variance(group0, m0);
+  const sPooled = Math.sqrt(((n1 - 1) * s1 + (n0 - 1) * s0) / (n1 + n0 - 2));
+  if (sPooled === 0) return null;
+  const J = 1 - 3 / (4 * (n1 + n0) - 9);
+  const g = ((m1 - m0) / sPooled) * J;
+  const se = Math.sqrt((n1 + n0) / (n1 * n0) + (g * g) / (2 * (n1 + n0)));
+  return { g, ciLow: g - 1.96 * se, ciHigh: g + 1.96 * se, n1, n0, m1, m0 };
+}
+function starRatingForEffect(res) {
+  if (!res) return 0;
+  const { n1, n0, g, ciLow, ciHigh } = res;
+  if (n1 < 3 || n0 < 3) return 0;
+  let stars = 1;
+  const crossesZero = ciLow <= 0 && ciHigh >= 0;
+  if (!crossesZero) stars = 2;
+  if (!crossesZero && Math.abs(g) >= 0.5) stars = 3;
+  if (!crossesZero && Math.abs(g) >= 0.5 && n1 >= 10 && n0 >= 10) stars = 4;
+  return stars;
+}
+// ---- 統計ヘルパー ここまで ----
+function getCorrelationData(entries, targetKey, targetFilter, t) {
   const list = Object.values(entries).filter(targetFilter);
   return FACTORS.filter((f) => f.key !== targetKey).map((f) => {
     const pairs = list
       .map((e) => ({ x: e[f.key], y: e[targetKey] }))
       .filter((p) => typeof p.x === "number" && typeof p.y === "number");
     const r = pairs.length >= 3 ? pearson(pairs.map((p) => p.x), pairs.map((p) => p.y)) : null;
-    return { key: f.key, label: f.label, unit: f.unit, r, n: pairs.length, pairs };
+    return { key: f.key, label: t(f.labelKey), unit: f.unitKey ? t(f.unitKey) : f.unit, r, n: pairs.length, pairs };
   });
 }
-function correlationLabel(r) {
+function correlationLabel(r, t) {
   const abs = Math.abs(r);
-  const dir = r >= 0 ? "正の" : "負の";
-  if (abs >= 0.7) return `強い${dir}相関があります。`;
-  if (abs >= 0.4) return `中程度の${dir}相関があります。`;
-  if (abs >= 0.2) return `弱い${dir}相関があります。`;
-  return "ほとんど相関は見られません。";
+  const pos = r >= 0;
+  if (abs >= 0.7) return t(pos ? "corrStrongPos" : "corrStrongNeg");
+  if (abs >= 0.4) return t(pos ? "corrModeratePos" : "corrModerateNeg");
+  if (abs >= 0.2) return t(pos ? "corrWeakPos" : "corrWeakNeg");
+  return t("corrNone");
 }
-function generateInsights(correlationResults, targetLabel) {
+function generateInsights(correlationResults, targetLabel, t) {
   return correlationResults
     .filter((r) => r.r != null && Math.abs(r.r) >= 0.4 && r.n >= 5)
     .sort((a, b) => Math.abs(b.r) - Math.abs(a.r))
     .slice(0, 3)
     .map((r) => {
-      const strength = Math.abs(r.r) >= 0.7 ? "はっきりとした" : "ある程度の";
-      const action = r.r >= 0
-        ? `${r.label}を意識して増やす・整えると、${targetLabel}にも良い影響がありそうです。`
-        : `${r.label}が多い日は${targetLabel}が下がる傾向があるので、控えめにする・対策を取るのが良さそうです。`;
-      return { key: r.key, text: `「${r.label}」と${strength}関連が見られます（r=${r.r.toFixed(2)}、${r.n}件）。${action}` };
+      const strength = Math.abs(r.r) >= 0.7 ? t("insightStrengthClear") : t("insightStrengthSome");
+      const actionTemplate = r.r >= 0 ? t("insightActionPos") : t("insightActionNeg");
+      const action = actionTemplate.replace(/\{factor\}/g, r.label).replace(/\{target\}/g, targetLabel);
+      const line = t("insightLine")
+        .replace(/\{factor\}/g, r.label)
+        .replace(/\{strength\}/g, strength)
+        .replace(/\{r\}/g, r.r.toFixed(2))
+        .replace(/\{n\}/g, r.n);
+      return { key: r.key, text: `${line}${action}` };
     });
 }
 function getLastLocation(entries, beforeDate) {
@@ -182,6 +835,35 @@ function getLastLocation(entries, beforeDate) {
   if (dates.length === 0) return "";
   const last = entries[dates[dates.length - 1]];
   return last && last.location ? last.location : "";
+}
+// lavoce-収集データ拡張案.md C-1: 指定した日が、直近の周期開始日から何日目かを計算する。
+// 周期開始日がまだ一度も記録されていなければ null を返す。
+function cycleDayForDate(dateISO, entries) {
+  const startDates = Object.keys(entries)
+    .filter((d) => d <= dateISO && entries[d] && entries[d].cycleStart)
+    .sort();
+  if (startDates.length === 0) return null;
+  const lastStart = startDates[startDates.length - 1];
+  const diffDays = Math.round((new Date(dateISO + "T00:00:00") - new Date(lastStart + "T00:00:00")) / 86400000);
+  return diffDays + 1;
+}
+// 記録と分析の順番設計 §4: 新しい日の「今日は？」を、決断させずに推測して既に選んでおく。
+// 優先順位: 直近8週の「同じ曜日」で最も多かった種別 → それが無ければ「自主練習」。
+// （指導者プランのレッスン日程・稽古ノートの予定は、いずれも本アプリ未実装のため対象外）
+// 推測が外れても実害はない（表示される欄が変わるだけ）ため、間違えたときの取り消し表示は不要。
+function guessTodayActivityKind(date, entries) {
+  const targetWeekday = new Date(date + "T00:00:00Z").getUTCDay();
+  const counts = {}; // "休養" も含めてカウントする
+  for (let i = 1; i <= 56; i++) {
+    const d = addDays(date, -i);
+    const entry = entries[d];
+    if (!entry) continue;
+    if (new Date(d + "T00:00:00Z").getUTCDay() !== targetWeekday) continue;
+    const kind = (entry.activities || []).length === 0 && entry.recovery ? "休養" : (entry.activities || [])[0] && entry.activities[0].kind;
+    if (kind) counts[kind] = (counts[kind] || 0) + 1;
+  }
+  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  return sorted.length > 0 ? sorted[0][0] : "自主練習";
 }
 function buildFormData(date, entries) {
   const existing = entries[date];
@@ -193,11 +875,36 @@ function buildFormData(date, entries) {
       voiceMemo: existing.voiceMemo || "",
       weather: existing.weather || "",
       mentalReason: existing.mentalReason || "",
+      mentalTags: existing.mentalTags || [],
       meals: existing.meals || [],
       exercises: existing.exercises || [],
       voiceCheckins: existing.voiceCheckins || {},
       waterBySlot: existing.waterBySlot || {},
-      activityDetail: existing.activityDetail || {}
+      activityDetail: existing.activityDetail || {},
+      wakeNote: existing.wakeNote || "",
+      routineNote: existing.routineNote || "",
+      resonanceScore: existing.resonanceScore ?? "",
+      bedtime: existing.bedtime || "",
+      dinnerTime: existing.dinnerTime || "",
+      dinnerTags: existing.dinnerTags || [],
+      loadDetail: existing.loadDetail || {},
+      cycleStart: existing.cycleStart || false,
+      medicationTags: existing.medicationTags || [],
+      ambientNoiseDb: existing.ambientNoiseDb ?? "",
+      flightHours: existing.flightHours ?? "",
+      jetlagHours: existing.jetlagHours ?? "",
+      pianissimoHighNote: existing.pianissimoHighNote || "",
+      pianissimoOnsetDelay: existing.pianissimoOnsetDelay || false,
+      speakingLevel: existing.speakingLevel ?? null,
+      noisyEnvironment: existing.noisyEnvironment || false,
+      cppsValue: existing.cppsValue ?? "",
+      exerciseLevel: existing.exerciseLevel ?? null,
+      bodyFatPct: existing.bodyFatPct ?? "",
+      proteinLevel: existing.proteinLevel ?? null,
+      voiceEntries: existing.voiceEntries || [],
+      calorieLevel: existing.calorieLevel ?? null,
+      activities: existing.activities || [],
+      recovery: existing.recovery || null
     };
   }
   return {
@@ -208,31 +915,85 @@ function buildFormData(date, entries) {
     throatSymptomsOther: "",
     voiceMemo: "",
     voiceCheckins: {},
+    wakeNote: "",
+    routineNote: "",
+    resonanceScore: "",
     sleepHours: 7,
     sleepQuality: 3,
+    bedtime: "",
     waterBySlot: {},
     mealNotes: "",
+    dinnerTime: "",
+    dinnerTags: [],
     location: getLastLocation(entries, date),
     weather: "",
     temperature: "",
     humidity: "",
-    activityType: "自主練習",
-    activityDuration: "",
-    activityDetail: {},
-    repertoire: "",
     performanceQuality: null,
     ease: 3,
     mentalReason: "",
+    mentalTags: [],
     notes: "",
     weightKg: "",
     meals: [],
-    exercises: []
+    exercises: [],
+    loadDetail: {},
+    cycleStart: false,
+    medicationTags: [],
+    ambientNoiseDb: "",
+    flightHours: "",
+    jetlagHours: "",
+    pianissimoHighNote: "",
+    pianissimoOnsetDelay: false,
+    speakingLevel: null,
+    noisyEnvironment: false,
+    cppsValue: "",
+    exerciseLevel: null,
+    bodyFatPct: "",
+    proteinLevel: null,
+    calorieLevel: null,
+    // lavoce-記録項目の再設計v2.md §3.1: 声の記録は1件でよい（総合欄は存在しない）。
+    // 1件目はcontext:'wake'（起き抜け）を既定にする。
+    voiceEntries: [newVoiceEntry(date, "wake")],
+    // lavoce-曲目複数化パッチ.md: 活動は「1日1つ」ではなくブロックの配列。
+    // 記録と分析の順番設計 §4: 既定は固定の「自主練習」ではなく、直近8週の同じ曜日の推測から選ぶ。
+    ...(() => {
+      const guessed = guessTodayActivityKind(date, entries);
+      return guessed === "休養"
+        ? { activities: [], recovery: { methods: [], note: "" } }
+        : { activities: [newActivityBlock(guessed, 0)], recovery: null };
+    })()
   };
 }
 function computeBMI(weightKg, heightCm) {
   if (!weightKg || !heightCm) return null;
   const h = heightCm / 100;
   return weightKg / (h * h);
+}
+// lavoce-記録項目の再設計v2.md §3.5: BMI・体重レンジ表示を廃止し、エネルギー可用性（EA）に置換する。
+// Deurenberg et al. (1991) の式による体脂肪率の推定。標準誤差は約4.1%BF（変動係数16%）で、
+// 鍛えている人・痩せている人ほど誤差が大きいため、推定値である旨を必ず画面に明示すること。
+function estimateBodyFatPct(bmi, age, sex) {
+  if (bmi == null || age == null || (sex !== "男性" && sex !== "女性")) return null;
+  const sexFactor = sex === "男性" ? 1 : 0;
+  return 1.20 * bmi + 0.23 * age - 10.8 * sexFactor - 5.4;
+}
+// 除脂肪体重 FFM。体組成計の実測（体脂肪率）があれば優先し、なければDeurenberg式で推定する。
+function computeFFM(weightKg, heightCm, age, sex, measuredBodyFatPct) {
+  if (!weightKg) return null;
+  if (typeof measuredBodyFatPct === "number") {
+    return { ffm: weightKg * (1 - measuredBodyFatPct / 100), isEstimated: false };
+  }
+  const bmi = computeBMI(weightKg, heightCm);
+  const estimated = estimateBodyFatPct(bmi, age, sex);
+  if (estimated == null) return null;
+  return { ffm: weightKg * (1 - estimated / 100), isEstimated: true };
+}
+// エネルギー可用性 EA = (摂取エネルギー − 運動によるエネルギー消費) / FFM(kg)。
+// 目安は45kcal/kgFFM/日前後が十分、30を下回る状態が継続すると低EA。単一日では断定しない。
+function computeEnergyAvailability(intakeKcal, exerciseKcal, ffmKg) {
+  if (!ffmKg || ffmKg <= 0 || intakeKcal == null) return null;
+  return (intakeKcal - (exerciseKcal || 0)) / ffmKg;
 }
 function healthyWeightRange(heightCm) {
   if (!heightCm) return null;
@@ -252,7 +1013,7 @@ function newMealItem(slot = "朝食") {
 function buildFoodLibrary(entries, currentMeals) {
   const map = new Map();
   FOOD_PRESETS.forEach((f) => {
-    map.set(f.name, { name: f.name, carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber, isPreset: true, unit: f.unit || null, unitWeight: f.unitWeight || null, date: "0000-00-00" });
+    map.set(f.name, { name: f.name, reading: f.reading || null, i18n: f.i18n || null, category: f.category || null, nativeTerm: f.nativeTerm || null, carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber, isPreset: true, unit: f.unit || null, unitWeight: f.unitWeight || null, date: "0000-00-00" });
   });
   const consider = (meals, date) => {
     (meals || []).forEach((m) => {
@@ -302,16 +1063,79 @@ function computeNutritionTargets(weightKg, heightCm, age, sex, phase, proteinCoe
   const fiberTarget = sex === "男性" ? 21 : sex === "女性" ? 18 : 20;
   return { calorieTarget, proteinTarget, fatTarget, carbsTarget, fiberTarget, usedPreciseFormula };
 }
+// lavoce-記録項目の再設計v2.md §3.4: 食品を数えさせない簡易モード。
+// 「しっかり摂った／ふつう／少なめ」の3択から、体重と目標係数をもとにg/kgを推定する。
+// カロリーも同様に3択で、目標に対する比率として推定する。
+function estimateSimpleMealMacros(targets, proteinLevel, calorieLevel) {
+  if (!targets) return null;
+  const proteinMultiplier = [0.7, 1.0, 1.3][proteinLevel] ?? 1.0;
+  const calorieMultiplier = [0.85, 1.0, 1.15][calorieLevel] ?? 1.0;
+  const proteinG = targets.proteinTarget * proteinMultiplier;
+  const totalKcal = targets.calorieTarget * calorieMultiplier;
+  const proteinKcal = proteinG * 4;
+  const remainingKcal = Math.max(0, totalKcal - proteinKcal);
+  const carbsKcalTarget = targets.carbsTarget * 4;
+  const fatKcalTarget = targets.fatTarget * 9;
+  const remainingTargetKcal = carbsKcalTarget + fatKcalTarget;
+  const carbsG = remainingTargetKcal > 0 ? (remainingKcal * (carbsKcalTarget / remainingTargetKcal)) / 4 : 0;
+  const fatG = remainingTargetKcal > 0 ? (remainingKcal * (fatKcalTarget / remainingTargetKcal)) / 9 : 0;
+  return { proteinG, carbsG, fatG, fiberG: targets.fiberTarget || 0, totalKcal };
+}
 function evaluateIntake(actual, target) {
   if (!target || target <= 0) return null;
   const ratio = actual / target;
-  if (ratio < 0.8) return { label: "不足", color: C.curtain };
-  if (ratio <= 1.1) return { label: "適正", color: C.sage };
-  if (ratio <= 1.3) return { label: "やや過剰", color: C.gold };
-  return { label: "過剰", color: C.rust };
+  if (ratio < 0.8) return { labelKey: "evalInsufficient", color: C.curtain };
+  if (ratio <= 1.1) return { labelKey: "evalAppropriate", color: C.sage };
+  if (ratio <= 1.3) return { labelKey: "evalSlightlyExcess", color: C.gold };
+  return { labelKey: "evalExcess", color: C.rust };
 }
 function newExerciseItem() {
   return { id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, type: "有酸素運動", minutes: "", intensity: 3, memo: "" };
+}
+// lavoce-曲目複数化パッチ.md §2.0/§6: 活動ブロックと、その中の曲目アイテムのファクトリ関数
+const ACTIVITY_BLOCK_KINDS = ["自主練習", "レッスン", "リハーサル", "本番"]; // 休養は recovery 側で扱うためここには含めない
+function newActivityBlock(kind, order) {
+  return {
+    id: `act-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    kind: kind || "自主練習",
+    startAt: "",
+    minutes: "",
+    items: [],
+    order: order || 0,
+    detail: {}
+  };
+}
+function newActivityItem(order) {
+  return { repertoireName: "", minutesOverride: null, order: order || 0 };
+}
+// lavoce-記録項目の再設計v2.md §3.1: 声の記録を1件追加するときの初期値。
+// 既定の場面は「その他」。時刻は現在時刻を既定にする（記録項目v2の指定通り）。
+const VOICE_CONTEXT_OPTIONS = [
+  { key: "wake", label: "起き抜け" },
+  { key: "after_routine", label: "ルーティン後" },
+  { key: "before_work", label: "本番前" },
+  { key: "after_work", label: "本番後" },
+  { key: "other", label: "その他" }
+];
+function newVoiceEntry(date, context) {
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2, "0");
+  const mm = String(now.getMinutes()).padStart(2, "0");
+  return {
+    id: `voice-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    date,
+    at: `${hh}:${mm}`,
+    context: context || "other",
+    bodyFeel: 3,
+    quality: 5,
+    pitchChest: "",
+    pitchSoftMax: "",
+    symptoms: [],
+    note: "",
+    // 稽古ノートの「息の支え」「音色の均一」タグに対応する任意項目（作業計画v2で「まだ記録機能がない」とされていたもの）
+    mptSeconds: null,
+    toneEvenness: null
+  };
 }
 function updateVoiceCheckin(f, slotKey, field, value) {
   const checkins = { ...(f.voiceCheckins || {}) };
@@ -336,7 +1160,206 @@ function describeArc(cx, cy, r, startAngle, endAngle) {
 }
 
 /* ---------- DB row <-> app-shape mapping ---------- */
+// lavoce-曲目複数化パッチ.md §8: 既存データ（単一の活動フィールド）を、読み込み時点で
+// 新しい activities[] 構造に合成する互換レイヤー。DBを一括で書き換えず、古い記録もそのまま動く。
+function migrateLegacyToActivities(row) {
+  if (row.activities && Array.isArray(row.activities) && row.activities.length > 0) {
+    return { activities: row.activities, recovery: row.recovery || null };
+  }
+  if (row.activity_type === "休養") {
+    return {
+      activities: [],
+      recovery: row.recovery || {
+        methods: (row.activity_detail && row.activity_detail.restMethods) || [],
+        note: (row.activity_detail && row.activity_detail.restMethodOther) || ""
+      }
+    };
+  }
+  if (row.activity_type) {
+    const items = row.repertoire && row.repertoire.trim()
+      ? [{ repertoireName: row.repertoire.trim(), minutesOverride: null, order: 0 }]
+      : [];
+    return {
+      activities: [{
+        id: `migrated-${row.date}`,
+        kind: row.activity_type,
+        startAt: "",
+        minutes: typeof row.activity_duration === "number" ? row.activity_duration : 0,
+        items,
+        order: 0,
+        detail: row.activity_detail || {},
+        source: "migrated"
+      }],
+      recovery: row.recovery || null
+    };
+  }
+  return { activities: row.activities || [], recovery: row.recovery || null };
+}
+// lavoce-作業計画v2-構造変更の分離.md §5 Step1（読み取り互換レイヤー）+ Step3（移行ロジック）。
+// 声の構造変更の第一段階：新旧どちらの形でも常に VoiceEntry[] を返す。
+// 【重要】既存の throat_condition / voice_quality / voice_checkins などのフィールドは
+// 一切変更しない。ここは「読み取り時に合成するだけ」の追加レイヤーで、書き込みはまだ旧形式のまま。
+const VOICE_QUALITY_SLOT_TIME = { "朝": "08:00", "昼": "13:00", "晩": "20:00" };
+const VOICE_QUALITY_SLOT_CONTEXT = { "朝": "wake", "昼": "before_work", "晩": "after_work" };
+// 声の調子（5段階）を、quality の内部表現（常に0〜10）に変換する。記録項目v2 §3.2準拠。
+function fiveScaleToQuality10(v) {
+  if (typeof v !== "number") return null;
+  return ((v - 1) / 4) * 10;
+}
+function migrateLegacyToVoiceEntries(row) {
+  // 新形式（voice_entriesを直接持つ場合）はそのまま返す。将来Step4で書き込みを切り替えた後に使う経路。
+  if (row.voice_entries && Array.isArray(row.voice_entries) && row.voice_entries.length > 0) {
+    return row.voice_entries;
+  }
+  const entries = [];
+  const checkins = row.voice_checkins || {};
+  const hasCheckins = Object.keys(checkins).some((k) => checkins[k] && (typeof checkins[k].throat === "number" || typeof checkins[k].voice === "number"));
+
+  if (hasCheckins) {
+    // 朝/昼/晩の3枠を、時刻つきのVoiceEntry 3件に分解する（記録項目v2 §6の移行表）。
+    Object.keys(VOICE_QUALITY_SLOT_TIME).forEach((slot) => {
+      const c = checkins[slot];
+      if (!c || (typeof c.throat !== "number" && typeof c.voice !== "number")) return;
+      entries.push({
+        id: `migrated-${row.date}-${slot}`,
+        date: row.date,
+        at: VOICE_QUALITY_SLOT_TIME[slot],
+        context: VOICE_QUALITY_SLOT_CONTEXT[slot],
+        bodyFeel: typeof c.throat === "number" ? c.throat : null,
+        quality: fiveScaleToQuality10(c.voice),
+        pitchChest: null,
+        pitchSoftMax: null,
+        symptoms: [],
+        note: "",
+        source: "migrated"
+      });
+    });
+  } else if (typeof row.throat_condition === "number" || typeof row.voice_quality === "number" || typeof row.resonance_score === "number") {
+    // 総合の1組だけの日は、正午のVoiceEntry 1件にまとめる。
+    entries.push({
+      id: `migrated-${row.date}-total`,
+      date: row.date,
+      at: "12:00",
+      context: "other",
+      bodyFeel: typeof row.throat_condition === "number" ? row.throat_condition : null,
+      // 響きスコア（0-10）があればそちらを優先し、なければ声の調子（5段階）を0-10に変換する。
+      quality: typeof row.resonance_score === "number" ? row.resonance_score : fiveScaleToQuality10(row.voice_quality),
+      pitchChest: null,
+      pitchSoftMax: null,
+      symptoms: row.throat_symptoms || [],
+      note: row.voice_memo || "",
+      source: "migrated"
+    });
+  }
+
+  // 起き抜け／弱声の最高音は、どちらも context:'wake' なので同じエントリにまとめる。
+  // 既に「起き抜け」のエントリが無ければ新規に作る（総合の値とは独立に存在しうるため）。
+  if (row.wake_note || row.pianissimo_high_note) {
+    let wakeEntry = entries.find((e) => e.context === "wake");
+    if (!wakeEntry) {
+      wakeEntry = {
+        id: `migrated-${row.date}-wake`,
+        date: row.date,
+        at: "07:00",
+        context: "wake",
+        bodyFeel: null,
+        quality: null,
+        pitchChest: null,
+        pitchSoftMax: null,
+        symptoms: entries.length === 0 ? (row.throat_symptoms || []) : [],
+        note: "",
+        source: "migrated"
+      };
+      entries.push(wakeEntry);
+    }
+    if (row.wake_note) wakeEntry.pitchChest = row.wake_note;
+    if (row.pianissimo_high_note) wakeEntry.pitchSoftMax = row.pianissimo_high_note;
+  }
+
+  if (row.routine_note) {
+    entries.push({
+      id: `migrated-${row.date}-routine`,
+      date: row.date,
+      at: "07:30",
+      context: "after_routine",
+      bodyFeel: null,
+      quality: null,
+      pitchChest: row.routine_note,
+      pitchSoftMax: null,
+      symptoms: [],
+      note: "",
+      source: "migrated"
+    });
+  }
+
+  return entries.sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0));
+}
+// 日次分析で使う「その日の代表値」を導出する（記録項目v2 §3.1）。ユーザーには入力させない。
+function deriveVoiceEntryRepresentatives(voiceEntries) {
+  if (!voiceEntries || voiceEntries.length === 0) return { bodyFeel: null, quality: null, wakeEntry: null, lastEntry: null, dayRange: null };
+  const median = (arr) => {
+    if (arr.length === 0) return null;
+    const sorted = [...arr].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+  };
+  const bodyFeelVals = voiceEntries.map((e) => e.bodyFeel).filter((v) => typeof v === "number");
+  const qualityVals = voiceEntries.map((e) => e.quality).filter((v) => typeof v === "number");
+  const sorted = [...voiceEntries].sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0));
+  const wakeEntry = voiceEntries.find((e) => e.context === "wake") || sorted[0] || null;
+  const lastEntry = sorted[sorted.length - 1] || null;
+  return {
+    bodyFeel: median(bodyFeelVals),
+    quality: median(qualityVals),
+    wakeEntry,
+    lastEntry,
+    // 日内変動 = 最終エントリ − 起き抜けエントリ（記録項目v2 §3.1）
+    dayRange: (wakeEntry && lastEntry && wakeEntry !== lastEntry && typeof wakeEntry.bodyFeel === "number" && typeof lastEntry.bodyFeel === "number")
+      ? lastEntry.bodyFeel - wakeEntry.bodyFeel
+      : null
+  };
+}
+// quality（内部は常に0-10）を、既存の5段階表示に戻す（fiveScaleToQuality10の逆変換）。
+function quality10ToFiveScale(q) {
+  if (typeof q !== "number") return null;
+  return 1 + (q / 10) * 4;
+}
+// lavoce-作業計画v2-構造変更の分離.md §5 Step4: 新しい VoiceEntry[] から、
+// 既存の数十個の分析機能が読んでいる旧フィールド（throat_condition等）を逆算する。
+// これにより「書き込みを新構造に切り替える」段階でも、既存の分析コードを一切変更せずに動かし続けられる。
+// 新形式で入力されたエントリが1件でもあれば、旧フィールドはこの関数の結果で「上書き」される
+// （つまり新形式が唯一の真実のソースになり、旧フィールドは常にそこから導出される派生値になる）。
+function deriveLegacyVoiceFieldsFromEntries(voiceEntries) {
+  if (!voiceEntries || voiceEntries.length === 0) return null;
+  const rep = deriveVoiceEntryRepresentatives(voiceEntries);
+  const wakeEntry = voiceEntries.find((e) => e.context === "wake") || null;
+  const routineEntry = voiceEntries.find((e) => e.context === "after_routine") || null;
+  // 全エントリの症状・一口メモを合算する（どのエントリで書いても分析・記録に反映されるように）。
+  const allSymptoms = [...new Set(voiceEntries.flatMap((e) => e.symptoms || []))];
+  const firstNote = voiceEntries.map((e) => e.note).find((n) => n && n.trim()) || "";
+  // 朝/昼/晩の3枠（時間帯別分析用）。該当する場面のエントリがあれば、そこから再構成する。
+  const checkins = {};
+  const contextToSlot = { wake: "朝", before_work: "昼", after_work: "晩" };
+  voiceEntries.forEach((e) => {
+    const slot = contextToSlot[e.context];
+    if (!slot) return;
+    checkins[slot] = { throat: e.bodyFeel ?? null, voice: quality10ToFiveScale(e.quality) };
+  });
+  return {
+    throatCondition: rep.bodyFeel,
+    voiceQuality: quality10ToFiveScale(rep.quality),
+    resonanceScore: rep.quality, // resonance_scoreは元々0-10なので、qualityとそのまま対応する
+    wakeNote: wakeEntry ? wakeEntry.pitchChest || null : null,
+    routineNote: routineEntry ? routineEntry.pitchChest || null : null,
+    pianissimoHighNote: wakeEntry ? wakeEntry.pitchSoftMax || null : null,
+    throatSymptoms: allSymptoms,
+    voiceMemo: firstNote,
+    voiceCheckins: checkins
+  };
+}
 function rowToEntry(row) {
+  const { activities, recovery } = migrateLegacyToActivities(row);
+  const voiceEntries = migrateLegacyToVoiceEntries(row);
   return {
     date: row.date,
     throatCondition: row.throat_condition,
@@ -356,6 +1379,9 @@ function rowToEntry(row) {
     ease: row.ease,
     notes: row.notes || "",
     weightKg: row.weight_kg,
+    bodyFatPct: row.body_fat_pct,
+    proteinLevel: row.protein_level,
+    calorieLevel: row.calorie_level,
     carbs: row.carbs_g,
     protein: row.protein_g,
     fat: row.fat_g,
@@ -367,49 +1393,361 @@ function rowToEntry(row) {
     waterBySlot: row.water_by_slot || {},
     weather: row.weather || "",
     mentalReason: row.mental_reason || "",
+    mentalTags: row.mental_tags || [],
     throatSymptomsOther: row.throat_symptoms_other || "",
     voiceMemo: row.voice_memo || "",
-    activityDetail: row.activity_detail || {}
+    activityDetail: row.activity_detail || {},
+    wakeNote: row.wake_note || "",
+    routineNote: row.routine_note || "",
+    resonanceScore: row.resonance_score,
+    bedtime: row.bedtime || "",
+    dinnerTime: row.dinner_time || "",
+    dinnerTags: row.dinner_tags || [],
+    loadDetail: row.load_detail || {},
+    cycleStart: row.cycle_start || false,
+    medicationTags: row.medication_tags || [],
+    ambientNoiseDb: row.ambient_noise_db,
+    flightHours: row.flight_hours,
+    jetlagHours: row.jetlag_hours,
+    pianissimoHighNote: row.pianissimo_high_note || "",
+    pianissimoOnsetDelay: row.pianissimo_onset_delay || false,
+    speakingLevel: row.speaking_level,
+    noisyEnvironment: row.noisy_environment || false,
+    cppsValue: row.cpps_value,
+    exerciseLevel: row.exercise_level,
+    activities,
+    recovery,
+    voiceEntries
   };
 }
 function numOrNull(v) {
   return v === "" || v === undefined ? null : v;
 }
+function computeTimeGapHours(startTime, endTime) {
+  if (!startTime || !endTime) return null;
+  const [sh, sm] = startTime.split(":").map(Number);
+  const [eh, em] = endTime.split(":").map(Number);
+  if ([sh, sm, eh, em].some((n) => Number.isNaN(n))) return null;
+  let diff = (eh * 60 + em) - (sh * 60 + sm);
+  if (diff < 0) diff += 24 * 60; // 日をまたぐ場合（例: 夕食19:00→就寝1:00）
+  return roundTo1(diff / 60);
+}
+// lavoce-収集データ拡張案.md D節: スマホのマイクで環境騒音レベルを測定する（A-2の自動版）。
+// キャリブレーションされたマイクではないため、あくまで「参考値」としての推定dB。
+// マイクの音声データ自体は端末内で処理するだけで、サーバーには送らない・保存しない。
+async function measureAmbientNoise(durationMs = 2000) {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    throw new Error("このブラウザではマイクを使用できません");
+  }
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const audioContext = new AudioCtx();
+    const source = audioContext.createMediaStreamSource(stream);
+    const analyser = audioContext.createAnalyser();
+    analyser.fftSize = 2048;
+    source.connect(analyser);
+    const dataArray = new Float32Array(analyser.fftSize);
+    const samples = [];
+    const start = Date.now();
+    await new Promise((resolve) => {
+      function sample() {
+        analyser.getFloatTimeDomainData(dataArray);
+        let sumSquares = 0;
+        for (let i = 0; i < dataArray.length; i++) sumSquares += dataArray[i] * dataArray[i];
+        samples.push(Math.sqrt(sumSquares / dataArray.length));
+        if (Date.now() - start < durationMs) {
+          requestAnimationFrame(sample);
+        } else {
+          resolve();
+        }
+      }
+      sample();
+    });
+    await audioContext.close();
+    const avgRms = samples.length ? samples.reduce((a, b) => a + b, 0) / samples.length : 0;
+    const dbfs = avgRms > 0 ? 20 * Math.log10(avgRms) : -100;
+    // dBFS（デジタル満杯を0とする相対値）を、体感的に馴染みのある実世界のdB表示に近づけるための
+    // ざっくりした補正。正式な音圧レベル（dB SPL）ではなく、あくまで日ごとの相対比較用の目安。
+    return Math.round(Math.max(30, Math.min(110, 90 + dbfs)));
+  } finally {
+    stream.getTracks().forEach((track) => track.stop());
+  }
+}
+// ---- lavoce-収集データ拡張案.md A-3: CPPS（平滑化ケプストラムピーク突出度）計算用のDSP一式 ----
+// 基数2クーリー・タッキーFFT（in-place）。fftSize は2の累乗である必要がある。
+function fftInPlace(real, imag) {
+  const n = real.length;
+  for (let i = 1, j = 0; i < n; i++) {
+    let bit = n >> 1;
+    for (; j & bit; bit >>= 1) j ^= bit;
+    j ^= bit;
+    if (i < j) {
+      [real[i], real[j]] = [real[j], real[i]];
+      [imag[i], imag[j]] = [imag[j], imag[i]];
+    }
+  }
+  for (let len = 2; len <= n; len <<= 1) {
+    const ang = (-2 * Math.PI) / len;
+    const wr0 = Math.cos(ang), wi0 = Math.sin(ang);
+    for (let i = 0; i < n; i += len) {
+      let curWr = 1, curWi = 0;
+      for (let j = 0; j < len / 2; j++) {
+        const ur = real[i + j], ui = imag[i + j];
+        const half = i + j + len / 2;
+        const vr = real[half] * curWr - imag[half] * curWi;
+        const vi = real[half] * curWi + imag[half] * curWr;
+        real[i + j] = ur + vr; imag[i + j] = ui + vi;
+        real[half] = ur - vr; imag[half] = ui - vi;
+        const nextWr = curWr * wr0 - curWi * wi0;
+        const nextWi = curWr * wi0 + curWi * wr0;
+        curWr = nextWr; curWi = nextWi;
+      }
+    }
+  }
+}
+function hannWindow(n) {
+  const w = new Float64Array(n);
+  for (let i = 0; i < n; i++) w[i] = 0.5 - 0.5 * Math.cos((2 * Math.PI * i) / (n - 1));
+  return w;
+}
+// 頑健な直線回帰（IRLS: 反復重み付け最小二乗法、Huber重み）。
+// Praatの仕様書は「通常の最小二乗法はピーク自身に直線が引っ張られて精度が落ちる」として
+// デフォルトでTheilの頑健回帰を使うと明記しているため、それに準じた近似をここで行う。
+// 通常のOLSで初期直線を引いた後、残差の大きい点（＝ピーク自身など）の重みを下げて再フィットする。
+function robustLinearFitPredict(xs, ys, predictAtX) {
+  const n = xs.length;
+  if (n < 2) return ys[0] || 0;
+  let weights = new Array(n).fill(1);
+  let slope = 0, intercept = 0;
+  for (let iter = 0; iter < 4; iter++) {
+    let sw = 0, swx = 0, swy = 0, swxx = 0, swxy = 0;
+    for (let i = 0; i < n; i++) {
+      const w = weights[i];
+      sw += w; swx += w * xs[i]; swy += w * ys[i];
+      swxx += w * xs[i] * xs[i]; swxy += w * xs[i] * ys[i];
+    }
+    const denom = sw * swxx - swx * swx;
+    if (Math.abs(denom) < 1e-9) break;
+    slope = (sw * swxy - swx * swy) / denom;
+    intercept = (swy - slope * swx) / sw;
+    // 残差からHuber重みを再計算（残差が大きい点＝外れ値ほど重みを下げる）
+    const residuals = xs.map((x, i) => ys[i] - (intercept + slope * x));
+    const absRes = residuals.map(Math.abs).sort((a, b) => a - b);
+    const mad = absRes[Math.floor(n / 2)] || 1e-6;
+    const scale = Math.max(1.4826 * mad, 1e-6);
+    const k = 1.345 * scale;
+    weights = residuals.map((r) => (Math.abs(r) <= k ? 1 : k / Math.abs(r)));
+  }
+  return intercept + slope * predictAtX;
+}
+// 1フレーム分のCPP（ケプストラムピーク突出度、dB）を計算する。
+// ①窓かけ済みフレームをFFT → 対数振幅スペクトル(dB) → それを再度FFTしてケプストラムを得る
+// ②ケプストラム上で、想定F0範囲（60〜400Hz）に対応するクフレンシー区間の最大値を探す
+// ③その区間全体に回帰直線（ベースライン）をあてはめ、ピークとベースラインの差（突出度）を返す
+function computeCPPForFrame(windowedFrame, sampleRate, fftSize) {
+  const real = new Float64Array(fftSize);
+  const imag = new Float64Array(fftSize);
+  for (let i = 0; i < fftSize; i++) real[i] = windowedFrame[i];
+  fftInPlace(real, imag);
+  const logMag = new Float64Array(fftSize);
+  for (let i = 0; i < fftSize; i++) {
+    const mag = Math.sqrt(real[i] * real[i] + imag[i] * imag[i]);
+    logMag[i] = 20 * Math.log10(mag + 1e-6);
+  }
+  const cepReal = new Float64Array(fftSize);
+  const cepImag = new Float64Array(fftSize);
+  for (let i = 0; i < fftSize; i++) cepReal[i] = logMag[i];
+  fftInPlace(cepReal, cepImag);
+  // fftInPlace は正規化しない生のDFTのため、逆変換相当のここでは 1/N を掛けて正規化する。
+  for (let i = 0; i < fftSize; i++) cepReal[i] /= fftSize;
+  const minQuefBin = Math.max(2, Math.round(sampleRate / 400)); // 400Hzに相当する最短周期
+  const maxQuefBin = Math.min(Math.floor(fftSize / 2) - 1, Math.round(sampleRate / 60)); // 60Hzに相当する最長周期
+  if (maxQuefBin <= minQuefBin) return null;
+  let peakIdx = minQuefBin, peakVal = -Infinity;
+  for (let i = minQuefBin; i <= maxQuefBin; i++) {
+    if (cepReal[i] > peakVal) { peakVal = cepReal[i]; peakIdx = i; }
+  }
+  // トレンド直線（背景ノイズの傾向線）は、Praatの仕様書に倣いピーク探索範囲より広い
+  // クフレンシー0.001〜0.05秒相当の範囲全体で当てはめる（狭い範囲だとピーク自身に直線が引っ張られやすい）。
+  const trendLoBin = Math.max(2, Math.round(sampleRate * 0.001));
+  const trendHiBin = Math.min(Math.floor(fftSize / 2) - 1, Math.round(sampleRate * 0.05));
+  const xs = [], ys = [];
+  for (let i = trendLoBin; i <= trendHiBin; i++) { xs.push(i); ys.push(cepReal[i]); }
+  const baselineAtPeak = robustLinearFitPredict(xs, ys, peakIdx);
+  return peakVal - baselineAtPeak;
+}
+// 録音全体からCPPS（フレームごとのCPPを時間方向に平滑化=平均した値）を求める。
+function computeCPPS(samples, sampleRate) {
+  const fftSize = 2048;
+  const hop = 1024;
+  const win = hannWindow(fftSize);
+  const cppValues = [];
+  for (let start = 0; start + fftSize <= samples.length; start += hop) {
+    const frame = new Float64Array(fftSize);
+    let energy = 0;
+    for (let i = 0; i < fftSize; i++) {
+      frame[i] = samples[start + i] * win[i];
+      energy += frame[i] * frame[i];
+    }
+    const rms = Math.sqrt(energy / fftSize);
+    if (rms < 0.005) continue; // 無音に近いフレームは声が乗っていないと判断して除外
+    const cpp = computeCPPForFrame(frame, sampleRate, fftSize);
+    if (cpp != null && Number.isFinite(cpp)) cppValues.push(cpp);
+  }
+  if (cppValues.length === 0) return null;
+  return cppValues.reduce((a, b) => a + b, 0) / cppValues.length;
+}
+// マイクからdurationMsぶん録音し、Blobとして返す。
+async function recordAudioBlob(durationMs) {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    throw new Error("このブラウザではマイクを使用できません");
+  }
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  try {
+    const recorder = new MediaRecorder(stream);
+    const chunks = [];
+    recorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) chunks.push(e.data); };
+    const stopped = new Promise((resolve) => { recorder.onstop = resolve; });
+    recorder.start();
+    await new Promise((resolve) => setTimeout(resolve, durationMs));
+    recorder.stop();
+    await stopped;
+    return new Blob(chunks, { type: recorder.mimeType || "audio/webm" });
+  } finally {
+    stream.getTracks().forEach((track) => track.stop());
+  }
+}
+// 録音Blobを、解析可能な生のPCMサンプル列（Float32Array）に変換する。
+async function decodeAudioBlob(blob) {
+  const arrayBuffer = await blob.arrayBuffer();
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  const audioContext = new AudioCtx();
+  try {
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+    return { samples: audioBuffer.getChannelData(0), sampleRate: audioBuffer.sampleRate };
+  } finally {
+    await audioContext.close();
+  }
+}
+// 「あー」を録音してCPPSを算出する、一連の流れをまとめた関数。
+// 録音データ自体（音声そのもの）はどこにも保存せず、数値化した後は破棄する。
+async function recordAndAnalyzeCPPS(durationMs = 5000) {
+  const blob = await recordAudioBlob(durationMs);
+  const { samples, sampleRate } = await decodeAudioBlob(blob);
+  const cpps = computeCPPS(samples, sampleRate);
+  if (cpps == null) throw new Error("声が十分に録音できませんでした。もう一度お試しください。");
+  return Math.round(cpps * 10) / 10;
+}
+// ---- CPPS計算用DSP ここまで ----
+// 前日の記録から、声のコンディションに影響しやすい要因を抽出する。
+// flagKey は「今日」タブの短い警告表示に、explainKey は分析タブの理論的な解説文に対応する。
+function computeConditionFlags(y) {
+  const dinnerGap = computeTimeGapHours(y.dinnerTime, y.bedtime);
+  const flags = [];
+  if (dinnerGap != null && dinnerGap < 3) flags.push({ flagKey: "flagDinnerGap", explainKey: "explainDinnerGap" });
+  if (typeof y.sleepHours === "number" && y.sleepHours < 6) flags.push({ flagKey: "flagShortSleep", explainKey: "explainShortSleep" });
+  if (entryHasActivityKind(y, "本番") || entryHasActivityKind(y, "リハーサル")) flags.push({ flagKey: "flagHeavyVoiceUse", explainKey: "explainHeavyVoiceUse" });
+  if ((y.dinnerTags || []).includes("アルコール")) flags.push({ flagKey: "flagAlcohol", explainKey: "explainAlcohol" });
+  if ((y.dinnerTags || []).includes("カフェイン")) flags.push({ flagKey: "flagCaffeine", explainKey: "explainCaffeine" });
+  return { dinnerGap, flags };
+}
+// activities[] の中から「その日の主たる活動」（時間が最長のブロック）を導出する。
+// これは保存しない派生値であり、旧フィールド（後方互換用）を埋めるためだけに使う。
+function derivePrimaryActivityLegacy(activities) {
+  if (!activities || activities.length === 0) return null;
+  return activities.reduce((a, b) => ((Number(b.minutes) || 0) >= (Number(a.minutes) || 0) ? b : a));
+}
+// その日のactivities[]の中に、指定した種別のブロックが1つでもあるか（例: 本番があった日の判定）。
+// 「主たる活動（最長のブロック）」だけを見ると、短い本番を自主練の後に入れた日を見逃すため、
+// 配列全体を確認する。
+function entryHasActivityKind(entry, kind) {
+  if (entry && Array.isArray(entry.activities) && entry.activities.length > 0) {
+    return entry.activities.some((a) => a.kind === kind);
+  }
+  return entry && entry.activityType === kind;
+}
 function entryToRow(userId, e) {
+  const activities = e.activities || [];
+  const primary = derivePrimaryActivityLegacy(activities);
+  const legacyRepertoire = activities
+    .flatMap((a) => (a.items || []).map((it) => (it.repertoireName || "").trim()))
+    .filter(Boolean)
+    .join("、");
+  const isRecoveryDay = activities.length === 0 && !!e.recovery;
+  // 本番ブロックはactivity.detail.performanceQualityに保存されるようになったため、
+  // 後方互換の日次フィールドはそこから導出する（複数の本番ブロックがあれば最初のものを採用）。
+  const performanceBlock = activities.find((a) => a.kind === "本番" && a.detail && a.detail.performanceQuality != null);
+  const derivedPerformanceQuality = performanceBlock ? performanceBlock.detail.performanceQuality : e.performanceQuality;
+  // §3.4: 簡易モード（食品を1件も記録していない）のときは、3択から推定したマクロを使う。
+  const hasDetailedMeals = (e.meals || []).length > 0;
+  const simpleMacros = !hasDetailedMeals ? e.simpleMealMacros : null;
+  // lavoce-作業計画v2-構造変更の分離.md §5 Step4: 声の記録を新しいVoiceEntry[]で
+  // 入力した日は、旧フィールド（throat_condition等）をそこから導出した値で保存する。
+  // 既存の数十個の分析機能はすべて旧フィールドを読むため、この導出だけで動き続ける。
+  const voiceLegacy = deriveLegacyVoiceFieldsFromEntries(e.voiceEntries);
   return {
     user_id: userId,
     date: e.date,
-    throat_condition: numOrNull(e.throatCondition),
-    voice_quality: numOrNull(e.voiceQuality),
-    throat_symptoms: e.throatSymptoms || [],
+    throat_condition: numOrNull(voiceLegacy ? voiceLegacy.throatCondition : e.throatCondition),
+    voice_quality: numOrNull(voiceLegacy ? voiceLegacy.voiceQuality : e.voiceQuality),
+    throat_symptoms: (voiceLegacy ? voiceLegacy.throatSymptoms : e.throatSymptoms) || [],
     sleep_hours: numOrNull(e.sleepHours),
     sleep_quality: numOrNull(e.sleepQuality),
     meal_notes: e.mealNotes,
     location: e.location,
     temperature: numOrNull(e.temperature),
     humidity: numOrNull(e.humidity),
-    activity_type: e.activityType,
-    activity_duration: numOrNull(e.activityDuration),
-    repertoire: e.repertoire,
-    performance_quality: numOrNull(e.performanceQuality),
+    // 以下4つは後方互換用の派生値。新しい読み込みはすべて activities / recovery を見る。
+    activity_type: primary ? primary.kind : (isRecoveryDay ? "休養" : (e.activityType || null)),
+    activity_duration: primary ? (Number(primary.minutes) || 0) : (isRecoveryDay ? 0 : numOrNull(e.activityDuration)),
+    repertoire: legacyRepertoire || null,
+    activity_detail: primary
+      ? (primary.detail || {})
+      : (isRecoveryDay ? { restMethods: e.recovery.methods || [], restMethodOther: e.recovery.note || "" } : (e.activityDetail || {})),
+    performance_quality: numOrNull(derivedPerformanceQuality),
     ease: numOrNull(e.ease),
     notes: e.notes,
     weight_kg: numOrNull(e.weightKg),
+    body_fat_pct: numOrNull(e.bodyFatPct),
+    protein_level: numOrNull(e.proteinLevel),
+    calorie_level: numOrNull(e.calorieLevel),
     water_intake: Object.values(e.waterBySlot || {}).reduce((total, v) => total + (Number(v) || 0), 0),
-    carbs_g: sumMacro(e.meals, "carbs"),
-    protein_g: sumMacro(e.meals, "protein"),
-    fat_g: sumMacro(e.meals, "fat"),
-    fiber_g: sumMacro(e.meals, "fiber"),
+    carbs_g: hasDetailedMeals ? sumMacro(e.meals, "carbs") : (simpleMacros ? simpleMacros.carbsG : numOrNull(e.carbs)),
+    protein_g: hasDetailedMeals ? sumMacro(e.meals, "protein") : (simpleMacros ? simpleMacros.proteinG : numOrNull(e.protein)),
+    fat_g: hasDetailedMeals ? sumMacro(e.meals, "fat") : (simpleMacros ? simpleMacros.fatG : numOrNull(e.fat)),
+    fiber_g: hasDetailedMeals ? sumMacro(e.meals, "fiber") : (simpleMacros ? simpleMacros.fiberG : numOrNull(e.fiber)),
     exercise_minutes: (e.exercises || []).reduce((total, x) => total + (Number(x.minutes) || 0), 0),
     meals: (e.meals || []).map((m) => ({ ...m, carbs: numOrNull(m.carbs), protein: numOrNull(m.protein), fat: numOrNull(m.fat), fiber: numOrNull(m.fiber) })),
     exercises: (e.exercises || []).map((x) => ({ ...x, minutes: numOrNull(x.minutes) })),
-    voice_checkins: e.voiceCheckins || {},
+    voice_checkins: (voiceLegacy ? voiceLegacy.voiceCheckins : e.voiceCheckins) || {},
     water_by_slot: e.waterBySlot || {},
     weather: e.weather || null,
     mental_reason: e.mentalReason || "",
+    mental_tags: e.mentalTags || [],
     throat_symptoms_other: e.throatSymptomsOther || "",
-    voice_memo: e.voiceMemo || "",
-    activity_detail: e.activityDetail || {}
+    voice_memo: (voiceLegacy ? voiceLegacy.voiceMemo : e.voiceMemo) || "",
+    wake_note: (voiceLegacy ? voiceLegacy.wakeNote : e.wakeNote) || "",
+    routine_note: (voiceLegacy ? voiceLegacy.routineNote : e.routineNote) || "",
+    resonance_score: numOrNull(voiceLegacy ? voiceLegacy.resonanceScore : e.resonanceScore),
+    bedtime: e.bedtime || "",
+    dinner_time: e.dinnerTime || "",
+    dinner_tags: e.dinnerTags || [],
+    load_detail: e.loadDetail || {},
+    cycle_start: !!e.cycleStart,
+    medication_tags: e.medicationTags || [],
+    ambient_noise_db: numOrNull(e.ambientNoiseDb),
+    flight_hours: numOrNull(e.flightHours),
+    jetlag_hours: numOrNull(e.jetlagHours),
+    pianissimo_high_note: (voiceLegacy ? voiceLegacy.pianissimoHighNote : e.pianissimoHighNote) || "",
+    pianissimo_onset_delay: !!e.pianissimoOnsetDelay,
+    speaking_level: numOrNull(e.speakingLevel),
+    noisy_environment: !!e.noisyEnvironment,
+    cpps_value: numOrNull(e.cppsValue),
+    exercise_level: numOrNull(e.exerciseLevel),
+    activities,
+    recovery: e.recovery || null,
+    voice_entries: e.voiceEntries || []
   };
 }
 
@@ -444,7 +1782,8 @@ function Gauge({ score, t }) {
   );
 }
 
-function DynamicsSelector({ label, icon: Icon, value, onChange }) {
+function DynamicsSelector({ label, icon: Icon, value, onChange, t }) {
+  const dynDescKeys = ["dynDesc1", "dynDesc2", "dynDesc3", "dynDesc4", "dynDesc5"];
   return (
     <div>
       <div className="flex items-center gap-2 mb-2">
@@ -473,7 +1812,7 @@ function DynamicsSelector({ label, icon: Icon, value, onChange }) {
           );
         })}
       </div>
-      <div className="text-xs mt-1 text-right ff-mono" style={{ color: C.inkSoft }}>{LEVEL_DYNAMIC_DESC[value - 1]}</div>
+      <div className="text-xs mt-1 text-right ff-mono" style={{ color: C.inkSoft }}>{t ? t(dynDescKeys[value - 1]) : LEVEL_DYNAMIC_DESC[value - 1]}</div>
     </div>
   );
 }
@@ -527,14 +1866,104 @@ function Chip({ label, active, onClick }) {
   );
 }
 
-function SectionCard({ title, icon: Icon, children }) {
+function SectionCard({ title, icon: Icon, children, id, highlighted }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (highlighted && ref.current) {
+      ref.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [highlighted]);
   return (
-    <div className="rounded-2xl p-4 sm:p-5 border" style={{ background: C.card, borderColor: C.line }}>
+    <div ref={ref} id={id} className="rounded-2xl p-4 sm:p-5 border" style={{
+      background: C.card, borderColor: highlighted ? C.gold : C.line, borderWidth: highlighted ? 2 : 1,
+      transition: "border-color 2s ease, border-width 2s ease"
+    }}>
       <div className="flex items-center gap-2 mb-4">
         <Icon size={18} style={{ color: C.curtain }} />
         <h3 className="ff-display italic text-lg">{title}</h3>
       </div>
       <div className="space-y-4">{children}</div>
+    </div>
+  );
+}
+
+// 記録日数がまだ解放条件に届いていないときに表示する、進捗つきの「予告編」カード。
+// 灰色の空箱ではなく、うっすらとしたプレビューと「あと◯日」の進捗バーを見せることで、
+// 記録を続ける動機にする（lavoce-指標設計図.md の「ロックの見せ方」参照）。
+function LockedCard({ title, teaser, current, required }) {
+  const remaining = Math.max(0, required - current);
+  const pct = Math.min(100, Math.round((current / required) * 100));
+  return (
+    <div className="rounded-2xl p-4 border overflow-hidden relative" style={{ background: C.card, borderColor: C.line }}>
+      <div style={{ filter: "blur(3px)", opacity: 0.35, pointerEvents: "none", userSelect: "none" }}>
+        <h3 className="ff-display italic text-lg mb-2">{title}</h3>
+        <div className="flex items-end gap-1.5" style={{ height: 64 }}>
+          {[40, 65, 30, 80, 50, 90, 60].map((h, i) => (
+            <div key={i} style={{ width: 10, height: `${h}%`, background: C.gold, borderRadius: 3 }} />
+          ))}
+        </div>
+      </div>
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 px-6 text-center" style={{ background: "rgba(255,253,248,0.55)" }}>
+        <Lock size={18} style={{ color: C.inkSoft }} />
+        <p className="text-xs font-medium" style={{ color: C.ink }}>{title}</p>
+        <p className="text-xs" style={{ color: C.inkSoft }}>{teaser}</p>
+        <div className="w-full max-w-[220px] mt-1">
+          <div className="h-1.5 rounded-full overflow-hidden" style={{ background: C.line }}>
+            <div className="h-full rounded-full" style={{ width: `${pct}%`, background: C.gold }} />
+          </div>
+          <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
+            {remaining > 0 ? `あと${remaining}日で解放されます（${current}/${required}日）` : `${current}/${required}日`}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// 音域到達マップ用の簡易ピアノ鍵盤。白鍵を等幅で並べ、黒鍵を近似位置に重ねる。
+// 下段の帯で「自己ベスト（グレー）」と「選んだ期間の到達範囲（色つき）」を示す。
+function PianoKeyboard({ lowMidi, highMidi, bestLow, bestHigh, currentLow, currentHigh, newRecord, pianissimoMidi }) {
+  const WHITE_OFFSET = { 0: 0, 2: 1, 4: 2, 5: 3, 7: 4, 9: 5, 11: 6 };
+  const BLACK_OFFSET = { 1: 0.68, 3: 1.68, 6: 3.68, 8: 4.68, 10: 5.68 };
+  const startOctave = Math.floor(lowMidi / 12);
+  const endOctave = Math.floor(highMidi / 12);
+  const numOctaves = Math.max(1, endOctave - startOctave + 1);
+  const totalWhite = numOctaves * 7;
+  const whiteKeyPct = 100 / totalWhite;
+  const xOf = (m) => {
+    const oct = Math.floor(m / 12) - startOctave;
+    const mod = ((m % 12) + 12) % 12;
+    return WHITE_OFFSET[mod] !== undefined ? oct * 7 + WHITE_OFFSET[mod] : oct * 7 + BLACK_OFFSET[mod];
+  };
+  const blackKeyMidis = [];
+  for (let o = 0; o < numOctaves; o++) {
+    [1, 3, 6, 8, 10].forEach((mod) => blackKeyMidis.push((startOctave + o) * 12 + mod));
+  }
+  return (
+    <div style={{ position: "relative", height: 76, marginTop: 4 }}>
+      <div style={{ display: "flex", height: 48 }}>
+        {Array.from({ length: totalWhite }).map((_, i) => (
+          <div key={i} style={{ flex: 1, border: `1px solid ${C.line}`, background: C.paper, borderRadius: "0 0 3px 3px" }} />
+        ))}
+      </div>
+      {blackKeyMidis.map((m) => (
+        <div key={m} style={{ position: "absolute", top: 0, left: `${xOf(m) * whiteKeyPct}%`, width: `${whiteKeyPct * 0.62}%`, height: 30, background: C.ink, borderRadius: "0 0 2px 2px" }} />
+      ))}
+      <div style={{ position: "absolute", left: 0, right: 0, top: 56, height: 5, borderRadius: 3, background: C.line, opacity: 0.4 }} />
+      {bestLow != null && bestHigh != null && (
+        <div style={{ position: "absolute", left: `${xOf(bestLow) * whiteKeyPct}%`, width: `${Math.max(2, (xOf(bestHigh) + 1 - xOf(bestLow)) * whiteKeyPct)}%`, top: 56, height: 5, borderRadius: 3, background: C.line }} />
+      )}
+      {currentLow != null && currentHigh != null && (
+        <div style={{ position: "absolute", left: `${xOf(currentLow) * whiteKeyPct}%`, width: `${Math.max(2, (xOf(currentHigh) + 1 - xOf(currentLow)) * whiteKeyPct)}%`, top: 64, height: 6, borderRadius: 3, background: newRecord ? C.gold : C.sage }} />
+      )}
+      {pianissimoMidi != null && (
+        <div title={`弱声の最高音: ${midiToNoteLabel(pianissimoMidi)}`}
+          style={{
+            position: "absolute", left: `${(xOf(pianissimoMidi) + 0.5) * whiteKeyPct}%`, top: 50,
+            width: 0, height: 0, transform: "translateX(-50%)",
+            borderLeft: "5px solid transparent", borderRight: "5px solid transparent", borderTop: `7px solid ${C.curtain}`
+          }} />
+      )}
     </div>
   );
 }
@@ -558,6 +1987,7 @@ function NumberField({ label, value, onChange, step = 1, min = -Infinity, max = 
           value={value}
           onChange={(e) => onChange(e.target.value === "" ? "" : Number(e.target.value))}
           onBlur={(e) => { if (e.target.value !== "") onChange(clamp(Number(e.target.value))); }}
+          onWheel={(e) => e.target.blur()}
           className="w-full text-center rounded-lg border py-1.5 ff-mono"
           style={{ borderColor: C.line, background: C.paper, color: C.ink }}
         />
@@ -566,6 +1996,97 @@ function NumberField({ label, value, onChange, step = 1, min = -Infinity, max = 
           <Plus size={14} />
         </button>
         {suffix && <span className="text-xs ff-mono shrink-0 w-8" style={{ color: C.inkSoft }}>{suffix}</span>}
+      </div>
+    </div>
+  );
+}
+
+// 「今日の負荷」——職業ごとに意味のある指標だけを、共通の抽象スキーマ（type/durationMin/intensity + 職業別の追加項目）で記録する。
+// 分析エンジン側は type を見て解釈するため、ここは「どの項目を見せるか」の設定だけを担う。
+function LoadTracker({ profession, loadDetail, onChange, t }) {
+  const fields = LOAD_FIELDS_BY_PROFESSION[profession] || LOAD_FIELDS_BY_PROFESSION.singer;
+  const update = (patch) => onChange({ ...loadDetail, ...patch });
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-3">
+        <NumberField label={t("loadDurationMin")} value={loadDetail.durationMin ?? ""} step={5} min={0} max={600}
+          suffix={t("unitMinutes")} onChange={(v) => update({ durationMin: v })} />
+        <div>
+          <label className="text-sm font-medium block mb-1.5">{t("loadIntensity")}</label>
+          <div className="flex gap-1.5">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <button key={n} type="button" onClick={() => update({ intensity: n })}
+                className="flex-1 h-10 rounded-lg border text-sm font-medium"
+                style={{
+                  background: (loadDetail.intensity || 0) >= n ? C.curtain : C.paper,
+                  color: (loadDetail.intensity || 0) >= n ? "#FFFDF8" : C.inkSoft,
+                  borderColor: (loadDetail.intensity || 0) >= n ? C.curtain : C.line
+                }}>
+                {n}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {fields.map((f) => {
+          if (f.type === "text") {
+            return (
+              <div key={f.key}>
+                <label className="text-sm font-medium block mb-1.5">{t(f.labelKey)}</label>
+                <input type="text" value={loadDetail[f.key] || ""} placeholder={f.placeholderKey ? t(f.placeholderKey) : ""}
+                  onChange={(e) => update({ [f.key]: e.target.value })}
+                  className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+              </div>
+            );
+          }
+          if (f.type === "number") {
+            return (
+              <NumberField key={f.key} label={t(f.labelKey)} value={loadDetail[f.key] ?? ""} step={1} min={0} max={200}
+                onChange={(v) => update({ [f.key]: v })} />
+            );
+          }
+          if (f.type === "boolean") {
+            return (
+              <div key={f.key}>
+                <label className="text-sm font-medium block mb-1.5">{t(f.labelKey)}</label>
+                <div className="flex gap-2">
+                  <Chip label={t("labelYes")} active={loadDetail[f.key] === true} onClick={() => update({ [f.key]: true })} />
+                  <Chip label={t("labelNo")} active={loadDetail[f.key] === false} onClick={() => update({ [f.key]: false })} />
+                </div>
+              </div>
+            );
+          }
+          if (f.type === "select") {
+            return (
+              <div key={f.key}>
+                <label className="text-sm font-medium block mb-1.5">{t(f.labelKey)}</label>
+                <MiniSelect value={loadDetail[f.key] || f.options[0]} onChange={(v) => update({ [f.key]: v })} options={f.options} />
+              </div>
+            );
+          }
+          if (f.type === "scale5") {
+            return (
+              <div key={f.key}>
+                <label className="text-sm font-medium block mb-1.5">{t(f.labelKey)}</label>
+                <div className="flex gap-1.5">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <button key={n} type="button" onClick={() => update({ [f.key]: n })}
+                      className="flex-1 h-9 rounded-lg border text-xs font-medium"
+                      style={{
+                        background: (loadDetail[f.key] || 0) >= n ? C.gold : C.paper,
+                        color: (loadDetail[f.key] || 0) >= n ? "#FFFDF8" : C.inkSoft,
+                        borderColor: (loadDetail[f.key] || 0) >= n ? C.gold : C.line
+                      }}>
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          return null;
+        })}
       </div>
     </div>
   );
@@ -591,6 +2112,7 @@ function MiniNumber({ value, onChange, placeholder }) {
       value={value}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value === "" ? "" : Number(e.target.value))}
+      onWheel={(e) => e.target.blur()}
       className="w-full rounded-lg border text-xs px-2 py-1.5 ff-mono text-center"
       style={{ borderColor: C.line, background: C.paper, color: C.ink }}
     />
@@ -600,18 +2122,202 @@ function MiniNumber({ value, onChange, placeholder }) {
 function roundTo1(n) {
   return Math.round(n * 10) / 10;
 }
-function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood }) {
+// 配列の中央値を求める（本番ピーキング曲線の逆算プランで使用）
+function median(arr) {
+  if (arr.length === 0) return null;
+  const sorted = [...arr].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+}
+// ---- lavoce-曲目複数化パッチ.md 用の純関数群 ----
+// §3.1: 活動ブロック内の時間配分。①個別入力(override)を確定 → ②残りを標準演奏時間の比で按分
+// → ③標準演奏時間が1つもなければ等分。allocations は items と同じ並びの配列で返す。
+function allocateActivityMinutes(totalMinutes, items, standardMinutesLookup) {
+  const total = Number(totalMinutes) || 0;
+  const hasOverride = items.map((it) => it.minutesOverride != null && it.minutesOverride !== "" && !Number.isNaN(Number(it.minutesOverride)));
+  const overrideSum = items.reduce((s, it, i) => s + (hasOverride[i] ? Number(it.minutesOverride) : 0), 0);
+  const remaining = total - overrideSum;
+  const withoutIdx = items.map((_, i) => i).filter((i) => !hasOverride[i]);
+  const allocations = items.map((it, i) => (hasOverride[i] ? Number(it.minutesOverride) : 0));
+  if (withoutIdx.length > 0 && remaining > 0) {
+    const lookup = standardMinutesLookup || (() => null);
+    const standardVals = withoutIdx.map((i) => lookup(items[i].repertoireName)).filter((v) => typeof v === "number" && v > 0);
+    if (standardVals.length > 0) {
+      const med = median(standardVals);
+      const weights = withoutIdx.map((i) => {
+        const v = lookup(items[i].repertoireName);
+        return (typeof v === "number" && v > 0) ? v : med;
+      });
+      const sumW = weights.reduce((a, b) => a + b, 0);
+      withoutIdx.forEach((i, k) => { allocations[i] = sumW > 0 ? (remaining * weights[k]) / sumW : remaining / withoutIdx.length; });
+    } else {
+      const equalShare = remaining / withoutIdx.length;
+      withoutIdx.forEach((i) => { allocations[i] = equalShare; });
+    }
+  }
+  return { allocations, remaining, overflow: remaining < 0 };
+}
+// §4: 活動ブロック a の負荷 L_a = Σ_i (minutes_i × actW_a × songFactor_i)。曲が0件なら minutes×actW。
+// songFactorResolver(repertoireName) は songFactor（数値）または null を返す関数。
+function computeActivityBlockLoad(activity, songFactorResolver) {
+  const actW = ACTIVITY_LOAD_WEIGHT[activity.kind] ?? 1.0;
+  const minutes = Number(activity.minutes) || 0;
+  const items = activity.items || [];
+  if (items.length === 0) {
+    return { total: minutes * actW, perItem: [] };
+  }
+  const lookup = (name) => {
+    const rec = songFactorResolver && songFactorResolver.tessituraMap ? songFactorResolver.tessituraMap[name] : null;
+    if (!rec) return null;
+    return rec.standardMinutes || null;
+  };
+  const { allocations } = allocateActivityMinutes(minutes, items, lookup);
+  const perItem = items.map((it, i) => {
+    const rec = songFactorResolver && songFactorResolver.tessituraMap ? songFactorResolver.tessituraMap[it.repertoireName] : null;
+    let songFactor = 1.0;
+    if (rec && songFactorResolver.resolveD) {
+      const resolved = songFactorResolver.resolveD(rec);
+      if (resolved) songFactor = songFactorFromD(resolved.d);
+    }
+    const load = allocations[i] * actW * songFactor;
+    return { repertoireName: it.repertoireName, minutes: allocations[i], songFactor, load };
+  });
+  return { total: perItem.reduce((s, x) => s + x.load, 0), perItem };
+}
+// §4: その日の発声負荷 L_day = Σ_a L_a。既存ACWRのcomputeDailyLoadを置き換える、activities[]対応版。
+function computeDayLoadFromActivities(activities, songFactorResolver) {
+  return (activities || []).reduce((sum, a) => sum + computeActivityBlockLoad(a, songFactorResolver).total, 0);
+}
+// ---- 曲目複数化パッチ 用純関数群 ここまで ----
+// 音名（国際式、例: "C4", "G#3", "Bb4"）を MIDI ノート番号に変換する。パースできなければ null。
+function noteToMidi(noteStr) {
+  if (!noteStr || typeof noteStr !== "string") return null;
+  const match = noteStr.trim().match(/^([A-Ga-g])([#♯b♭]?)(-?\d+)$/);
+  if (!match) return null;
+  const letter = match[1].toUpperCase();
+  const accidental = match[2];
+  const octave = parseInt(match[3], 10);
+  const base = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[letter];
+  let semitone = base;
+  if (accidental === "#" || accidental === "♯") semitone += 1;
+  if (accidental === "b" || accidental === "♭") semitone -= 1;
+  return (octave + 1) * 12 + semitone;
+}
+// ---- lavoce-レパートリー負荷パッチ.md 用の純関数群 ----
+// §2.2 曲目名の正規化：表示は必ずtitleRaw、照合にだけtitleNormalizedを使う。
+function normalizeTitle(raw) {
+  if (!raw) return "";
+  return raw
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[\s　]+/g, " ")
+    .replace(/[・･]/g, "")
+    .replace(/[「」『』"'"']/g, "")
+    .replace(/[（(][^）)]*[）)]/g, "")
+    .trim();
+}
+// §2.4 近い名前の警告に使うレーベンシュタイン距離
+function levenshteinDistance(a, b) {
+  const m = a.length, n = b.length;
+  if (m === 0) return n;
+  if (n === 0) return m;
+  const dp = Array.from({ length: m + 1 }, (_, i) => [i, ...new Array(n).fill(0)]);
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] = a[i - 1] === b[j - 1]
+        ? dp[i - 1][j - 1]
+        : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+    }
+  }
+  return dp[m][n];
+}
+// §1.2 負荷計算式の修正。較正（§6）で書き換えられるよう定数を分離してある。
+const REPERTOIRE_GAMMA = 1.7;
+const REPERTOIRE_KAPPA = 0.6;
+const REPERTOIRE_TESSITURA_OFFSET = 5; // 最高音からテッシトゥーラを推定する際の初期オフセット（半音）
+function computeSongFactor(tessMidi, lowMidi, highMidi) {
+  if (lowMidi == null || highMidi == null || highMidi <= lowMidi || tessMidi == null) return null;
+  const center = (lowMidi + highMidi) / 2;
+  const half = (highMidi - lowMidi) / 2;
+  const d = (tessMidi - center) / half;
+  return { d, songFactor: songFactorFromD(d) };
+}
+function songFactorFromD(d) {
+  const strainRaw = Math.pow(Math.abs(d) / 0.85, REPERTOIRE_GAMMA);
+  let strain = d >= 0 ? strainRaw : strainRaw * REPERTOIRE_KAPPA;
+  strain = Math.max(0, Math.min(1.5, strain));
+  return 1.0 + 1.5 * strain;
+}
+// ---- レパートリー負荷パッチ 用純関数群 ここまで ----
+// MIDI ノート番号を音名表記（国際式）に戻す。
+function midiToNoteLabel(midi) {
+  if (midi == null || Number.isNaN(midi)) return "-";
+  const rounded = Math.round(midi); // パーセンタイル計算などで小数のMIDI値が来ても崩れないようにする
+  const names = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+  const octave = Math.floor(rounded / 12) - 1;
+  const name = names[((rounded % 12) + 12) % 12];
+  return `${name}${octave}`;
+}
+const ACTIVITY_CHART_COLORS = { "休養": C.sageSoft, "自主練習": C.sage, "レッスン": C.gold, "リハーサル": C.rust, "本番": C.curtain };
+// カタカナをひらがなに変換する（読み仮名検索のための正規化）
+function toHiragana(str) {
+  return (str || "").replace(/[\u30a1-\u30f6]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0x60));
+}
+function normalizeForSearch(str) {
+  return toHiragana((str || "").trim().toLowerCase());
+}
+// 食品名を現在の表示言語で返す（翻訳が無ければ日本語名のまま）
+function foodDisplayName(foodItem, language) {
+  if (!foodItem) return "";
+  if (language && language !== "ja" && foodItem.i18n && foodItem.i18n[language]) {
+    return foodItem.i18n[language];
+  }
+  return foodItem.name;
+}
+function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood, t, language }) {
   const [open, setOpen] = useState(false);
-  const q = (value || "").trim().toLowerCase();
+  const q = normalizeForSearch(value);
+  // クエリが「料理グループ」の同義語辞書のキー（例：パスタ、米）に一致するか調べ、
+  // 一致していれば、そのグループに属するキーワードを含む食品名も検索対象に加える。
+  const groupKeywords = q
+    ? Object.keys(DISH_GROUP_ALIASES)
+        .filter((key) => {
+          const keyNorm = normalizeForSearch(key);
+          return keyNorm.includes(q) || q.includes(keyNorm);
+        })
+        .flatMap((key) => DISH_GROUP_ALIASES[key])
+    : [];
+  // クエリが「イタリアン」「和食」「中華」のような料理ジャンル名に一致する場合、
+  // そのジャンルに属する食品をカテゴリで直接まとめて候補に出す。
+  const matchedCategories = q
+    ? Object.keys(CATEGORY_SEARCH_ALIASES).filter((cat) => {
+        const catNorm = normalizeForSearch(cat);
+        if (catNorm.includes(q) || q.includes(catNorm)) return true;
+        return CATEGORY_SEARCH_ALIASES[cat].some((alias) => alias.includes(q) || q.includes(alias));
+      })
+    : [];
   const matches = q
-    ? (foodLibrary || []).filter((f) => f.name.toLowerCase().includes(q)).slice(0, 6)
+    ? (foodLibrary || []).filter((f) => {
+        const nameNorm = normalizeForSearch(f.name);
+        const readingNorm = f.reading ? normalizeForSearch(f.reading) : "";
+        // 現在の表示言語での多言語名（i18n）も検索対象にする。
+        // これにより、例えば英語表示中に "chicken" と入力しても、
+        // 日本語名や読み仮名にその文字が無い品目でも見つかるようになる。
+        const i18nNorm = f.i18n && language && f.i18n[language] ? normalizeForSearch(f.i18n[language]) : "";
+        // 原語表記（中国語の簡体字、イタリア語など）は、表示言語に関わらず常に検索対象にする。
+        const nativeNorm = f.nativeTerm ? normalizeForSearch(f.nativeTerm) : "";
+        if (nameNorm.includes(q) || (readingNorm && readingNorm.includes(q)) || (i18nNorm && i18nNorm.includes(q)) || (nativeNorm && nativeNorm.includes(q))) return true;
+        if (f.category && matchedCategories.includes(f.category)) return true;
+        return groupKeywords.some((kw) => nameNorm.includes(kw) || (readingNorm && readingNorm.includes(kw)));
+      }).slice(0, 8)
     : [];
   return (
     <div className="relative flex-1">
       <input
         type="text"
         value={value}
-        placeholder="食品名（プリセットや過去の記録から候補が出ます）"
+        placeholder={t("placeholderFoodNameSearch")}
         onChange={(e) => {
           const v = e.target.value;
           onNameChange(v);
@@ -629,30 +2335,35 @@ function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood }
           className="absolute left-0 right-0 mt-1 rounded-lg border overflow-hidden max-h-60 overflow-y-auto"
           style={{ background: C.card, borderColor: C.line, zIndex: 20, boxShadow: "0 6px 16px rgba(36,25,20,0.15)" }}
         >
-          {matches.map((f, i) => (
-            <button
-              key={f.name}
-              type="button"
-              onMouseDown={(e) => { e.preventDefault(); onSelectFood(f); setOpen(false); }}
-              className="w-full text-left px-2.5 py-2 text-xs"
-              style={{ color: C.ink, borderTop: i > 0 ? `1px solid ${C.line}` : "none" }}
-            >
-              {f.isPreset && <span className="ff-mono mr-1" style={{ color: C.gold }}>[プリセット{f.unit ? `・1${f.unit}あり` : ""}]</span>}
-              {f.name}
-              <span className="ml-1.5" style={{ color: C.inkSoft }}>
-                {f.isPreset
-                  ? `（100gあたり 炭${f.carbs}・蛋${f.protein}・脂${f.fat}・繊${f.fiber}g）`
-                  : `（炭${f.carbs || 0}・蛋${f.protein || 0}・脂${f.fat || 0}・繊${f.fiber || 0}g）`}
-              </span>
-            </button>
-          ))}
+          {matches.map((f, i) => {
+            const displayName = foodDisplayName(f, language);
+            const showJapaneseSuffix = language && language !== "ja" && f.i18n && f.i18n[language];
+            return (
+              <button
+                key={f.name}
+                type="button"
+                onMouseDown={(e) => { e.preventDefault(); onSelectFood(f); setOpen(false); }}
+                className="w-full text-left px-2.5 py-2 text-xs"
+                style={{ color: C.ink, borderTop: i > 0 ? `1px solid ${C.line}` : "none" }}
+              >
+                {f.isPreset && <span className="ff-mono mr-1" style={{ color: C.gold }}>[{t("labelPreset")}{f.unit ? `・1${f.unit}${t("labelUnitAvailable")}` : ""}]</span>}
+                {displayName}
+                {showJapaneseSuffix && <span className="ml-1" style={{ color: C.inkSoft, fontSize: "0.85em" }}>（{f.name}）</span>}
+                <span className="ml-1.5" style={{ color: C.inkSoft }}>
+                  {f.isPreset
+                    ? t("labelNutrientAbbrPer100g").replace("{carbs}", f.carbs).replace("{protein}", f.protein).replace("{fat}", f.fat).replace("{fiber}", f.fiber)
+                    : t("labelNutrientAbbr").replace("{carbs}", f.carbs || 0).replace("{protein}", f.protein || 0).replace("{fat}", f.fat || 0).replace("{fiber}", f.fiber || 0)}
+                </span>
+              </button>
+            );
+          })}
         </div>
       )}
     </div>
   );
 }
 
-function MealItemRow({ item, onChange, onRemove, foodLibrary, t }) {
+function MealItemRow({ item, onChange, onRemove, foodLibrary, t, language }) {
   function setQty(qtyMode, qtyInput) {
     const base = item.presetBase || { carbs: 0, protein: 0, fat: 0, fiber: 0 };
     const grams = qtyMode === "unit" ? (Number(qtyInput) || 0) * (item.presetUnitWeight || 0) : (Number(qtyInput) || 0);
@@ -671,7 +2382,7 @@ function MealItemRow({ item, onChange, onRemove, foodLibrary, t }) {
       const grams = hasUnit ? f.unitWeight : 100;
       const factor = grams / 100;
       onChange({
-        ...item, name: f.name, isPreset: true,
+        ...item, name: f.name, isPreset: true, presetI18n: f.i18n || null,
         presetBase: { carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber },
         presetUnit: f.unit || null,
         presetUnitWeight: f.unitWeight || null,
@@ -680,27 +2391,33 @@ function MealItemRow({ item, onChange, onRemove, foodLibrary, t }) {
         fat: roundTo1(f.fat * factor), fiber: roundTo1(f.fiber * factor)
       });
     } else {
-      onChange({ ...item, name: f.name, isPreset: false, presetBase: null, presetUnit: null, presetUnitWeight: null, grams: "", carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber });
+      onChange({ ...item, name: f.name, isPreset: false, presetBase: null, presetI18n: null, presetUnit: null, presetUnitWeight: null, grams: "", carbs: f.carbs, protein: f.protein, fat: f.fat, fiber: f.fiber });
     }
   }
+  const translatedLabel = item.isPreset && language && language !== "ja" && item.presetI18n && item.presetI18n[language];
   return (
     <div className="rounded-xl border p-3" style={{ borderColor: C.line, background: C.paper }}>
       <div className="flex items-center gap-2 mb-2">
         <FoodNameAutocomplete
           value={item.name}
           foodLibrary={foodLibrary}
-          onNameChange={(name) => onChange({ ...item, name, isPreset: false, presetBase: null })}
+          t={t}
+          language={language}
+          onNameChange={(name) => onChange({ ...item, name, isPreset: false, presetBase: null, presetI18n: null })}
           onSelectFood={handleSelectFood}
         />
         <button type="button" onClick={onRemove} className="shrink-0" style={{ color: C.inkSoft }}>
           <X size={15} />
         </button>
       </div>
+      {translatedLabel && (
+        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>🌐 {translatedLabel}</p>
+      )}
 
       {item.isPreset ? (
         <>
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <span className="text-xs shrink-0" style={{ color: C.inkSoft }}>量</span>
+            <span className="text-xs shrink-0" style={{ color: C.inkSoft }}>{t("labelQuantityShort")}</span>
             <MiniNumber value={item.qtyInput ?? item.grams} onChange={(v) => setQty(item.qtyMode || "g", v)} placeholder={item.qtyMode === "unit" ? item.presetUnit : "g"} />
             {item.presetUnit ? (
               <div className="flex rounded-lg border overflow-hidden shrink-0" style={{ borderColor: C.line }}>
@@ -713,10 +2430,12 @@ function MealItemRow({ item, onChange, onRemove, foodLibrary, t }) {
               <span className="text-xs shrink-0" style={{ color: C.inkSoft }}>g</span>
             )}
             <button type="button" onClick={() => onChange({ ...item, isPreset: false, presetBase: null })}
-              className="text-xs shrink-0 underline ml-auto" style={{ color: C.inkSoft }}>手動編集</button>
+              className="text-xs shrink-0 underline ml-auto" style={{ color: C.inkSoft }}>{t("btnManualEdit")}</button>
           </div>
           {item.qtyMode === "unit" && (
-            <p className="text-xs mb-2" style={{ color: C.inkSoft }}>1{item.presetUnit}あたり約{item.presetUnitWeight}g換算・合計{item.grams}g</p>
+            <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+              {t("labelUnitConversion").replace("{unit}", item.presetUnit).replace("{weight}", item.presetUnitWeight).replace("{total}", item.grams)}
+            </p>
           )}
           <div className="grid grid-cols-4 gap-2 text-center">
             <div><div className="text-xs" style={{ color: C.inkSoft }}>{t("macroCarbs")}</div><div className="ff-mono text-xs font-medium">{item.carbs}g</div></div>
@@ -749,6 +2468,534 @@ function MealItemRow({ item, onChange, onRemove, foodLibrary, t }) {
   );
 }
 
+// lavoce-曲目複数化パッチ.md §2.1: 曲目1行分。サジェスト・登録フォーム・近似曲目警告を
+// 行ごとに自前で持つ（親でどの行が登録中かを追跡する必要がなく、状態管理がシンプルになる）。
+function RepertoireItemRow({
+  item, index, totalItems, onChange, onRemove, onMoveUp, onMoveDown,
+  repertoireTessituraMap, repertoireUsageCounts, repertoireSkipped, setRepertoireSkipped,
+  handleSaveRepertoire, tessituraSaving, t
+}) {
+  const [topNoteInput, setTopNoteInput] = useState("");
+  const [tessituraOptionalInput, setTessituraOptionalInput] = useState("");
+  const [showTessituraAccordion, setShowTessituraAccordion] = useState(false);
+  const [dOverrideChoice, setDOverrideChoice] = useState(null);
+  const [duplicateWarning, setDuplicateWarning] = useState(null);
+
+  const name = item.repertoireName || "";
+  const record = name ? repertoireTessituraMap[name] : null;
+  const norm = name ? normalizeTitle(name) : "";
+  const usageSoFar = norm ? ((repertoireUsageCounts[norm] && repertoireUsageCounts[norm].count) || 0) : 0;
+  const suggestions = name && !record
+    ? Object.entries(repertoireTessituraMap)
+        .filter(([n]) => n !== name && normalizeTitle(n).includes(norm))
+        .sort((a, b) => (repertoireUsageCounts[normalizeTitle(b[0])]?.count || 0) - (repertoireUsageCounts[normalizeTitle(a[0])]?.count || 0))
+        .slice(0, 3)
+    : [];
+
+  return (
+    <div className="rounded-xl border p-2.5" style={{ borderColor: C.line, background: C.paper }}>
+      <div className="flex items-center gap-1.5">
+        <div className="flex flex-col" style={{ gap: 1 }}>
+          <button type="button" disabled={index === 0} onClick={onMoveUp} style={{ opacity: index === 0 ? 0.3 : 1, color: C.inkSoft, lineHeight: 1 }}>▲</button>
+          <button type="button" disabled={index === totalItems - 1} onClick={onMoveDown} style={{ opacity: index === totalItems - 1 ? 0.3 : 1, color: C.inkSoft, lineHeight: 1 }}>▼</button>
+        </div>
+        <input type="text" value={name} placeholder={t("placeholderRepertoireExample")}
+          onChange={(e) => { onChange({ repertoireName: e.target.value }); setDuplicateWarning(null); }}
+          className="flex-1 rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.card }} />
+        <input type="number" value={item.minutesOverride ?? ""} placeholder="自動"
+          onChange={(e) => onChange({ minutesOverride: e.target.value === "" ? null : Number(e.target.value) })}
+          className="rounded-lg border p-1.5 text-xs ff-mono" style={{ width: 56, borderColor: C.line, background: C.card }} />
+        <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>分</span>
+        <button type="button" onClick={onRemove} className="flex-shrink-0" style={{ color: C.inkSoft }}><X size={14} /></button>
+      </div>
+
+      {suggestions.length > 0 && (
+        <div className="mt-1.5 rounded-lg border overflow-hidden" style={{ borderColor: C.line }}>
+          {suggestions.map(([n, rec]) => (
+            <button key={n} type="button" onClick={() => onChange({ repertoireName: n })}
+              className="w-full text-left px-2.5 py-1.5 text-xs flex items-center justify-between"
+              style={{ background: C.card, borderBottom: `1px solid ${C.line}` }}>
+              <span>{n}</span>
+              <span className="ff-mono flex-shrink-0 ml-2" style={{ color: C.inkSoft }}>{rec.topNote || rec.tessituraNote || ""}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {name && !record && (() => {
+        const shouldPrompt = usageSoFar === 0 || usageSoFar === 2;
+        if (!shouldPrompt || repertoireSkipped[norm]) return null;
+
+        if (duplicateWarning && duplicateWarning.forName === name) {
+          return (
+            <div className="mt-2 rounded-lg p-2" style={{ background: C.card }}>
+              <p className="text-xs font-medium mb-1.5">似た曲目が登録されています</p>
+              <p className="text-xs mb-1.5" style={{ color: C.ink }}>
+                「{duplicateWarning.existingName}」（{duplicateWarning.existingRecord.topNote || duplicateWarning.existingRecord.tessituraNote}）
+              </p>
+              <div className="flex gap-1.5">
+                <button type="button" onClick={() => { onChange({ repertoireName: duplicateWarning.existingName }); setDuplicateWarning(null); }}
+                  className="flex-1 py-1 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>同じ曲です</button>
+                <button type="button" onClick={() => setDuplicateWarning({ ...duplicateWarning, confirmed: true })}
+                  className="flex-1 py-1 rounded-full text-xs font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>別の曲です</button>
+              </div>
+            </div>
+          );
+        }
+
+        return (
+          <div className="mt-2 rounded-lg p-2" style={{ background: C.card }}>
+            <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>「{name}」の最高音は？（登録すると次回から自動で使われます）</p>
+            <input type="text" value={topNoteInput} placeholder={t("placeholderNoteExample")}
+              onChange={(e) => setTopNoteInput(e.target.value)}
+              className="w-full rounded-lg border p-1.5 text-xs mb-1.5" style={{ borderColor: C.line, background: C.paper }} />
+            <details className="text-xs mb-1.5" open={showTessituraAccordion} onToggle={(e) => setShowTessituraAccordion(e.target.open)}>
+              <summary className="cursor-pointer" style={{ color: C.inkSoft }}>テッシトゥーラも入力する（任意）</summary>
+              <p className="mt-1 mb-1" style={{ color: C.inkSoft }}>最高音とは別。曲全体で「だいたいこの高さ」という中心の音域です。</p>
+              <input type="text" value={tessituraOptionalInput} placeholder={t("placeholderNoteExample")}
+                onChange={(e) => setTessituraOptionalInput(e.target.value)}
+                className="w-full rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.paper }} />
+            </details>
+            {dOverrideChoice === null && !topNoteInput && (
+              <button type="button" onClick={() => setDOverrideChoice(0)} className="text-xs underline mb-1.5" style={{ color: C.inkSoft }}>
+                音名で答えられない場合はこちら
+              </button>
+            )}
+            {dOverrideChoice !== null && !topNoteInput && (
+              <div className="flex gap-1.5 mb-1.5">
+                {[["低め", -0.5], ["真ん中", 0], ["高め", 0.5]].map(([label, val]) => (
+                  <button key={label} type="button" onClick={() => setDOverrideChoice(val)}
+                    className="flex-1 py-1 rounded-full text-xs font-medium"
+                    style={{ background: dOverrideChoice === val ? C.curtain : C.paper, color: dOverrideChoice === val ? "#FFFDF8" : C.inkSoft, border: `1px solid ${dOverrideChoice === val ? C.curtain : C.line}` }}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
+            <div className="flex gap-1.5">
+              <button type="button" disabled={tessituraSaving || (!topNoteInput && dOverrideChoice == null)}
+                onClick={() => {
+                  if (!duplicateWarning || !duplicateWarning.confirmed) {
+                    const nearMatch = Object.keys(repertoireTessituraMap).find((existingName) => {
+                      const existingNorm = normalizeTitle(existingName);
+                      return existingNorm.includes(norm) || norm.includes(existingNorm) || levenshteinDistance(existingNorm, norm) <= 2;
+                    });
+                    if (nearMatch) {
+                      setDuplicateWarning({ forName: name, existingName: nearMatch, existingRecord: repertoireTessituraMap[nearMatch], confirmed: false });
+                      return;
+                    }
+                  }
+                  handleSaveRepertoire(name, {
+                    topNote: topNoteInput || null,
+                    tessituraNote: tessituraOptionalInput || null,
+                    dOverride: !topNoteInput && dOverrideChoice != null ? dOverrideChoice : null
+                  });
+                  setTopNoteInput(""); setTessituraOptionalInput(""); setDOverrideChoice(null); setDuplicateWarning(null);
+                }}
+                className="flex-1 py-1 rounded-full text-xs font-medium"
+                style={{ background: C.curtain, color: "#FFFDF8", opacity: tessituraSaving || (!topNoteInput && dOverrideChoice == null) ? 0.5 : 1 }}>
+                登録する
+              </button>
+              <button type="button" onClick={() => setRepertoireSkipped((prev) => ({ ...prev, [norm]: true }))}
+                className="flex-1 py-1 rounded-full text-xs font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                あとで
+              </button>
+            </div>
+          </div>
+        );
+      })()}
+      {name && record && (
+        <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
+          登録済み：{record.topNote ? `最高音${record.topNote}` : ""}{record.tessituraNote ? `・テッシトゥーラ${record.tessituraNote}` : ""}
+        </p>
+      )}
+    </div>
+  );
+}
+// lavoce-画面レイアウト仕様_1.md §9: オンボーディングと同意（法的に必須）。
+// 既存ユーザー（既にentriesがある）は同意画面だけを出し、新規ユーザーは5画面のフルフローにする。
+const ONBOARDING_GOAL_OPTIONS = [
+  { key: "diagnose", label: "不調の原因を突き止めたい" },
+  { key: "peak", label: "本番に合わせたい" },
+  { key: "train", label: "長く鍛えたい" },
+  { key: "log_only", label: "記録だけしたい" }
+];
+const CONSENT_POLICY_VERSION = "2026-08-v1";
+const CONSENT_DATA_CATEGORIES = [
+  "喉のコンディション・声の状態（5段階評価、音の高さ）",
+  "睡眠時間・就寝時刻",
+  "体重・体脂肪率（入力した場合）",
+  "症状（乾燥・嗄れ・咳など）",
+  "心の余裕・気持ちのタグ",
+  "月経周期（記録を選んだ場合のみ）",
+  "既往症・診断済みの症状（登録した場合のみ）",
+  "食事・運動の記録"
+];
+function OnboardingFlow({ existingUser, onComplete }) {
+  const [step, setStep] = useState(0);
+  const [statsConsent, setStatsConsent] = useState(false);
+  const [professions, setProfessions] = useState([]);
+  const [goalFocus, setGoalFocus] = useState("");
+  const [rangeLow, setRangeLow] = useState("");
+  const [rangeHigh, setRangeHigh] = useState("");
+  const [saving, setSaving] = useState(false);
+  const totalSteps = existingUser ? 1 : 5;
+
+  async function handleFinish() {
+    setSaving(true);
+    const patch = {
+      onboarding_completed: true,
+      consent_health_data_at: new Date().toISOString(),
+      consent_stats_use_at: statsConsent ? new Date().toISOString() : null,
+      consent_policy_version: CONSENT_POLICY_VERSION
+    };
+    if (!existingUser) {
+      patch.professions = professions.length ? professions : ["singer"];
+      patch.vocal_profession = professions[0] || "singer";
+      patch.goal_focus = goalFocus || "log_only";
+      if (rangeLow) patch.vocal_range_low = rangeLow;
+      if (rangeHigh) patch.vocal_range_high = rangeHigh;
+    }
+    await onComplete(patch);
+    setSaving(false);
+  }
+
+  return (
+    <div style={{ background: C.paper, color: C.ink, minHeight: "100vh" }} className="flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <div className="flex items-center gap-1 mb-6 justify-center">
+          {Array.from({ length: totalSteps }).map((_, i) => (
+            <div key={i} style={{ width: 28, height: 3, borderRadius: 2, background: i <= step ? C.curtain : C.line }} />
+          ))}
+        </div>
+
+        {step === 0 && (
+          <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+            <h2 className="ff-display italic text-xl mb-3">記録データについて</h2>
+            <p className="text-sm mb-3">La Voceは、あなたの声や体調の記録を保存します。以下の項目を取得します。</p>
+            <ul className="text-xs space-y-1 mb-3" style={{ color: C.inkSoft }}>
+              {CONSENT_DATA_CATEGORIES.map((c) => <li key={c}>・{c}</li>)}
+            </ul>
+            <p className="text-sm mb-1 font-medium">何のために使うか</p>
+            <ul className="text-xs space-y-1 mb-4" style={{ color: C.inkSoft }}>
+              <li>・あなた自身が声の調子の傾向を振り返るため</li>
+              <li>・記録をもとに、あなた専用の分析（偏差値・発声負荷など）を表示するため</li>
+            </ul>
+            <div className="rounded-xl p-3 mb-3" style={{ background: C.paper }}>
+              <p className="text-xs font-medium mb-1">上記の記録・分析のための取得（必須）</p>
+              <p className="text-xs" style={{ color: C.inkSoft }}>この同意がないと、アプリの記録機能を使えません。</p>
+            </div>
+            <label className="flex items-start gap-2 rounded-xl p-3 mb-4" style={{ background: C.paper, cursor: "pointer" }}>
+              <input type="checkbox" checked={statsConsent} onChange={(e) => setStatsConsent(e.target.checked)} className="mt-0.5" />
+              <span className="text-xs" style={{ color: C.inkSoft }}>
+                <strong style={{ color: C.ink }}>（任意）</strong> 匿名化した統計として、La Voceの機能改善に役立てることに同意します。個人を特定できる形で第三者に提供されることはありません。
+              </span>
+            </label>
+            <p className="text-xs mb-4" style={{ color: C.inkSoft }}>
+              同意はいつでも「もっと ＞ 設定」から撤回できます。撤回すると新しい記録の保存が制限されます（既存データの書き出し・削除は同意状況に関わらずいつでも可能です）。
+            </p>
+            <button type="button"
+              onClick={() => { if (existingUser) { handleFinish(); } else { setStep(1); } }}
+              disabled={saving}
+              className="w-full py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: saving ? 0.6 : 1 }}>
+              {existingUser ? (saving ? "保存中…" : "同意して続ける") : "同意して次へ"}
+            </button>
+          </div>
+        )}
+
+        {step === 1 && !existingUser && (
+          <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+            <h2 className="ff-display italic text-xl mb-3">職業を選んでください</h2>
+            <p className="text-xs mb-3" style={{ color: C.inkSoft }}>複数選択できます。</p>
+            <div className="grid grid-cols-2 gap-2 mb-4">
+              {VOCAL_PROFESSIONS.map((p) => {
+                const label = p === "singer" ? "声楽家・ミュージカル" : p === "announcer" ? "アナウンサー" : p === "voice_actor" ? "声優" : "ポップス・ロック";
+                const active = professions.includes(p);
+                return (
+                  <button key={p} type="button"
+                    onClick={() => setProfessions((prev) => active ? prev.filter((x) => x !== p) : [...prev, p])}
+                    className="py-3 rounded-xl text-sm font-medium border"
+                    style={{ background: active ? C.curtain : C.paper, color: active ? "#FFFDF8" : C.inkSoft, borderColor: active ? C.curtain : C.line }}>
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+            <button type="button" onClick={() => setStep(2)} disabled={professions.length === 0}
+              className="w-full py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: professions.length === 0 ? 0.5 : 1 }}>
+              次へ
+            </button>
+          </div>
+        )}
+
+        {step === 2 && !existingUser && (
+          <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+            <h2 className="ff-display italic text-xl mb-3">いま知りたいことは？</h2>
+            <div className="space-y-2 mb-4">
+              {ONBOARDING_GOAL_OPTIONS.map((opt) => (
+                <button key={opt.key} type="button" onClick={() => setGoalFocus(opt.key)}
+                  className="w-full py-3 rounded-xl text-sm font-medium border text-left px-4"
+                  style={{ background: goalFocus === opt.key ? C.curtain : C.paper, color: goalFocus === opt.key ? "#FFFDF8" : C.inkSoft, borderColor: goalFocus === opt.key ? C.curtain : C.line }}>
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+            <button type="button" onClick={() => setStep(3)} disabled={!goalFocus}
+              className="w-full py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: !goalFocus ? 0.5 : 1 }}>
+              次へ
+            </button>
+          </div>
+        )}
+
+        {step === 3 && !existingUser && (
+          <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+            <h2 className="ff-display italic text-xl mb-3">声域（任意）</h2>
+            <p className="text-xs mb-3" style={{ color: C.inkSoft }}>あとから「もっと＞設定」でも入力できます。分からなければ飛ばして大丈夫です。</p>
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <input type="text" value={rangeLow} onChange={(e) => setRangeLow(e.target.value)} placeholder="最低音（例: A3）"
+                className="rounded-lg border p-2.5 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+              <input type="text" value={rangeHigh} onChange={(e) => setRangeHigh(e.target.value)} placeholder="最高音（例: C6）"
+                className="rounded-lg border p-2.5 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+            </div>
+            <div className="flex gap-2">
+              <button type="button" onClick={() => setStep(4)}
+                className="flex-1 py-3 rounded-full text-sm font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                あとで
+              </button>
+              <button type="button" onClick={() => setStep(4)}
+                className="flex-1 py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                次へ
+              </button>
+            </div>
+          </div>
+        )}
+
+        {step === 4 && !existingUser && (
+          <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+            <h2 className="ff-display italic text-xl mb-3">3日記録すると</h2>
+            <ul className="text-sm space-y-1.5 mb-4">
+              <li>✓ 声の立ち上がりの速さ（ウォームアップ効率）</li>
+              <li>✓ 症状のカレンダー</li>
+              <li>✓ 音域マップ</li>
+            </ul>
+            <p className="text-sm mb-4">が見られるようになります。<br />7日で「コンディション偏差値」、14日で「あなただけの法則」が出ます。</p>
+            <button type="button" onClick={handleFinish} disabled={saving}
+              className="w-full py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: saving ? 0.6 : 1 }}>
+              {saving ? "はじめています…" : "はじめる"}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+// lavoce-曲目複数化パッチ.md §2.0: 活動ブロック1つ分。種別・時間・曲目リスト・種別固有項目・
+// ブロックごとの負荷フィードバックをまとめる。
+// lavoce-記録項目の再設計v2.md §3.1・画面レイアウト仕様_1 §4.4: 声の記録シート。
+// 1件の声の記録（時刻・場面・喉の身体感覚・声の出来・音名・症状・ひとこと）を編集する。
+function VoiceEntryEditor({ entry, onChange, onRemove, onClose, t }) {
+  const [mptRunning, setMptRunning] = useState(false);
+  const [mptElapsed, setMptElapsed] = useState(0);
+  const mptStartRef = useRef(null);
+  const mptIntervalRef = useRef(null);
+
+  function startMpt() {
+    setMptElapsed(0);
+    mptStartRef.current = Date.now();
+    setMptRunning(true);
+    mptIntervalRef.current = setInterval(() => {
+      setMptElapsed((Date.now() - mptStartRef.current) / 1000);
+    }, 100);
+  }
+  function stopMpt() {
+    clearInterval(mptIntervalRef.current);
+    const finalSeconds = Math.round(((Date.now() - mptStartRef.current) / 1000) * 10) / 10;
+    setMptRunning(false);
+    onChange({ mptSeconds: finalSeconds });
+  }
+  useEffect(() => () => clearInterval(mptIntervalRef.current), []);
+
+  return (
+    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <input type="time" value={entry.at} onChange={(e) => onChange({ at: e.target.value })}
+            className="rounded-lg border px-2 py-1.5 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+          <select value={entry.context} onChange={(e) => onChange({ context: e.target.value })}
+            className="rounded-lg border px-2 py-1.5 text-sm" style={{ borderColor: C.line, background: C.paper }}>
+            {VOICE_CONTEXT_OPTIONS.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
+          </select>
+        </div>
+        <button type="button" onClick={onClose} className="w-7 h-7 rounded-full flex items-center justify-center" style={{ color: C.inkSoft }}>
+          <X size={16} />
+        </button>
+      </div>
+      <DynamicsSelector t={t} label="喉の身体感覚" icon={Mic2} value={entry.bodyFeel}
+        onChange={(v) => onChange({ bodyFeel: v })} />
+      <div className="mt-3">
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="text-sm font-medium">声の出来</span>
+          <span className="ff-mono text-sm" style={{ color: C.inkSoft }}>{(entry.quality ?? 5).toFixed(1)}</span>
+        </div>
+        <input type="range" min={0} max={10} step={0.5} value={entry.quality ?? 5}
+          onChange={(e) => onChange({ quality: Number(e.target.value) })}
+          className="w-full" />
+      </div>
+      <div className="grid grid-cols-2 gap-3 mt-3">
+        <div>
+          <label className="text-xs block mb-1" style={{ color: C.inkSoft }}>地声の音名</label>
+          <input type="text" value={entry.pitchChest || ""} placeholder={t("placeholderNoteExample")}
+            onChange={(e) => onChange({ pitchChest: e.target.value })}
+            className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+        </div>
+        <div>
+          <label className="text-xs block mb-1" style={{ color: C.inkSoft }}>弱声の最高音</label>
+          <input type="text" value={entry.pitchSoftMax || ""} placeholder={t("placeholderNoteExample")}
+            onChange={(e) => onChange({ pitchSoftMax: e.target.value })}
+            className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+        </div>
+      </div>
+      <div className="mt-3">
+        <span className="text-xs block mb-1.5" style={{ color: C.inkSoft }}>症状（あれば）</span>
+        <div className="flex flex-wrap gap-1.5">
+          {SYMPTOM_OPTIONS.map((s) => (
+            <Chip key={s} label={t(SYMPTOM_KEYS[s])} active={(entry.symptoms || []).includes(s)}
+              onClick={() => onChange({ symptoms: (entry.symptoms || []).includes(s) ? entry.symptoms.filter((x) => x !== s) : [...(entry.symptoms || []), s] })} />
+          ))}
+        </div>
+      </div>
+      <div className="mt-3">
+        <input type="text" value={entry.note || ""} placeholder="ひとこと（任意）"
+          onChange={(e) => onChange({ note: e.target.value })}
+          className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+      </div>
+      <details className="mt-3 text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
+        <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>+詳しく記録する（最長発声時間・音色）</summary>
+        <div className="mt-3">
+          <p className="text-xs font-medium mb-1.5" style={{ color: C.ink }}>最長発声時間（MPT）</p>
+          <p className="text-xs mb-2">「あー」を、無理のない範囲で一息のばして測ります。「開始」を押して、声が止まったら「停止」を押してください。</p>
+          <div className="flex items-center gap-3">
+            <span className="ff-mono text-lg" style={{ color: C.ink }}>{mptRunning ? mptElapsed.toFixed(1) : (entry.mptSeconds != null ? entry.mptSeconds.toFixed(1) : "0.0")}秒</span>
+            {!mptRunning ? (
+              <button type="button" onClick={startMpt}
+                className="px-3.5 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                開始
+              </button>
+            ) : (
+              <button type="button" onClick={stopMpt}
+                className="px-3.5 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, border: `1px solid ${C.line}` }}>
+                停止
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="mt-3">
+          <DotSelector label="音色の均一感（音域全体で音色が揃っていたか）" icon={Music2}
+            value={entry.toneEvenness ?? 3} lowLabel="バラつく" highLabel="揃う"
+            onChange={(v) => onChange({ toneEvenness: v })} />
+        </div>
+      </details>
+      <div className="flex gap-2 mt-3">
+        <button type="button" onClick={onClose}
+          className="flex-1 py-2 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+          記録する
+        </button>
+        <button type="button" onClick={onRemove}
+          className="px-4 py-2 rounded-full text-sm" style={{ color: C.curtain }}>
+          <Trash2 size={16} />
+        </button>
+      </div>
+    </div>
+  );
+}
+function ActivityBlockEditor({
+  activity, onChange, onRemove, onDetailChange,
+  onAddItem, onUpdateItem, onRemoveItem, onMoveItem,
+  repertoireTessituraMap, repertoireUsageCounts, repertoireSkipped, setRepertoireSkipped,
+  handleSaveRepertoire, tessituraSaving, songFactorResolver, t
+}) {
+  const detail = activity.detail || {};
+  const items = activity.items || [];
+  const { total, perItem } = computeActivityBlockLoad(activity, songFactorResolver);
+  return (
+    <div className="rounded-xl border p-3" style={{ borderColor: C.line, background: C.card }}>
+      <div className="flex items-center gap-2 mb-2">
+        <MiniSelect value={activity.kind} onChange={(v) => onChange({ kind: v })} options={ACTIVITY_BLOCK_KINDS}
+          labels={Object.fromEntries(ACTIVITY_BLOCK_KINDS.map((k) => [k, t((ACTIVITY_OPTIONS.find((a) => a.key === k) || {}).labelKey) || k]))} />
+        <div className="flex items-center gap-1 flex-1">
+          <MiniNumber value={activity.minutes} placeholder="分" onChange={(v) => onChange({ minutes: v })} />
+          <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>分</span>
+        </div>
+        <button type="button" onClick={onRemove} className="flex-shrink-0" style={{ color: C.inkSoft }}><X size={16} /></button>
+      </div>
+
+      <div className="mt-2">
+        <span className="text-xs font-medium block mb-1.5">{activity.kind === "本番" ? "演目・曲目" : activity.kind === "リハーサル" ? "曲目・演目" : "曲目"}</span>
+        <div className="space-y-1.5">
+          {items.map((item, idx) => (
+            <RepertoireItemRow
+              key={idx} item={item} index={idx} totalItems={items.length}
+              onChange={(patch) => onUpdateItem(idx, patch)}
+              onRemove={() => onRemoveItem(idx)}
+              onMoveUp={() => onMoveItem(idx, -1)}
+              onMoveDown={() => onMoveItem(idx, 1)}
+              repertoireTessituraMap={repertoireTessituraMap}
+              repertoireUsageCounts={repertoireUsageCounts}
+              repertoireSkipped={repertoireSkipped}
+              setRepertoireSkipped={setRepertoireSkipped}
+              handleSaveRepertoire={handleSaveRepertoire}
+              tessituraSaving={tessituraSaving}
+              t={t}
+            />
+          ))}
+        </div>
+        {items.length < 50 && (
+          <button type="button" onClick={onAddItem} className="mt-1.5 text-xs font-medium flex items-center gap-1" style={{ color: C.curtain }}>
+            <Plus size={12} />曲を追加
+          </button>
+        )}
+      </div>
+
+      {activity.kind === "自主練習" && (
+        <div className="mt-3 pt-2 border-t space-y-2" style={{ borderColor: C.line }}>
+          <textarea value={detail.practiceMenu || ""} rows={2} placeholder={t("placeholderPracticeMenuExample")}
+            onChange={(e) => onDetailChange({ practiceMenu: e.target.value })}
+            className="w-full rounded-lg border p-2 text-xs" style={{ borderColor: C.line, background: C.paper }} />
+        </div>
+      )}
+      {activity.kind === "レッスン" && (
+        <div className="mt-3 pt-2 border-t space-y-2" style={{ borderColor: C.line }}>
+          <textarea value={detail.teacherNotes || ""} rows={2} placeholder={t("placeholderTeacherNotes")}
+            onChange={(e) => onDetailChange({ teacherNotes: e.target.value })}
+            className="w-full rounded-lg border p-2 text-xs" style={{ borderColor: C.line, background: C.paper }} />
+        </div>
+      )}
+      {activity.kind === "本番" && (
+        <div className="mt-3 pt-2 border-t space-y-3" style={{ borderColor: C.line }}>
+          <DynamicsSelector t={t} label={t("targetPerformance")} icon={Sparkles} value={detail.performanceQuality || 3}
+            onChange={(v) => onDetailChange({ performanceQuality: v })} />
+          <textarea value={detail.performanceComment || ""} rows={2} placeholder={t("placeholderPerformanceComment")}
+            onChange={(e) => onDetailChange({ performanceComment: e.target.value })}
+            className="w-full rounded-lg border p-2 text-xs" style={{ borderColor: C.line, background: C.paper }} />
+        </div>
+      )}
+
+      {items.length > 0 && total > 0 && (
+        <div className="mt-3 pt-2 border-t" style={{ borderColor: C.line }}>
+          <p className="text-xs font-medium mb-1">このブロックの負荷 {Math.round(total)}</p>
+          <div className="space-y-1">
+            {[...perItem].sort((a, b) => b.load - a.load).slice(0, 5).map((pi, i) => (
+              <div key={i} className="flex items-center justify-between text-xs" style={{ color: C.inkSoft }}>
+                <span>{pi.repertoireName || "（無題）"}</span>
+                <span className="ff-mono">{Math.round(pi.load)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 function ExerciseItemRow({ item, onChange, onRemove, t }) {
   return (
     <div className="rounded-xl border p-3" style={{ borderColor: C.line, background: C.paper }}>
@@ -756,15 +3003,15 @@ function ExerciseItemRow({ item, onChange, onRemove, t }) {
         <MiniSelect value={item.type} onChange={(v) => onChange({ ...item, type: v })} options={EXERCISE_TYPES}
           labels={Object.fromEntries(EXERCISE_TYPES.map((o) => [o, t(EXERCISE_TYPE_KEYS[o])]))} />
         <div className="flex items-center gap-1 flex-1">
-          <MiniNumber value={item.minutes} placeholder="時間(分)" onChange={(v) => onChange({ ...item, minutes: v })} />
-          <span className="text-xs shrink-0" style={{ color: C.inkSoft }}>分</span>
+          <MiniNumber value={item.minutes} placeholder={t("placeholderExerciseMinutes")} onChange={(v) => onChange({ ...item, minutes: v })} />
+          <span className="text-xs shrink-0" style={{ color: C.inkSoft }}>{t("unitMinutesShort")}</span>
         </div>
         <button type="button" onClick={onRemove} className="shrink-0" style={{ color: C.inkSoft }}>
           <X size={15} />
         </button>
       </div>
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-xs shrink-0" style={{ color: C.inkSoft }}>強度</span>
+        <span className="text-xs shrink-0" style={{ color: C.inkSoft }}>{t("labelIntensityShort")}</span>
         <div className="flex gap-1.5">
           {[1, 2, 3, 4, 5].map((v) => (
             <button
@@ -785,7 +3032,7 @@ function ExerciseItemRow({ item, onChange, onRemove, t }) {
       <input
         type="text"
         value={item.memo || ""}
-        placeholder={item.type === "その他" ? "内容を記入してください（例：バレエレッスン）" : "メモ（任意）"}
+        placeholder={item.type === "その他" ? t("placeholderExerciseOtherType") : t("placeholderExerciseMemo")}
         onChange={(e) => onChange({ ...item, memo: e.target.value })}
         className="w-full rounded-lg border text-xs px-2 py-1.5"
         style={{ borderColor: C.line, background: C.card, color: C.ink }}
@@ -798,27 +3045,196 @@ function ExerciseItemRow({ item, onChange, onRemove, t }) {
 export default function VocalTracker({ userId, userEmail }) {
   const [loading, setLoading] = useState(true);
   const [entries, setEntries] = useState({});
-  const [activeTab, setActiveTab] = useState("today");
-  const [selectedDate, setSelectedDate] = useState(todayISO());
+  const [activeTab, setActiveTab] = useState("home");
+  // 記録と分析の順番設計 §5.3: 分析画面の「この分析を強くする」から記録画面へジャンプしたとき、
+  // 該当セクションを2秒だけ淡くハイライトする（入力欄へのフォーカスは当てない）。
+  const [highlightSection, setHighlightSection] = useState(null);
+  // ★重要：ホームタブの挨拶も、以前は new Date() をレンダリング中に直接使っており、
+  // recordViewと同じ原因（サーバー/ブラウザの時刻差）でハイドレーションエラー（React #423）を
+  // 起こしていた。ホームタブは既定タブのため、アプリを開くたび必ず発動する重大な不具合だった。
+  // 同じ安全なパターン（固定値→マウント後のuseEffectで補正）に統一する。
+  const [greetingHour, setGreetingHour] = useState(12);
+  useEffect(() => {
+    setGreetingHour(new Date().getHours());
+  }, []);
+  // 記録と分析の順番設計 §3.1: 記録の入口を時間帯で2つに分ける。
+  // 境界時刻（既定21時）より前は「声の記録」、以降は「一日の記録」を既定表示にする。
+  // ユーザーはいつでも上部の切り替えで行き来できる（隠さない）。
+  // ★重要：useStateの初期値でnew Date()を直接使わないこと。サーバー（UTC）とブラウザ（日本時間等）で
+  // 結果が食い違い、ハイドレーションエラー（React #423）でアプリ全体がクラッシュする
+  // （このプロジェクトで過去に経験済みの既知のパターン）。安全な固定値で始め、
+  // マウント後のuseEffectだけで実際の時刻判定を行う。
+  const [recordView, setRecordView] = useState("voice");
+  const recordViewInitializedRef = useRef(false);
+  useEffect(() => {
+    if (recordViewInitializedRef.current || profile.day_record_boundary_hour == null) return;
+    recordViewInitializedRef.current = true;
+    const hour = new Date().getHours();
+    const boundary = profile.day_record_boundary_hour;
+    setRecordView(hour >= boundary || hour < 5 ? "day" : "voice");
+  }, [profile.day_record_boundary_hour]);
+  useEffect(() => {
+    if (!highlightSection) return;
+    const timer = setTimeout(() => setHighlightSection(null), 2000);
+    return () => clearTimeout(timer);
+  }, [highlightSection]);
+  function jumpToRecordSection(sectionId) {
+    setActiveTab("today");
+    setRecordView("day"); // ジャンプ先(睡眠・水分・食事・活動・メンタル)はすべて「一日の記録」ビューにあるため
+    setHighlightSection(sectionId);
+  }
+  const [lessonMode, setLessonMode] = useState(false);
+  const lessonExitTimerRef = useRef(null);
+  const [lessonExitProgress, setLessonExitProgress] = useState(0);
+  const [clinicPeriodMode, setClinicPeriodMode] = useState("auto");
+  const [clinicCustomStart, setClinicCustomStart] = useState("");
+  const [clinicCustomEnd, setClinicCustomEnd] = useState("");
+  const [clinicFreeNote, setClinicFreeNote] = useState("");
+  const [showExerciseDetail, setShowExerciseDetail] = useState(false);
+  const [showMealDetail, setShowMealDetail] = useState(false);
+  // lavoce-アプリ配布と課金仕様.md §3・実行順マスター Stage 1-4: PWA化＋インストール導線＋計測
+  const [pwaInstallPrompt, setPwaInstallPrompt] = useState(null);
+  const [showInstallBanner, setShowInstallBanner] = useState(false);
+  const [isPwaInstalled, setIsPwaInstalled] = useState(false);
+  const [isIosSafari, setIsIosSafari] = useState(false);
+  const [mergeSourceRepertoire, setMergeSourceRepertoire] = useState("");
+  const [mergeTargetRepertoire, setMergeTargetRepertoire] = useState("");
+  const [mergeConfirming, setMergeConfirming] = useState(false);
+  const [mergeInProgress, setMergeInProgress] = useState(false);
+  const [mergeResult, setMergeResult] = useState("");
+  const [showQuickRecord, setShowQuickRecord] = useState(false);
+  const [notesSubTab, setNotesSubTab] = useState("practice");
+  const [editingVoiceEntryId, setEditingVoiceEntryId] = useState(null);
+  const [editingPracticeGoal, setEditingPracticeGoal] = useState(false);
+  const [practiceGoalDraft, setPracticeGoalDraft] = useState("");
+  const [practiceGoalTagsDraft, setPracticeGoalTagsDraft] = useState([]);
+  const [practiceReviewDraft, setPracticeReviewDraft] = useState("");
+  const [dismissedFoldSuggestions, setDismissedFoldSuggestions] = useState([]);
+  const [showFieldGroupManager, setShowFieldGroupManager] = useState(false);
+  const [showCopiedNotice, setShowCopiedNotice] = useState(false);
+  const [showDay7Survey, setShowDay7Survey] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(todayISOUTC());
+  // ★重要：ホームタブの「今日」判定（realToday）も、以前はレンダリング中に todayISO()（ローカル時刻）を
+  // 直接呼んでおり、selectedDateと同じ理由でハイドレーション不一致を起こしうる状態だった。
+  // 同じ安全なパターン（UTC基準で初期化→マウント後のuseEffectで現地時間へ補正）に統一する。
+  const [realTodayDate, setRealTodayDate] = useState(todayISOUTC());
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
   const [saveError, setSaveError] = useState("");
   const [toastMessage, setToastMessage] = useState(null);
+  const [saveCardData, setSaveCardData] = useState(null);
+  const [noiseMeasuring, setNoiseMeasuring] = useState(false);
+  const [noiseError, setNoiseError] = useState("");
+  const [cppsRecording, setCppsRecording] = useState(false);
+  const [cppsError, setCppsError] = useState("");
+  const [questionnaireResponses, setQuestionnaireResponses] = useState([]);
+  const [activeQuestionnaire, setActiveQuestionnaire] = useState(null);
+  const [questionnaireAnswers, setQuestionnaireAnswers] = useState({});
+  const [questionnaireSaving, setQuestionnaireSaving] = useState(false);
+  const [questionnaireError, setQuestionnaireError] = useState("");
+  const [repertoireTessituraMap, setRepertoireTessituraMap] = useState({});
+  const [tessituraSaving, setTessituraSaving] = useState(false);
+  const [topNoteInput, setTopNoteInput] = useState("");
+  const [tessituraOptionalInput, setTessituraOptionalInput] = useState("");
+  const [showTessituraAccordion, setShowTessituraAccordion] = useState(false);
+  const [dOverrideChoice, setDOverrideChoice] = useState(null);
+  const [duplicateWarning, setDuplicateWarning] = useState(null);
+  const [repertoireSkipped, setRepertoireSkipped] = useState({});
   const [language, setLanguage] = useState("ja");
   const [viewMonth, setViewMonth] = useState(() => {
     const d = new Date();
-    return { year: d.getFullYear(), month: d.getMonth() };
+    return { year: d.getUTCFullYear(), month: d.getUTCMonth() };
   });
   const [confirmDeleteDate, setConfirmDeleteDate] = useState(null);
   const [selectedFactorKey, setSelectedFactorKey] = useState(null);
   const [analysisTarget, setAnalysisTarget] = useState("performance");
+  // 分析対象の期間（週・月・年・全期間・任意の期間から選べる）
+  const [analysisPeriod, setAnalysisPeriod] = useState("all"); // "week" | "month" | "year" | "all" | "custom"
+  const [analysisCustomStart, setAnalysisCustomStart] = useState("");
+  const [analysisCustomEnd, setAnalysisCustomEnd] = useState("");
   const [adviceText, setAdviceText] = useState("");
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "" });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21 });
+  const [ownedItemKeys, setOwnedItemKeys] = useState([]);
+  const [characterEquipped, setCharacterEquipped] = useState({});
+  const [characterPointsSpent, setCharacterPointsSpent] = useState(0);
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileSaveStatus, setProfileSaveStatus] = useState("idle");
+
+  // selectedDate / viewMonth は、サーバーとクライアントのハイドレーション不一致を避けるため
+  // UTC基準の値で初期化している。マウント後（＝ハイドレーションが安全に完了した後）に、
+  // ブラウザの現地時間で計算した正しい「今日」へ補正する。
+  useEffect(() => {
+    const localToday = todayISO();
+    const utcToday = todayISOUTC();
+    if (localToday !== utcToday) {
+      setSelectedDate((prev) => (prev === utcToday ? localToday : prev));
+      setRealTodayDate(localToday);
+      const d = new Date();
+      setViewMonth((prev) =>
+        (prev.year === d.getUTCFullYear() && prev.month === d.getUTCMonth())
+          ? { year: d.getFullYear(), month: d.getMonth() }
+          : prev
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // lavoce-アプリ配布と課金仕様.md §3・実行順マスター Stage 1-4: PWA化。
+  // Service Workerの登録、インストール導線（beforeinstallprompt）、インストール計測をまとめて行う。
+  useEffect(() => {
+    if (typeof window === "undefined" || !("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.register("/sw.js").catch((err) => {
+      console.error("Service Workerの登録に失敗しました:", err);
+    });
+    // 既にインストール済み（スタンドアロン表示）かどうかを判定する
+    const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+    setIsPwaInstalled(standalone);
+    // iOS/iPadOSのSafari（および同エンジンを使う全ブラウザ）はbeforeinstallpromptを実装していないため、
+    // 別途ユーザーエージェントで判定し、手動での案内に切り替える。
+    const ua = window.navigator.userAgent;
+    const isIOSDevice = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const isIOS = isIOSDevice && !standalone;
+    setIsIosSafari(isIOS);
+    // iOSはbeforeinstallpromptが来ないので、同じ「少し操作した後に出す」タイミングを別途用意する。
+    if (isIOS) {
+      setTimeout(() => setShowInstallBanner(true), 3000);
+    }
+
+    function handleBeforeInstallPrompt(e) {
+      e.preventDefault();
+      setPwaInstallPrompt(e);
+      // 記録画面の邪魔をしないよう、少し操作した後にだけバナーを出す。
+      setTimeout(() => setShowInstallBanner(true), 3000);
+    }
+    function handleAppInstalled() {
+      setIsPwaInstalled(true);
+      setShowInstallBanner(false);
+      setPwaInstallPrompt(null);
+      // 計測：インストール完了をプロフィールに記録する（実行順マスター Stage 1-4の「計測」要件）。
+      const supabase = createClient();
+      supabase.from("profiles").update({ pwa_installed_at: new Date().toISOString() }).eq("id", userId).then(() => {});
+    }
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("appinstalled", handleAppInstalled);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      window.removeEventListener("appinstalled", handleAppInstalled);
+    };
+  }, [userId]);
+
+  async function handleInstallPwa() {
+    if (!pwaInstallPrompt) return;
+    // 計測：ボタンを押してプロンプトを表示した時点を記録する。
+    const supabase = createClient();
+    supabase.from("profiles").update({ pwa_install_prompted_at: new Date().toISOString() }).eq("id", userId).then(() => {});
+    pwaInstallPrompt.prompt();
+    await pwaInstallPrompt.userChoice;
+    setPwaInstallPrompt(null);
+    setShowInstallBanner(false);
+  }
 
   useEffect(() => {
     try {
@@ -841,7 +3257,14 @@ export default function VocalTracker({ userId, userEmail }) {
     let mounted = true;
     (async () => {
       const supabase = createClient();
-      const { data, error } = await supabase.from("entries").select("*").eq("user_id", userId);
+      const { data, error } = await runQueryWithAuthRetry(
+        supabase,
+        () => supabase.from("entries").select("*").eq("user_id", userId),
+        "記録データの取得"
+      );
+      if (error) {
+        console.error("記録データの読み込みに失敗しました:", error, "userId:", userId);
+      }
       if (mounted && data) {
         const map = {};
         data.forEach((row) => { map[row.date] = rowToEntry(row); });
@@ -856,7 +3279,65 @@ export default function VocalTracker({ userId, userEmail }) {
     let mounted = true;
     (async () => {
       const supabase = createClient();
-      const { data } = await supabase.from("profiles").select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex").eq("id", userId).single();
+      const { data, error } = await runQueryWithAuthRetry(
+        supabase,
+        () => supabase.from("questionnaire_responses").select("*").eq("user_id", userId).order("response_date", { ascending: true }),
+        "質問票の回答の取得"
+      );
+      if (error) {
+        console.error("質問票の回答の読み込みに失敗しました:", error, "userId:", userId);
+      }
+      if (mounted && data) setQuestionnaireResponses(data);
+    })();
+    return () => { mounted = false; };
+  }, [userId]);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const supabase = createClient();
+      const { data, error } = await runQueryWithAuthRetry(
+        supabase,
+        () => supabase.from("repertoire_tessitura").select("*").eq("user_id", userId),
+        "曲目のテッシトゥーラ登録の取得"
+      );
+      if (error) {
+        console.error("曲目のテッシトゥーラ登録の読み込みに失敗しました:", error, "userId:", userId);
+      }
+      if (mounted && data) {
+        const map = {};
+        data.forEach((row) => {
+          map[row.repertoire_name] = {
+            tessituraNote: row.tessitura_note || null,
+            topNote: row.top_note || null,
+            dOverride: row.d_override,
+            confidence: row.confidence || "entered",
+            usageCount: row.usage_count || 0
+          };
+        });
+        setRepertoireTessituraMap(map);
+      }
+    })();
+    return () => { mounted = false; };
+  }, [userId]);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const supabase = createClient();
+      const { data, error } = await runQueryWithAuthRetry(
+        supabase,
+        () =>
+          supabase
+            .from("profiles")
+            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus, practice_goal, practice_goal_tags, practice_goal_started_at, practice_reviews, folded_groups, survey_day7_shown_at, survey_day7_response, line_user_id, line_link_code, line_linked_at, line_notification_enabled, day_record_boundary_hour")
+            .eq("id", userId)
+            .single(),
+        "プロフィール（羊の装備を含む）の取得"
+      );
+      if (error) {
+        console.error("プロフィール（羊の装備を含む）の読み込みに失敗しました:", error, "userId:", userId);
+      }
       if (mounted && data) {
         setProfile({
           height_cm: data.height_cm ?? "",
@@ -864,8 +3345,42 @@ export default function VocalTracker({ userId, userEmail }) {
           nutrition_phase: data.nutrition_phase || "維持",
           protein_coefficient: data.protein_coefficient ?? 1.6,
           age: data.age ?? "",
-          sex: data.sex ?? ""
+          sex: data.sex ?? "",
+          garden_theme: data.garden_theme || "rose",
+          vocal_range_low: data.vocal_range_low || "",
+          vocal_range_high: data.vocal_range_high || "",
+          comfort_range_low: data.comfort_range_low || "",
+          comfort_range_high: data.comfort_range_high || "",
+          technical_goal: data.technical_goal || "",
+          health_notes: data.health_notes || "",
+          conditions: data.conditions || [],
+          onboarding_completed: data.onboarding_completed ?? false,
+          consent_health_data_at: data.consent_health_data_at || null,
+          consent_stats_use_at: data.consent_stats_use_at || null,
+          consent_policy_version: data.consent_policy_version || null,
+          professions: data.professions || [],
+          goal_focus: data.goal_focus || "",
+          practice_goal: data.practice_goal || "",
+          practice_goal_tags: data.practice_goal_tags || [],
+          practice_goal_started_at: data.practice_goal_started_at || null,
+          practice_reviews: data.practice_reviews || [],
+          folded_groups: data.folded_groups || [],
+          survey_day7_shown_at: data.survey_day7_shown_at || null,
+          survey_day7_response: data.survey_day7_response || "",
+          line_user_id: data.line_user_id || null,
+          line_link_code: data.line_link_code || null,
+          line_linked_at: data.line_linked_at || null,
+          line_notification_enabled: data.line_notification_enabled ?? true,
+          day_record_boundary_hour: data.day_record_boundary_hour ?? 21,
+          vocal_profession: data.vocal_profession || "singer",
+          track_cycle: data.track_cycle || false
         });
+        setCharacterPointsSpent(data.character_points_spent || 0);
+        setCharacterEquipped(data.character_equipped || {});
+      }
+      const { data: inventoryRows } = await supabase.from("character_inventory").select("item_key").eq("user_id", userId);
+      if (mounted && inventoryRows) {
+        setOwnedItemKeys(inventoryRows.map((r) => r.item_key));
       }
       if (mounted) setProfileLoading(false);
     })();
@@ -879,16 +3394,72 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [selectedDate, loading]);
 
   const t = useMemo(() => createTranslator(language), [language]);
+  const weekdayLabels = useMemo(() => getWeekdayLabels(language), [language]);
   const currentScore = useMemo(() => computeOverallScore(formData), [formData]);
-  const mealTotals = useMemo(() => {
-    const meals = formData ? formData.meals || [] : [];
+  const yesterdayContext = useMemo(() => {
+    const yDate = addDays(selectedDate, -1);
+    const y = entries[yDate];
+    if (!y) return null;
+    const { dinnerGap, flags } = computeConditionFlags(y);
     return {
-      carbs: sumMacro(meals, "carbs"),
-      protein: sumMacro(meals, "protein"),
-      fat: sumMacro(meals, "fat"),
-      fiber: sumMacro(meals, "fiber")
+      date: yDate,
+      sleepHours: y.sleepHours,
+      sleepQuality: y.sleepQuality,
+      bedtime: y.bedtime,
+      dinnerTime: y.dinnerTime,
+      dinnerGap,
+      dinnerTags: y.dinnerTags || [],
+      activityType: y.activityType,
+      weather: y.weather,
+      flags: flags.map((f) => f.flagKey)
     };
-  }, [formData]);
+  }, [entries, selectedDate]);
+  // 職業ごとに、危険信号を検知する時間軸としきい値を変える。
+  // 声優＝急性（その日のセッション単体）、アナウンサー＝本番前（直近数日の累積）、
+  // ポップス/ミュージカル歌手＝慢性（連続公演日数）。声楽家は既存の yesterdayContext が担う。
+  const loadWarnings = useMemo(() => {
+    const profession = profile.vocal_profession || "singer";
+    const today = formData ? formData.loadDetail || {} : {};
+    const warnings = [];
+
+    if (profession === "voice_actor") {
+      const mins = Number(today.sessionMinutes) || 0;
+      if (today.hasExtremeVocalization === true && mins >= 120) {
+        warnings.push("loadWarnVoiceActorAcute");
+      }
+    }
+
+    if (profession === "announcer") {
+      const recentDates = [addDays(selectedDate, -1), addDays(selectedDate, -2)];
+      const recentMinutes = recentDates.reduce((sum, d) => {
+        const e = entries[d];
+        const m = e && e.loadDetail ? Number(e.loadDetail.onAirMinutes) || 0 : 0;
+        return sum + m;
+      }, 0);
+      if (recentMinutes >= 180) {
+        warnings.push("loadWarnAnnouncerPreBroadcast");
+      }
+    }
+
+    if (profession === "pop_musical") {
+      const day = Number(today.consecutivePerformanceDay) || 0;
+      if (day >= 3) {
+        warnings.push("loadWarnPopMusicalConsecutive");
+      }
+    }
+
+    return warnings;
+  }, [profile.vocal_profession, formData, entries, selectedDate]);
+  // 分析タブ用の「声の状態の予測」。selectedDate（今日タブでの表示中の日）とは独立して、
+  // 常に実際の「今日」から見た前日の記録をもとに、理論的な根拠つきで解説する。
+  const voicePrediction = useMemo(() => {
+    const realToday = realTodayDate;
+    const yDate = addDays(realToday, -1);
+    const y = entries[yDate];
+    if (!y) return { hasData: false, date: yDate, flags: [] };
+    const { flags } = computeConditionFlags(y);
+    return { hasData: true, date: yDate, flags };
+  }, [entries, realTodayDate]);
   const foodLibrary = useMemo(
     () => buildFoodLibrary(entries, formData ? formData.meals : []),
     [entries, formData]
@@ -913,6 +3484,24 @@ export default function VocalTracker({ userId, userEmail }) {
     const w = (formData && formData.weightKg) ? Number(formData.weightKg) : getLatestWeight(entries, selectedDate);
     return computeNutritionTargets(w, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient);
   }, [formData, entries, selectedDate, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient]);
+  // lavoce-記録項目の再設計v2.md §3.4: 食品を1件も記録していない日は、簡易3択からの推定値を使う。
+  const simpleMealMacros = useMemo(() => {
+    if (!formData || (formData.meals || []).length > 0) return null;
+    if (formData.proteinLevel == null && formData.calorieLevel == null) return null;
+    return estimateSimpleMealMacros(nutritionTargets, formData.proteinLevel ?? 1, formData.calorieLevel ?? 1);
+  }, [formData, nutritionTargets]);
+  const mealTotals = useMemo(() => {
+    const meals = formData ? formData.meals || [] : [];
+    if (meals.length === 0 && simpleMealMacros) {
+      return { carbs: simpleMealMacros.carbsG, protein: simpleMealMacros.proteinG, fat: simpleMealMacros.fatG, fiber: simpleMealMacros.fiberG };
+    }
+    return {
+      carbs: sumMacro(meals, "carbs"),
+      protein: sumMacro(meals, "protein"),
+      fat: sumMacro(meals, "fat"),
+      fiber: sumMacro(meals, "fiber")
+    };
+  }, [formData, simpleMealMacros]);
   const sortedDates = useMemo(() => Object.keys(entries).sort().reverse(), [entries]);
   const monthEntries = useMemo(() => {
     const prefix = `${viewMonth.year}-${String(viewMonth.month + 1).padStart(2, "0")}`;
@@ -928,15 +3517,70 @@ export default function VocalTracker({ userId, userEmail }) {
     }
     return cells;
   }, [viewMonth, entries]);
+  // 分析期間で絞り込んだ記録データ。分析タブの計算だけがこれを使い、
+  // 「今日」「履歴」「羊」タブなどが参照する entries 本体には一切手を加えない。
+  const filteredEntries = useMemo(() => {
+    if (analysisPeriod === "all") return entries;
+    const today = new Date();
+    let startISO, endISO;
+    if (analysisPeriod === "week") {
+      const start = new Date(today); start.setDate(start.getDate() - 6);
+      startISO = toISODate(start); endISO = toISODate(today);
+    } else if (analysisPeriod === "month") {
+      const start = new Date(today); start.setDate(start.getDate() - 29);
+      startISO = toISODate(start); endISO = toISODate(today);
+    } else if (analysisPeriod === "year") {
+      const start = new Date(today); start.setFullYear(start.getFullYear() - 1);
+      startISO = toISODate(start); endISO = toISODate(today);
+    } else if (analysisPeriod === "aroundPerformance") {
+      // 数字の作法④: 暦の区切りではなく、声のプロの実感に合わせて「直近の本番」を基準にした期間。
+      const performanceDates = Object.keys(entries).filter((d) => entryHasActivityKind(entries[d], "本番")).sort();
+      if (performanceDates.length === 0) return {};
+      const lastPerformance = performanceDates[performanceDates.length - 1];
+      startISO = addDays(lastPerformance, -14);
+      endISO = addDays(lastPerformance, 14);
+    } else if (analysisPeriod === "custom") {
+      startISO = analysisCustomStart || "0000-01-01";
+      endISO = analysisCustomEnd || "9999-12-31";
+    } else {
+      return entries;
+    }
+    const result = {};
+    Object.keys(entries).forEach((d) => {
+      if (d >= startISO && d <= endISO) result[d] = entries[d];
+    });
+    return result;
+  }, [entries, analysisPeriod, analysisCustomStart, analysisCustomEnd]);
+  // メンタル（こころの落ち着き度=ease）が低かった日を、選んだ分析期間の中から集める。
+  // 診断や原因の断定はせず、本人が実際に書いた理由をそのまま並べて振り返れるようにするだけに留める。
+  const lowEaseEntries = useMemo(() => {
+    return Object.keys(filteredEntries)
+      .filter((d) => typeof filteredEntries[d].ease === "number" && filteredEntries[d].ease <= 2)
+      .sort()
+      .reverse()
+      .map((d) => ({ date: d, ease: filteredEntries[d].ease, mentalReason: filteredEntries[d].mentalReason || "", mentalTags: filteredEntries[d].mentalTags || [] }));
+  }, [filteredEntries]);
+  // こころの落ち着き度の推移グラフ用: timeSeries（常に直近30日固定）ではなく、
+  // 分析タブで選んだ期間（週/月/年/カスタム）に合わせたease専用の時系列データ。
+  const easeTimeSeries = useMemo(() => {
+    return Object.keys(filteredEntries)
+      .sort()
+      .map((d) => ({
+        date: d.slice(5),
+        fullDate: d,
+        ease: typeof filteredEntries[d].ease === "number" ? filteredEntries[d].ease : null
+      }));
+  }, [filteredEntries]);
+
   const correlationResults = useMemo(() => {
     if (analysisTarget === "performance") {
-      return getCorrelationData(entries, "performanceQuality", (e) => e.activityType === "本番" && typeof e.performanceQuality === "number");
+      return getCorrelationData(filteredEntries, "performanceQuality", (e) => entryHasActivityKind(e, "本番") && typeof e.performanceQuality === "number", t);
     }
     if (analysisTarget === "ease") {
-      return getCorrelationData(entries, "ease", (e) => typeof e.ease === "number");
+      return getCorrelationData(filteredEntries, "ease", (e) => typeof e.ease === "number", t);
     }
-    return getCorrelationData(entries, "throatCondition", (e) => typeof e.throatCondition === "number");
-  }, [entries, analysisTarget]);
+    return getCorrelationData(filteredEntries, "throatCondition", (e) => typeof e.throatCondition === "number", t);
+  }, [filteredEntries, analysisTarget, t]);
   const chartData = useMemo(
     () => correlationResults.filter((r) => r.r != null).sort((a, b) => Math.abs(b.r) - Math.abs(a.r)).map(({ key, label, r, n }) => ({ key, label, r, n })),
     [correlationResults]
@@ -954,21 +3598,31 @@ export default function VocalTracker({ userId, userEmail }) {
 
   const scatterInfo = useMemo(() => correlationResults.find((r) => r.key === selectedFactorKey) || null, [correlationResults, selectedFactorKey]);
   const insights = useMemo(() => {
-    const targetLabel = analysisTarget === "performance" ? "公演の出来" : analysisTarget === "ease" ? "心の余裕" : "喉のコンディション";
-    return generateInsights(correlationResults, targetLabel);
-  }, [correlationResults, analysisTarget]);
+    const targetLabel = analysisTarget === "performance" ? t("targetPerformance") : analysisTarget === "ease" ? t("targetEase") : t("targetThroat");
+    return generateInsights(correlationResults, targetLabel, t);
+  }, [correlationResults, analysisTarget, t]);
   const voiceMemoEntries = useMemo(() => {
+    return Object.keys(filteredEntries)
+      .filter((d) => (filteredEntries[d].voiceMemo || "").trim())
+      .sort()
+      .reverse()
+      .slice(0, 10)
+      .map((d) => ({ date: d, ...filteredEntries[d] }));
+  }, [filteredEntries]);
+  // lavoce-画面レイアウト仕様_1.md §6.1: ノートタブの「メモ」は分析の期間セレクタと無関係に、
+  // 常に直近のメモを見せる（分析タブの期間設定次第で見えなくなるのを防ぐ）。
+  const voiceMemoEntriesAllTime = useMemo(() => {
     return Object.keys(entries)
       .filter((d) => (entries[d].voiceMemo || "").trim())
       .sort()
       .reverse()
-      .slice(0, 10)
+      .slice(0, 30)
       .map((d) => ({ date: d, ...entries[d] }));
   }, [entries]);
   const timeOfDayStats = useMemo(() => {
     const sums = {};
     VOICE_TIME_SLOTS.forEach(({ key }) => { sums[key] = { throatSum: 0, throatN: 0, voiceSum: 0, voiceN: 0 }; });
-    Object.values(entries).forEach((e) => {
+    Object.values(filteredEntries).forEach((e) => {
       const checkins = e.voiceCheckins || {};
       VOICE_TIME_SLOTS.forEach(({ key }) => {
         const c = checkins[key];
@@ -976,21 +3630,22 @@ export default function VocalTracker({ userId, userEmail }) {
         if (c && typeof c.voice === "number") { sums[key].voiceSum += c.voice; sums[key].voiceN += 1; }
       });
     });
-    return VOICE_TIME_SLOTS.map(({ key, icon }) => ({
-      key, icon,
+    return VOICE_TIME_SLOTS.map(({ key, icon, labelKey }) => ({
+      key, icon, labelKey,
       avgThroat: sums[key].throatN ? sums[key].throatSum / sums[key].throatN : null,
       avgVoice: sums[key].voiceN ? sums[key].voiceSum / sums[key].voiceN : null,
       n: Math.max(sums[key].throatN, sums[key].voiceN)
     }));
-  }, [entries]);
+  }, [filteredEntries]);
   const restMethodStats = useMemo(() => {
     const byMethod = {};
-    Object.values(entries).forEach((e) => {
-      if (e.activityType !== "休養") return;
-      const methods = (e.activityDetail && e.activityDetail.restMethods) || [];
-      const otherText = (e.activityDetail && e.activityDetail.restMethodOther || "").trim();
-      methods.forEach((rawM) => {
-        const m = (rawM === "その他" && otherText) ? otherText : rawM;
+    Object.values(filteredEntries).forEach((e) => {
+      // 休養は活動ブロックではなく、日ごとの recovery として独立管理する（曲目複数化パッチ §2.0.1）
+      if (!e.recovery || (e.activities && e.activities.length > 0)) return;
+      const methods = e.recovery.methods || [];
+      // §3.10: 「その他」の自由記述は集計に使わない（表記ゆれで集計が壊れるため）。
+      // 選択肢のみを集計対象にし、自由記述は note として保持するだけに留める。
+      methods.forEach((m) => {
         if (!byMethod[m]) byMethod[m] = { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 };
         if (typeof e.throatCondition === "number") byMethod[m].throatSum += e.throatCondition;
         if (typeof e.voiceQuality === "number") byMethod[m].voiceSum += e.voiceQuality;
@@ -998,19 +3653,91 @@ export default function VocalTracker({ userId, userEmail }) {
         byMethod[m].n += 1;
       });
     });
-    return Object.entries(byMethod)
-      .map(([method, s]) => ({
-        method, n: s.n,
-        avgThroat: s.n ? s.throatSum / s.n : null,
-        avgVoice: s.n ? s.voiceSum / s.n : null,
-        avgEase: s.n ? s.easeSum / s.n : null
-      }))
-      .sort((a, b) => (b.avgVoice || 0) - (a.avgVoice || 0));
-  }, [entries]);
+    const all = Object.entries(byMethod).map(([method, s]) => ({
+      method, n: s.n,
+      avgThroat: s.n ? s.throatSum / s.n : null,
+      avgVoice: s.n ? s.voiceSum / s.n : null,
+      avgEase: s.n ? s.easeSum / s.n : null
+    }));
+    // 数字の作法: n≥3を平均表示の下限にする。それ未満は記録数だけを見せて、貯める動機にする。
+    return {
+      confident: all.filter((s) => s.n >= 3),
+      lowN: all.filter((s) => s.n < 3).sort((a, b) => b.n - a.n)
+    };
+  }, [filteredEntries]);
+  // 声の調子スコア（過去2週間の平均から算出する、100点満点の参考指標）。
+  // 医学的な診断値ではなく、これまで記録してきた項目を独自の重み付けで統合したもの。
+  // 各項目の内訳も併せて返し、ブラックボックスにしない。
+  const vocalConditionScore = useMemo(() => {
+    const realToday = realTodayDate;
+    const startDate = addDays(realToday, -13);
+    const days = [];
+    for (let i = 0; i < 14; i++) {
+      const d = addDays(startDate, i);
+      if (entries[d]) days.push(entries[d]);
+    }
+    if (days.length < 3) return { hasEnoughData: false, daysCount: days.length };
+
+    const avg = (arr) => (arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null);
+
+    const throatVals = days.map((e) => e.throatCondition).filter((v) => typeof v === "number");
+    const voiceVals = days.map((e) => e.voiceQuality).filter((v) => typeof v === "number");
+    const easeVals = days.map((e) => e.ease).filter((v) => typeof v === "number");
+    const sleepHoursVals = days.map((e) => e.sleepHours).filter((v) => typeof v === "number");
+    const sleepQualityVals = days.map((e) => e.sleepQuality).filter((v) => typeof v === "number");
+    const waterVals = days
+      .map((e) => Object.values(e.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0))
+      .filter((v) => v > 0);
+
+    const throatScore = throatVals.length ? (avg(throatVals) / 5) * 100 : null;
+    const voiceScore = voiceVals.length ? (avg(voiceVals) / 5) * 100 : null;
+    const easeScore = easeVals.length ? (avg(easeVals) / 5) * 100 : null;
+
+    let sleepHoursScore = null;
+    if (sleepHoursVals.length) {
+      const h = avg(sleepHoursVals);
+      if (h >= 7 && h <= 9) sleepHoursScore = 100;
+      else if (h < 7) sleepHoursScore = Math.max(0, 100 - (7 - h) * 20);
+      else sleepHoursScore = Math.max(0, 100 - (h - 9) * 15);
+    }
+    const sleepQualityScore = sleepQualityVals.length ? (avg(sleepQualityVals) / 5) * 100 : null;
+    let sleepScore = null;
+    if (sleepHoursScore != null && sleepQualityScore != null) sleepScore = (sleepHoursScore + sleepQualityScore) / 2;
+    else sleepScore = sleepHoursScore ?? sleepQualityScore;
+
+    const symptomDays = days.filter((e) => (e.throatSymptoms || []).length > 0).length;
+    const symptomScore = 100 - (symptomDays / days.length) * 100;
+
+    const waterScore = waterVals.length ? Math.min(100, (avg(waterVals) / 2000) * 100) : null;
+
+    const components = [
+      { key: "throat", labelKey: "scoreCompThroat", score: throatScore, weight: 25 },
+      { key: "voice", labelKey: "scoreCompVoice", score: voiceScore, weight: 20 },
+      { key: "sleep", labelKey: "scoreCompSleep", score: sleepScore, weight: 20 },
+      { key: "mental", labelKey: "scoreCompMental", score: easeScore, weight: 15 },
+      { key: "symptom", labelKey: "scoreCompSymptom", score: symptomScore, weight: 10 },
+      { key: "water", labelKey: "scoreCompWater", score: waterScore, weight: 10 }
+    ];
+
+    const validComponents = components.filter((c) => c.score != null);
+    const totalWeight = validComponents.reduce((s, c) => s + c.weight, 0);
+    if (totalWeight === 0) return { hasEnoughData: false, daysCount: days.length };
+    const weightedSum = validComponents.reduce((s, c) => s + c.score * c.weight, 0);
+    const total = Math.round(weightedSum / totalWeight);
+
+    // 数字の作法③: 各サブスコアの「押し下げ量」= 全体に対する重みの割合 × (100点との差)。
+    // 総合点そのものより、「どの項目がいちばん効いているか」の方が行動につながる。
+    const withPullDown = validComponents
+      .map((c) => ({ ...c, pullDown: (c.weight / totalWeight) * (100 - c.score) }))
+      .sort((a, b) => b.pullDown - a.pullDown);
+    const topPullDown = withPullDown[0] && withPullDown[0].pullDown >= 1 ? withPullDown[0] : null;
+
+    return { hasEnoughData: true, total, components, pullDowns: withPullDown, topPullDown, daysCount: days.length };
+  }, [entries, realTodayDate]);
   const timeSeries = useMemo(() => {
-    const dates = Object.keys(entries).sort().slice(-30);
+    const dates = Object.keys(filteredEntries).sort();
     return dates.map((date) => {
-      const e = entries[date];
+      const e = filteredEntries[date];
       const w = e.weightKg || getLatestWeight(entries, date);
       const targets = computeNutritionTargets(w, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient);
       const calorieActual = (e.carbs || 0) * 4 + (e.protein || 0) * 4 + (e.fat || 0) * 9;
@@ -1023,13 +3750,22 @@ export default function VocalTracker({ userId, userEmail }) {
         sleepQuality: typeof e.sleepQuality === "number" ? e.sleepQuality : null,
         calorieActual: calorieActual > 0 ? Math.round(calorieActual) : null,
         calorieTarget: targets ? Math.round(targets.calorieTarget) : null,
-        ease: typeof e.ease === "number" ? e.ease : null
+        ease: typeof e.ease === "number" ? e.ease : null,
+        resonanceScore: typeof e.resonanceScore === "number" ? e.resonanceScore : null,
+        wakeMidi: noteToMidi(e.wakeNote),
+        routineMidi: noteToMidi(e.routineNote),
+        pianissimoMidi: noteToMidi(e.pianissimoHighNote),
+        wakeNoteLabel: e.wakeNote || null,
+        routineNoteLabel: e.routineNote || null,
+        pianissimoNoteLabel: e.pianissimoHighNote || null,
+        activityType: e.activityType || null,
+        activityColor: ACTIVITY_CHART_COLORS[e.activityType] || C.line
       };
     });
-  }, [entries, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient]);
+  }, [filteredEntries, entries, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient]);
   const locationStats = useMemo(() => {
     const byLoc = {};
-    Object.values(entries).forEach((e) => {
+    Object.values(filteredEntries).forEach((e) => {
       const loc = (e.location || "").trim();
       if (!loc) return;
       if (!byLoc[loc]) byLoc[loc] = { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 };
@@ -1038,16 +3774,1649 @@ export default function VocalTracker({ userId, userEmail }) {
       if (typeof e.ease === "number") byLoc[loc].easeSum += e.ease;
       byLoc[loc].n += 1;
     });
-    return Object.entries(byLoc)
+    const all = Object.entries(byLoc).map(([location, s]) => ({
+      location, n: s.n,
+      avgThroat: s.n ? s.throatSum / s.n : null,
+      avgVoice: s.n ? s.voiceSum / s.n : null,
+      avgEase: s.n ? s.easeSum / s.n : null
+    }));
+    // 数字の作法: n≥3を平均表示の下限にする。それ未満は記録数だけを見せて、貯める動機にする。
+    return {
+      confident: all.filter((s) => s.n >= 3).sort((a, b) => b.n - a.n),
+      lowN: all.filter((s) => s.n < 3).sort((a, b) => b.n - a.n)
+    };
+  }, [filteredEntries]);
+
+  // ---- ここから「メンタル」まとめセクション用のデータ ----
+  // 「今の気持ちに近いもの」タグを、心の余裕が低かった日／高かった日で集計し、
+  // それぞれで多く選ばれているタグを見つける。診断ではなく、あくまで記録の傾向を見返すためのもの。
+  const mentalTagStats = useMemo(() => {
+    const lowCounts = {};
+    const highCounts = {};
+    let lowTotal = 0;
+    let highTotal = 0;
+    Object.values(filteredEntries).forEach((e) => {
+      if (typeof e.ease !== "number") return;
+      const tags = e.mentalTags || [];
+      if (e.ease <= 2) {
+        lowTotal += 1;
+        tags.forEach((tag) => { lowCounts[tag] = (lowCounts[tag] || 0) + 1; });
+      } else if (e.ease >= 4) {
+        highTotal += 1;
+        tags.forEach((tag) => { highCounts[tag] = (highCounts[tag] || 0) + 1; });
+      }
+    });
+    const toSorted = (counts) =>
+      Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(([tag, count]) => ({ tag, count }));
+    return { low: toSorted(lowCounts), lowTotal, high: toSorted(highCounts), highTotal };
+  }, [filteredEntries]);
+  // 休養方法・滞在地それぞれの中で、心の余裕の平均が最も高いものを1つずつ拾う（件数2件未満は参考にならないので除外）。
+  const mentalTopGroups = useMemo(() => {
+    const bestRest = restMethodStats.confident
+      .filter((s) => typeof s.avgEase === "number")
+      .sort((a, b) => b.avgEase - a.avgEase)[0] || null;
+    const bestLocation = locationStats.confident
+      .filter((s) => typeof s.avgEase === "number")
+      .sort((a, b) => b.avgEase - a.avgEase)[0] || null;
+    return { bestRest, bestLocation };
+  }, [restMethodStats, locationStats]);
+  // ---- 「メンタル」まとめセクション用データ ここまで ----
+
+  // ---- ここから、各グループ横断のクロス分析用データ ----
+  // timeSeries（体重・タンパク質・カロリー・心の余裕・響きスコアなど）に、
+  // filteredEntries側にしかない喉のコンディション・声の質を日付で突き合わせて1つにまとめる。
+  const crossFactorDaily = useMemo(() => {
+    return timeSeries.map((row) => {
+      const e = filteredEntries[row.fullDate] || {};
+      return {
+        ...row,
+        throatCondition: typeof e.throatCondition === "number" ? e.throatCondition : null,
+        voiceQuality: typeof e.voiceQuality === "number" ? e.voiceQuality : null
+      };
+    });
+  }, [timeSeries, filteredEntries]);
+
+  // 「食事」用: 喉のコンディションが良かった日／悪かった日それぞれで、よく食べていたものを集計する。
+  // 診断や断定ではなく、記録上の傾向をそのまま見返せるようにするだけのもの。
+  const dietGoodBadFoodStats = useMemo(() => {
+    const goodCounts = {};
+    const badCounts = {};
+    let goodTotal = 0;
+    let badTotal = 0;
+    Object.values(filteredEntries).forEach((e) => {
+      if (typeof e.throatCondition !== "number") return;
+      const items = (e.meals || []).map((m) => (m.name || "").trim()).filter(Boolean);
+      if (e.throatCondition >= 4) {
+        goodTotal += 1;
+        items.forEach((name) => { goodCounts[name] = (goodCounts[name] || 0) + 1; });
+      } else if (e.throatCondition <= 2) {
+        badTotal += 1;
+        items.forEach((name) => { badCounts[name] = (badCounts[name] || 0) + 1; });
+      }
+    });
+    const toSorted = (counts) =>
+      Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([name, count]) => ({ name, count }));
+    return { good: toSorted(goodCounts), goodTotal, bad: toSorted(badCounts), badTotal };
+  }, [filteredEntries]);
+
+  // 1対1の相関ではなく、「タンパク質・カロリー・心の余裕・睡眠、複数の条件が同時に揃っているかどうか」で
+  // 日をグループ分けし、それぞれのグループで声の調子がどう違うかを比較する。
+  // 各条件の基準: タンパク質は「身体データ」で設定した目標係数以上／カロリーは目標カロリー以上／
+  // 心の余裕は5段階で4以上／睡眠時間は7時間以上、を「良い」とみなす。
+  const compositeConditionDaily = useMemo(() => {
+    const coefficient = Number(profile.protein_coefficient) || 1.6;
+    return crossFactorDaily.map((d) => {
+      const proteinGood = typeof d.proteinPerKg === "number" ? d.proteinPerKg >= coefficient : null;
+      const calorieGood = (typeof d.calorieActual === "number" && typeof d.calorieTarget === "number") ? d.calorieActual >= d.calorieTarget : null;
+      const easeGood = typeof d.ease === "number" ? d.ease >= 4 : null;
+      const sleepGood = typeof d.sleepHours === "number" ? d.sleepHours >= 7 : null;
+      const flags = [proteinGood, calorieGood, easeGood, sleepGood];
+      const known = flags.filter((f) => f !== null);
+      const goodCount = flags.filter((f) => f === true).length;
+      return { ...d, proteinGood, calorieGood, easeGood, sleepGood, goodCount, knownCount: known.length };
+    });
+  }, [crossFactorDaily, profile.protein_coefficient]);
+
+  // 「好条件が重なった日」（4項目中3つ以上）と「あまり重ならなかった日」（4項目中1つ以下）を比較して、
+  // 声の調子（喉のコンディション・声の質・響きスコア）がどう違うかを文章にする。
+  // どちらかの日数が2日未満のときは、参考にできるほどのデータがまだないと判断して表示しない。
+  // 現時点では日本語のみの文言（他7言語の翻訳は translations.js 側の対応が別途必要）。
+  const compositePatternInsight = useMemo(() => {
+    const usable = compositeConditionDaily.filter((d) => d.knownCount >= 3);
+    const goodDays = usable.filter((d) => d.goodCount >= 3);
+    const poorDays = usable.filter((d) => d.goodCount <= 1);
+    if (goodDays.length < 2 || poorDays.length < 2) return null;
+
+    const avg = (arr, key) => {
+      const vals = arr.map((d) => d[key]).filter((v) => typeof v === "number");
+      return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+    };
+    const describe = (group) => ({
+      n: group.length,
+      throat: avg(group, "throatCondition"),
+      voice: avg(group, "voiceQuality"),
+      resonance: avg(group, "resonanceScore")
+    });
+    const outcomeText = (stats) => {
+      const parts = [];
+      if (stats.throat != null) parts.push(t("compositeOutcomeThroat").replace("{value}", stats.throat.toFixed(1)));
+      if (stats.voice != null) parts.push(t("compositeOutcomeVoice").replace("{value}", stats.voice.toFixed(1)));
+      if (stats.resonance != null) parts.push(t("compositeOutcomeResonance").replace("{value}", stats.resonance.toFixed(1)));
+      return parts.length ? parts.join(t("listSeparatorComma")) : null;
+    };
+
+    const good = describe(goodDays);
+    const poor = describe(poorDays);
+    const goodText = outcomeText(good);
+    const poorText = outcomeText(poor);
+    if (!goodText || !poorText) return null;
+
+    const sentences = [
+      t("compositeGoodDaysSentence").replace("{n}", good.n).replace("{outcome}", goodText),
+      t("compositePoorDaysSentence").replace("{n}", poor.n).replace("{outcome}", poorText)
+    ];
+
+    const { bestRest } = mentalTopGroups;
+    if (bestRest) {
+      const label = REST_METHOD_KEYS[bestRest.method] ? t(REST_METHOD_KEYS[bestRest.method]) : bestRest.method;
+      sentences.push(
+        t("compositeRestMethodSentence")
+          .replace("{method}", label)
+          .replace("{avg}", bestRest.avgEase.toFixed(1))
+          .replace("{n}", bestRest.n)
+      );
+    }
+    const topGoodFood = dietGoodBadFoodStats.good[0] || null;
+    const topBadFood = dietGoodBadFoodStats.bad[0] || null;
+    if (topGoodFood) {
+      sentences.push(
+        t("compositeGoodFoodSentence")
+          .replace("{n}", dietGoodBadFoodStats.goodTotal)
+          .replace("{food}", topGoodFood.name)
+          .replace("{count}", topGoodFood.count)
+      );
+    }
+    if (topBadFood) {
+      sentences.push(
+        t("compositeBadFoodSentence")
+          .replace("{n}", dietGoodBadFoodStats.badTotal)
+          .replace("{food}", topBadFood.name)
+          .replace("{count}", topBadFood.count)
+      );
+    }
+
+    return sentences;
+  }, [compositeConditionDaily, mentalTopGroups, dietGoodBadFoodStats, t]);
+  // ---- 各グループ横断のクロス分析用データ ここまで ----
+
+  // ---- ここから、lavoce-指標設計図.md フェーズ1の3指標用データ ----
+  // 段階解放の判定に使う「これまでの総記録日数」（選んだ分析期間ではなく、全期間で数える）。
+  const recordedDaysTotal = useMemo(() => Object.keys(entries).length, [entries]);
+  // 実行順マスター Stage 2-2: 記録7日目に達し、まだ表示も回答もしていなければマイクロ調査を出す。
+  useEffect(() => {
+    if (recordedDaysTotal >= 7 && !profile.survey_day7_shown_at && !profile.survey_day7_response) {
+      setShowDay7Survey(true);
+    }
+  }, [recordedDaysTotal, profile.survey_day7_shown_at, profile.survey_day7_response]);
+
+  // ---- lavoce-記録項目の再設計v2.md §4.3: 使っていないものは、アプリから畳む提案をする ----
+  // 「設定でオンオフ」ではなく「使用実績からアプリが提案する」方式。30日間、記録が十分に
+  // 溜まっている（＝アプリを使い続けている）人だけを対象にする。
+  const unusedFieldGroupSuggestions = useMemo(() => {
+    if (recordedDaysTotal < 30) return [];
+    const dates30 = Object.keys(entries).sort().slice(-30);
+    if (dates30.length < 20) return []; // 直近30日のうち記録がまばらな人には提案しない
+    const folded = profile.folded_groups || [];
+    const suggestions = [];
+    // バグ修正: 簡易3択（exerciseLevel）の利用を「詳細記録を使った」と誤判定していたため、
+    // 簡易3択だけ使い続けている人に永遠に提案が出なかった。判定を「詳細記録（exercises配列）を
+    // 使ったか」に絞る。
+    const usedExerciseDetail = dates30.some((d) => (entries[d].exercises || []).length > 0);
+    if (!usedExerciseDetail && !folded.includes("exercise_detail")) {
+      suggestions.push({ key: "exercise_detail", label: "運動の詳細記録（種目・時間・強度）" });
+    }
+    const usedMealDetail = dates30.some((d) => (entries[d].meals || []).length > 0);
+    if (!usedMealDetail && !folded.includes("meal_detail")) {
+      suggestions.push({ key: "meal_detail", label: "食事の詳細記録（食品別のPFC）" });
+    }
+    const usedBodyFat = dates30.some((d) => typeof entries[d].bodyFatPct === "number");
+    if (!usedBodyFat && !folded.includes("body_fat")) {
+      suggestions.push({ key: "body_fat", label: "体脂肪率の記録" });
+    }
+    const usedCpps = dates30.some((d) => typeof entries[d].cppsValue === "number");
+    if (!usedCpps && !folded.includes("cpps")) {
+      suggestions.push({ key: "cpps", label: "CPPS客観測定" });
+    }
+    const usedEnvironment = dates30.some((d) => typeof entries[d].temperature === "number" || typeof entries[d].humidity === "number");
+    if (!usedEnvironment && !folded.includes("environment")) {
+      suggestions.push({ key: "environment", label: "気温・湿度の記録" });
+    }
+    const usedMentalDetail = dates30.some((d) => (entries[d].mentalTags || []).length > 0 || (entries[d].mentalReason || "").trim());
+    if (!usedMentalDetail && !folded.includes("mental_detail")) {
+      suggestions.push({ key: "mental_detail", label: "気持ちタグ・日記（心の余裕の詳細）" });
+    }
+    const usedMedication = dates30.some((d) => (entries[d].medicationTags || []).length > 0);
+    if (!usedMedication && !folded.includes("medication")) {
+      suggestions.push({ key: "medication", label: "服薬タグの記録" });
+    }
+    return suggestions;
+  }, [entries, recordedDaysTotal, profile.folded_groups]);
+
+  // ---- lavoce-画面レイアウト仕様_1.md §3: ホーム（今日の一枚） 用データ（前半） ----
+  const recordStreak = useMemo(() => {
+    const realToday = realTodayDate;
+    let streak = 0;
+    let d = entries[realToday] ? realToday : addDays(realToday, -1);
+    while (entries[d]) { streak += 1; d = addDays(d, -1); }
+    return streak;
+  }, [entries, realTodayDate]);
+  // 次に解放される指標までの進捗（3/7/14/28日のうち、まだ届いていない最初のもの）
+  const nextUnlock = useMemo(() => {
+    const thresholds = [
+      { days: 3, label: "症状カレンダー・音域マップ" },
+      { days: 7, label: "コンディション偏差値" },
+      { days: 14, label: "声の時差マップ・効いた習慣" },
+      { days: 28, label: "発声負荷バランス（ACWR）" }
+    ];
+    return thresholds.find((t) => recordedDaysTotal < t.days) || null;
+  }, [recordedDaysTotal]);
+  // ---- ホーム 用データ（前半）ここまで ----
+
+
+  // 03. ウォームアップ効率（起き抜け→ルーティン後の半音差）
+  const warmupDaily = useMemo(() => {
+    return Object.keys(filteredEntries).sort().map((date) => {
+      const e = filteredEntries[date];
+      const wakeMidi = noteToMidi(e.wakeNote);
+      const routineMidi = noteToMidi(e.routineNote);
+      const deltaST = (wakeMidi != null && routineMidi != null) ? routineMidi - wakeMidi : null;
+      return { date, dateLabel: date.slice(5), wakeMidi, routineMidi, wakeNoteLabel: e.wakeNote || null, routineNoteLabel: e.routineNote || null, deltaST };
+    });
+  }, [filteredEntries]);
+  // 平常値は中央値とMAD（中央絶対偏差）による頑健統計。外れ値1件に振り回されにくい。
+  const warmupStats = useMemo(() => {
+    const values = warmupDaily.map((d) => d.deltaST).filter((v) => v != null).sort((a, b) => a - b);
+    const n = values.length;
+    if (n === 0) return null;
+    const median = n % 2 === 1 ? values[(n - 1) / 2] : (values[n / 2 - 1] + values[n / 2]) / 2;
+    const absDevs = values.map((v) => Math.abs(v - median)).sort((a, b) => a - b);
+    const madRaw = absDevs.length % 2 === 1 ? absDevs[(absDevs.length - 1) / 2] : (absDevs[absDevs.length / 2 - 1] + absDevs[absDevs.length / 2]) / 2;
+    const mad = madRaw > 0 ? madRaw : 0.5; // 0割り防止の下限
+    return { median, mad, n };
+  }, [warmupDaily]);
+  const warmupWithZ = useMemo(() => {
+    return warmupDaily.map((d, i) => {
+      if (d.deltaST == null || !warmupStats) return { ...d, z: null, efficiencyPct: null, wakeMidi7d: null };
+      const z = 0.6745 * (d.deltaST - warmupStats.median) / warmupStats.mad;
+      const efficiencyPct = warmupStats.median !== 0 ? Math.round((d.deltaST / warmupStats.median) * 100) : null;
+      const windowVals = warmupDaily.slice(Math.max(0, i - 6), i + 1).map((x) => x.wakeMidi).filter((v) => v != null);
+      const wakeMidi7d = windowVals.length ? windowVals.reduce((a, b) => a + b, 0) / windowVals.length : null;
+      return { ...d, z, efficiencyPct, wakeMidi7d };
+    });
+  }, [warmupDaily, warmupStats]);
+  const warmupLatest = useMemo(() => {
+    const withValue = warmupWithZ.filter((d) => d.deltaST != null);
+    return withValue.length ? withValue[withValue.length - 1] : null;
+  }, [warmupWithZ]);
+
+  // 10. 音域到達マップ
+  const allNoteMidisInPeriod = useMemo(() => {
+    const vals = [];
+    Object.values(filteredEntries).forEach((e) => {
+      const w = noteToMidi(e.wakeNote);
+      const r = noteToMidi(e.routineNote);
+      if (w != null) vals.push(w);
+      if (r != null) vals.push(r);
+    });
+    return vals;
+  }, [filteredEntries]);
+  const allNoteMidisAllTime = useMemo(() => {
+    const vals = [];
+    Object.values(entries).forEach((e) => {
+      const w = noteToMidi(e.wakeNote);
+      const r = noteToMidi(e.routineNote);
+      if (w != null) vals.push(w);
+      if (r != null) vals.push(r);
+    });
+    return vals;
+  }, [entries]);
+  const percentileOf = (sortedArr, p) => {
+    if (sortedArr.length === 0) return null;
+    const idx = (p / 100) * (sortedArr.length - 1);
+    const lo = Math.floor(idx), hi = Math.ceil(idx);
+    if (lo === hi) return sortedArr[lo];
+    return sortedArr[lo] + (sortedArr[hi] - sortedArr[lo]) * (idx - lo);
+  };
+  // 自己ベストは最大値・最小値そのものではなく、上位/下位5%点（95パーセンタイル）を採用する。
+  // 単発の外れ値1件でベストが動いて以後ずっと更新できなくなる、という事態を防ぐため。
+  const personalBestRange = useMemo(() => {
+    if (allNoteMidisAllTime.length < 3) return null;
+    const sorted = [...allNoteMidisAllTime].sort((a, b) => a - b);
+    const low = percentileOf(sorted, 5);
+    const high = percentileOf(sorted, 95);
+    return { low, high, width: high - low };
+  }, [allNoteMidisAllTime]);
+  const rangeThisPeriod = useMemo(() => {
+    if (allNoteMidisInPeriod.length === 0) return null;
+    return { low: Math.min(...allNoteMidisInPeriod), high: Math.max(...allNoteMidisInPeriod) };
+  }, [allNoteMidisInPeriod]);
+  const rangeFullnessPct = useMemo(() => {
+    if (!rangeThisPeriod || !personalBestRange || personalBestRange.width <= 0) return null;
+    const thisWidth = rangeThisPeriod.high - rangeThisPeriod.low;
+    return Math.round((thisWidth / personalBestRange.width) * 100);
+  }, [rangeThisPeriod, personalBestRange]);
+  const isNewRecord = useMemo(() => {
+    if (!rangeThisPeriod || !personalBestRange) return false;
+    return rangeThisPeriod.high > personalBestRange.high || rangeThisPeriod.low < personalBestRange.low;
+  }, [rangeThisPeriod, personalBestRange]);
+  // 直近の弱声の最高音（音域マップのマーカー用）。最新の記録を優先。
+  const latestPianissimoMidi = useMemo(() => {
+    const dates = Object.keys(entries).sort().reverse();
+    for (const d of dates) {
+      const midi = noteToMidi(entries[d].pianissimoHighNote);
+      if (midi != null) return midi;
+    }
+    return null;
+  }, [entries]);
+  // lavoce-作業計画v2-構造変更の分離.md §3.4③: 平常値との比較。
+  // m=中央値, MAD=中央絶対偏差、z = 0.6745×(今日の値−m)/MAD。z≤−1.5が3日以上続いたら知らせる。
+  // むくみ・診断語は使わず「平常値よりN半音低い日がN日続いている」という事実提示に留める（§7.1）。
+  const pianissimoTrend = useMemo(() => {
+    const dates = Object.keys(entries).sort();
+    const vals = dates.map((d) => ({ date: d, midi: noteToMidi(entries[d].pianissimoHighNote) })).filter((x) => x.midi != null);
+    if (vals.length < 3) return null;
+    const last28 = vals.slice(-28);
+    const sortedMidis = last28.map((x) => x.midi).sort((a, b) => a - b);
+    const n = sortedMidis.length;
+    const m = n % 2 === 1 ? sortedMidis[(n - 1) / 2] : (sortedMidis[n / 2 - 1] + sortedMidis[n / 2]) / 2;
+    const absDevs = last28.map((x) => Math.abs(x.midi - m)).sort((a, b) => a - b);
+    const madRaw = absDevs.length % 2 === 1 ? absDevs[(absDevs.length - 1) / 2] : (absDevs[absDevs.length / 2 - 1] + absDevs[absDevs.length / 2]) / 2;
+    const mad = madRaw > 0 ? madRaw : 0.5;
+    const withZ = last28.map((x) => ({ ...x, z: 0.6745 * (x.midi - m) / mad }));
+    let streak = 0;
+    for (let i = withZ.length - 1; i >= 0; i--) {
+      if (withZ[i].z <= -1.5) streak += 1; else break;
+    }
+    return { median: m, latest: withZ[withZ.length - 1], streak, isLow: streak >= 3 };
+  }, [entries]);
+  // 起き抜け最低音の30日移動平均（下がり続けていたら疲労蓄積の目安）
+  const wakeLowNote30dTrend = useMemo(() => {
+    const dates = Object.keys(entries).sort().slice(-30);
+    const wakeVals = dates.map((d) => noteToMidi(entries[d].wakeNote)).filter((v) => v != null);
+    if (wakeVals.length < 4) return null;
+    const mid = Math.floor(wakeVals.length / 2);
+    const firstHalfAvg = wakeVals.slice(0, mid).reduce((a, b) => a + b, 0) / mid;
+    const secondHalfAvg = wakeVals.slice(mid).reduce((a, b) => a + b, 0) / (wakeVals.length - mid);
+    return { firstHalfAvg, secondHalfAvg, declining: secondHalfAvg < firstHalfAvg - 1 };
+  }, [entries]);
+
+  // 06. 症状カレンダーと連鎖
+  const symptomDatesSorted = useMemo(() => Object.keys(filteredEntries).sort(), [filteredEntries]);
+  // ①連続日数：各症状について、直近まで続いている連続記録日数（カレンダー上で連続した日のみ数える）
+  const symptomStreaks = useMemo(() => {
+    const result = {};
+    SYMPTOM_OPTIONS.forEach((symptom) => {
+      let current = 0;
+      let prevDate = null;
+      symptomDatesSorted.forEach((date) => {
+        const has = (filteredEntries[date].throatSymptoms || []).includes(symptom);
+        if (has) {
+          current = (prevDate && addDays(prevDate, 1) === date) ? current + 1 : 1;
+        } else {
+          current = 0;
+        }
+        prevDate = date;
+      });
+      if (current > 0) result[symptom] = current;
+    });
+    return result;
+  }, [filteredEntries, symptomDatesSorted]);
+  // ②連鎖確率：症状aの翌日に症状bが出る確率が、bの普段の出現率よりどれだけ高いか（lift）
+  const symptomChainStats = useMemo(() => {
+    const chains = [];
+    const totalDays = symptomDatesSorted.length;
+    if (totalDays < 2) return chains;
+    SYMPTOM_OPTIONS.forEach((a) => {
+      const bBaseCounts = {};
+      SYMPTOM_OPTIONS.forEach((s) => { bBaseCounts[s] = 0; });
+      symptomDatesSorted.forEach((d) => {
+        (filteredEntries[d].throatSymptoms || []).forEach((s) => { if (bBaseCounts[s] != null) bBaseCounts[s] += 1; });
+      });
+      SYMPTOM_OPTIONS.forEach((b) => {
+        if (a === b) return;
+        let countA = 0, countAB = 0;
+        for (let i = 0; i < symptomDatesSorted.length - 1; i++) {
+          const d1 = symptomDatesSorted[i], d2 = symptomDatesSorted[i + 1];
+          if (addDays(d1, 1) !== d2) continue;
+          const hasA = (filteredEntries[d1].throatSymptoms || []).includes(a);
+          if (!hasA) continue;
+          countA += 1;
+          if ((filteredEntries[d2].throatSymptoms || []).includes(b)) countAB += 1;
+        }
+        const pB = totalDays > 0 ? bBaseCounts[b] / totalDays : 0;
+        if (countA >= 5 && pB > 0) {
+          const pBGivenA = countAB / countA;
+          const lift = pBGivenA / pB;
+          if (lift >= 1.5) chains.push({ a, b, pBGivenA, pB, lift, countA });
+        }
+      });
+    });
+    return chains.sort((x, y) => y.lift - x.lift).slice(0, 5);
+  }, [filteredEntries, symptomDatesSorted]);
+  // ③よく一緒に出る組み合わせ：ジャッカード係数の上位3組
+  const symptomJaccardPairs = useMemo(() => {
+    const pairs = [];
+    for (let i = 0; i < SYMPTOM_OPTIONS.length; i++) {
+      for (let j = i + 1; j < SYMPTOM_OPTIONS.length; j++) {
+        const a = SYMPTOM_OPTIONS[i], b = SYMPTOM_OPTIONS[j];
+        let union = 0, inter = 0;
+        symptomDatesSorted.forEach((d) => {
+          const list = filteredEntries[d].throatSymptoms || [];
+          const hasA = list.includes(a), hasB = list.includes(b);
+          if (hasA || hasB) union += 1;
+          if (hasA && hasB) inter += 1;
+        });
+        if (inter > 0 && union > 0) pairs.push({ a, b, jaccard: inter / union, count: inter });
+      }
+    }
+    return pairs.sort((x, y) => y.jaccard - x.jaccard).slice(0, 3);
+  }, [filteredEntries, symptomDatesSorted]);
+  // カレンダーグリッド表示用（直近30日、症状×日付）
+  const symptomGridDates = useMemo(() => symptomDatesSorted.slice(-30), [symptomDatesSorted]);
+  // ---- lavoce-指標設計図.md フェーズ1の3指標用データ ここまで ----
+
+  // ---- ここから、lavoce-指標設計図.md フェーズ2（02偏差値・01予報）用データ ----
+  // 02. コンディション偏差値：直近28日分の「声の調子スコア」を日ごとに並べ、自分の分布の中で今日がどこにいるかを見る。
+  const dailyScoreSeries = useMemo(() => {
+    const realToday = realTodayDate;
+    const dates = [];
+    for (let i = 27; i >= 0; i--) dates.push(addDays(realToday, -i));
+    return dates
+      .map((d) => ({ date: d, score: computeDailyScore100(entries[d]) }))
+      .filter((x) => x.score != null);
+  }, [entries, realTodayDate]);
+  const deviationScore = useMemo(() => {
+    if (dailyScoreSeries.length < 7) return null;
+    const values = dailyScoreSeries.map((d) => d.score);
+    const n = values.length;
+    const mean = values.reduce((a, b) => a + b, 0) / n;
+    let sigma;
+    if (n < 14) {
+      const sorted = [...values].sort((a, b) => a - b);
+      const median = n % 2 === 1 ? sorted[(n - 1) / 2] : (sorted[n / 2 - 1] + sorted[n / 2]) / 2;
+      const absDevs = values.map((v) => Math.abs(v - median)).sort((a, b) => a - b);
+      const mad = absDevs.length % 2 === 1 ? absDevs[(absDevs.length - 1) / 2] : (absDevs[absDevs.length / 2 - 1] + absDevs[absDevs.length / 2]) / 2;
+      sigma = 1.4826 * mad;
+    } else {
+      const variance = values.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / (n - 1);
+      sigma = Math.sqrt(variance);
+    }
+    sigma = Math.max(sigma, 0.5);
+    const todayEntry = dailyScoreSeries[dailyScoreSeries.length - 1];
+    const z = (todayEntry.score - mean) / sigma;
+    const T = Math.min(80, Math.max(20, Math.round(50 + 10 * z)));
+    const position = values.filter((v) => v > todayEntry.score).length + 1; // 1位＝この期間でいちばん良い日
+    const topPercentPct = Math.max(1, Math.round((position / n) * 100));
+    return { z, T, n, position, topPercentPct, today: Math.round(todayEntry.score) };
+  }, [dailyScoreSeries]);
+
+  // lavoce-レパートリー負荷パッチ.md §1.4: 「無理なく出せる音域」（任意）があればそちらを優先し、
+  // なければ全音域を使う。ACWR（発声負荷）の計算で曲のsongFactorを使うため、ACWRより前に置く。
+  const comfortableRangeMidi = useMemo(() => {
+    const low = noteToMidi(profile.comfort_range_low) ?? noteToMidi(profile.vocal_range_low);
+    const high = noteToMidi(profile.comfort_range_high) ?? noteToMidi(profile.vocal_range_high);
+    const isEstimatedRange = !profile.comfort_range_low || !profile.comfort_range_high;
+    if (low == null || high == null || high <= low) return null;
+    return { low, high, center: (low + high) / 2, half: (high - low) / 2, isEstimatedRange };
+  }, [profile.comfort_range_low, profile.comfort_range_high, profile.vocal_range_low, profile.vocal_range_high]);
+  // §3.2: 両方（最高音・テッシトゥーラ）が入力済みの曲が5件以上あれば、個人の実測差に置き換える。
+  const personalTessituraOffset = useMemo(() => {
+    const diffs = Object.values(repertoireTessituraMap)
+      .filter((r) => r.topNote && r.tessituraNote)
+      .map((r) => noteToMidi(r.topNote) - noteToMidi(r.tessituraNote))
+      .filter((v) => Number.isFinite(v));
+    return diffs.length >= 5 ? median(diffs) : REPERTOIRE_TESSITURA_OFFSET;
+  }, [repertoireTessituraMap]);
+  // 登録レコードから d（快適音域中心からの正規化位置、-1〜+1）を解決する。
+  // 優先順位：テッシトゥーラ実測 > 最高音からの推定 > 3択フォールバック。
+  function resolveRepertoireD(record) {
+    if (!record || !comfortableRangeMidi) return null;
+    if (record.tessituraNote) {
+      const midi = noteToMidi(record.tessituraNote);
+      if (midi != null) return { d: (midi - comfortableRangeMidi.center) / comfortableRangeMidi.half, confidence: "entered" };
+    }
+    if (record.topNote) {
+      const topMidi = noteToMidi(record.topNote);
+      if (topMidi != null) {
+        const estTess = topMidi - personalTessituraOffset;
+        return { d: (estTess - comfortableRangeMidi.center) / comfortableRangeMidi.half, confidence: "estimated" };
+      }
+    }
+    if (record.dOverride != null) return { d: record.dOverride, confidence: "coarse" };
+    return null;
+  }
+  // songFactorResolver: computeDailyLoad / computeActivityBlockLoad に渡す共通の解決器
+  const songFactorResolver = useMemo(() => ({
+    tessituraMap: repertoireTessituraMap,
+    resolveD: resolveRepertoireD
+  }), [repertoireTessituraMap, comfortableRangeMidi, personalTessituraOffset]);
+
+  // 07. 発声負荷（ACWR）の日次系列。声の予報の「前日発声負荷」predictorにも使う。
+  // 記録のない日は L=0 として扱わず、前日のEWMAをそのまま引き継ぐ（休んだのか未記録なのか区別できないため）。
+  const acwrSeries = useMemo(() => {
+    const allDates = Object.keys(entries).sort();
+    const series = {};
+    if (allDates.length === 0) return series;
+    const firstDate = allDates[0];
+    const realToday = realTodayDate;
+    const lambdaA = 2 / (7 + 1);
+    const lambdaC = 2 / (28 + 1);
+    let A = null, C = null;
+    let d = firstDate;
+    let guard = 0;
+    while (d <= realToday && guard < 3660) { // 約10年分で打ち切る安全弁
+      const entry = entries[d];
+      if (entry) {
+        const L = computeDailyLoad(entry, songFactorResolver);
+        A = A == null ? L : lambdaA * L + (1 - lambdaA) * A;
+        C = C == null ? L : lambdaC * L + (1 - lambdaC) * C;
+        series[d] = { A, C, acwr: C > 0 ? A / C : null };
+      } else if (A != null && C != null) {
+        series[d] = { A, C, acwr: C > 0 ? A / C : null };
+      }
+      d = addDays(d, 1);
+      guard += 1;
+    }
+    return series;
+  }, [entries, songFactorResolver, realTodayDate]);
+
+  // 01. 声の予報：前夜の行動から翌朝の喉スコアを予測する。
+  // 記録14日未満は一般知見（β₀）だけで予報し、14日以上たまったらリッジ回帰で
+  // その人自身の係数（β̂）を推定し、経験ベイズ縮約で β₀ とブレンドする（β = n/(n+k)·β̂ + k/(n+k)·β₀、k=20）。
+  const forecastTrainingSet = useMemo(() => {
+    const realToday = realTodayDate;
+    const rows = [];
+    for (let i = 35; i >= 0; i--) {
+      const d = addDays(realToday, -i);
+      const prevD = addDays(d, -1);
+      const prevEntry = entries[prevD];
+      if (!prevEntry) continue;
+      const todayEntry = entries[d];
+      const actual = todayEntry && typeof todayEntry.throatCondition === "number" ? todayEntry.throatCondition : null;
+      const prevAcwr = acwrSeries[prevD] ? acwrSeries[prevD].acwr : null;
+      rows.push({ date: d, predictors: extractForecastPredictors(prevEntry, prevAcwr), actual });
+    }
+    return rows;
+  }, [entries, acwrSeries, realTodayDate]);
+  const predictorMeans = useMemo(() => {
+    const means = {};
+    FORECAST_KEYS.forEach((k) => {
+      const vals = forecastTrainingSet.map((r) => r.predictors && r.predictors[k]).filter((v) => typeof v === "number");
+      means[k] = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+    });
+    return means;
+  }, [forecastTrainingSet]);
+  const predictorStds = useMemo(() => {
+    const stds = {};
+    FORECAST_KEYS.forEach((k) => {
+      const vals = forecastTrainingSet.map((r) => r.predictors && r.predictors[k]).filter((v) => typeof v === "number");
+      if (vals.length < 2) { stds[k] = 1; return; }
+      const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+      const variance = vals.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / vals.length;
+      stds[k] = Math.sqrt(variance) || 1;
+    });
+    return stds;
+  }, [forecastTrainingSet]);
+  const throatMu = useMemo(() => {
+    const vals = Object.keys(entries).sort().slice(-28).map((d) => entries[d].throatCondition).filter((v) => typeof v === "number");
+    return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 3;
+  }, [entries]);
+  // 個人化（リッジ回帰）。n（学習に使える件数）が14未満なら β̂=0（＝β₀のみ）とみなす。
+  const personalizedBeta = useMemo(() => {
+    const trainRows = forecastTrainingSet.filter((r) => r.actual != null && r.predictors);
+    const n = trainRows.length;
+    const k = 20;
+    const blendRatio = n / (n + k);
+    if (n < 14) {
+      return { beta: FORECAST_PRIORS, n, personalizationPct: 0 };
+    }
+    // 標準化: (x - 平均) / SD。欠損は0（＝平均で埋めたのと同じ）として扱う。
+    const X = trainRows.map((r) =>
+      FORECAST_KEYS.map((key) => {
+        const x = r.predictors[key];
+        if (typeof x !== "number" || predictorMeans[key] == null) return 0;
+        const std = predictorStds[key] > 1e-6 ? predictorStds[key] : 1;
+        return (x - predictorMeans[key]) / std;
+      })
+    );
+    const y = trainRows.map((r) => r.actual - throatMu);
+    const betaStd = fitRidgeRegression(X, y, 1.0);
+    if (!betaStd) {
+      return { beta: FORECAST_PRIORS, n, personalizationPct: 0 };
+    }
+    const betaHat = {};
+    FORECAST_KEYS.forEach((key, i) => {
+      const std = predictorStds[key] > 1e-6 ? predictorStds[key] : 1;
+      betaHat[key] = betaStd[i] / std;
+    });
+    const blended = {};
+    FORECAST_KEYS.forEach((key) => {
+      blended[key] = blendRatio * betaHat[key] + (1 - blendRatio) * FORECAST_PRIORS[key];
+    });
+    return { beta: blended, n, personalizationPct: Math.round(blendRatio * 100) };
+  }, [forecastTrainingSet, predictorMeans, predictorStds, throatMu]);
+  const forecastResiduals = useMemo(() => {
+    return forecastTrainingSet
+      .map((r) => {
+        if (r.actual == null) return null;
+        const pred = predictThroat(r.predictors, predictorMeans, throatMu, personalizedBeta.beta);
+        if (!pred) return null;
+        return { date: r.date, actual: r.actual, yhat: pred.yhat, residual: r.actual - pred.yhat };
+      })
+      .filter((x) => x != null);
+  }, [forecastTrainingSet, predictorMeans, throatMu, personalizedBeta]);
+  const forecastResidualSD = useMemo(() => {
+    if (forecastResiduals.length < 3) return 0.8; // データが少ないうちの初期の目安幅
+    const vals = forecastResiduals.map((r) => r.residual);
+    const n = vals.length;
+    const mean = vals.reduce((a, b) => a + b, 0) / n;
+    const variance = vals.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / (n - 1);
+    return Math.sqrt(variance) || 0.8;
+  }, [forecastResiduals]);
+  const forecastHitRate = useMemo(() => {
+    const recent = forecastResiduals.slice(-30);
+    if (recent.length === 0) return null;
+    const hits = recent.filter((r) => Math.abs(r.residual) <= 0.5).length;
+    return { rate: Math.round((hits / recent.length) * 100), n: recent.length };
+  }, [forecastResiduals]);
+  const todayForecast = useMemo(() => {
+    const realToday = realTodayDate;
+    const yDate = addDays(realToday, -1);
+    const prevEntry = entries[yDate];
+    if (!prevEntry) return { hasData: false, yesterdayDate: yDate };
+    const prevAcwr = acwrSeries[yDate] ? acwrSeries[yDate].acwr : null;
+    const predictors = extractForecastPredictors(prevEntry, prevAcwr);
+    const pred = predictThroat(predictors, predictorMeans, throatMu, personalizedBeta.beta);
+    if (!pred) return { hasData: false, yesterdayDate: yDate };
+    const intervalWidth = forecastResidualSD * (pred.missingCount > 0 ? 1.2 : 1);
+    const contributions = FORECAST_KEYS
+      .filter((k) => typeof predictors[k] === "number" && typeof predictorMeans[k] === "number")
+      .map((k) => ({ key: k, label: FORECAST_FACTOR_LABELS[k], contribution: personalizedBeta.beta[k] * (predictors[k] - predictorMeans[k]) }))
+      .sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution));
+    return {
+      hasData: true,
+      yesterdayDate: yDate,
+      yhat: pred.yhat,
+      low: Math.max(1, pred.yhat - intervalWidth),
+      high: Math.min(5, pred.yhat + intervalWidth),
+      topFactor: contributions[0] || null,
+      allContributions: contributions,
+      personalizationPct: personalizedBeta.personalizationPct,
+      trainN: personalizedBeta.n
+    };
+  }, [entries, acwrSeries, predictorMeans, throatMu, forecastResidualSD, personalizedBeta, realTodayDate]);
+  // lavoce-画面レイアウト仕様_1.md §3.3: 提案は必ず1つだけ。予報の寄与のうち、
+  // いちばん改善余地が大きい「行動可能」な項目を選ぶ（環境・前日症状などは提案しない）。
+  const HOME_SUGGESTION_TEXT = {
+    sleepHours: "今夜は少し早めに眠ってみましょう",
+    dinnerGap: "夕食を就寝の3時間以上前に済ませてみましょう",
+    waterL: "水分をもう少し摂ってみましょう",
+    alcohol: "今夜はアルコールを控えてみましょう",
+    prevLoad: "今日は発声の負荷を少し抑えてみましょう"
+  };
+  const todaySuggestion = useMemo(() => {
+    if (!todayForecast.hasData || !todayForecast.allContributions) return null;
+    const actionable = todayForecast.allContributions
+      .filter((c) => HOME_SUGGESTION_TEXT[c.key])
+      .sort((a, b) => a.contribution - b.contribution); // 最も足を引っ張っている項目を先頭に
+    const worst = actionable[0];
+    if (!worst || worst.contribution >= -0.05) return null; // 改善余地がほぼなければ提案しない
+    return HOME_SUGGESTION_TEXT[worst.key];
+  }, [todayForecast]);
+  const forecastChartData = useMemo(() => {
+    return forecastResiduals.slice(-14).map((r) => {
+      const low = Math.max(1, r.yhat - forecastResidualSD);
+      const high = Math.min(5, r.yhat + forecastResidualSD);
+      return { date: r.date.slice(5), actual: r.actual, yhat: Math.round(r.yhat * 10) / 10, low, bandWidth: Math.max(0, high - low) };
+    });
+  }, [forecastResiduals, forecastResidualSD]);
+  // ---- フェーズ2（02偏差値・01予報）用データ ここまで ----
+
+  // ---- lavoce-収集データ拡張案.md C-1: 周期と声・メンタルの傾向 用データ ----
+  // 周期日を4分割（1〜7/8〜14/15〜21/22日目以降）してグループ比較する。
+  const cycleGroupStats = useMemo(() => {
+    if (!profile.track_cycle) return [];
+    const buckets = {
+      "1〜7日目": { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 },
+      "8〜14日目": { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 },
+      "15〜21日目": { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 },
+      "22日目以降": { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 }
+    };
+    Object.keys(filteredEntries).forEach((d) => {
+      const day = cycleDayForDate(d, entries);
+      if (day == null) return;
+      const bucketKey = day <= 7 ? "1〜7日目" : day <= 14 ? "8〜14日目" : day <= 21 ? "15〜21日目" : "22日目以降";
+      const e = filteredEntries[d];
+      if (typeof e.throatCondition === "number") buckets[bucketKey].throatSum += e.throatCondition;
+      if (typeof e.voiceQuality === "number") buckets[bucketKey].voiceSum += e.voiceQuality;
+      if (typeof e.ease === "number") buckets[bucketKey].easeSum += e.ease;
+      buckets[bucketKey].n += 1;
+    });
+    return Object.entries(buckets)
       .filter(([, s]) => s.n >= 2)
-      .map(([location, s]) => ({
-        location, n: s.n,
+      .map(([label, s]) => ({
+        label, n: s.n,
         avgThroat: s.n ? s.throatSum / s.n : null,
         avgVoice: s.n ? s.voiceSum / s.n : null,
         avgEase: s.n ? s.easeSum / s.n : null
-      }))
-      .sort((a, b) => b.n - a.n);
+      }));
+  }, [filteredEntries, entries, profile.track_cycle]);
+  const hasCycleData = useMemo(() => Object.values(entries).some((e) => e.cycleStart), [entries]);
+  // ---- 周期と声・メンタルの傾向 用データ ここまで ----
+
+  // ---- lavoce-収集データ拡張案.md E節 + レパートリー負荷パッチ.md: 曲目ごとの負荷 用データ ----
+  // §2: 曲目名の正規化と、既存登録に対する使用回数（サジェストの並び順・繰り返し登録抑制に使う）
+  const repertoireUsageCounts = useMemo(() => {
+    const counts = {};
+    Object.values(entries).forEach((e) => {
+      const raw = (e.repertoire || "").trim();
+      if (!raw) return;
+      const norm = normalizeTitle(raw);
+      if (!counts[norm]) counts[norm] = { count: 0, displayName: raw };
+      counts[norm].count += 1;
+    });
+    return counts;
   }, [entries]);
+  const overallThroatBaseline = useMemo(() => {
+    const vals = Object.values(entries).map((e) => e.throatCondition).filter((v) => typeof v === "number");
+    return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+  }, [entries]);
+  const roleLoadStats = useMemo(() => {
+    if (!comfortableRangeMidi) return { confident: [], lowN: [] };
+    const byRole = {};
+    const sortedDates = Object.keys(entries).sort();
+    sortedDates.forEach((date, i) => {
+      const e = entries[date];
+      const activities = e.activities || [];
+      // その日、同じ曲が複数ブロックにまたがっていても1日分としてまとめる
+      const dayNamesWithLoad = {};
+      activities.forEach((activity) => {
+        const { perItem } = computeActivityBlockLoad(activity, songFactorResolver);
+        perItem.forEach((pi) => {
+          const name = (pi.repertoireName || "").trim();
+          if (!name || !repertoireTessituraMap[name]) return; // 未登録の曲は負荷を計算できないので対象外
+          dayNamesWithLoad[name] = (dayNamesWithLoad[name] || 0) + pi.load;
+        });
+      });
+      Object.entries(dayNamesWithLoad).forEach(([name, load]) => {
+        if (!byRole[name]) byRole[name] = { name, record: repertoireTessituraMap[name], loads: [], nextDayThroatDeviation: [] };
+        byRole[name].loads.push(load);
+      });
+      // §5（帰属の按分・共起検出）は今回のフェーズでは実装せず、その日に歌った曲すべてに
+      // 翌日の落ち込みをそのまま計上する簡易版。同じ日によく一緒に歌われる曲は同じ値になる。
+      const nextDate = sortedDates[i + 1];
+      if (nextDate && addDays(date, 1) === nextDate) {
+        const nextEntry = entries[nextDate];
+        if (typeof nextEntry.throatCondition === "number" && overallThroatBaseline != null) {
+          const deviation = nextEntry.throatCondition - overallThroatBaseline;
+          Object.keys(dayNamesWithLoad).forEach((name) => {
+            byRole[name].nextDayThroatDeviation.push(deviation);
+          });
+        }
+      }
+    });
+    const list = Object.values(byRole).map((r) => ({
+      name: r.name,
+      record: r.record,
+      count: r.loads.length,
+      avgLoad: r.loads.reduce((a, b) => a + b, 0) / r.loads.length,
+      avgNextDayDeviation: r.nextDayThroatDeviation.length ? r.nextDayThroatDeviation.reduce((a, b) => a + b, 0) / r.nextDayThroatDeviation.length : null,
+      nextDayCount: r.nextDayThroatDeviation.length
+    }));
+    // §4.1/§4.3: n≥3を本表示の下限にし、実測の落ち込みが大きい順（＝deviationが低い順）に並べる。
+    const confident = list.filter((r) => r.count >= 3 && r.avgNextDayDeviation != null).sort((a, b) => a.avgNextDayDeviation - b.avgNextDayDeviation);
+    const lowN = list.filter((r) => r.count < 3 || r.avgNextDayDeviation == null).sort((a, b) => b.count - a.count);
+    // §4.4: 実測順位と計算負荷順位の乖離（大きいほど「音域以外の要因」のサイン）
+    const loadRanked = [...confident].sort((a, b) => b.avgLoad - a.avgLoad);
+    confident.forEach((r, actualRank) => {
+      const loadRank = loadRanked.findIndex((x) => x.name === r.name);
+      r.rankGap = loadRank - actualRank; // 正: 計算より実際の落ち込みが大きい（見落とされがちな重い役）
+    });
+    return { confident, lowN };
+  }, [entries, repertoireTessituraMap, comfortableRangeMidi, overallThroatBaseline, songFactorResolver]);
+  // ---- 曲目ごとの負荷 用データ ここまで ----
+
+  // ---- lavoce-指標設計図.md 05. 効いた習慣ランキング 用データ ----
+  // 前日の行動（二値）→翌日のスコア、という向きに必ず固定する（同日で見ると逆向きの因果を拾ってしまうため）。
+  const HABIT_DEFINITIONS = useMemo(() => [
+    { key: "sleep7h", label: "前夜の睡眠が7時間以上だった", test: (e) => typeof e.sleepHours === "number" ? e.sleepHours >= 7 : null },
+    { key: "water2L", label: "前夜の水分摂取が2.0L以上だった", test: (e) => {
+      const ml = Object.values(e.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0);
+      return ml > 0 ? ml >= 2000 : null;
+    } },
+    { key: "alcohol", label: "前夜、アルコールを摂取した", test: (e) => (e.dinnerTags || []).length ? (e.dinnerTags || []).includes("アルコール") : null },
+    { key: "fried", label: "前夜、揚げ物を食べた", test: (e) => (e.dinnerTags || []).length ? (e.dinnerTags || []).includes("揚げ物") : null },
+    { key: "caffeine", label: "前夜、カフェインを摂取した", test: (e) => (e.dinnerTags || []).length ? (e.dinnerTags || []).includes("カフェイン") : null },
+    { key: "carbonated", label: "前夜、炭酸飲料を飲んだ", test: (e) => (e.dinnerTags || []).length ? (e.dinnerTags || []).includes("炭酸") : null },
+    { key: "highEase", label: "前夜の心の余裕が高かった（4以上）", test: (e) => typeof e.ease === "number" ? e.ease >= 4 : null },
+    { key: "talkedALot", label: "前日、よく喋った", test: (e) => typeof e.speakingLevel === "number" ? e.speakingLevel === 2 : null }
+  ], []);
+  const effectiveHabitRanking = useMemo(() => {
+    const sortedDates = Object.keys(filteredEntries).sort();
+    const results = HABIT_DEFINITIONS.map((habit) => {
+      const group1 = [], group0 = [];
+      sortedDates.forEach((date, i) => {
+        const nextDate = sortedDates[i + 1];
+        if (!nextDate || addDays(date, 1) !== nextDate) return;
+        const e = filteredEntries[date];
+        const testResult = habit.test(e);
+        if (testResult == null) return;
+        const nextEntry = filteredEntries[nextDate];
+        const throatV = typeof nextEntry.throatCondition === "number" ? nextEntry.throatCondition : null;
+        const voiceV = typeof nextEntry.voiceQuality === "number" ? nextEntry.voiceQuality : null;
+        if (throatV == null && voiceV == null) return;
+        const score = throatV != null && voiceV != null ? (throatV + voiceV) / 2 : (throatV ?? voiceV);
+        (testResult ? group1 : group0).push(score);
+      });
+      const res = computeHedgesG(group1, group0);
+      if (!res) return null;
+      return { key: habit.key, label: habit.label, ...res, stars: starRatingForEffect(res) };
+    }).filter((r) => r != null && r.n1 >= 3 && r.n0 >= 3);
+    return results.sort((a, b) => Math.abs(b.g) - Math.abs(a.g));
+  }, [filteredEntries, HABIT_DEFINITIONS]);
+  // ---- 効いた習慣ランキング 用データ ここまで ----
+
+  // ---- lavoce-指標設計図.md 04. 声の時差マップ 用データ ----
+  // 生活変数を k 日ずらして、目的変数（声の調子＝喉・声の平均）とのスピアマン順位相関を取る。
+  const LAG_VARIABLES = useMemo(() => [
+    { key: "sleepHours", label: "睡眠時間", extract: (e) => typeof e.sleepHours === "number" ? e.sleepHours : null },
+    { key: "water", label: "水分量", extract: (e) => {
+      const ml = Object.values(e.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0);
+      return ml > 0 ? ml : null;
+    } },
+    { key: "ease", label: "心の余裕", extract: (e) => typeof e.ease === "number" ? e.ease : null },
+    { key: "dinnerGap", label: "夕食から就寝までの間隔", extract: (e) => computeTimeGapHours(e.dinnerTime, e.bedtime) },
+    { key: "absHumidity", label: "絶対湿度", extract: (e) => computeAbsoluteHumidity(e.temperature, e.humidity) },
+    { key: "alcohol", label: "アルコール摂取", extract: (e) => (e.dinnerTags || []).length ? ((e.dinnerTags || []).includes("アルコール") ? 1 : 0) : null },
+    { key: "load", label: "発声負荷（ACWR）", extract: (e, date) => acwrSeries[date] ? acwrSeries[date].acwr : null }
+  ], [acwrSeries]);
+  const lagCorrelationMap = useMemo(() => {
+    const sortedDates = Object.keys(filteredEntries).sort();
+    const dateIndex = {};
+    sortedDates.forEach((d, i) => { dateIndex[d] = i; });
+    const cells = [];
+    LAG_VARIABLES.forEach((variable) => {
+      for (let lag = 0; lag <= 3; lag++) {
+        const xs = [], ys = [];
+        sortedDates.forEach((date) => {
+          const targetIdx = dateIndex[date] + lag;
+          const targetDate = sortedDates[targetIdx];
+          if (!targetDate) return;
+          // lag日分すべて連続したカレンダー日であることを確認（記録の欠落をまたいだ比較を避ける）
+          let expected = date;
+          let ok = true;
+          for (let s = 0; s < lag; s++) {
+            expected = addDays(expected, 1);
+            if (sortedDates[dateIndex[date] + s + 1] !== expected) { ok = false; break; }
+          }
+          if (!ok) return;
+          const xVal = variable.extract(filteredEntries[date], date);
+          const targetEntry = filteredEntries[targetDate];
+          const throatV = typeof targetEntry.throatCondition === "number" ? targetEntry.throatCondition : null;
+          const voiceV = typeof targetEntry.voiceQuality === "number" ? targetEntry.voiceQuality : null;
+          if (xVal == null || (throatV == null && voiceV == null)) return;
+          const yVal = throatV != null && voiceV != null ? (throatV + voiceV) / 2 : (throatV ?? voiceV);
+          xs.push(xVal); ys.push(yVal);
+        });
+        const n = xs.length;
+        const rho = n >= 14 ? spearman(xs, ys) : null;
+        let pValue = null;
+        if (rho != null && Math.abs(rho) < 1) {
+          const tStat = rho * Math.sqrt((n - 2) / (1 - rho * rho));
+          pValue = tDistPValue(tStat, n - 2);
+        }
+        cells.push({ variableKey: variable.key, variableLabel: variable.label, lag, n, rho, pValue });
+      }
+    });
+    const significance = benjaminiHochberg(cells.map((c) => c.pValue), 0.10);
+    cells.forEach((c, i) => { c.significant = significance[i]; });
+    return cells;
+  }, [filteredEntries, LAG_VARIABLES]);
+  const topLagFinding = useMemo(() => {
+    const significant = lagCorrelationMap.filter((c) => c.significant);
+    if (significant.length === 0) return null;
+    return significant.sort((a, b) => Math.abs(b.rho) - Math.abs(a.rho))[0];
+  }, [lagCorrelationMap]);
+  // ---- 声の時差マップ 用データ ここまで ----
+
+  // ---- lavoce-指標設計図.md 07. 発声負荷バランス（ACWR） 用データ ----
+  // acwrSeries（フェーズ2の予報モデルで既に計算済み）をそのまま使い、
+  // ゾーン判定・グラフ用の系列・「明日を休養にした場合」の1ステップ先予測を組み立てる。
+  function acwrZone(value) {
+    if (value == null) return null;
+    if (value < 0.8) return { key: "low", label: "積み足りない", color: C.gold };
+    if (value <= 1.3) return { key: "good", label: "ちょうどいい", color: C.sage };
+    if (value <= 1.5) return { key: "caution", label: "増やしすぎ注意", color: C.gold };
+    return { key: "high", label: "喉を痛めやすい急増", color: C.curtain };
+  }
+  const acwrChartData = useMemo(() => {
+    const dates = Object.keys(acwrSeries).sort().slice(-28);
+    return dates.map((d) => ({ date: d.slice(5), acwr: acwrSeries[d].acwr != null ? roundTo1(acwrSeries[d].acwr) : null }));
+  }, [acwrSeries]);
+  const acwrToday = useMemo(() => {
+    const dates = Object.keys(acwrSeries).sort();
+    if (dates.length === 0) return null;
+    const lastDate = dates[dates.length - 1];
+    const latest = acwrSeries[lastDate];
+    if (latest.acwr == null) return null;
+    const lambdaA = 2 / (7 + 1);
+    const lambdaC = 2 / (28 + 1);
+    // 明日を休養（発声負荷ゼロ）にした場合のEWMAをもう1ステップ進めた予測値
+    const restA = lambdaA * 0 + (1 - lambdaA) * latest.A;
+    const restC = lambdaC * 0 + (1 - lambdaC) * latest.C;
+    const restAcwr = restC > 0 ? restA / restC : null;
+    return { date: lastDate, value: roundTo1(latest.acwr), zone: acwrZone(latest.acwr), restProjection: restAcwr != null ? roundTo1(restAcwr) : null, restZone: acwrZone(restAcwr) };
+  }, [acwrSeries]);
+  // ---- 発声負荷バランス 用データ ここまで ----
+
+  // ---- lavoce-記録項目の再設計v2.md §3.7: 稽古ノート（タグ別の自動添付データ） ----
+  // 「変わった気がしない」の横に、実は半音上がっているグラフを出すのがこの機能の肝。
+  const practiceGoalMetrics = useMemo(() => {
+    const tags = profile.practice_goal_tags || [];
+    if (tags.length === 0) return [];
+    const dates28 = Object.keys(entries).sort().slice(-28);
+    const metrics = [];
+    tags.forEach((tag) => {
+      if (tag === "soft_high") {
+        const vals = dates28.map((d) => ({ date: d, midi: noteToMidi(entries[d].pianissimoHighNote) })).filter((x) => x.midi != null);
+        if (vals.length >= 2) {
+          const first = vals[0], last = vals[vals.length - 1];
+          const diff = last.midi - first.midi;
+          metrics.push({
+            tag, label: "弱声の最高音", data: vals.map((v) => ({ date: v.date.slice(5), value: v.midi })),
+            summary: `${midiToNoteLabel(first.midi)} → ${midiToNoteLabel(last.midi)}（${diff >= 0 ? "+" : ""}${diff}半音）`
+          });
+        }
+      } else if (tag === "high_range") {
+        const vals = dates28.map((d) => ({ date: d, midi: noteToMidi(entries[d].routineNote) })).filter((x) => x.midi != null);
+        if (vals.length >= 2) {
+          const first = vals[0], last = vals[vals.length - 1];
+          const diff = last.midi - first.midi;
+          metrics.push({
+            tag, label: "ルーティン後の音名", data: vals.map((v) => ({ date: v.date.slice(5), value: v.midi })),
+            summary: `${midiToNoteLabel(first.midi)} → ${midiToNoteLabel(last.midi)}（${diff >= 0 ? "+" : ""}${diff}半音）`
+          });
+        }
+      } else if (tag === "range") {
+        const vals = dates28.map((d) => {
+          const wake = noteToMidi(entries[d].wakeNote);
+          const routine = noteToMidi(entries[d].routineNote);
+          const vs = [wake, routine].filter((v) => v != null);
+          return vs.length >= 2 ? { date: d, width: Math.max(...vs) - Math.min(...vs) } : null;
+        }).filter(Boolean);
+        if (vals.length >= 2) {
+          const first = vals[0], last = vals[vals.length - 1];
+          metrics.push({
+            tag, label: "音域幅（最高−最低、半音）", data: vals.map((v) => ({ date: v.date.slice(5), value: v.width })),
+            summary: `${first.width}半音 → ${last.width}半音（${last.width - first.width >= 0 ? "+" : ""}${last.width - first.width}半音）`
+          });
+        }
+      } else if (tag === "articulation") {
+        const vals = dates28.map((d) => ({ date: d, cpps: entries[d].cppsValue })).filter((x) => typeof x.cpps === "number");
+        if (vals.length >= 2) {
+          const first = vals[0], last = vals[vals.length - 1];
+          metrics.push({
+            tag, label: "CPPS（声の明瞭さ）の推移", data: vals.map((v) => ({ date: v.date.slice(5), value: v.cpps })),
+            summary: `${first.cpps.toFixed(1)}dB → ${last.cpps.toFixed(1)}dB`
+          });
+        }
+      } else if (tag === "stamina") {
+        const vals = dates28.map((d) => (acwrSeries[d] && acwrSeries[d].acwr != null ? { date: d, acwr: roundTo1(acwrSeries[d].acwr) } : null)).filter(Boolean);
+        if (vals.length >= 2) {
+          metrics.push({
+            tag, label: "発声負荷バランス（ACWR）の推移", data: vals.map((v) => ({ date: v.date.slice(5), value: v.acwr })),
+            summary: `直近: ${vals[vals.length - 1].acwr}`
+          });
+        }
+      } else if (tag === "breath_support") {
+        // その日の声の記録のうち、MPTを測った中でいちばん長かった値を採用する。
+        const vals = dates28.map((d) => {
+          const mpts = ((entries[d].voiceEntries || [])).map((v) => v.mptSeconds).filter((v) => typeof v === "number");
+          return mpts.length > 0 ? { date: d, mpt: Math.max(...mpts) } : null;
+        }).filter(Boolean);
+        if (vals.length >= 2) {
+          const first = vals[0], last = vals[vals.length - 1];
+          metrics.push({
+            tag, label: "最長発声時間（MPT）の推移", data: vals.map((v) => ({ date: v.date.slice(5), value: v.mpt })),
+            summary: `${first.mpt.toFixed(1)}秒 → ${last.mpt.toFixed(1)}秒`
+          });
+        } else {
+          metrics.push({ tag, label: "最長発声時間（MPT）", data: null, summary: null, needsMoreData: true });
+        }
+      } else if (tag === "evenness") {
+        const vals = dates28.map((d) => {
+          const scores = ((entries[d].voiceEntries || [])).map((v) => v.toneEvenness).filter((v) => typeof v === "number");
+          return scores.length > 0 ? { date: d, score: scores.reduce((a, b) => a + b, 0) / scores.length } : null;
+        }).filter(Boolean);
+        if (vals.length >= 2) {
+          const first = vals[0], last = vals[vals.length - 1];
+          metrics.push({
+            tag, label: "音色の均一感の推移", data: vals.map((v) => ({ date: v.date.slice(5), value: v.score })),
+            summary: `${first.score.toFixed(1)} → ${last.score.toFixed(1)}（5点満点）`
+          });
+        } else {
+          metrics.push({ tag, label: "音色の均一感", data: null, summary: null, needsMoreData: true });
+        }
+      } else {
+        metrics.push({ tag, label: (GOAL_TAGS.find((g) => g.key === tag) || {}).label, data: null, summary: null, notYetAvailable: true });
+      }
+    });
+    return metrics;
+  }, [profile.practice_goal_tags, entries, acwrSeries]);
+  // ---- 稽古ノート 用データ ここまで ----
+
+  // ---- lavoce-指標設計図.md 09. 環境の快適帯 用データ ----
+  // 相対湿度ではなく絶対湿度（AH）で見る。気温が変わると同じ%でも実際の水分量が変わるため。
+  const envEntries = useMemo(() => {
+    return Object.values(entries)
+      .map((e) => ({
+        ah: computeAbsoluteHumidity(e.temperature, e.humidity),
+        temp: typeof e.temperature === "number" ? e.temperature : null,
+        rh: typeof e.humidity === "number" ? e.humidity : null,
+        throat: typeof e.throatCondition === "number" ? e.throatCondition : null
+      }))
+      .filter((x) => x.ah != null && x.throat != null);
+  }, [entries]);
+  // ①絶対湿度を2g/m³刻みでビン分けし、②喉スコア平均が「全体平均+0.3」を超える連続区間を快適帯とする。
+  const comfortZone1D = useMemo(() => {
+    if (envEntries.length < 5) return null;
+    const overallAvg = envEntries.reduce((s, x) => s + x.throat, 0) / envEntries.length;
+    const binSize = 2;
+    const byBin = {};
+    envEntries.forEach((x) => {
+      const bin = Math.floor(x.ah / binSize) * binSize;
+      if (!byBin[bin]) byBin[bin] = { sum: 0, n: 0 };
+      byBin[bin].sum += x.throat; byBin[bin].n += 1;
+    });
+    const bins = Object.keys(byBin).map(Number).sort((a, b) => a - b);
+    const binStats = bins.map((b) => ({ bin: b, avg: byBin[b].sum / byBin[b].n, n: byBin[b].n }));
+    const threshold = overallAvg + 0.3;
+    // n≥2のビンの中で、閾値を超える連続区間のうち最長のものを快適帯とする
+    let bestRun = [], currentRun = [];
+    binStats.forEach((s, i) => {
+      const qualifies = s.n >= 2 && s.avg > threshold;
+      const isContiguous = currentRun.length === 0 || s.bin === currentRun[currentRun.length - 1].bin + binSize;
+      if (qualifies && isContiguous) {
+        currentRun.push(s);
+      } else if (qualifies) {
+        currentRun = [s];
+      } else {
+        currentRun = [];
+      }
+      if (currentRun.length > bestRun.length) bestRun = currentRun;
+    });
+    if (bestRun.length === 0) return { overallAvg, binStats, range: null };
+    return { overallAvg, binStats, range: { low: bestRun[0].bin, high: bestRun[bestRun.length - 1].bin + binSize } };
+  }, [envEntries]);
+  // ②気温4℃刻み×相対湿度10%刻みの2次元マップ
+  const comfortZone2D = useMemo(() => {
+    if (envEntries.length < 10) return null;
+    const cells = {};
+    envEntries.forEach((x) => {
+      if (x.temp == null || x.rh == null) return;
+      const tBin = Math.floor(x.temp / 4) * 4;
+      const rhBin = Math.floor(x.rh / 10) * 10;
+      const key = `${tBin}_${rhBin}`;
+      if (!cells[key]) cells[key] = { tBin, rhBin, sum: 0, n: 0 };
+      cells[key].sum += x.throat; cells[key].n += 1;
+    });
+    const list = Object.values(cells).map((c) => ({ ...c, avg: c.sum / c.n }));
+    if (list.length === 0) return null;
+    const tBins = [...new Set(list.map((c) => c.tBin))].sort((a, b) => a - b);
+    const rhBins = [...new Set(list.map((c) => c.rhBin))].sort((a, b) => a - b);
+    return { cells: list, tBins, rhBins };
+  }, [envEntries]);
+  const todayEnvPosition = useMemo(() => {
+    const realToday = realTodayDate;
+    const e = entries[realToday];
+    if (!e) return null;
+    const ah = computeAbsoluteHumidity(e.temperature, e.humidity);
+    if (ah == null) return null;
+    return { ah: roundTo1(ah), temp: e.temperature, rh: e.humidity, location: e.location || null };
+  }, [entries, realTodayDate]);
+  // ---- 環境の快適帯 用データ ここまで ----
+
+  // ---- lavoce-指標設計図.md 08. 本番ピーキング曲線 用データ ----
+  const performanceDates = useMemo(() => Object.keys(entries).filter((d) => entryHasActivityKind(entries[d], "本番")).sort(), [entries]);
+  const nextPerformanceDate = useMemo(() => {
+    const realToday = realTodayDate;
+    return performanceDates.find((d) => d > realToday) || null;
+  }, [performanceDates, realTodayDate]);
+  const pastPerformanceDates = useMemo(() => {
+    const realToday = realTodayDate;
+    return performanceDates.filter((d) => d <= realToday);
+  }, [performanceDates, realTodayDate]);
+  // 本番日をゼロ点にして、過去のすべての本番を重ね合わせる（イベント整列平均）。
+  const peakingCurve = useMemo(() => {
+    if (pastPerformanceDates.length < 3) return null;
+    const tauMin = -7, tauMax = 3;
+    const tauData = {};
+    for (let tau = tauMin; tau <= tauMax; tau++) tauData[tau] = [];
+    pastPerformanceDates.forEach((perfDate) => {
+      for (let tau = tauMin; tau <= tauMax; tau++) {
+        const targetDate = addDays(perfDate, tau);
+        // 本番が連日で重なる期間は、targetDateにとって「最寄りの本番」にだけ紐づけ、二重計上を防ぐ。
+        let nearest = null, nearestDist = Infinity;
+        pastPerformanceDates.forEach((pd) => {
+          const dist = Math.abs((new Date(targetDate) - new Date(pd)) / 86400000);
+          if (dist < nearestDist) { nearestDist = dist; nearest = pd; }
+        });
+        if (nearest !== perfDate) continue;
+        const entry = entries[targetDate];
+        if (!entry || typeof entry.throatCondition !== "number") continue;
+        tauData[tau].push(entry.throatCondition);
+      }
+    });
+    const curve = [];
+    for (let tau = tauMin; tau <= tauMax; tau++) {
+      const vals = tauData[tau];
+      if (vals.length < 2) { curve.push({ tau, mean: null, sd: null, n: vals.length }); continue; }
+      const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+      const variance = vals.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / (vals.length - 1);
+      curve.push({ tau, mean: roundTo1(mean), sd: Math.sqrt(variance), n: vals.length });
+    }
+    const validPoints = curve.filter((c) => c.mean != null);
+    const dips = validPoints.filter((c) => c.tau < 0);
+    const lowestDip = dips.length ? dips.reduce((a, b) => (b.mean < a.mean ? b : a)) : null;
+    return { curve, count: pastPerformanceDates.length, lowestDip };
+  }, [pastPerformanceDates, entries]);
+  // 逆算プラン：本番当日のスコアが4以上だった回だけを使い、τ日目の行動の中央値を目標値として提示する。
+  const peakingReversePlan = useMemo(() => {
+    if (pastPerformanceDates.length < 3) return null;
+    const goodPerfs = pastPerformanceDates.filter((d) => typeof entries[d].throatCondition === "number" && entries[d].throatCondition >= 4);
+    const usePerfs = goodPerfs.length >= 2 ? goodPerfs : pastPerformanceDates;
+    const isGeneral = goodPerfs.length < 2;
+    const tauMin = -7, tauMax = 0;
+    const plan = [];
+    for (let tau = tauMin; tau <= tauMax; tau++) {
+      const sleepVals = [], loadVals = [], waterVals = [];
+      usePerfs.forEach((perfDate) => {
+        const targetDate = addDays(perfDate, tau);
+        const e = entries[targetDate];
+        if (!e) return;
+        if (typeof e.sleepHours === "number") sleepVals.push(e.sleepHours);
+        if (acwrSeries[targetDate] && acwrSeries[targetDate].acwr != null) loadVals.push(acwrSeries[targetDate].acwr);
+        const waterMl = Object.values(e.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0);
+        if (waterMl > 0) waterVals.push(waterMl);
+      });
+      plan.push({
+        tau,
+        sleepHours: median(sleepVals),
+        load: median(loadVals),
+        waterL: waterVals.length ? median(waterVals) / 1000 : null
+      });
+    }
+    return { plan, isGeneral, basedOnCount: usePerfs.length };
+  }, [pastPerformanceDates, entries, acwrSeries]);
+  // ---- 本番ピーキング曲線 用データ ここまで ----
+
+  // ---- lavoce-週次カルテ見直しパッチ.md §4: レッスンモード 用データ ----
+  // 先生に画面をそのまま見せるための読み取り専用ビュー。メンタルの日記・気持ちタグ・
+  // 体重・体組成・食事の詳細・既往症は、意図的にここでは一切参照しない。
+  const lessonModeData = useMemo(() => {
+    const realToday = realTodayDate;
+    const dates4w = [];
+    for (let i = 27; i >= 0; i--) dates4w.push(addDays(realToday, -i));
+    const scoreTrend = dates4w.map((d) => ({ date: d.slice(5), score: entries[d] ? computeDailyScore100(entries[d]) : null }));
+    const symptomWeeks = dates4w.map((d) => ({ date: d, symptoms: entries[d] ? (entries[d].throatSymptoms || []) : null }));
+    const loadTrend = dates4w.map((d) => ({ date: d.slice(5), acwr: acwrSeries[d] ? roundTo1(acwrSeries[d].acwr) : null }));
+    const allMidis = [];
+    dates4w.forEach((d) => {
+      const e = entries[d];
+      if (!e) return;
+      const w = noteToMidi(e.wakeNote), r = noteToMidi(e.routineNote);
+      if (w != null) allMidis.push(w);
+      if (r != null) allMidis.push(r);
+    });
+    const rangeInWindow = allMidis.length ? { low: Math.min(...allMidis), high: Math.max(...allMidis) } : null;
+    return { scoreTrend, symptomWeeks, loadTrend, rangeInWindow, recordedCount: dates4w.filter((d) => entries[d]).length };
+  }, [entries, acwrSeries, realTodayDate]);
+  // ---- レッスンモード 用データ ここまで ----
+
+  // ---- lavoce-週次カルテ見直しパッチ.md §5: 受診用サマリー 用データ ----
+  // 医師に見せる想定のため、偏差値・ACWR・ラグ相関・効果量・CPPSなどアプリ独自の指標は
+  // 意図的に一切含めない（§5.4）。記録した項目名をそのまま使い、病名は書かない。
+  const symptomContinuousRanges = useMemo(() => {
+    const dates = Object.keys(entries).sort();
+    const ranges = {};
+    SYMPTOM_OPTIONS.forEach((symptom) => {
+      let currentStart = null, prevDate = null;
+      const list = [];
+      dates.forEach((date) => {
+        const has = (entries[date].throatSymptoms || []).includes(symptom);
+        if (has) {
+          if (!(currentStart && prevDate && addDays(prevDate, 1) === date)) currentStart = date;
+        } else if (currentStart) {
+          list.push({ start: currentStart, end: prevDate });
+          currentStart = null;
+        }
+        prevDate = date;
+      });
+      if (currentStart) list.push({ start: currentStart, end: prevDate });
+      ranges[symptom] = list;
+    });
+    return ranges;
+  }, [entries]);
+  // §5.2: 現在まで続いている症状の連続区間のうち、開始日がいちばん早いものを自動検出する
+  const clinicAutoDetectedStart = useMemo(() => {
+    const dates = Object.keys(entries).sort();
+    if (dates.length === 0) return null;
+    const latestDate = dates[dates.length - 1];
+    let earliest = null;
+    Object.values(symptomContinuousRanges).forEach((ranges) => {
+      ranges.forEach((r) => {
+        if (r.end === latestDate && (!earliest || r.start < earliest)) earliest = r.start;
+      });
+    });
+    return earliest;
+  }, [symptomContinuousRanges, entries]);
+  const clinicPeriodRange = useMemo(() => {
+    const realToday = realTodayDate;
+    if (clinicPeriodMode === "month") return { start: addDays(realToday, -29), end: realToday };
+    if (clinicPeriodMode === "3months") return { start: addDays(realToday, -89), end: realToday };
+    if (clinicPeriodMode === "custom") return { start: clinicCustomStart || addDays(realToday, -29), end: clinicCustomEnd || realToday };
+    return { start: clinicAutoDetectedStart || addDays(realToday, -29), end: realToday }; // "auto"
+  }, [clinicPeriodMode, clinicAutoDetectedStart, clinicCustomStart, clinicCustomEnd, realTodayDate]);
+  const clinicSymptomSummary = useMemo(() => {
+    const { start, end } = clinicPeriodRange;
+    const datesInRange = Object.keys(entries).filter((d) => d >= start && d <= end).sort();
+    return SYMPTOM_OPTIONS.map((symptom) => {
+      const symptomDates = datesInRange.filter((d) => (entries[d].throatSymptoms || []).includes(symptom));
+      if (symptomDates.length === 0) return null;
+      return { symptom, firstDate: symptomDates[0], lastDate: symptomDates[symptomDates.length - 1], count: symptomDates.length, dates: symptomDates };
+    }).filter(Boolean);
+  }, [entries, clinicPeriodRange]);
+  // §5.3-③: 週あたりの発声時間（グラフは1つだけ、というルールに沿う）
+  const clinicWeeklyVoiceUsage = useMemo(() => {
+    const { start, end } = clinicPeriodRange;
+    const weeks = {};
+    Object.keys(entries).filter((d) => d >= start && d <= end).forEach((d) => {
+      const e = entries[d];
+      const dayMinutes = (e.activities || []).reduce((sum, a) => sum + (Number(a.minutes) || 0), 0);
+      if (dayMinutes <= 0) return;
+      const dayOfWeek = new Date(d + "T00:00:00").getDay();
+      const weekStart = addDays(d, -dayOfWeek);
+      weeks[weekStart] = (weeks[weekStart] || 0) + dayMinutes / 60;
+    });
+    return Object.entries(weeks).sort(([a], [b]) => a.localeCompare(b)).map(([weekStart, hours]) => ({ week: weekStart.slice(5), hours: roundTo1(hours) }));
+  }, [entries, clinicPeriodRange]);
+  const clinicSleepAverage = useMemo(() => {
+    const { start, end } = clinicPeriodRange;
+    const vals = Object.keys(entries).filter((d) => d >= start && d <= end).map((d) => entries[d].sleepHours).filter((v) => typeof v === "number");
+    return vals.length ? roundTo1(vals.reduce((a, b) => a + b, 0) / vals.length) : null;
+  }, [entries, clinicPeriodRange]);
+  const clinicMedications = useMemo(() => {
+    const { start, end } = clinicPeriodRange;
+    const meds = new Set();
+    Object.keys(entries).filter((d) => d >= start && d <= end).forEach((d) => {
+      (entries[d].medicationTags || []).forEach((m) => meds.add(m));
+    });
+    return Array.from(meds);
+  }, [entries, clinicPeriodRange]);
+  // ---- 受診用サマリー 用データ ここまで ----
+
+  // ---- lavoce-記録項目の再設計v2.md §3.6: 逆流専用の分析 用データ ----
+  // conditions に gerd（逆流性食道炎）か lpr（咽喉頭酸逆流）を登録した人にだけ表示する。
+  // 未診断の人には「疑い」を一切示さない（§7.1）。
+  const hasRefluxCondition = (profile.conditions || []).some((c) => c === "gerd" || c === "lpr");
+  const refluxDinnerGapBins = useMemo(() => {
+    if (!hasRefluxCondition) return [];
+    const sortedDates = Object.keys(entries).sort();
+    const bins = { "〜1時間": { n: 0, hit: 0 }, "1〜2時間": { n: 0, hit: 0 }, "2〜3時間": { n: 0, hit: 0 }, "3時間〜": { n: 0, hit: 0 } };
+    sortedDates.forEach((date, i) => {
+      const e = entries[date];
+      const gap = computeTimeGapHours(e.dinnerTime, e.bedtime);
+      if (gap == null) return;
+      const nextDate = sortedDates[i + 1];
+      if (!nextDate || addDays(date, 1) !== nextDate) return;
+      const nextEntry = entries[nextDate];
+      const hasDiscomfort = (nextEntry.throatSymptoms || []).includes("違和感");
+      const binKey = gap <= 1 ? "〜1時間" : gap <= 2 ? "1〜2時間" : gap <= 3 ? "2〜3時間" : "3時間〜";
+      bins[binKey].n += 1;
+      if (hasDiscomfort) bins[binKey].hit += 1;
+    });
+    // §7.3: 件数を必ず添える。各ビンn≥5で表示。
+    return Object.entries(bins).map(([label, s]) => ({ label, n: s.n, rate: s.n > 0 ? (s.hit / s.n) * 100 : null }));
+  }, [entries, hasRefluxCondition]);
+  const refluxDinnerTagEffects = useMemo(() => {
+    if (!hasRefluxCondition) return [];
+    const tags = ["揚げ物", "炭酸", "カフェイン", "アルコール", "トマト系"];
+    const sortedDates = Object.keys(entries).sort();
+    return tags.map((tag) => {
+      const group1 = [], group0 = [];
+      sortedDates.forEach((date, i) => {
+        const e = entries[date];
+        const nextDate = sortedDates[i + 1];
+        if (!nextDate || addDays(date, 1) !== nextDate) return;
+        const nextEntry = entries[nextDate];
+        const hasDiscomfort = (nextEntry.throatSymptoms || []).includes("違和感") ? 1 : 0;
+        ((e.dinnerTags || []).includes(tag) ? group1 : group0).push(hasDiscomfort);
+      });
+      const res = computeHedgesG(group1, group0);
+      if (!res) return null;
+      return { tag, ...res, stars: starRatingForEffect(res) };
+    }).filter((r) => r != null && r.n1 >= 3 && r.n0 >= 3);
+  }, [entries, hasRefluxCondition]);
+  // ---- 逆流専用の分析 用データ ここまで ----
+
+  // ---- lavoce-記録項目の再設計v2.md §3.5: エネルギー可用性（EA） 用データ ----
+  // 日次では出さない（体重は水分でブレるため）。件数が十分溜まったときだけ、月1回のまとめとして表示する。
+  const energyAvailabilityAnalysis = useMemo(() => {
+    const realToday = realTodayDate;
+    const dates28 = [];
+    for (let i = 27; i >= 0; i--) dates28.push(addDays(realToday, -i));
+    const nutritionTargets28 = dates28.map((d) => {
+      const e = entries[d];
+      if (!e) return null;
+      const w = e.weightKg || getLatestWeight(entries, d);
+      const targets = computeNutritionTargets(w, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient);
+      const intakeKcal = (e.carbs || 0) * 4 + (e.protein || 0) * 4 + (e.fat || 0) * 9;
+      const exerciseKcal = (e.exercises || []).reduce((s, x) => s + 0.1 * (w || 60) * (Number(x.minutes) || 0) * ((typeof x.intensity === "number" ? x.intensity : 3) / 3), 0);
+      const ffmResult = computeFFM(w, profile.height_cm ? Number(profile.height_cm) : null, profile.age ? Number(profile.age) : null, profile.sex, e.bodyFatPct);
+      const ea = ffmResult && intakeKcal > 0 ? computeEnergyAvailability(intakeKcal, exerciseKcal, ffmResult.ffm) : null;
+      return { date: d, intakeKcal, ea, isEstimatedFFM: ffmResult ? ffmResult.isEstimated : null };
+    });
+    const validEaCount = nutritionTargets28.filter((x) => x && x.ea != null).length;
+    // カロリー記録が十分に揃っている（28日中14日以上）場合はEAで判定する
+    if (validEaCount >= 14) {
+      const eaVals = nutritionTargets28.filter((x) => x && x.ea != null).map((x) => x.ea);
+      const recentAvg = eaVals.slice(-21).reduce((a, b) => a + b, 0) / Math.min(21, eaVals.length);
+      const earlierSlice = eaVals.slice(0, Math.max(0, eaVals.length - 13));
+      const earlierAvg = earlierSlice.length ? earlierSlice.reduce((a, b) => a + b, 0) / earlierSlice.length : recentAvg;
+      const isLow = recentAvg < 30 && earlierAvg < 30; // 2週間程度の継続を簡易的に確認（両端で判定）
+      const isEstimated = nutritionTargets28.some((x) => x && x.isEstimatedFFM);
+      return { method: "ea", recentAvg, isLow, isEstimated, validEaCount };
+    }
+    // カロリー記録が足りない場合は、既存データだけで組める複合サインにフォールバックする
+    const dates56 = [];
+    for (let i = 55; i >= 0; i--) dates56.push(addDays(realToday, -i));
+    const weightsRecent = dates56.slice(28).map((d) => entries[d] && entries[d].weightKg).filter((v) => typeof v === "number");
+    const weightsEarlier = dates56.slice(0, 28).map((d) => entries[d] && entries[d].weightKg).filter((v) => typeof v === "number");
+    const signal1 = weightsRecent.length >= 3 && weightsEarlier.length >= 3 &&
+      (weightsEarlier.reduce((a, b) => a + b, 0) / weightsEarlier.length - weightsRecent.reduce((a, b) => a + b, 0) / weightsRecent.length) /
+      (weightsEarlier.reduce((a, b) => a + b, 0) / weightsEarlier.length) >= 0.03;
+    const dates14 = dates28.slice(-14);
+    const symptomDayRatio = dates14.filter((d) => entries[d] && (entries[d].throatSymptoms || []).length > 0).length / 14;
+    const signal2 = symptomDayRatio > 0.5;
+    let recoveryNotBackCount = 0;
+    const sortedDates = Object.keys(entries).sort();
+    sortedDates.forEach((date, i) => {
+      const e = entries[date];
+      if (!(e.activities && e.activities.length === 0 && e.recovery)) return;
+      const nextDate = sortedDates[i + 1];
+      if (!nextDate || addDays(date, 1) !== nextDate) return;
+      const nextEntry = entries[nextDate];
+      if (typeof nextEntry.throatCondition === "number" && overallThroatBaseline != null && nextEntry.throatCondition < overallThroatBaseline) {
+        recoveryNotBackCount += 1;
+      }
+    });
+    const signal3 = recoveryNotBackCount >= 3;
+    const sleepVals14 = dates14.map((d) => entries[d] && entries[d].sleepHours).filter((v) => typeof v === "number");
+    const avgSleep14 = sleepVals14.length ? sleepVals14.reduce((a, b) => a + b, 0) / sleepVals14.length : null;
+    const fatigueDayCount = dates14.filter((d) => entries[d] && (entries[d].mentalTags || []).includes("疲労・過労")).length;
+    const signal5 = avgSleep14 != null && avgSleep14 >= 7 && fatigueDayCount >= 7;
+    // 月経周期の乱れ（signal4）は現状のデータでは信頼できる判定ができないため対象外とする
+    const signalCount = [signal1, signal2, signal3, signal5].filter(Boolean).length;
+    return { method: "composite", signalCount, isLow: signalCount >= 3, signals: { signal1, signal2, signal3, signal5 } };
+  }, [entries, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient, overallThroatBaseline, realTodayDate]);
+  // ---- エネルギー可用性 用データ ここまで ----
+
+  // ---- lavoce-画面レイアウト仕様_1.md §5.3: 発見カード（今週の発見） 用データ ----
+  // priority = |効果量（正規化）| × 確度係数 × 行動可能性。既存の各分析結果から候補を集め、
+  // 上位1〜3件だけを「今週の発見」として分析タブの先頭に出す。既存のカード群自体は変更しない。
+  const topDiscoveries = useMemo(() => {
+    const candidates = [];
+    if (topLagFinding) {
+      candidates.push({
+        id: "lag-" + topLagFinding.variableKey,
+        icon: "💡",
+        text: `あなたの声は、${topLagFinding.variableLabel}の「${topLagFinding.lag}日後」にいちばん関係が出ています。`,
+        detail: `ρ = ${topLagFinding.rho.toFixed(2)}`,
+        priority: Math.min(1, Math.abs(topLagFinding.rho)) * 1.0 * 0.6
+      });
+    }
+    if (effectiveHabitRanking.length > 0 && effectiveHabitRanking[0].stars >= 2) {
+      const top = effectiveHabitRanking[0];
+      candidates.push({
+        id: "habit-" + top.key,
+        icon: "✨",
+        text: `${top.label}日は、翌日の声が平均で${top.g >= 0 ? "良く" : "悪く"}記録されています。`,
+        detail: `効果量 g=${top.g.toFixed(2)}・${"★".repeat(top.stars)}${"☆".repeat(4 - top.stars)}`,
+        priority: Math.min(1, Math.abs(top.g) / 1.5) * (top.stars / 4) * 0.9
+      });
+    }
+    if (roleLoadStats.confident.length > 0) {
+      const divergent = [...roleLoadStats.confident].sort((a, b) => Math.abs(b.rankGap) - Math.abs(a.rankGap))[0];
+      if (divergent && Math.abs(divergent.rankGap) >= 2) {
+        candidates.push({
+          id: "role-" + divergent.name,
+          icon: divergent.rankGap > 0 ? "⚠️" : "✨",
+          text: divergent.rankGap > 0
+            ? `「${divergent.name}」は計算上そこまで重くありませんが、翌日の落ち込みは大きめです。`
+            : `「${divergent.name}」は計算上重い役ですが、翌日の落ち込みは平均的です。`,
+          detail: `${divergent.count}回の記録`,
+          priority: Math.min(1, Math.abs(divergent.rankGap) / 5) * Math.min(1, divergent.count / 8) * 0.4
+        });
+      }
+    }
+    if (acwrToday && acwrToday.zone && (acwrToday.zone.key === "caution" || acwrToday.zone.key === "high")) {
+      candidates.push({
+        id: "acwr-today",
+        icon: "⚠️",
+        text: `今日の発声負荷比は${acwrToday.value}。${acwrToday.zone.label}な状態です。`,
+        detail: acwrToday.restProjection != null ? `明日を休養にすると${acwrToday.restProjection}に戻ります` : "",
+        priority: Math.min(1, Math.abs(acwrToday.value - 1.1) / 1.0) * 1.0 * 0.8
+      });
+    }
+    if (refluxDinnerTagEffects.length > 0) {
+      const top = refluxDinnerTagEffects.sort((a, b) => Math.abs(b.g) - Math.abs(a.g))[0];
+      if (top && top.stars >= 2) {
+        candidates.push({
+          id: "reflux-" + top.tag,
+          icon: "💡",
+          text: `前夜の${top.tag}は、翌朝の喉の違和感と関係がありそうです。`,
+          detail: `効果量 g=${top.g.toFixed(2)}・${"★".repeat(top.stars)}${"☆".repeat(4 - top.stars)}`,
+          priority: Math.min(1, Math.abs(top.g) / 1.5) * (top.stars / 4) * 0.7
+        });
+      }
+    }
+    if (energyAvailabilityAnalysis && energyAvailabilityAnalysis.isLow) {
+      candidates.push({
+        id: "ea-low",
+        icon: "⚠️",
+        text: "摂取エネルギーが、推定の必要量を下回る状態が続いています。",
+        detail: "エネルギー可用性（月次まとめ）",
+        priority: 0.7 * 1.0 * 0.5
+      });
+    }
+    return candidates.sort((a, b) => b.priority - a.priority).slice(0, 3);
+  }, [topLagFinding, effectiveHabitRanking, roleLoadStats, acwrToday, refluxDinnerTagEffects, energyAvailabilityAnalysis]);
+  // ---- 発見カード 用データ ここまで ----
+
+  // ---- lavoce-記録と分析の順番設計.md §5.3: 「この分析を強くする」カード 用データ ----
+  // 習慣の内容から、記録画面のどのセクションへジャンプさせるかの対応表。
+  const HABIT_KEY_TO_SECTION = {
+    sleep7h: "sleep", water2L: "water", alcohol: "meal", fried: "meal",
+    caffeine: "meal", carbonated: "meal", highEase: "mental", talkedALot: "practice"
+  };
+  const analysisBoostCandidates = useMemo(() => {
+    const candidates = [];
+    // R5: score = 見込みの改善量 / 必要な追加記録日数。10日を超えるものは出さない。
+    // ①「効いた習慣」の確度：3→4つ星は、CI・効果量の条件は既に満たしており、
+    //   残る条件はサンプル数（n1・n0とも10以上）だけなので、日数の見積もりが立てやすい。
+    effectiveHabitRanking.forEach((h) => {
+      if (h.stars !== 3) return;
+      const minN = Math.min(h.n1, h.n0);
+      const daysNeeded = Math.max(1, 10 - minN);
+      if (daysNeeded > 10) return;
+      const section = HABIT_KEY_TO_SECTION[h.key];
+      if (!section) return;
+      candidates.push({
+        id: "habit-boost-" + h.key,
+        title: `「効いた習慣」の確度 ${"★".repeat(h.stars)}${"☆".repeat(4 - h.stars)}`,
+        body: `${h.label.replace(/^前夜の|^前夜、|^前日、/, "")}の記録を あと${daysNeeded}日 続けると ★★★★ になります`,
+        daysNeeded,
+        section,
+        score: 0.6 / daysNeeded
+      });
+    });
+    // ②ロックされた分析（既存のnextUnlockと同じ閾値）。改善量=1.0（解放）。
+    if (nextUnlock) {
+      const daysNeeded = nextUnlock.days - recordedDaysTotal;
+      if (daysNeeded > 0 && daysNeeded <= 10) {
+        candidates.push({
+          id: "unlock-boost-" + nextUnlock.label,
+          title: `🔒 ${nextUnlock.label}`,
+          body: `あと${daysNeeded}日記録すると開きます`,
+          daysNeeded,
+          section: null, // 特定のセクションではなく、記録全般を促す
+          score: 1.0 / daysNeeded
+        });
+      }
+    }
+    // R1: 1度に2枚まで。R5: スコアが高い順。
+    return candidates.sort((a, b) => b.score - a.score).slice(0, 2);
+  }, [effectiveHabitRanking, nextUnlock, recordedDaysTotal]);
+  // ---- 「この分析を強くする」用データ ここまで ----
+
+
+  // 装備・配置・ドラッグ移動は、その場ではデータベースに保存しない。
+  // 「保存中」の表示に気づかれにくかったこと、また保存されたかどうかが分かりにくいという指摘を受けて、
+  // 「今日の記録」ページと同じ、明示的な保存ボタン方式に変更した。
+  // 画面上の操作はすべてローカルの状態（characterEquipped）だけを更新し、
+  // 「未保存の変更あり」フラグを立てる。実際にデータベースへ送るのは、
+  // ユーザーが保存ボタンを押した時の一度だけ。これにより、
+  // 「いつ保存されたか分からない」問題と、以前あった「保存の順番が入れ替わって
+  // 古い状態で上書きされる」問題の両方を、根本からまとめて解消できる。
+  const [characterDirty, setCharacterDirty] = useState(false);
+  const [characterSaveStatus, setCharacterSaveStatus] = useState("idle"); // idle | saving | saved | error
+
+  async function handleSaveCharacter() {
+    setCharacterSaveStatus("saving");
+    const supabase = createClient();
+    // upsert は「無ければ追加」の権限（RLSのINSERTポリシー）まで必要になり、
+    // 通常はUPDATEより厳しく制限されているため、403で拒否されることがあった。
+    // profiles行は既に存在するので、updateに戻す。
+    const { data, error } = await supabase.from("profiles").update({ character_equipped: characterEquipped }).eq("id", userId).select();
+    if (error) {
+      console.error("キャラクターの保存に失敗しました:", error);
+      setCharacterSaveStatus("error");
+      return;
+    }
+    if (!data || data.length === 0) {
+      console.error("キャラクターの保存対象が見つかりませんでした（該当する行が0件）。userId:", userId);
+      setCharacterSaveStatus("error");
+      return;
+    }
+    setCharacterDirty(false);
+    setCharacterSaveStatus("saved");
+    setTimeout(() => setCharacterSaveStatus((s) => (s === "saved" ? "idle" : s)), 2000);
+  }
+
+  useEffect(() => {
+    function handleBeforeUnload(e) {
+      if (characterDirty) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    }
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [characterDirty]);
+
+  function countPlacedOfSize(list, size) {
+    return (list || []).filter((k) => {
+      const other = SHOP_ITEMS.find((i) => i.key === k);
+      return other && other.size === size;
+    }).length;
+  }
+
+  async function handlePurchaseItem(item) {
+    const supabase = createClient();
+    setOwnedItemKeys((prev) => [...prev, item.key]);
+    setCharacterPointsSpent((prev) => prev + item.cost);
+    const { error } = await supabase.from("character_inventory").insert({ user_id: userId, item_key: item.key });
+    if (error) {
+      setOwnedItemKeys((prev) => prev.filter((k) => k !== item.key));
+      setCharacterPointsSpent((prev) => prev - item.cost);
+      return;
+    }
+    const newSpent = characterPointsSpent + item.cost;
+    const { data: spentData, error: spentError } = await supabase.from("profiles").update({ character_points_spent: newSpent }).eq("id", userId).select();
+    if (spentError || !spentData || spentData.length === 0) {
+      console.error("ポイント消費の保存に失敗しました:", spentError, "userId:", userId);
+    }
+    if (SINGLE_SLOT_CATEGORIES.includes(item.category)) {
+      handleEquipItem(item.category, item.key);
+    } else if (MULTI_SLOT_CATEGORIES.includes(item.category)) {
+      // 購入時は自動的に配置状態にする（ただし一度に置ける上限を超える場合は、持ち物には入れつつ配置はしない）
+      setCharacterEquipped((prev) => {
+        const currentList = prev[item.category] || [];
+        const limit = item.size ? PLACEMENT_LIMITS[item.size] : Infinity;
+        const withinLimit = !item.size || countPlacedOfSize(currentList, item.size) < limit;
+        if (!withinLimit) return prev;
+        return { ...prev, [item.category]: [...currentList, item.key] };
+      });
+      setCharacterDirty(true);
+    }
+  }
+
+  function handleEquipItem(category, itemKey) {
+    setCharacterEquipped((prev) => ({ ...prev, [category]: itemKey }));
+    setCharacterDirty(true);
+  }
+
+  // 家具・庭アイテム（複数設置可）を「置く」⇔「しまう」で切り替える（sizeごとの上限を超える配置は行わない）
+  function handleTogglePlacement(category, itemKey) {
+    setCharacterEquipped((prev) => {
+      const currentList = prev[category] || [];
+      const isPlaced = currentList.includes(itemKey);
+      if (!isPlaced) {
+        const item = SHOP_ITEMS.find((i) => i.key === itemKey);
+        const limit = item && item.size ? PLACEMENT_LIMITS[item.size] : Infinity;
+        if (item && item.size && countPlacedOfSize(currentList, item.size) >= limit) return prev;
+      }
+      const nextList = isPlaced ? currentList.filter((k) => k !== itemKey) : [...currentList, itemKey];
+      return { ...prev, [category]: nextList };
+    });
+    setCharacterDirty(true);
+  }
+
+  // ドラッグで決めた配置アイテムの位置（left/top%）をローカルの状態に反映する
+  function handleUpdatePosition(category, itemKey, leftPct, topPct) {
+    setCharacterEquipped((prev) => {
+      const posKey = `${category}Positions`;
+      const currentPositions = prev[posKey] || {};
+      const existing = currentPositions[itemKey];
+      const existingTop = existing && typeof existing === "object" ? existing.top : undefined;
+      const entry = {
+        left: Math.round(leftPct * 10) / 10,
+        top: topPct !== undefined ? Math.round(topPct * 10) / 10 : existingTop
+      };
+      const nextPositions = { ...currentPositions, [itemKey]: entry };
+      return { ...prev, [posKey]: nextPositions };
+    });
+    setCharacterDirty(true);
+  }
+
+  async function handleThemeChange(themeKey) {
+    setProfile((p) => ({ ...p, garden_theme: themeKey }));
+    const supabase = createClient();
+    await supabase.from("profiles").update({ garden_theme: themeKey }).eq("id", userId);
+  }
 
   async function handleSaveProfile() {
     setProfileSaveStatus("saving");
@@ -1060,19 +5429,393 @@ export default function VocalTracker({ userId, userEmail }) {
         nutrition_phase: profile.nutrition_phase || "維持",
         protein_coefficient: profile.protein_coefficient === "" ? null : Number(profile.protein_coefficient),
         age: profile.age === "" ? null : Number(profile.age),
-        sex: profile.sex || null
+        sex: profile.sex || null,
+        vocal_range_low: profile.vocal_range_low || null,
+        vocal_range_high: profile.vocal_range_high || null,
+        comfort_range_low: profile.comfort_range_low || null,
+        comfort_range_high: profile.comfort_range_high || null,
+        technical_goal: profile.technical_goal || null,
+        health_notes: profile.health_notes || null,
+        conditions: profile.conditions || [],
+        vocal_profession: profile.vocal_profession || "singer",
+        track_cycle: !!profile.track_cycle
       })
       .eq("id", userId);
     setProfileSaveStatus(error ? "error" : "saved");
     setTimeout(() => setProfileSaveStatus("idle"), 1800);
   }
 
-  function updateDetail(patch) {
-    setFormData((f) => ({ ...f, activityDetail: { ...(f.activityDetail || {}), ...patch } }));
+  // lavoce-画面レイアウト仕様_1.md §9: オンボーディング完了時に、同意日時・プロフィールをまとめて保存する。
+  // lavoce-記録項目の再設計v2.md §4.1・Stage4-2スコープ調整パッチ §2: プリセット。
+  // 【対象】既存ユーザーには一切適用しない（onboarding_completedが既にtrueのため、この関数の
+  // 分岐自体を通らない）。全新規ユーザーが対象（パッチ§2.1: 新規ユーザーには壊れる既存状態がなく、
+  // 「戻すUI」で解消済みのため、対象を絞る追加の安全効果はない）。
+  // 【既定：実行順マスター Stage 0-3の実データに基づき更新】
+  // 当初は食事・運動の詳細、体重・体脂肪率、環境、気持ちタグの6項目を畳む案だったが、
+  // 実際の入力率（直近7日）を見たところ、環境85.7%・食事詳細71.4%・気持ちタグ57.1%・
+  // 運動詳細42.9%と、いずれも実際にはよく使われていることが判明した（体重も71.4%）。
+  // 「削るつもりだった項目が実は使われている」という、実行順マスターが警告していた事態そのもの。
+  // 実際に使用率0%だった項目（服薬・体脂肪率・CPPS測定）だけを既定で畳む形に縮小した。
+  // ※ n=1（開発者本人）・7日分のみのデータであり、他のユーザーが増えたら見直すこと。
+  const DEFAULT_PRESET_FOLDED_GROUPS = ["medication", "body_fat", "cpps"];
+  function computePresetFoldedGroups(goalFocus, professions) {
+    let folded = [...DEFAULT_PRESET_FOLDED_GROUPS];
+    if (goalFocus === "train") folded = folded.filter((g) => g !== "body_fat");
+    // goalFocus === 'log_only' / 'peak' / 'diagnose' は既定のまま（何も足さない）。
+    // 職業に「声楽家」が含まれる場合の曲目欄の扱いは、現状すべての活動ブロックで常に表示されており、
+    // 個別に畳む対象になっていないため、ここでの差分は対象外（パッチ§2.4の該当項目はまだ実装なし）。
+    return folded;
+  }
+  async function handleCompleteOnboarding(patch) {
+    const finalPatch = { ...patch };
+    // patch.goal_focusは新規ユーザーのオンボーディング完了時のみ渡される
+    // （既存ユーザーは同意画面だけを通るため、goal_focusを含むpatchはこの関数に来ない）。
+    if (patch.goal_focus) {
+      finalPatch.folded_groups = computePresetFoldedGroups(patch.goal_focus, patch.professions || []);
+    }
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update(finalPatch).eq("id", userId);
+    if (error) {
+      console.error("オンボーディングの保存に失敗しました:", error);
+      return;
+    }
+    setProfile((p) => ({ ...p, ...finalPatch }));
+  }
+
+  // lavoce-記録項目の再設計v2.md §3.7: 稽古ノートの目標を設定・更新する。目標は常に1つだけ。
+  async function handleSetPracticeGoal(goal, tags) {
+    const supabase = createClient();
+    const patch = { practice_goal: goal, practice_goal_tags: tags, practice_goal_started_at: todayISO() };
+    const { error } = await supabase.from("profiles").update(patch).eq("id", userId);
+    if (error) { console.error("目標の保存に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, ...patch }));
+  }
+  // 振り返りを1件追加する（週1想定）。過去の振り返りは時系列で読み返せるよう配列で保持する。
+  async function handleAddPracticeReview(text) {
+    if (!text || !text.trim()) return;
+    const newReview = { at: todayISO(), text: text.trim() };
+    const updatedReviews = [...(profile.practice_reviews || []), newReview];
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update({ practice_reviews: updatedReviews }).eq("id", userId);
+    if (error) { console.error("振り返りの保存に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, practice_reviews: updatedReviews }));
+  }
+
+  // lavoce-記録項目の再設計v2.md §4.3: 項目を畳む（非表示にする）。「続ける」はローカルの
+  // 一時的な非表示のみとし、DBには保存しない（毎月の見直しのたびに、また使われていなければ提案し直す）。
+  async function handleFoldGroup(key) {
+    const updated = [...(profile.folded_groups || []), key];
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update({ folded_groups: updated }).eq("id", userId);
+    if (error) { console.error("項目の設定保存に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, folded_groups: updated }));
+  }
+  async function handleUnfoldGroup(key) {
+    const updated = (profile.folded_groups || []).filter((k) => k !== key);
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update({ folded_groups: updated }).eq("id", userId);
+    if (error) { console.error("項目の設定保存に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, folded_groups: updated }));
+  }
+
+  // 実行順マスター Stage 2-2・判断ゲート①: 7日目に一度だけ、3層（朝30秒／週次の発見／本番）
+  // のどれに需要があったかを聞くマイクロ調査。判断ゲート①の「4」の判定材料になる。
+  async function handleAnswerDay7Survey(answer) {
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update({ survey_day7_response: answer }).eq("id", userId);
+    if (error) { console.error("調査回答の保存に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, survey_day7_response: answer }));
+    setShowDay7Survey(false);
+  }
+  async function handleDismissDay7Survey() {
+    setShowDay7Survey(false);
+    // 「あとで」を選んだ場合は表示済みフラグだけ立てて、次回以降しつこく出さないようにする。
+    if (!profile.survey_day7_shown_at) {
+      const supabase = createClient();
+      const shownAt = new Date().toISOString();
+      const { error } = await supabase.from("profiles").update({ survey_day7_shown_at: shownAt }).eq("id", userId);
+      if (!error) setProfile((p) => ({ ...p, survey_day7_shown_at: shownAt }));
+    }
+  }
+
+  // 実行順マスター Stage 2-3: LINE通知。6文字の連携コードを発行し、
+  // ユーザーがLINE公式アカウントにそのコードを送ると、Webhook側で紐付けが完了する。
+  async function handleChangeDayRecordBoundary(hour) {
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update({ day_record_boundary_hour: hour }).eq("id", userId);
+    if (error) { console.error("境界時刻の保存に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, day_record_boundary_hour: hour }));
+  }
+  async function handleGenerateLineLinkCode() {
+    const code = Array.from({ length: 6 }, () => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)]).join("");
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update({ line_link_code: code }).eq("id", userId);
+    if (error) { console.error("連携コードの発行に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, line_link_code: code }));
+  }
+  async function handleToggleLineNotification(enabled) {
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update({ line_notification_enabled: enabled }).eq("id", userId);
+    if (error) { console.error("通知設定の保存に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, line_notification_enabled: enabled }));
+  }
+  async function handleUnlinkLine() {
+    if (!window.confirm("LINE連携を解除しますか？通知が届かなくなります。")) return;
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update({ line_user_id: null, line_linked_at: null }).eq("id", userId);
+    if (error) { console.error("連携解除に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, line_user_id: null, line_linked_at: null }));
+  }
+
+  // lavoce-収集データ拡張案.md B節: 質問票（EASE / VFI / SVHI-10 / RSI）の回答を保存する
+  async function handleSubmitQuestionnaire(type) {
+    const def = QUESTIONNAIRES[type];
+    if (!def) return;
+    if (def.items.some((_, i) => questionnaireAnswers[i] == null)) {
+      setQuestionnaireError("すべての項目に回答してください。");
+      return;
+    }
+    const itemScores = def.items.map((_, i) => Number(questionnaireAnswers[i]) || 0);
+    const { total, factorScores } = computeQuestionnaireScore(type, itemScores);
+    setQuestionnaireSaving(true);
+    setQuestionnaireError("");
+    const supabase = createClient();
+    const todayDate = todayISO();
+    const { data, error } = await supabase
+      .from("questionnaire_responses")
+      .insert({
+        user_id: userId,
+        questionnaire_type: type,
+        response_date: todayDate,
+        item_scores: itemScores,
+        total_score: total,
+        factor_scores: factorScores
+      })
+      .select()
+      .single();
+    setQuestionnaireSaving(false);
+    if (error) {
+      console.error("質問票の保存に失敗しました:", error);
+      setQuestionnaireError("保存に失敗しました。もう一度お試しください。");
+      return;
+    }
+    setQuestionnaireResponses((prev) => [...prev, data]);
+    setActiveQuestionnaire(null);
+    setQuestionnaireAnswers({});
+    setToastMessage("記録しました。");
+    setTimeout(() => setToastMessage(null), 3200);
+  }
+
+  // lavoce-レパートリー負荷パッチ.md §3: 曲目・役に「最高音」（主質問）を1回だけ紐づける。
+  // テッシトゥーラ（任意）や3択フォールバックも受け付け、confidenceとして記録する。
+  async function handleSaveRepertoire(repertoireName, { topNote, tessituraNote, dOverride } = {}) {
+    if (!repertoireName) return;
+    if (!topNote && !tessituraNote && dOverride == null) return;
+    setTessituraSaving(true);
+    const confidence = tessituraNote ? "entered" : topNote ? "estimated" : "coarse";
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("repertoire_tessitura")
+      .upsert({
+        user_id: userId,
+        repertoire_name: repertoireName,
+        top_note: topNote || null,
+        tessitura_note: tessituraNote || null,
+        d_override: dOverride != null ? dOverride : null,
+        confidence
+      }, { onConflict: "user_id,repertoire_name" });
+    setTessituraSaving(false);
+    if (error) {
+      console.error("レパートリーの登録に失敗しました:", error);
+      return;
+    }
+    setRepertoireTessituraMap((prev) => ({
+      ...prev,
+      [repertoireName]: { topNote: topNote || null, tessituraNote: tessituraNote || null, dOverride: dOverride != null ? dOverride : null, confidence, usageCount: (prev[repertoireName] && prev[repertoireName].usageCount) || 0 }
+    }));
+    setTopNoteInput("");
+    setTessituraOptionalInput("");
+    setDOverrideChoice(null);
+    setShowTessituraAccordion(false);
+    setDuplicateWarning(null);
+  }
+
+  // lavoce-レパートリー負荷パッチ.md §2.5: 表記ゆれした曲目を2つ選んで統合する。
+  // 過去のすべての記録（activities[].items[]内のrepertoireName）を書き換え、
+  // 統合される側のrepertoire_tessituraは削除する。
+  function findAffectedDatesForRepertoire(name) {
+    return Object.keys(entries).filter((d) =>
+      (entries[d].activities || []).some((a) => (a.items || []).some((it) => it.repertoireName === name))
+    );
+  }
+  async function handleMergeRepertoire(sourceName, targetName) {
+    if (!sourceName || !targetName || sourceName === targetName) return;
+    setMergeInProgress(true);
+    setMergeResult("");
+    const affectedDates = findAffectedDatesForRepertoire(sourceName);
+    const supabase = createClient();
+    const updatedEntries = {};
+    try {
+      for (const date of affectedDates) {
+        const entry = entries[date];
+        const renamedActivities = (entry.activities || []).map((a) => ({
+          ...a,
+          items: (a.items || []).map((it) => (it.repertoireName === sourceName ? { ...it, repertoireName: targetName } : it))
+        }));
+        const updatedEntry = { ...entry, activities: renamedActivities };
+        const { error } = await supabase.from("entries").upsert(entryToRow(userId, updatedEntry), { onConflict: "user_id,date" });
+        if (error) throw error;
+        updatedEntries[date] = updatedEntry;
+      }
+      const { error: deleteError } = await supabase.from("repertoire_tessitura").delete().eq("user_id", userId).eq("repertoire_name", sourceName);
+      if (deleteError) throw deleteError;
+      setEntries((prev) => ({ ...prev, ...updatedEntries }));
+      setRepertoireTessituraMap((prev) => {
+        const next = { ...prev };
+        delete next[sourceName];
+        return next;
+      });
+      setMergeResult(`「${sourceName}」を「${targetName}」に統合しました（${affectedDates.length}件の記録を書き換えました）。`);
+      setMergeSourceRepertoire("");
+      setMergeTargetRepertoire("");
+      setMergeConfirming(false);
+    } catch (err) {
+      console.error("レパートリーの統合に失敗しました:", err);
+      setMergeResult("統合に失敗しました。もう一度お試しください。");
+    }
+    setMergeInProgress(false);
+  }
+
+  // lavoce-曲目複数化パッチ.md §2.0/§2.1: 活動ブロック・曲目アイテムの操作関数
+  // lavoce-画面レイアウト仕様_1.md §4.7: 前日をコピーする。
+  // 変わりにくい項目（食事・身体データ・環境など）だけをコピーし、
+  // 声の記録・症状・メンタルはその日固有の情報のためコピーしない。
+  function handleCopyPreviousDay() {
+    const prevDate = addDays(selectedDate, -1);
+    const prevEntry = entries[prevDate];
+    if (!prevEntry) return;
+    setFormData((f) => ({
+      ...f,
+      dinnerTime: prevEntry.dinnerTime || f.dinnerTime,
+      dinnerTags: prevEntry.dinnerTags && prevEntry.dinnerTags.length > 0 ? prevEntry.dinnerTags : f.dinnerTags,
+      proteinLevel: prevEntry.proteinLevel ?? f.proteinLevel,
+      calorieLevel: prevEntry.calorieLevel ?? f.calorieLevel,
+      weightKg: prevEntry.weightKg ?? f.weightKg,
+      bodyFatPct: prevEntry.bodyFatPct ?? f.bodyFatPct,
+      temperature: prevEntry.temperature ?? f.temperature,
+      humidity: prevEntry.humidity ?? f.humidity,
+      weather: prevEntry.weather || f.weather,
+      location: prevEntry.location || f.location,
+      medicationTags: prevEntry.medicationTags && prevEntry.medicationTags.length > 0 ? prevEntry.medicationTags : f.medicationTags
+    }));
+    setShowCopiedNotice(true);
+    setTimeout(() => setShowCopiedNotice(false), 5000);
+  }
+  function addActivity() {
+    setFormData((f) => {
+      const activities = f.activities || [];
+      if (activities.length >= 10) return f;
+      return { ...f, recovery: null, activities: [...activities, newActivityBlock("自主練習", activities.length)] };
+    });
+  }
+  // lavoce-記録項目の再設計v2.md §3.1: 声の記録は1日に何件でも追加できる。
+  function addVoiceEntry(context) {
+    setFormData((f) => {
+      const entries = f.voiceEntries || [];
+      if (entries.length >= 12) return f;
+      const newEntry = newVoiceEntry(f.date, context || (entries.length === 0 ? "wake" : "other"));
+      setEditingVoiceEntryId(newEntry.id);
+      return { ...f, voiceEntries: [...entries, newEntry] };
+    });
+  }
+  function updateVoiceEntry(id, patch) {
+    setFormData((f) => ({ ...f, voiceEntries: (f.voiceEntries || []).map((v) => (v.id === id ? { ...v, ...patch } : v)) }));
+  }
+  function removeVoiceEntry(id) {
+    setFormData((f) => ({ ...f, voiceEntries: (f.voiceEntries || []).filter((v) => v.id !== id) }));
+    setEditingVoiceEntryId((cur) => (cur === id ? null : cur));
+  }
+  function removeActivityBlock(id) {
+    setFormData((f) => ({ ...f, activities: (f.activities || []).filter((a) => a.id !== id) }));
+  }
+  function updateActivityBlock(id, patch) {
+    setFormData((f) => ({ ...f, activities: (f.activities || []).map((a) => (a.id === id ? { ...a, ...patch } : a)) }));
+  }
+  function updateActivityBlockDetail(id, patch) {
+    setFormData((f) => ({
+      ...f,
+      activities: (f.activities || []).map((a) => (a.id === id ? { ...a, detail: { ...(a.detail || {}), ...patch } } : a))
+    }));
+  }
+  function addRepertoireItemToActivity(activityId) {
+    setFormData((f) => ({
+      ...f,
+      activities: (f.activities || []).map((a) => {
+        if (a.id !== activityId) return a;
+        if ((a.items || []).length >= 50) return a;
+        return { ...a, items: [...(a.items || []), newActivityItem((a.items || []).length)] };
+      })
+    }));
+  }
+  function updateRepertoireItemInActivity(activityId, index, patch) {
+    setFormData((f) => ({
+      ...f,
+      activities: (f.activities || []).map((a) => {
+        if (a.id !== activityId) return a;
+        const items = [...(a.items || [])];
+        items[index] = { ...items[index], ...patch };
+        return { ...a, items };
+      })
+    }));
+  }
+  function removeRepertoireItemFromActivity(activityId, index) {
+    setFormData((f) => ({
+      ...f,
+      activities: (f.activities || []).map((a) => {
+        if (a.id !== activityId) return a;
+        return { ...a, items: (a.items || []).filter((_, i) => i !== index).map((it, i) => ({ ...it, order: i })) };
+      })
+    }));
+  }
+  function moveRepertoireItemInActivity(activityId, index, direction) {
+    setFormData((f) => ({
+      ...f,
+      activities: (f.activities || []).map((a) => {
+        if (a.id !== activityId) return a;
+        const items = [...(a.items || [])];
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= items.length) return a;
+        [items[index], items[newIndex]] = [items[newIndex], items[index]];
+        return { ...a, items: items.map((it, i) => ({ ...it, order: i })) };
+      })
+    }));
+  }
+  function updateRecovery(patch) {
+    setFormData((f) => ({ ...f, recovery: { ...(f.recovery || { methods: [], note: "" }), ...patch } }));
   }
 
   function addMeal(slot) {
     setFormData((f) => ({ ...f, meals: [...(f.meals || []), newMealItem(slot)] }));
+  }
+  function quickAddFood(slot, presetName) {
+    const preset = FOOD_PRESETS.find((p) => p.name === presetName);
+    if (!preset) return;
+    const hasUnit = !!preset.unit;
+    const qtyMode = hasUnit ? "unit" : "g";
+    const qtyInput = hasUnit ? 1 : 100;
+    const grams = hasUnit ? preset.unitWeight : 100;
+    const factor = grams / 100;
+    const item = {
+      ...newMealItem(slot),
+      name: preset.name, isPreset: true, presetI18n: preset.i18n || null,
+      presetBase: { carbs: preset.carbs, protein: preset.protein, fat: preset.fat, fiber: preset.fiber },
+      presetUnit: preset.unit || null,
+      presetUnitWeight: preset.unitWeight || null,
+      qtyMode, qtyInput, grams,
+      carbs: roundTo1(preset.carbs * factor), protein: roundTo1(preset.protein * factor),
+      fat: roundTo1(preset.fat * factor), fiber: roundTo1(preset.fiber * factor)
+    };
+    setFormData((f) => ({ ...f, meals: [...(f.meals || []), item] }));
   }
   function updateMeal(id, next) {
     setFormData((f) => ({ ...f, meals: (f.meals || []).map((m) => (m.id === id ? next : m)) }));
@@ -1092,26 +5835,51 @@ export default function VocalTracker({ userId, userEmail }) {
 
   async function handleSave() {
     if (!formData) return;
+    const saveStartedAt = Date.now();
     setSaveStatus("saving");
     setSaveError("");
     const clean = { ...formData };
-    if (clean.activityType !== "本番") clean.performanceQuality = null;
+    if (!entryHasActivityKind(clean, "本番")) clean.performanceQuality = null;
+    clean.simpleMealMacros = simpleMealMacros;
     const supabase = createClient();
     const { error } = await supabase
       .from("entries")
       .upsert(entryToRow(userId, clean), { onConflict: "user_id,date" });
     if (error) {
       setSaveStatus("error");
-      setSaveError(error.message || "不明なエラー");
+      setSaveError(error.message || t("errorUnknown"));
       setTimeout(() => setSaveStatus("idle"), 4000);
       return;
     }
+    // 記録と分析の順番設計 §3.5: 保存直後のカードに必要な数値を、保存の前後で計算する。
+    const balanceBefore = computeBalance(entries, characterPointsSpent);
+    const mergedEntries = { ...entries, [clean.date]: clean };
+    const balanceAfter = computeBalance(mergedEntries, characterPointsSpent);
+    let streakAfter = 0;
+    {
+      let d = clean.date;
+      while (mergedEntries[d]) { streakAfter += 1; d = addDays(d, -1); }
+    }
+    const discovery = computeTodaysDiscovery(mergedEntries, clean.date);
+    const filledCount = countFilledSections(clean);
+
     setEntries((prev) => ({ ...prev, [clean.date]: clean }));
     setSaveStatus("saved");
     setTimeout(() => setSaveStatus("idle"), 1800);
-    const msg = CARING_MESSAGES[Math.floor(Math.random() * CARING_MESSAGES.length)];
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3200);
+    setSaveCardData({
+      pointsBefore: balanceBefore,
+      pointsAfter: balanceAfter,
+      streak: streakAfter,
+      totalDays: Object.keys(mergedEntries).length,
+      discovery
+    });
+
+    // §7: 計測。record_saveイベントを記録する（失敗しても記録自体は成立させるため、結果を待たない）。
+    supabase.from("events").insert({
+      user_id: userId,
+      event_type: "record_save",
+      payload: { filledCount, msTotal: Date.now() - saveStartedAt, mode: filledCount <= 3 ? "30s" : "full" }
+    }).then(() => {}, () => {});
   }
 
   async function handleDelete(date) {
@@ -1128,13 +5896,13 @@ export default function VocalTracker({ userId, userEmail }) {
       const res = await fetch("/api/advice", { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
-        setAdviceError(data.error || "アドバイスの生成に失敗しました。");
+        setAdviceError(data.error || t("errorAdviceGeneration"));
       } else {
         setAdviceText(data.advice);
         setAdviceGeneratedAt(new Date());
       }
     } catch (e) {
-      setAdviceError("アドバイスの生成に失敗しました。");
+      setAdviceError(t("errorAdviceGeneration"));
     }
     setAdviceLoading(false);
   }
@@ -1143,6 +5911,13 @@ export default function VocalTracker({ userId, userEmail }) {
     const supabase = createClient();
     await supabase.auth.signOut();
     window.location.href = "/";
+  }
+
+  // lavoce-画面レイアウト仕様_1.md §9: 同意・オンボーディングが未完了なら、本編より先にこちらを表示する。
+  // profile.onboarding_completedがnullの間（読み込み中）は判定を保留し、誤って一瞬表示されるのを防ぐ。
+  if (!loading && profile.onboarding_completed === false) {
+    const existingUser = Object.keys(entries).length > 0;
+    return <OnboardingFlow existingUser={existingUser} onComplete={handleCompleteOnboarding} />;
   }
 
   return (
@@ -1154,6 +5929,41 @@ export default function VocalTracker({ userId, userEmail }) {
             style={{ background: C.curtain, color: "#FFFDF8", boxShadow: "0 8px 24px rgba(36,25,20,0.25)" }}
           >
             {toastMessage}
+          </div>
+        </div>
+      )}
+      {saveCardData && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4" style={{ background: "rgba(36,25,20,0.35)" }}
+          onClick={() => setSaveCardData(null)}>
+          <div className="w-full sm:max-w-sm rounded-3xl p-6 text-center" style={{ background: C.paper }} onClick={(e) => e.stopPropagation()}>
+            <style>{`
+              @keyframes saveCardPointsPop { 0% { transform: scale(0.7); opacity: 0; } 60% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+              .save-card-points { animation: saveCardPointsPop 0.5s ease-out; }
+              @media (prefers-reduced-motion: reduce) { .save-card-points { animation: none; } }
+            `}</style>
+            <p className="ff-display italic text-xl mb-3" style={{ color: C.curtain }}>✓ {t("labelRecordedCheck")}</p>
+            <p className="ff-mono save-card-points" style={{ fontSize: 28, color: C.gold }}>
+              +{saveCardData.pointsAfter - saveCardData.pointsBefore}pt <span style={{ fontSize: 16, color: C.inkSoft }}>→ {saveCardData.pointsAfter}pt</span>
+            </p>
+            {saveCardData.streak > 1 && (
+              <p className="text-sm mt-2" style={{ color: C.inkSoft }}>{saveCardData.streak}日つづいています</p>
+            )}
+            {saveCardData.discovery && (
+              <div className="rounded-xl p-3 mt-4" style={{ background: C.card }}>
+                <p className="text-xs mb-1" style={{ color: C.inkSoft }}>今日わかったこと</p>
+                <p className="text-sm">{saveCardData.discovery}</p>
+              </div>
+            )}
+            <div className="flex gap-2 mt-5">
+              <button type="button" onClick={() => { setSaveCardData(null); setActiveTab("garden"); }}
+                className="flex-1 py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                おうちで羊を見る
+              </button>
+              <button type="button" onClick={() => setSaveCardData(null)}
+                className="flex-1 py-2.5 rounded-full text-sm font-medium border" style={{ borderColor: C.line, color: C.inkSoft }}>
+                閉じる
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -1179,6 +5989,12 @@ export default function VocalTracker({ userId, userEmail }) {
                 {LANGUAGES.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
               </select>
             </div>
+            <button onClick={() => setLessonMode(true)} title="レッスンモード" className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line, color: C.inkSoft }}>
+              <GraduationCap size={14} />
+            </button>
+            <a href="/feedback" title={t("navFeedback")} className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line, color: C.inkSoft }}>
+              <MessageCircle size={14} />
+            </a>
             <a href="/billing" title={t("navPlan")} className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line, color: C.inkSoft }}>
               <CreditCard size={14} />
             </a>
@@ -1187,29 +6003,335 @@ export default function VocalTracker({ userId, userEmail }) {
             </button>
           </div>
         </div>
-        <nav className="max-w-3xl mx-auto flex gap-1 mt-5 overflow-x-auto">
-          {TABS.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
-              style={{ background: activeTab === tab.key ? C.curtain : "transparent", color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
-            >
-              <tab.icon size={15} />
-              {t(tab.labelKey)}
-            </button>
-          ))}
-        </nav>
+        {!lessonMode && (
+          <nav className="max-w-3xl mx-auto flex gap-1 mt-5 overflow-x-auto">
+            {TABS.map((tab) => (
+              tab.href ? (
+                <a
+                  key={tab.key}
+                  href={tab.key === "voicetheory" ? (PROFESSION_THEORY_PAGES[profile.vocal_profession] || tab.href) : tab.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
+                  style={{ background: "transparent", color: C.inkSoft }}
+                >
+                  <tab.icon size={15} />
+                  {t(tab.labelKey)}
+                </a>
+              ) : (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
+                  style={{ background: activeTab === tab.key ? C.curtain : "transparent", color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
+                >
+                  <tab.icon size={15} />
+                  {t(tab.labelKey)}
+                </button>
+              )
+            ))}
+          </nav>
+        )}
       </header>
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 pb-16">
-        {loading ? (
+        {lessonMode ? (
+          <div className="space-y-5">
+            <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+              <div className="flex items-center gap-2 mb-1">
+                <GraduationCap size={18} style={{ color: C.curtain }} />
+                <h2 className="ff-display italic text-xl">レッスンモード</h2>
+              </div>
+              <p className="text-xs" style={{ color: C.inkSoft }}>
+                この画面をそのまま先生・ボイストレーナーにお見せいただけます。
+              </p>
+              <p className="text-xs mt-2 rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                🔒 先生には見えません：メンタルの日記・気持ちタグ・体重・食事の詳細・既往症
+              </p>
+            </div>
+
+            <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+              <h3 className="ff-display italic text-lg mb-1">直近4週の推移</h3>
+              <p className="text-xs mb-3" style={{ color: C.inkSoft }}>記録{lessonModeData.recordedCount}/28日</p>
+              <div style={{ width: "100%", height: 130 }}>
+                <ResponsiveContainer>
+                  <LineChart data={lessonModeData.scoreTrend} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                    <CartesianGrid stroke={C.line} />
+                    <XAxis dataKey="date" tick={{ fontSize: 9, fill: C.inkSoft }} />
+                    <YAxis domain={[0, 100]} tick={{ fontSize: 9, fill: C.inkSoft }} />
+                    <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, borderColor: C.line }} />
+                    <Line type="monotone" dataKey="score" stroke={C.gold} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+              <h3 className="ff-display italic text-lg mb-1">症状カレンダー</h3>
+              <div className="space-y-1 mt-2" style={{ overflowX: "auto" }}>
+                {SYMPTOM_OPTIONS.map((symptom) => (
+                  <div key={symptom} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                    <span className="text-xs" style={{ width: 76, flexShrink: 0, color: C.inkSoft }}>{t(SYMPTOM_KEYS[symptom])}</span>
+                    <div style={{ display: "flex", gap: 2 }}>
+                      {lessonModeData.symptomWeeks.map((d) => {
+                        const has = d.symptoms && d.symptoms.includes(symptom);
+                        return <div key={d.date} title={d.date} style={{ width: 10, height: 10, borderRadius: 2, background: has ? C.curtain : C.paper, flexShrink: 0 }} />;
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+              <h3 className="ff-display italic text-lg mb-1">発声負荷（ACWR）</h3>
+              <div style={{ width: "100%", height: 110 }}>
+                <ResponsiveContainer>
+                  <LineChart data={lessonModeData.loadTrend} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                    <CartesianGrid stroke={C.line} />
+                    <XAxis dataKey="date" tick={{ fontSize: 9, fill: C.inkSoft }} />
+                    <YAxis domain={[0, "auto"]} tick={{ fontSize: 9, fill: C.inkSoft }} />
+                    <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, borderColor: C.line }} />
+                    <Line type="monotone" dataKey="acwr" stroke={C.sage} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {lessonModeData.rangeInWindow && (
+              <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                <h3 className="ff-display italic text-lg mb-1">音域マップ</h3>
+                <PianoKeyboard
+                  lowMidi={lessonModeData.rangeInWindow.low - 1}
+                  highMidi={lessonModeData.rangeInWindow.high + 1}
+                  bestLow={null}
+                  bestHigh={null}
+                  currentLow={lessonModeData.rangeInWindow.low}
+                  currentHigh={lessonModeData.rangeInWindow.high}
+                  newRecord={false}
+                />
+                <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                  {midiToNoteLabel(lessonModeData.rangeInWindow.low)} 〜 {midiToNoteLabel(lessonModeData.rangeInWindow.high)}（直近4週）
+                </p>
+              </div>
+            )}
+
+            <button
+              type="button"
+              onMouseDown={() => {
+                setLessonExitProgress(0);
+                const start = Date.now();
+                lessonExitTimerRef.current = setInterval(() => {
+                  const elapsed = Date.now() - start;
+                  setLessonExitProgress(Math.min(100, (elapsed / 3000) * 100));
+                  if (elapsed >= 3000) {
+                    clearInterval(lessonExitTimerRef.current);
+                    setLessonMode(false);
+                    setLessonExitProgress(0);
+                  }
+                }, 50);
+              }}
+              onMouseUp={() => { clearInterval(lessonExitTimerRef.current); setLessonExitProgress(0); }}
+              onMouseLeave={() => { clearInterval(lessonExitTimerRef.current); setLessonExitProgress(0); }}
+              onTouchStart={() => {
+                setLessonExitProgress(0);
+                const start = Date.now();
+                lessonExitTimerRef.current = setInterval(() => {
+                  const elapsed = Date.now() - start;
+                  setLessonExitProgress(Math.min(100, (elapsed / 3000) * 100));
+                  if (elapsed >= 3000) {
+                    clearInterval(lessonExitTimerRef.current);
+                    setLessonMode(false);
+                    setLessonExitProgress(0);
+                  }
+                }, 50);
+              }}
+              onTouchEnd={() => { clearInterval(lessonExitTimerRef.current); setLessonExitProgress(0); }}
+              className="w-full py-3 rounded-full text-sm font-medium relative overflow-hidden"
+              style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}
+            >
+              <span style={{ position: "absolute", inset: 0, left: 0, width: `${lessonExitProgress}%`, background: "rgba(184,49,49,0.15)" }} />
+              <span style={{ position: "relative" }}>終了（3秒長押し）</span>
+            </button>
+          </div>
+        ) : loading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-3">
             <Loader2 size={22} className="animate-spin" style={{ color: C.curtain }} />
             <span className="text-sm" style={{ color: C.inkSoft }}>{t("loadingText")}</span>
           </div>
         ) : (
           <div key={activeTab} className="tab-panel">
+            {activeTab === "home" && (() => {
+              const realToday = realTodayDate;
+              const hour = greetingHour;
+              const greeting = hour < 5 ? "こんばんは" : hour < 11 ? "おはようございます" : hour < 18 ? "こんにちは" : "こんばんは";
+              const todayEntry = entries[realToday];
+              const isRecordedToday = !!todayEntry;
+              return (
+                <div className="space-y-4">
+                  {!isPwaInstalled && showInstallBanner && pwaInstallPrompt && (
+                    <div className="rounded-2xl p-3 border flex items-center gap-3" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">ホーム画面に追加しませんか？</p>
+                        <p className="text-xs" style={{ color: C.inkSoft }}>ワンタップで記録を開けます。</p>
+                      </div>
+                      <button type="button" onClick={handleInstallPwa}
+                        className="px-3 py-1.5 rounded-full text-xs font-medium shrink-0" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                        追加する
+                      </button>
+                      <button type="button" onClick={() => setShowInstallBanner(false)} className="w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ color: C.inkSoft }}>
+                        <X size={14} />
+                      </button>
+                    </div>
+                  )}
+                  {!isPwaInstalled && isIosSafari && showInstallBanner && (
+                    <div className="rounded-2xl p-3 border flex items-center gap-3" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">ホーム画面に追加しませんか？</p>
+                        <p className="text-xs" style={{ color: C.inkSoft }}>
+                          共有ボタン(<span style={{ fontWeight: 600 }}>□に↑</span>)→「ホーム画面に追加」で、ワンタップで開けるようになります。
+                        </p>
+                      </div>
+                      <button type="button" onClick={() => setShowInstallBanner(false)} className="w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ color: C.inkSoft }}>
+                        <X size={14} />
+                      </button>
+                    </div>
+                  )}
+                  {showDay7Survey && (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                      <p className="text-sm font-medium mb-1">7日間、お疲れさまでした</p>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>ここまで使ってみて、いちばん価値を感じたのはどれですか？(1つだけ選んでください)</p>
+                      <div className="space-y-2">
+                        {[
+                          { key: "morning30", label: "朝30秒の記録" },
+                          { key: "weekly_discovery", label: "週の振り返り・分析の発見" },
+                          { key: "performance_prep", label: "本番に向けた準備" },
+                          { key: "not_yet", label: "まだよく分からない" }
+                        ].map((opt) => (
+                          <button key={opt.key} type="button" onClick={() => handleAnswerDay7Survey(opt.key)}
+                            className="w-full text-left py-2.5 px-3 rounded-xl text-sm border"
+                            style={{ borderColor: C.line, color: C.ink, background: C.paper }}>
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
+                      <button type="button" onClick={handleDismissDay7Survey}
+                        className="w-full text-center text-xs underline mt-3" style={{ color: C.inkSoft }}>
+                        あとで答える
+                      </button>
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-sm" style={{ color: C.inkSoft }}>{greeting}</p>
+                    <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
+                      {realToday.slice(5).replace("-", "/")}
+                      {recordStreak > 0 && <> ・ {recordStreak}日連続 🔥</>}
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{isRecordedToday ? "今日の記録" : "今日の声"}</p>
+                    {isRecordedToday ? (
+                      <>
+                        <div className="flex items-end gap-2 mb-2">
+                          <span className="ff-display italic" style={{ fontSize: "2.6rem", lineHeight: 1, color: levelColor(todayEntry.throatCondition) }}>
+                            {typeof todayEntry.throatCondition === "number" ? todayEntry.throatCondition.toFixed(1) : "-"}
+                          </span>
+                          <span className="text-sm mb-1" style={{ color: C.inkSoft }}>/ 5</span>
+                        </div>
+                        <p className="text-sm" style={{ color: C.ink }}>今日はもう記録済みです。お疲れさまでした。</p>
+                      </>
+                    ) : todayForecast.hasData ? (
+                      <>
+                        <div className="flex items-end gap-2 mb-2">
+                          <span className="ff-display italic" style={{ fontSize: "2.6rem", lineHeight: 1, color: levelColor(todayForecast.yhat) }}>
+                            {todayForecast.yhat.toFixed(1)}
+                          </span>
+                          <span className="text-sm mb-1" style={{ color: C.inkSoft }}>/ 5（予報）</span>
+                        </div>
+                        {todayForecast.topFactor && (
+                          <p className="text-sm mb-2" style={{ color: C.ink }}>
+                            {todayForecast.topFactor.label}が{todayForecast.topFactor.contribution >= 0 ? "良い方向に" : "厳しい方向に"}いちばん効いています。
+                          </p>
+                        )}
+                        {forecastHitRate && (
+                          <p className="text-xs pt-2 border-t" style={{ borderColor: C.line, color: C.inkSoft }}>
+                            的中率 {forecastHitRate.rate}%（直近{forecastHitRate.n}日）
+                          </p>
+                        )}
+                      </>
+                    ) : (
+                      <p className="text-sm" style={{ color: C.inkSoft }}>記録が増えると、ここに今日の声の予報が表示されます。</p>
+                    )}
+                  </div>
+
+                  {todaySuggestion && !isRecordedToday && (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <p className="text-xs mb-1" style={{ color: C.inkSoft }}>今日やるといいこと</p>
+                      <p className="text-sm font-medium">{todaySuggestion}</p>
+                    </div>
+                  )}
+
+                  {!isRecordedToday && (
+                    <>
+                      {!showQuickRecord ? (
+                        <>
+                          <button type="button"
+                            onClick={() => { setSelectedDate(realToday); setShowQuickRecord(true); }}
+                            className="w-full py-4 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                            30秒で記録する
+                          </button>
+                          <button type="button" onClick={() => { setSelectedDate(realToday); setActiveTab("today"); }}
+                            className="w-full text-center text-xs underline" style={{ color: C.inkSoft }}>
+                            しっかり記録する
+                          </button>
+                        </>
+                      ) : (
+                        <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                          <p className="text-sm font-medium mb-3">30秒で記録</p>
+                          <DotSelector label={t("labelThroatCondition")} icon={Mic2} value={(formData.voiceEntries || [])[0]?.bodyFeel ?? 3} lowLabel="pp" highLabel="ff"
+                            onChange={(v) => setFormData((f) => {
+                              const entries = f.voiceEntries && f.voiceEntries.length > 0 ? f.voiceEntries : [newVoiceEntry(f.date, "wake")];
+                              const updated = [{ ...entries[0], bodyFeel: v }, ...entries.slice(1)];
+                              return { ...f, voiceEntries: updated };
+                            })} />
+                          <div className="mt-3">
+                            <DotSelector label={t("labelVoiceQuality")} icon={Sparkles} value={quality10ToFiveScale((formData.voiceEntries || [])[0]?.quality ?? 5) || 3} lowLabel="pp" highLabel="ff"
+                              onChange={(v) => setFormData((f) => {
+                                const entries = f.voiceEntries && f.voiceEntries.length > 0 ? f.voiceEntries : [newVoiceEntry(f.date, "wake")];
+                                const updated = [{ ...entries[0], quality: fiveScaleToQuality10(v) }, ...entries.slice(1)];
+                                return { ...f, voiceEntries: updated };
+                              })} />
+                          </div>
+                          <div className="mt-3">
+                            <NumberField label="昨夜の睡眠" value={formData.sleepHours ?? ""} step={0.5} min={0} max={14} suffix={t("unitHours")}
+                              onChange={(v) => setFormData((f) => ({ ...f, sleepHours: v }))} />
+                          </div>
+                          <button type="button"
+                            onClick={async () => { await handleSave(); setShowQuickRecord(false); }}
+                            className="w-full mt-4 py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                            記録する
+                          </button>
+                          <button type="button" onClick={() => { setActiveTab("today"); }}
+                            className="w-full mt-2 text-center text-xs underline" style={{ color: C.inkSoft }}>
+                            もっと記録する →
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {nextUnlock && (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <p className="text-xs mb-2" style={{ color: C.ink }}>あと{nextUnlock.days - recordedDaysTotal}日で「{nextUnlock.label}」が開きます</p>
+                      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: C.paper }}>
+                        <div className="h-full rounded-full" style={{ width: `${Math.min(100, (recordedDaysTotal / nextUnlock.days) * 100)}%`, background: C.gold }} />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
             {activeTab === "today" && (
               <div className="space-y-5">
                 <div className="flex items-center justify-between rounded-2xl p-3 border" style={{ background: C.card, borderColor: C.line }}>
@@ -1218,7 +6340,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     <ChevronLeft size={16} />
                   </button>
                   <div className="text-center">
-                    <div className="font-medium text-sm">{formatDateLabel(selectedDate)}</div>
+                    <div className="font-medium text-sm">{formatDateLabel(selectedDate, language)}</div>
                     <input type="date" value={selectedDate} max={todayISO()} onChange={(e) => setSelectedDate(e.target.value)}
                       className="text-xs ff-mono mt-1 bg-transparent border-none" style={{ color: C.inkSoft }} />
                   </div>
@@ -1228,64 +6350,235 @@ export default function VocalTracker({ userId, userEmail }) {
                   </button>
                 </div>
 
+                {(() => {
+                  // 記録と分析の順番設計 §3.4: 進捗の見せ方。「未入力」「不足」「空欄」は使わない。
+                  // 満タンを目標に見せず、赤くしない（羊のおうち仕様 §1の「罰を作らない」を記録画面にも適用）。
+                  const filled = countFilledSections(formData);
+                  const total = 9;
+                  const dots = Array.from({ length: total }, (_, i) => i < filled);
+                  // 実際にまだ埋まっていない項目の中から1つだけ選び、それが加わると何につながるかを添える。
+                  const pendingBenefits = [
+                    { done: (formData.dinnerTime || (formData.dinnerTags || []).length > 0 || typeof formData.proteinLevel === "number"), label: "食事の影響" },
+                    { done: ((formData.activities || []).some((a) => (a.items || []).length > 0)), label: "曲目ごとの負荷" },
+                    { done: ((formData.symptoms || []).length > 0), label: "症状の推移" }
+                  ];
+                  const nextBenefit = (pendingBenefits.find((b) => !b.done) || {}).label;
+                  return (
+                    <div className="flex items-center justify-between px-1">
+                      <div className="flex items-center gap-2">
+                        <div className="flex gap-1">
+                          {dots.map((on, i) => (
+                            <span key={i} style={{
+                              display: "inline-block", width: 7, height: 7, borderRadius: "50%",
+                              background: on ? C.gold : C.line
+                            }} />
+                          ))}
+                        </div>
+                        <span className="text-xs" style={{ color: C.inkSoft }}>今日の記録　{filled}項目</span>
+                      </div>
+                      {nextBenefit && (
+                        <span className="text-xs" style={{ color: C.inkSoft }}>もう少しで「{nextBenefit}」が加わります</span>
+                      )}
+                    </div>
+                  );
+                })()}
+
+                {!!entries[addDays(selectedDate, -1)] && (
+                  <button type="button" onClick={handleCopyPreviousDay}
+                    className="w-full rounded-xl border py-2 text-xs font-medium flex items-center justify-center gap-1.5"
+                    style={{ borderColor: C.line, color: C.inkSoft, background: C.card }}>
+                    <NotebookPen size={12} />前日をコピー（食事・身体データ・環境）
+                  </button>
+                )}
+                {showCopiedNotice && (
+                  <p className="text-xs text-center rounded-lg p-2" style={{ background: "rgba(212,160,23,0.12)", color: C.ink }}>
+                    前日の内容をコピーしました。内容を確認・編集してください。
+                  </p>
+                )}
+
                 <div className="rounded-2xl p-5 border flex justify-center" style={{ background: C.card, borderColor: C.line }}>
                   <Gauge score={currentScore} t={t} />
                 </div>
 
+                {yesterdayContext && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">{t("titleYesterdayContext")}</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteYesterdayContext")}</p>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="rounded-lg p-2" style={{ background: C.paper }}>
+                        <span style={{ color: C.inkSoft }}>{t("labelSleepHours")}</span>
+                        <div className="font-medium ff-mono">{yesterdayContext.sleepHours != null ? `${yesterdayContext.sleepHours}${t("unitHours")}` : "-"}</div>
+                      </div>
+                      <div className="rounded-lg p-2" style={{ background: C.paper }}>
+                        <span style={{ color: C.inkSoft }}>{t("labelDinnerToBedGap")}</span>
+                        <div className="font-medium ff-mono">{yesterdayContext.dinnerGap != null ? `${yesterdayContext.dinnerGap}${t("unitHours")}` : "-"}</div>
+                      </div>
+                      <div className="rounded-lg p-2" style={{ background: C.paper }}>
+                        <span style={{ color: C.inkSoft }}>{t("sectionPractice")}</span>
+                        <div className="font-medium">{yesterdayContext.activityType ? t((ACTIVITY_OPTIONS.find((a) => a.key === yesterdayContext.activityType) || {}).labelKey) : "-"}</div>
+                      </div>
+                      <div className="rounded-lg p-2" style={{ background: C.paper }}>
+                        <span style={{ color: C.inkSoft }}>{t("labelWeather")}</span>
+                        <div className="font-medium">{yesterdayContext.weather ? t(WEATHER_KEYS[yesterdayContext.weather] || "optionOther") : "-"}</div>
+                      </div>
+                    </div>
+                    {yesterdayContext.dinnerTags.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-2">
+                        {yesterdayContext.dinnerTags.map((tag) => (
+                          <span key={tag} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>{t(DINNER_TAG_KEYS[tag])}</span>
+                        ))}
+                      </div>
+                    )}
+                    {yesterdayContext.flags.length > 0 && (
+                      <div className="mt-3 space-y-1.5">
+                        {yesterdayContext.flags.map((flagKey) => (
+                          <div key={flagKey} className="text-xs rounded-lg p-2" style={{ background: "rgba(184,49,49,0.08)", color: C.curtain }}>
+                            ⚠ {t(flagKey)}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {formData && (
                   <>
-                    <SectionCard title={t("sectionVoiceThroat")} icon={Mic2}>
-                      <DynamicsSelector label={t("labelThroatOverall")} icon={Mic2} value={formData.throatCondition}
-                        onChange={(v) => setFormData((f) => ({ ...f, throatCondition: v }))} />
-                      <DynamicsSelector label={t("labelVoiceOverall")} icon={Music2} value={formData.voiceQuality}
-                        onChange={(v) => setFormData((f) => ({ ...f, voiceQuality: v }))} />
-                      <div>
-                        <span className="text-sm font-medium block mb-2">{t("labelSymptoms")}</span>
-                        <div className="flex flex-wrap gap-2">
-                          {SYMPTOM_OPTIONS.map((s) => (
-                            <Chip key={s} label={t(SYMPTOM_KEYS[s])} active={(formData.throatSymptoms || []).includes(s)}
-                              onClick={() => setFormData((f) => ({
-                                ...f,
-                                throatSymptoms: (f.throatSymptoms || []).includes(s)
-                                  ? f.throatSymptoms.filter((x) => x !== s)
-                                  : [...(f.throatSymptoms || []), s]
-                              }))} />
-                          ))}
-                        </div>
-                        <input type="text" value={formData.throatSymptomsOther} placeholder={t("labelSymptomsOther")}
-                          onChange={(e) => setFormData((f) => ({ ...f, throatSymptomsOther: e.target.value }))}
-                          className="w-full rounded-lg border p-2 text-sm mt-2" style={{ borderColor: C.line, background: C.paper }} />
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium block mb-1.5">{t("labelVoiceMemo")}</label>
-                        <input type="text" value={formData.voiceMemo} placeholder="声について気づいたことを一言"
-                          onChange={(e) => setFormData((f) => ({ ...f, voiceMemo: e.target.value }))}
-                          className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                      </div>
-                      <div className="pt-2 border-t" style={{ borderColor: C.line }}>
-                        <p className="text-sm font-medium mb-1">時間帯別に記録（任意）</p>
-                        <p className="text-xs mb-3" style={{ color: C.inkSoft }}>入力すると「総合」の欄は自動的に平均値へ更新されます。</p>
-                        <div className="space-y-4">
-                          {VOICE_TIME_SLOTS.map(({ key, icon: SlotIcon, labelKey }) => (
-                            <div key={key} className="rounded-xl p-3" style={{ background: C.paper }}>
-                              <div className="flex items-center gap-1.5 mb-2">
-                                <SlotIcon size={14} style={{ color: C.gold }} />
-                                <span className="text-sm font-medium">{t(labelKey)}</span>
+                    <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
+                      <button type="button" onClick={() => setRecordView("voice")}
+                        className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                        style={{ background: recordView === "voice" ? C.curtain : "transparent", color: recordView === "voice" ? "#FFFDF8" : C.inkSoft }}>
+                        声の記録
+                      </button>
+                      <button type="button" onClick={() => setRecordView("day")}
+                        className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                        style={{ background: recordView === "day" ? C.curtain : "transparent", color: recordView === "day" ? "#FFFDF8" : C.inkSoft }}>
+                        一日の記録
+                      </button>
+                    </div>
+
+                    {recordView === "voice" && (
+                      <>
+                        <SectionCard title={t("sectionVoiceThroat")} icon={Mic2}>
+                          <div className="space-y-2">
+                        {(formData.voiceEntries || []).slice().sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0)).map((entry) => (
+                          editingVoiceEntryId === entry.id ? (
+                            <VoiceEntryEditor key={entry.id} entry={entry} t={t}
+                              onChange={(patch) => updateVoiceEntry(entry.id, patch)}
+                              onRemove={() => removeVoiceEntry(entry.id)}
+                              onClose={() => setEditingVoiceEntryId(null)} />
+                          ) : (
+                            <button key={entry.id} type="button" onClick={() => setEditingVoiceEntryId(entry.id)}
+                              className="w-full text-left rounded-2xl p-3 border" style={{ background: C.paper, borderColor: C.line }}>
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium ff-mono">{entry.at}　{(VOICE_CONTEXT_OPTIONS.find((c) => c.key === entry.context) || {}).label}</span>
+                                <Sparkles size={14} style={{ color: C.gold }} />
                               </div>
-                              <div className="space-y-3">
-                                <DynamicsSelector label={t("labelThroatCondition")} icon={Mic2}
-                                  value={((formData.voiceCheckins || {})[key] || {}).throat || 3}
-                                  onChange={(v) => setFormData((f) => updateVoiceCheckin(f, key, "throat", v))} />
-                                <DynamicsSelector label={t("labelVoiceQuality")} icon={Music2}
-                                  value={((formData.voiceCheckins || {})[key] || {}).voice || 3}
-                                  onChange={(v) => setFormData((f) => updateVoiceCheckin(f, key, "voice", v))} />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
+                              <p className="text-xs mt-1" style={{ color: C.inkSoft }}>
+                                喉{levelDynamic(entry.bodyFeel)}・声{typeof entry.quality === "number" ? entry.quality.toFixed(1) : "-"}
+                                {entry.pitchChest && <>・{entry.pitchChest}</>}
+                                {(entry.symptoms || []).length > 0 && <>・{entry.symptoms.map((s) => t(SYMPTOM_KEYS[s])).join("/")}</>}
+                              </p>
+                            </button>
+                          )
+                        ))}
                       </div>
+                      <button type="button" onClick={() => addVoiceEntry()}
+                        className="w-full rounded-xl border-2 border-dashed py-3 text-sm font-medium flex items-center justify-center gap-1.5"
+                        style={{ borderColor: C.line, color: C.inkSoft }}>
+                        <Plus size={14} />＋声の記録を追加
+                      </button>
+                      {(formData.voiceEntries || []).length === 0 && (
+                        <p className="text-xs text-center" style={{ color: C.inkSoft }}>
+                          1件記録すれば、それがその日の値になります。何度でも追加でき、3件以上あると時間帯別の推移も見られます。
+                        </p>
+                      )}
+                      <p className="text-xs rounded-xl p-2.5 leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
+                        {t("noteNotationRule")}
+                      </p>
+                      <p className="text-xs rounded-xl p-2.5 leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
+                        {t("noteChestVoiceRule")}
+                      </p>
+                      <details className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
+                        <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>{t("labelRecommendedRoutineToggle")}</summary>
+                        <p className="mt-2 leading-relaxed">{t("noteRecommendedRoutine")}</p>
+                      </details>
+
+                      {!(profile.folded_groups || []).includes("cpps") && (
+                      <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <Mic2 size={14} style={{ color: C.gold }} />
+                          <span className="text-sm font-medium">客観測定（CPPS）</span>
+                        </div>
+                        <details className="text-xs rounded-lg p-2.5 mb-2" style={{ background: C.card, color: C.inkSoft }}>
+                          <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>これで何が分かるの？</summary>
+                          <div className="mt-2 space-y-1.5 leading-relaxed">
+                            <p>声の音を細かく分解すると、「倍音」と呼ばれる整った成分が、雑音にどれだけ埋もれずくっきり出ているかが分かります。CPPSはその「くっきり度合い」を1つの数字にしたものです。</p>
+                            <p><strong>数値が高い日</strong>：声帯がきれいに閉じて振動できていて、声にノイズ（息漏れ・かすれ）が少ない状態を示唆します。</p>
+                            <p><strong>数値が低い日</strong>：息漏れ・かすれ・声の立ち上がりの弱さなど、声帯の閉じが甘くなっている可能性を示唆します。</p>
+                            <p><strong>できないこと</strong>：病名の診断はできません。あくまで「声のノイズっぽさ」を映す一つの物差しです。また、このアプリ独自の簡易計算のため、数値そのものを論文の基準値と比べることはできません。</p>
+                            <p><strong>使い方のコツ</strong>：毎日同じような発声（力まず「あー」と伸ばす）で測ることで、自分自身の中での「今日は高い／低い」という変化を追いかけるのに向いています。</p>
+                          </div>
+                        </details>
+                        <div className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            disabled={cppsRecording}
+                            onClick={async () => {
+                              setCppsError("");
+                              setCppsRecording(true);
+                              try {
+                                const value = await recordAndAnalyzeCPPS(5000);
+                                setFormData((f) => ({ ...f, cppsValue: value }));
+                              } catch (err) {
+                                setCppsError(err && err.message ? err.message : "マイクを使用できませんでした。ブラウザの権限設定をご確認ください。");
+                              } finally {
+                                setCppsRecording(false);
+                              }
+                            }}
+                            className="px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5"
+                            style={{ background: cppsRecording ? C.line : C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}
+                          >
+                            {cppsRecording ? <Loader2 size={12} className="animate-spin" /> : <Mic2 size={12} />}
+                            {cppsRecording ? "録音中（5秒）「あー」と伸ばしてください…" : "5秒録音して測定する"}
+                          </button>
+                        </div>
+                        {formData.cppsValue !== "" && formData.cppsValue != null && (
+                          <p className="text-sm mt-2" style={{ color: C.ink }}>
+                            CPPS: <span className="ff-mono font-medium">{formData.cppsValue} dB</span>
+                          </p>
+                        )}
+                        {cppsError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{cppsError}</p>}
+                        <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
+                          「あー」を5秒のばして録音すると、声のスペクトルの明瞭さ（CPPS）を自動で数値化します。録音データ自体は保存せず、数値化した後にその場で破棄します。
+                        </p>
+                        <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
+                          ※ このアプリ独自の簡易計算のため、数値そのものを医学論文の基準値と比べることはできません。あくまで「自分自身がこれまでよりCPPSが高いか低いか」という、ご自身の推移で見るための参考値です。
+                        </p>
+                      </div>
+                      )}
                     </SectionCard>
 
+                        <button type="button" onClick={handleSave} disabled={saveStatus === "saving"}
+                          className="w-full rounded-2xl py-3.5 font-medium flex items-center justify-center gap-2 transition-all"
+                          style={{ background: C.curtain, color: "#FFFDF8" }}>
+                          {saveStatus === "saving" && <Loader2 size={16} className="animate-spin" />}
+                          {saveStatus === "saved" && <Check size={16} />}
+                          {saveStatus === "saving" ? t("saveButtonSaving") : saveStatus === "saved" ? t("saveButtonSaved") : saveStatus === "error" ? t("saveButtonError") : t("saveButton")}
+                        </button>
+                        {saveStatus === "error" && saveError && (
+                          <p className="text-xs text-center" style={{ color: C.curtain }}>{saveError}</p>
+                        )}
+
+                        <button type="button" onClick={() => setRecordView("day")}
+                          className="w-full flex items-center justify-between rounded-xl p-3 text-sm" style={{ background: C.card, color: C.inkSoft }}>
+                          夜に、睡眠や食事をまとめて記録します
+                          <ChevronRight size={14} />
+                        </button>
+                      </>
+                    )}
+
+                    {recordView === "day" && (
+                      <>
                     <SectionCard title={t("sectionBodyData")} icon={Scale}>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
@@ -1297,6 +6590,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             type="number"
                             value={profile.height_cm}
                             onChange={(e) => setProfile((p) => ({ ...p, height_cm: e.target.value === "" ? "" : Number(e.target.value) }))}
+                            onWheel={(e) => e.target.blur()}
                             className="w-full rounded-lg border p-2 text-sm ff-mono"
                             style={{ borderColor: C.line, background: C.paper, color: C.ink }}
                           />
@@ -1309,7 +6603,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             className="w-full rounded-lg border p-2 text-sm"
                             style={{ borderColor: C.line, background: C.paper, color: C.ink }}
                           >
-                            <option value="">選択してください</option>
+                            <option value="">{t("labelSelectPlaceholder")}</option>
                             {VOICE_TYPES.map((v) => <option key={v} value={v}>{t(VOICE_TYPE_KEYS[v])}</option>)}
                           </select>
                         </div>
@@ -1330,10 +6624,11 @@ export default function VocalTracker({ userId, userEmail }) {
                             type="number" step="0.1"
                             value={profile.protein_coefficient}
                             onChange={(e) => setProfile((p) => ({ ...p, protein_coefficient: e.target.value === "" ? "" : Number(e.target.value) }))}
+                            onWheel={(e) => e.target.blur()}
                             className="w-full rounded-lg border p-2 text-sm ff-mono"
                             style={{ borderColor: C.line, background: C.paper, color: C.ink }}
                           />
-                          <p className="text-xs mt-1" style={{ color: C.inkSoft }}>目安：維持1.2〜1.6、増量1.6〜2.2</p>
+                          <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("noteProteinCoefficientRange")}</p>
                         </div>
                         <div>
                           <label className="text-sm font-medium block mb-1.5">{t("labelAge")}</label>
@@ -1341,6 +6636,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             type="number"
                             value={profile.age}
                             onChange={(e) => setProfile((p) => ({ ...p, age: e.target.value === "" ? "" : Number(e.target.value) }))}
+                            onWheel={(e) => e.target.blur()}
                             className="w-full rounded-lg border p-2 text-sm ff-mono"
                             style={{ borderColor: C.line, background: C.paper, color: C.ink }}
                           />
@@ -1353,80 +6649,763 @@ export default function VocalTracker({ userId, userEmail }) {
                             className="w-full rounded-lg border p-2 text-sm"
                             style={{ borderColor: C.line, background: C.paper, color: C.ink }}
                           >
-                            <option value="">回答しない</option>
-                            <option value="男性">男性</option>
-                            <option value="女性">女性</option>
+                            <option value="">{t("sexNotAnswer")}</option>
+                            <option value="男性">{t("sexMale")}</option>
+                            <option value="女性">{t("sexFemale")}</option>
                           </select>
                         </div>
                       </div>
+
+                      {profile.sex === "女性" && (
+                        <div className="rounded-xl p-3 flex items-center justify-between gap-3" style={{ background: C.paper }}>
+                          <div>
+                            <p className="text-sm font-medium">月経周期を記録する</p>
+                            <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
+                              周期開始日を1タップで記録し、分析タブで声・メンタルとの関連を見られるようにします。任意（オプトイン）です。
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setProfile((p) => ({ ...p, track_cycle: !p.track_cycle }))}
+                            className="flex-shrink-0"
+                            style={{
+                              width: 44, height: 26, borderRadius: 999, position: "relative",
+                              background: profile.track_cycle ? C.curtain : C.line,
+                              transition: "background 0.15s"
+                            }}
+                          >
+                            <span style={{
+                              position: "absolute", top: 3, left: profile.track_cycle ? 21 : 3,
+                              width: 20, height: 20, borderRadius: 999, background: "#FFFDF8",
+                              transition: "left 0.15s"
+                            }} />
+                          </button>
+                        </div>
+                      )}
+
+                      <div>
+                        <label className="text-sm font-medium block mb-1.5">{t("labelVocalProfession")}</label>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("noteVocalProfession")}</p>
+                        <div className="flex gap-2 flex-wrap">
+                          {VOCAL_PROFESSIONS.map((p) => (
+                            <button key={p} type="button" onClick={() => setProfile((prev) => ({ ...prev, vocal_profession: p }))}
+                              className="px-3.5 py-1.5 rounded-full text-xs font-medium"
+                              style={{
+                                background: profile.vocal_profession === p ? C.curtain : C.paper,
+                                color: profile.vocal_profession === p ? "#FFFDF8" : C.inkSoft,
+                                border: `1px solid ${profile.vocal_profession === p ? C.curtain : C.line}`
+                              }}>
+                              {t(p === "singer" ? "professionSinger" : p === "announcer" ? "professionAnnouncer" : p === "voice_actor" ? "professionVoiceActor" : "professionPopMusical")}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-sm font-medium block mb-1.5">{t("labelVocalRangeLow")}</label>
+                          <input type="text" value={profile.vocal_range_low} placeholder={t("placeholderNoteExample")}
+                            onChange={(e) => setProfile((p) => ({ ...p, vocal_range_low: e.target.value }))}
+                            className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+                        </div>
+                        <div>
+                          <label className="text-sm font-medium block mb-1.5">{t("labelVocalRangeHigh")}</label>
+                          <input type="text" value={profile.vocal_range_high} placeholder={t("placeholderNoteExample")}
+                            onChange={(e) => setProfile((p) => ({ ...p, vocal_range_high: e.target.value }))}
+                            className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+                        </div>
+                      </div>
+                      <details className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
+                        <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>無理なく出せる音域（任意）</summary>
+                        <p className="mt-1.5 mb-2 leading-relaxed">
+                          上の音域は「出せる限界」です。曲目ごとの負荷計算では、本来はもっと狭い「無理なく出せる音域」を使うのが正確です。空欄のままなら、上の音域をそのまま使います。
+                        </p>
+                        <div className="grid grid-cols-2 gap-3">
+                          <input type="text" value={profile.comfort_range_low} placeholder={t("placeholderNoteExample")}
+                            onChange={(e) => setProfile((p) => ({ ...p, comfort_range_low: e.target.value }))}
+                            className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.card }} />
+                          <input type="text" value={profile.comfort_range_high} placeholder={t("placeholderNoteExample")}
+                            onChange={(e) => setProfile((p) => ({ ...p, comfort_range_high: e.target.value }))}
+                            className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.card }} />
+                        </div>
+                      </details>
+                      {(profile.vocal_profession || "singer") === "singer" && (
+                        <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                          <p className="text-xs font-medium mb-2">{t("labelVoiceRangeRefTitle")}</p>
+                          <div className="space-y-1">
+                            {[
+                              ["voiceSoprano", "C4 – C6"],
+                              ["voiceMezzo", "A3 – A5"],
+                              ["voiceAlto", "F3 – F5"],
+                              ["voiceCountertenor", "G3 – E5"],
+                              ["voiceTenor", "C3 – C5"],
+                              ["voiceBaritone", "A2 – A4"],
+                              ["voiceBass", "E2 – E4"]
+                            ].map(([key, range]) => (
+                              <div key={key} className="flex items-center justify-between text-xs">
+                                <span style={{ color: C.inkSoft }}>{t(key)}</span>
+                                <span className="ff-mono">{range}</span>
+                              </div>
+                            ))}
+                          </div>
+                          <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("noteVoiceRangeRef")}</p>
+                        </div>
+                      )}
+                      <div>
+                        <label className="text-sm font-medium block mb-1.5">{t("labelTechnicalGoal")}</label>
+                        <input type="text" value={profile.technical_goal}
+                          onChange={(e) => setProfile((p) => ({ ...p, technical_goal: e.target.value }))}
+                          className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium block mb-1.5">既往症・診断済みの症状（任意）</label>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                          選ぶと、その症状に関する専用の分析が「分析」タブに表示されるようになります。ここは診断を受けている項目だけを選ぶ場所で、疑いの有無を判定するものではありません。
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {CONDITION_OPTIONS.map((c) => (
+                            <Chip key={c.key} label={c.label} active={(profile.conditions || []).includes(c.key)}
+                              onClick={() => setProfile((p) => {
+                                const current = p.conditions || [];
+                                return { ...p, conditions: current.includes(c.key) ? current.filter((x) => x !== c.key) : [...current, c.key] };
+                              })} />
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium block mb-1.5">{t("labelHealthNotes")}</label>
+                        <textarea rows={2} value={profile.health_notes}
+                          onChange={(e) => setProfile((p) => ({ ...p, health_notes: e.target.value }))}
+                          className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                      </div>
+
                       <button onClick={handleSaveProfile} disabled={profileSaveStatus === "saving"}
                         className="text-xs px-4 py-2 rounded-full font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
-                        {profileSaveStatus === "saving" ? t("saveButtonSaving") : profileSaveStatus === "saved" ? t("saveButtonSaved") : "身体データ設定を保存"}
+                        {profileSaveStatus === "saving" ? t("saveButtonSaving") : profileSaveStatus === "saved" ? t("saveButtonSaved") : t("btnSaveProfileSettings")}
                       </button>
+
+                      {Object.keys(repertoireTessituraMap).length >= 2 && (
+                        <div className="rounded-xl p-3 mt-2" style={{ background: C.paper }}>
+                          <p className="text-sm font-medium mb-1">レパートリーの整理</p>
+                          <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                            「蝶々夫人」と「蝶々夫人（第2幕）」のように、表記ゆれで別の曲として登録されてしまった場合、ここで1つに統合できます。統合すると、過去の記録もすべて書き換わります。
+                          </p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div>
+                              <label className="text-xs block mb-1" style={{ color: C.inkSoft }}>統合される曲（消える方）</label>
+                              <select value={mergeSourceRepertoire} onChange={(e) => { setMergeSourceRepertoire(e.target.value); setMergeConfirming(false); }}
+                                className="w-full rounded-lg border p-2 text-xs" style={{ borderColor: C.line, background: C.card }}>
+                                <option value="">選択してください</option>
+                                {Object.keys(repertoireTessituraMap).sort().map((name) => (
+                                  <option key={name} value={name} disabled={name === mergeTargetRepertoire}>{name}（{repertoireUsageCounts[normalizeTitle(name)]?.count || 0}回）</option>
+                                ))}
+                              </select>
+                            </div>
+                            <div>
+                              <label className="text-xs block mb-1" style={{ color: C.inkSoft }}>統合先（残る方）</label>
+                              <select value={mergeTargetRepertoire} onChange={(e) => { setMergeTargetRepertoire(e.target.value); setMergeConfirming(false); }}
+                                className="w-full rounded-lg border p-2 text-xs" style={{ borderColor: C.line, background: C.card }}>
+                                <option value="">選択してください</option>
+                                {Object.keys(repertoireTessituraMap).sort().map((name) => (
+                                  <option key={name} value={name} disabled={name === mergeSourceRepertoire}>{name}（{repertoireUsageCounts[normalizeTitle(name)]?.count || 0}回）</option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                          {mergeSourceRepertoire && mergeTargetRepertoire && (
+                            <>
+                              <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                                {findAffectedDatesForRepertoire(mergeSourceRepertoire).length}件の記録が「{mergeTargetRepertoire}」に書き換えられます。この操作は取り消せません。
+                              </p>
+                              {!mergeConfirming ? (
+                                <button type="button" onClick={() => setMergeConfirming(true)}
+                                  className="mt-2 px-3.5 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                                  統合する
+                                </button>
+                              ) : (
+                                <div className="flex gap-2 mt-2">
+                                  <button type="button" disabled={mergeInProgress}
+                                    onClick={() => handleMergeRepertoire(mergeSourceRepertoire, mergeTargetRepertoire)}
+                                    className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: mergeInProgress ? 0.6 : 1 }}>
+                                    {mergeInProgress ? "統合中…" : "本当に統合する（取り消せません）"}
+                                  </button>
+                                  <button type="button" onClick={() => setMergeConfirming(false)}
+                                    className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                                    やめる
+                                  </button>
+                                </div>
+                              )}
+                            </>
+                          )}
+                          {mergeResult && (
+                            <p className="text-xs mt-2 rounded-lg p-2" style={{ background: C.card, color: C.ink }}>{mergeResult}</p>
+                          )}
+                        </div>
+                      )}
+
+                      <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                        <p className="text-sm font-medium mb-1">記録データの同意状況</p>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                          記録・分析のための取得に{profile.consent_health_data_at ? `${new Date(profile.consent_health_data_at).toLocaleDateString("ja-JP")}に同意済み` : "未同意"}です。
+                        </p>
+                        <label className="flex items-start gap-2" style={{ cursor: "pointer" }}>
+                          <input type="checkbox" checked={!!profile.consent_stats_use_at} className="mt-0.5"
+                            onChange={async (e) => {
+                              const checked = e.target.checked;
+                              const supabase = createClient();
+                              const value = checked ? new Date().toISOString() : null;
+                              const { error } = await supabase.from("profiles").update({ consent_stats_use_at: value }).eq("id", userId);
+                              if (!error) setProfile((p) => ({ ...p, consent_stats_use_at: value }));
+                            }} />
+                          <span className="text-xs" style={{ color: C.inkSoft }}>
+                            （任意）匿名化した統計として、機能改善に役立てることに同意する
+                          </span>
+                        </label>
+                      </div>
 
                       <NumberField label={t("labelTodayWeight")} icon={Scale} value={formData.weightKg ?? ""} step={0.1} min={20} max={200} suffix="kg"
                         onChange={(v) => setFormData((f) => ({ ...f, weightKg: v }))} />
+                      {!(profile.folded_groups || []).includes("body_fat") && (
+                        <NumberField label="体脂肪率（体組成計をお持ちの場合・任意）" icon={Scale} value={formData.bodyFatPct ?? ""} step={0.1} min={3} max={60} suffix="%"
+                          onChange={(v) => setFormData((f) => ({ ...f, bodyFatPct: v }))} />
+                      )}
+
+                      {profile.track_cycle && (
+                        <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                          <div className="flex items-center justify-between gap-3">
+                            <div>
+                              <p className="text-sm font-medium">月経周期</p>
+                              {(() => {
+                                const day = cycleDayForDate(selectedDate, entries);
+                                return (
+                                  <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
+                                    {formData.cycleStart
+                                      ? "この日を周期1日目として記録しています"
+                                      : day != null
+                                        ? `周期${day}日目`
+                                        : "まだ周期開始日が記録されていません"}
+                                  </p>
+                                );
+                              })()}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setFormData((f) => ({ ...f, cycleStart: !f.cycleStart }))}
+                              className="px-3 py-1.5 rounded-full text-xs font-medium flex-shrink-0"
+                              style={{
+                                background: formData.cycleStart ? C.curtain : C.card,
+                                color: formData.cycleStart ? "#FFFDF8" : C.inkSoft,
+                                border: `1px solid ${formData.cycleStart ? C.curtain : C.line}`
+                              }}
+                            >
+                              {formData.cycleStart ? "1日目を取り消す" : "今日を1日目にする"}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {!(profile.folded_groups || []).includes("medication") && (
+                        <div>
+                          <span className="text-sm font-medium block mb-2">服薬（複数選択可）</span>
+                          <div className="flex flex-wrap gap-2">
+                            {MEDICATION_OPTIONS.map((m) => (
+                              <Chip key={m} label={m} active={(formData.medicationTags || []).includes(m)}
+                                onClick={() => setFormData((f) => ({
+                                  ...f,
+                                  medicationTags: (f.medicationTags || []).includes(m)
+                                    ? f.medicationTags.filter((x) => x !== m)
+                                    : [...(f.medicationTags || []), m]
+                                }))} />
+                            ))}
+                          </div>
+                        </div>
+                      )}
 
                       {profile.height_cm ? (
                         <div className="rounded-xl p-3 text-xs leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
-                          {currentBMI && <p>現在のBMI：{currentBMI.toFixed(1)}</p>}
-                          {weightRange && <p>参考体重レンジ（一般的なBMI 18.5〜24.9基準）：{weightRange.min.toFixed(1)}kg 〜 {weightRange.max.toFixed(1)}kg</p>}
-                          <p className="mt-1">※ 声楽家専用の計算式ではなく、一般的な健康指標に基づく参考値です。詳しくは「健康情報」タブをご覧ください。</p>
+                          <p>体組成計をお持ちの場合は、下の「体脂肪率」欄に入力すると、より正確な分析ができます。</p>
+                          <p className="mt-1">体重・体脂肪率の傾向は、月1回のまとめで「エネルギー可用性」としてお伝えします（BMIや体重の上限レンジは表示しません。声のプロにとってのリスクは主に下側だからです）。</p>
                         </div>
                       ) : (
-                        <p className="text-xs" style={{ color: C.inkSoft }}>身長を登録すると、参考体重レンジが表示されます。</p>
+                        <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteRegisterHeightForRange")}</p>
                       )}
                     </SectionCard>
 
-                    <SectionCard title={t("sectionSleepWater")} icon={Moon}>
-                      <NumberField label={t("labelSleepHours")} icon={Moon} value={formData.sleepHours} step={0.5} min={0} max={16} suffix="時間"
-                        onChange={(v) => setFormData((f) => ({ ...f, sleepHours: v }))} />
-                      <DotSelector label={t("labelSleepQuality")} icon={Moon} value={formData.sleepQuality} lowLabel="悪い" highLabel="良い"
-                        onChange={(v) => setFormData((f) => ({ ...f, sleepQuality: v }))} />
+                    <SectionCard title={t("sectionClimate")} icon={Thermometer}>
                       <div>
-                        <div className="flex items-center gap-1.5 mb-2">
-                          <Droplets size={14} style={{ color: C.gold }} />
-                          <label className="text-sm font-medium">{t("labelWaterBySlot")}</label>
+                        <label className="text-sm font-medium block mb-1.5">{t("labelLocation")}</label>
+                        <div className="flex items-center gap-2 rounded-lg border p-2" style={{ borderColor: C.line, background: C.paper }}>
+                          <MapPin size={16} style={{ color: C.inkSoft }} />
+                          <input type="text" value={formData.location} placeholder={t("placeholderLocationExample")}
+                            onChange={(e) => setFormData((f) => ({ ...f, location: e.target.value }))}
+                            className="w-full text-sm bg-transparent border-none" />
                         </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                          {MEAL_SLOTS.map((slot) => (
-                            <div key={slot}>
-                              <div className="text-xs mb-1" style={{ color: C.inkSoft }}>{t(MEAL_SLOT_KEYS[slot])}</div>
-                              <MiniNumber
-                                value={(formData.waterBySlot || {})[slot] ?? ""}
-                                placeholder="ml"
-                                onChange={(v) => setFormData((f) => ({ ...f, waterBySlot: { ...(f.waterBySlot || {}), [slot]: v } }))}
+                      </div>
+                      {!(profile.folded_groups || []).includes("environment") && (
+                        <>
+                          <div className="grid grid-cols-2 gap-4">
+                            <NumberField label={t("labelTemperature")} icon={Thermometer} value={formData.temperature ?? ""} step={1} min={-30} max={50} suffix="℃"
+                              onChange={(v) => setFormData((f) => ({ ...f, temperature: v }))} />
+                            <NumberField label={t("labelHumidity")} icon={Wind} value={formData.humidity ?? ""} step={5} min={0} max={100} suffix="%"
+                              onChange={(v) => setFormData((f) => ({ ...f, humidity: v }))} />
+                          </div>
+                          {(() => {
+                            const absH = computeAbsoluteHumidity(formData.temperature, formData.humidity);
+                            if (absH == null) return null;
+                            const recentDates = Object.keys(entries).sort().slice(-14);
+                            const recentVals = recentDates.map((d) => computeAbsoluteHumidity(entries[d].temperature, entries[d].humidity)).filter((v) => v != null);
+                            let compareText = "";
+                            if (recentVals.length >= 3) {
+                              const avg = recentVals.reduce((s, v) => s + v, 0) / recentVals.length;
+                              const diff = absH - avg;
+                              compareText = Math.abs(diff) < 0.5 ? "・平常並みです" : diff > 0 ? "・あなたの平常より 湿っています" : "・あなたの平常より 乾いています";
+                            }
+                            return (
+                              <p className="text-xs rounded-lg p-2" style={{ background: C.paper, color: C.inkSoft }}>
+                                絶対湿度 {absH.toFixed(1)} g/m³{compareText}
+                              </p>
+                            );
+                          })()}
+                          <div>
+                            <label className="text-sm font-medium block mb-1.5">{t("labelWeather")}</label>
+                            <select
+                              value={formData.weather}
+                              onChange={(e) => setFormData((f) => ({ ...f, weather: e.target.value }))}
+                              className="w-full rounded-lg border p-2 text-sm"
+                              style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                            >
+                              <option value="">{t("labelSelectPlaceholder")}</option>
+                              {WEATHER_OPTIONS.map((w) => <option key={w} value={w}>{t(WEATHER_KEYS[w])}</option>)}
+                            </select>
+                          </div>
+                        </>
+                      )}
+
+                      <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <Volume2 size={14} style={{ color: C.gold }} />
+                          <span className="text-sm font-medium">環境騒音レベル</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            disabled={noiseMeasuring}
+                            onClick={async () => {
+                              setNoiseError("");
+                              setNoiseMeasuring(true);
+                              try {
+                                const db = await measureAmbientNoise(2000);
+                                setFormData((f) => ({ ...f, ambientNoiseDb: db }));
+                              } catch (err) {
+                                setNoiseError("マイクを使用できませんでした。ブラウザの権限設定をご確認ください。");
+                              } finally {
+                                setNoiseMeasuring(false);
+                              }
+                            }}
+                            className="px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5"
+                            style={{ background: noiseMeasuring ? C.line : C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}
+                          >
+                            {noiseMeasuring ? <Loader2 size={12} className="animate-spin" /> : <Mic2 size={12} />}
+                            {noiseMeasuring ? "測定中（2秒）…" : "騒音レベルを測定する"}
+                          </button>
+                          {formData.ambientNoiseDb !== "" && formData.ambientNoiseDb != null && (
+                            <span className="ff-mono text-sm" style={{ color: C.ink }}>約{formData.ambientNoiseDb} dB</span>
+                          )}
+                        </div>
+                        {noiseError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{noiseError}</p>}
+                        <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
+                          今いる場所にスマホを置いて測定すると、2秒間の音を録音データに残さず、その場で数値化します。校正されたマイクではないため、あくまで日々の相対的な比較のための参考値です。
+                        </p>
+                      </div>
+
+                      <details className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
+                        <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>移動・時差の記録（任意）</summary>
+                        <div className="grid grid-cols-2 gap-3 mt-2">
+                          <NumberField label="フライト時間" icon={Plane} value={formData.flightHours ?? ""} step={0.5} min={0} max={30} suffix={t("unitHours")}
+                            onChange={(v) => setFormData((f) => ({ ...f, flightHours: v }))} />
+                          <NumberField label="時差" value={formData.jetlagHours ?? ""} step={1} min={-12} max={12} suffix={t("unitHours")}
+                            onChange={(v) => setFormData((f) => ({ ...f, jetlagHours: v }))} />
+                        </div>
+                        <p className="mt-2 leading-relaxed">機内の乾燥と時差ぼけは、どちらも喉と体調に影響しやすいとされています。遠征のあった日だけ記録してください。</p>
+                      </details>
+                    </SectionCard>
+
+                    <SectionCard title={t("sectionSleep")} icon={Moon} id="record-section-sleep" highlighted={highlightSection === "sleep"}>
+                      <div className="grid grid-cols-2 gap-3">
+                        <NumberField label={t("labelSleepHours")} icon={Moon} value={formData.sleepHours} step={0.5} min={0} max={16} suffix={t("unitHours")}
+                          onChange={(v) => setFormData((f) => ({ ...f, sleepHours: v }))} />
+                        <div>
+                          <label className="text-sm font-medium block mb-1.5">{t("labelBedtime")}</label>
+                          <input type="time" value={formData.bedtime}
+                            onChange={(e) => setFormData((f) => ({ ...f, bedtime: e.target.value }))}
+                            className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                        </div>
+                      </div>
+                      {(() => {
+                        if (typeof formData.sleepHours !== "number") return null;
+                        const recentDates = Object.keys(entries).sort().slice(-14);
+                        const recentVals = recentDates.map((d) => entries[d].sleepHours).filter((v) => typeof v === "number");
+                        if (recentVals.length < 3) return null;
+                        const avg = recentVals.reduce((s, v) => s + v, 0) / recentVals.length;
+                        const diff = formData.sleepHours - avg;
+                        return (
+                          <p className="text-xs rounded-lg p-2" style={{ background: C.paper, color: C.inkSoft }}>
+                            14日平均より {diff >= 0 ? "+" : ""}{diff.toFixed(1)}{t("unitHours")}
+                          </p>
+                        );
+                      })()}
+                      <DotSelector label={t("labelSleepQuality")} icon={Moon} value={formData.sleepQuality} lowLabel={t("lowSleepQuality")} highLabel={t("highSleepQuality")}
+                        onChange={(v) => setFormData((f) => ({ ...f, sleepQuality: v }))} />
+                    </SectionCard>
+
+                    <SectionCard title={t("sectionPractice")} icon={Music2} id="record-section-practice" highlighted={highlightSection === "practice"}>
+                      <div>
+                        <span className="text-sm font-medium block mb-2">{t("labelTodayActivity")}</span>
+                        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                          <button type="button"
+                            onClick={() => setFormData((f) => ({ ...f, activities: [], recovery: f.recovery || { methods: [], note: "" } }))}
+                            className="flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-medium transition-all"
+                            style={{
+                              background: (formData.activities || []).length === 0 && formData.recovery ? C.curtain : C.paper,
+                              color: (formData.activities || []).length === 0 && formData.recovery ? "#FFFDF8" : C.inkSoft,
+                              borderColor: (formData.activities || []).length === 0 && formData.recovery ? C.curtain : C.line
+                            }}>
+                            <Moon size={16} />
+                            {t("activityRest")}
+                          </button>
+                          {ACTIVITY_BLOCK_KINDS.map((kind) => {
+                            const opt = ACTIVITY_OPTIONS.find((a) => a.key === kind) || {};
+                            const isFirstBlockKind = (formData.activities || []).length === 0;
+                            return (
+                              <button key={kind} type="button"
+                                onClick={() => {
+                                  if (isFirstBlockKind) {
+                                    setFormData((f) => ({ ...f, recovery: null, activities: [newActivityBlock(kind, 0)] }));
+                                  }
+                                }}
+                                className="flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-medium transition-all"
+                                style={{
+                                  background: isFirstBlockKind ? C.paper : C.paper,
+                                  color: C.inkSoft,
+                                  borderColor: C.line,
+                                  opacity: isFirstBlockKind ? 1 : 0.4,
+                                  cursor: isFirstBlockKind ? "pointer" : "default"
+                                }}>
+                                {opt.icon ? <opt.icon size={16} /> : <Music2 size={16} />}
+                                {t(opt.labelKey) || kind}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
+                          {(formData.activities || []).length === 0 && formData.recovery
+                            ? "休養日として記録します。"
+                            : (formData.activities || []).length === 0
+                              ? "上のボタンから、1つ目の活動を選んでください。"
+                              : "活動は下のブロックごとに追加・編集できます。2つ以上の活動があった日は「＋活動を追加」で足してください。"}
+                        </p>
+                      </div>
+
+                      {(formData.activities || []).length === 0 && formData.recovery ? (
+                        <div className="pt-2 border-t" style={{ borderColor: C.line }}>
+                          <p className="text-sm font-medium mb-2">{t("labelRestMethodsHeader")}</p>
+                          <div className="flex flex-wrap gap-2">
+                            {REST_METHODS.map((m) => (
+                              <Chip key={m} label={t(REST_METHOD_KEYS[m])} active={((formData.recovery || {}).methods || []).includes(m)}
+                                onClick={() => {
+                                  const current = (formData.recovery || {}).methods || [];
+                                  updateRecovery({ methods: current.includes(m) ? current.filter((x) => x !== m) : [...current, m] });
+                                }} />
+                            ))}
+                          </div>
+                          {((formData.recovery || {}).methods || []).includes("その他") && (
+                            <input
+                              type="text"
+                              value={(formData.recovery || {}).note || ""}
+                              placeholder={t("placeholderRestOtherExample")}
+                              onChange={(e) => updateRecovery({ note: e.target.value })}
+                              className="w-full rounded-lg border p-2 text-sm mt-2"
+                              style={{ borderColor: C.line, background: C.paper }}
+                            />
+                          )}
+                          <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                            {t("noteRestMethodsFull")}
+                          </p>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="space-y-3">
+                            {(formData.activities || []).map((activity) => (
+                              <ActivityBlockEditor
+                                key={activity.id}
+                                activity={activity}
+                                onChange={(patch) => updateActivityBlock(activity.id, patch)}
+                                onRemove={() => removeActivityBlock(activity.id)}
+                                onDetailChange={(patch) => updateActivityBlockDetail(activity.id, patch)}
+                                onAddItem={() => addRepertoireItemToActivity(activity.id)}
+                                onUpdateItem={(idx, patch) => updateRepertoireItemInActivity(activity.id, idx, patch)}
+                                onRemoveItem={(idx) => removeRepertoireItemFromActivity(activity.id, idx)}
+                                onMoveItem={(idx, dir) => moveRepertoireItemInActivity(activity.id, idx, dir)}
+                                repertoireTessituraMap={repertoireTessituraMap}
+                                repertoireUsageCounts={repertoireUsageCounts}
+                                repertoireSkipped={repertoireSkipped}
+                                setRepertoireSkipped={setRepertoireSkipped}
+                                handleSaveRepertoire={handleSaveRepertoire}
+                                tessituraSaving={tessituraSaving}
+                                songFactorResolver={songFactorResolver}
+                                t={t}
                               />
-                            </div>
+                            ))}
+                          </div>
+                          {(formData.activities || []).length > 0 && (formData.activities || []).length < 10 && (
+                            <button type="button" onClick={addActivity}
+                              className="w-full rounded-xl border py-2 text-xs font-medium flex items-center justify-center gap-1.5"
+                              style={{ borderColor: C.line, color: C.inkSoft }}>
+                              <Plus size={13} />活動を追加
+                            </button>
+                          )}
+                          {(formData.activities || []).length > 0 && (() => {
+                            const totalMinutes = (formData.activities || []).reduce((s, a) => s + (Number(a.minutes) || 0), 0);
+                            const totalLoad = computeDayLoadFromActivities(formData.activities, songFactorResolver);
+                            const recentDates = Object.keys(entries).sort().slice(-7);
+                            const recentLoads = recentDates
+                              .map((d) => (entries[d].activities || []).length > 0 ? computeDayLoadFromActivities(entries[d].activities, songFactorResolver) : null)
+                              .filter((v) => typeof v === "number" && v > 0);
+                            let zoneText = "";
+                            if (recentLoads.length >= 3) {
+                              const avg = recentLoads.reduce((s, v) => s + v, 0) / recentLoads.length;
+                              const ratio = avg > 0 ? totalLoad / avg : 1;
+                              zoneText = ratio > 1.3 ? "（今週の中では重め）" : ratio < 0.7 ? "（今週の中では軽め）" : "（ちょうどいい）";
+                            }
+                            return (
+                              <p className="text-xs text-right ff-mono" style={{ color: C.inkSoft }}>
+                                今日の合計　{totalMinutes}分・負荷 {Math.round(totalLoad)}{zoneText}
+                              </p>
+                            );
+                          })()}
+                        </>
+                      )}
+
+                      <div>
+                        <span className="text-sm font-medium block mb-2">話し声の使用量（歌以外でどれだけ喋ったか）</span>
+                        <div className="flex gap-2">
+                          {[
+                            { v: 0, label: "ほとんど喋っていない" },
+                            { v: 1, label: "ふつう" },
+                            { v: 2, label: "よく喋った" }
+                          ].map((opt) => (
+                            <button key={opt.v} type="button" onClick={() => setFormData((f) => ({ ...f, speakingLevel: opt.v }))}
+                              className="flex-1 py-2 rounded-xl text-xs font-medium border transition-all"
+                              style={{
+                                background: formData.speakingLevel === opt.v ? C.curtain : C.paper,
+                                color: formData.speakingLevel === opt.v ? "#FFFDF8" : C.inkSoft,
+                                borderColor: formData.speakingLevel === opt.v ? C.curtain : C.line
+                              }}>
+                              {opt.label}
+                            </button>
                           ))}
                         </div>
-                        <p className="text-xs text-right mt-2 ff-mono" style={{ color: C.inkSoft }}>{t("labelTotal")} {waterTotal}ml</p>
+                        <label className="flex items-center gap-2 mt-2 text-xs" style={{ color: C.inkSoft }}>
+                          <input type="checkbox" checked={!!formData.noisyEnvironment}
+                            onChange={(e) => setFormData((f) => ({ ...f, noisyEnvironment: e.target.checked }))} />
+                          騒がしい場所での会話が多かった（無意識に声が大きくなりやすい環境）
+                        </label>
+                        <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
+                          レッスンで喋る・騒がしい店での会話・電話など、歌っていない時間の声の使用も、発声負荷として発声負荷（ACWR）の計算に反映されます。
+                        </p>
+                      </div>
+
+                    </SectionCard>
+
+                    <SectionCard title={t("sectionWater")} icon={Droplets} id="record-section-water" highlighted={highlightSection === "water"}>
+                      <div>
+                        <div className="flex items-center gap-3">
+                          <button type="button"
+                            onClick={() => setFormData((f) => ({ ...f, waterBySlot: { total: Math.max(0, ((f.waterBySlot || {}).total || 0) - 200) } }))}
+                            className="w-10 h-10 rounded-full border flex items-center justify-center flex-shrink-0"
+                            style={{ borderColor: C.line, color: C.inkSoft }}>
+                            <Minus size={16} />
+                          </button>
+                          <div className="flex-1 text-center">
+                            <span className="ff-display italic text-2xl">{waterTotal}</span>
+                            <span className="text-xs ml-1" style={{ color: C.inkSoft }}>ml</span>
+                          </div>
+                          <button type="button"
+                            onClick={() => setFormData((f) => ({ ...f, waterBySlot: { total: ((f.waterBySlot || {}).total || 0) + 200 } }))}
+                            className="w-10 h-10 rounded-full border flex items-center justify-center flex-shrink-0"
+                            style={{ borderColor: C.line, color: C.inkSoft }}>
+                            <Plus size={16} />
+                          </button>
+                        </div>
+                        <details className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                          <summary className="cursor-pointer">数値を直接入力する</summary>
+                          <MiniNumber
+                            value={waterTotal || ""}
+                            placeholder="ml"
+                            onChange={(v) => setFormData((f) => ({ ...f, waterBySlot: { total: Number(v) || 0 } }))}
+                          />
+                        </details>
+                        {waterTotal > 0 && (() => {
+                          let weightKg = formData.weightKg;
+                          if (typeof weightKg !== "number") {
+                            const pastDates = Object.keys(entries).sort().reverse();
+                            const found = pastDates.find((d) => typeof entries[d].weightKg === "number");
+                            if (found) weightKg = entries[found].weightKg;
+                          }
+                          if (typeof weightKg === "number" && weightKg > 0) {
+                            return (
+                              <p className="text-xs rounded-lg p-2 mt-2" style={{ background: C.paper, color: C.inkSoft }}>
+                                体重比 {Math.round(waterTotal / weightKg)} ml/kg
+                              </p>
+                            );
+                          }
+                          const recentDates = Object.keys(entries).sort().slice(-7);
+                          const recentVals = recentDates.map((d) => (entries[d].waterBySlot || {}).total).filter((v) => typeof v === "number" && v > 0);
+                          if (recentVals.length < 3) return null;
+                          const avg = recentVals.reduce((s, v) => s + v, 0) / recentVals.length;
+                          const diff = Math.round(waterTotal - avg);
+                          return (
+                            <p className="text-xs rounded-lg p-2 mt-2" style={{ background: C.paper, color: C.inkSoft }}>
+                              今週の平均より {diff >= 0 ? "+" : ""}{diff}ml
+                            </p>
+                          );
+                        })()}
                       </div>
                     </SectionCard>
 
-                    <SectionCard title={t("sectionMealDetail")} icon={Wheat}>
-                      <p className="text-xs" style={{ color: C.inkSoft }}>時間帯ごとに食品を追加すると、下に1日の合計が自動計算されます。</p>
-                      {MEAL_SLOTS.map((slot) => (
-                        <div key={slot}>
-                          <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>{t(MEAL_SLOT_KEYS[slot])}</p>
-                          <div className="space-y-2">
-                            {(formData.meals || []).filter((m) => m.slot === slot).map((m) => (
-                              <MealItemRow key={m.id} item={m} foodLibrary={foodLibrary} t={t} onChange={(next) => updateMeal(m.id, next)} onRemove={() => removeMeal(m.id)} />
-                            ))}
-                          </div>
-                          <button type="button" onClick={() => addMeal(slot)}
-                            className="w-full rounded-xl border py-1.5 text-xs font-medium flex items-center justify-center gap-1.5 mt-2"
-                            style={{ borderColor: C.line, color: C.inkSoft }}>
-                            <Plus size={12} />{t(MEAL_SLOT_KEYS[slot])}
-                          </button>
+                    <SectionCard title={t("sectionMealDetail")} icon={Wheat} id="record-section-meal" highlighted={highlightSection === "meal"}>
+                      <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteMealAutoCalc")}</p>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-sm font-medium block mb-1.5">{t("labelDinnerTime")}</label>
+                          <input type="time" value={formData.dinnerTime}
+                            onChange={(e) => setFormData((f) => ({ ...f, dinnerTime: e.target.value }))}
+                            className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                         </div>
-                      ))}
+                        <div className="flex flex-col justify-end">
+                          {(() => {
+                            const gap = computeTimeGapHours(formData.dinnerTime, formData.bedtime);
+                            return gap != null ? (
+                              <p className="text-xs rounded-lg p-2" style={{ background: gap < 3 ? "rgba(184,49,49,0.08)" : C.paper, color: gap < 3 ? C.curtain : C.inkSoft }}>
+                                {t("labelDinnerToBedGap")}: {gap}{t("unitHours")}
+                              </p>
+                            ) : (
+                              <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteDinnerGapHint")}</p>
+                            );
+                          })()}
+                        </div>
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium block mb-2">{t("labelDinnerTags")}</span>
+                        <div className="flex flex-wrap gap-2">
+                          {DINNER_TAGS.map((tag) => (
+                            <Chip key={tag} label={t(DINNER_TAG_KEYS[tag])} active={(formData.dinnerTags || []).includes(tag)}
+                              onClick={() => setFormData((f) => ({
+                                ...f,
+                                dinnerTags: (f.dinnerTags || []).includes(tag)
+                                  ? f.dinnerTags.filter((x) => x !== tag)
+                                  : [...(f.dinnerTags || []), tag]
+                              }))} />
+                          ))}
+                        </div>
+                      </div>
+                      {(formData.meals || []).length === 0 && !showMealDetail ? (
+                        <>
+                          <div>
+                            <span className="text-sm font-medium block mb-2">タンパク質は摂れましたか？</span>
+                            <div className="flex gap-2">
+                              {[
+                                { v: 0, label: "少なめ" },
+                                { v: 1, label: "ふつう" },
+                                { v: 2, label: "しっかり摂った" }
+                              ].map((opt) => (
+                                <button key={opt.v} type="button" onClick={() => setFormData((f) => ({ ...f, proteinLevel: opt.v }))}
+                                  className="flex-1 py-2 rounded-xl text-xs font-medium border transition-all"
+                                  style={{
+                                    background: formData.proteinLevel === opt.v ? C.curtain : C.paper,
+                                    color: formData.proteinLevel === opt.v ? "#FFFDF8" : C.inkSoft,
+                                    borderColor: formData.proteinLevel === opt.v ? C.curtain : C.line
+                                  }}>
+                                  {opt.label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                          <div>
+                            <span className="text-sm font-medium block mb-2">食事の量は全体的にどうでしたか？</span>
+                            <div className="flex gap-2">
+                              {[
+                                { v: 0, label: "少なめ" },
+                                { v: 1, label: "いつも通り" },
+                                { v: 2, label: "多め" }
+                              ].map((opt) => (
+                                <button key={opt.v} type="button" onClick={() => setFormData((f) => ({ ...f, calorieLevel: opt.v }))}
+                                  className="flex-1 py-2 rounded-xl text-xs font-medium border transition-all"
+                                  style={{
+                                    background: formData.calorieLevel === opt.v ? C.curtain : C.paper,
+                                    color: formData.calorieLevel === opt.v ? "#FFFDF8" : C.inkSoft,
+                                    borderColor: formData.calorieLevel === opt.v ? C.curtain : C.line
+                                  }}>
+                                  {opt.label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                          {!(profile.folded_groups || []).includes("meal_detail") && (
+                            <button type="button" onClick={() => setShowMealDetail(true)}
+                              className="text-xs underline" style={{ color: C.inkSoft }}>
+                              +食品ごとに詳しく記録する
+                            </button>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          {MEAL_SLOTS.map((slot) => (
+                            <div key={slot}>
+                              <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>{t(MEAL_SLOT_KEYS[slot])}</p>
+                              <div className="flex flex-wrap gap-1.5 mb-2">
+                                {QUICK_ADD_FOODS.map((name) => {
+                                  const preset = FOOD_PRESETS.find((p) => p.name === name);
+                                  const label = preset ? foodDisplayName(preset, language) : name;
+                                  return (
+                                    <button key={name} type="button" onClick={() => quickAddFood(slot, name)}
+                                      className="px-2.5 py-1 rounded-full text-xs font-medium border"
+                                      style={{ borderColor: C.line, color: C.inkSoft, background: C.card }}>
+                                      + {label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <div className="space-y-2">
+                                {(formData.meals || []).filter((m) => m.slot === slot).map((m) => (
+                                  <MealItemRow key={m.id} item={m} foodLibrary={foodLibrary} t={t} language={language} onChange={(next) => updateMeal(m.id, next)} onRemove={() => removeMeal(m.id)} />
+                                ))}
+                              </div>
+                              <button type="button" onClick={() => addMeal(slot)}
+                                className="w-full rounded-xl border py-1.5 text-xs font-medium flex items-center justify-center gap-1.5 mt-2"
+                                style={{ borderColor: C.line, color: C.inkSoft }}>
+                                <Plus size={12} />{t(MEAL_SLOT_KEYS[slot])}
+                              </button>
+                            </div>
+                          ))}
+                          <button type="button"
+                            onClick={() => {
+                              const hasItems = (formData.meals || []).length > 0;
+                              if (hasItems && !window.confirm("入力済みの食品の記録は消えます。簡易入力（3択）に戻しますか？")) return;
+                              setFormData((f) => ({ ...f, meals: [] }));
+                              setShowMealDetail(false);
+                            }}
+                            className="text-xs underline" style={{ color: C.inkSoft }}>
+                            簡易入力（3択）に戻す
+                          </button>
+                        </>
+                      )}
                       <div>
                         <div className="flex items-center gap-1.5 mb-1.5 mt-1">
                           <Utensils size={14} style={{ color: C.gold }} />
                           <label className="text-sm font-medium">{t("labelMealNotes")}</label>
                         </div>
-                        <textarea value={formData.mealNotes} rows={2} placeholder="例：消化に良いものを中心に、公演前は控えめに"
+                        <textarea value={formData.mealNotes} rows={2} placeholder={t("placeholderMealNotesExample")}
                           onChange={(e) => setFormData((f) => ({ ...f, mealNotes: e.target.value }))}
                           className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                       </div>
@@ -1448,11 +7427,16 @@ export default function VocalTracker({ userId, userEmail }) {
                           <div className="ff-mono text-sm font-medium">{mealTotals.fiber.toFixed(0)}g</div>
                         </div>
                       </div>
+                      {simpleMealMacros && (formData.meals || []).length === 0 && (
+                        <p className="text-xs" style={{ color: C.inkSoft }}>
+                          ※ 上の数値は、選択した3択と目標値から推定した参考値です。実際に食べた食品を記録すると、より正確になります。
+                        </p>
+                      )}
 
                       {nutritionTargets ? (
                         <div className="rounded-xl p-3" style={{ background: C.paper }}>
                           <div className="flex items-center justify-between mb-2">
-                            <p className="text-xs font-medium">栄養評価（目安）</p>
+                            <p className="text-xs font-medium">{t("labelNutritionEval")}</p>
                             <span className="text-xs ff-mono rounded-full px-2 py-0.5" style={{ background: C.card, color: C.inkSoft, border: `1px solid ${C.line}` }}>
                               {t(NUTRITION_PHASE_KEYS[profile.nutrition_phase] || "phaseMaintain")}
                             </span>
@@ -1468,223 +7452,130 @@ export default function VocalTracker({ userId, userEmail }) {
                               return (
                                 <div key={label} className="flex items-center justify-between text-xs">
                                   <span style={{ color: C.inkSoft }}>{label}</span>
-                                  <span className="ff-mono">{actual.toFixed(0)}g / 目安{target.toFixed(0)}g</span>
-                                  {ev && <span className="font-medium" style={{ color: ev.color }}>{ev.label}</span>}
+                                  <span className="ff-mono">{actual.toFixed(0)}g / {t("labelTargetPrefix")}{target.toFixed(0)}g</span>
+                                  {ev && <span className="font-medium" style={{ color: ev.color }}>{t(ev.labelKey)}</span>}
                                 </div>
                               );
                             })}
                             <div className="flex items-center justify-between text-xs pt-1 border-t" style={{ borderColor: C.line }}>
-                              <span style={{ color: C.inkSoft }}>推定カロリー</span>
+                              <span style={{ color: C.inkSoft }}>{t("labelEstimatedCalorie")}</span>
                               <span className="ff-mono">
-                                {(mealTotals.carbs * 4 + mealTotals.protein * 4 + mealTotals.fat * 9).toFixed(0)}kcal / 目安{nutritionTargets.calorieTarget.toFixed(0)}kcal
+                                {(mealTotals.carbs * 4 + mealTotals.protein * 4 + mealTotals.fat * 9).toFixed(0)}kcal / {t("labelTargetPrefix")}{nutritionTargets.calorieTarget.toFixed(0)}kcal
                               </span>
                             </div>
                           </div>
                           <p className="text-xs mt-2 leading-relaxed" style={{ color: C.inkSoft }}>
                             ※ {nutritionTargets.usedPreciseFormula
-                              ? "年齢・性別・身長・体重をもとにした基礎代謝の推定値（Mifflin-St Jeor式）と、活動量の仮定（週3〜5日の運動を想定）から算出した目安です。"
-                              : "年齢・性別・身長を登録すると、より精度の高い計算（Mifflin-St Jeor式）に切り替わります。今は体重のみをもとにした簡易的な目安です。"}
-                            {" "}あくまで一般的な目安であり、正確な数値が必要な場合は管理栄養士にご相談ください。
+                              ? t("noteBMIFormulaPrecise")
+                              : t("noteBMIFormulaSimple")}
+                            {" "}{t("noteNutritionAdvice")}
                           </p>
                         </div>
                       ) : (
-                        <p className="text-xs" style={{ color: C.inkSoft }}>体重を記録すると、栄養目標との比較が表示されます。</p>
-                      )}
-                    </SectionCard>
-
-                    <SectionCard title={t("sectionClimate")} icon={Thermometer}>
-                      <div>
-                        <label className="text-sm font-medium block mb-1.5">{t("labelLocation")}</label>
-                        <div className="flex items-center gap-2 rounded-lg border p-2" style={{ borderColor: C.line, background: C.paper }}>
-                          <MapPin size={16} style={{ color: C.inkSoft }} />
-                          <input type="text" value={formData.location} placeholder="例：ミラノ"
-                            onChange={(e) => setFormData((f) => ({ ...f, location: e.target.value }))}
-                            className="w-full text-sm bg-transparent border-none" />
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <NumberField label={t("labelTemperature")} icon={Thermometer} value={formData.temperature ?? ""} step={1} min={-30} max={50} suffix="℃"
-                          onChange={(v) => setFormData((f) => ({ ...f, temperature: v }))} />
-                        <NumberField label={t("labelHumidity")} icon={Wind} value={formData.humidity ?? ""} step={5} min={0} max={100} suffix="%"
-                          onChange={(v) => setFormData((f) => ({ ...f, humidity: v }))} />
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium block mb-1.5">{t("labelWeather")}</label>
-                        <select
-                          value={formData.weather}
-                          onChange={(e) => setFormData((f) => ({ ...f, weather: e.target.value }))}
-                          className="w-full rounded-lg border p-2 text-sm"
-                          style={{ borderColor: C.line, background: C.paper, color: C.ink }}
-                        >
-                          <option value="">選択してください</option>
-                          {WEATHER_OPTIONS.map((w) => <option key={w} value={w}>{t(WEATHER_KEYS[w])}</option>)}
-                        </select>
-                      </div>
-                    </SectionCard>
-
-                    <SectionCard title={t("sectionPractice")} icon={Music2}>
-                      <div>
-                        <span className="text-sm font-medium block mb-2">{t("labelTodayActivity")}</span>
-                        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                          {ACTIVITY_OPTIONS.map((a) => {
-                            const active = formData.activityType === a.key;
-                            return (
-                              <button key={a.key} type="button"
-                                onClick={() => setFormData((f) => ({
-                                  ...f,
-                                  activityType: a.key,
-                                  performanceQuality: a.key === "本番" ? (f.performanceQuality ?? 3) : f.performanceQuality
-                                }))}
-                                className="flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-medium transition-all"
-                                style={{ background: active ? C.curtain : C.paper, color: active ? "#FFFDF8" : C.inkSoft, borderColor: active ? C.curtain : C.line }}
-                              >
-                                <a.icon size={16} />
-                                {t(a.labelKey)}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <NumberField label={t("labelActivityDuration")} value={formData.activityDuration ?? ""} step={0.5} min={0} max={24} suffix="時間"
-                          onChange={(v) => setFormData((f) => ({ ...f, activityDuration: v }))} />
-                        <div>
-                          <label className="text-sm font-medium block mb-1.5">{t("labelRepertoire")}</label>
-                          <input type="text" value={formData.repertoire} placeholder="例：椿姫"
-                            onChange={(e) => setFormData((f) => ({ ...f, repertoire: e.target.value }))}
-                            className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                        </div>
-                      </div>
-
-                      {formData.activityType === "休養" && (
-                        <div className="pt-2 border-t" style={{ borderColor: C.line }}>
-                          <p className="text-sm font-medium mb-2">試した休養方法（複数選択可）</p>
-                          <div className="flex flex-wrap gap-2">
-                            {REST_METHODS.map((m) => (
-                              <Chip key={m} label={t(REST_METHOD_KEYS[m])} active={((formData.activityDetail || {}).restMethods || []).includes(m)}
-                                onClick={() => {
-                                  const current = (formData.activityDetail || {}).restMethods || [];
-                                  updateDetail({ restMethods: current.includes(m) ? current.filter((x) => x !== m) : [...current, m] });
-                                }} />
-                            ))}
-                          </div>
-                          {((formData.activityDetail || {}).restMethods || []).includes("その他") && (
-                            <input
-                              type="text"
-                              value={(formData.activityDetail || {}).restMethodOther || ""}
-                              placeholder="その他の内容を記入（例：ヨガ、サウナ）"
-                              onChange={(e) => updateDetail({ restMethodOther: e.target.value })}
-                              className="w-full rounded-lg border p-2 text-sm mt-2"
-                              style={{ borderColor: C.line, background: C.paper }}
-                            />
-                          )}
-                          <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                            この日の「声・喉」「メンタル」の評価とあわせて記録され、分析タブで休養方法ごとの傾向を見られます。
-                            「その他」に記入した内容は、同じ言葉で書くと同じ方法として集計されます。
-                          </p>
-                        </div>
-                      )}
-
-                      {formData.activityType === "自主練習" && (
-                        <div className="pt-2 border-t space-y-3" style={{ borderColor: C.line }}>
-                          <div>
-                            <label className="text-sm font-medium block mb-1.5">練習メニュー</label>
-                            <textarea value={(formData.activityDetail || {}).practiceMenu || ""} rows={2}
-                              placeholder="例：ロングトーン15分、音階練習、該当曲の通し2回"
-                              onChange={(e) => updateDetail({ practiceMenu: e.target.value })}
-                              className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                          </div>
-                          <div>
-                            <label className="text-sm font-medium block mb-1.5">成果・気づき</label>
-                            <textarea value={(formData.activityDetail || {}).practiceResult || ""} rows={2}
-                              placeholder="今日できるようになったこと、次回への課題など"
-                              onChange={(e) => updateDetail({ practiceResult: e.target.value })}
-                              className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                          </div>
-                        </div>
-                      )}
-
-                      {formData.activityType === "レッスン" && (
-                        <div className="pt-2 border-t space-y-3" style={{ borderColor: C.line }}>
-                          <div>
-                            <label className="text-sm font-medium block mb-1.5">先生が言ったこと</label>
-                            <textarea value={(formData.activityDetail || {}).teacherNotes || ""} rows={3}
-                              placeholder="レッスンで指摘・アドバイスされた内容"
-                              onChange={(e) => updateDetail({ teacherNotes: e.target.value })}
-                              className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                          </div>
-                          <div>
-                            <label className="text-sm font-medium block mb-1.5">自分のまとめ</label>
-                            <textarea value={(formData.activityDetail || {}).lessonSummary || ""} rows={3}
-                              placeholder="次回までに取り組むこと、自分なりの解釈など"
-                              onChange={(e) => updateDetail({ lessonSummary: e.target.value })}
-                              className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                          </div>
-                        </div>
-                      )}
-
-                      {formData.activityType === "リハーサル" && (
-                        <p className="text-xs pt-2 border-t" style={{ borderColor: C.line, color: C.inkSoft }}>
-                          このページ上部「声・喉」の評価と、下部「メンタル」の評価に、リハーサルでの客観的な声・メンタルの状態を記録してください。
-                        </p>
-                      )}
-
-                      {formData.activityType === "本番" && (
-                        <div className="pt-2 border-t space-y-4" style={{ borderColor: C.line }}>
-                          <DynamicsSelector label="公演の出来" icon={Sparkles} value={formData.performanceQuality || 3}
-                            onChange={(v) => setFormData((f) => ({ ...f, performanceQuality: v }))} />
-                          <DynamicsSelector label="トーク" icon={Sparkles} value={(formData.activityDetail || {}).talkQuality || 3}
-                            onChange={(v) => updateDetail({ talkQuality: v })} />
-                          <DynamicsSelector label="振る舞い" icon={Sparkles} value={(formData.activityDetail || {}).stageManner || 3}
-                            onChange={(v) => updateDetail({ stageManner: v })} />
-                          <div>
-                            <label className="text-sm font-medium block mb-1.5">コメント</label>
-                            <textarea value={(formData.activityDetail || {}).performanceComment || ""} rows={3}
-                              placeholder="公演を振り返って気づいたこと。後日、日付を戻って編集・追記もできます"
-                              onChange={(e) => updateDetail({ performanceComment: e.target.value })}
-                              className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                          </div>
-                        </div>
+                        <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteRecordWeightForTargets")}</p>
                       )}
                     </SectionCard>
 
                     <SectionCard title={t("sectionExercise")} icon={Dumbbell}>
-                      <p className="text-xs" style={{ color: C.inkSoft }}>その日行った運動を追加してください。合計時間は自動計算され、分析にも反映されます。</p>
-                      <div className="space-y-2">
-                        {(formData.exercises || []).map((x) => (
-                          <ExerciseItemRow key={x.id} item={x} t={t} onChange={(next) => updateExercise(x.id, next)} onRemove={() => removeExercise(x.id)} />
-                        ))}
-                      </div>
-                      <button type="button" onClick={addExercise}
-                        className="w-full rounded-xl border py-2 text-xs font-medium flex items-center justify-center gap-1.5"
-                        style={{ borderColor: C.line, color: C.inkSoft }}>
-                        <Plus size={13} />{t("btnAddExercise")}
-                      </button>
-                      {exerciseTotalMinutes > 0 && (
-                        <p className="text-xs text-right ff-mono" style={{ color: C.inkSoft }}>{t("labelTotal")} {exerciseTotalMinutes}分</p>
+                      <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteExerciseHelp")}</p>
+                      {(formData.exercises || []).length === 0 && !showExerciseDetail ? (
+                        <>
+                          <div className="flex gap-2">
+                            {[
+                              { v: 0, label: "していない" },
+                              { v: 1, label: "軽め" },
+                              { v: 2, label: "しっかり" }
+                            ].map((opt) => (
+                              <button key={opt.v} type="button" onClick={() => setFormData((f) => ({ ...f, exerciseLevel: opt.v }))}
+                                className="flex-1 py-2 rounded-xl text-xs font-medium border transition-all"
+                                style={{
+                                  background: formData.exerciseLevel === opt.v ? C.curtain : C.paper,
+                                  color: formData.exerciseLevel === opt.v ? "#FFFDF8" : C.inkSoft,
+                                  borderColor: formData.exerciseLevel === opt.v ? C.curtain : C.line
+                                }}>
+                                {opt.label}
+                              </button>
+                            ))}
+                          </div>
+                          {!(profile.folded_groups || []).includes("exercise_detail") && (
+                            <button type="button" onClick={() => setShowExerciseDetail(true)}
+                              className="text-xs underline" style={{ color: C.inkSoft }}>
+                              +詳しく記録する（種目・時間・強度）
+                            </button>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <div className="space-y-2">
+                            {(formData.exercises || []).map((x) => (
+                              <ExerciseItemRow key={x.id} item={x} t={t} onChange={(next) => updateExercise(x.id, next)} onRemove={() => removeExercise(x.id)} />
+                            ))}
+                          </div>
+                          <button type="button" onClick={addExercise}
+                            className="w-full rounded-xl border py-2 text-xs font-medium flex items-center justify-center gap-1.5"
+                            style={{ borderColor: C.line, color: C.inkSoft }}>
+                            <Plus size={13} />{t("btnAddExercise")}
+                          </button>
+                          {exerciseTotalMinutes > 0 && (
+                            <p className="text-xs text-right ff-mono" style={{ color: C.inkSoft }}>{t("labelTotal")} {exerciseTotalMinutes}分</p>
+                          )}
+                          <button type="button"
+                            onClick={() => {
+                              const hasItems = (formData.exercises || []).length > 0;
+                              if (hasItems && !window.confirm("入力済みの運動の記録は消えます。簡易入力（3択）に戻しますか？")) return;
+                              setFormData((f) => ({ ...f, exercises: [] }));
+                              setShowExerciseDetail(false);
+                            }}
+                            className="text-xs underline" style={{ color: C.inkSoft }}>
+                            簡易入力（3択）に戻す
+                          </button>
+                        </>
                       )}
                       <div className="rounded-xl p-3 text-xs leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
-                        <p className="font-medium mb-1" style={{ color: C.ink }}>おすすめの運動（参考）</p>
-                        <p>・呼吸支持のために：横隔膜呼吸、プランク、ピラティス</p>
-                        <p>・姿勢・喉頭の安定のために：肩甲骨まわりのストレッチ、首肩のストレッチ</p>
-                        <p>・全身持久力のために：ウォーキング、軽いジョギング</p>
-                        <p className="mt-1">詳しい理由は「健康情報」タブをご覧ください。</p>
+                        <p className="font-medium mb-1" style={{ color: C.ink }}>{t("labelRecommendedExercise")}</p>
+                        <p>・{t("exerciseTipBreath")}</p>
+                        <p>・{t("exerciseTipPosture")}</p>
+                        <p>・{t("exerciseTipEndurance")}</p>
+                        <p className="mt-1">{t("noteSeeHealthInfo")}</p>
                       </div>
                     </SectionCard>
 
-                    <SectionCard title={t("sectionMental")} icon={HeartHandshake}>
-                      <DotSelector label="心の余裕" icon={HeartHandshake} value={formData.ease} lowLabel="緊張" highLabel="穏やか"
+                    <SectionCard title={t("sectionMental")} icon={HeartHandshake} id="record-section-mental" highlighted={highlightSection === "mental"}>
+                      <DotSelector label={t("labelMentalEase")} icon={HeartHandshake} value={formData.ease} lowLabel={t("lowTension")} highLabel={t("highCalm")}
                         onChange={(v) => setFormData((f) => ({ ...f, ease: v }))} />
-                      <div>
-                        <label className="text-sm font-medium block mb-1.5">{t("labelMentalReason")}</label>
-                        <textarea value={formData.mentalReason} rows={3} placeholder="なぜその評価にしたか、今日感じたことを書き残せます"
-                          onChange={(e) => setFormData((f) => ({ ...f, mentalReason: e.target.value }))}
-                          className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                      </div>
+                      {typeof formData.ease === "number" && (
+                        <p className="text-xs" style={{ color: C.inkSoft }}>記録しました</p>
+                      )}
+                      {!(profile.folded_groups || []).includes("mental_detail") && (
+                        <>
+                          <div>
+                            <span className="text-sm font-medium block mb-2">{t("labelMentalTags")}</span>
+                            <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("noteMentalTagsFollowEase")}</p>
+                            <div className="flex flex-wrap gap-2">
+                              {MENTAL_TAG_GROUPS[mentalTagGroupForEase(formData.ease)].map((tag) => (
+                                <Chip key={tag} label={t(MENTAL_TAG_KEYS[tag])} active={(formData.mentalTags || []).includes(tag)}
+                                  onClick={() => setFormData((f) => ({
+                                    ...f,
+                                    mentalTags: (f.mentalTags || []).includes(tag)
+                                      ? f.mentalTags.filter((x) => x !== tag)
+                                      : [...(f.mentalTags || []), tag]
+                                  }))} />
+                              ))}
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium block mb-1.5">{t("labelMentalReason")}</label>
+                            <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{t("noteMentalReasonOptional")}</p>
+                            <textarea value={formData.mentalReason} rows={3} placeholder={t("placeholderMentalReasonText")}
+                              onChange={(e) => setFormData((f) => ({ ...f, mentalReason: e.target.value }))}
+                              className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                          </div>
+                        </>
+                      )}
                     </SectionCard>
 
                     <SectionCard title={t("sectionMemo")} icon={NotebookPen}>
-                      <textarea value={formData.notes} rows={3} placeholder="自由に記録を残せます"
+                      <textarea value={formData.notes} rows={3} placeholder={t("placeholderGeneralNotes")}
                         onChange={(e) => setFormData((f) => ({ ...f, notes: e.target.value }))}
                         className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                     </SectionCard>
@@ -1699,12 +7590,153 @@ export default function VocalTracker({ userId, userEmail }) {
                     {saveStatus === "error" && saveError && (
                       <p className="text-xs text-center" style={{ color: C.curtain }}>{saveError}</p>
                     )}
+                      </>
+                    )}
                   </>
                 )}
               </div>
             )}
 
-            {activeTab === "history" && (
+            {activeTab === "garden" && (
+              <CharacterHome
+                entries={entries}
+                ownedKeys={ownedItemKeys}
+                equipped={characterEquipped}
+                pointsSpent={characterPointsSpent}
+                onPurchase={handlePurchaseItem}
+                onEquip={handleEquipItem}
+                onTogglePlacement={handleTogglePlacement}
+                onUpdatePosition={handleUpdatePosition}
+                isDirty={characterDirty}
+                saveStatus={characterSaveStatus}
+                onSave={handleSaveCharacter}
+                t={t}
+              />
+            )}
+
+            {activeTab === "notes" && (
+              <div className="flex rounded-full border p-1 mb-4" style={{ borderColor: C.line }}>
+                <button onClick={() => setNotesSubTab("practice")}
+                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                  style={{ background: notesSubTab === "practice" ? C.curtain : "transparent", color: notesSubTab === "practice" ? "#FFFDF8" : C.inkSoft }}>
+                  稽古ノート
+                </button>
+                <button onClick={() => setNotesSubTab("calendar")}
+                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                  style={{ background: notesSubTab === "calendar" ? C.curtain : "transparent", color: notesSubTab === "calendar" ? "#FFFDF8" : C.inkSoft }}>
+                  カレンダー
+                </button>
+                <button onClick={() => setNotesSubTab("memo")}
+                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                  style={{ background: notesSubTab === "memo" ? C.curtain : "transparent", color: notesSubTab === "memo" ? "#FFFDF8" : C.inkSoft }}>
+                  メモ
+                </button>
+              </div>
+            )}
+            {activeTab === "notes" && notesSubTab === "practice" && (
+              <div className="space-y-5">
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-xs mb-2" style={{ color: C.inkSoft }}>いまの目標</p>
+                  {!editingPracticeGoal ? (
+                    profile.practice_goal ? (
+                      <>
+                        <p className="text-base font-medium">{profile.practice_goal}</p>
+                        <p className="text-xs mt-1" style={{ color: C.inkSoft }}>
+                          {(profile.practice_goal_tags || []).map((t) => `#${(GOAL_TAGS.find((g) => g.key === t) || {}).label}`).join("　")}
+                          {profile.practice_goal_started_at && (
+                            <>　{profile.practice_goal_started_at}〜（{Math.max(1, Math.floor((new Date(todayISO()) - new Date(profile.practice_goal_started_at)) / 86400000) + 1)}日目）</>
+                          )}
+                        </p>
+                        <button type="button" onClick={() => { setPracticeGoalDraft(profile.practice_goal); setPracticeGoalTagsDraft(profile.practice_goal_tags || []); setEditingPracticeGoal(true); }}
+                          className="text-xs underline mt-2" style={{ color: C.inkSoft }}>編集</button>
+                      </>
+                    ) : (
+                      <button type="button" onClick={() => { setPracticeGoalDraft(""); setPracticeGoalTagsDraft([]); setEditingPracticeGoal(true); }}
+                        className="w-full rounded-xl border-2 border-dashed py-3 text-sm font-medium" style={{ borderColor: C.line, color: C.inkSoft }}>
+                        ＋目標を設定する
+                      </button>
+                    )
+                  ) : (
+                    <>
+                      <input type="text" value={practiceGoalDraft} placeholder="例: 高音の弱声を安定させる" onChange={(e) => setPracticeGoalDraft(e.target.value)}
+                        className="w-full rounded-lg border p-2 text-sm mb-2" style={{ borderColor: C.line, background: C.paper }} />
+                      <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>タグ（振り返りに関連グラフが自動で並びます）</p>
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {GOAL_TAGS.map((g) => (
+                          <Chip key={g.key} label={g.label} active={practiceGoalTagsDraft.includes(g.key)}
+                            onClick={() => setPracticeGoalTagsDraft((prev) => prev.includes(g.key) ? prev.filter((x) => x !== g.key) : [...prev, g.key])} />
+                        ))}
+                      </div>
+                      <div className="flex gap-2">
+                        <button type="button" disabled={!practiceGoalDraft.trim()}
+                          onClick={async () => { await handleSetPracticeGoal(practiceGoalDraft.trim(), practiceGoalTagsDraft); setEditingPracticeGoal(false); }}
+                          className="flex-1 py-2 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: practiceGoalDraft.trim() ? 1 : 0.5 }}>
+                          保存
+                        </button>
+                        <button type="button" onClick={() => setEditingPracticeGoal(false)}
+                          className="flex-1 py-2 rounded-full text-sm font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                          キャンセル
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {profile.practice_goal && !editingPracticeGoal && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-sm font-medium mb-3">今週の振り返り</p>
+                    {practiceGoalMetrics.map((m) => (
+                      <div key={m.tag} className="mb-3">
+                        {m.notYetAvailable ? (
+                          <p className="text-xs rounded-lg p-2" style={{ background: C.paper, color: C.inkSoft }}>{m.label}：この指標はまだ記録機能がありません。</p>
+                        ) : m.data ? (
+                          <>
+                            <p className="text-xs mb-1" style={{ color: C.inkSoft }}>{m.label}</p>
+                            <div style={{ width: "100%", height: 100 }}>
+                              <ResponsiveContainer>
+                                <LineChart data={m.data} margin={{ left: 0, right: 8, top: 4, bottom: 0 }}>
+                                  <Line type="monotone" dataKey="value" stroke={C.curtain} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                                  <XAxis dataKey="date" tick={{ fontSize: 9, fill: C.inkSoft }} />
+                                  <YAxis hide domain={["auto", "auto"]} />
+                                  <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, borderColor: C.line }} />
+                                </LineChart>
+                              </ResponsiveContainer>
+                            </div>
+                            <p className="text-sm font-medium mt-1">{m.summary}</p>
+                          </>
+                        ) : (
+                          <p className="text-xs rounded-lg p-2" style={{ background: C.paper, color: C.inkSoft }}>{m.label}：まだデータが足りません。</p>
+                        )}
+                      </div>
+                    ))}
+                    <textarea value={practiceReviewDraft} rows={2} placeholder="感じたことを書く（「変わった気がしない」でも大丈夫です）"
+                      onChange={(e) => setPracticeReviewDraft(e.target.value)}
+                      className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                    <button type="button" disabled={!practiceReviewDraft.trim()}
+                      onClick={async () => { await handleAddPracticeReview(practiceReviewDraft); setPracticeReviewDraft(""); }}
+                      className="w-full mt-2 py-2 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: practiceReviewDraft.trim() ? 1 : 0.5 }}>
+                      書く
+                    </button>
+                  </div>
+                )}
+
+                {(profile.practice_reviews || []).length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-sm font-medium mb-3">これまでの振り返り</p>
+                    <div className="space-y-2">
+                      {[...(profile.practice_reviews || [])].reverse().map((r, i) => (
+                        <div key={i} className="rounded-xl p-2.5" style={{ background: C.paper }}>
+                          <p className="text-xs ff-mono mb-1" style={{ color: C.inkSoft }}>{r.at}</p>
+                          <p className="text-sm" style={{ color: C.ink }}>{r.text}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {(activeTab === "history" || (activeTab === "notes" && notesSubTab === "calendar")) && (
               <div className="space-y-5">
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <div className="flex items-center justify-between mb-3">
@@ -1712,15 +7744,15 @@ export default function VocalTracker({ userId, userEmail }) {
                       className="w-8 h-8 rounded-full border flex items-center justify-center" style={{ borderColor: C.line }}>
                       <ChevronLeft size={14} />
                     </button>
-                    <span className="ff-display italic text-lg">{viewMonth.year}年 {viewMonth.month + 1}月</span>
+                    <span className="ff-display italic text-lg">{formatMonthLabel(viewMonth.year, viewMonth.month, language)}</span>
                     <button onClick={() => setViewMonth((m) => shiftMonth(m, 1))}
                       className="w-8 h-8 rounded-full border flex items-center justify-center" style={{ borderColor: C.line }}>
                       <ChevronRight size={14} />
                     </button>
                   </div>
                   <div className="grid grid-cols-7 gap-1 text-center">
-                    {WEEKDAYS.map((w) => (
-                      <div key={w} className="text-xs ff-mono py-1" style={{ color: C.inkSoft }}>{w}</div>
+                    {weekdayLabels.map((w, i) => (
+                      <div key={i} className="text-xs ff-mono py-1" style={{ color: C.inkSoft }}>{w}</div>
                     ))}
                     {calendarCells.map((c, i) =>
                       c === null ? (
@@ -1754,10 +7786,10 @@ export default function VocalTracker({ userId, userEmail }) {
                       <div key={date} className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                         {confirmDeleteDate === date ? (
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-sm">この記録を削除しますか？</span>
+                            <span className="text-sm">{t("confirmDeleteRecord")}</span>
                             <div className="flex gap-2 shrink-0">
-                              <button onClick={() => handleDelete(date)} className="px-3 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>削除する</button>
-                              <button onClick={() => setConfirmDeleteDate(null)} className="px-3 py-1.5 rounded-full text-xs font-medium border" style={{ borderColor: C.line }}>キャンセル</button>
+                              <button onClick={() => handleDelete(date)} className="px-3 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>{t("btnDeleteConfirm")}</button>
+                              <button onClick={() => setConfirmDeleteDate(null)} className="px-3 py-1.5 rounded-full text-xs font-medium border" style={{ borderColor: C.line }}>{t("btnCancel")}</button>
                             </div>
                           </div>
                         ) : (
@@ -1767,11 +7799,11 @@ export default function VocalTracker({ userId, userEmail }) {
                               {levelDynamic(e.throatCondition)}
                             </div>
                             <div className="flex-1 min-w-0 cursor-pointer" onClick={() => { setSelectedDate(date); setActiveTab("today"); }}>
-                              <div className="text-sm font-medium">{formatDateLabel(date)}</div>
+                              <div className="text-sm font-medium">{formatDateLabel(date, language)}</div>
                               <div className="flex items-center gap-1.5 text-xs mt-0.5 flex-wrap" style={{ color: C.inkSoft }}>
                                 <ActIcon size={12} />
                                 <span>{t((ACTIVITY_OPTIONS.find((a) => a.key === e.activityType) || {}).labelKey) || e.activityType}</span>
-                                {e.activityType === "本番" && e.performanceQuality && <span>・公演の出来 {levelDynamic(e.performanceQuality)}</span>}
+                                {entryHasActivityKind(e, "本番") && e.performanceQuality && <span>・{t("targetPerformance")} {levelDynamic(e.performanceQuality)}</span>}
                                 {e.location && <span>・{e.location}</span>}
                               </div>
                               {e.mentalReason && (
@@ -1793,13 +7825,320 @@ export default function VocalTracker({ userId, userEmail }) {
               </div>
             )}
 
+            {activeTab === "notes" && notesSubTab === "memo" && (
+              <div className="space-y-5">
+                {voiceMemoEntriesAllTime.length > 0 ? (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">{t("titleVoiceMemoReview")}</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteVoiceMemoReview")}</p>
+                    <div className="space-y-2">
+                      {voiceMemoEntriesAllTime.map((e) => (
+                        <div key={e.date} className="rounded-xl p-2.5 cursor-pointer" style={{ background: C.paper }}
+                          onClick={() => { setSelectedDate(e.date); setActiveTab("today"); }}>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs ff-mono" style={{ color: C.inkSoft }}>{e.date}</span>
+                            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: levelColor(e.throatCondition), color: "#FFFDF8" }}>
+                              喉{levelDynamic(e.throatCondition)}
+                            </span>
+                            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: levelColor(e.voiceQuality), color: "#FFFDF8" }}>
+                              声{levelDynamic(e.voiceQuality)}
+                            </span>
+                          </div>
+                          <p className="text-xs" style={{ color: C.ink }}>{e.voiceMemo}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm text-center py-10" style={{ color: C.inkSoft }}>
+                    「声・喉」欄の一口メモを書くと、ここに一覧が表示されます。
+                  </p>
+                )}
+              </div>
+            )}
+
             {activeTab === "analysis" && (
               <div className="space-y-5">
+                {(() => {
+                  // 記録と分析の順番設計 §5.2: ①今日の一言。発見があれば発見、無ければ中立的な事実を出す。
+                  // 「調子が悪い日に低い判定が最初に出て、開かなくなる」ことを避けるため、判定より先に置く。
+                  if (topDiscoveries.length > 0) {
+                    const top = topDiscoveries[0];
+                    return (
+                      <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{top.icon} 今日の一言</p>
+                        <p className="text-base font-medium mb-1" style={{ color: C.ink, lineHeight: 1.4 }}>{top.text}</p>
+                        {top.detail && <p className="text-xs" style={{ color: C.inkSoft }}>{top.detail}</p>}
+                      </div>
+                    );
+                  }
+                  const nextLine = nextUnlock
+                    ? `記録${recordedDaysTotal}日目。あと${nextUnlock.days - recordedDaysTotal}日で「${nextUnlock.label}」がひらきます`
+                    : `記録${recordedDaysTotal}日目です`;
+                  return (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <p className="text-sm" style={{ color: C.inkSoft }}>{nextLine}</p>
+                    </div>
+                  );
+                })()}
+                <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleVocalScore")}</h3>
+                  <p className="text-xs mb-4" style={{ color: C.inkSoft }}>{t("noteVocalScore")}</p>
+                  {!vocalConditionScore.hasEnoughData ? (
+                    <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
+                      {t("noteVocalScoreNotEnough").replace("{count}", vocalConditionScore.daysCount)}
+                    </p>
+                  ) : (
+                    <>
+                      <div className="flex items-end gap-2 mb-4">
+                        <span className="ff-display italic" style={{ fontSize: "3.4rem", lineHeight: 1, color: levelColor(vocalConditionScore.total / 20) }}>
+                          {vocalConditionScore.total}
+                        </span>
+                        <span className="text-sm mb-1.5" style={{ color: C.inkSoft }}>/ 100</span>
+                      </div>
+                      <div className="space-y-2">
+                        {vocalConditionScore.components.map((c) => (
+                          <div key={c.key}>
+                            <div className="flex items-center justify-between text-xs mb-1">
+                              <span style={{ color: C.inkSoft }}>{t(c.labelKey)}</span>
+                              <span className="ff-mono" style={{ color: C.ink }}>{Math.round(c.score)}</span>
+                            </div>
+                            <div className="h-1.5 rounded-full overflow-hidden" style={{ background: C.paper }}>
+                              <div className="h-full rounded-full" style={{ width: `${c.score}%`, background: C.gold }} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {vocalConditionScore.topPullDown && (
+                        <p className="text-xs mt-3 rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                          <strong>{t(vocalConditionScore.topPullDown.labelKey)}</strong>が{Math.round(vocalConditionScore.topPullDown.score)}点で、
+                          ここが全体を約{vocalConditionScore.topPullDown.pullDown.toFixed(1)}点押し下げています。
+                        </p>
+                      )}
+                      <p className="text-xs mt-4" style={{ color: C.inkSoft }}>
+                        {t("noteVocalScoreDisclaimer")}
+                      </p>
+                    </>
+                  )}
+                </div>
+
+                {recordedDaysTotal >= 7 ? (
+                  deviationScore && (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <h3 className="ff-display italic text-lg mb-1">コンディション偏差値</h3>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        100点満点の絶対評価だと、良い日も悪い日も似た点数に集まりがちです。自分の直近{deviationScore.n}日の分布の中で、今日がどこにいるかで見ます。
+                      </p>
+                      <div className="flex items-center gap-5">
+                        <div style={{ position: "relative", width: 96, height: 96, flexShrink: 0 }}>
+                          <svg viewBox="0 0 100 100" style={{ transform: "rotate(-90deg)" }}>
+                            <circle cx="50" cy="50" r="42" fill="none" stroke={C.paper} strokeWidth="10" />
+                            <circle
+                              cx="50" cy="50" r="42" fill="none"
+                              stroke={deviationScore.T >= 60 ? C.sage : deviationScore.T <= 40 ? C.curtain : C.gold}
+                              strokeWidth="10" strokeLinecap="round"
+                              strokeDasharray={`${(Math.min(100, Math.max(0, (deviationScore.T - 20) / 60 * 100)) / 100) * 264} 264`}
+                            />
+                          </svg>
+                          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                            <span className="ff-display italic" style={{ fontSize: "1.7rem", color: C.ink }}>{deviationScore.T}</span>
+                            <span className="text-xs" style={{ color: C.inkSoft }}>偏差値</span>
+                          </div>
+                        </div>
+                        <p className="text-xs" style={{ color: C.ink }}>
+                          今日は<strong>偏差値{deviationScore.T}</strong>。この{deviationScore.n}日間で上から{deviationScore.topPercentPct}%、
+                          <strong>{deviationScore.position}番目に良い日</strong>です。
+                        </p>
+                      </div>
+                      <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                        ※ 絶対値ではなく、自分自身の記録の中での相対的な位置を示す参考値です。
+                      </p>
+                    </div>
+                  )
+                ) : (
+                  <LockedCard
+                    title="コンディション偏差値"
+                    teaser="今日が「自分比でどのくらい良い日か」を偏差値で見られます"
+                    current={recordedDaysTotal}
+                    required={7}
+                  />
+                )}
+
+                {topDiscoveries.slice(1).length > 0 && (
+                  <div>
+                    <h2 className="ff-display italic text-xl mb-3" style={{ color: C.ink }}>今週の発見</h2>
+                    <div className="space-y-3">
+                      {topDiscoveries.slice(1).map((d) => (
+                        <div key={d.id} className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                          <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{d.icon} 見つかりました</p>
+                          <p className="text-base font-medium mb-2" style={{ color: C.ink, lineHeight: 1.4 }}>{d.text}</p>
+                          {d.detail && <p className="text-xs" style={{ color: C.inkSoft }}>{d.detail}</p>}
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                      ※ その時点でいちばん優先度の高い発見だけを自動で選んで表示しています。詳しい内訳は下の各カードでご確認いただけます。
+                    </p>
+                  </div>
+                )}
+
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">時間帯別の声の傾向</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>「時間帯別に記録」した内容の平均値です。件数が少ないうちは参考程度にご覧ください。</p>
+                  <h3 className="ff-display italic text-lg mb-3">{t("titleAnalysisPeriod")}</h3>
+                  <div className="flex gap-2 flex-wrap">
+                    {["week", "month", "year", "all", "custom"].map((p) => (
+                      <button key={p} type="button" onClick={() => setAnalysisPeriod(p)}
+                        className="px-3.5 py-1.5 rounded-full text-xs font-medium"
+                        style={{
+                          background: analysisPeriod === p ? C.curtain : C.paper,
+                          color: analysisPeriod === p ? "#FFFDF8" : C.inkSoft,
+                          border: `1px solid ${analysisPeriod === p ? C.curtain : C.line}`
+                        }}>
+                        {t(p === "week" ? "periodWeek" : p === "month" ? "periodMonth" : p === "year" ? "periodYear" : p === "all" ? "periodAll" : "periodCustom")}
+                      </button>
+                    ))}
+                    {Object.values(entries).some((e) => entryHasActivityKind(e, "本番")) && (
+                      <button type="button" onClick={() => setAnalysisPeriod("aroundPerformance")}
+                        className="px-3.5 py-1.5 rounded-full text-xs font-medium"
+                        style={{
+                          background: analysisPeriod === "aroundPerformance" ? C.curtain : C.paper,
+                          color: analysisPeriod === "aroundPerformance" ? "#FFFDF8" : C.inkSoft,
+                          border: `1px solid ${analysisPeriod === "aroundPerformance" ? C.curtain : C.line}`
+                        }}>
+                        直近の本番前後
+                      </button>
+                    )}
+                  </div>
+                  {analysisPeriod === "custom" && (
+                    <div className="flex items-center gap-2 mt-3 flex-wrap">
+                      <input type="date" value={analysisCustomStart} onChange={(e) => setAnalysisCustomStart(e.target.value)}
+                        className="rounded-lg border px-2.5 py-1.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                      <span className="text-xs" style={{ color: C.inkSoft }}>〜</span>
+                      <input type="date" value={analysisCustomEnd} onChange={(e) => setAnalysisCustomEnd(e.target.value)}
+                        className="rounded-lg border px-2.5 py-1.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                    </div>
+                  )}
+                  {analysisPeriod === "aroundPerformance" && (
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      暦の区切りではなく、直近の本番日を基準にした前後2週間で振り返ります。
+                    </p>
+                  )}
+                  <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                    {t("noteAnalysisPeriodCount").replace("{count}", Object.keys(filteredEntries).length)}
+                  </p>
+                </div>
+                <div className="pt-2">
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderVoice")}</h2>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    {t("groupHeaderVoiceDesc")}
+                  </p>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleVoicePrediction")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteVoicePrediction")}</p>
+                  {!voicePrediction.hasData ? (
+                    <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
+                      {t("notePredictionNoData")}
+                    </p>
+                  ) : (
+                    <>
+                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                        {t("labelBasedOnDate").replace("{date}", formatDateLabel(voicePrediction.date, language))}
+                      </p>
+                      {voicePrediction.flags.length === 0 ? (
+                        <p className="text-xs rounded-xl p-3" style={{ background: "rgba(122,150,109,0.12)", color: C.sage }}>
+                          ✓ {t("notePredictionNoFlags")}
+                        </p>
+                      ) : (
+                        <div className="space-y-2.5">
+                          {voicePrediction.flags.map(({ flagKey, explainKey }) => (
+                            <div key={flagKey} className="rounded-xl p-3" style={{ background: "rgba(184,49,49,0.06)" }}>
+                              <p className="text-xs font-medium" style={{ color: C.curtain }}>⚠ {t(flagKey)}</p>
+                              <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>{t(explainKey)}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">声の予報</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    前夜の行動から、今日の喉の状態（1〜5）を数値で予報します。記録が14日分たまると、あなた自身の傾向（回帰係数）を一般知見とブレンドして、少しずつ個人化していきます。
+                  </p>
+                  {!todayForecast.hasData ? (
+                    <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
+                      前日の記録がまだ無いため、予報を組み立てられません。
+                    </p>
+                  ) : (
+                    <>
+                      <div className="flex items-end justify-between mb-3">
+                        <div>
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="ff-display italic" style={{ fontSize: "2.4rem", color: levelColor(Math.round(todayForecast.yhat)) }}>
+                              {todayForecast.yhat.toFixed(1)}
+                            </span>
+                            <span className="text-sm" style={{ color: C.inkSoft }}>/ 5</span>
+                          </div>
+                          <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
+                            予測区間 {todayForecast.low.toFixed(1)}〜{todayForecast.high.toFixed(1)}
+                          </p>
+                        </div>
+                        {forecastHitRate && (
+                          <div className="text-right">
+                            <div className="ff-mono" style={{ fontSize: "1.2rem", color: C.ink }}>{forecastHitRate.rate}%</div>
+                            <p className="text-xs" style={{ color: C.inkSoft }}>直近{forecastHitRate.n}日の的中率</p>
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        {todayForecast.personalizationPct > 0
+                          ? `記録${todayForecast.trainN}件をもとに、${todayForecast.personalizationPct}%個人化された式で予報しています。`
+                          : `まだ記録${todayForecast.trainN}件（14件で個人化が始まります）。一般知見のみの予報です。`}
+                      </p>
+                      {todayForecast.topFactor && (
+                        <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
+                          {todayForecast.topFactor.label}が{todayForecast.topFactor.contribution >= 0 ? "良い方向に" : "厳しい方向に"}いちばん効いています。
+                        </p>
+                      )}
+                      {forecastChartData.length > 0 && (
+                        <div style={{ width: "100%", height: 180 }}>
+                          <ResponsiveContainer>
+                            <ComposedChart data={forecastChartData} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                              <CartesianGrid stroke={C.line} />
+                              <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                              <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 11, fill: C.inkSoft }} />
+                              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                              <Area dataKey="low" stackId="band" stroke="none" fill="transparent" />
+                              <Area dataKey="bandWidth" stackId="band" stroke="none" fill={C.gold} fillOpacity={0.15} />
+                              <Line type="monotone" dataKey="yhat" name="予報" stroke={C.gold} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                              <Line type="monotone" dataKey="actual" name="実測" stroke={C.curtain} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                            </ComposedChart>
+                          </ResponsiveContainer>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-3 mt-2">
+                        <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                          <span style={{ width: 8, height: 2, background: C.gold, display: "inline-block" }} />予報
+                        </span>
+                        <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                          <span style={{ width: 8, height: 2, background: C.curtain, display: "inline-block" }} />実測
+                        </span>
+                      </div>
+                    </>
+                  )}
+                  <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                    ※ 生理学的な一般知見にもとづく参考値であり、医学的な予測ではありません。
+                  </p>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleTimeOfDayTrend")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteTimeOfDayTrend")}</p>
                   <div className="grid grid-cols-3 gap-2">
-                    {timeOfDayStats.map(({ key, icon: SlotIcon, avgThroat, avgVoice, n }) => {
+                    {timeOfDayStats.map(({ key, icon: SlotIcon, labelKey, avgThroat, avgVoice, n }) => {
                       const best = timeOfDayStats
                         .filter((s) => s.avgThroat != null)
                         .reduce((a, b) => (a && a.avgThroat >= b.avgThroat ? a : b), null);
@@ -1808,25 +8147,24 @@ export default function VocalTracker({ userId, userEmail }) {
                         <div key={key} className="rounded-xl p-3 text-center" style={{ background: C.paper, border: isBest ? `1.5px solid ${C.gold}` : "none" }}>
                           <div className="flex items-center justify-center gap-1 mb-1">
                             <SlotIcon size={13} style={{ color: C.gold }} />
-                            <span className="text-xs font-medium">{key}</span>
+                            <span className="text-xs font-medium">{t(labelKey)}</span>
                           </div>
                           <div className="ff-display italic text-xl" style={{ color: avgThroat != null ? levelColor(avgThroat) : C.inkSoft }}>
                             {levelDynamic(avgThroat)}
                           </div>
                           <div className="text-xs ff-mono mt-0.5" style={{ color: C.inkSoft }}>
-                            {n > 0 ? `声${avgVoice != null ? avgVoice.toFixed(1) : "-"} / 喉${avgThroat != null ? avgThroat.toFixed(1) : "-"}` : "記録なし"}
+                            {n > 0 ? t("timeOfDayStatLine").replace("{voice}", avgVoice != null ? avgVoice.toFixed(1) : "-").replace("{throat}", avgThroat != null ? avgThroat.toFixed(1) : "-") : t("labelNoRecordShort")}
                           </div>
-                          {isBest && <div className="text-xs mt-1" style={{ color: C.gold }}>調子が良い傾向</div>}
+                          {isBest && <div className="text-xs mt-1" style={{ color: C.gold }}>{t("labelGoodTrend")}</div>}
                         </div>
                       );
                     })}
                   </div>
                 </div>
-
                 {voiceMemoEntries.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">声のメモ振り返り</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>「声・喉」の一口メモを書いた日の一覧です（直近10件）。その日の状態とあわせて見返せます。</p>
+                    <h3 className="ff-display italic text-lg mb-1">{t("titleVoiceMemoReview")}</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteVoiceMemoReview")}</p>
                     <div className="space-y-2">
                       {voiceMemoEntries.map((e) => (
                         <div key={e.date} className="rounded-xl p-2.5" style={{ background: C.paper }}>
@@ -1845,44 +8183,386 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   </div>
                 )}
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleSleepChart")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteSleepChart")}</p>
+                  <div style={{ width: "100%", height: 200 }}>
+                    <ResponsiveContainer>
+                      <BarChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis tick={{ fontSize: 11, fill: C.inkSoft }} unit="h" />
+                        <Tooltip
+                          contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }}
+                          formatter={(v, n, p) => [t("chartSleepTooltip").replace("{h}", v).replace("{q}", p.payload.sleepQuality ?? "-"), t("chartNameSleepHours")]}
+                        />
+                        <Bar dataKey="sleepHours" name={t("chartNameSleepHours")} radius={4}>
+                          {timeSeries.map((d, i) => (
+                            <Cell key={i} fill={levelColor(d.sleepQuality)} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleResonanceChart")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteResonanceChart")}</p>
+                  <div style={{ width: "100%", height: 180 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis domain={[0, 10]} tick={{ fontSize: 11, fill: C.inkSoft }} />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <Line type="monotone" dataKey="resonanceScore" name={t("labelResonanceScore")} stroke={C.gold} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titlePitchChart")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("notePitchChart")}</p>
+                  <div style={{ width: "100%", height: 220 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis
+                          domain={["dataMin - 2", "dataMax + 2"]}
+                          tickFormatter={(v) => midiToNoteLabel(v)}
+                          tick={{ fontSize: 10, fill: C.inkSoft }}
+                          width={38}
+                        />
+                        <Tooltip
+                          contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }}
+                          formatter={(value, name, entry) => {
+                            const isWake = entry && entry.dataKey === "wakeMidi";
+                            const isPianissimo = entry && entry.dataKey === "pianissimoMidi";
+                            const label = isWake ? entry.payload.wakeNoteLabel : isPianissimo ? entry.payload.pianissimoNoteLabel : entry.payload.routineNoteLabel;
+                            return [label || "-", name];
+                          }}
+                        />
+                        <Line
+                          type="monotone" dataKey="wakeMidi" name={t("labelWakeNote")} stroke={C.gold} strokeWidth={2}
+                          connectNulls
+                          dot={(dotProps) => {
+                            const { cx, cy, payload, index } = dotProps;
+                            if (payload.wakeMidi == null) return null;
+                            return <circle key={`wake-${index}`} cx={cx} cy={cy} r={5} fill={payload.activityColor} stroke={C.gold} strokeWidth={1.5} />;
+                          }}
+                        />
+                        <Line
+                          type="monotone" dataKey="routineMidi" name={t("labelRoutineNote")} stroke={C.sage} strokeWidth={2}
+                          connectNulls
+                          dot={(dotProps) => {
+                            const { cx, cy, payload, index } = dotProps;
+                            if (payload.routineMidi == null) return null;
+                            return <circle key={`routine-${index}`} cx={cx} cy={cy} r={5} fill={payload.activityColor} stroke={C.sage} strokeWidth={1.5} />;
+                          }}
+                        />
+                        <Line
+                          type="monotone" dataKey="pianissimoMidi" name="pp最高音" stroke={C.curtain} strokeWidth={2} strokeDasharray="4 3"
+                          connectNulls
+                          dot={(dotProps) => {
+                            const { cx, cy, payload, index } = dotProps;
+                            if (payload.pianissimoMidi == null) return null;
+                            return <circle key={`pp-${index}`} cx={cx} cy={cy} r={4} fill={C.card} stroke={C.curtain} strokeWidth={1.5} />;
+                          }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {Object.entries(ACTIVITY_CHART_COLORS).map(([key, color]) => (
+                      <span key={key} className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                        <span style={{ width: 9, height: 9, borderRadius: 999, background: color, display: "inline-block" }} />
+                        {t((ACTIVITY_OPTIONS.find((a) => a.key === key) || {}).labelKey) || key}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("notePitchChartLegend")}</p>
+                  <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
+                    点線（pp最高音）は、平常値と比べてどれくらい変化しているかを「音域到達マップ」でお知らせします。
+                  </p>
+                </div>
 
-                {restMethodStats.length > 0 && (
+                {recordedDaysTotal >= 3 ? (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">休養方法ごとの声・メンタルの傾向</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>「休養」の日に選んだ方法別の平均値です（件数が少ないうちは参考程度に）。</p>
-                    <div className="space-y-2">
-                      {restMethodStats.map((s) => (
-                        <div key={s.method} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
-                          <span className="font-medium">{s.method}</span>
-                          <span className="ff-mono" style={{ color: C.inkSoft }}>
-                            喉{s.avgThroat != null ? s.avgThroat.toFixed(1) : "-"} ・ 声{s.avgVoice != null ? s.avgVoice.toFixed(1) : "-"} ・ 心の余裕{s.avgEase != null ? s.avgEase.toFixed(1) : "-"}（{s.n}件）
-                          </span>
+                    <h3 className="ff-display italic text-lg mb-1">ウォームアップ効率</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      起き抜けからルーティン後にかけて、声がどれだけ「戻った」かを半音数で見ます。長いほど、よく声が起きた日です。
+                    </p>
+                    {warmupLatest ? (
+                      <div className="rounded-xl p-3 mb-3" style={{ background: C.paper }}>
+                        <p className="text-xs" style={{ color: C.ink }}>
+                          今朝は <span className="ff-mono" style={{ fontWeight: 600 }}>{warmupLatest.deltaST >= 0 ? "+" : ""}{warmupLatest.deltaST}半音</span>
+                          {warmupStats && <>（ふだんは{warmupStats.median >= 0 ? "+" : ""}{warmupStats.median.toFixed(1)}半音）</>}
+                        </p>
+                        <p className="text-xs mt-1" style={{ color: C.inkSoft }}>
+                          {warmupLatest.z != null && warmupLatest.z <= -1.5 && "声が起きるのに、いつもより時間がかかる日です。"}
+                          {warmupLatest.z != null && warmupLatest.z >= 1.5 && "いつもよりよく声が起きています。"}
+                          {warmupLatest.z != null && warmupLatest.z > -1.5 && warmupLatest.z < 1.5 && "いつも通りの立ち上がりです。"}
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-xs rounded-xl p-3 mb-3" style={{ background: C.paper, color: C.inkSoft }}>
+                        起き抜けとルーティン後、両方の音名が記録された日がまだありません。
+                      </p>
+                    )}
+                    {warmupWithZ.filter((d) => d.deltaST != null).length > 0 && (() => {
+                      const visible = warmupWithZ.filter((d) => d.deltaST != null).slice(-14);
+                      const allMidis = visible.flatMap((x) => [x.wakeMidi, x.routineMidi]);
+                      const rMin = Math.min(...allMidis), rMax = Math.max(...allMidis);
+                      const span = Math.max(1, rMax - rMin);
+                      const pct = (v) => ((v - rMin) / span) * 100;
+                      return (
+                        <div className="space-y-1.5">
+                          {visible.map((d) => {
+                            const lo = Math.min(d.wakeMidi, d.routineMidi);
+                            const hi = Math.max(d.wakeMidi, d.routineMidi);
+                            const barColor = d.z >= 1.5 ? C.sage : d.z <= -1.5 ? C.curtain : C.gold;
+                            return (
+                              <div key={d.date} className="flex items-center gap-2">
+                                <span className="text-xs ff-mono" style={{ width: 44, color: C.inkSoft }}>{d.dateLabel}</span>
+                                <div style={{ position: "relative", flex: 1, height: 14 }}>
+                                  <div style={{ position: "absolute", top: 6, left: 0, right: 0, height: 2, background: C.line }} />
+                                  <div style={{ position: "absolute", top: 5, left: `${pct(lo)}%`, width: `${pct(hi) - pct(lo)}%`, height: 4, borderRadius: 2, background: barColor }} />
+                                  <div style={{ position: "absolute", top: 2, left: `calc(${pct(d.wakeMidi)}% - 5px)`, width: 10, height: 10, borderRadius: 999, background: C.gold, border: `1.5px solid ${C.card}` }} />
+                                  <div style={{ position: "absolute", top: 2, left: `calc(${pct(d.routineMidi)}% - 5px)`, width: 10, height: 10, borderRadius: 999, background: C.sage, border: `1.5px solid ${C.card}` }} />
+                                </div>
+                                <span className="text-xs ff-mono" style={{ width: 36, textAlign: "right", color: C.ink }}>{d.deltaST >= 0 ? "+" : ""}{d.deltaST}</span>
+                              </div>
+                            );
+                          })}
                         </div>
-                      ))}
+                      );
+                    })()}
+                    <div className="flex items-center gap-3 mt-3">
+                      <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                        <span style={{ width: 8, height: 8, borderRadius: 999, background: C.gold, display: "inline-block" }} />起き抜け
+                      </span>
+                      <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                        <span style={{ width: 8, height: 8, borderRadius: 999, background: C.sage, display: "inline-block" }} />ルーティン後
+                      </span>
                     </div>
+                    {wakeLowNote30dTrend && wakeLowNote30dTrend.declining && (
+                      <p className="text-xs mt-3 rounded-xl p-2.5" style={{ background: "rgba(184,49,49,0.06)", color: C.curtain }}>
+                        起き抜けの音の高さが、直近でじわじわ下がってきています。疲労が蓄積しているサインかもしれません。
+                      </p>
+                    )}
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ 平常値は中央値をもとにした参考値です。記録が増えるほど精度が上がります。
+                    </p>
+                  </div>
+                ) : (
+                  <LockedCard
+                    title="ウォームアップ効率"
+                    teaser="起き抜けとルーティン後の声の差を、半音数で毎朝チェックできます"
+                    current={recordedDaysTotal}
+                    required={3}
+                  />
+                )}
+
+                {recordedDaysTotal >= 3 ? (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">音域到達マップ</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      記録した地声の音を鍵盤の上に置いています。下段のグレーが自己ベスト、色つきが選んだ期間の到達範囲です。
+                    </p>
+                    {personalBestRange && rangeThisPeriod ? (
+                      <>
+                        <PianoKeyboard
+                          lowMidi={Math.min(personalBestRange.low, rangeThisPeriod.low, latestPianissimoMidi ?? Infinity) - 1}
+                          highMidi={Math.max(personalBestRange.high, rangeThisPeriod.high, latestPianissimoMidi ?? -Infinity) + 1}
+                          bestLow={personalBestRange.low}
+                          bestHigh={personalBestRange.high}
+                          currentLow={rangeThisPeriod.low}
+                          currentHigh={rangeThisPeriod.high}
+                          newRecord={isNewRecord}
+                          pianissimoMidi={latestPianissimoMidi}
+                        />
+                        <div className="flex flex-wrap items-center gap-3 mt-3">
+                          <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                            <span style={{ width: 14, height: 4, borderRadius: 2, background: C.line, display: "inline-block" }} />
+                            自己ベスト（{midiToNoteLabel(personalBestRange.low)}〜{midiToNoteLabel(personalBestRange.high)}）
+                          </span>
+                          <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                            <span style={{ width: 14, height: 4, borderRadius: 2, background: isNewRecord ? C.gold : C.sage, display: "inline-block" }} />
+                            選んだ期間（{midiToNoteLabel(rangeThisPeriod.low)}〜{midiToNoteLabel(rangeThisPeriod.high)}）
+                          </span>
+                          {latestPianissimoMidi != null && (
+                            <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
+                              <span style={{ width: 0, height: 0, borderLeft: "5px solid transparent", borderRight: "5px solid transparent", borderTop: `7px solid ${C.curtain}`, display: "inline-block" }} />
+                              直近の弱声の最高音（{midiToNoteLabel(latestPianissimoMidi)}）
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs mt-3" style={{ color: C.ink }}>
+                          {isNewRecord
+                            ? "自己ベストを更新する記録が出ています。"
+                            : rangeFullnessPct != null
+                              ? <>選んだ期間の音域は、自己ベストの<span className="ff-mono" style={{ fontWeight: 600 }}> {rangeFullnessPct}%</span>まで戻ってきています。</>
+                              : null}
+                        </p>
+                        {pianissimoTrend && pianissimoTrend.isLow && (
+                          <p className="text-xs mt-2 rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                            弱声の最高音が、あなたの平常値（直近28日の中央値 {midiToNoteLabel(pianissimoTrend.median)}）より低い日が{pianissimoTrend.streak}日続いています。
+                          </p>
+                        )}
+                      </>
+                    ) : (
+                      <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
+                        自己ベストを出すには、あと少し記録が必要です。
+                      </p>
+                    )}
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ 自己ベストは、単発の記録に振り回されないよう上位／下位5%点を採用しています。
+                    </p>
+                  </div>
+                ) : (
+                  <LockedCard
+                    title="音域到達マップ"
+                    teaser="記録した声の高さを鍵盤の上で確認できます"
+                    current={recordedDaysTotal}
+                    required={3}
+                  />
+                )}
+
+                {recordedDaysTotal >= 3 ? (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">症状カレンダーと連鎖</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      直近30日分の症状を、日付×症状の格子で振り返れます。
+                    </p>
+                    {symptomGridDates.length > 0 ? (
+                      <>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                          {symptomGridDates[0].slice(5)} 〜 {symptomGridDates[symptomGridDates.length - 1].slice(5)}
+                        </p>
+                        <div style={{ overflowX: "auto" }}>
+                          <div style={{ display: "inline-block", minWidth: "100%" }}>
+                            {SYMPTOM_OPTIONS.map((symptom) => (
+                              <div key={symptom} style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 3 }}>
+                                <div className="text-xs" style={{ width: 80, flexShrink: 0, color: C.inkSoft }}>{t(SYMPTOM_KEYS[symptom])}</div>
+                                <div style={{ display: "flex", gap: 2 }}>
+                                  {symptomGridDates.map((d) => {
+                                    const has = (filteredEntries[d].throatSymptoms || []).includes(symptom);
+                                    return (
+                                      <div
+                                        key={d}
+                                        onClick={() => { setSelectedDate(d); setActiveTab("today"); }}
+                                        title={d}
+                                        style={{ width: 12, height: 12, borderRadius: 3, background: has ? C.curtain : C.paper, cursor: "pointer", flexShrink: 0 }}
+                                      />
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>まだ症状の記録がありません。</p>
+                    )}
+                    {Object.keys(symptomStreaks).length > 0 && (
+                      <div className="mt-3 space-y-1.5">
+                        {Object.entries(symptomStreaks).map(([symptom, streak]) => (
+                          <p key={symptom} className="text-xs rounded-xl p-2.5" style={{ background: streak >= 7 ? "rgba(184,49,49,0.08)" : streak >= 3 ? "rgba(212,160,23,0.1)" : C.paper, color: C.ink }}>
+                            <strong>{t(SYMPTOM_KEYS[symptom])}が{streak}日続いています。</strong>
+                            {streak >= 7 && " ふだんより長い状態です。耳鼻咽喉科への相談も選択肢の一つです。"}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                    {symptomChainStats.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs font-medium mb-1.5" style={{ color: C.ink }}>症状の連鎖</p>
+                        <div className="space-y-1.5">
+                          {symptomChainStats.map((c, i) => (
+                            <p key={i} className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                              {t(SYMPTOM_KEYS[c.a])}の翌日に{t(SYMPTOM_KEYS[c.b])}が出る確率は<strong> {Math.round(c.pBGivenA * 100)}%</strong>です（ふだんは{Math.round(c.pB * 100)}%、{c.countA}件中）。
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {symptomJaccardPairs.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs font-medium mb-1.5" style={{ color: C.ink }}>よく一緒に出る症状</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {symptomJaccardPairs.map((p, i) => (
+                            <span key={i} className="px-2 py-0.5 rounded-full text-xs" style={{ background: C.paper, color: C.ink }}>
+                              {t(SYMPTOM_KEYS[p.a])} + {t(SYMPTOM_KEYS[p.b])}（{p.count}日）
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向であり、医学的な診断ではありません。症状が続く場合は耳鼻咽喉科にご相談ください。
+                    </p>
+                  </div>
+                ) : (
+                  <LockedCard
+                    title="症状カレンダーと連鎖"
+                    teaser="8種類の症状を、日付×症状の格子で振り返れます"
+                    current={recordedDaysTotal}
+                    required={3}
+                  />
+                )}
+
+                {hasRefluxCondition && (refluxDinnerGapBins.some((b) => b.n >= 5) || refluxDinnerTagEffects.length > 0) && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">逆流と喉の違和感の傾向</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      既往症に登録されている方にだけ表示しています。夕食の内容・時刻と、翌朝の喉の違和感の記録上の関係です。
+                    </p>
+                    {refluxDinnerGapBins.some((b) => b.n >= 5) && (
+                      <div className="mb-3">
+                        <p className="text-xs font-medium mb-1.5">夕食から就寝までの間隔別・翌朝の違和感の出現率</p>
+                        <div className="space-y-1.5">
+                          {refluxDinnerGapBins.filter((b) => b.n >= 5).map((b) => (
+                            <div key={b.label} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                              <span>{b.label}</span>
+                              <span className="ff-mono" style={{ color: C.inkSoft }}>{Math.round(b.rate)}%（{b.n}日）</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {refluxDinnerTagEffects.length > 0 && (
+                      <div>
+                        <p className="text-xs font-medium mb-1.5">夕食タグ別の効果</p>
+                        <div className="space-y-1.5">
+                          {refluxDinnerTagEffects.map((r) => (
+                            <div key={r.tag} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                              <span>{r.tag}</span>
+                              <span className="ff-mono" style={{ color: C.inkSoft }}>
+                                {r.stars <= 1 ? "まだ判断できません" : `g=${r.g.toFixed(2)}（${"★".repeat(r.stars)}${"☆".repeat(4 - r.stars)}）`}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向であり、因果関係を断定するものではありません。診断・治療のご判断は主治医にご相談ください。
+                    </p>
                   </div>
                 )}
 
-                {locationStats.length > 0 && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">滞在地ごとの声・メンタルの傾向</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>2件以上記録のある滞在地のみ表示しています。</p>
-                    <div className="space-y-2">
-                      {locationStats.map((s) => (
-                        <div key={s.location} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
-                          <span className="font-medium">{s.location}</span>
-                          <span className="ff-mono" style={{ color: C.inkSoft }}>
-                            喉{s.avgThroat != null ? s.avgThroat.toFixed(1) : "-"} ・ 声{s.avgVoice != null ? s.avgVoice.toFixed(1) : "-"} ・ 心の余裕{s.avgEase != null ? s.avgEase.toFixed(1) : "-"}（{s.n}件）
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                <div className="pt-2">
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderBody")}</h2>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    {t("groupHeaderBodyDesc")}
+                  </p>
+                </div>
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">体重の推移</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>直近30日分の記録です。</p>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleWeightTrend")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteLast30Days")}</p>
                   <div style={{ width: "100%", height: 200 }}>
                     <ResponsiveContainer>
                       <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
@@ -1890,11 +8570,45 @@ export default function VocalTracker({ userId, userEmail }) {
                         <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
                         <YAxis domain={["auto", "auto"]} tick={{ fontSize: 11, fill: C.inkSoft }} unit="kg" />
                         <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <Line type="monotone" dataKey="weightKg" name="体重" stroke={C.curtain} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                        <Line type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={C.curtain} strokeWidth={2} dot={{ r: 3 }} connectNulls />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
                 </div>
+
+                {(energyAvailabilityAnalysis.method === "ea"
+                  ? energyAvailabilityAnalysis.validEaCount >= 14
+                  : energyAvailabilityAnalysis.signalCount > 0) && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">エネルギー可用性（月次まとめ）</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      体重や体型ではなく、「消費に対して摂取が足りているか」を見る指標です。日々の変動は水分でブレるため、ここでは長期の傾向だけをお伝えします。
+                    </p>
+                    {energyAvailabilityAnalysis.method === "ea" ? (
+                      <>
+                        <p className="text-sm rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                          {energyAvailabilityAnalysis.isLow
+                            ? `摂取エネルギーが、直近3週間ほど推定の必要量を下回る状態が続いています（1kgの除脂肪体重あたり約${energyAvailabilityAnalysis.recentAvg.toFixed(0)}kcal/日）。支える力に影響が出ることがあります。気になる場合は管理栄養士や医師にご相談ください。`
+                            : `直近のエネルギー可用性は、1kgの除脂肪体重あたり約${energyAvailabilityAnalysis.recentAvg.toFixed(0)}kcal/日です（目安45kcal前後）。`}
+                        </p>
+                        {energyAvailabilityAnalysis.isEstimated && (
+                          <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                            ※ 体脂肪率は身長・年齢・性別から推定した値を使っています（推定誤差は標準で約4%）。体組成計をお持ちの場合は「身体データ」欄への入力で精度が上がります。
+                          </p>
+                        )}
+                      </>
+                    ) : (
+                      <p className="text-sm rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                        {energyAvailabilityAnalysis.isLow
+                          ? "体重の減少・症状の頻度・休養後の回復・睡眠と疲労感のバランスのうち、複数の項目で気になる傾向が同時に出ています。気になる場合は管理栄養士や医師にご相談ください。"
+                          : "現時点では、複数の項目が同時に気になる傾向を示してはいません。"}
+                      </p>
+                    )}
+                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向であり、医学的な診断ではありません。
+                    </p>
+                  </div>
+                )}
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">タンパク質摂取量（体重1kgあたり）の推移</h3>
@@ -1907,62 +8621,597 @@ export default function VocalTracker({ userId, userEmail }) {
                         <YAxis domain={["auto", "auto"]} tick={{ fontSize: 11, fill: C.inkSoft }} unit="g/kg" />
                         <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
                         <ReferenceLine y={Number(profile.protein_coefficient) || 1.6} stroke={C.gold} strokeDasharray="4 4" />
-                        <Line type="monotone" dataKey="proteinPerKg" name="実際の係数" stroke={C.sage} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                        <Line type="monotone" dataKey="proteinPerKg" name={t("chartNameActualCoefficient")} stroke={C.sage} strokeWidth={2} dot={{ r: 3 }} connectNulls />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
                 </div>
-
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">睡眠時間と質</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>棒の高さが時間、色の濃さが質の高さを表します。</p>
-                  <div style={{ width: "100%", height: 200 }}>
-                    <ResponsiveContainer>
-                      <BarChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                        <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis tick={{ fontSize: 11, fill: C.inkSoft }} unit="h" />
-                        <Tooltip
-                          contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }}
-                          formatter={(v, n, p) => [`${v}時間（質${p.payload.sleepQuality ?? "-"}）`, "睡眠"]}
-                        />
-                        <Bar dataKey="sleepHours" name="睡眠時間" radius={4}>
-                          {timeSeries.map((d, i) => (
-                            <Cell key={i} fill={levelColor(d.sleepQuality)} />
-                          ))}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">栄養摂取と体重の変化</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>上：摂取カロリー（棒）と目標カロリー（破線）。下：体重の推移。</p>
-                  <div style={{ width: "100%", height: 170 }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleNutritionWeightChart")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteNutritionWeightChart")}</p>
+                  <div style={{ width: "100%", height: 150 }}>
                     <ResponsiveContainer>
                       <ComposedChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
                         <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
                         <YAxis tick={{ fontSize: 10, fill: C.inkSoft }} unit="kcal" />
                         <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <Bar dataKey="calorieActual" name="摂取カロリー" fill={C.gold} radius={3} />
-                        <Line type="monotone" dataKey="calorieTarget" name="目標カロリー" stroke={C.curtain} strokeDasharray="4 4" dot={false} connectNulls />
+                        <Bar dataKey="calorieActual" name={t("chartNameCalorieActual")} fill={C.gold} radius={3} />
+                        <Line type="monotone" dataKey="calorieTarget" name={t("chartNameCalorieTarget")} stroke={C.curtain} strokeDasharray="4 4" dot={false} connectNulls />
                       </ComposedChart>
                     </ResponsiveContainer>
                   </div>
-                  <div style={{ width: "100%", height: 130, marginTop: 8 }}>
+                  <div style={{ width: "100%", height: 110, marginTop: 8 }}>
                     <ResponsiveContainer>
                       <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
                         <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
                         <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="kg" />
                         <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <Line type="monotone" dataKey="weightKg" name="体重" stroke={C.sage} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                        <Line type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={C.sage} strokeWidth={2} dot={{ r: 2 }} connectNulls />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
+                  <div style={{ width: "100%", height: 110, marginTop: 8 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="g/kg" />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <ReferenceLine y={Number(profile.protein_coefficient) || 1.6} stroke={C.gold} strokeDasharray="4 4" />
+                        <Line type="monotone" dataKey="proteinPerKg" name={t("chartNameActualCoefficient")} stroke={C.curtain} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                    3つの指標を、それぞれ実際のスケールのまま、x軸だけ揃えて上下に並べています。1枚のグラフに複数の軸を重ねると、交点の位置が軸の取り方次第で変わってしまうため、この形にしています。
+                  </p>
                 </div>
+                <div className="pt-2">
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("sectionMental")}</h2>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    {t("groupHeaderMentalDesc")}
+                  </p>
+                </div>
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleMentalTrend")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteMentalTrend")}</p>
+                  <div style={{ width: "100%", height: 200 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={easeTimeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 11, fill: C.inkSoft }} />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <Line type="monotone" dataKey="ease" name={t("labelMentalEase")} stroke={C.rust} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                  {lowEaseEntries.length > 0 && (
+                    <div className="mt-4 pt-3 border-t" style={{ borderColor: C.line }}>
+                      <p className="text-xs font-medium mb-2">{t("labelLowEaseReview")}</p>
+                      <div>
+                        {lowEaseEntries.slice(0, 10).map((e) => (
+                          <div key={e.date} className="text-xs py-2 border-t first:border-t-0" style={{ borderColor: C.line }}>
+                            <div className="flex items-center justify-between">
+                              <span className="ff-mono cursor-pointer" style={{ color: C.inkSoft }} onClick={() => { setSelectedDate(e.date); setActiveTab("today"); }}>
+                                {formatDateLabel(e.date, language)}
+                              </span>
+                              <span className="ff-mono" style={{ color: C.rust }}>{t("labelMentalEase")} {e.ease}</span>
+                            </div>
+                            {(e.mentalTags || []).length > 0 && (
+                              <div className="flex flex-wrap gap-1 mt-1.5">
+                                {e.mentalTags.map((tag) => (
+                                  <span key={tag} className="px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.ink, fontSize: 11 }}>
+                                    {t(MENTAL_TAG_KEYS[tag]) || tag}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                            {e.mentalReason && <p className="mt-1.5" style={{ color: C.ink }}>{e.mentalReason}</p>}
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-xs mt-3" style={{ color: C.inkSoft }}>{t("noteLowEaseReviewCare")}</p>
+                    </div>
+                  )}
+                </div>
+                {(mentalTagStats.low.length > 0 || mentalTagStats.high.length > 0) && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">{t("titleMentalTagStats")}</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      {t("noteMentalTagStats")}
+                    </p>
+                    <div className="space-y-3">
+                      {mentalTagStats.low.length > 0 && (
+                        <div>
+                          <p className="text-xs font-medium mb-1.5" style={{ color: C.rust }}>
+                            {t("labelLowEaseTagsHeader").replace("{n}", mentalTagStats.lowTotal)}
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {mentalTagStats.low.map(({ tag, count }) => (
+                              <span key={tag} className="px-2 py-0.5 rounded-full text-xs" style={{ background: C.paper, color: C.ink }}>
+                                {t(MENTAL_TAG_KEYS[tag]) || tag}（{count}）
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {mentalTagStats.high.length > 0 && (
+                        <div>
+                          <p className="text-xs font-medium mb-1.5" style={{ color: C.inkSoft }}>
+                            {t("labelHighEaseTagsHeader").replace("{n}", mentalTagStats.highTotal)}
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {mentalTagStats.high.map(({ tag, count }) => (
+                              <span key={tag} className="px-2 py-0.5 rounded-full text-xs" style={{ background: C.paper, color: C.ink }}>
+                                {t(MENTAL_TAG_KEYS[tag]) || tag}（{count}）
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+                <div className="pt-2">
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderOverall")}</h2>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    {t("groupHeaderOverallDesc")}
+                  </p>
+                </div>
+                {(restMethodStats.confident.length > 0 || restMethodStats.lowN.length > 0) && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">{t("titleRestMethodTrend")}</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteRestMethodTrend")}</p>
+                    {restMethodStats.confident.length > 0 && (
+                      <div className="space-y-2">
+                        {restMethodStats.confident.map((s) => (
+                          <div key={s.method} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                            <span className="font-medium">{REST_METHOD_KEYS[s.method] ? t(REST_METHOD_KEYS[s.method]) : s.method}</span>
+                            <span className="ff-mono" style={{ color: C.inkSoft }}>
+                              {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {restMethodStats.lowN.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>まだ3件未満（記録数のみ表示。貯まると平均が出ます）</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {restMethodStats.lowN.map((s) => (
+                            <span key={s.method} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>
+                              {REST_METHOD_KEYS[s.method] ? t(REST_METHOD_KEYS[s.method]) : s.method}（{s.n}）
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {(locationStats.confident.length > 0 || locationStats.lowN.length > 0) && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">{t("titleLocationTrend")}</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteLocationTrend")}</p>
+                    {locationStats.confident.length > 0 && (
+                      <div className="space-y-2">
+                        {locationStats.confident.map((s) => (
+                          <div key={s.location} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                            <span className="font-medium">{s.location}</span>
+                            <span className="ff-mono" style={{ color: C.inkSoft }}>
+                              {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {locationStats.lowN.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>まだ3件未満（記録数のみ表示。貯まると平均が出ます）</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {locationStats.lowN.map((s) => (
+                            <span key={s.location} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>
+                              {s.location}（{s.n}）
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {profile.track_cycle && hasCycleData && cycleGroupStats.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">周期と声・メンタルの傾向</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      記録した周期開始日をもとに、周期を4つに区切って声・メンタルの平均を比べています。
+                    </p>
+                    <div className="space-y-2">
+                      {cycleGroupStats.map((s) => (
+                        <div key={s.label} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                          <span className="font-medium">{s.label}</span>
+                          <span className="ff-mono" style={{ color: C.inkSoft }}>
+                            {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向であり、医学的な診断ではありません。件数が少ないうちは参考程度にご覧ください。
+                    </p>
+                  </div>
+                )}
+                {(roleLoadStats.confident.length > 0 || roleLoadStats.lowN.length > 0) && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">あなたにとって重い役</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      翌日の落ち込みが大きい順に並んでいます（その人の平常値との偏差）。計算上の負荷は横に添えているだけで、順位には使っていません。
+                    </p>
+                    {roleLoadStats.confident.length > 0 && (
+                      <div className="space-y-3">
+                        {roleLoadStats.confident.slice(0, 8).map((r, i) => {
+                          const dropPct = Math.max(0, Math.min(100, (-r.avgNextDayDeviation / 2) * 100));
+                          const isHeavierThanExpected = r.rankGap >= 2;
+                          const isLighterThanExpected = r.rankGap <= -2;
+                          return (
+                            <div key={r.name} className="rounded-xl p-2.5" style={{ background: C.paper }}>
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium">{i + 1}. {r.name}</span>
+                                <span className="ff-mono text-xs" style={{ color: r.avgNextDayDeviation < 0 ? C.curtain : C.sage }}>
+                                  翌日 {r.avgNextDayDeviation >= 0 ? "+" : ""}{r.avgNextDayDeviation.toFixed(1)}
+                                </span>
+                              </div>
+                              <div className="h-1.5 rounded-full overflow-hidden mt-1.5" style={{ background: C.card }}>
+                                <div className="h-full rounded-full" style={{ width: `${dropPct}%`, background: C.curtain }} />
+                              </div>
+                              <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
+                                計算上の負荷 {r.avgLoad.toFixed(0)}・{r.count}回
+                                {r.record.confidence !== "entered" && "（推定値）"}
+                              </p>
+                              {isHeavierThanExpected && (
+                                <p className="text-xs mt-1" style={{ color: C.curtain }}>⚠ 計算より重い（音域以外の要因があるかもしれません）</p>
+                              )}
+                              {isLighterThanExpected && (
+                                <p className="text-xs mt-1" style={{ color: C.sage }}>この役はあなたに合っているのかもしれません</p>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                    {roleLoadStats.lowN.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>まだ3回未満（記録数のみ表示）</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {roleLoadStats.lowN.map((r) => (
+                            <span key={r.name} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>
+                              {r.name}（{r.count}回、あと{Math.max(0, 3 - r.count)}回でランキングに入ります）
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向です。「この役は喉を痛める」といった断定ではなく、「翌日の落ち込みが大きい」という観測にとどめています。
+                    </p>
+                  </div>
+                )}
+                {effectiveHabitRanking.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">効いた習慣ランキング</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      前日の行動があった日となかった日で、翌日の声のスコア（喉・声の平均）を比べています。件数が少ない項目は★が付かず「まだ判断できません」と表示されます。
+                    </p>
+                    <div className="space-y-3">
+                      {effectiveHabitRanking.slice(0, 8).map((r) => {
+                        const inconclusive = r.stars <= 1;
+                        const direction = r.g >= 0 ? "良く" : "悪く";
+                        return (
+                          <div key={r.key} className="rounded-xl p-3" style={{ background: C.paper }}>
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-sm font-medium">{r.label}</span>
+                              <span className="text-xs flex-shrink-0" style={{ color: C.gold }}>
+                                {"★".repeat(r.stars)}{"☆".repeat(4 - r.stars)}
+                              </span>
+                            </div>
+                            <div style={{ position: "relative", height: 22, marginTop: 8, marginBottom: 4 }}>
+                              {(() => {
+                                const scaleMin = -2, scaleMax = 2;
+                                const pct = (v) => Math.max(0, Math.min(100, ((v - scaleMin) / (scaleMax - scaleMin)) * 100));
+                                return (
+                                  <>
+                                    <div style={{ position: "absolute", left: 0, right: 0, top: 10, height: 1, background: C.line }} />
+                                    <div style={{ position: "absolute", left: `${pct(0)}%`, top: 2, width: 1, height: 18, background: C.line }} />
+                                    <div style={{ position: "absolute", left: `${pct(r.ciLow)}%`, width: `${pct(r.ciHigh) - pct(r.ciLow)}%`, top: 9, height: 3, borderRadius: 2, background: inconclusive ? C.line : (r.g >= 0 ? C.sage : C.curtain) }} />
+                                    <div style={{ position: "absolute", left: `calc(${pct(r.g)}% - 5px)`, top: 5, width: 10, height: 10, borderRadius: 999, background: inconclusive ? C.inkSoft : (r.g >= 0 ? C.sage : C.curtain) }} />
+                                  </>
+                                );
+                              })()}
+                            </div>
+                            <p className="text-xs" style={{ color: C.inkSoft }}>
+                              {inconclusive
+                                ? `まだ判断できません（あった日${r.n1}件・なかった日${r.n0}件。記録が増えると結論が出ます）`
+                                : `この行動があった日（${r.n1}件）は、翌日の声が平均で${direction}記録されています（効果量 g=${r.g.toFixed(2)}）。`}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※「◯◯すると声が良くなる」という保証ではなく、「◯◯した日の翌日は、平均して声が良く記録されている」という記録上の傾向です。
+                    </p>
+                  </div>
+                )}
+                {lagCorrelationMap.some((c) => c.n >= 14) && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">声の時差マップ</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      生活の変化は、当日より数日後に声へ出ることがあります。行が生活の変数、列が「何日後に効くか」。色が濃いほど関係が強く、枠のついたマスは統計的にも裏付けのある関係です。
+                    </p>
+                    {topLagFinding && (
+                      <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
+                        見つかりました。<strong>{topLagFinding.variableLabel}の「{topLagFinding.lag}日後」</strong>に、声への関係がいちばん強く出ています（ρ = {topLagFinding.rho.toFixed(2)}）。
+                      </p>
+                    )}
+                    <div style={{ overflowX: "auto" }}>
+                      <table style={{ borderCollapse: "collapse", width: "100%" }}>
+                        <thead>
+                          <tr>
+                            <th style={{ textAlign: "left", fontSize: 11, color: C.inkSoft, fontWeight: 500, padding: "2px 6px" }}></th>
+                            {[0, 1, 2, 3].map((lag) => (
+                              <th key={lag} style={{ fontSize: 11, color: C.inkSoft, fontWeight: 500, padding: "2px 6px" }}>{lag}日後</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {LAG_VARIABLES.map((v) => (
+                            <tr key={v.key}>
+                              <td style={{ fontSize: 11, color: C.ink, padding: "2px 6px", whiteSpace: "nowrap" }}>{v.label}</td>
+                              {[0, 1, 2, 3].map((lag) => {
+                                const cell = lagCorrelationMap.find((c) => c.variableKey === v.key && c.lag === lag);
+                                if (!cell || cell.n < 14) {
+                                  return (
+                                    <td key={lag} style={{ padding: 3 }}>
+                                      <div title={`記録${cell ? cell.n : 0}日分（14日で解放）`} style={{ width: 40, height: 28, borderRadius: 6, background: C.line, opacity: 0.35 }} />
+                                    </td>
+                                  );
+                                }
+                                const rho = cell.rho || 0;
+                                const intensity = Math.min(1, Math.abs(rho));
+                                const color = rho >= 0
+                                  ? `rgba(75,122,90,${0.15 + intensity * 0.7})`
+                                  : `rgba(184,49,49,${0.15 + intensity * 0.7})`;
+                                return (
+                                  <td key={lag} style={{ padding: 3 }}>
+                                    <div
+                                      title={`ρ=${rho.toFixed(2)}（n=${cell.n}）`}
+                                      style={{
+                                        width: 40, height: 28, borderRadius: 6, background: color,
+                                        border: cell.significant ? `2px solid ${C.ink}` : "2px solid transparent",
+                                        display: "flex", alignItems: "center", justifyContent: "center",
+                                        fontSize: 10, color: C.ink, fontFamily: "monospace"
+                                      }}
+                                    >
+                                      {rho.toFixed(1)}
+                                    </div>
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ 灰色のマスはまだ記録が14日分たまっていません。枠のついた濃い色のマスだけが、複数の比較を行った上でも統計的に裏付けのある関係です（それ以外は偶然の可能性があります）。
+                    </p>
+                  </div>
+                )}
+                {recordedDaysTotal >= 28 ? (
+                  acwrToday && (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <h3 className="ff-display italic text-lg mb-1">発声負荷バランス（ACWR）</h3>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        直近1週間の発声負荷が、この1か月の平均に対して何倍かを見ます。歌い込みすぎと、積み足りない状態の両方を1つの数字で管理できます。
+                      </p>
+                      <div className="flex items-end gap-4 mb-3">
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="ff-display italic" style={{ fontSize: "2.6rem", color: acwrToday.zone ? acwrToday.zone.color : C.ink }}>
+                            {acwrToday.value}
+                          </span>
+                          {acwrToday.zone && (
+                            <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: C.paper, color: acwrToday.zone.color }}>
+                              {acwrToday.zone.label}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      {acwrToday.restProjection != null && (
+                        <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
+                          明日を休養にすると <span className="ff-mono font-medium">{acwrToday.restProjection}</span>
+                          {acwrToday.restZone && <>（{acwrToday.restZone.label}）</>}に戻ります。
+                        </p>
+                      )}
+                      {acwrChartData.length > 0 && (
+                        <div style={{ width: "100%", height: 180 }}>
+                          <ResponsiveContainer>
+                            <LineChart data={acwrChartData} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                              <CartesianGrid stroke={C.line} />
+                              <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                              <YAxis domain={[0, "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} />
+                              <ReferenceArea y1={0} y2={0.8} fill={C.gold} fillOpacity={0.08} />
+                              <ReferenceArea y1={0.8} y2={1.3} fill={C.sage} fillOpacity={0.1} />
+                              <ReferenceArea y1={1.3} y2={1.5} fill={C.gold} fillOpacity={0.12} />
+                              <ReferenceArea y1={1.5} y2={3} fill={C.curtain} fillOpacity={0.08} />
+                              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                              <Line type="monotone" dataKey="acwr" stroke={C.ink} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                            </LineChart>
+                          </ResponsiveContainer>
+                        </div>
+                      )}
+                      <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                        帯は目安のゾーン（下から積み足りない・ちょうどいい・増やしすぎ注意・急増）です。1.5を超える急な増やし方は、喉のトラブルと結びつくことが知られています。
+                      </p>
+                    </div>
+                  )
+                ) : (
+                  <LockedCard
+                    title="発声負荷バランス（ACWR）"
+                    teaser="歌い込みすぎ・積み足りないを1つの数字で管理できます"
+                    current={recordedDaysTotal}
+                    required={28}
+                  />
+                )}
+                {recordedDaysTotal >= 7 ? (
+                  comfortZone1D && (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <h3 className="ff-display italic text-lg mb-1">環境の快適帯</h3>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        相対湿度ではなく絶対湿度（空気中の実際の水分量）で見ています。気温が変わると、同じ％でも実際の水分量は変わるためです。
+                      </p>
+                      {comfortZone1D.range ? (
+                        <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
+                          あなたの喉の快適帯は <strong>絶対湿度 {comfortZone1D.range.low}〜{comfortZone1D.range.high} g/m³</strong>。
+                          {todayEnvPosition && (
+                            <>
+                              　今日{todayEnvPosition.location ? `の${todayEnvPosition.location}` : ""}
+                              （{todayEnvPosition.temp}℃/{todayEnvPosition.rh}%）は AH {todayEnvPosition.ah}
+                              で、{todayEnvPosition.ah >= comfortZone1D.range.low && todayEnvPosition.ah <= comfortZone1D.range.high ? "ちょうど快適帯の中です。" : "快適帯から外れています。"}
+                            </>
+                          )}
+                        </p>
+                      ) : (
+                        <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.inkSoft }}>
+                          まだ明確な快適帯は見えていません。気温・湿度・喉の記録が増えると精度が上がります。
+                        </p>
+                      )}
+                      <div style={{ width: "100%", height: 140 }}>
+                        <ResponsiveContainer>
+                          <BarChart data={comfortZone1D.binStats.map((s) => ({ bin: `${s.bin}`, avg: roundTo1(s.avg), n: s.n }))} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                            <CartesianGrid stroke={C.line} />
+                            <XAxis dataKey="bin" tick={{ fontSize: 9, fill: C.inkSoft }} label={{ value: "絶対湿度 g/m³", position: "insideBottom", offset: -2, fontSize: 10, fill: C.inkSoft }} />
+                            <YAxis domain={[1, 5]} tick={{ fontSize: 10, fill: C.inkSoft }} />
+                            <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} formatter={(v, n, entry) => [`${v}（${entry.payload.n}件）`, "喉スコア平均"]} />
+                            <Bar dataKey="avg" radius={3}>
+                              {comfortZone1D.binStats.map((s, i) => (
+                                <Cell key={i} fill={s.n >= 2 ? C.sage : C.line} opacity={s.n >= 2 ? 0.8 : 0.4} />
+                              ))}
+                            </Bar>
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                      {comfortZone2D && (
+                        <div className="mt-4">
+                          <p className="text-xs font-medium mb-2">気温×湿度の2次元マップ</p>
+                          <div style={{ overflowX: "auto" }}>
+                            <table style={{ borderCollapse: "collapse" }}>
+                              <thead>
+                                <tr>
+                                  <th></th>
+                                  {comfortZone2D.rhBins.map((rh) => (
+                                    <th key={rh} style={{ fontSize: 9, color: C.inkSoft, padding: "2px 4px" }}>{rh}%</th>
+                                  ))}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {comfortZone2D.tBins.map((t) => (
+                                  <tr key={t}>
+                                    <td style={{ fontSize: 9, color: C.inkSoft, padding: "2px 4px", whiteSpace: "nowrap" }}>{t}℃</td>
+                                    {comfortZone2D.rhBins.map((rh) => {
+                                      const cell = comfortZone2D.cells.find((c) => c.tBin === t && c.rhBin === rh);
+                                      if (!cell || cell.n < 2) {
+                                        return <td key={rh} style={{ padding: 2 }}><div style={{ width: 30, height: 24, borderRadius: 4, background: C.line, opacity: 0.3 }} /></td>;
+                                      }
+                                      const intensity = Math.max(0, Math.min(1, (cell.avg - 1) / 4));
+                                      return (
+                                        <td key={rh} style={{ padding: 2 }}>
+                                          <div title={`平均${cell.avg.toFixed(1)}（${cell.n}件）`} style={{ width: 30, height: 24, borderRadius: 4, background: `rgba(75,122,90,${0.15 + intensity * 0.7})` }} />
+                                        </td>
+                                      );
+                                    })}
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )}
+                      <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                        ※ 記録数が少ないマスは灰色にしています。あくまで記録上の傾向です。
+                      </p>
+                    </div>
+                  )
+                ) : (
+                  <LockedCard
+                    title="環境の快適帯"
+                    teaser="自分の喉が快適な気温・湿度のゾーンが分かります"
+                    current={recordedDaysTotal}
+                    required={7}
+                  />
+                )}
+                {peakingCurve ? (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">本番ピーキング曲線</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      過去{peakingCurve.count}回の本番日を「当日＝0」にそろえて重ね合わせた平均です。谷の位置が、あなた固有の仕上がり方の型です。
+                    </p>
+                    {peakingCurve.lowestDip && (
+                      <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
+                        あなたは<strong>本番の{Math.abs(peakingCurve.lowestDip.tau)}日前にいちど沈む</strong>型です（過去{peakingCurve.count}回の平均）。
+                      </p>
+                    )}
+                    <div style={{ width: "100%", height: 200 }}>
+                      <ResponsiveContainer>
+                        <ComposedChart data={peakingCurve.curve.map((c) => ({
+                          tau: c.tau === 0 ? "当日" : c.tau > 0 ? `+${c.tau}` : `${c.tau}`,
+                          mean: c.mean,
+                          low: c.mean != null && c.sd != null ? roundTo1(c.mean - c.sd) : null,
+                          bandWidth: c.mean != null && c.sd != null ? roundTo1(c.sd * 2) : null
+                        }))} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                          <CartesianGrid stroke={C.line} />
+                          <XAxis dataKey="tau" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                          <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 10, fill: C.inkSoft }} />
+                          <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                          <Area dataKey="low" stackId="band" stroke="none" fill="transparent" />
+                          <Area dataKey="bandWidth" stackId="band" stroke="none" fill={C.gold} fillOpacity={0.15} />
+                          <Line type="monotone" dataKey="mean" stroke={C.curtain} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                        </ComposedChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>横軸は本番日を0とした相対日、帯は±1SDです。件数2未満の日は表示していません。</p>
+
+                    {nextPerformanceDate && peakingReversePlan && (
+                      <div className="mt-4 pt-3 border-t" style={{ borderColor: C.line }}>
+                        <p className="text-sm font-medium mb-2">逆算プラン：次の本番は{nextPerformanceDate.slice(5)}</p>
+                        <div className="space-y-1.5">
+                          {peakingReversePlan.plan.map((p) => (
+                            <div key={p.tau} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                              <span className="font-medium">{addDays(nextPerformanceDate, p.tau).slice(5)}（{p.tau === 0 ? "当日" : `${p.tau}日前`}）</span>
+                              <span className="ff-mono" style={{ color: C.inkSoft }}>
+                                {p.sleepHours != null ? `睡眠${p.sleepHours}h` : "-"}
+                                {p.load != null ? `　負荷${p.load.toFixed(1)}` : ""}
+                                {p.waterL != null ? `　水分${p.waterL.toFixed(1)}L` : ""}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                          {peakingReversePlan.isGeneral
+                            ? `声の調子が良かった本番がまだ2回未満のため、全体の中央値（${peakingReversePlan.basedOnCount}回分）を目安として出しています。`
+                            : `声の調子が良かった本番${peakingReversePlan.basedOnCount}回の、各日の行動の中央値です。`}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <LockedCard
+                    title="本番ピーキング曲線"
+                    teaser="本番前後の仕上がり方の、あなた固有の型が分かります"
+                    current={pastPerformanceDates.length}
+                    required={3}
+                  />
+                )}
 
                 <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
                   <button onClick={() => setAnalysisTarget("performance")}
@@ -1985,17 +9234,19 @@ export default function VocalTracker({ userId, userEmail }) {
                 {chartData.length === 0 ? (
                   <div className="text-center py-14 text-sm rounded-2xl border" style={{ color: C.inkSoft, borderColor: C.line }}>
                     {analysisTarget === "performance"
-                      ? "「本番」の記録が3件以上たまると、相関分析が表示されます。"
-                      : "記録が3件以上たまると、相関分析が表示されます。"}
+                      ? t("noteEmptyPerformanceCorr")
+                      : t("noteEmptyGeneralCorr")}
                   </div>
                 ) : (
                   <>
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                      <h3 className="ff-display italic text-lg mb-2">相関の強さ</h3>
+                      <h3 className="ff-display italic text-lg mb-2">{t("titleCorrelationStrength")}</h3>
                       <p className="text-xs mb-3 leading-relaxed rounded-xl p-2.5" style={{ color: C.inkSoft, background: C.paper }}>
-                        棒が<span style={{ color: C.sage, fontWeight: 500 }}>右</span>に伸びるほど「多いほど良くなる」正の相関、
-                        <span style={{ color: C.curtain, fontWeight: 500 }}>左</span>に伸びるほど「多いほど悪くなる」負の相関です。
-                        棒が長いほど関連が強く、0に近い（短い）ほど関連は弱いことを示します。
+                        {t("noteCorrDirection").split(/(\{right\}|\{left\})/g).map((part, i) => {
+                          if (part === "{right}") return <span key={i} style={{ color: C.sage, fontWeight: 500 }}>{t("wordRight")}</span>;
+                          if (part === "{left}") return <span key={i} style={{ color: C.curtain, fontWeight: 500 }}>{t("wordLeft")}</span>;
+                          return <span key={i}>{part}</span>;
+                        })}
                       </p>
                       <div style={{ width: "100%", height: 260 }}>
                         <ResponsiveContainer>
@@ -2003,7 +9254,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             <CartesianGrid horizontal={false} stroke={C.line} />
                             <XAxis type="number" domain={[-1, 1]} tick={{ fontSize: 11, fill: C.inkSoft }} />
                             <YAxis type="category" dataKey="label" width={110} tick={{ fontSize: 12, fill: C.ink }} />
-                            <Tooltip formatter={(v) => [Number(v).toFixed(2), "相関係数"]} contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                            <Tooltip formatter={(v) => [Number(v).toFixed(2), t("chartNameCorrelation")]} contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
                             <ReferenceLine x={0} stroke={C.inkSoft} />
                             <Bar dataKey="r" radius={4} onClick={(d) => setSelectedFactorKey(d.key)} cursor="pointer">
                               {chartData.map((r) => (
@@ -2017,7 +9268,7 @@ export default function VocalTracker({ userId, userEmail }) {
 
                     {insights.length > 0 && (
                       <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                        <h3 className="ff-display italic text-lg mb-2">気づき</h3>
+                        <h3 className="ff-display italic text-lg mb-2">{t("titleInsights")}</h3>
                         <div className="space-y-2">
                           {insights.map((ins) => (
                             <p key={ins.key} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
@@ -2025,7 +9276,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             </p>
                           ))}
                         </div>
-                        <p className="text-xs mt-2" style={{ color: C.inkSoft }}>※ あくまで記録上の傾向であり、因果関係を断定するものではありません。</p>
+                        <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("noteInsightsDisclaimer")}</p>
                       </div>
                     )}
 
@@ -2035,17 +9286,16 @@ export default function VocalTracker({ userId, userEmail }) {
                           <h3 className="ff-display italic text-lg">{scatterInfo.label}の散布図</h3>
                           <span className="text-xs ff-mono" style={{ color: C.inkSoft }}>r = {scatterInfo.r.toFixed(2)}（n={scatterInfo.n}）</span>
                         </div>
-                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{correlationLabel(scatterInfo.r)}</p>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{correlationLabel(scatterInfo.r, t)}</p>
                         <p className="text-xs mb-3 leading-relaxed rounded-xl p-2.5" style={{ color: C.inkSoft, background: C.paper }}>
-                          点1つが記録した1日分です。右上がりに点が並ぶほど正の関係、右下がりなら負の関係。
-                          点がバラバラなら、はっきりした関係はなさそうです。
+                          {t("noteScatterExplain")}
                         </p>
                         <div style={{ width: "100%", height: 220 }}>
                           <ResponsiveContainer>
                             <ScatterChart margin={{ left: 8, right: 16, top: 8, bottom: 8 }}>
                               <CartesianGrid stroke={C.line} />
                               <XAxis type="number" dataKey="x" name={scatterInfo.label} unit={scatterInfo.unit} tick={{ fontSize: 11, fill: C.inkSoft }} />
-                              <YAxis type="number" dataKey="y" name={analysisTarget === "performance" ? "公演の出来" : analysisTarget === "ease" ? "心の余裕" : "喉の状態"} domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 11, fill: C.inkSoft }} />
+                              <YAxis type="number" dataKey="y" name={analysisTarget === "performance" ? t("targetPerformance") : analysisTarget === "ease" ? t("targetEase") : t("targetThroat")} domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 11, fill: C.inkSoft }} />
                               <Tooltip cursor={{ strokeDasharray: "3 3" }} contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
                               <Scatter data={scatterInfo.pairs} fill={C.gold} />
                             </ScatterChart>
@@ -2055,23 +9305,304 @@ export default function VocalTracker({ userId, userEmail }) {
                     )}
 
                     <p className="text-xs leading-relaxed px-1" style={{ color: C.inkSoft }}>
-                      ※ 相関は関連の強さを示すものであり、因果関係を証明するものではありません。記録件数が少ないうちは参考程度にご覧ください。
+                      {t("noteCorrelationCaveat")}
                     </p>
                   </>
                 )}
+                {compositePatternInsight && compositePatternInsight.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">{t("titleCompositeInsight")}</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      {t("noteCompositeInsight")}
+                    </p>
+                    <div className="space-y-2">
+                      {compositePatternInsight.map((s, i) => (
+                        <p key={i} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                          {s}
+                        </p>
+                      ))}
+                    </div>
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      {t("noteCompositeInsightDisclaimer")}
+                    </p>
+                  </div>
+                )}
+
+                {analysisBoostCandidates.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-3">この分析を強くする</h3>
+                    <div className="space-y-3">
+                      {analysisBoostCandidates.map((c) => (
+                        <div key={c.id} className="rounded-xl p-3" style={{ background: C.paper }}>
+                          <p className="text-sm font-medium mb-1">{c.title}</p>
+                          <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{c.body}</p>
+                          <button type="button"
+                            onClick={() => { if (c.section) jumpToRecordSection(c.section); else setActiveTab("today"); }}
+                            className="w-full py-2 rounded-full text-xs font-medium flex items-center justify-center gap-1"
+                            style={{ background: C.curtain, color: "#FFFDF8" }}>
+                            今日の分を入れる <ChevronRight size={13} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
               </div>
             )}
+            {activeTab === "questionnaires" && (
+              <div className="space-y-5">
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h2 className="ff-display italic text-xl mb-1">標準化された質問票</h2>
+                  <p className="text-xs" style={{ color: C.inkSoft }}>
+                    自己流の5段階評価と違い、学術論文で検証された尺度の構成にもとづいています。同じものさしで記録を重ねることで、自分の変化を追いかけやすくなります。
+                  </p>
+                  <p className="text-xs mt-2 rounded-xl p-2.5 leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
+                    ※ ここに出す点数は、いずれもスクリーニング（ふるい分け）目的の参考値であり、医学的な診断ではありません。基準値を超えた場合も、診断名ではなく「受診を検討する目安」として捉えてください。項目文は各尺度の構成（項目数・因子・カットオフ値）にもとづいて作成した簡易版で、原論文（英語）の一字一句の翻訳ではないため、点数を論文の基準値と厳密に比較できることは保証できません。
+                  </p>
+                </div>
 
+                {!activeQuestionnaire ? (
+                  <div className="space-y-3">
+                    {Object.values(QUESTIONNAIRES).map((def) => {
+                      const history = questionnaireResponses
+                        .filter((r) => r.questionnaire_type === def.key)
+                        .sort((a, b) => a.response_date.localeCompare(b.response_date));
+                      const latest = history[history.length - 1];
+                      return (
+                        <div key={def.key} className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                          <div className="flex items-center justify-between gap-3">
+                            <div>
+                              <h3 className="ff-display italic text-lg">{def.name}</h3>
+                              <p className="text-xs" style={{ color: C.inkSoft }}>{def.fullName}（{def.citation}）・{def.frequency}</p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => { setActiveQuestionnaire(def.key); setQuestionnaireAnswers({}); setQuestionnaireError(""); }}
+                              className="px-3.5 py-1.5 rounded-full text-xs font-medium flex-shrink-0"
+                              style={{ background: C.curtain, color: "#FFFDF8" }}
+                            >
+                              回答する
+                            </button>
+                          </div>
+                          {latest ? (
+                            <div className="mt-3 rounded-xl p-3" style={{ background: C.paper }}>
+                              <p className="text-xs" style={{ color: C.inkSoft }}>直近の記録（{latest.response_date}）</p>
+                              <p className="text-sm mt-1">
+                                合計 <span className="ff-mono font-medium">{latest.total_score}</span>点
+                                {def.cutoff != null && (
+                                  <span className="text-xs ml-2" style={{ color: latest.total_score >= def.cutoff ? C.curtain : C.inkSoft }}>
+                                    （基準値 {def.cutoff}）
+                                  </span>
+                                )}
+                              </p>
+                              {def.cutoffNote && (
+                                <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{def.cutoffNote}</p>
+                              )}
+                              {latest.factor_scores && (
+                                <div className="flex flex-wrap gap-2 mt-1.5">
+                                  {latest.factor_scores.map((f) => (
+                                    <span key={f.name} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.card, color: C.ink }}>
+                                      {f.name}: {f.score}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                              {history.length > 1 && (
+                                <div style={{ width: "100%", height: 110 }} className="mt-2">
+                                  <ResponsiveContainer>
+                                    <LineChart data={history.map((h) => ({ date: h.response_date.slice(5), score: h.total_score }))} margin={{ left: 0, right: 8, top: 4, bottom: 0 }}>
+                                      <XAxis dataKey="date" tick={{ fontSize: 9, fill: C.inkSoft }} />
+                                      <YAxis hide domain={["auto", "auto"]} />
+                                      <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, borderColor: C.line }} />
+                                      <Line type="monotone" dataKey="score" stroke={C.gold} strokeWidth={2} dot={{ r: 3 }} />
+                                    </LineChart>
+                                  </ResponsiveContainer>
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <p className="text-xs mt-3 rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>まだ記録がありません。</p>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (() => {
+                  const def = QUESTIONNAIRES[activeQuestionnaire];
+                  const answeredCount = def.items.filter((_, i) => questionnaireAnswers[i] != null).length;
+                  return (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <div className="flex items-center justify-between mb-1">
+                        <h3 className="ff-display italic text-lg">{def.name}</h3>
+                        <button
+                          type="button"
+                          onClick={() => { setActiveQuestionnaire(null); setQuestionnaireAnswers({}); setQuestionnaireError(""); }}
+                          className="text-xs" style={{ color: C.inkSoft }}
+                        >
+                          やめる
+                        </button>
+                      </div>
+                      <p className="text-xs mb-4" style={{ color: C.inkSoft }}>{answeredCount}/{def.items.length}問 回答済み</p>
+                      <div className="space-y-4">
+                        {def.items.map((item, i) => (
+                          <div key={i}>
+                            <p className="text-sm mb-1.5">{i + 1}. {item}</p>
+                            <div className="flex gap-1.5">
+                              {Array.from({ length: def.scaleMax + 1 }).map((_, v) => (
+                                <button
+                                  key={v}
+                                  type="button"
+                                  onClick={() => setQuestionnaireAnswers((a) => ({ ...a, [i]: v }))}
+                                  className="flex-1 py-1.5 rounded-lg text-xs font-medium border"
+                                  style={{
+                                    background: questionnaireAnswers[i] === v ? C.curtain : C.paper,
+                                    color: questionnaireAnswers[i] === v ? "#FFFDF8" : C.inkSoft,
+                                    borderColor: questionnaireAnswers[i] === v ? C.curtain : C.line
+                                  }}
+                                >
+                                  {v}
+                                </button>
+                              ))}
+                            </div>
+                            <div className="flex justify-between text-xs mt-1" style={{ color: C.inkSoft }}>
+                              <span>{def.scaleLabels[0]}</span>
+                              <span>{def.scaleLabels[def.scaleLabels.length - 1]}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {questionnaireError && <p className="text-xs mt-3" style={{ color: C.curtain }}>{questionnaireError}</p>}
+                      <button
+                        type="button"
+                        disabled={questionnaireSaving}
+                        onClick={() => handleSubmitQuestionnaire(def.key)}
+                        className="w-full mt-4 py-2.5 rounded-full text-sm font-medium flex items-center justify-center gap-1.5"
+                        style={{ background: C.curtain, color: "#FFFDF8" }}
+                      >
+                        {questionnaireSaving && <Loader2 size={14} className="animate-spin" />}
+                        記録する
+                      </button>
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+            {activeTab === "clinicSummary" && (() => {
+              // §5.4: ここには絶対に載せない（あとから「便利だから」と足されがちなので明記しておく）
+              // 偏差値／ACWR／ラグ相関（声の時差マップ）／効果量（効いた習慣ランキング）／CPPS／エネルギー可用性
+              const { start, end } = clinicPeriodRange;
+              return (
+                <div className="space-y-5">
+                  <style>{`@media print { header, nav, .no-print { display: none !important; } }`}</style>
+                  <div className="rounded-2xl p-4 border no-print" style={{ background: C.card, borderColor: C.line }}>
+                    <h2 className="ff-display italic text-xl mb-1">受診用サマリー</h2>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      耳鼻咽喉科など受診の際にお使いください。独自の指標(偏差値・発声負荷など)は含めず、記録した内容をそのまま整理しています。
+                    </p>
+                    <p className="text-xs font-medium mb-1.5">期間</p>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        ["auto", clinicAutoDetectedStart ? `症状が出てから（${clinicAutoDetectedStart.slice(5)}〜）` : "症状が出てから（自動検出）"],
+                        ["month", "過去1ヶ月"],
+                        ["3months", "過去3ヶ月"],
+                        ["custom", "期間を指定"]
+                      ].map(([key, label]) => (
+                        <button key={key} type="button" onClick={() => setClinicPeriodMode(key)}
+                          className="px-3 py-1.5 rounded-full text-xs font-medium"
+                          style={{ background: clinicPeriodMode === key ? C.curtain : C.paper, color: clinicPeriodMode === key ? "#FFFDF8" : C.inkSoft, border: `1px solid ${clinicPeriodMode === key ? C.curtain : C.line}` }}>
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                    {clinicPeriodMode === "custom" && (
+                      <div className="flex items-center gap-2 mt-3">
+                        <input type="date" value={clinicCustomStart} onChange={(e) => setClinicCustomStart(e.target.value)}
+                          className="rounded-lg border px-2.5 py-1.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                        <span className="text-xs" style={{ color: C.inkSoft }}>〜</span>
+                        <input type="date" value={clinicCustomEnd} onChange={(e) => setClinicCustomEnd(e.target.value)}
+                          className="rounded-lg border px-2.5 py-1.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                      </div>
+                    )}
+                    <button type="button" onClick={() => window.print()}
+                      className="mt-3 px-3.5 py-1.5 rounded-full text-xs font-medium"
+                      style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                      印刷 / PDFで保存
+                    </button>
+                  </div>
+
+                  <div id="clinic-summary-content" className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-xs mb-4 rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
+                      本書はご本人の自己申告に基づく記録です。医学的な診断や検査結果ではありません。
+                    </p>
+                    <p className="text-xs mb-4" style={{ color: C.inkSoft }}>期間：{start} 〜 {end}</p>
+
+                    <h3 className="text-sm font-medium mb-1.5">基本情報</h3>
+                    <p className="text-xs mb-4" style={{ color: C.ink }}>
+                      年齢：{profile.age || "未登録"}　性別：{profile.sex ? t(profile.sex === "男性" ? "sexMale" : profile.sex === "女性" ? "sexFemale" : "sexNotAnswer") : "未登録"}
+                      　職業：{t(profile.vocal_profession === "singer" ? "professionSinger" : profile.vocal_profession === "announcer" ? "professionAnnouncer" : profile.vocal_profession === "voice_actor" ? "professionVoiceActor" : "professionPopMusical")}
+                      {clinicWeeklyVoiceUsage.length > 0 && <>　1日あたりの平均発声時間：約{roundTo1(clinicWeeklyVoiceUsage.reduce((a, w) => a + w.hours, 0) / (clinicWeeklyVoiceUsage.length * 7))}時間</>}
+                    </p>
+
+                    <h3 className="text-sm font-medium mb-1.5">症状の経過</h3>
+                    {clinicSymptomSummary.length > 0 ? (
+                      <div className="mb-4 space-y-1">
+                        {clinicSymptomSummary.map((s) => (
+                          <p key={s.symptom} className="text-xs" style={{ color: C.ink }}>
+                            {t(SYMPTOM_KEYS[s.symptom])}　{s.firstDate.slice(5)} 〜 {s.lastDate.slice(5)}（{s.count}日）
+                          </p>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-xs mb-4" style={{ color: C.inkSoft }}>この期間に記録された症状はありません。</p>
+                    )}
+
+                    <h3 className="text-sm font-medium mb-1.5">声の使用量（週あたり）</h3>
+                    {clinicWeeklyVoiceUsage.length > 0 ? (
+                      <div style={{ width: "100%", height: 140 }} className="mb-4">
+                        <ResponsiveContainer>
+                          <BarChart data={clinicWeeklyVoiceUsage} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                            <CartesianGrid stroke={C.line} />
+                            <XAxis dataKey="week" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                            <YAxis tick={{ fontSize: 10, fill: C.inkSoft }} unit="h" />
+                            <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                            <Bar dataKey="hours" fill={C.gold} radius={3} />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    ) : (
+                      <p className="text-xs mb-4" style={{ color: C.inkSoft }}>この期間に活動時間の記録はありません。</p>
+                    )}
+
+                    <h3 className="text-sm font-medium mb-1.5">睡眠時間の平均</h3>
+                    <p className="text-xs mb-4" style={{ color: C.ink }}>
+                      {clinicSleepAverage != null ? `${clinicSleepAverage}時間` : "記録なし"}
+                    </p>
+
+                    <h3 className="text-sm font-medium mb-1.5">既往・服薬</h3>
+                    <p className="text-xs mb-4" style={{ color: C.ink }}>
+                      {clinicMedications.length > 0 ? clinicMedications.join("・") : "この期間の登録はありません"}
+                    </p>
+
+                    <h3 className="text-sm font-medium mb-1.5">自由記入欄</h3>
+                    <textarea value={clinicFreeNote} onChange={(e) => setClinicFreeNote(e.target.value)}
+                      placeholder="受診時に手書きで書き足す場合は、このまま余白としてご利用いただけます。"
+                      className="w-full rounded-lg border p-2 text-xs no-print" rows={4} style={{ borderColor: C.line, background: C.paper }} />
+                    <div className="hidden print:block" style={{ borderBottom: `1px solid ${C.line}`, height: 80 }} />
+                  </div>
+                </div>
+              );
+            })()}
             {activeTab === "advice" && (
               <div className="space-y-5">
                 <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
                   <div className="flex items-center gap-2 mb-2">
                     <Bot size={18} style={{ color: C.curtain }} />
-                    <h3 className="ff-display italic text-lg">AIアドバイス</h3>
+                    <h3 className="ff-display italic text-lg">{t("titleAIAdvice")}</h3>
                   </div>
                   {!AI_ADVICE_ENABLED ? (
                     <div className="rounded-xl p-4 text-sm" style={{ background: C.paper, color: C.inkSoft }}>
-                      この機能は現在準備中です。近日公開予定ですので、もうしばらくお待ちください。
+                      {t("labelAdviceComingSoon")}
                     </div>
                   ) : (
                     <>
@@ -2082,7 +9613,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         className="rounded-full px-5 py-2.5 text-sm font-medium flex items-center gap-2"
                         style={{ background: C.curtain, color: "#FFFDF8" }}>
                         {adviceLoading && <Loader2 size={14} className="animate-spin" />}
-                        {adviceLoading ? "分析中…" : "アドバイスを生成する"}
+                        {adviceLoading ? t("labelAnalyzing") : t("labelGenerateAdvice")}
                       </button>
                       {adviceError && <p className="text-xs mt-3" style={{ color: C.curtain }}>{adviceError}</p>}
                       {adviceText && (
@@ -2106,7 +9637,224 @@ export default function VocalTracker({ userId, userEmail }) {
               </div>
             )}
 
-            {activeTab === "info" && <HealthInfo />}
+            {activeTab === "info" && <HealthInfo language={language} />}
+
+            {activeTab === "more" && (
+              <div className="space-y-5">
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>学ぶ</p>
+                  <div className="space-y-1">
+                    <a href={PROFESSION_THEORY_PAGES[profile.vocal_profession] || "/vocal-theory"} target="_blank" rel="noopener noreferrer"
+                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
+                      <span className="flex items-center gap-2"><Music2 size={16} style={{ color: C.gold }} />発声理論</span>
+                      <span style={{ color: C.inkSoft }}>→</span>
+                    </a>
+                    <button type="button" onClick={() => setActiveTab("info")}
+                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
+                      <span className="flex items-center gap-2"><BookOpen size={16} style={{ color: C.gold }} />健康情報</span>
+                      <span style={{ color: C.inkSoft }}>→</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>ツール</p>
+                  <div className="space-y-1">
+                    <button type="button" onClick={() => setActiveTab("questionnaires")}
+                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
+                      <span className="flex items-center gap-2"><ClipboardList size={16} style={{ color: C.gold }} />質問票</span>
+                      <span style={{ color: C.inkSoft }}>→</span>
+                    </button>
+                    <button type="button" onClick={() => setActiveTab("clinicSummary")}
+                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
+                      <span className="flex items-center gap-2"><FileText size={16} style={{ color: C.gold }} />受診用サマリー</span>
+                      <span style={{ color: C.inkSoft }}>→</span>
+                    </button>
+                    <button type="button" onClick={() => setLessonMode(true)}
+                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
+                      <span className="flex items-center gap-2"><GraduationCap size={16} style={{ color: C.gold }} />レッスンモード</span>
+                      <span style={{ color: C.inkSoft }}>→</span>
+                    </button>
+                    <button type="button" onClick={() => setActiveTab("advice")}
+                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
+                      <span className="flex items-center gap-2"><Bot size={16} style={{ color: C.gold }} />AIアドバイス</span>
+                      <span style={{ color: C.inkSoft }}>→</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>設定</p>
+                  <div className="space-y-1">
+                    <button type="button" onClick={() => setActiveTab("today")}
+                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
+                      <span className="flex items-center gap-2"><Scale size={16} style={{ color: C.gold }} />プロフィール・記録項目</span>
+                      <span style={{ color: C.inkSoft }}>→</span>
+                    </button>
+                    <p className="text-xs px-1 mt-1" style={{ color: C.inkSoft }}>
+                      現在は「今日の記録」タブの「身体データ」欄にまとまっています。専用の設定画面への切り出しは今後の対応予定です。
+                    </p>
+                  </div>
+                </div>
+
+                {unusedFieldGroupSuggestions.filter((s) => !dismissedFoldSuggestions.includes(s.key)).length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>使っていない項目</p>
+                    <div className="space-y-3">
+                      {unusedFieldGroupSuggestions.filter((s) => !dismissedFoldSuggestions.includes(s.key)).map((s) => (
+                        <div key={s.key} className="rounded-xl p-3" style={{ background: C.paper }}>
+                          <p className="text-sm mb-2">「{s.label}」を30日間記録していません。畳みますか？</p>
+                          <div className="flex gap-2">
+                            <button type="button" onClick={() => handleFoldGroup(s.key)}
+                              className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                              畳む
+                            </button>
+                            <button type="button" onClick={() => setDismissedFoldSuggestions((prev) => [...prev, s.key])}
+                              className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                              続ける
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {(profile.folded_groups || []).length > 0 && (
+                  <p className="text-xs px-1" style={{ color: C.inkSoft }}>
+                    現在畳んでいる項目: {(profile.folded_groups || []).map((k) => FOLDABLE_GROUP_LABELS[k] || k).join("・")}
+                  </p>
+                )}
+                <button type="button" onClick={() => setShowFieldGroupManager(true)}
+                  className="w-full rounded-2xl border-2 border-dashed py-3 text-sm font-medium flex items-center justify-center gap-1.5"
+                  style={{ borderColor: C.line, color: C.inkSoft }}>
+                  <Plus size={14} />記録する項目を増やす
+                </button>
+                {showFieldGroupManager && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-sm font-medium">記録する項目</p>
+                      <button type="button" onClick={() => setShowFieldGroupManager(false)} className="w-7 h-7 rounded-full flex items-center justify-center" style={{ color: C.inkSoft }}>
+                        <X size={16} />
+                      </button>
+                    </div>
+                    <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>表示中</p>
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {Object.keys(FOLDABLE_GROUP_LABELS).filter((key) => !(profile.folded_groups || []).includes(key)).map((key) => (
+                        <button key={key} type="button" onClick={() => handleFoldGroup(key)}
+                          className="px-3 py-1.5 rounded-full text-xs font-medium border flex items-center gap-1.5"
+                          style={{ borderColor: C.line, color: C.ink, background: C.paper }}>
+                          <Check size={12} />{FOLDABLE_GROUP_LABELS[key]}
+                        </button>
+                      ))}
+                      {Object.keys(FOLDABLE_GROUP_LABELS).filter((key) => !(profile.folded_groups || []).includes(key)).length === 0 && (
+                        <p className="text-xs" style={{ color: C.inkSoft }}>すべて畳んでいます。</p>
+                      )}
+                    </div>
+                    <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>畳んでいる</p>
+                    <div className="flex flex-wrap gap-2">
+                      {(profile.folded_groups || []).map((key) => (
+                        <button key={key} type="button" onClick={() => handleUnfoldGroup(key)}
+                          className="px-3 py-1.5 rounded-full text-xs font-medium border flex items-center gap-1.5"
+                          style={{ borderColor: C.line, color: C.inkSoft, background: C.paper }}>
+                          <Plus size={12} />{FOLDABLE_GROUP_LABELS[key]}
+                        </button>
+                      ))}
+                      {(profile.folded_groups || []).length === 0 && (
+                        <p className="text-xs" style={{ color: C.inkSoft }}>畳んでいる項目はありません。</p>
+                      )}
+                    </div>
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      変更は「今日の記録」タブに即座に反映されます。畳んでも、過去に入力した値が消えることはありません。
+                    </p>
+                  </div>
+                )}
+
+                {!isPwaInstalled && pwaInstallPrompt && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                    <p className="text-sm font-medium mb-1">アプリとしてインストール</p>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      ホーム画面に追加すると、ブラウザを開かずワンタップで記録できます。
+                    </p>
+                    <button type="button" onClick={handleInstallPwa}
+                      className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                      インストールする
+                    </button>
+                  </div>
+                )}
+                {!isPwaInstalled && isIosSafari && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                    <p className="text-sm font-medium mb-1">アプリとしてインストール</p>
+                    <p className="text-xs" style={{ color: C.inkSoft }}>
+                      画面下部(または上部)の共有ボタン(四角から矢印が出ているアイコン)をタップし、「ホーム画面に追加」を選んでください。
+                    </p>
+                  </div>
+                )}
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-sm font-medium mb-1">記録画面の切り替え時刻</p>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    この時刻より前は「声の記録」、以降は「一日の記録」を最初に開きます。いつでも上部のタブで行き来できます。
+                  </p>
+                  <select value={profile.day_record_boundary_hour ?? 21}
+                    onChange={(e) => handleChangeDayRecordBoundary(Number(e.target.value))}
+                    className="rounded-lg border px-3 py-2 text-sm" style={{ borderColor: C.line, background: C.paper }}>
+                    {Array.from({ length: 24 }, (_, h) => (
+                      <option key={h} value={h}>{String(h).padStart(2, "0")}:00</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-sm font-medium mb-1">LINE通知（毎朝のリマインド）</p>
+                  {profile.line_user_id ? (
+                    <>
+                      <p className="text-xs mb-3" style={{ color: C.sage }}>連携済みです。{profile.line_linked_at && new Date(profile.line_linked_at).toLocaleDateString("ja-JP")}に連携しました。</p>
+                      <label className="flex items-center gap-2 mb-3" style={{ cursor: "pointer" }}>
+                        <input type="checkbox" checked={profile.line_notification_enabled}
+                          onChange={(e) => handleToggleLineNotification(e.target.checked)} />
+                        <span className="text-sm">毎朝、記録していない日にリマインドを受け取る</span>
+                      </label>
+                      <button type="button" onClick={handleUnlinkLine}
+                        className="text-xs underline" style={{ color: C.curtain }}>
+                        連携を解除する
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        LINEと連携すると、まだ記録していない日の朝に、LINEでリマインドが届きます。
+                      </p>
+                      {profile.line_link_code ? (
+                        <div className="rounded-xl p-3 mb-2" style={{ background: C.paper }}>
+                          <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>①LINEで「La Voce」を友だち追加</p>
+                          <p className="text-xs mb-2" style={{ color: C.inkSoft }}>②トーク画面に、下の連携コードをそのまま送信</p>
+                          <p className="ff-mono text-center text-2xl tracking-widest py-2 rounded-lg" style={{ background: C.card, color: C.curtain }}>
+                            {profile.line_link_code}
+                          </p>
+                        </div>
+                      ) : (
+                        <button type="button" onClick={handleGenerateLineLinkCode}
+                          className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                          連携コードを発行する
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>アカウント</p>
+                  <p className="text-xs px-1 mb-2" style={{ color: C.inkSoft }}>
+                    データの書き出し・アカウント削除機能は準備中です。
+                  </p>
+                  <button onClick={handleSignOut}
+                    className="w-full flex items-center gap-2 py-2.5 px-1 text-sm" style={{ color: C.curtain }}>
+                    <LogOut size={16} />ログアウト
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </main>
