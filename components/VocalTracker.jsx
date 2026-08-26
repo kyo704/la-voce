@@ -11830,11 +11830,11 @@ export default function VocalTracker({ userId, userEmail }) {
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-sm font-medium mb-1">表示名</p>
                   <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
-                    先生とつながったとき、先生の生徒一覧にこの名前が表示されます。空欄のままでも構いません（その場合は職業名で表示されます）。
+                    先生・生徒としてつながった相手に表示される名前です。先生の場合、生徒のレッスンカレンダーにこの名前が表示されます。空欄のままでも構いません（その場合は職業名などで代替表示されます）。
                   </p>
                   <input type="text" defaultValue={profile.display_name} maxLength={30}
                     onBlur={(e) => { if (e.target.value !== profile.display_name) handleSaveDisplayName(e.target.value); }}
-                    placeholder="例：やまだ" className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                    placeholder="例：やまだ先生" className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                 </div>
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
