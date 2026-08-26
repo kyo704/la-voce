@@ -3067,13 +3067,6 @@ export default function VocalTracker({ userId, userEmail }) {
   const [recordView, setRecordView] = useState("voice");
   const recordViewInitializedRef = useRef(false);
   useEffect(() => {
-    if (recordViewInitializedRef.current || profile.day_record_boundary_hour == null) return;
-    recordViewInitializedRef.current = true;
-    const hour = new Date().getHours();
-    const boundary = profile.day_record_boundary_hour;
-    setRecordView(hour >= boundary || hour < 5 ? "day" : "voice");
-  }, [profile.day_record_boundary_hour]);
-  useEffect(() => {
     if (!highlightSection) return;
     const timer = setTimeout(() => setHighlightSection(null), 2000);
     return () => clearTimeout(timer);
@@ -3157,6 +3150,15 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
   const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21 });
+  // 記録と分析の順番設計 §3.1: profile読込後、実際の時刻と境界時刻からrecordViewを補正する。
+  // （profileに依存するため、profile宣言より前に置くと「宣言前にアクセス」エラーになる。要注意）
+  useEffect(() => {
+    if (recordViewInitializedRef.current || profile.day_record_boundary_hour == null) return;
+    recordViewInitializedRef.current = true;
+    const hour = new Date().getHours();
+    const boundary = profile.day_record_boundary_hour;
+    setRecordView(hour >= boundary || hour < 5 ? "day" : "voice");
+  }, [profile.day_record_boundary_hour]);
   const [ownedItemKeys, setOwnedItemKeys] = useState([]);
   const [characterEquipped, setCharacterEquipped] = useState({});
   const [characterPointsSpent, setCharacterPointsSpent] = useState(0);
