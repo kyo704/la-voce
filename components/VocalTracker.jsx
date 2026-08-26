@@ -6,7 +6,7 @@ import {
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
   Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot, MessageCircle, Home,
   Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe, Lock,
-  Volume2, Plane, AudioWaveform, Timer, MessageSquare, ClipboardList, GraduationCap, FileText, House
+  Volume2, Plane, AudioWaveform, Timer, MessageSquare, ClipboardList, GraduationCap, FileText, House, MoreHorizontal
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -274,7 +274,8 @@ const TABS = [
   { key: "clinicSummary", labelKey: "tabClinicSummary", icon: FileText },
   { key: "advice", labelKey: "tabAdvice", icon: Bot },
   { key: "info", labelKey: "tabInfo", icon: BookOpen },
-  { key: "voicetheory", labelKey: "tabVoiceTheory", icon: Music2, href: "/vocal-theory" }
+  { key: "voicetheory", labelKey: "tabVoiceTheory", icon: Music2, href: "/vocal-theory" },
+  { key: "more", labelKey: "tabMore", icon: MoreHorizontal }
 ];
 // 職業ごとに専用の理論ページへ切り替える
 const PROFESSION_THEORY_PAGES = {
@@ -8211,6 +8212,77 @@ export default function VocalTracker({ userId, userEmail }) {
             )}
 
             {activeTab === "info" && <HealthInfo language={language} />}
+
+            {activeTab === "more" && (
+              <div className="space-y-5">
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>学ぶ</p>
+                  <div className="space-y-1">
+                    <a href={PROFESSION_THEORY_PAGES[profile.vocal_profession] || "/vocal-theory"} target="_blank" rel="noopener noreferrer"
+                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
+                      <span className="flex items-center gap-2"><Music2 size={16} style={{ color: C.gold }} />発声理論</span>
+                      <span style={{ color: C.inkSoft }}>→</span>
+                    </a>
+                    <button type="button" onClick={() => setActiveTab("info")}
+                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
+                      <span className="flex items-center gap-2"><BookOpen size={16} style={{ color: C.gold }} />健康情報</span>
+                      <span style={{ color: C.inkSoft }}>→</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>ツール</p>
+                  <div className="space-y-1">
+                    <button type="button" onClick={() => setActiveTab("questionnaires")}
+                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
+                      <span className="flex items-center gap-2"><ClipboardList size={16} style={{ color: C.gold }} />質問票</span>
+                      <span style={{ color: C.inkSoft }}>→</span>
+                    </button>
+                    <button type="button" onClick={() => setActiveTab("clinicSummary")}
+                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
+                      <span className="flex items-center gap-2"><FileText size={16} style={{ color: C.gold }} />受診用サマリー</span>
+                      <span style={{ color: C.inkSoft }}>→</span>
+                    </button>
+                    <button type="button" onClick={() => setLessonMode(true)}
+                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
+                      <span className="flex items-center gap-2"><GraduationCap size={16} style={{ color: C.gold }} />レッスンモード</span>
+                      <span style={{ color: C.inkSoft }}>→</span>
+                    </button>
+                    <button type="button" onClick={() => setActiveTab("advice")}
+                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
+                      <span className="flex items-center gap-2"><Bot size={16} style={{ color: C.gold }} />AIアドバイス</span>
+                      <span style={{ color: C.inkSoft }}>→</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>設定</p>
+                  <div className="space-y-1">
+                    <button type="button" onClick={() => setActiveTab("today")}
+                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
+                      <span className="flex items-center gap-2"><Scale size={16} style={{ color: C.gold }} />プロフィール・記録項目</span>
+                      <span style={{ color: C.inkSoft }}>→</span>
+                    </button>
+                    <p className="text-xs px-1 mt-1" style={{ color: C.inkSoft }}>
+                      現在は「今日の記録」タブの「身体データ」欄にまとまっています。専用の設定画面への切り出しは今後の対応予定です。
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>アカウント</p>
+                  <p className="text-xs px-1 mb-2" style={{ color: C.inkSoft }}>
+                    データの書き出し・アカウント削除機能は準備中です。
+                  </p>
+                  <button onClick={handleSignOut}
+                    className="w-full flex items-center gap-2 py-2.5 px-1 text-sm" style={{ color: C.curtain }}>
+                    <LogOut size={16} />ログアウト
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </main>
