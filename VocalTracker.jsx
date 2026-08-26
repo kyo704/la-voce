@@ -18,6 +18,7 @@ import { FOOD_PRESETS, DISH_GROUP_ALIASES, CATEGORY_SEARCH_ALIASES } from "@/lib
 import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, SHOP_ITEMS, PLACEMENT_LIMITS, computeBalance } from "@/lib/character";
 import { LANGUAGES, createTranslator } from "@/lib/translations";
 import HealthInfo from "@/components/HealthInfo";
+import { ARTICLES, CHAPTER_LABELS, PROFESSION_LABELS, getArticlesForProfession, getArticleById } from "@/lib/learnContent";
 import CharacterHome from "@/components/CharacterHome";
 
 /* ---------- constants ---------- */
@@ -280,8 +281,8 @@ const FACTORS = [
 const TABS = [
   { key: "home", labelKey: "tabHome", icon: Sun },
   { key: "today", labelKey: "tabToday", icon: Mic2 },
-  { key: "garden", labelKey: "tabCharacter", icon: Home },
   { key: "analysis", labelKey: "tabAnalysis", icon: BarChart3 },
+  { key: "garden", labelKey: "tabCharacter", icon: Home },
   { key: "notes", labelKey: "tabNotes", icon: NotebookPen },
   { key: "more", labelKey: "tabMore", icon: MoreHorizontal }
 ];
@@ -904,6 +905,7 @@ function buildFormData(date, entries) {
       pianissimoOnsetDelay: existing.pianissimoOnsetDelay || false,
       speakingLevel: existing.speakingLevel ?? null,
       nonPerformanceSpeechMinutes: existing.nonPerformanceSpeechMinutes ?? null,
+      longestSpeechBlockMinutes: existing.longestSpeechBlockMinutes ?? null,
       environmentTags: existing.environmentTags || [],
       noisyEnvironment: existing.noisyEnvironment || false,
       cppsValue: existing.cppsValue ?? "",
@@ -956,6 +958,7 @@ function buildFormData(date, entries) {
     pianissimoOnsetDelay: false,
     speakingLevel: null,
     nonPerformanceSpeechMinutes: null,
+    longestSpeechBlockMinutes: null,
     environmentTags: [],
     noisyEnvironment: false,
     cppsValue: "",
@@ -1453,6 +1456,7 @@ function rowToEntry(row) {
     pianissimoOnsetDelay: row.pianissimo_onset_delay || false,
     speakingLevel: row.speaking_level,
     nonPerformanceSpeechMinutes: row.non_performance_speech_minutes ?? null,
+    longestSpeechBlockMinutes: row.longest_speech_block_minutes ?? null,
     environmentTags: row.environment_tags || [],
     noisyEnvironment: row.noisy_environment || false,
     cppsValue: row.cpps_value,
@@ -1843,6 +1847,7 @@ function entryToRow(userId, e) {
     pianissimo_onset_delay: !!e.pianissimoOnsetDelay,
     speaking_level: numOrNull(e.speakingLevel),
     non_performance_speech_minutes: numOrNull(e.nonPerformanceSpeechMinutes),
+    longest_speech_block_minutes: numOrNull(e.longestSpeechBlockMinutes),
     environment_tags: e.environmentTags || [],
     noisy_environment: !!e.noisyEnvironment,
     cpps_value: numOrNull(e.cppsValue),
@@ -1992,6 +1997,68 @@ function SectionCard({ title, icon: Icon, children, id, highlighted }) {
 // 記録日数がまだ解放条件に届いていないときに表示する、進捗つきの「予告編」カード。
 // 灰色の空箱ではなく、うっすらとしたプレビューと「あと◯日」の進捗バーを見せることで、
 // 記録を続ける動機にする（lavoce-指標設計図.md の「ロックの見せ方」参照）。
+// 指導者プラン実装仕様 §7: レッスン日程をカレンダーで見せる。既存の月次カレンダー（記録閲覧用）と
+// 同じ月送りの仕組み（monthMeta/shiftMonth）を再利用する。先生用ページ・レッスンモードの両方で使う。
+function LessonCalendar({ lessons, onDayClick, selectable, getTeacherName, getStudentName }) {
+  const [viewMonth, setViewMonth] = useState(() => { const d = new Date(); return { year: d.getFullYear(), month: d.getMonth() }; });
+  const [selectedDetailDate, setSelectedDetailDate] = useState(null);
+  const lessonsByDate = useMemo(() => {
+    const map = {};
+    (lessons || []).forEach((l) => {
+      const iso = toISODate(new Date(l.scheduled_at));
+      (map[iso] = map[iso] || []).push(l);
+    });
+    return map;
+  }, [lessons]);
+  const { daysInMonth, startWeekday } = monthMeta(viewMonth.year, viewMonth.month);
+  const cells = [];
+  for (let i = 0; i < startWeekday; i++) cells.push(null);
+  for (let d = 1; d <= daysInMonth; d++) {
+    const iso = `${viewMonth.year}-${String(viewMonth.month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    cells.push({ day: d, iso, lessons: lessonsByDate[iso] || [] });
+  }
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <button type="button" onClick={() => setViewMonth((m) => shiftMonth(m, -1))} style={{ color: C.inkSoft }}><ChevronLeft size={16} /></button>
+        <span className="text-sm font-medium">{viewMonth.year}年{viewMonth.month + 1}月</span>
+        <button type="button" onClick={() => setViewMonth((m) => shiftMonth(m, 1))} style={{ color: C.inkSoft }}><ChevronRight size={16} /></button>
+      </div>
+      <div className="grid grid-cols-7 gap-1 text-center">
+        {["日", "月", "火", "水", "木", "金", "土"].map((w) => (
+          <span key={w} className="text-xs" style={{ color: C.inkSoft }}>{w}</span>
+        ))}
+        {cells.map((c, i) => {
+          if (!c) return <div key={i} />;
+          const hasLesson = c.lessons.length > 0;
+          return (
+            <button key={i} type="button" disabled={!selectable && !hasLesson}
+              onClick={() => { if (selectable) onDayClick && onDayClick(c.iso); else if (hasLesson) setSelectedDetailDate(c.iso === selectedDetailDate ? null : c.iso); }}
+              className="rounded-lg py-1.5 text-xs relative"
+              style={{
+                background: hasLesson ? C.curtain : "transparent", color: hasLesson ? "#FFFDF8" : C.ink,
+                boxShadow: c.iso === selectedDetailDate ? `0 0 0 2px ${C.gold}` : "none"
+              }}>
+              {c.day}
+            </button>
+          );
+        })}
+      </div>
+      {!selectable && selectedDetailDate && lessonsByDate[selectedDetailDate] && (
+        <div className="mt-3 space-y-1.5">
+          {lessonsByDate[selectedDetailDate].map((l) => (
+            <div key={l.id} className="rounded-lg p-2 text-xs" style={{ background: C.paper }}>
+              <span className="ff-mono">{new Date(l.scheduled_at).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</span>
+              {getTeacherName && l.teacher_id && <span>　{getTeacherName(l.teacher_id)}先生</span>}
+              {getStudentName && l.student_id && <span>　{getStudentName(l.student_id)}さん</span>}
+              {l.note && <span>　{l.note}</span>}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 function LockedCard({ title, teaser, current, required }) {
   const remaining = Math.max(0, required - current);
   const pct = Math.min(100, Math.round((current / required) * 100));
@@ -2575,13 +2642,18 @@ function MealItemRow({ item, onChange, onRemove, foodLibrary, t, language }) {
 function RepertoireItemRow({
   item, index, totalItems, onChange, onRemove, onMoveUp, onMoveDown,
   repertoireTessituraMap, repertoireUsageCounts, repertoireSkipped, setRepertoireSkipped,
-  handleSaveRepertoire, tessituraSaving, t
+  handleSaveRepertoire, tessituraSaving, professions, roleMasterMap, projectMasterMap,
+  handleSaveRole, handleSaveProject, handleSaveSingingLanguage, t
 }) {
   const [topNoteInput, setTopNoteInput] = useState("");
   const [tessituraOptionalInput, setTessituraOptionalInput] = useState("");
   const [showTessituraAccordion, setShowTessituraAccordion] = useState(false);
   const [dOverrideChoice, setDOverrideChoice] = useState(null);
   const [duplicateWarning, setDuplicateWarning] = useState(null);
+  const [showExtraAccordion, setShowExtraAccordion] = useState(false);
+  const isSinger = (professions || []).includes("singer");
+  const isVoiceActor = (professions || []).includes("voice_actor");
+  const isAnnouncer = (professions || []).includes("announcer");
 
   const name = item.repertoireName || "";
   const record = name ? repertoireTessituraMap[name] : null;
@@ -2708,8 +2780,60 @@ function RepertoireItemRow({
       })()}
       {name && record && (
         <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
-          登録済み：{record.topNote ? `最高音${record.topNote}` : ""}{record.tessituraNote ? `・テッシトゥーラ${record.tessituraNote}` : ""}
+          登録済み：{record.topNote ? `最高音${record.topNote}` : ""}{record.tessituraNote ? `・テッシトゥーラ${record.tessituraNote}` : ""}{record.singingLanguage ? `・${record.singingLanguage}語` : ""}
         </p>
+      )}
+      {name && (isSinger || isVoiceActor || isAnnouncer) && (
+        <div className="mt-1.5">
+          <button type="button" onClick={() => setShowExtraAccordion((v) => !v)} className="text-xs underline" style={{ color: C.inkSoft }}>
+            {isSinger ? "歌唱言語を登録" : isVoiceActor ? "役の情報を登録" : "案件の情報を登録"}
+          </button>
+          {showExtraAccordion && isSinger && (
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {["伊", "独", "仏", "露", "英", "日", "西", "チェコ", "その他"].map((lang) => (
+                <Chip key={lang} label={lang} active={record && record.singingLanguage === lang}
+                  onClick={() => handleSaveSingingLanguage(name, lang)} />
+              ))}
+            </div>
+          )}
+          {showExtraAccordion && isVoiceActor && (() => {
+            const roleRec = roleMasterMap[name] || {};
+            return (
+              <div className="mt-1.5 space-y-1.5">
+                <input type="text" defaultValue={roleRec.workTitle || ""} placeholder="作品名"
+                  onBlur={(e) => handleSaveRole(name, { ...roleRec, workTitle: e.target.value })}
+                  className="w-full rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.card }} />
+                <div className="flex flex-wrap gap-1.5">
+                  {["地声寄り", "高め", "低め", "特殊"].map((vq) => (
+                    <Chip key={vq} label={vq} active={roleRec.voiceQuality === vq}
+                      onClick={() => handleSaveRole(name, { ...roleRec, voiceQuality: vq })} />
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
+          {showExtraAccordion && isAnnouncer && (() => {
+            const projRec = projectMasterMap[name] || {};
+            return (
+              <div className="mt-1.5 space-y-1.5">
+                <div className="flex flex-wrap gap-1.5">
+                  {["ニュース", "情報", "スポーツ実況", "ナレーション", "CM", "司会", "朗読"].map((st) => (
+                    <Chip key={st} label={st} active={projRec.scriptType === st}
+                      onClick={() => handleSaveProject(name, { ...projRec, scriptType: st })} />
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {["早口", "普通", "ゆっくり"].map((sp) => (
+                    <Chip key={sp} label={sp} active={projRec.speechSpeed === sp}
+                      onClick={() => handleSaveProject(name, { ...projRec, speechSpeed: sp })} />
+                  ))}
+                  <Chip label="生放送" active={!!projRec.isLive}
+                    onClick={() => handleSaveProject(name, { ...projRec, isLive: !projRec.isLive })} />
+                </div>
+              </div>
+            );
+          })()}
+        </div>
       )}
     </div>
   );
@@ -3057,7 +3181,8 @@ function ActivityBlockEditor({
   activity, onChange, onRemove, onDetailChange,
   onAddItem, onUpdateItem, onRemoveItem, onMoveItem,
   repertoireTessituraMap, repertoireUsageCounts, repertoireSkipped, setRepertoireSkipped,
-  handleSaveRepertoire, tessituraSaving, songFactorResolver, professions, t
+  handleSaveRepertoire, tessituraSaving, songFactorResolver, professions,
+  roleMasterMap, projectMasterMap, handleSaveRole, handleSaveProject, handleSaveSingingLanguage, t
 }) {
   const detail = activity.detail || {};
   const items = activity.items || [];
@@ -3093,6 +3218,12 @@ function ActivityBlockEditor({
               setRepertoireSkipped={setRepertoireSkipped}
               handleSaveRepertoire={handleSaveRepertoire}
               tessituraSaving={tessituraSaving}
+              professions={professions}
+              roleMasterMap={roleMasterMap}
+              projectMasterMap={projectMasterMap}
+              handleSaveRole={handleSaveRole}
+              handleSaveProject={handleSaveProject}
+              handleSaveSingingLanguage={handleSaveSingingLanguage}
               t={t}
             />
           ))}
@@ -3130,14 +3261,23 @@ function ActivityBlockEditor({
 
       {isVoiceActor && (
         <div className="mt-3 pt-2 border-t" style={{ borderColor: C.line }}>
-          <div className="flex items-center gap-1.5 mb-1.5">
-            <span className="text-xs font-medium">叫び・悲鳴のテイク数</span>
+          <span className="text-xs font-medium block mb-1.5">喉に負担のある演技（あてはまるものすべて）</span>
+          <div className="flex flex-wrap gap-1.5 mb-2">
+            {["叫び", "がなり・エッジ", "泣き・嗚咽", "咳・えずき・呼吸音", "ささやき", "悲鳴"].map((tag) => (
+              <Chip key={tag} label={tag} active={(detail.demandingActing || []).includes(tag)}
+                onClick={() => onDetailChange({
+                  demandingActing: (detail.demandingActing || []).includes(tag)
+                    ? detail.demandingActing.filter((x) => x !== tag)
+                    : [...(detail.demandingActing || []), tag]
+                })} />
+            ))}
           </div>
-          <div className="flex items-center gap-2">
-            <MiniNumber value={detail.screamTakes ?? ""} placeholder="0" onChange={(v) => onDetailChange({ screamTakes: v === "" ? null : Number(v) })} />
-            <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>テイク（概算でよい）</span>
-          </div>
-          <p className="text-xs mt-1" style={{ color: C.inkSoft }}>叫び・悲鳴が無い収録は空欄のままで構いません。</p>
+          {((detail.demandingActing || []).includes("叫び") || (detail.demandingActing || []).includes("悲鳴")) && (
+            <div className="flex items-center gap-2">
+              <MiniNumber value={detail.screamTakes ?? ""} placeholder="0" onChange={(v) => onDetailChange({ screamTakes: v === "" ? null : Number(v) })} />
+              <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>テイク（概算でよい）</span>
+            </div>
+          )}
         </div>
       )}
 
@@ -3188,6 +3328,11 @@ function ActivityBlockEditor({
               onChange={(e) => onDetailChange({ isTourStart: e.target.checked })} />
             このツアーの初日
           </label>
+          <label className="flex items-center gap-2 text-xs" style={{ color: C.inkSoft }}>
+            <input type="checkbox" checked={!!detail.isPlayingAndSinging}
+              onChange={(e) => onDetailChange({ isPlayingAndSinging: e.target.checked })} />
+            弾き語りだった（楽器を持って歌った）
+          </label>
         </div>
       )}
 
@@ -3236,6 +3381,22 @@ function ActivityBlockEditor({
                     background: detail.hallAcoustics === v ? C.curtain : C.paper,
                     color: detail.hallAcoustics === v ? "#FFFDF8" : C.inkSoft,
                     borderColor: detail.hallAcoustics === v ? C.curtain : C.line
+                  }}>
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <span className="text-xs font-medium block mb-1.5">伴奏</span>
+            <div className="flex gap-1.5">
+              {[["piano", "ピアノ"], ["orchestra", "オーケストラ"], ["none", "なし"]].map(([v, label]) => (
+                <button key={v} type="button" onClick={() => onDetailChange({ accompaniment: v })}
+                  className="flex-1 py-1.5 rounded-lg text-xs font-medium border"
+                  style={{
+                    background: detail.accompaniment === v ? C.curtain : C.paper,
+                    color: detail.accompaniment === v ? "#FFFDF8" : C.inkSoft,
+                    borderColor: detail.accompaniment === v ? C.curtain : C.line
                   }}>
                   {label}
                 </button>
@@ -3342,8 +3503,6 @@ export default function VocalTracker({ userId, userEmail }) {
     setHighlightSection(sectionId);
   }
   const [lessonMode, setLessonMode] = useState(false);
-  const lessonExitTimerRef = useRef(null);
-  const [lessonExitProgress, setLessonExitProgress] = useState(0);
   const [clinicPeriodMode, setClinicPeriodMode] = useState("auto");
   const [clinicCustomStart, setClinicCustomStart] = useState("");
   const [clinicCustomEnd, setClinicCustomEnd] = useState("");
@@ -3388,6 +3547,34 @@ export default function VocalTracker({ userId, userEmail }) {
   const [viewingStudentLink, setViewingStudentLink] = useState(null); // 生徒個別ページ(§6)で開いている生徒
   const [teacherNoteDraft, setTeacherNoteDraft] = useState("");
   const [teacherNoteSaveStatus, setTeacherNoteSaveStatus] = useState("idle");
+  const [studentLessons, setStudentLessons] = useState([]); // 個別ページで見ている生徒のレッスン日程
+  const [newLessonDate, setNewLessonDate] = useState("");
+  const [newLessonTime, setNewLessonTime] = useState("19:00");
+  const [newLessonNote, setNewLessonNote] = useState("");
+  const [myUpcomingLessons, setMyUpcomingLessons] = useState([]); // 自分が生徒として持つ、直近のレッスン予定
+  const [studentComments, setStudentComments] = useState({}); // date -> comments[]（個別ページで見ている生徒）
+  const [newCommentDraft, setNewCommentDraft] = useState("");
+  const [myRecentComments, setMyRecentComments] = useState([]); // 自分が生徒として受け取った、直近のコメント
+  // 職業別項目の再設計と学ぶ画面 §7: 学ぶ画面用のstate
+  const [learnProfession, setLearnProfession] = useState(null); // null=まだ選んでいない（初回はvocal_professionを既定にする）
+  const [learnOpenChapters, setLearnOpenChapters] = useState({}); // "professionKey:chapter" -> boolean
+  const [learnReadArticles, setLearnReadArticles] = useState({}); // articleId -> readAt
+  const [viewingArticleId, setViewingArticleId] = useState(null);
+  const [articleNotes, setArticleNotes] = useState({}); // articleId -> notes[]
+  const [newArticleNoteDraft, setNewArticleNoteDraft] = useState("");
+  const [learnSearchQuery, setLearnSearchQuery] = useState("");
+  // 作業指示-教室プラン §B・C・E: 教室プラン用のstate
+  const [myOrgs, setMyOrgs] = useState([]); // 自分がメンバーである組織一覧（role付き）
+  const [viewingOrgId, setViewingOrgId] = useState(null);
+  const [orgMembers, setOrgMembers] = useState({}); // orgId -> memberships[]
+  const [orgEnrollments, setOrgEnrollments] = useState({}); // orgId -> enrollments[]
+  const [orgAssignments, setOrgAssignments] = useState({}); // orgId -> assignments[]
+  const [orgLessons, setOrgLessons] = useState({}); // orgId -> lessons[]
+  const [generatedOrgInviteCode, setGeneratedOrgInviteCode] = useState(null);
+  const [orgInviteCodeInput, setOrgInviteCodeInput] = useState("");
+  const [orgInviteLookupError, setOrgInviteLookupError] = useState("");
+  const [pendingOrgInvitation, setPendingOrgInvitation] = useState(null);
+  const [myAllLessons, setMyAllLessons] = useState([]); // 生徒として、教室をまたいで統合した全レッスン
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
   const [saveError, setSaveError] = useState("");
@@ -3403,6 +3590,8 @@ export default function VocalTracker({ userId, userEmail }) {
   const [questionnaireSaving, setQuestionnaireSaving] = useState(false);
   const [questionnaireError, setQuestionnaireError] = useState("");
   const [repertoireTessituraMap, setRepertoireTessituraMap] = useState({});
+  const [roleMasterMap, setRoleMasterMap] = useState({}); // 職業別項目の再設計と学ぶ画面 §5
+  const [projectMasterMap, setProjectMasterMap] = useState({});
   const [tessituraSaving, setTessituraSaving] = useState(false);
   const [topNoteInput, setTopNoteInput] = useState("");
   const [tessituraOptionalInput, setTessituraOptionalInput] = useState("");
@@ -3426,7 +3615,12 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "" });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "", is_admin: false });
+  // 確認用: 管理者アカウント（is_admin）は、動作確認のため全職業の機能を見られるようにする。
+  // ★重要：profile宣言より前に置くと「宣言前にアクセス」エラーになるため、必ずこの直後に置くこと。
+  const effectiveProfessions = useMemo(() => {
+    return profile.is_admin ? VOCAL_PROFESSIONS : (profile.professions || []);
+  }, [profile.is_admin, profile.professions]);
   // 記録と分析の順番設計 §3.1: profile読込後、実際の時刻と境界時刻からrecordViewを補正する。
   // （profileに依存するため、profile宣言より前に置くと「宣言前にアクセス」エラーになる。要注意）
   useEffect(() => {
@@ -3591,10 +3785,49 @@ export default function VocalTracker({ userId, userEmail }) {
             topNote: row.top_note || null,
             dOverride: row.d_override,
             confidence: row.confidence || "entered",
-            usageCount: row.usage_count || 0
+            usageCount: row.usage_count || 0,
+            singingLanguage: row.singing_language || null
           };
         });
         setRepertoireTessituraMap(map);
+      }
+    })();
+    return () => { mounted = false; };
+  }, [userId]);
+
+  // 職業別項目の再設計と学ぶ画面 §5: 役マスタ・案件マスタ（レパートリーと全く同じ仕組み）
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const supabase = createClient();
+      const { data, error } = await runQueryWithAuthRetry(
+        supabase, () => supabase.from("role_master").select("*").eq("user_id", userId), "役マスタの取得"
+      );
+      if (error) console.error("役マスタの読み込みに失敗しました:", error, "userId:", userId);
+      if (mounted && data) {
+        const map = {};
+        data.forEach((row) => {
+          map[row.role_name] = { workTitle: row.work_title || "", pitchLowNote: row.pitch_low_note || null, pitchHighNote: row.pitch_high_note || null, voiceQuality: row.voice_quality || null };
+        });
+        setRoleMasterMap(map);
+      }
+    })();
+    return () => { mounted = false; };
+  }, [userId]);
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const supabase = createClient();
+      const { data, error } = await runQueryWithAuthRetry(
+        supabase, () => supabase.from("project_master").select("*").eq("user_id", userId), "案件マスタの取得"
+      );
+      if (error) console.error("案件マスタの読み込みに失敗しました:", error, "userId:", userId);
+      if (mounted && data) {
+        const map = {};
+        data.forEach((row) => {
+          map[row.project_name] = { scriptType: row.script_type || null, speechSpeed: row.speech_speed || null, isLive: !!row.is_live };
+        });
+        setProjectMasterMap(map);
       }
     })();
     return () => { mounted = false; };
@@ -3609,7 +3842,7 @@ export default function VocalTracker({ userId, userEmail }) {
         () =>
           supabase
             .from("profiles")
-            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus, practice_goal, practice_goal_tags, practice_goal_started_at, practice_reviews, folded_groups, survey_day7_shown_at, survey_day7_response, line_user_id, line_link_code, line_linked_at, line_notification_enabled, day_record_boundary_hour, teacher_beta_access, display_name")
+            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus, practice_goal, practice_goal_tags, practice_goal_started_at, practice_reviews, folded_groups, survey_day7_shown_at, survey_day7_response, line_user_id, line_link_code, line_linked_at, line_notification_enabled, day_record_boundary_hour, teacher_beta_access, display_name, is_admin")
             .eq("id", userId)
             .single(),
         "プロフィール（羊の装備を含む）の取得"
@@ -3653,6 +3886,7 @@ export default function VocalTracker({ userId, userEmail }) {
           day_record_boundary_hour: data.day_record_boundary_hour ?? 21,
           teacher_beta_access: data.teacher_beta_access || false,
           display_name: data.display_name || "",
+          is_admin: data.is_admin || false,
           vocal_profession: data.vocal_profession || "singer",
           track_cycle: data.track_cycle || false
         });
@@ -3673,6 +3907,12 @@ export default function VocalTracker({ userId, userEmail }) {
   // この取得自体は全ユーザーに対して行う（表示するかどうかはUI側で絞る）。
   useEffect(() => {
     fetchTeacherLinks();
+    fetchMyAllLessons();
+    fetchMyRecentComments();
+    fetchLearnState();
+    fetchMyOrgs();
+    fetchMyEnrollments();
+    fetchMyTeachingLessons();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
@@ -4969,7 +5209,7 @@ export default function VocalTracker({ userId, userEmail }) {
   // 「即時（計算のみ）」の指標のため、entriesの蓄積を待たず、今まさに編集中のセットリストに対して
   // その場で診断する。曲順による負荷の偏りと、快適音域を超える曲を指摘する。
   const setlistDiagnosis = useMemo(() => {
-    if (!(profile.professions || []).includes("pop_musical") || !formData) return null;
+    if (!(effectiveProfessions || []).includes("pop_musical") || !formData) return null;
     const performanceActivities = (formData.activities || []).filter((a) => a.kind === "本番");
     if (performanceActivities.length === 0) return null;
     // 複数の本番ブロックがある日は、曲数が最も多いものを対象にする
@@ -5031,13 +5271,13 @@ export default function VocalTracker({ userId, userEmail }) {
     }
 
     return { hasEnoughSongs: true, peakSuggestion, keyLoweringSuggestions };
-  }, [formData, profile.professions, repertoireTessituraMap, comfortableRangeMidi, songFactorResolver]);
+  }, [formData, effectiveProfessions, repertoireTessituraMap, comfortableRangeMidi, songFactorResolver]);
   // ---- セットリスト診断 用データ ここまで ----
 
   // ---- lavoce-職業別データと分析の確定仕様.md §4.4: モニター環境・打ち上げの効果量 ----
   // 既存の効いた習慣ランキングと同じ考え方（前日の行動→翌日の声）を、この日の「本番」ブロックに適用する。
   const popMusicalEffects = useMemo(() => {
-    if (!(profile.professions || []).includes("pop_musical")) return [];
+    if (!(effectiveProfessions || []).includes("pop_musical")) return [];
     const sortedDates = Object.keys(entries).sort();
     const monitorGroups = { iem: [], wedge: [], none: [] };
     const afterpartyGroups = { yes: [], no: [] };
@@ -5077,14 +5317,14 @@ export default function VocalTracker({ userId, userEmail }) {
       results.push({ key: "travel", label: "夜行バス・車中泊の移動", ...travelRes, stars: starRatingForEffect(travelRes) });
     }
     return results;
-  }, [entries, profile.professions]);
+  }, [entries, effectiveProfessions]);
   // ---- モニター環境・打ち上げの効果量 用データ ここまで ----
 
   // ---- lavoce-職業別データと分析の確定仕様.md §4.4: ポップス/ロックのツアー耐久曲線 ----
   // ツアー初日（isTourStartが立った日）を0として、その後何日目に喉コンディションが落ちるかを
   // 複数のツアーで重ね合わせる。ツアー2本以上のデータが必要。
   const tourEnduranceCurve = useMemo(() => {
-    if (!(profile.professions || []).includes("pop_musical") || overallThroatBaseline == null) return { hasEnoughData: false, tourCount: 0 };
+    if (!(effectiveProfessions || []).includes("pop_musical") || overallThroatBaseline == null) return { hasEnoughData: false, tourCount: 0 };
     const sortedDates = Object.keys(entries).sort();
     const tourStarts = sortedDates.filter((d) => (entries[d].activities || []).some((a) => a.kind === "本番" && (a.detail || {}).isTourStart));
     if (tourStarts.length < 2) return { hasEnoughData: false, tourCount: tourStarts.length };
@@ -5118,14 +5358,14 @@ export default function VocalTracker({ userId, userEmail }) {
     // 最も落ち込みが大きい日を「型」として提示する
     const worst = curve.reduce((min, c) => (c.avgDeviation != null && (min == null || c.avgDeviation < min.avgDeviation) ? c : min), null);
     return { hasEnoughData: true, tourCount: tourStarts.length, curve, worstDay: worst ? worst.tau : null };
-  }, [entries, profile.professions, overallThroatBaseline]);
+  }, [entries, effectiveProfessions, overallThroatBaseline]);
   // ---- ツアー耐久曲線 用データ ここまで ----
 
   // ---- lavoce-職業別データと分析の確定仕様.md §4.2: アナウンサーの話声位の日内変動 ----
   // 朝（wake）と終業後（after_work）のSFFの差Δ = SFF(終業後) − SFF(朝)。
   // 上がる人・下がる人がいて、方向自体が個人の特性のため、頑健統計（中央値・MAD）で評価する。
   const sffDiurnalVariation = useMemo(() => {
-    if (!(profile.professions || []).includes("announcer")) return { hasEnoughData: false, n: 0 };
+    if (!(effectiveProfessions || []).includes("announcer")) return { hasEnoughData: false, n: 0 };
     const sortedDates = Object.keys(entries).sort();
     const deltas = []; // { date, delta }
     sortedDates.forEach((date) => {
@@ -5143,14 +5383,36 @@ export default function VocalTracker({ userId, userEmail }) {
     const z = mad > 0 ? (today.delta - m) / mad : 0;
     const isTodayExtreme = Math.abs(z) >= 1.5;
     return { hasEnoughData: true, n: deltas.length, medianDelta: Math.round(m * 10) / 10, todayDelta: Math.round(today.delta * 10) / 10, isTodayExtreme, direction: m < 0 ? "下がります" : "上がります" };
-  }, [entries, profile.professions]);
+  }, [entries, effectiveProfessions]);
   // ---- 話声位の日内変動 用データ ここまで ----
 
   // ---- lavoce-職業別データと分析の確定仕様.md §4.1: 声楽家のパッサッジョの安定度 ----
   // 通過感の28日中央値とMADを見て、z<=-1.5が3日続いたら知らせる（頑健統計、指標設計図の
   // 「弱声の最高音」等と同じ考え方）。
+  // ---- 作業指示-教室プラン E-3: レッスンの重なり検出 ----
+  // 警告を出すだけ。自動でレッスンを動かさない・予約を拒否しない。
+  const lessonOverlaps = useMemo(() => {
+    const sorted = [...myAllLessons].sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
+    const overlapPairs = [];
+    for (let i = 0; i < sorted.length; i++) {
+      for (let j = i + 1; j < sorted.length; j++) {
+        const aStart = new Date(sorted[i].scheduled_at);
+        const aEnd = new Date(aStart.getTime() + (sorted[i].duration_minutes || 60) * 60000);
+        const bStart = new Date(sorted[j].scheduled_at);
+        if (bStart >= aEnd) break; // 時系列順なので、これ以降は重ならない
+        overlapPairs.push([sorted[i], sorted[j]]);
+      }
+    }
+    // 1日のレッスンが4件を超えた日（生徒本人にだけ、そっと知らせる）
+    const byDate = {};
+    sorted.forEach((l) => { const d = toISODate(new Date(l.scheduled_at)); (byDate[d] = byDate[d] || []).push(l); });
+    const busyDates = Object.entries(byDate).filter(([, list]) => list.length > 4).map(([d]) => d);
+    return { overlapPairs, busyDates };
+  }, [myAllLessons]);
+  // ---- レッスンの重なり検出 ここまで ----
+
   const passaggioStability = useMemo(() => {
-    if (!(profile.professions || []).includes("singer")) return { hasEnoughData: false, n: 0 };
+    if (!(effectiveProfessions || []).includes("singer")) return { hasEnoughData: false, n: 0 };
     const sortedDates = Object.keys(entries).sort();
     const byDate = [];
     sortedDates.forEach((date) => {
@@ -5166,12 +5428,12 @@ export default function VocalTracker({ userId, userEmail }) {
     const last3 = recent.slice(-3);
     const alertStreak = last3.length === 3 && last3.every((d) => mad > 0 && (d.feel - m) / mad <= -1.5);
     return { hasEnoughData: true, n: byDate.length, medianFeel: Math.round(m * 10) / 10, alertStreak, latestFeel: recent[recent.length - 1].feel };
-  }, [entries, profile.professions]);
+  }, [entries, effectiveProfessions]);
   // ---- パッサッジョの安定度 用データ ここまで ----
 
   // ---- lavoce-職業別データと分析の確定仕様.md §4.1: 声楽家の衣装・会場の効果量 ----
   const singerCostumeVenueEffects = useMemo(() => {
-    if (!(profile.professions || []).includes("singer")) return [];
+    if (!(effectiveProfessions || []).includes("singer")) return [];
     const sortedDates = Object.keys(entries).sort();
     const costumeGroups = { tight: [], other: [] };
     const acousticsGroups = { dead: [], other: [] };
@@ -5200,7 +5462,7 @@ export default function VocalTracker({ userId, userEmail }) {
       results.push({ key: "acoustics", label: "会場の響き（デッドな日）", ...acousticsRes, stars: starRatingForEffect(acousticsRes) });
     }
     return results;
-  }, [entries, profile.professions]);
+  }, [entries, effectiveProfessions]);
   // ---- 衣装・会場の効果量 用データ ここまで ----
 
   // ---- lavoce-指標設計図.md 05. 効いた習慣ランキング 用データ ----
@@ -6169,7 +6431,19 @@ export default function VocalTracker({ userId, userEmail }) {
   }
   // 指導者プラン実装仕様 §3: 招待コードの発行（先生側）。1コード=1回限り、有効期限7日。
   // 紛らわしい文字（0/O/1/l/I）を除いた文字だけを使う。
+  // 作業指示-教室プラン: この先生がまだどの教室のownerでもなければ、solo組織を1つ作る。
+  // 既に持っていれば何もしない（何度呼んでも安全）。
+  async function ensureOwnOrg() {
+    const supabase = createClient();
+    const { data: existing } = await supabase.from("memberships").select("org_id").eq("user_id", userId).eq("role", "owner").maybeSingle();
+    if (existing) return existing.org_id;
+    const { data: org, error: orgError } = await supabase.from("organizations").insert({ name: "マイ教室", kind: "solo", created_by: userId }).select().single();
+    if (orgError || !org) { console.error("教室の作成に失敗しました:", orgError); return null; }
+    await supabase.from("memberships").insert({ org_id: org.id, user_id: userId, role: "owner" });
+    return org.id;
+  }
   async function handleGenerateTeacherInvite() {
+    await ensureOwnOrg();
     const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
     const code = Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
     const supabase = createClient();
@@ -6177,6 +6451,7 @@ export default function VocalTracker({ userId, userEmail }) {
     const { error } = await supabase.from("teacher_invitations").insert({ code, teacher_id: userId, expires_at: expiresAt });
     if (error) { console.error("招待コードの発行に失敗しました:", error); return; }
     setGeneratedInviteCode(code);
+    fetchMyOrgs();
   }
   // §3.1〜3.2: 生徒側が招待コードを入力すると、まず承認画面（公開範囲の選択）を表示する。
   // ここではまだ紐付けを作らない（「つながる」を押すまでは何も確定しない）。
@@ -6204,10 +6479,18 @@ export default function VocalTracker({ userId, userEmail }) {
     });
     if (linkError) { setInviteLookupError("連携に失敗しました。もう一度お試しください。"); return; }
     await supabase.from("teacher_invitations").update({ used_at: new Date().toISOString(), used_by_student_id: userId }).eq("code", pendingInvitation.code);
+    // 作業指示-教室プラン: この先生がownerである教室があれば、レッスン日程の運営面（在籍・担当）にも
+    // 自動的に組み込む。健康データの共有範囲(share_scope)には一切影響しない、別の仕組み。
+    const { data: ownerMembership } = await supabase.from("memberships").select("org_id").eq("user_id", pendingInvitation.teacher_id).eq("role", "owner").maybeSingle();
+    if (ownerMembership) {
+      await supabase.from("enrollments").upsert({ org_id: ownerMembership.org_id, student_id: userId, status: "active" }, { onConflict: "org_id,student_id" });
+      await supabase.from("assignments").insert({ org_id: ownerMembership.org_id, teacher_id: pendingInvitation.teacher_id, student_id: userId });
+    }
     setPendingInvitation(null);
     setInviteCodeInput("");
     setShareScopeDraft(DEFAULT_SHARE_SCOPE);
     fetchTeacherLinks();
+    fetchMyOrgs();
   }
   function handleDeclineInvitation() {
     setPendingInvitation(null);
@@ -6232,7 +6515,7 @@ export default function VocalTracker({ userId, userEmail }) {
   }
   async function fetchTeacherLinks() {
     const supabase = createClient();
-    const { data: asTeacher } = await supabase.from("teacher_student_links").select("*, student:profiles!teacher_student_links_student_id_fkey(vocal_profession, display_name)").eq("teacher_id", userId).eq("status", "active");
+    const { data: asTeacher } = await supabase.from("teacher_student_links").select("*, student:profiles!teacher_student_links_student_profile_fkey(vocal_profession, display_name)").eq("teacher_id", userId).eq("status", "active");
     const { data: asStudent } = await supabase.from("teacher_student_links").select("*").eq("student_id", userId).eq("status", "active");
     setMyStudentLinks(asTeacher || []);
     setMyTeacherLinks(asStudent || []);
@@ -6267,6 +6550,312 @@ export default function VocalTracker({ userId, userEmail }) {
     setTeacherNoteSaveStatus(error ? "error" : "saved");
     setTimeout(() => setTeacherNoteSaveStatus("idle"), 1800);
   }
+
+  // 指導者プラン実装仕様 §7: レッスン日程。先生・生徒どちらも見られる（teacher_notesとは違い秘匿しない）。
+  async function fetchLessonsForLink(linkId) {
+    const supabase = createClient();
+    const { data } = await supabase.from("lessons").select("*").eq("link_id", linkId).order("scheduled_at", { ascending: true });
+    setStudentLessons(data || []);
+  }
+  const [myTeachingLessons, setMyTeachingLessons] = useState([]); // 先生として担当する全生徒のレッスンを統合したもの
+  // 先生が担当する全生徒のレッスンを、旧1:1連携（teacher_student_links経由）と
+  // 新しい教室ベース（assignments経由、org_id/teacher_idが直接入る）の両方からまとめて取得する。
+  async function fetchMyTeachingLessons() {
+    const supabase = createClient();
+    const [{ data: linkLessons }, { data: orgLessonsData }] = await Promise.all([
+      supabase.from("lessons").select("*, link:teacher_student_links!inner(teacher_id, student_id)").eq("link.teacher_id", userId).order("scheduled_at", { ascending: true }).limit(200),
+      supabase.from("lessons").select("*").eq("teacher_id", userId).order("scheduled_at", { ascending: true }).limit(200)
+    ]);
+    // 旧1:1連携のレッスンは、生徒のIDがlink.student_idの中に入っているので、扱いやすいよう正規化する。
+    const normalizedLinkLessons = (linkLessons || []).map((l) => ({ ...l, student_id: l.student_id || (l.link && l.link.student_id) }));
+    const combined = [...normalizedLinkLessons, ...(orgLessonsData || [])];
+    const seen = new Set();
+    const deduped = combined.filter((l) => (seen.has(l.id) ? false : (seen.add(l.id), true)));
+    deduped.sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
+    setMyTeachingLessons(deduped);
+    const studentIds = Array.from(new Set(deduped.map((l) => l.student_id).filter(Boolean)));
+    if (studentIds.length > 0) {
+      const { data: profilesData } = await supabase.from("profiles").select("id, display_name, vocal_profession").in("id", studentIds);
+      if (profilesData) {
+        const map = {};
+        profilesData.forEach((p) => { map[p.id] = { displayName: p.display_name || "", vocalProfession: p.vocal_profession }; });
+        setOrgProfileNames((prev) => ({ ...prev, ...map }));
+      }
+    }
+  }
+  async function handleCreateLesson(linkId) {
+    if (!newLessonDate) return;
+    const supabase = createClient();
+    const scheduledAt = new Date(`${newLessonDate}T${newLessonTime}:00`).toISOString();
+    const { error } = await supabase.from("lessons").insert({ link_id: linkId, scheduled_at: scheduledAt, note: newLessonNote, created_by: userId });
+    if (error) { console.error("レッスン日程の登録に失敗しました:", error); return; }
+    setNewLessonDate(""); setNewLessonNote("");
+    fetchLessonsForLink(linkId);
+  }
+  async function handleDeleteLesson(lessonId, linkId) {
+    const supabase = createClient();
+    await supabase.from("lessons").delete().eq("id", lessonId);
+    fetchLessonsForLink(linkId);
+  }
+  // 生徒として、自分の直近のレッスン予定を取得する（複数の先生分をまとめて）。
+  async function fetchMyUpcomingLessons() {
+    const supabase = createClient();
+    const { data } = await supabase.from("lessons").select("*, link:teacher_student_links!inner(student_id)")
+      .eq("link.student_id", userId).order("scheduled_at", { ascending: true }).limit(100);
+    setMyUpcomingLessons(data || []);
+  }
+
+  // 指導者プラン実装仕様 §8: 記録へのコメント。teacher_notesと違い、生徒にも見える前提のもの。
+  async function fetchCommentsForLink(linkId) {
+    const supabase = createClient();
+    const { data } = await supabase.from("entry_comments").select("*").eq("link_id", linkId).order("entry_date", { ascending: false });
+    const byDate = {};
+    (data || []).forEach((c) => { (byDate[c.entry_date] = byDate[c.entry_date] || []).push(c); });
+    setStudentComments(byDate);
+  }
+  async function handleCreateComment(linkId, entryDate, body) {
+    if (!body || !body.trim()) return;
+    const supabase = createClient();
+    const { error } = await supabase.from("entry_comments").insert({ link_id: linkId, entry_date: entryDate, body: body.trim(), created_by: userId });
+    if (error) { console.error("コメントの投稿に失敗しました:", error); return; }
+    setNewCommentDraft("");
+    fetchCommentsForLink(linkId);
+  }
+  // 生徒として、自分が受け取った直近のコメントを取得する（複数の先生分をまとめて）。
+  async function fetchMyRecentComments() {
+    const supabase = createClient();
+    const { data } = await supabase.from("entry_comments").select("*, link:teacher_student_links!inner(student_id)")
+      .eq("link.student_id", userId).order("created_at", { ascending: false }).limit(10);
+    setMyRecentComments(data || []);
+  }
+
+  // 職業別項目の再設計と学ぶ画面 §7: 学ぶ画面。章の開閉状態は保存し、次に開いたときも前回のままにする。
+  async function fetchLearnState() {
+    const supabase = createClient();
+    const { data: chapters } = await supabase.from("chapter_state").select("*").eq("user_id", userId);
+    if (chapters) {
+      const map = {};
+      chapters.forEach((c) => { map[`${c.profession_key}:${c.chapter}`] = c.is_open; });
+      setLearnOpenChapters(map);
+    }
+    const { data: progress } = await supabase.from("article_progress").select("*").eq("user_id", userId);
+    if (progress) {
+      const map = {};
+      progress.forEach((p) => { if (p.read_at) map[p.article_id] = p.read_at; });
+      setLearnReadArticles(map);
+    }
+  }
+  async function handleToggleChapter(professionKey, chapter) {
+    const key = `${professionKey}:${chapter}`;
+    const nextOpen = !learnOpenChapters[key];
+    setLearnOpenChapters((prev) => ({ ...prev, [key]: nextOpen }));
+    const supabase = createClient();
+    await supabase.from("chapter_state").upsert(
+      { user_id: userId, profession_key: professionKey, chapter, is_open: nextOpen },
+      { onConflict: "user_id,profession_key,chapter" }
+    );
+  }
+  // §7.1: 既読は自動でつける（最後までスクロールしたら）。手動でも外せる。
+  async function handleMarkArticleRead(articleId, read) {
+    setLearnReadArticles((prev) => {
+      const next = { ...prev };
+      if (read) next[articleId] = new Date().toISOString(); else delete next[articleId];
+      return next;
+    });
+    const supabase = createClient();
+    await supabase.from("article_progress").upsert(
+      { user_id: userId, article_id: articleId, read_at: read ? new Date().toISOString() : null },
+      { onConflict: "user_id,article_id" }
+    );
+  }
+  // §7.3: 記事メモ。ハイライトメモと記事メモの両方をこの1関数でまとめて扱う。
+  async function fetchArticleNotes(articleId) {
+    const supabase = createClient();
+    const { data } = await supabase.from("article_notes").select("*").eq("user_id", userId).eq("article_id", articleId).is("deleted_at", null).order("created_at", { ascending: true });
+    setArticleNotes((prev) => ({ ...prev, [articleId]: data || [] }));
+  }
+  async function handleCreateArticleNote(articleId, kind, body, anchorText) {
+    if (!body || !body.trim()) return;
+    const supabase = createClient();
+    const { error } = await supabase.from("article_notes").insert({
+      user_id: userId, article_id: articleId, kind, anchor_text: anchorText || null, body: body.trim().slice(0, 500), shared_with_teacher: false
+    });
+    if (error) { console.error("メモの保存に失敗しました:", error); return; }
+    setNewArticleNoteDraft("");
+    fetchArticleNotes(articleId);
+  }
+  async function handleDeleteArticleNote(noteId, articleId) {
+    const supabase = createClient();
+    await supabase.from("article_notes").update({ deleted_at: new Date().toISOString() }).eq("id", noteId);
+    fetchArticleNotes(articleId);
+  }
+
+  // ---- 作業指示-教室プラン §B・C・E ----
+  async function fetchMyOrgs() {
+    const supabase = createClient();
+    const { data } = await supabase.from("memberships").select("*, org:organizations(*)").eq("user_id", userId);
+    setMyOrgs(data || []);
+  }
+  const [myEnrollments, setMyEnrollments] = useState([]); // 生徒として在籍している教室一覧
+  const [myAssignedTeachers, setMyAssignedTeachers] = useState({}); // orgId -> 担当講師のuserId配列
+  // 作業指示-教室プラン D-1: つながり画面用。自分が生徒として在籍している教室と、
+  // それぞれの教室での担当講師を取得する。
+  async function fetchMyEnrollments() {
+    const supabase = createClient();
+    const { data: enrollments } = await supabase.from("enrollments").select("*, org:organizations(*)").eq("student_id", userId).eq("status", "active");
+    setMyEnrollments(enrollments || []);
+    if (enrollments && enrollments.length > 0) {
+      const { data: assignments } = await supabase.from("assignments").select("*").eq("student_id", userId).is("ended_at", null).in("org_id", enrollments.map((e) => e.org_id));
+      const map = {};
+      (assignments || []).forEach((a) => { (map[a.org_id] = map[a.org_id] || []).push(a.teacher_id); });
+      setMyAssignedTeachers(map);
+      const ids = (assignments || []).map((a) => a.teacher_id);
+      if (ids.length > 0) {
+        const { data: profilesData } = await supabase.from("profiles").select("id, display_name, vocal_profession").in("id", ids);
+        if (profilesData) {
+          const nameMap = {};
+          profilesData.forEach((p) => { nameMap[p.id] = { displayName: p.display_name || "", vocalProfession: p.vocal_profession }; });
+          setOrgProfileNames((prev) => ({ ...prev, ...nameMap }));
+        }
+      }
+    }
+  }
+  // D-1: 「つながりを解除する」。教室から抜ける（enrollment.statusを'left'にする）。
+  async function handleLeaveOrg(enrollmentId) {
+    if (!window.confirm("この教室とのつながりを解除しますか？担当の先生からは、以後レッスン日程が見えなくなります。")) return;
+    const supabase = createClient();
+    await supabase.from("enrollments").update({ status: "left", left_at: new Date().toISOString() }).eq("id", enrollmentId);
+    fetchMyEnrollments();
+  }
+  const [orgProfileNames, setOrgProfileNames] = useState({}); // userId -> {displayName, vocalProfession}
+  async function fetchOrgDetail(orgId) {
+    const supabase = createClient();
+    const [{ data: members }, { data: enrollments }, { data: assignments }, { data: lessons }] = await Promise.all([
+      supabase.from("memberships").select("*").eq("org_id", orgId),
+      supabase.from("enrollments").select("*").eq("org_id", orgId).eq("status", "active"),
+      supabase.from("assignments").select("*").eq("org_id", orgId).is("ended_at", null),
+      supabase.from("lessons").select("*").eq("org_id", orgId).order("scheduled_at", { ascending: true })
+    ]);
+    setOrgMembers((prev) => ({ ...prev, [orgId]: members || [] }));
+    setOrgEnrollments((prev) => ({ ...prev, [orgId]: enrollments || [] }));
+    setOrgAssignments((prev) => ({ ...prev, [orgId]: assignments || [] }));
+    setOrgLessons((prev) => ({ ...prev, [orgId]: lessons || [] }));
+    // 表示名の引き当て：外部キーの埋め込みは使わず、関わる全ユーザーIDをまとめて別クエリで引く
+    // （teacher_student_linksで経験したPostgRESTの直接外部キー制約の問題を避けるため）。
+    const ids = new Set();
+    (members || []).forEach((m) => ids.add(m.user_id));
+    (enrollments || []).forEach((e) => ids.add(e.student_id));
+    (assignments || []).forEach((a) => { ids.add(a.teacher_id); ids.add(a.student_id); });
+    if (ids.size > 0) {
+      const { data: profilesData } = await supabase.from("profiles").select("id, display_name, vocal_profession").in("id", Array.from(ids));
+      if (profilesData) {
+        const map = {};
+        profilesData.forEach((p) => { map[p.id] = { displayName: p.display_name || "", vocalProfession: p.vocal_profession }; });
+        setOrgProfileNames((prev) => ({ ...prev, ...map }));
+      }
+    }
+  }
+  function orgDisplayName(userId) {
+    const p = orgProfileNames[userId];
+    if (p && p.displayName) return p.displayName;
+    return `${userId.slice(0, 8)}…`;
+  }
+  // C-1: 先生を教室に招待する。招待コードの画面には必ず教室名を表示すること。
+  async function handleGenerateOrgInvite(orgId) {
+    const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+    const code = Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+    const supabase = createClient();
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    const { error } = await supabase.from("org_invitations").insert({ code, org_id: orgId, invited_by: userId, expires_at: expiresAt });
+    if (error) { console.error("教室招待コードの発行に失敗しました:", error); return; }
+    setGeneratedOrgInviteCode(code);
+  }
+  async function handleLookupOrgInviteCode(codeInput) {
+    setOrgInviteLookupError("");
+    const code = (codeInput || "").trim().toUpperCase();
+    if (!code) return;
+    const supabase = createClient();
+    const { data, error } = await supabase.from("org_invitations").select("*, org:organizations(name)").eq("code", code).maybeSingle();
+    if (error || !data) { setOrgInviteLookupError("コードが見つかりませんでした。"); return; }
+    if (data.used_at || new Date(data.expires_at) < new Date()) { setOrgInviteLookupError("このコードは使用済み、または期限切れです。"); return; }
+    setPendingOrgInvitation(data);
+  }
+  async function handleAcceptOrgInvitation() {
+    if (!pendingOrgInvitation) return;
+    const supabase = createClient();
+    const { error } = await supabase.from("memberships").insert({ org_id: pendingOrgInvitation.org_id, user_id: userId, role: "teacher" });
+    if (error) { setOrgInviteLookupError("参加に失敗しました。もう一度お試しください。"); return; }
+    await supabase.from("org_invitations").update({ used_at: new Date().toISOString(), used_by: userId }).eq("code", pendingOrgInvitation.code);
+    setPendingOrgInvitation(null);
+    setOrgInviteCodeInput("");
+    fetchMyOrgs();
+  }
+  // C-2: 役割の変更（最後のownerは降格・削除できない）
+  async function handleChangeRole(orgId, membershipId, targetUserId, newRole) {
+    const members = orgMembers[orgId] || [];
+    const owners = members.filter((m) => m.role === "owner");
+    if (owners.length === 1 && owners[0].user_id === targetUserId && newRole !== "owner") {
+      alert("最後のownerを降格することはできません。");
+      return;
+    }
+    const supabase = createClient();
+    await supabase.from("memberships").update({ role: newRole }).eq("id", membershipId);
+    fetchOrgDetail(orgId);
+  }
+  // C-2: 担当の割り当て・解除。担当が変わったら生徒に通知する（entry_commentsの仕組みは使わず、
+  // 今回はシンプルにログのみ。通知UIは今回のスコープ外とする）。
+  async function handleAssignTeacherToStudent(orgId, teacherId, studentId) {
+    const supabase = createClient();
+    const { error } = await supabase.from("assignments").insert({ org_id: orgId, teacher_id: teacherId, student_id: studentId });
+    if (error) { console.error("担当の割り当てに失敗しました:", error); return; }
+    fetchOrgDetail(orgId);
+  }
+  async function handleUnassignTeacher(orgId, assignmentId) {
+    const supabase = createClient();
+    await supabase.from("assignments").update({ ended_at: new Date().toISOString() }).eq("id", assignmentId);
+    fetchOrgDetail(orgId);
+  }
+  // E-1: 教室のレッスンを作成する。teacherNoteは先生専用（生徒に表示しない）。
+  async function handleCreateOrgLesson(orgId, teacherId, studentId, dateStr, timeStr, note, teacherNote) {
+    if (!dateStr) return;
+    const supabase = createClient();
+    const scheduledAt = new Date(`${dateStr}T${timeStr}:00`).toISOString();
+    const { error } = await supabase.from("lessons").insert({
+      org_id: orgId, teacher_id: teacherId, student_id: studentId,
+      scheduled_at: scheduledAt, note: note || "", teacher_note: teacherNote || "", created_by: userId
+    });
+    if (error) { console.error("レッスンの登録に失敗しました:", error); return; }
+    fetchOrgDetail(orgId);
+  }
+  // E-2: 生徒として、教室をまたいで統合した自分の全レッスンを取得する（既存の1:1レッスンと、
+  // 新しい教室ベースのレッスンの両方を1つに合わせる）。
+  async function fetchMyAllLessons() {
+    const supabase = createClient();
+    const [{ data: linkLessons }, { data: orgLessonsData }] = await Promise.all([
+      supabase.from("lessons").select("*, link:teacher_student_links!inner(student_id, teacher_id)").eq("link.student_id", userId).order("scheduled_at", { ascending: true }).limit(100),
+      supabase.from("lessons").select("*").eq("student_id", userId).order("scheduled_at", { ascending: true }).limit(100)
+    ]);
+    // 旧1:1連携のレッスンは、先生のIDがlink.teacher_idの中に入っているので、
+    // カレンダー・一覧の両方で扱いやすいよう、lessonオブジェクト自身にteacher_idとして持たせる。
+    const normalizedLinkLessons = (linkLessons || []).map((l) => ({ ...l, teacher_id: l.teacher_id || (l.link && l.link.teacher_id) }));
+    const combined = [...normalizedLinkLessons, ...(orgLessonsData || [])];
+    const seen = new Set();
+    const deduped = combined.filter((l) => (seen.has(l.id) ? false : (seen.add(l.id), true)));
+    deduped.sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
+    setMyAllLessons(deduped);
+    setMyUpcomingLessons(deduped); // 既存のレッスンモード表示もこの統合済みリストを使う
+    // 先生の表示名をまとめて取得する（既存のorgDisplayName用のキャッシュに統合する）。
+    const teacherIds = Array.from(new Set(deduped.map((l) => l.teacher_id).filter(Boolean)));
+    if (teacherIds.length > 0) {
+      const { data: profilesData } = await supabase.from("profiles").select("id, display_name, vocal_profession").in("id", teacherIds);
+      if (profilesData) {
+        const map = {};
+        profilesData.forEach((p) => { map[p.id] = { displayName: p.display_name || "", vocalProfession: p.vocal_profession }; });
+        setOrgProfileNames((prev) => ({ ...prev, ...map }));
+      }
+    }
+  }
+  // ---- 作業指示-教室プラン ここまで ----
 
   async function handleGenerateLineLinkCode() {
     const code = Array.from({ length: 6 }, () => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)]).join("");
@@ -6360,6 +6949,40 @@ export default function VocalTracker({ userId, userEmail }) {
     setDOverrideChoice(null);
     setShowTessituraAccordion(false);
     setDuplicateWarning(null);
+  }
+
+  // 職業別項目の再設計と学ぶ画面 §5: 役マスタ・案件マスタ（レパートリーと全く同じ仕組み）。
+  async function handleSaveRole(roleName, { workTitle, pitchLowNote, pitchHighNote, voiceQuality } = {}) {
+    if (!roleName) return;
+    const supabase = createClient();
+    const { error } = await supabase.from("role_master").upsert({
+      user_id: userId, role_name: roleName, work_title: workTitle || "",
+      pitch_low_note: pitchLowNote || null, pitch_high_note: pitchHighNote || null, voice_quality: voiceQuality || null
+    }, { onConflict: "user_id,role_name" });
+    if (error) { console.error("役マスタの登録に失敗しました:", error); return; }
+    setRoleMasterMap((prev) => ({ ...prev, [roleName]: { workTitle: workTitle || "", pitchLowNote: pitchLowNote || null, pitchHighNote: pitchHighNote || null, voiceQuality: voiceQuality || null } }));
+  }
+  async function handleSaveProject(projectName, { scriptType, speechSpeed, isLive } = {}) {
+    if (!projectName) return;
+    const supabase = createClient();
+    const { error } = await supabase.from("project_master").upsert({
+      user_id: userId, project_name: projectName, script_type: scriptType || null, speech_speed: speechSpeed || null, is_live: !!isLive
+    }, { onConflict: "user_id,project_name" });
+    if (error) { console.error("案件マスタの登録に失敗しました:", error); return; }
+    setProjectMasterMap((prev) => ({ ...prev, [projectName]: { scriptType: scriptType || null, speechSpeed: speechSpeed || null, isLive: !!isLive } }));
+  }
+  // 職業別項目の再設計と学ぶ画面 §3.1: 歌唱言語をレパートリーに登録する（曲ごとに1回だけ）。
+  async function handleSaveSingingLanguage(repertoireName, language) {
+    if (!repertoireName) return;
+    const supabase = createClient();
+    const existing = repertoireTessituraMap[repertoireName] || {};
+    const { error } = await supabase.from("repertoire_tessitura").upsert({
+      user_id: userId, repertoire_name: repertoireName, singing_language: language,
+      top_note: existing.topNote || null, tessitura_note: existing.tessituraNote || null,
+      d_override: existing.dOverride != null ? existing.dOverride : null, confidence: existing.confidence || "coarse"
+    }, { onConflict: "user_id,repertoire_name" });
+    if (error) { console.error("歌唱言語の登録に失敗しました:", error); return; }
+    setRepertoireTessituraMap((prev) => ({ ...prev, [repertoireName]: { ...(prev[repertoireName] || {}), singingLanguage: language } }));
   }
 
   // lavoce-レパートリー負荷パッチ.md §2.5: 表記ゆれした曲目を2つ選んで統合する。
@@ -6725,42 +7348,48 @@ export default function VocalTracker({ userId, userEmail }) {
             </button>
           </div>
         </div>
-        {!lessonMode && (
-          <nav className="max-w-3xl mx-auto flex gap-1 mt-5 overflow-x-auto">
-            {TABS.map((tab) => (
-              tab.href ? (
-                <a
-                  key={tab.key}
-                  href={tab.key === "voicetheory" ? (PROFESSION_THEORY_PAGES[profile.vocal_profession] || tab.href) : tab.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
-                  style={{ background: "transparent", color: C.inkSoft }}
-                >
-                  <tab.icon size={15} />
-                  {t(tab.labelKey)}
-                </a>
-              ) : (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
-                  style={{ background: activeTab === tab.key ? C.curtain : "transparent", color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
-                >
-                  <tab.icon size={15} />
-                  {t(tab.labelKey)}
-                </button>
-              )
-            ))}
-            {myStudentLinks.length > 0 && (
-              <button onClick={() => setActiveTab("students")}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
-                style={{ background: activeTab === "students" ? C.curtain : "transparent", color: activeTab === "students" ? "#FFFDF8" : C.inkSoft }}>
-                <GraduationCap size={15} />生徒
-              </button>
-            )}
-          </nav>
-        )}
+        {!lessonMode && (() => {
+          // レッスン項目は、出現するときは「おうち」の直前に入れる。
+          const hasTeacherLessonTab = myStudentLinks.length > 0;
+          const hasStudentLessonTab = myAllLessons.length > 0 || myTeacherLinks.length > 0;
+          const displayTabs = [];
+          TABS.forEach((tab) => {
+            if (tab.key === "garden") {
+              if (hasTeacherLessonTab) displayTabs.push({ key: "students", labelKey: null, label: "レッスン", icon: GraduationCap });
+              if (hasStudentLessonTab) displayTabs.push({ key: "mylessons", labelKey: null, label: "レッスン", icon: GraduationCap });
+            }
+            displayTabs.push(tab);
+          });
+          return (
+            <nav className="max-w-3xl mx-auto flex gap-1 mt-5 overflow-x-auto">
+              {displayTabs.map((tab) => (
+                tab.href ? (
+                  <a
+                    key={tab.key}
+                    href={tab.key === "voicetheory" ? (PROFESSION_THEORY_PAGES[profile.vocal_profession] || tab.href) : tab.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
+                    style={{ background: "transparent", color: C.inkSoft }}
+                  >
+                    <tab.icon size={15} />
+                    {t(tab.labelKey)}
+                  </a>
+                ) : (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveTab(tab.key)}
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
+                    style={{ background: activeTab === tab.key ? C.curtain : "transparent", color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
+                  >
+                    <tab.icon size={15} />
+                    {tab.labelKey ? t(tab.labelKey) : tab.label}
+                  </button>
+                )
+              ))}
+            </nav>
+          );
+        })()}
       </header>
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 pb-16">
@@ -6777,7 +7406,51 @@ export default function VocalTracker({ userId, userEmail }) {
               <p className="text-xs mt-2 rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
                 🔒 先生には見えません：メンタルの日記・気持ちタグ・体重・食事の詳細・既往症
               </p>
+              {(() => {
+                const nextLesson = myUpcomingLessons.find((l) => new Date(l.scheduled_at) >= new Date());
+                return nextLesson && (
+                  <p className="text-xs mt-2 rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                    次回のレッスン：{new Date(nextLesson.scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                    {nextLesson.note ? `　${nextLesson.note}` : ""}
+                  </p>
+                );
+              })()}
+              {myRecentComments.length > 0 && (
+                <div className="mt-2 space-y-1.5">
+                  {myRecentComments.slice(0, 3).map((c) => (
+                    <p key={c.id} className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                      💬 {c.entry_date.slice(5)}の記録に：{c.body}
+                    </p>
+                  ))}
+                </div>
+              )}
             </div>
+
+            {myUpcomingLessons.length > 0 && (
+              <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                <h3 className="ff-display italic text-lg mb-1">レッスンカレンダー</h3>
+                <LessonCalendar lessons={myUpcomingLessons} selectable={false} getTeacherName={orgDisplayName} />
+              </div>
+            )}
+
+            {lessonOverlaps.overlapPairs.filter(([a]) => new Date(a.scheduled_at) >= new Date()).length > 0 && (
+              <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                <h3 className="ff-display italic text-lg mb-2">⚠ レッスンの重なり</h3>
+                <div className="space-y-2">
+                  {lessonOverlaps.overlapPairs.filter(([a]) => new Date(a.scheduled_at) >= new Date()).map(([a, b], i) => (
+                    <p key={i} className="text-sm">
+                      {new Date(a.scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", weekday: "short", hour: "2-digit", minute: "2-digit" })}が2件重なっています
+                      {a.note && `　・${a.note}`}{b.note && `　・${b.note}`}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            )}
+            {lessonOverlaps.busyDates.filter((d) => d >= todayISO()).length > 0 && (
+              <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
+                {lessonOverlaps.busyDates.filter((d) => d >= todayISO())[0]}は、レッスンが4件を超えて入っています。
+              </p>
+            )}
 
             <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
               <h3 className="ff-display italic text-lg mb-1">直近4週の推移</h3>
@@ -6847,40 +7520,11 @@ export default function VocalTracker({ userId, userEmail }) {
 
             <button
               type="button"
-              onMouseDown={() => {
-                setLessonExitProgress(0);
-                const start = Date.now();
-                lessonExitTimerRef.current = setInterval(() => {
-                  const elapsed = Date.now() - start;
-                  setLessonExitProgress(Math.min(100, (elapsed / 3000) * 100));
-                  if (elapsed >= 3000) {
-                    clearInterval(lessonExitTimerRef.current);
-                    setLessonMode(false);
-                    setLessonExitProgress(0);
-                  }
-                }, 50);
-              }}
-              onMouseUp={() => { clearInterval(lessonExitTimerRef.current); setLessonExitProgress(0); }}
-              onMouseLeave={() => { clearInterval(lessonExitTimerRef.current); setLessonExitProgress(0); }}
-              onTouchStart={() => {
-                setLessonExitProgress(0);
-                const start = Date.now();
-                lessonExitTimerRef.current = setInterval(() => {
-                  const elapsed = Date.now() - start;
-                  setLessonExitProgress(Math.min(100, (elapsed / 3000) * 100));
-                  if (elapsed >= 3000) {
-                    clearInterval(lessonExitTimerRef.current);
-                    setLessonMode(false);
-                    setLessonExitProgress(0);
-                  }
-                }, 50);
-              }}
-              onTouchEnd={() => { clearInterval(lessonExitTimerRef.current); setLessonExitProgress(0); }}
-              className="w-full py-3 rounded-full text-sm font-medium relative overflow-hidden"
+              onClick={() => setLessonMode(false)}
+              className="w-full py-3 rounded-full text-sm font-medium"
               style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}
             >
-              <span style={{ position: "absolute", inset: 0, left: 0, width: `${lessonExitProgress}%`, background: "rgba(184,49,49,0.15)" }} />
-              <span style={{ position: "relative" }}>終了（3秒長押し）</span>
+              終了する
             </button>
           </div>
         ) : loading ? (
@@ -7191,7 +7835,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           <div className="space-y-2">
                         {(formData.voiceEntries || []).slice().sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0)).map((entry) => (
                           editingVoiceEntryId === entry.id ? (
-                            <VoiceEntryEditor key={entry.id} entry={entry} professions={profile.professions} t={t}
+                            <VoiceEntryEditor key={entry.id} entry={entry} professions={effectiveProfessions} t={t}
                               onChange={(patch) => updateVoiceEntry(entry.id, patch)}
                               onRemove={() => removeVoiceEntry(entry.id)}
                               onClose={() => setEditingVoiceEntryId(null)} />
@@ -7897,7 +8541,12 @@ export default function VocalTracker({ userId, userEmail }) {
                                 handleSaveRepertoire={handleSaveRepertoire}
                                 tessituraSaving={tessituraSaving}
                                 songFactorResolver={songFactorResolver}
-                                professions={profile.professions}
+                                professions={effectiveProfessions}
+                                roleMasterMap={roleMasterMap}
+                                projectMasterMap={projectMasterMap}
+                                handleSaveRole={handleSaveRole}
+                                handleSaveProject={handleSaveProject}
+                                handleSaveSingingLanguage={handleSaveSingingLanguage}
                                 t={t}
                               />
                             ))}
@@ -7963,6 +8612,18 @@ export default function VocalTracker({ userId, userEmail }) {
                         <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
                           「今日は歌っていない・収録していない」日でも、レッスンで教える・会議・電話などの発話は、発声負荷（ACWR）の計算に反映されます。
                         </p>
+                        {effectiveProfessions.includes("announcer") && (
+                          <details className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                            <summary className="cursor-pointer">＋詳しく記録する</summary>
+                            <div className="flex items-center gap-2 mt-1.5">
+                              <span className="flex-shrink-0">最長の連続発話ブロック</span>
+                              <MiniNumber value={formData.longestSpeechBlockMinutes ?? ""} placeholder="0"
+                                onChange={(v) => setFormData((f) => ({ ...f, longestSpeechBlockMinutes: v === "" ? null : Number(v) }))} />
+                              <span className="flex-shrink-0">分</span>
+                            </div>
+                            <p className="mt-1">合計時間より、休みなく話し続けた長さが効きます。</p>
+                          </details>
+                        )}
                       </div>
 
                     </SectionCard>
@@ -8347,6 +9008,70 @@ export default function VocalTracker({ userId, userEmail }) {
               </div>
             )}
 
+            {activeTab === "mylessons" && (
+              <div className="space-y-4">
+                <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>レッスン</h2>
+                <p className="text-xs" style={{ color: C.inkSoft }}>
+                  先生と共有しているのはレッスンの日程だけです。声・症状・睡眠などの記録は、別に許可した場合だけ共有されます。
+                </p>
+
+                {myAllLessons.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <LessonCalendar lessons={myAllLessons} selectable={false} getTeacherName={orgDisplayName} />
+                  </div>
+                )}
+
+                {lessonOverlaps.overlapPairs.filter(([a]) => new Date(a.scheduled_at) >= new Date()).length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                    <h3 className="ff-display italic text-lg mb-2">⚠ レッスンの重なり</h3>
+                    <div className="space-y-2">
+                      {lessonOverlaps.overlapPairs.filter(([a]) => new Date(a.scheduled_at) >= new Date()).map(([a, b], i) => (
+                        <p key={i} className="text-sm">
+                          {new Date(a.scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", weekday: "short", hour: "2-digit", minute: "2-digit" })}が2件重なっています
+                          {a.note && `　・${a.note}`}{b.note && `　・${b.note}`}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-3">予定一覧</h3>
+                  {myAllLessons.filter((l) => new Date(l.scheduled_at) >= new Date()).length === 0 && (
+                    <p className="text-xs" style={{ color: C.inkSoft }}>今後のレッスンはまだありません。</p>
+                  )}
+                  <div className="space-y-1.5">
+                    {myAllLessons.filter((l) => new Date(l.scheduled_at) >= new Date()).map((l) => (
+                      <div key={l.id} className="rounded-lg p-2.5 text-xs" style={{ background: C.paper }}>
+                        {new Date(l.scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", weekday: "short", hour: "2-digit", minute: "2-digit" })}
+                        {l.teacher_id && <span>　{orgDisplayName(l.teacher_id)}先生</span>}
+                        {l.note ? `　${l.note}` : ""}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {myEnrollments.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-3">所属している教室</h3>
+                    <div className="space-y-2">
+                      {myEnrollments.map((en) => {
+                        const teacherIds = myAssignedTeachers[en.org_id] || [];
+                        return (
+                          <div key={en.id} className="rounded-xl p-3" style={{ background: C.paper }}>
+                            <p className="text-sm font-medium">{en.org.name}</p>
+                            {teacherIds.map((tid) => (
+                              <p key={tid} className="text-xs mt-0.5" style={{ color: C.inkSoft }}>担当：{orgDisplayName(tid)}</p>
+                            ))}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {activeTab === "students" && (
               viewingStudentLink ? (() => {
                 const link = viewingStudentLink;
@@ -8386,34 +9111,86 @@ export default function VocalTracker({ userId, userEmail }) {
 
                     {(scope.voice || scope.symptoms || scope.sleep) && recentDates.length > 0 && (
                       <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                        <h3 className="ff-display italic text-lg mb-3">直近の記録</h3>
+                        <h3 className="ff-display italic text-lg mb-1">直近の記録</h3>
+                        <p className="text-xs mb-3" style={{ color: C.inkSoft }}>各日にコメントを残せます。生徒にも表示されます。</p>
                         <div className="space-y-2">
                           {recentDates.map((date) => {
                             const e = studentEntries[date];
+                            const comments = studentComments[date] || [];
                             return (
-                              <div key={date} className="rounded-xl p-2.5 flex items-center justify-between text-xs" style={{ background: C.paper }}>
-                                <span className="ff-mono" style={{ color: C.inkSoft }}>{date.slice(5)}</span>
-                                <div className="flex gap-3">
-                                  {scope.voice && (
-                                    <span style={{ color: C.ink }}>
-                                      喉{typeof e.throatCondition === "number" ? e.throatCondition.toFixed(1) : "-"}
-                                    </span>
-                                  )}
-                                  {scope.symptoms && (e.throatSymptoms || []).length > 0 && (
-                                    <span style={{ color: C.curtain }}>症状{e.throatSymptoms.length}件</span>
-                                  )}
-                                  {scope.sleep && (
-                                    <span style={{ color: C.ink }}>
-                                      睡眠{typeof e.sleepHours === "number" ? `${e.sleepHours}h` : "-"}
-                                    </span>
-                                  )}
+                              <div key={date} className="rounded-xl p-2.5" style={{ background: C.paper }}>
+                                <div className="flex items-center justify-between text-xs">
+                                  <span className="ff-mono" style={{ color: C.inkSoft }}>{date.slice(5)}</span>
+                                  <div className="flex gap-3">
+                                    {scope.voice && (
+                                      <span style={{ color: C.ink }}>
+                                        喉{typeof e.throatCondition === "number" ? e.throatCondition.toFixed(1) : "-"}
+                                      </span>
+                                    )}
+                                    {scope.symptoms && (e.throatSymptoms || []).length > 0 && (
+                                      <span style={{ color: C.curtain }}>症状{e.throatSymptoms.length}件</span>
+                                    )}
+                                    {scope.sleep && (
+                                      <span style={{ color: C.ink }}>
+                                        睡眠{typeof e.sleepHours === "number" ? `${e.sleepHours}h` : "-"}
+                                      </span>
+                                    )}
+                                  </div>
                                 </div>
+                                {comments.length > 0 && (
+                                  <div className="mt-2 space-y-1">
+                                    {comments.map((c) => (
+                                      <p key={c.id} className="text-xs rounded-lg p-1.5" style={{ background: C.card, color: C.ink }}>💬 {c.body}</p>
+                                    ))}
+                                  </div>
+                                )}
+                                <details className="mt-1.5">
+                                  <summary className="text-xs cursor-pointer" style={{ color: C.inkSoft }}>コメントする</summary>
+                                  <div className="flex gap-1.5 mt-1.5">
+                                    <input type="text" value={newCommentDraft} onChange={(ev) => setNewCommentDraft(ev.target.value)}
+                                      placeholder="この日の記録へのコメント" maxLength={500}
+                                      className="flex-1 rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.card }} />
+                                    <button type="button" onClick={() => handleCreateComment(link.id, date, newCommentDraft)}
+                                      className="px-3 py-1.5 rounded-lg text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                                      送信
+                                    </button>
+                                  </div>
+                                </details>
                               </div>
                             );
                           })}
                         </div>
                       </div>
                     )}
+
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <h3 className="ff-display italic text-lg mb-1">レッスン日程</h3>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>生徒にも表示されます。日付をタップすると、下の欄にその日が入ります。</p>
+                      <LessonCalendar lessons={studentLessons} selectable onDayClick={(iso) => setNewLessonDate(iso)} />
+                      {studentLessons.filter((l) => new Date(l.scheduled_at) >= new Date()).length > 0 && (
+                        <div className="space-y-1.5 my-3">
+                          {studentLessons.filter((l) => new Date(l.scheduled_at) >= new Date()).map((l) => (
+                            <div key={l.id} className="rounded-lg p-2 flex items-center justify-between text-xs" style={{ background: C.paper }}>
+                              <span>{new Date(l.scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}{l.note ? `　${l.note}` : ""}</span>
+                              <button type="button" onClick={() => handleDeleteLesson(l.id, link.id)} style={{ color: C.inkSoft }}><X size={13} /></button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      <div className="flex gap-1.5">
+                        <input type="date" value={newLessonDate} onChange={(e) => setNewLessonDate(e.target.value)}
+                          className="rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.paper }} />
+                        <input type="time" value={newLessonTime} onChange={(e) => setNewLessonTime(e.target.value)}
+                          className="rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.paper }} />
+                      </div>
+                      <input type="text" value={newLessonNote} onChange={(e) => setNewLessonNote(e.target.value)}
+                        placeholder="メモ（任意）" maxLength={100}
+                        className="w-full rounded-lg border p-1.5 text-xs mt-1.5" style={{ borderColor: C.line, background: C.paper }} />
+                      <button type="button" onClick={() => handleCreateLesson(link.id)}
+                        className="w-full py-2 rounded-full text-xs font-medium mt-2" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                        レッスンを追加
+                      </button>
+                    </div>
 
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">先生用メモ</h3>
@@ -8435,7 +9212,17 @@ export default function VocalTracker({ userId, userEmail }) {
                 );
               })() : (
               <div className="space-y-4">
-                <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>生徒一覧（{myStudentLinks.length}人）</h2>
+                <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>レッスン</h2>
+
+                {myTeachingLessons.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">全生徒のレッスンカレンダー</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>担当する生徒すべてのレッスンを、1つのカレンダーにまとめています。</p>
+                    <LessonCalendar lessons={myTeachingLessons} selectable={false} getStudentName={orgDisplayName} />
+                  </div>
+                )}
+
+                <h3 className="ff-display italic text-lg" style={{ color: C.ink }}>生徒一覧（{myStudentLinks.length}人）</h3>
                 {myStudentLinks.map((link) => {
                   const scope = link.share_scope || {};
                   const studentEntries = studentEntriesCache[link.student_id];
@@ -8451,6 +9238,8 @@ export default function VocalTracker({ userId, userEmail }) {
                           setViewingStudentLink(link);
                           fetchStudentEntries(link.student_id);
                           fetchTeacherNote(link.id);
+                          fetchLessonsForLink(link.id);
+                          fetchCommentsForLink(link.id);
                         }}
                         className="w-full text-left p-4 flex items-center justify-between">
                         <div>
@@ -8841,7 +9630,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   />
                 )}
 
-                {(profile.professions || []).includes("voice_actor") && (
+                {(effectiveProfessions || []).includes("voice_actor") && (
                   screamRecoveryCurve.hasEnoughData ? (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">回復曲線（叫び・悲鳴の収録から）</h3>
@@ -8883,7 +9672,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   )
                 )}
 
-                {(profile.professions || []).includes("voice_actor") && (
+                {(effectiveProfessions || []).includes("voice_actor") && (
                   screamTakeThreshold.hasEnoughData ? (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">叫びテイク数の閾値</h3>
@@ -8908,7 +9697,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   )
                 )}
 
-                {(profile.professions || []).includes("singer") && (
+                {(effectiveProfessions || []).includes("singer") && (
                   passaggioStability.hasEnoughData ? (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">パッサッジョの安定度</h3>
@@ -8958,7 +9747,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                 )}
 
-                {(profile.professions || []).includes("announcer") && (
+                {(effectiveProfessions || []).includes("announcer") && (
                   sffDiurnalVariation.hasEnoughData ? (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">話声位の日内変動</h3>
@@ -8987,7 +9776,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   )
                 )}
 
-                {(profile.professions || []).includes("pop_musical") && (
+                {(effectiveProfessions || []).includes("pop_musical") && (
                   tourEnduranceCurve.hasEnoughData ? (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">ツアー耐久曲線</h3>
@@ -10728,6 +11517,162 @@ export default function VocalTracker({ userId, userEmail }) {
               </div>
             )}
 
+            {activeTab === "learn" && (() => {
+              const currentProfession = learnProfession || profile.vocal_profession || "singer";
+              // §7.4: 検索。記事タイトル・本文を職業をまたいで横断する。用語（第7章相当）は無いため、
+              // タイトル・本文の部分一致だけで簡易実装する。
+              const searchResults = learnSearchQuery.trim()
+                ? ARTICLES.filter((a) =>
+                    a.title.includes(learnSearchQuery.trim()) || a.bodyMd.includes(learnSearchQuery.trim()) || (a.terms || []).some((t) => t.includes(learnSearchQuery.trim()))
+                  )
+                : null;
+
+              if (viewingArticleId) {
+                // §7.2: 記事の画面
+                const article = getArticleById(viewingArticleId);
+                if (!article) return null;
+                const notes = articleNotes[article.id] || [];
+                const isRead = !!learnReadArticles[article.id];
+                const professionLabel = article.professions === "all" ? "からだ" : PROFESSION_LABELS[article.professions[0]];
+                return (
+                  <div className="space-y-4">
+                    <button type="button" onClick={() => setViewingArticleId(null)}
+                      className="flex items-center gap-1 text-sm font-medium" style={{ color: C.inkSoft }}>
+                      <ChevronLeft size={16} />戻る
+                    </button>
+                    <div>
+                      <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>{article.title}</h2>
+                      <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{professionLabel}・約{article.readMinutes}分</p>
+                    </div>
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <p className="text-sm font-medium mb-3" style={{ lineHeight: 1.7 }}>{article.lead}</p>
+                      <div className="text-sm" style={{ lineHeight: 1.8, whiteSpace: "pre-wrap" }}>{article.bodyMd}</div>
+                    </div>
+
+                    {article.relatedField && (
+                      <button type="button" onClick={() => { setActiveTab("today"); setRecordView("day"); }}
+                        className="w-full rounded-2xl p-3 border flex items-center justify-between" style={{ background: C.card, borderColor: C.line }}>
+                        <span className="text-sm">この項目を今日の分から記録する</span>
+                        <ChevronRight size={16} style={{ color: C.inkSoft }} />
+                      </button>
+                    )}
+
+                    {article.sources && article.sources.length > 0 && (
+                      <p className="text-xs" style={{ color: C.inkSoft }}>
+                        出典：{article.sources.map((s) => s.label).join("、")}
+                      </p>
+                    )}
+
+                    <label className="flex items-center gap-2 text-xs" style={{ color: C.inkSoft }}>
+                      <input type="checkbox" checked={isRead} onChange={(e) => handleMarkArticleRead(article.id, e.target.checked)} />
+                      既読にする
+                    </label>
+
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <h3 className="ff-display italic text-lg mb-1">あなたのメモ</h3>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>先生には既定で見せません。上限500字。</p>
+                      {notes.map((n) => (
+                        <div key={n.id} className="rounded-xl p-2.5 mb-2" style={{ background: C.paper }}>
+                          {n.anchor_text && <p className="text-xs mb-1" style={{ color: C.inkSoft }}>「{n.anchor_text}」について</p>}
+                          <p className="text-sm">{n.body}</p>
+                          <button type="button" onClick={() => handleDeleteArticleNote(n.id, article.id)} className="text-xs underline mt-1" style={{ color: C.inkSoft }}>削除</button>
+                        </div>
+                      ))}
+                      <textarea value={newArticleNoteDraft} rows={2} maxLength={500}
+                        onChange={(e) => setNewArticleNoteDraft(e.target.value)}
+                        placeholder="先生に聞きたいこと、気づいたことなど"
+                        className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                      <button type="button" onClick={() => handleCreateArticleNote(article.id, "article", newArticleNoteDraft, null)}
+                        className="mt-2 px-4 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                        メモする
+                      </button>
+                    </div>
+                  </div>
+                );
+              }
+
+              // §7.1: 一覧
+              return (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>学ぶ</h2>
+                  </div>
+                  <select value={currentProfession} onChange={(e) => setLearnProfession(e.target.value)}
+                    className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }}>
+                    {VOCAL_PROFESSIONS.map((p) => <option key={p} value={p}>{PROFESSION_LABELS[p]}</option>)}
+                  </select>
+                  <input type="text" value={learnSearchQuery} onChange={(e) => setLearnSearchQuery(e.target.value)}
+                    placeholder="記事を検索（例：パッサッジョ）"
+                    className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+
+                  {searchResults ? (
+                    <div className="space-y-1.5">
+                      {searchResults.length === 0 && <p className="text-xs" style={{ color: C.inkSoft }}>見つかりませんでした。</p>}
+                      {searchResults.map((a) => (
+                        <button key={a.id} type="button" onClick={() => { setViewingArticleId(a.id); fetchArticleNotes(a.id); }}
+                          className="w-full text-left rounded-xl border p-3" style={{ background: C.card, borderColor: C.line }}>
+                          <p className="text-sm font-medium">{learnReadArticles[a.id] ? "✓ " : ""}{a.title}</p>
+                          <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>{a.professions === "all" ? "からだ" : PROFESSION_LABELS[a.professions[0]]}</p>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <>
+                      {[1, 2, 3, 4, 5, 6, 7].map((chapter) => {
+                        const articles = getArticlesForProfession(currentProfession).filter((a) => a.chapter === chapter);
+                        const isOpen = learnOpenChapters[`${currentProfession}:${chapter}`] !== false; // 既定は開く
+                        const readCount = articles.filter((a) => learnReadArticles[a.id]).length;
+                        return (
+                          <div key={chapter}>
+                            <button type="button" onClick={() => handleToggleChapter(currentProfession, chapter)}
+                              className="w-full flex items-center justify-between py-2 text-sm font-medium" style={{ color: C.ink }}>
+                              <span>{isOpen ? "▾" : "▸"} {chapter}. {CHAPTER_LABELS[chapter]}</span>
+                              <span className="ff-mono text-xs" style={{ color: C.inkSoft }}>
+                                {articles.length > 0 ? `${readCount}/${articles.length}` : "—"}
+                              </span>
+                            </button>
+                            {isOpen && (
+                              <div className="rounded-xl border overflow-hidden ml-2" style={{ borderColor: C.line }}>
+                                {articles.length === 0 && (
+                                  <p className="text-xs p-3" style={{ color: C.inkSoft }}>まだ記事がありません。</p>
+                                )}
+                                {articles.map((a) => (
+                                  <button key={a.id} type="button" onClick={() => { setViewingArticleId(a.id); fetchArticleNotes(a.id); }}
+                                    className="w-full text-left px-3 py-2 text-sm flex items-center justify-between" style={{ background: C.card, borderBottom: `1px solid ${C.line}` }}>
+                                    <span>{learnReadArticles[a.id] ? "✓ " : ""}{a.title}</span>
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+
+                      <div className="pt-2 border-t" style={{ borderColor: C.line }}>
+                        <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>── からだ（全職業共通）──</p>
+                        <div className="rounded-xl border overflow-hidden" style={{ borderColor: C.line }}>
+                          {getArticlesForProfession("body").map((a) => (
+                            <button key={a.id} type="button" onClick={() => { setViewingArticleId(a.id); fetchArticleNotes(a.id); }}
+                              className="w-full text-left px-3 py-2 text-sm flex items-center justify-between" style={{ background: C.card, borderBottom: `1px solid ${C.line}` }}>
+                              <span>{learnReadArticles[a.id] ? "✓ " : ""}{a.title}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <button type="button" onClick={() => {
+                        const others = VOCAL_PROFESSIONS.filter((p) => p !== currentProfession);
+                        setLearnProfession(others[0]);
+                      }} className="w-full flex items-center justify-between py-2 text-sm" style={{ color: C.inkSoft }}>
+                        他の職業の記事も見る
+                        <ChevronRight size={14} />
+                      </button>
+                    </>
+                  )}
+                </div>
+              );
+            })()}
+
             {activeTab === "info" && <HealthInfo language={language} />}
 
             {activeTab === "more" && (
@@ -10735,11 +11680,11 @@ export default function VocalTracker({ userId, userEmail }) {
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>学ぶ</p>
                   <div className="space-y-1">
-                    <a href={PROFESSION_THEORY_PAGES[profile.vocal_profession] || "/vocal-theory"} target="_blank" rel="noopener noreferrer"
+                    <button type="button" onClick={() => { setActiveTab("learn"); setLearnProfession(learnProfession || profile.vocal_profession); }}
                       className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
-                      <span className="flex items-center gap-2"><Music2 size={16} style={{ color: C.gold }} />発声理論</span>
+                      <span className="flex items-center gap-2"><Music2 size={16} style={{ color: C.gold }} />学ぶ</span>
                       <span style={{ color: C.inkSoft }}>→</span>
-                    </a>
+                    </button>
                     <button type="button" onClick={() => setActiveTab("info")}
                       className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
                       <span className="flex items-center gap-2"><BookOpen size={16} style={{ color: C.gold }} />健康情報</span>
@@ -10906,6 +11851,44 @@ export default function VocalTracker({ userId, userEmail }) {
                   </select>
                 </div>
 
+                {/* 作業指示-教室プラン D-1: つながり画面。所属している教室を一覧で見せ、
+                    教室ごとに担当の先生と、共有している内容を書く。「つながりを解除する」を
+                    探さないと見つからない場所に置かないこと。 */}
+                {myEnrollments.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-sm font-medium mb-1">所属している教室</p>
+                    <div className="space-y-2 mt-2">
+                      {myEnrollments.map((en) => {
+                        const teacherIds = myAssignedTeachers[en.org_id] || [];
+                        // この教室の担当講師のうち、健康データの共有（既存の1:1の仕組み）も
+                        // 別途つながっているかどうかを確認する。
+                        const linkedTeacherIds = new Set(myTeacherLinks.map((l) => l.teacher_id));
+                        return (
+                          <div key={en.id} className="rounded-xl p-3" style={{ background: C.paper }}>
+                            <p className="text-sm font-medium">{en.org.name}</p>
+                            {teacherIds.length > 0 ? (
+                              <div className="mt-1 space-y-1">
+                                {teacherIds.map((tid) => (
+                                  <p key={tid} className="text-xs" style={{ color: C.inkSoft }}>
+                                    担当：{orgDisplayName(tid)}
+                                    {linkedTeacherIds.has(tid) ? "・声や記録も共有中" : "・レッスン日程のみ共有（声や記録は共有していません）"}
+                                  </p>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="text-xs mt-1" style={{ color: C.inkSoft }}>まだ担当の先生が割り当てられていません。</p>
+                            )}
+                            <button type="button" onClick={() => handleLeaveOrg(en.id)}
+                              className="text-xs underline mt-2" style={{ color: C.curtain }}>
+                              この教室とのつながりを解除する
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 {/* 指導者プラン実装仕様 §3: 生徒側の招待コード入力。先生・生徒の役割は排他ではないため全員に表示する。 */}
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-sm font-medium mb-1">先生とつながる</p>
@@ -10966,7 +11949,8 @@ export default function VocalTracker({ userId, userEmail }) {
                 </div>
 
                 {/* §2〜§3: 先生機能。開発中のため、フラグを持つアカウントだけに表示する（鍵付き）。 */}
-                {profile.teacher_beta_access && (
+                {(profile.teacher_beta_access || profile.is_admin) && (
+                  <>
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
                     <p className="text-sm font-medium mb-1">生徒を招待する（テスト機能）</p>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -10995,7 +11979,120 @@ export default function VocalTracker({ userId, userEmail }) {
                       </button>
                     )}
                   </div>
+                  </>
                 )}
+
+                {/* 作業指示-教室プラン C-1: 他の先生の教室に参加する。招待コードを知っている人だけが
+                    実際に使えるため、入力欄自体は全ユーザーに公開する（生徒向け「先生とつながる」と同じ考え方）。 */}
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-sm font-medium mb-1">教室に参加する</p>
+                  {pendingOrgInvitation ? (
+                    <div>
+                      <p className="text-sm mb-2">「{pendingOrgInvitation.org.name}」に参加しますか？</p>
+                      <div className="flex gap-2">
+                        <button type="button" onClick={handleAcceptOrgInvitation}
+                          className="flex-1 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>参加する</button>
+                        <button type="button" onClick={() => setPendingOrgInvitation(null)}
+                          className="flex-1 py-2 rounded-full text-xs font-medium border" style={{ borderColor: C.line, color: C.inkSoft }}>今はやめる</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>他の先生の教室に、講師として参加できます。</p>
+                      <div className="flex gap-2">
+                        <input type="text" value={orgInviteCodeInput} onChange={(e) => setOrgInviteCodeInput(e.target.value)}
+                          placeholder="教室の招待コード" maxLength={8}
+                          className="flex-1 rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+                        <button type="button" onClick={() => handleLookupOrgInviteCode(orgInviteCodeInput)}
+                          className="px-4 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>確認する</button>
+                      </div>
+                      {orgInviteLookupError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{orgInviteLookupError}</p>}
+                    </>
+                  )}
+                </div>
+
+                {/* 作業指示-教室プラン C-2: 教室の管理（owner/adminのみ）。役割変更・担当割り当て。
+                    「鍵」ではなく、実際にowner/adminという役割を持つ人にだけ表示する（本来あるべき権限判定）。 */}
+                {(profile.teacher_beta_access || profile.is_admin) && myOrgs.filter((m) => m.role === "owner" || m.role === "admin").length === 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-sm font-medium mb-2">教室を作る</p>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      複数の先生・複数の生徒をまとめて管理する「教室」を作成します。
+                    </p>
+                    <button type="button" onClick={async () => { await ensureOwnOrg(); fetchMyOrgs(); }}
+                      className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                      教室を作る
+                    </button>
+                  </div>
+                )}
+
+                {(profile.teacher_beta_access || profile.is_admin) && myOrgs.filter((m) => m.role === "owner" || m.role === "admin").map((m) => {
+                  const orgId = m.org_id;
+                  const isViewing = viewingOrgId === orgId;
+                  const members = orgMembers[orgId] || [];
+                  const enrollments = orgEnrollments[orgId] || [];
+                  const assignments = orgAssignments[orgId] || [];
+                  return (
+                    <div key={orgId} className="rounded-2xl border overflow-hidden" style={{ background: C.card, borderColor: C.line }}>
+                      <button type="button" onClick={() => { setViewingOrgId(isViewing ? null : orgId); if (!isViewing) fetchOrgDetail(orgId); }}
+                        className="w-full text-left p-4 flex items-center justify-between">
+                        <span className="text-sm font-medium">{m.org.name}（{m.role === "owner" ? "オーナー" : "管理者"}）</span>
+                        <ChevronRight size={16} style={{ color: C.inkSoft, transform: isViewing ? "rotate(90deg)" : "none" }} />
+                      </button>
+                      {isViewing && (
+                        <div className="px-4 pb-4 space-y-3 border-t" style={{ borderColor: C.line }}>
+                          <div className="pt-3">
+                            <p className="text-xs font-medium mb-1.5">講師を招待する</p>
+                            {generatedOrgInviteCode ? (
+                              <p className="ff-mono text-center text-xl tracking-widest py-2 rounded-lg" style={{ background: C.paper, color: C.curtain }}>{generatedOrgInviteCode}</p>
+                            ) : (
+                              <button type="button" onClick={() => handleGenerateOrgInvite(orgId)}
+                                className="w-full py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>招待コードを発行する</button>
+                            )}
+                          </div>
+                          <div>
+                            <p className="text-xs font-medium mb-1.5">メンバー（{members.length}人）</p>
+                            {members.map((mem) => (
+                              <div key={mem.id} className="rounded-lg p-2 mb-1 flex items-center justify-between text-xs" style={{ background: C.paper }}>
+                                <span>{orgDisplayName(mem.user_id)}</span>
+                                <select value={mem.role} onChange={(e) => handleChangeRole(orgId, mem.id, mem.user_id, e.target.value)}
+                                  className="rounded border text-xs p-1" style={{ borderColor: C.line, background: C.card }}>
+                                  <option value="owner">オーナー</option>
+                                  <option value="admin">管理者</option>
+                                  <option value="teacher">講師</option>
+                                </select>
+                              </div>
+                            ))}
+                          </div>
+                          <div>
+                            <p className="text-xs font-medium mb-1.5">在籍している生徒（{enrollments.length}人）と担当</p>
+                            {enrollments.map((en) => {
+                              const currentAssignments = assignments.filter((a) => a.student_id === en.student_id);
+                              return (
+                                <div key={en.id} className="rounded-lg p-2 mb-1.5" style={{ background: C.paper }}>
+                                  <p className="text-xs mb-1">生徒: {orgDisplayName(en.student_id)}</p>
+                                  {currentAssignments.map((a) => (
+                                    <div key={a.id} className="flex items-center justify-between text-xs mb-1">
+                                      <span>担当: {orgDisplayName(a.teacher_id)}</span>
+                                      <button type="button" onClick={() => handleUnassignTeacher(orgId, a.id)} className="underline" style={{ color: C.curtain }}>外す</button>
+                                    </div>
+                                  ))}
+                                  <select onChange={(e) => { if (e.target.value) { handleAssignTeacherToStudent(orgId, e.target.value, en.student_id); e.target.value = ""; } }}
+                                    className="w-full rounded border text-xs p-1 mt-1" style={{ borderColor: C.line, background: C.card }}>
+                                    <option value="">＋ 講師を割り当てる</option>
+                                    {members.filter((mm) => mm.role !== "owner" || true).map((mm) => (
+                                      <option key={mm.user_id} value={mm.user_id}>{orgDisplayName(mm.user_id)}（{mm.role}）</option>
+                                    ))}
+                                  </select>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-sm font-medium mb-1">LINE通知（毎朝のリマインド）</p>
