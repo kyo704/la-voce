@@ -281,8 +281,8 @@ const FACTORS = [
 const TABS = [
   { key: "home", labelKey: "tabHome", icon: Sun },
   { key: "today", labelKey: "tabToday", icon: Mic2 },
-  { key: "garden", labelKey: "tabCharacter", icon: Home },
   { key: "analysis", labelKey: "tabAnalysis", icon: BarChart3 },
+  { key: "garden", labelKey: "tabCharacter", icon: Home },
   { key: "notes", labelKey: "tabNotes", icon: NotebookPen },
   { key: "more", labelKey: "tabMore", icon: MoreHorizontal }
 ];
@@ -1999,8 +1999,9 @@ function SectionCard({ title, icon: Icon, children, id, highlighted }) {
 // 記録を続ける動機にする（lavoce-指標設計図.md の「ロックの見せ方」参照）。
 // 指導者プラン実装仕様 §7: レッスン日程をカレンダーで見せる。既存の月次カレンダー（記録閲覧用）と
 // 同じ月送りの仕組み（monthMeta/shiftMonth）を再利用する。先生用ページ・レッスンモードの両方で使う。
-function LessonCalendar({ lessons, onDayClick, selectable }) {
+function LessonCalendar({ lessons, onDayClick, selectable, getTeacherName, getStudentName }) {
   const [viewMonth, setViewMonth] = useState(() => { const d = new Date(); return { year: d.getFullYear(), month: d.getMonth() }; });
+  const [selectedDetailDate, setSelectedDetailDate] = useState(null);
   const lessonsByDate = useMemo(() => {
     const map = {};
     (lessons || []).forEach((l) => {
@@ -2031,15 +2032,30 @@ function LessonCalendar({ lessons, onDayClick, selectable }) {
           if (!c) return <div key={i} />;
           const hasLesson = c.lessons.length > 0;
           return (
-            <button key={i} type="button" disabled={!selectable}
-              onClick={() => onDayClick && onDayClick(c.iso)}
+            <button key={i} type="button" disabled={!selectable && !hasLesson}
+              onClick={() => { if (selectable) onDayClick && onDayClick(c.iso); else if (hasLesson) setSelectedDetailDate(c.iso === selectedDetailDate ? null : c.iso); }}
               className="rounded-lg py-1.5 text-xs relative"
-              style={{ background: hasLesson ? C.curtain : "transparent", color: hasLesson ? "#FFFDF8" : C.ink }}>
+              style={{
+                background: hasLesson ? C.curtain : "transparent", color: hasLesson ? "#FFFDF8" : C.ink,
+                boxShadow: c.iso === selectedDetailDate ? `0 0 0 2px ${C.gold}` : "none"
+              }}>
               {c.day}
             </button>
           );
         })}
       </div>
+      {!selectable && selectedDetailDate && lessonsByDate[selectedDetailDate] && (
+        <div className="mt-3 space-y-1.5">
+          {lessonsByDate[selectedDetailDate].map((l) => (
+            <div key={l.id} className="rounded-lg p-2 text-xs" style={{ background: C.paper }}>
+              <span className="ff-mono">{new Date(l.scheduled_at).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</span>
+              {getTeacherName && l.teacher_id && <span>　{getTeacherName(l.teacher_id)}先生</span>}
+              {getStudentName && l.student_id && <span>　{getStudentName(l.student_id)}さん</span>}
+              {l.note && <span>　{l.note}</span>}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -6547,14 +6563,25 @@ export default function VocalTracker({ userId, userEmail }) {
   async function fetchMyTeachingLessons() {
     const supabase = createClient();
     const [{ data: linkLessons }, { data: orgLessonsData }] = await Promise.all([
-      supabase.from("lessons").select("*, link:teacher_student_links!inner(teacher_id)").eq("link.teacher_id", userId).order("scheduled_at", { ascending: true }).limit(200),
+      supabase.from("lessons").select("*, link:teacher_student_links!inner(teacher_id, student_id)").eq("link.teacher_id", userId).order("scheduled_at", { ascending: true }).limit(200),
       supabase.from("lessons").select("*").eq("teacher_id", userId).order("scheduled_at", { ascending: true }).limit(200)
     ]);
-    const combined = [...(linkLessons || []), ...(orgLessonsData || [])];
+    // 旧1:1連携のレッスンは、生徒のIDがlink.student_idの中に入っているので、扱いやすいよう正規化する。
+    const normalizedLinkLessons = (linkLessons || []).map((l) => ({ ...l, student_id: l.student_id || (l.link && l.link.student_id) }));
+    const combined = [...normalizedLinkLessons, ...(orgLessonsData || [])];
     const seen = new Set();
     const deduped = combined.filter((l) => (seen.has(l.id) ? false : (seen.add(l.id), true)));
     deduped.sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
     setMyTeachingLessons(deduped);
+    const studentIds = Array.from(new Set(deduped.map((l) => l.student_id).filter(Boolean)));
+    if (studentIds.length > 0) {
+      const { data: profilesData } = await supabase.from("profiles").select("id, display_name, vocal_profession").in("id", studentIds);
+      if (profilesData) {
+        const map = {};
+        profilesData.forEach((p) => { map[p.id] = { displayName: p.display_name || "", vocalProfession: p.vocal_profession }; });
+        setOrgProfileNames((prev) => ({ ...prev, ...map }));
+      }
+    }
   }
   async function handleCreateLesson(linkId) {
     if (!newLessonDate) return;
@@ -6805,15 +6832,28 @@ export default function VocalTracker({ userId, userEmail }) {
   async function fetchMyAllLessons() {
     const supabase = createClient();
     const [{ data: linkLessons }, { data: orgLessonsData }] = await Promise.all([
-      supabase.from("lessons").select("*, link:teacher_student_links!inner(student_id)").eq("link.student_id", userId).order("scheduled_at", { ascending: true }).limit(100),
+      supabase.from("lessons").select("*, link:teacher_student_links!inner(student_id, teacher_id)").eq("link.student_id", userId).order("scheduled_at", { ascending: true }).limit(100),
       supabase.from("lessons").select("*").eq("student_id", userId).order("scheduled_at", { ascending: true }).limit(100)
     ]);
-    const combined = [...(linkLessons || []), ...(orgLessonsData || [])];
+    // 旧1:1連携のレッスンは、先生のIDがlink.teacher_idの中に入っているので、
+    // カレンダー・一覧の両方で扱いやすいよう、lessonオブジェクト自身にteacher_idとして持たせる。
+    const normalizedLinkLessons = (linkLessons || []).map((l) => ({ ...l, teacher_id: l.teacher_id || (l.link && l.link.teacher_id) }));
+    const combined = [...normalizedLinkLessons, ...(orgLessonsData || [])];
     const seen = new Set();
     const deduped = combined.filter((l) => (seen.has(l.id) ? false : (seen.add(l.id), true)));
     deduped.sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
     setMyAllLessons(deduped);
     setMyUpcomingLessons(deduped); // 既存のレッスンモード表示もこの統合済みリストを使う
+    // 先生の表示名をまとめて取得する（既存のorgDisplayName用のキャッシュに統合する）。
+    const teacherIds = Array.from(new Set(deduped.map((l) => l.teacher_id).filter(Boolean)));
+    if (teacherIds.length > 0) {
+      const { data: profilesData } = await supabase.from("profiles").select("id, display_name, vocal_profession").in("id", teacherIds);
+      if (profilesData) {
+        const map = {};
+        profilesData.forEach((p) => { map[p.id] = { displayName: p.display_name || "", vocalProfession: p.vocal_profession }; });
+        setOrgProfileNames((prev) => ({ ...prev, ...map }));
+      }
+    }
   }
   // ---- 作業指示-教室プラン ここまで ----
 
@@ -7308,49 +7348,48 @@ export default function VocalTracker({ userId, userEmail }) {
             </button>
           </div>
         </div>
-        {!lessonMode && (
-          <nav className="max-w-3xl mx-auto flex gap-1 mt-5 overflow-x-auto">
-            {TABS.map((tab) => (
-              tab.href ? (
-                <a
-                  key={tab.key}
-                  href={tab.key === "voicetheory" ? (PROFESSION_THEORY_PAGES[profile.vocal_profession] || tab.href) : tab.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
-                  style={{ background: "transparent", color: C.inkSoft }}
-                >
-                  <tab.icon size={15} />
-                  {t(tab.labelKey)}
-                </a>
-              ) : (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
-                  style={{ background: activeTab === tab.key ? C.curtain : "transparent", color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
-                >
-                  <tab.icon size={15} />
-                  {t(tab.labelKey)}
-                </button>
-              )
-            ))}
-            {myStudentLinks.length > 0 && (
-              <button onClick={() => setActiveTab("students")}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
-                style={{ background: activeTab === "students" ? C.curtain : "transparent", color: activeTab === "students" ? "#FFFDF8" : C.inkSoft }}>
-                <GraduationCap size={15} />レッスン
-              </button>
-            )}
-            {(myAllLessons.length > 0 || myTeacherLinks.length > 0) && (
-              <button onClick={() => setActiveTab("mylessons")}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
-                style={{ background: activeTab === "mylessons" ? C.curtain : "transparent", color: activeTab === "mylessons" ? "#FFFDF8" : C.inkSoft }}>
-                <GraduationCap size={15} />レッスン
-              </button>
-            )}
-          </nav>
-        )}
+        {!lessonMode && (() => {
+          // レッスン項目は、出現するときは「おうち」の直前に入れる。
+          const hasTeacherLessonTab = myStudentLinks.length > 0;
+          const hasStudentLessonTab = myAllLessons.length > 0 || myTeacherLinks.length > 0;
+          const displayTabs = [];
+          TABS.forEach((tab) => {
+            if (tab.key === "garden") {
+              if (hasTeacherLessonTab) displayTabs.push({ key: "students", labelKey: null, label: "レッスン", icon: GraduationCap });
+              if (hasStudentLessonTab) displayTabs.push({ key: "mylessons", labelKey: null, label: "レッスン", icon: GraduationCap });
+            }
+            displayTabs.push(tab);
+          });
+          return (
+            <nav className="max-w-3xl mx-auto flex gap-1 mt-5 overflow-x-auto">
+              {displayTabs.map((tab) => (
+                tab.href ? (
+                  <a
+                    key={tab.key}
+                    href={tab.key === "voicetheory" ? (PROFESSION_THEORY_PAGES[profile.vocal_profession] || tab.href) : tab.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
+                    style={{ background: "transparent", color: C.inkSoft }}
+                  >
+                    <tab.icon size={15} />
+                    {t(tab.labelKey)}
+                  </a>
+                ) : (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveTab(tab.key)}
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
+                    style={{ background: activeTab === tab.key ? C.curtain : "transparent", color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
+                  >
+                    <tab.icon size={15} />
+                    {tab.labelKey ? t(tab.labelKey) : tab.label}
+                  </button>
+                )
+              ))}
+            </nav>
+          );
+        })()}
       </header>
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 pb-16">
@@ -7390,7 +7429,7 @@ export default function VocalTracker({ userId, userEmail }) {
             {myUpcomingLessons.length > 0 && (
               <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                 <h3 className="ff-display italic text-lg mb-1">レッスンカレンダー</h3>
-                <LessonCalendar lessons={myUpcomingLessons} selectable={false} />
+                <LessonCalendar lessons={myUpcomingLessons} selectable={false} getTeacherName={orgDisplayName} />
               </div>
             )}
 
@@ -8978,7 +9017,7 @@ export default function VocalTracker({ userId, userEmail }) {
 
                 {myAllLessons.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <LessonCalendar lessons={myAllLessons} selectable={false} />
+                    <LessonCalendar lessons={myAllLessons} selectable={false} getTeacherName={orgDisplayName} />
                   </div>
                 )}
 
@@ -9005,6 +9044,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     {myAllLessons.filter((l) => new Date(l.scheduled_at) >= new Date()).map((l) => (
                       <div key={l.id} className="rounded-lg p-2.5 text-xs" style={{ background: C.paper }}>
                         {new Date(l.scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", weekday: "short", hour: "2-digit", minute: "2-digit" })}
+                        {l.teacher_id && <span>　{orgDisplayName(l.teacher_id)}先生</span>}
                         {l.note ? `　${l.note}` : ""}
                       </div>
                     ))}
@@ -9178,7 +9218,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">全生徒のレッスンカレンダー</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>担当する生徒すべてのレッスンを、1つのカレンダーにまとめています。</p>
-                    <LessonCalendar lessons={myTeachingLessons} selectable={false} />
+                    <LessonCalendar lessons={myTeachingLessons} selectable={false} getStudentName={orgDisplayName} />
                   </div>
                 )}
 
