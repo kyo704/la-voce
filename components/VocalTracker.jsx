@@ -9130,6 +9130,108 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   </div>
                 )}
+
+                {/* ここから下は、普段は使わない設定類。開くまで最小化しておく。 */}
+                <details className="rounded-2xl border" style={{ background: C.card, borderColor: C.line }}>
+                  <summary className="p-4 text-sm font-medium cursor-pointer">表示名</summary>
+                  <div className="px-4 pb-4">
+                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                      先生・生徒としてつながった相手に表示される名前です。先生の場合、生徒のレッスンカレンダーにこの名前が表示されます。空欄のままでも構いません（その場合は職業名などで代替表示されます）。
+                    </p>
+                    <input type="text" defaultValue={profile.display_name} maxLength={30}
+                      onBlur={(e) => { if (e.target.value !== profile.display_name) handleSaveDisplayName(e.target.value); }}
+                      placeholder="例：やまだ先生" className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                  </div>
+                </details>
+
+                <details className="rounded-2xl border" style={{ background: C.card, borderColor: C.line }}>
+                  <summary className="p-4 text-sm font-medium cursor-pointer">{t("connectWithTeacherTitle")}</summary>
+                  <div className="px-4 pb-4">
+                    {myTeacherLinks.length > 0 && (
+                      <div className="space-y-2 mb-3">
+                        {myTeacherLinks.map((link) => (
+                          <div key={link.id} className="rounded-xl p-3 flex items-center justify-between" style={{ background: C.paper }}>
+                            <span className="text-xs" style={{ color: C.inkSoft }}>連携中の先生が1名います</span>
+                            <button type="button" onClick={() => handleRevokeLink(link.id, "student")}
+                              className="text-xs underline" style={{ color: C.curtain }}>{t("disconnectButton")}</button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {pendingInvitation ? (
+                      <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                        <p className="text-sm font-medium mb-2">先生から招待が届いています</p>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>つながると、先生は選んだ項目を見られるようになります。</p>
+                        <div className="space-y-1.5 mb-3">
+                          {[
+                            ["voice", "声・喉の記録"], ["symptoms", "症状"], ["sleep", "睡眠"], ["activity", "活動・練習量"],
+                            ["hydration", "水分・食事"], ["meal", "食事"], ["body", "体重・身体データ"], ["mental", "心の余裕・日記"], ["notes", "稽古ノート"]
+                          ].map(([key, label]) => (
+                            <label key={key} className="flex items-center gap-2 text-xs" style={{ color: C.ink }}>
+                              <input type="checkbox" checked={!!shareScopeDraft[key]}
+                                onChange={(e) => setShareScopeDraft((s) => ({ ...s, [key]: e.target.checked }))} />
+                              {label}
+                            </label>
+                          ))}
+                        </div>
+                        <p className="text-xs mb-3" style={{ color: C.inkSoft }}>あとから変更できます。つながりの解除もいつでもできます。</p>
+                        <div className="flex gap-2">
+                          <button type="button" onClick={handleAcceptInvitation}
+                            className="flex-1 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                            {t("connectButton")}
+                          </button>
+                          <button type="button" onClick={handleDeclineInvitation}
+                            className="flex-1 py-2 rounded-full text-xs font-medium border" style={{ borderColor: C.line, color: C.inkSoft }}>
+                            {t("notNowButton")}
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>先生から受け取った招待コードを入力してください。</p>
+                        <div className="flex gap-2">
+                          <input type="text" value={inviteCodeInput} onChange={(e) => setInviteCodeInput(e.target.value)}
+                            placeholder="招待コード" maxLength={8}
+                            className="flex-1 rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+                          <button type="button" onClick={() => handleLookupInviteCode(inviteCodeInput)}
+                            className="px-4 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                            {t("confirmButton")}
+                          </button>
+                        </div>
+                        {inviteLookupError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{inviteLookupError}</p>}
+                      </>
+                    )}
+                  </div>
+                </details>
+
+                <details className="rounded-2xl border" style={{ background: C.card, borderColor: C.line }}>
+                  <summary className="p-4 text-sm font-medium cursor-pointer">{t("joinClassroomTitle")}</summary>
+                  <div className="px-4 pb-4">
+                    {pendingOrgInvitation ? (
+                      <div>
+                        <p className="text-sm mb-2">「{pendingOrgInvitation.org.name}」に参加しますか？</p>
+                        <div className="flex gap-2">
+                          <button type="button" onClick={handleAcceptOrgInvitation}
+                            className="flex-1 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>{t("joinButton")}</button>
+                          <button type="button" onClick={() => setPendingOrgInvitation(null)}
+                            className="flex-1 py-2 rounded-full text-xs font-medium border" style={{ borderColor: C.line, color: C.inkSoft }}>{t("notNowButton")}</button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>他の先生の教室に、講師として参加できます。</p>
+                        <div className="flex gap-2">
+                          <input type="text" value={orgInviteCodeInput} onChange={(e) => setOrgInviteCodeInput(e.target.value)}
+                            placeholder={t("enterInvitationCodePlaceholder")} maxLength={8}
+                            className="flex-1 rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+                          <button type="button" onClick={() => handleLookupOrgInviteCode(orgInviteCodeInput)}
+                            className="px-4 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>{t("confirmButton")}</button>
+                        </div>
+                        {orgInviteLookupError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{orgInviteLookupError}</p>}
+                      </>
+                    )}
+                  </div>
+                </details>
               </div>
             )}
 
@@ -9320,6 +9422,159 @@ export default function VocalTracker({ userId, userEmail }) {
                 <p className="text-xs" style={{ color: C.inkSoft }}>
                   ※ 生徒が公開範囲を変更・解除すると、この画面の表示もすぐに切り替わります。
                 </p>
+
+                {/* ここから下は、普段は使わない設定類。開くまで最小化しておく。 */}
+                <details className="rounded-2xl border" style={{ background: C.card, borderColor: C.line }}>
+                  <summary className="p-4 text-sm font-medium cursor-pointer">表示名</summary>
+                  <div className="px-4 pb-4">
+                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                      先生・生徒としてつながった相手に表示される名前です。先生の場合、生徒のレッスンカレンダーにこの名前が表示されます。空欄のままでも構いません（その場合は職業名などで代替表示されます）。
+                    </p>
+                    <input type="text" defaultValue={profile.display_name} maxLength={30}
+                      onBlur={(e) => { if (e.target.value !== profile.display_name) handleSaveDisplayName(e.target.value); }}
+                      placeholder="例：やまだ先生" className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                  </div>
+                </details>
+
+                {(profile.teacher_beta_access || profile.is_admin) && (
+                  <details className="rounded-2xl border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                    <summary className="p-4 text-sm font-medium cursor-pointer">{t("inviteStudentTitle")}</summary>
+                    <div className="px-4 pb-4">
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        発行したコードは7日間有効・1回だけ使えます。
+                      </p>
+                      {myStudentLinks.length > 0 && (
+                        <div className="space-y-2 mb-3">
+                          <p className="text-xs font-medium" style={{ color: C.ink }}>連携中の生徒（{myStudentLinks.length}人）</p>
+                          {myStudentLinks.map((link) => (
+                            <div key={link.id} className="rounded-xl p-3 flex items-center justify-between" style={{ background: C.paper }}>
+                              <span className="text-xs" style={{ color: C.inkSoft }}>生徒ID: {link.student_id.slice(0, 8)}…</span>
+                              <button type="button" onClick={() => handleRevokeLink(link.id, "teacher")}
+                                className="text-xs underline" style={{ color: C.curtain }}>{t("disconnectButton")}</button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {generatedInviteCode ? (
+                        <p className="ff-mono text-center text-2xl tracking-widest py-2 rounded-lg" style={{ background: C.paper, color: C.curtain }}>
+                          {generatedInviteCode}
+                        </p>
+                      ) : (
+                        <button type="button" onClick={handleGenerateTeacherInvite}
+                          className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                          {t("inviteTeacherButton")}
+                        </button>
+                      )}
+                    </div>
+                  </details>
+                )}
+
+                <details className="rounded-2xl border" style={{ background: C.card, borderColor: C.line }}>
+                  <summary className="p-4 text-sm font-medium cursor-pointer">{t("joinClassroomTitle")}</summary>
+                  <div className="px-4 pb-4">
+                    {pendingOrgInvitation ? (
+                      <div>
+                        <p className="text-sm mb-2">「{pendingOrgInvitation.org.name}」に参加しますか？</p>
+                        <div className="flex gap-2">
+                          <button type="button" onClick={handleAcceptOrgInvitation}
+                            className="flex-1 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>{t("joinButton")}</button>
+                          <button type="button" onClick={() => setPendingOrgInvitation(null)}
+                            className="flex-1 py-2 rounded-full text-xs font-medium border" style={{ borderColor: C.line, color: C.inkSoft }}>{t("notNowButton")}</button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>他の先生の教室に、講師として参加できます。</p>
+                        <div className="flex gap-2">
+                          <input type="text" value={orgInviteCodeInput} onChange={(e) => setOrgInviteCodeInput(e.target.value)}
+                            placeholder={t("enterInvitationCodePlaceholder")} maxLength={8}
+                            className="flex-1 rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+                          <button type="button" onClick={() => handleLookupOrgInviteCode(orgInviteCodeInput)}
+                            className="px-4 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>{t("confirmButton")}</button>
+                        </div>
+                        {orgInviteLookupError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{orgInviteLookupError}</p>}
+                      </>
+                    )}
+                  </div>
+                </details>
+
+                {(profile.teacher_beta_access || profile.is_admin) && myOrgs.filter((m) => m.role === "owner" || m.role === "admin").length === 0 && (
+                  <details className="rounded-2xl border" style={{ background: C.card, borderColor: C.line }}>
+                    <summary className="p-4 text-sm font-medium cursor-pointer">{t("createClassroomTitle")}</summary>
+                    <div className="px-4 pb-4">
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        {t("createClassroomDesc")}
+                      </p>
+                      <button type="button" onClick={async () => { await ensureOwnOrg(); fetchMyOrgs(); }}
+                        className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                        {t("createClassroomTitle")}
+                      </button>
+                    </div>
+                  </details>
+                )}
+
+                {(profile.teacher_beta_access || profile.is_admin) && myOrgs.filter((m) => m.role === "owner" || m.role === "admin").map((m) => {
+                  const orgId = m.org_id;
+                  const isViewingOrg = viewingOrgId === orgId;
+                  const members = orgMembers[orgId] || [];
+                  const enrollments = orgEnrollments[orgId] || [];
+                  const assignments = orgAssignments[orgId] || [];
+                  return (
+                    <details key={orgId} className="rounded-2xl border" style={{ background: C.card, borderColor: C.line }}
+                      onToggle={(e) => { if (e.target.open) fetchOrgDetail(orgId); }}>
+                      <summary className="p-4 text-sm font-medium cursor-pointer">{m.org.name}（{m.role === "owner" ? "オーナー" : "管理者"}）</summary>
+                      <div className="px-4 pb-4 space-y-3">
+                        <div>
+                          <p className="text-xs font-medium mb-1.5">講師を招待する</p>
+                          {generatedOrgInviteCode ? (
+                            <p className="ff-mono text-center text-xl tracking-widest py-2 rounded-lg" style={{ background: C.paper, color: C.curtain }}>{generatedOrgInviteCode}</p>
+                          ) : (
+                            <button type="button" onClick={() => handleGenerateOrgInvite(orgId)}
+                              className="w-full py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>招待コードを発行する</button>
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-xs font-medium mb-1.5">メンバー（{members.length}人）</p>
+                          {members.map((mem) => (
+                            <div key={mem.id} className="rounded-lg p-2 mb-1 flex items-center justify-between text-xs" style={{ background: C.paper }}>
+                              <span>{orgDisplayName(mem.user_id)}</span>
+                              <select value={mem.role} onChange={(e) => handleChangeRole(orgId, mem.id, mem.user_id, e.target.value)}
+                                className="rounded border text-xs p-1" style={{ borderColor: C.line, background: C.card }}>
+                                <option value="owner">オーナー</option>
+                                <option value="admin">管理者</option>
+                                <option value="teacher">講師</option>
+                              </select>
+                            </div>
+                          ))}
+                        </div>
+                        <div>
+                          <p className="text-xs font-medium mb-1.5">在籍している生徒（{enrollments.length}人）と担当</p>
+                          {enrollments.map((en) => {
+                            const currentAssignments = assignments.filter((a) => a.student_id === en.student_id);
+                            return (
+                              <div key={en.id} className="rounded-lg p-2 mb-1.5" style={{ background: C.paper }}>
+                                <p className="text-xs mb-1">生徒: {orgDisplayName(en.student_id)}</p>
+                                {currentAssignments.map((a) => (
+                                  <div key={a.id} className="flex items-center justify-between text-xs mb-1">
+                                    <span>{t("assignedTeacherLabel")}: {orgDisplayName(a.teacher_id)}</span>
+                                    <button type="button" onClick={() => handleUnassignTeacher(orgId, a.id)} className="underline" style={{ color: C.curtain }}>外す</button>
+                                  </div>
+                                ))}
+                                <select onChange={(e) => { if (e.target.value) { handleAssignTeacherToStudent(orgId, e.target.value, en.student_id); e.target.value = ""; } }}
+                                  className="w-full rounded border text-xs p-1 mt-1" style={{ borderColor: C.line, background: C.card }}>
+                                  <option value="">＋ 講師を割り当てる</option>
+                                  {members.map((mm) => (
+                                    <option key={mm.user_id} value={mm.user_id}>{orgDisplayName(mm.user_id)}（{mm.role}）</option>
+                                  ))}
+                                </select>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </details>
+                  );
+                })}
               </div>
               )
             )}
@@ -11889,16 +12144,6 @@ export default function VocalTracker({ userId, userEmail }) {
                 )}
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <p className="text-sm font-medium mb-1">表示名</p>
-                  <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
-                    先生・生徒としてつながった相手に表示される名前です。先生の場合、生徒のレッスンカレンダーにこの名前が表示されます。空欄のままでも構いません（その場合は職業名などで代替表示されます）。
-                  </p>
-                  <input type="text" defaultValue={profile.display_name} maxLength={30}
-                    onBlur={(e) => { if (e.target.value !== profile.display_name) handleSaveDisplayName(e.target.value); }}
-                    placeholder="例：やまだ先生" className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                </div>
-
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-sm font-medium mb-1">記録画面の切り替え時刻</p>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                     この時刻より前は「声の記録」、以降は「一日の記録」を最初に開きます。いつでも上部のタブで行き来できます。
@@ -11912,248 +12157,6 @@ export default function VocalTracker({ userId, userEmail }) {
                   </select>
                 </div>
 
-                {/* 作業指示-教室プラン D-1: つながり画面。所属している教室を一覧で見せ、
-                    教室ごとに担当の先生と、共有している内容を書く。「つながりを解除する」を
-                    探さないと見つからない場所に置かないこと。 */}
-                {myEnrollments.length > 0 && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <p className="text-sm font-medium mb-1">所属している教室</p>
-                    <div className="space-y-2 mt-2">
-                      {myEnrollments.map((en) => {
-                        const teacherIds = myAssignedTeachers[en.org_id] || [];
-                        // この教室の担当講師のうち、健康データの共有（既存の1:1の仕組み）も
-                        // 別途つながっているかどうかを確認する。
-                        const linkedTeacherIds = new Set(myTeacherLinks.map((l) => l.teacher_id));
-                        return (
-                          <div key={en.id} className="rounded-xl p-3" style={{ background: C.paper }}>
-                            <p className="text-sm font-medium">{en.org.name}</p>
-                            {teacherIds.length > 0 ? (
-                              <div className="mt-1 space-y-1">
-                                {teacherIds.map((tid) => (
-                                  <p key={tid} className="text-xs" style={{ color: C.inkSoft }}>
-                                    {t("assignedTeacherLabel")}：{orgDisplayName(tid)}
-                                    {linkedTeacherIds.has(tid) ? "・声や記録も共有中" : "・レッスン日程のみ共有（声や記録は共有していません）"}
-                                  </p>
-                                ))}
-                              </div>
-                            ) : (
-                              <p className="text-xs mt-1" style={{ color: C.inkSoft }}>まだ担当の先生が割り当てられていません。</p>
-                            )}
-                            <button type="button" onClick={() => handleLeaveOrg(en.id)}
-                              className="text-xs underline mt-2" style={{ color: C.curtain }}>
-                              この教室とのつながりを解除する
-                            </button>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* 指導者プラン実装仕様 §3: 生徒側の招待コード入力。先生・生徒の役割は排他ではないため全員に表示する。 */}
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <p className="text-sm font-medium mb-1">{t("connectWithTeacherTitle")}</p>
-                  {myTeacherLinks.length > 0 && (
-                    <div className="space-y-2 mb-3">
-                      {myTeacherLinks.map((link) => (
-                        <div key={link.id} className="rounded-xl p-3 flex items-center justify-between" style={{ background: C.paper }}>
-                          <span className="text-xs" style={{ color: C.inkSoft }}>連携中の先生が1名います</span>
-                          <button type="button" onClick={() => handleRevokeLink(link.id, "student")}
-                            className="text-xs underline" style={{ color: C.curtain }}>{t("disconnectButton")}</button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {pendingInvitation ? (
-                    <div className="rounded-xl p-3" style={{ background: C.paper }}>
-                      <p className="text-sm font-medium mb-2">先生から招待が届いています</p>
-                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>つながると、先生は選んだ項目を見られるようになります。</p>
-                      <div className="space-y-1.5 mb-3">
-                        {[
-                          ["voice", "声・喉の記録"], ["symptoms", "症状"], ["sleep", "睡眠"], ["activity", "活動・練習量"],
-                          ["hydration", "水分・食事"], ["meal", "食事"], ["body", "体重・身体データ"], ["mental", "心の余裕・日記"], ["notes", "稽古ノート"]
-                        ].map(([key, label]) => (
-                          <label key={key} className="flex items-center gap-2 text-xs" style={{ color: C.ink }}>
-                            <input type="checkbox" checked={!!shareScopeDraft[key]}
-                              onChange={(e) => setShareScopeDraft((s) => ({ ...s, [key]: e.target.checked }))} />
-                            {label}
-                          </label>
-                        ))}
-                      </div>
-                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>あとから変更できます。つながりの解除もいつでもできます。</p>
-                      <div className="flex gap-2">
-                        <button type="button" onClick={handleAcceptInvitation}
-                          className="flex-1 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
-                          つながる
-                        </button>
-                        <button type="button" onClick={handleDeclineInvitation}
-                          className="flex-1 py-2 rounded-full text-xs font-medium border" style={{ borderColor: C.line, color: C.inkSoft }}>
-                          今はやめる
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>先生から受け取った招待コードを入力してください。</p>
-                      <div className="flex gap-2">
-                        <input type="text" value={inviteCodeInput} onChange={(e) => setInviteCodeInput(e.target.value)}
-                          placeholder="招待コード" maxLength={8}
-                          className="flex-1 rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
-                        <button type="button" onClick={() => handleLookupInviteCode(inviteCodeInput)}
-                          className="px-4 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
-                          確認する
-                        </button>
-                      </div>
-                      {inviteLookupError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{inviteLookupError}</p>}
-                    </>
-                  )}
-                </div>
-
-                {/* §2〜§3: 先生機能。開発中のため、フラグを持つアカウントだけに表示する（鍵付き）。 */}
-                {(profile.teacher_beta_access || profile.is_admin) && (
-                  <>
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
-                    <p className="text-sm font-medium mb-1">{t("inviteStudentTitle")}</p>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      発行したコードは7日間有効・1回だけ使えます。
-                    </p>
-                    {myStudentLinks.length > 0 && (
-                      <div className="space-y-2 mb-3">
-                        <p className="text-xs font-medium" style={{ color: C.ink }}>連携中の生徒（{myStudentLinks.length}人）</p>
-                        {myStudentLinks.map((link) => (
-                          <div key={link.id} className="rounded-xl p-3 flex items-center justify-between" style={{ background: C.paper }}>
-                            <span className="text-xs" style={{ color: C.inkSoft }}>生徒ID: {link.student_id.slice(0, 8)}…</span>
-                            <button type="button" onClick={() => handleRevokeLink(link.id, "teacher")}
-                              className="text-xs underline" style={{ color: C.curtain }}>{t("disconnectButton")}</button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {generatedInviteCode ? (
-                      <p className="ff-mono text-center text-2xl tracking-widest py-2 rounded-lg" style={{ background: C.paper, color: C.curtain }}>
-                        {generatedInviteCode}
-                      </p>
-                    ) : (
-                      <button type="button" onClick={handleGenerateTeacherInvite}
-                        className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
-                        招待コードを発行する
-                      </button>
-                    )}
-                  </div>
-                  </>
-                )}
-
-                {/* 作業指示-教室プラン C-1: 他の先生の教室に参加する。招待コードを知っている人だけが
-                    実際に使えるため、入力欄自体は全ユーザーに公開する（生徒向け「先生とつながる」と同じ考え方）。 */}
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <p className="text-sm font-medium mb-1">{t("joinClassroomTitle")}</p>
-                  {pendingOrgInvitation ? (
-                    <div>
-                      <p className="text-sm mb-2">「{pendingOrgInvitation.org.name}」に参加しますか？</p>
-                      <div className="flex gap-2">
-                        <button type="button" onClick={handleAcceptOrgInvitation}
-                          className="flex-1 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>{t("joinButton")}</button>
-                        <button type="button" onClick={() => setPendingOrgInvitation(null)}
-                          className="flex-1 py-2 rounded-full text-xs font-medium border" style={{ borderColor: C.line, color: C.inkSoft }}>{t("notNowButton")}</button>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>他の先生の教室に、講師として参加できます。</p>
-                      <div className="flex gap-2">
-                        <input type="text" value={orgInviteCodeInput} onChange={(e) => setOrgInviteCodeInput(e.target.value)}
-                          placeholder={t("enterInvitationCodePlaceholder")} maxLength={8}
-                          className="flex-1 rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
-                        <button type="button" onClick={() => handleLookupOrgInviteCode(orgInviteCodeInput)}
-                          className="px-4 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>{t("confirmButton")}</button>
-                      </div>
-                      {orgInviteLookupError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{orgInviteLookupError}</p>}
-                    </>
-                  )}
-                </div>
-
-                {/* 作業指示-教室プラン C-2: 教室の管理（owner/adminのみ）。役割変更・担当割り当て。
-                    「鍵」ではなく、実際にowner/adminという役割を持つ人にだけ表示する（本来あるべき権限判定）。 */}
-                {(profile.teacher_beta_access || profile.is_admin) && myOrgs.filter((m) => m.role === "owner" || m.role === "admin").length === 0 && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <p className="text-sm font-medium mb-2">{t("createClassroomTitle")}</p>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      {t("createClassroomDesc")}
-                    </p>
-                    <button type="button" onClick={async () => { await ensureOwnOrg(); fetchMyOrgs(); }}
-                      className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
-                      {t("createClassroomTitle")}
-                    </button>
-                  </div>
-                )}
-
-                {(profile.teacher_beta_access || profile.is_admin) && myOrgs.filter((m) => m.role === "owner" || m.role === "admin").map((m) => {
-                  const orgId = m.org_id;
-                  const isViewing = viewingOrgId === orgId;
-                  const members = orgMembers[orgId] || [];
-                  const enrollments = orgEnrollments[orgId] || [];
-                  const assignments = orgAssignments[orgId] || [];
-                  return (
-                    <div key={orgId} className="rounded-2xl border overflow-hidden" style={{ background: C.card, borderColor: C.line }}>
-                      <button type="button" onClick={() => { setViewingOrgId(isViewing ? null : orgId); if (!isViewing) fetchOrgDetail(orgId); }}
-                        className="w-full text-left p-4 flex items-center justify-between">
-                        <span className="text-sm font-medium">{m.org.name}（{m.role === "owner" ? "オーナー" : "管理者"}）</span>
-                        <ChevronRight size={16} style={{ color: C.inkSoft, transform: isViewing ? "rotate(90deg)" : "none" }} />
-                      </button>
-                      {isViewing && (
-                        <div className="px-4 pb-4 space-y-3 border-t" style={{ borderColor: C.line }}>
-                          <div className="pt-3">
-                            <p className="text-xs font-medium mb-1.5">講師を招待する</p>
-                            {generatedOrgInviteCode ? (
-                              <p className="ff-mono text-center text-xl tracking-widest py-2 rounded-lg" style={{ background: C.paper, color: C.curtain }}>{generatedOrgInviteCode}</p>
-                            ) : (
-                              <button type="button" onClick={() => handleGenerateOrgInvite(orgId)}
-                                className="w-full py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>招待コードを発行する</button>
-                            )}
-                          </div>
-                          <div>
-                            <p className="text-xs font-medium mb-1.5">メンバー（{members.length}人）</p>
-                            {members.map((mem) => (
-                              <div key={mem.id} className="rounded-lg p-2 mb-1 flex items-center justify-between text-xs" style={{ background: C.paper }}>
-                                <span>{orgDisplayName(mem.user_id)}</span>
-                                <select value={mem.role} onChange={(e) => handleChangeRole(orgId, mem.id, mem.user_id, e.target.value)}
-                                  className="rounded border text-xs p-1" style={{ borderColor: C.line, background: C.card }}>
-                                  <option value="owner">オーナー</option>
-                                  <option value="admin">管理者</option>
-                                  <option value="teacher">講師</option>
-                                </select>
-                              </div>
-                            ))}
-                          </div>
-                          <div>
-                            <p className="text-xs font-medium mb-1.5">在籍している生徒（{enrollments.length}人）と担当</p>
-                            {enrollments.map((en) => {
-                              const currentAssignments = assignments.filter((a) => a.student_id === en.student_id);
-                              return (
-                                <div key={en.id} className="rounded-lg p-2 mb-1.5" style={{ background: C.paper }}>
-                                  <p className="text-xs mb-1">生徒: {orgDisplayName(en.student_id)}</p>
-                                  {currentAssignments.map((a) => (
-                                    <div key={a.id} className="flex items-center justify-between text-xs mb-1">
-                                      <span>担当: {orgDisplayName(a.teacher_id)}</span>
-                                      <button type="button" onClick={() => handleUnassignTeacher(orgId, a.id)} className="underline" style={{ color: C.curtain }}>外す</button>
-                                    </div>
-                                  ))}
-                                  <select onChange={(e) => { if (e.target.value) { handleAssignTeacherToStudent(orgId, e.target.value, en.student_id); e.target.value = ""; } }}
-                                    className="w-full rounded border text-xs p-1 mt-1" style={{ borderColor: C.line, background: C.card }}>
-                                    <option value="">＋ 講師を割り当てる</option>
-                                    {members.filter((mm) => mm.role !== "owner" || true).map((mm) => (
-                                      <option key={mm.user_id} value={mm.user_id}>{orgDisplayName(mm.user_id)}（{mm.role}）</option>
-                                    ))}
-                                  </select>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-sm font-medium mb-1">LINE通知（毎朝のリマインド）</p>
