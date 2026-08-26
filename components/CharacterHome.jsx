@@ -743,6 +743,8 @@ function SheepSleepingHead({ size }) {
 }
 
 function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWalking, isFarming, isSitting, isLying, isSweating, isCelebrating }) {
+  const frontScale = LAYER_CONFIG.front.scale;
+  const frontZ = LAYER_CONFIG.front.z;
   if (isLying) {
     return (
       <div
@@ -752,10 +754,10 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
           top: `${topPct}%`,
           transform: "translate(-50%, -50%)",
           transition: "left 1.6s ease-in-out, top 1.6s ease-in-out",
-          zIndex: 6
+          zIndex: frontZ
         }}
       >
-        <SheepSleepingHead size={size * 0.62} />
+        <SheepSleepingHead size={size * 0.62 * frontScale} />
       </div>
     );
   }
@@ -767,11 +769,11 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
         top: `${topPct}%`,
         transform: "translate(-50%, -100%)",
         transition: "left 2.2s ease-in-out, top 2.2s ease-in-out",
-        zIndex: 5
+        zIndex: frontZ
       }}
     >
       <div style={{ transform: facingLeft ? "scaleX(-1)" : "none" }}>
-        <SheepCharacter equipped={equipped} size={size} isWalking={isWalking} isFarming={isFarming} showBook={isSitting} isSweating={isSweating} isCelebrating={isCelebrating} />
+        <SheepCharacter equipped={equipped} size={size * frontScale} isWalking={isWalking} isFarming={isFarming} showBook={isSitting} isSweating={isSweating} isCelebrating={isCelebrating} />
       </div>
     </div>
   );
@@ -1105,41 +1107,73 @@ function ShopItemPreview({ item }) {
   return <div style={boxStyle} />;
 }
 
+// 羊のおうち仕様 §2.2: 奥行きを3層に固定する。層ごとに z-index とスケールを持つ。
+const LAYER_CONFIG = {
+  back: { z: 10, scale: 0.85 },
+  mid: { z: 20, scale: 1.00 },
+  front: { z: 30, scale: 1.15 }
+};
+// §2.4: 配置のスナップ。層の横幅を12分割したグリッドにスナップさせる。
+const GRID_COLUMNS = 12;
+function snapToGrid(pct) {
+  const cellWidth = 100 / GRID_COLUMNS;
+  const cell = Math.round(pct / cellWidth);
+  const clamped = Math.max(0, Math.min(GRID_COLUMNS - 1, cell));
+  return clamped * cellWidth + cellWidth / 2;
+}
+// 羊のおうち仕様 §2.4: 同じマスに2つ置けない。既に他アイテムが占有しているマスなら、
+// 近い方向へ隣の空きマスを探して押しのける。siblingLefts は「同じ層の、動かしている本人以外」の
+// 現在位置（%）の配列。
+function resolveGridCollision(targetLeftPct, siblingLefts) {
+  const cellWidth = 100 / GRID_COLUMNS;
+  const targetCell = Math.max(0, Math.min(GRID_COLUMNS - 1, Math.round(targetLeftPct / cellWidth)));
+  const occupied = new Set(siblingLefts.map((l) => Math.round(l / cellWidth)));
+  if (!occupied.has(targetCell)) return targetCell * cellWidth + cellWidth / 2;
+  for (let d = 1; d < GRID_COLUMNS; d++) {
+    if (targetCell + d < GRID_COLUMNS && !occupied.has(targetCell + d)) return (targetCell + d) * cellWidth + cellWidth / 2;
+    if (targetCell - d >= 0 && !occupied.has(targetCell - d)) return (targetCell - d) * cellWidth + cellWidth / 2;
+  }
+  return targetCell * cellWidth + cellWidth / 2; // 全マス埋まっている場合はそのまま重ねる
+}
+
 // 家具は全て同じ「接地ライン」(top=98)に足元を揃え、横幅ぶん間隔を空けて重ならないように配置。
 // ラグだけは床に敷く別レイヤー（家具の手前・足元の空きスペースに独立して配置）。
 // aspect は各アイコンの viewBox（幅/高さ）と一致させ、部屋の形が変わっても絵が歪まないようにする。
+// width は「その層のscaleを掛ける前の基準サイズ」。実際の表示幅は width × LAYER_CONFIG[layer].scale。
 const FURNITURE_FLOOR_TOP = 98;
 const FURNITURE_LAYOUT = {
-  furniture_bed: { left: 13, top: FURNITURE_FLOOR_TOP, width: 26, z: 2, aspect: 60 / 46 },
-  furniture_piano: { left: 41, top: FURNITURE_FLOOR_TOP, width: 26, z: 2, aspect: 90 / 60 },
-  furniture_shelf: { left: 63, top: FURNITURE_FLOOR_TOP, width: 15, z: 2, aspect: 40 / 45 },
-  furniture_chair: { left: 79, top: FURNITURE_FLOOR_TOP, width: 15, z: 2, aspect: 45 / 50 },
-  furniture_plant: { left: 93, top: FURNITURE_FLOOR_TOP, width: 11, z: 2, aspect: 40 / 50 },
-  furniture_rug: { left: 50, top: 82, width: 26, z: 1, aspect: 100 / 40 }
+  furniture_bed: { left: 13, top: FURNITURE_FLOOR_TOP, width: 26, layer: "mid", aspect: 60 / 46 },
+  furniture_piano: { left: 41, top: FURNITURE_FLOOR_TOP, width: 26, layer: "mid", aspect: 90 / 60 },
+  furniture_shelf: { left: 63, top: FURNITURE_FLOOR_TOP, width: 15, layer: "mid", aspect: 40 / 45 },
+  furniture_chair: { left: 79, top: FURNITURE_FLOOR_TOP, width: 15, layer: "mid", aspect: 45 / 50 },
+  furniture_plant: { left: 93, top: FURNITURE_FLOOR_TOP, width: 11, layer: "mid", aspect: 40 / 50 },
+  furniture_rug: { left: 50, top: 82, width: 26, layer: "front", aspect: 100 / 40 }
 };
 // 壁掛けアイテムは床ではなく壁の帯（窓のない右手のスペース）にのみ、横一列に重ならないよう配置。
+// 羊のおうち仕様 §2.2: 壁掛けは back 層（壁・窓と同じ奥行き）。
 const WALL_BAND_MIN_TOP = 14;
 const WALL_BAND_MAX_TOP = 58;
 const WALLHANG_LAYOUT = {
-  wallhang_clock: { left: 54, top: 22, width: 8, z: 3, aspect: 40 / 40 },
-  wallhang_lamp: { left: 64, top: 26, width: 7, z: 3, aspect: 30 / 40 },
-  wallhang_candle: { left: 73, top: 34, width: 5, z: 3, aspect: 24 / 34 },
-  wallhang_painting: { left: 82, top: 32, width: 9, z: 3, aspect: 50 / 60 },
-  wallhang_hanger: { left: 93, top: 46, width: 11, z: 3, aspect: 60 / 20 }
+  wallhang_clock: { left: 54, top: 22, width: 8, layer: "back", aspect: 40 / 40 },
+  wallhang_lamp: { left: 64, top: 26, width: 7, layer: "back", aspect: 30 / 40 },
+  wallhang_candle: { left: 73, top: 34, width: 5, layer: "back", aspect: 24 / 34 },
+  wallhang_painting: { left: 82, top: 32, width: 9, layer: "back", aspect: 50 / 60 },
+  wallhang_hanger: { left: 93, top: 46, width: 11, layer: "back", aspect: 60 / 20 }
 };
 // 庭は奥行きのある2列（奥列・手前列）で、それぞれの列内で足元のラインを揃えて重ならないように配置。
 // 柵より手前に置かれるアイテムは柵を隠してよい。
+// 羊のおうち仕様 §2.2: 池・ベンチは front 層、それ以外の庭の置物は mid 層（噴水はmid例示のとおり）。
 const GARDEN_BACK_TOP = 76;
 const GARDEN_FRONT_TOP = 98;
 const GARDEN_LAYOUT = {
-  garden_gazebo: { left: 15, top: GARDEN_BACK_TOP, width: 26, z: 1, aspect: 70 / 60 },
-  garden_lantern: { left: 38, top: GARDEN_BACK_TOP, width: 10, z: 1, aspect: 30 / 45 },
-  garden_hay_bale: { left: 52, top: GARDEN_BACK_TOP, width: 14, z: 1, aspect: 50 / 50 },
-  garden_pond: { left: 76, top: GARDEN_BACK_TOP, width: 24, z: 1, aspect: 70 / 40 },
-  garden_bench: { left: 12, top: GARDEN_FRONT_TOP, width: 20, z: 2, aspect: 60 / 40 },
-  garden_fountain: { left: 34, top: GARDEN_FRONT_TOP, width: 16, z: 2, aspect: 50 / 50 },
-  garden_field: { left: 58, top: GARDEN_FRONT_TOP, width: 26, z: 2, aspect: 70 / 40 },
-  garden_flowerbed: { left: 86, top: GARDEN_FRONT_TOP, width: 20, z: 2, aspect: 60 / 30 }
+  garden_gazebo: { left: 15, top: GARDEN_BACK_TOP, width: 26, layer: "mid", aspect: 70 / 60 },
+  garden_lantern: { left: 38, top: GARDEN_BACK_TOP, width: 10, layer: "mid", aspect: 30 / 45 },
+  garden_hay_bale: { left: 52, top: GARDEN_BACK_TOP, width: 14, layer: "mid", aspect: 50 / 50 },
+  garden_pond: { left: 76, top: GARDEN_BACK_TOP, width: 24, layer: "front", aspect: 70 / 40 },
+  garden_bench: { left: 12, top: GARDEN_FRONT_TOP, width: 20, layer: "front", aspect: 60 / 40 },
+  garden_fountain: { left: 34, top: GARDEN_FRONT_TOP, width: 16, layer: "mid", aspect: 50 / 50 },
+  garden_field: { left: 58, top: GARDEN_FRONT_TOP, width: 26, layer: "mid", aspect: 70 / 40 },
+  garden_flowerbed: { left: 86, top: GARDEN_FRONT_TOP, width: 20, layer: "mid", aspect: 60 / 30 }
 };
 
 // アイテムを左右・上下にドラッグして位置を自由に決められるようにするラッパー。
@@ -1158,12 +1192,14 @@ function resolvePos(saved, layout) {
   return { left: saved.left ?? layout.left, top: saved.top ?? layout.top };
 }
 
-function DraggableItem({ left, top, width, z, editMode, minLeft = 3, maxLeft = 97, minTop, maxTop, aspect, onDragEnd, transform, anchor = "floor", children }) {
+function DraggableItem({ left, top, width, layer = "mid", editMode, minLeft = 3, maxLeft = 97, minTop, maxTop, aspect, onDragEnd, transform, anchor = "floor", children }) {
   const wrapRef = useRef(null);
   const [dragLeft, setDragLeft] = useState(null);
   const [dragTop, setDragTop] = useState(null);
   const draggingRef = useRef(false);
   const allowVertical = minTop != null && maxTop != null;
+  const { z, scale } = LAYER_CONFIG[layer] || LAYER_CONFIG.mid;
+  const scaledWidth = width * scale;
 
   function handlePointerDown(e) {
     if (!editMode) return;
@@ -1188,7 +1224,10 @@ function DraggableItem({ left, top, width, z, editMode, minLeft = 3, maxLeft = 9
   function handlePointerUp() {
     if (!draggingRef.current) return;
     draggingRef.current = false;
-    if (dragLeft !== null) onDragEnd(dragLeft, dragTop !== null ? dragTop : undefined);
+    // 羊のおうち仕様 §2.4: 自由ドラッグをやめ、横方向の12分割グリッドへスナップさせる。
+    // 同じマスへの重なり回避（押しのけ）は、呼び出し側（onDragEnd＝各Sceneのハンドラ）が
+    // 他アイテムの位置を把握しているため、そちらで最終決定する。ここではスナップ後の値を渡すだけ。
+    if (dragLeft !== null) onDragEnd(snapToGrid(dragLeft), dragTop !== null ? dragTop : undefined);
     setDragLeft(null);
     setDragTop(null);
   }
@@ -1204,7 +1243,7 @@ function DraggableItem({ left, top, width, z, editMode, minLeft = 3, maxLeft = 9
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
       style={{
-        position: "absolute", left: `${effectiveLeft}%`, top: `${effectiveTop}%`, width: `${width}%`,
+        position: "absolute", left: `${effectiveLeft}%`, top: `${effectiveTop}%`, width: `${scaledWidth}%`,
         aspectRatio: aspect || undefined,
         transform: transform || "translate(-50%, -100%)", zIndex: z,
         cursor: editMode ? "grab" : "default", touchAction: editMode ? "none" : "auto"
@@ -1738,7 +1777,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
         <DraggableItem
           left={resolvePos((equipped.furniturePositions || {}).furniture_rug, FURNITURE_LAYOUT.furniture_rug).left}
           top={resolvePos((equipped.furniturePositions || {}).furniture_rug, FURNITURE_LAYOUT.furniture_rug).top}
-          width={FURNITURE_LAYOUT.furniture_rug.width} z={FURNITURE_LAYOUT.furniture_rug.z}
+          width={FURNITURE_LAYOUT.furniture_rug.width} layer={FURNITURE_LAYOUT.furniture_rug.layer}
           aspect={FURNITURE_LAYOUT.furniture_rug.aspect}
           editMode={editMode} transform="translate(-50%, -50%)"
           minTop={ROOM_FLOOR_MIN_TOP} maxTop={ROOM_FLOOR_MAX_TOP}
@@ -1756,11 +1795,17 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
         const resolved = resolvePos((equipped.furniturePositions || {})[k], layout);
         return (
           <DraggableItem key={k}
-            left={resolved.left} top={resolved.top} width={layout.width} z={layout.z}
+            left={resolved.left} top={resolved.top} width={layout.width} layer={layout.layer}
             aspect={layout.aspect}
             editMode={editMode}
             minTop={ROOM_FLOOR_MIN_TOP} maxTop={ROOM_FLOOR_MAX_TOP}
-            onDragEnd={(nl, nt) => onUpdatePosition && onUpdatePosition("furniture", k, nl, nt)}
+            onDragEnd={(nl, nt) => {
+              if (!onUpdatePosition) return;
+              const siblingLefts = placedFurniture
+                .filter((ok) => ok !== k && ok !== "furniture_rug" && FURNITURE_LAYOUT[ok].layer === layout.layer)
+                .map((ok) => resolvePos((equipped.furniturePositions || {})[ok], FURNITURE_LAYOUT[ok]).left);
+              onUpdatePosition("furniture", k, resolveGridCollision(nl, siblingLefts), nt);
+            }}
           >
             <Icon />
           </DraggableItem>
@@ -1773,11 +1818,17 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
         const resolved = resolvePos((equipped.wallhangPositions || {})[k], layout);
         return (
           <DraggableItem key={k}
-            left={resolved.left} top={resolved.top} width={layout.width} z={layout.z}
+            left={resolved.left} top={resolved.top} width={layout.width} layer={layout.layer}
             aspect={layout.aspect}
             editMode={editMode} anchor="wall"
             minTop={WALL_BAND_MIN_TOP} maxTop={WALL_BAND_MAX_TOP}
-            onDragEnd={(nl, nt) => onUpdatePosition && onUpdatePosition("wallhang", k, nl, nt)}
+            onDragEnd={(nl, nt) => {
+              if (!onUpdatePosition) return;
+              const siblingLefts = placedWallhang
+                .filter((ok) => ok !== k)
+                .map((ok) => resolvePos((equipped.wallhangPositions || {})[ok], WALLHANG_LAYOUT[ok]).left);
+              onUpdatePosition("wallhang", k, resolveGridCollision(nl, siblingLefts), nt);
+            }}
           >
             <Icon />
           </DraggableItem>
@@ -2032,11 +2083,17 @@ function GardenScene({ equipped, owned, onUpdatePosition, t }) {
         const resolved = resolvePos((equipped.gardenPositions || {})[k], layout);
         return (
           <DraggableItem key={k}
-            left={resolved.left} top={resolved.top} width={layout.width} z={layout.z}
+            left={resolved.left} top={resolved.top} width={layout.width} layer={layout.layer}
             aspect={layout.aspect}
             editMode={editMode}
             minTop={GARDEN_FLOOR_MIN_TOP} maxTop={GARDEN_FLOOR_MAX_TOP}
-            onDragEnd={(nl, nt) => onUpdatePosition && onUpdatePosition("garden", k, nl, nt)}
+            onDragEnd={(nl, nt) => {
+              if (!onUpdatePosition) return;
+              const siblingLefts = placedOrnaments
+                .filter((ok) => ok !== k && GARDEN_LAYOUT[ok].layer === layout.layer)
+                .map((ok) => resolvePos((equipped.gardenPositions || {})[ok], GARDEN_LAYOUT[ok]).left);
+              onUpdatePosition("garden", k, resolveGridCollision(nl, siblingLefts), nt);
+            }}
           >
             <Icon />
           </DraggableItem>
