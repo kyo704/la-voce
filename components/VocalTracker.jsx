@@ -6821,6 +6821,23 @@ export default function VocalTracker({ userId, userEmail }) {
                             <NumberField label={t("labelHumidity")} icon={Wind} value={formData.humidity ?? ""} step={5} min={0} max={100} suffix="%"
                               onChange={(v) => setFormData((f) => ({ ...f, humidity: v }))} />
                           </div>
+                          {(() => {
+                            const absH = computeAbsoluteHumidity(formData.temperature, formData.humidity);
+                            if (absH == null) return null;
+                            const recentDates = Object.keys(entries).sort().slice(-14);
+                            const recentVals = recentDates.map((d) => computeAbsoluteHumidity(entries[d].temperature, entries[d].humidity)).filter((v) => v != null);
+                            let compareText = "";
+                            if (recentVals.length >= 3) {
+                              const avg = recentVals.reduce((s, v) => s + v, 0) / recentVals.length;
+                              const diff = absH - avg;
+                              compareText = Math.abs(diff) < 0.5 ? "・平常並みです" : diff > 0 ? "・あなたの平常より 湿っています" : "・あなたの平常より 乾いています";
+                            }
+                            return (
+                              <p className="text-xs rounded-lg p-2" style={{ background: C.paper, color: C.inkSoft }}>
+                                絶対湿度 {absH.toFixed(1)} g/m³{compareText}
+                              </p>
+                            );
+                          })()}
                           <div>
                             <label className="text-sm font-medium block mb-1.5">{t("labelWeather")}</label>
                             <select
@@ -6896,6 +6913,19 @@ export default function VocalTracker({ userId, userEmail }) {
                             className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                         </div>
                       </div>
+                      {(() => {
+                        if (typeof formData.sleepHours !== "number") return null;
+                        const recentDates = Object.keys(entries).sort().slice(-14);
+                        const recentVals = recentDates.map((d) => entries[d].sleepHours).filter((v) => typeof v === "number");
+                        if (recentVals.length < 3) return null;
+                        const avg = recentVals.reduce((s, v) => s + v, 0) / recentVals.length;
+                        const diff = formData.sleepHours - avg;
+                        return (
+                          <p className="text-xs rounded-lg p-2" style={{ background: C.paper, color: C.inkSoft }}>
+                            14日平均より {diff >= 0 ? "+" : ""}{diff.toFixed(1)}{t("unitHours")}
+                          </p>
+                        );
+                      })()}
                       <DotSelector label={t("labelSleepQuality")} icon={Moon} value={formData.sleepQuality} lowLabel={t("lowSleepQuality")} highLabel={t("highSleepQuality")}
                         onChange={(v) => setFormData((f) => ({ ...f, sleepQuality: v }))} />
                     </SectionCard>
@@ -7009,9 +7039,19 @@ export default function VocalTracker({ userId, userEmail }) {
                           {(formData.activities || []).length > 0 && (() => {
                             const totalMinutes = (formData.activities || []).reduce((s, a) => s + (Number(a.minutes) || 0), 0);
                             const totalLoad = computeDayLoadFromActivities(formData.activities, songFactorResolver);
+                            const recentDates = Object.keys(entries).sort().slice(-7);
+                            const recentLoads = recentDates
+                              .map((d) => (entries[d].activities || []).length > 0 ? computeDayLoadFromActivities(entries[d].activities, songFactorResolver) : null)
+                              .filter((v) => typeof v === "number" && v > 0);
+                            let zoneText = "";
+                            if (recentLoads.length >= 3) {
+                              const avg = recentLoads.reduce((s, v) => s + v, 0) / recentLoads.length;
+                              const ratio = avg > 0 ? totalLoad / avg : 1;
+                              zoneText = ratio > 1.3 ? "（今週の中では重め）" : ratio < 0.7 ? "（今週の中では軽め）" : "（ちょうどいい）";
+                            }
                             return (
                               <p className="text-xs text-right ff-mono" style={{ color: C.inkSoft }}>
-                                今日の合計　{totalMinutes}分・負荷 {Math.round(totalLoad)}
+                                今日の合計　{totalMinutes}分・負荷 {Math.round(totalLoad)}{zoneText}
                               </p>
                             );
                           })()}
@@ -7077,6 +7117,31 @@ export default function VocalTracker({ userId, userEmail }) {
                             onChange={(v) => setFormData((f) => ({ ...f, waterBySlot: { total: Number(v) || 0 } }))}
                           />
                         </details>
+                        {waterTotal > 0 && (() => {
+                          let weightKg = formData.weightKg;
+                          if (typeof weightKg !== "number") {
+                            const pastDates = Object.keys(entries).sort().reverse();
+                            const found = pastDates.find((d) => typeof entries[d].weightKg === "number");
+                            if (found) weightKg = entries[found].weightKg;
+                          }
+                          if (typeof weightKg === "number" && weightKg > 0) {
+                            return (
+                              <p className="text-xs rounded-lg p-2 mt-2" style={{ background: C.paper, color: C.inkSoft }}>
+                                体重比 {Math.round(waterTotal / weightKg)} ml/kg
+                              </p>
+                            );
+                          }
+                          const recentDates = Object.keys(entries).sort().slice(-7);
+                          const recentVals = recentDates.map((d) => (entries[d].waterBySlot || {}).total).filter((v) => typeof v === "number" && v > 0);
+                          if (recentVals.length < 3) return null;
+                          const avg = recentVals.reduce((s, v) => s + v, 0) / recentVals.length;
+                          const diff = Math.round(waterTotal - avg);
+                          return (
+                            <p className="text-xs rounded-lg p-2 mt-2" style={{ background: C.paper, color: C.inkSoft }}>
+                              今週の平均より {diff >= 0 ? "+" : ""}{diff}ml
+                            </p>
+                          );
+                        })()}
                       </div>
                     </SectionCard>
 
@@ -7350,6 +7415,9 @@ export default function VocalTracker({ userId, userEmail }) {
                     <SectionCard title={t("sectionMental")} icon={HeartHandshake} id="record-section-mental" highlighted={highlightSection === "mental"}>
                       <DotSelector label={t("labelMentalEase")} icon={HeartHandshake} value={formData.ease} lowLabel={t("lowTension")} highLabel={t("highCalm")}
                         onChange={(v) => setFormData((f) => ({ ...f, ease: v }))} />
+                      {typeof formData.ease === "number" && (
+                        <p className="text-xs" style={{ color: C.inkSoft }}>記録しました</p>
+                      )}
                       {!(profile.folded_groups || []).includes("mental_detail") && (
                         <>
                           <div>
