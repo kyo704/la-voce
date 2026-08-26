@@ -6,7 +6,7 @@ import {
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
   Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot, MessageCircle, Home,
   Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe, Lock,
-  Volume2, Plane, AudioWaveform, Timer, MessageSquare, ClipboardList, GraduationCap, FileText
+  Volume2, Plane, AudioWaveform, Timer, MessageSquare, ClipboardList, GraduationCap, FileText, House
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -265,6 +265,7 @@ const FACTORS = [
 ];
 
 const TABS = [
+  { key: "home", labelKey: "tabHome", icon: House },
   { key: "today", labelKey: "tabToday", icon: Mic2 },
   { key: "garden", labelKey: "tabCharacter", icon: Home },
   { key: "history", labelKey: "tabHistory", icon: CalendarDays },
@@ -2623,7 +2624,7 @@ function ExerciseItemRow({ item, onChange, onRemove, t }) {
 export default function VocalTracker({ userId, userEmail }) {
   const [loading, setLoading] = useState(true);
   const [entries, setEntries] = useState({});
-  const [activeTab, setActiveTab] = useState("today");
+  const [activeTab, setActiveTab] = useState("home");
   const [lessonMode, setLessonMode] = useState(false);
   const lessonExitTimerRef = useRef(null);
   const [lessonExitProgress, setLessonExitProgress] = useState(0);
@@ -2638,6 +2639,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [mergeConfirming, setMergeConfirming] = useState(false);
   const [mergeInProgress, setMergeInProgress] = useState(false);
   const [mergeResult, setMergeResult] = useState("");
+  const [showQuickRecord, setShowQuickRecord] = useState(false);
   const [selectedDate, setSelectedDate] = useState(todayISOUTC());
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
@@ -3398,6 +3400,26 @@ export default function VocalTracker({ userId, userEmail }) {
   // ---- ここから、lavoce-指標設計図.md フェーズ1の3指標用データ ----
   // 段階解放の判定に使う「これまでの総記録日数」（選んだ分析期間ではなく、全期間で数える）。
   const recordedDaysTotal = useMemo(() => Object.keys(entries).length, [entries]);
+  // ---- lavoce-画面レイアウト仕様_1.md §3: ホーム（今日の一枚） 用データ（前半） ----
+  const recordStreak = useMemo(() => {
+    const realToday = todayISO();
+    let streak = 0;
+    let d = entries[realToday] ? realToday : addDays(realToday, -1);
+    while (entries[d]) { streak += 1; d = addDays(d, -1); }
+    return streak;
+  }, [entries]);
+  // 次に解放される指標までの進捗（3/7/14/28日のうち、まだ届いていない最初のもの）
+  const nextUnlock = useMemo(() => {
+    const thresholds = [
+      { days: 3, label: "症状カレンダー・音域マップ" },
+      { days: 7, label: "コンディション偏差値" },
+      { days: 14, label: "声の時差マップ・効いた習慣" },
+      { days: 28, label: "発声負荷バランス（ACWR）" }
+    ];
+    return thresholds.find((t) => recordedDaysTotal < t.days) || null;
+  }, [recordedDaysTotal]);
+  // ---- ホーム 用データ（前半）ここまで ----
+
 
   // 03. ウォームアップ効率（起き抜け→ルーティン後の半音差）
   const warmupDaily = useMemo(() => {
@@ -3826,10 +3848,29 @@ export default function VocalTracker({ userId, userEmail }) {
       low: Math.max(1, pred.yhat - intervalWidth),
       high: Math.min(5, pred.yhat + intervalWidth),
       topFactor: contributions[0] || null,
+      allContributions: contributions,
       personalizationPct: personalizedBeta.personalizationPct,
       trainN: personalizedBeta.n
     };
   }, [entries, acwrSeries, predictorMeans, throatMu, forecastResidualSD, personalizedBeta]);
+  // lavoce-画面レイアウト仕様_1.md §3.3: 提案は必ず1つだけ。予報の寄与のうち、
+  // いちばん改善余地が大きい「行動可能」な項目を選ぶ（環境・前日症状などは提案しない）。
+  const HOME_SUGGESTION_TEXT = {
+    sleepHours: "今夜は少し早めに眠ってみましょう",
+    dinnerGap: "夕食を就寝の3時間以上前に済ませてみましょう",
+    waterL: "水分をもう少し摂ってみましょう",
+    alcohol: "今夜はアルコールを控えてみましょう",
+    prevLoad: "今日は発声の負荷を少し抑えてみましょう"
+  };
+  const todaySuggestion = useMemo(() => {
+    if (!todayForecast.hasData || !todayForecast.allContributions) return null;
+    const actionable = todayForecast.allContributions
+      .filter((c) => HOME_SUGGESTION_TEXT[c.key])
+      .sort((a, b) => a.contribution - b.contribution); // 最も足を引っ張っている項目を先頭に
+    const worst = actionable[0];
+    if (!worst || worst.contribution >= -0.05) return null; // 改善余地がほぼなければ提案しない
+    return HOME_SUGGESTION_TEXT[worst.key];
+  }, [todayForecast]);
   const forecastChartData = useMemo(() => {
     return forecastResiduals.slice(-14).map((r) => {
       const low = Math.max(1, r.yhat - forecastResidualSD);
@@ -5090,6 +5131,117 @@ export default function VocalTracker({ userId, userEmail }) {
           </div>
         ) : (
           <div key={activeTab} className="tab-panel">
+            {activeTab === "home" && (() => {
+              const realToday = todayISO();
+              const hour = new Date().getHours();
+              const greeting = hour < 5 ? "こんばんは" : hour < 11 ? "おはようございます" : hour < 18 ? "こんにちは" : "こんばんは";
+              const todayEntry = entries[realToday];
+              const isRecordedToday = !!todayEntry;
+              return (
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-sm" style={{ color: C.inkSoft }}>{greeting}</p>
+                    <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
+                      {realToday.slice(5).replace("-", "/")}
+                      {recordStreak > 0 && <> ・ {recordStreak}日連続 🔥</>}
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{isRecordedToday ? "今日の記録" : "今日の声"}</p>
+                    {isRecordedToday ? (
+                      <>
+                        <div className="flex items-end gap-2 mb-2">
+                          <span className="ff-display italic" style={{ fontSize: "2.6rem", lineHeight: 1, color: levelColor(todayEntry.throatCondition) }}>
+                            {typeof todayEntry.throatCondition === "number" ? todayEntry.throatCondition.toFixed(1) : "-"}
+                          </span>
+                          <span className="text-sm mb-1" style={{ color: C.inkSoft }}>/ 5</span>
+                        </div>
+                        <p className="text-sm" style={{ color: C.ink }}>今日はもう記録済みです。お疲れさまでした。</p>
+                      </>
+                    ) : todayForecast.hasData ? (
+                      <>
+                        <div className="flex items-end gap-2 mb-2">
+                          <span className="ff-display italic" style={{ fontSize: "2.6rem", lineHeight: 1, color: levelColor(todayForecast.yhat) }}>
+                            {todayForecast.yhat.toFixed(1)}
+                          </span>
+                          <span className="text-sm mb-1" style={{ color: C.inkSoft }}>/ 5（予報）</span>
+                        </div>
+                        {todayForecast.topFactor && (
+                          <p className="text-sm mb-2" style={{ color: C.ink }}>
+                            {todayForecast.topFactor.label}が{todayForecast.topFactor.contribution >= 0 ? "良い方向に" : "厳しい方向に"}いちばん効いています。
+                          </p>
+                        )}
+                        {forecastHitRate && (
+                          <p className="text-xs pt-2 border-t" style={{ borderColor: C.line, color: C.inkSoft }}>
+                            的中率 {forecastHitRate.rate}%（直近{forecastHitRate.n}日）
+                          </p>
+                        )}
+                      </>
+                    ) : (
+                      <p className="text-sm" style={{ color: C.inkSoft }}>記録が増えると、ここに今日の声の予報が表示されます。</p>
+                    )}
+                  </div>
+
+                  {todaySuggestion && !isRecordedToday && (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <p className="text-xs mb-1" style={{ color: C.inkSoft }}>今日やるといいこと</p>
+                      <p className="text-sm font-medium">{todaySuggestion}</p>
+                    </div>
+                  )}
+
+                  {!isRecordedToday && (
+                    <>
+                      {!showQuickRecord ? (
+                        <>
+                          <button type="button"
+                            onClick={() => { setSelectedDate(realToday); setShowQuickRecord(true); }}
+                            className="w-full py-4 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                            30秒で記録する
+                          </button>
+                          <button type="button" onClick={() => { setSelectedDate(realToday); setActiveTab("today"); }}
+                            className="w-full text-center text-xs underline" style={{ color: C.inkSoft }}>
+                            しっかり記録する
+                          </button>
+                        </>
+                      ) : (
+                        <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                          <p className="text-sm font-medium mb-3">30秒で記録</p>
+                          <DotSelector label={t("labelThroatCondition")} icon={Mic2} value={formData.throatCondition} lowLabel="pp" highLabel="ff"
+                            onChange={(v) => setFormData((f) => ({ ...f, throatCondition: v }))} />
+                          <div className="mt-3">
+                            <DotSelector label={t("labelVoiceQuality")} icon={Sparkles} value={formData.voiceQuality} lowLabel="pp" highLabel="ff"
+                              onChange={(v) => setFormData((f) => ({ ...f, voiceQuality: v }))} />
+                          </div>
+                          <div className="mt-3">
+                            <NumberField label="昨夜の睡眠" value={formData.sleepHours ?? ""} step={0.5} min={0} max={14} suffix={t("unitHours")}
+                              onChange={(v) => setFormData((f) => ({ ...f, sleepHours: v }))} />
+                          </div>
+                          <button type="button"
+                            onClick={async () => { await handleSave(); setShowQuickRecord(false); }}
+                            className="w-full mt-4 py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                            記録する
+                          </button>
+                          <button type="button" onClick={() => { setActiveTab("today"); }}
+                            className="w-full mt-2 text-center text-xs underline" style={{ color: C.inkSoft }}>
+                            もっと記録する →
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {nextUnlock && (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <p className="text-xs mb-2" style={{ color: C.ink }}>あと{nextUnlock.days - recordedDaysTotal}日で「{nextUnlock.label}」が開きます</p>
+                      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: C.paper }}>
+                        <div className="h-full rounded-full" style={{ width: `${Math.min(100, (recordedDaysTotal / nextUnlock.days) * 100)}%`, background: C.gold }} />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
             {activeTab === "today" && (
               <div className="space-y-5">
                 <div className="flex items-center justify-between rounded-2xl p-3 border" style={{ background: C.card, borderColor: C.line }}>
