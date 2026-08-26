@@ -3052,11 +3052,11 @@ export default function VocalTracker({ userId, userEmail }) {
   // 記録と分析の順番設計 §3.1: 記録の入口を時間帯で2つに分ける。
   // 境界時刻（既定21時）より前は「声の記録」、以降は「一日の記録」を既定表示にする。
   // ユーザーはいつでも上部の切り替えで行き来できる（隠さない）。
-  const [recordView, setRecordView] = useState(() => {
-    const hour = new Date().getHours();
-    const boundary = 21; // 初回描画時はprofile未読込のため既定値を使い、profile読込後にuseEffectで補正する
-    return hour >= boundary || hour < 5 ? "day" : "voice";
-  });
+  // ★重要：useStateの初期値でnew Date()を直接使わないこと。サーバー（UTC）とブラウザ（日本時間等）で
+  // 結果が食い違い、ハイドレーションエラー（React #423）でアプリ全体がクラッシュする
+  // （このプロジェクトで過去に経験済みの既知のパターン）。安全な固定値で始め、
+  // マウント後のuseEffectだけで実際の時刻判定を行う。
+  const [recordView, setRecordView] = useState("voice");
   const recordViewInitializedRef = useRef(false);
   useEffect(() => {
     if (recordViewInitializedRef.current || profile.day_record_boundary_hour == null) return;
