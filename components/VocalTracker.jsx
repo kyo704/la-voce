@@ -566,10 +566,17 @@ function computeDailyLoad(entry, songFactorResolver) {
     const equiv = entry.exerciseLevel === 1 ? { minutes: 20, intensity: 2 } : { minutes: 40, intensity: 4 };
     exerciseLoad = 0.3 * equiv.minutes * (equiv.intensity / 3);
   }
-  // lavoce-収集データ拡張案.md A-2: 話し声の使用量。歌っていない時間の声の使用も発声負荷に加算する。
-  // 「話し声2（よく喋った）＝+45分相当」を基準に、レベルに比例させる。騒がしい場所では1.3倍。
-  const speakingLevel = typeof entry.speakingLevel === "number" ? entry.speakingLevel : 0;
-  const speakingLoad = speakingLevel * 22.5 * (entry.noisyEnvironment ? 1.3 : 1);
+  // lavoce-職業別項目の再設計と学ぶ画面.md §2.1: 本番外の発話（レッスン・会議・電話・授業・打合せ等）。
+  // 「歌っていない＝休養日」という誤った過小評価を正すための、全職業共通の項目。
+  // 分単位の実測値（nonPerformanceSpeechMinutes）を優先し、無い場合だけ旧speakingLevel（3択）
+  // からの概算にフォールバックする（過去データを消さず、両立させる）。
+  let speakingLoad;
+  if (typeof entry.nonPerformanceSpeechMinutes === "number") {
+    speakingLoad = entry.nonPerformanceSpeechMinutes * 1.0 * (entry.noisyEnvironment ? 1.3 : 1);
+  } else {
+    const speakingLevel = typeof entry.speakingLevel === "number" ? entry.speakingLevel : 0;
+    speakingLoad = speakingLevel * 22.5 * (entry.noisyEnvironment ? 1.3 : 1);
+  }
   return baseLoad + exerciseLoad + speakingLoad;
 }
 // 事前値 β₀（lavoce-指標設計図.md 01節より）。記録が14日未満のときはこの値だけで予報する。
@@ -896,6 +903,8 @@ function buildFormData(date, entries) {
       pianissimoHighNote: existing.pianissimoHighNote || "",
       pianissimoOnsetDelay: existing.pianissimoOnsetDelay || false,
       speakingLevel: existing.speakingLevel ?? null,
+      nonPerformanceSpeechMinutes: existing.nonPerformanceSpeechMinutes ?? null,
+      environmentTags: existing.environmentTags || [],
       noisyEnvironment: existing.noisyEnvironment || false,
       cppsValue: existing.cppsValue ?? "",
       exerciseLevel: existing.exerciseLevel ?? null,
@@ -946,6 +955,8 @@ function buildFormData(date, entries) {
     pianissimoHighNote: "",
     pianissimoOnsetDelay: false,
     speakingLevel: null,
+    nonPerformanceSpeechMinutes: null,
+    environmentTags: [],
     noisyEnvironment: false,
     cppsValue: "",
     exerciseLevel: null,
@@ -1134,7 +1145,10 @@ function newVoiceEntry(date, context) {
     note: "",
     // 稽古ノートの「息の支え」「音色の均一」タグに対応する任意項目（作業計画v2で「まだ記録機能がない」とされていたもの）
     mptSeconds: null,
-    toneEvenness: null
+    toneEvenness: null,
+    // lavoce-職業別項目の再設計と学ぶ画面.md §2.3: 発声ルーティンの長さ（全職業共通）。
+    // ウォームアップ効率（半音差）の分母として使う。
+    routineMinutes: null
   };
 }
 function updateVoiceCheckin(f, slotKey, field, value) {
@@ -1412,6 +1426,8 @@ function rowToEntry(row) {
     pianissimoHighNote: row.pianissimo_high_note || "",
     pianissimoOnsetDelay: row.pianissimo_onset_delay || false,
     speakingLevel: row.speaking_level,
+    nonPerformanceSpeechMinutes: row.non_performance_speech_minutes ?? null,
+    environmentTags: row.environment_tags || [],
     noisyEnvironment: row.noisy_environment || false,
     cppsValue: row.cpps_value,
     exerciseLevel: row.exercise_level,
@@ -1639,6 +1655,64 @@ async function recordAndAnalyzeCPPS(durationMs = 5000) {
   if (cpps == null) throw new Error("声が十分に録音できませんでした。もう一度お試しください。");
   return Math.round(cpps * 10) / 10;
 }
+// 職業別データと分析の確定仕様 §4.2: 話声位（SFF）の計算。
+// YIN法で短いフレームごとの基本周波数(F0)を推定し、有声区間（声が乗っている区間）だけを集め、
+// その中央値をSFFとする（平均ではなく中央値。外れ値に強いという文書の指定通り）。
+function estimateF0Yin(frame, sampleRate) {
+  const threshold = 0.15;
+  const maxLag = Math.floor(sampleRate / 75); // 75Hzまで（低い男声の下限を想定）
+  const minLag = Math.floor(sampleRate / 400); // 400Hzまで（高い女声・裏声を想定）
+  const n = frame.length;
+  const diff = new Float32Array(maxLag + 1);
+  for (let lag = minLag; lag <= maxLag; lag++) {
+    let sum = 0;
+    for (let i = 0; i < n - lag; i++) {
+      const d = frame[i] - frame[i + lag];
+      sum += d * d;
+    }
+    diff[lag] = sum;
+  }
+  let cumulative = 0;
+  const cmnd = new Float32Array(maxLag + 1);
+  cmnd[minLag] = 1;
+  for (let lag = minLag + 1; lag <= maxLag; lag++) {
+    cumulative += diff[lag];
+    cmnd[lag] = diff[lag] / (cumulative / (lag - minLag + 1));
+  }
+  let tau = -1;
+  for (let lag = minLag + 1; lag <= maxLag; lag++) {
+    if (cmnd[lag] < threshold) {
+      tau = lag;
+      while (tau + 1 <= maxLag && cmnd[tau + 1] < cmnd[tau]) tau++;
+      break;
+    }
+  }
+  if (tau === -1) return null; // 無声（声が乗っていない）区間
+  return sampleRate / tau;
+}
+// 定型文の3秒録音から、話声位（SFF）を算出する。
+async function recordAndAnalyzeSFF(durationMs = 3000) {
+  const blob = await recordAudioBlob(durationMs);
+  const { samples, sampleRate } = await decodeAudioBlob(blob);
+  const frameSize = Math.floor(sampleRate * 0.04); // 40msフレーム
+  const hopSize = Math.floor(frameSize / 2);
+  const f0s = [];
+  for (let start = 0; start + frameSize <= samples.length; start += hopSize) {
+    const frame = samples.subarray(start, start + frameSize);
+    // 無音区間はスキップ（RMSが小さすぎる区間は解析しない）
+    let rms = 0;
+    for (let i = 0; i < frame.length; i++) rms += frame[i] * frame[i];
+    rms = Math.sqrt(rms / frame.length);
+    if (rms < 0.01) continue;
+    const f0 = estimateF0Yin(frame, sampleRate);
+    if (f0 != null && f0 >= 75 && f0 <= 400) f0s.push(f0);
+  }
+  if (f0s.length < 5) throw new Error("声が十分に録音できませんでした。もう一度お試しください。");
+  f0s.sort((a, b) => a - b);
+  const mid = Math.floor(f0s.length / 2);
+  const median = f0s.length % 2 === 0 ? (f0s[mid - 1] + f0s[mid]) / 2 : f0s[mid];
+  return Math.round(median * 10) / 10;
+}
 // ---- CPPS計算用DSP ここまで ----
 // 前日の記録から、声のコンディションに影響しやすい要因を抽出する。
 // flagKey は「今日」タブの短い警告表示に、explainKey は分析タブの理論的な解説文に対応する。
@@ -1742,6 +1816,8 @@ function entryToRow(userId, e) {
     pianissimo_high_note: (voiceLegacy ? voiceLegacy.pianissimoHighNote : e.pianissimoHighNote) || "",
     pianissimo_onset_delay: !!e.pianissimoOnsetDelay,
     speaking_level: numOrNull(e.speakingLevel),
+    non_performance_speech_minutes: numOrNull(e.nonPerformanceSpeechMinutes),
+    environment_tags: e.environmentTags || [],
     noisy_environment: !!e.noisyEnvironment,
     cpps_value: numOrNull(e.cppsValue),
     exercise_level: numOrNull(e.exerciseLevel),
@@ -2793,11 +2869,14 @@ function OnboardingFlow({ existingUser, onComplete }) {
 // ブロックごとの負荷フィードバックをまとめる。
 // lavoce-記録項目の再設計v2.md §3.1・画面レイアウト仕様_1 §4.4: 声の記録シート。
 // 1件の声の記録（時刻・場面・喉の身体感覚・声の出来・音名・症状・ひとこと）を編集する。
-function VoiceEntryEditor({ entry, onChange, onRemove, onClose, t }) {
+function VoiceEntryEditor({ entry, onChange, onRemove, onClose, professions, t }) {
   const [mptRunning, setMptRunning] = useState(false);
   const [mptElapsed, setMptElapsed] = useState(0);
   const mptStartRef = useRef(null);
   const mptIntervalRef = useRef(null);
+  const [sffRecording, setSffRecording] = useState(false);
+  const [sffError, setSffError] = useState("");
+  const isAnnouncer = (professions || []).includes("announcer");
 
   function startMpt() {
     setMptElapsed(0);
@@ -2830,6 +2909,15 @@ function VoiceEntryEditor({ entry, onChange, onRemove, onClose, t }) {
           <X size={16} />
         </button>
       </div>
+      {entry.context === "after_routine" && (
+        <div className="mb-3">
+          <label className="text-xs block mb-1" style={{ color: C.inkSoft }}>発声ルーティンの長さ</label>
+          <div className="flex items-center gap-2">
+            <MiniNumber value={entry.routineMinutes ?? ""} placeholder="0" onChange={(v) => onChange({ routineMinutes: v === "" ? null : Number(v) })} />
+            <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>分</span>
+          </div>
+        </div>
+      )}
       <DynamicsSelector t={t} label="喉の身体感覚" icon={Mic2} value={entry.bodyFeel}
         onChange={(v) => onChange({ bodyFeel: v })} />
       <div className="mt-3">
@@ -2894,6 +2982,37 @@ function VoiceEntryEditor({ entry, onChange, onRemove, onClose, t }) {
             value={entry.toneEvenness ?? 3} lowLabel="バラつく" highLabel="揃う"
             onChange={(v) => onChange({ toneEvenness: v })} />
         </div>
+        {isAnnouncer && (
+          <div className="mt-3">
+            <p className="text-xs font-medium mb-1.5" style={{ color: C.ink }}>話声位（SFF）</p>
+            <p className="text-xs mb-2">同じ定型文(例:「本日は晴天なり」)を3秒読んでください。毎朝と終業後の両方で測ると、日内変動が見られます。</p>
+            <div className="flex items-center gap-3">
+              <span className="ff-mono text-lg" style={{ color: C.ink }}>{entry.speakingF0Hz != null ? `${entry.speakingF0Hz} Hz` : "未測定"}</span>
+              <button type="button" disabled={sffRecording}
+                onClick={async () => {
+                  setSffError("");
+                  setSffRecording(true);
+                  try {
+                    const hz = await recordAndAnalyzeSFF(3000);
+                    onChange({ speakingF0Hz: hz });
+                  } catch (err) {
+                    setSffError(err && err.message ? err.message : "マイクを使用できませんでした。ブラウザの権限設定をご確認ください。");
+                  } finally {
+                    setSffRecording(false);
+                  }
+                }}
+                className="px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5"
+                style={{ background: sffRecording ? C.line : C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                {sffRecording ? <Loader2 size={12} className="animate-spin" /> : <Mic2 size={12} />}
+                {sffRecording ? "録音中（3秒）…" : "3秒録音して測定する"}
+              </button>
+            </div>
+            {sffError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{sffError}</p>}
+            <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
+              録音データ自体は保存せず、数値化した後にその場で破棄します。このアプリ独自の簡易計算のため、あくまで自分自身の推移で見るための参考値です。
+            </p>
+          </div>
+        )}
       </details>
       <div className="flex gap-2 mt-3">
         <button type="button" onClick={onClose}
@@ -2918,6 +3037,8 @@ function ActivityBlockEditor({
   const items = activity.items || [];
   const { total, perItem } = computeActivityBlockLoad(activity, songFactorResolver);
   const isVoiceActor = (professions || []).includes("voice_actor");
+  const isPopMusical = (professions || []).includes("pop_musical");
+  const isSinger = (professions || []).includes("singer");
   return (
     <div className="rounded-xl border p-3" style={{ borderColor: C.line, background: C.card }}>
       <div className="flex items-center gap-2 mb-2">
@@ -2991,6 +3112,110 @@ function ActivityBlockEditor({
             <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>テイク（概算でよい）</span>
           </div>
           <p className="text-xs mt-1" style={{ color: C.inkSoft }}>叫び・悲鳴が無い収録は空欄のままで構いません。</p>
+        </div>
+      )}
+
+      {isPopMusical && activity.kind === "本番" && (
+        <div className="mt-3 pt-2 border-t space-y-3" style={{ borderColor: C.line }}>
+          <div>
+            <span className="text-xs font-medium block mb-1.5">モニター環境</span>
+            <div className="flex gap-1.5">
+              {[["iem", "インイヤー"], ["wedge", "ウェッジ"], ["none", "なし"]].map(([v, label]) => (
+                <button key={v} type="button" onClick={() => onDetailChange({ monitorType: v })}
+                  className="flex-1 py-1.5 rounded-lg text-xs font-medium border"
+                  style={{
+                    background: detail.monitorType === v ? C.curtain : C.paper,
+                    color: detail.monitorType === v ? "#FFFDF8" : C.inkSoft,
+                    borderColor: detail.monitorType === v ? C.curtain : C.line
+                  }}>
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <span className="text-xs font-medium block mb-1.5">終演後の打ち上げ</span>
+            <div className="flex flex-wrap gap-1.5">
+              <Chip label="参加した" active={!!(detail.afterparty || {}).attended}
+                onClick={() => onDetailChange({ afterparty: { ...(detail.afterparty || {}), attended: !(detail.afterparty || {}).attended } })} />
+              {(detail.afterparty || {}).attended && (
+                <>
+                  <Chip label="騒がしかった" active={!!(detail.afterparty || {}).noisy}
+                    onClick={() => onDetailChange({ afterparty: { ...(detail.afterparty || {}), noisy: !(detail.afterparty || {}).noisy } })} />
+                  <Chip label="飲酒あり" active={!!(detail.afterparty || {}).alcohol}
+                    onClick={() => onDetailChange({ afterparty: { ...(detail.afterparty || {}), alcohol: !(detail.afterparty || {}).alcohol } })} />
+                </>
+              )}
+            </div>
+          </div>
+          <div>
+            <span className="text-xs font-medium block mb-1.5">この日の移動手段（任意）</span>
+            <div className="flex flex-wrap gap-1.5">
+              {[["train", "電車・新幹線"], ["car", "車"], ["night_bus", "夜行バス・車中泊"], ["flight", "飛行機"]].map(([v, label]) => (
+                <Chip key={v} label={label} active={detail.travelMode === v}
+                  onClick={() => onDetailChange({ travelMode: detail.travelMode === v ? null : v })} />
+              ))}
+            </div>
+          </div>
+          <label className="flex items-center gap-2 text-xs" style={{ color: C.inkSoft }}>
+            <input type="checkbox" checked={!!detail.isTourStart}
+              onChange={(e) => onDetailChange({ isTourStart: e.target.checked })} />
+            このツアーの初日
+          </label>
+        </div>
+      )}
+
+      {isSinger && (activity.kind === "本番" || activity.kind === "リハーサル") && (
+        <div className="mt-3 pt-2 border-t space-y-3" style={{ borderColor: C.line }}>
+          <div>
+            <span className="text-xs font-medium block mb-1.5">パッサッジョの通過感</span>
+            <div className="flex gap-1.5">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button key={n} type="button" onClick={() => onDetailChange({ passaggioFeel: n })}
+                  className="flex-1 h-9 rounded-lg border text-xs font-medium"
+                  style={{
+                    background: (detail.passaggioFeel || 0) >= n ? C.curtain : C.paper,
+                    color: (detail.passaggioFeel || 0) >= n ? "#FFFDF8" : C.inkSoft,
+                    borderColor: (detail.passaggioFeel || 0) >= n ? C.curtain : C.line
+                  }}>
+                  {n}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs mt-1" style={{ color: C.inkSoft }}>1＝引っかかる・5＝すっと通る</p>
+          </div>
+          <div>
+            <span className="text-xs font-medium block mb-1.5">衣装の締め付け</span>
+            <div className="flex gap-1.5">
+              {[["none", "なし"], ["some", "やや"], ["tight", "強い"]].map(([v, label]) => (
+                <button key={v} type="button" onClick={() => onDetailChange({ costumeTightness: v })}
+                  className="flex-1 py-1.5 rounded-lg text-xs font-medium border"
+                  style={{
+                    background: detail.costumeTightness === v ? C.curtain : C.paper,
+                    color: detail.costumeTightness === v ? "#FFFDF8" : C.inkSoft,
+                    borderColor: detail.costumeTightness === v ? C.curtain : C.line
+                  }}>
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <span className="text-xs font-medium block mb-1.5">会場の響き</span>
+            <div className="flex gap-1.5">
+              {[["dead", "デッド"], ["normal", "普通"], ["live", "ライブ"]].map(([v, label]) => (
+                <button key={v} type="button" onClick={() => onDetailChange({ hallAcoustics: v })}
+                  className="flex-1 py-1.5 rounded-lg text-xs font-medium border"
+                  style={{
+                    background: detail.hallAcoustics === v ? C.curtain : C.paper,
+                    color: detail.hallAcoustics === v ? "#FFFDF8" : C.inkSoft,
+                    borderColor: detail.hallAcoustics === v ? C.curtain : C.line
+                  }}>
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       )}
 
@@ -4049,7 +4274,11 @@ export default function VocalTracker({ userId, userEmail }) {
       const wakeMidi = noteToMidi(e.wakeNote);
       const routineMidi = noteToMidi(e.routineNote);
       const deltaST = (wakeMidi != null && routineMidi != null) ? routineMidi - wakeMidi : null;
-      return { date, dateLabel: date.slice(5), wakeMidi, routineMidi, wakeNoteLabel: e.wakeNote || null, routineNoteLabel: e.routineNote || null, deltaST };
+      // lavoce-職業別項目の再設計と学ぶ画面.md §2.3: ルーティンの長さ（分）を分母にした、半音/分のレート。
+      const routineEntry = (e.voiceEntries || []).find((v) => v.context === "after_routine" && typeof v.routineMinutes === "number" && v.routineMinutes > 0);
+      const routineMinutes = routineEntry ? routineEntry.routineMinutes : null;
+      const deltaSTPerMinute = (deltaST != null && routineMinutes) ? deltaST / routineMinutes : null;
+      return { date, dateLabel: date.slice(5), wakeMidi, routineMidi, wakeNoteLabel: e.wakeNote || null, routineNoteLabel: e.routineNote || null, deltaST, routineMinutes, deltaSTPerMinute };
     });
   }, [filteredEntries]);
   // 平常値は中央値とMAD（中央絶対偏差）による頑健統計。外れ値1件に振り回されにくい。
@@ -4642,6 +4871,289 @@ export default function VocalTracker({ userId, userEmail }) {
     return { hasEnoughData: true, n: heavyDates.length, p75, curve, recoveredDays: recoveredAt ? recoveredAt.tau : null };
   }, [entries, overallThroatBaseline]);
   // ---- 声優の回復曲線 用データ ここまで ----
+
+  // ---- lavoce-職業別データと分析の確定仕様.md §4.3: 声優の叫びテイク数の閾値 ----
+  // テイク数xと翌日の喉コンディション偏差yに、区分線形（ヒンジ）モデルを当てる。
+  // y = a (x <= k) / y = a - b(x-k) (x > k)。kを1〜50でグリッド探索し、残差平方和が最小のものを採用。
+  // b>0（閾値を超えると悪化する向き）かつ n>=8のときだけ表示する。
+  const screamTakeThreshold = useMemo(() => {
+    const sortedDates = Object.keys(entries).sort();
+    const points = []; // { x: テイク数, y: 翌日の偏差 }
+    sortedDates.forEach((date, i) => {
+      const activities = entries[date].activities || [];
+      const x = activities.reduce((s, a) => s + (Number((a.detail || {}).screamTakes) || 0), 0);
+      if (x <= 0 || overallThroatBaseline == null) return;
+      const nextDate = sortedDates[i + 1];
+      if (!nextDate || addDays(date, 1) !== nextDate) return;
+      const nextEntry = entries[nextDate];
+      if (typeof nextEntry.throatCondition !== "number") return;
+      points.push({ x, y: nextEntry.throatCondition - overallThroatBaseline });
+    });
+    if (points.length < 8) return { hasEnoughData: false, n: points.length };
+
+    let best = null;
+    for (let k = 1; k <= 50; k++) {
+      const left = points.filter((p) => p.x <= k);
+      const right = points.filter((p) => p.x > k);
+      if (left.length < 2 || right.length < 2) continue;
+      const a = left.reduce((s, p) => s + p.y, 0) / left.length;
+      // 右側をa - b(x-k)で最小二乗フィット（bだけを推定、切片はaに固定）
+      const num = right.reduce((s, p) => s + (a - p.y) * (p.x - k), 0);
+      const den = right.reduce((s, p) => s + (p.x - k) * (p.x - k), 0);
+      const b = den > 0 ? num / den : 0;
+      const sse = points.reduce((s, p) => {
+        const pred = p.x <= k ? a : a - b * (p.x - k);
+        return s + (p.y - pred) * (p.y - pred);
+      }, 0);
+      if (!best || sse < best.sse) best = { k, a, b, sse };
+    }
+    if (!best || best.b <= 0) return { hasEnoughData: false, n: points.length };
+    const overThreshold = points.filter((p) => p.x > best.k);
+    return {
+      hasEnoughData: true, n: points.length, k: best.k,
+      overCount: overThreshold.length,
+      avgDeviationOver: overThreshold.length ? overThreshold.reduce((s, p) => s + p.y, 0) / overThreshold.length : null
+    };
+  }, [entries, overallThroatBaseline]);
+  // ---- 声優の叫びテイク数の閾値 用データ ここまで ----
+
+  // ---- lavoce-職業別データと分析の確定仕様.md §4.4: ポップス/ロックのセットリスト診断・キー下げ提案 ----
+  // 「即時（計算のみ）」の指標のため、entriesの蓄積を待たず、今まさに編集中のセットリストに対して
+  // その場で診断する。曲順による負荷の偏りと、快適音域を超える曲を指摘する。
+  const setlistDiagnosis = useMemo(() => {
+    if (!(profile.professions || []).includes("pop_musical") || !formData) return null;
+    const performanceActivities = (formData.activities || []).filter((a) => a.kind === "本番");
+    if (performanceActivities.length === 0) return null;
+    // 複数の本番ブロックがある日は、曲数が最も多いものを対象にする
+    const activity = [...performanceActivities].sort((a, b) => (b.items || []).length - (a.items || []).length)[0];
+    const items = (activity.items || []).filter((it) => (it.repertoireName || "").trim());
+    if (items.length < 3) return { hasEnoughSongs: false };
+
+    const { perItem } = computeActivityBlockLoad(activity, songFactorResolver);
+    const loadByIndex = items.map((it, idx) => {
+      const found = perItem.find((pi) => pi.repertoireName === it.repertoireName);
+      return { name: it.repertoireName, load: found ? found.load : 0, index: idx };
+    });
+
+    // 連続する3曲の移動和で「山」を検出する
+    const windows = [];
+    for (let j = 0; j <= loadByIndex.length - 3; j++) {
+      const w = loadByIndex[j].load + loadByIndex[j + 1].load + loadByIndex[j + 2].load;
+      windows.push({ startIndex: j, sum: w });
+    }
+    const avgWindow = windows.reduce((s, w) => s + w.sum, 0) / windows.length;
+    const peakWindow = windows.length ? windows.reduce((max, w) => (w.sum > max.sum ? w : max), windows[0]) : null;
+    let peakSuggestion = null;
+    if (peakWindow && avgWindow > 0 && peakWindow.sum > avgWindow * 1.4) {
+      const peakSongs = loadByIndex.slice(peakWindow.startIndex, peakWindow.startIndex + 3);
+      const heaviestInPeak = [...peakSongs].sort((a, b) => b.load - a.load)[0];
+      const outsidePeak = loadByIndex.filter((s) => s.index < peakWindow.startIndex || s.index >= peakWindow.startIndex + 3);
+      const lightestOutside = outsidePeak.length ? [...outsidePeak].sort((a, b) => a.load - b.load)[0] : null;
+      if (lightestOutside) {
+        // 交換後のmax(W)を概算し、改善率を見積もる
+        const swappedLoads = loadByIndex.map((s) => {
+          if (s.index === heaviestInPeak.index) return { ...s, load: lightestOutside.load };
+          if (s.index === lightestOutside.index) return { ...s, load: heaviestInPeak.load };
+          return s;
+        });
+        let newMax = 0;
+        for (let j = 0; j <= swappedLoads.length - 3; j++) {
+          const w = swappedLoads[j].load + swappedLoads[j + 1].load + swappedLoads[j + 2].load;
+          if (w > newMax) newMax = w;
+        }
+        const improvement = peakWindow.sum > 0 ? Math.round((1 - newMax / peakWindow.sum) * 100) : 0;
+        peakSuggestion = {
+          peakStart: peakWindow.startIndex + 1, peakEnd: peakWindow.startIndex + 3,
+          heaviestSong: heaviestInPeak.name, lightestSong: lightestOutside.name, improvement
+        };
+      }
+    }
+
+    // キー下げ提案：快適音域の上限を超える曲を指摘する
+    const keyLoweringSuggestions = [];
+    if (comfortableRangeMidi) {
+      items.forEach((it) => {
+        const name = (it.repertoireName || "").trim();
+        const record = repertoireTessituraMap[name];
+        const topMidi = record ? (record.dOverride != null ? null : noteToMidi(record.topNote)) : null;
+        if (topMidi != null && topMidi > comfortableRangeMidi.high) {
+          keyLoweringSuggestions.push({ name, overBy: topMidi - comfortableRangeMidi.high });
+        }
+      });
+    }
+
+    return { hasEnoughSongs: true, peakSuggestion, keyLoweringSuggestions };
+  }, [formData, profile.professions, repertoireTessituraMap, comfortableRangeMidi, songFactorResolver]);
+  // ---- セットリスト診断 用データ ここまで ----
+
+  // ---- lavoce-職業別データと分析の確定仕様.md §4.4: モニター環境・打ち上げの効果量 ----
+  // 既存の効いた習慣ランキングと同じ考え方（前日の行動→翌日の声）を、この日の「本番」ブロックに適用する。
+  const popMusicalEffects = useMemo(() => {
+    if (!(profile.professions || []).includes("pop_musical")) return [];
+    const sortedDates = Object.keys(entries).sort();
+    const monitorGroups = { iem: [], wedge: [], none: [] };
+    const afterpartyGroups = { yes: [], no: [] };
+    const travelGroups = { nightBus: [], other: [] };
+    sortedDates.forEach((date, i) => {
+      const nextDate = sortedDates[i + 1];
+      if (!nextDate || addDays(date, 1) !== nextDate) return;
+      const nextEntry = entries[nextDate];
+      const throatV = typeof nextEntry.throatCondition === "number" ? nextEntry.throatCondition : null;
+      const voiceV = typeof nextEntry.voiceQuality === "number" ? nextEntry.voiceQuality : null;
+      if (throatV == null && voiceV == null) return;
+      const score = throatV != null && voiceV != null ? (throatV + voiceV) / 2 : (throatV ?? voiceV);
+      const performances = (entries[date].activities || []).filter((a) => a.kind === "本番");
+      performances.forEach((a) => {
+        const d = a.detail || {};
+        if (d.monitorType && monitorGroups[d.monitorType]) monitorGroups[d.monitorType].push(score);
+        if (d.afterparty && typeof d.afterparty.attended === "boolean") {
+          (d.afterparty.attended ? afterpartyGroups.yes : afterpartyGroups.no).push(score);
+        }
+        if (d.travelMode) {
+          (d.travelMode === "night_bus" ? travelGroups.nightBus : travelGroups.other).push(score);
+        }
+      });
+    });
+    const results = [];
+    // モニター：インイヤー vs ウェッジ（最も対比の意味がある組み合わせ）
+    const monitorRes = computeHedgesG(monitorGroups.iem, monitorGroups.wedge);
+    if (monitorRes && monitorRes.n1 >= 3 && monitorRes.n0 >= 3) {
+      results.push({ key: "monitor", label: "モニター環境（インイヤー vs ウェッジ）", ...monitorRes, stars: starRatingForEffect(monitorRes) });
+    }
+    const afterpartyRes = computeHedgesG(afterpartyGroups.yes, afterpartyGroups.no);
+    if (afterpartyRes && afterpartyRes.n1 >= 3 && afterpartyRes.n0 >= 3) {
+      results.push({ key: "afterparty", label: "終演後の打ち上げ", ...afterpartyRes, stars: starRatingForEffect(afterpartyRes) });
+    }
+    const travelRes = computeHedgesG(travelGroups.nightBus, travelGroups.other);
+    if (travelRes && travelRes.n1 >= 3 && travelRes.n0 >= 3) {
+      results.push({ key: "travel", label: "夜行バス・車中泊の移動", ...travelRes, stars: starRatingForEffect(travelRes) });
+    }
+    return results;
+  }, [entries, profile.professions]);
+  // ---- モニター環境・打ち上げの効果量 用データ ここまで ----
+
+  // ---- lavoce-職業別データと分析の確定仕様.md §4.4: ポップス/ロックのツアー耐久曲線 ----
+  // ツアー初日（isTourStartが立った日）を0として、その後何日目に喉コンディションが落ちるかを
+  // 複数のツアーで重ね合わせる。ツアー2本以上のデータが必要。
+  const tourEnduranceCurve = useMemo(() => {
+    if (!(profile.professions || []).includes("pop_musical") || overallThroatBaseline == null) return { hasEnoughData: false, tourCount: 0 };
+    const sortedDates = Object.keys(entries).sort();
+    const tourStarts = sortedDates.filter((d) => (entries[d].activities || []).some((a) => a.kind === "本番" && (a.detail || {}).isTourStart));
+    if (tourStarts.length < 2) return { hasEnoughData: false, tourCount: tourStarts.length };
+
+    const MAX_TOUR_DAYS = 14; // ツアーの最大想定日数（これを超えたら別ツアー扱いにする）
+    const tauDeviations = {};
+    for (let tau = 0; tau <= 10; tau++) tauDeviations[tau] = [];
+
+    tourStarts.forEach((startDate, idx) => {
+      const nextStart = tourStarts[idx + 1];
+      for (let tau = 0; tau <= 10; tau++) {
+        const d = addDays(startDate, tau);
+        if (nextStart && d >= nextStart) break; // 次のツアーに食い込んだら打ち切る
+        if (tau > MAX_TOUR_DAYS) break;
+        const e = entries[d];
+        if (e && typeof e.throatCondition === "number") {
+          tauDeviations[tau].push(e.throatCondition - overallThroatBaseline);
+        }
+      }
+    });
+
+    const curve = Object.keys(tauDeviations).map(Number).sort((a, b) => a - b)
+      .map((tau) => ({
+        tau,
+        avgDeviation: tauDeviations[tau].length ? tauDeviations[tau].reduce((a, b) => a + b, 0) / tauDeviations[tau].length : null,
+        n: tauDeviations[tau].length
+      }))
+      .filter((c) => c.n >= 2); // 2本のツアーどちらにもデータがある日だけを使う
+
+    if (curve.length < 3) return { hasEnoughData: false, tourCount: tourStarts.length };
+    // 最も落ち込みが大きい日を「型」として提示する
+    const worst = curve.reduce((min, c) => (c.avgDeviation != null && (min == null || c.avgDeviation < min.avgDeviation) ? c : min), null);
+    return { hasEnoughData: true, tourCount: tourStarts.length, curve, worstDay: worst ? worst.tau : null };
+  }, [entries, profile.professions, overallThroatBaseline]);
+  // ---- ツアー耐久曲線 用データ ここまで ----
+
+  // ---- lavoce-職業別データと分析の確定仕様.md §4.2: アナウンサーの話声位の日内変動 ----
+  // 朝（wake）と終業後（after_work）のSFFの差Δ = SFF(終業後) − SFF(朝)。
+  // 上がる人・下がる人がいて、方向自体が個人の特性のため、頑健統計（中央値・MAD）で評価する。
+  const sffDiurnalVariation = useMemo(() => {
+    if (!(profile.professions || []).includes("announcer")) return { hasEnoughData: false, n: 0 };
+    const sortedDates = Object.keys(entries).sort();
+    const deltas = []; // { date, delta }
+    sortedDates.forEach((date) => {
+      const voiceEntries = entries[date].voiceEntries || [];
+      const wake = voiceEntries.find((v) => v.context === "wake" && typeof v.speakingF0Hz === "number");
+      const afterWork = voiceEntries.find((v) => v.context === "after_work" && typeof v.speakingF0Hz === "number");
+      if (wake && afterWork) deltas.push({ date, delta: afterWork.speakingF0Hz - wake.speakingF0Hz });
+    });
+    if (deltas.length < 14) return { hasEnoughData: false, n: deltas.length };
+    const recent = deltas.slice(-28);
+    const vals = recent.map((d) => d.delta);
+    const m = median(vals);
+    const mad = median(vals.map((v) => Math.abs(v - m))) * 1.4826; // 正規分布換算のMAD
+    const today = recent[recent.length - 1];
+    const z = mad > 0 ? (today.delta - m) / mad : 0;
+    const isTodayExtreme = Math.abs(z) >= 1.5;
+    return { hasEnoughData: true, n: deltas.length, medianDelta: Math.round(m * 10) / 10, todayDelta: Math.round(today.delta * 10) / 10, isTodayExtreme, direction: m < 0 ? "下がります" : "上がります" };
+  }, [entries, profile.professions]);
+  // ---- 話声位の日内変動 用データ ここまで ----
+
+  // ---- lavoce-職業別データと分析の確定仕様.md §4.1: 声楽家のパッサッジョの安定度 ----
+  // 通過感の28日中央値とMADを見て、z<=-1.5が3日続いたら知らせる（頑健統計、指標設計図の
+  // 「弱声の最高音」等と同じ考え方）。
+  const passaggioStability = useMemo(() => {
+    if (!(profile.professions || []).includes("singer")) return { hasEnoughData: false, n: 0 };
+    const sortedDates = Object.keys(entries).sort();
+    const byDate = [];
+    sortedDates.forEach((date) => {
+      const activities = entries[date].activities || [];
+      const feels = activities.map((a) => (a.detail || {}).passaggioFeel).filter((v) => typeof v === "number");
+      if (feels.length > 0) byDate.push({ date, feel: feels.reduce((a, b) => a + b, 0) / feels.length });
+    });
+    if (byDate.length < 14) return { hasEnoughData: false, n: byDate.length };
+    const recent = byDate.slice(-28);
+    const vals = recent.map((d) => d.feel);
+    const m = median(vals);
+    const mad = median(vals.map((v) => Math.abs(v - m))) * 1.4826;
+    const last3 = recent.slice(-3);
+    const alertStreak = last3.length === 3 && last3.every((d) => mad > 0 && (d.feel - m) / mad <= -1.5);
+    return { hasEnoughData: true, n: byDate.length, medianFeel: Math.round(m * 10) / 10, alertStreak, latestFeel: recent[recent.length - 1].feel };
+  }, [entries, profile.professions]);
+  // ---- パッサッジョの安定度 用データ ここまで ----
+
+  // ---- lavoce-職業別データと分析の確定仕様.md §4.1: 声楽家の衣装・会場の効果量 ----
+  const singerCostumeVenueEffects = useMemo(() => {
+    if (!(profile.professions || []).includes("singer")) return [];
+    const sortedDates = Object.keys(entries).sort();
+    const costumeGroups = { tight: [], other: [] };
+    const acousticsGroups = { dead: [], other: [] };
+    sortedDates.forEach((date, i) => {
+      const nextDate = sortedDates[i + 1];
+      if (!nextDate || addDays(date, 1) !== nextDate) return;
+      const nextEntry = entries[nextDate];
+      const throatV = typeof nextEntry.throatCondition === "number" ? nextEntry.throatCondition : null;
+      const voiceV = typeof nextEntry.voiceQuality === "number" ? nextEntry.voiceQuality : null;
+      if (throatV == null && voiceV == null) return;
+      const score = throatV != null && voiceV != null ? (throatV + voiceV) / 2 : (throatV ?? voiceV);
+      const relevant = (entries[date].activities || []).filter((a) => a.kind === "本番" || a.kind === "リハーサル");
+      relevant.forEach((a) => {
+        const d = a.detail || {};
+        if (d.costumeTightness) (d.costumeTightness === "tight" ? costumeGroups.tight : costumeGroups.other).push(score);
+        if (d.hallAcoustics) (d.hallAcoustics === "dead" ? acousticsGroups.dead : acousticsGroups.other).push(score);
+      });
+    });
+    const results = [];
+    const costumeRes = computeHedgesG(costumeGroups.tight, costumeGroups.other);
+    if (costumeRes && costumeRes.n1 >= 3 && costumeRes.n0 >= 3) {
+      results.push({ key: "costume", label: "衣装の締め付け（強い日）", ...costumeRes, stars: starRatingForEffect(costumeRes) });
+    }
+    const acousticsRes = computeHedgesG(acousticsGroups.dead, acousticsGroups.other);
+    if (acousticsRes && acousticsRes.n1 >= 3 && acousticsRes.n0 >= 3) {
+      results.push({ key: "acoustics", label: "会場の響き（デッドな日）", ...acousticsRes, stars: starRatingForEffect(acousticsRes) });
+    }
+    return results;
+  }, [entries, profile.professions]);
+  // ---- 衣装・会場の効果量 用データ ここまで ----
 
   // ---- lavoce-指標設計図.md 05. 効いた習慣ランキング 用データ ----
   // 前日の行動（二値）→翌日のスコア、という向きに必ず固定する（同日で見ると逆向きの因果を拾ってしまうため）。
@@ -6516,7 +7028,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           <div className="space-y-2">
                         {(formData.voiceEntries || []).slice().sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0)).map((entry) => (
                           editingVoiceEntryId === entry.id ? (
-                            <VoiceEntryEditor key={entry.id} entry={entry} t={t}
+                            <VoiceEntryEditor key={entry.id} entry={entry} professions={profile.professions} t={t}
                               onChange={(patch) => updateVoiceEntry(entry.id, patch)}
                               onRemove={() => removeVoiceEntry(entry.id)}
                               onClose={() => setEditingVoiceEntryId(null)} />
@@ -7072,6 +7584,21 @@ export default function VocalTracker({ userId, userEmail }) {
                         </p>
                       </div>
 
+                      <div>
+                        <span className="text-sm font-medium block mb-2">今日の環境（あてはまるものすべて）</span>
+                        <div className="flex flex-wrap gap-2">
+                          {["乾燥を感じた", "空調が直接あたる", "マスク着用", "大声を出す場所にいた", "喫煙環境", "粉塵・スモーク"].map((tag) => (
+                            <Chip key={tag} label={tag} active={(formData.environmentTags || []).includes(tag)}
+                              onClick={() => setFormData((f) => ({
+                                ...f,
+                                environmentTags: (f.environmentTags || []).includes(tag)
+                                  ? f.environmentTags.filter((x) => x !== tag)
+                                  : [...(f.environmentTags || []), tag]
+                              }))} />
+                          ))}
+                        </div>
+                      </div>
+
                       <details className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
                         <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>移動・時差の記録（任意）</summary>
                         <div className="grid grid-cols-2 gap-3 mt-2">
@@ -7241,24 +7768,29 @@ export default function VocalTracker({ userId, userEmail }) {
                         </>
                       )}
 
-                      <div>
-                        <span className="text-sm font-medium block mb-2">話し声の使用量（歌以外でどれだけ喋ったか）</span>
-                        <div className="flex gap-2">
-                          {[
-                            { v: 0, label: "ほとんど喋っていない" },
-                            { v: 1, label: "ふつう" },
-                            { v: 2, label: "よく喋った" }
-                          ].map((opt) => (
-                            <button key={opt.v} type="button" onClick={() => setFormData((f) => ({ ...f, speakingLevel: opt.v }))}
-                              className="flex-1 py-2 rounded-xl text-xs font-medium border transition-all"
-                              style={{
-                                background: formData.speakingLevel === opt.v ? C.curtain : C.paper,
-                                color: formData.speakingLevel === opt.v ? "#FFFDF8" : C.inkSoft,
-                                borderColor: formData.speakingLevel === opt.v ? C.curtain : C.line
-                              }}>
-                              {opt.label}
-                            </button>
+                      {setlistDiagnosis && setlistDiagnosis.hasEnoughSongs && (setlistDiagnosis.peakSuggestion || setlistDiagnosis.keyLoweringSuggestions.length > 0) && (
+                        <div className="rounded-xl p-3 space-y-2" style={{ background: C.paper }}>
+                          <p className="text-xs font-medium" style={{ color: C.ink }}>セットリスト診断</p>
+                          {setlistDiagnosis.peakSuggestion && (
+                            <p className="text-xs leading-relaxed" style={{ color: C.inkSoft }}>
+                              {setlistDiagnosis.peakSuggestion.peakStart}曲目と{setlistDiagnosis.peakSuggestion.peakEnd}曲目が連続で重く、ここで一度声が消耗します。
+                              「{setlistDiagnosis.peakSuggestion.lightestSong}」と入れ替えると、その山の負荷が約{setlistDiagnosis.peakSuggestion.improvement}%下がります。
+                            </p>
+                          )}
+                          {setlistDiagnosis.keyLoweringSuggestions.map((s, i) => (
+                            <p key={i} className="text-xs leading-relaxed" style={{ color: C.inkSoft }}>
+                              「{s.name}」は、あなたの快適音域の上限を{s.overBy}半音超えています。キーを下げると収まります。
+                            </p>
                           ))}
+                        </div>
+                      )}
+
+                      <div>
+                        <span className="text-sm font-medium block mb-2">本番外の発話（レッスン・会議・電話・授業・打合せなど）</span>
+                        <div className="flex items-center gap-2">
+                          <MiniNumber value={formData.nonPerformanceSpeechMinutes ?? ""} placeholder="0"
+                            onChange={(v) => setFormData((f) => ({ ...f, nonPerformanceSpeechMinutes: v === "" ? null : Number(v) }))} />
+                          <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>分</span>
                         </div>
                         <label className="flex items-center gap-2 mt-2 text-xs" style={{ color: C.inkSoft }}>
                           <input type="checkbox" checked={!!formData.noisyEnvironment}
@@ -7266,7 +7798,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           騒がしい場所での会話が多かった（無意識に声が大きくなりやすい環境）
                         </label>
                         <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
-                          レッスンで喋る・騒がしい店での会話・電話など、歌っていない時間の声の使用も、発声負荷として発声負荷（ACWR）の計算に反映されます。
+                          「今日は歌っていない・収録していない」日でも、レッスンで教える・会議・電話などの発話は、発声負荷（ACWR）の計算に反映されます。
                         </p>
                       </div>
 
@@ -8061,6 +8593,175 @@ export default function VocalTracker({ userId, userEmail }) {
                   )
                 )}
 
+                {(profile.professions || []).includes("voice_actor") && (
+                  screamTakeThreshold.hasEnoughData ? (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <h3 className="ff-display italic text-lg mb-1">叫びテイク数の閾値</h3>
+                      <p className="text-sm font-medium mt-1 mb-2">
+                        あなたの限界は叫び{screamTakeThreshold.k}テイクあたりです。
+                      </p>
+                      <p className="text-xs" style={{ color: C.inkSoft }}>
+                        それを超えた{screamTakeThreshold.overCount}回の収録では、翌日の喉コンディションが平常より平均
+                        {Math.abs(screamTakeThreshold.avgDeviationOver).toFixed(1)}段階{screamTakeThreshold.avgDeviationOver < 0 ? "低く" : "変わらず"}記録されています。
+                      </p>
+                      <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                        ※ {screamTakeThreshold.n}件の記録から推定した、自分の記録上の目安です。現場での判断の参考にしてください。
+                      </p>
+                    </div>
+                  ) : (
+                    <LockedCard
+                      title="叫びテイク数の閾値"
+                      teaser="あなた自身の「これ以上は翌日に響く」テイク数の目安が見られます"
+                      current={screamTakeThreshold.n}
+                      required={8}
+                    />
+                  )
+                )}
+
+                {(profile.professions || []).includes("singer") && (
+                  passaggioStability.hasEnoughData ? (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <h3 className="ff-display italic text-lg mb-1">パッサッジョの安定度</h3>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        直近{passaggioStability.n}件の通過感（1〜5）の中央値は{passaggioStability.medianFeel}です。
+                      </p>
+                      {passaggioStability.alertStreak ? (
+                        <p className="text-sm font-medium" style={{ color: C.curtain }}>
+                          パッサッジョの通過感が、あなたの平常より低い日が3日続いています。
+                        </p>
+                      ) : (
+                        <p className="text-sm" style={{ color: C.inkSoft }}>直近の通過感は、平常の範囲内です。</p>
+                      )}
+                      <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                        ※ 自分の記録上の傾向であり、他人との比較ではありません。
+                      </p>
+                    </div>
+                  ) : (
+                    <LockedCard
+                      title="パッサッジョの安定度"
+                      teaser="声区の切り替えの調子を、自分の平常値と比べて見られます"
+                      current={passaggioStability.n}
+                      required={14}
+                    />
+                  )
+                )}
+
+                {singerCostumeVenueEffects.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-3">衣装・会場の効果量</h3>
+                    <div className="space-y-3">
+                      {singerCostumeVenueEffects.map((r) => (
+                        <div key={r.key} className="rounded-xl p-3" style={{ background: C.paper }}>
+                          <p className="text-sm font-medium mb-1">{r.label}</p>
+                          <p className="text-xs" style={{ color: C.inkSoft }}>
+                            {r.key === "costume"
+                              ? `衣装の締め付けが強い日は、翌日の声が平均${Math.abs(r.g).toFixed(1)}段階${r.g < 0 ? "悪く" : "変わらず"}記録されています`
+                              : `会場の響きがデッドな日は、翌日の声が平均${Math.abs(r.g).toFixed(1)}段階${r.g < 0 ? "悪く" : "変わらず"}記録されています`}
+                            （{"★".repeat(r.stars)}{"☆".repeat(4 - r.stars)}）
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                      ※ 自分の記録上の傾向であり、件数が少ないうちは変わることがあります。
+                    </p>
+                  </div>
+                )}
+
+                {(profile.professions || []).includes("announcer") && (
+                  sffDiurnalVariation.hasEnoughData ? (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <h3 className="ff-display italic text-lg mb-1">話声位の日内変動</h3>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        朝と終業後の話声位（SFF）の差を、直近{sffDiurnalVariation.n}件から見ています。上がる人・下がる人がいて、方向自体があなたの特性です。
+                      </p>
+                      <p className="text-sm font-medium">
+                        あなたは仕事終わりに話声位が平均{Math.abs(sffDiurnalVariation.medianDelta)}Hz{sffDiurnalVariation.direction}。
+                      </p>
+                      {sffDiurnalVariation.isTodayExtreme && (
+                        <p className="text-sm font-medium mt-1" style={{ color: C.curtain }}>
+                          今日は{Math.abs(sffDiurnalVariation.todayDelta)}Hz{sffDiurnalVariation.todayDelta < 0 ? "下がって" : "上がって"}いて、この2週間で最大の変化です。
+                        </p>
+                      )}
+                      <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                        ※ 自分の記録上の傾向であり、他人との比較ではありません。
+                      </p>
+                    </div>
+                  ) : (
+                    <LockedCard
+                      title="話声位の日内変動"
+                      teaser="朝と終業後の声の変化から、あなた自身の疲労のサインが見られます"
+                      current={sffDiurnalVariation.n}
+                      required={14}
+                    />
+                  )
+                )}
+
+                {(profile.professions || []).includes("pop_musical") && (
+                  tourEnduranceCurve.hasEnoughData ? (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <h3 className="ff-display italic text-lg mb-1">ツアー耐久曲線</h3>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        ツアー初日を0日目にそろえ、過去{tourEnduranceCurve.tourCount}本のツアーを重ね合わせています。
+                      </p>
+                      <div className="flex items-end gap-1.5" style={{ height: 90 }}>
+                        {tourEnduranceCurve.curve.map((c) => (
+                          <div key={c.tau} className="flex-1 flex flex-col items-center justify-end h-full">
+                            {c.avgDeviation != null ? (
+                              <div className="w-full rounded-t-lg" style={{
+                                height: `${Math.max(4, Math.min(100, 50 - c.avgDeviation * 20))}%`,
+                                background: c.tau === tourEnduranceCurve.worstDay ? C.curtain : C.gold
+                              }} />
+                            ) : (
+                              <div className="w-full rounded-t-lg" style={{ height: "10%", background: C.line }} />
+                            )}
+                            <span className="text-xs mt-1" style={{ color: C.inkSoft }}>{c.tau}</span>
+                          </div>
+                        ))}
+                      </div>
+                      {tourEnduranceCurve.worstDay != null && (
+                        <p className="text-sm font-medium mt-3">
+                          あなたはツアー{tourEnduranceCurve.worstDay}日目に落ちる型です。過去{tourEnduranceCurve.tourCount}本のツアーで同じ傾向が出ています。
+                        </p>
+                      )}
+                      <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                        ※ 自分の記録上の傾向です。次のツアーでは、この日の前後に休養を厚くする判断材料にしてください。
+                      </p>
+                    </div>
+                  ) : (
+                    <LockedCard
+                      title="ツアー耐久曲線"
+                      teaser="ツアー中、何日目に声が落ちやすいかの「型」が見られます"
+                      current={tourEnduranceCurve.tourCount}
+                      required={2}
+                    />
+                  )
+                )}
+
+                {popMusicalEffects.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-3">ツアー中の効いた・響いた習慣</h3>
+                    <div className="space-y-3">
+                      {popMusicalEffects.map((r) => (
+                        <div key={r.key} className="rounded-xl p-3" style={{ background: C.paper }}>
+                          <p className="text-sm font-medium mb-1">{r.label}</p>
+                          <p className="text-xs" style={{ color: C.inkSoft }}>
+                            {r.key === "monitor"
+                              ? `インイヤーの日は、ウェッジの日より翌日の声が平均${Math.abs(r.g).toFixed(1)}段階${r.g > 0 ? "良い" : "悪い"}`
+                              : r.key === "travel"
+                              ? `夜行バス・車中泊で移動した翌日は、平均${Math.abs(r.g).toFixed(1)}段階${r.g < 0 ? "落ちる" : "変わらない"}`
+                              : `打ち上げに出た日の翌日は、平均${Math.abs(r.g).toFixed(1)}段階${r.g < 0 ? "落ちる" : "変わらない"}`}
+                            （{"★".repeat(r.stars)}{"☆".repeat(4 - r.stars)}）
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                      ※ 自分の記録上の傾向であり、件数が少ないうちは変わることがあります。
+                    </p>
+                  </div>
+                )}
+
                 {topDiscoveries.slice(1).length > 0 && (
                   <div>
                     <h2 className="ff-display italic text-xl mb-3" style={{ color: C.ink }}>今週の発見</h2>
@@ -8395,6 +9096,9 @@ export default function VocalTracker({ userId, userEmail }) {
                         <p className="text-xs" style={{ color: C.ink }}>
                           今朝は <span className="ff-mono" style={{ fontWeight: 600 }}>{warmupLatest.deltaST >= 0 ? "+" : ""}{warmupLatest.deltaST}半音</span>
                           {warmupStats && <>（ふだんは{warmupStats.median >= 0 ? "+" : ""}{warmupStats.median.toFixed(1)}半音）</>}
+                          {warmupLatest.deltaSTPerMinute != null && (
+                            <> ・ {warmupLatest.routineMinutes}分で{warmupLatest.deltaSTPerMinute.toFixed(2)}半音/分</>
+                          )}
                         </p>
                         <p className="text-xs mt-1" style={{ color: C.inkSoft }}>
                           {warmupLatest.z != null && warmupLatest.z <= -1.5 && "声が起きるのに、いつもより時間がかかる日です。"}
