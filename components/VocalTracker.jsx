@@ -1065,8 +1065,133 @@ function migrateLegacyToActivities(row) {
   }
   return { activities: row.activities || [], recovery: row.recovery || null };
 }
+// lavoce-作業計画v2-構造変更の分離.md §5 Step1（読み取り互換レイヤー）+ Step3（移行ロジック）。
+// 声の構造変更の第一段階：新旧どちらの形でも常に VoiceEntry[] を返す。
+// 【重要】既存の throat_condition / voice_quality / voice_checkins などのフィールドは
+// 一切変更しない。ここは「読み取り時に合成するだけ」の追加レイヤーで、書き込みはまだ旧形式のまま。
+const VOICE_QUALITY_SLOT_TIME = { "朝": "08:00", "昼": "13:00", "晩": "20:00" };
+const VOICE_QUALITY_SLOT_CONTEXT = { "朝": "wake", "昼": "before_work", "晩": "after_work" };
+// 声の調子（5段階）を、quality の内部表現（常に0〜10）に変換する。記録項目v2 §3.2準拠。
+function fiveScaleToQuality10(v) {
+  if (typeof v !== "number") return null;
+  return ((v - 1) / 4) * 10;
+}
+function migrateLegacyToVoiceEntries(row) {
+  // 新形式（voice_entriesを直接持つ場合）はそのまま返す。将来Step4で書き込みを切り替えた後に使う経路。
+  if (row.voice_entries && Array.isArray(row.voice_entries) && row.voice_entries.length > 0) {
+    return row.voice_entries;
+  }
+  const entries = [];
+  const checkins = row.voice_checkins || {};
+  const hasCheckins = Object.keys(checkins).some((k) => checkins[k] && (typeof checkins[k].throat === "number" || typeof checkins[k].voice === "number"));
+
+  if (hasCheckins) {
+    // 朝/昼/晩の3枠を、時刻つきのVoiceEntry 3件に分解する（記録項目v2 §6の移行表）。
+    Object.keys(VOICE_QUALITY_SLOT_TIME).forEach((slot) => {
+      const c = checkins[slot];
+      if (!c || (typeof c.throat !== "number" && typeof c.voice !== "number")) return;
+      entries.push({
+        id: `migrated-${row.date}-${slot}`,
+        date: row.date,
+        at: VOICE_QUALITY_SLOT_TIME[slot],
+        context: VOICE_QUALITY_SLOT_CONTEXT[slot],
+        bodyFeel: typeof c.throat === "number" ? c.throat : null,
+        quality: fiveScaleToQuality10(c.voice),
+        pitchChest: null,
+        pitchSoftMax: null,
+        symptoms: [],
+        note: "",
+        source: "migrated"
+      });
+    });
+  } else if (typeof row.throat_condition === "number" || typeof row.voice_quality === "number" || typeof row.resonance_score === "number") {
+    // 総合の1組だけの日は、正午のVoiceEntry 1件にまとめる。
+    entries.push({
+      id: `migrated-${row.date}-total`,
+      date: row.date,
+      at: "12:00",
+      context: "other",
+      bodyFeel: typeof row.throat_condition === "number" ? row.throat_condition : null,
+      // 響きスコア（0-10）があればそちらを優先し、なければ声の調子（5段階）を0-10に変換する。
+      quality: typeof row.resonance_score === "number" ? row.resonance_score : fiveScaleToQuality10(row.voice_quality),
+      pitchChest: null,
+      pitchSoftMax: null,
+      symptoms: row.throat_symptoms || [],
+      note: row.voice_memo || "",
+      source: "migrated"
+    });
+  }
+
+  // 起き抜け／弱声の最高音は、どちらも context:'wake' なので同じエントリにまとめる。
+  // 既に「起き抜け」のエントリが無ければ新規に作る（総合の値とは独立に存在しうるため）。
+  if (row.wake_note || row.pianissimo_high_note) {
+    let wakeEntry = entries.find((e) => e.context === "wake");
+    if (!wakeEntry) {
+      wakeEntry = {
+        id: `migrated-${row.date}-wake`,
+        date: row.date,
+        at: "07:00",
+        context: "wake",
+        bodyFeel: null,
+        quality: null,
+        pitchChest: null,
+        pitchSoftMax: null,
+        symptoms: entries.length === 0 ? (row.throat_symptoms || []) : [],
+        note: "",
+        source: "migrated"
+      };
+      entries.push(wakeEntry);
+    }
+    if (row.wake_note) wakeEntry.pitchChest = row.wake_note;
+    if (row.pianissimo_high_note) wakeEntry.pitchSoftMax = row.pianissimo_high_note;
+  }
+
+  if (row.routine_note) {
+    entries.push({
+      id: `migrated-${row.date}-routine`,
+      date: row.date,
+      at: "07:30",
+      context: "after_routine",
+      bodyFeel: null,
+      quality: null,
+      pitchChest: row.routine_note,
+      pitchSoftMax: null,
+      symptoms: [],
+      note: "",
+      source: "migrated"
+    });
+  }
+
+  return entries.sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0));
+}
+// 日次分析で使う「その日の代表値」を導出する（記録項目v2 §3.1）。ユーザーには入力させない。
+function deriveVoiceEntryRepresentatives(voiceEntries) {
+  if (!voiceEntries || voiceEntries.length === 0) return { bodyFeel: null, quality: null, wakeEntry: null, lastEntry: null, dayRange: null };
+  const median = (arr) => {
+    if (arr.length === 0) return null;
+    const sorted = [...arr].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+  };
+  const bodyFeelVals = voiceEntries.map((e) => e.bodyFeel).filter((v) => typeof v === "number");
+  const qualityVals = voiceEntries.map((e) => e.quality).filter((v) => typeof v === "number");
+  const sorted = [...voiceEntries].sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0));
+  const wakeEntry = voiceEntries.find((e) => e.context === "wake") || sorted[0] || null;
+  const lastEntry = sorted[sorted.length - 1] || null;
+  return {
+    bodyFeel: median(bodyFeelVals),
+    quality: median(qualityVals),
+    wakeEntry,
+    lastEntry,
+    // 日内変動 = 最終エントリ − 起き抜けエントリ（記録項目v2 §3.1）
+    dayRange: (wakeEntry && lastEntry && wakeEntry !== lastEntry && typeof wakeEntry.bodyFeel === "number" && typeof lastEntry.bodyFeel === "number")
+      ? lastEntry.bodyFeel - wakeEntry.bodyFeel
+      : null
+  };
+}
 function rowToEntry(row) {
   const { activities, recovery } = migrateLegacyToActivities(row);
+  const voiceEntries = migrateLegacyToVoiceEntries(row);
   return {
     date: row.date,
     throatCondition: row.throat_condition,
@@ -1123,7 +1248,8 @@ function rowToEntry(row) {
     cppsValue: row.cpps_value,
     exerciseLevel: row.exercise_level,
     activities,
-    recovery
+    recovery,
+    voiceEntries
   };
 }
 function numOrNull(v) {
