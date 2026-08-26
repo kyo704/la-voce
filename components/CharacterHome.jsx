@@ -1158,7 +1158,7 @@ function resolvePos(saved, layout) {
   return { left: saved.left ?? layout.left, top: saved.top ?? layout.top };
 }
 
-function DraggableItem({ left, top, width, z, editMode, minLeft = 3, maxLeft = 97, minTop, maxTop, aspect, onDragEnd, transform, children }) {
+function DraggableItem({ left, top, width, z, editMode, minLeft = 3, maxLeft = 97, minTop, maxTop, aspect, onDragEnd, transform, anchor = "floor", children }) {
   const wrapRef = useRef(null);
   const [dragLeft, setDragLeft] = useState(null);
   const [dragTop, setDragTop] = useState(null);
@@ -1210,6 +1210,16 @@ function DraggableItem({ left, top, width, z, editMode, minLeft = 3, maxLeft = 9
         cursor: editMode ? "grab" : "default", touchAction: editMode ? "none" : "auto"
       }}
     >
+      {/* 羊のおうち仕様 §2.1: 接地の影。壁掛け・窓のアイテムには付けない（anchor:'wall'）。
+          このdivは親のtransformと一緒に動くため、親の描画位置（＝アイテムの接地点）に自然に追随する。 */}
+      {anchor !== "wall" && (
+        <div style={{
+          position: "absolute", bottom: -2, left: "50%", transform: "translateX(-50%)",
+          width: "85%", aspectRatio: "1 / 0.22",
+          background: "rgba(70,45,30,0.18)", borderRadius: "50%", filter: "blur(6px)",
+          pointerEvents: "none"
+        }} />
+      )}
       {editMode && (
         <div style={{ position: "absolute", inset: -4, border: `2px dashed ${C.gold}`, borderRadius: 8, pointerEvents: "none" }} />
       )}
@@ -1765,7 +1775,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
           <DraggableItem key={k}
             left={resolved.left} top={resolved.top} width={layout.width} z={layout.z}
             aspect={layout.aspect}
-            editMode={editMode}
+            editMode={editMode} anchor="wall"
             minTop={WALL_BAND_MIN_TOP} maxTop={WALL_BAND_MAX_TOP}
             onDragEnd={(nl, nt) => onUpdatePosition && onUpdatePosition("wallhang", k, nl, nt)}
           >
