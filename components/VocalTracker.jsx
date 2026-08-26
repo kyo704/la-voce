@@ -7784,23 +7784,28 @@ export default function VocalTracker({ userId, userEmail }) {
 
             {activeTab === "analysis" && (
               <div className="space-y-5">
-                {topDiscoveries.length > 0 && (
-                  <div>
-                    <h2 className="ff-display italic text-xl mb-3" style={{ color: C.ink }}>今週の発見</h2>
-                    <div className="space-y-3">
-                      {topDiscoveries.map((d) => (
-                        <div key={d.id} className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                          <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{d.icon} 見つかりました</p>
-                          <p className="text-base font-medium mb-2" style={{ color: C.ink, lineHeight: 1.4 }}>{d.text}</p>
-                          {d.detail && <p className="text-xs" style={{ color: C.inkSoft }}>{d.detail}</p>}
-                        </div>
-                      ))}
+                {(() => {
+                  // 記録と分析の順番設計 §5.2: ①今日の一言。発見があれば発見、無ければ中立的な事実を出す。
+                  // 「調子が悪い日に低い判定が最初に出て、開かなくなる」ことを避けるため、判定より先に置く。
+                  if (topDiscoveries.length > 0) {
+                    const top = topDiscoveries[0];
+                    return (
+                      <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{top.icon} 今日の一言</p>
+                        <p className="text-base font-medium mb-1" style={{ color: C.ink, lineHeight: 1.4 }}>{top.text}</p>
+                        {top.detail && <p className="text-xs" style={{ color: C.inkSoft }}>{top.detail}</p>}
+                      </div>
+                    );
+                  }
+                  const nextLine = nextUnlock
+                    ? `記録${recordedDaysTotal}日目。あと${nextUnlock.days - recordedDaysTotal}日で「${nextUnlock.label}」がひらきます`
+                    : `記録${recordedDaysTotal}日目です`;
+                  return (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <p className="text-sm" style={{ color: C.inkSoft }}>{nextLine}</p>
                     </div>
-                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                      ※ その時点でいちばん優先度の高い発見だけを自動で選んで表示しています。詳しい内訳は下の各カードでご確認いただけます。
-                    </p>
-                  </div>
-                )}
+                  );
+                })()}
                 <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleVocalScore")}</h3>
                   <p className="text-xs mb-4" style={{ color: C.inkSoft }}>{t("noteVocalScore")}</p>
@@ -7882,6 +7887,24 @@ export default function VocalTracker({ userId, userEmail }) {
                     current={recordedDaysTotal}
                     required={7}
                   />
+                )}
+
+                {topDiscoveries.slice(1).length > 0 && (
+                  <div>
+                    <h2 className="ff-display italic text-xl mb-3" style={{ color: C.ink }}>今週の発見</h2>
+                    <div className="space-y-3">
+                      {topDiscoveries.slice(1).map((d) => (
+                        <div key={d.id} className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                          <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{d.icon} 見つかりました</p>
+                          <p className="text-base font-medium mb-2" style={{ color: C.ink, lineHeight: 1.4 }}>{d.text}</p>
+                          {d.detail && <p className="text-xs" style={{ color: C.inkSoft }}>{d.detail}</p>}
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                      ※ その時点でいちばん優先度の高い発見だけを自動で選んで表示しています。詳しい内訳は下の各カードでご確認いただけます。
+                    </p>
+                  </div>
                 )}
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
