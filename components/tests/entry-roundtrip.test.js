@@ -44,12 +44,34 @@ function extractFunction(source, name) {
   return source.slice(start, end);
 }
 
-function loadFunctions(names) {
+// 関数だけでなく、`const NAME = {...}` のようなオブジェクト/配列定数も抽出する。
+// 波かっこ・角かっこ両方の対応を数えて、宣言の終わり（セミコロン）を正しく見つける。
+function extractConst(source, name) {
+  const marker = `const ${name} = `;
+  const start = source.indexOf(marker);
+  if (start === -1) {
+    throw new Error(`定数 ${name} が VocalTracker.jsx 内に見つかりませんでした。`);
+  }
+  let i = start + marker.length;
+  let depth = 0;
+  let end = -1;
+  for (; i < source.length; i++) {
+    if (source[i] === "{" || source[i] === "[") depth++;
+    else if (source[i] === "}" || source[i] === "]") depth--;
+    else if (source[i] === ";" && depth === 0) { end = i + 1; break; }
+  }
+  if (end === -1) throw new Error(`定数 ${name} の終わりが見つかりませんでした。`);
+  return source.slice(start, end);
+}
+
+function loadFunctions(names, constNames = []) {
   const source = fs.readFileSync(SOURCE_PATH, "utf-8");
-  const snippets = names.map((n) => extractFunction(source, n));
+  const funcSnippets = names.map((n) => extractFunction(source, n));
+  const constSnippets = constNames.map((n) => extractConst(source, n));
   const sandbox = {};
-  // 抽出した関数群を1つのスコープでまとめて評価し、sandboxオブジェクトへ代入する。
-  const code = snippets.join("\n") + "\n" + names.map((n) => `sandbox.${n} = ${n};`).join("\n");
+  // 定数を先に、関数をあとに評価する（関数の中で定数を参照している場合があるため）。
+  const code = constSnippets.join("\n") + "\n" + funcSnippets.join("\n") + "\n" +
+    names.concat(constNames).map((n) => `sandbox.${n} = ${n};`).join("\n");
   const fn = new Function("sandbox", code);
   fn(sandbox);
   return sandbox;
@@ -96,13 +118,19 @@ function assertNoThrow(fn, label) {
 // ---------------------------------------------------------------------------
 // 実装の読み込み
 // ---------------------------------------------------------------------------
-const { numOrNull, sumMacro, derivePrimaryActivityLegacy, migrateLegacyToActivities, rowToEntry, entryToRow } = loadFunctions([
+const { numOrNull, sumMacro, derivePrimaryActivityLegacy, migrateLegacyToActivities, fiveScaleToQuality10, migrateLegacyToVoiceEntries, deriveVoiceEntryRepresentatives, rowToEntry, entryToRow } = loadFunctions([
   "numOrNull",
   "sumMacro",
   "derivePrimaryActivityLegacy",
   "migrateLegacyToActivities",
+  "fiveScaleToQuality10",
+  "migrateLegacyToVoiceEntries",
+  "deriveVoiceEntryRepresentatives",
   "rowToEntry",
   "entryToRow"
+], [
+  "VOICE_QUALITY_SLOT_TIME",
+  "VOICE_QUALITY_SLOT_CONTEXT"
 ]);
 
 const USER_ID = "test-user-id";
@@ -275,6 +303,51 @@ console.log("\n=== 移行レイヤーの検証: 旧形式（単一activityType�
   const restResult = migrateLegacyToActivities(legacyRestRow);
   assertEqual(restResult.activities, [], "休養日は activities が空配列になる");
   assertEqual(restResult.recovery.methods, ["読書"], "休養方法が recovery.methods に正しく移る");
+}
+
+console.log("\n=== 声の構造変更（作業計画v2 §5）: VoiceEntry[] 移行ロジックの検証 ===");
+{
+  // ケースA: 総合（1組）だけの日 → 正午のVoiceEntry 1件にまとまる
+  const totalOnlyRow = { date: "2026-08-10", throat_condition: 4, voice_quality: 3, resonance_score: 7, throat_symptoms: ["乾燥"], voice_memo: "普通" };
+  const totalEntries = migrateLegacyToVoiceEntries(totalOnlyRow);
+  assertEqual(totalEntries.length, 1, "総合のみの日は VoiceEntry 1件になる");
+  assertEqual(totalEntries[0].context, "other", "総合のみの日は context:'other'");
+  assertEqual(totalEntries[0].bodyFeel, 4, "throat_condition が bodyFeel にそのまま入る");
+  assertEqual(totalEntries[0].quality, 7, "響きスコア(resonance_score)があれば、それを quality として優先する");
+
+  // ケースB: 響きスコアが無い日 → 声の調子（5段階）を0-10に線形変換したものがqualityになる
+  const noResonanceRow = { date: "2026-08-11", throat_condition: 3, voice_quality: 3 };
+  const noResEntries = migrateLegacyToVoiceEntries(noResonanceRow);
+  assertEqual(noResEntries[0].quality, 5, "響きスコアが無い場合、声の調子3（中央）は quality=5 に変換される");
+
+  // ケースC: 朝昼晩の3枠がある日 → VoiceEntry 3件に分解される
+  const checkinsRow = {
+    date: "2026-08-12",
+    voice_checkins: { "朝": { throat: 3, voice: 3 }, "昼": { throat: 4, voice: 4 }, "晩": { throat: 4, voice: 5 } }
+  };
+  const checkinEntries = migrateLegacyToVoiceEntries(checkinsRow);
+  assertEqual(checkinEntries.length, 3, "朝昼晩の3枠は VoiceEntry 3件に分解される");
+  assertEqual(checkinEntries.map((e) => e.at), ["08:00", "13:00", "20:00"], "各エントリの時刻が朝→昼→晩の順で正しく設定される");
+  assertEqual(checkinEntries[0].context, "wake", "朝の枠は context:'wake'");
+
+  // ケースD: 起き抜けの音名と弱声の最高音は、同じ context:'wake' のエントリに統合される（別々の2件にならない）
+  const wakeRow = { date: "2026-08-13", wake_note: "A3", pianissimo_high_note: "E5", routine_note: "C4" };
+  const wakeEntries = migrateLegacyToVoiceEntries(wakeRow);
+  const wakeEntry = wakeEntries.find((e) => e.context === "wake");
+  assertTrue(!!wakeEntry, "context:'wake' のエントリが作られる");
+  assertEqual(wakeEntry.pitchChest, "A3", "起き抜けの音名が pitchChest に入る");
+  assertEqual(wakeEntry.pitchSoftMax, "E5", "弱声の最高音が、同じエントリの pitchSoftMax に入る（別エントリに分裂しない）");
+  const routineEntry = wakeEntries.find((e) => e.context === "after_routine");
+  assertEqual(routineEntry.pitchChest, "C4", "ルーティン後の音名は別エントリ(context:'after_routine')に入る");
+
+  // ケースE: 何も記録がない日 → 空配列（例外を投げない）
+  assertNoThrow(() => migrateLegacyToVoiceEntries({ date: "2026-08-14" }), "記録が何もない日でも例外を投げない");
+  assertEqual(migrateLegacyToVoiceEntries({ date: "2026-08-14" }), [], "記録が何もない日は空配列になる");
+
+  // ケースF: 代表値の導出（中央値・日内変動）
+  const rep = deriveVoiceEntryRepresentatives(checkinEntries);
+  assertEqual(rep.bodyFeel, 4, "代表bodyFeelは中央値（3,4,4の中央値=4）");
+  assertTrue(rep.wakeEntry.context === "wake", "代表の起き抜けエントリが正しく取得できる");
 }
 
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
