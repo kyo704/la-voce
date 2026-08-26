@@ -6248,7 +6248,7 @@ export default function VocalTracker({ userId, userEmail }) {
   }
   async function fetchTeacherLinks() {
     const supabase = createClient();
-    const { data: asTeacher } = await supabase.from("teacher_student_links").select("*, student:profiles!teacher_student_links_student_id_fkey(vocal_profession, display_name)").eq("teacher_id", userId).eq("status", "active");
+    const { data: asTeacher } = await supabase.from("teacher_student_links").select("*, student:profiles!teacher_student_links_student_profile_fkey(vocal_profession, display_name)").eq("teacher_id", userId).eq("status", "active");
     const { data: asStudent } = await supabase.from("teacher_student_links").select("*").eq("student_id", userId).eq("status", "active");
     setMyStudentLinks(asTeacher || []);
     setMyTeacherLinks(asStudent || []);
