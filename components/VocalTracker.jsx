@@ -3007,6 +3007,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [dismissedFoldSuggestions, setDismissedFoldSuggestions] = useState([]);
   const [showFieldGroupManager, setShowFieldGroupManager] = useState(false);
   const [showCopiedNotice, setShowCopiedNotice] = useState(false);
+  const [showDay7Survey, setShowDay7Survey] = useState(false);
   const [selectedDate, setSelectedDate] = useState(todayISOUTC());
   const [formData, setFormData] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
@@ -3045,7 +3046,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [] });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "" });
   const [ownedItemKeys, setOwnedItemKeys] = useState([]);
   const [characterEquipped, setCharacterEquipped] = useState({});
   const [characterPointsSpent, setCharacterPointsSpent] = useState(0);
@@ -3208,7 +3209,7 @@ export default function VocalTracker({ userId, userEmail }) {
         () =>
           supabase
             .from("profiles")
-            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus, practice_goal, practice_goal_tags, practice_goal_started_at, practice_reviews, folded_groups")
+            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus, practice_goal, practice_goal_tags, practice_goal_started_at, practice_reviews, folded_groups, survey_day7_shown_at, survey_day7_response")
             .eq("id", userId)
             .single(),
         "プロフィール（羊の装備を含む）の取得"
@@ -3243,6 +3244,8 @@ export default function VocalTracker({ userId, userEmail }) {
           practice_goal_started_at: data.practice_goal_started_at || null,
           practice_reviews: data.practice_reviews || [],
           folded_groups: data.folded_groups || [],
+          survey_day7_shown_at: data.survey_day7_shown_at || null,
+          survey_day7_response: data.survey_day7_response || "",
           vocal_profession: data.vocal_profession || "singer",
           track_cycle: data.track_cycle || false
         });
@@ -3826,6 +3829,13 @@ export default function VocalTracker({ userId, userEmail }) {
   // ---- ここから、lavoce-指標設計図.md フェーズ1の3指標用データ ----
   // 段階解放の判定に使う「これまでの総記録日数」（選んだ分析期間ではなく、全期間で数える）。
   const recordedDaysTotal = useMemo(() => Object.keys(entries).length, [entries]);
+  // 実行順マスター Stage 2-2: 記録7日目に達し、まだ表示も回答もしていなければマイクロ調査を出す。
+  useEffect(() => {
+    if (recordedDaysTotal >= 7 && !profile.survey_day7_shown_at && !profile.survey_day7_response) {
+      setShowDay7Survey(true);
+    }
+  }, [recordedDaysTotal, profile.survey_day7_shown_at, profile.survey_day7_response]);
+
   // ---- lavoce-記録項目の再設計v2.md §4.3: 使っていないものは、アプリから畳む提案をする ----
   // 「設定でオンオフ」ではなく「使用実績からアプリが提案する」方式。30日間、記録が十分に
   // 溜まっている（＝アプリを使い続けている）人だけを対象にする。
@@ -5336,6 +5346,26 @@ export default function VocalTracker({ userId, userEmail }) {
     setProfile((p) => ({ ...p, folded_groups: updated }));
   }
 
+  // 実行順マスター Stage 2-2・判断ゲート①: 7日目に一度だけ、3層（朝30秒／週次の発見／本番）
+  // のどれに需要があったかを聞くマイクロ調査。判断ゲート①の「4」の判定材料になる。
+  async function handleAnswerDay7Survey(answer) {
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update({ survey_day7_response: answer }).eq("id", userId);
+    if (error) { console.error("調査回答の保存に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, survey_day7_response: answer }));
+    setShowDay7Survey(false);
+  }
+  async function handleDismissDay7Survey() {
+    setShowDay7Survey(false);
+    // 「あとで」を選んだ場合は表示済みフラグだけ立てて、次回以降しつこく出さないようにする。
+    if (!profile.survey_day7_shown_at) {
+      const supabase = createClient();
+      const shownAt = new Date().toISOString();
+      const { error } = await supabase.from("profiles").update({ survey_day7_shown_at: shownAt }).eq("id", userId);
+      if (!error) setProfile((p) => ({ ...p, survey_day7_shown_at: shownAt }));
+    }
+  }
+
   // lavoce-収集データ拡張案.md B節: 質問票（EASE / VFI / SVHI-10 / RSI）の回答を保存する
   async function handleSubmitQuestionnaire(type) {
     const def = QUESTIONNAIRES[type];
@@ -5891,6 +5921,30 @@ export default function VocalTracker({ userId, userEmail }) {
                       </button>
                       <button type="button" onClick={() => setShowInstallBanner(false)} className="w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ color: C.inkSoft }}>
                         <X size={14} />
+                      </button>
+                    </div>
+                  )}
+                  {showDay7Survey && (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                      <p className="text-sm font-medium mb-1">7日間、お疲れさまでした</p>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>ここまで使ってみて、いちばん価値を感じたのはどれですか？(1つだけ選んでください)</p>
+                      <div className="space-y-2">
+                        {[
+                          { key: "morning30", label: "朝30秒の記録" },
+                          { key: "weekly_discovery", label: "週の振り返り・分析の発見" },
+                          { key: "performance_prep", label: "本番に向けた準備" },
+                          { key: "not_yet", label: "まだよく分からない" }
+                        ].map((opt) => (
+                          <button key={opt.key} type="button" onClick={() => handleAnswerDay7Survey(opt.key)}
+                            className="w-full text-left py-2.5 px-3 rounded-xl text-sm border"
+                            style={{ borderColor: C.line, color: C.ink, background: C.paper }}>
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
+                      <button type="button" onClick={handleDismissDay7Survey}
+                        className="w-full text-center text-xs underline mt-3" style={{ color: C.inkSoft }}>
+                        あとで答える
                       </button>
                     </div>
                   )}
