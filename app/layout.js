@@ -39,6 +39,11 @@ export const metadata = {
     capable: true,
     statusBarStyle: "default",
     title: "La Voce"
+  },
+  // apple-mobile-web-app-capable は非推奨。新しい標準タグ mobile-web-app-capable を
+  // 追加で入れておく（Apple版は互換のため残す。両方入れるのが現時点の最善）。
+  other: {
+    "mobile-web-app-capable": "yes"
   }
 };
 export const viewport = {
