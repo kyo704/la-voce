@@ -1377,7 +1377,20 @@ function deriveLegacyVoiceFieldsFromEntries(voiceEntries) {
 // 指導者プラン実装仕様 §5: 生徒一覧カード用のサマリーを計算する。
 // scope（公開範囲）で許可されていない項目は、計算すらせずnullのままにする
 // （「計算はしたが表示しない」ではなく「そもそも見ない」を徹底する）。
-function computeStudentSummary(entries, scope) {
+// 作業指示-公開前の実装.md A-1: 健康データ(声・症状・睡眠等)の閲覧権限を、サーバー側(RLS)だけに
+// 頼らず、クライアント側でも二重にチェックする。
+// ★重要な設計: 健康データの共有は、教室(organizations/memberships/assignments)とは
+// 完全に独立した、1対1の連携(teacher_student_links)だけで判定する。
+// オーナー・管理者・担当講師という「教室での役割」は、ここには一切関与しない。
+// 担当していない生徒の健康データを、オーナーや管理者が見られる経路は存在しない。
+function canViewHealth(link, scopeKey) {
+  if (!link) return false;
+  if (link.status !== "active") return false; // 解除された瞬間、過去の期間も含めて見えなくなる
+  if (link.revoked_at) return false;
+  const scope = link.share_scope || {};
+  return !!scope[scopeKey];
+}
+function computeStudentSummary(entries, link) {
   const dates = Object.keys(entries).sort();
   const totalDays = dates.length;
   const lastDate = dates[dates.length - 1] || null;
@@ -1385,16 +1398,16 @@ function computeStudentSummary(entries, scope) {
   const daysSinceLastRecord = lastDate ? Math.round((new Date(todayStr) - new Date(lastDate)) / 86400000) : null;
   const recentDates = dates.slice(-7);
   let avgThroat = null;
-  if (scope.voice) {
+  if (canViewHealth(link, "voice")) {
     const throatVals = recentDates.map((d) => entries[d].throatCondition).filter((v) => typeof v === "number");
     avgThroat = throatVals.length ? throatVals.reduce((a, b) => a + b, 0) / throatVals.length : null;
   }
   let recentSymptomCount = null;
-  if (scope.symptoms) {
+  if (canViewHealth(link, "symptoms")) {
     recentSymptomCount = recentDates.reduce((s, d) => s + (entries[d].throatSymptoms || []).length, 0);
   }
   let avgSleep = null;
-  if (scope.sleep) {
+  if (canViewHealth(link, "sleep")) {
     const sleepVals = recentDates.map((d) => entries[d].sleepHours).filter((v) => typeof v === "number");
     avgSleep = sleepVals.length ? sleepVals.reduce((a, b) => a + b, 0) / sleepVals.length : null;
   }
@@ -9240,7 +9253,7 @@ export default function VocalTracker({ userId, userEmail }) {
                 const link = viewingStudentLink;
                 const scope = link.share_scope || {};
                 const studentEntries = studentEntriesCache[link.student_id];
-                const summary = studentEntries ? computeStudentSummary(studentEntries, scope) : null;
+                const summary = studentEntries ? computeStudentSummary(studentEntries, link) : null;
                 const studentProfessionLabel = t(link.student && link.student.vocal_profession === "singer" ? "professionSinger"
                   : link.student && link.student.vocal_profession === "announcer" ? "professionAnnouncer"
                   : link.student && link.student.vocal_profession === "voice_actor" ? "professionVoiceActor" : "professionPopMusical");
@@ -9264,7 +9277,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     {summary && (
                       <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                         <p className="text-sm font-medium mb-1">記録日数（直近60日中）：{summary.totalDays}日</p>
-                        {!scope.voice && !scope.symptoms && !scope.sleep && (
+                        {!canViewHealth(link, "voice") && !canViewHealth(link, "symptoms") && !canViewHealth(link, "sleep") && (
                           <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
                             この生徒は、記録日数以外の項目をまだ共有していません。
                           </p>
@@ -9272,7 +9285,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       </div>
                     )}
 
-                    {(scope.voice || scope.symptoms || scope.sleep) && recentDates.length > 0 && (
+                    {(canViewHealth(link, "voice") || canViewHealth(link, "symptoms") || canViewHealth(link, "sleep")) && recentDates.length > 0 && (
                       <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                         <h3 className="ff-display italic text-lg mb-1">直近の記録</h3>
                         <p className="text-xs mb-3" style={{ color: C.inkSoft }}>各日にコメントを残せます。生徒にも表示されます。</p>
@@ -9285,15 +9298,15 @@ export default function VocalTracker({ userId, userEmail }) {
                                 <div className="flex items-center justify-between text-xs">
                                   <span className="ff-mono" style={{ color: C.inkSoft }}>{date.slice(5)}</span>
                                   <div className="flex gap-3">
-                                    {scope.voice && (
+                                    {canViewHealth(link, "voice") && (
                                       <span style={{ color: C.ink }}>
                                         喉{typeof e.throatCondition === "number" ? e.throatCondition.toFixed(1) : "-"}
                                       </span>
                                     )}
-                                    {scope.symptoms && (e.throatSymptoms || []).length > 0 && (
+                                    {canViewHealth(link, "symptoms") && (e.throatSymptoms || []).length > 0 && (
                                       <span style={{ color: C.curtain }}>症状{e.throatSymptoms.length}件</span>
                                     )}
-                                    {scope.sleep && (
+                                    {canViewHealth(link, "sleep") && (
                                       <span style={{ color: C.ink }}>
                                         睡眠{typeof e.sleepHours === "number" ? `${e.sleepHours}h` : "-"}
                                       </span>
@@ -9389,7 +9402,7 @@ export default function VocalTracker({ userId, userEmail }) {
                 {myStudentLinks.map((link) => {
                   const scope = link.share_scope || {};
                   const studentEntries = studentEntriesCache[link.student_id];
-                  const summary = studentEntries ? computeStudentSummary(studentEntries, scope) : null;
+                  const summary = studentEntries ? computeStudentSummary(studentEntries, link) : null;
                   const studentProfessionLabel = t(link.student && link.student.vocal_profession === "singer" ? "professionSinger"
                     : link.student && link.student.vocal_profession === "announcer" ? "professionAnnouncer"
                     : link.student && link.student.vocal_profession === "voice_actor" ? "professionVoiceActor" : "professionPopMusical");
@@ -9448,7 +9461,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           <p className="text-xs font-medium" style={{ color: C.ink }}>連携中の生徒（{myStudentLinks.length}人）</p>
                           {myStudentLinks.map((link) => (
                             <div key={link.id} className="rounded-xl p-3 flex items-center justify-between" style={{ background: C.paper }}>
-                              <span className="text-xs" style={{ color: C.inkSoft }}>生徒ID: {link.student_id.slice(0, 8)}…</span>
+                              <span className="text-xs" style={{ color: C.inkSoft }}>{(link.student && link.student.display_name) || "生徒"}</span>
                               <button type="button" onClick={() => handleRevokeLink(link.id, "teacher")}
                                 className="text-xs underline" style={{ color: C.curtain }}>{t("disconnectButton")}</button>
                             </div>
