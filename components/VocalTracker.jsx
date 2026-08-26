@@ -6640,7 +6640,89 @@ export default function VocalTracker({ userId, userEmail }) {
                       )}
                     </SectionCard>
 
-                    <SectionCard title={t("sectionSleepWater")} icon={Moon}>
+                    <SectionCard title={t("sectionClimate")} icon={Thermometer}>
+                      <div>
+                        <label className="text-sm font-medium block mb-1.5">{t("labelLocation")}</label>
+                        <div className="flex items-center gap-2 rounded-lg border p-2" style={{ borderColor: C.line, background: C.paper }}>
+                          <MapPin size={16} style={{ color: C.inkSoft }} />
+                          <input type="text" value={formData.location} placeholder={t("placeholderLocationExample")}
+                            onChange={(e) => setFormData((f) => ({ ...f, location: e.target.value }))}
+                            className="w-full text-sm bg-transparent border-none" />
+                        </div>
+                      </div>
+                      {!(profile.folded_groups || []).includes("environment") && (
+                        <>
+                          <div className="grid grid-cols-2 gap-4">
+                            <NumberField label={t("labelTemperature")} icon={Thermometer} value={formData.temperature ?? ""} step={1} min={-30} max={50} suffix="℃"
+                              onChange={(v) => setFormData((f) => ({ ...f, temperature: v }))} />
+                            <NumberField label={t("labelHumidity")} icon={Wind} value={formData.humidity ?? ""} step={5} min={0} max={100} suffix="%"
+                              onChange={(v) => setFormData((f) => ({ ...f, humidity: v }))} />
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium block mb-1.5">{t("labelWeather")}</label>
+                            <select
+                              value={formData.weather}
+                              onChange={(e) => setFormData((f) => ({ ...f, weather: e.target.value }))}
+                              className="w-full rounded-lg border p-2 text-sm"
+                              style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                            >
+                              <option value="">{t("labelSelectPlaceholder")}</option>
+                              {WEATHER_OPTIONS.map((w) => <option key={w} value={w}>{t(WEATHER_KEYS[w])}</option>)}
+                            </select>
+                          </div>
+                        </>
+                      )}
+
+                      <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <Volume2 size={14} style={{ color: C.gold }} />
+                          <span className="text-sm font-medium">環境騒音レベル</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            disabled={noiseMeasuring}
+                            onClick={async () => {
+                              setNoiseError("");
+                              setNoiseMeasuring(true);
+                              try {
+                                const db = await measureAmbientNoise(2000);
+                                setFormData((f) => ({ ...f, ambientNoiseDb: db }));
+                              } catch (err) {
+                                setNoiseError("マイクを使用できませんでした。ブラウザの権限設定をご確認ください。");
+                              } finally {
+                                setNoiseMeasuring(false);
+                              }
+                            }}
+                            className="px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5"
+                            style={{ background: noiseMeasuring ? C.line : C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}
+                          >
+                            {noiseMeasuring ? <Loader2 size={12} className="animate-spin" /> : <Mic2 size={12} />}
+                            {noiseMeasuring ? "測定中（2秒）…" : "騒音レベルを測定する"}
+                          </button>
+                          {formData.ambientNoiseDb !== "" && formData.ambientNoiseDb != null && (
+                            <span className="ff-mono text-sm" style={{ color: C.ink }}>約{formData.ambientNoiseDb} dB</span>
+                          )}
+                        </div>
+                        {noiseError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{noiseError}</p>}
+                        <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
+                          今いる場所にスマホを置いて測定すると、2秒間の音を録音データに残さず、その場で数値化します。校正されたマイクではないため、あくまで日々の相対的な比較のための参考値です。
+                        </p>
+                      </div>
+
+                      <details className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
+                        <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>移動・時差の記録（任意）</summary>
+                        <div className="grid grid-cols-2 gap-3 mt-2">
+                          <NumberField label="フライト時間" icon={Plane} value={formData.flightHours ?? ""} step={0.5} min={0} max={30} suffix={t("unitHours")}
+                            onChange={(v) => setFormData((f) => ({ ...f, flightHours: v }))} />
+                          <NumberField label="時差" value={formData.jetlagHours ?? ""} step={1} min={-12} max={12} suffix={t("unitHours")}
+                            onChange={(v) => setFormData((f) => ({ ...f, jetlagHours: v }))} />
+                        </div>
+                        <p className="mt-2 leading-relaxed">機内の乾燥と時差ぼけは、どちらも喉と体調に影響しやすいとされています。遠征のあった日だけ記録してください。</p>
+                      </details>
+                    </SectionCard>
+
+                    <SectionCard title={t("sectionSleep")} icon={Moon}>
                       <div className="grid grid-cols-2 gap-3">
                         <NumberField label={t("labelSleepHours")} icon={Moon} value={formData.sleepHours} step={0.5} min={0} max={16} suffix={t("unitHours")}
                           onChange={(v) => setFormData((f) => ({ ...f, sleepHours: v }))} />
@@ -6653,11 +6735,159 @@ export default function VocalTracker({ userId, userEmail }) {
                       </div>
                       <DotSelector label={t("labelSleepQuality")} icon={Moon} value={formData.sleepQuality} lowLabel={t("lowSleepQuality")} highLabel={t("highSleepQuality")}
                         onChange={(v) => setFormData((f) => ({ ...f, sleepQuality: v }))} />
+                    </SectionCard>
+
+                    <SectionCard title={t("sectionPractice")} icon={Music2}>
                       <div>
-                        <div className="flex items-center gap-1.5 mb-2">
-                          <Droplets size={14} style={{ color: C.gold }} />
-                          <label className="text-sm font-medium">{t("labelWaterBySlot")}</label>
+                        <span className="text-sm font-medium block mb-2">{t("labelTodayActivity")}</span>
+                        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                          <button type="button"
+                            onClick={() => setFormData((f) => ({ ...f, activities: [], recovery: f.recovery || { methods: [], note: "" } }))}
+                            className="flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-medium transition-all"
+                            style={{
+                              background: (formData.activities || []).length === 0 && formData.recovery ? C.curtain : C.paper,
+                              color: (formData.activities || []).length === 0 && formData.recovery ? "#FFFDF8" : C.inkSoft,
+                              borderColor: (formData.activities || []).length === 0 && formData.recovery ? C.curtain : C.line
+                            }}>
+                            <Moon size={16} />
+                            {t("activityRest")}
+                          </button>
+                          {ACTIVITY_BLOCK_KINDS.map((kind) => {
+                            const opt = ACTIVITY_OPTIONS.find((a) => a.key === kind) || {};
+                            const isFirstBlockKind = (formData.activities || []).length === 0;
+                            return (
+                              <button key={kind} type="button"
+                                onClick={() => {
+                                  if (isFirstBlockKind) {
+                                    setFormData((f) => ({ ...f, recovery: null, activities: [newActivityBlock(kind, 0)] }));
+                                  }
+                                }}
+                                className="flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-medium transition-all"
+                                style={{
+                                  background: isFirstBlockKind ? C.paper : C.paper,
+                                  color: C.inkSoft,
+                                  borderColor: C.line,
+                                  opacity: isFirstBlockKind ? 1 : 0.4,
+                                  cursor: isFirstBlockKind ? "pointer" : "default"
+                                }}>
+                                {opt.icon ? <opt.icon size={16} /> : <Music2 size={16} />}
+                                {t(opt.labelKey) || kind}
+                              </button>
+                            );
+                          })}
                         </div>
+                        <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
+                          {(formData.activities || []).length === 0 && formData.recovery
+                            ? "休養日として記録します。"
+                            : (formData.activities || []).length === 0
+                              ? "上のボタンから、1つ目の活動を選んでください。"
+                              : "活動は下のブロックごとに追加・編集できます。2つ以上の活動があった日は「＋活動を追加」で足してください。"}
+                        </p>
+                      </div>
+
+                      {(formData.activities || []).length === 0 && formData.recovery ? (
+                        <div className="pt-2 border-t" style={{ borderColor: C.line }}>
+                          <p className="text-sm font-medium mb-2">{t("labelRestMethodsHeader")}</p>
+                          <div className="flex flex-wrap gap-2">
+                            {REST_METHODS.map((m) => (
+                              <Chip key={m} label={t(REST_METHOD_KEYS[m])} active={((formData.recovery || {}).methods || []).includes(m)}
+                                onClick={() => {
+                                  const current = (formData.recovery || {}).methods || [];
+                                  updateRecovery({ methods: current.includes(m) ? current.filter((x) => x !== m) : [...current, m] });
+                                }} />
+                            ))}
+                          </div>
+                          {((formData.recovery || {}).methods || []).includes("その他") && (
+                            <input
+                              type="text"
+                              value={(formData.recovery || {}).note || ""}
+                              placeholder={t("placeholderRestOtherExample")}
+                              onChange={(e) => updateRecovery({ note: e.target.value })}
+                              className="w-full rounded-lg border p-2 text-sm mt-2"
+                              style={{ borderColor: C.line, background: C.paper }}
+                            />
+                          )}
+                          <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                            {t("noteRestMethodsFull")}
+                          </p>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="space-y-3">
+                            {(formData.activities || []).map((activity) => (
+                              <ActivityBlockEditor
+                                key={activity.id}
+                                activity={activity}
+                                onChange={(patch) => updateActivityBlock(activity.id, patch)}
+                                onRemove={() => removeActivityBlock(activity.id)}
+                                onDetailChange={(patch) => updateActivityBlockDetail(activity.id, patch)}
+                                onAddItem={() => addRepertoireItemToActivity(activity.id)}
+                                onUpdateItem={(idx, patch) => updateRepertoireItemInActivity(activity.id, idx, patch)}
+                                onRemoveItem={(idx) => removeRepertoireItemFromActivity(activity.id, idx)}
+                                onMoveItem={(idx, dir) => moveRepertoireItemInActivity(activity.id, idx, dir)}
+                                repertoireTessituraMap={repertoireTessituraMap}
+                                repertoireUsageCounts={repertoireUsageCounts}
+                                repertoireSkipped={repertoireSkipped}
+                                setRepertoireSkipped={setRepertoireSkipped}
+                                handleSaveRepertoire={handleSaveRepertoire}
+                                tessituraSaving={tessituraSaving}
+                                songFactorResolver={songFactorResolver}
+                                t={t}
+                              />
+                            ))}
+                          </div>
+                          {(formData.activities || []).length > 0 && (formData.activities || []).length < 10 && (
+                            <button type="button" onClick={addActivity}
+                              className="w-full rounded-xl border py-2 text-xs font-medium flex items-center justify-center gap-1.5"
+                              style={{ borderColor: C.line, color: C.inkSoft }}>
+                              <Plus size={13} />活動を追加
+                            </button>
+                          )}
+                          {(formData.activities || []).length > 0 && (() => {
+                            const totalMinutes = (formData.activities || []).reduce((s, a) => s + (Number(a.minutes) || 0), 0);
+                            const totalLoad = computeDayLoadFromActivities(formData.activities, songFactorResolver);
+                            return (
+                              <p className="text-xs text-right ff-mono" style={{ color: C.inkSoft }}>
+                                今日の合計　{totalMinutes}分・負荷 {Math.round(totalLoad)}
+                              </p>
+                            );
+                          })()}
+                        </>
+                      )}
+
+                      <div>
+                        <span className="text-sm font-medium block mb-2">話し声の使用量（歌以外でどれだけ喋ったか）</span>
+                        <div className="flex gap-2">
+                          {[
+                            { v: 0, label: "ほとんど喋っていない" },
+                            { v: 1, label: "ふつう" },
+                            { v: 2, label: "よく喋った" }
+                          ].map((opt) => (
+                            <button key={opt.v} type="button" onClick={() => setFormData((f) => ({ ...f, speakingLevel: opt.v }))}
+                              className="flex-1 py-2 rounded-xl text-xs font-medium border transition-all"
+                              style={{
+                                background: formData.speakingLevel === opt.v ? C.curtain : C.paper,
+                                color: formData.speakingLevel === opt.v ? "#FFFDF8" : C.inkSoft,
+                                borderColor: formData.speakingLevel === opt.v ? C.curtain : C.line
+                              }}>
+                              {opt.label}
+                            </button>
+                          ))}
+                        </div>
+                        <label className="flex items-center gap-2 mt-2 text-xs" style={{ color: C.inkSoft }}>
+                          <input type="checkbox" checked={!!formData.noisyEnvironment}
+                            onChange={(e) => setFormData((f) => ({ ...f, noisyEnvironment: e.target.checked }))} />
+                          騒がしい場所での会話が多かった（無意識に声が大きくなりやすい環境）
+                        </label>
+                        <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
+                          レッスンで喋る・騒がしい店での会話・電話など、歌っていない時間の声の使用も、発声負荷として発声負荷（ACWR）の計算に反映されます。
+                        </p>
+                      </div>
+
+                    </SectionCard>
+
+                    <SectionCard title={t("sectionWater")} icon={Droplets}>
+                      <div>
                         <div className="flex items-center gap-3">
                           <button type="button"
                             onClick={() => setFormData((f) => ({ ...f, waterBySlot: { total: Math.max(0, ((f.waterBySlot || {}).total || 0) - 200) } }))}
@@ -6888,237 +7118,6 @@ export default function VocalTracker({ userId, userEmail }) {
                       ) : (
                         <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteRecordWeightForTargets")}</p>
                       )}
-                    </SectionCard>
-
-                    <SectionCard title={t("sectionClimate")} icon={Thermometer}>
-                      <div>
-                        <label className="text-sm font-medium block mb-1.5">{t("labelLocation")}</label>
-                        <div className="flex items-center gap-2 rounded-lg border p-2" style={{ borderColor: C.line, background: C.paper }}>
-                          <MapPin size={16} style={{ color: C.inkSoft }} />
-                          <input type="text" value={formData.location} placeholder={t("placeholderLocationExample")}
-                            onChange={(e) => setFormData((f) => ({ ...f, location: e.target.value }))}
-                            className="w-full text-sm bg-transparent border-none" />
-                        </div>
-                      </div>
-                      {!(profile.folded_groups || []).includes("environment") && (
-                        <>
-                          <div className="grid grid-cols-2 gap-4">
-                            <NumberField label={t("labelTemperature")} icon={Thermometer} value={formData.temperature ?? ""} step={1} min={-30} max={50} suffix="℃"
-                              onChange={(v) => setFormData((f) => ({ ...f, temperature: v }))} />
-                            <NumberField label={t("labelHumidity")} icon={Wind} value={formData.humidity ?? ""} step={5} min={0} max={100} suffix="%"
-                              onChange={(v) => setFormData((f) => ({ ...f, humidity: v }))} />
-                          </div>
-                          <div>
-                            <label className="text-sm font-medium block mb-1.5">{t("labelWeather")}</label>
-                            <select
-                              value={formData.weather}
-                              onChange={(e) => setFormData((f) => ({ ...f, weather: e.target.value }))}
-                              className="w-full rounded-lg border p-2 text-sm"
-                              style={{ borderColor: C.line, background: C.paper, color: C.ink }}
-                            >
-                              <option value="">{t("labelSelectPlaceholder")}</option>
-                              {WEATHER_OPTIONS.map((w) => <option key={w} value={w}>{t(WEATHER_KEYS[w])}</option>)}
-                            </select>
-                          </div>
-                        </>
-                      )}
-
-                      <div className="rounded-xl p-3" style={{ background: C.paper }}>
-                        <div className="flex items-center gap-1.5 mb-1.5">
-                          <Volume2 size={14} style={{ color: C.gold }} />
-                          <span className="text-sm font-medium">環境騒音レベル</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <button
-                            type="button"
-                            disabled={noiseMeasuring}
-                            onClick={async () => {
-                              setNoiseError("");
-                              setNoiseMeasuring(true);
-                              try {
-                                const db = await measureAmbientNoise(2000);
-                                setFormData((f) => ({ ...f, ambientNoiseDb: db }));
-                              } catch (err) {
-                                setNoiseError("マイクを使用できませんでした。ブラウザの権限設定をご確認ください。");
-                              } finally {
-                                setNoiseMeasuring(false);
-                              }
-                            }}
-                            className="px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5"
-                            style={{ background: noiseMeasuring ? C.line : C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}
-                          >
-                            {noiseMeasuring ? <Loader2 size={12} className="animate-spin" /> : <Mic2 size={12} />}
-                            {noiseMeasuring ? "測定中（2秒）…" : "騒音レベルを測定する"}
-                          </button>
-                          {formData.ambientNoiseDb !== "" && formData.ambientNoiseDb != null && (
-                            <span className="ff-mono text-sm" style={{ color: C.ink }}>約{formData.ambientNoiseDb} dB</span>
-                          )}
-                        </div>
-                        {noiseError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{noiseError}</p>}
-                        <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
-                          今いる場所にスマホを置いて測定すると、2秒間の音を録音データに残さず、その場で数値化します。校正されたマイクではないため、あくまで日々の相対的な比較のための参考値です。
-                        </p>
-                      </div>
-
-                      <details className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
-                        <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>移動・時差の記録（任意）</summary>
-                        <div className="grid grid-cols-2 gap-3 mt-2">
-                          <NumberField label="フライト時間" icon={Plane} value={formData.flightHours ?? ""} step={0.5} min={0} max={30} suffix={t("unitHours")}
-                            onChange={(v) => setFormData((f) => ({ ...f, flightHours: v }))} />
-                          <NumberField label="時差" value={formData.jetlagHours ?? ""} step={1} min={-12} max={12} suffix={t("unitHours")}
-                            onChange={(v) => setFormData((f) => ({ ...f, jetlagHours: v }))} />
-                        </div>
-                        <p className="mt-2 leading-relaxed">機内の乾燥と時差ぼけは、どちらも喉と体調に影響しやすいとされています。遠征のあった日だけ記録してください。</p>
-                      </details>
-                    </SectionCard>
-
-                    <SectionCard title={t("sectionPractice")} icon={Music2}>
-                      <div>
-                        <span className="text-sm font-medium block mb-2">{t("labelTodayActivity")}</span>
-                        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                          <button type="button"
-                            onClick={() => setFormData((f) => ({ ...f, activities: [], recovery: f.recovery || { methods: [], note: "" } }))}
-                            className="flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-medium transition-all"
-                            style={{
-                              background: (formData.activities || []).length === 0 && formData.recovery ? C.curtain : C.paper,
-                              color: (formData.activities || []).length === 0 && formData.recovery ? "#FFFDF8" : C.inkSoft,
-                              borderColor: (formData.activities || []).length === 0 && formData.recovery ? C.curtain : C.line
-                            }}>
-                            <Moon size={16} />
-                            {t("activityRest")}
-                          </button>
-                          {ACTIVITY_BLOCK_KINDS.map((kind) => {
-                            const opt = ACTIVITY_OPTIONS.find((a) => a.key === kind) || {};
-                            const isFirstBlockKind = (formData.activities || []).length === 0;
-                            return (
-                              <button key={kind} type="button"
-                                onClick={() => {
-                                  if (isFirstBlockKind) {
-                                    setFormData((f) => ({ ...f, recovery: null, activities: [newActivityBlock(kind, 0)] }));
-                                  }
-                                }}
-                                className="flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-medium transition-all"
-                                style={{
-                                  background: isFirstBlockKind ? C.paper : C.paper,
-                                  color: C.inkSoft,
-                                  borderColor: C.line,
-                                  opacity: isFirstBlockKind ? 1 : 0.4,
-                                  cursor: isFirstBlockKind ? "pointer" : "default"
-                                }}>
-                                {opt.icon ? <opt.icon size={16} /> : <Music2 size={16} />}
-                                {t(opt.labelKey) || kind}
-                              </button>
-                            );
-                          })}
-                        </div>
-                        <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
-                          {(formData.activities || []).length === 0 && formData.recovery
-                            ? "休養日として記録します。"
-                            : (formData.activities || []).length === 0
-                              ? "上のボタンから、1つ目の活動を選んでください。"
-                              : "活動は下のブロックごとに追加・編集できます。2つ以上の活動があった日は「＋活動を追加」で足してください。"}
-                        </p>
-                      </div>
-
-                      {(formData.activities || []).length === 0 && formData.recovery ? (
-                        <div className="pt-2 border-t" style={{ borderColor: C.line }}>
-                          <p className="text-sm font-medium mb-2">{t("labelRestMethodsHeader")}</p>
-                          <div className="flex flex-wrap gap-2">
-                            {REST_METHODS.map((m) => (
-                              <Chip key={m} label={t(REST_METHOD_KEYS[m])} active={((formData.recovery || {}).methods || []).includes(m)}
-                                onClick={() => {
-                                  const current = (formData.recovery || {}).methods || [];
-                                  updateRecovery({ methods: current.includes(m) ? current.filter((x) => x !== m) : [...current, m] });
-                                }} />
-                            ))}
-                          </div>
-                          {((formData.recovery || {}).methods || []).includes("その他") && (
-                            <input
-                              type="text"
-                              value={(formData.recovery || {}).note || ""}
-                              placeholder={t("placeholderRestOtherExample")}
-                              onChange={(e) => updateRecovery({ note: e.target.value })}
-                              className="w-full rounded-lg border p-2 text-sm mt-2"
-                              style={{ borderColor: C.line, background: C.paper }}
-                            />
-                          )}
-                          <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                            {t("noteRestMethodsFull")}
-                          </p>
-                        </div>
-                      ) : (
-                        <>
-                          <div className="space-y-3">
-                            {(formData.activities || []).map((activity) => (
-                              <ActivityBlockEditor
-                                key={activity.id}
-                                activity={activity}
-                                onChange={(patch) => updateActivityBlock(activity.id, patch)}
-                                onRemove={() => removeActivityBlock(activity.id)}
-                                onDetailChange={(patch) => updateActivityBlockDetail(activity.id, patch)}
-                                onAddItem={() => addRepertoireItemToActivity(activity.id)}
-                                onUpdateItem={(idx, patch) => updateRepertoireItemInActivity(activity.id, idx, patch)}
-                                onRemoveItem={(idx) => removeRepertoireItemFromActivity(activity.id, idx)}
-                                onMoveItem={(idx, dir) => moveRepertoireItemInActivity(activity.id, idx, dir)}
-                                repertoireTessituraMap={repertoireTessituraMap}
-                                repertoireUsageCounts={repertoireUsageCounts}
-                                repertoireSkipped={repertoireSkipped}
-                                setRepertoireSkipped={setRepertoireSkipped}
-                                handleSaveRepertoire={handleSaveRepertoire}
-                                tessituraSaving={tessituraSaving}
-                                songFactorResolver={songFactorResolver}
-                                t={t}
-                              />
-                            ))}
-                          </div>
-                          {(formData.activities || []).length > 0 && (formData.activities || []).length < 10 && (
-                            <button type="button" onClick={addActivity}
-                              className="w-full rounded-xl border py-2 text-xs font-medium flex items-center justify-center gap-1.5"
-                              style={{ borderColor: C.line, color: C.inkSoft }}>
-                              <Plus size={13} />活動を追加
-                            </button>
-                          )}
-                          {(formData.activities || []).length > 0 && (() => {
-                            const totalMinutes = (formData.activities || []).reduce((s, a) => s + (Number(a.minutes) || 0), 0);
-                            const totalLoad = computeDayLoadFromActivities(formData.activities, songFactorResolver);
-                            return (
-                              <p className="text-xs text-right ff-mono" style={{ color: C.inkSoft }}>
-                                今日の合計　{totalMinutes}分・負荷 {Math.round(totalLoad)}
-                              </p>
-                            );
-                          })()}
-                        </>
-                      )}
-
-                      <div>
-                        <span className="text-sm font-medium block mb-2">話し声の使用量（歌以外でどれだけ喋ったか）</span>
-                        <div className="flex gap-2">
-                          {[
-                            { v: 0, label: "ほとんど喋っていない" },
-                            { v: 1, label: "ふつう" },
-                            { v: 2, label: "よく喋った" }
-                          ].map((opt) => (
-                            <button key={opt.v} type="button" onClick={() => setFormData((f) => ({ ...f, speakingLevel: opt.v }))}
-                              className="flex-1 py-2 rounded-xl text-xs font-medium border transition-all"
-                              style={{
-                                background: formData.speakingLevel === opt.v ? C.curtain : C.paper,
-                                color: formData.speakingLevel === opt.v ? "#FFFDF8" : C.inkSoft,
-                                borderColor: formData.speakingLevel === opt.v ? C.curtain : C.line
-                              }}>
-                              {opt.label}
-                            </button>
-                          ))}
-                        </div>
-                        <label className="flex items-center gap-2 mt-2 text-xs" style={{ color: C.inkSoft }}>
-                          <input type="checkbox" checked={!!formData.noisyEnvironment}
-                            onChange={(e) => setFormData((f) => ({ ...f, noisyEnvironment: e.target.checked }))} />
-                          騒がしい場所での会話が多かった（無意識に声が大きくなりやすい環境）
-                        </label>
-                        <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
-                          レッスンで喋る・騒がしい店での会話・電話など、歌っていない時間の声の使用も、発声負荷として発声負荷（ACWR）の計算に反映されます。
-                        </p>
-                      </div>
-
                     </SectionCard>
 
                     <SectionCard title={t("sectionExercise")} icon={Dumbbell}>
