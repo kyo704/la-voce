@@ -50,6 +50,32 @@ async function main() {
   const direct = (tracker.match(/profile\.is_admin/g) || []).length;
   assertTrue(direct <= 3, `is_admin の直接参照が増えすぎていない（${direct}件）`);
 
+  console.log("\n=== ★生徒の側から「先生とつながる」入口は、常に出す ===");
+  console.log("     これは指導者機能ではなく、生徒自身の操作です。");
+  const FRESH = { is_admin: false, teacher_beta_access: false };
+  assertEqual(m.canSeeStudentTeacherLink(), true, "★新規アカウントでも出る");
+  assertEqual(m.canSeeStudentTeacherLink(FRESH), true, "プロフィールを渡しても常に出る");
+  assertEqual(m.canSeeStudentTeacherLink(null), true, "プロフィール未読み込みでも出る");
+  assertEqual(m.canSeeStudentTeacherLink(undefined), true, "引数が無くても出る");
+
+  // ★画面側が、この入口を機能フラグで包み直していないこと。
+  //   以前は canSeeTeacherFeatures で包んでいたため、「もっと」へ移したのに
+  //   移した先ごと消えていた。同じことが二度起きないように固定する。
+  const ui = fs.readFileSync(path.join(__dirname, "..", "VocalTracker.jsx"), "utf-8");
+  const stripped = ui.replace(/\{\/\*[\s\S]*?\*\/\}/g, "").replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+  const idx = stripped.indexOf("canSeeStudentTeacherLink()");
+  assertTrue(idx > 0, "画面が canSeeStudentTeacherLink() を使っている");
+  const around = stripped.slice(Math.max(0, idx - 400), idx + 400);
+  assertTrue(!/canSeeTeacherFeatures[\s\S]{0,200}connectWithTeacherTitle/.test(stripped),
+    "★「先生とつながる」を canSeeTeacherFeatures で包んでいない");
+  assertTrue(/connectWithTeacherTitle/.test(around),
+    "canSeeStudentTeacherLink() が「先生とつながる」欄そのものを守っている");
+
+  console.log("\n=== 先生の側の道具は、これまでどおり隠す ===");
+  assertEqual(m.canSeeTeacherFeatures(FRESH, {}), false, "生徒一覧・招待の発行は、新規アカウントには出さない");
+  assertEqual(m.canSeeTeacherFeatures(FRESH, { hasStudentLinks: true }), true,
+    "★既に生徒がいる人からは取り上げない（解除する手段まで消えるため）");
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");

@@ -32,7 +32,7 @@ import { isAnalysisCardVisible } from "@/lib/analysisCardVisibility";
 // 記録項目の表示・非表示は必ずこのレイヤーを通す（記録項目の再設計v2 §3.3）
 import { isFieldGroupVisible, DEFAULT_RECORD_MODE } from "@/lib/fieldGroups";
 // 機能フラグ（G2-14）。判定はこのモジュールだけが持つ。
-import { canSeeBetaFeatures, canSeeTeacherFeatures, canSeeLineLink } from "@/lib/featureFlags";
+import { canSeeBetaFeatures, canSeeTeacherFeatures, canSeeLineLink, canSeeStudentTeacherLink } from "@/lib/featureFlags";
 // 削除の猶予期間（A-4）。日数の計算はサーバーと同じものを使う。
 import { graceDaysLeft, GRACE_PERIOD_DAYS } from "@/lib/accountDeletion";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
@@ -13446,9 +13446,12 @@ export default function VocalTracker({ userId, userEmail }) {
                     「レッスンの予定があるか、先生とつながっているか」の人にしか
                     表示されない。新規ユーザーはどちらも無いため、先生とつながる
                     入口に永久に到達できなかった（鶏と卵）。全員が見る「もっと」へ移す。 */}
-                  {/* G2-14: 先生とつながる欄も、指導者機能が検証できるまでは出さない。
-                      ★既につながっている人には出す（解除する手段まで消えないように）。 */}
-                  {canSeeTeacherFeatures(profile, { hasTeacherLinks: myTeacherLinks.length > 0 }) && (
+                  {/* ★ここは常に出す（canSeeStudentTeacherLink）。
+                      G2-14 の機能フラグで一緒に隠していたが、これは指導者機能ではなく
+                      生徒自身の操作。隠していたせいで、レッスンタブから「もっと」へ
+                      移した意味が無くなっていた（移した先ごと消えていた）。
+                      ベータの先生が招待しても、生徒がコードを入れる欄に届かなかった。 */}
+                  {canSeeStudentTeacherLink() && (
                   <details className="rounded-2xl border" style={{ background: C.card, borderColor: C.line }}>
                     <summary className="p-4 text-sm font-medium cursor-pointer">{t("connectWithTeacherTitle")}</summary>
                     <div className="px-4 pb-4">
