@@ -2300,6 +2300,75 @@ function LessonCalendar({ lessons, onDayClick, selectable, getTeacherName, getSt
     </div>
   );
 }
+// §3-D: 推移の線に添える点。
+// ★線は補助（不透明度0.3）で、主役は点。重なっても数えられるよう面の色で縁取る。
+//   本番・レッスンの日だけ大きく、別の色にする。★色と大きさの両方で区別すること。
+function trendDot(props) {
+  const { cx, cy, payload, index } = props;
+  if (cx == null || cy == null) return null;
+  const key = payload && payload.isKeyDay;
+  return (
+    <circle key={index} cx={cx} cy={cy}
+      r={key ? 4.8 : 3.2}
+      fill={key ? SERIES.s2 : SERIES.s1}
+      stroke={C.card} strokeWidth={key ? 1.8 : 1.6} />
+  );
+}
+
+// 分析画面の描画仕様.md §3-A: 数値ヒーローに添えるスパークライン。
+// ★数字だけでは「今日が良い日なのか」が分からない。推移を横に添えるだけで読める。
+//   96×26px、軸も目盛りも付けない。点は最新の1つだけ。
+function Sparkline({ values, width = 96, height = 26 }) {
+  const vals = (values || []).filter((v) => typeof v === "number").slice(-14);
+  if (vals.length < 2) return null;
+  const min = Math.min(...vals), max = Math.max(...vals);
+  const span = max - min || 1;
+  const pad = 3;
+  const x = (i) => pad + (i / (vals.length - 1)) * (width - pad * 2);
+  const y = (v) => height - pad - ((v - min) / span) * (height - pad * 2);
+  const d = vals.map((v, i) => `${i === 0 ? "M" : "L"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+  return (
+    <svg width={width} height={height} style={{ flexShrink: 0 }} aria-hidden="true">
+      <path d={d} fill="none" stroke={SERIES.s1} strokeWidth={1.8} opacity={0.3} />
+      <circle cx={x(vals.length - 1)} cy={y(vals[vals.length - 1])} r={3.2} fill={SERIES.s1} />
+    </svg>
+  );
+}
+
+// §3-C: 1次元の点列。★リング表示の置き換え。
+// リングは「7／9日中」しか言えないが、点列は順位と散らばりを同時に見せる。
+// 良い日と悪い日がどれくらい離れているかが分かる。
+function DotStrip({ values, today, height = 46 }) {
+  const vals = (values || []).filter((v) => typeof v === "number");
+  if (vals.length < 2) return null;
+  const min = Math.min(...vals), max = Math.max(...vals);
+  const span = max - min || 1;
+  const pad = 10;
+  const w = 100;
+  const x = (v) => pad + ((v - min) / span) * (w - pad * 2);
+  return (
+    <svg viewBox={`0 0 ${w} ${height}`} style={{ width: "100%", maxWidth: 260 }} aria-hidden="true">
+      {/* 目盛りは3本だけ（§3-C） */}
+      {[0, 0.5, 1].map((f) => (
+        <line key={f} x1={pad + f * (w - pad * 2)} x2={pad + f * (w - pad * 2)}
+          y1={height - 14} y2={height - 10} stroke={SERIES.grid} strokeWidth={0.6} />
+      ))}
+      <line x1={pad} x2={w - pad} y1={height - 12} y2={height - 12} stroke={SERIES.grid} strokeWidth={0.6} />
+      {/* 過去の日。★色は増やさず、淡いほうで描く */}
+      {vals.map((v, i) => (
+        <circle key={i} cx={x(v)} cy={height - 22} r={2.2} fill={SERIES.pale} opacity={0.85} />
+      ))}
+      {/* 今日。少し大きく、上にラベル */}
+      {typeof today === "number" && (
+        <>
+          <circle cx={x(today)} cy={height - 22} r={3.6} fill={SERIES.s1} />
+          <text x={x(today)} y={height - 30} textAnchor="middle" fontSize="7" fill={SERIES.axis}>今日</text>
+        </>
+      )}
+    </svg>
+  );
+}
+
 // 分析画面の描画仕様.md §3-F: 進捗ドット。件数が足りない全てのカードで使う。
 // ★「データがありません」と書かないための部品（§7-11）。
 //   9px の丸を10個、たまった分だけ SERIES.s2、残りは SERIES.grid。
@@ -5036,6 +5105,9 @@ export default function VocalTracker({ userId, userEmail }) {
       return {
         date: date.slice(5),
         fullDate: date,
+        // ★§3-D: 本番・レッスンの日を、色と大きさの両方で区別するための印。
+        //   色だけに頼らない（色覚多様性への対応でもある）。
+        isKeyDay: entryHasActivityKind(e, "本番") || entryHasActivityKind(e, "レッスン"),
         weightKg: e.weightKg || null,
         proteinPerKg: (w && e.protein) ? roundTo1(e.protein / w) : null,
         sleepHours: typeof e.sleepHours === "number" ? e.sleepHours : null,
@@ -5634,7 +5706,8 @@ export default function VocalTracker({ userId, userEmail }) {
     const T = Math.min(80, Math.max(20, Math.round(50 + 10 * z)));
     const position = values.filter((v) => v > todayEntry.score).length + 1; // 1位＝この期間でいちばん良い日
     const topPercentPct = Math.max(1, Math.round((position / n) * 100));
-    return { z, T, n, position, topPercentPct, today: Math.round(todayEntry.score) };
+    // ★点列（§3-C）を描くために、分布そのものも返す。順位だけでは散らばりが見えない。
+    return { z, T, n, position, topPercentPct, today: Math.round(todayEntry.score), values };
   }, [dailyScoreSeries]);
 
   // lavoce-レパートリー負荷パッチ.md §1.4: 「無理なく出せる音域」（任意）があればそちらを優先し、
@@ -11297,10 +11370,13 @@ export default function VocalTracker({ userId, userEmail }) {
                   ) : (
                     <>
                       <div className="flex items-end gap-2 mb-4">
-                        <span className="ff-display italic" style={{ fontSize: "3.4rem", lineHeight: 1, color: levelInk(vocalConditionScore.total / 20) }}>
+                        <span className="ff-display italic" style={{ fontSize: "3.4rem", lineHeight: 1, color: C.ink }}>
                           {vocalConditionScore.total}
                         </span>
                         <span className="text-sm mb-1.5" style={{ color: C.inkSoft }}>/ 100</span>
+                        {/* ★§3-A: 数字だけでは「今日が良い日なのか」が分からない。
+                            直近14日の推移を横に添えるだけで、同じ数字が読めるようになる。 */}
+                        <span className="ml-auto mb-1"><Sparkline values={dailyScoreSeries.map((d) => d.score)} /></span>
                       </div>
                       <div className="space-y-2">
                         {vocalConditionScore.components.map((c) => (
@@ -11341,17 +11417,12 @@ export default function VocalTracker({ userId, userEmail }) {
                         100点満点の絶対評価だと、良い日も悪い日も似た点数に集まりがちです。自分の直近{deviationScore.n}日の分布の中で、今日がどこにいるかで見ます。
                       </p>
                       <div className="flex items-center gap-5">
-                        <div style={{ position: "relative", width: 96, height: 96, flexShrink: 0 }}>
-                          <svg viewBox="0 0 100 100" style={{ transform: "rotate(-90deg)" }}>
-                            <circle cx="50" cy="50" r="42" fill="none" stroke={C.paper} strokeWidth="10" />
-                            <circle
-                              cx="50" cy="50" r="42" fill="none"
-                              stroke={deviationScore.T >= 60 ? C.sage : deviationScore.T <= 40 ? C.curtain : C.gold}
-                              strokeWidth="10" strokeLinecap="round"
-                              strokeDasharray={`${(Math.min(100, Math.max(0, (deviationScore.T - 20) / 60 * 100)) / 100) * 264} 264`}
-                            />
-                          </svg>
-                          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                        {/* ★§3-C: リングを点列に置き換えた。
+                            リングは「7／9日中」しか言えない。点列なら、順位と散らばりを
+                            同時に見せられる。良い日と悪い日がどれくらい離れているかが分かる。
+                            ★リングの色も、値によって緑・金・赤に変えていた（§7-5 違反）。 */}
+                        <div style={{ flexShrink: 0, minWidth: 0 }}>
+                          <div className="flex items-baseline gap-1.5">
                             {gateAllows("deviation.tScore", { n: deviationScore.n }) ? (
                               <>
                                 <span className="ff-display italic" style={{ fontSize: "1.7rem", color: C.ink }}>{deviationScore.T}</span>
@@ -11364,6 +11435,8 @@ export default function VocalTracker({ userId, userEmail }) {
                               </>
                             )}
                           </div>
+                          <DotStrip values={deviationScore.values} today={deviationScore.today} />
+                          <p className="text-[10px]" style={{ color: C.inkSoft }}>低い ← → 高い</p>
                         </div>
                         {gateAllows("deviation.tScore", { n: deviationScore.n }) ? (
                           <p className="text-xs" style={{ color: C.ink }}>
@@ -11743,7 +11816,9 @@ export default function VocalTracker({ userId, userEmail }) {
                         <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
                         <YAxis domain={[0, 10]} tick={{ fontSize: 11, fill: C.inkSoft }} />
                         <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <Line type="monotone" dataKey="resonanceScore" name={t("labelResonanceScore")} stroke={C.gold} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                        {/* §3-D: 線は補助、主役は点。本番・レッスンの日を大きく別色で示す。 */}
+                        <Line type="monotone" dataKey="resonanceScore" name={t("labelResonanceScore")}
+                          stroke={SERIES.s1} strokeWidth={1.8} strokeOpacity={0.3} dot={trendDot} connectNulls />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
