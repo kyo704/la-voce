@@ -5,7 +5,8 @@ import { Loader2, Check } from "lucide-react";
 import { C } from "@/lib/tokens";
 import {
   SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, PLACEMENT_LIMITS,
-  computeTotalEarned, computeStreaks, computeBalance
+  computeTotalEarned, computeStreaks, computeBalance,
+  sortShopItems, computeUnlocked
 } from "@/lib/character";
 
 const CATEGORY_LABEL_KEYS = {
@@ -2315,7 +2316,7 @@ function GardenScene({ equipped, owned, onUpdatePosition, totalDaysRecorded = 0,
   );
 }
 
-export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, onUpdatePosition, isDirty, saveStatus, onSave, t }) {
+export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, onUpdatePosition, isDirty, saveStatus, onSave, professions = [], t }) {
   const [view, setView] = useState("room");
   const [shopCategory, setShopCategory] = useState("hat");
 
@@ -2326,7 +2327,12 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
   const totalDaysRecorded = useMemo(() => Object.keys(entries || {}).length, [entries]);
   const balance = computeBalance(entries, pointsSpent);
 
-  const itemsInCategory = SHOP_ITEMS.filter((i) => i.category === shopCategory);
+  // B-2: 並び順の規則は lib/character.js が持つ。画面には書かない。
+  //   買えるものが上、購入済みが下。同じ組では今月の新作 → 職業が合うもの → 安い順。
+  const itemsInCategory = sortShopItems(
+    SHOP_ITEMS.filter((i) => i.category === shopCategory),
+    { balance, owned: new Set(ownedKeys || []), professions: professions || [] }
+  );
   const isMultiSlot = MULTI_SLOT_CATEGORIES.includes(shopCategory);
 
   return (

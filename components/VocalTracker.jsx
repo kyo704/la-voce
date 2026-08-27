@@ -10966,6 +10966,7 @@ export default function VocalTracker({ userId, userEmail }) {
 
             {activeTab === "garden" && (
               <CharacterHome
+                professions={effectiveProfessions}
                 entries={entries}
                 ownedKeys={ownedItemKeys}
                 equipped={characterEquipped}
