@@ -83,6 +83,39 @@ assertTrue(/export const SERIES_SHAPES = \{/.test(tokCode), "形での区別が�
 assertTrue(/hollow/.test(tokCode) && /small/.test(tokCode) && /large/.test(tokCode),
   "白抜き・小さい丸・大きい丸の3通り");
 
+console.log("\n=== §7-3・7-5・§1-4: ★値の大小で色を変えない ===");
+console.log("     信号色は3ゲートを迂回する。文章を出していなくても、色が言っている。");
+assertTrue(!/function levelColor/.test(ui), "★値→色の対応表（levelColor）が無い");
+assertTrue(/function levelInk/.test(ui), "色を返す関数は、値によらず一色");
+const inkFn = ui.slice(ui.indexOf("function levelInk"), ui.indexOf("function levelInk") + 200);
+assertTrue(!/LEVEL_COLORS/.test(inkFn), "★LEVEL_COLORS を引いていない");
+// 値で面を塗っていないこと
+assertTrue(!/background: levelInk\(/.test(ui), "★面を値で塗っていない");
+assertTrue(!/fill=\{levelInk\(/.test(ui), "★棒を値で塗っていない");
+// カレンダーの升目
+const cal = ui.slice(ui.indexOf("calendarCells.map"), ui.indexOf("calendarCells.map") + 1800);
+assertTrue(!/background: c\.entry \? levelInk/.test(cal), "★升目を値で塗り分けていない");
+assertTrue(/SERIES\.s2/.test(cal), "値は一色の点で表している");
+assertTrue(/clampLevel\(c\.entry\.throatCondition\)/.test(cal), "点の大きさが値で変わる（色ではなく大きさ）");
+
+console.log("\n=== §7-4: メーターに危険ゾーンを塗らない ===");
+assertTrue(!/color: LEVEL_COLORS\[i\]/.test(ui), "★メーターの弧を段階ごとに塗り分けていない");
+
+console.log("\n=== §3-F: 「データがありません」ではなく進捗ドット ===");
+assertTrue(/function ProgressDots/.test(ui), "進捗ドットの部品がある");
+const dots = ui.slice(ui.indexOf("function ProgressDots"), ui.indexOf("function ProgressDots") + 1200);
+assertTrue(/width: 9, height: 9/.test(dots), "9px の丸（§3-F）");
+assertTrue(/length: total/.test(dots) && /const total = 10/.test(dots), "10個");
+assertTrue(/日分たまりました/.test(dots) && /で傾向を出せます/.test(dots), "★指定どおりの文言");
+assertTrue(/SERIES\.s2/.test(dots) && /SERIES\.grid/.test(dots), "たまった分と残りを色で分けている（2色のみ）");
+
+console.log("\n=== §5: 3つの状態 ===");
+const tr = readRaw("lib", "translations.js");
+assertTrue(/gateNoClearTrend/.test(tr), "③不通過の文言がある");
+assertTrue(/まだはっきりした傾向が出ていません/.test(tr), "★「関係なし」ではなく「見えていない」と書く");
+assertTrue(!/弱い関係|関係はありません|相関なし/.test(readCode("lib", "translations.js")),
+  "★「弱い関係があります」と書いていない");
+
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
 if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
 console.log("\n✓ すべて成功しました。");

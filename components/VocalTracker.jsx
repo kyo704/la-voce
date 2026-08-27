@@ -16,7 +16,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 // ★通信は必ず時間制限を付ける。返ってこないまま待ち続けると、画面が止まる。
 import { withTimeout, QUERY_TIMEOUT_MS, AUTH_TIMEOUT_MS } from "@/lib/withTimeout";
-import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC, CYCLE_BAND } from "@/lib/tokens";
+import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC, CYCLE_BAND, SERIES } from "@/lib/tokens";
 import { FOOD_PRESETS, DISH_GROUP_ALIASES, CATEGORY_SEARCH_ALIASES } from "@/lib/foodPresets";
 import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, SHOP_ITEMS, PLACEMENT_LIMITS, computeBalance } from "@/lib/character";
 import { LANGUAGES, createTranslator } from "@/lib/translations";
@@ -610,9 +610,15 @@ function shiftMonth({ year, month }, delta) {
 function clampLevel(v) {
   return Math.max(1, Math.min(5, Math.round(v)));
 }
-function levelColor(v) {
-  if (v == null) return "#D8D0BE";
-  return LEVEL_COLORS[clampLevel(v) - 1];
+// ★値の大小で色を変えない（描画仕様 §7-5・§1-4）。
+//   以前は 1〜5 を「濃い赤 → 緑」に写していた。これは信号色そのもので、
+//   表示ゲートを迂回します。文章を出していなくても、色が「良い・悪い」を
+//   言っているためです。記録2日目の赤い四角は、判定を下しています。
+//   見本（analysis-mock4.html）も、数字はすべて --ink 一色で、
+//   定義されている --ok を1度も使っていません。
+//   ★値は、色ではなく位置・大きさ・数で表します。
+function levelInk(v) {
+  return v == null ? C.inkSoft : C.ink;
 }
 function levelDynamic(v) {
   if (v == null) return "—";
@@ -2026,13 +2032,14 @@ function Gauge({ score, t }) {
   const cx = 100, cy = 100, r = 78, sw = 16;
   const segs = [0, 1, 2, 3, 4].map((i) => ({
     d: describeArc(cx, cy, r, 180 - i * 36, 180 - (i + 1) * 36),
-    color: LEVEL_COLORS[i]
+    // ★メーターに危険ゾーンを塗らない（§7-4）。目盛りは一色の下地にする。
+    color: SERIES.grid
   }));
   const f = score == null ? 0.5 : Math.max(0, Math.min(1, (score - 1) / 4));
   const needleAngle = 180 * (1 - f);
   const tip = polarPoint(cx, cy, r - sw / 2 - 4, needleAngle);
   const dyn = levelDynamic(score);
-  const color = score == null ? C.inkSoft : levelColor(score);
+  const color = score == null ? C.inkSoft : levelInk(score);
   return (
     <div className="flex flex-col items-center">
       <svg viewBox="0 0 200 116" style={{ width: "100%", maxWidth: 260 }}>
@@ -2106,8 +2113,9 @@ function DotSelector({ label, icon: Icon, value, onChange, lowLabel, highLabel }
               style={{
                 width: value === v ? 26 : 20,
                 height: value === v ? 26 : 20,
-                background: v <= value ? levelColor(value) : C.card,
-                border: `1.5px solid ${v <= value ? levelColor(value) : C.line}`
+                // ★色は1つ。いくつ塗られているかで値を表す（§1-2）。
+                background: v <= value ? SERIES.s2 : C.card,
+                border: `1.5px solid ${v <= value ? SERIES.s2 : C.line}`
               }}
               aria-label={`${label} ${v}`}
             />
@@ -2292,9 +2300,34 @@ function LessonCalendar({ lessons, onDayClick, selectable, getTeacherName, getSt
     </div>
   );
 }
-function LockedCard({ title, teaser, current, required }) {
+// 分析画面の描画仕様.md §3-F: 進捗ドット。件数が足りない全てのカードで使う。
+// ★「データがありません」と書かないための部品（§7-11）。
+//   9px の丸を10個、たまった分だけ SERIES.s2、残りは SERIES.grid。
+//   文言は「◯日分たまりました。あと◯日で傾向を出せます。」
+function ProgressDots({ current, required }) {
+  const total = 10;
+  const filled = required > 0 ? Math.min(total, Math.round((current / required) * total)) : 0;
   const remaining = Math.max(0, required - current);
-  const pct = Math.min(100, Math.round((current / required) * 100));
+  return (
+    <div>
+      <div className="flex gap-[5px] my-1" aria-hidden="true">
+        {Array.from({ length: total }).map((_, i) => (
+          <span key={i} style={{
+            width: 9, height: 9, borderRadius: "50%", display: "block",
+            background: i < filled ? SERIES.s2 : SERIES.grid
+          }} />
+        ))}
+      </div>
+      <p className="text-xs" style={{ color: SERIES.axis }}>
+        {remaining > 0
+          ? `${current}日分たまりました。あと${remaining}日で傾向を出せます。`
+          : `${current}日分たまりました。`}
+      </p>
+    </div>
+  );
+}
+
+function LockedCard({ title, teaser, current, required }) {
   return (
     <div className="rounded-2xl p-4 border overflow-hidden relative" style={{ background: C.card, borderColor: C.line }}>
       <div style={{ filter: "blur(3px)", opacity: 0.35, pointerEvents: "none", userSelect: "none" }}>
@@ -2309,13 +2342,11 @@ function LockedCard({ title, teaser, current, required }) {
         <Lock size={18} style={{ color: C.inkSoft }} />
         <p className="text-xs font-medium" style={{ color: C.ink }}>{title}</p>
         <p className="text-xs" style={{ color: C.inkSoft }}>{teaser}</p>
-        <div className="w-full max-w-[220px] mt-1">
-          <div className="h-1.5 rounded-full overflow-hidden" style={{ background: C.line }}>
-            <div className="h-full rounded-full" style={{ width: `${pct}%`, background: C.gold }} />
-          </div>
-          <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
-            {remaining > 0 ? `あと${remaining}日で解放されます（${current}/${required}日）` : `${current}/${required}日`}
-          </p>
+        {/* ★§3-F: 進捗は棒ではなく点で出す。「今日の記録」の点と同じ形にそろえる。
+            記録と分析の順番設計 §5.4 の「ぼかし＋進捗＋具体的な条件」の3点セットは
+            そのまま満たしている（進捗の見せ方が棒から点に変わっただけ）。 */}
+        <div className="w-full max-w-[220px] mt-1 flex flex-col items-center">
+          <ProgressDots current={current} required={required} />
         </div>
       </div>
     </div>
@@ -9116,7 +9147,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     {isRecordedToday ? (
                       <>
                         <div className="flex items-end gap-2 mb-2">
-                          <span className="ff-display italic" style={{ fontSize: "2.6rem", lineHeight: 1, color: levelColor(todayEntry.throatCondition) }}>
+                          <span className="ff-display italic" style={{ fontSize: "2.6rem", lineHeight: 1, color: levelInk(todayEntry.throatCondition) }}>
                             {typeof todayEntry.throatCondition === "number" ? todayEntry.throatCondition.toFixed(1) : "-"}
                           </span>
                           <span className="text-sm mb-1" style={{ color: C.inkSoft }}>/ 5</span>
@@ -9126,7 +9157,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     ) : todayForecast.hasData ? (
                       <>
                         <div className="flex items-end gap-2 mb-2">
-                          <span className="ff-display italic" style={{ fontSize: "2.6rem", lineHeight: 1, color: levelColor(todayForecast.yhat) }}>
+                          <span className="ff-display italic" style={{ fontSize: "2.6rem", lineHeight: 1, color: levelInk(todayForecast.yhat) }}>
                             {todayForecast.yhat.toFixed(1)}
                           </span>
                           <span className="text-sm mb-1" style={{ color: C.inkSoft }}>/ 5（予報）</span>
@@ -11021,12 +11052,23 @@ export default function VocalTracker({ userId, userEmail }) {
                         <button key={c.iso} onClick={() => { setSelectedDate(c.iso); setActiveTab("today"); }}
                           className="aspect-square rounded-lg flex items-center justify-center text-xs ff-mono relative"
                           style={{
-                            background: c.entry ? levelColor(c.entry.throatCondition) : C.paper,
-                            color: c.entry ? "#FFFDF8" : C.inkSoft,
+                            // ★升目を値で塗り分けない（§7-5）。赤と緑の格子は、
+                            //   良い日と悪い日の通知表に見える。記録が2日でも色は判定を下す。
+                            background: C.paper,
+                            color: C.ink,
                             border: c.iso === todayISO() ? `2px solid ${C.gold}` : `1px solid ${C.line}`,
                             opacity: c.iso > todayISO() ? 0.4 : 1
                           }}>
                           {c.day}
+                          {/* 値は大きさで表す。色は1つ（§1-2「色を増やさず、形で区別する」）。
+                              周期の帯と衝突しないよう、点は升目の上側に置く。 */}
+                          {c.entry && typeof c.entry.throatCondition === "number" && (
+                            <span aria-hidden="true" style={{
+                              position: "absolute", top: 3, left: "50%", transform: "translateX(-50%)",
+                              width: 3 + clampLevel(c.entry.throatCondition), height: 3 + clampLevel(c.entry.throatCondition),
+                              borderRadius: "50%", background: SERIES.s2
+                            }} />
+                          )}
                           {/* ★帯（§5-1）。集計表を別に作らず、既存の月表示に重ねる。
                               声の調子の点と同じ月に並ぶことが目的。
                               濃い赤・ピンクは使わない（§4-2）。 */}
@@ -11105,7 +11147,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         ) : (
                           <div className="flex items-center gap-3">
                             <div className="w-11 h-11 rounded-full flex items-center justify-center ff-display italic text-base shrink-0"
-                              style={{ background: levelColor(e.throatCondition), color: "#FFFDF8" }}>
+                              style={{ background: C.paper, color: C.ink, border: `1px solid ${C.line}` }}>
                               {levelDynamic(e.throatCondition)}
                             </div>
                             <div className="flex-1 min-w-0 cursor-pointer" onClick={() => { setSelectedDate(date); setActiveTab("today"); }}>
@@ -11147,10 +11189,10 @@ export default function VocalTracker({ userId, userEmail }) {
                           onClick={() => { setSelectedDate(e.date); setActiveTab("today"); }}>
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-xs ff-mono" style={{ color: C.inkSoft }}>{e.date}</span>
-                            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: levelColor(e.throatCondition), color: "#FFFDF8" }}>
+                            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.ink, border: `1px solid ${C.line}` }}>
                               喉{levelDynamic(e.throatCondition)}
                             </span>
-                            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: levelColor(e.voiceQuality), color: "#FFFDF8" }}>
+                            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.ink, border: `1px solid ${C.line}` }}>
                               声{levelDynamic(e.voiceQuality)}
                             </span>
                           </div>
@@ -11255,7 +11297,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   ) : (
                     <>
                       <div className="flex items-end gap-2 mb-4">
-                        <span className="ff-display italic" style={{ fontSize: "3.4rem", lineHeight: 1, color: levelColor(vocalConditionScore.total / 20) }}>
+                        <span className="ff-display italic" style={{ fontSize: "3.4rem", lineHeight: 1, color: levelInk(vocalConditionScore.total / 20) }}>
                           {vocalConditionScore.total}
                         </span>
                         <span className="text-sm mb-1.5" style={{ color: C.inkSoft }}>/ 100</span>
@@ -11569,7 +11611,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       <div className="flex items-end justify-between mb-3">
                         <div>
                           <div className="flex items-baseline gap-1.5">
-                            <span className="ff-display italic" style={{ fontSize: "2.4rem", color: levelColor(Math.round(todayForecast.yhat)) }}>
+                            <span className="ff-display italic" style={{ fontSize: "2.4rem", color: levelInk(Math.round(todayForecast.yhat)) }}>
                               {todayForecast.yhat.toFixed(1)}
                             </span>
                             <span className="text-sm" style={{ color: C.inkSoft }}>/ 5</span>
@@ -11678,7 +11720,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             <SlotIcon size={13} style={{ color: C.gold }} />
                             <span className="text-xs font-medium">{t(labelKey)}</span>
                           </div>
-                          <div className="ff-display italic text-xl" style={{ color: avgThroat != null ? levelColor(avgThroat) : C.inkSoft }}>
+                          <div className="ff-display italic text-xl" style={{ color: avgThroat != null ? levelInk(avgThroat) : C.inkSoft }}>
                             {levelDynamic(avgThroat)}
                           </div>
                           <div className="text-xs ff-mono mt-0.5" style={{ color: C.inkSoft }}>
@@ -12123,10 +12165,10 @@ export default function VocalTracker({ userId, userEmail }) {
                         <div key={e.date} className="rounded-xl p-2.5" style={{ background: C.paper }}>
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-xs ff-mono" style={{ color: C.inkSoft }}>{e.date}</span>
-                            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: levelColor(e.throatCondition), color: "#FFFDF8" }}>
+                            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.ink, border: `1px solid ${C.line}` }}>
                               喉{levelDynamic(e.throatCondition)}
                             </span>
-                            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: levelColor(e.voiceQuality), color: "#FFFDF8" }}>
+                            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.ink, border: `1px solid ${C.line}` }}>
                               声{levelDynamic(e.voiceQuality)}
                             </span>
                           </div>
@@ -12162,7 +12204,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         />
                         <Bar dataKey="sleepHours" name={t("chartNameSleepHours")} radius={4}>
                           {timeSeries.map((d, i) => (
-                            <Cell key={i} fill={levelColor(d.sleepQuality)} />
+                            <Cell key={i} fill={SERIES.s2} />
                           ))}
                         </Bar>
                       </BarChart>
