@@ -478,13 +478,19 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, hasChair, hasBe
     const timers = [];
     const addTimer = (fn, ms) => { const id = setTimeout(fn, ms); timers.push(id); return id; };
 
+    // ★移動ごとに札を持たせる。前の移動のタイマーが、新しい移動の
+    //   「歩いている」を消さないようにするため。以前は、移動が重なると
+    //   脚の動きだけ止まって体は滑り続け、歩いているというより
+    //   浮いて流れているように見えていた。
+    let moveToken = 0;
     function moveTo(nl, nt, duration) {
+      const myToken = ++moveToken;
       setFacingLeft(nl < leftRef.current - 1);
       leftRef.current = nl;
       setIsWalking(true);
       setLeftPct(nl);
       setTopPct(nt);
-      addTimer(() => { if (!cancelled) setIsWalking(false); }, duration);
+      addTimer(() => { if (!cancelled && myToken === moveToken) setIsWalking(false); }, duration);
     }
 
     function scheduleWander() {
@@ -509,6 +515,10 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, hasChair, hasBe
       const delay = 20000 + Math.random() * 20000;
       addTimer(() => {
         if (cancelled) return;
+        // ★何かしている最中（歩いている・座っている・寝ている）は割り込まない。
+        //   以前はここに番人が無く、寝ている羊を椅子へ歩かせていた。
+        //   「寝ているのに急に動く」の正体はこれ。
+        if (busyRef.current) { scheduleSitting(); return; }
         if (!hasChair) { scheduleSitting(); return; }
         const chairLeft = 79, chairFloorTop = 98, chairSeatTop = 89;
         busyRef.current = true;
@@ -535,6 +545,9 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, hasChair, hasBe
       const delay = 26000 + Math.random() * 24000;
       addTimer(() => {
         if (cancelled) return;
+        // ★同じ理由の番人。寝ている最中に、次の「寝る予定」が割り込んで
+        //   ベッドの手前へ歩き出していた。
+        if (busyRef.current) { scheduleLying(); return; }
         if (!hasBed) { scheduleLying(); return; }
         const bedApproachLeft = 13, bedFloorTop = 98, pillowLeft = 7, pillowTop = 82;
         busyRef.current = true;
@@ -592,13 +605,19 @@ function useGardenLife(centerLeft, centerTop, rangeLeft, rangeTop, hasField) {
     const timers = [];
     const addTimer = (fn, ms) => { const id = setTimeout(fn, ms); timers.push(id); return id; };
 
+    // ★移動ごとに札を持たせる。前の移動のタイマーが、新しい移動の
+    //   「歩いている」を消さないようにするため。以前は、移動が重なると
+    //   脚の動きだけ止まって体は滑り続け、歩いているというより
+    //   浮いて流れているように見えていた。
+    let moveToken = 0;
     function moveTo(nl, nt, duration) {
+      const myToken = ++moveToken;
       setFacingLeft(nl < leftRef.current - 1);
       leftRef.current = nl;
       setIsWalking(true);
       setLeftPct(nl);
       setTopPct(nt);
-      addTimer(() => { if (!cancelled) setIsWalking(false); }, duration);
+      addTimer(() => { if (!cancelled && myToken === moveToken) setIsWalking(false); }, duration);
     }
 
     function scheduleWander() {
@@ -1322,7 +1341,11 @@ function resolvePos(saved, layout) {
   return { left: saved.left ?? layout.left, top: saved.top ?? layout.top };
 }
 
-function DraggableItem({ left, top, width, layer = "mid", editMode, minLeft = 3, maxLeft = 97, minTop, maxTop, aspect, onDragEnd, transform, anchor = "floor", children }) {
+// resolveSnap: ドラッグ中の左位置(%) → 実際に落ちる左位置(%)。
+// ★押しのけ（同じマスに2つ置けない）まで含めた「最終的に落ちる場所」を返すこと。
+//   ここが単なるスナップだけだと、指を離した瞬間に別の場所へ飛び、
+//   目印が嘘になる。目印と着地点は必ず同じ関数から出す。
+function DraggableItem({ left, top, width, layer = "mid", editMode, minLeft = 3, maxLeft = 97, minTop, maxTop, aspect, onDragEnd, resolveSnap, transform, anchor = "floor", children }) {
   const wrapRef = useRef(null);
   const [dragLeft, setDragLeft] = useState(null);
   const [dragTop, setDragTop] = useState(null);
@@ -1357,15 +1380,35 @@ function DraggableItem({ left, top, width, layer = "mid", editMode, minLeft = 3,
     // 羊のおうち仕様 §2.4: 自由ドラッグをやめ、横方向の12分割グリッドへスナップさせる。
     // 同じマスへの重なり回避（押しのけ）は、呼び出し側（onDragEnd＝各Sceneのハンドラ）が
     // 他アイテムの位置を把握しているため、そちらで最終決定する。ここではスナップ後の値を渡すだけ。
-    if (dragLeft !== null) onDragEnd(snapToGrid(dragLeft), dragTop !== null ? dragTop : undefined);
+    if (dragLeft !== null) onDragEnd(resolveFinalLeft(dragLeft), dragTop !== null ? dragTop : undefined);
     setDragLeft(null);
     setDragTop(null);
   }
 
+  // 目印と着地点を、必ず同じ計算から出す。
+  const resolveFinalLeft = (l) => (resolveSnap ? resolveSnap(l) : snapToGrid(l));
   const effectiveLeft = dragLeft !== null ? dragLeft : left;
   const effectiveTop = dragTop !== null ? dragTop : top;
+  // 羊のおうち仕様 §2.4 / 作業指示 A-4:「ドラッグ中にスナップ位置が視覚的にわかる」。
+  // ★指を離す前に、どこに落ちるかが見えること。見えないと、離してから
+  //   飛んだように感じる。
+  const snapPreviewLeft = dragLeft !== null ? resolveFinalLeft(dragLeft) : null;
 
   return (
+    <>
+      {/* ★落ちる先の目印（A-4）。アイテム本体は指に追従するので、
+          目印は本体とは別に、落ちるマスへ置く。押しのけが起きる場合は、
+          押しのけたあとの位置に出る（同じ関数から出しているため必ず一致する）。 */}
+      {snapPreviewLeft !== null && (
+        <div style={{
+          position: "absolute", left: `${snapPreviewLeft}%`,
+          top: `${dragTop !== null ? dragTop : effectiveTop}%`,
+          width: `${scaledWidth}%`, aspectRatio: aspect || undefined,
+          transform: transform || "translate(-50%, -100%)", zIndex: z,
+          border: `2px dashed ${C.gold}`, borderRadius: 8, opacity: 0.7,
+          pointerEvents: "none"
+        }} />
+      )}
     <div
       ref={wrapRef}
       onPointerDown={handlePointerDown}
@@ -1376,7 +1419,9 @@ function DraggableItem({ left, top, width, layer = "mid", editMode, minLeft = 3,
         position: "absolute", left: `${effectiveLeft}%`, top: `${effectiveTop}%`, width: `${scaledWidth}%`,
         aspectRatio: aspect || undefined,
         transform: transform || "translate(-50%, -100%)", zIndex: z,
-        cursor: editMode ? "grab" : "default", touchAction: editMode ? "none" : "auto"
+        cursor: editMode ? "grab" : "default", touchAction: editMode ? "none" : "auto",
+        // ドラッグ中は本体を少し薄くして、目印のほうを読ませる
+        opacity: dragLeft !== null ? 0.75 : 1
       }}
     >
       {/* 羊のおうち仕様 §2.1: 接地の影。壁掛け・窓のアイテムには付けない（anchor:'wall'）。
@@ -1392,6 +1437,7 @@ function DraggableItem({ left, top, width, layer = "mid", editMode, minLeft = 3,
       )}
       {children}
     </div>
+    </>
   );
 }
 

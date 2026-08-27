@@ -54,7 +54,11 @@ assertTrue(/front: \{ z: \d+, scale: 1\.15 \}/.test(ui), "front のスケール 
 
 console.log("\n=== A-4: 配置のスナップ ===");
 assertTrue(/const GRID_COLUMNS = 12/.test(ui), "12分割のグリッド");
-assertTrue(/onDragEnd\(snapToGrid\(/.test(ui), "★ドラッグ終了時に実際にスナップしている");
+// 目印と着地点は同じ関数から出す（resolveFinalLeft）。押しのけまで含む。
+assertTrue(/onDragEnd\(resolveFinalLeft\(/.test(ui), "★ドラッグ終了時に、落ちる先を計算している");
+assertTrue(/resolveSnap \? resolveSnap\(l\) : snapToGrid\(l\)/.test(ui),
+  "既定はグリッドへのスナップ。呼び出し側が押しのけ込みの関数を渡せる");
+assertTrue(/snapPreviewLeft/.test(ui), "★ドラッグ中に、落ちる先が目印で見える（A-4）");
 
 console.log("\n=== A-5: 表示の階層 ===");
 assertTrue(/fontSize: 32/.test(ui), "所持ポイントが 32px（主役）");
@@ -108,6 +112,35 @@ console.log("\n=== 羊はドラッグできない（仕様どおり） ===");
 assertTrue(!/<DraggableItem[^>]*SheepCharacter/.test(readRaw("components", "CharacterHome.jsx")),
   "羊をドラッグ対象にしていない（自分で歩く）");
 assertTrue(/function useRoomLife|scheduleWander/.test(ui), "羊は自分で歩く仕組みを持っている");
+
+console.log("\n=== ★予定どうしが割り込まない（実機で3症状すべての原因だった） ===");
+// scheduleWander だけに番人があり、椅子・ベッドの予定には無かった。
+// そのため寝ている羊を椅子へ歩かせ、歩いている途中に別の移動が上書きしていた。
+// ★お部屋には3つの予定（歩く・座る・寝る）、お庭には1つ（歩く）。
+const roomHook = ui.slice(ui.indexOf("function useRoomLife"), ui.indexOf("function useGardenLife"));
+const gardenHook = ui.slice(ui.indexOf("function useGardenLife"), ui.indexOf("function useGardenLife") + 4000);
+["Wander", "Sitting", "Lying"].forEach((name) => {
+  assertTrue(new RegExp(`if \\(busyRef\\.current\\) \\{ schedule${name}\\(\\); return; \\}`).test(roomHook),
+    `★お部屋の schedule${name} に番人がある`);
+});
+assertTrue(/if \(busyRef\.current\) \{ scheduleWander\(\); return; \}/.test(gardenHook),
+  "お庭の scheduleWander にも番人がある");
+
+console.log("\n=== ★古いタイマーが、新しい移動の「歩いている」を消さない ===");
+assertTrue(/const myToken = \+\+moveToken/.test(ui), "移動ごとに札を持たせている");
+assertTrue(/myToken === moveToken/.test(ui), "★最後の移動だけが「歩き終わり」を決める");
+// 部屋と庭の両方に入っていること
+assertTrue((ui.match(/let moveToken = 0;/g) || []).length === 2, "部屋とお庭の両方に入っている");
+
+console.log("\n=== 寝るにはベッドを『置いて』いる必要がある ===");
+// ★持っているだけでは寝ない。置いていないと lying は一度も起きない。
+assertTrue(/placedFurniture\.includes\("furniture_bed"\)/.test(ui),
+  "★置いてあるかどうかで判定している（持っているだけでは寝ない）");
+assertTrue(/placedFurniture\.includes\("furniture_chair"\)/.test(ui), "椅子も同じ");
+
+console.log("\n=== お庭には寝る仕組みが無い（仕様どおり） ===");
+const garden = ui.slice(ui.indexOf("function useGardenLife"), ui.indexOf("function useGardenLife") + 2600);
+assertTrue(!/isLying/.test(garden), "★お庭では寝ない（ベッドはお部屋のものなので）");
 
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
 if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
