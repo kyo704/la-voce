@@ -11871,6 +11871,15 @@ export default function VocalTracker({ userId, userEmail }) {
                   <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteProfileSettings")}</p>
                 </div>
 
+                  {/* 職業別プロファイル設計案 §4-2: 恒久項目を、変更頻度の低い順に5つへまとめる。
+                      「からだのこと」は受診用サマリーに載る項目をひとまとめにしてあり、
+                      医師に見せる前にこのグループだけ見直せば足りる形にしている。 */}
+
+                  <div className="pt-1">
+                    <h3 className="ff-display italic text-lg" style={{ color: C.ink }}>{t("groupProfileBasic")}</h3>
+                    <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>{t("groupProfileBasicNote")}</p>
+                  </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <div className="flex items-center gap-1.5 mb-1.5">
@@ -11885,41 +11894,6 @@ export default function VocalTracker({ userId, userEmail }) {
                         className="w-full rounded-lg border p-2 text-sm ff-mono"
                         style={{ borderColor: C.line, background: C.paper, color: C.ink }}
                       />
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium block mb-1.5">{t("labelVoiceType")}</label>
-                      <select
-                        value={profile.voice_type}
-                        onChange={(e) => setProfile((p) => ({ ...p, voice_type: e.target.value }))}
-                        className="w-full rounded-lg border p-2 text-sm"
-                        style={{ borderColor: C.line, background: C.paper, color: C.ink }}
-                      >
-                        <option value="">{t("labelSelectPlaceholder")}</option>
-                        {VOICE_TYPES.map((v) => <option key={v} value={v}>{t(VOICE_TYPE_KEYS[v])}</option>)}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium block mb-1.5">{t("labelPhase")}</label>
-                      <select
-                        value={profile.nutrition_phase}
-                        onChange={(e) => setProfile((p) => ({ ...p, nutrition_phase: e.target.value }))}
-                        className="w-full rounded-lg border p-2 text-sm"
-                        style={{ borderColor: C.line, background: C.paper, color: C.ink }}
-                      >
-                        {NUTRITION_PHASES.map((v) => <option key={v} value={v}>{t(NUTRITION_PHASE_KEYS[v])}</option>)}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium block mb-1.5">{t("labelProteinCoefficient")}</label>
-                      <input
-                        type="number" step="0.1"
-                        value={profile.protein_coefficient}
-                        onChange={(e) => setProfile((p) => ({ ...p, protein_coefficient: e.target.value === "" ? "" : Number(e.target.value) }))}
-                        onWheel={(e) => e.target.blur()}
-                        className="w-full rounded-lg border p-2 text-sm ff-mono"
-                        style={{ borderColor: C.line, background: C.paper, color: C.ink }}
-                      />
-                      <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("noteProteinCoefficientRange")}</p>
                     </div>
                     <div>
                       <label className="text-sm font-medium block mb-1.5">{t("labelAge")}</label>
@@ -11945,6 +11919,87 @@ export default function VocalTracker({ userId, userEmail }) {
                         <option value="女性">{t("sexFemale")}</option>
                       </select>
                     </div>
+                    <div>
+                      <label className="text-sm font-medium block mb-1.5">{t("labelVoiceType")}</label>
+                      <select
+                        value={profile.voice_type}
+                        onChange={(e) => setProfile((p) => ({ ...p, voice_type: e.target.value }))}
+                        className="w-full rounded-lg border p-2 text-sm"
+                        style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                      >
+                        <option value="">{t("labelSelectPlaceholder")}</option>
+                        {VOICE_TYPES.map((v) => <option key={v} value={v}>{t(VOICE_TYPE_KEYS[v])}</option>)}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium block mb-1.5">{t("labelVocalProfession")}</label>
+                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("noteVocalProfession")}</p>
+                    <div className="flex gap-2 flex-wrap">
+                      {VOCAL_PROFESSIONS.map((p) => (
+                        <button key={p} type="button" onClick={() => setProfile((prev) => ({ ...prev, vocal_profession: p }))}
+                          className="px-3.5 py-1.5 rounded-full text-xs font-medium"
+                          style={{
+                            background: profile.vocal_profession === p ? C.curtain : C.paper,
+                            color: profile.vocal_profession === p ? "#FFFDF8" : C.inkSoft,
+                            border: `1px solid ${profile.vocal_profession === p ? C.curtain : C.line}`
+                          }}>
+                          {t(p === "singer" ? "professionSinger" : p === "announcer" ? "professionAnnouncer" : p === "voice_actor" ? "professionVoiceActor" : "professionPopMusical")}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pt-1">
+                    <h3 className="ff-display italic text-lg" style={{ color: C.ink }}>{t("groupProfileHealth")}</h3>
+                    <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>{t("groupProfileHealthNote")}</p>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium block mb-1.5">既往症・診断済みの症状（任意）</label>
+                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                      選ぶと、その症状に関する専用の分析が「分析」タブに表示されるようになります。ここは診断を受けている項目だけを選ぶ場所で、疑いの有無を判定するものではありません。
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {CONDITION_OPTIONS.map((c) => (
+                        <Chip key={c.key} label={c.label} active={(profile.conditions || []).includes(c.key)}
+                          onClick={() => setProfile((p) => {
+                            const current = p.conditions || [];
+                            return { ...p, conditions: current.includes(c.key) ? current.filter((x) => x !== c.key) : [...current, c.key] };
+                          })} />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 職業別プロファイル設計案 §4-5: アレルギーと常用薬。
+                      ★どちらも既往症(conditions)とは別に持つ。
+                      「常用薬のリスト」は恒久的な情報で、「今日の服薬」
+                      （entries.medication_tags）とは別物なので混ぜないこと。
+                      いずれも受診用サマリーに載せるべき情報。 */}
+                  <div>
+                    <label className="text-sm font-medium block mb-1.5">{t("labelAllergies")}</label>
+                    <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{t("noteAllergies")}</p>
+                    <textarea rows={2} value={(profile.allergies || []).join("\n")}
+                      placeholder={t("placeholderAllergies")}
+                      onChange={(e) => setProfile((p) => ({ ...p, allergies: e.target.value.split("\n").map((x) => x.trim()).filter(Boolean) }))}
+                      className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium block mb-1.5">{t("labelRegularMedications")}</label>
+                    <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{t("noteRegularMedications")}</p>
+                    <textarea rows={2} value={(profile.regular_medications || []).join("\n")}
+                      placeholder={t("placeholderRegularMedications")}
+                      onChange={(e) => setProfile((p) => ({ ...p, regular_medications: e.target.value.split("\n").map((x) => x.trim()).filter(Boolean) }))}
+                      className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium block mb-1.5">{t("labelHealthNotes")}</label>
+                    <textarea rows={2} value={profile.health_notes}
+                      onChange={(e) => setProfile((p) => ({ ...p, health_notes: e.target.value }))}
+                      className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                   </div>
 
                   {/* ★以前は sex === "女性" のときだけ出していたため、性別が未設定の人には
@@ -11978,22 +12033,9 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   )}
 
-                  <div>
-                    <label className="text-sm font-medium block mb-1.5">{t("labelVocalProfession")}</label>
-                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("noteVocalProfession")}</p>
-                    <div className="flex gap-2 flex-wrap">
-                      {VOCAL_PROFESSIONS.map((p) => (
-                        <button key={p} type="button" onClick={() => setProfile((prev) => ({ ...prev, vocal_profession: p }))}
-                          className="px-3.5 py-1.5 rounded-full text-xs font-medium"
-                          style={{
-                            background: profile.vocal_profession === p ? C.curtain : C.paper,
-                            color: profile.vocal_profession === p ? "#FFFDF8" : C.inkSoft,
-                            border: `1px solid ${profile.vocal_profession === p ? C.curtain : C.line}`
-                          }}>
-                          {t(p === "singer" ? "professionSinger" : p === "announcer" ? "professionAnnouncer" : p === "voice_actor" ? "professionVoiceActor" : "professionPopMusical")}
-                        </button>
-                      ))}
-                    </div>
+                  <div className="pt-1">
+                    <h3 className="ff-display italic text-lg" style={{ color: C.ink }}>{t("groupProfileVoice")}</h3>
+                    <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>{t("groupProfileVoiceNote")}</p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
@@ -12010,6 +12052,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
                     </div>
                   </div>
+
                   <details className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
                     <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>無理なく出せる音域（任意）</summary>
                     <p className="mt-1.5 mb-2 leading-relaxed">
@@ -12024,6 +12067,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.card }} />
                     </div>
                   </details>
+
                   {(profile.vocal_profession || "singer") === "singer" && (
                     <div className="rounded-xl p-3" style={{ background: C.paper }}>
                       <p className="text-xs font-medium mb-2">{t("labelVoiceRangeRefTitle")}</p>
@@ -12046,59 +12090,76 @@ export default function VocalTracker({ userId, userEmail }) {
                       <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("noteVoiceRangeRef")}</p>
                     </div>
                   )}
+
                   <div>
                     <label className="text-sm font-medium block mb-1.5">{t("labelTechnicalGoal")}</label>
                     <input type="text" value={profile.technical_goal}
                       onChange={(e) => setProfile((p) => ({ ...p, technical_goal: e.target.value }))}
                       className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                   </div>
-                  <div>
-                    <label className="text-sm font-medium block mb-1.5">既往症・診断済みの症状（任意）</label>
-                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
-                      選ぶと、その症状に関する専用の分析が「分析」タブに表示されるようになります。ここは診断を受けている項目だけを選ぶ場所で、疑いの有無を判定するものではありません。
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {CONDITION_OPTIONS.map((c) => (
-                        <Chip key={c.key} label={c.label} active={(profile.conditions || []).includes(c.key)}
-                          onClick={() => setProfile((p) => {
-                            const current = p.conditions || [];
-                            return { ...p, conditions: current.includes(c.key) ? current.filter((x) => x !== c.key) : [...current, c.key] };
-                          })} />
-                      ))}
+
+                  <div className="pt-1">
+                    <h3 className="ff-display italic text-lg" style={{ color: C.ink }}>{t("groupProfileNutrition")}</h3>
+                    <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>{t("groupProfileNutritionNote")}</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium block mb-1.5">{t("labelPhase")}</label>
+                      <select
+                        value={profile.nutrition_phase}
+                        onChange={(e) => setProfile((p) => ({ ...p, nutrition_phase: e.target.value }))}
+                        className="w-full rounded-lg border p-2 text-sm"
+                        style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                      >
+                        {NUTRITION_PHASES.map((v) => <option key={v} value={v}>{t(NUTRITION_PHASE_KEYS[v])}</option>)}
+                      </select>
                     </div>
-                  </div>
-                  {/* 職業別プロファイル設計案 §4-5: アレルギーと常用薬。
-                      ★どちらも既往症(conditions)とは別に持つ。
-                      「常用薬のリスト」は恒久的な情報で、「今日の服薬」
-                      （entries.medication_tags）とは別物なので混ぜないこと。
-                      いずれも受診用サマリーに載せるべき情報。 */}
-                  <div>
-                    <label className="text-sm font-medium block mb-1.5">{t("labelAllergies")}</label>
-                    <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{t("noteAllergies")}</p>
-                    <textarea rows={2} value={(profile.allergies || []).join("\n")}
-                      placeholder={t("placeholderAllergies")}
-                      onChange={(e) => setProfile((p) => ({ ...p, allergies: e.target.value.split("\n").map((x) => x.trim()).filter(Boolean) }))}
-                      className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium block mb-1.5">{t("labelRegularMedications")}</label>
-                    <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{t("noteRegularMedications")}</p>
-                    <textarea rows={2} value={(profile.regular_medications || []).join("\n")}
-                      placeholder={t("placeholderRegularMedications")}
-                      onChange={(e) => setProfile((p) => ({ ...p, regular_medications: e.target.value.split("\n").map((x) => x.trim()).filter(Boolean) }))}
-                      className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium block mb-1.5">{t("labelHealthNotes")}</label>
-                    <textarea rows={2} value={profile.health_notes}
-                      onChange={(e) => setProfile((p) => ({ ...p, health_notes: e.target.value }))}
-                      className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                    <div>
+                      <label className="text-sm font-medium block mb-1.5">{t("labelProteinCoefficient")}</label>
+                      <input
+                        type="number" step="0.1"
+                        value={profile.protein_coefficient}
+                        onChange={(e) => setProfile((p) => ({ ...p, protein_coefficient: e.target.value === "" ? "" : Number(e.target.value) }))}
+                        onWheel={(e) => e.target.blur()}
+                        className="w-full rounded-lg border p-2 text-sm ff-mono"
+                        style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                      />
+                      <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("noteProteinCoefficientRange")}</p>
+                    </div>
                   </div>
 
                   <button onClick={handleSaveProfile} disabled={profileSaveStatus === "saving"}
                     className="text-xs px-4 py-2 rounded-full font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
                     {profileSaveStatus === "saving" ? t("saveButtonSaving") : profileSaveStatus === "saved" ? t("saveButtonSaved") : t("btnSaveProfileSettings")}
                   </button>
+
+                  <div className="pt-1">
+                    <h3 className="ff-display italic text-lg" style={{ color: C.ink }}>{t("groupProfileData")}</h3>
+                  </div>
+
+                  <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                    <p className="text-sm font-medium mb-1">記録データの同意状況</p>
+                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                      記録・分析のための取得に{profile.consent_health_data_at ? `${new Date(profile.consent_health_data_at).toLocaleDateString("ja-JP")}に同意済み` : "未同意"}です。
+                    </p>
+                    <label className="flex items-start gap-2" style={{ cursor: "pointer" }}>
+                      <input type="checkbox" checked={!!profile.consent_stats_use_at} className="mt-0.5"
+                        onChange={async (e) => {
+                          const checked = e.target.checked;
+                          const supabase = createClient();
+                          const value = checked ? new Date().toISOString() : null;
+                          const { error } = await supabase.from("profiles").update({ consent_stats_use_at: value }).eq("id", userId);
+                          if (!error) setProfile((p) => ({ ...p, consent_stats_use_at: value }));
+                        }} />
+                      <span className="text-xs" style={{ color: C.inkSoft }}>
+                        （任意）匿名化した統計として、機能改善に役立てることに同意する
+                      </span>
+                    </label>
+                  </div>
+
+                  {/* ★レパートリーの整理は、そもそも身体データではない。
+                      「もっと」の中に独立した「データの整理」として切り出す予定（優先度低）。 */}
 
                   {Object.keys(repertoireTessituraMap).length >= 2 && (
                     <div className="rounded-xl p-3 mt-2" style={{ background: C.paper }}>
@@ -12158,26 +12219,6 @@ export default function VocalTracker({ userId, userEmail }) {
                       )}
                     </div>
                   )}
-
-                  <div className="rounded-xl p-3" style={{ background: C.paper }}>
-                    <p className="text-sm font-medium mb-1">記録データの同意状況</p>
-                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
-                      記録・分析のための取得に{profile.consent_health_data_at ? `${new Date(profile.consent_health_data_at).toLocaleDateString("ja-JP")}に同意済み` : "未同意"}です。
-                    </p>
-                    <label className="flex items-start gap-2" style={{ cursor: "pointer" }}>
-                      <input type="checkbox" checked={!!profile.consent_stats_use_at} className="mt-0.5"
-                        onChange={async (e) => {
-                          const checked = e.target.checked;
-                          const supabase = createClient();
-                          const value = checked ? new Date().toISOString() : null;
-                          const { error } = await supabase.from("profiles").update({ consent_stats_use_at: value }).eq("id", userId);
-                          if (!error) setProfile((p) => ({ ...p, consent_stats_use_at: value }));
-                        }} />
-                      <span className="text-xs" style={{ color: C.inkSoft }}>
-                        （任意）匿名化した統計として、機能改善に役立てることに同意する
-                      </span>
-                    </label>
-                  </div>
               </div>
             )}
 
