@@ -23,7 +23,8 @@ import { LANGUAGES, createTranslator } from "@/lib/translations";
 // 周期の記録（周期記録の設計.md §3）。★日数はすべてここで導出する。保存しない。
 import {
   currentCycleState, cycleSummary, buildBleedingDayset,
-  validateNewStart, validateEnd, MIN_CYCLES_FOR_AVERAGE
+  validateNewStart, validateEnd, MIN_CYCLES_FOR_AVERAGE,
+  cycleDayForDate, isCycleStartDate
 } from "@/lib/cyclePeriods";
 // 統合実行ルートv4 §6: 表示ゲートは必ずこのレイヤーを経由する。画面ごとに条件を書かないこと。
 import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q } from "@/lib/displayGates";
@@ -993,17 +994,10 @@ function getLastLocation(entries, beforeDate) {
   const last = entries[dates[dates.length - 1]];
   return last && last.location ? last.location : "";
 }
-// lavoce-収集データ拡張案.md C-1: 指定した日が、直近の周期開始日から何日目かを計算する。
-// 周期開始日がまだ一度も記録されていなければ null を返す。
-function cycleDayForDate(dateISO, entries) {
-  const startDates = Object.keys(entries)
-    .filter((d) => d <= dateISO && entries[d] && entries[d].cycleStart)
-    .sort();
-  if (startDates.length === 0) return null;
-  const lastStart = startDates[startDates.length - 1];
-  const diffDays = Math.round((new Date(dateISO + "T00:00:00") - new Date(lastStart + "T00:00:00")) / 86400000);
-  return diffDays + 1;
-}
+// ★「周期◯日目」の計算は lib/cyclePeriods.js に一本化した。
+//   以前はここに entries.cycle_start から数える版があり、ホームの新しい
+//   ボタン（cycle_periods に書く）と置き場所が分かれていた。
+//   片方に入れた記録が、もう片方からは見えない状態だった。
 // 記録と分析の順番設計 §4: 新しい日の「今日は？」を、決断させずに推測して既に選んでおく。
 // 優先順位: 直近8週の「同じ曜日」で最も多かった種別 → それが無ければ「自主練習」。
 // （指導者プランのレッスン日程・稽古ノートの予定は、いずれも本アプリ未実装のため対象外）
@@ -5865,7 +5859,7 @@ export default function VocalTracker({ userId, userEmail }) {
       "22日目以降": { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 }
     };
     Object.keys(filteredEntries).forEach((d) => {
-      const day = cycleDayForDate(d, entries);
+      const day = cycleDayForDate(d, cyclePeriods);
       if (day == null) return;
       const bucketKey = day <= 7 ? "1〜7日目" : day <= 14 ? "8〜14日目" : day <= 21 ? "15〜21日目" : "22日目以降";
       const e = filteredEntries[d];
@@ -5882,8 +5876,8 @@ export default function VocalTracker({ userId, userEmail }) {
         avgVoice: s.n ? s.voiceSum / s.n : null,
         avgEase: s.n ? s.easeSum / s.n : null
       }));
-  }, [filteredEntries, entries, profile.track_cycle]);
-  const hasCycleData = useMemo(() => Object.values(entries).some((e) => e.cycleStart), [entries]);
+  }, [filteredEntries, cyclePeriods, profile.track_cycle]);
+  const hasCycleData = cyclePeriods.length > 0;
   // ---- 周期と声・メンタルの傾向 用データ ここまで ----
 
   // ---- lavoce-収集データ拡張案.md E節 + レパートリー負荷パッチ.md: 曲目ごとの負荷 用データ ----
@@ -6310,6 +6304,19 @@ export default function VocalTracker({ userId, userEmail }) {
     setTimeout(() => setCycleJustSaved(""), 3000);
   }
 
+  // 記録画面から、間違えて付けた初日を取り消す。★入力の誤りは必ず起きる。
+  async function handleRemoveCycleStart(dateISO) {
+    const target = (cyclePeriods || []).find((p) => p.start_date === dateISO);
+    if (!target) return;
+    setCycleBusy(true); setCycleError("");
+    const supabase = createClient();
+    const { error } = await supabase.from("cycle_periods").delete().eq("id", target.id).eq("user_id", userId);
+    setCycleBusy(false);
+    if (error) { setCycleError("取り消せませんでした。" + (error.message || "")); return; }
+    setCyclePeriods((prev) => prev.filter((p) => p.id !== target.id));
+    setCycleJustSaved("取り消しました。");
+    setTimeout(() => setCycleJustSaved(""), 3000);
+  }
   // 「終わった」。押し忘れても、次の開始日が入れば自動的に閉じる（§4-1）。
   async function handleEndCycle(periodId, startISO, endISO) {
     const problem = validateEnd(endISO, startISO, realTodayDate);
@@ -9514,37 +9521,45 @@ export default function VocalTracker({ userId, userEmail }) {
                           onChange={(v) => setFormData((f) => ({ ...f, bodyFatPct: v }))} />
                       )}
 
+                      {/* ★置き場所は cycle_periods ただ1つ（周期記録の設計.md §3）。
+                          ここは以前 entries.cycle_start に書いていた。ホームのボタンは
+                          cycle_periods に書くので、同じ「周期◯日目」が2つの別々の場所から
+                          計算され、片方に入れた記録がもう片方から見えなかった。
+                          ★この画面は過去の日付も選べるので、入口としては残す。
+                            書き込み先だけを1つに寄せる。 */}
                       {profile.track_cycle && (
                         <div className="rounded-xl p-3" style={{ background: C.paper }}>
                           <div className="flex items-center justify-between gap-3">
                             <div>
                               <p className="text-sm font-medium">月経周期</p>
                               {(() => {
-                                const day = cycleDayForDate(selectedDate, entries);
+                                const isStart = isCycleStartDate(selectedDate, cyclePeriods);
+                                const day = cycleDayForDate(selectedDate, cyclePeriods);
                                 return (
                                   <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
-                                    {formData.cycleStart
-                                      ? "この日を周期1日目として記録しています"
+                                    {isStart
+                                      ? "この日を生理の初日として記録しています"
                                       : day != null
                                         ? `周期${day}日目`
-                                        : "まだ周期開始日が記録されていません"}
+                                        : "まだ記録がありません"}
                                   </p>
                                 );
                               })()}
                             </div>
                             <button
                               type="button"
-                              onClick={() => setFormData((f) => ({ ...f, cycleStart: !f.cycleStart }))}
-                              className="px-3 py-1.5 rounded-full text-xs font-medium flex-shrink-0"
-                              style={{
-                                background: formData.cycleStart ? C.curtain : C.card,
-                                color: formData.cycleStart ? "#FFFDF8" : C.inkSoft,
-                                border: `1px solid ${formData.cycleStart ? C.curtain : C.line}`
+                              disabled={cycleBusy}
+                              onClick={() => {
+                                if (isCycleStartDate(selectedDate, cyclePeriods)) handleRemoveCycleStart(selectedDate);
+                                else handleStartCycle(selectedDate);
                               }}
+                              className="px-3 py-1.5 rounded-full text-xs font-medium flex-shrink-0"
+                              style={{ background: C.card, color: C.inkSoft, border: `1px solid ${C.line}`, opacity: cycleBusy ? 0.5 : 1 }}
                             >
-                              {formData.cycleStart ? "1日目を取り消す" : "今日を1日目にする"}
+                              {isCycleStartDate(selectedDate, cyclePeriods) ? "初日の記録を取り消す" : "この日を初日にする"}
                             </button>
                           </div>
+                          {cycleError && <p className="text-xs mt-2" style={{ color: C.curtain }}>{cycleError}</p>}
                         </div>
                       )}
 

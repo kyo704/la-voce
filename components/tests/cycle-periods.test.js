@@ -206,6 +206,37 @@ async function main() {
   assertTrue(!/cycle_periods[\s\S]{0,200}?(day_count|cycle_length|bleeding_days)/.test(uiCycle),
     "画面側も日数を書き込んでいない");
 
+  console.log("\n=== テスト15: ★周期の置き場所が1つだけであること ===");
+  console.log("     ホームと今日の記録が、別々の場所に書いていた（実際に起きた不具合）。");
+  const uiCode = stripComments(uiRaw);
+  // ★entries.cycle_start を読んで「◯日目」を出す経路が残っていないこと。
+  assertTrue(!/cycleDayForDate\([^)]*entries\)/.test(uiCode),
+    "★entries から周期の日数を数えていない");
+  assertTrue(!/e\.cycleStart\b/.test(uiCode) || !/hasCycleData[\s\S]{0,80}cycleStart/.test(uiCode),
+    "★entries.cycleStart から「記録がある」を判定していない");
+  assertTrue(!/f\.cycleStart|formData\.cycleStart/.test(uiCode),
+    "★記録画面が entries.cycle_start に書き込んでいない");
+  // 書き込み先は cycle_periods だけ
+  const writes = (uiCode.match(/from\("cycle_periods"\)\s*\.(insert|update|delete)/g) || []);
+  assertTrue(writes.length >= 3, `cycle_periods への書き込みが${writes.length}種類ある（追加・終了・取り消し）`);
+  assertTrue(/handleRemoveCycleStart/.test(uiCode), "間違えた初日を取り消せる（入力の誤りは必ず起きる）");
+  // ★どちらの画面も同じ関数を使っていること
+  assertTrue(/cycleDayForDate\(selectedDate, cyclePeriods\)/.test(uiCode), "記録画面は cyclePeriods から数えている");
+  assertTrue(/cycleDayForDate\(d, cyclePeriods\)/.test(uiCode), "分析も cyclePeriods から数えている");
+
+  console.log("\n=== テスト16: 日数の導出は1か所（lib/cyclePeriods.js） ===");
+  assertEqual(m.cycleDayForDate("2026-08-27", [P("2026-08-25")]), 3, "開始日から3日目");
+  assertEqual(m.cycleDayForDate("2026-08-25", [P("2026-08-25")]), 1, "開始日そのものは1日目");
+  assertEqual(m.cycleDayForDate("2026-07-31", [P("2026-08-25")]), null, "開始前は null");
+  assertEqual(m.cycleDayForDate("2026-08-27", []), null, "記録が無ければ null");
+  // 複数の周期があるときは、直近の開始日から数える
+  assertEqual(m.cycleDayForDate("2026-08-27", [P("2026-08-01", "2026-08-05"), P("2026-08-25")]), 3,
+    "★直近の開始日から数える（古いほうから数えない）");
+  assertEqual(m.cycleDayForDate("2026-08-10", [P("2026-08-01", "2026-08-05"), P("2026-08-25")]), 10,
+    "過去の日は、その時点で直近だった開始日から数える");
+  assertEqual(m.isCycleStartDate("2026-08-25", [P("2026-08-25")]), true, "開始日そのものを見分けられる");
+  assertEqual(m.isCycleStartDate("2026-08-26", [P("2026-08-25")]), false, "翌日は開始日ではない");
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");
