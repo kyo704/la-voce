@@ -7052,6 +7052,40 @@ export default function VocalTracker({ userId, userEmail }) {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  // ---- 統合実行ルートv4 G3-17 / 改善タスクv2 P0-3: アカウントの削除（3段階） ----
+  // ★各ページが「情報提示」として意味を持つこと。無意味なページを挟むだけの
+  //   引き止めは、削除権の行使を不当に妨げると見なされうる（v2 P0-3 の注記）。
+  //   1: 何が失われるか＋先に書き出す / 2: 共有相手への影響 / 3: 入力して最終確認
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deleteStatus, setDeleteStatus] = useState("idle"); // idle | working | error
+  const [deleteError, setDeleteError] = useState("");
+
+  async function handleDeleteAccount() {
+    setDeleteStatus("working");
+    setDeleteError("");
+    try {
+      const res = await fetch("/api/account/delete", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ confirmation: deleteConfirmText })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setDeleteStatus("error");
+        setDeleteError(data.error || "削除できませんでした。");
+        return;
+      }
+      // 削除できたら、セッションを畳んでトップへ戻す。
+      const supabase = createClient();
+      await supabase.auth.signOut();
+      window.location.href = "/";
+    } catch (e) {
+      console.error("アカウントの削除に失敗しました:", e);
+      setDeleteStatus("error");
+      setDeleteError("通信に失敗しました。時間をおいてもう一度お試しください。");
+    }
+  }
+
   async function handleExportData() {
     setExportStatus("working");
     try {
@@ -12345,6 +12379,108 @@ export default function VocalTracker({ userId, userEmail }) {
               </div>
             )}
 
+            {/* 統合実行ルートv4 G3-17: アカウントの削除。3つの別ページに分ける。
+                各ページが「知らせる」「取り返しをつける」ための実質を持つこと。 */}
+            {activeTab === "deleteAccount1" && (
+              <div className="space-y-4">
+                <h2 className="ff-display italic text-xl">{t("deleteStep1Title")}</h2>
+                <p className="text-sm" style={{ color: C.ink }}>{t("deleteStep1Lead")}</p>
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <ul className="text-sm space-y-1.5">
+                    <li>・日々の記録　<strong className="ff-mono">{recordedDaysTotal}</strong> 日分</li>
+                    <li>・質問票の回答　<strong className="ff-mono">{questionnaireResponses.length}</strong> 件</li>
+                    <li>・稽古ノート・目標・羊のおうちの持ち物</li>
+                    <li>・既往症・アレルギー・常用薬・月経周期の記録</li>
+                  </ul>
+                </div>
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold }}>
+                  <p className="text-sm font-medium mb-1">{t("deleteStep1ExportFirst")}</p>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("deleteStep1ExportNote")}</p>
+                  <button type="button" onClick={handleExportData} disabled={exportStatus === "working"}
+                    className="w-full py-2.5 rounded-full text-sm font-medium flex items-center justify-center gap-2"
+                    style={{ background: C.gold, color: "#FFFDF8", opacity: exportStatus === "working" ? 0.7 : 1 }}>
+                    {exportStatus === "working" && <Loader2 size={15} className="animate-spin" />}
+                    {exportStatus === "working" ? t("exportWorking") : t("labelExportData")}
+                  </button>
+                  {exportStatus === "done" && (
+                    <p className="text-xs mt-2" style={{ color: C.sage }}>{t("exportDone")}</p>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => setActiveTab("more")}
+                    className="flex-1 py-3 rounded-full text-sm font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                    {t("deleteBack")}
+                  </button>
+                  <button type="button" onClick={() => setActiveTab("deleteAccount2")}
+                    className="flex-1 py-3 rounded-full text-sm font-medium" style={{ background: C.card, border: `1px solid ${C.curtain}`, color: C.curtain }}>
+                    {t("deleteNext")}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "deleteAccount2" && (
+              <div className="space-y-4">
+                <h2 className="ff-display italic text-xl">{t("deleteStep2Title")}</h2>
+                <div className="rounded-2xl p-4 border space-y-2" style={{ background: C.card, borderColor: C.line }}>
+                  {myStudentLinks.length === 0 && myTeacherLinks.length === 0 && (
+                    <p className="text-sm">{t("deleteStep2NoLinks")}</p>
+                  )}
+                  {myStudentLinks.length > 0 && (
+                    <p className="text-sm leading-relaxed">{t("deleteStep2Teacher").replace("{n}", myStudentLinks.length)}</p>
+                  )}
+                  {myTeacherLinks.length > 0 && (
+                    <p className="text-sm leading-relaxed">{t("deleteStep2Student").replace("{n}", myTeacherLinks.length)}</p>
+                  )}
+                </div>
+                <p className="text-sm rounded-2xl p-3" style={{ background: "rgba(184,49,49,0.08)", color: C.curtain }}>
+                  {t("deleteStep2Reregister")}
+                </p>
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => setActiveTab("deleteAccount1")}
+                    className="flex-1 py-3 rounded-full text-sm font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                    {t("deleteBack")}
+                  </button>
+                  <button type="button" onClick={() => setActiveTab("deleteAccount3")}
+                    className="flex-1 py-3 rounded-full text-sm font-medium" style={{ background: C.card, border: `1px solid ${C.curtain}`, color: C.curtain }}>
+                    {t("deleteNext")}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "deleteAccount3" && (
+              <div className="space-y-4">
+                <h2 className="ff-display italic text-xl">{t("deleteStep3Title")}</h2>
+                <p className="text-sm">{t("deleteStep3Lead")}</p>
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{userEmail}　または　「削除します」</p>
+                  <input type="text" value={deleteConfirmText} onChange={(e) => setDeleteConfirmText(e.target.value)}
+                    placeholder={t("deleteConfirmPlaceholder")} autoComplete="off"
+                    className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                </div>
+                {deleteStatus === "error" && (
+                  <p className="text-sm rounded-2xl p-3" style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>{deleteError}</p>
+                )}
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => setActiveTab("deleteAccount2")}
+                    className="flex-1 py-3 rounded-full text-sm font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                    {t("deleteBack")}
+                  </button>
+                  <button type="button" onClick={handleDeleteAccount}
+                    disabled={deleteStatus === "working" || !(deleteConfirmText.trim() === "削除します" || deleteConfirmText.trim().toLowerCase() === (userEmail || "").toLowerCase())}
+                    className="flex-1 py-3 rounded-full text-sm font-medium flex items-center justify-center gap-2"
+                    style={{
+                      background: C.curtain, color: "#FFFDF8",
+                      opacity: (deleteStatus === "working" || !(deleteConfirmText.trim() === "削除します" || deleteConfirmText.trim().toLowerCase() === (userEmail || "").toLowerCase())) ? 0.4 : 1
+                    }}>
+                    {deleteStatus === "working" && <Loader2 size={15} className="animate-spin" />}
+                    {deleteStatus === "working" ? t("deleteExecuting") : t("labelDeleteAccount")}
+                  </button>
+                </div>
+              </div>
+            )}
+
             {activeTab === "questionnaires" && (
               <div className="space-y-5">
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
@@ -13018,9 +13154,11 @@ export default function VocalTracker({ userId, userEmail }) {
                       {exportStatus === "working" ? t("exportWorking") : t("labelExportData")}
                     </button>
                   </div>
-                  <p className="text-xs px-1 mb-2" style={{ color: C.inkSoft }}>
-                    アカウント削除機能は準備中です。
-                  </p>
+                  <button type="button" onClick={() => { setDeleteConfirmText(""); setDeleteStatus("idle"); setActiveTab("deleteAccount1"); }}
+                    className="w-full flex items-center justify-between py-2.5 px-1 text-sm mb-1" style={{ color: C.curtain }}>
+                    <span className="flex items-center gap-2"><Trash2 size={16} />{t("labelDeleteAccount")}</span>
+                    <span style={{ color: C.inkSoft }}>→</span>
+                  </button>
                   <button onClick={handleSignOut}
                     className="w-full flex items-center gap-2 py-2.5 px-1 text-sm" style={{ color: C.curtain }}>
                     <LogOut size={16} />ログアウト
