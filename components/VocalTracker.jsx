@@ -7776,6 +7776,23 @@ export default function VocalTracker({ userId, userEmail }) {
   }
   // ---- 作業指示-教室プラン ここまで ----
 
+  const [lineCheckStatus, setLineCheckStatus] = useState("idle"); // idle | checking | notyet
+
+  // LINE側で連携が終わっても、アプリは自分からは気づけない。押されたときに取り直す。
+  async function handleRefreshLineStatus() {
+    setLineCheckStatus("checking");
+    const supabase = createClient();
+    const { data } = await supabase
+      .from("profiles").select("line_user_id, line_linked_at, line_link_code, line_notification_enabled")
+      .eq("id", userId).maybeSingle();
+    if (data && data.line_user_id) {
+      setProfile((p) => ({ ...p, ...data }));
+      setLineCheckStatus("idle");
+    } else {
+      setLineCheckStatus("notyet");
+    }
+  }
+
   async function handleGenerateLineLinkCode() {
     const code = Array.from({ length: 6 }, () => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)]).join("");
     const supabase = createClient();
@@ -13170,11 +13187,38 @@ export default function VocalTracker({ userId, userEmail }) {
                       </p>
                       {profile.line_link_code ? (
                         <div className="rounded-xl p-3 mb-2" style={{ background: C.paper }}>
+                          {/* ★以前は「友だち追加」が説明文だけで、どこの公式アカウントに
+                              送ればよいのか分からなかった。友だち追加の導線を実際に置く。
+                              URL は環境変数で渡す（アカウントごとに違うため）。 */}
                           <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>①LINEで「La Voce」を友だち追加</p>
+                          {process.env.NEXT_PUBLIC_LINE_ADD_FRIEND_URL ? (
+                            <a href={process.env.NEXT_PUBLIC_LINE_ADD_FRIEND_URL} target="_blank" rel="noopener noreferrer"
+                              className="block w-full text-center py-2 rounded-full text-xs font-medium mb-2"
+                              style={{ background: "#06C755", color: "#FFFFFF" }}>
+                              LINEで友だち追加する
+                            </a>
+                          ) : (
+                            <p className="text-xs mb-2 rounded-lg p-2" style={{ background: "rgba(184,49,49,0.10)", color: C.curtain }}>
+                              友だち追加のリンクが未設定です。管理者に連絡してください（NEXT_PUBLIC_LINE_ADD_FRIEND_URL）。
+                            </p>
+                          )}
                           <p className="text-xs mb-2" style={{ color: C.inkSoft }}>②トーク画面に、下の連携コードをそのまま送信</p>
                           <p className="ff-mono text-center text-2xl tracking-widest py-2 rounded-lg" style={{ background: C.card, color: C.curtain }}>
                             {profile.line_link_code}
                           </p>
+                          {/* ★LINE側で連携が完了しても、アプリはそれを知らない。
+                              以前は画面を開き直すまで「未連携」のままで、成功したのか
+                              失敗したのか分からなかった。取り直す導線を置く。 */}
+                          <button type="button" onClick={handleRefreshLineStatus} disabled={lineCheckStatus === "checking"}
+                            className="w-full mt-2 py-2 rounded-full text-xs font-medium border"
+                            style={{ borderColor: C.line, color: C.inkSoft }}>
+                            {lineCheckStatus === "checking" ? "確認しています…" : "③送信したら、ここを押して確認"}
+                          </button>
+                          {lineCheckStatus === "notyet" && (
+                            <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                              まだ連携が確認できません。コードを送信してから、少し待ってもう一度お試しください。
+                            </p>
+                          )}
                         </div>
                       ) : (
                         <button type="button" onClick={handleGenerateLineLinkCode}

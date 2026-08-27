@@ -62,8 +62,10 @@ export async function POST(req) {
     }
 
     if (event.type === "message" && event.message && event.message.type === "text") {
-      const text = event.message.text.trim();
-      // 連携コードらしき形式（英数字6文字）のときだけ照合する。
+      // ★大文字に揃えてから照合する。以前は /^[A-Z0-9]{6}$/ で大文字しか
+      //   受け付けず、小文字で送った人（スマホのキーボードでは珍しくない）は
+      //   「コードを送ってください」と返されて、永久に連携できなかった。
+      const text = event.message.text.trim().toUpperCase();
       if (/^[A-Z0-9]{6}$/.test(text)) {
         const { data: matched, error } = await admin
           .from("profiles")
