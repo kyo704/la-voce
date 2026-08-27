@@ -78,6 +78,18 @@ const dead = rows.filter((r) => r.writes === 0 && r.reads > 0);
 const unused = rows.filter((r) => r.writes > 0 && r.reads === 0);
 const orphan = rows.filter((r) => r.writes === 0 && r.reads === 0);
 
+// 項目ごとの申し送り。★同じことを別の課題として立て直さないための欄。
+const NOTES = {
+  cppsValue:
+    "学ぶ記事 C3-4 が「唯一、主観の入らない指標」として説明している。" +
+    "記録はされるが読む分析が無い。分析を作るか、記事の書きぶりを弱めるかの両にらみ。",
+  speakingLevel:
+    "★読み取り専用として残す判断済み（2026-08-28）。実データ1件、代替の分単位記録なし。" +
+    "消さないこと。理由は lib/vocalDose.js の分岐に書いてある。",
+  longestSpeechBlockMinutes:
+    "学ぶ記事 announcer-2-1 が「休みなく話し続けた最長の時間に注目する」と書いている。同上。"
+};
+
 function table(title, list, note) {
   console.log(`\n=== ${title}（${list.length}件）===`);
   if (note) console.log(`  ${note}`);
@@ -85,6 +97,7 @@ function table(title, list, note) {
   list.forEach((r) => console.log(
     `  ${r.field.padEnd(30)} 入力${String(r.writes).padStart(3)}  分析${String(r.reads).padStart(3)}` +
     (r.libReaders.length ? `   ← ${r.libReaders.join(", ")}` : "")));
+  list.filter((r) => NOTES[r.field]).forEach((r) => console.log(`     └ ${r.field}: ${NOTES[r.field]}`));
 }
 
 console.log(`記録項目 ${rows.length}件を棚卸ししました。`);
