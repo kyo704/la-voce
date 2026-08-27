@@ -10503,36 +10503,10 @@ export default function VocalTracker({ userId, userEmail }) {
                   </p>
                 </div>
 
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">{t("titleVoicePrediction")}</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteVoicePrediction")}</p>
-                  {!voicePrediction.hasData ? (
-                    <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
-                      {t("notePredictionNoData")}
-                    </p>
-                  ) : (
-                    <>
-                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
-                        {t("labelBasedOnDate").replace("{date}", formatDateLabel(voicePrediction.date, language))}
-                      </p>
-                      {voicePrediction.flags.length === 0 ? (
-                        <p className="text-xs rounded-xl p-3" style={{ background: "rgba(122,150,109,0.12)", color: C.sage }}>
-                          ✓ {t("notePredictionNoFlags")}
-                        </p>
-                      ) : (
-                        <div className="space-y-2.5">
-                          {voicePrediction.flags.map(({ flagKey, explainKey }) => (
-                            <div key={flagKey} className="rounded-xl p-3" style={{ background: "rgba(184,49,49,0.06)" }}>
-                              <p className="text-xs font-medium" style={{ color: C.curtain }}>⚠ {t(flagKey)}</p>
-                              <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>{t(explainKey)}</p>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-
+                {/* 改善タスクv2 §4-1(f): 「声の状態の予測」と「声の予報」が連続して2つあり、
+                    ユーザーから見て違いが分からなかった。1枚のカードに統合する。
+                    ★計算は一切変えていない。voicePrediction（前日の記録からの注意点）と
+                    todayForecast（回帰モデルの数値予報）は、どちらも従来のまま使っている。 */}
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">声の予報</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -10603,6 +10577,39 @@ export default function VocalTracker({ userId, userEmail }) {
                     </>
                   )}
                   <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                    ※ 生理学的な一般知見にもとづく参考値であり、医学的な予測ではありません。
+
+                  {/* 統合前は別カードだった「声の状態の予測」。数値の下に、
+                      前夜の記録から見た注意点として置く。 */}
+                  <div className="mt-4 pt-3 border-t" style={{ borderColor: C.line }}>
+                    <p className="text-sm font-medium mb-1" style={{ color: C.ink }}>{t("titleVoicePrediction")}</p>
+                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("noteVoicePrediction")}</p>
+                    {!voicePrediction.hasData ? (
+                      <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
+                        {t("notePredictionNoData")}
+                      </p>
+                    ) : (
+                      <>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                          {t("labelBasedOnDate").replace("{date}", formatDateLabel(voicePrediction.date, language))}
+                        </p>
+                        {voicePrediction.flags.length === 0 ? (
+                          <p className="text-xs rounded-xl p-3" style={{ background: "rgba(122,150,109,0.12)", color: C.sage }}>
+                            ✓ {t("notePredictionNoFlags")}
+                          </p>
+                        ) : (
+                          <div className="space-y-2.5">
+                            {voicePrediction.flags.map(({ flagKey, explainKey }) => (
+                              <div key={flagKey} className="rounded-xl p-3" style={{ background: "rgba(184,49,49,0.06)" }}>
+                                <p className="text-xs font-medium" style={{ color: C.curtain }}>⚠ {t(flagKey)}</p>
+                                <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>{t(explainKey)}</p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
                     ※ 生理学的な一般知見にもとづく参考値であり、医学的な予測ではありません。
                   </p>
                 </div>
