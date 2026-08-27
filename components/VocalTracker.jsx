@@ -26,6 +26,8 @@ import { isAnalysisCardVisible } from "@/lib/analysisCardVisibility";
 import { isFieldGroupVisible, DEFAULT_RECORD_MODE } from "@/lib/fieldGroups";
 // 機能フラグ（G2-14）。判定はこのモジュールだけが持つ。
 import { canSeeBetaFeatures, canSeeTeacherFeatures, canSeeLineLink } from "@/lib/featureFlags";
+// 削除の猶予期間（A-4）。日数の計算はサーバーと同じものを使う。
+import { graceDaysLeft, GRACE_PERIOD_DAYS } from "@/lib/accountDeletion";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
 import { EXPORTED_TABLES, EXPORTED_PROFILE_COLUMNS, entriesToCsv, buildExportPayload, sanitizeShareHistory } from "@/lib/exportData";
 import HealthInfo from "@/components/HealthInfo";
@@ -4045,7 +4047,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], allergies: [], regular_medications: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "", is_admin: false, record_mode: DEFAULT_RECORD_MODE });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], allergies: [], regular_medications: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "", is_admin: false, record_mode: DEFAULT_RECORD_MODE, deleted_at: null });
   // 確認用: 管理者アカウント（is_admin）は、動作確認のため全職業の機能を見られるようにする。
   // ★重要：profile宣言より前に置くと「宣言前にアクセス」エラーになるため、必ずこの直後に置くこと。
   const effectiveProfessions = useMemo(() => {
@@ -4344,6 +4346,12 @@ export default function VocalTracker({ userId, userEmail }) {
         .from("profiles").select("record_mode").eq("id", userId).maybeSingle();
       // アレルギー・常用薬も、migration_profile_health_fields.sql 未実行の環境が
       // ありうるので、本体クエリとは分けて寛容に読む（record_mode と同じ理由）。
+      // 削除の猶予期間中かどうか。migration_account_soft_delete.sql が未実行の
+      // 環境では列が無いので、本体クエリとは分けて寛容に読む。
+      const { data: delRow } = await supabase
+        .from("profiles").select("deleted_at").eq("id", userId).maybeSingle();
+      if (mounted && delRow) setProfile((prev) => ({ ...prev, deleted_at: delRow.deleted_at || null }));
+
       const { data: healthRow } = await supabase
         .from("profiles").select("allergies, regular_medications").eq("id", userId).maybeSingle();
       if (mounted && healthRow) {
@@ -7079,14 +7087,32 @@ export default function VocalTracker({ userId, userEmail }) {
   const [deleteStatus, setDeleteStatus] = useState("idle"); // idle | working | error
   const [deleteError, setDeleteError] = useState("");
 
-  async function handleDeleteAccount() {
+  const [restoreStatus, setRestoreStatus] = useState("idle"); // idle | working | error
+
+  async function handleRestoreAccount() {
+    setRestoreStatus("working");
+    const res = await fetch("/api/account/restore", { method: "POST" });
+    if (res.ok) {
+      setProfile((p) => ({ ...p, deleted_at: null }));
+      setRestoreStatus("idle");
+    } else {
+      setRestoreStatus("error");
+    }
+  }
+
+  // 確認の入力が一致しているか。ボタンが2つあるので、判定は1箇所に置く。
+  const deleteConfirmOk =
+    deleteConfirmText.trim() === "削除します" ||
+    deleteConfirmText.trim().toLowerCase() === (userEmail || "").toLowerCase();
+
+  async function handleDeleteAccount(mode) {
     setDeleteStatus("working");
     setDeleteError("");
     try {
       const res = await fetch("/api/account/delete", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ confirmation: deleteConfirmText })
+        body: JSON.stringify({ confirmation: deleteConfirmText, mode })
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -8199,6 +8225,40 @@ export default function VocalTracker({ userId, userEmail }) {
 
   // lavoce-画面レイアウト仕様_1.md §9: 同意・オンボーディングが未完了なら、本編より先にこちらを表示する。
   // profile.onboarding_completedがnullの間（読み込み中）は判定を保留し、誤って一瞬表示されるのを防ぐ。
+  // 作業指示-公開前の実装.md A-4「30日間は復元できる（誤操作の救済）」。
+  // 削除を申し出た状態でログインしたら、まずここで復元するか尋ねる。
+  // ★共有（先生とのつながり）は申請の時点で切れており、復元しても戻らない。
+  //   相手の同意なしにつながりを復活させないため。その旨を明示する。
+  if (!loading && profile.deleted_at) {
+    const left = graceDaysLeft(profile.deleted_at);
+    return (
+      <div style={{ background: C.paper, color: C.ink, minHeight: "100vh" }} className="flex items-center justify-center px-4">
+        <div className="w-full max-w-md rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+          <h2 className="ff-display italic text-xl mb-3">{t("restoreTitle")}</h2>
+          <p className="text-sm mb-2">{t("restoreLead").replace("{days}", Math.max(0, left))}</p>
+          <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("restoreConnectionsNote")}</p>
+          <p className="text-xs mb-4" style={{ color: C.inkSoft }}>
+            {t("restoreIfNothing").replace("{days}", GRACE_PERIOD_DAYS)}
+          </p>
+          {restoreStatus === "error" && (
+            <p className="text-xs mb-3 rounded-lg p-2.5" style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>
+              {t("restoreError")}
+            </p>
+          )}
+          <button type="button" onClick={handleRestoreAccount} disabled={restoreStatus === "working"}
+            className="w-full py-3 rounded-full text-sm font-medium mb-2"
+            style={{ background: C.curtain, color: "#FFFDF8", opacity: restoreStatus === "working" ? 0.7 : 1 }}>
+            {restoreStatus === "working" ? t("restoreWorking") : t("restoreButton")}
+          </button>
+          <button type="button" onClick={handleSignOut}
+            className="w-full py-3 rounded-full text-sm font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+            {t("restoreKeepDeleting")}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (!loading && profile.onboarding_completed === false) {
     const existingUser = Object.keys(entries).length > 0;
     return <OnboardingFlow existingUser={existingUser} onComplete={handleCompleteOnboarding} t={t} />;
@@ -12488,17 +12548,23 @@ export default function VocalTracker({ userId, userEmail }) {
                     className="flex-1 py-3 rounded-full text-sm font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
                     {t("deleteBack")}
                   </button>
-                  <button type="button" onClick={handleDeleteAccount}
-                    disabled={deleteStatus === "working" || !(deleteConfirmText.trim() === "削除します" || deleteConfirmText.trim().toLowerCase() === (userEmail || "").toLowerCase())}
+                  <button type="button" onClick={() => handleDeleteAccount("grace")}
+                    disabled={deleteStatus === "working" || !deleteConfirmOk}
                     className="flex-1 py-3 rounded-full text-sm font-medium flex items-center justify-center gap-2"
-                    style={{
-                      background: C.curtain, color: "#FFFDF8",
-                      opacity: (deleteStatus === "working" || !(deleteConfirmText.trim() === "削除します" || deleteConfirmText.trim().toLowerCase() === (userEmail || "").toLowerCase())) ? 0.4 : 1
-                    }}>
+                    style={{ background: C.curtain, color: "#FFFDF8", opacity: (deleteStatus === "working" || !deleteConfirmOk) ? 0.4 : 1 }}>
                     {deleteStatus === "working" && <Loader2 size={15} className="animate-spin" />}
-                    {deleteStatus === "working" ? t("deleteExecuting") : t("labelDeleteAccount")}
+                    {deleteStatus === "working" ? t("deleteExecuting") : t("deleteWithGrace")}
                   </button>
                 </div>
+                {/* A-4「今すぐ完全に削除する」も選べるようにする。
+                    ただし既定は猶予つき。取り返しのつかない方を既定にしない。 */}
+                <p className="text-xs" style={{ color: C.inkSoft }}>{t("deleteGraceNote").replace("{days}", GRACE_PERIOD_DAYS)}</p>
+                <button type="button" onClick={() => handleDeleteAccount("now")}
+                  disabled={deleteStatus === "working" || !deleteConfirmOk}
+                  className="w-full py-2.5 text-xs underline"
+                  style={{ color: C.curtain, opacity: (deleteStatus === "working" || !deleteConfirmOk) ? 0.4 : 1 }}>
+                  {t("deleteNowInstead")}
+                </button>
               </div>
             )}
 

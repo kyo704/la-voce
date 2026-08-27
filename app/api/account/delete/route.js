@@ -1,51 +1,19 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { purgeAccount, severConnections } from "@/lib/accountDeletion";
 
 // ============================================================================
-// アカウントの削除（統合実行ルートv4 G3-17 / 改善タスクv2 P0-3）
+// アカウントの削除（統合実行ルートv4 G3-17 / 作業指示-公開前の実装.md A-4）
 //
-// 受け入れ条件:「削除後、同一メールで再登録しても旧データが復活しない」
-//   → auth のユーザーを消すだけでは足りない。schema.sql で on delete cascade が
-//     付いているのは profiles / subscriptions / entries の3つだけで、あとから
-//     手作業で足されたテーブルには付いていない可能性がある。
-//     取り残された行は「持ち主のいないデータ」として残り続けるので、
-//     ここで明示的に消してから auth のユーザーを消す。
+// mode = "grace"（既定）… 30日の猶予に入れる。誤操作の救済（A-4）。
+//                          ★共有だけは即座に切る（教室の側から見えなくなるのは
+//                            即時。30日待たない、と A-4 が明記している）
+// mode = "now"          … その場で物理削除する（A-4 の「今すぐ完全に削除する」）
 //
-// ★1つのテーブルの削除に失敗しても、そこで止めない。
-//   途中で止めると「一部だけ消えた」状態が残り、次に再試行しても
-//   同じところで止まる。失敗したテーブルを記録して最後まで進み、
-//   1つでも失敗があれば auth のユーザーは消さずに報告する
-//   （ユーザーが消えると、残った行に手が届かなくなるため）。
+// 実際の削除の中身は lib/accountDeletion.js に置いてある。猶予明けの定期処理
+// （/api/cron/purge-deleted）と同じ処理を使うため。2通りに分かれるとズレる。
 // ============================================================================
-
-// 削除する順序。子から先に消す（外部キーの参照が残らないように）。
-const USER_OWNED_TABLES = [
-  "entry_comments",
-  "teacher_notes",
-  "lessons",
-  "article_notes",
-  "article_progress",
-  "chapter_state",
-  "character_inventory",
-  "repertoire_tessitura",
-  "role_master",
-  "project_master",
-  "questionnaire_responses",
-  "entries",
-  "feedback",
-  "assignments",
-  "enrollments",
-  "memberships",
-  "subscriptions"
-];
-
-// user_id 以外の列で本人に紐づくもの。
-const SPECIAL_DELETES = [
-  { table: "teacher_student_links", column: "student_id" },
-  { table: "teacher_student_links", column: "teacher_id" },
-  { table: "teacher_invitations", column: "teacher_id" }
-];
 
 export async function POST(request) {
   const supabase = createClient();
@@ -54,14 +22,15 @@ export async function POST(request) {
     return NextResponse.json({ error: "ログインが必要です。" }, { status: 401 });
   }
 
-  // 本人確認。画面で入力させた文字列を、ここでもう一度突き合わせる。
-  // 画面側だけの確認では、リクエストを直接投げれば素通りしてしまう。
   let body;
   try {
     body = await request.json();
   } catch (e) {
     return NextResponse.json({ error: "不正なリクエストです。" }, { status: 400 });
   }
+
+  // 本人確認。画面で入力させた文字列を、ここでもう一度突き合わせる。
+  // 画面側だけの確認では、リクエストを直接投げれば素通りしてしまう。
   const typed = (body.confirmation || "").trim();
   const okByEmail = typed.toLowerCase() === (user.email || "").toLowerCase();
   const okByPhrase = typed === "削除します";
@@ -73,46 +42,43 @@ export async function POST(request) {
   }
 
   const admin = createAdminClient();
-  const failures = [];
+  const mode = body.mode === "now" ? "now" : "grace";
 
-  for (const table of USER_OWNED_TABLES) {
-    const { error } = await admin.from(table).delete().eq("user_id", user.id);
-    // テーブルが存在しない環境もあるため、その場合は失敗として数えない。
-    if (error && !/does not exist|schema cache/i.test(error.message || "")) {
-      failures.push({ table, message: error.message });
+  if (mode === "now") {
+    const { ok, failures } = await purgeAccount(admin, user.id);
+    if (!ok) {
+      console.error("アカウント削除：一部のデータを削除できませんでした。", failures);
+      return NextResponse.json(
+        { error: "一部のデータを削除できませんでした。お手数ですが、時間をおいてもう一度お試しください。" },
+        { status: 500 }
+      );
     }
-  }
-  for (const { table, column } of SPECIAL_DELETES) {
-    const { error } = await admin.from(table).delete().eq(column, user.id);
-    if (error && !/does not exist|schema cache/i.test(error.message || "")) {
-      failures.push({ table: `${table}.${column}`, message: error.message });
-    }
-  }
-  // 教室のオーナーだった場合、教室そのものは他の人が使っている可能性がある。
-  // 勝手に消さず、作成者の紐付けだけ外す。
-  const { error: orgError } = await admin
-    .from("organizations").update({ created_by: null }).eq("created_by", user.id);
-  if (orgError && !/does not exist|schema cache/i.test(orgError.message || "")) {
-    failures.push({ table: "organizations", message: orgError.message });
+    return NextResponse.json({ ok: true, mode: "now" });
   }
 
-  const { error: profileError } = await admin.from("profiles").delete().eq("id", user.id);
-  if (profileError) failures.push({ table: "profiles", message: profileError.message });
-
-  if (failures.length > 0) {
-    // ★ここで auth のユーザーを消さない。消すと残った行に手が届かなくなる。
-    console.error("アカウント削除：一部のデータを削除できませんでした。", failures);
+  // ---- 猶予期間に入れる ----
+  // ★共有は待たずに切る。削除を申し出た人の記録が、30日ものあいだ
+  //   先生の画面に出続けるのは受け入れられない（A-4）。
+  const severFailures = await severConnections(admin, user.id);
+  if (severFailures.length > 0) {
+    console.error("アカウント削除：共有の解除に失敗しました。", severFailures);
     return NextResponse.json(
-      { error: "一部のデータを削除できませんでした。お手数ですが、時間をおいてもう一度お試しください。", failures },
+      { error: "共有の解除に失敗したため、削除を中断しました。時間をおいてもう一度お試しください。" },
       { status: 500 }
     );
   }
 
-  const { error: deleteUserError } = await admin.auth.admin.deleteUser(user.id);
-  if (deleteUserError) {
-    console.error("アカウント削除：認証ユーザーを削除できませんでした。", deleteUserError);
-    return NextResponse.json({ error: "アカウントを削除できませんでした。時間をおいてもう一度お試しください。" }, { status: 500 });
+  const { error: markError } = await admin
+    .from("profiles")
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("id", user.id);
+  if (markError) {
+    console.error("アカウント削除：削除の申請を記録できませんでした。", markError);
+    return NextResponse.json(
+      { error: "削除を受け付けられませんでした。supabase/migration_account_soft_delete.sql が未実行の可能性があります。" },
+      { status: 500 }
+    );
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, mode: "grace" });
 }
