@@ -12183,7 +12183,11 @@ export default function VocalTracker({ userId, userEmail }) {
                         <YAxis tick={{ fontSize: 10, fill: C.inkSoft }} unit="kcal" />
                         <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
                         <Bar dataKey="calorieActual" name={t("chartNameCalorieActual")} fill={C.gold} radius={3} />
-                        <Line type="monotone" dataKey="calorieTarget" name={t("chartNameCalorieTarget")} stroke={C.curtain} strokeDasharray="4 4" dot={false} connectNulls />
+                        {/* ★目標カロリーの破線は外した（分析画面の描画仕様.md §4-1・§7-6）。
+                            破線の下を「足りなかった日」に見せてしまうため。
+                            食後就寝までの時間に推奨の2時間の線を引かないと決めたのと同じ話。
+                            La Voce の利用者は体型の圧力が強い職業の人たちで、
+                            毎日「目標に届かなかった」を見せる画面を作らない。 */}
                       </ComposedChart>
                     </ResponsiveContainer>
                   </div>
@@ -12198,6 +12202,11 @@ export default function VocalTracker({ userId, userEmail }) {
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
+                  {/* §4-1 の指定どおりの文言。体重とカロリーは記録として残すが、
+                      声の分析には使っていない。そのことを本人に伝える。 */}
+                  <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                    ※ 声の分析には使っていません。記録として残しているだけです。
+                  </p>
                   <div style={{ width: "100%", height: 110, marginTop: 8 }}>
                     <ResponsiveContainer>
                       <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
@@ -12477,7 +12486,10 @@ export default function VocalTracker({ userId, userEmail }) {
                           <BarChart data={comfortZone1D.binStats.map((s) => ({ bin: `${s.bin}`, avg: roundTo1(s.avg), n: s.n }))} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                             <CartesianGrid stroke={C.line} />
                             <XAxis dataKey="bin" tick={{ fontSize: 9, fill: C.inkSoft }} label={{ value: "絶対湿度 g/m³", position: "insideBottom", offset: -2, fontSize: 10, fill: C.inkSoft }} />
-                            <YAxis domain={[1, 5]} tick={{ fontSize: 10, fill: C.inkSoft }} />
+                            {/* ★棒グラフの縦軸は0から（描画仕様 §7-12）。
+                                1から始めると、3.0 と 3.5 の差が実際の何倍にも見える。
+                                線グラフは1〜5のままでよい（規則は棒グラフの話）。 */}
+                            <YAxis domain={[0, 5]} tick={{ fontSize: 10, fill: C.inkSoft }} />
                             <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} formatter={(v, n, entry) => [`${v}（${entry.payload.n}件）`, "喉スコア平均"]} />
                             <Bar dataKey="avg" radius={3}>
                               {comfortZone1D.binStats.map((s, i) => (
