@@ -36,6 +36,8 @@ import { canSeeBetaFeatures, canSeeTeacherFeatures, canSeeLineLink, canSeeStuden
 // 削除の猶予期間（A-4）。日数の計算はサーバーと同じものを使う。
 import { graceDaysLeft, GRACE_PERIOD_DAYS } from "@/lib/accountDeletion";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
+// 書き出しに添える「記録の控え」。★解釈を1つも書かない。文言と禁止語はこの1か所。
+import { buildExportSummary } from "@/lib/exportSummary";
 import { EXPORTED_TABLES, EXPORTED_PROFILE_COLUMNS, entriesToCsv, buildExportPayload, sanitizeShareHistory } from "@/lib/exportData";
 import HealthInfo from "@/components/HealthInfo";
 import { ARTICLES, CHAPTER_LABELS, PROFESSION_LABELS, getArticlesForProfession, getArticleById } from "@/lib/learnContent";
@@ -13089,6 +13091,82 @@ export default function VocalTracker({ userId, userEmail }) {
                 })()}
               </div>
             )}
+            {activeTab === "exportSummary" && (() => {
+              // ★この紙に解釈を1つも書かないこと（lib/exportSummary.js の頭に理由）。
+              //   「多い」「少ない」「良い」「傾向」「改善」— 1つも出しません。
+              //   出してよいのは、件数・日付・ファイル名だけです。
+              // ★言語はこの文書だけの4分岐（ja/zh/ko/それ以外→en）。
+              //   アプリ本体の9言語とは独立しています。
+              const sum = buildExportSummary({
+                profile,
+                entries,
+                professionLabel: t(PROFESSION_LABEL_KEYS[profile.vocal_profession] || "professionSinger"),
+                exportedAt: new Date().toISOString(),
+                uiLanguage: language
+              });
+              const T = sum.text;
+              const row = (label, value) => (
+                <div className="flex items-baseline justify-between gap-4 py-1">
+                  <span className="text-xs" style={{ color: C.inkSoft }}>{label}</span>
+                  <span className="text-sm" style={{ color: C.ink }}>{value}</span>
+                </div>
+              );
+              return (
+                <div className="space-y-5">
+                  <style>{`@media print { header, nav, .no-print { display: none !important; } }`}</style>
+                  <div className="rounded-2xl p-4 border no-print" style={{ background: C.card, borderColor: C.line }}>
+                    <button type="button" onClick={() => setActiveTab("more")}
+                      className="flex items-center gap-1 text-sm font-medium mb-2" style={{ color: C.inkSoft }}>
+                      <ChevronLeft size={16} />戻る
+                    </button>
+                    <h2 className="ff-display italic text-xl mb-1">記録の控え</h2>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      書き出したデータに、どれだけの記録が入っているかを確かめるための紙です。
+                      受診用サマリーとは別のもので、お医者さんに見せるためのものではありません。
+                    </p>
+                    <button type="button" onClick={() => window.print()}
+                      className="px-3.5 py-1.5 rounded-full text-xs font-medium"
+                      style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                      印刷 / PDFで保存
+                    </button>
+                  </div>
+
+                  <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h1 className="ff-display italic text-xl" style={{ color: C.ink }}>{T.title}</h1>
+                    <p className="text-xs mt-0.5 mb-4" style={{ color: C.inkSoft }}>{T.createdAt(sum.createdAt)}</p>
+
+                    <p className="text-xs font-medium pt-3 mt-3 border-t" style={{ color: C.inkSoft, borderColor: C.line }}>{T.sectionYou}</p>
+                    {row(T.labelName, sum.name || T.notSet)}
+                    {row(T.labelProfession, sum.professionLabel || T.notSet)}
+                    {row(T.labelStarted, sum.firstDate || T.notSet)}
+
+                    <p className="text-xs font-medium pt-3 mt-3 border-t" style={{ color: C.inkSoft, borderColor: C.line }}>{T.sectionAmount}</p>
+                    {row(T.labelDays, T.unitDays(sum.recordedDays))}
+                    {row(T.labelRange, sum.firstDate ? `${sum.firstDate} 〜 ${sum.lastDate}` : T.notSet)}
+
+                    <p className="text-xs font-medium pt-3 mt-3 border-t" style={{ color: C.inkSoft, borderColor: C.line }}>{T.sectionItems}</p>
+                    {row(T.itemVoice, T.unitDays(sum.items.voice))}
+                    {row(T.itemSleep, T.unitDays(sum.items.sleep))}
+                    {row(T.itemActivity, T.unitDays(sum.items.activity))}
+                    {row(T.itemMeal, T.unitDays(sum.items.meal))}
+                    {row(T.itemMental, T.unitDays(sum.items.mental))}
+                    {row(T.itemNotes, T.unitCount(sum.items.notes))}
+
+                    <p className="text-xs font-medium pt-3 mt-3 border-t" style={{ color: C.inkSoft, borderColor: C.line }}>{T.sectionFiles}</p>
+                    {sum.files.map((f) => (
+                      <div key={f.name} className="py-1">
+                        <p className="text-sm ff-mono" style={{ color: C.ink }}>{f.name}</p>
+                        <p className="text-xs" style={{ color: C.inkSoft }}>{T[f.descKey]}</p>
+                      </div>
+                    ))}
+
+                    <p className="text-xs leading-relaxed pt-3 mt-4 border-t" style={{ color: C.inkSoft, borderColor: C.line }}>
+                      {T.footer}
+                    </p>
+                  </div>
+                </div>
+              );
+            })()}
             {activeTab === "clinicSummary" && (() => {
               // §5.4: ここには絶対に載せない（あとから「便利だから」と足されがちなので明記しておく）
               // 偏差値／ACWR／ラグ相関（声の時差マップ）／効果量（効いた習慣ランキング）／CPPS／エネルギー可用性
@@ -13727,6 +13805,14 @@ export default function VocalTracker({ userId, userEmail }) {
                       style={{ background: C.curtain, color: "#FFFDF8", opacity: exportStatus === "working" ? 0.7 : 1 }}>
                       {exportStatus === "working" && <Loader2 size={15} className="animate-spin" />}
                       {exportStatus === "working" ? t("exportWorking") : t("labelExportData")}
+                    </button>
+                    {/* ★受診用サマリーとは別物。あちらはお医者さんに見せるもの、
+                        こちらは本人が「ちゃんと入っているか」を確かめるもの。
+                        同じ無料の書き出しの一部で、有料機能ではない。 */}
+                    <button type="button" onClick={() => setActiveTab("exportSummary")}
+                      className="w-full mt-2 py-2 rounded-full text-xs font-medium"
+                      style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                      記録の控えを開く（印刷・PDF）
                     </button>
                   </div>
                   <button type="button" onClick={() => { setDeleteConfirmText(""); setDeleteStatus("idle"); setActiveTab("deleteAccount1"); }}
