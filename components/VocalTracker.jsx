@@ -29,6 +29,11 @@ import {
 import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q } from "@/lib/displayGates";
 // 分析カードの職業別の出し分け（docs/profession-presets.json と1対1）
 import { isAnalysisCardVisible } from "@/lib/analysisCardVisibility";
+// 「この分析を強くする」の選び方（記録と分析の順番設計.md §5.3 の R1〜R6）。
+// ★規則は画面に書かず、必ずこのモジュールを通すこと。
+import {
+  selectBoostCandidates, describeUnlockCondition, IMPROVEMENT, MAX_BOOST_CARDS
+} from "@/lib/analysisBoost";
 // 記録項目の表示・非表示は必ずこのレイヤーを通す（記録項目の再設計v2 §3.3）
 import { isFieldGroupVisible, DEFAULT_RECORD_MODE } from "@/lib/fieldGroups";
 // 機能フラグ（G2-14）。判定はこのモジュールだけが持つ。
@@ -7263,14 +7268,12 @@ export default function VocalTracker({ userId, userEmail }) {
   };
   const analysisBoostCandidates = useMemo(() => {
     const candidates = [];
-    // R5: score = 見込みの改善量 / 必要な追加記録日数。10日を超えるものは出さない。
     // ①「効いた習慣」の確度：3→4つ星は、CI・効果量の条件は既に満たしており、
-    //   残る条件はサンプル数（n1・n0とも10以上）だけなので、日数の見積もりが立てやすい。
+    //   残る条件はサンプル数（n1・n0とも10以上）だけなので、日数の見積もりが立つ。
     effectiveHabitRanking.forEach((h) => {
       if (h.stars !== 3) return;
       const minN = Math.min(h.n1, h.n0);
       const daysNeeded = Math.max(1, 10 - minN);
-      if (daysNeeded > 10) return;
       const section = HABIT_KEY_TO_SECTION[h.key];
       if (!section) return;
       candidates.push({
@@ -7278,26 +7281,30 @@ export default function VocalTracker({ userId, userEmail }) {
         title: `「効いた習慣」の確度 ${"★".repeat(h.stars)}${"☆".repeat(4 - h.stars)}`,
         body: `${h.label.replace(/^前夜の|^前夜、|^前日、/, "")}の記録を あと${daysNeeded}日 続けると ★★★★ になります`,
         daysNeeded,
+        improvement: IMPROVEMENT.star,
         section,
-        score: 0.6 / daysNeeded
+        // R6: 一度も記録していない項目は、いきなり要求しない（3枚目以降扱い）。
+        neverUsed: minN === 0
       });
     });
-    // ②ロックされた分析（既存のnextUnlockと同じ閾値）。改善量=1.0（解放）。
+    // ②ロックされた分析。改善量は 1.0（解放）。
     if (nextUnlock) {
       const daysNeeded = nextUnlock.days - recordedDaysTotal;
-      if (daysNeeded > 0 && daysNeeded <= 10) {
-        candidates.push({
-          id: "unlock-boost-" + nextUnlock.label,
-          title: `🔒 ${nextUnlock.label}`,
-          body: `あと${daysNeeded}日記録すると開きます`,
-          daysNeeded,
-          section: null, // 特定のセクションではなく、記録全般を促す
-          score: 1.0 / daysNeeded
-        });
-      }
+      candidates.push({
+        id: "unlock-boost-" + nextUnlock.label,
+        title: nextUnlock.label,
+        // ★R4: 日数と項目の両方を書く。ただし、項目の条件が本当に分かっている
+        //   ときだけ書くこと。分からないのに「または◯◯を5日」と書くと、
+        //   実際には早まらない条件を約束することになる。
+        body: describeUnlockCondition({ daysNeeded }),
+        daysNeeded,
+        improvement: IMPROVEMENT.unlock,
+        section: null,   // 特定のセクションではなく、記録全般
+        locked: true
+      });
     }
-    // R1: 1度に2枚まで。R5: スコアが高い順。
-    return candidates.sort((a, b) => b.score - a.score).slice(0, 2);
+    // R1・R5・R6 の適用は lib/analysisBoost.js が持つ。
+    return selectBoostCandidates(candidates);
   }, [effectiveHabitRanking, nextUnlock, recordedDaysTotal]);
   // ---- 「この分析を強くする」用データ ここまで ----
 
@@ -12910,40 +12917,53 @@ export default function VocalTracker({ userId, userEmail }) {
                   </>
                 )}
 
-                {/* 改善タスクv2 §4-1(a): ロックカードは、以前 3〜8番目に5枚も固まっていた。
-                    最初にスクロールした人が最初に出会うのが「まだ使えないもの」5連続、
-                    という状態だった（§4-0 原則1）。全部ここに集約する。
-                    判定は analysisLocks（1箇所）だけが持っている。 */}
-                {analysisLocks.pending.length > 0 && (
+                {/* 記録と分析の順番設計.md §5.3 ＋ 改善タスクv2 §4-1(a)。
+                    ★見出しを1つにまとめること。以前は「これから開く分析」と
+                      「この分析を強くする」が縦に並んでいた。どちらも
+                      「まだ見られないもの」の話で、利用者から見れば同じ話が
+                      2回続く。§5.3 の図も、鍵つきのカードをこの中に置いている。
+                    ★順番は「いま動けるもの」が先。待つしかないものを上に置くと、
+                      できることが埋もれる。
+                    判定は analysisLocks と lib/analysisBoost.js が持っている。 */}
+                {(analysisBoostCandidates.length > 0 || analysisLocks.pending.length > 0) && (
                   <div className="pt-2">
-                    <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("titleUpcomingAnalyses")}</h2>
+                    <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>この分析を強くする</h2>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteUpcomingAnalyses")}</p>
-                    <div className="space-y-3">
-                      {analysisLocks.pending.map((lock) => (
-                        <LockedCard key={lock.key} title={lock.title} teaser={lock.teaser}
-                          current={lock.current} required={lock.required} />
-                      ))}
-                    </div>
-                  </div>
-                )}
 
-                {analysisBoostCandidates.length > 0 && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-3">この分析を強くする</h3>
-                    <div className="space-y-3">
-                      {analysisBoostCandidates.map((c) => (
-                        <div key={c.id} className="rounded-xl p-3" style={{ background: C.paper }}>
-                          <p className="text-sm font-medium mb-1">{c.title}</p>
-                          <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{c.body}</p>
-                          <button type="button"
-                            onClick={() => { if (c.section) jumpToRecordSection(c.section); else setActiveTab("today"); }}
-                            className="w-full py-2 rounded-full text-xs font-medium flex items-center justify-center gap-1"
-                            style={{ background: C.curtain, color: "#FFFDF8" }}>
-                            今日の分を入れる <ChevronRight size={13} />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
+                    {/* ①いま動けるもの（R1: 2枚まで。選定は lib/analysisBoost.js） */}
+                    {analysisBoostCandidates.length > 0 && (
+                      <div className="space-y-3 mb-3">
+                        {analysisBoostCandidates.map((c) => (
+                          <div key={c.id} className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                            <p className="text-sm font-medium mb-1">
+                              {c.locked && <Lock size={13} className="inline mr-1.5" style={{ verticalAlign: "-1px", color: C.inkSoft }} />}
+                              {c.title}
+                            </p>
+                            <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{c.body}</p>
+                            {/* R3: 記録画面の該当セクションへ直行し、そこをハイライトする。
+                                ★入力欄にフォーカスは当てない（キーボードが勝手に出ると、
+                                  かえって閉じられてしまう）。 */}
+                            <button type="button"
+                              onClick={() => { if (c.section) jumpToRecordSection(c.section); else setActiveTab("today"); }}
+                              className="w-full py-2 rounded-full text-xs font-medium flex items-center justify-center gap-1"
+                              style={{ background: C.curtain, color: "#FFFDF8" }}>
+                              今日の分を入れる <ChevronRight size={13} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* ②待てば開くもの。★§5.4: 灰色の「データ不足」を出さないこと。
+                        ぼかし＋進捗バー＋具体的な条件の3点セットは LockedCard が持つ。 */}
+                    {analysisLocks.pending.length > 0 && (
+                      <div className="space-y-3">
+                        {analysisLocks.pending.map((lock) => (
+                          <LockedCard key={lock.key} title={lock.title} teaser={lock.teaser}
+                            current={lock.current} required={lock.required} />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 
