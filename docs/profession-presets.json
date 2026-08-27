@@ -1,0 +1,574 @@
+{
+  "version": 1,
+  "note": "La Voce 職業別プロファイル設定。activityType と reverberance は正規化値として保存し、ラベルのみ職業で切り替える。",
+  "professions": [
+    {
+      "id": "classical-musical",
+      "title": "声楽家・ミュージカル"
+    },
+    {
+      "id": "announcer",
+      "title": "アナウンサー・ナレーター"
+    },
+    {
+      "id": "voice-actor",
+      "title": "声優"
+    },
+    {
+      "id": "pops-rock",
+      "title": "ポップス／ロック"
+    }
+  ],
+  "teachesFlag": {
+    "field": "teaches",
+    "type": "boolean",
+    "note": "指導者は5つ目の職業にしない。上の4職業のいずれかを兼ねているのが普通のため。trueのとき activityType lesson_giving とレッスンタブを有効化する。"
+  },
+  "activityTypes": [
+    {
+      "id": "rest",
+      "title": "休養",
+      "usesVoice": false
+    },
+    {
+      "id": "self_practice",
+      "title": "一人での練習",
+      "usesVoice": true
+    },
+    {
+      "id": "lesson_taking",
+      "title": "レッスンを受ける",
+      "usesVoice": true
+    },
+    {
+      "id": "lesson_giving",
+      "title": "指導する",
+      "usesVoice": true,
+      "requiresTeaches": true
+    },
+    {
+      "id": "rehearsal",
+      "title": "合わせ・稽古・リハーサル",
+      "usesVoice": true
+    },
+    {
+      "id": "performance",
+      "title": "本番",
+      "usesVoice": true
+    },
+    {
+      "id": "recording",
+      "title": "収録・レコーディング",
+      "usesVoice": true
+    },
+    {
+      "id": "speaking_work",
+      "title": "発話業務",
+      "usesVoice": true
+    },
+    {
+      "id": "other",
+      "title": "その他",
+      "usesVoice": null
+    }
+  ],
+  "activityPresets": {
+    "classical-musical": [
+      {
+        "label": "休養",
+        "activityType": "rest"
+      },
+      {
+        "label": "自主練習",
+        "activityType": "self_practice"
+      },
+      {
+        "label": "レッスン",
+        "activityType": "lesson_taking"
+      },
+      {
+        "label": "音楽稽古",
+        "activityType": "rehearsal",
+        "subtype": "music_rehearsal"
+      },
+      {
+        "label": "立ち稽古",
+        "activityType": "rehearsal",
+        "subtype": "staging_rehearsal"
+      },
+      {
+        "label": "ゲネプロ",
+        "activityType": "rehearsal",
+        "subtype": "dress_rehearsal"
+      },
+      {
+        "label": "本番",
+        "activityType": "performance"
+      },
+      {
+        "label": "録音・収録",
+        "activityType": "recording"
+      }
+    ],
+    "pops-rock": [
+      {
+        "label": "休養",
+        "activityType": "rest"
+      },
+      {
+        "label": "個人練習",
+        "activityType": "self_practice"
+      },
+      {
+        "label": "ボイトレ",
+        "activityType": "lesson_taking"
+      },
+      {
+        "label": "スタジオリハ",
+        "activityType": "rehearsal",
+        "subtype": "studio_rehearsal"
+      },
+      {
+        "label": "会場リハ・サウンドチェック",
+        "activityType": "rehearsal",
+        "subtype": "venue_rehearsal"
+      },
+      {
+        "label": "ライブ本番",
+        "activityType": "performance"
+      },
+      {
+        "label": "レコーディング",
+        "activityType": "recording"
+      }
+    ],
+    "voice-actor": [
+      {
+        "label": "休養",
+        "activityType": "rest"
+      },
+      {
+        "label": "自主練習",
+        "activityType": "self_practice"
+      },
+      {
+        "label": "レッスン",
+        "activityType": "lesson_taking"
+      },
+      {
+        "label": "テスト・リハ",
+        "activityType": "rehearsal"
+      },
+      {
+        "label": "アフレコ",
+        "activityType": "recording",
+        "subtype": "anime"
+      },
+      {
+        "label": "吹き替え",
+        "activityType": "recording",
+        "subtype": "dubbing"
+      },
+      {
+        "label": "ゲーム収録",
+        "activityType": "recording",
+        "subtype": "game"
+      },
+      {
+        "label": "ナレーション収録",
+        "activityType": "recording",
+        "subtype": "narration"
+      },
+      {
+        "label": "イベント・朗読",
+        "activityType": "performance"
+      }
+    ],
+    "announcer": [
+      {
+        "label": "休養",
+        "activityType": "rest"
+      },
+      {
+        "label": "発声練習",
+        "activityType": "self_practice"
+      },
+      {
+        "label": "下読み・原稿確認",
+        "activityType": "self_practice",
+        "subtype": "script_reading"
+      },
+      {
+        "label": "リハーサル",
+        "activityType": "rehearsal"
+      },
+      {
+        "label": "生放送",
+        "activityType": "speaking_work",
+        "subtype": "live_broadcast"
+      },
+      {
+        "label": "収録",
+        "activityType": "recording"
+      },
+      {
+        "label": "司会・イベント",
+        "activityType": "speaking_work",
+        "subtype": "mc"
+      },
+      {
+        "label": "取材・インタビュー",
+        "activityType": "speaking_work",
+        "subtype": "interview"
+      }
+    ],
+    "_teaches": [
+      {
+        "label": "レッスンをする",
+        "activityType": "lesson_giving"
+      }
+    ]
+  },
+  "loadCoefficients": {
+    "_note": "暫定値。発声量の実測（改善タスクv2 3-1）が入ったら実測を優先し、これはフォールバックに降格する。職業共通の係数は使わないこと（声優の1テイクと声楽家の1公演は同じ重みではない）。",
+    "_scale": "1.0 = 標準的な1時間の自主練習相当",
+    "classical-musical": {
+      "rest": 0.0,
+      "self_practice": 1.0,
+      "lesson_taking": 1.2,
+      "lesson_giving": 1.0,
+      "rehearsal": 1.5,
+      "performance": 2.2,
+      "recording": 1.6,
+      "speaking_work": 0.8,
+      "other": 0.5
+    },
+    "pops-rock": {
+      "rest": 0.0,
+      "self_practice": 1.0,
+      "lesson_taking": 1.1,
+      "lesson_giving": 1.0,
+      "rehearsal": 1.4,
+      "performance": 2.4,
+      "recording": 1.5,
+      "speaking_work": 0.8,
+      "other": 0.5
+    },
+    "voice-actor": {
+      "rest": 0.0,
+      "self_practice": 0.9,
+      "lesson_taking": 1.1,
+      "lesson_giving": 1.0,
+      "rehearsal": 0.8,
+      "performance": 1.6,
+      "recording": 1.5,
+      "speaking_work": 0.9,
+      "other": 0.5
+    },
+    "announcer": {
+      "rest": 0.0,
+      "self_practice": 0.8,
+      "lesson_taking": 1.0,
+      "lesson_giving": 1.0,
+      "rehearsal": 0.9,
+      "performance": 1.4,
+      "recording": 1.3,
+      "speaking_work": 1.5,
+      "other": 0.5
+    }
+  },
+  "reverberance": {
+    "field": "reverberance",
+    "type": "integer",
+    "range": [
+      1,
+      5
+    ],
+    "shape": "non-linear",
+    "_note": "両端が難しく、真ん中が扱いやすい非直線の軸。UIで直線スライダーにして端ほど良く見える表現にしないこと。",
+    "neutralLabels": {
+      "1": "ほとんど響かない",
+      "2": "響きが少ない",
+      "3": "ふつう",
+      "4": "よく響く",
+      "5": "響きすぎる（残響が長い）"
+    },
+    "difficulty": {
+      "1": "難しい",
+      "2": "やや難しい",
+      "3": "扱いやすい",
+      "4": "扱いやすい",
+      "5": "難しい"
+    },
+    "labelsByProfession": {
+      "classical-musical": {
+        "1": "響かない",
+        "2": "響きが少ない",
+        "3": "ふつう",
+        "4": "よく響く",
+        "5": "響きすぎる"
+      },
+      "pops-rock": {
+        "1": "デッド",
+        "2": "ややデッド",
+        "3": "ふつう",
+        "4": "よく響く",
+        "5": "響きすぎる"
+      },
+      "voice-actor": {
+        "1": "ブース（無響に近い）",
+        "2": "吸音された部屋",
+        "3": "ふつうの部屋",
+        "4": "響きのある部屋",
+        "5": "かなり響く"
+      },
+      "announcer": {
+        "1": "ブース（無響に近い）",
+        "2": "吸音された部屋",
+        "3": "ふつうの部屋",
+        "4": "響きのある部屋",
+        "5": "かなり響く"
+      }
+    },
+    "avoidTerms": [
+      {
+        "term": "ライブ",
+        "reason": "公演を指す『ライブ』と同一画面で衝突する。ポップスでどうしても使う場合は『よく響く（ライブ）』と併記する"
+      }
+    ]
+  },
+  "venuePresets": {
+    "_note": "タップすると reverberance に既定値が入る。後から微調整可能にすること。前回と同じ場所を1タップで再入力できるようにする。",
+    "classical-musical": [
+      {
+        "label": "練習室・レッスン室",
+        "reverberance": 2
+      },
+      {
+        "label": "スタジオ",
+        "reverberance": 2
+      },
+      {
+        "label": "小ホール",
+        "reverberance": 3
+      },
+      {
+        "label": "大ホール",
+        "reverberance": 4
+      },
+      {
+        "label": "教会・大聖堂",
+        "reverberance": 5
+      },
+      {
+        "label": "屋外",
+        "reverberance": 1,
+        "isOutdoor": true
+      }
+    ],
+    "pops-rock": [
+      {
+        "label": "リハスタ",
+        "reverberance": 2
+      },
+      {
+        "label": "ライブハウス",
+        "reverberance": 2
+      },
+      {
+        "label": "ホール",
+        "reverberance": 3
+      },
+      {
+        "label": "アリーナ・大箱",
+        "reverberance": 4
+      },
+      {
+        "label": "野外",
+        "reverberance": 1,
+        "isOutdoor": true
+      },
+      {
+        "label": "レコーディングブース",
+        "reverberance": 1
+      }
+    ],
+    "voice-actor": [
+      {
+        "label": "アフレコブース",
+        "reverberance": 1
+      },
+      {
+        "label": "ナレーションブース",
+        "reverberance": 1
+      },
+      {
+        "label": "会議室・仮設ブース",
+        "reverberance": 3
+      },
+      {
+        "label": "イベントホール",
+        "reverberance": 4
+      },
+      {
+        "label": "屋外",
+        "reverberance": 1,
+        "isOutdoor": true
+      }
+    ],
+    "announcer": [
+      {
+        "label": "ナレーションブース",
+        "reverberance": 1
+      },
+      {
+        "label": "スタジオ",
+        "reverberance": 2
+      },
+      {
+        "label": "会議室・仮設ブース",
+        "reverberance": 3
+      },
+      {
+        "label": "イベントホール",
+        "reverberance": 4
+      },
+      {
+        "label": "屋外・中継先",
+        "reverberance": 1,
+        "isOutdoor": true
+      }
+    ]
+  },
+  "outdoorFlag": {
+    "field": "isOutdoor",
+    "type": "boolean",
+    "_note": "屋外は reverberance 1 だが、同時に気温・湿度・風・声を張る必要が効く。響きの値だけで表すと『響かない部屋』と混ざるため別に持つ。"
+  },
+  "professionSpecificFields": [
+    {
+      "field": "shoutTakeCount",
+      "label": "叫び・悲鳴のテイク数",
+      "professions": [
+        "voice-actor"
+      ],
+      "status": "existing",
+      "note": "既存機能。現在は全職業に表示されている可能性があるため出し分け対象"
+    },
+    {
+      "field": "siteCount",
+      "label": "その日の現場数",
+      "professions": [
+        "voice-actor"
+      ],
+      "status": "new"
+    },
+    {
+      "field": "performanceQuality",
+      "label": "公演の出来",
+      "professions": [
+        "classical-musical"
+      ],
+      "status": "existing",
+      "note": "本番ピーキング曲線が参照"
+    },
+    {
+      "field": "repertoire",
+      "label": "演目・役",
+      "professions": [
+        "classical-musical"
+      ],
+      "status": "new"
+    },
+    {
+      "field": "setlistCount",
+      "label": "セットリスト曲数",
+      "professions": [
+        "pops-rock"
+      ],
+      "status": "new"
+    },
+    {
+      "field": "monitorType",
+      "label": "モニター環境",
+      "professions": [
+        "pops-rock"
+      ],
+      "status": "new",
+      "options": [
+        "イヤモニ",
+        "転がし",
+        "なし"
+      ]
+    },
+    {
+      "field": "continuousSpeechMinutes",
+      "label": "連続発話時間",
+      "professions": [
+        "announcer"
+      ],
+      "status": "new",
+      "note": "発声セッション（v2 3-1）で代替できるなら不要"
+    }
+  ],
+  "analysisCardVisibility": {
+    "_note": "職業に関係ないロックカードが『あと14日で解放されます』と並び続けるのを防ぐ。改善タスクv2 4-1(a) と併せて実施すること。",
+    "shout-recovery-curve": [
+      "voice-actor"
+    ],
+    "shout-take-threshold": [
+      "voice-actor"
+    ],
+    "passaggio-stability": [
+      "classical-musical",
+      "pops-rock"
+    ],
+    "speaking-pitch-diurnal": [
+      "announcer",
+      "voice-actor"
+    ],
+    "tour-endurance-curve": [
+      "classical-musical",
+      "pops-rock"
+    ],
+    "performance-peaking-curve": [
+      "classical-musical",
+      "pops-rock",
+      "voice-actor"
+    ],
+    "reverberance-trend": [
+      "*"
+    ],
+    "environment-comfort-zone": [
+      "*"
+    ]
+  },
+  "optionalFields": [
+    {
+      "field": "vocalEffort",
+      "label": "声を張る必要があったか",
+      "range": [
+        1,
+        5
+      ],
+      "tier": "detail",
+      "note": "響きだけでは負荷を説明しきれない。同じデッドでもモニターが良ければ楽。ロンバード効果を直接拾える。最小記録セットには入れず詳細層に置くこと。優先度は低め。"
+    }
+  ],
+  "migration": {
+    "activityType": {
+      "休養": "rest",
+      "自主練習": "self_practice",
+      "レッスン": "lesson_taking",
+      "リハーサル": "rehearsal",
+      "本番": "performance"
+    },
+    "reverberance": {
+      "デッド": 2,
+      "普通": 3,
+      "ライブ": 4
+    },
+    "_reverberanceWarning": "1と5は移行後の新規記録にしか現れない。移行前データに両端が存在しないことを分析の注記に書くこと。書かないと『響きすぎる日が一度もない』という誤った傾向として読まれる。",
+    "_order": "活動タイプと響きの移行はデータ変更を伴う。改善タスクv2 P0-3（データ書き出し）を先に入れておくと安全。"
+  }
+}

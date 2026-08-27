@@ -19,6 +19,8 @@ import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, SHOP_ITEMS, PLACEMENT_LI
 import { LANGUAGES, createTranslator } from "@/lib/translations";
 // 統合実行ルートv4 §6: 表示ゲートは必ずこのレイヤーを経由する。画面ごとに条件を書かないこと。
 import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q } from "@/lib/displayGates";
+// 分析カードの職業別の出し分け（docs/profession-presets.json と1対1）
+import { isAnalysisCardVisible } from "@/lib/analysisCardVisibility";
 import HealthInfo from "@/components/HealthInfo";
 import { ARTICLES, CHAPTER_LABELS, PROFESSION_LABELS, getArticlesForProfession, getArticleById } from "@/lib/learnContent";
 import CharacterHome from "@/components/CharacterHome";
@@ -6377,35 +6379,35 @@ export default function VocalTracker({ userId, userEmail }) {
         title: "発声負荷バランス（ACWR）",
         teaser: "歌い込みすぎ・積み足りないを1つの数字で管理できます",
         current: recordedDaysTotal, required: getGate("acwr").minDays },
-      { key: "envComfort", visible: true, unlocked: recordedDaysTotal >= 7,
+      { key: "envComfort", visible: isAnalysisCardVisible("environment-comfort-zone", prof), unlocked: recordedDaysTotal >= 7,
         title: "環境の快適帯",
         teaser: "自分の喉が快適な気温・湿度のゾーンが分かります",
         current: recordedDaysTotal, required: 7 },
-      { key: "peaking", visible: true, unlocked: !!peakingCurve,
+      { key: "peaking", visible: isAnalysisCardVisible("performance-peaking-curve", prof), unlocked: !!peakingCurve,
         title: "本番ピーキング曲線",
         teaser: "本番前後の仕上がり方の、あなた固有の型が分かります",
         current: pastPerformanceDates.length, required: 3 },
-      { key: "screamRecovery", visible: prof.includes("voice_actor"),
+      { key: "screamRecovery", visible: isAnalysisCardVisible("shout-recovery-curve", prof),
         unlocked: screamRecoveryCurve.hasEnoughData,
         title: "回復曲線（叫び・悲鳴の収録から）",
         teaser: "叫び・悲鳴のテイク数が多い日から、何日で戻るかが見られます",
         current: screamRecoveryCurve.n, required: 3 },
-      { key: "screamThreshold", visible: prof.includes("voice_actor"),
+      { key: "screamThreshold", visible: isAnalysisCardVisible("shout-take-threshold", prof),
         unlocked: screamTakeThreshold.hasEnoughData,
         title: "叫びテイク数の閾値",
         teaser: "あなた自身の「これ以上は翌日に響く」テイク数の目安が見られます",
         current: screamTakeThreshold.n, required: 8 },
-      { key: "passaggio", visible: prof.includes("singer"),
+      { key: "passaggio", visible: isAnalysisCardVisible("passaggio-stability", prof),
         unlocked: passaggioStability.hasEnoughData,
         title: "パッサッジョの安定度",
         teaser: "声区の切り替えの調子を、自分の平常値と比べて見られます",
         current: passaggioStability.n, required: 14 },
-      { key: "sffDiurnal", visible: prof.includes("announcer"),
+      { key: "sffDiurnal", visible: isAnalysisCardVisible("speaking-pitch-diurnal", prof),
         unlocked: sffDiurnalVariation.hasEnoughData,
         title: "話声位の日内変動",
         teaser: "朝と終業後の声の変化から、あなた自身の疲労のサインが見られます",
         current: sffDiurnalVariation.n, required: 14 },
-      { key: "tourEndurance", visible: prof.includes("pop_musical"),
+      { key: "tourEndurance", visible: isAnalysisCardVisible("tour-endurance-curve", prof),
         unlocked: tourEnduranceCurve.hasEnoughData,
         title: "ツアー耐久曲線",
         teaser: "ツアー中、何日目に声が落ちやすいかの「型」が見られます",
@@ -10302,7 +10304,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   )
                 ) : null}
 
-                {(effectiveProfessions || []).includes("voice_actor") && (
+                {analysisLocks.map.screamRecovery.visible && (
                   analysisLocks.map.screamRecovery.unlocked ? (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">回復曲線（叫び・悲鳴の収録から）</h3>
@@ -10337,7 +10339,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   ) : null
                 )}
 
-                {(effectiveProfessions || []).includes("voice_actor") && (
+                {analysisLocks.map.screamThreshold.visible && (
                   analysisLocks.map.screamThreshold.unlocked ? (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">叫びテイク数の閾値</h3>
@@ -10355,7 +10357,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   ) : null
                 )}
 
-                {(effectiveProfessions || []).includes("singer") && (
+                {analysisLocks.map.passaggio.visible && (
                   analysisLocks.map.passaggio.unlocked ? (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">パッサッジョの安定度</h3>
@@ -10398,7 +10400,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                 )}
 
-                {(effectiveProfessions || []).includes("announcer") && (
+                {analysisLocks.map.sffDiurnal.visible && (
                   analysisLocks.map.sffDiurnal.unlocked ? (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">話声位の日内変動</h3>
@@ -10420,7 +10422,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   ) : null
                 )}
 
-                {(effectiveProfessions || []).includes("pop_musical") && (
+                {analysisLocks.map.tourEndurance.visible && (
                   analysisLocks.map.tourEndurance.unlocked ? (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">ツアー耐久曲線</h3>
@@ -10508,7 +10510,13 @@ export default function VocalTracker({ userId, userEmail }) {
                     ★計算は一切変えていない。voicePrediction（前日の記録からの注意点）と
                     todayForecast（回帰モデルの数値予報）は、どちらも従来のまま使っている。 */}
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">声の予報</h3>
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <h3 className="ff-display italic text-lg">声の予報</h3>
+                    {/* 改善タスクv2 §4-1(b): 期間セレクタが効かないカードであることを明示する */}
+                    <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: C.paper, color: C.inkSoft }}>
+                      {t("badgeFixedPeriodPrevDay")}
+                    </span>
+                  </div>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                     前夜の行動から、今日の喉の状態（1〜5）を数値で予報します。記録が14日分たまると、あなた自身の傾向（回帰係数）を一般知見とブレンドして、少しずつ個人化していきます。
                   </p>
@@ -10801,7 +10809,13 @@ export default function VocalTracker({ userId, userEmail }) {
 
                 {analysisLocks.map.rangeMap.unlocked ? (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">音域到達マップ</h3>
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <h3 className="ff-display italic text-lg">音域到達マップ</h3>
+                      {/* 改善タスクv2 §4-1(b): 期間セレクタが効かないカードであることを明示する */}
+                      <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: C.paper, color: C.inkSoft }}>
+                        {t("badgeFixedPeriodAll")}
+                      </span>
+                    </div>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                       記録した地声の音を鍵盤の上に置いています。下段のグレーが自己ベスト、色つきが選んだ期間の到達範囲です。
                     </p>
@@ -10863,7 +10877,13 @@ export default function VocalTracker({ userId, userEmail }) {
                 {analysisLocks.map.acwr.unlocked ? (
                   acwrToday && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                      <h3 className="ff-display italic text-lg mb-1">発声負荷バランス（ACWR）</h3>
+                      <div className="flex items-start justify-between gap-2 mb-1">
+                        <h3 className="ff-display italic text-lg">発声負荷バランス（ACWR）</h3>
+                        {/* 改善タスクv2 §4-1(b): 期間セレクタが効かないカードであることを明示する */}
+                        <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: C.paper, color: C.inkSoft }}>
+                          {t("badgeFixedPeriodAll")}
+                        </span>
+                      </div>
                       <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                         直近1週間の発声負荷が、この1か月の平均に対して何倍かを見ます。歌い込みすぎと、積み足りない状態の両方を1つの数字で管理できます。
                       </p>
@@ -10911,7 +10931,13 @@ export default function VocalTracker({ userId, userEmail }) {
 
                 {analysisLocks.map.symptomCalendar.unlocked ? (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">症状カレンダーと連鎖</h3>
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <h3 className="ff-display italic text-lg">症状カレンダーと連鎖</h3>
+                      {/* 改善タスクv2 §4-1(b): 期間セレクタが効かないカードであることを明示する */}
+                      <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: C.paper, color: C.inkSoft }}>
+                        {t("badgeFixedPeriod").replace("{n}", 30)}
+                      </span>
+                    </div>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                       直近30日分の症状を、日付×症状の格子で振り返れます。
                     </p>
@@ -11166,7 +11192,13 @@ export default function VocalTracker({ userId, userEmail }) {
                   ? energyAvailabilityAnalysis.validEaCount >= 14
                   : energyAvailabilityAnalysis.signalCount > 0) && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">エネルギー可用性（月次まとめ）</h3>
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <h3 className="ff-display italic text-lg">エネルギー可用性（月次まとめ）</h3>
+                      {/* 改善タスクv2 §4-1(b): 期間セレクタが効かないカードであることを明示する */}
+                      <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: C.paper, color: C.inkSoft }}>
+                        {t("badgeFixedPeriod").replace("{n}", 28)}
+                      </span>
+                    </div>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                       体重や体型ではなく、「消費に対して摂取が足りているか」を見る指標です。日々の変動は水分でブレるため、ここでは長期の傾向だけをお伝えします。
                     </p>
@@ -11296,9 +11328,16 @@ export default function VocalTracker({ userId, userEmail }) {
                   </p>
                 </div>
 
-                {analysisLocks.map.peaking.unlocked ? (
+                {analysisLocks.map.peaking.visible && (
+                  analysisLocks.map.peaking.unlocked ? (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">本番ピーキング曲線</h3>
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <h3 className="ff-display italic text-lg">本番ピーキング曲線</h3>
+                      {/* 改善タスクv2 §4-1(b): 期間セレクタが効かないカードであることを明示する */}
+                      <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: C.paper, color: C.inkSoft }}>
+                        {t("badgeFixedPeriodEvent")}
+                      </span>
+                    </div>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                       過去{peakingCurve.count}回の本番日を「当日＝0」にそろえて重ね合わせた平均です。谷の位置が、あなた固有の仕上がり方の型です。
                     </p>
@@ -11350,7 +11389,8 @@ export default function VocalTracker({ userId, userEmail }) {
                       </div>
                     )}
                   </div>
-                ) : null}
+                  ) : null
+                )}
 
                 <div className="pt-2">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderEnvironment")}</h2>
@@ -11359,10 +11399,17 @@ export default function VocalTracker({ userId, userEmail }) {
                   </p>
                 </div>
 
-                {analysisLocks.map.envComfort.unlocked ? (
+                {analysisLocks.map.envComfort.visible && (
+                  analysisLocks.map.envComfort.unlocked ? (
                   comfortZone1D && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                      <h3 className="ff-display italic text-lg mb-1">環境の快適帯</h3>
+                      <div className="flex items-start justify-between gap-2 mb-1">
+                        <h3 className="ff-display italic text-lg">環境の快適帯</h3>
+                        {/* 改善タスクv2 §4-1(b): 期間セレクタが効かないカードであることを明示する */}
+                        <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: C.paper, color: C.inkSoft }}>
+                          {t("badgeFixedPeriodAll")}
+                        </span>
+                      </div>
                       <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                         相対湿度ではなく絶対湿度（空気中の実際の水分量）で見ています。気温が変わると、同じ％でも実際の水分量は変わるためです。
                       </p>
@@ -11438,7 +11485,8 @@ export default function VocalTracker({ userId, userEmail }) {
                       </p>
                     </div>
                   )
-                ) : null}
+                  ) : null
+                )}
 
                 {(locationStats.confident.length > 0 || locationStats.lowN.length > 0) && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
