@@ -1551,8 +1551,12 @@ function deriveLegacyVoiceFieldsFromEntries(voiceEntries) {
     checkins[slot] = { throat: e.bodyFeel ?? null, voice: quality10ToFiveScale(e.quality) };
   });
   return {
-    throatCondition: rep.bodyFeel,
-    voiceQuality: quality10ToFiveScale(rep.quality),
+    // ★旧列は整数の列です（schema.sql: throat_condition int / voice_quality int）。
+    //   声の出来スライダーは0.5刻みで、そこから逆算した値は小数になります。
+    //   丸めずに送ると Postgres が integer に入れられず、保存が400で落ちます。
+    //   ここで丸めるのは、この関数が「列の形に合わせる」場所だからです。
+    throatCondition: intOrNull(rep.bodyFeel),
+    voiceQuality: intOrNull(quality10ToFiveScale(rep.quality)),
     resonanceScore: rep.quality, // resonance_scoreは元々0-10なので、qualityとそのまま対応する
     wakeNote: wakeEntry ? wakeEntry.pitchChest || null : null,
     routineNote: routineEntry ? routineEntry.pitchChest || null : null,
@@ -1669,6 +1673,13 @@ function rowToEntry(row) {
 }
 function numOrNull(v) {
   return v === "" || v === undefined ? null : v;
+}
+// 整数の列（throat_condition / voice_quality など）へ書くための丸め。
+// ★null と 0 を取り違えないこと。0 は「記録された0」で、null は「記録が無い」です。
+function intOrNull(v) {
+  if (v === "" || v === null || v === undefined) return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? Math.round(n) : null;
 }
 function computeTimeGapHours(startTime, endTime) {
   if (!startTime || !endTime) return null;

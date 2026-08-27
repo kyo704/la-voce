@@ -118,7 +118,7 @@ function assertNoThrow(fn, label) {
 // ---------------------------------------------------------------------------
 // 実装の読み込み
 // ---------------------------------------------------------------------------
-const { numOrNull, sumMacro, derivePrimaryActivityLegacy, migrateLegacyToActivities, fiveScaleToQuality10, migrateLegacyToVoiceEntries, deriveVoiceEntryRepresentatives, deriveLegacyVoiceFieldsFromEntries, rowToEntry, entryToRow } = loadFunctions([
+const { intOrNull, numOrNull, sumMacro, derivePrimaryActivityLegacy, migrateLegacyToActivities, fiveScaleToQuality10, migrateLegacyToVoiceEntries, deriveVoiceEntryRepresentatives, deriveLegacyVoiceFieldsFromEntries, rowToEntry, entryToRow } = loadFunctions([
   "numOrNull",
   "sumMacro",
   "derivePrimaryActivityLegacy",
@@ -126,6 +126,8 @@ const { numOrNull, sumMacro, derivePrimaryActivityLegacy, migrateLegacyToActivit
   "fiveScaleToQuality10",
   "migrateLegacyToVoiceEntries",
   "deriveVoiceEntryRepresentatives",
+  "intOrNull",
+  "quality10ToFiveScale",
   "deriveLegacyVoiceFieldsFromEntries",
   "rowToEntry",
   "entryToRow"
@@ -349,6 +351,54 @@ console.log("\n=== 声の構造変更（作業計画v2 §5）: VoiceEntry[] 移�
   const rep = deriveVoiceEntryRepresentatives(checkinEntries);
   assertEqual(rep.bodyFeel, 4, "代表bodyFeelは中央値（3,4,4の中央値=4）");
   assertTrue(rep.wakeEntry.context === "wake", "代表の起き抜けエントリが正しく取得できる");
+}
+
+// ---------------------------------------------------------------------------
+// 旧列は整数の列。小数を送ると保存が400で落ちる
+//
+//   声の出来スライダーは0〜10の0.5刻み。そこから逆算する voice_quality は
+//   1 + (q/10)*4 なので、21段階のうち18段階で小数になる。
+//   schema.sql の voice_quality / throat_condition は int。
+//   PostgREST は "3.8" を integer に入れられず、22P02 で400を返す。
+//
+//   ★今日の新規記録は既定値 quality=5 → voice_quality=3 で通ってしまう。
+//     落ちるのは、保存済みの値を読み込んで開いたとき（＝過去の日付）。
+//     「今日は保存できるのに、過去の日付だけ落ちる」の正体がこれ。
+// ---------------------------------------------------------------------------
+console.log("\n=== 旧列（整数）へ小数を書かない ===");
+{
+  const mkVoice = (q) => ({ id: "v1", date: "2026-08-01", at: "09:00", context: "other",
+    bodyFeel: 3, quality: q, pitchChest: "", pitchSoftMax: "", symptoms: [], note: "",
+    mptSeconds: null, toneEvenness: null, routineMinutes: null });
+
+  let decimals = 0;
+  for (let q = 0; q <= 10; q += 0.5) {
+    const r = entryToRow(USER_ID, { ...sampleFullEntry(), voiceEntries: [mkVoice(q)] });
+    if (!Number.isInteger(r.voice_quality) || !Number.isInteger(r.throat_condition)) decimals += 1;
+  }
+  assertEqual(decimals, 0, "★スライダー21段階すべてで、voice_quality と throat_condition が整数");
+
+  // 保存済みの行を読み込んで、そのまま保存し直す（過去の日付を開いたときの経路）
+  let reDecimals = 0;
+  for (let rs = 0; rs <= 10; rs += 1) {
+    const stored = { date: "2026-08-01", user_id: USER_ID, throat_condition: 3, voice_quality: 3,
+      resonance_score: rs, throat_symptoms: [], voice_checkins: {} };
+    const back = entryToRow(USER_ID, rowToEntry(stored));
+    if (!Number.isInteger(back.voice_quality) || !Number.isInteger(back.throat_condition)) reDecimals += 1;
+  }
+  assertEqual(reDecimals, 0, "★保存済みの0〜10を開いて保存し直しても、整数のまま");
+
+  // 声の記録が2件あると中央値が .5 になる。ここも整数へ丸まること。
+  const two = entryToRow(USER_ID, { ...sampleFullEntry(),
+    voiceEntries: [{ ...mkVoice(6), bodyFeel: 3 }, { ...mkVoice(9), bodyFeel: 4 }] });
+  assertTrue(Number.isInteger(two.voice_quality) && Number.isInteger(two.throat_condition),
+    "声の記録が2件（中央値が .5 になる）でも整数");
+
+  // ★0 と null を取り違えないこと。0 は「記録された0」。
+  assertEqual(intOrNull(0), 0, "★0 は 0 のまま（null にしない）");
+  assertEqual(intOrNull(null), null, "null は null のまま");
+  assertEqual(intOrNull(""), null, "空文字は null");
+  assertEqual(intOrNull(3.8), 4, "3.8 は 4 に丸まる");
 }
 
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
