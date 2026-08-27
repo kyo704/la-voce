@@ -3012,6 +3012,11 @@ const CONSENT_DATA_CATEGORIES = [
 //   showProfession … 職業はオンボーディングでは別のステップで聞くので、そこでは false
 // ============================================================================
 function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
+  // professions が空のまま登録された古いデータもあるので、単一値から補う。
+  // ここが空だと、職業別の出し分けが丸ごと効かなくなる。
+  const currentProfessions = (value.professions && value.professions.length > 0)
+    ? value.professions
+    : (value.vocal_profession ? [value.vocal_profession] : []);
   return (
     <>
                   <div className="pt-6 mt-2 border-t" style={{ borderColor: C.line }}>
@@ -3079,18 +3084,34 @@ function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
                     <div>
                       <label className="text-sm font-medium block mb-1.5">{t("labelVocalProfession")}</label>
                       <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("noteVocalProfession")}</p>
+                      {/* ★オンボーディングと同じく複数選択にする。
+                          以前はここが単一選択で、しかも vocal_profession しか更新して
+                          いなかった。職業別の出し分けは professions（配列）を見ているため、
+                          この画面で職業を変えても記録画面の職業別項目が変わらなかった。
+                          2つを必ず揃えて更新する。 */}
                       <div className="flex gap-2 flex-wrap">
-                        {SELECTABLE_PROFESSIONS.map((p) => (
-                          <button key={p} type="button" onClick={() => onChange({ vocal_profession: p })}
-                            className="px-3.5 py-1.5 rounded-full text-xs font-medium"
-                            style={{
-                              background: value.vocal_profession === p ? C.curtain : C.paper,
-                              color: value.vocal_profession === p ? "#FFFDF8" : C.inkSoft,
-                              border: `1px solid ${value.vocal_profession === p ? C.curtain : C.line}`
-                            }}>
-                            {t(PROFESSION_LABEL_KEYS[p])}
-                          </button>
-                        ))}
+                        {SELECTABLE_PROFESSIONS.map((p) => {
+                          const selected = currentProfessions.includes(p);
+                          return (
+                            <button key={p} type="button"
+                              onClick={() => {
+                                const next = selected
+                                  ? currentProfessions.filter((x) => x !== p)
+                                  : [...currentProfessions, p];
+                                // 1つも選ばれていない状態は作らない（オンボーディングと同じ扱い）。
+                                if (next.length === 0) return;
+                                onChange({ professions: next, vocal_profession: next[0] });
+                              }}
+                              className="px-3.5 py-1.5 rounded-full text-xs font-medium"
+                              style={{
+                                background: selected ? C.curtain : C.paper,
+                                color: selected ? "#FFFDF8" : C.inkSoft,
+                                border: `1px solid ${selected ? C.curtain : C.line}`
+                              }}>
+                              {t(PROFESSION_LABEL_KEYS[p])}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
@@ -4337,7 +4358,12 @@ export default function VocalTracker({ userId, userEmail }) {
           consent_health_data_at: data.consent_health_data_at || null,
           consent_stats_use_at: data.consent_stats_use_at || null,
           consent_policy_version: data.consent_policy_version || null,
-          professions: data.professions || [],
+          // ★professions が空のまま登録された古いデータがある。空のままだと
+          //   effectiveProfessions が空になり、職業別の出し分けが丸ごと効かない。
+          //   単一値（vocal_profession）から補う。
+          professions: (data.professions && data.professions.length > 0)
+            ? data.professions
+            : (data.vocal_profession ? [data.vocal_profession] : []),
           goal_focus: data.goal_focus || "",
           practice_goal: data.practice_goal || "",
           practice_goal_tags: data.practice_goal_tags || [],
@@ -7211,6 +7237,10 @@ export default function VocalTracker({ userId, userEmail }) {
         health_notes: profile.health_notes || null,
         conditions: profile.conditions || [],
         vocal_profession: profile.vocal_profession || "singer",
+        // ★professions も必ず一緒に保存する。職業別の出し分けはこちらを見ている。
+        professions: (profile.professions && profile.professions.length > 0)
+          ? profile.professions
+          : [profile.vocal_profession || "singer"],
         track_cycle: !!profile.track_cycle
       })
       .eq("id", userId);

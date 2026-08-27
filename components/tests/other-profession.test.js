@@ -69,6 +69,19 @@ async function main() {
   const labelUses = (tracker.match(/PROFESSION_LABEL_KEYS\[/g) || []).length;
   assertTrue(labelUses >= 5, `職業名を出す箇所が対応表を使っている（${labelUses}箇所）`);
 
+  console.log("\n=== テスト4c: 職業を変えたら、出し分けに使う値も一緒に変わる ===");
+  // ★職業別の出し分けは professions（配列）を見ている。プロフィール画面が
+  //   vocal_profession しか更新していなかったため、職業を変えても記録画面の
+  //   職業別項目が変わらなかった。2つを必ず揃えて更新すること。
+  assertTrue(/onChange\(\{ professions: next, vocal_profession: next\[0\] \}\)/.test(tracker),
+    "プロフィール画面の職業選択が professions と vocal_profession を両方更新する");
+  assertTrue(/professions: \(profile\.professions && profile\.professions\.length > 0\)/.test(tracker),
+    "保存時にも professions を含めている");
+  assertTrue(/if \(next\.length === 0\) return;/.test(tracker),
+    "1つも選ばれていない状態を作らない（オンボーディングと同じ扱い）");
+  assertTrue(/currentProfessions = \(value\.professions && value\.professions\.length > 0\)/.test(tracker),
+    "professions が空の古いデータは、単一値から補っている");
+
   console.log("\n=== テスト5: 職業別のコンテンツを新しく作っていない ===");
   assertTrue(!/"other":/.test(visSrc), "分析カードの対応表に other 向けの指定を足していない");
   const others = (learnSrc.match(/"other"/g) || []).length;
