@@ -83,6 +83,11 @@ assertTrue(/USER_OWNED_TABLES\s*=/.test(shared) && !/USER_OWNED_TABLES\s*=/.test
   "削除するテーブルの一覧が1箇所にある（cronと本体で二重管理していない）");
 
 assertTrue(/CRON_SECRET/.test(cron), "定期処理は CRON_SECRET で保護されている");
+// ★未設定のとき "Bearer undefined" で誰でも通れてしまう穴を塞いでいること。
+assertTrue(/if \(!cronSecret\)/.test(cron), "CRON_SECRET が未設定なら実行しない（Bearer undefined で通れない）");
+assertTrue(/status: 503/.test(cron), "未設定は 503 で返す（認証失敗の 401 とは区別する）");
+const reminder = fs.readFileSync(path.join(ROOT, "app", "api", "cron", "line-reminder", "route.js"), "utf-8");
+assertTrue(/if \(!cronSecret\)/.test(reminder), "同じ穴が line-reminder にもあったので塞いである");
 assertTrue(/purgeAccount/.test(cron), "定期処理は共通の削除処理を使っている");
 assertTrue(/\.limit\(/.test(cron), "一度に処理する件数を制限している");
 assertTrue(/results\.failed/.test(cron), "1件失敗しても他を止めない");

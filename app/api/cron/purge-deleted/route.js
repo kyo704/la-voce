@@ -13,8 +13,17 @@ import { purgeAccount, GRACE_PERIOD_DAYS } from "@/lib/accountDeletion";
 // ============================================================================
 
 export async function GET(req) {
+  // ★CRON_SECRET が未設定のときは、必ず拒否すること。
+  //   `Bearer ${process.env.CRON_SECRET}` は、未設定だと文字列
+  //   "Bearer undefined" になる。その状態では Authorization に
+  //   "Bearer undefined" を送るだけで、誰でもこの処理を実行できてしまう。
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret) {
+    console.error("CRON_SECRET が設定されていません。定期処理を実行しません。");
+    return new Response("Not configured", { status: 503 });
+  }
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return new Response("Unauthorized", { status: 401 });
   }
 
