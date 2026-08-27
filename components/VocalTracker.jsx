@@ -2429,7 +2429,11 @@ function ProgressDots({ current, required }) {
   );
 }
 
-function LockedCard({ title, teaser, current, required }) {
+// action: { label, onClick } を渡すと、進捗の下にひかえめな行き先を足せます。
+// ★カードの形そのものは変えないこと。ここに独自の見た目を作ると、
+//   「ロック中のカード」が2種類できて、並んだときにちぐはぐになります。
+//   実際にそうなっていました（片方だけボタン、進捗の点も日数も無し）。
+function LockedCard({ title, teaser, current, required, action }) {
   return (
     <div className="rounded-2xl p-4 border overflow-hidden relative" style={{ background: C.card, borderColor: C.line }}>
       <div style={{ filter: "blur(3px)", opacity: 0.35, pointerEvents: "none", userSelect: "none" }}>
@@ -2449,6 +2453,13 @@ function LockedCard({ title, teaser, current, required }) {
             そのまま満たしている（進捗の見せ方が棒から点に変わっただけ）。 */}
         <div className="w-full max-w-[220px] mt-1 flex flex-col items-center">
           <ProgressDots current={current} required={required} />
+          {action && (
+            <button type="button" onClick={action.onClick}
+              className="w-full mt-2 py-1.5 rounded-full text-xs font-medium flex items-center justify-center gap-1"
+              style={{ background: C.card, color: C.inkSoft, border: `1px solid ${C.line}` }}>
+              {action.label} <ChevronRight size={12} />
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -7430,6 +7441,8 @@ export default function VocalTracker({ userId, userEmail }) {
         title: `「効いた習慣」の確度 ${"★".repeat(h.stars)}${"☆".repeat(4 - h.stars)}`,
         body: `${h.label.replace(/^前夜の|^前夜、|^前日、/, "")}の記録を あと${daysNeeded}日 続けると ★★★★ になります`,
         daysNeeded,
+        // ★ロック中のカードと同じ進捗の点を描くため、件数も持たせる。
+        current: minN, required: NARRATIVE_MIN_N_PER_GROUP,
         improvement: IMPROVEMENT.star,
         section,
         // R6: 一度も記録していない項目は、いきなり要求しない（3枚目以降扱い）。
@@ -7447,6 +7460,7 @@ export default function VocalTracker({ userId, userEmail }) {
         //   実際には早まらない条件を約束することになる。
         body: describeUnlockCondition({ daysNeeded }),
         daysNeeded,
+        current: recordedDaysTotal, required: nextUnlock.days,
         improvement: IMPROVEMENT.unlock,
         section: null,   // 特定のセクションではなく、記録全般
         locked: true
@@ -13143,27 +13157,24 @@ export default function VocalTracker({ userId, userEmail }) {
                     {/* ①いま動けるもの（R1: 2枚まで。選定は lib/analysisBoost.js） */}
                     {analysisBoostCandidates.length > 0 && (
                       <div className="space-y-3 mb-3">
+                        {/* ★ロック中のカードと同じ型を使うこと（LockedCard）。
+                            以前はここだけ独自の作りで、進捗の点も日数の文も無く、
+                            ボタンだけが並んでいました。ロック中のカードが2種類あると、
+                            並んだときにちぐはぐに見えます。
+                            R3 の「記録画面へ直行する」行き先は、型の中に足しました
+                            （進捗の下に、ひかえめに置く）。
+                            ★入力欄にフォーカスは当てません（キーボードが勝手に出ると、
+                              かえって閉じられてしまうため）。 */}
                         {analysisBoostCandidates.map((c) => (
-                          <div key={c.id} className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                            <p className="text-sm font-medium mb-1">
-                              {c.locked && <Lock size={13} className="inline mr-1.5" style={{ verticalAlign: "-1px", color: C.inkSoft }} />}
-                              {c.title}
-                            </p>
-                            <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{c.body}</p>
-                            {/* R3: 記録画面の該当セクションへ直行し、そこをハイライトする。
-                                ★入力欄にフォーカスは当てない（キーボードが勝手に出ると、
-                                  かえって閉じられてしまう）。 */}
-                            {/* ★赤い塗りをやめる。ロック中のカードに赤い誘導が並ぶと、
-                                「早く入れないと」という急かしになる（続けてもらうための設計 §4）。
-                                描画仕様 §1-4 も、色そのものに意味を持たせることを禁じている。
-                                行き先は変えない（§5.3 R3）。目立たせ方だけを落とす。 */}
-                            <button type="button"
-                              onClick={() => { if (c.section) jumpToRecordSection(c.section); else setActiveTab("today"); }}
-                              className="w-full py-2 rounded-full text-xs font-medium flex items-center justify-center gap-1"
-                              style={{ background: C.card, color: C.inkSoft, border: `1px solid ${C.line}` }}>
-                              今日の分を入れる <ChevronRight size={13} />
-                            </button>
-                          </div>
+                          <LockedCard key={c.id}
+                            title={c.title}
+                            teaser={c.body}
+                            current={c.current}
+                            required={c.required}
+                            action={{
+                              label: "今日の分を入れる",
+                              onClick: () => { if (c.section) jumpToRecordSection(c.section); else setActiveTab("today"); }
+                            }} />
                         ))}
                       </div>
                     )}

@@ -124,6 +124,23 @@ async function main() {
     "本番のカード自体は、ロック層を通っている");
   assertTrue(/analysisLocks\.pending\.map/.test(ui), "ロック中のものは下に集約されている");
 
+  console.log("\n=== ★ロック中のカードは、1種類の型だけを使う ===");
+  console.log("     片方だけボタン、進捗の点も日数も無し、という状態でした。");
+  assertTrue(/analysisBoostCandidates\.map\(\(c\) => \(\s*<LockedCard/.test(ui.replace(/\s+/g, " ").replace(/ /g, " ")) ||
+    /<LockedCard key=\{c\.id\}/.test(ui), "★強くするカードも LockedCard を使っている");
+  assertTrue(/current=\{c\.current\}/.test(ui) && /required=\{c\.required\}/.test(ui),
+    "★進捗の点が描けるよう、件数を渡している");
+  assertTrue(/action=\{\{/.test(ui), "行き先は、型の中の action として渡している");
+  // 独自のカード枠を作っていないこと
+  const boostBlock = ui.slice(ui.indexOf("analysisBoostCandidates.map"), ui.indexOf("analysisBoostCandidates.map") + 900);
+  assertTrue(!/rounded-2xl p-4 border/.test(boostBlock), "★独自のカード枠を作っていない");
+  assertTrue(!/<button type="button"/.test(boostBlock), "★独自のボタンを直接書いていない");
+  // LockedCard 側が action を受け取れること
+  assertTrue(/function LockedCard\(\{ title, teaser, current, required, action \}\)/.test(ui),
+    "LockedCard が action を受け取る");
+  assertTrue(/ProgressDots current=\{current\} required=\{required\}/.test(ui),
+    "★型のほうに進捗の点がある（1か所）");
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");
