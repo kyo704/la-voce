@@ -134,9 +134,12 @@ assertTrue((ui.match(/let moveToken = 0;/g) || []).length === 2, "部屋とお�
 
 console.log("\n=== 寝るにはベッドを『置いて』いる必要がある ===");
 // ★持っているだけでは寝ない。置いていないと lying は一度も起きない。
-assertTrue(/placedFurniture\.includes\("furniture_bed"\)/.test(ui),
+// ★「持っているか」ではなく「置いてあるか」で判定すること。
+//   いまは furniturePos(key) の中で見ている（key を引数にした共通の形）。
+assertTrue(/placedFurniture\.includes\(key\)/.test(ui),
   "★置いてあるかどうかで判定している（持っているだけでは寝ない）");
-assertTrue(/placedFurniture\.includes\("furniture_chair"\)/.test(ui), "椅子も同じ");
+assertTrue(/furniturePos\("furniture_bed"\)/.test(ui), "ベッドの位置を渡している");
+assertTrue(/furniturePos\("furniture_chair"\)/.test(ui), "椅子の位置も渡している");
 
 console.log("\n=== お庭には寝る仕組みが無い（仕様どおり） ===");
 const garden = ui.slice(ui.indexOf("function useGardenLife"), ui.indexOf("function useGardenLife") + 2600);
@@ -177,6 +180,36 @@ assertTrue(!/setLayer|layer:\s*drag/.test(ui), "ドラッグ中に層を書き�
 assertTrue(/FURNITURE_LAYOUT\[ok\]\.layer === layout\.layer/.test(ui),
   "★押しのけの相手を、同じ層のアイテムだけに絞っている");
 assertTrue(/GARDEN_LAYOUT\[ok\]\.layer === layout\.layer/.test(ui), "お庭でも同じ");
+
+console.log("\n=== ★寝る場所・座る場所は、家具の実際の位置から求めること ===");
+console.log("     実機で「ベッドの横で寝ている」と報告されました。");
+// 家具はドラッグで動かせる。既定の座標を決め打ちすると、動かしたときに
+// 羊は「元あった場所」で寝る。
+assertTrue(!/const bedApproachLeft = \d+/.test(ui), "★寝る場所を決め打ちしていない");
+assertTrue(!/const chairLeft = \d+,/.test(ui), "★座る場所も決め打ちしていない");
+assertTrue(/const pillowLeft = bedPos\.left - PILLOW_LEFT_OFFSET/.test(ui),
+  "枕は、ベッドの実際の位置から求めている");
+assertTrue(/const chairSeatTop = chairPos\.top - SEAT_ABOVE_FLOOR/.test(ui),
+  "座面も、椅子の実際の位置から求めている");
+assertTrue(/useRoomLife\(centerLeft, centerTop, rangeLeft, rangeTop, chairPos, bedPos\)/.test(ui),
+  "★真偽値ではなく、位置そのものを受け取っている");
+assertTrue(/const hasBed = !!bedPos/.test(ui), "置いてあるかどうかは、位置の有無で決まる");
+// 動かしたら追随すること（依存配列に位置が入っている）
+assertTrue(/bedPos && bedPos\.left/.test(ui), "★家具を動かしたら、寝る場所も追随する");
+// 呼び出し側が、保存済みの位置を解決して渡していること
+assertTrue(/resolvePos\(\(equipped\.furniturePositions \|\| \{\}\)\[key\], FURNITURE_LAYOUT\[key\]\)/.test(ui),
+  "★保存済みの位置を読んでいる（既定値のままにしていない）");
+
+console.log("\n=== 既定の配置では、これまでと同じ座標になること ===");
+// ★直したことで見え方が変わってしまうと、別の不具合になる。
+const off = Number((ui.match(/PILLOW_LEFT_OFFSET = (\d+)/) || [])[1]);
+const above = Number((ui.match(/PILLOW_ABOVE_FLOOR = (\d+)/) || [])[1]);
+const seat = Number((ui.match(/SEAT_ABOVE_FLOOR = (\d+)/) || [])[1]);
+const floor = Number((ui.match(/const FURNITURE_FLOOR_TOP = (\d+)/) || [])[1]);
+const bedLeft = Number((ui.match(/furniture_bed: \{ left: (\d+)/) || [])[1]);
+assertEqual(bedLeft - off, 7, "既定のベッドなら、枕は left 7（従来どおり）");
+assertEqual(floor - above, 82, "既定のベッドなら、枕は top 82（従来どおり）");
+assertEqual(floor - seat, 89, "既定の椅子なら、座面は top 89（従来どおり）");
 
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
 if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }

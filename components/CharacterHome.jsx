@@ -464,7 +464,14 @@ function useWanderPercent(centerLeft, centerTop, rangeLeft, rangeTop) {
 }
 
 // ===== 部屋専用：椅子に座って本を読んだり、ベッドで眠ったりする「生活感」フック =====
-function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, hasChair, hasBed) {
+// chairPos / bedPos: その家具の「いまの位置」{left, top} または null（置いていない）。
+// ★以前は真偽値だけを受け取り、寝る場所・座る場所を既定の座標で決め打ちして
+//   いました。家具はドラッグで動かせるので、ベッドを動かすと羊はベッドの
+//   「元あった場所」で寝ます。実機で「ベッドの横で寝ている」と報告された
+//   のはこれです。家具の位置を渡し、そこから枕と座面を求めます。
+function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, chairPos, bedPos) {
+  const hasChair = !!chairPos;
+  const hasBed = !!bedPos;
   const [leftPct, setLeftPct] = useState(centerLeft);
   const [topPct, setTopPct] = useState(centerTop);
   const [facingLeft, setFacingLeft] = useState(false);
@@ -521,7 +528,11 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, hasChair, hasBe
         //   「寝ているのに急に動く」の正体はこれ。
         if (busyRef.current) { scheduleSitting(); return; }
         if (!hasChair) { scheduleSitting(); return; }
-        const chairLeft = 79, chairFloorTop = 98, chairSeatTop = 89;
+        // ★椅子の実際の位置から求める。既定値（left 79 / top 98）のときは
+        //   これまでと同じ座標になる（79, 98, 89）。
+        const chairLeft = chairPos.left;
+        const chairFloorTop = chairPos.top;
+        const chairSeatTop = chairPos.top - SEAT_ABOVE_FLOOR;
         busyRef.current = true;
         moveTo(chairLeft, chairFloorTop, 2000);
         addTimer(() => {
@@ -550,7 +561,12 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, hasChair, hasBe
         //   ベッドの手前へ歩き出していた。
         if (busyRef.current) { scheduleLying(); return; }
         if (!hasBed) { scheduleLying(); return; }
-        const bedApproachLeft = 13, bedFloorTop = 98, pillowLeft = 7, pillowTop = 82;
+        // ★ベッドの実際の位置から求める。既定値（left 13 / top 98）のときは
+        //   これまでと同じ座標になる（13, 98, 7, 82）。
+        const bedApproachLeft = bedPos.left;
+        const bedFloorTop = bedPos.top;
+        const pillowLeft = bedPos.left - PILLOW_LEFT_OFFSET;
+        const pillowTop = bedPos.top - PILLOW_ABOVE_FLOOR;
         busyRef.current = true;
         moveTo(bedApproachLeft, bedFloorTop, 2000);
         addTimer(() => {
@@ -582,7 +598,10 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, hasChair, hasBe
     scheduleSitting();
     scheduleLying();
     return () => { cancelled = true; timers.forEach(clearTimeout); };
-  }, [centerLeft, centerTop, rangeLeft, rangeTop, hasChair, hasBed]);
+    // ★家具を動かしたら、寝る場所・座る場所も追随させる。
+  }, [centerLeft, centerTop, rangeLeft, rangeTop,
+      chairPos && chairPos.left, chairPos && chairPos.top,
+      bedPos && bedPos.left, bedPos && bedPos.top]);
 
   return [leftPct, topPct, facingLeft, isWalking, isSitting, isLying];
 }
@@ -1246,6 +1265,14 @@ const UI_CHROME_Z = 10;
 // 実機で「寝ているのに動き続ける」と報告されたのは、6秒で起きていたため。
 const SLEEP_DURATION_MS = 30000;
 
+// ベッド・椅子の「足元の座標」から、枕と座面の位置を求めるための差分。
+// ★既定の配置（ベッド left13/top98、椅子 left79/top98）のときに、
+//   これまでと同じ座標（枕 7/82、座面 89）になる値にしてある。
+//   家具を動かしても、同じ位置関係のままついていく。
+const PILLOW_LEFT_OFFSET = 6;   // 枕は、ベッドの中心より少し左
+const PILLOW_ABOVE_FLOOR = 16;  // 寝姿は中心合わせなので、足元より上に置く
+const SEAT_ABOVE_FLOOR = 9;     // 座面の高さ
+
 // 作業指示 A-2: 接地の影。★家具も羊も、同じ1つの定義から作ること。
 //   仕様は「全アイテムに楕円のソフトシャドウを1枚敷く」。羊も対象で、
 //   指示書は「家具も羊も床から浮いて見えます」と名指ししている。
@@ -1669,10 +1696,17 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
 
   const sceneryKey = equipped.scenery || "scenery_default";
 
+  // ★家具の「いまの位置」を渡す。置いていなければ null。
+  //   保存済みの位置があればそれを、無ければレイアウトの既定値を使う
+  //   （resolvePos が両方を吸収する）。ドラッグで動かしたら、羊の
+  //   寝る場所・座る場所もそこへついていく。
+  const furniturePos = (key) => (placedFurniture.includes(key)
+    ? resolvePos((equipped.furniturePositions || {})[key], FURNITURE_LAYOUT[key])
+    : null);
   const [leftPct, topPct, facingLeft, isWalking, isSitting, isLying] = useRoomLife(
     50, 78, 18, 6,
-    placedFurniture.includes("furniture_chair"),
-    placedFurniture.includes("furniture_bed")
+    furniturePos("furniture_chair"),
+    furniturePos("furniture_bed")
   );
 
   return (
