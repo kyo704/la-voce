@@ -2010,6 +2010,16 @@ function Chip({ label, active, onClick }) {
   );
 }
 
+// 記録と分析の順番設計 §3.3: 入力した欄が、その場で1行返す。
+// ★自分比の事実だけを返す。良し悪しの判定はしない（罰を作らない原則）。
+function SectionFeedback({ text }) {
+  if (!text) return null;
+  return (
+    <p className="text-xs mt-3 rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
+      {text}
+    </p>
+  );
+}
 function SectionCard({ title, icon: Icon, children, id, highlighted }) {
   const ref = useRef(null);
   useEffect(() => {
@@ -5963,6 +5973,86 @@ export default function VocalTracker({ userId, userEmail }) {
     if (bestRun.length === 0) return { overallAvg, binStats, range: null };
     return { overallAvg, binStats, range: { low: bestRun[0].bin, high: bestRun[bestRun.length - 1].bin + binSize } };
   }, [envEntries]);
+
+  // ---- 記録と分析の順番設計 §3.3: 各セクションが、その場で返すもの ----
+  //
+  // ★「入れたのに何も起きない」欄をゼロにする（統合実行ルートv4 §2 瞬間②）。
+  //   分析の本領（発見カード）は14日ぶんのデータを要するため、新規ユーザーは
+  //   入れても何も返ってこない2週間を通過する。その2週間を支えるのはこれ。
+  //
+  // ★守ること:
+  //   ・すべて「自分比」。他人との比較・文献の閾値は出さない（v4 §11）
+  //   ・心の余裕だけは数値を返さない。メンタルに点数を返すと良し悪しの判定になる
+  //   ・根拠の指標がロック中なら出さない（ACWRで起きたことを繰り返さない）
+  const sectionFeedback = useMemo(() => {
+    if (!formData) return {};
+    const fb = {};
+    const past = Object.keys(entries).filter((d) => d < selectedDate).sort();
+    const avgOf = (dates, pick) => {
+      const vals = dates.map((d) => pick(entries[d])).filter((v) => typeof v === "number" && !isNaN(v));
+      return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+    };
+    const signed = (v, digits, unit) => `${v >= 0 ? "+" : ""}${v.toFixed(digits)}${unit}`;
+
+    // 環境: 絶対湿度と、自分の快適域との関係
+    const ah = computeAbsoluteHumidity(Number(formData.temperature), Number(formData.humidity));
+    if (ah != null && !isNaN(ah)) {
+      let rel = "";
+      if (comfortZone1D && comfortZone1D.range) {
+        if (ah < comfortZone1D.range.low) rel = "・あなたの快適域より乾いています";
+        else if (ah > comfortZone1D.range.high) rel = "・あなたの快適域より湿っています";
+        else rel = "・あなたの快適域の中です";
+      }
+      fb.env = `絶対湿度 ${ah.toFixed(1)} g/m³${rel}`;
+    }
+
+    // 睡眠: 直近14日の自分の平均との差
+    if (typeof formData.sleepHours === "number" && formData.sleepHours > 0) {
+      const avg = avgOf(past.slice(-14), (e) => e.sleepHours);
+      if (avg != null) fb.sleep = `14日平均より ${signed(formData.sleepHours - avg, 1, "時間")}`;
+    }
+
+    // 活動: その場で再計算した今日の発声負荷。負荷比はロックが解けてからだけ添える。
+    const todayLoad = computeDayLoadFromActivities(formData.activities || [], songFactorResolver);
+    if (todayLoad > 0) {
+      const zone = acwrGate.passed && acwrToday && acwrToday.zone
+        ? `・今週の発声負荷 ${acwrToday.value}（${acwrToday.zone.label}）` : "";
+      fb.activity = `今日の発声負荷 ${Math.round(todayLoad)}（分の重みつき換算）${zone}`;
+    }
+
+    // 水分: 体重があれば体重比、無ければ自分の平均との差
+    const water = Object.values(formData.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0);
+    if (water > 0) {
+      const w = Number(formData.weightKg) || getLatestWeight(entries, selectedDate);
+      if (w) fb.water = `体重比 ${Math.round(water / w)} ml/kg`;
+      else {
+        const avg = avgOf(past.slice(-7), (e) => Object.values(e.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0) || null);
+        if (avg != null) fb.water = `今週の平均より ${signed(water - avg, 0, "ml")}`;
+      }
+    }
+
+    // 食事: 夕食から就寝までの間隔
+    const gap = computeTimeGapHours(formData.dinnerTime, formData.bedtime);
+    if (gap != null) fb.meal = `就寝まで ${gap.toFixed(1)}時間`;
+
+    // 症状: 同じ症状が今月なん日目か
+    // 症状は声の記録（voiceEntries）側に入るので、そこから集める。
+    const syms = Array.from(new Set([
+      ...(formData.throatSymptoms || []),
+      ...(formData.voiceEntries || []).flatMap((v) => v.symptoms || [])
+    ]));
+    if (syms.length > 0) {
+      const month = selectedDate.slice(0, 7);
+      const days = past.filter((d) => d.startsWith(month) && (entries[d].throatSymptoms || []).some((x) => syms.includes(x))).length;
+      fb.symptoms = `同じ症状は今月 ${days + 1}日目`;
+    }
+
+    // 心の余裕: ★数値を返さない。点数を返すと良し悪しの判定になるため。
+    if (typeof formData.ease === "number") fb.mental = "記録しました";
+
+    return fb;
+  }, [formData, entries, selectedDate, comfortZone1D, acwrGate, acwrToday, songFactorResolver]);
+
   // ②気温4℃刻み×相対湿度10%刻みの2次元マップ
   const comfortZone2D = useMemo(() => {
     if (envEntries.length < 10) return null;
@@ -8286,6 +8376,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         </p>
                       </div>
                       )}
+                          <SectionFeedback text={sectionFeedback.symptoms} />
                     </SectionCard>
 
                         <button type="button" onClick={handleSave} disabled={saveStatus === "saving"}
@@ -8827,6 +8918,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         </div>
                         <p className="mt-2 leading-relaxed">機内の乾燥と時差ぼけは、どちらも喉と体調に影響しやすいとされています。遠征のあった日だけ記録してください。</p>
                       </details>
+                      <SectionFeedback text={sectionFeedback.env} />
                     </SectionCard>
                     )}
 
@@ -8856,6 +8948,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       })()}
                       <DotSelector label={t("labelSleepQuality")} icon={Moon} value={formData.sleepQuality} lowLabel={t("lowSleepQuality")} highLabel={t("highSleepQuality")}
                         onChange={(v) => setFormData((f) => ({ ...f, sleepQuality: v }))} />
+                      <SectionFeedback text={sectionFeedback.sleep} />
                     </SectionCard>
 
                     <SectionCard title={t("sectionPractice")} icon={Music2} id="record-section-practice" highlighted={highlightSection === "practice"}>
@@ -9038,6 +9131,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         )}
                       </div>
 
+                      <SectionFeedback text={sectionFeedback.activity} />
                     </SectionCard>
 
                     {showGroup("hydration") && (
@@ -9095,6 +9189,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           );
                         })()}
                       </div>
+                      <SectionFeedback text={sectionFeedback.water} />
                     </SectionCard>
                     )}
 
@@ -9300,6 +9395,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       ) : (
                         <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteRecordWeightForTargets")}</p>
                       )}
+                      <SectionFeedback text={sectionFeedback.meal} />
                     </SectionCard>
                     )}
 
@@ -9402,6 +9498,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           </div>
                         </>
                       )}
+                      <SectionFeedback text={sectionFeedback.mental} />
                     </SectionCard>
                     )}
 
