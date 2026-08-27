@@ -45,6 +45,26 @@ const out = [];
 const unresolved = [];
 const orderByChapter = {};
 
+// ★実装者あての注記を、記事の本文として出さない。
+//
+//   原稿の一部は「※ここは実装者向け」で始まり、区切り線（---）のあとに
+//   本文が続く形で書かれている。取り込みでそこを落としていなかったため、
+//   利用者が記事を開くと、最初の段落が作業指示になっていた。
+//     C4-8「※新規記事。既存の…を削除し、これに置き換えてください」
+//     C6-4「※執筆・掲載にあたっての注意（実装者向け）」
+//     C7-1「※実装メモ: 1記事にまとめ…」
+//
+//   ★条件を二つとも満たすときだけ切る。※で始まり、かつ区切り線があること。
+//     区切り線だけを頼りにすると、本文中で区切りを使う記事を壊す。
+//     いまは3記事だけが該当し、3記事とも※で始まる（確認済み）。
+function stripImplementerNote(body) {
+  const text = String(body || "");
+  if (!/^\s*※/.test(text)) return text;
+  const m = text.match(/^\s*-{3,}\s*$/m);
+  if (!m) return text;
+  return text.slice(m.index + m[0].length).replace(/^\s+/, "");
+}
+
 src.articles.forEach((a) => {
   orderByChapter[a.chapter] = (orderByChapter[a.chapter] || 0) + 1;
   const order = orderByChapter[a.chapter];
@@ -53,8 +73,8 @@ src.articles.forEach((a) => {
   if (HAS_PROSE.has(a.status)) {
     out.push({
       id: a.id, professions, chapter: a.chapter, order,
-      title: a.title, lead: a.summary || "", bodyMd: a.body,
-      readMinutes: readMinutes(a.body), terms: [], sources: []
+      title: a.title, lead: a.summary || "", bodyMd: stripImplementerNote(a.body),
+      readMinutes: readMinutes(stripImplementerNote(a.body)), terms: [], sources: []
     });
     return;
   }

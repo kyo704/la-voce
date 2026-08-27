@@ -82,6 +82,23 @@ async function main() {
   assertTrue(/scripts\/build-learn-content\.js/.test(raw), "★生成元が書いてある（直接編集しないため）");
   assertTrue(/C2-1 \/ C2-2 \/ C4-1 \/ C4-6 \/ C4-7/.test(raw), "★入れていない5本を明記している");
 
+  console.log("\n=== 実装者あての注記が本文に出ていないこと ===");
+  console.log("     原稿の一部は「※ここは実装者向け」で始まり、区切り線のあとに本文が続く。");
+  console.log("     取り込みでそこを落としておらず、記事の最初の段落が作業指示になっていた。");
+  {
+    const leaked = m.ARTICLES.filter((a) => /^\s*※/.test(a.bodyMd));
+    assertTrue(leaked.length === 0,
+      leaked.length === 0 ? "★どの記事も、※の注記で始まっていない"
+        : `★注記が本文に残っている: ${leaked.map((a) => a.id).join(", ")}`);
+    // ★狭く書く。「〜してください」は本文の助言（ご相談ください等）にも出るので、
+    //   それだけを手がかりにしない。実装者にしか向かない言い回しだけを拾う。
+    const IMPLEMENTER = /実装メモ|実装者向け|削除の理由[:：]|これに置き換えてください|既存の「[^」]*」を削除/;
+    const orders = m.ARTICLES.filter((a) => IMPLEMENTER.test(a.bodyMd));
+    assertTrue(orders.length === 0,
+      orders.length === 0 ? "★本文のどこにも、作業指示の言い回しが残っていない"
+        : `★作業指示が残っている: ${orders.map((a) => a.id).join(", ")}`);
+  }
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");
