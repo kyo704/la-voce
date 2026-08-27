@@ -3140,7 +3140,7 @@ function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
                       </div>
                       <button
                         type="button"
-                        onClick={() => onChange({ track_cycle: !p.track_cycle })}
+                        onClick={() => onChange({ track_cycle: !value.track_cycle })}
                         className="flex-shrink-0"
                         style={{
                           width: 44, height: 26, borderRadius: 999, position: "relative",
@@ -9767,65 +9767,6 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                 </details>
 
-                <details className="rounded-2xl border" style={{ background: C.card, borderColor: C.line }}>
-                  <summary className="p-4 text-sm font-medium cursor-pointer">{t("connectWithTeacherTitle")}</summary>
-                  <div className="px-4 pb-4">
-                    {myTeacherLinks.length > 0 && (
-                      <div className="space-y-2 mb-3">
-                        {myTeacherLinks.map((link) => (
-                          <div key={link.id} className="rounded-xl p-3 flex items-center justify-between" style={{ background: C.paper }}>
-                            <span className="text-xs" style={{ color: C.inkSoft }}>連携中の先生が1名います</span>
-                            <button type="button" onClick={() => handleRevokeLink(link.id, "student")}
-                              className="text-xs underline" style={{ color: C.curtain }}>{t("disconnectButton")}</button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {pendingInvitation ? (
-                      <div className="rounded-xl p-3" style={{ background: C.paper }}>
-                        <p className="text-sm font-medium mb-2">先生から招待が届いています</p>
-                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>つながると、先生は選んだ項目を見られるようになります。</p>
-                        <div className="space-y-1.5 mb-3">
-                          {[
-                            ["voice", "声・喉の記録"], ["symptoms", "症状"], ["sleep", "睡眠"], ["activity", "活動・練習量"],
-                            ["hydration", "水分・食事"], ["meal", "食事"], ["body", "体重・身体データ"], ["mental", "心の余裕・日記"], ["notes", "稽古ノート"]
-                          ].map(([key, label]) => (
-                            <label key={key} className="flex items-center gap-2 text-xs" style={{ color: C.ink }}>
-                              <input type="checkbox" checked={!!shareScopeDraft[key]}
-                                onChange={(e) => setShareScopeDraft((s) => ({ ...s, [key]: e.target.checked }))} />
-                              {label}
-                            </label>
-                          ))}
-                        </div>
-                        <p className="text-xs mb-3" style={{ color: C.inkSoft }}>あとから変更できます。つながりの解除もいつでもできます。</p>
-                        <div className="flex gap-2">
-                          <button type="button" onClick={handleAcceptInvitation}
-                            className="flex-1 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
-                            {t("connectButton")}
-                          </button>
-                          <button type="button" onClick={handleDeclineInvitation}
-                            className="flex-1 py-2 rounded-full text-xs font-medium border" style={{ borderColor: C.line, color: C.inkSoft }}>
-                            {t("notNowButton")}
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>先生から受け取った招待コードを入力してください。</p>
-                        <div className="flex gap-2">
-                          <input type="text" value={inviteCodeInput} onChange={(e) => setInviteCodeInput(e.target.value)}
-                            placeholder="招待コード" maxLength={8}
-                            className="flex-1 rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
-                          <button type="button" onClick={() => handleLookupInviteCode(inviteCodeInput)}
-                            className="px-4 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
-                            {t("confirmButton")}
-                          </button>
-                        </div>
-                        {inviteLookupError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{inviteLookupError}</p>}
-                      </>
-                    )}
-                  </div>
-                </details>
 
                 <details className="rounded-2xl border" style={{ background: C.card, borderColor: C.line }}>
                   <summary className="p-4 text-sm font-medium cursor-pointer">{t("joinClassroomTitle")}</summary>
@@ -12986,6 +12927,70 @@ export default function VocalTracker({ userId, userEmail }) {
                     </button>
                   </div>
                 </div>
+
+                {/* ★以前は「レッスン」タブの中にあったが、そのタブ自体が
+                    「レッスンの予定があるか、先生とつながっているか」の人にしか
+                    表示されない。新規ユーザーはどちらも無いため、先生とつながる
+                    入口に永久に到達できなかった（鶏と卵）。全員が見る「もっと」へ移す。 */}
+                  <details className="rounded-2xl border" style={{ background: C.card, borderColor: C.line }}>
+                    <summary className="p-4 text-sm font-medium cursor-pointer">{t("connectWithTeacherTitle")}</summary>
+                    <div className="px-4 pb-4">
+                      {myTeacherLinks.length > 0 && (
+                        <div className="space-y-2 mb-3">
+                          {myTeacherLinks.map((link) => (
+                            <div key={link.id} className="rounded-xl p-3 flex items-center justify-between" style={{ background: C.paper }}>
+                              <span className="text-xs" style={{ color: C.inkSoft }}>連携中の先生が1名います</span>
+                              <button type="button" onClick={() => handleRevokeLink(link.id, "student")}
+                                className="text-xs underline" style={{ color: C.curtain }}>{t("disconnectButton")}</button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {pendingInvitation ? (
+                        <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                          <p className="text-sm font-medium mb-2">先生から招待が届いています</p>
+                          <p className="text-xs mb-2" style={{ color: C.inkSoft }}>つながると、先生は選んだ項目を見られるようになります。</p>
+                          <div className="space-y-1.5 mb-3">
+                            {[
+                              ["voice", "声・喉の記録"], ["symptoms", "症状"], ["sleep", "睡眠"], ["activity", "活動・練習量"],
+                              ["hydration", "水分・食事"], ["meal", "食事"], ["body", "体重・身体データ"], ["mental", "心の余裕・日記"], ["notes", "稽古ノート"]
+                            ].map(([key, label]) => (
+                              <label key={key} className="flex items-center gap-2 text-xs" style={{ color: C.ink }}>
+                                <input type="checkbox" checked={!!shareScopeDraft[key]}
+                                  onChange={(e) => setShareScopeDraft((s) => ({ ...s, [key]: e.target.checked }))} />
+                                {label}
+                              </label>
+                            ))}
+                          </div>
+                          <p className="text-xs mb-3" style={{ color: C.inkSoft }}>あとから変更できます。つながりの解除もいつでもできます。</p>
+                          <div className="flex gap-2">
+                            <button type="button" onClick={handleAcceptInvitation}
+                              className="flex-1 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                              {t("connectButton")}
+                            </button>
+                            <button type="button" onClick={handleDeclineInvitation}
+                              className="flex-1 py-2 rounded-full text-xs font-medium border" style={{ borderColor: C.line, color: C.inkSoft }}>
+                              {t("notNowButton")}
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <p className="text-xs mb-2" style={{ color: C.inkSoft }}>先生から受け取った招待コードを入力してください。</p>
+                          <div className="flex gap-2">
+                            <input type="text" value={inviteCodeInput} onChange={(e) => setInviteCodeInput(e.target.value)}
+                              placeholder="招待コード" maxLength={8}
+                              className="flex-1 rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+                            <button type="button" onClick={() => handleLookupInviteCode(inviteCodeInput)}
+                              className="px-4 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                              {t("confirmButton")}
+                            </button>
+                          </div>
+                          {inviteLookupError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{inviteLookupError}</p>}
+                        </>
+                      )}
+                    </div>
+                  </details>
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>設定</p>
