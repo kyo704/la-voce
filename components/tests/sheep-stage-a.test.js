@@ -142,6 +142,42 @@ console.log("\n=== お庭には寝る仕組みが無い（仕様どおり） ===
 const garden = ui.slice(ui.indexOf("function useGardenLife"), ui.indexOf("function useGardenLife") + 2600);
 assertTrue(!/isLying/.test(garden), "★お庭では寝ない（ベッドはお部屋のものなので）");
 
+console.log("\n=== A-3: ★配置できるアイテムは、全部 layer を持つ ===");
+// 新しいアイテムを足したとき、layout への追加を忘れると層が既定(mid)に落ちる。
+// 忘れても気づけるよう、SHOP_ITEMS 側と突き合わせる。
+const character = readRaw("lib", "character.js");
+const placeable = [...character.matchAll(/key: "((?:furniture|garden|wallhang)_[a-z_]+)"/g)].map((m) => m[1]);
+const layers = {};
+["FURNITURE_LAYOUT", "GARDEN_LAYOUT", "WALLHANG_LAYOUT"].forEach((tbl) => {
+  const body = (ui.match(new RegExp(`const ${tbl} = \\{([\\s\\S]*?)\\n\\};`)) || [])[1] || "";
+  [...body.matchAll(/(\w+):\s*\{[^}]*layer:\s*"(\w+)"/g)].forEach((m) => { layers[m[1]] = m[2]; });
+});
+assertTrue(placeable.length > 0, `配置できるアイテムが${placeable.length}件見つかった`);
+const missing = placeable.filter((k) => !layers[k]);
+assertEqual(missing, [], "★layer を持たないアイテムが無い（足し忘れると既定の mid に落ちる）");
+
+console.log("\n=== A-3: 仕様の表どおりの層に入っている ===");
+// 作業指示 A-3 の表: back=壁掛け / mid=家具・噴水・ベッド・本棚 / front=ラグ・池・ベンチ・羊
+const expected = {
+  wallhang_clock: "back", wallhang_lamp: "back", wallhang_painting: "back",
+  furniture_bed: "mid", furniture_shelf: "mid", garden_fountain: "mid",
+  furniture_rug: "front", garden_pond: "front", garden_bench: "front"
+};
+Object.entries(expected).forEach(([k, want]) => {
+  assertEqual(layers[k], want, `${k} は ${want} 層`);
+});
+// ★羊は常に最前面。front より前の層は無い。
+assertTrue(!Object.values(layers).includes("overlay"), "front より前の層を作っていない");
+
+console.log("\n=== A-3: 層をまたぐドラッグができない ===");
+// layer は layout テーブルから来る固定値で、ドラッグでは変わらない。
+assertTrue(/layer=\{layout\.layer\}/.test(ui), "★層はレイアウト表から渡され、ドラッグでは変わらない");
+assertTrue(!/setLayer|layer:\s*drag/.test(ui), "ドラッグ中に層を書き換えていない");
+// 押しのけは同じ層の中だけで起きる
+assertTrue(/FURNITURE_LAYOUT\[ok\]\.layer === layout\.layer/.test(ui),
+  "★押しのけの相手を、同じ層のアイテムだけに絞っている");
+assertTrue(/GARDEN_LAYOUT\[ok\]\.layer === layout\.layer/.test(ui), "お庭でも同じ");
+
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
 if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
 console.log("\n✓ すべて成功しました。");
