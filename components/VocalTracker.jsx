@@ -21,6 +21,8 @@ import { LANGUAGES, createTranslator } from "@/lib/translations";
 import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q } from "@/lib/displayGates";
 // 分析カードの職業別の出し分け（docs/profession-presets.json と1対1）
 import { isAnalysisCardVisible } from "@/lib/analysisCardVisibility";
+// 記録項目の表示・非表示は必ずこのレイヤーを通す（記録項目の再設計v2 §3.3）
+import { isFieldGroupVisible, DEFAULT_RECORD_MODE } from "@/lib/fieldGroups";
 import HealthInfo from "@/components/HealthInfo";
 import { ARTICLES, CHAPTER_LABELS, PROFESSION_LABELS, getArticlesForProfession, getArticleById } from "@/lib/learnContent";
 import CharacterHome from "@/components/CharacterHome";
@@ -375,7 +377,21 @@ const LOAD_FIELDS_BY_PROFESSION = {
 // 一時的に起きる種類のエラーを見分けるためのもの。
 // 記録と分析の順番設計 §7: 「1日あたりの平均入力項目数」を計測するための、記入済みセクション数の
 // 概算カウント。DAY_RECORD_ORDER相当の主要セクションだけを対象にする（曲目の中身などは数えない）。
-function countFilledSections(entry) {
+// 統合実行ルートv4 §11: かんたん記録を選んだ人に「未入力」「完了度◯%」を見せないこと。
+// かんたん記録では、そもそも出していない項目を分母に入れない（コアの3つだけを数える）。
+// 満タンにできない目盛りを見せるのは、事実上の減点表示になるため。
+export function countedSectionTotal(mode) {
+  return mode === "simple" ? 3 : 9;
+}
+function countFilledSectionsCore(entry) {
+  let n = 0;
+  if ((entry.voiceEntries || []).length > 0) n += 1;
+  if (typeof entry.sleepHours === "number") n += 1;
+  if ((entry.activities || []).length > 0 || entry.recovery) n += 1;
+  return n;
+}
+function countFilledSections(entry, mode) {
+  if (mode === "simple") return countFilledSectionsCore(entry);
   let n = 0;
   if ((entry.voiceEntries || []).length > 0) n += 1;
   if (typeof entry.temperature === "number" || typeof entry.humidity === "number") n += 1;
@@ -3697,7 +3713,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "", is_admin: false });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "", is_admin: false, record_mode: DEFAULT_RECORD_MODE });
   // 確認用: 管理者アカウント（is_admin）は、動作確認のため全職業の機能を見られるようにする。
   // ★重要：profile宣言より前に置くと「宣言前にアクセス」エラーになるため、必ずこの直後に置くこと。
   const effectiveProfessions = useMemo(() => {
@@ -3987,6 +4003,15 @@ export default function VocalTracker({ userId, userEmail }) {
         });
         setCharacterPointsSpent(data.character_points_spent || 0);
         setCharacterEquipped(data.character_equipped || {});
+      }
+      // 統合実行ルートv4 G2-8: かんたん記録／しっかり記録の設定。
+      // ★上の本体クエリには足さない。supabase/migration_record_mode.sql を
+      //   まだ実行していない環境では列が無く、本体クエリごと失敗してしまうため。
+      //   ここだけ別に取り、失敗したら既定（しっかり記録）のまま動かす。
+      const { data: modeRow } = await supabase
+        .from("profiles").select("record_mode").eq("id", userId).maybeSingle();
+      if (mounted && modeRow && modeRow.record_mode) {
+        setProfile((prev) => ({ ...prev, record_mode: modeRow.record_mode }));
       }
       const { data: inventoryRows } = await supabase.from("character_inventory").select("item_key").eq("user_id", userId);
       if (mounted && inventoryRows) {
@@ -6688,6 +6713,20 @@ export default function VocalTracker({ userId, userEmail }) {
     if (error) { console.error("項目の設定保存に失敗しました:", error); return; }
     setProfile((p) => ({ ...p, folded_groups: updated }));
   }
+  // 統合実行ルートv4 G2-8: かんたん記録／しっかり記録の切り替え。
+  async function handleChangeRecordMode(mode) {
+    const prev = profile.record_mode;
+    setProfile((p) => ({ ...p, record_mode: mode }));   // 先に反映して、切り替えを軽く見せる
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update({ record_mode: mode }).eq("id", userId);
+    if (error) {
+      console.error("記録モードの保存に失敗しました。supabase/migration_record_mode.sql を実行済みか確認してください。", error);
+      setProfile((p) => ({ ...p, record_mode: prev }));  // 保存できなければ元に戻す
+    }
+  }
+  // 項目グループを出すかどうかは、必ずここを通す（記録項目の再設計v2 §3.3）。
+  const showGroup = (key) => isFieldGroupVisible(key, { mode: profile.record_mode, foldedGroups: profile.folded_groups });
+
   async function handleUnfoldGroup(key) {
     const updated = (profile.folded_groups || []).filter((k) => k !== key);
     const supabase = createClient();
@@ -7524,7 +7563,8 @@ export default function VocalTracker({ userId, userEmail }) {
       while (mergedEntries[d]) { streakAfter += 1; d = addDays(d, -1); }
     }
     const discovery = computeTodaysDiscovery(mergedEntries, clean.date);
-    const filledCount = countFilledSections(clean);
+    // 保存カードの「N項目」も、かんたん記録では分母を合わせる（v4 §11）
+    const filledCount = countFilledSections(clean, profile.record_mode);
 
     setEntries((prev) => ({ ...prev, [clean.date]: clean }));
     setSaveStatus("saved");
@@ -8050,8 +8090,8 @@ export default function VocalTracker({ userId, userEmail }) {
                 {(() => {
                   // 記録と分析の順番設計 §3.4: 進捗の見せ方。「未入力」「不足」「空欄」は使わない。
                   // 満タンを目標に見せず、赤くしない（羊のおうち仕様 §1の「罰を作らない」を記録画面にも適用）。
-                  const filled = countFilledSections(formData);
-                  const total = 9;
+                  const filled = countFilledSections(formData, profile.record_mode);
+                  const total = countedSectionTotal(profile.record_mode);
                   const dots = Array.from({ length: total }, (_, i) => i < filled);
                   // 実際にまだ埋まっていない項目の中から1つだけ選び、それが加わると何につながるかを添える。
                   const pendingBenefits = [
@@ -8059,7 +8099,9 @@ export default function VocalTracker({ userId, userEmail }) {
                     { done: ((formData.activities || []).some((a) => (a.items || []).length > 0)), label: "曲目ごとの負荷" },
                     { done: ((formData.symptoms || []).length > 0), label: "症状の推移" }
                   ];
-                  const nextBenefit = (pendingBenefits.find((b) => !b.done) || {}).label;
+                  const nextBenefit = profile.record_mode === "simple"
+                    ? null
+                    : (pendingBenefits.find((b) => !b.done) || {}).label;
                   return (
                     <div className="flex items-center justify-between px-1">
                       <div className="flex items-center gap-2">
@@ -8079,6 +8121,30 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   );
                 })()}
+
+                {/* 統合実行ルートv4 G2-8 / §2 瞬間④: 30秒で終わる道が常にあること。
+                    調子が悪い日ほど、項目の多さが「開かない理由」になる。
+                    ★かんたん記録は劣った記録ではない。減点表示（未入力・完了度）を出さないこと（§11）。 */}
+                <div className="rounded-2xl p-3 border" style={{ background: C.card, borderColor: C.line }}>
+                  <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
+                    {[["simple", "recordModeSimple"], ["full", "recordModeFull"]].map(([mode, labelKey]) => (
+                      <button key={mode} type="button" onClick={() => handleChangeRecordMode(mode)}
+                        className="flex-1 py-1.5 rounded-full text-xs font-medium transition-all"
+                        style={{
+                          background: profile.record_mode === mode ? C.curtain : "transparent",
+                          color: profile.record_mode === mode ? "#FFFDF8" : C.inkSoft
+                        }}>
+                        {t(labelKey)}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                    {profile.record_mode === "simple" ? t("recordModeSimpleNote") : t("recordModeFullNote")}
+                  </p>
+                  {profile.record_mode === "simple" && (
+                    <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("recordModeSwitchHint")}</p>
+                  )}
+                </div>
 
                 {!!entries[addDays(selectedDate, -1)] && (
                   <button type="button" onClick={handleCopyPreviousDay}
@@ -8167,7 +8233,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         <p className="mt-2 leading-relaxed">{t("noteRecommendedRoutine")}</p>
                       </details>
 
-                      {!(profile.folded_groups || []).includes("cpps") && (
+                      {showGroup("cpps") && (
                       <div className="rounded-xl p-3" style={{ background: C.paper }}>
                         <div className="flex items-center gap-1.5 mb-1.5">
                           <Mic2 size={14} style={{ color: C.gold }} />
@@ -8294,6 +8360,7 @@ export default function VocalTracker({ userId, userEmail }) {
 
                     {recordView === "day" && (
                       <>
+                    {showGroup("body") && (
                     <SectionCard title={t("sectionBodyData")} icon={Scale}>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
@@ -8580,7 +8647,7 @@ export default function VocalTracker({ userId, userEmail }) {
 
                       <NumberField label={t("labelTodayWeight")} icon={Scale} value={formData.weightKg ?? ""} step={0.1} min={20} max={200} suffix="kg"
                         onChange={(v) => setFormData((f) => ({ ...f, weightKg: v }))} />
-                      {!(profile.folded_groups || []).includes("body_fat") && (
+                      {showGroup("body_fat") && (
                         <NumberField label="体脂肪率（体組成計をお持ちの場合・任意）" icon={Scale} value={formData.bodyFatPct ?? ""} step={0.1} min={3} max={60} suffix="%"
                           onChange={(v) => setFormData((f) => ({ ...f, bodyFatPct: v }))} />
                       )}
@@ -8619,7 +8686,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         </div>
                       )}
 
-                      {!(profile.folded_groups || []).includes("medication") && (
+                      {showGroup("medication") && (
                         <div>
                           <span className="text-sm font-medium block mb-2">服薬（複数選択可）</span>
                           <div className="flex flex-wrap gap-2">
@@ -8645,7 +8712,9 @@ export default function VocalTracker({ userId, userEmail }) {
                         <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteRegisterHeightForRange")}</p>
                       )}
                     </SectionCard>
+                    )}
 
+                    {showGroup("env") && (
                     <SectionCard title={t("sectionClimate")} icon={Thermometer}>
                       <div>
                         <label className="text-sm font-medium block mb-1.5">{t("labelLocation")}</label>
@@ -8656,7 +8725,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             className="w-full text-sm bg-transparent border-none" />
                         </div>
                       </div>
-                      {!(profile.folded_groups || []).includes("environment") && (
+                      {showGroup("env") && (
                         <>
                           <div className="grid grid-cols-2 gap-4">
                             <NumberField label={t("labelTemperature")} icon={Thermometer} value={formData.temperature ?? ""} step={1} min={-30} max={50} suffix="℃"
@@ -8759,6 +8828,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         <p className="mt-2 leading-relaxed">機内の乾燥と時差ぼけは、どちらも喉と体調に影響しやすいとされています。遠征のあった日だけ記録してください。</p>
                       </details>
                     </SectionCard>
+                    )}
 
                     <SectionCard title={t("sectionSleep")} icon={Moon} id="record-section-sleep" highlighted={highlightSection === "sleep"}>
                       <div className="grid grid-cols-2 gap-3">
@@ -8970,6 +9040,7 @@ export default function VocalTracker({ userId, userEmail }) {
 
                     </SectionCard>
 
+                    {showGroup("hydration") && (
                     <SectionCard title={t("sectionWater")} icon={Droplets} id="record-section-water" highlighted={highlightSection === "water"}>
                       <div>
                         <div className="flex items-center gap-3">
@@ -9025,7 +9096,9 @@ export default function VocalTracker({ userId, userEmail }) {
                         })()}
                       </div>
                     </SectionCard>
+                    )}
 
+                    {showGroup("meal") && (
                     <SectionCard title={t("sectionMealDetail")} icon={Wheat} id="record-section-meal" highlighted={highlightSection === "meal"}>
                       <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteMealAutoCalc")}</p>
                       <div className="grid grid-cols-2 gap-3">
@@ -9104,7 +9177,7 @@ export default function VocalTracker({ userId, userEmail }) {
                               ))}
                             </div>
                           </div>
-                          {!(profile.folded_groups || []).includes("meal_detail") && (
+                          {showGroup("meal_detail") && (
                             <button type="button" onClick={() => setShowMealDetail(true)}
                               className="text-xs underline" style={{ color: C.inkSoft }}>
                               +食品ごとに詳しく記録する
@@ -9228,7 +9301,9 @@ export default function VocalTracker({ userId, userEmail }) {
                         <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteRecordWeightForTargets")}</p>
                       )}
                     </SectionCard>
+                    )}
 
+                    {showGroup("exercise") && (
                     <SectionCard title={t("sectionExercise")} icon={Dumbbell}>
                       <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteExerciseHelp")}</p>
                       {(formData.exercises || []).length === 0 && !showExerciseDetail ? (
@@ -9250,7 +9325,7 @@ export default function VocalTracker({ userId, userEmail }) {
                               </button>
                             ))}
                           </div>
-                          {!(profile.folded_groups || []).includes("exercise_detail") && (
+                          {showGroup("exercise_detail") && (
                             <button type="button" onClick={() => setShowExerciseDetail(true)}
                               className="text-xs underline" style={{ color: C.inkSoft }}>
                               +詳しく記録する（種目・時間・強度）
@@ -9292,14 +9367,16 @@ export default function VocalTracker({ userId, userEmail }) {
                         <p className="mt-1">{t("noteSeeHealthInfo")}</p>
                       </div>
                     </SectionCard>
+                    )}
 
+                    {showGroup("mental") && (
                     <SectionCard title={t("sectionMental")} icon={HeartHandshake} id="record-section-mental" highlighted={highlightSection === "mental"}>
                       <DotSelector label={t("labelMentalEase")} icon={HeartHandshake} value={formData.ease} lowLabel={t("lowTension")} highLabel={t("highCalm")}
                         onChange={(v) => setFormData((f) => ({ ...f, ease: v }))} />
                       {typeof formData.ease === "number" && (
                         <p className="text-xs" style={{ color: C.inkSoft }}>記録しました</p>
                       )}
-                      {!(profile.folded_groups || []).includes("mental_detail") && (
+                      {showGroup("mental_detail") && (
                         <>
                           <div>
                             <span className="text-sm font-medium block mb-2">{t("labelMentalTags")}</span>
@@ -9326,12 +9403,15 @@ export default function VocalTracker({ userId, userEmail }) {
                         </>
                       )}
                     </SectionCard>
+                    )}
 
+                    {showGroup("practiceNote") && (
                     <SectionCard title={t("sectionMemo")} icon={NotebookPen}>
                       <textarea value={formData.notes} rows={3} placeholder={t("placeholderGeneralNotes")}
                         onChange={(e) => setFormData((f) => ({ ...f, notes: e.target.value }))}
                         className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                     </SectionCard>
+                    )}
 
                     <button onClick={handleSave} disabled={saveStatus === "saving"}
                       className="w-full rounded-2xl py-3.5 font-medium flex items-center justify-center gap-2 transition-all"
