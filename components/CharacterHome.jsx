@@ -544,6 +544,10 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, hasChair, hasBe
           setLeftPct(pillowLeft);
           setTopPct(pillowTop);
           setIsLying(true);
+          // ★寝ている間は、位置を1度も動かさない。
+          //   busyRef で歩き回りは止まっているが、実機では「寝ているのに動く」と
+          //   報告された。休んでいる時間が6秒しかなく、枕へ滑り込んで、すぐ起きて
+          //   また歩き出すため、落ち着いて見えなかった。しっかり休ませる。
           addTimer(() => {
             if (cancelled) return;
             setIsLying(false);
@@ -554,7 +558,7 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, hasChair, hasBe
             setTopPct(bedFloorTop);
             leftRef.current = bedApproachLeft;
             busyRef.current = false;
-          }, 6000);
+          }, SLEEP_DURATION_MS);
         }, 2100);
         scheduleLying();
       }, delay);
@@ -721,9 +725,17 @@ function PackageIcon() {
 
 // キャラクターを部屋・庭の中に配置する。
 // left/top はパーセント指定でアニメーション（CSSトランジション）、transformは常に固定値（アンカー・反転のみ）。
+// 寝ている姿。★丸くなって、ベッドの上で休んでいる形にする。
+//   以前は顔だけが浮いており、止まっているようには見えなかった。
+//   ★動かさないこと。寝ているのに動くと、休んでいるようには見えず、壊れて見える。
 function SheepSleepingHead({ size }) {
   return (
     <svg viewBox="0 0 60 60" style={{ width: size, height: size, display: "block", overflow: "visible" }}>
+      {/* 接地の影。ベッドの面に接している。★立ち姿と同じく、SVGの中に持たせる。 */}
+      <ellipse cx="31" cy="52" rx="26" ry="5" fill="#3D2E12" opacity="0.14" />
+      {/* 丸くなった体。頭より後ろに描く。 */}
+      <ellipse cx="36" cy="41" rx="23" ry="15" fill="#F1E9D6" />
+      <ellipse cx="50" cy="45" rx="7" ry="5" fill="#EDE4CE" />
       <circle cx="30" cy="32" r="24" fill="#F6EFDF" />
       {[[12, 22, 8], [48, 22, 8], [10, 38, 6.5], [50, 38, 6.5], [21, 12, 6.5], [39, 12, 6.5], [30, 8, 7.5]].map(([cx, cy, r], i) => (
         <circle key={i} cx={cx} cy={cy} r={r} fill="#F6EFDF" />
@@ -757,12 +769,9 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
           zIndex: frontZ
         }}
       >
-        {/* 寝ているときは伏せているので、影も小さく薄くする。
-            立っているときと同じ影だと、寝ながら浮いているように見える。 */}
-        <div style={{
-          position: "absolute", bottom: -1, left: "50%", transform: "translateX(-50%)",
-          ...CONTACT_SHADOW, width: "70%", opacity: 0.7, pointerEvents: "none"
-        }} />
+        {/* ★ここでも影を足さない。SheepSleepingHead のSVGの中に入れてある。
+            寝姿の枠は translate(-50%, -50%)（中心合わせ）なので、
+            bottom を基準に外から置くと、そもそも足元に来ない。 */}
         <SheepSleepingHead size={size * 0.62 * frontScale} />
       </div>
     );
@@ -778,13 +787,12 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
         zIndex: frontZ
       }}
     >
-      {/* ★A-2: 羊にも接地の影。指示書が「家具も羊も床から浮いて見えます」と
-          名指ししているのに、家具にしか付いていなかった。
-          羊は歩き回るので、影も一緒に動く（親のtransformに追随する）。 */}
-      <div style={{
-        position: "absolute", bottom: -2, left: "50%", transform: "translateX(-50%)",
-        ...CONTACT_SHADOW, pointerEvents: "none"
-      }} />
+      {/* ★羊には、ここで影を足さないこと。
+          SheepCharacter のSVGの中に、足元（cy=192）の楕円として既に入っている。
+          外から2枚目を足すと、SVGの下端（y=200）を基準に置かれるため、
+          本来の足元より下にずれた影がもう1枚できる。2枚が少しずれて重なり、
+          止まっているのに滑って見える。実機でそう報告された。
+          ★同じものが2か所にある、をここでも作ってしまった。 */}
       <div style={{ transform: facingLeft ? "scaleX(-1)" : "none" }}>
         <SheepCharacter equipped={equipped} size={size * frontScale} isWalking={isWalking} isFarming={isFarming} showBook={isSitting} isSweating={isSweating} isCelebrating={isCelebrating} />
       </div>
@@ -1213,6 +1221,10 @@ function ShopItemPreview({ item }) {
 //   「模様替え」ボタンは場面の一部ではないので、羊より前に出てよい。
 //   場面の要素は front(6) を超えてはいけない（超えると羊を横切る）。
 const UI_CHROME_Z = 10;
+
+// 羊が寝ている時間。★短いと、寝たそばから起きて歩き出すので休んで見えない。
+// 実機で「寝ているのに動き続ける」と報告されたのは、6秒で起きていたため。
+const SLEEP_DURATION_MS = 30000;
 
 // 作業指示 A-2: 接地の影。★家具も羊も、同じ1つの定義から作ること。
 //   仕様は「全アイテムに楕円のソフトシャドウを1枚敷く」。羊も対象で、

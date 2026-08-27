@@ -39,9 +39,12 @@ assertTrue(/width: "85%"/.test(sh), "幅はアイテム幅 × 0.85");
 assertTrue(/1 \/ 0\.22/.test(sh), "高さは幅 × 0.22");
 assertTrue(/rgba\(70,45,30,0\.18\)/.test(sh), "色 rgba(70,45,30,0.18)");
 assertTrue(/blur\(6px\)/.test(sh), "ぼかし 6px");
-// 家具・羊の両方が同じ定義から作られていること
+// ★影の付け方は2通りあり、それぞれ理由がある。
+//   家具: 外から1枚敷く（アイテムごとに絵が違い、共通の楕円で足りる）
+//   羊  : 自分のSVGの中に持つ（足元の位置が絵ごとに違い、外からでは合わない）
+//   ★羊に外から足すと、SVGの下端を基準に2枚目ができて滑って見える。実機で報告された。
 const uses = (ui.match(/\.\.\.CONTACT_SHADOW/g) || []).length;
-assertTrue(uses >= 3, `影を使っている箇所が${uses}件（家具・立ち姿・寝姿）`);
+assertTrue(uses >= 1, `家具が共通の定義から影を作っている（${uses}件）`);
 assertTrue(/anchor !== "wall"/.test(ui), "★壁掛け・窓には影を付けない");
 
 console.log("\n=== A-3: 3層のスケール ===");
@@ -72,6 +75,39 @@ assertTrue(/Object\.keys\(entries \|\| \{\}\)\.length/.test(ui),
 });
 assertTrue(/prefers-reduced-motion/.test(ui) || /prefersReducedMotion/.test(ui),
   "★動きを減らす設定に対応している");
+
+console.log("\n=== ★羊の影は1枚だけ（実機で「浮いて滑って見える」と報告） ===");
+console.log("     SVGの中に足元の影があるのに、外からもう1枚足していた。");
+// 立ち姿のSVGの中に、足元の影がある
+assertTrue(/<ellipse cx="80" cy="192"[^>]*opacity="0\.14"/.test(ui),
+  "立ち姿は、SVGの中の足元（cy=192）に影を持っている");
+// PositionedCharacter が外から影を足していないこと
+const posChar = ui.slice(ui.indexOf("function PositionedCharacter"), ui.indexOf("function PositionedCharacter") + 2200);
+assertTrue(!/CONTACT_SHADOW/.test(posChar),
+  "★羊に外から影を足していない（2枚が少しずれて重なると、滑って見える）");
+// 寝姿もSVGの中に持つ
+const sleep = ui.slice(ui.indexOf("function SheepSleepingHead"), ui.indexOf("function SheepSleepingHead") + 1600);
+assertTrue(/<ellipse cx="31" cy="52"/.test(sleep), "寝姿も、SVGの中に影を持っている");
+// 家具は引き続き外から
+assertTrue(/\.\.\.CONTACT_SHADOW/.test(ui), "家具の影は共通の定義から作っている");
+
+console.log("\n=== ★寝ているときは動かない ===");
+assertTrue(/const SLEEP_DURATION_MS = /.test(ui), "寝ている時間が定数になっている");
+const dur = Number((ui.match(/const SLEEP_DURATION_MS = (\d+)/) || [])[1]);
+assertTrue(dur >= 20000, `寝ている時間が${dur / 1000}秒（短いと寝たそばから起きて、休んで見えない）`);
+assertTrue(/busyRef\.current\) \{ scheduleWander\(\); return; \}/.test(ui),
+  "★寝ている間は歩き回らない（busyRef で止めている）");
+// 寝姿に動きを付けていないこと
+assertTrue(!/animation/.test(sleep), "★寝姿にアニメーションを付けていない");
+assertTrue(/丸くなった体/.test(readRaw("components", "CharacterHome.jsx")),
+  "丸くなって休む形になっている（顔だけが浮いていない）");
+
+console.log("\n=== 羊はドラッグできない（仕様どおり） ===");
+// ★仕様に羊のドラッグは無い。羊は自分で歩く。
+//   DraggableItem は家具・お庭のアイテム用で、羊には使っていない。
+assertTrue(!/<DraggableItem[^>]*SheepCharacter/.test(readRaw("components", "CharacterHome.jsx")),
+  "羊をドラッグ対象にしていない（自分で歩く）");
+assertTrue(/function useRoomLife|scheduleWander/.test(ui), "羊は自分で歩く仕組みを持っている");
 
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
 if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
