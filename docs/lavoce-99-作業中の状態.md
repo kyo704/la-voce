@@ -29,7 +29,7 @@
 
 ```
 supabase/migration_cycle_periods.sql            実行済み（★再実行を推奨）
-supabase/migration_data_region.sql              実行中とのこと
+supabase/migration_data_region.sql              ★実行の確認が取れていない
 supabase/migration_invitation_teacher_name.sql  実行済み
 supabase/check_activity_minutes_coverage.sql    実行済み（③=4日）
 supabase/migration_record_mode.sql              未実行（無くても動く）
@@ -114,6 +114,32 @@ supabase/migration_record_mode.sql              未実行（無くても動く�
 - ★ゲートそのものは変えません（件数・効果量・FDR の3つは §6-1 のまま）。
   変えるのは「何を検定するか」と「どう説明するか」だけです。
 - §3 効果量の不確かさを隠さない（点推定だけで「中程度」と書かない）
+
+## 5.7 ★保留: LoadTracker がまるごと描かれていない（坂本さんの判断で先送り）
+
+**急ぎではありません。忘れないための記録です。**
+
+`LoadTracker`（components/VocalTracker.jsx）は、関数の定義が1つあるだけで、
+呼び出しが0件です。★どの画面からも描かれていません。
+そのため `LOAD_FIELDS_BY_PROFESSION` は、全職業ぶんが死んでいます。
+
+  声楽家     4項目 … ★削除済み（音域の低・高／ダイナミクス／通過数）
+  アナウンサー 3項目 … onAirMinutes / isLive / consecutiveSegments
+  声優       3項目 … sessionMinutes / characterCount / hasExtremeVocalization
+  ポップス   3項目 … venueVolume / monitorVolume / consecutivePerformanceDay
+
+合計13項目のうち、4つを消し、9つが残っています。
+（「12項目」と伺いましたが、声楽家は音域が低・高の2項目に分かれているため、
+　数え方によって12にも13にもなります。コード上の登録は13です。）
+
+**判断すること**
+  ・残り9項目も消すか
+  ・LoadTracker ごと消すか（`load_detail` 列は空のまま残ります）
+  ・それとも、どこかから描くようにするか（＝仕様に戻す）
+
+★消す前に、今回と同じ手順で実データを数えること。
+今回、対照が0だったのに結論を出しかけました。数え方が違っていただけでした。
+supabase/check_detail_keys.sql の②③（キーの列挙）が、その確認に使えます。
 
 ## 5.5 受領済みだが、まだ着手しない文書
 
