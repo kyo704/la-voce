@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La Voce 分析画面 見本 v3</title>
+<style>
+:root{
+  color-scheme: light;
+  /* ★すべてサイトの画素から抜いた値。作り変えていません */
+  --bg:#F7F2E6;        /* 地色 */
+  --card:#FFFDF8;      /* カードの面 */
+  --card-2:#F7F2E6;    /* チップの面 */
+  --border:#E5DDC7;    /* 枠線 */
+  --grid:#E5DDC7;      /* 目盛り線 */
+  --track:#E5DDC7;     /* 棒の下地 */
+  --ink:#261913;       /* 本文 */
+  --ink-2:#6D5D50;     /* 補助 */
+  --ink-3:#76665A;     /* 目盛り・注記 */
+  --wine:#840C24;      /* ブランド色 */
+  --s1:#840C24;        /* 系列1（サイトのワイン） */
+  --s2:#BF8722;        /* 系列2（サイトの山吹） */
+  --s3:#447862;        /* 系列3（サイトの深緑） */
+  --s2-pale:#DFC28D;   /* 山吹の淡いほう（サイトにある値） */
+  --ok:#739E67;        /* サイトのスコアの緑 */
+  --muted:#DFC28D;
+  --band:#E5DDC7;
+  --radius:14px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--ink);padding:26px 14px 80px;
+  font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;
+  font-feature-settings:"palt";-webkit-font-smoothing:antialiased;
+}
+.serif{font-family:Georgia,"Times New Roman","Hiragino Mincho ProN","Yu Mincho",serif}
+.wrap{max-width:440px;margin:0 auto}
+.brand{font-family:Georgia,serif;font-style:italic;font-size:26px;color:var(--wine);margin:0;letter-spacing:.01em}
+.brand-sub{font-size:11.5px;color:var(--ink-2);margin:2px 0 22px}
+.note{font-size:12.5px;line-height:1.85;color:var(--ink-2);margin:24px 4px 9px}
+.note b{color:var(--ink);font-weight:600}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 17px 15px;margin:0}
+.card + .card{margin-top:10px}
+.card h2{font-size:15px;margin:0 0 4px;font-weight:600;letter-spacing:.02em}
+.card .lead{font-size:11.5px;color:var(--ink-2);line-height:1.7;margin:0 0 14px}
+.chip{float:right;font-size:10.5px;color:var(--ink-2);background:var(--card-2);
+      border:1px solid var(--border);border-radius:999px;padding:2px 9px;margin-top:-1px}
+.hero{font-size:36px;font-weight:400;font-variant-numeric:tabular-nums;line-height:1.05;color:var(--ink)}
+.hero small{font-size:13px;color:var(--ink-2);margin:0 2px}
+.body{font-size:13.5px;line-height:1.9;margin:13px 0 0}
+.meta{font-size:11.5px;color:var(--ink-2);line-height:1.8;margin-top:10px;font-variant-numeric:tabular-nums}
+.foot{font-size:10.5px;color:var(--ink-3);line-height:1.7;margin-top:12px;padding-top:11px;border-top:1px solid var(--border)}
+.dots{display:flex;gap:5px;margin:4px 0 2px}
+.dots i{width:9px;height:9px;border-radius:50%;display:block;background:var(--track)}
+.dots i.on{background:var(--s2)}
+.rows{margin-top:6px}
+.row{margin:0 0 11px}
+.row .l{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-2);margin-bottom:4px}
+.row .l b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.bar{height:5px;border-radius:3px;background:var(--track);overflow:hidden}
+.bar span{display:block;height:100%;border-radius:3px;background:var(--s2)}
+.legend{display:flex;gap:13px;align-items:center;font-size:11px;color:var(--ink-2);margin-top:11px;flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend b{width:8px;height:8px;border-radius:50%;display:block}
+.legend .sw{width:15px;height:8px;border-radius:3px;display:block;background:var(--band)}
+details{margin-top:10px}
+summary{font-size:11.5px;color:var(--ink-2);cursor:pointer;list-style:none;padding:5px 0}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--ink-3)}
+details[open] summary::before{content:"▾ "}
+table{border-collapse:collapse;width:100%;font-size:11px;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:5px 5px;border-bottom:1px solid var(--border);color:var(--ink-2)}
+th:first-child,td:first-child{text-align:left}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.tip{position:fixed;pointer-events:none;opacity:0;transition:opacity .12s;background:var(--ink);
+     color:var(--card);font-size:11px;padding:5px 8px;border-radius:7px;white-space:nowrap;z-index:99;
+     font-variant-numeric:tabular-nums}
+.themebtn{position:fixed;top:10px;right:10px;z-index:50;background:var(--card);color:var(--ink-2);
+  border:1px solid var(--border);border-radius:999px;padding:6px 13px;font-size:11.5px;cursor:pointer;font-family:inherit}
+.spark{display:inline-block;vertical-align:middle;width:96px;margin-left:10px}
+.subhead{font-size:12px;color:var(--ink-2);margin:0 0 6px}
+.kv{display:flex;align-items:baseline;gap:8px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="brand">La Voce</p>
+  <p class="brand-sub">分析画面の見本　※ 実際のデータではありません。色はサイトから抜いた値をそのまま使っています</p>
+
+
+  <p class="note"><b>① 今日のスコア。</b>
+     数字だけでは「今日が良い日なのか」が分かりません。
+     <b>直近の推移を横に添える</b>だけで、同じ数字が読めるようになります。
+     内訳の棒は今のサイトと同じ形にそろえ、<b>色で良し悪しを言いません。</b></p>
+  <div class="card">
+    <span class="chip">2026/08/27</span>
+    <h2 class="serif">コンディションスコア</h2>
+    <p class="lead">自己申告の記録から作った、参考のための指標です。折れ線は直近14日。</p>
+    <div class="kv">
+      <span class="hero">74<small>/ 100</small></span>
+      <span class="spark" id="spark"></span>
+    </div>
+    <div class="rows" id="score"></div>
+    <p class="meta"><b>喉のコンディション</b>が69点で、ここが全体を約7.8点押し下げています。</p>
+    <p class="foot">※ これは医学的な診断や絶対的な評価を示すものではなく、自己申告に基づく記録から作られた、あくまで参考のための指標です。</p>
+  </div>
+
+  <p class="note"><b>② 今日が何番目か。</b>
+     今はリングで「7／9日中」と出しています。
+     <b>点を並べて今日に印をつけるほうが、順位も、散らばりも、同時に見えます。</b>
+     良い日と悪い日がどれくらい離れているかが分かります。</p>
+  <div class="card">
+    <span class="chip">期間固定：直近9日</span>
+    <h2 class="serif">直近9日の中での今日</h2>
+    <p class="lead">点ひとつが1日です。右にあるほど良い日でした。</p>
+    <div id="rank"></div>
+    <p class="body">この9日間で <b>7番目に良い日</b> でした。</p>
+    <p class="meta">件数がまだ少ないため、偏差値の数値は出さず、位置だけを示しています。</p>
+  </div>
+
+  <p class="note"><b>③ 声の調子の推移。</b>
+     本番とレッスンの日だけ色を変えます。
+     <b>「本番の翌日に落ちるかどうか」は、この1枚で本人が気づきます。</b></p>
+  <div class="card">
+    <span class="chip">直近28日</span>
+    <h2 class="serif">声の調子</h2>
+    <p class="lead">毎朝の記録。丸が大きい日は本番かレッスンがありました。</p>
+    <div id="voiceline"></div>
+    <div class="legend">
+      <span><b style="background:var(--s1)"></b>ふだんの日</span>
+      <span><b style="background:var(--s2)"></b>本番・レッスンの日</span>
+    </div>
+  </div>
+
+  <p class="note"><b>④ まだ判定できない状態。</b>
+     ほとんどの人が最初の数週間ここにいます。空白にせず、
+     <b>待っている状態を、進んでいる状態として見せます。</b>
+     「今日の記録」の点と同じ形にそろえています。</p>
+  <div class="card">
+    <h2 class="serif">食後就寝までの時間と、翌朝の声</h2>
+    <p class="lead">記録がたまると、あなたの傾向を出せます。</p>
+    <div class="dots" id="progress"></div>
+    <p class="body">6日分たまりました。あと4日で傾向を出せます。</p>
+    <p class="meta">判定には、それぞれの群に10日分が必要です。</p>
+  </div>
+
+  <p class="note"><b>⑤ 通った状態。</b>
+     件数・効果量・多重比較の3つを通ったときだけ文章が出ます。
+     平均の棒2本にせず、<b>1日ぶんの点を全部出します。</b>ばらつきを隠さないためです。</p>
+  <div class="card">
+    <span class="chip">2026/07/01 – 08/26</span>
+    <h2 class="serif">食後就寝までの時間と、翌朝の声</h2>
+    <p class="lead">「2時間未満の日の翌朝」と「2時間以上の日の翌朝」を並べています。<br>
+       縦線はそれぞれの中央値です。</p>
+    <div id="dotplot"></div>
+    <p class="body">2時間未満の翌朝は、2時間以上の翌朝にくらべて声の調子の記録が低めでした。</p>
+    <p class="meta">2時間未満 31回 ／ 2時間以上 24回　　差の大きさ 中程度</p>
+    <details>
+      <summary>数字で見る</summary>
+      <table>
+        <tr><th>群</th><th>日数</th><th>中央値</th><th>四分位</th></tr>
+        <tr><td>2時間未満</td><td>31</td><td>2.6</td><td>2.1–3.3</td></tr>
+        <tr><td>2時間以上</td><td>24</td><td>3.5</td><td>3.0–4.1</td></tr>
+      </table>
+    </details>
+    <p class="foot">※ これは医学的な診断や絶対的な評価を示すものではなく、自己申告に基づく記録から作られた、あくまで参考のための指標です。</p>
+  </div>
+
+  <p class="note"><b>⑥ 事実だけを出す画面。</b>
+     解釈の文章がありません。<b>推奨の2時間にも線を引いていません。</b>
+     文献の値を画面に引くと、線の下が「悪い」になり、それは判定だからです。
+     代わりに引いたのは<b>その人自身の中央値</b>です。</p>
+  <div class="card">
+    <span class="chip">直近28日</span>
+    <h2 class="serif">食後、寝るまでの時間</h2>
+    <p class="lead">最後に食べた時刻から、ベッドに入った時刻までの長さ。</p>
+    <div class="hero">1<small>時間</small>15<small>分</small><span style="font-size:12px;color:var(--ink-2);margin-left:8px">中央値</span></div>
+    <div id="timeline" style="margin-top:12px"></div>
+    <div class="legend">
+      <span><b style="background:var(--s1)"></b>ふだんの日</span>
+      <span><b style="background:var(--s2)"></b>本番・レッスンの日</span>
+    </div>
+    <p class="meta">本番の日は 8 回。うち 7 回が 1 時間未満でした。</p>
+  </div>
+
+  <p class="note"><b>⑦ 並べるだけで気づかせる。</b>
+     周期を横に並べ、声の調子を重ねます。
+     <b>「生理前に低い傾向があります」という文章は、ここには添えません。</b>
+     解釈は⑤のカードだけが担当します。</p>
+  <div class="card">
+    <span class="chip">直近5周期</span>
+    <h2 class="serif">周期と声</h2>
+    <p class="lead">横軸は「周期の何日目か」です。日付ではありません。</p>
+    <div id="cycles"></div>
+    <div class="legend">
+      <span><b class="sw"></b>生理</span>
+      <span><b style="background:var(--s1)"></b>声の調子ふつう以上</span>
+      <span><b style="background:transparent;box-shadow:inset 0 0 0 1.4px var(--s1)"></b>低い（白抜き）</span>
+    </div>
+  </div>
+
+  <p class="note"><b>⑧ 内訳を出すとき。</b>
+     今のサイトの「コンディションスコア」と同じ横棒にそろえます。
+     <b>ただし色で良し悪しを言いません。</b>赤・黄・緑を使うと、
+     色そのものが判定になり、3つのゲートを迂回してしまいます。</p>
+  <div class="card">
+    <span class="chip">直近30日</span>
+    <h2 class="serif">当てはまった日数</h2>
+    <p class="lead">チェックした項目の回数です。多い少ないの評価はしていません。</p>
+    <div class="rows" id="bars"></div>
+    <p class="foot">※ どの項目が声に影響したかは、件数がたまってから⑤の形で判定します。</p>
+  </div>
+
+
+  <p class="note"><b>⑨ 単位が違うものを並べるとき。</b>
+     今のサイトが選んでいる「x軸だけ揃えて上下に並べる」形は<b>正しい判断</b>です。
+     1枚に2つの縦軸を重ねると、交点の位置が軸の取り方で変わってしまいます。
+     ただし<b>目標の破線は外しました。</b>下回った日が「失敗」に見えるためです。</p>
+  <div class="card">
+    <span class="chip">直近14日</span>
+    <h2 class="serif">食事と体重</h2>
+    <p class="lead">上：摂取カロリー。下：体重。x軸だけ揃えて、縦軸はそれぞれ実際の目盛りのままです。</p>
+    <div id="small1"></div>
+    <div id="small2" style="margin-top:6px"></div>
+    <p class="foot">※ 声の分析には使っていません。記録として残しているだけです。</p>
+  </div>
+
+  <p class="note"><b>使わないもの。</b>
+     立体のグラフ（遠近で差が誇張される）、赤・黄・緑の信号色とメーター、
+     抽象的な形で調子を表すこと。<b>立体を担当するのは「羊のおうち」だけにします。</b></p>
+</div>
+<div class="tip" id="tip"></div>
+<script>
+(function(){
+  var tip=document.getElementById('tip');
+  function bindTip(el,text){
+    el.addEventListener('pointerenter',function(){tip.textContent=text;tip.style.opacity=1;});
+    el.addEventListener('pointermove',function(e){
+      tip.style.left=Math.min(window.innerWidth-tip.offsetWidth-8,e.clientX+12)+'px';
+      tip.style.top=(e.clientY-32)+'px';});
+    el.addEventListener('pointerleave',function(){tip.style.opacity=0;});
+  }
+  var NS='http://www.w3.org/2000/svg';
+  function mk(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e;}
+
+
+  /* ① スパークライン + 内訳バー */
+  (function(){
+    var v=[68,71,66,73,70,75,69,72,77,74,70,73,71,74];
+    var W=96,H=26;
+    var svg=mk('svg',{viewBox:'0 0 '+W+' '+H,role:'img','aria-label':'直近14日の推移'});
+    var mn=Math.min.apply(null,v)-2, mx=Math.max.apply(null,v)+2;
+    var x=function(i){return i/(v.length-1)*(W-6)+3;};
+    var y=function(t){return H-4-(t-mn)/(mx-mn)*(H-8);};
+    var d='';v.forEach(function(t,i){d+=(i?'L':'M')+x(i)+' '+y(t);});
+    svg.appendChild(mk('path',{d:d,fill:'none',stroke:'var(--s1)','stroke-width':1.6,'stroke-opacity':.55,'stroke-linejoin':'round'}));
+    svg.appendChild(mk('circle',{cx:x(v.length-1),cy:y(v[v.length-1]),r:3,fill:'var(--s1)',stroke:'var(--card)','stroke-width':1.5}));
+    document.getElementById('spark').appendChild(svg);
+    var rows=[['喉のコンディション',69],['声の質',69],['睡眠',82],['メンタルの安定度',76],['喉の症状のなさ',67],['水分摂取',83]];
+    var el=document.getElementById('score');
+    rows.forEach(function(r){
+      var d=document.createElement('div');d.className='row';
+      d.innerHTML='<div class="l"><span>'+r[0]+'</span><b>'+r[1]+'</b></div>'+
+                  '<div class="bar"><span style="width:'+r[1]+'%"></span></div>';
+      el.appendChild(d);});
+  })();
+
+  /* ② 直近9日の中での位置 */
+  (function(){
+    var days=[['8/19',61],['8/20',78],['8/21',70],['8/22',83],['8/23',66],
+              ['8/24',72],['8/25',80],['8/26',69],['今日',74]];
+    var W=380,H=74,L=8,R=8,T=26;
+    var svg=mk('svg',{viewBox:'0 0 '+W+' '+H,role:'img','aria-label':'直近9日の分布と今日の位置'});
+    var mn=55,mx=90;
+    var x=function(v){return L+(v-mn)/(mx-mn)*(W-L-R);};
+    svg.appendChild(mk('line',{x1:L,x2:W-R,y1:T+16,y2:T+16,stroke:'var(--grid)','stroke-width':1}));
+    [60,70,80,90].forEach(function(t){
+      var q=mk('text',{x:x(t),y:H-6,'text-anchor':'middle','font-size':9,fill:'var(--ink-3)'});q.textContent=t;svg.appendChild(q);
+      svg.appendChild(mk('line',{x1:x(t),x2:x(t),y1:T+11,y2:T+21,stroke:'var(--grid)','stroke-width':1}));
+    });
+    days.forEach(function(d){
+      var today=d[0]==='今日';
+      var c=today?mk('circle',{cx:x(d[1]),cy:T+16,r:7,fill:'var(--s1)',stroke:'var(--card)','stroke-width':2})
+                :mk('circle',{cx:x(d[1]),cy:T+16,r:4.6,fill:'var(--card)',stroke:'var(--s1)','stroke-width':1.6,'stroke-opacity':.45});
+      bindTip(c,d[0]+'　'+d[1]+'点');svg.appendChild(c);
+      if(today){
+        var t=mk('text',{x:x(d[1]),y:T-2,'text-anchor':'middle','font-size':10.5,fill:'var(--s1)','font-weight':600});
+        t.textContent='今日 74';svg.appendChild(t);
+        svg.appendChild(mk('line',{x1:x(d[1]),x2:x(d[1]),y1:T+2,y2:T+8,stroke:'var(--s1)','stroke-width':1.5}));
+      }
+    });
+    document.getElementById('rank').appendChild(svg);
+  })();
+
+  /* ③ 声の調子の推移 */
+  (function(){
+    var v=[3.4,3.1,3.6,2.8,3.9,3.5,2.6,3.3,3.8,3.0,2.4,3.6,3.2,3.9,2.9,3.4,2.2,3.7,3.1,3.5,2.7,3.8,3.3,3.0,3.6,2.5,3.4,3.2];
+    var perf=[3,6,10,16,20,25];
+    var W=380,H=140,L=26,R=8,T=12,B=24;
+    var svg=mk('svg',{viewBox:'0 0 '+W+' '+H,role:'img','aria-label':'声の調子の推移'});
+    var x=function(i){return L+i/(v.length-1)*(W-L-R);};
+    var y=function(t){return T+(1-(t-1)/4)*(H-T-B);};
+    [1,2,3,4,5].forEach(function(t){
+      svg.appendChild(mk('line',{x1:L,x2:W-R,y1:y(t),y2:y(t),stroke:'var(--grid)','stroke-width':1}));
+      var q=mk('text',{x:L-5,y:y(t)+3,'text-anchor':'end','font-size':9,fill:'var(--ink-3)'});q.textContent=t;svg.appendChild(q);});
+    var d='';v.forEach(function(t,i){d+=(i?'L':'M')+x(i)+' '+y(t);});
+    svg.appendChild(mk('path',{d:d,fill:'none',stroke:'var(--s1)','stroke-width':1.8,'stroke-opacity':.3,'stroke-linejoin':'round'}));
+    v.forEach(function(t,i){
+      var isP=perf.indexOf(i)>=0;
+      var c=mk('circle',{cx:x(i),cy:y(t),r:isP?4.8:3.2,fill:isP?'var(--s2)':'var(--s1)',
+        stroke:'var(--card)','stroke-width':1.8});
+      bindTip(c,(isP?'本番・レッスン　':'')+'声の調子 '+t.toFixed(1));svg.appendChild(c);});
+    var a=mk('text',{x:L,y:H-4,'font-size':9.5,fill:'var(--ink-3)'});a.textContent='7/30';svg.appendChild(a);
+    var b=mk('text',{x:W-R,y:H-4,'text-anchor':'end','font-size':9.5,fill:'var(--ink-3)'});b.textContent='8/26';svg.appendChild(b);
+    document.getElementById('voiceline').appendChild(svg);
+  })();
+
+  /* ⑨ 小さく並べる */
+  (function(){
+    var kcal=[0,0,2200,2450,2300,1150,1750,1500,720,1900,2100,1600,1850,1400];
+    var wt=[null,null,57.7,58.5,58.5,59.0,58.8,58.8,58.7,58.6,58.9,58.7,58.5,58.6];
+    var W=380,L=34,R=8;
+    function axisX(svg,H){
+      ['08-14','08-19','08-21','08-24','08-27'].forEach(function(lb,k){
+        var pos=[0,5,7,10,13][k];
+        var q=mk('text',{x:L+pos/13*(W-L-R),y:H-3,'text-anchor':'middle','font-size':8.5,fill:'var(--ink-3)'});
+        q.textContent=lb;svg.appendChild(q);});
+    }
+    (function(){
+      var H=86,T=10,B=18,max=2800;
+      var svg=mk('svg',{viewBox:'0 0 '+W+' '+H});
+      var bw=(W-L-R)/kcal.length*0.62;
+      [0,1400,2800].forEach(function(t){
+        var yy=T+(1-t/max)*(H-T-B);
+        svg.appendChild(mk('line',{x1:L,x2:W-R,y1:yy,y2:yy,stroke:'var(--grid)','stroke-width':1}));
+        var q=mk('text',{x:L-5,y:yy+3,'text-anchor':'end','font-size':8.5,fill:'var(--ink-3)'});
+        q.textContent=t?(t/1000).toFixed(1)+'k':'0';svg.appendChild(q);});
+      kcal.forEach(function(t,i){
+        if(!t)return;
+        var xx=L+i/(kcal.length-1)*(W-L-R)-bw/2;
+        var hh=(t/max)*(H-T-B);
+        var r=mk('rect',{x:xx,y:T+(H-T-B)-hh,width:bw,height:hh,rx:3,fill:'var(--s2)'});
+        bindTip(r,t+' kcal');svg.appendChild(r);});
+      axisX(svg,H);
+      var lb=mk('text',{x:L,y:8,'font-size':9,fill:'var(--ink-2)'});lb.textContent='摂取カロリー';svg.appendChild(lb);
+      document.getElementById('small1').appendChild(svg);
+    })();
+    (function(){
+      var H=76,T=12,B=18,mn=57.4,mx=59.4;
+      var svg=mk('svg',{viewBox:'0 0 '+W+' '+H});
+      var y=function(t){return T+(1-(t-mn)/(mx-mn))*(H-T-B);};
+      [57.6,58.4,59.2].forEach(function(t){
+        svg.appendChild(mk('line',{x1:L,x2:W-R,y1:y(t),y2:y(t),stroke:'var(--grid)','stroke-width':1}));
+        var q=mk('text',{x:L-5,y:y(t)+3,'text-anchor':'end','font-size':8.5,fill:'var(--ink-3)'});q.textContent=t;svg.appendChild(q);});
+      var d='',first=true;
+      wt.forEach(function(t,i){ if(t==null)return;
+        var xx=L+i/(wt.length-1)*(W-L-R);
+        d+=(first?'M':'L')+xx+' '+y(t); first=false;});
+      svg.appendChild(mk('path',{d:d,fill:'none',stroke:'var(--s3)','stroke-width':2,'stroke-linejoin':'round'}));
+      wt.forEach(function(t,i){ if(t==null)return;
+        var xx=L+i/(wt.length-1)*(W-L-R);
+        var c=mk('circle',{cx:xx,cy:y(t),r:3,fill:'var(--s3)',stroke:'var(--card)','stroke-width':1.6});
+        bindTip(c,t+' kg');svg.appendChild(c);});
+      axisX(svg,H);
+      var lb=mk('text',{x:L,y:9,'font-size':9,fill:'var(--ink-2)'});lb.textContent='体重';svg.appendChild(lb);
+      document.getElementById('small2').appendChild(svg);
+    })();
+  })();
+
+  var p=document.getElementById('progress');
+  for(var i=0;i<10;i++){var d=document.createElement('i');if(i<6)d.className='on';p.appendChild(d);}
+
+  (function(){
+    var W=380,H=182,L=74,R=12,T=20;
+    var g1=[2.1,2.4,2.0,3.1,2.6,2.2,3.4,1.8,2.9,2.5,3.3,2.7,2.3,1.9,3.0,2.6,2.8,2.2,3.2,2.4,2.0,2.9,2.5,3.5,2.1,2.7,2.3,3.1,2.6,1.7,2.8];
+    var g2=[3.5,3.9,3.2,4.1,3.6,3.8,3.0,4.3,3.4,3.7,4.0,3.3,3.6,4.2,3.1,3.8,3.5,3.9,3.4,4.4,3.2,3.7,4.0,3.6];
+    var svg=mk('svg',{viewBox:'0 0 '+W+' '+H,role:'img','aria-label':'2群の比較'});
+    var x=function(v){return L+(v-1)/4*(W-L-R);};
+    [1,2,3,4,5].forEach(function(t){
+      svg.appendChild(mk('line',{x1:x(t),x2:x(t),y1:T,y2:H-42,stroke:'var(--grid)','stroke-width':1}));
+      var q=mk('text',{x:x(t),y:H-27,'text-anchor':'middle','font-size':10,fill:'var(--ink-3)'});q.textContent=t;svg.appendChild(q);
+    });
+    var lab=mk('text',{x:W/2,y:H-8,'text-anchor':'middle','font-size':10,fill:'var(--ink-3)'});
+    lab.textContent='翌朝の声の調子（低い ← → 高い）';svg.appendChild(lab);
+    function row(data,yc,color,name,med){
+      var t=mk('text',{x:0,y:yc+4,'font-size':11,fill:'var(--ink-2)'});t.textContent=name;svg.appendChild(t);
+      data.forEach(function(v,i){
+        var c=mk('circle',{cx:x(v),cy:yc+((i%5)-2)*4.2,r:3.8,fill:color,'fill-opacity':.45,
+          stroke:'var(--card)','stroke-width':1.6});
+        bindTip(c,name+'：'+v.toFixed(1));svg.appendChild(c);
+      });
+      svg.appendChild(mk('line',{x1:x(med),x2:x(med),y1:yc-15,y2:yc+15,stroke:color,'stroke-width':2.5,'stroke-linecap':'round'}));
+      var m=mk('text',{x:x(med),y:yc-20,'text-anchor':'middle','font-size':10,fill:color,'font-weight':600});
+      m.textContent='中央値 '+med.toFixed(1);svg.appendChild(m);
+    }
+    row(g1,60,'var(--s1)','2時間未満',2.6);
+    row(g2,120,'var(--s2)','2時間以上',3.5);
+    document.getElementById('dotplot').appendChild(svg);
+  })();
+
+  (function(){
+    var vals=[95,140,60,150,120,45,135,110,155,70,130,40,145,125,90,150,35,140,115,160,50,135,145,80,130,55,150,120];
+    var perf=[0,2,5,11,16,20,23,25];
+    var W=380,H=150,L=32,R=8,T=14,B=26,max=180;
+    var svg=mk('svg',{viewBox:'0 0 '+W+' '+H,role:'img','aria-label':'食後就寝までの時間の推移'});
+    var x=function(i){return L+i/(vals.length-1)*(W-L-R);};
+    var y=function(v){return T+(1-v/max)*(H-T-B);};
+    [0,60,120,180].forEach(function(v){
+      svg.appendChild(mk('line',{x1:L,x2:W-R,y1:y(v),y2:y(v),stroke:'var(--grid)','stroke-width':1}));
+      var t=mk('text',{x:L-6,y:y(v)+3,'text-anchor':'end','font-size':9,fill:'var(--ink-3)'});
+      t.textContent=(v/60)+'h';svg.appendChild(t);});
+    var med=115;
+    svg.appendChild(mk('line',{x1:L,x2:W-R,y1:y(med),y2:y(med),stroke:'var(--ink-3)','stroke-width':1.2,'stroke-dasharray':'2 4'}));
+    var ml=mk('text',{x:L+44,y:y(med)-6,'font-size':9.5,fill:'var(--ink-3)',stroke:'var(--card)','stroke-width':3.5,'paint-order':'stroke'});
+    ml.textContent='あなたの中央値';svg.appendChild(ml);
+    var dp='';vals.forEach(function(v,i){dp+=(i?'L':'M')+x(i)+' '+y(v);});
+    svg.appendChild(mk('path',{d:dp,fill:'none',stroke:'var(--s1)','stroke-width':1.8,'stroke-opacity':.3,'stroke-linejoin':'round'}));
+    vals.forEach(function(v,i){
+      var isP=perf.indexOf(i)>=0;
+      var c=mk('circle',{cx:x(i),cy:y(v),r:isP?4.6:3.4,fill:isP?'var(--s2)':'var(--s1)',
+        stroke:'var(--card)','stroke-width':1.8});
+      bindTip(c,(isP?'本番・レッスンの日　':'')+Math.floor(v/60)+'時間'+(v%60)+'分');
+      svg.appendChild(c);});
+    var a=mk('text',{x:L,y:H-4,'font-size':9.5,fill:'var(--ink-3)'});a.textContent='7/30';svg.appendChild(a);
+    var b=mk('text',{x:W-R,y:H-4,'text-anchor':'end','font-size':9.5,fill:'var(--ink-3)'});b.textContent='8/26';svg.appendChild(b);
+    document.getElementById('timeline').appendChild(svg);
+  })();
+
+  (function(){
+    var cycles=[{label:'8月',len:29,bleed:5,low:[24,25,26,27,28]},
+                {label:'7月',len:29,bleed:5,low:[25,26,27,28]},
+                {label:'6月',len:27,bleed:6,low:[22,23,24,25,26]},
+                {label:'5月',len:30,bleed:5,low:[26,27,28,29]},
+                {label:'4月',len:28,bleed:4,low:[23,24,25,26,27]}];
+    var W=380,L=32,R=8,rowH=25,T=15,H=T+cycles.length*rowH+12;
+    var svg=mk('svg',{viewBox:'0 0 '+W+' '+H,role:'img','aria-label':'周期を横に並べた図'});
+    var cw=(W-L-R)/30;
+    [1,5,10,15,20,25,29].forEach(function(d){
+      var t=mk('text',{x:L+(d-.5)*cw,y:9,'text-anchor':'middle','font-size':9,fill:'var(--ink-3)'});
+      t.textContent=d;svg.appendChild(t);});
+    cycles.forEach(function(c,ri){
+      var yy=T+ri*rowH;
+      var lb=mk('text',{x:0,y:yy+13,'font-size':10.5,fill:'var(--ink-2)'});lb.textContent=c.label;svg.appendChild(lb);
+      var band=mk('rect',{x:L+1,y:yy+2,width:c.bleed*cw-2,height:8,rx:4,fill:'var(--band)'});
+      bindTip(band,c.label+'　生理 '+c.bleed+'日');svg.appendChild(band);
+      for(var d=1;d<=c.len;d++){
+        var low=c.low.indexOf(d)>=0;
+        var dot=low?mk('circle',{cx:L+(d-.5)*cw,cy:yy+17,r:2.2,fill:'none',stroke:'var(--s1)','stroke-width':1.4})
+                 :mk('circle',{cx:L+(d-.5)*cw,cy:yy+17,r:2.9,fill:'var(--s1)'});
+        bindTip(dot,c.label+' '+d+'日目　声の調子：'+(low?'低い':'ふつう以上'));svg.appendChild(dot);}
+    });
+    document.getElementById('cycles').appendChild(svg);
+  })();
+
+  (function(){
+    var data=[['食後すぐ横になった',22],['遅い時間にお酒',14],['満腹まで食べた',12],
+              ['前かがみの時間が長かった',9],['締めつける衣装だった',6],['脂っこい食事だった',5]];
+    var el=document.getElementById('bars');
+    data.forEach(function(d){
+      var w=Math.round(d[1]/30*100);
+      var r=document.createElement('div');r.className='row';
+      r.innerHTML='<div class="l"><span>'+d[0]+'</span><b>'+d[1]+'日</b></div>'+
+                  '<div class="bar"><span style="width:'+w+'%"></span></div>';
+      el.appendChild(r);});
+  })();
+
+})();
+</script>
+</body>
+</html>
