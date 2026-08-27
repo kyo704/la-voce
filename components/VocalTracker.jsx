@@ -949,8 +949,14 @@ function buildFormData(date, entries) {
   }
   return {
     date,
-    throatCondition: 3,
-    voiceQuality: 3,
+    // ★触っていない値を保存しないこと。
+    //   以前はここが 3 や 7 で始まっていたため、その欄に一度も触れずに保存した日にも
+    //   「喉3・声3・睡眠7時間・心の余裕3」が本人の申告と区別できない形で保存され、
+    //   平均・相関・予報・偏差値がすべて、作られた値を含んだまま計算されていた。
+    //   分析側は typeof x === "number" で null を除外できるので、未記入は null で持つ。
+    //   （DotSelector は value=null で全ドットが未選択、NumberField は空欄になる）
+    throatCondition: null,
+    voiceQuality: null,
     throatSymptoms: [],
     throatSymptomsOther: "",
     voiceMemo: "",
@@ -958,19 +964,21 @@ function buildFormData(date, entries) {
     wakeNote: "",
     routineNote: "",
     resonanceScore: "",
-    sleepHours: 7,
-    sleepQuality: 3,
+    sleepHours: null,
+    sleepQuality: null,
     bedtime: "",
     waterBySlot: {},
     mealNotes: "",
     dinnerTime: "",
     dinnerTags: [],
-    location: getLastLocation(entries, date),
+    // 滞在地も、前日の値を引き継ぐと「今日そこに居た」ことになってしまう。
+    // 引き継ぎたい場合は「前日をコピー」を明示的に押してもらう。
+    location: "",
     weather: "",
     temperature: "",
     humidity: "",
     performanceQuality: null,
-    ease: 3,
+    ease: null,
     mentalReason: "",
     mentalTags: [],
     notes: "",
