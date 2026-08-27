@@ -106,7 +106,12 @@ assertTrue(/function ProgressDots/.test(ui), "進捗ドットの部品がある"
 const dots = ui.slice(ui.indexOf("function ProgressDots"), ui.indexOf("function ProgressDots") + 1200);
 assertTrue(/width: 9, height: 9/.test(dots), "9px の丸（§3-F）");
 assertTrue(/length: total/.test(dots) && /const total = 10/.test(dots), "10個");
-assertTrue(/日分たまりました/.test(dots) && /で傾向を出せます/.test(dots), "★指定どおりの文言");
+// ★描画仕様 §3-F の「傾向を出せます」は、分析の検出力と族の設計.md §2-2 が
+//   改めています。あと4日でたまるのは「判定を始められる件数」であって、
+//   はっきりした関係が見えるまでには、ふつう3〜4か月かかります。
+assertTrue(/日分たまりました/.test(dots), "◯日分たまりました");
+assertTrue(/判定を始められます/.test(dots), "★「判定を始められます」（新しい指定）");
+assertTrue(!/傾向を出せます/.test(dots), "★「傾向を出せます」と書いていない（事実と違う）");
 assertTrue(/SERIES\.s2/.test(dots) && /SERIES\.grid/.test(dots), "たまった分と残りを色で分けている（2色のみ）");
 
 console.log("\n=== §5: 3つの状態 ===");

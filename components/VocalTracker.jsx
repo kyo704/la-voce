@@ -2396,7 +2396,9 @@ function DotStrip({ values, today, height = 46 }) {
 // 分析画面の描画仕様.md §3-F: 進捗ドット。件数が足りない全てのカードで使う。
 // ★「データがありません」と書かないための部品（§7-11）。
 //   9px の丸を10個、たまった分だけ SERIES.s2、残りは SERIES.grid。
-//   文言は「◯日分たまりました。あと◯日で傾向を出せます。」
+//   文言は「◯日分たまりました。あと◯日で、判定を始められます。」
+//   ★描画仕様 §3-F は「傾向を出せます」と書いていましたが、
+//     分析の検出力と族の設計.md §2-2 がこれを改めています。新しいほうが正。
 function ProgressDots({ current, required }) {
   const total = 10;
   const filled = required > 0 ? Math.min(total, Math.round((current / required) * total)) : 0;
@@ -2411,9 +2413,13 @@ function ProgressDots({ current, required }) {
           }} />
         ))}
       </div>
+      {/* ★「傾向を出せます」と書いてはいけない（分析の検出力と族の設計.md §2-2）。
+          あと4日でたまるのは「判定を始められる件数」であって、
+          はっきりした関係が見えるまでには、ふつう3〜4か月かかります。
+          4日で何か分かるかのように書くのは、事実と違います。 */}
       <p className="text-xs" style={{ color: SERIES.axis }}>
         {remaining > 0
-          ? `${current}日分たまりました。あと${remaining}日で傾向を出せます。`
+          ? `${current}日分たまりました。あと${remaining}日で、判定を始められます。`
           : `${current}日分たまりました。`}
       </p>
     </div>
