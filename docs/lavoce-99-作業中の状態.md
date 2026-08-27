@@ -169,6 +169,21 @@ supabase/check_detail_keys.sql の②③（キーの列挙）が、その確認�
 ★この5本を入れるときは、健康情報の側から消すことになります。
 同じ内容が2か所に残ると、片方だけ古くなります。統合の作業と一緒に。
 
+## 5.10 分析タブの節見出し（残り4節）
+
+見出しが無条件に描かれるため、中身が1つも無い節は「空のカードが上に
+居座っている」ように見えます。本番と環境は、中身の条件で包みました。
+残りの4節（声・身体・メンタル・全体）も同じ扱いにする必要があります。
+
+包む条件（調べた範囲）:
+  声    hasRefluxCondition ／ voiceMemoEntries.length > 0 ／ ほか
+  全体  compositePatternInsight ／ restMethodStats ／ cycleTrackingOn(profile)
+        ／ roleLoadStats ／ effectiveHabitRanking ／ lagCorrelationMap
+  身体・メンタル … 条件の抽出ができていません。手で確認が要ります。
+
+★本当は、節ごとに条件を並べるより「子が0件なら節ごと消す」ほうが
+崩れません。CSS の :has() で書けます。器を作り直すときに検討すること。
+
 ## 5.5 受領済みだが、まだ着手しない文書
 
 - **権利と課金の線引き.md**（旧 entitlements）… ★G3 が全部終わるまで

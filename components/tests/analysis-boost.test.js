@@ -112,6 +112,18 @@ async function main() {
     "★いま動けるものが先、待つしかないものが後");
   assertTrue(/jumpToRecordSection\(c\.section\)/.test(ui), "R3: 該当セクションへ直行する");
 
+  console.log("\n=== ★中身の無い節は、見出しごと出さない（④） ===");
+  console.log("     見出しだけ残ると、空のカードが上に居座っているように見えます。");
+  // 本番・環境は、中身の条件で見出しを包んである
+  assertTrue(/analysisLocks\.map\.peaking\.visible && analysisLocks\.map\.peaking\.unlocked && \(/.test(ui),
+    "★本番の見出しが、中身があるときだけ出る");
+  assertTrue(/analysisLocks\.map\.envComfort\.unlocked\)\s*\|\| locationStats/.test(ui.replace(/\s+/g, " ")),
+    "★環境の見出しも、中身があるときだけ出る");
+  // ロックされたカードは、上に残らず下へ集約されること
+  assertTrue(/analysisLocks\.map\.peaking\.unlocked \? \(/.test(ui),
+    "本番のカード自体は、ロック層を通っている");
+  assertTrue(/analysisLocks\.pending\.map/.test(ui), "ロック中のものは下に集約されている");
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");

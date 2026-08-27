@@ -12553,12 +12553,18 @@ export default function VocalTracker({ userId, userEmail }) {
                     行き場のないものの寄せ集めになっていた。本番・環境・組み合わせに分けた。
                     発声負荷ACWRは声の使用量なので【声】へ移してある。 */}
 
+                {/* ★中身が1つも無い節は、見出しごと出さないこと。
+                    見出しだけが残ると、空のカードが上に居座っているように見える。
+                    ロックされたカードは、いちばん下の「この分析を強くする」に
+                    集約されるので、ここには何も残らない（G2-11）。 */}
+                {analysisLocks.map.peaking.visible && analysisLocks.map.peaking.unlocked && (
                 <div className="pt-2">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderPerformance")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                     {t("groupHeaderPerformanceDesc")}
                   </p>
                 </div>
+                )}
 
                 {analysisLocks.map.peaking.visible && (
                   analysisLocks.map.peaking.unlocked ? (
@@ -12624,12 +12630,16 @@ export default function VocalTracker({ userId, userEmail }) {
                   ) : null
                 )}
 
+                {/* ★同じ理由。快適帯もロケーションも無ければ、見出しを出さない。 */}
+                {((analysisLocks.map.envComfort.visible && analysisLocks.map.envComfort.unlocked)
+                  || locationStats.confident.length > 0 || locationStats.lowN.length > 0) && (
                 <div className="pt-2">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderEnvironment")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                     {t("groupHeaderEnvironmentDesc")}
                   </p>
                 </div>
+                )}
 
                 {analysisLocks.map.envComfort.visible && (
                   analysisLocks.map.envComfort.unlocked ? (
