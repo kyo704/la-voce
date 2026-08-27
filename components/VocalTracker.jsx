@@ -8482,290 +8482,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     {recordView === "day" && (
                       <>
                     {showGroup("body") && (
-                    <SectionCard title={t("sectionBodyData")} icon={Scale}>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <div className="flex items-center gap-1.5 mb-1.5">
-                            <Ruler size={14} style={{ color: C.gold }} />
-                            <label className="text-sm font-medium">{t("labelHeight")}(cm)</label>
-                          </div>
-                          <input
-                            type="number"
-                            value={profile.height_cm}
-                            onChange={(e) => setProfile((p) => ({ ...p, height_cm: e.target.value === "" ? "" : Number(e.target.value) }))}
-                            onWheel={(e) => e.target.blur()}
-                            className="w-full rounded-lg border p-2 text-sm ff-mono"
-                            style={{ borderColor: C.line, background: C.paper, color: C.ink }}
-                          />
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium block mb-1.5">{t("labelVoiceType")}</label>
-                          <select
-                            value={profile.voice_type}
-                            onChange={(e) => setProfile((p) => ({ ...p, voice_type: e.target.value }))}
-                            className="w-full rounded-lg border p-2 text-sm"
-                            style={{ borderColor: C.line, background: C.paper, color: C.ink }}
-                          >
-                            <option value="">{t("labelSelectPlaceholder")}</option>
-                            {VOICE_TYPES.map((v) => <option key={v} value={v}>{t(VOICE_TYPE_KEYS[v])}</option>)}
-                          </select>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium block mb-1.5">{t("labelPhase")}</label>
-                          <select
-                            value={profile.nutrition_phase}
-                            onChange={(e) => setProfile((p) => ({ ...p, nutrition_phase: e.target.value }))}
-                            className="w-full rounded-lg border p-2 text-sm"
-                            style={{ borderColor: C.line, background: C.paper, color: C.ink }}
-                          >
-                            {NUTRITION_PHASES.map((v) => <option key={v} value={v}>{t(NUTRITION_PHASE_KEYS[v])}</option>)}
-                          </select>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium block mb-1.5">{t("labelProteinCoefficient")}</label>
-                          <input
-                            type="number" step="0.1"
-                            value={profile.protein_coefficient}
-                            onChange={(e) => setProfile((p) => ({ ...p, protein_coefficient: e.target.value === "" ? "" : Number(e.target.value) }))}
-                            onWheel={(e) => e.target.blur()}
-                            className="w-full rounded-lg border p-2 text-sm ff-mono"
-                            style={{ borderColor: C.line, background: C.paper, color: C.ink }}
-                          />
-                          <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("noteProteinCoefficientRange")}</p>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium block mb-1.5">{t("labelAge")}</label>
-                          <input
-                            type="number"
-                            value={profile.age}
-                            onChange={(e) => setProfile((p) => ({ ...p, age: e.target.value === "" ? "" : Number(e.target.value) }))}
-                            onWheel={(e) => e.target.blur()}
-                            className="w-full rounded-lg border p-2 text-sm ff-mono"
-                            style={{ borderColor: C.line, background: C.paper, color: C.ink }}
-                          />
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium block mb-1.5">{t("labelSex")}</label>
-                          <select
-                            value={profile.sex}
-                            onChange={(e) => setProfile((p) => ({ ...p, sex: e.target.value }))}
-                            className="w-full rounded-lg border p-2 text-sm"
-                            style={{ borderColor: C.line, background: C.paper, color: C.ink }}
-                          >
-                            <option value="">{t("sexNotAnswer")}</option>
-                            <option value="男性">{t("sexMale")}</option>
-                            <option value="女性">{t("sexFemale")}</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      {profile.sex === "女性" && (
-                        <div className="rounded-xl p-3 flex items-center justify-between gap-3" style={{ background: C.paper }}>
-                          <div>
-                            <p className="text-sm font-medium">月経周期を記録する</p>
-                            <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
-                              周期開始日を1タップで記録し、分析タブで声・メンタルとの関連を見られるようにします。任意（オプトイン）です。
-                            </p>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => setProfile((p) => ({ ...p, track_cycle: !p.track_cycle }))}
-                            className="flex-shrink-0"
-                            style={{
-                              width: 44, height: 26, borderRadius: 999, position: "relative",
-                              background: profile.track_cycle ? C.curtain : C.line,
-                              transition: "background 0.15s"
-                            }}
-                          >
-                            <span style={{
-                              position: "absolute", top: 3, left: profile.track_cycle ? 21 : 3,
-                              width: 20, height: 20, borderRadius: 999, background: "#FFFDF8",
-                              transition: "left 0.15s"
-                            }} />
-                          </button>
-                        </div>
-                      )}
-
-                      <div>
-                        <label className="text-sm font-medium block mb-1.5">{t("labelVocalProfession")}</label>
-                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("noteVocalProfession")}</p>
-                        <div className="flex gap-2 flex-wrap">
-                          {VOCAL_PROFESSIONS.map((p) => (
-                            <button key={p} type="button" onClick={() => setProfile((prev) => ({ ...prev, vocal_profession: p }))}
-                              className="px-3.5 py-1.5 rounded-full text-xs font-medium"
-                              style={{
-                                background: profile.vocal_profession === p ? C.curtain : C.paper,
-                                color: profile.vocal_profession === p ? "#FFFDF8" : C.inkSoft,
-                                border: `1px solid ${profile.vocal_profession === p ? C.curtain : C.line}`
-                              }}>
-                              {t(p === "singer" ? "professionSinger" : p === "announcer" ? "professionAnnouncer" : p === "voice_actor" ? "professionVoiceActor" : "professionPopMusical")}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="text-sm font-medium block mb-1.5">{t("labelVocalRangeLow")}</label>
-                          <input type="text" value={profile.vocal_range_low} placeholder={t("placeholderNoteExample")}
-                            onChange={(e) => setProfile((p) => ({ ...p, vocal_range_low: e.target.value }))}
-                            className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium block mb-1.5">{t("labelVocalRangeHigh")}</label>
-                          <input type="text" value={profile.vocal_range_high} placeholder={t("placeholderNoteExample")}
-                            onChange={(e) => setProfile((p) => ({ ...p, vocal_range_high: e.target.value }))}
-                            className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
-                        </div>
-                      </div>
-                      <details className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
-                        <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>無理なく出せる音域（任意）</summary>
-                        <p className="mt-1.5 mb-2 leading-relaxed">
-                          上の音域は「出せる限界」です。曲目ごとの負荷計算では、本来はもっと狭い「無理なく出せる音域」を使うのが正確です。空欄のままなら、上の音域をそのまま使います。
-                        </p>
-                        <div className="grid grid-cols-2 gap-3">
-                          <input type="text" value={profile.comfort_range_low} placeholder={t("placeholderNoteExample")}
-                            onChange={(e) => setProfile((p) => ({ ...p, comfort_range_low: e.target.value }))}
-                            className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.card }} />
-                          <input type="text" value={profile.comfort_range_high} placeholder={t("placeholderNoteExample")}
-                            onChange={(e) => setProfile((p) => ({ ...p, comfort_range_high: e.target.value }))}
-                            className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.card }} />
-                        </div>
-                      </details>
-                      {(profile.vocal_profession || "singer") === "singer" && (
-                        <div className="rounded-xl p-3" style={{ background: C.paper }}>
-                          <p className="text-xs font-medium mb-2">{t("labelVoiceRangeRefTitle")}</p>
-                          <div className="space-y-1">
-                            {[
-                              ["voiceSoprano", "C4 – C6"],
-                              ["voiceMezzo", "A3 – A5"],
-                              ["voiceAlto", "F3 – F5"],
-                              ["voiceCountertenor", "G3 – E5"],
-                              ["voiceTenor", "C3 – C5"],
-                              ["voiceBaritone", "A2 – A4"],
-                              ["voiceBass", "E2 – E4"]
-                            ].map(([key, range]) => (
-                              <div key={key} className="flex items-center justify-between text-xs">
-                                <span style={{ color: C.inkSoft }}>{t(key)}</span>
-                                <span className="ff-mono">{range}</span>
-                              </div>
-                            ))}
-                          </div>
-                          <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("noteVoiceRangeRef")}</p>
-                        </div>
-                      )}
-                      <div>
-                        <label className="text-sm font-medium block mb-1.5">{t("labelTechnicalGoal")}</label>
-                        <input type="text" value={profile.technical_goal}
-                          onChange={(e) => setProfile((p) => ({ ...p, technical_goal: e.target.value }))}
-                          className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium block mb-1.5">既往症・診断済みの症状（任意）</label>
-                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
-                          選ぶと、その症状に関する専用の分析が「分析」タブに表示されるようになります。ここは診断を受けている項目だけを選ぶ場所で、疑いの有無を判定するものではありません。
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {CONDITION_OPTIONS.map((c) => (
-                            <Chip key={c.key} label={c.label} active={(profile.conditions || []).includes(c.key)}
-                              onClick={() => setProfile((p) => {
-                                const current = p.conditions || [];
-                                return { ...p, conditions: current.includes(c.key) ? current.filter((x) => x !== c.key) : [...current, c.key] };
-                              })} />
-                          ))}
-                        </div>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium block mb-1.5">{t("labelHealthNotes")}</label>
-                        <textarea rows={2} value={profile.health_notes}
-                          onChange={(e) => setProfile((p) => ({ ...p, health_notes: e.target.value }))}
-                          className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                      </div>
-
-                      <button onClick={handleSaveProfile} disabled={profileSaveStatus === "saving"}
-                        className="text-xs px-4 py-2 rounded-full font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
-                        {profileSaveStatus === "saving" ? t("saveButtonSaving") : profileSaveStatus === "saved" ? t("saveButtonSaved") : t("btnSaveProfileSettings")}
-                      </button>
-
-                      {Object.keys(repertoireTessituraMap).length >= 2 && (
-                        <div className="rounded-xl p-3 mt-2" style={{ background: C.paper }}>
-                          <p className="text-sm font-medium mb-1">レパートリーの整理</p>
-                          <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
-                            「蝶々夫人」と「蝶々夫人（第2幕）」のように、表記ゆれで別の曲として登録されてしまった場合、ここで1つに統合できます。統合すると、過去の記録もすべて書き換わります。
-                          </p>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            <div>
-                              <label className="text-xs block mb-1" style={{ color: C.inkSoft }}>統合される曲（消える方）</label>
-                              <select value={mergeSourceRepertoire} onChange={(e) => { setMergeSourceRepertoire(e.target.value); setMergeConfirming(false); }}
-                                className="w-full rounded-lg border p-2 text-xs" style={{ borderColor: C.line, background: C.card }}>
-                                <option value="">選択してください</option>
-                                {Object.keys(repertoireTessituraMap).sort().map((name) => (
-                                  <option key={name} value={name} disabled={name === mergeTargetRepertoire}>{name}（{repertoireUsageCounts[normalizeTitle(name)]?.count || 0}回）</option>
-                                ))}
-                              </select>
-                            </div>
-                            <div>
-                              <label className="text-xs block mb-1" style={{ color: C.inkSoft }}>統合先（残る方）</label>
-                              <select value={mergeTargetRepertoire} onChange={(e) => { setMergeTargetRepertoire(e.target.value); setMergeConfirming(false); }}
-                                className="w-full rounded-lg border p-2 text-xs" style={{ borderColor: C.line, background: C.card }}>
-                                <option value="">選択してください</option>
-                                {Object.keys(repertoireTessituraMap).sort().map((name) => (
-                                  <option key={name} value={name} disabled={name === mergeSourceRepertoire}>{name}（{repertoireUsageCounts[normalizeTitle(name)]?.count || 0}回）</option>
-                                ))}
-                              </select>
-                            </div>
-                          </div>
-                          {mergeSourceRepertoire && mergeTargetRepertoire && (
-                            <>
-                              <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                                {findAffectedDatesForRepertoire(mergeSourceRepertoire).length}件の記録が「{mergeTargetRepertoire}」に書き換えられます。この操作は取り消せません。
-                              </p>
-                              {!mergeConfirming ? (
-                                <button type="button" onClick={() => setMergeConfirming(true)}
-                                  className="mt-2 px-3.5 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
-                                  統合する
-                                </button>
-                              ) : (
-                                <div className="flex gap-2 mt-2">
-                                  <button type="button" disabled={mergeInProgress}
-                                    onClick={() => handleMergeRepertoire(mergeSourceRepertoire, mergeTargetRepertoire)}
-                                    className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: mergeInProgress ? 0.6 : 1 }}>
-                                    {mergeInProgress ? "統合中…" : "本当に統合する（取り消せません）"}
-                                  </button>
-                                  <button type="button" onClick={() => setMergeConfirming(false)}
-                                    className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
-                                    やめる
-                                  </button>
-                                </div>
-                              )}
-                            </>
-                          )}
-                          {mergeResult && (
-                            <p className="text-xs mt-2 rounded-lg p-2" style={{ background: C.card, color: C.ink }}>{mergeResult}</p>
-                          )}
-                        </div>
-                      )}
-
-                      <div className="rounded-xl p-3" style={{ background: C.paper }}>
-                        <p className="text-sm font-medium mb-1">記録データの同意状況</p>
-                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
-                          記録・分析のための取得に{profile.consent_health_data_at ? `${new Date(profile.consent_health_data_at).toLocaleDateString("ja-JP")}に同意済み` : "未同意"}です。
-                        </p>
-                        <label className="flex items-start gap-2" style={{ cursor: "pointer" }}>
-                          <input type="checkbox" checked={!!profile.consent_stats_use_at} className="mt-0.5"
-                            onChange={async (e) => {
-                              const checked = e.target.checked;
-                              const supabase = createClient();
-                              const value = checked ? new Date().toISOString() : null;
-                              const { error } = await supabase.from("profiles").update({ consent_stats_use_at: value }).eq("id", userId);
-                              if (!error) setProfile((p) => ({ ...p, consent_stats_use_at: value }));
-                            }} />
-                          <span className="text-xs" style={{ color: C.inkSoft }}>
-                            （任意）匿名化した統計として、機能改善に役立てることに同意する
-                          </span>
-                        </label>
-                      </div>
-
+                    <SectionCard title={t("sectionTodayBody")} icon={Scale}>
                       <NumberField label={t("labelTodayWeight")} icon={Scale} value={formData.weightKg ?? ""} step={0.1} min={20} max={200} suffix="kg"
                         onChange={(v) => setFormData((f) => ({ ...f, weightKg: v }))} />
                       {showGroup("body_fat") && (
@@ -12120,6 +11837,301 @@ export default function VocalTracker({ userId, userEmail }) {
 
               </div>
             )}
+            {/* 職業別プロファイル設計案 §4-2「畳むのではなく切り出す」。
+                ほぼ一生変わらない身体データは、毎日開く「今日の記録」から完全に外へ出す。
+                判定基準は「昨日と今日で値が変わりうるか」。変わらないものはここ。 */}
+            {activeTab === "profile" && (
+              <div className="space-y-5">
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h2 className="ff-display italic text-xl mb-1">{t("titleProfileSettings")}</h2>
+                  <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteProfileSettings")}</p>
+                </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <Ruler size={14} style={{ color: C.gold }} />
+                        <label className="text-sm font-medium">{t("labelHeight")}(cm)</label>
+                      </div>
+                      <input
+                        type="number"
+                        value={profile.height_cm}
+                        onChange={(e) => setProfile((p) => ({ ...p, height_cm: e.target.value === "" ? "" : Number(e.target.value) }))}
+                        onWheel={(e) => e.target.blur()}
+                        className="w-full rounded-lg border p-2 text-sm ff-mono"
+                        style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium block mb-1.5">{t("labelVoiceType")}</label>
+                      <select
+                        value={profile.voice_type}
+                        onChange={(e) => setProfile((p) => ({ ...p, voice_type: e.target.value }))}
+                        className="w-full rounded-lg border p-2 text-sm"
+                        style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                      >
+                        <option value="">{t("labelSelectPlaceholder")}</option>
+                        {VOICE_TYPES.map((v) => <option key={v} value={v}>{t(VOICE_TYPE_KEYS[v])}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium block mb-1.5">{t("labelPhase")}</label>
+                      <select
+                        value={profile.nutrition_phase}
+                        onChange={(e) => setProfile((p) => ({ ...p, nutrition_phase: e.target.value }))}
+                        className="w-full rounded-lg border p-2 text-sm"
+                        style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                      >
+                        {NUTRITION_PHASES.map((v) => <option key={v} value={v}>{t(NUTRITION_PHASE_KEYS[v])}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium block mb-1.5">{t("labelProteinCoefficient")}</label>
+                      <input
+                        type="number" step="0.1"
+                        value={profile.protein_coefficient}
+                        onChange={(e) => setProfile((p) => ({ ...p, protein_coefficient: e.target.value === "" ? "" : Number(e.target.value) }))}
+                        onWheel={(e) => e.target.blur()}
+                        className="w-full rounded-lg border p-2 text-sm ff-mono"
+                        style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                      />
+                      <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("noteProteinCoefficientRange")}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium block mb-1.5">{t("labelAge")}</label>
+                      <input
+                        type="number"
+                        value={profile.age}
+                        onChange={(e) => setProfile((p) => ({ ...p, age: e.target.value === "" ? "" : Number(e.target.value) }))}
+                        onWheel={(e) => e.target.blur()}
+                        className="w-full rounded-lg border p-2 text-sm ff-mono"
+                        style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium block mb-1.5">{t("labelSex")}</label>
+                      <select
+                        value={profile.sex}
+                        onChange={(e) => setProfile((p) => ({ ...p, sex: e.target.value }))}
+                        className="w-full rounded-lg border p-2 text-sm"
+                        style={{ borderColor: C.line, background: C.paper, color: C.ink }}
+                      >
+                        <option value="">{t("sexNotAnswer")}</option>
+                        <option value="男性">{t("sexMale")}</option>
+                        <option value="女性">{t("sexFemale")}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {profile.sex === "女性" && (
+                    <div className="rounded-xl p-3 flex items-center justify-between gap-3" style={{ background: C.paper }}>
+                      <div>
+                        <p className="text-sm font-medium">月経周期を記録する</p>
+                        <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
+                          周期開始日を1タップで記録し、分析タブで声・メンタルとの関連を見られるようにします。任意（オプトイン）です。
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setProfile((p) => ({ ...p, track_cycle: !p.track_cycle }))}
+                        className="flex-shrink-0"
+                        style={{
+                          width: 44, height: 26, borderRadius: 999, position: "relative",
+                          background: profile.track_cycle ? C.curtain : C.line,
+                          transition: "background 0.15s"
+                        }}
+                      >
+                        <span style={{
+                          position: "absolute", top: 3, left: profile.track_cycle ? 21 : 3,
+                          width: 20, height: 20, borderRadius: 999, background: "#FFFDF8",
+                          transition: "left 0.15s"
+                        }} />
+                      </button>
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="text-sm font-medium block mb-1.5">{t("labelVocalProfession")}</label>
+                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("noteVocalProfession")}</p>
+                    <div className="flex gap-2 flex-wrap">
+                      {VOCAL_PROFESSIONS.map((p) => (
+                        <button key={p} type="button" onClick={() => setProfile((prev) => ({ ...prev, vocal_profession: p }))}
+                          className="px-3.5 py-1.5 rounded-full text-xs font-medium"
+                          style={{
+                            background: profile.vocal_profession === p ? C.curtain : C.paper,
+                            color: profile.vocal_profession === p ? "#FFFDF8" : C.inkSoft,
+                            border: `1px solid ${profile.vocal_profession === p ? C.curtain : C.line}`
+                          }}>
+                          {t(p === "singer" ? "professionSinger" : p === "announcer" ? "professionAnnouncer" : p === "voice_actor" ? "professionVoiceActor" : "professionPopMusical")}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-sm font-medium block mb-1.5">{t("labelVocalRangeLow")}</label>
+                      <input type="text" value={profile.vocal_range_low} placeholder={t("placeholderNoteExample")}
+                        onChange={(e) => setProfile((p) => ({ ...p, vocal_range_low: e.target.value }))}
+                        className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium block mb-1.5">{t("labelVocalRangeHigh")}</label>
+                      <input type="text" value={profile.vocal_range_high} placeholder={t("placeholderNoteExample")}
+                        onChange={(e) => setProfile((p) => ({ ...p, vocal_range_high: e.target.value }))}
+                        className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
+                    </div>
+                  </div>
+                  <details className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
+                    <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>無理なく出せる音域（任意）</summary>
+                    <p className="mt-1.5 mb-2 leading-relaxed">
+                      上の音域は「出せる限界」です。曲目ごとの負荷計算では、本来はもっと狭い「無理なく出せる音域」を使うのが正確です。空欄のままなら、上の音域をそのまま使います。
+                    </p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <input type="text" value={profile.comfort_range_low} placeholder={t("placeholderNoteExample")}
+                        onChange={(e) => setProfile((p) => ({ ...p, comfort_range_low: e.target.value }))}
+                        className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.card }} />
+                      <input type="text" value={profile.comfort_range_high} placeholder={t("placeholderNoteExample")}
+                        onChange={(e) => setProfile((p) => ({ ...p, comfort_range_high: e.target.value }))}
+                        className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.card }} />
+                    </div>
+                  </details>
+                  {(profile.vocal_profession || "singer") === "singer" && (
+                    <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                      <p className="text-xs font-medium mb-2">{t("labelVoiceRangeRefTitle")}</p>
+                      <div className="space-y-1">
+                        {[
+                          ["voiceSoprano", "C4 – C6"],
+                          ["voiceMezzo", "A3 – A5"],
+                          ["voiceAlto", "F3 – F5"],
+                          ["voiceCountertenor", "G3 – E5"],
+                          ["voiceTenor", "C3 – C5"],
+                          ["voiceBaritone", "A2 – A4"],
+                          ["voiceBass", "E2 – E4"]
+                        ].map(([key, range]) => (
+                          <div key={key} className="flex items-center justify-between text-xs">
+                            <span style={{ color: C.inkSoft }}>{t(key)}</span>
+                            <span className="ff-mono">{range}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("noteVoiceRangeRef")}</p>
+                    </div>
+                  )}
+                  <div>
+                    <label className="text-sm font-medium block mb-1.5">{t("labelTechnicalGoal")}</label>
+                    <input type="text" value={profile.technical_goal}
+                      onChange={(e) => setProfile((p) => ({ ...p, technical_goal: e.target.value }))}
+                      className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium block mb-1.5">既往症・診断済みの症状（任意）</label>
+                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                      選ぶと、その症状に関する専用の分析が「分析」タブに表示されるようになります。ここは診断を受けている項目だけを選ぶ場所で、疑いの有無を判定するものではありません。
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {CONDITION_OPTIONS.map((c) => (
+                        <Chip key={c.key} label={c.label} active={(profile.conditions || []).includes(c.key)}
+                          onClick={() => setProfile((p) => {
+                            const current = p.conditions || [];
+                            return { ...p, conditions: current.includes(c.key) ? current.filter((x) => x !== c.key) : [...current, c.key] };
+                          })} />
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium block mb-1.5">{t("labelHealthNotes")}</label>
+                    <textarea rows={2} value={profile.health_notes}
+                      onChange={(e) => setProfile((p) => ({ ...p, health_notes: e.target.value }))}
+                      className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                  </div>
+
+                  <button onClick={handleSaveProfile} disabled={profileSaveStatus === "saving"}
+                    className="text-xs px-4 py-2 rounded-full font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                    {profileSaveStatus === "saving" ? t("saveButtonSaving") : profileSaveStatus === "saved" ? t("saveButtonSaved") : t("btnSaveProfileSettings")}
+                  </button>
+
+                  {Object.keys(repertoireTessituraMap).length >= 2 && (
+                    <div className="rounded-xl p-3 mt-2" style={{ background: C.paper }}>
+                      <p className="text-sm font-medium mb-1">レパートリーの整理</p>
+                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                        「蝶々夫人」と「蝶々夫人（第2幕）」のように、表記ゆれで別の曲として登録されてしまった場合、ここで1つに統合できます。統合すると、過去の記録もすべて書き換わります。
+                      </p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-xs block mb-1" style={{ color: C.inkSoft }}>統合される曲（消える方）</label>
+                          <select value={mergeSourceRepertoire} onChange={(e) => { setMergeSourceRepertoire(e.target.value); setMergeConfirming(false); }}
+                            className="w-full rounded-lg border p-2 text-xs" style={{ borderColor: C.line, background: C.card }}>
+                            <option value="">選択してください</option>
+                            {Object.keys(repertoireTessituraMap).sort().map((name) => (
+                              <option key={name} value={name} disabled={name === mergeTargetRepertoire}>{name}（{repertoireUsageCounts[normalizeTitle(name)]?.count || 0}回）</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="text-xs block mb-1" style={{ color: C.inkSoft }}>統合先（残る方）</label>
+                          <select value={mergeTargetRepertoire} onChange={(e) => { setMergeTargetRepertoire(e.target.value); setMergeConfirming(false); }}
+                            className="w-full rounded-lg border p-2 text-xs" style={{ borderColor: C.line, background: C.card }}>
+                            <option value="">選択してください</option>
+                            {Object.keys(repertoireTessituraMap).sort().map((name) => (
+                              <option key={name} value={name} disabled={name === mergeSourceRepertoire}>{name}（{repertoireUsageCounts[normalizeTitle(name)]?.count || 0}回）</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                      {mergeSourceRepertoire && mergeTargetRepertoire && (
+                        <>
+                          <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                            {findAffectedDatesForRepertoire(mergeSourceRepertoire).length}件の記録が「{mergeTargetRepertoire}」に書き換えられます。この操作は取り消せません。
+                          </p>
+                          {!mergeConfirming ? (
+                            <button type="button" onClick={() => setMergeConfirming(true)}
+                              className="mt-2 px-3.5 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                              統合する
+                            </button>
+                          ) : (
+                            <div className="flex gap-2 mt-2">
+                              <button type="button" disabled={mergeInProgress}
+                                onClick={() => handleMergeRepertoire(mergeSourceRepertoire, mergeTargetRepertoire)}
+                                className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: mergeInProgress ? 0.6 : 1 }}>
+                                {mergeInProgress ? "統合中…" : "本当に統合する（取り消せません）"}
+                              </button>
+                              <button type="button" onClick={() => setMergeConfirming(false)}
+                                className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                                やめる
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      )}
+                      {mergeResult && (
+                        <p className="text-xs mt-2 rounded-lg p-2" style={{ background: C.card, color: C.ink }}>{mergeResult}</p>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                    <p className="text-sm font-medium mb-1">記録データの同意状況</p>
+                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                      記録・分析のための取得に{profile.consent_health_data_at ? `${new Date(profile.consent_health_data_at).toLocaleDateString("ja-JP")}に同意済み` : "未同意"}です。
+                    </p>
+                    <label className="flex items-start gap-2" style={{ cursor: "pointer" }}>
+                      <input type="checkbox" checked={!!profile.consent_stats_use_at} className="mt-0.5"
+                        onChange={async (e) => {
+                          const checked = e.target.checked;
+                          const supabase = createClient();
+                          const value = checked ? new Date().toISOString() : null;
+                          const { error } = await supabase.from("profiles").update({ consent_stats_use_at: value }).eq("id", userId);
+                          if (!error) setProfile((p) => ({ ...p, consent_stats_use_at: value }));
+                        }} />
+                      <span className="text-xs" style={{ color: C.inkSoft }}>
+                        （任意）匿名化した統計として、機能改善に役立てることに同意する
+                      </span>
+                    </label>
+                  </div>
+              </div>
+            )}
+
             {activeTab === "questionnaires" && (
               <div className="space-y-5">
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
@@ -12612,14 +12624,11 @@ export default function VocalTracker({ userId, userEmail }) {
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>設定</p>
                   <div className="space-y-1">
-                    <button type="button" onClick={() => setActiveTab("today")}
+                    <button type="button" onClick={() => setActiveTab("profile")}
                       className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
                       <span className="flex items-center gap-2"><Scale size={16} style={{ color: C.gold }} />プロフィール・記録項目</span>
                       <span style={{ color: C.inkSoft }}>→</span>
                     </button>
-                    <p className="text-xs px-1 mt-1" style={{ color: C.inkSoft }}>
-                      現在は「今日の記録」タブの「身体データ」欄にまとまっています。専用の設定画面への切り出しは今後の対応予定です。
-                    </p>
                   </div>
                 </div>
 
