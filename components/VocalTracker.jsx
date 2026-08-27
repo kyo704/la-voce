@@ -3735,7 +3735,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "", is_admin: false, record_mode: DEFAULT_RECORD_MODE });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], allergies: [], regular_medications: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "", is_admin: false, record_mode: DEFAULT_RECORD_MODE });
   // 確認用: 管理者アカウント（is_admin）は、動作確認のため全職業の機能を見られるようにする。
   // ★重要：profile宣言より前に置くと「宣言前にアクセス」エラーになるため、必ずこの直後に置くこと。
   const effectiveProfessions = useMemo(() => {
@@ -4032,6 +4032,17 @@ export default function VocalTracker({ userId, userEmail }) {
       //   ここだけ別に取り、失敗したら既定（しっかり記録）のまま動かす。
       const { data: modeRow } = await supabase
         .from("profiles").select("record_mode").eq("id", userId).maybeSingle();
+      // アレルギー・常用薬も、migration_profile_health_fields.sql 未実行の環境が
+      // ありうるので、本体クエリとは分けて寛容に読む（record_mode と同じ理由）。
+      const { data: healthRow } = await supabase
+        .from("profiles").select("allergies, regular_medications").eq("id", userId).maybeSingle();
+      if (mounted && healthRow) {
+        setProfile((prev) => ({
+          ...prev,
+          allergies: healthRow.allergies || [],
+          regular_medications: healthRow.regular_medications || []
+        }));
+      }
       let mode = modeRow && modeRow.record_mode ? modeRow.record_mode : null;
       if (!mode) {
         // 列がまだ無い環境では、端末に覚えさせた値を使う。
@@ -6756,6 +6767,19 @@ export default function VocalTracker({ userId, userEmail }) {
         track_cycle: !!profile.track_cycle
       })
       .eq("id", userId);
+    // ★アレルギーと常用薬は、上の update に混ぜないこと。
+    //   migration_profile_health_fields.sql が未実行の環境では列が無く、
+    //   混ぜるとプロフィール全体の保存が丸ごと失敗してしまうため。
+    const { error: healthError } = await supabase
+      .from("profiles")
+      .update({
+        allergies: profile.allergies || [],
+        regular_medications: profile.regular_medications || []
+      })
+      .eq("id", userId);
+    if (healthError) {
+      console.warn("アレルギー・常用薬を保存できませんでした。supabase/migration_profile_health_fields.sql を実行してください。", healthError);
+    }
     setProfileSaveStatus(error ? "error" : "saved");
     setTimeout(() => setProfileSaveStatus("idle"), 1800);
   }
@@ -12042,6 +12066,27 @@ export default function VocalTracker({ userId, userEmail }) {
                           })} />
                       ))}
                     </div>
+                  </div>
+                  {/* 職業別プロファイル設計案 §4-5: アレルギーと常用薬。
+                      ★どちらも既往症(conditions)とは別に持つ。
+                      「常用薬のリスト」は恒久的な情報で、「今日の服薬」
+                      （entries.medication_tags）とは別物なので混ぜないこと。
+                      いずれも受診用サマリーに載せるべき情報。 */}
+                  <div>
+                    <label className="text-sm font-medium block mb-1.5">{t("labelAllergies")}</label>
+                    <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{t("noteAllergies")}</p>
+                    <textarea rows={2} value={(profile.allergies || []).join("\n")}
+                      placeholder={t("placeholderAllergies")}
+                      onChange={(e) => setProfile((p) => ({ ...p, allergies: e.target.value.split("\n").map((x) => x.trim()).filter(Boolean) }))}
+                      className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium block mb-1.5">{t("labelRegularMedications")}</label>
+                    <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{t("noteRegularMedications")}</p>
+                    <textarea rows={2} value={(profile.regular_medications || []).join("\n")}
+                      placeholder={t("placeholderRegularMedications")}
+                      onChange={(e) => setProfile((p) => ({ ...p, regular_medications: e.target.value.split("\n").map((x) => x.trim()).filter(Boolean) }))}
+                      className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                   </div>
                   <div>
                     <label className="text-sm font-medium block mb-1.5">{t("labelHealthNotes")}</label>
