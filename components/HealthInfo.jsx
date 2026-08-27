@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { BookOpen, AlertCircle, Wind, Dumbbell, Ruler, ChevronDown } from "lucide-react";
+import { BookOpen, AlertCircle, Wind, Dumbbell, ChevronDown } from "lucide-react";
 import { C } from "@/lib/tokens";
 import { HEALTH_INFO_CONTENT } from "@/lib/healthInfoContent";
 
@@ -145,9 +145,6 @@ export default function HealthInfo({ language = "ja" }) {
         <Note>{t("s5Note")}</Note>
       </Section>
 
-      <Section title={t("s6Title")} icon={Ruler}>
-        <p>{t("s6Para1")}</p>
-      </Section>
     </div>
   );
 }

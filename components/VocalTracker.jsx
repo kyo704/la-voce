@@ -1020,11 +1020,6 @@ function computeEnergyAvailability(intakeKcal, exerciseKcal, ffmKg) {
   if (!ffmKg || ffmKg <= 0 || intakeKcal == null) return null;
   return (intakeKcal - (exerciseKcal || 0)) / ffmKg;
 }
-function healthyWeightRange(heightCm) {
-  if (!heightCm) return null;
-  const h = heightCm / 100;
-  return { min: 18.5 * h * h, max: 24.9 * h * h };
-}
 function sumMacro(meals, key) {
   return (meals || []).reduce((total, m) => total + (Number(m[key]) || 0), 0);
 }
@@ -4089,10 +4084,6 @@ export default function VocalTracker({ userId, userEmail }) {
   const currentBMI = useMemo(
     () => computeBMI(formData && formData.weightKg ? Number(formData.weightKg) : null, profile.height_cm ? Number(profile.height_cm) : null),
     [formData, profile.height_cm]
-  );
-  const weightRange = useMemo(
-    () => healthyWeightRange(profile.height_cm ? Number(profile.height_cm) : null),
-    [profile.height_cm]
   );
   const nutritionTargets = useMemo(() => {
     const w = (formData && formData.weightKg) ? Number(formData.weightKg) : getLatestWeight(entries, selectedDate);
