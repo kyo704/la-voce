@@ -59,6 +59,16 @@ async function main() {
   assertTrue(!/VOCAL_PROFESSIONS\.map/.test(tracker), "旧い一覧で職業を並べている箇所が残っていない");
   assertTrue(/professionOtherNote/.test(tracker), "「その他」が何をするのかを画面で説明している");
 
+  console.log("\n=== テスト4b: ラベルも1箇所から引いている ===");
+  // ★一覧に「その他」を足しても、ラベルが三項演算子のままだと最後の枝
+  //   （ポップス・ロック）に落ちて、同じ名前のボタンが2つ並ぶ。実際に起きた。
+  assertTrue(!/professionSinger" ?: /.test(tracker),
+    "職業名を三項演算子の連鎖で出している箇所が残っていない");
+  assertTrue(/PROFESSION_LABEL_KEYS = \{[\s\S]{0,400}other: "professionOther"/.test(tracker),
+    "ラベルの対応表に other が入っている");
+  const labelUses = (tracker.match(/PROFESSION_LABEL_KEYS\[/g) || []).length;
+  assertTrue(labelUses >= 5, `職業名を出す箇所が対応表を使っている（${labelUses}箇所）`);
+
   console.log("\n=== テスト5: 職業別のコンテンツを新しく作っていない ===");
   assertTrue(!/"other":/.test(visSrc), "分析カードの対応表に other 向けの指定を足していない");
   const others = (learnSrc.match(/"other"/g) || []).length;

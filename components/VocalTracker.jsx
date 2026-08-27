@@ -3088,7 +3088,7 @@ function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
                               color: value.vocal_profession === p ? "#FFFDF8" : C.inkSoft,
                               border: `1px solid ${value.vocal_profession === p ? C.curtain : C.line}`
                             }}>
-                            {t(p === "singer" ? "professionSinger" : p === "announcer" ? "professionAnnouncer" : p === "voice_actor" ? "professionVoiceActor" : "professionPopMusical")}
+                            {t(PROFESSION_LABEL_KEYS[p])}
                           </button>
                         ))}
                       </div>
@@ -9945,9 +9945,7 @@ export default function VocalTracker({ userId, userEmail }) {
                 const scope = link.share_scope || {};
                 const studentEntries = studentEntriesCache[link.student_id];
                 const summary = studentEntries ? computeStudentSummary(studentEntries, link) : null;
-                const studentProfessionLabel = t(link.student && link.student.vocal_profession === "singer" ? "professionSinger"
-                  : link.student && link.student.vocal_profession === "announcer" ? "professionAnnouncer"
-                  : link.student && link.student.vocal_profession === "voice_actor" ? "professionVoiceActor" : "professionPopMusical");
+                const studentProfessionLabel = t(PROFESSION_LABEL_KEYS[link.student && link.student.vocal_profession] || "professionSinger");
                 const studentDisplayName = (link.student && link.student.display_name) || studentProfessionLabel;
                 const recentDates = studentEntries ? Object.keys(studentEntries).sort().slice(-14).reverse() : [];
                 return (
@@ -10100,9 +10098,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   const scope = link.share_scope || {};
                   const studentEntries = studentEntriesCache[link.student_id];
                   const summary = studentEntries ? computeStudentSummary(studentEntries, link) : null;
-                  const studentProfessionLabel = t(link.student && link.student.vocal_profession === "singer" ? "professionSinger"
-                    : link.student && link.student.vocal_profession === "announcer" ? "professionAnnouncer"
-                    : link.student && link.student.vocal_profession === "voice_actor" ? "professionVoiceActor" : "professionPopMusical");
+                  const studentProfessionLabel = t(PROFESSION_LABEL_KEYS[link.student && link.student.vocal_profession] || "professionSinger");
                   const studentDisplayName = (link.student && link.student.display_name) || studentProfessionLabel;
                   return (
                     <div key={link.id} className="rounded-2xl border overflow-hidden" style={{ background: C.card, borderColor: C.line }}>
@@ -12780,7 +12776,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     <h3 className="text-sm font-medium mb-1.5">基本情報</h3>
                     <p className="text-xs mb-4" style={{ color: C.ink }}>
                       年齢：{profile.age || "未登録"}　性別：{profile.sex ? t(profile.sex === "男性" ? "sexMale" : profile.sex === "女性" ? "sexFemale" : "sexNotAnswer") : "未登録"}
-                      　職業：{t(profile.vocal_profession === "singer" ? "professionSinger" : profile.vocal_profession === "announcer" ? "professionAnnouncer" : profile.vocal_profession === "voice_actor" ? "professionVoiceActor" : "professionPopMusical")}
+                      　職業：{t(PROFESSION_LABEL_KEYS[profile.vocal_profession] || "professionSinger")}
                       {clinicWeeklyVoiceUsage.length > 0 && <>　1日あたりの平均発声時間：約{roundTo1(clinicWeeklyVoiceUsage.reduce((a, w) => a + w.hours, 0) / (clinicWeeklyVoiceUsage.length * 7))}時間</>}
                     </p>
 
