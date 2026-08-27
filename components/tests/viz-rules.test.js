@@ -116,6 +116,38 @@ assertTrue(/まだはっきりした傾向が出ていません/.test(tr), "★�
 assertTrue(!/弱い関係|関係はありません|相関なし/.test(readCode("lib", "translations.js")),
   "★「弱い関係があります」と書いていない");
 
+console.log("\n=== §3-A: 数値ヒーローにスパークライン ===");
+assertTrue(/function Sparkline/.test(ui), "スパークラインの部品がある");
+const sp = ui.slice(ui.indexOf("function Sparkline"), ui.indexOf("function Sparkline") + 1200);
+assertTrue(/width = 96, height = 26/.test(sp), "96×26px（§3-A）");
+assertTrue(!/<XAxis|<YAxis|axis/i.test(sp), "★軸・目盛りを付けていない");
+assertTrue(/slice\(-14\)/.test(sp), "直近14日");
+assertTrue(/<circle/.test(sp) && (sp.match(/<circle/g) || []).length === 1, "★点は最新の1つだけ");
+
+console.log("\n=== §3-C: リングを点列に置き換えた ===");
+assertTrue(/function DotStrip/.test(ui), "点列の部品がある");
+assertTrue(!/strokeDasharray=\{`\$\{\(Math\.min\(100/.test(ui), "★偏差値のリングが残っていない");
+assertTrue(!/deviationScore\.T >= 60 \? C\.sage/.test(ui), "★リングの色を値で変えていた箇所が無い");
+assertTrue(/DotStrip values=\{deviationScore\.values\}/.test(ui), "分布そのものを渡している（順位だけでは散らばりが見えない）");
+
+console.log("\n=== §3-D: 本番・レッスンの日を、色と大きさの両方で区別 ===");
+assertTrue(/function trendDot/.test(ui), "点の描き分けが部品になっている");
+const td = ui.slice(ui.indexOf("function trendDot"), ui.indexOf("function trendDot") + 700);
+assertTrue(/4\.8/.test(td) && /3\.2/.test(td), "★大きさで区別している（4.8 と 3.2）");
+assertTrue(/SERIES\.s2/.test(td) && /SERIES\.s1/.test(td), "色でも区別している（色だけに頼らない）");
+assertTrue(/strokeOpacity=\{0\.3\}/.test(ui), "★線は補助（不透明度0.3）。主役は点");
+assertTrue(/isKeyDay/.test(ui), "本番・レッスンの日を印にしている");
+
+console.log("\n=== §3-E: 群間比較を、方向で色分けしない ===");
+assertTrue(!/r\.g >= 0 \? C\.sage : C\.curtain/.test(ui),
+  "★「良い方向は緑・悪い方向は赤」をやめた（色が判定を言っていた）");
+assertTrue(!/<BarChart[\s\S]{0,600}effectiveHabitRanking/.test(ui), "★棒グラフにしていない（§3-E）");
+
+console.log("\n=== §3-I: 散布図に回帰直線を引かない ===");
+const sc = ui.slice(ui.indexOf("<ScatterChart"), ui.indexOf("</ScatterChart>"));
+assertTrue(!/<Line\b|ReferenceLine/.test(sc), "★直線を引いていない（引いた瞬間に予測になる）");
+assertTrue(/fillOpacity=\{0\.45\}/.test(sc), "点の不透明度0.45（重なりが見える）");
+
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
 if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
 console.log("\n✓ すべて成功しました。");

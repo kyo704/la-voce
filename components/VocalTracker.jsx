@@ -12865,7 +12865,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           <div key={r.key} className="rounded-xl p-3" style={{ background: C.paper }}>
                             <div className="flex items-center justify-between gap-2">
                               <span className="text-sm font-medium">{r.label}</span>
-                              <span className="text-xs flex-shrink-0" style={{ color: C.gold }}>
+                              <span className="text-xs flex-shrink-0" style={{ color: SERIES.axis }}>
                                 {"★".repeat(r.stars)}{"☆".repeat(4 - r.stars)}
                               </span>
                             </div>
@@ -12877,8 +12877,13 @@ export default function VocalTracker({ userId, userEmail }) {
                                   <>
                                     <div style={{ position: "absolute", left: 0, right: 0, top: 10, height: 1, background: C.line }} />
                                     <div style={{ position: "absolute", left: `${pct(0)}%`, top: 2, width: 1, height: 18, background: C.line }} />
-                                    <div style={{ position: "absolute", left: `${pct(r.ciLow)}%`, width: `${pct(r.ciHigh) - pct(r.ciLow)}%`, top: 9, height: 3, borderRadius: 2, background: inconclusive ? C.line : (r.g >= 0 ? C.sage : C.curtain) }} />
-                                    <div style={{ position: "absolute", left: `calc(${pct(r.g)}% - 5px)`, top: 5, width: 10, height: 10, borderRadius: 999, background: inconclusive ? C.inkSoft : (r.g >= 0 ? C.sage : C.curtain) }} />
+                                    {/* ★良い方向を緑、悪い方向を赤にしていた（§7-5・§1-4 違反）。
+                                        「この習慣は悪い」と色が言い切っていた。方向は0の縦線に対する
+                                        左右で読めるので、色を変える必要がない。
+                                        判断できないものだけ、淡いほうで描き分ける（濃さの違いではなく、
+                                        「まだ確からしくない」という別の意味を持たせている）。 */}
+                                    <div style={{ position: "absolute", left: `${pct(r.ciLow)}%`, width: `${pct(r.ciHigh) - pct(r.ciLow)}%`, top: 9, height: 3, borderRadius: 2, background: inconclusive ? SERIES.grid : SERIES.pale }} />
+                                    <div style={{ position: "absolute", left: `calc(${pct(r.g)}% - 5px)`, top: 5, width: 10, height: 10, borderRadius: 999, background: inconclusive ? SERIES.axis : SERIES.s1 }} />
                                   </>
                                 );
                               })()}
@@ -13048,7 +13053,10 @@ export default function VocalTracker({ userId, userEmail }) {
                               <XAxis type="number" dataKey="x" name={scatterInfo.label} unit={scatterInfo.unit} tick={{ fontSize: 11, fill: C.inkSoft }} />
                               <YAxis type="number" dataKey="y" name={analysisTarget === "performance" ? t("targetPerformance") : analysisTarget === "ease" ? t("targetEase") : t("targetThroat")} domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 11, fill: C.inkSoft }} />
                               <Tooltip cursor={{ strokeDasharray: "3 3" }} contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                              <Scatter data={scatterInfo.pairs} fill={C.gold} />
+                              {/* §3-I: 点のみ。★回帰直線・近似曲線を引かない。
+                                  引いた瞬間に「予測」になり、3ゲートの外に出る。
+                                  ρ は上の文章に数値で添えてある（図の上に線として描かない）。 */}
+                              <Scatter data={scatterInfo.pairs} fill={SERIES.s1} fillOpacity={0.45} />
                             </ScatterChart>
                           </ResponsiveContainer>
                         </div>
