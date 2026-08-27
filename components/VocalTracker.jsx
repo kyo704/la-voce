@@ -460,6 +460,36 @@ function isTransientAuthError(error) {
     message.includes("unauthorized")
   );
 }
+// ★セッションの更新は、同時にいくつ失敗しても「1回だけ」走らせる。
+//   画面を開いた瞬間、7つの useEffect が12本のクエリを並行して投げる。
+//   一時的な認証エラーが起きると、そのすべてが同時にエラーになり、
+//   以前は各自が refreshSession() を呼んでいた。1回のつまずきで6回の更新が
+//   立て続けに走っていた（コンソールに同じ警告が並ぶのはこれ）。
+//   Supabase はセッションを更新するたびにリフレッシュトークンを作り替えるので、
+//   同時に何度も更新すると、後から届いた更新が「もう使われたトークン」として
+//   弾かれ、最悪の場合そのままログアウトになる。
+let sessionRefreshInFlight = null;
+let sessionRefreshedAt = 0;
+const SESSION_REFRESH_COOLDOWN_MS = 10000;
+async function refreshSessionOnce(supabase) {
+  // すでに誰かが更新中なら、その結果を一緒に待つ（新しく走らせない）。
+  if (sessionRefreshInFlight) return sessionRefreshInFlight;
+  // ついさっき更新したばかりなら、もう一度は走らせない。
+  // 更新済みのトークンで、呼び出し元がそのまま再試行すれば足りる。
+  if (Date.now() - sessionRefreshedAt < SESSION_REFRESH_COOLDOWN_MS) return null;
+  const task = (async () => {
+    try {
+      await supabase.auth.refreshSession();
+    } catch (e) {
+      /* リフレッシュ自体が失敗しても、呼び出し元の再試行で最終的なエラーを拾う */
+    } finally {
+      sessionRefreshedAt = Date.now();
+      sessionRefreshInFlight = null;
+    }
+  })();
+  sessionRefreshInFlight = task;
+  return task;
+}
 // queryFn: () => Promise<{data, error}> を返す関数（クエリを毎回組み立て直せるように関数で受け取る）。
 // 一時的な認証エラーが出た場合のみ、セッションを更新してから1回だけ再試行する。
 // それ以外のエラー（権限不足や入力ミスなど）はそのまま返し、無限にリトライしない。
@@ -467,11 +497,7 @@ async function runQueryWithAuthRetry(supabase, queryFn, label) {
   let result = await queryFn();
   if (result.error && isTransientAuthError(result.error)) {
     console.warn(`${label || "クエリ"}で一時的な認証エラーを検知。セッションを更新して再試行します。`, result.error);
-    try {
-      await supabase.auth.refreshSession();
-    } catch (e) {
-      /* リフレッシュ自体が失敗しても、下のリトライで最終的なエラーを拾う */
-    }
+    await refreshSessionOnce(supabase);
     await new Promise((resolve) => setTimeout(resolve, 600));
     result = await queryFn();
   }
