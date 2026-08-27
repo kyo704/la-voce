@@ -177,6 +177,25 @@ async function main() {
   assertTrue(/C = C == null \? L : lambdaC \* L \+ \(1 - lambdaC\) \* C/.test(ui), "★EWMA の式がそのまま");
   assertTrue(/acwr: C > 0 \? A \/ C : null/.test(ui), "★比の取り方もそのまま");
 
+  console.log("\n=== テスト13: ★過去も含めて同じ規則で計算する（坂本さんの判断・案A） ===");
+  console.log("     ポイントとは扱いが違う。理由まで含めてここに残す。");
+  // 影響のあった日は実データで4日だけでした（③の集計）。
+  // 過去だけ別の規則にすると、グラフの途中で同じ活動が別の意味になり、
+  // ACWR がいちばん見せたい「前後のつながり」が読めなくなります。
+  const est = ui.slice(ui.indexOf("function withEstimatedMinutes"), ui.indexOf("function withEstimatedMinutes") + 1200);
+  assertTrue(!/\d{4}-\d{2}-\d{2}/.test(est), "★推定の適用に、切り替え日を入れていない");
+  assertTrue(!/_FROM\b/.test(est), "★「この日から」という定数を使っていない");
+  const seriesStart = ui.indexOf("const acwrSeries = useMemo");
+  const seriesBlock = ui.slice(seriesStart, seriesStart + 1800);
+  assertTrue(!/\d{4}-\d{2}-\d{2}/.test(seriesBlock), "★ACWR 系列の側にも切り替え日が無い");
+  // ★ポイントの側には、意図的に切り替え日があります。
+  //   ポイントは「本人が貯めた残高」なので、過去分を作り直すと取り上げになる。
+  //   ACWR は「その場で計算して見せている値」で、誰も何も貯めていない。
+  //   だから扱いが違う。この違いを消さないこと。
+  const character = fs.readFileSync(path.join(ROOT, "lib", "character.js"), "utf-8");
+  assertTrue(/POINTS_RULE_V2_FROM/.test(character),
+    "ポイントの側には切り替え日がある（貯めた残高を動かさないため）");
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");
