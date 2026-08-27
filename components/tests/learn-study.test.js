@@ -191,6 +191,31 @@ async function main() {
   const madeTable = sqls.some((f) => /create table[^;]*self_explanation/i.test(fs2.readFileSync(path2.join(__dirname, "..", "..", "supabase", f), "utf-8")));
   assertTrue(!madeTable, "★新しい表を作っていない（移し損ねと、書き出し・削除への足し忘れを避ける）");
 
+  console.log("\n=== §2-2 覚えるべき1文の見せ方 ===");
+  assertEqual(m.KEY_SENTENCE_HEADING, "この記事で覚えておくこと", "見出しが決まっている");
+  assertEqual(m.shouldShowKeySentence({ keySentence: "乾燥は摩擦を増やす" }), true, "1文があれば出す");
+  assertEqual(m.shouldShowKeySentence({}), false, "★無い記事では、枠ごと出さない（空の枠を見せない）");
+  const uiRaw2 = readRaw("components", "VocalTracker.jsx");
+  assertTrue(/shouldShowKeySentence\(article\)/.test(uiRaw2), "画面が、その判定を使っている");
+  // ★蛍光ペンのような装飾を使わない
+  const keyBlock = uiRaw2.slice(uiRaw2.indexOf("KEY_SENTENCE_HEADING}</p>") - 700, uiRaw2.indexOf("KEY_SENTENCE_HEADING}</p>") + 400);
+  assertTrue(!/background:\s*C\.gold|mark>|highlight/i.test(keyBlock), "★蛍光ペンのような装飾が無い（枠で囲むだけ）");
+
+  console.log("\n=== §2-3 自分に当てはめる問い ===");
+  assertEqual(m.REFLECTION_PRIVACY_NOTE, "これはあなただけが読みます。", "本人だけが読む、と書いてある");
+  assertEqual(m.validateReflectionPrompt("乾いた場所で歌ったあと、最初に気づく変化は何ですか？").ok, true, "問いの形なら通る");
+  assertEqual(m.validateReflectionPrompt("あなたの場合を書いてください").ok, false, "問いの形でないと通らない");
+  assertEqual(m.validateReflectionPrompt(null).ok, true, "未設定は通る");
+  console.log("     ★ここに記録の数値を差し込むと、3ゲートを通っていない主張になります。");
+  ["あなたの平均は{{avg}}時間ですね？", "先週は${days}日でした？", "%sleep% 時間でしたね？"].forEach((bad) => {
+    assertEqual(m.validateReflectionPrompt(bad).ok, false, `★数値の差し込みを弾く: ${bad.slice(0, 12)}…`);
+  });
+  assertTrue(/studyReadiness\(article\)\.hasReflection/.test(uiRaw2), "★問いが無い記事では、欄ごと出さない");
+  assertTrue(/REFLECTION_PRIVACY_NOTE/.test(uiRaw2), "画面に「あなただけが読みます」を出している");
+  // 自分に当てはめた答えも、メモと同じ表に残す（別の表を作らない）
+  assertTrue(/handleCreateArticleNote\(article\.id, "reflection"/.test(uiRaw2),
+    "★答えは article_notes に kind: reflection として残す（新しい表を作らない）");
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");

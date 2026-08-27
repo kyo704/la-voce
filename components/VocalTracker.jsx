@@ -55,6 +55,11 @@ import { buildExportSummary } from "@/lib/exportSummary";
 import { EXPORTED_TABLES, EXPORTED_PROFILE_COLUMNS, entriesToCsv, buildExportPayload, sanitizeShareHistory } from "@/lib/exportData";
 import HealthInfo from "@/components/HealthInfo";
 import { ARTICLES, CHAPTER_LABELS, PROFESSION_LABELS, getArticlesForProfession, getArticleById } from "@/lib/learnContent";
+// 学ぶ画面の勉強の仕組み（§2・§3）。★規則はこのモジュールが持つ。
+import {
+  KEY_SENTENCE_HEADING, REFLECTION_PRIVACY_NOTE, PREQUESTION_NOTE,
+  shouldShowKeySentence, studyReadiness
+} from "@/lib/learnStudy";
 import CharacterHome from "@/components/CharacterHome";
 
 /* ---------- constants ---------- */
@@ -4322,6 +4327,8 @@ export default function VocalTracker({ userId, userEmail }) {
   const [viewingArticleId, setViewingArticleId] = useState(null);
   const [articleNotes, setArticleNotes] = useState({}); // articleId -> notes[]
   const [newArticleNoteDraft, setNewArticleNoteDraft] = useState("");
+  // 自分に当てはめる問いの下書き（記事ごと）
+  const [reflectionDraft, setReflectionDraft] = useState({});
   const [learnSearchQuery, setLearnSearchQuery] = useState("");
   // 作業指示-教室プラン §B・C・E: 教室プラン用のstate
   const [myOrgs, setMyOrgs] = useState([]); // 自分がメンバーである組織一覧（role付き）
@@ -13857,6 +13864,38 @@ export default function VocalTracker({ userId, userEmail }) {
                       <input type="checkbox" checked={isRead} onChange={(e) => handleMarkArticleRead(article.id, e.target.checked)} />
                       {t("markAsReadLabel")}
                     </label>
+
+                    {/* ★§2-2 覚えるべき1文。枠で囲むだけ。蛍光ペンのような装飾は使わない。
+                        「大事なところに線を引く」のではなく「大事な1文だけを別に置く」。
+                        1文が無い記事では、枠ごと出さない（空の枠を見せない）。 */}
+                    {shouldShowKeySentence(article) && (
+                      <div className="rounded-2xl p-4 border mb-4" style={{ background: C.paper, borderColor: C.line }}>
+                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{KEY_SENTENCE_HEADING}</p>
+                        <p className="text-sm leading-relaxed" style={{ color: C.ink }}>{article.keySentence}</p>
+                      </div>
+                    )}
+
+                    {/* ★§2-3 自分に当てはめる問い。本人に思い出させるためのもので、
+                        アプリが教えるためのものではない。
+                        ★ここに記録の数値を差し込まないこと（職業別 §9 の線）。 */}
+                    {studyReadiness(article).hasReflection && (
+                      <div className="rounded-2xl p-4 border mb-4" style={{ background: C.card, borderColor: C.line }}>
+                        <h3 className="ff-display italic text-lg mb-1">あなたの場合はどうですか</h3>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{article.reflectionPrompt}</p>
+                        <textarea rows={2} maxLength={500}
+                          value={reflectionDraft[article.id] || ""}
+                          onChange={(e) => setReflectionDraft((d) => ({ ...d, [article.id]: e.target.value }))}
+                          className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                        <div className="flex items-center justify-between mt-2">
+                          <p className="text-xs" style={{ color: C.inkSoft }}>{REFLECTION_PRIVACY_NOTE}</p>
+                          <button type="button"
+                            onClick={() => { handleCreateArticleNote(article.id, "reflection", reflectionDraft[article.id], null); setReflectionDraft((d) => ({ ...d, [article.id]: "" })); }}
+                            className="px-4 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, color: C.inkSoft, border: `1px solid ${C.line}` }}>
+                            {t("addNoteButton")}
+                          </button>
+                        </div>
+                      </div>
+                    )}
 
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">{t("yourNotesTitle")}</h3>
