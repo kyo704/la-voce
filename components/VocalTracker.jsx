@@ -16,10 +16,15 @@ import {
 import { createClient } from "@/lib/supabase/client";
 // ★通信は必ず時間制限を付ける。返ってこないまま待ち続けると、画面が止まる。
 import { withTimeout, QUERY_TIMEOUT_MS, AUTH_TIMEOUT_MS } from "@/lib/withTimeout";
-import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC } from "@/lib/tokens";
+import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC, CYCLE_BAND } from "@/lib/tokens";
 import { FOOD_PRESETS, DISH_GROUP_ALIASES, CATEGORY_SEARCH_ALIASES } from "@/lib/foodPresets";
 import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, SHOP_ITEMS, PLACEMENT_LIMITS, computeBalance } from "@/lib/character";
 import { LANGUAGES, createTranslator } from "@/lib/translations";
+// 周期の記録（周期記録の設計.md §3）。★日数はすべてここで導出する。保存しない。
+import {
+  currentCycleState, cycleSummary, buildBleedingDayset,
+  validateNewStart, validateEnd, MIN_CYCLES_FOR_AVERAGE
+} from "@/lib/cyclePeriods";
 // 統合実行ルートv4 §6: 表示ゲートは必ずこのレイヤーを経由する。画面ごとに条件を書かないこと。
 import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q } from "@/lib/displayGates";
 // 分析カードの職業別の出し分け（docs/profession-presets.json と1対1）
@@ -3259,6 +3264,40 @@ function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
                     </div>
                   )}
 
+                  {/* ★オフにできる3段階（周期記録の設計.md §4-3）。
+                        ① 機能ごとオフ（track_cycle = false。既定はこれ）
+                        ② ホームに出さない（cycle_show_on_home = false）← ここ
+                        ③ オンで表示（既定）
+                      記録はしたいが、人に見られる場所には出したくない、が成り立つようにする。
+                      ★「妊娠中ですか」「閉経しましたか」は聞かないこと（§4-4）。
+                        オフにする導線があれば足りる。聞いた瞬間に扱いの重さが跳ね上がる。 */}
+                  {value.sex !== "男性" && value.track_cycle && (
+                    <div className="rounded-xl p-3 flex items-center justify-between gap-3" style={{ background: C.paper }}>
+                      <div>
+                        <p className="text-sm font-medium">ホームにも表示する</p>
+                        <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
+                          オフにすると、記録は続けたまま、ホームの1行だけが出なくなります。ノートのカレンダーには残ります。
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => onChange({ cycle_show_on_home: value.cycle_show_on_home === false })}
+                        className="flex-shrink-0"
+                        style={{
+                          width: 44, height: 26, borderRadius: 999, position: "relative",
+                          background: value.cycle_show_on_home !== false ? C.curtain : C.line,
+                          transition: "background 0.15s"
+                        }}
+                      >
+                        <span style={{
+                          position: "absolute", top: 3, left: value.cycle_show_on_home !== false ? 21 : 3,
+                          width: 20, height: 20, borderRadius: 999, background: "#FFFDF8",
+                          transition: "left 0.15s"
+                        }} />
+                      </button>
+                    </div>
+                  )}
+
                   <div className="pt-6 mt-2 border-t" style={{ borderColor: C.line }}>
                     <div className="flex items-center gap-2">
                       <Music2 size={17} style={{ color: C.curtain }} />
@@ -4057,6 +4096,10 @@ export default function VocalTracker({ userId, userEmail }) {
   const [notesSubTab, setNotesSubTab] = useState("practice");
   // レッスン画面の立場。null は「まだ選んでいない」＝ 既定に従う。
   const [lessonRoleChoice, setLessonRoleChoice] = useState(null);
+  // 周期の記録。開始日と、あれば終了日だけを持つ（周期記録の設計.md §3-1）。
+  const [cyclePeriods, setCyclePeriods] = useState([]);
+  const [cycleBusy, setCycleBusy] = useState(false);
+  const [cycleError, setCycleError] = useState("");
   const [editingVoiceEntryId, setEditingVoiceEntryId] = useState(null);
   const [editingPracticeGoal, setEditingPracticeGoal] = useState(false);
   const [practiceGoalDraft, setPracticeGoalDraft] = useState("");
@@ -4298,6 +4341,23 @@ export default function VocalTracker({ userId, userEmail }) {
         setEntriesLoadError("");
       }
       if (mounted) setLoading(false);
+    })();
+    return () => { mounted = false; };
+  }, [userId]);
+
+  // ★周期は本人しか読めない（RLSは auth.uid() = user_id の1本だけ）。
+  //   テーブルが無い環境でも他の機能を巻き込まないよう、失敗しても黙って空にする。
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const supabase = createClient();
+      const { data, error } = await runQueryWithAuthRetry(
+        supabase,
+        () => supabase.from("cycle_periods").select("id, start_date, end_date").eq("user_id", userId).order("start_date", { ascending: false }),
+        "周期の記録の取得"
+      );
+      if (error) console.warn("周期の記録を読み込めませんでした:", error.message);
+      if (mounted && data) setCyclePeriods(data);
     })();
     return () => { mounted = false; };
   }, [userId]);
@@ -6112,6 +6172,64 @@ export default function VocalTracker({ userId, userEmail }) {
   const canLearnLessons = canSeeTeacherFeatures(profile, { hasTeacherLinks: myTeacherLinks.length > 0 })
     && (myAllLessons.length > 0 || myTeacherLinks.length > 0 || canSeeBetaFeatures(profile));
   const hasLessonTab = canTeachLessons || canLearnLessons;
+  // ---- 周期の記録（周期記録の設計.md §4・§5） ----
+  // ★日数は1つも保存しない。すべて開始日から導出する。
+  //   保存すると、開始日を直したときに全部を書き換える処理が要る。
+  const cycleEnabled = !!profile.track_cycle;
+  const cycleShowOnHome = profile.cycle_show_on_home !== false;
+  const cycleState = useMemo(
+    () => (cycleEnabled ? currentCycleState(cyclePeriods, realTodayDate) : { state: "none" }),
+    [cycleEnabled, cyclePeriods, realTodayDate]
+  );
+  const cycleStats = useMemo(
+    () => (cycleEnabled ? cycleSummary(cyclePeriods, realTodayDate) : null),
+    [cycleEnabled, cyclePeriods, realTodayDate]
+  );
+  const bleedingDays = useMemo(
+    () => (cycleEnabled ? buildBleedingDayset(cyclePeriods, realTodayDate) : new Set()),
+    [cycleEnabled, cyclePeriods, realTodayDate]
+  );
+
+  // 「今日から始まった」。★検証は lib/cyclePeriods.js が持つ（画面では判定しない）。
+  async function handleStartCycle(startISO) {
+    const problem = validateNewStart(startISO, cyclePeriods, realTodayDate);
+    if (problem) {
+      setCycleError(
+        problem === "startInFuture" ? "未来の日付は記録できません。"
+          : problem === "duplicateStart" ? "その日はすでに記録されています。"
+            : "すでに記録されている期間と重なっています。"
+      );
+      return;
+    }
+    setCycleBusy(true); setCycleError("");
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("cycle_periods").insert({ user_id: userId, start_date: startISO })
+      .select("id, start_date, end_date").single();
+    setCycleBusy(false);
+    // ★失敗を黙って飲み込まない。押したのに何も起きない、が一番わかりにくい。
+    if (error) { setCycleError("保存できませんでした。" + (error.message || "")); return; }
+    setCyclePeriods((prev) => [data, ...prev]);
+  }
+
+  // 「終わった」。押し忘れても、次の開始日が入れば自動的に閉じる（§4-1）。
+  async function handleEndCycle(periodId, startISO, endISO) {
+    const problem = validateEnd(endISO, startISO, realTodayDate);
+    if (problem) {
+      setCycleError(problem === "endBeforeStart" ? "開始日より前にはできません。" : "未来の日付は記録できません。");
+      return;
+    }
+    setCycleBusy(true); setCycleError("");
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("cycle_periods").update({ end_date: endISO, updated_at: new Date().toISOString() })
+      .eq("id", periodId).eq("user_id", userId);
+    setCycleBusy(false);
+    if (error) { setCycleError("保存できませんでした。" + (error.message || "")); return; }
+    setCyclePeriods((prev) => prev.map((p) => (p.id === periodId ? { ...p, end_date: endISO } : p)));
+  }
+  // ---- 周期の記録 ここまで ----
+
   const lessonRole = resolveLessonRole(lessonRoleChoice, { canTeach: canTeachLessons, canLearn: canLearnLessons });
   const showLessonRoleSwitch = shouldShowLessonRoleSwitch({ canTeach: canTeachLessons, canLearn: canLearnLessons });
   // ---- レッスンの「立場」 ここまで ----
@@ -7346,6 +7464,15 @@ export default function VocalTracker({ userId, userEmail }) {
       .eq("id", userId);
     if (healthError) {
       console.warn("アレルギー・常用薬を保存できませんでした。supabase/migration_profile_health_fields.sql を実行してください。", healthError);
+    }
+    // ★同じ理由で、周期の表示設定も分けて保存する（§4-3 の3段階の②）。
+    //   migration_cycle_periods.sql が未実行の環境では列が無い。
+    const { error: cycleSettingError } = await supabase
+      .from("profiles")
+      .update({ cycle_show_on_home: profile.cycle_show_on_home !== false })
+      .eq("id", userId);
+    if (cycleSettingError) {
+      console.warn("周期の表示設定を保存できませんでした。supabase/migration_cycle_periods.sql を実行してください。", cycleSettingError);
     }
     setProfileSaveStatus(error ? "error" : "saved");
     // ★失敗の表示は自動で消さない。以前は 1.8秒で idle に戻していたため、
@@ -8773,6 +8900,41 @@ export default function VocalTracker({ userId, userEmail }) {
                       {recordStreak > 0 && <> ・ {recordStreak}日連続 🔥</>}
                     </p>
                   </div>
+
+                  {/* ★周期の1行（周期記録の設計.md §4-1）。
+                      §4-2「目立たせない」を必ず守ること:
+                        ・色を付けない（日付の行と同じ C.inkSoft）
+                        ・絵文字・アイコンを付けない
+                        ・カードの背景色を変えない（枠も背景も持たせない）
+                        ・フォントサイズを大きくしない（text-xs のまま）
+                      電車の中で、隣の人に見えます。 */}
+                  {cycleEnabled && cycleShowOnHome && (
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-xs" style={{ color: C.inkSoft }}>
+                        {cycleState.state === "bleeding"
+                          ? `生理 ${cycleState.dayIndex}日目`
+                          : cycleState.state === "cycle"
+                            ? `周期 ${cycleState.dayIndex}日目`
+                            : "周期の記録"}
+                      </p>
+                      {cycleState.state === "bleeding" ? (
+                        <button type="button" disabled={cycleBusy}
+                          onClick={() => handleEndCycle(cycleState.periodId, cycleState.startDate, realToday)}
+                          className="text-xs underline" style={{ color: C.inkSoft }}>
+                          終わった
+                        </button>
+                      ) : (
+                        <button type="button" disabled={cycleBusy}
+                          onClick={() => handleStartCycle(realToday)}
+                          className="text-xs underline" style={{ color: C.inkSoft }}>
+                          今日から始まった
+                        </button>
+                      )}
+                    </div>
+                  )}
+                  {cycleEnabled && cycleShowOnHome && cycleError && (
+                    <p className="text-xs" style={{ color: C.curtain }}>{cycleError}</p>
+                  )}
 
                   <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
                     <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{isRecordedToday ? "今日の記録" : "今日の声"}</p>
@@ -10605,7 +10767,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         <div key={`empty-${i}`} />
                       ) : (
                         <button key={c.iso} onClick={() => { setSelectedDate(c.iso); setActiveTab("today"); }}
-                          className="aspect-square rounded-lg flex items-center justify-center text-xs ff-mono"
+                          className="aspect-square rounded-lg flex items-center justify-center text-xs ff-mono relative"
                           style={{
                             background: c.entry ? levelColor(c.entry.throatCondition) : C.paper,
                             color: c.entry ? "#FFFDF8" : C.inkSoft,
@@ -10613,11 +10775,61 @@ export default function VocalTracker({ userId, userEmail }) {
                             opacity: c.iso > todayISO() ? 0.4 : 1
                           }}>
                           {c.day}
+                          {/* ★帯（§5-1）。集計表を別に作らず、既存の月表示に重ねる。
+                              声の調子の点と同じ月に並ぶことが目的。
+                              濃い赤・ピンクは使わない（§4-2）。 */}
+                          {cycleEnabled && bleedingDays.has(c.iso) && (
+                            <span aria-hidden="true"
+                              style={{
+                                position: "absolute", left: 3, right: 3, bottom: 2,
+                                height: 3, borderRadius: 2, background: CYCLE_BAND
+                              }} />
+                          )}
                         </button>
                       )
                     )}
                   </div>
                 </div>
+
+                {/* ★カレンダーの下に4つだけ（周期記録の設計.md §5-2）。
+                    5つ目を足さないこと。
+                    「次回の目安」は 直近の開始日 + 平均周期日数 の単純な足し算。
+                    ★必ず「ごろ」と書く（§8 医療機器の線）。 */}
+                {cycleEnabled && cycleStats && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    {cycleStats.enough ? (
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between text-xs">
+                          <span style={{ color: C.inkSoft }}>平均周期</span>
+                          <span style={{ color: C.ink }}>{cycleStats.averageCycle}日（直近{cycleStats.usedCycles}周期）</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                          <span style={{ color: C.inkSoft }}>ばらつき</span>
+                          <span style={{ color: C.ink }}>±{cycleStats.variability}日</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                          <span style={{ color: C.inkSoft }}>出血日数</span>
+                          <span style={{ color: C.ink }}>
+                            {cycleStats.averageBleeding != null ? `平均${cycleStats.averageBleeding}日` : "まだ出せません"}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                          <span style={{ color: C.inkSoft }}>次回の目安</span>
+                          <span style={{ color: C.ink }}>
+                            {cycleStats.nextEstimate
+                              ? `${cycleStats.nextEstimate.slice(5).replace("-", "月")}日ごろ`
+                              : "—"}
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      // ★3回に満たないうちは平均を出さない。出せない理由を書く。
+                      <p className="text-xs" style={{ color: C.inkSoft }}>
+                        あと{cycleStats.needMore}回で、平均周期を出せます。
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 <div className="space-y-3">
                   {monthEntries.length === 0 && (

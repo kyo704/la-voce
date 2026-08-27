@@ -106,6 +106,75 @@ async function main() {
   assertTrue(!closed.has("2026-08-05"), "終わった日が分からない周期を、勝手に塗り広げない");
   assertTrue(closed.has("2026-08-10"), "進行中の周期は今日まで塗る");
 
+  // =========================================================================
+  // ここから画面側（§4・§5）。VocalTracker.jsx を本文として読んで検査する。
+  // =========================================================================
+  const uiRaw = fs.readFileSync(path.join(ROOT, "components", "VocalTracker.jsx"), "utf-8");
+  // 該当のブロックだけを切り出す。コメントには「色を付けない」といった説明として
+  // 禁止側の語が出てくるので、まずコメントを外す。
+  function stripComments(t) {
+    return t.replace(/\{\/\*[\s\S]*?\*\/\}/g, "").replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+  }
+  function sliceBetween(text, startMark, endMark) {
+    const a = text.indexOf(startMark);
+    if (a < 0) throw new Error(`見つかりません: ${startMark}`);
+    const b = text.indexOf(endMark, a);
+    return text.slice(a, b < 0 ? text.length : b);
+  }
+  const homeRow = stripComments(sliceBetween(uiRaw, "{cycleEnabled && cycleShowOnHome && (", "{cycleEnabled && cycleShowOnHome && cycleError"));
+  const statsCard = stripComments(sliceBetween(uiRaw, "{cycleEnabled && cycleStats && (", "<div className=\"space-y-3\">"));
+  const tokens = fs.readFileSync(path.join(ROOT, "lib", "tokens.js"), "utf-8");
+
+  console.log("\n=== テスト10: ★ホームの1行を目立たせない（§4-2・この文書で最も重要） ===");
+  console.log("     電車の中で、隣の人に見えます。");
+  assertTrue(!/C\.curtain|C\.gold|C\.rust|C\.sage|#[0-9a-fA-F]{3,6}/.test(homeRow),
+    "★色を付けていない（日付の行と同じ C.inkSoft のみ）");
+  assertTrue(/C\.inkSoft/.test(homeRow), "文字色は他の行と同じ C.inkSoft");
+  assertTrue(!/<(Droplets|HeartPulse|Sparkles|CalendarDays|Moon|Droplet)\b/.test(homeRow),
+    "★アイコンを付けていない");
+  assertTrue(!/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(homeRow), "★絵文字を付けていない");
+  assertTrue(!/text-(sm|base|lg|xl|2xl)\b/.test(homeRow), "★フォントサイズを大きくしていない（text-xs のまま）");
+  assertTrue(!/font-(medium|semibold|bold)/.test(homeRow), "★太字にしていない");
+  assertTrue(!/rounded-2xl|border|background:\s*C\.card/.test(homeRow),
+    "★カードにしていない・背景色を変えていない");
+
+  console.log("\n=== テスト11: ホームの表示（§4-1） ===");
+  assertTrue(/生理 \$\{cycleState\.dayIndex\}日目/.test(homeRow), "出血中は「生理 ◯日目」");
+  assertTrue(/周期 \$\{cycleState\.dayIndex\}日目/.test(homeRow), "出血後は「周期 ◯日目」");
+  assertTrue(/終わった/.test(homeRow), "「終わった」を押せる");
+  assertEqual(m.currentCycleState([P("2026-08-25")], "2026-08-27").state, "bleeding", "終了日が無ければ出血中");
+  assertEqual(m.currentCycleState([P("2026-08-01", "2026-08-05")], "2026-08-12").state, "cycle", "終了後は周期");
+  assertEqual(m.currentCycleState([P("2026-08-01", "2026-08-05")], "2026-08-12").dayIndex, 12, "周期の日数は開始日から数える");
+
+  console.log("\n=== テスト12: ★カレンダーの下は4つだけ（§5-2） ===");
+  ["平均周期", "ばらつき", "出血日数", "次回の目安"].forEach((label) => {
+    assertTrue(statsCard.includes(label), `${label} がある`);
+  });
+  const rowCount = (statsCard.match(/flex items-center justify-between text-xs/g) || []).length;
+  assertEqual(rowCount, 4, "★4つだけ（5つ目を足していない）");
+  assertTrue(/日ごろ/.test(statsCard), "★次回は「ごろ」と書いている（§8 医療機器の線）");
+  assertTrue(!/必ず|確実|です。$/m.test(statsCard), "言い切っていない");
+  assertTrue(/あと\{cycleStats\.needMore\}回/.test(statsCard),
+    "3回に満たないうちは平均を出さず、あと何回かを伝える");
+
+  console.log("\n=== テスト13: 帯の色（§5-1） ===");
+  assertTrue(/export const CYCLE_BAND/.test(tokens), "帯の色を tokens.js で1か所に決めている");
+  const band = (tokens.match(/CYCLE_BAND\s*=\s*"(#[0-9a-fA-F]{6})"/) || [])[1];
+  assertTrue(!!band, `帯の色が定義されている（${band}）`);
+  if (band) {
+    const r = parseInt(band.slice(1, 3), 16), g = parseInt(band.slice(3, 5), 16), b = parseInt(band.slice(5, 7), 16);
+    assertTrue(!(r > g + 40 && r > b + 40), "★濃い赤・ピンクではない（赤成分が突出していない）");
+    const levels = ["#7A1F2B", "#A8583F", "#B8863B", "#7C9A6B", "#4F7562"];
+    assertTrue(!levels.includes(band.toUpperCase()), "★声の調子の5色と同じ色ではない");
+  }
+
+  console.log("\n=== テスト14: ★日数を1つも保存しない（§3-1） ===");
+  const insertCols = (sql.match(/insert into public\.cycle_periods \(([^)]*)\)/) || [])[1] || "";
+  assertTrue(!/day|days|length|count|日数/.test(insertCols), "移行の INSERT が日数を入れていない");
+  const uiCycle = stripComments(uiRaw);
+  assertTrue(!/cycle_periods[\s\S]{0,200}?(day_count|cycle_length|bleeding_days)/.test(uiCycle),
+    "画面側も日数を書き込んでいない");
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");
