@@ -27,7 +27,7 @@ import {
   cycleDayForDate, isCycleStartDate
 } from "@/lib/cyclePeriods";
 // 統合実行ルートv4 §6: 表示ゲートは必ずこのレイヤーを経由する。画面ごとに条件を書かないこと。
-import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q } from "@/lib/displayGates";
+import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q, NARRATIVE_MIN_N_PER_GROUP } from "@/lib/displayGates";
 // 分析カードの職業別の出し分け（docs/profession-presets.json と1対1）
 import { isAnalysisCardVisible } from "@/lib/analysisCardVisibility";
 // 「この分析を強くする」の選び方（記録と分析の順番設計.md §5.3 の R1〜R6）。
@@ -946,7 +946,10 @@ function starRatingForEffect(res) {
   const crossesZero = ciLow <= 0 && ciHigh >= 0;
   if (!crossesZero) stars = 2;
   if (!crossesZero && Math.abs(g) >= 0.5) stars = 3;
-  if (!crossesZero && Math.abs(g) >= 0.5 && n1 >= 10 && n0 >= 10) stars = 4;
+  // ★件数のしきい値は displayGates の定数を使う。ここに 10 と直接書くと、
+  //   §6-1 のしきい値を変えたときに★の判定だけ古いまま残る。
+  //   （同じ決定が2か所にある、の典型。このリポジトリで繰り返している形）
+  if (!crossesZero && Math.abs(g) >= 0.5 && n1 >= NARRATIVE_MIN_N_PER_GROUP && n0 >= NARRATIVE_MIN_N_PER_GROUP) stars = 4;
   return stars;
 }
 // ---- 統計ヘルパー ここまで ----
