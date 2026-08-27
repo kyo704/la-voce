@@ -4090,7 +4090,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], allergies: [], regular_medications: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "", is_admin: false, record_mode: DEFAULT_RECORD_MODE, deleted_at: null });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], allergies: [], regular_medications: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "", is_admin: false, record_mode: DEFAULT_RECORD_MODE, deleted_at: null, cycle_show_on_home: true });
   // 確認用: 管理者アカウント（is_admin）は、動作確認のため全職業の機能を見られるようにする。
   // ★重要：profile宣言より前に置くと「宣言前にアクセス」エラーになるため、必ずこの直後に置くこと。
   const effectiveProfessions = useMemo(() => {
@@ -4399,6 +4399,13 @@ export default function VocalTracker({ userId, userEmail }) {
       const { data: delRow } = await supabase
         .from("profiles").select("deleted_at").eq("id", userId).maybeSingle();
       if (mounted && delRow) setProfile((prev) => ({ ...prev, deleted_at: delRow.deleted_at || null }));
+
+      // 周期をホームに出すか（§4-3 の3段階の②）。列が無い環境でも壊さない。
+      const { data: cycleRow } = await supabase
+        .from("profiles").select("cycle_show_on_home").eq("id", userId).maybeSingle();
+      if (mounted && cycleRow && cycleRow.cycle_show_on_home != null) {
+        setProfile((prev) => ({ ...prev, cycle_show_on_home: cycleRow.cycle_show_on_home }));
+      }
 
       const { data: healthRow } = await supabase
         .from("profiles").select("allergies, regular_medications").eq("id", userId).maybeSingle();
