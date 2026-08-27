@@ -6342,6 +6342,86 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [topLagFinding, effectiveHabitRanking, roleLoadStats, acwrToday, refluxDinnerTagEffectsWithFdr, energyAvailabilityAnalysis, recordedDaysTotal]);
   // ---- 発見カード 用データ ここまで ----
 
+  // ---- 改善タスクv2 §4-1(a): 分析タブのロック判定を1箇所に集約する ----
+  //
+  // ★ロックカードが12箇所に散らばり、それぞれの解放条件が JSX の中に直接
+  //   書かれていた。最下部にまとめるために条件を書き写すと、条件が2箇所に
+  //   分かれて必ずズレる（表示ゲートで起きたのと同じ問題）。
+  //   そこで、解放条件はここだけに置き、その場の描画も最下部の一覧も
+  //   この結果を参照する。新しい分析を足すときは、この配列に1行足すこと。
+  //
+  //   visible … その職業のユーザーに、そもそも見せる分析かどうか
+  //   unlocked… 解放済みか（★既存の条件をそのまま移してある。変えないこと）
+  //   current / required … 「あと◯日」の進捗バーの表示にだけ使う
+  const analysisLocks = useMemo(() => {
+    const prof = effectiveProfessions || [];
+    const defs = [
+      { key: "deviation", visible: true,
+        unlocked: gateAllows("deviation.card", { days: recordedDaysTotal }),
+        title: "コンディション偏差値",
+        teaser: "今日が「自分比でどのくらい良い日か」を偏差値で見られます",
+        current: recordedDaysTotal, required: getGate("deviation.card").minDays },
+      { key: "warmup", visible: true, unlocked: recordedDaysTotal >= 3,
+        title: "ウォームアップ効率",
+        teaser: "起き抜けとルーティン後の声の差を、半音数で毎朝チェックできます",
+        current: recordedDaysTotal, required: 3 },
+      { key: "rangeMap", visible: true, unlocked: recordedDaysTotal >= 3,
+        title: "音域到達マップ",
+        teaser: "記録した声の高さを鍵盤の上で確認できます",
+        current: recordedDaysTotal, required: 3 },
+      { key: "symptomCalendar", visible: true, unlocked: recordedDaysTotal >= 3,
+        title: "症状カレンダーと連鎖",
+        teaser: "8種類の症状を、日付×症状の格子で振り返れます",
+        current: recordedDaysTotal, required: 3 },
+      { key: "acwr", visible: true, unlocked: acwrGate.passed,
+        title: "発声負荷バランス（ACWR）",
+        teaser: "歌い込みすぎ・積み足りないを1つの数字で管理できます",
+        current: recordedDaysTotal, required: getGate("acwr").minDays },
+      { key: "envComfort", visible: true, unlocked: recordedDaysTotal >= 7,
+        title: "環境の快適帯",
+        teaser: "自分の喉が快適な気温・湿度のゾーンが分かります",
+        current: recordedDaysTotal, required: 7 },
+      { key: "peaking", visible: true, unlocked: !!peakingCurve,
+        title: "本番ピーキング曲線",
+        teaser: "本番前後の仕上がり方の、あなた固有の型が分かります",
+        current: pastPerformanceDates.length, required: 3 },
+      { key: "screamRecovery", visible: prof.includes("voice_actor"),
+        unlocked: screamRecoveryCurve.hasEnoughData,
+        title: "回復曲線（叫び・悲鳴の収録から）",
+        teaser: "叫び・悲鳴のテイク数が多い日から、何日で戻るかが見られます",
+        current: screamRecoveryCurve.n, required: 3 },
+      { key: "screamThreshold", visible: prof.includes("voice_actor"),
+        unlocked: screamTakeThreshold.hasEnoughData,
+        title: "叫びテイク数の閾値",
+        teaser: "あなた自身の「これ以上は翌日に響く」テイク数の目安が見られます",
+        current: screamTakeThreshold.n, required: 8 },
+      { key: "passaggio", visible: prof.includes("singer"),
+        unlocked: passaggioStability.hasEnoughData,
+        title: "パッサッジョの安定度",
+        teaser: "声区の切り替えの調子を、自分の平常値と比べて見られます",
+        current: passaggioStability.n, required: 14 },
+      { key: "sffDiurnal", visible: prof.includes("announcer"),
+        unlocked: sffDiurnalVariation.hasEnoughData,
+        title: "話声位の日内変動",
+        teaser: "朝と終業後の声の変化から、あなた自身の疲労のサインが見られます",
+        current: sffDiurnalVariation.n, required: 14 },
+      { key: "tourEndurance", visible: prof.includes("pop_musical"),
+        unlocked: tourEnduranceCurve.hasEnoughData,
+        title: "ツアー耐久曲線",
+        teaser: "ツアー中、何日目に声が落ちやすいかの「型」が見られます",
+        current: tourEnduranceCurve.tourCount, required: 2 }
+    ];
+    const map = {};
+    defs.forEach((d) => { map[d.key] = d; });
+    // 最下部の「これから開く分析」に出すもの。解放が近い順に並べる。
+    const pending = defs
+      .filter((d) => d.visible && !d.unlocked)
+      .sort((a, b) => (b.current / b.required) - (a.current / a.required));
+    return { map, pending };
+  }, [effectiveProfessions, recordedDaysTotal, acwrGate, peakingCurve, pastPerformanceDates,
+      screamRecoveryCurve, screamTakeThreshold, passaggioStability, sffDiurnalVariation, tourEnduranceCurve]);
+  // ---- ロック判定の集約 ここまで ----
+
   // ---- lavoce-記録と分析の順番設計.md §5.3: 「この分析を強くする」カード 用データ ----
   // 習慣の内容から、記録画面のどのセクションへジャンプさせるかの対応表。
   const HABIT_KEY_TO_SECTION = {
@@ -8078,7 +8158,10 @@ export default function VocalTracker({ userId, userEmail }) {
                         <p className="mt-2 leading-relaxed">{t("noteChestVoiceRule")}</p>
                       </details>
                       <details className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
-                        <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>{t("labelRecommendedRoutineToggle")}</summary>
+                        <summary className="cursor-pointer font-medium flex items-center gap-1.5" style={{ color: C.ink }}>
+                          <HelpCircle size={13} style={{ color: C.gold }} />
+                          {t("labelRecommendedRoutineToggle")}
+                        </summary>
                         <p className="mt-2 leading-relaxed">{t("noteRecommendedRoutine")}</p>
                       </details>
 
@@ -10161,7 +10244,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   )}
                 </div>
 
-                {gateAllows("deviation.card", { days: recordedDaysTotal }) ? (
+                {analysisLocks.map.deviation.unlocked ? (
                   deviationScore && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <div className="flex items-start justify-between gap-2 mb-1">
@@ -10217,17 +10300,10 @@ export default function VocalTracker({ userId, userEmail }) {
                       </p>
                     </div>
                   )
-                ) : (
-                  <LockedCard
-                    title="コンディション偏差値"
-                    teaser="今日が「自分比でどのくらい良い日か」を偏差値で見られます"
-                    current={recordedDaysTotal}
-                    required={getGate("deviation.card").minDays}
-                  />
-                )}
+                ) : null}
 
                 {(effectiveProfessions || []).includes("voice_actor") && (
-                  screamRecoveryCurve.hasEnoughData ? (
+                  analysisLocks.map.screamRecovery.unlocked ? (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">回復曲線（叫び・悲鳴の収録から）</h3>
                       <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -10258,18 +10334,11 @@ export default function VocalTracker({ userId, userEmail }) {
                         ※ 自分の記録上の傾向であり、収録内容や体調によって変わります。
                       </p>
                     </div>
-                  ) : (
-                    <LockedCard
-                      title="回復曲線（叫び・悲鳴の収録から）"
-                      teaser="叫び・悲鳴のテイク数が多い日から、何日で戻るかが見られます"
-                      current={screamRecoveryCurve.n}
-                      required={3}
-                    />
-                  )
+                  ) : null
                 )}
 
                 {(effectiveProfessions || []).includes("voice_actor") && (
-                  screamTakeThreshold.hasEnoughData ? (
+                  analysisLocks.map.screamThreshold.unlocked ? (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">叫びテイク数の閾値</h3>
                       <p className="text-sm font-medium mt-1 mb-2">
@@ -10283,18 +10352,11 @@ export default function VocalTracker({ userId, userEmail }) {
                         ※ {screamTakeThreshold.n}件の記録から推定した、自分の記録上の目安です。現場での判断の参考にしてください。
                       </p>
                     </div>
-                  ) : (
-                    <LockedCard
-                      title="叫びテイク数の閾値"
-                      teaser="あなた自身の「これ以上は翌日に響く」テイク数の目安が見られます"
-                      current={screamTakeThreshold.n}
-                      required={8}
-                    />
-                  )
+                  ) : null
                 )}
 
                 {(effectiveProfessions || []).includes("singer") && (
-                  passaggioStability.hasEnoughData ? (
+                  analysisLocks.map.passaggio.unlocked ? (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">パッサッジョの安定度</h3>
                       <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -10311,14 +10373,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         ※ 自分の記録上の傾向であり、他人との比較ではありません。
                       </p>
                     </div>
-                  ) : (
-                    <LockedCard
-                      title="パッサッジョの安定度"
-                      teaser="声区の切り替えの調子を、自分の平常値と比べて見られます"
-                      current={passaggioStability.n}
-                      required={14}
-                    />
-                  )
+                  ) : null
                 )}
 
                 {singerCostumeVenueEffects.length > 0 && (
@@ -10344,7 +10399,7 @@ export default function VocalTracker({ userId, userEmail }) {
                 )}
 
                 {(effectiveProfessions || []).includes("announcer") && (
-                  sffDiurnalVariation.hasEnoughData ? (
+                  analysisLocks.map.sffDiurnal.unlocked ? (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">話声位の日内変動</h3>
                       <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -10362,18 +10417,11 @@ export default function VocalTracker({ userId, userEmail }) {
                         ※ 自分の記録上の傾向であり、他人との比較ではありません。
                       </p>
                     </div>
-                  ) : (
-                    <LockedCard
-                      title="話声位の日内変動"
-                      teaser="朝と終業後の声の変化から、あなた自身の疲労のサインが見られます"
-                      current={sffDiurnalVariation.n}
-                      required={14}
-                    />
-                  )
+                  ) : null
                 )}
 
                 {(effectiveProfessions || []).includes("pop_musical") && (
-                  tourEnduranceCurve.hasEnoughData ? (
+                  analysisLocks.map.tourEndurance.unlocked ? (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">ツアー耐久曲線</h3>
                       <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -10403,14 +10451,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         ※ 自分の記録上の傾向です。次のツアーでは、この日の前後に休養を厚くする判断材料にしてください。
                       </p>
                     </div>
-                  ) : (
-                    <LockedCard
-                      title="ツアー耐久曲線"
-                      teaser="ツアー中、何日目に声が落ちやすいかの「型」が見られます"
-                      current={tourEnduranceCurve.tourCount}
-                      required={2}
-                    />
-                  )
+                  ) : null
                 )}
 
                 {popMusicalEffects.length > 0 && (
@@ -10720,7 +10761,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   </p>
                 </div>
 
-                {recordedDaysTotal >= 3 ? (
+                {analysisLocks.map.warmup.unlocked ? (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">ウォームアップ効率</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -10791,16 +10832,9 @@ export default function VocalTracker({ userId, userEmail }) {
                       ※ 平常値は中央値をもとにした参考値です。記録が増えるほど精度が上がります。
                     </p>
                   </div>
-                ) : (
-                  <LockedCard
-                    title="ウォームアップ効率"
-                    teaser="起き抜けとルーティン後の声の差を、半音数で毎朝チェックできます"
-                    current={recordedDaysTotal}
-                    required={3}
-                  />
-                )}
+                ) : null}
 
-                {recordedDaysTotal >= 3 ? (
+                {analysisLocks.map.rangeMap.unlocked ? (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">音域到達マップ</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -10856,16 +10890,9 @@ export default function VocalTracker({ userId, userEmail }) {
                       ※ 自己ベストは、単発の記録に振り回されないよう上位／下位5%点を採用しています。
                     </p>
                   </div>
-                ) : (
-                  <LockedCard
-                    title="音域到達マップ"
-                    teaser="記録した声の高さを鍵盤の上で確認できます"
-                    current={recordedDaysTotal}
-                    required={3}
-                  />
-                )}
+                ) : null}
 
-                {recordedDaysTotal >= 3 ? (
+                {analysisLocks.map.symptomCalendar.unlocked ? (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">症状カレンダーと連鎖</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -10940,14 +10967,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       ※ あくまで記録上の傾向であり、医学的な診断ではありません。症状が続く場合は耳鼻咽喉科にご相談ください。
                     </p>
                   </div>
-                ) : (
-                  <LockedCard
-                    title="症状カレンダーと連鎖"
-                    teaser="8種類の症状を、日付×症状の格子で振り返れます"
-                    current={recordedDaysTotal}
-                    required={3}
-                  />
-                )}
+                ) : null}
 
                 {hasRefluxCondition && (refluxDinnerGapBins.some((b) => b.n >= 5) || refluxDinnerTagEffects.length > 0) && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
@@ -11447,7 +11467,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     </p>
                   </div>
                 )}
-                {acwrGate.passed ? (
+                {analysisLocks.map.acwr.unlocked ? (
                   acwrToday && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">発声負荷バランス（ACWR）</h3>
@@ -11494,15 +11514,8 @@ export default function VocalTracker({ userId, userEmail }) {
                       </p>
                     </div>
                   )
-                ) : (
-                  <LockedCard
-                    title="発声負荷バランス（ACWR）"
-                    teaser="歌い込みすぎ・積み足りないを1つの数字で管理できます"
-                    current={recordedDaysTotal}
-                    required={getGate("acwr").minDays}
-                  />
-                )}
-                {recordedDaysTotal >= 7 ? (
+                ) : null}
+                {analysisLocks.map.envComfort.unlocked ? (
                   comfortZone1D && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">環境の快適帯</h3>
@@ -11581,15 +11594,8 @@ export default function VocalTracker({ userId, userEmail }) {
                       </p>
                     </div>
                   )
-                ) : (
-                  <LockedCard
-                    title="環境の快適帯"
-                    teaser="自分の喉が快適な気温・湿度のゾーンが分かります"
-                    current={recordedDaysTotal}
-                    required={7}
-                  />
-                )}
-                {peakingCurve ? (
+                ) : null}
+                {analysisLocks.map.peaking.unlocked ? (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">本番ピーキング曲線</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -11643,14 +11649,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       </div>
                     )}
                   </div>
-                ) : (
-                  <LockedCard
-                    title="本番ピーキング曲線"
-                    teaser="本番前後の仕上がり方の、あなた固有の型が分かります"
-                    current={pastPerformanceDates.length}
-                    required={3}
-                  />
-                )}
+                ) : null}
 
                 <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
                   <button onClick={() => setAnalysisTarget("performance")}
@@ -11774,6 +11773,23 @@ export default function VocalTracker({ userId, userEmail }) {
                         </p>
                       </>
                     )}
+                  </div>
+                )}
+
+                {/* 改善タスクv2 §4-1(a): ロックカードは、以前 3〜8番目に5枚も固まっていた。
+                    最初にスクロールした人が最初に出会うのが「まだ使えないもの」5連続、
+                    という状態だった（§4-0 原則1）。全部ここに集約する。
+                    判定は analysisLocks（1箇所）だけが持っている。 */}
+                {analysisLocks.pending.length > 0 && (
+                  <div className="pt-2">
+                    <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("titleUpcomingAnalyses")}</h2>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteUpcomingAnalyses")}</p>
+                    <div className="space-y-3">
+                      {analysisLocks.pending.map((lock) => (
+                        <LockedCard key={lock.key} title={lock.title} teaser={lock.teaser}
+                          current={lock.current} required={lock.required} />
+                      ))}
+                    </div>
                   </div>
                 )}
 

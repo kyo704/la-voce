@@ -4,7 +4,8 @@
 // アプリ自体は元々オンライン（Supabase）が前提のため、ここでは「アプリの外枠（HTML/CSS/JS）」
 // だけをキャッシュし、開けなくなることを防ぐ程度に留めています。
 
-const CACHE_NAME = "la-voce-shell-v1";
+// エラー応答を取り込んでしまった古いキャッシュを捨てるため、版を上げる。
+const CACHE_NAME = "la-voce-shell-v2";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
@@ -29,10 +30,16 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        const responseClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseClone);
-        });
+        // ★重要: 成功した応答だけをキャッシュする。
+        // 以前はステータスを見ずに cache.put していたため、504 などのエラー応答まで
+        // キャッシュに入り、障害が復旧したあとも「キャッシュ済みの504」が
+        // 返り続けることがあった（オフライン時のフォールバックが壊れる）。
+        if (response && response.ok && response.type === "basic") {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone);
+          }).catch(() => { /* 容量超過などは無視してよい */ });
+        }
         return response;
       })
       .catch(() => caches.match(event.request))
