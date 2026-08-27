@@ -1,0 +1,93 @@
+#!/usr/bin/env node
+/**
+ * 学ぶ画面の器（作業指示-学ぶ画面を勉強できるものにする.md §3・§7・§9）。
+ *
+ * ★器だけの段階です。記事ごとの中身は、まだ入っていません。
+ *   だから「中身が無くても、これまでどおり読めること」がいちばん大事です。
+ */
+const { readCode, readRaw } = require("./_source");
+let passCount = 0, failCount = 0;
+function assertTrue(c, label) { if (c) { console.log(`  ✓ ${label}`); passCount++; } else { console.log(`  ✗ ${label}`); failCount++; } }
+function assertEqual(a, b, label) {
+  if (JSON.stringify(a) === JSON.stringify(b)) { console.log(`  ✓ ${label}`); passCount++; }
+  else { console.log(`  ✗ ${label}  期待:${JSON.stringify(b)} 実際:${JSON.stringify(a)}`); failCount++; }
+}
+
+async function main() {
+  const raw = readRaw("lib", "learnStudy.js");
+  const m = await import("data:text/javascript;base64," + Buffer.from(raw, "utf-8").toString("base64"));
+  const learn = await import("data:text/javascript;base64," +
+    Buffer.from(readRaw("lib", "learnContent.js"), "utf-8").toString("base64"));
+
+  console.log("=== §3-1 間隔をあけて、また出す ===");
+  assertEqual(m.REVIEW_BOXES, [0, 1, 7, 21, 30], "読了直後 → 1日 → 7日 → 21日 → 30日ごと");
+  assertEqual(m.nextBox(1, true), 2, "正解したら次の段階へ");
+  assertEqual(m.nextBox(3, false), 2, "★間違えたら1つ前に戻す");
+  assertEqual(m.nextBox(1, false), 1, "★最初には戻さない（積み上げを消さない）");
+  assertEqual(m.nextBox(4, true), 4, "いちばん上で止まる");
+  assertEqual(m.nextDueAt(2, "2026-08-27"), "2026-09-03", "box2 は7日後");
+  assertEqual(m.nextDueAt(1, "2026-08-31"), "2026-09-01", "月をまたいでも正しい");
+
+  console.log("\n=== ★1回に出すのは3問まで（§3-1） ===");
+  assertEqual(m.MAX_REVIEW_QUESTIONS, 3, "上限は3問");
+  const list = [
+    { articleId: "a", box: 2, nextDueAt: "2026-08-20" },
+    { articleId: "b", box: 1, nextDueAt: "2026-08-25" },
+    { articleId: "c", box: 3, nextDueAt: "2026-08-26" },
+    { articleId: "d", box: 1, nextDueAt: "2026-08-27" },
+    { articleId: "e", box: 0, nextDueAt: "2026-08-01" },
+    { articleId: "f", box: 2, nextDueAt: "2026-09-10" }
+  ];
+  const due = m.dueReviews(list, "2026-08-27");
+  assertEqual(due.length, 3, "★4件たまっていても3問まで");
+  assertEqual(due.map((x) => x.articleId), ["a", "b", "c"], "期限の古いものから");
+  assertTrue(!due.some((x) => x.box === 0), "未読は出さない");
+  assertTrue(!due.some((x) => x.articleId === "f"), "まだ期限が来ていないものは出さない");
+
+  console.log("\n=== ★覚えるべき1文は、1記事に1つだけ・60字以内（§2-2・§9-4） ===");
+  assertEqual(m.KEY_SENTENCE_MAX, 60, "上限は60字");
+  assertEqual(m.validateKeySentence("あ".repeat(60)).ok, true, "60字ちょうどは通る");
+  assertEqual(m.validateKeySentence("あ".repeat(61)).ok, false, "61字は通らない");
+  assertEqual(m.validateKeySentence("ひとつめ。ふたつめ。").ok, false, "★2文は通らない");
+  assertEqual(m.validateKeySentence("").ok, true, "未設定は通る（まだ書いていない記事があるため）");
+  assertEqual(m.validateKeySentence(null).ok, true, "未設定は通る");
+
+  console.log("\n=== ★中身が無くても、記事は読めること ===");
+  console.log("     器を入れたせいで、いまの69本が読めなくなってはいけません。");
+  const first = learn.ARTICLES[0];
+  const r = m.studyReadiness(first);
+  assertTrue(typeof r.hasKeySentence === "boolean", "備わっているかを、記事ごとに答えられる");
+  assertEqual(m.studyReadiness({}).hasQuiz, false, "何も無い記事でも落ちない");
+  assertEqual(m.studyReadiness(null).hasKeySentence, false, "★記事が無くても落ちない");
+  assertTrue(learn.ARTICLES.length >= 60, `記事は${learn.ARTICLES.length}本のまま`);
+  assertTrue(learn.ARTICLES.every((a) => (a.bodyMd || "").length > 0), "★全記事に本文がある");
+
+  console.log("\n=== ★§9 禁止事項を、仕組みとして守る ===");
+  assertTrue(typeof m.summarizeAttempts === "function", "集計の入口はある（が、拒否する）");
+  let threw = false;
+  try { m.summarizeAttempts([]); } catch (e) { threw = /集計しません/.test(e.message); }
+  assertTrue(threw, "★正答率を集計しようとすると、理由つきで止まる（§6-2・§9-5）");
+  assertEqual(m.REVIEW_IS_FREE, true, "★復習は無料（§9-11）");
+  const code = readCode("lib", "learnStudy.js");
+  assertTrue(!/highlight|ハイライト|下線/.test(code), "★蛍光ペン・下線を作っていない（§9-1）");
+  assertTrue(!/要約/.test(code), "★メモの見出しを「要約」にしていない（§9-2）");
+  // ★禁じている語は、禁止を宣言する文（拒否のメッセージ）にも出てきます。
+  //   そこを数えると、禁止を実装している箇所そのものが不合格になります。
+  //   拒否のメッセージを除いてから調べます。
+  const codeNoRefusal = code.replace(/throw new Error\([\s\S]*?\);/g, "");
+  assertTrue(!/streak|連続日数|正答率|点数/.test(codeNoRefusal), "★点数・連続日数を扱っていない（§9-5）");
+  assertTrue(!/ranking|順位|比較/.test(code), "★比較・順位を作っていない（§9-6）");
+  // ★push は problems.push() にも当たります。語の一部で判定しないこと。
+  assertTrue(!/notification|通知|sendBeacon|Notification\(/i.test(codeNoRefusal),
+    "★通知で催促していない（§9-7）");
+  assertTrue(!/premium|課金|subscription/i.test(code), "★復習に課金の判定が無い（§9-11）");
+
+  console.log("\n=== 日付の扱い ===");
+  assertTrue(!/toISOString\(\)\.slice\(0, 10\)/.test(code.replace(/fromISO \|\| new Date\(\)\.toISOString\(\)/g, "")),
+    "★日付の組み立てに toISOString を使っていない（日本時間で前日に転がる）");
+
+  console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
+  if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
+  console.log("\n✓ すべて成功しました。");
+}
+main().catch((e) => { console.error(e); process.exit(1); });
