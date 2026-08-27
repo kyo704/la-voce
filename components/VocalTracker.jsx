@@ -25,7 +25,7 @@ import { isAnalysisCardVisible } from "@/lib/analysisCardVisibility";
 // 記録項目の表示・非表示は必ずこのレイヤーを通す（記録項目の再設計v2 §3.3）
 import { isFieldGroupVisible, DEFAULT_RECORD_MODE } from "@/lib/fieldGroups";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
-import { EXPORTED_TABLES, EXPORTED_PROFILE_COLUMNS, entriesToCsv, buildExportPayload } from "@/lib/exportData";
+import { EXPORTED_TABLES, EXPORTED_PROFILE_COLUMNS, entriesToCsv, buildExportPayload, sanitizeShareHistory } from "@/lib/exportData";
 import HealthInfo from "@/components/HealthInfo";
 import { ARTICLES, CHAPTER_LABELS, PROFESSION_LABELS, getArticlesForProfession, getArticleById } from "@/lib/learnContent";
 import CharacterHome from "@/components/CharacterHome";
@@ -7119,6 +7119,13 @@ export default function VocalTracker({ userId, userEmail }) {
       const { data: prof } = await supabase
         .from("profiles").select(EXPORTED_PROFILE_COLUMNS.join(", ")).eq("id", userId).maybeSingle();
 
+      // 共有設定の履歴（A-3）。自分が「生徒として」共有した分だけを対象にする。
+      // 自分が先生として受け取っていた側は、生徒本人の情報なので含めない。
+      // 相手を特定できる値は sanitizeShareHistory が落とす。
+      const { data: shareRows } = await supabase
+        .from("teacher_student_links").select("*").eq("student_id", userId);
+      tables.share_history = sanitizeShareHistory(shareRows || []);
+
       const stamp = new Date().toISOString().slice(0, 10);
       const payload = buildExportPayload({ profile: prof || null, tables, exportedAt: new Date().toISOString() });
       downloadFile(`la-voce-${stamp}.json`, JSON.stringify(payload, null, 2), "application/json");
@@ -7316,18 +7323,36 @@ export default function VocalTracker({ userId, userEmail }) {
     const { data: existing } = await supabase.from("memberships").select("org_id").eq("user_id", userId).eq("role", "owner").maybeSingle();
     if (existing) return existing.org_id;
     const { data: org, error: orgError } = await supabase.from("organizations").insert({ name: "マイ教室", kind: "solo", created_by: userId }).select().single();
-    if (orgError || !org) { console.error("教室の作成に失敗しました:", orgError); return null; }
+    if (orgError || !org) {
+      console.error("教室の作成に失敗しました:", orgError);
+      setInviteError(`教室を作成できませんでした：${(orgError && orgError.message) || "原因不明"}`);
+      return null;
+    }
     await supabase.from("memberships").insert({ org_id: org.id, user_id: userId, role: "owner" });
     return org.id;
   }
+  // ★以前は、失敗しても console.error に出すだけで画面には何も出なかった。
+  //   ユーザーからは「押しても反応がない」としか見えず、原因も分からない。
+  //   （RLSのINSERTポリシー・列の欠落など、サーバー側の理由で失敗しうる）
+  const [inviteError, setInviteError] = useState("");
+
   async function handleGenerateTeacherInvite() {
-    await ensureOwnOrg();
+    setInviteError("");
+    const orgId = await ensureOwnOrg();
+    if (!orgId) {
+      setInviteError("教室の準備に失敗しました。時間をおいて、もう一度お試しください。");
+      return;
+    }
     const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
     const code = Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
     const supabase = createClient();
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
     const { error } = await supabase.from("teacher_invitations").insert({ code, teacher_id: userId, expires_at: expiresAt });
-    if (error) { console.error("招待コードの発行に失敗しました:", error); return; }
+    if (error) {
+      console.error("招待コードの発行に失敗しました:", error);
+      setInviteError(`招待コードを発行できませんでした：${error.message || "原因不明"}`);
+      return;
+    }
     setGeneratedInviteCode(code);
     fetchMyOrgs();
   }
@@ -8245,7 +8270,13 @@ export default function VocalTracker({ userId, userEmail }) {
         </div>
         {!lessonMode && (() => {
           // レッスン項目は、出現するときは「おうち」の直前に入れる。
-          const hasTeacherLessonTab = myStudentLinks.length > 0;
+          // ★「先生とつながる」で見つかったのと同じ鶏と卵が、先生側にもあった。
+          //   「生徒を招待する」は students タブの中にあるのに、そのタブ自体が
+          //   「つながっている生徒が1人以上いる」ときしか出ない。生徒が0人の
+          //   管理者は、招待コードを発行する場所そのものに到達できなかった。
+          //   管理者・指導者ベータの人だけは、生徒0人でもタブを出す。
+          //   一般ユーザーの条件は変えない（つながって初めて出る、のまま）。
+          const hasTeacherLessonTab = myStudentLinks.length > 0 || !!profile.is_admin || !!profile.teacher_beta_access;
           const hasStudentLessonTab = myAllLessons.length > 0 || myTeacherLinks.length > 0;
           const displayTabs = [];
           TABS.forEach((tab) => {
@@ -10034,6 +10065,11 @@ export default function VocalTracker({ userId, userEmail }) {
                           className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
                           {t("inviteTeacherButton")}
                         </button>
+                      )}
+                      {inviteError && (
+                        <p className="text-xs mt-2 rounded-lg p-2.5" style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>
+                          {inviteError}
+                        </p>
                       )}
                     </div>
                   </details>
