@@ -3267,8 +3267,15 @@ function OnboardingFlow({ existingUser, onComplete, t }) {
   const [statsConsent, setStatsConsent] = useState(false);
   const [professions, setProfessions] = useState([]);
   const [goalFocus, setGoalFocus] = useState("");
-  const [rangeLow, setRangeLow] = useState("");
-  const [rangeHigh, setRangeHigh] = useState("");
+  // ★step3 の任意項目。プロフィール画面と同じ ProfileFieldGroups を使うため、
+  //   profile と同じ形のオブジェクトで持つ。何も触らなければ空のまま送られる。
+  //   （旧 rangeLow / rangeHigh は vocal_range_low / vocal_range_high に統合した）
+  const [optionalFields, setOptionalFields] = useState({
+    height_cm: "", age: "", sex: "", voice_type: "",
+    conditions: [], allergies: [], regular_medications: [], health_notes: "",
+    vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "",
+    technical_goal: "", nutrition_phase: "維持", protein_coefficient: 1.6, track_cycle: false
+  });
   const [saving, setSaving] = useState(false);
   const totalSteps = existingUser ? 1 : 5;
 
@@ -3283,9 +3290,19 @@ function OnboardingFlow({ existingUser, onComplete, t }) {
     if (!existingUser) {
       patch.professions = professions.length ? professions : ["singer"];
       patch.vocal_profession = professions[0] || "singer";
-      patch.goal_focus = goalFocus || "log_only";
-      if (rangeLow) patch.vocal_range_low = rangeLow;
-      if (rangeHigh) patch.vocal_range_high = rangeHigh;
+      // ★「いま知りたいこと」は任意。未回答なら goal_focus を送らない。
+      //   handleCompleteOnboarding は goal_focus があるときだけ folded_groups の
+      //   プリセットを計算するので、未回答＝何も畳まない＝全項目表示になる。
+      if (goalFocus) patch.goal_focus = goalFocus;
+      // step3 の任意項目。入力されたものだけを送る（空欄を既定値で埋めない）。
+      Object.entries(optionalFields).forEach(([k, v]) => {
+        if (v === "" || v == null) return;
+        if (Array.isArray(v) && v.length === 0) return;
+        if (k === "nutrition_phase" && v === "維持") return;
+        if (k === "protein_coefficient" && v === 1.6) return;
+        if (k === "track_cycle" && v === false) return;
+        patch[k] = v;
+      });
     }
     await onComplete(patch);
     setSaving(false);
