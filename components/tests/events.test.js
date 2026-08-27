@@ -81,6 +81,25 @@ async function main() {
   const vercel = JSON.parse(readRaw("vercel.json"));
   assertTrue(vercel.crons.some((c) => c.path === "/api/cron/purge-events"), "毎日走るように登録されている");
 
+  console.log("\n=== ★既にある表に、あとから足せる形になっている ===");
+  console.log("     create table if not exists は、表があると黙って何もしません。");
+  console.log("     列は古いまま、続く create index が新しい列名を指して落ちます。");
+  assertTrue(/add column if not exists/.test(sql), "★足りない列を足す形になっている");
+  const addCols = (sql.match(/add column if not exists/g) || []).length;
+  assertTrue(addCols >= 5, `新しい列を${addCols}件、個別に足している`);
+  // 索引は、列を足したあとに作ること（順序が逆だと落ちる）
+  const addAt = sql.lastIndexOf("add column if not exists");
+  const idxAt = sql.indexOf("create index");
+  assertTrue(addAt < idxAt, "★列を足してから索引を作っている（順序）");
+  // 古い列の中身を写していること。★消していないこと。
+  assertTrue(/set name = event_type/.test(sql), "古い event_type を name へ写している");
+  assertTrue(/set props = payload/.test(sql), "古い payload を props へ写している");
+  assertTrue(!/drop column/.test(sql), "★古い列を消していない（写し違いがあったとき戻せる）");
+  assertTrue(/information_schema\.columns/.test(sql),
+    "★列の有無を確かめてから写している（無い環境でも落ちない）");
+  assertTrue(/set name = 'record_saved' where name = 'record_save'/.test(sql),
+    "旧 record_save を、仕様の名前に合わせている");
+
   console.log("\n=== 表の作り ===");
   assertTrue(/create index if not exists events_user_at_idx/.test(sql), "(user_id, at) の索引");
   assertTrue(/create index if not exists events_name_at_idx/.test(sql), "(name, at) の索引");
