@@ -4,6 +4,8 @@ import { isNativeApp } from "@/lib/isNativeApp";
 import { C } from "@/lib/tokens";
 import CheckoutButton from "@/components/CheckoutButton";
 import PortalButton from "@/components/PortalButton";
+import { getUserWithTimeout } from "@/lib/withTimeout";
+import ConnectionError from "@/components/ConnectionError";
 
 function formatDate(iso) {
   if (!iso) return "";
@@ -13,7 +15,8 @@ function formatDate(iso) {
 
 export default async function BillingPage() {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { user, unreachable } = await getUserWithTimeout(supabase, "お支払い画面の認証確認");
+  if (unreachable) return <ConnectionError detail="認証の確認がタイムアウトしました" />;
   if (!user) redirect("/login");
 
   const requireSubscription = process.env.REQUIRE_SUBSCRIPTION === "true";

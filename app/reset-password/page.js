@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getUserWithTimeout } from "@/lib/withTimeout";
 
 // ============================================================================
 // パスワードの再設定（Supabase Auth の標準の仕組み）
@@ -32,7 +33,7 @@ const T = {
 function tr(k) { return T[k].ja; }
 
 export default function ResetPasswordPage() {
-  const [ready, setReady] = useState("checking"); // checking | ok | nosession
+  const [ready, setReady] = useState("checking"); // checking | ok | nosession | unreachable
   const [pw1, setPw1] = useState("");
   const [pw2, setPw2] = useState("");
   const [status, setStatus] = useState("idle");   // idle | saving | done
@@ -43,8 +44,11 @@ export default function ResetPasswordPage() {
     // 直接開かれた場合やリンクが期限切れの場合は、セッションが無い。
     (async () => {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      setReady(user ? "ok" : "nosession");
+      // ★つながらないときに「セッションが無い」と決めつけないこと。
+      //   リンクは有効なのに「期限切れです」と出すと、利用者は
+      //   もう一度メールを送り直し、また同じ画面に当たります。
+      const { user, unreachable } = await getUserWithTimeout(supabase, "再設定リンクの確認");
+      setReady(unreachable ? "unreachable" : user ? "ok" : "nosession");
     })();
   }, []);
 
@@ -91,6 +95,17 @@ export default function ResetPasswordPage() {
         <h1 className="ff-display italic" style={{ fontSize: "1.4rem", color: "#7A1F2B", margin: 0 }}>{tr("title")}</h1>
 
         {ready === "checking" && <p style={{ fontSize: 14, color: "#6b5d52", margin: 0 }}>{tr("checking")}</p>}
+
+        {/* ★つながらなかっただけのときは、「期限切れ」と言わない。
+            リンクは有効かもしれないので、もう一度試せるようにする。 */}
+        {ready === "unreachable" && (
+          <>
+            <p style={{ fontSize: 14, color: "#7A1F2B", margin: 0 }}>
+              いま、つながりません。リンクはまだ有効かもしれません。少し待ってから、もう一度開いてください。
+            </p>
+            <button type="button" onClick={() => window.location.reload()} style={button}>もう一度試す</button>
+          </>
+        )}
 
         {ready === "nosession" && (
           <>

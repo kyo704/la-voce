@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isNativeApp } from "@/lib/isNativeApp";
 import { C } from "@/lib/tokens";
+import { getUserWithTimeout } from "@/lib/withTimeout";
 
 const LANGS = [
   { code: "ja", label: "日本語" },
@@ -115,7 +116,10 @@ function FeatureCard({ title, desc, accent }) {
 
 export default async function LandingPage({ searchParams }) {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // ★ここは公開ページ。つながらなくても、必ず表示すること。
+  //   ログインの有無は「入口をどちらに出すか」に使うだけなので、
+  //   確認できないときは未ログインとして扱い、ページは出す。
+  const { user } = await getUserWithTimeout(supabase, "トップページの認証確認");
   if (user) redirect("/dashboard");
 
   const nativeApp = isNativeApp();

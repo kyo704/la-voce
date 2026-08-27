@@ -1,12 +1,20 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getUserWithTimeout } from "@/lib/withTimeout";
 
 const FEEDBACK_TO_EMAIL = "kyo0703opera@gmail.com";
 
 export async function POST(request) {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { user, unreachable } = await getUserWithTimeout(supabase, "問い合わせの認証確認");
+  // ★「確認できなかった」と「ログインしていない」を分ける。
+  //   つながらないときに 401 を返すと、利用者は「ログインし直してください」と
+  //   案内され、ログインもできず途方に暮れます。503 を返して、時間を置けば
+  //   直ることを伝えます。
+  if (unreachable) {
+    return NextResponse.json({ error: "いま、つながりません。少し待ってからお試しください。" }, { status: 503 });
+  }
   if (!user) {
     return NextResponse.json({ error: "ログインが必要です。" }, { status: 401 });
   }

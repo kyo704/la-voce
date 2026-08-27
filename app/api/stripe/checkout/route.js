@@ -2,10 +2,16 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { stripe } from "@/lib/stripe";
+import { getUserWithTimeout } from "@/lib/withTimeout";
 
 export async function POST() {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { user, unreachable } = await getUserWithTimeout(supabase, "決済の認証確認");
+  // ★「確認できなかった」と「ログインしていない」を分ける。
+  //   つながらないときに 401 を返すと、利用者は「ログインし直してください」と
+  //   案内され、ログインもできず途方に暮れます。503 を返して、時間を置けば
+  //   直ることを伝えます。
+  if (unreachable) return NextResponse.json({ error: "unavailable" }, { status: 503 });
   if (!user) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }

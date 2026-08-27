@@ -46,7 +46,12 @@ console.log("\n=== テスト3: 確認の入力をサーバー側でも見てい�
 assertTrue(/body\.confirmation/.test(api), "リクエストの確認文字列を読んでいる");
 assertTrue(/user\.email/.test(api) && /削除します/.test(api), "メールアドレスまたは定型句と突き合わせている");
 assertTrue(/status: 400/.test(api), "一致しなければ 400 で拒否している");
-assertTrue(/getUser\(\)/.test(api) && /status: 401/.test(api), "ログインしていなければ 401");
+// ★getUser() は時間制限つきの共通関数に置き換わった（lib/withTimeout.js）。
+//   401 と 503 の区別が本体。ログインしていない＝401、確認できない＝503。
+assertTrue(/getUserWithTimeout\(/.test(api), "認証の確認が、時間制限つきの共通関数を通っている");
+assertTrue(/status: 401/.test(api), "ログインしていなければ 401");
+assertTrue(/unreachable[\s\S]{0,160}status: 503/.test(api),
+  "★つながらないときは 503（401 だと「ログインし直して」と案内され、ログインもできない）");
 
 console.log("\n=== テスト4: 3ページそれぞれに中身がある ===");
 ["deleteAccount1", "deleteAccount2", "deleteAccount3"].forEach((k) =>

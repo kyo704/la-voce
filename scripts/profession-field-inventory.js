@@ -24,8 +24,17 @@ function storage(keys){
   return '—';
 }
 function rendersInUI(keys){
-  // JSX の中で onChange / value として現れるか
-  return keys.some(k=>new RegExp(`(onDetailChange|setFormData|onChange)[^\\n]{0,160}\\b${k}\\b|\\b${k}\\b[^\\n]{0,80}(onChange|checked=|value=)`).test(ui));
+  // ★onChange だけを見ると取りこぼします。
+  //   マスタ登録の欄は onClick={() => handleSaveXxx(name, { ...rec, field: v })}
+  //   という形で、項目名が onChange の隣に出てきません。
+  //   実際に歌唱言語・原稿の種類などを「入力欄なし」と誤判定しました。
+  //   ★保存を呼ぶ式の中に項目名が出るかどうかも見ます。
+  return keys.some(k=>{
+    const direct=new RegExp(`(onDetailChange|setFormData|onChange)[^\\n]{0,160}\\b${k}\\b|\\b${k}\\b[^\\n]{0,80}(onChange|checked=|value=)`);
+    const viaSave=new RegExp(`(onClick|onBlur)=\\{[^}]{0,200}\\b${k}\\b`);
+    const inSaveArgs=new RegExp(`handleSave\\w+\\([^)]{0,200}\\b${k}\\b`);
+    return direct.test(ui)||viaSave.test(ui)||inSaveArgs.test(ui);
+  });
 }
 function usedInAnalysis(keys){
   return keys.some(k=>new RegExp(`\\b${k}\\b`).test(analysisZone));

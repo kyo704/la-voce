@@ -2,10 +2,13 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { C } from "@/lib/tokens";
 import FeedbackForm from "@/components/FeedbackForm";
+import { getUserWithTimeout } from "@/lib/withTimeout";
+import ConnectionError from "@/components/ConnectionError";
 
 export default async function FeedbackPage() {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { user, unreachable } = await getUserWithTimeout(supabase, "お問い合わせの認証確認");
+  if (unreachable) return <ConnectionError detail="認証の確認がタイムアウトしました" />;
   if (!user) redirect("/login");
 
   return (

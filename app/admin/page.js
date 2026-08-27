@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { C } from "@/lib/tokens";
+import { getUserWithTimeout } from "@/lib/withTimeout";
+import ConnectionError from "@/components/ConnectionError";
 
 function formatDate(iso) {
   if (!iso) return "—";
@@ -33,7 +35,9 @@ const SURVEY_LABEL = {
 
 export default async function AdminPage() {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { user, unreachable } = await getUserWithTimeout(supabase, "管理画面の認証確認");
+  // ★つながらないときは、ログイン画面へ飛ばさない。飛ばしても、その画面も開かない。
+  if (unreachable) return <ConnectionError detail="認証の確認がタイムアウトしました" />;
   if (!user) redirect("/login");
 
   const { data: myProfile } = await supabase

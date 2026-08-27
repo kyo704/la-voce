@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getAdvice } from "@/lib/anthropic";
+import { getUserWithTimeout } from "@/lib/withTimeout";
 
 const SYSTEM_PROMPT = `あなたは声楽家の体調管理をサポートするアシスタントです。
 ユーザーが記録した直近の体調データ（喉のコンディション、声の調子、睡眠、水分、気候、活動内容、
@@ -38,7 +39,12 @@ function buildSummary(rows) {
 
 export async function POST() {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { user, unreachable } = await getUserWithTimeout(supabase, "アドバイスの認証確認");
+  // ★「確認できなかった」と「ログインしていない」を分ける。
+  //   つながらないときに 401 を返すと、利用者は「ログインし直してください」と
+  //   案内され、ログインもできず途方に暮れます。503 を返して、時間を置けば
+  //   直ることを伝えます。
+  if (unreachable) return Response.json({ error: "いま、つながりません。" }, { status: 503 });
   if (!user) {
     return NextResponse.json({ error: "ログインが必要です。" }, { status: 401 });
   }
