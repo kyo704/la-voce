@@ -6,7 +6,8 @@ import {
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
   Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot, MessageCircle, Home,
   Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe, Lock,
-  Volume2, Plane, AudioWaveform, Timer, MessageSquare, ClipboardList, GraduationCap, FileText, MoreHorizontal, HelpCircle
+  Volume2, Plane, AudioWaveform, Timer, MessageSquare, ClipboardList, GraduationCap, FileText, MoreHorizontal, HelpCircle,
+  User, HeartPulse
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -6781,7 +6782,10 @@ export default function VocalTracker({ userId, userEmail }) {
       console.warn("アレルギー・常用薬を保存できませんでした。supabase/migration_profile_health_fields.sql を実行してください。", healthError);
     }
     setProfileSaveStatus(error ? "error" : "saved");
-    setTimeout(() => setProfileSaveStatus("idle"), 1800);
+    // ★失敗の表示は自動で消さない。以前は 1.8秒で idle に戻していたため、
+    //   保存に失敗しても何も残らず、ユーザーには成功と区別がつかなかった。
+    //   成功したときだけ、しばらくして自然に消す。
+    if (!error) setTimeout(() => setProfileSaveStatus((st) => (st === "saved" ? "idle" : st)), 2500);
   }
 
   // lavoce-画面レイアウト仕様_1.md §9: オンボーディング完了時に、同意日時・プロフィールをまとめて保存する。
@@ -11875,8 +11879,11 @@ export default function VocalTracker({ userId, userEmail }) {
                       「からだのこと」は受診用サマリーに載る項目をひとまとめにしてあり、
                       医師に見せる前にこのグループだけ見直せば足りる形にしている。 */}
 
-                  <div className="pt-1">
-                    <h3 className="ff-display italic text-lg" style={{ color: C.ink }}>{t("groupProfileBasic")}</h3>
+                  <div className="pt-6 mt-2 border-t" style={{ borderColor: C.line }}>
+                    <div className="flex items-center gap-2">
+                      <User size={17} style={{ color: C.curtain }} />
+                      <h3 className="ff-display italic text-lg" style={{ color: C.curtain }}>{t("groupProfileBasic")}</h3>
+                    </div>
                     <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>{t("groupProfileBasicNote")}</p>
                   </div>
 
@@ -11951,8 +11958,11 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   </div>
 
-                  <div className="pt-1">
-                    <h3 className="ff-display italic text-lg" style={{ color: C.ink }}>{t("groupProfileHealth")}</h3>
+                  <div className="pt-6 mt-2 border-t" style={{ borderColor: C.line }}>
+                    <div className="flex items-center gap-2">
+                      <HeartPulse size={17} style={{ color: C.curtain }} />
+                      <h3 className="ff-display italic text-lg" style={{ color: C.curtain }}>{t("groupProfileHealth")}</h3>
+                    </div>
                     <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>{t("groupProfileHealthNote")}</p>
                   </div>
 
@@ -12033,8 +12043,11 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   )}
 
-                  <div className="pt-1">
-                    <h3 className="ff-display italic text-lg" style={{ color: C.ink }}>{t("groupProfileVoice")}</h3>
+                  <div className="pt-6 mt-2 border-t" style={{ borderColor: C.line }}>
+                    <div className="flex items-center gap-2">
+                      <Music2 size={17} style={{ color: C.curtain }} />
+                      <h3 className="ff-display italic text-lg" style={{ color: C.curtain }}>{t("groupProfileVoice")}</h3>
+                    </div>
                     <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>{t("groupProfileVoiceNote")}</p>
                   </div>
 
@@ -12098,8 +12111,11 @@ export default function VocalTracker({ userId, userEmail }) {
                       className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                   </div>
 
-                  <div className="pt-1">
-                    <h3 className="ff-display italic text-lg" style={{ color: C.ink }}>{t("groupProfileNutrition")}</h3>
+                  <div className="pt-6 mt-2 border-t" style={{ borderColor: C.line }}>
+                    <div className="flex items-center gap-2">
+                      <Wheat size={17} style={{ color: C.curtain }} />
+                      <h3 className="ff-display italic text-lg" style={{ color: C.curtain }}>{t("groupProfileNutrition")}</h3>
+                    </div>
                     <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>{t("groupProfileNutritionNote")}</p>
                   </div>
 
@@ -12134,8 +12150,11 @@ export default function VocalTracker({ userId, userEmail }) {
                     {profileSaveStatus === "saving" ? t("saveButtonSaving") : profileSaveStatus === "saved" ? t("saveButtonSaved") : t("btnSaveProfileSettings")}
                   </button>
 
-                  <div className="pt-1">
-                    <h3 className="ff-display italic text-lg" style={{ color: C.ink }}>{t("groupProfileData")}</h3>
+                  <div className="pt-6 mt-2 border-t" style={{ borderColor: C.line }}>
+                    <div className="flex items-center gap-2">
+                      <FileText size={17} style={{ color: C.curtain }} />
+                      <h3 className="ff-display italic text-lg" style={{ color: C.curtain }}>{t("groupProfileData")}</h3>
+                    </div>
                   </div>
 
                   <div className="rounded-xl p-3" style={{ background: C.paper }}>
