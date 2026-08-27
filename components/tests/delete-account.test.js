@@ -99,6 +99,35 @@ assertTrue(/restoreConnectionsNote/.test(tracker), "復元しても共有は戻�
 assertTrue(/profile\.deleted_at/.test(tracker), "削除申請中はアプリを開かせず、復元を尋ねている");
 assertTrue(/バックアップ/.test(shared), "バックアップから復元したときの手順がコメントに残っている（A-4）");
 
+console.log("\n=== ★定期処理は、すべて CRON_SECRET が未設定なら止まること ===");
+const cronDir = path.join(ROOT, "app", "api", "cron");
+const cronRoutes = fs.readdirSync(cronDir).filter((d) => fs.existsSync(path.join(cronDir, d, "route.js")));
+assertTrue(cronRoutes.length >= 3, `定期処理が${cronRoutes.length}本ある`);
+cronRoutes.forEach((name) => {
+  const code = fs.readFileSync(path.join(cronDir, name, "route.js"), "utf-8");
+  assertTrue(/if \(!cronSecret\)/.test(code) && /503/.test(code), `${name}: 未設定なら 503 で止まる`);
+  assertTrue(/!== `Bearer \$\{cronSecret\}`/.test(code), `${name}: 変数と比べている`);
+  const guardAt = code.indexOf("if (!cronSecret)");
+  const queryAt = code.search(/\.from\(/);
+  // ★認証に失敗した cron は DB に触れない。つまり Supabase の活動として
+  //   数えられない。停止よけが効かなくなるので、順序も含めて固定しておく。
+  if (queryAt >= 0) assertTrue(guardAt >= 0 && guardAt < queryAt, `${name}: ★DBに触る前に認証している`);
+});
+
+console.log("\n=== 停止よけ（keep-alive）の設定 ===");
+const ka = vercel.crons.find((c) => c.path === "/api/cron/keep-alive");
+assertTrue(!!ka, "keep-alive が vercel.json に登録されている");
+// ★Vercel Hobby は1日1回まで。それより短い式はデプロイ時に失敗する。
+//   Supabase 無料プランの判定は7日の窓なので、1日1回で足りる。
+vercel.crons.forEach((c) => {
+  const [min, hour] = c.schedule.split(" ");
+  assertTrue(!hour.includes("*") && !hour.includes("/") && !min.includes("*") && !min.includes("/"),
+    `${c.path}: 1日1回に収まっている（Hobby の制限）`);
+});
+const cronHours = vercel.crons.map((c) => Number(c.schedule.split(" ")[1]));
+const tooClose = cronHours.some((h, i) => cronHours.some((g, j) => i !== j && Math.abs(h - g) < 2));
+assertTrue(!tooClose, "★起動時刻が2時間以上離れている（Hobby は±59分ずれる）");
+
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
 if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
 console.log("\n✓ すべて成功しました。");
