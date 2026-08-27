@@ -18,6 +18,18 @@ const path = require("path");
 const ROOT = path.join(__dirname, "..");
 const src = fs.readFileSync(path.join(ROOT, "components", "VocalTracker.jsx"), "utf-8");
 
+// ★lib/ も見る。VocalTracker.jsx だけを見ていたせいで、
+//   lib/vocalDose.js が speakingLevel を読んでいることを見落とした。
+//   「どこからも読まれていない」と報告する前に、読む場所を全部見ること。
+const LIB_DIR = path.join(ROOT, "lib");
+const libFiles = fs.readdirSync(LIB_DIR)
+  .filter((f) => f.endsWith(".js") && f !== "translations.js")
+  .map((f) => ({ name: `lib/${f}`, text: fs.readFileSync(path.join(LIB_DIR, f), "utf-8") }));
+const otherComponents = ["CharacterHome.jsx", "HealthInfo.jsx"]
+  .filter((f) => fs.existsSync(path.join(ROOT, "components", f)))
+  .map((f) => ({ name: `components/${f}`, text: fs.readFileSync(path.join(ROOT, "components", f), "utf-8") }));
+const EXTRA = libFiles.concat(otherComponents);
+
 // entryToRow / rowToEntry / migrate* の中は「入出力の配線」であって、読み書きではない。
 // 数えるときはそこを除く（除かないと、全項目が「使われている」ことになってしまう）。
 function spanOf(name) {
@@ -56,7 +68,10 @@ const rows = FIELDS.map((f) => {
     count(analysis, new RegExp(`\\be\\.${esc}\\b`, "g")) +
     count(analysis, new RegExp(`\\bentry\\.${esc}\\b`, "g")) +
     count(analysis, new RegExp(`["']${esc}["']`, "g"));
-  return { field: f, writes, reads };
+  // どの lib/ ファイルが読んでいるか。名前まで出す（「どこか」では追えないため）
+  const libReaders = EXTRA.filter((m) =>
+    new RegExp(`\\b(e|entry|d)\\.${esc}\\b`).test(m.text)).map((m) => m.name);
+  return { field: f, writes, reads: reads + libReaders.length, libReaders };
 });
 
 const dead = rows.filter((r) => r.writes === 0 && r.reads > 0);
@@ -67,7 +82,9 @@ function table(title, list, note) {
   console.log(`\n=== ${title}（${list.length}件）===`);
   if (note) console.log(`  ${note}`);
   if (!list.length) { console.log("  なし"); return; }
-  list.forEach((r) => console.log(`  ${r.field.padEnd(30)} 入力${String(r.writes).padStart(3)}  分析${String(r.reads).padStart(3)}`));
+  list.forEach((r) => console.log(
+    `  ${r.field.padEnd(30)} 入力${String(r.writes).padStart(3)}  分析${String(r.reads).padStart(3)}` +
+    (r.libReaders.length ? `   ← ${r.libReaders.join(", ")}` : "")));
 }
 
 console.log(`記録項目 ${rows.length}件を棚卸ししました。`);
@@ -77,3 +94,6 @@ table("記録画面にはあるが、分析がどこも読んでいない", unus
   "記録だけされて使われていない項目です。消すか、使うかの判断がいります。");
 table("入力も分析も見あたらない", orphan);
 console.log("\n※ 数は目安です。0でも別名で扱われていることがあります（響きスコア/声の出来のように）。");
+console.log("※ ★「入力0」は『いま入力が無い』という意味です。『昔も無かった』ではありません。");
+console.log("   消す前に git log -S で過去の入力を探し、DBに実データが無いことを数えてください。");
+console.log("   speakingLevel で、その確認をせずに『全利用者で必ず null』と報告しかけました。");
