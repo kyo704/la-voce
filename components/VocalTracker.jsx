@@ -515,6 +515,26 @@ async function runQueryWithAuthRetry(supabase, queryFn, label) {
   }
   return result;
 }
+// ---- レッスン画面の「立場」を決める（1か所だけで決める） ----
+// ★1人が先生でもあり生徒でもある、は正当な想定（自分も誰かに習っている先生）。
+//   以前は教える側と習う側でタブの出現条件が独立していたため、両方に当てはまる人には
+//   「レッスン」タブが2つ並んでいた。タブは1つにして、中で立場を切り替える。
+//
+// choice は本人が選んだ立場（まだ選んでいなければ null）。
+// 連携が解除されて選んだ立場が使えなくなることがあるので、毎回ふるいにかける。
+function resolveLessonRole(choice, { canTeach, canLearn }) {
+  if (choice === "teach" && canTeach) return "teach";
+  if (choice === "learn" && canLearn) return "learn";
+  // 既定は「教える」。先生の仕事には期限があるものが多いため。
+  // 教える側でなければ、当然「習う」。
+  return canTeach ? "teach" : "learn";
+}
+// 切り替えを出すのは、両方に当てはまる人だけ。
+// ★片方だけの人（大多数）に、選ぶものが1つしかない切り替えを見せないこと。
+function shouldShowLessonRoleSwitch({ canTeach, canLearn }) {
+  return Boolean(canTeach && canLearn);
+}
+// ---- レッスン画面の「立場」 ここまで ----
 function toISODate(d) {
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -4035,6 +4055,8 @@ export default function VocalTracker({ userId, userEmail }) {
   const [mergeResult, setMergeResult] = useState("");
   const [showQuickRecord, setShowQuickRecord] = useState(false);
   const [notesSubTab, setNotesSubTab] = useState("practice");
+  // レッスン画面の立場。null は「まだ選んでいない」＝ 既定に従う。
+  const [lessonRoleChoice, setLessonRoleChoice] = useState(null);
   const [editingVoiceEntryId, setEditingVoiceEntryId] = useState(null);
   const [editingPracticeGoal, setEditingPracticeGoal] = useState(false);
   const [practiceGoalDraft, setPracticeGoalDraft] = useState("");
@@ -6076,6 +6098,23 @@ export default function VocalTracker({ userId, userEmail }) {
     return { overlapPairs, busyDates };
   }, [myAllLessons]);
   // ---- レッスンの重なり検出 ここまで ----
+
+  // ---- レッスンの「立場」 ----
+  // ★1人が先生でもあり生徒でもある、は正当な想定（自分も誰かに習っている先生）。
+  //   以前は「教える側のタブ」と「習う側のタブ」の出現条件が独立していたので、
+  //   両方に当てはまる人には「レッスン」タブが2つ並んでいた。
+  //   タブは1つにして、中で立場を切り替える。
+  //
+  // ★呼び名は「習う」「教える」。「生徒として／担当として」も検討したが、
+  //   生徒の画面に既に「担当の先生」（assignedTeacherLabel）があり、
+  //   同じ語が両側で逆向きの意味になるため避けた。行為で言い分ければ迷わない。
+  const canTeachLessons = canSeeTeacherFeatures(profile, { hasStudentLinks: myStudentLinks.length > 0 });
+  const canLearnLessons = canSeeTeacherFeatures(profile, { hasTeacherLinks: myTeacherLinks.length > 0 })
+    && (myAllLessons.length > 0 || myTeacherLinks.length > 0 || canSeeBetaFeatures(profile));
+  const hasLessonTab = canTeachLessons || canLearnLessons;
+  const lessonRole = resolveLessonRole(lessonRoleChoice, { canTeach: canTeachLessons, canLearn: canLearnLessons });
+  const showLessonRoleSwitch = shouldShowLessonRoleSwitch({ canTeach: canTeachLessons, canLearn: canLearnLessons });
+  // ---- レッスンの「立場」 ここまで ----
 
   const passaggioStability = useMemo(() => {
     if (!(effectiveProfessions || []).includes("singer")) return { hasEnoughData: false, n: 0 };
@@ -8465,14 +8504,12 @@ export default function VocalTracker({ userId, userEmail }) {
           // 統合実行ルートv4 G2-14: 指導者・教室機能は、10人に配る段階では
           // 一般ユーザーに出さない。判定は lib/featureFlags.js に集約する。
           // ★既につながっている人からは取り上げない（解除する手段まで消えるため）。
-          const hasTeacherLessonTab = canSeeTeacherFeatures(profile, { hasStudentLinks: myStudentLinks.length > 0 });
-          const hasStudentLessonTab = canSeeTeacherFeatures(profile, { hasTeacherLinks: myTeacherLinks.length > 0 })
-            && (myAllLessons.length > 0 || myTeacherLinks.length > 0 || canSeeBetaFeatures(profile));
+          // ★「レッスン」は必ず1つ。教える側と習う側は、この中で切り替える。
+          //   判定は上の canTeachLessons / canLearnLessons に集約してある。
           const displayTabs = [];
           TABS.forEach((tab) => {
-            if (tab.key === "garden") {
-              if (hasTeacherLessonTab) displayTabs.push({ key: "students", labelKey: null, label: t("tabLesson"), icon: GraduationCap });
-              if (hasStudentLessonTab) displayTabs.push({ key: "mylessons", labelKey: null, label: t("tabLesson"), icon: GraduationCap });
+            if (tab.key === "garden" && hasLessonTab) {
+              displayTabs.push({ key: "lesson", labelKey: null, label: t("tabLesson"), icon: GraduationCap });
             }
             displayTabs.push(tab);
           });
@@ -9931,7 +9968,23 @@ export default function VocalTracker({ userId, userEmail }) {
               </div>
             )}
 
-            {activeTab === "mylessons" && (
+            {/* ★両方に当てはまる人にだけ出す。片方だけの人には出さない（大多数はこちら）。
+                生徒の詳細を開いている間も出さない（戻る導線があるため）。 */}
+            {activeTab === "lesson" && showLessonRoleSwitch && !viewingStudentLink && (
+              <div className="flex rounded-full border p-1 mb-4" style={{ borderColor: C.line }}>
+                <button onClick={() => setLessonRoleChoice("learn")}
+                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                  style={{ background: lessonRole === "learn" ? C.curtain : "transparent", color: lessonRole === "learn" ? "#FFFDF8" : C.inkSoft }}>
+                  {t("lessonRoleLearn")}
+                </button>
+                <button onClick={() => setLessonRoleChoice("teach")}
+                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                  style={{ background: lessonRole === "teach" ? C.curtain : "transparent", color: lessonRole === "teach" ? "#FFFDF8" : C.inkSoft }}>
+                  {t("lessonRoleTeach")}
+                </button>
+              </div>
+            )}
+            {activeTab === "lesson" && lessonRole === "learn" && (
               <div className="space-y-4">
                 <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>{t("tabLesson")}</h2>
                 <p className="text-xs" style={{ color: C.inkSoft }}>
@@ -10039,7 +10092,7 @@ export default function VocalTracker({ userId, userEmail }) {
               </div>
             )}
 
-            {activeTab === "students" && (
+            {activeTab === "lesson" && lessonRole === "teach" && (
               viewingStudentLink ? (() => {
                 const link = viewingStudentLink;
                 const scope = link.share_scope || {};
