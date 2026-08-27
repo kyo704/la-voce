@@ -48,6 +48,8 @@ import {
   VOCAL_SESSION_KINDS, dayVocalDose, weeklyVocalDose, activityMinutes,
   elapsedMinutes, reviewSession, SESSION_MAX_MINUTES
 } from "@/lib/vocalDose";
+// 行動ログ。★健康の値を props に入れない歯止めは、このモジュールが持つ。
+import { trackEvent } from "@/lib/events";
 import { buildExportSummary } from "@/lib/exportSummary";
 import { EXPORTED_TABLES, EXPORTED_PROFILE_COLUMNS, entriesToCsv, buildExportPayload, sanitizeShareHistory } from "@/lib/exportData";
 import HealthInfo from "@/components/HealthInfo";
@@ -432,6 +434,24 @@ function countFilledSectionsCore(entry) {
   if (typeof entry.sleepHours === "number") n += 1;
   if ((entry.activities || []).length > 0 || entry.recovery) n += 1;
   return n;
+}
+// ★どのセクションを入れたか、その「名前」だけを返す（計測とユーザー調査仕様 §3.3）。
+//   fieldsFilled は項目名の配列であって、項目の値ではありません。
+//   この線を守っているかぎり、行動ログは要配慮個人情報になりません。
+function filledSectionNames(entry, mode) {
+  const e = entry || {};
+  const names = [];
+  if ((e.voiceEntries || []).length > 0) names.push("voice");
+  if (typeof e.sleepHours === "number") names.push("sleep");
+  if ((e.activities || []).length > 0 || e.recovery) names.push("activity");
+  if (mode === "simple") return names;
+  if (typeof e.temperature === "number" || typeof e.humidity === "number") names.push("environment");
+  if ((e.waterBySlot || {}).total > 0) names.push("hydration");
+  if (e.dinnerTime || (e.dinnerTags || []).length > 0 || typeof e.proteinLevel === "number") names.push("meal");
+  if ((e.symptoms || []).length > 0) names.push("symptoms");
+  if (typeof e.mentalEase === "number") names.push("mental");
+  if ((e.note || e.mentalReason || "").trim()) names.push("notes");
+  return names;
 }
 function countFilledSections(entry, mode) {
   if (mode === "simple") return countFilledSectionsCore(entry);
@@ -8709,6 +8729,7 @@ export default function VocalTracker({ userId, userEmail }) {
     const discovery = computeTodaysDiscovery(mergedEntries, clean.date);
     // 保存カードの「N項目」も、かんたん記録では分母を合わせる（v4 §11）
     const filledCount = countFilledSections(clean, profile.record_mode);
+    const filledFieldNames = filledSectionNames(clean, profile.record_mode);
 
     setEntries((prev) => ({ ...prev, [clean.date]: clean }));
     setSaveStatus("saved");
@@ -8721,12 +8742,16 @@ export default function VocalTracker({ userId, userEmail }) {
       discovery
     });
 
-    // §7: 計測。record_saveイベントを記録する（失敗しても記録自体は成立させるため、結果を待たない）。
-    supabase.from("events").insert({
-      user_id: userId,
-      event_type: "record_save",
-      payload: { filledCount, msTotal: Date.now() - saveStartedAt, mode: filledCount <= 3 ? "30s" : "full" }
-    }).then(() => {}, () => {});
+    // 計測（計測とユーザー調査仕様.md §3）。★lib/events.js を必ず経由すること。
+    //   以前はここで直接 insert しており、列名も仕様と違っていました
+    //   （event_type / payload → name / props）。何より、健康の値を
+    //   入れてしまう歯止めがどこにもありませんでした。
+    trackEvent(supabase, userId, "record_saved", {
+      // ★項目名の配列であって、項目の値ではない（§3.3）。
+      fieldsFilled: filledFieldNames,
+      durationMs: Date.now() - saveStartedAt,
+      mode: filledCount <= 3 ? "quick" : "full"
+    });
   }
 
   async function handleDelete(date) {

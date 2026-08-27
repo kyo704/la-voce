@@ -11,6 +11,10 @@
     {
       "path": "/api/cron/keep-alive",
       "schedule": "0 12 * * *"
+    },
+    {
+      "path": "/api/cron/purge-events",
+      "schedule": "0 6 * * *"
     }
   ]
 }
