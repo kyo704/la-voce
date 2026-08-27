@@ -757,6 +757,12 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
           zIndex: frontZ
         }}
       >
+        {/* 寝ているときは伏せているので、影も小さく薄くする。
+            立っているときと同じ影だと、寝ながら浮いているように見える。 */}
+        <div style={{
+          position: "absolute", bottom: -1, left: "50%", transform: "translateX(-50%)",
+          ...CONTACT_SHADOW, width: "70%", opacity: 0.7, pointerEvents: "none"
+        }} />
         <SheepSleepingHead size={size * 0.62 * frontScale} />
       </div>
     );
@@ -772,6 +778,13 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
         zIndex: frontZ
       }}
     >
+      {/* ★A-2: 羊にも接地の影。指示書が「家具も羊も床から浮いて見えます」と
+          名指ししているのに、家具にしか付いていなかった。
+          羊は歩き回るので、影も一緒に動く（親のtransformに追随する）。 */}
+      <div style={{
+        position: "absolute", bottom: -2, left: "50%", transform: "translateX(-50%)",
+        ...CONTACT_SHADOW, pointerEvents: "none"
+      }} />
       <div style={{ transform: facingLeft ? "scaleX(-1)" : "none" }}>
         <SheepCharacter equipped={equipped} size={size * frontScale} isWalking={isWalking} isFarming={isFarming} showBook={isSitting} isSweating={isSweating} isCelebrating={isCelebrating} />
       </div>
@@ -1196,6 +1209,23 @@ function ShopItemPreview({ item }) {
 // z-indexは、ページのヘッダー等と競合しないよう、以前から問題なく動いていた小さい範囲(1〜6)に収める。
 // 指示書は 10/20/30 を例示しているが、絶対値よりも back < mid < front の相対順序が本質のため、
 // アプリ全体のヘッダーのz-indexと衝突しない値を優先する。
+// ★場面の中の重なり（LAYER_CONFIG）と、場面の上に乗せる操作ボタンを混同しないこと。
+//   「模様替え」ボタンは場面の一部ではないので、羊より前に出てよい。
+//   場面の要素は front(6) を超えてはいけない（超えると羊を横切る）。
+const UI_CHROME_Z = 10;
+
+// 作業指示 A-2: 接地の影。★家具も羊も、同じ1つの定義から作ること。
+//   仕様は「全アイテムに楕円のソフトシャドウを1枚敷く」。羊も対象で、
+//   指示書は「家具も羊も床から浮いて見えます」と名指ししている。
+//   ★壁掛け・窓（anchor:'wall'）には付けない。
+const CONTACT_SHADOW = {
+  width: "85%",          // アイテム幅 × 0.85
+  aspectRatio: "1 / 0.22",
+  background: "rgba(70,45,30,0.18)",
+  filter: "blur(6px)",
+  borderRadius: "50%"
+};
+
 const LAYER_CONFIG = {
   back: { z: 1, scale: 0.85 },
   mid: { z: 2, scale: 1.00 },
@@ -1342,9 +1372,7 @@ function DraggableItem({ left, top, width, layer = "mid", editMode, minLeft = 3,
       {anchor !== "wall" && (
         <div style={{
           position: "absolute", bottom: -2, left: "50%", transform: "translateX(-50%)",
-          width: "85%", aspectRatio: "1 / 0.22",
-          background: "rgba(70,45,30,0.18)", borderRadius: "50%", filter: "blur(6px)",
-          pointerEvents: "none"
+          ...CONTACT_SHADOW, pointerEvents: "none"
         }} />
       )}
       {editMode && (
@@ -1926,7 +1954,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
       {(placedFurniture.length > 0 || placedWallhang.length > 0) && (
         <button type="button" onClick={() => setEditMode((v) => !v)}
           className="absolute bottom-2 right-2 text-xs px-3 py-1.5 rounded-full font-medium"
-          style={{ background: editMode ? C.curtain : "rgba(255,253,248,0.9)", color: editMode ? "#FFFDF8" : C.ink, border: `1px solid ${C.line}`, zIndex: 10 }}>
+          style={{ background: editMode ? C.curtain : "rgba(255,253,248,0.9)", color: editMode ? "#FFFDF8" : C.ink, border: `1px solid ${C.line}`, zIndex: UI_CHROME_Z }}>
           {editMode ? t("btnDoneArranging") : t("btnArrangeItems")}
         </button>
       )}
@@ -2221,7 +2249,7 @@ function GardenScene({ equipped, owned, onUpdatePosition, totalDaysRecorded = 0,
       {placedOrnaments.length > 0 && (
         <button type="button" onClick={() => setEditMode((v) => !v)}
           className="absolute bottom-2 right-2 text-xs px-3 py-1.5 rounded-full font-medium"
-          style={{ background: editMode ? C.curtain : "rgba(255,253,248,0.9)", color: editMode ? "#FFFDF8" : C.ink, border: `1px solid ${C.line}`, zIndex: 10 }}>
+          style={{ background: editMode ? C.curtain : "rgba(255,253,248,0.9)", color: editMode ? "#FFFDF8" : C.ink, border: `1px solid ${C.line}`, zIndex: UI_CHROME_Z }}>
           {editMode ? t("btnDoneArranging") : t("btnArrangeItems")}
         </button>
       )}
