@@ -55,7 +55,11 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ja" className={`${display.variable} ${body.variable} ${mono.variable}`}>
-      <body>{children}</body>
+      <body
+        // ★どの版が配信されているかの印（開発用）。利用者には見えません。
+        data-build={process.env.NEXT_PUBLIC_BUILD_SHA}
+        data-built-at={process.env.NEXT_PUBLIC_BUILD_AT}
+      >{children}</body>
     </html>
   );
 }
