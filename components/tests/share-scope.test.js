@@ -15,6 +15,9 @@
 
 const fs = require("fs");
 const path = require("path");
+// ★コメント除去は components/tests/_source.js の1か所から使う。
+//   各テストが自前で持つと、除去の仕方が少しずつずれていく。
+const { stripComments } = require("./_source");
 
 const ROOT = path.join(__dirname, "..", "..");
 const TRACKER_PATH = path.join(ROOT, "components", "VocalTracker.jsx");
@@ -132,7 +135,7 @@ async function main() {
     assertTrue(!canViewHealthSrc.includes(word), `canViewHealth() が「${word}」を参照していない`);
   });
   const fnBody = (sqlSource.match(/create or replace function public\.get_student_entries[\s\S]*?\$\$;/) || [""])[0];
-  const sqlWithoutComments = fnBody.split("\n").filter((l) => !l.trim().startsWith("--")).join("\n");
+  const sqlWithoutComments = stripComments(fnBody);
   ["organizations", "memberships", "assignments", "enrollments", "is_admin"].forEach((word) => {
     assertTrue(!sqlWithoutComments.includes(word), `サーバー側の関数が「${word}」を参照していない`);
   });

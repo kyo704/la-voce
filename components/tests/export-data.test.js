@@ -10,6 +10,9 @@
  */
 const fs = require("fs");
 const path = require("path");
+// ★コメント除去は components/tests/_source.js の1か所から使う。
+//   各テストが自前で持つと、除去の仕方が少しずつずれていく。
+const { stripComments } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let passCount = 0, failCount = 0;
 function assertEqual(a, b, label) {
@@ -35,7 +38,7 @@ async function main() {
 
   console.log("\n=== テスト2: 共有範囲の設定を、書き出しに持ち込んでいない ===");
   // コメント内の言及（「共有しない」との対比の説明）は除いて、実際の参照だけを見る。
-  const codeOnly = src.replace(/\/\*[\s\S]*?\*\//g, "").split("\n").filter((l) => !l.trim().startsWith("//")).join("\n");
+  const codeOnly = stripComments(src);
   assertTrue(!/shareScope|allowedColumnsForScope|get_student_entries/.test(codeOnly),
     "書き出しが、先生向けの共有範囲の仕組みを実際には参照していない（本人の権利は別物）");
 

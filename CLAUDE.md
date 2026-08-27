@@ -23,7 +23,15 @@ for f in components/tests/*.test.js; do node "$f"; done  # 全部
 - **Reads `components/VocalTracker.jsx` at runtime** (`entry-roundtrip`, `entry-defaults`, `points-rule`, `profession-visibility`, `other-profession`) — extracts named functions/consts by brace-matching and `new Function`s them. Consequence: if `entryToRow` / `rowToEntry` / the migration helpers start calling a *new* top-level helper, **add that helper's name to the `loadFunctions([...])` list at the bottom of the test** or it fails with `ReferenceError`. That exact omission broke `entry-roundtrip` once (`deriveLegacyVoiceFieldsFromEntries`); it is not a regression in the mapper.
 - **Imports a `lib/` module directly**, usually via `data:text/javascript;base64` dynamic import so the source is read fresh (`display-gates`, `share-scope`, `field-groups`, `feature-flags`, `export-data`, `delete-account`, `cycle-periods`).
 
-Several tests are **drift detectors, not unit tests**: they read the SQL migrations and `VocalTracker.jsx` as text and assert structural facts — that `get_student_entries` never touches `cycle_periods`, that `cycle_periods` has exactly one RLS policy and no `SECURITY DEFINER`, that no phase vocabulary (卵形期/黄体期/排卵) appears in the code, that no day counts are stored. **Strip comments before any forbidden-word check** — the specs are quoted in comments, and an unstripped check fails on its own documentation.
+Several tests are **drift detectors, not unit tests**: they read the SQL migrations and `VocalTracker.jsx` as text and assert structural facts — that `get_student_entries` never touches `cycle_periods`, that `cycle_periods` has exactly one RLS policy and no `SECURITY DEFINER`, that no phase vocabulary (卵形期/黄体期/排卵) appears in the code, that no day counts are stored, that all three cron routes authenticate before their first query.
+
+**Any forbidden-word check must run on comment-stripped source**, via `components/tests/_source.js`:
+
+```js
+const { stripComments, readCode, readRaw } = require("./_source");
+```
+
+Specs are quoted in comments and rules are written as "never write X" — so an unstripped scan fails on its own documentation. This trap was hit twice (the cycle phase vocabulary, then 「データ不足」 in the boost card) before the helper existed, and eight tests each carried their own slightly different copy of the stripping. Use `readCode`/`stripComments` for forbidden-word checks and `readRaw` when asserting structure or ordering, where comments still count as position.
 
 `npm run lint` is worth running: `no-undef` was added after a runtime-only crash (`optionalFields is not defined`) that both `next build` and the tests passed, because JSX referenced a state variable whose `useState` line had never been written.
 

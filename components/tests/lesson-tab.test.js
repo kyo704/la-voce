@@ -17,6 +17,9 @@
  */
 const fs = require("fs");
 const path = require("path");
+// ★コメント除去は components/tests/_source.js の1か所から使う。
+//   各テストが自前で持つと、除去の仕方が少しずつずれていく。
+const { stripComments } = require("./_source");
 let passCount = 0, failCount = 0;
 function assertEqual(a, b, label) {
   if (JSON.stringify(a) === JSON.stringify(b)) { console.log(`  ✓ ${label}`); passCount++; }
@@ -29,9 +32,6 @@ const src = fs.readFileSync(SRC_PATH, "utf-8");
 
 // コメントを外してから調べる（仕様をコメントに引用しているため、
 // そのままだと自分の説明文に引っかかる）
-function stripComments(text) {
-  return text.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
-}
 
 function loadFunctions(names) {
   const parts = names.map((name) => {

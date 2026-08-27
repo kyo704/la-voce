@@ -14,6 +14,9 @@
  */
 const fs = require("fs");
 const path = require("path");
+// ★コメント除去は components/tests/_source.js の1か所から使う。
+//   各テストが自前で持つと、除去の仕方が少しずつずれていく。
+const { stripComments } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let passCount = 0, failCount = 0;
 function assertEqual(a, b, label) {
@@ -73,7 +76,7 @@ async function main() {
   });
   // コメントを外してから調べる。コメントには「連続日数は入れない」という
   // 説明としてその語が出てくるため、そのままだと自分の説明文で落ちる。
-  const srcCode = src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+  const srcCode = stripComments(src);
   assertTrue(!/streak|連続|连续|연속/i.test(srcCode),
     "★連続日数を入れていない（達成度の話になり、この紙の目的から外れる）");
 

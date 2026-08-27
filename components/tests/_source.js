@@ -1,0 +1,56 @@
+// ============================================================================
+// テストがソースを本文として読むときの、共通の下ごしらえ。
+//
+// ★なぜ要るか
+//   このリポジトリのテストの多くは「禁止語が出てこないこと」を機械的に
+//   確かめます。ところが仕様の引用や「こう書かないこと」という戒めは、
+//   コメントの中にその語そのものを含みます。素のまま調べると、
+//   自分が書いた説明文で落ちます。
+//
+//   この罠は少なくとも2回踏みました（周期記録の位相の語、
+//   「この分析を強くする」の「データ不足」）。8つのテストが各自で
+//   コメント除去を書いており、同じ決定が8か所にある状態でした。
+//   ★このリポジトリで繰り返している不具合の形そのものなので、1か所に集約します。
+//
+// ★使い方
+//   const { readCode, readRaw } = require("./_source");
+//   const code = readCode("components", "VocalTracker.jsx");  // 禁止語の検査はこちら
+//   const raw  = readRaw("components", "VocalTracker.jsx");   // 構造の検査はこちら
+//
+//   「この書き方をしていること」を確かめたいときは raw を使ってください。
+//   コメントを外すと行番号や位置関係が変わります。
+// ============================================================================
+
+const fs = require("fs");
+const path = require("path");
+
+const ROOT = path.join(__dirname, "..", "..");
+
+/**
+ * コメントを外す。JSX・JavaScript・SQL のどれでも使えるようにしてある。
+ *   {\/* ... *\/}  JSX
+ *   \/* ... *\/    ブロック
+ *   // ...        行
+ *   -- ...        SQL の行
+ * ★文字列の中に // が入っている場合（URL など）まで消してしまうと行が壊れるため、
+ *   行コメントは「行頭から空白を挟んで始まるもの」だけを対象にする。
+ */
+function stripComments(text) {
+  return String(text == null ? "" : text)
+    .replace(/\{\/\*[\s\S]*?\*\/\}/g, "")   // JSX
+    .replace(/\/\*[\s\S]*?\*\//g, "")       // ブロック
+    .replace(/^\s*\/\/.*$/gm, "")           // 行（行頭のものだけ）
+    .replace(/^\s*--.*$/gm, "");            // SQL の行
+}
+
+/** リポジトリ相対のパスで読む（生のまま） */
+function readRaw(...parts) {
+  return fs.readFileSync(path.join(ROOT, ...parts), "utf-8");
+}
+
+/** リポジトリ相対のパスで読み、コメントを外す（禁止語の検査用） */
+function readCode(...parts) {
+  return stripComments(readRaw(...parts));
+}
+
+module.exports = { ROOT, stripComments, readRaw, readCode };

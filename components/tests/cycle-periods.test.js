@@ -8,6 +8,9 @@
  */
 const fs = require("fs");
 const path = require("path");
+// ★コメント除去は components/tests/_source.js の1か所から使う。
+//   各テストが自前で持つと、除去の仕方が少しずつずれていく。
+const { stripComments } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let passCount = 0, failCount = 0;
 function assertEqual(a, b, label) {
@@ -23,10 +26,10 @@ async function main() {
   const m = await import("data:text/javascript;base64," + Buffer.from(src, "utf-8").toString("base64"));
   // 禁止語の検査は、コードだけを対象にする。コメントには「こう言わないこと」という
   // 説明として、その語自体が出てくるため。
-  const code = src.replace(/\/\*[\s\S]*?\*\//g, "").split("\n").filter((l) => !l.trim().startsWith("//")).join("\n");
+  const code = stripComments(src);
   const sqlRaw = fs.readFileSync(path.join(ROOT, "supabase", "migration_cycle_periods.sql"), "utf-8");
   // SQLも、コメント（「〜を作らない」という説明）を除いてから検査する。
-  const sql = sqlRaw.split("\n").filter((l) => !l.trim().startsWith("--")).join("\n");
+  const sql = stripComments(sqlRaw);
   const rpc = fs.readFileSync(path.join(ROOT, "supabase", "migration_teacher_student_entries_rpc.sql"), "utf-8");
   const exportSrc = fs.readFileSync(path.join(ROOT, "lib", "exportData.js"), "utf-8");
   const delSrc = fs.readFileSync(path.join(ROOT, "lib", "accountDeletion.js"), "utf-8");
@@ -112,9 +115,6 @@ async function main() {
   const uiRaw = fs.readFileSync(path.join(ROOT, "components", "VocalTracker.jsx"), "utf-8");
   // 該当のブロックだけを切り出す。コメントには「色を付けない」といった説明として
   // 禁止側の語が出てくるので、まずコメントを外す。
-  function stripComments(t) {
-    return t.replace(/\{\/\*[\s\S]*?\*\/\}/g, "").replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
-  }
   function sliceBetween(text, startMark, endMark) {
     const a = text.indexOf(startMark);
     if (a < 0) throw new Error(`見つかりません: ${startMark}`);

@@ -14,6 +14,9 @@
  */
 const fs = require("fs");
 const path = require("path");
+// ★コメント除去は components/tests/_source.js の1か所から使う。
+//   各テストが自前で持つと、除去の仕方が少しずつずれていく。
+const { stripComments } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let passCount = 0, failCount = 0;
 function assertEqual(a, b, label) {
@@ -31,7 +34,7 @@ async function main() {
   // ★禁止語の検査は、コメントを外してから行うこと。
   //   コメントには「こう書かないこと」という説明としてその語が出てくる。
   //   外さずに調べると、自分が書いた説明文で落ちる（CLAUDE.md に既出の罠）。
-  const uiCode = ui.replace(/\{\/\*[\s\S]*?\*\/\}/g, "").replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+  const uiCode = stripComments(ui);
 
   console.log("=== R1: 1度に2枚まで ===");
   const many = m.selectBoostCandidates([1, 2, 3, 4, 5].map((i) => C({ id: "c" + i, daysNeeded: i })));

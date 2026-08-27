@@ -8,6 +8,9 @@
  */
 const fs = require("fs");
 const path = require("path");
+// ★コメント除去は components/tests/_source.js の1か所から使う。
+//   各テストが自前で持つと、除去の仕方が少しずつずれていく。
+const { stripComments } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let passCount = 0, failCount = 0;
 function assertEqual(a, b, label) {
@@ -62,7 +65,7 @@ async function main() {
   //   以前は canSeeTeacherFeatures で包んでいたため、「もっと」へ移したのに
   //   移した先ごと消えていた。同じことが二度起きないように固定する。
   const ui = fs.readFileSync(path.join(__dirname, "..", "VocalTracker.jsx"), "utf-8");
-  const stripped = ui.replace(/\{\/\*[\s\S]*?\*\/\}/g, "").replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+  const stripped = stripComments(ui);
   const idx = stripped.indexOf("canSeeStudentTeacherLink()");
   assertTrue(idx > 0, "画面が canSeeStudentTeacherLink() を使っている");
   const around = stripped.slice(Math.max(0, idx - 400), idx + 400);

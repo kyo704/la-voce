@@ -14,6 +14,9 @@
  */
 const fs = require("fs");
 const path = require("path");
+// ★コメント除去は components/tests/_source.js の1か所から使う。
+//   各テストが自前で持つと、除去の仕方が少しずつずれていく。
+const { stripComments } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let passCount = 0, failCount = 0;
 function assertTrue(c, label) { if (c) { console.log(`  ✓ ${label}`); passCount++; } else { console.log(`  ✗ ${label}`); failCount++; } }
@@ -23,7 +26,7 @@ function assertEqual(a, b, label) {
 }
 
 const sqlRaw = fs.readFileSync(path.join(ROOT, "supabase", "migration_invitation_teacher_name.sql"), "utf-8");
-const sql = sqlRaw.split("\n").filter((l) => !l.trim().startsWith("--")).join("\n");
+const sql = stripComments(sqlRaw);
 const ui = fs.readFileSync(path.join(ROOT, "components", "VocalTracker.jsx"), "utf-8");
 
 console.log("=== テスト1: 必要な列だけを返す関数になっている ===");
