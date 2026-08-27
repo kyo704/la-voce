@@ -12157,27 +12157,12 @@ export default function VocalTracker({ userId, userEmail }) {
                 ほぼ一生変わらない身体データは、毎日開く「今日の記録」から完全に外へ出す。
                 判定基準は「昨日と今日で値が変わりうるか」。変わらないものはここ。 */}
             {activeTab === "profile" && (
-              <div className="space-y-5">
+              <div className="space-y-5 pb-32">
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h2 className="ff-display italic text-xl mb-1">{t("titleProfileSettings")}</h2>
                   <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteProfileSettings")}</p>
                 </div>
 
-                {/* ★保存の結果は、ボタンのラベルだけに頼らない。
-                    以前は小さなボタンの文字が1.8秒変わるだけで、失敗しても無言だった。
-                    成功は自然に消えるが、失敗は消さない（やり直せることが分かるように）。 */}
-                {profileSaveStatus === "saved" && (
-                  <div className="rounded-2xl px-4 py-3 flex items-center gap-2"
-                    style={{ background: "rgba(122,150,109,0.14)", color: C.sage }}>
-                    <Check size={16} />
-                    <span className="text-sm font-medium">{t("profileSavedBanner")}</span>
-                  </div>
-                )}
-                {profileSaveStatus === "error" && (
-                  <div className="rounded-2xl px-4 py-3" style={{ background: "rgba(184,49,49,0.10)", color: C.curtain }}>
-                    <p className="text-sm font-medium">{t("profileSaveErrorBanner")}</p>
-                  </div>
-                )}
 
                   {/* 職業別プロファイル設計案 §4-2: 恒久項目を、変更頻度の低い順に5つへまとめる。
                       「からだのこと」は受診用サマリーに載る項目をひとまとめにしてあり、
@@ -12188,18 +12173,35 @@ export default function VocalTracker({ userId, userEmail }) {
                   <ProfileFieldGroups value={profile} t={t}
                     onChange={(patch) => setProfile((p) => ({ ...p, ...patch }))} />
 
-                  {/* ★保存ボタンは、以前は画面の中ほどに置かれた最小サイズの淡いボタンで、
-                      背景とほぼ同化しており、スクロールすると見失った。記録画面の保存と
-                      同じ強さに揃え、下端に固定して常に見えるようにする。 */}
-                  <div className="sticky bottom-0 -mx-1 px-1 pt-3 pb-2 z-10"
-                    style={{ background: `linear-gradient(to top, ${C.paper} 72%, rgba(246,241,231,0))` }}>
-                    <button onClick={handleSaveProfile} disabled={profileSaveStatus === "saving"}
-                      className="w-full rounded-2xl py-3.5 font-medium flex items-center justify-center gap-2 transition-all"
-                      style={{ background: C.curtain, color: "#FFFDF8", opacity: profileSaveStatus === "saving" ? 0.7 : 1 }}>
-                      {profileSaveStatus === "saving" && <Loader2 size={16} className="animate-spin" />}
-                      {profileSaveStatus === "saved" && <Check size={16} />}
-                      {profileSaveStatus === "saving" ? t("saveButtonSaving") : t("btnSaveProfileSettings")}
-                    </button>
+                  {/* ★以前は sticky bottom-0 をこのコンテナの最後の子に置いていたが、
+                      sticky は「自分より下にまだ内容があるとき」しか浮かない。最後尾では
+                      滑る余地がゼロで、静的な要素と同じ挙動になっていた。fixed にする。
+                      保存の結果も、以前は画面の一番上に出していたため、下までスクロールして
+                      ボタンを押すユーザーには画面外で見えなかった。ボタンと同じ場所に置く。 */}
+                  <div className="fixed left-0 right-0 bottom-0 z-40 px-4 sm:px-6 pt-6 pb-4"
+                    style={{ background: `linear-gradient(to top, ${C.paper} 62%, rgba(246,241,231,0))` }}>
+                    <div className="max-w-3xl mx-auto">
+                      {profileSaveStatus === "saved" && (
+                        <div className="rounded-xl px-3 py-2 mb-2 flex items-center gap-2"
+                          style={{ background: "rgba(122,150,109,0.18)", color: C.sage }}>
+                          <Check size={15} />
+                          <span className="text-xs font-medium">{t("profileSavedBanner")}</span>
+                        </div>
+                      )}
+                      {profileSaveStatus === "error" && (
+                        <div className="rounded-xl px-3 py-2 mb-2" style={{ background: "rgba(184,49,49,0.14)", color: C.curtain }}>
+                          <p className="text-xs font-medium">{t("profileSaveErrorBanner")}</p>
+                        </div>
+                      )}
+                      <button onClick={handleSaveProfile} disabled={profileSaveStatus === "saving"}
+                        className="w-full rounded-2xl py-3.5 font-medium flex items-center justify-center gap-2 transition-all"
+                        style={{ background: C.curtain, color: "#FFFDF8", opacity: profileSaveStatus === "saving" ? 0.7 : 1,
+                          boxShadow: "0 6px 20px rgba(36,25,20,0.18)" }}>
+                        {profileSaveStatus === "saving" && <Loader2 size={16} className="animate-spin" />}
+                        {profileSaveStatus === "saved" && <Check size={16} />}
+                        {profileSaveStatus === "saving" ? t("saveButtonSaving") : t("btnSaveProfileSettings")}
+                      </button>
+                    </div>
                   </div>
 
                   <div className="pt-6 mt-2 border-t" style={{ borderColor: C.line }}>
