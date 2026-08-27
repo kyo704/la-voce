@@ -23,6 +23,16 @@ const LT = {
   placeholderPassword: { ja: "パスワード", en: "Password", zh: "密码", it: "Password", de: "Passwort", fr: "Mot de passe", es: "Contraseña", ko: "비밀번호", ru: "Пароль" },
   errorLogin: { ja: "メールアドレスまたはパスワードが正しくありません。", en: "The email address or password is incorrect.", zh: "邮箱地址或密码不正确。", it: "L'indirizzo e-mail o la password non sono corretti.", de: "E-Mail-Adresse oder Passwort ist falsch.", fr: "L'adresse e-mail ou le mot de passe est incorrect.", es: "El correo electrónico o la contraseña son incorrectos.", ko: "이메일 주소 또는 비밀번호가 올바르지 않습니다.", ru: "Неверный адрес электронной почты или пароль." },
   btnLoading: { ja: "開演準備中…", en: "Preparing to begin…", zh: "开演准备中…", it: "Preparazione in corso…", de: "Vorbereitung läuft…", fr: "Préparation en cours…", es: "Preparando…", ko: "공연 준비 중…", ru: "Готовимся начать…" },
+  // パスワードの再設定（Supabase Auth の resetPasswordForEmail を使う）。
+  linkForgot: { ja: "パスワードをお忘れの方は", en: "Forgot your password?", zh: "忘记密码？", it: "Password dimenticata?", de: "Passwort vergessen?", fr: "Mot de passe oublie ?", es: "\u00bfOlvidaste tu contrase\u00f1a?", ko: "비밀번호를 잊으셨나요?", ru: "Забыли пароль?" },
+  resetTitle: { ja: "パスワードの再設定", en: "Reset your password", zh: "重置密码", it: "Reimposta la password", de: "Passwort zuruecksetzen", fr: "Reinitialiser le mot de passe", es: "Restablecer la contrase\u00f1a", ko: "비밀번호 재설정", ru: "Сброс пароля" },
+  resetLead: { ja: "ご登録のメールアドレスに、再設定用のリンクをお送りします。", en: "We will email you a link to set a new password.", zh: "我们会将重置链接发送到您注册的邮箱。", it: "Ti invieremo per e-mail un link per impostare una nuova password.", de: "Wir senden dir per E-Mail einen Link zum Festlegen eines neuen Passworts.", fr: "Nous vous enverrons par e-mail un lien pour definir un nouveau mot de passe.", es: "Te enviaremos por correo un enlace para establecer una nueva contrase\u00f1a.", ko: "등록하신 이메일 주소로 재설정 링크를 보내드립니다.", ru: "Мы отправим на вашу почту ссылку для установки нового пароля." },
+  resetSend: { ja: "再設定用のリンクを送る", en: "Send reset link", zh: "发送重置链接", it: "Invia il link", de: "Link senden", fr: "Envoyer le lien", es: "Enviar enlace", ko: "재설정 링크 보내기", ru: "Отправить ссылку" },
+  resetSending: { ja: "送信しています…", en: "Sending…", zh: "正在发送…", it: "Invio in corso…", de: "Wird gesendet…", fr: "Envoi…", es: "Enviando…", ko: "보내는 중…", ru: "Отправка…" },
+  resetSent: { ja: "再設定用のリンクをお送りしました。メール内のリンクから、新しいパスワードを設定してください。", en: "We have sent the reset link. Use the link in the email to set a new password.", zh: "重置链接已发送。请通过邮件中的链接设置新密码。", it: "Abbiamo inviato il link. Usalo per impostare una nuova password.", de: "Der Link wurde gesendet. Lege damit ein neues Passwort fest.", fr: "Le lien a ete envoye. Utilisez-le pour definir un nouveau mot de passe.", es: "Hemos enviado el enlace. Uselo para establecer una nueva contrase\u00f1a.", ko: "재설정 링크를 보냈습니다. 메일의 링크에서 새 비밀번호를 설정해 주세요.", ru: "Ссылка отправлена. Установите новый пароль по ссылке из письма." },
+  resetSpamNote: { ja: "数分待っても届かない場合は、迷惑メールフォルダもご確認ください。", en: "If it has not arrived after a few minutes, please also check your spam folder.", zh: "如果等待几分钟仍未收到，请一并确认垃圾邮件文件夹。", it: "Se dopo qualche minuto non arriva, controlla anche la cartella spam.", de: "Falls nach einigen Minuten nichts ankommt, sieh bitte auch im Spam-Ordner nach.", fr: "Si vous ne recevez rien apres quelques minutes, verifiez aussi votre dossier spam.", es: "Si no llega tras unos minutos, revisa tambien la carpeta de spam.", ko: "몇 분을 기다려도 오지 않으면 스팸 메일함도 확인해 주세요.", ru: "Если письмо не пришло через несколько минут, проверьте также папку «Спам»." },
+  resetBack: { ja: "ログインに戻る", en: "Back to login", zh: "返回登录", it: "Torna al login", de: "Zurueck zur Anmeldung", fr: "Retour a la connexion", es: "Volver al inicio de sesion", ko: "로그인으로 돌아가기", ru: "Вернуться ко входу" },
+  resetError: { ja: "送信できませんでした。メールアドレスをご確認のうえ、もう一度お試しください。", en: "Could not send. Please check the address and try again.", zh: "发送失败。请确认邮箱地址后重试。", it: "Invio non riuscito. Controlla l\'indirizzo e riprova.", de: "Senden fehlgeschlagen. Pruefe die Adresse und versuche es erneut.", fr: "Echec de l\'envoi. Verifiez l\'adresse et reessayez.", es: "No se pudo enviar. Comprueba la direccion e intentalo de nuevo.", ko: "보내지 못했습니다. 이메일 주소를 확인한 뒤 다시 시도해 주세요.", ru: "Не удалось отправить. Проверьте адрес и повторите попытку." },
   btnLogin: { ja: "ログイン", en: "Log in", zh: "登录", it: "Accedi", de: "Anmelden", fr: "Se connecter", es: "Iniciar sesión", ko: "로그인", ru: "Войти" },
   noAccountText: { ja: "アカウントをお持ちでない方は", en: "Don't have an account?", zh: "尚未拥有账户？", it: "Non hai un account?", de: "Noch kein Konto?", fr: "Vous n'avez pas de compte ?", es: "¿No tienes una cuenta?", ko: "계정이 없으신가요?", ru: "Нет аккаунта?" },
   linkSignup: { ja: "新規登録", en: "Sign up", zh: "新用户注册", it: "Registrati", de: "Registrieren", fr: "S'inscrire", es: "Registrarse", ko: "회원가입", ru: "Регистрация" },
@@ -129,6 +139,26 @@ function LoginPageInner() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
+  // パスワードの再設定。Supabase Auth の標準の仕組み（resetPasswordForEmail）を使う。
+  // 独自にトークンを作ったりはしない。
+  const [mode, setMode] = useState("login");        // login | reset
+  const [resetStatus, setResetStatus] = useState("idle"); // idle | sending | sent | error
+
+  async function handleReset(e) {
+    e.preventDefault();
+    setResetStatus("sending");
+    const supabase = createClient();
+    // 再設定用リンクの戻り先。/auth/callback がセッションを確立してから
+    // /reset-password へ送る（既存の仕組みをそのまま使う）。
+    const redirectTo = `${window.location.origin}/auth/callback?next=/reset-password`;
+    const { error } = await supabase.auth.resetPasswordForEmail(form.email, { redirectTo });
+    if (error) {
+      console.error("パスワード再設定メールの送信に失敗しました:", error);
+      setResetStatus("error");
+      return;
+    }
+    setResetStatus("sent");
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -217,7 +247,7 @@ function LoginPageInner() {
         </p>
 
         <form
-          onSubmit={handleSubmit}
+          onSubmit={mode === "reset" ? handleReset : handleSubmit}
           style={{
             width: "100%",
             background: "#FBF6EA",
@@ -231,8 +261,11 @@ function LoginPageInner() {
           }}
         >
           <h2 className="ff-display italic" style={{ fontSize: "1.4rem", color: "#7A1F2B", margin: "0 0 4px" }}>
-            {ltr("formTitle", lang)}
+            {mode === "reset" ? ltr("resetTitle", lang) : ltr("formTitle", lang)}
           </h2>
+          {mode === "reset" && (
+            <p style={{ fontSize: 13, color: "#6b5d52", margin: "0 0 4px" }}>{ltr("resetLead", lang)}</p>
+          )}
           <input
             required
             type="email"
@@ -241,14 +274,16 @@ function LoginPageInner() {
             onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
             style={inputStyle}
           />
-          <input
-            required
-            type="password"
-            placeholder={ltr("placeholderPassword", lang)}
-            value={form.password}
-            onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
-            style={inputStyle}
-          />
+          {mode === "login" && (
+            <input
+              required
+              type="password"
+              placeholder={ltr("placeholderPassword", lang)}
+              value={form.password}
+              onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
+              style={inputStyle}
+            />
+          )}
           {error && <p style={{ color: "#7A1F2B", fontSize: 13, margin: 0 }}>{error}</p>}
           <button
             type="submit"
@@ -265,7 +300,25 @@ function LoginPageInner() {
               boxShadow: "0 6px 16px rgba(122,31,43,0.4)"
             }}
           >
-            {status === "loading" ? ltr("btnLoading", lang) : ltr("btnLogin", lang)}
+            {mode === "reset"
+              ? (resetStatus === "sending" ? ltr("resetSending", lang) : ltr("resetSend", lang))
+              : (status === "loading" ? ltr("btnLoading", lang) : ltr("btnLogin", lang))}
+          </button>
+
+          {mode === "reset" && resetStatus === "sent" && (
+            <>
+              <p style={{ fontSize: 13, color: "#4F7562", margin: 0 }}>{ltr("resetSent", lang)}</p>
+              <p style={{ fontSize: 12, color: "#6b5d52", margin: 0 }}>{ltr("resetSpamNote", lang)}</p>
+            </>
+          )}
+          {mode === "reset" && resetStatus === "error" && (
+            <p style={{ fontSize: 13, color: "#7A1F2B", margin: 0 }}>{ltr("resetError", lang)}</p>
+          )}
+
+          <button type="button"
+            onClick={() => { setMode(mode === "reset" ? "login" : "reset"); setResetStatus("idle"); setError(""); }}
+            style={{ background: "none", border: "none", padding: 0, fontSize: 13, color: "#7A1F2B", textDecoration: "underline", cursor: "pointer" }}>
+            {mode === "reset" ? ltr("resetBack", lang) : ltr("linkForgot", lang)}
           </button>
         </form>
 
