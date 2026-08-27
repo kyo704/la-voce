@@ -24,6 +24,8 @@ import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q } from "@/lib/displa
 import { isAnalysisCardVisible } from "@/lib/analysisCardVisibility";
 // 記録項目の表示・非表示は必ずこのレイヤーを通す（記録項目の再設計v2 §3.3）
 import { isFieldGroupVisible, DEFAULT_RECORD_MODE } from "@/lib/fieldGroups";
+// 機能フラグ（G2-14）。判定はこのモジュールだけが持つ。
+import { canSeeBetaFeatures, canSeeTeacherFeatures, canSeeLineLink } from "@/lib/featureFlags";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
 import { EXPORTED_TABLES, EXPORTED_PROFILE_COLUMNS, entriesToCsv, buildExportPayload, sanitizeShareHistory } from "@/lib/exportData";
 import HealthInfo from "@/components/HealthInfo";
@@ -8293,8 +8295,12 @@ export default function VocalTracker({ userId, userEmail }) {
           //   管理者は、招待コードを発行する場所そのものに到達できなかった。
           //   管理者・指導者ベータの人だけは、生徒0人でもタブを出す。
           //   一般ユーザーの条件は変えない（つながって初めて出る、のまま）。
-          const hasTeacherLessonTab = myStudentLinks.length > 0 || !!profile.is_admin || !!profile.teacher_beta_access;
-          const hasStudentLessonTab = myAllLessons.length > 0 || myTeacherLinks.length > 0;
+          // 統合実行ルートv4 G2-14: 指導者・教室機能は、10人に配る段階では
+          // 一般ユーザーに出さない。判定は lib/featureFlags.js に集約する。
+          // ★既につながっている人からは取り上げない（解除する手段まで消えるため）。
+          const hasTeacherLessonTab = canSeeTeacherFeatures(profile, { hasStudentLinks: myStudentLinks.length > 0 });
+          const hasStudentLessonTab = canSeeTeacherFeatures(profile, { hasTeacherLinks: myTeacherLinks.length > 0 })
+            && (myAllLessons.length > 0 || myTeacherLinks.length > 0 || canSeeBetaFeatures(profile));
           const displayTabs = [];
           TABS.forEach((tab) => {
             if (tab.key === "garden") {
@@ -10054,7 +10060,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                 </details>
 
-                {(profile.teacher_beta_access || profile.is_admin) && (
+                {canSeeBetaFeatures(profile) && (
                   <details className="rounded-2xl border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
                     <summary className="p-4 text-sm font-medium cursor-pointer">{t("inviteStudentTitle")}</summary>
                     <div className="px-4 pb-4">
@@ -10121,7 +10127,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                 </details>
 
-                {(profile.teacher_beta_access || profile.is_admin) && myOrgs.filter((m) => m.role === "owner" || m.role === "admin").length === 0 && (
+                {canSeeBetaFeatures(profile) && myOrgs.filter((m) => m.role === "owner" || m.role === "admin").length === 0 && (
                   <details className="rounded-2xl border" style={{ background: C.card, borderColor: C.line }}>
                     <summary className="p-4 text-sm font-medium cursor-pointer">{t("createClassroomTitle")}</summary>
                     <div className="px-4 pb-4">
@@ -10136,7 +10142,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   </details>
                 )}
 
-                {(profile.teacher_beta_access || profile.is_admin) && myOrgs.filter((m) => m.role === "owner" || m.role === "admin").map((m) => {
+                {canSeeBetaFeatures(profile) && myOrgs.filter((m) => m.role === "owner" || m.role === "admin").map((m) => {
                   const orgId = m.org_id;
                   const isViewingOrg = viewingOrgId === orgId;
                   const members = orgMembers[orgId] || [];
@@ -12985,6 +12991,9 @@ export default function VocalTracker({ userId, userEmail }) {
                     「レッスンの予定があるか、先生とつながっているか」の人にしか
                     表示されない。新規ユーザーはどちらも無いため、先生とつながる
                     入口に永久に到達できなかった（鶏と卵）。全員が見る「もっと」へ移す。 */}
+                  {/* G2-14: 先生とつながる欄も、指導者機能が検証できるまでは出さない。
+                      ★既につながっている人には出す（解除する手段まで消えないように）。 */}
+                  {canSeeTeacherFeatures(profile, { hasTeacherLinks: myTeacherLinks.length > 0 }) && (
                   <details className="rounded-2xl border" style={{ background: C.card, borderColor: C.line }}>
                     <summary className="p-4 text-sm font-medium cursor-pointer">{t("connectWithTeacherTitle")}</summary>
                     <div className="px-4 pb-4">
@@ -13044,6 +13053,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       )}
                     </div>
                   </details>
+                  )}
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>設定</p>
@@ -13165,6 +13175,10 @@ export default function VocalTracker({ userId, userEmail }) {
                 </div>
 
 
+                {/* 統合実行ルートv4 G2-14: LINE連携は、公式アカウントの運用（友だち追加の
+                    導線・Webhookの設定）が固まるまで一般ユーザーに出さない。
+                    設定が済んでいない環境では、入口だけあっても連携できない。 */}
+                {canSeeLineLink(profile) && (
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-sm font-medium mb-1">LINE通知（毎朝のリマインド）</p>
                   {profile.line_user_id ? (
@@ -13229,6 +13243,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     </>
                   )}
                 </div>
+                )}
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>アカウント</p>
