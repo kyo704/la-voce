@@ -62,6 +62,45 @@ async function main() {
   assertTrue(learn.ARTICLES.length >= 60, `記事は${learn.ARTICLES.length}本のまま`);
   assertTrue(learn.ARTICLES.every((a) => (a.bodyMd || "").length > 0), "★全記事に本文がある");
 
+  console.log("\n=== §2-1 読む前の問い（★正解をここで出さない） ===");
+  console.log("     当てさせるためではなく、考えさせるための問いです。");
+  const pre = m.answerPrequestion();
+  assertEqual(pre.showCorrectness, false, "★○×を付けない");
+  assertEqual(pre.showAnswer, false, "★正解をこの時点で出さない（本文で明らかになる）");
+  assertTrue(/当てなくて構いません/.test(pre.note), "★「当てなくて構いません」を必ず添える");
+  // 正誤を返す道が無いこと（あとから足せてしまう形にしない）
+  assertTrue(!("correct" in pre), "★正誤そのものを返していない");
+  assertEqual(m.validatePrequestion(null).ok, true, "未設定は通る（まだ書いていない記事）");
+  assertEqual(m.validatePrequestion({ stem: "q", choices: ["a", "b", "c"] }).ok, true, "3択は通る");
+  assertEqual(m.validatePrequestion({ stem: "q", choices: ["a", "b"] }).ok, false, "2択は通らない");
+  assertEqual(m.validatePrequestion({ stem: "q", choices: ["a", "b", "c"], explanation: "x" }).ok, false,
+    "★解説を付けたら通らない（正解をここで出さないため）");
+
+  console.log("\n=== §2-4 読んだ直後の3問 ===");
+  assertEqual(m.QUIZ_SOURCE_ORDER, ["keySentence", "term", "mechanism"],
+    "★1問目は覚えるべき1文、2問目は用語、3問目は機序");
+  assertEqual(m.QUIZ_LENGTH, 3, "3問");
+  const goodQuiz = m.QUIZ_SOURCE_ORDER.map((src, i) => ({
+    stem: "q" + i, choices: ["a", "b", "c"], answerIndex: 0, explanation: "理由", source: src
+  }));
+  assertEqual(m.validateQuizSet(goodQuiz).ok, true, "規則どおりの3問は通る");
+  const wrongOrder = [goodQuiz[1], goodQuiz[0], goodQuiz[2]];
+  assertEqual(m.validateQuizSet(wrongOrder).ok, false, "★出どころの順番が違うと通らない");
+  const noExp = goodQuiz.map((q, i) => (i === 0 ? { ...q, explanation: "" } : q));
+  assertEqual(m.validateQuizSet(noExp).ok, false, "★解説の無い問いは通らない");
+  assertEqual(m.validateQuizSet(null).ok, true, "未設定は通る");
+
+  console.log("\n=== ★間違えても、点数や励ましを出さない（§2-4・§9-5） ===");
+  console.log("     励ましは、次に間違えたときの落差を作ります。");
+  const wrong = m.answerQuizQuestion({ answerIndex: 1, explanation: "理由" }, 0);
+  assertEqual(wrong.correct, false, "正誤そのものは分かる（次にいつ出すかを決めるため）");
+  assertEqual(wrong.showAnswer, true, "★答えたらすぐ正解を出す");
+  assertEqual(wrong.explanation, "理由", "★解説も一緒に出す");
+  assertEqual(wrong.encouragement, null, "★励ましを返さない");
+  assertEqual(wrong.score, null, "★点数を返さない");
+  const right = m.answerQuizQuestion({ answerIndex: 1, explanation: "理由" }, 1);
+  assertEqual(right.encouragement, null, "正解でも励ましを返さない（差をつけない）");
+
   console.log("\n=== ★§9 禁止事項を、仕組みとして守る ===");
   assertTrue(typeof m.summarizeAttempts === "function", "集計の入口はある（が、拒否する）");
   let threw = false;
