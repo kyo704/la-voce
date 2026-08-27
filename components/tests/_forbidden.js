@@ -24,7 +24,13 @@ const FORBIDDEN_KEYS = [
   "lastMealAt", "bedAt", "gapMinutes", "refluxFlags",
   "last_meal_at", "bed_at", "gap_minutes",
   // 振り返り（レッスンモードの解体.md §5-5）
-  "feel", "reflectionFeel"
+  "feel", "reflectionFeel",
+  // 記述式の答え（問いの形を記事ごとに分ける.md §5）
+  // ★「音楽家の商い」の記述は、本人が自分の考えの変化を見るためのものです。
+  //   分析にも統計にもAIにも渡しません。同期・共有・集計のどのペイロードにも
+  //   本文が乗らないこと。書き出し（法定エクスポート）にだけ含めます。
+  "reflectAnswer", "reflectAnswers", "promptIndex",
+  "reflect_answer", "reflect_answers", "prompt_index"
 ];
 
 // 値の中に紛れ込んだら困る語（日本語UIの文字列が混ざる事故を拾う）

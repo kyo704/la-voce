@@ -243,6 +243,57 @@ async function main() {
     console.log("     いつも1番目だと、中身ではなく位置を覚えてしまいます。");
   }
 
+  console.log("\n=== 記事ごとに問いの形を分ける（§2・§4・§5・§6・§7）===");
+  assertEqual(m.quizModeOf({}), "recall", "quizMode を書き忘れたら recall（黙って採点されない側に落とさない）");
+  assertEqual(m.quizModeOf({ quizMode: "reflect" }), "reflect", "reflect を指定できる");
+  assertEqual(m.quizModeOf({ quizMode: "てきとう" }), "recall", "知らない値は recall として扱う");
+
+  console.log("     ★音楽家の商い 01〜13 は、正解が土地と状況で変わります。");
+  assertTrue(!m.validateArticleQuestions({ quizMode: "reflect", quiz: [1, 2, 3] }).ok,
+    "★reflect の記事に選択式を混ぜたら落ちる（§7 受け入れ条件）");
+  assertTrue(!m.validateArticleQuestions({ quizMode: "recall", prompts: ["あ？", "い？"] }).ok,
+    "recall の記事に記述の問いを混ぜたら落ちる");
+  assertEqual(m.validateReflectPrompts(["ひとつだけ？"]).ok, false, "記述の問いは2つ");
+  assertEqual(m.validateReflectPrompts(null).ok, true, "未設定は通る（まだ書いていない記事）");
+  assertEqual(m.validateReflectPrompts(["あなたの街ではどうですか？", "去年はどうでしたか？"]).ok, true,
+    "問いの形の2つなら通る");
+  assertEqual(m.validateReflectPrompts(["あなたの平均は{{avg}}ですか？", "どうですか？"]).ok, false,
+    "★記述の問いにも、記録の数値を差し込ませない");
+
+  console.log("     ★書いたものに、○×も点数も評価語も付けません。");
+  const reflectResult = m.answerReflectPrompt();
+  assertEqual(reflectResult.showCorrectness, false, "正誤を出さない");
+  assertEqual(reflectResult.showAnswer, false, "正解を出さない");
+  assertEqual(reflectResult.showScore, false, "点数を出さない");
+  assertEqual(reflectResult.evaluation, null, "★評価語を出さない（「よく書けています」は採点です）");
+  assertTrue(/採点もしません/.test(m.REFLECT_NOTE), "画面下の注記に「採点もしません」がある");
+
+  assertEqual(m.shouldRepeatInReview({ quizMode: "recall" }), true, "recall は間隔反復で再出題する");
+  assertEqual(m.shouldRepeatInReview({ quizMode: "reflect" }), false,
+    "★reflect は再出題しない。前に書いたものを読み返す導線に替える（§4）");
+
+  {
+    const h1 = m.appendReflectAnswer([], "shobai-01", 0, "最初の考え", "2026-08-01T00:00:00Z");
+    const h2 = m.appendReflectAnswer(h1, "shobai-01", 0, "いまはこう思う", "2026-08-22T00:00:00Z");
+    assertEqual(h2.length, 2, "★追記は積む。上書きしない（考えが変わる過程が価値）");
+    assertEqual(m.reflectHistoryFor(h2, "shobai-01", 0).map((x) => x.text),
+      ["最初の考え", "いまはこう思う"], "古い順に読み返せる");
+    assertEqual(m.appendReflectAnswer(h2, "shobai-01", 0, "   ", "2026-08-23T00:00:00Z").length, 2,
+      "空の追記は積まない");
+  }
+
+  console.log("     ★記述の本文は、分析にも統計にもAIにも渡しません（§5）。");
+  let reflectSummaryBlocked = false;
+  try { m.summarizeReflectAnswers(); } catch (e) { reflectSummaryBlocked = /分析にも統計にも使いません/.test(e.message); }
+  assertTrue(reflectSummaryBlocked, "★集計しようとしたら止まる");
+  const forbidden = require("./_forbidden");
+  ["reflectAnswer", "reflectAnswers", "promptIndex"].forEach((k) => {
+    assertTrue(forbidden.FORBIDDEN_KEYS.includes(k), `守りのテストの禁止キーに ${k} がある`);
+  });
+
+  assertEqual(m.reflectInputIsVisibleToFreeUsers(), true,
+    "★無料の人にも記述欄は見せる。鍵は記事本文の側（§6）");
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");

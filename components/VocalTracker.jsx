@@ -747,6 +747,8 @@ function computeDailyLoad(entry, songFactorResolver) {
   // 「歌っていない＝休養日」という誤った過小評価を正すための、全職業共通の項目。
   // 分単位の実測値（nonPerformanceSpeechMinutes）を優先し、無い場合だけ旧speakingLevel（3択）
   // からの概算にフォールバックする（過去データを消さず、両立させる）。
+  // ★speakingLevel は読み取り専用の旧項目です。消さないでください。
+  //   理由は lib/vocalDose.js の同じ分岐に書きました（実データ1件、代替なし）。
   let speakingLoad;
   if (typeof entry.nonPerformanceSpeechMinutes === "number") {
     speakingLoad = entry.nonPerformanceSpeechMinutes * 1.0 * (entry.noisyEnvironment ? 1.3 : 1);
