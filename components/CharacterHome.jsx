@@ -46,8 +46,8 @@ function SheepCharacter({ equipped, size = 120, isWalking = false, isFarming = f
         .sweat-drop { animation: sweatDrop 1.3s ease-in infinite; }
         .leg-l { transform-box: fill-box; transform-origin: top center; ${isWalking ? "animation: legSwingL 0.62s ease-in-out infinite;" : ""} }
         .leg-r { transform-box: fill-box; transform-origin: top center; ${isWalking ? "animation: legSwingR 0.62s ease-in-out infinite;" : ""} }
-        .arm-l { transform-box: fill-box; transform-origin: 80% 15%; ${isCelebrating ? "animation: armsUpL 0.45s ease-in-out infinite;" : isFarming ? "animation: digBob 0.5s ease-in-out infinite;" : isWalking ? "animation: armSwingL 0.62s ease-in-out infinite;" : "animation: idleBob 2.4s ease-in-out infinite;"} }
-        .arm-r { transform-box: fill-box; transform-origin: 20% 15%; ${isCelebrating ? "animation: armsUpR 0.45s ease-in-out infinite;" : isFarming ? "animation: digBob 0.5s ease-in-out infinite reverse;" : isWalking ? "animation: armSwingR 0.62s ease-in-out infinite;" : "animation: idleBob 2.4s ease-in-out infinite;"} }
+        .arm-l { transform-box: fill-box; transform-origin: 80% 15%; ${isCelebrating ? "animation: armsUpL 0.45s ease-in-out infinite;" : isFarming ? "animation: digBob 0.5s ease-in-out infinite;" : isWalking ? "animation: armSwingL 0.62s ease-in-out infinite;" : showBook ? "" : "animation: idleBob 2.4s ease-in-out infinite;"} }
+        .arm-r { transform-box: fill-box; transform-origin: 20% 15%; ${isCelebrating ? "animation: armsUpR 0.45s ease-in-out infinite;" : isFarming ? "animation: digBob 0.5s ease-in-out infinite reverse;" : isWalking ? "animation: armSwingR 0.62s ease-in-out infinite;" : showBook ? "" : "animation: idleBob 2.4s ease-in-out infinite;"} }
       `}</style>
 
       <ellipse cx="80" cy="192" rx="34" ry="8" fill="#3D2E12" opacity="0.14" />
@@ -67,8 +67,12 @@ function SheepCharacter({ equipped, size = 120, isWalking = false, isFarming = f
       ))}
       <ellipse cx="98" cy="145" rx="30" ry="34" fill="#D8CBA8" opacity="0.35" />
 
-      <g className="arm-l"><ellipse cx="35" cy="128" rx="13" ry="10" fill={bodyColor} /></g>
-      <g className="arm-r"><ellipse cx="125" cy="128" rx="13" ry="10" fill={bodyColor} /></g>
+      {/* ★本を持っているときは、腕を本の縁まで寄せる。
+          本は x58〜102・y118〜144 にあるのに、腕は x35 と x125 のままで、
+          10pxほど離れていました。そのため本だけが胸の前に浮いて見えます。
+          縁に少し重ねて、掴んでいるように見せます。 */}
+      <g className="arm-l"><ellipse cx={showBook ? 61 : 35} cy={showBook ? 131 : 128} rx="13" ry="10" fill={bodyColor} /></g>
+      <g className="arm-r"><ellipse cx={showBook ? 99 : 125} cy={showBook ? 131 : 128} rx="13" ry="10" fill={bodyColor} /></g>
       {equipped.accessory === "accessory_staff" && (
         <g className="arm-r">
           <rect x="128" y="88" width="5" height="56" rx="2.5" fill="#8B6529" transform="rotate(10 130 116)" />
@@ -532,7 +536,7 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, chairPos, bedPo
         //   これまでと同じ座標になる（79, 98, 89）。
         const chairLeft = chairPos.left;
         const chairFloorTop = chairPos.top;
-        const chairSeatTop = chairPos.top - SEAT_ABOVE_FLOOR;
+        const chairSeatTop = Math.max(ROOM_FLOOR_LINE, chairPos.top - SEAT_ABOVE_FLOOR);
         busyRef.current = true;
         moveTo(chairLeft, chairFloorTop, 2000);
         addTimer(() => {
@@ -566,7 +570,9 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, chairPos, bedPo
         const bedApproachLeft = bedPos.left;
         const bedFloorTop = bedPos.top;
         const pillowLeft = bedPos.left - PILLOW_LEFT_OFFSET;
-        const pillowTop = bedPos.top - PILLOW_ABOVE_FLOOR;
+        // ★すでに高い位置に保存されているベッドもあるので、ここでも床の中に収める。
+        //   ドラッグの制限は、これから動かすときにしか効かないため。
+        const pillowTop = Math.max(ROOM_FLOOR_LINE, bedPos.top - PILLOW_ABOVE_FLOOR);
         busyRef.current = true;
         moveTo(bedApproachLeft, bedFloorTop, 2000);
         addTimer(() => {
@@ -787,18 +793,30 @@ function SheepSleepingHead({ size }) {
       <circle cx="47" cy="40" r="3.6" fill="#F0B7A4" opacity="0.55" />
       <path d="M15,15 Q11,7 16,3 Q19,9 17,16 Z" fill="#D9AE6E" stroke="#A87D45" strokeWidth="0.8" />
       <path d="M45,15 Q49,7 44,3 Q41,9 43,16 Z" fill="#D9AE6E" stroke="#A87D45" strokeWidth="0.8" />
-      <text x="48" y="14" fontSize="12" fill="#B8863B" opacity="0.75" fontFamily="Georgia, serif" fontStyle="italic">z</text>
-      <text x="56" y="6" fontSize="8" fill="#B8863B" opacity="0.6" fontFamily="Georgia, serif" fontStyle="italic">z</text>
+      {/* ★zzz が濃い黄土色（#B8863B）で、背景に埋もれて見えませんでした。
+          本文と同じ色にし、不透明度も上げます。★新しい色は作りません
+          （描画仕様 §1-1）。大きさも少し上げて、読めるようにします。 */}
+      <text x="47" y="15" fontSize="14" fill="#241914" opacity="0.9" fontFamily="Georgia, serif" fontStyle="italic">z</text>
+      <text x="56" y="6" fontSize="10" fill="#241914" opacity="0.7" fontFamily="Georgia, serif" fontStyle="italic">z</text>
     </svg>
   );
 }
 
-function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWalking, isFarming, isSitting, isLying, isSweating, isCelebrating }) {
+// ★diag: 実際に動いている値を、画面から読めるようにする（利用者には見えません）。
+//   静的に読むかぎりコードは正しいのに、実機の結果が合いません。
+//   読むのをやめて、動いている値そのものを見ます。
+//   落ち着いたら消してください。
+function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWalking, isFarming, isSitting, isLying, isSweating, isCelebrating, diag }) {
   const frontScale = LAYER_CONFIG.front.scale;
   const frontZ = LAYER_CONFIG.front.z;
   if (isLying) {
     return (
       <div
+        data-sheep="lying"
+        data-top={String(topPct)}
+        data-left={String(leftPct)}
+        data-bed-top={diag && diag.bedTop != null ? String(diag.bedTop) : "none"}
+        data-bed-left={diag && diag.bedLeft != null ? String(diag.bedLeft) : "none"}
         style={{
           position: "absolute",
           left: `${leftPct}%`,
@@ -817,6 +835,11 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
   }
   return (
     <div
+      data-sheep={isSitting ? "sitting" : isWalking ? "walking" : "idle"}
+      data-top={String(topPct)}
+      data-left={String(leftPct)}
+      data-bed-top={diag && diag.bedTop != null ? String(diag.bedTop) : "none"}
+      data-bed-left={diag && diag.bedLeft != null ? String(diag.bedLeft) : "none"}
       style={{
         position: "absolute",
         left: `${leftPct}%`,
@@ -1273,6 +1296,22 @@ const PILLOW_LEFT_OFFSET = 6;   // 枕は、ベッドの中心より少し左
 const PILLOW_ABOVE_FLOOR = 16;  // 寝姿は中心合わせなので、足元より上に置く
 const SEAT_ABOVE_FLOOR = 9;     // 座面の高さ
 
+// ★休む場所が、床の外へ出ないようにする。
+//
+//   お部屋の床は下から34%（＝縦66%より下）です。ベッドや椅子を高く上げると、
+//   そこから求める枕・座面の位置が床より上（壁の側）へ出ます。
+//   出た先で羊がどう見えるかは、家具の絵と重なり方しだいで、
+//   「ベッドの下にいる」ようにも見えます。実機でそう報告されました。
+//
+//   ★私の計測では、羊の位置に上限下限をかける仕組みは見つかりませんでした。
+//     機序を確かめきれていません。それでも、床の外に休む場所ができること
+//     自体が想定外なので、そこを作れないようにします。
+//     家具を下げれば直る、という運用に頼らないための修正です。
+const ROOM_FLOOR_LINE = 66;     // ここより下が床（お部屋）
+// 家具を上げられる限界。これ以上あげると、休む場所が床の外へ出る。
+const BED_MIN_TOP = ROOM_FLOOR_LINE + PILLOW_ABOVE_FLOOR;   // 82
+const CHAIR_MIN_TOP = ROOM_FLOOR_LINE + SEAT_ABOVE_FLOOR;   // 75
+
 // 作業指示 A-2: 接地の影。★家具も羊も、同じ1つの定義から作ること。
 //   仕様は「全アイテムに楕円のソフトシャドウを1枚敷く」。羊も対象で、
 //   指示書は「家具も羊も床から浮いて見えます」と名指ししている。
@@ -1703,6 +1742,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
   const furniturePos = (key) => (placedFurniture.includes(key)
     ? resolvePos((equipped.furniturePositions || {})[key], FURNITURE_LAYOUT[key])
     : null);
+  const bedPosForDiag = furniturePos("furniture_bed");
   const [leftPct, topPct, facingLeft, isWalking, isSitting, isLying] = useRoomLife(
     50, 78, 18, 6,
     furniturePos("furniture_chair"),
@@ -1996,8 +2036,12 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
         </DraggableItem>
       )}
 
-      <PositionedCharacter equipped={equipped} size={92} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isSitting={isSitting} isLying={isLying} />
+      <PositionedCharacter equipped={equipped} size={92} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isSitting={isSitting} isLying={isLying}
+        diag={{ bedTop: bedPosForDiag && bedPosForDiag.top, bedLeft: bedPosForDiag && bedPosForDiag.left }} />
 
+      {/* ★ベッドと椅子は、上げられる高さを狭めてある（BED_MIN_TOP / CHAIR_MIN_TOP）。
+          ここから羊の休む場所を求めるので、上げすぎると床の外に休む場所ができる。
+          ほかの家具は、これまでどおり自由に動かせる。 */}
       {placedFurniture.filter((k) => k !== "furniture_rug").map((k) => {
         const Icon = FURNITURE_ICON[k];
         const layout = FURNITURE_LAYOUT[k];
@@ -2007,7 +2051,8 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
             left={resolved.left} top={resolved.top} width={layout.width} layer={layout.layer}
             aspect={layout.aspect}
             editMode={editMode}
-            minTop={ROOM_FLOOR_MIN_TOP} maxTop={ROOM_FLOOR_MAX_TOP}
+            minTop={k === "furniture_bed" ? BED_MIN_TOP : k === "furniture_chair" ? CHAIR_MIN_TOP : ROOM_FLOOR_MIN_TOP}
+            maxTop={ROOM_FLOOR_MAX_TOP}
             onDragEnd={(nl, nt) => {
               if (!onUpdatePosition) return;
               const siblingLefts = placedFurniture

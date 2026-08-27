@@ -4254,7 +4254,8 @@ export default function VocalTracker({ userId, userEmail }) {
   const [mergeInProgress, setMergeInProgress] = useState(false);
   const [mergeResult, setMergeResult] = useState("");
   const [showQuickRecord, setShowQuickRecord] = useState(false);
-  const [notesSubTab, setNotesSubTab] = useState("practice");
+  // ★カレンダーを既定にする（いちばん役に立つものを最初に見せる）。
+  const [notesSubTab, setNotesSubTab] = useState("calendar");
   // レッスン画面の立場。null は「まだ選んでいない」＝ 既定に従う。
   const [lessonRoleChoice, setLessonRoleChoice] = useState(null);
   // 周期の記録。開始日と、あれば終了日だけを持つ（周期記録の設計.md §3-1）。
@@ -9500,7 +9501,8 @@ export default function VocalTracker({ userId, userEmail }) {
                       <button type="button" onClick={() => addVoiceEntry()}
                         className="w-full rounded-xl border-2 border-dashed py-3 text-sm font-medium flex items-center justify-center gap-1.5"
                         style={{ borderColor: C.line, color: C.inkSoft }}>
-                        <Plus size={14} />＋声の記録を追加
+                        {/* ★アイコンの＋と、文字の＋で2つ並んでいた。文字のほうを外す。 */}
+                        <Plus size={14} />声の記録を追加
                       </button>
                       {(formData.voiceEntries || []).length === 0 && (
                         <p className="text-xs text-center" style={{ color: C.inkSoft }}>
@@ -9874,7 +9876,10 @@ export default function VocalTracker({ userId, userEmail }) {
                         const diff = formData.sleepHours - avg;
                         return (
                           <p className="text-xs rounded-lg p-2" style={{ background: C.paper, color: C.inkSoft }}>
-                            14日平均より {diff >= 0 ? "+" : ""}{diff.toFixed(1)}{t("unitHours")}
+                            {/* ★窓の長さ（14日）ではなく、実際に平均を取れた日数を書く。
+                                同じ間違いを sectionFeedback で一度直しており、ここは
+                                その修正から漏れていた別の場所。 */}
+                            {recentVals.length}日平均より {diff >= 0 ? "+" : ""}{diff.toFixed(1)}{t("unitHours")}
                           </p>
                         );
                       })()}
@@ -11023,15 +11028,15 @@ export default function VocalTracker({ userId, userEmail }) {
 
             {activeTab === "notes" && (
               <div className="flex rounded-full border p-1 mb-4" style={{ borderColor: C.line }}>
-                <button onClick={() => setNotesSubTab("practice")}
-                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
-                  style={{ background: notesSubTab === "practice" ? C.curtain : "transparent", color: notesSubTab === "practice" ? "#FFFDF8" : C.inkSoft }}>
-                  稽古ノート
-                </button>
                 <button onClick={() => setNotesSubTab("calendar")}
                   className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
                   style={{ background: notesSubTab === "calendar" ? C.curtain : "transparent", color: notesSubTab === "calendar" ? "#FFFDF8" : C.inkSoft }}>
                   カレンダー
+                </button>
+                <button onClick={() => setNotesSubTab("practice")}
+                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                  style={{ background: notesSubTab === "practice" ? C.curtain : "transparent", color: notesSubTab === "practice" ? "#FFFDF8" : C.inkSoft }}>
+                  稽古ノート
                 </button>
                 <button onClick={() => setNotesSubTab("memo")}
                   className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
@@ -13138,10 +13143,14 @@ export default function VocalTracker({ userId, userEmail }) {
                             {/* R3: 記録画面の該当セクションへ直行し、そこをハイライトする。
                                 ★入力欄にフォーカスは当てない（キーボードが勝手に出ると、
                                   かえって閉じられてしまう）。 */}
+                            {/* ★赤い塗りをやめる。ロック中のカードに赤い誘導が並ぶと、
+                                「早く入れないと」という急かしになる（続けてもらうための設計 §4）。
+                                描画仕様 §1-4 も、色そのものに意味を持たせることを禁じている。
+                                行き先は変えない（§5.3 R3）。目立たせ方だけを落とす。 */}
                             <button type="button"
                               onClick={() => { if (c.section) jumpToRecordSection(c.section); else setActiveTab("today"); }}
                               className="w-full py-2 rounded-full text-xs font-medium flex items-center justify-center gap-1"
-                              style={{ background: C.curtain, color: "#FFFDF8" }}>
+                              style={{ background: C.card, color: C.inkSoft, border: `1px solid ${C.line}` }}>
                               今日の分を入れる <ChevronRight size={13} />
                             </button>
                           </div>

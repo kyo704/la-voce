@@ -189,8 +189,24 @@ assertTrue(!/const bedApproachLeft = \d+/.test(ui), "★寝る場所を決め打
 assertTrue(!/const chairLeft = \d+,/.test(ui), "★座る場所も決め打ちしていない");
 assertTrue(/const pillowLeft = bedPos\.left - PILLOW_LEFT_OFFSET/.test(ui),
   "枕は、ベッドの実際の位置から求めている");
-assertTrue(/const chairSeatTop = chairPos\.top - SEAT_ABOVE_FLOOR/.test(ui),
+assertTrue(/chairPos\.top - SEAT_ABOVE_FLOOR/.test(ui),
   "座面も、椅子の実際の位置から求めている");
+// ★休む場所が床の外へ出ないよう、下限をかけている
+assertTrue(/Math\.max\(ROOM_FLOOR_LINE, bedPos\.top - PILLOW_ABOVE_FLOOR\)/.test(ui),
+  "★枕が床の外へ出ない（すでに高い位置に保存されたベッドにも効く）");
+assertTrue(/Math\.max\(ROOM_FLOOR_LINE, chairPos\.top - SEAT_ABOVE_FLOOR\)/.test(ui),
+  "★座面も同じ（椅子でも同じことが起きうる）");
+assertTrue(/const BED_MIN_TOP = ROOM_FLOOR_LINE \+ PILLOW_ABOVE_FLOOR/.test(ui),
+  "ベッドを上げられる限界が決まっている");
+assertTrue(/const CHAIR_MIN_TOP = ROOM_FLOOR_LINE \+ SEAT_ABOVE_FLOOR/.test(ui),
+  "椅子にも同じ限界がある");
+assertTrue(/k === "furniture_bed" \? BED_MIN_TOP : k === "furniture_chair" \? CHAIR_MIN_TOP/.test(ui),
+  "★ドラッグの範囲にも、その限界がかかっている");
+
+console.log("\n=== 見た目（zzz と本） ===");
+assertTrue(!/fill="#B8863B"[^>]*>z</.test(ui), "★zzz が濃い黄土色でなくなった（背景に埋もれていた）");
+assertTrue(/showBook \? 61 : 35/.test(ui), "★本を持つときは、腕を本の縁まで寄せる");
+assertTrue(/showBook \? "" : "animation: idleBob/.test(ui), "★本を持つあいだは腕を揺らさない");
 assertTrue(/useRoomLife\(centerLeft, centerTop, rangeLeft, rangeTop, chairPos, bedPos\)/.test(ui),
   "★真偽値ではなく、位置そのものを受け取っている");
 assertTrue(/const hasBed = !!bedPos/.test(ui), "置いてあるかどうかは、位置の有無で決まる");
