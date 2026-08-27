@@ -6,7 +6,7 @@ import {
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
   Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot, MessageCircle, Home,
   Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe, Lock,
-  Volume2, Plane, AudioWaveform, Timer, MessageSquare, ClipboardList, GraduationCap, FileText, MoreHorizontal
+  Volume2, Plane, AudioWaveform, Timer, MessageSquare, ClipboardList, GraduationCap, FileText, MoreHorizontal, HelpCircle
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -3714,6 +3714,19 @@ export default function VocalTracker({ userId, userEmail }) {
   const [characterEquipped, setCharacterEquipped] = useState({});
   const [characterPointsSpent, setCharacterPointsSpent] = useState(0);
   const [profileLoading, setProfileLoading] = useState(true);
+  // 学ぶ統合設計書 4-3: 音名ルールの説明は初回のみ自動展開する。
+  // 端末ごとの表示上の都合なので localStorage で持つ（言語設定と同じ扱い）。
+  const [noteRuleOpen, setNoteRuleOpen] = useState(false);
+  useEffect(() => {
+    try {
+      if (window.localStorage.getItem("la-voce-note-rule-seen") !== "1") {
+        setNoteRuleOpen(true);
+        window.localStorage.setItem("la-voce-note-rule-seen", "1");
+      }
+    } catch (e) {
+      /* localStorageが使えない環境では、畳んだまま表示する */
+    }
+  }, []);
   const [profileSaveStatus, setProfileSaveStatus] = useState("idle");
 
   // selectedDate / viewMonth は、サーバーとクライアントのハイドレーション不一致を避けるため
@@ -7998,51 +8011,6 @@ export default function VocalTracker({ userId, userEmail }) {
                   </p>
                 )}
 
-                <div className="rounded-2xl p-5 border flex justify-center" style={{ background: C.card, borderColor: C.line }}>
-                  <Gauge score={currentScore} t={t} />
-                </div>
-
-                {yesterdayContext && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">{t("titleYesterdayContext")}</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteYesterdayContext")}</p>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="rounded-lg p-2" style={{ background: C.paper }}>
-                        <span style={{ color: C.inkSoft }}>{t("labelSleepHours")}</span>
-                        <div className="font-medium ff-mono">{yesterdayContext.sleepHours != null ? `${yesterdayContext.sleepHours}${t("unitHours")}` : "-"}</div>
-                      </div>
-                      <div className="rounded-lg p-2" style={{ background: C.paper }}>
-                        <span style={{ color: C.inkSoft }}>{t("labelDinnerToBedGap")}</span>
-                        <div className="font-medium ff-mono">{yesterdayContext.dinnerGap != null ? `${yesterdayContext.dinnerGap}${t("unitHours")}` : "-"}</div>
-                      </div>
-                      <div className="rounded-lg p-2" style={{ background: C.paper }}>
-                        <span style={{ color: C.inkSoft }}>{t("sectionPractice")}</span>
-                        <div className="font-medium">{yesterdayContext.activityType ? t((ACTIVITY_OPTIONS.find((a) => a.key === yesterdayContext.activityType) || {}).labelKey) : "-"}</div>
-                      </div>
-                      <div className="rounded-lg p-2" style={{ background: C.paper }}>
-                        <span style={{ color: C.inkSoft }}>{t("labelWeather")}</span>
-                        <div className="font-medium">{yesterdayContext.weather ? t(WEATHER_KEYS[yesterdayContext.weather] || "optionOther") : "-"}</div>
-                      </div>
-                    </div>
-                    {yesterdayContext.dinnerTags.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 mt-2">
-                        {yesterdayContext.dinnerTags.map((tag) => (
-                          <span key={tag} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>{t(DINNER_TAG_KEYS[tag])}</span>
-                        ))}
-                      </div>
-                    )}
-                    {yesterdayContext.flags.length > 0 && (
-                      <div className="mt-3 space-y-1.5">
-                        {yesterdayContext.flags.map((flagKey) => (
-                          <div key={flagKey} className="text-xs rounded-lg p-2" style={{ background: "rgba(184,49,49,0.08)", color: C.curtain }}>
-                            ⚠ {t(flagKey)}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-
                 {formData && (
                   <>
                     <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
@@ -8094,12 +8062,21 @@ export default function VocalTracker({ userId, userEmail }) {
                           1件記録すれば、それがその日の値になります。何度でも追加でき、3件以上あると時間帯別の推移も見られます。
                         </p>
                       )}
-                      <p className="text-xs rounded-xl p-2.5 leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
-                        {t("noteNotationRule")}
-                      </p>
-                      <p className="text-xs rounded-xl p-2.5 leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
-                        {t("noteChestVoiceRule")}
-                      </p>
+                      {/* 学ぶ統合設計書 4-3 / 改善タスクv2 §4-2:
+                          表記のルールと地声の説明は、合わせて200字以上ある長文が、毎日開く
+                          記録画面に常時展開されていた。入力ブロックを分断し、記録のテンポを
+                          最も損なっていた箇所。★内容は削らず、置き場所だけを変える。
+                          初回のみ自動展開し、2回目以降は畳んでおく。
+                          ※「学ぶ」統合が入ったら、この中身を C3-3 の記事へのリンクに差し替える。 */}
+                      <details className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}
+                        open={noteRuleOpen} onToggle={(e) => setNoteRuleOpen(e.currentTarget.open)}>
+                        <summary className="cursor-pointer font-medium flex items-center gap-1.5" style={{ color: C.ink }}>
+                          <HelpCircle size={13} style={{ color: C.gold }} />
+                          {t("noteRuleSummary")}
+                        </summary>
+                        <p className="mt-2 leading-relaxed">{t("noteNotationRule")}</p>
+                        <p className="mt-2 leading-relaxed">{t("noteChestVoiceRule")}</p>
+                      </details>
                       <details className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
                         <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>{t("labelRecommendedRoutineToggle")}</summary>
                         <p className="mt-2 leading-relaxed">{t("noteRecommendedRoutine")}</p>
@@ -8169,6 +8146,57 @@ export default function VocalTracker({ userId, userEmail }) {
                         </button>
                         {saveStatus === "error" && saveError && (
                           <p className="text-xs text-center" style={{ color: C.curtain }}>{saveError}</p>
+                        )}
+
+                        {/* 改善タスクv2 §4-2(a): 総合コンディションは「結果」なので、入力の前ではなく
+                            保存の後ろへ移した。まだ記録していない日に空の数字を見せない。 */}
+                        {entries[selectedDate] && (
+                          <div className="rounded-2xl p-5 border flex justify-center" style={{ background: C.card, borderColor: C.line }}>
+                            <Gauge score={currentScore} t={t} />
+                          </div>
+                        )}
+
+                        {/* 改善タスクv2 §4-2: 前日からの背景は参照情報なので、入力の流れに割り込ませず、
+                            保存の後ろに畳んで置く（初期状態は閉じる）。 */}
+                        {yesterdayContext && (
+                          <details className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                            <summary className="cursor-pointer ff-display italic text-lg">{t("titleYesterdayContext")}</summary>
+                            <p className="text-xs mt-1 mb-3" style={{ color: C.inkSoft }}>{t("noteYesterdayContext")}</p>
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                              <div className="rounded-lg p-2" style={{ background: C.paper }}>
+                                <span style={{ color: C.inkSoft }}>{t("labelSleepHours")}</span>
+                                <div className="font-medium ff-mono">{yesterdayContext.sleepHours != null ? `${yesterdayContext.sleepHours}${t("unitHours")}` : "-"}</div>
+                              </div>
+                              <div className="rounded-lg p-2" style={{ background: C.paper }}>
+                                <span style={{ color: C.inkSoft }}>{t("labelDinnerToBedGap")}</span>
+                                <div className="font-medium ff-mono">{yesterdayContext.dinnerGap != null ? `${yesterdayContext.dinnerGap}${t("unitHours")}` : "-"}</div>
+                              </div>
+                              <div className="rounded-lg p-2" style={{ background: C.paper }}>
+                                <span style={{ color: C.inkSoft }}>{t("sectionPractice")}</span>
+                                <div className="font-medium">{yesterdayContext.activityType ? t((ACTIVITY_OPTIONS.find((a) => a.key === yesterdayContext.activityType) || {}).labelKey) : "-"}</div>
+                              </div>
+                              <div className="rounded-lg p-2" style={{ background: C.paper }}>
+                                <span style={{ color: C.inkSoft }}>{t("labelWeather")}</span>
+                                <div className="font-medium">{yesterdayContext.weather ? t(WEATHER_KEYS[yesterdayContext.weather] || "optionOther") : "-"}</div>
+                              </div>
+                            </div>
+                            {yesterdayContext.dinnerTags.length > 0 && (
+                              <div className="flex flex-wrap gap-1.5 mt-2">
+                                {yesterdayContext.dinnerTags.map((tag) => (
+                                  <span key={tag} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>{t(DINNER_TAG_KEYS[tag])}</span>
+                                ))}
+                              </div>
+                            )}
+                            {yesterdayContext.flags.length > 0 && (
+                              <div className="mt-3 space-y-1.5">
+                                {yesterdayContext.flags.map((flagKey) => (
+                                  <div key={flagKey} className="text-xs rounded-lg p-2" style={{ background: "rgba(184,49,49,0.08)", color: C.curtain }}>
+                                    ⚠ {t(flagKey)}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </details>
                         )}
 
                         <button type="button" onClick={() => setRecordView("day")}
