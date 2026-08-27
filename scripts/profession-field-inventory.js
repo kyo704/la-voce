@@ -1,4 +1,4 @@
-const {readCode,readRaw}=require('/Users/sakamotokyou/Desktop/la-voce/components/tests/_source.js');
+const {readCode,readRaw}=require('../components/tests/_source.js');
 const ui=readCode('components','VocalTracker.jsx');
 const uiRaw=readRaw('components','VocalTracker.jsx');
 const learn=readRaw('lib','learnContent.js');
