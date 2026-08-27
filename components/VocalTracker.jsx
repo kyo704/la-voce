@@ -4153,6 +4153,8 @@ export default function VocalTracker({ userId, userEmail }) {
   const [inviteCodeInput, setInviteCodeInput] = useState("");
   const [inviteLookupError, setInviteLookupError] = useState("");
   const [pendingInvitation, setPendingInvitation] = useState(null);
+  // つながっている先生の名前（teacher_id -> {display_name, school}）
+  const [myTeacherNames, setMyTeacherNames] = useState({});
   const [myStudentLinks, setMyStudentLinks] = useState([]); // 自分が「先生」として見られる生徒たち
   const [myTeacherLinks, setMyTeacherLinks] = useState([]); // 自分が「生徒」としてつながっている先生たち
   const [studentEntriesCache, setStudentEntriesCache] = useState({}); // studentId -> entries（サーバー側の関数が、共有範囲の列だけを返す）
@@ -4399,6 +4401,25 @@ export default function VocalTracker({ userId, userEmail }) {
         setEntriesLoadError("");
       }
       if (mounted) setLoading(false);
+    })();
+    return () => { mounted = false; };
+  }, [userId]);
+
+  // つながっている先生の名前。★profiles を直接は読めないので関数を経由する。
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const supabase = createClient();
+      const { data, error } = await supabase.rpc("get_my_teacher_names");
+      if (error) {
+        console.warn("先生の名前を取得できませんでした。supabase/migration_invitation_teacher_name.sql を実行してください。", error);
+        return;
+      }
+      if (mounted && Array.isArray(data)) {
+        const map = {};
+        data.forEach((t) => { if (t && t.teacher_id) map[t.teacher_id] = t; });
+        setMyTeacherNames(map);
+      }
     })();
     return () => { mounted = false; };
   }, [userId]);
@@ -6221,6 +6242,14 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [myAllLessons]);
   // ---- レッスンの重なり検出 ここまで ----
 
+  // ★先生の名前の出し方を、1か所で決める。
+  //   名前が無い先生を「先生」と書くのはよいが、画面ごとに違う書き方をすると
+  //   「名前が分からない」ことが伝わったり伝わらなかったりする。
+  function teacherLabel(teacher) {
+    const name = teacher && teacher.display_name;
+    if (name) return teacher.school ? `${name}（${teacher.school}）` : name;
+    return "名前未設定の先生";
+  }
   // ---- レッスンの「立場」 ----
   // ★1人が先生でもあり生徒でもある、は正当な想定（自分も誰かに習っている先生）。
   //   以前は「教える側のタブ」と「習う側のタブ」の出現条件が独立していたので、
@@ -7733,7 +7762,17 @@ export default function VocalTracker({ userId, userEmail }) {
       .eq("code", code).maybeSingle();
     if (error || !data) { setInviteLookupError("コードが見つかりませんでした。先生に確認してください。"); return; }
     if (data.used_at || new Date(data.expires_at) < new Date()) { setInviteLookupError("このコードは使用済み、または期限切れです。"); return; }
-    setPendingInvitation(data);
+    // ★誰に渡すのかが分からないまま同意させないこと。
+    //   profiles は本人の行しか読めないので、名前だけを返す関数を経由する。
+    //   （supabase/migration_invitation_teacher_name.sql）
+    let teacher = null;
+    const { data: t, error: tErr } = await supabase.rpc("get_invitation_teacher", { p_code: code });
+    if (tErr) {
+      console.warn("先生の名前を取得できませんでした。supabase/migration_invitation_teacher_name.sql を実行してください。", tErr);
+    } else {
+      teacher = t || null;
+    }
+    setPendingInvitation({ ...data, teacher });
   }
   // §4.1: 既定値。mentalとnotesは既定false（変更しないこと）。
   const DEFAULT_SHARE_SCOPE = { voice: true, symptoms: true, sleep: true, activity: true, hydration: false, meal: false, body: false, mental: false, notes: false };
@@ -13715,7 +13754,9 @@ export default function VocalTracker({ userId, userEmail }) {
                         <div className="space-y-2 mb-3">
                           {myTeacherLinks.map((link) => (
                             <div key={link.id} className="rounded-xl p-3 flex items-center justify-between" style={{ background: C.paper }}>
-                              <span className="text-xs" style={{ color: C.inkSoft }}>連携中の先生が1名います</span>
+                              <span className="text-xs" style={{ color: C.inkSoft }}>
+                                {teacherLabel(myTeacherNames[link.teacher_id])}と連携中
+                              </span>
                               <button type="button" onClick={() => handleRevokeLink(link.id, "student")}
                                 className="text-xs underline" style={{ color: C.curtain }}>{t("disconnectButton")}</button>
                             </div>
@@ -13724,8 +13765,19 @@ export default function VocalTracker({ userId, userEmail }) {
                       )}
                       {pendingInvitation ? (
                         <div className="rounded-xl p-3" style={{ background: C.paper }}>
-                          <p className="text-sm font-medium mb-2">先生から招待が届いています</p>
-                          <p className="text-xs mb-2" style={{ color: C.inkSoft }}>つながると、先生は選んだ項目を見られるようになります。</p>
+                          <p className="text-sm font-medium mb-2">{teacherLabel(pendingInvitation.teacher)}から招待が届いています</p>
+                          {/* ★名前が取れなかったことを隠さない。
+                              「誰か分からない相手」と「やまだ先生」を、同じ見た目で
+                              出してはいけない。分からないなら、分からないと書く。 */}
+                          {!(pendingInvitation.teacher && pendingInvitation.teacher.display_name) && (
+                            <p className="text-xs mb-2" style={{ color: C.curtain }}>
+                              先生の名前を確認できませんでした。心当たりのない招待には、つながらないでください。
+                            </p>
+                          )}
+                          {pendingInvitation.teacher && pendingInvitation.teacher.school && (
+                            <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{pendingInvitation.teacher.school}</p>
+                          )}
+                          <p className="text-xs mb-2" style={{ color: C.inkSoft }}>つながると、この先生は選んだ項目を見られるようになります。</p>
                           <div className="space-y-1.5 mb-3">
                             {[
                               ["voice", "声・喉の記録"], ["symptoms", "症状"], ["sleep", "睡眠"], ["activity", "活動・練習量"],
