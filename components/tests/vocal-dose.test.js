@@ -120,6 +120,41 @@ async function main() {
   assertTrue(!m.VOCAL_SESSION_KINDS.includes("休養"),
     "休養は含めない（recovery 側で扱う既存の設計を壊さない）");
 
+  console.log("\n=== テスト9: ★ACWR に渡す前の補完（式は変えない） ===");
+  // VocalTracker.jsx の withEstimatedMinutes を、本物のソースから取り出して動かす。
+  const start = ui.indexOf("function withEstimatedMinutes(entry) {");
+  assertTrue(start > 0, "withEstimatedMinutes が VocalTracker.jsx にある");
+  let depth = 0, i = ui.indexOf("{", start), end = -1;
+  for (; i < ui.length; i++) {
+    if (ui[i] === "{") depth++;
+    else if (ui[i] === "}") { depth--; if (depth === 0) { end = i + 1; break; } }
+  }
+  // eslint-disable-next-line no-new-func
+  const withEstimatedMinutes = new Function("activityMinutes",
+    `${ui.slice(start, end)}\nreturn withEstimatedMinutes;`)(m.activityMinutes);
+
+  const blank = withEstimatedMinutes({ activities: [{ kind: "レッスン", minutes: "" }] });
+  assertEqual(blank.usedEstimate, true, "★分が空なら、補ったことを申告する");
+  assertEqual(blank.entry.activities[0].minutes, 60, "レッスンは60分として式に渡す");
+  const filled = withEstimatedMinutes({ activities: [{ kind: "レッスン", minutes: 45 }] });
+  assertEqual(filled.usedEstimate, false, "入力があれば補わない");
+  assertEqual(filled.entry.activities[0].minutes, 45, "値もそのまま");
+  const none = withEstimatedMinutes({ activities: [] });
+  assertEqual(none.usedEstimate, false, "活動が無い日は補わない（休養日を練習日にしない）");
+  assertEqual(withEstimatedMinutes(null).usedEstimate, false, "空でも壊れない");
+  // ★元のオブジェクトを書き換えないこと。entries は画面の状態そのもの。
+  const original = { activities: [{ kind: "本番", minutes: "" }] };
+  withEstimatedMinutes(original);
+  assertEqual(original.activities[0].minutes, "", "★元の記録を書き換えていない（保存される値は変わらない）");
+
+  console.log("\n=== テスト10: ★受診用サマリーに推定を混ぜない ===");
+  console.log("     お医者さんが読む紙に、こちらが補った値を実測のように載せない。");
+  assertTrue(/dayVocalDose\(e\)\.measuredMinutes/.test(ui),
+    "★受診用サマリーは measuredMinutes だけを使っている");
+  const mixed = m.dayVocalDose({ activities: [{ kind: "レッスン", minutes: 45 }, { kind: "本番", minutes: "" }] });
+  assertEqual(mixed.measuredMinutes, 45, "実測は45分だけ");
+  assertEqual(mixed.totalMinutes, 135, "内部の合計には推定も入る（ACWR用）");
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");

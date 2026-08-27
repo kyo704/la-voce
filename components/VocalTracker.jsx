@@ -39,7 +39,7 @@ import { graceDaysLeft, GRACE_PERIOD_DAYS } from "@/lib/accountDeletion";
 // 書き出しに添える「記録の控え」。★解釈を1つも書かない。文言と禁止語はこの1か所。
 // 発声量（G2-10.5）。★種別の重みと、実測／推定の区別はこの1か所が持つ。
 import {
-  VOCAL_SESSION_KINDS, dayVocalDose, weeklyVocalDose,
+  VOCAL_SESSION_KINDS, dayVocalDose, weeklyVocalDose, activityMinutes,
   elapsedMinutes, reviewSession, SESSION_MAX_MINUTES
 } from "@/lib/vocalDose";
 import { buildExportSummary } from "@/lib/exportSummary";
@@ -665,6 +665,28 @@ function computeAbsoluteHumidity(tempC, rhPercent) {
 // 07. 発声負荷バランス（ACWR）：活動種別ごとの重み。声の予報の「前日発声負荷」predictor でも
 // この正式な計算を使う（簡易プロキシではなく、指標設計図.md 07節の計算式そのもの）。
 const ACTIVITY_LOAD_WEIGHT = { "休養": 0, "自主練習": 1.0, "レッスン": 1.2, "リハーサル": 1.3, "本番": 1.6 };
+// ★実測が無い活動に、種別ごとの推定時間を補う（G2-10.5 / 改善タスクv2 §3-1）。
+//
+// これまで、分が空の活動ブロックは Number("")||0 で 0分として扱われていました。
+// 「レッスンに行った」と記録した日が、声を1分も使わなかった日と同じ負荷0になり、
+// ACWR が動かない原因になっていました。
+//
+// ★計算式は1文字も変えません。式に渡す「分」を補うだけです。
+//   補ったかどうかは usedEstimate で持ち回り、画面で区別して見せます。
+//   推定を実測と混ぜて、実測のような顔をさせないこと。
+function withEstimatedMinutes(entry) {
+  if (!entry || !Array.isArray(entry.activities) || entry.activities.length === 0) {
+    return { entry, usedEstimate: false };
+  }
+  let usedEstimate = false;
+  const activities = entry.activities.map((a) => {
+    const m = activityMinutes(a);
+    if (!m.isEstimated || m.minutes <= 0) return a;
+    usedEstimate = true;
+    return { ...a, minutes: m.minutes };
+  });
+  return { entry: usedEstimate ? { ...entry, activities } : entry, usedEstimate };
+}
 // 1日分の発声負荷 L_d = 活動時間(分) × 種別重み + 運動記録の負荷（0.3 × 分 × 強度/3）
 function computeDailyLoad(entry, songFactorResolver) {
   if (!entry) return 0;
@@ -5621,12 +5643,16 @@ export default function VocalTracker({ userId, userEmail }) {
     while (d <= realToday && guard < 3660) { // 約10年分で打ち切る安全弁
       const entry = entries[d];
       if (entry) {
-        const L = computeDailyLoad(entry, songFactorResolver);
+        // ★実測が無い活動には、種別ごとの推定時間を補ってから式に渡す。
+        //   式（EWMA）は変えていない。補ったことは isEstimated で持ち回る。
+        const { entry: entryForLoad, usedEstimate } = withEstimatedMinutes(entry);
+        const L = computeDailyLoad(entryForLoad, songFactorResolver);
         A = A == null ? L : lambdaA * L + (1 - lambdaA) * A;
         C = C == null ? L : lambdaC * L + (1 - lambdaC) * C;
-        series[d] = { A, C, acwr: C > 0 ? A / C : null };
+        series[d] = { A, C, acwr: C > 0 ? A / C : null, isEstimated: usedEstimate };
       } else if (A != null && C != null) {
-        series[d] = { A, C, acwr: C > 0 ? A / C : null };
+        // 記録のない日は、前日のEWMAを引き継ぐ（ここも従来どおり）。
+        series[d] = { A, C, acwr: C > 0 ? A / C : null, isEstimated: false, noRecord: true };
       }
       d = addDays(d, 1);
       guard += 1;
@@ -6884,7 +6910,10 @@ export default function VocalTracker({ userId, userEmail }) {
     const weeks = {};
     Object.keys(entries).filter((d) => d >= start && d <= end).forEach((d) => {
       const e = entries[d];
-      const dayMinutes = (e.activities || []).reduce((sum, a) => sum + (Number(a.minutes) || 0), 0);
+      // ★受診用サマリーには、推定を混ぜないこと。
+      //   お医者さんが読む紙に、こちらが種別から補った値を実測のように
+      //   載せてはいけない。実際に記録された分だけを出す（§5.4 の趣旨）。
+      const dayMinutes = dayVocalDose(e).measuredMinutes;
       if (dayMinutes <= 0) return;
       const dayOfWeek = new Date(d + "T00:00:00").getDay();
       const weekStart = addDays(d, -dayOfWeek);
@@ -9741,6 +9770,75 @@ export default function VocalTracker({ userId, userEmail }) {
                               />
                             ))}
                           </div>
+                          {/* ★発声量の計測（G2-10.5 軽量版・改善タスクv2 §3-1）。
+                              受診用サマリーの発声時間が約0時間だったのは、計算では
+                              なく入力の負担が原因。「分」の小さな数値欄は、実際には
+                              ほとんど埋まらない。開始／終了だけで済むようにする。
+                              ★マイクは使わない。音圧サンプリング（中量版）は
+                                v4 §10 で凍結中で、これはその前提にしない。
+                              ★あとから手で直せること。押し忘れは必ず起きる。 */}
+                          {selectedDate === realTodayDate && (
+                            <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                              {runningSession ? (
+                                <div className="flex items-center justify-between gap-3">
+                                  <div>
+                                    <p className="text-sm font-medium">{runningSession.kind}を計測中</p>
+                                    <p className="text-xs mt-0.5 ff-mono" style={{ color: C.inkSoft }}>
+                                      {elapsedMinutes(runningSession.startedAtMs, Date.now() + sessionTick * 0)}分
+                                    </p>
+                                  </div>
+                                  <button type="button" onClick={handleStopSession}
+                                    className="px-4 py-2 rounded-full text-xs font-medium shrink-0"
+                                    style={{ background: C.curtain, color: "#FFFDF8" }}>
+                                    終了
+                                  </button>
+                                </div>
+                              ) : (
+                                <>
+                                  <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                                    声を使い始めるときに押すと、時間を数えます。あとから手で直せます。
+                                  </p>
+                                  <div className="flex flex-wrap gap-1.5">
+                                    {VOCAL_SESSION_KINDS.map((kind) => (
+                                      <button key={kind} type="button" onClick={() => handleStartSession(kind)}
+                                        className="px-3 py-1.5 rounded-full text-xs font-medium"
+                                        style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                                        {kind}を始める
+                                      </button>
+                                    ))}
+                                  </div>
+                                </>
+                              )}
+                              {/* ★押し忘れたものを、黙って保存しない。
+                                  いつ終わったか分からないものを、分かっているように保存しない。 */}
+                              {sessionConfirm && (
+                                <div className="mt-3 pt-3 border-t" style={{ borderColor: C.line }}>
+                                  <p className="text-xs mb-2" style={{ color: C.ink }}>
+                                    {sessionConfirm.kind}が{Math.floor(sessionConfirm.minutes / 60)}時間
+                                    {sessionConfirm.minutes % 60}分になっています。
+                                    終了を押し忘れていませんか？
+                                  </p>
+                                  <div className="flex flex-wrap gap-1.5">
+                                    <button type="button" onClick={() => commitSession(sessionConfirm.kind, sessionConfirm.minutes)}
+                                      className="px-3 py-1.5 rounded-full text-xs font-medium"
+                                      style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                                      この時間で記録する
+                                    </button>
+                                    <button type="button" onClick={() => commitSession(sessionConfirm.kind, SESSION_MAX_MINUTES)}
+                                      className="px-3 py-1.5 rounded-full text-xs font-medium"
+                                      style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                                      {Math.floor(SESSION_MAX_MINUTES / 60)}時間として記録する
+                                    </button>
+                                    <button type="button" onClick={() => { setRunningSession(null); setSessionConfirm(null); }}
+                                      className="px-3 py-1.5 rounded-full text-xs font-medium"
+                                      style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                                      記録しない
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
                           {(formData.activities || []).length > 0 && (formData.activities || []).length < 10 && (
                             <button type="button" onClick={addActivity}
                               className="w-full rounded-xl border py-2 text-xs font-medium flex items-center justify-center gap-1.5"
