@@ -12,14 +12,20 @@ La Voce — a health/condition tracking app for voice professionals (classical s
 npm install
 npm run dev            # http://localhost:3000
 npm run build
-npm run lint           # next lint (no eslint config file checked in)
+npm run lint           # next lint (.eslintrc.json: next/core-web-vitals + no-undef)
 
-node components/tests/entry-roundtrip.test.js   # the only test
-
-npx cap sync && npx cap open ios                # iOS wrapper (see README §8)
+node components/tests/entry-roundtrip.test.js          # 単体で実行できる
+for f in components/tests/*.test.js; do node "$f"; done  # 全部
 ```
 
-There is no test runner dependency — `components/tests/entry-roundtrip.test.js` is a standalone Node script with its own assertion helpers. It does **not** copy the implementation: it reads `components/VocalTracker.jsx` at runtime, extracts named functions/consts by brace-matching, and `new Function`s them. Consequence: if you make `entryToRow` / `rowToEntry` / the migration helpers call a *new* top-level helper, you must add that helper's name to the `loadFunctions([...])` list at the bottom of the test, or it fails with `ReferenceError`. **This test currently fails on `main`** for exactly that reason (`deriveLegacyVoiceFieldsFromEntries is not defined`) — fix the list before treating a failure as a regression you introduced.
+`components/tests/*.test.js` are standalone Node scripts with their own assertion helpers — there is no test runner dependency. They fall into two kinds:
+
+- **Reads `components/VocalTracker.jsx` at runtime** (`entry-roundtrip`, `entry-defaults`, `points-rule`, `profession-visibility`, `other-profession`) — extracts named functions/consts by brace-matching and `new Function`s them. Consequence: if `entryToRow` / `rowToEntry` / the migration helpers start calling a *new* top-level helper, **add that helper's name to the `loadFunctions([...])` list at the bottom of the test** or it fails with `ReferenceError`. That exact omission broke `entry-roundtrip` once (`deriveLegacyVoiceFieldsFromEntries`); it is not a regression in the mapper.
+- **Imports a `lib/` module directly**, usually via `data:text/javascript;base64` dynamic import so the source is read fresh (`display-gates`, `share-scope`, `field-groups`, `feature-flags`, `export-data`, `delete-account`, `cycle-periods`).
+
+Several tests are **drift detectors, not unit tests**: they read the SQL migrations and `VocalTracker.jsx` as text and assert structural facts — that `get_student_entries` never touches `cycle_periods`, that `cycle_periods` has exactly one RLS policy and no `SECURITY DEFINER`, that no phase vocabulary (卵形期/黄体期/排卵) appears in the code, that no day counts are stored. **Strip comments before any forbidden-word check** — the specs are quoted in comments, and an unstripped check fails on its own documentation.
+
+`npm run lint` is worth running: `no-undef` was added after a runtime-only crash (`optionalFields is not defined`) that both `next build` and the tests passed, because JSX referenced a state variable whose `useState` line had never been written.
 
 No `.env.local.example` is checked in despite the README referencing it. Env vars actually read by the code: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SITE_URL`, `REQUIRE_SUBSCRIPTION`, `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`, `ANTHROPIC_API_KEY`, `LINE_CHANNEL_ACCESS_TOKEN`, `LINE_CHANNEL_SECRET`, `CRON_SECRET`, `RESEND_API_KEY`, `FEEDBACK_FROM_EMAIL`.
 
@@ -38,7 +44,7 @@ Editing a root-level copy has no effect on the app. Several files also open with
 
 Code comments cite spec documents (`lavoce-記録項目の再設計v2.md`, `lavoce-指標設計図.md`, `lavoce-作業計画v2-構造変更の分離.md`, …). Those live in `docs/` at the repo root (tracked as of commit `1cbb9ea`; the directory was previously named `docs:` with a trailing colon and sat outside git).
 
-**`docs:/lavoce-02-統合実行ルート-v4.md` is the single source of truth for priority and work order.** Read it, and especially its §4 (conflict resolution) and §7 (replacement table), before starting work: about 36 spec documents exist and several are deliberately superseded, so implementing from an older one will "fix" correct code back into a bug. Progress is reported one line per numbered item in Japanese, and work stops at every gate listed in its §9 until the owner confirms.
+**`docs/lavoce-02-統合実行ルート-v4.md` is the single source of truth for priority and work order.** Read it, and especially its §4 (conflict resolution) and §7 (replacement table), before starting work: about 36 spec documents exist and several are deliberately superseded, so implementing from an older one will "fix" correct code back into a bug. Progress is reported one line per numbered item in Japanese, and work stops at every gate listed in its §9 until the owner confirms.
 
 ## Architecture
 
@@ -59,7 +65,7 @@ Code comments cite spec documents (`lavoce-記録項目の再設計v2.md`, `lavo
 
 ### VocalTracker — the whole app
 
-`components/VocalTracker.jsx` (~12k lines) is a single client component rendered by `app/dashboard/page.js` with `userId`/`userEmail` props. It holds all in-app state (no store, no data-fetching library); everything above the default export at line ~3544 is top-level pure helpers — option lists, statistics (ridge regression, Pearson/Spearman, Benjamini–Hochberg FDR, Hedges' g), date/score utilities, and the row↔entry mappers. Sub-views live in `components/CharacterHome.jsx` and `components/HealthInfo.jsx`. Top-level tabs: `home / today / analysis / garden / notes / more`.
+`components/VocalTracker.jsx` (~13.4k lines) is a single client component rendered by `app/dashboard/page.js` with `userId`/`userEmail` props. It holds all in-app state (no store, no data-fetching library); everything above the default export at line ~3544 is top-level pure helpers — option lists, statistics (ridge regression, Pearson/Spearman, Benjamini–Hochberg FDR, Hedges' g), date/score utilities, and the row↔entry mappers. Sub-views live in `components/CharacterHome.jsx` and `components/HealthInfo.jsx`. Top-level tabs: `home / today / analysis / garden / notes / more`.
 
 ### The entry data model (the thing to be careful with)
 
@@ -76,9 +82,36 @@ The reason is that dozens of analysis features still read the legacy columns. So
 
 Writes to `profiles` use `.update(...).eq("id", userId)`, never `upsert` — the RLS policy set grants UPDATE but not INSERT, and upsert was returning 403. The row already exists (created by the `handle_new_user` trigger).
 
+### One decision, one module (the pattern to follow)
+
+The recurring defect in this repo is **the same decision living in two places**, where one copy is later changed and the other is not. A display gate that also existed inline; a permission check that gated rendering while the query still fetched every column; a profession label computed by a ternary chain next to a list of the same professions. Each fix consolidated the decision into a single `lib/` module with a test that fails when a caller drifts away from it.
+
+| Module | The single decision it owns |
+|---|---|
+| `lib/displayGates.js` | Whether a statistic may be stated at all (n, effect size, FDR) — §6 of the route doc |
+| `lib/analysisCardVisibility.js` | Which analysis cards appear |
+| `lib/shareScope.js` | Which of the 58 `entries` columns map to which of the 9 share scopes — and the **11 columns never shared with a teacher** (`medication_tags, cycle_start, location, temperature, humidity, weather, environment_tags, ambient_noise_db, noisy_environment, flight_hours, jetlag_hours`) |
+| `lib/fieldGroups.js` | Which fields belong to かんたん記録 vs しっかり記録, and to which profession |
+| `lib/featureFlags.js` | What is hidden from non-admins (teacher/classroom/lesson mode) |
+| `lib/accountDeletion.js` | The list of user-owned tables, the 30-day grace period, and the purge order |
+| `lib/exportData.js` | The list of tables in a data export |
+| `lib/cyclePeriods.js` | Every day count derived from cycle start dates |
+
+`shareScope` / `accountDeletion` / `exportData` overlap deliberately and must be kept **deliberately inconsistent**: a column can be excluded from teacher sharing while still being required in the owner's own export and deletion. "We don't share it" and "the owner can't retrieve it" are different statements.
+
+### RLS is row-level — it cannot hide a column
+
+`canViewHealth()` and friends gate *rendering*; a `select("*")` behind them still ships every column to the browser, where the network tab shows it. Where a teacher may see some columns of a student's row but not others, the filtering has to happen server-side: `supabase/migration_teacher_student_entries_rpc.sql` defines `get_student_entries(p_student_id, p_limit)` as `SECURITY DEFINER returning setof jsonb`, building each object from `shareScope`'s allowed columns only. It authorizes **solely** via `teacher_student_links` — never via org roles, which would let an org owner read students they don't teach.
+
+The cycle tables go one step further: `cycle_periods` has exactly one RLS policy (`auth.uid() = user_id`), no teacher policy and no `SECURITY DEFINER` function at all, because the goal is that no code path to another user's rows exists to be misconfigured later.
+
+### Cron routes must fail closed
+
+`app/api/cron/*` authenticate with `Bearer ${CRON_SECRET}`. If the env var is unset, `authHeader !== "Bearer undefined"` is false for a caller who literally sends `Bearer undefined` — so an unset secret made the route world-callable. Both routes now return **503 when `CRON_SECRET` is missing**, and only then compare.
+
 ### Database schema is not fully checked in
 
-`supabase/schema.sql` defines only `profiles`, `subscriptions`, `entries` plus the `handle_new_user` trigger and RLS policies. The application code queries roughly twenty tables — `questionnaire_responses`, `repertoire_tessitura`, `role_master`, `project_master`, `character_inventory`, `chapter_state`, `article_progress`, `article_notes`, `feedback`, `events`, `lessons`, `entry_comments`, `organizations`, `memberships`, `enrollments`, `assignments`, `org_invitations`, `teacher_invitations`, `teacher_student_links`, `teacher_notes` — and `profiles` has ~35 columns beyond the ones in the file (`display_name`, `vocal_profession`, `character_equipped`, `garden_theme`, `folded_groups`, `practice_reviews`, `line_user_id`, `day_record_boundary_hour`, `teacher_beta_access`, …). Those were applied by hand in the Supabase SQL Editor; `components/migration_activity_detail.sql` is the only migration checked in. **Do not treat `schema.sql` as the source of truth** — read the live schema in Supabase, and when adding a table/column write the SQL out for the user to run rather than assuming a migration pipeline exists.
+`supabase/schema.sql` defines only `profiles`, `subscriptions`, `entries` plus the `handle_new_user` trigger and RLS policies. The application code queries roughly twenty tables — `questionnaire_responses`, `repertoire_tessitura`, `role_master`, `project_master`, `character_inventory`, `chapter_state`, `article_progress`, `article_notes`, `feedback`, `events`, `lessons`, `entry_comments`, `organizations`, `memberships`, `enrollments`, `assignments`, `org_invitations`, `teacher_invitations`, `teacher_student_links`, `teacher_notes` — and `profiles` has ~35 columns beyond the ones in the file (`display_name`, `vocal_profession`, `character_equipped`, `garden_theme`, `folded_groups`, `practice_reviews`, `line_user_id`, `day_record_boundary_hour`, `teacher_beta_access`, …). Those were applied by hand in the Supabase SQL Editor; Migrations are written out as files for the owner to paste into the SQL Editor: `components/migration_activity_detail.sql`, and in `supabase/` — `migration_record_mode.sql`, `migration_profile_health_fields.sql`, `migration_teacher_student_entries_rpc.sql`, `migration_account_soft_delete.sql`, `migration_cycle_periods.sql`. Each is written to be safe to run repeatedly (`if not exists`, `on conflict do nothing`, policy creation wrapped in a `do $$` existence check). **Do not treat `schema.sql` as the source of truth** — read the live schema in Supabase, and when adding a table/column write the SQL out for the user to run rather than assuming a migration pipeline exists.
 
 ### i18n
 
