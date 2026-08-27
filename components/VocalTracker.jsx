@@ -24,6 +24,8 @@ import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q } from "@/lib/displa
 import { isAnalysisCardVisible } from "@/lib/analysisCardVisibility";
 // 記録項目の表示・非表示は必ずこのレイヤーを通す（記録項目の再設計v2 §3.3）
 import { isFieldGroupVisible, DEFAULT_RECORD_MODE } from "@/lib/fieldGroups";
+// データの書き出し（G3-16）。★含める項目を減らさないこと。
+import { EXPORTED_TABLES, EXPORTED_PROFILE_COLUMNS, entriesToCsv, buildExportPayload } from "@/lib/exportData";
 import HealthInfo from "@/components/HealthInfo";
 import { ARTICLES, CHAPTER_LABELS, PROFESSION_LABELS, getArticlesForProfession, getArticleById } from "@/lib/learnContent";
 import CharacterHome from "@/components/CharacterHome";
@@ -7033,6 +7035,54 @@ export default function VocalTracker({ userId, userEmail }) {
     await supabase.from("profiles").update({ garden_theme: themeKey }).eq("id", userId);
   }
 
+  // ---- 統合実行ルートv4 G3-16 / 改善タスクv2 P0-3: データの書き出し ----
+  // ★月経周期・既往症・アレルギー・常用薬も必ず含める。先生には共有しない設定だが、
+  //   本人が自分のデータを持ち出す権利は別の話（ルート文書 G3 の注記）。
+  const [exportStatus, setExportStatus] = useState("idle"); // idle | working | done | error
+
+  function downloadFile(name, text, mime) {
+    const blob = new Blob([text], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  async function handleExportData() {
+    setExportStatus("working");
+    try {
+      const supabase = createClient();
+      const tables = {};
+      for (const { table, orderBy } of EXPORTED_TABLES) {
+        let q = supabase.from(table).select("*").eq("user_id", userId);
+        if (orderBy) q = q.order(orderBy, { ascending: true });
+        const { data, error } = await q;
+        // 1つのテーブルが失敗しても、書き出し全体を諦めない。
+        // 取れなかったことは、そのテーブルの中身として残す。
+        tables[table] = error ? { error: error.message } : (data || []);
+      }
+      const { data: prof } = await supabase
+        .from("profiles").select(EXPORTED_PROFILE_COLUMNS.join(", ")).eq("id", userId).maybeSingle();
+
+      const stamp = new Date().toISOString().slice(0, 10);
+      const payload = buildExportPayload({ profile: prof || null, tables, exportedAt: new Date().toISOString() });
+      downloadFile(`la-voce-${stamp}.json`, JSON.stringify(payload, null, 2), "application/json");
+
+      const csv = entriesToCsv(Array.isArray(tables.entries) ? tables.entries : []);
+      if (csv) downloadFile(`la-voce-entries-${stamp}.csv`, "\ufeff" + csv, "text/csv;charset=utf-8");
+
+      setExportStatus("done");
+      setTimeout(() => setExportStatus((st) => (st === "done" ? "idle" : st)), 4000);
+    } catch (e) {
+      console.error("データの書き出しに失敗しました:", e);
+      setExportStatus("error");   // ★失敗は自動で消さない
+    }
+  }
+
   async function handleSaveProfile() {
     setProfileSaveStatus("saving");
     const supabase = createClient();
@@ -12944,8 +12994,32 @@ export default function VocalTracker({ userId, userEmail }) {
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>アカウント</p>
+                  {/* 統合実行ルートv4 G3-16: データの書き出し。
+                      ★アカウント削除（G3-17）の1ページ目から「先に書き出す」で
+                        ここへ誘導するため、削除より先に用意している。 */}
+                  <div className="rounded-xl p-3 mb-3" style={{ background: C.paper }}>
+                    <p className="text-sm font-medium mb-1">{t("labelExportData")}</p>
+                    <p className="text-xs mb-1" style={{ color: C.inkSoft }}>{t("noteExportData")}</p>
+                    <p className="text-xs mb-2.5" style={{ color: C.inkSoft }}>{t("noteExportFormats")}</p>
+                    {exportStatus === "done" && (
+                      <p className="text-xs rounded-lg px-2.5 py-1.5 mb-2" style={{ background: "rgba(122,150,109,0.18)", color: C.sage }}>
+                        {t("exportDone")}
+                      </p>
+                    )}
+                    {exportStatus === "error" && (
+                      <p className="text-xs rounded-lg px-2.5 py-1.5 mb-2" style={{ background: "rgba(184,49,49,0.14)", color: C.curtain }}>
+                        {t("exportError")}
+                      </p>
+                    )}
+                    <button type="button" onClick={handleExportData} disabled={exportStatus === "working"}
+                      className="w-full py-2.5 rounded-full text-sm font-medium flex items-center justify-center gap-2"
+                      style={{ background: C.curtain, color: "#FFFDF8", opacity: exportStatus === "working" ? 0.7 : 1 }}>
+                      {exportStatus === "working" && <Loader2 size={15} className="animate-spin" />}
+                      {exportStatus === "working" ? t("exportWorking") : t("labelExportData")}
+                    </button>
+                  </div>
                   <p className="text-xs px-1 mb-2" style={{ color: C.inkSoft }}>
-                    データの書き出し・アカウント削除機能は準備中です。
+                    アカウント削除機能は準備中です。
                   </p>
                   <button onClick={handleSignOut}
                     className="w-full flex items-center gap-2 py-2.5 px-1 text-sm" style={{ color: C.curtain }}>
