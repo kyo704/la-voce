@@ -10635,50 +10635,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     })}
                   </div>
                 </div>
-                {voiceMemoEntries.length > 0 && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">{t("titleVoiceMemoReview")}</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteVoiceMemoReview")}</p>
-                    <div className="space-y-2">
-                      {voiceMemoEntries.map((e) => (
-                        <div key={e.date} className="rounded-xl p-2.5" style={{ background: C.paper }}>
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-xs ff-mono" style={{ color: C.inkSoft }}>{e.date}</span>
-                            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: levelColor(e.throatCondition), color: "#FFFDF8" }}>
-                              喉{levelDynamic(e.throatCondition)}
-                            </span>
-                            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: levelColor(e.voiceQuality), color: "#FFFDF8" }}>
-                              声{levelDynamic(e.voiceQuality)}
-                            </span>
-                          </div>
-                          <p className="text-xs" style={{ color: C.ink }}>{e.voiceMemo}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">{t("titleSleepChart")}</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteSleepChart")}</p>
-                  <div style={{ width: "100%", height: 200 }}>
-                    <ResponsiveContainer>
-                      <BarChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                        <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis tick={{ fontSize: 11, fill: C.inkSoft }} unit="h" />
-                        <Tooltip
-                          contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }}
-                          formatter={(v, n, p) => [t("chartSleepTooltip").replace("{h}", v).replace("{q}", p.payload.sleepQuality ?? "-"), t("chartNameSleepHours")]}
-                        />
-                        <Bar dataKey="sleepHours" name={t("chartNameSleepHours")} radius={4}>
-                          {timeSeries.map((d, i) => (
-                            <Cell key={i} fill={levelColor(d.sleepQuality)} />
-                          ))}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
+
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleResonanceChart")}</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteResonanceChart")}</p>
@@ -10694,6 +10651,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     </ResponsiveContainer>
                   </div>
                 </div>
+
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titlePitchChart")}</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("notePitchChart")}</p>
@@ -11061,10 +11019,123 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                 )}
 
+                {/* 改善タスクv2 §4-1(c): 声のメモ振り返りは読み物なので【声】の最後へ。
+                    睡眠は【身体】へ移した。【声】の中にあったうえ、声の測定値グループ
+                    （響き／声の高さ／ウォームアップ／音域）を分断していた。 */}
+
+                {voiceMemoEntries.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">{t("titleVoiceMemoReview")}</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteVoiceMemoReview")}</p>
+                    <div className="space-y-2">
+                      {voiceMemoEntries.map((e) => (
+                        <div key={e.date} className="rounded-xl p-2.5" style={{ background: C.paper }}>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs ff-mono" style={{ color: C.inkSoft }}>{e.date}</span>
+                            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: levelColor(e.throatCondition), color: "#FFFDF8" }}>
+                              喉{levelDynamic(e.throatCondition)}
+                            </span>
+                            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: levelColor(e.voiceQuality), color: "#FFFDF8" }}>
+                              声{levelDynamic(e.voiceQuality)}
+                            </span>
+                          </div>
+                          <p className="text-xs" style={{ color: C.ink }}>{e.voiceMemo}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className="pt-2">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderBody")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                     {t("groupHeaderBodyDesc")}
+                  </p>
+                </div>
+
+                {/* 改善タスクv2 §4-1(g): 体重が2回出ていた。摂取 → 結果（体重） →
+                    統合評価（エネルギー可用性）の順に整えた。睡眠はここが本来の居場所。 */}
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleSleepChart")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteSleepChart")}</p>
+                  <div style={{ width: "100%", height: 200 }}>
+                    <ResponsiveContainer>
+                      <BarChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis tick={{ fontSize: 11, fill: C.inkSoft }} unit="h" />
+                        <Tooltip
+                          contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }}
+                          formatter={(v, n, p) => [t("chartSleepTooltip").replace("{h}", v).replace("{q}", p.payload.sleepQuality ?? "-"), t("chartNameSleepHours")]}
+                        />
+                        <Bar dataKey="sleepHours" name={t("chartNameSleepHours")} radius={4}>
+                          {timeSeries.map((d, i) => (
+                            <Cell key={i} fill={levelColor(d.sleepQuality)} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">タンパク質摂取量（体重1kgあたり）の推移</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>破線が「身体データ」で設定した目標係数です。</p>
+                  <div style={{ width: "100%", height: 200 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 11, fill: C.inkSoft }} unit="g/kg" />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <ReferenceLine y={Number(profile.protein_coefficient) || 1.6} stroke={C.gold} strokeDasharray="4 4" />
+                        <Line type="monotone" dataKey="proteinPerKg" name={t("chartNameActualCoefficient")} stroke={C.sage} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleNutritionWeightChart")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteNutritionWeightChart")}</p>
+                  <div style={{ width: "100%", height: 150 }}>
+                    <ResponsiveContainer>
+                      <ComposedChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis tick={{ fontSize: 10, fill: C.inkSoft }} unit="kcal" />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <Bar dataKey="calorieActual" name={t("chartNameCalorieActual")} fill={C.gold} radius={3} />
+                        <Line type="monotone" dataKey="calorieTarget" name={t("chartNameCalorieTarget")} stroke={C.curtain} strokeDasharray="4 4" dot={false} connectNulls />
+                      </ComposedChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div style={{ width: "100%", height: 110, marginTop: 8 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="kg" />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <Line type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={C.sage} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div style={{ width: "100%", height: 110, marginTop: 8 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                        <CartesianGrid stroke={C.line} />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="g/kg" />
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <ReferenceLine y={Number(profile.protein_coefficient) || 1.6} stroke={C.gold} strokeDasharray="4 4" />
+                        <Line type="monotone" dataKey="proteinPerKg" name={t("chartNameActualCoefficient")} stroke={C.curtain} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                    3つの指標を、それぞれ実際のスケールのまま、x軸だけ揃えて上下に並べています。1枚のグラフに複数の軸を重ねると、交点の位置が軸の取り方次第で変わってしまうため、この形にしています。
                   </p>
                 </div>
 
@@ -11117,65 +11188,6 @@ export default function VocalTracker({ userId, userEmail }) {
                     </p>
                   </div>
                 )}
-
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">タンパク質摂取量（体重1kgあたり）の推移</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>破線が「身体データ」で設定した目標係数です。</p>
-                  <div style={{ width: "100%", height: 200 }}>
-                    <ResponsiveContainer>
-                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                        <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 11, fill: C.inkSoft }} unit="g/kg" />
-                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <ReferenceLine y={Number(profile.protein_coefficient) || 1.6} stroke={C.gold} strokeDasharray="4 4" />
-                        <Line type="monotone" dataKey="proteinPerKg" name={t("chartNameActualCoefficient")} stroke={C.sage} strokeWidth={2} dot={{ r: 3 }} connectNulls />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">{t("titleNutritionWeightChart")}</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteNutritionWeightChart")}</p>
-                  <div style={{ width: "100%", height: 150 }}>
-                    <ResponsiveContainer>
-                      <ComposedChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                        <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis tick={{ fontSize: 10, fill: C.inkSoft }} unit="kcal" />
-                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <Bar dataKey="calorieActual" name={t("chartNameCalorieActual")} fill={C.gold} radius={3} />
-                        <Line type="monotone" dataKey="calorieTarget" name={t("chartNameCalorieTarget")} stroke={C.curtain} strokeDasharray="4 4" dot={false} connectNulls />
-                      </ComposedChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div style={{ width: "100%", height: 110, marginTop: 8 }}>
-                    <ResponsiveContainer>
-                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                        <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="kg" />
-                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <Line type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={C.sage} strokeWidth={2} dot={{ r: 2 }} connectNulls />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div style={{ width: "100%", height: 110, marginTop: 8 }}>
-                    <ResponsiveContainer>
-                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                        <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="g/kg" />
-                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <ReferenceLine y={Number(profile.protein_coefficient) || 1.6} stroke={C.gold} strokeDasharray="4 4" />
-                        <Line type="monotone" dataKey="proteinPerKg" name={t("chartNameActualCoefficient")} stroke={C.curtain} strokeWidth={2} dot={{ r: 2 }} connectNulls />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                    3つの指標を、それぞれ実際のスケールのまま、x軸だけ揃えて上下に並べています。1枚のグラフに複数の軸を重ねると、交点の位置が軸の取り方次第で変わってしまうため、この形にしています。
-                  </p>
-                </div>
                 <div className="pt-2">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("sectionMental")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
