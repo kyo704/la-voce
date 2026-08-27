@@ -6508,8 +6508,19 @@ export default function VocalTracker({ userId, userEmail }) {
   }
   const acwrChartData = useMemo(() => {
     const dates = Object.keys(acwrSeries).sort().slice(-28);
-    return dates.map((d) => ({ date: d.slice(5), acwr: acwrSeries[d].acwr != null ? roundTo1(acwrSeries[d].acwr) : null }));
+    // ★推定を補った日が分かるようにする（改善タスクv2 §3-1「グラフ上で区別表示する」）。
+    //   実測の日と推定の日を、同じ点で描いてはいけない。
+    return dates.map((d) => ({
+      date: d.slice(5),
+      acwr: acwrSeries[d].acwr != null ? roundTo1(acwrSeries[d].acwr) : null,
+      isEstimated: !!acwrSeries[d].isEstimated
+    }));
   }, [acwrSeries]);
+  // 直近28日のうち、何日が推定に頼っているか。★0日なら注記を出さない。
+  const acwrEstimatedDays = useMemo(
+    () => acwrChartData.filter((d) => d.isEstimated && d.acwr != null).length,
+    [acwrChartData]
+  );
   // 統合実行ルートv4 §6-4 / P0-2: ACWRのパネルがロック中なのに、トップに警告だけが
   // 出ていた。★ロックと警告は必ずこの同一フラグを見ること。ここで null にすることで、
   // パネルも「今日の一言」も、同時にしか出られないようにする。
@@ -11924,10 +11935,28 @@ export default function VocalTracker({ userId, userEmail }) {
                               <ReferenceArea y1={1.3} y2={1.5} fill={C.gold} fillOpacity={0.12} />
                               <ReferenceArea y1={1.5} y2={3} fill={C.curtain} fillOpacity={0.08} />
                               <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                              <Line type="monotone" dataKey="acwr" stroke={C.ink} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                              {/* ★推定を補った日は、塗りつぶさない白抜きの点にする。
+                                  色は変えない（ゾーンの色と衝突するため）。形で区別する。 */}
+                              <Line type="monotone" dataKey="acwr" stroke={C.ink} strokeWidth={2} connectNulls
+                                dot={(props) => {
+                                  const { cx, cy, payload, index } = props;
+                                  if (cx == null || cy == null) return null;
+                                  return payload.isEstimated
+                                    ? <circle key={index} cx={cx} cy={cy} r={3} fill={C.card} stroke={C.ink} strokeWidth={1.5} />
+                                    : <circle key={index} cx={cx} cy={cy} r={2} fill={C.ink} />;
+                                }} />
                             </LineChart>
                           </ResponsiveContainer>
                         </div>
+                      )}
+                      {/* ★推定に頼った日があることを、必ず伝える。
+                          実測と推定を混ぜたまま黙っていると、
+                          こちらが埋めた値を本人の記録だと思わせてしまう。 */}
+                      {acwrEstimatedDays > 0 && (
+                        <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                          白い点の{acwrEstimatedDays}日は、活動の記録はあるものの時間が入っていないため、
+                          種別ごとの目安の時間で計算しています。開始・終了ボタンか、活動の「分」を入れると実測に変わります。
+                        </p>
                       )}
                       <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
                         帯は目安のゾーン（下から積み足りない・ちょうどいい・増やしすぎ注意・急増）です。1.5を超える急な増やし方は、喉のトラブルと結びつくことが知られています。

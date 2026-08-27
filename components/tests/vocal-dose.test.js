@@ -155,6 +155,28 @@ async function main() {
   assertEqual(mixed.measuredMinutes, 45, "実測は45分だけ");
   assertEqual(mixed.totalMinutes, 135, "内部の合計には推定も入る（ACWR用）");
 
+  console.log("\n=== テスト11: ★推定の日をグラフで区別している（受け入れ条件） ===");
+  console.log("     実測と推定を、同じ点で描いてはいけない。");
+  assertTrue(/isEstimated: !!acwrSeries\[d\]\.isEstimated/.test(ui),
+    "グラフのデータが、推定かどうかを持っている");
+  assertTrue(/payload\.isEstimated/.test(ui), "★点の描き分けに使っている");
+  assertTrue(/acwrEstimatedDays/.test(ui), "推定に頼った日数を数えている");
+  assertTrue(/acwrEstimatedDays > 0 &&/.test(ui), "★0日なら注記を出さない");
+  assertTrue(/種別ごとの目安の時間で計算しています/.test(ui),
+    "★補った値であることを、本人に伝えている");
+  // ★色ではなく形で区別すること。ゾーンの色（gold/sage/curtain）と衝突する。
+  const dotBlock = ui.slice(ui.indexOf("dot={(props) =>"), ui.indexOf("dot={(props) =>") + 500);
+  assertTrue(!/C\.gold|C\.sage|C\.rust|C\.curtain/.test(dotBlock),
+    "★点の描き分けに色を使っていない（ゾーンの色と衝突するため）");
+  assertTrue(/fill=\{C\.card\}/.test(dotBlock), "推定の日は白抜きの点");
+
+  console.log("\n=== テスト12: ACWR の式に手を入れていない ===");
+  assertTrue(/const lambdaA = 2 \/ \(7 \+ 1\)/.test(ui), "★λA = 2/(7+1) のまま");
+  assertTrue(/const lambdaC = 2 \/ \(28 \+ 1\)/.test(ui), "★λC = 2/(28+1) のまま");
+  assertTrue(/A = A == null \? L : lambdaA \* L \+ \(1 - lambdaA\) \* A/.test(ui), "★EWMA の式がそのまま");
+  assertTrue(/C = C == null \? L : lambdaC \* L \+ \(1 - lambdaC\) \* C/.test(ui), "★EWMA の式がそのまま");
+  assertTrue(/acwr: C > 0 \? A \/ C : null/.test(ui), "★比の取り方もそのまま");
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");
