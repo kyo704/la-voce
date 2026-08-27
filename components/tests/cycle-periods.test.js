@@ -129,22 +129,53 @@ async function main() {
   console.log("     電車の中で、隣の人に見えます。");
   assertTrue(!/C\.curtain|C\.gold|C\.rust|C\.sage|#[0-9a-fA-F]{3,6}/.test(homeRow),
     "★色を付けていない（日付の行と同じ C.inkSoft のみ）");
+  // ★C.line は、他の入力欄と同じ細い枠線。色ではないので許す。
+  //   §4-2 が禁じているのは「目立たせること」であって、
+  //   「押せると分かること」ではない。ここを混同すると、
+  //   仕様を守るために使えないボタンを作ってしまう（実際に一度そうなった）。
+  assertTrue(/C\.line/.test(homeRow) || !/border/.test(homeRow),
+    "枠線を使うなら、他と同じ C.line だけ");
   assertTrue(/C\.inkSoft/.test(homeRow), "文字色は他の行と同じ C.inkSoft");
   assertTrue(!/<(Droplets|HeartPulse|Sparkles|CalendarDays|Moon|Droplet)\b/.test(homeRow),
     "★アイコンを付けていない");
   assertTrue(!/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(homeRow), "★絵文字を付けていない");
   assertTrue(!/text-(sm|base|lg|xl|2xl)\b/.test(homeRow), "★フォントサイズを大きくしていない（text-xs のまま）");
   assertTrue(!/font-(medium|semibold|bold)/.test(homeRow), "★太字にしていない");
-  assertTrue(!/rounded-2xl|border|background:\s*C\.card/.test(homeRow),
+  assertTrue(!/rounded-2xl|background:\s*C\.card|background:\s*C\.paper/.test(homeRow),
     "★カードにしていない・背景色を変えていない");
 
   console.log("\n=== テスト11: ホームの表示（§4-1） ===");
   assertTrue(/生理 \$\{cycleState\.dayIndex\}日目/.test(homeRow), "出血中は「生理 ◯日目」");
   assertTrue(/周期 \$\{cycleState\.dayIndex\}日目/.test(homeRow), "出血後は「周期 ◯日目」");
-  assertTrue(/終わった/.test(homeRow), "「終わった」を押せる");
+  // ★ボタンの文字だけで、何を記録するのか分かること。
+  //   「始まった」「終わった」だけでは、何がなのか読み取れない。
+  assertTrue(/生理が終わった/.test(homeRow), "★「生理が終わった」と、何がかまで書いてある");
+  assertTrue(/生理が始まった/.test(homeRow), "★「生理が始まった」と、何がかまで書いてある");
+  assertTrue(!/>\s*(始まった|終わった)\s*</.test(homeRow), "「始まった」「終わった」だけのボタンが無い");
+  // ★指で狙える大きさがあること。下線付きの文字だけでは押せない。
+  assertTrue(/px-3 py-1\.5/.test(homeRow), "★ボタンに余白がある（指で狙える）");
+  assertTrue(!/className="text-xs underline"/.test(homeRow), "下線だけの文字リンクになっていない");
   assertEqual(m.currentCycleState([P("2026-08-25")], "2026-08-27").state, "bleeding", "終了日が無ければ出血中");
   assertEqual(m.currentCycleState([P("2026-08-01", "2026-08-05")], "2026-08-12").state, "cycle", "終了後は周期");
   assertEqual(m.currentCycleState([P("2026-08-01", "2026-08-05")], "2026-08-12").dayIndex, 12, "周期の日数は開始日から数える");
+
+  console.log("\n=== テスト11-2: ★「終わった」の押し忘れに上限がある ===");
+  console.log("     上限が片方（カレンダーの帯）にしか無く、ホームには「生理101日目」と出ていた。");
+  assertEqual(m.currentCycleState([P("2026-08-14")], "2026-08-27").state, "bleeding",
+    `${m.BLEEDING_DAYS_MAX}日目までは出血中`);
+  assertEqual(m.currentCycleState([P("2026-08-13")], "2026-08-27").state, "cycle",
+    `★${m.BLEEDING_DAYS_MAX}日を超えたら、出血中として扱わない`);
+  assertEqual(m.currentCycleState([P("2026-05-19")], "2026-08-27").state, "cycle",
+    "★101日目を「生理101日目」と出さない");
+  // ★同じ「出血期間の最大」が2か所にあって、片方だけ効いていたのが原因。
+  //   ホームとカレンダーが、同じ日数で切り替わることを確かめる。
+  for (const n of [10, 14, 15, 30]) {
+    const start = m.addDaysISO("2026-08-27", -(n - 1));
+    const isBleeding = m.currentCycleState([P(start)], "2026-08-27").state === "bleeding";
+    const bandDays = m.buildBleedingDayset([P(start)], "2026-08-27").size;
+    const bandCapped = bandDays < n;
+    assertEqual(isBleeding, !bandCapped, `${n}日目: ホームとカレンダーの判断が一致している`);
+  }
 
   console.log("\n=== テスト12: ★カレンダーの下は4つだけ（§5-2） ===");
   ["平均周期", "ばらつき", "出血日数", "次回の目安"].forEach((label) => {

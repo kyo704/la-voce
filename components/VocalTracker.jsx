@@ -37,6 +37,11 @@ import { canSeeBetaFeatures, canSeeTeacherFeatures, canSeeLineLink, canSeeStuden
 import { graceDaysLeft, GRACE_PERIOD_DAYS } from "@/lib/accountDeletion";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
 // 書き出しに添える「記録の控え」。★解釈を1つも書かない。文言と禁止語はこの1か所。
+// 発声量（G2-10.5）。★種別の重みと、実測／推定の区別はこの1か所が持つ。
+import {
+  VOCAL_SESSION_KINDS, dayVocalDose, weeklyVocalDose,
+  elapsedMinutes, reviewSession, SESSION_MAX_MINUTES
+} from "@/lib/vocalDose";
 import { buildExportSummary } from "@/lib/exportSummary";
 import { EXPORTED_TABLES, EXPORTED_PROFILE_COLUMNS, entriesToCsv, buildExportPayload, sanitizeShareHistory } from "@/lib/exportData";
 import HealthInfo from "@/components/HealthInfo";
@@ -4099,9 +4104,14 @@ export default function VocalTracker({ userId, userEmail }) {
   // レッスン画面の立場。null は「まだ選んでいない」＝ 既定に従う。
   const [lessonRoleChoice, setLessonRoleChoice] = useState(null);
   // 周期の記録。開始日と、あれば終了日だけを持つ（周期記録の設計.md §3-1）。
+  // 計測中の発声セッション。★端末に持たせる（画面を閉じても続くように）。
+  const [runningSession, setRunningSession] = useState(null); // { kind, startedAtMs }
+  const [sessionTick, setSessionTick] = useState(0);          // 経過時間の再描画用
+  const [sessionConfirm, setSessionConfirm] = useState(null); // 押し忘れの確認
   const [cyclePeriods, setCyclePeriods] = useState([]);
   const [cycleBusy, setCycleBusy] = useState(false);
   const [cycleError, setCycleError] = useState("");
+  const [cycleJustSaved, setCycleJustSaved] = useState("");  // 押したことが伝わるように
   const [editingVoiceEntryId, setEditingVoiceEntryId] = useState(null);
   const [editingPracticeGoal, setEditingPracticeGoal] = useState(false);
   const [practiceGoalDraft, setPracticeGoalDraft] = useState("");
@@ -4303,6 +4313,30 @@ export default function VocalTracker({ userId, userEmail }) {
     setPwaInstallPrompt(null);
     setShowInstallBanner(false);
   }
+
+  // ★計測中のセッションを、画面を閉じても失わないようにする。
+  //   「開始を押したのに消えていた」は、押し忘れより始末が悪い。
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem("la-voce-running-session");
+      if (raw) {
+        const v = JSON.parse(raw);
+        if (v && v.kind && v.startedAtMs) setRunningSession(v);
+      }
+    } catch (e) { /* 壊れていたら無視して、計測なしから始める */ }
+  }, []);
+  useEffect(() => {
+    try {
+      if (runningSession) window.localStorage.setItem("la-voce-running-session", JSON.stringify(runningSession));
+      else window.localStorage.removeItem("la-voce-running-session");
+    } catch (e) { /* localStorage が使えない環境では計測がその場限りになるだけ */ }
+  }, [runningSession]);
+  // 計測中だけ、1分ごとに経過を描き直す（止まっているときは何もしない）
+  useEffect(() => {
+    if (!runningSession) return;
+    const id = setInterval(() => setSessionTick((n) => n + 1), 60000);
+    return () => clearInterval(id);
+  }, [runningSession]);
 
   useEffect(() => {
     try {
@@ -6212,6 +6246,8 @@ export default function VocalTracker({ userId, userEmail }) {
     // ★失敗を黙って飲み込まない。押したのに何も起きない、が一番わかりにくい。
     if (error) { setCycleError("保存できませんでした。" + (error.message || "")); return; }
     setCyclePeriods((prev) => [data, ...prev]);
+    setCycleJustSaved("記録しました。");
+    setTimeout(() => setCycleJustSaved(""), 3000);
   }
 
   // 「終わった」。押し忘れても、次の開始日が入れば自動的に閉じる（§4-1）。
@@ -6229,6 +6265,8 @@ export default function VocalTracker({ userId, userEmail }) {
     setCycleBusy(false);
     if (error) { setCycleError("保存できませんでした。" + (error.message || "")); return; }
     setCyclePeriods((prev) => prev.map((p) => (p.id === periodId ? { ...p, end_date: endISO } : p)));
+    setCycleJustSaved("記録しました。");
+    setTimeout(() => setCycleJustSaved(""), 3000);
   }
   // ---- 周期の記録 ここまで ----
 
@@ -8291,6 +8329,34 @@ export default function VocalTracker({ userId, userEmail }) {
     setShowCopiedNotice(true);
     setTimeout(() => setShowCopiedNotice(false), 5000);
   }
+  // ---- 発声セッションの計測（G2-10.5 軽量版） ----
+  // ★マイクは使いません。中量版（音圧サンプリング）は v4 §10 で凍結中です。
+  function handleStartSession(kind) {
+    setSessionConfirm(null);
+    setRunningSession({ kind: kind || "自主練習", startedAtMs: Date.now() });
+  }
+  // 計測した分を、活動ブロックとして足す。
+  // ★手で直せること（既存の「分」の欄がそのまま使えます）。押し忘れは必ず起きる。
+  function commitSession(kind, minutes) {
+    setFormData((f) => {
+      const activities = f.activities || [];
+      if (activities.length >= 10) return f;
+      const block = newActivityBlock(kind, activities.length);
+      return { ...f, recovery: null, activities: [...activities, { ...block, minutes, source: "timer" }] };
+    });
+    setRunningSession(null);
+    setSessionConfirm(null);
+  }
+  function handleStopSession() {
+    if (!runningSession) return;
+    const minutes = elapsedMinutes(runningSession.startedAtMs, Date.now());
+    const review = reviewSession(minutes);
+    if (review.action === "discard") { setRunningSession(null); return; }
+    // ★長すぎるものを黙って保存しない。いつ終わったか分からないものを、
+    //   分かっているように保存しない（周期記録の「終わった」の押し忘れと同じ考え方）。
+    if (review.action === "confirm") { setSessionConfirm({ kind: runningSession.kind, minutes }); return; }
+    commitSession(runningSession.kind, review.minutes);
+  }
   function addActivity() {
     setFormData((f) => {
       const activities = f.activities || [];
@@ -8919,23 +8985,37 @@ export default function VocalTracker({ userId, userEmail }) {
                             ? `周期 ${cycleState.dayIndex}日目`
                             : "周期の記録"}
                       </p>
+                      {/* ★押せると分かる形にすること。以前は下線付きの文字だけで、
+                          文章の一部にしか見えず、指で狙える大きさもなかった。
+                          §4-2 が禁じているのは「目立たせること」（色・アイコン・
+                          大きい文字・太字・カード）であって、押せると分かることは
+                          禁じていない。線は他の入力欄と同じ C.line の細い枠だけ。
+                          ★何を記録するのかを、ボタンの文字だけで分かるようにする。
+                          「始まった」だけでは、何が始まったのか読み取れない。 */}
                       {cycleState.state === "bleeding" ? (
                         <button type="button" disabled={cycleBusy}
                           onClick={() => handleEndCycle(cycleState.periodId, cycleState.startDate, realToday)}
-                          className="text-xs underline" style={{ color: C.inkSoft }}>
-                          終わった
+                          className="text-xs px-3 py-1.5 rounded-full shrink-0"
+                          style={{ color: C.inkSoft, border: `1px solid ${C.line}`, opacity: cycleBusy ? 0.5 : 1 }}>
+                          生理が終わった
                         </button>
                       ) : (
                         <button type="button" disabled={cycleBusy}
                           onClick={() => handleStartCycle(realToday)}
-                          className="text-xs underline" style={{ color: C.inkSoft }}>
-                          今日から始まった
+                          className="text-xs px-3 py-1.5 rounded-full shrink-0"
+                          style={{ color: C.inkSoft, border: `1px solid ${C.line}`, opacity: cycleBusy ? 0.5 : 1 }}>
+                          生理が始まった
                         </button>
                       )}
                     </div>
                   )}
                   {cycleEnabled && cycleShowOnHome && cycleError && (
                     <p className="text-xs" style={{ color: C.curtain }}>{cycleError}</p>
+                  )}
+                  {/* ★押したことが伝わるようにする。上の行はごく小さな文字なので、
+                      記録できても変化に気づけず「押せていない」と感じてしまう。 */}
+                  {cycleEnabled && cycleShowOnHome && cycleJustSaved && (
+                    <p className="text-xs" style={{ color: C.inkSoft }}>{cycleJustSaved}</p>
                   )}
 
                   <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
