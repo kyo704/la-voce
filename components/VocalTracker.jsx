@@ -8273,9 +8273,13 @@ export default function VocalTracker({ userId, userEmail }) {
                 {LANGUAGES.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
               </select>
             </div>
-            <button onClick={() => setLessonMode(true)} title="レッスンモード" className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line, color: C.inkSoft }}>
-              <GraduationCap size={14} />
-            </button>
+            {/* G2-14: レッスンモードは解体が決まっている機能（レッスンモードの解体.md）。
+                解体するまでの間、一般ユーザーの視界には出さない。 */}
+            {canSeeBetaFeatures(profile) && (
+              <button onClick={() => setLessonMode(true)} title="レッスンモード" className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line, color: C.inkSoft }}>
+                <GraduationCap size={14} />
+              </button>
+            )}
             <a href="/feedback" title={t("navFeedback")} className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line, color: C.inkSoft }}>
               <MessageCircle size={14} />
             </a>
@@ -12974,11 +12978,13 @@ export default function VocalTracker({ userId, userEmail }) {
                       <span className="flex items-center gap-2"><FileText size={16} style={{ color: C.gold }} />受診用サマリー</span>
                       <span style={{ color: C.inkSoft }}>→</span>
                     </button>
-                    <button type="button" onClick={() => setLessonMode(true)}
-                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
-                      <span className="flex items-center gap-2"><GraduationCap size={16} style={{ color: C.gold }} />レッスンモード</span>
-                      <span style={{ color: C.inkSoft }}>→</span>
-                    </button>
+                    {canSeeBetaFeatures(profile) && (
+                      <button type="button" onClick={() => setLessonMode(true)}
+                        className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
+                        <span className="flex items-center gap-2"><GraduationCap size={16} style={{ color: C.gold }} />レッスンモード</span>
+                        <span style={{ color: C.inkSoft }}>→</span>
+                      </button>
+                    )}
                     <button type="button" onClick={() => setActiveTab("advice")}
                       className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
                       <span className="flex items-center gap-2"><Bot size={16} style={{ color: C.gold }} />AIアドバイス</span>

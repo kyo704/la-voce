@@ -42,6 +42,10 @@ async function main() {
   console.log("\n=== テスト4: 画面側が、判定を1箇所からしか受け取っていない ===");
   assertTrue(tracker.includes("canSeeTeacherFeatures"), "指導者機能が機能フラグを参照している");
   assertTrue(tracker.includes("canSeeLineLink"), "LINE連携が機能フラグを参照している");
+  // レッスンモードは解体が決まっている機能。入口が2つ（ヘッダーと「もっと」）あるので両方見る。
+  const entries = [...tracker.matchAll(/setLessonMode\(true\)/g)].length;
+  const gatedEntries = [...tracker.matchAll(/canSeeBetaFeatures\(profile\)[\s\S]{0,260}?setLessonMode\(true\)/g)].length;
+  assertEqual(gatedEntries, entries, `レッスンモードの入口 ${entries}件が、すべて機能フラグ配下にある`);
   // 画面に is_admin を直接書いた判定が増えていないか（タブの計算式に残る分だけ許容）
   const direct = (tracker.match(/profile\.is_admin/g) || []).length;
   assertTrue(direct <= 3, `is_admin の直接参照が増えすぎていない（${direct}件）`);
