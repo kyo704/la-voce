@@ -216,6 +216,33 @@ async function main() {
   assertTrue(/handleCreateArticleNote\(article\.id, "reflection"/.test(uiRaw2),
     "★答えは article_notes に kind: reflection として残す（新しい表を作らない）");
 
+  console.log("\n=== 正解の位置をばらけさせる ===");
+  console.log("     原稿は正解をつねに先頭に書き、出す直前にここで回します。");
+  {
+    const q = { source: "term", stem: "問い", choices: ["正解", "はずれA", "はずれB"], answerIndex: 0, explanation: "解説" };
+    const a = m.spreadAnswerPosition("C1-1", 0, q);
+    const b = m.spreadAnswerPosition("C1-1", 0, q);
+    assertEqual(a, b, "同じ記事・同じ問番号なら、いつ開いても同じ並びになる");
+    console.log("     ★乱数にしないのは、復習で同じ問題に戻ったとき並びが変わると覚え直しの手がかりが消えるためです。");
+    assertEqual(a.choices[a.answerIndex], "正解", "回しても、正解の中身は変わらない");
+    assertEqual([...a.choices].sort(), [...q.choices].sort(), "選択肢が増えも減りもしない");
+    assertEqual(q.answerIndex, 0, "★原稿そのものは書き換えない（純関数）");
+    assertEqual(m.spreadAnswerPosition("C1-1", 0, { stem: "正解が決まっていない問い", choices: ["あ", "い"] }).choices,
+      ["あ", "い"], "正解が決まっていない問いは、触らない");
+    assertEqual(m.spreadQuizAnswers("C1-1", null), null, "3問がまだ無い記事でも落ちない");
+  }
+  {
+    // ★偏りが実際に解けているか。1記事ぶんでは分からないので、まとめて見る。
+    const ids = learn.ARTICLES.map((a) => a.id);
+    const sample = { source: "keySentence", stem: "問い", choices: ["正解", "はずれA", "はずれB"], answerIndex: 0, explanation: "解説" };
+    const pos = [0, 0, 0];
+    ids.forEach((id) => [0, 1, 2].forEach((i) => { pos[m.spreadAnswerPosition(id, i, sample).answerIndex] += 1; }));
+    const total = pos.reduce((x, y) => x + y, 0);
+    assertTrue(pos.every((n) => n > total / 6),
+      `★正解がどの位置にも散っている（1番目:${pos[0]} 2番目:${pos[1]} 3番目:${pos[2]}）`);
+    console.log("     いつも1番目だと、中身ではなく位置を覚えてしまいます。");
+  }
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");
