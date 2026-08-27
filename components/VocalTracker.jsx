@@ -11923,7 +11923,11 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   </div>
 
-                  {profile.sex === "女性" && (
+                  {/* ★以前は sex === "女性" のときだけ出していたため、性別が未設定の人には
+                      スイッチ自体が見えず、オンにできないので「1日目」のボタンにも永久に
+                      到達できなかった。性別は任意項目なので、未設定でも選べるようにする。
+                      明示的に「男性」を選んだ人にだけ出さない。 */}
+                  {profile.sex !== "男性" && (
                     <div className="rounded-xl p-3 flex items-center justify-between gap-3" style={{ background: C.paper }}>
                       <div>
                         <p className="text-sm font-medium">月経周期を記録する</p>
