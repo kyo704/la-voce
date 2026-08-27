@@ -4020,8 +4020,13 @@ export default function VocalTracker({ userId, userEmail }) {
       //   ここだけ別に取り、失敗したら既定（しっかり記録）のまま動かす。
       const { data: modeRow } = await supabase
         .from("profiles").select("record_mode").eq("id", userId).maybeSingle();
-      if (mounted && modeRow && modeRow.record_mode) {
-        setProfile((prev) => ({ ...prev, record_mode: modeRow.record_mode }));
+      let mode = modeRow && modeRow.record_mode ? modeRow.record_mode : null;
+      if (!mode) {
+        // 列がまだ無い環境では、端末に覚えさせた値を使う。
+        try { mode = window.localStorage.getItem("la-voce-record-mode"); } catch (e) { mode = null; }
+      }
+      if (mounted && mode) {
+        setProfile((prev) => ({ ...prev, record_mode: mode }));
       }
       const { data: inventoryRows } = await supabase.from("character_inventory").select("item_key").eq("user_id", userId);
       if (mounted && inventoryRows) {
@@ -5988,9 +5993,14 @@ export default function VocalTracker({ userId, userEmail }) {
     if (!formData) return {};
     const fb = {};
     const past = Object.keys(entries).filter((d) => d < selectedDate).sort();
+    // ★実際に値のあった日数も返すこと。
+    //   以前は3日ぶんしか無くても「14日平均より」と書いていた。窓の長さと、
+    //   実際に平均を取れた日数は別物で、混ぜると事実と違う表示になる。
+    const MIN_DAYS_FOR_AVERAGE = 3;   // 1〜2日を「平均」とは呼ばない
     const avgOf = (dates, pick) => {
       const vals = dates.map((d) => pick(entries[d])).filter((v) => typeof v === "number" && !isNaN(v));
-      return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+      if (vals.length < MIN_DAYS_FOR_AVERAGE) return null;
+      return { avg: vals.reduce((a, b) => a + b, 0) / vals.length, n: vals.length };
     };
     const signed = (v, digits, unit) => `${v >= 0 ? "+" : ""}${v.toFixed(digits)}${unit}`;
 
@@ -6008,8 +6018,8 @@ export default function VocalTracker({ userId, userEmail }) {
 
     // 睡眠: 直近14日の自分の平均との差
     if (typeof formData.sleepHours === "number" && formData.sleepHours > 0) {
-      const avg = avgOf(past.slice(-14), (e) => e.sleepHours);
-      if (avg != null) fb.sleep = `14日平均より ${signed(formData.sleepHours - avg, 1, "時間")}`;
+      const r = avgOf(past.slice(-14), (e) => e.sleepHours);
+      if (r) fb.sleep = `直近${r.n}日の平均より ${signed(formData.sleepHours - r.avg, 1, "時間")}`;
     }
 
     // 活動: その場で再計算した今日の発声負荷。負荷比はロックが解けてからだけ添える。
@@ -6026,8 +6036,8 @@ export default function VocalTracker({ userId, userEmail }) {
       const w = Number(formData.weightKg) || getLatestWeight(entries, selectedDate);
       if (w) fb.water = `体重比 ${Math.round(water / w)} ml/kg`;
       else {
-        const avg = avgOf(past.slice(-7), (e) => Object.values(e.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0) || null);
-        if (avg != null) fb.water = `今週の平均より ${signed(water - avg, 0, "ml")}`;
+        const r = avgOf(past.slice(-7), (e) => Object.values(e.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0) || null);
+        if (r) fb.water = `直近${r.n}日の平均より ${signed(water - r.avg, 0, "ml")}`;
       }
     }
 
@@ -6804,14 +6814,22 @@ export default function VocalTracker({ userId, userEmail }) {
     setProfile((p) => ({ ...p, folded_groups: updated }));
   }
   // 統合実行ルートv4 G2-8: かんたん記録／しっかり記録の切り替え。
+  // ★以前は、保存に失敗したら表示を元に戻していた。その結果
+  //   migration_record_mode.sql が未実行の環境では、トグルを押しても一瞬で
+  //   戻るだけで機能しなかった。機能そのものが移行の完了に依存してはいけない。
+  //   保存できない場合は端末に覚えさせ、切り替えは必ず効くようにする。
   async function handleChangeRecordMode(mode) {
-    const prev = profile.record_mode;
-    setProfile((p) => ({ ...p, record_mode: mode }));   // 先に反映して、切り替えを軽く見せる
+    setProfile((p) => ({ ...p, record_mode: mode }));
+    try {
+      window.localStorage.setItem("la-voce-record-mode", mode);
+    } catch (e) {
+      /* localStorageが使えない環境では、その場限りの切り替えになる */
+    }
     const supabase = createClient();
     const { error } = await supabase.from("profiles").update({ record_mode: mode }).eq("id", userId);
     if (error) {
-      console.error("記録モードの保存に失敗しました。supabase/migration_record_mode.sql を実行済みか確認してください。", error);
-      setProfile((p) => ({ ...p, record_mode: prev }));  // 保存できなければ元に戻す
+      // 保存できなくても表示は戻さない。列が用意されれば、次から自動的に同期される。
+      console.warn("記録モードをサーバーに保存できませんでした（端末には保存済み）。supabase/migration_record_mode.sql を実行してください。", error);
     }
   }
   // 項目グループを出すかどうかは、必ずここを通す（記録項目の再設計v2 §3.3）。
