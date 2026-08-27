@@ -237,6 +237,37 @@ async function main() {
   assertEqual(m.isCycleStartDate("2026-08-25", [P("2026-08-25")]), true, "開始日そのものを見分けられる");
   assertEqual(m.isCycleStartDate("2026-08-26", [P("2026-08-25")]), false, "翌日は開始日ではない");
 
+  console.log("\n=== テスト17: ★「この人に周期を出すか」の判定が1か所であること ===");
+  console.log("     3か所に分かれており、性別が男性の人のホームに出続けていました。");
+  assertEqual(m.cycleFeatureApplies({ sex: "男性", track_cycle: true }), false, "★男性には出さない");
+  assertEqual(m.cycleFeatureApplies({ sex: "女性" }), true, "女性には出す");
+  assertEqual(m.cycleFeatureApplies({ sex: "" }), true, "★未設定にも出す（選べるように）");
+  assertEqual(m.cycleFeatureApplies({}), true, "性別の項目that自体が無くても出す");
+  assertEqual(m.cycleFeatureApplies(null), false, "プロフィール未読み込みでは出さない");
+
+  assertEqual(m.cycleTrackingOn({ sex: "男性", track_cycle: true }), false,
+    "★男性なら、記録がオンでも出さない（消す手段が無い状態を作らない）");
+  assertEqual(m.cycleTrackingOn({ sex: "女性", track_cycle: true }), true, "女性で記録オンなら出す");
+  assertEqual(m.cycleTrackingOn({ sex: "女性", track_cycle: false }), false, "記録オフなら出さない");
+
+  assertEqual(m.cycleShowsOnHome({ sex: "女性", track_cycle: true }), true, "既定ではホームに出る");
+  assertEqual(m.cycleShowsOnHome({ sex: "女性", track_cycle: true, cycle_show_on_home: false }), false,
+    "ホームに出さない設定を尊重する");
+  assertEqual(m.cycleShowsOnHome({ sex: "男性", track_cycle: true, cycle_show_on_home: true }), false,
+    "★男性なら、ホームに出す設定でも出さない");
+
+  console.log("\n=== テスト18: 画面が、条件を自前で書いていない ===");
+  const ui2 = stripComments(uiRaw);
+  assertTrue(!/profile\.track_cycle &&/.test(ui2), "★画面が track_cycle だけで判定していない");
+  assertTrue(!/value\.sex !== "男性"/.test(ui2), "★画面が性別を直接見ていない");
+  assertTrue(/cycleTrackingOn\(profile\)/.test(ui2), "記録画面は共通の判定を使っている");
+  assertTrue(/cycleShowsOnHome\(profile\)/.test(ui2), "ホームも共通の判定を使っている");
+  assertTrue(/cycleFeatureApplies\(value\)/.test(ui2), "設定のスイッチも共通の判定を使っている");
+  // ★出るのに消せない、を作らないこと。スイッチが出る条件は、
+  //   機能が出る条件と同じか、それより広いこと。
+  assertTrue(m.cycleFeatureApplies({ sex: "女性" }) >= m.cycleTrackingOn({ sex: "女性", track_cycle: true }),
+    "★スイッチが出る条件は、機能が出る条件より狭くない（消せない状態を作らない）");
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");

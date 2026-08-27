@@ -24,7 +24,8 @@ import { LANGUAGES, createTranslator } from "@/lib/translations";
 import {
   currentCycleState, cycleSummary, buildBleedingDayset,
   validateNewStart, validateEnd, MIN_CYCLES_FOR_AVERAGE,
-  cycleDayForDate, isCycleStartDate
+  cycleDayForDate, isCycleStartDate,
+  cycleTrackingOn, cycleShowsOnHome, cycleFeatureApplies
 } from "@/lib/cyclePeriods";
 // 統合実行ルートv4 §6: 表示ゲートは必ずこのレイヤーを経由する。画面ごとに条件を書かないこと。
 import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q, NARRATIVE_MIN_N_PER_GROUP } from "@/lib/displayGates";
@@ -3388,7 +3389,7 @@ function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
                       スイッチ自体が見えず、オンにできないので「1日目」のボタンにも永久に
                       到達できなかった。性別は任意項目なので、未設定でも選べるようにする。
                       明示的に「男性」を選んだ人にだけ出さない。 */}
-                  {value.sex !== "男性" && (
+                  {cycleFeatureApplies(value) && (
                     <div className="rounded-xl p-3 flex items-center justify-between gap-3" style={{ background: C.paper }}>
                       <div>
                         <p className="text-sm font-medium">月経周期を記録する</p>
@@ -3422,7 +3423,7 @@ function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
                       記録はしたいが、人に見られる場所には出したくない、が成り立つようにする。
                       ★「妊娠中ですか」「閉経しましたか」は聞かないこと（§4-4）。
                         オフにする導線があれば足りる。聞いた瞬間に扱いの重さが跳ね上がる。 */}
-                  {value.sex !== "男性" && value.track_cycle && (
+                  {cycleFeatureApplies(value) && value.track_cycle && (
                     <div className="rounded-xl p-3 flex items-center justify-between gap-3" style={{ background: C.paper }}>
                       <div>
                         <p className="text-sm font-medium">ホームにも表示する</p>
@@ -6392,8 +6393,12 @@ export default function VocalTracker({ userId, userEmail }) {
   // ---- 周期の記録（周期記録の設計.md §4・§5） ----
   // ★日数は1つも保存しない。すべて開始日から導出する。
   //   保存すると、開始日を直したときに全部を書き換える処理が要る。
-  const cycleEnabled = !!profile.track_cycle;
-  const cycleShowOnHome = profile.cycle_show_on_home !== false;
+  // ★判定は lib/cyclePeriods.js の1か所から。ここに条件を書かないこと。
+  //   以前はここが track_cycle だけを見ており、性別を「男性」にした人の
+  //   ホームと記録画面に、周期の欄が出続けていました。
+  //   しかも設定のスイッチのほうは隠れるので、消す手段がありませんでした。
+  const cycleEnabled = cycleTrackingOn(profile);
+  const cycleShowOnHome = cycleShowsOnHome(profile);
   const cycleState = useMemo(
     () => (cycleEnabled ? currentCycleState(cyclePeriods, realTodayDate) : { state: "none" }),
     [cycleEnabled, cyclePeriods, realTodayDate]
@@ -9659,7 +9664,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           計算され、片方に入れた記録がもう片方から見えなかった。
                           ★この画面は過去の日付も選べるので、入口としては残す。
                             書き込み先だけを1つに寄せる。 */}
-                      {profile.track_cycle && (
+                      {cycleTrackingOn(profile) && (
                         <div className="rounded-xl p-3" style={{ background: C.paper }}>
                           <div className="flex items-center justify-between gap-3">
                             <div>
@@ -12802,7 +12807,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                 )}
 
-                {profile.track_cycle && hasCycleData && cycleGroupStats.length > 0 && (
+                {cycleTrackingOn(profile) && hasCycleData && cycleGroupStats.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">周期と声・メンタルの傾向</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
