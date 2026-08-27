@@ -11875,6 +11875,22 @@ export default function VocalTracker({ userId, userEmail }) {
                   <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteProfileSettings")}</p>
                 </div>
 
+                {/* ★保存の結果は、ボタンのラベルだけに頼らない。
+                    以前は小さなボタンの文字が1.8秒変わるだけで、失敗しても無言だった。
+                    成功は自然に消えるが、失敗は消さない（やり直せることが分かるように）。 */}
+                {profileSaveStatus === "saved" && (
+                  <div className="rounded-2xl px-4 py-3 flex items-center gap-2"
+                    style={{ background: "rgba(122,150,109,0.14)", color: C.sage }}>
+                    <Check size={16} />
+                    <span className="text-sm font-medium">{t("profileSavedBanner")}</span>
+                  </div>
+                )}
+                {profileSaveStatus === "error" && (
+                  <div className="rounded-2xl px-4 py-3" style={{ background: "rgba(184,49,49,0.10)", color: C.curtain }}>
+                    <p className="text-sm font-medium">{t("profileSaveErrorBanner")}</p>
+                  </div>
+                )}
+
                   {/* 職業別プロファイル設計案 §4-2: 恒久項目を、変更頻度の低い順に5つへまとめる。
                       「からだのこと」は受診用サマリーに載る項目をひとまとめにしてあり、
                       医師に見せる前にこのグループだけ見直せば足りる形にしている。 */}
@@ -11987,7 +12003,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       「常用薬のリスト」は恒久的な情報で、「今日の服薬」
                       （entries.medication_tags）とは別物なので混ぜないこと。
                       いずれも受診用サマリーに載せるべき情報。 */}
-                  <div>
+                  <div className="rounded-xl p-3" style={{ background: C.paper }}>
                     <label className="text-sm font-medium block mb-1.5">{t("labelAllergies")}</label>
                     <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{t("noteAllergies")}</p>
                     <textarea rows={2} value={(profile.allergies || []).join("\n")}
@@ -11996,7 +12012,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                   </div>
 
-                  <div>
+                  <div className="rounded-xl p-3" style={{ background: C.paper }}>
                     <label className="text-sm font-medium block mb-1.5">{t("labelRegularMedications")}</label>
                     <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{t("noteRegularMedications")}</p>
                     <textarea rows={2} value={(profile.regular_medications || []).join("\n")}
@@ -12005,7 +12021,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                   </div>
 
-                  <div>
+                  <div className="rounded-xl p-3" style={{ background: C.paper }}>
                     <label className="text-sm font-medium block mb-1.5">{t("labelHealthNotes")}</label>
                     <textarea rows={2} value={profile.health_notes}
                       onChange={(e) => setProfile((p) => ({ ...p, health_notes: e.target.value }))}
@@ -12145,10 +12161,19 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   </div>
 
-                  <button onClick={handleSaveProfile} disabled={profileSaveStatus === "saving"}
-                    className="text-xs px-4 py-2 rounded-full font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
-                    {profileSaveStatus === "saving" ? t("saveButtonSaving") : profileSaveStatus === "saved" ? t("saveButtonSaved") : t("btnSaveProfileSettings")}
-                  </button>
+                  {/* ★保存ボタンは、以前は画面の中ほどに置かれた最小サイズの淡いボタンで、
+                      背景とほぼ同化しており、スクロールすると見失った。記録画面の保存と
+                      同じ強さに揃え、下端に固定して常に見えるようにする。 */}
+                  <div className="sticky bottom-0 -mx-1 px-1 pt-3 pb-2 z-10"
+                    style={{ background: `linear-gradient(to top, ${C.paper} 72%, rgba(246,241,231,0))` }}>
+                    <button onClick={handleSaveProfile} disabled={profileSaveStatus === "saving"}
+                      className="w-full rounded-2xl py-3.5 font-medium flex items-center justify-center gap-2 transition-all"
+                      style={{ background: C.curtain, color: "#FFFDF8", opacity: profileSaveStatus === "saving" ? 0.7 : 1 }}>
+                      {profileSaveStatus === "saving" && <Loader2 size={16} className="animate-spin" />}
+                      {profileSaveStatus === "saved" && <Check size={16} />}
+                      {profileSaveStatus === "saving" ? t("saveButtonSaving") : t("btnSaveProfileSettings")}
+                    </button>
+                  </div>
 
                   <div className="pt-6 mt-2 border-t" style={{ borderColor: C.line }}>
                     <div className="flex items-center gap-2">
