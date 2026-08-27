@@ -307,6 +307,22 @@ const PROFESSION_THEORY_PAGES = {
   pop_musical: "/performer-theory"
 };
 const VOCAL_PROFESSIONS = ["singer", "announcer", "voice_actor", "pop_musical"];
+// 「その他」は5つ目の職業ではない（v4 §10 の凍結対象とは別物）。
+// 職業別のコンテンツを一切作らず、既に「共通」として用意してあるものだけを
+// 職業に関わらず見られるようにするための選択肢。
+//   学ぶ画面   … 共通記事（professions: "all"）だけが出る
+//   分析カード … analysisCardVisibility の "*" 指定のものだけが出る
+//   活動記録   … 職業別のラベルを付けず、一般的な名前のまま
+//   職業固有の追加項目（叫びテイク数・モニター環境など）は一切出さない
+const PROFESSION_LABEL_KEYS = {
+  singer: "professionSinger",
+  announcer: "professionAnnouncer",
+  voice_actor: "professionVoiceActor",
+  pop_musical: "professionPopMusical",
+  other: "professionOther"
+};
+const OTHER_PROFESSION = "other";
+const SELECTABLE_PROFESSIONS = [...VOCAL_PROFESSIONS, OTHER_PROFESSION];
 // lavoce-記録項目の再設計v2.md §3.6: 既往症を自由記述から選択式に構造化。
 // 目的：診断済みの人には専用分析を出し、未診断の人には「疑い」を一切示さない（§7.1）。
 // lavoce-記録項目の再設計v2.md §3.7: 稽古ノートの目標タグ。振り返り画面で、
@@ -2299,7 +2315,10 @@ function NumberField({ label, value, onChange, step = 1, min = -Infinity, max = 
 // 「今日の負荷」——職業ごとに意味のある指標だけを、共通の抽象スキーマ（type/durationMin/intensity + 職業別の追加項目）で記録する。
 // 分析エンジン側は type を見て解釈するため、ここは「どの項目を見せるか」の設定だけを担う。
 function LoadTracker({ profession, loadDetail, onChange, t }) {
-  const fields = LOAD_FIELDS_BY_PROFESSION[profession] || LOAD_FIELDS_BY_PROFESSION.singer;
+  // ★「その他」は職業固有の項目を一切出さない。
+  //   以前は未知の職業を声楽家にフォールバックしていたため、「その他」を選んだ人に
+  //   音域・パッサッジョ通過数といった声楽家向けの欄が出てしまう状態だった。
+  const fields = profession === OTHER_PROFESSION ? [] : (LOAD_FIELDS_BY_PROFESSION[profession] || LOAD_FIELDS_BY_PROFESSION.singer);
   const update = (patch) => onChange({ ...loadDetail, ...patch });
   return (
     <div className="space-y-4">
@@ -3061,7 +3080,7 @@ function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
                       <label className="text-sm font-medium block mb-1.5">{t("labelVocalProfession")}</label>
                       <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("noteVocalProfession")}</p>
                       <div className="flex gap-2 flex-wrap">
-                        {VOCAL_PROFESSIONS.map((p) => (
+                        {SELECTABLE_PROFESSIONS.map((p) => (
                           <button key={p} type="button" onClick={() => onChange({ vocal_profession: p })}
                             className="px-3.5 py-1.5 rounded-full text-xs font-medium"
                             style={{
@@ -3358,10 +3377,13 @@ function OnboardingFlow({ existingUser, onComplete, t }) {
         {step === 1 && !existingUser && (
           <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
             <h2 className="ff-display italic text-xl mb-3">職業を選んでください</h2>
-            <p className="text-xs mb-3" style={{ color: C.inkSoft }}>複数選択できます。</p>
+            <p className="text-xs mb-2" style={{ color: C.inkSoft }}>複数選択できます。</p>
+            <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+              {t("professionOther")}：{t("professionOtherNote")}
+            </p>
             <div className="grid grid-cols-2 gap-2 mb-4">
-              {VOCAL_PROFESSIONS.map((p) => {
-                const label = p === "singer" ? "声楽家・ミュージカル" : p === "announcer" ? "アナウンサー" : p === "voice_actor" ? "声優" : "ポップス・ロック";
+              {SELECTABLE_PROFESSIONS.map((p) => {
+                const label = t(PROFESSION_LABEL_KEYS[p]);
                 const active = professions.includes(p);
                 return (
                   <button key={p} type="button"
@@ -12937,7 +12959,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                   <select value={currentProfession} onChange={(e) => setLearnProfession(e.target.value)}
                     className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }}>
-                    {VOCAL_PROFESSIONS.map((p) => <option key={p} value={p}>{PROFESSION_LABELS[p]}</option>)}
+                    {SELECTABLE_PROFESSIONS.map((p) => <option key={p} value={p}>{PROFESSION_LABELS[p] || t(PROFESSION_LABEL_KEYS[p])}</option>)}
                   </select>
                   <input type="text" value={learnSearchQuery} onChange={(e) => setLearnSearchQuery(e.target.value)}
                     placeholder={t("searchArticlesPlaceholder")}
@@ -12999,7 +13021,7 @@ export default function VocalTracker({ userId, userEmail }) {
                       </div>
 
                       <button type="button" onClick={() => {
-                        const others = VOCAL_PROFESSIONS.filter((p) => p !== currentProfession);
+                        const others = SELECTABLE_PROFESSIONS.filter((p) => p !== currentProfession);
                         setLearnProfession(others[0]);
                       }} className="w-full flex items-center justify-between py-2 text-sm" style={{ color: C.inkSoft }}>
                         {t("viewOtherProfessionArticles")}
