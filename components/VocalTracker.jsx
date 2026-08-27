@@ -10892,6 +10892,58 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                 ) : null}
 
+                {/* 改善タスクv2 §4-1(d): 発声負荷は「声の使用量」なので、身体でも全体でもなく
+                    【声】に置く。以前はパネルが最下部、その結論だけが最上部の今日の一言、
+                    という具合に画面の両端に分かれていた（同一フラグ化は G2-5 で完了済み）。 */}
+                {analysisLocks.map.acwr.unlocked ? (
+                  acwrToday && (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <h3 className="ff-display italic text-lg mb-1">発声負荷バランス（ACWR）</h3>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        直近1週間の発声負荷が、この1か月の平均に対して何倍かを見ます。歌い込みすぎと、積み足りない状態の両方を1つの数字で管理できます。
+                      </p>
+                      <div className="flex items-end gap-4 mb-3">
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="ff-display italic" style={{ fontSize: "2.6rem", color: acwrToday.zone ? acwrToday.zone.color : C.ink }}>
+                            {acwrToday.value}
+                          </span>
+                          {acwrToday.zone && (
+                            <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: C.paper, color: acwrToday.zone.color }}>
+                              {acwrToday.zone.label}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      {acwrToday.restProjection != null && (
+                        <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
+                          明日を休養にすると <span className="ff-mono font-medium">{acwrToday.restProjection}</span>
+                          {acwrToday.restZone && <>（{acwrToday.restZone.label}）</>}に戻ります。
+                        </p>
+                      )}
+                      {acwrChartData.length > 0 && (
+                        <div style={{ width: "100%", height: 180 }}>
+                          <ResponsiveContainer>
+                            <LineChart data={acwrChartData} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                              <CartesianGrid stroke={C.line} />
+                              <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                              <YAxis domain={[0, "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} />
+                              <ReferenceArea y1={0} y2={0.8} fill={C.gold} fillOpacity={0.08} />
+                              <ReferenceArea y1={0.8} y2={1.3} fill={C.sage} fillOpacity={0.1} />
+                              <ReferenceArea y1={1.3} y2={1.5} fill={C.gold} fillOpacity={0.12} />
+                              <ReferenceArea y1={1.5} y2={3} fill={C.curtain} fillOpacity={0.08} />
+                              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                              <Line type="monotone" dataKey="acwr" stroke={C.ink} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                            </LineChart>
+                          </ResponsiveContainer>
+                        </div>
+                      )}
+                      <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                        帯は目安のゾーン（下から積み足りない・ちょうどいい・増やしすぎ注意・急増）です。1.5を超える急な増やし方は、喉のトラブルと結びつくことが知られています。
+                      </p>
+                    </div>
+                  )
+                ) : null}
+
                 {analysisLocks.map.symptomCalendar.unlocked ? (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">症状カレンダーと連鎖</h3>
@@ -11214,307 +11266,80 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   </div>
                 )}
+                {/* 改善タスクv2 §4-1(e): 【全体を関連づけた分析】は、名前と違って
+                    行き場のないものの寄せ集めになっていた。本番・環境・組み合わせに分けた。
+                    発声負荷ACWRは声の使用量なので【声】へ移してある。 */}
+
                 <div className="pt-2">
-                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderOverall")}</h2>
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderPerformance")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                    {t("groupHeaderOverallDesc")}
+                    {t("groupHeaderPerformanceDesc")}
                   </p>
                 </div>
-                {(restMethodStats.confident.length > 0 || restMethodStats.lowN.length > 0) && (
+
+                {analysisLocks.map.peaking.unlocked ? (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">{t("titleRestMethodTrend")}</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteRestMethodTrend")}</p>
-                    {restMethodStats.confident.length > 0 && (
-                      <div className="space-y-2">
-                        {restMethodStats.confident.map((s) => (
-                          <div key={s.method} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
-                            <span className="font-medium">{REST_METHOD_KEYS[s.method] ? t(REST_METHOD_KEYS[s.method]) : s.method}</span>
-                            <span className="ff-mono" style={{ color: C.inkSoft }}>
-                              {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {restMethodStats.lowN.length > 0 && (
-                      <div className="mt-3">
-                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>まだ3件未満（記録数のみ表示。貯まると平均が出ます）</p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {restMethodStats.lowN.map((s) => (
-                            <span key={s.method} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>
-                              {REST_METHOD_KEYS[s.method] ? t(REST_METHOD_KEYS[s.method]) : s.method}（{s.n}）
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-                {(locationStats.confident.length > 0 || locationStats.lowN.length > 0) && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">{t("titleLocationTrend")}</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteLocationTrend")}</p>
-                    {locationStats.confident.length > 0 && (
-                      <div className="space-y-2">
-                        {locationStats.confident.map((s) => (
-                          <div key={s.location} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
-                            <span className="font-medium">{s.location}</span>
-                            <span className="ff-mono" style={{ color: C.inkSoft }}>
-                              {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {locationStats.lowN.length > 0 && (
-                      <div className="mt-3">
-                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>まだ3件未満（記録数のみ表示。貯まると平均が出ます）</p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {locationStats.lowN.map((s) => (
-                            <span key={s.location} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>
-                              {s.location}（{s.n}）
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-                {profile.track_cycle && hasCycleData && cycleGroupStats.length > 0 && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">周期と声・メンタルの傾向</h3>
+                    <h3 className="ff-display italic text-lg mb-1">本番ピーキング曲線</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      記録した周期開始日をもとに、周期を4つに区切って声・メンタルの平均を比べています。
+                      過去{peakingCurve.count}回の本番日を「当日＝0」にそろえて重ね合わせた平均です。谷の位置が、あなた固有の仕上がり方の型です。
                     </p>
-                    <div className="space-y-2">
-                      {cycleGroupStats.map((s) => (
-                        <div key={s.label} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
-                          <span className="font-medium">{s.label}</span>
-                          <span className="ff-mono" style={{ color: C.inkSoft }}>
-                            {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
-                          </span>
-                        </div>
-                      ))}
+                    {peakingCurve.lowestDip && (
+                      <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
+                        あなたは<strong>本番の{Math.abs(peakingCurve.lowestDip.tau)}日前にいちど沈む</strong>型です（過去{peakingCurve.count}回の平均）。
+                      </p>
+                    )}
+                    <div style={{ width: "100%", height: 200 }}>
+                      <ResponsiveContainer>
+                        <ComposedChart data={peakingCurve.curve.map((c) => ({
+                          tau: c.tau === 0 ? "当日" : c.tau > 0 ? `+${c.tau}` : `${c.tau}`,
+                          mean: c.mean,
+                          low: c.mean != null && c.sd != null ? roundTo1(c.mean - c.sd) : null,
+                          bandWidth: c.mean != null && c.sd != null ? roundTo1(c.sd * 2) : null
+                        }))} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
+                          <CartesianGrid stroke={C.line} />
+                          <XAxis dataKey="tau" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                          <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 10, fill: C.inkSoft }} />
+                          <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                          <Area dataKey="low" stackId="band" stroke="none" fill="transparent" />
+                          <Area dataKey="bandWidth" stackId="band" stroke="none" fill={C.gold} fillOpacity={0.15} />
+                          <Line type="monotone" dataKey="mean" stroke={C.curtain} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                        </ComposedChart>
+                      </ResponsiveContainer>
                     </div>
-                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
-                      ※ あくまで記録上の傾向であり、医学的な診断ではありません。件数が少ないうちは参考程度にご覧ください。
-                    </p>
-                  </div>
-                )}
-                {(roleLoadStats.confident.length > 0 || roleLoadStats.lowN.length > 0) && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">あなたにとって重い役</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      翌日の落ち込みが大きい順に並んでいます（その人の平常値との偏差）。計算上の負荷は横に添えているだけで、順位には使っていません。
-                    </p>
-                    {roleLoadStats.confident.length > 0 && (
-                      <div className="space-y-3">
-                        {roleLoadStats.confident.slice(0, 8).map((r, i) => {
-                          const dropPct = Math.max(0, Math.min(100, (-r.avgNextDayDeviation / 2) * 100));
-                          const isHeavierThanExpected = r.rankGap >= 2;
-                          const isLighterThanExpected = r.rankGap <= -2;
-                          return (
-                            <div key={r.name} className="rounded-xl p-2.5" style={{ background: C.paper }}>
-                              <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium">{i + 1}. {r.name}</span>
-                                <span className="ff-mono text-xs" style={{ color: r.avgNextDayDeviation < 0 ? C.curtain : C.sage }}>
-                                  翌日 {r.avgNextDayDeviation >= 0 ? "+" : ""}{r.avgNextDayDeviation.toFixed(1)}
-                                </span>
-                              </div>
-                              <div className="h-1.5 rounded-full overflow-hidden mt-1.5" style={{ background: C.card }}>
-                                <div className="h-full rounded-full" style={{ width: `${dropPct}%`, background: C.curtain }} />
-                              </div>
-                              <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
-                                計算上の負荷 {r.avgLoad.toFixed(0)}・{r.count}回
-                                {r.record.confidence !== "entered" && "（推定値）"}
-                              </p>
-                              {isHeavierThanExpected && (
-                                <p className="text-xs mt-1" style={{ color: C.curtain }}>⚠ 計算より重い（音域以外の要因があるかもしれません）</p>
-                              )}
-                              {isLighterThanExpected && (
-                                <p className="text-xs mt-1" style={{ color: C.sage }}>この役はあなたに合っているのかもしれません</p>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                    {roleLoadStats.lowN.length > 0 && (
-                      <div className="mt-3">
-                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>まだ3回未満（記録数のみ表示）</p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {roleLoadStats.lowN.map((r) => (
-                            <span key={r.name} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>
-                              {r.name}（{r.count}回、あと{Math.max(0, 3 - r.count)}回でランキングに入ります）
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
-                      ※ あくまで記録上の傾向です。「この役は喉を痛める」といった断定ではなく、「翌日の落ち込みが大きい」という観測にとどめています。
-                    </p>
-                  </div>
-                )}
-                {effectiveHabitRanking.length > 0 && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">効いた習慣ランキング</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      前日の行動があった日となかった日で、翌日の声のスコア（喉・声の平均）を比べています。件数が少ない項目は★が付かず「まだ判断できません」と表示されます。
-                    </p>
-                    <div className="space-y-3">
-                      {effectiveHabitRanking.slice(0, 8).map((r) => {
-                        const inconclusive = r.stars <= 1;
-                        const direction = r.g >= 0 ? "良く" : "悪く";
-                        return (
-                          <div key={r.key} className="rounded-xl p-3" style={{ background: C.paper }}>
-                            <div className="flex items-center justify-between gap-2">
-                              <span className="text-sm font-medium">{r.label}</span>
-                              <span className="text-xs flex-shrink-0" style={{ color: C.gold }}>
-                                {"★".repeat(r.stars)}{"☆".repeat(4 - r.stars)}
+                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>横軸は本番日を0とした相対日、帯は±1SDです。件数2未満の日は表示していません。</p>
+
+                    {nextPerformanceDate && peakingReversePlan && (
+                      <div className="mt-4 pt-3 border-t" style={{ borderColor: C.line }}>
+                        <p className="text-sm font-medium mb-2">逆算プラン：次の本番は{nextPerformanceDate.slice(5)}</p>
+                        <div className="space-y-1.5">
+                          {peakingReversePlan.plan.map((p) => (
+                            <div key={p.tau} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                              <span className="font-medium">{addDays(nextPerformanceDate, p.tau).slice(5)}（{p.tau === 0 ? "当日" : `${p.tau}日前`}）</span>
+                              <span className="ff-mono" style={{ color: C.inkSoft }}>
+                                {p.sleepHours != null ? `睡眠${p.sleepHours}h` : "-"}
+                                {p.load != null ? `　負荷${p.load.toFixed(1)}` : ""}
+                                {p.waterL != null ? `　水分${p.waterL.toFixed(1)}L` : ""}
                               </span>
                             </div>
-                            <div style={{ position: "relative", height: 22, marginTop: 8, marginBottom: 4 }}>
-                              {(() => {
-                                const scaleMin = -2, scaleMax = 2;
-                                const pct = (v) => Math.max(0, Math.min(100, ((v - scaleMin) / (scaleMax - scaleMin)) * 100));
-                                return (
-                                  <>
-                                    <div style={{ position: "absolute", left: 0, right: 0, top: 10, height: 1, background: C.line }} />
-                                    <div style={{ position: "absolute", left: `${pct(0)}%`, top: 2, width: 1, height: 18, background: C.line }} />
-                                    <div style={{ position: "absolute", left: `${pct(r.ciLow)}%`, width: `${pct(r.ciHigh) - pct(r.ciLow)}%`, top: 9, height: 3, borderRadius: 2, background: inconclusive ? C.line : (r.g >= 0 ? C.sage : C.curtain) }} />
-                                    <div style={{ position: "absolute", left: `calc(${pct(r.g)}% - 5px)`, top: 5, width: 10, height: 10, borderRadius: 999, background: inconclusive ? C.inkSoft : (r.g >= 0 ? C.sage : C.curtain) }} />
-                                  </>
-                                );
-                              })()}
-                            </div>
-                            <p className="text-xs" style={{ color: C.inkSoft }}>
-                              {inconclusive
-                                ? `まだ判断できません（あった日${r.n1}件・なかった日${r.n0}件。記録が増えると結論が出ます）`
-                                : `この行動があった日（${r.n1}件）は、翌日の声が平均で${direction}記録されています（効果量 g=${r.g.toFixed(2)}）。`}
-                            </p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
-                      ※「◯◯すると声が良くなる」という保証ではなく、「◯◯した日の翌日は、平均して声が良く記録されている」という記録上の傾向です。
-                    </p>
-                  </div>
-                )}
-                {lagCorrelationMap.some((c) => c.n >= 14) && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">声の時差マップ</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      生活の変化は、当日より数日後に声へ出ることがあります。行が生活の変数、列が「何日後に効くか」。色が濃いほど関係が強く、枠のついたマスは統計的にも裏付けのある関係です。
-                    </p>
-                    {topLagFinding && (
-                      <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
-                        見つかりました。<strong>{topLagFinding.variableLabel}の「{topLagFinding.lag}日後」</strong>に、声への関係がいちばん強く出ています（ρ = {topLagFinding.rho.toFixed(2)}）。
-                      </p>
-                    )}
-                    <div style={{ overflowX: "auto" }}>
-                      <table style={{ borderCollapse: "collapse", width: "100%" }}>
-                        <thead>
-                          <tr>
-                            <th style={{ textAlign: "left", fontSize: 11, color: C.inkSoft, fontWeight: 500, padding: "2px 6px" }}></th>
-                            {[0, 1, 2, 3].map((lag) => (
-                              <th key={lag} style={{ fontSize: 11, color: C.inkSoft, fontWeight: 500, padding: "2px 6px" }}>{lag}日後</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {LAG_VARIABLES.map((v) => (
-                            <tr key={v.key}>
-                              <td style={{ fontSize: 11, color: C.ink, padding: "2px 6px", whiteSpace: "nowrap" }}>{v.label}</td>
-                              {[0, 1, 2, 3].map((lag) => {
-                                const cell = lagCorrelationMap.find((c) => c.variableKey === v.key && c.lag === lag);
-                                if (!cell || cell.n < 14) {
-                                  return (
-                                    <td key={lag} style={{ padding: 3 }}>
-                                      <div title={`記録${cell ? cell.n : 0}日分（14日で解放）`} style={{ width: 40, height: 28, borderRadius: 6, background: C.line, opacity: 0.35 }} />
-                                    </td>
-                                  );
-                                }
-                                const rho = cell.rho || 0;
-                                const intensity = Math.min(1, Math.abs(rho));
-                                const color = rho >= 0
-                                  ? `rgba(75,122,90,${0.15 + intensity * 0.7})`
-                                  : `rgba(184,49,49,${0.15 + intensity * 0.7})`;
-                                return (
-                                  <td key={lag} style={{ padding: 3 }}>
-                                    <div
-                                      title={`ρ=${rho.toFixed(2)}（n=${cell.n}）`}
-                                      style={{
-                                        width: 40, height: 28, borderRadius: 6, background: color,
-                                        border: cell.significant ? `2px solid ${C.ink}` : "2px solid transparent",
-                                        display: "flex", alignItems: "center", justifyContent: "center",
-                                        fontSize: 10, color: C.ink, fontFamily: "monospace"
-                                      }}
-                                    >
-                                      {rho.toFixed(1)}
-                                    </div>
-                                  </td>
-                                );
-                              })}
-                            </tr>
                           ))}
-                        </tbody>
-                      </table>
-                    </div>
-                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
-                      ※ 灰色のマスはまだ記録が14日分たまっていません。枠のついた濃い色のマスだけが、複数の比較を行った上でも統計的に裏付けのある関係です（それ以外は偶然の可能性があります）。
-                    </p>
-                  </div>
-                )}
-                {analysisLocks.map.acwr.unlocked ? (
-                  acwrToday && (
-                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                      <h3 className="ff-display italic text-lg mb-1">発声負荷バランス（ACWR）</h3>
-                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                        直近1週間の発声負荷が、この1か月の平均に対して何倍かを見ます。歌い込みすぎと、積み足りない状態の両方を1つの数字で管理できます。
-                      </p>
-                      <div className="flex items-end gap-4 mb-3">
-                        <div className="flex items-baseline gap-1.5">
-                          <span className="ff-display italic" style={{ fontSize: "2.6rem", color: acwrToday.zone ? acwrToday.zone.color : C.ink }}>
-                            {acwrToday.value}
-                          </span>
-                          {acwrToday.zone && (
-                            <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: C.paper, color: acwrToday.zone.color }}>
-                              {acwrToday.zone.label}
-                            </span>
-                          )}
                         </div>
-                      </div>
-                      {acwrToday.restProjection != null && (
-                        <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
-                          明日を休養にすると <span className="ff-mono font-medium">{acwrToday.restProjection}</span>
-                          {acwrToday.restZone && <>（{acwrToday.restZone.label}）</>}に戻ります。
+                        <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                          {peakingReversePlan.isGeneral
+                            ? `声の調子が良かった本番がまだ2回未満のため、全体の中央値（${peakingReversePlan.basedOnCount}回分）を目安として出しています。`
+                            : `声の調子が良かった本番${peakingReversePlan.basedOnCount}回の、各日の行動の中央値です。`}
                         </p>
-                      )}
-                      {acwrChartData.length > 0 && (
-                        <div style={{ width: "100%", height: 180 }}>
-                          <ResponsiveContainer>
-                            <LineChart data={acwrChartData} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                              <CartesianGrid stroke={C.line} />
-                              <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                              <YAxis domain={[0, "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} />
-                              <ReferenceArea y1={0} y2={0.8} fill={C.gold} fillOpacity={0.08} />
-                              <ReferenceArea y1={0.8} y2={1.3} fill={C.sage} fillOpacity={0.1} />
-                              <ReferenceArea y1={1.3} y2={1.5} fill={C.gold} fillOpacity={0.12} />
-                              <ReferenceArea y1={1.5} y2={3} fill={C.curtain} fillOpacity={0.08} />
-                              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                              <Line type="monotone" dataKey="acwr" stroke={C.ink} strokeWidth={2} dot={{ r: 2 }} connectNulls />
-                            </LineChart>
-                          </ResponsiveContainer>
-                        </div>
-                      )}
-                      <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                        帯は目安のゾーン（下から積み足りない・ちょうどいい・増やしすぎ注意・急増）です。1.5を超える急な増やし方は、喉のトラブルと結びつくことが知られています。
-                      </p>
-                    </div>
-                  )
+                      </div>
+                    )}
+                  </div>
                 ) : null}
+
+                <div className="pt-2">
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderEnvironment")}</h2>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    {t("groupHeaderEnvironmentDesc")}
+                  </p>
+                </div>
+
                 {analysisLocks.map.envComfort.unlocked ? (
                   comfortZone1D && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
@@ -11595,61 +11420,295 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   )
                 ) : null}
-                {analysisLocks.map.peaking.unlocked ? (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">本番ピーキング曲線</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      過去{peakingCurve.count}回の本番日を「当日＝0」にそろえて重ね合わせた平均です。谷の位置が、あなた固有の仕上がり方の型です。
-                    </p>
-                    {peakingCurve.lowestDip && (
-                      <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
-                        あなたは<strong>本番の{Math.abs(peakingCurve.lowestDip.tau)}日前にいちど沈む</strong>型です（過去{peakingCurve.count}回の平均）。
-                      </p>
-                    )}
-                    <div style={{ width: "100%", height: 200 }}>
-                      <ResponsiveContainer>
-                        <ComposedChart data={peakingCurve.curve.map((c) => ({
-                          tau: c.tau === 0 ? "当日" : c.tau > 0 ? `+${c.tau}` : `${c.tau}`,
-                          mean: c.mean,
-                          low: c.mean != null && c.sd != null ? roundTo1(c.mean - c.sd) : null,
-                          bandWidth: c.mean != null && c.sd != null ? roundTo1(c.sd * 2) : null
-                        }))} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                          <CartesianGrid stroke={C.line} />
-                          <XAxis dataKey="tau" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                          <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 10, fill: C.inkSoft }} />
-                          <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                          <Area dataKey="low" stackId="band" stroke="none" fill="transparent" />
-                          <Area dataKey="bandWidth" stackId="band" stroke="none" fill={C.gold} fillOpacity={0.15} />
-                          <Line type="monotone" dataKey="mean" stroke={C.curtain} strokeWidth={2} dot={{ r: 3 }} connectNulls />
-                        </ComposedChart>
-                      </ResponsiveContainer>
-                    </div>
-                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>横軸は本番日を0とした相対日、帯は±1SDです。件数2未満の日は表示していません。</p>
 
-                    {nextPerformanceDate && peakingReversePlan && (
-                      <div className="mt-4 pt-3 border-t" style={{ borderColor: C.line }}>
-                        <p className="text-sm font-medium mb-2">逆算プラン：次の本番は{nextPerformanceDate.slice(5)}</p>
-                        <div className="space-y-1.5">
-                          {peakingReversePlan.plan.map((p) => (
-                            <div key={p.tau} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
-                              <span className="font-medium">{addDays(nextPerformanceDate, p.tau).slice(5)}（{p.tau === 0 ? "当日" : `${p.tau}日前`}）</span>
-                              <span className="ff-mono" style={{ color: C.inkSoft }}>
-                                {p.sleepHours != null ? `睡眠${p.sleepHours}h` : "-"}
-                                {p.load != null ? `　負荷${p.load.toFixed(1)}` : ""}
-                                {p.waterL != null ? `　水分${p.waterL.toFixed(1)}L` : ""}
-                              </span>
-                            </div>
+                {(locationStats.confident.length > 0 || locationStats.lowN.length > 0) && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">{t("titleLocationTrend")}</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteLocationTrend")}</p>
+                    {locationStats.confident.length > 0 && (
+                      <div className="space-y-2">
+                        {locationStats.confident.map((s) => (
+                          <div key={s.location} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                            <span className="font-medium">{s.location}</span>
+                            <span className="ff-mono" style={{ color: C.inkSoft }}>
+                              {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {locationStats.lowN.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>まだ3件未満（記録数のみ表示。貯まると平均が出ます）</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {locationStats.lowN.map((s) => (
+                            <span key={s.location} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>
+                              {s.location}（{s.n}）
+                            </span>
                           ))}
                         </div>
-                        <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                          {peakingReversePlan.isGeneral
-                            ? `声の調子が良かった本番がまだ2回未満のため、全体の中央値（${peakingReversePlan.basedOnCount}回分）を目安として出しています。`
-                            : `声の調子が良かった本番${peakingReversePlan.basedOnCount}回の、各日の行動の中央値です。`}
-                        </p>
                       </div>
                     )}
                   </div>
-                ) : null}
+                )}
+
+                <div className="pt-2">
+                  <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderOverall")}</h2>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    {t("groupHeaderOverallDesc")}
+                  </p>
+                </div>
+
+                {compositePatternInsight && (compositePatternInsight.sentences.length > 0 || compositePatternInsight.gateMessage) && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">{t("titleCompositeInsight")}</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      {t("noteCompositeInsight")}
+                    </p>
+                    {/* 統合実行ルートv4 §6-3: 条件を満たさないときは、消すのではなく
+                        「あと◯で何が見えるか」に置き換える。 */}
+                    {compositePatternInsight.gateMessage ? (
+                      <p className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
+                        {compositePatternInsight.gateMessage}
+                      </p>
+                    ) : (
+                      <>
+                        <div className="space-y-2">
+                          {compositePatternInsight.sentences.map((s, i) => (
+                            <p key={i} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
+                              {s}
+                            </p>
+                          ))}
+                        </div>
+                        <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                          {t("noteCompositeInsightDisclaimer")}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                )}
+
+                {(restMethodStats.confident.length > 0 || restMethodStats.lowN.length > 0) && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">{t("titleRestMethodTrend")}</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteRestMethodTrend")}</p>
+                    {restMethodStats.confident.length > 0 && (
+                      <div className="space-y-2">
+                        {restMethodStats.confident.map((s) => (
+                          <div key={s.method} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                            <span className="font-medium">{REST_METHOD_KEYS[s.method] ? t(REST_METHOD_KEYS[s.method]) : s.method}</span>
+                            <span className="ff-mono" style={{ color: C.inkSoft }}>
+                              {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {restMethodStats.lowN.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>まだ3件未満（記録数のみ表示。貯まると平均が出ます）</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {restMethodStats.lowN.map((s) => (
+                            <span key={s.method} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>
+                              {REST_METHOD_KEYS[s.method] ? t(REST_METHOD_KEYS[s.method]) : s.method}（{s.n}）
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {profile.track_cycle && hasCycleData && cycleGroupStats.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">周期と声・メンタルの傾向</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      記録した周期開始日をもとに、周期を4つに区切って声・メンタルの平均を比べています。
+                    </p>
+                    <div className="space-y-2">
+                      {cycleGroupStats.map((s) => (
+                        <div key={s.label} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
+                          <span className="font-medium">{s.label}</span>
+                          <span className="ff-mono" style={{ color: C.inkSoft }}>
+                            {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向であり、医学的な診断ではありません。件数が少ないうちは参考程度にご覧ください。
+                    </p>
+                  </div>
+                )}
+
+                {(roleLoadStats.confident.length > 0 || roleLoadStats.lowN.length > 0) && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">あなたにとって重い役</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      翌日の落ち込みが大きい順に並んでいます（その人の平常値との偏差）。計算上の負荷は横に添えているだけで、順位には使っていません。
+                    </p>
+                    {roleLoadStats.confident.length > 0 && (
+                      <div className="space-y-3">
+                        {roleLoadStats.confident.slice(0, 8).map((r, i) => {
+                          const dropPct = Math.max(0, Math.min(100, (-r.avgNextDayDeviation / 2) * 100));
+                          const isHeavierThanExpected = r.rankGap >= 2;
+                          const isLighterThanExpected = r.rankGap <= -2;
+                          return (
+                            <div key={r.name} className="rounded-xl p-2.5" style={{ background: C.paper }}>
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium">{i + 1}. {r.name}</span>
+                                <span className="ff-mono text-xs" style={{ color: r.avgNextDayDeviation < 0 ? C.curtain : C.sage }}>
+                                  翌日 {r.avgNextDayDeviation >= 0 ? "+" : ""}{r.avgNextDayDeviation.toFixed(1)}
+                                </span>
+                              </div>
+                              <div className="h-1.5 rounded-full overflow-hidden mt-1.5" style={{ background: C.card }}>
+                                <div className="h-full rounded-full" style={{ width: `${dropPct}%`, background: C.curtain }} />
+                              </div>
+                              <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
+                                計算上の負荷 {r.avgLoad.toFixed(0)}・{r.count}回
+                                {r.record.confidence !== "entered" && "（推定値）"}
+                              </p>
+                              {isHeavierThanExpected && (
+                                <p className="text-xs mt-1" style={{ color: C.curtain }}>⚠ 計算より重い（音域以外の要因があるかもしれません）</p>
+                              )}
+                              {isLighterThanExpected && (
+                                <p className="text-xs mt-1" style={{ color: C.sage }}>この役はあなたに合っているのかもしれません</p>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                    {roleLoadStats.lowN.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>まだ3回未満（記録数のみ表示）</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {roleLoadStats.lowN.map((r) => (
+                            <span key={r.name} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>
+                              {r.name}（{r.count}回、あと{Math.max(0, 3 - r.count)}回でランキングに入ります）
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ あくまで記録上の傾向です。「この役は喉を痛める」といった断定ではなく、「翌日の落ち込みが大きい」という観測にとどめています。
+                    </p>
+                  </div>
+                )}
+
+                {effectiveHabitRanking.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">効いた習慣ランキング</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      前日の行動があった日となかった日で、翌日の声のスコア（喉・声の平均）を比べています。件数が少ない項目は★が付かず「まだ判断できません」と表示されます。
+                    </p>
+                    <div className="space-y-3">
+                      {effectiveHabitRanking.slice(0, 8).map((r) => {
+                        const inconclusive = r.stars <= 1;
+                        const direction = r.g >= 0 ? "良く" : "悪く";
+                        return (
+                          <div key={r.key} className="rounded-xl p-3" style={{ background: C.paper }}>
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-sm font-medium">{r.label}</span>
+                              <span className="text-xs flex-shrink-0" style={{ color: C.gold }}>
+                                {"★".repeat(r.stars)}{"☆".repeat(4 - r.stars)}
+                              </span>
+                            </div>
+                            <div style={{ position: "relative", height: 22, marginTop: 8, marginBottom: 4 }}>
+                              {(() => {
+                                const scaleMin = -2, scaleMax = 2;
+                                const pct = (v) => Math.max(0, Math.min(100, ((v - scaleMin) / (scaleMax - scaleMin)) * 100));
+                                return (
+                                  <>
+                                    <div style={{ position: "absolute", left: 0, right: 0, top: 10, height: 1, background: C.line }} />
+                                    <div style={{ position: "absolute", left: `${pct(0)}%`, top: 2, width: 1, height: 18, background: C.line }} />
+                                    <div style={{ position: "absolute", left: `${pct(r.ciLow)}%`, width: `${pct(r.ciHigh) - pct(r.ciLow)}%`, top: 9, height: 3, borderRadius: 2, background: inconclusive ? C.line : (r.g >= 0 ? C.sage : C.curtain) }} />
+                                    <div style={{ position: "absolute", left: `calc(${pct(r.g)}% - 5px)`, top: 5, width: 10, height: 10, borderRadius: 999, background: inconclusive ? C.inkSoft : (r.g >= 0 ? C.sage : C.curtain) }} />
+                                  </>
+                                );
+                              })()}
+                            </div>
+                            <p className="text-xs" style={{ color: C.inkSoft }}>
+                              {inconclusive
+                                ? `まだ判断できません（あった日${r.n1}件・なかった日${r.n0}件。記録が増えると結論が出ます）`
+                                : `この行動があった日（${r.n1}件）は、翌日の声が平均で${direction}記録されています（効果量 g=${r.g.toFixed(2)}）。`}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※「◯◯すると声が良くなる」という保証ではなく、「◯◯した日の翌日は、平均して声が良く記録されている」という記録上の傾向です。
+                    </p>
+                  </div>
+                )}
+
+                {lagCorrelationMap.some((c) => c.n >= 14) && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">声の時差マップ</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      生活の変化は、当日より数日後に声へ出ることがあります。行が生活の変数、列が「何日後に効くか」。色が濃いほど関係が強く、枠のついたマスは統計的にも裏付けのある関係です。
+                    </p>
+                    {topLagFinding && (
+                      <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
+                        見つかりました。<strong>{topLagFinding.variableLabel}の「{topLagFinding.lag}日後」</strong>に、声への関係がいちばん強く出ています（ρ = {topLagFinding.rho.toFixed(2)}）。
+                      </p>
+                    )}
+                    <div style={{ overflowX: "auto" }}>
+                      <table style={{ borderCollapse: "collapse", width: "100%" }}>
+                        <thead>
+                          <tr>
+                            <th style={{ textAlign: "left", fontSize: 11, color: C.inkSoft, fontWeight: 500, padding: "2px 6px" }}></th>
+                            {[0, 1, 2, 3].map((lag) => (
+                              <th key={lag} style={{ fontSize: 11, color: C.inkSoft, fontWeight: 500, padding: "2px 6px" }}>{lag}日後</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {LAG_VARIABLES.map((v) => (
+                            <tr key={v.key}>
+                              <td style={{ fontSize: 11, color: C.ink, padding: "2px 6px", whiteSpace: "nowrap" }}>{v.label}</td>
+                              {[0, 1, 2, 3].map((lag) => {
+                                const cell = lagCorrelationMap.find((c) => c.variableKey === v.key && c.lag === lag);
+                                if (!cell || cell.n < 14) {
+                                  return (
+                                    <td key={lag} style={{ padding: 3 }}>
+                                      <div title={`記録${cell ? cell.n : 0}日分（14日で解放）`} style={{ width: 40, height: 28, borderRadius: 6, background: C.line, opacity: 0.35 }} />
+                                    </td>
+                                  );
+                                }
+                                const rho = cell.rho || 0;
+                                const intensity = Math.min(1, Math.abs(rho));
+                                const color = rho >= 0
+                                  ? `rgba(75,122,90,${0.15 + intensity * 0.7})`
+                                  : `rgba(184,49,49,${0.15 + intensity * 0.7})`;
+                                return (
+                                  <td key={lag} style={{ padding: 3 }}>
+                                    <div
+                                      title={`ρ=${rho.toFixed(2)}（n=${cell.n}）`}
+                                      style={{
+                                        width: 40, height: 28, borderRadius: 6, background: color,
+                                        border: cell.significant ? `2px solid ${C.ink}` : "2px solid transparent",
+                                        display: "flex", alignItems: "center", justifyContent: "center",
+                                        fontSize: 10, color: C.ink, fontFamily: "monospace"
+                                      }}
+                                    >
+                                      {rho.toFixed(1)}
+                                    </div>
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      ※ 灰色のマスはまだ記録が14日分たまっていません。枠のついた濃い色のマスだけが、複数の比較を行った上でも統計的に裏付けのある関係です（それ以外は偶然の可能性があります）。
+                    </p>
+                  </div>
+                )}
 
                 <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
                   <button onClick={() => setAnalysisTarget("performance")}
@@ -11746,34 +11805,6 @@ export default function VocalTracker({ userId, userEmail }) {
                       {t("noteCorrelationCaveat")}
                     </p>
                   </>
-                )}
-                {compositePatternInsight && (compositePatternInsight.sentences.length > 0 || compositePatternInsight.gateMessage) && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">{t("titleCompositeInsight")}</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      {t("noteCompositeInsight")}
-                    </p>
-                    {/* 統合実行ルートv4 §6-3: 条件を満たさないときは、消すのではなく
-                        「あと◯で何が見えるか」に置き換える。 */}
-                    {compositePatternInsight.gateMessage ? (
-                      <p className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
-                        {compositePatternInsight.gateMessage}
-                      </p>
-                    ) : (
-                      <>
-                        <div className="space-y-2">
-                          {compositePatternInsight.sentences.map((s, i) => (
-                            <p key={i} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
-                              {s}
-                            </p>
-                          ))}
-                        </div>
-                        <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
-                          {t("noteCompositeInsightDisclaimer")}
-                        </p>
-                      </>
-                    )}
-                  </div>
                 )}
 
                 {/* 改善タスクv2 §4-1(a): ロックカードは、以前 3〜8番目に5枚も固まっていた。
