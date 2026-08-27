@@ -14,6 +14,8 @@ import {
   Cell, ScatterChart, Scatter, ReferenceLine, ReferenceArea, LineChart, Line, ComposedChart, Area
 } from "recharts";
 import { createClient } from "@/lib/supabase/client";
+// ★通信は必ず時間制限を付ける。返ってこないまま待ち続けると、画面が止まる。
+import { withTimeout, QUERY_TIMEOUT_MS, AUTH_TIMEOUT_MS } from "@/lib/withTimeout";
 import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC } from "@/lib/tokens";
 import { FOOD_PRESETS, DISH_GROUP_ALIASES, CATEGORY_SEARCH_ALIASES } from "@/lib/foodPresets";
 import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, SHOP_ITEMS, PLACEMENT_LIMITS, computeBalance } from "@/lib/character";
@@ -479,7 +481,8 @@ async function refreshSessionOnce(supabase) {
   if (Date.now() - sessionRefreshedAt < SESSION_REFRESH_COOLDOWN_MS) return null;
   const task = (async () => {
     try {
-      await supabase.auth.refreshSession();
+      // ★時間制限が要る。更新が返ってこないと、待っている全員が道連れで止まる。
+      await withTimeout(supabase.auth.refreshSession(), AUTH_TIMEOUT_MS, "セッションの更新");
     } catch (e) {
       /* リフレッシュ自体が失敗しても、呼び出し元の再試行で最終的なエラーを拾う */
     } finally {
@@ -493,13 +496,22 @@ async function refreshSessionOnce(supabase) {
 // queryFn: () => Promise<{data, error}> を返す関数（クエリを毎回組み立て直せるように関数で受け取る）。
 // 一時的な認証エラーが出た場合のみ、セッションを更新してから1回だけ再試行する。
 // それ以外のエラー（権限不足や入力ミスなど）はそのまま返し、無限にリトライしない。
+// クエリを1回実行する。返ってこない場合は打ち切り、エラーとして扱う。
+// ★例外を投げないこと。呼び出し側は全て { data, error } を前提にしている。
+async function runQueryOnce(queryFn, label) {
+  try {
+    return await withTimeout(Promise.resolve(queryFn()), QUERY_TIMEOUT_MS, label || "クエリ");
+  } catch (e) {
+    return { data: null, error: e };
+  }
+}
 async function runQueryWithAuthRetry(supabase, queryFn, label) {
-  let result = await queryFn();
+  let result = await runQueryOnce(queryFn, label);
   if (result.error && isTransientAuthError(result.error)) {
     console.warn(`${label || "クエリ"}で一時的な認証エラーを検知。セッションを更新して再試行します。`, result.error);
     await refreshSessionOnce(supabase);
     await new Promise((resolve) => setTimeout(resolve, 600));
-    result = await queryFn();
+    result = await runQueryOnce(queryFn, label);
   }
   return result;
 }
@@ -3970,6 +3982,8 @@ function ExerciseItemRow({ item, onChange, onRemove, t }) {
 /* ---------- main component ---------- */
 export default function VocalTracker({ userId, userEmail }) {
   const [loading, setLoading] = useState(true);
+  // 記録データが読み込めなかったとき、画面の上に出す（黙って空にしない）
+  const [entriesLoadError, setEntriesLoadError] = useState("");
   const [entries, setEntries] = useState({});
   const [activeTab, setActiveTab] = useState("home");
   // 記録と分析の順番設計 §5.3: 分析画面の「この分析を強くする」から記録画面へジャンプしたとき、
@@ -4249,13 +4263,17 @@ export default function VocalTracker({ userId, userEmail }) {
         () => supabase.from("entries").select("*").eq("user_id", userId),
         "記録データの取得"
       );
+      // ★失敗を黙って飲み込まないこと。以前はコンソールに出すだけだったので、
+      //   読み込めなかった人には「記録が消えた」ようにしか見えなかった。
       if (error) {
         console.error("記録データの読み込みに失敗しました:", error, "userId:", userId);
+        if (mounted) setEntriesLoadError(error.message || "記録データを読み込めませんでした");
       }
       if (mounted && data) {
         const map = {};
         data.forEach((row) => { map[row.date] = rowToEntry(row); });
         setEntries(map);
+        setEntriesLoadError("");
       }
       if (mounted) setLoading(false);
     })();
@@ -8491,6 +8509,25 @@ export default function VocalTracker({ userId, userEmail }) {
       </header>
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 pb-16">
+        {/* ★記録が読み込めなかったことを、必ず本人に伝える。
+            黙って空の画面を出すと「記録が消えた」に見える。消えていない。 */}
+        {entriesLoadError && (
+          <div className="rounded-2xl p-4 border mb-4" style={{ background: "#FFF4F0", borderColor: C.curtain }}>
+            <p className="text-sm font-medium" style={{ color: C.ink }}>記録を読み込めませんでした</p>
+            <p className="text-xs mt-1 leading-relaxed" style={{ color: C.inkSoft }}>
+              記録は消えていません。サーバーからの返事が来なかっただけです。<br />
+              しばらく待ってから、画面を読み込み直してください。
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-3 px-4 py-1.5 rounded-full text-xs font-medium"
+              style={{ background: C.curtain, color: "#FFFDF8" }}
+            >
+              読み込み直す
+            </button>
+            <p className="text-[10px] mt-2" style={{ color: C.inkSoft }}>{entriesLoadError}</p>
+          </div>
+        )}
         {lessonMode ? (
           <div className="space-y-5">
             <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>

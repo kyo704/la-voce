@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
+import { withTimeout, MIDDLEWARE_TIMEOUT_MS } from "@/lib/withTimeout";
 
 export async function middleware(request) {
   let response = NextResponse.next({ request: { headers: request.headers } });
@@ -26,8 +27,17 @@ export async function middleware(request) {
     }
   );
 
-  // トークンが期限切れなら更新する
-  await supabase.auth.getUser();
+  // トークンが期限切れなら更新する。
+  // ★時間制限を付けること。ここはほぼ全リクエストが通る場所で、
+  //   以前は制限が無かった。Supabase が応答しないと、この await が返らず、
+  //   サイト全体が「読み込み中のまま止まる」状態になっていた。
+  //   時間切れのときは、セッションを更新せずに先へ進める。今回のリクエストで
+  //   トークンが新しくならないだけで、ログアウトはしない。
+  try {
+    await withTimeout(supabase.auth.getUser(), MIDDLEWARE_TIMEOUT_MS, "ミドルウェアの認証確認");
+  } catch (e) {
+    console.warn("ミドルウェアでの認証確認を打ち切りました。セッションの更新は次回に持ち越します。", e.message);
+  }
 
   return response;
 }

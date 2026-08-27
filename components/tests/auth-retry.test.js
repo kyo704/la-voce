@@ -28,7 +28,16 @@ function assertTrue(c, label) { if (c) { console.log(`  ✓ ${label}`); passCoun
 
 // VocalTracker.jsx から、認証リトライまわりの一続きの部分をそのまま取り出す。
 // （実装をコピーせず、本物のソースを読んで動かす）
-function loadAuthRetry() {
+//
+// ★取り出した部分が import している名前は、ここで渡してやる必要がある。
+//   new Function の中には import が届かないため。
+//   新しい import を使い始めたら、ここに足すこと。足し忘れると ReferenceError で落ちる。
+async function loadAuthRetry() {
+  const timeoutSrc = fs.readFileSync(path.join(__dirname, "..", "..", "lib", "withTimeout.js"), "utf-8");
+  const timeoutMod = await import("data:text/javascript;base64," + Buffer.from(timeoutSrc, "utf-8").toString("base64"));
+  return buildAuthRetry(timeoutMod);
+}
+function buildAuthRetry(timeoutMod) {
   const src = fs.readFileSync(path.join(__dirname, "..", "VocalTracker.jsx"), "utf-8");
   const start = src.indexOf("function isTransientAuthError(error)");
   if (start < 0) throw new Error("isTransientAuthError が見つかりません");
@@ -44,7 +53,10 @@ function loadAuthRetry() {
   if (end < 0) throw new Error("runQueryWithAuthRetry の終わりが見つかりません");
   const body = src.slice(start, end);
   // eslint-disable-next-line no-new-func
-  return new Function(`${body}\nreturn { isTransientAuthError, runQueryWithAuthRetry };`)();
+  return new Function(
+    "withTimeout", "QUERY_TIMEOUT_MS", "AUTH_TIMEOUT_MS",
+    `${body}\nreturn { isTransientAuthError, runQueryWithAuthRetry };`
+  )(timeoutMod.withTimeout, timeoutMod.QUERY_TIMEOUT_MS, timeoutMod.AUTH_TIMEOUT_MS);
 }
 
 // refreshSession() が何回呼ばれたかを数える、偽の supabase
@@ -65,7 +77,7 @@ function makeFakeSupabase() {
 const JWT_FUTURE = { code: "PGRST303", message: 'JWT issued at future' };
 
 async function main() {
-  const { isTransientAuthError, runQueryWithAuthRetry } = loadAuthRetry();
+  const { isTransientAuthError, runQueryWithAuthRetry } = await loadAuthRetry();
 
   console.log("=== テスト1: 一時的な認証エラーの見分け ===");
   assertEqual(isTransientAuthError(JWT_FUTURE), true, "PGRST303 は一時的な認証エラー");
@@ -117,7 +129,7 @@ async function main() {
   console.log("\n=== テスト5: ★同時に6本失敗しても、セッションの更新は1回だけ ===");
   {
     // 別モジュールとして読み直し、更新の回数をまっさらな状態から数える
-    const { runQueryWithAuthRetry: run } = loadAuthRetry();
+    const { runQueryWithAuthRetry: run } = await loadAuthRetry();
     const supabase = makeFakeSupabase();
     // 画面を開いた瞬間の6本を、同時に投げる。全部が認証エラーで返る想定。
     const labels = ["記録データ", "質問票", "テッシトゥーラ", "役マスタ", "案件マスタ", "プロフィール"];
@@ -132,7 +144,7 @@ async function main() {
 
   console.log("\n=== テスト6: 直後にもう1本失敗しても、更新を重ねない ===");
   {
-    const { runQueryWithAuthRetry: run } = loadAuthRetry();
+    const { runQueryWithAuthRetry: run } = await loadAuthRetry();
     const supabase = makeFakeSupabase();
     await run(supabase, async () => ({ data: null, error: JWT_FUTURE }), "1本目");
     assertEqual(supabase.calls.refresh, 1, "1本目で1回だけ更新する");
@@ -143,7 +155,7 @@ async function main() {
 
   console.log("\n=== テスト7: 呼び出し側がクエリを組み立て直せること ===");
   {
-    const { runQueryWithAuthRetry: run } = loadAuthRetry();
+    const { runQueryWithAuthRetry: run } = await loadAuthRetry();
     const supabase = makeFakeSupabase();
     const built = [];
     let firstRound = true;
@@ -154,6 +166,40 @@ async function main() {
     }, "テスト");
     assertEqual(built.length, 2,
       "★再試行のたびにクエリを組み立て直している（使い回すと古いトークンのまま飛ぶ）");
+  }
+
+  console.log("\n=== テスト8: ★返ってこないクエリは打ち切る（画面が止まらない） ===");
+  {
+    // 制限時間だけ短くして、実際の待ち時間をテスト用に縮める
+    const timeoutSrc = fs.readFileSync(path.join(__dirname, "..", "..", "lib", "withTimeout.js"), "utf-8");
+    const real = await import("data:text/javascript;base64," + Buffer.from(timeoutSrc, "utf-8").toString("base64"));
+    const { runQueryWithAuthRetry: run } = buildAuthRetry({
+      withTimeout: real.withTimeout, QUERY_TIMEOUT_MS: 120, AUTH_TIMEOUT_MS: 120
+    });
+    const supabase = makeFakeSupabase();
+    const started = Date.now();
+    // いつまでも返ってこないクエリ（Supabase が応答しない状態）
+    const result = await run(supabase, () => new Promise(() => {}), "記録データの取得");
+    const elapsed = Date.now() - started;
+    assertTrue(result && result.error, "★永久に待たず、エラーとして返る");
+    assertTrue(elapsed < 2000, `打ち切りまで ${elapsed}ms（永久に待たない）`);
+    assertEqual(supabase.calls.refresh, 0,
+      "時間切れは認証エラーではないので、セッションの更新は走らない");
+  }
+
+  console.log("\n=== テスト9: 遅いだけのクエリは、待って成功させる ===");
+  {
+    const timeoutSrc = fs.readFileSync(path.join(__dirname, "..", "..", "lib", "withTimeout.js"), "utf-8");
+    const real = await import("data:text/javascript;base64," + Buffer.from(timeoutSrc, "utf-8").toString("base64"));
+    const { runQueryWithAuthRetry: run } = buildAuthRetry({
+      withTimeout: real.withTimeout, QUERY_TIMEOUT_MS: 500, AUTH_TIMEOUT_MS: 500
+    });
+    const supabase = makeFakeSupabase();
+    const result = await run(supabase, async () => {
+      await new Promise((r) => setTimeout(r, 100));
+      return { data: [1, 2], error: null };
+    }, "記録データの取得");
+    assertEqual(result.data, [1, 2], "★少し遅いだけなら、ちゃんと待って結果を返す");
   }
 
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
