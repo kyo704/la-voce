@@ -67,7 +67,26 @@ async function main() {
   assertTrue(!/\(effectiveProfessions \|\| \[\]\)\.includes\("voice_actor"\) && \(\s*\n\s*analysisLocks/.test(trackerSrc),
     "職業ゲートが画面側に直接書き残されていない");
 
-  console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
+  console.log("\n=== ★消した4項目が、戻ってきていないこと（§3.1） ===");
+console.log("     消す前に3か所すべてで実データ0件を確認しています。");
+{
+  const { readCode, readRaw } = require("./_source");
+  const uiCode = readCode("components", "VocalTracker.jsx");
+  const tr = readCode("lib", "translations.js");
+  ["vocalRangeLowUsed", "vocalRangeHighUsed", "dynamicsRange", "passaggioCrossings"].forEach((k) => {
+    assertTrue(!new RegExp(`\\b${k}\\b`).test(uiCode), `★${k} が復活していない`);
+  });
+  ["loadVocalRangeLowUsed", "loadVocalRangeHighUsed", "loadDynamicsRange", "loadPassaggioCrossings"].forEach((k) => {
+    assertTrue(!new RegExp(`\\b${k}\\b`).test(tr), `★翻訳キー ${k} も残っていない`);
+  });
+  // ★通過感（passaggioFeel）は、この職業の看板。消していないこと。
+  const uiRaw2 = readRaw("components", "VocalTracker.jsx");
+  assertTrue(/passaggioFeel/.test(uiRaw2), "★パッサッジョの通過感は残っている（この職業の看板）");
+  assertTrue(/onDetailChange\(\{ passaggioFeel/.test(uiRaw2), "通過感の入力が残っている");
+  assertTrue(/passaggioStability/.test(uiRaw2), "通過感を読む分析も残っている");
+}
+
+console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");
 }

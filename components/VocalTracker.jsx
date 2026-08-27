@@ -394,12 +394,15 @@ const LOAD_TYPE_BY_PROFESSION = {
   pop_musical: "loud_venue_performance"
 };
 const LOAD_FIELDS_BY_PROFESSION = {
-  singer: [
-    { key: "vocalRangeLowUsed", type: "text", labelKey: "loadVocalRangeLowUsed", placeholderKey: "placeholderNoteExample" },
-    { key: "vocalRangeHighUsed", type: "text", labelKey: "loadVocalRangeHighUsed", placeholderKey: "placeholderNoteExample" },
-    { key: "dynamicsRange", type: "select", labelKey: "loadDynamicsRange", options: ["pp-mp", "mp-mf", "mf-f", "f-ff", "pp-ff"] },
-    { key: "passaggioCrossings", type: "number", labelKey: "loadPassaggioCrossings" }
-  ],
+  // ★声楽家向けの4項目を削除しました（職業別項目の再設計と学ぶ画面.md §3.1）。
+  //   音域（使用）… レパートリーのテッシトゥーラ・最高音と重複していた
+  //   ダイナミクス … §3 の表に無く、参照する分析も無かった
+  //   パッサッジョの通過数 … §3 の表に無い。★通過感（passaggioFeel）とは
+  //     別物で、そちらは活動ブロックの detail にあり、分析も学ぶ記事も
+  //     使っています。この職業の看板なので、消していません。
+  //   消す前に実データを数えました。3か所（activities[].detail・
+  //   activity_detail・load_detail）すべてで0件でした。
+  singer: [],
   announcer: [
     { key: "onAirMinutes", type: "number", labelKey: "loadOnAirMinutes" },
     { key: "isLive", type: "boolean", labelKey: "loadIsLive" },
