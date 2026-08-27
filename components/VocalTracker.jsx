@@ -10044,6 +10044,54 @@ export default function VocalTracker({ userId, userEmail }) {
 
             {activeTab === "analysis" && (
               <div className="space-y-5">
+                {/* 改善タスクv2 §4-1(b): 期間セレクタは9番目にあり、その上のカードは
+                    セレクタの影響を受けなかった。「期間を1年にしたのに数字が変わらない」
+                    という混乱の原因だったので、最上部に移した。期間の効かないカードには
+                    その旨をラベルで明示する。 */}
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-3">{t("titleAnalysisPeriod")}</h3>
+                  <div className="flex gap-2 flex-wrap">
+                    {["week", "month", "year", "all", "custom"].map((p) => (
+                      <button key={p} type="button" onClick={() => setAnalysisPeriod(p)}
+                        className="px-3.5 py-1.5 rounded-full text-xs font-medium"
+                        style={{
+                          background: analysisPeriod === p ? C.curtain : C.paper,
+                          color: analysisPeriod === p ? "#FFFDF8" : C.inkSoft,
+                          border: `1px solid ${analysisPeriod === p ? C.curtain : C.line}`
+                        }}>
+                        {t(p === "week" ? "periodWeek" : p === "month" ? "periodMonth" : p === "year" ? "periodYear" : p === "all" ? "periodAll" : "periodCustom")}
+                      </button>
+                    ))}
+                    {Object.values(entries).some((e) => entryHasActivityKind(e, "本番")) && (
+                      <button type="button" onClick={() => setAnalysisPeriod("aroundPerformance")}
+                        className="px-3.5 py-1.5 rounded-full text-xs font-medium"
+                        style={{
+                          background: analysisPeriod === "aroundPerformance" ? C.curtain : C.paper,
+                          color: analysisPeriod === "aroundPerformance" ? "#FFFDF8" : C.inkSoft,
+                          border: `1px solid ${analysisPeriod === "aroundPerformance" ? C.curtain : C.line}`
+                        }}>
+                        直近の本番前後
+                      </button>
+                    )}
+                  </div>
+                  {analysisPeriod === "custom" && (
+                    <div className="flex items-center gap-2 mt-3 flex-wrap">
+                      <input type="date" value={analysisCustomStart} onChange={(e) => setAnalysisCustomStart(e.target.value)}
+                        className="rounded-lg border px-2.5 py-1.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                      <span className="text-xs" style={{ color: C.inkSoft }}>〜</span>
+                      <input type="date" value={analysisCustomEnd} onChange={(e) => setAnalysisCustomEnd(e.target.value)}
+                        className="rounded-lg border px-2.5 py-1.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                    </div>
+                  )}
+                  {analysisPeriod === "aroundPerformance" && (
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                      暦の区切りではなく、直近の本番日を基準にした前後2週間で振り返ります。
+                    </p>
+                  )}
+                  <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+                    {t("noteAnalysisPeriodCount").replace("{count}", Object.keys(filteredEntries).length)}
+                  </p>
+                </div>
                 {(() => {
                   // 記録と分析の順番設計 §5.2: ①今日の一言。発見があれば発見、無ければ中立的な事実を出す。
                   // 「調子が悪い日に低い判定が最初に出て、開かなくなる」ことを避けるため、判定より先に置く。
@@ -10067,7 +10115,13 @@ export default function VocalTracker({ userId, userEmail }) {
                   );
                 })()}
                 <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">{t("titleVocalScore")}</h3>
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <h3 className="ff-display italic text-lg">{t("titleVocalScore")}</h3>
+                    {/* 改善タスクv2 §4-1(b): 期間セレクタが効かないカードであることを明示する */}
+                    <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: C.paper, color: C.inkSoft }}>
+                      {t("badgeFixedPeriod").replace("{n}", 14)}
+                    </span>
+                  </div>
                   <p className="text-xs mb-4" style={{ color: C.inkSoft }}>{t("noteVocalScore")}</p>
                   {!vocalConditionScore.hasEnoughData ? (
                     <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
@@ -10110,7 +10164,12 @@ export default function VocalTracker({ userId, userEmail }) {
                 {gateAllows("deviation.card", { days: recordedDaysTotal }) ? (
                   deviationScore && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                      <h3 className="ff-display italic text-lg mb-1">コンディション偏差値</h3>
+                      <div className="flex items-start justify-between gap-2 mb-1">
+                        <h3 className="ff-display italic text-lg">コンディション偏差値</h3>
+                        <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: C.paper, color: C.inkSoft }}>
+                          {t("badgeFixedPeriod").replace("{n}", deviationScore.n)}
+                        </span>
+                      </div>
                       <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                         100点満点の絶対評価だと、良い日も悪い日も似た点数に集まりがちです。自分の直近{deviationScore.n}日の分布の中で、今日がどこにいるかで見ます。
                       </p>
@@ -10396,50 +10455,6 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                 )}
 
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-3">{t("titleAnalysisPeriod")}</h3>
-                  <div className="flex gap-2 flex-wrap">
-                    {["week", "month", "year", "all", "custom"].map((p) => (
-                      <button key={p} type="button" onClick={() => setAnalysisPeriod(p)}
-                        className="px-3.5 py-1.5 rounded-full text-xs font-medium"
-                        style={{
-                          background: analysisPeriod === p ? C.curtain : C.paper,
-                          color: analysisPeriod === p ? "#FFFDF8" : C.inkSoft,
-                          border: `1px solid ${analysisPeriod === p ? C.curtain : C.line}`
-                        }}>
-                        {t(p === "week" ? "periodWeek" : p === "month" ? "periodMonth" : p === "year" ? "periodYear" : p === "all" ? "periodAll" : "periodCustom")}
-                      </button>
-                    ))}
-                    {Object.values(entries).some((e) => entryHasActivityKind(e, "本番")) && (
-                      <button type="button" onClick={() => setAnalysisPeriod("aroundPerformance")}
-                        className="px-3.5 py-1.5 rounded-full text-xs font-medium"
-                        style={{
-                          background: analysisPeriod === "aroundPerformance" ? C.curtain : C.paper,
-                          color: analysisPeriod === "aroundPerformance" ? "#FFFDF8" : C.inkSoft,
-                          border: `1px solid ${analysisPeriod === "aroundPerformance" ? C.curtain : C.line}`
-                        }}>
-                        直近の本番前後
-                      </button>
-                    )}
-                  </div>
-                  {analysisPeriod === "custom" && (
-                    <div className="flex items-center gap-2 mt-3 flex-wrap">
-                      <input type="date" value={analysisCustomStart} onChange={(e) => setAnalysisCustomStart(e.target.value)}
-                        className="rounded-lg border px-2.5 py-1.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                      <span className="text-xs" style={{ color: C.inkSoft }}>〜</span>
-                      <input type="date" value={analysisCustomEnd} onChange={(e) => setAnalysisCustomEnd(e.target.value)}
-                        className="rounded-lg border px-2.5 py-1.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                    </div>
-                  )}
-                  {analysisPeriod === "aroundPerformance" && (
-                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
-                      暦の区切りではなく、直近の本番日を基準にした前後2週間で振り返ります。
-                    </p>
-                  )}
-                  <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
-                    {t("noteAnalysisPeriodCount").replace("{count}", Object.keys(filteredEntries).length)}
-                  </p>
-                </div>
                 <div className="pt-2">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderVoice")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
