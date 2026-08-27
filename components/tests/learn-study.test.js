@@ -158,6 +158,39 @@ async function main() {
   assertTrue(!/toISOString\(\)\.slice\(0, 10\)/.test(code.replace(/fromISO \|\| new Date\(\)\.toISOString\(\)/g, "")),
     "★日付の組み立てに toISOString を使っていない（日本時間で前日に転がる）");
 
+  console.log("\n=== §4 メモ欄の役割を変える（廃止しない） ===");
+  const tr = readRaw("lib", "translations.js");
+  const ui = readRaw("components", "VocalTracker.jsx");
+  assertTrue(/yourNotesTitle: \{ ja: "自分の言葉で書いてみる"/.test(tr),
+    "★見出しが「自分の言葉で書いてみる」になっている");
+  assertTrue(!/yourNotesTitle: \{ ja: "[^"]*要約/.test(tr), "★見出しを「要約」にしていない（§9-2）");
+  assertTrue(/あとで自分が読んで分かるように/.test(tr), "説明文も自己説明の役割になっている");
+  // 9言語そろっていること
+  const learnKeys = ["yourNotesTitle", "yourNotesDesc", "articleNotePlaceholder", "addNoteButton"];
+  learnKeys.forEach((k) => {
+    const mm = tr.match(new RegExp(`${k}: \\{([^}]*)\\}`));
+    assertTrue(!!mm, `${k} がある`);
+    if (mm) {
+      const miss = ["ja", "en", "zh", "it", "de", "fr", "es", "ko", "ru"].filter((l) => !new RegExp(`\\b${l}:`).test(mm[1]));
+      assertEqual(miss, [], `${k} が9言語そろっている`);
+    }
+  });
+
+  console.log("\n=== ★既存のメモを消していない（§9-12） ===");
+  assertTrue(/handleCreateArticleNote\(article\.id, "self_explanation"/.test(ui),
+    "★新しく書くものは self_explanation として保存する");
+  assertTrue(!/from\("article_notes"\)\.delete\(/.test(ui), "★メモを物理削除していない");
+  assertTrue(/is\("deleted_at", null\)/.test(ui), "消したメモは伏せるだけ（行は残る）");
+  // 読み出しが kind で絞られていないこと（古い kind のメモも読める）
+  const fetchBlock = ui.slice(ui.indexOf("async function fetchArticleNotes"), ui.indexOf("async function fetchArticleNotes") + 500);
+  assertTrue(!/eq\("kind"/.test(fetchBlock), "★kind で絞っていない（前に書いたメモも読める）");
+  // 新しい表を作っていないこと
+  const fs2 = require("fs");
+  const path2 = require("path");
+  const sqls = fs2.readdirSync(path2.join(__dirname, "..", "..", "supabase")).filter((f) => f.endsWith(".sql"));
+  const madeTable = sqls.some((f) => /create table[^;]*self_explanation/i.test(fs2.readFileSync(path2.join(__dirname, "..", "..", "supabase", f), "utf-8")));
+  assertTrue(!madeTable, "★新しい表を作っていない（移し損ねと、書き出し・削除への足し忘れを避ける）");
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");

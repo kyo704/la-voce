@@ -13872,7 +13872,12 @@ export default function VocalTracker({ userId, userEmail }) {
                         onChange={(e) => setNewArticleNoteDraft(e.target.value)}
                         placeholder={t("articleNotePlaceholder")}
                         className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                      <button type="button" onClick={() => handleCreateArticleNote(article.id, "article", newArticleNoteDraft, null)}
+                      {/* ★kind を self_explanation にする（§7 の SelfExplanation に当たる）。
+                          新しい表は作りません。article_notes が同じ項目を持っており、
+                          表を増やして中身を移すと、移し損ねと、書き出し・削除への
+                          足し忘れが起きます。どちらもこのセッションで実際に踏みました。
+                          ★既存のメモ（kind: "article"）は、そのまま読めます。 */}
+                      <button type="button" onClick={() => handleCreateArticleNote(article.id, "self_explanation", newArticleNoteDraft, null)}
                         className="mt-2 px-4 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
                         {t("addNoteButton")}
                       </button>
