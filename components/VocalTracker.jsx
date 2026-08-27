@@ -1328,8 +1328,13 @@ function newVoiceEntry(date, context) {
     date,
     at: `${hh}:${mm}`,
     context: context || "other",
-    bodyFeel: 3,
-    quality: 5,
+    // ★空で始める。既定値を入れると、触っていない人の記録に
+    //   「喉3・声の出来5」が入り、分析はそれを答えとして読む。
+    //   throatCondition はこのアプリで最も多く読まれる項目（33か所）なので、
+    //   ここが埋まっていると、静かに嘘のデータが広がる。
+    //   pitchChest / mptSeconds が空で始まるのと同じ扱いにそろえた。
+    bodyFeel: null,
+    quality: null,
     pitchChest: "",
     pitchSoftMax: "",
     symptoms: [],
@@ -1563,9 +1568,29 @@ function deriveLegacyVoiceFieldsFromEntries(voiceEntries) {
   // 朝/昼/晩の3枠（時間帯別分析用）。該当する場面のエントリがあれば、そこから再構成する。
   const checkins = {};
   const contextToSlot = { wake: "朝", before_work: "昼", after_work: "晩" };
+  // ★場面が「ルーティン後」「その他」の記録を、まるごと捨てていた。
+  //   newVoiceEntry の既定は「その他」なので、いちばん普通の入れ方が
+  //   朝・昼・晩のカードに出てこなかった。音名と同じ取りこぼし。
+  //   場面で決まらないものは、記録した時刻（at）で置く。
+  //   ★場面がはっきりしている記録を、時刻から来たもので上書きしない。
+  const slotByHour = (at) => {
+    const h = Number(String(at || "").slice(0, 2));
+    if (!Number.isFinite(h)) return null;
+    if (h < 11) return "朝";
+    if (h < 17) return "昼";
+    return "晩";
+  };
+  const fromContext = new Set();
   voiceEntries.forEach((e) => {
     const slot = contextToSlot[e.context];
     if (!slot) return;
+    checkins[slot] = { throat: e.bodyFeel ?? null, voice: quality10ToFiveScale(e.quality) };
+    fromContext.add(slot);
+  });
+  voiceEntries.forEach((e) => {
+    if (contextToSlot[e.context]) return;
+    const slot = slotByHour(e.at);
+    if (!slot || fromContext.has(slot) || checkins[slot]) return;
     checkins[slot] = { throat: e.bodyFeel ?? null, voice: quality10ToFiveScale(e.quality) };
   });
   return {
@@ -3850,7 +3875,11 @@ function VoiceEntryEditor({ entry, onChange, onRemove, onClose, professions, t }
       <div className="mt-3">
         <div className="flex items-center justify-between mb-1.5">
           <span className="text-sm font-medium">声の出来</span>
-          <span className="ff-mono text-sm" style={{ color: C.inkSoft }}>{(entry.quality ?? 5).toFixed(1)}</span>
+          {/* ★まだ動かしていないときは数字を出さない。0.0 でも 5.0 でもなく「—」。
+              つまみは真ん中に置くが、それは初期位置であって記録した値ではない。 */}
+          <span className="ff-mono text-sm" style={{ color: C.inkSoft }}>
+            {typeof entry.quality === "number" ? entry.quality.toFixed(1) : "—"}
+          </span>
         </div>
         <input type="range" min={0} max={10} step={0.5} value={entry.quality ?? 5}
           onChange={(e) => onChange({ quality: Number(e.target.value) })}
