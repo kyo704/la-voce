@@ -1447,7 +1447,8 @@ function migrateLegacyToVoiceEntries(row) {
       at: "12:00",
       context: "other",
       bodyFeel: typeof row.throat_condition === "number" ? row.throat_condition : null,
-      // 響きスコア（0-10）があればそちらを優先し、なければ声の調子（5段階）を0-10に変換する。
+      // 声の出来（0-10。列名は resonance_score のまま）があればそちらを優先し、
+      // なければ声の調子（5段階）を0-10に変換する。
       quality: typeof row.resonance_score === "number" ? row.resonance_score : fiveScaleToQuality10(row.voice_quality),
       pitchChest: null,
       pitchSoftMax: null,
@@ -1537,8 +1538,25 @@ function quality10ToFiveScale(q) {
 function deriveLegacyVoiceFieldsFromEntries(voiceEntries) {
   if (!voiceEntries || voiceEntries.length === 0) return null;
   const rep = deriveVoiceEntryRepresentatives(voiceEntries);
-  const wakeEntry = voiceEntries.find((e) => e.context === "wake") || null;
-  const routineEntry = voiceEntries.find((e) => e.context === "after_routine") || null;
+  // ★音名は「起き抜け」の記録からしか拾っていなかった。
+  //   地声の音名・弱声の最高音の入力は、どの場面のブロックにも出ている。
+  //   場面が「本番前」「本番後」「その他」だと、書いた音名が旧列に届かず
+  //   推移グラフから消えていた。しかも newVoiceEntry の既定は「その他」。
+  //   代表値の側（deriveVoiceEntryRepresentatives）は
+  //   find(wake) || sorted[0] という受け皿を持っていたのに、こちらだけ無かった。
+  //   同じ決まりを2か所に書いて、片方だけ直っていない、いつもの形。
+  const routineEntryForGuard = voiceEntries.find((e) => e.context === "after_routine") || null;
+  // ★受け皿が、同じ1件を起き抜けとルーティン後の両方にしてしまわないようにする。
+  //   「ルーティン後」1件だけの日に受け皿をそのまま使うと、wake も routine も
+  //   その1件になり、ウォームアップ効率が必ず「0半音」になる。
+  //   記録していないことを「変わらなかった」と言ってしまう。
+  const wakeFallback = rep.wakeEntry;
+  const wakeEntry = (wakeFallback && wakeFallback === routineEntryForGuard) ? null : wakeFallback;
+  // ★ルーティン後には受け皿を作らない。
+  //   ウォームアップ効率は routineMidi − wakeMidi で測る。受け皿を作ると
+  //   同じ1件が両方になり、差が必ず0半音になる。記録が無いことと
+  //   「変わらなかった」ことは別なので、無いときは無いままにする。
+  const routineEntry = routineEntryForGuard;
   // 全エントリの症状・一口メモを合算する（どのエントリで書いても分析・記録に反映されるように）。
   const allSymptoms = [...new Set(voiceEntries.flatMap((e) => e.symptoms || []))];
   const firstNote = voiceEntries.map((e) => e.note).find((n) => n && n.trim()) || "";
@@ -5263,7 +5281,7 @@ export default function VocalTracker({ userId, userEmail }) {
   // ---- 「メンタル」まとめセクション用データ ここまで ----
 
   // ---- ここから、各グループ横断のクロス分析用データ ----
-  // timeSeries（体重・タンパク質・カロリー・心の余裕・響きスコアなど）に、
+  // timeSeries（体重・タンパク質・カロリー・心の余裕・声の出来など）に、
   // filteredEntries側にしかない喉のコンディション・声の質を日付で突き合わせて1つにまとめる。
   const crossFactorDaily = useMemo(() => {
     return timeSeries.map((row) => {
@@ -5362,7 +5380,7 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [crossFactorDaily, profile.protein_coefficient]);
 
   // 「好条件が重なった日」（4項目中3つ以上）と「あまり重ならなかった日」（4項目中1つ以下）を比較して、
-  // 声の調子（喉のコンディション・声の質・響きスコア）がどう違うかを文章にする。
+  // 声の調子（喉のコンディション・声の質・声の出来）がどう違うかを文章にする。
   // どちらかの日数が2日未満のときは、参考にできるほどのデータがまだないと判断して表示しない。
   // 現時点では日本語のみの文言（他7言語の翻訳は translations.js 側の対応が別途必要）。
   const compositePatternInsight = useMemo(() => {
@@ -9133,7 +9151,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     <XAxis dataKey="date" tick={{ fontSize: 9, fill: C.inkSoft }} />
                     <YAxis domain={[0, "auto"]} tick={{ fontSize: 9, fill: C.inkSoft }} />
                     <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, borderColor: C.line }} />
-                    <Line type="monotone" dataKey="acwr" stroke={C.sage} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                    <Line type="monotone" dataKey="acwr" stroke={C.ink} strokeWidth={2} dot={{ r: 3 }} connectNulls />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -12378,7 +12396,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         <YAxis domain={["auto", "auto"]} tick={{ fontSize: 11, fill: C.inkSoft }} unit="g/kg" />
                         <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
                         <ReferenceLine y={Number(profile.protein_coefficient) || 1.6} stroke={C.gold} strokeDasharray="4 4" />
-                        <Line type="monotone" dataKey="proteinPerKg" name={t("chartNameActualCoefficient")} stroke={C.sage} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                        <Line type="monotone" dataKey="proteinPerKg" name={t("chartNameActualCoefficient")} stroke={SERIES.s1} strokeWidth={2} dot={{ r: 3 }} connectNulls />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -12410,7 +12428,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
                         <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="kg" />
                         <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <Line type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={C.sage} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                        <Line type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={SERIES.s3} strokeWidth={2} dot={{ r: 2 }} connectNulls />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -12427,7 +12445,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="g/kg" />
                         <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
                         <ReferenceLine y={Number(profile.protein_coefficient) || 1.6} stroke={C.gold} strokeDasharray="4 4" />
-                        <Line type="monotone" dataKey="proteinPerKg" name={t("chartNameActualCoefficient")} stroke={C.curtain} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                        <Line type="monotone" dataKey="proteinPerKg" name={t("chartNameActualCoefficient")} stroke={SERIES.s1} strokeWidth={2} dot={{ r: 2 }} connectNulls />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -12446,7 +12464,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
                         <YAxis domain={["auto", "auto"]} tick={{ fontSize: 11, fill: C.inkSoft }} unit="kg" />
                         <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <Line type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={C.curtain} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                        <Line type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={SERIES.s3} strokeWidth={2} dot={{ r: 3 }} connectNulls />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
