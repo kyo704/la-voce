@@ -57,6 +57,32 @@ assertTrue(hardcoded.length < 30,
 const tokens = readRaw("lib", "tokens.js");
 assertTrue(/export const C = \{/.test(tokens), "色は lib/tokens.js の C が持っている");
 
+console.log("\n=== §1-1: ★色の出どころは lib/tokens.js ただ1つ（案A） ===");
+console.log("     仕様書の16進値は画素からの採色で、実際の値と数単位ずれていた。");
+const tok = readRaw("lib", "tokens.js");
+// ★禁止値の検査はコメントを外してから。ここには「仕様書には #840C24 と
+//   書いてあるが実際は違う」という説明が入っており、生のまま調べると
+//   自分の説明文で落ちる。readCode / readRaw を使い分ける理由そのもの。
+const tokCode = readCode("lib", "tokens.js");
+assertTrue(/export const SERIES = \{/.test(tokCode), "系列色の役割が SERIES として定義されている");
+// ★仕様書の値をそのまま持ち込んでいないこと。持ち込むと色が2組になる。
+const specOnly = ["#840C24", "#BF8722", "#447862", "#F7F2E6", "#E5DDC7", "#261913", "#6D5D50", "#76665A", "#739E67"];
+specOnly.forEach((hex) => {
+  assertTrue(!tokCode.includes(hex), `★仕様書だけの値 ${hex} を持ち込んでいない`);
+});
+// 新しい色は1つだけ（--s2-pale に当たるもの）
+const allHex = (tokCode.match(/#[0-9A-Fa-f]{6}/g) || []).map((h) => h.toUpperCase());
+const cHex = (tokCode.match(/export const C = \{[\s\S]*?\};/)[0].match(/#[0-9A-Fa-f]{6}/g) || []).map((h) => h.toUpperCase());
+const outsideC = [...new Set(allHex.filter((h) => !cHex.includes(h)))];
+assertTrue(outsideC.length <= 2,
+  `C の外にある色が${outsideC.length}件だけ（${outsideC.join(", ")}）= 帯の色と s2-pale`);
+assertTrue(tokCode.includes("#DFC28D"), "s2-pale（山吹の淡いほう）だけを新しく足した");
+
+console.log("\n=== §1-2: 4色目を作らず、形で区別する ===");
+assertTrue(/export const SERIES_SHAPES = \{/.test(tokCode), "形での区別が用意されている");
+assertTrue(/hollow/.test(tokCode) && /small/.test(tokCode) && /large/.test(tokCode),
+  "白抜き・小さい丸・大きい丸の3通り");
+
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
 if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
 console.log("\n✓ すべて成功しました。");
