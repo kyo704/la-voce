@@ -101,6 +101,39 @@ async function main() {
   const right = m.answerQuizQuestion({ answerIndex: 1, explanation: "理由" }, 1);
   assertEqual(right.encouragement, null, "正解でも励ましを返さない（差をつけない）");
 
+  console.log("\n=== §3-2 復習の見せ方 ===");
+  console.log("     ★催促しない。連続日数を数えない。やらなくても何も起きない。");
+  const arts = {
+    a: { title: "記事A", quiz: m.QUIZ_SOURCE_ORDER.map((src, i) => ({ stem: "q" + (i + 1), choices: ["x", "y", "z"], answerIndex: i % 3, explanation: "e", source: src })) },
+    b: { title: "記事B", quiz: [] },
+    c: { title: "記事C", quiz: [{ stem: "c1", choices: ["x", "y", "z"], answerIndex: 0, explanation: "e", source: "keySentence" }] }
+  };
+  const prog = [
+    { articleId: "a", box: 2, nextDueAt: "2026-08-20" },
+    { articleId: "b", box: 1, nextDueAt: "2026-08-21" },
+    { articleId: "c", box: 1, nextDueAt: "2026-08-22" }
+  ];
+  const set = m.buildReviewSet(prog, arts, "2026-08-27");
+  assertTrue(set.length <= m.MAX_REVIEW_QUESTIONS, `★${set.length}問（3問まで）`);
+  assertTrue(!set.some((x) => x.articleId === "b"), "★問いの無い記事は出さない（まだ書いていない記事がある）");
+  assertTrue(set.every((x) => x.question && x.question.stem), "問いの中身がある");
+  assertEqual(m.buildReviewSet([], arts, "2026-08-27").length, 0, "たまっていなければ0問");
+  assertEqual(m.buildReviewSet(prog, {}, "2026-08-27").length, 0, "記事が無くても落ちない");
+
+  console.log("\n=== ★答えたあとに返すのは「次にいつ出すか」だけ ===");
+  const after = m.afterReviewAnswer({ box: 2 }, true, "2026-08-27");
+  assertEqual(after.box, 3, "正解したら次の段階へ");
+  assertEqual(after.nextDueAt, "2026-09-17", "box3 は21日後");
+  assertTrue(!("score" in after) && !("streak" in after) && !("rate" in after),
+    "★点数・連続日数・達成率を返していない");
+  const afterWrong = m.afterReviewAnswer({ box: 2 }, false, "2026-08-27");
+  assertEqual(afterWrong.box, 1, "間違えたら1つ前へ");
+  assertTrue(!("encouragement" in afterWrong), "★励ましも返さない");
+
+  console.log("\n=== ★催促する道を、そもそも作らない ===");
+  assertEqual(m.shouldPromptReview(), false, "催促してよいかは、常に false");
+  assertEqual(m.shouldPromptReview({ due: 99 }), false, "★何件たまっていても false");
+
   console.log("\n=== ★§9 禁止事項を、仕組みとして守る ===");
   assertTrue(typeof m.summarizeAttempts === "function", "集計の入口はある（が、拒否する）");
   let threw = false;
