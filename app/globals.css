@@ -160,7 +160,12 @@ button.inline-action {
    はみ出すのではなく、折り返す。 */
 button {
   white-space: normal;
-  overflow-wrap: anywhere;
+  /* ★anywhere ではなく break-word。
+     anywhere は語の途中でも切ります。日本語ではほとんど差が出ませんが、
+     ドイツ語やロシア語の長い語が不自然な位置で割れます（ゲートBの
+     「長い言語でレイアウトが崩れない」に直接効きます）。
+     break-word は、ほかに手が無いときだけ語を割ります。 */
+  overflow-wrap: break-word;
 }
 
 /* ★表が横に切れないこと（§2-3）。横スクロールできる箱に入れる。 */

@@ -236,6 +236,12 @@ async function main() {
     assertTrue(!/text-sm font-medium whitespace-nowrap transition-all/.test(uiCode),
       "★タブに shrink-0 が付いている（縮んで文字が切れない）");
     assertTrue(/overflow-x-auto/.test(uiCode), "帯が横スクロールできる");
+
+    console.log("     ★語の途中で割らない（ドイツ語・ロシア語。ゲートB）。");
+    assertTrue(!/overflow-wrap: anywhere/.test(css),
+      "★ボタンで overflow-wrap: anywhere を使っていない");
+    assertTrue(/overflow-wrap: break-word/.test(css),
+      "ほかに手が無いときだけ語を割る");
   }
 
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
