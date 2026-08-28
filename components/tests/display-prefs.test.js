@@ -139,6 +139,41 @@ async function main() {
       "長押しだけで消す操作が無い");
   }
 
+  console.log("\n=== 間違えても壊れない（§4-2）===");
+  {
+    console.log("     ★保存のあと、必ず「取り消す」を30秒出す。");
+    assertEqual(m.UNDO_WINDOW_MS, 30000, "30秒（仕様どおり）");
+    assertTrue(/setUndoableSave\(\{ date: clean\.date, previous: previousEntry/.test(uiCode),
+      "保存の直前の姿を控えている");
+    assertTrue(/async function handleUndoSave/.test(uiCode), "取り消しの処理がある");
+    assertTrue(/undoSaveLabel/.test(uiCode), "画面に「取り消す」を出している");
+    console.log("     ★保存前に記録が無かった日は、行ごと消す。");
+    console.log("       空の記録を残すと、「記録した日」として数えられてしまう。");
+    assertTrue(/from\("entries"\)\.delete\(\)\.eq\("user_id", userId\)\.eq\("date", date\)/.test(uiCode),
+      "無かった日は、取り消しで行ごと消す");
+
+    console.log("     ★消える通知を使わない（§4-1）。画面の中に残し、自分で閉じる。");
+    assertEqual(m.USE_DISAPPEARING_TOAST, false, "消える通知は使わない");
+    assertTrue(/setUndoableSave\(null\)/.test(uiCode), "自分で閉じられる");
+    assertTrue(!/残り\{|あと\{.*秒|カウントダウン/.test(uiCode),
+      "★秒数を数えて見せていない（急かされているように読める）");
+
+    console.log("     ★削除は2段階。押し間違いは必ず起きる。");
+    assertEqual(m.DELETE_NEEDS_CONFIRM, true, "2段階と決めてある");
+    assertTrue(/function DeleteWithConfirm/.test(uiCode), "2段階の部品が1つにそろっている");
+    const oneStep = (uiCode.match(/onClick=\{\(\) => handleDeleteArticleNote\(/g) || []).length;
+    assertTrue(oneStep === 0,
+      oneStep === 0 ? "★1回で消えるメモの削除が、残っていない" : `★1段階の削除が ${oneStep} 箇所ある`);
+
+    console.log("     ★エラーには、何をすればいいかを書く。");
+    assertTrue(/setSaveError\(t\(ACTIONABLE_ERROR_KEY\)\)/.test(uiCode),
+      "保存の失敗に、次にすることを書いている");
+    assertTrue(/console\.error\("記録を保存できませんでした:", error\)/.test(uiCode),
+      "★技術的な中身は console に残す（今日の400の切り分けは、これで進んだ）");
+    assertTrue(!/setSaveError\(error\.message/.test(uiCode),
+      "★Supabase の文面を、そのまま画面に出していない");
+  }
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");

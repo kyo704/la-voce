@@ -32,7 +32,7 @@ import {
 // 統合実行ルートv4 §6: 表示ゲートは必ずこのレイヤーを経由する。画面ごとに条件を書かないこと。
 import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q, NARRATIVE_MIN_N_PER_GROUP } from "@/lib/displayGates";
 import { SCALES, DEFAULT_SCALE, SCALE_LABELS, SCALE_SAMPLE, normalizeScale,
-  scaleAttribute, isSimpleDisplay } from "@/lib/displayPrefs";
+  scaleAttribute, isSimpleDisplay, UNDO_WINDOW_MS, ACTIONABLE_ERROR_KEY } from "@/lib/displayPrefs";
 import { SIMPLE_STEPS, SIMPLE_STEP_COUNT, remainingSteps, applyStep, skipStep,
   nextIndex, prevIndex, isFinished, SIMPLE_SKIP_LABEL, SIMPLE_BACK_LABEL, SIMPLE_DONE_TEXT } from "@/lib/simpleFlow";
 import { familyOf, mayStateFinding, EXPLORE, EXPLORE_NOTE,
@@ -2618,6 +2618,32 @@ function PeriodBands({ rows, maxDay = 35, width = 280, rowHeight = 18 }) {
 //   （見やすさ §3-2）。つまみは「いまどちらなのか」が読み取りにくく、
 //   小さくて狙いにくい。選んだほうに✓を付けて、言葉で示す。
 //   ★同じ切り替えを画面ごとに書かないこと。ここ1つにそろえる。
+// ★削除は2段階（見やすさ §4-2）。「消しますか」→「消す」。
+//   1回で消える削除を作らないこと。押し間違いは必ず起きる。
+//   ★同じ2段階を画面ごとに書かない。ここ1つにそろえる。
+function DeleteWithConfirm({ confirming, onAsk, onCancel, onDelete, t }) {
+  if (!confirming) {
+    return (
+      <button type="button" onClick={onAsk} className="text-xs underline mt-1 inline-action"
+        style={{ color: C.inkSoft }}>
+        {t("deleteButton")}
+      </button>
+    );
+  }
+  return (
+    <div className="flex items-center gap-2 mt-1 flex-wrap">
+      <span className="text-xs" style={{ color: C.ink }}>{t("confirmDeleteNote")}</span>
+      <button type="button" onClick={onDelete} className="px-3 py-1.5 rounded-full text-xs font-medium"
+        style={{ background: C.curtain, color: "#FFFDF8" }}>
+        {t("deleteButton")}
+      </button>
+      <button type="button" onClick={onCancel} className="px-3 py-1.5 rounded-full text-xs"
+        style={{ color: C.inkSoft, border: `1px solid ${C.line}` }}>
+        {t("cancelLabel")}
+      </button>
+    </div>
+  );
+}
 function TwoWaySwitch({ on, onChange, simple, onLabel = "あり", offLabel = "なし" }) {
   if (simple) {
     return (
@@ -4599,6 +4625,12 @@ export default function VocalTracker({ userId, userEmail }) {
   const [reflectDraft, setReflectDraft] = useState({});
   // かんたん表示の「1画面に1つ」。いま何問目か。★とばした数は数えない。
   const [simpleStepIndex, setSimpleStepIndex] = useState(0);
+  // ★保存のあと30秒、「取り消す」を出しておく（見やすさ §4-2）。
+  //   消える通知にしない。画面の中に残し、自分で閉じる（§4-1）。
+  //   { date, previous }  previous が null なら「その日の記録は無かった」。
+  const [undoableSave, setUndoableSave] = useState(null);
+  // ★削除は2段階（見やすさ §4-2）。押し間違いは必ず起きる。
+  const [confirmDeleteNoteId, setConfirmDeleteNoteId] = useState(null);
   // 間隔をあけて出し直すための状態（articleId -> { box, nextDueAt, ... }）
   const [articleProgress, setArticleProgress] = useState({});
   // 復習で答えた分（articleId -> 選んだ番号）。★正答率は数えない。
@@ -8010,6 +8042,13 @@ export default function VocalTracker({ userId, userEmail }) {
 
   // ★見やすさ。画面を2つ作らず、html の印を切り替えるだけにする（§0-④）。
   //   CSS 変数（--base / --tap / --gap）が、1つの画面を伸び縮みさせる。
+  // ★30秒たったら、取り消しの帯は静かに消える。押さなくても何も起きない。
+  useEffect(() => {
+    if (!undoableSave) return undefined;
+    const id = setTimeout(() => setUndoableSave(null), UNDO_WINDOW_MS);
+    return () => clearTimeout(id);
+  }, [undoableSave]);
+
   useEffect(() => {
     if (typeof document === "undefined") return;
     const mark = scaleAttribute(profile);
@@ -9105,6 +9144,9 @@ export default function VocalTracker({ userId, userEmail }) {
     const saveStartedAt = Date.now();
     setSaveStatus("saving");
     setSaveError("");
+    // ★保存する前の姿を控えておく。取り消しはこれを書き戻すだけ。
+    //   「無かった」と「あった」を取り違えないよう、null をそのまま持つ。
+    const previousEntry = entries[formData.date] ? { ...entries[formData.date] } : null;
     const clean = { ...formData };
     if (!entryHasActivityKind(clean, "本番")) clean.performanceQuality = null;
     clean.simpleMealMacros = simpleMealMacros;
@@ -9114,7 +9156,11 @@ export default function VocalTracker({ userId, userEmail }) {
       .upsert(entryToRow(userId, clean), { onConflict: "user_id,date" });
     if (error) {
       setSaveStatus("error");
-      setSaveError(error.message || t("errorUnknown"));
+      // ★画面には「次に何をすればいいか」だけを出す（見やすさ §4-2）。
+      //   「不明なエラー」や Supabase の技術的な文面は、読んでも動けない。
+      //   ★中身は console に残す。今日の400の切り分けは、これで進んだ。
+      console.error("記録を保存できませんでした:", error);
+      setSaveError(t(ACTIONABLE_ERROR_KEY));
       setTimeout(() => setSaveStatus("idle"), 4000);
       return;
     }
@@ -9133,6 +9179,7 @@ export default function VocalTracker({ userId, userEmail }) {
     const filledFieldNames = filledSectionNames(clean, profile.record_mode);
 
     setEntries((prev) => ({ ...prev, [clean.date]: clean }));
+    setUndoableSave({ date: clean.date, previous: previousEntry, at: Date.now() });
     setSaveStatus("saved");
     setTimeout(() => setSaveStatus("idle"), 1800);
     setSaveCardData({
@@ -9153,6 +9200,29 @@ export default function VocalTracker({ userId, userEmail }) {
       durationMs: Date.now() - saveStartedAt,
       mode: filledCount <= 3 ? "quick" : "full"
     });
+  }
+
+  /**
+   * 保存を取り消す。★保存前の姿を書き戻すだけ。
+   * ★保存前に記録が無かった日は、行ごと消す。
+   *   空の記録を残すと、「記録した日」として数えられてしまう。
+   */
+  async function handleUndoSave() {
+    if (!undoableSave) return;
+    const { date, previous } = undoableSave;
+    const supabase = createClient();
+    if (previous) {
+      const { error } = await supabase.from("entries").upsert(entryToRow(userId, previous), { onConflict: "user_id,date" });
+      if (error) { console.error("取り消せませんでした:", error); return; }
+      setEntries((prev) => ({ ...prev, [date]: previous }));
+      setFormData({ ...previous });
+    } else {
+      const { error } = await supabase.from("entries").delete().eq("user_id", userId).eq("date", date);
+      if (error) { console.error("取り消せませんでした:", error); return; }
+      setEntries((prev) => { const next = { ...prev }; delete next[date]; return next; });
+    }
+    setUndoableSave(null);
+    setSaveCardData(null);
   }
 
   async function handleDelete(date) {
@@ -10094,6 +10164,31 @@ export default function VocalTracker({ userId, userEmail }) {
                         </button>
                         {saveStatus === "error" && saveError && (
                           <p className="text-xs text-center" style={{ color: C.curtain }}>{saveError}</p>
+                        )}
+
+                        {/* ★保存のあと30秒、「取り消す」を出しておく（見やすさ §4-2）。
+                            ★消える通知にしない。画面の中に残し、自分で閉じる（§4-1）。
+                              読み終わる前に消えるのが、いちばん不安を生む。
+                            ★30秒は数えて出さない。数字が減っていくのを見せると、
+                              急かされているように読める。 */}
+                        {undoableSave && (
+                          <div className="rounded-2xl p-3 border flex items-center justify-between gap-3"
+                            style={{ background: C.paper, borderColor: C.line }}>
+                            <p className="text-sm" style={{ color: C.ink }}>{t("undoSaveDone")}</p>
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                              <button type="button" onClick={handleUndoSave}
+                                className="px-4 py-2 rounded-full text-sm font-medium"
+                                style={{ background: C.card, color: C.ink, border: `1px solid ${C.ink}` }}>
+                                {t("undoSaveLabel")}
+                              </button>
+                              <button type="button" onClick={() => setUndoableSave(null)}
+                                className="w-9 h-9 rounded-full flex items-center justify-center"
+                                style={{ color: C.inkSoft, border: `1px solid ${C.line}` }}
+                                aria-label={t("cancelLabel")}>
+                                <X size={14} />
+                              </button>
+                            </div>
+                          </div>
                         )}
 
                         {/* 改善タスクv2 §4-2(a): 総合コンディションは「結果」なので、入力の前ではなく
@@ -14478,10 +14573,11 @@ export default function VocalTracker({ userId, userEmail }) {
                                           {String(n.created_at || "").slice(0, 10)}
                                         </p>
                                         <p className="text-sm" style={{ color: C.ink, lineHeight: 1.7 }}>{n.body}</p>
-                                        <button type="button" onClick={() => handleDeleteArticleNote(n.id, article.id)}
-                                          className="text-xs underline mt-0.5" style={{ color: C.inkSoft }}>
-                                          {t("deleteButton")}
-                                        </button>
+                                        <DeleteWithConfirm t={t}
+                                          confirming={confirmDeleteNoteId === n.id}
+                                          onAsk={() => setConfirmDeleteNoteId(n.id)}
+                                          onCancel={() => setConfirmDeleteNoteId(null)}
+                                          onDelete={() => { handleDeleteArticleNote(n.id, article.id); setConfirmDeleteNoteId(null); }} />
                                       </div>
                                     ))}
                                   </div>
@@ -14599,7 +14695,11 @@ export default function VocalTracker({ userId, userEmail }) {
                         <div key={n.id} className="rounded-xl p-2.5 mb-2" style={{ background: C.paper }}>
                           {n.anchor_text && <p className="text-xs mb-1" style={{ color: C.inkSoft }}>「{n.anchor_text}」について</p>}
                           <p className="text-sm">{n.body}</p>
-                          <button type="button" onClick={() => handleDeleteArticleNote(n.id, article.id)} className="text-xs underline mt-1" style={{ color: C.inkSoft }}>{t("deleteButton")}</button>
+                          <DeleteWithConfirm t={t}
+                            confirming={confirmDeleteNoteId === n.id}
+                            onAsk={() => setConfirmDeleteNoteId(n.id)}
+                            onCancel={() => setConfirmDeleteNoteId(null)}
+                            onDelete={() => { handleDeleteArticleNote(n.id, article.id); setConfirmDeleteNoteId(null); }} />
                         </div>
                       ))}
                       <textarea value={newArticleNoteDraft} rows={2} maxLength={500}
