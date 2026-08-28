@@ -39,7 +39,8 @@ import {
 // 記録項目の表示・非表示は必ずこのレイヤーを通す（記録項目の再設計v2 §3.3）
 import { isFieldGroupVisible, DEFAULT_RECORD_MODE } from "@/lib/fieldGroups";
 // 機能フラグ（G2-14）。判定はこのモジュールだけが持つ。
-import { canSeeBetaFeatures, canSeeTeacherFeatures, canSeeLineLink, canSeeStudentTeacherLink } from "@/lib/featureFlags";
+import { canSeeBetaFeatures, canSeeTeacherFeatures, canSeeLineLink, canSeeStudentTeacherLink,
+  canSeeShobaiArticles, isShobaiArticle } from "@/lib/featureFlags";
 // 削除の猶予期間（A-4）。日数の計算はサーバーと同じものを使う。
 import { graceDaysLeft, GRACE_PERIOD_DAYS } from "@/lib/accountDeletion";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
@@ -13884,8 +13885,15 @@ export default function VocalTracker({ userId, userEmail }) {
               const currentProfession = learnProfession || profile.vocal_profession || "singer";
               // §7.4: 検索。記事タイトル・本文を職業をまたいで横断する。用語（第7章相当）は無いため、
               // タイトル・本文の部分一致だけで簡易実装する。
+              // ★音楽家の商いは有料の記事。課金の線が引かれるまでは、
+              //   一覧・検索・本文のすべてを1つの判定で絞る（lib/featureFlags.js）。
+              //   一覧には出して本文で止める形にしないこと。読めない記事が
+              //   並んでいるのは、鍵をかけられているのと同じ体験になる。
+              const canSeeShobai = canSeeShobaiArticles(profile);
+              const visibleArticle = (a) => canSeeShobai || !isShobaiArticle(a);
+              const learnChapters = canSeeShobai ? [1, 2, 3, 4, 5, 6, 7, 8, 9] : [1, 2, 3, 4, 5, 6, 7];
               const searchResults = learnSearchQuery.trim()
-                ? ARTICLES.filter((a) =>
+                ? ARTICLES.filter(visibleArticle).filter((a) =>
                     a.title.includes(learnSearchQuery.trim()) || a.bodyMd.includes(learnSearchQuery.trim()) || (a.terms || []).some((t) => t.includes(learnSearchQuery.trim()))
                   )
                 : null;
@@ -13894,6 +13902,9 @@ export default function VocalTracker({ userId, userEmail }) {
                 // §7.2: 記事の画面
                 const article = getArticleById(viewingArticleId);
                 if (!article) return null;
+                // ★一覧を絞っているので通常は届かないが、ここでも止める。
+                //   入口が1つだと思い込んだところから漏れる、というのを何度か見ている。
+                if (!visibleArticle(article)) return null;
                 const notes = articleNotes[article.id] || [];
                 const isRead = !!learnReadArticles[article.id];
                 const professionLabel = article.professions === "all" ? "からだ" : PROFESSION_LABELS[article.professions[0]];
@@ -14098,8 +14109,8 @@ export default function VocalTracker({ userId, userEmail }) {
                     </div>
                   ) : (
                     <>
-                      {[1, 2, 3, 4, 5, 6, 7].map((chapter) => {
-                        const articles = getArticlesForProfession(currentProfession).filter((a) => a.chapter === chapter);
+                      {learnChapters.map((chapter) => {
+                        const articles = getArticlesForProfession(currentProfession).filter(visibleArticle).filter((a) => a.chapter === chapter);
                         const isOpen = learnOpenChapters[`${currentProfession}:${chapter}`] !== false; // 既定は開く
                         const readCount = articles.filter((a) => learnReadArticles[a.id]).length;
                         return (

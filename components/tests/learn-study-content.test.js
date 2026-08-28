@@ -36,6 +36,10 @@ async function main() {
   const parsed = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
   const data = parsed.articles || {};
   const skipped = parsed.skipped || {};
+  const shobaiPath = path.join(__dirname, "..", "..", "docs", "learn-content", "shobai.json");
+  const shobai = fs.existsSync(shobaiPath)
+    ? (JSON.parse(fs.readFileSync(shobaiPath, "utf-8")).articles || []) : [];
+  const shobaiIds = new Set(shobai.map((a) => a.id));
   const byId = Object.fromEntries(L.ARTICLES.map((a) => [a.id, a]));
 
   console.log(`\n=== 勉強パーツの検査（${Object.keys(data).length}記事）===`);
@@ -102,8 +106,13 @@ async function main() {
   //   「勉強パーツが無い」には二通りある。決めて置かなかったのと、忘れたの。
   //   区別できないと、決めたほうをあとから「抜けている」と思って埋めてしまう。
   {
+    // ★原稿は2つある。study.json（69本）と shobai.json（音楽家の商い14本）。
+    //   商いの記事は原稿そのものが勉強パーツを持っているので、
+    //   study.json を見に行かない。ここで数えると、毎回14本欠けて見える。
     const covered = new Set(Object.keys(data).concat(Object.keys(skipped)));
-    const missing = L.ARTICLES.map((a) => a.id).filter((id) => !covered.has(id));
+    const missing = L.ARTICLES.map((a) => a.id)
+      .filter((id) => !shobaiIds.has(id))
+      .filter((id) => !covered.has(id));
     assertTrue(missing.length === 0,
       missing.length === 0
         ? `★69本すべてに答えが出ている（作った ${Object.keys(data).length} / 置かないと決めた ${Object.keys(skipped).length}）`
@@ -121,7 +130,7 @@ async function main() {
   // ★原稿とアプリのつながり。合流を止めても、原稿の検査だけは通ってしまう。
   //   「原稿は正しいのに、画面には何も出ていない」を拾えるようにする。
   {
-    const inApp = L.ARTICLES.filter((a) => a.keySentence).length;
+    const inApp = L.ARTICLES.filter((a) => a.keySentence && !shobaiIds.has(a.id)).length;
     const inManuscript = Object.keys(data).filter((id) => data[id].keySentence).length;
     assertTrue(inApp === inManuscript,
       `★原稿の勉強パーツが、そのままアプリにも入っている（原稿 ${inManuscript} / アプリ ${inApp}）`);
@@ -144,6 +153,42 @@ async function main() {
     assertTrue(leaked.length === 0,
       leaked.length === 0 ? "★アプリ側の読む前の問いにも、正解が入っていない"
         : `★読む前の問いに正解が入った: ${leaked.map((a) => a.id).join(", ")}`);
+  }
+
+  console.log("\n=== 音楽家の商い（記述式・14本）===");
+  {
+    assertTrue(shobai.length === 14, `原稿が14本ある（いま${shobai.length}本）`);
+    const inApp = L.ARTICLES.filter((a) => shobaiIds.has(a.id));
+    assertTrue(inApp.length === shobai.length,
+      `★原稿がそのままアプリにも入っている（原稿 ${shobai.length} / アプリ ${inApp.length}）`);
+
+    console.log("     ★正解が土地と状況で変わる記事。選択式を出さない（§7 受け入れ条件）。");
+    const withQuiz = inApp.filter((a) => a.quiz && a.quiz.length);
+    assertTrue(withQuiz.length === 0,
+      withQuiz.length === 0 ? "★選択式の設問が1つも入っていない"
+        : `★選択式が入った: ${withQuiz.map((a) => a.id).join(", ")}`);
+    const notReflect = inApp.filter((a) => S.quizModeOf(a) !== "reflect");
+    assertTrue(notReflect.length === 0,
+      notReflect.length === 0 ? "14本とも quizMode が reflect"
+        : `★reflect になっていない: ${notReflect.map((a) => a.id).join(", ")}`);
+    const wrongCount = inApp.filter((a) => (a.prompts || []).length !== S.REFLECT_PROMPT_COUNT);
+    assertTrue(wrongCount.length === 0,
+      wrongCount.length === 0 ? `記述の問いが、どれも${S.REFLECT_PROMPT_COUNT}つある`
+        : `★数が違う: ${wrongCount.map((a) => `${a.id}(${(a.prompts || []).length})`).join(", ")}`);
+
+    console.log("     ★有料の記事。課金の線が引かれるまで、一覧にも本文にも出さない。");
+    const F = require("fs").readFileSync(
+      path.join(__dirname, "..", "..", "lib", "featureFlags.js"), "utf-8");
+    assertTrue(/export function canSeeShobaiArticles/.test(F),
+      "見せる相手の判定が lib/featureFlags.js にある");
+    const uiCode = require("./_source").stripComments(
+      require("./_source").readRaw("components", "VocalTracker.jsx"));
+    assertTrue(/canSeeShobaiArticles\(profile\)/.test(uiCode), "画面がその判定を使っている");
+    assertTrue(/ARTICLES\.filter\(visibleArticle\)/.test(uiCode), "★検索からも外している");
+    assertTrue(/if \(!visibleArticle\(article\)\) return null;/.test(uiCode),
+      "★本文の側でも止めている（入口が1つだと思い込まない）");
+    assertTrue(!/\[1, 2, 3, 4, 5, 6, 7\]\.map\(\(chapter\)/.test(uiCode),
+      "章の一覧を数字べた書きにしていない（8・9が漏れる形にしない）");
   }
 
   const total = answerPos.reduce((x, y) => x + y, 0);

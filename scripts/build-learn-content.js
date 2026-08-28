@@ -120,6 +120,25 @@ unresolved.forEach((a) => console.log("   ", a.id, a.title, "／", a.status));
   if (fs.existsSync(studyPath)) study = JSON.parse(fs.readFileSync(studyPath, "utf-8"));
   const S = await import(url.pathToFileURL(path.join(ROOT, "lib/learnStudy.js")).href);
 
+  // ★音楽家の商い（shobai-01〜14）を合流させる。
+  //   原稿は docs/音楽家の商い-第1章.md / 第2章.md、
+  //   切り出しは scripts/build-shobai-content.js が docs/learn-content/shobai.json へ。
+  //   ★選択式の3問は作らない（quizMode: "reflect"）。正解が土地と状況で変わる。
+  //   ★見せる相手は lib/featureFlags.js の canSeeShobaiArticles が決める。
+  //     ここでは全部入れておき、画面側で絞る。
+  const shobaiPath = path.join(ROOT, "docs/learn-content/shobai.json");
+  if (fs.existsSync(shobaiPath)) {
+    const shobai = JSON.parse(fs.readFileSync(shobaiPath, "utf-8")).articles || [];
+    const already = new Set(out.map((a) => a.id));
+    let added = 0;
+    shobai.forEach((a) => {
+      if (already.has(a.id)) return;
+      out.push(a);
+      added += 1;
+    });
+    console.log("音楽家の商い      :", added, "本（quizMode: reflect）");
+  }
+
   let withStudy = 0;
   out.forEach((a) => {
     const s = (study.articles || {})[a.id];
@@ -136,7 +155,10 @@ unresolved.forEach((a) => console.log("   ", a.id, a.title, "／", a.status));
   const skipped = Object.keys(study.skipped || {});
   console.log("勉強パーツを入れた  :", withStudy, "本");
   console.log("  ★置かないと決めた:", skipped.length, "本", skipped.length ? `（${skipped.join(", ")}）` : "");
-  const missing = out.filter((a) => !(study.articles || {})[a.id] && !(study.skipped || {})[a.id]);
+  // ★音楽家の商いは、原稿そのものが勉強パーツを持っている（shobai.json）。
+  //   study.json を見に行かないので、ここでは数えない。
+  const missing = out.filter((a) => !a.quizMode
+    && !(study.articles || {})[a.id] && !(study.skipped || {})[a.id]);
   if (missing.length) console.log("  ★どちらにも無い   :", missing.map((a) => a.id).join(", "));
 
   // ---- ファイルを書き出す ----
@@ -153,6 +175,7 @@ unresolved.forEach((a) => console.log("   ", a.id, a.title, "／", a.status));
     if (a.prequestion) parts.push(`    prequestion: ${JSON.stringify(a.prequestion)}`);
     if (a.quiz && a.quiz.length) parts.push(`    quiz: ${JSON.stringify(a.quiz)}`);
     if (a.reflectionPrompt) parts.push(`    reflectionPrompt: ${q(a.reflectionPrompt)}`);
+    if (a.prompts && a.prompts.length) parts.push(`    prompts: ${JSON.stringify(a.prompts)}`);
     if (a.quizMode) parts.push(`    quizMode: ${q(a.quizMode)}`);
     return parts.length ? ",\n" + parts.join(",\n") : "";
   };
