@@ -9349,12 +9349,16 @@ export default function VocalTracker({ userId, userEmail }) {
         className="px-4 sm:px-6 pb-4 sticky top-0 z-10"
         style={{ background: C.paper, borderBottom: `1px solid ${C.line}`, paddingTop: "calc(env(safe-area-inset-top) + 1.5rem)" }}
       >
-        <div className="max-w-3xl mx-auto flex items-start justify-between gap-3">
-          {/* ★左に幅を与える（flex-1 min-w-0）。
-              右側は shrink-0 で縮まないため、左は min-content まで潰されていました。
-              日本語はどの文字と文字のあいだでも折り返せるので、潰れた幅のまま
-              副題が縦一列に崩れます。★これは文字サイズではなく、幅の問題です。 */}
-          <div className="flex-1 min-w-0">
+        {/* ★携帯では、横に並べるのをやめて上下に分けます。
+            右側（言語＋アイコン4つ）だけで 240〜290px あり、375px の画面では
+            左に残る幅がほとんどありません。横並びのままだと、どう調整しても
+            ロゴと副題が数十pxを奪い合うことになります。
+            ★min-w-0 を外します。あれは「min-content より縮んでよい」という指定で、
+              まさにロゴが「La / Voce」に割れ、副題が1文字ずつ縦に崩れた原因でした。
+              私が入れた指定です。幅を与えるつもりで、床を外していました。
+            広い画面（sm以上）では、これまでどおり横に並べます。 */}
+        <div className="max-w-3xl mx-auto flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
+          <div>
             {/* ★ヘッダーは、見やすさの設定につながっていませんでした（G2-14.5 の抜け）。
                 text-3xl は rem なので html 基点になった今は伸びますが、
                 それだと「とても大きい」で見出しだけが画面を占めてしまいます。
@@ -9362,10 +9366,10 @@ export default function VocalTracker({ userId, userEmail }) {
                 ★副題は行の高さを明示します。ff-mono と text-xs が組み合わさると、
                   大きくなった文字が小さい行の箱に入り、上の見出しと重なっていました。
                   ここが「左上が読みにくい」の正体です。 */}
-            <h1 className="ff-display italic app-wordmark" style={{ color: C.curtain }}>La Voce</h1>
+            <h1 className="ff-display italic app-wordmark whitespace-nowrap" style={{ color: C.curtain }}>La Voce</h1>
             <p className="ff-mono app-tagline tracking-widest uppercase" style={{ color: C.inkSoft }}>{t("appTagline")}</p>
           </div>
-          <div className="flex items-center gap-1 shrink-0 mt-1">
+          <div className="flex items-center gap-1 shrink-0 self-end sm:self-auto sm:mt-1">
             <div className="relative flex items-center">
               <Globe size={13} style={{ color: C.inkSoft, position: "absolute", left: 8, pointerEvents: "none" }} />
               <select
@@ -9373,7 +9377,7 @@ export default function VocalTracker({ userId, userEmail }) {
                 onChange={(e) => setLanguage(e.target.value)}
                 aria-label={t("languageLabel")}
                 className="rounded-full border text-xs pl-7 pr-2 py-1.5 appearance-none"
-                style={{ borderColor: C.line, color: C.inkSoft, background: C.card }}
+                style={{ borderColor: C.line, color: C.inkSoft, background: C.card, maxWidth: "7.5em" }}
               >
                 {LANGUAGES.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
               </select>

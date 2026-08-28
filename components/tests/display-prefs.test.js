@@ -227,8 +227,18 @@ async function main() {
     assertTrue(fixedBoxes === 0, `★文字の入る固定幅が残っていない（${fixedBoxes}箇所）`);
 
     console.log("     ★ヘッダーの左側に幅を与える（右は縮まないため）。");
-    assertTrue(/<div className="flex-1 min-w-0">/.test(uiCode),
-      "★左側が min-content まで潰れない（日本語が縦一列に崩れない）");
+    // ★min-w-0 は「min-content より縮んでよい」という指定。
+    //   幅を与えるつもりで入れたが、床を外していた。ロゴが「La / Voce」に割れ、
+    //   副題が1文字ずつ縦に崩れた直接の原因。★入れ直さないこと。
+    const headerBlock = uiCode.slice(uiCode.indexOf("max-w-3xl mx-auto flex flex-col"),
+      uiCode.indexOf("max-w-3xl mx-auto flex flex-col") + 1400);
+    assertTrue(!/min-w-0/.test(headerBlock), "★ヘッダーに min-w-0 を入れていない");
+    assertTrue(/flex-col gap-2 sm:flex-row/.test(headerBlock),
+      "★携帯では上下に分ける（右側だけで240〜290pxあり、横並びでは幅を奪い合う）");
+    assertTrue(/app-wordmark whitespace-nowrap/.test(uiCode),
+      "★ロゴは折り返さない（La / Voce に割れない）");
+    assertTrue(/maxWidth: "7\.5em"/.test(headerBlock),
+      "言語の選択欄が、長い言語で広がりすぎない");
     assertTrue(/app-wordmark/.test(uiCode) && /clamp\(/.test(css),
       "ワードマークが伸びる（ただし伸びすぎない）");
 
