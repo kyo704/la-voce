@@ -76,6 +76,53 @@ Domain 属性でも共有できません）。
 
 ---
 
+## ★進捗（2026-08-28 時点）
+
+```
+Phase 0   ✅ 完了・確認済み
+ゲートA   ✅ 通過（Production）／★Preview だけ未確認
+Phase 1   ✅ 完了・確認済み（ゲートB 通過）
+Phase 2   ⬜ これから
+Phase 3   ⛔ ★配信と更新の確認.md §3・§5 が終わるまで着手しない
+Phase 4   ⬜ Phase 3 のあと、数日置いてから
+```
+
+**Phase 0（0006999 ほか）**
+`lib/baseUrl.js` に集約。`metadataBase` もここから。
+2026-08-28 に OG と canonical を追加（03ed0a0）。それまで OG タグが
+1つも出ておらず、★ゲートAの「OG画像のURLが woolsong.app で出る」を
+確かめる対象そのものがありませんでした。いまは出ています。
+
+  <meta property="og:url" content="https://woolsong.app"/>
+  <meta property="og:image" content="https://woolsong.app/icons/icon-1024.png"/>
+  <link rel="canonical" href="https://woolsong.app"/>
+
+★これは `NEXT_PUBLIC_SITE_URL` が Production に正しく入っている
+　証拠でもあります（未設定なら *.vercel.app が出ます）。
+★共有画像は暫定（正方形のアイコン流用）。横長1200×630は別の作業。
+★Preview デプロイでの確認だけ、まだ行っていません。
+
+**Phase 1（コードの変更なし・1ad454e）**
+§5-3 を監査した結果、★変えないと決めました。
+
+  emailRedirectTo / redirectTo   window.location.origin 由来のまま
+  OAuth                          使っていない（該当なし）
+  Cookie の Domain 属性          付いていない（§16-6 のとおり）
+
+理由: 新旧2つのドメインが同時に生きている期間があります。
+window.location.origin は、その人がいま見ているドメインを返すので、
+旧URLから登録した人には旧URLの確認リンクが届き、完了できます。
+getBaseUrl() に固定すると、旧URLにいる人に新URLのリンクを送ることに
+なり、転送がまだ無い期間は手続きの途中で行き止まります。
+★寄せてよいのは Phase 4 のあと。理由ごとテストに固定しました。
+
+**ゲートB（2026-08-28・坂本さんが実機で確認）**
+新旧の両方のURLで、登録→確認メール→リンク→ログイン、
+パスワード再設定→メール→再設定、ログアウト→再ログイン。
+★どちらのドメインでも問題なし。
+
+---
+
 ## 3. Phase 0｜絶対URLの出どころを1か所にする
 
 **先にこれをやらないと、以降の作業が総当たりになります。**
