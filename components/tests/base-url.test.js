@@ -98,6 +98,37 @@ async function main() {
     require("path").join(__dirname, "..", "..", "public", "icons", "icon-1024.png")),
     "og:image のファイルが実在する");
 
+  console.log("\n=== ★認証の戻り先は、わざと window.location.origin のまま（§5-3） ===");
+  // ★これは「直し忘れ」ではありません。2026-08-28 に検討したうえで、
+  //   このままにすると決めました。次に読む人が getBaseUrl() に
+  //   「統一」しないように、理由ごとここに固定します。
+  //
+  //   理由: 新旧2つのドメインが同時に生きている期間があります（Phase 4 の
+  //   308 転送を入れるまで）。window.location.origin は、その人がいま
+  //   実際に見ているドメインを返します。旧URLから登録した人には旧URLの
+  //   確認リンクが届き、そのまま完了できます。
+  //   ここを getBaseUrl() に固定すると、旧URLにいる人に新URLのリンクを
+  //   送ることになり、転送がまだ無い期間は手続きの途中で行き止まります。
+  //
+  //   ★getBaseUrl() に寄せてよいのは、Phase 4 の転送が入り、旧URLからの
+  //     流入が無くなってからです。それまでは、この形が正しい。
+  //
+  //   ★前提: Supabase の Redirect URLs に新旧の両方が載っていること（§5-1）。
+  //     載っていないほうから来た人は、Supabase 側で弾かれます。
+  {
+    const login = stripComments(readRaw("app", "login", "page.js"));
+    const signup = stripComments(readRaw("components", "SignupForm.jsx"));
+    assertTrue(/\$\{window\.location\.origin\}\/auth\/callback/.test(login),
+      "パスワード再設定の戻り先が window.location.origin 由来");
+    assertTrue(/\$\{window\.location\.origin\}\/auth\/callback/.test(signup),
+      "新規登録の確認メールの戻り先が window.location.origin 由来");
+    // ★ドメインの直書きだけは、いつでも間違いです。
+    [["app/login/page.js", login], ["components/SignupForm.jsx", signup]].forEach(([name, code]) => {
+      assertTrue(!/https?:\/\/(woolsong\.app|la-voce\.vercel\.app)/.test(code),
+        `★${name} にドメインの直書きが無い`);
+    });
+  }
+
   console.log("\n=== まだ何も切り替えていないこと（Phase 0 の範囲）===");
   {
     assertTrue(m.LEGACY_ORIGINS.includes("https://la-voce.vercel.app"),
