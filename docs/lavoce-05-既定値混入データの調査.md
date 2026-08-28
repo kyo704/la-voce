@@ -84,10 +84,19 @@ select
   count(*) filter (where throat_condition = 3)                    as "喉が3",
   count(*) filter (where resonance_score = 5)                     as "響きが5",
   count(*) filter (where throat_condition = 3 and resonance_score = 5) as "両方（★これが本命）",
+  -- ★2026-08-28 修正。前の版は、ここに voice_quality is null を入れていました。
+  --   voice_quality は resonance_score から導出される列です
+  --   （VocalTracker.jsx:1660 voiceQuality = intOrNull(quality10ToFiveScale(rep.quality))、
+  --    quality10ToFiveScale(q) = 1 + (q/10)*4 なので、5 → 必ず 3）。
+  --   つまり resonance_score = 5 のとき voice_quality は絶対に null になりません。
+  --   条件が最初から成立せず、★必ず 0 が返ります。実際に0が出て、
+  --   「4件とも本人が答えたものだ」と誤って読みかけました。
+  --   導出された列を「触っていない証拠」に使わないこと。
   count(*) filter (where throat_condition = 3 and resonance_score = 5
-                     and voice_quality is null
-                     and pianissimo_high_note is null
-                     and voice_memo is null)                      as "両方＋ほかの声の項目が空"
+                     and (sleep_hours is not null
+                          or activity_type is not null
+                          or meals is not null))
+    as "両方＋声以外は記録している（＝スライダーだけ触っていない疑い）"
 from public.entries
 where created_at < '2026-08-28 08:15:16+09';
 
@@ -169,3 +178,58 @@ where created_at < '2026-08-28 08:15:16+09'
 
 ★健康に関するデータの扱いを、仕様書も数字も無いまま
 　私の判断で決めることは避けたいです。
+
+
+---
+
+# 実行の結果と、決めたこと（2026-08-28）
+
+## 数えた結果
+
+```
+② 基準より前の行            15
+     喉が3                   8
+     響きが5                 5
+     両方                    4
+     両方＋ほかの声の項目が空 0   ← ★このクエリは壊れていました
+③ 基準より後の行             1
+     両方                    0
+```
+
+## ★「0」は証拠ではありませんでした
+
+`voice_quality is null` を「ほかの項目を触っていない証拠」として
+使っていましたが、この列は `resonance_score` から導出されます。
+`resonance_score = 5` なら `voice_quality` は必ず 3 になり、
+null にはなりません。**条件が成立しないので、必ず0が返ります。**
+
+★この0を見て「4件とも本人の回答だ」と読みかけました。
+　導出された列を、入力の有無の判定に使わないこと。
+
+## 決めたこと: **C（いまは何もしない）**
+
+理由は、混入が無いからではありません。**データが少なすぎて、
+そもそも文章が1つも出ていないから**です。
+
+- 記録は全部で **16行**（前15・後1）
+- `lib/displayGates.js:22` が `NARRATIVE_MIN_N_PER_GROUP = 10`
+- 群比較は**両群とも** n ≥ 10 が要る。16行では成立しません
+- 分析は本人1人ぶん（N-of-1）なので、1人あたりはさらに少ない
+
+**いま、この混入が影響している表示は1つもありません。**
+ゲートが既に止めているものを守るために、本物の回答を巻き添えに
+する仕組みを入れるのは、割に合いません。
+
+★ただし 15件中4件（27%）は低くありません。
+　人数が増えたときに効いてきます。「いまはやらない」であって
+　「やらない」ではありません。
+
+## いつ数え直すか
+
+**15〜20人に配ったあと。** ③（基準より後）が1行では、
+比べる相手がありません。配布後なら、基準より後のデータが
+まとまって出るので、④の比較が初めて意味を持ちます。
+
+★混入した期間は1日で、すでに閉じています。
+　これから増える記録はすべてきれいなので、
+　放っておいても割合は下がり続けます。
