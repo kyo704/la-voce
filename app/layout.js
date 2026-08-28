@@ -1,4 +1,5 @@
 import { Cormorant_Garamond, Work_Sans, IBM_Plex_Mono } from "next/font/google";
+import { getBaseUrl } from "@/lib/baseUrl";
 import "./globals.css";
 const display = Cormorant_Garamond({
   subsets: ["latin"],
@@ -17,6 +18,9 @@ const mono = IBM_Plex_Mono({
   variable: "--font-mono"
 });
 export const metadata = {
+  // ★OG画像などの相対URLの基準（ドメイン切替 §3）。
+  //   ここを設定しないと、Next.js は基準を推測する。推測させない。
+  metadataBase: new URL(getBaseUrl()),
   title: "La Voce | 声のプロフェッショナルのための体調管理",
   description:
     "声楽家・アナウンサー・声優・ポップス/ミュージカル歌手など、声のプロフェッショナルのための体調管理アプリ。喉・声のコンディション、睡眠、気候、本番の出来までを記録し、傾向を分析します。",

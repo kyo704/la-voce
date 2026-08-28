@@ -7,10 +7,13 @@
 // ★A4・縦。ブラウザの印刷（⌘P / Ctrl+P）でそのまま出ます。
 import { C } from "@/lib/tokens";
 import { INSTALL_STEPS } from "@/lib/displayPrefs";
+import { getBaseUrl } from "@/lib/baseUrl";
 
 export const metadata = { title: "La Voce のはじめかた" };
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://la-voce.app";
+// ★私が書いた fallback（https://la-voce.app）は、存在しない住所だった。
+// 紙に刷って配るものなので、出どころを1か所に寄せる。
+const SITE = getBaseUrl();
 
 export default function StartSheet() {
   return (

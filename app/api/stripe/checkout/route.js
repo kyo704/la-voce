@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { absoluteUrl } from "@/lib/baseUrl";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { stripe } from "@/lib/stripe";
@@ -45,8 +46,8 @@ export async function POST() {
       trial_period_days: 14,
       metadata: { supabase_user_id: user.id }
     },
-    success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard`,
-    cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/billing`
+    success_url: absoluteUrl("/dashboard"),
+    cancel_url: absoluteUrl("/billing")
   });
 
   return NextResponse.json({ url: session.url });

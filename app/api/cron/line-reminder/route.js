@@ -9,6 +9,7 @@
 // （外部から誰でもこのURLを叩いてリマインドを乱発できないようにするため）。
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { absoluteUrl } from "@/lib/baseUrl";
 
 function todayISO() {
   const d = new Date();
@@ -71,7 +72,10 @@ export async function GET(req) {
 
     if (todayEntry) continue; // 既に今日記録済みの人には送らない
 
-    await pushMessage(p.line_user_id, "おはようございます。今日の声・喉の調子を、30秒だけ記録してみませんか？\nhttps://la-voce.vercel.app/");
+    // ★URLを直書きしない（ドメイン切替 §3）。ここに書くと、ドメインを変えたとき
+    //   利用者の手元に届くリンクだけが古いまま残る。いちばん気づきにくい形。
+    await pushMessage(p.line_user_id,
+      `おはようございます。今日の声・喉の調子を、30秒だけ記録してみませんか？\n${absoluteUrl("/")}`);
     sentCount += 1;
   }
 
