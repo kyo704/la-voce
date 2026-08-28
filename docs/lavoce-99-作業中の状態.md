@@ -431,7 +431,8 @@ falseAlarmTest は1件も見つかりませんでした。
 | ゲートA | ✅ Production は通過／★Preview だけ未確認 |
 | Phase 1 Supabase 認証 | ✅ 完了（★コードの変更なし） |
 | ゲートB 実機の通し確認 | ✅ 新旧の両ドメインで通過 |
-| Phase 2 外部サービス | ⬜ これから |
+| Phase 2 LINE | ✅ 完了（Webhook を /api/line-webhook に。検証200） |
+| Phase 2 Resend | ⏸ 後回し（★Phase 3・4 を止めません） |
 | Phase 3 旧オリジンの後始末 | ⛔ ★ゲートあり（下記） |
 | Phase 4 308への切替 | ⬜ Phase 3 のあと、数日置いてから |
 

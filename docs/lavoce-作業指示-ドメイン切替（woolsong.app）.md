@@ -82,10 +82,37 @@ Domain 属性でも共有できません）。
 Phase 0   ✅ 完了・確認済み
 ゲートA   ✅ 通過（Production）／★Preview だけ未確認
 Phase 1   ✅ 完了・確認済み（ゲートB 通過）
-Phase 2   ⬜ これから
+Phase 2   ✅ LINE 完了 ／ ⏸ Resend は後回し（★止めていません）
 Phase 3   ⛔ ★配信と更新の確認.md §3・§5 が終わるまで着手しない
 Phase 4   ⬜ Phase 3 のあと、数日置いてから
 ```
+
+**Phase 2-LINE（2026-08-28・坂本さんがコンソールで変更）**
+Webhook URL を `https://woolsong.app/api/line-webhook` に変更し、
+「検証」で 200 を確認。
+
+★仕様書 §7-1 は `/api/line/webhook` と書いていますが、
+　**それは誤りです。**実際のルートはハイフンで、階層がありません。
+　外から確かめた結果（2026-08-28）:
+
+```
+  /api/line-webhook   → 401（ルートは在る。署名が無いので弾かれる＝正常）
+  /api/line/webhook   → 404（★このパスは存在しない）
+```
+
+★LIFF・LINE Login は使っていません（Messaging API のみ）。
+★友だち追加URL（line.me）は変更不要。
+
+**Phase 2-Resend（★後回し。止めていません）**
+`RESEND_API_KEY` を使うのは `app/api/feedback/route.js` の1本だけで、
+それは坂本さん宛のフィードバック通知です。
+★利用者にメールは送っておらず、本文にリンクもありません
+（認証メールは Supabase 側）。
+したがって Phase 3・4 を止めません。
+
+branded な送信元が欲しくなったら、
+★先に Resend でドメイン認証（SPF/DKIM/DMARC）を済ませてから
+送信元を変えてください（§16-3。順番を逆にすると全メールが止まります）。
 
 **Phase 0（0006999 ほか）**
 `lib/baseUrl.js` に集約。`metadataBase` もここから。
