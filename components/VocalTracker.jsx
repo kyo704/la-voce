@@ -412,12 +412,7 @@ const CONDITION_OPTIONS = [
 ];
 // 「今日の負荷」の抽象スキーマ。type はログの種類、durationMin/intensity は職業共通、
 // それ以外は職業ごとに意味のある追加項目（分析エンジン側は type を見て解釈する）。
-const LOAD_TYPE_BY_PROFESSION = {
-  singer: "sustained_singing",
-  announcer: "live_broadcast",
-  voice_actor: "character_switching",
-  pop_musical: "loud_venue_performance"
-};
+
 // ★LoadTracker の職業別9項目を、すべて削除しました（2026-08-28）。
 //   職業を声の型で切り直す.md §6 の手順どおり、消す前に数えています。
 //
@@ -438,12 +433,7 @@ const LOAD_TYPE_BY_PROFESSION = {
 //
 //   ★LoadTracker 自体は、まだ呼び出しが0件のままです（§5.7）。
 //     器を消すかどうかは、声の型で切り直すときに一緒に決めます。
-const LOAD_FIELDS_BY_PROFESSION = {
-  singer: [],
-  announcer: [],
-  voice_actor: [],
-  pop_musical: []
-};
+
 
 /* ---------- helpers ---------- */
 // Supabase側の一時的な認証エラー（JWT関連の401/PGRST303など）かどうかを判定する。
@@ -2855,97 +2845,7 @@ function NumberField({ label, value, onChange, step = 1, min = -Infinity, max = 
 
 // 「今日の負荷」——職業ごとに意味のある指標だけを、共通の抽象スキーマ（type/durationMin/intensity + 職業別の追加項目）で記録する。
 // 分析エンジン側は type を見て解釈するため、ここは「どの項目を見せるか」の設定だけを担う。
-function LoadTracker({ profession, loadDetail, onChange, t }) {
-  // ★「その他」は職業固有の項目を一切出さない。
-  //   以前は未知の職業を声楽家にフォールバックしていたため、「その他」を選んだ人に
-  //   音域・パッサッジョ通過数といった声楽家向けの欄が出てしまう状態だった。
-  const fields = profession === OTHER_PROFESSION ? [] : (LOAD_FIELDS_BY_PROFESSION[profession] || LOAD_FIELDS_BY_PROFESSION.singer);
-  const update = (patch) => onChange({ ...loadDetail, ...patch });
-  return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-3">
-        <NumberField label={t("loadDurationMin")} value={loadDetail.durationMin ?? ""} step={5} min={0} max={600}
-          suffix={t("unitMinutes")} onChange={(v) => update({ durationMin: v })} />
-        <div>
-          <label className="text-sm font-medium block mb-1.5">{t("loadIntensity")}</label>
-          <div className="flex gap-1.5">
-            {[1, 2, 3, 4, 5].map((n) => (
-              <button key={n} type="button" onClick={() => update({ intensity: n })}
-                className="flex-1 h-10 rounded-lg border text-sm font-medium"
-                style={{
-                  background: (loadDetail.intensity || 0) >= n ? C.curtain : C.paper,
-                  color: (loadDetail.intensity || 0) >= n ? "#FFFDF8" : C.inkSoft,
-                  borderColor: (loadDetail.intensity || 0) >= n ? C.curtain : C.line
-                }}>
-                {n}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {fields.map((f) => {
-          if (f.type === "text") {
-            return (
-              <div key={f.key}>
-                <label className="text-sm font-medium block mb-1.5">{t(f.labelKey)}</label>
-                <input type="text" value={loadDetail[f.key] || ""} placeholder={f.placeholderKey ? t(f.placeholderKey) : ""}
-                  onChange={(e) => update({ [f.key]: e.target.value })}
-                  className="w-full rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
-              </div>
-            );
-          }
-          if (f.type === "number") {
-            return (
-              <NumberField key={f.key} label={t(f.labelKey)} value={loadDetail[f.key] ?? ""} step={1} min={0} max={200}
-                onChange={(v) => update({ [f.key]: v })} />
-            );
-          }
-          if (f.type === "boolean") {
-            return (
-              <div key={f.key}>
-                <label className="text-sm font-medium block mb-1.5">{t(f.labelKey)}</label>
-                <div className="flex gap-2">
-                  <Chip label={t("labelYes")} active={loadDetail[f.key] === true} onClick={() => update({ [f.key]: true })} />
-                  <Chip label={t("labelNo")} active={loadDetail[f.key] === false} onClick={() => update({ [f.key]: false })} />
-                </div>
-              </div>
-            );
-          }
-          if (f.type === "select") {
-            return (
-              <div key={f.key}>
-                <label className="text-sm font-medium block mb-1.5">{t(f.labelKey)}</label>
-                <MiniSelect value={loadDetail[f.key] || f.options[0]} onChange={(v) => update({ [f.key]: v })} options={f.options} />
-              </div>
-            );
-          }
-          if (f.type === "scale5") {
-            return (
-              <div key={f.key}>
-                <label className="text-sm font-medium block mb-1.5">{t(f.labelKey)}</label>
-                <div className="flex gap-1.5">
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <button key={n} type="button" onClick={() => update({ [f.key]: n })}
-                      className="flex-1 h-9 rounded-lg border text-xs font-medium"
-                      style={{
-                        background: (loadDetail[f.key] || 0) >= n ? C.gold : C.paper,
-                        color: (loadDetail[f.key] || 0) >= n ? "#FFFDF8" : C.inkSoft,
-                        borderColor: (loadDetail[f.key] || 0) >= n ? C.gold : C.line
-                      }}>
-                      {n}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            );
-          }
-          return null;
-        })}
-      </div>
-    </div>
-  );
-}
+
 
 function MiniSelect({ value, onChange, options, labels }) {
   return (

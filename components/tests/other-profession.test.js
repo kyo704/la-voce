@@ -47,8 +47,16 @@ async function main() {
   assertEqual(isAnalysisCardVisible("deviation-score", ["other"]), true, "表に無いカード（職業を問わないもの）は出る");
 
   console.log("\n=== テスト3: 職業固有の追加項目を出さない ===");
-  assertTrue(/profession === OTHER_PROFESSION \? \[\]/.test(tracker),
-    "「その他」では職業別の負荷項目を空にしている（声楽家にフォールバックしない）");
+  // ★2026-08-28: LoadTracker ごと消しました（呼び出し0件・実データ0件を確認済み）。
+  //   守りたいことは同じ（その他に職業別の項目を出さない）ですが、守り方が
+  //   変わりました。いまは「職業別の負荷項目」という仕組み自体がありません。
+  assertTrue(!/LOAD_FIELDS_BY_PROFESSION|LOAD_TYPE_BY_PROFESSION/.test(tracker),
+    "★職業別の負荷項目という仕組みが、もう無い");
+  assertTrue(!/function LoadTracker/.test(tracker),
+    "★LoadTracker が消えている（呼び出し0件だった）");
+  // いまの保証は lib/typeFields.js が持っている（type-fields.test.js テスト3-2）。
+  assertTrue(/typeFieldsFor\(/.test(tracker),
+    "★代わりに typeFieldsFor が出し分けを持っている");
 
   console.log("\n=== テスト4: 選択肢として選べる ===");
   assertTrue(/const OTHER_PROFESSION = "other"/.test(tracker), "OTHER_PROFESSION が定義されている");
