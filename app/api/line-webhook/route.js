@@ -14,6 +14,7 @@
 
 import crypto from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { BRAND } from "@/lib/brand";
 
 function verifySignature(body, signature) {
   const secret = process.env.LINE_CHANNEL_SECRET;
@@ -56,7 +57,7 @@ export async function POST(req) {
       // 友だち追加された時点での案内。
       await replyMessage(
         event.replyToken,
-        "La Voceを友だち追加いただきありがとうございます。\nアプリの「もっと」タブで発行した連携コード（6文字）を、このトーク画面にそのまま送ってください。"
+        `${BRAND.name}を友だち追加いただきありがとうございます。\nアプリの「もっと」タブで発行した連携コード（6文字）を、このトーク画面にそのまま送ってください。`
       );
       continue;
     }

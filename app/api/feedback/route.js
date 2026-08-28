@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getUserWithTimeout } from "@/lib/withTimeout";
+import { BRAND } from "@/lib/brand";
 
 const FEEDBACK_TO_EMAIL = "kyo0703opera@gmail.com";
 
@@ -54,10 +55,10 @@ export async function POST(request) {
           authorization: `Bearer ${process.env.RESEND_API_KEY}`
         },
         body: JSON.stringify({
-          from: process.env.FEEDBACK_FROM_EMAIL || "La Voce Feedback <onboarding@resend.dev>",
+          from: process.env.FEEDBACK_FROM_EMAIL || `${BRAND.name} Feedback <onboarding@resend.dev>`,
           to: FEEDBACK_TO_EMAIL,
           reply_to: user.email,
-          subject: `[La Voce フィードバック] ${category}`,
+          subject: `[${BRAND.name} フィードバック] ${category}`,
           text: `送信者: ${user.email}\n種類: ${category}\n\n${message}`
         })
       });
