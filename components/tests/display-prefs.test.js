@@ -8,7 +8,7 @@
  * ★画面を2つ作らないこと。CSS変数で1つの画面が伸び縮みすること。
  * ★OSの文字サイズ設定を邪魔しないこと。
  */
-const { readRaw, stripComments } = require("./_source");
+const { readRaw, stripComments, assertAbsent } = require("./_source");
 let passCount = 0, failCount = 0;
 function assertTrue(c, label) {
   if (c) { console.log(`  ✓ ${label}`); passCount++; } else { console.log(`  ✗ ${label}`); failCount++; }
@@ -33,13 +33,11 @@ async function main() {
   assertTrue(!/\bage\b|年齢|birth/.test(prefsCode),
     "★見やすさの判定が、年齢をいっさい見ていない");
   const settingBlock = uiCode.slice(uiCode.indexOf("見やすさ"), uiCode.indexOf("見やすさ") + 3000);
-  // ★禁止語の検査は、コメントを外した本文に対して行う（CLAUDE.md）。
-  //   画面のコメントには「シニアモードと書かないこと」と書いてあり、
-  //   生のまま数えると、禁止を書いた側で落ちる。
-  //   このセッションで4回目の同じ取り違えなので、_source の readCode を使う。
-  ["シニア", "高齢", "お年寄り", "年配"].forEach((w) => {
-    assertTrue(!uiCode.includes(w), `★画面に「${w}」と書いていない`);
-  });
+  // ★assertAbsent は、中で readCode を呼ぶ。生の本文を渡す道が無い。
+  //   このセッションで4回、コメント側を数えて落ちている。
+  //   毎回どちらを渡すか選ばせるのをやめた（_source.js）。
+  assertAbsent(["シニア", "高齢", "お年寄り", "年配"],
+    ["components", "VocalTracker.jsx"], assertTrue, "★画面に");
 
   console.log("\n=== 文字の大きさとかんたん表示は、別の設定（§0-③）===");
   assertEqual(m.SCALES, ["normal", "large", "xlarge"], "3段階");
@@ -106,6 +104,40 @@ async function main() {
   assertTrue(!/label: "ちょうどいい", color:/.test(uiCode),
     "★ACWR のゾーンが、値で色を変えていない");
   console.log("     言葉のほうが、色より正確に伝わる。");
+
+  console.log("\n=== かんたん表示が、実際に画面を変えているか（§3）===");
+  {
+    console.log("     ★減らすのは選択肢であって、機能ではない。消すのではなく、奥に置く。");
+    assertTrue(/isSimpleDisplay\(profile\) && \(/.test(uiCode),
+      "ホームに、かんたん表示のときだけ出る塊がある");
+    const homeIdx = uiCode.indexOf("今日を記録する");
+    assertTrue(homeIdx > 0, "★大きなボタンを1つ、真ん中に置いている");
+    const homeBlock = uiCode.slice(homeIdx - 900, homeIdx + 1400);
+    assertTrue(/minHeight: "calc\(var\(--tap\) \* 1\.6\)"/.test(homeBlock),
+      "大きさを --tap から決めている（文字の大きさに追従する）");
+    const secondary = (homeBlock.match(/setActiveTab\("(analysis|learn)"\)/g) || []).length;
+    assertTrue(secondary <= 2, `★二番目に大事なものは2つまで（いま ${secondary} つ）`);
+
+    console.log("     ★スライダーは、手が震える人には操作できない。");
+    assertTrue(/SIMPLE_QUALITY_STEPS/.test(uiCode), "かんたん表示のときの5段階を定義している");
+    const sliderIdx = uiCode.indexOf('type="range"');
+    const sliderBlock = uiCode.slice(sliderIdx - 1500, sliderIdx + 200);
+    assertTrue(/simple \? \(/.test(sliderBlock),
+      "★かんたん表示では、スライダーではなくボタンを出している");
+    assertTrue(/simple=\{isSimpleDisplay\(profile\)\}/.test(uiCode),
+      "声の記録の画面に、かんたん表示かどうかを渡している");
+
+    console.log("     ★同じ切り替えを画面ごとに書かない。");
+    assertTrue(/function TwoWaySwitch/.test(uiCode), "オン・オフの部品が1つにそろっている");
+    const switches = (uiCode.match(/<TwoWaySwitch /g) || []).length;
+    assertTrue(switches >= 2, `つまみを直接書いた箇所が残っていない（${switches} 箇所が部品を使用）`);
+    assertTrue(!/borderRadius: 999, position: "relative",\n\s+background: value\./.test(uiCode),
+      "★つまみの作りを、画面側に直接書いていない");
+
+    console.log("     ★長押しだけ・スワイプだけの操作を作らない（§4）。");
+    assertTrue(!/onLongPress|longPressDelete=\{true\}/.test(uiCode),
+      "長押しだけで消す操作が無い");
+  }
 
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }

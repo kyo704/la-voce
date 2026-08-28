@@ -53,4 +53,25 @@ function readCode(...parts) {
   return stripComments(readRaw(...parts));
 }
 
-module.exports = { ROOT, stripComments, readRaw, readCode };
+
+// ---------------------------------------------------------------------------
+// 禁止語の検査は、必ずコメントを外した本文に対して行う
+//
+//   ★このセッションで、同じ取り違えを4回しました。
+//     周期の語彙／「データ不足」／「点数」／「シニア」。
+//     どれも、禁止を書いたコメントの側を数えて落ちています。
+//
+//   readRaw と readCode のどちらを渡すかを毎回選ばせると、また間違えます。
+//   ★この関数は、中で readCode を呼びます。生の本文を渡す道がありません。
+//     選択肢を消すほうが、注意して覚えるより確実です。
+// ---------------------------------------------------------------------------
+function assertAbsent(words, parts, assertTrue, label) {
+  const code = readCode(...parts);
+  const list = Array.isArray(words) ? words : [words];
+  list.forEach((w) => {
+    assertTrue(!code.includes(w), `${label || "★"}「${w}」が本文に出ていない`);
+  });
+}
+
+module.exports = {
+  assertAbsent, ROOT, stripComments, readRaw, readCode };

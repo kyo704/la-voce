@@ -2612,6 +2612,46 @@ function PeriodBands({ rows, maxDay = 35, width = 280, rowHeight = 18 }) {
     </svg>
   );
 }
+// ★オン・オフの切り替え。かんたん表示では、つまみをやめて2つのボタンにする
+//   （見やすさ §3-2）。つまみは「いまどちらなのか」が読み取りにくく、
+//   小さくて狙いにくい。選んだほうに✓を付けて、言葉で示す。
+//   ★同じ切り替えを画面ごとに書かないこと。ここ1つにそろえる。
+function TwoWaySwitch({ on, onChange, simple, onLabel = "あり", offLabel = "なし" }) {
+  if (simple) {
+    return (
+      <div className="flex gap-2 flex-shrink-0">
+        {[{ v: true, label: onLabel }, { v: false, label: offLabel }].map((opt) => {
+          const active = on === opt.v;
+          return (
+            <button key={String(opt.v)} type="button" onClick={() => onChange(opt.v)}
+              className="rounded-xl border px-4 py-2 text-sm"
+              style={{
+                background: active ? C.paper : C.card,
+                borderColor: active ? C.ink : C.line,
+                color: C.ink,
+                fontWeight: active ? 600 : 400
+              }}>
+              {active ? "✓ " : ""}{opt.label}
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
+  return (
+    <button type="button" onClick={() => onChange(!on)} className="flex-shrink-0"
+      style={{
+        width: 44, height: 26, borderRadius: 999, position: "relative",
+        background: on ? C.curtain : C.line, transition: "background 0.15s"
+      }}>
+      <span style={{
+        position: "absolute", top: 3, left: on ? 21 : 3,
+        width: 20, height: 20, borderRadius: 999, background: "#FFFDF8",
+        transition: "left 0.15s"
+      }} />
+    </button>
+  );
+}
 function ProgressDots({ current, required }) {
   const total = 10;
   const filled = required > 0 ? Math.min(total, Math.round((current / required) * total)) : 0;
@@ -3627,22 +3667,9 @@ function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
                           周期開始日を1タップで記録し、分析タブで声・メンタルとの関連を見られるようにします。任意（オプトイン）です。
                         </p>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => onChange({ track_cycle: !value.track_cycle })}
-                        className="flex-shrink-0"
-                        style={{
-                          width: 44, height: 26, borderRadius: 999, position: "relative",
-                          background: value.track_cycle ? C.curtain : C.line,
-                          transition: "background 0.15s"
-                        }}
-                      >
-                        <span style={{
-                          position: "absolute", top: 3, left: value.track_cycle ? 21 : 3,
-                          width: 20, height: 20, borderRadius: 999, background: "#FFFDF8",
-                          transition: "left 0.15s"
-                        }} />
-                      </button>
+                      <TwoWaySwitch on={!!value.track_cycle} simple={isSimpleDisplay(value)}
+                        onChange={(v) => onChange({ track_cycle: v })}
+                        onLabel="記録する" offLabel="記録しない" />
                     </div>
                   )}
 
@@ -3661,22 +3688,9 @@ function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
                           オフにすると、記録は続けたまま、ホームの1行だけが出なくなります。ノートのカレンダーには残ります。
                         </p>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => onChange({ cycle_show_on_home: value.cycle_show_on_home === false })}
-                        className="flex-shrink-0"
-                        style={{
-                          width: 44, height: 26, borderRadius: 999, position: "relative",
-                          background: value.cycle_show_on_home !== false ? C.curtain : C.line,
-                          transition: "background 0.15s"
-                        }}
-                      >
-                        <span style={{
-                          position: "absolute", top: 3, left: value.cycle_show_on_home !== false ? 21 : 3,
-                          width: 20, height: 20, borderRadius: 999, background: "#FFFDF8",
-                          transition: "left 0.15s"
-                        }} />
-                      </button>
+                      <TwoWaySwitch on={value.cycle_show_on_home !== false} simple={isSimpleDisplay(value)}
+                        onChange={(v) => onChange({ cycle_show_on_home: v })}
+                        onLabel="出す" offLabel="出さない" />
                     </div>
                   )}
 
@@ -3972,7 +3986,17 @@ function OnboardingFlow({ existingUser, onComplete, t }) {
 // ブロックごとの負荷フィードバックをまとめる。
 // lavoce-記録項目の再設計v2.md §3.1・画面レイアウト仕様_1 §4.4: 声の記録シート。
 // 1件の声の記録（時刻・場面・喉の身体感覚・声の出来・音名・症状・ひとこと）を編集する。
-function VoiceEntryEditor({ entry, onChange, onRemove, onClose, professions, t }) {
+// ★かんたん表示のときの「声の出来」の5段階（見やすさ §3-2）。
+//   0〜10 のまま、刻みを粗くするだけ。記録できる範囲は変えない。
+//   ★言葉を添える。数字だけだと、どちらが良いのか分からない。
+const SIMPLE_QUALITY_STEPS = [
+  { value: 0, label: "とても\n悪い" },
+  { value: 2.5, label: "悪い" },
+  { value: 5, label: "ふつう" },
+  { value: 7.5, label: "良い" },
+  { value: 10, label: "とても\n良い" }
+];
+function VoiceEntryEditor({ entry, onChange, onRemove, onClose, professions, t, simple = false }) {
   const [mptRunning, setMptRunning] = useState(false);
   const [mptElapsed, setMptElapsed] = useState(0);
   const mptStartRef = useRef(null);
@@ -4032,9 +4056,35 @@ function VoiceEntryEditor({ entry, onChange, onRemove, onClose, professions, t }
             {typeof entry.quality === "number" ? entry.quality.toFixed(1) : "—"}
           </span>
         </div>
-        <input type="range" min={0} max={10} step={0.5} value={entry.quality ?? 5}
-          onChange={(e) => onChange({ quality: Number(e.target.value) })}
-          className="w-full" />
+        {/* ★かんたん表示ではスライダーを使わない（見やすさ §3-2）。
+            スライダーは、手が震える人には操作できない。
+            そして正確な値を入れたい人にも向かない。両方に悪い部品。
+            ★減らすのは選択肢であって、機能ではない。0〜10 のまま、刻みを粗くする。
+            ふつう表示に戻せば、0.5刻みのつまみが戻る。 */}
+        {simple ? (
+          <div className="grid grid-cols-5 gap-1.5">
+            {SIMPLE_QUALITY_STEPS.map((step) => {
+              const active = entry.quality === step.value;
+              return (
+                <button key={step.value} type="button"
+                  onClick={() => onChange({ quality: step.value })}
+                  className="rounded-xl border py-3 text-xs"
+                  style={{
+                    background: active ? C.paper : C.card,
+                    borderColor: active ? C.ink : C.line,
+                    color: C.ink,
+                    fontWeight: active ? 600 : 400
+                  }}>
+                  {step.label}
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <input type="range" min={0} max={10} step={0.5} value={entry.quality ?? 5}
+            onChange={(e) => onChange({ quality: Number(e.target.value) })}
+            className="w-full" />
+        )}
       </div>
       <div className="grid grid-cols-2 gap-3 mt-3">
         <div>
@@ -9481,6 +9531,43 @@ export default function VocalTracker({ userId, userEmail }) {
               const isRecordedToday = !!todayEntry;
               return (
                 <div className="space-y-4">
+                  {/* ★かんたん表示のホーム（見やすさ §3-1）。
+                      大きなボタンを1つだけ、真ん中に置く。二番目に大事なものを2つまで。
+                      ★減らすのは選択肢であって、機能ではない。
+                        推移・お知らせ・予定は、下にそのまま残してある（消していない）。 */}
+                  {isSimpleDisplay(profile) && (
+                    <div className="pt-2">
+                      <button type="button"
+                        onClick={() => { setActiveTab("today"); setRecordView("day"); }}
+                        className="w-full rounded-2xl"
+                        style={{
+                          background: C.curtain, color: "#FFFDF8",
+                          padding: "var(--gap) calc(var(--gap) * 1.5)",
+                          minHeight: "calc(var(--tap) * 1.6)",
+                          fontSize: "1.25rem", fontWeight: 600, lineHeight: 1.5
+                        }}>
+                        {isRecordedToday ? "今日の記録を見なおす" : "今日を記録する"}
+                      </button>
+                      <div className="grid grid-cols-2 gap-3 mt-3">
+                        <button type="button" onClick={() => setActiveTab("analysis")}
+                          className="rounded-2xl border"
+                          style={{
+                            background: C.card, borderColor: C.line, color: C.ink,
+                            minHeight: "var(--tap)", fontSize: "1rem", padding: "var(--gap)"
+                          }}>
+                          見る
+                        </button>
+                        <button type="button" onClick={() => setActiveTab("learn")}
+                          className="rounded-2xl border"
+                          style={{
+                            background: C.card, borderColor: C.line, color: C.ink,
+                            minHeight: "var(--tap)", fontSize: "1rem", padding: "var(--gap)"
+                          }}>
+                          学ぶ
+                        </button>
+                      </div>
+                    </div>
+                  )}
                   {!isPwaInstalled && showInstallBanner && pwaInstallPrompt && (
                     <div className="rounded-2xl p-3 border flex items-center gap-3" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
                       <div className="flex-1">
@@ -9811,6 +9898,7 @@ export default function VocalTracker({ userId, userEmail }) {
                         {(formData.voiceEntries || []).slice().sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0)).map((entry) => (
                           editingVoiceEntryId === entry.id ? (
                             <VoiceEntryEditor key={entry.id} entry={entry} professions={effectiveProfessions} t={t}
+                              simple={isSimpleDisplay(profile)}
                               onChange={(patch) => updateVoiceEntry(entry.id, patch)}
                               onRemove={() => removeVoiceEntry(entry.id)}
                               onClose={() => setEditingVoiceEntryId(null)} />
