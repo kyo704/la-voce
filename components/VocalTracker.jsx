@@ -58,7 +58,8 @@ import { ARTICLES, CHAPTER_LABELS, PROFESSION_LABELS, getArticlesForProfession, 
 // 学ぶ画面の勉強の仕組み（§2・§3）。★規則はこのモジュールが持つ。
 import {
   KEY_SENTENCE_HEADING, REFLECTION_PRIVACY_NOTE, PREQUESTION_NOTE,
-  shouldShowKeySentence, studyReadiness
+  shouldShowKeySentence, studyReadiness,
+  answerPrequestion, answerQuizQuestion, quizModeOf
 } from "@/lib/learnStudy";
 import CharacterHome from "@/components/CharacterHome";
 
@@ -4389,6 +4390,11 @@ export default function VocalTracker({ userId, userEmail }) {
   const [newArticleNoteDraft, setNewArticleNoteDraft] = useState("");
   // 自分に当てはめる問いの下書き（記事ごと）
   const [reflectionDraft, setReflectionDraft] = useState({});
+  // 読む前の問いの選択（articleId -> 選んだ番号）。★正誤は持たない。
+  //   持てるようにすると、いつか画面に出てしまう。
+  const [prequestionChoice, setPrequestionChoice] = useState({});
+  // 読んだ直後の3問の答え（articleId -> { 問番号: 選んだ番号 }）
+  const [quizAnswers, setQuizAnswers] = useState({});
   const [learnSearchQuery, setLearnSearchQuery] = useState("");
   // 作業指示-教室プラン §B・C・E: 教室プラン用のstate
   const [myOrgs, setMyOrgs] = useState([]); // 自分がメンバーである組織一覧（role付き）
@@ -13901,6 +13907,36 @@ export default function VocalTracker({ userId, userEmail }) {
                       <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>{article.title}</h2>
                       <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{professionLabel}・約{article.readMinutes}分</p>
                     </div>
+                    {studyReadiness(article).hasPrequestion && (() => {
+                      const chosen = prequestionChoice[article.id];
+                      const answered = typeof chosen === "number";
+                      const after = answerPrequestion();
+                      return (
+                        <div className="rounded-2xl p-4 border" style={{ background: C.paper, borderColor: C.line }}>
+                          <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>読む前に、少しだけ考えてみてください</p>
+                          <p className="text-sm mb-3" style={{ color: C.ink, lineHeight: 1.7 }}>{article.prequestion.stem}</p>
+                          <div className="space-y-1.5">
+                            {(article.prequestion.choices || []).map((choice, i) => (
+                              <button key={i} type="button"
+                                onClick={() => setPrequestionChoice((s) => ({ ...s, [article.id]: i }))}
+                                className="w-full text-left rounded-xl p-2.5 text-sm border"
+                                style={{
+                                  background: chosen === i ? C.card : C.card,
+                                  borderColor: chosen === i ? C.ink : C.line,
+                                  color: C.ink,
+                                  lineHeight: 1.6
+                                }}>
+                                {choice}
+                              </button>
+                            ))}
+                          </div>
+                          {answered && (
+                            <p className="text-xs mt-2.5" style={{ color: C.inkSoft, lineHeight: 1.6 }}>{after.note}</p>
+                          )}
+                        </div>
+                      );
+                    })()}
+
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <p className="text-sm font-medium mb-3" style={{ lineHeight: 1.7 }}>{article.lead}</p>
                       <div className="text-sm" style={{ lineHeight: 1.8, whiteSpace: "pre-wrap" }}>{article.bodyMd}</div>
@@ -13932,6 +13968,56 @@ export default function VocalTracker({ userId, userEmail }) {
                       <div className="rounded-2xl p-4 border mb-4" style={{ background: C.paper, borderColor: C.line }}>
                         <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{KEY_SENTENCE_HEADING}</p>
                         <p className="text-sm leading-relaxed" style={{ color: C.ink }}>{article.keySentence}</p>
+                      </div>
+                    )}
+
+                    {quizModeOf(article) === "recall" && studyReadiness(article).hasQuiz && (
+                      <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                        <h3 className="ff-display italic text-lg mb-1">読んだあとに、3問</h3>
+                        <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                          答えるとすぐに正解と理由が出ます。点数は付けません。
+                        </p>
+                        <div className="space-y-4">
+                          {article.quiz.map((question, qi) => {
+                            const chosen = (quizAnswers[article.id] || {})[qi];
+                            const answered = typeof chosen === "number";
+                            const result = answered ? answerQuizQuestion(question, chosen) : null;
+                            return (
+                              <div key={qi}>
+                                <p className="text-sm mb-2" style={{ color: C.ink, lineHeight: 1.7 }}>
+                                  {qi + 1}. {question.stem}
+                                </p>
+                                <div className="space-y-1.5">
+                                  {(question.choices || []).map((choice, ci) => {
+                                    const isAnswer = answered && ci === result.answerIndex;
+                                    const isWrongPick = answered && ci === chosen && !result.correct;
+                                    return (
+                                      <button key={ci} type="button" disabled={answered}
+                                        onClick={() => setQuizAnswers((s) => ({
+                                          ...s, [article.id]: { ...(s[article.id] || {}), [qi]: ci }
+                                        }))}
+                                        className="w-full text-left rounded-xl p-2.5 text-sm border"
+                                        style={{
+                                          background: isAnswer ? C.paper : C.card,
+                                          borderColor: isAnswer ? C.ink : (isWrongPick ? C.inkSoft : C.line),
+                                          color: C.ink,
+                                          opacity: answered && !isAnswer && !isWrongPick ? 0.55 : 1,
+                                          lineHeight: 1.6
+                                        }}>
+                                        {choice}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                                {answered && (
+                                  <p className="text-xs mt-2" style={{ color: C.inkSoft, lineHeight: 1.7 }}>
+                                    {result.explanation}
+                                  </p>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
                     )}
 

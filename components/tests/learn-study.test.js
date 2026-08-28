@@ -243,6 +243,41 @@ async function main() {
     console.log("     いつも1番目だと、中身ではなく位置を覚えてしまいます。");
   }
 
+  console.log("\n=== 画面: 読む前の問いと、読んだ直後の3問 ===");
+  {
+    const { stripComments } = require("./_source");
+    const uiCode = stripComments(readRaw("components", "VocalTracker.jsx"));
+    const preStart = uiCode.indexOf("studyReadiness(article).hasPrequestion");
+    const quizStart = uiCode.indexOf('quizModeOf(article) === "recall"');
+    assertTrue(preStart > 0, "読む前の問いを、画面が出している");
+    assertTrue(quizStart > 0, "読んだ直後の3問を、画面が出している");
+
+    const preBlock = uiCode.slice(preStart, preStart + 1800);
+    assertTrue(/answerPrequestion\(\)/.test(preBlock), "読む前の問いは answerPrequestion を通している");
+    assertTrue(!/answerIndex/.test(preBlock), "★読む前の問いの画面が、正解に触れていない");
+    assertTrue(/PREQUESTION_NOTE|after\.note/.test(preBlock),
+      "答えたあと「当てなくて構いません」を出している");
+    assertTrue(preStart < uiCode.indexOf("{article.bodyMd}"),
+      "★読む前の問いが、本文より前にある（読んだあとでは意味が変わる）");
+
+    const quizBlock = uiCode.slice(quizStart, quizStart + 4200);
+    assertTrue(/answerQuizQuestion\(question, chosen\)/.test(quizBlock),
+      "3問の判定は answerQuizQuestion を通している");
+    assertTrue(/result\.explanation/.test(quizBlock), "答えたら、理由を出している");
+    console.log("     ★点数・励まし・正答率を、画面に出さないこと（§2-4・§9-5）。");
+    // ★禁止を実装している側は数えない。画面には「点数は付けません」と
+    //   書いてあり、それは禁止の宣言であって、点数を出していることではない。
+    //   同じ取り違えを、周期の語彙と「データ不足」でも一度ずつやっている。
+    const quizVisible = quizBlock
+      .replace(/点数は付けません。?/g, "")
+      .replace(/答えるとすぐに正解と理由が出ます。?/g, "");
+    ["score", "encouragement", "正答率", "点数", "おしい", "すごい", "よくできました"].forEach((word) => {
+      assertTrue(!quizVisible.includes(word), `★3問の画面に「${word}」が出ていない`);
+    });
+    assertTrue(/quizModeOf\(article\) === "recall"/.test(quizBlock),
+      "★reflect の記事では、選択式の3問を出さない（§7 受け入れ条件）");
+  }
+
   console.log("\n=== 記事ごとに問いの形を分ける（§2・§4・§5・§6・§7）===");
   assertEqual(m.quizModeOf({}), "recall", "quizMode を書き忘れたら recall（黙って採点されない側に落とさない）");
   assertEqual(m.quizModeOf({ quizMode: "reflect" }), "reflect", "reflect を指定できる");
