@@ -158,8 +158,12 @@ async function main() {
       "★旧オリジンでは Service Worker を登録し直さない");
 
     const sw = readRaw("public", "sw.js");
-    assertTrue(/cached \|\| Response\.error\(\)/.test(sw),
+    // ★2026-08-29: 画面への移動にはオフライン画面を返すようになったため、
+    //   書き方が変わりました。確かめたいこと（undefined を返さない）は同じです。
+    assertTrue(/return Response\.error\(\);/.test(sw),
       "★キャッシュに無いとき undefined を返さない");
+    assertTrue(/caches\.match\(OFFLINE_URL\)/.test(sw),
+      "★画面への移動なら、オフライン画面を返す");
     assertTrue(!/\.catch\(\(\) => caches\.match\(event\.request\)\)/.test(sw),
       "★落ちる書き方が残っていない");
     assertTrue(/CACHE_NAME = "woolsong-shell-v3"/.test(sw),

@@ -105,7 +105,9 @@ async function main() {
   assertTrue(/CACHE_NAME = "woolsong-shell-v3"/.test(sw), "キャッシュ名に版が入っている（§3-3）");
   assertTrue(/keys\s*\n?\s*\.filter\(\(key\) => key !== CACHE_NAME\)/.test(sw.replace(/\s+/g, " ").replace(/ /g, " ")) || /key !== CACHE_NAME/.test(sw),
     "activate で古いキャッシュを消す（§3-3）");
-  assertTrue(/cached \|\| Response\.error\(\)/.test(sw), "★キャッシュに無くても Response を返す");
+  // ★2026-08-29: オフライン画面を返す形に変わりました。確かめたいことは同じです。
+  assertTrue(/return Response\.error\(\);/.test(sw), "★キャッシュに無くても Response を返す");
+  assertTrue(/OFFLINE_URL/.test(sw), "★画面への移動には、オフライン画面がある");
   // ★API はキャッシュしない（§3-2）。Supabase は別オリジンなので type が basic にならない。
   assertTrue(/response\.type === "basic"/.test(sw), "★別オリジンの応答はキャッシュしない（§3-2）");
 

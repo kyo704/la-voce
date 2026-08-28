@@ -66,7 +66,7 @@ console.log("\n=== ★失敗の経路をそのまま真似る ===");
     return "NETWORK_ERROR";
   }
   // ★これが今回の失敗そのもの: 「/」は 307 なので控えが無い
-  return (async () => {
+  (async () => {
     assertEqual(await fallback("/", "navigate"), "OFFLINE_PAGE",
       "★start_url「/」の控えが無くても、オフライン画面が出る（＝白くならない）");
     assertEqual(await fallback("/dashboard", "navigate"), "DASH",
