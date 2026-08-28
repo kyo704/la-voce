@@ -104,44 +104,92 @@ console.log("  そのまま残した既存:", kept.length);
 console.log("★結び付かなかった指示:", unresolved.length, "本");
 unresolved.forEach((a) => console.log("   ", a.id, a.title, "／", a.status));
 
-// ---- ファイルを書き出す ----
-const esc = (t) => String(t == null ? "" : t).replace(/\\/g, "\\\\").replace(/`/g, "\\`").replace(/\$\{/g, "\\${");
-const q = (t) => JSON.stringify(String(t == null ? "" : t));
-
-const header = liveSrc.slice(0, liveSrc.indexOf("export const ARTICLES"));
-const footer = liveSrc.slice(liveSrc.indexOf("export function getArticlesForProfession"));
-
-const body = out.map((a) => {
-  const profs = a.professions === "all" ? '"all"' : JSON.stringify(a.professions);
-  return `  {
-    id: ${q(a.id)},
-    professions: ${profs},
-    chapter: ${a.chapter},
-    order: ${a.order || 99},
-    title: ${q(a.title)},
-    lead: ${q(a.lead)},
-    bodyMd: \`${esc(a.bodyMd)}\`,
-    readMinutes: ${a.readMinutes || 2},
-    terms: ${JSON.stringify(a.terms || [])},
-    sources: ${JSON.stringify(a.sources || [])}
-  }`;
-}).join(",\n");
-
-const note = `// ★docs/learn-content/articles.json（67本）から生成しています。
-//   直接編集せず、articles.json を直してから
-//   node scripts/build-learn-content.js で作り直してください。
+// ---- 勉強パーツ（docs/learn-content/study.json）を合流させる ----
 //
-//   67本のうち5本は「健康情報から移してくる」という指示で、本文を持って
-//   いません。健康情報の記事を動かすかどうかは別の作業（並行トラックの
-//   「学ぶと健康情報の統合」）なので、ここには入れていません。
-//   入れていないもの: C2-1 / C2-2 / C4-1 / C4-6 / C4-7
+//   ★原稿は正解をつねに選択肢の先頭に書いてある。人が読んで確かめやすいため。
+//     そのまま出すと「いつも1番目」を覚えてしまうので、ここで回してから埋め込む。
+//     回すのは lib/learnStudy.js の spreadQuizAnswers。記事IDと問番号から
+//     決まるので、同じ問題はいつ開いても同じ並びになる。
 //
-//   既存の記事は1本も失っていません（結び付かなかった分はそのまま残す）。
+//   ★勉強パーツを持たない記事があってよい（用語集など、形が合わないもの）。
+//     studyReadiness が未設定を扱えるので、枠ごと出ない。
+(async () => {
+  const url = require("url");
+  const studyPath = path.join(ROOT, "docs/learn-content/study.json");
+  let study = { articles: {}, skipped: {} };
+  if (fs.existsSync(studyPath)) study = JSON.parse(fs.readFileSync(studyPath, "utf-8"));
+  const S = await import(url.pathToFileURL(path.join(ROOT, "lib/learnStudy.js")).href);
 
-`;
+  let withStudy = 0;
+  out.forEach((a) => {
+    const s = (study.articles || {})[a.id];
+    if (!s) return;
+    withStudy += 1;
+    a.keySentence = s.keySentence || null;
+    a.prequestion = s.prequestion || null;
+    a.quiz = S.spreadQuizAnswers(a.id, s.quiz || []);
+    a.reflectionPrompt = s.reflectionPrompt || null;
+    // ★問いの形（recall / reflect）。書いていなければ recall。
+    if (s.quizMode) a.quizMode = s.quizMode;
+  });
 
-fs.writeFileSync(path.join(ROOT, "lib/learnContent.js"),
-  header + note + "export const ARTICLES = [\n" + body + "\n];\n\n" + footer, "utf-8");
-console.log("");
-console.log("lib/learnContent.js を書き出しました:", out.length, "本");
+  const skipped = Object.keys(study.skipped || {});
+  console.log("勉強パーツを入れた  :", withStudy, "本");
+  console.log("  ★置かないと決めた:", skipped.length, "本", skipped.length ? `（${skipped.join(", ")}）` : "");
+  const missing = out.filter((a) => !(study.articles || {})[a.id] && !(study.skipped || {})[a.id]);
+  if (missing.length) console.log("  ★どちらにも無い   :", missing.map((a) => a.id).join(", "));
 
+  // ---- ファイルを書き出す ----
+  const esc = (t) => String(t == null ? "" : t).replace(/\\/g, "\\\\").replace(/`/g, "\\`").replace(/\$\{/g, "\\${");
+  const q = (t) => JSON.stringify(String(t == null ? "" : t));
+
+  const header = liveSrc.slice(0, liveSrc.indexOf("export const ARTICLES"));
+  const footer = liveSrc.slice(liveSrc.indexOf("export function getArticlesForProfession"));
+
+  // 勉強パーツを持つ記事にだけ、そのぶんの行を足す（持たない記事に空欄を作らない）
+  const studyFields = (a) => {
+    const parts = [];
+    if (a.keySentence) parts.push(`    keySentence: ${q(a.keySentence)}`);
+    if (a.prequestion) parts.push(`    prequestion: ${JSON.stringify(a.prequestion)}`);
+    if (a.quiz && a.quiz.length) parts.push(`    quiz: ${JSON.stringify(a.quiz)}`);
+    if (a.reflectionPrompt) parts.push(`    reflectionPrompt: ${q(a.reflectionPrompt)}`);
+    if (a.quizMode) parts.push(`    quizMode: ${q(a.quizMode)}`);
+    return parts.length ? ",\n" + parts.join(",\n") : "";
+  };
+
+  const body = out.map((a) => {
+    const profs = a.professions === "all" ? '"all"' : JSON.stringify(a.professions);
+    return `  {
+      id: ${q(a.id)},
+      professions: ${profs},
+      chapter: ${a.chapter},
+      order: ${a.order || 99},
+      title: ${q(a.title)},
+      lead: ${q(a.lead)},
+      bodyMd: \`${esc(a.bodyMd)}\`,
+      readMinutes: ${a.readMinutes || 2},
+      terms: ${JSON.stringify(a.terms || [])},
+      sources: ${JSON.stringify(a.sources || [])}${studyFields(a)}
+    }`;
+  }).join(",\n");
+
+  const note = `// ★docs/learn-content/articles.json（67本）から生成しています。
+  //   直接編集せず、articles.json を直してから
+  //   node scripts/build-learn-content.js で作り直してください。
+  //
+  //   67本のうち5本は「健康情報から移してくる」という指示で、本文を持って
+  //   いません。健康情報の記事を動かすかどうかは別の作業（並行トラックの
+  //   「学ぶと健康情報の統合」）なので、ここには入れていません。
+  //   入れていないもの: C2-1 / C2-2 / C4-1 / C4-6 / C4-7
+  //
+  //   既存の記事は1本も失っていません（結び付かなかった分はそのまま残す）。
+
+  `;
+
+  fs.writeFileSync(path.join(ROOT, "lib/learnContent.js"),
+    header + note + "export const ARTICLES = [\n" + body + "\n];\n\n" + footer, "utf-8");
+  console.log("");
+  console.log("lib/learnContent.js を書き出しました:", out.length, "本");
+
+
+})();

@@ -118,6 +118,34 @@ async function main() {
     });
   }
 
+  // ★原稿とアプリのつながり。合流を止めても、原稿の検査だけは通ってしまう。
+  //   「原稿は正しいのに、画面には何も出ていない」を拾えるようにする。
+  {
+    const inApp = L.ARTICLES.filter((a) => a.keySentence).length;
+    const inManuscript = Object.keys(data).filter((id) => data[id].keySentence).length;
+    assertTrue(inApp === inManuscript,
+      `★原稿の勉強パーツが、そのままアプリにも入っている（原稿 ${inManuscript} / アプリ ${inApp}）`);
+
+    // 回したあとも、正解の中身が変わっていないこと
+    let moved = 0, withAnswer = 0;
+    L.ARTICLES.forEach((a) => {
+      const src2 = data[a.id];
+      if (!src2 || !src2.quiz || !a.quiz) return;
+      a.quiz.forEach((q, i) => {
+        withAnswer += 1;
+        const o = src2.quiz[i];
+        if (q.choices[q.answerIndex] !== o.choices[o.answerIndex]) moved += 1;
+      });
+    });
+    assertTrue(moved === 0, `★出すときに回しても、正解の中身は変わらない（${withAnswer}問）`);
+
+    // ★読む前の問いに正解を持たせない。合流のときに足してしまわないこと。
+    const leaked = L.ARTICLES.filter((a) => a.prequestion && a.prequestion.answerIndex !== undefined);
+    assertTrue(leaked.length === 0,
+      leaked.length === 0 ? "★アプリ側の読む前の問いにも、正解が入っていない"
+        : `★読む前の問いに正解が入った: ${leaked.map((a) => a.id).join(", ")}`);
+  }
+
   const total = answerPos.reduce((x, y) => x + y, 0);
   if (total > 0) {
     assertTrue(answerPos.slice(0, 3).every((n) => n > total / 6),
