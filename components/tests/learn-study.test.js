@@ -243,6 +243,47 @@ async function main() {
     console.log("     いつも1番目だと、中身ではなく位置を覚えてしまいます。");
   }
 
+  console.log("\n=== 画面: 間隔をあけて出し直す（§3）===");
+  {
+    const { stripComments, readRaw } = require("./_source");
+    const uiCode = stripComments(readRaw("components", "VocalTracker.jsx"));
+    const start = uiCode.indexOf("buildReviewSet(Object.values(articleProgress)");
+    assertTrue(start > 0, "復習の欄を、画面が出している");
+    const block3 = uiCode.slice(start - 900, start + 3200);
+
+    console.log("     ★催促しない。開いたときに出るだけ（§3-2・§9-7）。");
+    assertTrue(/shouldPromptReview\(\)/.test(block3),
+      "★催促してよいかを、必ず関数に聞いている（常に false）");
+    ["連続", "streak", "日連続", "がんばり", "復習しましょう", "通知"].forEach((w) => {
+      assertTrue(!block3.includes(w), `★復習の欄に「${w}」が出ていない`);
+    });
+    ["正答率", "点数", "score", "達成率", "%"].forEach((w) => {
+      assertTrue(!block3.includes(w), `★復習の欄に「${w}」が出ていない`);
+    });
+    assertTrue(/やらなくても、何も起きません/.test(block3),
+      "やらなくても何も起きない、と画面に書いてある");
+
+    console.log("     ★次にいつ出すかは、lib/learnStudy.js が決める。");
+    assertTrue(/afterReviewAnswer\(current, correct, todayISO\)/.test(uiCode),
+      "★次の予定は afterReviewAnswer が決めている（画面で日数を計算しない）");
+    m.REVIEW_BOXES.filter((n) => n > 0).forEach((n) => {
+      assertTrue(!new RegExp(`nextDue[^\\n]*${n}`).test(uiCode),
+        `★画面に間隔の日数（${n}）を直接書いていない`);
+    });
+    assertTrue(/handleFinishArticleQuiz\(article\.id, allCorrect\)/.test(uiCode),
+      "3問そろった時点で、はじめて箱に入れている");
+    assertTrue(/next_due_at: next\.nextDueAt/.test(uiCode),
+      "列名とプログラムの名前の橋渡しをしている（snake_case ↔ camelCase）");
+
+    console.log("     ★出す場所は「学ぶ」の中だけ。ホームにも通知にも渡さない。");
+    // ★import の行から数え始めない。読み込んでいることと、
+    //   ホーム側で使っていることは別。ここで一度、自分で誤検出した。
+    const afterImports = uiCode.lastIndexOf('from "@/lib/');
+    const homeArea = uiCode.slice(afterImports, uiCode.indexOf('activeTab === "learn"'));
+    assertTrue(!/buildReviewSet|dueReviews/.test(homeArea),
+      "★学ぶ画面より前（ホーム側）で、復習を組み立てていない");
+  }
+
   console.log("\n=== 画面: 記述式（音楽家の商い）===");
   {
     const { stripComments, readRaw } = require("./_source");

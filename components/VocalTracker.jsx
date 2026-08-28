@@ -61,6 +61,7 @@ import {
   KEY_SENTENCE_HEADING, REFLECTION_PRIVACY_NOTE, PREQUESTION_NOTE,
   shouldShowKeySentence, studyReadiness,
   answerPrequestion, answerQuizQuestion, quizModeOf,
+  buildReviewSet, afterReviewAnswer, shouldPromptReview, REVIEW_BOXES,
   REFLECT_NOTE, REFLECT_NOTE_KIND, REFLECT_REVISIT_HEADING, REFLECT_REVISIT_ACTION,
   reflectAnchor, reflectNotesFor, hasEarlierReflectAnswer
 } from "@/lib/learnStudy";
@@ -4400,6 +4401,10 @@ export default function VocalTracker({ userId, userEmail }) {
   const [quizAnswers, setQuizAnswers] = useState({});
   // 記述式の下書き（"articleId:問番号" -> 文字列）。★保存済みの記述は上書きしない。
   const [reflectDraft, setReflectDraft] = useState({});
+  // 間隔をあけて出し直すための状態（articleId -> { box, nextDueAt, ... }）
+  const [articleProgress, setArticleProgress] = useState({});
+  // 復習で答えた分（articleId -> 選んだ番号）。★正答率は数えない。
+  const [reviewAnswers, setReviewAnswers] = useState({});
   const [learnSearchQuery, setLearnSearchQuery] = useState("");
   // 作業指示-教室プラン §B・C・E: 教室プラン用のstate
   const [myOrgs, setMyOrgs] = useState([]); // 自分がメンバーである組織一覧（role付き）
@@ -8226,7 +8231,52 @@ export default function VocalTracker({ userId, userEmail }) {
       const map = {};
       progress.forEach((p) => { if (p.read_at) map[p.article_id] = p.read_at; });
       setLearnReadArticles(map);
+      // 間隔をあけて出し直すための箱と、次に出す日。
+      // ★列は snake_case、lib/learnStudy.js は camelCase。境目はここ1か所。
+      const prog = {};
+      progress.forEach((p) => {
+        prog[p.article_id] = {
+          articleId: p.article_id,
+          box: p.box || 0,
+          nextDueAt: p.next_due_at || null,
+          lastAnsweredAt: p.last_answered_at || null
+        };
+      });
+      setArticleProgress(prog);
     }
+  }
+
+  /**
+   * 読んだ直後の3問を答え終えたとき。★ここで初めて箱に入る。
+   * ★正誤は「次にいつ出すか」を決めるためだけに使う。点数にしない。
+   */
+  async function handleFinishArticleQuiz(articleId, allCorrect) {
+    const todayISO = toISODate(new Date());
+    const current = articleProgress[articleId] || { box: 0 };
+    const next = afterReviewAnswer(current, allCorrect, todayISO);
+    setArticleProgress((prev) => ({ ...prev, [articleId]: { articleId, ...next } }));
+    const supabase = createClient();
+    await supabase.from("article_progress").upsert({
+      user_id: userId, article_id: articleId,
+      box: next.box, next_due_at: next.nextDueAt, last_answered_at: next.lastAnsweredAt,
+      first_read_at: current.lastAnsweredAt ? undefined : new Date().toISOString()
+    }, { onConflict: "user_id,article_id" });
+  }
+
+  /**
+   * 復習を1問答えたとき。★返ってくるのは次の予定だけ。
+   * 点数も連続日数も達成率も、計算しないし保存しない（§6-2・§9-5）。
+   */
+  async function handleAnswerReview(articleId, correct) {
+    const todayISO = toISODate(new Date());
+    const current = articleProgress[articleId] || { box: 1 };
+    const next = afterReviewAnswer(current, correct, todayISO);
+    setArticleProgress((prev) => ({ ...prev, [articleId]: { articleId, ...next } }));
+    const supabase = createClient();
+    await supabase.from("article_progress").upsert({
+      user_id: userId, article_id: articleId,
+      box: next.box, next_due_at: next.nextDueAt, last_answered_at: next.lastAnsweredAt
+    }, { onConflict: "user_id,article_id" });
   }
   async function handleToggleChapter(professionKey, chapter) {
     const key = `${professionKey}:${chapter}`;
@@ -14064,9 +14114,17 @@ export default function VocalTracker({ userId, userEmail }) {
                                     const isWrongPick = answered && ci === chosen && !result.correct;
                                     return (
                                       <button key={ci} type="button" disabled={answered}
-                                        onClick={() => setQuizAnswers((s) => ({
-                                          ...s, [article.id]: { ...(s[article.id] || {}), [qi]: ci }
-                                        }))}
+                                        onClick={() => {
+                                          const prev = quizAnswers[article.id] || {};
+                                          const next = { ...prev, [qi]: ci };
+                                          setQuizAnswers((s) => ({ ...s, [article.id]: next }));
+                                          // 3問そろったら、そこで初めて箱に入れる。
+                                          // ★正誤は「次にいつ出すか」を決めるためだけに使う。
+                                          if (Object.keys(next).length === article.quiz.length) {
+                                            const allCorrect = article.quiz.every((qq, k) => next[k] === qq.answerIndex);
+                                            handleFinishArticleQuiz(article.id, allCorrect);
+                                          }
+                                        }}
                                         className="w-full text-left rounded-xl p-2.5 text-sm border"
                                         style={{
                                           background: isAnswer ? C.paper : C.card,
@@ -14155,6 +14213,65 @@ export default function VocalTracker({ userId, userEmail }) {
                   <input type="text" value={learnSearchQuery} onChange={(e) => setLearnSearchQuery(e.target.value)}
                     placeholder={t("searchArticlesPlaceholder")}
                     className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+
+                  {(() => {
+                    // §3 間隔をあけて出し直す。★「学ぶ」を開いたときに出るだけ。
+                    //   ホームにも通知にも出さない。催促しない。連続日数も数えない。
+                    if (shouldPromptReview()) return null;   // ★常に false。催促の経路を作らない
+                    const byId = {};
+                    ARTICLES.filter(visibleArticle).forEach((a) => { byId[a.id] = a; });
+                    const set = buildReviewSet(Object.values(articleProgress), byId, toISODate(new Date()));
+                    if (set.length === 0) return null;
+                    return (
+                      <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                        <h3 className="ff-display italic text-lg mb-1">前に読んだところから</h3>
+                        <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                          やらなくても、何も起きません。
+                        </p>
+                        <div className="space-y-4">
+                          {set.map((item) => {
+                            const chosen = reviewAnswers[item.articleId];
+                            const answered = typeof chosen === "number";
+                            const result = answered ? answerQuizQuestion(item.question, chosen) : null;
+                            return (
+                              <div key={item.articleId}>
+                                <p className="text-xs mb-1" style={{ color: C.inkSoft }}>{item.articleTitle}</p>
+                                <p className="text-sm mb-2" style={{ color: C.ink, lineHeight: 1.7 }}>{item.question.stem}</p>
+                                <div className="space-y-1.5">
+                                  {(item.question.choices || []).map((choice, ci) => {
+                                    const isAnswer = answered && ci === result.answerIndex;
+                                    const isWrongPick = answered && ci === chosen && !result.correct;
+                                    return (
+                                      <button key={ci} type="button" disabled={answered}
+                                        onClick={() => {
+                                          setReviewAnswers((s) => ({ ...s, [item.articleId]: ci }));
+                                          handleAnswerReview(item.articleId, ci === item.question.answerIndex);
+                                        }}
+                                        className="w-full text-left rounded-xl p-2.5 text-sm border"
+                                        style={{
+                                          background: isAnswer ? C.paper : C.card,
+                                          borderColor: isAnswer ? C.ink : (isWrongPick ? C.inkSoft : C.line),
+                                          color: C.ink,
+                                          opacity: answered && !isAnswer && !isWrongPick ? 0.55 : 1,
+                                          lineHeight: 1.6
+                                        }}>
+                                        {choice}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                                {answered && (
+                                  <p className="text-xs mt-2" style={{ color: C.inkSoft, lineHeight: 1.7 }}>
+                                    {result.explanation}
+                                  </p>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })()}
 
                   {searchResults ? (
                     <div className="space-y-1.5">
