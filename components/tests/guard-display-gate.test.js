@@ -38,7 +38,24 @@ async function main() {
   assertTrue(!!narrativeKey, `3つの門を全部持つゲートがある（${narrativeKey}）`);
   const base = { n1: 20, n0: 20, effectSize: 0.6, fdrPass: true, days: 400 };
 
-  console.log("=== 3つ全部そろえば通る ===");
+  console.log("=== ★閾値そのものが、決めた値であること ===");
+  // ★2026-08-29 追加。ここが抜けていました。
+  //   このテストは「NARRATIVE_MIN_N_PER_GROUP - 1 なら通らない」という形で、
+  //   閾値を★自分自身と比べていました。だから閾値を 10 から 1 に下げても、
+  //   「n=0 なら通らない」を確かめるだけになり、通ってしまいます。
+  //   実際に 10 → 1 に書き換えて試したところ、3本のうちこれだけが
+  //   落ちませんでした。表示ゲートを骨抜きにできる状態でした。
+  //
+  //   ★仕組みが動くことと、線が正しい位置にあることは別です。
+  //     少ないデータで断定的な文章を出さない、という約束を守るのは
+  //     「線の位置」のほうです。値を直接固定します。
+  //
+  //   出典: 統合実行ルート v4 §6／分析の検出力と族の設計.md
+  assertEqual(NARRATIVE_MIN_N_PER_GROUP, 10, "★各群の下限は 10（緩めない）");
+  assertEqual(NARRATIVE_MIN_EFFECT_SIZE, 0.4, "★効果量の下限は 0.4（緩めない）");
+  assertEqual(NARRATIVE_FDR_Q, 0.10, "★BH-FDR の q は 0.10（緩めない）");
+
+  console.log("\n=== 3つ全部そろえば通る ===");
   assertEqual(evaluateGate(narrativeKey, base).passed, true, "件数・効果量・多重比較が揃えば通る");
 
   console.log("\n=== ★件数が足りなければ通らない ===");
