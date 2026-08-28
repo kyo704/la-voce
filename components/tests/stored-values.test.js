@@ -57,6 +57,15 @@ async function main() {
   assertTrue(/NUTRITION_PHASE_KEYS = \{ "維持": "phaseMaintain"/.test(vt),
     "栄養のフェーズも key と labelKey が分かれている");
 
+  console.log("\n=== 登録画面の「学生」（★保存される値） ===");
+  // profiles.occupation に固定の文字列として入ります。訳すと、管理画面の
+  // 一覧と本人の書き出しに、言語ごとに違う値が並びます。
+  assertEqual(S.SIGNUP_STUDENT_VALUE, "学生", "値は「学生」");
+  const signup = readCode("components", "SignupForm.jsx");
+  assertTrue(/occupation: form\.isStudent \? "学生" : form\.occupation/.test(signup),
+    "★登録画面が、固定の「学生」を保存している（t() を通していない）");
+  assertTrue(!/isStudent \? t\(/.test(signup), "★t() に置き換えられていない");
+
   console.log("\n=== ★保存する側に、翻訳した文字が入っていないか ===");
   // activity_type に t(...) を渡していたら、訳語が保存されてしまう。
   assertTrue(!/activity_type:\s*t\(/.test(vt), "★activity_type に t() を渡していない");

@@ -59,13 +59,18 @@ function stripComments(src) {
 function classify(text, line) {
   if (STORED.includes(text.trim())) return "stored";
   if (/console\.(log|warn|error)|throw new|catch\s*\(/.test(line)) return "code";
+  // ★翻訳表の中の ja: "..." は、既に訳されています。作業ではありません。
+  //   app/page.js の T、SignupForm.jsx の ST、login/page.js の LT が
+  //   それぞれ9言語ぶんを自前で持っています。
+  //   これを「未翻訳」と数えると、作業量を大きく見誤ります（実際に誤りました）。
+  if (/\b(ja|en|zh|it|de|fr|es|ko|ru):\s*["'`]/.test(line)) return "translated";
   return "display";
 }
 
 async function main() {
 await loadStored();
 
-let grand = { stored: 0, display: 0, code: 0 };
+let grand = { stored: 0, display: 0, code: 0, translated: 0 };
 const perFile = [];
 
 for (const parts of TARGETS) {
@@ -74,7 +79,7 @@ for (const parts of TARGETS) {
   const raw = fs.readFileSync(p, "utf-8");
   const code = stripComments(raw);
   const lines = code.split("\n");
-  const counts = { stored: 0, display: 0, code: 0 };
+  const counts = { stored: 0, display: 0, code: 0, translated: 0 };
   const samples = [];
 
   lines.forEach((line, idx) => {
@@ -100,9 +105,9 @@ for (const parts of TARGETS) {
 }
 
 console.log("多言語対応の棚卸し（★数えただけ。何も変更していません）\n");
-console.log("ファイル                              訳す  ★訳さない  開発用");
+console.log("ファイル                              訳す  訳済み  ★訳さない  開発用");
 perFile.forEach((f) => {
-  console.log(`  ${f.file.padEnd(34)} ${String(f.display).padStart(5)} ${String(f.stored).padStart(9)} ${String(f.code).padStart(7)}`);
+  console.log(`  ${f.file.padEnd(34)} ${String(f.display).padStart(5)} ${String(f.translated).padStart(7)} ${String(f.stored).padStart(9)} ${String(f.code).padStart(7)}`);
 });
 console.log(`  ${"合計".padEnd(34)} ${String(grand.display).padStart(5)} ${String(grand.stored).padStart(9)} ${String(grand.code).padStart(7)}`);
 console.log(`\n★「訳す」= t() に通す対象。これが本当の作業量です。`);
