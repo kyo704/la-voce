@@ -8256,11 +8256,17 @@ export default function VocalTracker({ userId, userEmail }) {
     const next = afterReviewAnswer(current, allCorrect, todayISO);
     setArticleProgress((prev) => ({ ...prev, [articleId]: { articleId, ...next } }));
     const supabase = createClient();
-    await supabase.from("article_progress").upsert({
+    // ★first_read_at は「はじめて答えた日」で、あとから上書きしない。
+    //   以前は undefined を入れて「送られないはず」に頼っていた。
+    //   JSON.stringify は undefined の項目を落とすので実際には動くが、
+    //   時刻を守る判断を、確かめていない外の挙動に預けるのはやめる。
+    //   ★入れないときは、鍵ごと作らない。
+    const row = {
       user_id: userId, article_id: articleId,
-      box: next.box, next_due_at: next.nextDueAt, last_answered_at: next.lastAnsweredAt,
-      first_read_at: current.lastAnsweredAt ? undefined : new Date().toISOString()
-    }, { onConflict: "user_id,article_id" });
+      box: next.box, next_due_at: next.nextDueAt, last_answered_at: next.lastAnsweredAt
+    };
+    if (!current.lastAnsweredAt) row.first_read_at = new Date().toISOString();
+    await supabase.from("article_progress").upsert(row, { onConflict: "user_id,article_id" });
   }
 
   /**

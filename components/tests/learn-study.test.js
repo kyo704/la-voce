@@ -274,6 +274,12 @@ async function main() {
       "3問そろった時点で、はじめて箱に入れている");
     assertTrue(/next_due_at: next\.nextDueAt/.test(uiCode),
       "列名とプログラムの名前の橋渡しをしている（snake_case ↔ camelCase）");
+    // ★はじめて答えた日を、外の挙動に預けない。
+    //   undefined を渡して「送られないはず」に頼らず、鍵ごと作らない。
+    assertTrue(!/first_read_at:[^\n]*undefined/.test(uiCode),
+      "★first_read_at に undefined を渡していない（落ちる前提にしない）");
+    assertTrue(/if \(!current\.lastAnsweredAt\) row\.first_read_at/.test(uiCode),
+      "はじめてのときだけ、鍵を作って入れている");
 
     console.log("     ★出す場所は「学ぶ」の中だけ。ホームにも通知にも渡さない。");
     // ★import の行から数え始めない。読み込んでいることと、
