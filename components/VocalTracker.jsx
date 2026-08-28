@@ -4653,7 +4653,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", occupation: null, voice_mix: null, mix_edited_at: null, occupation_notice_shown_at: null, conditions: [], allergies: [], regular_medications: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "", is_admin: false, record_mode: DEFAULT_RECORD_MODE, deleted_at: null, cycle_show_on_home: true,
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", occupation: null, voice_mix: null, voice_mix_edited_at: null, occupation_notice_shown_at: null, conditions: [], allergies: [], regular_medications: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "", is_admin: false, record_mode: DEFAULT_RECORD_MODE, deleted_at: null, cycle_show_on_home: true,
     display_scale: DEFAULT_SCALE, simple_display: false });
   // 確認用: 管理者アカウント（is_admin）は、動作確認のため全職業の機能を見られるようにする。
   // ★重要：profile宣言より前に置くと「宣言前にアクセス」エラーになるため、必ずこの直後に置くこと。
@@ -4959,7 +4959,7 @@ export default function VocalTracker({ userId, userEmail }) {
       //   既存の全機能を巻き添えにしないこと。
       //   まず全部を要求し、列が無いと言われたときだけ、無しでもう一度読みます。
       const PROFILE_BASE_COLUMNS = "height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus, practice_goal, practice_goal_tags, practice_goal_started_at, practice_reviews, folded_groups, survey_day7_shown_at, survey_day7_response, line_user_id, line_link_code, line_linked_at, line_notification_enabled, day_record_boundary_hour, teacher_beta_access, display_name, is_admin";
-      const PROFILE_OCCUPATION_COLUMNS = "occupation, voice_mix, mix_edited_at, occupation_notice_shown_at";
+      const PROFILE_OCCUPATION_COLUMNS = "occupation, voice_mix, voice_mix_edited_at, occupation_notice_shown_at";
       let { data, error } = await runQueryWithAuthRetry(
         supabase,
         () =>
@@ -5039,7 +5039,7 @@ export default function VocalTracker({ userId, userEmail }) {
           //   ここで既定値を埋めないこと。
           occupation: data.occupation || null,
           voice_mix: data.voice_mix || null,
-          mix_edited_at: data.mix_edited_at || null,
+          voice_mix_edited_at: data.voice_mix_edited_at || null,
           occupation_notice_shown_at: data.occupation_notice_shown_at || null,
           track_cycle: data.track_cycle || false
         });
@@ -8272,12 +8272,12 @@ export default function VocalTracker({ userId, userEmail }) {
   // 型ごとの追加項目（職業を声の型で切り直す §5-2）。
   // ★occupation を必ず渡すこと。渡さないと「その他」の人にも項目が出ます。
   //   components/tests/type-fields.test.js のテスト3-4 が見張っています。
-  // ★mix_edited_at が入っているかどうかだけで、「その他」の扱いを決めます。
+  // ★voice_mix_edited_at が入っているかどうかだけで、「その他」の扱いを決めます。
   //   既定の配合がたまたま閾値を超えていても、それは本人の意思ではありません。
   const typeFieldsForToday = useMemo(
     () => typeFieldsFor(mixOf(profile), {
       occupation: currentOccupation,
-      mixEdited: !!profile.mix_edited_at
+      mixEdited: !!profile.voice_mix_edited_at
     }),
     [profile, currentOccupation]
   );

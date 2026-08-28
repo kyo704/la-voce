@@ -124,6 +124,25 @@ async function main() {
   assertTrue(!/occupation:/.test(mainUpdate),
     "★本体の update に職業を混ぜていない（混ぜると保存が丸ごと失敗する）");
 
+  console.log("\n=== 列名が本番と一致していること ===");
+  // ★2026-08-28の障害。本番の列は voice_mix_edited_at ですが、コードと
+  //   migration が mix_edited_at を見ていて、42703 で落ちていました。
+  //   接頭辞の付け忘れは、目で読んでも気づきにくい種類の間違いです。
+  const nameFiles = [["components", "VocalTracker.jsx"], ["lib", "typeFields.js"],
+                     ["supabase", "migration_occupation.sql"]];
+  nameFiles.forEach((f) => {
+    const raw = readRaw(...f);
+    const bare = (raw.match(/(?<!voice_)\bmix_edited_at\b/g) || []).length;
+    assertTrue(bare === 0, `★${f.join("/")} に voice_ の付かない mix_edited_at が無い`);
+    assertTrue(!/voice_voice_mix/.test(raw), `★${f.join("/")} に接頭辞の重複が無い`);
+  });
+  // 読み出す列名と、プロパティ名が同じであること（片方だけ直す間違いを防ぐ）
+  const vtRaw2 = readRaw("components", "VocalTracker.jsx");
+  assertTrue(/PROFILE_OCCUPATION_COLUMNS = "occupation, voice_mix, voice_mix_edited_at, occupation_notice_shown_at"/.test(vtRaw2),
+    "★select の列名が本番と一致している");
+  assertTrue(/voice_mix_edited_at: data\.voice_mix_edited_at/.test(vtRaw2),
+    "★読み出したあとのプロパティ名も一致している");
+
   console.log(`\n${failCount === 0 ? "✅ 全て通りました" : "❌ 失敗あり"}  成功:${passCount} 失敗:${failCount}`);
   process.exit(failCount === 0 ? 0 : 1);
 }

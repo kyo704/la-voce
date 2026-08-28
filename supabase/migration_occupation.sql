@@ -32,7 +32,7 @@ alter table public.profiles
 -- 本人が配合を動かした時刻。null なら既定値のまま。
 -- ★職業を変えたときに勝手に既定値へ戻さないための目印です。
 alter table public.profiles
-  add column if not exists mix_edited_at timestamptz;
+  add column if not exists voice_mix_edited_at timestamptz;
 
 -- 「呼び方をお仕事に合わせました」の知らせを出した時刻。★1回だけ出します（§8③）。
 alter table public.profiles
@@ -84,7 +84,7 @@ comment on column public.profiles.occupation is
   '職業（11種）。★呼び名と配合の正は lib/occupation.js。v1では分析の説明変数に使わないこと。';
 comment on column public.profiles.voice_mix is
   '声の使い方の配合 {sing,speak,project} 合計10。★v1では負荷の計算に掛けないこと。nullなら職業の既定値。';
-comment on column public.profiles.mix_edited_at is
+comment on column public.profiles.voice_mix_edited_at is
   '本人が配合を動かした時刻。★nullでないときに既定値へ戻さないこと。';
 comment on column public.profiles.occupation_notice_shown_at is
   '呼び方が変わったことを知らせた時刻。★1回だけ出すこと。';
