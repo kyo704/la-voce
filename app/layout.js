@@ -24,6 +24,33 @@ export const metadata = {
   title: "Woolsong | 声のプロフェッショナルのための体調管理",
   description:
     "声楽家・アナウンサー・声優・ポップス/ミュージカル歌手など、声のプロフェッショナルのための体調管理アプリ。喉・声のコンディション、睡眠、気候、本番の出来までを記録し、傾向を分析します。",
+  // ドメイン切替 §4 ゲートA:「OG画像のURLが https://woolsong.app で出る」。
+  // ★URLを直書きしないこと。すべて上の metadataBase（= getBaseUrl()）から
+  //   組み立てます。相対パスを書けば、Next.js が絶対URLにしてくれます。
+  //   直書きすると、ドメインを変えるときに総当たりに戻ります。
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: "Woolsong",
+    locale: "ja_JP",
+    url: "/",
+    title: "Woolsong | 声のプロフェッショナルのための体調管理",
+    description:
+      "喉・声のコンディション、睡眠、気候、本番の出来までを記録し、傾向を分析します。",
+    // ★暫定です。共有用の横長画像（1200×630）はまだありません。
+    //   いまはアプリのアイコンを流用しています。正方形なので、
+    //   SNSでは中央が切り取られて表示されます。
+    //   ちゃんとした共有画像を作るのは、別の作業です。
+    images: [{ url: "/icons/icon-1024.png", width: 1024, height: 1024,
+      alt: "Woolsong" }]
+  },
+  twitter: {
+    card: "summary",
+    title: "Woolsong | 声のプロフェッショナルのための体調管理",
+    description:
+      "喉・声のコンディション、睡眠、気候、本番の出来までを記録し、傾向を分析します。",
+    images: ["/icons/icon-1024.png"]
+  },
   // lavoce-アプリアイコン実装仕様.md §4: favicon・iOSホーム画面アイコンの指定。
   // Next.jsのMetadata APIがここから<link>タグを自動生成するため、layout側にheadタグを書く必要はない。
   icons: {

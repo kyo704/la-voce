@@ -86,6 +86,18 @@ async function main() {
   assertTrue(/metadataBase: new URL\(getBaseUrl\(\)\)/.test(layout),
     "★OG画像の基準を、出どころから決めている（Next.js に推測させない）");
 
+  console.log("\n=== OG（§4 ゲートA） ===");
+  assertTrue(/openGraph: \{/.test(layout), "openGraph がある");
+  assertTrue(/alternates: \{ canonical:/.test(layout), "canonical がある");
+  assertTrue(/url: "\/"/.test(layout), "og:url を相対で書いている（絶対URLにしない）");
+  assertTrue(/\/icons\/icon-1024\.png/.test(layout), "og:image が実在する画像を指している");
+  // ★直書きすると、ドメインを変えるときに総当たりに戻る。Phase 0 の目的そのもの。
+  assertTrue(!/https?:\/\//.test(layout),
+    "★layout.js に絶対URLの直書きが無い（すべて metadataBase 由来）");
+  assertTrue(require("fs").existsSync(
+    require("path").join(__dirname, "..", "..", "public", "icons", "icon-1024.png")),
+    "og:image のファイルが実在する");
+
   console.log("\n=== まだ何も切り替えていないこと（Phase 0 の範囲）===");
   {
     assertTrue(m.LEGACY_ORIGINS.includes("https://la-voce.vercel.app"),
