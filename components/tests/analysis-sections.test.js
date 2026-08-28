@@ -44,6 +44,36 @@ assertTrue(/\.analysis-section-head:last-child/.test(css),
 assertTrue(/display: none/.test(css.slice(css.indexOf(".analysis-section-head"))),
   "空の節を消している");
 
+console.log("\n=== §3-I 散布図（相関を出すとき）===");
+{
+  const i = ui.indexOf("CorrelationScatter pairs=");
+  assertTrue(i > 0, "選んだ項目の散布図を出している");
+  const block = ui.slice(i - 900, i + 900);
+  console.log("     ★回帰直線を引かない。引いた瞬間に「予測」になり、3ゲートの外に出る。");
+  ["回帰", "近似曲線", "trendline", "ReferenceLine", "regression"].forEach((w) => {
+    assertTrue(!block.includes(w), `★散布図に「${w}」が無い`);
+  });
+  assertTrue(/mayStateFinding\(sel\.key\)/.test(block),
+    "★探索族には ρ の数値を出さない（図だけ）");
+  assertTrue(/EXPLORE_NOTE/.test(block), "探索族には「まだ調べています」とだけ出す");
+}
+
+console.log("\n=== §3-G 周期ごとの並び ===");
+{
+  const i = ui.indexOf("PeriodBands rows=");
+  assertTrue(i > 0, "周期を帯と点で並べている");
+  const block = ui.slice(i - 1200, i + 700);
+  console.log("     ★この図に解釈の文章を添えない。並べれば本人が気づく（§3-G）。");
+  ["卵胞", "黄体", "排卵", "月経期"].forEach((w) => {
+    assertTrue(!ui.includes(w), `★位相の呼び名「${w}」を書いていない`);
+  });
+  assertTrue(!/傾向があります|関係があります|影響しています/.test(block),
+    "★図に解釈の文章を添えていない");
+  assertTrue(/何日目か/.test(block), "横軸が「何日目か」だと書いてある（日付ではない）");
+  assertTrue(!ui.includes("cycleGroupStats"),
+    "★4分割して平均を比べる古い計算が、残っていない");
+}
+
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
 if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
 console.log("\n✓ すべて成功しました。");

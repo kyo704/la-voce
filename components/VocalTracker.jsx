@@ -25,8 +25,10 @@ import {
   currentCycleState, cycleSummary, buildBleedingDayset,
   validateNewStart, validateEnd, MIN_CYCLES_FOR_AVERAGE,
   cycleDayForDate, isCycleStartDate,
-  cycleTrackingOn, cycleShowsOnHome, cycleFeatureApplies
-} from "@/lib/cyclePeriods";
+  cycleTrackingOn, cycleShowsOnHome, cycleFeatureApplies,
+  sortPeriods,
+  addDaysISO,
+  diffDays} from "@/lib/cyclePeriods";
 // 統合実行ルートv4 §6: 表示ゲートは必ずこのレイヤーを経由する。画面ごとに条件を書かないこと。
 import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q, NARRATIVE_MIN_N_PER_GROUP } from "@/lib/displayGates";
 import { familyOf, mayStateFinding, EXPLORE, EXPLORE_NOTE,
@@ -2566,6 +2568,42 @@ function CorrelationScatter({ pairs, xLabel, yLabel, width = 260, height = 150 }
       ))}
       <text x={width - padR} y={height - 6} textAnchor="end" style={{ fontSize: 9, fill: C.inkSoft }}>{xLabel}</text>
       <text x={2} y={padT + 8} style={{ fontSize: 9, fill: C.inkSoft }}>{yLabel}</text>
+    </svg>
+  );
+}
+// ★§3-G 期間の帯＋点。周期など、繰り返す期間どうしを並べて比べる。
+//   ・行は直近6件まで。横軸は「何日目か」（★日付ではない）
+//   ・帯は薄く、点は「ふつう以上」と「低い」で描き分ける
+//   ★この図に解釈の文章を添えないこと。
+//     並べれば、本人が自分で気づきます。教えないでください。
+//   ★位相の呼び名（卵胞期・黄体期など）を書かないこと（周期記録の設計 §2）。
+function PeriodBands({ rows, maxDay = 35, width = 280, rowHeight = 18 }) {
+  const list = (rows || []).slice(-6);
+  if (list.length === 0) return null;
+  const padL = 18, padR = 8;
+  const x = (day) => padL + ((day - 1) / Math.max(1, maxDay - 1)) * (width - padL - padR);
+  const height = list.length * rowHeight + 16;
+  return (
+    <svg width="100%" viewBox={`0 0 ${width} ${height}`} style={{ display: "block", maxWidth: width }}>
+      {list.map((row, ri) => {
+        const y = ri * rowHeight + rowHeight / 2;
+        const last = Math.min(maxDay, row.length || maxDay);
+        return (
+          <g key={ri}>
+            <rect x={x(1)} y={y - 4} width={Math.max(2, x(last) - x(1))} height={8} rx={4}
+              fill={CYCLE_BAND} fillOpacity={0.22} />
+            {(row.points || []).filter((p) => p.day <= maxDay).map((p, i) => (
+              <circle key={i} cx={x(p.day)} cy={y} r={3.2}
+                fill={p.low ? C.inkSoft : SERIES.s1} fillOpacity={p.low ? 0.5 : 0.75}
+                stroke={C.card} strokeWidth={1.4} />
+            ))}
+          </g>
+        );
+      })}
+      <line x1={padL} y1={height - 11} x2={width - padR} y2={height - 11} stroke={C.line} strokeWidth={1} />
+      {[1, 7, 14, 21, 28].filter((d) => d <= maxDay).map((d) => (
+        <text key={d} x={x(d)} y={height - 1} textAnchor="middle" style={{ fontSize: 8, fill: C.inkSoft }}>{d}</text>
+      ))}
     </svg>
   );
 }
@@ -6204,35 +6242,33 @@ export default function VocalTracker({ userId, userEmail }) {
   }, [forecastResiduals, forecastResidualSD]);
   // ---- フェーズ2（02偏差値・01予報）用データ ここまで ----
 
-  // ---- lavoce-収集データ拡張案.md C-1: 周期と声・メンタルの傾向 用データ ----
-  // 周期日を4分割（1〜7/8〜14/15〜21/22日目以降）してグループ比較する。
-  const cycleGroupStats = useMemo(() => {
-    if (!profile.track_cycle) return [];
-    const buckets = {
-      "1〜7日目": { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 },
-      "8〜14日目": { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 },
-      "15〜21日目": { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 },
-      "22日目以降": { throatSum: 0, voiceSum: 0, easeSum: 0, n: 0 }
-    };
-    Object.keys(filteredEntries).forEach((d) => {
-      const day = cycleDayForDate(d, cyclePeriods);
-      if (day == null) return;
-      const bucketKey = day <= 7 ? "1〜7日目" : day <= 14 ? "8〜14日目" : day <= 21 ? "15〜21日目" : "22日目以降";
-      const e = filteredEntries[d];
-      if (typeof e.throatCondition === "number") buckets[bucketKey].throatSum += e.throatCondition;
-      if (typeof e.voiceQuality === "number") buckets[bucketKey].voiceSum += e.voiceQuality;
-      if (typeof e.ease === "number") buckets[bucketKey].easeSum += e.ease;
-      buckets[bucketKey].n += 1;
+  // ★4分割して平均を比べる計算は外した（分析画面の描画仕様 §3-G）。
+  //   区切り方そのものが結論を作ってしまうため。1周期を1行として並べる
+  //   cyclePeriodRows に置き換えてある。
+  // ★§3-G 周期どうしを並べる。横軸は「何日目か」で、日付ではない。
+  //   4つに区切って平均を比べるのをやめ、1周期を1行として並べる。
+  //   区切って平均にすると、区切り方が結論を作ってしまう。
+  //   ★位相の呼び名は書かない（周期記録の設計 §2）。日数だけで表す。
+  const cyclePeriodRows = useMemo(() => {
+    if (!cycleTrackingOn(profile)) return [];
+    const sorted = sortPeriods(cyclePeriods);
+    return sorted.slice(-6).map((per, i) => {
+      const next = sorted[sorted.indexOf(per) + 1];
+      const endISO = per.end_date || (next ? addDaysISO(next.start_date, -1) : null);
+      const length = endISO ? diffDays(per.start_date, endISO) + 1 : null;
+      const points = [];
+      Object.keys(filteredEntries).forEach((d) => {
+        const day = cycleDayForDate(d, cyclePeriods);
+        if (day == null) return;
+        if (diffDays(per.start_date, d) < 0) return;
+        if (length != null && diffDays(per.start_date, d) >= length) return;
+        const v = filteredEntries[d].throatCondition;
+        if (typeof v !== "number") return;
+        points.push({ day, low: v < 3 });
+      });
+      return { key: per.start_date || String(i), length: length || 30, points };
     });
-    return Object.entries(buckets)
-      .filter(([, s]) => s.n >= 2)
-      .map(([label, s]) => ({
-        label, n: s.n,
-        avgThroat: s.n ? s.throatSum / s.n : null,
-        avgVoice: s.n ? s.voiceSum / s.n : null,
-        avgEase: s.n ? s.easeSum / s.n : null
-      }));
-  }, [filteredEntries, cyclePeriods, profile.track_cycle]);
+  }, [cyclePeriods, filteredEntries, profile]);
   const hasCycleData = cyclePeriods.length > 0;
   // ---- 周期と声・メンタルの傾向 用データ ここまで ----
 
@@ -13110,24 +13146,20 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                 )}
 
-                {cycleTrackingOn(profile) && hasCycleData && cycleGroupStats.length > 0 && (
+                {cycleTrackingOn(profile) && hasCycleData && cyclePeriodRows.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">周期と声・メンタルの傾向</h3>
+                    <h3 className="ff-display italic text-lg mb-1">周期ごとの並び</h3>
+                    {/* ★§3-G 4つに区切って平均を比べるのをやめた。区切り方が結論を
+                        作ってしまうため。1周期を1行として、何日目かで並べる。
+                        ★この図に解釈の文章を添えないこと。
+                        並べれば、本人が自分で気づく。教えない。
+                        ★位相の呼び名は書かない（周期記録の設計 §2）。 */}
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      記録した周期開始日をもとに、周期を4つに区切って声・メンタルの平均を比べています。
+                      直近{cyclePeriodRows.length}周期を、上から古い順に並べています。横は「何日目か」です。
                     </p>
-                    <div className="space-y-2">
-                      {cycleGroupStats.map((s) => (
-                        <div key={s.label} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
-                          <span className="font-medium">{s.label}</span>
-                          <span className="ff-mono" style={{ color: C.inkSoft }}>
-                            {t("groupStatLine").replace("{throat}", s.avgThroat != null ? s.avgThroat.toFixed(1) : "-").replace("{voice}", s.avgVoice != null ? s.avgVoice.toFixed(1) : "-").replace("{ease}", s.avgEase != null ? s.avgEase.toFixed(1) : "-").replace("{n}", s.n)}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
-                      ※ あくまで記録上の傾向であり、医学的な診断ではありません。件数が少ないうちは参考程度にご覧ください。
+                    <PeriodBands rows={cyclePeriodRows} />
+                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                      濃い点はふつう以上、薄い点は低めに記録した日です。
                     </p>
                   </div>
                 )}
@@ -13357,6 +13389,28 @@ export default function VocalTracker({ userId, userEmail }) {
                           </BarChart>
                         </ResponsiveContainer>
                       </div>
+                      {/* ★§3-I 選んだ項目の散布図。点のみ。回帰直線を引かない。
+                          引いた瞬間に「予測」になり、3ゲートの外に出る。
+                          ★探索族は「図だけ」。ρ の数値も文章も出さない（族の設計 §1）。
+                          中核族のときだけ ρ を数字で添える。 */}
+                      {(() => {
+                        const sel = correlationResults.find((r) => r.key === selectedFactorKey && (r.pairs || []).length > 0);
+                        if (!sel) return null;
+                        const canState = mayStateFinding(sel.key);
+                        return (
+                          <div className="mt-3 pt-3" style={{ borderTop: `1px solid ${C.line}` }}>
+                            <p className="text-xs mb-1" style={{ color: C.inkSoft }}>{sel.label}</p>
+                            <CorrelationScatter pairs={sel.pairs} xLabel={sel.label} yLabel={t("labelThroatCondition")} />
+                            {canState ? (
+                              <p className="text-xs mt-1" style={{ color: C.inkSoft }}>
+                                ρ = {sel.r != null ? sel.r.toFixed(2) : "—"}（{sel.n}日）
+                              </p>
+                            ) : (
+                              <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{EXPLORE_NOTE}</p>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </div>
 
                     {coreFindings.length > 0 && (
