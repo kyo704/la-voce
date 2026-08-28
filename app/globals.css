@@ -92,3 +92,73 @@ input[type="number"] {
 .analysis-section-head:last-child {
   display: none;
 }
+
+/* ============================================================================
+   見やすさ（見やすさとかんたん表示.md §2）
+
+   ★画面を2つ作らない。1つの画面が、ここで伸び縮みする。
+     2つ作ると、片方だけ直す日が必ず来る。
+
+   ★OSの文字サイズ設定を邪魔しない。
+     iPhone の「文字を大きく」を使っている人は、すでにそこで設定している。
+     viewport に maximum-scale / user-scalable=no を書かないこと
+     （app/layout.js の viewport を参照。いまも書かれていない）。
+
+   ★大きい文字ほど、行間が要る。
+   ============================================================================ */
+:root {
+  --base: 16px;
+  --tap: 44px;
+  --gap: 12px;
+  --line: 1.7;
+}
+[data-scale="large"] {
+  --base: 20px;
+  --tap: 56px;
+  --gap: 16px;
+  --line: 1.75;
+}
+[data-scale="xlarge"] {
+  --base: 24px;
+  --tap: 64px;
+  --gap: 20px;
+  --line: 1.8;
+}
+
+/* 本文の基準。★rem で書くと、この値に追従する。 */
+body {
+  font-size: var(--base);
+  line-height: var(--line);
+}
+
+/* ★押せるものは、指の大きさぶん確保する（§4）。
+   大きい文字を選んだ人は、多くの場合、狙いを定めるのも大変になっている。 */
+button,
+[role="button"],
+input[type="checkbox"],
+input[type="radio"] {
+  min-height: var(--tap);
+}
+/* ただし、行の中に混ざる小さなボタン（削除リンクなど）までは広げない。
+   広げると行が飛び飛びになって、かえって読みにくくなる。 */
+button.inline-action {
+  min-height: 0;
+}
+
+/* ★とても大きい でも、ボタンの文字が枠から出ないこと（§2-3）。
+   はみ出すのではなく、折り返す。 */
+button {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* ★表が横に切れないこと（§2-3）。横スクロールできる箱に入れる。 */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ★数字は本文より1段階大きく（§2-1）。記録の数字がいちばん読まれる。 */
+.ff-mono {
+  font-size: 1.05em;
+}

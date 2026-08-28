@@ -31,6 +31,8 @@ import {
   diffDays} from "@/lib/cyclePeriods";
 // 統合実行ルートv4 §6: 表示ゲートは必ずこのレイヤーを経由する。画面ごとに条件を書かないこと。
 import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q, NARRATIVE_MIN_N_PER_GROUP } from "@/lib/displayGates";
+import { SCALES, DEFAULT_SCALE, SCALE_LABELS, SCALE_SAMPLE, normalizeScale,
+  scaleAttribute, isSimpleDisplay } from "@/lib/displayPrefs";
 import { familyOf, mayStateFinding, EXPLORE, EXPLORE_NOTE,
   buildCoreGroups, groupLabelsFor, CORE_LABELS, availableCoreFactors } from "@/lib/analysisFamilies";
 // 分析カードの職業別の出し分け（docs/profession-presets.json と1対1）
@@ -4597,7 +4599,8 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], allergies: [], regular_medications: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "", is_admin: false, record_mode: DEFAULT_RECORD_MODE, deleted_at: null, cycle_show_on_home: true });
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], allergies: [], regular_medications: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "", is_admin: false, record_mode: DEFAULT_RECORD_MODE, deleted_at: null, cycle_show_on_home: true,
+    display_scale: DEFAULT_SCALE, simple_display: false });
   // 確認用: 管理者アカウント（is_admin）は、動作確認のため全職業の機能を見られるようにする。
   // ★重要：profile宣言より前に置くと「宣言前にアクセス」エラーになるため、必ずこの直後に置くこと。
   const effectiveProfessions = useMemo(() => {
@@ -7945,6 +7948,23 @@ export default function VocalTracker({ userId, userEmail }) {
       console.error("データの書き出しに失敗しました:", e);
       setExportStatus("error");   // ★失敗は自動で消さない
     }
+  }
+
+  // ★見やすさ。画面を2つ作らず、html の印を切り替えるだけにする（§0-④）。
+  //   CSS 変数（--base / --tap / --gap）が、1つの画面を伸び縮みさせる。
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const mark = scaleAttribute(profile);
+    if (mark) document.documentElement.setAttribute("data-scale", mark);
+    else document.documentElement.removeAttribute("data-scale");
+  }, [profile.display_scale]);
+
+  /** 見やすさの設定を、その場で保存する。★「保存」を押させない。 */
+  async function handleSaveDisplayPref(patch) {
+    setProfile((p) => ({ ...p, ...patch }));
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update(patch).eq("id", userId);
+    if (error) console.error("見やすさの設定を保存できませんでした:", error);
   }
 
   async function handleSaveProfile() {
@@ -14586,6 +14606,56 @@ export default function VocalTracker({ userId, userEmail }) {
                       className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
                       <span className="flex items-center gap-2"><BookOpen size={16} style={{ color: C.gold }} />健康情報</span>
                       <span style={{ color: C.inkSoft }}>→</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* ★名前は「見やすさ」。「シニアモード」と書かないこと（§0-②）。
+                    ★年齢からは何も決めない。本人に直接、見え方を選んでもらう。 */}
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>見やすさ</p>
+                  <p className="text-sm mb-2" style={{ color: C.ink }}>文字の大きさ</p>
+                  {/* ★見本を実寸で出す。「大きい」という言葉では伝わらない（§1-1）。 */}
+                  <div className="grid grid-cols-3 gap-2 mb-1">
+                    {SCALES.map((s) => {
+                      const active = normalizeScale(profile.display_scale) === s;
+                      const sampleSize = s === "normal" ? "1rem" : s === "large" ? "1.25rem" : "1.5rem";
+                      return (
+                        <button key={s} type="button"
+                          onClick={() => handleSaveDisplayPref({ display_scale: s })}
+                          className="rounded-xl border p-3 text-center"
+                          style={{
+                            background: active ? C.paper : C.card,
+                            borderColor: active ? C.ink : C.line,
+                            color: C.ink
+                          }}>
+                          <span className="block text-xs" style={{ color: C.inkSoft }}>{SCALE_LABELS[s]}</span>
+                          <span className="block mt-1" style={{ fontSize: sampleSize, lineHeight: 1.4 }}>{SCALE_SAMPLE}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p className="text-xs mb-4" style={{ color: C.inkSoft }}>
+                    お使いの端末の文字サイズ設定も、そのまま効きます。
+                  </p>
+
+                  {/* ★文字の大きさとは別の設定。片方だけ変えられること（§0-③）。 */}
+                  <div className="flex items-start justify-between gap-3 pt-3" style={{ borderTop: `1px solid ${C.line}` }}>
+                    <div style={{ minWidth: 0 }}>
+                      <p className="text-sm" style={{ color: C.ink }}>かんたん表示</p>
+                      <p className="text-xs mt-0.5" style={{ color: C.inkSoft, lineHeight: 1.7 }}>
+                        1つの画面に出すことを減らします。機能は減りません。押した先に、これまでどおりあります。
+                      </p>
+                    </div>
+                    <button type="button"
+                      onClick={() => handleSaveDisplayPref({ simple_display: !isSimpleDisplay(profile) })}
+                      className="px-4 py-2 rounded-full text-xs font-medium flex-shrink-0"
+                      style={{
+                        background: isSimpleDisplay(profile) ? C.ink : C.card,
+                        color: isSimpleDisplay(profile) ? C.card : C.inkSoft,
+                        border: `1px solid ${isSimpleDisplay(profile) ? C.ink : C.line}`
+                      }}>
+                      {isSimpleDisplay(profile) ? "オン" : "オフ"}
                     </button>
                   </div>
                 </div>
