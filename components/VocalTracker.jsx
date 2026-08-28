@@ -4953,16 +4953,40 @@ export default function VocalTracker({ userId, userEmail }) {
     let mounted = true;
     (async () => {
       const supabase = createClient();
-      const { data, error } = await runQueryWithAuthRetry(
+      // ★職業の4列は、migration_occupation.sql を流していない環境では存在しません。
+      //   1列でも欠けると select 全体が 42703 で落ち、プロフィールが1つも
+      //   読めなくなります（＝アプリが使えない）。新しい機能のために、
+      //   既存の全機能を巻き添えにしないこと。
+      //   まず全部を要求し、列が無いと言われたときだけ、無しでもう一度読みます。
+      const PROFILE_BASE_COLUMNS = "height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus, practice_goal, practice_goal_tags, practice_goal_started_at, practice_reviews, folded_groups, survey_day7_shown_at, survey_day7_response, line_user_id, line_link_code, line_linked_at, line_notification_enabled, day_record_boundary_hour, teacher_beta_access, display_name, is_admin";
+      const PROFILE_OCCUPATION_COLUMNS = "occupation, voice_mix, mix_edited_at, occupation_notice_shown_at";
+      let { data, error } = await runQueryWithAuthRetry(
         supabase,
         () =>
           supabase
             .from("profiles")
-            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus, practice_goal, practice_goal_tags, practice_goal_started_at, practice_reviews, folded_groups, survey_day7_shown_at, survey_day7_response, line_user_id, line_link_code, line_linked_at, line_notification_enabled, day_record_boundary_hour, teacher_beta_access, display_name, is_admin, occupation, voice_mix, mix_edited_at, occupation_notice_shown_at")
+            .select(PROFILE_BASE_COLUMNS + ", " + PROFILE_OCCUPATION_COLUMNS)
             .eq("id", userId)
             .single(),
         "プロフィール（羊の装備を含む）の取得"
       );
+      // 42703 = undefined_column。列が無いときだけ、職業の4列を外して読み直す。
+      if (error && (error.code === "42703" || /does not exist/i.test(error.message || ""))) {
+        console.warn(
+          "職業の列がまだありません。supabase/migration_occupation.sql を実行してください。" +
+          "それまで、職業の選択と型別項目は既定の動作になります。", error
+        );
+        ({ data, error } = await runQueryWithAuthRetry(
+          supabase,
+          () =>
+            supabase
+              .from("profiles")
+              .select(PROFILE_BASE_COLUMNS)
+              .eq("id", userId)
+              .single(),
+          "プロフィール（職業の列を除く）の取得"
+        ));
+      }
       if (error) {
         console.error("プロフィール（羊の装備を含む）の読み込みに失敗しました:", error, "userId:", userId);
       }
@@ -8105,6 +8129,23 @@ export default function VocalTracker({ userId, userEmail }) {
     }
     // ★同じ理由で、周期の表示設定も分けて保存する（§4-3 の3段階の②）。
     //   migration_cycle_periods.sql が未実行の環境では列が無い。
+    // 職業（migration_occupation.sql）。★本体の update に混ぜないこと。
+    //   列が無い環境では、混ぜるとプロフィールの保存が丸ごと失敗します。
+    //   選んだ職業が保存されないのは困りますが、身長や声種まで
+    //   保存できなくなるほうが、はるかに大きな害です。
+    if (profile.occupation) {
+      const { error: occupationError } = await supabase
+        .from("profiles")
+        .update({ occupation: profile.occupation })
+        .eq("id", userId);
+      if (occupationError) {
+        console.warn(
+          "職業を保存できませんでした。supabase/migration_occupation.sql を実行してください。",
+          occupationError
+        );
+      }
+    }
+
     const { error: cycleSettingError } = await supabase
       .from("profiles")
       .update({ cycle_show_on_home: profile.cycle_show_on_home !== false })
@@ -8218,7 +8259,13 @@ export default function VocalTracker({ userId, userEmail }) {
     //   このファイルの決まりどおり、使うところで createClient() します。
     const supabase = createClient();
     // profiles は update のみ（RLS が INSERT を許していないため upsert は 403）。
-    await supabase.from("profiles").update({ occupation_notice_shown_at: at }).eq("id", userId);
+    const { error } = await supabase
+      .from("profiles").update({ occupation_notice_shown_at: at }).eq("id", userId);
+    if (error) {
+      // ★列がまだ無い環境では保存できません。画面は閉じたままにします。
+      //   次に開いたときにもう一度出るだけで、害はありません。
+      console.warn("知らせを出したことを保存できませんでした。", error);
+    }
   }
   const showGroup = (key) => isFieldGroupVisible(key, { mode: profile.record_mode, foldedGroups: profile.folded_groups });
 

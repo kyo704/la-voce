@@ -108,6 +108,22 @@ async function main() {
   assertTrue(/\.update\(\{ occupation_notice_shown_at/.test(vt),
     "★profiles は update で書く（upsert は RLS が許していない）");
 
+  console.log("\n=== 移行SQLが未実行でも、アプリが使えること ===");
+  // ★2026-08-28に実際に起きた障害。職業の4列を1つの select に足したため、
+  //   列が無い環境で 42703 が出て、プロフィールが1件も読めなくなりました。
+  //   新しい機能のために、既存の全機能を巻き添えにしないこと。
+  assertTrue(/42703/.test(vt), "★列が無いときの番号（42703）を見ている");
+  assertTrue(/PROFILE_BASE_COLUMNS/.test(vt), "職業の列を分けて持っている");
+  assertTrue(/select\(PROFILE_BASE_COLUMNS\)/.test(vt),
+    "★列が無いときは、職業の列を外して読み直す");
+  // 書き込み側も、本体と混ぜない
+  assertTrue(/update\(\{ occupation: profile\.occupation \}\)/.test(vt),
+    "★職業の保存は、本体の update と分けてある");
+  const mainUpdate = vt.slice(vt.indexOf("vocal_profession: profile.vocal_profession"), 
+                              vt.indexOf("track_cycle: !!profile.track_cycle"));
+  assertTrue(!/occupation:/.test(mainUpdate),
+    "★本体の update に職業を混ぜていない（混ぜると保存が丸ごと失敗する）");
+
   console.log(`\n${failCount === 0 ? "✅ 全て通りました" : "❌ 失敗あり"}  成功:${passCount} 失敗:${failCount}`);
   process.exit(failCount === 0 ? 0 : 1);
 }
