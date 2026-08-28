@@ -29,6 +29,7 @@ import {
 } from "@/lib/cyclePeriods";
 // 統合実行ルートv4 §6: 表示ゲートは必ずこのレイヤーを経由する。画面ごとに条件を書かないこと。
 import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q, NARRATIVE_MIN_N_PER_GROUP } from "@/lib/displayGates";
+import { familyOf, mayStateFinding, EXPLORE, EXPLORE_NOTE } from "@/lib/analysisFamilies";
 // 分析カードの職業別の出し分け（docs/profession-presets.json と1対1）
 import { isAnalysisCardVisible } from "@/lib/analysisCardVisibility";
 // 「この分析を強くする」の選び方（記録と分析の順番設計.md §5.3 の R1〜R6）。
@@ -1014,15 +1015,36 @@ function correlationLabel(r, t) {
 // 統合実行ルートv4 §6-1: 相関を文章で語るには、件数・効果量・多重比較の3つを全部通すこと。
 // 以前は |r| ≥ 0.4 かつ n ≥ 5 だけで文章にしていたため、少数データで断定的な文が出ていた（P0-1）。
 // FACTORS を一斉に見ているので、多重比較の補正はここでまとめて行う。
+// ★BH-FDR は族ごとに独立してかける（分析の検出力と族の設計.md §1）。
+//   以前は FACTORS を全部まとめて1つの族として補正していた。項目が増えるほど
+//   しきい値が厳しくなり、検出力が落ちて何も出なくなる方向に働いていた。
+//
+// ★文章を出してよいのは中核族だけ。探索族は図だけで、文章も数字も出さない。
+//   3ゲート（件数・効果量・FDR）は変えていない。§6-1 のまま。
+//   探索族はそもそも文章を出さないので、ゲートの対象外になる。
+//   だから族を分けても、ガードレールは1ミリも緩まない。
 function generateInsights(correlationResults, targetLabel, t) {
   const withP = correlationResults.map((r) => {
     if (r.r == null || r.n < 3 || Math.abs(r.r) >= 1) return { ...r, pValue: null };
     const tStat = r.r * Math.sqrt((r.n - 2) / (1 - r.r * r.r));
     return { ...r, pValue: tDistPValue(tStat, r.n - 2) };
   });
-  const fdrPass = benjaminiHochberg(withP.map((x) => x.pValue), NARRATIVE_FDR_Q);
+  // 族ごとに分けてから、その中だけで補正する。
+  // ★探索族は検定しない（計算もしない）。
+  const fdrByKey = {};
+  const byFamily = {};
+  withP.forEach((r) => {
+    const fam = familyOf(r.key);
+    if (fam === EXPLORE) return;
+    (byFamily[fam] = byFamily[fam] || []).push(r);
+  });
+  Object.values(byFamily).forEach((rows) => {
+    const passes = benjaminiHochberg(rows.map((x) => x.pValue), NARRATIVE_FDR_Q);
+    rows.forEach((r, i) => { fdrByKey[r.key] = passes[i]; });
+  });
   return withP
-    .filter((r, i) => evaluateGate("correlation.narrative", { n: r.n, rho: r.r, fdrPass: fdrPass[i] }, t).passed)
+    .filter((r) => mayStateFinding(r.key))
+    .filter((r) => evaluateGate("correlation.narrative", { n: r.n, rho: r.r, fdrPass: fdrByKey[r.key] }, t).passed)
     .sort((a, b) => Math.abs(b.r) - Math.abs(a.r))
     .slice(0, 3)
     .map((r) => {

@@ -76,6 +76,27 @@ async function main() {
   assertEqual(bin.high.length, 2, "二値は 1 の群");
   assertEqual(bin.low.length, 2, "二値は 0 の群");
 
+  console.log("\n=== 画面が、族ごとに補正しているか ===");
+  {
+    const ui = readRaw("components", "VocalTracker.jsx");
+    console.log("     ★以前は FACTORS を全部まとめて1つの族として補正していた。");
+    console.log("       項目が増えるほどしきい値が厳しくなり、何も出なくなる方向に働く。");
+    assertTrue(/const fdrByKey = \{\};/.test(ui),
+      "族ごとの結果を、項目ごとに持ち直している");
+    assertTrue(/if \(fam === EXPLORE\) return;/.test(ui),
+      "★探索族を、検定の対象から外している（計算もしない）");
+    assertTrue(/\.filter\(\(r\) => mayStateFinding\(r\.key\)\)/.test(ui),
+      "★文章を出してよいのは中核族だけ、という判定を通している");
+    assertTrue(!/benjaminiHochberg\(withP\.map/.test(ui),
+      "★全部まとめて補正する古い書き方が、残っていない");
+    assertTrue(/Object\.values\(byFamily\)\.forEach/.test(ui),
+      "族ごとに独立して補正をかけている");
+
+    console.log("     ★3ゲートは変えていない。§6-1 のまま。");
+    assertTrue(/evaluateGate\("correlation\.narrative"/.test(ui),
+      "ゲートの判定は、これまでと同じ関数を通している");
+  }
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");
