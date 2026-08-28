@@ -289,6 +289,23 @@ const MENTAL_TAG_KEYS = {
 //   再開：職業別の項目分岐（収録種別・叫びテイク数・番組名・セットリスト等、
 //        職業別設計.md）と合わせて実装するのが自然。
 // ============================================================
+// 活動の種類を、その人の職業の呼び名で出す（用語辞書 §4）。
+// ★保存される値（kind）は変えません。「本番」は「本番」のまま保存され、
+//   発声負荷の重み ACTIVITY_LOAD_WEIGHT も、これまでどおり効きます。
+//   変えるのは、画面に出す文字だけです。
+// ★6か所で同じ ternary を書いていたのを、ここ1か所にまとめました。
+const ACTIVITY_KIND_TERM = {
+  "本番": "performanceDay",
+  "リハーサル": "rehearsalDay",
+  "レッスン": "lessonDay"
+};
+function activityKindLabel(kind, occupation, language, t) {
+  const opt = ACTIVITY_OPTIONS.find((a) => a.key === kind) || {};
+  const termKey = ACTIVITY_KIND_TERM[kind];
+  if (termKey) return termLabel(occupation, termKey, language, t, opt.labelKey);
+  return t(opt.labelKey) || kind;
+}
+
 const ACTIVITY_OPTIONS = [
   { key: "休養", icon: Moon, labelKey: "activityRest" },
   { key: "自主練習", icon: Music2, labelKey: "activitySelfPractice" },
@@ -4162,7 +4179,8 @@ function ActivityBlockEditor({
   onAddItem, onUpdateItem, onRemoveItem, onMoveItem,
   repertoireTessituraMap, repertoireUsageCounts, repertoireSkipped, setRepertoireSkipped,
   handleSaveRepertoire, tessituraSaving, songFactorResolver, professions,
-  roleMasterMap, projectMasterMap, handleSaveRole, handleSaveProject, handleSaveSingingLanguage, t
+  roleMasterMap, projectMasterMap, handleSaveRole, handleSaveProject, handleSaveSingingLanguage, t,
+  occupation, language
 }) {
   const detail = activity.detail || {};
   const items = activity.items || [];
@@ -4174,7 +4192,7 @@ function ActivityBlockEditor({
     <div className="rounded-xl border p-3" style={{ borderColor: C.line, background: C.card }}>
       <div className="flex items-center gap-2 mb-2">
         <MiniSelect value={activity.kind} onChange={(v) => onChange({ kind: v })} options={ACTIVITY_BLOCK_KINDS}
-          labels={Object.fromEntries(ACTIVITY_BLOCK_KINDS.map((k) => [k, t((ACTIVITY_OPTIONS.find((a) => a.key === k) || {}).labelKey) || k]))} />
+          labels={Object.fromEntries(ACTIVITY_BLOCK_KINDS.map((k) => [k, activityKindLabel(k, occupation, language, t)]))} />
         <div className="flex items-center gap-1 flex-1">
           <MiniNumber value={activity.minutes} placeholder="分" onChange={(v) => onChange({ minutes: v })} />
           <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>分</span>
@@ -4618,6 +4636,8 @@ export default function VocalTracker({ userId, userEmail }) {
   const [duplicateWarning, setDuplicateWarning] = useState(null);
   const [repertoireSkipped, setRepertoireSkipped] = useState({});
   const [language, setLanguage] = useState("ja");
+  // その人の職業。★呼び名（用語辞書）と型別項目の両方がこれを見ます。
+  //   occupation が null のうちは vocal_profession から読み替わります。
   const [viewMonth, setViewMonth] = useState(() => {
     const d = new Date();
     return { year: d.getUTCFullYear(), month: d.getUTCMonth() };
@@ -8184,6 +8204,22 @@ export default function VocalTracker({ userId, userEmail }) {
     }
   }
   // 項目グループを出すかどうかは、必ずここを通す（記録項目の再設計v2 §3.3）。
+  const currentOccupation = occupationOf(profile);
+
+  // 呼び方が変わったことを、1回だけ知らせる（職業を声の型で切り直す §8③）。
+  // ★出す条件は「まだ知らせていない」ことだけ。既に記録がある人にだけ出します。
+  //   新しく始めた人には、変わった呼び方も何もないためです。
+  const showOccupationNotice = !profile.occupation_notice_shown_at
+    && !!profile.onboarding_completed;
+  async function dismissOccupationNotice() {
+    const at = new Date().toISOString();
+    setProfile((prev) => ({ ...prev, occupation_notice_shown_at: at }));
+    // ★失敗しても画面は閉じます。もう一度出るだけで、害はありません。
+    //   このファイルの決まりどおり、使うところで createClient() します。
+    const supabase = createClient();
+    // profiles は update のみ（RLS が INSERT を許していないため upsert は 403）。
+    await supabase.from("profiles").update({ occupation_notice_shown_at: at }).eq("id", userId);
+  }
   const showGroup = (key) => isFieldGroupVisible(key, { mode: profile.record_mode, foldedGroups: profile.folded_groups });
 
   // 型ごとの追加項目（職業を声の型で切り直す §5-2）。
@@ -8193,10 +8229,10 @@ export default function VocalTracker({ userId, userEmail }) {
   //   既定の配合がたまたま閾値を超えていても、それは本人の意思ではありません。
   const typeFieldsForToday = useMemo(
     () => typeFieldsFor(mixOf(profile), {
-      occupation: occupationOf(profile),
+      occupation: currentOccupation,
       mixEdited: !!profile.mix_edited_at
     }),
-    [profile]
+    [profile, currentOccupation]
   );
 
   // 追加項目の1つを書き換える。★null を渡すと、その項目を消します。
@@ -10202,6 +10238,22 @@ export default function VocalTracker({ userId, userEmail }) {
                         ★どれも任意。空欄のまま保存できます（§10-7）。
                         ★分析には入れません（§9）。記録だけです。
                         ★「その他」を選んだ人には、配合を自分で動かすまで出しません。 */}
+                    {/* 呼び方が変わったことの知らせ（§8③）。★1回だけ。
+                        記録は何も変わっていない、と先に伝えます。 */}
+                    {showOccupationNotice && (
+                      <div className="rounded-2xl p-4 mb-3 border"
+                        style={{ background: C.paper, borderColor: C.line }}>
+                        <p className="text-sm mb-2" style={{ color: C.ink }}>
+                          呼び方をお仕事に合わせました。記録はそのままです。
+                        </p>
+                        <button type="button" onClick={dismissOccupationNotice}
+                          className="text-xs px-3 py-1.5 rounded-full font-medium"
+                          style={{ background: C.curtain, color: "#FFFDF8" }}>
+                          わかりました
+                        </button>
+                      </div>
+                    )}
+
                     {typeFieldsForToday.length > 0 && (
                     <SectionCard title="お仕事に合わせた記録" icon={Mic2}>
                       <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -10323,7 +10375,7 @@ export default function VocalTracker({ userId, userEmail }) {
                               </div>
                               <div className="rounded-lg p-2" style={{ background: C.paper }}>
                                 <span style={{ color: C.inkSoft }}>{t("sectionPractice")}</span>
-                                <div className="font-medium">{yesterdayContext.activityType ? t((ACTIVITY_OPTIONS.find((a) => a.key === yesterdayContext.activityType) || {}).labelKey) : "-"}</div>
+                                <div className="font-medium">{yesterdayContext.activityType ? activityKindLabel(yesterdayContext.activityType, currentOccupation, language, t) : "-"}</div>
                               </div>
                               <div className="rounded-lg p-2" style={{ background: C.paper }}>
                                 <span style={{ color: C.inkSoft }}>{t("labelWeather")}</span>
@@ -10621,7 +10673,7 @@ export default function VocalTracker({ userId, userEmail }) {
                                   cursor: isFirstBlockKind ? "pointer" : "default"
                                 }}>
                                 {opt.icon ? <opt.icon size={16} /> : <Music2 size={16} />}
-                                {t(opt.labelKey) || kind}
+                                {activityKindLabel(kind, currentOccupation, language, t)}
                               </button>
                             );
                           })}
@@ -10689,6 +10741,7 @@ export default function VocalTracker({ userId, userEmail }) {
                                 handleSaveProject={handleSaveProject}
                                 handleSaveSingingLanguage={handleSaveSingingLanguage}
                                 t={t}
+                              occupation={currentOccupation} language={language}
                               />
                             ))}
                           </div>
@@ -11974,7 +12027,7 @@ export default function VocalTracker({ userId, userEmail }) {
                               <div className="text-sm font-medium">{formatDateLabel(date, language)}</div>
                               <div className="flex items-center gap-1.5 text-xs mt-0.5 flex-wrap" style={{ color: C.inkSoft }}>
                                 <ActIcon size={12} />
-                                <span>{t((ACTIVITY_OPTIONS.find((a) => a.key === e.activityType) || {}).labelKey) || e.activityType}</span>
+                                <span>{activityKindLabel(e.activityType, currentOccupation, language, t)}</span>
                                 {entryHasActivityKind(e, "本番") && e.performanceQuality && <span>・{t("targetPerformance")} {levelDynamic(e.performanceQuality)}</span>}
                                 {e.location && <span>・{e.location}</span>}
                               </div>
@@ -12635,7 +12688,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     {Object.entries(ACTIVITY_CHART_COLORS).map(([key, color]) => (
                       <span key={key} className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
                         <span style={{ width: 9, height: 9, borderRadius: 999, background: color, display: "inline-block" }} />
-                        {t((ACTIVITY_OPTIONS.find((a) => a.key === key) || {}).labelKey) || key}
+                        {activityKindLabel(key, currentOccupation, language, t)}
                       </span>
                     ))}
                   </div>

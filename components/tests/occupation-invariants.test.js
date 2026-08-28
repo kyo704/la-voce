@@ -82,6 +82,32 @@ async function main() {
   assertTrue(vt.includes("passaggioFeel"), "★通過感（passaggioFeel）は残っている");
   assertTrue(vt.includes("passaggioStability"), "★通過感の分析も残っている");
 
+  console.log("\n=== §4: 用語辞書が画面につながっている ===");
+  // ★ファイルがあってテストが通っていても、呼ばれていなければ誰にも届きません。
+  //   このセッションで、その形の抜けが実際に起きました。
+  assertTrue(/function activityKindLabel/.test(vt), "呼び名を決める helper がある");
+  assertTrue(/termLabel\(occupation, termKey, language, t, opt\.labelKey\)/.test(vt),
+    "★helper が用語辞書を呼んでいる");
+  const uses = (vt.match(/activityKindLabel\(/g) || []).length;
+  assertTrue(uses >= 6, `★画面が helper 経由で呼び名を出している（${uses}箇所）`);
+  assertTrue(!/t\(\(ACTIVITY_OPTIONS\.find\([^)]*\) \|\| \{\}\)\.labelKey\)/.test(vt),
+    "★辞書を通さない古い書き方が残っていない");
+  // ★保存される値は変えていない（§4）
+  assertTrue(/ACTIVITY_KIND_TERM = \{/.test(vt), "kind と用語の対応表がある");
+  assertTrue(/"本番": "performanceDay"/.test(vt), "「本番」という kind はそのまま");
+  assertTrue(/ACTIVITY_LOAD_WEIGHT = \{ "休養": 0/.test(vt),
+    "★発声負荷の重みが、これまでどおり kind を鍵にしている");
+
+  console.log("\n=== §8③: 呼び方が変わったことを1回だけ知らせる ===");
+  assertTrue(/呼び方をお仕事に合わせました。記録はそのままです。/.test(vt),
+    "知らせの文面がある");
+  assertTrue(/showOccupationNotice/.test(vt), "出す条件がある");
+  assertTrue(/!profile\.occupation_notice_shown_at/.test(vt),
+    "★まだ知らせていない人にだけ出す");
+  assertTrue(/occupation_notice_shown_at: at/.test(vt), "★出したら記録する（1回だけ）");
+  assertTrue(/\.update\(\{ occupation_notice_shown_at/.test(vt),
+    "★profiles は update で書く（upsert は RLS が許していない）");
+
   console.log(`\n${failCount === 0 ? "✅ 全て通りました" : "❌ 失敗あり"}  成功:${passCount} 失敗:${failCount}`);
   process.exit(failCount === 0 ? 0 : 1);
 }
