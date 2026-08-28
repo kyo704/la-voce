@@ -209,3 +209,32 @@ button {
   line-height: 1.6;
   margin-top: 0.35em;
 }
+
+/* ============================================================================
+   タブの帯（横スクロール）
+
+   ★両端に薄い影を出して、「まだ続く」ことを示します。
+     右端の見切れだけでなく、左端も同じように隠れます。
+     影が無いと、切れているだけに見えて、動かせると気づけません。
+
+   ★スクロールバーは出しません。携帯では場所を取り、しばらくすると消えるため、
+     指標としてあてになりません。
+
+   mask-image は、帯の中身が端に近づいたときだけ薄くなります。
+   中身が端に無ければ（＝スクロールしきっていれば）何も起きません。
+   ============================================================================ */
+.nav-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* 端の内側に余白を作り、タブが縁に貼りつかないようにする */
+  padding-left: 2px;
+  padding-right: 2px;
+  scroll-padding-inline: 12px;
+  -webkit-mask-image: linear-gradient(
+    to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+  mask-image: linear-gradient(
+    to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+}
+.nav-scroll::-webkit-scrollbar {
+  display: none;
+}

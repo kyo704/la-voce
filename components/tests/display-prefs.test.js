@@ -246,6 +246,10 @@ async function main() {
     assertTrue(!/text-sm font-medium whitespace-nowrap transition-all/.test(uiCode),
       "★タブに shrink-0 が付いている（縮んで文字が切れない）");
     assertTrue(/overflow-x-auto/.test(uiCode), "帯が横スクロールできる");
+    console.log("     ★両端に「まだ続く」の合図を出す。右だけでなく左も隠れる。");
+    assertTrue(/nav-scroll/.test(uiCode), "帯に印が付いている");
+    assertTrue(/mask-image: linear-gradient/.test(css), "両端が薄くなる（まだ続くと分かる）");
+    assertTrue(/scroll-padding-inline/.test(css), "端でタブが縁に貼りつかない");
 
     console.log("     ★語の途中で割らない（ドイツ語・ロシア語。ゲートB）。");
     assertTrue(!/overflow-wrap: anywhere/.test(css),

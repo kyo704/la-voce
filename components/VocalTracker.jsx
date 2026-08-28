@@ -2730,15 +2730,23 @@ function LockedCard({ title, teaser, current, required, action }) {
     <Tag {...tagProps}
       className="rounded-2xl p-4 border overflow-hidden relative w-full text-left"
       style={{ background: C.card, borderColor: C.line }}>
-      <div style={{ filter: "blur(3px)", opacity: 0.35, pointerEvents: "none", userSelect: "none" }}>
+      {/* ★ぼかした飾りを、うしろへ回します。
+          これまでは飾りが高さを決め、その上に文字を absolute で重ねていました。
+          飾りの高さは px 固定なのに、重ねた文字は文字サイズで伸びます。
+          「とても大きい」では文字が飾りの高さを越え、overflow-hidden で
+          刈られて、鍵と見出しが重なって見えていました。
+          ★高さは文字の側が決めるべきです。飾りが決めてはいけません。
+          飾りの寸法も em にして、文字と一緒に伸びるようにしました。 */}
+      <div aria-hidden="true" className="absolute inset-0 p-4"
+        style={{ filter: "blur(3px)", opacity: 0.35, pointerEvents: "none", userSelect: "none" }}>
         <h3 className="ff-display italic text-lg mb-2">{title}</h3>
-        <div className="flex items-end gap-1.5" style={{ height: 64 }}>
+        <div className="flex items-end gap-1.5" style={{ height: "4em" }}>
           {[40, 65, 30, 80, 50, 90, 60].map((h, i) => (
-            <div key={i} style={{ width: 10, height: `${h}%`, background: C.gold, borderRadius: 3 }} />
+            <div key={i} style={{ width: "0.6em", height: `${h}%`, background: C.gold, borderRadius: 3 }} />
           ))}
         </div>
       </div>
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 px-6 text-center" style={{ background: "rgba(255,253,248,0.55)" }}>
+      <div className="relative flex flex-col items-center justify-center gap-2 px-6 py-3 text-center" style={{ background: "rgba(255,253,248,0.55)", minHeight: "7em" }}>
         <Lock size={18} style={{ color: C.inkSoft }} />
         <p className="text-xs font-medium" style={{ color: C.ink }}>{title}</p>
         <p className="text-xs" style={{ color: C.inkSoft }}>{teaser}</p>
@@ -9454,8 +9462,12 @@ export default function VocalTracker({ userId, userEmail }) {
             }
             displayTabs.push(tab);
           });
+          // ★横スクロールする帯。両端に、まだ続くことが分かる薄い影を出す（.nav-scroll）。
+          //   右端の見切れだけでなく、左端も同じように隠れる。
+          //   指標が無いと「切れている」だけに見えて、動かせると気づけない。
+          //   ★スクロールの棒は出さない（携帯では場所を取り、しばらくすると消えるため）。
           return (
-            <nav className="max-w-3xl mx-auto flex gap-1 mt-5 overflow-x-auto">
+            <nav className="max-w-3xl mx-auto flex gap-1 mt-5 overflow-x-auto nav-scroll">
               {displayTabs.map((tab) => (
                 tab.href ? (
                   <a

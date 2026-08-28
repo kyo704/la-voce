@@ -88,6 +88,15 @@ console.log("\n=== ロック中のカードは1種類（型も見た目も）===
   assertTrue(!/ChevronRight/.test(body), "ボタンの矢印も残っていない");
   assertTrue(/const Tag = action \? "button" : "div"/.test(body),
     "行き先があるときは、カードごと押せる");
+
+  console.log("     ★高さは文字の側が決める。飾りが決めない。");
+  assertTrue(/aria-hidden="true" className="absolute inset-0 p-4"/.test(body),
+    "★ぼかした飾りが、うしろに回っている（高さを決めていない）");
+  assertTrue(!/className="absolute inset-0 flex flex-col/.test(body),
+    "★文字の側を absolute で重ねていない（重ねると、飾りの高さで刈られる）");
+  assertTrue(/height: "4em"/.test(body) && /width: "0\.6em"/.test(body),
+    "飾りの寸法も em（文字と一緒に伸びる）");
+  assertTrue(!/height: 64/.test(body), "★px 固定の高さが残っていない");
   assertTrue(/aria-label/.test(body),
     "★見た目は同じでも、支援技術からは辿れる（目に見えない押し場所にしない）");
 
