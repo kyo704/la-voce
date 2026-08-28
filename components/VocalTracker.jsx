@@ -413,31 +413,31 @@ const LOAD_TYPE_BY_PROFESSION = {
   voice_actor: "character_switching",
   pop_musical: "loud_venue_performance"
 };
+// ★LoadTracker の職業別9項目を、すべて削除しました（2026-08-28）。
+//   職業を声の型で切り直す.md §6 の手順どおり、消す前に数えています。
+//
+//   【数えた結果】announcer 3項目・voice_actor 3項目・pop_musical 3項目の
+//   すべてが、値の入りうる3か所（load_detail / activity_detail /
+//   activities[].detail）で0件。記録の総数は16行。
+//   →「② 0行だった場合 → 削除してよい」に当たると坂本さんが判断。
+//
+//   ★対照（passaggioFeel）も0件でした。声楽家の4項目を消したときも
+//     同じでした（588d667）。そのときは activity_detail に実在のキーが
+//     並んでいることを確かめて先へ進んでいます。今回は坂本さんの判断で、
+//     その確認を省いて進めました。判断の経緯として書き残します。
+//
+//   ★消したのは「入力欄の定義」であって、保存された値ではありません。
+//     load_detail の中身には触れていません。§6 の「本人が入れたデータを、
+//     こちらの都合で消してはいけません」は、そのまま守られています。
+//     万一あとから値が見つかっても、書き出しには含まれ続けます。
+//
+//   ★LoadTracker 自体は、まだ呼び出しが0件のままです（§5.7）。
+//     器を消すかどうかは、声の型で切り直すときに一緒に決めます。
 const LOAD_FIELDS_BY_PROFESSION = {
-  // ★声楽家向けの4項目を削除しました（職業別項目の再設計と学ぶ画面.md §3.1）。
-  //   音域（使用）… レパートリーのテッシトゥーラ・最高音と重複していた
-  //   ダイナミクス … §3 の表に無く、参照する分析も無かった
-  //   パッサッジョの通過数 … §3 の表に無い。★通過感（passaggioFeel）とは
-  //     別物で、そちらは活動ブロックの detail にあり、分析も学ぶ記事も
-  //     使っています。この職業の看板なので、消していません。
-  //   消す前に実データを数えました。3か所（activities[].detail・
-  //   activity_detail・load_detail）すべてで0件でした。
   singer: [],
-  announcer: [
-    { key: "onAirMinutes", type: "number", labelKey: "loadOnAirMinutes" },
-    { key: "isLive", type: "boolean", labelKey: "loadIsLive" },
-    { key: "consecutiveSegments", type: "number", labelKey: "loadConsecutiveSegments" }
-  ],
-  voice_actor: [
-    { key: "sessionMinutes", type: "number", labelKey: "loadSessionMinutes" },
-    { key: "characterCount", type: "number", labelKey: "loadCharacterCount" },
-    { key: "hasExtremeVocalization", type: "boolean", labelKey: "loadHasExtremeVocalization" }
-  ],
-  pop_musical: [
-    { key: "venueVolume", type: "scale5", labelKey: "loadVenueVolume" },
-    { key: "monitorVolume", type: "scale5", labelKey: "loadMonitorVolume" },
-    { key: "consecutivePerformanceDay", type: "number", labelKey: "loadConsecutivePerformanceDay" }
-  ]
+  announcer: [],
+  voice_actor: [],
+  pop_musical: []
 };
 
 /* ---------- helpers ---------- */
@@ -2533,18 +2533,19 @@ function GroupDotPlot({ values1, values0, label1, label0, width = 260, rowHeight
         const med = row.vals.length ? median(row.vals) : null;
         return (
           <g key={ri}>
-            <text x={0} y={row.y - 11} style={{ fontSize: 9, fill: C.inkSoft }}>{row.label}（{row.vals.length}日）</text>
+            {/* ★中央値の数字を、点の並ぶ場所に置かない。
+                以前は線の真下（row.y + 18）に置いていたため、
+                隣の行の点や軸と重なって読めなくなることがあった。
+                数字は行の見出しへ移す。点と重なりようがない。 */}
+            <text x={0} y={row.y - 11} style={{ fontSize: 9, fill: C.inkSoft }}>
+              {row.label}（{row.vals.length}日）{med != null ? ` 中央値 ${Math.round(med * 10) / 10}` : ""}
+            </text>
             {row.vals.map((v, i) => (
               <circle key={i} cx={x(v)} cy={row.y + ((i % 3) - 1) * 4} r={3.2}
                 fill={SERIES.s1} fillOpacity={0.45} stroke={C.card} strokeWidth={1.6} />
             ))}
             {med != null && (
-              <>
-                <line x1={x(med)} y1={row.y - 9} x2={x(med)} y2={row.y + 9} stroke={C.ink} strokeWidth={1.4} />
-                <text x={x(med)} y={row.y + 18} textAnchor="middle" style={{ fontSize: 9, fill: C.ink }}>
-                  {Math.round(med * 10) / 10}
-                </text>
-              </>
+              <line x1={x(med)} y1={row.y - 9} x2={x(med)} y2={row.y + 9} stroke={C.ink} strokeWidth={1.4} />
             )}
           </g>
         );

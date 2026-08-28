@@ -196,6 +196,17 @@ async function main() {
       ["components", "VocalTracker.jsx"], assertTrue, "★画面に");
   }
 
+  console.log("\n=== 2群の図: 数字と点を重ねない ===");
+  {
+    const ui = readRaw("components", "VocalTracker.jsx");
+    const plot = ui.slice(ui.indexOf("function GroupDotPlot"), ui.indexOf("function GroupDotPlot") + 2200);
+    assertTrue(!/y=\{row\.y \+ 18\}/.test(plot),
+      "★中央値の数字を、点の並ぶ場所の下に置いていない");
+    assertTrue(/中央値 \$\{Math\.round\(med \* 10\) \/ 10\}/.test(plot),
+      "中央値は行の見出しに出す（点と重なりようがない）");
+    assertTrue(/<line x1=\{x\(med\)\}/.test(plot), "中央値の線そのものは残っている");
+  }
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");

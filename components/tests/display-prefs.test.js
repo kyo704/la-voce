@@ -242,6 +242,16 @@ async function main() {
     assertTrue(/app-wordmark/.test(uiCode) && /clamp\(/.test(css),
       "ワードマークが伸びる（ただし伸びすぎない）");
 
+    console.log("     ★副題だけは、設定に追従させない（飾りの一行なので）。");
+    // ★決め打ちの文字数で切らない。説明を足しただけで検査が外れる。
+    //   規則の終わり（閉じ括弧）までを見る。
+    const tagStart = css.indexOf(".app-tagline {");
+    const tagline = css.slice(tagStart, css.indexOf("}", tagStart) + 1);
+    assertTrue(/font-size: \d+px/.test(tagline),
+      "★px で固定（em は親に対する割合なので、親が伸びれば一緒に伸びる）");
+    assertTrue(!/font-size: [\d.]+em/.test(tagline), "★em を使っていない");
+    assertTrue(/-webkit-line-clamp: 2/.test(tagline), "長い言語でも2行までにとどめる");
+
     console.log("     ★タブは縮ませず、帯ごと横へスクロールさせる。");
     assertTrue(!/text-sm font-medium whitespace-nowrap transition-all/.test(uiCode),
       "★タブに shrink-0 が付いている（縮んで文字が切れない）");
