@@ -55,6 +55,17 @@ Domain 属性でも共有できません）。
 壊れうる    PWA の manifest（id / start_url / scope）
 壊れうる    ★インストール済みPWA（テスターの端末）
 確認要      OG画像（@vercel/og）と metadataBase
+              ★この案件には OG画像がありません（2026-08-28 確認）。
+                openGraph / og:image / ImageResponse は app・lib・components の
+                どこにも1件もなく、metadata を宣言しているのは
+                app/layout.js（metadataBase・title・description・icons）と
+                app/start/page.js（title のみ）の2つだけです。
+                共有カードを作らないことは guard-leak.test.js が検査しており、
+                以前からの判断だと読めます。
+                したがってゲートAの「OG画像のURLが新ドメインで出る」は、
+                確かめる対象がありません。metadataBase の設定だけが該当し、
+                その値は /start が画面に出す住所で確認できます
+                （getBaseUrl() の戻り値をそのまま表示しているため）。
 確認要      招待コードのリンク生成
 確認要      ICS フィードの URL と PRODID
 確認要      cron（keep-alive が旧URLを叩いていないか）
