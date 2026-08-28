@@ -11934,7 +11934,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                 )}
 
-                <div className="pt-2">
+                <div className="pt-2 analysis-section-head">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderVoice")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                     {t("groupHeaderVoiceDesc")}
@@ -12535,7 +12535,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                 )}
 
-                <div className="pt-2">
+                <div className="pt-2 analysis-section-head">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderBody")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                     {t("groupHeaderBodyDesc")}
@@ -12692,7 +12692,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     </p>
                   </div>
                 )}
-                <div className="pt-2">
+                <div className="pt-2 analysis-section-head">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("sectionMental")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                     {t("groupHeaderMentalDesc")}
@@ -12791,7 +12791,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     ロックされたカードは、いちばん下の「この分析を強くする」に
                     集約されるので、ここには何も残らない（G2-11）。 */}
                 {analysisLocks.map.peaking.visible && analysisLocks.map.peaking.unlocked && (
-                <div className="pt-2">
+                <div className="pt-2 analysis-section-head">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderPerformance")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                     {t("groupHeaderPerformanceDesc")}
@@ -12866,7 +12866,7 @@ export default function VocalTracker({ userId, userEmail }) {
                 {/* ★同じ理由。快適帯もロケーションも無ければ、見出しを出さない。 */}
                 {((analysisLocks.map.envComfort.visible && analysisLocks.map.envComfort.unlocked)
                   || locationStats.confident.length > 0 || locationStats.lowN.length > 0) && (
-                <div className="pt-2">
+                <div className="pt-2 analysis-section-head">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderEnvironment")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                     {t("groupHeaderEnvironmentDesc")}
@@ -12997,7 +12997,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   </div>
                 )}
 
-                <div className="pt-2">
+                <div className="pt-2 analysis-section-head">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderOverall")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                     {t("groupHeaderOverallDesc")}
