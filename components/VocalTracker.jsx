@@ -15589,6 +15589,22 @@ export default function VocalTracker({ userId, userEmail }) {
                     <LogOut size={16} />ログアウト
                   </button>
                 </div>
+
+                {/* 配信と更新の確認.md §2: ★もっとのいちばん下に、小さく版を出す。
+                    利用者への説明は要りません。★私たちが「古い画面を見ている」ことを
+                    1秒で見分けるために置きます。§5 の実機確認は、ここが変わることで
+                    合否を判断します。★消さないこと（同書 §6-5）。 */}
+                <p className="text-center" style={{ fontSize: 11, color: C.inkSoft, opacity: 0.8 }}>
+                  バージョン {process.env.NEXT_PUBLIC_BUILD_SHA || "dev"}
+                  {process.env.NEXT_PUBLIC_BUILD_AT ? (
+                    <>
+                      <br />
+                      最終更新 {new Date(process.env.NEXT_PUBLIC_BUILD_AT).toLocaleString("ja-JP", {
+                        month: "long", day: "numeric", hour: "2-digit", minute: "2-digit"
+                      })}
+                    </>
+                  ) : null}
+                </p>
               </div>
             )}
           </div>

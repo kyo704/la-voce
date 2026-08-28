@@ -116,6 +116,14 @@ async function main() {
   assertTrue(/stopWatching\(\);\s*\n\s*stopReload\(\);/.test(vt),
     "★後片付けしている（listener が積み上がらない）");
 
+  console.log("\n=== §2 バージョンの表示（★§5 の合否判定に要る） ===");
+  assertTrue(/バージョン \{process\.env\.NEXT_PUBLIC_BUILD_SHA/.test(vt),
+    "もっとに版が出る");
+  assertTrue(/NEXT_PUBLIC_BUILD_AT/.test(vt), "最終更新の時刻も出る");
+  // ★§6-5「バージョン表示を消さない」
+  assertTrue(/★消さないこと/.test(readRaw("components", "VocalTracker.jsx")),
+    "★消さないことが、そばに書いてある");
+
   console.log(`\n${failCount === 0 ? "✅ 全て通りました" : "❌ 失敗あり"}  成功:${passCount} 失敗:${failCount}`);
   process.exit(failCount === 0 ? 0 : 1);
 }
