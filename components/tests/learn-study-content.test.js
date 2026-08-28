@@ -33,7 +33,9 @@ async function main() {
     console.log("\n合計: 0件成功 / 0件失敗");
     return;
   }
-  const data = JSON.parse(fs.readFileSync(jsonPath, "utf-8")).articles || {};
+  const parsed = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
+  const data = parsed.articles || {};
+  const skipped = parsed.skipped || {};
   const byId = Object.fromEntries(L.ARTICLES.map((a) => [a.id, a]));
 
   console.log(`\n=== 勉強パーツの検査（${Object.keys(data).length}記事）===`);
@@ -95,6 +97,26 @@ async function main() {
 
   assertTrue(problems.length === 0,
     problems.length === 0 ? "すべての記事が validate* と原稿の決まりを通る" : `問題あり\n     ${problems.join("\n     ")}`);
+
+  // ★69本すべてが、どちらかに入っていること。
+  //   「勉強パーツが無い」には二通りある。決めて置かなかったのと、忘れたの。
+  //   区別できないと、決めたほうをあとから「抜けている」と思って埋めてしまう。
+  {
+    const covered = new Set(Object.keys(data).concat(Object.keys(skipped)));
+    const missing = L.ARTICLES.map((a) => a.id).filter((id) => !covered.has(id));
+    assertTrue(missing.length === 0,
+      missing.length === 0
+        ? `★69本すべてに答えが出ている（作った ${Object.keys(data).length} / 置かないと決めた ${Object.keys(skipped).length}）`
+        : `★どちらにも入っていない記事: ${missing.join(", ")}`);
+    const noReason = Object.entries(skipped).filter(([, why]) => !why || String(why).length < 20);
+    assertTrue(noReason.length === 0,
+      noReason.length === 0
+        ? "置かないと決めた記事には、理由が書いてある"
+        : `★理由が書かれていない: ${noReason.map(([id]) => id).join(", ")}`);
+    Object.keys(skipped).forEach((id) => {
+      assertTrue(!data[id], `★${id} は置かないと決めた記事。両方に入れない`);
+    });
+  }
 
   const total = answerPos.reduce((x, y) => x + y, 0);
   if (total > 0) {
