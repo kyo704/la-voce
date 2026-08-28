@@ -49,9 +49,42 @@ async function main() {
 
   console.log("\n=== テスト3: 11職業すべてで項目が決まる ===");
   O.OCCUPATIONS.forEach((occ) => {
-    const fields = T.typeFieldsFor(O.DEFAULT_MIX[occ]);
-    assertTrue(fields.length >= 1 && fields.length <= 3, `${occ} は1〜3個（${fields.length}個）`);
+    const fields = T.typeFieldsFor(O.DEFAULT_MIX[occ], { occupation: occ });
+    if (occ === "other") {
+      assertEqual(fields, [], "★その他は既定では0個（職業別の項目を出さない）");
+    } else {
+      assertTrue(fields.length >= 1 && fields.length <= 3, `${occ} は1〜3個（${fields.length}個）`);
+    }
   });
+
+  console.log("\n=== テスト3-2: ★「その他」の原則を守る ===");
+  // VocalTracker.jsx に「職業固有の追加項目は一切出さない」と書いてある。
+  // DEFAULT_MIX.other は 3/5/2 なので、素通しすると project の項目が出てしまう。
+  const otherMix = O.DEFAULT_MIX.other;
+  assertTrue(T.activeTypes(otherMix).includes("project"),
+    "（前提）その他の既定配合は project の閾値を超えている");
+  assertEqual(T.typeFieldsFor(otherMix, { occupation: "other" }), [],
+    "★それでも、その他には1つも出さない");
+  assertEqual(T.typeFieldsFor(otherMix, { occupation: "other", mixEdited: true }).length, 1,
+    "★本人が配合を動かしていれば、そのとおりに出す");
+  assertEqual(T.typeFieldsFor(O.DEFAULT_MIX.classical, { occupation: "other", mixEdited: true }).length, 2,
+    "★動かした配合の閾値どおりに出る（声楽の配合にしたなら sing の2つ）");
+  assertTrue(T.typeFieldsFor(O.DEFAULT_MIX.classical, { occupation: "classical" }).length === 2,
+    "ほかの職業のふるまいは変わっていない");
+  assertTrue(!T.isTypeFieldVisible("projectedVoiceMinutes", otherMix, { occupation: "other" }),
+    "★その他の人には、保存済みの値も出ているとみなさない");
+
+  console.log("\n=== テスト3-3: 「その他」の綴りがズレていない ===");
+  // lib/typeFields.js は lib/occupation.js を読み込まないので、値を写している。
+  assertTrue(readCode("lib", "typeFields.js").includes(`OTHER_OCCUPATION = "${O.OTHER_OCCUPATION}"`),
+    `★写した綴りが occupation.js と同じ（"${O.OTHER_OCCUPATION}"）`);
+
+  console.log("\n=== テスト3-4: 呼ぶ側が occupation を渡している ===");
+  // ★渡し忘れると、その他の人に職業別の項目が出てしまう。
+  const vt = readCode("components", "VocalTracker.jsx");
+  const calls = vt.match(/typeFieldsFor\s*\([^)]*\)/g) || [];
+  calls.forEach((c) => assertTrue(/,/.test(c), `★${c.slice(0, 50)} が第2引数を渡している`));
+  console.log(`  （呼び出し ${calls.length} 箇所）`);
 
   console.log("\n=== テスト4: ★共通コアに触っていない（§5-1） ===");
   const CORE = ["sleepHours", "offStageVoiceMinutes", "absoluteHumidity",
