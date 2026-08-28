@@ -56,13 +56,13 @@ async function main() {
   assertEqual(O.occupationOf(null), "classical", "プロフィールが無いとき");
   assertEqual(O.occupationOf({}), "classical", "職業が未設定のとき");
   assertEqual(O.occupationOf({ vocal_profession: "trombone" }), "classical", "知らない値のとき");
-  assertEqual(O.occupationOf({ occupation: "rakugo" }), "rakugo", "新しい列があればそれを使う");
+  assertEqual(O.occupationOf({ voice_occupation: "rakugo" }), "rakugo", "新しい列があればそれを使う");
 
   console.log("\n=== テスト4: ★本人が動かした配合を勝手に戻さない（§7） ===");
   const own = { sing: 4, speak: 4, project: 2 };
-  assertEqual(O.mixOf({ occupation: "classical", voice_mix: own }), own,
+  assertEqual(O.mixOf({ voice_occupation: "classical", voice_mix: own }), own,
     "本人の配合が既定値に上書きされない");
-  assertEqual(O.mixOf({ occupation: "classical", voice_mix: { sing: 1, speak: 1, project: 1 } }),
+  assertEqual(O.mixOf({ voice_occupation: "classical", voice_mix: { sing: 1, speak: 1, project: 1 } }),
     O.DEFAULT_MIX.classical, "壊れた配合は既定値に落ちる");
 
   console.log("\n=== テスト5: ★移行しても分析結果が動かない（§8④・§9） ===");
@@ -102,7 +102,7 @@ async function main() {
   assertEqual(sqlKeys.sort(), Object.keys(O.LEGACY_TO_OCCUPATION).sort(),
     "SQLとJSで、読み替える職業の集合が一致");
   // 制約に並ぶ11個が、JSの一覧と一致していること
-  const check = mig.slice(mig.indexOf("profiles_occupation_check"), mig.indexOf("end $$;"));
+  const check = mig.slice(mig.indexOf("profiles_voice_occupation_check"), mig.indexOf("end $$;"));
   O.OCCUPATIONS.forEach((k) => assertTrue(check.includes(`'${k}'`), `SQLの制約に ${k} がある`));
 
   console.log("\n=== テスト8: ★他人と比べない・職業名で語らない（§10-3・§10-4） ===");

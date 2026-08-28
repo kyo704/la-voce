@@ -117,7 +117,7 @@ async function main() {
   assertTrue(/select\(PROFILE_BASE_COLUMNS\)/.test(vt),
     "★列が無いときは、職業の列を外して読み直す");
   // 書き込み側も、本体と混ぜない
-  assertTrue(/update\(\{ occupation: profile\.occupation \}\)/.test(vt),
+  assertTrue(/update\(\{ voice_occupation: profile\.voice_occupation \}\)/.test(vt),
     "★職業の保存は、本体の update と分けてある");
   const mainUpdate = vt.slice(vt.indexOf("vocal_profession: profile.vocal_profession"), 
                               vt.indexOf("track_cycle: !!profile.track_cycle"));
@@ -138,10 +138,62 @@ async function main() {
   });
   // 読み出す列名と、プロパティ名が同じであること（片方だけ直す間違いを防ぐ）
   const vtRaw2 = readRaw("components", "VocalTracker.jsx");
-  assertTrue(/PROFILE_OCCUPATION_COLUMNS = "occupation, voice_mix, voice_mix_edited_at, occupation_notice_shown_at"/.test(vtRaw2),
+  assertTrue(/PROFILE_OCCUPATION_COLUMNS = "voice_occupation, voice_mix, voice_mix_edited_at, occupation_notice_shown_at"/.test(vtRaw2),
     "★select の列名が本番と一致している");
   assertTrue(/voice_mix_edited_at: data\.voice_mix_edited_at/.test(vtRaw2),
     "★読み出したあとのプロパティ名も一致している");
+
+  console.log("\n=== ★登録画面の自由記述 occupation を奪っていないこと ===");
+  // ★2026-08-28。11分類の職業を profiles.occupation に入れようとしていました。
+  //   あれは schema.sql の当初からある登録画面の自由記述の列で、
+  //   「学生」「声楽家」「会社員のものまね」など、本人の回答が26人ぶん
+  //   入っていました。選ぶ画面で保存した瞬間に、黙って消えるところでした。
+  //   11分類は voice_occupation に入れます。
+
+  // (a) 新機能が、接頭辞なしの occupation を読み書きしていないこと
+  const occSrc = readCode("lib", "occupation.js");
+  assertTrue(!/profile\.occupation\b/.test(occSrc),
+    "★occupationOf が profile.occupation を読んでいない");
+  assertTrue(/profile\.voice_occupation/.test(occSrc),
+    "★occupationOf が voice_occupation を読んでいる");
+  assertTrue(!/\bdata\.occupation\b/.test(vt), "★読み出しで data.occupation を使っていない");
+  assertTrue(!/update\(\{ occupation:/.test(vt), "★occupation に書き込んでいない");
+  assertTrue(!/PROFILE_OCCUPATION_COLUMNS = "occupation,/.test(vt),
+    "★select の先頭が occupation になっていない");
+  assertTrue(!/\boccupation: occ\b/.test(vt), "★選ぶ画面が occupation に入れていない");
+
+  // (b) 制約は voice_occupation にだけ掛かっていること
+  const migs = ["migration_occupation.sql", "migration_voice_occupation.sql"];
+  migs.forEach((f) => {
+    const raw = readRaw("supabase", f);
+    const live = raw.split("\n").filter((l) => !l.trim().startsWith("--")).join("\n");
+    assertTrue(!/check \(occupation is null or occupation in/.test(live),
+      `★${f} の制約が occupation に掛かっていない`);
+    assertTrue(!/^\s*update public\.profiles[\s\S]{0,80}set occupation\b/m.test(live),
+      `★${f} が occupation を書き換えない`);
+    assertTrue(!/add column if not exists occupation\b/.test(live),
+      `★${f} が occupation を作ろうとしていない`);
+  });
+  const newMig = readRaw("supabase", "migration_voice_occupation.sql");
+  assertTrue(/add column if not exists voice_occupation text/.test(newMig),
+    "新しいSQLが voice_occupation を作る");
+  assertTrue(/profiles_voice_occupation_check/.test(newMig),
+    "★制約の名前も voice_occupation 側");
+
+  // (c) 登録画面の自由記述は、そのまま残っていること
+  const signup = readCode("components", "SignupForm.jsx");
+  assertTrue(/occupation: form\.isStudent \? "学生" : form\.occupation/.test(signup),
+    "★登録画面は、これまでどおり occupation に自由記述を書く");
+  assertTrue(!/voice_occupation/.test(signup),
+    "★登録画面は voice_occupation を触らない（別の機能）");
+  const schema = readRaw("supabase", "schema.sql");
+  assertTrue(/^\s*occupation text,/m.test(schema), "★schema.sql の occupation 列はそのまま");
+  assertTrue(/raw_user_meta_data->>'occupation'/.test(schema),
+    "★登録時のトリガーもそのまま");
+  const exp = readCode("lib", "exportData.js");
+  assertTrue(/"occupation"/.test(exp), "★本人の書き出しに occupation が残っている");
+  const admin = readCode("app", "admin", "page.js");
+  assertTrue(/u\.occupation/.test(admin), "★管理画面の表示もそのまま");
 
   console.log(`\n${failCount === 0 ? "✅ 全て通りました" : "❌ 失敗あり"}  成功:${passCount} 失敗:${failCount}`);
   process.exit(failCount === 0 ? 0 : 1);

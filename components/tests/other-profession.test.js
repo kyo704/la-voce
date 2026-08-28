@@ -86,7 +86,7 @@ async function main() {
   //   複数選択のときの書き方は無くなったので、新しい書き方で数える。
   // ★「最初の onChange({」ではなく、選ぶ画面のものを名指しで取り出す。
   //   ファイルには onChange({ が何十箇所もあるため。
-  const at = tracker.indexOf("occupation: occ");
+  const at = tracker.indexOf("voice_occupation: occ");
   const pickerOnChange = at < 0 ? "" : tracker.slice(at, at + 200);
   assertTrue(at >= 0, "選ぶ画面が occupation を保存する");
   assertTrue(/professions: \[legacy\]/.test(pickerOnChange)

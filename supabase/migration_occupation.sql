@@ -1,4 +1,18 @@
 -- ============================================================================
+-- ★★★ このファイルは実行しないでください（2026-08-28 に無効化）★★★
+--
+--   このファイルは profiles.occupation を 11分類の職業として扱っていますが、
+--   ★それは間違いでした。occupation は登録画面の自由記述の列で、
+--     schema.sql の当初から存在し、実際のユーザーの回答
+--     （「学生」「声楽家」「会社員のものまね」など）が入っています。
+--
+--   11分類の職業は voice_occupation という別の列に移しました。
+--   ★これから実行するのは supabase/migration_voice_occupation.sql です。
+--
+--   このファイルは、何があったかの記録として残しています。
+-- ============================================================================
+
+-- ============================================================================
 -- 職業を「声の使い方の型」で切り直す — 型と配合の定義／既存ユーザーの移行
 --
 --   出典 docs/lavoce-作業指示-職業を声の型で切り直す.md §7・§8
@@ -23,7 +37,7 @@ select coalesce(vocal_profession, '(未設定)') as "いまの職業",
 -- ② 列を足す
 -- ---------------------------------------------------------------------------
 alter table public.profiles
-  add column if not exists occupation text;
+  add column if not exists voice_occupation text;
 
 -- 配合（歌う/話す/張る、合計10）。★プロフィールに1つだけ。日々の記録には持たせません。
 alter table public.profiles
@@ -41,10 +55,10 @@ alter table public.profiles
 -- 知らない職業が入らないようにする（11個だけ）
 do $$
 begin
-  if not exists (select 1 from pg_constraint where conname = 'profiles_occupation_check') then
+  if not exists (select 1 from pg_constraint where conname = 'profiles_voice_occupation_check') then
     alter table public.profiles
-      add constraint profiles_occupation_check
-      check (occupation is null or occupation in (
+      add constraint profiles_voice_occupation_check
+      check (voice_occupation is null or voice_occupation in (
         'classical','musical','pops','voiceActor','narrator',
         'announcer','actorStage','actorScreen','rakugo','mc','other'));
   end if;
@@ -65,9 +79,17 @@ end $$;
 --   未設定      → classical    アプリ側の既定値が singer だったため
 --
 --   ★1回きりの既定値です。本人が設定から選び直せます。
+--
+--   ★★★ 実行しないでください ★★★
+--   この update は profiles.occupation を書き換えます。そこには
+--   登録画面で本人が入れた自由記述（「学生」「声楽家」「会社員のものまね」
+--   など、2026-08-28 時点で26人ぶん）が入っています。
+--   実行すると、その回答が 'classical' などに置き換わり、元に戻せません。
+--   ★11分類は voice_occupation に入ります。この update は不要です。
+--   ★本人が選ぶまで null のまま、という判断とも矛盾します。
 -- ---------------------------------------------------------------------------
-update public.profiles
-   set occupation = case coalesce(vocal_profession, 'singer')
+-- update public.profiles
+--    set occupation = case coalesce(vocal_profession, 'singer')
                       when 'singer'      then 'classical'
                       when 'pop_musical' then 'pops'
                       when 'announcer'   then 'announcer'
@@ -80,7 +102,7 @@ update public.profiles
 -- ---------------------------------------------------------------------------
 -- ④ 列の説明
 -- ---------------------------------------------------------------------------
-comment on column public.profiles.occupation is
+comment on column public.profiles.voice_occupation is
   '職業（11種）。★呼び名と配合の正は lib/occupation.js。v1では分析の説明変数に使わないこと。';
 comment on column public.profiles.voice_mix is
   '声の使い方の配合 {sing,speak,project} 合計10。★v1では負荷の計算に掛けないこと。nullなら職業の既定値。';
