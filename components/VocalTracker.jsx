@@ -1324,10 +1324,13 @@ function estimateSimpleMealMacros(targets, proteinLevel, calorieLevel) {
 function evaluateIntake(actual, target) {
   if (!target || target <= 0) return null;
   const ratio = actual / target;
-  if (ratio < 0.8) return { labelKey: "evalInsufficient", color: C.curtain };
-  if (ratio <= 1.1) return { labelKey: "evalAppropriate", color: C.sage };
-  if (ratio <= 1.3) return { labelKey: "evalSlightlyExcess", color: C.gold };
-  return { labelKey: "evalExcess", color: C.rust };
+  // ★値で色を変えない（分析画面の描画仕様 §7-5）。
+  //   ★金と緑は文字に使わない（見やすさ §5。実測で 2.80 / 2.76 しかない）。
+  //   言葉のほうが、色より正確に伝わる。色は足さず、文字で読ませる。
+  if (ratio < 0.8) return { labelKey: "evalInsufficient" };
+  if (ratio <= 1.1) return { labelKey: "evalAppropriate" };
+  if (ratio <= 1.3) return { labelKey: "evalSlightlyExcess" };
+  return { labelKey: "evalExcess" };
 }
 function newExerciseItem() {
   return { id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, type: "有酸素運動", minutes: "", intensity: 3, memo: "" };
@@ -3102,7 +3105,7 @@ function FoodNameAutocomplete({ value, foodLibrary, onNameChange, onSelectFood, 
                 className="w-full text-left px-2.5 py-2 text-xs"
                 style={{ color: C.ink, borderTop: i > 0 ? `1px solid ${C.line}` : "none" }}
               >
-                {f.isPreset && <span className="ff-mono mr-1" style={{ color: C.gold }}>[{t("labelPreset")}{f.unit ? `・1${f.unit}${t("labelUnitAvailable")}` : ""}]</span>}
+                {f.isPreset && <span className="ff-mono mr-1" style={{ color: C.inkSoft }}>[{t("labelPreset")}{f.unit ? `・1${f.unit}${t("labelUnitAvailable")}` : ""}]</span>}
                 {displayName}
                 {showJapaneseSuffix && <span className="ml-1" style={{ color: C.inkSoft, fontSize: "0.85em" }}>（{f.name}）</span>}
                 <span className="ml-1.5" style={{ color: C.inkSoft }}>
@@ -6912,10 +6915,11 @@ export default function VocalTracker({ userId, userEmail }) {
   // ゾーン判定・グラフ用の系列・「明日を休養にした場合」の1ステップ先予測を組み立てる。
   function acwrZone(value) {
     if (value == null) return null;
-    if (value < 0.8) return { key: "low", label: "積み足りない", color: C.gold };
-    if (value <= 1.3) return { key: "good", label: "ちょうどいい", color: C.sage };
-    if (value <= 1.5) return { key: "caution", label: "増やしすぎ注意", color: C.gold };
-    return { key: "high", label: "喉を痛めやすい急増", color: C.curtain };
+    // ★値で色を変えない（§7-5）。言葉がそのまま状態を言っている。
+    if (value < 0.8) return { key: "low", label: "積み足りない" };
+    if (value <= 1.3) return { key: "good", label: "ちょうどいい" };
+    if (value <= 1.5) return { key: "caution", label: "増やしすぎ注意" };
+    return { key: "high", label: "喉を痛めやすい急増" };
   }
   const acwrChartData = useMemo(() => {
     const dates = Object.keys(acwrSeries).sort().slice(-28);
@@ -9191,7 +9195,7 @@ export default function VocalTracker({ userId, userEmail }) {
               @media (prefers-reduced-motion: reduce) { .save-card-points { animation: none; } }
             `}</style>
             <p className="ff-display italic text-xl mb-3" style={{ color: C.curtain }}>✓ {t("labelRecordedCheck")}</p>
-            <p className="ff-mono save-card-points" style={{ fontSize: 28, color: C.gold }}>
+            <p className="ff-mono save-card-points" style={{ fontSize: 28, color: C.ink }}>
               +{saveCardData.pointsAfter - saveCardData.pointsBefore}pt <span style={{ fontSize: 16, color: C.inkSoft }}>→ {saveCardData.pointsAfter}pt</span>
             </p>
             {saveCardData.streak > 1 && (
@@ -10708,7 +10712,7 @@ export default function VocalTracker({ userId, userEmail }) {
                                 <div key={label} className="flex items-center justify-between text-xs">
                                   <span style={{ color: C.inkSoft }}>{label}</span>
                                   <span className="ff-mono">{actual.toFixed(0)}g / {t("labelTargetPrefix")}{target.toFixed(0)}g</span>
-                                  {ev && <span className="font-medium" style={{ color: ev.color }}>{t(ev.labelKey)}</span>}
+                                  {ev && <span className="font-medium" style={{ color: C.ink }}>{t(ev.labelKey)}</span>}
                                 </div>
                               );
                             })}
@@ -12140,7 +12144,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           {t("labelBasedOnDate").replace("{date}", formatDateLabel(voicePrediction.date, language))}
                         </p>
                         {voicePrediction.flags.length === 0 ? (
-                          <p className="text-xs rounded-xl p-3" style={{ background: "rgba(122,150,109,0.12)", color: C.sage }}>
+                          <p className="text-xs rounded-xl p-3" style={{ background: "rgba(122,150,109,0.12)", color: C.ink }}>
                             ✓ {t("notePredictionNoFlags")}
                           </p>
                         ) : (
@@ -12182,7 +12186,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           <div className="text-xs ff-mono mt-0.5" style={{ color: C.inkSoft }}>
                             {n > 0 ? t("timeOfDayStatLine").replace("{voice}", avgVoice != null ? avgVoice.toFixed(1) : "-").replace("{throat}", avgThroat != null ? avgThroat.toFixed(1) : "-") : t("labelNoRecordShort")}
                           </div>
-                          {isBest && <div className="text-xs mt-1" style={{ color: C.gold }}>{t("labelGoodTrend")}</div>}
+                          {isBest && <div className="text-xs mt-1" style={{ color: C.ink }}>{t("labelGoodTrend")}</div>}
                         </div>
                       );
                     })}
@@ -12433,7 +12437,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             {acwrToday.value}
                           </span>
                           {acwrToday.zone && (
-                            <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: C.paper, color: acwrToday.zone.color }}>
+                            <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.ink }}>
                               {acwrToday.zone.label}
                             </span>
                           )}
@@ -13215,7 +13219,7 @@ export default function VocalTracker({ userId, userEmail }) {
                                 <p className="text-xs mt-1" style={{ color: C.curtain }}>⚠ 計算より重い（音域以外の要因があるかもしれません）</p>
                               )}
                               {isLighterThanExpected && (
-                                <p className="text-xs mt-1" style={{ color: C.sage }}>この役はあなたに合っているのかもしれません</p>
+                                <p className="text-xs mt-1" style={{ color: C.ink }}>この役はあなたに合っているのかもしれません</p>
                               )}
                             </div>
                           );
@@ -13388,8 +13392,10 @@ export default function VocalTracker({ userId, userEmail }) {
                       <h3 className="ff-display italic text-lg mb-2">{t("titleCorrelationStrength")}</h3>
                       <p className="text-xs mb-3 leading-relaxed rounded-xl p-2.5" style={{ color: C.inkSoft, background: C.paper }}>
                         {t("noteCorrDirection").split(/(\{right\}|\{left\})/g).map((part, i) => {
-                          if (part === "{right}") return <span key={i} style={{ color: C.sage, fontWeight: 500 }}>{t("wordRight")}</span>;
-                          if (part === "{left}") return <span key={i} style={{ color: C.curtain, fontWeight: 500 }}>{t("wordLeft")}</span>;
+                          // ★色だけに意味を持たせない（§1-2）。「右」「左」という言葉が、すでに意味を持っている。
+                          //   緑は文字に使えないので（実測 2.76）、太さで読ませる。
+                          if (part === "{right}") return <span key={i} style={{ color: C.ink, fontWeight: 600 }}>{t("wordRight")}</span>;
+                          if (part === "{left}") return <span key={i} style={{ color: C.ink, fontWeight: 600 }}>{t("wordLeft")}</span>;
                           return <span key={i}>{part}</span>;
                         })}
                       </p>
@@ -13601,7 +13607,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     <div className="max-w-3xl mx-auto">
                       {profileSaveStatus === "saved" && (
                         <div className="rounded-xl px-3 py-2 mb-2 flex items-center gap-2"
-                          style={{ background: "rgba(122,150,109,0.18)", color: C.sage }}>
+                          style={{ background: "rgba(122,150,109,0.18)", color: C.ink }}>
                           <Check size={15} />
                           <span className="text-xs font-medium">{t("profileSavedBanner")}</span>
                         </div>
@@ -13737,7 +13743,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     {exportStatus === "working" ? t("exportWorking") : t("labelExportData")}
                   </button>
                   {exportStatus === "done" && (
-                    <p className="text-xs mt-2" style={{ color: C.sage }}>{t("exportDone")}</p>
+                    <p className="text-xs mt-2" style={{ color: C.ink }}>{t("exportDone")}</p>
                   )}
                 </div>
                 <div className="flex gap-2">
@@ -14900,7 +14906,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   <p className="text-sm font-medium mb-1">LINE通知（毎朝のリマインド）</p>
                   {profile.line_user_id ? (
                     <>
-                      <p className="text-xs mb-3" style={{ color: C.sage }}>連携済みです。{profile.line_linked_at && new Date(profile.line_linked_at).toLocaleDateString("ja-JP")}に連携しました。</p>
+                      <p className="text-xs mb-3" style={{ color: C.ink }}>連携済みです。{profile.line_linked_at && new Date(profile.line_linked_at).toLocaleDateString("ja-JP")}に連携しました。</p>
                       <label className="flex items-center gap-2 mb-3" style={{ cursor: "pointer" }}>
                         <input type="checkbox" checked={profile.line_notification_enabled}
                           onChange={(e) => handleToggleLineNotification(e.target.checked)} />
@@ -14972,7 +14978,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     <p className="text-xs mb-1" style={{ color: C.inkSoft }}>{t("noteExportData")}</p>
                     <p className="text-xs mb-2.5" style={{ color: C.inkSoft }}>{t("noteExportFormats")}</p>
                     {exportStatus === "done" && (
-                      <p className="text-xs rounded-lg px-2.5 py-1.5 mb-2" style={{ background: "rgba(122,150,109,0.18)", color: C.sage }}>
+                      <p className="text-xs rounded-lg px-2.5 py-1.5 mb-2" style={{ background: "rgba(122,150,109,0.18)", color: C.ink }}>
                         {t("exportDone")}
                       </p>
                     )}

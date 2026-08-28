@@ -81,6 +81,32 @@ async function main() {
   assertEqual(m.USE_DISAPPEARING_TOAST, false,
     "★消える通知を使わない（読み終わる前に消える。§4-1）");
 
+  console.log("\n=== 金と緑を、文字に使わない（§0-⑦・§5）===");
+  console.log("     実測のコントラスト比: 金 2.80 / 緑 2.76。文字には足りない。");
+  console.log("     ★塗りと線には使ってよい。アイコンは線なので、そのまま。");
+  {
+    // 行ごとに見て、アイコン（<Icon size=…>）かどうかで分ける
+    const lines = uiCode.split("\n");
+    const textUses = lines
+      .map((l, i) => ({ l, i: i + 1 }))
+      .filter(({ l }) => /color: C\.(gold|sage)\b/.test(l))
+      .filter(({ l }) => !/<[A-Z][A-Za-z0-9]* +[^>]*size=/.test(l));
+    assertTrue(textUses.length === 0,
+      textUses.length === 0
+        ? "★文字色としての金・緑が、1つも残っていない"
+        : `★文字に使われている: ${textUses.map((x) => x.i).join(", ")} 行目`);
+
+    const iconUses = lines.filter((l) => /color: C\.(gold|sage)\b/.test(l)).length;
+    assertTrue(iconUses > 0, `塗り・線としては、そのまま使っている（${iconUses} 箇所）`);
+  }
+
+  console.log("\n=== 値で色を変えない（描画仕様 §7-5）===");
+  assertTrue(!/labelKey: "evalAppropriate", color:/.test(uiCode),
+    "★摂取量の評価が、値で色を変えていない");
+  assertTrue(!/label: "ちょうどいい", color:/.test(uiCode),
+    "★ACWR のゾーンが、値で色を変えていない");
+  console.log("     言葉のほうが、色より正確に伝わる。");
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");
