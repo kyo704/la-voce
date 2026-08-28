@@ -174,6 +174,41 @@ async function main() {
       "★Supabase の文面を、そのまま画面に出していない");
   }
 
+  console.log("\n=== ホーム画面に追加できない問題（§6）===");
+  console.log("     ★この層でいちばん脱落する場所。共有メニューからの追加を知らない人が大多数。");
+  {
+    assertEqual(m.INSTALL_STEPS.ios.length, 4, "iPhone の手順が4段階ある");
+    assertEqual(m.INSTALL_STEPS.android.length, 4, "Android の手順が4段階ある");
+    assertTrue(m.INSTALL_STEPS.ios[0] !== m.INSTALL_STEPS.android[0],
+      "★iPhone と Android で、案内を出し分けている");
+
+    console.log("     ★「あとで」を押せること。追加しないと使えない、と読ませない。");
+    assertEqual(m.INSTALL_LATER_LABEL, "あとで", "「あとで」がある");
+    assertTrue(/ブラウザのままでも/.test(m.INSTALL_LATER_NOTE),
+      "★ブラウザのままでも全部使える、と書いてある");
+    assertTrue(/INSTALL_LATER_NOTE/.test(uiCode), "画面にその一文を出している");
+
+    console.log("     ★こちらから何度も勧めない（§7-9 と同じ線）。");
+    assertEqual(m.shouldShowInstallGuide({ installed: true, dismissed: false, platform: "ios" }), false,
+      "追加済みの人には出さない");
+    assertEqual(m.shouldShowInstallGuide({ installed: false, dismissed: true, platform: "ios" }), false,
+      "★一度閉じたら、その後は出さない");
+    assertEqual(m.shouldShowInstallGuide({ installed: false, dismissed: false, platform: "desktop" }), false,
+      "パソコンには出さない");
+
+    assertTrue(/shouldShowInstallGuide\(\{/.test(uiCode), "画面がその判定を通している");
+    const thinBanner = (uiCode.match(/ホーム画面に追加しませんか/g) || []).length;
+    assertTrue(thinBanner === 0,
+      "★同じ案内を2か所に置いていない（片方だけ古くなるため）");
+
+    console.log("     ★紙を渡せることが、この層では効く。");
+    const sheet = readRaw("app", "start/page.js");
+    assertTrue(/size: A4 portrait/.test(sheet), "印刷用の1枚が A4・縦で作ってある");
+    assertTrue(/INSTALL_STEPS/.test(sheet), "★紙と画面で、手順が同じところから来ている");
+    assertTrue(/ブラウザのままで全部お使いいただけます/.test(sheet),
+      "紙にも「追加しなくても使える」と書いてある");
+  }
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");

@@ -32,7 +32,8 @@ import {
 // 統合実行ルートv4 §6: 表示ゲートは必ずこのレイヤーを経由する。画面ごとに条件を書かないこと。
 import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q, NARRATIVE_MIN_N_PER_GROUP } from "@/lib/displayGates";
 import { SCALES, DEFAULT_SCALE, SCALE_LABELS, SCALE_SAMPLE, normalizeScale,
-  scaleAttribute, isSimpleDisplay, UNDO_WINDOW_MS, ACTIONABLE_ERROR_KEY } from "@/lib/displayPrefs";
+  scaleAttribute, isSimpleDisplay, UNDO_WINDOW_MS, ACTIONABLE_ERROR_KEY,
+  INSTALL_STEPS, INSTALL_LATER_NOTE, INSTALL_LATER_LABEL, shouldShowInstallGuide } from "@/lib/displayPrefs";
 import { SIMPLE_STEPS, SIMPLE_STEP_COUNT, remainingSteps, applyStep, skipStep,
   nextIndex, prevIndex, isFinished, SIMPLE_SKIP_LABEL, SIMPLE_BACK_LABEL, SIMPLE_DONE_TEXT } from "@/lib/simpleFlow";
 import { familyOf, mayStateFinding, EXPLORE, EXPLORE_NOTE,
@@ -9642,34 +9643,53 @@ export default function VocalTracker({ userId, userEmail }) {
                       </div>
                     </div>
                   )}
-                  {!isPwaInstalled && showInstallBanner && pwaInstallPrompt && (
-                    <div className="rounded-2xl p-3 border flex items-center gap-3" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">ホーム画面に追加しませんか？</p>
-                        <p className="text-xs" style={{ color: C.inkSoft }}>ワンタップで記録を開けます。</p>
+                  {/* ★ホーム画面に追加できないことが、この層でいちばん脱落する場所（§6）。
+                      細い帯ではなく、手順を1枚にして出す。文字は大きく。
+                      ★「あとで」を必ず置く。ブラウザのままでも全部使える、と書く。
+                        追加しないと使えない、と読ませないため。
+                      ★こちらから何度も勧めない。閉じたら、その後は出さない。 */}
+                  {shouldShowInstallGuide({
+                    installed: isPwaInstalled,
+                    dismissed: !showInstallBanner,
+                    platform: isIosSafari ? "ios" : (pwaInstallPrompt ? "android" : "other")
+                  }) && (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <p className="mb-1" style={{ color: C.ink, fontSize: "1.1rem", fontWeight: 600, lineHeight: 1.6 }}>
+                        ホーム画面に、羊のマークを置けます
+                      </p>
+                      <p className="text-sm mb-3" style={{ color: C.inkSoft, lineHeight: 1.7 }}>
+                        置いておくと、次からは1回押すだけで開けます。
+                      </p>
+                      <ol className="space-y-2 mb-3">
+                        {(isIosSafari ? INSTALL_STEPS.ios : INSTALL_STEPS.android).map((stepText, i) => (
+                          <li key={i} className="flex gap-3" style={{ lineHeight: 1.7 }}>
+                            <span className="ff-mono flex-shrink-0" style={{ color: C.inkSoft }}>{i + 1}</span>
+                            <span className="text-sm" style={{ color: C.ink }}>{stepText}</span>
+                          </li>
+                        ))}
+                      </ol>
+                      {pwaInstallPrompt && (
+                        <button type="button" onClick={handleInstallPwa}
+                          className="w-full rounded-xl mb-2"
+                          style={{
+                            background: C.curtain, color: "#FFFDF8",
+                            minHeight: "var(--tap)", padding: "var(--gap)", fontSize: "1rem", fontWeight: 600
+                          }}>
+                          いま追加する
+                        </button>
+                      )}
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.7 }}>{INSTALL_LATER_NOTE}</p>
+                        <button type="button" onClick={() => setShowInstallBanner(false)}
+                          className="px-4 py-2 rounded-full text-sm flex-shrink-0"
+                          style={{ color: C.inkSoft, border: `1px solid ${C.line}` }}>
+                          {INSTALL_LATER_LABEL}
+                        </button>
                       </div>
-                      <button type="button" onClick={handleInstallPwa}
-                        className="px-3 py-1.5 rounded-full text-xs font-medium shrink-0" style={{ background: C.curtain, color: "#FFFDF8" }}>
-                        追加する
-                      </button>
-                      <button type="button" onClick={() => setShowInstallBanner(false)} className="w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ color: C.inkSoft }}>
-                        <X size={14} />
-                      </button>
                     </div>
                   )}
-                  {!isPwaInstalled && isIosSafari && showInstallBanner && (
-                    <div className="rounded-2xl p-3 border flex items-center gap-3" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">ホーム画面に追加しませんか？</p>
-                        <p className="text-xs" style={{ color: C.inkSoft }}>
-                          共有ボタン(<span style={{ fontWeight: 600 }}>□に↑</span>)→「ホーム画面に追加」で、ワンタップで開けるようになります。
-                        </p>
-                      </div>
-                      <button type="button" onClick={() => setShowInstallBanner(false)} className="w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ color: C.inkSoft }}>
-                        <X size={14} />
-                      </button>
-                    </div>
-                  )}
+                  {/* ★iOS 用の細い帯は、上の1枚にまとめた。
+                      同じことを2か所で案内すると、片方だけ古くなる。 */}
                   {showDay7Survey && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
                       <p className="text-sm font-medium mb-1">7日間、お疲れさまでした</p>
