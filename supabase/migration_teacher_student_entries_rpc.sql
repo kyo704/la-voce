@@ -49,7 +49,10 @@ declare
     'calorie_level', 'dinner_time', 'dinner_tags', 'weight_kg', 'body_fat_pct', 'ease',
     'mental_reason', 'mental_tags', 'notes', 'medication_tags', 'cycle_start',
     'location', 'temperature', 'humidity', 'weather', 'environment_tags',
-    'ambient_noise_db', 'noisy_environment', 'flight_hours', 'jetlag_hours'
+    'ambient_noise_db', 'noisy_environment', 'flight_hours', 'jetlag_hours',
+    -- 型ごとの追加項目（職業を声の型で切り直す §5-2）。
+    -- ★どの共有範囲にも入れていないので、v_denied 側に落ちます（§10-10）。
+    'type_fields'
   ];
 begin
   -- 呼び出した本人（auth.uid()）が、この生徒と「いま有効に」つながっているかを確認する。
@@ -113,7 +116,7 @@ begin
 
   -- どの共有範囲にも属さない列は、生徒が見るチェックボックスで説明されていないため、
   -- 常に共有しません。共有したい場合は、生徒側の選択肢を先に増やしてから追加すること。
-  --   medication_tags, cycle_start, location, temperature, humidity, weather, environment_tags, ambient_noise_db, noisy_environment, flight_hours, jetlag_hours
+  --   medication_tags, cycle_start, location, temperature, humidity, weather, environment_tags, ambient_noise_db, noisy_environment, flight_hours, jetlag_hours, type_fields
 
   select array_agg(c) into v_denied
     from unnest(v_known) c

@@ -82,8 +82,28 @@ async function main() {
   console.log("\n=== テスト3-4: 呼ぶ側が occupation を渡している ===");
   // ★渡し忘れると、その他の人に職業別の項目が出てしまう。
   const vt = readCode("components", "VocalTracker.jsx");
-  const calls = vt.match(/typeFieldsFor\s*\([^)]*\)/g) || [];
-  calls.forEach((c) => assertTrue(/,/.test(c), `★${c.slice(0, 50)} が第2引数を渡している`));
+  // ★括弧は数えて閉じる。/\([^)]*\)/ だと mixOf(profile) の ) で切れてしまい、
+  //   第2引数を渡していても「渡していない」と誤判定します。
+  const calls = [];
+  for (let i = vt.indexOf("typeFieldsFor("); i >= 0; i = vt.indexOf("typeFieldsFor(", i + 1)) {
+    let depth = 0, j = i + "typeFieldsFor".length;
+    for (; j < vt.length; j++) {
+      if (vt[j] === "(") depth++;
+      else if (vt[j] === ")") { depth--; if (depth === 0) { j++; break; } }
+    }
+    calls.push(vt.slice(i, j));
+  }
+  assertTrue(calls.length >= 1, "記録画面から呼ばれている（呼び出しが1箇所以上ある）");
+  calls.forEach((c) => {
+    // 最上位のコンマだけを数える（入れ子の中のコンマは無視する）。
+    let depth = 0, topLevelComma = false;
+    for (const ch of c.slice("typeFieldsFor".length)) {
+      if (ch === "(") depth++;
+      else if (ch === ")") depth--;
+      else if (ch === "," && depth === 1) topLevelComma = true;
+    }
+    assertTrue(topLevelComma, `★${c.slice(0, 46).replace(/\s+/g, " ")}… が occupation を渡している`);
+  });
   console.log(`  （呼び出し ${calls.length} 箇所）`);
 
   console.log("\n=== テスト4: ★共通コアに触っていない（§5-1） ===");

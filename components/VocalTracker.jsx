@@ -1703,6 +1703,8 @@ function rowToEntry(row) {
   const voiceEntries = migrateLegacyToVoiceEntries(row);
   return {
     date: row.date,
+    // 型ごとの追加項目（§5-2）。★分析には入れない（§9）。
+    typeFields: row.type_fields || {},
     throatCondition: row.throat_condition,
     voiceQuality: row.voice_quality,
     throatSymptoms: row.throat_symptoms || [],
@@ -2098,6 +2100,9 @@ function entryToRow(userId, e) {
   return {
     user_id: userId,
     date: e.date,
+    // 型ごとの追加項目（§5-2）。空のときは null にして、
+    // 「{}」という中身のない塊を残さない。
+    type_fields: (e.typeFields && Object.keys(e.typeFields).length > 0) ? e.typeFields : null,
     throat_condition: numOrNull(voiceLegacy ? voiceLegacy.throatCondition : e.throatCondition),
     voice_quality: numOrNull(voiceLegacy ? voiceLegacy.voiceQuality : e.voiceQuality),
     throat_symptoms: (voiceLegacy ? voiceLegacy.throatSymptoms : e.throatSymptoms) || [],
@@ -8281,6 +8286,29 @@ export default function VocalTracker({ userId, userEmail }) {
   // 項目グループを出すかどうかは、必ずここを通す（記録項目の再設計v2 §3.3）。
   const showGroup = (key) => isFieldGroupVisible(key, { mode: profile.record_mode, foldedGroups: profile.folded_groups });
 
+  // 型ごとの追加項目（職業を声の型で切り直す §5-2）。
+  // ★occupation を必ず渡すこと。渡さないと「その他」の人にも項目が出ます。
+  //   components/tests/type-fields.test.js のテスト3-4 が見張っています。
+  // ★mix_edited_at が入っているかどうかだけで、「その他」の扱いを決めます。
+  //   既定の配合がたまたま閾値を超えていても、それは本人の意思ではありません。
+  const typeFieldsForToday = useMemo(
+    () => typeFieldsFor(mixOf(profile), {
+      occupation: occupationOf(profile),
+      mixEdited: !!profile.mix_edited_at
+    }),
+    [profile]
+  );
+
+  // 追加項目の1つを書き換える。★null を渡すと、その項目を消します。
+  function setTypeField(key, value) {
+    setFormData((prev) => {
+      const next = { ...(prev.typeFields || {}) };
+      if (value === null || value === undefined || value === "") delete next[key];
+      else next[key] = value;
+      return { ...prev, typeFields: next };
+    });
+  }
+
   async function handleUnfoldGroup(key) {
     const updated = (profile.folded_groups || []).filter((k) => k !== key);
     const supabase = createClient();
@@ -10268,6 +10296,71 @@ export default function VocalTracker({ userId, userEmail }) {
                       )}
                           <SectionFeedback text={sectionFeedback.symptoms} />
                     </SectionCard>
+
+                    {/* 型ごとの追加項目（職業を声の型で切り直す §5-2）。
+                        ★配合が閾値を超えた型のぶんだけ出ます。多くても3項目です。
+                        ★どれも任意。空欄のまま保存できます（§10-7）。
+                        ★分析には入れません（§9）。記録だけです。
+                        ★「その他」を選んだ人には、配合を自分で動かすまで出しません。 */}
+                    {typeFieldsForToday.length > 0 && (
+                    <SectionCard title="お仕事に合わせた記録" icon={Mic2}>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        どれも任意です。空欄のままでも保存できます。
+                      </p>
+                      <div className="space-y-3">
+                        {typeFieldsForToday.map((f) => (
+                          <div key={f.key}>
+                            <span className="text-xs font-medium block mb-1.5">{f.label}</span>
+                            {f.type === "scale5" && (
+                              <div className="flex gap-1.5">
+                                {[1, 2, 3, 4, 5].map((n) => {
+                                  const on = (formData.typeFields || {})[f.key] === n;
+                                  return (
+                                    <button key={n} type="button"
+                                      onClick={() => setTypeField(f.key, on ? null : n)}
+                                      className="flex-1 py-2 rounded-xl text-xs font-medium"
+                                      style={{
+                                        background: on ? C.curtain : C.paper,
+                                        color: on ? "#FFFDF8" : C.inkSoft,
+                                        border: `1px solid ${on ? C.curtain : C.line}`
+                                      }}>{n}</button>
+                                  );
+                                })}
+                              </div>
+                            )}
+                            {f.type === "choice" && (
+                              <div className="flex gap-1.5">
+                                {f.options.map((opt) => {
+                                  const on = (formData.typeFields || {})[f.key] === opt;
+                                  return (
+                                    <button key={opt} type="button"
+                                      onClick={() => setTypeField(f.key, on ? null : opt)}
+                                      className="flex-1 py-2 rounded-xl text-xs font-medium"
+                                      style={{
+                                        background: on ? C.curtain : C.paper,
+                                        color: on ? "#FFFDF8" : C.inkSoft,
+                                        border: `1px solid ${on ? C.curtain : C.line}`
+                                      }}>{opt}</button>
+                                  );
+                                })}
+                              </div>
+                            )}
+                            {f.type === "minutes" && (
+                              <div className="flex items-center gap-2">
+                                <input type="number" inputMode="numeric" min="0" max="1440"
+                                  value={(formData.typeFields || {})[f.key] ?? ""}
+                                  onChange={(e) => setTypeField(f.key,
+                                    e.target.value === "" ? null : Math.max(0, Math.min(1440, Number(e.target.value))))}
+                                  className="w-28 px-3 py-2 rounded-xl text-sm"
+                                  style={{ background: C.paper, border: `1px solid ${C.line}` }} />
+                                <span className="text-xs" style={{ color: C.inkSoft }}>分</span>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </SectionCard>
+                    )}
 
                         <button type="button" onClick={handleSave} disabled={saveStatus === "saving"}
                           className="w-full rounded-2xl py-3.5 font-medium flex items-center justify-center gap-2 transition-all"

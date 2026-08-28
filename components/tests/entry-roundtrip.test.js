@@ -401,6 +401,22 @@ console.log("\n=== 旧列（整数）へ小数を書かない ===");
   assertEqual(intOrNull(3.8), 4, "3.8 は 4 に丸まる");
 }
 
+console.log("\n=== 型ごとの追加項目（職業を声の型で切り直す §5-2） ===");
+{
+  // ★中身は lib/typeFields.js が決める。ここで確かめるのは往復だけ。
+  const tf = { passaggioDifficulty: 4, highNoteEase: 2 };
+  const row = entryToRow("u1", { date: "2026-08-28", typeFields: tf });
+  assertEqual(row.type_fields, tf, "書き込みで type_fields に入る");
+  assertEqual(rowToEntry(row).typeFields, tf, "読み出しで typeFields に戻る");
+  // 空のときは {} を残さない（中身のない塊を保存しない）
+  assertEqual(entryToRow("u1", { date: "2026-08-28", typeFields: {} }).type_fields, null,
+    "空のときは null で保存する");
+  assertEqual(entryToRow("u1", { date: "2026-08-28" }).type_fields, null,
+    "未記録のときも null");
+  assertEqual(rowToEntry({ date: "2026-08-28" }).typeFields, {},
+    "列が無い行を読んでも壊れない");
+}
+
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
 if (failCount > 0) {
   console.log("\n⚠ 失敗したテストがあります。声の構造変更などの大きな変更に進む前に、原因を確認してください。");
