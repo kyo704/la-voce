@@ -73,12 +73,24 @@ async function main() {
   // ★職業別の出し分けは professions（配列）を見ている。プロフィール画面が
   //   vocal_profession しか更新していなかったため、職業を変えても記録画面の
   //   職業別項目が変わらなかった。2つを必ず揃えて更新すること。
-  assertTrue(/onChange\(\{ professions: next, vocal_profession: next\[0\] \}\)/.test(tracker),
-    "プロフィール画面の職業選択が professions と vocal_profession を両方更新する");
+  // ★2026-08-28: 選ぶ画面を「職業を声の型で切り直す」§3 の単一選択に作り替えた。
+  //   確かめたいことは前と同じ（職業を変えたら出し分けに使う値も一緒に変わる）が、
+  //   複数選択のときの書き方は無くなったので、新しい書き方で数える。
+  // ★「最初の onChange({」ではなく、選ぶ画面のものを名指しで取り出す。
+  //   ファイルには onChange({ が何十箇所もあるため。
+  const at = tracker.indexOf("occupation: occ");
+  const pickerOnChange = at < 0 ? "" : tracker.slice(at, at + 200);
+  assertTrue(at >= 0, "選ぶ画面が occupation を保存する");
+  assertTrue(/professions: \[legacy\]/.test(pickerOnChange)
+    && /vocal_profession: legacy/.test(pickerOnChange),
+    "選ぶ画面が professions と vocal_profession も一緒に更新する");
   assertTrue(/professions: \(profile\.professions && profile\.professions\.length > 0\)/.test(tracker),
     "保存時にも professions を含めている");
-  assertTrue(/if \(next\.length === 0\) return;/.test(tracker),
-    "1つも選ばれていない状態を作らない（オンボーディングと同じ扱い）");
+  // ★§10-5「職業を複数選ばせない」。単一選択なので、空になる道がそもそも無い。
+  assertTrue(!/currentProfessions\.filter\(\(x\) => x !== p\)/.test(tracker),
+    "★複数選択の外し方が残っていない（1つだけ選ぶ／§10-5）");
+  assertTrue(/OCCUPATIONS\.map\(\(occ\)/.test(tracker),
+    "11職業の一覧から選ばせている（§3）");
   assertTrue(/currentProfessions = \(value\.professions && value\.professions\.length > 0\)/.test(tracker),
     "professions が空の古いデータは、単一値から補っている");
 

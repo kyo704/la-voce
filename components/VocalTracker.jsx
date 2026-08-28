@@ -21,6 +21,10 @@ import { FOOD_PRESETS, DISH_GROUP_ALIASES, CATEGORY_SEARCH_ALIASES } from "@/lib
 import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, SHOP_ITEMS, PLACEMENT_LIMITS, computeBalance } from "@/lib/character";
 import { LANGUAGES, createTranslator } from "@/lib/translations";
 import { BRAND } from "@/lib/brand";
+import { OCCUPATIONS, OCCUPATION_LABELS, OTHER_OCCUPATION, OCCUPATION_TO_LEGACY,
+  DEFAULT_MIX, occupationOf, mixOf, isValidMix } from "@/lib/occupation";
+import { term, termLabel } from "@/lib/vocabulary";
+import { typeFieldsFor } from "@/lib/typeFields";
 // 周期の記録（周期記録の設計.md §3）。★日数はすべてここで導出する。保存しない。
 import {
   currentCycleState, cycleSummary, buildBleedingDayset,
@@ -3617,37 +3621,51 @@ function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
 
                   {showProfession && (
                     <div>
-                      <label className="text-sm font-medium block mb-1.5">{t("labelVocalProfession")}</label>
-                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("noteVocalProfession")}</p>
-                      {/* ★オンボーディングと同じく複数選択にする。
-                          以前はここが単一選択で、しかも vocal_profession しか更新して
-                          いなかった。職業別の出し分けは professions（配列）を見ているため、
-                          この画面で職業を変えても記録画面の職業別項目が変わらなかった。
-                          2つを必ず揃えて更新する。 */}
-                      <div className="flex gap-2 flex-wrap">
-                        {SELECTABLE_PROFESSIONS.map((p) => {
-                          const selected = currentProfessions.includes(p);
+                      <label className="text-sm font-medium block mb-1.5">あなたの声の使い方に近いものを選んでください</label>
+                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                        呼び方と、記録する項目が、お仕事に合わせて変わります。記録の中身は同じです。
+                      </p>
+                      {/* 「職業を声の型で切り直す」§3 の選ぶ画面。
+                          ★1つだけ選びます（§10-5）。以前はここが複数選択でしたが、
+                            兼業は職業を増やすのではなく、配合を動かして表します。
+                          ★選ぶまでは occupation を null のままにして、いまの
+                            vocal_profession から読み替えた職業を「点いている」ように
+                            見せます。見た目は変わらず、「自分で選んだ」かどうかだけが
+                            区別されます。
+                          ★古い列も必ず一緒に更新します。学ぶ画面と分析カードの
+                            出し分けは、いまも professions（配列）を見ているためです。 */}
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {OCCUPATIONS.map((occ) => {
+                          const selected = occupationOf(value) === occ;
                           return (
-                            <button key={p} type="button"
+                            <button key={occ} type="button"
                               onClick={() => {
-                                const next = selected
-                                  ? currentProfessions.filter((x) => x !== p)
-                                  : [...currentProfessions, p];
-                                // 1つも選ばれていない状態は作らない（オンボーディングと同じ扱い）。
-                                if (next.length === 0) return;
-                                onChange({ professions: next, vocal_profession: next[0] });
+                                const legacy = OCCUPATION_TO_LEGACY[occ] || "singer";
+                                onChange({
+                                  occupation: occ,
+                                  professions: [legacy],
+                                  vocal_profession: legacy
+                                });
                               }}
-                              className="px-3.5 py-1.5 rounded-full text-xs font-medium"
+                              className="px-3 py-2 rounded-xl text-xs font-medium text-left"
                               style={{
                                 background: selected ? C.curtain : C.paper,
                                 color: selected ? "#FFFDF8" : C.inkSoft,
                                 border: `1px solid ${selected ? C.curtain : C.line}`
                               }}>
-                              {t(PROFESSION_LABEL_KEYS[p])}
+                              {OCCUPATION_LABELS[occ]}
                             </button>
                           );
                         })}
                       </div>
+                      <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                        あとから変えられます。迷ったら、いちばん近いものをお選びください。
+                      </p>
+                      {occupationOf(value) === OTHER_OCCUPATION && (
+                        <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
+                          {t("professionOtherNote")}
+                        </p>
+                      )}
                     </div>
                   )}
 
@@ -4710,7 +4728,7 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
-  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", conditions: [], allergies: [], regular_medications: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "", is_admin: false, record_mode: DEFAULT_RECORD_MODE, deleted_at: null, cycle_show_on_home: true,
+  const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", occupation: null, voice_mix: null, mix_edited_at: null, occupation_notice_shown_at: null, conditions: [], allergies: [], regular_medications: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "", is_admin: false, record_mode: DEFAULT_RECORD_MODE, deleted_at: null, cycle_show_on_home: true,
     display_scale: DEFAULT_SCALE, simple_display: false });
   // 確認用: 管理者アカウント（is_admin）は、動作確認のため全職業の機能を見られるようにする。
   // ★重要：profile宣言より前に置くと「宣言前にアクセス」エラーになるため、必ずこの直後に置くこと。
@@ -5015,7 +5033,7 @@ export default function VocalTracker({ userId, userEmail }) {
         () =>
           supabase
             .from("profiles")
-            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus, practice_goal, practice_goal_tags, practice_goal_started_at, practice_reviews, folded_groups, survey_day7_shown_at, survey_day7_response, line_user_id, line_link_code, line_linked_at, line_notification_enabled, day_record_boundary_hour, teacher_beta_access, display_name, is_admin")
+            .select("height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus, practice_goal, practice_goal_tags, practice_goal_started_at, practice_reviews, folded_groups, survey_day7_shown_at, survey_day7_response, line_user_id, line_link_code, line_linked_at, line_notification_enabled, day_record_boundary_hour, teacher_beta_access, display_name, is_admin, occupation, voice_mix, mix_edited_at, occupation_notice_shown_at")
             .eq("id", userId)
             .single(),
         "プロフィール（羊の装備を含む）の取得"
@@ -5066,6 +5084,14 @@ export default function VocalTracker({ userId, userEmail }) {
           display_name: data.display_name || "",
           is_admin: data.is_admin || false,
           vocal_profession: data.vocal_profession || "singer",
+          // ★本人が選ぶまで occupation は null のまま。null のときは
+          //   occupationOf() が vocal_profession から読み替える。
+          //   「自分で選んだ」と「既定で表示している」を区別するため、
+          //   ここで既定値を埋めないこと。
+          occupation: data.occupation || null,
+          voice_mix: data.voice_mix || null,
+          mix_edited_at: data.mix_edited_at || null,
+          occupation_notice_shown_at: data.occupation_notice_shown_at || null,
           track_cycle: data.track_cycle || false
         });
         setCharacterPointsSpent(data.character_points_spent || 0);
