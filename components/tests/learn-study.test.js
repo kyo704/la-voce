@@ -296,7 +296,10 @@ async function main() {
     const uiCode = stripComments(readRaw("components", "VocalTracker.jsx"));
     const start = uiCode.indexOf('quizModeOf(article) === "reflect"');
     assertTrue(start > 0, "記述式の欄を、画面が出している");
-    const block2 = uiCode.slice(start, start + 3400);
+    // ★決め打ちの文字数で切らない。中身が増えると、検査だけが黙って外れる。
+    //   記述式の欄は、選択式の欄が始まるところで終わる。そこを終端にする。
+    const end = uiCode.indexOf('quizModeOf(article) === "recall"', start);
+    const block2 = uiCode.slice(start, end > start ? end : start + 4000);
 
     console.log("     ★書いたものに、○×も点数も評価語も付けません。");
     ["answerQuizQuestion", "正解", "score", "点数", "おしい", "よくできました", "評価"].forEach((w) => {
