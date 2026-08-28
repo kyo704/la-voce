@@ -3337,7 +3337,7 @@ function RepertoireItemRow({
           className="flex-1 rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.card }} />
         <input type="number" value={item.minutesOverride ?? ""} placeholder="自動"
           onChange={(e) => onChange({ minutesOverride: e.target.value === "" ? null : Number(e.target.value) })}
-          className="rounded-lg border p-1.5 text-xs ff-mono" style={{ width: 56, borderColor: C.line, background: C.card }} />
+          className="rounded-lg border p-1.5 text-xs ff-mono" style={{ width: "4.5em", borderColor: C.line, background: C.card }} />
         <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>分</span>
         <button type="button" onClick={onRemove} className="flex-shrink-0" style={{ color: C.inkSoft }}><X size={14} /></button>
       </div>
@@ -9320,8 +9320,8 @@ export default function VocalTracker({ userId, userEmail }) {
               @media (prefers-reduced-motion: reduce) { .save-card-points { animation: none; } }
             `}</style>
             <p className="ff-display italic text-xl mb-3" style={{ color: C.curtain }}>✓ {t("labelRecordedCheck")}</p>
-            <p className="ff-mono save-card-points" style={{ fontSize: 28, color: C.ink }}>
-              +{saveCardData.pointsAfter - saveCardData.pointsBefore}pt <span style={{ fontSize: 16, color: C.inkSoft }}>→ {saveCardData.pointsAfter}pt</span>
+            <p className="ff-mono save-card-points" style={{ fontSize: "1.75rem", color: C.ink }}>
+              +{saveCardData.pointsAfter - saveCardData.pointsBefore}pt <span style={{ fontSize: "1.0rem", color: C.inkSoft }}>→ {saveCardData.pointsAfter}pt</span>
             </p>
             {saveCardData.streak > 1 && (
               <p className="text-sm mt-2" style={{ color: C.inkSoft }}>{saveCardData.streak}日つづいています</p>
@@ -9350,9 +9350,20 @@ export default function VocalTracker({ userId, userEmail }) {
         style={{ background: C.paper, borderBottom: `1px solid ${C.line}`, paddingTop: "calc(env(safe-area-inset-top) + 1.5rem)" }}
       >
         <div className="max-w-3xl mx-auto flex items-start justify-between gap-3">
-          <div>
-            <h1 className="ff-display italic text-3xl sm:text-4xl" style={{ color: C.curtain }}>La Voce</h1>
-            <p className="ff-mono text-xs tracking-widest uppercase mt-1" style={{ color: C.inkSoft }}>{t("appTagline")}</p>
+          {/* ★左に幅を与える（flex-1 min-w-0）。
+              右側は shrink-0 で縮まないため、左は min-content まで潰されていました。
+              日本語はどの文字と文字のあいだでも折り返せるので、潰れた幅のまま
+              副題が縦一列に崩れます。★これは文字サイズではなく、幅の問題です。 */}
+          <div className="flex-1 min-w-0">
+            {/* ★ヘッダーは、見やすさの設定につながっていませんでした（G2-14.5 の抜け）。
+                text-3xl は rem なので html 基点になった今は伸びますが、
+                それだと「とても大きい」で見出しだけが画面を占めてしまいます。
+                clamp で、伸びるが伸びすぎない形にします。
+                ★副題は行の高さを明示します。ff-mono と text-xs が組み合わさると、
+                  大きくなった文字が小さい行の箱に入り、上の見出しと重なっていました。
+                  ここが「左上が読みにくい」の正体です。 */}
+            <h1 className="ff-display italic app-wordmark" style={{ color: C.curtain }}>La Voce</h1>
+            <p className="ff-mono app-tagline tracking-widest uppercase" style={{ color: C.inkSoft }}>{t("appTagline")}</p>
           </div>
           <div className="flex items-center gap-1 shrink-0 mt-1">
             <div className="relative flex items-center">
@@ -9414,7 +9425,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     href={tab.key === "voicetheory" ? (PROFESSION_THEORY_PAGES[profile.vocal_profession] || tab.href) : tab.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap shrink-0 transition-all"
                     style={{ background: "transparent", color: C.inkSoft }}
                   >
                     <tab.icon size={15} />
@@ -9424,7 +9435,7 @@ export default function VocalTracker({ userId, userEmail }) {
                   <button
                     key={tab.key}
                     onClick={() => setActiveTab(tab.key)}
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap shrink-0 transition-all"
                     style={{ background: activeTab === tab.key ? C.curtain : "transparent", color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
                   >
                     <tab.icon size={15} />
@@ -9537,7 +9548,7 @@ export default function VocalTracker({ userId, userEmail }) {
               <div className="space-y-1 mt-2" style={{ overflowX: "auto" }}>
                 {SYMPTOM_OPTIONS.map((symptom) => (
                   <div key={symptom} style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                    <span className="text-xs" style={{ width: 76, flexShrink: 0, color: C.inkSoft }}>{t(SYMPTOM_KEYS[symptom])}</span>
+                    <span className="text-xs" style={{ minWidth: "6em", flexShrink: 0, color: C.inkSoft }}>{t(SYMPTOM_KEYS[symptom])}</span>
                     <div style={{ display: "flex", gap: 2 }}>
                       {lessonModeData.symptomWeeks.map((d) => {
                         const has = d.symptoms && d.symptoms.includes(symptom);
@@ -12598,14 +12609,14 @@ export default function VocalTracker({ userId, userEmail }) {
                             const barColor = d.z >= 1.5 ? C.sage : d.z <= -1.5 ? C.curtain : C.gold;
                             return (
                               <div key={d.date} className="flex items-center gap-2">
-                                <span className="text-xs ff-mono" style={{ width: 44, color: C.inkSoft }}>{d.dateLabel}</span>
+                                <span className="text-xs ff-mono shrink-0" style={{ minWidth: "3.4em", color: C.inkSoft }}>{d.dateLabel}</span>
                                 <div style={{ position: "relative", flex: 1, height: 14 }}>
                                   <div style={{ position: "absolute", top: 6, left: 0, right: 0, height: 2, background: C.line }} />
                                   <div style={{ position: "absolute", top: 5, left: `${pct(lo)}%`, width: `${pct(hi) - pct(lo)}%`, height: 4, borderRadius: 2, background: barColor }} />
                                   <div style={{ position: "absolute", top: 2, left: `calc(${pct(d.wakeMidi)}% - 5px)`, width: 10, height: 10, borderRadius: 999, background: C.gold, border: `1.5px solid ${C.card}` }} />
                                   <div style={{ position: "absolute", top: 2, left: `calc(${pct(d.routineMidi)}% - 5px)`, width: 10, height: 10, borderRadius: 999, background: C.sage, border: `1.5px solid ${C.card}` }} />
                                 </div>
-                                <span className="text-xs ff-mono" style={{ width: 36, textAlign: "right", color: C.ink }}>{d.deltaST >= 0 ? "+" : ""}{d.deltaST}</span>
+                                <span className="text-xs ff-mono shrink-0" style={{ minWidth: "2.8em", textAlign: "right", color: C.ink }}>{d.deltaST >= 0 ? "+" : ""}{d.deltaST}</span>
                               </div>
                             );
                           })}
@@ -12792,7 +12803,7 @@ export default function VocalTracker({ userId, userEmail }) {
                           <div style={{ display: "inline-block", minWidth: "100%" }}>
                             {SYMPTOM_OPTIONS.map((symptom) => (
                               <div key={symptom} style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 3 }}>
-                                <div className="text-xs" style={{ width: 80, flexShrink: 0, color: C.inkSoft }}>{t(SYMPTOM_KEYS[symptom])}</div>
+                                <div className="text-xs" style={{ minWidth: "6.4em", flexShrink: 0, color: C.inkSoft }}>{t(SYMPTOM_KEYS[symptom])}</div>
                                 <div style={{ display: "flex", gap: 2 }}>
                                   {symptomGridDates.map((d) => {
                                     const has = (filteredEntries[d].throatSymptoms || []).includes(symptom);
@@ -13113,7 +13124,7 @@ export default function VocalTracker({ userId, userEmail }) {
                             {(e.mentalTags || []).length > 0 && (
                               <div className="flex flex-wrap gap-1 mt-1.5">
                                 {e.mentalTags.map((tag) => (
-                                  <span key={tag} className="px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.ink, fontSize: 11 }}>
+                                  <span key={tag} className="px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.ink, fontSize: "0.6875rem" }}>
                                     {t(MENTAL_TAG_KEYS[tag]) || tag}
                                   </span>
                                 ))}
@@ -13317,14 +13328,14 @@ export default function VocalTracker({ userId, userEmail }) {
                                 <tr>
                                   <th></th>
                                   {comfortZone2D.rhBins.map((rh) => (
-                                    <th key={rh} style={{ fontSize: 9, color: C.inkSoft, padding: "2px 4px" }}>{rh}%</th>
+                                    <th key={rh} style={{ fontSize: "0.5625rem", color: C.inkSoft, padding: "2px 4px" }}>{rh}%</th>
                                   ))}
                                 </tr>
                               </thead>
                               <tbody>
                                 {comfortZone2D.tBins.map((t) => (
                                   <tr key={t}>
-                                    <td style={{ fontSize: 9, color: C.inkSoft, padding: "2px 4px", whiteSpace: "nowrap" }}>{t}℃</td>
+                                    <td style={{ fontSize: "0.5625rem", color: C.inkSoft, padding: "2px 4px", whiteSpace: "nowrap" }}>{t}℃</td>
                                     {comfortZone2D.rhBins.map((rh) => {
                                       const cell = comfortZone2D.cells.find((c) => c.tBin === t && c.rhBin === rh);
                                       if (!cell || cell.n < 2) {
@@ -13591,16 +13602,16 @@ export default function VocalTracker({ userId, userEmail }) {
                       <table style={{ borderCollapse: "collapse", width: "100%" }}>
                         <thead>
                           <tr>
-                            <th style={{ textAlign: "left", fontSize: 11, color: C.inkSoft, fontWeight: 500, padding: "2px 6px" }}></th>
+                            <th style={{ textAlign: "left", fontSize: "0.6875rem", color: C.inkSoft, fontWeight: 500, padding: "2px 6px" }}></th>
                             {[0, 1, 2, 3].map((lag) => (
-                              <th key={lag} style={{ fontSize: 11, color: C.inkSoft, fontWeight: 500, padding: "2px 6px" }}>{lag}日後</th>
+                              <th key={lag} style={{ fontSize: "0.6875rem", color: C.inkSoft, fontWeight: 500, padding: "2px 6px" }}>{lag}日後</th>
                             ))}
                           </tr>
                         </thead>
                         <tbody>
                           {LAG_VARIABLES.map((v) => (
                             <tr key={v.key}>
-                              <td style={{ fontSize: 11, color: C.ink, padding: "2px 6px", whiteSpace: "nowrap" }}>{v.label}</td>
+                              <td style={{ fontSize: "0.6875rem", color: C.ink, padding: "2px 6px", whiteSpace: "nowrap" }}>{v.label}</td>
                               {[0, 1, 2, 3].map((lag) => {
                                 const cell = lagCorrelationMap.find((c) => c.variableKey === v.key && c.lag === lag);
                                 if (!cell || cell.n < 14) {
@@ -13623,7 +13634,7 @@ export default function VocalTracker({ userId, userEmail }) {
                                         width: 40, height: 28, borderRadius: 6, background: color,
                                         border: cell.significant ? `2px solid ${C.ink}` : "2px solid transparent",
                                         display: "flex", alignItems: "center", justifyContent: "center",
-                                        fontSize: 10, color: C.ink, fontFamily: "monospace"
+                                        fontSize: "0.625rem", color: C.ink, fontFamily: "monospace"
                                       }}
                                     >
                                       {rho.toFixed(1)}

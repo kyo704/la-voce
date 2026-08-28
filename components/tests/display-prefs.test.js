@@ -209,6 +209,35 @@ async function main() {
       "紙にも「追加しなくても使える」と書いてある");
   }
 
+  console.log("\n=== 伸び縮みが実際に効くこと（重なりの再発防止）===");
+  {
+    console.log("     ★rem は html を基準に解決される。body に指定しても文字は動かない。");
+    assertTrue(/html \{\s*\n\s*font-size: var\(--base\);/.test(css),
+      "★伸び縮みの基点が html にある（body ではない）");
+    assertTrue(!/body \{\s*\n\s*font-size: var\(--base\)/.test(css),
+      "body には文字サイズを置いていない");
+
+    console.log("     ★font-size を上書きするなら、行の高さも一緒に決めること。");
+    const mono = css.slice(css.indexOf(".ff-mono {", css.indexOf("数字は本文より")));
+    assertTrue(/line-height/.test(mono.slice(0, 120)),
+      "★.ff-mono に行の高さがある（Tailwind の固定 line-height を残さない）");
+
+    console.log("     ★固定 px の箱に、伸びる文字を入れない。");
+    const fixedBoxes = (uiCode.match(/className="[^"]*text-(xs|sm)[^"]*"[^>]*style=\{\{[^}]*\bwidth: \d+/g) || []).length;
+    assertTrue(fixedBoxes === 0, `★文字の入る固定幅が残っていない（${fixedBoxes}箇所）`);
+
+    console.log("     ★ヘッダーの左側に幅を与える（右は縮まないため）。");
+    assertTrue(/<div className="flex-1 min-w-0">/.test(uiCode),
+      "★左側が min-content まで潰れない（日本語が縦一列に崩れない）");
+    assertTrue(/app-wordmark/.test(uiCode) && /clamp\(/.test(css),
+      "ワードマークが伸びる（ただし伸びすぎない）");
+
+    console.log("     ★タブは縮ませず、帯ごと横へスクロールさせる。");
+    assertTrue(!/text-sm font-medium whitespace-nowrap transition-all/.test(uiCode),
+      "★タブに shrink-0 が付いている（縮んで文字が切れない）");
+    assertTrue(/overflow-x-auto/.test(uiCode), "帯が横スクロールできる");
+  }
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");
