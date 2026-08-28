@@ -972,7 +972,11 @@ function computeHedgesG(group1, group0) {
   const J = 1 - 3 / (4 * (n1 + n0) - 9);
   const g = ((m1 - m0) / sPooled) * J;
   const se = Math.sqrt((n1 + n0) / (n1 * n0) + (g * g) / (2 * (n1 + n0)));
-  return { g, ciLow: g - 1.96 * se, ciHigh: g + 1.96 * se, n1, n0, m1, m0 };
+  // ★点を全部描くために、元の値も返す（描画仕様 §3-E）。
+  //   平均の棒2本にすると、差が実際より確かなものに見える。
+  //   点を全部出すと重なりが見え、「2時間未満でも良かった日はある」が伝わる。
+  return { g, ciLow: g - 1.96 * se, ciHigh: g + 1.96 * se, n1, n0, m1, m0,
+    values1: group1.slice(), values0: group0.slice() };
 }
 function starRatingForEffect(res) {
   if (!res) return 0;
@@ -2468,6 +2472,80 @@ function DotStrip({ values, today, height = 46 }) {
 //   文言は「◯日分たまりました。あと◯日で、判定を始められます。」
 //   ★描画仕様 §3-F は「傾向を出せます」と書いていましたが、
 //     分析の検出力と族の設計.md §2-2 がこれを改めています。新しいほうが正。
+// ★§3-E 2群のドットプロット。判定が出たときだけ出す。
+//   ・1日ぶんの点を全部描く（重なりは縦にずらす）
+//   ・各群の中央値を縦線で示し、数値を直接ラベルする
+//   ・軸は下に1本。★棒グラフにしない
+function GroupDotPlot({ values1, values0, label1, label0, width = 260, rowHeight = 34 }) {
+  const all = [...(values1 || []), ...(values0 || [])].filter((v) => typeof v === "number");
+  if (all.length === 0) return null;
+  const lo = Math.min(...all), hi = Math.max(...all);
+  const span = hi - lo || 1;
+  const padX = 8;
+  const x = (v) => padX + ((v - lo) / span) * (width - padX * 2);
+  const median = (arr) => {
+    const s = [...arr].sort((a, b) => a - b);
+    const m = Math.floor(s.length / 2);
+    return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+  };
+  const rows = [
+    { vals: values1 || [], label: label1, y: rowHeight * 0.5 },
+    { vals: values0 || [], label: label0, y: rowHeight * 1.5 }
+  ];
+  const height = rowHeight * 2 + 18;
+  return (
+    <svg width="100%" viewBox={`0 0 ${width} ${height}`} style={{ display: "block", maxWidth: width }}>
+      {rows.map((row, ri) => {
+        const med = row.vals.length ? median(row.vals) : null;
+        return (
+          <g key={ri}>
+            <text x={0} y={row.y - 11} style={{ fontSize: 9, fill: C.inkSoft }}>{row.label}（{row.vals.length}日）</text>
+            {row.vals.map((v, i) => (
+              <circle key={i} cx={x(v)} cy={row.y + ((i % 3) - 1) * 4} r={3.2}
+                fill={SERIES.s1} fillOpacity={0.45} stroke={C.card} strokeWidth={1.6} />
+            ))}
+            {med != null && (
+              <>
+                <line x1={x(med)} y1={row.y - 9} x2={x(med)} y2={row.y + 9} stroke={C.ink} strokeWidth={1.4} />
+                <text x={x(med)} y={row.y + 18} textAnchor="middle" style={{ fontSize: 9, fill: C.ink }}>
+                  {Math.round(med * 10) / 10}
+                </text>
+              </>
+            )}
+          </g>
+        );
+      })}
+      <line x1={padX} y1={height - 12} x2={width - padX} y2={height - 12} stroke={C.line} strokeWidth={1} />
+      <text x={padX} y={height - 2} style={{ fontSize: 9, fill: C.inkSoft }}>低い</text>
+      <text x={width - padX} y={height - 2} textAnchor="end" style={{ fontSize: 9, fill: C.inkSoft }}>高い</text>
+    </svg>
+  );
+}
+// ★§3-I 散布図。点のみ。★回帰直線・近似曲線を引かない。
+//   引いた瞬間に「予測」になり、3ゲートの外に出る。
+//   ρ の値は数値で添える（図の上に線として描かない）。
+function CorrelationScatter({ pairs, xLabel, yLabel, width = 260, height = 150 }) {
+  const pts = (pairs || []).filter((p) => typeof p.x === "number" && typeof p.y === "number");
+  if (pts.length === 0) return null;
+  const xs = pts.map((p) => p.x), ys = pts.map((p) => p.y);
+  const xLo = Math.min(...xs), xHi = Math.max(...xs);
+  const yLo = Math.min(...ys), yHi = Math.max(...ys);
+  const padL = 26, padB = 20, padT = 6, padR = 6;
+  const px = (v) => padL + ((v - xLo) / ((xHi - xLo) || 1)) * (width - padL - padR);
+  const py = (v) => height - padB - ((v - yLo) / ((yHi - yLo) || 1)) * (height - padB - padT);
+  return (
+    <svg width="100%" viewBox={`0 0 ${width} ${height}`} style={{ display: "block", maxWidth: width }}>
+      <line x1={padL} y1={height - padB} x2={width - padR} y2={height - padB} stroke={C.line} strokeWidth={1} />
+      <line x1={padL} y1={padT} x2={padL} y2={height - padB} stroke={C.line} strokeWidth={1} />
+      {pts.map((p, i) => (
+        <circle key={i} cx={px(p.x)} cy={py(p.y)} r={3.2}
+          fill={SERIES.s1} fillOpacity={0.45} stroke={C.card} strokeWidth={1.6} />
+      ))}
+      <text x={width - padR} y={height - 6} textAnchor="end" style={{ fontSize: 9, fill: C.inkSoft }}>{xLabel}</text>
+      <text x={2} y={padT + 8} style={{ fontSize: 9, fill: C.inkSoft }}>{yLabel}</text>
+    </svg>
+  );
+}
 function ProgressDots({ current, required }) {
   const total = 10;
   const filled = required > 0 ? Math.min(total, Math.round((current / required) * total)) : 0;
@@ -11742,6 +11820,13 @@ export default function VocalTracker({ userId, userEmail }) {
                               : `会場の響きがデッドな日は、翌日の声が平均${Math.abs(r.g).toFixed(1)}段階${r.g < 0 ? "悪く" : "変わらず"}記録されています`}
                             （{"★".repeat(r.stars)}{"☆".repeat(4 - r.stars)}）
                           </p>
+                          {r.values1 && r.values0 && (
+                            <div className="mt-2">
+                              <GroupDotPlot values1={r.values1} values0={r.values0}
+                                label1={r.key === "costume" ? "締め付けが強い日" : "デッドな会場の日"}
+                                label0="それ以外の日" />
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
