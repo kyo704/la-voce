@@ -243,6 +243,35 @@ async function main() {
     console.log("     いつも1番目だと、中身ではなく位置を覚えてしまいます。");
   }
 
+  console.log("\n=== 画面: 記述式（音楽家の商い）===");
+  {
+    const { stripComments, readRaw } = require("./_source");
+    const uiCode = stripComments(readRaw("components", "VocalTracker.jsx"));
+    const start = uiCode.indexOf('quizModeOf(article) === "reflect"');
+    assertTrue(start > 0, "記述式の欄を、画面が出している");
+    const block2 = uiCode.slice(start, start + 3400);
+
+    console.log("     ★書いたものに、○×も点数も評価語も付けません。");
+    ["answerQuizQuestion", "正解", "score", "点数", "おしい", "よくできました", "評価"].forEach((w) => {
+      assertTrue(!block2.includes(w), `★記述式の画面に「${w}」が出ていない`);
+    });
+    assertTrue(/REFLECT_NOTE/.test(block2), "画面の下に「答え合わせはありません」の注記を出している");
+    assertTrue(/REFLECT_REVISIT_HEADING/.test(block2), "前に書いたものを読み返す導線がある（§4）");
+    assertTrue(/REFLECT_REVISIT_ACTION/.test(block2), "「いまは同じことを思いますか」を出している");
+
+    console.log("     ★追記は積む。上書きしない。");
+    assertTrue(!/\.update\(/.test(block2), "★記述式の画面から update を呼んでいない（上書きしない）");
+    assertTrue(/handleCreateArticleNote\(article\.id, REFLECT_NOTE_KIND/.test(block2),
+      "★答えは article_notes に kind: reflect として積む（新しい表を作らない）");
+    assertTrue(/reflectAnchor\(pi\)/.test(block2),
+      "どちらの問いへの答えかを、置き方の関数を通して決めている");
+    assertTrue(!block2.includes('"prompt:'), "★画面に置き方の文字列を直接書いていない");
+    assertTrue(/handleDeleteArticleNote/.test(block2), "書いたものを消せる（§5 削除できるようにする）");
+
+    assertTrue(/notes\.filter\(\(n\) => n\.kind !== REFLECT_NOTE_KIND\)/.test(uiCode),
+      "★ふつうのメモ欄に、記述式の答えを二重に出していない");
+  }
+
   console.log("\n=== 画面: 読む前の問いと、読んだ直後の3問 ===");
   {
     const { stripComments } = require("./_source");

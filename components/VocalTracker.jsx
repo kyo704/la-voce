@@ -60,7 +60,9 @@ import { ARTICLES, CHAPTER_LABELS, PROFESSION_LABELS, getArticlesForProfession, 
 import {
   KEY_SENTENCE_HEADING, REFLECTION_PRIVACY_NOTE, PREQUESTION_NOTE,
   shouldShowKeySentence, studyReadiness,
-  answerPrequestion, answerQuizQuestion, quizModeOf
+  answerPrequestion, answerQuizQuestion, quizModeOf,
+  REFLECT_NOTE, REFLECT_NOTE_KIND, REFLECT_REVISIT_HEADING, REFLECT_REVISIT_ACTION,
+  reflectAnchor, reflectNotesFor, hasEarlierReflectAnswer
 } from "@/lib/learnStudy";
 import CharacterHome from "@/components/CharacterHome";
 
@@ -4396,6 +4398,8 @@ export default function VocalTracker({ userId, userEmail }) {
   const [prequestionChoice, setPrequestionChoice] = useState({});
   // 読んだ直後の3問の答え（articleId -> { 問番号: 選んだ番号 }）
   const [quizAnswers, setQuizAnswers] = useState({});
+  // 記述式の下書き（"articleId:問番号" -> 文字列）。★保存済みの記述は上書きしない。
+  const [reflectDraft, setReflectDraft] = useState({});
   const [learnSearchQuery, setLearnSearchQuery] = useState("");
   // 作業指示-教室プラン §B・C・E: 教室プラン用のstate
   const [myOrgs, setMyOrgs] = useState([]); // 自分がメンバーである組織一覧（role付き）
@@ -13982,6 +13986,62 @@ export default function VocalTracker({ userId, userEmail }) {
                       </div>
                     )}
 
+                    {quizModeOf(article) === "reflect" && (article.prompts || []).length > 0 && (
+                      <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                        <h3 className="ff-display italic text-lg mb-1">自分の場合を書く</h3>
+                        <div className="space-y-5 mt-3">
+                          {article.prompts.map((prompt, pi) => {
+                            const key = `${article.id}:${pi}`;
+                            const history = reflectNotesFor(notes, pi);
+                            const hasEarlier = hasEarlierReflectAnswer(notes, pi);
+                            return (
+                              <div key={pi}>
+                                <p className="text-sm mb-2" style={{ color: C.ink, lineHeight: 1.7 }}>
+                                  Q{pi + 1}. {prompt}
+                                </p>
+                                {history.length > 0 && (
+                                  <div className="rounded-xl p-3 mb-2" style={{ background: C.paper }}>
+                                    <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{REFLECT_REVISIT_HEADING}</p>
+                                    {history.map((n) => (
+                                      <div key={n.id} className="mb-2">
+                                        <p className="text-xs" style={{ color: C.inkSoft }}>
+                                          {String(n.created_at || "").slice(0, 10)}
+                                        </p>
+                                        <p className="text-sm" style={{ color: C.ink, lineHeight: 1.7 }}>{n.body}</p>
+                                        <button type="button" onClick={() => handleDeleteArticleNote(n.id, article.id)}
+                                          className="text-xs underline mt-0.5" style={{ color: C.inkSoft }}>
+                                          {t("deleteButton")}
+                                        </button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                                <textarea rows={3} maxLength={500}
+                                  value={reflectDraft[key] || ""}
+                                  onChange={(e) => setReflectDraft((d) => ({ ...d, [key]: e.target.value }))}
+                                  className="w-full rounded-lg border p-2 text-sm"
+                                  style={{ borderColor: C.line, background: C.paper }} />
+                                <div className="flex justify-end mt-1.5">
+                                  <button type="button"
+                                    onClick={() => {
+                                      handleCreateArticleNote(article.id, REFLECT_NOTE_KIND, reflectDraft[key], reflectAnchor(pi));
+                                      setReflectDraft((d) => ({ ...d, [key]: "" }));
+                                    }}
+                                    className="px-4 py-1.5 rounded-full text-xs font-medium"
+                                    style={{ background: C.card, color: C.inkSoft, border: `1px solid ${C.line}` }}>
+                                    {hasEarlier ? REFLECT_REVISIT_ACTION : t("addNoteButton")}
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <p className="text-xs mt-4" style={{ color: C.inkSoft, lineHeight: 1.8, whiteSpace: "pre-line" }}>
+                          {REFLECT_NOTE}
+                        </p>
+                      </div>
+                    )}
+
                     {quizModeOf(article) === "recall" && studyReadiness(article).hasQuiz && (
                       <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                         <h3 className="ff-display italic text-lg mb-1">読んだあとに、3問</h3>
@@ -14057,7 +14117,7 @@ export default function VocalTracker({ userId, userEmail }) {
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">{t("yourNotesTitle")}</h3>
                       <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("yourNotesDesc")}</p>
-                      {notes.map((n) => (
+                      {notes.filter((n) => n.kind !== REFLECT_NOTE_KIND).map((n) => (
                         <div key={n.id} className="rounded-xl p-2.5 mb-2" style={{ background: C.paper }}>
                           {n.anchor_text && <p className="text-xs mb-1" style={{ color: C.inkSoft }}>「{n.anchor_text}」について</p>}
                           <p className="text-sm">{n.body}</p>
