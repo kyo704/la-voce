@@ -8,7 +8,21 @@
 // ★版を上げると、activate で古い版（la-voce-shell-v2 など）が消えます。
 const CACHE_NAME = "woolsong-shell-v3";
 
+// オフラインのときに必ず出せる画面。★install で焼き込みます。
+//   これが無いと、キャッシュに無いURLへ移動したときに
+//   respondWith がエラー応答を返し、standalone のPWAでは
+//   ブラウザのオフライン画面も出ないため★真っ白になります。
+//   2026-08-29 の実機確認（§5 テスト4）で、実際にそうなりました。
+const OFFLINE_URL = "/offline.html";
+
 self.addEventListener("install", (event) => {
+  // ★焼き込みに失敗しても install は止めません。
+  //   止めると Service Worker 自体が入らず、更新の経路まで死にます。
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.add(new Request(OFFLINE_URL, { cache: "reload" })))
+      .catch(() => { /* 取得できなくても、オンラインでは普通に動きます */ })
+  );
   self.skipWaiting();
 });
 
@@ -49,8 +63,21 @@ self.addEventListener("fetch", (event) => {
       //   一瞬の通信断が、そのままページ遷移の失敗になります。
       //   必ず Response を返すこと。
       .catch(async () => {
+        // まず、そのURL自身の控えを探す
         const cached = await caches.match(event.request);
-        return cached || Response.error();
+        if (cached) return cached;
+        // ★画面への移動なら、必ず何かを返すこと。
+        //   ここで Response.error() を返すと、standalone のPWAでは
+        //   真っ白になります（§5 テスト4 の失敗）。
+        //   ★とくに start_url の「/」は、ログイン済みだと 307 を返すため、
+        //     response.ok の条件に掛からず、永久にキャッシュされません。
+        //     どれだけオンラインで使っても貯まらないので、
+        //     「使っていれば大丈夫」という前提が成り立ちません。
+        if (event.request.mode === "navigate") {
+          const offline = await caches.match(OFFLINE_URL);
+          if (offline) return offline;
+        }
+        return Response.error();
       })
   );
 });

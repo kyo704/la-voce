@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Woolsong</title>
+<!--
+  オフラインのときに出す画面（配信と更新の確認.md §5）。
+
+  ★このファイルは、それ単体で表示できなければ意味がありません。
+    外部のCSSもJSも読み込まないこと。読み込むと、それ自体が
+    オフラインで取得できず、また白い画面になります。
+
+  ★Service Worker が install のときに焼き込みます。
+-->
+<style>
+  :root { color-scheme: light; }
+  body {
+    margin: 0; min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 18px; padding: 32px 24px; text-align: center;
+    background: #F6F1E7; color: #241914;
+    font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+    line-height: 1.8;
+  }
+  h1 { font-size: 20px; font-weight: 600; margin: 0; }
+  p  { font-size: 15px; margin: 0; max-width: 22em; }
+  .sub { font-size: 13px; opacity: .72; }
+  button {
+    margin-top: 6px; padding: 13px 30px; border: 0; border-radius: 999px;
+    background: #8C2F39; color: #FFFDF8;
+    font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+  <h1>インターネットにつながっていません</h1>
+  <p>Woolsong は、記録の保存と読み込みにインターネット接続が必要です。</p>
+  <p class="sub">電波の届く場所に移動するか、機内モードを解除して、もう一度お試しください。<br />これまでの記録は、そのまま残っています。</p>
+  <button type="button" onclick="location.reload()">もう一度ためす</button>
+</body>
+</html>
