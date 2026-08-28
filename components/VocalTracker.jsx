@@ -22,6 +22,7 @@ import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, SHOP_ITEMS, PLACEMENT_LI
 import { LANGUAGES, createTranslator } from "@/lib/translations";
 import { BRAND } from "@/lib/brand";
 import { isLegacyOrigin } from "@/lib/baseUrl";
+import { watchForUpdates, reloadOnceOnControllerChange } from "@/lib/swUpdate";
 import { OCCUPATIONS, OCCUPATION_LABELS, OTHER_OCCUPATION, OCCUPATION_TO_LEGACY,
   DEFAULT_MIX, occupationOf, mixOf, isValidMix } from "@/lib/occupation";
 import { term, termLabel } from "@/lib/vocabulary";
@@ -4715,9 +4716,20 @@ export default function VocalTracker({ userId, userEmail }) {
     // ★旧オリジンでは登録しません。LegacyOriginNotice が解除する先から、
     //   すぐに登録し直してしまうためです（ドメイン切替 §8-1①）。
     if (isLegacyOrigin(window.location.hostname)) return;
-    navigator.serviceWorker.register("/sw.js").catch((err) => {
-      console.error("Service Workerの登録に失敗しました:", err);
-    });
+    // ★新しい版が来たことに気づく仕組み（配信と更新の確認.md §3-1）。
+    //   skipWaiting / clients.claim は sw.js にありますが、それだけでは
+    //   「新しい版が来た」と気づけません。ブラウザが自発的に sw.js を
+    //   取りに行くのは、おおむね24時間ごとです。ホーム画面から開いたまま
+    //   使う人には、古い画面が残り続けます（実際に iPad で起きました）。
+    let stopWatching = () => {};
+    navigator.serviceWorker.register("/sw.js")
+      .then((reg) => { stopWatching = watchForUpdates(reg); })
+      .catch((err) => {
+        console.error("Service Workerの登録に失敗しました:", err);
+      });
+    // ★新しい版が制御を取ったら、1回だけ読み込み直します。
+    //   ループ防止の守りは lib/swUpdate.js に3つ重ねてあります。
+    const stopReload = reloadOnceOnControllerChange();
     // 既にインストール済み（スタンドアロン表示）かどうかを判定する
     const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
     setIsPwaInstalled(standalone);
@@ -4749,6 +4761,10 @@ export default function VocalTracker({ userId, userEmail }) {
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     window.addEventListener("appinstalled", handleAppInstalled);
     return () => {
+      // ★更新の見張りも、必ず外すこと。外さないと、画面を行き来する
+      //   たびに listener が積み上がり、update() が何度も走ります。
+      stopWatching();
+      stopReload();
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
       window.removeEventListener("appinstalled", handleAppInstalled);
     };
