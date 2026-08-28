@@ -74,6 +74,30 @@ console.log("\n=== §3-G 周期ごとの並び ===");
     "★4分割して平均を比べる古い計算が、残っていない");
 }
 
+console.log("\n=== ロック中のカードは1種類（型も見た目も）===");
+{
+  const impl = (ui.match(/function LockedCard/g) || []).length;
+  assertTrue(impl === 1, `★実装は1つだけ（いま ${impl} 個）`);
+
+  console.log("     ★ボタンを1枚だけ足さない。「なぜこれだけ特別なのか」が生まれる。");
+  const body = ui.slice(ui.indexOf("function LockedCard"), ui.indexOf("function LockedCard") + 1800);
+  // ★aria-label の中の ${action.label} と、描画されるボタンを取り違えないこと。
+  //   最初これで誤検出した。見るのは「子要素として描かれているか」。
+  assertTrue(!/<button type="button" onClick=\{action\.onClick\}/.test(body),
+    "★カードの中に、行き先ボタンを置いていない");
+  assertTrue(!/ChevronRight/.test(body), "ボタンの矢印も残っていない");
+  assertTrue(/const Tag = action \? "button" : "div"/.test(body),
+    "行き先があるときは、カードごと押せる");
+  assertTrue(/aria-label/.test(body),
+    "★見た目は同じでも、支援技術からは辿れる（目に見えない押し場所にしない）");
+
+  console.log("     ★行き先は §5.3 の R3。分析画面から記録画面へ直行する。");
+  assertTrue(/jumpToRecordSection\(c\.section\)/.test(ui),
+    "該当する記録セクションへ飛ぶ（R3 が消えていない）");
+  const calls = (ui.match(/<LockedCard/g) || []).length;
+  assertTrue(calls >= 2, `どの一覧でも同じ型を使っている（${calls}箇所）`);
+}
+
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
 if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
 console.log("\n✓ すべて成功しました。");

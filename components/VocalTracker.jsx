@@ -2713,9 +2713,23 @@ function ProgressDots({ current, required }) {
 // ★カードの形そのものは変えないこと。ここに独自の見た目を作ると、
 //   「ロック中のカード」が2種類できて、並んだときにちぐはぐになります。
 //   実際にそうなっていました（片方だけボタン、進捗の点も日数も無し）。
+// ★ロック中のカードは1種類だけ。見た目も1つにそろえる。
+//   行き先があるカードは、カードごと押せます。ボタンを1枚だけ足すと
+//   「なぜこれだけ特別なのか」が生まれるため、別の部品にしません。
+//
+//   ★見た目は変えません（ご指定）。ただし、目に見えない押し場所は
+//     支援技術から辿れなくなるので、行き先があるときだけ <button> にし、
+//     読み上げ用の説明を付けます。見え方は同じまま、キーボードと
+//     スクリーンリーダーからは届きます。
 function LockedCard({ title, teaser, current, required, action }) {
+  const Tag = action ? "button" : "div";
+  const tagProps = action
+    ? { type: "button", onClick: action.onClick, "aria-label": `${title}：${action.label}` }
+    : {};
   return (
-    <div className="rounded-2xl p-4 border overflow-hidden relative" style={{ background: C.card, borderColor: C.line }}>
+    <Tag {...tagProps}
+      className="rounded-2xl p-4 border overflow-hidden relative w-full text-left"
+      style={{ background: C.card, borderColor: C.line }}>
       <div style={{ filter: "blur(3px)", opacity: 0.35, pointerEvents: "none", userSelect: "none" }}>
         <h3 className="ff-display italic text-lg mb-2">{title}</h3>
         <div className="flex items-end gap-1.5" style={{ height: 64 }}>
@@ -2733,16 +2747,9 @@ function LockedCard({ title, teaser, current, required, action }) {
             そのまま満たしている（進捗の見せ方が棒から点に変わっただけ）。 */}
         <div className="w-full max-w-[220px] mt-1 flex flex-col items-center">
           <ProgressDots current={current} required={required} />
-          {action && (
-            <button type="button" onClick={action.onClick}
-              className="w-full mt-2 py-1.5 rounded-full text-xs font-medium flex items-center justify-center gap-1"
-              style={{ background: C.card, color: C.inkSoft, border: `1px solid ${C.line}` }}>
-              {action.label} <ChevronRight size={12} />
-            </button>
-          )}
         </div>
       </div>
-    </div>
+    </Tag>
   );
 }
 
