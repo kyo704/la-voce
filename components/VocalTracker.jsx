@@ -37,7 +37,8 @@ import { SCALES, DEFAULT_SCALE, SCALE_LABELS, SCALE_SAMPLE, normalizeScale,
 import { SIMPLE_STEPS, SIMPLE_STEP_COUNT, remainingSteps, applyStep, skipStep,
   nextIndex, prevIndex, isFinished, SIMPLE_SKIP_LABEL, SIMPLE_BACK_LABEL, SIMPLE_DONE_TEXT } from "@/lib/simpleFlow";
 import { familyOf, mayStateFinding, EXPLORE, EXPLORE_NOTE,
-  buildCoreGroups, groupLabelsFor, CORE_LABELS, availableCoreFactors } from "@/lib/analysisFamilies";
+  buildCoreGroups, groupLabelsFor, CORE_LABELS, availableCoreFactors,
+  buildCycleGroups, cycleGroupLabels, CYCLE_LABEL, CYCLE_FACTOR } from "@/lib/analysisFamilies";
 // 分析カードの職業別の出し分け（docs/profession-presets.json と1対1）
 import { isAnalysisCardVisible } from "@/lib/analysisCardVisibility";
 // 「この分析を強くする」の選び方（記録と分析の順番設計.md §5.3 の R1〜R6）。
@@ -5314,6 +5315,32 @@ export default function VocalTracker({ userId, userEmail }) {
     const passes = benjaminiHochberg(withStats.map((x) => x.pValue), NARRATIVE_FDR_Q);
     return withStats.map((r, i) => ({ ...r, fdrPass: passes[i] }));
   }, [filteredEntries]);
+
+  // ---- 周期の族（分析の検出力と族の設計.md §1-2）----
+  //
+  // ★中核に混ぜません。使っている人だけの分析なので、混ぜると
+  //   全員が記録する4項目の検出力まで下げてしまいます。
+  //   独立した族として、この中だけで BH-FDR をかけます。
+  //   ★いまこの族の検定は1つだけなので、BH は p ≤ q と同じになります。
+  //     それでも同じ道を通しておきます。項目が増えたときに、
+  //     ここだけ素通しのままになるのを避けるためです。
+  //
+  // ★位相（何日目か）では区切りません。「在周期中かどうか」の二値です。
+  //   区切り方そのものが結論を作るため（§3-G で4分割をやめたのと同じ理由）。
+  const cycleFindings = useMemo(() => {
+    if (!cycleTrackingOn(profile)) return null;
+    const bleeding = buildBleedingDayset(cyclePeriods, realTodayDate);
+    const split = buildCycleGroups(filteredEntries, bleeding,
+      (e) => (e && typeof e.throatCondition === "number" ? e.throatCondition : null));
+    if (!split) return null;
+    const res = computeHedgesG(split.high, split.low);
+    if (!res) return null;
+    const nTotal = res.n1 + res.n0;
+    const tStat = res.g * Math.sqrt((res.n1 * res.n0) / nTotal);
+    const pValue = nTotal > 2 ? tDistPValue(tStat, nTotal - 2) : null;
+    const passes = benjaminiHochberg([pValue], NARRATIVE_FDR_Q);
+    return { key: CYCLE_FACTOR, label: CYCLE_LABEL, ...res, pValue, fdrPass: passes[0] };
+  }, [profile, cyclePeriods, filteredEntries, realTodayDate]);
 
   const correlationResults = useMemo(() => {
     if (analysisTarget === "performance") {
@@ -13733,6 +13760,47 @@ export default function VocalTracker({ userId, userEmail }) {
                         );
                       })()}
                     </div>
+
+                    {/* ★周期の族は、中核とは別のカードに出します（§1-2）。
+                        中核の文章に混ぜないこと。使っている人だけの分析なので、
+                        全員が記録する4項目の話と並べると、読む人が取り違えます。
+                        ★教師には見えません。cycle_periods は本人のRLSポリシー1本だけで、
+                          教師用の SECURITY DEFINER 関数もありません。
+                          get_student_entries も cycle_start を常に拒否します。
+                          この画面は本人の分析タブで、本人のデータから描いています。 */}
+                    {cycleFindings && (() => {
+                      const labels = cycleGroupLabels();
+                      const passed = gateAllows("diet.narrative", {
+                        n1: cycleFindings.n1, n0: cycleFindings.n0,
+                        effectSize: cycleFindings.g, fdrPass: cycleFindings.fdrPass
+                      });
+                      return (
+                        <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                          <h3 className="ff-display italic text-lg mb-1">{cycleFindings.label}</h3>
+                          <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                            記録した期間の中の日と、それ以外の日を並べています。
+                          </p>
+                          <GroupDotPlot values1={cycleFindings.values1} values0={cycleFindings.values0}
+                            label1={labels.high} label0={labels.low} />
+                          {passed ? (
+                            <p className="text-xs mt-1" style={{ color: C.ink, lineHeight: 1.7 }}>
+                              {labels.high}の喉のコンディションは、{labels.low}より
+                              {cycleFindings.g > 0 ? "高め" : "低め"}に記録されています
+                              （効果量 {Math.abs(cycleFindings.g).toFixed(2)}、
+                              95%区間 {cycleFindings.ciLow.toFixed(2)}〜{cycleFindings.ciHigh.toFixed(2)}）。
+                            </p>
+                          ) : (
+                            <p className="text-xs mt-1" style={{ color: C.inkSoft, lineHeight: 1.7 }}>
+                              はっきりした関係は、まだ見えていません。
+                            </p>
+                          )}
+                          <p className="text-xs mt-3" style={{ color: C.inkSoft, lineHeight: 1.7 }}>
+                            ※ 見えたのは関係であって、原因ではありません。
+                            この記録は、あなただけが見られます。
+                          </p>
+                        </div>
+                      );
+                    })()}
 
                     {coreFindings.length > 0 && (
                       <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>

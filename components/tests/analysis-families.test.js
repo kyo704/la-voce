@@ -9,7 +9,7 @@
  * ★3ゲート（件数・効果量・FDR）は変えていません。§6-1 のままです。
  *   変えるのは「何を検定するか」と「どう説明するか」だけです。
  */
-const { readRaw } = require("./_source");
+const { readRaw, assertAbsent } = require("./_source");
 let passCount = 0, failCount = 0;
 function assertTrue(c, label) {
   if (c) { console.log(`  ✓ ${label}`); passCount++; } else { console.log(`  ✗ ${label}`); failCount++; }
@@ -26,7 +26,11 @@ async function main() {
   console.log("\n=== 族の分け方 ===");
   assertEqual(m.CORE_FAMILY.length, 5, "中核は5項目（仕様どおり）");
   assertEqual(m.familyOf("sleepHours"), "core", "睡眠時間は中核");
-  assertEqual(m.familyOf("cyclePhase"), "cycle", "周期は別の族");
+  // ★もとは "cyclePhase"（位相）という名前だけを置いていた。実装するときに
+  //   「在周期中かどうか」の二値へ変えたので、名前もそれに合わせてある。
+  //   位相で区切らないのは、区切り方そのものが結論を作るため（§3-G と同じ理由）。
+  assertEqual(m.familyOf("inCycle"), "cycle", "周期は別の族");
+  assertEqual(m.familyOf("cyclePhase"), "explore", "★位相という項目は、もう持っていない");
   assertEqual(m.familyOf("refluxFlags"), "reflux", "食事と就寝は別の族");
   assertEqual(m.familyOf("weightKg"), "explore", "そのほかは探索族");
   console.log("     ★周期と食事と就寝を中核に混ぜない。使っている人だけの分析なので、");
@@ -145,6 +149,51 @@ async function main() {
       "★通らなかったときは「見えなかった」と書く（「関係なし」と書かない）");
     assertTrue(/関係であって、原因ではありません/.test(ui), "関係であって原因ではない、と添えている");
     assertTrue(!/弱い関係があります/.test(ui), "★「弱い関係があります」と書いていない（§5 ③）");
+  }
+
+  console.log("\n=== 周期の族（★中核に混ぜない）===");
+  {
+    assertTrue(!m.CORE_FAMILY.includes(m.CYCLE_FACTOR),
+      "★周期が中核に入っていない（使っている人だけの分析で、中核の検出力を下げるため）");
+    assertEqual(m.familyOf(m.CYCLE_FACTOR), "cycle", "周期は独立した族");
+    assertEqual(m.FAMILIES.cycle, ["inCycle"],
+      "★位相ではなく「在周期中かどうか」の二値（区切り方が結論を作らないように）");
+
+    const entries = {}; const days = new Set();
+    for (let i = 1; i <= 24; i += 1) {
+      const d = `2026-08-${String(i).padStart(2, "0")}`;
+      entries[d] = { throatCondition: i % 6 < 3 ? 3 : 4 };
+      if (i % 6 < 3) days.add(d);
+    }
+    const split = m.buildCycleGroups(entries, days, (e) => e && e.throatCondition);
+    assertTrue(split.high.length > 0 && split.low.length > 0, "両群に日が入る");
+    assertEqual(m.buildCycleGroups(entries, new Set(), (e) => e && e.throatCondition), null,
+      "★周期の記録が無ければ、群を作らない");
+
+    console.log("     ★片方の群にしかデータが無ければ、結果を出さない。");
+    const allIn = new Set(Object.keys(entries));
+    assertEqual(m.buildCycleGroups(entries, allIn, (e) => e && e.throatCondition), null,
+      "★全部が期間内なら、比べる相手がいないので出さない");
+
+    const ui = readRaw("components", "VocalTracker.jsx");
+    console.log("     ★3ゲートは項目ごとにかける（族に1回ではない）。");
+    assertTrue(/gateAllows\("diet\.narrative", \{\s*\n?\s*n1: cycleFindings\.n1/.test(ui),
+      "周期にも、同じ3ゲートを個別にかけている");
+    assertTrue(/cycleTrackingOn\(profile\)/.test(ui), "記録していない人には出さない");
+
+    console.log("     ★中核の文章に混ぜない。別のカードに出す。");
+    assertTrue(/cycleFindings && \(\(\) => \{/.test(ui), "周期は独立したカード");
+    assertTrue(!/coreFindings.*cycleFindings|cycleFindings.*coreFindings/.test(
+      ui.replace(/\n/g, " ").match(/const coreFindings[\s\S]{0,400}/)?.[0] || ""),
+      "中核の計算に周期が混ざっていない");
+
+    console.log("     ★位相の呼び名を使わない（周期記録の設計 §2）。");
+    // ★assertAbsent を使う。中で readCode（コメントを外した本文）を読む。
+    //   生の本文で数えると、禁止を書いたコメント側で落ちる。
+    //   この取り違えは6回目で、しかも assertAbsent を作ったあとにやっている。
+    //   使わなければ意味がない、という当たり前のことの実例。
+    assertAbsent(["卵胞", "黄体", "排卵", "月経期"],
+      ["components", "VocalTracker.jsx"], assertTrue, "★画面に");
   }
 
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
