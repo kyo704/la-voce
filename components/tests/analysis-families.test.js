@@ -97,6 +97,56 @@ async function main() {
       "ゲートの判定は、これまでと同じ関数を通している");
   }
 
+  console.log("\n=== 中核の群を組み立てる ===");
+  {
+    const entries = {};
+    for (let i = 1; i <= 30; i += 1) {
+      const d = `2026-08-${String(i).padStart(2, "0")}`;
+      entries[d] = {
+        sleepHours: 5 + (i % 2) * 3,
+        nonPerformanceSpeechMinutes: (i % 3) * 40,
+        temperature: 20, humidity: 30 + (i % 2) * 40,
+        activities: i % 4 === 0 ? [{ kind: "本番" }] : [],
+        throatCondition: 3 + (i % 2)
+      };
+    }
+    const groups = m.buildCoreGroups(entries, (e) => (e && e.throatCondition));
+    assertEqual(groups.length, 4, "記録できる中核4項目ぶんの群ができる");
+    groups.forEach((g) => {
+      assertTrue(g.split.high.length > 0 && g.split.low.length > 0,
+        `${g.key} の両群に日が入っている`);
+    });
+
+    console.log("     ★ずらす日数は項目ごとに違う。ここで宣言し、画面に書かせない。");
+    assertEqual(m.CORE_LAG_DAYS.sleepHours, 0, "睡眠時間はずらさない（その日の朝までの睡眠）");
+    assertEqual(m.CORE_LAG_DAYS.offStageVoiceMinutes, 1,
+      "★本番外の発話時間だけ1日ずらす（前日に話した分が翌日に出る）");
+    assertEqual(m.CORE_LAG_DAYS.absoluteHumidity, 0, "絶対湿度はずらさない（その日の環境）");
+
+    console.log("     ★原因の日の記録が無い日は、使わない。");
+    const sparse = { "2026-08-01": entries["2026-08-01"], "2026-08-20": entries["2026-08-20"] };
+    const few = m.buildCoreGroups(sparse, (e) => (e && e.throatCondition));
+    assertTrue(few.length === 0, "日が少なすぎるときは、群を作らない");
+
+    const bin = m.groupLabelsFor("dayAfterPerformance");
+    assertEqual(bin.high, "その翌日", "二値の項目は、群の名前が変わる");
+    assertTrue(/多い日/.test(m.groupLabelsFor("sleepHours").high), "二分の項目は、多い日／少ない日");
+  }
+
+  console.log("\n=== 画面が、中核の比較を出しているか ===");
+  {
+    const ui = readRaw("components", "VocalTracker.jsx");
+    assertTrue(/const coreFindings = useMemo/.test(ui), "中核の比較を計算している");
+    assertTrue(/buildCoreGroups\(filteredEntries/.test(ui), "群の作り方はモジュールに任せている");
+    assertTrue(/benjaminiHochberg\(withStats\.map/.test(ui), "★BH は中核族の中だけでかけている");
+    assertTrue(/gateAllows\("diet\.narrative"/.test(ui), "★3ゲートを通してから文章にしている");
+    assertTrue(/GroupDotPlot values1=\{r\.values1\}/.test(ui), "★§3-E の点を全部描く図を使っている");
+    assertTrue(/はっきりした関係は、まだ見えていません/.test(ui),
+      "★通らなかったときは「見えなかった」と書く（「関係なし」と書かない）");
+    assertTrue(/関係であって、原因ではありません/.test(ui), "関係であって原因ではない、と添えている");
+    assertTrue(!/弱い関係があります/.test(ui), "★「弱い関係があります」と書いていない（§5 ③）");
+  }
+
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
   console.log("\n✓ すべて成功しました。");

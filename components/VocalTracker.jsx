@@ -29,7 +29,8 @@ import {
 } from "@/lib/cyclePeriods";
 // 統合実行ルートv4 §6: 表示ゲートは必ずこのレイヤーを経由する。画面ごとに条件を書かないこと。
 import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q, NARRATIVE_MIN_N_PER_GROUP } from "@/lib/displayGates";
-import { familyOf, mayStateFinding, EXPLORE, EXPLORE_NOTE } from "@/lib/analysisFamilies";
+import { familyOf, mayStateFinding, EXPLORE, EXPLORE_NOTE,
+  buildCoreGroups, groupLabelsFor, CORE_LABELS, availableCoreFactors } from "@/lib/analysisFamilies";
 // 分析カードの職業別の出し分け（docs/profession-presets.json と1対1）
 import { isAnalysisCardVisible } from "@/lib/analysisCardVisibility";
 // 「この分析を強くする」の選び方（記録と分析の順番設計.md §5.3 の R1〜R6）。
@@ -5158,6 +5159,29 @@ export default function VocalTracker({ userId, userEmail }) {
         fullDate: d,
         ease: typeof filteredEntries[d].ease === "number" ? filteredEntries[d].ease : null
       }));
+  }, [filteredEntries]);
+
+  // ---- 中核族の群間比較（分析の検出力と族の設計.md §1）----
+  //
+  // ★これが族を分けた目的です。少数の、機序のはっきりした項目だけを検定し、
+  //   その中だけで BH-FDR をかけます。項目を増やすほど検出力が落ちる形から抜けます。
+  //
+  // ★3ゲート（件数・効果量・FDR）は §6-1 のまま。ここでも同じ関数を通します。
+  // ★群の作り方・ずらし方は lib/analysisFamilies.js が持ちます。ここには書きません。
+  const coreFindings = useMemo(() => {
+    const groups = buildCoreGroups(filteredEntries, (e) => (e && typeof e.throatCondition === "number" ? e.throatCondition : null));
+    const withStats = groups.map((g) => {
+      const res = computeHedgesG(g.split.high, g.split.low);
+      if (!res) return null;
+      // 効果量から p 値を出す（群間比較なので t 検定に相当する形で近似する）
+      const nTotal = res.n1 + res.n0;
+      const tStat = res.g * Math.sqrt((res.n1 * res.n0) / nTotal);
+      const pValue = nTotal > 2 ? tDistPValue(tStat, nTotal - 2) : null;
+      return { key: g.key, label: CORE_LABELS[g.key], ...res, pValue };
+    }).filter(Boolean);
+    // ★BH はこの中核族の中だけでかける
+    const passes = benjaminiHochberg(withStats.map((x) => x.pValue), NARRATIVE_FDR_Q);
+    return withStats.map((r, i) => ({ ...r, fdrPass: passes[i] }));
   }, [filteredEntries]);
 
   const correlationResults = useMemo(() => {
@@ -13334,6 +13358,44 @@ export default function VocalTracker({ userId, userEmail }) {
                         </ResponsiveContainer>
                       </div>
                     </div>
+
+                    {coreFindings.length > 0 && (
+                      <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                        <h3 className="ff-display italic text-lg mb-1">中核の4項目</h3>
+                        <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                          全員が毎日記録する項目だけを、少数にしぼって調べています。
+                        </p>
+                        <div className="space-y-4">
+                          {coreFindings.map((r) => {
+                            const labels = groupLabelsFor(r.key);
+                            const passed = gateAllows("diet.narrative",
+                              { n1: r.n1, n0: r.n0, effectSize: r.g, fdrPass: r.fdrPass });
+                            return (
+                              <div key={r.key} className="rounded-xl p-3" style={{ background: C.paper }}>
+                                <p className="text-sm font-medium mb-1">{r.label}</p>
+                                <GroupDotPlot values1={r.values1} values0={r.values0}
+                                  label1={labels.high} label0={labels.low} />
+                                {passed ? (
+                                  <p className="text-xs mt-1" style={{ color: C.ink, lineHeight: 1.7 }}>
+                                    {labels.high}の喉のコンディションは、{labels.low}より
+                                    {r.g > 0 ? "高め" : "低め"}に記録されています
+                                    （効果量 {Math.abs(r.g).toFixed(2)}、95%区間 {r.ciLow.toFixed(2)}〜{r.ciHigh.toFixed(2)}）。
+                                  </p>
+                                ) : (
+                                  <p className="text-xs mt-1" style={{ color: C.inkSoft, lineHeight: 1.7 }}>
+                                    はっきりした関係は、まだ見えていません。
+                                  </p>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <p className="text-xs mt-3" style={{ color: C.inkSoft, lineHeight: 1.7 }}>
+                          ※ 見えたのは関係であって、原因ではありません。
+                          はっきりした関係が出るまでには、ふつう3〜4か月かかります。
+                        </p>
+                      </div>
+                    )}
 
                     {insights.length > 0 && (
                       <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
