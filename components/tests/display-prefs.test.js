@@ -258,7 +258,17 @@ async function main() {
     assertTrue(/overflow-x-auto/.test(uiCode), "帯が横スクロールできる");
     console.log("     ★両端に「まだ続く」の合図を出す。右だけでなく左も隠れる。");
     assertTrue(/nav-scroll/.test(uiCode), "帯に印が付いている");
-    assertTrue(/mask-image: linear-gradient/.test(css), "両端が薄くなる（まだ続くと分かる）");
+    // ★スクロールする要素に mask-image をかけるのはやめた。
+    //   iOS では「見えている範囲」ではなく「中身の全長」に効くことがあり、
+    //   ぼかしが画面の外へ出てしまう。指定は届いていたのに、端は硬いままだった。
+    //   動かない外枠に、覆いとして重ねる形にしている。
+    assertTrue(!/\.nav-scroll\{[^}]*mask-image/.test(css.replace(/\s+/g, "")),
+      "★スクロールする要素にマスクをかけていない");
+    assertTrue(/\.nav-scroll-wrap::before/.test(css) && /\.nav-scroll-wrap::after/.test(css),
+      "両端に覆いを重ねている（まだ続くと分かる）");
+    assertTrue(/pointer-events: none/.test(css.slice(css.indexOf(".nav-scroll-wrap::before"))),
+      "★覆いがタブの上に乗っても、押せなくならない");
+    assertTrue(/nav-scroll-wrap/.test(uiCode), "画面が外枠を使っている");
     assertTrue(/scroll-padding-inline/.test(css), "端でタブが縁に貼りつかない");
 
     console.log("     ★語の途中で割らない（ドイツ語・ロシア語。ゲートB）。");

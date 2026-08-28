@@ -9468,7 +9468,8 @@ export default function VocalTracker({ userId, userEmail }) {
           //   指標が無いと「切れている」だけに見えて、動かせると気づけない。
           //   ★スクロールの棒は出さない（携帯では場所を取り、しばらくすると消えるため）。
           return (
-            <nav className="max-w-3xl mx-auto flex gap-1 mt-5 overflow-x-auto nav-scroll">
+            <div className="max-w-3xl mx-auto mt-5 nav-scroll-wrap">
+            <nav className="flex gap-1 overflow-x-auto nav-scroll">
               {displayTabs.map((tab) => (
                 tab.href ? (
                   <a
@@ -9495,6 +9496,7 @@ export default function VocalTracker({ userId, userEmail }) {
                 )
               ))}
             </nav>
+            </div>
           );
         })()}
       </header>

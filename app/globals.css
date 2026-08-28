@@ -236,17 +236,38 @@ button {
    mask-image は、帯の中身が端に近づいたときだけ薄くなります。
    中身が端に無ければ（＝スクロールしきっていれば）何も起きません。
    ============================================================================ */
+/* ★スクロールする要素そのものに mask-image をかけない。
+   iOS Safari では、スクロール容器にかけたマスクが「見えている範囲」ではなく
+   「スクロールできる中身の全長」に対して効くことがあり、ぼかしが画面の外へ
+   出てしまいます。指定は届いていたのに、端では硬い切り口のままでした。
+   ★動かない外枠に、覆いとして重ねるほうが確実です。 */
 .nav-scroll {
   scrollbar-width: none;
   -ms-overflow-style: none;
-  /* 端の内側に余白を作り、タブが縁に貼りつかないようにする */
   padding-left: 2px;
   padding-right: 2px;
-  scroll-padding-inline: 12px;
-  -webkit-mask-image: linear-gradient(
-    to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
-  mask-image: linear-gradient(
-    to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+  scroll-padding-inline: 16px;
+}
+.nav-scroll-wrap {
+  position: relative;
+}
+.nav-scroll-wrap::before,
+.nav-scroll-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 28px;            /* ★14px では気づけなかったので広げる */
+  pointer-events: none;   /* 覆いがタブの上に乗っても、押せなくならないように */
+  z-index: 1;
+}
+.nav-scroll-wrap::before {
+  left: 0;
+  background: linear-gradient(to right, #F6F1E7 0%, rgba(246, 241, 231, 0) 100%);
+}
+.nav-scroll-wrap::after {
+  right: 0;
+  background: linear-gradient(to left, #F6F1E7 0%, rgba(246, 241, 231, 0) 100%);
 }
 .nav-scroll::-webkit-scrollbar {
   display: none;
