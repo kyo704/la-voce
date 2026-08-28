@@ -2336,7 +2336,7 @@ function downloadLessonICS(lesson, title) {
   const end = new Date(start.getTime() + (lesson.duration_minutes || 60) * 60000);
   // §9: 外部カレンダーへの自動書き込み・双方向同期は作らない。1件だけの.icsダウンロードにとどめる。
   const ics = [
-    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//La Voce//Lesson//JA",
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Woolsong//Lesson//JA",
     "BEGIN:VEVENT",
     `UID:${lesson.id}@lavoce`,
     `DTSTAMP:${formatDateForICS(new Date())}`,
@@ -9409,7 +9409,7 @@ export default function VocalTracker({ userId, userEmail }) {
                 ★副題は行の高さを明示します。ff-mono と text-xs が組み合わさると、
                   大きくなった文字が小さい行の箱に入り、上の見出しと重なっていました。
                   ここが「左上が読みにくい」の正体です。 */}
-            <h1 className="ff-display italic app-wordmark whitespace-nowrap" style={{ color: C.curtain }}>La Voce</h1>
+            <h1 className="ff-display italic app-wordmark whitespace-nowrap" style={{ color: C.curtain }}>Woolsong</h1>
             <p className="ff-mono app-tagline tracking-widest uppercase" style={{ color: C.inkSoft }}>{t("appTagline")}</p>
           </div>
           <div className="flex items-center gap-1 shrink-0 self-end sm:self-auto sm:mt-1">

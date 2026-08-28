@@ -9,7 +9,7 @@ import { C } from "@/lib/tokens";
 import { INSTALL_STEPS } from "@/lib/displayPrefs";
 import { getBaseUrl } from "@/lib/baseUrl";
 
-export const metadata = { title: "La Voce のはじめかた" };
+export const metadata = { title: "Woolsong のはじめかた" };
 
 // ★私が書いた fallback（https://la-voce.app）は、存在しない住所だった。
 // 紙に刷って配るものなので、出どころを1か所に寄せる。
@@ -24,7 +24,7 @@ export default function StartSheet() {
         ol { margin: 0; padding: 0; list-style: none; }
       `}</style>
 
-      <h1 style={{ fontSize: "28pt", margin: 0, lineHeight: 1.3 }}>La Voce のはじめかた</h1>
+      <h1 style={{ fontSize: "28pt", margin: 0, lineHeight: 1.3 }}>Woolsong のはじめかた</h1>
       <p style={{ fontSize: "13pt", marginTop: "4mm", lineHeight: 1.7 }}>
         スマートフォンのホーム画面に置いておくと、次からは1回押すだけで開けます。
       </p>

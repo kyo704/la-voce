@@ -1,8 +1,8 @@
 // このファイルは app/manifest.js に上書き保存してください。
 export default function manifest() {
   return {
-    name: "La Voce",
-    short_name: "La Voce",
+    name: "Woolsong",
+    short_name: "Woolsong",
     description: "声のプロフェッショナルのための体調管理",
     start_url: "/",
     display: "standalone",

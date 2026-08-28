@@ -240,7 +240,7 @@ function LoginPageInner() {
           className="ff-display italic"
           style={{ fontSize: "3rem", color: "#F6F1E7", marginTop: 4, marginBottom: 2, textAlign: "center", textShadow: "0 2px 24px rgba(212,169,79,0.35)" }}
         >
-          La Voce
+          Woolsong
         </h1>
         <p style={{ color: "#D9C7A8", fontSize: 13, letterSpacing: "0.04em", marginBottom: 30, textAlign: "center" }}>
           {ltr("subtitle", lang)}

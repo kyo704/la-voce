@@ -106,7 +106,7 @@ export default function AdminDashboard({ userId }) {
 
   return (
     <div style={{ padding: 24, maxWidth: 720, margin: "0 auto", fontFamily: "system-ui", color: C.ink, background: C.paper, minHeight: "100vh" }}>
-      <h1 style={{ fontSize: 24, marginBottom: 4 }}>La Voce 管理画面（第1版）</h1>
+      <h1 style={{ fontSize: 24, marginBottom: 4 }}>Woolsong 管理画面（第1版）</h1>
       <p style={{ fontSize: 12, color: C.inkSoft, marginBottom: 24 }}>
         既存テーブル（entries / profiles）のみを使った集計です。管理画面仕様.md §7 第2版で events テーブルによる拡張を予定しています。
       </p>

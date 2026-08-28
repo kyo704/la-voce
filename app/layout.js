@@ -21,7 +21,7 @@ export const metadata = {
   // ★OG画像などの相対URLの基準（ドメイン切替 §3）。
   //   ここを設定しないと、Next.js は基準を推測する。推測させない。
   metadataBase: new URL(getBaseUrl()),
-  title: "La Voce | 声のプロフェッショナルのための体調管理",
+  title: "Woolsong | 声のプロフェッショナルのための体調管理",
   description:
     "声楽家・アナウンサー・声優・ポップス/ミュージカル歌手など、声のプロフェッショナルのための体調管理アプリ。喉・声のコンディション、睡眠、気候、本番の出来までを記録し、傾向を分析します。",
   // lavoce-アプリアイコン実装仕様.md §4: favicon・iOSホーム画面アイコンの指定。
@@ -42,7 +42,7 @@ export const metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "La Voce"
+    title: "Woolsong"
   },
   // apple-mobile-web-app-capable は非推奨。新しい標準タグ mobile-web-app-capable を
   // 追加で入れておく（Apple版は互換のため残す。両方入れるのが現時点の最善）。
