@@ -117,10 +117,12 @@ async function main() {
   assertTrue(/select\(PROFILE_BASE_COLUMNS\)/.test(vt),
     "★列が無いときは、職業の列を外して読み直す");
   // 書き込み側も、本体と混ぜない
-  assertTrue(/update\(\{ voice_occupation: profile\.voice_occupation \}\)/.test(vt),
+  // ★2026-08-28: 保存は下書き（draft）を読むようになりました。
+  //   確かめたいことは同じ（職業の保存を本体の update と混ぜない）です。
+  assertTrue(/update\(\{ voice_occupation: draft\.voice_occupation \}\)/.test(vt),
     "★職業の保存は、本体の update と分けてある");
-  const mainUpdate = vt.slice(vt.indexOf("vocal_profession: profile.vocal_profession"), 
-                              vt.indexOf("track_cycle: !!profile.track_cycle"));
+  const mainUpdate = vt.slice(vt.indexOf("vocal_profession: draft.vocal_profession"),
+                              vt.indexOf("track_cycle: !!draft.track_cycle"));
   assertTrue(!/occupation:/.test(mainUpdate),
     "★本体の update に職業を混ぜていない（混ぜると保存が丸ごと失敗する）");
 

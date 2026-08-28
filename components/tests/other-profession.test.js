@@ -92,7 +92,8 @@ async function main() {
   assertTrue(/professions: \[legacy\]/.test(pickerOnChange)
     && /vocal_profession: legacy/.test(pickerOnChange),
     "選ぶ画面が professions と vocal_profession も一緒に更新する");
-  assertTrue(/professions: \(profile\.professions && profile\.professions\.length > 0\)/.test(tracker),
+  // ★2026-08-28: 保存は下書き（draft）を読むようになりました。
+  assertTrue(/professions: \(draft\.professions && draft\.professions\.length > 0\)/.test(tracker),
     "保存時にも professions を含めている");
   // ★§10-5「職業を複数選ばせない」。単一選択なので、空になる道がそもそも無い。
   assertTrue(!/currentProfessions\.filter\(\(x\) => x !== p\)/.test(tracker),

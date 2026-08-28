@@ -8092,30 +8092,33 @@ export default function VocalTracker({ userId, userEmail }) {
   }
 
   async function handleSaveProfile() {
+    // ★下書きを保存します。下書きが無いとき（画面を開いていないとき）は
+    //   保存済みの値をそのまま使います。
+    const draft = profileDraft || profile;
     setProfileSaveStatus("saving");
     const supabase = createClient();
     const { error } = await supabase
       .from("profiles")
       .update({
-        height_cm: profile.height_cm === "" ? null : Number(profile.height_cm),
-        voice_type: profile.voice_type || null,
-        nutrition_phase: profile.nutrition_phase || "維持",
-        protein_coefficient: profile.protein_coefficient === "" ? null : Number(profile.protein_coefficient),
-        age: profile.age === "" ? null : Number(profile.age),
-        sex: profile.sex || null,
-        vocal_range_low: profile.vocal_range_low || null,
-        vocal_range_high: profile.vocal_range_high || null,
-        comfort_range_low: profile.comfort_range_low || null,
-        comfort_range_high: profile.comfort_range_high || null,
-        technical_goal: profile.technical_goal || null,
-        health_notes: profile.health_notes || null,
-        conditions: profile.conditions || [],
-        vocal_profession: profile.vocal_profession || "singer",
+        height_cm: draft.height_cm === "" ? null : Number(draft.height_cm),
+        voice_type: draft.voice_type || null,
+        nutrition_phase: draft.nutrition_phase || "維持",
+        protein_coefficient: draft.protein_coefficient === "" ? null : Number(draft.protein_coefficient),
+        age: draft.age === "" ? null : Number(draft.age),
+        sex: draft.sex || null,
+        vocal_range_low: draft.vocal_range_low || null,
+        vocal_range_high: draft.vocal_range_high || null,
+        comfort_range_low: draft.comfort_range_low || null,
+        comfort_range_high: draft.comfort_range_high || null,
+        technical_goal: draft.technical_goal || null,
+        health_notes: draft.health_notes || null,
+        conditions: draft.conditions || [],
+        vocal_profession: draft.vocal_profession || "singer",
         // ★professions も必ず一緒に保存する。職業別の出し分けはこちらを見ている。
-        professions: (profile.professions && profile.professions.length > 0)
-          ? profile.professions
-          : [profile.vocal_profession || "singer"],
-        track_cycle: !!profile.track_cycle
+        professions: (draft.professions && draft.professions.length > 0)
+          ? draft.professions
+          : [draft.vocal_profession || "singer"],
+        track_cycle: !!draft.track_cycle
       })
       .eq("id", userId);
     // ★アレルギーと常用薬は、上の update に混ぜないこと。
@@ -8124,8 +8127,8 @@ export default function VocalTracker({ userId, userEmail }) {
     const { error: healthError } = await supabase
       .from("profiles")
       .update({
-        allergies: profile.allergies || [],
-        regular_medications: profile.regular_medications || []
+        allergies: draft.allergies || [],
+        regular_medications: draft.regular_medications || []
       })
       .eq("id", userId);
     if (healthError) {
@@ -8141,10 +8144,10 @@ export default function VocalTracker({ userId, userEmail }) {
     //   profiles.occupation は登録画面の自由記述で、別の列です。
     //   ここで occupation に書くと、本人が登録時に入れた
     //   「学生」「会社員のものまね」などを、黙って消してしまいます。
-    if (profile.voice_occupation) {
+    if (draft.voice_occupation) {
       const { error: occupationError } = await supabase
         .from("profiles")
-        .update({ voice_occupation: profile.voice_occupation })
+        .update({ voice_occupation: draft.voice_occupation })
         .eq("id", userId);
       if (occupationError) {
         console.warn(
@@ -8156,10 +8159,18 @@ export default function VocalTracker({ userId, userEmail }) {
 
     const { error: cycleSettingError } = await supabase
       .from("profiles")
-      .update({ cycle_show_on_home: profile.cycle_show_on_home !== false })
+      .update({ cycle_show_on_home: draft.cycle_show_on_home !== false })
       .eq("id", userId);
     if (cycleSettingError) {
       console.warn("周期の表示設定を保存できませんでした。supabase/migration_cycle_periods.sql を実行してください。", cycleSettingError);
+    }
+    // ★成功したときだけ、下書きを保存済みへ移します。
+    //   失敗したときは profile を触りません。画面には「保存できません」と
+    //   出したまま、ほかのタブには古い（＝実際に保存されている）値が
+    //   出続けます。エラーなのに新しい値が見えている、という状態を作りません。
+    if (!error) {
+      setProfile((p) => ({ ...p, ...draft }));
+      setProfileDraft(null);
     }
     setProfileSaveStatus(error ? "error" : "saved");
     // ★失敗の表示は自動で消さない。以前は 1.8秒で idle に戻していたため、
@@ -8253,6 +8264,23 @@ export default function VocalTracker({ userId, userEmail }) {
     }
   }
   // 項目グループを出すかどうかは、必ずここを通す（記録項目の再設計v2 §3.3）。
+  // ★プロフィール画面の下書き。
+  //   以前は編集フォームが共有の profile を直接書き換えていました。
+  //   保存を押していないのに、ほかのタブがその値を「保存済み」として
+  //   読んでしまいます（今日の記録の呼び名・型別項目まで変わりました）。
+  //   下書きを分け、★保存に成功したときだけ profile に移します。
+  //   163か所の読み取りは profile のまま（＝保存済みの真実）です。
+  const [profileDraft, setProfileDraft] = useState(null);
+  const profileDirty = profileDraft !== null;
+  // プロフィール画面を開いたとき、保存済みの値から下書きを作る。
+  // ★閉じたら捨てます。保存せずに離れた編集は、どこにも残りません。
+  useEffect(() => {
+    if (activeTab === "profile") setProfileDraft((d) => d || { ...profile });
+    else setProfileDraft(null);
+    // profile を依存に入れないこと。入れると、入力のたびに種を撒き直します。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
+  // 保存済みの真実。★分析も呼び名も、こちらだけを見ます。
   const currentOccupation = occupationOf(profile);
 
   // 呼び方が変わったことを、1回だけ知らせる（職業を声の型で切り直す §8③）。
@@ -14110,8 +14138,10 @@ export default function VocalTracker({ userId, userEmail }) {
 
                   {/* 4グループの入力欄は ProfileFieldGroups に集約してある。
                       オンボーディングでも同じ部品を使うため（同じ欄を2箇所に書かない）。 */}
-                  <ProfileFieldGroups value={profile} t={t}
-                    onChange={(patch) => setProfile((p) => ({ ...p, ...patch }))} />
+                  {/* ★共有の profile ではなく、下書きを渡すこと。
+                      profile を渡すと、保存前の値がほかのタブに出ます。 */}
+                  <ProfileFieldGroups value={profileDraft || profile} t={t}
+                    onChange={(patch) => setProfileDraft((d) => ({ ...(d || profile), ...patch }))} />
 
                   {/* ★以前は sticky bottom-0 をこのコンテナの最後の子に置いていたが、
                       sticky は「自分より下にまだ内容があるとき」しか浮かない。最後尾では
@@ -14121,6 +14151,16 @@ export default function VocalTracker({ userId, userEmail }) {
                   <div className="fixed left-0 right-0 bottom-0 z-40 px-4 sm:px-6 pt-6 pb-4"
                     style={{ background: `linear-gradient(to top, ${C.paper} 62%, rgba(246,241,231,0))` }}>
                     <div className="max-w-3xl mx-auto">
+                      {/* ★下書きがあるあいだは、そのことを伝えます。
+                          下書きを分けたことで、編集してもほかのタブが
+                          変わらなくなりました。その代わり「変えたつもり」
+                          のまま離れられるので、目印を置きます。 */}
+                      {profileDirty && profileSaveStatus !== "saved" && (
+                        <div className="rounded-xl px-3 py-2 mb-2 flex items-center gap-2"
+                          style={{ background: "rgba(198,160,74,0.18)", color: C.ink }}>
+                          <span className="text-xs font-medium">保存されていません</span>
+                        </div>
+                      )}
                       {profileSaveStatus === "saved" && (
                         <div className="rounded-xl px-3 py-2 mb-2 flex items-center gap-2"
                           style={{ background: "rgba(122,150,109,0.18)", color: C.ink }}>
