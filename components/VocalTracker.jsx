@@ -33,6 +33,8 @@ import {
 import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q, NARRATIVE_MIN_N_PER_GROUP } from "@/lib/displayGates";
 import { SCALES, DEFAULT_SCALE, SCALE_LABELS, SCALE_SAMPLE, normalizeScale,
   scaleAttribute, isSimpleDisplay } from "@/lib/displayPrefs";
+import { SIMPLE_STEPS, SIMPLE_STEP_COUNT, remainingSteps, applyStep, skipStep,
+  nextIndex, prevIndex, isFinished, SIMPLE_SKIP_LABEL, SIMPLE_BACK_LABEL, SIMPLE_DONE_TEXT } from "@/lib/simpleFlow";
 import { familyOf, mayStateFinding, EXPLORE, EXPLORE_NOTE,
   buildCoreGroups, groupLabelsFor, CORE_LABELS, availableCoreFactors } from "@/lib/analysisFamilies";
 // 分析カードの職業別の出し分け（docs/profession-presets.json と1対1）
@@ -4595,6 +4597,8 @@ export default function VocalTracker({ userId, userEmail }) {
   const [quizAnswers, setQuizAnswers] = useState({});
   // 記述式の下書き（"articleId:問番号" -> 文字列）。★保存済みの記述は上書きしない。
   const [reflectDraft, setReflectDraft] = useState({});
+  // かんたん表示の「1画面に1つ」。いま何問目か。★とばした数は数えない。
+  const [simpleStepIndex, setSimpleStepIndex] = useState(0);
   // 間隔をあけて出し直すための状態（articleId -> { box, nextDueAt, ... }）
   const [articleProgress, setArticleProgress] = useState({});
   // 復習で答えた分（articleId -> 選んだ番号）。★正答率は数えない。
@@ -9788,6 +9792,79 @@ export default function VocalTracker({ userId, userEmail }) {
             })()}
             {activeTab === "today" && (
               <div className="space-y-5">
+                {/* ★かんたん表示の「1画面に1つ」（見やすさ §3-3）。
+                    ★下のふつうの記録欄は消していない。ここで答えても、
+                      下の欄に反映される。同じ項目に書いているため。
+                    ★「とばす」を必ず置く。答えられない項目で止まると、
+                      その日の記録が丸ごと消える。
+                    ★とばした数を数えない。「未入力」「不足」「完了度」を
+                      出さないため（統合実行ルート v4 §11）。 */}
+                {isSimpleDisplay(profile) && formData && !isFinished(simpleStepIndex) && (() => {
+                  const step = SIMPLE_STEPS[simpleStepIndex];
+                  const left = remainingSteps(simpleStepIndex);
+                  return (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <p className="text-xs text-right mb-2" style={{ color: C.inkSoft }}>あと {left}つ</p>
+                      <p className="mb-4" style={{ color: C.ink, fontSize: "1.15rem", lineHeight: 1.6 }}>
+                        {step.question}
+                      </p>
+                      <div className="space-y-2">
+                        {step.choices.map((choice) => {
+                          const active = formData[step.key] === choice.value;
+                          return (
+                            <button key={choice.label} type="button"
+                              onClick={() => {
+                                setFormData((f) => applyStep(f, step.key, choice.value));
+                                setSimpleStepIndex((i) => nextIndex(i));
+                              }}
+                              className="w-full rounded-xl border"
+                              style={{
+                                background: active ? C.paper : C.card,
+                                borderColor: active ? C.ink : C.line,
+                                color: C.ink,
+                                minHeight: "var(--tap)",
+                                padding: "var(--gap)",
+                                fontSize: "1.05rem",
+                                fontWeight: active ? 600 : 400
+                              }}>
+                              {active ? "✓ " : ""}{choice.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <div className="flex items-center justify-between mt-4">
+                        <button type="button" disabled={simpleStepIndex === 0}
+                          onClick={() => setSimpleStepIndex((i) => prevIndex(i))}
+                          className="px-4 py-2 rounded-full text-sm"
+                          style={{
+                            color: simpleStepIndex === 0 ? C.line : C.inkSoft,
+                            border: `1px solid ${simpleStepIndex === 0 ? C.line : C.line}`
+                          }}>
+                          {SIMPLE_BACK_LABEL}
+                        </button>
+                        <button type="button"
+                          onClick={() => {
+                            setFormData((f) => skipStep(f));
+                            setSimpleStepIndex((i) => nextIndex(i));
+                          }}
+                          className="px-4 py-2 rounded-full text-sm"
+                          style={{ color: C.inkSoft, border: `1px solid ${C.line}` }}>
+                          {SIMPLE_SKIP_LABEL}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })()}
+                {isSimpleDisplay(profile) && isFinished(simpleStepIndex) && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.paper, borderColor: C.line }}>
+                    <p className="text-sm" style={{ color: C.ink, lineHeight: 1.7 }}>{SIMPLE_DONE_TEXT}</p>
+                    <button type="button" onClick={() => setSimpleStepIndex(0)}
+                      className="mt-2 px-4 py-2 rounded-full text-sm"
+                      style={{ color: C.inkSoft, border: `1px solid ${C.line}` }}>
+                      もう一度はじめから
+                    </button>
+                  </div>
+                )}
                 <div className="flex items-center justify-between rounded-2xl p-3 border" style={{ background: C.card, borderColor: C.line }}>
                   <button onClick={() => setSelectedDate((d) => addDays(d, -1))}
                     className="w-9 h-9 rounded-full border flex items-center justify-center" style={{ borderColor: C.line }}>
