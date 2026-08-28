@@ -129,6 +129,43 @@ async function main() {
     });
   }
 
+  console.log("\n=== 旧オリジンの後始末（§8-1①） ===");
+  {
+    assertEqual(mod.isLegacyOrigin("la-voce.vercel.app"), true, "旧オリジンを見分ける");
+    assertEqual(mod.isLegacyOrigin("woolsong.app"), false, "★新オリジンでは働かない");
+    assertEqual(mod.isLegacyOrigin(""), false, "空のホスト名で誤作動しない");
+    // ★パスを落とさないこと（§10）。配った招待リンクが死にます。
+    assertEqual(
+      mod.newOriginUrlFor({ pathname: "/learn/xxx", search: "?a=1", hash: "#b" }),
+      "https://woolsong.app/learn/xxx?a=1#b", "★移動先がパスを保つ");
+
+    const notice = stripComments(readRaw("components", "LegacyOriginNotice.jsx"));
+    assertTrue(/getRegistrations\(\)/.test(notice), "Service Worker を解除している");
+    assertTrue(/\.unregister\(\)/.test(notice), "unregister を呼んでいる");
+    assertTrue(/caches\.keys\(\)/.test(notice) && /caches\.delete\(/.test(notice),
+      "キャッシュを全部消している");
+    assertTrue(/新しいURLに移動しました/.test(notice), "案内の文言がある");
+    assertTrue(/location\.replace\(/.test(notice),
+      "★replace で移動する（戻るボタンで旧オリジンに戻らせない）");
+    assertTrue(/<a[\s\S]{0,200}href=\{target\}/.test(notice),
+      "★押せるボタンもある（自動で移動しなかった人のため）");
+    // ★後始末が先、移動があと。逆だと解除する手段を失う。
+    assertTrue(notice.indexOf("unregister") < notice.indexOf("location.replace("),
+      "★解除してから移動している");
+
+    const vt = stripComments(readRaw("components", "VocalTracker.jsx"));
+    assertTrue(/isLegacyOrigin\(window\.location\.hostname\)\) return;/.test(vt),
+      "★旧オリジンでは Service Worker を登録し直さない");
+
+    const sw = readRaw("public", "sw.js");
+    assertTrue(/cached \|\| Response\.error\(\)/.test(sw),
+      "★キャッシュに無いとき undefined を返さない");
+    assertTrue(!/\.catch\(\(\) => caches\.match\(event\.request\)\)/.test(sw),
+      "★落ちる書き方が残っていない");
+    assertTrue(/CACHE_NAME = "woolsong-shell-v3"/.test(sw),
+      "キャッシュ名を上げた（古い版が activate で消える）");
+  }
+
   console.log("\n=== まだ何も切り替えていないこと（Phase 0 の範囲）===");
   {
     assertTrue(m.LEGACY_ORIGINS.includes("https://la-voce.vercel.app"),

@@ -21,6 +21,7 @@ import { FOOD_PRESETS, DISH_GROUP_ALIASES, CATEGORY_SEARCH_ALIASES } from "@/lib
 import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, SHOP_ITEMS, PLACEMENT_LIMITS, computeBalance } from "@/lib/character";
 import { LANGUAGES, createTranslator } from "@/lib/translations";
 import { BRAND } from "@/lib/brand";
+import { isLegacyOrigin } from "@/lib/baseUrl";
 import { OCCUPATIONS, OCCUPATION_LABELS, OTHER_OCCUPATION, OCCUPATION_TO_LEGACY,
   DEFAULT_MIX, occupationOf, mixOf, isValidMix } from "@/lib/occupation";
 import { term, termLabel } from "@/lib/vocabulary";
@@ -4711,6 +4712,9 @@ export default function VocalTracker({ userId, userEmail }) {
   // Service Workerの登録、インストール導線（beforeinstallprompt）、インストール計測をまとめて行う。
   useEffect(() => {
     if (typeof window === "undefined" || !("serviceWorker" in navigator)) return;
+    // ★旧オリジンでは登録しません。LegacyOriginNotice が解除する先から、
+    //   すぐに登録し直してしまうためです（ドメイン切替 §8-1①）。
+    if (isLegacyOrigin(window.location.hostname)) return;
     navigator.serviceWorker.register("/sw.js").catch((err) => {
       console.error("Service Workerの登録に失敗しました:", err);
     });

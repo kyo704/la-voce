@@ -1,4 +1,5 @@
 import { Cormorant_Garamond, Work_Sans, IBM_Plex_Mono } from "next/font/google";
+import LegacyOriginNotice from "@/components/LegacyOriginNotice";
 import { getBaseUrl } from "@/lib/baseUrl";
 import "./globals.css";
 const display = Cormorant_Garamond({
@@ -90,7 +91,10 @@ export default function RootLayout({ children }) {
         // ★どの版が配信されているかの印（開発用）。利用者には見えません。
         data-build={process.env.NEXT_PUBLIC_BUILD_SHA}
         data-built-at={process.env.NEXT_PUBLIC_BUILD_AT}
-      >{children}</body>
+      >
+        {/* 旧オリジンで開かれたときだけ働きます（ドメイン切替 §8-1①）。
+            ★新オリジンでは何も描かず、何もしません。 */}
+        <LegacyOriginNotice />{children}</body>
     </html>
   );
 }

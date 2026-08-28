@@ -5,7 +5,8 @@
 // だけをキャッシュし、開けなくなることを防ぐ程度に留めています。
 
 // エラー応答を取り込んでしまった古いキャッシュを捨てるため、版を上げる。
-const CACHE_NAME = "la-voce-shell-v2";
+// ★版を上げると、activate で古い版（la-voce-shell-v2 など）が消えます。
+const CACHE_NAME = "woolsong-shell-v3";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
@@ -42,6 +43,14 @@ self.addEventListener("fetch", (event) => {
         }
         return response;
       })
-      .catch(() => caches.match(event.request))
+      // ★キャッシュに無いときは undefined が返ります。
+      //   respondWith(undefined) は
+      //   「Failed to convert value to 'Response'」で落ち、
+      //   一瞬の通信断が、そのままページ遷移の失敗になります。
+      //   必ず Response を返すこと。
+      .catch(async () => {
+        const cached = await caches.match(event.request);
+        return cached || Response.error();
+      })
   );
 });
