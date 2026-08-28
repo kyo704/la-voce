@@ -20,6 +20,7 @@ import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC, CYCLE_BAND, SERIES
 import { FOOD_PRESETS, DISH_GROUP_ALIASES, CATEGORY_SEARCH_ALIASES } from "@/lib/foodPresets";
 import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, SHOP_ITEMS, PLACEMENT_LIMITS, computeBalance } from "@/lib/character";
 import { LANGUAGES, createTranslator } from "@/lib/translations";
+import { BRAND } from "@/lib/brand";
 // 周期の記録（周期記録の設計.md §3）。★日数はすべてここで導出する。保存しない。
 import {
   currentCycleState, cycleSummary, buildBleedingDayset,
@@ -3522,7 +3523,10 @@ const ONBOARDING_GOAL_OPTIONS = [
   { key: "train", label: "長く鍛えたい" },
   { key: "log_only", label: "記録だけしたい" }
 ];
-const CONSENT_POLICY_VERSION = "2026-08-v1";
+// ★この値は記録するだけで、比較していません。上げても再同意を求めません。
+//   「どの文面に同意したか」を残すためのものです。
+//   改名で文面が変わったので、1つ上げます（改名v2 Phase 2）。
+const CONSENT_POLICY_VERSION = "2026-08-v2";
 const CONSENT_DATA_CATEGORIES = [
   "喉のコンディション・声の状態（5段階評価、音の高さ）",
   "睡眠時間・就寝時刻",
@@ -3903,7 +3907,7 @@ function OnboardingFlow({ existingUser, onComplete, t }) {
         {step === 0 && (
           <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
             <h2 className="ff-display italic text-xl mb-3">記録データについて</h2>
-            <p className="text-sm mb-3">La Voceは、あなたの声や体調の記録を保存します。以下の項目を取得します。</p>
+            <p className="text-sm mb-3">{BRAND.name}は、あなたの声や体調の記録を保存します。以下の項目を取得します。</p>
             <ul className="text-xs space-y-1 mb-3" style={{ color: C.inkSoft }}>
               {CONSENT_DATA_CATEGORIES.map((c) => <li key={c}>・{c}</li>)}
             </ul>
@@ -3919,7 +3923,7 @@ function OnboardingFlow({ existingUser, onComplete, t }) {
             <label className="flex items-start gap-2 rounded-xl p-3 mb-4" style={{ background: C.paper, cursor: "pointer" }}>
               <input type="checkbox" checked={statsConsent} onChange={(e) => setStatsConsent(e.target.checked)} className="mt-0.5" />
               <span className="text-xs" style={{ color: C.inkSoft }}>
-                <strong style={{ color: C.ink }}>（任意）</strong> 匿名化した統計として、La Voceの機能改善に役立てることに同意します。個人を特定できる形で第三者に提供されることはありません。
+                <strong style={{ color: C.ink }}>（任意）</strong> 匿名化した統計として、{BRAND.name}の機能改善に役立てることに同意します。個人を特定できる形で第三者に提供されることはありません。
               </span>
             </label>
             <p className="text-xs mb-4" style={{ color: C.inkSoft }}>

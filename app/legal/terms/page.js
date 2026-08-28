@@ -1,4 +1,5 @@
 import { C } from "@/lib/tokens";
+import { BRAND } from "@/lib/brand";
 
 export default function TermsPage() {
   return (
@@ -11,7 +12,7 @@ export default function TermsPage() {
       </p>
 
       <h2 style={{ fontWeight: 600, marginTop: 24 }}>第1条（適用）</h2>
-      <p>本規約は、［事業者名］（以下「当方」）が提供する「La Voce」（以下「本サービス」）の利用条件を定めるものです。</p>
+      <p>本規約は、［事業者名］（以下「当方」）が提供する「{BRAND.name}」（https://{BRAND.domain}、以下「本サービス」）の利用条件を定めるものです。</p>
 
       <h2 style={{ fontWeight: 600, marginTop: 24 }}>第2条（登録）</h2>
       <p>利用希望者は、氏名・メールアドレス・生年月日等の必要事項を届け出て、当方所定の方法によって利用登録を申請します。</p>
