@@ -3564,6 +3564,17 @@ function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
                           return (
                             <button key={occ} type="button"
                               onClick={() => {
+                                // ★もう一度押したら、選び直せるように null に戻します。
+                                //   「まだ自分で選んでいない」状態に戻る道が無いと、
+                                //   間違って押した人が二度と戻れません。
+                                //   ★このとき professions と vocal_profession は
+                                //     そのままにします。学ぶ画面と分析カードは
+                                //     いまもそちらを見ているため、消すと記事が変わります。
+                                //     未選択の人と同じ扱い（occupationOf が読み替える）に戻るだけです。
+                                if (selected && value.voice_occupation === occ) {
+                                  onChange({ voice_occupation: null });
+                                  return;
+                                }
                                 const legacy = OCCUPATION_TO_LEGACY[occ] || "singer";
                                 onChange({
                                   voice_occupation: occ,
@@ -8995,14 +9006,22 @@ export default function VocalTracker({ userId, userEmail }) {
     setTessituraSaving(true);
     const confidence = tessituraNote ? "entered" : topNote ? "estimated" : "coarse";
     const supabase = createClient();
+    // ★既にある値を持ち越すこと。upsert は渡さなかった列を null で上書きします。
+    //   直す前は singing_language に触れておらず、最高音を保存するたびに
+    //   歌唱言語が消えていました。渡されなかった tessitura_note も同じです。
+    //   handleSaveSingingLanguage は最初から持ち越していました。
+    //   ★同じ表に書く関数どうしで、やり方が違っていたのが原因です。
+    const existing = repertoireTessituraMap[repertoireName] || {};
     const { error } = await supabase
       .from("repertoire_tessitura")
       .upsert({
         user_id: userId,
         repertoire_name: repertoireName,
-        top_note: topNote || null,
-        tessitura_note: tessituraNote || null,
-        d_override: dOverride != null ? dOverride : null,
+        top_note: topNote || existing.topNote || null,
+        tessitura_note: tessituraNote || existing.tessituraNote || null,
+        d_override: dOverride != null ? dOverride
+          : (existing.dOverride != null ? existing.dOverride : null),
+        singing_language: existing.singingLanguage || null,
         confidence
       }, { onConflict: "user_id,repertoire_name" });
     setTessituraSaving(false);
@@ -9010,9 +9029,18 @@ export default function VocalTracker({ userId, userEmail }) {
       console.error("レパートリーの登録に失敗しました:", error);
       return;
     }
+    // ★画面の状態も、既存を残したまま重ねること。
+    //   作り直すと、歌唱言語がその場で消えて見えます。
     setRepertoireTessituraMap((prev) => ({
       ...prev,
-      [repertoireName]: { topNote: topNote || null, tessituraNote: tessituraNote || null, dOverride: dOverride != null ? dOverride : null, confidence, usageCount: (prev[repertoireName] && prev[repertoireName].usageCount) || 0 }
+      [repertoireName]: {
+        ...(prev[repertoireName] || {}),
+        topNote: topNote || existing.topNote || null,
+        tessituraNote: tessituraNote || existing.tessituraNote || null,
+        dOverride: dOverride != null ? dOverride : (existing.dOverride != null ? existing.dOverride : null),
+        confidence,
+        usageCount: (prev[repertoireName] && prev[repertoireName].usageCount) || 0
+      }
     }));
     setTopNoteInput("");
     setTessituraOptionalInput("");
@@ -12254,10 +12282,15 @@ export default function VocalTracker({ userId, userEmail }) {
                   );
                 })()}
                 <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
-                  <div className="flex items-start justify-between gap-2 mb-1">
+                  {/* ★見出しと帯を、狭い画面では縦に積む。
+                      横並びのままだと、帯が whitespace-nowrap で縮まないため、
+                      見出し「声の調子スコア（直近2週間）」が2行に折れます。
+                      ★min-w-0 は付けないこと。縮みの下限が外れて、
+                        見出しのほうが1文字ずつに潰れます（2026-08-28 に一度やりました）。 */}
+                  <div className="flex flex-col gap-1 mb-1 sm:flex-row sm:items-start sm:justify-between sm:gap-2">
                     <h3 className="ff-display italic text-lg">{t("titleVocalScore")}</h3>
                     {/* 改善タスクv2 §4-1(b): 期間セレクタが効かないカードであることを明示する */}
-                    <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: C.paper, color: C.inkSoft }}>
+                    <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap self-start" style={{ background: C.paper, color: C.inkSoft }}>
                       {t("badgeFixedPeriod").replace("{n}", 14)}
                     </span>
                   </div>
