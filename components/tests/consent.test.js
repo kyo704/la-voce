@@ -73,11 +73,16 @@ async function main() {
   assertTrue(!/teacher|share_scope|org/i.test(sqlCode), "★教師や教室に見せる道が無い");
 
   console.log("\n=== ★未成年には求めない（研究利用の同意 §1-④） ===");
-  assertEqual(C.mayAskForConsent({ age: 17 }), false, "17歳には求めない");
-  assertEqual(C.mayAskForConsent({ age: 18 }), true, "18歳には求める");
-  assertEqual(C.mayAskForConsent({}), false, "★年齢が未入力なら、求めない側に倒す");
-  assertEqual(C.mayAskForConsent({ age: "" }), false, "空文字でも求めない");
-  assertEqual(C.mayAskForConsent(null), false, "プロフィールが無くても落ちない");
+  // ★判断そのものは lib/ageGate.js に移りました（age-gate.test.js が固定します）。
+  //   ここでは「consent.js が自分で決め直していないこと」だけを見ます。
+  //   同じ判断が2か所に戻ると、片方だけ変わります。
+  assertTrue(typeof C.mayAskForConsent === "undefined",
+    "★consent.js は、年齢の判断を持たない（lib/ageGate.js が持つ）");
+  assertTrue(typeof C.ADULT_AGE === "undefined",
+    "★consent.js は、年齢のしきい値を持たない");
+  const consentBody = readCode("lib", "consent.js");
+  assertTrue(!/profile\.age\b/.test(consentBody),
+    "★consent.js が profiles.age を読んでいない（あれは体組成用の数値）");
 
   console.log("\n=== ★同意しなくても、全機能が同じに使える ===");
   // 同意の有無で機能を出し分けるコードが無いこと。
