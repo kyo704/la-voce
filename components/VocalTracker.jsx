@@ -24,7 +24,8 @@ import { BRAND } from "@/lib/brand";
 import { isLegacyOrigin } from "@/lib/baseUrl";
 import { watchForUpdates, reloadOnceOnControllerChange } from "@/lib/swUpdate";
 import { OCCUPATIONS, OCCUPATION_LABELS, OTHER_OCCUPATION, OCCUPATION_TO_LEGACY,
-  DEFAULT_MIX, occupationOf, mixOf, isValidMix } from "@/lib/occupation";
+  DEFAULT_MIX, occupationOf, mixOf, isValidMix,
+  repertoireExtraFor, EXTRA_SINGING_LANGUAGE, EXTRA_ROLE, EXTRA_PROJECT } from "@/lib/occupation";
 import { term, termLabel } from "@/lib/vocabulary";
 import { typeFieldsFor } from "@/lib/typeFields";
 // 周期の記録（周期記録の設計.md §3）。★日数はすべてここで導出する。保存しない。
@@ -3260,8 +3261,8 @@ function MealItemRow({ item, onChange, onRemove, foodLibrary, t, language }) {
 function RepertoireItemRow({
   item, index, totalItems, onChange, onRemove, onMoveUp, onMoveDown,
   repertoireTessituraMap, repertoireUsageCounts, repertoireSkipped, setRepertoireSkipped,
-  handleSaveRepertoire, tessituraSaving, professions, roleMasterMap, projectMasterMap,
-  handleSaveRole, handleSaveProject, handleSaveSingingLanguage, t
+  handleSaveRepertoire, tessituraSaving, roleMasterMap, projectMasterMap,
+  handleSaveRole, handleSaveProject, handleSaveSingingLanguage, occupation, t
 }) {
   const [topNoteInput, setTopNoteInput] = useState("");
   const [tessituraOptionalInput, setTessituraOptionalInput] = useState("");
@@ -3272,9 +3273,15 @@ function RepertoireItemRow({
   // ★登録し直しているところか。登録済みの曲は欄が閉じているので、
   //   ここを開けないと、間違えて入れた最高音を直せません。
   const [editingPitch, setEditingPitch] = useState(false);
-  const isSinger = (professions || []).includes("singer");
-  const isVoiceActor = (professions || []).includes("voice_actor");
-  const isAnnouncer = (professions || []).includes("announcer");
+  // ★どの欄を添えるかは lib/occupation.js が決めます。
+  //   ここで professions.includes("singer") と書き直さないでください。
+  //   旧い professions は歌う人を singer と pop_musical に分けており、
+  //   singer だけを見ていたため、★ポップスの人には歌唱言語の欄が
+  //   まったく出ませんでした（「その他」「落語」も同様に何も出ませんでした）。
+  const repertoireExtra = repertoireExtraFor(occupation);
+  const isSinger = repertoireExtra === EXTRA_SINGING_LANGUAGE;
+  const isVoiceActor = repertoireExtra === EXTRA_ROLE;
+  const isAnnouncer = repertoireExtra === EXTRA_PROJECT;
 
   const name = item.repertoireName || "";
   const record = name ? repertoireTessituraMap[name] : null;
@@ -4273,9 +4280,17 @@ function ActivityBlockEditor({
   const detail = activity.detail || {};
   const items = activity.items || [];
   const { total, perItem } = computeActivityBlockLoad(activity, songFactorResolver);
-  const isVoiceActor = (professions || []).includes("voice_actor");
-  const isPopMusical = (professions || []).includes("pop_musical");
-  const isSinger = (professions || []).includes("singer");
+  // ★職業の判定は lib/occupation.js に一本化してあります（RepertoireItemRow と同じ）。
+  //   歌う人は旧い professions では singer と pop_musical に分かれるため、
+  //   singer だけを見ると、ポップスの人にパッサッジョの欄が出ませんでした。
+  const blockExtra = repertoireExtraFor(occupation);
+  const isVoiceActor = blockExtra === EXTRA_ROLE;
+  const isSinger = blockExtra === EXTRA_SINGING_LANGUAGE;
+  // モニター環境（インイヤー／ウェッジ）は、ポップスの本番だけの欄です。
+  // ★旧い pop_musical と同じ範囲を保つため、対応表から引きます。
+  //   ここを「歌う人みんな」に広げないこと。声楽・ミュージカルの本番には
+  //   出ていなかった欄で、広げると出し分けが黙って変わります。
+  const isPopMusical = OCCUPATION_TO_LEGACY[occupation] === "pop_musical";
   return (
     <div className="rounded-xl border p-3" style={{ borderColor: C.line, background: C.card }}>
       <div className="flex items-center gap-2 mb-2">
@@ -4304,12 +4319,12 @@ function ActivityBlockEditor({
               setRepertoireSkipped={setRepertoireSkipped}
               handleSaveRepertoire={handleSaveRepertoire}
               tessituraSaving={tessituraSaving}
-              professions={professions}
               roleMasterMap={roleMasterMap}
               projectMasterMap={projectMasterMap}
               handleSaveRole={handleSaveRole}
               handleSaveProject={handleSaveProject}
               handleSaveSingingLanguage={handleSaveSingingLanguage}
+              occupation={occupation}
               t={t}
             />
           ))}
