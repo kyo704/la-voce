@@ -41,7 +41,8 @@ import {
   addDaysISO,
   diffDays} from "@/lib/cyclePeriods";
 // 統合実行ルートv4 §6: 表示ゲートは必ずこのレイヤーを経由する。画面ごとに条件を書かないこと。
-import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q, NARRATIVE_MIN_N_PER_GROUP } from "@/lib/displayGates";
+import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q, NARRATIVE_MIN_N_PER_GROUP,
+  effectStateOf, mayShowEffectNumbers, EFFECT_SHOWN, EFFECT_WAITING } from "@/lib/displayGates";
 import { SCALES, DEFAULT_SCALE, SCALE_LABELS, SCALE_SAMPLE, normalizeScale,
   scaleAttribute, isSimpleDisplay, UNDO_WINDOW_MS, ACTIONABLE_ERROR_KEY,
   INSTALL_STEPS, INSTALL_LATER_NOTE, INSTALL_LATER_LABEL, shouldShowInstallGuide } from "@/lib/displayPrefs";
@@ -1027,20 +1028,23 @@ function computeHedgesG(group1, group0) {
   return { g, ciLow: g - 1.96 * se, ciHigh: g + 1.96 * se, n1, n0, m1, m0,
     values1: group1.slice(), values0: group0.slice() };
 }
-function starRatingForEffect(res) {
+// ★4段階の星（★☆☆☆〜★★★★）は、もう作りません（設計憲章 §3-4）。
+//   §3-4 の表示状態は3つだけです。星は「だんだん確からしくなる」という
+//   4段階の目盛りで、①待機／②通過／③不通過 のどれとも一致しません。
+//
+//   ★2026-08-30 まで、これは n≥3 で★2つを付け、そのカードが
+//     「この行動があった日（3件）は…（効果量 g=0.62）」という断定の文と
+//     数字を出していました。古い lavoce-指標設計図.md のしきい値が、
+//     この関数の中にだけ残っていたためです。
+//
+//   ★判定は lib/displayGates.js の effectStateOf() が持ちます。
+//     ここに n や |g| のしきい値を書き戻さないでください。
+//   ★この関数は、並び順のための内部の重みだけを返します。画面に出さないこと。
+function effectSortWeight(res) {
   if (!res) return 0;
-  const { n1, n0, g, ciLow, ciHigh } = res;
-  if (n1 < 3 || n0 < 3) return 0;
-  let stars = 1;
-  const crossesZero = ciLow <= 0 && ciHigh >= 0;
-  if (!crossesZero) stars = 2;
-  if (!crossesZero && Math.abs(g) >= 0.5) stars = 3;
-  // ★件数のしきい値は displayGates の定数を使う。ここに 10 と直接書くと、
-  //   §6-1 のしきい値を変えたときに★の判定だけ古いまま残る。
-  //   （同じ決定が2か所にある、の典型。このリポジトリで繰り返している形）
-  if (!crossesZero && Math.abs(g) >= 0.5 && n1 >= NARRATIVE_MIN_N_PER_GROUP && n0 >= NARRATIVE_MIN_N_PER_GROUP) stars = 4;
-  return stars;
+  return Math.min(1, Math.abs(res.g || 0));
 }
+
 // ---- 統計ヘルパー ここまで ----
 function getCorrelationData(entries, targetKey, targetFilter, t) {
   const list = Object.values(entries).filter(targetFilter);
@@ -5896,7 +5900,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       }
       const res = computeHedgesG(group1, group0);
       if (!res) return;
-      results.push({ name, ...res, stars: starRatingForEffect(res) });
+      results.push({ name, ...res, sortWeight: effectSortWeight(res) });
     });
 
     // 多くの食品を一斉に比べているので、文章にする前に多重比較を補正する（§6-1 ③）。
@@ -6921,15 +6925,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     // モニター：インイヤー vs ウェッジ（最も対比の意味がある組み合わせ）
     const monitorRes = computeHedgesG(monitorGroups.iem, monitorGroups.wedge);
     if (monitorRes && monitorRes.n1 >= 3 && monitorRes.n0 >= 3) {
-      results.push({ key: "monitor", label: "モニター環境（インイヤー vs ウェッジ）", ...monitorRes, stars: starRatingForEffect(monitorRes) });
+      results.push({ key: "monitor", label: "モニター環境（インイヤー vs ウェッジ）", ...monitorRes, sortWeight: effectSortWeight(monitorRes) });
     }
     const afterpartyRes = computeHedgesG(afterpartyGroups.yes, afterpartyGroups.no);
     if (afterpartyRes && afterpartyRes.n1 >= 3 && afterpartyRes.n0 >= 3) {
-      results.push({ key: "afterparty", label: "終演後の打ち上げ", ...afterpartyRes, stars: starRatingForEffect(afterpartyRes) });
+      results.push({ key: "afterparty", label: "終演後の打ち上げ", ...afterpartyRes, sortWeight: effectSortWeight(afterpartyRes) });
     }
     const travelRes = computeHedgesG(travelGroups.nightBus, travelGroups.other);
     if (travelRes && travelRes.n1 >= 3 && travelRes.n0 >= 3) {
-      results.push({ key: "travel", label: "夜行バス・車中泊の移動", ...travelRes, stars: starRatingForEffect(travelRes) });
+      results.push({ key: "travel", label: "夜行バス・車中泊の移動", ...travelRes, sortWeight: effectSortWeight(travelRes) });
     }
     return results;
   }, [entries, effectiveProfessions]);
@@ -7174,11 +7178,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const results = [];
     const costumeRes = computeHedgesG(costumeGroups.tight, costumeGroups.other);
     if (costumeRes && costumeRes.n1 >= 3 && costumeRes.n0 >= 3) {
-      results.push({ key: "costume", label: "衣装の締め付け（強い日）", ...costumeRes, stars: starRatingForEffect(costumeRes) });
+      results.push({ key: "costume", label: "衣装の締め付け（強い日）", ...costumeRes, sortWeight: effectSortWeight(costumeRes) });
     }
     const acousticsRes = computeHedgesG(acousticsGroups.dead, acousticsGroups.other);
     if (acousticsRes && acousticsRes.n1 >= 3 && acousticsRes.n0 >= 3) {
-      results.push({ key: "acoustics", label: "会場の響き（デッドな日）", ...acousticsRes, stars: starRatingForEffect(acousticsRes) });
+      results.push({ key: "acoustics", label: "会場の響き（デッドな日）", ...acousticsRes, sortWeight: effectSortWeight(acousticsRes) });
     }
     return results;
   }, [entries, effectiveProfessions]);
@@ -7218,8 +7222,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       });
       const res = computeHedgesG(group1, group0);
       if (!res) return null;
-      return { key: habit.key, label: habit.label, ...res, stars: starRatingForEffect(res) };
-    }).filter((r) => r != null && r.n1 >= 3 && r.n0 >= 3);
+      return { key: habit.key, label: habit.label, ...res, sortWeight: effectSortWeight(res) };
+          // ★ここで n のしきい値を持たないこと。判定は displayGates が行います。
+    }).filter((r) => r != null);
     // 統合実行ルートv4 §6-1 ③: 習慣を一斉に比べているので、文章にする前に多重比較を補正する。
     // ★の付け方（指標設計図.md §04）はここでは変更していない。fdrPass を足すだけ。
     const pValues = results.map((r) => {
@@ -7817,8 +7822,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       });
       const res = computeHedgesG(group1, group0);
       if (!res) return null;
-      return { tag, ...res, stars: starRatingForEffect(res) };
-    }).filter((r) => r != null && r.n1 >= 3 && r.n0 >= 3);
+      return { tag, ...res, sortWeight: effectSortWeight(res) };
+          // ★ここで n のしきい値を持たないこと。判定は displayGates が行います。
+    }).filter((r) => r != null);
   }, [entries, hasRefluxCondition]);
   // 統合実行ルートv4 §6-1 ③: 5つのタグを一斉に比べているので、文章にする前に多重比較を補正する。
   const refluxDinnerTagEffectsWithFdr = useMemo(() => {
@@ -7910,15 +7916,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         priority: Math.min(1, Math.abs(topLagFinding.rho)) * 1.0 * 0.6
       });
     }
-    if (effectiveHabitRanking.length > 0 && effectiveHabitRanking[0].stars >= 2
+    if (effectiveHabitRanking.length > 0 && effectStateOf(effectiveHabitRanking[0]) === EFFECT_SHOWN
         && gateAllows("habit.narrative", { days: recordedDaysTotal, n1: effectiveHabitRanking[0].n1, n0: effectiveHabitRanking[0].n0, effectSize: effectiveHabitRanking[0].g, fdrPass: effectiveHabitRanking[0].fdrPass })) {
       const top = effectiveHabitRanking[0];
       candidates.push({
         id: "habit-" + top.key,
         icon: "✨",
         text: `${top.label}日は、翌日の声が平均で${top.g >= 0 ? "良く" : "悪く"}記録されています。`,
-        detail: `効果量 g=${top.g.toFixed(2)}・${"★".repeat(top.stars)}${"☆".repeat(4 - top.stars)}`,
-        priority: Math.min(1, Math.abs(top.g) / 1.5) * (top.stars / 4) * 0.9
+        detail: `効果量 g=${top.g.toFixed(2)}`,
+        priority: Math.min(1, Math.abs(top.g) / 1.5) * 0.9
       });
     }
     if (roleLoadStats.confident.length > 0) {
@@ -7949,14 +7955,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }
     if (refluxDinnerTagEffectsWithFdr.length > 0) {
       const top = [...refluxDinnerTagEffectsWithFdr].sort((a, b) => Math.abs(b.g) - Math.abs(a.g))[0];
-      if (top && top.stars >= 2
+      if (top && effectStateOf(top) === EFFECT_SHOWN
           && gateAllows("reflux.narrative", { n1: top.n1, n0: top.n0, effectSize: top.g, fdrPass: top.fdrPass })) {
         candidates.push({
           id: "reflux-" + top.tag,
           icon: "💡",
           text: `前夜の${top.tag}は、翌朝の喉の違和感と関係がありそうです。`,
-          detail: `効果量 g=${top.g.toFixed(2)}・${"★".repeat(top.stars)}${"☆".repeat(4 - top.stars)}`,
-          priority: Math.min(1, Math.abs(top.g) / 1.5) * (top.stars / 4) * 0.7
+          detail: `効果量 g=${top.g.toFixed(2)}`,
+          priority: Math.min(1, Math.abs(top.g) / 1.5) * 0.7
         });
       }
     }
@@ -8068,15 +8074,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     // ①「効いた習慣」の確度：3→4つ星は、CI・効果量の条件は既に満たしており、
     //   残る条件はサンプル数（n1・n0とも10以上）だけなので、日数の見積もりが立つ。
     effectiveHabitRanking.forEach((h) => {
-      if (h.stars !== 3) return;
+      // ★「あと◯日で★★★★」はもうありません。件数が足りないものだけを、
+      //   進捗として出します（§3-4 ①）。
+      if (effectStateOf(h) !== EFFECT_WAITING) return;
       const minN = Math.min(h.n1, h.n0);
       const daysNeeded = Math.max(1, 10 - minN);
       const section = HABIT_KEY_TO_SECTION[h.key];
       if (!section) return;
       candidates.push({
         id: "habit-boost-" + h.key,
-        title: `「効いた習慣」の確度 ${"★".repeat(h.stars)}${"☆".repeat(4 - h.stars)}`,
-        body: `${h.label.replace(/^前夜の|^前夜、|^前日、/, "")}の記録を あと${daysNeeded}日 続けると ★★★★ になります`,
+        title: "「効いた習慣」の判定に、あと少しです",
+        body: `${h.label.replace(/^前夜の|^前夜、|^前日、/, "")}の記録を あと${daysNeeded}日 続けると、判定を始められます`,
         daysNeeded,
         // ★ロック中のカードと同じ進捗の点を描くため、件数も持たせる。
         current: minN, required: NARRATIVE_MIN_N_PER_GROUP,
@@ -12965,13 +12973,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       {singerCostumeVenueEffects.map((r) => (
                         <div key={r.key} className="rounded-xl p-3" style={{ background: C.paper }}>
                           <p className="text-sm font-medium mb-1">{r.label}</p>
+                          {/* ★3ゲートを通ったときだけ、数字と断定の文を出します（§3-4）。
+                              通っていないときは、数字を出さずに状態だけ伝えます。 */}
                           <p className="text-xs" style={{ color: C.inkSoft }}>
-                            {r.key === "costume"
-                              ? `衣装の締め付けが強い日は、翌日の声が平均${Math.abs(r.g).toFixed(1)}段階${r.g < 0 ? "悪く" : "変わらず"}記録されています`
-                              : `会場の響きがデッドな日は、翌日の声が平均${Math.abs(r.g).toFixed(1)}段階${r.g < 0 ? "悪く" : "変わらず"}記録されています`}
-                            （{"★".repeat(r.stars)}{"☆".repeat(4 - r.stars)}）
+                            {!mayShowEffectNumbers(r)
+                              ? (effectStateOf(r) === EFFECT_WAITING ? "記録が増えると、判定を始められます。" : "はっきりした関係は見えませんでした。")
+                              : r.key === "costume"
+                                ? `衣装の締め付けが強い日は、翌日の声が平均${Math.abs(r.g).toFixed(1)}段階${r.g < 0 ? "悪く" : "変わらず"}記録されています`
+                                : `会場の響きがデッドな日は、翌日の声が平均${Math.abs(r.g).toFixed(1)}段階${r.g < 0 ? "悪く" : "変わらず"}記録されています`}
                           </p>
-                          {r.values1 && r.values0 && (
+                          {mayShowEffectNumbers(r) && r.values1 && r.values0 && (
                             <div className="mt-2">
                               <GroupDotPlot values1={r.values1} values0={r.values0}
                                 label1={r.key === "costume" ? "締め付けが強い日" : "デッドな会場の日"}
@@ -13050,13 +13061,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       {popMusicalEffects.map((r) => (
                         <div key={r.key} className="rounded-xl p-3" style={{ background: C.paper }}>
                           <p className="text-sm font-medium mb-1">{r.label}</p>
+                          {/* ★3ゲートを通ったときだけ、数字と断定の文を出します（§3-4）。
+                              通っていないときは、数字を出さずに状態だけ伝えます。 */}
                           <p className="text-xs" style={{ color: C.inkSoft }}>
-                            {r.key === "monitor"
-                              ? `インイヤーの日は、ウェッジの日より翌日の声が平均${Math.abs(r.g).toFixed(1)}段階${r.g > 0 ? "良い" : "悪い"}`
-                              : r.key === "travel"
-                              ? `夜行バス・車中泊で移動した翌日は、平均${Math.abs(r.g).toFixed(1)}段階${r.g < 0 ? "落ちる" : "変わらない"}`
-                              : `打ち上げに出た日の翌日は、平均${Math.abs(r.g).toFixed(1)}段階${r.g < 0 ? "落ちる" : "変わらない"}`}
-                            （{"★".repeat(r.stars)}{"☆".repeat(4 - r.stars)}）
+                            {!mayShowEffectNumbers(r)
+                              ? (effectStateOf(r) === EFFECT_WAITING ? "記録が増えると、判定を始められます。" : "はっきりした関係は見えませんでした。")
+                              : r.key === "monitor"
+                                ? `インイヤーの日は、ウェッジの日より翌日の声が平均${Math.abs(r.g).toFixed(1)}段階${r.g > 0 ? "良い" : "悪い"}`
+                                : r.key === "travel"
+                                  ? `夜行バス・車中泊で移動した翌日は、平均${Math.abs(r.g).toFixed(1)}段階${r.g < 0 ? "落ちる" : "変わらない"}`
+                                  : `打ち上げに出た日の翌日は、平均${Math.abs(r.g).toFixed(1)}段階${r.g < 0 ? "落ちる" : "変わらない"}`}
                           </p>
                         </div>
                       ))}
@@ -13646,7 +13660,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             <div key={r.tag} className="flex items-center justify-between text-xs rounded-lg p-2" style={{ background: C.paper }}>
                               <span>{r.tag}</span>
                               <span className="ff-mono" style={{ color: C.inkSoft }}>
-                                {r.stars <= 1 ? "まだ判断できません" : `g=${r.g.toFixed(2)}（${"★".repeat(r.stars)}${"☆".repeat(4 - r.stars)}）`}
+                                {/* ★通ったときだけ数字を出す（§3-4 ③は数字も出さない）。 */}
+                                {mayShowEffectNumbers(r) ? `g=${r.g.toFixed(2)}`
+                                  : effectStateOf(r) === EFFECT_WAITING ? "まだ判断できません" : "はっきりした関係は見えませんでした"}
                               </span>
                             </div>
                           ))}
@@ -14293,19 +14309,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">効いた習慣ランキング</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      前日の行動があった日となかった日で、翌日の声のスコア（喉・声の平均）を比べています。件数が少ない項目は★が付かず「まだ判断できません」と表示されます。
+                      前日の行動があった日となかった日で、翌日の声のスコア（喉・声の平均）を比べています。件数・効果の大きさ・見かけ上の偶然を除く検定の3つをすべて通ったものだけ、結果をお伝えします。
                     </p>
                     <div className="space-y-3">
                       {effectiveHabitRanking.slice(0, 8).map((r) => {
-                        const inconclusive = r.stars <= 1;
+                        // ★3つの表示状態（§3-4）。判定は displayGates が持ちます。
+                        const state = effectStateOf(r);
+                        const showNumbers = state === EFFECT_SHOWN;
                         const direction = r.g >= 0 ? "良く" : "悪く";
                         return (
                           <div key={r.key} className="rounded-xl p-3" style={{ background: C.paper }}>
                             <div className="flex items-center justify-between gap-2">
                               <span className="text-sm font-medium">{r.label}</span>
-                              <span className="text-xs flex-shrink-0" style={{ color: SERIES.axis }}>
-                                {"★".repeat(r.stars)}{"☆".repeat(4 - r.stars)}
-                              </span>
+
                             </div>
                             <div style={{ position: "relative", height: 22, marginTop: 8, marginBottom: 4 }}>
                               {(() => {
@@ -14320,16 +14336,28 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                         左右で読めるので、色を変える必要がない。
                                         判断できないものだけ、淡いほうで描き分ける（濃さの違いではなく、
                                         「まだ確からしくない」という別の意味を持たせている）。 */}
-                                    <div style={{ position: "absolute", left: `${pct(r.ciLow)}%`, width: `${pct(r.ciHigh) - pct(r.ciLow)}%`, top: 9, height: 3, borderRadius: 2, background: inconclusive ? SERIES.grid : SERIES.pale }} />
-                                    <div style={{ position: "absolute", left: `calc(${pct(r.g)}% - 5px)`, top: 5, width: 10, height: 10, borderRadius: 999, background: inconclusive ? SERIES.axis : SERIES.s1 }} />
+                                    {/* ★通っていないときは、区間も点も描きません。
+                                        §3-4 ③「数字（効果量・q値）も出さない」。
+                                        図の位置そのものが効果量を語るためです。 */}
+                                    {showNumbers && (
+                                      <>
+                                        <div style={{ position: "absolute", left: `${pct(r.ciLow)}%`, width: `${pct(r.ciHigh) - pct(r.ciLow)}%`, top: 9, height: 3, borderRadius: 2, background: SERIES.pale }} />
+                                        <div style={{ position: "absolute", left: `calc(${pct(r.g)}% - 5px)`, top: 5, width: 10, height: 10, borderRadius: 999, background: SERIES.s1 }} />
+                                      </>
+                                    )}
                                   </>
                                 );
                               })()}
                             </div>
                             <p className="text-xs" style={{ color: C.inkSoft }}>
-                              {inconclusive
-                                ? `まだ判断できません（あった日${r.n1}件・なかった日${r.n0}件。記録が増えると結論が出ます）`
-                                : `この行動があった日（${r.n1}件）は、翌日の声が平均で${direction}記録されています（効果量 g=${r.g.toFixed(2)}）。`}
+                              {/* ★§3-4 の3状態。①待機 ②通過 ③不通過。
+                                  ★③で「関係なし」と書かないこと。見えなかったことと、
+                                    無いことは違います。★③でも数字を出さないこと。 */}
+                              {showNumbers
+                                ? `この行動があった日（${r.n1}件）は、翌日の声が平均で${direction}記録されています（効果量 g=${r.g.toFixed(2)}）。`
+                                : state === EFFECT_WAITING
+                                  ? "記録が増えると、判定を始められます。"
+                                  : "はっきりした関係は見えませんでした。"}
                             </p>
                           </div>
                         );
