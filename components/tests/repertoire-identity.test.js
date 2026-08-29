@@ -89,9 +89,14 @@ async function main() {
     "★曲目の登録の失敗も、console だけで終わっていない");
   // ★即時に保存するものは、すべて同じ扱いにすること。
   //   役と案件は console だけで終わっており、同じ事故の一歩手前でした。
-  [["役マスタの登録に失敗しました", "役の情報"], ["案件マスタの登録に失敗しました", "案件の情報"]].forEach(([msg, label]) => {
+  // ★「setRepertoireSaveError」を探すだけでは足りません。成功したときの
+  //   setRepertoireSaveError(null) が窓に入り、消しても通ってしまいました
+  //   （わざと壊して気づきました）。★中身を入れている形で探します。
+  [["役マスタの登録に失敗しました", "役の情報", "roleName"],
+   ["案件マスタの登録に失敗しました", "案件の情報", "projectName"]].forEach(([msg, label, arg]) => {
     const at = vt.indexOf(`console.error("${msg}:"`);
-    assertTrue(at > 0 && /setRepertoireSaveError/.test(vt.slice(at, at + 320)),
+    const win = at > 0 ? vt.slice(at, at + 320) : "";
+    assertTrue(new RegExp(`setRepertoireSaveError\\(\\{ name: ${arg},`).test(win),
       `★${label}の失敗も、console だけで終わっていない`);
   });
 
