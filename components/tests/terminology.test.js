@@ -33,17 +33,32 @@ async function main() {
     "data:text/javascript;base64," + Buffer.from(src, "utf-8").toString("base64"));
   const LANGS = ["ja", "en", "zh", "it", "de", "fr", "es", "ko", "ru"];
 
-  console.log("=== ★2つの表示場所が、同じ言葉であること ===");
+  console.log("=== ★2つの表示場所が、同じ概念の語であること ===");
   // ① 入力欄 labelVoiceQuality ／ ② グラフ labelResonanceScore
+  //
+  // ★2026-08-30 改訂：完全一致ではなく「概念の語を含むこと」に変えました。
+  //   もとは完全一致を要求していました。ところが「相関の強さ」の棒グラフには
+  //   この2つが★両方並びます。同じ名前だと、棒が2本とも「声の調子」になり、
+  //   自分自身との相関に見えます（実際に 0.67 と 0.72 の2本が観測されました）。
+  //   坂本さんの判断で、目盛りだけを両方に付けました。用語表の改訂を参照。
+  //   ★概念の語は揃ったままであることを、ここで見張り続けます。
+  Object.entries({ ja: "声の調子", en: "Voice condition", zh: "嗓音状态", it: "Condizione della voce" }).forEach(([l, v]) => {
+    assertTrue(String(T.labelVoiceQuality[l]).includes(v), `${l}: 入力欄が「${v}」を含む`);
+    assertTrue(String(T.labelResonanceScore[l]).includes(v), `${l}: グラフが「${v}」を含む`);
+  });
+  // ★ただし、同一の文字列にはしないこと（図の上で区別が付かなくなります）。
   LANGS.forEach((l) => {
-    assertEqual(T.labelResonanceScore[l], T.labelVoiceQuality[l],
-      `${l}: 入力欄とグラフが同じ「${T.labelVoiceQuality[l]}」`);
+    assertTrue(String(T.labelResonanceScore[l]) !== String(T.labelVoiceQuality[l]),
+      `${l}: ★2つが同じ文字列になっていない`);
   });
 
   console.log("\n=== 決めた語（用語表のとおりか） ===");
+  // ★概念の語のあとに来てよいのは、目盛りの括弧だけです。
+  //   別の語（「声の出来」など）を足して区別しないこと。
   const CANON = { ja: "声の調子", en: "Voice condition", zh: "嗓音状态", it: "Condizione della voce" };
   Object.entries(CANON).forEach(([l, v]) => {
-    assertEqual(T.labelVoiceQuality[l], v, `${l} は「${v}」`);
+    assertTrue(String(T.labelVoiceQuality[l]).startsWith(v), `${l} は「${v}」で始まる`);
+    assertTrue(String(T.labelResonanceScore[l]).startsWith(v), `${l}（グラフ）も「${v}」で始まる`);
   });
 
   console.log("\n=== ★古い語が残っていないこと ===");
@@ -52,11 +67,15 @@ async function main() {
   const itOld = Object.keys(T).filter((k) => /resa della voce/i.test(String(T[k].it || "")));
   assertEqual(itOld, [], "★イタリア語の「resa della voce」が残っていない");
 
-  console.log("\n=== ★目盛りの表記を、片方だけに付けないこと ===");
-  // 「（0〜10）」を片方にだけ付けると、また別の名前に見えます。
+  console.log("\n=== ★目盛りは、片方だけに付けないこと ===");
+  // ★もとは「どちらにも付けない」でした。並ぶ場所ができたので
+  //   「両方に付ける」に変えました。★片方だけ、は今も禁止です。
+  //   片方にだけ付くと、また別の名前に見えます。
+  const hasScale = (v) => /[（(]/.test(String(v));
   LANGS.forEach((l) => {
-    assertTrue(!/[（(]\s*0/.test(String(T.labelResonanceScore[l])),
-      `${l}: グラフのラベルに目盛りが付いていない`);
+    assertEqual(hasScale(T.labelVoiceQuality[l]), hasScale(T.labelResonanceScore[l]),
+      `${l}: 目盛りの有無が、2つで揃っている`);
+    assertTrue(hasScale(T.labelResonanceScore[l]), `${l}: グラフ側に目盛りが付いている`);
   });
 
   console.log("\n=== ★計算と列名には触れていないこと ===");

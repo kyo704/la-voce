@@ -365,6 +365,14 @@ const FACTORS = [
   { key: "humidity", labelKey: "labelHumidity", unit: "%" },
   { key: "ease", labelKey: "labelMentalEase", unit: "" },
   { key: "throatCondition", labelKey: "labelThroatCondition", unit: "" },
+  // ★この2つは、同じ「声の調子」を別のきざみで持ったものです。
+  //   deriveLegacyVoiceFieldsFromEntries が、同じ rep.quality から
+  //     voiceQuality   = quality10ToFiveScale(rep.quality)   5段階に丸めたもの
+  //     resonanceScore = rep.quality                          0〜10 そのまま
+  //   を作ります。図の上では別の棒になるので、★名前を必ず区別すること。
+  //   2026-08-29 に用語を「声の調子」へ揃えたとき、両方が同じ名前になり、
+  //   同じ名前の棒が2本並びました。自分自身との相関に見えます。
+  //   components/tests/factor-labels.test.js が、名前の重複を止めます。
   { key: "voiceQuality", labelKey: "labelVoiceQuality", unit: "" },
   { key: "resonanceScore", labelKey: "labelResonanceScore", unit: "" },
   { key: "weightKg", labelKey: "labelWeight", unit: "kg" },
@@ -5951,7 +5959,26 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       effectSize: effect ? effect.g : null,
       fdrPass
     }, t);
-    if (!comboGate.passed) return { gateMessage: comboGate.message, sentences: [] };
+    // ========================================================================
+    // ★このカードは、文章を出しません（設計憲章 §3-1）。
+    //
+    //   組み合わせている4つのうち、中核5項目は睡眠時間だけです。
+    //   タンパク質・カロリー・心の余裕は、どの族にも入らない＝探索族です。
+    //     憲章 §3-1「★族をまたいで補正しない」
+    //     憲章 §3-1「→ ★文章を出してよいのは、ここだけ（中核5項目）」
+    //     憲章 §3-1「explore → ★文章も数字も出さない。『まだ調べています』だけ」
+    //
+    //   ★ゲートを通っても、文章を出しません。族が違うので、ゲートの通過は
+    //     「語ってよい」を意味しません。3ゲートは族の中でだけ意味を持ちます。
+    //
+    //   ★ここで sentences を返すように戻さないでください。戻すなら、先に
+    //     この4項目を族としてどう扱うかを決める必要があります
+    //     （docs/lavoce-Opusへの判断依頼-配布後の残課題.md の11番）。
+    //
+    //   ★下の計算はそのまま残しています。消すと、族の判断が変わったときに
+    //     作り直しになるためです。結果を出さないだけです。
+    // ========================================================================
+    return { gateMessage: comboGate.message || EXPLORE_NOTE, sentences: [] };
 
     const avg = (arr, key) => {
       const vals = arr.map((d) => d[key]).filter((v) => typeof v === "number");
@@ -6013,6 +6040,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         t("dietStapleExcludedNote").replace("{foods}", dietFoodEffects.excludedStaples.slice(0, 3).map((x) => x.name).join("、"))
       );
     }
+    // ★ここへは到達しません（上で必ず返しています）。族の判断が変わったときの
+    //   ために残してあります。復活させる前に、判断依頼の11番を読んでください。
     return { gateMessage: null, sentences };
   }, [compositeConditionDaily, mentalTopGroups, dietFoodEffects, t]);
   // ---- 各グループ横断のクロス分析用データ ここまで ----
@@ -14438,11 +14467,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       {(() => {
                         const sel = correlationResults.find((r) => r.key === selectedFactorKey && (r.pairs || []).length > 0);
                         if (!sel) return null;
+                        // ★Y軸の名前は、いま選んでいる対象に必ず合わせること。
+                        //   決め打ちで「喉の状態」と書いていたため、心の余裕や
+                        //   公演の出来を選んでいるときに、点は正しいのに
+                        //   軸の名前だけが嘘になっていました（2026-08-30）。
+                        const yLabelForTarget = analysisTarget === "performance"
+                          ? t("targetPerformance")
+                          : analysisTarget === "ease"
+                            ? t("targetEase")
+                            : t("targetThroat");
                         const canState = mayStateFinding(sel.key);
                         return (
                           <div className="mt-3 pt-3" style={{ borderTop: `1px solid ${C.line}` }}>
                             <p className="text-xs mb-1" style={{ color: C.inkSoft }}>{sel.label}</p>
-                            <CorrelationScatter pairs={sel.pairs} xLabel={sel.label} yLabel={t("labelThroatCondition")} />
+                            <CorrelationScatter pairs={sel.pairs} xLabel={sel.label} yLabel={yLabelForTarget} />
                             {canState ? (
                               <p className="text-xs mt-1" style={{ color: C.inkSoft }}>
                                 ρ = {sel.r != null ? sel.r.toFixed(2) : "—"}（{sel.n}日）
