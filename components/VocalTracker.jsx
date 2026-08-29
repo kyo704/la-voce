@@ -3357,6 +3357,12 @@ function RepertoireItemRow({
                   if (!duplicateWarning || !duplicateWarning.confirmed) {
                     const nearMatch = Object.keys(repertoireTessituraMap).find((existingName) => {
                       const existingNorm = normalizeTitle(existingName);
+                      // ★その曲自身を「似ている別の曲」と見なさないこと。
+                      //   歌唱言語などを先に登録すると、この曲の行が既にできています。
+                      //   自分自身は includes も距離0も必ず満たすので、
+                      //   重複の警告が出て★保存されずに抜けていました。
+                      //   利用者には「最高音だけ保存されない」と見えます（2026-08-29）。
+                      if (existingNorm === norm) return false;
                       return existingNorm.includes(norm) || norm.includes(existingNorm) || levenshteinDistance(existingNorm, norm) <= 2;
                     });
                     if (nearMatch) {

@@ -89,6 +89,20 @@ async function main() {
   assertEqual(A.CORE_SPLIT.morningEdema, "binary", "⑤ 起きたときのむくみは二値");
   assertEqual(A.CORE_LAG_DAYS.offStageVoiceMinutes, 1, "★②だけ前日の値を見る");
 
+  console.log("\n=== ★曲目の重複判定が、その曲自身を拾わないこと ===");
+  // 2026-08-29 の実データ喪失。歌唱言語などを先に登録すると、その曲の行が
+  // 既にできています。自分自身は includes も距離0も必ず満たすため、
+  // 重複の警告が出て★保存されずに抜けていました。
+  // 利用者には「最高音だけ保存されない」と見えます。
+  assertTrue(/if \(existingNorm === norm\) return false;/.test(vt),
+    "★自分自身を、似ている別の曲と見なしていない");
+  const dupBlock = vt.slice(vt.indexOf("const nearMatch = Object.keys(repertoireTessituraMap)"),
+                            vt.indexOf("const nearMatch = Object.keys(repertoireTessituraMap)") + 600);
+  assertTrue(dupBlock.indexOf("existingNorm === norm") < dupBlock.indexOf("existingNorm.includes(norm)"),
+    "★自分自身の除外を、似ている判定より先に行う");
+  assertTrue(/levenshteinDistance\(existingNorm, norm\) <= 2/.test(dupBlock),
+    "本物の重複の判定は残っている");
+
   console.log(`\n${failCount === 0 ? "✅ 全て通りました" : "❌ 失敗あり"}  成功:${passCount} 失敗:${failCount}`);
   process.exit(failCount === 0 ? 0 : 1);
 }
