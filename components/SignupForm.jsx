@@ -41,6 +41,12 @@ const ST = {
   linkLogin: { ja: "ログイン", en: "Log in", zh: "登录", it: "Accedi", de: "Anmelden", fr: "Se connecter", es: "Iniciar sesión", ko: "로그인", ru: "Войти" },
   agreementText: { ja: "登録すると{terms}と{privacy}に同意したものとみなされます。", en: "By signing up, you agree to our {terms} and {privacy}.", zh: "注册即表示您同意我们的{terms}与{privacy}。", it: "Registrandoti, accetti i nostri {terms} e la nostra {privacy}.", de: "Mit der Registrierung stimmst du unseren {terms} und unserer {privacy} zu.", fr: "En vous inscrivant, vous acceptez nos {terms} et notre {privacy}.", es: "Al registrarte, aceptas nuestros {terms} y nuestra {privacy}.", ko: "가입하면 {terms} 및 {privacy}에 동의하는 것으로 간주됩니다.", ru: "Регистрируясь, вы соглашаетесь с {terms} и {privacy}." },
   termsLink: { ja: "利用規約", en: "Terms of Service", zh: "使用条款", it: "Termini di servizio", de: "Nutzungsbedingungen", fr: "conditions d'utilisation", es: "términos de servicio", ko: "이용약관", ru: "Условия использования" },
+  // ★18歳未満かの確認（作業指示-公開前の実装.md A-7 の1行目）。
+  //   答えなくても登録できます。答えないままの方は、未成年として扱います。
+  labelAgeQuestion: { ja: "18歳未満ですか？", en: "Are you under 18?", zh: "您未满18岁吗？", it: "Hai meno di 18 anni?", de: "Bist du unter 18 Jahre alt?", fr: "Avez-vous moins de 18 ans ?", es: "¿Eres menor de 18 años?", ko: "만 18세 미만이신가요?", ru: "Вам меньше 18 лет?" },
+  optionUnder18Yes: { ja: "はい（18歳未満です）", en: "Yes (under 18)", zh: "是（未满18岁）", it: "Sì (meno di 18 anni)", de: "Ja (unter 18)", fr: "Oui (moins de 18 ans)", es: "Sí (menor de 18)", ko: "예(18세 미만)", ru: "Да (меньше 18)" },
+  optionUnder18No: { ja: "いいえ（18歳以上です）", en: "No (18 or older)", zh: "否（已满18岁）", it: "No (18 anni o più)", de: "Nein (18 oder älter)", fr: "Non (18 ans ou plus)", es: "No (18 o más)", ko: "아니요(18세 이상)", ru: "Нет (18 и старше)" },
+  ageQuestionNote: { ja: "答えなくても登録できます。お答えいただくと、年齢に合わない項目をお出しせずに済みます。あとから設定でも変更できます。", en: "You can sign up without answering. Answering lets us avoid showing items that are not suitable for your age. You can change this later in Settings.", zh: "不回答也可以注册。回答后，我们可以避免显示不适合您年龄的项目。之后也可在设置中更改。", it: "Puoi registrarti anche senza rispondere. Rispondendo, eviteremo di mostrarti elementi non adatti alla tua età. Puoi modificarlo in seguito nelle impostazioni.", de: "Du kannst dich auch ohne Antwort registrieren. Mit einer Antwort können wir Inhalte ausblenden, die nicht zu deinem Alter passen. Du kannst das später in den Einstellungen ändern.", fr: "Vous pouvez vous inscrire sans répondre. Si vous répondez, nous éviterons d'afficher des éléments inadaptés à votre âge. Vous pourrez le modifier plus tard dans les réglages.", es: "Puedes registrarte sin responder. Si respondes, evitaremos mostrarte elementos que no sean adecuados para tu edad. Podrás cambiarlo después en los ajustes.", ko: "답하지 않아도 가입할 수 있습니다. 답해 주시면 연령에 맞지 않는 항목을 표시하지 않을 수 있습니다. 나중에 설정에서 변경할 수 있습니다.", ru: "Зарегистрироваться можно и без ответа. Ответ позволит нам не показывать то, что не подходит по возрасту. Изменить это можно позже в настройках." },
 };
 
 function str(key, lang) { const e = ST[key]; if (!e) return ""; return e[lang] || e.en || e.ja || ""; }
@@ -109,7 +115,10 @@ function SignupFormInner() {
     password: "",
     isStudent: false,
     occupation: "",
-    school: ""
+    school: "",
+    // ★null は「答えていない」。既定を false（＝18歳以上）にしないこと。
+    //   答えないまま登録した人は、未成年として扱われます（lib/ageGate.js）。
+    isUnder18: null
   });
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
@@ -126,7 +135,13 @@ function SignupFormInner() {
         data: {
           name: form.name,
           occupation: form.isStudent ? "学生" : form.occupation,
-          school: form.isStudent ? form.school : ""
+          school: form.isStudent ? form.school : "",
+          // ★ここではまだログインしていないため（確認メールの前）、
+          //   profiles には書けません。いったん auth の user_metadata に預け、
+          //   初回ログインのときに VocalTracker が profiles へ移します
+          //   （lib/ageGate.js の adoptSignupAnswer）。
+          //   答えていなければ、この鍵ごと送りません。
+          ...(typeof form.isUnder18 === "boolean" ? { is_under_18: form.isUnder18 } : {})
         },
         emailRedirectTo: `${window.location.origin}/auth/callback`
       }
@@ -217,6 +232,39 @@ function SignupFormInner() {
             />
           </div>
         )}
+
+        {/* ★18歳未満かの確認（A-7 の1行目）。
+            required を付けないこと。答えずに登録できます（研究利用の同意 §4-4）。
+            既定で選ばれている選択肢を作らないこと。答えていないことが、
+            そのまま「未成年として扱う」に対応します。 */}
+        <fieldset style={{ border: `1px solid ${C.line}`, borderRadius: 10, padding: "12px 14px" }}>
+          <legend style={{ fontSize: 12, color: C.inkSoft, padding: "0 6px" }}>
+            {str("labelAgeQuestion", lang)}
+          </legend>
+          <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: C.ink }}>
+              <input
+                type="radio"
+                name="isUnder18"
+                checked={form.isUnder18 === true}
+                onChange={() => setForm((f) => ({ ...f, isUnder18: true }))}
+              />
+              {str("optionUnder18Yes", lang)}
+            </label>
+            <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: C.ink }}>
+              <input
+                type="radio"
+                name="isUnder18"
+                checked={form.isUnder18 === false}
+                onChange={() => setForm((f) => ({ ...f, isUnder18: false }))}
+              />
+              {str("optionUnder18No", lang)}
+            </label>
+          </div>
+          <p style={{ fontSize: 11.5, color: C.inkSoft, marginTop: 8, lineHeight: 1.6 }}>
+            {str("ageQuestionNote", lang)}
+          </p>
+        </fieldset>
 
         <input
           required

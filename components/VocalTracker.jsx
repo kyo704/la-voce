@@ -71,6 +71,12 @@ import {
 import { trackEvent } from "@/lib/events";
 import { buildExportSummary } from "@/lib/exportSummary";
 import { EXPORTED_TABLES, EXPORTED_PROFILE_COLUMNS, entriesToCsv, buildExportPayload, sanitizeShareHistory } from "@/lib/exportData";
+// 年齢の確認（A-7 の1行目）。★「未成年として扱うか」の判断は、このモジュールだけが持つ。
+//   ここで profile.is_under_18 を直に見ないこと。答えていない人を成人側へ倒してしまう。
+import {
+  shouldAskAgeQuestion, mayAskForConsent,
+  answerToProfilePatch, skipToProfilePatch, adoptSignupAnswer
+} from "@/lib/ageGate";
 import HealthInfo from "@/components/HealthInfo";
 import { ARTICLES, CHAPTER_LABELS, PROFESSION_LABELS, getArticlesForProfession, getArticleById } from "@/lib/learnContent";
 // 学ぶ画面の勉強の仕組み（§2・§3）。★規則はこのモジュールが持つ。
@@ -4485,7 +4491,7 @@ function ExerciseItemRow({ item, onChange, onRemove, t }) {
 }
 
 /* ---------- main component ---------- */
-export default function VocalTracker({ userId, userEmail }) {
+export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null }) {
   const [loading, setLoading] = useState(true);
   // 記録データが読み込めなかったとき、画面の上に出す（黙って空にしない）
   const [entriesLoadError, setEntriesLoadError] = useState("");
@@ -4561,6 +4567,9 @@ export default function VocalTracker({ userId, userEmail }) {
   const [showFieldGroupManager, setShowFieldGroupManager] = useState(false);
   const [showCopiedNotice, setShowCopiedNotice] = useState(false);
   const [showDay7Survey, setShowDay7Survey] = useState(false);
+  // ★18歳未満かの確認（A-7）。一度出したら、飛ばされていても二度と出さない。
+  //   出す/出さないの判断は lib/ageGate.js が持つ。ここでは呼ぶだけ。
+  const showAgeQuestion = shouldAskAgeQuestion(profile);
   const [selectedDate, setSelectedDate] = useState(todayISOUTC());
   // ★重要：ホームタブの「今日」判定（realToday）も、以前はレンダリング中に todayISO()（ローカル時刻）を
   // 直接呼んでおり、selectedDateと同じ理由でハイドレーション不一致を起こしうる状態だった。
@@ -4673,6 +4682,9 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceError, setAdviceError] = useState("");
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
   const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", voice_occupation: null, voice_mix: null, voice_mix_edited_at: null, occupation_notice_shown_at: null, conditions: [], allergies: [], regular_medications: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "", is_admin: false, record_mode: DEFAULT_RECORD_MODE, deleted_at: null, cycle_show_on_home: true,
+    // ★18歳未満か（A-7）。null は「まだ答えていない」＝未成年として扱う。
+    //   既定を false にしないこと。答えていないことが、そのまま安全側になる。
+    is_under_18: null, age_question_shown_at: null,
     display_scale: DEFAULT_SCALE, simple_display: false });
   // 確認用: 管理者アカウントは、全職業の機能を見られるようにできる。
   // ★2026-08-29 まで、管理者は「常に」全職業が見えていました。そのため、
@@ -5119,6 +5131,28 @@ export default function VocalTracker({ userId, userEmail }) {
         setProfile((prev) => ({ ...prev, cycle_show_on_home: cycleRow.cycle_show_on_home }));
       }
 
+      // 18歳未満かの確認（A-7）。migration_age_question.sql が未実行の環境が
+      // ありうるので、本体クエリとは分けて寛容に読む（record_mode と同じ理由）。
+      // ★列が無くて読めなくても、profile.is_under_18 は null のまま＝未成年扱い。
+      //   落ちる方向が安全側なので、ここでは何も補いません。
+      const { data: ageRow } = await supabase
+        .from("profiles").select("is_under_18, age_question_shown_at").eq("id", userId).maybeSingle();
+      if (mounted && ageRow) {
+        setProfile((prev) => ({
+          ...prev,
+          is_under_18: typeof ageRow.is_under_18 === "boolean" ? ageRow.is_under_18 : null,
+          age_question_shown_at: ageRow.age_question_shown_at || null
+        }));
+        // ★登録画面で答えた人の答えを、ここで profiles へ移す（初回ログインの1回だけ）。
+        //   すでに答えが入っていれば、adoptSignupAnswer が null を返して何もしません。
+        const adopted = adoptSignupAnswer(ageRow, signupAgeAnswer);
+        if (adopted) {
+          const { error: adoptError } = await supabase
+            .from("profiles").update(adopted).eq("id", userId);
+          if (!adoptError && mounted) setProfile((prev) => ({ ...prev, ...adopted }));
+        }
+      }
+
       const { data: healthRow } = await supabase
         .from("profiles").select("allergies, regular_medications").eq("id", userId).maybeSingle();
       if (mounted && healthRow) {
@@ -5143,7 +5177,9 @@ export default function VocalTracker({ userId, userEmail }) {
       if (mounted) setProfileLoading(false);
     })();
     return () => { mounted = false; };
-  }, [userId]);
+    // signupAgeAnswer はサーバから渡る値で、この画面の間は変わりません。
+    // 依存に入れても読み直しは起きませんが、規則どおり並べておきます。
+  }, [userId, signupAgeAnswer]);
 
   // 指導者プラン実装仕様: 自分が関わる紐付け（先生として・生徒として）を取得する。
   // teacher_beta_accessを持たないユーザーでも、他人から生徒として招待される可能性はあるため、
@@ -8384,6 +8420,26 @@ export default function VocalTracker({ userId, userEmail }) {
     setProfile((p) => ({ ...p, folded_groups: updated }));
   }
 
+  // ★18歳未満かの確認（作業指示-公開前の実装.md A-7 の1行目）。
+  //   答えても飛ばしても、age_question_shown_at を入れて二度と出さない。
+  //   飛ばした人は is_under_18 が null のまま＝未成年として扱われる。
+  async function handleAnswerAgeQuestion(isUnder18) {
+    const patch = answerToProfilePatch(isUnder18);
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update(patch).eq("id", userId);
+    if (error) { console.error("年齢の確認の保存に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, ...patch }));
+  }
+  async function handleSkipAgeQuestion() {
+    const patch = skipToProfilePatch();
+    const supabase = createClient();
+    const { error } = await supabase.from("profiles").update(patch).eq("id", userId);
+    // ★保存できなくても、画面は先へ進ませる。答えは義務ではない（研究利用の同意 §4-4）。
+    //   保存できていなければ次回また出るが、それは催促ではなく、単に記録できていないだけ。
+    if (error) { console.error("年齢の確認の保存に失敗しました:", error); return; }
+    setProfile((p) => ({ ...p, ...patch }));
+  }
+
   // 実行順マスター Stage 2-2・判断ゲート①: 7日目に一度だけ、3層（朝30秒／週次の発見／本番）
   // のどれに需要があったかを聞くマイクロ調査。判断ゲート①の「4」の判定材料になる。
   async function handleAnswerDay7Survey(answer) {
@@ -9896,6 +9952,36 @@ export default function VocalTracker({ userId, userEmail }) {
                   )}
                   {/* ★iOS 用の細い帯は、上の1枚にまとめた。
                       同じことを2か所で案内すると、片方だけ古くなる。 */}
+                  {/* ★18歳未満かの確認（作業指示-公開前の実装.md A-7 の1行目）。
+                      登録のあとに入られた方に、一度だけおたずねします。
+                      ★画面をふさぐ形（モーダル）にしないこと。答えは義務ではありません
+                        （研究利用の同意 §4-4「登録の必須項目にしない」）。
+                      ★既定で選ばれている選択肢を作らないこと。答えないままの方は、
+                        未成年として扱います（lib/ageGate.js）。 */}
+                  {showAgeQuestion && (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <p className="text-sm font-medium mb-1">18歳未満ですか？</p>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        お答えいただくと、年齢に合わない項目をお出しせずに済みます。答えなくてもすべての機能をお使いいただけます。
+                      </p>
+                      <div className="flex gap-2">
+                        <button type="button" onClick={() => handleAnswerAgeQuestion(true)}
+                          className="flex-1 py-2.5 px-3 rounded-xl text-sm border"
+                          style={{ borderColor: C.line, color: C.ink, background: C.paper }}>
+                          はい（18歳未満です）
+                        </button>
+                        <button type="button" onClick={() => handleAnswerAgeQuestion(false)}
+                          className="flex-1 py-2.5 px-3 rounded-xl text-sm border"
+                          style={{ borderColor: C.line, color: C.ink, background: C.paper }}>
+                          いいえ（18歳以上です）
+                        </button>
+                      </div>
+                      <button type="button" onClick={handleSkipAgeQuestion}
+                        className="w-full text-center text-xs underline mt-3" style={{ color: C.inkSoft }}>
+                        答えない
+                      </button>
+                    </div>
+                  )}
                   {showDay7Survey && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
                       <p className="text-sm font-medium mb-1">7日間、お疲れさまでした</p>
@@ -14266,19 +14352,32 @@ export default function VocalTracker({ userId, userEmail }) {
                     <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
                       記録・分析のための取得に{profile.consent_health_data_at ? `${new Date(profile.consent_health_data_at).toLocaleDateString("ja-JP")}に同意済み` : "未同意"}です。
                     </p>
-                    <label className="flex items-start gap-2" style={{ cursor: "pointer" }}>
-                      <input type="checkbox" checked={!!profile.consent_stats_use_at} className="mt-0.5"
-                        onChange={async (e) => {
-                          const checked = e.target.checked;
-                          const supabase = createClient();
-                          const value = checked ? new Date().toISOString() : null;
-                          const { error } = await supabase.from("profiles").update({ consent_stats_use_at: value }).eq("id", userId);
-                          if (!error) setProfile((p) => ({ ...p, consent_stats_use_at: value }));
-                        }} />
-                      <span className="text-xs" style={{ color: C.inkSoft }}>
-                        （任意）匿名化した統計として、機能改善に役立てることに同意する
-                      </span>
-                    </label>
+                    {/* ★任意の同意は、未成年には出しません
+                        （作業指示-研究利用の同意.md §1-④・§3-3・§5）。
+                        保護者同意の設計が別に要るためです（A-7）。
+                      ★ただし、すでに同意している方からは取り上げません。
+                        欄ごと消すと、撤回する手段まで消えてしまいます
+                        （GDPR 第7条3項「撤回は同意と同じ手軽さで」）。
+                        その場合は、外すことだけができる形にします。
+                      ★ここで profile.is_under_18 を直に見ないこと。
+                        答えていない人が成人側に倒れます。判断は lib/ageGate.js。 */}
+                    {(mayAskForConsent(profile) || !!profile.consent_stats_use_at) && (
+                      <label className="flex items-start gap-2" style={{ cursor: "pointer" }}>
+                        <input type="checkbox" checked={!!profile.consent_stats_use_at} className="mt-0.5"
+                          onChange={async (e) => {
+                            const checked = e.target.checked;
+                            // ★未成年は、新たに入れることができません（外すことだけできます）。
+                            if (checked && !mayAskForConsent(profile)) return;
+                            const supabase = createClient();
+                            const value = checked ? new Date().toISOString() : null;
+                            const { error } = await supabase.from("profiles").update({ consent_stats_use_at: value }).eq("id", userId);
+                            if (!error) setProfile((p) => ({ ...p, consent_stats_use_at: value }));
+                          }} />
+                        <span className="text-xs" style={{ color: C.inkSoft }}>
+                          （任意）匿名化した統計として、機能改善に役立てることに同意する
+                        </span>
+                      </label>
+                    )}
                   </div>
 
                   {/* ★レパートリーの整理は、そもそも身体データではない。

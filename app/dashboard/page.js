@@ -20,5 +20,14 @@ export default async function DashboardPage() {
 
   if (!user) redirect("/login");
 
-  return <VocalTracker userId={user.id} userEmail={user.email} />;
+  // ★登録画面で「18歳未満ですか？」に答えた人は、その答えが auth の
+  //   user_metadata に預けてあります（確認メールの前で、まだ profiles に
+  //   書けなかったため）。初回ログインのここで受け渡し、VocalTracker が
+  //   profiles へ移します（lib/ageGate.js の adoptSignupAnswer）。
+  //   答えていなければ null で、アプリの中の質問が出るだけです。
+  const signupAgeAnswer = typeof user.user_metadata?.is_under_18 === "boolean"
+    ? user.user_metadata.is_under_18
+    : null;
+
+  return <VocalTracker userId={user.id} userEmail={user.email} signupAgeAnswer={signupAgeAnswer} />;
 }
