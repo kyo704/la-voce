@@ -98,6 +98,13 @@ const DINNER_TAG_KEYS = { "揚げ物": "dinnerFried", "あっさり": "dinnerLig
 // lavoce-収集データ拡張案.md C-2: 服薬タグ。DINNER_TAGSと同じ複数選択タグの形式。
 const MEDICATION_OPTIONS = ["抗ヒスタミン薬", "吸入ステロイド", "経口避妊薬", "NSAIDs", "利尿薬"];
 
+// ★cutoff（文献のしきい値）は、画面に出しません。設計憲章 §2-1
+//   「文献の基準値を、個人の数値と同じ画面に置かない。基準値は『学ぶ』の記事の中だけ」。
+//   値そのものは尺度の性質として残していますが、本人の点数の隣に書き戻さないでください。
+//   以前はここに「（基準値 13）」と併記し、超えると色まで変えていました。
+//   点数に合否を付けるのと同じことになります（2026-08-29 の文言監査 ②）。
+// ★cutoffNote も同じ理由で、しきい値の点数と病名の「疑い」を含みません（同 ①）。
+//
 // lavoce-収集データ拡張案.md B節: 標準化された質問票（週1・月1でよいもの）。
 // 重要な注意: ここに書いた項目文は、公表されている各尺度の構成（項目数・因子・尺度幅・
 // カットオフ値）にもとづいて作成した簡易版であり、原論文（英語）の項目文を一字一句
@@ -114,7 +121,7 @@ const QUESTIONNAIRES = {
     scaleMax: 5,
     scaleLabels: ["問題なし", "軽度", "やや軽度", "中程度", "やや重度", "重度の問題"],
     cutoff: 13,
-    cutoffNote: "13点を超えると、喉頭咽頭逆流症（LPR）の疑いの目安とされています。",
+    cutoffNote: "喉の違和感・声のかすれ・咳払いが続くときは、耳鼻咽喉科でご相談ください。点数の見方は「学ぶ」の『四つの質問票の使い分け』でご説明しています。",
     items: [
       "声のかすれ、または声の問題",
       "咳払いをする",
@@ -174,7 +181,7 @@ const QUESTIONNAIRES = {
     scaleMax: 4,
     scaleLabels: ["まったくない", "ほとんどない", "時々", "たいてい", "常に"],
     cutoff: 20,
-    cutoffNote: "20点以上で、歌声への支障が大きくなっている可能性の目安とされています。",
+    cutoffNote: "点数が高い時期が続くときは、耳鼻咽喉科や音声外来でご相談ください。点数の見方は「学ぶ」の『四つの質問票の使い分け』でご説明しています。",
     items: [
       "自分の歌声のせいで、人前で歌う機会を避けている",
       "自分の歌声のせいで、収入や仕事に影響が出ている",
@@ -198,7 +205,7 @@ const QUESTIONNAIRES = {
     scaleMax: 3,
     scaleLabels: ["なし", "軽度", "中程度", "強度"],
     cutoff: 12.5,
-    cutoffNote: "12.5点を超えると、歌声機能の低下が疑われる目安とされています。",
+    cutoffNote: "本番やリハーサルのあとに点数が高い日が続くときは、耳鼻咽喉科や音声外来でご相談ください。点数の見方は「学ぶ」の『四つの質問票の使い分け』でご説明しています。",
     items: [
       "声がかすれている",
       "声が乾いた・こすれた感じがする",
@@ -14592,11 +14599,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               <p className="text-xs" style={{ color: C.inkSoft }}>直近の記録（{latest.response_date}）</p>
                               <p className="text-sm mt-1">
                                 合計 <span className="ff-mono font-medium">{latest.total_score}</span>点
-                                {def.cutoff != null && (
-                                  <span className="text-xs ml-2" style={{ color: latest.total_score >= def.cutoff ? C.curtain : C.inkSoft }}>
-                                    （基準値 {def.cutoff}）
-                                  </span>
-                                )}
                               </p>
                               {def.cutoffNote && (
                                 <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{def.cutoffNote}</p>
