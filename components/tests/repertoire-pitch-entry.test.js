@@ -57,7 +57,8 @@ assertTrue(/setRepertoireTessituraMap\(\(prev\) => \(\{ \.\.\.prev, \[repertoire
 console.log("\n=== ★③ 使う回数で欄を閉じない ===");
 assertTrue(!/usageSoFar === 0 \|\| usageSoFar === 2/.test(code),
   "★1回目と3回目にしか出さない、という条件が消えている");
-assertTrue(/if \(repertoireSkipped\[norm\]\) return null;/.test(code),
+// ★覚え書きの鍵も、同一性の鍵（key）に揃えました。norm は「似ているか」用です。
+assertTrue(/if \(repertoireSkipped\[key\]\) return null;/.test(code),
   "「あとで」を押したときは、その場で消える（催促にしない）");
 
 console.log("\n=== ★④ 使用回数を、曲ごとに数える ===");

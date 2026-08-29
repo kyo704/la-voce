@@ -23,6 +23,9 @@ import { LANGUAGES, createTranslator } from "@/lib/translations";
 import { BRAND } from "@/lib/brand";
 import { isLegacyOrigin } from "@/lib/baseUrl";
 import { watchForUpdates, reloadOnceOnControllerChange } from "@/lib/swUpdate";
+// 曲目の「同じ曲か」。★引くときも書くときも、必ずこれを通すこと。
+//   生の名前をそのまま鍵にすると、末尾の空白や全角半角の違いで別の曲になります。
+import { repertoireKey, lookupRepertoire, resolveRepertoireName, isSameRepertoire } from "@/lib/repertoireTitle";
 import { OCCUPATIONS, OCCUPATION_LABELS, OTHER_OCCUPATION, OCCUPATION_TO_LEGACY,
   DEFAULT_MIX, occupationOf, mixOf, isValidMix,
   repertoireExtraFor, EXTRA_SINGING_LANGUAGE, EXTRA_ROLE, EXTRA_PROJECT } from "@/lib/occupation";
@@ -3262,7 +3265,8 @@ function RepertoireItemRow({
   item, index, totalItems, onChange, onRemove, onMoveUp, onMoveDown,
   repertoireTessituraMap, repertoireUsageCounts, repertoireSkipped, setRepertoireSkipped,
   handleSaveRepertoire, tessituraSaving, roleMasterMap, projectMasterMap,
-  handleSaveRole, handleSaveProject, handleSaveSingingLanguage, occupation, t
+  handleSaveRole, handleSaveProject, handleSaveSingingLanguage, occupation,
+  repertoireSaveError, t
 }) {
   const [topNoteInput, setTopNoteInput] = useState("");
   const [tessituraOptionalInput, setTessituraOptionalInput] = useState("");
@@ -3284,17 +3288,20 @@ function RepertoireItemRow({
   const isAnnouncer = repertoireExtra === EXTRA_PROJECT;
 
   const name = item.repertoireName || "";
-  const record = name ? repertoireTessituraMap[name] : null;
+  // ★生の名前で引かないこと。ここが原因で、歌唱言語のチップが点かず、
+  //   「登録済み」も出ず、最高音の欄が何度も出ていました（2026-08-29）。
+  const record = name ? lookupRepertoire(repertoireTessituraMap, name) : null;
   // ★「行がある」と「音の高さを記録済み」は別物です。
   //   歌唱言語（handleSaveSingingLanguage）や役・案件を先に登録すると、
   //   最高音が空のまま行だけができます。行の有無で欄を閉じていたため、
   //   その曲の最高音を入れる場所が、どこにも無くなっていました。
   const hasPitch = !!(record && (record.topNote || record.tessituraNote || record.dOverride != null));
-  const norm = name ? normalizeTitle(name) : "";
+  const norm = name ? normalizeTitle(name) : "";          // 似ている曲を探す用
+  const key = name ? repertoireKey(name) : "";            // ★同じ曲かどうかの鍵
   const suggestions = name && !record
     ? Object.entries(repertoireTessituraMap)
         .filter(([n]) => n !== name && normalizeTitle(n).includes(norm))
-        .sort((a, b) => (repertoireUsageCounts[normalizeTitle(b[0])]?.count || 0) - (repertoireUsageCounts[normalizeTitle(a[0])]?.count || 0))
+        .sort((a, b) => (repertoireUsageCounts[repertoireKey(b[0])]?.count || 0) - (repertoireUsageCounts[repertoireKey(a[0])]?.count || 0))
         .slice(0, 3)
     : [];
 
@@ -3335,7 +3342,7 @@ function RepertoireItemRow({
         //   しかも usageSoFar 自体が、2曲以上の日には常に0でした。
         // ★いまは「音の高さが未記録のあいだ」出します。入れれば消えますし、
         //   「あとで」を押せばその場で消えるので、催促にはなりません。
-        if (repertoireSkipped[norm]) return null;
+        if (repertoireSkipped[key]) return null;
 
         if (duplicateWarning && duplicateWarning.forName === name) {
           return (
@@ -3436,7 +3443,7 @@ function RepertoireItemRow({
                     setTopNoteInput(""); setTessituraOptionalInput(""); setDOverrideChoice(null);
                     return;
                   }
-                  setRepertoireSkipped((prev) => ({ ...prev, [norm]: true }));
+                  setRepertoireSkipped((prev) => ({ ...prev, [key]: true }));
                 }}
                 className="flex-1 py-1 rounded-full text-xs font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
                 {editingPitch ? "やめる" : "あとで"}
@@ -3468,6 +3475,14 @@ function RepertoireItemRow({
               直す
             </button>
           )}
+        </p>
+      )}
+      {/* ★保存に失敗したら、必ず画面に出すこと。
+          console だけに書いていたため、「押しても反応しない」という
+          報告のまま2日ぶん原因が分かりませんでした。 */}
+      {name && repertoireSaveError && isSameRepertoire(repertoireSaveError.name, name) && (
+        <p className="text-xs mt-1.5 rounded-lg px-2 py-1.5" style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>
+          {repertoireSaveError.message}
         </p>
       )}
       {name && (isSinger || isVoiceActor || isAnnouncer) && (
@@ -4275,7 +4290,7 @@ function ActivityBlockEditor({
   repertoireTessituraMap, repertoireUsageCounts, repertoireSkipped, setRepertoireSkipped,
   handleSaveRepertoire, tessituraSaving, songFactorResolver, professions,
   roleMasterMap, projectMasterMap, handleSaveRole, handleSaveProject, handleSaveSingingLanguage, t,
-  occupation, language
+  occupation, language, repertoireSaveError
 }) {
   const detail = activity.detail || {};
   const items = activity.items || [];
@@ -4325,6 +4340,7 @@ function ActivityBlockEditor({
               handleSaveProject={handleSaveProject}
               handleSaveSingingLanguage={handleSaveSingingLanguage}
               occupation={occupation}
+              repertoireSaveError={repertoireSaveError}
               t={t}
             />
           ))}
@@ -4743,6 +4759,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [roleMasterMap, setRoleMasterMap] = useState({}); // 職業別項目の再設計と学ぶ画面 §5
   const [projectMasterMap, setProjectMasterMap] = useState({});
   const [tessituraSaving, setTessituraSaving] = useState(false);
+  // ★保存に失敗したことを、画面に出すための覚え書き。
+  //   これが無かったため、書き込みが 400 で弾かれても画面には何も出ず、
+  //   利用者からは「チップが反応しない」に見えていました（2026-08-29）。
+  //   console.error だけで済ませないこと。
+  const [repertoireSaveError, setRepertoireSaveError] = useState(null);
   const [topNoteInput, setTopNoteInput] = useState("");
   const [tessituraOptionalInput, setTessituraOptionalInput] = useState("");
   const [showTessituraAccordion, setShowTessituraAccordion] = useState(false);
@@ -6596,11 +6617,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         (a.items || []).forEach((it) => {
           const raw = (it.repertoireName || "").trim();
           if (!raw) return;
-          const norm = normalizeTitle(raw);
-          if (!norm || seenToday.has(norm)) return;
-          seenToday.add(norm);
-          if (!counts[norm]) counts[norm] = { count: 0, displayName: raw };
-          counts[norm].count += 1;
+          // ★同一性の鍵を使うこと。似ている用の normalizeTitle は
+          //   かっこ書きまで落とすので、「椿姫（第1幕）」と「椿姫（第2幕）」が
+          //   1つに数えられてしまいます。
+          const k = repertoireKey(raw);
+          if (!k || seenToday.has(k)) return;
+          seenToday.add(k);
+          if (!counts[k]) counts[k] = { count: 0, displayName: raw };
+          counts[k].count += 1;
         });
       });
     });
@@ -6623,12 +6647,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         const { perItem } = computeActivityBlockLoad(activity, songFactorResolver);
         perItem.forEach((pi) => {
           const name = (pi.repertoireName || "").trim();
-          if (!name || !repertoireTessituraMap[name]) return; // 未登録の曲は負荷を計算できないので対象外
+          // ★生の名前で引かないこと。末尾の空白ひとつで「未登録」となり、
+          //   その記録が黙って分析から外れます。
+          if (!name || !lookupRepertoire(repertoireTessituraMap, name)) return;
           dayNamesWithLoad[name] = (dayNamesWithLoad[name] || 0) + pi.load;
         });
       });
       Object.entries(dayNamesWithLoad).forEach(([name, load]) => {
-        if (!byRole[name]) byRole[name] = { name, record: repertoireTessituraMap[name], loads: [], nextDayThroatDeviation: [] };
+        if (!byRole[name]) byRole[name] = { name, record: lookupRepertoire(repertoireTessituraMap, name), loads: [], nextDayThroatDeviation: [] };
         byRole[name].loads.push(load);
       });
       // §5（帰属の按分・共起検出）は今回のフェーズでは実装せず、その日に歌った曲すべてに
@@ -6805,7 +6831,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (comfortableRangeMidi) {
       items.forEach((it) => {
         const name = (it.repertoireName || "").trim();
-        const record = repertoireTessituraMap[name];
+        const record = lookupRepertoire(repertoireTessituraMap, name);
         const topMidi = record ? (record.dOverride != null ? null : noteToMidi(record.topNote)) : null;
         if (topMidi != null && topMidi > comfortableRangeMidi.high) {
           keyLoweringSuggestions.push({ name, overBy: topMidi - comfortableRangeMidi.high });
@@ -9199,8 +9225,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★登録のときは false のままにしてください。渡さなかった列を null で
   //   上書きしてしまい、歌唱言語や最高音が消えます（下のコメント参照）。
   //   「直す」ときだけ、空にできる必要があります。
-  async function handleSaveRepertoire(repertoireName, { topNote, tessituraNote, dOverride, replace } = {}) {
-    if (!repertoireName) return;
+  async function handleSaveRepertoire(typedName, { topNote, tessituraNote, dOverride, replace } = {}) {
+    if (!typedName) return;
+    // ★すでにある曲なら、その名前に書きます。打った通りに書くと、
+    //   表記が少し違うだけの行がもう1つできます。
+    const repertoireName = resolveRepertoireName(repertoireTessituraMap, typedName);
     if (!replace && !topNote && !tessituraNote && dOverride == null) return;
     // ★直すときも、全部空にはさせない。行の意味が無くなるため。
     if (replace && !topNote && !tessituraNote && dOverride == null) return;
@@ -9212,7 +9241,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     //   歌唱言語が消えていました。渡されなかった tessitura_note も同じです。
     //   handleSaveSingingLanguage は最初から持ち越していました。
     //   ★同じ表に書く関数どうしで、やり方が違っていたのが原因です。
-    const existing = repertoireTessituraMap[repertoireName] || {};
+    const existing = lookupRepertoire(repertoireTessituraMap, repertoireName) || {};
     const { error } = await supabase
       .from("repertoire_tessitura")
       .upsert({
@@ -9229,8 +9258,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setTessituraSaving(false);
     if (error) {
       console.error("レパートリーの登録に失敗しました:", error);
+      setRepertoireSaveError({ name: repertoireName, message: "保存できませんでした。時間をおいて、もう一度お試しください。" });
       return;
     }
+    setRepertoireSaveError(null);
     // ★画面の状態も、既存を残したまま重ねること。
     //   作り直すと、歌唱言語がその場で消えて見えます。
     setRepertoireTessituraMap((prev) => ({
@@ -9273,25 +9304,34 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setProjectMasterMap((prev) => ({ ...prev, [projectName]: { scriptType: scriptType || null, speechSpeed: speechSpeed || null, isLive: !!isLive } }));
   }
   // 職業別項目の再設計と学ぶ画面 §3.1: 歌唱言語をレパートリーに登録する（曲ごとに1回だけ）。
-  async function handleSaveSingingLanguage(repertoireName, language) {
-    if (!repertoireName) return;
+  async function handleSaveSingingLanguage(typedName, language) {
+    if (!typedName) return;
+    const repertoireName = resolveRepertoireName(repertoireTessituraMap, typedName);
     const supabase = createClient();
-    const existing = repertoireTessituraMap[repertoireName] || {};
+    const existing = lookupRepertoire(repertoireTessituraMap, repertoireName) || {};
     const { error } = await supabase.from("repertoire_tessitura").upsert({
       user_id: userId, repertoire_name: repertoireName, singing_language: language,
       top_note: existing.topNote || null, tessitura_note: existing.tessituraNote || null,
       d_override: existing.dOverride != null ? existing.dOverride : null, confidence: existing.confidence || "coarse"
     }, { onConflict: "user_id,repertoire_name" });
-    if (error) { console.error("歌唱言語の登録に失敗しました:", error); return; }
+    if (error) {
+      console.error("歌唱言語の登録に失敗しました:", error);
+      setRepertoireSaveError({ name: repertoireName, message: "歌唱言語を保存できませんでした。時間をおいて、もう一度お試しください。" });
+      return;
+    }
+    setRepertoireSaveError(null);
     setRepertoireTessituraMap((prev) => ({ ...prev, [repertoireName]: { ...(prev[repertoireName] || {}), singingLanguage: language } }));
   }
 
   // lavoce-レパートリー負荷パッチ.md §2.5: 表記ゆれした曲目を2つ選んで統合する。
   // 過去のすべての記録（activities[].items[]内のrepertoireName）を書き換え、
   // 統合される側のrepertoire_tessituraは削除する。
+  // ★表記が少し違うだけの記録も、同じ曲として拾うこと。
+  //   生の名前で比べると、末尾の空白ひとつで取りこぼします。
   function findAffectedDatesForRepertoire(name) {
     return Object.keys(entries).filter((d) =>
-      (entries[d].activities || []).some((a) => (a.items || []).some((it) => it.repertoireName === name))
+      (entries[d].activities || []).some((a) =>
+        (a.items || []).some((it) => isSameRepertoire(it.repertoireName, name)))
     );
   }
   async function handleMergeRepertoire(sourceName, targetName) {
@@ -9360,7 +9400,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         const entry = entries[date];
         const renamed = (entry.activities || []).map((a) => ({
           ...a,
-          items: (a.items || []).map((it) => (it.repertoireName === from ? { ...it, repertoireName: to } : it))
+          items: (a.items || []).map((it) => (isSameRepertoire(it.repertoireName, from) ? { ...it, repertoireName: to } : it))
         }));
         const updatedEntry = { ...entry, activities: renamed };
         const { error } = await supabase.from("entries").upsert(entryToRow(userId, updatedEntry), { onConflict: "user_id,date" });
@@ -9438,7 +9478,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         //   ブロックごと消すと、過去の負荷やACWRの数字が黙って変わります。
         const stripped = (entry.activities || []).map((a) => ({
           ...a,
-          items: (a.items || []).filter((it) => it.repertoireName !== from)
+          items: (a.items || []).filter((it) => !isSameRepertoire(it.repertoireName, from))
         }));
         const updatedEntry = { ...entry, activities: stripped };
         const { error } = await supabase.from("entries").upsert(entryToRow(userId, updatedEntry), { onConflict: "user_id,date" });
@@ -11239,6 +11279,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                 handleSaveRole={handleSaveRole}
                                 handleSaveProject={handleSaveProject}
                                 handleSaveSingingLanguage={handleSaveSingingLanguage}
+                              repertoireSaveError={repertoireSaveError}
                                 t={t}
                               occupation={currentOccupation} language={language}
                               />
@@ -14661,7 +14702,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             className="w-full rounded-lg border p-2 text-xs" style={{ borderColor: C.line, background: C.card }}>
                             <option value="">選択してください</option>
                             {Object.keys(repertoireTessituraMap).sort().map((name) => (
-                              <option key={name} value={name} disabled={name === mergeTargetRepertoire}>{name}（{repertoireUsageCounts[normalizeTitle(name)]?.count || 0}回）</option>
+                              <option key={name} value={name} disabled={name === mergeTargetRepertoire}>{name}（{repertoireUsageCounts[repertoireKey(name)]?.count || 0}回）</option>
                             ))}
                           </select>
                         </div>
@@ -14671,7 +14712,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             className="w-full rounded-lg border p-2 text-xs" style={{ borderColor: C.line, background: C.card }}>
                             <option value="">選択してください</option>
                             {Object.keys(repertoireTessituraMap).sort().map((name) => (
-                              <option key={name} value={name} disabled={name === mergeSourceRepertoire}>{name}（{repertoireUsageCounts[normalizeTitle(name)]?.count || 0}回）</option>
+                              <option key={name} value={name} disabled={name === mergeSourceRepertoire}>{name}（{repertoireUsageCounts[repertoireKey(name)]?.count || 0}回）</option>
                             ))}
                           </select>
                         </div>
@@ -14722,7 +14763,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         className="w-full rounded-lg border p-2 text-xs mb-2" style={{ borderColor: C.line, background: C.card }}>
                         <option value="">曲目を選んでください</option>
                         {Object.keys(repertoireTessituraMap).sort().map((n) => (
-                          <option key={n} value={n}>{n}（{repertoireUsageCounts[normalizeTitle(n)]?.count || 0}日）</option>
+                          <option key={n} value={n}>{n}（{repertoireUsageCounts[repertoireKey(n)]?.count || 0}日）</option>
                         ))}
                       </select>
                       {editRepertoireName && (
