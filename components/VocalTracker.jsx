@@ -4674,11 +4674,26 @@ export default function VocalTracker({ userId, userEmail }) {
   const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
   const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", voice_occupation: null, voice_mix: null, voice_mix_edited_at: null, occupation_notice_shown_at: null, conditions: [], allergies: [], regular_medications: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "", is_admin: false, record_mode: DEFAULT_RECORD_MODE, deleted_at: null, cycle_show_on_home: true,
     display_scale: DEFAULT_SCALE, simple_display: false });
-  // 確認用: 管理者アカウント（is_admin）は、動作確認のため全職業の機能を見られるようにする。
+  // 確認用: 管理者アカウントは、全職業の機能を見られるようにできる。
+  // ★2026-08-29 まで、管理者は「常に」全職業が見えていました。そのため、
+  //   自分の職業を選び直しても画面が変わらず、職業別の出し分けを
+  //   自分のアカウントで確かめられませんでした（実際に、直っていない不具合だと
+  //   誤って報告されました）。★既定を「自分の職業だけ」に変え、
+  //   全職業を見たいときだけ、もっとの中で入にします。
+  // ★管理者以外には、この切り替えは出ませんし、動きも一切変わりません。
   // ★重要：profile宣言より前に置くと「宣言前にアクセス」エラーになるため、必ずこの直後に置くこと。
+  const [adminShowAllProfessions, setAdminShowAllProfessions] = useState(false);
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("woolsong-admin-all-professions");
+      if (saved === "1") setAdminShowAllProfessions(true);
+    } catch { /* 読めなくても、既定（自分の職業だけ）で動きます */ }
+  }, []);
   const effectiveProfessions = useMemo(() => {
-    return profile.is_admin ? VOCAL_PROFESSIONS : (profile.professions || []);
-  }, [profile.is_admin, profile.professions]);
+    return (profile.is_admin && adminShowAllProfessions)
+      ? VOCAL_PROFESSIONS
+      : (profile.professions || []);
+  }, [profile.is_admin, adminShowAllProfessions, profile.professions]);
   // 記録と分析の順番設計 §3.1: profile読込後、実際の時刻と境界時刻からrecordViewを補正する。
   // （profileに依存するため、profile宣言より前に置くと「宣言前にアクセス」エラーになる。要注意）
   useEffect(() => {
@@ -15628,6 +15643,31 @@ export default function VocalTracker({ userId, userEmail }) {
                     <LogOut size={16} />ログアウト
                   </button>
                 </div>
+
+                {/* ★管理者だけに出す確認用の切り替え。
+                    既定は入れていません（自分の職業だけが見えます）。
+                    入れると、全職業の入力欄とチップが同時に出ます。
+                    ★一般の利用者には、この枠ごと出ません。 */}
+                {profile.is_admin && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <label className="flex items-start gap-2" style={{ cursor: "pointer" }}>
+                      <input type="checkbox" className="mt-0.5" checked={adminShowAllProfessions}
+                        onChange={(e) => {
+                          const on = e.target.checked;
+                          setAdminShowAllProfessions(on);
+                          try {
+                            window.localStorage.setItem("woolsong-admin-all-professions", on ? "1" : "0");
+                          } catch { /* 保存できなくても、この画面のあいだは効きます */ }
+                        }} />
+                      <span className="text-xs" style={{ color: C.inkSoft }}>
+                        <strong style={{ color: C.ink }}>全職業を表示（管理者）</strong><br />
+                        ほかの職業の画面を確かめるための切り替えです。
+                        ★入にすると、自分の職業に関係なく、全職業の入力欄が出ます。
+                        職業別の出し分けを自分のアカウントで確かめるときは、切にしてください。
+                      </span>
+                    </label>
+                  </div>
+                )}
 
                 {/* 配信と更新の確認.md §2: ★もっとのいちばん下に、小さく版を出す。
                     利用者への説明は要りません。★私たちが「古い画面を見ている」ことを
