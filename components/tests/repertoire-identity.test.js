@@ -87,6 +87,20 @@ async function main() {
   const repAt = vt.indexOf('console.error("レパートリーの登録に失敗しました:"');
   assertTrue(repAt > 0 && /setRepertoireSaveError/.test(vt.slice(repAt, repAt + 320)),
     "★曲目の登録の失敗も、console だけで終わっていない");
+  // ★即時に保存するものは、すべて同じ扱いにすること。
+  //   役と案件は console だけで終わっており、同じ事故の一歩手前でした。
+  [["役マスタの登録に失敗しました", "役の情報"], ["案件マスタの登録に失敗しました", "案件の情報"]].forEach(([msg, label]) => {
+    const at = vt.indexOf(`console.error("${msg}:"`);
+    assertTrue(at > 0 && /setRepertoireSaveError/.test(vt.slice(at, at + 320)),
+      `★${label}の失敗も、console だけで終わっていない`);
+  });
+
+  console.log("\n=== ★保存のタイミングの原則が、コードに書いてある ===");
+  const raw = readRaw("components", "VocalTracker.jsx");
+  assertTrue(/自由記述は、明示的な確定が要る/.test(raw), "原則①が書いてある");
+  assertTrue(/離散的な選択は、タップで確定してよい/.test(raw), "原則②が書いてある");
+  assertTrue((raw.match(/即時に書くものは、書けたこと／書けなかったことを必ず見せる/g) || []).length >= 2,
+    "★原則③が、手が触れる場所（保存側とチップ側）の両方に書いてある");
 
   console.log("\n=== 移行のSQL（NOT NULL を外す） ===");
   const sql = readCode("supabase", "migration_repertoire_tessitura_nullable.sql");

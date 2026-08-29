@@ -3495,6 +3495,15 @@ function RepertoireItemRow({
           <button type="button" onClick={() => setShowExtraAccordion((v) => !v)} className="text-xs underline" style={{ color: C.inkSoft }}>
             {isSinger ? "歌唱言語を登録" : isVoiceActor ? "役の情報を登録" : "案件の情報を登録"}
           </button>
+          {/* ★ここから下は「タップで即DBへ」です。上の最高音の欄（「登録する」で
+              確定）とは、保存のタイミングが違います。
+                ・自由記述は、明示的な確定が要る（登録する）
+                ・離散的な選択は、タップで確定してよい
+                ・★即時に書くものは、書けたこと／書けなかったことを必ず見せる
+              ★3つめを守ること。チップの色は「選ばれているか」であって
+                「保存できたか」ではありません。書き込みが弾かれると色が付かず、
+                利用者からは「押しても反応しない」としか見えません。
+              揃える判断は docs/lavoce-Opusへの判断依頼-配布後の残課題.md の10番。 */}
           {showExtraAccordion && isSinger && (
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               {["伊", "独", "仏", "露", "英", "日", "西", "チェコ", "その他"].map((lang) => (
@@ -3507,6 +3516,9 @@ function RepertoireItemRow({
             const roleRec = roleMasterMap[name] || {};
             return (
               <div className="mt-1.5 space-y-1.5">
+                {/* ★この欄だけ onBlur で保存します（4つめの流儀）。
+                    自由記述なのに「登録する」を通りません。揃える判断は
+                    判断依頼の10番。ここを真似して増やさないでください。 */}
                 <input type="text" defaultValue={roleRec.workTitle || ""} placeholder="作品名"
                   onBlur={(e) => handleSaveRole(name, { ...roleRec, workTitle: e.target.value })}
                   className="w-full rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.card }} />
@@ -9288,6 +9300,28 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setDuplicateWarning(null);
   }
 
+  // ==========================================================================
+  // ★曲目カードの「保存のタイミング」の原則（2026-08-29 に決めました）
+  //
+  //   ・自由記述は、明示的な確定が要る（「登録する」を押す）
+  //     … 打っている途中の「C」を保存してしまわないため。
+  //   ・離散的な選択は、タップで確定してよい
+  //     … 一度のタップに、迷いが残っていないため。
+  //   ・★即時に書くものは、書けたこと／書けなかったことを必ず見せる
+  //
+  //   ★3つめが無いと、こうなります（実際になりました）。
+  //     チップの色は「選ばれているか」を表しますが、その色は保存が
+  //     成功して初めて付きます。書き込みが弾かれると、チップは薄いまま。
+  //     利用者からは「押しても反応しない」としか見えません。
+  //     原因（tessitura_note の NOT NULL）が分かるまで2日かかりました。
+  //
+  //   ★このカードには、いま3つの流儀が混ざっています。
+  //     ① その日の記録へ（曲名・分）      ② 「登録する」で確定（最高音・テッシトゥーラ）
+  //     ③ タップで即DBへ（言語・声の質・原稿の種類）
+  //     さらに 作品名 だけが onBlur という4つめです。揃える判断は
+  //     docs/lavoce-Opusへの判断依頼-配布後の残課題.md の10番。
+  // ==========================================================================
+
   // 職業別項目の再設計と学ぶ画面 §5: 役マスタ・案件マスタ（レパートリーと全く同じ仕組み）。
   async function handleSaveRole(roleName, { workTitle, pitchLowNote, pitchHighNote, voiceQuality } = {}) {
     if (!roleName) return;
@@ -9296,7 +9330,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       user_id: userId, role_name: roleName, work_title: workTitle || "",
       pitch_low_note: pitchLowNote || null, pitch_high_note: pitchHighNote || null, voice_quality: voiceQuality || null
     }, { onConflict: "user_id,role_name" });
-    if (error) { console.error("役マスタの登録に失敗しました:", error); return; }
+    if (error) {
+      console.error("役マスタの登録に失敗しました:", error);
+      // ★console だけで終わらせないこと。上の原則の3つめ。
+      setRepertoireSaveError({ name: roleName, message: "役の情報を保存できませんでした。時間をおいて、もう一度お試しください。" });
+      return;
+    }
+    setRepertoireSaveError(null);
     setRoleMasterMap((prev) => ({ ...prev, [roleName]: { workTitle: workTitle || "", pitchLowNote: pitchLowNote || null, pitchHighNote: pitchHighNote || null, voiceQuality: voiceQuality || null } }));
   }
   async function handleSaveProject(projectName, { scriptType, speechSpeed, isLive } = {}) {
@@ -9305,7 +9345,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const { error } = await supabase.from("project_master").upsert({
       user_id: userId, project_name: projectName, script_type: scriptType || null, speech_speed: speechSpeed || null, is_live: !!isLive
     }, { onConflict: "user_id,project_name" });
-    if (error) { console.error("案件マスタの登録に失敗しました:", error); return; }
+    if (error) {
+      console.error("案件マスタの登録に失敗しました:", error);
+      // ★console だけで終わらせないこと。上の原則の3つめ。
+      setRepertoireSaveError({ name: projectName, message: "案件の情報を保存できませんでした。時間をおいて、もう一度お試しください。" });
+      return;
+    }
+    setRepertoireSaveError(null);
     setProjectMasterMap((prev) => ({ ...prev, [projectName]: { scriptType: scriptType || null, speechSpeed: speechSpeed || null, isLive: !!isLive } }));
   }
   // 職業別項目の再設計と学ぶ画面 §3.1: 歌唱言語をレパートリーに登録する（曲ごとに1回だけ）。
