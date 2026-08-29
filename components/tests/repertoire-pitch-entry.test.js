@@ -38,14 +38,16 @@ const opacityLine = (code.match(/opacity: tessituraSaving \|\|[^}]*\}/) || [""])
 assertTrue(/!topNoteInput && !tessituraOptionalInput && dOverrideChoice == null/.test(opacityLine),
   "★薄さの条件も揃っている");
 // 呼ぶ先の条件と食い違っていないこと。★ここがずれていたのが原因。
-assertTrue(/if \(!topNote && !tessituraNote && dOverride == null\) return;/.test(code),
+// ★「直す」を足したとき replace が付きました。条件そのものは同じです。
+assertTrue(/if \(!replace && !topNote && !tessituraNote && dOverride == null\) return;/.test(code),
   "呼ぶ先（handleSaveRepertoire）は3つのどれか1つで受け付ける");
 
 console.log("\n=== ★② 「行がある」と「音の高さを記録済み」を分ける ===");
 assertTrue(/const hasPitch = !!\(record && \(record\.topNote \|\| record\.tessituraNote \|\| record\.dOverride != null\)\);/.test(code),
   "★音の高さが入っているか、を別に持っている");
-assertTrue(/\{name && !hasPitch && \(\(\) => \{/.test(code),
-  "★欄の出し分けが hasPitch を見ている");
+// ★「直す」を足したので、登録済みでも editingPitch のあいだは開きます。
+assertTrue(/\{name && \(!hasPitch \|\| editingPitch\) && \(\(\) => \{/.test(code),
+  "★欄の出し分けが hasPitch を見ている（直しているときも開く）");
 assertTrue(!/\{name && !record && \(\(\) => \{/.test(code),
   "★「行が無いときだけ」という古い条件が残っていない");
 // 歌唱言語だけでも行ができることを、根拠として固定する。

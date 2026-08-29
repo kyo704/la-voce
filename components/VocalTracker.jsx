@@ -3269,6 +3269,9 @@ function RepertoireItemRow({
   const [dOverrideChoice, setDOverrideChoice] = useState(null);
   const [duplicateWarning, setDuplicateWarning] = useState(null);
   const [showExtraAccordion, setShowExtraAccordion] = useState(false);
+  // ★登録し直しているところか。登録済みの曲は欄が閉じているので、
+  //   ここを開けないと、間違えて入れた最高音を直せません。
+  const [editingPitch, setEditingPitch] = useState(false);
   const isSinger = (professions || []).includes("singer");
   const isVoiceActor = (professions || []).includes("voice_actor");
   const isAnnouncer = (professions || []).includes("announcer");
@@ -3318,7 +3321,7 @@ function RepertoireItemRow({
         </div>
       )}
 
-      {name && !hasPitch && (() => {
+      {name && (!hasPitch || editingPitch) && (() => {
         // ★以前は usageSoFar === 0 || usageSoFar === 2 で、
         //   1回目と3回目にしか出しませんでした。2・4・5回目に使う曲には
         //   欄が出ず、最高音を入れる手立てがありませんでした。
@@ -3346,7 +3349,11 @@ function RepertoireItemRow({
 
         return (
           <div className="mt-2 rounded-lg p-2" style={{ background: C.card }}>
-            <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>「{name}」の最高音は？（登録すると次回から自動で使われます）</p>
+            <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>
+              {editingPitch
+                ? `「${name}」の音の高さを直す`
+                : `「${name}」の最高音は？（登録すると次回から自動で使われます）`}
+            </p>
             <input type="text" value={topNoteInput} placeholder={t("placeholderNoteExample")}
               onChange={(e) => setTopNoteInput(e.target.value)}
               className="w-full rounded-lg border p-1.5 text-xs mb-1.5" style={{ borderColor: C.line, background: C.paper }} />
@@ -3380,7 +3387,9 @@ function RepertoireItemRow({
                   入れた人はボタンが押せませんでした。条件を合わせること。 */}
               <button type="button" disabled={tessituraSaving || (!topNoteInput && !tessituraOptionalInput && dOverrideChoice == null)}
                 onClick={() => {
-                  if (!duplicateWarning || !duplicateWarning.confirmed) {
+                  // ★直しているときは、似た曲の確認を出さない。
+                  //   曲名は変えていないので、聞く意味がありません。
+                  if (!editingPitch && (!duplicateWarning || !duplicateWarning.confirmed)) {
                     const nearMatch = Object.keys(repertoireTessituraMap).find((existingName) => {
                       const existingNorm = normalizeTitle(existingName);
                       // ★その曲自身を「似ている別の曲」と見なさないこと。
@@ -3399,25 +3408,59 @@ function RepertoireItemRow({
                   handleSaveRepertoire(name, {
                     topNote: topNoteInput || null,
                     tessituraNote: tessituraOptionalInput || null,
-                    dOverride: !topNoteInput && dOverrideChoice != null ? dOverrideChoice : null
+                    dOverride: !topNoteInput && dOverrideChoice != null ? dOverrideChoice : null,
+                    // ★直しているときは、そのままの値を入れる（＝空にもできる）。
+                    //   持ち越しのままだと、間違って入れた値を消せません。
+                    replace: editingPitch
                   });
                   setTopNoteInput(""); setTessituraOptionalInput(""); setDOverrideChoice(null); setDuplicateWarning(null);
+                  setEditingPitch(false);
                 }}
                 className="flex-1 py-1 rounded-full text-xs font-medium"
                 style={{ background: C.curtain, color: "#FFFDF8", opacity: tessituraSaving || (!topNoteInput && !tessituraOptionalInput && dOverrideChoice == null) ? 0.5 : 1 }}>
-                登録する
+                {editingPitch ? "この内容にする" : "登録する"}
               </button>
-              <button type="button" onClick={() => setRepertoireSkipped((prev) => ({ ...prev, [norm]: true }))}
+              {/* ★編集中は「やめる」。ここで「あとで」の印を付けると、
+                  直しをやめただけなのに、その曲の欄が二度と出なくなります。 */}
+              <button type="button"
+                onClick={() => {
+                  if (editingPitch) {
+                    setEditingPitch(false);
+                    setTopNoteInput(""); setTessituraOptionalInput(""); setDOverrideChoice(null);
+                    return;
+                  }
+                  setRepertoireSkipped((prev) => ({ ...prev, [norm]: true }));
+                }}
                 className="flex-1 py-1 rounded-full text-xs font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
-                あとで
+                {editingPitch ? "やめる" : "あとで"}
               </button>
             </div>
           </div>
         );
       })()}
       {name && record && (
-        <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
-          登録済み：{record.topNote ? `最高音${record.topNote}` : ""}{record.tessituraNote ? `・テッシトゥーラ${record.tessituraNote}` : ""}{record.singingLanguage ? `・${record.singingLanguage}語` : ""}
+        <p className="text-xs mt-1.5 flex items-center gap-2 flex-wrap" style={{ color: C.inkSoft }}>
+          <span>
+            登録済み：{record.topNote ? `最高音${record.topNote}` : ""}{record.tessituraNote ? `・テッシトゥーラ${record.tessituraNote}` : ""}{record.singingLanguage ? `・${record.singingLanguage}語` : ""}
+          </span>
+          {/* ★直す手立てを、必ずここに置くこと。
+              これが無かったため、一度入れた最高音を直す方法が
+              アプリのどこにも無くなっていました。
+              曲名の変更と削除は「もっと」→「データの整理」にあります。
+              過去の記録まで書き換わるので、毎日の記録画面には置きません。 */}
+          {hasPitch && !editingPitch && (
+            <button type="button"
+              onClick={() => {
+                setTopNoteInput(record.topNote || "");
+                setTessituraOptionalInput(record.tessituraNote || "");
+                setDOverrideChoice(record.dOverride != null ? record.dOverride : null);
+                setShowTessituraAccordion(!!record.tessituraNote);
+                setEditingPitch(true);
+              }}
+              className="underline" style={{ color: C.curtain }}>
+              直す
+            </button>
+          )}
         </p>
       )}
       {name && (isSinger || isVoiceActor || isAnnouncer) && (
@@ -4562,6 +4605,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [mergeSourceRepertoire, setMergeSourceRepertoire] = useState("");
   const [mergeTargetRepertoire, setMergeTargetRepertoire] = useState("");
   const [mergeConfirming, setMergeConfirming] = useState(false);
+  // 曲目の名前の変更・削除（★過去の記録もつなぎ直すので、確認を2段にする）
+  const [editRepertoireName, setEditRepertoireName] = useState("");
+  const [renameRepertoireTo, setRenameRepertoireTo] = useState("");
+  const [deleteRepertoireConfirming, setDeleteRepertoireConfirming] = useState(false);
   const [mergeInProgress, setMergeInProgress] = useState(false);
   const [mergeResult, setMergeResult] = useState("");
   const [showQuickRecord, setShowQuickRecord] = useState(false);
@@ -9133,9 +9180,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
   // lavoce-レパートリー負荷パッチ.md §3: 曲目・役に「最高音」（主質問）を1回だけ紐づける。
   // テッシトゥーラ（任意）や3択フォールバックも受け付け、confidenceとして記録する。
-  async function handleSaveRepertoire(repertoireName, { topNote, tessituraNote, dOverride } = {}) {
+  // replace=true のときは、渡された値をそのまま入れます（＝空にできる）。
+  // ★登録のときは false のままにしてください。渡さなかった列を null で
+  //   上書きしてしまい、歌唱言語や最高音が消えます（下のコメント参照）。
+  //   「直す」ときだけ、空にできる必要があります。
+  async function handleSaveRepertoire(repertoireName, { topNote, tessituraNote, dOverride, replace } = {}) {
     if (!repertoireName) return;
-    if (!topNote && !tessituraNote && dOverride == null) return;
+    if (!replace && !topNote && !tessituraNote && dOverride == null) return;
+    // ★直すときも、全部空にはさせない。行の意味が無くなるため。
+    if (replace && !topNote && !tessituraNote && dOverride == null) return;
     setTessituraSaving(true);
     const confidence = tessituraNote ? "entered" : topNote ? "estimated" : "coarse";
     const supabase = createClient();
@@ -9150,10 +9203,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       .upsert({
         user_id: userId,
         repertoire_name: repertoireName,
-        top_note: topNote || existing.topNote || null,
-        tessitura_note: tessituraNote || existing.tessituraNote || null,
-        d_override: dOverride != null ? dOverride
-          : (existing.dOverride != null ? existing.dOverride : null),
+        top_note: replace ? (topNote || null) : (topNote || existing.topNote || null),
+        tessitura_note: replace ? (tessituraNote || null) : (tessituraNote || existing.tessituraNote || null),
+        d_override: replace ? (dOverride != null ? dOverride : null)
+          : (dOverride != null ? dOverride
+            : (existing.dOverride != null ? existing.dOverride : null)),
         singing_language: existing.singingLanguage || null,
         confidence
       }, { onConflict: "user_id,repertoire_name" });
@@ -9168,9 +9222,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       ...prev,
       [repertoireName]: {
         ...(prev[repertoireName] || {}),
-        topNote: topNote || existing.topNote || null,
-        tessituraNote: tessituraNote || existing.tessituraNote || null,
-        dOverride: dOverride != null ? dOverride : (existing.dOverride != null ? existing.dOverride : null),
+        topNote: replace ? (topNote || null) : (topNote || existing.topNote || null),
+        tessituraNote: replace ? (tessituraNote || null) : (tessituraNote || existing.tessituraNote || null),
+        dOverride: replace ? (dOverride != null ? dOverride : null)
+          : (dOverride != null ? dOverride : (existing.dOverride != null ? existing.dOverride : null)),
         confidence,
         usageCount: (prev[repertoireName] && prev[repertoireName].usageCount) || 0
       }
@@ -9258,6 +9313,136 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     } catch (err) {
       console.error("レパートリーの統合に失敗しました:", err);
       setMergeResult("統合に失敗しました。もう一度お試しください。");
+    }
+    setMergeInProgress(false);
+  }
+
+  // ==========================================================================
+  // 曲目の名前を変える／曲目を消す（過去の記録もつなぎ直す）
+  //
+  //   ★曲目は、外部キーではなく「名前の文字列」でつながっています。
+  //     ① repertoire_tessitura        主キー (user_id, repertoire_name)
+  //     ② entries.activities[].items[].repertoireName   JSONB の中の文字列
+  //     ③ entries.repertoire（旧列）  entryToRow が items を「、」でつないで作る
+  //        → 明示的に触りません。entryToRow を通せば作り直されます。
+  //     ④ role_master.role_name / project_master.project_name  同じ名前が鍵
+  //
+  //   ★活動ブロックそのものは消しません（坂本さんの判断・2026-08-29）。
+  //     曲名だけを外し、分・活動の種別は残します。過去の負荷やACWRの数字を、
+  //     訂正のついでに書き換えないためです。
+  // ==========================================================================
+  async function handleRenameRepertoire(oldName, newName) {
+    const from = (oldName || "").trim();
+    const to = (newName || "").trim();
+    if (!from || !to || from === to) return;
+    setMergeInProgress(true);
+    setMergeResult("");
+    const affectedDates = findAffectedDatesForRepertoire(from);
+    const supabase = createClient();
+    const updatedEntries = {};
+    try {
+      for (const date of affectedDates) {
+        const entry = entries[date];
+        const renamed = (entry.activities || []).map((a) => ({
+          ...a,
+          items: (a.items || []).map((it) => (it.repertoireName === from ? { ...it, repertoireName: to } : it))
+        }));
+        const updatedEntry = { ...entry, activities: renamed };
+        const { error } = await supabase.from("entries").upsert(entryToRow(userId, updatedEntry), { onConflict: "user_id,date" });
+        if (error) throw error;
+        updatedEntries[date] = updatedEntry;
+      }
+      // 音の高さ・歌唱言語を、新しい名前へ移す。★先に入れてから、古い行を消す。
+      const rec = repertoireTessituraMap[from];
+      if (rec) {
+        const { error } = await supabase.from("repertoire_tessitura").upsert({
+          user_id: userId, repertoire_name: to,
+          top_note: rec.topNote || null, tessitura_note: rec.tessituraNote || null,
+          d_override: rec.dOverride != null ? rec.dOverride : null,
+          singing_language: rec.singingLanguage || null, confidence: rec.confidence || "entered"
+        }, { onConflict: "user_id,repertoire_name" });
+        if (error) throw error;
+        const { error: delError } = await supabase.from("repertoire_tessitura")
+          .delete().eq("user_id", userId).eq("repertoire_name", from);
+        if (delError) throw delError;
+      }
+      // 役・案件も、同じ名前を鍵にしている。
+      const role = roleMasterMap[from];
+      if (role) {
+        await supabase.from("role_master").upsert({
+          user_id: userId, role_name: to, work_title: role.workTitle || "",
+          pitch_low_note: role.pitchLowNote || null, pitch_high_note: role.pitchHighNote || null,
+          voice_quality: role.voiceQuality || null
+        }, { onConflict: "user_id,role_name" });
+        await supabase.from("role_master").delete().eq("user_id", userId).eq("role_name", from);
+      }
+      const proj = projectMasterMap[from];
+      if (proj) {
+        await supabase.from("project_master").upsert({
+          user_id: userId, project_name: to, script_type: proj.scriptType || null,
+          speech_speed: proj.speechSpeed || null, is_live: !!proj.isLive
+        }, { onConflict: "user_id,project_name" });
+        await supabase.from("project_master").delete().eq("user_id", userId).eq("project_name", from);
+      }
+      setEntries((prev) => ({ ...prev, ...updatedEntries }));
+      setRepertoireTessituraMap((prev) => {
+        const next = { ...prev };
+        if (next[from]) { next[to] = { ...next[from] }; delete next[from]; }
+        return next;
+      });
+      setRoleMasterMap((prev) => {
+        const next = { ...prev };
+        if (next[from]) { next[to] = { ...next[from] }; delete next[from]; }
+        return next;
+      });
+      setProjectMasterMap((prev) => {
+        const next = { ...prev };
+        if (next[from]) { next[to] = { ...next[from] }; delete next[from]; }
+        return next;
+      });
+      setMergeResult(`「${from}」を「${to}」に変えました（${affectedDates.length}日ぶんの記録をつなぎ直しました）。`);
+    } catch (err) {
+      console.error("曲目の名前の変更に失敗しました:", err);
+      setMergeResult("名前を変えられませんでした。もう一度お試しください。");
+    }
+    setMergeInProgress(false);
+  }
+
+  async function handleDeleteRepertoire(targetName) {
+    const from = (targetName || "").trim();
+    if (!from) return;
+    setMergeInProgress(true);
+    setMergeResult("");
+    const affectedDates = findAffectedDatesForRepertoire(from);
+    const supabase = createClient();
+    const updatedEntries = {};
+    try {
+      for (const date of affectedDates) {
+        const entry = entries[date];
+        // ★曲名だけを外します。ブロック（分・種別）は残します。
+        //   ブロックごと消すと、過去の負荷やACWRの数字が黙って変わります。
+        const stripped = (entry.activities || []).map((a) => ({
+          ...a,
+          items: (a.items || []).filter((it) => it.repertoireName !== from)
+        }));
+        const updatedEntry = { ...entry, activities: stripped };
+        const { error } = await supabase.from("entries").upsert(entryToRow(userId, updatedEntry), { onConflict: "user_id,date" });
+        if (error) throw error;
+        updatedEntries[date] = updatedEntry;
+      }
+      const { error: delError } = await supabase.from("repertoire_tessitura")
+        .delete().eq("user_id", userId).eq("repertoire_name", from);
+      if (delError) throw delError;
+      await supabase.from("role_master").delete().eq("user_id", userId).eq("role_name", from);
+      await supabase.from("project_master").delete().eq("user_id", userId).eq("project_name", from);
+      setEntries((prev) => ({ ...prev, ...updatedEntries }));
+      setRepertoireTessituraMap((prev) => { const n = { ...prev }; delete n[from]; return n; });
+      setRoleMasterMap((prev) => { const n = { ...prev }; delete n[from]; return n; });
+      setProjectMasterMap((prev) => { const n = { ...prev }; delete n[from]; return n; });
+      setMergeResult(`「${from}」を消しました（${affectedDates.length}日ぶんの記録から曲名を外しました。練習の分数はそのまま残っています）。`);
+    } catch (err) {
+      console.error("曲目の削除に失敗しました:", err);
+      setMergeResult("消せませんでした。もう一度お試しください。");
     }
     setMergeInProgress(false);
   }
@@ -14503,6 +14688,76 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       )}
                       {mergeResult && (
                         <p className="text-xs mt-2 rounded-lg p-2" style={{ background: C.card, color: C.ink }}>{mergeResult}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* 曲目の名前を変える・消す。
+                      ★毎日の記録画面ではなく、ここに置いています。
+                        どちらも過去の記録をつなぎ直すので、
+                        指1本の誤操作で起きてよいことではありません。 */}
+                  {Object.keys(repertoireTessituraMap).length > 0 && (
+                    <div className="rounded-xl p-3 mt-2" style={{ background: C.paper }}>
+                      <p className="text-sm font-medium mb-1">曲目の名前を変える・消す</p>
+                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                        名前を変えると、過去の記録の曲名もすべて変わります。消すと、過去の記録から曲名だけが外れます。★練習した分数や活動の種別は、そのまま残ります。
+                      </p>
+                      <select value={editRepertoireName}
+                        onChange={(e) => { setEditRepertoireName(e.target.value); setRenameRepertoireTo(e.target.value); setDeleteRepertoireConfirming(false); setMergeResult(""); }}
+                        className="w-full rounded-lg border p-2 text-xs mb-2" style={{ borderColor: C.line, background: C.card }}>
+                        <option value="">曲目を選んでください</option>
+                        {Object.keys(repertoireTessituraMap).sort().map((n) => (
+                          <option key={n} value={n}>{n}（{repertoireUsageCounts[normalizeTitle(n)]?.count || 0}日）</option>
+                        ))}
+                      </select>
+                      {editRepertoireName && (
+                        <>
+                          <label className="text-xs block mb-1" style={{ color: C.inkSoft }}>新しい名前</label>
+                          <input type="text" value={renameRepertoireTo}
+                            onChange={(e) => setRenameRepertoireTo(e.target.value)}
+                            className="w-full rounded-lg border p-2 text-xs mb-2" style={{ borderColor: C.line, background: C.card }} />
+                          <button type="button"
+                            disabled={mergeInProgress || !renameRepertoireTo.trim() || renameRepertoireTo.trim() === editRepertoireName}
+                            onClick={async () => {
+                              await handleRenameRepertoire(editRepertoireName, renameRepertoireTo);
+                              setEditRepertoireName(""); setRenameRepertoireTo("");
+                            }}
+                            className="w-full py-1.5 rounded-full text-xs font-medium mb-3"
+                            style={{ background: C.curtain, color: "#FFFDF8",
+                              opacity: (mergeInProgress || !renameRepertoireTo.trim() || renameRepertoireTo.trim() === editRepertoireName) ? 0.5 : 1 }}>
+                            {mergeInProgress ? "変更中…" : "名前を変える"}
+                          </button>
+
+                          {/* ★消すほうは2段。1段目で、いくつの記録に触るかを実数で見せる。 */}
+                          {!deleteRepertoireConfirming ? (
+                            <button type="button" onClick={() => setDeleteRepertoireConfirming(true)}
+                              className="w-full py-1.5 rounded-full text-xs font-medium"
+                              style={{ background: C.card, border: `1px solid ${C.line}`, color: C.curtain }}>
+                              この曲目を消す
+                            </button>
+                          ) : (
+                            <div className="rounded-lg p-2" style={{ background: C.card }}>
+                              <p className="text-xs mb-2" style={{ color: C.ink }}>
+                                「{editRepertoireName}」を消すと、<strong className="ff-mono">{findAffectedDatesForRepertoire(editRepertoireName).length}</strong>日ぶんの記録から、この曲名が外れます。
+                                最高音・テッシトゥーラ・歌唱言語も消えます。★練習した分数と活動の種別は残ります。取り消せません。
+                              </p>
+                              <div className="flex gap-1.5">
+                                <button type="button" disabled={mergeInProgress}
+                                  onClick={async () => {
+                                    await handleDeleteRepertoire(editRepertoireName);
+                                    setEditRepertoireName(""); setRenameRepertoireTo(""); setDeleteRepertoireConfirming(false);
+                                  }}
+                                  className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: mergeInProgress ? 0.6 : 1 }}>
+                                  {mergeInProgress ? "削除中…" : "本当に消す（取り消せません）"}
+                                </button>
+                                <button type="button" onClick={() => setDeleteRepertoireConfirming(false)}
+                                  className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                                  やめる
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                   )}
