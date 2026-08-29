@@ -4574,9 +4574,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [showFieldGroupManager, setShowFieldGroupManager] = useState(false);
   const [showCopiedNotice, setShowCopiedNotice] = useState(false);
   const [showDay7Survey, setShowDay7Survey] = useState(false);
+  // ★migration_age_question.sql を実行済みか。読めたときだけ true。
+  //   保存できない質問を出さないための歯止め。
+  const [ageColumnsReady, setAgeColumnsReady] = useState(false);
   // ★18歳未満かの確認（A-7）。一度出したら、飛ばされていても二度と出さない。
   //   出す/出さないの判断は lib/ageGate.js が持つ。ここでは呼ぶだけ。
-  const showAgeQuestion = shouldAskAgeQuestion(profile);
+  //   ★保存できない環境では、そもそもたずねない。答えられない1枚が残るため。
+  const showAgeQuestion = ageColumnsReady && shouldAskAgeQuestion(profile);
   const [selectedDate, setSelectedDate] = useState(todayISOUTC());
   // ★重要：ホームタブの「今日」判定（realToday）も、以前はレンダリング中に todayISO()（ローカル時刻）を
   // 直接呼んでおり、selectedDateと同じ理由でハイドレーション不一致を起こしうる状態だった。
@@ -5142,8 +5146,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       // ありうるので、本体クエリとは分けて寛容に読む（record_mode と同じ理由）。
       // ★列が無くて読めなくても、profile.is_under_18 は null のまま＝未成年扱い。
       //   落ちる方向が安全側なので、ここでは何も補いません。
-      const { data: ageRow } = await supabase
+      const { data: ageRow, error: ageError } = await supabase
         .from("profiles").select("is_under_18, age_question_shown_at").eq("id", userId).maybeSingle();
+      // ★列がまだ無いときは、質問そのものを出さない。
+      //   出してしまうと、答えても保存できず、消えない1枚が残る。
+      //   読めたときだけ true にして、その場合にだけたずねる。
+      if (mounted) setAgeColumnsReady(!ageError && !!ageRow);
+      if (ageError) {
+        console.warn(
+          "年齢の確認の列がまだありません。supabase/migration_age_question.sql を実行してください。" +
+          "それまで「18歳未満ですか？」はたずねず、全員を未成年として扱います。", ageError
+        );
+      }
       if (mounted && ageRow) {
         setProfile((prev) => ({
           ...prev,

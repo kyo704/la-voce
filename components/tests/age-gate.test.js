@@ -84,6 +84,11 @@ async function main() {
     "★「false なら成人」と書いていない");
   assertTrue(/mayAskForConsent\(profile\)/.test(vt), "任意の同意の出し分けが、ageGate を通っている");
   assertTrue(/shouldAskAgeQuestion\(profile\)/.test(vt), "質問の出し分けが、ageGate を通っている");
+  // ★列がまだ無い環境で、答えても保存できない1枚を出さないこと。
+  assertTrue(/ageColumnsReady && shouldAskAgeQuestion\(profile\)/.test(vt),
+    "★移行が済んでいない環境では、そもそもたずねない");
+  assertTrue(/setAgeColumnsReady\(!ageError && !!ageRow\)/.test(vt),
+    "★読めたときだけ、たずねてよい状態にする");
   // consent.js に同じ判断を作り直していないこと。
   const consent = readCode("lib", "consent.js");
   assertTrue(!/export function mayAskForConsent/.test(consent),
@@ -106,7 +111,9 @@ async function main() {
   assertTrue(/isUnder18: null/.test(signup),
     "★登録画面の初期値が null（既定で「18歳以上」にしていない）");
   const vtRaw = readRaw("components", "VocalTracker.jsx");
-  const cardAt = vtRaw.indexOf("18歳未満ですか？");
+  // ★「18歳未満ですか？」は、列が無いときの警告文にも出ます。そちらが先に
+  //   見つかるので、字面ではなく、1枚の出し分けそのものを目印にします。
+  const cardAt = vtRaw.indexOf("{showAgeQuestion && (");
   assertTrue(cardAt > 0, "アプリの中に、一度だけの質問がある");
   const card = vtRaw.slice(cardAt, cardAt + 1600);
   assertTrue(/答えない/.test(card), "★「答えない」を選べる");
