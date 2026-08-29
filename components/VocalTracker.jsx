@@ -10133,7 +10133,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </div>
                   )}
 
-                  {!isRecordedToday && (
+                  {/* ★formData は、読み込みが終わるまで null です
+                      （:5219 の効果が `if (loading) return;` で待つため）。
+                      この中は formData.voiceEntries などを直に読むので、
+                      読み込み中に「30秒で記録する」を押すと落ちていました。
+                      ★読み込み中は、押せる形にしないこと。押しても中身が無く、
+                        押せてしまうと落ちます。 */}
+                  {!isRecordedToday && formData && (
                     <>
                       {!showQuickRecord ? (
                         <>
@@ -10285,6 +10291,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 </div>
 
                 {(() => {
+                  // ★読み込みが終わるまで formData は null（:5219）。
+                  //   進み具合は、まだ数えられません。
+                  if (!formData) return null;
                   // 記録と分析の順番設計 §3.4: 進捗の見せ方。「未入力」「不足」「空欄」は使わない。
                   // 満タンを目標に見せず、赤くしない（羊のおうち仕様 §1の「罰を作らない」を記録画面にも適用）。
                   const filled = countFilledSections(formData, profile.record_mode);
