@@ -3275,8 +3275,12 @@ function RepertoireItemRow({
 
   const name = item.repertoireName || "";
   const record = name ? repertoireTessituraMap[name] : null;
+  // ★「行がある」と「音の高さを記録済み」は別物です。
+  //   歌唱言語（handleSaveSingingLanguage）や役・案件を先に登録すると、
+  //   最高音が空のまま行だけができます。行の有無で欄を閉じていたため、
+  //   その曲の最高音を入れる場所が、どこにも無くなっていました。
+  const hasPitch = !!(record && (record.topNote || record.tessituraNote || record.dOverride != null));
   const norm = name ? normalizeTitle(name) : "";
-  const usageSoFar = norm ? ((repertoireUsageCounts[norm] && repertoireUsageCounts[norm].count) || 0) : 0;
   const suggestions = name && !record
     ? Object.entries(repertoireTessituraMap)
         .filter(([n]) => n !== name && normalizeTitle(n).includes(norm))
@@ -3314,9 +3318,14 @@ function RepertoireItemRow({
         </div>
       )}
 
-      {name && !record && (() => {
-        const shouldPrompt = usageSoFar === 0 || usageSoFar === 2;
-        if (!shouldPrompt || repertoireSkipped[norm]) return null;
+      {name && !hasPitch && (() => {
+        // ★以前は usageSoFar === 0 || usageSoFar === 2 で、
+        //   1回目と3回目にしか出しませんでした。2・4・5回目に使う曲には
+        //   欄が出ず、最高音を入れる手立てがありませんでした。
+        //   しかも usageSoFar 自体が、2曲以上の日には常に0でした。
+        // ★いまは「音の高さが未記録のあいだ」出します。入れれば消えますし、
+        //   「あとで」を押せばその場で消えるので、催促にはなりません。
+        if (repertoireSkipped[norm]) return null;
 
         if (duplicateWarning && duplicateWarning.forName === name) {
           return (
@@ -3365,7 +3374,11 @@ function RepertoireItemRow({
               </div>
             )}
             <div className="flex gap-1.5">
-              <button type="button" disabled={tessituraSaving || (!topNoteInput && dOverrideChoice == null)}
+              {/* ★呼ぶ先（handleSaveRepertoire :9103）は
+                  「最高音・テッシトゥーラ・3択のどれか1つ」で受け付けます。
+                  ここだけテッシトゥーラを数えておらず、テッシトゥーラだけ
+                  入れた人はボタンが押せませんでした。条件を合わせること。 */}
+              <button type="button" disabled={tessituraSaving || (!topNoteInput && !tessituraOptionalInput && dOverrideChoice == null)}
                 onClick={() => {
                   if (!duplicateWarning || !duplicateWarning.confirmed) {
                     const nearMatch = Object.keys(repertoireTessituraMap).find((existingName) => {
@@ -3391,7 +3404,7 @@ function RepertoireItemRow({
                   setTopNoteInput(""); setTessituraOptionalInput(""); setDOverrideChoice(null); setDuplicateWarning(null);
                 }}
                 className="flex-1 py-1 rounded-full text-xs font-medium"
-                style={{ background: C.curtain, color: "#FFFDF8", opacity: tessituraSaving || (!topNoteInput && dOverrideChoice == null) ? 0.5 : 1 }}>
+                style={{ background: C.curtain, color: "#FFFDF8", opacity: tessituraSaving || (!topNoteInput && !tessituraOptionalInput && dOverrideChoice == null) ? 0.5 : 1 }}>
                 登録する
               </button>
               <button type="button" onClick={() => setRepertoireSkipped((prev) => ({ ...prev, [norm]: true }))}
@@ -6498,14 +6511,36 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
   // ---- lavoce-収集データ拡張案.md E節 + レパートリー負荷パッチ.md: 曲目ごとの負荷 用データ ----
   // §2: 曲目名の正規化と、既存登録に対する使用回数（サジェストの並び順・繰り返し登録抑制に使う）
+  // 曲目ごとの使用回数（曲ごとに、記録のあった日数）。
+  //
+  // ★旧列 entries.repertoire を数えてはいけません。あの列は entryToRow が
+  //   その日の全曲を「、」でつないで作る文字列です（:2106-2109）。
+  //   2曲を記録した日は「曲A、曲B」というひとつの鍵になり、
+  //   ★曲A も曲B も 0回のままでした。2曲以上を書く人には、
+  //   曲目ごとの出し分けが一度も効きません（2026-08-29 に判明）。
+  // ★数えるのは activities[].items[].repertoireName のほうです。
+  //   同じ日に同じ曲が複数のブロックに出ても、1日は1回と数えます。
+  //   「何日その曲をやったか」が知りたいことで、ブロックの数ではありません。
+  // ★旧データも数えられます。activities の列が空の行でも、rowToEntry の
+  //   migrateLegacyToActivities(:1460-1463) が repertoire 列から items を1件作ります。
+  // ★ただし、旧列に「曲A、曲B」と入っている行は1件の「曲A、曲B」になります。
+  //   「、」で割らないこと。曲名そのものに「、」が入りうるためです。
+  //   直す前と同じ鍵なので、これまでより悪くはなりません。
   const repertoireUsageCounts = useMemo(() => {
     const counts = {};
     Object.values(entries).forEach((e) => {
-      const raw = (e.repertoire || "").trim();
-      if (!raw) return;
-      const norm = normalizeTitle(raw);
-      if (!counts[norm]) counts[norm] = { count: 0, displayName: raw };
-      counts[norm].count += 1;
+      const seenToday = new Set();
+      (e.activities || []).forEach((a) => {
+        (a.items || []).forEach((it) => {
+          const raw = (it.repertoireName || "").trim();
+          if (!raw) return;
+          const norm = normalizeTitle(raw);
+          if (!norm || seenToday.has(norm)) return;
+          seenToday.add(norm);
+          if (!counts[norm]) counts[norm] = { count: 0, displayName: raw };
+          counts[norm].count += 1;
+        });
+      });
     });
     return counts;
   }, [entries]);
