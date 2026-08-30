@@ -8393,6 +8393,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   引き止めは、削除権の行使を不当に妨げると見なされうる（v2 P0-3 の注記）。
   //   1: 何が失われるか＋先に書き出す / 2: 共有相手への影響 / 3: 入力して最終確認
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  // ★本人確認のパスワード。★保存しません。送ったら消します。
+  const [deletePassword, setDeletePassword] = useState("");
   const [deleteStatus, setDeleteStatus] = useState("idle"); // idle | working | error
   const [deleteError, setDeleteError] = useState("");
 
@@ -8421,9 +8423,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       const res = await fetch("/api/account/delete", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ confirmation: deleteConfirmText, mode })
+        body: JSON.stringify({ confirmation: deleteConfirmText, password: deletePassword, mode })
       });
       const data = await res.json().catch(() => ({}));
+      // ★成否にかかわらず、パスワードは手元から消します。画面にも残しません。
+      setDeletePassword("");
       if (!res.ok) {
         setDeleteStatus("error");
         setDeleteError(data.error || "削除できませんでした。");
@@ -15278,6 +15282,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     placeholder={t("deleteConfirmPlaceholder")} autoComplete="off"
                     className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                 </div>
+                {/* ★パスワードをもう一度いただきます（判断の回答-年齢確認とアカウント削除 §2）。
+                    ★上の確認の入力は「間違えて押していないか」を確かめるものです。
+                      画面に出ているメールアドレスか、決まった言葉なので、
+                      端末を一時的に触れる人なら誰でも通せます。
+                    ★パスワードは「本人かどうか」を確かめます。目的が違います。
+                    ★猶予つきの削除にも必要です。猶予中でも、先生との共有は
+                      すぐに切れて戻らないためです（＝取り返しがつかない）。 */}
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("deletePasswordPrompt")}</p>
+                  <input type="password" value={deletePassword} onChange={(e) => setDeletePassword(e.target.value)}
+                    placeholder={t("deletePasswordPlaceholder")} autoComplete="current-password"
+                    className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                </div>
                 {deleteStatus === "error" && (
                   <p className="text-sm rounded-2xl p-3" style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>{deleteError}</p>
                 )}
@@ -15287,9 +15304,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     {t("deleteBack")}
                   </button>
                   <button type="button" onClick={() => handleDeleteAccount("grace")}
-                    disabled={deleteStatus === "working" || !deleteConfirmOk}
+                    disabled={deleteStatus === "working" || !deleteConfirmOk || !deletePassword}
                     className="flex-1 py-3 rounded-full text-sm font-medium flex items-center justify-center gap-2"
-                    style={{ background: C.curtain, color: "#FFFDF8", opacity: (deleteStatus === "working" || !deleteConfirmOk) ? 0.4 : 1 }}>
+                    style={{ background: C.curtain, color: "#FFFDF8", opacity: (deleteStatus === "working" || !deleteConfirmOk || !deletePassword) ? 0.4 : 1 }}>
                     {deleteStatus === "working" && <Loader2 size={15} className="animate-spin" />}
                     {deleteStatus === "working" ? t("deleteExecuting") : t("deleteWithGrace")}
                   </button>
@@ -15298,9 +15315,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ただし既定は猶予つき。取り返しのつかない方を既定にしない。 */}
                 <p className="text-xs" style={{ color: C.inkSoft }}>{t("deleteGraceNote").replace("{days}", GRACE_PERIOD_DAYS)}</p>
                 <button type="button" onClick={() => handleDeleteAccount("now")}
-                  disabled={deleteStatus === "working" || !deleteConfirmOk}
+                  disabled={deleteStatus === "working" || !deleteConfirmOk || !deletePassword}
                   className="w-full py-2.5 text-xs underline"
-                  style={{ color: C.curtain, opacity: (deleteStatus === "working" || !deleteConfirmOk) ? 0.4 : 1 }}>
+                  style={{ color: C.curtain, opacity: (deleteStatus === "working" || !deleteConfirmOk || !deletePassword) ? 0.4 : 1 }}>
                   {t("deleteNowInstead")}
                 </button>
               </div>

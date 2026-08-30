@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { createClient as createPlainClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { purgeAccount, severConnections } from "@/lib/accountDeletion";
@@ -45,6 +46,39 @@ export async function POST(request) {
       { error: "確認の入力が一致しません。登録メールアドレス、または「削除します」と入力してください。" },
       { status: 400 }
     );
+  }
+
+  // ==========================================================================
+  // ★本人確認（判断の回答-年齢確認とアカウント削除-20260830.md §2）
+  //
+  //   上の確認の入力（メールアドレス or「削除します」）は、
+  //   ★「間違えて押していないか」を確かめるものです。
+  //     どちらも画面に出ているので、端末を一時的に触れる人なら通せます。
+  //   ★パスワードは「本人かどうか」を確かめます。目的が違います。
+  //
+  //   ★猶予つきの削除にも要求します。猶予中でも severConnections が
+  //     すぐ走り、先生との共有は戻りません（＝取り返しがつかない）。
+  //     「今すぐ」だけ守っても意味がありません。
+  //
+  //   ★セッションを持たないクライアントで確かめます。
+  //     cookie 付きのクライアントで signInWithPassword を呼ぶと、
+  //     いまのセッションを書き換えてしまいます。
+  // ==========================================================================
+  const password = typeof body.password === "string" ? body.password : "";
+  if (!password) {
+    return NextResponse.json({ error: "パスワードをご入力ください。" }, { status: 400 });
+  }
+  const verifier = createPlainClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } }
+  );
+  const { error: pwError } = await verifier.auth.signInWithPassword({
+    email: user.email, password
+  });
+  if (pwError) {
+    // ★理由を細かく分けないこと。「このメールは存在する」を漏らさないためです。
+    return NextResponse.json({ error: "パスワードが一致しません。" }, { status: 401 });
   }
 
   const admin = createAdminClient();
