@@ -85,7 +85,13 @@ export async function POST(request) {
   const mode = body.mode === "now" ? "now" : "grace";
 
   if (mode === "now") {
-    const { ok, failures } = await purgeAccount(admin, user.id);
+    const { ok, failures, countRecorded, countError } = await purgeAccount(admin, user.id);
+    // ★数えられなかったことは、削除の失敗ではありません。返り値には出しますが、
+    //   利用者には見せません（消えたことが大事で、数は運営の都合です）。
+    //   ★ただし、黙って捨てません。ここでログに残します。
+    if (ok && countRecorded === false) {
+      console.error("★アカウントは削除できましたが、件数を記録できませんでした。", { countError });
+    }
     if (!ok) {
       console.error("アカウント削除：一部のデータを削除できませんでした。", failures);
       return NextResponse.json(

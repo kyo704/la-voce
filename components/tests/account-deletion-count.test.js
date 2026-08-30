@@ -35,7 +35,16 @@ assertTrue(cols === 2, `★列は2つだけ（${cols}）`);
 
 console.log("\n=== ★② 本当に消したときだけ数える ===");
 // purgeAccount の中で数えること。猶予の申し出（deleted_at を立てる側）では数えない。
-assertTrue(/from\("account_deletions"\)\.insert\(\{\}\)/.test(del), "purgeAccount で数えている");
+assertTrue(/from\("account_deletions"\)\.insert\(\{ deleted_at: deletedAt \}\)/.test(del),
+  "purgeAccount で数えている");
+// ★空のオブジェクトを送らないこと。列が1つも無い本文になり、版によって 400 で弾かれます。
+//   2026-08-30、数が増えなかった第一の疑いがこれでした。
+assertTrue(!/insert\(\{\}\)/.test(del), "★insert({}) に戻っていない");
+assertTrue(/for \(let attempt = 1; attempt <= 2; attempt\+\+\)/.test(del), "一度だけやり直す");
+assertTrue(/countRecorded: false/.test(del) && /countRecorded: true/.test(del),
+  "★数えられたかどうかを、呼ぶ側へ返す");
+const route = readCode("app/api/account/delete", "route.js");
+assertTrue(/countRecorded === false/.test(route), "★削除のAPIが、記録できなかったことをログに残す");
 assertTrue(!/account_deletions/.test(readCode("app/api/account/delete", "route.js")),
   "★削除の入口では数えていない（猶予の申し出で数えない）");
 assertTrue(!/account_deletions/.test(readCode("app/api/cron/purge-deleted", "route.js")),
