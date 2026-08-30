@@ -3300,7 +3300,7 @@ function RepertoireItemRow({
   repertoireTessituraMap, repertoireUsageCounts, repertoireSkipped, setRepertoireSkipped,
   handleSaveRepertoire, tessituraSaving, roleMasterMap, projectMasterMap,
   handleSaveRole, handleSaveProject, handleSaveSingingLanguage, occupation,
-  repertoireSaveError, pendingChip, t
+  repertoireSaveError, pendingChip, language, t
 }) {
   const [topNoteInput, setTopNoteInput] = useState("");
   const [tessituraOptionalInput, setTessituraOptionalInput] = useState("");
@@ -3316,6 +3316,10 @@ function RepertoireItemRow({
   //   旧い professions は歌う人を singer と pop_musical に分けており、
   //   singer だけを見ていたため、★ポップスの人には歌唱言語の欄が
   //   まったく出ませんでした（「その他」「落語」も同様に何も出ませんでした）。
+  // ★テッシトゥーラの呼び名は職業で変わります。空文字なら、欄ごと出しません。
+  //   「テッシトゥーラ」という語を、声楽・ミュージカル以外に出さないこと
+  //   （用語辞書の拡張 §2）。★3択の逃げ道は、全職業で残します。
+  const tessituraLabel = termLabel(occupation, "tessitura", language, t, null);
   const repertoireExtra = repertoireExtraFor(occupation);
   const isSinger = repertoireExtra === EXTRA_SINGING_LANGUAGE;
   const isVoiceActor = repertoireExtra === EXTRA_ROLE;
@@ -3355,6 +3359,26 @@ function RepertoireItemRow({
         <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>分</span>
         <button type="button" onClick={onRemove} className="flex-shrink-0" style={{ color: C.inkSoft }}><X size={14} /></button>
       </div>
+
+      {/* ★声優は「何の作品の、どの役か」で1件が特定されます（§1-1）。
+          作品名を、役名のすぐ下＝上部に置きます。
+          ★仕様書 §1-1 は handleSaveProject と書いていますが、作品名は
+            role_master.work_title で、保存するのは handleSaveRole です。
+            案件マスタ（project_master）は別の表です。実装のほうが事実です。
+          ★下の「役の情報を登録」の中にある作品名の欄は、そのまま残します。
+            同じ値を2か所から編集できますが、どちらも handleSaveRole を
+            通るので食い違いません。片方だけ消すと、畳んだ人が触れなくなります。 */}
+      {name && isVoiceActor && (() => {
+        const roleRec = roleMasterMap[name] || {};
+        return (
+          <div className="mt-1.5">
+            <label className="text-xs block mb-1" style={{ color: C.inkSoft }}>作品名</label>
+            <input type="text" defaultValue={roleRec.workTitle || ""} placeholder="作品名"
+              onBlur={(e) => handleSaveRole(name, { ...roleRec, workTitle: e.target.value })}
+              className="w-full rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.card }} />
+          </div>
+        );
+      })()}
 
       {suggestions.length > 0 && (
         <div className="mt-1.5 rounded-lg border overflow-hidden" style={{ borderColor: C.line }}>
@@ -3405,13 +3429,18 @@ function RepertoireItemRow({
             <input type="text" value={topNoteInput} placeholder={t("placeholderNoteExample")}
               onChange={(e) => setTopNoteInput(e.target.value)}
               className="w-full rounded-lg border p-1.5 text-xs mb-1.5" style={{ borderColor: C.line, background: C.paper }} />
+            {/* ★呼び名が空の職業（ナレーター・アナウンサー・落語・声優）では、
+                この欄ごと出しません（用語辞書の拡張 §2・§6）。
+                ★下の3択（低め／真ん中／高め）は、全職業で残します。 */}
+            {tessituraLabel && (
             <details className="text-xs mb-1.5" open={showTessituraAccordion} onToggle={(e) => setShowTessituraAccordion(e.target.open)}>
-              <summary className="cursor-pointer" style={{ color: C.inkSoft }}>テッシトゥーラも入力する（任意）</summary>
+              <summary className="cursor-pointer" style={{ color: C.inkSoft }}>{tessituraLabel}も入力する（任意）</summary>
               <p className="mt-1 mb-1" style={{ color: C.inkSoft }}>最高音とは別。曲全体で「だいたいこの高さ」という中心の音域です。</p>
               <input type="text" value={tessituraOptionalInput} placeholder={t("placeholderNoteExample")}
                 onChange={(e) => setTessituraOptionalInput(e.target.value)}
                 className="w-full rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.paper }} />
             </details>
+            )}
             {dOverrideChoice === null && !topNoteInput && (
               <button type="button" onClick={() => setDOverrideChoice(0)} className="text-xs underline mb-1.5" style={{ color: C.inkSoft }}>
                 音名で答えられない場合はこちら
@@ -3489,7 +3518,7 @@ function RepertoireItemRow({
       {name && record && (
         <p className="text-xs mt-1.5 flex items-center gap-2 flex-wrap" style={{ color: C.inkSoft }}>
           <span>
-            登録済み：{record.topNote ? `最高音${record.topNote}` : ""}{record.tessituraNote ? `・テッシトゥーラ${record.tessituraNote}` : ""}{record.singingLanguage ? `・${record.singingLanguage}語` : ""}
+            登録済み：{record.topNote ? `最高音${record.topNote}` : ""}{record.tessituraNote ? `・${tessituraLabel || ""}${record.tessituraNote}` : ""}{record.singingLanguage ? `・${record.singingLanguage}語` : ""}
           </span>
           {/* ★直す手立てを、必ずここに置くこと。
               これが無かったため、一度入れた最高音を直す方法が
@@ -4373,7 +4402,11 @@ function ActivityBlockEditor({
       </div>
 
       <div className="mt-2">
-        <span className="text-xs font-medium block mb-1.5">{activity.kind === "本番" ? "演目・曲目" : activity.kind === "リハーサル" ? "曲目・演目" : "曲目"}</span>
+        {/* ★職業ごとの呼び名は lib/vocabulary.js が持ちます。
+            ここに文字列を書かないこと（用語辞書の拡張 §1・§8）。
+            声楽＝曲目／声優＝役／落語・舞台＝演目／映像＝作品／
+            ナレーター・司会＝案件／アナウンサー＝番組。 */}
+        <span className="text-xs font-medium block mb-1.5">{term(occupation, "repertoireCard")}</span>
         <div className="space-y-1.5">
           {items.map((item, idx) => (
             <RepertoireItemRow
@@ -4396,13 +4429,14 @@ function ActivityBlockEditor({
               occupation={occupation}
               repertoireSaveError={repertoireSaveError}
               pendingChip={pendingChip}
+              language={language}
               t={t}
             />
           ))}
         </div>
         {items.length < 50 && (
           <button type="button" onClick={onAddItem} className="mt-1.5 text-xs font-medium flex items-center gap-1" style={{ color: C.curtain }}>
-            <Plus size={12} />曲を追加
+            <Plus size={12} />{term(occupation, "repertoireAdd")}
           </button>
         )}
       </div>
@@ -11497,7 +11531,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                       <button key={kind} type="button" onClick={() => handleStartSession(kind)}
                                         className="px-3 py-1.5 rounded-full text-xs font-medium"
                                         style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
-                                        {kind}を始める
+                                        {/* ★保存する値（kind）ではなく、職業ごとの呼び名を出します。 */}
+                                        {activityKindLabel(kind, currentOccupation, language, t)}を始める
                                       </button>
                                     ))}
                                   </div>
