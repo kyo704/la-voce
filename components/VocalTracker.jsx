@@ -4697,10 +4697,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★migration_age_question.sql を実行済みか。読めたときだけ true。
   //   保存できない質問を出さないための歯止め。
   const [ageColumnsReady, setAgeColumnsReady] = useState(false);
-  // ★18歳未満かの確認（A-7）。一度出したら、飛ばされていても二度と出さない。
-  //   出す/出さないの判断は lib/ageGate.js が持つ。ここでは呼ぶだけ。
-  //   ★保存できない環境では、そもそもたずねない。答えられない1枚が残るため。
-  const showAgeQuestion = ageColumnsReady && shouldAskAgeQuestion(profile);
   const [selectedDate, setSelectedDate] = useState(todayISOUTC());
   // ★重要：ホームタブの「今日」判定（realToday）も、以前はレンダリング中に todayISO()（ローカル時刻）を
   // 直接呼んでおり、selectedDateと同じ理由でハイドレーション不一致を起こしうる状態だった。
@@ -4837,6 +4833,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       if (saved === "1") setAdminShowAllProfessions(true);
     } catch { /* 読めなくても、既定（自分の職業だけ）で動きます */ }
   }, []);
+  // ★18歳未満かの確認（A-7）。一度出したら、飛ばされていても二度と出さない。
+  //   出す/出さないの判断は lib/ageGate.js が持つ。ここでは呼ぶだけ。
+  //   ★保存できない環境では、そもそもたずねない。答えられない1枚が残るため。
+  //
+  // ★この行を profile の宣言より前に置かないこと。
+  //   2026-08-30、これを前に置いていたため、本番で全画面が落ちました。
+  //     ReferenceError: Cannot access 'profile' before initialization
+  //   ★しばらく気づけませんでした。`ageColumnsReady &&` が短絡していて、
+  //     列がまだ無いあいだは profile を評価しなかったためです。
+  //     移行SQLを実行して ageColumnsReady が true になった瞬間に、
+  //     初めて評価され、全員が落ちました。
+  //   ★短絡で隠れる宣言前アクセスは、いちばん遅れて出ます。
+  const showAgeQuestion = ageColumnsReady && shouldAskAgeQuestion(profile);
+
   const effectiveProfessions = useMemo(() => {
     return (profile.is_admin && adminShowAllProfessions)
       ? VOCAL_PROFESSIONS
