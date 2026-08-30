@@ -48,6 +48,10 @@ declare
     'meals', 'carbs_g', 'protein_g', 'fat_g', 'fiber_g', 'protein_level',
     'calorie_level', 'dinner_time', 'dinner_tags', 'weight_kg', 'body_fat_pct', 'ease',
     'mental_reason', 'mental_tags', 'notes', 'medication_tags', 'cycle_start',
+    -- ★嗜好品。対応表には載せますが、どの scope にも入れません
+    --   （＝先生には決して渡りません）。載せない場合との違いは、
+    --   「知らない列」ではなく「共有しないと決めた列」だと分かることです。
+    'smoked_today', 'drank_today',
     'location', 'temperature', 'humidity', 'weather', 'environment_tags',
     'ambient_noise_db', 'noisy_environment', 'flight_hours', 'jetlag_hours',
     -- 型ごとの追加項目（職業を声の型で切り直す §5-2）。

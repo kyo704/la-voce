@@ -63,6 +63,8 @@ import {
 } from "@/lib/analysisBoost";
 // 記録項目の表示・非表示は必ずこのレイヤーを通す（記録項目の再設計v2 §3.3）
 import { medicalCaution } from "@/lib/medicalCaution";
+import { ACCOMPANIMENT_OPTIONS } from "@/lib/storedValues";
+import { mayShowLuxuryFields } from "@/lib/ageGate";
 import { cycleOptInDescription, mentionsCycleInDataLists } from "@/lib/cycleCopy";
 import { writeWithMissingColumnFallback } from "@/lib/entryWriteFallback";
 import { isFieldGroupVisible, DEFAULT_RECORD_MODE } from "@/lib/fieldGroups";
@@ -1192,6 +1194,8 @@ function buildFormData(date, entries) {
       speakingLevel: existing.speakingLevel ?? null,
       nonPerformanceSpeechMinutes: existing.nonPerformanceSpeechMinutes ?? null,
       morningEdema: existing.morningEdema ?? null,
+      smokedToday: existing.smokedToday ?? null,
+      drankToday: existing.drankToday ?? null,
       longestSpeechBlockMinutes: existing.longestSpeechBlockMinutes ?? null,
       environmentTags: existing.environmentTags || [],
       noisyEnvironment: existing.noisyEnvironment || false,
@@ -1257,6 +1261,11 @@ function buildFormData(date, entries) {
     // 中核5項目の⑤（中核5項目 §2-2②）。なし=0 / 少し=1 / はっきり=2。
     // ★null は「答えていない」。0（なし）とは別です。
     morningEdema: null,
+    // 嗜好品（用語辞書の拡張と嗜好品の記録.md §7）。あり=true / なし=false。
+    // ★null は「答えていない」。false（吸わなかった）とは別です。
+    // ★本数・量・銘柄は聞きません（§7-2）。二値で足ります。
+    smokedToday: null,
+    drankToday: null,
     environmentTags: [],
     noisyEnvironment: false,
     cppsValue: "",
@@ -1806,6 +1815,9 @@ function rowToEntry(row) {
     routineNote: row.routine_note || "",
     // ★?? を使うこと。|| だと 0（むくみなし）が null になります。
     morningEdema: row.morning_edema ?? null,
+    // ★?? を使うこと。|| だと false（吸わなかった）が null になります。
+    smokedToday: row.smoked_today ?? null,
+    drankToday: row.drank_today ?? null,
     resonanceScore: row.resonance_score,
     bedtime: row.bedtime || "",
     dinnerTime: row.dinner_time || "",
@@ -1832,6 +1844,12 @@ function rowToEntry(row) {
 }
 function numOrNull(v) {
   return v === "" || v === undefined ? null : v;
+}
+
+// ★true / false / null の3つを保てるようにする。
+//   false（しなかった）と null（答えていない）を混ぜないこと。
+function boolOrNull(v) {
+  return v === true || v === false ? v : null;
 }
 // 整数の列（throat_condition / voice_quality など）へ書くための丸め。
 // ★null と 0 を取り違えないこと。0 は「記録された0」で、null は「記録が無い」です。
@@ -2245,6 +2263,8 @@ function entryToRow(userId, e) {
     throat_symptoms_other: e.throatSymptomsOther || "",
     voice_memo: (voiceLegacy ? voiceLegacy.voiceMemo : e.voiceMemo) || "",
     morning_edema: numOrNull(e.morningEdema),
+    smoked_today: boolOrNull(e.smokedToday),
+    drank_today: boolOrNull(e.drankToday),
     wake_note: (voiceLegacy ? voiceLegacy.wakeNote : e.wakeNote) || "",
     routine_note: (voiceLegacy ? voiceLegacy.routineNote : e.routineNote) || "",
     resonance_score: numOrNull(voiceLegacy ? voiceLegacy.resonanceScore : e.resonanceScore),
@@ -2352,6 +2372,32 @@ const EDEMA_CHOICES = [
   { value: 1, label: "少し" },
   { value: 2, label: "はっきり" }
 ];
+// あり／なし の2択。★もう一度押すと取り消せます（答えない、に戻せる）。
+//   ★null（答えていない）と false（しなかった）を分けます。
+function YesNoField({ label, value, onChange }) {
+  return (
+    <div className="flex-1">
+      <span className="text-xs font-medium block mb-1.5" style={{ color: C.inkSoft }}>{label}</span>
+      <div className="flex gap-2">
+        {[{ v: true, l: "あり" }, { v: false, l: "なし" }].map(({ v, l }) => {
+          const on = value === v;
+          return (
+            <button key={String(v)} type="button"
+              onClick={() => onChange(on ? null : v)}
+              className="flex-1 py-2 rounded-full text-xs font-medium border"
+              style={{
+                background: on ? C.curtain : C.card,
+                color: on ? "#fff" : C.ink,
+                borderColor: on ? C.curtain : C.line
+              }}>
+              {l}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 function EdemaSelector({ value, onChange }) {
   return (
     <div>
@@ -4701,7 +4747,11 @@ function ActivityBlockEditor({
           <div>
             <span className="text-xs font-medium block mb-1.5">伴奏</span>
             <div className="flex gap-1.5">
-              {[["piano", "ピアノ"], ["orchestra", "オーケストラ"], ["none", "なし"]].map(([v, label]) => (
+              {/* ★選択肢の正は lib/storedValues.js の ACCOMPANIMENT_OPTIONS（§5）。
+                  ここに書き写さないこと。以前は3つしか無く、
+                  バンド・音源・アカペラを選べませんでした。
+                  ★v1 では負荷の計算に入れません（§5-1）。記録するだけです。 */}
+              {ACCOMPANIMENT_OPTIONS.map(({ key: v, label }) => (
                 <button key={v} type="button" onClick={() => onDetailChange({ accompaniment: v })}
                   className="flex-1 py-1.5 rounded-lg text-xs font-medium border"
                   style={{
@@ -11419,6 +11469,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <EdemaSelector value={formData.morningEdema}
                           onChange={(v) => setFormData((f) => ({ ...f, morningEdema: v }))} />
                       </div>
+                      {/* ★嗜好品（用語辞書の拡張と嗜好品の記録.md §7）。
+                          ★未成年には欄ごと出しません。灰色にするのでも
+                            押せなくするのでもなく、無い状態にします。
+                          ★年齢に答えていない人にも出しません（フェイルクローズ）。
+                          ★本数・量・銘柄は聞きません。二値で足ります（§7-2）。 */}
+                      {mayShowLuxuryFields(profile) && (
+                        <div className="mb-4 flex gap-4">
+                          <YesNoField label="たばこを吸った" value={formData.smokedToday}
+                            onChange={(v) => setFormData((f) => ({ ...f, smokedToday: v }))} />
+                          <YesNoField label="お酒を飲んだ" value={formData.drankToday}
+                            onChange={(v) => setFormData((f) => ({ ...f, drankToday: v }))} />
+                        </div>
+                      )}
                       <NumberField label={t("labelTodayWeight")} icon={Scale} value={formData.weightKg ?? ""} step={0.1} min={20} max={200} suffix="kg"
                         onChange={(v) => setFormData((f) => ({ ...f, weightKg: v }))} />
                       {showGroup("body_fat") && (

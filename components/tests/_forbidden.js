@@ -20,6 +20,10 @@ const FORBIDDEN_KEYS = [
   "medication_tags", "location", "temperature", "humidity", "weather",
   "environment_tags", "ambient_noise_db", "noisy_environment",
   "flight_hours", "jetlag_hours",
+  // 嗜好品（用語辞書の拡張と嗜好品の記録.md §7）。★先生には共有しません。
+  //   吸ったか・飲んだかは指導に要る情報ではなく、知られると
+  //   記録そのものをやめる方向に働きます。
+  "smoked_today", "drank_today", "smokedToday", "drankToday",
   // 周期（周期記録の設計.md §2）
   "cyclePeriod", "cyclePeriods", "cycleSetting", "cycleSettings",
   "cycle_periods", "cycle_start", "cycle_show_on_home",

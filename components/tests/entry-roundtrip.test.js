@@ -118,8 +118,10 @@ function assertNoThrow(fn, label) {
 // ---------------------------------------------------------------------------
 // 実装の読み込み
 // ---------------------------------------------------------------------------
-const { intOrNull, numOrNull, sumMacro, derivePrimaryActivityLegacy, migrateLegacyToActivities, fiveScaleToQuality10, migrateLegacyToVoiceEntries, deriveVoiceEntryRepresentatives, deriveLegacyVoiceFieldsFromEntries, rowToEntry, entryToRow } = loadFunctions([
+const { intOrNull, numOrNull, boolOrNull, sumMacro, derivePrimaryActivityLegacy, migrateLegacyToActivities, fiveScaleToQuality10, migrateLegacyToVoiceEntries, deriveVoiceEntryRepresentatives, deriveLegacyVoiceFieldsFromEntries, rowToEntry, entryToRow } = loadFunctions([
   "numOrNull",
+  // ★entryToRow が呼ぶ新しいヘルパは、必ずここに足すこと（CLAUDE.md）。
+  "boolOrNull",
   "sumMacro",
   "derivePrimaryActivityLegacy",
   "migrateLegacyToActivities",
@@ -438,6 +440,36 @@ console.log("\n=== テスト: 起きたときのむくみ（中核5項目 §2-2�
   // ★列がまだ無い環境（移行前）でも壊れないこと
   assertEqual(rowToEntry({ date: "2026-08-30" }).morningEdema, null,
     "★列が無い行を読んでも null（移行前でも落ちない）");
+}
+
+console.log("\n=== テスト: 嗜好品（用語辞書の拡張と嗜好品の記録 §7） ===");
+{
+  // ★false（しなかった）と null（答えていない）を、往復で取り違えないこと。
+  const base = sampleFullEntry();
+
+  const rowFalse = entryToRow(USER_ID, { ...base, smokedToday: false, drankToday: false });
+  assertEqual(rowFalse.smoked_today, false, "「なし」は false として保存される");
+  assertEqual(rowFalse.drank_today, false, "お酒の「なし」も false");
+  assertEqual(rowToEntry(rowFalse).smokedToday, false, "★false が読み戻せる（|| で null にしない）");
+  assertEqual(rowToEntry(rowFalse).drankToday, false, "★お酒の false も読み戻せる");
+
+  const rowTrue = entryToRow(USER_ID, { ...base, smokedToday: true, drankToday: true });
+  assertEqual(rowTrue.smoked_today, true, "「あり」は true");
+  assertEqual(rowToEntry(rowTrue).drankToday, true, "true が読み戻せる");
+
+  const rowNull = entryToRow(USER_ID, { ...base, smokedToday: null, drankToday: null });
+  assertEqual(rowNull.smoked_today, null, "答えていなければ null");
+  assertEqual(rowToEntry(rowNull).smokedToday, null, "null は null のまま");
+
+  // ★変な値が来ても、true/false/null のどれかに落ちること
+  assertEqual(entryToRow(USER_ID, { ...base, smokedToday: "はい" }).smoked_today, null,
+    "★文字列は null にする（true として保存しない）");
+  assertEqual(entryToRow(USER_ID, { ...base, smokedToday: 1 }).smoked_today, null,
+    "★数値も null にする");
+
+  // ★列がまだ無い環境でも壊れない
+  assertEqual(rowToEntry({ date: "2026-08-31" }).smokedToday, null, "★列が無い行を読んでも null");
+  assertEqual(rowToEntry({ date: "2026-08-31" }).drankToday, null, "★お酒も同じ");
 }
 
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
