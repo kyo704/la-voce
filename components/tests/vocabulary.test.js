@@ -68,11 +68,8 @@ async function main() {
 
   console.log("\n=== テスト3-2: 2026-08-30 に足した語（用語辞書の拡張 §1-4） ===");
   // カードの見出し
-  const CARDS = { classical: "曲目", musical: "曲目", pops: "曲目", voiceActor: "役",
-    narrator: "案件", announcer: "番組", actorStage: "作品", actorScreen: "作品",
-    rakugo: "演目", mc: "案件", other: "演目" };
-  Object.entries(CARDS).forEach(([occ, w]) =>
-    assertEqual(V.term(occ, "repertoireCard"), w, `${occ} のカードは「${w}」`));
+  // ★カードの見出しは、下の SPEC で仕様書の表と丸ごと突き合わせます。
+  //   ここに2枚目の表を置くと、片方だけ古くなります（実際になりました）。
   // ★「テッシトゥーラ」は声楽とミュージカルだけ。ほかでは絶対に出しません。
   O.OCCUPATIONS.filter((o) => o !== "classical" && o !== "musical").forEach((occ) => {
     assertTrue(V.term(occ, "tessitura") !== "テッシトゥーラ",
