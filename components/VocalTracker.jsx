@@ -63,6 +63,8 @@ import {
 } from "@/lib/analysisBoost";
 // 記録項目の表示・非表示は必ずこのレイヤーを通す（記録項目の再設計v2 §3.3）
 import { medicalCaution } from "@/lib/medicalCaution";
+import { cycleOptInDescription, mentionsCycleInDataLists } from "@/lib/cycleCopy";
+import { writeWithMissingColumnFallback } from "@/lib/entryWriteFallback";
 import { isFieldGroupVisible, DEFAULT_RECORD_MODE } from "@/lib/fieldGroups";
 // 機能フラグ（G2-14）。判定はこのモジュールだけが持つ。
 import { canSeeBetaFeatures, canSeeTeacherFeatures, canSeeLineLink, canSeeStudentTeacherLink,
@@ -2153,6 +2155,32 @@ function entryHasActivityKind(entry, kind) {
   }
   return entry && entry.activityType === kind;
 }
+// 記録の保存。★移行がまだの列があっても、その日の記録ごと失わないようにする。
+//
+//   ★2026-08-30 に2回、これで本番の保存が全部止まりました
+//     （type_fields / morning_edema）。列を使うコードが先に出て、
+//     SQL がまだ実行されていない時間帯があったためです。
+//     PostgREST は知らない列が1つあるだけで、リクエスト全体を断ります。
+//
+//   ★足りない列だけを外して、もう一度だけ試します。
+//     新しい項目は保存されませんが、その日の記録は残ります。
+//   ★黙って握りつぶしません。外した列は console に必ず出します。
+async function writeEntryRow(supabase, row) {
+  const { error, dropped } = await writeWithMissingColumnFallback(
+    (r) => supabase.from("entries").upsert(r, { onConflict: "user_id,date" }),
+    row
+  );
+  if (dropped.length > 0) {
+    console.error(
+      "★データベースにまだ無い列があったため、その項目だけ外して保存しました: " +
+      dropped.join(", ") +
+      "。supabase/ の該当する migration_*.sql を実行してください。" +
+      "実行するまで、この項目は保存されません。"
+    );
+  }
+  return { error };
+}
+
 function entryToRow(userId, e) {
   const activities = e.activities || [];
   const primary = derivePrimaryActivityLegacy(activities);
@@ -3917,7 +3945,10 @@ function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
                       <div>
                         <p className="text-sm font-medium">月経周期を記録する</p>
                         <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
-                          周期開始日を1タップで記録し、分析タブで声・メンタルとの関連を見られるようにします。任意（オプトイン）です。
+                          {/* ★文言の決め方は lib/cycleCopy.js。機能は誰にも止めません。
+                              未成年には短い言い方にします（消すのではなく、整えます）。
+                              消すと、切り替えだけがあって説明が無い状態になります。 */}
+                          {cycleOptInDescription(value)}
                         </p>
                       </div>
                       <TwoWaySwitch on={!!value.track_cycle} simple={isSimpleDisplay(value)}
@@ -9755,7 +9786,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           items: (a.items || []).map((it) => (it.repertoireName === sourceName ? { ...it, repertoireName: targetName } : it))
         }));
         const updatedEntry = { ...entry, activities: renamedActivities };
-        const { error } = await supabase.from("entries").upsert(entryToRow(userId, updatedEntry), { onConflict: "user_id,date" });
+        const { error } = await writeEntryRow(supabase, entryToRow(userId, updatedEntry));
         if (error) throw error;
         updatedEntries[date] = updatedEntry;
       }
@@ -9809,7 +9840,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           items: (a.items || []).map((it) => (isSameRepertoire(it.repertoireName, from) ? { ...it, repertoireName: to } : it))
         }));
         const updatedEntry = { ...entry, activities: renamed };
-        const { error } = await supabase.from("entries").upsert(entryToRow(userId, updatedEntry), { onConflict: "user_id,date" });
+        const { error } = await writeEntryRow(supabase, entryToRow(userId, updatedEntry));
         if (error) throw error;
         updatedEntries[date] = updatedEntry;
       }
@@ -9887,7 +9918,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           items: (a.items || []).filter((it) => !isSameRepertoire(it.repertoireName, from))
         }));
         const updatedEntry = { ...entry, activities: stripped };
-        const { error } = await supabase.from("entries").upsert(entryToRow(userId, updatedEntry), { onConflict: "user_id,date" });
+        const { error } = await writeEntryRow(supabase, entryToRow(userId, updatedEntry));
         if (error) throw error;
         updatedEntries[date] = updatedEntry;
       }
@@ -10095,9 +10126,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (!entryHasActivityKind(clean, "本番")) clean.performanceQuality = null;
     clean.simpleMealMacros = simpleMealMacros;
     const supabase = createClient();
-    const { error } = await supabase
-      .from("entries")
-      .upsert(entryToRow(userId, clean), { onConflict: "user_id,date" });
+    const { error } = await writeEntryRow(supabase, entryToRow(userId, clean));
     if (error) {
       setSaveStatus("error");
       // ★画面には「次に何をすればいいか」だけを出す（見やすさ §4-2）。
@@ -10156,7 +10185,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const { date, previous } = undoableSave;
     const supabase = createClient();
     if (previous) {
-      const { error } = await supabase.from("entries").upsert(entryToRow(userId, previous), { onConflict: "user_id,date" });
+      const { error } = await writeEntryRow(supabase, entryToRow(userId, previous));
       if (error) { console.error("取り消せませんでした:", error); return; }
       setEntries((prev) => ({ ...prev, [date]: previous }));
       setFormData({ ...previous });
@@ -15341,7 +15370,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <li>・日々の記録　<strong className="ff-mono">{recordedDaysTotal}</strong> 日分</li>
                     <li>・質問票の回答　<strong className="ff-mono">{questionnaireResponses.length}</strong> 件</li>
                     <li>・稽古ノート・目標・羊のおうちの持ち物</li>
-                    <li>・既往症・アレルギー・常用薬・月経周期の記録</li>
+                    {/* ★周期は、記録している人にだけ挙げます（lib/cycleCopy.js）。
+                        記録していない人に、話題だけが目に入る理由がありません。 */}
+                    <li>・既往症・アレルギー・常用薬{mentionsCycleInDataLists(profile) ? "・月経周期" : ""}の記録</li>
                   </ul>
                 </div>
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold }}>
@@ -16605,7 +16636,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ここへ誘導するため、削除より先に用意している。 */}
                   <div className="rounded-xl p-3 mb-3" style={{ background: C.paper }}>
                     <p className="text-sm font-medium mb-1">{t("labelExportData")}</p>
-                    <p className="text-xs mb-1" style={{ color: C.inkSoft }}>{t("noteExportData")}</p>
+                    <p className="text-xs mb-1" style={{ color: C.inkSoft }}>{t("noteExportData")}{mentionsCycleInDataLists(profile) ? t("noteExportDataCycle") : ""}</p>
                     <p className="text-xs mb-2.5" style={{ color: C.inkSoft }}>{t("noteExportFormats")}</p>
                     {exportStatus === "done" && (
                       <p className="text-xs rounded-lg px-2.5 py-1.5 mb-2" style={{ background: "rgba(122,150,109,0.18)", color: C.ink }}>
