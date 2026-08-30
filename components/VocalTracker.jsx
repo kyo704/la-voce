@@ -2322,16 +2322,22 @@ function DotSelector({ label, icon: Icon, value, onChange, lowLabel, highLabel }
   );
 }
 
-function Chip({ label, active, onClick }) {
+// ★チップの状態は3つです（判断の回答 §8-2）。
+//   未選択 薄い枠 ／ ★保存待ち 薄く塗る ／ 保存済み 濃く塗る
+//   ★ふつうは一瞬で通り抜けるので、成功したときには何も見えません。
+//     失敗したときだけ「保存待ち」で止まり、それが目に見えます。
+//   ★成功の印（チェックなど）は出しません。画面が賑やかになります。
+function Chip({ label, active, onClick, pending }) {
   return (
     <button
       type="button"
       onClick={onClick}
       className="px-3 py-1.5 rounded-full text-xs font-medium transition-all border"
       style={{
-        background: active ? C.curtain : C.card,
+        background: active ? C.curtain : pending ? C.paper : C.card,
         color: active ? "#FFFDF8" : C.inkSoft,
-        borderColor: active ? C.curtain : C.line
+        borderColor: (active || pending) ? C.curtain : C.line,
+        opacity: pending ? 0.7 : 1
       }}
     >
       {label}
@@ -3294,7 +3300,7 @@ function RepertoireItemRow({
   repertoireTessituraMap, repertoireUsageCounts, repertoireSkipped, setRepertoireSkipped,
   handleSaveRepertoire, tessituraSaving, roleMasterMap, projectMasterMap,
   handleSaveRole, handleSaveProject, handleSaveSingingLanguage, occupation,
-  repertoireSaveError, t
+  repertoireSaveError, pendingChip, t
 }) {
   const [topNoteInput, setTopNoteInput] = useState("");
   const [tessituraOptionalInput, setTessituraOptionalInput] = useState("");
@@ -3527,7 +3533,7 @@ function RepertoireItemRow({
               確定）とは、保存のタイミングが違います。
                 ・自由記述は、明示的な確定が要る（登録する）
                 ・離散的な選択は、タップで確定してよい
-                ・★即時に書くものは、書けたこと／書けなかったことを必ず見せる
+                ・★即時に書くものは【書けなかったこと】を必ず見せる（★成功は静かに）
               ★3つめを守ること。チップの色は「選ばれているか」であって
                 「保存できたか」ではありません。書き込みが弾かれると色が付かず、
                 利用者からは「押しても反応しない」としか見えません。
@@ -3536,6 +3542,7 @@ function RepertoireItemRow({
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               {["伊", "独", "仏", "露", "英", "日", "西", "チェコ", "その他"].map((lang) => (
                 <Chip key={lang} label={lang} active={record && record.singingLanguage === lang}
+                  pending={pendingChip === `lang:${name}:${lang}`}
                   onClick={() => handleSaveSingingLanguage(name, lang)} />
               ))}
             </div>
@@ -3553,6 +3560,7 @@ function RepertoireItemRow({
                 <div className="flex flex-wrap gap-1.5">
                   {["地声寄り", "高め", "低め", "特殊"].map((vq) => (
                     <Chip key={vq} label={vq} active={roleRec.voiceQuality === vq}
+                      pending={pendingChip === `role:${name}:${vq}`}
                       onClick={() => handleSaveRole(name, { ...roleRec, voiceQuality: vq })} />
                   ))}
                 </div>
@@ -3566,6 +3574,7 @@ function RepertoireItemRow({
                 <div className="flex flex-wrap gap-1.5">
                   {["ニュース", "情報", "スポーツ実況", "ナレーション", "CM", "司会", "朗読"].map((st) => (
                     <Chip key={st} label={st} active={projRec.scriptType === st}
+                      pending={pendingChip === `proj:${name}:${st}`}
                       onClick={() => handleSaveProject(name, { ...projRec, scriptType: st })} />
                   ))}
                 </div>
@@ -4335,7 +4344,7 @@ function ActivityBlockEditor({
   repertoireTessituraMap, repertoireUsageCounts, repertoireSkipped, setRepertoireSkipped,
   handleSaveRepertoire, tessituraSaving, songFactorResolver, professions,
   roleMasterMap, projectMasterMap, handleSaveRole, handleSaveProject, handleSaveSingingLanguage, t,
-  occupation, language, repertoireSaveError
+  occupation, language, repertoireSaveError, pendingChip
 }) {
   const detail = activity.detail || {};
   const items = activity.items || [];
@@ -4386,6 +4395,7 @@ function ActivityBlockEditor({
               handleSaveSingingLanguage={handleSaveSingingLanguage}
               occupation={occupation}
               repertoireSaveError={repertoireSaveError}
+              pendingChip={pendingChip}
               t={t}
             />
           ))}
@@ -4805,6 +4815,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   利用者からは「チップが反応しない」に見えていました（2026-08-29）。
   //   console.error だけで済ませないこと。
   const [repertoireSaveError, setRepertoireSaveError] = useState(null);
+  // ★いま保存を待っているチップ。ふつうは一瞬で消えます。
+  //   失敗したときだけ残り、それが「書けていない」の目印になります。
+  const [pendingChip, setPendingChip] = useState(null);
   const [topNoteInput, setTopNoteInput] = useState("");
   const [tessituraOptionalInput, setTessituraOptionalInput] = useState("");
   const [showTessituraAccordion, setShowTessituraAccordion] = useState(false);
@@ -9411,7 +9424,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //     … 打っている途中の「C」を保存してしまわないため。
   //   ・離散的な選択は、タップで確定してよい
   //     … 一度のタップに、迷いが残っていないため。
-  //   ・★即時に書くものは、書けたこと／書けなかったことを必ず見せる
+  //   ・★即時に書くものは【書けなかったこと】を必ず見せる（★成功は静かに）
   //
   //   ★3つめが無いと、こうなります（実際になりました）。
   //     チップの色は「選ばれているか」を表しますが、その色は保存が
@@ -9429,6 +9442,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // 職業別項目の再設計と学ぶ画面 §5: 役マスタ・案件マスタ（レパートリーと全く同じ仕組み）。
   async function handleSaveRole(roleName, { workTitle, pitchLowNote, pitchHighNote, voiceQuality } = {}) {
     if (!roleName) return;
+    if (voiceQuality) setPendingChip(`role:${roleName}:${voiceQuality}`);
     const supabase = createClient();
     const { error } = await supabase.from("role_master").upsert({
       user_id: userId, role_name: roleName, work_title: workTitle || "",
@@ -9441,10 +9455,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       return;
     }
     setRepertoireSaveError(null);
+    setPendingChip(null);   // ★成功したときだけ解く
     setRoleMasterMap((prev) => ({ ...prev, [roleName]: { workTitle: workTitle || "", pitchLowNote: pitchLowNote || null, pitchHighNote: pitchHighNote || null, voiceQuality: voiceQuality || null } }));
   }
   async function handleSaveProject(projectName, { scriptType, speechSpeed, isLive } = {}) {
     if (!projectName) return;
+    setPendingChip(`proj:${projectName}:${scriptType || ""}`);
     const supabase = createClient();
     const { error } = await supabase.from("project_master").upsert({
       user_id: userId, project_name: projectName, script_type: scriptType || null, speech_speed: speechSpeed || null, is_live: !!isLive
@@ -9456,11 +9472,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       return;
     }
     setRepertoireSaveError(null);
+    setPendingChip(null);   // ★成功したときだけ解く
     setProjectMasterMap((prev) => ({ ...prev, [projectName]: { scriptType: scriptType || null, speechSpeed: speechSpeed || null, isLive: !!isLive } }));
   }
   // 職業別項目の再設計と学ぶ画面 §3.1: 歌唱言語をレパートリーに登録する（曲ごとに1回だけ）。
   async function handleSaveSingingLanguage(typedName, language) {
     if (!typedName) return;
+    setPendingChip(`lang:${typedName}:${language}`);
     const repertoireName = resolveRepertoireName(repertoireTessituraMap, typedName);
     const supabase = createClient();
     const existing = lookupRepertoire(repertoireTessituraMap, repertoireName) || {};
@@ -9475,6 +9493,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       return;
     }
     setRepertoireSaveError(null);
+    setPendingChip(null);   // ★成功したときだけ解く
     setRepertoireTessituraMap((prev) => ({ ...prev, [repertoireName]: { ...(prev[repertoireName] || {}), singingLanguage: language } }));
   }
 
@@ -11435,6 +11454,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                 handleSaveProject={handleSaveProject}
                                 handleSaveSingingLanguage={handleSaveSingingLanguage}
                               repertoireSaveError={repertoireSaveError}
+                              pendingChip={pendingChip}
                                 t={t}
                               occupation={currentOccupation} language={language}
                               />

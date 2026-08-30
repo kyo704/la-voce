@@ -104,8 +104,13 @@ async function main() {
   const raw = readRaw("components", "VocalTracker.jsx");
   assertTrue(/自由記述は、明示的な確定が要る/.test(raw), "原則①が書いてある");
   assertTrue(/離散的な選択は、タップで確定してよい/.test(raw), "原則②が書いてある");
-  assertTrue((raw.match(/即時に書くものは、書けたこと／書けなかったことを必ず見せる/g) || []).length >= 2,
+  // ★2026-08-30、判断の回答 §8-1 で③を書き換えました。
+  //   前：書けたこと／書けなかったことを必ず見せる
+  //   後：★【書けなかったこと】を必ず見せる（成功は静かに）
+  //   成功を毎回見せると画面が賑やかになる、という理由です。
+  assertTrue((raw.match(/即時に書くものは【書けなかったこと】を必ず見せる/g) || []).length >= 2,
     "★原則③が、手が触れる場所（保存側とチップ側）の両方に書いてある");
+  assertTrue(!/書けたこと／書けなかったこと/.test(raw), "★古い言い方が残っていない");
 
   console.log("\n=== 移行のSQL（NOT NULL を外す） ===");
   const sql = readCode("supabase", "migration_repertoire_tessitura_nullable.sql");
@@ -119,6 +124,22 @@ async function main() {
     "★仮の値を入れて通していない（入っていない事実を書き換えない）");
   assertTrue(!/tessitura_note: *"[^"]/.test(vt.replace(/tessitura_note: replace[^,]*,/, "")),
     "★画面側でも、テッシトゥーラに仮の値を入れていない");
+
+  console.log("\n=== ★チップの3状態（判断の回答 §8-2） ===");
+  assertTrue(/function Chip\(\{ label, active, onClick, pending \}\)/.test(vt), "チップが保存待ちを受け取る");
+  assertTrue(/pending \? C\.paper : C\.card/.test(vt), "★保存待ちを、未選択とも保存済みとも違う塗りにしている");
+  assertTrue(/const \[pendingChip, setPendingChip\] = useState\(null\)/.test(vt), "保存待ちの覚え書きが1つある");
+  // ★成功したときだけ解くこと。失敗時に解くと、止まって見えなくなります。
+  assertTrue((vt.match(/setPendingChip\(null\)/g) || []).length >= 3, "★3つの保存すべてで、成功時に解いている");
+  // ★窓を広く取らないこと。成功したときの setPendingChip(null) が入ってしまい、
+  //   「失敗時に解いている」と誤判定します（今日3度目の同じ取り違えです）。
+  //   error の枝（console.error 〜 その直後の return;）だけを見ます。
+  ["歌唱言語の登録に失敗しました", "役マスタの登録に失敗しました", "案件マスタの登録に失敗しました"].forEach((msg) => {
+    const at = vt.indexOf(`console.error("${msg}:"`);
+    const branch = at > 0 ? vt.slice(at, vt.indexOf("return;", at) + 7) : "";
+    assertTrue(!!branch && !/setPendingChip\(null\)/.test(branch),
+      `★失敗したときは解かない（${msg.slice(0, 4)}）`);
+  });
 
   console.log(`\n${failCount === 0 ? "✅ 全て通りました" : "❌ 失敗あり"}  成功:${passCount} 失敗:${failCount}`);
   process.exit(failCount === 0 ? 0 : 1);
