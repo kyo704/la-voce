@@ -107,6 +107,23 @@ export default async function AdminPage() {
     { label: "解約済み", value: canceledCount }
   ];
 
+  // ---- 消えたアカウントの数（時刻だけ） ----
+  //   ★select するのは deleted_at だけです。「*」にしないでください。
+  //     いまは列が2つしかありませんが、あとで誰かが列を足したときに
+  //     ここが黙って拾ってしまいます。
+  //   ★表そのものに時刻以外を入れない、という決めごとが先にありますが、
+  //     読む側でも狭めておきます（二重の歯止め）。
+  const { data: deletionRows } = await admin
+    .from("account_deletions").select("deleted_at").order("deleted_at", { ascending: false });
+  const deletionTotal = (deletionRows || []).length;
+  // 月ごとの内訳。★人を特定できる粒度にしないため、日ではなく月にします。
+  const deletionByMonth = {};
+  (deletionRows || []).forEach((r) => {
+    const m = String(r.deleted_at || "").slice(0, 7);   // YYYY-MM
+    if (m) deletionByMonth[m] = (deletionByMonth[m] || 0) + 1;
+  });
+  const deletionMonths = Object.entries(deletionByMonth).sort((a, b) => (a[0] < b[0] ? 1 : -1)).slice(0, 12);
+
   // ---- ここから追加分：実行順マスター Stage 2-1（入力率・7日目調査・PWA導線） ----
   const n = (entryRows || []).length || 1;
   const pct = (count) => `${Math.round((count / n) * 1000) / 10}%`;
@@ -213,6 +230,32 @@ export default async function AdminPage() {
             </div>
           ))}
         </div>
+      </div>
+
+      <h2 className="ff-display italic" style={{ fontSize: "1.5rem", color: C.curtain, marginTop: 32, marginBottom: 12 }}>
+        消えたアカウント
+      </h2>
+      <p style={{ fontSize: 12, color: C.inkSoft, marginBottom: 12 }}>
+        ★数だけです。誰が消したかは分かりません（時刻しか残していません）。
+        30日の猶予を申し出た時点では数えず、実際に消えたときだけ数えます。
+      </p>
+      <div className="rounded-2xl border p-4" style={{ borderColor: C.line, background: C.card }}>
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 8 }}>
+          <span style={{ color: C.inkSoft }}>これまでの合計</span>
+          <span style={{ fontFamily: "monospace", fontWeight: 500 }}>{deletionTotal} 件</span>
+        </div>
+        {deletionMonths.length === 0 ? (
+          <p style={{ fontSize: 12, color: C.inkSoft }}>まだありません。</p>
+        ) : (
+          <div className="space-y-1.5" style={{ borderTop: `1px solid ${C.line}`, paddingTop: 8 }}>
+            {deletionMonths.map(([month, count]) => (
+              <div key={month} style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
+                <span style={{ color: C.inkSoft }}>{month.replace("-", "年")}月</span>
+                <span style={{ fontFamily: "monospace", fontWeight: 500 }}>{count} 件</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <h2 className="ff-display italic" style={{ fontSize: "1.5rem", color: C.curtain, marginTop: 32, marginBottom: 12 }}>
