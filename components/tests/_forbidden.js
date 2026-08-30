@@ -12,6 +12,14 @@
 //   このリポジトリでは他の用途で使っていないことを確認済み（lib/ 内は
 //   cyclePeriods.js のみ。start_date / end_date の列を持つ表も cycle_periods だけ）。
 const FORBIDDEN_KEYS = [
+  // ★教師に共有しない11列（lib/shareScope.js が正・CLAUDE.md に記載）
+  //   2026-08-30 追加。それまで、この11列のうち cycle_start しか入っておらず、
+  //   ★guard-leak.test.js は medication_tags を許可リストに足しても落ちませんでした。
+  //   「わざと壊すと3本とも落ちる」（実装順序 §3）を満たしていなかったことになります。
+  //   実害はありませんでした（許可リストに入っていなかったため）。穴は検出器の側です。
+  "medication_tags", "location", "temperature", "humidity", "weather",
+  "environment_tags", "ambient_noise_db", "noisy_environment",
+  "flight_hours", "jetlag_hours",
   // 周期（周期記録の設計.md §2）
   "cyclePeriod", "cyclePeriods", "cycleSetting", "cycleSettings",
   "cycle_periods", "cycle_start", "cycle_show_on_home",
