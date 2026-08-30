@@ -128,10 +128,24 @@ assertTrue(!/clinicSummary|受診用/.test(exportSrc), "★書き出しが受診
 assertTrue(ui.includes('activeTab === "clinicSummary"') && ui.includes('activeTab === "exportSummary"'),
   "★2つは別の画面として存在する");
 
-console.log("\n=== ⑤ 課金の仕組みは、まだ1行も入っていない（G3.2 まで着手しない） ===");
+console.log("\n=== ⑤ ★課金の仕組みは、まだ1行も入っていない（G3.2 まで着手しない） ===");
 // 権利と課金の線引き.md の冒頭: G3 が終わるまで1行も実装しないこと。
-assertTrue(!/lib\/entitlements|from "@\/lib\/entitlements"/.test(uiRaw),
-  "エンタイトルメントのモジュールをまだ作っていない");
+//
+// ★2026-08-30、lib/entitlements.js を作りました。★これは課金ではありません。
+//   「仕上がった機能を、テスターにだけ先に見せる」出し分けです。
+//   売っていません。値段も支払いも期限もありません。
+//   ★したがって、見張る対象を「ファイルの有無」から「課金の概念の有無」へ
+//     変えます。ファイルの有無で見ると、別物まで止めてしまいます。
+//   ★凍結そのものは、いまも見張っています。下の3つが入った時点で落ちます。
+const entSrc = readCode("lib", "entitlements.js");
+assertTrue(!/plan|price|stripe|subscription|premium/i.test(entSrc),
+  "★出し分けの表に、プラン・価格・課金の概念が入っていない");
+assertTrue(!/stripe|checkout|price_/i.test(uiRaw.replace(/\/\/.*$/gm, "")),
+  "★画面に決済の導線が入っていない");
+assertTrue(!/有料プラン|アップグレード|購入/.test(uiRaw.replace(/\/\/.*$/gm, "")),
+  "★画面に購入を促す言葉が入っていない");
+assertTrue(/これは課金の実装ではありません/.test(readRaw("lib", "entitlements.js")),
+  "★entitlements.js 自身が「課金ではない」と明記している");
 
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
 if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }

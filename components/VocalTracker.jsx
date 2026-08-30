@@ -30,6 +30,9 @@ import { OCCUPATIONS, OCCUPATION_LABELS, OTHER_OCCUPATION, OCCUPATION_TO_LEGACY,
   DEFAULT_MIX, occupationOf, mixOf, isValidMix,
   repertoireExtraFor, EXTRA_SINGING_LANGUAGE, EXTRA_ROLE, EXTRA_PROJECT } from "@/lib/occupation";
 import { term, termLabel } from "@/lib/vocabulary";
+// ★テスター先行公開（課金ではありません）。判定は lib/entitlements.js の1か所。
+//   ★ここで profile.is_tester を直に見ないこと。フェイルクローズの向きが逆になります。
+import { can, viewerOf, IN_DEVELOPMENT_NOTE } from "@/lib/entitlements";
 import { typeFieldsFor } from "@/lib/typeFields";
 // 周期の記録（周期記録の設計.md §3）。★日数はすべてここで導出する。保存しない。
 import {
@@ -2338,6 +2341,19 @@ function DotSelector({ label, icon: Icon, value, onChange, lowLabel, highLabel }
 //   ★ふつうは一瞬で通り抜けるので、成功したときには何も見えません。
 //     失敗したときだけ「保存待ち」で止まり、それが目に見えます。
 //   ★成功の印（チェックなど）は出しません。画面が賑やかになります。
+// ★「開発中」の1枚（テスター先行公開）。
+//   ★「有料プランです」とは書きません。売っていないためです。
+//   ★ぼかしません。数字を出さないなら、最初から出しません（線引き §6-3）。
+//   ★画面を覆いません。勧誘もしません。ただ、いま出せないことだけを伝えます。
+function InDevelopmentCard({ title }) {
+  return (
+    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+      <h3 className="ff-display italic text-lg mb-1" style={{ color: C.inkSoft }}>{title}</h3>
+      <p className="text-xs leading-relaxed" style={{ color: C.inkSoft }}>{IN_DEVELOPMENT_NOTE}</p>
+    </div>
+  );
+}
+
 function Chip({ label, active, onClick, pending }) {
   return (
     <button
@@ -4384,7 +4400,7 @@ function ActivityBlockEditor({
   repertoireTessituraMap, repertoireUsageCounts, repertoireSkipped, setRepertoireSkipped,
   handleSaveRepertoire, tessituraSaving, songFactorResolver, professions,
   roleMasterMap, projectMasterMap, handleSaveRole, handleSaveProject, handleSaveSingingLanguage, t,
-  occupation, language, repertoireSaveError, pendingChip
+  occupation, language, repertoireSaveError, pendingChip, viewer
 }) {
   const detail = activity.detail || {};
   const items = activity.items || [];
@@ -4627,7 +4643,9 @@ function ActivityBlockEditor({
         </div>
       )}
 
-      {items.length > 0 && total > 0 && (
+      {/* ★ゲートするのは負荷の配分だけです。曲目を記録すること、
+          曲名・最高音の登録は、これまでどおり誰にでもできます（線引き §3）。 */}
+      {can(viewer, "repertoire.multi") && items.length > 0 && total > 0 && (
         <div className="mt-3 pt-2 border-t" style={{ borderColor: C.line }}>
           <p className="text-xs font-medium mb-1">このブロックの負荷 {Math.round(total)}</p>
           <div className="space-y-1">
@@ -4895,6 +4913,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     // ★18歳未満か（A-7）。null は「まだ答えていない」＝未成年として扱う。
     //   既定を false にしないこと。答えていないことが、そのまま安全側になる。
     is_under_18: null, age_question_shown_at: null,
+    // ★テスターの印（課金ではありません）。既定は false＝一般の見え方。
+    is_tester: false,
     display_scale: DEFAULT_SCALE, simple_display: false });
   // 確認用: 管理者アカウントは、全職業の機能を見られるようにできる。
   // ★2026-08-29 まで、管理者は「常に」全職業が見えていました。そのため、
@@ -4924,6 +4944,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //     初めて評価され、全員が落ちました。
   //   ★短絡で隠れる宣言前アクセスは、いちばん遅れて出ます。
   const showAgeQuestion = ageColumnsReady && shouldAskAgeQuestion(profile);
+
+  // ★テスター先行公開の区分。課金ではありません（lib/entitlements.js の冒頭を参照）。
+  const viewer = useMemo(() => viewerOf(profile), [profile]);
 
   const effectiveProfessions = useMemo(() => {
     return (profile.is_admin && adminShowAllProfessions)
@@ -5385,6 +5408,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             .from("profiles").update(adopted).eq("id", userId);
           if (!adoptError && mounted) setProfile((prev) => ({ ...prev, ...adopted }));
         }
+      }
+
+      // テスターの印。migration_is_tester.sql が未実行の環境がありうるので、
+      // 本体クエリとは分けて寛容に読む（record_mode と同じ理由）。
+      // ★読めなければ false のまま＝一般の見え方（フェイルクローズ）。
+      const { data: testerRow } = await supabase
+        .from("profiles").select("is_tester").eq("id", userId).maybeSingle();
+      if (mounted && testerRow) {
+        setProfile((prev) => ({ ...prev, is_tester: testerRow.is_tester === true }));
       }
 
       const { data: healthRow } = await supabase
@@ -11572,7 +11604,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               repertoireSaveError={repertoireSaveError}
                               pendingChip={pendingChip}
                                 t={t}
-                              occupation={currentOccupation} language={language}
+                              occupation={currentOccupation} language={language} viewer={viewer}
                               />
                             ))}
                           </div>
@@ -13862,7 +13894,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </div>
                 ) : null}
 
-                {hasRefluxCondition && (refluxDinnerGapBins.some((b) => b.n >= 5) || refluxDinnerTagEffects.length > 0) && (
+                {/* ★ゲートするのは分析だけです。食事・就寝の記録と、当日の差の表示は
+                    これまでどおり誰にでも出ます（線引き §3・§4）。 */}
+                {can(viewer, "analysis.reflux") && hasRefluxCondition && (refluxDinnerGapBins.some((b) => b.n >= 5) || refluxDinnerTagEffects.length > 0) && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">逆流と喉の違和感の傾向</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -14400,7 +14434,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </p>
                 </div>
 
-                {compositePatternInsight && (compositePatternInsight.sentences.length > 0 || compositePatternInsight.gateMessage) && (
+                {!can(viewer, "analysis.relations") && (
+                  <InDevelopmentCard title={t("titleCompositeInsight")} />
+                )}
+                {can(viewer, "analysis.relations") && compositePatternInsight && (compositePatternInsight.sentences.length > 0 || compositePatternInsight.gateMessage) && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">{t("titleCompositeInsight")}</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -14460,7 +14497,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </div>
                 )}
 
-                {cycleTrackingOn(profile) && hasCycleData && cyclePeriodRows.length > 0 && (
+                {/* ★ゲートするのは分析だけです。周期を記録すること、ホームの
+                    「◯日目」の表示は、これまでどおり誰にでも出ます（線引き §3・§4）。 */}
+                {can(viewer, "analysis.cycle") && cycleTrackingOn(profile) && hasCycleData && cyclePeriodRows.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">周期ごとの並び</h3>
                     {/* ★§3-G 4つに区切って平均を比べるのをやめた。区切り方が結論を
@@ -14534,7 +14573,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </div>
                 )}
 
-                {effectiveHabitRanking.length > 0 && (
+                {can(viewer, "analysis.relations") && effectiveHabitRanking.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">効いた習慣ランキング</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -14688,6 +14727,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ? t("noteEmptyPerformanceCorr")
                       : t("noteEmptyGeneralCorr")}
                   </div>
+                ) : !can(viewer, "analysis.relations") ? (
+                  <InDevelopmentCard title={t("titleCorrelationStrength")} />
                 ) : (
                   <>
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
@@ -15532,7 +15573,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 </div>
               );
             })()}
-            {activeTab === "clinicSummary" && (() => {
+            {/* ★受診用の1枚（export.doctorSheet）。
+                ★法定の書き出し（JSON/CSV）は別実装で、誰にでも無料のままです。
+                  線引き §3「この2つを同じ実装にまとめないでください」。 */}
+            {activeTab === "clinicSummary" && !can(viewer, "export.doctorSheet") && (
+              <InDevelopmentCard title="受診用サマリー" />
+            )}
+            {activeTab === "clinicSummary" && can(viewer, "export.doctorSheet") && (() => {
               // §5.4: ここには絶対に載せない（あとから「便利だから」と足されがちなので明記しておく）
               // 偏差値／ACWR／ラグ相関（声の時差マップ）／効果量（効いた習慣ランキング）／CPPS／エネルギー可用性
               const { start, end } = clinicPeriodRange;
@@ -15540,6 +15587,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <div className="space-y-5">
                   <style>{`@media print { header, nav, .no-print { display: none !important; } }`}</style>
                   <div className="rounded-2xl p-4 border no-print" style={{ background: C.card, borderColor: C.line }}>
+                    {/* ★これは「受診のときに持っていく1枚」です。
+                        ★法定の書き出し（JSON/CSV）とは別実装で、そちらは
+                          誰にでも無料のままです（線引き §3・§4）。混ぜないこと。 */}
                     <h2 className="ff-display italic text-xl mb-1">受診用サマリー</h2>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                       耳鼻咽喉科など受診の際にお使いください。独自の指標(偏差値・発声負荷など)は含めず、記録した内容をそのまま整理しています。
