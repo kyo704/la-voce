@@ -62,6 +62,7 @@ import {
   selectBoostCandidates, describeUnlockCondition, IMPROVEMENT, MAX_BOOST_CARDS
 } from "@/lib/analysisBoost";
 // 記録項目の表示・非表示は必ずこのレイヤーを通す（記録項目の再設計v2 §3.3）
+import { medicalCaution } from "@/lib/medicalCaution";
 import { isFieldGroupVisible, DEFAULT_RECORD_MODE } from "@/lib/fieldGroups";
 // 機能フラグ（G2-14）。判定はこのモジュールだけが持つ。
 import { canSeeBetaFeatures, canSeeTeacherFeatures, canSeeLineLink, canSeeStudentTeacherLink,
@@ -13202,7 +13203,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </p>
                       )}
                       <p className="text-xs mt-4" style={{ color: C.inkSoft }}>
-                        {t("noteVocalScoreDisclaimer")}
+                        {/* ★注意書きは lib/medicalCaution.js が唯一の正。
+                            ここで言い換えないこと（4か所で言い方が違っていました）。 */}
+                        {t("noteVocalScoreDisclaimer")}{medicalCaution(language)}
                       </p>
                     </>
                   )}
