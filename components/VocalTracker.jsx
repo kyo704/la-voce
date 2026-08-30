@@ -4546,7 +4546,11 @@ function ActivityBlockEditor({
           <div>
             <span className="text-xs font-medium block mb-1.5">会場の響き</span>
             <div className="flex gap-1.5">
-              {[["dead", "デッド"], ["normal", "普通"], ["live", "ライブ"]].map(([v, label]) => (
+              {/* ★保存する値（dead / normal / live）と係数は変えません。表示だけです。
+                  ★「ライブ」を音楽の人は「本番」と読みます。音響の用語のつもりでも、
+                    画面では別の意味になります（坂本さんの実機での気づき）。
+                    響きの強さが伝わる言葉にします。 */}
+              {[["dead", "響きにくい"], ["normal", "普通"], ["live", "よく響く"]].map(([v, label]) => (
                 <button key={v} type="button" onClick={() => onDetailChange({ hallAcoustics: v })}
                   className="flex-1 py-1.5 rounded-lg text-xs font-medium border"
                   style={{
@@ -7224,7 +7228,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }
     const acousticsRes = computeHedgesG(acousticsGroups.dead, acousticsGroups.other);
     if (acousticsRes && acousticsRes.n1 >= 3 && acousticsRes.n0 >= 3) {
-      results.push({ key: "acoustics", label: "会場の響き（デッドな日）", ...acousticsRes, sortWeight: effectSortWeight(acousticsRes) });
+      results.push({ key: "acoustics", label: "会場の響き（響きにくい日）", ...acousticsRes, sortWeight: effectSortWeight(acousticsRes) });
     }
     return results;
   }, [entries, effectiveProfessions]);
@@ -13070,12 +13074,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               ? (effectStateOf(r) === EFFECT_WAITING ? "記録が増えると、判定を始められます。" : "はっきりした関係は見えませんでした。")
                               : r.key === "costume"
                                 ? `衣装の締め付けが強い日は、翌日の声が平均${Math.abs(r.g).toFixed(1)}段階${r.g < 0 ? "悪く" : "変わらず"}記録されています`
-                                : `会場の響きがデッドな日は、翌日の声が平均${Math.abs(r.g).toFixed(1)}段階${r.g < 0 ? "悪く" : "変わらず"}記録されています`}
+                                : `会場の響きが響きにくい日は、翌日の声が平均${Math.abs(r.g).toFixed(1)}段階${r.g < 0 ? "悪く" : "変わらず"}記録されています`}
                           </p>
                           {mayShowEffectNumbers(r) && r.values1 && r.values0 && (
                             <div className="mt-2">
                               <GroupDotPlot values1={r.values1} values0={r.values0}
-                                label1={r.key === "costume" ? "締め付けが強い日" : "デッドな会場の日"}
+                                label1={r.key === "costume" ? "締め付けが強い日" : "響きにくい会場の日"}
                                 label0="それ以外の日" />
                             </div>
                           )}

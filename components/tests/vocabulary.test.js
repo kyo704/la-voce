@@ -30,18 +30,21 @@ async function main() {
   const O = await load("occupation.js");
 
   console.log("=== テスト1: 職業の一覧との取りこぼし（★ズレの検出） ===");
+  // ★空文字は「出さないと決めた」という答えなので、取りこぼしではありません。
+  //   undefined（書き忘れ）だけを取りこぼしとして数えます。
   O.OCCUPATIONS.forEach((occ) => {
-    const missing = V.TERM_KEYS.filter((k) => !V.term(occ, k));
+    const missing = V.TERM_KEYS.filter((k) => typeof V.term(occ, k) !== "string");
     assertEqual(missing, [], `${occ} の呼び名が全部そろっている`);
   });
-  assertEqual(V.TERM_KEYS.length, 6, "差し替える語は6つ");
+  assertEqual(V.TERM_KEYS.length, 9, "差し替える語は9つ（2026-08-30 に3つ追加）");
 
   console.log("\n=== テスト2: 辞書に無いものは声楽の言葉に落ちる（§4） ===");
+  // ★2026-08-30：actorScreen / mc / other は、辞書に明示しました。
+  //   「その他」の人に「テッシトゥーラ」が出ていたためです（用語辞書の拡張 §1-4）。
+  //   落ちる規則そのものは変えていないので、★本当に知らない職業で確かめます。
   const base = Object.fromEntries(V.TERM_KEYS.map((k) => [k, V.term("classical", k)]));
-  ["actorScreen", "mc", "other"].forEach((occ) => {
-    assertEqual(Object.fromEntries(V.TERM_KEYS.map((k) => [k, V.term(occ, k)])), base,
-      `${occ}（表に列が無い）が声楽の言葉に落ちる`);
-  });
+  assertEqual(Object.fromEntries(V.TERM_KEYS.map((k) => [k, V.term("trombone", k)])), base,
+    "★辞書に無い職業は、いまも声楽の言葉に落ちる");
   assertEqual(V.term("trombone", "performanceDay"), "本番", "知らない職業でも落ちる");
   assertEqual(V.term("classical", "knownNothing"), "", "知らない語は空文字（勝手に作らない）");
 
@@ -52,13 +55,42 @@ async function main() {
     actorStage: ["公演", "稽古", "稽古", "稽古以外で話した時間", "発声", "公演の翌日"],
     voiceActor: ["収録", "テスト", "レッスン", "収録以外で話した時間", "喉ならし", "収録の翌日"],
     narrator:   ["収録", "下読み", "レッスン", "練習以外で話した時間", "喉ならし", "収録の翌日"],
-    announcer:  ["生放送", "打ち合わせ", "研修", "放送以外で話した時間", "発声", "放送の翌日"],
+    // ★「打ち合わせ」は声を出さないので、下読みに訂正しました（2026-08-30）。
+    announcer:  ["生放送", "下読み", "研修", "放送以外で話した時間", "発声", "放送の翌日"],
     rakugo:     ["高座", "ネタ稽古", "稽古", "練習以外で話した時間", "声出し", "高座の翌日"],
     pops:       ["ライブ", "リハ", "レッスン", "練習以外で話した時間", "ウォームアップ", "ライブの翌日"]
   };
+  // ★表は最初の6語ぶんです。2026-08-30 に足した3語は、下のテスト3-2 で見ます。
+  const TABLE_KEYS = V.TERM_KEYS.slice(0, 6);
   Object.entries(TABLE).forEach(([occ, words]) => {
-    assertEqual(V.TERM_KEYS.map((k) => V.term(occ, k)), words, `${occ} の行が表のとおり`);
+    assertEqual(TABLE_KEYS.map((k) => V.term(occ, k)), words, `${occ} の行が表のとおり`);
   });
+
+  console.log("\n=== テスト3-2: 2026-08-30 に足した語（用語辞書の拡張 §1-4） ===");
+  // カードの見出し
+  const CARDS = { classical: "曲目", musical: "曲目", pops: "曲目", voiceActor: "役",
+    narrator: "案件", announcer: "番組", actorStage: "作品", actorScreen: "作品",
+    rakugo: "演目", mc: "案件", other: "演目" };
+  Object.entries(CARDS).forEach(([occ, w]) =>
+    assertEqual(V.term(occ, "repertoireCard"), w, `${occ} のカードは「${w}」`));
+  // ★「テッシトゥーラ」は声楽とミュージカルだけ。ほかでは絶対に出しません。
+  O.OCCUPATIONS.filter((o) => o !== "classical" && o !== "musical").forEach((occ) => {
+    assertTrue(V.term(occ, "tessitura") !== "テッシトゥーラ",
+      `★${occ} に「テッシトゥーラ」を出さない`);
+  });
+  assertEqual(V.term("pops", "tessitura"), "よく出てくる高さ", "ポップスは「よく出てくる高さ」");
+  assertEqual(V.term("actorStage", "tessitura"), "台詞の高さ", "舞台俳優は「台詞の高さ」");
+  // ★落語と声優は、坂本さんの確認待ち。空文字＝出さない、で止めています。
+  assertEqual(V.term("rakugo", "tessitura"), "", "★落語は空（確認待ちなので出さない）");
+  assertEqual(V.term("voiceActor", "tessitura"), "", "★声優も空（確認待ちなので出さない）");
+  assertEqual(V.term("narrator", "tessitura"), "", "ナレーターは出さない");
+  assertEqual(V.term("announcer", "tessitura"), "", "アナウンサーは出さない");
+
+  console.log("\n=== ★アナウンサーの「打ち合わせ」の訂正 ===");
+  // 打ち合わせは声を出さない。この欄は「声を使ったか」を記録する場所。
+  assertEqual(V.term("announcer", "rehearsalDay"), "下読み", "★下読みに直っている");
+  O.OCCUPATIONS.forEach((occ) =>
+    assertTrue(V.term(occ, "rehearsalDay") !== "打ち合わせ", `★${occ} に「打ち合わせ」が無い`));
 
   console.log("\n=== テスト4: ★保存される値を書き換えていない（§4） ===");
   const code = readCode("lib", "vocabulary.js");
