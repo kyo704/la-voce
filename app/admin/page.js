@@ -86,6 +86,12 @@ export default async function AdminPage() {
   } catch (e) {
     authListError = e;
   }
+  // 群ごとの人数。★cohort だけを見ます（viewerOf() と同じ見方）。
+  //   知らない値が入っていたら、どれにも数えません。★黙って一般に足さないこと。
+  const cohortCount = (name) => (profiles || []).filter((p) => p.cohort === name).length;
+  const cohortUnknown = (profiles || []).filter(
+    (p) => p.cohort && !["tester", "general", "founder"].includes(p.cohort)).length;
+
   const confirmedOf = (id) => {
     const u = authUserById[id];
     if (!u) return null;                       // ★分からないときは null。false にしない
@@ -132,9 +138,14 @@ export default async function AdminPage() {
     { label: "　うち★未確認（登録メールを開いていない）", value: users.filter((u) => confirmedOf(u.id) === false).length },
     { label: "　うち不明（auth を読めず）", value: users.filter((u) => confirmedOf(u.id) === null).length },
     // ★群ごとの人数。継続率を分けて見るための分母です。
-    { label: "群：tester", value: users.filter((u) => (u.cohort || (u.is_tester ? "tester" : "general")) === "tester").length },
-    { label: "群：general", value: users.filter((u) => (u.cohort || (u.is_tester ? "tester" : "general")) === "general").length },
-    { label: "群：founder", value: users.filter((u) => u.cohort === "founder").length },
+    //   ★cohort が正です。is_tester は見ません（2026-08-30、移行が済みました）。
+    //     両方を見ると、食い違ったときに管理画面と viewerOf() の答えがずれます。
+    //     viewerOf() は cohort だけを見るので、ここも揃えます。
+    { label: "★テスター合計", value: cohortCount("tester") },
+    { label: "　一般", value: cohortCount("general") },
+    { label: "　founder", value: cohortCount("founder") },
+    // ★0 でないときだけ出します。0 なら並べても意味がありません。
+    ...(cohortUnknown > 0 ? [{ label: "　★知らない群（要確認）", value: cohortUnknown }] : []),
     { label: "お試し中", value: trialingCount },
     { label: "契約中", value: activeCount },
     { label: "解約済み", value: canceledCount }

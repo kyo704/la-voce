@@ -49,7 +49,13 @@ console.log("\n=== 一覧の印 ===");
 assertTrue(/u\.cohort === "tester" \|\| \(u\.is_tester && !u\.cohort\)/.test(admin),
   "★テスターの印を出す（付与できたか確かめられる）");
 assertTrue(/u\.cohort === "founder"/.test(admin), "founder の印も出す");
-assertTrue(/label: "群：tester"/.test(admin), "★群ごとの人数を出す（継続率の分母）");
+assertTrue(/label: "★テスター合計", value: cohortCount\("tester"\)/.test(admin),
+  "★テスターの合計人数を出す");
+assertTrue(/const cohortCount = \(name\) => \(profiles \|\| \[\]\)\.filter\(\(p\) => p\.cohort === name\)/.test(admin),
+  "★cohort だけを見る（is_tester を混ぜない）");
+assertTrue(!/cohort \|\| \(u\.is_tester \? "tester" : "general"\)/.test(admin),
+  "★移行中の読み替えが、数えるところに残っていない");
+assertTrue(/cohortUnknown/.test(admin), "★知らない群が居たら、黙らせず出す");
 assertTrue(/confirmedOf\(u\.id\) === false && \(/.test(admin), "未確認の印を出す");
 assertTrue(/is_admin, is_tester,/.test(admin), "is_tester を読んでいる");
 
