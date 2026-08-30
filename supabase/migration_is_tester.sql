@@ -43,6 +43,17 @@ select id, email
 --  where id = (select id from auth.users where email = 'ayane.sop1300@gmail.com');
 
 -- ---------------------------------------------------------------------------
+-- ②-2 2人目（2026-08-30 追加）
+--     ★同じ手順です。まず居ることを確かめ、そのあとで立ててください。
+-- ---------------------------------------------------------------------------
+select id, email
+  from auth.users
+ where email = 'topniel929@gmail.com';
+
+-- update public.profiles set is_tester = true
+--  where id = (select id from auth.users where email = 'topniel929@gmail.com');
+
+-- ---------------------------------------------------------------------------
 -- ③ 確かめる
 -- ---------------------------------------------------------------------------
 select column_name as "列", data_type as "型", is_nullable as "null可",
