@@ -14109,25 +14109,25 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 </div>
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">タンパク質摂取量（体重1kgあたり）の推移</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>破線が「身体データ」で設定した目標係数です。</p>
-                  <div style={{ width: "100%", height: 200 }}>
+                  <h3 className="ff-display italic text-lg mb-1">{t("titleNutritionWeightChart")}</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteNutritionWeightChart")}</p>
+                  {/* ★何から計算しているかを書きます（単独カードを外したため、
+                      この1枚だけを見て分かる必要があります）。 */}
+                  <p className="text-xs mt-3 mb-1" style={{ color: C.inkSoft }}>
+                    体重：記録した日の体重をそのまま並べています。平均や補正はしていません。
+                  </p>
+                  <div style={{ width: "100%", height: 110, marginTop: 8 }}>
                     <ResponsiveContainer>
                       <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
                         <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 11, fill: C.inkSoft }} unit="g/kg" />
+                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="kg" />
                         <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <ReferenceLine y={Number(profile.protein_coefficient) || 1.6} stroke={C.gold} strokeDasharray="4 4" />
-                        <Line type="monotone" dataKey="proteinPerKg" name={t("chartNameActualCoefficient")} stroke={SERIES.s1} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                        <Line type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={SERIES.s3} strokeWidth={2} dot={{ r: 2 }} connectNulls />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
-                </div>
 
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">{t("titleNutritionWeightChart")}</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteNutritionWeightChart")}</p>
                   <div style={{ width: "100%", height: 150 }}>
                     <ResponsiveContainer>
                       <ComposedChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
@@ -14144,23 +14144,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       </ComposedChart>
                     </ResponsiveContainer>
                   </div>
-                  <div style={{ width: "100%", height: 110, marginTop: 8 }}>
-                    <ResponsiveContainer>
-                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                        <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="kg" />
-                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <Line type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={SERIES.s3} strokeWidth={2} dot={{ r: 2 }} connectNulls />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
                   {/* §4-1 の指定どおりの文言。体重とカロリーは記録として残すが、
                       声の分析には使っていない。そのことを本人に伝える。 */}
                   <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
                     ※ 声の分析には使っていません。記録として残しているだけです。
                   </p>
-                  <div style={{ width: "100%", height: 110, marginTop: 8 }}>
+                                    {/* ★破線は、プロフィールに入れた「1kgあたりの目標」です。
+                      ★下回った日を責める線として使わないこと（描画仕様 §4-1）。 */}
+                  <p className="text-xs mt-3 mb-1" style={{ color: C.inkSoft }}>
+                    タンパク質：その日に記録した食事のタンパク質を合計し、その日の体重で割っています。
+                    体重を記録していない日は、直近に記録した体重を使います。
+                  </p>
+<div style={{ width: "100%", height: 110, marginTop: 8 }}>
                     <ResponsiveContainer>
                       <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
@@ -14175,22 +14170,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
                     3つの指標を、それぞれ実際のスケールのまま、x軸だけ揃えて上下に並べています。1枚のグラフに複数の軸を重ねると、交点の位置が軸の取り方次第で変わってしまうため、この形にしています。
                   </p>
-                </div>
-
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <h3 className="ff-display italic text-lg mb-1">{t("titleWeightTrend")}</h3>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteLast30Days")}</p>
-                  <div style={{ width: "100%", height: 200 }}>
-                    <ResponsiveContainer>
-                      <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                        <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 11, fill: C.inkSoft }} unit="kg" />
-                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
-                        <Line type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={SERIES.s3} strokeWidth={2} dot={{ r: 3 }} connectNulls />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
                 </div>
 
                 {(energyAvailabilityAnalysis.method === "ea"
