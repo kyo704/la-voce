@@ -18,6 +18,26 @@ const { readCode } = require("./_source");
 let passCount = 0, failCount = 0;
 function assertTrue(c, label) { if (c) { console.log(`  ✓ ${label}`); passCount++; } else { console.log(`  ✗ ${label}`); failCount++; } }
 
+// ★必ず、実際に描画されるファイルを読むこと。
+//   2026-08-31 まで、リポジトリ直下に import されない写しが残っていました。
+//   そちらを直しても画面は変わりません。
+const fs = require("fs");
+const path = require("path");
+const ROOT = path.join(__dirname, "..", "..");
+const LIVE = "components/VocalTracker.jsx";
+
+// このテストが見ているファイルが、本当に描画される側かを先に確かめる。
+const page = fs.readFileSync(path.join(ROOT, "app", "dashboard", "page.js"), "utf8");
+if (!/from\s+"@\/components\/VocalTracker"/.test(page)) {
+  console.log("  ✗ ★app/dashboard/page.js が components/VocalTracker を読んでいない");
+  process.exit(1);
+}
+if (fs.existsSync(path.join(ROOT, "VocalTracker.jsx"))) {
+  console.log("  ✗ ★リポジトリ直下に、使われない VocalTracker.jsx の写しがある");
+  process.exit(1);
+}
+console.log(`（読んでいるファイル: ${LIVE} ＝ app/dashboard/page.js が import する側）\n`);
+
 const vt = readCode("components", "VocalTracker.jsx");
 
 /** const NAME = useMemo(() => { ... }, [deps]); を、括弧を数えて取り出す。 */
