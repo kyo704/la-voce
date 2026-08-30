@@ -136,6 +136,48 @@ async function main() {
   assertTrue(!/\balter table public\.profiles[\s\S]{0,80}\bage\b\s/.test(sql.replace(/is_under_18|age_question_shown_at/g, "")),
     "★profiles.age に触っていない");
 
+  console.log("\n=== ★論拠は「害の非対称」であること（2026-08-30 の差し替え） ===");
+  const gateSrc = readRaw("lib", "ageGate.js");
+  assertTrue(/安全に関わる判定を、他の目的の欄と混ぜないため/.test(gateSrc),
+    "★新しい論拠が書いてある");
+  assertTrue(/間違えたときの害が、まったく違う/.test(gateSrc), "★害の非対称が書いてある");
+  assertTrue(/集める情報が最小限だから/.test(gateSrc) && /✗ 旧い理由/.test(gateSrc),
+    "★古い論拠が「もう成り立たない」と明示してある（黙って消していない）");
+  assertTrue(/配布前の暫定/.test(gateSrc), "★暫定であることが書いてある");
+  assertTrue(/生年月日を含めて設計し直します/.test(gateSrc), "★いつ作り直すかが書いてある");
+
+  console.log("\n=== ★本人が答えを変えられる（永久に弾かれない） ===");
+  const vt2 = readCode("components", "VocalTracker.jsx");
+  assertTrue(/async function handleChangeAgeAnswer\(nextIsUnder18\)/.test(vt2), "設定から変えられる");
+  assertTrue(/from\("age_answer_changes"\)\.insert\(\{/.test(vt2), "★変更を記録に残す");
+  assertTrue(/from_value: before \?\? null, to_value: nextIsUnder18/.test(vt2),
+    "★どちらからどちらへ、を残す（null も残す）");
+  // ★記録が書けなくても、変更そのものは通すこと（19歳の人が弾かれたままになる）
+  const at = vt2.indexOf("年齢の答えの変更を記録できませんでした");
+  assertTrue(at > 0 && !/return;/.test(vt2.slice(at, at + 200)),
+    "★記録に失敗しても、変更は巻き戻さない");
+  assertTrue(/hasAnsweredAgeQuestion\(profile\)/.test(vt2), "画面は ageGate を通して状態を出す");
+
+  console.log("\n=== ★年齢の欄と、この答えを混ぜていない ===");
+  assertTrue(/ここは「身体データ」の年齢とは別のもの/.test(readRaw("components", "VocalTracker.jsx")),
+    "★別物であることを、画面にも書いてある");
+  // profiles.age を年齢判定に使っていないこと（既存の見張りを再確認）
+  assertTrue(!/profile\.age[^_]/.test(gateSrc.replace(/\/\/.*$/gm, "")),
+    "★ageGate は profiles.age を読まない");
+
+  console.log("\n=== 記録の表（書き出し・削除に入っている） ===");
+  assertTrue(readCode("lib", "exportData.js").includes("age_answer_changes"), "★書き出しに含まれる");
+  assertTrue(readCode("lib", "accountDeletion.js").includes("age_answer_changes"), "★削除で消える");
+  const changeSql = readCode("supabase", "migration_age_answer_changes.sql");
+  assertTrue(/create table if not exists public\.age_answer_changes/.test(changeSql), "表を作る");
+  assertTrue(!/for delete|for update/.test(changeSql), "★消す・書き換えるポリシーを作っていない");
+  // ★字面で "ip" を探さないこと。「★IPを保存しないこと」という自分の注意書きに当たります。
+  //   （SQLの文字列なので `--` のコメント除去では消えません）
+  //   列の定義として ip があるかどうかを見ます。
+  assertTrue(!/^\s*ip(_address)?\s+\w/mi.test(changeSql), "★IPの列を作っていない");
+  assertTrue(/IPを保存しないこと/.test(readRaw("supabase", "migration_age_answer_changes.sql")),
+    "★保存しない、と書いてある");
+
   console.log(`\n${failCount === 0 ? "✅ 全て通りました" : "❌ 失敗あり"}  成功:${passCount} 失敗:${failCount}`);
   process.exit(failCount === 0 ? 0 : 1);
 }

@@ -79,7 +79,7 @@ import { EXPORTED_TABLES, EXPORTED_PROFILE_COLUMNS, entriesToCsv, buildExportPay
 // 年齢の確認（A-7 の1行目）。★「未成年として扱うか」の判断は、このモジュールだけが持つ。
 //   ここで profile.is_under_18 を直に見ないこと。答えていない人を成人側へ倒してしまう。
 import {
-  shouldAskAgeQuestion, mayAskForConsent, isTreatedAsMinor,
+  shouldAskAgeQuestion, mayAskForConsent, isTreatedAsMinor, hasAnsweredAgeQuestion,
   answerToProfilePatch, skipToProfilePatch, adoptSignupAnswer
 } from "@/lib/ageGate";
 import HealthInfo from "@/components/HealthInfo";
@@ -8757,6 +8757,31 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (error) { console.error("年齢の確認の保存に失敗しました:", error); return; }
     setProfile((p) => ({ ...p, ...patch }));
   }
+  // 設定から、本人が答えを変える（判断の回答-年齢確認 §1-3）。
+  // ★18歳になった人が、永久に弾かれ続けないようにするためです。
+  // ★安全に関わる判定なので、変えたことを残します（いつ・どちらからどちらへ）。
+  //   A-5 の監査ログ（誰が誰の健康データを見たか）とは別の表です。
+  async function handleChangeAgeAnswer(nextIsUnder18) {
+    const before = profile.is_under_18;
+    if (before === nextIsUnder18) return;
+    const supabase = createClient();
+    const patch = answerToProfilePatch(nextIsUnder18);
+    const { error } = await supabase.from("profiles").update(patch).eq("id", userId);
+    if (error) { console.error("年齢の答えを変えられませんでした:", error); return; }
+    // ★記録が書けなくても、変更そのものは通します。書けなかったことは console に残します。
+    //   ここで巻き戻すと、19歳の人が弾かれたままになります。
+    const { error: logError } = await supabase.from("age_answer_changes").insert({
+      user_id: userId, from_value: before ?? null, to_value: nextIsUnder18
+    });
+    if (logError) {
+      console.error(
+        "年齢の答えの変更を記録できませんでした。supabase/migration_age_answer_changes.sql を実行してください。",
+        logError
+      );
+    }
+    setProfile((p) => ({ ...p, ...patch }));
+  }
+
   async function handleSkipAgeQuestion() {
     const patch = skipToProfilePatch();
     const supabase = createClient();
@@ -14970,7 +14995,40 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </div>
                   </div>
 
+                  {/* ★年齢の答えは、本人が変えられます（判断の回答-年齢確認 §1-3）。
+                      18歳になった人が、永久に弾かれ続けないためです。
+                      ★ここで profile.is_under_18 を直に見ないこと。判断は lib/ageGate.js。
+                      ★これは配布前の暫定です。一般公開のときに、保護者同意と
+                        あわせて生年月日を含めて設計し直します（同 §1-4）。 */}
                   <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                    <p className="text-sm font-medium mb-1">年齢の確認</p>
+                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                      {hasAnsweredAgeQuestion(profile)
+                        ? (isTreatedAsMinor(profile) ? "「18歳未満です」と答えています。" : "「18歳以上です」と答えています。")
+                        : "まだ答えていません。答えるまでは、18歳未満の方と同じ扱いになります。"}
+                    </p>
+                    <div className="flex gap-1.5">
+                      <button type="button" onClick={() => handleChangeAgeAnswer(true)}
+                        className="flex-1 py-1.5 rounded-full text-xs font-medium"
+                        style={{ background: (hasAnsweredAgeQuestion(profile) && isTreatedAsMinor(profile)) ? C.curtain : C.card,
+                          color: (hasAnsweredAgeQuestion(profile) && isTreatedAsMinor(profile)) ? "#FFFDF8" : C.inkSoft,
+                          border: `1px solid ${C.line}` }}>
+                        18歳未満です
+                      </button>
+                      <button type="button" onClick={() => handleChangeAgeAnswer(false)}
+                        className="flex-1 py-1.5 rounded-full text-xs font-medium"
+                        style={{ background: (hasAnsweredAgeQuestion(profile) && !isTreatedAsMinor(profile)) ? C.curtain : C.card,
+                          color: (hasAnsweredAgeQuestion(profile) && !isTreatedAsMinor(profile)) ? "#FFFDF8" : C.inkSoft,
+                          border: `1px solid ${C.line}` }}>
+                        18歳以上です
+                      </button>
+                    </div>
+                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                      ここは「身体データ」の年齢とは別のものです。年齢は栄養の計算にだけ使い、この答えとはつながっていません。
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl p-3 mt-2" style={{ background: C.paper }}>
                     <p className="text-sm font-medium mb-1">記録データの同意状況</p>
                     <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
                       記録・分析のための取得に{profile.consent_health_data_at ? `${new Date(profile.consent_health_data_at).toLocaleDateString("ja-JP")}に同意済み` : "未同意"}です。
