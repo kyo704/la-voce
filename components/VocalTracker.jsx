@@ -103,6 +103,17 @@ const DINNER_TAG_KEYS = { "揚げ物": "dinnerFried", "あっさり": "dinnerLig
 // lavoce-収集データ拡張案.md C-2: 服薬タグ。DINNER_TAGSと同じ複数選択タグの形式。
 const MEDICATION_OPTIONS = ["抗ヒスタミン薬", "吸入ステロイド", "経口避妊薬", "NSAIDs", "利尿薬"];
 
+// 本番外の発話時間の4択（中核5項目 §2-3）。
+// ★保存するのは分です（列 non_performance_speech_minutes は数値のまま）。
+//   代表値なので、正確な分数ではありません。中央値で二分するには足ります。
+// ★この一覧をここ以外に書かないこと。画面に文字列を散らすと、片方だけ変わります。
+const SPEECH_MINUTE_CHOICES = [
+  { value: 15, label: "15分" },
+  { value: 30, label: "30分" },
+  { value: 60, label: "1時間" },
+  { value: 120, label: "2時間以上" }
+];
+
 // ★cutoff（文献のしきい値）は、画面に出しません。設計憲章 §2-1
 //   「文献の基準値を、個人の数値と同じ画面に置かない。基準値は『学ぶ』の記事の中だけ」。
 //   値そのものは尺度の性質として残していますが、本人の点数の隣に書き戻さないでください。
@@ -6672,6 +6683,39 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     alcohol: "今夜はアルコールを控えてみましょう",
     prevLoad: "今日は発声の負荷を少し抑えてみましょう"
   };
+  // 中核5項目の、項目ごとの記録日数（中核5項目 §2-4）。
+  // ★「率」ではなく「日数」を出します。率は分母が見えないと意味が取れません。
+  //   判定に要るのは各群10日なので、日数のほうが本人の実感に近い数です。
+  const coreFillCounts = useMemo(() => {
+    const dates = Object.keys(entries);
+    const has = (fn) => dates.filter((d) => fn(entries[d])).length;
+    return {
+      sleepHours: has((e) => typeof e.sleepHours === "number"),
+      offStageVoiceMinutes: has((e) => typeof e.nonPerformanceSpeechMinutes === "number"),
+      absoluteHumidity: has((e) => typeof e.temperature === "number" && typeof e.humidity === "number")
+    };
+  }, [entries]);
+
+  // ★事実だけを書きます（憲章 §8-1・中核5項目 §2-4）。
+  //   「記録しましょう」「あと◯日です」と書かないこと。催促は、
+  //   調子が悪い日の記録率を下げます。
+  const CORE_FILL_LABEL = {
+    sleepHours: "睡眠時間",
+    offStageVoiceMinutes: "練習以外で話した時間",
+    absoluteHumidity: "気温と湿度"
+  };
+  const coreFillNote = useMemo(() => {
+    const total = Object.keys(entries).length;
+    if (total < 3) return null;               // 記録がごく少ないうちは何も言わない
+    const behind = Object.entries(coreFillCounts)
+      .filter(([, n]) => n < total)            // 記録した日より少ないものだけ
+      .sort((a, b) => a[1] - b[1]);            // いちばん少ないものを1つだけ
+    if (behind.length === 0) return null;
+    const [key, n] = behind[0];
+    if (n >= NARRATIVE_MIN_N_PER_GROUP * 2) return null;  // 十分たまったら黙る
+    return `${CORE_FILL_LABEL[key]}は、まだ${n}日ぶんです`;
+  }, [coreFillCounts, entries]);
+
   const todaySuggestion = useMemo(() => {
     if (!todayForecast.hasData || !todayForecast.allContributions) return null;
     const actionable = todayForecast.allContributions
@@ -6681,6 +6725,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (!worst || worst.contribution >= -0.05) return null; // 改善余地がほぼなければ提案しない
     return HOME_SUGGESTION_TEXT[worst.key];
   }, [todayForecast]);
+
+  // ★新しい枠は作りません（§2-4「既存の枠の使い道を変えるだけ」）。
+  //   予報からの提案が無い日にだけ、中核の埋まり具合を1行出します。
+  //   ★両方を同時に出さないこと。1つだけ、が §3.3 の決めごとです。
+  const todayOneLine = todaySuggestion || coreFillNote;
   const forecastChartData = useMemo(() => {
     return forecastResiduals.slice(-14).map((r) => {
       const low = Math.max(1, r.yhat - forecastResidualSD);
@@ -10613,10 +10662,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     )}
                   </div>
 
-                  {todaySuggestion && !isRecordedToday && (
+                  {todayOneLine && !isRecordedToday && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <p className="text-xs mb-1" style={{ color: C.inkSoft }}>今日やるといいこと</p>
-                      <p className="text-sm font-medium">{todaySuggestion}</p>
+                      <p className="text-sm font-medium">{todayOneLine}</p>
                     </div>
                   )}
 
@@ -11619,11 +11668,33 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                       <div>
                         <span className="text-sm font-medium block mb-2">本番外の発話（レッスン・会議・電話・授業・打合せなど）</span>
-                        <div className="flex items-center gap-2">
-                          <MiniNumber value={formData.nonPerformanceSpeechMinutes ?? ""} placeholder="0"
-                            onChange={(v) => setFormData((f) => ({ ...f, nonPerformanceSpeechMinutes: v === "" ? null : Number(v) }))} />
-                          <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>分</span>
+                        {/* ★4択にします（中核5項目 §2-3）。
+                            「何分話しましたか」に毎日数字で答えるのは重すぎます。
+                            中央値で二分するだけなら、代表値の4択で足ります。
+                            ★保存する値は分（15/30/60/120）のままです。列も型も変えません。
+                            ★既にある数値は変換しません。4択に無い値でも、そのまま残り、
+                              「その他」として下の数字入力に出ます。
+                            ★数字で入れたい人のために、しっかり記録では数字入力も残します。 */}
+                        <div className="flex flex-wrap gap-1.5">
+                          {SPEECH_MINUTE_CHOICES.map(({ value, label }) => (
+                            <Chip key={value} label={label}
+                              active={formData.nonPerformanceSpeechMinutes === value}
+                              onClick={() => setFormData((f) => ({
+                                ...f,
+                                nonPerformanceSpeechMinutes: f.nonPerformanceSpeechMinutes === value ? null : value
+                              }))} />
+                          ))}
                         </div>
+                        {/* ★4択に無い値（過去に数字で入れた日・詳細で入れた日）は、
+                            消さずにここへ出します。黙って書き換えないこと。 */}
+                        {!isSimpleDisplay(profile) && (
+                          <div className="flex items-center gap-2 mt-2">
+                            <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>分で入れる</span>
+                            <MiniNumber value={formData.nonPerformanceSpeechMinutes ?? ""} placeholder="0"
+                              onChange={(v) => setFormData((f) => ({ ...f, nonPerformanceSpeechMinutes: v === "" ? null : Number(v) }))} />
+                            <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>分</span>
+                          </div>
+                        )}
                         <label className="flex items-center gap-2 mt-2 text-xs" style={{ color: C.inkSoft }}>
                           <input type="checkbox" checked={!!formData.noisyEnvironment}
                             onChange={(e) => setFormData((f) => ({ ...f, noisyEnvironment: e.target.checked }))} />
