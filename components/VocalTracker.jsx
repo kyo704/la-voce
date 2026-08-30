@@ -79,7 +79,7 @@ import { EXPORTED_TABLES, EXPORTED_PROFILE_COLUMNS, entriesToCsv, buildExportPay
 // 年齢の確認（A-7 の1行目）。★「未成年として扱うか」の判断は、このモジュールだけが持つ。
 //   ここで profile.is_under_18 を直に見ないこと。答えていない人を成人側へ倒してしまう。
 import {
-  shouldAskAgeQuestion, mayAskForConsent,
+  shouldAskAgeQuestion, mayAskForConsent, isTreatedAsMinor,
   answerToProfilePatch, skipToProfilePatch, adoptSignupAnswer
 } from "@/lib/ageGate";
 import HealthInfo from "@/components/HealthInfo";
@@ -8742,14 +8742,41 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const DEFAULT_SHARE_SCOPE = { voice: true, symptoms: true, sleep: true, activity: true, hydration: false, meal: false, body: false, mental: false, notes: false };
   const [shareScopeDraft, setShareScopeDraft] = useState(DEFAULT_SHARE_SCOPE);
   // §3.2・§4: 「つながる」を押した瞬間に、紐付けを作成しコードを使用済みにする。
+  // ★DBのトリガーが「未成年だから弾いた」と言っているかどうか。
+  //   supabase/migration_block_minor_teacher_link.sql が、この目印を返します。
+  //   ★ここで年齢を判定しないこと。判定はDB側です。
+  function isMinorLinkBlocked(error) {
+    return !!error && /MINOR_TEACHER_LINK_BLOCKED/.test(String(error.message || ""));
+  }
   async function handleAcceptInvitation() {
     if (!pendingInvitation) return;
+    // ★未成年（および年齢に答えていない人）は、先生とつながれません。
+    //   判断の回答 §7-2②（案D）。保護者同意ができるまでの措置です。
+    //
+    //   ★本当の歯止めはDB側のトリガーです
+    //     （supabase/migration_block_minor_teacher_link.sql）。
+    //     ここで止めるのは、生のDBエラーではなく日本語の理由を出すためだけ。
+    //     ★ここを消しても、つながれるようにはなりません。逆に、
+    //       ここだけ直してトリガーを外さないでください。画面は騙せます。
+    if (isTreatedAsMinor(profile)) {
+      setInviteLookupError(
+        "いまはまだ、先生とつながることができません。保護者の方の確認の仕組みを準備しています。"
+      );
+      return;
+    }
     const supabase = createClient();
     const { error: linkError } = await supabase.from("teacher_student_links").insert({
       teacher_id: pendingInvitation.teacher_id, student_id: userId, status: "active",
       share_scope: shareScopeDraft, accepted_at: new Date().toISOString()
     });
-    if (linkError) { setInviteLookupError("連携に失敗しました。もう一度お試しください。"); return; }
+    if (linkError) {
+      // ★上の事前チェックをすり抜けても、DBのトリガーが必ず弾きます。
+      //   そのときも、理由が分かる文にします。
+      setInviteLookupError(isMinorLinkBlocked(linkError)
+        ? "いまはまだ、先生とつながることができません。保護者の方の確認の仕組みを準備しています。"
+        : "連携に失敗しました。もう一度お試しください。");
+      return;
+    }
     await supabase.from("teacher_invitations").update({ used_at: new Date().toISOString(), used_by_student_id: userId }).eq("code", pendingInvitation.code);
     // 作業指示-教室プラン: この先生がownerである教室があれば、レッスン日程の運営面（在籍・担当）にも
     // 自動的に組み込む。健康データの共有範囲(share_scope)には一切影響しない、別の仕組み。
@@ -9145,8 +9172,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // 今回はシンプルにログのみ。通知UIは今回のスコープ外とする）。
   async function handleAssignTeacherToStudent(orgId, teacherId, studentId) {
     const supabase = createClient();
+    // ★生徒の年齢は、先生の側からは読めません（profiles は本人の行だけ）。
+    //   ここでは事前に判定できないので、DBのトリガーが返す理由を拾って出します。
     const { error } = await supabase.from("assignments").insert({ org_id: orgId, teacher_id: teacherId, student_id: studentId });
-    if (error) { console.error("担当の割り当てに失敗しました:", error); return; }
+    if (error) {
+      console.error("担当の割り当てに失敗しました:", error);
+      // ★DBのトリガーが弾いたときは、その理由を日本語で出します
+      //   （supabase/migration_block_minor_teacher_link.sql）。
+      //   生の Postgres のメッセージを、そのまま先生に見せないこと。
+      alert(isMinorLinkBlocked(error)
+        ? "この生徒は、いま先生とつなぐことができません。保護者の方の確認の仕組みを準備しています。"
+        : "担当を割り当てられませんでした。時間をおいて、もう一度お試しください。");
+      return;
+    }
     fetchOrgDetail(orgId);
   }
   async function handleUnassignTeacher(orgId, assignmentId) {
