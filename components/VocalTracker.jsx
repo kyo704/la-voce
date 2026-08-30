@@ -65,6 +65,7 @@ import {
 import { medicalCaution } from "@/lib/medicalCaution";
 import { ACCOMPANIMENT_OPTIONS } from "@/lib/storedValues";
 import { mayShowLuxuryFields } from "@/lib/ageGate";
+import { shouldShowNotice, withNoticeShown, noticeStateFromRows, NOTICE_TEXT } from "@/lib/notices";
 import { cycleOptInDescription, mentionsCycleInDataLists } from "@/lib/cycleCopy";
 import { writeWithMissingColumnFallback } from "@/lib/entryWriteFallback";
 import { isFieldGroupVisible, DEFAULT_RECORD_MODE } from "@/lib/fieldGroups";
@@ -5024,6 +5025,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   });
   const [confirmDeleteDate, setConfirmDeleteDate] = useState(null);
   const [selectedFactorKey, setSelectedFactorKey] = useState(null);
+  // 1回だけ出す知らせ。★null は「まだ読めていない」。
+  //   読めていないあいだは出しません（既読にできず、毎回出てしまうため）。
+  const [noticeState, setNoticeState] = useState(null);
   const [analysisTarget, setAnalysisTarget] = useState("performance");
   // 分析対象の期間（週・月・年・全期間・任意の期間から選べる）
   const [analysisPeriod, setAnalysisPeriod] = useState("all"); // "week" | "month" | "year" | "all" | "custom"
@@ -5550,6 +5554,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       // 本体クエリとは分けて寛容に読む（record_mode と同じ理由）。
       // ★読めなければ false のまま＝一般の見え方（フェイルクローズ）。
       // ★cohort を先に読みます。無い環境では is_tester に落ちます（viewerOf が判断）。
+      // 1回だけ出す知らせ。★表がまだ無い環境でも落ちないよう、別に寛容に読む。
+      //   読めなければ noticeState は null のままで、知らせを出しません。
+      const { data: noticeRows, error: noticeError } = await supabase
+        .from("user_notices").select("notice_key, shown_at").eq("user_id", userId);
+      if (mounted && !noticeError) setNoticeState(noticeStateFromRows(noticeRows));
+
       const { data: cohortRow } = await supabase
         .from("profiles").select("cohort").eq("id", userId).maybeSingle();
       if (mounted && cohortRow && cohortRow.cohort) {
@@ -8705,6 +8715,23 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (error) console.error("見やすさの設定を保存できませんでした:", error);
   }
 
+  // 知らせを既読にする。★列ではなく user_notices に1行入れます。
+  //   同じ鍵は主キーで弾かれるので、二重に入りません。
+  async function markNoticeShown(key) {
+    const at = new Date().toISOString();
+    setNoticeState((prev) => withNoticeShown(prev, key, at));
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("user_notices")
+      .upsert({ user_id: userId, notice_key: key, shown_at: at },
+              { onConflict: "user_id,notice_key", ignoreDuplicates: true });
+    if (error) {
+      // ★画面はもう閉じています。ここで戻すと、閉じたものがまた出ます。
+      //   出さないほうを優先し、記録の失敗は console に残します。
+      console.error("知らせを既読にできませんでした（次回また出ます）:", key, error);
+    }
+  }
+
   async function handleSaveProfile() {
     // ★下書きを保存します。下書きが無いとき（画面を開いていないとき）は
     //   保存済みの値をそのまま使います。
@@ -10651,6 +10678,56 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               const isRecordedToday = !!todayEntry;
               return (
                 <div className="space-y-4">
+                  {/* 1回だけの知らせ（lib/notices.js）。
+                      ★出すのは、まだ既読でなく、かつ文字が既定の大きさのときだけ。
+                        すでに大きくしている人に「大きくできます」と言わないため。
+                      ★user_notices が読めていないときは出しません。
+                        既読にできないので、毎回出てしまいます。
+
+                      ★「文字が小さければ」に応えるのは display_scale です。
+                        --base / --tap / --gap を動かすのは data-scale だけで、
+                        かんたん表示（simple_display）は文字の大きさに
+                        一切触れません（lib/displayPrefs.js の注記）。
+                        押して文字が変わらない、を作らないため、
+                        文字を大きくする方を先に置き、かんたん表示は
+                        別のボタンとして並べています。 */}
+                  {shouldShowNotice(noticeState, "displayScaleHint")
+                    && normalizeScale(profile.display_scale) === DEFAULT_SCALE && (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.sage }}>
+                      <p className="text-sm" style={{ color: C.ink, lineHeight: 1.7 }}>
+                        {NOTICE_TEXT.displayScaleHint}
+                      </p>
+                      <div className="flex flex-wrap gap-2 mt-3">
+                        <button type="button"
+                          onClick={async () => {
+                            await handleSaveDisplayPref({ display_scale: "large" });
+                            await markNoticeShown("displayScaleHint");
+                          }}
+                          className="px-4 py-2 rounded-full text-xs font-medium"
+                          style={{ background: C.curtain, color: "#FFFDF8" }}>
+                          文字を大きくする
+                        </button>
+                        <button type="button"
+                          onClick={async () => {
+                            await handleSaveDisplayPref({ simple_display: true });
+                            await markNoticeShown("displayScaleHint");
+                          }}
+                          className="px-4 py-2 rounded-full text-xs font-medium"
+                          style={{ background: C.card, color: C.ink, border: `1px solid ${C.line}` }}>
+                          かんたん表示にする
+                        </button>
+                        <button type="button"
+                          onClick={() => markNoticeShown("displayScaleHint")}
+                          className="px-4 py-2 rounded-full text-xs"
+                          style={{ color: C.inkSoft }}>
+                          閉じる
+                        </button>
+                      </div>
+                      <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                        どちらも、あとから「もっと」→「見やすさ」で戻せます。
+                      </p>
+                    </div>
+                  )}
                   {/* ★かんたん表示のホーム（見やすさ §3-1）。
                       大きなボタンを1つだけ、真ん中に置く。二番目に大事なものを2つまで。
                       ★減らすのは選択肢であって、機能ではない。
