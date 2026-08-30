@@ -63,9 +63,34 @@ export default async function AdminPage() {
   const admin = createAdminClient();
   const { data: profiles } = await admin
     .from("profiles")
-    .select("id, name, email, occupation, school, created_at, is_admin, survey_day7_response, pwa_install_prompted_at, pwa_installed_at, onboarding_completed")
+    .select("id, name, email, occupation, school, created_at, is_admin, is_tester, survey_day7_response, pwa_install_prompted_at, pwa_installed_at, onboarding_completed")
     .order("created_at", { ascending: false });
   const { data: subs } = await admin.from("subscriptions").select("*");
+
+  // ---- 確認済みかどうか（auth.users にしかありません） ----
+  //   ★profiles には確認の状態がありません。email_confirmed_at は auth.users 側です。
+  //   ★signup した瞬間に auth.users の行ができ、その時点で
+  //     handle_new_user が profiles を作ります（schema.sql:98「after insert」）。
+  //     つまり★確認していない人も、これまで「総ユーザー数」に入っていました。
+  //   ★listUsers はページ送りです。1ページだけ読むと、多いときに取りこぼします。
+  const authUserById = {};
+  let authListError = null;
+  try {
+    for (let page = 1; page <= 20; page++) {   // 上限は念のため（1000人ぶん）
+      const { data: authPage, error } = await admin.auth.admin.listUsers({ page, perPage: 50 });
+      if (error) { authListError = error; break; }
+      const list = (authPage && authPage.users) || [];
+      list.forEach((u) => { authUserById[u.id] = u; });
+      if (list.length < 50) break;
+    }
+  } catch (e) {
+    authListError = e;
+  }
+  const confirmedOf = (id) => {
+    const u = authUserById[id];
+    if (!u) return null;                       // ★分からないときは null。false にしない
+    return !!(u.email_confirmed_at || u.confirmed_at);
+  };
   // 実行順マスター Stage 0-3・Stage 2-1: 入力率の集計に必要な列を追加で取得する。
   const { data: entryRows } = await admin
     .from("entries")
@@ -102,6 +127,10 @@ export default async function AdminPage() {
 
   const stats = [
     { label: "総ユーザー数", value: totalUsers },
+    // ★確認していない人を分けて数えます。これまでは混ざっていました。
+    { label: "　うち確認済み", value: users.filter((u) => confirmedOf(u.id) === true).length },
+    { label: "　うち★未確認（登録メールを開いていない）", value: users.filter((u) => confirmedOf(u.id) === false).length },
+    { label: "　うち不明（auth を読めず）", value: users.filter((u) => confirmedOf(u.id) === null).length },
     { label: "お試し中", value: trialingCount },
     { label: "契約中", value: activeCount },
     { label: "解約済み", value: canceledCount }
@@ -113,8 +142,13 @@ export default async function AdminPage() {
   //     ここが黙って拾ってしまいます。
   //   ★表そのものに時刻以外を入れない、という決めごとが先にありますが、
   //     読む側でも狭めておきます（二重の歯止め）。
-  const { data: deletionRows } = await admin
+  const { data: deletionRows, error: deletionError } = await admin
     .from("account_deletions").select("deleted_at").order("deleted_at", { ascending: false });
+  // ★エラーを捨てないこと。表が無いときの 0 と、本当に 0 件のときの 0 が
+  //   見分けられなくなります（2026-08-30、実際に見分けられませんでした）。
+  const deletionTable = deletionError
+    ? (/does not exist|schema cache/i.test(deletionError.message || "") ? "missing" : "error")
+    : "ok";
   const deletionTotal = (deletionRows || []).length;
   // 月ごとの内訳。★人を特定できる粒度にしないため、日ではなく月にします。
   const deletionByMonth = {};
@@ -183,7 +217,15 @@ export default async function AdminPage() {
               {users.map((u) => (
                 <tr key={u.id} style={{ borderBottom: `1px solid ${C.line}` }}>
                   <td style={{ padding: "12px 14px" }}>
-                    {u.name || "—"}{u.is_admin && <span style={{ marginLeft: 6, fontSize: 11, color: C.gold }}>管理者</span>}
+                    {u.name || "—"}
+                    {u.is_admin && <span style={{ marginLeft: 6, fontSize: 11, color: C.gold }}>管理者</span>}
+                    {/* ★テスターの印。付与できたかを、ここで確かめられます。 */}
+                    {u.is_tester && <span style={{ marginLeft: 6, fontSize: 11, color: C.sage }}>テスター</span>}
+                    {/* ★確認していない人。登録メールを開いていないだけで、
+                        中身は空です。数に混ざると、実際より多く見えます。 */}
+                    {confirmedOf(u.id) === false && (
+                      <span style={{ marginLeft: 6, fontSize: 11, color: C.curtain }}>未確認</span>
+                    )}
                   </td>
                   <td style={{ padding: "12px 14px", color: C.inkSoft }}>{u.email || "—"}</td>
                   <td style={{ padding: "12px 14px", color: C.inkSoft }}>
@@ -240,12 +282,29 @@ export default async function AdminPage() {
         30日の猶予を申し出た時点では数えず、実際に消えたときだけ数えます。
       </p>
       <div className="rounded-2xl border p-4" style={{ borderColor: C.line, background: C.card }}>
+        {/* ★「表が無くて0」と「本当に0件」を、見分けられるようにします。
+            黙って 0 を出すと、壊れていることに気づけません。 */}
+        {deletionTable === "missing" ? (
+          <p style={{ fontSize: 13, color: C.curtain }}>
+            まだ記録の表がありません。<br />
+            <span style={{ fontSize: 12, color: C.inkSoft }}>
+              supabase/migration_account_deletions_count.sql を実行してください。
+              実行するまで、消えたアカウントは数えられません（削除そのものは動きます）。
+            </span>
+          </p>
+        ) : deletionTable === "error" ? (
+          <p style={{ fontSize: 13, color: C.curtain }}>
+            記録を読めませんでした。<br />
+            <span style={{ fontSize: 12, color: C.inkSoft }}>時間をおいて、もう一度開いてみてください。</span>
+          </p>
+        ) : (
+        <>
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 8 }}>
           <span style={{ color: C.inkSoft }}>これまでの合計</span>
           <span style={{ fontFamily: "monospace", fontWeight: 500 }}>{deletionTotal} 件</span>
         </div>
         {deletionMonths.length === 0 ? (
-          <p style={{ fontSize: 12, color: C.inkSoft }}>まだありません。</p>
+          <p style={{ fontSize: 12, color: C.inkSoft }}>まだありません（表はあります）。</p>
         ) : (
           <div className="space-y-1.5" style={{ borderTop: `1px solid ${C.line}`, paddingTop: 8 }}>
             {deletionMonths.map(([month, count]) => (
@@ -255,6 +314,8 @@ export default async function AdminPage() {
               </div>
             ))}
           </div>
+        )}
+        </>
         )}
       </div>
 
