@@ -44,7 +44,12 @@ assertTrue(/うち不明（auth を読めず）/.test(raw), "★不明も数え�
 assertTrue(/label: "総ユーザー数", value: totalUsers/.test(admin), "総ユーザー数は残してある");
 
 console.log("\n=== 一覧の印 ===");
-assertTrue(/u\.is_tester && <span/.test(admin), "★テスターの印を出す（付与できたか確かめられる）");
+// ★2026-08-30、群のラベル（cohort）に切り替えました。
+//   cohort が入っていればそちら、無い環境では古い is_tester に落ちます。
+assertTrue(/u\.cohort === "tester" \|\| \(u\.is_tester && !u\.cohort\)/.test(admin),
+  "★テスターの印を出す（付与できたか確かめられる）");
+assertTrue(/u\.cohort === "founder"/.test(admin), "founder の印も出す");
+assertTrue(/label: "群：tester"/.test(admin), "★群ごとの人数を出す（継続率の分母）");
 assertTrue(/confirmedOf\(u\.id\) === false && \(/.test(admin), "未確認の印を出す");
 assertTrue(/is_admin, is_tester,/.test(admin), "is_tester を読んでいる");
 

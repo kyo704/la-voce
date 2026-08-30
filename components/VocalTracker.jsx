@@ -32,7 +32,7 @@ import { OCCUPATIONS, OCCUPATION_LABELS, OTHER_OCCUPATION, OCCUPATION_TO_LEGACY,
 import { term, termLabel } from "@/lib/vocabulary";
 // ★テスター先行公開（課金ではありません）。判定は lib/entitlements.js の1か所。
 //   ★ここで profile.is_tester を直に見ないこと。フェイルクローズの向きが逆になります。
-import { can, viewerOf, IN_DEVELOPMENT_NOTE } from "@/lib/entitlements";
+import { can, viewerOf } from "@/lib/entitlements";
 import { typeFieldsFor } from "@/lib/typeFields";
 // 周期の記録（周期記録の設計.md §3）。★日数はすべてここで導出する。保存しない。
 import {
@@ -2341,18 +2341,13 @@ function DotSelector({ label, icon: Icon, value, onChange, lowLabel, highLabel }
 //   ★ふつうは一瞬で通り抜けるので、成功したときには何も見えません。
 //     失敗したときだけ「保存待ち」で止まり、それが目に見えます。
 //   ★成功の印（チェックなど）は出しません。画面が賑やかになります。
-// ★「開発中」の1枚（テスター先行公開）。
-//   ★「有料プランです」とは書きません。売っていないためです。
-//   ★ぼかしません。数字を出さないなら、最初から出しません（線引き §6-3）。
-//   ★画面を覆いません。勧誘もしません。ただ、いま出せないことだけを伝えます。
-function InDevelopmentCard({ title }) {
-  return (
-    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-      <h3 className="ff-display italic text-lg mb-1" style={{ color: C.inkSoft }}>{title}</h3>
-      <p className="text-xs leading-relaxed" style={{ color: C.inkSoft }}>{IN_DEVELOPMENT_NOTE}</p>
-    </div>
-  );
-}
+// ★「開発中」の1枚は、2026-08-30 に消しました。
+//   先行公開の文書 §4：「隠すのではありません。無いのです。」
+//     ✗ 鍵アイコン ／ ✗ バッジ ／ ✗ グレーアウト ／ ✗ 近日公開の予告
+//   ★非テスターの画面では、カードそのものを描きません。
+//   「存在するのに開かない」がいちばん不快で、
+//   「あなたはテスターではありません」と分かる表示は屈辱を与えます。
+//   ★InDevelopmentCard を作り直さないでください。
 
 function Chip({ label, active, onClick, pending }) {
   return (
@@ -4913,7 +4908,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     // ★18歳未満か（A-7）。null は「まだ答えていない」＝未成年として扱う。
     //   既定を false にしないこと。答えていないことが、そのまま安全側になる。
     is_under_18: null, age_question_shown_at: null,
-    // ★テスターの印（課金ではありません）。既定は false＝一般の見え方。
+    // ★群のラベル（課金ではありません）。既定は general＝一般の見え方。
+    //   ★判定は lib/entitlements.js の viewerOf() が持ちます。ここで比べないこと。
+    cohort: "general",
     is_tester: false,
     display_scale: DEFAULT_SCALE, simple_display: false });
   // 確認用: 管理者アカウントは、全職業の機能を見られるようにできる。
@@ -5413,6 +5410,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       // テスターの印。migration_is_tester.sql が未実行の環境がありうるので、
       // 本体クエリとは分けて寛容に読む（record_mode と同じ理由）。
       // ★読めなければ false のまま＝一般の見え方（フェイルクローズ）。
+      // ★cohort を先に読みます。無い環境では is_tester に落ちます（viewerOf が判断）。
+      const { data: cohortRow } = await supabase
+        .from("profiles").select("cohort").eq("id", userId).maybeSingle();
+      if (mounted && cohortRow && cohortRow.cohort) {
+        setProfile((prev) => ({ ...prev, cohort: cohortRow.cohort }));
+      }
       const { data: testerRow } = await supabase
         .from("profiles").select("is_tester").eq("id", userId).maybeSingle();
       if (mounted && testerRow) {
@@ -14434,9 +14437,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </p>
                 </div>
 
-                {!can(viewer, "analysis.relations") && (
-                  <InDevelopmentCard title={t("titleCompositeInsight")} />
-                )}
                 {can(viewer, "analysis.relations") && compositePatternInsight && (compositePatternInsight.sentences.length > 0 || compositePatternInsight.gateMessage) && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-1">{t("titleCompositeInsight")}</h3>
@@ -14727,9 +14727,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ? t("noteEmptyPerformanceCorr")
                       : t("noteEmptyGeneralCorr")}
                   </div>
-                ) : !can(viewer, "analysis.relations") ? (
-                  <InDevelopmentCard title={t("titleCorrelationStrength")} />
-                ) : (
+                ) : !can(viewer, "analysis.relations") ? null : (
                   <>
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-2">{t("titleCorrelationStrength")}</h3>
@@ -15576,9 +15574,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             {/* ★受診用の1枚（export.doctorSheet）。
                 ★法定の書き出し（JSON/CSV）は別実装で、誰にでも無料のままです。
                   線引き §3「この2つを同じ実装にまとめないでください」。 */}
-            {activeTab === "clinicSummary" && !can(viewer, "export.doctorSheet") && (
-              <InDevelopmentCard title="受診用サマリー" />
-            )}
             {activeTab === "clinicSummary" && can(viewer, "export.doctorSheet") && (() => {
               // §5.4: ここには絶対に載せない（あとから「便利だから」と足されがちなので明記しておく）
               // 偏差値／ACWR／ラグ相関（声の時差マップ）／効果量（効いた習慣ランキング）／CPPS／エネルギー可用性

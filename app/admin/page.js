@@ -63,7 +63,7 @@ export default async function AdminPage() {
   const admin = createAdminClient();
   const { data: profiles } = await admin
     .from("profiles")
-    .select("id, name, email, occupation, school, created_at, is_admin, is_tester, survey_day7_response, pwa_install_prompted_at, pwa_installed_at, onboarding_completed")
+    .select("id, name, email, occupation, school, created_at, is_admin, is_tester, cohort, survey_day7_response, pwa_install_prompted_at, pwa_installed_at, onboarding_completed")
     .order("created_at", { ascending: false });
   const { data: subs } = await admin.from("subscriptions").select("*");
 
@@ -131,6 +131,10 @@ export default async function AdminPage() {
     { label: "　うち確認済み", value: users.filter((u) => confirmedOf(u.id) === true).length },
     { label: "　うち★未確認（登録メールを開いていない）", value: users.filter((u) => confirmedOf(u.id) === false).length },
     { label: "　うち不明（auth を読めず）", value: users.filter((u) => confirmedOf(u.id) === null).length },
+    // ★群ごとの人数。継続率を分けて見るための分母です。
+    { label: "群：tester", value: users.filter((u) => (u.cohort || (u.is_tester ? "tester" : "general")) === "tester").length },
+    { label: "群：general", value: users.filter((u) => (u.cohort || (u.is_tester ? "tester" : "general")) === "general").length },
+    { label: "群：founder", value: users.filter((u) => u.cohort === "founder").length },
     { label: "お試し中", value: trialingCount },
     { label: "契約中", value: activeCount },
     { label: "解約済み", value: canceledCount }
@@ -220,7 +224,12 @@ export default async function AdminPage() {
                     {u.name || "—"}
                     {u.is_admin && <span style={{ marginLeft: 6, fontSize: 11, color: C.gold }}>管理者</span>}
                     {/* ★テスターの印。付与できたかを、ここで確かめられます。 */}
-                    {u.is_tester && <span style={{ marginLeft: 6, fontSize: 11, color: C.sage }}>テスター</span>}
+                    {/* ★群のラベル。継続率を群ごとに分けるために要ります。
+                        ★利用者には見せません（§4）。ここは管理画面です。 */}
+                    {(u.cohort === "tester" || (u.is_tester && !u.cohort)) &&
+                      <span style={{ marginLeft: 6, fontSize: 11, color: C.sage }}>テスター</span>}
+                    {u.cohort === "founder" &&
+                      <span style={{ marginLeft: 6, fontSize: 11, color: C.gold }}>founder</span>}
                     {/* ★確認していない人。登録メールを開いていないだけで、
                         中身は空です。数に混ざると、実際より多く見えます。 */}
                     {confirmedOf(u.id) === false && (
