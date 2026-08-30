@@ -235,7 +235,10 @@ const QUESTIONNAIRES = {
     ],
     factors: [
       { name: "声の疲労（VF）", start: 0, end: 9 },
-      { name: "病的リスク指標（PRI）", start: 10, end: 17 },
+      // ★画面には略称だけを出します（判断の回答 §4-1）。
+      //   正式名「病的リスク指標（Pathological Risk Index）」は「学ぶ」の記事の中だけ。
+      //   ★尺度そのものは外しません。名前だけの話です。
+      { name: "PRI", start: 10, end: 17 },
       { name: "声への不安（VC）", start: 18, end: 19 }
     ]
   }
@@ -2091,10 +2094,23 @@ async function recordAndAnalyzeSFF(durationMs = 3000) {
 // ---- CPPS計算用DSP ここまで ----
 // 前日の記録から、声のコンディションに影響しやすい要因を抽出する。
 // flagKey は「今日」タブの短い警告表示に、explainKey は分析タブの理論的な解説文に対応する。
+// 注意文に、その日の値を差し込む。★時刻の差は保存せず、毎回ここで作ります。
+function flagText(t, flagKey, values) {
+  let text = t(flagKey);
+  Object.entries(values || {}).forEach(([k, v]) => {
+    if (v == null) return;
+    text = text.split(`{${k}}`).join(String(v));
+  });
+  return text;
+}
 function computeConditionFlags(y) {
   const dinnerGap = computeTimeGapHours(y.dinnerTime, y.bedtime);
   const flags = [];
-  if (dinnerGap != null && dinnerGap < 3) flags.push({ flagKey: "flagDinnerGap", explainKey: "explainDinnerGap" });
+  // ★評価語を使わず、事実だけを出します（判断の回答 §4-3）。
+  //   時刻の差は保存せず、毎回ここで計算します。
+  if (dinnerGap != null && dinnerGap < 3) {
+    flags.push({ flagKey: "flagDinnerGap", explainKey: "explainDinnerGap", hours: Math.round(dinnerGap * 10) / 10 });
+  }
   if (typeof y.sleepHours === "number" && y.sleepHours < 6) flags.push({ flagKey: "flagShortSleep", explainKey: "explainShortSleep" });
   if (entryHasActivityKind(y, "本番") || entryHasActivityKind(y, "リハーサル")) flags.push({ flagKey: "flagHeavyVoiceUse", explainKey: "explainHeavyVoiceUse" });
   if ((y.dinnerTags || []).includes("アルコール")) flags.push({ flagKey: "flagAlcohol", explainKey: "explainAlcohol" });
@@ -4002,7 +4018,7 @@ function OnboardingFlow({ existingUser, onComplete, t }) {
             <label className="flex items-start gap-2 rounded-xl p-3 mb-4" style={{ background: C.paper, cursor: "pointer" }}>
               <input type="checkbox" checked={statsConsent} onChange={(e) => setStatsConsent(e.target.checked)} className="mt-0.5" />
               <span className="text-xs" style={{ color: C.inkSoft }}>
-                <strong style={{ color: C.ink }}>（任意）</strong> 匿名化した統計として、{BRAND.name}の機能改善に役立てることに同意します。個人を特定できる形で第三者に提供されることはありません。
+                <strong style={{ color: C.ink }}>（任意）</strong> 匿名化した統計として、発声負荷の係数など、分析に使う定数の較正に役立てることに同意します。個人を特定できる形で第三者に提供されることはありません。
               </span>
             </label>
             <p className="text-xs mb-4" style={{ color: C.inkSoft }}>
@@ -5375,7 +5391,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       dinnerTags: y.dinnerTags || [],
       activityType: y.activityType,
       weather: y.weather,
-      flags: flags.map((f) => f.flagKey)
+      // ★flagDinnerGap は時間を差し込むので、鍵だけでなく値も持ち回ります。
+      flags: flags.map((f) => ({ flagKey: f.flagKey, hours: f.hours }))
     };
   }, [entries, selectedDate]);
   // 職業ごとに、危険信号を検知する時間軸としきい値を変える。
@@ -6834,7 +6851,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }, [entries, overallThroatBaseline]);
   // ---- 声優の叫びテイク数の閾値 用データ ここまで ----
 
-  // ---- lavoce-職業別データと分析の確定仕様.md §4.4: ポップス/ロックのセットリスト診断・キー下げ提案 ----
+  // ---- lavoce-職業別データと分析の確定仕様.md §4.4: ポップス/ロックの曲順・キー下げ提案 ----
+  //   ★仕様書では「セットリスト診断」という名前ですが、画面には出しません
+  //     （判断の回答 §3）。変数名 setlistDiagnosis は仕様書との対応のため残します。
   // 「即時（計算のみ）」の指標のため、entriesの蓄積を待たず、今まさに編集中のセットリストに対して
   // その場で診断する。曲順による負荷の偏りと、快適音域を超える曲を指摘する。
   const setlistDiagnosis = useMemo(() => {
@@ -6901,7 +6920,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
     return { hasEnoughSongs: true, peakSuggestion, keyLoweringSuggestions };
   }, [formData, effectiveProfessions, repertoireTessituraMap, comfortableRangeMidi, songFactorResolver]);
-  // ---- セットリスト診断 用データ ここまで ----
+  // ---- 曲順を組む 用データ ここまで ----
 
   // ---- lavoce-職業別データと分析の確定仕様.md §4.4: モニター環境・打ち上げの効果量 ----
   // 既存の効いた習慣ランキングと同じ考え方（前日の行動→翌日の声）を、この日の「本番」ブロックに適用する。
@@ -11066,9 +11085,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             )}
                             {yesterdayContext.flags.length > 0 && (
                               <div className="mt-3 space-y-1.5">
-                                {yesterdayContext.flags.map((flagKey) => (
+                                {yesterdayContext.flags.map(({ flagKey, hours }) => (
                                   <div key={flagKey} className="text-xs rounded-lg p-2" style={{ background: "rgba(184,49,49,0.08)", color: C.curtain }}>
-                                    ⚠ {t(flagKey)}
+                                    ⚠ {flagText(t, flagKey, { hours })}
                                   </div>
                                 ))}
                               </div>
@@ -11157,7 +11176,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       {profile.height_cm ? (
                         <div className="rounded-xl p-3 text-xs leading-relaxed" style={{ background: C.paper, color: C.inkSoft }}>
                           <p>体組成計をお持ちの場合は、下の「体脂肪率」欄に入力すると、より正確な分析ができます。</p>
-                          <p className="mt-1">体重・体脂肪率の傾向は、月1回のまとめで「エネルギー可用性」としてお伝えします（BMIや体重の上限レンジは表示しません。声のプロにとってのリスクは主に下側だからです）。</p>
+                          <p className="mt-1">体重・体脂肪率の傾向は、月1回のまとめで「エネルギー可用性」としてお伝えします（BMIや体重の上限レンジは表示しません。下側だけを見ています）。</p>
                         </div>
                       ) : (
                         <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteRegisterHeightForRange")}</p>
@@ -11521,7 +11540,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                       {setlistDiagnosis && setlistDiagnosis.hasEnoughSongs && (setlistDiagnosis.peakSuggestion || setlistDiagnosis.keyLoweringSuggestions.length > 0) && (
                         <div className="rounded-xl p-3 space-y-2" style={{ background: C.paper }}>
-                          <p className="text-xs font-medium" style={{ color: C.ink }}>セットリスト診断</p>
+                          {/* ★「診断」を機能名に使わないこと（設計憲章 §2-1・判断の回答 §3）。
+                              このカードは「入れ替えると負荷が下がります」という
+                              手を動かすための提案を出すので、「組む」にしています。 */}
+                          <p className="text-xs font-medium" style={{ color: C.ink }}>曲順を組む</p>
                           {setlistDiagnosis.peakSuggestion && (
                             <p className="text-xs leading-relaxed" style={{ color: C.inkSoft }}>
                               {setlistDiagnosis.peakSuggestion.peakStart}曲目と{setlistDiagnosis.peakSuggestion.peakEnd}曲目が連続で重く、ここで一度声が消耗します。
@@ -13256,9 +13278,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           </p>
                         ) : (
                           <div className="space-y-2.5">
-                            {voicePrediction.flags.map(({ flagKey, explainKey }) => (
+                            {voicePrediction.flags.map(({ flagKey, explainKey, hours }) => (
                               <div key={flagKey} className="rounded-xl p-3" style={{ background: "rgba(184,49,49,0.06)" }}>
-                                <p className="text-xs font-medium" style={{ color: C.curtain }}>⚠ {t(flagKey)}</p>
+                                <p className="text-xs font-medium" style={{ color: C.curtain }}>⚠ {flagText(t, flagKey, { hours })}</p>
                                 <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>{t(explainKey)}</p>
                               </div>
                             ))}
@@ -14845,7 +14867,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             if (!error) setProfile((p) => ({ ...p, consent_stats_use_at: value }));
                           }} />
                         <span className="text-xs" style={{ color: C.inkSoft }}>
-                          （任意）匿名化した統計として、機能改善に役立てることに同意する
+                          （任意）匿名化した統計として、発声負荷の係数など、分析に使う定数の較正に役立てることに同意する
                         </span>
                       </label>
                     )}
