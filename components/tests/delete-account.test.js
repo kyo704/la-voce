@@ -68,7 +68,12 @@ assertTrue(/deleteStep2Reregister/.test(p2), "2ページ目で、再登録して
 
 console.log("\n=== テスト5: 入力が一致するまで削除ボタンを押せない ===");
 const p3 = tracker.slice(tracker.indexOf('deleteAccount3"'));
-assertTrue(/disabled=\{deleteStatus === "working" \|\| !deleteConfirmOk\}/.test(p3), "確認の入力が一致するまで無効");
+// ★2026-08-30、パスワードの再入力を足しました（判断の回答 §2）。
+//   確認の入力だけでは「間違えて押していないか」しか確かめられません。
+assertTrue(/disabled=\{deleteStatus === "working" \|\| !deleteConfirmOk \|\| !deletePassword\}/.test(p3),
+  "確認の入力とパスワードが揃うまで無効");
+assertTrue(!/disabled=\{deleteStatus === "working" \|\| !deleteConfirmOk\}/.test(p3),
+  "★パスワードを見ない古い条件が残っていない");
 assertTrue(/deleteStatus === "error"/.test(p3), "失敗を画面に出している");
 
 console.log("\n=== テスト6: 30日の猶予期間（A-4） ===");
