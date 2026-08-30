@@ -40,7 +40,7 @@ declare
     'throat_condition', 'voice_quality', 'voice_checkins', 'voice_entries',
     'voice_memo', 'wake_note', 'routine_note', 'resonance_score',
     'pianissimo_high_note', 'pianissimo_onset_delay', 'cpps_value', 'throat_symptoms',
-    'throat_symptoms_other', 'sleep_hours', 'sleep_quality', 'bedtime',
+    'throat_symptoms_other', 'morning_edema', 'sleep_hours', 'sleep_quality', 'bedtime',
     'activity_type', 'activity_duration', 'activity_detail', 'repertoire',
     'performance_quality', 'recovery', 'load_detail', 'exercise_minutes', 'exercises',
     'exercise_level', 'speaking_level', 'non_performance_speech_minutes',
@@ -78,8 +78,12 @@ begin
       'pianissimo_high_note', 'pianissimo_onset_delay', 'cpps_value'];
   end if;
   -- symptoms: 症状
+  -- ★起きたときのむくみ（中核5項目の⑤）も symptoms に入れます。
+  --   正は lib/shareScope.js。足し忘れると、共有を許した先生に列が届かず、
+  --   外し忘れると許していない列が届きます。
+  -- ★then と array[ の間に行を挟まないこと。テストが構造で見ています。
   if coalesce((v_scope->>'symptoms')::boolean, false) then
-    v_allowed := v_allowed || array['throat_symptoms', 'throat_symptoms_other'];
+    v_allowed := v_allowed || array['throat_symptoms', 'throat_symptoms_other', 'morning_edema'];
   end if;
   -- sleep: 睡眠
   if coalesce((v_scope->>'sleep')::boolean, false) then

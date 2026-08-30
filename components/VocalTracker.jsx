@@ -1188,6 +1188,7 @@ function buildFormData(date, entries) {
       pianissimoOnsetDelay: existing.pianissimoOnsetDelay || false,
       speakingLevel: existing.speakingLevel ?? null,
       nonPerformanceSpeechMinutes: existing.nonPerformanceSpeechMinutes ?? null,
+      morningEdema: existing.morningEdema ?? null,
       longestSpeechBlockMinutes: existing.longestSpeechBlockMinutes ?? null,
       environmentTags: existing.environmentTags || [],
       noisyEnvironment: existing.noisyEnvironment || false,
@@ -1250,6 +1251,9 @@ function buildFormData(date, entries) {
     speakingLevel: null,
     nonPerformanceSpeechMinutes: null,
     longestSpeechBlockMinutes: null,
+    // 中核5項目の⑤（中核5項目 §2-2②）。なし=0 / 少し=1 / はっきり=2。
+    // ★null は「答えていない」。0（なし）とは別です。
+    morningEdema: null,
     environmentTags: [],
     noisyEnvironment: false,
     cppsValue: "",
@@ -1797,6 +1801,8 @@ function rowToEntry(row) {
     activityDetail: row.activity_detail || {},
     wakeNote: row.wake_note || "",
     routineNote: row.routine_note || "",
+    // ★?? を使うこと。|| だと 0（むくみなし）が null になります。
+    morningEdema: row.morning_edema ?? null,
     resonanceScore: row.resonance_score,
     bedtime: row.bedtime || "",
     dinnerTime: row.dinner_time || "",
@@ -2209,6 +2215,7 @@ function entryToRow(userId, e) {
     mental_tags: e.mentalTags || [],
     throat_symptoms_other: e.throatSymptomsOther || "",
     voice_memo: (voiceLegacy ? voiceLegacy.voiceMemo : e.voiceMemo) || "",
+    morning_edema: numOrNull(e.morningEdema),
     wake_note: (voiceLegacy ? voiceLegacy.wakeNote : e.wakeNote) || "",
     routine_note: (voiceLegacy ? voiceLegacy.routineNote : e.routineNote) || "",
     resonance_score: numOrNull(voiceLegacy ? voiceLegacy.resonanceScore : e.resonanceScore),
@@ -2303,6 +2310,46 @@ function DynamicsSelector({ label, icon: Icon, value, onChange, t }) {
   );
 }
 
+// 起きたときのむくみ（中核5項目の⑤）。★3択・1タップ。
+//
+//   ★null（答えていない）と 0（なし）を分けます。
+//     分析では「なし / あり（1以上）」の二値にしますが、
+//     記録の側で 0 と未回答を同じにすると、
+//     「むくみが無い日」と「答えなかった日」の区別が消えます。
+//
+//   ★もう一度押すと取り消せます。間違えて触ったまま直せない、を作らないため。
+const EDEMA_CHOICES = [
+  { value: 0, label: "なし" },
+  { value: 1, label: "少し" },
+  { value: 2, label: "はっきり" }
+];
+function EdemaSelector({ value, onChange }) {
+  return (
+    <div>
+      <div className="flex items-center gap-2 mb-2">
+        <Droplets size={16} style={{ color: C.gold }} />
+        <span className="text-sm font-medium">起きたときのむくみ</span>
+      </div>
+      <div className="flex gap-2">
+        {EDEMA_CHOICES.map((c) => {
+          const on = value === c.value;
+          return (
+            <button key={c.value} type="button"
+              onClick={() => onChange(on ? null : c.value)}
+              className="flex-1 py-2 rounded-full text-xs font-medium border"
+              style={{
+                background: on ? C.curtain : C.card,
+                color: on ? "#fff" : C.ink,
+                borderColor: on ? C.curtain : C.line
+              }}>
+              {c.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 function DotSelector({ label, icon: Icon, value, onChange, lowLabel, highLabel }) {
   return (
     <div>
@@ -6737,7 +6784,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     return {
       sleepHours: has((e) => typeof e.sleepHours === "number"),
       offStageVoiceMinutes: has((e) => typeof e.nonPerformanceSpeechMinutes === "number"),
-      absoluteHumidity: has((e) => typeof e.temperature === "number" && typeof e.humidity === "number")
+      absoluteHumidity: has((e) => typeof e.temperature === "number" && typeof e.humidity === "number"),
+      // ★④本番・レッスンの翌日か。「その日が本番だったか」を数えます。
+      //   ★activity_type（旧列）を見ないこと。あの列は、いちばん長い活動しか
+      //     残しません。90分のレッスンと40分の本番があった日は「レッスン」に
+      //     なり、本番が消えます。hadPerformanceOrLesson は activities[] を見ます。
+      dayAfterPerformance: has((e) => Array.isArray(e.activities) && e.activities.length > 0),
+      // ★⑤起きたときのむくみ。0（なし）も「答えた」に数えます。
+      //   null（答えていない）だけを、埋まっていないとします。
+      morningEdema: has((e) => typeof e.morningEdema === "number")
     };
   }, [entries]);
 
@@ -6747,7 +6802,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const CORE_FILL_LABEL = {
     sleepHours: "睡眠時間",
     offStageVoiceMinutes: "練習以外で話した時間",
-    absoluteHumidity: "気温と湿度"
+    absoluteHumidity: "気温と湿度",
+    dayAfterPerformance: "その日の活動",
+    morningEdema: "むくみ"
   };
   const coreFillNote = useMemo(() => {
     const total = Object.keys(entries).length;
@@ -6760,6 +6817,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (n >= NARRATIVE_MIN_N_PER_GROUP * 2) return null;  // 十分たまったら黙る
     return `${CORE_FILL_LABEL[key]}は、まだ${n}日ぶんです`;
   }, [coreFillCounts, entries]);
+
+  // ★中核カードの下に出す、事実だけの1行（中核5項目 §2-2①）。
+  //   ③絶対湿度と④活動は入力の欄がないので、埋まっているかだけを伝えます。
+  //   ★「記録しましょう」と書かないこと（憲章 §8-1）。
+  const coreDerivedNote = useMemo(() => {
+    const e = formData || {};
+    const hasHumidity = typeof e.temperature === "number" && typeof e.humidity === "number";
+    const hasActivity = Array.isArray(e.activities) && e.activities.length > 0;
+    const parts = [];
+    parts.push(hasHumidity ? "気温と湿度：記録あり" : "気温と湿度：まだです");
+    parts.push(hasActivity ? "今日の活動：記録あり" : "今日の活動：まだです");
+    return parts.join("　/　");
+  }, [formData]);
 
   const todaySuggestion = useMemo(() => {
     if (!todayForecast.hasData || !todayForecast.allContributions) return null;
@@ -10784,6 +10854,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             <NumberField label="昨夜の睡眠" value={formData.sleepHours ?? ""} step={0.5} min={0} max={14} suffix={t("unitHours")}
                               onChange={(v) => setFormData((f) => ({ ...f, sleepHours: v }))} />
                           </div>
+                          {/* ★中核5項目の⑤（中核5項目 §2-2②）。3択・1タップ。
+                              増えるのは5秒。「これだけでいい」という言い方は変えません。 */}
+                          <div className="mt-3">
+                            <EdemaSelector value={formData.morningEdema}
+                              onChange={(v) => setFormData((f) => ({ ...f, morningEdema: v }))} />
+                          </div>
                           <button type="button"
                             onClick={async () => { await handleSave(); setShowQuickRecord(false); }}
                             className="w-full mt-4 py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
@@ -10992,6 +11068,79 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                     {recordView === "voice" && (
                       <>
+                        {/* ★中核5項目を、記録画面のいちばん上に固めます（中核5項目 §2-2①）。
+                            強制はしません。全部これまでどおり任意です。
+                            上にあるから自然に埋まる、という置き方で解きます。
+                            ★①睡眠時間 ②本番外の発話時間 ③絶対湿度（気温と湿度から自動）
+                              ④本番・レッスンの翌日か（前日の記録から自動）⑤起きたときのむくみ
+                            ③④は入力が要りません。下の気温・湿度と活動の記録から導きます。 */}
+                        <SectionCard title="今日の中核" icon={Mic2}>
+                          <div className="space-y-4">
+                          <NumberField label={t("labelSleepHours")} icon={Moon} value={formData.sleepHours} step={0.5} min={0} max={16} suffix={t("unitHours")}
+                            onChange={(v) => setFormData((f) => ({ ...f, sleepHours: v }))} />
+
+                          <div>
+                            <span className="text-sm font-medium block mb-2">本番外の発話（レッスン・会議・電話・授業・打合せなど）</span>
+                            {/* ★4択にします（中核5項目 §2-3）。
+                                「何分話しましたか」に毎日数字で答えるのは重すぎます。
+                                中央値で二分するだけなら、代表値の4択で足ります。
+                                ★保存する値は分（15/30/60/120）のままです。列も型も変えません。
+                                ★既にある数値は変換しません。4択に無い値でも、そのまま残り、
+                                  「その他」として下の数字入力に出ます。
+                                ★数字で入れたい人のために、しっかり記録では数字入力も残します。 */}
+                            <div className="flex flex-wrap gap-1.5">
+                              {SPEECH_MINUTE_CHOICES.map(({ value, label }) => (
+                                <Chip key={value} label={label}
+                                  active={formData.nonPerformanceSpeechMinutes === value}
+                                  onClick={() => setFormData((f) => ({
+                                    ...f,
+                                    nonPerformanceSpeechMinutes: f.nonPerformanceSpeechMinutes === value ? null : value
+                                  }))} />
+                              ))}
+                            </div>
+                            {/* ★4択に無い値（過去に数字で入れた日・詳細で入れた日）は、
+                                消さずにここへ出します。黙って書き換えないこと。 */}
+                            {!isSimpleDisplay(profile) && (
+                              <div className="flex items-center gap-2 mt-2">
+                                <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>分で入れる</span>
+                                <MiniNumber value={formData.nonPerformanceSpeechMinutes ?? ""} placeholder="0"
+                                  onChange={(v) => setFormData((f) => ({ ...f, nonPerformanceSpeechMinutes: v === "" ? null : Number(v) }))} />
+                                <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>分</span>
+                              </div>
+                            )}
+                            <label className="flex items-center gap-2 mt-2 text-xs" style={{ color: C.inkSoft }}>
+                              <input type="checkbox" checked={!!formData.noisyEnvironment}
+                                onChange={(e) => setFormData((f) => ({ ...f, noisyEnvironment: e.target.checked }))} />
+                              騒がしい場所での会話が多かった（無意識に声が大きくなりやすい環境）
+                            </label>
+                            <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
+                              「今日は歌っていない・収録していない」日でも、レッスンで教える・会議・電話などの発話は、発声負荷（ACWR）の計算に反映されます。
+                            </p>
+                            {effectiveProfessions.includes("announcer") && (
+                              <details className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                                <summary className="cursor-pointer">＋詳しく記録する</summary>
+                                <div className="flex items-center gap-2 mt-1.5">
+                                  <span className="flex-shrink-0">最長の連続発話ブロック</span>
+                                  <MiniNumber value={formData.longestSpeechBlockMinutes ?? ""} placeholder="0"
+                                    onChange={(v) => setFormData((f) => ({ ...f, longestSpeechBlockMinutes: v === "" ? null : Number(v) }))} />
+                                  <span className="flex-shrink-0">分</span>
+                                </div>
+                                <p className="mt-1">合計時間より、休みなく話し続けた長さが効きます。</p>
+                              </details>
+                            )}
+                          </div>
+
+                            <EdemaSelector value={formData.morningEdema}
+                              onChange={(v) => setFormData((f) => ({ ...f, morningEdema: v }))} />
+                            {/* ★③絶対湿度と④本番・レッスンの翌日かは、入力の欄を作りません。
+                                すでに記録しているものから導けるためです。ここでは
+                                「埋まっているか」だけを、事実として出します。 */}
+                            <div className="text-xs" style={{ color: C.inkSoft }}>
+                              {coreDerivedNote}
+                            </div>
+                          </div>
+                        </SectionCard>
+                        
                         <SectionCard title={t("sectionVoiceThroat")} icon={Mic2}>
                           <div className="space-y-2">
                         {(formData.voiceEntries || []).slice().sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0)).map((entry) => (
@@ -11483,8 +11632,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                     <SectionCard title={t("sectionSleep")} icon={Moon} id="record-section-sleep" highlighted={highlightSection === "sleep"}>
                       <div className="grid grid-cols-2 gap-3">
-                        <NumberField label={t("labelSleepHours")} icon={Moon} value={formData.sleepHours} step={0.5} min={0} max={16} suffix={t("unitHours")}
-                          onChange={(v) => setFormData((f) => ({ ...f, sleepHours: v }))} />
                         <div>
                           <label className="text-sm font-medium block mb-1.5">{t("labelBedtime")}</label>
                           <input type="time" value={formData.bedtime}
@@ -11740,56 +11887,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </div>
                       )}
 
-                      <div>
-                        <span className="text-sm font-medium block mb-2">本番外の発話（レッスン・会議・電話・授業・打合せなど）</span>
-                        {/* ★4択にします（中核5項目 §2-3）。
-                            「何分話しましたか」に毎日数字で答えるのは重すぎます。
-                            中央値で二分するだけなら、代表値の4択で足ります。
-                            ★保存する値は分（15/30/60/120）のままです。列も型も変えません。
-                            ★既にある数値は変換しません。4択に無い値でも、そのまま残り、
-                              「その他」として下の数字入力に出ます。
-                            ★数字で入れたい人のために、しっかり記録では数字入力も残します。 */}
-                        <div className="flex flex-wrap gap-1.5">
-                          {SPEECH_MINUTE_CHOICES.map(({ value, label }) => (
-                            <Chip key={value} label={label}
-                              active={formData.nonPerformanceSpeechMinutes === value}
-                              onClick={() => setFormData((f) => ({
-                                ...f,
-                                nonPerformanceSpeechMinutes: f.nonPerformanceSpeechMinutes === value ? null : value
-                              }))} />
-                          ))}
-                        </div>
-                        {/* ★4択に無い値（過去に数字で入れた日・詳細で入れた日）は、
-                            消さずにここへ出します。黙って書き換えないこと。 */}
-                        {!isSimpleDisplay(profile) && (
-                          <div className="flex items-center gap-2 mt-2">
-                            <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>分で入れる</span>
-                            <MiniNumber value={formData.nonPerformanceSpeechMinutes ?? ""} placeholder="0"
-                              onChange={(v) => setFormData((f) => ({ ...f, nonPerformanceSpeechMinutes: v === "" ? null : Number(v) }))} />
-                            <span className="text-xs flex-shrink-0" style={{ color: C.inkSoft }}>分</span>
-                          </div>
-                        )}
-                        <label className="flex items-center gap-2 mt-2 text-xs" style={{ color: C.inkSoft }}>
-                          <input type="checkbox" checked={!!formData.noisyEnvironment}
-                            onChange={(e) => setFormData((f) => ({ ...f, noisyEnvironment: e.target.checked }))} />
-                          騒がしい場所での会話が多かった（無意識に声が大きくなりやすい環境）
-                        </label>
-                        <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
-                          「今日は歌っていない・収録していない」日でも、レッスンで教える・会議・電話などの発話は、発声負荷（ACWR）の計算に反映されます。
-                        </p>
-                        {effectiveProfessions.includes("announcer") && (
-                          <details className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                            <summary className="cursor-pointer">＋詳しく記録する</summary>
-                            <div className="flex items-center gap-2 mt-1.5">
-                              <span className="flex-shrink-0">最長の連続発話ブロック</span>
-                              <MiniNumber value={formData.longestSpeechBlockMinutes ?? ""} placeholder="0"
-                                onChange={(v) => setFormData((f) => ({ ...f, longestSpeechBlockMinutes: v === "" ? null : Number(v) }))} />
-                              <span className="flex-shrink-0">分</span>
-                            </div>
-                            <p className="mt-1">合計時間より、休みなく話し続けた長さが効きます。</p>
-                          </details>
-                        )}
-                      </div>
 
                       <SectionFeedback text={sectionFeedback.activity} />
                     </SectionCard>

@@ -417,6 +417,29 @@ console.log("\n=== 型ごとの追加項目（職業を声の型で切り直す 
     "列が無い行を読んでも壊れない");
 }
 
+console.log("\n=== テスト: 起きたときのむくみ（中核5項目 §2-2②） ===");
+{
+  // ★0（なし）と null（答えていない）を、往復で取り違えないこと。
+  //   rowToEntry で || を使うと 0 が null に化けます。
+  const base = sampleFullEntry();
+
+  const row0 = entryToRow(USER_ID, { ...base, morningEdema: 0 });
+  assertEqual(row0.morning_edema, 0, "「なし」は 0 として保存される");
+  assertEqual(rowToEntry(row0).morningEdema, 0, "★0 が読み戻せる（|| で null にしない）");
+
+  const rowNull = entryToRow(USER_ID, { ...base, morningEdema: null });
+  assertEqual(rowNull.morning_edema, null, "答えていなければ null");
+  assertEqual(rowToEntry(rowNull).morningEdema, null, "null は null のまま");
+
+  const row2 = entryToRow(USER_ID, { ...base, morningEdema: 2 });
+  assertEqual(row2.morning_edema, 2, "「はっきり」は 2");
+  assertEqual(rowToEntry(row2).morningEdema, 2, "2 が読み戻せる");
+
+  // ★列がまだ無い環境（移行前）でも壊れないこと
+  assertEqual(rowToEntry({ date: "2026-08-30" }).morningEdema, null,
+    "★列が無い行を読んでも null（移行前でも落ちない）");
+}
+
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
 if (failCount > 0) {
   console.log("\n⚠ 失敗したテストがあります。声の構造変更などの大きな変更に進む前に、原因を確認してください。");
