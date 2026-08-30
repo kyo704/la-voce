@@ -57,13 +57,20 @@ async function main() {
   assertTrue(/NUTRITION_PHASE_KEYS = \{ "維持": "phaseMaintain"/.test(vt),
     "栄養のフェーズも key と labelKey が分かれている");
 
-  console.log("\n=== 登録画面の「学生」（★保存される値） ===");
-  // profiles.occupation に固定の文字列として入ります。訳すと、管理画面の
-  // 一覧と本人の書き出しに、言語ごとに違う値が並びます。
-  assertEqual(S.SIGNUP_STUDENT_VALUE, "学生", "値は「学生」");
+  console.log("\n=== 登録画面の「学生」（★過去に保存された値） ===");
+  // ★2026-08-30 から、新しい登録は profiles.occupation を書きません
+  //   （職業は11個から選び、voice_occupation に入ります）。
+  //   「学生」という値は、それまでに登録した方の行に残っています。
+  //   ★訳さないこと、という決まりは、その残っている値にこそ効きます。
+  //   訳してしまうと、管理画面と本人の書き出しで、同じ人の同じ回答が
+  //   言語ごとに違って見えます。
+  assertEqual(S.SIGNUP_STUDENT_VALUE, "学生", "値は「学生」（過去の行に残っている文字列）");
   const signup = readCode("components", "SignupForm.jsx");
-  assertTrue(/occupation: form\.isStudent \? "学生" : form\.occupation/.test(signup),
-    "★登録画面が、固定の「学生」を保存している（t() を通していない）");
+  assertTrue(!/[^_a-zA-Z]occupation:/.test(
+    signup.slice(signup.indexOf("options: {"), signup.indexOf("emailRedirectTo"))),
+    "★新しい登録は occupation を保存しない（「学生」も入れない）");
+  assertTrue(!/t\("labelIsStudent"\)[\s\S]{0,80}occupation/.test(signup),
+    "★学生かどうかを、訳した文字列で保存していない");
   assertTrue(!/isStudent \? t\(/.test(signup), "★t() に置き換えられていない");
 
   console.log("\n=== ★保存する側に、翻訳した文字が入っていないか ===");

@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { C } from "@/lib/tokens";
+import { OCCUPATIONS, occupationLabelIn } from "@/lib/occupation";
 
 const SIGNUP_LANGS = [
   { code: "ja", label: "日本語" },
@@ -32,8 +33,11 @@ const ST = {
   labelIsStudent: { ja: "学生です", en: "I'm a student", zh: "我是学生", it: "Sono uno studente/una studentessa", de: "Ich bin Student/in", fr: "Je suis étudiant(e)", es: "Soy estudiante", ko: "학생입니다", ru: "Я студент(ка)" },
   labelSchool: { ja: "学校名", en: "School name", zh: "学校名称", it: "Nome della scuola", de: "Name der Schule", fr: "Nom de l'établissement", es: "Nombre de la escuela", ko: "학교명", ru: "Название учебного заведения" },
   placeholderSchoolExample: { ja: "例：〇〇音楽大学", en: "e.g. Ondo College of Music", zh: "例：〇〇音乐大学", it: "Es.: Conservatorio 〇〇", de: "Z. B.: Musikhochschule 〇〇", fr: "Ex. : Conservatoire 〇〇", es: "Ej.: Conservatorio 〇〇", ko: "예: 〇〇음악대학", ru: "Например: Музыкальный колледж «Ондо»" },
+  // ★職業は11個から選びます。呼び名の持ち主は lib/occupation.js です。
+  //   ここに11個を書き写さないこと（片方だけ古くなります）。
+  placeholderOccupationSelect: { ja: "選んでください", en: "Please select", zh: "请选择", it: "Seleziona", de: "Bitte wählen", fr: "Veuillez choisir", es: "Selecciona", ko: "선택해 주세요", ru: "Выберите" },
+  occupationChangeNote: { ja: "あとから設定で変更できます。", en: "You can change this later in settings.", zh: "之后可在设置中更改。", it: "Puoi modificarlo in seguito nelle impostazioni.", de: "Du kannst dies später in den Einstellungen ändern.", fr: "Vous pourrez le modifier plus tard dans les réglages.", es: "Puedes cambiarlo más tarde en los ajustes.", ko: "나중에 설정에서 변경할 수 있습니다.", ru: "Это можно изменить позже в настройках." },
   labelOccupation: { ja: "職業", en: "Occupation", zh: "职业", it: "Professione", de: "Beruf", fr: "Profession", es: "Ocupación", ko: "직업", ru: "Профессия" },
-  placeholderOccupationExample: { ja: "例：声楽家、会社員 など", en: "e.g. singer, office worker", zh: "例：声乐家、公司职员等", it: "Es.: cantante, impiegato/a", de: "Z. B.: Sänger/in, Angestellte/r", fr: "Ex. : chanteur/euse, employé(e)", es: "Ej.: cantante, empleado/a", ko: "예: 성악가, 회사원 등", ru: "Например: певец, офисный работник" },
   placeholderPassword: { ja: "パスワード（8文字以上）", en: "Password (8+ characters)", zh: "密码（8位以上）", it: "Password (min. 8 caratteri)", de: "Passwort (mind. 8 Zeichen)", fr: "Mot de passe (8 caractères min.)", es: "Contraseña (8 caracteres o más)", ko: "비밀번호(8자 이상)", ru: "Пароль (от 8 символов)" },
   btnLoading: { ja: "処理中…", en: "Processing…", zh: "处理中…", it: "Elaborazione in corso…", de: "Wird verarbeitet…", fr: "Traitement en cours…", es: "Procesando…", ko: "처리 중…", ru: "Обработка…" },
   btnSubmit: { ja: "登録する", en: "Sign up", zh: "注册", it: "Registrati", de: "Registrieren", fr: "S'inscrire", es: "Registrarse", ko: "가입하기", ru: "Зарегистрироваться" },
@@ -114,7 +118,9 @@ function SignupFormInner() {
     email: "",
     password: "",
     isStudent: false,
-    occupation: "",
+    // ★自由記述の occupation は、新しい登録では持ちません（11個から選びます）。
+    //   すでに profiles.occupation に入っている26人ぶんの回答は、そのまま残します。
+    voiceOccupation: "",
     school: "",
     // ★null は「答えていない」。既定を false（＝18歳以上）にしないこと。
     //   答えないまま登録した人は、未成年として扱われます（lib/ageGate.js）。
@@ -134,8 +140,14 @@ function SignupFormInner() {
       options: {
         data: {
           name: form.name,
-          occupation: form.isStudent ? "学生" : form.occupation,
+          // ★occupation（自由記述）は、もう送りません。
+          //   送ると handle_new_user が profiles.occupation に書きます。
+          //   新しい登録では、この列を書かないと決めました。
           school: form.isStudent ? form.school : "",
+          // ★11個から選んだ職業。ここではまだログインしていないため
+          //   profiles には書けません。初回ログインのときに VocalTracker が
+          //   voice_occupation へ移します（lib/occupation.js の adoptSignupOccupation）。
+          ...(form.voiceOccupation ? { voice_occupation: form.voiceOccupation } : {}),
           // ★ここではまだログインしていないため（確認メールの前）、
           //   profiles には書けません。いったん auth の user_metadata に預け、
           //   初回ログインのときに VocalTracker が profiles へ移します
@@ -209,7 +221,7 @@ function SignupFormInner() {
           {str("labelIsStudent", lang)}
         </label>
 
-        {form.isStudent ? (
+        {form.isStudent && (
           <div>
             <label style={{ fontSize: 12, color: C.inkSoft, display: "block", marginBottom: 4 }}>{str("labelSchool", lang)}</label>
             <input
@@ -220,18 +232,26 @@ function SignupFormInner() {
               style={{ ...inputStyle, width: "100%" }}
             />
           </div>
-        ) : (
-          <div>
-            <label style={{ fontSize: 12, color: C.inkSoft, display: "block", marginBottom: 4 }}>{str("labelOccupation", lang)}</label>
-            <input
-              required
-              placeholder={str("placeholderOccupationExample", lang)}
-              value={form.occupation}
-              onChange={(e) => setForm((f) => ({ ...f, occupation: e.target.value }))}
-              style={{ ...inputStyle, width: "100%" }}
-            />
-          </div>
         )}
+
+        {/* ★職業は11個から選びます（自由記述をやめました）。
+            学生の方にもたずねます。学校名と職業は別のことだからです。
+            選択肢は lib/occupation.js が持っています。ここに書き写さないこと。 */}
+        <div>
+          <label style={{ fontSize: 12, color: C.inkSoft, display: "block", marginBottom: 4 }}>{str("labelOccupation", lang)}</label>
+          <select
+            required
+            value={form.voiceOccupation}
+            onChange={(e) => setForm((f) => ({ ...f, voiceOccupation: e.target.value }))}
+            style={{ ...inputStyle, width: "100%" }}
+          >
+            <option value="">{str("placeholderOccupationSelect", lang)}</option>
+            {OCCUPATIONS.map((occ) => (
+              <option key={occ} value={occ}>{occupationLabelIn(occ, lang)}</option>
+            ))}
+          </select>
+          <p style={{ fontSize: 11, color: C.inkSoft, marginTop: 4 }}>{str("occupationChangeNote", lang)}</p>
+        </div>
 
         {/* ★18歳未満かの確認（A-7 の1行目）。
             required を付けないこと。答えずに登録できます（研究利用の同意 §4-4）。

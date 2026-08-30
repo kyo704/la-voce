@@ -26,7 +26,7 @@ import { watchForUpdates, reloadOnceOnControllerChange } from "@/lib/swUpdate";
 // 曲目の「同じ曲か」。★引くときも書くときも、必ずこれを通すこと。
 //   生の名前をそのまま鍵にすると、末尾の空白や全角半角の違いで別の曲になります。
 import { repertoireKey, lookupRepertoire, resolveRepertoireName, isSameRepertoire } from "@/lib/repertoireTitle";
-import { OCCUPATIONS, OCCUPATION_LABELS, OTHER_OCCUPATION, OCCUPATION_TO_LEGACY,
+import { adoptSignupOccupation, OCCUPATIONS, OCCUPATION_LABELS, OTHER_OCCUPATION, OCCUPATION_TO_LEGACY,
   DEFAULT_MIX, occupationOf, mixOf, isValidMix,
   repertoireExtraFor, EXTRA_SINGING_LANGUAGE, EXTRA_ROLE, EXTRA_PROJECT } from "@/lib/occupation";
 import { term, termLabel } from "@/lib/vocabulary";
@@ -4702,7 +4702,7 @@ function ExerciseItemRow({ item, onChange, onRemove, t }) {
 }
 
 /* ---------- main component ---------- */
-export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null }) {
+export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null, signupVoiceOccupation = null }) {
   const [loading, setLoading] = useState(true);
   // 記録データが読み込めなかったとき、画面の上に出す（黙って空にしない）
   const [entriesLoadError, setEntriesLoadError] = useState("");
@@ -5353,6 +5353,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         });
         setCharacterPointsSpent(data.character_points_spent || 0);
         setCharacterEquipped(data.character_equipped || {});
+        // ★登録画面で選んだ職業を、ここで profiles へ移す（初回ログインの1回だけ）。
+        //   すでに本人が選んでいれば adoptSignupOccupation が null を返し、
+        //   何もしません（設定で選び直した値を上書きしないため）。
+        //   ★書くのは voice_occupation だけです。profiles.occupation には触れません。
+        const adoptedOcc = adoptSignupOccupation(data, signupVoiceOccupation);
+        if (adoptedOcc) {
+          const { error: occError } = await supabase
+            .from("profiles").update(adoptedOcc).eq("id", userId);
+          if (!occError && mounted) setProfile((prev) => ({ ...prev, ...adoptedOcc }));
+        }
       }
       // 統合実行ルートv4 G2-8: かんたん記録／しっかり記録の設定。
       // ★上の本体クエリには足さない。supabase/migration_record_mode.sql を
@@ -5448,7 +5458,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     return () => { mounted = false; };
     // signupAgeAnswer はサーバから渡る値で、この画面の間は変わりません。
     // 依存に入れても読み直しは起きませんが、規則どおり並べておきます。
-  }, [userId, signupAgeAnswer]);
+  }, [userId, signupAgeAnswer, signupVoiceOccupation]);
 
   // 指導者プラン実装仕様: 自分が関わる紐付け（先生として・生徒として）を取得する。
   // teacher_beta_accessを持たないユーザーでも、他人から生徒として招待される可能性はあるため、

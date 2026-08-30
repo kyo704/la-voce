@@ -182,12 +182,27 @@ async function main() {
   assertTrue(/profiles_voice_occupation_check/.test(newMig),
     "★制約の名前も voice_occupation 側");
 
-  // (c) 登録画面の自由記述は、そのまま残っていること
+  // (c) 登録画面（2026-08-30 に変わりました）
+  //
+  //   ★ここは以前、逆のことを守っていました。
+  //     「登録画面は、これまでどおり occupation に自由記述を書く」。
+  //     坂本さんの判断で、新しい登録は11個から選ぶ形に変わり、
+  //     profiles.occupation は★もう書きません。
+  //
+  //   ★変わっていないこと：すでに入っている26人ぶんの自由記述には触れません。
+  //     handle_new_user もそのままです。消さない・書き換えない、が続きます。
   const signup = readCode("components", "SignupForm.jsx");
-  assertTrue(/occupation: form\.isStudent \? "学生" : form\.occupation/.test(signup),
-    "★登録画面は、これまでどおり occupation に自由記述を書く");
-  assertTrue(!/voice_occupation/.test(signup),
-    "★登録画面は voice_occupation を触らない（別の機能）");
+  const signupData = signup.slice(signup.indexOf("options: {"), signup.indexOf("emailRedirectTo"));
+  assertTrue(!/[^_a-zA-Z]occupation:/.test(signupData),
+    "★登録画面は occupation という鍵を送らない（新しい登録は profiles.occupation を書かない）");
+  assertTrue(!/form\.occupation/.test(signup),
+    "★自由記述の状態が残っていない");
+  assertTrue(/voice_occupation: form\.voiceOccupation/.test(signupData),
+    "★登録画面は voice_occupation を送る（11個から選んだ鍵）");
+  // 既存の行の作られ方は、変えていないこと
+  assertTrue(/insert into public\.profiles \(id, name, email, occupation, school\)/.test(
+    readRaw("supabase", "schema.sql")),
+    "★handle_new_user は変えていない（過去の回答は残る）");
   const schema = readRaw("supabase", "schema.sql");
   assertTrue(/^\s*occupation text,/m.test(schema), "★schema.sql の occupation 列はそのまま");
   assertTrue(/raw_user_meta_data->>'occupation'/.test(schema),

@@ -29,5 +29,20 @@ export default async function DashboardPage() {
     ? user.user_metadata.is_under_18
     : null;
 
-  return <VocalTracker userId={user.id} userEmail={user.email} signupAgeAnswer={signupAgeAnswer} />;
+  // ★登録画面で選んだ職業。年齢の答えと同じ道すじで、初回ログインに
+  //   profiles.voice_occupation へ移します（lib/occupation.js の
+  //   adoptSignupOccupation）。★profiles.occupation には書きません。
+  const signupVoiceOccupation =
+    typeof user.user_metadata?.voice_occupation === "string"
+      ? user.user_metadata.voice_occupation
+      : null;
+
+  return (
+    <VocalTracker
+      userId={user.id}
+      userEmail={user.email}
+      signupAgeAnswer={signupAgeAnswer}
+      signupVoiceOccupation={signupVoiceOccupation}
+    />
+  );
 }
