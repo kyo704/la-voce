@@ -79,6 +79,26 @@ async function main() {
       `★${occ} に「テッシトゥーラ」を出さない`);
   });
   assertEqual(V.term("pops", "tessitura"), "よく出てくる高さ", "ポップスは「よく出てくる高さ」");
+  // ★仕様書 §1・§2 の表と、1行ずつ突き合わせます。
+  //   逐語の文書を読む前は、actorStage を「作品」、other を「演目・非表示」と
+  //   推測していました。★どちらも表と違いました。推測を固定しないための表です。
+  const SPEC = {
+    classical:  ["曲目", "曲を追加", "テッシトゥーラ"],
+    musical:    ["曲目", "曲を追加", "テッシトゥーラ"],
+    pops:       ["曲目", "曲を追加", "よく出てくる高さ"],
+    voiceActor: ["役", "役を追加", ""],
+    actorStage: ["演目", "演目を追加", "台詞の高さ"],
+    actorScreen:["作品", "作品を追加", "台詞の高さ"],
+    narrator:   ["案件", "案件を追加", ""],
+    announcer:  ["番組", "番組を追加", ""],
+    rakugo:     ["演目", "演目を追加", ""],
+    mc:         ["案件", "案件を追加", ""],
+    other:      ["曲目", "曲を追加", "よく出てくる高さ"]
+  };
+  Object.entries(SPEC).forEach(([occ, [card, add, tess]]) => {
+    assertEqual([V.term(occ, "repertoireCard"), V.term(occ, "repertoireAdd"), V.term(occ, "tessitura")],
+      [card, add, tess], `${occ} が仕様書の表のとおり`);
+  });
   assertEqual(V.term("actorStage", "tessitura"), "台詞の高さ", "舞台俳優は「台詞の高さ」");
   // ★落語と声優は、坂本さんの確認待ち。空文字＝出さない、で止めています。
   assertEqual(V.term("rakugo", "tessitura"), "", "★落語は空（確認待ちなので出さない）");
