@@ -59,7 +59,12 @@ assertTrue(authAt > 0 && countAt > authAt, "★auth のユーザーを消した�
 // ★数えられなくても、削除は成功のまま
 const tail = purgeBody.slice(countAt);
 assertTrue(!/return \{ ok: false/.test(tail), "★記録に失敗しても ok: false にしない");
-assertTrue(/return \{ ok: true, failures: \[\] \};/.test(tail), "最後は成功で返る");
+// ★2026-08-30、countRecorded を足しました。どちらの枝も ok: true です。
+//   （数えられなくても、削除は成功。消えたことのほうが大事）
+assertTrue(/return \{ ok: true, failures: \[\], countRecorded: true \};/.test(tail),
+  "最後は成功で返る");
+assertTrue(/countRecorded: false/.test(tail) && !/ok: false/.test(tail),
+  "★数えられなかった枝も、ok: true のまま");
 
 console.log("\n=== ★⑤ 本人には読めない ===");
 assertTrue(/enable row level security/.test(sql), "RLS が有効");
