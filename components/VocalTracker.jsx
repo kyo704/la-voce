@@ -14967,15 +14967,22 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </div>
                 )}
 
-                {/* ★権限のチェックを、いちばん外に出しました（2026-08-31）。
-                    以前は「データがある ＆ 権限が無い」のときだけ null を返していて、
-                    ★ボタンは出るのに、押しても何も出ない状態になっていました。
-                    データが無い日は空状態の文が出るので、
-                    「データが少ないほど何か出て、増えると無言になる」という
-                    逆転が起きていました。4回の調査で見つからなかった原因です。
-                    先行公開 §4「隠すのではありません。無いのです」に合わせ、
-                    権限が無ければ、ボタンごと出しません。 */}
-                {can(viewer, "analysis.relations") && (<>
+                {/* ★このまとまりは、誰にでも必ず出します（2026-08-31）。
+                    見出しも、3つのボタンも、その下の説明も、消しません。
+
+                    ★ここは1日で3回作り替えました。経緯を残します。
+                      ① 元の形：ボタンは外、中身だけ権限の中。
+                         データがある人は押しても無言（4回の調査で判明）。
+                      ② 直し1：権限をいちばん外へ出した。
+                         → 権限の無い人から、ボタンごと消えた。
+                      ③ いまの形：まとまりは常に出し、★中身だけを状態で分ける。
+                         消える画面を作らない。何が起きているかを必ず書く。
+
+                    ★「隠すのではありません。無いのです」（先行公開 §4）は、
+                      機能そのものを見せない話でした。ここでは、
+                      すでに見えていたものを消さない（§2）ほうを採ります。
+                      2つが当たるときは、消さないほうを選びます。 */}
+                <h3 className="ff-display italic text-lg mb-2">{t("titleCorrelationStrength")}</h3>
                 <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
                   <button onClick={() => setAnalysisTarget("performance")}
                     className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
@@ -14995,8 +15002,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 </div>
 
                 {/* ★待っている状態を、必ず出すこと（憲章 §3-4）。
-                    無言で消さない。あと何が要るのかを、事実として書く。 */}
-                {chartData.length === 0 ? (
+                    無言で消さない。あと何が要るのかを、事実として書く。
+                    ★null を返す枝を作らないこと。それが今日の不具合の正体でした。 */}
+                {!can(viewer, "analysis.relations") ? (
+                  <div className="text-center py-10 px-4 text-sm rounded-2xl border" style={{ color: C.inkSoft, borderColor: C.line }}>
+                    <p style={{ lineHeight: 1.7 }}>この見かたは、いまは一部の方にお出ししています。</p>
+                    <p className="text-xs mt-2">記録はこれまでどおり続けられます。あとから見られるようになります。</p>
+                  </div>
+                ) : chartData.length === 0 ? (
                   <div className="text-center py-10 px-4 text-sm rounded-2xl border" style={{ color: C.inkSoft, borderColor: C.line }}>
                     <p style={{ lineHeight: 1.7 }}>
                       {analysisTarget === "performance"
@@ -15012,7 +15025,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 ) : (
                   <>
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                      <h3 className="ff-display italic text-lg mb-2">{t("titleCorrelationStrength")}</h3>
                       <p className="text-xs mb-3 leading-relaxed rounded-xl p-2.5" style={{ color: C.inkSoft, background: C.paper }}>
                         {t("noteCorrDirection").split(/(\{right\}|\{left\})/g).map((part, i) => {
                           // ★色だけに意味を持たせない（§1-2）。「右」「左」という言葉が、すでに意味を持っている。
@@ -15199,7 +15211,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </p>
                   </>
                 )}
-                </>)}
 
                 {/* 記録と分析の順番設計.md §5.3 ＋ 改善タスクv2 §4-1(a)。
                     ★見出しを1つにまとめること。以前は「これから開く分析」と

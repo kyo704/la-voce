@@ -33,15 +33,27 @@ console.log("=== ★① 権限で null を返していない ===");
 assertTrue(!/!can\(viewer, "[a-z.]+"\) \? null/.test(vt),
   "★「権限が無ければ null」という分岐が無い");
 
-console.log("\n=== ★② 対象の切り替えボタンは、ゲートの中にある ===");
-const gate = vt.indexOf('can(viewer, "analysis.relations") && (<>');
+console.log("\n=== ★② まとまりは、誰にでも必ず出る ===");
+// ★1日で3回作り替えた場所です。経緯：
+//   ① ボタンは外・中身だけ権限の中 → 押しても無言
+//   ② 権限をいちばん外へ → ボタンごと消えた
+//   ③ いまの形：まとまりは常に出し、中身だけ状態で分ける
 const btn = vt.indexOf('setAnalysisTarget("performance")');
-assertTrue(gate > 0, "相関の権限チェックがある");
+const head = vt.indexOf('<h3 className="ff-display italic text-lg mb-2">{t("titleCorrelationStrength")}</h3>');
 assertTrue(btn > 0, "切り替えボタンがある");
-assertTrue(gate < btn, "★ボタンは権限チェックより後（＝中にある）");
-// ゲートとボタンの間に、別のカードが挟まっていないこと
-const between = vt.slice(gate, btn);
-assertTrue(!/<SectionCard|<h3 /.test(between), "ゲートとボタンの間に別のカードが無い");
+assertTrue(head > 0 && head < btn, "★見出しがボタンより先にあり、常に出る");
+// 見出しとボタンの手前に can( の && ゲートが無いこと
+const before = vt.slice(Math.max(0, head - 600), head);
+assertTrue(!/can\(viewer, "analysis\.relations"\)\s*&&\s*\(<>/.test(before),
+  "★見出しとボタンが、権限のゲートで囲われていない");
+
+console.log("\n=== ★②-2 中身は3つの状態に必ず分かれる ===");
+const branch = vt.slice(vt.indexOf('!can(viewer, "analysis.relations") ? ('),
+                        vt.indexOf('!can(viewer, "analysis.relations") ? (') + 1400);
+assertTrue(branch.length > 100, "3分岐のかたまりが見つかる");
+assertTrue(/この見かたは、いまは一部の方に/.test(branch),
+  "★権限が無いときも、理由の文が出る（null にしない）");
+assertTrue(/chartData\.length === 0 \? \(/.test(branch), "データが無いときの枝がある");
 
 console.log("\n=== ★③ 待っている状態は、無言にしない（憲章 §3-4） ===");
 const empty = vt.slice(vt.indexOf("chartData.length === 0 ? ("),
@@ -58,8 +70,12 @@ console.log("\n=== ★④ ほかの can() も、操作ごと囲っている ==="
 const uses = vt.match(/can\(viewer, "[a-z.]+"\)[^\n]*/g) || [];
 assertTrue(uses.length >= 5, `can() の使用箇所を見つけた（${uses.length}件）`);
 uses.forEach((u) => {
-  const ok = /can\(viewer, "[a-z.]+"\)\s*&&/.test(u) || /&&\s*can\(viewer/.test(u);
-  assertTrue(ok, `★「&&」で囲っている: ${u.trim().slice(0, 60)}`);
+  // ★許すのは2つの形だけ：
+  //   can(...) && ( …全部… )        操作ごと出し分ける
+  //   !can(...) ? ( …理由… ) : …    出さない代わりに、必ず理由を出す
+  const gated = /can\(viewer, "[a-z.]+"\)\s*&&/.test(u) || /&&\s*can\(viewer/.test(u);
+  const explained = /can\(viewer, "[a-z.]+"\)\s*\?\s*\(/.test(u);
+  assertTrue(gated || explained, `★出し分けの形が正しい: ${u.trim().slice(0, 60)}`);
 });
 
 console.log("\n=== 3ゲート（n≥10）とは別のしくみであること ===");
