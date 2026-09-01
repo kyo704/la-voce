@@ -40,6 +40,15 @@ async function main() {
   const shobai = fs.existsSync(shobaiPath)
     ? (JSON.parse(fs.readFileSync(shobaiPath, "utf-8")).articles || []) : [];
   const shobaiIds = new Set(shobai.map((a) => a.id));
+  // ★原稿を経由せず、勉強パーツごと受け取った記事（2026-09-02）。
+  //   商いの記事と同じ扱いです。study.json には現れないので、
+  //   ここで数えると毎回「抜けている」と出ます。
+  //   ★アプリ側の中身は、下の validate* が同じ厳しさで見ます。
+  const DIRECT_ARTICLE_IDS = new Set([
+    "medicine-and-voice",     // 薬と声
+    "when-to-see-a-doctor",   // いつ、耳鼻咽喉科に行くか
+    "speaking-voice-load"     // 歌より、話し声のほうが
+  ]);
   const byId = Object.fromEntries(L.ARTICLES.map((a) => [a.id, a]));
 
   console.log(`\n=== 勉強パーツの検査（${Object.keys(data).length}記事）===`);
@@ -112,6 +121,7 @@ async function main() {
     const covered = new Set(Object.keys(data).concat(Object.keys(skipped)));
     const missing = L.ARTICLES.map((a) => a.id)
       .filter((id) => !shobaiIds.has(id))
+      .filter((id) => !DIRECT_ARTICLE_IDS.has(id))
       .filter((id) => !covered.has(id));
     assertTrue(missing.length === 0,
       missing.length === 0
@@ -130,7 +140,7 @@ async function main() {
   // ★原稿とアプリのつながり。合流を止めても、原稿の検査だけは通ってしまう。
   //   「原稿は正しいのに、画面には何も出ていない」を拾えるようにする。
   {
-    const inApp = L.ARTICLES.filter((a) => a.keySentence && !shobaiIds.has(a.id)).length;
+    const inApp = L.ARTICLES.filter((a) => a.keySentence && !shobaiIds.has(a.id) && !DIRECT_ARTICLE_IDS.has(a.id)).length;
     const inManuscript = Object.keys(data).filter((id) => data[id].keySentence).length;
     assertTrue(inApp === inManuscript,
       `★原稿の勉強パーツが、そのままアプリにも入っている（原稿 ${inManuscript} / アプリ ${inApp}）`);
