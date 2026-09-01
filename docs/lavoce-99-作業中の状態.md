@@ -999,3 +999,104 @@ flight_hours / jetlag_hours
 
 ★だから `supabase/security-snapshot-2026-09-01.md` に写しを置きました。
 　写しが無いかぎり、3回目も同じ見つかり方をします。
+
+---
+
+## ★memberships への insert が 403 になる（2026-09-02・調査待ち）
+
+**組織の予定（org_events）とは無関係です。**別件として記録します。
+
+### 症状
+
++t6（まだ教室を作っていない）が招待コードを発行しようとして：
+
+```
+POST .../rest/v1/memberships  403 (Forbidden)
+```
+
+### memberships に insert する場所は、2つあります
+
+**★どちらが鳴ったのかは、まだ確かめていません。**
+
+#### ① ensureOwnOrg の最初の1本（components/VocalTracker.jsx）
+
+招待コードの発行（`handleGenerateTeacherInvite`）から呼ばれます。
+教室が無ければ作り、自分を owner として入れます。
+
+坂本さんの見立ては、こちらが
+**今朝の `organizations.created_by` を null 可にした移行で壊れた**、というものです。
+
+★ただし、私はまだ裏づけを取っていません。気になる点があります。
+
+- `created_by` を null 可にしても、`ensureOwnOrg` は
+  **いまも `created_by: userId` を入れています**。null にはなりません。
+- `memberships_insert_bootstrap_owner` は「自分・owner・自分が作った教室・
+  まだ誰も居ない」を見ます。この4つは、null 可にしても変わりません。
+
+**★だから「移行で壊れた」は、まだ仮説です。**別の説明もあり得ます。
+
+- +t6 は G4-26 の確認のときに、すでに教室を作っている
+  → 2本目の membership を入れようとして、
+  「まだ誰も居ない」の条件に外れて弾かれた
+- 前回 membership の作成だけ失敗して、教室だけが残っている（孤児）
+  → `ensureOwnOrg` の orphan の探索が拾えていない
+
+#### ② handleAcceptOrgInvitation（9881行）★これは確実に壊れています
+
+組織の招待コード（「講師を招待する」で出るもの）を入れたときに走ります。
+
+```js
+await supabase.from("memberships").insert({
+  org_id: pendingOrgInvitation.org_id, user_id: userId, role: "teacher"
+});
+```
+
+**どのポリシーも、これを許しません。**
+
+| ポリシー | 通らない理由 |
+|---|---|
+| `memberships_all_owner_admin` | `is_org_owner_or_admin` が要る。招かれた人はまだ member ではない |
+| `memberships_insert_bootstrap_owner` | 「自分が作った教室」「まだ誰も居ない」の両方に外れる |
+
+★つまり **組織の招待は、誰が受けても必ず失敗します**。
+　+s1 だからではありません。**本物の講師を招いても、同じように弾かれます**。
+　この道は、一度も通ったことがないはずです。
+
+★しかも、理由が画面に出ません。
+
+```js
+if (error) { setOrgInviteLookupError("参加に失敗しました。もう一度お試しください。"); return; }
+```
+
+何度試しても成功しないものに「もう一度お試しください」と出しています。
+403 が分かったのは、坂本さんがコンソールを開いたからです。
+**今朝の在籍の不具合と、まったく同じ形**（握りつぶしが数か月隠していた）。
+
+### どちらか見分ける方法
+
+```sql
+-- +t6 の教室と membership の状態
+select o.id as "教室", o.name, o.created_by is null as "created_by が null か",
+       (select count(*) from public.memberships m where m.org_id = o.id) as "所属している人数"
+  from public.organizations o
+ where o.created_by = (select id from auth.users where email = 'kyosakamoto0703+t6@gmail.com')
+    or o.id in (select org_id from public.memberships
+                 where user_id = (select id from auth.users where email = 'kyosakamoto0703+t6@gmail.com'));
+```
+
+- **0行** → 教室がまだ無い。①の作成そのものが失敗している
+- **教室があり、所属0人** → 孤児。`ensureOwnOrg` の orphan 探索を見る
+- **教室があり、所属1人** → ①は成功ずみ。鳴ったのは②のほう
+
+### 直し方（②のほう。①は原因が決まってから）
+
+`/api/enrollment/accept` と同じ形のサーバ側の道が要ります。
+**招かれた人は、まだ member ではないので、どんなポリシーでも
+自分を通せません。**それが招待というものの性質です。
+
+★見積り：半日（route ＋ 検査 ＋ 4つの一覧への登録）。
+
+### いまは追いません
+
++t6 を使わず、+t5 の「マイ教室」（+s1 が在籍ずみ）で
+組織の予定の確認を続けます。
