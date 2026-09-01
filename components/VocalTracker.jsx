@@ -66,6 +66,7 @@ import { medicalCaution } from "@/lib/medicalCaution";
 import { ACCOMPANIMENT_OPTIONS } from "@/lib/storedValues";
 import { mayShowLuxuryFields } from "@/lib/ageGate";
 import { weatherCarryDecision, isWeatherSource, isCarried, CARRIED_NOTE, mayUseAbsoluteHumidity } from "@/lib/weatherCarry";
+import { CPPS_ENABLED } from "@/lib/pausedFeatures";
 import { shouldShowNotice, withNoticeShown, noticeStateFromRows, NOTICE_TEXT } from "@/lib/notices";
 import { cycleOptInDescription, mentionsCycleInDataLists } from "@/lib/cycleCopy";
 import { writeWithMissingColumnFallback } from "@/lib/entryWriteFallback";
@@ -2301,6 +2302,10 @@ function entryToRow(userId, e) {
     longest_speech_block_minutes: numOrNull(e.longestSpeechBlockMinutes),
     environment_tags: e.environmentTags || [],
     noisy_environment: !!e.noisyEnvironment,
+    // ★止めているあいだも、この行は「そのまま通す」ままにします。
+    //   null を書くようにすると、過去の記録を開いて保存し直したときに、
+    //   ★当時測った値が消えます。増やさないことと、消すことは別です。
+    //   新しい値が作られないのは、測る導線を出していないからです。
     cpps_value: numOrNull(e.cppsValue),
     exercise_level: numOrNull(e.exerciseLevel),
     activities,
@@ -6383,8 +6388,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (!usedBodyFat && !folded.includes("body_fat")) {
       suggestions.push({ key: "body_fat", label: "体脂肪率の記録" });
     }
+    // ★止めているあいだは、勧めません（lib/pausedFeatures.js）。
     const usedCpps = dates30.some((d) => typeof entries[d].cppsValue === "number");
-    if (!usedCpps && !folded.includes("cpps")) {
+    if (CPPS_ENABLED && !usedCpps && !folded.includes("cpps")) {
       suggestions.push({ key: "cpps", label: "CPPS客観測定" });
     }
     const usedEnvironment = dates30.some((d) => typeof entries[d].temperature === "number" || typeof entries[d].humidity === "number");
@@ -7756,7 +7762,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           });
         }
       } else if (tag === "articulation") {
-        const vals = dates28.map((d) => ({ date: d, cpps: entries[d].cppsValue })).filter((x) => typeof x.cpps === "number");
+        // ★止めているあいだは、推移も出しません（lib/pausedFeatures.js）。
+        const vals = CPPS_ENABLED
+          ? dates28.map((d) => ({ date: d, cpps: entries[d].cppsValue })).filter((x) => typeof x.cpps === "number")
+          : [];
         if (vals.length >= 2) {
           const first = vals[0], last = vals[vals.length - 1];
           metrics.push({
@@ -11340,7 +11349,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <p className="mt-2 leading-relaxed">{t("noteRecommendedRoutine")}</p>
                       </details>
 
-                      {showGroup("cpps") && (
+                      {/* ★CPPS はいったん止めています（lib/pausedFeatures.js）。
+                          計算が仕様どおりでなく、値が実際より低く出るためです。
+                          ★測る導線も、測った値の表示も出しません。
+                          ★過去に測った値は消しません。増やさないだけです。 */}
+                      {CPPS_ENABLED && showGroup("cpps") && (
                       <div className="rounded-xl p-3" style={{ background: C.paper }}>
                         <div className="flex items-center gap-1.5 mb-1.5">
                           <Mic2 size={14} style={{ color: C.gold }} />
