@@ -4961,9 +4961,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [newLessonTime, setNewLessonTime] = useState("19:00");
   const [newLessonNote, setNewLessonNote] = useState("");
   const [myUpcomingLessons, setMyUpcomingLessons] = useState([]); // 自分が生徒として持つ、直近のレッスン予定
-  const [studentComments, setStudentComments] = useState({}); // date -> comments[]（個別ページで見ている生徒）
-  const [newCommentDraft, setNewCommentDraft] = useState("");
-  const [myRecentComments, setMyRecentComments] = useState([]); // 自分が生徒として受け取った、直近のコメント
   // 職業別項目の再設計と学ぶ画面 §7: 学ぶ画面用のstate
   const [learnProfession, setLearnProfession] = useState(null); // null=まだ選んでいない（初回はvocal_professionを既定にする）
   const [learnOpenChapters, setLearnOpenChapters] = useState({}); // "professionKey:chapter" -> boolean
@@ -5626,7 +5623,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   useEffect(() => {
     fetchTeacherLinks();
     fetchMyAllLessons();
-    fetchMyRecentComments();
     fetchLearnState();
     fetchMyOrgs();
     fetchMyEnrollments();
@@ -9350,29 +9346,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setMyUpcomingLessons(data || []);
   }
 
-  // 指導者プラン実装仕様 §8: 記録へのコメント。teacher_notesと違い、生徒にも見える前提のもの。
-  async function fetchCommentsForLink(linkId) {
-    const supabase = createClient();
-    const { data } = await supabase.from("entry_comments").select("*").eq("link_id", linkId).order("entry_date", { ascending: false });
-    const byDate = {};
-    (data || []).forEach((c) => { (byDate[c.entry_date] = byDate[c.entry_date] || []).push(c); });
-    setStudentComments(byDate);
-  }
-  async function handleCreateComment(linkId, entryDate, body) {
-    if (!body || !body.trim()) return;
-    const supabase = createClient();
-    const { error } = await supabase.from("entry_comments").insert({ link_id: linkId, entry_date: entryDate, body: body.trim(), created_by: userId });
-    if (error) { console.error("コメントの投稿に失敗しました:", error); return; }
-    setNewCommentDraft("");
-    fetchCommentsForLink(linkId);
-  }
-  // 生徒として、自分が受け取った直近のコメントを取得する（複数の先生分をまとめて）。
-  async function fetchMyRecentComments() {
-    const supabase = createClient();
-    const { data } = await supabase.from("entry_comments").select("*, link:teacher_student_links!inner(student_id)")
-      .eq("link.student_id", userId).order("created_at", { ascending: false }).limit(10);
-    setMyRecentComments(data || []);
-  }
 
   // 職業別項目の再設計と学ぶ画面 §7: 学ぶ画面。章の開閉状態は保存し、次に開いたときも前回のままにする。
   async function fetchLearnState() {
@@ -10597,15 +10570,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </p>
                 );
               })()}
-              {myRecentComments.length > 0 && (
-                <div className="mt-2 space-y-1.5">
-                  {myRecentComments.slice(0, 3).map((c) => (
-                    <p key={c.id} className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
-                      💬 {c.entry_date.slice(5)}の記録に：{c.body}
-                    </p>
-                  ))}
-                </div>
-              )}
             </div>
 
             {myUpcomingLessons.length > 0 && (
@@ -12700,7 +12664,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <div className="space-y-2">
                           {recentDates.map((date) => {
                             const e = studentEntries[date];
-                            const comments = studentComments[date] || [];
                             return (
                               <div key={date} className="rounded-xl p-2.5" style={{ background: C.paper }}>
                                 <div className="flex items-center justify-between text-xs">
@@ -12721,25 +12684,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                     )}
                                   </div>
                                 </div>
-                                {comments.length > 0 && (
-                                  <div className="mt-2 space-y-1">
-                                    {comments.map((c) => (
-                                      <p key={c.id} className="text-xs rounded-lg p-1.5" style={{ background: C.card, color: C.ink }}>💬 {c.body}</p>
-                                    ))}
-                                  </div>
-                                )}
-                                <details className="mt-1.5">
-                                  <summary className="text-xs cursor-pointer" style={{ color: C.inkSoft }}>コメントする</summary>
-                                  <div className="flex gap-1.5 mt-1.5">
-                                    <input type="text" value={newCommentDraft} onChange={(ev) => setNewCommentDraft(ev.target.value)}
-                                      placeholder="この日の記録へのコメント" maxLength={500}
-                                      className="flex-1 rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.card }} />
-                                    <button type="button" onClick={() => handleCreateComment(link.id, date, newCommentDraft)}
-                                      className="px-3 py-1.5 rounded-lg text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
-                                      送信
-                                    </button>
-                                  </div>
-                                </details>
                               </div>
                             );
                           })}
@@ -12821,7 +12765,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           fetchStudentEntries(link.student_id);
                           fetchTeacherNote(link.id);
                           fetchLessonsForLink(link.id);
-                          fetchCommentsForLink(link.id);
                         }}
                         className="w-full text-left p-4 flex items-center justify-between">
                         <div>

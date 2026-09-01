@@ -58,7 +58,25 @@ async function main() {
   assertEqual(sent, null, "★知らない名前も送らない");
   m.trackEvent(fake, "u1", "record_saved", { fieldsFilled: ["sleep"] });
   console.error = quiet; console.warn = quietWarn;
-  assertTrue(sent && sent.name === "record_saved", "正しいものは送る");
+  assertTrue(sent && sent.event_type === "record_saved",
+    "★正しいものは送る（列は event_type。name ではありません）");
+
+  console.log("\n=== ★許可リスト（2026-09-01）===");
+  // ★禁止リストから許可リストに変えました。禁止リストは必ず漏れます。
+  //   健康の値だけを止めていて、teacher_id / created_by / 名前 / メール /
+  //   招待コードは何も止めていませんでした。
+  sent = null;
+  console.error = () => {};
+  m.trackEvent(fake, "u1", "record_saved", { fieldsFilled: ["sleep"], teacher_id: "t1", email: "a@b.c" });
+  console.error = quiet;
+  assertTrue(sent !== null, "許可外の鍵があっても、イベント自体は送る");
+  assertEqual(Object.keys(sent.props).sort(), ["fieldsFilled"],
+    "★許可外の鍵（teacher_id / email）は落として送る");
+  assertTrue(m.ALLOWED_PROP_KEYS.length > 0, "許可リストがある");
+  ["teacher_id", "created_by", "invited_by", "email", "name", "code", "body"].forEach((k) => {
+    assertTrue(!m.ALLOWED_PROP_KEYS.includes(k), `★${k} は許可していない`);
+  });
+  assertTrue(m.HEALTH_PROP_KEYS.length > 0, "健康の値の一覧もある（二重の歯止め）");
   assertTrue(sent && sent.user_id === "u1" && sent.at, "user_id と時刻が入る");
   assertEqual(sent && sent.props, { fieldsFilled: ["sleep"] }, "props はそのまま");
 

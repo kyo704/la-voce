@@ -26,7 +26,8 @@ function assertTrue(c, label) { if (c) { console.log(`  ✓ ${label}`); passCoun
 
 // ★本番で確認した8つ（pg_constraint・2026-09-01）
 const NO_ACTION_COLUMNS = [
-  ["entry_comments", "created_by"],
+  // ★entry_comments は 2026-09-01 に表ごと削除しました（憲章 §10）。
+  //   表が無いので、この列も外部キーの一覧から消えます。
   ["lessons", "created_by"],
   ["lessons", "student_id"],
   ["lessons", "teacher_id"],
@@ -50,6 +51,18 @@ const NO_ACTION_COLUMNS = [
     const how = covered(t, c);
     assertTrue(how !== null, `${t}.${c} → ${how || "★どこにも無い（退会が失敗します）"}`);
   });
+
+  console.log("\n=== ★entry_comments が復活していない ===");
+  // 生徒の記録への自由記述コメント。憲章 §10 が禁じています。
+  const vt = readCode("components", "VocalTracker.jsx");
+  ["entry_comments", "handleCreateComment", "fetchCommentsForLink", "fetchMyRecentComments",
+   "studentComments", "myRecentComments", "newCommentDraft"].forEach((n) => {
+    assertTrue(!vt.includes(n), `★${n} が残っていない`);
+  });
+  assertTrue(!d.USER_OWNED_TABLES.includes("entry_comments"), "★削除の一覧からも外れている");
+  const charter = readCode("docs", "lavoce-設計憲章.md");
+  assertTrue(/生徒の記録に対するコメント・ひとこと・反応を作らない/.test(charter),
+    "★憲章 §10 に、作らないことが書いてある");
 
   console.log("\n=== ★判断待ちは、理由が書いてある ===");
   d.PENDING_FK_DECISIONS.forEach((x) => {
