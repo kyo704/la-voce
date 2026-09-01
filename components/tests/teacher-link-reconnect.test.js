@@ -106,7 +106,7 @@ console.log("\n=== ★「読み込み中」と「未成年」を分けている 
 {
   const at = vt.indexOf("async function handleAcceptInvitation");
   const body = vt.slice(at, at + 1400);
-  const iLoading = body.indexOf("まだ読み込みが終わっていません");
+  const iLoading = body.indexOf("読み込み中です");
   const iMinor = body.indexOf("isTreatedAsMinor(profile)");
   assertTrue(iLoading > 0, "読み込み中の案内がある");
   assertTrue(iLoading < iMinor,

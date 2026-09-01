@@ -9315,7 +9315,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     //   ★事実と違いますし、待てば直ることも伝わりません。
     //   回線の遅い端末で押したときに、これが起きていました。
     if (!profile) {
-      setInviteLookupError("まだ読み込みが終わっていません。少し待ってから、もう一度お押しください。");
+      setInviteLookupError("読み込み中です。少し待ってから、もう一度お押しください。");
       return;
     }
     if (isTreatedAsMinor(profile)) {
@@ -11771,7 +11771,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                       ? "この日を生理の初日として記録しています"
                                       : day != null
                                         ? `周期${day}日目`
-                                        : "まだ記録がありません"}
+                                        : "記録がありません"}
                                   </p>
                                 );
                               })()}
@@ -13125,7 +13125,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 return (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <p className="text-sm" style={{ color: C.inkSoft }}>
-                      まだ記録がありません。記録すると、ここに並びます。
+                      記録すると、ここに並びます。
                     </p>
                   </div>
                 );
@@ -14400,7 +14400,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </div>
                       </>
                     ) : (
-                      <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>まだ症状の記録がありません。</p>
+                      <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>症状の記録はありません。</p>
                     )}
                     {Object.keys(symptomStreaks).length > 0 && (
                       <div className="mt-3 space-y-1.5">
@@ -14839,7 +14839,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">環境の快適帯</h3>
                       <p className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.7 }}>
-                        気温と湿度のうち、前の日から引き継いだ日が多いため、まだ結論を出していません。
+                        気温と湿度のうち、前の日から引き継いだ日が多いため、結論を出すには日数が足りません。
                       </p>
                       <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
                         その日に記録した日：{absHumidityUsable.total - absHumidityUsable.carried} 日 ／
@@ -14954,7 +14954,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     )}
                     {locationStats.lowN.length > 0 && (
                       <div className="mt-3">
-                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>まだ3件未満（記録数のみ表示。貯まると平均が出ます）</p>
+                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>3件未満（記録数のみ表示。貯まると平均が出ます）</p>
                         <div className="flex flex-wrap gap-1.5">
                           {locationStats.lowN.map((s) => (
                             <span key={s.location} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>
@@ -15021,7 +15021,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     )}
                     {restMethodStats.lowN.length > 0 && (
                       <div className="mt-3">
-                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>まだ3件未満（記録数のみ表示。貯まると平均が出ます）</p>
+                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>3件未満（記録数のみ表示。貯まると平均が出ます）</p>
                         <div className="flex flex-wrap gap-1.5">
                           {restMethodStats.lowN.map((s) => (
                             <span key={s.method} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>
@@ -15094,7 +15094,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     )}
                     {roleLoadStats.lowN.length > 0 && (
                       <div className="mt-3">
-                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>まだ3回未満（記録数のみ表示）</p>
+                        <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>3回未満（記録数のみ表示）</p>
                         <div className="flex flex-wrap gap-1.5">
                           {roleLoadStats.lowN.map((r) => (
                             <span key={r.name} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>
@@ -16117,7 +16117,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               )}
                             </div>
                           ) : (
-                            <p className="text-xs mt-3 rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>まだ記録がありません。</p>
+                            <p className="text-xs mt-3 rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>記録がありません。</p>
                           )}
                         </div>
                       );
