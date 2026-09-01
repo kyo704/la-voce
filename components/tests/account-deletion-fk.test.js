@@ -52,6 +52,26 @@ const NO_ACTION_COLUMNS = [
     assertTrue(how !== null, `${t}.${c} → ${how || "★どこにも無い（退会が失敗します）"}`);
   });
 
+  console.log("\n=== ★user_id を持たない表が、一覧に紛れていない ===");
+  // ★2026-09-01、user_id 列を持たない4表が22表の一覧に入っていて、
+  //   実地の削除試験で5件の失敗として表面化しました。
+  //   （それまでは isMissingTable が握りつぶして成功扱いでした）
+  const NO_USER_ID_TABLES = ["teacher_notes", "lessons", "assignments", "enrollments"];
+  NO_USER_ID_TABLES.forEach((t) => {
+    assertTrue(!d.USER_OWNED_TABLES.includes(t),
+      `★${t} は user_id を持たないので、一覧に入れない`);
+  });
+  // lessons だけは、専用の処理が要る（外部キーが NO ACTION のため）
+  assertTrue(d.SPECIAL_DELETES.some((x) => x.table === "lessons" && x.column === "student_id"),
+    "lessons.student_id は行ごと削除");
+  ["teacher_id", "created_by"].forEach((c) => {
+    assertTrue(d.NULLED_REFERENCES.some((x) => x.table === "lessons" && x.column === c),
+      `lessons.${c} は null にする`);
+  });
+  // 残る一覧が、本当に user_id で消せる表だけであること（数の確認）
+  assertTrue(d.USER_OWNED_TABLES.length === 17,
+    `一覧は17表（いまは ${d.USER_OWNED_TABLES.length}）`);
+
   console.log("\n=== ★entry_comments が復活していない ===");
   // 生徒の記録への自由記述コメント。憲章 §10 が禁じています。
   const vt = readCode("components", "VocalTracker.jsx");
