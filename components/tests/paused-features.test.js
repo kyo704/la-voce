@@ -61,8 +61,11 @@ const vt = readCode("components", "VocalTracker.jsx");
   // 相関の説明変数に入っていないこと（入っていたら null だらけで壊れる）
   const factors = vt.slice(vt.indexOf("const FACTORS = ["), vt.indexOf("];", vt.indexOf("const FACTORS = [")));
   assertTrue(!/cpps/i.test(factors), "★相関の説明変数に入っていない");
-  // 共有範囲はそのまま（過去の値は、許可されていれば見えてよい）
-  assertTrue(scope.COLUMN_SCOPE.cpps_value === "voice", "共有範囲の分類は変えていない");
+  // ★共有範囲という考え方は 2026-09-01 に廃止しました。
+  //   cpps_value を含め、記録の列は★1つも先生に渡りません。
+  //   ここで見るのは「決して渡さない一覧に、余計なものを足していないか」だけです。
+  assertTrue(!scope.NEVER_SHARED_COLUMNS.includes("cpps_value"),
+    "★cpps_value は、決して渡さない一覧の対象ではない（そもそも何も渡らない）");
   // 管理画面は件数を数えるだけ＝0件でも落ちない
   const admin = readCode("app/admin", "page.js");
   assertTrue(/typeof e\.cpps_value === "number"/.test(admin),

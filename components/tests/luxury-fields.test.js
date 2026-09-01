@@ -41,13 +41,17 @@ const vt = readCode("components", "VocalTracker.jsx");
   });
 
   console.log("\n=== ★③ 先生に共有しない ===");
-  eq(scope.COLUMN_SCOPE.smoked_today, null, "たばこは、どの共有範囲にも入れない");
-  eq(scope.COLUMN_SCOPE.drank_today, null, "お酒も同じ");
-  const rpc = readRaw("supabase", "migration_teacher_student_entries_rpc.sql");
-  const live = rpc.split("\n").filter((l) => !l.trim().startsWith("--")).join("\n");
-  assertTrue(/'smoked_today', 'drank_today'/.test(live), "RPC の既知の列には載っている");
-  assertTrue(!/v_allowed[^;]*smoked_today/.test(live), "★どの scope の許可リストにも入っていない");
-  assertTrue(!/v_allowed[^;]*drank_today/.test(live), "★お酒も同じ");
+  // ★2026-09-01、共有範囲そのものを廃止しました。
+  //   いま先生に渡る記録の列は★1つもありません。
+  //   それでも、この2つが「決して渡さない一覧」に載っていることを見ます。
+  //   ★将来また共有の話が出たときに、真っ先に外すべき列だからです。
+  assertTrue(scope.NEVER_SHARED_COLUMNS.includes("smoked_today"), "たばこは、決して渡さない一覧にある");
+  assertTrue(scope.NEVER_SHARED_COLUMNS.includes("drank_today"), "お酒も同じ");
+  // ★以前は「RPC の許可リストに入っていないこと」を見ていました。
+  //   その RPC は 2026-09-01 に削除しました（migration_drop_student_entries_rpc.sql）。
+  //   いま見るのは、★関数そのものが消えていることです。
+  const drop = readRaw("supabase", "migration_drop_student_entries_rpc.sql");
+  assertTrue(/drop function/i.test(drop), "★先生が記録を読む関数は削除されている");
 
   console.log("\n=== ★④ 中核5項目に混ぜない（別の族） ===");
   eq(fam.LUXURY_FAMILY, ["smokedToday", "drankToday"], "嗜好品の族は2つ");

@@ -41,7 +41,10 @@ console.log("=== ★解除は、行を消さない ===");
 console.log("\n=== ★書き出しが、解除ずみの行を履歴として使っている ===");
 {
   assertTrue(/SHARE_HISTORY_SAFE_COLUMNS/.test(ex), "共有履歴の列が定義されている");
-  ["status", "revoked_at", "revoked_by", "accepted_at", "share_scope"].forEach((c) => {
+  // ★share_scope は 2026-09-01 に外しました。二度と値が入らない項目を
+  //   書き出しに載せ続けると、いまも選べるかのように読めます。
+  assertTrue(!/"share_scope"/.test(ex), "★share_scope は書き出しに載せない");
+  ["status", "revoked_at", "revoked_by", "accepted_at"].forEach((c) => {
     assertTrue(new RegExp(`"${c}"`).test(ex), `履歴に ${c} が入る`);
   });
   // 書き出しは status で絞っていないこと（絞ると解除ずみが落ちます）

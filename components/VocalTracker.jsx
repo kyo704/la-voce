@@ -78,6 +78,7 @@ import { canSeeBetaFeatures, canSeeTeacherFeatures, canSeeLineLink, canSeeStuden
   canSeeShobaiArticles, isShobaiArticle } from "@/lib/featureFlags";
 // 削除の猶予期間（A-4）。日数の計算はサーバーと同じものを使う。
 import { graceDaysLeft, GRACE_PERIOD_DAYS } from "@/lib/accountDeletion";
+import { buildLinkConsentRow, buildUnlinkPatch } from "@/lib/linkConsent";
 import { departingOwnerNotice, transferMailto, CLOSE_ORG_KEEP_LINE, CLOSE_ORG_DELETE_LINE } from "@/lib/orgClosure";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
 // 書き出しに添える「記録の控え」。★解釈を1つも書かない。文言と禁止語はこの1か所。
@@ -1723,44 +1724,23 @@ function deriveLegacyVoiceFieldsFromEntries(voiceEntries) {
   };
 }
 // 指導者プラン実装仕様 §5: 生徒一覧カード用のサマリーを計算する。
-// scope（公開範囲）で許可されていない項目は、計算すらせずnullのままにする
-// （「計算はしたが表示しない」ではなく「そもそも見ない」を徹底する）。
-// 作業指示-公開前の実装.md A-1: 健康データ(声・症状・睡眠等)の閲覧権限を、サーバー側(RLS)だけに
-// 頼らず、クライアント側でも二重にチェックする。
-// ★重要な設計: 健康データの共有は、教室(organizations/memberships/assignments)とは
-// 完全に独立した、1対1の連携(teacher_student_links)だけで判定する。
-// オーナー・管理者・担当講師という「教室での役割」は、ここには一切関与しない。
-// 担当していない生徒の健康データを、オーナーや管理者が見られる経路は存在しない。
-function canViewHealth(link, scopeKey) {
-  if (!link) return false;
-  if (link.status !== "active") return false; // 解除された瞬間、過去の期間も含めて見えなくなる
-  if (link.revoked_at) return false;
-  const scope = link.share_scope || {};
-  return !!scope[scopeKey];
-}
-function computeStudentSummary(entries, link) {
-  const dates = Object.keys(entries).sort();
-  const totalDays = dates.length;
-  const lastDate = dates[dates.length - 1] || null;
-  const todayStr = todayISOUTC();
-  const daysSinceLastRecord = lastDate ? Math.round((new Date(todayStr) - new Date(lastDate)) / 86400000) : null;
-  const recentDates = dates.slice(-7);
-  let avgThroat = null;
-  if (canViewHealth(link, "voice")) {
-    const throatVals = recentDates.map((d) => entries[d].throatCondition).filter((v) => typeof v === "number");
-    avgThroat = throatVals.length ? throatVals.reduce((a, b) => a + b, 0) / throatVals.length : null;
-  }
-  let recentSymptomCount = null;
-  if (canViewHealth(link, "symptoms")) {
-    recentSymptomCount = recentDates.reduce((s, d) => s + (entries[d].throatSymptoms || []).length, 0);
-  }
-  let avgSleep = null;
-  if (canViewHealth(link, "sleep")) {
-    const sleepVals = recentDates.map((d) => entries[d].sleepHours).filter((v) => typeof v === "number");
-    avgSleep = sleepVals.length ? sleepVals.reduce((a, b) => a + b, 0) / sleepVals.length : null;
-  }
-  return { totalDays, lastDate, daysSinceLastRecord, avgThroat, recentSymptomCount, avgSleep };
-}
+// ★先生が生徒の記録の中身を見る仕組みは、2026-09-01 に削除しました。
+//
+//   ここには canViewHealth() と computeStudentSummary() がありました。
+//   共有範囲（share_scope）に応じて、声・症状・睡眠の中身を先生の画面に
+//   出すための判定と集計です。
+//
+//   ★常時アクセスそのものをやめる、という判断です（坂本さん・2026-09-01）。
+//     共有は、生徒さんが自分で書き出して手渡す形にします。
+//     お医者さんに紙を1枚渡すのと同じで、1回きり・アプリの外です。
+//
+//   ★教室の役割（オーナー・管理者・担当講師）から健康データへ届く道は、
+//     もともと1本もありません。これは変わりません（永久に作らない・Opus 判断）。
+//
+//   ★share_scope の列と lib/shareScope.js は残しています。
+//     列は、生徒さんの書き出しに入る「共有設定の履歴」だからです（A-3）。
+//     モジュールは、書き出しと控えの検査が参照する「決して共有しない11列」の
+//     持ち主だからです。★どちらも、いま何かを見せるためのものではありません。
 function rowToEntry(row) {
   const { activities, recovery } = migrateLegacyToActivities(row);
   const voiceEntries = migrateLegacyToVoiceEntries(row);
@@ -4942,9 +4922,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [myTeacherNames, setMyTeacherNames] = useState({});
   const [myStudentLinks, setMyStudentLinks] = useState([]); // 自分が「先生」として見られる生徒たち
   const [myTeacherLinks, setMyTeacherLinks] = useState([]); // 自分が「生徒」としてつながっている先生たち
-  const [studentEntriesCache, setStudentEntriesCache] = useState({}); // studentId -> entries（サーバー側の関数が、共有範囲の列だけを返す）
-  const [studentEntriesFetchError, setStudentEntriesFetchError] = useState({}); // studentId -> 取得に失敗したか
-  const [studentEntriesLoading, setStudentEntriesLoading] = useState({});
+  // ★生徒の記録を持つ入れ物は、2026-09-01 に削除しました。
+  //   先生の画面に、生徒の記録の中身を出さないためです。
   const [viewingStudentLink, setViewingStudentLink] = useState(null); // 生徒個別ページ(§6)で開いている生徒
   const [teacherNoteDraft, setTeacherNoteDraft] = useState("");
   const [teacherNoteSaveStatus, setTeacherNoteSaveStatus] = useState("idle");
@@ -9251,9 +9230,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }
     setPendingInvitation({ ...data, teacher });
   }
-  // §4.1: 既定値。mentalとnotesは既定false（変更しないこと）。
-  const DEFAULT_SHARE_SCOPE = { voice: true, symptoms: true, sleep: true, activity: true, hydration: false, meal: false, body: false, mental: false, notes: false };
-  const [shareScopeDraft, setShareScopeDraft] = useState(DEFAULT_SHARE_SCOPE);
+  // ★共有範囲（shareScope）は 2026-09-01 に廃止しました。
+  //   選ぶものが無くなったので、既定値も下書きもありません。
+  //   ★ここに項目の一覧を戻さないこと。戻すと「選べる」という約束になります。
   // §3.2・§4: 「つながる」を押した瞬間に、紐付けを作成しコードを使用済みにする。
   // ★DBのトリガーが「未成年だから弾いた」と言っているかどうか。
   //   supabase/migration_block_minor_teacher_link.sql が、この目印を返します。
@@ -9301,8 +9280,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }
     const supabase = createClient();
     const { error: linkError } = await supabase.from("teacher_student_links").insert({
+      // ★share_scope は書きません（2026-09-01 に廃止）。
+      //   列は残っていますが、これから先そこに値が入ることはありません。
       teacher_id: pendingInvitation.teacher_id, student_id: userId, status: "active",
-      share_scope: shareScopeDraft, accepted_at: new Date().toISOString()
+      accepted_at: new Date().toISOString()
     });
     if (linkError) {
       // ★上の事前チェックをすり抜けても、DBのトリガーが必ず弾きます。
@@ -9326,6 +9307,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         ? "この先生とは、すでにつながっています。"
         : "連携に失敗しました。もう一度お試しください。");
       return;
+    }
+    // ★つながりの記録を積みます（D-3）。上書きしません。
+    //   ★失敗しても、つながり自体は止めません。記録できなかったことは残します。
+    {
+      const { error: consentError } = await supabase.from("link_consents")
+        .insert(buildLinkConsentRow({ studentId: userId, teacherId: pendingInvitation.teacher_id }));
+      if (consentError) console.error("★つながりの記録を残せませんでした:", consentError);
     }
     await supabase.from("teacher_invitations").update({ used_at: new Date().toISOString(), used_by_student_id: userId }).eq("code", pendingInvitation.code);
     // 作業指示-教室プラン: この先生がownerである教室があれば、レッスン日程の運営面（在籍・担当）にも
@@ -9362,21 +9350,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     //   assignments の RLS もオーナー・管理者向けなので通りません。
     setPendingInvitation(null);
     setInviteCodeInput("");
-    setShareScopeDraft(DEFAULT_SHARE_SCOPE);
     fetchTeacherLinks();
     fetchMyOrgs();
   }
   function handleDeclineInvitation() {
     setPendingInvitation(null);
-    setShareScopeDraft(DEFAULT_SHARE_SCOPE);
   }
-  // §4.4: 公開範囲は変更した瞬間から反映される（過去のデータも含めて）。
-  async function handleUpdateShareScope(linkId, newScope) {
-    const supabase = createClient();
-    const { error } = await supabase.from("teacher_student_links").update({ share_scope: newScope }).eq("id", linkId);
-    if (error) { console.error("公開範囲の更新に失敗しました:", error); return; }
-    fetchTeacherLinks();
-  }
+  // ★公開範囲を変える処理は、2026-09-01 に削除しました。
+  //   変えるものが無くなったためです。上書きの不具合も、これで消えました。
+  //   ★戻さないこと。戻すと、共有範囲という考え方ごと戻ってきます。
   // §3.1: 先生・生徒どちらからでも、いつでも解除できる。解除した瞬間から先生は一切見られなくなる
   // （statusを'revoked'にするとRLSの条件を満たさなくなるため、DBレベルで即座に遮断される）。
   async function handleRevokeLink(linkId, asRole) {
@@ -9385,6 +9367,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const { error } = await supabase.from("teacher_student_links")
       .update({ status: "revoked", revoked_at: new Date().toISOString(), revoked_by: asRole }).eq("id", linkId);
     if (error) { console.error("解除に失敗しました:", error); return; }
+    // ★つながりの記録に、終わりの時刻を入れます。行は消しません。
+    //   いま続いている行（unlinked_at が null）だけが対象です。
+    {
+      const link = [...myTeacherLinks, ...myStudentLinks].find((l) => l.id === linkId);
+      if (link) {
+        const { error: consentError } = await supabase.from("link_consents")
+          .update(buildUnlinkPatch({ by: asRole }))
+          .eq("student_id", link.student_id).eq("teacher_id", link.teacher_id)
+          .is("unlinked_at", null);
+        if (consentError) console.error("★つながりの終わりを記録できませんでした:", consentError);
+      }
+    }
     fetchTeacherLinks();
   }
   async function fetchTeacherLinks() {
@@ -9397,35 +9391,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // 指導者プラン実装仕様 §5: 生徒一覧の各カードを開いたときに、その生徒の記録を取得する。
   //
   // ★ここは以前 entries に対して select("*") をしていたが、それは誤りだった。
-  //   PostgreSQL の RLS は「行」単位の制御であり、「列」単位ではない。そのため
-  //   RLS が行を通した時点で、生徒が共有を許可していない項目（睡眠・心の余裕・
-  //   稽古ノート等）まで、先生のブラウザに届いていた。画面に描画していなかっただけで、
-  //   ネットワーク応答には含まれていた。
+  // ★生徒の記録を取ってくる処理は、2026-09-01 に削除しました。
+  //   先生が生徒の記録の中身を常時見られる状態そのものを、やめた判断です。
+  //   共有は、生徒さんが自分で書き出して手渡す形にします（1回きり・アプリの外）。
   //
-  //   統合実行ルートv4 §11「RLS だけで守らない。サーバー側の canView() と二重にする」
-  //   に従い、列の絞り込みはサーバー側の SECURITY DEFINER 関数で行う。
-  //   関数の定義: supabase/migration_teacher_student_entries_rpc.sql
-  //   列と共有範囲の対応: lib/shareScope.js（SQL と1対1。テストでズレを検出する）
-  //
-  //   許可されていない列は null になって返ってくる。画面側の canViewHealth() は
-  //   「二重にする」ための2枚目として、これまでどおり残してある。
-  async function fetchStudentEntries(studentId) {
-    if (studentEntriesCache[studentId] || studentEntriesLoading[studentId]) return;
-    setStudentEntriesLoading((s) => ({ ...s, [studentId]: true }));
-    const supabase = createClient();
-    const { data, error } = await supabase.rpc("get_student_entries", { p_student_id: studentId, p_limit: 60 });
-    if (error) {
-      // 取得できないときに entries への直接アクセスへ戻してはいけない（列が絞られなくなるため）。
-      console.error("生徒の記録を取得できませんでした。supabase/migration_teacher_student_entries_rpc.sql を実行済みか確認してください。", error);
-      setStudentEntriesFetchError((s) => ({ ...s, [studentId]: true }));
-    } else if (data) {
-      const byDate = {};
-      data.forEach((row) => { byDate[row.date] = rowToEntry(row); });
-      setStudentEntriesCache((s) => ({ ...s, [studentId]: byDate }));
-      setStudentEntriesFetchError((s) => ({ ...s, [studentId]: false }));
-    }
-    setStudentEntriesLoading((s) => ({ ...s, [studentId]: false }));
-  }
+  //   ★ここに get_student_entries を呼ぶ処理を戻さないこと。
+  //     関数は supabase/migration_drop_student_entries_rpc.sql で削除しました。
+  //   ★entries を直接読む処理も書かないこと。RLS は行単位で、列を絞れません
+  //     （それが、わざわざ SECURITY DEFINER の関数を作った理由でした）。
   // 指導者プラン実装仕様 §6: 先生専用メモ。teacher_notesはRLSにより先生本人しか読み書きできないため、
   // 生徒には（生徒がこのアプリの他のどの画面を見ても）絶対に見えない。
   async function fetchTeacherNote(linkId) {
@@ -10709,9 +10682,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               <p className="text-xs" style={{ color: C.inkSoft }}>
                 {t("lessonModeDesc")}
               </p>
-              <p className="text-xs mt-2 rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
-                {t("lessonModeHidden")}
-              </p>
+              {/* ★「先生には見えません：メンタルの日記…」の断り書きは、
+                  2026-09-01 に削除しました。隠すものが無くなったので、
+                  ★断る必要もありません。一部だけ隠していると読めてしまう文でした。
+                  いまは、記録の中身は1つも先生に渡りません。 */}
               {(() => {
                 const nextLesson = myUpcomingLessons.find((l) => new Date(l.scheduled_at) >= new Date());
                 return nextLesson && (
@@ -12770,12 +12744,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             {activeTab === "lesson" && lessonRole === "teach" && (
               viewingStudentLink ? (() => {
                 const link = viewingStudentLink;
-                const scope = link.share_scope || {};
-                const studentEntries = studentEntriesCache[link.student_id];
-                const summary = studentEntries ? computeStudentSummary(studentEntries, link) : null;
                 const studentProfessionLabel = t(PROFESSION_LABEL_KEYS[link.student && link.student.vocal_profession] || "professionSinger");
                 const studentDisplayName = (link.student && link.student.display_name) || studentProfessionLabel;
-                const recentDates = studentEntries ? Object.keys(studentEntries).sort().slice(-14).reverse() : [];
                 return (
                   <div className="space-y-4">
                     <button type="button" onClick={() => setViewingStudentLink(null)}
@@ -12787,60 +12757,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       <p className="text-xs" style={{ color: C.inkSoft }}>{studentProfessionLabel}</p>
                     </div>
 
-                    {studentEntriesLoading[link.student_id] && (
-                      <p className="text-xs" style={{ color: C.inkSoft }}>読み込み中…</p>
-                    )}
-
-                    {studentEntriesFetchError[link.student_id] && (
-                      <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.rust }}>
-                        記録を読み込めませんでした。時間をおいて、もう一度お試しください。
-                      </p>
-                    )}
-
-                    {summary && (
-                      <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                        <p className="text-sm font-medium mb-1">記録日数（直近60日中）：{summary.totalDays}日</p>
-                        {!canViewHealth(link, "voice") && !canViewHealth(link, "symptoms") && !canViewHealth(link, "sleep") && (
-                          <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                            この生徒は、記録日数以外の項目をまだ共有していません。
-                          </p>
-                        )}
-                      </div>
-                    )}
-
-                    {(canViewHealth(link, "voice") || canViewHealth(link, "symptoms") || canViewHealth(link, "sleep")) && recentDates.length > 0 && (
-                      <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                        <h3 className="ff-display italic text-lg mb-1">直近の記録</h3>
-                        <p className="text-xs mb-3" style={{ color: C.inkSoft }}>各日にコメントを残せます。生徒にも表示されます。</p>
-                        <div className="space-y-2">
-                          {recentDates.map((date) => {
-                            const e = studentEntries[date];
-                            return (
-                              <div key={date} className="rounded-xl p-2.5" style={{ background: C.paper }}>
-                                <div className="flex items-center justify-between text-xs">
-                                  <span className="ff-mono" style={{ color: C.inkSoft }}>{date.slice(5)}</span>
-                                  <div className="flex gap-3">
-                                    {canViewHealth(link, "voice") && (
-                                      <span style={{ color: C.ink }}>
-                                        喉{typeof e.throatCondition === "number" ? e.throatCondition.toFixed(1) : "-"}
-                                      </span>
-                                    )}
-                                    {canViewHealth(link, "symptoms") && (e.throatSymptoms || []).length > 0 && (
-                                      <span style={{ color: C.curtain }}>症状{e.throatSymptoms.length}件</span>
-                                    )}
-                                    {canViewHealth(link, "sleep") && (
-                                      <span style={{ color: C.ink }}>
-                                        睡眠{typeof e.sleepHours === "number" ? `${e.sleepHours}h` : "-"}
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
+                    {/* ★健康の記録の中身は、先生には出しません（2026-09-01 の判断）。
+                        常時アクセスをやめました。生徒さんが自分で書き出して渡す形にします。
+                        ★ここに要約や『直近の記録』を戻さないこと。
+                          戻すと、同意していない中身が先生の画面に出ます。
+                        残すのは、レッスンの予定と、先生自身のメモだけです。 */}
 
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <h3 className="ff-display italic text-lg mb-1">{t("lessonScheduleTitle")}</h3>
@@ -12903,9 +12824,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                 <h3 className="ff-display italic text-lg" style={{ color: C.ink }}>{t("studentListTitle").replace("{n}", myStudentLinks.length)}</h3>
                 {myStudentLinks.map((link) => {
-                  const scope = link.share_scope || {};
-                  const studentEntries = studentEntriesCache[link.student_id];
-                  const summary = studentEntries ? computeStudentSummary(studentEntries, link) : null;
                   const studentProfessionLabel = t(PROFESSION_LABEL_KEYS[link.student && link.student.vocal_profession] || "professionSinger");
                   const studentDisplayName = (link.student && link.student.display_name) || studentProfessionLabel;
                   return (
@@ -12913,7 +12831,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       <button type="button"
                         onClick={() => {
                           setViewingStudentLink(link);
-                          fetchStudentEntries(link.student_id);
                           fetchTeacherNote(link.id);
                           fetchLessonsForLink(link.id);
                         }}
@@ -12921,11 +12838,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <div>
                           <p className="text-sm font-medium">{studentDisplayName}</p>
                           <p className="text-xs" style={{ color: C.inkSoft }}>{studentProfessionLabel}</p>
-                          {summary && (
-                            <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
-                              {summary.daysSinceLastRecord === 0 ? "今日記録あり" : summary.daysSinceLastRecord != null ? `最終記録：${summary.daysSinceLastRecord}日前` : "記録がまだありません"}
-                            </p>
-                          )}
+                          {/* ★「最終記録：N日前」も出しません（2026-09-01）。
+                              中身ではありませんが、記録を取ってこないと出せない値です。
+                              ★「いつ記録したか」も、先生に常時見せるものではありません。 */}
                         </div>
                         <ChevronRight size={16} style={{ color: C.inkSoft }} />
                       </button>
@@ -16870,20 +16785,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           {pendingInvitation.teacher && pendingInvitation.teacher.school && (
                             <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{pendingInvitation.teacher.school}</p>
                           )}
-                          <p className="text-xs mb-2" style={{ color: C.inkSoft }}>つながると、この先生は選んだ項目を見られるようになります。</p>
-                          <div className="space-y-1.5 mb-3">
-                            {[
-                              ["voice", "声・喉の記録"], ["symptoms", "症状"], ["sleep", "睡眠"], ["activity", "活動・練習量"],
-                              ["hydration", "水分・食事"], ["meal", "食事"], ["body", "体重・身体データ"], ["mental", "心の余裕・日記"], ["notes", "稽古ノート"]
-                            ].map(([key, label]) => (
-                              <label key={key} className="flex items-center gap-2 text-xs" style={{ color: C.ink }}>
-                                <input type="checkbox" checked={!!shareScopeDraft[key]}
-                                  onChange={(e) => setShareScopeDraft((s) => ({ ...s, [key]: e.target.checked }))} />
-                                {label}
-                              </label>
-                            ))}
-                          </div>
-                          <p className="text-xs mb-3" style={{ color: C.inkSoft }}>あとから変更できます。つながりの解除もいつでもできます。</p>
+                          {/* ★選ぶ項目は置きません（2026-09-01 の判断）。
+                              先生が記録の中身を見られる仕組みそのものを廃止したので、
+                              ★選べるものが1つもありません。
+                              チェックの一覧を置くと「選べば見せられる」という
+                              約束になってしまいます。つなぐか、つながないかだけです。 */}
+                          <p className="text-xs mb-3 leading-relaxed" style={{ color: C.ink }}>
+                            つながると、この先生とレッスンの予定を共有できるようになります。
+                            あなたの記録の中身は、先生には見えません。
+                          </p>
+                          <p className="text-xs mb-3" style={{ color: C.inkSoft }}>つながりの解除は、いつでもできます。</p>
                           {/* ★理由を、この画面にも出すこと（2026-09-01）。
                               これまで inviteLookupError は、招待コードを入れる側の
                               分岐にしか描かれていませんでした。同意画面が出ている間は、
