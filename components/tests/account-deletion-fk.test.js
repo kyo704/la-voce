@@ -69,9 +69,15 @@ const NO_ACTION_COLUMNS = [
     assertTrue(typeof x.note === "string" && x.note.length > 10,
       `${x.table}.${x.column} に理由がある`);
   });
-  // ★判断待ちが空になるまでは、先生の退会は失敗しうる
-  assertTrue(d.PENDING_FK_DECISIONS.length > 0,
-    `いま判断待ちが ${d.PENDING_FK_DECISIONS.length} 件（0 になったら、この行は消してよい）`);
+  // ★2026-09-01、判断待ちは空になりました。8列すべてを実際に扱っています。
+  assertTrue(d.PENDING_FK_DECISIONS.length === 0,
+    "★判断待ちが無い（＝先生の退会が外部キーで詰まらない）");
+  NO_ACTION_COLUMNS.forEach(([t, c]) => {
+    const handled =
+      d.SPECIAL_DELETES.some((x) => x.table === t && x.column === c) ||
+      d.NULLED_REFERENCES.some((x) => x.table === t && x.column === c);
+    assertTrue(handled, `★${t}.${c} が実際に処理されている（保留ではない）`);
+  });
 
   console.log("\n=== ★同じ列を2か所で扱っていない ===");
   const seen = new Set();

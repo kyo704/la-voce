@@ -67,6 +67,7 @@ import { ACCOMPANIMENT_OPTIONS } from "@/lib/storedValues";
 import { mayShowLuxuryFields } from "@/lib/ageGate";
 import { weatherCarryDecision, isWeatherSource, isCarried, CARRIED_NOTE, mayUseAbsoluteHumidity } from "@/lib/weatherCarry";
 import { CPPS_ENABLED } from "@/lib/pausedFeatures";
+import { teacherWithHonorific, DEPARTED_TEACHER_LABEL } from "@/lib/teacherDisplay";
 import { shouldShowNotice, withNoticeShown, noticeStateFromRows, NOTICE_TEXT } from "@/lib/notices";
 import { cycleOptInDescription, mentionsCycleInDataLists } from "@/lib/cycleCopy";
 import { writeWithMissingColumnFallback } from "@/lib/entryWriteFallback";
@@ -2631,13 +2632,15 @@ function LessonCalendar({ lessons, onDayClick, selectable, getTeacherName, getSt
       {!selectable && selectedDetailDate && lessonsByDate[selectedDetailDate] && (
         <div className="mt-3 space-y-1.5">
           {lessonsByDate[selectedDetailDate].map((l) => {
-            const withWhom = (getTeacherName && l.teacher_id && `${getTeacherName(l.teacher_id)}先生`)
+            // ★退会した先生（teacher_id が null）でも、必ず何かを出す。
+            //   空白にすると、消えたのか壊れたのかが分かりません。
+            const withWhom = (getTeacherName && teacherWithHonorific(l.teacher_id, getTeacherName))
               || (getStudentName && l.student_id && `${getStudentName(l.student_id)}さん`) || "";
             const title = `レッスン${withWhom ? `（${withWhom}）` : ""}`;
             return (
               <div key={l.id} className="rounded-lg p-2 text-xs" style={{ background: C.paper }}>
                 <span className="ff-mono">{new Date(l.scheduled_at).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</span>
-                {getTeacherName && l.teacher_id && <span>　{getTeacherName(l.teacher_id)}先生</span>}
+                {getTeacherName && <span>　{teacherWithHonorific(l.teacher_id, getTeacherName)}</span>}
                 {getStudentName && l.student_id && <span>　{getStudentName(l.student_id)}さん</span>}
                 {l.note && <span>　{l.note}</span>}
                 <AddToCalendarButtons lesson={l} title={title} t={t} />
@@ -9507,9 +9510,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }
   }
   function orgDisplayName(userId) {
+    // ★null でも落ちないこと。退会した先生の行は teacher_id が null です。
+    if (!userId) return DEPARTED_TEACHER_LABEL;
     const p = orgProfileNames[userId];
     if (p && p.displayName) return p.displayName;
-    return `${userId.slice(0, 8)}…`;
+    return `${String(userId).slice(0, 8)}…`;
   }
   // C-1: 先生を教室に招待する。招待コードの画面には必ず教室名を表示すること。
   async function handleGenerateOrgInvite(orgId) {
@@ -12526,9 +12531,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     {myAllLessons.filter((l) => new Date(l.scheduled_at) >= new Date()).map((l) => (
                       <div key={l.id} className="rounded-lg p-2.5 text-xs" style={{ background: C.paper }}>
                         {new Date(l.scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", weekday: "short", hour: "2-digit", minute: "2-digit" })}
-                        {l.teacher_id && <span>　{orgDisplayName(l.teacher_id)}先生</span>}
+                        <span>　{teacherWithHonorific(l.teacher_id, orgDisplayName)}</span>
                         {l.note ? `　${l.note}` : ""}
-                        <AddToCalendarButtons lesson={l} title={`レッスン${l.teacher_id ? `（${orgDisplayName(l.teacher_id)}先生）` : ""}`} t={t} />
+                        <AddToCalendarButtons lesson={l} title={`レッスン（${teacherWithHonorific(l.teacher_id, orgDisplayName)}）`}t={t} />
                       </div>
                     ))}
                   </div>
