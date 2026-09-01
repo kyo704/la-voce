@@ -54,11 +54,37 @@ assertTrue(/if not exists \(select 1 from pg_policies/.test(live),
 
 console.log("\n=== アプリ側の前提と合っている ===");
 // ensureOwnOrg が入れる列と、ポリシーが見る列が一致していること
-const fn = vt.slice(vt.indexOf("async function ensureOwnOrg"), vt.indexOf("async function ensureOwnOrg") + 900);
+// ★幅を決め打ちしないこと。関数が伸びた分だけ見落とします
+//   （2026-09-01、900字で切っていて role:"owner" を見落としました）。
+const fnStart = vt.indexOf("async function ensureOwnOrg");
+let d = 0, fnEnd = fnStart;
+for (let i = vt.indexOf("{", fnStart); i < vt.length; i++) {
+  if (vt[i] === "{") d++;
+  else if (vt[i] === "}") { d--; if (d === 0) { fnEnd = i; break; } }
+}
+const fn = vt.slice(fnStart, fnEnd + 1);
 assertTrue(/created_by: userId/.test(fn), "★アプリは created_by に自分を入れている");
 assertTrue(/role: "owner"/.test(fn), "★アプリは owner として membership を作る");
 assertTrue(/kind: "solo"/.test(fn), "solo として作る");
 assertTrue(/\.eq\("role", "owner"\)/.test(fn), "既に owner なら作り直さない（何度押しても安全）");
+
+console.log("\n=== ★INSERT ... RETURNING のための SELECT ポリシー ===");
+// .select() を付けた INSERT は、書いた行を読み返します。
+// できたばかりの教室は membership が無いので、作成者自身にも読めませんでした。
+assertTrue(/\.insert\(\{ name: "マイ教室"[\s\S]{0,120}\.select\(\)/.test(fn),
+  "アプリは .select() を付けて INSERT している（org.id が要るため）");
+const sel = readRaw("supabase", "migration_org_insert_policies.sql");
+assertTrue(/organizations_select_own_created/.test(sel) || /created_by = auth\.uid\(\)/.test(sel),
+  "★作成者が自分の教室を読める SELECT ポリシーが要る");
+
+console.log("\n=== ★membership の失敗を見逃さない ===");
+assertTrue(/const \{ error: memError \}/.test(fn),
+  "★membership の INSERT の error を受け取っている");
+assertTrue(/if \(memError\)/.test(fn), "★失敗したら止まる");
+assertTrue(/setInviteError/.test(fn.slice(fn.indexOf("memError"))),
+  "★画面にも出す（console だけにしない）");
+assertTrue(/eq\("created_by", userId\)/.test(fn),
+  "★前回作りかけた教室を拾う（押すたびに増やさない）");
 
 console.log("\n=== 確かめ方が用意してある ===");
 const ver = readRaw("supabase", "verify_org_insert_policies.sql");

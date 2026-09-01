@@ -661,3 +661,86 @@ Praat の CPPS は健常な持続母音で   15〜20 dB
 「本学が保有しているデータの一覧」PDF書き出し画面は、
 **いま予定している機能が全部そろってから**着手します。
 坂本さんの判断で後回しにしました。★中止ではありません。
+
+
+---
+
+# 2026-09-01｜手で作った表に、RLS のポリシーが足りていなかった
+
+## 何が起きたか
+
+削除試験のために先生役のアカウントで招待コードを発行しようとしたところ、
+**403 / 42501** で止まりました。原因は2つ重なっていました。
+
+```
+① organizations に INSERT のポリシーが★1つも無かった
+     SELECT のポリシーだけがありました。
+     RLS が有効な表に INSERT ポリシーが無いと、service_role 以外からの
+     INSERT は★すべて拒否されます。
+     ★つまり、アプリから教室が作られたことは一度もありません。
+       いまある行は SQL エディタ（postgres ロール＝RLS 迂回）で
+       作られたものです。
+
+② INSERT ... RETURNING が、SELECT のポリシーにも引っかかっていた
+     アプリは .insert(...).select() と書いています（org.id が要るため）。
+     これは RETURNING なので、★書いた行を読み返します。
+     既存の SELECT ポリシーは can_view_organization()＝membership を
+     見ており、できたばかりの教室は★作成者自身にも読めませんでした。
+     結果、INSERT そのものが失敗します。
+```
+
+さらに**鶏と卵**がありました。`memberships` のポリシーは
+`is_org_owner_or_admin(auth.uid(), org_id)` を要求しますが、
+できたばかりの教室には membership が1行も無いので、この条件は
+**決して真になりません**。最初の1行だけ、別の道が要ります。
+
+## 直したこと
+
+```
+organizations_insert_own            自分を作成者としてのみ作れる
+organizations_select_own_created    自分が作った教室は読める（RETURNING のため）
+memberships_insert_bootstrap_owner  自分を／owner として／自分が作った教室に／
+                                    まだ誰も居ないときだけ
+```
+
+★既存のポリシーは1つも消していません。UPDATE / DELETE は作っていません。
+
+## ★ほかの表にも同じ穴があるかもしれません
+
+CLAUDE.md が警告しているとおり、この repo は**約20の表が SQL エディタで
+手作りされていて、定義もポリシーもリポジトリにありません**。
+`organizations` はその1つでした。**同じ穴が他にもあるはずです。**
+
+★配布前に、一度これを流してください。
+
+```sql
+-- RLS が有効なのに、INSERT のポリシーが無い表を洗い出す
+select c.relname as "テーブル"
+  from pg_class c
+  join pg_namespace n on n.oid = c.relnamespace
+ where n.nspname = 'public' and c.relkind = 'r' and c.relrowsecurity
+   and not exists (
+     select 1 from pg_policies p
+      where p.schemaname = 'public' and p.tablename = c.relname
+        and p.cmd in ('INSERT', 'ALL')
+   )
+ order by 1;
+```
+
+**ここに挙がった表は、アプリから行を作れません。**
+使っていない表なら問題ありませんが、使う予定があるなら配布前に直す必要があります。
+
+## 教訓
+
+★**「画面が出る」と「DBが受け付ける」は別**です。
+　`teacher_beta_access` は `lib/featureFlags.js` の出し分け専用で、
+　RLS は一切見ていません。**画面は出るのに押すと弾かれる**、という形になります。
+
+★**`.select()` を付けた INSERT は、SELECT のポリシーも通ります。**
+　書けるだけでは足りません。
+
+★**SQL エディタでの検証は、RLS を迂回します。**
+　`postgres` ロールで動くためです。なりすまして試すときは
+　★claims を先に、role をあとに設定してください。逆にすると
+　`auth.uid()` が null になり、正しいポリシーでも 42501 になります。
+　（この順序を逆に書いて、ポリシーのせいだと誤診しました）

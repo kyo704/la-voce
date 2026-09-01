@@ -54,6 +54,29 @@ begin
 end $$;
 
 -- ---------------------------------------------------------------------------
+-- ②-2 ★作成者が、自分の教室を読めるようにする
+--
+--   ★アプリは .insert(...).select() と書いています（org.id が要るため）。
+--     これは INSERT ... RETURNING で、★書いた行を読み返します。
+--     既存の SELECT ポリシー can_view_organization() は membership を見ており、
+--     できたばかりの教室は★作成者自身にも読めません。
+--     そのため INSERT そのものが 42501 で失敗していました。
+--
+--   ★既存の organizations_select は消しません。PERMISSIVE は OR で足されます。
+-- ---------------------------------------------------------------------------
+do $$
+begin
+  if not exists (select 1 from pg_policies
+                 where schemaname = 'public' and tablename = 'organizations'
+                   and policyname = 'organizations_select_own_created') then
+    create policy "organizations_select_own_created"
+      on public.organizations for select
+      to authenticated
+      using (created_by = auth.uid());
+  end if;
+end $$;
+
+-- ---------------------------------------------------------------------------
 -- ③ 最初の1人（作成者＝オーナー）だけを通す道
 --
 --   ★既存の memberships_all_owner_admin は残します。2人目以降は

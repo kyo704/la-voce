@@ -15,13 +15,21 @@ create temporary table _t as
 select id from auth.users where email = 'kyosakamoto0703+t1@gmail.com';
 
 -- ★ログインしている状態を作る
-set local role authenticated;
+--   ★順序が大事です。claims を先に、role をあとに。
+--     逆にすると auth.uid() が null になり、正しいポリシーでも 42501 になります。
+--     （2026-09-01、この順序を逆に書いて、ポリシーのせいだと誤診しました）
+--   ★auth.users を読むのは role を切り替える前に済ませます。
+--     authenticated は auth.users を読めません。
 select set_config('request.jwt.claims',
        json_build_object('sub', (select id::text from _t), 'role', 'authenticated')::text,
        true);
+set local role authenticated;
 
 -- ---------------------------------------------------------------------------
 -- ① 自分を作成者として教室を作れるか（★通るはず）
+--    ★returning を付けています。アプリも .select() を付けるので、
+--      INSERT のポリシーだけでなく★SELECT のポリシーも通る必要があります。
+--      ここが 42501 になるなら、SELECT 側が足りていません。
 -- ---------------------------------------------------------------------------
 insert into public.organizations (name, kind, created_by)
 values ('試験用マイ教室', 'solo', (select id from _t))

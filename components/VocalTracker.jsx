@@ -9093,13 +9093,33 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const supabase = createClient();
     const { data: existing } = await supabase.from("memberships").select("org_id").eq("user_id", userId).eq("role", "owner").maybeSingle();
     if (existing) return existing.org_id;
-    const { data: org, error: orgError } = await supabase.from("organizations").insert({ name: "マイ教室", kind: "solo", created_by: userId }).select().single();
-    if (orgError || !org) {
-      console.error("教室の作成に失敗しました:", orgError);
-      setInviteError(`教室を作成できませんでした：${(orgError && orgError.message) || "原因不明"}`);
+    // ★自分が作った教室が既に無いかを、先に見ます。
+    //   前回 membership の作成だけ失敗していると、教室はあるのに
+    //   上の検索では見つかりません。そのまま作ると★教室が増えます。
+    //   （2026-09-01、この落とし穴が実在することを確認しました）
+    const { data: orphan } = await supabase.from("organizations")
+      .select("id").eq("created_by", userId).order("created_at", { ascending: true }).limit(1).maybeSingle();
+    const org = orphan || await (async () => {
+      const { data, error } = await supabase.from("organizations")
+        .insert({ name: "マイ教室", kind: "solo", created_by: userId }).select().single();
+      if (error || !data) {
+        console.error("教室の作成に失敗しました:", error);
+        setInviteError(`教室を作成できませんでした：${(error && error.message) || "原因不明"}`);
+        return null;
+      }
+      return data;
+    })();
+    if (!org) return null;
+    // ★membership の失敗を、黙って見逃さないこと。
+    //   ここが失敗すると、教室はあるのにオーナーが居ない状態になります。
+    //   次に押したとき、上の orphan の検索がその教室を拾って作り直しません。
+    const { error: memError } = await supabase.from("memberships")
+      .insert({ org_id: org.id, user_id: userId, role: "owner" });
+    if (memError) {
+      console.error("教室のオーナー登録に失敗しました:", memError);
+      setInviteError(`教室の準備に失敗しました：${memError.message || "原因不明"}`);
       return null;
     }
-    await supabase.from("memberships").insert({ org_id: org.id, user_id: userId, role: "owner" });
     return org.id;
   }
   // ★以前は、失敗しても console.error に出すだけで画面には何も出なかった。
