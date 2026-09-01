@@ -118,10 +118,11 @@ function assertNoThrow(fn, label) {
 // ---------------------------------------------------------------------------
 // 実装の読み込み
 // ---------------------------------------------------------------------------
-const { intOrNull, numOrNull, boolOrNull, sumMacro, derivePrimaryActivityLegacy, migrateLegacyToActivities, fiveScaleToQuality10, migrateLegacyToVoiceEntries, deriveVoiceEntryRepresentatives, deriveLegacyVoiceFieldsFromEntries, rowToEntry, entryToRow } = loadFunctions([
+const { intOrNull, numOrNull, boolOrNull, weatherSourceOrNull, sumMacro, derivePrimaryActivityLegacy, migrateLegacyToActivities, fiveScaleToQuality10, migrateLegacyToVoiceEntries, deriveVoiceEntryRepresentatives, deriveLegacyVoiceFieldsFromEntries, rowToEntry, entryToRow } = loadFunctions([
   "numOrNull",
   // ★entryToRow が呼ぶ新しいヘルパは、必ずここに足すこと（CLAUDE.md）。
   "boolOrNull",
+  "weatherSourceOrNull",
   "sumMacro",
   "derivePrimaryActivityLegacy",
   "migrateLegacyToActivities",
@@ -470,6 +471,26 @@ console.log("\n=== テスト: 嗜好品（用語辞書の拡張と嗜好品の�
   // ★列がまだ無い環境でも壊れない
   assertEqual(rowToEntry({ date: "2026-08-31" }).smokedToday, null, "★列が無い行を読んでも null");
   assertEqual(rowToEntry({ date: "2026-08-31" }).drankToday, null, "★お酒も同じ");
+}
+
+console.log("\n=== テスト: 気温・湿度の出どころ（weather_source） ===");
+{
+  const base = sampleFullEntry();
+  ["entered", "carried"].forEach((v) => {
+    const row = entryToRow(USER_ID, { ...base, weatherSource: v });
+    assertEqual(row.weather_source, v, `${v} がそのまま保存される`);
+    assertEqual(rowToEntry(row).weatherSource, v, `${v} が読み戻せる`);
+  });
+  // ★知らない値は null にする（DBの制約に当たる前に止める）
+  assertEqual(entryToRow(USER_ID, { ...base, weatherSource: "guessed" }).weather_source, null,
+    "★知らない値は null にする");
+  assertEqual(entryToRow(USER_ID, { ...base, weatherSource: "" }).weather_source, null,
+    "空文字も null");
+  assertEqual(entryToRow(USER_ID, { ...base, weatherSource: null }).weather_source, null,
+    "null は null のまま");
+  // ★列がまだ無い環境でも壊れない
+  assertEqual(rowToEntry({ date: "2026-09-01" }).weatherSource, null,
+    "★列が無い行を読んでも null（移行前でも落ちない）");
 }
 
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);

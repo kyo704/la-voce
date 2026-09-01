@@ -55,10 +55,17 @@ const rawLines = readRaw("components", "VocalTracker.jsx").split("\n");
 const lines = maskComments(rawLines);
 
 console.log("=== 前提：formData は読み込み中 null のまま ===");
-const effectAt = lines.findIndex((l) => l.includes("setFormData(buildFormData(selectedDate, entries));"));
+// ★2026-09-01、気温・湿度の引き継ぎを入れたときに、この行は2段になりました。
+//   setFormData(buildFormData(...)) の1行ではなくなっています。
+//   見るのは「buildFormData を呼ぶ効果があること」と、
+//   その直前に読み込み中の門番があることです。
+const effectAt = lines.findIndex((l) => l.includes("buildFormData(selectedDate, entries)"));
 assertTrue(effectAt > 0, "formData を作る効果がある");
-assertTrue(lines[effectAt - 1].includes("if (loading) return;"),
-  "★読み込み中は作らない（＝そのあいだ null）");
+const guardAt = lines.slice(Math.max(0, effectAt - 4), effectAt)
+  .findIndex((l) => l.includes("if (loading) return;"));
+assertTrue(guardAt >= 0, "★読み込み中は作らない（＝そのあいだ null）");
+assertTrue(lines.some((l) => l.includes("setFormData(carry.carry")),
+  "引き継ぎの判断を通してから setFormData している");
 assertTrue(lines.some((l) => l.includes("const [formData, setFormData] = useState(null)")),
   "★初期値は null");
 // ★読み込み中の画面が無いことも、前提として書き留めておく。

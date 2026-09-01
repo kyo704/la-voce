@@ -48,6 +48,8 @@ declare
     'meals', 'carbs_g', 'protein_g', 'fat_g', 'fiber_g', 'protein_level',
     'calorie_level', 'dinner_time', 'dinner_tags', 'weight_kg', 'body_fat_pct', 'ease',
     'mental_reason', 'mental_tags', 'notes', 'medication_tags', 'cycle_start',
+    -- 気温・湿度の出どころ。★環境の列と同じく、どの scope にも入れません。
+    'weather_source',
     -- ★嗜好品。対応表には載せますが、どの scope にも入れません
     --   （＝先生には決して渡りません）。載せない場合との違いは、
     --   「知らない列」ではなく「共有しないと決めた列」だと分かることです。

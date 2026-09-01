@@ -65,6 +65,7 @@ import {
 import { medicalCaution } from "@/lib/medicalCaution";
 import { ACCOMPANIMENT_OPTIONS } from "@/lib/storedValues";
 import { mayShowLuxuryFields } from "@/lib/ageGate";
+import { weatherCarryDecision, isWeatherSource, isCarried, CARRIED_NOTE, mayUseAbsoluteHumidity } from "@/lib/weatherCarry";
 import { shouldShowNotice, withNoticeShown, noticeStateFromRows, NOTICE_TEXT } from "@/lib/notices";
 import { cycleOptInDescription, mentionsCycleInDataLists } from "@/lib/cycleCopy";
 import { writeWithMissingColumnFallback } from "@/lib/entryWriteFallback";
@@ -1195,6 +1196,7 @@ function buildFormData(date, entries) {
       speakingLevel: existing.speakingLevel ?? null,
       nonPerformanceSpeechMinutes: existing.nonPerformanceSpeechMinutes ?? null,
       morningEdema: existing.morningEdema ?? null,
+      weatherSource: existing.weatherSource ?? null,
       smokedToday: existing.smokedToday ?? null,
       drankToday: existing.drankToday ?? null,
       longestSpeechBlockMinutes: existing.longestSpeechBlockMinutes ?? null,
@@ -1262,6 +1264,9 @@ function buildFormData(date, entries) {
     // 中核5項目の⑤（中核5項目 §2-2②）。なし=0 / 少し=1 / はっきり=2。
     // ★null は「答えていない」。0（なし）とは別です。
     morningEdema: null,
+    // 気温・湿度の出どころ（lib/weatherCarry.js）。
+    // 'entered'=本人が入れた / 'carried'=前の日から引き継いだ / null=どちらでもない
+    weatherSource: null,
     // 嗜好品（用語辞書の拡張と嗜好品の記録.md §7）。あり=true / なし=false。
     // ★null は「答えていない」。false（吸わなかった）とは別です。
     // ★本数・量・銘柄は聞きません（§7-2）。二値で足ります。
@@ -1816,6 +1821,7 @@ function rowToEntry(row) {
     routineNote: row.routine_note || "",
     // ★?? を使うこと。|| だと 0（むくみなし）が null になります。
     morningEdema: row.morning_edema ?? null,
+    weatherSource: row.weather_source ?? null,
     // ★?? を使うこと。|| だと false（吸わなかった）が null になります。
     smokedToday: row.smoked_today ?? null,
     drankToday: row.drank_today ?? null,
@@ -1851,6 +1857,15 @@ function numOrNull(v) {
 //   false（しなかった）と null（答えていない）を混ぜないこと。
 function boolOrNull(v) {
   return v === true || v === false ? v : null;
+}
+
+// 気温・湿度の出どころ。★'entered' / 'carried' 以外は null にする。
+//   ★値の正は lib/weatherCarry.js の WEATHER_SOURCES です。
+//     ここに書き写しているのは、entryToRow が外部の import に依存できないため
+//     （往復テストが関数だけを取り出して動かします。CLAUDE.md の loadFunctions）。
+//     ★2つがずれたら components/tests/weather-carry.test.js が落ちます。
+function weatherSourceOrNull(v) {
+  return v === "entered" || v === "carried" ? v : null;
 }
 // 整数の列（throat_condition / voice_quality など）へ書くための丸め。
 // ★null と 0 を取り違えないこと。0 は「記録された0」で、null は「記録が無い」です。
@@ -2264,6 +2279,7 @@ function entryToRow(userId, e) {
     throat_symptoms_other: e.throatSymptomsOther || "",
     voice_memo: (voiceLegacy ? voiceLegacy.voiceMemo : e.voiceMemo) || "",
     morning_edema: numOrNull(e.morningEdema),
+    weather_source: weatherSourceOrNull(e.weatherSource),
     smoked_today: boolOrNull(e.smokedToday),
     drank_today: boolOrNull(e.drankToday),
     wake_note: (voiceLegacy ? voiceLegacy.wakeNote : e.wakeNote) || "",
@@ -5615,9 +5631,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
   useEffect(() => {
     if (loading) return;
-    setFormData(buildFormData(selectedDate, entries));
+    const built = buildFormData(selectedDate, entries);
+    // ★気温・湿度の引き継ぎ（lib/weatherCarry.js）。
+    //   ・今日の記録のときだけ（§4：過去の日は埋めない）
+    //   ・すでに値があれば触らない
+    //   ・3日続けて引き継いでいたら、4日目は空のまま（§3）
+    const carry = weatherCarryDecision({
+      entries, date: selectedDate, realToday: realTodayDate, addDays, current: built
+    });
+    setFormData(carry.carry
+      ? { ...built, temperature: carry.temperature, humidity: carry.humidity, weatherSource: "carried" }
+      : built);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDate, loading]);
+  }, [selectedDate, loading, realTodayDate]);
 
   const t = useMemo(() => createTranslator(language), [language]);
   const weekdayLabels = useMemo(() => getWeekdayLabels(language), [language]);
@@ -7796,7 +7822,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       .filter((x) => x.ah != null && x.throat != null);
   }, [entries]);
   // ①絶対湿度を2g/m³刻みでビン分けし、②喉スコア平均が「全体平均+0.3」を超える連続区間を快適帯とする。
+  // ★引き継いだ日が半分を超える期間では、絶対湿度を説明変数に使いません（§7）。
+  //   引き継ぎは「その日に測った値」ではないので、それが多数を占める期間の
+  //   相関は、何も言っていないのと同じです。結論を出さず、待っている状態を出します。
+  const absHumidityUsable = useMemo(() => {
+    const dates = Object.keys(entries).filter(
+      (d) => typeof entries[d].temperature === "number" && typeof entries[d].humidity === "number"
+    );
+    return mayUseAbsoluteHumidity(entries, dates);
+  }, [entries]);
+
   const comfortZone1D = useMemo(() => {
+    if (!absHumidityUsable.allowed) return null;
     if (envEntries.length < 5) return null;
     const overallAvg = envEntries.reduce((s, x) => s + x.throat, 0) / envEntries.length;
     const binSize = 2;
@@ -7825,7 +7862,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     });
     if (bestRun.length === 0) return { overallAvg, binStats, range: null };
     return { overallAvg, binStats, range: { low: bestRun[0].bin, high: bestRun[bestRun.length - 1].bin + binSize } };
-  }, [envEntries]);
+  }, [envEntries, absHumidityUsable]);
 
   // ---- 記録と分析の順番設計 §3.3: 各セクションが、その場で返すもの ----
   //
@@ -11651,13 +11688,31 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <>
                           <div className="grid grid-cols-2 gap-4">
                             <NumberField label={t("labelTemperature")} icon={Thermometer} value={formData.temperature ?? ""} step={1} min={-30} max={50} suffix="℃"
-                              onChange={(v) => setFormData((f) => ({ ...f, temperature: v }))} />
+                              onChange={(v) => setFormData((f) => ({ ...f, temperature: v, weatherSource: "entered" }))} />
                             <NumberField label={t("labelHumidity")} icon={Wind} value={formData.humidity ?? ""} step={5} min={0} max={100} suffix="%"
-                              onChange={(v) => setFormData((f) => ({ ...f, humidity: v }))} />
+                              onChange={(v) => setFormData((f) => ({ ...f, humidity: v, weatherSource: "entered" }))} />
                           </div>
+                          {/* ★引き継いだ値には、必ずこの一行を添えます（§5）。
+                              「そのままで構いません」とは書かないこと。
+                              直さなくてよいと読ませると、引き継ぎが記録として積み上がります。 */}
+                          {isCarried(formData) && (
+                            <p className="text-xs rounded-lg p-2" style={{ background: C.paper, color: C.inkSoft }}>
+                              {CARRIED_NOTE}
+                            </p>
+                          )}
                           {(() => {
                             const absH = computeAbsoluteHumidity(formData.temperature, formData.humidity);
                             if (absH == null) return null;
+                            // ★引き継いだ日は、快適帯の判定を出しません（§6）。
+                            //   測っていない値で「今日は外れています」とは言えません。
+                            //   数字だけを、控えめに出します。
+                            if (isCarried(formData)) {
+                              return (
+                                <p className="text-xs rounded-lg p-2" style={{ background: C.paper, color: C.line }}>
+                                  絶対湿度 {absH.toFixed(1)} g/m³
+                                </p>
+                              );
+                            }
                             const recentDates = Object.keys(entries).sort().slice(-14);
                             const recentVals = recentDates.map((d) => computeAbsoluteHumidity(entries[d].temperature, entries[d].humidity)).filter((v) => v != null);
                             let compareText = "";
@@ -14573,7 +14628,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                 {analysisLocks.map.envComfort.visible && (
                   analysisLocks.map.envComfort.unlocked ? (
-                  comfortZone1D && (
+                  (!absHumidityUsable.allowed ? (
+                    /* ★引き継いだ日が半分を超えているので、結論を出しません（§7）。
+                       ★無言で消さないこと。何を待っているのかを事実として書きます。 */
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <h3 className="ff-display italic text-lg mb-1">環境の快適帯</h3>
+                      <p className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.7 }}>
+                        気温と湿度のうち、前の日から引き継いだ日が多いため、まだ結論を出していません。
+                      </p>
+                      <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                        その日に記録した日：{absHumidityUsable.total - absHumidityUsable.carried} 日 ／
+                        引き継いだ日：{absHumidityUsable.carried} 日
+                      </p>
+                    </div>
+                  ) : null) || comfortZone1D && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <div className="flex items-start justify-between gap-2 mb-1">
                         <h3 className="ff-display italic text-lg">環境の快適帯</h3>
