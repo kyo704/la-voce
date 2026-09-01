@@ -20,7 +20,7 @@ import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC, CYCLE_BAND, SERIES
 import { FOOD_PRESETS, DISH_GROUP_ALIASES, CATEGORY_SEARCH_ALIASES } from "@/lib/foodPresets";
 import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, SHOP_ITEMS, PLACEMENT_LIMITS, computeBalance } from "@/lib/character";
 import { LANGUAGES, createTranslator } from "@/lib/translations";
-import { BRAND } from "@/lib/brand";
+import { BRAND, OPERATOR_CONTACT_EMAIL } from "@/lib/brand";
 import { isLegacyOrigin } from "@/lib/baseUrl";
 import { watchForUpdates, reloadOnceOnControllerChange } from "@/lib/swUpdate";
 // 曲目の「同じ曲か」。★引くときも書くときも、必ずこれを通すこと。
@@ -78,6 +78,7 @@ import { canSeeBetaFeatures, canSeeTeacherFeatures, canSeeLineLink, canSeeStuden
   canSeeShobaiArticles, isShobaiArticle } from "@/lib/featureFlags";
 // 削除の猶予期間（A-4）。日数の計算はサーバーと同じものを使う。
 import { graceDaysLeft, GRACE_PERIOD_DAYS } from "@/lib/accountDeletion";
+import { departingOwnerNotice, transferMailto, CLOSE_ORG_KEEP_LINE, CLOSE_ORG_DELETE_LINE } from "@/lib/orgClosure";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
 // 書き出しに添える「記録の控え」。★解釈を1つも書かない。文言と禁止語はこの1か所。
 // 発声量（G2-10.5）。★種別の重みと、実測／推定の区別はこの1か所が持つ。
@@ -8634,6 +8635,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [deletePassword, setDeletePassword] = useState("");
   const [deleteStatus, setDeleteStatus] = useState("idle"); // idle | working | error
   const [deleteError, setDeleteError] = useState("");
+  // ★オーナーの退会を止めたときの、その教室の一覧（判断 2026-09-01）。
+  //   ここに1つでも入っていたら、退会の処理は何も始まっていません。
+  const [blockedOrgs, setBlockedOrgs] = useState([]);
+  const [closeOrgTarget, setCloseOrgTarget] = useState(null);   // 閉じようとしている教室
+  const [closeOrgConfirm, setCloseOrgConfirm] = useState("");
+  const [closeOrgStatus, setCloseOrgStatus] = useState("idle"); // idle | working | error
+  const [closeOrgError, setCloseOrgError] = useState("");
 
   const [restoreStatus, setRestoreStatus] = useState("idle"); // idle | working | error
 
@@ -8665,6 +8673,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       const data = await res.json().catch(() => ({}));
       // ★成否にかかわらず、パスワードは手元から消します。画面にも残しません。
       setDeletePassword("");
+      // ★教室にほかの方がいて、退会を止めた場合（判断 2026-09-01）。
+      //   ★失敗ではありません。何も消えていません。
+      //   「エラーが出た」と読ませないよう、別の状態にします。
+      if (res.status === 409 && data.blocked) {
+        setBlockedOrgs(data.orgs || []);
+        setDeleteStatus("blocked");
+        return;
+      }
       if (!res.ok) {
         setDeleteStatus("error");
         setDeleteError(data.error || "削除できませんでした。");
@@ -8678,6 +8694,37 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       console.error("アカウントの削除に失敗しました:", e);
       setDeleteStatus("error");
       setDeleteError("通信に失敗しました。時間をおいてもう一度お試しください。");
+    }
+  }
+
+  // ★教室を閉じる（判断 2026-09-01・追加要件）。
+  //   仕様（教室プラン仕様 §46）には最初からありましたが、作られていませんでした。
+  //   ★退会を止める知らせが「教室を閉じてください」と言う以上、
+  //     閉じる手段が無いと、ただの締め出しになります。
+  async function handleCloseOrg(orgId) {
+    setCloseOrgStatus("working");
+    setCloseOrgError("");
+    try {
+      const res = await fetch("/api/org/close", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ orgId, confirmation: closeOrgConfirm })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setCloseOrgStatus("error");
+        setCloseOrgError(data.error || "教室を閉じられませんでした。");
+        return;
+      }
+      // 閉じられた教室を一覧から外す。★空になったら、退会の画面へ戻します。
+      setBlockedOrgs((prev) => prev.filter((o) => o.orgId !== orgId));
+      setCloseOrgTarget(null);
+      setCloseOrgConfirm("");
+      setCloseOrgStatus("idle");
+    } catch (e) {
+      console.error("教室を閉じられませんでした:", e);
+      setCloseOrgStatus("error");
+      setCloseOrgError("通信に失敗しました。時間をおいてもう一度お試しください。");
     }
   }
 
@@ -15700,6 +15747,92 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     placeholder={t("deletePasswordPlaceholder")} autoComplete="current-password"
                     className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                 </div>
+                {/* ★教室にほかの方がいるので、退会を止めています（判断 2026-09-01）。
+                    ★閉じ込めではありません。順番の話です。
+                      「教室を閉じる」は、この場で自分でできます。
+                    ★2つとも押せること。片方だけが押せると、
+                      戻せないほうへ寄ります（Opus の訂正）。 */}
+                {deleteStatus === "blocked" && blockedOrgs.map((org) => {
+                  const notice = org.notice || departingOwnerNotice(org.otherCount);
+                  const closing = closeOrgTarget && closeOrgTarget.orgId === org.orgId;
+                  return (
+                    <div key={org.orgId} className="rounded-2xl p-4 space-y-3"
+                      style={{ background: C.card, border: `1px solid ${C.line}` }}>
+                      <p className="text-sm font-medium" style={{ color: C.ink }}>{org.name}</p>
+                      {notice.lines.map((line, i) => (
+                        <p key={i} className="text-sm leading-relaxed" style={{ color: C.ink }}>{line}</p>
+                      ))}
+
+                      {!closing && (
+                        <div className="space-y-2 pt-1">
+                          {/* ① 教室を閉じる（自分でできる） */}
+                          <button type="button"
+                            onClick={() => { setCloseOrgTarget(org); setCloseOrgConfirm(""); setCloseOrgError(""); setCloseOrgStatus("idle"); }}
+                            className="w-full rounded-2xl p-3 text-left"
+                            style={{ background: C.paper, border: `1px solid ${C.line}` }}>
+                            <span className="block text-sm font-medium" style={{ color: C.curtain }}>
+                              {notice.choices[0].label}
+                            </span>
+                            {notice.choices[0].lines.map((line, i) => (
+                              <span key={i} className="block text-xs mt-0.5" style={{ color: C.inkSoft }}>{line}</span>
+                            ))}
+                          </button>
+
+                          {/* ② 教室を残す（運営者へ連絡）。★件名に教室のIDが入ります。 */}
+                          <a href={transferMailto(org, OPERATOR_CONTACT_EMAIL)}
+                            className="block w-full rounded-2xl p-3 text-left"
+                            style={{ background: C.paper, border: `1px solid ${C.line}` }}>
+                            <span className="block text-sm font-medium" style={{ color: C.ink }}>
+                              {notice.choices[1].label}
+                            </span>
+                            {notice.choices[1].lines.map((line, i) => (
+                              <span key={i} className="block text-xs mt-0.5" style={{ color: C.inkSoft }}>{line}</span>
+                            ))}
+                          </a>
+                        </div>
+                      )}
+
+                      {/* 閉じる前の確認。★残るものを先に言うこと。 */}
+                      {closing && (
+                        <div className="space-y-2 pt-1">
+                          <p className="text-sm leading-relaxed" style={{ color: C.ink }}>{CLOSE_ORG_KEEP_LINE}</p>
+                          <p className="text-sm leading-relaxed" style={{ color: C.inkSoft }}>{CLOSE_ORG_DELETE_LINE}</p>
+                          <p className="text-xs" style={{ color: C.inkSoft }}>よろしければ「閉じます」とご入力ください。</p>
+                          <input type="text" value={closeOrgConfirm} onChange={(e) => setCloseOrgConfirm(e.target.value)}
+                            placeholder="閉じます"
+                            className="w-full rounded-lg border p-2.5 text-sm"
+                            style={{ borderColor: C.line, background: C.paper }} />
+                          {closeOrgStatus === "error" && (
+                            <p className="text-sm rounded-2xl p-3" style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>{closeOrgError}</p>
+                          )}
+                          <div className="flex gap-2">
+                            <button type="button"
+                              onClick={() => { setCloseOrgTarget(null); setCloseOrgConfirm(""); }}
+                              className="flex-1 py-3 rounded-full text-sm font-medium"
+                              style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                              やめる
+                            </button>
+                            <button type="button" onClick={() => handleCloseOrg(org.orgId)}
+                              disabled={closeOrgStatus === "working" || closeOrgConfirm.trim() !== "閉じます"}
+                              className="flex-1 py-3 rounded-full text-sm font-medium flex items-center justify-center gap-2"
+                              style={{ background: C.curtain, color: "#FFFDF8",
+                                opacity: (closeOrgStatus === "working" || closeOrgConfirm.trim() !== "閉じます") ? 0.4 : 1 }}>
+                              {closeOrgStatus === "working" && <Loader2 size={15} className="animate-spin" />}
+                              {closeOrgStatus === "working" ? "閉じています…" : "教室を閉じる"}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+                {/* ★教室を全部片付けたら、もう一度どうぞ、と伝えます。
+                    ★自動では進めません。押し直すのは本人の判断です。 */}
+                {deleteStatus === "blocked" && blockedOrgs.length === 0 && (
+                  <p className="text-sm rounded-2xl p-3" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.ink }}>
+                    教室を閉じました。続けるときは、下のボタンをもう一度お押しください。
+                  </p>
+                )}
                 {deleteStatus === "error" && (
                   <p className="text-sm rounded-2xl p-3" style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>{deleteError}</p>
                 )}

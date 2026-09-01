@@ -19,6 +19,10 @@ const ROOT = path.join(__dirname, "..", "..");
 let passCount = 0, failCount = 0;
 function assertTrue(c, label) { if (c) { console.log(`  ✓ ${label}`); passCount++; } else { console.log(`  ✗ ${label}`); failCount++; } }
 
+// ★コメントを外したソース。禁止語の検査は、必ずこちらで行うこと
+//   （この repo では、自分の説明コメントに引っかかる失敗を二度やっています）。
+const { readCode } = require("./_source");
+
 const api = fs.readFileSync(path.join(ROOT, "app", "api", "account", "delete", "route.js"), "utf-8");
 // 削除の中身は lib/accountDeletion.js に共通化してある（cron と共用するため）。
 const purge = fs.readFileSync(path.join(ROOT, "lib", "accountDeletion.js"), "utf-8");
@@ -40,7 +44,16 @@ const failIdx = purge.indexOf("failures.length > 0");
 const delIdx = purge.indexOf("auth.admin.deleteUser");
 assertTrue(failIdx > 0 && delIdx > failIdx, "失敗の判定が、認証ユーザーの削除より前にある");
 assertTrue(/failures\.length > 0\) return \{ ok: false/.test(purge), "失敗があれば、そこで打ち切って報告している");
-assertTrue(/does not exist|schema cache/.test(purge), "存在しないテーブルは失敗に数えない（環境差で止まらない）");
+// ★判定は lib/supabaseErrors.js へ移しました（2026-09-01）。
+//   orgClosure からも同じ判定が要り、accountDeletion から import すると
+//   循環するためです。ここでは、移した先を見ます。
+const errSrc = readCode("lib", "supabaseErrors.js");
+assertTrue(/does not exist|schema cache/.test(errSrc), "存在しないテーブルは失敗に数えない（環境差で止まらない）");
+assertTrue(/isMissingTable/.test(purge), "★削除の処理が、その判定を使っている");
+// ★「列が無い」は握りつぶさないこと。ここをゆるめた結果、user_id を持たない
+//   4つの表への削除が、静かに成功扱いになっていました（2026-09-01）。
+assertTrue(/column .\* does not exist[\s\S]{0,40}return false/.test(errSrc),
+  "★「列が無い」は、表が無いのと区別して、握りつぶさない");
 
 console.log("\n=== テスト3: 確認の入力をサーバー側でも見ている ===");
 assertTrue(/body\.confirmation/.test(api), "リクエストの確認文字列を読んでいる");

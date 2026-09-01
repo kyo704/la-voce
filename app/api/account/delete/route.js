@@ -3,6 +3,7 @@ import { createClient as createPlainClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { purgeAccount, severConnections } from "@/lib/accountDeletion";
+import { classifyOwnedOrgs, departingOwnerNotice } from "@/lib/orgClosure";
 import { getUserWithTimeout } from "@/lib/withTimeout";
 
 // ============================================================================
@@ -84,13 +85,47 @@ export async function POST(request) {
   const admin = createAdminClient();
   const mode = body.mode === "now" ? "now" : "grace";
 
+  // ==========================================================================
+  // ★教室の確認（判断 2026-09-01・追加要件）
+  //
+  //   オーナーが抜けると、その教室は契約者のいない状態になります。
+  //   ほかに人がいる教室では、退会を★ここで止めます。
+  //
+  //   ★猶予つきの削除でも止めます。猶予でも severConnections が
+  //     すぐ走り、先生と生徒の紐付けは戻りません。
+  //     「今すぐ」だけ止めても、意味がありません。
+  //   ★閉じ込めるためではありません。順番の話です。
+  //     「教室を閉じる」は、この画面から自分でできます。
+  // ==========================================================================
+  const orgs = await classifyOwnedOrgs(admin, user.id);
+  if (orgs.error) {
+    console.error("アカウント削除：教室を確認できませんでした。", orgs.error);
+    return NextResponse.json(
+      { error: "教室の状態を確認できませんでした。時間をおいて、もう一度お試しください。" },
+      { status: 500 }
+    );
+  }
+  if (orgs.blocked.length > 0) {
+    return NextResponse.json({
+      blocked: true,
+      orgs: orgs.blocked.map((o) => ({ ...o, notice: departingOwnerNotice(o.otherCount) }))
+    }, { status: 409 });
+  }
+
   if (mode === "now") {
-    const { ok, failures, countRecorded, countError } = await purgeAccount(admin, user.id);
+    const { ok, failures, blocked, countRecorded, countError } = await purgeAccount(admin, user.id);
     // ★数えられなかったことは、削除の失敗ではありません。返り値には出しますが、
     //   利用者には見せません（消えたことが大事で、数は運営の都合です）。
     //   ★ただし、黙って捨てません。ここでログに残します。
     if (ok && countRecorded === false) {
       console.error("★アカウントは削除できましたが、件数を記録できませんでした。", { countError });
+    }
+    if (!ok && blocked && blocked.length > 0) {
+      // ★上の確認をすり抜けた場合の受け皿（同時に誰かが教室へ入った、など）
+      return NextResponse.json({
+        blocked: true,
+        orgs: blocked.map((o) => ({ ...o, notice: departingOwnerNotice(o.otherCount) }))
+      }, { status: 409 });
     }
     if (!ok) {
       console.error("アカウント削除：一部のデータを削除できませんでした。", failures);

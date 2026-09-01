@@ -108,11 +108,19 @@ const NO_ACTION_COLUMNS = [
   });
 
   console.log("\n=== ★isMissingTable が、列の不足を握りつぶさない ===");
+  // ★判定は lib/supabaseErrors.js に移しました（2026-09-01）。
+  //   orgClosure からも同じ判定が要り、accountDeletion から import すると
+  //   循環するためです。★2つに増やさないこと。
+  // ★code は accountDeletion.js のままにしておくこと。
+  //   このあとの「消す順番」の検査が、同じ変数を見ています。
+  //   ここで差し替えて、順番の検査が空文字を見ていました（2026-09-01）。
   const code = readCode("lib", "accountDeletion.js");
-  assertTrue(/column .\* does not exist/.test(code) || /column .*does not exist/i.test(code),
+  const errCode = readCode("lib", "supabaseErrors.js");
+  assertTrue(code.includes("isMissingTable"), "★削除の処理が、その判定を使っている");
+  assertTrue(/column .\* does not exist/.test(errCode) || /column .*does not exist/i.test(errCode),
     "列のエラーを見分ける分岐がある");
   // 実際に動かして確かめる
-  const mod = code.slice(code.indexOf("function isMissingTable"), code.indexOf("}", code.indexOf("return /relation")) + 1);
+  const mod = errCode.slice(errCode.indexOf("function isMissingTable"), errCode.indexOf("}", errCode.indexOf("return /relation")) + 1);
   const isMissingTable = new Function("return " + mod)();
   assertTrue(isMissingTable({ message: 'relation "public.lessons" does not exist' }) === true,
     "表が無いときは握りつぶす（環境差なので）");
