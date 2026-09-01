@@ -68,6 +68,7 @@ import { mayShowLuxuryFields } from "@/lib/ageGate";
 import { weatherCarryDecision, isWeatherSource, isCarried, CARRIED_NOTE, mayUseAbsoluteHumidity } from "@/lib/weatherCarry";
 import { CPPS_ENABLED } from "@/lib/pausedFeatures";
 import { teacherWithHonorific, DEPARTED_TEACHER_LABEL } from "@/lib/teacherDisplay";
+import { rankPhrase } from "@/lib/rankWording";
 import { shouldShowNotice, withNoticeShown, noticeStateFromRows, NOTICE_TEXT } from "@/lib/notices";
 import { cycleOptInDescription, mentionsCycleInDataLists } from "@/lib/cycleCopy";
 import { writeWithMissingColumnFallback } from "@/lib/entryWriteFallback";
@@ -12894,8 +12895,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               <span>{orgDisplayName(mem.user_id)}</span>
                               <select value={mem.role} onChange={(e) => handleChangeRole(orgId, mem.id, mem.user_id, e.target.value)}
                                 className="rounded border text-xs p-1" style={{ borderColor: C.line, background: C.card }}>
+                                {/* ★「管理者」と呼ばないこと。
+                                    Woolsong の運営（坂本さんの側）と読み違えられます。
+                                    利用者向けの説明に「運営者に分かるのは開いた回数だけ」と
+                                    書いてあるので、教室の役割まで「管理者」にすると、
+                                    ★生徒が「教室の管理者に開いた回数を見られている」と
+                                    読みます。教室側の役割は「教室の責任者」です。 */}
                                 <option value="owner">オーナー</option>
-                                <option value="admin">管理者</option>
+                                <option value="admin">教室の責任者</option>
                                 <option value="teacher">講師</option>
                               </select>
                             </div>
@@ -13420,12 +13427,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </div>
                         {gateAllows("deviation.tScore", { n: deviationScore.n }) ? (
                           <p className="text-xs" style={{ color: C.ink }}>
-                            今日は<strong>偏差値{deviationScore.T}</strong>。この{deviationScore.n}日間で上から{deviationScore.topPercentPct}%、
-                            <strong>{deviationScore.position}番目に良い日</strong>です。
+                            今日は<strong>偏差値{deviationScore.T}</strong>。{rankPhrase(deviationScore.position, deviationScore.n).text}
                           </p>
                         ) : (
                           <p className="text-xs" style={{ color: C.ink }}>
-                            この{deviationScore.n}日間で<strong>{deviationScore.position}番目に良い日</strong>です（上から{deviationScore.topPercentPct}%）。
+                            {rankPhrase(deviationScore.position, deviationScore.n).text}
                           </p>
                         )}
                       </div>
