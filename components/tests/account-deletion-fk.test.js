@@ -71,8 +71,12 @@ const NO_ACTION_COLUMNS = [
   // 残る一覧が、本当に user_id で消せる表だけであること（数の確認）
   // ★2026-09-01、events を足して18表。events は auth.users を参照しているのに
   //   一覧から丸ごと漏れていて、退会が外部キー違反で失敗していました。
-  assertTrue(d.USER_OWNED_TABLES.length === 18,
-    `一覧は18表（いまは ${d.USER_OWNED_TABLES.length}）`);
+  // ★2026-09-02、org_event_participants を足して19表。
+  //   組織の予定に「出ます」と印をつけた記録です。本人のものなので、
+  //   退会のときに一緒に消します。★中身は持ちません（印だけ）。
+  assertTrue(d.USER_OWNED_TABLES.length === 19,
+    `一覧は19表（いまは ${d.USER_OWNED_TABLES.length}）`);
+  assertTrue(d.USER_OWNED_TABLES.includes("org_event_participants"), "★出るという印が入っている");
   assertTrue(d.USER_OWNED_TABLES.includes("events"), "★events が入っている");
 
   console.log("\n=== ★entry_comments が復活していない ===");
