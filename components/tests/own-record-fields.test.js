@@ -95,14 +95,38 @@ function fieldsFromMapper() {
     assertTrue(dup.length === 0, `同じ項目が2度書かれていない${dup.length ? `（${dup.join(",")}）` : ""}`);
   }
 
-  console.log("\n=== ★かつて返らなかった3つが、いま返る ===");
+  console.log("\n=== ★書けるのに返らなかった項目が、いま返る ===");
   {
-    ["throatSymptomsOther", "pianissimoOnsetDelay", "activityDetail"].forEach((k) => {
-      assertTrue(registered.has(k), `★${k} が表にある`);
+    // ★2026-09-01、はじめの報告を正しました。
+    //   「3つが返らない」と書きましたが、うち2つは★そもそも書く欄がありません。
+    //   誰も一度も書いていない項目に返す場所を作っても、返るものがありません。
+    //   本当に「書けるのに返らなかった」のは activityDetail だけでした。
+    assertTrue(registered.has("activityDetail"), "★activityDetail が表にある");
+    assertTrue(reg.ownRecordField("activityDetail").display === "daily",
+      "★その日書いた形のまま並べる");
+  }
+
+  console.log("\n=== ★書く欄が無い項目は、外してある（増えたら見直す） ===");
+  {
+    // ★書く欄ができた瞬間、「書けないから返さない」は
+    //   「書けるのに返らない」に変わります（憲章 §10 が禁じている形）。
+    const noInput = ["throatSymptomsOther", "pianissimoOnsetDelay"];
+    noInput.forEach((k) => {
+      assertTrue(!registered.has(k), `${k} は表に無い`);
+      const ex = reg.EXCLUDED_FROM_OWN_RECORD.find((x) => x.key === k);
+      assertTrue(!!ex && /書く欄が無い/.test(ex.why), `★${k} を外した理由が書いてある`);
     });
-    // 自由記述は、文字として並べること（数のグラフにしない）
-    assertTrue(reg.ownRecordField("throatSymptomsOther").kind === "text",
-      "★自由記述は、書いた文字のまま返す");
+
+    // ★症状の「その他」が足されたら、throatSymptomsOther に書く道ができます。
+    const symptomLine = (raw.match(/const SYMPTOM_OPTIONS = \[[^\]]*\]/) || [""])[0];
+    assertTrue(!/その他/.test(symptomLine),
+      "★症状の選択肢に「その他」が無い（足したら、外す判断を見直すこと）");
+
+    // ★入力欄ができると、setFormData の中にこの名前が現れます。
+    noInput.forEach((k) => {
+      const inForm = new RegExp(`setFormData[^;]{0,200}${k}`).test(raw);
+      assertTrue(!inForm, `★${k} を書き込む入力欄がまだ無い（できたら見直すこと）`);
+    });
   }
 
   console.log("\n=== ★3重ゲートに掛かっていた項目も、素で返る ===");
@@ -123,10 +147,10 @@ function fieldsFromMapper() {
 
   console.log("\n=== 触っていない項目は、並べない ===");
   {
-    const entries = { "2026-09-01": { sleepHours: 7, meals: [], throatSymptomsOther: "声がかすれる" } };
+    const entries = { "2026-09-01": { sleepHours: 7, meals: [], notes: "喉が乾く感じ" } };
     const shown = reg.recordedFieldsFor(entries).map((f) => f.key);
     assertTrue(shown.includes("sleepHours"), "記録した項目は出る");
-    assertTrue(shown.includes("throatSymptomsOther"), "★自由記述も出る");
+    assertTrue(shown.includes("notes"), "★自由記述（メモ）も出る");
     assertTrue(!shown.includes("meals"), "空の項目は出ない");
     assertTrue(!shown.includes("weightKg"), "一度も触っていない項目は出ない");
     assertTrue(reg.recordedFieldsFor({}).length === 0, "記録が無ければ、何も出ない");
