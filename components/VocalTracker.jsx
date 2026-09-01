@@ -4932,6 +4932,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [generatedInviteCode, setGeneratedInviteCode] = useState(null);
   const [inviteCodeInput, setInviteCodeInput] = useState("");
   const [inviteLookupError, setInviteLookupError] = useState("");
+  // ★「つながる」を二度押ししたときの二重登録を止めます（2026-09-01）。
+  //   止めていなかったため、1回目が成功し2回目が 23505 になり、
+  //   ★「以前つながっていた記録が…」という誤った説明が出ていました。
+  //   回線の遅い端末ほど、押し直しやすくなります。
+  const [acceptingInvitation, setAcceptingInvitation] = useState(false);
   const [pendingInvitation, setPendingInvitation] = useState(null);
   // つながっている先生の名前（teacher_id -> {display_name, school}）
   const [myTeacherNames, setMyTeacherNames] = useState({});
@@ -9258,6 +9263,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }
   async function handleAcceptInvitation() {
     if (!pendingInvitation) return;
+    if (acceptingInvitation) return;   // ★二度押しを、ここで止めます
+    setAcceptingInvitation(true);
+    try {
+      await acceptInvitationInner();
+    } finally {
+      // ★成否によらず必ず戻します。戻し忘れると、
+      //   一度失敗した人が二度と押せなくなります。
+      setAcceptingInvitation(false);
+    }
+  }
+  async function acceptInvitationInner() {
     // ★未成年（および年齢に答えていない人）は、先生とつながれません。
     //   判断の回答 §7-2②（案D）。保護者同意ができるまでの措置です。
     //
@@ -9296,12 +9312,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //   (teacher_id, student_id) の一意制約に status が入っていないと
       //   ★二度とつなぎ直せません。生の 409 のままだと、
       //   利用者にも坂本さんにも、何が起きたか分かりません。
+      // ★部分索引にしたあと（migration_teacher_link_reconnect.sql）、
+      //   teacher_student_links の 23505 は
+      //   ★「いま有効な紐付けが、すでにある」だけを意味します。
+      //   解除ずみの行は、もうぶつかりません。
+      //   ★だから「以前つながっていた記録が…」とは言えません。
+      //     実際は二度押しで起きます（1回目が成功し、2回目がぶつかる）。
       const isDuplicateLink =
         linkError.code === "23505" || /duplicate key|already exists/i.test(String(linkError.message || ""));
       setInviteLookupError(isMinorLinkBlocked(linkError)
         ? "いまはまだ、先生とつながることができません。保護者の方の確認の仕組みを準備しています。"
         : isDuplicateLink
-        ? "この先生とは、以前つながっていた記録が残っています。おそれいりますが、運営者にご連絡ください。"
+        ? "この先生とは、すでにつながっています。"
         : "連携に失敗しました。もう一度お試しください。");
       return;
     }
@@ -16877,8 +16899,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           )}
                           <div className="flex gap-2">
                             <button type="button" onClick={handleAcceptInvitation}
-                              className="flex-1 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
-                              {t("connectButton")}
+                              disabled={acceptingInvitation}
+                              className="flex-1 py-2 rounded-full text-xs font-medium"
+                              style={{ background: C.curtain, color: "#FFFDF8", opacity: acceptingInvitation ? 0.4 : 1 }}>
+                              {acceptingInvitation ? "つないでいます…" : t("connectButton")}
                             </button>
                             <button type="button" onClick={handleDeclineInvitation}
                               className="flex-1 py-2 rounded-full text-xs font-medium border" style={{ borderColor: C.line, color: C.inkSoft }}>

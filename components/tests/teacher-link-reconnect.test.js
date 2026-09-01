@@ -71,8 +71,21 @@ console.log("\n=== ★一意索引は、部分索引であること ===");
 console.log("\n=== ★409 を、読める言葉にしている ===");
 {
   assertTrue(/23505/.test(vt), "重複のエラーを見分けている");
-  assertTrue(/以前つながっていた記録が残っています/.test(vt),
+  assertTrue(/すでにつながっています/.test(vt),
     "★生の 409 のままにしない");
+  // ★部分索引にしたあと、teacher_student_links の 23505 は
+  //   「いま有効な紐付けがすでにある」だけを意味します。
+  //   解除ずみの行はもうぶつからないので、
+  //   ★「以前つながっていた記録が…」は事実に反します。
+  //   実際は二度押しで起きます（1回目が成功し、2回目がぶつかる）。
+  assertTrue(!/以前つながっていた記録が残っています/.test(vt),
+    "★確かめていない原因を、画面で断定していない");
+  assertTrue(/acceptingInvitation/.test(vt), "★二度押しを止める仕組みがある");
+  const at = vt.indexOf("async function handleAcceptInvitation");
+  const head = vt.slice(at, at + 400);
+  assertTrue(/if \(acceptingInvitation\) return/.test(head), "送信中は、もう一度走らない");
+  assertTrue(/finally/.test(head),
+    "★失敗しても必ず戻す（戻し忘れると、二度と押せなくなる）");
 }
 
 console.log("\n=== ★失敗の理由が、同意画面にも出る ===");
