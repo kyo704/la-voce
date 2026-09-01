@@ -1,9 +1,9 @@
 {
-  "takenAt": "2026-08-31 23:42:10",
+  "takenAt": "2026-09-01 03:06:04",
   "note": "★行数だけです。個人のデータは入っていません。コミットして構いません。",
   "counts": {
-    "profiles": 30,
-    "entries": 23,
+    "profiles": 27,
+    "entries": 25,
     "questionnaire_responses": 3,
     "cycle_periods": 1,
     "repertoire_tessitura": 8,
@@ -13,7 +13,7 @@
     "article_progress": 3,
     "chapter_state": 0,
     "character_inventory": 86,
-    "events": 86,
+    "events": 91,
     "feedback": 1,
     "consent_records": 0,
     "age_answer_changes": 0,
@@ -25,11 +25,10 @@
     "enrollments": 0,
     "assignments": 0,
     "lessons": 0,
-    "entry_comments": 0,
     "teacher_notes": 0,
     "teacher_student_links": 0,
     "teacher_invitations": 8,
     "org_invitations": 4,
-    "subscriptions": 30
+    "subscriptions": 27
   }
 }
