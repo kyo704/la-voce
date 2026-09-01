@@ -12057,6 +12057,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
                           「今日は歌っていない・収録していない」日でも、レッスンで教える・会議・電話などの発話は、発声負荷（ACWR）の計算に反映されます。
                         </p>
+                        {/* ★一般に言われていることだけを書きます（職業別項目の再設計と学ぶ画面.md §9）。
+                            ★その人の記録率や日数を、ここに出さないこと。
+                              「あなたの発話時間の記録率は0%です」は、§9 が禁じている形です。
+                            記事へは、読みたい人だけが進みます。 */}
+                        <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
+                          歌った時間だけでは、その日の声の使用量は半分以下になることがあります。
+                          <button type="button" onClick={() => setActiveTab("learn")}
+                            className="underline ml-1" style={{ color: C.inkSoft }}>
+                            学ぶで読む
+                          </button>
+                        </p>
                         {effectiveProfessions.includes("announcer") && (
                           <details className="text-xs mt-2" style={{ color: C.inkSoft }}>
                             <summary className="cursor-pointer">＋詳しく記録する</summary>
