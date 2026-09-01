@@ -9303,9 +9303,29 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     await supabase.from("teacher_invitations").update({ used_at: new Date().toISOString(), used_by_student_id: userId }).eq("code", pendingInvitation.code);
     // 作業指示-教室プラン: この先生がownerである教室があれば、レッスン日程の運営面（在籍・担当）にも
     // 自動的に組み込む。健康データの共有範囲(share_scope)には一切影響しない、別の仕組み。
-    const { data: ownerMembership } = await supabase.from("memberships").select("org_id").eq("user_id", pendingInvitation.teacher_id).eq("role", "owner").maybeSingle();
+    // ★これは「生徒として、先生の membership を読む」問い合わせです。
+    //   RLS で他人の行が読めなければ、★エラーではなく null が返ります。
+    //   2026-09-01 まで error を捨てていたので、読めなかったことに
+    //   誰も気づけませんでした。★生徒は先生とつながっているのに、
+    //   教室には在籍していない、という状態になります。
+    //   （退会の「ほかに人がいます」は在籍を数えるので、そこにも出ません）
+    const { data: ownerMembership, error: ownerError } = await supabase.from("memberships")
+      .select("org_id").eq("user_id", pendingInvitation.teacher_id).eq("role", "owner").maybeSingle();
+    if (ownerError) {
+      // ★つながり自体は成立しています。ここで止めないこと。
+      //   ただし黙って捨てないこと。教室に入れていない、という事実が残ります。
+      console.error("★先生の教室を確認できませんでした（在籍を作れていません）:", ownerError);
+    }
+    if (!ownerError && !ownerMembership) {
+      console.error(
+        "★先生の教室が見つかりませんでした（在籍を作れていません）。" +
+        "RLS で他人の memberships が読めない可能性があります。teacher_id=" + pendingInvitation.teacher_id
+      );
+    }
     if (ownerMembership) {
-      await supabase.from("enrollments").upsert({ org_id: ownerMembership.org_id, student_id: userId, status: "active" }, { onConflict: "org_id,student_id" });
+      const { error: enrollError } = await supabase.from("enrollments")
+        .upsert({ org_id: ownerMembership.org_id, student_id: userId, status: "active" }, { onConflict: "org_id,student_id" });
+      if (enrollError) console.error("★在籍を作れませんでした:", enrollError);
       await supabase.from("assignments").insert({ org_id: ownerMembership.org_id, teacher_id: pendingInvitation.teacher_id, student_id: userId });
     }
     setPendingInvitation(null);
