@@ -59,25 +59,58 @@ pg_dump (PostgreSQL) 18.6 (Postgres.app)
 　→ 左下 **Project Settings**
 　→ **Database**
 　→ **Connection string**
-　→ **URI** タブ
+　→ ★**「Session pooler」タブ**（URI／Direct connection ではありません）
 　→ 表示された文字列をコピー
+
+★**Direct connection（`db.xxxx.supabase.co:5432`）は使えません。**
+　2026-09-01 に確認しました。無料プランでは IPv6 のみになっており、
+　手元の Mac からは `Connection refused` になります。
+　（それまでは通っていました。ある時点で切り替わったようです）
+
+★Session pooler は、**ユーザー名の形が違います**。プロジェクトIDが付きます。
+
+```
+postgresql://postgres.xxjtplvpcneksrofkjmf:パスワード@aws-0-ap-northeast-1.pooler.supabase.com:5432/postgres
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+             ★postgres. のあとにプロジェクトID        ★pooler のホスト
+```
+
+★**Transaction pooler（ポート6543）は使わないでください。**
+　`pg_dump` が通りません（prepared statement が使えないため）。
+　★必ず **Session pooler（ポート5432）** です。
 
 **2-2.** `~/Desktop/la-voce/` の中に `.env.backup.local` という名前のファイルを作る
 
-テキストエディットで作る場合は、**必ず「標準テキスト」**にしてください
-（フォーマット → 標準テキストにする）。
+いちばん確実なのは、ターミナルでこの2行です（パスワードが画面に出ません）:
 
-**2-3.** 中身は次の**1行だけ**：
-
-```
-BACKUP_DATABASE_URL="postgresql://postgres:パスワード@db.xxxx.supabase.co:5432/postgres"
+```bash
+cd ~/Desktop/la-voce
+read -s "URI?接続文字列を貼り付けて Enter: "; echo; printf 'BACKUP_DATABASE_URL="%s"\n' "$URI" > .env.backup.local; unset URI; echo "作成しました"
 ```
 
-- `パスワード` と `db.xxxx...` の部分は、2-1 でコピーしたものに置き換えます
-- ★前後の `"` は残してください
+2行目で入力待ちになります。**貼り付けて Enter**。何も表示されませんが、それが正常です。
+
+> bash をお使いの場合は2行目だけこちらに：
+> ```bash
+> read -s -p "接続文字列を貼り付けて Enter: " URI; echo; printf 'BACKUP_DATABASE_URL="%s"\n' "$URI" > .env.backup.local; unset URI; echo "作成しました"
+> ```
+
+**2-3.** 伏せた形で確かめる
+
+```bash
+sed -E 's|(postgres[^:]*:)[^@]*(@)|\1●●●●\2|' .env.backup.local
+```
+
+期待する形：
+
+```
+BACKUP_DATABASE_URL="postgresql:●●●●@aws-0-ap-northeast-1.pooler.supabase.com:5432/postgres"
+```
+
+★ホストが `db.…supabase.co` になっていたら、Direct connection を選んでいます。2-1 からやり直してください。
+
 - ★このファイルは `.gitignore` 済み（`.env*.local`）。GitHub には上がりません
 - ★要るのは**データベースのパスワード**です。**service_role キーではありません。**
-　　取り違えると、必要以上に強い鍵を手元に置くことになります
 
 ---
 
@@ -270,6 +303,8 @@ rm backups/woolsong-*.sql               # ★ダンプを消す（練習が済�
 | `pg_dump が見つかりません` | 手順1。Postgres.app が入っているか |
 | `.env.backup.local がありません` | 手順2 |
 | `password authentication failed` | 接続文字列のパスワード。★Supabase で再発行できます |
+| `Connection refused` | ★Direct connection を使っています。**Session pooler** に変えてください（手順2-1） |
+| `prepared statement ... already exists` | ★Transaction pooler（6543）を使っています。**Session pooler（5432）** に変えてください |
 | `could not translate host name` | 接続文字列のホスト名。2-1 からやり直し |
 | 復元中に `role ... does not exist` | **無視して構いません**（手順5④） |
 | `★ダンプの形が分かりませんでした` | ダンプが途中で切れています。取り直してください |
