@@ -5,7 +5,7 @@ import { Loader2, Check } from "lucide-react";
 import { C } from "@/lib/tokens";
 import {
   SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, PLACEMENT_LIMITS,
-  computeTotalEarned, computeStreaks, computeBalance,
+  computeTotalEarned, computeBalance,
   sortShopItems, computeUnlocked
 } from "@/lib/character";
 
@@ -2400,7 +2400,7 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
   const [shopCategory, setShopCategory] = useState("hat");
 
   const totalEarned = useMemo(() => computeTotalEarned(entries), [entries]);
-  const { currentStreak, longestStreak } = useMemo(() => computeStreaks(entries), [entries]);
+  // ★連続記録は 2026-09-01 に削除しました。累計の日数だけを見ます。
   // 羊のおうち仕様 §4.5・§4.7: 累計記録日数。連続記録が途切れても後退しない指標として、
   // 記録が存在する日の総数（entriesのキー数）をそのまま使う。
   const totalDaysRecorded = useMemo(() => Object.keys(entries || {}).length, [entries]);
@@ -2465,7 +2465,7 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
         <div className="ff-display italic" style={{ fontSize: 32, color: C.gold, lineHeight: 1.2 }}>{balance}</div>
         <div className="text-xs mt-0.5" style={{ color: C.inkSoft }}>{t("labelPointsBalance")}</div>
         <div className="text-xs mt-2" style={{ color: C.inkSoft, opacity: 0.75 }}>
-          {t("labelCurrentStreak")} {currentStreak}日 ・ {t("labelLongestStreak")} {longestStreak}日 ・ {t("labelTotalDaysRecorded")} {totalDaysRecorded}日
+          {t("labelTotalDaysRecorded")} {totalDaysRecorded}日
         </div>
       </div>
 

@@ -6398,13 +6398,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }, [entries, recordedDaysTotal, profile.folded_groups]);
 
   // ---- lavoce-画面レイアウト仕様_1.md §3: ホーム（今日の一枚） 用データ（前半） ----
-  const recordStreak = useMemo(() => {
-    const realToday = realTodayDate;
-    let streak = 0;
-    let d = entries[realToday] ? realToday : addDays(realToday, -1);
-    while (entries[d]) { streak += 1; d = addDays(d, -1); }
-    return streak;
-  }, [entries, realTodayDate]);
+  // ★連続記録（recordStreak）は 2026-09-01 に削除しました。
+  //   何日続けて記録したかを数えていました。
+  //   ★途切れた日を「なかったこと」にできない形だったので、やめました。
+  //   累計の日数（recordedDaysTotal）だけを使います。
+  //   ★ここに連続の計算を戻さないこと。
   // 次に解放される指標までの進捗（3/7/14/28日のうち、まだ届いていない最初のもの）
   const nextUnlock = useMemo(() => {
     const thresholds = [
@@ -11051,7 +11049,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <p className="text-sm" style={{ color: C.inkSoft }}>{greeting}</p>
                     <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
                       {realToday.slice(5).replace("-", "/")}
-                      {recordStreak > 0 && <> ・ {recordStreak}日連続 🔥</>}
+                      {/* ★「◯日連続 🔥」は 2026-09-01 に削除しました。
+                          続いたかどうかで人を測らない、という判断です（憲章 §10）。
+                          ★数えるのは累計の日数だけ。★ここに戻さないこと。 */}
                     </p>
                   </div>
 
@@ -11233,7 +11233,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                   {nextUnlock && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                      <p className="text-xs mb-2" style={{ color: C.ink }}>あと{nextUnlock.days - recordedDaysTotal}日で「{nextUnlock.label}」が開きます</p>
+                      <p className="text-xs mb-2" style={{ color: C.ink }}>{nextUnlock.days}日で「{nextUnlock.label}」が開きます（いま{recordedDaysTotal}日）</p>
                       <div className="h-1.5 rounded-full overflow-hidden" style={{ background: C.paper }}>
                         <div className="h-full rounded-full" style={{ width: `${Math.min(100, (recordedDaysTotal / nextUnlock.days) * 100)}%`, background: C.gold }} />
                       </div>

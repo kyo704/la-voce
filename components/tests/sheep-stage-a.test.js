@@ -63,14 +63,16 @@ assertTrue(/snapPreviewLeft/.test(ui), "★ドラッグ中に、落ちる先が�
 console.log("\n=== A-5: 表示の階層 ===");
 assertTrue(/fontSize: 32/.test(ui), "所持ポイントが 32px（主役）");
 assertTrue(/labelTotalDaysRecorded/.test(ui), "★累計記録日数を出している（A-6 の木と対応）");
-const statLine = raw.match(/labelCurrentStreak[\s\S]{0,220}/)[0];
-assertTrue(/labelLongestStreak/.test(statLine) && /labelTotalDaysRecorded/.test(statLine),
-  "★連続・最長・累計が1行にまとまっている");
+// ★2026-09-01、連続記録（現在・最長）を削除しました。
+//   続いたかどうかで人を測る形だったためです。累計だけを出します。
+assertTrue(!/labelCurrentStreak|labelLongestStreak/.test(raw),
+  "★連続記録は出していない（累計だけ）");
+assertTrue(/labelTotalDaysRecorded/.test(raw), "★累計の日数は出している");
 
 console.log("\n=== A-6: ★累計で育つ木は、絶対に後退しない ===");
 assertTrue(/totalDaysRecorded/.test(ui), "累計記録日数を使っている");
-assertTrue(!/currentStreak[\s\S]{0,120}treeStage|treeStage[\s\S]{0,120}currentStreak/.test(ui),
-  "★連続記録から木の段階を決めていない（途切れても後退しないため）");
+// ★連続記録そのものが無くなったので、木が連続で決まることはありません。
+assertTrue(!/currentStreak/.test(ui), "★連続記録から木の段階を決めていない（そもそも数えていない）");
 assertTrue(/Object\.keys\(entries \|\| \{\}\)\.length/.test(ui),
   "累計は記録が存在する日の総数");
 // 段階の境目（0-6 / 7-29 / 30-99 / 100-364 / 365-）

@@ -26,7 +26,28 @@ let passCount = 0, failCount = 0;
 function assertTrue(c, label) { if (c) { console.log(`  ✓ ${label}`); passCount++; } else { console.log(`  ✗ ${label}`); failCount++; } }
 
 const root = path.join(__dirname, "..", "..");
-const NAGGING = ["まだ", "忘れ", "途切れ", "連続", "達成", "頑張"];
+const NAGGING = ["まだ", "忘れ", "途切れ", "連続", "達成", "頑張", "記録が空いています"];
+
+/**
+ * ★「あと◯日で解放」の形も禁止です（2026-09-01）。
+ *   「あと」という言葉そのものが、人を急かします。
+ *   ★言ってよいのは目標だけ：「50日で、次のものが届きます」
+ *   ★言ってはいけないのは差分：「あと12日で届きます」
+ */
+const RUSHING_PATTERNS = [/あと\s*\{?[0-9a-zA-Z_.\- ]*\}?\s*日/];
+
+/**
+ * ★「あと◯日」でも、急かしていないもの。
+ *
+ *   取り消せる期限は、★利用者の権利の説明です。
+ *   「あと30日のあいだは、元に戻せます」は、
+ *   何かを早くやらせるための言葉ではありません。逆に、
+ *   ★慌てなくてよいことを伝えています。
+ *   消すと、いつまで取り消せるのかが分からなくなります。
+ */
+const RUSHING_EXCEPTIONS = [
+  { text: "元に戻せます", why: "退会を取り消せる期限。権利の説明であって、急かす言葉ではない" }
+];
 
 /**
  * ★測るための言葉としての例外。
@@ -75,31 +96,24 @@ function userFacingStrings(src) {
 }
 
 /**
- * ★判断待ち：連続記録（ストリーク）そのもの
+ * ★連続記録（ストリーク）は、2026-09-01 に累計へ切り替えました。
  *
- *   「現在の連続記録」「最長連続記録」「連続で解放」は、
- *   ★言い換えの問題ではありません。★実際に動いている機能の名前です。
- *   羊とおうちの仕組みが、何日続けて記録したかを数えて見せています。
+ *   もとは「現在の連続記録」「最長連続記録」を数えて出していました。
+ *   ★続いたかどうかで人を測る形だったので、やめました。
+ *   数えるのは★累計の記録日数だけです。
  *
- *   禁止語の理由は「途切れた日をなかったことにできなくする」でした。
- *   ★その理由は、言葉ではなく★仕組みそのものに向いています。
- *   名前だけ変えても、数えていることは変わりません。
+ *   ★切り替えで誰も損をしません。累計は連続より必ず大きいので、
+ *     解放ずみのものが戻ることはありません。
+ *   ★羊とおうちの仕組みは残しています。数え方を変えただけです。
  *
- *   憲章は「羊は記録した行為に反応し、記録の中身で人を並べない」と
- *   言っています。連続日数は中身ではありませんが、
- *   ★「続いたかどうか」で人を測る形ではあります。
- *
- *   ★だから、ここは坂本さんの判断待ちです。
- *     ① 連続記録という仕組みごとやめる
- *     ② 数え方を変える（累計の日数にする、など）
- *     ③ 測定の言葉として例外にする
- *   決まるまで、検査は落としません。★ただし、毎回名前を出します。
+ *   消したもの：computeStreaks（lib/character.js）／recordStreak
+ *   （VocalTracker）／labelCurrentStreak・labelLongestStreak・
+ *   noteUnlockDecorationSuffix（translations）
+ *   ★使わない関数として残しませんでした。残すと、いつかまた呼ばれます。
  */
-const PENDING_NAGGING_DECISION = [
-  { text: "現在の連続記録", why: "羊とおうちの機能そのもの。言い換えでは解けない" },
-  { text: "最長連続記録", why: "同上" },
-  { text: "連続で解放", why: "同上" },
-  { text: "ポイントと連続記録はそのまま貯まります", why: "同上" }
+const STREAK_REMOVED_NAMES = [
+  "computeStreaks", "recordStreak", "currentStreak", "longestStreak",
+  "labelCurrentStreak", "labelLongestStreak", "noteUnlockDecorationSuffix"
 ];
 
 const TARGETS = [
@@ -112,28 +126,57 @@ const TARGETS = [
 console.log("=== ★急かす言葉が、画面に出ていない ===");
 {
   let found = [];
-  const pending = [];
   TARGETS.forEach(([dir, file]) => {
     const p = path.join(root, dir, file);
     if (!fs.existsSync(p)) return;
     const strings = userFacingStrings(fs.readFileSync(p, "utf8"));
     strings.forEach((txt) => {
       if (MEASUREMENT_EXCEPTIONS.some((e) => txt.includes(e.text))) return;
-      if (PENDING_NAGGING_DECISION.some((e) => txt.includes(e.text))) { pending.push(txt.slice(0, 40)); return; }
       NAGGING.forEach((w) => {
         if (txt.includes(w)) found.push(`${file}「${txt.slice(0, 40)}」← ${w}`);
       });
     });
   });
-  if (pending.length > 0) {
-    console.log(`  ⚠ ★判断待ち（連続記録の仕組みそのもの）: ${[...new Set(pending)].length} 件`);
-    [...new Set(pending)].forEach((t) => console.log(`      ${t}`));
-    console.log("      言い換えでは解けません。仕組みをどうするかの判断が要ります。");
-  }
   assertTrue(found.length === 0,
     found.length === 0
       ? `★${NAGGING.join("／")} が画面に出ていない`
       : `★急かす言葉: ${found.slice(0, 5).join(" ／ ")}${found.length > 5 ? ` ほか${found.length - 5}件` : ""}`);
+}
+
+console.log("\n=== ★連続記録が、消えたままである ===");
+{
+  const files = ["components/VocalTracker.jsx", "components/CharacterHome.jsx", "lib/character.js", "lib/translations.js"];
+  let back = [];
+  files.forEach((f) => {
+    const p = path.join(root, f);
+    if (!fs.existsSync(p)) return;
+    const code = stripComments(fs.readFileSync(p, "utf8"));
+    STREAK_REMOVED_NAMES.forEach((n) => { if (code.includes(n)) back.push(`${f}: ${n}`); });
+  });
+  assertTrue(back.length === 0,
+    back.length === 0 ? "★連続記録の名前が1つも残っていない" : `★戻っている: ${back.join(", ")}`);
+  // 累計は残っていること（仕組みごと消したのではない）
+  const ch = stripComments(fs.readFileSync(path.join(root, "components/CharacterHome.jsx"), "utf8"));
+  assertTrue(/totalDaysRecorded/.test(ch), "★累計の日数は残っている（羊とおうちは残す）");
+  const chr = stripComments(fs.readFileSync(path.join(root, "lib/character.js"), "utf8"));
+  assertTrue(!/computeStreaks/.test(chr), "★使わない関数として残していない");
+}
+
+console.log("\n=== ★「あと◯日」で急かしていない ===");
+{
+  let rushed = [];
+  TARGETS.forEach(([dir, file]) => {
+    const p = path.join(root, dir, file);
+    if (!fs.existsSync(p)) return;
+    userFacingStrings(fs.readFileSync(p, "utf8")).forEach((txt) => {
+      if (RUSHING_EXCEPTIONS.some((e) => txt.includes(e.text))) return;
+      RUSHING_PATTERNS.forEach((re) => { if (re.test(txt)) rushed.push(`${file}「${txt.slice(0, 34)}」`); });
+    });
+  });
+  assertTrue(rushed.length === 0,
+    rushed.length === 0
+      ? "★「あと◯日」の言い方が無い"
+      : `★急かす言い方: ${rushed.slice(0, 4).join(" ／ ")}`);
 }
 
 console.log("\n=== 直した3つが、戻っていない ===");
