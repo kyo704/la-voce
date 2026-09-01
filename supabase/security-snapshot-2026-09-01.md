@@ -188,6 +188,51 @@ select count(*) as "見える行数", count(distinct user_id) as "見えてい�
 
 ---
 
+## ④-2 org_events / org_event_participants（2026-09-02 に作成）
+
+本番から写したもの。**正はデータベース側です。**
+
+| tablename | policyname | cmd | qual | with_check |
+|---|---|---|---|---|
+| org_event_participants | org_event_participants_own | ALL | `auth.uid() = user_id` | `auth.uid() = user_id` |
+| org_events | org_events_write_admin | ALL | `EXISTS(memberships m WHERE m.org_id=org_events.org_id AND m.user_id=auth.uid() AND m.role = ANY('{owner,admin}'))` | **null** |
+| org_events | org_events_select_member | SELECT | `EXISTS(memberships …) OR EXISTS(enrollments … status='active')` | null |
+
+### ★確かめたこと・確かめていないこと
+
+- `org_events.org_id` は **NOT NULL**。①の「(列 IS NULL) OR …」の形は**入りようがありません**。
+- `org_events_select_member` の `OR` は、**どちらも所属を確かめる式**です。
+  ①のように、片方が無条件に真になることはありません。
+- `org_event_participants` は**本人の行だけ**。
+  ★誰が出ると印をつけたかは、**同じ組織の人にも見えません**。
+- ★`org_events_write_admin` は `FOR ALL` で `with_check` が **null** です。
+  PostgreSQL は「WITH CHECK を省くと USING を使う」とされていますが、
+  **今日2件、ポリシーの挙動についての思い込みが外れています**。
+  → 下の手順で、**実地に確かめること**。
+
+### ★INSERT が本当に止まるかの確かめ方
+
+```sql
+begin;
+-- ★claims を先、role をあとに。逆にすると auth.uid() が null になり、
+--   「止まった」ように見えて実は別の理由、という誤診になります（今日1回やりました）。
+select set_config('request.jwt.claims',
+  '{"sub":"<+s1 の uuid>","role":"authenticated"}', true);
+set local role authenticated;
+
+select auth.uid() as "★+s1 になっているか";
+
+-- ★これは失敗するはずです（+s1 は membership を持たない在籍者）
+insert into public.org_events (org_id, event_date, kind, title)
+values ('<その教室の uuid>', current_date, 'その他', '権限の確認');
+rollback;
+```
+
+**期待：`new row violates row-level security policy`（42501）。**
+成功してしまったら、`with_check` を明示する必要があります。
+
+---
+
 ## ⑤ ★2回とも、同じ形でした
 
 | | lessons | entries |
