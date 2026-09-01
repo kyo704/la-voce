@@ -9261,6 +9261,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     //     ここで止めるのは、生のDBエラーではなく日本語の理由を出すためだけ。
     //     ★ここを消しても、つながれるようにはなりません。逆に、
     //       ここだけ直してトリガーを外さないでください。画面は騙せます。
+    // ★「まだ読み込めていない」と「未成年」を分けること（2026-09-01）。
+    //   isTreatedAsMinor は profile が無いときも true を返します。
+    //   それ自体は正しい設計です（年齢の判定は★閉じる側に倒す）。
+    //   ですが、読み込みが終わる前に押した人にまで
+    //   「保護者の方の確認の仕組みを準備しています」と言うのは、
+    //   ★事実と違いますし、待てば直ることも伝わりません。
+    //   回線の遅い端末で押したときに、これが起きていました。
+    if (!profile) {
+      setInviteLookupError("まだ読み込みが終わっていません。少し待ってから、もう一度お押しください。");
+      return;
+    }
     if (isTreatedAsMinor(profile)) {
       setInviteLookupError(
         "いまはまだ、先生とつながることができません。保護者の方の確認の仕組みを準備しています。"
@@ -9275,8 +9286,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (linkError) {
       // ★上の事前チェックをすり抜けても、DBのトリガーが必ず弾きます。
       //   そのときも、理由が分かる文にします。
+      // ★同じ先生と、一度解除してから、つなぎ直したとき（2026-09-01）。
+      //   解除は行を消さず status を revoked にするだけなので、
+      //   (teacher_id, student_id) の一意制約に status が入っていないと
+      //   ★二度とつなぎ直せません。生の 409 のままだと、
+      //   利用者にも坂本さんにも、何が起きたか分かりません。
+      const isDuplicateLink =
+        linkError.code === "23505" || /duplicate key|already exists/i.test(String(linkError.message || ""));
       setInviteLookupError(isMinorLinkBlocked(linkError)
         ? "いまはまだ、先生とつながることができません。保護者の方の確認の仕組みを準備しています。"
+        : isDuplicateLink
+        ? "この先生とは、以前つながっていた記録が残っています。おそれいりますが、運営者にご連絡ください。"
         : "連携に失敗しました。もう一度お試しください。");
       return;
     }
@@ -16812,6 +16832,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             ))}
                           </div>
                           <p className="text-xs mb-3" style={{ color: C.inkSoft }}>あとから変更できます。つながりの解除もいつでもできます。</p>
+                          {/* ★理由を、この画面にも出すこと（2026-09-01）。
+                              これまで inviteLookupError は、招待コードを入れる側の
+                              分岐にしか描かれていませんでした。同意画面が出ている間は、
+                              ★失敗しても画面が1文字も変わりません。
+                              「つながるボタンが反応しない」と報告されたのは、これです。
+                              押せていなかったのではなく、★理由が見えない場所に
+                              書かれていました。 */}
+                          {inviteLookupError && (
+                            <p className="text-xs mb-2 rounded-2xl p-2.5"
+                              style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>
+                              {inviteLookupError}
+                            </p>
+                          )}
                           <div className="flex gap-2">
                             <button type="button" onClick={handleAcceptInvitation}
                               className="flex-1 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
