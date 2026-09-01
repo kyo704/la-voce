@@ -966,9 +966,15 @@ flight_hours / jetlag_hours
 
 **消した関数より、広い道が残っていました。**
 
-### 直し（★未実行）
+### 直し（★2026-09-02 実行・確認ずみ）
 
-`supabase/migration_drop_teacher_entries_policy.sql`
+`supabase/migration_drop_teacher_entries_policy.sql`（コミット `74842f5`）
+
+```
+見える生徒の記録行数：1 → 0
+```
+
+★+t5 のセッションで確認しました（service_role では確かめになりません）。
 
 名指しで消したあと、条件でも探して消します（名前が違っても残さないため）。
 あわせて、同じ形の穴を3通り探します。
@@ -977,7 +983,7 @@ flight_hours / jetlag_hours
 - 「(列 IS NULL) OR …」で素通りするポリシー（lessons と同じ形）
 - RLS が有効なのにポリシーが0本の表
 
-流したあと、**同じクエリで 0 になること**を確かめてください。
+**0 になることを確認しました。**
 
 ### ★2回続けて、同じ形でした
 
