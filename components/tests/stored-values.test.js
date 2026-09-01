@@ -31,7 +31,9 @@ async function main() {
 
   console.log("\n=== ★コード側の実物と一致しているか（写し間違いを防ぐ） ===");
   // 一覧が実物からずれると、見張りが効かなくなる。
-  const weight = vt.slice(vt.indexOf("ACTIVITY_LOAD_WEIGHT = {"), vt.indexOf("ACTIVITY_LOAD_WEIGHT = {") + 200);
+  // ★重みの実物は lib/vocalDose.js に移りました（2026-09-01）。
+  //   VocalTracker は import するだけです。
+  const weight = readCode("lib", "vocalDose.js");
   S.ACTIVITY_KINDS.forEach((k) => {
     assertTrue(weight.includes(`"${k}"`), `発声負荷の重みに「${k}」がある`);
   });
@@ -47,7 +49,7 @@ async function main() {
   console.log("\n=== ★保存される値が、翻訳キーに置き換わっていないか ===");
   // ここが本体。t("activityPerformance") に変えてしまうと、
   // activity_type に英語が保存され、過去の記録が引けなくなる。
-  assertTrue(/ACTIVITY_LOAD_WEIGHT = \{ "休養": 0/.test(vt),
+  assertTrue(/VOCAL_LOAD_WEIGHT = \{[\s\S]{0,40}"休養": 0/.test(readCode("lib", "vocalDose.js")),
     "★発声負荷の重みが、日本語の鍵のままである");
   assertTrue(/ACTIVITY_BLOCK_KINDS = \["自主練習", "レッスン", "リハーサル", "本番"\]/.test(vt),
     "★活動の種類の一覧が、日本語のままである");

@@ -27,13 +27,18 @@ async function main() {
   const m = await import("data:text/javascript;base64," + Buffer.from(src, "utf-8").toString("base64"));
   const ui = fs.readFileSync(path.join(ROOT, "components", "VocalTracker.jsx"), "utf-8");
 
-  console.log("=== テスト1: 重みが、既存の計算と食い違っていない ===");
-  // ★同じ決定が2か所にあると、片方だけ直る。値が一致していることを機械的に見る。
-  const legacy = (ui.match(/const ACTIVITY_LOAD_WEIGHT = \{([^}]*)\}/) || [])[1] || "";
-  ["休養", "自主練習", "レッスン", "リハーサル", "本番"].forEach((k) => {
-    const mm = legacy.match(new RegExp(`"${k}":\\s*([\\d.]+)`));
-    assertTrue(!!mm, `既存側に ${k} の重みがある`);
-    if (mm) assertEqual(m.VOCAL_LOAD_WEIGHT[k], Number(mm[1]), `${k} の重みが一致（${mm[1]}）`);
+  console.log("=== テスト1: ★重みの表は、1つだけ ===");
+  // ★2026-09-01 まで、同じ表が2か所にありました。
+  //   VocalTracker 側に発話業務が無く、★中身が食い違っていました。
+  //   representativeActivityKind がそちらを見ていたため、
+  //   2時間の発話業務が10分の自主練習に負けていました。
+  //   → いまは lib/vocalDose.js の VOCAL_LOAD_WEIGHT だけが正です。
+  assertTrue(!/const ACTIVITY_LOAD_WEIGHT = \{ *"/.test(ui),
+    "★VocalTracker が、重みの表を書き写していない");
+  assertTrue(/const ACTIVITY_LOAD_WEIGHT = VOCAL_LOAD_WEIGHT/.test(ui),
+    "★import して使っている（値を書き写さない）");
+  ["休養", "自主練習", "レッスン", "リハーサル", "本番", "発話業務"].forEach((k) => {
+    assertTrue(typeof m.VOCAL_LOAD_WEIGHT[k] === "number", `${k} の重みが1か所にある`);
   });
   assertEqual(m.VOCAL_LOAD_WEIGHT["発話業務"], 1.0,
     "発話業務は 1.0（既存の nonPerformanceSpeechMinutes と同じ係数）");

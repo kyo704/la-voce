@@ -95,7 +95,8 @@ async function main() {
   // ★保存される値は変えていない（§4）
   assertTrue(/ACTIVITY_KIND_TERM = \{/.test(vt), "kind と用語の対応表がある");
   assertTrue(/"本番": "performanceDay"/.test(vt), "「本番」という kind はそのまま");
-  assertTrue(/ACTIVITY_LOAD_WEIGHT = \{ "休養": 0/.test(vt),
+  // ★重みの実物は lib/vocalDose.js に移りました（2026-09-01）。鍵は kind のままです。
+  assertTrue(/VOCAL_LOAD_WEIGHT = \{[\s\S]{0,40}"休養": 0/.test(readCode("lib", "vocalDose.js")),
     "★発声負荷の重みが、これまでどおり kind を鍵にしている");
 
   console.log("\n=== §8③: 呼び方が変わったことを1回だけ知らせる ===");

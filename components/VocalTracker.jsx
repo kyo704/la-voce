@@ -86,7 +86,7 @@ import { departingOwnerNotice, transferMailto, CLOSE_ORG_KEEP_LINE, CLOSE_ORG_DE
 // 書き出しに添える「記録の控え」。★解釈を1つも書かない。文言と禁止語はこの1か所。
 // 発声量（G2-10.5）。★種別の重みと、実測／推定の区別はこの1か所が持つ。
 import {
-  VOCAL_SESSION_KINDS, dayVocalDose, weeklyVocalDose, activityMinutes,
+  VOCAL_SESSION_KINDS, VOCAL_LOAD_WEIGHT, dayVocalDose, weeklyVocalDose, activityMinutes,
   elapsedMinutes, reviewSession, SESSION_MAX_MINUTES
 } from "@/lib/vocalDose";
 // 行動ログ。★健康の値を props に入れない歯止めは、このモジュールが持つ。
@@ -791,7 +791,21 @@ function computeAbsoluteHumidity(tempC, rhPercent) {
 }
 // 07. 発声負荷バランス（ACWR）：活動種別ごとの重み。声の予報の「前日発声負荷」predictor でも
 // この正式な計算を使う（簡易プロキシではなく、指標設計図.md 07節の計算式そのもの）。
-const ACTIVITY_LOAD_WEIGHT = { "休養": 0, "自主練習": 1.0, "レッスン": 1.2, "リハーサル": 1.3, "本番": 1.6 };
+// ★重みの正は lib/vocalDose.js（VOCAL_LOAD_WEIGHT）に1つだけ置きます（2026-09-01）。
+//
+//   ここに同じ表がもう1つあり、★中身が食い違っていました。
+//     こちら           休養／自主練習／レッスン／リハーサル／本番   （5種）
+//     lib/vocalDose.js 同じ5種＋★発話業務 1.0                      （6種）
+//
+//   ★実害が出ていました。今朝つくった representativeActivityKind は
+//     この表を見るので、発話業務の重みが「不明＝0」になります。
+//     2時間の発話業務と10分の自主練習が同じ日にあると、
+//     ★グラフの色は「自主練習」になっていました。
+//     いちばん声を使った出来事が、色から消えます。
+//
+//   ★同じ値を書き写さないこと。import して使います。
+//     重みの値そのものは変えていません（Opus の判断待ちのため）。
+const ACTIVITY_LOAD_WEIGHT = VOCAL_LOAD_WEIGHT;
 // ★実測が無い活動に、種別ごとの推定時間を補う（G2-10.5 / 改善タスクv2 §3-1）。
 //
 // これまで、分が空の活動ブロックは Number("")||0 で 0分として扱われていました。
