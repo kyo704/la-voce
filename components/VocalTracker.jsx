@@ -16262,7 +16262,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             {/* ★受診用の1枚（export.doctorSheet）。
                 ★法定の書き出し（JSON/CSV）は別実装で、誰にでも無料のままです。
                   線引き §3「この2つを同じ実装にまとめないでください」。 */}
-            {activeTab === "clinicSummary" && can(viewer, "export.doctorSheet") && (() => {
+            {/* ★権限の確認を外しました（2026-09-01）。
+                誰でも使えます。理由は lib/entitlements.js の NEVER_GATED に
+                書いてあります。要点だけ書くと、
+                ★声で困っている人とお医者さんのあいだに、お金を置かないためです。
+
+                ★画面まるごとを権限で囲まないこと（憲章 §10）。
+                  条件が偽のとき、React は黙って何も描きません。
+                  押せるボタンの先が、白い画面になります。 */}
+            {activeTab === "clinicSummary" && (() => {
               // §5.4: ここには絶対に載せない（あとから「便利だから」と足されがちなので明記しておく）
               // 偏差値／ACWR／ラグ相関（声の時差マップ）／効果量（効いた習慣ランキング）／CPPS／エネルギー可用性
               const { start, end } = clinicPeriodRange;

@@ -46,10 +46,14 @@ async function main() {
     });
   });
 
-  console.log("\n=== ★出し分けるのは、仕上がった5件だけ ===");
+  console.log("\n=== ★出し分けるのは、仕上がった4件だけ ===");
+  // ★2026-09-01、export.doctorSheet を外して5件→4件になりました。
+  //   受診用の1枚を有料の側に置いたのは★誤りでした。
+  //   公開の資料が無料だと約束していて、年に数回しか使わず、
+  //   何より★声で困っている人とお医者さんのあいだにお金を置く形でした。
   assertEqual([...E.PREVIEW_FEATURES].sort(),
-    ["analysis.cycle", "analysis.reflux", "analysis.relations", "export.doctorSheet", "repertoire.multi"],
-    "★5件ちょうど");
+    ["analysis.cycle", "analysis.reflux", "analysis.relations", "repertoire.multi"],
+    "★4件ちょうど");
   ["analysis.range", "metrics.history", "learn.advanced"].forEach((f) => {
     assertTrue(!E.PREVIEW_FEATURES.includes(f), `★${f} は出し分けない（未完成）`);
     assertEqual(E.can("general", f), true, `★${f} は誰にでも見える`);
@@ -64,9 +68,14 @@ async function main() {
     assertTrue(!E.PREVIEW_FEATURES.includes(f), `★${f} が出し分けの一覧に入っていない`);
   });
   assertTrue(E.NEVER_GATED.includes("export.legal"), "★法定の書き出しが一覧にある");
-  assertTrue(E.PREVIEW_FEATURES.includes("export.doctorSheet"), "受診用の1枚は出し分ける");
-  assertTrue(!E.NEVER_GATED.includes("export.doctorSheet"),
-    "★法定の書き出しと、受診用の1枚を混同していない");
+  // ★受診用の1枚も、ゲートしません（2026-09-01）。
+  assertTrue(!E.PREVIEW_FEATURES.includes("export.doctorSheet"), "★受診用の1枚を出し分けない");
+  assertTrue(E.NEVER_GATED.includes("export.doctorSheet"), "★受診用の1枚もゲートしない");
+  // ★ただし「同じ実装にまとめない」は、いまも生きています（線引き §3）。
+  //   どちらも無料になっただけで、中身は別のものです。
+  //   法定の書き出しは全列そのまま、受診用の1枚は独自の指標を載せません。
+  assertTrue(E.NEVER_GATED.includes("export.legal") && E.NEVER_GATED.includes("export.doctorSheet"),
+    "★2つとも無料。ただし別の鍵のまま（実装を混ぜないこと）");
 
   console.log("\n=== ★群のラベル（先行公開と群のラベル.md §3） ===");
   assertEqual([...E.VIEWERS].sort(), ["founder", "general", "tester"], "★群は3つ");
@@ -95,9 +104,13 @@ async function main() {
   assertTrue(!/profile\.is_tester\s*===/.test(vt), "★画面が is_tester を直に比べていない");
   assertTrue(/const viewer = useMemo\(\(\) => viewerOf\(profile\), \[profile\]\);/.test(vt),
     "区分は1か所で作っている");
-  // 5件とも出し分けている
-  ["analysis.relations", "analysis.cycle", "analysis.reflux", "export.doctorSheet", "repertoire.multi"]
+  // 4件とも出し分けている（★export.doctorSheet は 2026-09-01 に外しました）
+  ["analysis.relations", "analysis.cycle", "analysis.reflux", "repertoire.multi"]
     .forEach((f) => assertTrue(vt.includes(`can(viewer, "${f}")`), `${f} を画面で通している`));
+  // ★受診用の1枚は、画面でも確認しないこと。
+  //   画面まるごとを権限で囲んでいて、権限が無いと★真っ白になっていました。
+  assertTrue(!vt.includes('can(viewer, "export.doctorSheet")'),
+    "★受診用の1枚は、画面でも権限を見ない");
 
   console.log("\n=== ★何も描かない（先行公開 §4「隠すのではなく、無い」） ===");
   // ★2026-08-30、「開発中」の1枚をやめました。
