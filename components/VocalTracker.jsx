@@ -15611,8 +15611,38 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   {myStudentLinks.length === 0 && myTeacherLinks.length === 0 && (
                     <p className="text-sm">{t("deleteStep2NoLinks")}</p>
                   )}
+                  {/* ★指導者として生徒とつながっている人だけに出す3つの区分
+                      （Opus 判断・2026-09-01）。生徒側の退会には
+                      「生徒との紐付け」という概念がないので、出しません。
+
+                      ★真ん中の「すぐに切れて、戻らないもの」は新設です。
+                        続いている関係は、猶予の30日を待たずにその場で切れ、
+                        取り消しても戻りません（severConnections）。
+                        過去の事実（レッスンの日時）は、猶予明けに名前だけ外します。
+                        ★この2つを同じ欄に混ぜないこと。重さが違います。 */}
                   {myStudentLinks.length > 0 && (
-                    <p className="text-sm leading-relaxed">{t("deleteStep2Teacher").replace("{n}", myStudentLinks.length)}</p>
+                    <div className="space-y-3">
+                      <div>
+                        <p className="text-sm font-medium mb-1">消えるもの</p>
+                        <p className="text-sm leading-relaxed" style={{ color: C.inkSoft }}>
+                          あなたのアカウント、プロフィール、あなたが書いた記録のすべて
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium mb-1">すぐに切れて、戻らないもの</p>
+                        <p className="text-sm leading-relaxed" style={{ color: C.inkSoft }}>
+                          生徒との紐付け。30日以内に取り消しても、戻りません<br />
+                          もう一度つながるには、招待からやり直しになります
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium mb-1">残るもの</p>
+                        <p className="text-sm leading-relaxed" style={{ color: C.inkSoft }}>
+                          あなたが行ったレッスンの「日時・所要時間・場所」の記録<br />
+                          あなたの名前は消えます。生徒側の記録として残ります
+                        </p>
+                      </div>
+                    </div>
                   )}
                   {myTeacherLinks.length > 0 && (
                     <p className="text-sm leading-relaxed">{t("deleteStep2Student").replace("{n}", myTeacherLinks.length)}</p>
