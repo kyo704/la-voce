@@ -52,7 +52,12 @@ function fieldsFromMapper() {
   const reg = await import("../../lib/ownRecordFields.js");
   const mapperFields = fieldsFromMapper();
   const registered = new Set(reg.OWN_RECORD_FIELDS.map((f) => f.key));
-  const excluded = new Set(reg.NOT_A_RECORDED_VALUE);
+  // ★わざと外した項目は、理由つきで宣言されていること。
+  //   「表に無い」だけでは、足し忘れと区別がつきません。
+  const excluded = new Set([
+    ...reg.NOT_A_RECORDED_VALUE,
+    ...reg.EXCLUDED_FROM_OWN_RECORD.map((x) => x.key)
+  ]);
 
   console.log("=== ★記録される項目が、すべて表にある ===");
   {
@@ -142,6 +147,75 @@ function fieldsFromMapper() {
     ["高め", "低め", "良い", "悪い", "順調", "注意"].forEach((w) => {
       assertTrue(!src.includes(w), `★「${w}」のような解釈を入れていない`);
     });
+  }
+
+  console.log("\n=== ★出し方（display）が、全項目に決まっている ===");
+  {
+    const ok = ["series", "daily"];
+    reg.OWN_RECORD_FIELDS.forEach((f) => {
+      if (!ok.includes(f.display)) assertTrue(false, `★${f.key} の出し方「${f.display}」が不明`);
+    });
+    assertTrue(true, "全項目に series か daily が付いている");
+    // 数でないものを折れ線にしないこと
+    reg.OWN_RECORD_FIELDS.filter((f) => f.kind !== "number").forEach((f) => {
+      if (f.display === "series") assertTrue(false, `★${f.key} は数でないのに折れ線にしている`);
+    });
+    assertTrue(true, "★自由記述やタグを、折れ線にしていない");
+  }
+
+  console.log("\n=== ★内部の名前を、画面に出さない ===");
+  {
+    const v = await import("../../lib/vocabulary.js");
+    // 職業ごとの言い回しが要る項目は、辞書を通ること
+    const speech = reg.ownRecordField("nonPerformanceSpeechMinutes");
+    assertTrue(speech.termKey === "offStageVoiceMinutes", "★声を使った時間は辞書の鍵を持つ");
+    const forActor = reg.ownRecordLabel(speech, "voiceActor", "ja", v.termLabel);
+    assertTrue(forActor.includes("収録"),
+      `★声優には「収録」で出る（いまは「${forActor}」）`);
+    const forClassical = reg.ownRecordLabel(speech, "classical", "ja", v.termLabel);
+    assertTrue(!forClassical.includes("収録"), "声楽家には収録と出ない");
+    assertTrue(reg.ownRecordField("repertoire").termKey === "repertoireCard",
+      "★曲目も辞書の鍵を持つ");
+    // ★内部の列名が、そのまま名前になっていないこと
+    reg.OWN_RECORD_FIELDS.forEach((f) => {
+      if (f.label === f.key) assertTrue(false, `★${f.key} の名前が内部名のまま`);
+      if (/[a-zA-Z]{4,}/.test(f.label) && !/CPPS|MPT/.test(f.label)) {
+        assertTrue(false, `★${f.key} の名前に英字が混じっている（${f.label}）`);
+      }
+    });
+    assertTrue(true, "★内部の列名が、そのまま出ている項目は無い");
+  }
+
+  console.log("\n=== 日ごとの並べ方（合計や平均を足さない） ===");
+  {
+    const kindLabel = (k) => (k === "本番" ? "収録" : k);
+    const rows = reg.dailyRows(reg.ownRecordField("waterBySlot"), { "朝": 300, "昼": 500 }, {});
+    assertTrue(rows.length === 2, "書いた数だけ並ぶ");
+    assertTrue(rows.every((r) => !/合計|平均|計/.test(r.label)),
+      "★合計や平均を勝手に足していない");
+    const ck = reg.dailyRows(reg.ownRecordField("voiceCheckins"), { "7:30": { voice: 3, throat: 2 } }, {});
+    assertTrue(ck[0].value === "声3 喉2", "★その日の中央値に何が入ったかが見える");
+    const act = reg.dailyRows(reg.ownRecordField("activities"),
+      [{ kind: "本番", minutes: 20 }], { activityKindLabel: kindLabel });
+    assertTrue(act[0].label === "収録", "★活動の名前も職業ごとの言い回しになる");
+    const rec = reg.dailyRows(reg.ownRecordField("recovery"), { methods: ["入浴", "昼寝"] }, {});
+    assertTrue(rec.length === 2 && rec[0].label === "入浴", "休養は選んだものを並べる");
+    assertTrue(reg.dailyRows(reg.ownRecordField("waterBySlot"), null, {}).length === 0,
+      "記録が無ければ、何も並ばない");
+  }
+
+  console.log("\n=== ★負荷の詳細は、この画面に出さない ===");
+  {
+    assertTrue(!registered.has("loadDetail"), "★loadDetail が表に無い");
+    const ex = reg.EXCLUDED_FROM_OWN_RECORD.find((x) => x.key === "loadDetail");
+    assertTrue(!!ex && ex.why.length > 10, "★外した理由が書いてある");
+    // ★入力欄が復活したら、この判断を見直すこと
+    const calls = (raw.match(/<LoadTracker/g) || []).length;
+    assertTrue(calls === 0,
+      `★LoadTracker の呼び出しは0件のまま（いまは ${calls}）。復活したら、外す判断を見直すこと`);
+    // ★書き出しからは外していないこと（「出さない」と「取り出せない」は別）
+    assertTrue(/from\(table\)\.select\("\*"\)/.test(raw),
+      "★書き出しは行ごと取るので、loadDetail も本人には返る");
   }
 
   console.log("\n=== 憲章に、約束が書いてある ===");
