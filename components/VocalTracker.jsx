@@ -1136,12 +1136,6 @@ function generateInsights(correlationResults, targetLabel, t) {
       return { key: r.key, text: `${line}${action}` };
     });
 }
-function getLastLocation(entries, beforeDate) {
-  const dates = Object.keys(entries).filter((d) => d < beforeDate).sort();
-  if (dates.length === 0) return "";
-  const last = entries[dates[dates.length - 1]];
-  return last && last.location ? last.location : "";
-}
 // ★「周期◯日目」の計算は lib/cyclePeriods.js に一本化した。
 //   以前はここに entries.cycle_start から数える版があり、ホームの新しい
 //   ボタン（cycle_periods に書く）と置き場所が分かれていた。
@@ -1473,18 +1467,6 @@ function newVoiceEntry(date, context) {
     // lavoce-職業別項目の再設計と学ぶ画面.md §2.3: 発声ルーティンの長さ（全職業共通）。
     // ウォームアップ効率（半音差）の分母として使う。
     routineMinutes: null
-  };
-}
-function updateVoiceCheckin(f, slotKey, field, value) {
-  const checkins = { ...(f.voiceCheckins || {}) };
-  checkins[slotKey] = { ...(checkins[slotKey] || {}), [field]: value };
-  const throatVals = Object.values(checkins).map((c) => c && c.throat).filter((v) => typeof v === "number");
-  const voiceVals = Object.values(checkins).map((c) => c && c.voice).filter((v) => typeof v === "number");
-  return {
-    ...f,
-    voiceCheckins: checkins,
-    throatCondition: throatVals.length ? Math.round(throatVals.reduce((a, b) => a + b, 0) / throatVals.length) : f.throatCondition,
-    voiceQuality: voiceVals.length ? Math.round(voiceVals.reduce((a, b) => a + b, 0) / voiceVals.length) : f.voiceQuality
   };
 }
 function polarPoint(cx, cy, r, angleDeg) {
