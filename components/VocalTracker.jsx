@@ -79,6 +79,7 @@ import { canSeeBetaFeatures, canSeeTeacherFeatures, canSeeLineLink, canSeeStuden
 // 削除の猶予期間（A-4）。日数の計算はサーバーと同じものを使う。
 import { graceDaysLeft, GRACE_PERIOD_DAYS } from "@/lib/accountDeletion";
 import { representativeActivityKind, MULTI_ACTIVITY_LEGEND_NOTE } from "@/lib/activityPrecedence";
+import { recordedFieldsFor, seriesFor, dailyRows, ownRecordLabel, hasValue } from "@/lib/ownRecordFields";
 import { buildLinkConsentRow, buildUnlinkPatch } from "@/lib/linkConsent";
 import { departingOwnerNotice, transferMailto, CLOSE_ORG_KEEP_LINE, CLOSE_ORG_DELETE_LINE } from "@/lib/orgClosure";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
@@ -4894,6 +4895,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [mergeInProgress, setMergeInProgress] = useState(false);
   const [mergeResult, setMergeResult] = useState("");
   const [showQuickRecord, setShowQuickRecord] = useState(false);
+  // ★「自分の記録」で開いている項目。null なら一覧。
+  const [openRecordField, setOpenRecordField] = useState(null);
   // ★カレンダーを既定にする（いちばん役に立つものを最初に見せる）。
   const [notesSubTab, setNotesSubTab] = useState("calendar");
   // レッスン画面の立場。null は「まだ選んでいない」＝ 既定に従う。
@@ -13072,8 +13075,129 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   style={{ background: notesSubTab === "memo" ? C.curtain : "transparent", color: notesSubTab === "memo" ? "#FFFDF8" : C.inkSoft }}>
                   メモ
                 </button>
+                {/* ★「自分の記録」。記録した側に置きます（分析タブには置きません）。
+                    同じ数字でも、置く場所で読まれ方が変わります。
+                    分析は「判断が住む場所」、こちらは「記録がそのまま返る場所」です。 */}
+                <button onClick={() => { setNotesSubTab("own"); setOpenRecordField(null); }}
+                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                  style={{ background: notesSubTab === "own" ? C.curtain : "transparent", color: notesSubTab === "own" ? "#FFFDF8" : C.inkSoft }}>
+                  自分の記録
+                </button>
               </div>
             )}
+            {/* ============================================================
+                ★自分の記録（憲章 §10「書けるのに、本人に返らない項目を作らない」）
+
+                ・書いた項目だけを並べます。触っていない項目は出しません。
+                ・押すと、その項目の生の値だけが出ます。
+                ★解釈の言葉を足さないこと（「高めでした」など）。
+                ★良い／悪いの色を付けないこと（信号機の色は使わない）。
+                ★合計や平均を勝手に足さないこと。要るなら別の項目にします。
+                ============================================================ */}
+            {activeTab === "notes" && notesSubTab === "own" && (() => {
+              const fields = recordedFieldsFor(entries);
+              const labelOf = (f) => ownRecordLabel(f, currentOccupation, language, termLabel);
+              if (fields.length === 0) {
+                return (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-sm" style={{ color: C.inkSoft }}>
+                      まだ記録がありません。記録すると、ここに並びます。
+                    </p>
+                  </div>
+                );
+              }
+              const open = fields.find((f) => f.key === openRecordField) || null;
+              if (!open) {
+                return (
+                  <div className="space-y-3">
+                    <p className="text-xs" style={{ color: C.inkSoft }}>
+                      あなたが書いたものを、そのまま出しています。
+                    </p>
+                    <div className="rounded-2xl border overflow-hidden" style={{ background: C.card, borderColor: C.line }}>
+                      {fields.map((f, i) => (
+                        <button key={f.key} type="button" onClick={() => setOpenRecordField(f.key)}
+                          className="w-full text-left px-4 py-3 flex items-center justify-between"
+                          style={{ borderTop: i === 0 ? "none" : `1px solid ${C.line}` }}>
+                          <span className="text-sm" style={{ color: C.ink }}>{labelOf(f)}</span>
+                          <ChevronRight size={16} style={{ color: C.inkSoft }} />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+              // ---- 1つの項目を開いたとき ----
+              const rows = seriesFor(entries, open.key, 30);
+              return (
+                <div className="space-y-3">
+                  <button type="button" onClick={() => setOpenRecordField(null)}
+                    className="flex items-center gap-1 text-sm font-medium" style={{ color: C.inkSoft }}>
+                    <ChevronLeft size={16} /> 一覧へ
+                  </button>
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-sm font-medium mb-1" style={{ color: C.ink }}>{labelOf(open)}</p>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>直近30日ぶん</p>
+
+                    {/* 数のとき：折れ線と、数そのもの。★色分けはしません。 */}
+                    {open.display === "series" && rows.length > 0 && (
+                      <>
+                        <div style={{ height: 140 }}>
+                          <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={[...rows].reverse().map((r) => ({ date: r.date.slice(5), value: r.value }))}>
+                              <CartesianGrid strokeDasharray="3 3" stroke={C.line} />
+                              <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                              <YAxis tick={{ fontSize: 10, fill: C.inkSoft }} width={32} />
+                              <Tooltip />
+                              <Line type="monotone" dataKey="value" stroke={C.sage} strokeWidth={2} dot={{ r: 2 }} />
+                            </LineChart>
+                          </ResponsiveContainer>
+                        </div>
+                        <div className="mt-3 space-y-1">
+                          {rows.map((r) => (
+                            <div key={r.date} className="flex justify-between text-xs" style={{ color: C.ink }}>
+                              <span style={{ color: C.inkSoft }}>{r.date}</span>
+                              <span className="ff-mono">{String(r.value)}{open.unit}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+
+                    {/* 数でないとき：その日書いたものを、書いた形のまま並べます。 */}
+                    {open.display === "daily" && (
+                      <div className="space-y-3">
+                        {rows.map((r) => {
+                          const parts = dailyRows(open, r.value, {
+                            occupation: currentOccupation, language, t, activityKindLabel
+                          });
+                          return (
+                            <div key={r.date}>
+                              <p className="text-xs mb-0.5" style={{ color: C.inkSoft }}>{r.date}</p>
+                              {parts.length === 0 ? (
+                                <p className="text-sm" style={{ color: C.ink }}>{String(r.value)}</p>
+                              ) : (
+                                <div className="space-y-0.5">
+                                  {parts.map((pt, j) => (
+                                    <div key={j} className="flex gap-2 text-sm" style={{ color: C.ink }}>
+                                      {pt.label && <span style={{ color: C.inkSoft }}>{pt.label}</span>}
+                                      <span>{pt.value}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {rows.length === 0 && (
+                      <p className="text-sm" style={{ color: C.inkSoft }}>この30日には、記録がありません。</p>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
             {activeTab === "notes" && notesSubTab === "practice" && (
               <div className="space-y-5">
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>

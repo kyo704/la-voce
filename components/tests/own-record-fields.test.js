@@ -242,6 +242,47 @@ function fieldsFromMapper() {
       "★書き出しは行ごと取るので、loadDetail も本人には返る");
   }
 
+  console.log("\n=== ★画面がある（記録の側・分析タブではない） ===");
+  {
+    assertTrue(/notesSubTab === "own"/.test(raw), "★「自分の記録」の画面がある");
+    assertTrue(/自分の記録/.test(raw), "タブの名前がある");
+    // ★分析タブに置かないこと。同じ数字でも、置く場所で読まれ方が変わります。
+    const ownAt = raw.indexOf('notesSubTab === "own" && (() =>');
+    assertTrue(ownAt > 0, "画面の本体がある");
+    const screen = raw.slice(ownAt, ownAt + 6000);
+    assertTrue(!/activeTab === "analysis"/.test(screen), "★分析タブの中に置いていない");
+    assertTrue(/activeTab === "notes"/.test(raw.slice(Math.max(0, ownAt - 200), ownAt + 60)),
+      "★記録の側（notes）に置いている");
+
+    // 書いた項目だけを並べること
+    assertTrue(/recordedFieldsFor\(entries\)/.test(screen),
+      "★触っていない項目は並べない");
+    // 呼び名は辞書を通すこと
+    assertTrue(/ownRecordLabel\(f, currentOccupation, language, termLabel\)/.test(screen),
+      "★呼び名は辞書を通す（内部名を出さない）");
+    // 生の値を出すこと
+    assertTrue(/seriesFor\(entries, open\.key, 30\)/.test(screen), "直近30日ぶんを出す");
+    assertTrue(/dailyRows\(open, r\.value/.test(screen), "日ごとのものは、書いた形で並べる");
+  }
+
+  console.log("\n=== ★解釈も、良し悪しの色も付けない ===");
+  {
+    const ownAt = raw.indexOf('notesSubTab === "own" && (() =>');
+    const screen = raw.slice(ownAt, ownAt + 6000);
+    // 解釈の言葉
+    ["高め", "低め", "良い", "悪い", "順調", "注意", "できています", "でした"].forEach((w) => {
+      assertTrue(!screen.includes(w), `★「${w}」のような解釈を出していない`);
+    });
+    // ★信号機の色を使わないこと（良し悪しに見えます）
+    ["C.curtain", "C.rust", "C.gold"].forEach((col) => {
+      const inChart = new RegExp(`stroke=\\{${col.replace(".", "\\.")}\\}`).test(screen);
+      assertTrue(!inChart, `★線の色に ${col} を使っていない`);
+    });
+    assertTrue(/stroke=\{C\.sage\}/.test(screen), "線は1色（C.sage）だけ");
+    // 合計・平均を足さないこと
+    assertTrue(!/合計|平均/.test(screen), "★合計や平均を足していない");
+  }
+
   console.log("\n=== 憲章に、約束が書いてある ===");
   {
     const charter = readRaw("docs", "lavoce-設計憲章.md");
