@@ -9138,14 +9138,38 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // 既に持っていれば何もしない（何度呼んでも安全）。
   async function ensureOwnOrg() {
     const supabase = createClient();
-    const { data: existing } = await supabase.from("memberships").select("org_id").eq("user_id", userId).eq("role", "owner").maybeSingle();
-    if (existing) return existing.org_id;
+    // ★maybeSingle は「2行以上」のときエラーを返し、data は null になります。
+    //   ここでエラーを捨てていると、オーナーの membership が2つある人は
+    //   ★毎回「持っていない」と判定され、下へ進んでしまいます。
+    //   （2026-09-01、教室が増える道を探して見つけました）
+    //   だから limit(1) で受けて、1つでもあればそれを使います。
+    const { data: owned, error: ownedError } = await supabase.from("memberships")
+      .select("org_id").eq("user_id", userId).eq("role", "owner")
+      .order("created_at", { ascending: true }).limit(1);
+    if (ownedError) {
+      // ★黙って進まないこと。進むと教室を作り直します。
+      console.error("教室のオーナー確認に失敗しました:", ownedError);
+      setInviteError(`教室の確認に失敗しました：${ownedError.message || "原因不明"}`);
+      return null;
+    }
+    if (owned && owned.length > 0) return owned[0].org_id;
     // ★自分が作った教室が既に無いかを、先に見ます。
     //   前回 membership の作成だけ失敗していると、教室はあるのに
     //   上の検索では見つかりません。そのまま作ると★教室が増えます。
     //   （2026-09-01、この落とし穴が実在することを確認しました）
-    const { data: orphan } = await supabase.from("organizations")
+    // ★created_by でしか探せません。だから created_by が null になった教室は
+    //   ★二度と拾えず、次に押したときに新しい教室ができます。
+    //   いまの退会の流れでは null になりませんが（solo は行ごと削除、
+    //   ほかに人がいれば退会そのものを止めるため）、
+    //   ★NULLED_REFERENCES に organizations.created_by が残っているので、
+    //     将来そこを通る道ができたら、この穴が開きます。
+    const { data: orphan, error: orphanError } = await supabase.from("organizations")
       .select("id").eq("created_by", userId).order("created_at", { ascending: true }).limit(1).maybeSingle();
+    if (orphanError) {
+      console.error("作りかけの教室の確認に失敗しました:", orphanError);
+      setInviteError(`教室の確認に失敗しました：${orphanError.message || "原因不明"}`);
+      return null;
+    }
     const org = orphan || await (async () => {
       const { data, error } = await supabase.from("organizations")
         .insert({ name: "マイ教室", kind: "solo", created_by: userId }).select().single();

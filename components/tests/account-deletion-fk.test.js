@@ -69,8 +69,11 @@ const NO_ACTION_COLUMNS = [
       `lessons.${c} は null にする`);
   });
   // 残る一覧が、本当に user_id で消せる表だけであること（数の確認）
-  assertTrue(d.USER_OWNED_TABLES.length === 17,
-    `一覧は17表（いまは ${d.USER_OWNED_TABLES.length}）`);
+  // ★2026-09-01、events を足して18表。events は auth.users を参照しているのに
+  //   一覧から丸ごと漏れていて、退会が外部キー違反で失敗していました。
+  assertTrue(d.USER_OWNED_TABLES.length === 18,
+    `一覧は18表（いまは ${d.USER_OWNED_TABLES.length}）`);
+  assertTrue(d.USER_OWNED_TABLES.includes("events"), "★events が入っている");
 
   console.log("\n=== ★entry_comments が復活していない ===");
   // 生徒の記録への自由記述コメント。憲章 §10 が禁じています。
