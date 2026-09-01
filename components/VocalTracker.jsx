@@ -81,6 +81,7 @@ import { graceDaysLeft, GRACE_PERIOD_DAYS } from "@/lib/accountDeletion";
 import { representativeActivityKind, MULTI_ACTIVITY_LEGEND_NOTE } from "@/lib/activityPrecedence";
 import { recordedFieldsFor, seriesFor, dailyRows, ownRecordLabel, hasValue } from "@/lib/ownRecordFields";
 import { symptomsByLocation, dinnerToBedSummary, LOCATION_FOOTNOTE } from "@/lib/symptomLocations";
+import { orgEventState, movedMessage, WITHDRAWN_MESSAGE, DISMISS_LABEL, suggestActivityKind } from "@/lib/orgEventDisplay";
 import { buildLinkConsentRow, buildUnlinkPatch } from "@/lib/linkConsent";
 import { departingOwnerNotice, transferMailto, CLOSE_ORG_KEEP_LINE, CLOSE_ORG_DELETE_LINE } from "@/lib/orgClosure";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
@@ -4912,6 +4913,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [showQuickRecord, setShowQuickRecord] = useState(false);
   // ★「自分の記録」で開いている項目。null なら一覧。
   const [openRecordField, setOpenRecordField] = useState(null);
+  // 組織の予定（2026-09-02）。★写しは作りません。印だけです。
+  const [orgEvents, setOrgEvents] = useState({});        // orgId -> 予定[]
+  const [myOrgEvents, setMyOrgEvents] = useState([]);    // 自分が見られる予定（全組織ぶん）
+  const [myEventJoins, setMyEventJoins] = useState({});  // org_event_id -> 印の行
+  const [newEvent, setNewEvent] = useState({ date: "", kind: "本番", title: "" });
+  const [eventError, setEventError] = useState("");
   // ★カレンダーを既定にする（いちばん役に立つものを最初に見せる）。
   const [notesSubTab, setNotesSubTab] = useState("calendar");
   // レッスン画面の立場。null は「まだ選んでいない」＝ 既定に従う。
@@ -5632,6 +5639,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     fetchMyOrgs();
     fetchMyEnrollments();
     fetchMyTeachingLessons();
+    fetchMyOrgEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
@@ -5809,10 +5817,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     for (let i = 0; i < startWeekday; i++) cells.push(null);
     for (let d = 1; d <= daysInMonth; d++) {
       const iso = `${viewMonth.year}-${String(viewMonth.month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-      cells.push({ day: d, iso, entry: entries[iso] || null });
+      // ★組織の予定を重ねます（2026-09-02）。★写しではなく、そのまま参照します。
+      cells.push({
+        day: d, iso, entry: entries[iso] || null,
+        orgEvents: myOrgEvents.filter((e) => e.event_date === iso)
+      });
     }
     return cells;
-  }, [viewMonth, entries]);
+  }, [viewMonth, entries, myOrgEvents]);
   // 分析期間で絞り込んだ記録データ。分析タブの計算だけがこれを使い、
   // 「今日」「履歴」「羊」タブなどが参照する entries 本体には一切手を加えない。
   const filteredEntries = useMemo(() => {
@@ -9735,6 +9747,83 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     fetchMyEnrollments();
   }
   const [orgProfileNames, setOrgProfileNames] = useState({}); // userId -> {displayName, vocalProfession}
+  // ---- 組織の予定（2026-09-02）----
+  //   ★記録（entries）には一切触れません。押しても書きません。
+  async function fetchMyOrgEvents() {
+    const supabase = createClient();
+    const today = todayISOUTC();
+    const [{ data: evs }, { data: joins }] = await Promise.all([
+      // ★RLS が「その組織に居る人だけ」に絞ります。ここで org を指定しません。
+      supabase.from("org_events").select("*").gte("event_date", addDays(today, -1)).order("event_date", { ascending: true }),
+      supabase.from("org_event_participants").select("*").eq("user_id", userId)
+    ]);
+    setMyOrgEvents(evs || []);
+    const byId = {};
+    (joins || []).forEach((j) => { byId[j.org_event_id] = j; });
+    setMyEventJoins(byId);
+  }
+  async function fetchOrgEvents(orgId) {
+    const supabase = createClient();
+    const { data } = await supabase.from("org_events").select("*").eq("org_id", orgId)
+      .order("event_date", { ascending: true });
+    setOrgEvents((prev) => ({ ...prev, [orgId]: data || [] }));
+  }
+  async function handleCreateOrgEvent(orgId) {
+    setEventError("");
+    if (!newEvent.date) { setEventError("日付をお選びください。"); return; }
+    const supabase = createClient();
+    const { error } = await supabase.from("org_events").insert({
+      org_id: orgId, event_date: newEvent.date, kind: newEvent.kind,
+      title: newEvent.title || "", created_by: userId
+    });
+    if (error) { console.error("予定を作れませんでした:", error); setEventError(`予定を作れませんでした：${error.message || "原因不明"}`); return; }
+    setNewEvent({ date: "", kind: "本番", title: "" });
+    fetchOrgEvents(orgId);
+    fetchMyOrgEvents();
+  }
+  // ★日付を変えるときは、前の日付を残します。
+  //   「◯月◯日から◯月◯日に変わりました」と言うために要ります。
+  async function handleMoveOrgEvent(orgId, ev, nextDate) {
+    if (!nextDate || nextDate === ev.event_date) return;
+    const supabase = createClient();
+    const { error } = await supabase.from("org_events")
+      .update({ previous_date: ev.event_date, event_date: nextDate, updated_at: new Date().toISOString() })
+      .eq("id", ev.id);
+    if (error) { console.error("日付を変えられませんでした:", error); setEventError("日付を変えられませんでした。"); return; }
+    fetchOrgEvents(orgId);
+    fetchMyOrgEvents();
+  }
+  // ★取り下げは、行を消しません。消すと、出ると印をつけた人の画面から黙って消えます。
+  async function handleWithdrawOrgEvent(orgId, eventId) {
+    if (!window.confirm("この予定を取り下げますか？　出ると印をつけた方の画面には、取り下げられたことが出ます。")) return;
+    const supabase = createClient();
+    const { error } = await supabase.from("org_events")
+      .update({ withdrawn_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+      .eq("id", eventId);
+    if (error) { console.error("取り下げられませんでした:", error); setEventError("取り下げられませんでした。"); return; }
+    fetchOrgEvents(orgId);
+    fetchMyOrgEvents();
+  }
+  // ★「出ます」の印。★記録は1行も書きません。
+  async function handleToggleEventJoin(ev) {
+    const supabase = createClient();
+    const existing = myEventJoins[ev.id];
+    if (existing) {
+      await supabase.from("org_event_participants").delete().eq("id", existing.id);
+    } else {
+      await supabase.from("org_event_participants").insert({ user_id: userId, org_event_id: ev.id });
+    }
+    fetchMyOrgEvents();
+  }
+  // ★取り下げの知らせを、画面から消すだけ。印は外しません。
+  async function handleDismissEventNotice(ev) {
+    const j = myEventJoins[ev.id];
+    if (!j) return;
+    const supabase = createClient();
+    await supabase.from("org_event_participants")
+      .update({ dismissed_at: new Date().toISOString() }).eq("id", j.id);
+    fetchMyOrgEvents();
+  }
   async function fetchOrgDetail(orgId) {
     const supabase = createClient();
     const [{ data: members }, { data: enrollments }, { data: assignments }, { data: lessons }] = await Promise.all([
@@ -13083,9 +13172,62 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   const assignments = orgAssignments[orgId] || [];
                   return (
                     <details key={orgId} className="rounded-2xl border" style={{ background: C.card, borderColor: C.line }}
-                      onToggle={(e) => { if (e.target.open) fetchOrgDetail(orgId); }}>
+                      onToggle={(e) => { if (e.target.open) { fetchOrgDetail(orgId); fetchOrgEvents(orgId); } }}>
                       <summary className="p-4 text-sm font-medium cursor-pointer">{m.org ? m.org.name : "（教室情報を読み込めませんでした）"}（{m.role === "owner" ? "オーナー" : "管理者"}）</summary>
                       <div className="px-4 pb-4 space-y-3">
+                        {/* ★教室の予定（2026-09-02）。
+                            ★写しは作りません。生徒が押すのは「出ます」の印だけで、
+                              記録（entries）には1行も書きません。 */}
+                        <div>
+                          <p className="text-xs font-medium mb-1.5">教室の予定</p>
+                          {(orgEvents[orgId] || []).length === 0 ? (
+                            <p className="text-xs mb-2" style={{ color: C.inkSoft }}>予定はありません。</p>
+                          ) : (
+                            <div className="space-y-1.5 mb-2">
+                              {(orgEvents[orgId] || []).map((ev) => (
+                                <div key={ev.id} className="flex items-center gap-2 text-xs rounded-lg p-2"
+                                  style={{ background: C.paper, opacity: ev.withdrawn_at ? 0.5 : 1 }}>
+                                  <span className="ff-mono" style={{ color: C.inkSoft }}>{ev.event_date.slice(5)}</span>
+                                  <span style={{ color: C.ink }}>{ev.kind}</span>
+                                  <span className="flex-1 truncate" style={{ color: C.inkSoft }}>{ev.title}</span>
+                                  {ev.withdrawn_at ? (
+                                    <span style={{ color: C.inkSoft }}>取り下げずみ</span>
+                                  ) : (
+                                    <>
+                                      <input type="date" defaultValue={ev.event_date}
+                                        onChange={(e) => handleMoveOrgEvent(orgId, ev, e.target.value)}
+                                        className="rounded border px-1 py-0.5" style={{ borderColor: C.line, background: C.card }} />
+                                      <button type="button" onClick={() => handleWithdrawOrgEvent(orgId, ev.id)}
+                                        className="underline flex-shrink-0" style={{ color: C.inkSoft }}>取り下げる</button>
+                                    </>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+                            <input type="date" value={newEvent.date}
+                              onChange={(e) => setNewEvent((n) => ({ ...n, date: e.target.value }))}
+                              className="rounded-lg border px-2 py-1 text-xs" style={{ borderColor: C.line, background: C.paper }} />
+                            <select value={newEvent.kind} onChange={(e) => setNewEvent((n) => ({ ...n, kind: e.target.value }))}
+                              className="rounded-lg border px-2 py-1 text-xs" style={{ borderColor: C.line, background: C.paper }}>
+                              {["本番", "試験", "合わせ", "練習", "休講", "その他"].map((k) => (
+                                <option key={k} value={k}>{k}</option>
+                              ))}
+                            </select>
+                            <input type="text" value={newEvent.title} placeholder="名前（任意）"
+                              onChange={(e) => setNewEvent((n) => ({ ...n, title: e.target.value }))}
+                              className="flex-1 min-w-[8rem] rounded-lg border px-2 py-1 text-xs" style={{ borderColor: C.line, background: C.paper }} />
+                            <button type="button" onClick={() => handleCreateOrgEvent(orgId)}
+                              className="px-3 py-1 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                              足す
+                            </button>
+                          </div>
+                          {eventError && (
+                            <p className="text-xs mb-2 rounded-lg p-2" style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>{eventError}</p>
+                          )}
+                        </div>
+
                         <div>
                           <p className="text-xs font-medium mb-1.5">講師を招待する</p>
                           {generatedOrgInviteCode ? (
@@ -13416,6 +13558,53 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
             {(activeTab === "history" || (activeTab === "notes" && notesSubTab === "calendar")) && (
               <div className="space-y-5">
+                {/* ★教室の予定（2026-09-02）。★写しは作りません。
+                    押すのは「出ます」の印だけで、記録には1行も書きません。
+                    ★取り下げも日付の変更も、ここに出ます。黙って消えません。 */}
+                {myOrgEvents.filter((ev) => orgEventState(ev, myEventJoins[ev.id], todayISO()) !== "hidden").length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-sm font-medium mb-2">教室の予定</p>
+                    <div className="space-y-2">
+                      {myOrgEvents.map((ev) => {
+                        const joined = myEventJoins[ev.id];
+                        const st = orgEventState(ev, joined, todayISO());
+                        if (st === "hidden") return null;
+                        return (
+                          <div key={ev.id} className="text-xs rounded-xl p-2.5"
+                            style={{ background: C.paper, opacity: st === "withdrawn" ? 0.6 : 1 }}>
+                            <div className="flex items-center gap-2">
+                              <span className="ff-mono" style={{ color: C.inkSoft }}>{ev.event_date.slice(5)}</span>
+                              <span style={{ color: C.ink }}>{ev.kind}</span>
+                              <span className="flex-1 truncate" style={{ color: C.inkSoft }}>{ev.title}</span>
+                              {st !== "withdrawn" && (
+                                <button type="button" onClick={() => handleToggleEventJoin(ev)}
+                                  className="px-2.5 py-1 rounded-full flex-shrink-0"
+                                  style={{ background: joined ? C.sage : C.card, color: joined ? "#FFFDF8" : C.inkSoft, border: `1px solid ${C.line}` }}>
+                                  {joined ? "出ます" : "出る"}
+                                </button>
+                              )}
+                            </div>
+                            {/* ★主語は予定。人ではありません。 */}
+                            {st === "withdrawn" && (
+                              <div className="flex items-center gap-2 mt-1.5">
+                                <span style={{ color: C.inkSoft }}>{WITHDRAWN_MESSAGE}</span>
+                                {joined && (
+                                  <button type="button" onClick={() => handleDismissEventNotice(ev)}
+                                    className="underline" style={{ color: C.inkSoft }}>{DISMISS_LABEL}</button>
+                                )}
+                              </div>
+                            )}
+                            {st === "moved" && (
+                              <p className="mt-1.5" style={{ color: C.inkSoft }}>
+                                {movedMessage(ev.previous_date.slice(5), ev.event_date.slice(5))}
+                              </p>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <div className="flex items-center justify-between mb-3">
                     <button onClick={() => setViewMonth((m) => shiftMonth(m, -1))}
@@ -13449,6 +13638,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           {c.day}
                           {/* 値は大きさで表す。色は1つ（§1-2「色を増やさず、形で区別する」）。
                               周期の帯と衝突しないよう、点は升目の上側に置く。 */}
+                          {/* ★組織の予定の目印（2026-09-02）。
+                              ★升目を値で塗り分けない（§7-5）に従い、中立の枠だけにします。
+                                ACTIVITY_CHART_COLORS は使いません。本番が C.curtain（警告の色）
+                                なので、予定の種類で色を変えると「重い日・軽い日」に見えます。
+                              ★記録の点（下）とぶつからないよう、升目の下辺に細い線を引きます。 */}
+                          {c.orgEvents && c.orgEvents.some((e) => !e.withdrawn_at) && (
+                            <span aria-hidden="true" style={{
+                              position: "absolute", bottom: 2, left: "50%", transform: "translateX(-50%)",
+                              width: "60%", height: 2, borderRadius: 1, background: C.line
+                            }} />
+                          )}
                           {c.entry && typeof c.entry.throatCondition === "number" && (
                             <span aria-hidden="true" style={{
                               position: "absolute", top: 3, left: "50%", transform: "translateX(-50%)",
