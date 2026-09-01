@@ -5635,6 +5635,47 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
+  // ★画面に戻ってきたとき、つながりを取り直します（2026-09-02）。
+  //
+  //   ★なぜ要るか
+  //     先生の生徒一覧は、これまで★開いたときに1回だけ取っていました。
+  //     生徒が招待コードを受け取って「つながる」を押しても、
+  //     先生の画面はそのままです。手で読み込み直すまで、増えません。
+  //     ★先生には「招待が届いていない」ように見えます。
+  //
+  //   ★Realtime（購読）ではなく、戻ってきたときの取り直しにしています。
+  //     ・新しい仕組みを増やしません（この repo に購読は1つもありません）
+  //     ・つなぎっぱなしの接続を持ちません
+  //     ・RLS の面が増えません。★購読は行ごと丸ごと届くので、
+  //       列を絞る規律（get_student_entries でやっていたこと）が効きません
+  //     見ている最中には更新されませんが、
+  //     ★確かめようとタブに戻った時点では、必ず新しくなっています。
+  //
+  //   ★重ねて走らせないこと。戻るたびに何本も投げると、
+  //     行ったり来たりするだけで負荷になります。
+  useEffect(() => {
+    if (!userId) return;
+    let running = false;
+    const refresh = async () => {
+      if (document.visibilityState !== "visible") return;
+      if (running) return;
+      running = true;
+      try {
+        await fetchTeacherLinks();
+      } finally {
+        running = false;
+      }
+    };
+    document.addEventListener("visibilitychange", refresh);
+    window.addEventListener("focus", refresh);
+    return () => {
+      // ★必ず外すこと。外し忘れると、画面を移るたびに listener が積もります。
+      document.removeEventListener("visibilitychange", refresh);
+      window.removeEventListener("focus", refresh);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
+
   useEffect(() => {
     if (loading) return;
     const built = buildFormData(selectedDate, entries);
