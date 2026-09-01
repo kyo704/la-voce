@@ -80,6 +80,7 @@ import { canSeeBetaFeatures, canSeeTeacherFeatures, canSeeLineLink, canSeeStuden
 import { graceDaysLeft, GRACE_PERIOD_DAYS } from "@/lib/accountDeletion";
 import { representativeActivityKind, MULTI_ACTIVITY_LEGEND_NOTE } from "@/lib/activityPrecedence";
 import { recordedFieldsFor, seriesFor, dailyRows, ownRecordLabel, hasValue } from "@/lib/ownRecordFields";
+import { symptomsByLocation, dinnerToBedSummary, LOCATION_FOOTNOTE } from "@/lib/symptomLocations";
 import { buildLinkConsentRow, buildUnlinkPatch } from "@/lib/linkConsent";
 import { departingOwnerNotice, transferMailto, CLOSE_ORG_KEEP_LINE, CLOSE_ORG_DELETE_LINE } from "@/lib/orgClosure";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
@@ -6609,7 +6610,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         if (pB > 0 && gateAllows("symptom.cooccurrence", { days: totalDays, n: countA })) {
           const pBGivenA = countAB / countA;
           const lift = pBGivenA / pB;
-          if (lift >= 1.5) chains.push({ a, b, pBGivenA, pB, lift, countA });
+          // ★countAB（実際に起きた回数）も持たせます。受診用サマリーは
+          //   割合ではなく「12回中9回」の形で出すためです（Opus の裁定）。
+          if (lift >= 1.5) chains.push({ a, b, pBGivenA, pB, lift, countA, countAB });
         }
       });
     });
@@ -8181,6 +8184,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const { start, end } = clinicPeriodRange;
     const vals = Object.keys(entries).filter((d) => d >= start && d <= end).map((d) => entries[d].sleepHours).filter((v) => typeof v === "number");
     return vals.length ? roundTo1(vals.reduce((a, b) => a + b, 0) / vals.length) : null;
+  }, [entries, clinicPeriodRange]);
+  // ★受診用サマリー §1：感じた場所ごとに並べる（Opus の裁定・2026-09-01）。
+  //   ★原因の系統（呼吸器系…）で分けないこと。それは診断です。
+  //   ★「系」という字を画面に出さないこと。場所の言葉だけを使います。
+  const clinicSymptomsByLocation = useMemo(() => {
+    const { start, end } = clinicPeriodRange;
+    return symptomsByLocation(entries, start, end);
+  }, [entries, clinicPeriodRange]);
+  // ★受診用サマリー §4：夕食から就寝まで。★記録した時刻をそのまま出します。
+  //   逆流の分析（割合を出すもの）とは別です。あちらは主張、こちらは記録です。
+  //   ★病名の申告に関係なく、誰にでも出します。
+  const clinicDinnerToBed = useMemo(() => {
+    const { start, end } = clinicPeriodRange;
+    return dinnerToBedSummary(entries, start, end, computeTimeGapHours);
   }, [entries, clinicPeriodRange]);
   const clinicMedications = useMemo(() => {
     const { start, end } = clinicPeriodRange;
@@ -16343,17 +16360,54 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       {clinicWeeklyVoiceUsage.length > 0 && <>　1日あたりの平均発声時間：約{roundTo1(clinicWeeklyVoiceUsage.reduce((a, w) => a + w.hours, 0) / (clinicWeeklyVoiceUsage.length * 7))}時間</>}
                     </p>
 
-                    <h3 className="text-sm font-medium mb-1.5">症状の経過</h3>
-                    {clinicSymptomSummary.length > 0 ? (
-                      <div className="mb-4 space-y-1">
-                        {clinicSymptomSummary.map((s) => (
-                          <p key={s.symptom} className="text-xs" style={{ color: C.ink }}>
-                            {t(SYMPTOM_KEYS[s.symptom])}　{s.firstDate.slice(5)} 〜 {s.lastDate.slice(5)}（{s.count}日）
-                          </p>
+                    {/* ★§1 どこに、どれくらい。★感じた場所で並べます。
+                        原因の系統では分けません（それは診断です）。 */}
+                    <h3 className="text-sm font-medium mb-1.5">この期間で、どこに、どれくらい</h3>
+                    {clinicSymptomsByLocation.length > 0 ? (
+                      <div className="mb-2 space-y-2">
+                        {clinicSymptomsByLocation.map((g) => (
+                          <div key={g.location}>
+                            <p className="text-xs font-medium" style={{ color: C.ink }}>{g.location}</p>
+                            <p className="text-xs" style={{ color: C.ink }}>
+                              {g.items.map((it) => `${t(SYMPTOM_KEYS[it.symptom]) || it.symptom}${it.days}日`).join("　")}
+                            </p>
+                          </div>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-xs mb-4" style={{ color: C.inkSoft }}>この期間に記録された症状はありません。</p>
+                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>この期間に記録された症状はありません。</p>
+                    )}
+                    {clinicSymptomsByLocation.length > 0 && (
+                      <p className="text-xs mb-4" style={{ color: C.inkSoft }}>{LOCATION_FOOTNOTE}</p>
+                    )}
+
+                    {/* ★§2 一緒に起きていたこと。★条件を満たしたものだけが出ます
+                        （symptom.cooccurrence の表示ゲートを通ったものだけ）。 */}
+                    {symptomChainStats.length > 0 && (
+                      <>
+                        <h3 className="text-sm font-medium mb-1.5">一緒に起きていたこと</h3>
+                        <div className="mb-2 space-y-1">
+                          {symptomChainStats.map((c, i) => (
+                            <p key={i} className="text-xs" style={{ color: C.ink }}>
+                              {t(SYMPTOM_KEYS[c.a]) || c.a}があった日の翌日に{t(SYMPTOM_KEYS[c.b]) || c.b}　{c.countAB}回／{c.countA}回
+                            </p>
+                          ))}
+                        </div>
+                        <p className="text-xs mb-4" style={{ color: C.inkSoft }}>
+                          本人の記録から出た関係で、医学的な因果ではありません。
+                        </p>
+                      </>
+                    )}
+
+                    {/* ★§4 食事と就寝。★記録した時刻をそのまま出します。 */}
+                    {clinicDinnerToBed && (
+                      <>
+                        <h3 className="text-sm font-medium mb-1.5">食事と就寝</h3>
+                        <p className="text-xs mb-4" style={{ color: C.ink }}>
+                          夕食から就寝までの間隔　中央値 {clinicDinnerToBed.medianGapHours != null ? `${clinicDinnerToBed.medianGapHours.toFixed(1)}時間` : "—"}
+                          （{clinicDinnerToBed.days}日ぶんの記録から）
+                        </p>
+                      </>
                     )}
 
                     <h3 className="text-sm font-medium mb-1.5">声の使用量（週あたり）</h3>
