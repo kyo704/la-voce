@@ -31,7 +31,12 @@ const GONE = [
   ["VocalTracker.jsx", "components/VocalTracker.jsx"],
   ["feedback_route.js", "app/api/feedback/route.js"],
   ["lib/HealthInfo.jsx", "components/HealthInfo.jsx"],
-  ["lib/lib/healthInfoContent.js", "lib/healthInfoContent.js"]
+  ["lib/lib/healthInfoContent.js", "lib/healthInfoContent.js"],
+  // ★2026-09-01 に削除。どこからも import されていないのに、
+  //   entries の健康の列（服薬・気持ち・声のメモ）を丸ごと select していました。
+  //   使われていないものは、いつか使われます（今日2度その形の不具合を直しました）。
+  //   生きているのは app/admin/page.js のほうです。
+  ["components/AdminDashboard.jsx", "app/admin/page.js"]
 ];
 GONE.forEach(([stale, live]) => {
   assertTrue(!fs.existsSync(path.join(ROOT, stale)),
