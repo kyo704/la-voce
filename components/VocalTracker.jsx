@@ -9209,7 +9209,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const code = Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
     const supabase = createClient();
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-    const { error } = await supabase.from("teacher_invitations").insert({ code, teacher_id: userId, expires_at: expiresAt });
+    // ★どの教室への招待かを、発行時に入れます（2026-09-01）。
+    //   入れていなかったので、受け取った生徒は先生の memberships を
+    //   読んで教室を推測するしかなく、★RLS に阻まれて在籍が作れませんでした。
+    //   発行するのは先生なので、自分の教室のIDは当然に分かります。
+    const { error } = await supabase.from("teacher_invitations")
+      .insert({ code, teacher_id: userId, org_id: orgId, expires_at: expiresAt });
     if (error) {
       console.error("招待コードの発行に失敗しました:", error);
       setInviteError(`招待コードを発行できませんでした：${error.message || "原因不明"}`);
@@ -9303,31 +9308,36 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     await supabase.from("teacher_invitations").update({ used_at: new Date().toISOString(), used_by_student_id: userId }).eq("code", pendingInvitation.code);
     // 作業指示-教室プラン: この先生がownerである教室があれば、レッスン日程の運営面（在籍・担当）にも
     // 自動的に組み込む。健康データの共有範囲(share_scope)には一切影響しない、別の仕組み。
-    // ★これは「生徒として、先生の membership を読む」問い合わせです。
-    //   RLS で他人の行が読めなければ、★エラーではなく null が返ります。
-    //   2026-09-01 まで error を捨てていたので、読めなかったことに
-    //   誰も気づけませんでした。★生徒は先生とつながっているのに、
-    //   教室には在籍していない、という状態になります。
-    //   （退会の「ほかに人がいます」は在籍を数えるので、そこにも出ません）
-    const { data: ownerMembership, error: ownerError } = await supabase.from("memberships")
-      .select("org_id").eq("user_id", pendingInvitation.teacher_id).eq("role", "owner").maybeSingle();
-    if (ownerError) {
-      // ★つながり自体は成立しています。ここで止めないこと。
-      //   ただし黙って捨てないこと。教室に入れていない、という事実が残ります。
-      console.error("★先生の教室を確認できませんでした（在籍を作れていません）:", ownerError);
+    // ★在籍づくりは、サーバ側でやります（2026-09-01）。
+    //   これまでは、この画面から★先生の memberships を読んでいました。
+    //   memberships_select は「本人か、教室のオーナー・管理者」だけなので、
+    //   生徒には0行が返ります。★エラーではなく、ただの0行です。
+    //   そのため在籍は★一度も作られず、enrollments は全体で0行でした。
+    //   生徒の教室一覧・先生の名簿・担当・レッスンが、すべて空のままでした。
+    //
+    //   ★RLS をゆるめて生徒に入れさせる直し方は採りません。
+    //     教室のIDさえ知っていれば誰でも在籍できてしまいます。
+    //   ★権限の根拠は「いま有効な紐付けがあること」です。
+    try {
+      const res = await fetch("/api/enrollment/accept", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ code: pendingInvitation.code })
+      });
+      const enrollData = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        // ★つながり自体は成立しています。ここで止めないこと。
+        //   ただし黙って捨てないこと（それが今回の不具合の正体でした）。
+        console.error("★在籍を登録できませんでした:", enrollData.error || res.status);
+      } else if (enrollData.enrolled === false) {
+        console.warn("先生が教室を持っていないため、在籍は作られませんでした。");
+      }
+    } catch (e) {
+      console.error("★在籍の登録に失敗しました:", e);
     }
-    if (!ownerError && !ownerMembership) {
-      console.error(
-        "★先生の教室が見つかりませんでした（在籍を作れていません）。" +
-        "RLS で他人の memberships が読めない可能性があります。teacher_id=" + pendingInvitation.teacher_id
-      );
-    }
-    if (ownerMembership) {
-      const { error: enrollError } = await supabase.from("enrollments")
-        .upsert({ org_id: ownerMembership.org_id, student_id: userId, status: "active" }, { onConflict: "org_id,student_id" });
-      if (enrollError) console.error("★在籍を作れませんでした:", enrollError);
-      await supabase.from("assignments").insert({ org_id: ownerMembership.org_id, teacher_id: pendingInvitation.teacher_id, student_id: userId });
-    }
+    // ★担当（assignments）も、同じ道でサーバ側が作ります。
+    //   ここから入れようとしても、org_id を知る手段が無く、
+    //   assignments の RLS もオーナー・管理者向けなので通りません。
     setPendingInvitation(null);
     setInviteCodeInput("");
     setShareScopeDraft(DEFAULT_SHARE_SCOPE);
