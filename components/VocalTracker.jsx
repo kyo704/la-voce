@@ -7710,12 +7710,33 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
   // ---- lavoce-記録項目の再設計v2.md §3.7: 稽古ノート（タグ別の自動添付データ） ----
   // 「変わった気がしない」の横に、実は半音上がっているグラフを出すのがこの機能の肝。
+  // ★2026-09-01：隠す条件から、並べる順番へ。
+  //
+  //   これまでは、練習目標のタグに選んだものだけが見えていました。
+  //   選んでいない人には★1つも見えません。MPT を含む7つの指標が、
+  //   記録しているのに返ってこない状態でした。
+  //
+  //   ★練習目標は「何に集中するか」であって、
+  //     ★自分の記録を見てよいかの許可ではありません。
+  //   だから、データがあるものは全部出します。
+  //   選んだタグは★先頭に寄せます（順番で強調するだけ）。
   const practiceGoalMetrics = useMemo(() => {
-    const tags = profile.practice_goal_tags || [];
-    if (tags.length === 0) return [];
+    const chosen = profile.practice_goal_tags || [];
+    // ★選んだものが先、それ以外はあと。並べる順番だけの話です。
+    const tags = [
+      ...GOAL_TAGS.map((g) => g.key).filter((k) => chosen.includes(k)),
+      ...GOAL_TAGS.map((g) => g.key).filter((k) => !chosen.includes(k))
+    ];
     const dates28 = Object.keys(entries).sort().slice(-28);
     const metrics = [];
     tags.forEach((tag) => {
+      // ★CPPS は止めています（CPPS_ENABLED = false）。
+      //   ただし、止める前に記録された値があれば、それは記録なので出します。
+      //   ★記録が無い人に「準備中です」とは出しません。
+      if (tag === "articulation" && !CPPS_ENABLED) {
+        const hasHistory = dates28.some((d) => typeof entries[d].cppsValue === "number");
+        if (!hasHistory) return;
+      }
       if (tag === "soft_high") {
         const vals = dates28.map((d) => ({ date: d, midi: noteToMidi(entries[d].pianissimoHighNote) })).filter((x) => x.midi != null);
         if (vals.length >= 2) {
@@ -7803,7 +7824,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         metrics.push({ tag, label: (GOAL_TAGS.find((g) => g.key === tag) || {}).label, data: null, summary: null, notYetAvailable: true });
       }
     });
-    return metrics;
+    // ★「まだ記録が足りません」は、その人が選んだタグにだけ出します。
+    //   選んでいない7つすべてに出すと、空の札が並ぶだけの画面になります。
+    //   ★データがあるものは、選んでいなくても出します。
+    return metrics.filter((m) => (m.data && m.data.length > 0) || chosen.includes(m.tag));
   }, [profile.practice_goal_tags, entries, acwrSeries]);
   // ---- 稽古ノート 用データ ここまで ----
 
@@ -13247,7 +13271,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   )}
                 </div>
 
-                {profile.practice_goal && !editingPracticeGoal && (
+                {/* ★外側のゲートを外しました（2026-09-01）。
+                    以前は「練習目標を書いた人」にしか、この枠ごと見えませんでした。
+                    ★練習目標を書いていない人も、自分が記録した指標は見られます。
+                    練習目標は「何に集中するか」であって、
+                    ★自分の記録を見てよいかの許可ではありません。
+                    出すものが1つも無いときだけ、枠ごと出しません。 */}
+                {practiceGoalMetrics.length > 0 && !editingPracticeGoal && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <p className="text-sm font-medium mb-3">今週の振り返り</p>
                     {practiceGoalMetrics.map((m) => (
