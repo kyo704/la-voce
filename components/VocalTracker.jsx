@@ -78,6 +78,7 @@ import { canSeeBetaFeatures, canSeeTeacherFeatures, canSeeLineLink, canSeeStuden
   canSeeShobaiArticles, isShobaiArticle } from "@/lib/featureFlags";
 // 削除の猶予期間（A-4）。日数の計算はサーバーと同じものを使う。
 import { graceDaysLeft, GRACE_PERIOD_DAYS } from "@/lib/accountDeletion";
+import { representativeActivityKind, MULTI_ACTIVITY_LEGEND_NOTE } from "@/lib/activityPrecedence";
 import { buildLinkConsentRow, buildUnlinkPatch } from "@/lib/linkConsent";
 import { departingOwnerNotice, transferMailto, CLOSE_ORG_KEEP_LINE, CLOSE_ORG_DELETE_LINE } from "@/lib/orgClosure";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
@@ -1156,7 +1157,9 @@ function guessTodayActivityKind(date, entries) {
     const entry = entries[d];
     if (!entry) continue;
     if (new Date(d + "T00:00:00Z").getUTCDay() !== targetWeekday) continue;
-    const kind = (entry.activities || []).length === 0 && entry.recovery ? "休養" : (entry.activities || [])[0] && entry.activities[0].kind;
+    // ★以前は activities[0]（並び順の先頭）で決めていました。
+    //   並びは時刻順とはかぎらず、本番のある日が自主練習として数えられていました。
+    const kind = representativeActivityKind(entry, ACTIVITY_LOAD_WEIGHT);
     if (kind) counts[kind] = (counts[kind] || 0) + 1;
   }
   const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
@@ -2142,7 +2145,20 @@ function computeConditionFlags(y) {
 }
 // activities[] の中から「その日の主たる活動」（時間が最長のブロック）を導出する。
 // これは保存しない派生値であり、旧フィールド（後方互換用）を埋めるためだけに使う。
-function derivePrimaryActivityLegacy(activities) {
+// ★これは「保存のための判定」です。表示に使わないでください。
+//
+//   entries.activity_type に書く値を決めます。その列の意味は
+//   ★「その日いちばん長く続いた活動」です。
+//   「主たる活動」でも「いちばん負荷の大きい活動」でもありません。
+//
+//   ★表示で「その日を代表する活動」が要るときは、
+//     lib/activityPrecedence.js の representativeActivityKind を使ってください。
+//     あちらは発声負荷の重みで選びます（20分の本番が90分の自主練習に負けません）。
+//
+//   ★この関数の意味を変えないこと。変えると、これまでに保存した行と
+//     これから保存する行で、同じ列の意味が変わります。
+//     読む側からは見分けがつきません。
+function deriveActivityTypeForStorage(activities) {
   if (!activities || activities.length === 0) return null;
   return activities.reduce((a, b) => ((Number(b.minutes) || 0) >= (Number(a.minutes) || 0) ? b : a));
 }
@@ -2183,7 +2199,7 @@ async function writeEntryRow(supabase, row) {
 
 function entryToRow(userId, e) {
   const activities = e.activities || [];
-  const primary = derivePrimaryActivityLegacy(activities);
+  const primary = deriveActivityTypeForStorage(activities);
   const legacyRepertoire = activities
     .flatMap((a) => (a.items || []).map((it) => (it.repertoireName || "").trim()))
     .filter(Boolean)
@@ -5633,7 +5649,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       dinnerTime: y.dinnerTime,
       dinnerGap,
       dinnerTags: y.dinnerTags || [],
-      activityType: y.activityType,
+      activityType: representativeActivityKind(y, ACTIVITY_LOAD_WEIGHT) || y.activityType,
       weather: y.weather,
       // ★flagDinnerGap は時間を差し込むので、鍵だけでなく値も持ち回ります。
       flags: flags.map((f) => ({ flagKey: f.flagKey, hours: f.hours }))
@@ -6032,8 +6048,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         wakeNoteLabel: e.wakeNote || null,
         routineNoteLabel: e.routineNote || null,
         pianissimoNoteLabel: e.pianissimoHighNote || null,
-        activityType: e.activityType || null,
-        activityColor: ACTIVITY_CHART_COLORS[e.activityType] || C.line
+        // ★色は activity_type（旧列）から作らないこと。
+        //   あの列はいちばん長い活動しか残さないので、90分の自主練習のあとの
+        //   20分の本番が消えます。負荷の重みで選び直します。
+        activityType: representativeActivityKind(e, ACTIVITY_LOAD_WEIGHT) || e.activityType || null,
+        activityColor: ACTIVITY_CHART_COLORS[representativeActivityKind(e, ACTIVITY_LOAD_WEIGHT) || e.activityType] || C.line
       };
     });
   }, [filteredEntries, entries, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient]);
@@ -13264,7 +13283,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   )}
                   {monthEntries.map((date) => {
                     const e = entries[date];
-                    const ActIcon = (ACTIVITY_OPTIONS.find((a) => a.key === e.activityType) || {}).icon || Music2;
+                    const repKind = representativeActivityKind(e, ACTIVITY_LOAD_WEIGHT) || e.activityType;
+                    const ActIcon = (ACTIVITY_OPTIONS.find((a) => a.key === repKind) || {}).icon || Music2;
                     return (
                       <div key={date} className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                         {confirmDeleteDate === date ? (
@@ -13285,7 +13305,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               <div className="text-sm font-medium">{formatDateLabel(date, language)}</div>
                               <div className="flex items-center gap-1.5 text-xs mt-0.5 flex-wrap" style={{ color: C.inkSoft }}>
                                 <ActIcon size={12} />
-                                <span>{activityKindLabel(e.activityType, currentOccupation, language, t)}</span>
+                                <span>{activityKindLabel(repKind, currentOccupation, language, t)}</span>
                                 {entryHasActivityKind(e, "本番") && e.performanceQuality && <span>・{t("targetPerformance")} {levelDynamic(e.performanceQuality)}</span>}
                                 {e.location && <span>・{e.location}</span>}
                               </div>
@@ -13963,6 +13983,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ))}
                   </div>
                   <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("notePitchChartLegend")}</p>
+                  {/* ★色の決まりを、必ず書くこと（2026-09-01）。
+                      「決まりが間違っていた」と「決まりを説明していなかった」は
+                      別の問題です。色を直しても、説明が無ければ片方が残ります。 */}
+                  <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{MULTI_ACTIVITY_LEGEND_NOTE}</p>
                   <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
                     点線（pp最高音）は、平常値と比べてどれくらい変化しているかを「音域到達マップ」でお知らせします。
                   </p>

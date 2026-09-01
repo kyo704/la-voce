@@ -118,13 +118,13 @@ function assertNoThrow(fn, label) {
 // ---------------------------------------------------------------------------
 // 実装の読み込み
 // ---------------------------------------------------------------------------
-const { intOrNull, numOrNull, boolOrNull, weatherSourceOrNull, sumMacro, derivePrimaryActivityLegacy, migrateLegacyToActivities, fiveScaleToQuality10, migrateLegacyToVoiceEntries, deriveVoiceEntryRepresentatives, deriveLegacyVoiceFieldsFromEntries, rowToEntry, entryToRow } = loadFunctions([
+const { intOrNull, numOrNull, boolOrNull, weatherSourceOrNull, sumMacro, deriveActivityTypeForStorage, migrateLegacyToActivities, fiveScaleToQuality10, migrateLegacyToVoiceEntries, deriveVoiceEntryRepresentatives, deriveLegacyVoiceFieldsFromEntries, rowToEntry, entryToRow } = loadFunctions([
   "numOrNull",
   // ★entryToRow が呼ぶ新しいヘルパは、必ずここに足すこと（CLAUDE.md）。
   "boolOrNull",
   "weatherSourceOrNull",
   "sumMacro",
-  "derivePrimaryActivityLegacy",
+  "deriveActivityTypeForStorage",
   "migrateLegacyToActivities",
   "fiveScaleToQuality10",
   "migrateLegacyToVoiceEntries",
