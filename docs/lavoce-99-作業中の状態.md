@@ -49,7 +49,8 @@ supabase/migration_role_rank_no_self_promotion.sql  ★実行の確認が取れ�
                                                 （順位で見る規則。⑧が未確認）
 supabase/migration_org_member_names.sql         ★未実行（入れるまで名前は出ません）
 supabase/check_admin_can_demote_owner.sql       ★未実行（調べるだけ）
-supabase/check_owner_role_protection.sql        ★未実行（5場面・rollback します）
+supabase/check_owner_role_protection.sql        一部実行（4場面・rollback ずみ）
+                                                ★③④と「知らない役割」は未確認
 supabase/check_member_name_visibility.sql       ★未実行（調べるだけ）
 supabase/restore_g4t3_membership.sql            実行ずみ（試験のため戻した）
 supabase/URGENT_fix_owner_self_promotion.sql    実行ずみ
