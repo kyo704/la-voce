@@ -87,6 +87,7 @@ import { symptomsByLocation, dinnerToBedSummary, LOCATION_FOOTNOTE } from "@/lib
 import OrgEventList from "@/components/OrgEventList";
 import { countHeldLessons, heldCountLine } from "@/lib/lessonCounts";
 import { CONSENT_POLICY_VERSION } from "@/lib/consent";
+import { buildCalendarEvent } from "@/lib/calendarExport";
 import { buildLinkConsentRow, buildUnlinkPatch } from "@/lib/linkConsent";
 import { departingOwnerNotice, transferMailto, CLOSE_ORG_KEEP_LINE, CLOSE_ORG_DELETE_LINE, DEPARTING_PAYER_LINE } from "@/lib/orgClosure";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
@@ -2556,23 +2557,31 @@ function formatDateForGoogleCalendar(date) {
   // Googleカレンダーのテンプレート URLはUTC基準の "YYYYMMDDTHHMMSSZ" 形式を期待する。
   return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
 }
-function buildGoogleCalendarUrl(lesson, title) {
-  const start = new Date(lesson.scheduled_at);
-  const end = new Date(start.getTime() + (lesson.duration_minutes || 60) * 60000);
+// ★題名を受け取りません（2026-09-03・Opus の裁定 §6）。
+//   前は呼ぶ側が `レッスン（◯◯先生）` を渡していて、
+//   ★利用者の Google の予定表に先生のお名前が残っていました。
+//   ★details に lesson.note を入れていたのもやめます。
+//     メモには体調のことも、ほかの生徒さんのことも書けます。
+//   ★「入れないでください」ではなく、★入れられない形にします。
+function buildGoogleCalendarUrl(lesson, t) {
+  const ev = buildCalendarEvent(lesson, t);
   const params = new URLSearchParams({
     action: "TEMPLATE",
-    text: title,
-    dates: `${formatDateForGoogleCalendar(start)}/${formatDateForGoogleCalendar(end)}`,
-    details: lesson.note || ""
+    text: ev.title,
+    dates: `${formatDateForGoogleCalendar(ev.start)}/${formatDateForGoogleCalendar(ev.end)}`
   });
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
 function formatDateForICS(date) {
   return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
 }
-function downloadLessonICS(lesson, title) {
-  const start = new Date(lesson.scheduled_at);
-  const end = new Date(start.getTime() + (lesson.duration_minutes || 60) * 60000);
+// ★.ics も同じです。題名を受け取らず、メモも書きません。
+//   手元に落ちるファイルですが、そのまま Google や iCloud に取り込まれます。
+//   ★落ちる先が違うだけで、出ていくものは同じです。
+function downloadLessonICS(lesson, t) {
+  const ev = buildCalendarEvent(lesson, t);
+  const start = ev.start;
+  const end = ev.end;
   // §9: 外部カレンダーへの自動書き込み・双方向同期は作らない。1件だけの.icsダウンロードにとどめる。
   const ics = [
     "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Woolsong//Lesson//JA",
@@ -2581,8 +2590,7 @@ function downloadLessonICS(lesson, title) {
     `DTSTAMP:${formatDateForICS(new Date())}`,
     `DTSTART:${formatDateForICS(start)}`,
     `DTEND:${formatDateForICS(end)}`,
-    `SUMMARY:${title}`,
-    lesson.note ? `DESCRIPTION:${lesson.note.replace(/\n/g, "\\n")}` : "",
+    `SUMMARY:${ev.title}`,
     "END:VEVENT", "END:VCALENDAR"
   ].filter(Boolean).join("\r\n");
   const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
@@ -2594,12 +2602,13 @@ function downloadLessonICS(lesson, title) {
   URL.revokeObjectURL(url);
 }
 // レッスンの詳細に添える「カレンダーに追加」の小さなボタン群。
-function AddToCalendarButtons({ lesson, title, t }) {
+// ★title を受け取りません。呼ぶ側が名前を入れる口をなくします。
+function AddToCalendarButtons({ lesson, t }) {
   return (
     <div className="flex gap-2 mt-1">
-      <a href={buildGoogleCalendarUrl(lesson, title)} target="_blank" rel="noopener noreferrer"
+      <a href={buildGoogleCalendarUrl(lesson, t)} target="_blank" rel="noopener noreferrer"
         className="text-xs underline" style={{ color: C.curtain }}>{t ? t("addToGoogleCalendar") : "Googleカレンダーに追加"}</a>
-      <button type="button" onClick={() => downloadLessonICS(lesson, title)}
+      <button type="button" onClick={() => downloadLessonICS(lesson, t)}
         className="text-xs underline" style={{ color: C.curtain }}>{t ? t("downloadICS") : ".icsをダウンロード"}</button>
     </div>
   );
@@ -2654,16 +2663,16 @@ function LessonCalendar({ lessons, onDayClick, selectable, getTeacherName, getSt
           {lessonsByDate[selectedDetailDate].map((l) => {
             // ★退会した先生（teacher_id が null）でも、必ず何かを出す。
             //   空白にすると、消えたのか壊れたのかが分かりません。
-            const withWhom = (getTeacherName && teacherWithHonorific(l.teacher_id, getTeacherName))
-              || (getStudentName && l.student_id && `${getStudentName(l.student_id)}さん`) || "";
-            const title = `レッスン${withWhom ? `（${withWhom}）` : ""}`;
+            //   ★画面には、これまでどおりお名前を出します。変えていません。
+            //   ★変えたのはカレンダーへ渡すぶんだけです（lib/calendarExport.js）。
+            //     題名を組み立てていた行は、読む場所が無くなったので消しました。
             return (
               <div key={l.id} className="rounded-lg p-2 text-xs" style={{ background: C.paper }}>
                 <span className="ff-mono">{new Date(l.scheduled_at).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}</span>
                 {getTeacherName && <span>　{teacherWithHonorific(l.teacher_id, getTeacherName)}</span>}
                 {getStudentName && l.student_id && <span>　{getStudentName(l.student_id)}さん</span>}
                 {l.note && <span>　{l.note}</span>}
-                <AddToCalendarButtons lesson={l} title={title} t={t} />
+                <AddToCalendarButtons lesson={l} t={t} />
               </div>
             );
           })}
@@ -13258,7 +13267,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         {new Date(l.scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", weekday: "short", hour: "2-digit", minute: "2-digit" })}
                         <span>　{teacherWithHonorific(l.teacher_id, orgDisplayName)}</span>
                         {l.note ? `　${l.note}` : ""}
-                        <AddToCalendarButtons lesson={l} title={`レッスン（${teacherWithHonorific(l.teacher_id, orgDisplayName)}）`}t={t} />
+                        <AddToCalendarButtons lesson={l} t={t} />
                       </div>
                     ))}
                   </div>
