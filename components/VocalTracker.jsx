@@ -81,7 +81,10 @@ import { graceDaysLeft, GRACE_PERIOD_DAYS } from "@/lib/accountDeletion";
 import { representativeActivityKind, MULTI_ACTIVITY_LEGEND_NOTE } from "@/lib/activityPrecedence";
 import { recordedFieldsFor, seriesFor, dailyRows, ownRecordLabel, hasValue } from "@/lib/ownRecordFields";
 import { symptomsByLocation, dinnerToBedSummary, LOCATION_FOOTNOTE } from "@/lib/symptomLocations";
-import { orgEventState, movedMessage, WITHDRAWN_MESSAGE, DISMISS_LABEL, suggestActivityKind } from "@/lib/orgEventDisplay";
+// ★orgEventDisplay を直接は読みません。見せ方も判定も OrgEventList に集めました。
+//   ★suggestActivityKind は、ここに import されていましたが★一度も使われていません。
+//     「予定から活動の種類を先に選んでおく」は、まだ画面につながっていません。
+import OrgEventList from "@/components/OrgEventList";
 import { buildLinkConsentRow, buildUnlinkPatch } from "@/lib/linkConsent";
 import { departingOwnerNotice, transferMailto, CLOSE_ORG_KEEP_LINE, CLOSE_ORG_DELETE_LINE } from "@/lib/orgClosure";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
@@ -9868,25 +9871,67 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (error) { console.error("教室招待コードの発行に失敗しました:", error); return; }
     setGeneratedOrgInviteCode(code);
   }
+  // ★教室への招待は、サーバ側で扱います（2026-09-02）。
+  //   画面から org_invitations を読むと、招待された人には★0行が返ります
+  //   （まだその教室の誰でもないため）。コードは正しいのに
+  //   「見つかりませんでした」と出ていました。
+  //   在籍（enrollments）で 2026-09-01 に起きたのと同じ形です。
   async function handleLookupOrgInviteCode(codeInput) {
     setOrgInviteLookupError("");
     const code = (codeInput || "").trim().toUpperCase();
     if (!code) return;
-    const supabase = createClient();
-    const { data, error } = await supabase.from("org_invitations").select("*, org:organizations(name)").eq("code", code).maybeSingle();
-    if (error || !data) { setOrgInviteLookupError("コードが見つかりませんでした。"); return; }
-    if (data.used_at || new Date(data.expires_at) < new Date()) { setOrgInviteLookupError("このコードは使用済み、または期限切れです。"); return; }
-    setPendingOrgInvitation(data);
+    let res, data;
+    try {
+      res = await fetch("/api/org/invitation/lookup", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ code })
+      });
+      data = await res.json().catch(() => ({}));
+    } catch (e) {
+      console.error("招待を確認できませんでした:", e);
+      setOrgInviteLookupError("いま、つながりません。少ししてからお試しください。");
+      return;
+    }
+    if (!res.ok) {
+      // ★サーバが返した理由を、そのまま出します。
+      //   「もう一度お試しください」に丸めないこと。使用済みのコードは
+      //   何度押しても通りません。
+      setOrgInviteLookupError(data.error || "コードが見つかりませんでした。");
+      return;
+    }
+    setPendingOrgInvitation({
+      code: data.code,
+      org_id: data.orgId,
+      org: { name: data.orgName || "（名前のない教室）" },
+      alreadyMember: !!data.alreadyMember
+    });
   }
   async function handleAcceptOrgInvitation() {
     if (!pendingOrgInvitation) return;
-    const supabase = createClient();
-    const { error } = await supabase.from("memberships").insert({ org_id: pendingOrgInvitation.org_id, user_id: userId, role: "teacher" });
-    if (error) { setOrgInviteLookupError("参加に失敗しました。もう一度お試しください。"); return; }
-    await supabase.from("org_invitations").update({ used_at: new Date().toISOString(), used_by: userId }).eq("code", pendingOrgInvitation.code);
+    setOrgInviteLookupError("");
+    let res, data;
+    try {
+      res = await fetch("/api/org/invitation/accept", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ code: pendingOrgInvitation.code })
+      });
+      data = await res.json().catch(() => ({}));
+    } catch (e) {
+      console.error("教室に参加できませんでした:", e);
+      setOrgInviteLookupError("いま、つながりません。少ししてからお試しください。");
+      return;
+    }
+    if (!res.ok) {
+      console.error("教室に参加できませんでした:", data.error || res.status);
+      setOrgInviteLookupError(data.error || "参加できませんでした。");
+      return;
+    }
     setPendingOrgInvitation(null);
     setOrgInviteCodeInput("");
     fetchMyOrgs();
+    fetchMyOrgEvents();
   }
   // C-2: 役割の変更（最後のownerは降格・削除できない）
   async function handleChangeRole(orgId, membershipId, targetUserId, newRole) {
@@ -12895,6 +12940,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </div>
                 </div>
 
+                {/* ★教室の予定を、ここにも出します（2026-09-02）。
+                    ★ノートのカレンダーからは消しません。
+                      レッスンのタブは teacher_student_links か指導者ベータでしか
+                      出ません（hasLessonTab）。教室に在籍しているだけの人には
+                      ★このタブがありません。ここだけにすると、その人たちから
+                      予定が見えなくなります。
+                    ★実体は components/OrgEventList.jsx の1つだけです。
+                      2か所に出しますが、判定も見え方も1か所にあります。 */}
+                <OrgEventList events={myOrgEvents} joins={myEventJoins} todayISO={todayISO()}
+                  onToggleJoin={handleToggleEventJoin} onDismiss={handleDismissEventNotice} />
+
                 {myEnrollments.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                     <h3 className="ff-display italic text-lg mb-3">{t("myOrgsTitle")}</h3>
@@ -13560,51 +13616,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               <div className="space-y-5">
                 {/* ★教室の予定（2026-09-02）。★写しは作りません。
                     押すのは「出ます」の印だけで、記録には1行も書きません。
-                    ★取り下げも日付の変更も、ここに出ます。黙って消えません。 */}
-                {myOrgEvents.filter((ev) => orgEventState(ev, myEventJoins[ev.id], todayISO()) !== "hidden").length > 0 && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <p className="text-sm font-medium mb-2">教室の予定</p>
-                    <div className="space-y-2">
-                      {myOrgEvents.map((ev) => {
-                        const joined = myEventJoins[ev.id];
-                        const st = orgEventState(ev, joined, todayISO());
-                        if (st === "hidden") return null;
-                        return (
-                          <div key={ev.id} className="text-xs rounded-xl p-2.5"
-                            style={{ background: C.paper, opacity: st === "withdrawn" ? 0.6 : 1 }}>
-                            <div className="flex items-center gap-2">
-                              <span className="ff-mono" style={{ color: C.inkSoft }}>{ev.event_date.slice(5)}</span>
-                              <span style={{ color: C.ink }}>{ev.kind}</span>
-                              <span className="flex-1 truncate" style={{ color: C.inkSoft }}>{ev.title}</span>
-                              {st !== "withdrawn" && (
-                                <button type="button" onClick={() => handleToggleEventJoin(ev)}
-                                  className="px-2.5 py-1 rounded-full flex-shrink-0"
-                                  style={{ background: joined ? C.sage : C.card, color: joined ? "#FFFDF8" : C.inkSoft, border: `1px solid ${C.line}` }}>
-                                  {joined ? "出ます" : "出る"}
-                                </button>
-                              )}
-                            </div>
-                            {/* ★主語は予定。人ではありません。 */}
-                            {st === "withdrawn" && (
-                              <div className="flex items-center gap-2 mt-1.5">
-                                <span style={{ color: C.inkSoft }}>{WITHDRAWN_MESSAGE}</span>
-                                {joined && (
-                                  <button type="button" onClick={() => handleDismissEventNotice(ev)}
-                                    className="underline" style={{ color: C.inkSoft }}>{DISMISS_LABEL}</button>
-                                )}
-                              </div>
-                            )}
-                            {st === "moved" && (
-                              <p className="mt-1.5" style={{ color: C.inkSoft }}>
-                                {movedMessage(ev.previous_date.slice(5), ev.event_date.slice(5))}
-                              </p>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
+                    ★取り下げも日付の変更も、ここに出ます。黙って消えません。
+                    ★見せ方の実体は components/OrgEventList.jsx の1か所です。
+                      レッスンのタブにも同じものを出すので、書き写しません。 */}
+                <OrgEventList events={myOrgEvents} joins={myEventJoins} todayISO={todayISO()}
+                  onToggleJoin={handleToggleEventJoin} onDismiss={handleDismissEventNotice} />
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <div className="flex items-center justify-between mb-3">
                     <button onClick={() => setViewMonth((m) => shiftMonth(m, -1))}
