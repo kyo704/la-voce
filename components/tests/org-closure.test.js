@@ -40,6 +40,9 @@ function fakeClient(tables) {
         _filters: [],
         select() { return q; },
         eq(col, val) { q._filters.push([col, val]); rows = rows.filter((r) => r[col] === val); return q; },
+        // ★2026-09-02、listOperatedOrgs が .in を使うので足しました。
+        //   （役割を owner/admin の2つで絞るため）
+        in(col, vals) { q._filters.push([col, vals]); rows = rows.filter((r) => vals.includes(r[col])); return q; },
         maybeSingle() { return Promise.resolve({ data: rows[0] || null, error: null }); },
         delete() {
           return {
@@ -224,6 +227,54 @@ function fakeClient(tables) {
     const vt = readRaw("components", "VocalTracker.jsx");
     assertTrue(/api\/org\/close/.test(vt), "★画面から呼ばれている");
     assertTrue(/setDeleteStatus\("blocked"\)/.test(vt), "409 を受けて、止まった状態にする");
+  }
+
+  console.log("\n=== ★責任者（admin）の退会も止める（2026-09-02 の事故） ===");
+  {
+    // ★実際に起きたこと：+g4t3 は責任者で、教室を作った人でもなかった。
+    //   listOwnedOrgs は role='owner' で絞っていたので★0件を返し、
+    //   止める対象が無いまま退会が進み、ほかに3人いる教室から
+    //   責任者の membership だけが消えました。
+    const c = fakeClient({
+      memberships: [
+        { org_id: "org-1", user_id: ME, role: "admin" },      // ★私は責任者
+        { org_id: "org-1", user_id: OTHER, role: "owner" }
+      ],
+      enrollments: [{ org_id: "org-1", student_id: "stu-1", status: "active" }],
+      organizations: [{ id: "org-1", name: "音楽学校A", created_by: OTHER }]
+    });
+    const r = await oc.classifyOwnedOrgs(c, ME);
+    assertTrue(r.blocked.length === 1, "★責任者の退会でも、止める教室が見つかる");
+    assertTrue(r.blocked[0].otherCount === 2, "オーナーと生徒の2人が数えられている");
+    assertTrue(r.solo.length === 0, "solo には入らない");
+  }
+
+  console.log("\n=== ★閉じる権限は、広げていない ===");
+  {
+    // ★listOwnedOrgs は /api/org/close の権限の判定に使われています。
+    //   ここに責任者を足すと、★責任者が教室を消せるようになります。
+    //   答えている問いが違うので、同じ関数で兼ねません。
+    const c = fakeClient({
+      memberships: [{ org_id: "org-1", user_id: ME, role: "admin" }],
+      organizations: [{ id: "org-1", name: "音楽学校A", created_by: OTHER }]
+    });
+    const owned = await oc.listOwnedOrgs(c, ME);
+    assertTrue(owned.orgIds.length === 0,
+      "★責任者は「閉じてよい教室」を1つも持たない");
+    const operated = await oc.listOperatedOrgs(c, ME);
+    assertTrue(operated.orgIds.length === 1,
+      "★ですが「抜けると困る教室」は持っている");
+  }
+
+  console.log("\n=== 作りかけの教室も、放り出さない ===");
+  {
+    // membership の作成だけ失敗した教室（created_by はある）
+    const c = fakeClient({
+      memberships: [],
+      organizations: [{ id: "org-x", name: "作りかけ", created_by: ME }]
+    });
+    const r = await oc.listOperatedOrgs(c, ME);
+    assertTrue(r.orgIds.includes("org-x"), "★created_by からも拾う");
   }
 
   console.log("\n=== 教室を閉じても、記録は残る（文言） ===");
