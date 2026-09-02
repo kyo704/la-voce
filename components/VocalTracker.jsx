@@ -7468,6 +7468,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (name) return teacher.school ? `${name}（${teacher.school}）` : name;
     return "名前未設定の先生";
   }
+  // ★名前が分からないときに出す言葉。
+  //   「名前未設定」と言い切らないこと。こちらから読めていないだけで、
+  //   ★本人は名前を付けているかもしれません（profiles は本人の行しか
+  //   読めない設定なので、他人の名前は読めない可能性があります）。
+  const NAME_UNKNOWN_LABEL = "名前を読み込めませんでした";
   // ---- レッスンの「立場」 ----
   // ★1人が先生でもあり生徒でもある、は正当な想定（自分も誰かに習っている先生）。
   //   以前は「教える側のタブ」と「習う側のタブ」の出現条件が独立していたので、
@@ -9846,7 +9851,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     (enrollments || []).forEach((e) => ids.add(e.student_id));
     (assignments || []).forEach((a) => { ids.add(a.teacher_id); ids.add(a.student_id); });
     if (ids.size > 0) {
-      const { data: profilesData } = await supabase.from("profiles").select("id, display_name, vocal_profession").in("id", Array.from(ids));
+      const { data: profilesData, error: profilesError } = await supabase.from("profiles").select("id, display_name, vocal_profession").in("id", Array.from(ids));
+      // ★黙って捨てないこと。0行でも error は null なので、
+      //   「読めなかった」と「名前が無い」は、ここでは区別できません。
+      //   区別できないことを、せめて記録に残します。
+      if (profilesError) console.error("メンバーの名前を読めませんでした:", profilesError);
+      else if (!profilesData || profilesData.length < ids.size) {
+        console.warn(`★名前を読めた人数が足りません: ${(profilesData || []).length}/${ids.size}（profiles は本人の行しか読めない設定かもしれません）`);
+      }
       if (profilesData) {
         const map = {};
         profilesData.forEach((p) => { map[p.id] = { displayName: p.display_name || "", vocalProfession: p.vocal_profession }; });
@@ -9859,7 +9871,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (!userId) return DEPARTED_TEACHER_LABEL;
     const p = orgProfileNames[userId];
     if (p && p.displayName) return p.displayName;
-    return `${String(userId).slice(0, 8)}…`;
+    // ★内部のIDを画面に出さないこと（2026-09-02）。
+    //   前は `${userId.slice(0,8)}…` を出していて、メンバー欄に
+    //   「53ef27ed…」と表示されていました。読む人には意味が無く、
+    //   ★名前が無いのか読めていないのかも分かりません。
+    //   どちらの場合も、言えるのは「名前が分からない」ことだけです。
+    return NAME_UNKNOWN_LABEL;
   }
   // C-1: 先生を教室に招待する。招待コードの画面には必ず教室名を表示すること。
   async function handleGenerateOrgInvite(orgId) {
