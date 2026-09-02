@@ -20,7 +20,7 @@ const { readRaw } = require("./_source");
 let passCount = 0, failCount = 0;
 function assertTrue(c, label) { if (c) { console.log(`  ✓ ${label}`); passCount++; } else { console.log(`  ✗ ${label}`); failCount++; } }
 
-const sql = readRaw("supabase", "migration_protect_owner_role.sql");
+const sql = readRaw("supabase", "migration_fix_memberships_update_policy.sql");
 const check = readRaw("supabase", "check_owner_role_protection.sql");
 
 console.log("=== ★RESTRICTIVE であること ===");
@@ -54,14 +54,20 @@ console.log("\n=== ① オーナーの行は本人だけ ===");
     "★『オーナーか責任者なら誰でも』では守っていない");
 }
 
-console.log("\n=== ② owner / admin を書けるのはオーナーだけ ===");
+console.log("\n=== ② 役割の書き分け（2026-09-02 の裁定に更新） ===");
 {
-  assertTrue(/role not in \('owner', 'admin'\)/.test(sql), "owner / admin の書き込みを見ている");
-  assertTrue(/public\.is_org_owner\(auth\.uid\(\), org_id\)/.test(sql),
-    "★オーナーかどうかで判定する（責任者を含めない）");
-  assertTrue(/create or replace function public\.is_org_owner\(/.test(sql),
-    "is_org_owner を定義している");
-  assertTrue(/and m\.role = 'owner'/.test(sql), "★admin を混ぜていない");
+  // ★前の版は「owner も admin もオーナーだけが書ける」でした。
+  //   裁定が変わり、いまはこうです。
+  //     ・owner は★誰も書けない（UPDATE では。bootstrap のときだけ）
+  //     ・admin はオーナー★または責任者が書ける（ふつうの教室運営のため）
+  assertTrue(/role <> 'owner'/.test(sql), "★owner は書けない");
+  assertTrue(/role <> 'admin' or public\.is_org_owner_or_admin\(auth\.uid\(\), org_id\)/.test(sql),
+    "admin を書けるのはオーナーか責任者");
+  // ★オーナーの行を守るのは、役割ではなく user_id で見ていること
+  assertTrue(/role <> 'owner' or user_id = auth\.uid\(\)/.test(sql),
+    "★オーナーの行は本人だけ（共同オーナー同士も止まる）");
+  assertTrue(!/is_org_owner\(auth\.uid\(\), org_id\)\s*\n\s*\);/.test(sql),
+    "★前の版の判定が残っていない");
 }
 
 console.log("\n=== ③④ 降りる道と、最初の1人を塞がない ===");
@@ -78,16 +84,47 @@ console.log("\n=== ★削除も塞ぐ ===");
     "★オーナーの行を消せるのも本人だけ");
 }
 
-console.log("\n=== ★5つの場面が、確認用SQLに揃っている ===");
+console.log("\n=== ★正しい操作は通ること（締めすぎの防止） ===");
+{
+  // ★止めていたのは、足したポリシーではありません。効きすぎた PERMISSIVE です。
+  //   RESTRICTIVE は AND なので、そもそも何も許せません。
+  assertTrue(/drop policy if exists "memberships_update_self_only"/.test(sql),
+    "★効きすぎていた PERMISSIVE を置き換えている");
+  assertTrue(/create policy "memberships_update_allowed"[\s\S]{0,300}is_org_owner_or_admin/.test(sql),
+    "★オーナー・責任者が、他人の行に触れる道がある");
+  assertTrue(/role <> 'admin' or public\.is_org_owner_or_admin/.test(sql),
+    "★admin を書けるのはオーナーか責任者");
+  // 消す前に控えを取らせている
+  const dropAt = sql.indexOf('drop policy if exists "memberships_update_self_only"');
+  const selectAt = sql.indexOf("from pg_policies");
+  assertTrue(selectAt > -1 && selectAt < dropAt,
+    "★消す前に、本文を控える select がある（repo に無いポリシーのため）");
+}
+
+console.log("\n=== ★owner は UPDATE では書けない ===");
+{
+  assertTrue(/with check \(\s*\n\s*--[^\n]*\n\s*role <> 'owner'/.test(sql),
+    "★UPDATE で owner を書く道が閉じている");
+  // bootstrap だけは owner で入れる
+  assertTrue(/and role = 'owner'\s*\n\s*and exists \(select 1 from public\.organizations/.test(sql),
+    "★最初の1人だけ owner で入れる");
+  assertTrue(!/role not in \('owner', 'admin'\)\s*\n\s*or public\.is_org_owner\(auth\.uid\(\), org_id\)\s*\n\s*\);/.test(sql),
+    "★前の版（オーナーなら owner を書ける）が残っていない");
+}
+
+console.log("\n=== ★8つの場面が、確認用SQLに揃っている ===");
 {
   [
     ["格上げできてしまった行", "① 責任者が自分を owner に"],
     ["降格できてしまった行", "② 責任者がオーナーを降格"],
     ["AがBを降格できてしまった行", "③ ★共同オーナー同士（Opus が見つけた場面）"],
     ["自分で降りられた行", "④ オーナーが自分で降りる"],
-    ["最初の1人として入れた行", "⑤ bootstrap"]
+    ["最初の1人として入れた行", "⑤ bootstrap"],
+    ["責任者にできた行", "⑥ ★オーナーが講師を責任者にする（通ること）"],
+    ["講師に戻せた行", "⑦ ★責任者を講師に戻す（通ること）"],
+    ["自分を責任者にできてしまった行", "⑧ 講師が自分を責任者に（止まること）"]
   ].forEach(([needle, label]) => assertTrue(check.includes(needle), label));
-  assertTrue((check.match(/rollback;/g) || []).length >= 5, "★どの場面も rollback する");
+  assertTrue((check.match(/rollback;/g) || []).length >= 8, "★どの場面も rollback する");
   assertTrue(!/service_role/.test(check) || /service_role は RLS を素通り/.test(check),
     "service_role では確かめられないと書いてある");
 }

@@ -108,10 +108,58 @@ returning id as "★最初の1人として入れた行（★1行であること�
 rollback;
 
 -- ---------------------------------------------------------------------------
--- ⑥ 読み方
+-- ⑥ ★オーナーが、講師を「教室の責任者」にする → ★通らなければいけない
 --
---   ①②③ … 0行 なら守れています。1行返ったら★穴が開いています。
---   ④⑤   … 1行 でなければいけません。0行なら★締めすぎです。
+--   ★2026-09-02、ここが通らないことが分かって作り直しました。
+--     止めていたのは memberships_update_self_only（本番に手で当てられたもの）で、
+--     ★私が入れた RESTRICTIVE ではありません。
+--     RESTRICTIVE は AND なので、そもそも★何も許せません。
+-- ---------------------------------------------------------------------------
+begin;
+select set_config('request.jwt.claims',
+  '{"sub":"<オーナーA>","role":"authenticated"}', true);
+set local role authenticated;
+
+update public.memberships set role = 'admin'
+ where org_id = '<教室>' and user_id = '<講師>'
+returning id as "★責任者にできた行（★1行であること）", role;
+rollback;
+
+-- ---------------------------------------------------------------------------
+-- ⑦ ★責任者を、講師に戻す → ★通らなければいけない
+-- ---------------------------------------------------------------------------
+begin;
+select set_config('request.jwt.claims',
+  '{"sub":"<オーナーA>","role":"authenticated"}', true);
+set local role authenticated;
+
+update public.memberships set role = 'teacher'
+ where org_id = '<教室>' and user_id = '<責任者>'
+returning id as "★講師に戻せた行（★1行であること）", role;
+rollback;
+
+-- ---------------------------------------------------------------------------
+-- ⑧ ★講師が、自分を責任者にする → 通ってはいけない
+-- ---------------------------------------------------------------------------
+begin;
+select set_config('request.jwt.claims',
+  '{"sub":"<講師>","role":"authenticated"}', true);
+set local role authenticated;
+
+update public.memberships set role = 'admin'
+ where org_id = '<教室>' and user_id = auth.uid()
+returning id as "★自分を責任者にできてしまった行（0行であること）", role;
+rollback;
+
+-- ---------------------------------------------------------------------------
+-- ⑨ 読み方
+--
+--   ①②③⑧ … 0行 なら守れています。1行返ったら★穴が開いています。
+--   ④⑤⑥⑦ … 1行 でなければいけません。0行なら★締めすぎです。
+--
+--   ★⑥⑦は 2026-09-02 に足しました。①〜⑤だけ見て「守れている」と
+--     済ませたために、★オーナーが責任者を任命できない状態を
+--     見落としました。止まったことだけを数えると、これが起きます。
 --
 --   ★①〜③が通ってしまう場合、まず RESTRICTIVE が入っているかを見ます。
 --     PERMISSIVE のままだと、OR で足されるだけで★何も禁止できません。
