@@ -7481,6 +7481,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★本人は名前を付けているかもしれません（profiles は本人の行しか
   //   読めない設定なので、他人の名前は読めない可能性があります）。
   const NAME_UNKNOWN_LABEL = "名前を読み込めませんでした";
+  // ★表示名は、同じ教室の人に見えます（2026-09-02）。
+  //   get_org_member_names を入れたことで、教室のメンバー欄に
+  //   ★本名めいた名前がそのまま出るようになりました。
+  //   入れる前に、そのことを伝えておきます。あとから知らせても遅いので。
+  //   ★脅かす書き方をしないこと。事実と、避けたほうがよいものだけ書きます。
+  //   ★とくに未成年の利用者に効きます。生年月日入りの名前は珍しくありません。
+  const DISPLAY_NAME_CAUTION =
+    "この名前は、同じ教室のメンバーにも表示されます。生年月日や住んでいる場所など、知られたくないことが分かる名前は避けてください。";
   // ---- レッスンの「立場」 ----
   // ★1人が先生でもあり生徒でもある、は正当な想定（自分も誰かに習っている先生）。
   //   以前は「教える側のタブ」と「習う側のタブ」の出現条件が独立していたので、
@@ -9878,18 +9886,34 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     (enrollments || []).forEach((e) => ids.add(e.student_id));
     (assignments || []).forEach((a) => { ids.add(a.teacher_id); ids.add(a.student_id); });
     if (ids.size > 0) {
-      const { data: profilesData, error: profilesError } = await supabase.from("profiles").select("id, display_name, vocal_profession").in("id", Array.from(ids));
-      // ★黙って捨てないこと。0行でも error は null なので、
-      //   「読めなかった」と「名前が無い」は、ここでは区別できません。
-      //   区別できないことを、せめて記録に残します。
-      if (profilesError) console.error("メンバーの名前を読めませんでした:", profilesError);
-      else if (!profilesData || profilesData.length < ids.size) {
-        console.warn(`★名前を読めた人数が足りません: ${(profilesData || []).length}/${ids.size}（profiles は本人の行しか読めない設定かもしれません）`);
+      // ★名前は get_org_member_names から取ります（2026-09-02）。
+      //   profiles を直接読むと、他人の行は1行も返りません
+      //   （SELECT ポリシーが本人の行だけのため）。実際に
+      //   「★名前を読めた人数が足りません: 2/3」が出ていました。
+      //   ★profiles のポリシーはゆるめません。同じ行に allergies・
+      //     regular_medications・周期・is_under_18 が入っていて、
+      //     ★行が読めれば全列が読めます。
+      //   ★関数は display_name しか返しません。
+      //     vocal_profession は取るのをやめました。
+      //     orgProfileNames に入れてはいましたが、★どこからも読んでいません。
+      const { data: names, error: namesError } = await supabase
+        .rpc("get_org_member_names", { p_org_id: orgId });
+      if (namesError) {
+        // ★黙って捨てないこと。移行が未実行なら、ここに来ます。
+        console.warn(
+          "メンバーの名前を取得できませんでした。supabase/migration_org_member_names.sql を実行してください:",
+          namesError.message || namesError
+        );
       }
-      if (profilesData) {
+      if (names) {
         const map = {};
-        profilesData.forEach((p) => { map[p.id] = { displayName: p.display_name || "", vocalProfession: p.vocal_profession }; });
+        names.forEach((n) => { map[n.user_id] = { displayName: n.display_name || "" }; });
         setOrgProfileNames((prev) => ({ ...prev, ...map }));
+        if (names.length < ids.size) {
+          // ★足りないときは、名前が無い人が居るということです
+          //   （profiles の行そのものが無い場合も含みます）。
+          console.warn(`名前を返せた人数: ${names.length}/${ids.size}`);
+        }
       }
     }
   }
@@ -13021,6 +13045,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
                       先生・生徒としてつながった相手に表示される名前です。先生の場合、生徒のレッスンカレンダーにこの名前が表示されます。空欄のままでも構いません（その場合は職業名などで代替表示されます）。
                     </p>
+                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{DISPLAY_NAME_CAUTION}</p>
                     <input type="text" defaultValue={profile.display_name} maxLength={30}
                       onBlur={(e) => { if (e.target.value !== profile.display_name) handleSaveDisplayName(e.target.value); }}
                       placeholder="例：やまだ先生" className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
@@ -13176,6 +13201,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
                       先生・生徒としてつながった相手に表示される名前です。先生の場合、生徒のレッスンカレンダーにこの名前が表示されます。空欄のままでも構いません（その場合は職業名などで代替表示されます）。
                     </p>
+                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{DISPLAY_NAME_CAUTION}</p>
                     <input type="text" defaultValue={profile.display_name} maxLength={30}
                       onBlur={(e) => { if (e.target.value !== profile.display_name) handleSaveDisplayName(e.target.value); }}
                       placeholder="例：やまだ先生" className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
