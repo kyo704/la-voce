@@ -85,6 +85,7 @@ import { symptomsByLocation, dinnerToBedSummary, LOCATION_FOOTNOTE } from "@/lib
 //   ★suggestActivityKind は、ここに import されていましたが★一度も使われていません。
 //     「予定から活動の種類を先に選んでおく」は、まだ画面につながっていません。
 import OrgEventList from "@/components/OrgEventList";
+import { countHeldLessons, heldCountLine } from "@/lib/lessonCounts";
 import { buildLinkConsentRow, buildUnlinkPatch } from "@/lib/linkConsent";
 import { departingOwnerNotice, transferMailto, CLOSE_ORG_KEEP_LINE, CLOSE_ORG_DELETE_LINE, DEPARTING_PAYER_LINE } from "@/lib/orgClosure";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
@@ -9642,6 +9643,30 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const { data } = await supabase.from("teacher_notes").select("body").eq("link_id", linkId).maybeSingle();
     setTeacherNoteDraft(data ? data.body : "");
   }
+  // ★レッスンを実施したかどうかを記録する（2026-09-02）。
+  //   出どころ：docs/lavoce-判断のまとめ-20260902.md §1（会話の裁定）
+  //   ★数えるだけです。金額は1円も扱いません。
+  //   ★理由は聞きません（欠席理由は要配慮個人情報）。
+  //   ★もう一度押すと未回答に戻せます。間違えて触ったまま直せない、を作らない。
+  async function handleSetLessonHeld(lessonId, nextHeld, linkId) {
+    const supabase = createClient();
+    // ★.select() を付けて、何行変わったかを見ます。
+    //   RLS で弾かれた更新は★エラーになりません。0行が変わって error は null です。
+    //   lessons を書き換えられるのは先生だけ（2026-09-02 のポリシー）。
+    const { data, error } = await supabase.from("lessons")
+      .update({ held: nextHeld })
+      .eq("id", lessonId)
+      .select("id");
+    if (error) {
+      console.error("実施の記録を保存できませんでした:", error);
+      return;
+    }
+    if (!data || data.length === 0) {
+      console.error("★実施の記録が0行でした（権限が足りない可能性があります）:", { lessonId });
+      return;
+    }
+    fetchLessonsForLink(linkId);
+  }
   async function handleSaveTeacherNote(linkId, body) {
     setTeacherNoteSaveStatus("saving");
     const supabase = createClient();
@@ -13333,6 +13358,57 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           ))}
                         </div>
                       )}
+                      {/* ★終わったレッスンに、実施したかを記録します（2026-09-02）。
+                          出どころ：docs/lavoce-判断のまとめ-20260902.md §1
+                          ★数えるだけ。金額は1円も扱いません。
+                          ★理由は聞きません（欠席理由は要配慮個人情報。
+                            教室運営の範囲とカレンダー書き出し.md §4-3）。
+                          ★2択です。「欠席」という値は作りません。
+                            作ると、そこが理由の入口になります。 */}
+                      {(() => {
+                        const past = studentLessons.filter((l) => new Date(l.scheduled_at) < new Date());
+                        if (past.length === 0) return null;
+                        const now = new Date();
+                        const counts = countHeldLessons(studentLessons,
+                          { year: now.getFullYear(), month: now.getMonth() + 1 });
+                        return (
+                          <div className="my-3">
+                            <p className="text-xs font-medium mb-1.5">終わったレッスン</p>
+                            {/* ★未回答の数も一緒に出します。「3回」だけだと、
+                                3回で全部なのか、10件のうち3件しか答えていないのかが
+                                分かりません（lib/lessonCounts.js の注記）。 */}
+                            <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                              今月：{heldCountLine(counts)}
+                            </p>
+                            <div className="space-y-1.5">
+                              {past.slice(-8).reverse().map((l) => (
+                                <div key={l.id} className="rounded-lg p-2 flex items-center gap-2 text-xs"
+                                  style={{ background: C.paper }}>
+                                  <span className="ff-mono" style={{ color: C.inkSoft }}>
+                                    {new Date(l.scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric" })}
+                                  </span>
+                                  <span className="flex-1" />
+                                  {[{ v: true, label: "実施した" }, { v: false, label: "しなかった" }].map(({ v, label }) => {
+                                    const on = l.held === v;
+                                    return (
+                                      <button key={String(v)} type="button"
+                                        onClick={() => handleSetLessonHeld(l.id, on ? null : v, link.id)}
+                                        className="px-2.5 py-1 rounded-full flex-shrink-0"
+                                        style={{
+                                          background: on ? C.sage : C.card,
+                                          color: on ? "#FFFDF8" : C.inkSoft,
+                                          border: `1px solid ${C.line}`
+                                        }}>
+                                        {label}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })()}
                       <div className="flex gap-1.5">
                         <input type="date" value={newLessonDate} onChange={(e) => setNewLessonDate(e.target.value)}
                           className="rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.paper }} />
