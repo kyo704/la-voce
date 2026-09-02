@@ -42,15 +42,30 @@ supabase/migration_drop_teacher_entries_policy.sql    実行済み・確認ず�
                                                 （見える生徒の記録 1 → 0）
 supabase/migration_org_events.sql               実行済み（実機で4段階とも通過）
 supabase/migration_backfill_orphan_org_memberships.sql  ★未実行
-supabase/migration_protect_owner_role.sql       ★実行の確認が取れていない
-                                                （報告のポリシー名が違うため）
+supabase/migration_protect_owner_role.sql       実行ずみ
+supabase/migration_fix_memberships_update_policy.sql  実行ずみ・2件確認
+                                                （⑥通る／②止まる。残り6件は未確認）
 supabase/migration_org_member_names.sql         ★未実行（入れるまで名前は出ません）
 supabase/check_admin_can_demote_owner.sql       ★未実行（調べるだけ）
 supabase/check_owner_role_protection.sql        ★未実行（5場面・rollback します）
 supabase/check_member_name_visibility.sql       ★未実行（調べるだけ）
 ```
 
-★`migration_protect_owner_role.sql` が入ったかどうかが、はっきりしません。
+★役割まわりは、2026-09-02 に決着しました（下は経緯の記録です）。
+　止めていたのは `memberships_update_self_only`（手で当てられたもの）で、
+　★私が入れた RESTRICTIVE ではありませんでした。
+　RESTRICTIVE は AND なので、そもそも何も「許す」ことができません。
+　★この1本で「攻撃が止まった」と「任命できない」が同時に説明できます。
+　　つまり権限の昇格は DB では起きておらず、★危なかったのは画面だけでした。
+
+★残り6場面は、まだ確かめていません。とくに⑤（最初の1人が教室を作れるか）です。
+　最後の移行で INSERT のポリシーを書き換えているため、
+　★ここが壊れていると誰も新しい教室を作れません。
+　「止まったこと」だけを数えると、この種の壊れ方は見つかりません。
+　実際、①〜⑤だけを見て⑥（任命できない）を一度見落としました。
+　→ supabase/check_owner_role_protection.sql（8場面・すべて rollback）
+
+（以下、経緯）
 実地で「責任者がオーナーの役割を変えられなかった」ことは確かめられましたが、
 報告に出たポリシー名 `memberships_update_self_only` は★私が書いたものではありません
 （私の3本は memberships_restrict_… です）。
