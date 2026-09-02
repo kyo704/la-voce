@@ -4239,6 +4239,20 @@ function OnboardingFlow({ existingUser, onComplete, t }) {
             <p className="text-xs mb-4" style={{ color: C.inkSoft }}>
               同意はいつでも「もっと ＞ 設定」から撤回できます。撤回すると新しい記録の保存が制限されます（既存データの書き出し・削除は同意状況に関わらずいつでも可能です）。
             </p>
+            {/* ★プライバシーポリシーと利用規約へのリンク（2026-09-03・§3）。
+                ★これまで、この画面には href が1つもありませんでした。
+                  9人のテスターは、規約を一度も示されずに同意しています。
+                ★チェックボックス②（規約への同意）とは別のものです。
+                  あちらは purpose key と本文のハッシュが要り、B-3／B-4 待ちです。
+                  ★リンクを出すことは、それを待ちません。読む道が無いほうが問題です。
+                ★別のタブで開きます。同意の途中で、この画面を失わせないため。 */}
+            <p className="text-xs mb-4">
+              <a href="/legal/privacy" target="_blank" rel="noopener noreferrer"
+                className="underline" style={{ color: C.curtain }}>プライバシーポリシー</a>
+              <span style={{ color: C.inkSoft }}>　／　</span>
+              <a href="/legal/terms" target="_blank" rel="noopener noreferrer"
+                className="underline" style={{ color: C.curtain }}>利用規約</a>
+            </p>
             <button type="button"
               onClick={() => { if (existingUser) { handleFinish(); } else { setStep(1); } }}
               disabled={saving}
