@@ -4965,6 +4965,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // つながっている先生の名前（teacher_id -> {display_name, school}）
   const [myTeacherNames, setMyTeacherNames] = useState({});
   const [myStudentLinks, setMyStudentLinks] = useState([]); // 自分が「先生」として見られる生徒たち
+  // ★在籍（教室に入っていること）。2026-09-02 に、ここへ移しました。
+  //   ★canLearnLessons が使うためです。あちらは 7546 行あたりで、
+  //     宣言が下（9816）にあると★実行時に ReferenceError になります
+  //     （const は巻き上がらない）。next build は通ってしまいます。
+  //     CLAUDE.md にある optionalFields の事故と、同じ形です。
+  const [myEnrollments, setMyEnrollments] = useState([]); // 生徒として在籍している教室一覧
   const [myTeacherLinks, setMyTeacherLinks] = useState([]); // 自分が「生徒」としてつながっている先生たち
   // ★生徒の記録を持つ入れ物は、2026-09-01 に削除しました。
   //   先生の画面に、生徒の記録の中身を出さないためです。
@@ -7543,8 +7549,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   生徒の画面に既に「担当の先生」（assignedTeacherLabel）があり、
   //   同じ語が両側で逆向きの意味になるため避けた。行為で言い分ければ迷わない。
   const canTeachLessons = canSeeTeacherFeatures(profile, { hasStudentLinks: myStudentLinks.length > 0 });
-  const canLearnLessons = canSeeTeacherFeatures(profile, { hasTeacherLinks: myTeacherLinks.length > 0 })
-    && (myAllLessons.length > 0 || myTeacherLinks.length > 0 || canSeeBetaFeatures(profile));
+  // ★在籍しているだけの生徒にも、レッスンのタブを出します（2026-09-02）。
+  //   ★これまで、この条件は teacher_student_links と指導者ベータしか見て
+  //     いませんでした。ところが「所属している教室」を出す唯一の画面が
+  //     ★このタブの中です。つまり、教室に在籍しているのに
+  //     ★その教室をどこからも見られない人が生まれます。
+  //   ★2つある条件の★両方に足すこと。前half（canSeeTeacherFeatures）は
+  //     ベータ・先生とのつながり・生徒とのつながりしか見ないので、
+  //     後half だけに足しても、在籍だけの人は通りません。
+  //   ★これは teacher_student_links と enrollments の使い分けを決めたもの
+  //     ではありません（その判断は保留中）。★数え忘れを直しただけです。
+  const isEnrolledInOrg = myEnrollments.length > 0;
+  const canLearnLessons =
+    (canSeeTeacherFeatures(profile, { hasTeacherLinks: myTeacherLinks.length > 0 }) || isEnrolledInOrg)
+    && (myAllLessons.length > 0 || myTeacherLinks.length > 0 || isEnrolledInOrg || canSeeBetaFeatures(profile));
   const hasLessonTab = canTeachLessons || canLearnLessons;
   // ---- 周期の記録（周期記録の設計.md §4・§5） ----
   // ★日数は1つも保存しない。すべて開始日から導出する。
@@ -9813,7 +9831,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const joined = new Set(mine.map((m) => m.org_id));
     setMyOrphanOrgs((created || []).filter((o) => !joined.has(o.id)));
   }
-  const [myEnrollments, setMyEnrollments] = useState([]); // 生徒として在籍している教室一覧
   const [myAssignedTeachers, setMyAssignedTeachers] = useState({}); // orgId -> 担当講師のuserId配列
   // 作業指示-教室プラン D-1: つながり画面用。自分が生徒として在籍している教室と、
   // それぞれの教室での担当講師を取得する。
@@ -11227,6 +11244,22 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               const isRecordedToday = !!todayEntry;
               return (
                 <div className="space-y-4">
+                  {/* ★所属している教室の数（2026-09-02・Opus の裁定）。
+                      ★レッスンのタブ1つに頼らない、という趣旨です。
+                        タブは横スクロールする帯の4番目にあり、
+                        画面の幅によっては★見えないところに居ます。
+                      ★小さく、静かに出します。押せる案内にはしません
+                        （タブがあるのに、行き先を2つ作らないため）。
+                      ★数だけです。教室の名前はここに出しません
+                        （ホームは自分の記録の場所で、教室の場所ではない）。 */}
+                  {myEnrollments.length > 0 && (
+                    <p className="text-xs" style={{ color: C.inkSoft }}>
+                      所属教室: {myEnrollments.length}　
+                      <span style={{ color: C.inkSoft }}>
+                        （レッスン → 習う で見られます）
+                      </span>
+                    </p>
+                  )}
                   {/* 1回だけの知らせ（lib/notices.js）。
                       ★出すのは、まだ既読でなく、かつ文字が既定の大きさのときだけ。
                         すでに大きくしている人に「大きくできます」と言わないため。
