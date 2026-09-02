@@ -151,6 +151,25 @@ const cronHours = vercel.crons.map((c) => Number(c.schedule.split(" ")[1]));
 const tooClose = cronHours.some((h, i) => cronHours.some((g, j) => i !== j && Math.abs(h - g) < 2));
 assertTrue(!tooClose, "★起動時刻が2時間以上離れている（Hobby は±59分ずれる）");
 
+console.log("\n=== ★profiles は、手で消さない（2026-09-02） ===");
+{
+  // ★前は auth.users より先に profiles を消していました。
+  //   この2つは別々の通信で、巻き戻せません。後半だけ失敗すると
+  //   「ログインできるのに profiles の行が無い人」が残ります。
+  //   その人はアプリを使えますが、★保存がひとつも効きません
+  //   （書き込みは全部 .update(...) で、0行の更新は error になりません）。
+  assertTrue(!/from\("profiles"\)\.delete\(\)/.test(purge),
+    "★profiles を手で消していない");
+  const schema = fs.readFileSync(path.join(ROOT, "supabase", "schema.sql"), "utf-8");
+  assertTrue(/id uuid references auth\.users on delete cascade/.test(schema),
+    "profiles は auth.users の削除で連鎖する（手で消す必要が無い）");
+  assertTrue(/連鎖で消えます/.test(purge), "★なぜ消さないのかが書いてある");
+  const authAt = purge.indexOf("admin.auth.admin.deleteUser");
+  const failAt = purge.indexOf("if (failures.length > 0) return { ok: false, failures };");
+  assertTrue(failAt > -1 && authAt > -1 && failAt < authAt,
+    "★ほかの表で失敗していたら、auth.users を消しに行かない");
+}
+
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
 if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
 console.log("\n✓ すべて成功しました。");
