@@ -37,7 +37,39 @@ function buildSummary(rows) {
     .join("\n");
 }
 
+/**
+ * ★この機能が、いま開いているか（2026-09-03）。
+ *
+ *   ★サーバ側で決めます。画面の定数（VocalTracker.jsx の AI_ADVICE_ENABLED）は
+ *     ★ボタンを隠すだけで、この経路を止めません。
+ *     ログイン済みの人がこの URL を直に叩けば、隠れたボタンは無関係です。
+ *     ★「画面のフラグが門の代わりをしていた」— 撤回の強制が
+ *       どこにも無かったのと、まったく同じ形です。
+ *
+ *   ★閉じるほうへ倒します（フェイルクローズ）。
+ *     環境変数が無ければ★閉じたままです。開けるには、はっきり
+ *     "true" と書く必要があります。
+ *     ★CRON_SECRET が未設定なら 503 にしたのと同じ考え方です
+ *       （未設定を「誰でも通す」に読み替えない）。
+ *
+ *   ★これは記録の中身を外へ出す唯一の経路です。
+ *     app/api/advice/route.js が entries を読み、buildSummary が
+ *     喉・睡眠・症状を文にして、lib/anthropic.js が
+ *     api.anthropic.com へ送ります。★止めるなら、ここです。
+ */
+function adviceEnabled() {
+  return process.env.AI_ADVICE_ENABLED === "true";
+}
+
 export async function POST() {
+  // ★認証より前に見ます。閉じているなら、記録を1行も読みません。
+  if (!adviceEnabled()) {
+    return NextResponse.json(
+      { error: "この機能は、いまお使いいただけません。" },
+      { status: 403 }
+    );
+  }
+
   const supabase = createClient();
   const { user, unreachable } = await getUserWithTimeout(supabase, "アドバイスの認証確認");
   // ★「確認できなかった」と「ログインしていない」を分ける。
