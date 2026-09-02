@@ -7,7 +7,44 @@
 **★仕様の内容をここに写さないこと。** 仕様は docs/ の各文書が持っています。
 写すと、同じことが2か所にあって片方だけ古くなります。
 
-最終更新: 2026-08-27
+最終更新: 2026-09-02
+
+---
+
+## 0. ★次にやること（2026-09-02 の引き継ぎ）
+
+### ★実行の順（この順で）
+
+**① `supabase/audit_schema_wide_2026-09-02.sql`**
+　全体の棚卸し。★読むだけで、書き込みは1つもありません。
+　service_role（SQL Editor の既定）で構いません。
+　★とくに②-2（RLS が★無効な表）と⑤（SECURITY DEFINER に
+　search_path が無いもの）は、★どんな形でも一度も走らせていません。
+　③-2 の一覧は、`lib/accountDeletion.js` の3つの表
+　（USER_OWNED_TABLES / SPECIAL_DELETES / NULLED_REFERENCES）と
+　突き合わせてください。
+
+**② `supabase/check_owner_role_protection.sql` の ③ と ④**
+　★ふつうの利用者のセッションで。service_role では確かめになりません。
+　残っているのは2場面です。
+
+　- **③ 共同オーナーAがBを降格** → ★0行であること
+　- **④ ★オーナーが自分で降りる** → ★**1行**であること
+
+　★④が0行なら、オーナーには降りる手段がありません
+　（譲渡の仕組みも作っていません）。0行は「守れている」ではなく
+　「締めすぎ」です。止まったことだけを数えると、これを見落とします。
+
+### ★まだ実行していない移行（3つ）
+
+| ファイル | 入れないとどうなるか |
+|---|---|
+| `supabase/migration_lesson_held.sql` | ★`held` が常に null。画面は「実施 0回」と出ます |
+| `supabase/migration_org_member_names.sql` | ★受け入れ確認⑥が 404。メンバーの名前が出ません |
+| `supabase/migration_backfill_orphan_org_memberships.sql` | オーナーの居ない教室が、持ち主から見えないまま |
+
+★`migration_lesson_held.sql` は「数えてから直す」形ではありません。
+　列を1つ足すだけです。既定値も埋め戻しもありません。
 
 ---
 
