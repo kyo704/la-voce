@@ -86,6 +86,7 @@ import { symptomsByLocation, dinnerToBedSummary, LOCATION_FOOTNOTE } from "@/lib
 //     「予定から活動の種類を先に選んでおく」は、まだ画面につながっていません。
 import OrgEventList from "@/components/OrgEventList";
 import { countHeldLessons, heldCountLine } from "@/lib/lessonCounts";
+import { CONSENT_POLICY_VERSION } from "@/lib/consent";
 import { buildLinkConsentRow, buildUnlinkPatch } from "@/lib/linkConsent";
 import { departingOwnerNotice, transferMailto, CLOSE_ORG_KEEP_LINE, CLOSE_ORG_DELETE_LINE, DEPARTING_PAYER_LINE } from "@/lib/orgClosure";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
@@ -3804,7 +3805,10 @@ const ONBOARDING_GOAL_OPTIONS = [
 // ★この値は記録するだけで、比較していません。上げても再同意を求めません。
 //   「どの文面に同意したか」を残すためのものです。
 //   改名で文面が変わったので、1つ上げます（改名v2 Phase 2）。
-const CONSENT_POLICY_VERSION = "2026-08-v2";
+// ★版の定義は lib/consent.js の1か所だけです（2026-09-03・R-3）。
+//   ここに同じ名前で書いていたため、値が2つに分かれていました
+//   （ここが "2026-08-v2"、あちらが "ja-2026-08"）。
+//   ★同じ事実を2か所に置いた、今日5件目の形です。
 const CONSENT_DATA_CATEGORIES = [
   "喉のコンディション・声の状態（5段階評価、音の高さ）",
   "睡眠時間・就寝時刻",
