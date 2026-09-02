@@ -80,8 +80,14 @@ assertTrue(/誰が消したかは分かりません/.test(readRaw("app/admin", "
   "★画面にも、数だけだと書いてある");
 
 console.log("\n=== 消えたあとに同じメールで登録し直せるか ===");
-// ★profiles を消し、auth のユーザーも消すので、メールは残りません。
-assertTrue(/from\("profiles"\)\.delete\(\)\.eq\("id", userId\)/.test(del), "profiles の行を消す");
+// ★auth のユーザーを消せば、メールは残りません。
+//   profiles は auth.users への on delete cascade なので、★一緒に消えます。
+//   （2026-09-02、手で先に消すのをやめました。deleteUser が失敗したときに
+//     「ログインできるのに profiles が無い人」が残るためです）
+assertTrue(!/from\("profiles"\)\.delete\(\)/.test(del),
+  "★profiles を手で消していない（連鎖に任せる）");
+assertTrue(/id uuid references auth\.users on delete cascade/.test(
+  readRaw("supabase", "schema.sql")), "★連鎖が張られている（これが根拠）");
 assertTrue(/auth\.admin\.deleteUser\(userId\)/.test(del), "★auth のユーザーも消す（メールごと）");
 assertTrue(!/account_deletions[\s\S]{0,200}email/.test(del), "★数の表にメールを持ち込んでいない");
 

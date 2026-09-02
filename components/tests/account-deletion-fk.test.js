@@ -143,10 +143,17 @@ const NO_ACTION_COLUMNS = [
   const purge = code.slice(code.indexOf("export async function purgeAccount"));
   const iSever = purge.indexOf("severConnections");
   const iNull = purge.indexOf("NULLED_REFERENCES");
-  const iProfile = purge.indexOf('from("profiles").delete()');
   const iAuth = purge.indexOf("auth.admin.deleteUser");
-  assertTrue(iSever < iNull && iNull < iProfile && iProfile < iAuth,
-    "★紐付けを外す → profiles → auth.users の順になっている");
+  // ★2026-09-02、profiles を手で消すのをやめました。
+  //   profiles.id は auth.users への on delete cascade なので、
+  //   ★auth.users を消せば同じ処理の中で消えます。
+  //   手で先に消すと、deleteUser が失敗したときに
+  //   ★「ログインできるのに profiles が無い人」が残りました。
+  //   守るべき順序は「紐付けを外す → auth.users」だけです。
+  assertTrue(iSever < iNull && iNull < iAuth,
+    "★紐付けを外す → auth.users の順になっている");
+  assertTrue(purge.indexOf('from("profiles").delete()') === -1,
+    "★profiles を手で消していない（連鎖に任せる）");
   assertTrue(purge.indexOf("failures.length > 0") < iAuth,
     "★1つでも失敗したら、認証ユーザーを消さない門番が先にある");
 
