@@ -5643,6 +5643,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // 指導者プラン実装仕様: 自分が関わる紐付け（先生として・生徒として）を取得する。
   // teacher_beta_accessを持たないユーザーでも、他人から生徒として招待される可能性はあるため、
   // この取得自体は全ユーザーに対して行う（表示するかどうかはUI側で絞る）。
+  // ★他人が変えうるもの。ここが「取り直す対象」の唯一の一覧です。
+  //   ★fetchLearnState は入れません。自分しか変えないためです。
+  async function refreshSharedData() {
+    await Promise.all([
+      fetchTeacherLinks(),      // 先生とのつながり（相手が承諾する）
+      fetchMyAllLessons(),      // 自分のレッスン（先生が作る・動かす）
+      fetchMyTeachingLessons(), // 教えているレッスン
+      fetchMyOrgs(),            // 所属する教室（招かれる）
+      fetchMyEnrollments(),     // 在籍（先生が登録する）
+      fetchMyOrgEvents()        // 教室の予定（先生が作る・動かす・取り下げる）
+    ]);
+  }
   useEffect(() => {
     fetchTeacherLinks();
     fetchMyAllLessons();
@@ -5672,6 +5684,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //
   //   ★重ねて走らせないこと。戻るたびに何本も投げると、
   //     行ったり来たりするだけで負荷になります。
+  //
+  // ★2026-09-02、ここに fetchTeacherLinks しか入っていませんでした。
+  //   そのため、先生が予定の日付を変えても、生徒の画面は★古いままでした。
+  //   （実地で確認：DB は正しく書き換わっていて、読む側だけが古い）
+  //   数えたところ、同じ形が★6つありました。マウント時にだけ取っていて、
+  //   戻ってきても取り直さないものです。
+  //   ★他人が変えるものは、全部ここに入れます。1か所に並べます。
+  //     別々に足していくと、次に増えた取得がまた漏れます。
   useEffect(() => {
     if (!userId) return;
     let running = false;
@@ -5680,7 +5700,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       if (running) return;
       running = true;
       try {
-        await fetchTeacherLinks();
+        await refreshSharedData();
       } finally {
         running = false;
       }
@@ -5694,6 +5714,24 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
+
+  // ★アプリの中でタブを移っても、上の refresh は走りません（2026-09-02）。
+  //   タブは activeTab という★状態で、画面遷移ではありません。
+  //   だから component は再マウントせず、focus も visibilitychange も起きません。
+  //   ★「タブを移って戻れば新しくなる」は、これが無いと成り立ちません。
+  //     実際、坂本さんの手順（先生が日付を変える → 生徒がタブを移って戻る）で
+  //     ★古いままでした。
+  //   ★開いたときだけ取り直します。毎描画では走りません。
+  useEffect(() => {
+    if (!userId) return;
+    const showsSharedData =
+      activeTab === "lesson" ||
+      (activeTab === "notes" && notesSubTab === "calendar") ||
+      activeTab === "home";
+    if (!showsSharedData) return;
+    refreshSharedData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, activeTab, notesSubTab]);
 
   useEffect(() => {
     if (loading) return;
@@ -9835,10 +9873,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   async function handleMoveOrgEvent(orgId, ev, nextDate) {
     if (!nextDate || nextDate === ev.event_date) return;
     const supabase = createClient();
-    const { error } = await supabase.from("org_events")
+    // ★.select() を付けて、★何行変わったかを見ます（2026-09-02）。
+    //   RLS で弾かれた更新は★エラーになりません。0行が変わって、error は null です。
+    //   つまり「変えられなかった」ことが、これまで★どこにも出ませんでした。
+    //   org_events を書き換えられるのは owner と admin だけ（org_events_write_admin）。
+    //   講師のままの人が日付を変えても、★黙って何も起きません。
+    const { data: moved, error } = await supabase.from("org_events")
       .update({ previous_date: ev.event_date, event_date: nextDate, updated_at: new Date().toISOString() })
-      .eq("id", ev.id);
+      .eq("id", ev.id)
+      .select("id");
     if (error) { console.error("日付を変えられませんでした:", error); setEventError("日付を変えられませんでした。"); return; }
+    if (!moved || moved.length === 0) {
+      console.error("★日付の変更が0行でした（権限が足りない可能性があります）:", { eventId: ev.id, orgId });
+      setEventError("この予定を変える権限がありません。教室のオーナーか責任者にお願いしてください。");
+      return;
+    }
     fetchOrgEvents(orgId);
     fetchMyOrgEvents();
   }
@@ -9846,10 +9895,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   async function handleWithdrawOrgEvent(orgId, eventId) {
     if (!window.confirm("この予定を取り下げますか？　出ると印をつけた方の画面には、取り下げられたことが出ます。")) return;
     const supabase = createClient();
-    const { error } = await supabase.from("org_events")
+    const { data: withdrawn, error } = await supabase.from("org_events")
       .update({ withdrawn_at: new Date().toISOString(), updated_at: new Date().toISOString() })
-      .eq("id", eventId);
+      .eq("id", eventId)
+      .select("id");
     if (error) { console.error("取り下げられませんでした:", error); setEventError("取り下げられませんでした。"); return; }
+    if (!withdrawn || withdrawn.length === 0) {
+      console.error("★取り下げが0行でした（権限が足りない可能性があります）:", { eventId, orgId });
+      setEventError("この予定を取り下げる権限がありません。教室のオーナーか責任者にお願いしてください。");
+      return;
+    }
     fetchOrgEvents(orgId);
     fetchMyOrgEvents();
   }
