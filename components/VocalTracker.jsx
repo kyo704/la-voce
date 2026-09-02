@@ -5007,6 +5007,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [learnSearchQuery, setLearnSearchQuery] = useState("");
   // 作業指示-教室プラン §B・C・E: 教室プラン用のstate
   const [myOrgs, setMyOrgs] = useState([]); // 自分がメンバーである組織一覧（role付き）
+  // ★自分が作ったのに、自分の membership が無い教室（2026-09-02）。
+  //   ensureOwnOrg は「教室を作る」と「オーナーとして入る」が別の操作です。
+  //   後者だけ失敗すると、教室はあるのに誰も居ない行が残り、
+  //   ★一覧（membership を見ている）からは消えます。持ち主から見えなくなります。
+  //   ★ここに出すのは「在ることを見せる」ためだけです。
+  //     操作の権限は membership が根拠なので、この教室では★何も押せません。
+  //     押せる形にすると、押しても必ず失敗するボタンを並べることになります。
+  const [myOrphanOrgs, setMyOrphanOrgs] = useState([]);
   const [viewingOrgId, setViewingOrgId] = useState(null);
   const [orgMembers, setOrgMembers] = useState({}); // orgId -> memberships[]
   const [orgEnrollments, setOrgEnrollments] = useState({}); // orgId -> enrollments[]
@@ -9322,7 +9330,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setInviteError("");
     const orgId = await ensureOwnOrg();
     if (!orgId) {
-      setInviteError("教室の準備に失敗しました。時間をおいて、もう一度お試しください。");
+      // ★「もう一度お試しください」と言わないこと（2026-09-02）。
+      //   ここに来る理由の1つは、教室はできたのに★オーナーとして入るところで
+      //   止まっている状態です。そうなると、何度押しても同じところで止まります。
+      //   通らないものに再試行をすすめると、原因を探す手がかりまで消えます。
+      setInviteError("教室の準備が、途中で止まっています。同じ操作を繰り返しても直りません。坂本さんにお知らせください。");
       return;
     }
     const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
@@ -9720,8 +9732,23 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ---- 作業指示-教室プラン §B・C・E ----
   async function fetchMyOrgs() {
     const supabase = createClient();
-    const { data } = await supabase.from("memberships").select("*, org:organizations(*)").eq("user_id", userId);
-    setMyOrgs(data || []);
+    const { data, error } = await supabase.from("memberships").select("*, org:organizations(*)").eq("user_id", userId);
+    if (error) console.error("教室の一覧を読めませんでした:", error);
+    const mine = data || [];
+    setMyOrgs(mine);
+    // ★自分が作った教室のうち、自分の membership が無いものを拾います。
+    //   organizations_select_own_created（created_by = auth.uid()）で読めます。
+    const { data: created, error: createdError } = await supabase
+      .from("organizations").select("*").eq("created_by", userId);
+    if (createdError) {
+      // ★黙って捨てないこと。読めなければ「壊れた教室は無い」ではなく
+      //   「分からない」です。分からないときは、何も出しません。
+      console.error("自分が作った教室を確認できませんでした:", createdError);
+      setMyOrphanOrgs([]);
+      return;
+    }
+    const joined = new Set(mine.map((m) => m.org_id));
+    setMyOrphanOrgs((created || []).filter((o) => !joined.has(o.id)));
   }
   const [myEnrollments, setMyEnrollments] = useState([]); // 生徒として在籍している教室一覧
   const [myAssignedTeachers, setMyAssignedTeachers] = useState({}); // orgId -> 担当講師のuserId配列
@@ -13236,6 +13263,31 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </div>
                   </details>
                 )}
+
+                {/* ★作りかけの教室（2026-09-02）。
+                    ensureOwnOrg は「教室を作る」と「オーナーとして入る」が
+                    別の操作です。後者だけ失敗すると、教室はあるのに
+                    ★一覧から消えます（一覧は membership を見ているため）。
+                    持ち主から見えないと、直しようがありません。だから出します。
+                    ★操作の入口は1つも置きません。権限の根拠は membership で、
+                      この教室にはそれがありません。ボタンを置けば、押しても
+                      必ず失敗するボタンになります。 */}
+                {canSeeBetaFeatures(profile) && myOrphanOrgs.map((o) => (
+                  <div key={o.id} className="rounded-2xl p-4 border"
+                    style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                    <p className="text-sm font-medium mb-1">
+                      {o.name || "（名前のない教室）"}
+                    </p>
+                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                      この教室は作られましたが、あなたが「オーナー」として入るところで
+                      止まっています。そのため、いまは開けません。
+                    </p>
+                    <p className="text-xs" style={{ color: C.inkSoft }}>
+                      ★消えてはいません。中身はそのまま残っています。
+                      直し方をこちらで用意しますので、坂本さんにお伝えください。
+                    </p>
+                  </div>
+                ))}
 
                 {canSeeBetaFeatures(profile) && myOrgs.filter((m) => m.role === "owner" || m.role === "admin").map((m) => {
                   const orgId = m.org_id;
