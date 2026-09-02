@@ -71,6 +71,34 @@ function loadModule(rel) {
     });
   }
 
+  console.log("\n=== ★「連鎖するはず」は、証拠つきでなければ認めない ===");
+  {
+    // ★2026-09-02 に足しました。
+    //   この検査には穴がありました。handledBy: "cascade" と書けば、
+    //   どの一覧にも載せずに通ります。★中身は誰も確かめていません。
+    //
+    //   実際、assignments.teacher_id は "cascade" / verified: true と
+    //   書いてありながら、注記自身が
+    //   「CASCADE か SET NULL かは見ていない」と述べていました。
+    //   ★verified: true と、注記の中身が食い違っていたのです。
+    //   そして +g4t3 の退会は、その行を残したまま止まりました。
+    //
+    //   ★リポジトリからは外部キーの規則を読めません。
+    //     だから「読めない」ことを、せめて★書かせます。
+    //     注記に、確かめていないと読める言葉が入っていたら落とします。
+    const UNSURE = ["不明", "見ていない", "確かめていない", "はず", "たぶん", "推定"];
+    refs.filter((r) => r.handledBy === "cascade").forEach((r) => {
+      const note = r.note || "";
+      const unsure = UNSURE.filter((w) => note.includes(w));
+      assertTrue(unsure.length === 0,
+        `★${key(r)} は cascade を名乗るのに、注記が確かめていないと言っている`
+        + (unsure.length ? `（「${unsure.join("」「")}」）` : ""));
+      // ★どういう規則なのかを、必ず書かせます。
+      assertTrue(/set null|cascade|on delete/i.test(note),
+        `★${key(r)} の注記に、実際の外部キーの規則が書かれていない`);
+    });
+  }
+
   console.log("\n=== ★台帳 → 実際の一覧（書いてあるとおりに扱われているか） ===");
   {
     const owned = new Set(del.USER_OWNED_TABLES);
