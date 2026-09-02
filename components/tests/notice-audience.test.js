@@ -86,6 +86,18 @@ const 取込 = (p) =>
     鍵の位置 !== -1 && 送信の位置 !== -1 && 鍵の位置 < 送信の位置);
   ok("★記録の読み出しは、鍵の確認より前にある（台帳の『読んではいる』の根拠）",
     読出の位置 !== -1 && 読出の位置 < 鍵の位置);
+  console.log("\n④-3 ★サーバから出る道と、画面から出る道を混ぜていないか");
+  ok("すべての道に origin がある", 道.every((r) => r.origin === "server" || r.origin === "client"));
+  ok("★Google カレンダーは client（利用者が押したときだけ）",
+    O.clientOriginRoutes().some((r) => r.id === "google-calendar"));
+  ok("★Anthropic は server", O.serverOriginRoutes().some((r) => r.id === "anthropic"));
+  ok("server と client を足すと全件（どちらでもない道を作らない）",
+    O.serverOriginRoutes().length + O.clientOriginRoutes().length === 道.length);
+  // ★「サーバから出る唯一の経路」と言えるかは、server の中だけの話です。
+  //   画面から出る道を数え落として「唯一」と書いたのが、9/3 の言い間違いでした。
+  ok("★画面から出る道が1件以上ある（『唯一』と書けない根拠）",
+    O.clientOriginRoutes().length >= 1);
+
   const 麻 = O.OUTBOUND_ROUTES.find((r) => r.id === "anthropic");
   ok("台帳に、これまで通ったかどうかが記録されている",
     麻.history && 麻.history.everTransmitted === false && !!麻.history.confirmedOn);
