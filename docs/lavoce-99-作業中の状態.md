@@ -43,8 +43,10 @@ supabase/migration_drop_teacher_entries_policy.sql    実行済み・確認ず�
 supabase/migration_org_events.sql               実行済み（実機で4段階とも通過）
 supabase/migration_backfill_orphan_org_memberships.sql  ★未実行
 supabase/migration_protect_owner_role.sql       実行ずみ
-supabase/migration_fix_memberships_update_policy.sql  実行ずみ・2件確認
-                                                （⑥通る／②止まる。残り6件は未確認）
+supabase/migration_fix_memberships_update_policy.sql  実行ずみ
+supabase/URGENT_fix_owner_self_promotion.sql    実行ずみ（★実際に破られた件の修理）
+supabase/migration_role_rank_no_self_promotion.sql  ★実行の確認が取れていない
+                                                （順位で見る規則。⑧が未確認）
 supabase/migration_org_member_names.sql         ★未実行（入れるまで名前は出ません）
 supabase/check_admin_can_demote_owner.sql       ★未実行（調べるだけ）
 supabase/check_owner_role_protection.sql        ★未実行（5場面・rollback します）
