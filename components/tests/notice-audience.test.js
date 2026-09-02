@@ -74,6 +74,22 @@ const 取込 = (p) =>
   ok("Supabase 本体が台帳にある", 道.some((r) => r.id === "supabase"));
   ok("調べて外向きでなかったものも残している", O.CHECKED_NOT_OUTBOUND.length >= 3);
 
+  console.log("\n④-2 ★「一度も送っていない」の根拠が、まだ成り立っているか");
+  // 台帳は「鍵が無いので fetch に到達しない」と書いています。
+  // ★その主張は、route.js の★順番に乗っています。順番が変われば嘘になります。
+  const 助言 = readCode("app/api/advice/route.js");
+  const 鍵の位置 = 助言.indexOf("ANTHROPIC_API_KEY");
+  const 送信の位置 = 助言.indexOf("getAdvice(");
+  const 読出の位置 = 助言.indexOf('.from("entries")');
+  ok("鍵の確認がある", 鍵の位置 !== -1);
+  ok("★鍵の確認は、外へ送るより前にある（順番が逆になれば台帳が嘘になる）",
+    鍵の位置 !== -1 && 送信の位置 !== -1 && 鍵の位置 < 送信の位置);
+  ok("★記録の読み出しは、鍵の確認より前にある（台帳の『読んではいる』の根拠）",
+    読出の位置 !== -1 && 読出の位置 < 鍵の位置);
+  const 麻 = O.OUTBOUND_ROUTES.find((r) => r.id === "anthropic");
+  ok("台帳に、これまで通ったかどうかが記録されている",
+    麻.history && 麻.history.everTransmitted === false && !!麻.history.confirmedOn);
+
   console.log("\n⑤ is_internal が、4つの台帳でどう扱われるか");
   ok("★書き出しには含める（本人の状態だから）",
     読む("lib/exportData.js").includes('"is_internal"'));
