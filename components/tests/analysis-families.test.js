@@ -63,10 +63,17 @@ async function main() {
     "★前日の記録が無ければ null（0 にしない。何もしなかった日と区別する）");
   assertEqual(m.coreFactorValues({}, null).sleepHours, null, "記録が無ければ null");
   assertEqual(m.coreFactorValues(e, null).morningEdema, null,
-    "⑤ むくみは、まだ記録する場所が無いので常に null（作業中の状態 §5.14）");
-  assertTrue(!m.availableCoreFactors().includes("morningEdema"),
-    "★記録できないものを、検定できるものとして数えない");
-  assertEqual(m.availableCoreFactors().length, 4, "いま検定できる中核は4項目");
+    "⑤ むくみ：記録が無ければ null");
+  // ★2026-09-03、むくみの除外をやめました。
+  //   「記録する場所がまだない」という前提でしたが、いまは有ります
+  //   （EdemaSelector … components/VocalTracker.jsx:11406・11937）。
+  //   ★その間、本人が入れた値は分析から黙って捨てられていました。
+  //   件数が足りるかどうかは lib/displayGates.js の仕事で、ここでは見ません。
+  assertEqual(m.availableCoreFactors().length, 5, "★中核5項目すべてを検定できる");
+  assertTrue(m.availableCoreFactors().includes("morningEdema"),
+    "★むくみが除外されていない");
+  assertEqual(m.coreFactorValues({ morningEdema: 0 }, null).morningEdema, 0,
+    "★0（むくみなし）が null に落ちない");
 
   console.log("\n=== 二分の仕方 ===");
   const rows = [{ v: 1, y: 3 }, { v: 2, y: 4 }, { v: 3, y: 5 }, { v: 4, y: 2 }];
