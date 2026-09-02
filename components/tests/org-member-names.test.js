@@ -74,6 +74,27 @@ console.log("\n=== ★見る人の役割で出し分けない ===");
   assertTrue(!/String\(userId\)\.slice\(0, 8\)/.test(src), "★uuid を画面に出さない");
 }
 
+console.log("\n=== ★名前が無い人が居ても、崩れない ===");
+{
+  // ★「見にいって名前が無かった」と「まだ見にいけていない」は別のこと
+  assertTrue(/const NAME_UNSET_LABEL = "名前未設定";/.test(src),
+    "見にいって名前が無かったとき用の言葉がある");
+  assertTrue(/const NAME_UNKNOWN_LABEL = "名前を読み込めませんでした";/.test(src),
+    "まだ見にいけていないとき用の言葉がある");
+  assertTrue(/if \(p\) return NAME_UNSET_LABEL;/.test(src),
+    "★2つを言い分けている");
+  // 聞きにいった人は、返ってこなかった人も含めて全員を map に入れる
+  assertTrue(/ids\.forEach\(\(id\) => \{ map\[id\] = \{ displayName: "" \}; \}\);/.test(src),
+    "★返ってこなかった人も map に入れる（区別できるようにするため）");
+  // 空白やエラーを出さない
+  assertTrue(!/return "";/.test(src.slice(src.indexOf("function orgDisplayName"),
+                                          src.indexOf("function orgDisplayName") + 700)),
+    "★空文字を返さない");
+  assertTrue(!/undefined|null\}/.test(src.slice(src.indexOf("<span>{orgDisplayName(mem.user_id)}</span>") - 60,
+                                                src.indexOf("<span>{orgDisplayName(mem.user_id)}</span>") + 60)),
+    "メンバー欄が素の値を出していない");
+}
+
 console.log("\n=== ★表示名の画面に、見えることが書いてある ===");
 {
   assertTrue(/const DISPLAY_NAME_CAUTION =/.test(src), "注意書きが1か所に定義されている");

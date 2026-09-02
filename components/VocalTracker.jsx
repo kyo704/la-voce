@@ -7480,7 +7480,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   「名前未設定」と言い切らないこと。こちらから読めていないだけで、
   //   ★本人は名前を付けているかもしれません（profiles は本人の行しか
   //   読めない設定なので、他人の名前は読めない可能性があります）。
-  const NAME_UNKNOWN_LABEL = "名前を読み込めませんでした";
+  // ★見にいったけれど、名前が無かったとき。
+  //   本人が付けていない場合と、profiles の行そのものが無い場合があります。
+  //   ★読む人にできることは同じなので、言い分けません。
+  const NAME_UNSET_LABEL = "名前未設定";
+  const NAME_UNKNOWN_LABEL = "名前を読み込めませんでした";  // ★まだ見にいけていないとき（関数が呼べていない・移行が未実行など）。
+  //   ★「名前未設定」と言い切らないこと。付けてある名前を、
+  //     こちらが読めていないだけかもしれません。
   // ★表示名は、同じ教室の人に見えます（2026-09-02）。
   //   get_org_member_names を入れたことで、教室のメンバー欄に
   //   ★本名めいた名前がそのまま出るようになりました。
@@ -9906,12 +9912,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         );
       }
       if (names) {
+        // ★聞きにいった人は、返ってこなかった人も含めて全員を入れます。
+        //   こうすると「見にいったが名前が無かった」と
+        //   「まだ見にいけていない」を、あとで区別できます。
+        //   ★前者は 名前未設定、後者は 名前を読み込めませんでした です。
+        //   同じ空白でも、利用者にとっては別のことです。
         const map = {};
+        ids.forEach((id) => { map[id] = { displayName: "" }; });
         names.forEach((n) => { map[n.user_id] = { displayName: n.display_name || "" }; });
         setOrgProfileNames((prev) => ({ ...prev, ...map }));
         if (names.length < ids.size) {
-          // ★足りないときは、名前が無い人が居るということです
-          //   （profiles の行そのものが無い場合も含みます）。
+          // ★名前が無い人が居るということです。
+          //   profiles の行そのものが無い場合も、ここに入ります
+          //   （退会の処理が途中で止まると、その状態が残ります）。
           console.warn(`名前を返せた人数: ${names.length}/${ids.size}`);
         }
       }
@@ -9922,6 +9935,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (!userId) return DEPARTED_TEACHER_LABEL;
     const p = orgProfileNames[userId];
     if (p && p.displayName) return p.displayName;
+    // ★見にいった結果、名前が無かった。
+    //   （本人が付けていない／profiles の行そのものが無い）
+    //   ★どちらも、読む人にできることは同じです。区別して見せません。
+    if (p) return NAME_UNSET_LABEL;
     // ★内部のIDを画面に出さないこと（2026-09-02）。
     //   前は `${userId.slice(0,8)}…` を出していて、メンバー欄に
     //   「53ef27ed…」と表示されていました。読む人には意味が無く、
