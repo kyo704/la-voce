@@ -34,6 +34,10 @@ supabase/migration_data_region.sql              ★実行の確認が取れて�
 supabase/migration_invitation_teacher_name.sql  実行済み
 supabase/check_activity_minutes_coverage.sql    実行済み（③=4日）
 supabase/migration_record_mode.sql              未実行（無くても動く）
+supabase/migration_org_owner_departure.sql      ★実行の確認が取れていない
+                                                （created_by を null 可にする。
+                                                 ★これが未実行だと、教室を作った人は
+                                                 いまも退会できません）
 
   ---- 2026-09-02 に足したもの ----
 supabase/migration_fix_lessons_org_null_policies.sql  実行済み・確認ずみ
