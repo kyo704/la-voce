@@ -11096,7 +11096,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     href={tab.key === "voicetheory" ? (PROFESSION_THEORY_PAGES[profile.vocal_profession] || tab.href) : tab.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1 px-3 text-xs sm:gap-1.5 sm:px-3.5 sm:text-sm py-2 rounded-full font-medium whitespace-nowrap shrink-0 transition-all"
+                    className="flex items-center gap-1 px-[11px] text-xs sm:gap-1.5 sm:px-3.5 sm:text-sm py-2 rounded-full font-medium whitespace-nowrap shrink-0 transition-all"
                     style={{ background: "transparent", color: C.inkSoft }}
                   >
                     <tab.icon size={15} />
@@ -11106,7 +11106,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   <button
                     key={tab.key}
                     onClick={() => setActiveTab(tab.key)}
-                    className="flex items-center gap-1 px-3 text-xs sm:gap-1.5 sm:px-3.5 sm:text-sm py-2 rounded-full font-medium whitespace-nowrap shrink-0 transition-all"
+                    className="flex items-center gap-1 px-[11px] text-xs sm:gap-1.5 sm:px-3.5 sm:text-sm py-2 rounded-full font-medium whitespace-nowrap shrink-0 transition-all"
                     style={{ background: activeTab === tab.key ? C.curtain : "transparent", color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
                   >
                     <tab.icon size={15} />
@@ -11116,17 +11116,27 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               ))}
             </nav>
             </div>
-            {/* ★右端に固定。流れません。 */}
+            {/* ★右端に固定。流れません。
+                ★狭い画面では「…」だけにします（2026-09-02・Opus の裁定）。
+                  三本線にしないこと。三本線は「全部の献立」を思わせますが、
+                  ここで言いたいのは★「この先がまだある」です。
+                  MoreHorizontal は、もともと「…」です。
+                ★文字が消えるので、読み上げ用の名前を付けます。
+                  見た目から言葉が消えても、意味は消しません。
+                ★sm 以上では、これまでどおり文字も出します。 */}
             {displayTabs.filter((tab) => tab.key === "more").map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className="flex items-center gap-1 px-3 text-xs sm:gap-1.5 sm:px-3.5 sm:text-sm py-2 rounded-full font-medium whitespace-nowrap shrink-0"
+                aria-label={tab.labelKey ? t(tab.labelKey) : tab.label}
+                className="flex items-center gap-1 px-[11px] text-xs sm:gap-1.5 sm:px-3.5 sm:text-sm py-2 rounded-full font-medium whitespace-nowrap shrink-0"
                 style={{ background: activeTab === tab.key ? C.curtain : C.paper,
                          color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
               >
                 <tab.icon size={15} />
-                {tab.labelKey ? t(tab.labelKey) : tab.label}
+                <span className="hidden sm:inline">
+                  {tab.labelKey ? t(tab.labelKey) : tab.label}
+                </span>
               </button>
             ))}
             </div>

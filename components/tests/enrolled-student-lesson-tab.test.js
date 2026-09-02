@@ -101,9 +101,20 @@ console.log("\n=== ★もっと を右端に固定する ===");
   assertTrue(/displayTabs\.filter\(\(tab\) => tab\.key === "more"\)/.test(src),
     "★もっと を、帯の外に別で置いている");
   const pinned = src.slice(src.indexOf('displayTabs.filter((tab) => tab.key === "more")'),
-                           src.indexOf('displayTabs.filter((tab) => tab.key === "more")') + 500);
+                           src.indexOf('displayTabs.filter((tab) => tab.key === "more")') + 1000);
   assertTrue(/shrink-0/.test(pinned), "縮まない");
   assertTrue(!/overflow-x-auto/.test(pinned), "★流れる帯の中に入れていない");
+  // ★狭い画面では「…」だけ。三本線にしないこと（「全部の献立」を思わせる）。
+  assertTrue(/icon: MoreHorizontal/.test(src), "★アイコンは「…」（MoreHorizontal）");
+  // ★src 全体を見ると practiceMenu（練習メニュー）に当たります。
+  //   見るのは★タブの定義だけ。ここで三本線を選んでいないこと。
+  const tabDefs = src.slice(src.indexOf("const TABS = ["), src.indexOf("const TABS = [") + 400);
+  assertTrue(/icon: MoreHorizontal/.test(tabDefs), "★もっと のアイコンは「…」");
+  assertTrue(!/icon: (Menu|AlignJustify|List)\b/.test(tabDefs), "★三本線を選んでいない");
+  assertTrue(/<span className="hidden sm:inline">/.test(pinned),
+    "★狭い画面では文字を出さない（sm 以上では出す）");
+  assertTrue(/aria-label=\{tab\.labelKey \? t\(tab\.labelKey\) : tab\.label\}/.test(pinned),
+    "★文字が消えても、読み上げには名前が残る");
   // ★並び順は変えていないこと（9月28日まで保留）
   assertTrue(/key: "home"[\s\S]{0,400}key: "more"/.test(src),
     "★TABS の並びは変えていない");
@@ -116,12 +127,19 @@ console.log("\n=== ★1文字だけ切れるのを直す ===");
   // ★詰めるのは、狭い画面だけ（2026-09-02 の追加指示）。
   //   PC・iPad は元のままにします。あちらは幅が足りていて、
   //   ★そもそも見えなくなる問題が起きていません。
-  assertTrue(/gap-1 px-3 text-xs sm:gap-1\.5 sm:px-3\.5 sm:text-sm/.test(src),
-    "★狭い画面だけ詰め、sm 以上は元に戻している");
+  assertTrue(/gap-1 px-\[11px\] text-xs sm:gap-1\.5 sm:px-3\.5 sm:text-sm/.test(src),
+    "★狭い画面だけ詰め（余白 11px）、sm 以上は元に戻している");
   assertTrue(!/className="flex items-center gap-1 px-3 py-2 rounded-full text-xs/.test(src),
     "★どの幅でも詰める書き方が残っていない");
   // ★ラベルそのものは変えないこと
   assertTrue(/tabLesson/.test(src), "★「レッスン」の呼び名は変えていない");
+  // ★ホーム・今日・分析 の文字は消さない（案A は却下）。
+  //   機械に強くない方（年配の先生・落語家・声優）に、絵だけで
+  //   「今日の記録」と「分析」を見分けさせないため。
+  const scrolling = src.slice(src.indexOf('displayTabs.filter((tab) => tab.key !== "more")'),
+                              src.indexOf('displayTabs.filter((tab) => tab.key === "more")'));
+  assertTrue(!/hidden sm:inline/.test(scrolling),
+    "★流れる側のタブから、文字を消していない");
 }
 
 console.log("\n=== ★在籍の取得で、黙って消えないこと ===");
