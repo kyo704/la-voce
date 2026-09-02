@@ -70,33 +70,67 @@ console.log("\n=== ★コード側にも入っている ===");
     "★前half と後half の両方で見ている");
 }
 
-console.log("\n=== ★ホームにも数を出す（タブ1つに頼らない） ===");
+console.log("\n=== ★ホームの表示（2026-09-02 に、数からカードへ） ===");
 {
-  assertTrue(/所属教室: \{myEnrollments\.length\}/.test(src), "ホームに数を出している");
-  assertTrue(/レッスン → 習う で見られます/.test(src), "★どこで見られるかを書いている");
-  assertTrue(!/所属教室: 0/.test(src), "0のときは出さない（条件つき）");
-  // ★押せる案内にしないこと（行き先を2つ作らない）
-  const homeBlock = src.slice(src.indexOf("所属教室:") - 400, src.indexOf("所属教室:") + 200);
-  assertTrue(!/<button|onClick/.test(homeBlock), "★押せるものにしていない");
+  // ★前は「所属教室: 2」という数の1行でした。
+  //   裁定が変わり、教室の名前と担当の先生を出すカードになりました。
+  //   ★数だけでは、探しに行く手間が残ります。
+  assertTrue(!/所属教室: \{myEnrollments\.length\}/.test(src),
+    "★数だけの1行は、もう出していない");
+  assertTrue(/つながりを見る →/.test(src), "カードになっている");
 }
 
-console.log("\n=== ★もっと の点（在籍しているときだけ） ===");
+console.log("\n=== ★点は置かない（2026-09-02・裁定の見直し） ===");
 {
-  assertTrue(/tab\.key === "more" && myEnrollments\.length > 0/.test(src),
-    "在籍が1つ以上のときだけ出す");
-  // ★数を出さないこと。数は「片づけるもの」に見えます（連続記録と同じ理由）。
-  const dot = src.slice(src.indexOf('tab.key === "more" && myEnrollments'),
-                        src.indexOf('tab.key === "more" && myEnrollments') + 420);
-  assertTrue(!/myEnrollments\.length\}/.test(dot), "★点に数を出していない");
-  assertTrue(/borderRadius: "50%"/.test(dot), "丸い点である");
-  assertTrue(/width: 6, height: 6/.test(dot), "小さい（6px）");
-  assertTrue(/aria-hidden="true"/.test(dot),
-    "★読み上げには出さない（意味は隣の文字が持っている）");
-  // ★押させる催促にしないこと
-  assertTrue(!/animate|pulse|blink/.test(dot), "★点滅させていない");
-  // ホームの表示とは別物であること（役割が違う）
-  assertTrue(/所属教室: \{myEnrollments\.length\}/.test(src),
-    "ホームの表示は、これまでどおり数を出す");
+  // ★点は「未読」に読めます。教室のつながりに未読はありません。
+  //   消えない点は、止まらない催促です（今日の「急かさない」と同じ線）。
+  // ★そもそも、タブの上の点は★そのタブが見えている人にしか効きません。
+  //   困っていたのは「タブが見えない人」でした。
+  assertTrue(!/tab\.key === "more" && myEnrollments\.length > 0/.test(src),
+    "★もっと に点を出していない");
+  assertTrue(!/所属教室: \{myEnrollments\.length\}/.test(src),
+    "★ホームの「所属教室: 2」も出していない（カードに置き換え）");
+}
+
+console.log("\n=== ★もっと を右端に固定する ===");
+{
+  // ★もっと は「ここから先がある」と知らせる入口なのに、
+  //   その入口自身が画面の外に出ていました。
+  assertTrue(/displayTabs\.filter\(\(tab\) => tab\.key !== "more"\)/.test(src),
+    "流れる側から もっと を外している");
+  assertTrue(/displayTabs\.filter\(\(tab\) => tab\.key === "more"\)/.test(src),
+    "★もっと を、帯の外に別で置いている");
+  const pinned = src.slice(src.indexOf('displayTabs.filter((tab) => tab.key === "more")'),
+                           src.indexOf('displayTabs.filter((tab) => tab.key === "more")') + 500);
+  assertTrue(/shrink-0/.test(pinned), "縮まない");
+  assertTrue(!/overflow-x-auto/.test(pinned), "★流れる帯の中に入れていない");
+  // ★並び順は変えていないこと（9月28日まで保留）
+  assertTrue(/key: "home"[\s\S]{0,400}key: "more"/.test(src),
+    "★TABS の並びは変えていない");
+}
+
+console.log("\n=== ★1文字だけ切れるのを直す ===");
+{
+  // ★全部見えれば「これで全部」、半分見えれば「まだ続く」と読めますが、
+  //   1文字だけはみ出るのは、どちらにも読めません。
+  assertTrue(!/px-3\.5 py-2 rounded-full text-sm font-medium whitespace-nowrap/.test(src),
+    "★前の余白・文字の大きさが残っていない");
+  assertTrue(/gap-1 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap/.test(src),
+    "詰めた指定になっている");
+  // ★ラベルそのものは変えないこと
+  assertTrue(/tabLesson/.test(src), "★「レッスン」の呼び名は変えていない");
+}
+
+console.log("\n=== ★ホームのカード（探しに行かなくても分かる） ===");
+{
+  assertTrue(/つながりを見る →/.test(src), "行き先が書いてある");
+  assertTrue(/en\.org \? en\.org\.name/.test(src), "★教室の名前を出している");
+  assertTrue(/assignedTeacherLabel"\)\}：\{orgDisplayName\(tid\)\}/.test(src),
+    "★担当の先生を出している");
+  assertTrue(/setActiveTab\("lesson"\); setLessonRoleChoice\("learn"\)/.test(src),
+    "★押すと、習う側が開く（探させない）");
+  assertTrue(/myEnrollments\.length > 0 && \(\s*<button/.test(src),
+    "在籍しているときだけ出す");
 }
 
 console.log(`\n${failCount === 0 ? "✅ 全て通りました" : "❌ 失敗あり"}  成功:${passCount} 失敗:${failCount}`);

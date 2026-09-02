@@ -11050,16 +11050,27 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           //   指標が無いと「切れている」だけに見えて、動かせると気づけない。
           //   ★スクロールの棒は出さない（携帯では場所を取り、しばらくすると消えるため）。
           return (
-            <div className="max-w-3xl mx-auto mt-5 nav-scroll-wrap">
+            // ★もっと を右端に固定します（2026-09-02・Opus の裁定）。
+            //   ★もっと は「ここから先がある」と知らせる入口なのに、
+            //     その入口自身が画面の外に出ていました（574〜666px）。
+            //   真ん中のタブは、その下を流れます。
+            //   ★並び順は変えません（9月28日まで保留）。
+            //     位置ではなく、★見えるかどうかだけを直します。
+            <div className="max-w-3xl mx-auto mt-5 flex items-center gap-1">
+            <div className="flex-1 min-w-0 nav-scroll-wrap">
+            {/* ★文字を 1px 小さく、左右の余白を少し詰めます（③）。
+                「レッスン」の最後の1文字だけが切れる状態が、いちばん良くない。
+                全部見えれば「これで全部」、半分見えれば「まだ続く」と読めますが、
+                ★1文字だけはみ出るのは、どちらにも読めません。 */}
             <nav className="flex gap-1 overflow-x-auto nav-scroll">
-              {displayTabs.map((tab) => (
+              {displayTabs.filter((tab) => tab.key !== "more").map((tab) => (
                 tab.href ? (
                   <a
                     key={tab.key}
                     href={tab.key === "voicetheory" ? (PROFESSION_THEORY_PAGES[profile.vocal_profession] || tab.href) : tab.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap shrink-0 transition-all"
+                    className="flex items-center gap-1 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap shrink-0 transition-all"
                     style={{ background: "transparent", color: C.inkSoft }}
                   >
                     <tab.icon size={15} />
@@ -11069,28 +11080,29 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   <button
                     key={tab.key}
                     onClick={() => setActiveTab(tab.key)}
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium whitespace-nowrap shrink-0 transition-all"
+                    className="flex items-center gap-1 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap shrink-0 transition-all"
                     style={{ background: activeTab === tab.key ? C.curtain : "transparent", color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
                   >
                     <tab.icon size={15} />
                     {tab.labelKey ? t(tab.labelKey) : tab.label}
-                    {/* ★教室に在籍していることの目印（2026-09-02・Opus の裁定）。
-                        ★数は出しません。数を出すと「片づけるもの」に見えます。
-                          連続記録をやめたのと同じ理由です。
-                        ★あるか無いか、それだけ。押させる催促にしないこと。
-                        ★ホームの「所属教室: 2」と役割が違います。
-                          あちらはホームに居るときだけ。こちらはどのタブからでも。 */}
-                    {tab.key === "more" && myEnrollments.length > 0 && (
-                      <span aria-hidden="true" style={{
-                        width: 6, height: 6, borderRadius: "50%",
-                        background: activeTab === tab.key ? "#FFFDF8" : C.curtain,
-                        flexShrink: 0
-                      }} />
-                    )}
                   </button>
                 )
               ))}
             </nav>
+            </div>
+            {/* ★右端に固定。流れません。 */}
+            {displayTabs.filter((tab) => tab.key === "more").map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className="flex items-center gap-1 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap shrink-0"
+                style={{ background: activeTab === tab.key ? C.curtain : C.paper,
+                         color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
+              >
+                <tab.icon size={15} />
+                {tab.labelKey ? t(tab.labelKey) : tab.label}
+              </button>
+            ))}
             </div>
           );
         })()}
@@ -11257,21 +11269,37 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               const isRecordedToday = !!todayEntry;
               return (
                 <div className="space-y-4">
-                  {/* ★所属している教室の数（2026-09-02・Opus の裁定）。
-                      ★レッスンのタブ1つに頼らない、という趣旨です。
-                        タブは横スクロールする帯の4番目にあり、
-                        画面の幅によっては★見えないところに居ます。
-                      ★小さく、静かに出します。押せる案内にはしません
-                        （タブがあるのに、行き先を2つ作らないため）。
-                      ★数だけです。教室の名前はここに出しません
-                        （ホームは自分の記録の場所で、教室の場所ではない）。 */}
+                  {/* ★所属している教室のカード（2026-09-02・Opus の裁定）。
+                      ★点はやめました。点は「未読」に読めます。
+                        教室のつながりに未読はありません。消えない点は、
+                        止まらない催促です（今日の「急かさない」と同じ線）。
+                      ★数だけでも足りません。教室の名前と担当の先生を出して、
+                        探しに行かなくても分かるようにします。
+                      ★行き先は1つ（レッスン→習う）。ここは入口で、置き場ではありません。 */}
                   {myEnrollments.length > 0 && (
-                    <p className="text-xs" style={{ color: C.inkSoft }}>
-                      所属教室: {myEnrollments.length}　
-                      <span style={{ color: C.inkSoft }}>
-                        （レッスン → 習う で見られます）
+                    <button type="button"
+                      onClick={() => { setActiveTab("lesson"); setLessonRoleChoice("learn"); }}
+                      className="w-full rounded-2xl p-4 border text-left"
+                      style={{ background: C.card, borderColor: C.line }}>
+                      {myEnrollments.map((en) => {
+                        const teacherIds = myAssignedTeachers[en.org_id] || [];
+                        return (
+                          <span key={en.id} className="block mb-1 last:mb-0">
+                            <span className="block text-sm font-medium" style={{ color: C.ink }}>
+                              {en.org ? en.org.name : "（教室名を読み込めませんでした）"}
+                            </span>
+                            {teacherIds.map((tid) => (
+                              <span key={tid} className="block text-xs" style={{ color: C.inkSoft }}>
+                                {t("assignedTeacherLabel")}：{orgDisplayName(tid)}
+                              </span>
+                            ))}
+                          </span>
+                        );
+                      })}
+                      <span className="block text-xs mt-2" style={{ color: C.curtain }}>
+                        つながりを見る →
                       </span>
-                    </p>
+                    </button>
                   )}
                   {/* 1回だけの知らせ（lib/notices.js）。
                       ★出すのは、まだ既読でなく、かつ文字が既定の大きさのときだけ。
