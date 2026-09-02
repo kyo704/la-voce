@@ -170,6 +170,36 @@ console.log("\n=== ★profiles は、手で消さない（2026-09-02） ===");
     "★ほかの表で失敗していたら、auth.users を消しに行かない");
 }
 
+console.log("\n=== ★止まった表の名前を、その場で分かるようにする（2026-09-02） ===");
+{
+  // ★+g4t3 の退会が止まったとき、原因が分かるまでに何度もやり取りが要り、
+  //   最後は Vercel のログを見て決着しました。
+  //   ★止まった表の名前さえ分かれば、その場で見当がつきます。
+  assertTrue(/failedTables: failures\.map\(\(f\) => f\.table\)/.test(api),
+    "★止まった表の名前を返している");
+  assertTrue(/★退会が止まった表:/.test(tracker),
+    "★画面がコンソールに出している");
+
+  // ★message は返さないこと。列名や制約の名前が入るため。
+  const block = api.slice(api.indexOf("一部のデータを削除できませんでした。お手数"),
+                          api.indexOf("一部のデータを削除できませんでした。お手数") + 400);
+  assertTrue(!/f\.message|failures\b(?!\.map)/.test(block.replace(/failures\.map/g, "")),
+    "★中身（message）は返していない");
+  // ★コメントを外して検査すること。上の説明文に
+  //   「column X does not exist」を例として書いてあるため、
+  //   生のまま検査すると★自分の説明に引っかかります。
+  //   （CLAUDE.md に書いてある罠。今日4回目です）
+  assertTrue(!/does not exist|not-null|constraint/.test(readCode("app/api/account/delete", "route.js")),
+    "★制約や列の言葉を、そのまま外に出していない（★コメントを外して検査）");
+
+  // ★利用者に見せる文は変えないこと
+  assertTrue(/一部のデータを削除できませんでした。お手数ですが、時間をおいてもう一度お試しください。/.test(api),
+    "利用者向けの文は、これまでどおり");
+  // ★画面に表の名前を出さないこと（console だけ）
+  assertTrue(!/setDeleteError\([^)]*failedTables/.test(tracker),
+    "★画面には表の名前を出していない");
+}
+
 console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
 if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }
 console.log("\n✓ すべて成功しました。");

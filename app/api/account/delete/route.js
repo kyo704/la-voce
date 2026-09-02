@@ -150,8 +150,21 @@ export async function POST(request) {
     }
     if (!ok) {
       console.error("アカウント削除：一部のデータを削除できませんでした。", failures);
+      // ★どの表で止まったかだけ、画面にも返します（2026-09-02）。
+      //
+      //   ★2026-09-02、+g4t3 の退会が止まりました。原因が分かるまでに
+      //     何度もやり取りが要り、最後は Vercel のログを見て決着しました。
+      //     ★止まった表の名前さえ分かれば、その場で見当がつきます。
+      //
+      //   ★出すのは★表の名前だけです。message は出しません。
+      //     中身には列名や制約の名前が入り、外に出す理由がありません
+      //     （「column X does not exist」「violates not-null constraint」など）。
+      //   ★利用者に見せる文は変えません。名前は console 用です。
       return NextResponse.json(
-        { error: "一部のデータを削除できませんでした。お手数ですが、時間をおいてもう一度お試しください。" },
+        {
+          error: "一部のデータを削除できませんでした。お手数ですが、時間をおいてもう一度お試しください。",
+          failedTables: failures.map((f) => f.table)
+        },
         { status: 500 }
       );
     }

@@ -8892,6 +8892,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       }
       if (!res.ok) {
         setDeleteStatus("error");
+        // ★どの表で止まったかを、コンソールに出します（2026-09-02）。
+        //   ★画面の文は変えません。利用者に表の名前を見せる意味はありません。
+        //   ★これが無かったために、+g4t3 のときは Vercel のログを
+        //     見にいくまで原因が分かりませんでした。
+        if (Array.isArray(data.failedTables) && data.failedTables.length > 0) {
+          console.error("★退会が止まった表:", data.failedTables.join(", "));
+        }
         setDeleteError(data.error || "削除できませんでした。");
         return;
       }
