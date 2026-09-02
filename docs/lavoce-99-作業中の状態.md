@@ -42,7 +42,27 @@ supabase/migration_drop_teacher_entries_policy.sql    実行済み・確認ず�
                                                 （見える生徒の記録 1 → 0）
 supabase/migration_org_events.sql               実行済み（実機で4段階とも通過）
 supabase/migration_backfill_orphan_org_memberships.sql  ★未実行
+supabase/migration_protect_owner_role.sql       ★実行の確認が取れていない
+                                                （報告のポリシー名が違うため）
+supabase/migration_org_member_names.sql         ★未実行（入れるまで名前は出ません）
+supabase/check_admin_can_demote_owner.sql       ★未実行（調べるだけ）
+supabase/check_owner_role_protection.sql        ★未実行（5場面・rollback します）
+supabase/check_member_name_visibility.sql       ★未実行（調べるだけ）
 ```
+
+★`migration_protect_owner_role.sql` が入ったかどうかが、はっきりしません。
+実地で「責任者がオーナーの役割を変えられなかった」ことは確かめられましたが、
+報告に出たポリシー名 `memberships_update_self_only` は★私が書いたものではありません
+（私の3本は memberships_restrict_… です）。
+　→ もともと本番にあった別のポリシーが止めた可能性があります。
+　→ その場合、UPDATE はもとから本人の行だけ、ということになりますが、
+　　 それだと★オーナーが責任者を任命できないはずで、最初の報告と矛盾します。
+　→ `check_admin_can_demote_owner.sql` の①（ポリシー一覧）で決着します。
+
+★確かめたのは5場面のうち1つだけです（責任者→オーナーの降格）。
+　★とくに④「オーナーが自分で降りられるか」と
+　　⑤「最初の1人が教室を作れるか」は、★1行返らなければいけません。
+　　0行なら締めすぎで、⑤が0行だと★誰も新しい教室を作れません。
 
 ★`migration_backfill_orphan_org_memberships.sql` は「数えてから直す」形です。
 ①の結果を先に見てください。0件なら直すものはありません
