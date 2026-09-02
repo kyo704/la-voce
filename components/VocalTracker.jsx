@@ -9660,13 +9660,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     await supabase.from("lessons").delete().eq("id", lessonId);
     fetchLessonsForLink(linkId);
   }
-  // 生徒として、自分の直近のレッスン予定を取得する（複数の先生分をまとめて）。
-  async function fetchMyUpcomingLessons() {
-    const supabase = createClient();
-    const { data } = await supabase.from("lessons").select("*, link:teacher_student_links!inner(student_id)")
-      .eq("link.student_id", userId).order("scheduled_at", { ascending: true }).limit(100);
-    setMyUpcomingLessons(data || []);
-  }
+  // ★fetchMyUpcomingLessons は 2026-09-02 に消しました。
+  //   ★定義されているだけで、どこからも呼ばれていませんでした。
+  //   中身は fetchMyAllLessons に吸収されています。あちらは
+  //   1対1のレッスンと教室のレッスンを合わせて重複を除き、
+  //   ★setMyAllLessons と setMyUpcomingLessons の両方を入れます。
+  //   古いほうは student_id 側しか見ないので、残っていると
+  //   ★呼んだ瞬間に教室のレッスンが消えます。動かないより危ないので消しました。
 
 
   // 職業別項目の再設計と学ぶ画面 §7: 学ぶ画面。章の開閉状態は保存し、次に開いたときも前回のままにする。
@@ -10074,11 +10074,24 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     fetchMyOrgEvents();
   }
   // C-2: 役割の変更（最後のownerは降格・削除できない）
+  // ★守るのは「最後のオーナー」ではなく「最後の運営者」です（2026-09-02・Opus の裁定）。
+  //   前は owner だけを数えていました。ですが admin だけが1人いる教室では、
+  //   ★その人が自分を講師に落とすと、運営できる人が0になります。
+  //   オーナーが居ないので「最後のオーナー」の判定には引っかからず、通っていました。
+  //   共同オーナーのときと同じ形です。★役割の名前ではなく、
+  //   「運営できる人が何人残るか」で数えます。
+  //
+  // ★これは画面側の歯止めであって、権限の壁ではありません。
+  //   運営者が0になって困るのは、その教室の人たちです。攻撃ではありません。
+  //   だから DB では止めていません。ここで止めるのが釣り合っています。
+  const ORG_OPERATOR_ROLES = ["owner", "admin"];
   async function handleChangeRole(orgId, membershipId, targetUserId, newRole) {
     const members = orgMembers[orgId] || [];
-    const owners = members.filter((m) => m.role === "owner");
-    if (owners.length === 1 && owners[0].user_id === targetUserId && newRole !== "owner") {
-      alert("最後のownerを降格することはできません。");
+    const operators = members.filter((m) => ORG_OPERATOR_ROLES.includes(m.role));
+    const targetIsOperator = operators.some((m) => m.user_id === targetUserId);
+    const stillOperator = ORG_OPERATOR_ROLES.includes(newRole);
+    if (operators.length === 1 && targetIsOperator && !stillOperator) {
+      alert("この教室を運営できる人が、いなくなってしまいます。先に、ほかの方を「教室の責任者」にしてください。");
       return;
     }
     const supabase = createClient();
