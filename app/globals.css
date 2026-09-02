@@ -251,23 +251,23 @@ button {
 .nav-scroll-wrap {
   position: relative;
 }
-.nav-scroll-wrap::before,
-.nav-scroll-wrap::after {
+/* ★右端の覆い（::after）は 2026-09-02 に外しました。
+   もっと を右端に固定したため、覆いが★流れる帯の右端 28px に重なり、
+   ちょうどそこに居た「レッスン」を、地の色（#F6F1E7）で塗りつぶしていました。
+   ★アイコンだけが見えて、文字が1つも出ない状態です（実機で確認）。
+   「まだ続く」を知らせる役目は、★固定した もっと が引き継ぎました。
+   ★左端（::before）は残します。スクロールしたときに
+     「戻る先がある」と分かるのは、こちらだけです。 */
+.nav-scroll-wrap::before {
   content: "";
   position: absolute;
   top: 0;
   bottom: 0;
+  left: 0;
   width: 28px;            /* ★14px では気づけなかったので広げる */
   pointer-events: none;   /* 覆いがタブの上に乗っても、押せなくならないように */
   z-index: 1;
-}
-.nav-scroll-wrap::before {
-  left: 0;
   background: linear-gradient(to right, #F6F1E7 0%, rgba(246, 241, 231, 0) 100%);
-}
-.nav-scroll-wrap::after {
-  right: 0;
-  background: linear-gradient(to left, #F6F1E7 0%, rgba(246, 241, 231, 0) 100%);
 }
 .nav-scroll::-webkit-scrollbar {
   display: none;

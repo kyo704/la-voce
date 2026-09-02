@@ -264,10 +264,20 @@ async function main() {
     //   動かない外枠に、覆いとして重ねる形にしている。
     assertTrue(!/\.nav-scroll\{[^}]*mask-image/.test(css.replace(/\s+/g, "")),
       "★スクロールする要素にマスクをかけていない");
-    assertTrue(/\.nav-scroll-wrap::before/.test(css) && /\.nav-scroll-wrap::after/.test(css),
-      "両端に覆いを重ねている（まだ続くと分かる）");
+    // ★右端の覆い（::after）は 2026-09-02 に外しました。
+    //   もっと を右端に固定したところ、覆いが流れる帯の右端 28px に重なり、
+    //   ちょうどそこに居た「レッスン」を地の色で塗りつぶしていました。
+    //   ★アイコンだけが見えて、文字が1つも出ない状態です（実機で確認）。
+    //   「まだ続く」は、固定した もっと が知らせます。
+    assertTrue(/\.nav-scroll-wrap::before/.test(css),
+      "左端に覆いがある（戻る先があると分かる）");
+    assertTrue(!/\.nav-scroll-wrap::after/.test(css),
+      "★右端の覆いは無い（固定した もっと が役目を引き継いだ）");
     assertTrue(/pointer-events: none/.test(css.slice(css.indexOf(".nav-scroll-wrap::before"))),
       "★覆いがタブの上に乗っても、押せなくならない");
+    // ★もっと が帯の外に固定されていること（覆いの役目を引き継いだ相手）
+    assertTrue(/displayTabs\.filter\(\(tab\) => tab\.key === "more"\)/.test(uiCode),
+      "★もっと を右端に固定している");
     assertTrue(/nav-scroll-wrap/.test(uiCode), "画面が外枠を使っている");
     assertTrue(/scroll-padding-inline/.test(css), "端でタブが縁に貼りつかない");
 
