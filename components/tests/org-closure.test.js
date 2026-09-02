@@ -279,8 +279,57 @@ function fakeClient(tables) {
       organizations: [{ id: "org-1", name: "音楽学校A", created_by: ME }]
     });
     const r = await oc.classifyOwnedOrgs(c, ME);
-    assertTrue(r.blocked.length === 0,
-      "★いまの規則では止まらない（運営者は残る）");
+    assertTrue(r.blocked.length === 0, "★止めない（運営できる人は残る）");
+    // ★2026-09-02・Opus の裁定：止めないが、契約者が居なくなることは知らせる
+    assertTrue(r.payer.length === 1, "★契約者が居なくなる教室として拾う");
+    assertTrue(r.payer[0].name === "音楽学校A", "教室の名前が入っている");
+    assertTrue(r.solo.length === 0, "教室を消しもしない");
+  }
+
+  console.log("\n=== ★契約者の知らせ：出す場面と、出さない場面 ===");
+  {
+    // ① 責任者が抜ける（オーナーではない）→ 出さない
+    const c1 = fakeClient({
+      memberships: [
+        { org_id: "org-1", user_id: ME, role: "admin" },
+        { org_id: "org-1", user_id: OTHER, role: "owner" }
+      ],
+      enrollments: [{ org_id: "org-1", student_id: "stu-1", status: "active" }],
+      organizations: [{ id: "org-1", name: "音楽学校A", created_by: OTHER }]
+    });
+    const r1 = await oc.classifyOwnedOrgs(c1, ME);
+    assertTrue(r1.payer.length === 0, "★責任者が抜けるときは出さない（契約者ではない）");
+
+    // ② 運営者が0になる → blocked のほうへ（知らせは出さない）
+    const c2 = fakeClient({
+      memberships: [{ org_id: "org-1", user_id: ME, role: "owner" }],
+      enrollments: [{ org_id: "org-1", student_id: "stu-1", status: "active" }],
+      organizations: [{ id: "org-1", name: "音楽学校A", created_by: ME }]
+    });
+    const r2 = await oc.classifyOwnedOrgs(c2, ME);
+    assertTrue(r2.blocked.length === 1 && r2.payer.length === 0,
+      "★運営者が0になるときは、止めるほうだけ（二重に出さない）");
+
+    // ③ ほかに誰も居ない → solo（知らせも止めもしない）
+    const c3 = fakeClient({
+      memberships: [{ org_id: "org-1", user_id: ME, role: "owner" }],
+      organizations: [{ id: "org-1", name: "マイ教室", created_by: ME }]
+    });
+    const r3 = await oc.classifyOwnedOrgs(c3, ME);
+    assertTrue(r3.solo.length === 1 && r3.payer.length === 0 && r3.blocked.length === 0,
+      "★1人だけの教室は、そのまま閉じる");
+  }
+
+  console.log("\n=== ★知らせの中身 ===");
+  {
+    const n = oc.departingPayerNotice({ orgId: "org-1", name: "音楽学校A" }, "woolsong.app@gmail.com");
+    assertTrue(n.line === "あなたが退会すると、この教室の契約者がいなくなります。運営を続けるには、運営者にご連絡ください。",
+      "文言が指示どおり");
+    assertTrue(n.mailto.startsWith("mailto:woolsong.app@gmail.com"), "運営者あて");
+    assertTrue(n.mailto.includes(encodeURIComponent("教室ID: org-1")),
+      "★件名に教室IDが入っている（名前では特定できないため）");
+    // ★選択肢を作らないこと（止めていないので、閉じる道を並べない）
+    assertTrue(!n.choices, "★選択肢を出していない");
   }
 
   console.log("\n=== ★閉じる権限は、広げていない ===");

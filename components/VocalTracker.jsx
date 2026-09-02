@@ -86,7 +86,7 @@ import { symptomsByLocation, dinnerToBedSummary, LOCATION_FOOTNOTE } from "@/lib
 //     「予定から活動の種類を先に選んでおく」は、まだ画面につながっていません。
 import OrgEventList from "@/components/OrgEventList";
 import { buildLinkConsentRow, buildUnlinkPatch } from "@/lib/linkConsent";
-import { departingOwnerNotice, transferMailto, CLOSE_ORG_KEEP_LINE, CLOSE_ORG_DELETE_LINE } from "@/lib/orgClosure";
+import { departingOwnerNotice, transferMailto, CLOSE_ORG_KEEP_LINE, CLOSE_ORG_DELETE_LINE, DEPARTING_PAYER_LINE } from "@/lib/orgClosure";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
 // 書き出しに添える「記録の控え」。★解釈を1つも書かない。文言と禁止語はこの1か所。
 // 発声量（G2-10.5）。★種別の重みと、実測／推定の区別はこの1か所が持つ。
@@ -8818,6 +8818,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★オーナーの退会を止めたときの、その教室の一覧（判断 2026-09-01）。
   //   ここに1つでも入っていたら、退会の処理は何も始まっていません。
   const [blockedOrgs, setBlockedOrgs] = useState([]);
+  // ★止めないが、契約者が居なくなる教室（2026-09-02）。
+  //   ★消したあとに知らせても意味がないので、先に一度だけ出します。
+  const [payerOrgs, setPayerOrgs] = useState([]);
+  const [payerAcknowledged, setPayerAcknowledged] = useState(false);
   const [closeOrgTarget, setCloseOrgTarget] = useState(null);   // 閉じようとしている教室
   const [closeOrgConfirm, setCloseOrgConfirm] = useState("");
   const [closeOrgStatus, setCloseOrgStatus] = useState("idle"); // idle | working | error
@@ -8848,7 +8852,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       const res = await fetch("/api/account/delete", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ confirmation: deleteConfirmText, password: deletePassword, mode })
+        body: JSON.stringify({ confirmation: deleteConfirmText, password: deletePassword, mode, acknowledgePayerNotice: payerAcknowledged })
       });
       const data = await res.json().catch(() => ({}));
       // ★成否にかかわらず、パスワードは手元から消します。画面にも残しません。
@@ -8859,6 +8863,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       if (res.status === 409 && data.blocked) {
         setBlockedOrgs(data.orgs || []);
         setDeleteStatus("blocked");
+        return;
+      }
+      // ★止めてはいません。契約者が居なくなることを、先に1度だけ知らせます。
+      //   ★了解を押したら、もう一度この処理に入り、そのまま進みます。
+      if (res.status === 409 && data.payerNotice) {
+        setPayerOrgs(data.orgs || []);
+        setDeleteStatus("payerNotice");
         return;
       }
       if (!res.ok) {
@@ -16508,6 +16519,40 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 })}
                 {/* ★教室を全部片付けたら、もう一度どうぞ、と伝えます。
                     ★自動では進めません。押し直すのは本人の判断です。 */}
+                {/* ★契約者が居なくなる知らせ（2026-09-02・Opus の裁定）。
+                    ★止めていません。選択肢も出しません。
+                      「教室を閉じる」を並べると、閉じなくてよい教室を
+                      閉じさせてしまいます。知らせと、連絡先と、続ける道だけ。 */}
+                {deleteStatus === "payerNotice" && payerOrgs.map((org) => (
+                  <div key={org.orgId} className="rounded-2xl p-4 space-y-3"
+                    style={{ background: C.card, border: `1px solid ${C.gold}`, borderWidth: 2 }}>
+                    <p className="text-sm font-medium" style={{ color: C.ink }}>{org.name}</p>
+                    <p className="text-sm leading-relaxed" style={{ color: C.ink }}>
+                      {org.notice ? org.notice.line : DEPARTING_PAYER_LINE}
+                    </p>
+                    <a href={org.notice ? org.notice.mailto : "#"}
+                      className="block w-full rounded-2xl p-3 text-left"
+                      style={{ background: C.paper, border: `1px solid ${C.line}` }}>
+                      <span className="block text-sm font-medium" style={{ color: C.curtain }}>
+                        {org.notice ? org.notice.mailtoLabel : "運営者に連絡する"}
+                      </span>
+                    </a>
+                  </div>
+                ))}
+                {deleteStatus === "payerNotice" && (
+                  <button type="button"
+                    onClick={() => { setPayerAcknowledged(true); setDeleteStatus("idle"); }}
+                    className="w-full rounded-2xl p-3"
+                    style={{ background: C.paper, border: `1px solid ${C.line}` }}>
+                    <span className="block text-sm font-medium" style={{ color: C.ink }}>
+                      了解しました。退会を続けます
+                    </span>
+                    <span className="block text-xs mt-0.5" style={{ color: C.inkSoft }}>
+                      もう一度「削除する」を押してください
+                    </span>
+                  </button>
+                )}
+
                 {deleteStatus === "blocked" && blockedOrgs.length === 0 && (
                   <p className="text-sm rounded-2xl p-3" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.ink }}>
                     教室を閉じました。続けるときは、下のボタンをもう一度お押しください。

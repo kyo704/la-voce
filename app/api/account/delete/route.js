@@ -3,7 +3,8 @@ import { createClient as createPlainClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { purgeAccount, severConnections } from "@/lib/accountDeletion";
-import { classifyOwnedOrgs, departingOwnerNotice } from "@/lib/orgClosure";
+import { classifyOwnedOrgs, departingOwnerNotice, departingPayerNotice } from "@/lib/orgClosure";
+import { OPERATOR_CONTACT_EMAIL } from "@/lib/brand";
 import { getUserWithTimeout } from "@/lib/withTimeout";
 
 // ============================================================================
@@ -109,6 +110,26 @@ export async function POST(request) {
     return NextResponse.json({
       blocked: true,
       orgs: orgs.blocked.map((o) => ({ ...o, notice: departingOwnerNotice(o.otherCount) }))
+    }, { status: 409 });
+  }
+
+  // ==========================================================================
+  // ★止めないけれど、契約者が居なくなる教室（2026-09-02・Opus の裁定）
+  //
+  //   ★「教室を動かせるか」と「誰が払うか」は、別の問いです。
+  //     責任者が残っていれば教室は動くので、★止めません。
+  //     ですが契約者は居なくなるので、★黙っても通しません。
+  //
+  //   ★一度だけ知らせて、了解したら進みます。
+  //     消したあとに知らせても、意味がありません。
+  //   ★生徒には出ません。生徒は契約者ではないので、payer に入りません。
+  // ==========================================================================
+  if (orgs.payer.length > 0 && !body.acknowledgePayerNotice) {
+    return NextResponse.json({
+      payerNotice: true,
+      orgs: orgs.payer.map((o) => ({
+        ...o, notice: departingPayerNotice(o, OPERATOR_CONTACT_EMAIL)
+      }))
     }, { status: 409 });
   }
 
