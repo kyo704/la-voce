@@ -101,6 +101,31 @@ console.log("\n=== ★正しい操作は通ること（締めすぎの防止） 
     "★消す前に、本文を控える select がある（repo に無いポリシーのため）");
 }
 
+console.log("\n=== ★自分で自分を owner にできないこと（2026-09-02 の事故） ===");
+{
+  // ★本番で起きたこと：責任者が★自分の行を owner に書き換えて、通った。
+  //   本番に入っていたのは memberships_update_role_management で、
+  //   その WITH CHECK は（報告どおりなら）こうでした。
+  //       (role = 'owner' AND auth.uid() = user_id) OR (role <> 'owner')
+  //   ★「前が何だったか」を見ていないので、
+  //     「オーナーが自分の行を触る」と「責任者が自分を上げる」が
+  //     ★同じ条件で通ります。
+  //
+  // ★この形が repo に紛れ込んだら落ちるようにします。
+  assertTrue(!/role = 'owner'\s+and\s+auth\.uid\(\) = user_id/i.test(sql),
+    "★「owner かつ本人」で許す形になっていない（自己昇格が通る形）");
+  assertTrue(!/auth\.uid\(\) = user_id\s*\)\s*or\s*\(\s*role <> 'owner'/i.test(sql),
+    "★（owner かつ本人）OR（owner でない）の形になっていない");
+
+  // ★正しい形：role <> 'owner' が WITH CHECK の AND の直下にあること。
+  //   これがあれば、自分の行でも owner は書けません。
+  const wc = sql.slice(sql.indexOf("memberships_restrict_owner_row_update"));
+  const wcBody = wc.slice(wc.indexOf("with check"), wc.indexOf(");", wc.indexOf("with check")));
+  assertTrue(/role <> 'owner'/.test(wcBody), "★WITH CHECK が owner を禁じている");
+  assertTrue(!/\bor\b/i.test(wcBody.replace(/--[^\n]*/g, "").replace(/role <> 'admin' or [^\n]*/g, "")),
+    "★owner の禁止が OR で緩められていない");
+}
+
 console.log("\n=== ★owner は UPDATE では書けない ===");
 {
   assertTrue(/with check \(\s*\n\s*--[^\n]*\n\s*role <> 'owner'/.test(sql),
