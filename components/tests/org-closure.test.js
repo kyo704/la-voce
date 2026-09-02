@@ -244,9 +244,43 @@ function fakeClient(tables) {
       organizations: [{ id: "org-1", name: "音楽学校A", created_by: OTHER }]
     });
     const r = await oc.classifyOwnedOrgs(c, ME);
-    assertTrue(r.blocked.length === 1, "★責任者の退会でも、止める教室が見つかる");
-    assertTrue(r.blocked[0].otherCount === 2, "オーナーと生徒の2人が数えられている");
-    assertTrue(r.solo.length === 0, "solo には入らない");
+    // ★2026-09-02 に見直しました。
+    //   オーナー（OTHER）が残るので、この教室は続きます。★止めません。
+    //   止めたときの文は「この教室の契約者がいなくなります」です。
+    //   オーナーが残っているのに出すと、★事実と違うことを言うことになります。
+    assertTrue(r.blocked.length === 0,
+      "★オーナーが残るなら、責任者の退会は止めない");
+    assertTrue(r.solo.length === 0, "教室を消しもしない（ほかに人が居る）");
+  }
+
+  console.log("\n=== ★運営できる人が居なくなるときは、止める ===");
+  {
+    // 責任者が1人だけ（オーナーが居ない教室）＋生徒が居る
+    const c = fakeClient({
+      memberships: [{ org_id: "org-1", user_id: ME, role: "admin" }],
+      enrollments: [{ org_id: "org-1", student_id: "stu-1", status: "active" }],
+      organizations: [{ id: "org-1", name: "音楽学校A", created_by: OTHER }]
+    });
+    const r = await oc.classifyOwnedOrgs(c, ME);
+    assertTrue(r.blocked.length === 1, "★運営者が0になるので、止める");
+    assertTrue(r.blocked[0].otherCount === 1, "生徒1人が数えられている");
+  }
+
+  console.log("\n=== ★オーナーが抜けて、責任者だけが残る場合 ===");
+  {
+    // ★いまの規則では止めません（運営できる人は残るため）。
+    //   ですが「契約者」は居なくなります。★坂本さんの判断待ちです。
+    const c = fakeClient({
+      memberships: [
+        { org_id: "org-1", user_id: ME, role: "owner" },
+        { org_id: "org-1", user_id: OTHER, role: "admin" }
+      ],
+      enrollments: [{ org_id: "org-1", student_id: "stu-1", status: "active" }],
+      organizations: [{ id: "org-1", name: "音楽学校A", created_by: ME }]
+    });
+    const r = await oc.classifyOwnedOrgs(c, ME);
+    assertTrue(r.blocked.length === 0,
+      "★いまの規則では止まらない（運営者は残る）");
   }
 
   console.log("\n=== ★閉じる権限は、広げていない ===");
