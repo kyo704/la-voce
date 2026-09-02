@@ -80,5 +80,24 @@ console.log("\n=== ★ホームにも数を出す（タブ1つに頼らない）
   assertTrue(!/<button|onClick/.test(homeBlock), "★押せるものにしていない");
 }
 
+console.log("\n=== ★もっと の点（在籍しているときだけ） ===");
+{
+  assertTrue(/tab\.key === "more" && myEnrollments\.length > 0/.test(src),
+    "在籍が1つ以上のときだけ出す");
+  // ★数を出さないこと。数は「片づけるもの」に見えます（連続記録と同じ理由）。
+  const dot = src.slice(src.indexOf('tab.key === "more" && myEnrollments'),
+                        src.indexOf('tab.key === "more" && myEnrollments') + 420);
+  assertTrue(!/myEnrollments\.length\}/.test(dot), "★点に数を出していない");
+  assertTrue(/borderRadius: "50%"/.test(dot), "丸い点である");
+  assertTrue(/width: 6, height: 6/.test(dot), "小さい（6px）");
+  assertTrue(/aria-hidden="true"/.test(dot),
+    "★読み上げには出さない（意味は隣の文字が持っている）");
+  // ★押させる催促にしないこと
+  assertTrue(!/animate|pulse|blink/.test(dot), "★点滅させていない");
+  // ホームの表示とは別物であること（役割が違う）
+  assertTrue(/所属教室: \{myEnrollments\.length\}/.test(src),
+    "ホームの表示は、これまでどおり数を出す");
+}
+
 console.log(`\n${failCount === 0 ? "✅ 全て通りました" : "❌ 失敗あり"}  成功:${passCount} 失敗:${failCount}`);
 process.exit(failCount === 0 ? 0 : 1);

@@ -11074,6 +11074,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   >
                     <tab.icon size={15} />
                     {tab.labelKey ? t(tab.labelKey) : tab.label}
+                    {/* ★教室に在籍していることの目印（2026-09-02・Opus の裁定）。
+                        ★数は出しません。数を出すと「片づけるもの」に見えます。
+                          連続記録をやめたのと同じ理由です。
+                        ★あるか無いか、それだけ。押させる催促にしないこと。
+                        ★ホームの「所属教室: 2」と役割が違います。
+                          あちらはホームに居るときだけ。こちらはどのタブからでも。 */}
+                    {tab.key === "more" && myEnrollments.length > 0 && (
+                      <span aria-hidden="true" style={{
+                        width: 6, height: 6, borderRadius: "50%",
+                        background: activeTab === tab.key ? "#FFFDF8" : C.curtain,
+                        flexShrink: 0
+                      }} />
+                    )}
                   </button>
                 )
               ))}
