@@ -113,12 +113,28 @@ console.log("\n=== ★1文字だけ切れるのを直す ===");
 {
   // ★全部見えれば「これで全部」、半分見えれば「まだ続く」と読めますが、
   //   1文字だけはみ出るのは、どちらにも読めません。
-  assertTrue(!/px-3\.5 py-2 rounded-full text-sm font-medium whitespace-nowrap/.test(src),
-    "★前の余白・文字の大きさが残っていない");
-  assertTrue(/gap-1 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap/.test(src),
-    "詰めた指定になっている");
+  // ★詰めるのは、狭い画面だけ（2026-09-02 の追加指示）。
+  //   PC・iPad は元のままにします。あちらは幅が足りていて、
+  //   ★そもそも見えなくなる問題が起きていません。
+  assertTrue(/gap-1 px-3 text-xs sm:gap-1\.5 sm:px-3\.5 sm:text-sm/.test(src),
+    "★狭い画面だけ詰め、sm 以上は元に戻している");
+  assertTrue(!/className="flex items-center gap-1 px-3 py-2 rounded-full text-xs/.test(src),
+    "★どの幅でも詰める書き方が残っていない");
   // ★ラベルそのものは変えないこと
   assertTrue(/tabLesson/.test(src), "★「レッスン」の呼び名は変えていない");
+}
+
+console.log("\n=== ★在籍の取得で、黙って消えないこと ===");
+{
+  // ★埋め込み（org:organizations）は、organizations が読めないと
+  //   要求ごと落ち、在籍が0件になります。
+  //   → レッスンのタブも、ホームのカードも、黙って消えます。
+  assertTrue(!/from\("enrollments"\)\.select\("\*, org:organizations/.test(src),
+    "★在籍の取得に、埋め込みを使っていない");
+  assertTrue(/from\("enrollments"\)\.select\("\*"\)/.test(src), "素で取っている");
+  assertTrue(/★在籍を読めませんでした/.test(src), "★読めなかったら、記録に残す");
+  assertTrue(/教室の名前を読めませんでした（在籍は読めています）/.test(src),
+    "★名前が読めなくても、在籍は消えない");
 }
 
 console.log("\n=== ★ホームのカード（探しに行かなくても分かる） ===");

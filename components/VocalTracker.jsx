@@ -9836,9 +9836,35 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // それぞれの教室での担当講師を取得する。
   async function fetchMyEnrollments() {
     const supabase = createClient();
-    const { data: enrollments } = await supabase.from("enrollments").select("*, org:organizations(*)").eq("student_id", userId).eq("status", "active");
+    // ★埋め込み（org:organizations）は、organizations が読めないと
+    //   ★要求ごと落ちます。生徒は enrollments を持っていても、
+    //   organizations の SELECT ポリシー（can_view_organization）は
+    //   ★membership を見ているので、通らない可能性があります。
+    //   落ちると enrollments が null になり、在籍が0件として扱われます。
+    //   → レッスンのタブも、ホームのカードも、黙って消えます。
+    // ★だから、まず素で取ります。名前は、取れたら足します。
+    const { data: enrollments, error: enrollError } = await supabase
+      .from("enrollments").select("*").eq("student_id", userId).eq("status", "active");
+    if (enrollError) {
+      console.error("★在籍を読めませんでした:", enrollError);
+    }
     setMyEnrollments(enrollments || []);
     if (enrollments && enrollments.length > 0) {
+      // ★教室の名前は、別に取ります（埋め込みにしない）。
+      //   読めなくても、在籍そのものは消えません。
+      const orgIds = [...new Set(enrollments.map((e) => e.org_id).filter(Boolean))];
+      const { data: orgRows, error: orgError } = await supabase
+        .from("organizations").select("id, name").in("id", orgIds);
+      if (orgError) {
+        console.warn("教室の名前を読めませんでした（在籍は読めています）:", orgError.message || orgError);
+      }
+      if (orgRows && orgRows.length > 0) {
+        const byId = {};
+        orgRows.forEach((o) => { byId[o.id] = o; });
+        setMyEnrollments(enrollments.map((e) => ({ ...e, org: byId[e.org_id] || null })));
+      } else if (orgIds.length > 0) {
+        console.warn(`★教室の名前を取れた数: ${(orgRows || []).length}/${orgIds.length}`);
+      }
       const { data: assignments } = await supabase.from("assignments").select("*").eq("student_id", userId).is("ended_at", null).in("org_id", enrollments.map((e) => e.org_id));
       const map = {};
       (assignments || []).forEach((a) => { (map[a.org_id] = map[a.org_id] || []).push(a.teacher_id); });
@@ -11070,7 +11096,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     href={tab.key === "voicetheory" ? (PROFESSION_THEORY_PAGES[profile.vocal_profession] || tab.href) : tab.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap shrink-0 transition-all"
+                    className="flex items-center gap-1 px-3 text-xs sm:gap-1.5 sm:px-3.5 sm:text-sm py-2 rounded-full font-medium whitespace-nowrap shrink-0 transition-all"
                     style={{ background: "transparent", color: C.inkSoft }}
                   >
                     <tab.icon size={15} />
@@ -11080,7 +11106,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   <button
                     key={tab.key}
                     onClick={() => setActiveTab(tab.key)}
-                    className="flex items-center gap-1 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap shrink-0 transition-all"
+                    className="flex items-center gap-1 px-3 text-xs sm:gap-1.5 sm:px-3.5 sm:text-sm py-2 rounded-full font-medium whitespace-nowrap shrink-0 transition-all"
                     style={{ background: activeTab === tab.key ? C.curtain : "transparent", color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
                   >
                     <tab.icon size={15} />
@@ -11095,7 +11121,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className="flex items-center gap-1 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap shrink-0"
+                className="flex items-center gap-1 px-3 text-xs sm:gap-1.5 sm:px-3.5 sm:text-sm py-2 rounded-full font-medium whitespace-nowrap shrink-0"
                 style={{ background: activeTab === tab.key ? C.curtain : C.paper,
                          color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
               >
