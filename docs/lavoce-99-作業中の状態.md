@@ -34,7 +34,22 @@ supabase/migration_data_region.sql              ★実行の確認が取れて�
 supabase/migration_invitation_teacher_name.sql  実行済み
 supabase/check_activity_minutes_coverage.sql    実行済み（③=4日）
 supabase/migration_record_mode.sql              未実行（無くても動く）
+
+  ---- 2026-09-02 に足したもの ----
+supabase/migration_fix_lessons_org_null_policies.sql  実行済み・確認ずみ
+                                                （自分のものでない行 1 → 0）
+supabase/migration_drop_teacher_entries_policy.sql    実行済み・確認ずみ
+                                                （見える生徒の記録 1 → 0）
+supabase/migration_org_events.sql               実行済み（実機で4段階とも通過）
+supabase/migration_backfill_orphan_org_memberships.sql  ★未実行
 ```
+
+★`migration_backfill_orphan_org_memberships.sql` は「数えてから直す」形です。
+①の結果を先に見てください。0件なら直すものはありません
+（そのときは、403 の原因が別にあるということです）。
+★このファイルの⑤は、memberships と org_invitations のポリシーを出します。
+　lessons と entries は、どちらも手で当てられたポリシーが原因でした。
+　memberships のポリシーは、まだ一度も見ていません。
 
 ★`migration_cycle_periods.sql` の再実行をお願いしています。
 周期の二重書きを直す前に「今日の記録」から初日を付けた分が、
