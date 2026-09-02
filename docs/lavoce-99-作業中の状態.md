@@ -51,6 +51,15 @@ supabase/migration_org_member_names.sql         ★未実行（入れるまで�
 supabase/check_admin_can_demote_owner.sql       ★未実行（調べるだけ）
 supabase/check_owner_role_protection.sql        ★未実行（5場面・rollback します）
 supabase/check_member_name_visibility.sql       ★未実行（調べるだけ）
+supabase/restore_g4t3_membership.sql            実行ずみ（試験のため戻した）
+supabase/URGENT_fix_owner_self_promotion.sql    実行ずみ
+supabase/migration_role_rank_no_self_promotion.sql  ★実行の確認が取れていない
+
+★2026-09-02 の退会の件（責任者が止まらなかった）は、直って確認ずみです。
+　→ 権限の写し ④-4 に、経緯と実地の結果を書きました。
+★assignments の行が1つ残る件は、まだ分かっていません。
+　pg_constraint の confdeltype を見るまで、直し方を決められません。
+　+g4t3 の退会は、いまは正しく止まるので急ぎではありません。
 ```
 
 ★役割まわりは、2026-09-02 に決着しました（下は経緯の記録です）。
