@@ -10239,14 +10239,24 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     await supabase.from("assignments").update({ ended_at: new Date().toISOString() }).eq("id", assignmentId);
     fetchOrgDetail(orgId);
   }
-  // E-1: 教室のレッスンを作成する。teacherNoteは先生専用（生徒に表示しない）。
-  async function handleCreateOrgLesson(orgId, teacherId, studentId, dateStr, timeStr, note, teacherNote) {
+  // E-1: 教室のレッスンを作成する。
+  //
+  //   ★teacher_note を書くのをやめました（G-4・2026-09-03）。
+  //     ・書いているだけで、★どこからも読んでいませんでした。
+  //       先生のメモの本体は teacher_notes 表です（9674 / 9704 行）。
+  //     ・「先生専用（生徒に表示しない）」と書いていましたが、★届きます。
+  //       RLS は行単位で、列は隠せません。生徒自身の照会が
+  //       select("*") をしています（10260行）。
+  //       ★画面に出していないだけで、通信には乗ります。
+  //     ★引数からも外します。受け取れる口が残っていると、また書かれます。
+  //     列そのものは supabase/migration_drop_lessons_teacher_note.sql で落とします。
+  async function handleCreateOrgLesson(orgId, teacherId, studentId, dateStr, timeStr, note) {
     if (!dateStr) return;
     const supabase = createClient();
     const scheduledAt = new Date(`${dateStr}T${timeStr}:00`).toISOString();
     const { error } = await supabase.from("lessons").insert({
       org_id: orgId, teacher_id: teacherId, student_id: studentId,
-      scheduled_at: scheduledAt, note: note || "", teacher_note: teacherNote || "", created_by: userId
+      scheduled_at: scheduledAt, note: note || "", created_by: userId
     });
     if (error) { console.error("レッスンの登録に失敗しました:", error); return; }
     fetchOrgDetail(orgId);

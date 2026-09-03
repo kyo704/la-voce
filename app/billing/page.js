@@ -37,11 +37,17 @@ export default async function BillingPage() {
             background: C.card
           }}
         >
+          {/* ★ここが、実際に見えている文です（2026-09-03）。
+              REQUIRE_SUBSCRIPTION が有効でないので、この return より下へは進みません。
+              ★私は最初、下のほうの文だけを直しました。あちらは誰にも見えません。 */}
           <p style={{ fontSize: 14 }}>
-            現在、<strong>実験公開期間中につき、すべての機能を無料</strong>でご利用いただけます。
+            いまは、<strong>すべての機能を無料</strong>でお使いいただけます。
           </p>
           <p style={{ fontSize: 13, color: C.inkSoft, marginTop: 8, lineHeight: 1.7 }}>
-            クレジットカードの登録は不要です。今後、機能や料金プランを変更する場合はメールでお知らせします。
+            有料の提供は、まだ始まっていません。
+            自動的に有料に切り替わることはありません。
+            有料の提供を始めるときは、事前にお知らせします。
+            それまでにお預かりした記録は、そのまま残ります。
           </p>
         </div>
         <a
