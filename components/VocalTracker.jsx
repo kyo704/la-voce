@@ -17832,10 +17832,29 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               先生が記録の中身を見られる仕組みそのものを廃止したので、
                               ★選べるものが1つもありません。
                               チェックの一覧を置くと「選べば見せられる」という
-                              約束になってしまいます。つなぐか、つながないかだけです。 */}
+                              約束になってしまいます。つなぐか、つながないかだけです。
+
+                              ★2026-09-03 の訂正：上の「仕組みそのものを廃止した」は、
+                                ★entries については正しく、profiles については誤りでした。
+                                ポリシー profiles_connected_display_name により、
+                                つながっている相手から profiles の行が読める状態でした
+                                （既往症・常用薬・health_notes ほか）。
+                                ★同じ日にポリシーを落とし、返す列を3つに絞った関数
+                                （get_connected_names）に置き換えました。
+                                ★いま先生に渡るのは、表示名と職業だけです。 */}
+                          {/* ★文面を v2 に差し替えました（2026-09-03・LINK_AGREEMENT_VERSION）。
+                              ★「渡らないもの」より先に「渡るもの」を書きます。
+                              ★「見えません」ではなく「仕組みは、ありません」と書きます。
+                                約束は破れますが、無い仕組みは破れません。
+                              ★禁じた言い回しは lib/linkConsent.js の
+                                FORBIDDEN_LINK_PHRASES にあります。 */}
                           <p className="text-xs mb-3 leading-relaxed" style={{ color: C.ink }}>
-                            つながると、この先生とレッスンの予定を共有できるようになります。
-                            あなたの記録の中身は、先生には見えません。
+                            つながると、この先生とレッスンの予定を一緒に見られるようになります。
+                          </p>
+                          <p className="text-xs mb-3 leading-relaxed" style={{ color: C.ink }}>
+                            先生に伝わるのは、あなたの表示名と職業だけです。
+                            日々の記録（体調・声・睡眠・食事・メモなど）を先生が見る仕組みは、ありません。
+                            周期の記録も同じです。
                           </p>
                           <p className="text-xs mb-3" style={{ color: C.inkSoft }}>つながりの解除は、いつでもできます。</p>
                           {/* ★理由を、この画面にも出すこと（2026-09-01）。
