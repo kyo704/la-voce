@@ -310,7 +310,12 @@ button {
   max-width: 40em;
   /* ★行の途中で不自然に切れないように。 */
   line-break: strict;
-  overflow-wrap: anywhere;
+  /* ★anywhere は使いません。★display-prefs.test.js が禁じています。
+     ★理由：ドイツ語・ロシア語の長い語を、★語の途中で割ってしまうため。
+     ★break-word なら、★入りきらないときだけ割ります。
+     ★ここは日本語だけの画面ですが、★決まりは画面ごとに緩めません。
+       ★緩めた例外は、いつのまにか既定になります。 */
+  overflow-wrap: break-word;
 }
 .legal-doc h1 {
   /* ★題名だけは、Woolsong の見た目のままにします。 */
