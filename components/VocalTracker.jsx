@@ -17059,7 +17059,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             {activeTab === "withdrawConsent" && (
               <div className="space-y-4">
                 <button type="button" onClick={() => setActiveTab("profile")}
-                  className="text-xs underline" style={{ color: C.inkSoft }}>← 設定へもどる</button>
+                  className="text-xs underline" style={{ color: C.inkSoft }}>← もどる</button>
                 <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
                   <h2 className="ff-display italic text-xl mb-3">同意を撤回します</h2>
 
