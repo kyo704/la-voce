@@ -87,15 +87,21 @@ cycleReads.forEach((block, i) => {
     `★${i + 1}件目が、必ず自分の user_id を伴っている`);
 });
 
-console.log("\n=== ④ 教師が生徒の profiles から取る列 ===");
-// 教師画面が profiles から取るのは、名前と職業だけであること。
+console.log("\n=== ④ 他人の profiles を、直に読んでいないこと ===");
+// ★2026-09-03、見張る中身が変わりました。
+//   前は「直に読んでいる箇所が、名前と職業だけを取っているか」を見ていました。
+//   ★列を絞っていたのは★呼ぶ側で、DB の側は行ごと読ませていました
+//     （ポリシー profiles_connected_display_name。名前は「display_name だけ」
+//       と読めますが、RLS は行単位で列は絞れません）。
+//   ★呼ぶ側が絞っていることは、守りではありません。
+//     いまは関数の側で列を決めます（get_connected_names）。
 const teacherProfileSelects = [...ui.matchAll(/from\("profiles"\)\.select\("([^"]+)"\)[\s\S]{0,80}?\.in\("id"/g)]
   .map((m) => m[1]);
-assertTrue(teacherProfileSelects.length > 0, `教師が profiles を読む箇所が${teacherProfileSelects.length}件`);
-teacherProfileSelects.forEach((cols, i) => {
-  const hits = FORBIDDEN_KEYS.filter((k) => cols.split(/\s*,\s*/).includes(k));
-  assertEqual(hits, [], `★${i + 1}件目の列に禁止キーが無い（${cols}）`);
-});
+assertEqual(teacherProfileSelects, [],
+  "★他人の profiles を直に読む箇所が、1つも無い");
+const rpcCalls = [...ui.matchAll(/rpc\("get_connected_names"/g)];
+assertTrue(rpcCalls.length === 3,
+  `★代わりに get_connected_names を呼んでいる（${rpcCalls.length}件）`);
 
 console.log("\n=== ⑤ 共有カードは存在しない（作るときはここに検査を足すこと） ===");
 const hasShareCard = /opengraph-image|ImageResponse|satori/.test(ui);

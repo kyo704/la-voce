@@ -76,11 +76,46 @@
 **形**：「先生専用」「本人だけ」と書いた列が、`select("*")` で**そのまま渡る**。
 RLS は**行**単位で、列は隠せません。
 
-**出た回数**：3回（`get_student_entries` を作った理由／`entries` の先生ポリシー／
-`lessons.teacher_note`）
+**出た回数**：4回（`get_student_entries` を作った理由／`entries` の先生ポリシー／
+`lessons.teacher_note`／★`profiles_connected_display_name`。
+最後のものは、**本番で実際に他人の既往症が読める状態**でした）
 
 **防ぎ方**：列を絞るなら、サーバ側で返す列を決める（`SECURITY DEFINER` の関数）か、
 **その列を持たない**。★画面に出していないことは、渡していないことではありません。
+
+---
+
+## 6-2. ポリシーの名前が、列を指している
+
+**形**：`profiles_connected_display_name` のように、ポリシーの名前が
+**「この列だけ見せる」**と読める。作った人は、そのつもりだった。
+★**RLS は列を絞れません。** 行が読めれば、その行の**全部**が読めます。
+
+**出た回数**：1回（`profiles`。★`allergies` / `regular_medications` /
+`conditions`（既往症）/ `health_notes` / `is_under_18` / `line_user_id` が、
+つながっている相手から読める状態でした）
+
+★**これは6番の一種ですが、別に立てます。** 6番は「作るときの誤解」で、
+こちらは★**名前が、あとから読む人まで誤らせる**という害だからです。
+名前を信じたことが、そのまま漏れになりました。
+
+**★命名の規則（2026-09-03 から）**
+
+ポリシーの名前は、★**「誰がその行を見てよいか」**を書きます。
+★**「何の列を見せるつもりか」は、決して書きません。** RLS に、その力はありません。
+
+| 書いてよい | ★書いてはいけない |
+|---|---|
+| `profiles_own_row` | ~~`profiles_connected_display_name`~~ |
+| `profiles_connected_row` | ~~`lessons_public_note`~~ |
+| `entries_own_row` | ~~`profiles_name_only`~~ |
+
+★**列を絞りたいときは、ポリシーではなく関数を作ります**
+（`get_org_member_names` / `get_connected_names` と同じ形）。
+返す列を、関数の側で決めます。
+
+**防ぎ方**：`supabase/AUDIT_policies_by_using_clause.sql` を定期的に流す。
+★**名前を見ない。USING 句を見る。**
 
 ---
 

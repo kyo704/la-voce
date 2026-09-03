@@ -9730,7 +9730,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setMyTeachingLessons(deduped);
     const studentIds = Array.from(new Set(deduped.map((l) => l.student_id).filter(Boolean)));
     if (studentIds.length > 0) {
-      const { data: profilesData } = await supabase.from("profiles").select("id, display_name, vocal_profession").in("id", studentIds);
+      // ★profiles を直に引くのをやめました（2026-09-03）。
+      //   ポリシー profiles_connected_display_name は「名前だけ」と読めましたが、
+      //   ★RLS は行単位で、列は絞れません。行が読めれば全部読めていました。
+      //   ★返す列は関数の側で決めます（get_org_member_names と同じ形）。
+      const { data: profilesData } = await supabase
+        .rpc("get_connected_names", { p_ids: studentIds });
       if (profilesData) {
         const map = {};
         profilesData.forEach((p) => { map[p.id] = { displayName: p.display_name || "", vocalProfession: p.vocal_profession }; });
@@ -9934,7 +9939,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       setMyAssignedTeachers(map);
       const ids = (assignments || []).map((a) => a.teacher_id);
       if (ids.length > 0) {
-        const { data: profilesData } = await supabase.from("profiles").select("id, display_name, vocal_profession").in("id", ids);
+        // ★同上（2026-09-03）。返す列は関数の側で決めます。
+        const { data: profilesData } = await supabase
+          .rpc("get_connected_names", { p_ids: ids });
         if (profilesData) {
           const nameMap = {};
           profilesData.forEach((p) => { nameMap[p.id] = { displayName: p.display_name || "", vocalProfession: p.vocal_profession }; });
@@ -10281,7 +10288,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     // 先生の表示名をまとめて取得する（既存のorgDisplayName用のキャッシュに統合する）。
     const teacherIds = Array.from(new Set(deduped.map((l) => l.teacher_id).filter(Boolean)));
     if (teacherIds.length > 0) {
-      const { data: profilesData } = await supabase.from("profiles").select("id, display_name, vocal_profession").in("id", teacherIds);
+      // ★同上（2026-09-03）。返す列は関数の側で決めます。
+      const { data: profilesData } = await supabase
+        .rpc("get_connected_names", { p_ids: teacherIds });
       if (profilesData) {
         const map = {};
         profilesData.forEach((p) => { map[p.id] = { displayName: p.display_name || "", vocalProfession: p.vocal_profession }; });
