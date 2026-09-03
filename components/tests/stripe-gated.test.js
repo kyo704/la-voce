@@ -43,7 +43,15 @@ const 台 = readCode("lib/outboundRoutes.js");
 ok("Stripe の来歴が書かれている", /id: "stripe"/.test(台) && /StripeAuthenticationError/.test(台));
 ok("★『使っていない＝安全』と書いていない", !/使っていないので安全|何も出ていません/.test(台));
 
-console.log("\n④ A型・B型の区別");
+console.log("\n④ ★画面に入口があること（私が誤って『無い』と書いた点）");
+// ★入口が消えたと勘違いしないための見張りです。
+//   「画面に無いから安全」は、この repo で何度も誤りでした。
+const billing = readCode("app/billing/page.js");
+ok("★/billing は CheckoutButton を描画している", /<CheckoutButton\s*\/>/.test(billing));
+ok("★台帳が『入口がある』と書いている", /CheckoutButton/.test(台));
+ok("★台帳が『入口は無い』と書いていない", !/入口はありませんが/.test(台));
+
+console.log("\n⑤ A型・B型の区別");
 ok("kind がある", /kind: "custodial"/.test(台) && /kind: "processing"/.test(台));
 ok("★Supabase の場所が入った", /ap-northeast-1/.test(台));
 ok("★契約主体は、まだ書いていない（憶測で書かない）", /entity: null/.test(台));
