@@ -59,8 +59,15 @@ const 取込 = (p) =>
   //   ★見張るのは「全部空欄か」ではなく、★「確かめていないものを書いていないか」です。
   ok("★B型（中身を処理する）の契約主体は、1つも書かれていない",
     O.processingRoutesMissingEntity().length === O.processingRoutes().length);
+  // ★2026-09-03：Stripe も確定しました（運営者が請求書で確認・日本）。
+  //   見張るのは「どの道に入っているか」ではなく、
+  //   ★「入っている国には、確かめた出どころがあるか」です。
+  //   ここでは、確かめ終わったものの一覧と突き合わせます。
+  const 確かめた = ["supabase", "stripe"];
   ok("国が入っているのは、確かめた道だけ",
-    道.filter((r) => r.country).every((r) => r.id === "supabase"));
+    道.filter((r) => r.country).every((r) => 確かめた.includes(r.id)));
+  ok("★確かめていない道には、国を書いていない",
+    道.filter((r) => !確かめた.includes(r.id)).every((r) => !r.country));
   ok("★Supabase の場所は、確かめた値が入っている",
     /ap-northeast-1/.test(道.find((r) => r.id === "supabase").country || ""));
 
