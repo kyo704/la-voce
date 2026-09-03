@@ -34,6 +34,17 @@ const 取込 = (p) => import("data:text/javascript;base64," +
   ok("★v2 の文面も記録されている", /v2（2026-09-03）/.test(記録));
   ok("★再同意を求めない判断が書かれている", /再同意は求めません/.test(記録));
 
+  // ★版の文字列が、SQL 側と食い違っていないこと（2026-09-04）。
+  //   ★accept_teacher_invitation が、同意の台帳に版を書き込みます。
+  //     偽れないよう SQL に書き写してあるので、★2か所になっています。
+  //   ★片方だけ直されるのを、この検査が止めます。
+  const 関数 = fs.existsSync(path.join(根, "supabase/DRAFT_insert_functions.sql"))
+    ? readRaw("supabase", "DRAFT_insert_functions.sql") : "";
+  if (関数) {
+    ok("★SQL 側の版が、lib と一致している",
+      関数.includes("'" + L.LINK_AGREEMENT_VERSION + "'"));
+  }
+
   console.log("\n② 画面に、案A の文が出ていること");
   ok("渡るものを先に書いている", /先生に伝わるのは、あなたの表示名と職業だけです/.test(VT));
   ok("★「仕組みは、ありません」と書いている",
