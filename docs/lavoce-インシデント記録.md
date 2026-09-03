@@ -174,6 +174,10 @@ create unique index teacher_student_links_active_pair_idx
 
 ### 処置
 
+★**この穴は、まだ直っていません。**（2026-09-03 夜時点）
+★更新の側（この #006）は、明朝の直し待ちです。
+★作成の側は #007 で封じ込め済みですが、★**それは直しではありません。**
+
 ★**2026-09-03 03:52:03（UTC）、招待コード11件をすべて期限切れにしました。**
 これで `teacher_student_links` を新しく作る道が閉じています
 （`VocalTracker.jsx:9494` が `expires_at < now()` を見て弾きます）。
