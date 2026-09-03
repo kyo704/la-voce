@@ -7560,6 +7560,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   本人が付けていない場合と、profiles の行そのものが無い場合があります。
   //   ★読む人にできることは同じなので、言い分けません。
   const NAME_UNSET_LABEL = "名前未設定";
+  // ★名前を引く関数が失敗した／権限で弾かれた、を同じに扱います（2026-09-03）。
+  //   ★PostgREST は「関係する行が無い」と「権限が無い」を区別できません。
+  //     どちらも空で返ります。だから画面も、同じ1つの言い方にします。
+  //   ★空白のままにしないこと。読む人には、名前が無いのか壊れたのかが
+  //     分かりません。今日、埋め込み結合が黙って空になったのが、まさにそれでした。
+  const NAME_FETCH_FAILED_LABEL = "名前を表示できませんでした";
   const NAME_UNKNOWN_LABEL = "名前を読み込めませんでした";  // ★まだ見にいけていないとき（関数が呼べていない・移行が未実行など）。
   //   ★「名前未設定」と言い切らないこと。付けてある名前を、
   //     こちらが読めていないだけかもしれません。
@@ -9651,9 +9657,36 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }
   async function fetchTeacherLinks() {
     const supabase = createClient();
-    const { data: asTeacher } = await supabase.from("teacher_student_links").select("*, student:profiles!teacher_student_links_student_profile_fkey(vocal_profession, display_name)").eq("teacher_id", userId).eq("status", "active");
-    const { data: asStudent } = await supabase.from("teacher_student_links").select("*").eq("student_id", userId).eq("status", "active");
-    setMyStudentLinks(asTeacher || []);
+    // ★埋め込み結合（student:profiles!…）をやめました（2026-09-03）。
+    //   PostgREST の埋め込みは、内側の表にも RLS が効きます。
+    //   ★つまり、ここも profiles のポリシー頼みでした。
+    //     .from("profiles") と書いていないので、探しても出てきません。
+    //     ★3か所だと思っていたのは誤りで、これが4か所目でした。
+    //   ★列を2つに絞って書いていましたが、絞っていたのは呼ぶ側です。
+    //     ポリシーは行ごと読ませていたので、守りにはなっていません。
+    //   ★ポリシーを落としたあと、この埋め込みは★エラーになりません。
+    //     student が空になるだけです。画面は名前の代わりに職業を出すので、
+    //     ★壊れたことに気づけません。だから名前で引く形に替えます。
+    const { data: asTeacher } = await supabase.from("teacher_student_links")
+      .select("*").eq("teacher_id", userId).eq("status", "active");
+    const { data: asStudent } = await supabase.from("teacher_student_links")
+      .select("*").eq("student_id", userId).eq("status", "active");
+
+    // ★名前は関数から取ります。返る列は関数の側で決まります。
+    let links = asTeacher || [];
+    const ids = [...new Set(links.map((l) => l.student_id).filter(Boolean))];
+    if (ids.length > 0) {
+      const { data: names } = await supabase
+        .rpc("get_connected_names", { p_ids: ids });
+      const map = {};
+      (names || []).forEach((n) => {
+        map[n.id] = { display_name: n.display_name, vocal_profession: n.vocal_profession };
+      });
+      // ★呼ぶ側が読んでいる形（link.student）を変えません。
+      //   変えると、13378 / 13509 / 13574 の3か所も直すことになります。
+      links = links.map((l) => ({ ...l, student: map[l.student_id] || null }));
+    }
+    setMyStudentLinks(links);
     setMyTeacherLinks(asStudent || []);
   }
   // 指導者プラン実装仕様 §5: 生徒一覧の各カードを開いたときに、その生徒の記録を取得する。
@@ -13376,7 +13409,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               viewingStudentLink ? (() => {
                 const link = viewingStudentLink;
                 const studentProfessionLabel = t(PROFESSION_LABEL_KEYS[link.student && link.student.vocal_profession] || "professionSinger");
-                const studentDisplayName = (link.student && link.student.display_name) || studentProfessionLabel;
+                // ★link.student が null なら、引けなかったということです。
+                //   職業の名札で埋めると、★引けなかったことが隠れます。
+                const studentDisplayName = link.student
+                  ? (link.student.display_name || studentProfessionLabel)
+                  : NAME_FETCH_FAILED_LABEL;
                 return (
                   <div className="space-y-4">
                     <button type="button" onClick={() => setViewingStudentLink(null)}
@@ -13507,7 +13544,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <h3 className="ff-display italic text-lg" style={{ color: C.ink }}>{t("studentListTitle").replace("{n}", myStudentLinks.length)}</h3>
                 {myStudentLinks.map((link) => {
                   const studentProfessionLabel = t(PROFESSION_LABEL_KEYS[link.student && link.student.vocal_profession] || "professionSinger");
-                  const studentDisplayName = (link.student && link.student.display_name) || studentProfessionLabel;
+                  // ★link.student が null なら、引けなかったということです。
+                //   職業の名札で埋めると、★引けなかったことが隠れます。
+                const studentDisplayName = link.student
+                  ? (link.student.display_name || studentProfessionLabel)
+                  : NAME_FETCH_FAILED_LABEL;
                   return (
                     <div key={link.id} className="rounded-2xl border overflow-hidden" style={{ background: C.card, borderColor: C.line }}>
                       <button type="button"
@@ -13571,7 +13612,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           <p className="text-xs font-medium" style={{ color: C.ink }}>連携中の生徒（{myStudentLinks.length}人）</p>
                           {myStudentLinks.map((link) => (
                             <div key={link.id} className="rounded-xl p-3 flex items-center justify-between" style={{ background: C.paper }}>
-                              <span className="text-xs" style={{ color: C.inkSoft }}>{(link.student && link.student.display_name) || "生徒"}</span>
+                              <span className="text-xs" style={{ color: C.inkSoft }}>{link.student ? (link.student.display_name || "生徒") : NAME_FETCH_FAILED_LABEL}</span>
                               <button type="button" onClick={() => handleRevokeLink(link.id, "teacher")}
                                 className="text-xs underline" style={{ color: C.curtain }}>{t("disconnectButton")}</button>
                             </div>

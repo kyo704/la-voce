@@ -100,8 +100,12 @@ const teacherProfileSelects = [...ui.matchAll(/from\("profiles"\)\.select\("([^"
 assertEqual(teacherProfileSelects, [],
   "★他人の profiles を直に読む箇所が、1つも無い");
 const rpcCalls = [...ui.matchAll(/rpc\("get_connected_names"/g)];
-assertTrue(rpcCalls.length === 3,
+assertTrue(rpcCalls.length === 4,
   `★代わりに get_connected_names を呼んでいる（${rpcCalls.length}件）`);
+// ★4件目は埋め込み結合でした（2026-09-03）。
+//   .from("profiles") を探しても出てこない形です。
+assertTrue(!/select\("[^"]*profiles!/.test(ui),
+  "★profiles への埋め込み結合が無い（探しても出ない形の漏れ道）");
 
 console.log("\n=== ⑤ 共有カードは存在しない（作るときはここに検査を足すこと） ===");
 const hasShareCard = /opengraph-image|ImageResponse|satori/.test(ui);

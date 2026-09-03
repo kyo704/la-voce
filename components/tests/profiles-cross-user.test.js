@@ -42,9 +42,25 @@ if (違反.length) 違反.forEach((v) => console.log("      ", v));
 ok("★.in(\"id\", …) で profiles を引いていない",
   !/from\("profiles"\)[\s\S]{0,200}\.in\("id"/.test(VT));
 
-console.log("\n② 置き換えた3か所");
+console.log("\n①-2 ★埋め込み結合で profiles を引いていないこと");
+// ★これが4か所目でした（2026-09-03）。
+//   .from("profiles") と書いていないので、直の読み出しを探しても出ません。
+//     .from("teacher_student_links")
+//       .select("*, student:profiles!…_fkey(vocal_profession, display_name)")
+//   ★PostgREST の埋め込みは、内側の表にも RLS が効きます。
+//     つまり、ここも profiles のポリシー頼みでした。
+//   ★しかもポリシーを落とすと、エラーではなく★空になります。
+//     画面は代わりの文字を出すので、壊れたことに気づけません。
+ok("★profiles への埋め込み結合が無い", !/select\("[^"]*profiles!/.test(VT));
+ok("★別名つきの埋め込み（…:profiles(…)）も無い",
+  !/select\("[^"]*:profiles\(/.test(VT));
+
+console.log("\n② 置き換えた4か所");
 const rpc = [...VT.matchAll(/rpc\("get_connected_names"/g)];
-ok("get_connected_names を3か所で呼んでいる", rpc.length === 3);
+ok("get_connected_names を4か所で呼んでいる", rpc.length === 4);
+// ★呼ぶ側が読んでいる形（link.student）を変えていないこと。
+//   変えると、画面の3か所も直すことになります。
+ok("★link.student の形を保っている", /student: map\[l\.student_id\] \|\| null/.test(VT));
 
 console.log("\n③ 関数が、決めごとを書き写していないこと");
 ok("are_connected を呼んでいる", /public\.are_connected\(auth\.uid\(\), p\.id\)/.test(SQL));
