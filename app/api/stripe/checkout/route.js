@@ -55,7 +55,12 @@ export async function POST() {
     mode: "subscription",
     line_items: [{ price: process.env.STRIPE_PRICE_ID, quantity: 1 }],
     subscription_data: {
-      trial_period_days: 14,
+      // ★trial_period_days: 14 を消しました（2026-09-03・Opus §5）。
+      //   ★文言の嘘は3か所ありましたが、★動きの側にもありました。
+      //   ★サンドボックスであっても、値が残っていれば、いつか動きます。
+      //   ★お試し期間を設けるなら、★有料化を決めた日に、
+      //     ★利用規約・特商法の表記と同時に入れ直してください。
+      //   ★ここだけ先に戻さないこと。それが今回の形です。
       metadata: { supabase_user_id: user.id }
     },
     success_url: absoluteUrl("/dashboard"),
