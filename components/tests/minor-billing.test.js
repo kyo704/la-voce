@@ -64,8 +64,15 @@ ok("★年払いが無いと書く", lines.some((l) => /年ごとのお支払い
 ok("解約できると書く", lines.some((l) => /いつでも、ここから解約/.test(l)));
 ok("★返金の約束が入っている", lines.includes(m.REFUND_PROMISE));
 ok("連絡先が入っている", lines.some((l) => /woolsong\.app@gmail\.com/.test(l)));
-ok("★「この画面を見てもらい」が入っている",
-  /この画面を見てもらい/.test(m.MINOR_CONSENT_CHECKBOX));
+// ★2026-09-04 の追補 §5。★同じチェックで、当てはまる条文が変わります。
+//   ✕「この契約に同意します」… 民法5条1項。★あったことを証明しなければ効きません
+//   ◯「毎月◯◯円まで使ってよいと認めます」… 民法5条3項。★目的を定めた処分の許可
+ok("★★「認めます」の形になっている",
+  /使ってよいと認めます/.test(m.minorConsentCheckbox(500)));
+ok("★★「契約に同意します」と書いていない",
+  !/契約に同意/.test(m.minorConsentCheckbox(500)));
+ok("★金額の上限が入っている", /毎月500円まで/.test(m.minorConsentCheckbox(500)));
+ok("★価格が未定なら、仮の数字を書かない", /毎月◯◯円まで/.test(m.minorConsentCheckbox(null)));
 
 console.log("\n⑥ ★常設の1行は、1つだけであること");
 // ★3か所に出しますが、★文は1つです。★書き分けると、片方だけが古くなります。
@@ -83,6 +90,32 @@ for (const w of ["まだ", "忘れ", "途切れ", "連続", "達成", "頑張"])
     !m.RENEWAL_NOTICE_LINE.includes(w) && !m.MINOR_NOTICE_LINE.includes(w) &&
     !m.REFUND_PROMISE.includes(w));
 }
+
+console.log("\n⑦-2 ★期間の制限を、書かないこと");
+// ★未成年者の取消権は、成人してから5年です（民法126条）。
+//   ★17歳の方の契約は、22歳まで取り消せます。
+//   ★「30日以内に」と書くと、その権利を狭めたと読まれます。
+ok("★★日数の制限を書いていない", !/日以内|以内にお申し出|期限/.test(m.REFUND_PROMISE));
+ok("★区切っているのは金額（直近のお支払い）", /直近のお支払い/.test(m.REFUND_PROMISE));
+ok("★★日割りにしていない", !/日割り|按分/.test(code));
+
+console.log("\n⑦-3 ★「法律で決まっているため」と書かないこと");
+// ★15〜17歳について、これは法律が求めているものではありません。
+//   ★私たちの決まりです。★断言しないこと。
+ok("★★「法律で決まっている」と書いていない",
+  !/法律で決まって|法律上必要|法令により必要/.test(code));
+
+console.log("\n⑦-4 ★2つの同意は、1つにまとめないこと");
+ok("利用の同意は、前に出せる", m.mayFrontLoad(m.CONSENT_SCOPES.USAGE) === true);
+ok("★★連携の同意は、前に出せない", m.mayFrontLoad(m.CONSENT_SCOPES.CONNECTION) === false);
+ok("★知らない値でも、前に出さない", m.mayFrontLoad("なにか") === false);
+ok("★★無料の利用は、止めない", m.mayBlockFreeUsage() === false);
+
+console.log("\n⑦-5 ★フラグの名前");
+// ★得たかどうかを、アプリは知りません。★申告されたことだけを知っています。
+ok("★★declared という名前になっている",
+  m.GUARDIAN_CONSENT_FLAG === "guardian_consent_declared");
+ok("★★obtained という名前を使っていない", !/guardian_consent_obtained/.test(code));
 
 console.log("\n⑧ ★記録するもの（4つ）");
 const rec = m.buildMinorBillingRecord({ userId: "u1", band: B.TEEN, monthlyYen: 500, now: "2026-09-04T00:00:00.000Z" });
