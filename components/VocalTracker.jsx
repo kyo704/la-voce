@@ -10022,6 +10022,42 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     fetchMyEnrollments();
   }
   const [orgProfileNames, setOrgProfileNames] = useState({}); // userId -> {displayName, vocalProfession}
+  // ★講師の役の人が見る「自分の担当の生徒」だけの一覧（2026-09-04）。
+  //   ★orgAssignments とは別に持ちます。あちらはオーナー・責任者が
+  //     教室ぜんぶを読んだ結果で、★講師には0行しか返りません。
+  //   ★同じ入れ物を使うと、0行を「担当がいない」と読み違えます。
+  const [myOrgAssignments, setMyOrgAssignments] = useState({}); // orgId -> 自分が担当する assignments[]
+
+  // ★講師として、自分の担当だけを読みます。
+  //   ★assignments_select は (auth.uid() = teacher_id) OR … なので、
+  //     ★ポリシーを広げずに読めます（2026-09-04 に本番で確認済み）。
+  //   ★メンバー一覧・在籍の全体は読みません。読めませんし、要りません。
+  async function fetchMyOrgAssignments(orgId) {
+    const supabase = createClient();
+    const { data, error } = await supabase.from("assignments")
+      .select("*").eq("org_id", orgId).eq("teacher_id", userId).is("ended_at", null);
+    if (error) {
+      console.error("担当の生徒を読み込めませんでした:", error);
+      return;
+    }
+    setMyOrgAssignments((prev) => ({ ...prev, [orgId]: data || [] }));
+    // ★名前は関数から取ります。profiles は本人の行しか読めません。
+    const ids = [...new Set((data || []).map((a) => a.student_id).filter(Boolean))];
+    if (ids.length === 0) return;
+    const { data: names, error: nameError } = await supabase
+      .rpc("get_org_member_names", { p_org_id: orgId });
+    if (nameError) {
+      // ★名前が取れなくても、担当の一覧そのものは出します。
+      //   ★「読めなかった」ことは、画面の側で分かる文にします。
+      console.warn("教室のメンバーの名前を読み込めませんでした:", nameError);
+      return;
+    }
+    const map = {};
+    (names || []).forEach((n) => {
+      if (n && n.user_id) map[n.user_id] = { displayName: n.display_name || "", vocalProfession: null };
+    });
+    setOrgProfileNames((prev) => ({ ...prev, ...map }));
+  }
   // ---- 組織の予定（2026-09-02）----
   //   ★記録（entries）には一切触れません。押しても書きません。
   async function fetchMyOrgEvents() {
@@ -13761,6 +13797,50 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </p>
                   </div>
                 ))}
+
+                {/* ★講師の役の人にも、教室のカードを出します（2026-09-04・運営者の判断）。
+                    ★見せるのは「自分が担当している生徒」だけです。
+                      ・メンバー一覧 … 出しません（memberships_select が読ませません）
+                      ・在籍の全体   … 出しません
+                      ・予定の作成・招待の発行・役割の変更 … ★オーナーと責任者だけのまま
+                    ★「所属している教室が見えること」と「教室を運営できること」は、
+                      別の権利です。★講師は、自分の生徒を知っていてよい。
+                    ★ポリシーは1本も変えていません。assignments_select が
+                      (auth.uid() = teacher_id) を含むので、そのまま読めます。 */}
+                {canSeeBetaFeatures(profile) && myOrgs.filter((m) => m.role === "teacher").map((m) => {
+                  const orgId = m.org_id;
+                  const mine = myOrgAssignments[orgId] || [];
+                  return (
+                    <details key={`t-${orgId}`} className="rounded-2xl border"
+                      style={{ background: C.card, borderColor: C.line }}
+                      onToggle={(e) => { if (e.target.open) fetchMyOrgAssignments(orgId); }}>
+                      <summary className="p-4 text-sm font-medium cursor-pointer">
+                        {m.org ? m.org.name : "（教室情報を読み込めませんでした）"}（講師）
+                      </summary>
+                      <div className="px-4 pb-4 space-y-3">
+                        <p className="text-xs" style={{ color: C.inkSoft }}>
+                          担当している生徒さんの一覧です。教室の運営（予定の作成・招待・役割の変更）は、
+                          オーナーか教室の責任者にお願いしてください。
+                        </p>
+                        <div>
+                          <p className="text-xs font-medium mb-1.5">担当している生徒</p>
+                          {mine.length === 0 ? (
+                            /* ★「いません」と言い切らないこと。
+                                読み込めていないだけの場合と、見分けがつきません。 */
+                            <p className="text-xs" style={{ color: C.inkSoft }}>
+                              担当の生徒さんは、まだ登録されていません。
+                            </p>
+                          ) : mine.map((a) => (
+                            <div key={a.id} className="rounded-lg p-2 mb-1 text-xs"
+                              style={{ background: C.paper }}>
+                              {orgDisplayName(a.student_id)}さん
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </details>
+                  );
+                })}
 
                 {canSeeBetaFeatures(profile) && myOrgs.filter((m) => m.role === "owner" || m.role === "admin").map((m) => {
                   const orgId = m.org_id;
