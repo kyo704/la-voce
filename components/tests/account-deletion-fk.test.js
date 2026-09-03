@@ -72,10 +72,13 @@ const NO_ACTION_COLUMNS = [
   // ★2026-09-01、events を足して18表。events は auth.users を参照しているのに
   //   一覧から丸ごと漏れていて、退会が外部キー違反で失敗していました。
   // ★2026-09-02、org_event_participants を足して19表。
+  // ★2026-09-03、notice_targets を足して20表（TASK A）。
+  //   ★notice_batches は足しません。あちらは束そのもので、
+  //     1人の退会で送った記録が消えてはいけません。
   //   組織の予定に「出ます」と印をつけた記録です。本人のものなので、
   //   退会のときに一緒に消します。★中身は持ちません（印だけ）。
-  assertTrue(d.USER_OWNED_TABLES.length === 19,
-    `一覧は19表（いまは ${d.USER_OWNED_TABLES.length}）`);
+  assertTrue(d.USER_OWNED_TABLES.length === 20,
+    `一覧は20表（いまは ${d.USER_OWNED_TABLES.length}）`);
   assertTrue(d.USER_OWNED_TABLES.includes("org_event_participants"), "★出るという印が入っている");
   assertTrue(d.USER_OWNED_TABLES.includes("events"), "★events が入っている");
 
