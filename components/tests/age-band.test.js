@@ -94,6 +94,43 @@ const 全列 = (cols + ", " + consentCols).split(",").map((x) => x.trim());
 ok("★age_band が select に入っている", 全列.includes("age_band"));
 ok("★age_band_answered_at が select に入っている", 全列.includes("age_band_answered_at"));
 
+console.log("\n⑨ ★聞く場面（連携の手前だけ）");
+const VTraw = require("./_source").readRaw("components", "VocalTracker.jsx");
+const VTcode = VT;
+// ★ふだんの画面では聞きません。★答えを迫ることになります。
+ok("★連携の手前で聞いている", /setAskAgeBandFor\("connection"\)/.test(VTcode));
+ok("★聞く場面は1つだけ",
+  (VTcode.match(/setAskAgeBandFor\("/g) || []).length === 1);
+// ★shouldAskAgeBand を通すこと。★profile.age_band を直に見ないこと。
+const idx = VTcode.indexOf('setAskAgeBandFor("connection")');
+const 手前 = idx === -1 ? "" : VTcode.slice(Math.max(0, idx - 400), idx);
+ok("★shouldAskAgeBand を通している", /shouldAskAgeBand\(profile\)/.test(手前));
+ok("★profile.age_band を直に見ていない", !/profile\.age_band\s*===/.test(VTcode));
+
+console.log("\n⑩ ★言い方");
+ok("★生年月日を聞かないと書いてある", /生年月日はお聞きしません/.test(VTraw));
+ok("★あとから変えられると書いてある", /いつでも変えられます/.test(VTraw));
+// ★15〜17歳について、これは法律が求めているものではありません。
+//   ★私たちの決まりです。★断言しないこと。
+ok("★★「法律で決まっている」と書いていない",
+  !/法律で決まって|法律上必要|法令により必要/.test(VTcode));
+ok("★私たちの決まりとして、と書いている", /私たちの決まりとして/.test(VTraw));
+// ★3つとも押せること。★片方だけボタン、はしません。
+const 画面 = VTraw.slice(VTraw.indexOf('askAgeBandFor === "connection"'),
+                         VTraw.indexOf('askAgeBandFor === "connection"') + 2000);
+["15歳未満です", "15歳から17歳です", "18歳以上です"].forEach((l) => {
+  ok(`★「${l}」が押せる`, 画面.includes(l));
+});
+
+console.log("\n⑪ ★保存で、黙って失敗しないこと");
+const h = VTcode.indexOf("async function handleAnswerAgeBand");
+const 保存 = h === -1 ? "" : VTcode.slice(h, VTcode.indexOf("\n  }", h));
+ok(".select() を付けている", /\.select\("id"\)/.test(保存));
+ok("★0行も見ている", /length === 0/.test(保存));
+ok("★失敗を画面に出す", /setInviteLookupError/.test(保存));
+ok("★勝手に続けない（もう一度押していただく）",
+  /もう一度「確認」を押してください/.test(VTraw));
+
 console.log(`\n合計 ${通 + 否} 本：通過 ${通}／失敗 ${否}`);
 process.exit(否 ? 1 : 0);
 })();

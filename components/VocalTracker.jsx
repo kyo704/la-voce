@@ -110,7 +110,10 @@ import { EXPORTED_TABLES, EXPORTED_PROFILE_COLUMNS, entriesToCsv, buildExportPay
 //   ここで profile.is_under_18 を直に見ないこと。答えていない人を成人側へ倒してしまう。
 import {
   shouldAskAgeQuestion, mayAskForConsent, isTreatedAsMinor, hasAnsweredAgeQuestion,
-  answerToProfilePatch, skipToProfilePatch, adoptSignupAnswer
+  answerToProfilePatch, skipToProfilePatch, adoptSignupAnswer,
+  // ★3つの帯（2026-09-04）。★2択とは別の答えです。
+  shouldAskAgeBand, isTreatedAsMinorByBand, isUnder15Confirmed,
+  ageBandToProfilePatch, AGE_BANDS
 } from "@/lib/ageGate";
 import HealthInfo from "@/components/HealthInfo";
 import { ARTICLES, CHAPTER_LABELS, PROFESSION_LABELS, getArticlesForProfession, getArticleById } from "@/lib/learnContent";
@@ -4873,6 +4876,38 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [generatedInviteCode, setGeneratedInviteCode] = useState(null);
   const [inviteCodeInput, setInviteCodeInput] = useState("");
   const [inviteLookupError, setInviteLookupError] = useState("");
+  // ★年齢の帯を、いま聞いているか（2026-09-04）。
+  //   ★null なら聞いていません。★"connection" なら、連携の手前で聞いています。
+  //   ★ふだんの画面では聞きません。★必要になった場面だけです。
+  const [askAgeBandFor, setAskAgeBandFor] = useState(null);
+  const [ageBandBusy, setAgeBandBusy] = useState(false);
+
+  // ★帯の答えを保存します。★止めません。記録するだけです。
+  //   ★答えを変えることも、止めません（追補 §2.2）。
+  //     ★止めると、★正しく直そうとした人まで止まります。
+  async function handleAnswerAgeBand(band) {
+    const patch = ageBandToProfilePatch(band);
+    if (!patch || ageBandBusy) return;
+    setAgeBandBusy(true);
+    const supabase = createClient();
+    // ★0行を見ます。RLS で弾かれた更新は、エラーになりません。
+    const { data: saved, error } = await supabase.from("profiles")
+      .update(patch).eq("id", userId).select("id");
+    setAgeBandBusy(false);
+    if (error || !saved || saved.length === 0) {
+      console.error("★年齢の帯を保存できませんでした:", error);
+      setInviteLookupError("保存できませんでした。時間をおいて、もう一度お試しください。");
+      return;
+    }
+    setProfile((p) => ({ ...p, ...patch }));
+    setAskAgeBandFor(null);
+    // ★答えたら、そのまま続きへ。★もう一度押していただきます。
+    //   ★勝手に続けないこと。★何が起きたか分からなくなります。
+    setInviteLookupError(
+      band === AGE_BANDS.ADULT
+        ? "ありがとうございます。もう一度「確認」を押してください。"
+        : "ありがとうございます。もう一度「確認」を押してください。");
+  }
   // ★「つながる」を二度押ししたときの二重登録を止めます（2026-09-01）。
   //   止めていなかったため、1回目が成功し2回目が 23505 になり、
   //   ★「以前つながっていた記録が…」という誤った説明が出ていました。
@@ -9587,9 +9622,26 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       setInviteLookupError("読み込み中です。少し待ってから、もう一度お押しください。");
       return;
     }
-    if (isTreatedAsMinor(profile)) {
+    // ★年齢の帯を、まだ聞いていない方には、ここで聞きます（2026-09-04）。
+    //   ★ふだんの画面では聞きません。★必要になったときだけです。
+    //     ★答えを迫ることになるためです。
+    //   ★「18歳以上です」と答えている方には、★聞き直しません
+    //     （shouldAskAgeBand が false を返します）。
+    //   ★聞くだけで、★止めません。答えてから、下の判定に進みます。
+    if (shouldAskAgeBand(profile)) {
+      setInviteLookupError("");
+      setAskAgeBandFor("connection");
+      return;
+    }
+    if (isTreatedAsMinorByBand(profile)) {
+      // ★帯が分かっているので、言い方を分けられます。
+      //   ★どちらも、いまはつながれません。★理由が違うだけです。
+      //   ★★「法律で決まっているため」と書かないこと。
+      //     ★これは★私たちの決まりです。★断言しません。
       setInviteLookupError(
-        "いまはまだ、先生とつながることができません。保護者の方の確認の仕組みを準備しています。"
+        isUnder15Confirmed(profile)
+          ? "15歳未満の方は、いまは先生とつながることができません。私たちの決まりとして、そうしています。"
+          : "先生とつながるには、保護者の方の確認が必要です。いま、その仕組みを準備しています。"
       );
       return;
     }
@@ -18321,6 +18373,41 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             </button>
                           </div>
                           {inviteLookupError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{inviteLookupError}</p>}
+                          {/* ★年齢の帯を聞く（2026-09-04）。
+                              ★ふだんは出しません。★連携しようとしたときだけです。
+                              ★「18歳以上です」と答えている方には、出ません。
+                              ★生年月日は聞きません。★帯だけです。
+                              ★★「法律で決まっているため」と書かないこと。
+                                ★これは私たちの決まりです。★断言しません。 */}
+                          {askAgeBandFor === "connection" && (
+                            <div className="mt-3 rounded-xl p-3" style={{ background: C.paper }}>
+                              <p className="text-sm font-medium mb-1">年齢をお聞きします</p>
+                              <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                                先生とつながるときに、お聞きしています。
+                                生年月日はお聞きしません。あてはまるものを選んでください。
+                              </p>
+                              <div className="flex flex-col gap-1.5">
+                                {[
+                                  { v: AGE_BANDS.UNDER_15, label: "15歳未満です" },
+                                  { v: AGE_BANDS.TEEN, label: "15歳から17歳です" },
+                                  { v: AGE_BANDS.ADULT, label: "18歳以上です" }
+                                ].map(({ v, label }) => (
+                                  <button key={v} type="button" disabled={ageBandBusy}
+                                    onClick={() => handleAnswerAgeBand(v)}
+                                    className="w-full py-2 rounded-full text-xs font-medium"
+                                    style={{ background: C.card, color: C.ink,
+                                      border: `1px solid ${C.line}`, opacity: ageBandBusy ? 0.6 : 1 }}>
+                                    {label}
+                                  </button>
+                                ))}
+                              </div>
+                              {/* ★あとから変えられることを、書いておきます。
+                                  ★変更は止めません。★記録するだけです。 */}
+                              <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                                この答えは、「もっと ＞ 設定」からいつでも変えられます。
+                              </p>
+                            </div>
+                          )}
                         </>
                       )}
                     </div>

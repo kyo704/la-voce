@@ -111,11 +111,21 @@ console.log("\n=== ★失敗の理由が、同意画面にも出る ===");
 
 console.log("\n=== ★「読み込み中」と「未成年」を分けている ===");
 {
+  // ★窓の幅で境界を決めないこと（くり返す失敗の形 3）。
+  //   ★関数の始まりから、次の関数までを見ます。
   const at = vt.indexOf("async function handleAcceptInvitation");
-  const body = vt.slice(at, at + 1400);
+  const next = vt.indexOf("\n  function handleDeclineInvitation", at);
+  const body = vt.slice(at, next === -1 ? at + 4000 : next);
   const iLoading = body.indexOf("読み込み中です");
-  const iMinor = body.indexOf("isTreatedAsMinor(profile)");
+  // ★2026-09-04：判定が isTreatedAsMinorByBand（3帯の版）に替わりました。
+  //   ★見たいのは★順番です。★関数の名前ではありません。
+  //   ★どちらの名前でも拾えるようにしておきます。
+  const iMinor = Math.min(
+    ...["isTreatedAsMinorByBand(profile)", "isTreatedAsMinor(profile)", "shouldAskAgeBand(profile)"]
+      .map((n) => body.indexOf(n)).filter((i) => i >= 0)
+  );
   assertTrue(iLoading > 0, "読み込み中の案内がある");
+  assertTrue(Number.isFinite(iMinor), "未成年の判定が見つかる");
   assertTrue(iLoading < iMinor,
     "★読み込みの確認が先（profile が無いだけの人に、未成年の文言を出さない）");
   // ★年齢の判定そのものは、閉じる側に倒したまま変えていないこと
