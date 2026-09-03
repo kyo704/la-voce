@@ -13843,7 +13843,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             /* ★「いません」と言い切らないこと。
                                 読み込めていないだけの場合と、見分けがつきません。 */
                             <p className="text-xs" style={{ color: C.inkSoft }}>
-                              担当の生徒さんは、まだ登録されていません。
+                              担当の生徒さんは、見つかりませんでした。
                             </p>
                           ) : mine.map((a) => (
                             <div key={a.id} className="rounded-lg p-2 mb-1 text-xs"
@@ -13864,9 +13864,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           <p className="text-xs font-medium mb-1.5">教室の予定</p>
                           {(orgEvents[orgId] || []).length === 0 ? (
                             /* ★「ありません」と言い切らないこと。
-                                読み込めていないだけの場合と、見分けがつきません。 */
+                                読み込めていないだけの場合と、見分けがつきません。
+                                ★「まだ」も使えません（急かす言葉・no-nagging-words）。
+                                ★「見つかりませんでした」は、探した結果の話です。
+                                  世の中に無い、とは言っていません。 */
                             <p className="text-xs" style={{ color: C.inkSoft }}>
-                              予定は、まだ登録されていません。
+                              教室の予定は、見つかりませんでした。
                             </p>
                           ) : (
                             <div className="space-y-1.5">
@@ -13911,7 +13914,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <div>
                           <p className="text-xs font-medium mb-1.5">教室の予定</p>
                           {(orgEvents[orgId] || []).length === 0 ? (
-                            <p className="text-xs mb-2" style={{ color: C.inkSoft }}>予定はありません。</p>
+                            /* ★「ありません」と言い切らないこと（2026-09-04）。
+                                読み込めていないだけの場合と、見分けがつきません。
+                                ★講師のカードと同じ言い方にそろえます。 */
+                            <p className="text-xs mb-2" style={{ color: C.inkSoft }}>教室の予定は、見つかりませんでした。</p>
                           ) : (
                             <div className="space-y-1.5 mb-2">
                               {(orgEvents[orgId] || []).map((ev) => (

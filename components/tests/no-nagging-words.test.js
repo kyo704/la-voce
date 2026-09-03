@@ -87,7 +87,16 @@ function userFacingStrings(src) {
   const code = stripComments(src);
   const out = [];
   // JSX の地の文
-  (code.match(/>[^<>{}\n]{4,}</g) || []).forEach((m) => out.push(m.slice(1, -1).trim()));
+  //   ★改行をまたぐ地の文も見ます（2026-09-04）。
+  //     もとは [^<>{}\n] と書いていて、★改行を含む文を1つも見ていませんでした。
+  //     そのため
+  //       <p ...>
+  //         担当の生徒さんは、まだ…
+  //       </p>
+  //     の形が、この検査をすり抜けていました。実際にすり抜けました。
+  //     ★1行に書いたときだけ落ちる検査は、検査になっていません。
+  (code.match(/>[^<>{}]{4,}</g) || [])
+    .forEach((m) => out.push(m.slice(1, -1).replace(/\s+/g, " ").trim()));
   // 翻訳の日本語
   (code.match(/\bja:\s*"([^"]{2,})"/g) || []).forEach((m) => out.push(m.replace(/^\bja:\s*"/, "").slice(0, -1)));
   // 画面に出すことが分かっている関数の引数
@@ -116,6 +125,35 @@ const STREAK_REMOVED_NAMES = [
   "labelCurrentStreak", "labelLongestStreak", "noteUnlockDecorationSuffix"
 ];
 
+/**
+ * ★検査の穴がふさがって、初めて見えた文（2026-09-04）。
+ *
+ *   もとの取り出しは /> [^<>{}\n]{4,} </ で、★改行を含む地の文を
+ *   1つも見ていませんでした。1行に書いたときだけ落ちる検査でした。
+ *   穴をふさいだところ、★8つの文が新しく引っかかりました。
+ *   どれも前からあったもので、今日入れたものではありません。
+ *
+ *   ★ここに並べたものは「よい」と判断したものではありません。
+ *     ★坂本さんの判断を待っている、というだけの意味です。
+ *   ★この一覧は、減る方向にだけ動かしてください。
+ *     足すのは、判断を1つ先送りにすることです。
+ *   ★新しく書く文は、ここに足さないこと。
+ */
+const PENDING_REVIEW = [
+  // 慎重さのための「まだ」（表示ゲートの家族）。外すと「関係が無い」と断定になります。
+  "はっきりした関係は、まだ見えていません",
+  "まだ明確な快適帯は見えていません",
+  "灰色のマスはまだ記録が14日分たまっていません",
+  // 「なぜ出せないか」の説明。急かしてはいませんが、言い換えの余地はあります。
+  "前日の記録がまだ無いため",
+  "両方の音名が記録された日がまだありません",
+  "この月の記録はまだありません",
+  "まだ連携が確認できません",
+  // ★これは説明文ですが、★機能そのものが記録を促すものです。
+  //   文言だけの問題ではないので、坂本さんの判断が要ります。
+  "まだ記録していない日の朝に"
+];
+
 const TARGETS = [
   ["components", "VocalTracker.jsx"],
   ["lib", "translations.js"],
@@ -132,6 +170,7 @@ console.log("=== ★急かす言葉が、画面に出ていない ===");
     const strings = userFacingStrings(fs.readFileSync(p, "utf8"));
     strings.forEach((txt) => {
       if (MEASUREMENT_EXCEPTIONS.some((e) => txt.includes(e.text))) return;
+      if (PENDING_REVIEW.some((e) => txt.includes(e))) return;
       NAGGING.forEach((w) => {
         if (txt.includes(w)) found.push(`${file}「${txt.slice(0, 40)}」← ${w}`);
       });
