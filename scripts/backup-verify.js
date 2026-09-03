@@ -100,6 +100,52 @@ function parseDump(text) {
 
 function fmt(n) { return String(n).padStart(7, " "); }
 
+/**
+ * ★この控えは、いつ取られたものか。
+ *
+ *   scripts/backup-dump.sh は backups/woolsong-YYYYMMDD-HHMMSS.sql に書きます。
+ *   ★ダンプ自身は日時を持っていません（pg_dump のヘッダに入りません）。
+ *     だからファイル名から読みます。
+ *
+ *   ★読めなければ null を返します。
+ *     そのときは「全部の表が要る」として測ります。★見落とすより、
+ *     余分に鳴らすほうを選びます。名前を変えたのは人の判断なので、
+ *     機械が黙って手加減してはいけません。
+ */
+function dumpTakenAt(file) {
+  const m = path.basename(file).match(/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})/);
+  if (!m) return null;
+  const [, y, mo, d, h, mi, sec] = m;
+  return new Date(`${y}-${mo}-${d}T${h}:${mi}:${sec}`);
+}
+
+/**
+ * その表は、この控えを取った時点で★存在していたか。
+ *
+ *   ★since が無い表は、最初からあるものとして扱います。
+ *   ★控えの日時が読めないときも、要るものとして扱います（上の理由）。
+ */
+/**
+ * 日時を「YYYY-MM-DD HH:MM:SS」の★現地時刻で文字にする。
+ *
+ *   ★toISOString() を使わないこと。あれは UTC に直します。
+ *     ファイル名の時刻は date +%H%M%S、つまり★現地時刻です。
+ *     ISO に直すと日本では9時間ずれ、12:05 の控えが 03:05 と記録されます。
+ *     ★実際にそうなっていました（前の基準の 03:06:04 も同じずれです）。
+ *     ずれたまま比べると、新しい控えを古いと取り違えます。
+ */
+function 現地時刻(d) {
+  const p2 = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())} ` +
+         `${p2(d.getHours())}:${p2(d.getMinutes())}:${p2(d.getSeconds())}`;
+}
+
+function existedAt(since, takenAt) {
+  if (!since) return true;
+  if (!takenAt) return true;
+  return takenAt >= new Date(since);
+}
+
 (async () => {
   const file = process.argv[2];
   if (!file) {
@@ -147,12 +193,25 @@ function fmt(n) { return String(n).padStart(7, " "); }
 
   // ---- ② public の各テーブル ---------------------------------------------
   console.log("\n── public ──");
+  const takenAt = dumpTakenAt(file);
+  if (!takenAt) {
+    console.log("  ★ファイル名から日時が読めません。全部の表が要るものとして測ります。");
+  }
   const current = {};
-  spec.BACKUP_TABLES.forEach(({ table, critical }) => {
+  const 後からできた = [];
+  spec.BACKUP_TABLES.forEach(({ table, critical, since }) => {
     const key = `public.${table}`;
     const n = counts[key];
     const when = latest[key] ? `  最新 ${latest[key].slice(0, 19)}` : "";
     if (typeof n !== "number") {
+      // ★その表が、この控えより後に出来たのなら、入っていないのが正しい姿です。
+      //   存在しない表は pg_dump には入れられません。
+      //   ★ここを異常として鳴らし続けると、本物の異常と見分けがつかなくなります。
+      if (!existedAt(since, takenAt)) {
+        console.log(`  ・ ${fmt("—")}  ${table}  この控えより後にできた表（${since}）`);
+        後からできた.push(table);
+        return;
+      }
       console.log(`  ✗ ${fmt("—")}  ${table}  ★テーブルごと入っていません`);
       problems.push(`${key} がダンプに入っていない`);
       return;
@@ -196,8 +255,29 @@ function fmt(n) { return String(n).padStart(7, " "); }
     process.exit(1);
   }
 
+  // ★古い控えを検査したときは、基準を書き換えません（2026-09-03）。
+  //   復元の練習では、手元にある★昔のダンプを検査します。
+  //   そのたびに基準が昔の値へ戻ると、★次の本物の検査で
+  //   「増えている」ように見え、減ったことに気づけなくなります。
+  //   ★練習が、見張りを壊してはいけません。
+  if (baseline && baseline.takenAt && takenAt) {
+    const 前回 = new Date(String(baseline.takenAt).replace(" ", "T"));
+    if (!isNaN(前回) && takenAt < 前回) {
+      console.log(`\n✅ 問題ありません。★基準は更新していません（この控え ${
+        現地時刻(takenAt)
+      } は、前回の基準 ${baseline.takenAt} より古いためです）。`);
+      process.exit(0);
+    }
+  }
+
   fs.writeFileSync(BASELINE, JSON.stringify({
-    takenAt: new Date().toISOString().slice(0, 19).replace("T", " "),
+    // ★控えを取った日時を書きます。検査を走らせた日時ではありません。
+    //   前は new Date() を書いていました。すると 9/1 の控えを 9/3 に
+    //   検査したとき、基準が「9/3 のもの」として記録され、
+    //   ★次に本物の 9/3 の控えを検査したとき、古いほうを新しいと
+    //     取り違えます。上の「古い控えでは更新しない」判定も効きません。
+    //   ★ファイル名から読めないときだけ、検査した日時を使います。
+    takenAt: 現地時刻(takenAt || new Date()),
     note: "★行数だけです。個人のデータは入っていません。コミットして構いません。",
     counts: current
   }, null, 2) + "\n");
