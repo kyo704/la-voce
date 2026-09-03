@@ -161,3 +161,85 @@ select policyname as "ポリシー", cmd as "操作", permissive as "種別",
 --       grant update (ended_at) on public.assignments to authenticated;
 --     ＋ WITH CHECK で org_id / teacher_id / student_id が変わっていないこと。
 --   ★ですが、いまの WITH CHECK を見てからにします。
+
+
+-- ############################################################################
+-- ★assignments の直し（2026-09-03・★実地の確認のあとに流してください）
+--
+--   ★teacher_student_links とは、欠陥の形が違います
+--     teacher_student_links … WITH CHECK が★無い
+--     assignments           … WITH CHECK は★ある。ただし
+--                             is_org_owner_or_admin をもう一度確かめるだけで、
+--                             ★teacher_id / student_id には触れていません。
+--     ★「WITH CHECK があるから安全」ではありません。
+--       ★何を確かめているかが問題です。
+--
+--   ★誰の権限で通るか
+--     teacher_student_links … ★当事者（生徒・先生）
+--     assignments           … ★教室のオーナー・責任者
+--     ★後者のほうが、権限としては正しい相手です。
+--       ですが「担当を割り当てる権限」と
+--       「担当の行を任意の組に作り替える権限」は、★別のものです。
+--
+--   ★アプリが assignments に書く列（コードで確認済み）
+--     insert … org_id / teacher_id / student_id
+--               VocalTracker.jsx:10264、app/api/enrollment/accept/route.js:144
+--     update … ★ended_at の1列だけ（VocalTracker.jsx:10279）
+--   ★update で書くのは1列です。だから GRANT で絞れます。
+-- ############################################################################
+
+-- ---------------------------------------------------------------------------
+-- ⑥ 1枚目：権限を ended_at だけに絞る
+--
+--   ★insert は絞りません。3列とも入れる必要があります。
+--     ★列単位の GRANT は UPDATE と INSERT で別に指定できます。
+-- ---------------------------------------------------------------------------
+revoke update on public.assignments from authenticated;
+revoke update on public.assignments from anon;
+
+grant update (ended_at) on public.assignments to authenticated;
+
+-- ---------------------------------------------------------------------------
+-- ⑦ 2枚目：WITH CHECK に、身元の列が変わっていないことを足す
+--
+--   ★いまの条件（is_org_owner_or_admin）は★消しません。足します。
+--     ★消すと、権限の確認そのものが無くなります。
+--   ★org_id も固定します。教室をまたいで付け替えられないようにするためです。
+--
+--   ★<いまの USING の全文> と <いまの WITH CHECK の全文> は、
+--     ★運営者からいただいた実物に置き換えてください。
+--     ★私は要約しか受け取っていません。要約から書き起こすと、
+--       ★いまの条件を狭めたり広げたりするおそれがあります。
+-- ---------------------------------------------------------------------------
+-- drop policy if exists "assignments_all_owner_admin" on public.assignments;
+-- create policy "assignments_all_owner_admin" on public.assignments
+--   for all to authenticated
+--   using ( <いまの USING の全文> )
+--   with check (
+--     ( <いまの WITH CHECK の全文> )
+--     and org_id     = coalesce((select a.org_id     from public.assignments a where a.id = assignments.id), org_id)
+--     and teacher_id = coalesce((select a.teacher_id from public.assignments a where a.id = assignments.id), teacher_id)
+--     and student_id = coalesce((select a.student_id from public.assignments a where a.id = assignments.id), student_id)
+--   );
+--
+--   ★coalesce を使う理由
+--     ALL のポリシーは INSERT にも効きます。
+--     ★insert のとき、副問い合わせは「まだ無い行」を見るので null になります。
+--     ★coalesce が無いと、insert が★すべて弾かれます。
+--     coalesce で「元の行が無ければ、新しい値をそのまま認める」形にします。
+--     ★これは insert のときだけ効き、update では元の値との比較になります。
+--
+--   ★ここは、いまの全文をいただいてから確定させます。
+--     ★当てずっぽうで書きません。教室の管理者が担当を割り当てられなくなります。
+
+-- ---------------------------------------------------------------------------
+-- ⑧ 流したあとの確認（★両方やってください）
+-- ---------------------------------------------------------------------------
+--   ★塞げたか
+--     supabase/URGENT_test_assignment_forge.sql の②を、もう一度流す。
+--     ★0行、またはエラーになること。
+--
+--   ★壊していないか（★こちらを忘れないでください）
+--     ・教室の画面で「担当を割り当てる」が、まだできること（insert）
+--     ・「担当を外す」が、まだできること（update ended_at）
+--     ★守りを足したときは、正しい操作が通ることも必ず確かめます。
