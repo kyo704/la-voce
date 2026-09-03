@@ -86,7 +86,8 @@ import { symptomsByLocation, dinnerToBedSummary, LOCATION_FOOTNOTE } from "@/lib
 //     「予定から活動の種類を先に選んでおく」は、まだ画面につながっていません。
 import OrgEventList from "@/components/OrgEventList";
 import { countHeldLessons, heldCountLine } from "@/lib/lessonCounts";
-import { CONSENT_POLICY_VERSION } from "@/lib/consent";
+import { CONSENT_POLICY_VERSION, buildConsentRow, buildConsentWithdrawalRow } from "@/lib/consent";
+import { mayWriteRecords, mayUseForAnalysis, withdrawnAt } from "@/lib/consentGate";
 import { buildCalendarEvent } from "@/lib/calendarExport";
 import { buildLinkConsentRow, buildUnlinkPatch } from "@/lib/linkConsent";
 import { departingOwnerNotice, transferMailto, CLOSE_ORG_KEEP_LINE, CLOSE_ORG_DELETE_LINE, DEPARTING_PAYER_LINE } from "@/lib/orgClosure";
@@ -2204,7 +2205,16 @@ function entryHasActivityKind(entry, kind) {
 //   ★足りない列だけを外して、もう一度だけ試します。
 //     新しい項目は保存されませんが、その日の記録は残ります。
 //   ★黙って握りつぶしません。外した列は console に必ず出します。
-async function writeEntryRow(supabase, row) {
+async function writeEntryRow(supabase, row, profile) {
+  // ★同意を撤回した人の記録は、★ここで止めます（2026-09-03）。
+  //   ★画面のボタンを隠すだけにしないこと。それは門ではありません（#003）。
+  //   ★entries に新しく書く道は、この関数1つだけです。だからここに置きます。
+  //   ★削除（11104 / 11114）は、この関数を通りません。★いつでもできます。
+  //   ★これは画面側の門です。★サーバ側にはまだありません
+  //     （台帳07に、日付つきで書いてあります）。
+  if (!mayWriteRecords(profile)) {
+    return { error: { message: "CONSENT_WITHDRAWN" } };
+  }
   const { error, dropped } = await writeWithMissingColumnFallback(
     (r) => supabase.from("entries").upsert(r, { onConflict: "user_id,date" }),
     row
@@ -5537,6 +5547,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           conditions: data.conditions || [],
           onboarding_completed: data.onboarding_completed ?? false,
           consent_health_data_at: data.consent_health_data_at || null,
+          // ★撤回の時刻（2026-09-03）。★null が「撤回していない」です。
+          //   ★同意した日時（consent_health_data_at）は消しません。
+          //     ★消すと「いつ同意したか」が分からなくなります。
+          consent_health_data_withdrawn_at: data.consent_health_data_withdrawn_at || null,
           consent_stats_use_at: data.consent_stats_use_at || null,
           consent_policy_version: data.consent_policy_version || null,
           // ★professions が空のまま登録された古いデータがある。空のままだと
@@ -7644,6 +7658,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       );
       return;
     }
+    // ★撤回した人は、新しく記録できません（2026-09-03）。
+    //   ★取り消し（7666 の delete）は、この門を通しません。いつでもできます。
+    if (!mayWriteRecords(profile)) {
+      setCycleError("同意を撤回されているため、新しい記録は保存できません。「もっと ＞ 設定」から、もう一度同意できます。");
+      return;
+    }
     setCycleBusy(true); setCycleError("");
     const supabase = createClient();
     const { data, error } = await supabase
@@ -8858,6 +8878,60 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★月経周期・既往症・アレルギー・常用薬も必ず含める。先生には共有しない設定だが、
   //   本人が自分のデータを持ち出す権利は別の話（ルート文書 G3 の注記）。
   const [exportStatus, setExportStatus] = useState("idle"); // idle | working | done | error
+  // ★同意の撤回（2026-09-03）。★削除とは別のものです。
+  //   ★withdrawAlsoDelete は★既定でオフ。戻せるほうを既定にします。
+  const [withdrawAlsoDelete, setWithdrawAlsoDelete] = useState(false);
+  const [withdrawBusy, setWithdrawBusy] = useState(false);
+  const [withdrawError, setWithdrawError] = useState("");
+
+  // ★撤回します。★1行も消しません。
+  //   ★profiles が正です（2026-09-03 の決定）。
+  //     ★consent_records は歴史を持ちます。いまの状態は持ちません。
+  //   ★consent_records には★足すだけです。書き換えません。
+  //     ★同意 → 撤回 → もう一度同意、が行として並びます。
+  async function handleWithdrawHealthConsent() {
+    setWithdrawBusy(true); setWithdrawError("");
+    const supabase = createClient();
+    const now = new Date().toISOString();
+    // ★0行を見ます。RLS で弾かれた更新は、エラーになりません。
+    const { data: updated, error } = await supabase.from("profiles")
+      .update({ consent_health_data_withdrawn_at: now }).eq("id", userId).select("id");
+    setWithdrawBusy(false);
+    if (error) { setWithdrawError("撤回できませんでした。時間をおいて、もう一度お試しください。"); return; }
+    if (!updated || updated.length === 0) {
+      setWithdrawError("撤回できませんでした。時間をおいて、もう一度お試しください。");
+      return;
+    }
+    setProfile((p) => ({ ...p, consent_health_data_withdrawn_at: now }));
+    // ★歴史の1行。★失敗しても、撤回そのものは成立しています。
+    //   ★だから、ここで止めません。★ただし黙って捨てません。
+    const { error: recError } = await supabase.from("consent_records").insert(
+      buildConsentWithdrawalRow({ userId, purposeKey: "health.record", now }));
+    if (recError) console.error("★撤回の記録を残せませんでした:", recError);
+    // ★チェックが入っていれば、★既存の削除の流れへ入ります。
+    //   ★2本目の削除の道を作りません。
+    setActiveTab(withdrawAlsoDelete ? "deleteAccount1" : "profile");
+    setWithdrawAlsoDelete(false);
+  }
+
+  // ★もう一度同意する。★撤回の時刻を null に戻します。
+  //   ★同意した日時（consent_health_data_at）は、★書き換えません。
+  //     ★最初に同意した日が、歴史として要ります。
+  async function handleRegrantHealthConsent() {
+    const supabase = createClient();
+    const now = new Date().toISOString();
+    const { data: updated, error } = await supabase.from("profiles")
+      .update({ consent_health_data_withdrawn_at: null }).eq("id", userId).select("id");
+    if (error || !updated || updated.length === 0) {
+      console.error("★もう一度同意できませんでした:", error);
+      return;
+    }
+    setProfile((p) => ({ ...p, consent_health_data_withdrawn_at: null }));
+    const { error: recError } = await supabase.from("consent_records").insert(
+      buildConsentRow({ userId, purposeKey: "health.record", locale: language, method: "button", now }));
+    if (recError) console.error("★同意の記録を残せませんでした:", recError);
+  }
+
 
   function downloadFile(name, text, mime) {
     const blob = new Blob([text], { type: mime });
@@ -10697,7 +10771,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           items: (a.items || []).map((it) => (it.repertoireName === sourceName ? { ...it, repertoireName: targetName } : it))
         }));
         const updatedEntry = { ...entry, activities: renamedActivities };
-        const { error } = await writeEntryRow(supabase, entryToRow(userId, updatedEntry));
+        const { error } = await writeEntryRow(supabase, entryToRow(userId, updatedEntry), profile);
         if (error) throw error;
         updatedEntries[date] = updatedEntry;
       }
@@ -10751,7 +10825,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           items: (a.items || []).map((it) => (isSameRepertoire(it.repertoireName, from) ? { ...it, repertoireName: to } : it))
         }));
         const updatedEntry = { ...entry, activities: renamed };
-        const { error } = await writeEntryRow(supabase, entryToRow(userId, updatedEntry));
+        const { error } = await writeEntryRow(supabase, entryToRow(userId, updatedEntry), profile);
         if (error) throw error;
         updatedEntries[date] = updatedEntry;
       }
@@ -10829,7 +10903,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           items: (a.items || []).filter((it) => !isSameRepertoire(it.repertoireName, from))
         }));
         const updatedEntry = { ...entry, activities: stripped };
-        const { error } = await writeEntryRow(supabase, entryToRow(userId, updatedEntry));
+        const { error } = await writeEntryRow(supabase, entryToRow(userId, updatedEntry), profile);
         if (error) throw error;
         updatedEntries[date] = updatedEntry;
       }
@@ -11037,7 +11111,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (!entryHasActivityKind(clean, "本番")) clean.performanceQuality = null;
     clean.simpleMealMacros = simpleMealMacros;
     const supabase = createClient();
-    const { error } = await writeEntryRow(supabase, entryToRow(userId, clean));
+    const { error } = await writeEntryRow(supabase, entryToRow(userId, clean), profile);
     if (error) {
       setSaveStatus("error");
       // ★画面には「次に何をすればいいか」だけを出す（見やすさ §4-2）。
@@ -11096,7 +11170,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const { date, previous } = undoableSave;
     const supabase = createClient();
     if (previous) {
-      const { error } = await writeEntryRow(supabase, entryToRow(userId, previous));
+      const { error } = await writeEntryRow(supabase, entryToRow(userId, previous), profile);
       if (error) { console.error("取り消せませんでした:", error); return; }
       setEntries((prev) => ({ ...prev, [date]: previous }));
       setFormData({ ...previous });
@@ -14536,6 +14610,32 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
             {activeTab === "analysis" && (
               <div className="space-y-5">
+                {/* ★同意を撤回された方には、分析を作りません（2026-09-03・Opus §3.2）。
+                    ★分析は、その方の端末で、その方のデータから作られます。
+                      ★どこかへ送って集計しているわけではありません。
+                      ★だから「使わない」は「作らない・出さない」と同じことです。
+                    ★これまでの記録そのものは、★見られます。
+                      ★「今日」「ノート」「ホーム」は、そのままです。
+                      ★止めるのは分析だけです。
+                    ★書き出しと削除も、そのままです。 */}
+                {!mayUseForAnalysis(profile) ? (
+                  <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-2">分析は、止まっています</h3>
+                    <p className="text-sm mb-2" style={{ color: C.ink }}>
+                      同意を撤回されているため、記録を分析には使いません。
+                    </p>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      これまでの記録は、そのままあります。「今日」や「ノート」から見られます。
+                      書き出しも削除も、これまでどおりできます。
+                    </p>
+                    <button type="button" onClick={() => setActiveTab("more")}
+                      className="px-4 py-2 rounded-full text-xs font-medium"
+                      style={{ background: C.curtain, color: "#FFFDF8" }}>
+                      設定を開く
+                    </button>
+                  </div>
+                ) : (
+                <>
                 {/* 改善タスクv2 §4-1(b): 期間セレクタは9番目にあり、その上のカードは
                     セレクタの影響を受けなかった。「期間を1年にしたのに数字が変わらない」
                     という混乱の原因だったので、最上部に移した。期間の効かないカードには
@@ -16556,6 +16656,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </div>
                 )}
 
+                </>
+                )}
               </div>
             )}
             {/* 職業別プロファイル設計案 §4-2「畳むのではなく切り出す」。
@@ -16663,6 +16765,29 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                   <div className="rounded-xl p-3 mt-2" style={{ background: C.paper }}>
                     <p className="text-sm font-medium mb-1">記録データの同意状況</p>
+                    {/* ★撤回の入口（2026-09-03・期日 9/10）。
+                        ★「同意はいつでも『もっと ＞ 設定』から撤回できます」と
+                          ★2026-08-26 から画面に書いてありました。
+                        ★その道が、この日まで1つもありませんでした。
+                        ★新しい画面を作りません。約束した場所は、ここです。
+                        ★いまは health.record の1つだけです。
+                          ★周期・食事と就寝・研究は、それぞれの同意画面と一緒に、あとで。 */}
+                    {withdrawnAt(profile) ? (
+                      <div className="rounded-lg p-2.5 mb-2" style={{ background: C.card }}>
+                        <p className="text-xs mb-1" style={{ color: C.ink }}>
+                          {new Date(withdrawnAt(profile)).toLocaleDateString("ja-JP")}に、同意を撤回されています。
+                        </p>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                          新しい記録の保存と、分析が止まっています。
+                          これまでの記録は、そのままあります。書き出しも削除も、これまでどおりできます。
+                        </p>
+                        <button type="button" onClick={handleRegrantHealthConsent}
+                          className="px-3 py-1.5 rounded-full text-xs font-medium"
+                          style={{ background: C.curtain, color: "#FFFDF8" }}>
+                          もう一度同意する
+                        </button>
+                      </div>
+                    ) : null}
                     <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
                       記録・分析のための取得に{profile.consent_health_data_at ? `${new Date(profile.consent_health_data_at).toLocaleDateString("ja-JP")}に同意済み` : "未同意"}です。
                     </p>
@@ -16691,6 +16816,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           （任意）匿名化した統計として、発声負荷の係数など、分析に使う定数の較正に役立てることに同意する
                         </span>
                       </label>
+                    )}
+                    {/* ★撤回のボタン。★撤回していない方にだけ出します。 */}
+                    {!withdrawnAt(profile) && (
+                      <button type="button" onClick={() => setActiveTab("withdrawConsent")}
+                        className="mt-3 w-full py-2 rounded-full text-xs font-medium"
+                        style={{ background: C.card, color: C.curtain, border: `1px solid ${C.line}` }}>
+                        同意を撤回する
+                      </button>
                     )}
                   </div>
 
@@ -16828,6 +16961,76 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       )}
                     </div>
                   )}
+              </div>
+            )}
+
+            {/* ★同意の撤回（2026-09-03・期日 9/10・Opus §3.5）。
+                ★撤回は、削除ではありません。★混ぜないこと。
+                  ★撤回では、1行も消えません。
+                ★だから、削除のチェックは★既定でオフです。
+                  ★戻せるほうを既定にします。
+                ★チェックが入っているときは、★既存の削除の流れへ入ります。
+                  ★2本目の削除の道を作りません。30日の猶予も、あちらのものです。 */}
+            {activeTab === "withdrawConsent" && (
+              <div className="space-y-4">
+                <button type="button" onClick={() => setActiveTab("profile")}
+                  className="text-xs underline" style={{ color: C.inkSoft }}>← 設定へもどる</button>
+                <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h2 className="ff-display italic text-xl mb-3">同意を撤回します</h2>
+
+                  <p className="text-sm mb-2" style={{ color: C.ink }}>
+                    撤回すると、これから先、新しい記録を保存できなくなります。
+                  </p>
+                  <p className="text-sm mb-2" style={{ color: C.ink }}>
+                    これまでの記録は、<strong>分析には使いません</strong>。
+                  </p>
+                  <p className="text-sm mb-3" style={{ color: C.ink }}>
+                    これまでの記録は、消えません。いつでも見られます。
+                    書き出しも削除も、同意の状態とは関わりなくできます。
+                  </p>
+                  <p className="text-xs mb-4" style={{ color: C.inkSoft }}>
+                    もう一度同意すれば、また記録できるようになります。
+                  </p>
+
+                  {/* ★文字だけの案内にしないこと。★押せる控えを置きます。 */}
+                  <button type="button" onClick={handleExportData} disabled={exportStatus === "working"}
+                    className="w-full py-2.5 rounded-full text-sm font-medium mb-3"
+                    style={{ background: C.paper, color: C.ink, border: `1px solid ${C.line}` }}>
+                    {exportStatus === "working" ? "書き出しています…" : "記録を書き出す"}
+                  </button>
+
+                  {/* ★既定でオフ。★撤回と削除を混ぜないためです。 */}
+                  <label className="flex items-start gap-2 rounded-xl p-3 mb-4"
+                    style={{ background: C.paper, cursor: "pointer" }}>
+                    <input type="checkbox" checked={withdrawAlsoDelete} className="mt-0.5"
+                      onChange={(e) => setWithdrawAlsoDelete(e.target.checked)} />
+                    <span className="text-xs" style={{ color: C.inkSoft }}>
+                      あわせて、これまでの記録も削除する
+                    </span>
+                  </label>
+                  {withdrawAlsoDelete && (
+                    <p className="text-xs mb-3 rounded-lg p-2.5" style={{ background: C.paper, color: C.ink }}>
+                      削除は、撤回とは別のものです。押すと、削除の画面へ進みます。
+                      そちらで、消えるものと、30日のあいだ取り消せることを、もう一度お読みいただけます。
+                    </p>
+                  )}
+
+                  {withdrawError && (
+                    <p className="text-xs mb-3 rounded-lg p-2.5"
+                      style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>{withdrawError}</p>
+                  )}
+
+                  <button type="button" onClick={handleWithdrawHealthConsent} disabled={withdrawBusy}
+                    className="w-full py-2.5 rounded-full text-sm font-medium mb-2"
+                    style={{ background: C.curtain, color: "#FFFDF8", opacity: withdrawBusy ? 0.6 : 1 }}>
+                    {withdrawBusy ? "処理しています…" : withdrawAlsoDelete ? "撤回して、削除の画面へ進む" : "同意を撤回する"}
+                  </button>
+                  <button type="button" onClick={() => setActiveTab("profile")}
+                    className="w-full py-2 rounded-full text-sm"
+                    style={{ background: C.card, color: C.inkSoft, border: `1px solid ${C.line}` }}>
+                    やめる
+                  </button>
+                </div>
               </div>
             )}
 
