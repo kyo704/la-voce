@@ -121,3 +121,28 @@ select concat(
 
 -- ★③はポリシーに弾かれれば、0行ではなく★エラーで止まります。
 --   ★エラーが出ることが、正しい姿です。行が返ったら、★穴です。
+
+-- ---------------------------------------------------------------------------
+-- ④ ★書き込まずに確かめる（2026-09-03 追記）
+--
+--   ★begin 〜 rollback は、守りとして数えません。
+--     SQL エディタが1文ずつ流していると、囲みが効きません。
+--     ★実際に、②の insert が本番に残りました（id = 64a84bcd-…）。
+--     ★「エラーだから何も起きていない」とは考えません。
+--
+--   ★下は1行も書き込みません。ポリシーの式だけを評価します。
+-- ---------------------------------------------------------------------------
+select
+  public.role_rank('owner')   as "owner の順位",
+  public.role_rank('admin')   as "admin の順位",
+  public.role_rank('teacher') as "teacher の順位",
+  (public.role_rank('owner') <= public.role_rank('teacher'))
+    as "★teacher が owner へ上げられる条件（false であること）",
+  (public.role_rank('admin') <= public.role_rank('teacher'))
+    as "★teacher が admin へ上げられる条件（false であること）",
+  (public.role_rank('teacher') <= public.role_rank('teacher'))
+    as "同じ役職への更新（true でよい）";
+
+-- ★これは「式が正しいこと」を示すだけです。
+--   ★WITH CHECK の副問い合わせが元の値を見るかどうかは、これでは分かりません。
+--   そこは実際の update でしか確かめられません（②で確認済み・弾かれました）。
