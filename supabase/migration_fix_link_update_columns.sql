@@ -82,10 +82,18 @@ create policy "link_update_status_only" on public.teacher_student_links
     auth.uid() = teacher_id or auth.uid() = student_id
   )
   with check (
+    -- ★身元の列は、更新前と同じであること（両方です。片方では足りません）
     teacher_id = (select l.teacher_id from public.teacher_student_links l
                    where l.id = teacher_student_links.id)
     and student_id = (select l.student_id from public.teacher_student_links l
                        where l.id = teacher_student_links.id)
+    -- ★更新の行き先は「解除」だけ。
+    --   ★revoked → active に戻す道を閉じます。
+    --   ★つなぎ直しは壊しません。あちらは★新しい行を insert する形です
+    --     （teacher_student_links_active_pair_idx が「有効な行だけ」を一意にしており、
+    --       解除ずみの行は何行あってもかまいません）。
+    --   ★2026-09-03、本番にその部分索引が実在することを確認済みです。
+    and status = 'revoked'
   );
 
 comment on policy "link_update_status_only" on public.teacher_student_links is
@@ -120,3 +128,36 @@ select grantee as "誰に", privilege_type as "何を",
 --     アプリで「つながりの解除」を押し、status が revoked になること。
 --     ★守りを足したときは、正しい操作が通ることも必ず確かめます。
 -- ---------------------------------------------------------------------------
+
+-- ############################################################################
+-- ★assignments について（2026-09-03 追記）
+--
+--   ★同じ直しを当てるべきかは、まだ決められません。
+--     私は assignments のポリシーの★全文を受け取っていません。
+--     分かっているのは `assignments_all_owner_admin`（ALL・is_org_owner_or_admin）
+--     という名前だけです。★WITH CHECK があるかも分かりません。
+--
+--   ★assignments にも teacher_id と student_id があります。
+--     ★同じ形の穴がある可能性は高いです。
+--     ですが、当てずっぽうで GRANT を絞ると、
+--     ★教室の管理者が担当を割り当てられなくなるおそれがあります。
+--
+--   ★先に、これを流してください。
+-- ############################################################################
+
+select policyname as "ポリシー", cmd as "操作", permissive as "種別",
+       roles as "対象", qual as "USING", with_check as "★WITH CHECK"
+  from pg_policies
+ where schemaname = 'public' and tablename = 'assignments'
+ order by cmd, policyname;
+
+-- ★アプリが assignments に書くのは、この2か所だけです（コードで確認済み）
+--     VocalTracker.jsx:10264  insert({ org_id, teacher_id, student_id })
+--     VocalTracker.jsx:10279  update({ ended_at })
+--     app/api/enrollment/accept/route.js:144  insert({ org_id, teacher_id, student_id })
+--   ★update で書くのは ended_at の1列だけです。
+--   ★つまり、同じ形の直しが当てられます：
+--       revoke update on public.assignments from authenticated, anon;
+--       grant update (ended_at) on public.assignments to authenticated;
+--     ＋ WITH CHECK で org_id / teacher_id / student_id が変わっていないこと。
+--   ★ですが、いまの WITH CHECK を見てからにします。
