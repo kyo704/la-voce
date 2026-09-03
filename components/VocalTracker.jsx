@@ -9651,9 +9651,27 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   async function handleRevokeLink(linkId, asRole) {
     if (!window.confirm("連携を解除しますか？")) return;
     const supabase = createClient();
-    const { error } = await supabase.from("teacher_student_links")
-      .update({ status: "revoked", revoked_at: new Date().toISOString(), revoked_by: asRole }).eq("id", linkId);
-    if (error) { console.error("解除に失敗しました:", error); return; }
+    // ★.select() を付けて、何行変わったかを見ます（2026-09-04）。
+    //   ★RLS で弾かれた更新は、エラーになりません。0行が変わって error は null です。
+    //   ★2026-09-03 の件は、実際には成功していました（行は revoked になっていました）。
+    //     ですが「成功したのか、0行だったのか」を、この形では区別できませんでした。
+    //   ★handleSetLessonHeld（9733）と同じ形にそろえます。
+    const { data: revoked, error } = await supabase.from("teacher_student_links")
+      .update({ status: "revoked", revoked_at: new Date().toISOString(), revoked_by: asRole })
+      .eq("id", linkId)
+      .select("id");
+    if (error) {
+      console.error("解除に失敗しました:", error);
+      alert("解除できませんでした。時間をおいて、もう一度お試しください。");
+      return;
+    }
+    if (!revoked || revoked.length === 0) {
+      // ★0行＝権限で弾かれたか、その行が見えていません。
+      //   ★黙って画面だけ変えないこと。解除できたと思われてしまいます。
+      console.error("★解除が0行でした（権限が足りない可能性があります）:", { linkId, asRole });
+      alert("解除できませんでした。画面を読み込み直して、もう一度お試しください。");
+      return;
+    }
     // ★つながりの記録に、終わりの時刻を入れます。行は消しません。
     //   いま続いている行（unlinked_at が null）だけが対象です。
     {
@@ -10297,7 +10315,23 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }
   async function handleUnassignTeacher(orgId, assignmentId) {
     const supabase = createClient();
-    await supabase.from("assignments").update({ ended_at: new Date().toISOString() }).eq("id", assignmentId);
+    // ★これまで error も見ていませんでした（2026-09-04 に直しました）。
+    //   ★RLS で弾かれた更新は、エラーになりません。0行が変わって error は null です。
+    //   ★見ていなければ、外せなかったことに誰も気づけません。
+    const { data: ended, error } = await supabase.from("assignments")
+      .update({ ended_at: new Date().toISOString() })
+      .eq("id", assignmentId)
+      .select("id");
+    if (error) {
+      console.error("担当を外せませんでした:", error);
+      alert("担当を外せませんでした。時間をおいて、もう一度お試しください。");
+      return;
+    }
+    if (!ended || ended.length === 0) {
+      console.error("★担当外しが0行でした（権限が足りない可能性があります）:", { orgId, assignmentId });
+      alert("担当を外す権限がありません。教室のオーナーか責任者にお願いしてください。");
+      return;
+    }
     fetchOrgDetail(orgId);
   }
   // E-1: 教室のレッスンを作成する。
