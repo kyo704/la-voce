@@ -272,3 +272,62 @@ button {
 .nav-scroll::-webkit-scrollbar {
   display: none;
 }
+
+/* ============================================================================
+   法律の文書を読むための組み方（2026-09-03）
+
+   ★運営者が実機で「字が細くて読みにくい」と言われたので直しました。
+   ★本文は1文字も変えていません。★組み方だけです。
+
+   ★なぜ細かったか
+     body のフォントは Work Sans で、★subsets は latin だけです
+     （app/layout.js）。★日本語の字は入っていません。
+     ★だから日本語は、端末の既定の sans に落ちます。
+     ★iOS では Hiragino Sans の W3 になり、★これが細い字です。
+     ★font-weight を上げても、指す先が無ければ効きません。
+     ★★だから、日本語の入っている面を、名前で指します。
+
+   ★長い文章は、短い文章と別の組み方が要ります。
+     ・1行を長くしない（★40em）。目が戻る先を見失うためです。
+     ・行の間を広くとる（★1.9）。日本語は字が詰まって見えます。
+     ・字を小さくしない（★16px 以上）。iOS では、16px 未満の入力欄で
+       画面が勝手に拡大します。読み物でも、この線は下回らないこと。
+
+   ★色は変えていません。#241914 と #F6F1E7 の比は 15.24 で、
+     ★WCAG AA の本文（4.5）を十分に超えています。
+     ★読みにくさの原因は、色ではなく★太さと面でした。
+   ============================================================================ */
+.legal-doc {
+  /* ★日本語の入っている面を、名前で指します。★指さないと既定に落ちます。 */
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+               "Noto Sans JP", "Yu Gothic Medium", "YuGothic",
+               "Meiryo", var(--font-body), sans-serif;
+  /* ★400 だと Hiragino は W3（細字）になります。★500 で W5 です。 */
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.9;
+  /* ★1行の長さ。★em で決めます。字を大きくした人にも効くためです。 */
+  max-width: 40em;
+  /* ★行の途中で不自然に切れないように。 */
+  line-break: strict;
+  overflow-wrap: anywhere;
+}
+.legal-doc h1 {
+  /* ★題名だけは、Woolsong の見た目のままにします。 */
+  font-weight: 600;
+}
+.legal-doc h2 {
+  font-weight: 600;
+  font-size: 1.0625rem;
+}
+.legal-doc p {
+  margin: 0 0 1em;
+}
+/* ★囲みの中（一覧）は、行ごとに意味があります。★間を詰めます。 */
+.legal-doc .legal-list p {
+  margin: 0 0 0.35em;
+}
+@media (min-width: 640px) {
+  .legal-doc { font-size: 17px; }
+}
+

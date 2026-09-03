@@ -17,7 +17,7 @@ import { C } from "@/lib/tokens";
 
 export default function PrivacyPage() {
   return (
-    <main style={{ maxWidth: 720, margin: "0 auto", padding: "64px 24px", lineHeight: 1.9, fontSize: 14, color: C.ink }}>
+    <main className="legal-doc" style={{ margin: "0 auto", padding: "56px 24px 96px", color: C.ink }}>
       <h1 className="ff-display italic" style={{ fontSize: "2rem", color: C.curtain, marginBottom: 24 }}>
         プライバシーポリシー
       </h1>
@@ -26,7 +26,7 @@ export default function PrivacyPage() {
       <p>読みやすさを優先して書いていますが、内容は個人情報の保護に関する法律（以下「法」）に沿ったものです。</p>
       <hr style={{ border: 0, borderTop: `1px solid ${C.line}`, margin: "28px 0" }} />
       <h2 style={{ fontWeight: 600, marginTop: 28, marginBottom: 8 }}>1　わたしたちについて</h2>
-      <div style={{ margin: "8px 0 16px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
+      <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>事業者    Woolsong（坂本 響）</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>所在地    お問い合わせいただければ、遅滞なくお答えします</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>連絡先    woolsong.app@gmail.com</p>
@@ -35,7 +35,7 @@ export default function PrivacyPage() {
       <hr style={{ border: 0, borderTop: `1px solid ${C.line}`, margin: "28px 0" }} />
       <h2 style={{ fontWeight: 600, marginTop: 28, marginBottom: 8 }}>2　お預かりする情報</h2>
       <p><strong style={{ color: C.ink }}>あなたが入力するもの</strong></p>
-      <div style={{ margin: "8px 0 16px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
+      <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・お名前または表示名、メールアドレス</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・体調の記録</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>　　睡眠時間、のどの状態、声を使った時間、むくみ、</p>
@@ -50,17 +50,17 @@ export default function PrivacyPage() {
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>　　　年齢の区分だけをお聞きし、それ以外は記録しません。</p>
       </div>
       <p><strong style={{ color: C.ink }}>自動で記録されるもの</strong></p>
-      <div style={{ margin: "8px 0 16px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
+      <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・ログインの日時</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・アプリの利用に伴う技術的な記録（エラーの記録など）</p>
       </div>
       <p><strong style={{ color: C.ink }}>外から取り込むもの</strong></p>
-      <div style={{ margin: "8px 0 16px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
+      <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・お住まいの地域の気温・湿度（お住まいの地域をご指定いただいた場合）</p>
       </div>
       <hr style={{ border: 0, borderTop: `1px solid ${C.line}`, margin: "28px 0" }} />
       <h2 style={{ fontWeight: 600, marginTop: 28, marginBottom: 8 }}>3　何に使うか（利用目的）</h2>
-      <div style={{ margin: "8px 0 16px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
+      <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>1  あなたの記録を保存し、あなたに見せるため</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>2  あなたの記録から、不調と関係の深い要因を統計で示すため</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>3  教室・学校でお使いの場合、レッスンの予定と出欠を管理するため</p>
@@ -76,13 +76,13 @@ export default function PrivacyPage() {
       <p>同意は、いつでも撤回できます。撤回の方法は、第11項に記載しています。</p>
       <hr style={{ border: 0, borderTop: `1px solid ${C.line}`, margin: "28px 0" }} />
       <h2 style={{ fontWeight: 600, marginTop: 28, marginBottom: 8 }}>5　だれが見られるか</h2>
-      <div style={{ margin: "8px 0 16px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
+      <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>本サービスは、あなたの体調の記録を</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>あなた以外の方が参照する機能を持ちません。</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>教室・学校でお使いの場合も同じです。</p>
       </div>
       <p>教室・学校の指導者・運営者に伝わるもの</p>
-      <div style={{ margin: "8px 0 16px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
+      <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・あなたの表示名</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・あなたの職業</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・レッスンの予定</p>
@@ -90,7 +90,7 @@ export default function PrivacyPage() {
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・あなたが送った連絡（欠席、遅れます、相談したいことがあります）</p>
       </div>
       <p>本サービスは、教室・学校の指導者・運営者、および他の利用者が次のものを参照する機能を持ちません。</p>
-      <div style={{ margin: "8px 0 16px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
+      <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・体調の記録</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・既往症、服薬、その他の健康に関する情報</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・月経周期の記録</p>
@@ -103,7 +103,7 @@ export default function PrivacyPage() {
       <hr style={{ border: 0, borderTop: `1px solid ${C.line}`, margin: "28px 0" }} />
       <h2 style={{ fontWeight: 600, marginTop: 28, marginBottom: 8 }}>6　第三者への提供</h2>
       <p>法令に基づく場合を除き、あなたの記録を第三者に提供することはありません。</p>
-      <div style={{ margin: "8px 0 16px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
+      <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>売りません</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>広告に使いません</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>同意なく、外部の事業者に渡しません</p>
@@ -111,7 +111,7 @@ export default function PrivacyPage() {
       <hr style={{ border: 0, borderTop: `1px solid ${C.line}`, margin: "28px 0" }} />
       <h2 style={{ fontWeight: 600, marginTop: 28, marginBottom: 8 }}>7　業務を委ねている先と、データの置き場所</h2>
       <p>本サービスを動かすために、次の事業者のしくみを使っています。いずれも、契約により、記録の内容を取り扱わないこととしています。</p>
-      <div style={{ margin: "8px 0 16px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
+      <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>役割              契約の相手方の所在地   データが取り扱われる場所</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>────────────────────────────────────────────────────────────</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>データベース      シンガポール           日本（東京）</p>
@@ -127,7 +127,7 @@ export default function PrivacyPage() {
       <p>持病については、自由記述ではなく、一覧からお選びいただくことをおすすめします。あとから「持病の記録だけを消したい」とご希望いただいたときに、確実にお応えできるためです。</p>
       <hr style={{ border: 0, borderTop: `1px solid ${C.line}`, margin: "28px 0" }} />
       <h2 style={{ fontWeight: 600, marginTop: 28, marginBottom: 8 }}>9　どのくらい保存するか</h2>
-      <div style={{ margin: "8px 0 16px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
+      <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>アプリの中        あなたが削除するまで</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>バックアップの中  削除後、最大30日。その後、自動的に消えます</p>
       </div>
@@ -136,7 +136,7 @@ export default function PrivacyPage() {
       <hr style={{ border: 0, borderTop: `1px solid ${C.line}`, margin: "28px 0" }} />
       <h2 style={{ fontWeight: 600, marginTop: 28, marginBottom: 8 }}>10　統計への利用</h2>
       <p>本サービスは、記録から「不調と関係の深い要因」を統計で示します。</p>
-      <div style={{ margin: "8px 0 16px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
+      <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>あなたに示す統計    あなたの記録だけを使います</p>
         <p style={{ height: 10 }} />
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>サービス改善のための集計</p>
@@ -147,7 +147,7 @@ export default function PrivacyPage() {
       <p>あなたの記録が、他の方に示される統計に使われることはありません。</p>
       <hr style={{ border: 0, borderTop: `1px solid ${C.line}`, margin: "28px 0" }} />
       <h2 style={{ fontWeight: 600, marginTop: 28, marginBottom: 8 }}>11　あなたができること</h2>
-      <div style={{ margin: "8px 0 16px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
+      <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>見る          いつでも、ご自身の記録をご覧いただけます</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>　　　　　　　（「今日」「ノート」「分析」の各画面）</p>
         <p style={{ height: 10 }} />
@@ -165,7 +165,7 @@ export default function PrivacyPage() {
       </div>
       <p>撤回されても、これまでの記録は消えません。ご覧いただくことも、書き出すことも、削除することも、同意の状態とは関わりなくできます。</p>
       <p>これらのほか、法の定めにより、利用目的の通知、開示、訂正、利用の停止、消去、第三者提供の停止をご請求いただけます（法32条〜35条）。</p>
-      <div style={{ margin: "8px 0 16px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
+      <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>ご請求の方法    woolsong.app@gmail.com 宛にご連絡ください</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>手数料          いただきません</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>お答えする期間  おおむね2週間以内にご連絡します</p>
@@ -180,7 +180,7 @@ export default function PrivacyPage() {
       <hr style={{ border: 0, borderTop: `1px solid ${C.line}`, margin: "28px 0" }} />
       <h2 style={{ fontWeight: 600, marginTop: 28, marginBottom: 8 }}>14　漏えいなどが起きたとき</h2>
       <p>万一、あなたの記録が漏れた、失われた、壊れたといったことが起きた場合、法令に従い、個人情報保護委員会へ報告し、あなたにご連絡します。</p>
-      <div style={{ margin: "8px 0 16px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
+      <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>ご連絡する内容　何が起きたか / 何が漏れたか / いま何をしているか</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>　　　　　　　　あなたにしていただきたいこと</p>
       </div>
@@ -192,7 +192,7 @@ export default function PrivacyPage() {
       <p>重要な変更のときは、事前にお知らせし、必要な場合はあらためて同意をいただきます。</p>
       <hr style={{ border: 0, borderTop: `1px solid ${C.line}`, margin: "28px 0" }} />
       <h2 style={{ fontWeight: 600, marginTop: 28, marginBottom: 8 }}>16　お問い合わせ・苦情の申出先</h2>
-      <div style={{ margin: "8px 0 16px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
+      <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>woolsong.app@gmail.com</p>
       </div>
       <p>本サービスの個人情報の取扱いについてのご意見・苦情は、上記へお寄せください。</p>

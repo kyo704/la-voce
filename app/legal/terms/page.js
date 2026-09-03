@@ -17,7 +17,7 @@ import { C } from "@/lib/tokens";
 
 export default function TermsPage() {
   return (
-    <main style={{ maxWidth: 720, margin: "0 auto", padding: "64px 24px", lineHeight: 1.9, fontSize: 14, color: C.ink }}>
+    <main className="legal-doc" style={{ margin: "0 auto", padding: "56px 24px 96px", color: C.ink }}>
       <h1 className="ff-display italic" style={{ fontSize: "2rem", color: C.curtain, marginBottom: 24 }}>
         利用規約
       </h1>
@@ -47,7 +47,7 @@ export default function TermsPage() {
       <p>利用者は、教室・学校等の団体（以下「教室等」といいます）に参加して本サービスを利用することができます。</p>
       <p><strong style={{ color: C.ink }}>教室等に参加した場合、次のとおりとなります。</strong></p>
       <p>教室等の指導者・運営者に伝わるもの</p>
-      <div style={{ margin: "8px 0 16px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
+      <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・利用者の表示名</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・利用者の職業</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・レッスンの予定</p>
@@ -55,7 +55,7 @@ export default function TermsPage() {
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・利用者が送った連絡（欠席、遅れます、相談したいことがあります）</p>
       </div>
       <p>本サービスは、教室等の指導者・運営者が次のものを参照する機能を持ちません。</p>
-      <div style={{ margin: "8px 0 16px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
+      <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・体調の記録</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・既往症、服薬、その他の健康に関する情報</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・月経周期の記録</p>
