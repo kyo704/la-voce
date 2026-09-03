@@ -5348,24 +5348,33 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     return () => { mounted = false; };
   }, [userId]);
 
+  // ★名前のある関数にしました（2026-09-04）。
+  //   ★以前はこの中身が useEffect の中に直に書いてあり、[userId] でしか
+  //     走りませんでした。つまり★画面を開いたときの一度きりです。
+  //   ★招待を受けて先生とつながっても、この処理は二度と走らないので、
+  //     名前の対応表は「つながる前」のまま＝空でした。
+  //     つながり（myTeacherLinks）だけが増えるので、画面には
+  //     ★「名前未設定の先生と連携中」と出ます。名前は取れているのに、です。
+  //   ★本番で確認済み：関数 get_my_teacher_names は正しく名前を返していました。
+  //     壊れていたのは、呼び直していなかった呼ぶ側です。
+  //   ★教訓：useEffect の中に直に書いた処理は、あとから呼び直せません。
+  //     つながりが変わったら呼び直すものは、名前を付けて外に出すこと。
+  async function fetchMyTeacherNames() {
+    const supabase = createClient();
+    const { data, error } = await supabase.rpc("get_my_teacher_names");
+    if (error) {
+      console.warn("先生の名前を取得できませんでした。supabase/migration_invitation_teacher_name.sql を実行してください。", error);
+      return;
+    }
+    if (!Array.isArray(data)) return;
+    const map = {};
+    data.forEach((t) => { if (t && t.teacher_id) map[t.teacher_id] = t; });
+    // ★入れ替えます（積み増しではありません）。
+    //   解除した先生を、対応表に残さないためです。
+    setMyTeacherNames(map);
+  }
   // つながっている先生の名前。★profiles を直接は読めないので関数を経由する。
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      const supabase = createClient();
-      const { data, error } = await supabase.rpc("get_my_teacher_names");
-      if (error) {
-        console.warn("先生の名前を取得できませんでした。supabase/migration_invitation_teacher_name.sql を実行してください。", error);
-        return;
-      }
-      if (mounted && Array.isArray(data)) {
-        const map = {};
-        data.forEach((t) => { if (t && t.teacher_id) map[t.teacher_id] = t; });
-        setMyTeacherNames(map);
-      }
-    })();
-    return () => { mounted = false; };
-  }, [userId]);
+  useEffect(() => { fetchMyTeacherNames(); }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ★周期は本人しか読めない（RLSは auth.uid() = user_id の1本だけ）。
   //   テーブルが無い環境でも他の機能を巻き込まないよう、失敗しても黙って空にする。
@@ -9639,6 +9648,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setInviteCodeInput("");
     fetchTeacherLinks();
     fetchMyOrgs();
+    // ★つながりが増えたので、名前も読み直します（2026-09-04）。
+    //   ★これを忘れると「名前未設定の先生と連携中」と出ます。
+    //     つながりの一覧だけ新しく、名前の対応表だけ古い状態になるためです。
+    fetchMyTeacherNames();
   }
   function handleDeclineInvitation() {
     setPendingInvitation(null);
@@ -9685,6 +9698,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       }
     }
     fetchTeacherLinks();
+    // ★解除でも読み直します。対応表に、解除した先生を残さないためです。
+    fetchMyTeacherNames();
   }
   async function fetchTeacherLinks() {
     const supabase = createClient();
@@ -13813,7 +13828,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   return (
                     <details key={`t-${orgId}`} className="rounded-2xl border"
                       style={{ background: C.card, borderColor: C.line }}
-                      onToggle={(e) => { if (e.target.open) fetchMyOrgAssignments(orgId); }}>
+                      onToggle={(e) => { if (e.target.open) { fetchMyOrgAssignments(orgId); fetchOrgEvents(orgId); } }}>
                       <summary className="p-4 text-sm font-medium cursor-pointer">
                         {m.org ? m.org.name : "（教室情報を読み込めませんでした）"}（講師）
                       </summary>
@@ -13836,6 +13851,43 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               {orgDisplayName(a.student_id)}さん
                             </div>
                           ))}
+                        </div>
+                        {/* ★教室の予定（2026-09-04・運営者の判断）。★読むだけです。
+                            ★org_events_select_member は、教室に所属していれば読ませます。
+                              だから講師も読めます（本番のポリシー一覧で確認済み）。
+                            ★書くほうは org_events_write_admin のままで、オーナーと責任者だけです。
+                              ★だから画面にも、作る・動かす・取り下げるを出しません。
+                              ★出せる操作と、通る操作を、そろえます。
+                                画面にだけ出して押すと通らない、という形を作らないためです。
+                            ★ポリシーは1本も変えていません。 */}
+                        <div>
+                          <p className="text-xs font-medium mb-1.5">教室の予定</p>
+                          {(orgEvents[orgId] || []).length === 0 ? (
+                            /* ★「ありません」と言い切らないこと。
+                                読み込めていないだけの場合と、見分けがつきません。 */
+                            <p className="text-xs" style={{ color: C.inkSoft }}>
+                              予定は、まだ登録されていません。
+                            </p>
+                          ) : (
+                            <div className="space-y-1.5">
+                              {(orgEvents[orgId] || []).map((ev) => (
+                                <div key={ev.id} className="flex items-center gap-2 text-xs rounded-lg p-2"
+                                  style={{ background: C.paper, opacity: ev.withdrawn_at ? 0.5 : 1 }}>
+                                  <span className="ff-mono" style={{ color: C.inkSoft }}>{ev.event_date.slice(5)}</span>
+                                  <span style={{ color: C.ink }}>{ev.kind}</span>
+                                  <span className="flex-1 truncate" style={{ color: C.inkSoft }}>{ev.title}</span>
+                                  {/* ★取り下げずみも隠しません。予定が消えたのか、
+                                      取り下げられたのかが分からなくなるためです。 */}
+                                  {ev.withdrawn_at ? (
+                                    <span className="flex-shrink-0" style={{ color: C.inkSoft }}>取り下げずみ</span>
+                                  ) : null}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
+                            予定の追加・変更は、オーナーか教室の責任者にお願いしてください。
+                          </p>
                         </div>
                       </div>
                     </details>

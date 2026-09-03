@@ -36,23 +36,39 @@ ok("myOrgAssignments という別の state がある", /const \[myOrgAssignments
 ok("★orgAssignments に書き込んでいない", !/setOrgAssignments/.test(本体));
 
 console.log("\n④ ★運営の操作を、講師のカードに出していないこと");
+// ★窓の幅で決めません。次の分岐（オーナー・責任者）までを、カードとします。
 const j = RAW.indexOf('m.role === "teacher"');
-const カード = j === -1 ? "" : RAW.slice(j, j + 2200);
-ok("講師のカードを取り出せた", カード.length > 0);
+const k = RAW.indexOf('m.role === "owner" || m.role === "admin"', j);
+const カード = (j === -1 || k === -1) ? "" : RAW.slice(j, k);
+ok("講師のカードを取り出せた（次の分岐まで）", カード.length > 500);
 for (const [名, 語] of [
   ["招待コードの発行", "招待コードを発行"],
-  ["予定の作成", "handleCreateOrgEvent"],
+  ["★予定の作成", "handleCreateOrgEvent"],
+  ["★予定の日付の変更", "handleMoveOrgEvent"],
+  ["★予定の取り下げ", "handleWithdrawOrgEvent"],
   ["役割の変更", "handleChangeRole"],
   ["担当の割り当て", "handleAssignTeacherToStudent"],
   ["担当を外す", "handleUnassignTeacher"]
 ]) {
   ok(`★${名}を出していない`, !カード.includes(語));
 }
+// ★押しても通らないものを、画面に出さないこと。
+//   org_events_write_admin は owner と admin だけです。
+ok("★入力欄・ボタンを1つも置いていない",
+  !/<input/.test(カード) && !/<button/.test(カード));
+
+console.log("\n④-2 教室の予定は、読むだけで出すこと");
+ok("予定の一覧を出している", /orgEvents\[orgId\]/.test(カード));
+ok("開いたときに予定を読む", /fetchOrgEvents\(orgId\)/.test(カード));
+ok("★取り下げずみも隠していない", /withdrawn_at/.test(カード));
+ok("予定の追加は誰に頼むかを書いている", /オーナーか教室の責任者/.test(カード));
 
 console.log("\n⑤ ★0件のときの言い方");
 // ★「いません」と言い切らないこと。読み込めていないだけの場合と見分けがつきません。
 ok("0件のときの文がある", /担当の生徒さんは、まだ登録されていません/.test(RAW));
 ok("★「いません」と言い切っていない", !/担当の生徒はいません/.test(RAW));
+ok("予定が0件のときの文がある", /予定は、まだ登録されていません/.test(カード));
+ok("★「予定はありません」と言い切っていない", !/予定はありません。/.test(カード));
 
 console.log(`\n合計 ${通 + 否} 本：通過 ${通}／失敗 ${否}`);
 process.exit(否 ? 1 : 0);
