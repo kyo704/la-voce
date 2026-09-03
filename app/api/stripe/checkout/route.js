@@ -2,10 +2,22 @@ import { NextResponse } from "next/server";
 import { absoluteUrl } from "@/lib/baseUrl";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { stripe } from "@/lib/stripe";
+import { stripe, stripeConfigured } from "@/lib/stripe";
 import { getUserWithTimeout } from "@/lib/withTimeout";
 
 export async function POST() {
+  // ★鍵が無いなら、ここで止まります（2026-09-03）。
+  //   ★確かめたこと：new Stripe(undefined) は投げません。呼んだときに
+  //     初めて失敗します。つまり見張りが無いと、メールアドレスと利用者IDが
+  //     ★api.stripe.com へ出てから拒否されます。
+  //   ★/api/advice と同じ形です。閉じるほうへ倒します。
+  if (!stripeConfigured()) {
+    return NextResponse.json(
+      { error: "この機能は、いまお使いいただけません。" },
+      { status: 503 }
+    );
+  }
+
   const supabase = createClient();
   const { user, unreachable } = await getUserWithTimeout(supabase, "決済の認証確認");
   // ★「確認できなかった」と「ログインしていない」を分ける。

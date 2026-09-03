@@ -1,10 +1,22 @@
 import { NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+import { stripe, stripeConfigured } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // Stripe の署名検証には生のリクエストボディが必要なため、
 // このルートでは request.text() を使う（JSON.parse しない）。
 export async function POST(request) {
+  // ★鍵が無いなら、ここで止まります（2026-09-03）。
+  //   ★確かめたこと：new Stripe(undefined) は投げません。呼んだときに
+  //     初めて失敗します。つまり見張りが無いと、メールアドレスと利用者IDが
+  //     ★api.stripe.com へ出てから拒否されます。
+  //   ★/api/advice と同じ形です。閉じるほうへ倒します。
+  if (!stripeConfigured()) {
+    return NextResponse.json(
+      { error: "この機能は、いまお使いいただけません。" },
+      { status: 503 }
+    );
+  }
+
   const body = await request.text();
   const signature = request.headers.get("stripe-signature");
 

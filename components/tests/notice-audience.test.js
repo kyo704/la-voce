@@ -55,7 +55,14 @@ const 取込 = (p) =>
   ok("1件以上ある", 道.length >= 6);
   ok("すべてに id・host・where・what がある",
     道.every((r) => r.id && r.host && r.where && r.what));
-  ok("国はまだ全部が空欄（憶測で書いていない）", O.routesMissingCountry().length === 道.length);
+  // ★2026-09-03：Supabase の場所だけ確かめました（東京・ap-northeast-1）。
+  //   ★見張るのは「全部空欄か」ではなく、★「確かめていないものを書いていないか」です。
+  ok("★B型（中身を処理する）の契約主体は、1つも書かれていない",
+    O.processingRoutesMissingEntity().length === O.processingRoutes().length);
+  ok("国が入っているのは、確かめた道だけ",
+    道.filter((r) => r.country).every((r) => r.id === "supabase"));
+  ok("★Supabase の場所は、確かめた値が入っている",
+    /ap-northeast-1/.test(道.find((r) => r.id === "supabase").country || ""));
 
   // ★台帳とコードの突き合わせ。コードに fetch があるのに台帳に無い、を防ぎます。
   const 実際 = new Set();
