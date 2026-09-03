@@ -57,8 +57,16 @@ const 取込 = (p) =>
     道.every((r) => r.id && r.host && r.where && r.what));
   // ★2026-09-03：Supabase の場所だけ確かめました（東京・ap-northeast-1）。
   //   ★見張るのは「全部空欄か」ではなく、★「確かめていないものを書いていないか」です。
-  ok("★B型（中身を処理する）の契約主体は、1つも書かれていない",
-    O.processingRoutesMissingEntity().length === O.processingRoutes().length);
+  // ★2026-09-03：Anthropic の契約主体が、規約の本文から確定しました。
+  //   ★見張る中身を変えます。「1つも書かれていない」ではなく、
+  //     ★「書いてあるものには、出どころがあるか」です。
+  //     出どころの無い国名は、公開文書に載せた瞬間に嘘になります。
+  ok("★契約主体を書いた道には、必ず出どころがある",
+    O.OUTBOUND_ROUTES.filter((r) => r.entity).every((r) => !!r.entityBasis));
+  ok("★利用者ご自身が渡す道には、契約主体を書いていない",
+    O.userInitiatedRoutes().every((r) => !r.entity && !r.entityCountry));
+  ok("利用者ご自身が渡す道が、1件ある（Google カレンダー）",
+    O.userInitiatedRoutes().length === 1);
   // ★2026-09-03：Stripe も確定しました（運営者が請求書で確認・日本）。
   //   見張るのは「どの道に入っているか」ではなく、
   //   ★「入っている国には、確かめた出どころがあるか」です。
