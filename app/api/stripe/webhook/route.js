@@ -37,6 +37,19 @@ export async function POST(request) {
       .update({
         stripe_subscription_id: subscription.id,
         status: subscription.status,
+        // ★どのプランで契約したか（2026-09-04）。
+        //   ★checkout のときに、metadata へ入れています。
+        //   ★★Stripe の価格から逆算しません。★契約時の申告を、そのまま残します。
+        plan: (subscription.metadata && subscription.metadata.plan) || null,
+        // ★★契約したときに「表示していた価格」（未成年に売る形 §10）。
+        //   ★あとで値上げしたとき、★そのとき何円だったかが争点になります。
+        //   ★item の金額を使います。★プランの表に書いてある数字ではありません。
+        //     ★表を書き換えても、★契約の記録は変わってはいけません。
+        contracted_price_yen: (() => {
+          const item = subscription.items && subscription.items.data && subscription.items.data[0];
+          const amount = item && item.price && item.price.unit_amount;
+          return typeof amount === "number" ? amount : null;
+        })(),
         trial_end: subscription.trial_end
           ? new Date(subscription.trial_end * 1000).toISOString()
           : null,

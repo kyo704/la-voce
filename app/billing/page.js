@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { isNativeApp } from "@/lib/isNativeApp";
 import { C } from "@/lib/tokens";
 import CheckoutButton from "@/components/CheckoutButton";
+import { PLANS } from "@/lib/plans";
+import { MINOR_NOTICE_LINE } from "@/lib/minorBilling";
 import PortalButton from "@/components/PortalButton";
 import { getUserWithTimeout } from "@/lib/withTimeout";
 import ConnectionError from "@/components/ConnectionError";
@@ -145,7 +147,23 @@ export default async function BillingPage() {
             有料の提供を始めるときは、事前にお知らせします。
             それまでにお預かりした記録は、そのまま残ります。
           </p>
-          <CheckoutButton />
+          {/* ★プランごとに、1つずつ置きます（2026-09-04）。
+              ★1つのボタンで切り替えません。
+              ★どちらを押したかが、★押す前に見えているようにします。
+              ★年払いを未成年に出さない判断は、★サーバ側にもあります
+                （api/stripe/checkout/route.js）。
+                ★画面で隠すだけにしないこと。★API を直に叩かれます。 */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {PLANS.map((p) => (
+              <CheckoutButton key={p.key} planKey={p.key}
+                label={`${p.label}（${p.priceLabel}）でお申し込み`} />
+            ))}
+          </div>
+          {/* ★申し込みに至るまでの画面に、常設で置きます（未成年に売る形 §8）。
+              ★文言は1つに統一します。★lib/minorBilling.js が持ちます。 */}
+          <p style={{ fontSize: 12, color: C.inkSoft, marginTop: 12 }}>
+            {MINOR_NOTICE_LINE}
+          </p>
         </div>
       )}
     </main>

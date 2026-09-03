@@ -1,0 +1,95 @@
+// プランと、決済の道（2026-09-04）
+//
+//   ★★クライアントから価格ID（price_…）を受け取らないこと。
+//     ★受け取ると、★任意の価格で契約できてしまいます。
+//   ★年齢の帯で出し分ける判断は、★サーバ側にも要ります。
+//     ★画面で隠すだけにしないこと。★API を直に叩かれます。
+const fs = require("fs");
+const path = require("path");
+const { stripComments } = require("./_source");
+
+let 通 = 0, 否 = 0;
+const ok = (名, 条) => 条 ? (通++, console.log("  ✓ " + 名)) : (否++, console.log("  ✗ " + 名));
+const p = (...a) => path.join(__dirname, "..", "..", ...a);
+const read = (...a) => fs.readFileSync(p(...a), "utf8");
+
+const plansSrc = read("lib", "plans.js");
+const route = stripComments(read("app", "api", "stripe", "checkout", "route.js"));
+const hook = stripComments(read("app", "api", "stripe", "webhook", "route.js"));
+const button = stripComments(read("components", "CheckoutButton.jsx"));
+const billing = stripComments(read("app", "billing", "page.js"));
+const sql = stripComments(read("supabase", "2026-09-04-subscription-plan.sql"));
+
+(async () => {
+const m = await import("data:text/javascript;base64," + Buffer.from(plansSrc).toString("base64"));
+
+console.log("\n① プランの表");
+ok("2つある", m.PLANS.length === 2);
+ok("月額は580円", m.planByKey("monthly").priceYen === 580);
+ok("年額は5800円", m.planByKey("annual").priceYen === 5800);
+ok("★知らない名前は null", m.planByKey("なにか") === null);
+ok("★価格IDそのものを、表に書いていない", !/price_[A-Za-z0-9]/.test(plansSrc));
+ok("★環境変数の名前を持っている",
+  m.planByKey("monthly").envKey === "STRIPE_PRICE_ID_MONTHLY" &&
+  m.planByKey("annual").envKey === "STRIPE_PRICE_ID_ANNUAL");
+
+console.log("\n② ★価格IDの引き当ては、サーバ側で");
+ok("環境変数から引く", m.priceIdFor("monthly", { STRIPE_PRICE_ID_MONTHLY: "price_x" }) === "price_x");
+ok("★知らない名前は null", m.priceIdFor("なにか", { STRIPE_PRICE_ID_MONTHLY: "price_x" }) === null);
+ok("★環境変数が無ければ null", m.priceIdFor("monthly", {}) === null);
+ok("★env が無くても落ちない", m.priceIdFor("monthly", undefined) === null);
+
+console.log("\n③ 月あたりの金額（★年払いを、少なく見せない）");
+ok("月額はそのまま", m.monthlyEquivalentYen("monthly") === 580);
+// 5800 / 12 = 483.33… → ★切り上げて 484
+ok("★年払いは切り上げる", m.monthlyEquivalentYen("annual") === 484);
+
+console.log("\n④ ★決済の道が、価格IDを受け取らないこと");
+ok("★body から price を読んでいない", !/body\.price|body\["price"\]/.test(route));
+ok("★plan という名前だけを読む", /body\.plan/.test(route));
+ok("★一覧にない名前は 400", /PLAN_KEYS\.includes\(planKey\)/.test(route));
+ok("★価格IDは、サーバ側で引き当てる", /priceIdFor\(planKey, process\.env\)/.test(route));
+ok("★引き当てられなければ 503", /if \(!priceId\)/.test(route));
+ok("★古い STRIPE_PRICE_ID を、もう読んでいない",
+  !/process\.env\.STRIPE_PRICE_ID\b/.test(route));
+
+console.log("\n⑤ ★年齢の帯で出し分ける判断が、サーバ側にもあること");
+ok("★帯を読んでいる", /ageBandOf\(prof\)/.test(route));
+ok("★offeredPlans で確かめている", /offeredPlans\(band\)\.includes\(planKey\)/.test(route));
+ok("★通らなければ 403", /plan_not_available/.test(route));
+// ★判定の順：★帯の確認が、価格の引き当てより先にあること。
+const iBand = route.indexOf("offeredPlans(band)");
+const iPrice = route.indexOf("priceIdFor(planKey");
+ok("★帯の確認が先", iBand > 0 && iPrice > 0 && iBand < iPrice);
+
+console.log("\n⑥ ★契約したときのことを、残すこと");
+ok("★plan を metadata に入れている", /plan: planKey/.test(route));
+ok("★契約時の帯も入れている", /age_band: band/.test(route));
+ok("★webhook が plan を書く", /plan: \(subscription\.metadata/.test(hook));
+ok("★webhook が契約時の価格を書く", /contracted_price_yen/.test(hook));
+// ★プランの表の数字ではなく、★Stripe の item の金額を使うこと。
+//   ★表を書き換えても、契約の記録は変わってはいけません。
+ok("★item の金額を使っている", /price\.unit_amount/.test(hook));
+ok("★表の priceYen を使っていない", !/priceYen/.test(hook));
+
+console.log("\n⑦ 画面");
+ok("★ボタンがプランを送る", /JSON\.stringify\(\{ plan: planKey \}\)/.test(button));
+ok("★ボタンは価格IDを送らない", !/price_/.test(button));
+ok("★プランごとに1つずつ置く", /PLANS\.map/.test(billing));
+ok("★常設の1行を置いている", /MINOR_NOTICE_LINE/.test(billing));
+
+console.log("\n⑧ SQL");
+ok("plan の列がある", /add column if not exists plan text/.test(sql));
+ok("契約時の価格の列がある", /add column if not exists contracted_price_yen integer/.test(sql));
+ok("★知らないプラン名を弾く", /plan in \('monthly', 'annual'\)/.test(sql));
+ok("★利用者から書く権限を剥がしている",
+  /revoke insert, update, delete on public\.subscriptions from authenticated/.test(sql));
+ok("★SELECT は残している（本人が自分の契約を見る）",
+  !/revoke select on public\.subscriptions from authenticated/.test(sql));
+ok("★anon からは全部剥がしている",
+  /revoke all on public\.subscriptions from anon/.test(sql));
+ok("★埋め戻していない", !/update public\.subscriptions set plan/i.test(sql));
+
+console.log(`\n合計 ${通 + 否} 本：通過 ${通}／失敗 ${否}`);
+process.exit(否 ? 1 : 0);
+})();

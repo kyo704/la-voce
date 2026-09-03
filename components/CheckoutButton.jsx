@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { C } from "@/lib/tokens";
 
-export default function CheckoutButton() {
+/**
+ * @param planKey  "monthly" / "annual"（lib/plans.js の名前）
+ * @param label    ボタンに出す文字
+ *
+ * ★プランごとに1つずつ置きます。★1つのボタンで切り替えません。
+ *   ★どちらを押したかが、★押す前に見えているようにします。
+ */
+export default function CheckoutButton({ planKey = "monthly", label }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -11,7 +18,15 @@ export default function CheckoutButton() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/stripe/checkout", { method: "POST" });
+      // ★どのプランかを、名前で送ります（2026-09-04）。
+      //   ★★価格ID（price_…）を送らないこと。
+      //     ★送ると、任意の価格で契約できてしまいます。
+      //   ★引き当ては、サーバ側です。
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ plan: planKey })
+      });
       const data = await res.json();
       if (data.url) {
         window.location.href = data.url;
@@ -40,7 +55,7 @@ export default function CheckoutButton() {
           fontSize: 15
         }}
       >
-        {loading ? "処理中…" : "お申し込みに進む"}
+        {loading ? "処理中…" : (label || "お申し込みに進む")}
       </button>
       {error && <p style={{ color: C.curtain, fontSize: 13, marginTop: 8 }}>{error}</p>}
     </div>
