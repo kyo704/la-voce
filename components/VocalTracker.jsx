@@ -9553,12 +9553,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       return;
     }
     const supabase = createClient();
-    const { error: linkError } = await supabase.from("teacher_student_links").insert({
-      // ★share_scope は書きません（2026-09-01 に廃止）。
-      //   列は残っていますが、これから先そこに値が入ることはありません。
-      teacher_id: pendingInvitation.teacher_id, student_id: userId, status: "active",
-      accepted_at: new Date().toISOString()
-    });
+    // ★直接の insert をやめました（2026-09-04・#007）。
+    //   ★teacher_student_links への insert 権限は、authenticated から外してあります。
+    //   ★理由：招待コード無しで、任意の先生とのつながりを作れていました。
+    //     作ってよい条件（コードが実在し・その先生のもので・未使用で・期限内）は
+    //     ★行の中身ではなく、行の外にある証拠です。
+    //     ★WITH CHECK には、招待コードを受け取る口がありません。だから関数にしました。
+    //   ★引数は招待コードだけ。相手の uuid を渡す口が、どこにもありません。
+    //     teacher_id は招待から、student_id は auth.uid() から、関数が決めます。
+    //   ★同意の記録（link_consents）と、招待の使用済み（used_at）も、
+    //     ★同じ処理の中で行います。片方だけ成功する状態を作らないためです。
+    //     ★これで #004（招待が使い回せた不具合）も直ります。
+    const { error: linkError } = await supabase
+      .rpc("accept_teacher_invitation", { p_code: pendingInvitation.code });
     if (linkError) {
       // ★上の事前チェックをすり抜けても、DBのトリガーが必ず弾きます。
       //   そのときも、理由が分かる文にします。
@@ -9573,23 +9580,29 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //   解除ずみの行は、もうぶつかりません。
       //   ★だから「以前つながっていた記録が…」とは言えません。
       //     実際は二度押しで起きます（1回目が成功し、2回目がぶつかる）。
-      const isDuplicateLink =
-        linkError.code === "23505" || /duplicate key|already exists/i.test(String(linkError.message || ""));
-      setInviteLookupError(isMinorLinkBlocked(linkError)
-        ? "いまはまだ、先生とつながることができません。保護者の方の確認の仕組みを準備しています。"
-        : isDuplicateLink
-        ? "この先生とは、すでにつながっています。"
-        : "連携に失敗しました。もう一度お試しください。");
+      // ★関数が返す名前で見分けます（2026-09-04）。
+      //   MINOR_NOT_ALLOWED / ALREADY_LINKED / INVITATION_NOT_USABLE の3つだけです。
+      //   ★INVITATION_NOT_USABLE は「無い・使用済み・期限切れ」を分けません。
+      //     分けると、コードの当たりはずれを調べる道具になります。
+      //   ★isMinorLinkBlocked も残します。トリガーが直に上げる場合に備えて。
+      const m = String(linkError.message || "");
+      setInviteLookupError(
+        m.includes("MINOR_NOT_ALLOWED") || isMinorLinkBlocked(linkError)
+          ? "いまはまだ、先生とつながることができません。保護者の方の確認の仕組みを準備しています。"
+          : m.includes("ALREADY_LINKED")
+          ? "この先生とは、すでにつながっています。"
+          : m.includes("INVITATION_NOT_USABLE")
+          ? "このコードは使えません。先生に確認してください。"
+          : "連携に失敗しました。もう一度お試しください。");
       return;
     }
-    // ★つながりの記録を積みます（D-3）。上書きしません。
-    //   ★失敗しても、つながり自体は止めません。記録できなかったことは残します。
-    {
-      const { error: consentError } = await supabase.from("link_consents")
-        .insert(buildLinkConsentRow({ studentId: userId, teacherId: pendingInvitation.teacher_id }));
-      if (consentError) console.error("★つながりの記録を残せませんでした:", consentError);
-    }
-    await supabase.from("teacher_invitations").update({ used_at: new Date().toISOString(), used_by_student_id: userId }).eq("code", pendingInvitation.code);
+    // ★つながりの記録（link_consents）と、招待の使用済み（used_at）は、
+    //   ★accept_teacher_invitation の中で、同じ処理として行います（2026-09-04）。
+    //   ★ここから消しました。理由：
+    //     ・link_consents … 片方だけ成功する状態を作らないため
+    //     ・used_at       … ここからの update は★0行に当たっていました（#004）。
+    //                       生徒が、先生の行を更新しようとしていたためです。
+    //                       ★PostgREST では0行の更新はエラーになりません。無音でした。
     // 作業指示-教室プラン: この先生がownerである教室があれば、レッスン日程の運営面（在籍・担当）にも
     // 自動的に組み込む。健康データの共有範囲(share_scope)には一切影響しない、別の仕組み。
     // ★在籍づくりは、サーバ側でやります（2026-09-01）。
@@ -10016,11 +10029,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setEventError("");
     if (!newEvent.date) { setEventError("日付をお選びください。"); return; }
     const supabase = createClient();
-    const { error } = await supabase.from("org_events").insert({
-      org_id: orgId, event_date: newEvent.date, kind: newEvent.kind,
-      title: newEvent.title || "", created_by: userId
+    // ★直接の insert をやめました（2026-09-04・#007）。
+    //   ★org_events への insert 権限は、authenticated から外してあります。
+    //   ★理由：org_id を任意にして、どの教室にも予定を作れていました。
+    //   ★created_by は渡しません。関数が auth.uid() を入れます。
+    //     ★呼ぶ側が「誰が作ったか」を名乗れる形を、残さないためです。
+    const { data: eventId, error } = await supabase.rpc("create_org_event", {
+      p_org_id: orgId, p_event_date: newEvent.date,
+      p_kind: newEvent.kind, p_title: newEvent.title || ""
     });
     if (error) { console.error("予定を作れませんでした:", error); setEventError(`予定を作れませんでした：${error.message || "原因不明"}`); return; }
+    // ★権限が無いときは、エラーではなく null が返ります。
+    //   ★エラーにすると、教室の uuid の当たりはずれを調べる道具になります。
+    if (!eventId) { setEventError("この教室に予定を作る権限がありません。"); return; }
     setNewEvent({ date: "", kind: "本番", title: "" });
     fetchOrgEvents(orgId);
     fetchMyOrgEvents();

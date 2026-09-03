@@ -73,7 +73,14 @@ console.log("\n=== ★一意索引は、部分索引であること ===");
 
 console.log("\n=== ★409 を、読める言葉にしている ===");
 {
-  assertTrue(/23505/.test(vt), "重複のエラーを見分けている");
+  // ★2026-09-04：つながりの作成を、関数（accept_teacher_invitation）に移しました。
+  //   ★23505 を画面で見分けるのをやめ、★関数が ALREADY_LINKED を返します。
+  //   ★見張る中身は同じです ―― 「重複を、読める言葉にしているか」。
+  //   ★仕組みが変わっただけで、意図は変えていません。
+  assertTrue(/ALREADY_LINKED/.test(vt),
+    "重複のエラーを見分けている（関数が返す ALREADY_LINKED で）");
+  assertTrue(/この先生とは、すでにつながっています/.test(vt),
+    "★重複のときの文が、そのまま残っている");
   assertTrue(/すでにつながっています/.test(vt),
     "★生の 409 のままにしない");
   // ★部分索引にしたあと、teacher_student_links の 23505 は
