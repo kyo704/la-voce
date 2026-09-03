@@ -156,3 +156,99 @@ $$;
 
 revoke all on function public.create_org_event(uuid, date, text, text) from public, anon;
 grant execute on function public.create_org_event(uuid, date, text, text) to authenticated;
+
+
+-- ############################################################################
+-- ②-B ★変種B：is_org_owner_or_admin が壊れていた場合
+--
+--   ★1-B が true を返したら、②-A（上）は使えません。★壊れた関数を呼ぶだけです。
+--   ★そのときは、こちらを使います。memberships を★直に見ます。
+--
+--   ★memberships の列は、9/1 のダンプの CREATE TABLE で確かめました。
+--     id / org_id / user_id / role / created_at
+--     CHECK (role = ANY (ARRAY['owner','admin','teacher']))
+--   ★推測ではありません。
+--
+--   ★これは「同じ判断が2か所」になります。承知のうえです。
+--     ★壊れている関数に判断を委ねるほうが危ないためです。
+--     ★関数を直したら、②-A に戻してください。そのときこの関数は消します。
+-- ############################################################################
+
+create or replace function public.create_org_event(
+  p_org_id uuid, p_event_date date, p_kind text, p_title text
+)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_id uuid;
+begin
+  if auth.uid() is null then
+    raise exception 'NOT_AUTHENTICATED';
+  end if;
+
+  -- ★memberships を直に見ます。関数を経由しません。
+  if not exists (
+    select 1 from public.memberships m
+     where m.org_id = p_org_id
+       and m.user_id = auth.uid()
+       and m.role in ('owner', 'admin')
+  ) then
+    -- ★「権限が無い」と「その教室が無い」を分けません。
+    --   ★分けると、教室の uuid の当たりはずれを調べる道具になります。
+    return null;
+  end if;
+
+  insert into public.org_events (org_id, event_date, kind, title, created_by)
+  values (p_org_id, p_event_date, p_kind, coalesce(p_title, ''), auth.uid())
+  returning id into v_id;
+
+  return v_id;
+end;
+$$;
+
+revoke all on function public.create_org_event(uuid, date, text, text) from public, anon;
+grant execute on function public.create_org_event(uuid, date, text, text) to authenticated;
+
+
+-- ############################################################################
+-- ★呼ぶ側の差し替え（両方の表）
+-- ############################################################################
+--
+--   ★順番：関数を先に入れ、コードを後に出します（昨日の 7-3）。
+--     足すときは受け皿が先。消すときとは逆です。
+--
+--   ① 招待を受ける ― components/VocalTracker.jsx
+--      いま：9556（つながり insert）／9589（link_consents insert）／
+--            9592（used_at update）の★3つを、画面が順に呼んでいます。
+--      これから：★1本にまとめます。
+--
+--        const { data: linkId, error } = await supabase
+--          .rpc("accept_teacher_invitation", { p_code: pendingInvitation.code });
+--        if (error) {
+--          // ★関数が返すのは、この3つだけです。
+--          //   INVITATION_NOT_USABLE / MINOR_NOT_ALLOWED / ALREADY_LINKED
+--          //   ★どれも「なぜ駄目か」を利用者に伝えられる粒度です。
+--          //   ★INVITATION_NOT_USABLE は、無い・使用済み・期限切れを分けません。
+--        }
+--
+--      ★9589 と 9592 は★消します。関数の中でやります。
+--      ★9606 の /api/enrollment/accept は、そのまま残します。
+--        あちらは在籍と担当を作るもので、つながりができた後の処理です。
+--
+--   ② 教室の予定を作る ― components/VocalTracker.jsx:10019-10022
+--      いま：
+--        .from("org_events").insert({ org_id, event_date, kind, title, created_by })
+--      これから：
+--        const { data: eventId, error } = await supabase
+--          .rpc("create_org_event", {
+--            p_org_id: orgId, p_event_date: newEvent.date,
+--            p_kind: newEvent.kind, p_title: newEvent.title || ""
+--          });
+--        // ★eventId が null なら、権限がありません。
+--        //   ★エラーではなく null で返します。教室の uuid を
+--        //     探る道具にしないためです。画面には
+--        //     「この教室に予定を作る権限がありません」と出します。
+--      ★created_by は渡しません。関数が auth.uid() を入れます。
