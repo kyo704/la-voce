@@ -71,11 +71,14 @@ const 取込 = (p) =>
   //   見張るのは「どの道に入っているか」ではなく、
   //   ★「入っている国には、確かめた出どころがあるか」です。
   //   ここでは、確かめ終わったものの一覧と突き合わせます。
-  const 確かめた = ["supabase", "stripe"];
-  ok("国が入っているのは、確かめた道だけ",
-    道.filter((r) => r.country).every((r) => 確かめた.includes(r.id)));
-  ok("★確かめていない道には、国を書いていない",
-    道.filter((r) => !確かめた.includes(r.id)).every((r) => !r.country));
+  ok("★確かめ終わっていない道が、1つも無い（B-3 を書ける状態）",
+    O.routesNeedingConfirmation().length === 0);
+  // ★country は A型（預かるだけ）だけのものです。
+  //   B型に持たせると、entityCountry と同じことを2か所に書くことになります。
+  ok("★country を持つのは A型だけ",
+    道.filter((r) => r.country).every((r) => r.kind === "custodial"));
+  ok("★B型はすべて、契約の相手と国と出どころがそろっている",
+    O.processingRoutes().every((r) => r.entity && r.entityCountry && r.entityBasis));
   ok("★Supabase の場所は、確かめた値が入っている",
     /ap-northeast-1/.test(道.find((r) => r.id === "supabase").country || ""));
 
