@@ -54,7 +54,8 @@ console.log("\n⑤ ★門が読む列が、select に入っていること");
 //   ★「書いた値は読まれているか」の★裏返しです。
 //     ★読む値は、どこかで取ってこられているか。
 const cols = (VT.match(/const PROFILE_BASE_COLUMNS = "([^"]+)"/) || [])[1] || "";
-const consentCols = (VT.match(/const PROFILE_CONSENT_COLUMNS = "([^"]+)"/) || [])[1] || "";
+// ★宣言が改行をまたぐことがあります。★1行だけを見ないこと。
+const consentCols = (VT.match(/const PROFILE_CONSENT_COLUMNS\s*=\s*"([^"]+)"/) || [])[1] || "";
 const 全列 = (cols + ", " + consentCols).split(",").map((x) => x.trim());
 // ★lib/consentGate.js が読む profile の列を、そのまま拾います。
 const 門が読む列 = [...new Set(

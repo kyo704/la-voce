@@ -5379,7 +5379,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //   ★そして、この列を読み落とすと★門が開きます。
       //     ★undefined || null は null で、「撤回していない」と同じ形です。
       //     ★実際、その読み落としで撤回が効いていませんでした（2026-09-03）。
-      const PROFILE_CONSENT_COLUMNS = "consent_health_data_withdrawn_at";
+      // ★同意の撤回と、年齢の帯（2026-09-04）。★同じ組に入れます。
+      //   ★どちらも「まだ本番に無いかもしれない列」で、★同じ扱いだからです。
+      //   ★★門が読む列は、★必ずここに入れること。
+      //     ★取ってこない列は undefined で、★undefined || null は null です。
+      //     ★2026-09-03 に、それで撤回が効かなくなりました。
+      const PROFILE_CONSENT_COLUMNS =
+        "consent_health_data_withdrawn_at, age_band, age_band_answered_at";
       // ★読めなかったことを、★覚えておきます。★黙って「撤回していない」に
       //   倒さないためです。画面に出します（設定の同意欄）。
       let consentColumnMissing = false;
@@ -5455,6 +5461,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           consent_health_data_withdrawn_at: data.consent_health_data_withdrawn_at || null,
           // ★読めたかどうか。★読めていないことを、null と同じにしません。
           consent_column_missing: consentColumnMissing,
+          // ★年齢の帯（2026-09-04）。★null は「まだ答えていない」です。
+          //   ★2択の答え（is_under_18）とは、★別の答えです。
+          //   ★★null を、勝手に帯へ移し替えないこと。
+          age_band: data.age_band || null,
+          age_band_answered_at: data.age_band_answered_at || null,
           consent_stats_use_at: data.consent_stats_use_at || null,
           consent_policy_version: data.consent_policy_version || null,
           // ★professions が空のまま登録された古いデータがある。空のままだと
