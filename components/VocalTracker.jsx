@@ -10125,8 +10125,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     //   つまり「変えられなかった」ことが、これまで★どこにも出ませんでした。
     //   org_events を書き換えられるのは owner と admin だけ（org_events_write_admin）。
     //   講師のままの人が日付を変えても、★黙って何も起きません。
+    // ★書く列は event_date だけです（2026-09-04）。
+    //   ★previous_date と updated_at は、サーバが入れます
+    //     （trg_org_events_bookkeeping）。
+    //   ★previous_date は「どこから動いたか」です。古い行に書いてあるので、
+    //     ★渡してもらう必要がありません。渡させると、嘘を書ける口が増えます。
+    //   ★updated_at は「いつ変わったか」です。書く側に決めさせません。
+    //   ★ここに列を足さないこと。列ごとの権限は、この2列を含みません。
+    //     ★1つでも権限の無い列が混ざると、文ごと 42501 で落ちます。
+    //     ★実際、それで日付の変更も取り下げも通りませんでした。
     const { data: moved, error } = await supabase.from("org_events")
-      .update({ previous_date: ev.event_date, event_date: nextDate, updated_at: new Date().toISOString() })
+      .update({ event_date: nextDate })
       .eq("id", ev.id)
       .select("id");
     if (error) { console.error("日付を変えられませんでした:", error); setEventError("日付を変えられませんでした。"); return; }
@@ -10142,8 +10151,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   async function handleWithdrawOrgEvent(orgId, eventId) {
     if (!window.confirm("この予定を取り下げますか？　出ると印をつけた方の画面には、取り下げられたことが出ます。")) return;
     const supabase = createClient();
+    // ★書く列は withdrawn_at だけです（2026-09-04）。理由は
+    //   handleMoveOrgEvent と同じです。★updated_at はサーバが入れます。
     const { data: withdrawn, error } = await supabase.from("org_events")
-      .update({ withdrawn_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+      .update({ withdrawn_at: new Date().toISOString() })
       .eq("id", eventId)
       .select("id");
     if (error) { console.error("取り下げられませんでした:", error); setEventError("取り下げられませんでした。"); return; }
