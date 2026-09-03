@@ -13856,12 +13856,42 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             <p className="text-xs" style={{ color: C.inkSoft }}>
                               担当の生徒さんは、見つかりませんでした。
                             </p>
-                          ) : mine.map((a) => (
-                            <div key={a.id} className="rounded-lg p-2 mb-1 text-xs"
-                              style={{ background: C.paper }}>
-                              {orgDisplayName(a.student_id)}さん
-                            </div>
-                          ))}
+                          ) : mine.map((a) => {
+                            /* ★担当（assignments）と、個別のつながり（teacher_student_links）は、
+                                 ★別のものです（2026-09-03・運営者の判断＝案X）。
+                               ★つながりを解除しても、教室の在籍と担当は、そのまま残ります。
+                                 ★連動させません。教室が、別の講師に付け替えることがあるためです。
+                               ★ところが画面では、両者が同じ見た目でした。
+                                 ★「解除したのに、名前がまだ出ている」と読めます。
+                                 ★実際、2026-09-03 にそう報告されました。
+                               ★だから、担当だけの方には、小さな札を出します。
+                               ★myStudentLinks は、自分が先生として active なつながりです
+                                 （fetchTeacherLinks が status=active で絞っています）。 */
+                            const linked = myStudentLinks.some((l) => l.student_id === a.student_id);
+                            return (
+                              <div key={a.id} className="rounded-lg p-2 mb-1 text-xs flex items-center justify-between gap-2"
+                                style={{ background: C.paper }}>
+                                <span>{orgDisplayName(a.student_id)}さん</span>
+                                {/* ★つながっている方には、何も出しません。静かにします。
+                                    ★出すのは、担当だけの方の側です。 */}
+                                {!linked && (
+                                  <span className="text-xs px-1.5 py-0.5 rounded-full flex-shrink-0"
+                                    style={{ background: C.card, color: C.inkSoft }}>担当のみ</span>
+                                )}
+                              </div>
+                            );
+                          })}
+                          {/* ★札の意味を、同じ画面に書きます。
+                              ★「連携していません」と言い切らないこと。
+                                ★こちらから読めていないだけの場合と、見分けがつきません。
+                              ★言うのは「この画面から確認できたかどうか」です。 */}
+                          {mine.some((a) => !myStudentLinks.some((l) => l.student_id === a.student_id)) && (
+                            <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>
+                              「担当のみ」は、教室での担当として結ばれている方です。
+                              レッスンの予定を一緒に見る個別のつながりは、この画面からは確認できませんでした。
+                              教室の在籍と担当は、つながりの解除では変わりません。
+                            </p>
+                          )}
                         </div>
                         {/* ★教室の予定（2026-09-04・運営者の判断）。★読むだけです。
                             ★org_events_select_member は、教室に所属していれば読ませます。
