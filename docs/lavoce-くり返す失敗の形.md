@@ -537,3 +537,46 @@ grant update (status, revoked_at, revoked_by) on public.teacher_student_links to
 　★「のどが痛いようですね」と書いた瞬間に、★線を越えます。
 　★引く方向にだけ動かします。★足しません。
 
+## 17. 「与えない」を「剥がした」と読む
+
+★2026-09-03、★実機の確認で見つかりました（display_title）。
+
+    ★列ごとの権限と、表ぜんぶの権限は、★足し算です。
+    ★表ぜんぶの UPDATE を持っていれば、★どの列でも書けます。
+    ★★列の grant を書かないことは、★何も制限しません。
+
+★正しい形は、いつも2文で、★この順です。
+
+    revoke update on public.<表> from authenticated;
+    grant  update (<アプリが本当に書く列だけ>) on public.<表> to authenticated;
+
+★★順番が逆だと、★与えたほうが消えます。
+★検査では、★revoke が grant より★前にあることを見ること。
+
+### 何が起きたか
+
+    display_title を足し、★書ける道を関数1本にしたつもりでした。
+    ★「列の grant を書かない」ことを、守りだと考えていました。
+    ★★authenticated は、memberships の★表ぜんぶの UPDATE を持っていました。
+    ★講師の役の人が、★直の UPDATE で自分の肩書きを書けました。
+      ★オーナーの確認も、禁止語も、★全部素通りでした。
+
+### ★いちばん痛いこと
+
+★同じ形が、★このリポジトリに既にありました。
+
+    supabase/migration_identity_columns_immutable.sql:55-63
+      revoke update on public.org_events from authenticated;
+      grant  update (event_date, previous_date, withdrawn_at, updated_at) …
+
+★★自分が書いた正しい形を、★新しい表に写しませんでした。
+
+### やること
+
+    ・列を絞る移行を書くときは、★先に revoke があるか確かめる
+    ・★revoke の無い列 grant は、★未完成として扱う
+    ・★表ぜんぶ → 列ごと に切り替えたら、
+      ★その表への書き込みを★全部見直すこと
+      ★権限の無い列が1つ混ざると、★文ごと 42501 で落ちます
+      ★.select() と0行の確認が無い場所は、★無音で失敗します
+

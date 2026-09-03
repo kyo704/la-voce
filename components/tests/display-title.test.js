@@ -67,6 +67,19 @@ console.log("\n⑥ ★SQL：書ける道が、関数1本だけであること");
 const code = sql.replace(/--.*$/gm, "");
 ok("★display_title に列ごとの grant update を与えていない",
   !/grant\s+update\s*\([^)]*display_title/i.test(code));
+// ★★2026-09-03 の実機で見つかった穴。
+//   ★「与えない」だけでは足りません。★表ぜんぶの UPDATE 権限が上を行きます。
+//   ★先に剥がし、★それから要る列だけを与えること。
+ok("★★表ぜんぶの UPDATE を、先に剥がしている",
+  /revoke\s+update\s+on\s+public\.memberships\s+from\s+authenticated/i.test(code));
+ok("★role だけを与え直している",
+  /grant\s+update\s*\(\s*role\s*\)\s+on\s+public\.memberships\s+to\s+authenticated/i.test(code));
+// ★順番が大事です。★与えてから剥がすと、★与えたほうが消えます。
+ok("★★剥がすほうが、与えるほうより先にある",
+  code.search(/revoke\s+update\s+on\s+public\.memberships/i)
+    < code.search(/grant\s+update\s*\(\s*role\s*\)\s+on\s+public\.memberships/i));
+ok("★anon からも剥がしている",
+  /revoke\s+all\s+on\s+public\.memberships\s+from\s+anon/i.test(code));
 ok("関数がある", /create or replace function public\.set_member_display_title/.test(code));
 ok("★SECURITY DEFINER である", /set_member_display_title[\s\S]{0,400}security definer/i.test(code));
 ok("★search_path を固定している", /set_member_display_title[\s\S]{0,400}set search_path = public/i.test(code));

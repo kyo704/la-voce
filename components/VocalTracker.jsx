@@ -10374,7 +10374,24 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       return;
     }
     const supabase = createClient();
-    await supabase.from("memberships").update({ role: newRole }).eq("id", membershipId);
+    // ★.select() を付けて、何行変わったかを見ます（2026-09-03）。
+    //   ★これまで、error も行数も見ていませんでした。
+    //     ★弾かれても、画面は1文字も変わりませんでした。
+    //   ★2026-09-03 に memberships の権限を、表ぜんぶから
+    //     ★列ごと（role だけ）に切り替えました。
+    //     ★その確認を、この形でないと行えません。
+    const { data: changed, error } = await supabase.from("memberships")
+      .update({ role: newRole }).eq("id", membershipId).select("id");
+    if (error) {
+      console.error("役割を変えられませんでした:", error);
+      alert("役割を変えられませんでした。時間をおいて、もう一度お試しください。");
+      return;
+    }
+    if (!changed || changed.length === 0) {
+      console.error("★役割の変更が0行でした（権限が足りない可能性があります）:", { orgId, membershipId });
+      alert("この役割を変える権限がありません。教室のオーナーにお願いしてください。");
+      return;
+    }
     fetchOrgDetail(orgId);
   }
   // C-2: 担当の割り当て・解除。担当が変わったら生徒に通知する（entry_commentsの仕組みは使わず、
