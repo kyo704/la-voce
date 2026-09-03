@@ -40,7 +40,7 @@ export default function CheckoutButton() {
           fontSize: 15
         }}
       >
-        {loading ? "処理中…" : "14日間無料でお試しを始める"}
+        {loading ? "処理中…" : "お申し込みに進む"}
       </button>
       {error && <p style={{ color: C.curtain, fontSize: 13, marginTop: 8 }}>{error}</p>}
     </div>

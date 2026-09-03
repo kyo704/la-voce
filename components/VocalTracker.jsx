@@ -4016,6 +4016,10 @@ function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
 
                   <div className="rounded-xl p-3" style={{ background: C.paper }}>
                     <label className="text-sm font-medium block mb-1.5">{t("labelHealthNotes")}</label>
+                    {/* ★持病は上の一覧（CONDITION_OPTIONS）へ寄せてもらいます。
+                        ★自由記述に病名が散らばると、あとから「これだけ消して」が
+                          できません。選択肢なら、その1つを外せば消えます。 */}
+                    <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>{t("hintHealthNotes")}</p>
                     <textarea rows={2} value={value.health_notes}
                       onChange={(e) => onChange({ health_notes: e.target.value })}
                       className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />

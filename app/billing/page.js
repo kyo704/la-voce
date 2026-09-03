@@ -132,8 +132,12 @@ export default async function BillingPage() {
       ) : (
         <div style={{ marginTop: 24 }}>
           <p style={{ color: C.inkSoft, lineHeight: 1.7, marginBottom: 24 }}>
-            14日間無料でお試しいただけます。お試し期間終了後は月額プランに自動移行しますが、
-            期間中・期間後もいつでも解約いただけます。
+            いまは、すべての機能を無料でお使いいただけます。
+            <br /><br />
+            有料の提供は、まだ始まっていません。
+            自動的に有料に切り替わることはありません。
+            有料の提供を始めるときは、事前にお知らせします。
+            それまでにお預かりした記録は、そのまま残ります。
           </p>
           <CheckoutButton />
         </div>
