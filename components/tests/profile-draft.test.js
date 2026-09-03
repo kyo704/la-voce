@@ -33,8 +33,17 @@ assertTrue(/<ProfileFieldGroups value=\{optionalFields\}/.test(vt),
 console.log("\n=== 保存に成功したときだけ、共有の状態へ移す ===");
 const save = vt.slice(vt.indexOf("async function handleSaveProfile"), vt.indexOf("async function handleSaveProfile") + 3000);
 assertTrue(/const draft = profileDraft \|\| profile;/.test(save), "保存は下書きを読む");
-assertTrue(/if \(!error\) \{[\s\S]{0,120}setProfile\(/.test(save),
-  "★成功したときだけ profile に移す");
+// ★窓の幅で境界を決めないこと（くり返す失敗の形 3）。
+//   ★2026-09-03、if (!error) { と setProfile( のあいだに説明のコメントが
+//     入り、120文字の窓に収まらなくなって落ちました。
+//   ★見たいのは「順番」です。★if (!error) が先にあり、そのあとに
+//     setProfile が来ること。★あいだの長さは、見たいことではありません。
+{
+  const g = save.indexOf("if (!error) {");
+  const p = save.indexOf("setProfile(", g === -1 ? 0 : g);
+  const d = save.indexOf("setProfileDraft(null)", g === -1 ? 0 : g);
+  assertTrue(g !== -1 && p > g && d > p, "★成功したときだけ profile に移す");
+}
 assertTrue(/setProfileDraft\(null\)/.test(save), "移したら下書きを捨てる");
 assertTrue(!/draft\./.test(save.slice(0, save.indexOf("const draft"))), "draft は宣言より前で使われていない");
 

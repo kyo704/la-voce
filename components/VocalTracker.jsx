@@ -5499,16 +5499,43 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //   まず全部を要求し、列が無いと言われたときだけ、無しでもう一度読みます。
       const PROFILE_BASE_COLUMNS = "height_cm, voice_type, nutrition_phase, protein_coefficient, age, sex, garden_theme, character_points_spent, character_equipped, vocal_range_low, vocal_range_high, comfort_range_low, comfort_range_high, technical_goal, health_notes, vocal_profession, track_cycle, conditions, onboarding_completed, consent_health_data_at, consent_stats_use_at, consent_policy_version, professions, goal_focus, practice_goal, practice_goal_tags, practice_goal_started_at, practice_reviews, folded_groups, survey_day7_shown_at, survey_day7_response, line_user_id, line_link_code, line_linked_at, line_notification_enabled, day_record_boundary_hour, teacher_beta_access, display_name, is_admin";
       const PROFILE_OCCUPATION_COLUMNS = "voice_occupation, voice_mix, voice_mix_edited_at, occupation_notice_shown_at";
+      // ★同意の撤回の列（2026-09-03）。★本体に直に足さないこと。
+      //   ★足したら、この列が無い環境で★プロフィールが1行も読めなくなります。
+      //   ★そして、この列を読み落とすと★門が開きます。
+      //     ★undefined || null は null で、「撤回していない」と同じ形です。
+      //     ★実際、その読み落としで撤回が効いていませんでした（2026-09-03）。
+      const PROFILE_CONSENT_COLUMNS = "consent_health_data_withdrawn_at";
+      // ★読めなかったことを、★覚えておきます。★黙って「撤回していない」に
+      //   倒さないためです。画面に出します（設定の同意欄）。
+      let consentColumnMissing = false;
       let { data, error } = await runQueryWithAuthRetry(
         supabase,
         () =>
           supabase
             .from("profiles")
-            .select(PROFILE_BASE_COLUMNS + ", " + PROFILE_OCCUPATION_COLUMNS)
+            .select(PROFILE_BASE_COLUMNS + ", " + PROFILE_OCCUPATION_COLUMNS + ", " + PROFILE_CONSENT_COLUMNS)
             .eq("id", userId)
             .single(),
         "プロフィール（羊の装備を含む）の取得"
       );
+      // ★まず、同意の列だけを外して読み直します（職業の列より先に試します）。
+      if (error && (error.code === "42703" || /does not exist/i.test(error.message || ""))) {
+        consentColumnMissing = true;
+        console.error(
+          "★同意の撤回の列がまだありません。supabase/2026-09-03-consent-withdrawal.sql を実行してください。" +
+          "★実行するまで、撤回した方の記録の保存を止められません。", error
+        );
+        ({ data, error } = await runQueryWithAuthRetry(
+          supabase,
+          () =>
+            supabase
+              .from("profiles")
+              .select(PROFILE_BASE_COLUMNS + ", " + PROFILE_OCCUPATION_COLUMNS)
+              .eq("id", userId)
+              .single(),
+          "プロフィール（同意の列を除く）の取得"
+        ));
+      }
       // 42703 = undefined_column。列が無いときだけ、職業の4列を外して読み直す。
       if (error && (error.code === "42703" || /does not exist/i.test(error.message || ""))) {
         console.warn(
@@ -5551,6 +5578,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           //   ★同意した日時（consent_health_data_at）は消しません。
           //     ★消すと「いつ同意したか」が分からなくなります。
           consent_health_data_withdrawn_at: data.consent_health_data_withdrawn_at || null,
+          // ★読めたかどうか。★読めていないことを、null と同じにしません。
+          consent_column_missing: consentColumnMissing,
           consent_stats_use_at: data.consent_stats_use_at || null,
           consent_policy_version: data.consent_policy_version || null,
           // ★professions が空のまま登録された古いデータがある。空のままだと
@@ -8881,6 +8910,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★同意の撤回（2026-09-03）。★削除とは別のものです。
   //   ★withdrawAlsoDelete は★既定でオフ。戻せるほうを既定にします。
   const [withdrawAlsoDelete, setWithdrawAlsoDelete] = useState(false);
+  const [regrantBusy, setRegrantBusy] = useState(false);
+  const [regrantMessage, setRegrantMessage] = useState("");
   const [withdrawBusy, setWithdrawBusy] = useState(false);
   const [withdrawError, setWithdrawError] = useState("");
 
@@ -8918,14 +8949,25 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★同意した日時（consent_health_data_at）は、★書き換えません。
   //     ★最初に同意した日が、歴史として要ります。
   async function handleRegrantHealthConsent() {
+    // ★押した結果を、必ず画面に出します（2026-09-03）。
+    //   ★これまで console にしか出していませんでした。
+    //   ★押しても何も起きないので、運営者は2回押されました。
+    //     ★同意の行が2つ増えたのは、そのためです。
+    //   ★押している間も、押せないようにします。二度押しを防ぎます。
+    if (regrantBusy) return;
+    setRegrantBusy(true); setRegrantMessage("");
     const supabase = createClient();
     const now = new Date().toISOString();
     const { data: updated, error } = await supabase.from("profiles")
       .update({ consent_health_data_withdrawn_at: null }).eq("id", userId).select("id");
     if (error || !updated || updated.length === 0) {
       console.error("★もう一度同意できませんでした:", error);
+      setRegrantBusy(false);
+      setRegrantMessage("同意できませんでした。時間をおいて、もう一度お試しください。");
       return;
     }
+    setRegrantBusy(false);
+    setRegrantMessage("同意しました。記録と分析が、また使えます。");
     setProfile((p) => ({ ...p, consent_health_data_withdrawn_at: null }));
     const { error: recError } = await supabase.from("consent_records").insert(
       buildConsentRow({ userId, purposeKey: "health.record", locale: language, method: "button", now }));
@@ -9222,7 +9264,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     //   出したまま、ほかのタブには古い（＝実際に保存されている）値が
     //   出続けます。エラーなのに新しい値が見えている、という状態を作りません。
     if (!error) {
-      setProfile((p) => ({ ...p, ...draft }));
+      // ★下書きを、そのまま画面へ戻さないこと（2026-09-03）。
+      //   ★下書きは、画面を開いた時点の写しです。
+      //   ★同意の列は、このフォームが編集するものではありません。
+      //     ★なのに写しには入っているので、★戻すと
+      //       ★同意の状態が、開いた時点の古い値に巻き戻ります。
+      //   ★フォームが持っていない値を、フォームの保存で上書きしないこと。
+      const { consent_health_data_withdrawn_at, consent_health_data_at,
+              consent_stats_use_at, consent_column_missing, ...savable } = draft;
+      setProfile((p) => ({ ...p, ...savable }));
       setProfileDraft(null);
     }
     setProfileSaveStatus(error ? "error" : "saved");
@@ -9324,7 +9374,29 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   下書きを分け、★保存に成功したときだけ profile に移します。
   //   163か所の読み取りは profile のまま（＝保存済みの真実）です。
   const [profileDraft, setProfileDraft] = useState(null);
-  const profileDirty = profileDraft !== null;
+  // ★下書きが「在る」ことと、「変わった」ことは、別です（2026-09-03）。
+  //   ★下書きは、プロフィールの画面を開いただけで作られます（9331）。
+  //     ★だから、1文字も編集していなくても「保存されていません」が出ていました。
+  //   ★見るのは、★保存済みと違うかどうかです。
+  //   ★同意の列は、このフォームが編集しません。★比べる対象から外します。
+  const profileDirty = (() => {
+    if (profileDraft === null) return false;
+    const 除く = ["consent_health_data_withdrawn_at", "consent_health_data_at",
+                  "consent_stats_use_at", "consent_column_missing"];
+    const keys = [...new Set([...Object.keys(profile || {}), ...Object.keys(profileDraft)])]
+      .filter((k) => !除く.includes(k));
+    return keys.some((k) => {
+      const a = (profile || {})[k], b = profileDraft[k];
+      // ★配列は中身で比べます。参照で比べると、いつでも「変わった」になります。
+      if (Array.isArray(a) || Array.isArray(b)) {
+        return JSON.stringify(a || []) !== JSON.stringify(b || []);
+      }
+      // ★"" と null と undefined は、同じ「入っていない」として扱います。
+      const 空 = (v) => v === "" || v === null || v === undefined;
+      if (空(a) && 空(b)) return false;
+      return a !== b;
+    });
+  })();
   // プロフィール画面を開いたとき、保存済みの値から下書きを作る。
   // ★閉じたら捨てます。保存せずに離れた編集は、どこにも残りません。
   useEffect(() => {
@@ -16772,6 +16844,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ★新しい画面を作りません。約束した場所は、ここです。
                         ★いまは health.record の1つだけです。
                           ★周期・食事と就寝・研究は、それぞれの同意画面と一緒に、あとで。 */}
+                    {/* ★押した結果。★成功も失敗も、ここに出ます。 */}
+                    {regrantMessage && (
+                      <p className="text-xs mb-2 rounded-lg p-2"
+                        style={{ background: C.paper, color: C.ink }}>{regrantMessage}</p>
+                    )}
+                    {/* ★同意の状態を読めなかったとき。★黙って「同意ずみ」に倒しません。 */}
+                    {profile.consent_column_missing && (
+                      <p className="text-xs mb-2 rounded-lg p-2"
+                        style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>
+                        同意の状態を読み取れませんでした。
+                        supabase/2026-09-03-consent-withdrawal.sql を実行してください。
+                      </p>
+                    )}
                     {withdrawnAt(profile) ? (
                       <div className="rounded-lg p-2.5 mb-2" style={{ background: C.card }}>
                         <p className="text-xs mb-1" style={{ color: C.ink }}>
@@ -16781,10 +16866,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           新しい記録の保存と、分析が止まっています。
                           これまでの記録は、そのままあります。書き出しも削除も、これまでどおりできます。
                         </p>
-                        <button type="button" onClick={handleRegrantHealthConsent}
+                        <button type="button" onClick={handleRegrantHealthConsent} disabled={regrantBusy}
                           className="px-3 py-1.5 rounded-full text-xs font-medium"
-                          style={{ background: C.curtain, color: "#FFFDF8" }}>
-                          もう一度同意する
+                          style={{ background: C.curtain, color: "#FFFDF8", opacity: regrantBusy ? 0.6 : 1 }}>
+                          {regrantBusy ? "処理しています…" : "もう一度同意する"}
                         </button>
                       </div>
                     ) : null}

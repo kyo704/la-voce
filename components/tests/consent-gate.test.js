@@ -47,6 +47,41 @@ console.log("\n④ ★撤回と削除を、混ぜていないこと");
 ok("★門のファイルに delete がない", !/\.delete\(/.test(src));
 ok("★「消えます」と書いていない", !/消えます/.test(src));
 
+console.log("\n⑤ ★門が読む列が、select に入っていること");
+// ★2026-09-03 の不具合：撤回の列を select に入れ忘れていました。
+//   ★取ってこない列は undefined で、★undefined || null は null です。
+//   ★つまり「撤回していない」と同じ形になり、★読み込み直すと門が開きました。
+//   ★「書いた値は読まれているか」の★裏返しです。
+//     ★読む値は、どこかで取ってこられているか。
+const cols = (VT.match(/const PROFILE_BASE_COLUMNS = "([^"]+)"/) || [])[1] || "";
+const consentCols = (VT.match(/const PROFILE_CONSENT_COLUMNS = "([^"]+)"/) || [])[1] || "";
+const 全列 = (cols + ", " + consentCols).split(",").map((x) => x.trim());
+// ★lib/consentGate.js が読む profile の列を、そのまま拾います。
+const 門が読む列 = [...new Set(
+  (src.match(/profile(?:\s*&&\s*profile)?\.(\w+)/g) || []).map((m) => m.split(".")[1])
+)];
+ok(`門が読む列を拾えた（${門が読む列.join(", ")}）`, 門が読む列.length > 0);
+門が読む列.forEach((c) => {
+  ok(`★${c} が select に入っている`, 全列.includes(c));
+});
+// ★足すときは本体に直に足さないこと。列が無い環境で全部読めなくなります。
+ok("★同意の列は、別の組にしてある", /PROFILE_CONSENT_COLUMNS/.test(VT));
+ok("★列が無いときに読み直す道がある", /プロフィール（同意の列を除く）の取得/.test(VT));
+ok("★読めなかったことを覚えている", /consent_column_missing/.test(VT));
+
+console.log("\n⑥ ★フォームの保存が、同意の状態を巻き戻さないこと");
+const i2 = VT.indexOf("async function handleSaveProfile");
+const 保存 = i2 === -1 ? "" : VT.slice(i2, VT.indexOf("\n  }", VT.indexOf("setProfileDraft(null)", i2)));
+ok("★draft を丸ごと画面へ戻していない", !/setProfile\(\(p\) => \(\{ \.\.\.p, \.\.\.draft \}\)\)/.test(保存));
+ok("★同意の列を除いてから戻している", /consent_health_data_withdrawn_at,/.test(保存));
+
+console.log("\n⑦ ★再同意の結果が、画面に出ること");
+const i3 = VT.indexOf("async function handleRegrantHealthConsent");
+const 再同意 = i3 === -1 ? "" : VT.slice(i3, VT.indexOf("\n  }", i3));
+ok("★失敗を画面に出す", /setRegrantMessage\("同意できませんでした/.test(再同意));
+ok("★成功も画面に出す", /setRegrantMessage\("同意しました/.test(再同意));
+ok("★二度押しを止める", /if \(regrantBusy\) return/.test(再同意));
+
 console.log(`\n合計 ${通 + 否} 本：通過 ${通}／失敗 ${否}`);
 process.exit(否 ? 1 : 0);
 })();
