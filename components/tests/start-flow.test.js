@@ -74,5 +74,19 @@ ok("★寄せるかどうかを、呼ぶ側が決められる", /function Shell\
 ok("★★案内のときは、寄せない", /<Shell center=\{false\}>/.test(code));
 ok("★中身が短い画面は、寄せたまま", /<Shell>/.test(code));
 
+console.log("\n⑨ ★老眼の方に届く大きさであること");
+// ★★お客さまには、年配の声の professional がいらっしゃいます。
+//   ★読めない案内は、★無いのと同じです。
+//   ★2026-09-04、実機で「小さい」とご指摘をいただきました。
+{
+  const sizes = [...code.matchAll(/fontSize: (\d+)/g)].map((m) => Number(m[1]));
+  ok(`★文字の大きさを取り出せた（${sizes.length}か所）`, sizes.length > 0);
+  const 小さい = sizes.filter((n) => n < 14);
+  ok(`★★14px 未満が無い（いま ${小さい.join(", ") || "なし"}）`, 小さい.length === 0);
+  // ★押せるものは、指の大きさぶん。
+  const taps = [...code.matchAll(/minHeight: (\d+)/g)].map((m) => Number(m[1]));
+  ok("★押せるものに、高さを与えている", taps.length > 0 && taps.every((n) => n >= 44));
+}
+
 console.log(`\n合計 ${通 + 否} 本：通過 ${通}／失敗 ${否}`);
 process.exit(否 ? 1 : 0);

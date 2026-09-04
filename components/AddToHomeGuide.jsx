@@ -31,8 +31,11 @@ import { C } from "@/lib/tokens";
 const STEPS = [
   {
     src: "/onboarding/ios-1.png",
-    alt: "Woolsong のページを Safari で開いたところ。画面の下に、上向きの矢印のボタンが並んでいます。",
-    caption: "① 上向きの矢印（⬆）のボタンを押します"
+    alt: "Woolsong のページを Safari で開いたところ。画面の下の真ん中に、共有ボタン（上向きの矢印）があります。",
+    caption: "① 共有ボタン（画面の下の真ん中）を押します",
+    // ★Safari の設定で、上に出ることがあります（設定 ＞ Safari ＞ タブ）。
+    //   ★★言い切らないための、1行です。★消さないこと。
+    note: "設定によっては、画面の上に出ていることもあります。"
   },
   {
     src: "/onboarding/ios-2.png",
@@ -56,10 +59,10 @@ export default function AddToHomeGuide({ onSkip, onShow }) {
   //   ★二重に持つと、★画面が縦に伸びます。
   return (
     <div style={{ maxWidth: 420, margin: "0 auto" }}>
-      <h1 style={{ fontSize: 20, fontWeight: 600, color: C.ink, margin: "0 0 6px" }}>
+      <h1 style={{ fontSize: 24, fontWeight: 600, color: C.ink, margin: "0 0 8px", lineHeight: 1.5 }}>
         まず、ホーム画面に置きましょう。
       </h1>
-      <p style={{ fontSize: 13, color: C.inkSoft, margin: "0 0 18px" }}>
+      <p style={{ fontSize: 16, color: C.inkSoft, margin: "0 0 18px", lineHeight: 1.7 }}>
         次からは、アイコンを押すだけで開けます。
       </p>
 
@@ -93,9 +96,15 @@ export default function AddToHomeGuide({ onSkip, onShow }) {
           }} />
       </div>
 
-      <p style={{ fontSize: 15, color: C.ink, margin: "0 0 18px", textAlign: "center" }}>
+      <p style={{ fontSize: 19, color: C.ink, margin: "0 0 6px", textAlign: "center", lineHeight: 1.6, fontWeight: 600 }}>
         {step.caption}
       </p>
+      {/* ★位置は、設定で変わります。★言い切らないための1行です。 */}
+      {step.note && (
+        <p style={{ fontSize: 14, color: C.inkSoft, margin: "0 0 18px", textAlign: "center", lineHeight: 1.7 }}>
+          {step.note}
+        </p>
+      )}
 
       <div style={{ display: "flex", gap: 8 }}>
         {/* ★どの画面にも「戻る」があります。 */}
@@ -104,7 +113,7 @@ export default function AddToHomeGuide({ onSkip, onShow }) {
           style={{
             flex: 1, padding: "11px", borderRadius: 999,
             border: `1px solid ${C.line}`, background: C.card, color: C.inkSoft,
-            fontSize: 13, opacity: i === 0 ? 0.4 : 1
+            fontSize: 16, minHeight: 48, opacity: i === 0 ? 0.4 : 1
           }}>
           もどる
         </button>
@@ -112,7 +121,7 @@ export default function AddToHomeGuide({ onSkip, onShow }) {
           disabled={i === STEPS.length - 1}
           style={{
             flex: 1, padding: "11px", borderRadius: 999, border: "none",
-            background: C.curtain, color: "#FFFDF8", fontSize: 13, fontWeight: 600,
+            background: C.curtain, color: "#FFFDF8", fontSize: 16, fontWeight: 600, minHeight: 48,
             opacity: i === STEPS.length - 1 ? 0.4 : 1
           }}>
           つぎ
@@ -122,14 +131,14 @@ export default function AddToHomeGuide({ onSkip, onShow }) {
       {/* ★追加したあとの案内。★同じ画面の下に、常に出しておきます。
           ★★アイコンの絵を出します。探せない人がいます。 */}
       <div style={{ marginTop: 22, padding: 14, borderRadius: 14, background: C.paper }}>
-        <p style={{ fontSize: 13, color: C.ink, margin: "0 0 8px" }}>
+        <p style={{ fontSize: 16, color: C.ink, margin: "0 0 10px", lineHeight: 1.7 }}>
           追加できたら、ホーム画面に戻って
         </p>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <img src="/icon-120.png" alt="Woolsong のアイコン（羊の絵）"
-            width={44} height={44}
+            width={56} height={56}
             style={{ borderRadius: 10, border: `1px solid ${C.line}` }} />
-          <p style={{ fontSize: 13, color: C.ink, margin: 0 }}>
+          <p style={{ fontSize: 16, color: C.ink, margin: 0, lineHeight: 1.7 }}>
             このアイコンを押してください。
           </p>
         </div>
@@ -140,7 +149,7 @@ export default function AddToHomeGuide({ onSkip, onShow }) {
       <button type="button" onClick={onSkip}
         style={{
           width: "100%", marginTop: 18, padding: "11px", borderRadius: 999,
-          border: "none", background: "transparent", color: C.inkSoft, fontSize: 13
+          border: "none", background: "transparent", color: C.inkSoft, fontSize: 16, minHeight: 48
         }}>
         あとで
       </button>
