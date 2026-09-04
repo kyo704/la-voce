@@ -30,6 +30,14 @@ const UA = {
   Mac: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15",
   Windows: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36",
   Linux: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36",
+  // ★★ここが、いちばん危ないところです（2026-09-05 に確かめました）。
+  //   ★Mac の Chrome と Edge は、★PWA を入れられます。
+  //   ★だから beforeinstallprompt が★実際に来ます。
+  //   ★★来たことを機械の種類と読み違えると、★ここに携帯向けの手順が出ます。
+  MacChrome: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+  MacEdge: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0",
+  WinEdge: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0",
+  ChromeOS: "Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
   iPhone: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
   Android: "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Mobile Safari/537.36"
 };
@@ -39,7 +47,8 @@ const UA = {
   const m = await import("data:text/javascript;base64," + b64);
 
   console.log("\n① ★パソコンでは、案内の形が「無し」になること");
-  for (const name of ["Mac", "Windows", "Linux"]) {
+  for (const name of ["Mac", "Windows", "Linux",
+    "MacChrome", "MacEdge", "WinEdge", "ChromeOS"]) {
     // ★★maxTouchPoints は 0 です（★指で触る画面ではありません）。
     const os = m.osOf({ userAgent: UA[name], maxTouchPoints: 0 });
     ok(`${name}：★案内を出さない`,
