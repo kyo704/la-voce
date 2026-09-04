@@ -203,9 +203,17 @@ function SignupFormInner() {
           onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
           style={inputStyle}
         />
+        {/* ★★autocomplete を外すと、★端末がパスワードを覚えません。
+            ★覚えないと、★Face ID の自動入力が出ません。
+            ★★そうなると、★パスワードのほうが6桁より遅くなります。
+            ★判断-パスワードを主にする（9月4日・訂正2）§4 の要です。
+            ★消さないこと。 */}
         <input
           required
           type="email"
+          name="email"
+          autoComplete="username"
+          inputMode="email"
           placeholder={str("placeholderEmail", lang)}
           value={form.email}
           onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
@@ -286,9 +294,13 @@ function SignupFormInner() {
           </p>
         </fieldset>
 
+        {/* ★new-password です。★current-password ではありません。
+            ★これで、端末が「新しいパスワードを作りますか」を出します。 */}
         <input
           required
           type="password"
+          name="new-password"
+          autoComplete="new-password"
           minLength={8}
           placeholder={str("placeholderPassword", lang)}
           value={form.password}

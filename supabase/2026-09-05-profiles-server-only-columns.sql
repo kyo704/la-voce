@@ -1,8 +1,8 @@
 -- ============================================================================
 -- profiles ── ★本人に書かせてはいけない列を、止める（2026-09-05）
 --
---   ★★これは、★otp_migration の話より先に当ててください。
---     ★otp_migration は、★同じ穴の、いちばん軽いところです。
+--   ★★これは、★いま止まっている作業とは別に、★先に当ててください。
+--     ★2026-09-05、★列を1つ足す前の確認から見つかりました。
 --     ★★重いところは、★is_admin です。
 --
 --   ★★分かっていること（★運営者の照会で確かめました）
@@ -28,21 +28,44 @@
 
 
 -- ---------------------------------------------------------------------------
--- §0 ★先に、穴があることを確かめます（★戻します。何も残りません）
+-- §0 ★穴があるかどうかを、確かめます
 --
---   ★★begin と rollback で挟んでいます。★書き換わりません。
---   ★<ここに、ご自身のユーザーID> を入れ替えて、まとめて実行してください。
+--   ★★2026-09-05、★ここに私の間違いがありました。
+--     ★はじめ、★begin 〜 rollback で挟む形をお渡ししました。
+--     ★★Supabase の SQL エディタでは、★rollback が効きませんでした。
+--       ★is_admin = true が、★そのまま残りました。
+--       ★運営者が、手で false に戻してくださいました。
 --
---   ★「UPDATE 1」と出たら、★穴があります。
---   ★「new row violates」や「permission denied」なら、★塞がっています。
+--   ★★教訓 ── ★あとの1文で消す形の確かめを、お渡ししないこと。
+--     ★消えるかどうかは、★実行する場所しだいです。
+--     ★★消えることを、★データベース自身に保証させます。
+--
+--   ★下は、★do ブロック1文です。★中で書いて、★中で必ず戻します。
+--     ★raise で抜けるので、★書いたことは、★その場で消えます。
+--     ★成功しても失敗しても、★1行も残りません。
+--
+--   ★<ここに、ご自身のユーザーID> を入れ替えて、実行してください。
+--   ★答えは、★NOTICE として出ます。
 -- ---------------------------------------------------------------------------
--- begin;
---   set local role authenticated;
---   set local request.jwt.claims = '{"sub":"<ここに、ご自身のユーザーID>","role":"authenticated"}';
---   update public.profiles
---      set is_admin = true
---    where id = '<ここに、ご自身のユーザーID>';
--- rollback;
+-- do $probe$
+-- declare uid uuid := '<ここに、ご自身のユーザーID>';
+-- begin
+--   begin
+--     perform set_config('role', 'authenticated', true);
+--     perform set_config('request.jwt.claims',
+--       json_build_object('sub', uid, 'role', 'authenticated')::text, true);
+--     update public.profiles set is_admin = true where id = uid;
+--     -- ★★ここに来たら、書けてしまっています。★raise で、必ず戻します。
+--     raise exception 'PROBE_HOLE_OPEN';
+--   exception when others then
+--     if sqlerrm = 'PROBE_HOLE_OPEN' then
+--       raise notice '★★穴があります。本人が is_admin を書けます。';
+--     else
+--       raise notice '★塞がっています： %', sqlerrm;
+--     end if;
+--   end;
+-- end
+-- $probe$;
 
 
 -- ---------------------------------------------------------------------------
@@ -168,21 +191,30 @@ select grantee as "相手", privilege_type as "権限"
    and grantee in ('anon', 'authenticated')
  order by grantee, privilege_type;
 
--- §4-3 ★★もう一度、穴を試します（★今度は断られるはずです）
---       ★「SERVER_ONLY_COLUMN: is_admin」と出れば、塞がっています
--- begin;
---   set local role authenticated;
---   set local request.jwt.claims = '{"sub":"<ここに、ご自身のユーザーID>","role":"authenticated"}';
---   update public.profiles set is_admin = true where id = '<ここに、ご自身のユーザーID>';
--- rollback;
+-- §4-3 ★★もう一度、穴を試します（★§0 と同じ形を、もう一度実行してください）
+--       ★「★塞がっています： SERVER_ONLY_COLUMN: is_admin」と出れば、済んでいます。
 
 -- §4-4 ★★ふつうの保存が、まだ通ること（★いちばん大事な確かめ）
---       ★display_name は、アプリが書いている列です。★通らないと困ります
--- begin;
---   set local role authenticated;
---   set local request.jwt.claims = '{"sub":"<ここに、ご自身のユーザーID>","role":"authenticated"}';
---   update public.profiles set display_name = display_name where id = '<ここに、ご自身のユーザーID>';
--- rollback;
+--       ★display_name は、アプリが書いている列です。★通らないと困ります。
+--       ★★これも do ブロック1文です。★書いたものは、その場で消えます。
+-- do $probe$
+-- declare uid uuid := '<ここに、ご自身のユーザーID>';
+-- begin
+--   begin
+--     perform set_config('role', 'authenticated', true);
+--     perform set_config('request.jwt.claims',
+--       json_build_object('sub', uid, 'role', 'authenticated')::text, true);
+--     update public.profiles set display_name = display_name where id = uid;
+--     raise exception 'PROBE_SAVE_OK';
+--   exception when others then
+--     if sqlerrm = 'PROBE_SAVE_OK' then
+--       raise notice '★ふつうの保存は、まだ通ります。';
+--     else
+--       raise notice '★★保存が止まっています： %', sqlerrm;
+--     end if;
+--   end;
+-- end
+-- $probe$;
 
 
 -- ---------------------------------------------------------------------------
@@ -205,6 +237,6 @@ select grantee as "相手", privilege_type as "権限"
 -- ============================================================================
 -- ★台帳への登録
 --   06 起きたこと ★★入れる。2026-09-05、is_admin を本人が書ける状態だった
---                  ★見つけたのは、otp_migration の列を足す前の確認です
+--                  ★見つけたのは、profiles に列を足す前の権限の確認です
 --   07 約束       ★行は増えません
 -- ============================================================================

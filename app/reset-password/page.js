@@ -124,9 +124,10 @@ export default function ResetPasswordPage() {
         {ready === "ok" && status !== "done" && (
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <p style={{ fontSize: 13, color: "#6b5d52", margin: 0 }}>{tr("lead")}</p>
-            <input required type="password" autoComplete="new-password" placeholder={tr("ph1")}
+            {/* ★★autocomplete="new-password" を外さないこと（訂正2 §4）。 */}
+            <input required type="password" name="new-password" autoComplete="new-password" placeholder={tr("ph1")}
               value={pw1} onChange={(e) => setPw1(e.target.value)} style={input} />
-            <input required type="password" autoComplete="new-password" placeholder={tr("ph2")}
+            <input required type="password" name="new-password" autoComplete="new-password" placeholder={tr("ph2")}
               value={pw2} onChange={(e) => setPw2(e.target.value)} style={input} />
             {error && <p style={{ fontSize: 13, color: "#7A1F2B", margin: 0 }}>{error}</p>}
             <button type="submit" disabled={status === "saving"} style={{ ...button, opacity: status === "saving" ? 0.7 : 1 }}>

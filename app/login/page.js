@@ -266,9 +266,17 @@ function LoginPageInner() {
           {mode === "reset" && (
             <p style={{ fontSize: 13, color: "#6b5d52", margin: "0 0 4px" }}>{ltr("resetLead", lang)}</p>
           )}
+          {/* ★★autocomplete を外すと、★端末がパスワードを覚えません。
+              ★覚えないと、★Face ID の自動入力が出ません。
+              ★★そうなると、★パスワードのほうが6桁より遅くなります。
+              ★判断-パスワードを主にする（9月4日・訂正2）§4 の要です。
+              ★消さないこと。 */}
           <input
             required
             type="email"
+            name="email"
+            autoComplete="username"
+            inputMode="email"
             placeholder={ltr("placeholderEmail", lang)}
             value={form.email}
             onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
@@ -278,6 +286,8 @@ function LoginPageInner() {
             <input
               required
               type="password"
+              name="password"
+              autoComplete="current-password"
               placeholder={ltr("placeholderPassword", lang)}
               value={form.password}
               onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
