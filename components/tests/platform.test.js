@@ -89,12 +89,53 @@ ok("★一度断られたら、二度と出さない",
 ok("★ホーム画面版なら出さない", m.mayShowAndroidInstall({ ...base, standalone: true }) === false);
 ok("iOS には出さない", m.mayShowAndroidInstall({ ...base, os: OS.IOS }) === false);
 
+console.log("\n⑦-0 ★アプリの中のブラウザ（★いちばん置けない道）");
+// ★★LINE・Instagram・X の中では、ホーム画面に置く道が★1つもありません。
+//   ・iOS  … 共有のシートが出ません
+//   ・Android … beforeinstallprompt が来ません
+// ★★これは、いちばん使いそうな配り方に当たります。
+const UA2 = {
+  line: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 Line/14.5.0",
+  instagram: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 Instagram 300.0",
+  androidLine: "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/126.0 Mobile Safari/537.36 Line/14.5.0"
+};
+ok("LINE を見分ける", m.inAppBrowserOf({ userAgent: UA2.line }) === "line");
+ok("Instagram を見分ける", m.inAppBrowserOf({ userAgent: UA2.instagram }) === "instagram");
+ok("★Safari は null（★分からない、ではなく当たらない）",
+  m.inAppBrowserOf({ userAgent: UA.iPhone }) === null);
+ok("名前を出せる", m.inAppBrowserLabel("line") === "LINE");
+ok("★知らない key は null", m.inAppBrowserLabel("なにか") === null);
+
+// ★★押せないものを、見せないこと。
+ok("★★LINE の中では、置く案内を出さない",
+  m.canAddToHome({ os: OS.IOS, userAgent: UA2.line }) === false);
+ok("★★Android の LINE の中でも、出さない",
+  m.canAddToHome({ os: OS.ANDROID, userAgent: UA2.androidLine }) === false);
+ok("Safari なら出す", m.canAddToHome({ os: OS.IOS, userAgent: UA.iPhone }) === true);
+ok("Android の Chrome なら出す",
+  m.canAddToHome({ os: OS.ANDROID, userAgent: UA.android }) === true);
+ok("★もう置いてあるなら、出さない",
+  m.canAddToHome({ os: OS.IOS, userAgent: UA.iPhone, standalone: true }) === false);
+ok("★パソコンには出さない", m.canAddToHome({ os: OS.OTHER, userAgent: UA.mac }) === false);
+
+// ★代わりに「ふつうのブラウザで開いてください」と伝えます。
+ok("★LINE の中では、開き直しを伝える",
+  m.shouldAskToOpenInBrowser({ userAgent: UA2.line }) === true);
+ok("★Safari では伝えない", m.shouldAskToOpenInBrowser({ userAgent: UA.iPhone }) === false);
+ok("★ホーム画面版では伝えない",
+  m.shouldAskToOpenInBrowser({ userAgent: UA2.line, standalone: true }) === false);
+
 console.log("\n⑦ ★言葉の決まり");
 const code = stripComments(src);
 // ★「インストール」と書くと、ストアを探されます。
 ok("★★「インストール」と書いていない", !/インストール/.test(code));
 // ★追加したかどうかを、アプリは知りません。
 ok("★「ありがとう」と書いていない", !/ありがとう/.test(code));
+// ★.mobileconfig（構成プロファイル）は採りません。
+//   ★「この構成プロファイルは、あなたの端末を管理できます」と出ます。
+//   ★★体調のアプリで、その画面を出させないこと。
+ok("★★構成プロファイルの道を作っていない",
+  !/mobileconfig|configuration profile/i.test(code));
 
 console.log("\n⑧ ★判断と、window を読むところを分けていること");
 ok("★判断する関数は window を読まない",
