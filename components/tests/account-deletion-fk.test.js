@@ -77,8 +77,13 @@ const NO_ACTION_COLUMNS = [
   //     1人の退会で送った記録が消えてはいけません。
   //   組織の予定に「出ます」と印をつけた記録です。本人のものなので、
   //   退会のときに一緒に消します。★中身は持ちません（印だけ）。
-  assertTrue(d.USER_OWNED_TABLES.length === 20,
-    `一覧は20表（いまは ${d.USER_OWNED_TABLES.length}）`);
+  // ★2026-09-04、minor_billing_consents を足して21表。
+  //   ★未成年の方の、有料機能への申告の記録です。★本人のものです。
+  //   ★★数を書いておくのは、★黙って増えたり減ったりしないためです。
+  //     ★増やしたときは、★ここも一緒に直すこと。
+  //     ★★直すときに「なぜ増えたか」を、1行書くこと。
+  assertTrue(d.USER_OWNED_TABLES.length === 21,
+    `一覧は21表（いまは ${d.USER_OWNED_TABLES.length}）`);
   assertTrue(d.USER_OWNED_TABLES.includes("org_event_participants"), "★出るという印が入っている");
   assertTrue(d.USER_OWNED_TABLES.includes("events"), "★events が入っている");
 
