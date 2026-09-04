@@ -42,7 +42,7 @@ export const metadata = {
     //   いまはアプリのアイコンを流用しています。正方形なので、
     //   SNSでは中央が切り取られて表示されます。
     //   ちゃんとした共有画像を作るのは、別の作業です。
-    images: [{ url: "/icons/icon-1024.png", width: 1024, height: 1024,
+    images: [{ url: "/icons/icon-1024-2609.png", width: 1024, height: 1024,
       alt: "Woolsong" }]
   },
   twitter: {
@@ -50,20 +50,26 @@ export const metadata = {
     title: "Woolsong | 声のプロフェッショナルのための体調管理",
     description:
       "喉・声のコンディション、睡眠、気候、本番の出来までを記録し、傾向を分析します。",
-    images: ["/icons/icon-1024.png"]
+    images: ["/icons/icon-1024-2609.png"]
   },
   // lavoce-アプリアイコン実装仕様.md §4: favicon・iOSホーム画面アイコンの指定。
   // Next.jsのMetadata APIがここから<link>タグを自動生成するため、layout側にheadタグを書く必要はない。
+  // ★★Apple は、manifest の icons を★見ません。
+  //   ★apple-touch-icon を、★別に書く必要があります（差し替え手順 §2）。
+  // ★★名前を変えること。★同じ名前に上書きすると、古いものが残ります。
   icons: {
     icon: [
+      // ★favicon.ico は、まだ古い絵のままです（★案A に作り直していません）。
+      //   ★.ico を作る道具が、こちらにありません。
+      //   ★ブラウザのタブの小さな絵だけの話です。★急ぎではありません。
       { url: "/favicon.ico", sizes: "any" },
-      { url: "/icons/icon-32.png", sizes: "32x32", type: "image/png" },
-      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }
+      { url: "/icons/icon-32-2609.png", sizes: "32x32", type: "image/png" },
+      { url: "/icons/icon-192-2609.png", sizes: "192x192", type: "image/png" }
     ],
     apple: [
-      { url: "/icons/icon-180.png" },
-      { url: "/icons/icon-152.png", sizes: "152x152", type: "image/png" },
-      { url: "/icons/icon-167.png", sizes: "167x167", type: "image/png" }
+      { url: "/icons/icon-180-2609.png" },
+      { url: "/icons/icon-152-2609.png", sizes: "152x152", type: "image/png" },
+      { url: "/icons/icon-167-2609.png", sizes: "167x167", type: "image/png" }
     ]
   },
   // iOSでホーム画面に追加したときの見た目・名前を固定する。

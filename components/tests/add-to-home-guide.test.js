@@ -60,8 +60,11 @@ ok("★段の印を出している", /STEPS\.map/.test(code));
 ok("★3段ある", (code.match(/src: "\/onboarding\/ios-/g) || []).length === 3);
 
 console.log("\n⑤ ★アイコンの絵を出すこと（★探せない人がいます）");
-ok("★アイコンを出している", /icon-120\.png/.test(code));
-ok("★アイコンのファイルがある", fs.existsSync(p("public", "icon-120.png")));
+// ★★2026-09-05、絵を差し替えました（案A・顔アップ）。
+//   ★名前を変えています（-2609）。★上書きすると、古い絵が端末に残ります。
+//   ★★だから、この確かめも★名前ごと追います。
+ok("★アイコンを出している", /icons\/icon-120-2609\.png/.test(code));
+ok("★アイコンのファイルがある", fs.existsSync(p("public", "icons", "icon-120-2609.png")));
 
 console.log("\n⑥ ★目の見えない方にも届くこと");
 const alts = raw.match(/alt: "([^"]+)"/g) || [];

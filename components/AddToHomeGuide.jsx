@@ -135,7 +135,7 @@ export default function AddToHomeGuide({ onSkip, onShow }) {
           追加できたら、ホーム画面に戻って
         </p>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <img src="/icon-120.png" alt="Woolsong のアイコン（羊の絵）"
+          <img src="/icons/icon-120-2609.png" alt="Woolsong のアイコン（羊の絵）"
             width={56} height={56}
             style={{ borderRadius: 10, border: `1px solid ${C.line}` }} />
           <p style={{ fontSize: 16, color: C.ink, margin: 0, lineHeight: 1.7 }}>

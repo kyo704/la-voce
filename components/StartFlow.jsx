@@ -134,7 +134,7 @@ function Landing({ showSkipWarning, onAddToHome, onStart }) {
   const annual = PLANS.find((p) => p.key === "annual");
   return (
     <div style={{ textAlign: "center" }}>
-      <img src="/icon-120.png" alt="Woolsong のアイコン（羊の絵）"
+      <img src="/icons/icon-120-2609.png" alt="Woolsong のアイコン（羊の絵）"
         width={72} height={72}
         style={{ borderRadius: 16, margin: "0 auto 18px", display: "block" }} />
 

@@ -90,12 +90,14 @@ async function main() {
   assertTrue(/openGraph: \{/.test(layout), "openGraph がある");
   assertTrue(/alternates: \{ canonical:/.test(layout), "canonical がある");
   assertTrue(/url: "\/"/.test(layout), "og:url を相対で書いている（絶対URLにしない）");
-  assertTrue(/\/icons\/icon-1024\.png/.test(layout), "og:image が実在する画像を指している");
+  // ★★2026-09-05、絵を差し替え（案A）。★名前ごと追います。
+  //   ★SNS は、同じ名前の絵を長く抱えます。★名前を変えないと、古い顔が出続けます。
+  assertTrue(/\/icons\/icon-1024-2609\.png/.test(layout), "og:image が実在する画像を指している");
   // ★直書きすると、ドメインを変えるときに総当たりに戻る。Phase 0 の目的そのもの。
   assertTrue(!/https?:\/\//.test(layout),
     "★layout.js に絶対URLの直書きが無い（すべて metadataBase 由来）");
   assertTrue(require("fs").existsSync(
-    require("path").join(__dirname, "..", "..", "public", "icons", "icon-1024.png")),
+    require("path").join(__dirname, "..", "..", "public", "icons", "icon-1024-2609.png")),
     "og:image のファイルが実在する");
 
   console.log("\n=== ★認証の戻り先は、わざと window.location.origin のまま（§5-3） ===");
