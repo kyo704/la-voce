@@ -52,8 +52,10 @@ export default function AddToHomeGuide({ onSkip, onShow }) {
   useEffect(() => { if (onShow) onShow(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const step = STEPS[i];
 
+  // ★外側（Shell）が余白を持っています。★ここでは持ちません。
+  //   ★二重に持つと、★画面が縦に伸びます。
   return (
-    <div style={{ maxWidth: 420, margin: "0 auto", padding: "24px 20px 40px" }}>
+    <div style={{ maxWidth: 420, margin: "0 auto" }}>
       <h1 style={{ fontSize: 20, fontWeight: 600, color: C.ink, margin: "0 0 6px" }}>
         まず、ホーム画面に置きましょう。
       </h1>
@@ -71,11 +73,25 @@ export default function AddToHomeGuide({ onSkip, onShow }) {
         ))}
       </div>
 
-      <img src={step.src} alt={step.alt}
-        style={{
-          width: "100%", borderRadius: 14, border: `1px solid ${C.line}`,
-          display: "block", marginBottom: 12
-        }} />
+      {/* ★★写真は、縦に長いです（828×1792）。
+          ★幅いっぱいに出すと、★高さが800pxを超え、★画面に入りません。
+          ★★2026-09-04、実機で「①だけ空に見える」と報告されました。
+            ★空だったのではなく、★写真の淡いところだけが見えていました。
+            ★下の説明も、★画面の外にありました。
+          ★だから、★高さを画面に合わせて抑えます。
+            ★contain なので、★切れずに、全体が入ります。 */}
+      <div style={{
+        display: "flex", justifyContent: "center",
+        background: C.card, borderRadius: 14, border: `1px solid ${C.line}`,
+        padding: 8, marginBottom: 12
+      }}>
+        <img src={step.src} alt={step.alt}
+          style={{
+            maxWidth: "100%", maxHeight: "46svh",
+            width: "auto", height: "auto",
+            objectFit: "contain", display: "block"
+          }} />
+      </div>
 
       <p style={{ fontSize: 15, color: C.ink, margin: "0 0 18px", textAlign: "center" }}>
         {step.caption}

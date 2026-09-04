@@ -88,7 +88,7 @@ export default function StartFlow() {
   // ★iOS ＆ ブラウザ → ★まず置いてもらいます。
   if (step === STEP.IOS_ADD_TO_HOME && canAddToHome({ os: platform.os, userAgent: ua })) {
     return (
-      <Shell>
+      <Shell center={false}>
         <AddToHomeGuide
           onShow={() => countStep("add_to_home_shown")}
           onSkip={() => { countStep("add_to_home_skipped"); setSkipped(true); }} />
@@ -172,11 +172,18 @@ function Landing({ showSkipWarning, onAddToHome }) {
   );
 }
 
-function Shell({ children }) {
+/**
+ * ★★真ん中に寄せるのは、★中身が画面より短いときだけです。
+ *   ★長い中身を寄せると、★上下が画面の外へ出ます。
+ *   ★★2026-09-04、実機で★案内の写真と説明が、外に出ていました。
+ *   ★だから、★寄せる／寄せないを、呼ぶ側が決めます。
+ */
+function Shell({ children, center = true }) {
   return (
     <main style={{
-      minHeight: "100svh", display: "flex", alignItems: "center",
-      justifyContent: "center", padding: "32px 24px", background: C.paper
+      minHeight: "100svh", display: "flex",
+      alignItems: center ? "center" : "flex-start",
+      justifyContent: "center", padding: "24px 20px 40px", background: C.paper
     }}>
       <div style={{ width: "100%", maxWidth: 420 }}>{children}</div>
     </main>

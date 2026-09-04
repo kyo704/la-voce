@@ -67,5 +67,12 @@ ok("★描いたあとに見分けている", /useEffect\(\(\) => \{[\s\S]{0,120
 ok("★最初は、どちらでもない形を出す", /読み込んでいます/.test(raw));
 ok("★ページ自体は判定を持たない", !/readPlatform|navigator/.test(page));
 
+console.log("\n⑧ ★長い中身を、真ん中に寄せないこと");
+// ★真ん中に寄せるのは、★中身が画面より短いときだけです。
+//   ★長い中身を寄せると、★上下が画面の外へ出ます。
+ok("★寄せるかどうかを、呼ぶ側が決められる", /function Shell\(\{ children, center = true \}\)/.test(code));
+ok("★★案内のときは、寄せない", /<Shell center=\{false\}>/.test(code));
+ok("★中身が短い画面は、寄せたまま", /<Shell>/.test(code));
+
 console.log(`\n合計 ${通 + 否} 本：通過 ${通}／失敗 ${否}`);
 process.exit(否 ? 1 : 0);
