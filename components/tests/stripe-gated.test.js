@@ -50,10 +50,18 @@ const billing = readCode("app/billing/page.js");
 // ★見張るのは「ボタンがあるか」ではなく、★「無料のうちは、そこへ進まないか」です。
 //   REQUIRE_SUBSCRIPTION が無効なときの早期 return が、下を全部無効にします。
 const 早期 = billing.indexOf("if (!requireSubscription)");
-const ボタン = billing.indexOf("<CheckoutButton");
+// ★2026-09-04、/billing のボタンは MinorConsentGate の中へ移りました。
+//   ★年齢の帯で出し分けるためです。
+//   ★★見たいのは「無料のうちは、そこへ進まないか」です。
+//     ★部品の名前ではありません。★どちらの名前でも拾います。
+const ボタン = Math.min(
+  ...["<CheckoutButton", "<MinorConsentGate"]
+    .map((n) => billing.indexOf(n)).filter((i) => i >= 0)
+);
 ok("requireSubscription を読んでいる", /process\.env\.REQUIRE_SUBSCRIPTION === "true"/.test(billing));
 ok("★無効なときは早期 return する", 早期 !== -1);
-ok("★ボタンは、その return より後ろにある（＝無料のうちは出ない）",
+ok("★申し込みの入口が見つかる", Number.isFinite(ボタン) && ボタン > 0);
+ok("★入口は、その return より後ろにある（＝無料のうちは出ない）",
   早期 !== -1 && ボタン !== -1 && 早期 < ボタン);
 ok("★台帳が、到達しないことを書いている", /到達しません/.test(台));
 

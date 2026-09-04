@@ -129,6 +129,48 @@ ok("★表示していた価格が数字で入る", rec.displayed_price_yen === 
 ok("★生年月日を持っていない", !/birth|生年月日/.test(code));
 ok("★帯だけを持つ", rec.age_band === B.TEEN);
 
+console.log("\n⑨ ★画面（同意のゲート）");
+const { readRaw } = require("./_source");
+const gate = require("./_source").stripComments(readRaw("components", "MinorConsentGate.jsx"));
+const billing = require("./_source").stripComments(readRaw("app/billing", "page.js"));
+
+// ★★チェックは初期状態でオフ。★既定でオンにしないこと。
+ok("★チェックは初期状態でオフ", /useState\(false\)/.test(gate));
+ok("★★チェックしないと押せない", /disabled=\{!checked \|\| busy\}/.test(gate));
+// ★★「認めます」の形であること。
+ok("★minorConsentCheckbox を使っている", /minorConsentCheckbox\(/.test(gate));
+ok("★「同意します」と直に書いていない", !/この契約に同意します/.test(gate));
+// ★出せるプランが無い方には、★ボタンを出さないこと。
+ok("★プランが0なら、ボタンを出さない", /plans\.length === 0/.test(gate));
+// ★★禁じた言葉は、必ず★コメントを外したもので探すこと。
+//   ★★このリポジトリで、これが3度目です（くり返す失敗の形 2）。
+//   ★理由を説明するコメントに、★その言葉が出てくるためです。
+ok("★「法律で決まっている」と書いていない",
+  !/法律で決まって|法律上必要/.test(gate));
+ok("★「私たちの決まりとして」と書いている", /私たちの決まりとして/.test(gate));
+// ★保護者の方へのページは、★見せるだけ。★フォームにしないこと。
+ok("★保護者のページへの案内がある", /href="\/parents"/.test(gate));
+// ★記録の4項目
+["age_band", "policy_version", "displayed_price_yen", "plan"].forEach((k) => {
+  ok(`★記録に ${k} を入れている`, new RegExp(k + ":").test(gate));
+});
+// ★★金額を直書きしないこと。
+ok("★★金額を直書きしていない", !/580/.test(gate));
+ok("★lib/plans.js から引いている", /PLANS\.find\(\(p\) => p\.key === "monthly"\)/.test(gate));
+// ★列の名前は declared。
+ok("★★declared という名前を使っている", /guardian_consent_declared_at/.test(gate));
+ok("★★obtained を使っていない", !/guardian_consent_obtained/.test(gate));
+// ★保存で黙って失敗しないこと。
+ok("★0行を見ている", /updated\.length === 0/.test(gate));
+ok("★失敗を画面に出す", /setError\("保存できませんでした/.test(gate));
+
+console.log("\n⑩ ★画面の側でも、帯で出し分けていること");
+ok("★/billing が帯を読んでいる", /ageBandOf\(profForBand\)/.test(billing));
+ok("★ゲートに渡している", /<MinorConsentGate band=\{band\}/.test(billing));
+// ★★読めなかったときは、帯が分からない扱い（フェイルクローズ）。
+ok("★読めなくても、大人にしない（ageBandOf が unknownMinor を返す）",
+  m.offeredPlans("unknownMinor").length === 0);
+
 console.log(`\n合計 ${通 + 否} 本：通過 ${通}／失敗 ${否}`);
 process.exit(否 ? 1 : 0);
 })();

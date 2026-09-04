@@ -122,8 +122,13 @@ ok("★無ければ作る", /\.insert\(\{ user_id: user\.id, stripe_customer_id/
 console.log("\n⑦ 画面");
 ok("★ボタンがプランを送る", /JSON\.stringify\(\{ plan: planKey \}\)/.test(button));
 ok("★ボタンは価格IDを送らない", !/price_/.test(button));
-ok("★プランごとに1つずつ置く", /PLANS\.map/.test(billing));
-ok("★常設の1行を置いている", /MINOR_NOTICE_LINE/.test(billing));
+// ★2026-09-04、/billing の中身を MinorConsentGate へ移しました。
+//   ★年齢の帯で出し分けるためです。★見る先も、そちらへ移します。
+const gate = stripComments(read("components", "MinorConsentGate.jsx"));
+ok("★プランごとに1つずつ置く", /PLANS\.filter\(/.test(gate));
+ok("★常設の1行を置いている", /MINOR_NOTICE_LINE/.test(gate));
+ok("★/billing は、帯で出し分ける部品を置いている",
+  /<MinorConsentGate band=\{band\}/.test(billing));
 
 console.log("\n⑧ SQL");
 ok("plan の列がある", /add column if not exists plan text/.test(sql));

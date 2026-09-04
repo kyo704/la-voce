@@ -2,9 +2,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isNativeApp } from "@/lib/isNativeApp";
 import { C } from "@/lib/tokens";
-import CheckoutButton from "@/components/CheckoutButton";
-import { PLANS } from "@/lib/plans";
-import { MINOR_NOTICE_LINE } from "@/lib/minorBilling";
+import MinorConsentGate from "@/components/MinorConsentGate";
+import { ageBandOf } from "@/lib/ageGate";
 import PortalButton from "@/components/PortalButton";
 import { getUserWithTimeout } from "@/lib/withTimeout";
 import ConnectionError from "@/components/ConnectionError";
@@ -22,6 +21,14 @@ export default async function BillingPage() {
   if (!user) redirect("/login");
 
   const requireSubscription = process.env.REQUIRE_SUBSCRIPTION === "true";
+
+  // ★年齢の帯を、ここで読みます（2026-09-04）。
+  //   ★★読めなかったときは、★帯が分からない扱いになります。
+  //     ★ageBandOf(null) は unknownMinor を返します。★売りません。
+  //     ★フェイルクローズ。★読めないことを、大人と同じにしません。
+  const { data: profForBand } = await supabase
+    .from("profiles").select("age_band, is_under_18").eq("id", user.id).single();
+  const band = ageBandOf(profForBand);
 
   // 実験公開期間中（無料開放中）は課金導線を出さず、案内のみ表示する
   if (!requireSubscription) {
@@ -147,23 +154,15 @@ export default async function BillingPage() {
             有料の提供を始めるときは、事前にお知らせします。
             それまでにお預かりした記録は、そのまま残ります。
           </p>
-          {/* ★プランごとに、1つずつ置きます（2026-09-04）。
-              ★1つのボタンで切り替えません。
-              ★どちらを押したかが、★押す前に見えているようにします。
-              ★年払いを未成年に出さない判断は、★サーバ側にもあります
-                （api/stripe/checkout/route.js）。
-                ★画面で隠すだけにしないこと。★API を直に叩かれます。 */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {PLANS.map((p) => (
-              <CheckoutButton key={p.key} planKey={p.key}
-                label={`${p.label}（${p.priceLabel}）でお申し込み`} />
-            ))}
-          </div>
-          {/* ★申し込みに至るまでの画面に、常設で置きます（未成年に売る形 §8）。
-              ★文言は1つに統一します。★lib/minorBilling.js が持ちます。 */}
-          <p style={{ fontSize: 12, color: C.inkSoft, marginTop: 12 }}>
-            {MINOR_NOTICE_LINE}
-          </p>
+          {/* ★年齢の帯で、出すものが変わります（2026-09-04）。
+              ★18歳以上   … プランのボタンだけ
+              ★15〜17歳   … ★同意の画面を先に。押してから、月額だけ
+              ★15歳未満・帯が分からない方 … ★ボタンを出しません
+              ★★止めるのは画面だけではありません。
+                ★api/stripe/checkout も、同じ帯で止めます。
+                ★★画面で隠すだけにしないこと。★API を直に叩かれます。
+              ★常設の1行（§8）も、この部品が出します。 */}
+          <MinorConsentGate band={band} userId={user.id} />
         </div>
       )}
     </main>
