@@ -98,6 +98,27 @@ ok("★webhook が契約時の価格を書く", /contracted_price_yen/.test(hook
 ok("★item の金額を使っている", /price\.unit_amount/.test(hook));
 ok("★表の priceYen を使っていない", !/priceYen/.test(hook));
 
+console.log("\n⑥-2 ★Managed Payments を、この決済では使わないこと");
+// ★★2026-09-04、これが無くて 500 になりました。
+//   ★Stripe のアカウントで既定で有効になっており、
+//   ★商品に税コードが無いと投げます。
+//   ★★税コードを付ける道は採りません。★使うと決めていないためです。
+ok("★明示的に切っている", /managed_payments:\s*\{\s*enabled:\s*false\s*\}/.test(route));
+
+console.log("\n⑥-3 ★Stripe が投げたときに、裸の 500 を返さないこと");
+// ★何が起きたか分からないまま、★利用者にも私たちにも届きません。
+ok("★顧客の作成を包んでいる", /stripe_customer/.test(route));
+ok("★決済の画面の作成を包んでいる", /stripe_session/.test(route));
+ok("★理由の名前を返している", /detail: \(e && e\.code\)/.test(route));
+ok("★502 を返している（★500 ではない）", /status: 502/.test(route));
+// ★★秘密を返さないこと。★code と type だけです。
+ok("★e.message を返していない", !/detail:.*e\.message/.test(route));
+
+console.log("\n⑥-4 ★契約の行が無いときに、作ること");
+// ★0行のまま進むと、★押すたびに新しい顧客ができます。
+ok("★0行を見ている", /updated\.length === 0/.test(route));
+ok("★無ければ作る", /\.insert\(\{ user_id: user\.id, stripe_customer_id/.test(route));
+
 console.log("\n⑦ 画面");
 ok("★ボタンがプランを送る", /JSON\.stringify\(\{ plan: planKey \}\)/.test(button));
 ok("★ボタンは価格IDを送らない", !/price_/.test(button));

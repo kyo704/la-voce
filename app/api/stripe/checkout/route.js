@@ -83,23 +83,65 @@ export async function POST(request) {
 
   let customerId = sub && sub.stripe_customer_id;
 
-  if (!customerId) {
-    const customer = await stripe.customers.create({
-      email: user.email,
-      metadata: { supabase_user_id: user.id }
-    });
-    customerId = customer.id;
-    await admin
-      .from("subscriptions")
-      .update({ stripe_customer_id: customerId })
-      .eq("user_id", user.id);
+  try {
+    if (!customerId) {
+      const customer = await stripe.customers.create({
+        email: user.email,
+        metadata: { supabase_user_id: user.id }
+      });
+      customerId = customer.id;
+      // ★0行を見ます。★行が無ければ、作ります。
+      //   ★handle_new_user が作りますが、★それより前に作られた方の行はありません。
+      //   ★★0行のまま進むと、★押すたびに新しい顧客ができます。
+      const { data: updated, error: upErr } = await admin
+        .from("subscriptions")
+        .update({ stripe_customer_id: customerId })
+        .eq("user_id", user.id)
+        .select("user_id");
+      if (upErr) {
+        console.error("★subscriptions を更新できませんでした:", upErr);
+      } else if (!updated || updated.length === 0) {
+        console.error("★subscriptions に行がありませんでした。作ります:", user.id);
+        const { error: insErr } = await admin
+          .from("subscriptions")
+          .insert({ user_id: user.id, stripe_customer_id: customerId, status: "none" });
+        if (insErr) console.error("★subscriptions を作れませんでした:", insErr);
+      }
+    }
+  } catch (e) {
+    // ★Stripe が投げたときに、★裸の 500 を返さないこと。
+    //   ★何が起きたか分からないまま、★利用者にも私たちにも届きません。
+    console.error("★Stripe の顧客を作れませんでした:", e && e.message, e && e.type);
+    return NextResponse.json(
+      { error: "stripe_customer", detail: (e && e.code) || (e && e.type) || "unknown" },
+      { status: 502 }
+    );
   }
 
-  const session = await stripe.checkout.sessions.create({
-    customer: customerId,
-    mode: "subscription",
-    line_items: [{ price: priceId, quantity: 1 }],
-    subscription_data: {
+  // ★Stripe の呼び出しを包みます。★投げたら、理由の名前を返します。
+  //   ★★秘密は返しません。★code と type だけです。
+  async function createSessionOrThrow(params) {
+    return stripe.checkout.sessions.create(params);
+  }
+
+  let session;
+  try {
+    session = await createSessionOrThrow({
+      customer: customerId,
+      mode: "subscription",
+      // ★Managed Payments を、この決済では使いません（2026-09-04）。
+      //   ★Stripe のアカウントで★既定で有効になっています。
+      //   ★有効のままだと、★商品に税コードが要り、
+      //     ★無いと「the product tax code is missing」で投げます。
+      //     ★★2026-09-04、実際にそれで 500 になりました。
+      //   ★★税コードを商品に付ける道は、★採りません。
+      //     ★Managed Payments を使うかどうかは、★まだ決めていません（+3.5%）。
+      //     ★使わないと決めていないものを、★使う前提の設定にしないこと。
+      //   ★採用する日が来たら、★ここを消して、税コードを付けます。
+      //     ★そのときは、★手数料の話と一緒に決めてください。
+      managed_payments: { enabled: false },
+      line_items: [{ price: priceId, quantity: 1 }],
+      subscription_data: {
       // ★trial_period_days: 14 を消しました（2026-09-03・Opus §5）。
       //   ★文言の嘘は3か所ありましたが、★動きの側にもありました。
       //   ★サンドボックスであっても、値が残っていれば、いつか動きます。
@@ -107,9 +149,8 @@ export async function POST(request) {
       //     ★利用規約・特商法の表記と同時に入れ直してください。
       //   ★ここだけ先に戻さないこと。それが今回の形です。
       // ★どのプランで契約したかを、★Stripe 側にも残します。
-      //   ★subscriptions の表には、まだプランの列がありません。
-      //   ★★列を足すかどうかは、別のご判断です。
-      //     ★足さなくても、★ここに残っていれば、あとから分かります。
+      //   ★webhook が、ここから subscriptions.plan へ写します。
+      //   ★★Stripe 側にも残しておくこと。★DB が壊れても、こちらは残ります。
       metadata: {
         supabase_user_id: user.id,
         plan: planKey,
@@ -117,9 +158,18 @@ export async function POST(request) {
         age_band: band
       }
     },
-    success_url: absoluteUrl("/dashboard"),
-    cancel_url: absoluteUrl("/billing")
-  });
+      success_url: absoluteUrl("/dashboard"),
+      cancel_url: absoluteUrl("/billing")
+    });
+  } catch (e) {
+    // ★価格IDが違う／別のアカウントのもの／通貨が合わない、などで投げます。
+    //   ★★裸の 500 にしないこと。★理由の名前を返します。
+    console.error("★決済の画面を作れませんでした:", e && e.message, e && e.type, e && e.code);
+    return NextResponse.json(
+      { error: "stripe_session", detail: (e && e.code) || (e && e.type) || "unknown" },
+      { status: 502 }
+    );
+  }
 
   return NextResponse.json({ url: session.url });
 }
