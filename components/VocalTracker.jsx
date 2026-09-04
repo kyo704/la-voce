@@ -49,6 +49,10 @@ import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q, NARRATIVE_MIN_N_PER
 import { SCALES, DEFAULT_SCALE, SCALE_LABELS, SCALE_SAMPLE, normalizeScale,
   scaleAttribute, isSimpleDisplay, UNDO_WINDOW_MS, ACTIONABLE_ERROR_KEY,
   INSTALL_STEPS, INSTALL_LATER_NOTE, INSTALL_LATER_LABEL, shouldShowInstallGuide } from "@/lib/displayPrefs";
+// ★★どの機械かを決めるのは、lib/platform.js の1か所だけです（2026-09-05）。
+//   ★画面の側で「beforeinstallprompt が来たから Android」と決めていました。
+//   ★★それはパソコンにも来ます。★パソコンの方に手順が出ていました。
+import { osOf, installGuidePlatform } from "@/lib/platform";
 import { SIMPLE_STEPS, SIMPLE_STEP_COUNT, remainingSteps, applyStep, skipStep,
   nextIndex, prevIndex, isFinished, SIMPLE_SKIP_LABEL, SIMPLE_BACK_LABEL, SIMPLE_DONE_TEXT } from "@/lib/simpleFlow";
 import { familyOf, mayStateFinding, EXPLORE, EXPLORE_NOTE,
@@ -4824,6 +4828,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [isPwaInstalled, setIsPwaInstalled] = useState(false);
   const [isIosSafari, setIsIosSafari] = useState(false);
+  // ★どの機械か。★描いたあとに決めます（サーバには navigator がありません）。
+  const [deviceOs, setDeviceOs] = useState(null);
   const [mergeSourceRepertoire, setMergeSourceRepertoire] = useState("");
   const [mergeTargetRepertoire, setMergeTargetRepertoire] = useState("");
   const [mergeConfirming, setMergeConfirming] = useState(false);
@@ -5159,6 +5165,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const isIOSDevice = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
     const isIOS = isIOSDevice && !standalone;
     setIsIosSafari(isIOS);
+    // ★★機械の種類は、ここで1回だけ決めます。
+    setDeviceOs(osOf({ userAgent: ua, maxTouchPoints: navigator.maxTouchPoints }));
     // iOSはbeforeinstallpromptが来ないので、同じ「少し操作した後に出す」タイミングを別途用意する。
     if (isIOS) {
       setTimeout(() => setShowInstallBanner(true), 3000);
@@ -11765,7 +11773,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   {shouldShowInstallGuide({
                     installed: isPwaInstalled,
                     dismissed: !showInstallBanner,
-                    platform: isIosSafari ? "ios" : (pwaInstallPrompt ? "android" : "other")
+                    // ★★pwaInstallPrompt から機械を決めないこと（パソコンにも来ます）。
+                    platform: installGuidePlatform({
+                      os: deviceOs, standalone: isPwaInstalled, isIosSafari
+                    })
                   }) && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <p className="mb-1" style={{ color: C.ink, fontSize: "1.1rem", fontWeight: 600, lineHeight: 1.6 }}>
@@ -18498,7 +18509,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </div>
                 )}
 
-                {!isPwaInstalled && pwaInstallPrompt && (
+                {/* ★★パソコンの方には出しません（2026-09-05）。
+                    ★beforeinstallprompt は、パソコンの Chrome と Edge にも来ます。
+                    ★機械の種類で絞ります。★来たかどうかでは絞りません。 */}
+                {!isPwaInstalled && pwaInstallPrompt
+                  && installGuidePlatform({ os: deviceOs, standalone: isPwaInstalled }) === "android" && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
                     <p className="text-sm font-medium mb-1">アプリとしてインストール</p>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>

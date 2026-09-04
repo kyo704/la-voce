@@ -99,8 +99,25 @@ function eq(actual, expected, label) {
   //   ★「無くさないで」だけでは、★「見せてはいけない」が伝わりません。
   ok("★★人に見せない、と書いている", /人に見せないでください/.test(warning));
   ok("★見せると何が起きるかを、書いている", /記録を見られます/.test(warning));
-  ok("★二度と出せない、と書いている",
-    /二度と出せません/.test(m.RECOVERY_BODY_LINES.join(" ")));
+  // ★★2026-09-05、★ここを直しました。
+  //   ★以前は「二度と出せません」と書いていました。★嘘でした。
+  //   ★設定の画面から、★何度でも出し直せる作りです。
+  //   ★★書いてあることと作りが食い違ったら、★書いてあるほうを直します。
+  //   ★出し直せることを隠すと、★無くした方が、あきらめます。
+  const body = m.RECOVERY_BODY_LINES.join(" ");
+  ok("★この画面でしか見られない、と書いている", /この画面でしか見られません/.test(body));
+  ok("★いま書き写す、と言っている", /いま、書き写して/.test(body));
+  ok("★★出し直せることを、隠していない", /新しい番号を出せます/.test(body));
+  ok("★出し直すと古いほうが使えなくなる、と書いている", /使えなくなります/.test(body));
+  ok("★★「二度と出せません」と書いていない（★嘘になります）",
+    !/二度と(出せません|表示できません)/.test(body));
+
+  console.log("\n⑥-2 ★この画面だけは、「あとで」を置かないこと（§5）");
+  // ★閉じた瞬間に番号は見られません。★「あとで」を押した方は、
+  //   ★何も持たずに出ていき、★そのことに気づきません。
+  ok("★出口を1つにする、と決めている", m.maySkipRecoveryCodeScreen() === false);
+  ok("★受け取ったことを押していただく言葉がある",
+    typeof m.RECOVERY_ACK_LABEL === "string" && m.RECOVERY_ACK_LABEL.length > 0);
   // ★★ぼかす言葉を使わないこと。★「場合があります」で逃げない。
   const allCopy = [...m.RECOVERY_BODY_LINES, ...m.RECOVERY_WARNING_LINES,
     m.RECOVERY_HEADING, m.RECOVERY_REISSUED_LINE].join(" ");

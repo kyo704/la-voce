@@ -88,6 +88,15 @@
 create or replace function public.profiles_guard_server_only_columns()
 returns trigger
 language plpgsql
+-- ★★search_path を固定します（2026-09-05 追加）。
+--   ★この関数は security definer ではありません。★呼んだ方の権限で動きます。
+--     ★だから、★よく知られた「definer ＋ search_path 未固定」の穴とは、別です。
+--   ★★それでも固定します。★理由は2つあります。
+--     ① ★中身は、new・old・current_user しか見ていません。
+--        ★どの表も関数も引きません。★だから空にしても、何も壊れません。
+--     ② ★あとで誰かが security definer を足したときに、★穴が開きません。
+--        ★★先に閉めておくのは、ただです。
+set search_path = ''
 as $$
 declare
   guarded text;
