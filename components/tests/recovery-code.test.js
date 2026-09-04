@@ -95,6 +95,10 @@ function eq(actual, expected, label) {
   const warning = m.RECOVERY_WARNING_LINES.join(" ");
   ok("★入れなくなる、と書いている", /入れなくなります/.test(warning));
   ok("★★元に戻せない、と書いている", /元に戻すことはできません/.test(warning));
+  // ★★2026-09-05 に足しました。★コードは、実質「鍵そのもの」です。
+  //   ★「無くさないで」だけでは、★「見せてはいけない」が伝わりません。
+  ok("★★人に見せない、と書いている", /人に見せないでください/.test(warning));
+  ok("★見せると何が起きるかを、書いている", /記録を見られます/.test(warning));
   ok("★二度と出せない、と書いている",
     /二度と出せません/.test(m.RECOVERY_BODY_LINES.join(" ")));
   // ★★ぼかす言葉を使わないこと。★「場合があります」で逃げない。
