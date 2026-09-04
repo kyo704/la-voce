@@ -26,9 +26,17 @@ ok("★★自前で standalone を見ていない", !/display-mode: standalone/.
 console.log("\n② ★★iOS では、登録を先に出さないこと");
 // ★ここを間違えると、★いちばん嬉しい瞬間に、いちばん冷たいことが起きます。
 const iAdd = code.indexOf("STEP.IOS_ADD_TO_HOME");
-const iSignup = code.indexOf('href="/signup"');
+// ★2026-09-04、登録は /signup へのリンクから、
+//   ★★同じ画面の中の6桁の道（OtpSignIn）に変わりました。
+//   ★★見たいのは「案内が、登録より先にあること」です。
+//     ★リンクか、部品かは、★見たいことではありません。
+const iRegister = Math.min(
+  ...['href="/signup"', "setRegistering(true)", "<OtpSignIn"]
+    .map((n) => code.indexOf(n)).filter((i) => i >= 0)
+);
 ok("★案内へ分岐している", iAdd > 0);
-ok("★★案内の分岐が、登録のリンクより先にある", iAdd > 0 && iSignup > 0 && iAdd < iSignup);
+ok("★登録の入口が見つかる", Number.isFinite(iRegister) && iRegister > 0);
+ok("★★案内の分岐が、登録より先にある", iAdd > 0 && iAdd < iRegister);
 ok("★案内の部品を使っている", /<AddToHomeGuide/.test(code));
 // ★2026-09-04、数える呼び出しを足したので、書き方が変わりました。
 //   ★見たいのは「あとで を受け取って、skipped にすること」です。
