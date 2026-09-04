@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { C } from "@/lib/tokens";
 
 // ============================================================================
@@ -46,8 +46,10 @@ const STEPS = [
   }
 ];
 
-export default function AddToHomeGuide({ onSkip }) {
+export default function AddToHomeGuide({ onSkip, onShow }) {
   const [i, setI] = useState(0);
+  // ★出したことを、1回だけ数えます。★呼ぶ側が数え方を決めます。
+  useEffect(() => { if (onShow) onShow(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const step = STEPS[i];
 
   return (

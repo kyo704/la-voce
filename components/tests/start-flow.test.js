@@ -30,7 +30,11 @@ const iSignup = code.indexOf('href="/signup"');
 ok("★案内へ分岐している", iAdd > 0);
 ok("★★案内の分岐が、登録のリンクより先にある", iAdd > 0 && iSignup > 0 && iAdd < iSignup);
 ok("★案内の部品を使っている", /<AddToHomeGuide/.test(code));
-ok("★「あとで」を受け取っている", /onSkip=\{\(\) => setSkipped\(true\)\}/.test(code));
+// ★2026-09-04、数える呼び出しを足したので、書き方が変わりました。
+//   ★見たいのは「あとで を受け取って、skipped にすること」です。
+//   ★★書き方ではありません。
+ok("★「あとで」を受け取っている", /onSkip=\{[^}]*setSkipped\(true\)/.test(code));
+ok("★「あとで」も数えている", /countStep\("add_to_home_skipped"\)/.test(code));
 
 console.log("\n③ ★アプリの中のブラウザ");
 ok("★見分けている", /shouldAskToOpenInBrowser\(/.test(code));

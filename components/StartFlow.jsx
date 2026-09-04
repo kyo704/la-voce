@@ -8,6 +8,7 @@ import {
   shouldAskToOpenInBrowser, inAppBrowserOf, inAppBrowserLabel, canAddToHome
 } from "@/lib/platform";
 import { PLANS } from "@/lib/plans";
+import { countStep } from "@/lib/countStep";
 
 // ============================================================================
 // 着地の画面（2026-09-04）
@@ -35,8 +36,13 @@ export default function StartFlow() {
   const [ua, setUa] = useState("");
 
   useEffect(() => {
-    setPlatform(readPlatform());
+    const p = readPlatform();
+    setPlatform(p);
     if (typeof navigator !== "undefined") setUa(navigator.userAgent);
+    // ★1回だけ数えます。★人数ではありません。★回数です。
+    countStep("landing");
+    // ★ホーム画面から開かれたことも数えます。★ここが、いちばん見たい段です。
+    if (p.standalone) countStep("standalone_opened");
   }, []);
 
   // ★読み込みの前。★何も決めつけません。
@@ -83,7 +89,9 @@ export default function StartFlow() {
   if (step === STEP.IOS_ADD_TO_HOME && canAddToHome({ os: platform.os, userAgent: ua })) {
     return (
       <Shell>
-        <AddToHomeGuide onSkip={() => setSkipped(true)} />
+        <AddToHomeGuide
+          onShow={() => countStep("add_to_home_shown")}
+          onSkip={() => { countStep("add_to_home_skipped"); setSkipped(true); }} />
       </Shell>
     );
   }
