@@ -26,8 +26,13 @@ ok("★はじめての方は、ここで作られる", /shouldCreateUser: true/.
 console.log("\n② ★貼り付けで入ること");
 ok("★one-time-code を付けている", /autoComplete="one-time-code"/.test(code));
 ok("数字だけを受ける", /inputMode="numeric"/.test(code));
-ok("6桁で切る", /slice\(0, 6\)/.test(code));
-ok("6桁でないと押せない", /code\.length !== 6/.test(code));
+// ★★2026-09-05、★桁数の決め打ちをやめました。
+//   ★Supabase の設定が 8 になっていて、★入れない方が出ました。
+//   ★桁数を決めるのは lib/otpCode.js の1か所だけです。
+//   ★詳しくは components/tests/otp-code-length.test.js を見てください。
+ok("★桁数を、この画面で決めていない", !/slice\(0, 6\)|code\.length !== 6|maxLength=\{6\}/.test(code));
+ok("★lib/otpCode.js を通している", /otpCode/.test(code));
+ok("★上限は、決めた定数から取る", /maxLength=\{OTP_MAX_LENGTH\}/.test(code));
 
 console.log("\n③ ★いまお使いの方の道を、触っていないこと");
 // ★★パスワードで入る道は、そのままです。

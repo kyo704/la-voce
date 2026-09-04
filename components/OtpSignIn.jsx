@@ -4,13 +4,21 @@ import { useEffect, useRef, useState } from "react";
 import { C } from "@/lib/tokens";
 import { createClient } from "@/lib/supabase/client";
 import { countStep } from "@/lib/countStep";
+import {
+  OTP_MAX_LENGTH, normalizeOtp, isSendableOtp,
+  OTP_SENT_HEADING, OTP_INPUT_LABEL, OTP_NOT_ARRIVED
+} from "@/lib/otpCode";
 
 // ============================================================================
-// 6桁の数字で入る（2026-09-04）
+// メールに届く数字で入る（2026-09-04 ／ 2026-09-05 桁数の決め打ちをやめました）
 //
 //   出どころ docs/opus/lavoce-仕様-ホーム画面までの動線・画面と文言（9月4日）.md §4
 //
-//   ★★リンクではなく、6桁の数字です。
+//   ★★リンクではなく、メールに届く数字です。
+//     ★★桁数は、★ここで決めません（2026-09-05）。
+//       ★Supabase の設定で 6〜10 に変えられます。
+//       ★こちらで 6 と決め打つと、★設定が 8 のとき★誰も入れません。
+//       ★実際に、そうなりました。★lib/otpCode.js を見てください。
 //     ★メールのリンクを押すと、★既定のブラウザが開きます。
 //     ★★せっかくホーム画面に置いたアプリの、★外に出てしまいます。
 //     ★数字なら、★ホーム画面版の中で完結します。
@@ -78,8 +86,8 @@ export default function OtpSignIn({ onSignedIn }) {
   }
 
   async function verify() {
-    const t = code.replace(/[^0-9]/g, "");
-    if (t.length !== 6 || busy) return;
+    const t = normalizeOtp(code);
+    if (!isSendableOtp(t) || busy) return;
     setBusy(true);
     setError("");
     const supabase = createClient();
@@ -137,17 +145,18 @@ export default function OtpSignIn({ onSignedIn }) {
   return (
     <div>
       <h1 style={{ fontSize: 24, fontWeight: 600, color: C.ink, margin: "0 0 10px", lineHeight: 1.5 }}>
-        メールに、6桁の数字を送りました。
+        {OTP_SENT_HEADING}
       </h1>
       <p style={{ fontSize: 16, color: C.inkSoft, margin: "0 0 20px", lineHeight: 1.8 }}>
-        {email.trim()} に送っています。
+        {email.trim()} に送っています。{OTP_INPUT_LABEL}
       </p>
 
       {/* ★貼り付けでも入るようにします。★one-time-code を落とさないこと。 */}
       <input type="text" value={code}
-        onChange={(e) => setCode(e.target.value.replace(/[^0-9]/g, "").slice(0, 6))}
-        autoComplete="one-time-code" inputMode="numeric" maxLength={6}
+        onChange={(e) => setCode(normalizeOtp(e.target.value))}
+        autoComplete="one-time-code" inputMode="numeric" maxLength={OTP_MAX_LENGTH}
         placeholder="000000"
+        aria-label={OTP_INPUT_LABEL}
         style={{
           width: "100%", padding: "14px", borderRadius: 12,
           border: `1px solid ${C.line}`, background: C.card, color: C.ink,
@@ -157,17 +166,17 @@ export default function OtpSignIn({ onSignedIn }) {
 
       {error && <p style={{ fontSize: 15, color: C.curtain, margin: "0 0 12px", lineHeight: 1.7 }}>{error}</p>}
 
-      <button type="button" onClick={verify} disabled={busy || code.length !== 6}
+      <button type="button" onClick={verify} disabled={busy || !isSendableOtp(code)}
         style={{
           width: "100%", padding: "15px", borderRadius: 999, border: "none",
           background: C.curtain, color: "#FFFDF8", fontSize: 17, fontWeight: 600,
-          minHeight: 52, opacity: (busy || code.length !== 6) ? 0.5 : 1
+          minHeight: 52, opacity: (busy || !isSendableOtp(code)) ? 0.5 : 1
         }}>
         {busy ? "確かめています…" : "入る"}
       </button>
 
       <p style={{ fontSize: 15, color: C.inkSoft, margin: "18px 0 10px", lineHeight: 1.8 }}>
-        届かないときは、迷惑メールもご覧ください。
+        {OTP_NOT_ARRIVED}
       </p>
 
       {/* ★続けて押されると、送る側で止められます。★こちらでも待ちます。 */}

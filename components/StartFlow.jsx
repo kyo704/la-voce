@@ -10,6 +10,7 @@ import {
 } from "@/lib/platform";
 import { PLANS } from "@/lib/plans";
 import { countStep } from "@/lib/countStep";
+import { createClient } from "@/lib/supabase/client";
 
 // ============================================================================
 // 着地の画面（2026-09-04）
@@ -41,10 +42,30 @@ export default function StartFlow() {
     const p = readPlatform();
     setPlatform(p);
     if (typeof navigator !== "undefined") setUa(navigator.userAgent);
-    // ★1回だけ数えます。★人数ではありません。★回数です。
-    countStep("landing");
-    // ★ホーム画面から開かれたことも数えます。★ここが、いちばん見たい段です。
-    if (p.standalone) countStep("standalone_opened");
+
+    // ★★ホーム画面のしるしは、★必ずここを開きます（manifest の start_url）。
+    //   ★すでに入っておられる方には、★着地ページは要りません。
+    //   ★★毎回この画面を見せると、★「入り直すのか」と思わせます。
+    //   ★だから、★入っておられたら、そのまま中へ送ります。
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data } = await createClient().auth.getSession();
+        if (!cancelled && data && data.session) {
+          window.location.replace("/dashboard");
+          return;
+        }
+      } catch (e) {
+        // ★確かめられなくても、★着地ページを出せばよいだけです。
+        //   ★ここで止めないこと。
+      }
+      if (cancelled) return;
+      // ★1回だけ数えます。★人数ではありません。★回数です。
+      countStep("landing");
+      // ★ホーム画面から開かれたことも数えます。★ここが、いちばん見たい段です。
+      if (p.standalone) countStep("standalone_opened");
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   // ★読み込みの前。★何も決めつけません。
