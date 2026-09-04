@@ -2679,7 +2679,7 @@ function GroupDotPlot({ values1, values0, label1, label0, width = 260, rowHeight
                 以前は線の真下（row.y + 18）に置いていたため、
                 隣の行の点や軸と重なって読めなくなることがあった。
                 数字は行の見出しへ移す。点と重なりようがない。 */}
-            <text x={0} y={row.y - 11} style={{ fontSize: 9, fill: C.inkSoft }}>
+            <text x={0} y={row.y - 11} style={{ fontSize: "0.5625rem", fill: C.inkSoft }}>
               {row.label}（{row.vals.length}日）{med != null ? ` 中央値 ${Math.round(med * 10) / 10}` : ""}
             </text>
             {row.vals.map((v, i) => (
@@ -2693,8 +2693,8 @@ function GroupDotPlot({ values1, values0, label1, label0, width = 260, rowHeight
         );
       })}
       <line x1={padX} y1={height - 12} x2={width - padX} y2={height - 12} stroke={C.line} strokeWidth={1} />
-      <text x={padX} y={height - 2} style={{ fontSize: 9, fill: C.inkSoft }}>低い</text>
-      <text x={width - padX} y={height - 2} textAnchor="end" style={{ fontSize: 9, fill: C.inkSoft }}>高い</text>
+      <text x={padX} y={height - 2} style={{ fontSize: "0.5625rem", fill: C.inkSoft }}>低い</text>
+      <text x={width - padX} y={height - 2} textAnchor="end" style={{ fontSize: "0.5625rem", fill: C.inkSoft }}>高い</text>
     </svg>
   );
 }
@@ -2718,8 +2718,8 @@ function CorrelationScatter({ pairs, xLabel, yLabel, width = 260, height = 150 }
         <circle key={i} cx={px(p.x)} cy={py(p.y)} r={3.2}
           fill={SERIES.s1} fillOpacity={0.45} stroke={C.card} strokeWidth={1.6} />
       ))}
-      <text x={width - padR} y={height - 6} textAnchor="end" style={{ fontSize: 9, fill: C.inkSoft }}>{xLabel}</text>
-      <text x={2} y={padT + 8} style={{ fontSize: 9, fill: C.inkSoft }}>{yLabel}</text>
+      <text x={width - padR} y={height - 6} textAnchor="end" style={{ fontSize: "0.5625rem", fill: C.inkSoft }}>{xLabel}</text>
+      <text x={2} y={padT + 8} style={{ fontSize: "0.5625rem", fill: C.inkSoft }}>{yLabel}</text>
     </svg>
   );
 }
@@ -2754,7 +2754,7 @@ function PeriodBands({ rows, maxDay = 35, width = 280, rowHeight = 18 }) {
       })}
       <line x1={padL} y1={height - 11} x2={width - padR} y2={height - 11} stroke={C.line} strokeWidth={1} />
       {[1, 7, 14, 21, 28].filter((d) => d <= maxDay).map((d) => (
-        <text key={d} x={x(d)} y={height - 1} textAnchor="middle" style={{ fontSize: 8, fill: C.inkSoft }}>{d}</text>
+        <text key={d} x={x(d)} y={height - 1} textAnchor="middle" style={{ fontSize: "0.5rem", fill: C.inkSoft }}>{d}</text>
       ))}
     </svg>
   );
@@ -11563,9 +11563,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <ResponsiveContainer>
                   <LineChart data={lessonModeData.scoreTrend} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                     <CartesianGrid stroke={C.line} />
-                    <XAxis dataKey="date" tick={{ fontSize: 9, fill: C.inkSoft }} />
-                    <YAxis domain={[0, 100]} tick={{ fontSize: 9, fill: C.inkSoft }} />
-                    <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, borderColor: C.line }} />
+                    <XAxis dataKey="date" tick={{ fontSize: "0.5625rem", fill: C.inkSoft }} />
+                    <YAxis domain={[0, 100]} tick={{ fontSize: "0.5625rem", fill: C.inkSoft }} />
+                    <Tooltip contentStyle={{ fontSize: "0.6875rem", borderRadius: 8, borderColor: C.line }} />
                     <Line type="monotone" dataKey="score" stroke={C.gold} strokeWidth={2} dot={{ r: 3 }} connectNulls />
                   </LineChart>
                 </ResponsiveContainer>
@@ -11595,9 +11595,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <ResponsiveContainer>
                   <LineChart data={lessonModeData.loadTrend} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                     <CartesianGrid stroke={C.line} />
-                    <XAxis dataKey="date" tick={{ fontSize: 9, fill: C.inkSoft }} />
-                    <YAxis domain={[0, "auto"]} tick={{ fontSize: 9, fill: C.inkSoft }} />
-                    <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, borderColor: C.line }} />
+                    <XAxis dataKey="date" tick={{ fontSize: "0.5625rem", fill: C.inkSoft }} />
+                    <YAxis domain={[0, "auto"]} tick={{ fontSize: "0.5625rem", fill: C.inkSoft }} />
+                    <Tooltip contentStyle={{ fontSize: "0.6875rem", borderRadius: 8, borderColor: C.line }} />
                     <Line type="monotone" dataKey="acwr" stroke={C.ink} strokeWidth={2} dot={{ r: 3 }} connectNulls />
                   </LineChart>
                 </ResponsiveContainer>
@@ -14283,8 +14283,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={[...rows].reverse().map((r) => ({ date: r.date.slice(5), value: r.value }))}>
                               <CartesianGrid strokeDasharray="3 3" stroke={C.line} />
-                              <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                              <YAxis tick={{ fontSize: 10, fill: C.inkSoft }} width={32} />
+                              <XAxis dataKey="date" tick={{ fontSize: "0.625rem", fill: C.inkSoft }} />
+                              <YAxis tick={{ fontSize: "0.625rem", fill: C.inkSoft }} width={32} />
                               <Tooltip />
                               <Line type="monotone" dataKey="value" stroke={C.sage} strokeWidth={2} dot={{ r: 2 }} />
                             </LineChart>
@@ -14405,9 +14405,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               <ResponsiveContainer>
                                 <LineChart data={m.data} margin={{ left: 0, right: 8, top: 4, bottom: 0 }}>
                                   <Line type="monotone" dataKey="value" stroke={C.curtain} strokeWidth={2} dot={{ r: 2 }} connectNulls />
-                                  <XAxis dataKey="date" tick={{ fontSize: 9, fill: C.inkSoft }} />
+                                  <XAxis dataKey="date" tick={{ fontSize: "0.5625rem", fill: C.inkSoft }} />
                                   <YAxis hide domain={["auto", "auto"]} />
-                                  <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, borderColor: C.line }} />
+                                  <Tooltip contentStyle={{ fontSize: "0.6875rem", borderRadius: 8, borderColor: C.line }} />
                                 </LineChart>
                               </ResponsiveContainer>
                             </div>
@@ -15127,9 +15127,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           <ResponsiveContainer>
                             <ComposedChart data={forecastChartData} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                               <CartesianGrid stroke={C.line} />
-                              <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                              <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 11, fill: C.inkSoft }} />
-                              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                              <XAxis dataKey="date" tick={{ fontSize: "0.625rem", fill: C.inkSoft }} />
+                              <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: "0.6875rem", fill: C.inkSoft }} />
+                              <Tooltip contentStyle={{ fontSize: "0.75rem", borderRadius: 8, borderColor: C.line }} />
                               <Area dataKey="low" stackId="band" stroke="none" fill="transparent" />
                               <Area dataKey="bandWidth" stackId="band" stroke="none" fill={C.gold} fillOpacity={0.15} />
                               <Line type="monotone" dataKey="yhat" name="予報" stroke={C.gold} strokeWidth={2} dot={{ r: 2 }} connectNulls />
@@ -15222,9 +15222,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <ResponsiveContainer>
                       <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis domain={[0, 10]} tick={{ fontSize: 11, fill: C.inkSoft }} />
-                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <XAxis dataKey="date" tick={{ fontSize: "0.625rem", fill: C.inkSoft }} />
+                        <YAxis domain={[0, 10]} tick={{ fontSize: "0.6875rem", fill: C.inkSoft }} />
+                        <Tooltip contentStyle={{ fontSize: "0.75rem", borderRadius: 8, borderColor: C.line }} />
                         {/* §3-D: 線は補助、主役は点。本番・レッスンの日を大きく別色で示す。 */}
                         <Line type="monotone" dataKey="resonanceScore" name={t("labelResonanceScore")}
                           stroke={SERIES.s1} strokeWidth={1.8} strokeOpacity={0.3} dot={trendDot} connectNulls />
@@ -15240,15 +15240,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <ResponsiveContainer>
                       <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
+                        <XAxis dataKey="date" tick={{ fontSize: "0.625rem", fill: C.inkSoft }} />
                         <YAxis
                           domain={["dataMin - 2", "dataMax + 2"]}
                           tickFormatter={(v) => midiToNoteLabel(v)}
-                          tick={{ fontSize: 10, fill: C.inkSoft }}
+                          tick={{ fontSize: "0.625rem", fill: C.inkSoft }}
                           width={38}
                         />
                         <Tooltip
-                          contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }}
+                          contentStyle={{ fontSize: "0.75rem", borderRadius: 8, borderColor: C.line }}
                           formatter={(value, name, entry) => {
                             const isWake = entry && entry.dataKey === "wakeMidi";
                             const isPianissimo = entry && entry.dataKey === "pianissimoMidi";
@@ -15480,13 +15480,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           <ResponsiveContainer>
                             <LineChart data={acwrChartData} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                               <CartesianGrid stroke={C.line} />
-                              <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                              <YAxis domain={[0, "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} />
+                              <XAxis dataKey="date" tick={{ fontSize: "0.625rem", fill: C.inkSoft }} />
+                              <YAxis domain={[0, "auto"]} tick={{ fontSize: "0.625rem", fill: C.inkSoft }} />
                               <ReferenceArea y1={0} y2={0.8} fill={C.gold} fillOpacity={0.08} />
                               <ReferenceArea y1={0.8} y2={1.3} fill={C.sage} fillOpacity={0.1} />
                               <ReferenceArea y1={1.3} y2={1.5} fill={C.gold} fillOpacity={0.12} />
                               <ReferenceArea y1={1.5} y2={3} fill={C.curtain} fillOpacity={0.08} />
-                              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                              <Tooltip contentStyle={{ fontSize: "0.75rem", borderRadius: 8, borderColor: C.line }} />
                               {/* ★推定を補った日は、塗りつぶさない白抜きの点にする。
                                   色は変えない（ゾーンの色と衝突するため）。形で区別する。 */}
                               <Line type="monotone" dataKey="acwr" stroke={C.ink} strokeWidth={2} connectNulls
@@ -15688,10 +15688,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <ResponsiveContainer>
                       <BarChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis tick={{ fontSize: 11, fill: C.inkSoft }} unit="h" />
+                        <XAxis dataKey="date" tick={{ fontSize: "0.625rem", fill: C.inkSoft }} />
+                        <YAxis tick={{ fontSize: "0.6875rem", fill: C.inkSoft }} unit="h" />
                         <Tooltip
-                          contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }}
+                          contentStyle={{ fontSize: "0.75rem", borderRadius: 8, borderColor: C.line }}
                           formatter={(v, n, p) => [t("chartSleepTooltip").replace("{h}", v).replace("{q}", p.payload.sleepQuality ?? "-"), t("chartNameSleepHours")]}
                         />
                         <Bar dataKey="sleepHours" name={t("chartNameSleepHours")} radius={4}>
@@ -15716,9 +15716,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <ResponsiveContainer>
                       <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="kg" />
-                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <XAxis dataKey="date" tick={{ fontSize: "0.625rem", fill: C.inkSoft }} />
+                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: "0.625rem", fill: C.inkSoft }} unit="kg" />
+                        <Tooltip contentStyle={{ fontSize: "0.75rem", borderRadius: 8, borderColor: C.line }} />
                         <Line type="monotone" dataKey="weightKg" name={t("chartNameWeight")} stroke={SERIES.s3} strokeWidth={2} dot={{ r: 2 }} connectNulls />
                       </LineChart>
                     </ResponsiveContainer>
@@ -15728,9 +15728,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <ResponsiveContainer>
                       <ComposedChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis tick={{ fontSize: 10, fill: C.inkSoft }} unit="kcal" />
-                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <XAxis dataKey="date" tick={{ fontSize: "0.625rem", fill: C.inkSoft }} />
+                        <YAxis tick={{ fontSize: "0.625rem", fill: C.inkSoft }} unit="kcal" />
+                        <Tooltip contentStyle={{ fontSize: "0.75rem", borderRadius: 8, borderColor: C.line }} />
                         <Bar dataKey="calorieActual" name={t("chartNameCalorieActual")} fill={C.gold} radius={3} />
                         {/* ★目標カロリーの破線は外した（分析画面の描画仕様.md §4-1・§7-6）。
                             破線の下を「足りなかった日」に見せてしまうため。
@@ -15755,9 +15755,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <ResponsiveContainer>
                       <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fill: C.inkSoft }} unit="g/kg" />
-                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <XAxis dataKey="date" tick={{ fontSize: "0.625rem", fill: C.inkSoft }} />
+                        <YAxis domain={["auto", "auto"]} tick={{ fontSize: "0.625rem", fill: C.inkSoft }} unit="g/kg" />
+                        <Tooltip contentStyle={{ fontSize: "0.75rem", borderRadius: 8, borderColor: C.line }} />
                         <ReferenceLine y={Number(profile.protein_coefficient) || 1.6} stroke={C.gold} strokeDasharray="4 4" />
                         <Line type="monotone" dataKey="proteinPerKg" name={t("chartNameActualCoefficient")} stroke={SERIES.s1} strokeWidth={2} dot={{ r: 2 }} connectNulls />
                       </LineChart>
@@ -15820,9 +15820,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <ResponsiveContainer>
                       <LineChart data={easeTimeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                        <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 11, fill: C.inkSoft }} />
-                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                        <XAxis dataKey="date" tick={{ fontSize: "0.625rem", fill: C.inkSoft }} />
+                        <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: "0.6875rem", fill: C.inkSoft }} />
+                        <Tooltip contentStyle={{ fontSize: "0.75rem", borderRadius: 8, borderColor: C.line }} />
                         <Line type="monotone" dataKey="ease" name={t("labelMentalEase")} stroke={C.rust} strokeWidth={2} dot={{ r: 3 }} connectNulls />
                       </LineChart>
                     </ResponsiveContainer>
@@ -15941,9 +15941,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           bandWidth: c.mean != null && c.sd != null ? roundTo1(c.sd * 2) : null
                         }))} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                           <CartesianGrid stroke={C.line} />
-                          <XAxis dataKey="tau" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                          <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 10, fill: C.inkSoft }} />
-                          <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                          <XAxis dataKey="tau" tick={{ fontSize: "0.625rem", fill: C.inkSoft }} />
+                          <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: "0.625rem", fill: C.inkSoft }} />
+                          <Tooltip contentStyle={{ fontSize: "0.75rem", borderRadius: 8, borderColor: C.line }} />
                           <Area dataKey="low" stackId="band" stroke="none" fill="transparent" />
                           <Area dataKey="bandWidth" stackId="band" stroke="none" fill={C.gold} fillOpacity={0.15} />
                           <Line type="monotone" dataKey="mean" stroke={C.curtain} strokeWidth={2} dot={{ r: 3 }} connectNulls />
@@ -16036,12 +16036,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <ResponsiveContainer>
                           <BarChart data={comfortZone1D.binStats.map((s) => ({ bin: `${s.bin}`, avg: roundTo1(s.avg), n: s.n }))} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                             <CartesianGrid stroke={C.line} />
-                            <XAxis dataKey="bin" tick={{ fontSize: 9, fill: C.inkSoft }} label={{ value: "絶対湿度 g/m³", position: "insideBottom", offset: -2, fontSize: 10, fill: C.inkSoft }} />
+                            <XAxis dataKey="bin" tick={{ fontSize: "0.5625rem", fill: C.inkSoft }} label={{ value: "絶対湿度 g/m³", position: "insideBottom", offset: -2, fontSize: "0.625rem", fill: C.inkSoft }} />
                             {/* ★棒グラフの縦軸は0から（描画仕様 §7-12）。
                                 1から始めると、3.0 と 3.5 の差が実際の何倍にも見える。
                                 線グラフは1〜5のままでよい（規則は棒グラフの話）。 */}
-                            <YAxis domain={[0, 5]} tick={{ fontSize: 10, fill: C.inkSoft }} />
-                            <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} formatter={(v, n, entry) => [`${v}（${entry.payload.n}件）`, "喉スコア平均"]} />
+                            <YAxis domain={[0, 5]} tick={{ fontSize: "0.625rem", fill: C.inkSoft }} />
+                            <Tooltip contentStyle={{ fontSize: "0.75rem", borderRadius: 8, borderColor: C.line }} formatter={(v, n, entry) => [`${v}（${entry.payload.n}件）`, "喉スコア平均"]} />
                             <Bar dataKey="avg" radius={3}>
                               {comfortZone1D.binStats.map((s, i) => (
                                 <Cell key={i} fill={s.n >= 2 ? C.sage : C.line} opacity={s.n >= 2 ? 0.8 : 0.4} />
@@ -16469,9 +16469,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <ResponsiveContainer>
                           <BarChart data={chartData} layout="vertical" margin={{ left: 8, right: 16, top: 4, bottom: 4 }}>
                             <CartesianGrid horizontal={false} stroke={C.line} />
-                            <XAxis type="number" domain={[-1, 1]} tick={{ fontSize: 11, fill: C.inkSoft }} />
-                            <YAxis type="category" dataKey="label" width={110} tick={{ fontSize: 12, fill: C.ink }} />
-                            <Tooltip formatter={(v) => [Number(v).toFixed(2), t("chartNameCorrelation")]} contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                            <XAxis type="number" domain={[-1, 1]} tick={{ fontSize: "0.6875rem", fill: C.inkSoft }} />
+                            <YAxis type="category" dataKey="label" width={110} tick={{ fontSize: "0.75rem", fill: C.ink }} />
+                            <Tooltip formatter={(v) => [Number(v).toFixed(2), t("chartNameCorrelation")]} contentStyle={{ fontSize: "0.75rem", borderRadius: 8, borderColor: C.line }} />
                             <ReferenceLine x={0} stroke={C.inkSoft} />
                             <Bar dataKey="r" radius={4} onClick={(d) => setSelectedFactorKey(d.key)} cursor="pointer">
                               {chartData.map((r) => (
@@ -16624,9 +16624,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           <ResponsiveContainer>
                             <ScatterChart margin={{ left: 8, right: 16, top: 8, bottom: 8 }}>
                               <CartesianGrid stroke={C.line} />
-                              <XAxis type="number" dataKey="x" name={scatterInfo.label} unit={scatterInfo.unit} tick={{ fontSize: 11, fill: C.inkSoft }} />
-                              <YAxis type="number" dataKey="y" name={analysisTarget === "performance" ? t("targetPerformance") : analysisTarget === "ease" ? t("targetEase") : t("targetThroat")} domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: 11, fill: C.inkSoft }} />
-                              <Tooltip cursor={{ strokeDasharray: "3 3" }} contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                              <XAxis type="number" dataKey="x" name={scatterInfo.label} unit={scatterInfo.unit} tick={{ fontSize: "0.6875rem", fill: C.inkSoft }} />
+                              <YAxis type="number" dataKey="y" name={analysisTarget === "performance" ? t("targetPerformance") : analysisTarget === "ease" ? t("targetEase") : t("targetThroat")} domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: "0.6875rem", fill: C.inkSoft }} />
+                              <Tooltip cursor={{ strokeDasharray: "3 3" }} contentStyle={{ fontSize: "0.75rem", borderRadius: 8, borderColor: C.line }} />
                               {/* §3-I: 点のみ。★回帰直線・近似曲線を引かない。
                                   引いた瞬間に「予測」になり、3ゲートの外に出る。
                                   ρ は上の文章に数値で添えてある（図の上に線として描かない）。 */}
@@ -17415,9 +17415,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                 <div style={{ width: "100%", height: 110 }} className="mt-2">
                                   <ResponsiveContainer>
                                     <LineChart data={history.map((h) => ({ date: h.response_date.slice(5), score: h.total_score }))} margin={{ left: 0, right: 8, top: 4, bottom: 0 }}>
-                                      <XAxis dataKey="date" tick={{ fontSize: 9, fill: C.inkSoft }} />
+                                      <XAxis dataKey="date" tick={{ fontSize: "0.5625rem", fill: C.inkSoft }} />
                                       <YAxis hide domain={["auto", "auto"]} />
-                                      <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, borderColor: C.line }} />
+                                      <Tooltip contentStyle={{ fontSize: "0.6875rem", borderRadius: 8, borderColor: C.line }} />
                                       <Line type="monotone" dataKey="score" stroke={C.gold} strokeWidth={2} dot={{ r: 3 }} />
                                     </LineChart>
                                   </ResponsiveContainer>
@@ -17693,9 +17693,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <ResponsiveContainer>
                           <BarChart data={clinicWeeklyVoiceUsage} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                             <CartesianGrid stroke={C.line} />
-                            <XAxis dataKey="week" tick={{ fontSize: 10, fill: C.inkSoft }} />
-                            <YAxis tick={{ fontSize: 10, fill: C.inkSoft }} unit="h" />
-                            <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: C.line }} />
+                            <XAxis dataKey="week" tick={{ fontSize: "0.625rem", fill: C.inkSoft }} />
+                            <YAxis tick={{ fontSize: "0.625rem", fill: C.inkSoft }} unit="h" />
+                            <Tooltip contentStyle={{ fontSize: "0.75rem", borderRadius: 8, borderColor: C.line }} />
                             <Bar dataKey="hours" fill={C.gold} radius={3} />
                           </BarChart>
                         </ResponsiveContainer>
@@ -18693,7 +18693,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     利用者への説明は要りません。★私たちが「古い画面を見ている」ことを
                     1秒で見分けるために置きます。§5 の実機確認は、ここが変わることで
                     合否を判断します。★消さないこと（同書 §6-5）。 */}
-                <p className="text-center" style={{ fontSize: 11, color: C.inkSoft, opacity: 0.8 }}>
+                <p className="text-center" style={{ fontSize: "0.6875rem", color: C.inkSoft, opacity: 0.8 }}>
                   バージョン {process.env.NEXT_PUBLIC_BUILD_SHA || "dev"}
                   {process.env.NEXT_PUBLIC_BUILD_AT ? (
                     <>

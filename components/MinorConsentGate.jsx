@@ -49,10 +49,10 @@ export default function MinorConsentGate({ band, userId }) {
   if (plans.length === 0) {
     return (
       <div style={{ background: C.paper, borderRadius: 16, padding: 16 }}>
-        <p style={{ fontSize: 14, color: C.ink, margin: 0 }}>
+        <p style={{ fontSize: "0.875rem", color: C.ink, margin: 0 }}>
           いまは、有料の機能にお進みいただけません。
         </p>
-        <p style={{ fontSize: 12, color: C.inkSoft, marginTop: 8 }}>
+        <p style={{ fontSize: "0.75rem", color: C.inkSoft, marginTop: 8 }}>
           私たちの決まりとして、そうしています。記録の機能は、これまでどおりお使いいただけます。
         </p>
       </div>
@@ -64,7 +64,7 @@ export default function MinorConsentGate({ band, userId }) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <PlanButtons plans={plans} />
-        <p style={{ fontSize: 12, color: C.inkSoft, marginTop: 4 }}>{MINOR_NOTICE_LINE}</p>
+        <p style={{ fontSize: "0.75rem", color: C.inkSoft, marginTop: 4 }}>{MINOR_NOTICE_LINE}</p>
       </div>
     );
   }
@@ -112,19 +112,19 @@ export default function MinorConsentGate({ band, userId }) {
 
   return (
     <div style={{ background: C.paper, borderRadius: 16, padding: 16 }}>
-      <p style={{ fontSize: 15, fontWeight: 600, margin: "0 0 10px" }}>18歳未満の方へ</p>
-      <p style={{ fontSize: 14, color: C.ink, margin: "0 0 12px" }}>
+      <p style={{ fontSize: "0.9375rem", fontWeight: 600, margin: "0 0 10px" }}>18歳未満の方へ</p>
+      <p style={{ fontSize: "0.875rem", color: C.ink, margin: "0 0 12px" }}>
         有料の機能をお使いいただくには、保護者の方の同意が必要です。
       </p>
 
       <div style={{ margin: "0 0 14px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
         {minorConsentLines(monthlyYen).map((l) => (
-          <p key={l} style={{ fontSize: 12, color: C.inkSoft, margin: "3px 0" }}>{l}</p>
+          <p key={l} style={{ fontSize: "0.75rem", color: C.inkSoft, margin: "3px 0" }}>{l}</p>
         ))}
       </div>
 
       {/* ★見せるだけのページです。★フォームではありません。 */}
-      <p style={{ fontSize: 13, margin: "0 0 14px" }}>
+      <p style={{ fontSize: "0.8125rem", margin: "0 0 14px" }}>
         <a href="/parents" target="_blank" rel="noopener noreferrer"
           style={{ color: C.curtain }}>
           → 保護者の方へ（説明のページ）
@@ -135,24 +135,24 @@ export default function MinorConsentGate({ band, userId }) {
       <label style={{ display: "flex", gap: 8, alignItems: "flex-start", cursor: "pointer", marginBottom: 14 }}>
         <input type="checkbox" checked={checked}
           onChange={(e) => setChecked(e.target.checked)} style={{ marginTop: 3 }} />
-        <span style={{ fontSize: 13, color: C.ink }}>{minorConsentCheckbox(monthlyYen)}</span>
+        <span style={{ fontSize: "0.8125rem", color: C.ink }}>{minorConsentCheckbox(monthlyYen)}</span>
       </label>
 
       {error && (
-        <p style={{ fontSize: 12, color: C.curtain, margin: "0 0 10px" }}>{error}</p>
+        <p style={{ fontSize: "0.75rem", color: C.curtain, margin: "0 0 10px" }}>{error}</p>
       )}
 
       {/* ★チェックしないと押せません。 */}
       <button type="button" onClick={handleDeclare} disabled={!checked || busy}
         style={{
           width: "100%", padding: "12px", borderRadius: 999, border: "none",
-          background: C.curtain, color: "#FFFDF8", fontWeight: 600, fontSize: 14,
+          background: C.curtain, color: "#FFFDF8", fontWeight: 600, fontSize: "0.875rem",
           opacity: (!checked || busy) ? 0.5 : 1
         }}>
         {busy ? "処理しています…" : "申し込みに進む"}
       </button>
 
-      <p style={{ fontSize: 12, color: C.inkSoft, marginTop: 12 }}>{MINOR_NOTICE_LINE}</p>
+      <p style={{ fontSize: "0.75rem", color: C.inkSoft, marginTop: 12 }}>{MINOR_NOTICE_LINE}</p>
     </div>
   );
 }

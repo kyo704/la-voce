@@ -78,12 +78,13 @@ export default function ResetPasswordPage() {
   };
   const input = {
     padding: "13px 14px", borderRadius: 10, border: "1px solid #E4DCC9",
-    background: "#FFFDF8", fontSize: 15, color: "#241914"
+    // ★★16px を下回らないこと。★iOS が画面を勝手に拡大します（2026-09-05）。
+    background: "#FFFDF8", fontSize: "max(16px, 1rem)", color: "#241914"
   };
   const button = {
     padding: "14px", borderRadius: 10, border: "none",
     background: "linear-gradient(180deg, #8A2A36, #7A1F2B)", color: "#FBF6EA",
-    fontWeight: 600, fontSize: 15, cursor: "pointer"
+    fontWeight: 600, fontSize: "0.9375rem", cursor: "pointer"
   };
 
   return (
@@ -94,13 +95,13 @@ export default function ResetPasswordPage() {
       <div style={card}>
         <h1 className="ff-display italic" style={{ fontSize: "1.4rem", color: "#7A1F2B", margin: 0 }}>{tr("title")}</h1>
 
-        {ready === "checking" && <p style={{ fontSize: 14, color: "#6b5d52", margin: 0 }}>{tr("checking")}</p>}
+        {ready === "checking" && <p style={{ fontSize: "0.875rem", color: "#6b5d52", margin: 0 }}>{tr("checking")}</p>}
 
         {/* ★つながらなかっただけのときは、「期限切れ」と言わない。
             リンクは有効かもしれないので、もう一度試せるようにする。 */}
         {ready === "unreachable" && (
           <>
-            <p style={{ fontSize: 14, color: "#7A1F2B", margin: 0 }}>
+            <p style={{ fontSize: "0.875rem", color: "#7A1F2B", margin: 0 }}>
               いま、つながりません。リンクはまだ有効かもしれません。少し待ってから、もう一度開いてください。
             </p>
             <button type="button" onClick={() => window.location.reload()} style={button}>もう一度試す</button>
@@ -109,27 +110,27 @@ export default function ResetPasswordPage() {
 
         {ready === "nosession" && (
           <>
-            <p style={{ fontSize: 14, color: "#7A1F2B", margin: 0 }}>{tr("noSession")}</p>
+            <p style={{ fontSize: "0.875rem", color: "#7A1F2B", margin: 0 }}>{tr("noSession")}</p>
             <a href="/login" style={{ ...button, textAlign: "center", textDecoration: "none", display: "block" }}>{tr("toLogin")}</a>
           </>
         )}
 
         {ready === "ok" && status === "done" && (
           <>
-            <p style={{ fontSize: 14, color: "#4F7562", margin: 0 }}>{tr("done")}</p>
+            <p style={{ fontSize: "0.875rem", color: "#4F7562", margin: 0 }}>{tr("done")}</p>
             <a href="/login" style={{ ...button, textAlign: "center", textDecoration: "none", display: "block" }}>{tr("toLogin")}</a>
           </>
         )}
 
         {ready === "ok" && status !== "done" && (
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <p style={{ fontSize: 13, color: "#6b5d52", margin: 0 }}>{tr("lead")}</p>
+            <p style={{ fontSize: "0.8125rem", color: "#6b5d52", margin: 0 }}>{tr("lead")}</p>
             {/* ★★autocomplete="new-password" を外さないこと（訂正2 §4）。 */}
             <input required type="password" name="new-password" autoComplete="new-password" placeholder={tr("ph1")}
               value={pw1} onChange={(e) => setPw1(e.target.value)} style={input} />
             <input required type="password" name="new-password" autoComplete="new-password" placeholder={tr("ph2")}
               value={pw2} onChange={(e) => setPw2(e.target.value)} style={input} />
-            {error && <p style={{ fontSize: 13, color: "#7A1F2B", margin: 0 }}>{error}</p>}
+            {error && <p style={{ fontSize: "0.8125rem", color: "#7A1F2B", margin: 0 }}>{error}</p>}
             <button type="submit" disabled={status === "saving"} style={{ ...button, opacity: status === "saving" ? 0.7 : 1 }}>
               {status === "saving" ? tr("saving") : tr("save")}
             </button>

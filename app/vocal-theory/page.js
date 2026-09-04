@@ -448,23 +448,23 @@ function trList(key, lang) {
 function Section({ eyebrow, title, subtitle, children, accent }) {
   return (
     <section style={{ marginTop: 56 }}>
-      <p style={{ fontSize: 11.5, letterSpacing: "0.12em", color: accent || C.gold, fontWeight: 700, marginBottom: 6 }}>
+      <p style={{ fontSize: "0.71875rem", letterSpacing: "0.12em", color: accent || C.gold, fontWeight: 700, marginBottom: 6 }}>
         {eyebrow}
       </p>
       <h2 className="ff-display italic" style={{ fontSize: "1.9rem", color: C.ink, margin: "0 0 4px" }}>
         {title}
       </h2>
       {subtitle && (
-        <p style={{ color: C.inkSoft, fontSize: 13, marginBottom: 20 }}>{subtitle}</p>
+        <p style={{ color: C.inkSoft, fontSize: "0.8125rem", marginBottom: 20 }}>{subtitle}</p>
       )}
-      <div style={{ color: C.ink, fontSize: 14.5, lineHeight: 1.95 }}>{children}</div>
+      <div style={{ color: C.ink, fontSize: "0.90625rem", lineHeight: 1.95 }}>{children}</div>
     </section>
   );
 }
 
 function SingerList({ names, label }) {
   return (
-    <p style={{ marginTop: 14, fontSize: 13.5, color: C.inkSoft }}>
+    <p style={{ marginTop: 14, fontSize: "0.84375rem", color: C.inkSoft }}>
       <span style={{ fontWeight: 600, color: C.ink }}>{label}　</span>
       {names.join("、")}
     </p>
@@ -473,7 +473,7 @@ function SingerList({ names, label }) {
 
 function Callout({ children }) {
   return (
-    <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 12, padding: "14px 16px", margin: "18px 0", fontSize: 13.5, color: C.inkSoft, lineHeight: 1.8 }}>
+    <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 12, padding: "14px 16px", margin: "18px 0", fontSize: "0.84375rem", color: C.inkSoft, lineHeight: 1.8 }}>
       {children}
     </div>
   );
@@ -482,10 +482,10 @@ function Callout({ children }) {
 function GlossaryItem({ term, reading, children }) {
   return (
     <div style={{ borderTop: `1px solid ${C.line}`, padding: "16px 0" }}>
-      <p style={{ margin: 0, fontWeight: 600, color: C.curtain, fontSize: 14.5 }}>
-        {term} {reading && <span style={{ color: C.inkSoft, fontWeight: 400, fontSize: 12.5 }}>（{reading}）</span>}
+      <p style={{ margin: 0, fontWeight: 600, color: C.curtain, fontSize: "0.90625rem" }}>
+        {term} {reading && <span style={{ color: C.inkSoft, fontWeight: 400, fontSize: "0.78125rem" }}>（{reading}）</span>}
       </p>
-      <p style={{ margin: "6px 0 0", color: C.inkSoft, fontSize: 13.5, lineHeight: 1.8 }}>{children}</p>
+      <p style={{ margin: "6px 0 0", color: C.inkSoft, fontSize: "0.84375rem", lineHeight: 1.8 }}>{children}</p>
     </div>
   );
 }
@@ -495,9 +495,9 @@ export default function VocalTheoryPage({ searchParams }) {
   const glossaryIds = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   return (
-    <main style={{ maxWidth: 720, margin: "0 auto", padding: "64px 24px 96px", lineHeight: 1.8, fontSize: 14 }}>
+    <main style={{ maxWidth: 720, margin: "0 auto", padding: "64px 24px 96px", lineHeight: 1.8, fontSize: "0.875rem" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-        <p style={{ fontSize: 11.5, letterSpacing: "0.14em", color: C.gold, fontWeight: 700, margin: 0 }}>
+        <p style={{ fontSize: "0.71875rem", letterSpacing: "0.14em", color: C.gold, fontWeight: 700, margin: 0 }}>
           {tr("eyebrow", lang)}
         </p>
         <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
@@ -506,7 +506,7 @@ export default function VocalTheoryPage({ searchParams }) {
               key={l.code}
               href={`/vocal-theory?lang=${l.code}`}
               style={{
-                fontSize: 11, padding: "3px 8px", borderRadius: 999,
+                fontSize: "0.6875rem", padding: "3px 8px", borderRadius: 999,
                 border: `1px solid ${lang === l.code ? C.curtain : C.line}`,
                 background: lang === l.code ? C.curtain : "transparent",
                 color: lang === l.code ? "#FFFDF8" : C.inkSoft,
@@ -629,7 +629,7 @@ export default function VocalTheoryPage({ searchParams }) {
         </div>
       </Section>
 
-      <p style={{ marginTop: 56, fontSize: 11.5, color: C.inkSoft, borderTop: `1px solid ${C.line}`, paddingTop: 20, lineHeight: 1.8 }}>
+      <p style={{ marginTop: 56, fontSize: "0.71875rem", color: C.inkSoft, borderTop: `1px solid ${C.line}`, paddingTop: 20, lineHeight: 1.8 }}>
         {tr("footer", lang)}
       </p>
     </main>

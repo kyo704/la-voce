@@ -94,14 +94,14 @@ export default function AndroidInstallPrompt({ enteredFirstRecord }) {
     <div style={{
       background: C.paper, borderRadius: 16, padding: 16, marginTop: 16
     }}>
-      <p style={{ fontSize: 14, color: C.ink, margin: "0 0 12px" }}>
+      <p style={{ fontSize: "0.875rem", color: C.ink, margin: "0 0 12px" }}>
         ホーム画面に置いておくと、すぐ開けます。
       </p>
       <div style={{ display: "flex", gap: 8 }}>
         <button type="button" onClick={handlePlace}
           style={{
             flex: 1, padding: "11px", borderRadius: 999, border: "none",
-            background: C.curtain, color: "#FFFDF8", fontSize: 14, fontWeight: 600
+            background: C.curtain, color: "#FFFDF8", fontSize: "0.875rem", fontWeight: 600
           }}>
           置く
         </button>
@@ -109,7 +109,7 @@ export default function AndroidInstallPrompt({ enteredFirstRecord }) {
         <button type="button" onClick={remember}
           style={{
             flex: 1, padding: "11px", borderRadius: 999,
-            border: `1px solid ${C.line}`, background: C.card, color: C.inkSoft, fontSize: 14
+            border: `1px solid ${C.line}`, background: C.card, color: C.inkSoft, fontSize: "0.875rem"
           }}>
           あとで
         </button>

@@ -28,7 +28,7 @@ export default function PortalButton() {
         background: "transparent",
         color: C.ink,
         fontWeight: 500,
-        fontSize: 14
+        fontSize: "0.875rem"
       }}
     >
       {loading ? "処理中…" : "お支払い情報・解約の管理"}

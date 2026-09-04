@@ -80,7 +80,7 @@ export default function LegacyOriginNotice() {
       <p style={{ fontSize: 22, fontWeight: 600, margin: 0, lineHeight: 1.5 }}>
         新しいURLに移動しました
       </p>
-      <p style={{ fontSize: 15, margin: 0, lineHeight: 1.8, maxWidth: 420 }}>
+      <p style={{ fontSize: "0.9375rem", margin: 0, lineHeight: 1.8, maxWidth: 420 }}>
         Woolsong は <strong>woolsong.app</strong> に引っ越しました。<br />
         記録はそのまま残っています。自動で移動します。
       </p>
@@ -90,12 +90,12 @@ export default function LegacyOriginNotice() {
           display: "inline-block", marginTop: 8,
           padding: "14px 28px", borderRadius: 999,
           background: "#8C2F39", color: "#FFFDF8",
-          fontSize: 16, fontWeight: 600, textDecoration: "none"
+          fontSize: "1rem", fontWeight: 600, textDecoration: "none"
         }}
       >
         新しいページを開く
       </a>
-      <p style={{ fontSize: 13, margin: "8px 0 0", lineHeight: 1.8, maxWidth: 420, opacity: 0.75 }}>
+      <p style={{ fontSize: "0.8125rem", margin: "8px 0 0", lineHeight: 1.8, maxWidth: 420, opacity: 0.75 }}>
         ★ホーム画面にアイコンを追加していた方は、
         一度削除してから、新しいページで追加し直してください。
       </p>

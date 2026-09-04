@@ -53,7 +53,7 @@ export default async function AdminPage() {
           権限がありません
         </h1>
         <p style={{ color: C.inkSoft, marginTop: 12 }}>このページは管理者のみ閲覧できます。</p>
-        <a href="/dashboard" style={{ color: C.curtain, fontSize: 14, marginTop: 16, display: "inline-block" }}>
+        <a href="/dashboard" style={{ color: C.curtain, fontSize: "0.875rem", marginTop: 16, display: "inline-block" }}>
           アプリに戻る
         </a>
       </main>
@@ -202,7 +202,7 @@ export default async function AdminPage() {
       <h1 className="ff-display italic" style={{ fontSize: "2.25rem", color: C.curtain }}>
         管理者画面
       </h1>
-      <p style={{ color: C.inkSoft, fontSize: 13, marginTop: 4, marginBottom: 24 }}>
+      <p style={{ color: C.inkSoft, fontSize: "0.8125rem", marginTop: 4, marginBottom: 24 }}>
         ログイン中: {user.email}
       </p>
 
@@ -217,7 +217,7 @@ export default async function AdminPage() {
 
       <div className="rounded-2xl border overflow-hidden" style={{ borderColor: C.line, background: C.card }}>
         <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8125rem" }}>
             <thead>
               <tr style={{ borderBottom: `1px solid ${C.line}`, textAlign: "left" }}>
                 <th style={{ padding: "12px 14px", color: C.inkSoft, fontWeight: 500 }}>名前</th>
@@ -233,18 +233,18 @@ export default async function AdminPage() {
                 <tr key={u.id} style={{ borderBottom: `1px solid ${C.line}` }}>
                   <td style={{ padding: "12px 14px" }}>
                     {u.name || "—"}
-                    {u.is_admin && <span style={{ marginLeft: 6, fontSize: 11, color: C.gold }}>管理者</span>}
+                    {u.is_admin && <span style={{ marginLeft: 6, fontSize: "0.6875rem", color: C.gold }}>管理者</span>}
                     {/* ★テスターの印。付与できたかを、ここで確かめられます。 */}
                     {/* ★群のラベル。継続率を群ごとに分けるために要ります。
                         ★利用者には見せません（§4）。ここは管理画面です。 */}
                     {(u.cohort === "tester" || (u.is_tester && !u.cohort)) &&
-                      <span style={{ marginLeft: 6, fontSize: 11, color: C.sage }}>テスター</span>}
+                      <span style={{ marginLeft: 6, fontSize: "0.6875rem", color: C.sage }}>テスター</span>}
                     {u.cohort === "founder" &&
-                      <span style={{ marginLeft: 6, fontSize: 11, color: C.gold }}>founder</span>}
+                      <span style={{ marginLeft: 6, fontSize: "0.6875rem", color: C.gold }}>founder</span>}
                     {/* ★確認していない人。登録メールを開いていないだけで、
                         中身は空です。数に混ざると、実際より多く見えます。 */}
                     {confirmedOf(u.id) === false && (
-                      <span style={{ marginLeft: 6, fontSize: 11, color: C.curtain }}>未確認</span>
+                      <span style={{ marginLeft: 6, fontSize: "0.6875rem", color: C.curtain }}>未確認</span>
                     )}
                   </td>
                   <td style={{ padding: "12px 14px", color: C.inkSoft }}>{u.email || "—"}</td>
@@ -272,7 +272,7 @@ export default async function AdminPage() {
         </div>
       </div>
 
-      <p style={{ fontSize: 12, color: C.inkSoft, marginTop: 16 }}>
+      <p style={{ fontSize: "0.75rem", color: C.inkSoft, marginTop: 16 }}>
         管理者権限の付与や、契約状況の手動変更はSupabaseのTable Editorから行ってください。
       </p>
 
@@ -280,13 +280,13 @@ export default async function AdminPage() {
       <h2 className="ff-display italic" style={{ fontSize: "1.5rem", color: C.curtain, marginTop: 40, marginBottom: 12 }}>
         項目ごとの入力率
       </h2>
-      <p style={{ fontSize: 12, color: C.inkSoft, marginBottom: 12 }}>
+      <p style={{ fontSize: "0.75rem", color: C.inkSoft, marginBottom: 12 }}>
         全ユーザー・総記録{n}件に対する割合です（実行順マスター Stage 0-3・判断ゲート①の材料）。
       </p>
       <div className="rounded-2xl border p-4" style={{ borderColor: C.line, background: C.card }}>
         <div className="space-y-1.5">
           {inputRateRows.map((r) => (
-            <div key={r.label} style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
+            <div key={r.label} style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8125rem" }}>
               <span style={{ color: C.inkSoft }}>{r.label}</span>
               <span style={{ fontFamily: "monospace", fontWeight: 500 }}>{pct(r.count)}（{r.count}件）</span>
             </div>
@@ -297,7 +297,7 @@ export default async function AdminPage() {
       <h2 className="ff-display italic" style={{ fontSize: "1.5rem", color: C.curtain, marginTop: 32, marginBottom: 12 }}>
         消えたアカウント
       </h2>
-      <p style={{ fontSize: 12, color: C.inkSoft, marginBottom: 12 }}>
+      <p style={{ fontSize: "0.75rem", color: C.inkSoft, marginBottom: 12 }}>
         ★数だけです。誰が消したかは分かりません（時刻しか残していません）。
         30日の猶予を申し出た時点では数えず、実際に消えたときだけ数えます。
       </p>
@@ -305,30 +305,30 @@ export default async function AdminPage() {
         {/* ★「表が無くて0」と「本当に0件」を、見分けられるようにします。
             黙って 0 を出すと、壊れていることに気づけません。 */}
         {deletionTable === "missing" ? (
-          <p style={{ fontSize: 13, color: C.curtain }}>
+          <p style={{ fontSize: "0.8125rem", color: C.curtain }}>
             まだ記録の表がありません。<br />
-            <span style={{ fontSize: 12, color: C.inkSoft }}>
+            <span style={{ fontSize: "0.75rem", color: C.inkSoft }}>
               supabase/migration_account_deletions_count.sql を実行してください。
               実行するまで、消えたアカウントは数えられません（削除そのものは動きます）。
             </span>
           </p>
         ) : deletionTable === "error" ? (
-          <p style={{ fontSize: 13, color: C.curtain }}>
+          <p style={{ fontSize: "0.8125rem", color: C.curtain }}>
             記録を読めませんでした。<br />
-            <span style={{ fontSize: 12, color: C.inkSoft }}>時間をおいて、もう一度開いてみてください。</span>
+            <span style={{ fontSize: "0.75rem", color: C.inkSoft }}>時間をおいて、もう一度開いてみてください。</span>
           </p>
         ) : (
         <>
-        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 8 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8125rem", marginBottom: 8 }}>
           <span style={{ color: C.inkSoft }}>これまでの合計</span>
           <span style={{ fontFamily: "monospace", fontWeight: 500 }}>{deletionTotal} 件</span>
         </div>
         {deletionMonths.length === 0 ? (
-          <p style={{ fontSize: 12, color: C.inkSoft }}>まだありません（表はあります）。</p>
+          <p style={{ fontSize: "0.75rem", color: C.inkSoft }}>まだありません（表はあります）。</p>
         ) : (
           <div className="space-y-1.5" style={{ borderTop: `1px solid ${C.line}`, paddingTop: 8 }}>
             {deletionMonths.map(([month, count]) => (
-              <div key={month} style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
+              <div key={month} style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8125rem" }}>
                 <span style={{ color: C.inkSoft }}>{month.replace("-", "年")}月</span>
                 <span style={{ fontFamily: "monospace", fontWeight: 500 }}>{count} 件</span>
               </div>
@@ -344,11 +344,11 @@ export default async function AdminPage() {
       </h2>
       <div className="rounded-2xl border p-4" style={{ borderColor: C.line, background: C.card }}>
         {Object.keys(surveyCounts).length === 0 ? (
-          <p style={{ fontSize: 13, color: C.inkSoft }}>まだ回答がありません。</p>
+          <p style={{ fontSize: "0.8125rem", color: C.inkSoft }}>まだ回答がありません。</p>
         ) : (
           <div className="space-y-1.5">
             {Object.entries(surveyCounts).map(([key, count]) => (
-              <div key={key} style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
+              <div key={key} style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8125rem" }}>
                 <span style={{ color: C.inkSoft }}>{SURVEY_LABEL[key] || key}</span>
                 <span style={{ fontFamily: "monospace", fontWeight: 500 }}>{count}件</span>
               </div>
@@ -370,7 +370,7 @@ export default async function AdminPage() {
           <div className="text-xs mt-1" style={{ color: C.inkSoft }}>実際にインストールされた数</div>
         </div>
       </div>
-      <p style={{ fontSize: 12, color: C.inkSoft, marginTop: -20, marginBottom: 32 }}>
+      <p style={{ fontSize: "0.75rem", color: C.inkSoft, marginTop: -20, marginBottom: 32 }}>
         オンボーディング未完了ユーザー: {onboardingIncomplete}人
       </p>
       {/* ---- 追加ここまで ---- */}
@@ -381,16 +381,16 @@ export default async function AdminPage() {
       <div className="space-y-2">
         {(feedbackRows || []).map((f) => (
           <div key={f.id} className="rounded-xl p-3 border" style={{ background: C.card, borderColor: C.line }}>
-            <div className="flex items-center gap-2 flex-wrap" style={{ fontSize: 12, color: C.inkSoft }}>
+            <div className="flex items-center gap-2 flex-wrap" style={{ fontSize: "0.75rem", color: C.inkSoft }}>
               <span style={{ color: C.gold, fontWeight: 500 }}>{f.category}</span>
               <span>{f.email}</span>
               <span>{formatDate(f.created_at)}</span>
             </div>
-            <p style={{ fontSize: 13, marginTop: 6, whiteSpace: "pre-wrap" }}>{f.message}</p>
+            <p style={{ fontSize: "0.8125rem", marginTop: 6, whiteSpace: "pre-wrap" }}>{f.message}</p>
           </div>
         ))}
         {(!feedbackRows || feedbackRows.length === 0) && (
-          <p style={{ fontSize: 13, color: C.inkSoft }}>まだフィードバックはありません。</p>
+          <p style={{ fontSize: "0.8125rem", color: C.inkSoft }}>まだフィードバックはありません。</p>
         )}
       </div>
     </main>

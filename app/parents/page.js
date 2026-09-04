@@ -73,7 +73,7 @@ export default function ParentsPage() {
       <p>woolsong.app@gmail.com</p>
 
       <hr style={{ border: 0, borderTop: `1px solid ${C.line}`, margin: "28px 0" }} />
-      <p style={{ fontSize: 13, color: C.inkSoft }}>
+      <p style={{ fontSize: "0.8125rem", color: C.inkSoft }}>
         このページは、ご説明のためのものです。ここでお手続きいただくことはありません。
       </p>
     </main>

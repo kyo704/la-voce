@@ -52,12 +52,12 @@ export default function CheckoutButton({ planKey = "monthly", label }) {
           background: C.curtain,
           color: "#fff",
           fontWeight: 600,
-          fontSize: 15
+          fontSize: "0.9375rem"
         }}
       >
         {loading ? "処理中…" : (label || "お申し込みに進む")}
       </button>
-      {error && <p style={{ color: C.curtain, fontSize: 13, marginTop: 8 }}>{error}</p>}
+      {error && <p style={{ color: C.curtain, fontSize: "0.8125rem", marginTop: 8 }}>{error}</p>}
     </div>
   );
 }

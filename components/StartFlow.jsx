@@ -72,7 +72,7 @@ export default function StartFlow() {
   if (!platform) {
     return (
       <Shell>
-        <p style={{ fontSize: 16, color: C.inkSoft, textAlign: "center" }}>読み込んでいます…</p>
+        <p style={{ fontSize: "1rem", color: C.inkSoft, textAlign: "center" }}>読み込んでいます…</p>
       </Shell>
     );
   }
@@ -86,15 +86,15 @@ export default function StartFlow() {
         <h1 style={{ fontSize: 23, fontWeight: 600, margin: "0 0 12px", lineHeight: 1.5 }}>
           ブラウザで開いてください
         </h1>
-        <p style={{ fontSize: 17, color: C.ink, margin: "0 0 14px", lineHeight: 1.7 }}>
+        <p style={{ fontSize: "1.0625rem", color: C.ink, margin: "0 0 14px", lineHeight: 1.7 }}>
           {label ? `${label}の中では、` : "いまの画面では、"}
           ホーム画面に置くことができません。
         </p>
-        <p style={{ fontSize: 16, color: C.inkSoft, margin: "0 0 18px", lineHeight: 1.8 }}>
+        <p style={{ fontSize: "1rem", color: C.inkSoft, margin: "0 0 18px", lineHeight: 1.8 }}>
           画面のすみにある「…」や、四角から矢印が出ているしるしを押すと、
           ブラウザ（Safari や Chrome）で開き直せます。
         </p>
-        <p style={{ fontSize: 16, color: C.inkSoft, margin: 0, lineHeight: 1.8 }}>
+        <p style={{ fontSize: "1rem", color: C.inkSoft, margin: 0, lineHeight: 1.8 }}>
           このまま読んでいただくこともできます。記録を始めるときに、
           もう一度ブラウザで開いてください。
         </p>
@@ -133,7 +133,7 @@ export default function StartFlow() {
           style={{
             width: "100%", marginTop: 18, padding: "13px", borderRadius: 999,
             border: "none", background: "transparent", color: C.inkSoft,
-            fontSize: 16, minHeight: 48
+            fontSize: "1rem", minHeight: 48
           }}>
           もどる
         </button>
@@ -166,23 +166,23 @@ function Landing({ showSkipWarning, onAddToHome, onStart }) {
       <p style={{ fontSize: 18, color: C.ink, margin: "0 0 10px", lineHeight: 1.8 }}>
         声を使う人の、体調と負荷の記録。
       </p>
-      <p style={{ fontSize: 17, color: C.inkSoft, margin: "0 0 28px", lineHeight: 1.9 }}>
+      <p style={{ fontSize: "1.0625rem", color: C.inkSoft, margin: "0 0 28px", lineHeight: 1.9 }}>
         毎日ひとこと記録するだけで、<br />声の使いすぎが見えるようになります。
       </p>
 
       {showSkipWarning && (
         <div style={{ background: C.paper, borderRadius: 14, padding: 14, marginBottom: 18, textAlign: "left" }}>
-          <p style={{ fontSize: 17, color: C.ink, margin: "0 0 10px", lineHeight: 1.7 }}>
+          <p style={{ fontSize: "1.0625rem", color: C.ink, margin: "0 0 10px", lineHeight: 1.7 }}>
             このまま、ブラウザでも始められます。
           </p>
           {/* ★不利なことを、先に書きます。★あとで驚かせません。 */}
-          <p style={{ fontSize: 16, color: C.inkSoft, margin: "0 0 14px", lineHeight: 1.8 }}>
+          <p style={{ fontSize: "1rem", color: C.inkSoft, margin: "0 0 14px", lineHeight: 1.8 }}>
             あとでホーム画面に置いたときに、もう一度だけ、数字を入れていただきます。
           </p>
           <button type="button" onClick={onAddToHome}
             style={{
               width: "100%", padding: "10px", borderRadius: 999,
-              border: `1px solid ${C.line}`, background: C.card, color: C.ink, fontSize: 16, minHeight: 48
+              border: `1px solid ${C.line}`, background: C.card, color: C.ink, fontSize: "1rem", minHeight: 48
             }}>
             ホーム画面に置く
           </button>
@@ -203,16 +203,16 @@ function Landing({ showSkipWarning, onAddToHome, onStart }) {
       </button>
 
       {/* ★値段だけ見せると止まります。★「無料で使える」を必ず書きます。 */}
-      <p style={{ fontSize: 15, color: C.inkSoft, margin: "0 0 6px" }}>
+      <p style={{ fontSize: "0.9375rem", color: C.inkSoft, margin: "0 0 6px" }}>
         {monthly ? `毎月 ¥${monthly.priceYen}（税込）` : ""}
         {annual ? ` ／ 年 ¥${annual.priceYen.toLocaleString()}（税込）` : ""}
       </p>
-      <p style={{ fontSize: 15, color: C.inkSoft, margin: "0 0 24px" }}>
+      <p style={{ fontSize: "0.9375rem", color: C.inkSoft, margin: "0 0 24px" }}>
         記録は無料でお使いいただけます。
       </p>
 
       {/* ★すでにお使いの方のために、小さく置きます。 */}
-      <a href="/login" style={{ fontSize: 16, color: C.inkSoft, display: "inline-block", padding: "12px 8px" }}>
+      <a href="/login" style={{ fontSize: "1rem", color: C.inkSoft, display: "inline-block", padding: "12px 8px" }}>
         すでにお使いの方
       </a>
     </div>

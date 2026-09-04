@@ -44,7 +44,12 @@ const inputStyle = {
   padding: "13px 15px",
   borderRadius: 10,
   border: "1px solid #E4DCC9",
-  fontSize: 15,
+  // ★★16px を下回らないこと（2026-09-05）。
+  //   ★iOS は、★16px 未満の入力欄に触ると、★画面を勝手に拡大します。
+  //   ★★拡大されると、★戻し方が分からない方がいらっしゃいます。
+  //   ★ここは 15px（0.9375rem）でした。★拡大していました。
+  //   ★max( ) にすると、★大きくはなれて、★小さくはなりません。
+  fontSize: "max(16px, 1rem)",
   background: "#FFFDF8",
   color: "#241914",
   width: "100%"
@@ -58,7 +63,7 @@ function LangSwitcher({ lang }) {
           key={l.code}
           href={l.code === "ja" ? "/login" : `/login?lang=${l.code}`}
           style={{
-            fontSize: 11, padding: "3px 8px", borderRadius: 999,
+            fontSize: "0.6875rem", padding: "3px 8px", borderRadius: 999,
             border: `1px solid ${lang === l.code ? "#D4A94F" : "rgba(217,199,168,0.4)"}`,
             background: lang === l.code ? "#D4A94F" : "transparent",
             color: lang === l.code ? "#2A1216" : "#D9C7A8",
@@ -225,7 +230,7 @@ function LoginPageInner() {
       <MusicNote style={{ top: "14%", left: "12%", animationDelay: "0s" }} />
       <MusicNote style={{ top: "22%", right: "14%", animationDelay: "1.6s", fontSize: 28 }} />
       <MusicNote style={{ top: "40%", left: "8%", animationDelay: "3.1s", fontSize: 18 }} />
-      <MusicNote style={{ top: "10%", right: "26%", animationDelay: "2.2s", fontSize: 16 }} />
+      <MusicNote style={{ top: "10%", right: "26%", animationDelay: "2.2s", fontSize: "1rem" }} />
 
       {/* 舞台袖のカーテン */}
       <CurtainPanel side="left" />
@@ -242,7 +247,7 @@ function LoginPageInner() {
         >
           Woolsong
         </h1>
-        <p style={{ color: "#D9C7A8", fontSize: 13, letterSpacing: "0.04em", marginBottom: 30, textAlign: "center" }}>
+        <p style={{ color: "#D9C7A8", fontSize: "0.8125rem", letterSpacing: "0.04em", marginBottom: 30, textAlign: "center" }}>
           {ltr("subtitle", lang)}
         </p>
 
@@ -264,7 +269,7 @@ function LoginPageInner() {
             {mode === "reset" ? ltr("resetTitle", lang) : ltr("formTitle", lang)}
           </h2>
           {mode === "reset" && (
-            <p style={{ fontSize: 13, color: "#6b5d52", margin: "0 0 4px" }}>{ltr("resetLead", lang)}</p>
+            <p style={{ fontSize: "0.8125rem", color: "#6b5d52", margin: "0 0 4px" }}>{ltr("resetLead", lang)}</p>
           )}
           {/* ★★autocomplete を外すと、★端末がパスワードを覚えません。
               ★覚えないと、★Face ID の自動入力が出ません。
@@ -294,7 +299,7 @@ function LoginPageInner() {
               style={inputStyle}
             />
           )}
-          {error && <p style={{ color: "#7A1F2B", fontSize: 13, margin: 0 }}>{error}</p>}
+          {error && <p style={{ color: "#7A1F2B", fontSize: "0.8125rem", margin: 0 }}>{error}</p>}
           <button
             type="submit"
             disabled={status === "loading"}
@@ -305,7 +310,7 @@ function LoginPageInner() {
               background: "linear-gradient(180deg, #8A2A36, #7A1F2B)",
               color: "#FBF6EA",
               fontWeight: 600,
-              fontSize: 15,
+              fontSize: "0.9375rem",
               letterSpacing: "0.02em",
               boxShadow: "0 6px 16px rgba(122,31,43,0.4)"
             }}
@@ -317,22 +322,22 @@ function LoginPageInner() {
 
           {mode === "reset" && resetStatus === "sent" && (
             <>
-              <p style={{ fontSize: 13, color: "#4F7562", margin: 0 }}>{ltr("resetSent", lang)}</p>
-              <p style={{ fontSize: 12, color: "#6b5d52", margin: 0 }}>{ltr("resetSpamNote", lang)}</p>
+              <p style={{ fontSize: "0.8125rem", color: "#4F7562", margin: 0 }}>{ltr("resetSent", lang)}</p>
+              <p style={{ fontSize: "0.75rem", color: "#6b5d52", margin: 0 }}>{ltr("resetSpamNote", lang)}</p>
             </>
           )}
           {mode === "reset" && resetStatus === "error" && (
-            <p style={{ fontSize: 13, color: "#7A1F2B", margin: 0 }}>{ltr("resetError", lang)}</p>
+            <p style={{ fontSize: "0.8125rem", color: "#7A1F2B", margin: 0 }}>{ltr("resetError", lang)}</p>
           )}
 
           <button type="button"
             onClick={() => { setMode(mode === "reset" ? "login" : "reset"); setResetStatus("idle"); setError(""); }}
-            style={{ background: "none", border: "none", padding: 0, fontSize: 13, color: "#7A1F2B", textDecoration: "underline", cursor: "pointer" }}>
+            style={{ background: "none", border: "none", padding: 0, fontSize: "0.8125rem", color: "#7A1F2B", textDecoration: "underline", cursor: "pointer" }}>
             {mode === "reset" ? ltr("resetBack", lang) : ltr("linkForgot", lang)}
           </button>
         </form>
 
-        <p style={{ marginTop: 22, fontSize: 13, color: "#D9C7A8" }}>
+        <p style={{ marginTop: 22, fontSize: "0.8125rem", color: "#D9C7A8" }}>
           {ltr("noAccountText", lang)}{" "}
           <a href="/signup" style={{ color: "#F0DFA8", fontWeight: 600 }}>
             {ltr("linkSignup", lang)}

@@ -59,7 +59,12 @@ const inputStyle = {
   padding: "12px 14px",
   borderRadius: 10,
   border: `1px solid ${C.line}`,
-  fontSize: 14,
+  // ★★16px を下回らないこと（2026-09-05）。
+  //   ★iOS は、★16px 未満の入力欄に触ると、★画面を勝手に拡大します。
+  //   ★★拡大されると、★戻し方が分からない方がいらっしゃいます。
+  //   ★ここは 14px（0.875rem）でした。★拡大していました。
+  //   ★max( ) にすると、★大きくはなれて、★小さくはなりません。
+  fontSize: "max(16px, 1rem)",
   background: C.card,
   color: C.ink
 };
@@ -70,7 +75,7 @@ const buttonStyle = {
   background: C.curtain,
   color: "#fff",
   fontWeight: 600,
-  fontSize: 15
+  fontSize: "0.9375rem"
 };
 
 function LangSwitcher({ lang }) {
@@ -81,7 +86,7 @@ function LangSwitcher({ lang }) {
           key={l.code}
           href={l.code === "ja" ? "/signup" : `/signup?lang=${l.code}`}
           style={{
-            fontSize: 11, padding: "3px 8px", borderRadius: 999,
+            fontSize: "0.6875rem", padding: "3px 8px", borderRadius: 999,
             border: `1px solid ${lang === l.code ? C.curtain : C.line}`,
             background: lang === l.code ? C.curtain : "transparent",
             color: lang === l.code ? "#FFFDF8" : C.inkSoft,
@@ -191,7 +196,7 @@ function SignupFormInner() {
       <p style={{ color: C.inkSoft, marginBottom: 16 }}>
         {str("freeTrialNote", lang)}
       </p>
-      <div style={{ background: C.card, border: `1.5px solid ${C.sage}`, borderRadius: 12, padding: "12px 14px", marginBottom: 24, fontSize: 12.5, color: C.inkSoft, lineHeight: 1.6 }}>
+      <div style={{ background: C.card, border: `1.5px solid ${C.sage}`, borderRadius: 12, padding: "12px 14px", marginBottom: 24, fontSize: "0.78125rem", color: C.inkSoft, lineHeight: 1.6 }}>
         {str("privacyNote", lang)}
         <a href="/legal/privacy" style={{ color: C.sage, fontWeight: 600 }}> {str("privacyLink", lang)}</a>
       </div>
@@ -220,7 +225,7 @@ function SignupFormInner() {
           style={inputStyle}
         />
 
-        <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.inkSoft }}>
+        <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "0.8125rem", color: C.inkSoft }}>
           <input
             type="checkbox"
             checked={form.isStudent}
@@ -231,7 +236,7 @@ function SignupFormInner() {
 
         {form.isStudent && (
           <div>
-            <label style={{ fontSize: 12, color: C.inkSoft, display: "block", marginBottom: 4 }}>{str("labelSchool", lang)}</label>
+            <label style={{ fontSize: "0.75rem", color: C.inkSoft, display: "block", marginBottom: 4 }}>{str("labelSchool", lang)}</label>
             <input
               required
               placeholder={str("placeholderSchoolExample", lang)}
@@ -246,7 +251,7 @@ function SignupFormInner() {
             学生の方にもたずねます。学校名と職業は別のことだからです。
             選択肢は lib/occupation.js が持っています。ここに書き写さないこと。 */}
         <div>
-          <label style={{ fontSize: 12, color: C.inkSoft, display: "block", marginBottom: 4 }}>{str("labelOccupation", lang)}</label>
+          <label style={{ fontSize: "0.75rem", color: C.inkSoft, display: "block", marginBottom: 4 }}>{str("labelOccupation", lang)}</label>
           <select
             required
             value={form.voiceOccupation}
@@ -258,7 +263,7 @@ function SignupFormInner() {
               <option key={occ} value={occ}>{occupationLabelIn(occ, lang)}</option>
             ))}
           </select>
-          <p style={{ fontSize: 11, color: C.inkSoft, marginTop: 4 }}>{str("occupationChangeNote", lang)}</p>
+          <p style={{ fontSize: "0.6875rem", color: C.inkSoft, marginTop: 4 }}>{str("occupationChangeNote", lang)}</p>
         </div>
 
         {/* ★18歳未満かの確認（A-7 の1行目）。
@@ -266,11 +271,11 @@ function SignupFormInner() {
             既定で選ばれている選択肢を作らないこと。答えていないことが、
             そのまま「未成年として扱う」に対応します。 */}
         <fieldset style={{ border: `1px solid ${C.line}`, borderRadius: 10, padding: "12px 14px" }}>
-          <legend style={{ fontSize: 12, color: C.inkSoft, padding: "0 6px" }}>
+          <legend style={{ fontSize: "0.75rem", color: C.inkSoft, padding: "0 6px" }}>
             {str("labelAgeQuestion", lang)}
           </legend>
           <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-            <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: C.ink }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.8125rem", color: C.ink }}>
               <input
                 type="radio"
                 name="isUnder18"
@@ -279,7 +284,7 @@ function SignupFormInner() {
               />
               {str("optionUnder18Yes", lang)}
             </label>
-            <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: C.ink }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.8125rem", color: C.ink }}>
               <input
                 type="radio"
                 name="isUnder18"
@@ -289,7 +294,7 @@ function SignupFormInner() {
               {str("optionUnder18No", lang)}
             </label>
           </div>
-          <p style={{ fontSize: 11.5, color: C.inkSoft, marginTop: 8, lineHeight: 1.6 }}>
+          <p style={{ fontSize: "0.71875rem", color: C.inkSoft, marginTop: 8, lineHeight: 1.6 }}>
             {str("ageQuestionNote", lang)}
           </p>
         </fieldset>
@@ -307,15 +312,15 @@ function SignupFormInner() {
           onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
           style={inputStyle}
         />
-        {error && <p style={{ color: C.curtain, fontSize: 13 }}>{error}</p>}
+        {error && <p style={{ color: C.curtain, fontSize: "0.8125rem" }}>{error}</p>}
         <button type="submit" disabled={status === "loading"} style={buttonStyle}>
           {status === "loading" ? str("btnLoading", lang) : str("btnSubmit", lang)}
         </button>
       </form>
-      <p style={{ marginTop: 20, fontSize: 13, color: C.inkSoft }}>
+      <p style={{ marginTop: 20, fontSize: "0.8125rem", color: C.inkSoft }}>
         {str("haveAccountText", lang)} <a href="/login" style={{ color: C.curtain }}>{str("linkLogin", lang)}</a>
       </p>
-      <p style={{ marginTop: 32, fontSize: 11, color: C.inkSoft, lineHeight: 1.6 }}>
+      <p style={{ marginTop: 32, fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.6 }}>
         <AgreementSentence lang={lang} />
       </p>
     </main>

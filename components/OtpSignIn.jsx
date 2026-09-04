@@ -114,7 +114,7 @@ export default function OtpSignIn({ onSignedIn }) {
         <h1 style={{ fontSize: 24, fontWeight: 600, color: C.ink, margin: "0 0 10px", lineHeight: 1.5 }}>
           メールアドレスを教えてください。
         </h1>
-        <p style={{ fontSize: 16, color: C.inkSoft, margin: "0 0 20px", lineHeight: 1.8 }}>
+        <p style={{ fontSize: "1rem", color: C.inkSoft, margin: "0 0 20px", lineHeight: 1.8 }}>
           パスワードは要りません。
         </p>
 
@@ -125,15 +125,16 @@ export default function OtpSignIn({ onSignedIn }) {
             width: "100%", padding: "14px", borderRadius: 12,
             border: `1px solid ${C.line}`, background: C.card, color: C.ink,
             // ★16px より小さくしないこと。★iOS で画面が勝手に拡大します。
-            fontSize: 17, marginBottom: 14, boxSizing: "border-box"
+            // ★16px を下回らないこと。★iOS が画面を勝手に拡大します。
+            fontSize: "max(16px, 1.0625rem)", marginBottom: 14, boxSizing: "border-box"
           }} />
 
-        {error && <p style={{ fontSize: 15, color: C.curtain, margin: "0 0 12px", lineHeight: 1.7 }}>{error}</p>}
+        {error && <p style={{ fontSize: "0.9375rem", color: C.curtain, margin: "0 0 12px", lineHeight: 1.7 }}>{error}</p>}
 
         <button type="button" onClick={send} disabled={busy || !email.trim()}
           style={{
             width: "100%", padding: "15px", borderRadius: 999, border: "none",
-            background: C.curtain, color: "#FFFDF8", fontSize: 17, fontWeight: 600,
+            background: C.curtain, color: "#FFFDF8", fontSize: "1.0625rem", fontWeight: 600,
             minHeight: 52, opacity: (busy || !email.trim()) ? 0.5 : 1
           }}>
           {busy ? "送っています…" : "次へ"}
@@ -147,7 +148,7 @@ export default function OtpSignIn({ onSignedIn }) {
       <h1 style={{ fontSize: 24, fontWeight: 600, color: C.ink, margin: "0 0 10px", lineHeight: 1.5 }}>
         {OTP_SENT_HEADING}
       </h1>
-      <p style={{ fontSize: 16, color: C.inkSoft, margin: "0 0 20px", lineHeight: 1.8 }}>
+      <p style={{ fontSize: "1rem", color: C.inkSoft, margin: "0 0 20px", lineHeight: 1.8 }}>
         {email.trim()} に送っています。{OTP_INPUT_LABEL}
       </p>
 
@@ -164,18 +165,18 @@ export default function OtpSignIn({ onSignedIn }) {
           marginBottom: 14, boxSizing: "border-box"
         }} />
 
-      {error && <p style={{ fontSize: 15, color: C.curtain, margin: "0 0 12px", lineHeight: 1.7 }}>{error}</p>}
+      {error && <p style={{ fontSize: "0.9375rem", color: C.curtain, margin: "0 0 12px", lineHeight: 1.7 }}>{error}</p>}
 
       <button type="button" onClick={verify} disabled={busy || !isSendableOtp(code)}
         style={{
           width: "100%", padding: "15px", borderRadius: 999, border: "none",
-          background: C.curtain, color: "#FFFDF8", fontSize: 17, fontWeight: 600,
+          background: C.curtain, color: "#FFFDF8", fontSize: "1.0625rem", fontWeight: 600,
           minHeight: 52, opacity: (busy || !isSendableOtp(code)) ? 0.5 : 1
         }}>
         {busy ? "確かめています…" : "入る"}
       </button>
 
-      <p style={{ fontSize: 15, color: C.inkSoft, margin: "18px 0 10px", lineHeight: 1.8 }}>
+      <p style={{ fontSize: "0.9375rem", color: C.inkSoft, margin: "18px 0 10px", lineHeight: 1.8 }}>
         {OTP_NOT_ARRIVED}
       </p>
 
@@ -184,7 +185,7 @@ export default function OtpSignIn({ onSignedIn }) {
         style={{
           width: "100%", padding: "13px", borderRadius: 999,
           border: `1px solid ${C.line}`, background: C.card, color: C.inkSoft,
-          fontSize: 16, minHeight: 48, opacity: (busy || wait > 0) ? 0.5 : 1
+          fontSize: "1rem", minHeight: 48, opacity: (busy || wait > 0) ? 0.5 : 1
         }}>
         {wait > 0 ? `もう一度送る（${wait}秒後）` : "もう一度送る"}
       </button>
@@ -194,7 +195,7 @@ export default function OtpSignIn({ onSignedIn }) {
         style={{
           width: "100%", marginTop: 10, padding: "13px", borderRadius: 999,
           border: "none", background: "transparent", color: C.inkSoft,
-          fontSize: 16, minHeight: 48
+          fontSize: "1rem", minHeight: 48
         }}>
         アドレスを入れ直す
       </button>

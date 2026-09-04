@@ -62,7 +62,7 @@ export default function AddToHomeGuide({ onSkip, onShow }) {
       <h1 style={{ fontSize: 24, fontWeight: 600, color: C.ink, margin: "0 0 8px", lineHeight: 1.5 }}>
         まず、ホーム画面に置きましょう。
       </h1>
-      <p style={{ fontSize: 16, color: C.inkSoft, margin: "0 0 18px", lineHeight: 1.7 }}>
+      <p style={{ fontSize: "1rem", color: C.inkSoft, margin: "0 0 18px", lineHeight: 1.7 }}>
         次からは、アイコンを押すだけで開けます。
       </p>
 
@@ -101,7 +101,7 @@ export default function AddToHomeGuide({ onSkip, onShow }) {
       </p>
       {/* ★位置は、設定で変わります。★言い切らないための1行です。 */}
       {step.note && (
-        <p style={{ fontSize: 14, color: C.inkSoft, margin: "0 0 18px", textAlign: "center", lineHeight: 1.7 }}>
+        <p style={{ fontSize: "0.875rem", color: C.inkSoft, margin: "0 0 18px", textAlign: "center", lineHeight: 1.7 }}>
           {step.note}
         </p>
       )}
@@ -113,7 +113,7 @@ export default function AddToHomeGuide({ onSkip, onShow }) {
           style={{
             flex: 1, padding: "11px", borderRadius: 999,
             border: `1px solid ${C.line}`, background: C.card, color: C.inkSoft,
-            fontSize: 16, minHeight: 48, opacity: i === 0 ? 0.4 : 1
+            fontSize: "1rem", minHeight: 48, opacity: i === 0 ? 0.4 : 1
           }}>
           もどる
         </button>
@@ -121,7 +121,7 @@ export default function AddToHomeGuide({ onSkip, onShow }) {
           disabled={i === STEPS.length - 1}
           style={{
             flex: 1, padding: "11px", borderRadius: 999, border: "none",
-            background: C.curtain, color: "#FFFDF8", fontSize: 16, fontWeight: 600, minHeight: 48,
+            background: C.curtain, color: "#FFFDF8", fontSize: "1rem", fontWeight: 600, minHeight: 48,
             opacity: i === STEPS.length - 1 ? 0.4 : 1
           }}>
           つぎ
@@ -131,14 +131,14 @@ export default function AddToHomeGuide({ onSkip, onShow }) {
       {/* ★追加したあとの案内。★同じ画面の下に、常に出しておきます。
           ★★アイコンの絵を出します。探せない人がいます。 */}
       <div style={{ marginTop: 22, padding: 14, borderRadius: 14, background: C.paper }}>
-        <p style={{ fontSize: 16, color: C.ink, margin: "0 0 10px", lineHeight: 1.7 }}>
+        <p style={{ fontSize: "1rem", color: C.ink, margin: "0 0 10px", lineHeight: 1.7 }}>
           追加できたら、ホーム画面に戻って
         </p>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <img src="/icons/icon-120-2609.png" alt="Woolsong のアイコン（羊の絵）"
             width={56} height={56}
             style={{ borderRadius: 10, border: `1px solid ${C.line}` }} />
-          <p style={{ fontSize: 16, color: C.ink, margin: 0, lineHeight: 1.7 }}>
+          <p style={{ fontSize: "1rem", color: C.ink, margin: 0, lineHeight: 1.7 }}>
             このアイコンを押してください。
           </p>
         </div>
@@ -149,7 +149,7 @@ export default function AddToHomeGuide({ onSkip, onShow }) {
       <button type="button" onClick={onSkip}
         style={{
           width: "100%", marginTop: 18, padding: "11px", borderRadius: 999,
-          border: "none", background: "transparent", color: C.inkSoft, fontSize: 16, minHeight: 48
+          border: "none", background: "transparent", color: C.inkSoft, fontSize: "1rem", minHeight: 48
         }}>
         あとで
       </button>

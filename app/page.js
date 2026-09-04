@@ -45,7 +45,7 @@ function LangSwitcher({ lang }) {
           key={l.code}
           href={l.code === "ja" ? "/" : `/?lang=${l.code}`}
           style={{
-            fontSize: 11, padding: "3px 8px", borderRadius: 999,
+            fontSize: "0.6875rem", padding: "3px 8px", borderRadius: 999,
             border: `1px solid ${lang === l.code ? C.curtain : C.line}`,
             background: lang === l.code ? C.curtain : "transparent",
             color: lang === l.code ? "#FFFDF8" : C.inkSoft,
@@ -108,7 +108,7 @@ function FeatureCard({ title, desc, accent }) {
       <h3 className="ff-display italic" style={{ fontSize: "1.2rem", color: C.ink, margin: "0 0 6px" }}>
         {title}
       </h3>
-      <p style={{ color: C.inkSoft, fontSize: 13.5, lineHeight: 1.7, margin: 0 }}>{desc}</p>
+      <p style={{ color: C.inkSoft, fontSize: "0.84375rem", lineHeight: 1.7, margin: 0 }}>{desc}</p>
     </div>
   );
 }
@@ -130,13 +130,13 @@ export default async function LandingPage({ searchParams }) {
 
       {/* ヒーロー */}
       <section style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", padding: "40px 24px 40px" }}>
-        <p style={{ color: C.gold, fontSize: 12.5, letterSpacing: "0.14em", fontWeight: 600, marginBottom: 10 }}>
+        <p style={{ color: C.gold, fontSize: "0.78125rem", letterSpacing: "0.14em", fontWeight: 600, marginBottom: 10 }}>
           {tr("heroEyebrow", lang)}
         </p>
         <h1 className="ff-display italic" style={{ fontSize: "3.4rem", color: C.curtain, margin: 0, lineHeight: 1.15 }}>
           Woolsong
         </h1>
-        <p style={{ color: C.ink, maxWidth: 520, marginTop: 18, lineHeight: 1.85, fontSize: 15.5, whiteSpace: "pre-line" }}>
+        <p style={{ color: C.ink, maxWidth: 520, marginTop: 18, lineHeight: 1.85, fontSize: "0.96875rem", whiteSpace: "pre-line" }}>
           {tr("heroIntro", lang)}
         </p>
 
@@ -175,7 +175,7 @@ export default async function LandingPage({ searchParams }) {
             {tr("btnLogin", lang)}
           </a>
         </div>
-        <p style={{ color: C.gold, fontSize: 12.5, marginTop: 16, fontWeight: 500 }}>
+        <p style={{ color: C.gold, fontSize: "0.78125rem", marginTop: 16, fontWeight: 500 }}>
           {tr("noteFreeTrial", lang)}
         </p>
       </section>
@@ -185,7 +185,7 @@ export default async function LandingPage({ searchParams }) {
         <h2 className="ff-display italic" style={{ fontSize: "1.9rem", color: C.ink, marginBottom: 18 }}>
           {tr("whyTitle", lang)}
         </h2>
-        <p style={{ color: C.inkSoft, lineHeight: 1.9, fontSize: 14.5, textAlign: "left", whiteSpace: "pre-line" }}>
+        <p style={{ color: C.inkSoft, lineHeight: 1.9, fontSize: "0.90625rem", textAlign: "left", whiteSpace: "pre-line" }}>
           {tr("whyText", lang)}
         </p>
       </section>
@@ -212,12 +212,12 @@ export default async function LandingPage({ searchParams }) {
       </section>
 
       {nativeApp && (
-        <p style={{ textAlign: "center", fontSize: 12, color: C.inkSoft, maxWidth: 320, lineHeight: 1.7, margin: "0 auto 40px" }}>
+        <p style={{ textAlign: "center", fontSize: "0.75rem", color: C.inkSoft, maxWidth: 320, lineHeight: 1.7, margin: "0 auto 40px" }}>
           {tr("nativeAppNote", lang)}
         </p>
       )}
 
-      <p style={{ textAlign: "center", padding: "0 24px 40px", fontSize: 12, color: C.inkSoft }}>
+      <p style={{ textAlign: "center", padding: "0 24px 40px", fontSize: "0.75rem", color: C.inkSoft }}>
         <a href="/legal/privacy" style={{ color: C.inkSoft, marginRight: 12 }}>{tr("legalPrivacy", lang)}</a>
         <a href="/legal/terms" style={{ color: C.inkSoft }}>{tr("legalTerms", lang)}</a>
       </p>

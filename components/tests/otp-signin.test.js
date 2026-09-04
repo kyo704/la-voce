@@ -59,11 +59,20 @@ ok("★着地からも、もどれる", /もどる/.test(start));
 
 console.log("\n⑦ ★老眼の方に届く大きさ");
 {
-  const sizes = [...code.matchAll(/fontSize: (\d+)/g)].map((m) => Number(m[1]));
-  const 小さい = sizes.filter((n) => n < 15);
-  ok(`★★15px 未満が無い（いま ${小さい.join(", ") || "なし"}）`, 小さい.length === 0);
-  // ★16px より小さい入力欄は、★iOS で画面が勝手に拡大します。
-  ok("★入力欄は 16px 以上", /fontSize: 17, marginBottom: 14/.test(code));
+  // ★★2026-09-05、★px を rem に変えました。
+  //   ★px で書くと、★端末とアプリの文字の大きさの設定が、★届きません。
+  //   ★いまは 16 で割った rem です（15px → 0.9375rem）。
+  const px = [...code.matchAll(/fontSize: (\d+)\b/g)].map((m) => Number(m[1]));
+  const remv = [...code.matchAll(/fontSize: "([0-9.]+)rem"/g)].map((m) => Number(m[1]) * 16);
+  const 小さい = [...px, ...remv].filter((n) => n < 15);
+  ok(`★★15px 相当より小さいものが無い（いま ${小さい.join(", ") || "なし"}）`, 小さい.length === 0);
+  // ★★16px より小さい入力欄は、★iOS で画面が勝手に拡大します。
+  //   ★拡大されると、★戻し方が分からない方がいらっしゃいます。
+  //   ★max( ) にしてあります。★大きくはなれて、★小さくはなりません。
+  ok("★入力欄に、16px の下限がある",
+    /fontSize: "max\(16px, [0-9.]+rem\)", marginBottom: 14/.test(code));
+  ok("★px の決め打ちが、本文に残っていない（★大きい飾りは除く）",
+    px.filter((n) => n <= 17).length === 0);
   const taps = [...code.matchAll(/minHeight: (\d+)/g)].map((m) => Number(m[1]));
   ok("★押せるものに高さがある", taps.length >= 3 && taps.every((n) => n >= 48));
 }
