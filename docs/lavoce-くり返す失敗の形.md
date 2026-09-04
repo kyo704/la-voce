@@ -580,3 +580,40 @@ grant update (status, revoked_at, revoked_by) on public.teacher_student_links to
       ★権限の無い列が1つ混ざると、★文ごと 42501 で落ちます
       ★.select() と0行の確認が無い場所は、★無音で失敗します
 
+## 18. 同じものに、2つの名前を付ける
+
+★2026-09-04、実機で見つかりました。★誰も契約できませんでした。
+
+    lib/minorBilling.js   PLANS.MONTHLY_INDIVIDUAL = "monthlyIndividual"
+    lib/plans.js          { key: "monthly" }
+
+    決済の道   offeredPlans(band).includes(planKey)
+               ★planKey は画面から来る "monthly"
+               ★offeredPlans が返すのは "monthlyIndividual"
+               ★★1件も一致しません。★いつでも 403 です。
+
+★「同じ判断が2か所にある」（1）の★親戚ですが、★形が違います。
+
+    1  ★同じ判断が、2か所に書いてある     → 片方だけ古くなる
+    18 ★同じものに、2つの名前が付いている → ★はじめから噛み合わない
+
+★★18のほうが、たちが悪いです。★1度も動いたことがないので、
+　★「前は動いていたのに」という手がかりが★ありません。
+
+### ★検査が見つけられなかった理由
+
+★検査は「★関数を呼んでいるか」を見ていました。
+
+    ok("★offeredPlans で確かめている",
+       /offeredPlans\(band\)\.includes\(planKey\)/.test(route));   ← ★通ります
+
+★★呼んでいるかどうかと、★噛み合っているかどうかは、別のことです。
+
+### やること
+
+    ・★2つのモジュールが文字列でやり取りするなら、
+      ★★その文字列が一致することを、★検査で照らすこと
+      ★（すでに AGE_BANDS で同じ検査を書いていました。★こちらに写しませんでした）
+    ・★★「呼んでいる」の検査で満足しないこと。
+      ★★通しで1回、★実際に値を流して確かめること
+

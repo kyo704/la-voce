@@ -44,6 +44,32 @@ ok("月額はそのまま", m.monthlyEquivalentYen("monthly") === 580);
 // 5800 / 12 = 483.33… → ★切り上げて 484
 ok("★年払いは切り上げる", m.monthlyEquivalentYen("annual") === 484);
 
+console.log("\n③-2 ★★2つのモジュールで、プランの名前がそろっていること");
+// ★★2026-09-04、ここが食い違っていて、★誰も契約できませんでした。
+//   ★minorBilling は "monthlyIndividual"、plans は "monthly" でした。
+//   ★offeredPlans(band).includes(planKey) が、★1件も一致しませんでした。
+//   ★★同じものに、2つの名前を付けたためです。
+//   ★検査は「関数を呼んでいるか」だけを見ていて、
+//     ★★語彙が合っているかを見ていませんでした。
+const mb = await import("data:text/javascript;base64," +
+  Buffer.from(read("lib", "minorBilling.js")).toString("base64"));
+ok("★月額の名前が一致している", mb.PLANS.MONTHLY_INDIVIDUAL === "monthly");
+ok("★年額の名前が一致している", mb.PLANS.ANNUAL_INDIVIDUAL === "annual");
+// ★売っているプランは、すべて offeredPlans が返せる名前であること。
+m.PLAN_KEYS.forEach((k) => {
+  ok(`★"${k}" を、大人には出せる`, mb.offeredPlans("adult").includes(k));
+});
+// ★★実際に通るかを、通しで確かめます。★名前の一致だけでは足りません。
+const ag = await import("data:text/javascript;base64," +
+  Buffer.from(read("lib", "ageGate.js")).toString("base64"));
+const 大人 = ag.ageBandOf({ age_band: null, is_under_18: false });
+ok("★2択で「18歳以上」と答えた方は adult", 大人 === "adult");
+ok("★★その方が、月額を契約できる", mb.offeredPlans(大人).includes("monthly"));
+ok("★★その方が、年額も契約できる", mb.offeredPlans(大人).includes("annual"));
+const 十代 = ag.ageBandOf({ age_band: "teen" });
+ok("★15〜17歳は、月額だけ",
+  mb.offeredPlans(十代).includes("monthly") && !mb.offeredPlans(十代).includes("annual"));
+
 console.log("\n④ ★決済の道が、価格IDを受け取らないこと");
 ok("★body から price を読んでいない", !/body\.price|body\["price"\]/.test(route));
 ok("★plan という名前だけを読む", /body\.plan/.test(route));
