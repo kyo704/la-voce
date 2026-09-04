@@ -50,12 +50,26 @@ export async function POST(request) {
           const amount = item && item.price && item.price.unit_amount;
           return typeof amount === "number" ? amount : null;
         })(),
-        trial_end: subscription.trial_end
-          ? new Date(subscription.trial_end * 1000).toISOString()
-          : null,
-        current_period_end: subscription.current_period_end
-          ? new Date(subscription.current_period_end * 1000).toISOString()
-          : null,
+        // ★trial_end も、同じ理由で items 側にあることがあります。
+        trial_end: (() => {
+          const item = subscription.items && subscription.items.data && subscription.items.data[0];
+          const at = subscription.trial_end || (item && item.trial_end);
+          return typeof at === "number" ? new Date(at * 1000).toISOString() : null;
+        })(),
+        // ★新しい API の版では、★current_period_end が
+        //   ★subscription の直下から★items の中へ移りました。
+        //   ★★2026-09-04、null のまま入っていました。
+        //     ★status も plan も入っていたので、★webhook は届いていました。
+        //     ★★入らなかったのは、★場所が変わったからです。
+        //   ★どちらにあっても拾えるようにします。★版を固定しません。
+        //     ★webhook の payload の版は、★アカウント側の設定で決まります。
+        //     ★こちらの apiVersion を変えても、★そちらは変わりません。
+        current_period_end: (() => {
+          const item = subscription.items && subscription.items.data && subscription.items.data[0];
+          const at = subscription.current_period_end
+            || (item && item.current_period_end);
+          return typeof at === "number" ? new Date(at * 1000).toISOString() : null;
+        })(),
         updated_at: new Date().toISOString()
       })
       .eq("user_id", userId);
