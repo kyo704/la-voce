@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { C } from "@/lib/tokens";
 import AddToHomeGuide from "@/components/AddToHomeGuide";
+import OtpSignIn from "@/components/OtpSignIn";
 import {
   readPlatform, nextStep, STEP, OS,
   shouldAskToOpenInBrowser, inAppBrowserOf, inAppBrowserLabel, canAddToHome
@@ -33,6 +34,7 @@ import { countStep } from "@/lib/countStep";
 export default function StartFlow() {
   const [platform, setPlatform] = useState(null);
   const [skipped, setSkipped] = useState(false);
+  const [registering, setRegistering] = useState(false);
   const [ua, setUa] = useState("");
 
   useEffect(() => {
@@ -100,14 +102,34 @@ export default function StartFlow() {
   //   ★★あとで驚かせません。
   const showSkipWarning = skipped && platform.os === OS.IOS && !platform.standalone;
 
+  // ★★「はじめる」を押したら、★6桁の道に入ります。
+  //   ★別の画面へ飛ばしません。★飛ばすと、ホーム画面版の外に出ることがあります。
+  if (registering) {
+    return (
+      <Shell center={false}>
+        <OtpSignIn onSignedIn={() => { window.location.href = "/dashboard"; }} />
+        <button type="button" onClick={() => setRegistering(false)}
+          style={{
+            width: "100%", marginTop: 18, padding: "13px", borderRadius: 999,
+            border: "none", background: "transparent", color: C.inkSoft,
+            fontSize: 16, minHeight: 48
+          }}>
+          もどる
+        </button>
+      </Shell>
+    );
+  }
+
   return (
     <Shell>
-      <Landing showSkipWarning={showSkipWarning} onAddToHome={() => setSkipped(false)} />
+      <Landing showSkipWarning={showSkipWarning}
+        onAddToHome={() => setSkipped(false)}
+        onStart={() => setRegistering(true)} />
     </Shell>
   );
 }
 
-function Landing({ showSkipWarning, onAddToHome }) {
+function Landing({ showSkipWarning, onAddToHome, onStart }) {
   const monthly = PLANS.find((p) => p.key === "monthly");
   const annual = PLANS.find((p) => p.key === "annual");
   return (
@@ -146,14 +168,18 @@ function Landing({ showSkipWarning, onAddToHome }) {
         </div>
       )}
 
-      <a href="/signup"
+      {/* ★★6桁の数字で入ります（2026-09-04）。
+          ★リンクではありません。★リンクは、ホーム画面版の外に出ます。
+          ★★いまお使いの方は、★パスワードのままです。★触っていません。
+            ★この道は、★新しく始める方のものです。 */}
+      <button type="button" onClick={onStart}
         style={{
-          display: "block", padding: "16px", borderRadius: 999,
-          background: C.curtain, color: "#FFFDF8", fontWeight: 600,
-          fontSize: 18, textDecoration: "none", marginBottom: 16
+          display: "block", width: "100%", padding: "16px", borderRadius: 999,
+          border: "none", background: C.curtain, color: "#FFFDF8", fontWeight: 600,
+          fontSize: 18, marginBottom: 16, minHeight: 52
         }}>
         はじめる
-      </a>
+      </button>
 
       {/* ★値段だけ見せると止まります。★「無料で使える」を必ず書きます。 */}
       <p style={{ fontSize: 15, color: C.inkSoft, margin: "0 0 6px" }}>
