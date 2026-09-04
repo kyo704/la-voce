@@ -171,6 +171,47 @@ ok("★ゲートに渡している", /<MinorConsentGate band=\{band\}/.test(bill
 ok("★読めなくても、大人にしない（ageBandOf が unknownMinor を返す）",
   m.offeredPlans("unknownMinor").length === 0);
 
+console.log("\n⑪ ★よそおい（単発・季節ごと）");
+// ★★道具より、飾りを高くしないこと。
+//   ★月額（580円）と同じか、★それより安いこと。
+const { PLANS } = await import("data:text/javascript;base64," +
+  Buffer.from(require("fs").readFileSync(
+    require("path").join(__dirname, "..", "..", "lib", "plans.js"), "utf8")).toString("base64"));
+const monthlyYen = PLANS.find((x) => x.key === "monthly").priceYen;
+ok("★値段は500円", m.SEASONAL_ITEM_YEN === 500);
+ok("★★月額より高くない", m.SEASONAL_ITEM_YEN <= monthlyYen);
+
+// ★★買う前に、中身が確定していること。
+//   ★「あとから選べる」形にすると、★前払式支払手段になります（資金決済法）。
+ok("★中身が決まっている", m.SEASONAL_ITEM_CONTENTS.length === 5);
+ok("★数が合っている", m.SEASONAL_ITEM_PIECES === m.SEASONAL_ITEM_CONTENTS.length);
+ok("★眺め・壁・床・服2つ",
+  ["view", "wall", "floor", "clothes1", "clothes2"]
+    .every((k) => m.SEASONAL_ITEM_CONTENTS.includes(k)));
+
+console.log("\n⑫ ★季節ごとに1回（★みなさん同じ）");
+ok("年に4回", m.SEASONS.length === 4);
+ok("9月は autumn", m.seasonOf(new Date("2026-09-04")) === "autumn");
+ok("1月は winter", m.seasonOf(new Date("2026-01-15")) === "winter");
+// ★★未成年の方だけの上限では、ありません。
+ok("★18歳以上も、今季1回まで",
+  m.maySeasonalPurchase({ band: "adult", purchasesThisSeason: 0 }) === true &&
+  m.maySeasonalPurchase({ band: "adult", purchasesThisSeason: 1 }) === false);
+ok("★15〜17歳も、同じ上限",
+  m.maySeasonalPurchase({ band: "teen", purchasesThisSeason: 0 }) === true &&
+  m.maySeasonalPurchase({ band: "teen", purchasesThisSeason: 1 }) === false);
+// ★売る相手が分からないうちは、売りません。
+ok("★★帯が分からなければ、買えない",
+  m.maySeasonalPurchase({ band: "unknownMinor", purchasesThisSeason: 0 }) === false);
+ok("★15歳未満も、買えない",
+  m.maySeasonalPurchase({ band: "under15", purchasesThisSeason: 0 }) === false);
+
+console.log("\n⑬ ★年の上限（★同意の画面に出す数字ではありません）");
+ok("★580×12 ＋ 500×4 ＝ 8,960", m.minorAnnualMaxYen(580) === 8960);
+// ★★数字を直書きしないこと。★値段が変われば、自動で変わります。
+ok("★★8960 を直書きしていない", !/8960|8,960/.test(code));
+ok("★3Dセキュアを求める", m.THREE_D_SECURE === "any");
+
 console.log(`\n合計 ${通 + 否} 本：通過 ${通}／失敗 ${否}`);
 process.exit(否 ? 1 : 0);
 })();
