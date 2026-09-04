@@ -212,10 +212,19 @@ async function main() {
   console.log("\n=== 伸び縮みが実際に効くこと（重なりの再発防止）===");
   {
     console.log("     ★rem は html を基準に解決される。body に指定しても文字は動かない。");
-    assertTrue(/html \{\s*\n\s*font-size: var\(--base\);/.test(css),
+    // ★★2026-09-05、--base（px の決め打ち）を --scale（倍率）に変えました。
+    //   ★px で決めていると、★端末とブラウザの設定が上書きされて消えます。
+    //     Android の フォントサイズ／パソコンのブラウザの既定の文字の大きさ。
+    //   ★いまは 100%（端末が決めた大きさ）× 倍率の、かけ算です。
+    assertTrue(/html \{[\s\S]{0,400}?font-size: calc\(100% \* var\(--scale\)\);/.test(css),
       "★伸び縮みの基点が html にある（body ではない）");
-    assertTrue(!/body \{\s*\n\s*font-size: var\(--base\)/.test(css),
+    assertTrue(!/body \{\s*\n\s*font-size:/.test(css),
       "body には文字サイズを置いていない");
+    // ★★px に戻したら、ここで落ちます。★戻さないこと。
+    assertTrue(!/html \{[\s\S]{0,400}?font-size:\s*[0-9]+px/.test(css),
+      "★html の文字サイズを px で決め打っていない");
+    assertTrue(/--scale: 1;/.test(css) && /--scale: 1\.25;/.test(css) && /--scale: 1\.5;/.test(css),
+      "★倍率が3段ある（ふつう・大きい・とても大きい）");
 
     console.log("     ★font-size を上書きするなら、行の高さも一緒に決めること。");
     const mono = css.slice(css.indexOf(".ff-mono {", css.indexOf("数字は本文より")));
