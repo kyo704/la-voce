@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 import { C } from "@/lib/tokens";
 import AddToHomeGuide from "@/components/AddToHomeGuide";
-import OtpSignIn from "@/components/OtpSignIn";
+// ★★登録の道は、★1本だけにします（2026-09-05）。
+//   ★以前はここに、数字だけの登録を別に持っていました。
+//   ★★訂正2 で、入口はパスワードになりました。
+//     ★/signup と同じものを使います。★2つ作ると、片方だけ直す日が来ます。
+import SignupForm from "@/components/SignupForm";
 import {
   readPlatform, nextStep, STEP, OS,
   shouldAskToOpenInBrowser, inAppBrowserOf, inAppBrowserLabel, canAddToHome
@@ -123,12 +127,14 @@ export default function StartFlow() {
   //   ★★あとで驚かせません。
   const showSkipWarning = skipped && platform.os === OS.IOS && !platform.standalone;
 
-  // ★★「はじめる」を押したら、★6桁の道に入ります。
+  // ★★「はじめる」を押したら、★この場で登録します。
   //   ★別の画面へ飛ばしません。★飛ばすと、ホーム画面版の外に出ることがあります。
+  //   ★★入口はパスワードです（訂正2）。★端末が覚えて、Face ID で入れます。
+  //     ★確認の番号だけ、★メールで受け取っていただきます。
   if (registering) {
     return (
       <Shell center={false}>
-        <OtpSignIn onSignedIn={() => { window.location.href = "/dashboard"; }} />
+        <SignupForm />
         <button type="button" onClick={() => setRegistering(false)}
           style={{
             width: "100%", marginTop: 18, padding: "13px", borderRadius: 999,
@@ -189,10 +195,10 @@ function Landing({ showSkipWarning, onAddToHome, onStart }) {
         </div>
       )}
 
-      {/* ★★6桁の数字で入ります（2026-09-04）。
-          ★リンクではありません。★リンクは、ホーム画面版の外に出ます。
-          ★★いまお使いの方は、★パスワードのままです。★触っていません。
-            ★この道は、★新しく始める方のものです。 */}
+      {/* ★★入口はパスワードです（訂正2・2026-09-05）。
+          ★端末が覚えて、★Face ID で入れます。★6桁より速いです。
+          ★確認の番号だけ、メールで受け取っていただきます。
+            ★リンクではありません。★リンクは、ホーム画面版の外に出ます。 */}
       <button type="button" onClick={onStart}
         style={{
           display: "block", width: "100%", padding: "16px", borderRadius: 999,

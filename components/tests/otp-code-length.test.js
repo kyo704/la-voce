@@ -53,7 +53,7 @@ function ok(label, cond) {
   ok("★何を入れるかは、伝わる", /数字/.test(copy));
 
   console.log("\n④ ★★画面の側に、決め打ちが残っていないこと");
-  const screens = ["components/OtpSignIn.jsx"];
+  const screens = ["components/OtpCodeStep.jsx"];
   for (const f of screens) {
     const code = readCode(...f.split("/"));
     ok(`${f}：★length !== 6 のような決め打ちが無い`,
@@ -68,7 +68,7 @@ function ok(label, cond) {
   console.log("\n⑤ ★one-time-code を落としていないこと");
   // ★これがあると、★iOS がメールから数字を拾って、★キーボードの上に出します。
   //   ★★お客さまは、★打たずに済みます。
-  const raw = fs.readFileSync(path.join(ROOT, "components", "OtpSignIn.jsx"), "utf-8");
+  const raw = fs.readFileSync(path.join(ROOT, "components", "OtpCodeStep.jsx"), "utf-8");
   ok('★autoComplete="one-time-code" がある', /autoComplete="one-time-code"/.test(raw));
   ok('★inputMode="numeric" がある', /inputMode="numeric"/.test(raw));
 

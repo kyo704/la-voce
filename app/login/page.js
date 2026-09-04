@@ -3,6 +3,7 @@
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import OtpCodeStep from "@/components/OtpCodeStep";
 
 const LOGIN_LANGS = [
   { code: "ja", label: "日本語" },
@@ -26,7 +27,10 @@ const LT = {
   // パスワードの再設定（Supabase Auth の resetPasswordForEmail を使う）。
   linkForgot: { ja: "パスワードをお忘れの方は", en: "Forgot your password?", zh: "忘记密码？", it: "Password dimenticata?", de: "Passwort vergessen?", fr: "Mot de passe oublie ?", es: "\u00bfOlvidaste tu contrase\u00f1a?", ko: "비밀번호를 잊으셨나요?", ru: "Забыли пароль?" },
   resetTitle: { ja: "パスワードの再設定", en: "Reset your password", zh: "重置密码", it: "Reimposta la password", de: "Passwort zuruecksetzen", fr: "Reinitialiser le mot de passe", es: "Restablecer la contrase\u00f1a", ko: "비밀번호 재설정", ru: "Сброс пароля" },
-  resetLead: { ja: "ご登録のメールアドレスに、再設定用のリンクをお送りします。", en: "We will email you a link to set a new password.", zh: "我们会将重置链接发送到您注册的邮箱。", it: "Ti invieremo per e-mail un link per impostare una nuova password.", de: "Wir senden dir per E-Mail einen Link zum Festlegen eines neuen Passworts.", fr: "Nous vous enverrons par e-mail un lien pour definir un nouveau mot de passe.", es: "Te enviaremos por correo un enlace para establecer una nueva contrase\u00f1a.", ko: "등록하신 이메일 주소로 재설정 링크를 보내드립니다.", ru: "Мы отправим на вашу почту ссылку для установки нового пароля." },
+  // ★★2026-09-05、リンクから番号に変えました（訂正2 §2・§3）。
+  //   ★リンクを押すと、★既定のブラウザが開き、★ホーム画面版の外に出ます。
+  //   ★メールにはリンクも残してありますが、★画面はこちらを主にします。
+  resetLead: { ja: "ご登録のメールアドレスに、パスワードを設定し直す番号をお送りします。", en: "We will email you a number to set a new password.", zh: "我们会将设置新密码的验证码发送到您注册的邮箱。", it: "Ti invieremo un numero per impostare una nuova password.", de: "Wir senden Ihnen eine Nummer zum Festlegen eines neuen Passworts.", fr: "Nous vous enverrons un numero pour definir un nouveau mot de passe.", es: "Te enviaremos un numero para establecer una nueva contrasena.", ko: "새 비밀번호를 설정할 번호를 보내드립니다.", ru: "Мы отправим вам номер для установки нового пароля." },
   resetSend: { ja: "再設定用のリンクを送る", en: "Send reset link", zh: "发送重置链接", it: "Invia il link", de: "Link senden", fr: "Envoyer le lien", es: "Enviar enlace", ko: "재설정 링크 보내기", ru: "Отправить ссылку" },
   resetSending: { ja: "送信しています…", en: "Sending…", zh: "正在发送…", it: "Invio in corso…", de: "Wird gesendet…", fr: "Envoi…", es: "Enviando…", ko: "보내는 중…", ru: "Отправка…" },
   resetSent: { ja: "再設定用のリンクをお送りしました。メール内のリンクから、新しいパスワードを設定してください。", en: "We have sent the reset link. Use the link in the email to set a new password.", zh: "重置链接已发送。请通过邮件中的链接设置新密码。", it: "Abbiamo inviato il link. Usalo per impostare una nuova password.", de: "Der Link wurde gesendet. Lege damit ein neues Passwort fest.", fr: "Le lien a ete envoye. Utilisez-le pour definir un nouveau mot de passe.", es: "Hemos enviado el enlace. Uselo para establecer una nueva contrase\u00f1a.", ko: "재설정 링크를 보냈습니다. 메일의 링크에서 새 비밀번호를 설정해 주세요.", ru: "Ссылка отправлена. Установите новый пароль по ссылке из письма." },
@@ -251,6 +255,33 @@ function LoginPageInner() {
           {ltr("subtitle", lang)}
         </p>
 
+        {/* ★★番号を送ったあとは、★この画面で受けます（2026-09-05）。
+            ★以前は「メール内のリンクから設定してください」でした。
+            ★リンクを押すと既定のブラウザが開き、★ホーム画面版の外に出ます。
+            ★そこで決め直しても、★アプリの側は入れていません。
+            ★★「決め直したのに入れない」という、いちばん困る形でした。
+            ★番号が合えば、そのまま入れた状態になり、★/reset-password へ進みます。 */}
+        {mode === "reset" && resetStatus === "sent" ? (
+          <div style={{
+            width: "100%", maxWidth: 380, background: "#FBF6EA",
+            borderRadius: 16, padding: "24px 20px"
+          }}>
+            <OtpCodeStep
+              email={form.email}
+              type="recovery"
+              heading="パスワードを設定し直す番号を送りました。"
+              onVerified={() => { window.location.href = "/reset-password"; }}
+              onResend={async () => {
+                const supabase = createClient();
+                const redirectTo = `${window.location.origin}/auth/callback?next=/reset-password`;
+                const { error: err } = await supabase.auth.resetPasswordForEmail(form.email, { redirectTo });
+                if (err) console.error("★送り直せませんでした:", err.message);
+                return !err;
+              }}
+              onBack={() => { setMode("login"); setResetStatus("idle"); setError(""); }}
+            />
+          </div>
+        ) : (
         <form
           onSubmit={mode === "reset" ? handleReset : handleSubmit}
           style={{
@@ -320,12 +351,8 @@ function LoginPageInner() {
               : (status === "loading" ? ltr("btnLoading", lang) : ltr("btnLogin", lang))}
           </button>
 
-          {mode === "reset" && resetStatus === "sent" && (
-            <>
-              <p style={{ fontSize: "0.8125rem", color: "#4F7562", margin: 0 }}>{ltr("resetSent", lang)}</p>
-              <p style={{ fontSize: "0.75rem", color: "#6b5d52", margin: 0 }}>{ltr("resetSpamNote", lang)}</p>
-            </>
-          )}
+          {/* ★「送りました」だけの表示は、★もうありません。
+              ★上で、番号を入れる段に差し替えました。 */}
           {mode === "reset" && resetStatus === "error" && (
             <p style={{ fontSize: "0.8125rem", color: "#7A1F2B", margin: 0 }}>{ltr("resetError", lang)}</p>
           )}
@@ -336,6 +363,7 @@ function LoginPageInner() {
             {mode === "reset" ? ltr("resetBack", lang) : ltr("linkForgot", lang)}
           </button>
         </form>
+        )}
 
         <p style={{ marginTop: 22, fontSize: "0.8125rem", color: "#D9C7A8" }}>
           {ltr("noAccountText", lang)}{" "}

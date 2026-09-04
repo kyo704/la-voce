@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { C } from "@/lib/tokens";
 import { OCCUPATIONS, occupationLabelIn } from "@/lib/occupation";
+import OtpCodeStep from "@/components/OtpCodeStep";
 
 const SIGNUP_LANGS = [
   { code: "ja", label: "日本語" },
@@ -171,16 +172,37 @@ function SignupFormInner() {
     setStatus("done");
   }
 
+  // ★★2026-09-05、★ここを作り直しました。
+  //
+  //   ★以前は「メール内のリンクをクリックして登録を完了してください」でした。
+  //   ★★リンクを押すと、★既定のブラウザが開きます。
+  //     ★ホーム画面に置いたアプリの、★外に出ます。
+  //     ★そこで登録を終えても、★アプリの側は、まだ入れていません。
+  //     ★★「終わったのに入れない」という、いちばん困る形でした。
+  //
+  //   ★いまは、★数字を入れていただきます。★アプリの中で終わります。
+  //   ★リンクも、メールには残してあります（★パソコンの方のため）。
+  //     ★どちらでも進めます。★消してはいません。
   if (status === "done") {
     return (
-      <main style={{ maxWidth: 420, margin: "0 auto", padding: "64px 24px", textAlign: "center" }}>
-        <h1 className="ff-display italic" style={{ fontSize: "2rem", color: C.curtain }}>
-          {str("doneTitle", lang)}
-        </h1>
-        <p style={{ color: C.inkSoft, marginTop: 12, lineHeight: 1.7 }}>
-          {str("doneBody", lang).replace("{email}", form.email)}
-        </p>
-        <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
+      <main style={{ maxWidth: 420, margin: "0 auto", padding: "48px 24px" }}>
+        <OtpCodeStep
+          email={form.email}
+          type="signup"
+          heading="ご登録を確かめる番号を送りました。"
+          onVerified={() => { window.location.href = "/dashboard"; }}
+          onResend={async () => {
+            const supabase = createClient();
+            const { error: err } = await supabase.auth.resend({
+              type: "signup",
+              email: form.email,
+              options: { emailRedirectTo: `${window.location.origin}/auth/callback` }
+            });
+            if (err) console.error("★送り直せませんでした:", err.message);
+            return !err;
+          }}
+        />
+        <p style={{ marginTop: 24, fontSize: "0.8125rem", color: C.inkSoft, lineHeight: 1.7 }}>
           {str("doneSpamNote", lang)}
         </p>
       </main>

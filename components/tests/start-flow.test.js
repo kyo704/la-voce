@@ -26,12 +26,13 @@ ok("★★自前で standalone を見ていない", !/display-mode: standalone/.
 console.log("\n② ★★iOS では、登録を先に出さないこと");
 // ★ここを間違えると、★いちばん嬉しい瞬間に、いちばん冷たいことが起きます。
 const iAdd = code.indexOf("STEP.IOS_ADD_TO_HOME");
-// ★2026-09-04、登録は /signup へのリンクから、
-//   ★★同じ画面の中の6桁の道（OtpSignIn）に変わりました。
+// ★2026-09-04、登録は /signup へのリンクから、同じ画面の中に変わりました。
+// ★★2026-09-05、★入口がパスワードに戻りました（訂正2）。
+//   ★数字だけの登録（OtpSignIn）は取り下げ、★SignupForm に一本化しました。
 //   ★★見たいのは「案内が、登録より先にあること」です。
-//     ★リンクか、部品かは、★見たいことではありません。
+//     ★リンクか、部品か、どの部品かは、★見たいことではありません。
 const iRegister = Math.min(
-  ...['href="/signup"', "setRegistering(true)", "<OtpSignIn"]
+  ...['href="/signup"', "setRegistering(true)", "<SignupForm"]
     .map((n) => code.indexOf(n)).filter((i) => i >= 0)
 );
 ok("★案内へ分岐している", iAdd > 0);
