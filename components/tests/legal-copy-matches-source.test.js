@@ -1,0 +1,105 @@
+#!/usr/bin/env node
+/**
+ * ★正（docs/legal の md）と、画面（写し）が、字で合っていること（2026-09-05）
+ *
+ *   出どころ docs/legal/consent-scope-ja-2026-09-v1.md 末尾 ⑦
+ *            docs/opus/lavoce-判断-第5項の書き直しと、写した先の台帳（9月4日）.md §6
+ *
+ *   ★★同じ約束が、★2か所に書いてあります。
+ *     ・docs/legal/privacy-ja-2026-09-v1.md   ★こちらが正
+ *     ・app/legal/privacy/page.js             ★写し
+ *
+ *   ★正だけ直して、写しを直し忘れる。★これが3回起きました。
+ *   ★★だから、★思い出すのをやめて、★機械に見張らせます。
+ *
+ *   ★ここで見るのは「★正の行が、写しの中に在るか」だけです。
+ *     ★写しに余分があっても、★落としません（★見出しや飾りが入るためです）。
+ *
+ *   実行  node components/tests/legal-copy-matches-source.test.js
+ */
+
+const { readRaw } = require("./_source");
+
+let pass = 0;
+let fail = 0;
+function ok(label, cond) {
+  if (cond) { pass += 1; console.log("  ✓ " + label); }
+  else { fail += 1; console.log("  ✗ " + label); }
+}
+
+// ★空白・改行を落として比べます。★折り返しの違いで落ちないためです。
+const squash = (t) => String(t).replace(/\s+/g, "");
+
+// ★md の中から、1つの節を取り出します。
+function section(md, heading) {
+  const i = md.indexOf(heading);
+  if (i === -1) return "";
+  const j = md.indexOf("\n### ", i + heading.length);
+  return md.slice(i, j === -1 ? md.length : j);
+}
+
+// ★節の中の「本文の行」を集めます（★見出し・区切り・空行は除きます）。
+function bodyLines(sec) {
+  return sec.split("\n")
+    .map((l) => l.trim())
+    .filter((l) => l && !l.startsWith("#") && l !== "```" && l !== "---"
+      && !l.startsWith("**") && l.length >= 6);
+}
+
+const PAIRS = [
+  {
+    name: "プライバシーポリシー 第5項",
+    md: ["docs", "legal", "privacy-ja-2026-09-v1.md"],
+    page: ["app", "legal", "privacy", "page.js"],
+    heading: "### 5　だれが見られるか"
+  },
+  {
+    name: "利用規約 第5条",
+    md: ["docs", "legal", "terms-ja-2026-09-v1.md"],
+    page: ["app", "legal", "terms", "page.js"],
+    heading: "### 第5条"
+  }
+];
+
+for (const p of PAIRS) {
+  console.log("\n■ " + p.name);
+  const md = readRaw(...p.md);
+  const page = squash(readRaw(...p.page));
+  const sec = section(md, p.heading);
+  if (!sec) {
+    ok(`★正の中に「${p.heading}」がある`, false);
+    continue;
+  }
+  const lines = bodyLines(sec);
+  ok(`★正から、本文を取り出せた（${lines.length} 行）`, lines.length >= 3);
+  const missing = lines.filter((l) => !page.includes(squash(l)));
+  // ★★1行でも欠けたら、★そこが「直し忘れ」です。
+  ok(`★正の行が、すべて画面に在る${missing.length ? "（★欠け: " + missing.slice(0, 3).join(" ／ ") + "）" : ""}`,
+    missing.length === 0);
+}
+
+console.log("\n■ ★写した先の一覧が、正の側にあること（裁定 §6）");
+const scope = readRaw("docs", "legal", "consent-scope-ja-2026-09-v1.md");
+// ★★「思い出す」をやめるための一覧です。★消さないこと。
+ok("★一覧の見出しがある", /この文書を写している場所/.test(scope));
+for (const need of ["利用規約 第5条", "プライバシーポリシー §5", "linkConsent",
+  "app/legal/terms/page.js", "app/legal/privacy/page.js"]) {
+  ok(`★一覧に「${need}」が載っている`, scope.includes(need));
+}
+// ★★ここで直接直さないこと、と書いてあること。
+ok("★画面で直接直さない、と書いてある", /ここで直接直さないこと/.test(scope));
+// ★★台帳を8本目にしないこと（裁定 §6）。★既存の文書の末尾です。
+ok("★新しい台帳を作っていない（docs/ledgers は07まで）",
+  !require("fs").existsSync(require("path").join(__dirname, "..", "..", "docs", "ledgers", "08-写した先.md")));
+
+console.log("\n■ ★禁止形（lib/linkConsent.js）が、正の文にも入っていないこと");
+const forbidden = ["見えません", "一切", "決して", "安全です", "守られています"];
+for (const p of PAIRS) {
+  const sec = section(readRaw(...p.md), p.heading);
+  const hit = forbidden.filter((w) => sec.includes(w));
+  ok(`${p.name}：★禁じた言い方が無い${hit.length ? "（★" + hit.join(" ") + "）" : ""}`,
+    hit.length === 0);
+}
+
+console.log(`\n★とおった ${pass} ／ ★落ちた ${fail}`);
+process.exit(fail === 0 ? 0 : 1);
