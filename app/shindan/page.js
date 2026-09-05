@@ -1,0 +1,159 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+// ============================================================================
+// 診断の画面（2026-09-05）
+//
+//   ★★私は、画面を見られません。
+//     ★2026-09-05、★同じ直しについて「直った」「直っていない」が
+//     ★往復しました。★私の推測が、3回続けて外れました。
+//
+//   ★★だから、★端末の側で答えが出る画面を作ります。
+//     ★推測をやめて、★数字を見ます。
+//
+//   ★この画面は、★アプリの設定を読みません。★保存もしません。
+//     ★★ここで押しても、★お客さまの設定は変わりません。
+//     ★見ているのは、★CSS が届いているかどうか、それだけです。
+//
+//   ★個人のことは、★1つも出しません。★ログインも要りません。
+// ============================================================================
+
+export default function ShindanPage() {
+  const [ver, setVer] = useState(null);
+  const [scale, setScale] = useState("（まだ押していません）");
+  const [sizes, setSizes] = useState(null);
+  const [rules, setRules] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/version").then((r) => r.json()).then(setVer).catch(() => setVer({ short: "読めません" }));
+    read();
+    // ★いま html に付いている印を、そのまま見せます。
+    setScale(document.documentElement.getAttribute("data-scale") || "（付いていません＝ふつう）");
+  }, []);
+
+  // ★★CSS の決まりが、★このブラウザに届いているかを数えます。
+  //   ★届いていなければ、★0 と出ます。
+  function countRules() {
+    let calendar = 0;
+    let wrap = 0;
+    let heading = 0;
+    for (const sheet of Array.from(document.styleSheets)) {
+      let list;
+      try { list = sheet.cssRules; } catch (e) { continue; } // ★別の場所の CSS は読めません
+      for (const r of Array.from(list || [])) {
+        const t = r.selectorText || "";
+        if (/data-scale=?"?xlarge"?\]\s*\.grid-cols-7/.test(t)) calendar += 1;
+        if (/data-scale=?"?xlarge"?\]\s*\.justify-between/.test(t)) wrap += 1;
+        if (/data-scale=?"?xlarge"?\]\s*h3/.test(t)) heading += 1;
+      }
+    }
+    return { calendar, wrap, heading };
+  }
+
+  function read() {
+    const cell = document.getElementById("shindan-cell");
+    const body = document.getElementById("shindan-body");
+    const head = document.getElementById("shindan-head");
+    const row = document.getElementById("shindan-row");
+    const g = (el) => (el ? window.getComputedStyle(el) : null);
+    setSizes({
+      root: g(document.documentElement) ? g(document.documentElement).fontSize : "?",
+      cell: g(cell) ? g(cell).fontSize : "?",
+      body: g(body) ? g(body).fontSize : "?",
+      head: g(head) ? g(head).fontSize : "?",
+      wrap: g(row) ? g(row).flexWrap : "?"
+    });
+    setRules(countRules());
+  }
+
+  function apply(v) {
+    if (v) document.documentElement.setAttribute("data-scale", v);
+    else document.documentElement.removeAttribute("data-scale");
+    setScale(v || "（付いていません＝ふつう）");
+    // ★描き直しを待ってから測ります。
+    setTimeout(read, 60);
+  }
+
+  const box = { border: "1px solid #ddd", borderRadius: 12, padding: 14, marginBottom: 14 };
+  const btn = {
+    flex: 1, padding: "12px", borderRadius: 999, border: "1px solid #ccc",
+    background: "#fff", fontSize: "max(16px, 1rem)", minHeight: 48
+  };
+
+  return (
+    <main style={{ maxWidth: 480, margin: "0 auto", padding: "24px 16px" }}>
+      <h1 style={{ fontSize: "1.5rem", marginBottom: 6 }}>診断</h1>
+      <p style={{ fontSize: "1rem", lineHeight: 1.8, marginBottom: 18 }}>
+        この画面は、文字の大きさの決まりが、この端末に届いているかを見るためのものです。
+        アプリの設定は読みませんし、変えません。ログインも要りません。
+      </p>
+
+      <div style={box}>
+        <p style={{ fontSize: "0.9375rem", margin: 0 }}>
+          いま配られている版：<strong>{ver ? (ver.short || "?") : "読んでいます…"}</strong>
+        </p>
+        <p style={{ fontSize: "0.9375rem", margin: "6px 0 0" }}>
+          html に付いている印：<strong>{scale}</strong>
+        </p>
+      </div>
+
+      <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+        <button type="button" style={btn} onClick={() => apply(null)}>ふつう</button>
+        <button type="button" style={btn} onClick={() => apply("large")}>大きい</button>
+        <button type="button" style={btn} onClick={() => apply("xlarge")}>とても大きい</button>
+      </div>
+
+      {/* ★見本。★本物と同じ書き方にしてあります。 */}
+      <div style={box}>
+        <h3 id="shindan-head" className="ff-display italic text-lg">見出しの見本（h3・text-lg）</h3>
+        <p id="shindan-body" className="text-sm">本文の見本（text-sm）。この文が大きくなれば、倍率は効いています。</p>
+        <div className="grid grid-cols-7 gap-1 text-center" style={{ marginTop: 10 }}>
+          {[1, 2, 3, 4, 5, 6, 7].map((d) => (
+            <div key={d} id={d === 1 ? "shindan-cell" : undefined}
+              className="aspect-square rounded-lg flex items-center justify-center text-xs"
+              style={{ border: "1px solid #ddd" }}>{d}</div>
+          ))}
+        </div>
+        <div id="shindan-row" className="flex items-center justify-between" style={{ marginTop: 10, gap: 8 }}>
+          <span className="text-sm">横に並ぶものの見本です</span>
+          <button type="button" className="text-sm" style={{ border: "1px solid #ccc", borderRadius: 999, padding: "8px 14px" }}>
+            教室に参加する
+          </button>
+        </div>
+      </div>
+
+      <div style={box}>
+        <p style={{ fontSize: "1rem", fontWeight: 600, margin: "0 0 8px" }}>測った値</p>
+        {sizes ? (
+          <ul style={{ fontSize: "0.9375rem", lineHeight: 1.9, margin: 0, paddingLeft: 18 }}>
+            <li>根（html）の文字：<strong>{sizes.root}</strong></li>
+            <li>暦の升目の数字：<strong>{sizes.cell}</strong>（★とても大きい で 14px なら、効いています）</li>
+            <li>本文：<strong>{sizes.body}</strong>（★ふつうより大きくなるはずです）</li>
+            <li>見出し：<strong>{sizes.head}</strong>（★24px を超えないはずです）</li>
+            <li>横並びの折り返し：<strong>{sizes.wrap}</strong>（★とても大きい で wrap なら、効いています）</li>
+          </ul>
+        ) : <p style={{ fontSize: "0.9375rem" }}>まだ測っていません。</p>}
+      </div>
+
+      <div style={box}>
+        <p style={{ fontSize: "1rem", fontWeight: 600, margin: "0 0 8px" }}>決まりが届いているか</p>
+        {rules ? (
+          <ul style={{ fontSize: "0.9375rem", lineHeight: 1.9, margin: 0, paddingLeft: 18 }}>
+            <li>暦の決まり：<strong>{rules.calendar} 本</strong></li>
+            <li>折り返しの決まり：<strong>{rules.wrap} 本</strong></li>
+            <li>見出しの決まり：<strong>{rules.heading} 本</strong></li>
+          </ul>
+        ) : null}
+        <p style={{ fontSize: "0.875rem", lineHeight: 1.8, marginTop: 10, marginBottom: 0 }}>
+          ★どれかが 0 本なら、この端末に新しい CSS が届いていません。
+          0 本でないのに値が変わらないなら、別の決まりが勝っています。
+        </p>
+      </div>
+
+      <p style={{ fontSize: "0.875rem", lineHeight: 1.8 }}>
+        この画面の中身を、そのまま写して送っていただければ十分です。
+      </p>
+    </main>
+  );
+}
