@@ -121,11 +121,23 @@ function ok(label, cond) {
   ok("★お支払いの方は、見られる",
     m.mayViewSummary({ ...OPEN, scope: "month", profile: { is_tester: false }, subscribed: true }) === true);
 
-  console.log("\n■ ★門は、2枚で止まっていること");
-  ok("★門が切ってある", m.PAID_GATE_ENABLED === false);
-  ok("★開ける日も、まだ決まっていない", m.GATE_STARTS_AT === null);
-  ok("★切ってあれば、全部見られる",
-    m.mayViewSummary({ scope: "year", profile: { is_tester: false } }) === true);
+  console.log("\n■ ★★門は、いま開いています（★2026-09-05・試しのため）");
+  // ★★開けた狙いは、★運営者ご自身が、本物のお金で
+  //   ★申し込み → 契約 → 解約 まで通すことです。
+  // ★★ほかの方に、★門をかけないための鍵が、★もう1つあります。
+  //   ★NEXT_PUBLIC_GATE_TEST_USER_IDS（①-2）。
+  //   ★★あれが空になると、★門は全員にかかります。★同時に決めること。
+  ok("★門が開いている", m.PAID_GATE_ENABLED === true);
+  ok("★開けた日が、書いてある", typeof m.GATE_STARTS_AT === "string" && m.GATE_STARTS_AT.length === 10);
+  // ★一覧が在るあいだは、★その中の方だけに門がかかること。
+  const 試し = { NEXT_PUBLIC_GATE_TEST_USER_IDS: "aaa-111" };
+  ok("★★一覧に居ない方は、いまも全部見られる",
+    m.mayViewSummary({ scope: "year", profile: { is_tester: false }, userId: "zzz", env: 試し }) === true);
+  ok("★一覧に居る方には、門がかかる",
+    m.mayViewSummary({ scope: "year", profile: { is_tester: false }, userId: "aaa-111", env: 試し }) === false);
+  // ★★is_tester の方は、★どちらにしても、そのままです。
+  ok("★is_tester の方は、一覧に居ても見られる",
+    m.mayViewSummary({ scope: "year", profile: { is_tester: true }, userId: "aaa-111", env: 試し }) === true);
 
   console.log("\n■ ★期間 → まとめの単位（★1か所で対応させること）");
   ok("★last7 だけが、無料の側", m.scopeForPeriod("last7") === "last7");

@@ -78,10 +78,19 @@ ok("★★申し込みの入口は、どちらかの門の後ろにある",
   const fs2 = require("fs");
   const ft = fs2.readFileSync(
     require("path").join(__dirname, "..", "..", "lib", "freeTier.js"), "utf-8");
-  ok("★門は、まだ切ってある（PAID_GATE_ENABLED = false）",
-    /export const PAID_GATE_ENABLED = false;/.test(ft));
-  ok("★開ける日も、まだ決まっていない（GATE_STARTS_AT = null）",
-    /export const GATE_STARTS_AT = null;/.test(ft));
+  // ★★2026-09-05、★門を開けました（★試しのため）。
+  //   ★ほかの方に門をかけないための鍵が、★もう1つあります（①-2）。
+  //   ★★「門が開いている」だけを見て、★安心しないこと。
+  //     ★2つ揃って、はじめて「試しのあいだ」です。
+  ok("★門の状態が、はっきり書いてある",
+    /export const PAID_GATE_ENABLED = (true|false);/.test(ft));
+  ok("★開ける日が、はっきり書いてある",
+    /export const GATE_STARTS_AT = (null|"\d{4}-\d{2}-\d{2}");/.test(ft));
+  // ★★門が開いているなら、★試しの仕掛けが在ること。
+  if (/PAID_GATE_ENABLED = true/.test(ft)) {
+    ok("★★門が開いているなら、試しの仕掛けが在る",
+      /NEXT_PUBLIC_GATE_TEST_USER_IDS/.test(ft));
+  }
 }
 
 ok("★台帳が、到達しないことを書いている", /到達しません/.test(台));
