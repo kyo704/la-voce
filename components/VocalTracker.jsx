@@ -14930,7 +14930,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 {!mayViewSummary({
                   scope: scopeForPeriod(analysisPeriod),
                   profile,
-                  subscribed: subscribed === true
+                  subscribed: subscribed === true,
+                  // ★★試すあいだ、★自分にだけ門をかけるため（lib/freeTier.js ①-2）。
+                  //   ★環境変数が空なら、★何もしません。
+                  userId,
+                  env: { NEXT_PUBLIC_GATE_TEST_USER_IDS: process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS }
                 }) && (
                   <GateNotice onSeePlans={() => { window.location.href = "/billing"; }} />
                 )}

@@ -7,7 +7,7 @@ import MinorConsentGate from "@/components/MinorConsentGate";
 //   ★この画面で並べ直さないこと。★2か所になります。
 import {
   PAID_GATE_ENABLED, GATE_STARTS_AT, PAID_FEATURES, NEVER_PAID,
-  featureLabel, GATE_CLOSING_LINES
+  featureLabel, GATE_CLOSING_LINES, gateAppliesTo
 } from "@/lib/freeTier";
 import { ageBandOf } from "@/lib/ageGate";
 import PortalButton from "@/components/PortalButton";
@@ -44,7 +44,14 @@ export default async function BillingPage() {
   //
   //   ★門から「くわしく見る」で来た方が、★ここに着きます。
   //     ★★噛み合わない画面を出さないこと。★買えない画面に着かせないこと。
-  const paidGateOpen = PAID_GATE_ENABLED && !!GATE_STARTS_AT;
+  //   ★★試すあいだは、★一覧に居る方にだけ、この画面を出します（freeTier ①-2）。
+  //     ★一覧が空なら（null）、★門が開いている全員に出します。
+  //     ★★一覧が在って、その中に居ない方には、★出しません。
+  //       ★売っていないものの申し込みを、★見せないためです。
+  const gateOnlyMe = gateAppliesTo(user.id, {
+    NEXT_PUBLIC_GATE_TEST_USER_IDS: process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS
+  });
+  const paidGateOpen = PAID_GATE_ENABLED && !!GATE_STARTS_AT && gateOnlyMe !== false;
   if (!requireSubscription && paidGateOpen) {
     return (
       <main style={{ maxWidth: 480, margin: "0 auto", padding: "56px 24px 96px" }}>

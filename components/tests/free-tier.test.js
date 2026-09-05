@@ -159,6 +159,36 @@ function ok(label, cond) {
   ok("★last7 と week を、絞り込みで分けて扱っている",
     /analysisPeriod === "last7" \|\| analysisPeriod === "week"/.test(vt));
 
+  console.log("\n■ ★★試すあいだ、自分にだけ門をかけること（2026-09-05 夜）");
+  // ★本物のお金で、申し込み → 契約 → 解約 まで通す必要があります。
+  //   ★そのあいだ、★ほかの方に門をかけたくありません。
+  const E = { NEXT_PUBLIC_GATE_TEST_USER_IDS: "aaa-111, bbb-222" };
+  const 門あり = { ...OPEN, scope: "month", profile: { is_tester: false } };
+  ok("★一覧が空なら、ふだんどおり（★門がかかる）",
+    m.mayViewSummary({ ...門あり }) === false);
+  ok("★一覧に居る方には、門がかかる",
+    m.mayViewSummary({ ...門あり, env: E, userId: "aaa-111" }) === false);
+  ok("★★一覧に居ない方には、門がかからない",
+    m.mayViewSummary({ ...門あり, env: E, userId: "zzz-999" }) === true);
+  ok("★2人目も、ちゃんと拾う",
+    m.mayViewSummary({ ...門あり, env: E, userId: "bbb-222" }) === false);
+  ok("★試す方が買えば、見られる",
+    m.mayViewSummary({ ...門あり, env: E, userId: "aaa-111", subscribed: true }) === true);
+  // ★★お客さまのIDを、リポジトリに書かないこと。
+  const src2 = readCode("lib", "freeTier.js");
+  ok("★IDを、コードに書いていない",
+    !/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(src2));
+  ok("★環境変数から読んでいる", /NEXT_PUBLIC_GATE_TEST_USER_IDS/.test(src2));
+  // ★★空・壊れた値で、誰も止めないこと。
+  ok("★空の文字なら、ふだんどおり",
+    m.gateAppliesTo("aaa-111", { NEXT_PUBLIC_GATE_TEST_USER_IDS: "" }) === null);
+  ok("★カンマだけなら、ふだんどおり",
+    m.gateAppliesTo("aaa-111", { NEXT_PUBLIC_GATE_TEST_USER_IDS: " , , " }) === null);
+  ok("★渡し忘れても、ふだんどおり", m.gateAppliesTo("aaa-111", null) === null);
+  // ★画面から、ちゃんと渡していること。
+  const vt2 = readCode("components", "VocalTracker.jsx");
+  ok("★画面が、userId を渡している", /userId,\s*\n\s*env: \{ NEXT_PUBLIC_GATE_TEST_USER_IDS/.test(vt2));
+
   console.log("\n■ ★お支払いの画面（/billing）── ★門から来た方が着く先");
   const bill = readCode("app", "billing", "page.js");
   // ★★REQUIRE_SUBSCRIPTION と PAID_GATE_ENABLED は、★別の決めです。
