@@ -312,6 +312,18 @@ button {
   padding-left: 2px;
   padding-right: 2px;
   scroll-padding-inline: 16px;
+  /* ★★端で1文字だけ見えている状態を、なくします（2026-09-05）。
+     ★「ホーム」が「ーム」、「レッスン」が「レ」と見えていました。
+     ★★全部見えれば「これで全部」、半分見えれば「まだ続く」と読めますが、
+       ★1文字だけはみ出るのは、★どちらにも読めません。
+       ★（この考え方は、2026-09-02 に、この帯について書かれています）
+     ★proximity にしてあります。★近いときだけ、そっと寄ります。
+       ★mandatory にすると、★指を離すたびに引っぱられて、うるさくなります。 */
+  scroll-snap-type: x proximity;
+}
+/* ★寄る先は、★それぞれの札の左端です。 */
+.nav-scroll > * {
+  scroll-snap-align: start;
 }
 .nav-scroll-wrap {
   position: relative;
