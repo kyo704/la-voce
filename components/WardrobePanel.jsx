@@ -31,6 +31,9 @@ const SLOT_LABELS = {
 export default function WardrobePanel({
   wearing = {}, owned = [], unlockedFlags = {}, todayISO, onChange
 }) {
+  // ★★歩きの試し（2026-09-06・案B の第1段）。
+  //   ★まず1つだけ作って、★見ていただいてから、残りを作ります。
+  const [walking, setWalking] = useState(false);
   const groups = Object.keys(SHEEP_GROUPS);
   const [group, setGroup] = useState(groups[0]);
   const season = currentSeason(todayISO);
@@ -56,8 +59,26 @@ export default function WardrobePanel({
   return (
     <div>
       {/* ★いまの姿。★大きく出します。 */}
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
+        <SheepDressed wearing={wearing} size={240} motion={walking ? "walk" : "still"} />
+      </div>
+
+      {/* ★★歩きの試し。★これが「案B」の見た目です（2026-09-06）。
+          ★羊と服が、★一緒に動きます。★1枚ずつ動かすと、★ずれます。
+          ★腕と脚は、★別々には動きません。★服の下では、どのみち見えません。
+          ★★動きを減らす設定の方には、★動きません（★酔う方がいらっしゃいます）。
+          ★見ていただいたあとで、★眠る・喜ぶ・畑にいる を作ります。 */}
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
-        <SheepDressed wearing={wearing} size={240} />
+        <button type="button" onClick={() => setWalking((v) => !v)}
+          style={{
+            padding: "10px 20px", borderRadius: 999, minHeight: 44,
+            border: `1px solid ${walking ? C.curtain : C.line}`,
+            background: walking ? C.curtain : C.card,
+            color: walking ? "#FFFDF8" : C.inkSoft,
+            fontSize: "0.9375rem"
+          }}>
+          {walking ? "止める" : "歩かせてみる"}
+        </button>
       </div>
 
       {/* ★いま着ているものを、外せるように並べます。 */}

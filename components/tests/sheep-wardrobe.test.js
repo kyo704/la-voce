@@ -135,6 +135,25 @@ function ok(label, cond) {
   ok("★重ね順は、lib から取っている", /LAYER_ORDER/.test(dressed));
   ok("★画面で、順番を並べ直していない", !/"garment", *"neck"/.test(dressed));
 
+  console.log("\n⑨ ★歩き（★案B の第1段・2026-09-06）");
+  const dressed2 = readCode("components", "SheepDressed.jsx");
+  // ★★1枚ずつ動かさないこと。★服と体が、ずれます。
+  ok("★かたまりの外側を、動かしている", /sheep-dressed-move/.test(dressed2));
+  ok("★1枚ずつには、動きを付けていない",
+    !/layers\.map[\s\S]{0,400}animation:/.test(dressed2));
+  ok("★歩きの動きがある", /@keyframes sheepWalk/.test(dressed2));
+  // ★足もとを軸にすること。★頭を軸にすると、浮いて見えます。
+  ok("★足もとを軸にしている", /transformOrigin: "50% 92%"/.test(dressed2));
+  // ★★動きを減らす設定の方には、動かさないこと。
+  ok("★動きを減らす設定を、見ている", /prefers-reduced-motion: reduce/.test(dressed2));
+  // ★裏返しと、はずみを、同じ入れ物でやらないこと（★打ち消し合います）。
+  ok("★裏返しは外側、はずみは内側", /facingLeft \? "scaleX\(-1\)"/.test(dressed2));
+  ok("★止まっているのが、既定", /motion = "still"/.test(dressed2));
+
+  const panel2 = readCode("components", "WardrobePanel.jsx");
+  ok("★試しのボタンがある", /歩かせてみる/.test(panel2));
+  ok("★止められる", /止める/.test(panel2));
+
   console.log(`\n★とおった ${pass} ／ ★落ちた ${fail}`);
   process.exit(fail === 0 ? 0 : 1);
 })();
