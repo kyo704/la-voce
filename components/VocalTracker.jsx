@@ -80,6 +80,7 @@ import { weatherCarryDecision, isWeatherSource, isCarried, CARRIED_NOTE, mayUseA
 import { CPPS_ENABLED } from "@/lib/pausedFeatures";
 import { teacherWithHonorific, DEPARTED_TEACHER_LABEL } from "@/lib/teacherDisplay";
 import { rankPhrase } from "@/lib/rankWording";
+import { shouldNotify } from "@/lib/noticeAudience";
 import { shouldShowNotice, withNoticeShown, noticeStateFromRows, NOTICE_TEXT } from "@/lib/notices";
 import { cycleOptInDescription, mentionsCycleInDataLists } from "@/lib/cycleCopy";
 import { writeWithMissingColumnFallback } from "@/lib/entryWriteFallback";
@@ -5079,6 +5080,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     // ★群のラベル（課金ではありません）。既定は general＝一般の見え方。
     //   ★判定は lib/entitlements.js の viewerOf() が持ちます。ここで比べないこと。
     cohort: "general",
+    // ★お知らせの宛先を決めるのに使います（lib/noticeAudience.js）。
+    //   ★既定は false。★読めたら、上書きします。
+    is_internal: false,
     is_tester: false,
     display_scale: DEFAULT_SCALE, simple_display: false });
   // 確認用: 管理者アカウントは、全職業の機能を見られるようにできる。
@@ -5668,7 +5672,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       if (mounted && !noticeError) setNoticeState(noticeStateFromRows(noticeRows));
 
       const { data: cohortRow } = await supabase
-        .from("profiles").select("cohort").eq("id", userId).maybeSingle();
+        .from("profiles").select("cohort, is_internal").eq("id", userId).maybeSingle();
+      // ★★is_internal も、ここで一緒に取ります（2026-09-05 夜）。
+      //   ★お知らせの宛先を決めるのに要ります。
+      //   ★取らないと undefined で、★「試験用ではない」に倒れます。
+      //   ★★試験用の器に、お詫びのお知らせを出してしまいます。
+      if (mounted && cohortRow && typeof cohortRow.is_internal === "boolean") {
+        setProfile((p) => ({ ...p, is_internal: cohortRow.is_internal }));
+      }
       if (mounted && cohortRow && cohortRow.cohort) {
         setProfile((prev) => ({ ...prev, cohort: cohortRow.cohort }));
       }
@@ -11861,7 +11872,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ★★「あとで」を押した方は、★次にまた出ます。
                         ★責めません。★催促の言葉も、足しません。
                       ★同意し直した方には、★二度と出ません。 */}
-                  {shouldShowNotice(noticeState, "consentApology2026") && (
+                  {/* ★★2026-09-05 夜、★宛先で絞っていませんでした。
+                      ★lib/noticeAudience.js が在るのに、★通していませんでした。
+                      ★★試験用の器（is_internal）にも、★出てしまっていました。
+                        ★あの module は「試験用の器は、ほかの何であっても
+                        通知しません」と書いています。★守れていませんでした。
+                      ★お詫びのお知らせなので、★段階を踏まず、
+                        ★operator・tester・general の全部に出します。
+                        ★internal だけは、shouldNotify が外します。 */}
+                  {shouldShowNotice(noticeState, "consentApology2026")
+                    && shouldNotify(profile, ["operator", "tester", "general"]) && (
                     <NoticeScreen
                       onGoConsent={() => setRenewingConsent(true)}
                       onLater={() => markNoticeShown("consentApology2026")} />

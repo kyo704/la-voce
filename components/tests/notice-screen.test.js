@@ -87,6 +87,27 @@ const squash = (t) => String(t).replace(/[\s　]+/g, "");
     !/onboarding_completed: false/.test(vt));
   ok("★同意だけの1段を借りている", /<OnboardingFlow existingUser onComplete/.test(vt));
 
+  console.log("\n⑤-2 ★★宛先で絞ること（2026-09-05 夜に直しました）");
+  // ★★lib/noticeAudience.js が在るのに、★通していませんでした。
+  //   ★試験用の器（is_internal）にも、★お詫びのお知らせが出ていました。
+  //   ★あの module は「試験用の器は、ほかの何であっても通知しません」と
+  //     書いています。★守れていませんでした。
+  ok("★宛先の module を通している", /shouldNotify\(profile, \["operator", "tester", "general"\]\)/.test(vt));
+  ok("★宛先の module を import している", /from "@\/lib\/noticeAudience"/.test(vt));
+  // ★★is_internal を読んでいないと、★undefined ＝「試験用ではない」に倒れます。
+  ok("★is_internal を読んでいる", /select\("cohort, is_internal"\)/.test(vt));
+  ok("★is_internal の既定を置いている", /is_internal: false,/.test(vt));
+
+  const aud = await import("data:text/javascript;base64," +
+    Buffer.from(fs.readFileSync(path.join(ROOT, "lib", "noticeAudience.js"))).toString("base64"));
+  const G = ["operator", "tester", "general"];
+  ok("★ふつうの方には、出る", aud.shouldNotify({ cohort: "general" }, G) === true);
+  ok("★先行の方にも、出る", aud.shouldNotify({ cohort: "tester" }, G) === true);
+  ok("★運営者にも、出る", aud.shouldNotify({ cohort: "founder" }, G) === true);
+  // ★★ここが、いちばん大事な1行です。
+  ok("★★試験用の器には、出さない",
+    aud.shouldNotify({ is_internal: true, cohort: "founder" }, G) === false);
+
   console.log("\n⑥ ★禁じた言葉の検査が、この文面も見ていること");
   const nag = readRaw("components", "tests", "no-nagging-words.test.js");
   ok("★lib/notices.js を見ている", /"lib\/notices\.js"/.test(nag));
