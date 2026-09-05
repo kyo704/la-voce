@@ -94,23 +94,21 @@ function ok(label, cond) {
   for (const w of m.FORBIDDEN_GATE_PHRASES) {
     ok(`★「${w}」と書いていない`, !all.includes(w));
   }
-  // ★★画面に出す言葉にも、無いこと。
-  const screens = [];
-  const walk2 = (d) => {
-    for (const e of fs.readdirSync(path.join(ROOT, d), { withFileTypes: true })) {
-      const p = path.join(d, e.name);
-      if (e.isDirectory()) { walk2(p); continue; }
-      if (!/\.(js|jsx)$/.test(e.name)) continue;
-      if (p.includes(path.join("components", "tests"))) continue;
-      const t = readCode(p);
-      // ★お金の話をしている画面にだけ、かけます。
-      if (!/freeTier|GATE_LINES|mayViewSummary/.test(t)) continue;
-      for (const w of ["見られません", "できません"]) if (t.includes(w)) screens.push(p + "：" + w);
-    }
-  };
-  ["app", "components"].forEach(walk2);
-  ok(`★門の画面に、禁じた言い方が無い${screens.length ? "（★" + screens.join(" ") + "）" : ""}`,
-    screens.length === 0);
+  // ★★門の画面に出す言葉にも、無いこと。
+  //   ★★見る範囲を、★門の画面だけに絞ります（2026-09-05 夜に直しました）。
+  //     ★はじめ「mayViewSummary を使っているファイル」を丸ごと見ていました。
+  //     ★VocalTracker が引っかかりました ── ★マイクのエラー文
+  //       （「このブラウザではマイクを使用できません」）です。
+  //     ★★門とは関係のない文まで見ていました。★広すぎました。
+  const gateCopy = [
+    readCode("components", "GateNotice.jsx"),
+    m.GATE_LINES.join(" "),
+    m.GATE_CLOSING_LINES.join(" ")
+  ].join("\n");
+  const bad = ["見られません", "できません", "無料期間", "制限されました"]
+    .filter((w) => gateCopy.includes(w));
+  ok(`★門の画面に、禁じた言い方が無い${bad.length ? "（★" + bad.join(" ") + "）" : ""}`,
+    bad.length === 0);
 
   console.log("\n■ ★ずっと無料の方（★運営者の判断）");
   ok("★is_tester の方は、まとめも見られる",
@@ -128,6 +126,38 @@ function ok(label, cond) {
   ok("★開ける日も、まだ決まっていない", m.GATE_STARTS_AT === null);
   ok("★切ってあれば、全部見られる",
     m.mayViewSummary({ scope: "year", profile: { is_tester: false } }) === true);
+
+  console.log("\n■ ★期間 → まとめの単位（★1か所で対応させること）");
+  ok("★last7 だけが、無料の側", m.scopeForPeriod("last7") === "last7");
+  for (const p of ["week", "month", "year"]) {
+    ok(`★${p} は、そのままの単位`, m.scopeForPeriod(p) === p);
+  }
+  // ★★知らない値を、無料側に倒さないこと。★増やした人が、門を素通りします。
+  for (const p of ["all", "custom", "aroundPerformance", "なぞの値"]) {
+    ok(`★${p} は、まとめ扱い`, m.scopeForPeriod(p) === "compare");
+  }
+
+  console.log("\n■ ★画面につながっていること（2026-09-05 夜・第1段）");
+  const vt = readCode("components", "VocalTracker.jsx");
+  ok("★分析タブが、判定を通している", /mayViewSummary\(\{[\s\S]{0,120}scopeForPeriod\(analysisPeriod\)/.test(vt));
+  ok("★期間の札に「直近7日」がある", /"last7", "week", "month", "year"/.test(vt));
+  ok("★お支払いの状態を、サーバから取っている", /from\("subscriptions"\)[\s\S]{0,80}status/.test(vt));
+  // ★★localStorage に持たないこと（線引き §2-2）。
+  ok("★お支払いを localStorage に持っていない",
+    !/localStorage[\s\S]{0,80}subscri/i.test(vt));
+  // ★★読めないときは、門をかけないこと（★渡しすぎる側に倒す）。
+  ok("★読めないときは false にしていない", /setSubscribed\(null\)|useState\(null\)/.test(vt));
+  // ★★カードを消さないこと。★札を1枚、置くだけです。
+  ok("★カードを消していない（★札を置くだけ）", /<GateNotice/.test(vt));
+  const gate = readCode("components", "GateNotice.jsx");
+  ok("★文言は lib から取っている", /GATE_LINES/.test(gate));
+  ok("★締めの2行も出している", /GATE_CLOSING_LINES/.test(gate));
+  // ★★画面を覆うモーダルにしないこと（線引き §6-3）。
+  ok("★画面を覆っていない", !/fixed inset-0/.test(gate));
+  ok("★閉じるボタンを置いていない", !/閉じる|onClose/.test(gate));
+  // ★★「直近7日」と「1週間」を、1つにまとめないこと。★門が消えます。
+  ok("★last7 と week を、絞り込みで分けて扱っている",
+    /analysisPeriod === "last7" \|\| analysisPeriod === "week"/.test(vt));
 
   console.log("\n■ ★お支払いの状態を、手元に持たないこと（線引き §2-2）");
   ok("★localStorage を使っていない", !/localStorage/.test(src));

@@ -59,6 +59,10 @@ import ReauthGate from "@/components/ReauthGate";
 import RecoveryCodeCard from "@/components/RecoveryCodeCard";
 // ★★お知らせの画面（v3・2026-09-03 確定）。★文面は lib/notices.js が持ちます。
 import NoticeScreen from "@/components/NoticeScreen";
+// ★★無料と有料の線（⑫・案B）。★判定は lib/freeTier.js が1か所で持ちます。
+//   ★画面で、条件を並べ直さないこと。
+import { scopeForPeriod, mayViewSummary } from "@/lib/freeTier";
+import GateNotice from "@/components/GateNotice";
 import { REAUTH_ACTIONS, reauthStillValid } from "@/lib/reauth";
 import { SIMPLE_STEPS, SIMPLE_STEP_COUNT, remainingSteps, applyStep, skipStep,
   nextIndex, prevIndex, isFinished, SIMPLE_SKIP_LABEL, SIMPLE_BACK_LABEL, SIMPLE_DONE_TEXT } from "@/lib/simpleFlow";
@@ -5664,6 +5668,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       // テスターの印。migration_is_tester.sql が未実行の環境がありうるので、
       // 本体クエリとは分けて寛容に読む（record_mode と同じ理由）。
       // ★読めなければ false のまま＝一般の見え方（フェイルクローズ）。
+      // ★★お支払いの状態（⑫・2026-09-05）。
+      //   ★trialing / active のときだけ true にします。
+      //   ★読めなかったら null のままにします（★false にしないこと。
+      //     ★false にすると、★読めなかった方に門がかかります）。
+      const { data: subRow, error: subErr } = await supabase
+        .from("subscriptions").select("status").eq("user_id", userId).maybeSingle();
+      if (mounted) {
+        if (subErr) console.error("★お支払いの状態を読めませんでした:", subErr.message);
+        else setSubscribed(!!subRow && ["trialing", "active"].includes(subRow.status));
+      }
       // ★cohort を先に読みます。無い環境では is_tester に落ちます（viewerOf が判断）。
       // 1回だけ出す知らせ。★表がまだ無い環境でも落ちないよう、別に寛容に読む。
       //   読めなければ noticeState は null のままで、知らせを出しません。
@@ -5957,7 +5971,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (analysisPeriod === "all") return entries;
     const today = new Date();
     let startISO, endISO;
-    if (analysisPeriod === "week") {
+    // ★★「直近7日」は、無料で見られる範囲です（⑫・案B）。
+    //   ★1週間（week）と、日数は同じです。★名前だけが違います。
+    //   ★分けてある理由は、★片方が無料で、★片方が有料だからです。
+    //   ★★同じ日数だからと、1つにまとめないこと。★門が消えます。
+    if (analysisPeriod === "last7" || analysisPeriod === "week") {
       const start = new Date(today); start.setDate(start.getDate() - 6);
       startISO = toISODate(start); endISO = toISODate(today);
     } else if (analysisPeriod === "month") {
@@ -9000,6 +9018,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★戻すと、★プロフィールの設定からやり直しになります。
   //   ★同意だけの1段（existingUser）を、★そのまま借ります。
   const [renewingConsent, setRenewingConsent] = useState(false);
+  // ★★お支払いの状態（⑫）。★サーバから取ります。
+  //   ★★localStorage に持たないこと（権利と課金の線引き §2-2）。
+  //   ★読めないうちは null。★null のあいだは、門をかけません（★渡しすぎる側に倒す）。
+  const [subscribed, setSubscribed] = useState(null);
   const [deleteStatus, setDeleteStatus] = useState("idle"); // idle | working | error
   const [deleteError, setDeleteError] = useState("");
   // ★オーナーの退会を止めたときの、その教室の一覧（判断 2026-09-01）。
@@ -14886,6 +14908,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </div>
                 ) : (
                 <>
+                {/* ★★まとめが有料であることの、お伝え（⑫・2026-09-05）。
+                    ★期間の札は、★いつでも押せます（★選ぶこと自体は無料です）。
+                    ★★選んだ先が「まとめ」で、★お支払いがまだのときに、
+                      ★ここに札を1枚置きます。
+                    ★★カードを消しません。★下に、そのまま残します。
+                      ★「見られません」と言わないこと。★言い方は GateNotice が持ちます。
+                    ★門が切ってあるうちは、★1度も出ません。 */}
+                {!mayViewSummary({
+                  scope: scopeForPeriod(analysisPeriod),
+                  profile,
+                  subscribed: subscribed === true
+                }) && (
+                  <GateNotice onSeePlans={() => { window.location.href = "/billing"; }} />
+                )}
                 {/* 改善タスクv2 §4-1(b): 期間セレクタは9番目にあり、その上のカードは
                     セレクタの影響を受けなかった。「期間を1年にしたのに数字が変わらない」
                     という混乱の原因だったので、最上部に移した。期間の効かないカードには
@@ -14893,7 +14929,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-3">{t("titleAnalysisPeriod")}</h3>
                   <div className="flex gap-2 flex-wrap">
-                    {["week", "month", "year", "all", "custom"].map((p) => (
+                    {/* ★★「直近7日」を、いちばん前に置きます（⑫・案B）。
+                        ★ここまでが無料です。★これより広いのが「まとめ」です。 */}
+                    {["last7", "week", "month", "year", "all", "custom"].map((p) => (
                       <button key={p} type="button" onClick={() => setAnalysisPeriod(p)}
                         className="px-3.5 py-1.5 rounded-full text-xs font-medium"
                         style={{
@@ -14901,7 +14939,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           color: analysisPeriod === p ? "#FFFDF8" : C.inkSoft,
                           border: `1px solid ${analysisPeriod === p ? C.curtain : C.line}`
                         }}>
-                        {t(p === "week" ? "periodWeek" : p === "month" ? "periodMonth" : p === "year" ? "periodYear" : p === "all" ? "periodAll" : "periodCustom")}
+                        {t(p === "last7" ? "periodLast7" : p === "week" ? "periodWeek" : p === "month" ? "periodMonth" : p === "year" ? "periodYear" : p === "all" ? "periodAll" : "periodCustom")}
                       </button>
                     ))}
                     {Object.values(entries).some((e) => entryHasActivityKind(e, "本番")) && (
