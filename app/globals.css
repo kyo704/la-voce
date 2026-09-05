@@ -334,6 +334,19 @@ button {
   z-index: 1;
   background: linear-gradient(to right, #F6F1E7 0%, rgba(246, 241, 231, 0) 100%);
 }
+/* ★★大きい文字のとき、★左端の覆いを外します（2026-09-05・実機）。
+   ★覆いは 28px あり、★地の色で塗りつぶします。
+   ★文字が大きいとタブが広がり、★★ちょうど名前の上に乗ります。
+     ★実機では「レッスン」が「し」だけになり、★赤い丸（選ばれているタブ）に
+     ★重なって見えていました。
+   ★2026-09-02 に、★右端の覆いを同じ理由で外しています（上の注記）。
+     ★★同じことが、★左端でも起きていました。
+   ★「戻る先がある」は、★指で払えば分かります。★名前が読めないほうが重いです。 */
+:root[data-scale="large"] .nav-scroll-wrap::before,
+:root[data-scale="xlarge"] .nav-scroll-wrap::before {
+  display: none;
+}
+
 .nav-scroll::-webkit-scrollbar {
   display: none;
 }

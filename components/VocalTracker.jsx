@@ -5431,8 +5431,25 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //   ★★門が読む列は、★必ずここに入れること。
       //     ★取ってこない列は undefined で、★undefined || null は null です。
       //     ★2026-09-03 に、それで撤回が効かなくなりました。
+      // ★★見やすさの2列（2026-09-05）。★同じ組に入れます。
+      //   ★★これが抜けていました。★この日、半日それで迷いました。
+      //
+      //   ★何が起きていたか
+      //     ・読む列に display_scale が無い → ★profile.display_scale は undefined
+      //     ・normalizeScale(undefined) は "normal" → scaleAttribute は null
+      //     ・★html の data-scale が、★外されます
+      //     ・設定の画面は「ふつう」が選ばれて見えます（同じ理由で）
+      //     ・押すと、その場では効きます（setProfile が先に入るため）
+      //     ・★★ですが、★開き直すと、★ふつうに戻っています
+      //
+      //   ★だから「直っていない」と「直った」が、★往復していました。
+      //     ★CSS は正しく、★画面の作りも正しく、★読む列だけが足りていませんでした。
+      //
+      //   ★★5431行の注意書きが、★そのまま当たっていました。
+      //     「門が読む列は、必ずここに入れること」。★見やすさも、門の一種です。
       const PROFILE_CONSENT_COLUMNS =
-        "consent_health_data_withdrawn_at, age_band, age_band_answered_at";
+        "consent_health_data_withdrawn_at, age_band, age_band_answered_at, "
+        + "display_scale, simple_display";
       // ★読めなかったことを、★覚えておきます。★黙って「撤回していない」に
       //   倒さないためです。画面に出します（設定の同意欄）。
       let consentColumnMissing = false;
@@ -13686,12 +13703,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ) : (
                       <>
                         <p className="text-xs mb-2" style={{ color: C.inkSoft }}>他の先生の教室に、講師として参加できます。</p>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 flex-wrap">
                           <input type="text" value={orgInviteCodeInput} onChange={(e) => setOrgInviteCodeInput(e.target.value)}
                             placeholder={t("enterInvitationCodePlaceholder")} maxLength={8}
                             className="flex-1 rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
                           <button type="button" onClick={() => handleLookupOrgInviteCode(orgInviteCodeInput)}
-                            className="px-4 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>{t("confirmButton")}</button>
+                            className="px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap shrink-0" style={{ background: C.curtain, color: "#FFFDF8" }}>{t("confirmButton")}</button>
                         </div>
                         {orgInviteLookupError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{orgInviteLookupError}</p>}
                       </>
@@ -13950,12 +13967,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ) : (
                       <>
                         <p className="text-xs mb-2" style={{ color: C.inkSoft }}>他の先生の教室に、講師として参加できます。</p>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 flex-wrap">
                           <input type="text" value={orgInviteCodeInput} onChange={(e) => setOrgInviteCodeInput(e.target.value)}
                             placeholder={t("enterInvitationCodePlaceholder")} maxLength={8}
                             className="flex-1 rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
                           <button type="button" onClick={() => handleLookupOrgInviteCode(orgInviteCodeInput)}
-                            className="px-4 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>{t("confirmButton")}</button>
+                            className="px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap shrink-0" style={{ background: C.curtain, color: "#FFFDF8" }}>{t("confirmButton")}</button>
                         </div>
                         {orgInviteLookupError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{orgInviteLookupError}</p>}
                       </>
@@ -14884,7 +14901,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                         100点満点の絶対評価だと、良い日も悪い日も似た点数に集まりがちです。自分の直近{deviationScore.n}日の分布の中で、今日がどこにいるかで見ます。
                       </p>
-                      <div className="flex items-center gap-5">
+                      {/* ★★大きい文字のとき、★右の文が1行に1文字ずつ縦に並んでいました
+                          （2026-09-05・実機）。
+                          ★となりの箱に flexShrink: 0 が付いていて、★縮みません。
+                          ★★日本語は、★どこでも折り返せます。
+                            ★だから、★縮められる側は、★字1つぶんまで細くなります。
+                          ★入りきらないときは、★下に回します。★横に潰しません。 */}
+                      <div className="flex items-center gap-5 flex-wrap">
                         {/* ★§3-C: リングを点列に置き換えた。
                             リングは「7／9日中」しか言えない。点列なら、順位と散らばりを
                             同時に見せられる。良い日と悪い日がどれくらい離れているかが分かる。

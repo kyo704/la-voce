@@ -62,7 +62,16 @@ export default function ShindanPage() {
       cell: g(cell) ? g(cell).fontSize : "?",
       body: g(body) ? g(body).fontSize : "?",
       head: g(head) ? g(head).fontSize : "?",
-      wrap: g(row) ? g(row).flexWrap : "?"
+      wrap: g(row) ? g(row).flexWrap : "?",
+      // ★★字1つぶんまで潰れていないか。★幅で分かります。
+      //   ★1文字より少し広い程度なら、★縦に1文字ずつ並んでいます。
+      squeeze: (() => {
+        const el = document.getElementById("shindan-squeeze");
+        if (!el) return "?";
+        const w = Math.round(el.getBoundingClientRect().width);
+        const one = parseFloat(g(el).fontSize) || 16;
+        return w + "px（1文字は約" + Math.round(one) + "px）" + (w < one * 3 ? " ★潰れています" : " ★大丈夫です");
+      })()
     });
     setRules(countRules());
   }
@@ -115,6 +124,29 @@ export default function ShindanPage() {
               style={{ border: "1px solid #ddd" }}>{d}</div>
           ))}
         </div>
+        {/* ★★2026-09-05、★ここが足りませんでした。
+            ★前の見本は、★きれいすぎて、★崩れる形になっていませんでした。
+            ★本物には、★「縮まない箱」と「縮む文」が、★となり合っています。
+            ★それが、★字1つぶんまで潰れる形です。 */}
+        <div className="flex items-center gap-5 flex-wrap" style={{ marginTop: 12 }}>
+          <div style={{ flexShrink: 0, minWidth: 0 }}>
+            <span className="ff-display italic" style={{ fontSize: "1.7rem" }}>52</span>
+            <span className="text-xs">／18日中</span>
+          </div>
+          <div style={{ flex: 1 }}>
+            <p id="shindan-squeeze" className="text-xs">
+              この18日のうち、今日は低いほうから7番目です。
+            </p>
+          </div>
+        </div>
+        <div className="flex gap-2 flex-wrap" style={{ marginTop: 10 }}>
+          <input readOnly value="ABCD1234"
+            className="flex-1 rounded-lg border p-2 text-sm ff-mono"
+            style={{ border: "1px solid #ddd", fontSize: "max(16px, 0.875rem)" }} />
+          <button type="button" className="px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap shrink-0"
+            style={{ background: "#7A1F2B", color: "#FFFDF8" }}>確認する</button>
+        </div>
+
         <div id="shindan-row" className="flex items-center justify-between" style={{ marginTop: 10, gap: 8 }}>
           <span className="text-sm">横に並ぶものの見本です</span>
           <button type="button" className="text-sm" style={{ border: "1px solid #ccc", borderRadius: 999, padding: "8px 14px" }}>
@@ -132,6 +164,7 @@ export default function ShindanPage() {
             <li>本文：<strong>{sizes.body}</strong>（★ふつうより大きくなるはずです）</li>
             <li>見出し：<strong>{sizes.head}</strong>（★24px を超えないはずです）</li>
             <li>横並びの折り返し：<strong>{sizes.wrap}</strong>（★とても大きい で wrap なら、効いています）</li>
+            <li>潰れていないか：<strong>{sizes.squeeze}</strong></li>
           </ul>
         ) : <p style={{ fontSize: "0.9375rem" }}>まだ測っていません。</p>}
       </div>
