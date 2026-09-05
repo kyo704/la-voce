@@ -362,6 +362,18 @@ function LoginPageInner() {
             style={{ background: "none", border: "none", padding: 0, fontSize: "0.8125rem", color: "#7A1F2B", textDecoration: "underline", cursor: "pointer" }}>
             {mode === "reset" ? ltr("resetBack", lang) : ltr("linkForgot", lang)}
           </button>
+
+          {/* ★★メールごと失った方の道（判断-メールを失うこと §3）。
+              ★「パスワードを忘れた」の下に、小さく置きます。
+              ★★大きく出さないこと。★ふつうは、ここまで来ません。
+              ★でも、★来た方には、★ここしか無いのです。
+              ★どこからも行けない画面は、★無いのと同じです。 */}
+          {mode === "reset" && (
+            <a href="/recovery"
+              style={{ fontSize: "0.8125rem", color: "#7A1F2B", textDecoration: "underline", marginTop: 2 }}>
+              メールそのものが使えない方は、こちら
+            </a>
+          )}
         </form>
         )}
 

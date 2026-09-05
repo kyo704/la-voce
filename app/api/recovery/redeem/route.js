@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { verifyRecoveryCode } from "@/lib/recoveryCodeServer";
+import { sendEmailChangedNotice } from "@/lib/securityMail";
 import {
   normalizeRecoveryCode, isWellFormedRecoveryCode,
   RECOVERY_MAX_ATTEMPTS, recoveryLockMinutes, isRecoveryLocked
@@ -184,6 +185,20 @@ export async function POST(request) {
     via: "recovery"
   });
   if (logErr) console.error("★履歴を残せませんでした:", logErr.message);
+
+  // ★★新旧の両方に、お知らせします（判断-メールを失うこと §7）。
+  //   ★古いほうは、受け取れないかもしれません。★それでも送ります。
+  //   ★★「古いアドレスがまだ生きていた」場合が、★いちばん危ないからです。
+  //   ★送れなくても、★ここで止めません。
+  //     ★送れないことより、★入れないことのほうが重いです。
+  const notified = await sendEmailChangedNotice({
+    apiKey: process.env.RESEND_API_KEY,
+    from: process.env.FEEDBACK_FROM_EMAIL,
+    oldEmail,
+    newEmail,
+    changedVia: "recovery"
+  });
+  if (notified === 0) console.error("★変更のお知らせを送れませんでした");
 
   return evenOut(NextResponse.json(SAME_ANSWER, { status: 200 }));
 }
