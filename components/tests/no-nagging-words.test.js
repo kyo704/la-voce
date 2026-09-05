@@ -61,6 +61,12 @@ const RUSHING_EXCEPTIONS = [
  *     ★測定の名前であって、続けたことへの評価ではない、が条件です。
  */
 const MEASUREMENT_EXCEPTIONS = [
+  // ★★お知らせの文面（2026-09-03 確定・v3）。★1文字も変えられません。
+  //   ★禁じた理由は「まだ記録していません」のように、★利用者を急かすことでした。
+  //   ★★ここは、★開発者が自分の落ち度を言っています。★急かしていません。
+  //   ★出どころ docs/lavoce-お知らせ画面-文面（2026-09-03確定-v3）.md の末尾に、
+  //     ★この例外を足すように、と書かれています。★検査は消していません。
+  { text: "私（開発者）の作り忘れです", why: "開発者が自分の落ち度を言う言葉。利用者を急かしていない" },
   { text: "最長の連続発話ブロック", why: "続けて話した長さの名前。日数の連続ではない" },
   // ★声の負荷の言葉。何日続けて本番があったかは、声帯の回復に直に効きます。
   //   記録を続けたことへの評価ではありません。
@@ -184,7 +190,13 @@ console.log("=== ★急かす言葉が、画面に出ていない ===");
 
 console.log("\n=== ★連続記録が、消えたままである ===");
 {
-  const files = ["components/VocalTracker.jsx", "components/CharacterHome.jsx", "lib/character.js", "lib/translations.js"];
+  // ★★2026-09-05、★お知らせの文面を足すときに気づきました。
+  //   ★lib/notices.js と NoticeScreen を、★見ていませんでした。
+  //   ★★利用者に出る言葉なのに、★検査の外にありました。
+  //   ★見る場所を増やします。★言葉が増える場所は、必ずここに足すこと。
+  const files = ["components/VocalTracker.jsx", "components/CharacterHome.jsx",
+    "lib/character.js", "lib/translations.js",
+    "lib/notices.js", "components/NoticeScreen.jsx"];
   let back = [];
   files.forEach((f) => {
     const p = path.join(root, f);

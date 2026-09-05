@@ -57,6 +57,8 @@ import { osOf, installGuidePlatform } from "@/lib/platform";
 //   ★入ったままで長く使える形にしたぶん、★持ち出すときだけ、確かめます。
 import ReauthGate from "@/components/ReauthGate";
 import RecoveryCodeCard from "@/components/RecoveryCodeCard";
+// ★★お知らせの画面（v3・2026-09-03 確定）。★文面は lib/notices.js が持ちます。
+import NoticeScreen from "@/components/NoticeScreen";
 import { REAUTH_ACTIONS, reauthStillValid } from "@/lib/reauth";
 import { SIMPLE_STEPS, SIMPLE_STEP_COUNT, remainingSteps, applyStep, skipStep,
   nextIndex, prevIndex, isFinished, SIMPLE_SKIP_LABEL, SIMPLE_BACK_LABEL, SIMPLE_DONE_TEXT } from "@/lib/simpleFlow";
@@ -8982,6 +8984,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [emailBusy, setEmailBusy] = useState(false);
   const [emailMsg, setEmailMsg] = useState("");
   const [showReissue, setShowReissue] = useState(false); // 控えの出し直し
+  // ★★お知らせから、同意の画面へ進んでいる最中か（2026-09-05）。
+  //   ★onboarding_completed を false に戻しません。
+  //   ★★戻すと、★プロフィールの設定からやり直しになります。
+  //   ★同意だけの1段（existingUser）を、★そのまま借ります。
+  const [renewingConsent, setRenewingConsent] = useState(false);
   const [deleteStatus, setDeleteStatus] = useState("idle"); // idle | working | error
   const [deleteError, setDeleteError] = useState("");
   // ★オーナーの退会を止めたときの、その教室の一覧（判断 2026-09-01）。
@@ -11421,6 +11428,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     return <OnboardingFlow existingUser={existingUser} onComplete={handleCompleteOnboarding} t={t} />;
   }
 
+  // ★★お知らせから「同意の画面へ」を押した方（2026-09-05）。
+  //   ★同意だけの1段を、そのまま借ります（existingUser）。
+  //   ★★済んだら、★お知らせを既読にします。★二度は出しません。
+  if (!loading && renewingConsent) {
+    return (
+      <OnboardingFlow existingUser onComplete={async (patch) => {
+        await handleCompleteOnboarding(patch);
+        await markNoticeShown("consentApology2026");
+        setRenewingConsent(false);
+      }} t={t} />
+    );
+  }
+
   return (
     <div style={{ background: C.paper, color: C.ink, minHeight: "100vh" }}>
       {/* ★★大事な操作の前の、もう一度の確かめ（判断-メールを失うこと §4）。
@@ -11835,6 +11855,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         つながりを見る →
                       </span>
                     </button>
+                  )}
+                  {/* ★★お知らせ（v3・2026-09-03 確定・2026-09-05 実装）。
+                      ★お詫びの画面です。★いちばん上に、1度だけ出します。
+                      ★★「あとで」を押した方は、★次にまた出ます。
+                        ★責めません。★催促の言葉も、足しません。
+                      ★同意し直した方には、★二度と出ません。 */}
+                  {shouldShowNotice(noticeState, "consentApology2026") && (
+                    <NoticeScreen
+                      onGoConsent={() => setRenewingConsent(true)}
+                      onLater={() => markNoticeShown("consentApology2026")} />
                   )}
                   {/* 1回だけの知らせ（lib/notices.js）。
                       ★出すのは、まだ既読でなく、かつ文字が既定の大きさのときだけ。
