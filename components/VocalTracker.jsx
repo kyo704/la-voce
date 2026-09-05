@@ -2230,7 +2230,13 @@ function Gauge({ score, t }) {
   const color = score == null ? C.inkSoft : levelInk(score);
   return (
     <div className="flex flex-col items-center">
-      <svg viewBox="0 0 200 116" style={{ width: "100%", maxWidth: 260 }}>
+      {/* ★★グラフの上限を、文字の倍率に合わせて広げます（2026-09-05 夜）。
+          ★2026-09-05、実機で「グラフだけ小さいまま」とご報告がありました。
+          ★★グラフが縮んだのではありません。★まわりだけが伸びていました。
+          ★上限（maxWidth）が px の決め打ちで、★倍率に付いてこなかったためです。
+          ★min(100%, …) なので、★狭い画面では、これまでどおり画面幅までです。 */}
+      <svg viewBox="0 0 200 116"
+        style={{ width: "100%", maxWidth: "min(100%, calc(260px * var(--scale)))" }}>
         {segs.map((s, i) => (
           <path key={i} d={s.d} fill="none" stroke={s.color} strokeWidth={sw} strokeLinecap="butt" opacity={score == null ? 0.35 : 0.9} />
         ))}
@@ -2624,8 +2630,10 @@ function DotStrip({ values, today, height = 46 }) {
   const pad = 10;
   const w = 100;
   const x = (v) => pad + ((v - min) / span) * (w - pad * 2);
+  // ★上限を、文字の倍率に合わせて広げます（2026-09-05 夜）。
   return (
-    <svg viewBox={`0 0 ${w} ${height}`} style={{ width: "100%", maxWidth: 260 }} aria-hidden="true">
+    <svg viewBox={`0 0 ${w} ${height}`}
+      style={{ width: "100%", maxWidth: "min(100%, calc(260px * var(--scale)))" }} aria-hidden="true">
       {/* 目盛りは3本だけ（§3-C） */}
       {[0, 0.5, 1].map((f) => (
         <line key={f} x1={pad + f * (w - pad * 2)} x2={pad + f * (w - pad * 2)}
@@ -2640,7 +2648,7 @@ function DotStrip({ values, today, height = 46 }) {
       {typeof today === "number" && (
         <>
           <circle cx={x(today)} cy={height - 22} r={3.6} fill={SERIES.s1} />
-          <text x={x(today)} y={height - 30} textAnchor="middle" fontSize="7" fill={SERIES.axis}>今日</text>
+          <text x={x(today)} y={height - 30} textAnchor="middle" style={{ fontSize: "0.5625rem", fill: SERIES.axis }}>今日</text>
         </>
       )}
     </svg>
@@ -2675,7 +2683,7 @@ function GroupDotPlot({ values1, values0, label1, label0, width = 260, rowHeight
   ];
   const height = rowHeight * 2 + 18;
   return (
-    <svg width="100%" viewBox={`0 0 ${width} ${height}`} style={{ display: "block", maxWidth: width }}>
+    <svg width="100%" viewBox={`0 0 ${width} ${height}`} style={{ display: "block", maxWidth: `min(100%, calc(${width}px * var(--scale)))` }}>
       {rows.map((row, ri) => {
         const med = row.vals.length ? median(row.vals) : null;
         return (
@@ -2716,7 +2724,7 @@ function CorrelationScatter({ pairs, xLabel, yLabel, width = 260, height = 150 }
   const px = (v) => padL + ((v - xLo) / ((xHi - xLo) || 1)) * (width - padL - padR);
   const py = (v) => height - padB - ((v - yLo) / ((yHi - yLo) || 1)) * (height - padB - padT);
   return (
-    <svg width="100%" viewBox={`0 0 ${width} ${height}`} style={{ display: "block", maxWidth: width }}>
+    <svg width="100%" viewBox={`0 0 ${width} ${height}`} style={{ display: "block", maxWidth: `min(100%, calc(${width}px * var(--scale)))` }}>
       <line x1={padL} y1={height - padB} x2={width - padR} y2={height - padB} stroke={C.line} strokeWidth={1} />
       <line x1={padL} y1={padT} x2={padL} y2={height - padB} stroke={C.line} strokeWidth={1} />
       {pts.map((p, i) => (
@@ -2741,7 +2749,7 @@ function PeriodBands({ rows, maxDay = 35, width = 280, rowHeight = 18 }) {
   const x = (day) => padL + ((day - 1) / Math.max(1, maxDay - 1)) * (width - padL - padR);
   const height = list.length * rowHeight + 16;
   return (
-    <svg width="100%" viewBox={`0 0 ${width} ${height}`} style={{ display: "block", maxWidth: width }}>
+    <svg width="100%" viewBox={`0 0 ${width} ${height}`} style={{ display: "block", maxWidth: `min(100%, calc(${width}px * var(--scale)))` }}>
       {list.map((row, ri) => {
         const y = ri * rowHeight + rowHeight / 2;
         const last = Math.min(maxDay, row.length || maxDay);
@@ -3725,6 +3733,21 @@ const CONSENT_DATA_CATEGORIES = [
   "既往症・診断済みの症状（登録した場合のみ）",
   "食事・運動の記録"
 ];
+// ============================================================================
+// ★グラフの高さ（2026-09-05 夜）
+//
+//   ★★グラフは、★文字と一緒に大きくなりません。
+//     ★入れ物の高さが、★px の決め打ちだからです。
+//     ★文字だけが伸びて、★グラフが小さく見えていました。
+//
+//   ★倍率をかけます。★決めは、★ここ1か所です。
+//     ★★あちこちに calc を書かないこと。★片方だけ直す日が来ます。
+//
+//   ★絵なので、★上限は置きません。★横は画面幅で止まります（min(100%, …)）。
+function chartHeight(px) {
+  return `calc(${px}px * var(--scale))`;
+}
+
 // ============================================================================
 // プロフィールの恒久項目（4グループ）。
 // ★「もっと > プロフィール・記録項目」と、初回登録のオンボーディングの両方で使う。
@@ -11694,7 +11717,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
               <h3 className="ff-display italic text-lg mb-1">直近4週の推移</h3>
               <p className="text-xs mb-3" style={{ color: C.inkSoft }}>記録{lessonModeData.recordedCount}/28日</p>
-              <div style={{ width: "100%", height: 130 }}>
+              <div style={{ width: "100%", height: chartHeight(130) }}>
                 <ResponsiveContainer>
                   <LineChart data={lessonModeData.scoreTrend} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                     <CartesianGrid stroke={C.line} />
@@ -11726,7 +11749,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
             <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
               <h3 className="ff-display italic text-lg mb-1">発声負荷（ACWR）</h3>
-              <div style={{ width: "100%", height: 110 }}>
+              <div style={{ width: "100%", height: chartHeight(110) }}>
                 <ResponsiveContainer>
                   <LineChart data={lessonModeData.loadTrend} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                     <CartesianGrid stroke={C.line} />
@@ -14418,7 +14441,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     {/* 数のとき：折れ線と、数そのもの。★色分けはしません。 */}
                     {open.display === "series" && rows.length > 0 && (
                       <>
-                        <div style={{ height: 140 }}>
+                        <div style={{ height: chartHeight(140) }}>
                           <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={[...rows].reverse().map((r) => ({ date: r.date.slice(5), value: r.value }))}>
                               <CartesianGrid strokeDasharray="3 3" stroke={C.line} />
@@ -14540,7 +14563,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ) : m.data ? (
                           <>
                             <p className="text-xs mb-1" style={{ color: C.inkSoft }}>{m.label}</p>
-                            <div style={{ width: "100%", height: 100 }}>
+                            <div style={{ width: "100%", height: chartHeight(100) }}>
                               <ResponsiveContainer>
                                 <LineChart data={m.data} margin={{ left: 0, right: 8, top: 4, bottom: 0 }}>
                                   <Line type="monotone" dataKey="value" stroke={C.curtain} strokeWidth={2} dot={{ r: 2 }} connectNulls />
@@ -15008,7 +15031,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         叫び・悲鳴のテイク数が多かった日（あなたの上位25%・{screamRecoveryCurve.p75}テイク以上）を基準に、
                         その日から何日で平常値に戻るかを重ね合わせています（{screamRecoveryCurve.n}件のデータ）。
                       </p>
-                      <div className="flex items-end gap-3" style={{ height: 90 }}>
+                      <div className="flex items-end gap-3" style={{ height: chartHeight(90) }}>
                         {screamRecoveryCurve.curve.map((c) => (
                           <div key={c.tau} className="flex-1 flex flex-col items-center justify-end h-full">
                             {c.avgDeviation != null ? (
@@ -15135,7 +15158,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                         ツアー初日を0日目にそろえ、過去{tourEnduranceCurve.tourCount}本のツアーを重ね合わせています。
                       </p>
-                      <div className="flex items-end gap-1.5" style={{ height: 90 }}>
+                      <div className="flex items-end gap-1.5" style={{ height: chartHeight(90) }}>
                         {tourEnduranceCurve.curve.map((c) => (
                           <div key={c.tau} className="flex-1 flex flex-col items-center justify-end h-full">
                             {c.avgDeviation != null ? (
@@ -15268,7 +15291,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </p>
                       )}
                       {forecastChartData.length > 0 && (
-                        <div style={{ width: "100%", height: 180 }}>
+                        <div style={{ width: "100%", height: chartHeight(180) }}>
                           <ResponsiveContainer>
                             <ComposedChart data={forecastChartData} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                               <CartesianGrid stroke={C.line} />
@@ -15363,7 +15386,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleResonanceChart")}</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteResonanceChart")}</p>
-                  <div style={{ width: "100%", height: 180 }}>
+                  <div style={{ width: "100%", height: chartHeight(180) }}>
                     <ResponsiveContainer>
                       <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
@@ -15381,7 +15404,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titlePitchChart")}</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("notePitchChart")}</p>
-                  <div style={{ width: "100%", height: 220 }}>
+                  <div style={{ width: "100%", height: chartHeight(220) }}>
                     <ResponsiveContainer>
                       <LineChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
@@ -15621,7 +15644,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </p>
                       )}
                       {acwrChartData.length > 0 && (
-                        <div style={{ width: "100%", height: 180 }}>
+                        <div style={{ width: "100%", height: chartHeight(180) }}>
                           <ResponsiveContainer>
                             <LineChart data={acwrChartData} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                               <CartesianGrid stroke={C.line} />
@@ -15829,7 +15852,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleSleepChart")}</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteSleepChart")}</p>
-                  <div style={{ width: "100%", height: 200 }}>
+                  <div style={{ width: "100%", height: chartHeight(200) }}>
                     <ResponsiveContainer>
                       <BarChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
@@ -15869,7 +15892,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </ResponsiveContainer>
                   </div>
 
-                  <div style={{ width: "100%", height: 150 }}>
+                  <div style={{ width: "100%", height: chartHeight(150) }}>
                     <ResponsiveContainer>
                       <ComposedChart data={timeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
@@ -15961,7 +15984,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleMentalTrend")}</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("noteMentalTrend")}</p>
-                  <div style={{ width: "100%", height: 200 }}>
+                  <div style={{ width: "100%", height: chartHeight(200) }}>
                     <ResponsiveContainer>
                       <LineChart data={easeTimeSeries} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                         <CartesianGrid stroke={C.line} />
@@ -16077,7 +16100,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         あなたは<strong>本番の{Math.abs(peakingCurve.lowestDip.tau)}日前にいちど沈む</strong>型です（過去{peakingCurve.count}回の平均）。
                       </p>
                     )}
-                    <div style={{ width: "100%", height: 200 }}>
+                    <div style={{ width: "100%", height: chartHeight(200) }}>
                       <ResponsiveContainer>
                         <ComposedChart data={peakingCurve.curve.map((c) => ({
                           tau: c.tau === 0 ? "当日" : c.tau > 0 ? `+${c.tau}` : `${c.tau}`,
@@ -16177,7 +16200,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           まだ明確な快適帯は見えていません。気温・湿度・喉の記録が増えると精度が上がります。
                         </p>
                       )}
-                      <div style={{ width: "100%", height: 140 }}>
+                      <div style={{ width: "100%", height: chartHeight(140) }}>
                         <ResponsiveContainer>
                           <BarChart data={comfortZone1D.binStats.map((s) => ({ bin: `${s.bin}`, avg: roundTo1(s.avg), n: s.n }))} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                             <CartesianGrid stroke={C.line} />
@@ -16610,7 +16633,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           return <span key={i}>{part}</span>;
                         })}
                       </p>
-                      <div style={{ width: "100%", height: 260 }}>
+                      <div style={{ width: "100%", height: chartHeight(260) }}>
                         <ResponsiveContainer>
                           <BarChart data={chartData} layout="vertical" margin={{ left: 8, right: 16, top: 4, bottom: 4 }}>
                             <CartesianGrid horizontal={false} stroke={C.line} />
@@ -16765,7 +16788,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <p className="text-xs mb-3 leading-relaxed rounded-xl p-2.5" style={{ color: C.inkSoft, background: C.paper }}>
                           {t("noteScatterExplain")}
                         </p>
-                        <div style={{ width: "100%", height: 220 }}>
+                        <div style={{ width: "100%", height: chartHeight(220) }}>
                           <ResponsiveContainer>
                             <ScatterChart margin={{ left: 8, right: 16, top: 8, bottom: 8 }}>
                               <CartesianGrid stroke={C.line} />
@@ -17557,7 +17580,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                 </div>
                               )}
                               {history.length > 1 && (
-                                <div style={{ width: "100%", height: 110 }} className="mt-2">
+                                <div style={{ width: "100%", height: chartHeight(110) }} className="mt-2">
                                   <ResponsiveContainer>
                                     <LineChart data={history.map((h) => ({ date: h.response_date.slice(5), score: h.total_score }))} margin={{ left: 0, right: 8, top: 4, bottom: 0 }}>
                                       <XAxis dataKey="date" tick={{ fontSize: "0.5625rem", fill: C.inkSoft }} />
@@ -17834,7 +17857,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                     <h3 className="text-sm font-medium mb-1.5">声の使用量（週あたり）</h3>
                     {clinicWeeklyVoiceUsage.length > 0 ? (
-                      <div style={{ width: "100%", height: 140 }} className="mb-4">
+                      <div style={{ width: "100%", height: chartHeight(140) }} className="mb-4">
                         <ResponsiveContainer>
                           <BarChart data={clinicWeeklyVoiceUsage} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                             <CartesianGrid stroke={C.line} />
