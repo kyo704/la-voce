@@ -68,8 +68,8 @@ function writtenColumns() {
 }
 
 // ★SQL の中で「止める」と書いてある列を拾います。
-function guardedColumns() {
-  const sql = readRaw("supabase", "2026-09-05-profiles-server-only-columns.sql");
+function guardedColumns(file) {
+  const sql = readRaw("supabase", file || "2026-09-05-profiles-server-only-columns.sql");
   const out = new Set();
   const re = /guarded\s*:=\s*'([a-z_][a-z0-9_]*)'/g;
   let m;
@@ -79,6 +79,9 @@ function guardedColumns() {
 
 console.log("\n① ★止める列が、決まっていること");
 const guarded = guardedColumns();
+// ★2026-09-05 の後半で、reauth_at を足した SQL です。★関数ごと入れ替えます。
+const guardedLater = guardedColumns("2026-09-05-reauth-at.sql");
+const guardedAll = new Set([...guarded, ...guardedLater]);
 ok(`★止める列がある（${guarded.size} 列）`, guarded.size > 0);
 // ★★これがいちばん重い列です。★外さないこと。
 //   ★app/admin/page.js は、profiles.is_admin だけを見て通し、
@@ -86,11 +89,14 @@ ok(`★止める列がある（${guarded.size} 列）`, guarded.size > 0);
 ok("★★is_admin を止めている（★管理画面の鍵です）", guarded.has("is_admin"));
 ok("★deleted_at を止めている（★30日の猶予を飛ばせないように）", guarded.has("deleted_at"));
 ok("★teacher_beta_access を止めている", guarded.has("teacher_beta_access"));
+// ★★2026-09-05 追加。★本人が書けると、確かめが意味を失います。
+//   ★確かめずに、書き出しも削除もできてしまいます。
+ok("★★reauth_at を止めている", guardedAll.has("reauth_at"));
 
 console.log("\n② ★★止める列を、アプリが書いていないこと");
 const { cols, viaVariable } = writtenColumns();
 ok(`★アプリの書き込みを数えられた（${cols.size} 列）`, cols.size > 10);
-const collide = [...guarded].filter((c) => cols.has(c));
+const collide = [...guardedAll].filter((c) => cols.has(c));
 // ★★ここが落ちたら、★本番でその保存が失敗します。
 //   ★引き金を直すか、★アプリの側を route に移すか、どちらかです。
 ok(`★ぶつかっている列が無い${collide.length ? "（★" + collide.join(" ") + "）" : ""}`,
@@ -107,7 +113,7 @@ const builderText = builders.map((b) => {
   const i = src.indexOf(`function ${b}`);
   return i === -1 ? "" : src.slice(i, i + 1500);
 }).join("\n") + readRaw("lib", "ageGate.js");
-const fromBuilders = [...guarded].filter((c) => new RegExp(`\\b${c}\\s*:`).test(builderText));
+const fromBuilders = [...guardedAll].filter((c) => new RegExp(`\\b${c}\\s*:`).test(builderText));
 ok(`★patch を作る関数も、止める列を入れていない${fromBuilders.length ? "（★" + fromBuilders.join(" ") + "）" : ""}`,
   fromBuilders.length === 0);
 

@@ -473,10 +473,36 @@ body {
 /* ⑤ ★暦の数字は、★大きくしない
       ★★7つ並ぶ升目の幅は、★画面の1/7で決まっています。
         ★数字だけ大きくしても、★升目は広がりません。★重なります。
-      ★暦は「読むもの」ではなく「場所を示すもの」です。 */
+      ★暦は「読むもの」ではなく「場所を示すもの」です。
+
+      ★★2026-09-05、★1度目の直しは効いていませんでした。書いておきます。
+        ★書いたもの   .grid-cols-7 { font-size: calc(1rem / var(--scale)) }
+        ★効かない理由 ★升目の中の数字は text-xs（rem）で書かれています。
+                       ★rem は、★親ではなく★根（html）を見ます。
+                       ★★だから、入れ物の大きさを変えても、★届きません。
+        ★見出しのときと、★同じ間違いです（クラスのほうが強い／rem は根を見る）。
+
+      ★今度は、★升目の中身そのものに、★はっきりした大きさを置きます。
+        ★* まで含めて指しているので、★text-xs より強くなります。 */
 :root[data-scale="large"] .grid-cols-7,
-:root[data-scale="xlarge"] .grid-cols-7 {
-  font-size: calc(1rem / var(--scale));
+:root[data-scale="large"] .grid-cols-7 *,
+:root[data-scale="xlarge"] .grid-cols-7,
+:root[data-scale="xlarge"] .grid-cols-7 * {
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+/* ⑦ ★横に並んだものが入りきらないときは、★下へ回す
+      ★★2026-09-05、★レッスンの画面が横に流れる（指で払える）状態でした。
+        ★「教室に参加する」が、★画面の外へ出ていました。
+      ★★横に流すと、★そこに何かがあることに気づけません。
+        ★下に回れば、★スクロールで必ず出会います。
+      ★これは、★運営者のご提案そのものです（縦に積む）。
+      ★justify-between は、★左右に離して置く指示です。
+        ★入りきらないときに、★離したまま押し出していました。 */
+:root[data-scale="large"] .justify-between,
+:root[data-scale="xlarge"] .justify-between {
+  flex-wrap: wrap;
 }
 
 /* ⑥ ★横に並ぶ選び分けの帯は、★折り返さずに、横に流す

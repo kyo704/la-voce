@@ -76,20 +76,9 @@ function eq(actual, expected, label) {
   ok("★時刻が無いときは、とまっていない", !m.isRecoveryLocked(null, "2026-09-05T10:00:00Z"));
   ok("★読めない時刻で、締め出さない", !m.isRecoveryLocked("こわれた値", "2026-09-05T10:00:00Z"));
 
-  console.log("\n⑤ ★もう一度確かめる操作は、4つだけ（§4 線その1）");
-  // ★★書き出し・削除・メール変更・復旧コードの出し直し。★増やさないこと。
-  //   ★記録するとき・見るときに確かめさせると、★毎日メールを送ることになります。
-  eq(Object.values(m.REAUTH_ACTIONS).sort(),
-    ["change_email", "delete", "export", "reissue_recovery"], "4つで、過不足がない");
-  ok("★記録は、確かめの対象ではない", !m.needsReauth("save_entry"));
-  ok("★見るのも、対象ではない", !m.needsReauth("view"));
-  ok("★書き出しは、対象である", m.needsReauth(m.REAUTH_ACTIONS.EXPORT));
-  ok("★削除は、対象である", m.needsReauth(m.REAUTH_ACTIONS.DELETE_ACCOUNT));
-  ok("★確かめたあと、しばらくは続けられる",
-    m.reauthStillValid("2026-09-05T10:00:00Z", "2026-09-05T10:05:00Z"));
-  ok("★時間が経てば、また確かめる",
-    !m.reauthStillValid("2026-09-05T10:00:00Z", "2026-09-05T10:30:00Z"));
-  ok("★確かめていなければ、通さない", !m.reauthStillValid(null, "2026-09-05T10:00:00Z"));
+  // ★★確かめの決めは、lib/reauth.js に移しました（2026-09-05）。
+  //   ★components/tests/reauth.test.js が見ています。
+  //   ★同じ決めを、2つの確かめで見ないこと。
 
   console.log("\n⑥ ★正直に書くこと（★あとで「何とかして」が来ます）");
   const warning = m.RECOVERY_WARNING_LINES.join(" ");
