@@ -164,11 +164,28 @@ export async function POST(request) {
     ));
   }
 
+  // ★★email_confirm について（2026-09-05 夜・★書き直しました）
+  //
+  //   ★はじめ false にしていました。★狙いは正しかったのですが、★噛み合いません。
+  //
+  //   ★false のとき、そのアドレスは「まだ確かめていない」状態です。
+  //     ★その状態で signInWithOtp を呼ぶと、Supabase は
+  //     ★★「登録の確認」の側の番号を送ります。
+  //     ★こちらの画面は verifyOtp({ type: "email" }) で受けています。
+  //     ★★噛み合いません。★番号が届いても、通らない形です。
+  //
+  //   ★true にすると、★「ログインの番号」が送られ、★type: "email" で受かります。
+  //
+  //   ★★安全は、落ちません。
+  //     ★この印が決めるのは「どちらの番号を送るか」だけです。
+  //     ★★入れるかどうかを決めるのは、★番号そのものです。
+  //     ★番号を入れるまで、★セッションは1つも作られません。
+  //       （この経路は cookie を1行も触りません）
+  //
+  //   ★打ち間違いの危険は、★画面で2回入れていただくことで止めています。
   const { error: mailErr } = await admin.auth.admin.updateUserById(user.id, {
     email: newEmail,
-    // ★★確かめは、このあとの番号でします。
-    //   ★ここで confirm 済みにすると、★誰のものか分からないアドレスが確定します。
-    email_confirm: false
+    email_confirm: true
   });
   if (mailErr) {
     console.error("★アドレスを付け替えられませんでした:", mailErr.message);

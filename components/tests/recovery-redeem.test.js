@@ -11,7 +11,7 @@
  *   実行  node components/tests/recovery-redeem.test.js
  */
 
-const { readCode } = require("./_source");
+const { readCode, readRaw } = require("./_source");
 
 let pass = 0;
 let fail = 0;
@@ -69,8 +69,20 @@ ok("★IP を書こうとしていない", !/\bip\b|x-forwarded-for/i.test(r));
 ok("★履歴が残せなくても、止めていない", /logErr\) console\.error/.test(r));
 
 console.log("\n⑦ ★確かめは、このあとの番号でします");
-// ★★ここで confirm 済みにすると、★誰のものか分からないアドレスが確定します。
-ok("★email_confirm: false にしている", /email_confirm: false/.test(r));
+// ★★2026-09-05 夜に書き直しました。
+//   ★false だと、★Supabase は「登録の確認」の番号を送ります。
+//   ★画面は verifyOtp({ type: "email" }) で受けているので、★噛み合いません。
+//   ★true にすると「ログインの番号」が送られ、★受かります。
+//   ★★安全は落ちません。★入れるかどうかを決めるのは、★番号そのものです。
+ok("★email_confirm: true にしている（★番号の種類を合わせるため）",
+  /email_confirm: true/.test(r));
+// ★★それでも、★この経路はセッションを作らないこと。
+ok("★セッションを作らない（cookie も token も触らない）",
+  !/cookie|setSession|access_token|refresh_token/.test(r));
+// ★★理由はコメントに書いてあります。★readCode はコメントを外します。
+//   ★だから、ここだけ生のまま見ます（★このセッションで6回めの取り違えです）。
+ok("★理由が、コードに書いてある",
+  /安全は、落ちません/.test(readRaw("app", "api", "recovery", "redeem", "route.js")));
 
 console.log("\n⑧ ★ログに、控えを出さないこと");
 ok("★console に控えを出していない", !/console\.(log|info)\(/.test(r));
