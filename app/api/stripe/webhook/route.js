@@ -29,8 +29,42 @@ export async function POST(request) {
 
   const admin = createAdminClient();
 
+  /**
+   * ★どの利用者の契約かを、★突き止めます。
+   *
+   *   ★★2026-09-05 夜に足しました。
+   *     ★それまでは metadata だけを見て、★無ければ★黙って何もしませんでした。
+   *     ★★いちばん困るのは、★解約の知らせが届かないときです。
+   *       ★行が active のまま残り、★解約したのに使える状態になります。
+   *       ★お客さまに得な向きの間違いですが、★記録が本当でなくなります。
+   *
+   *   ★手がかりは3つ。★上から順に試します。
+   *     ① metadata（★こちらが入れたもの。★ふつうは、これで足ります）
+   *     ② stripe_customer_id（★checkout のときに保存しています）
+   *     ③ stripe_subscription_id（★一度でも同期していれば、入っています）
+   */
+  async function findUserId(subscription) {
+    const fromMeta = subscription.metadata && subscription.metadata.supabase_user_id;
+    if (fromMeta) return fromMeta;
+    const customerId = typeof subscription.customer === "string"
+      ? subscription.customer : (subscription.customer && subscription.customer.id);
+    if (customerId) {
+      const { data } = await admin.from("subscriptions")
+        .select("user_id").eq("stripe_customer_id", customerId).maybeSingle();
+      if (data && data.user_id) return data.user_id;
+    }
+    if (subscription.id) {
+      const { data } = await admin.from("subscriptions")
+        .select("user_id").eq("stripe_subscription_id", subscription.id).maybeSingle();
+      if (data && data.user_id) return data.user_id;
+    }
+    // ★★黙らないこと。★誰の契約か分からないまま、通り過ぎるのが、いちばん悪い形です。
+    console.error("★契約の持ち主が分かりませんでした: sub=" + subscription.id);
+    return null;
+  }
+
   async function syncSubscription(subscription) {
-    const userId = subscription.metadata && subscription.metadata.supabase_user_id;
+    const userId = await findUserId(subscription);
     if (!userId) return;
     await admin
       .from("subscriptions")
@@ -91,7 +125,9 @@ export async function POST(request) {
     }
     case "customer.subscription.deleted": {
       const subscription = event.data.object;
-      const userId = subscription.metadata && subscription.metadata.supabase_user_id;
+      // ★★ここが、いちばん大事です。★解約が、記録に届かないと、
+      //   ★行が active のまま残り、★解約したのに使える状態になります。
+      const userId = await findUserId(subscription);
       if (userId) {
         await admin
           .from("subscriptions")
