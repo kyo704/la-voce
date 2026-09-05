@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { C } from "@/lib/tokens";
+import { createClient } from "@/lib/supabase/client";
+import OtpCodeStep from "@/components/OtpCodeStep";
 import {
   normalizeRecoveryCode, isWellFormedRecoveryCode, RECOVERY_PREFIX
 } from "@/lib/recoveryCode";
@@ -32,11 +34,16 @@ export default function RecoveryPage() {
   const [oldEmail, setOldEmail] = useState("");
   const [code, setCode] = useState("");
   const [newEmail, setNewEmail] = useState("");
+  // ★★打ち間違いを、ここで止めます（2026-09-05 夜）。
+  //   ★間違えたアドレスに付け替わると、★その方は二度と入れません。
+  //   ★控えも、そのとき使い切っています。★取り返す手がありません。
+  const [newEmail2, setNewEmail2] = useState("");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
 
-  const ready = oldEmail.trim() && newEmail.trim() && isWellFormedRecoveryCode(code);
+  const sameNew = newEmail.trim() && newEmail.trim().toLowerCase() === newEmail2.trim().toLowerCase();
+  const ready = oldEmail.trim() && sameNew && isWellFormedRecoveryCode(code);
 
   async function submit(e) {
     e.preventDefault();
@@ -54,6 +61,29 @@ export default function RecoveryPage() {
       if (!res.ok) {
         setError(data.error || "いま、お手続きできません。少し置いて、もう一度お試しください。");
         return;
+      }
+      // ★★ここが、いちばん大事なところです（2026-09-05 夜に直しました）。
+      //
+      //   ★以前は、ここで「番号を送りました」と出していました。
+      //   ★★ですが、★番号は1通も送られていませんでした。
+      //     ★付け替えは admin の経路で、★メールを送りません。
+      //     ★つまり、★新しいアドレスを持っていることを、★誰も確かめていませんでした。
+      //
+      //   ★いまは、★ここで実際に送ります。
+      //     ★そして、★その番号を入れていただかないと、★中に入れません。
+      //     ★★これで、★新しいアドレスを本当にお持ちであることが要ります。
+      //
+      //   ★shouldCreateUser: false です。
+      //     ★合っていなかったときに、★新しいアカウントを作らないためです。
+      //     ★★そのときは、番号が届きません。★それでよいのです。
+      //       ★合ったかどうかを、★こちらから言わないためです。
+      try {
+        await createClient().auth.signInWithOtp({
+          email: newEmail.trim(),
+          options: { shouldCreateUser: false }
+        });
+      } catch (e3) {
+        // ★送れなくても、★次の画面は出します。★もう一度送る道があります。
       }
       setDone(true);
     } catch (e2) {
@@ -73,28 +103,34 @@ export default function RecoveryPage() {
 
   // ★★合っても合っていなくても、★同じ画面を出します。
   //   ★「送りました」とは書きません。★送れたかどうかを、こちらは言えません。
+  // ★★合っていれば、新しいアドレスに番号が届きます。
+  //   ★その番号を入れて、はじめて中に入れます。
+  //   ★合っていなければ、番号は届きません。★どちらでも、同じ画面です。
   if (done) {
     return (
-      <main style={{ maxWidth: 420, margin: "0 auto", padding: "56px 24px 96px", color: C.ink }}>
-        <h1 style={{ fontSize: "1.5rem", fontWeight: 600, margin: "0 0 14px", lineHeight: 1.5 }}>
-          お手続きを受け付けました。
-        </h1>
-        <p style={{ fontSize: "1rem", margin: "0 0 10px", lineHeight: 1.9 }}>
-          控えの番号が合っていれば、新しいアドレスに番号が届きます。
+      <main style={{ maxWidth: 420, margin: "0 auto", padding: "48px 24px 96px", color: C.ink }}>
+        <OtpCodeStep
+          email={newEmail.trim()}
+          type="email"
+          heading="新しいアドレスに、番号を送りました。"
+          onVerified={() => { window.location.href = "/dashboard"; }}
+          onResend={async () => {
+            try {
+              const { error: err } = await createClient().auth.signInWithOtp({
+                email: newEmail.trim(),
+                options: { shouldCreateUser: false }
+              });
+              return !err;
+            } catch (e) {
+              return false;
+            }
+          }}
+        />
+        <p style={{ fontSize: "0.9375rem", color: C.inkSoft, margin: "20px 0 0", lineHeight: 1.9 }}>
+          番号が届かないときは、いままでのアドレスか控えの番号が、合っていない可能性があります。
         </p>
-        <p style={{ fontSize: "1rem", margin: "0 0 10px", lineHeight: 1.9 }}>
-          届いたら、ログインの画面から、その番号でお入りください。
-        </p>
-        <p style={{ fontSize: "0.9375rem", color: C.inkSoft, margin: "0 0 24px", lineHeight: 1.9 }}>
-          届かないときは、迷惑メールもご覧ください。
-        </p>
-        <a href="/login"
-          style={{
-            display: "block", width: "100%", padding: "15px", borderRadius: 999,
-            background: C.curtain, color: "#FFFDF8", fontSize: "1.0625rem", fontWeight: 600,
-            textAlign: "center", textDecoration: "none", boxSizing: "border-box"
-          }}>
-          ログインの画面へ
+        <a href="/login" style={{ fontSize: "1rem", color: C.inkSoft, display: "inline-block", padding: "12px 8px" }}>
+          ログインの画面へ戻る
         </a>
       </main>
     );
@@ -135,6 +171,19 @@ export default function RecoveryPage() {
         <input type="email" name="new-email" autoComplete="email" inputMode="email"
           value={newEmail} onChange={(e) => setNewEmail(e.target.value)}
           placeholder="mail@example.com" style={input} />
+
+        <p style={label}>もう一度、これから使うメールアドレス</p>
+        {/* ★★打ち間違いを、ここで止めます。
+            ★間違えたアドレスに付け替わると、★二度と入れません。
+            ★控えも、そのとき使い切っています。 */}
+        <input type="email" name="new-email-confirm" autoComplete="off" inputMode="email"
+          value={newEmail2} onChange={(e) => setNewEmail2(e.target.value)}
+          placeholder="mail@example.com" style={input} />
+        {newEmail2.trim() && !sameNew && (
+          <p style={{ fontSize: "0.9375rem", color: C.curtain, margin: "-8px 0 16px", lineHeight: 1.8 }}>
+            2つのアドレスが、そろっていません。
+          </p>
+        )}
 
         {error && (
           <p style={{ fontSize: "0.9375rem", color: C.curtain, margin: "0 0 12px", lineHeight: 1.7 }}>{error}</p>

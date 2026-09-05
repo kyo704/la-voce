@@ -1,6 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+// ★★2026-09-05 夜、★「入ったままではないか」を確かめるために足しました。
+//   ★推測をやめて、★端末の側で見ます。
+import { createClient } from "@/lib/supabase/client";
+// ★★時間制限のない getUser() を書かないこと（確かめが見張っています）。
+//   ★つながらないときに、★この画面まで固まると、★調べる道具が使えません。
+import { getUserWithTimeout } from "@/lib/withTimeout";
 
 // ============================================================================
 // 診断の画面（2026-09-05）
@@ -24,13 +30,47 @@ export default function ShindanPage() {
   const [scale, setScale] = useState("（まだ押していません）");
   const [sizes, setSizes] = useState(null);
   const [rules, setRules] = useState(null);
+  // ★いま、入っているかどうか。★入っているなら、誰として入っているか。
+  const [who, setWho] = useState("調べています…");
+  const [signingOut, setSigningOut] = useState(false);
 
   useEffect(() => {
     fetch("/api/version").then((r) => r.json()).then(setVer).catch(() => setVer({ short: "読めません" }));
     read();
     // ★いま html に付いている印を、そのまま見せます。
     setScale(document.documentElement.getAttribute("data-scale") || "（付いていません＝ふつう）");
+    checkWho();
   }, []);
+
+  // ★★入っているかどうかを、★そのまま見ます。
+  //   ★画面の見た目ではなく、★セッションそのものを見ます。
+  async function checkWho() {
+    try {
+      const { user, unreachable } = await getUserWithTimeout(createClient(), "診断の認証確認");
+      // ★★「つながらない」と「入っていない」を、分けます。
+      //   ★混ぜると、★入っている方に「出られています」と言ってしまいます。
+      if (unreachable) { setWho("★確かめられませんでした（つながりません）"); return; }
+      if (!user) { setWho("★入っていません"); return; }
+      setWho("★入っています： " + (user.email || "（アドレスなし）"));
+    } catch (e) {
+      setWho("★確かめられませんでした");
+    }
+  }
+
+  // ★出てみて、★本当に出られたかを、★その場で見ます。
+  async function signOutAndCheck() {
+    setSigningOut(true);
+    setWho("出ています…");
+    try {
+      await createClient().auth.signOut();
+    } catch (e) {
+      // ★失敗しても、★下で見ます。
+    }
+    // ★★出たあと、★もう一度見ます。★「出たつもり」を、そのままにしないこと。
+    await new Promise((r) => setTimeout(r, 400));
+    await checkWho();
+    setSigningOut(false);
+  }
 
   // ★★CSS の決まりが、★このブラウザに届いているかを数えます。
   //   ★届いていなければ、★0 と出ます。
@@ -104,6 +144,23 @@ export default function ShindanPage() {
         </p>
         <p style={{ fontSize: "0.9375rem", margin: "6px 0 0" }}>
           html に付いている印：<strong>{scale}</strong>
+        </p>
+      </div>
+
+      {/* ★★入っているかどうか（2026-09-05 夜）。
+          ★★「入っているように見える」と「入っている」は、別のことです。
+          ★ここは、セッションそのものを見ています。 */}
+      <div style={box}>
+        <p style={{ fontSize: "1rem", margin: "0 0 10px", lineHeight: 1.8 }}>
+          <strong>{who}</strong>
+        </p>
+        <button type="button" onClick={signOutAndCheck} disabled={signingOut}
+          style={{ ...btn, width: "100%", opacity: signingOut ? 0.5 : 1 }}>
+          {signingOut ? "出ています…" : "出て、もう一度確かめる"}
+        </button>
+        <p style={{ fontSize: "0.875rem", lineHeight: 1.8, margin: "10px 0 0" }}>
+          ★押したあと「★入っていません」に変われば、出られています。
+          ★変わらなければ、出られていません。
         </p>
       </div>
 
