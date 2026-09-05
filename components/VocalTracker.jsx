@@ -12199,7 +12199,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     調子が悪い日ほど、項目の多さが「開かない理由」になる。
                     ★かんたん記録は劣った記録ではない。減点表示（未入力・完了度）を出さないこと（§11）。 */}
                 <div className="rounded-2xl p-3 border" style={{ background: C.card, borderColor: C.line }}>
-                  <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
+                  <div className="flex rounded-full border p-1 overflow-x-auto nav-scroll" style={{ borderColor: C.line }}>
                     {[["simple", "recordModeSimple"], ["full", "recordModeFull"]].map(([mode, labelKey]) => (
                       <button key={mode} type="button" onClick={() => handleChangeRecordMode(mode)}
                         className="flex-1 py-1.5 rounded-full text-xs font-medium transition-all"
@@ -12234,7 +12234,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                 {formData && (
                   <>
-                    <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
+                    <div className="flex rounded-full border p-1 overflow-x-auto nav-scroll" style={{ borderColor: C.line }}>
                       <button type="button" onClick={() => setRecordView("voice")}
                         className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
                         style={{ background: recordView === "voice" ? C.curtain : "transparent", color: recordView === "voice" ? "#FFFDF8" : C.inkSoft }}>
@@ -16418,7 +16418,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       すでに見えていたものを消さない（§2）ほうを採ります。
                       2つが当たるときは、消さないほうを選びます。 */}
                 <h3 className="ff-display italic text-lg mb-2">{t("titleCorrelationStrength")}</h3>
-                <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
+                <div className="flex rounded-full border p-1 overflow-x-auto nav-scroll" style={{ borderColor: C.line }}>
                   <button onClick={() => setAnalysisTarget("performance")}
                     className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
                     style={{ background: analysisTarget === "performance" ? C.curtain : "transparent", color: analysisTarget === "performance" ? "#FFFDF8" : C.inkSoft }}>
