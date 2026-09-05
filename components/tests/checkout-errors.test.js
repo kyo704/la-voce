@@ -68,6 +68,20 @@ function ok(label, cond) {
     /monthly=[\s\S]{0,120}annual=/.test(rt));
   ok("★年齢の帯で止めたとき、帯を残している", /年齢の帯で止めました/.test(rt));
 
+  console.log("\n③-2 ★★Stripe が言っている中身を、返すこと（2026-09-05 夜）");
+  // ★★名前だけ（StripeInvalidRequestError）では、★何が違うのか分かりません。
+  //   ★「No such price: 'price_…'」まで分かって、★はじめて直せます。
+  ok("★Stripe の文を返している", /message: String\(\(e && e\.message\)/.test(rt));
+  ok("★長すぎないように切っている", /\.slice\(0, 300\)/.test(rt));
+  // ★どちらの鍵で試したかが、★形だけ分かること（★値は返しません）。
+  ok("★鍵の種類（live/test）を返している", /keyMode/.test(rt));
+  ok("★鍵の値そのものは返していない",
+    !/detail[\s\S]{0,200}process\.env\.STRIPE_SECRET_KEY\b(?!\s*\|\|)/.test(rt)
+      || /startsWith\("sk_live_"\)/.test(rt));
+  ok("★価格IDは、頭だけ返している", /priceHead[\s\S]{0,80}slice\(0, 8\)/.test(rt));
+  // ★★お客さまの画面には、出さないこと。
+  ok("★画面は、Stripe の文を出していない", !/data\.message/.test(cb));
+
   console.log("\n④ ★★秘密を、ログに出さないこと");
   // ★鍵の値そのものを出さないこと。★名前と、有無だけです。
   ok("★鍵の値を出していない", !/process\.env\.STRIPE_SECRET_KEY\s*\)/.test(rt.replace(/!!process\.env\.STRIPE_SECRET_KEY/g, "")));

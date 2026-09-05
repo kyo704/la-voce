@@ -173,8 +173,26 @@ export async function POST(request) {
     // ★価格IDが違う／別のアカウントのもの／通貨が合わない、などで投げます。
     //   ★★裸の 500 にしないこと。★理由の名前を返します。
     console.error("★決済の画面を作れませんでした:", e && e.message, e && e.type, e && e.code);
+    // ★★2026-09-05 夜、★中身を返していませんでした。
+    //   ★返していたのは、★名前だけ（StripeInvalidRequestError）でした。
+    //   ★★それでは、★何が違うのか分かりません。
+    //   ★Stripe が言っている文そのものを、★返します。
+    //     例）「No such price: 'price_…'」★これで、一度で分かります。
+    //   ★★お客さまには、★出しません（画面は、やさしい文だけを出します）。
+    //     ★console と、★ログにだけ残ります。
+    //   ★鍵そのものは、★Stripe の文には入りません。
     return NextResponse.json(
-      { error: "stripe_session", detail: (e && e.code) || (e && e.type) || "unknown" },
+      {
+        error: "stripe_session",
+        detail: (e && e.code) || (e && e.type) || "unknown",
+        // ★長いことがあるので、★頭だけにします。
+        message: String((e && e.message) || "").slice(0, 300),
+        // ★どちらの鍵で試したかを、★形だけ返します（★値は返しません）。
+        keyMode: String(process.env.STRIPE_SECRET_KEY || "").startsWith("sk_live_")
+          ? "live" : (String(process.env.STRIPE_SECRET_KEY || "").startsWith("sk_test_") ? "test" : "unknown"),
+        // ★価格IDも、★頭だけ返します（★price_ か、それ以外かが分かれば足ります）。
+        priceHead: String(priceId || "").slice(0, 8)
+      },
       { status: 502 }
     );
   }
