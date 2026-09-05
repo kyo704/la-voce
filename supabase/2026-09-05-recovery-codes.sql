@@ -165,9 +165,12 @@ select column_name as "列", data_type as "型"
 -- ★台帳への登録（★この SQL を当てたら、忘れずに）
 --   01 削除処理     ★入れる。recovery_codes・email_change_log の両方
 --                    ★どちらも on delete cascade だが、★台帳には書くこと
---   02 バックアップ ★入れる。email_change_log は critical = true
---                    ★★recovery_codes は critical = false
---                      （★戻せなくても、出し直せます）
+--   02 バックアップ ★入れる。★★どちらも critical = false
+--                    ★2026-09-05 追記：★はじめ email_change_log を true と
+--                      書きましたが、★間違いです。
+--                    ★この印は「大事さ」ではなく「★空なら異常」の意味です。
+--                    ★メールを変えた方が0人なら、★この表は空です。
+--                    ★true にすると、★毎回のバックアップが異常終了します。
 --   03 auth 参照    ★★入れる。両方とも auth.users(id) を見ています
 --   04 書き出し     ★★recovery_codes は★入れない（判断書 §3）
 --                    ★email_change_log は★入れる（本人の履歴です）

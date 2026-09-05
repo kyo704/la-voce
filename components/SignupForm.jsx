@@ -6,6 +6,9 @@ import { createClient } from "@/lib/supabase/client";
 import { C } from "@/lib/tokens";
 import { OCCUPATIONS, occupationLabelIn } from "@/lib/occupation";
 import OtpCodeStep from "@/components/OtpCodeStep";
+// ★★登録が済んだら、★控えを1度だけお見せします（判断-メールを失うこと §3）。
+//   ★ここを飛ばすと、★メールを失った方を、★誰も助けられません。
+import RecoveryCodeCard from "@/components/RecoveryCodeCard";
 
 const SIGNUP_LANGS = [
   { code: "ja", label: "日本語" },
@@ -183,6 +186,17 @@ function SignupFormInner() {
   //   ★いまは、★数字を入れていただきます。★アプリの中で終わります。
   //   ★リンクも、メールには残してあります（★パソコンの方のため）。
   //     ★どちらでも進めます。★消してはいません。
+  // ★★番号が合ったあと、★控えを1度だけお見せします。
+  //   ★ここで「あとで」を押せるようにしないこと（判断書 §5）。
+  //   ★閉じた瞬間に、★番号は二度と見られません。
+  if (status === "recovery") {
+    return (
+      <main style={{ maxWidth: 420, margin: "0 auto", padding: "48px 24px" }}>
+        <RecoveryCodeCard onDone={() => { window.location.href = "/dashboard"; }} />
+      </main>
+    );
+  }
+
   if (status === "done") {
     return (
       <main style={{ maxWidth: 420, margin: "0 auto", padding: "48px 24px" }}>
@@ -190,7 +204,7 @@ function SignupFormInner() {
           email={form.email}
           type="signup"
           heading="ご登録を確かめる番号を送りました。"
-          onVerified={() => { window.location.href = "/dashboard"; }}
+          onVerified={() => setStatus("recovery")}
           onResend={async () => {
             const supabase = createClient();
             const { error: err } = await supabase.auth.resend({
