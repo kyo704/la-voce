@@ -35,7 +35,13 @@ function ok(label, cond) {
 
   // ★門が開いている状態を作って、そのうえで確かめます。
   const OPEN = { gateEnabled: true, gateStartsAt: "2026-10-19" };
-  const 無課金 = { ...OPEN, profile: { is_tester: false }, subscribed: false };
+  // ★★2枚めの守り（GATE_REQUIRES_TEST_LIST）が在るので、
+  //   ★一覧を渡さないと、★誰も止まりません。
+  //   ★ここで見たいのは「決めそのもの」なので、★一覧を渡して門を働かせます。
+  const 無課金 = {
+    ...OPEN, profile: { is_tester: false }, subscribed: false,
+    env: { NEXT_PUBLIC_GATE_TEST_USER_IDS: "u1" }, userId: "u1"
+  };
 
   console.log("\n■ §6-1 ★無課金の方が、1年前の日をカレンダーから開けること");
   // ★★本人が書いた数です。★期間を問わず、無料です。
@@ -64,7 +70,10 @@ function ok(label, cond) {
   console.log("\n■ §6-4 ★★課金が切れても、過去の記録は1件も消えない／見えなくならない");
   // ★★これが、いちばん大事な見張りです。
   //   ★解約した瞬間に過去が消えるのが、★この手のアプリで最も嫌われる事故です。
-  const 解約後 = { ...OPEN, profile: { is_tester: false }, subscribed: false };
+  const 解約後 = {
+    ...OPEN, profile: { is_tester: false }, subscribed: false,
+    env: { NEXT_PUBLIC_GATE_TEST_USER_IDS: "u1" }, userId: "u1"
+  };
   ok("★解約後も、記録は見られる", m.mayViewRecord() === true);
   ok("★解約後も、その日の値は見られる", m.mayViewSummary({ ...解約後, scope: "day" }) === true);
   ok("★解約後も、カレンダーに制限がつかない", m.calendarOldestDate() === null);
@@ -113,13 +122,17 @@ function ok(label, cond) {
   console.log("\n■ ★ずっと無料の方（★運営者の判断）");
   ok("★is_tester の方は、まとめも見られる",
     m.mayViewSummary({ ...OPEN, scope: "month", profile: { is_tester: true } }) === true);
+  // ★★一覧を渡します。★渡さないと、2枚めの守りで、誰も止まりません。
   ok("★is_tester でない方には、門がかかる",
-    m.mayViewSummary({ ...OPEN, scope: "month", profile: { is_tester: false } }) === false);
+    m.mayViewSummary({ ...OPEN, scope: "month", profile: { is_tester: false },
+      env: { NEXT_PUBLIC_GATE_TEST_USER_IDS: "u1" }, userId: "u1" }) === false);
   // ★★分からないときは、★無料の側に倒すこと。
   ok("★profile が読めないときは、無料に倒す",
-    m.mayViewSummary({ ...OPEN, scope: "month", profile: null }) === true);
+    m.mayViewSummary({ ...OPEN, scope: "month", profile: null,
+      env: { NEXT_PUBLIC_GATE_TEST_USER_IDS: "u1" }, userId: "u1" }) === true);
   ok("★お支払いの方は、見られる",
-    m.mayViewSummary({ ...OPEN, scope: "month", profile: { is_tester: false }, subscribed: true }) === true);
+    m.mayViewSummary({ ...OPEN, scope: "month", profile: { is_tester: false }, subscribed: true,
+      env: { NEXT_PUBLIC_GATE_TEST_USER_IDS: "u1" }, userId: "u1" }) === true);
 
   console.log("\n■ ★★門は、いま開いています（★2026-09-05・試しのため）");
   // ★★開けた狙いは、★運営者ご自身が、本物のお金で
@@ -133,6 +146,8 @@ function ok(label, cond) {
   const 試し = { NEXT_PUBLIC_GATE_TEST_USER_IDS: "aaa-111" };
   ok("★★一覧に居ない方は、いまも全部見られる",
     m.mayViewSummary({ scope: "year", profile: { is_tester: false }, userId: "zzz", env: 試し }) === true);
+  ok("★★一覧そのものが無いときも、全部見られる",
+    m.mayViewSummary({ scope: "year", profile: { is_tester: false }, userId: "zzz", env: {} }) === true);
   ok("★一覧に居る方には、門がかかる",
     m.mayViewSummary({ scope: "year", profile: { is_tester: false }, userId: "aaa-111", env: 試し }) === false);
   // ★★is_tester の方は、★どちらにしても、そのままです。
@@ -176,8 +191,10 @@ function ok(label, cond) {
   //   ★そのあいだ、★ほかの方に門をかけたくありません。
   const E = { NEXT_PUBLIC_GATE_TEST_USER_IDS: "aaa-111, bbb-222" };
   const 門あり = { ...OPEN, scope: "month", profile: { is_tester: false } };
-  ok("★一覧が空なら、ふだんどおり（★門がかかる）",
-    m.mayViewSummary({ ...門あり }) === false);
+  // ★★「一覧が空なら、ふだんどおり」は、2枚めの守りが在るので
+  //   ★「誰も止まらない」に変わりました。★下で、そう確かめます。
+  ok("★★一覧が空なら、誰も止まらない（★2枚めの守り）",
+    m.mayViewSummary({ ...門あり }) === true);
   ok("★一覧に居る方には、門がかかる",
     m.mayViewSummary({ ...門あり, env: E, userId: "aaa-111" }) === false);
   ok("★★一覧に居ない方には、門がかからない",
@@ -197,6 +214,24 @@ function ok(label, cond) {
   ok("★カンマだけなら、ふだんどおり",
     m.gateAppliesTo("aaa-111", { NEXT_PUBLIC_GATE_TEST_USER_IDS: " , , " }) === null);
   ok("★渡し忘れても、ふだんどおり", m.gateAppliesTo("aaa-111", null) === null);
+
+  console.log("\n■ ★★一覧が消えたときに、全員を止めないこと（2026-09-05 夜）");
+  // ★★いま、門は開いています（試しのため）。
+  //   ★ほかの方を守っているのは、★環境変数1つだけでした。
+  //   ★それが消えたら（入れ忘れ・別のデプロイ・打ち間違い）、
+  //     ★41名に、その瞬間から門がかかります。
+  //   ★★そして Stripe は、まだ本番の決済を通していません（2026-09-05）。
+  //     ★門はかかるのに、★買えない。★いちばん悪い形です。
+  //   ★だから、★もう1枚、置きました。
+  ok("★2枚めの守りが、在る", m.GATE_REQUIRES_TEST_LIST === true);
+  ok("★★一覧が消えたら、誰も止まらない",
+    m.mayViewSummary({ ...OPEN, scope: "month", profile: { is_tester: false }, env: {}, userId: "zzz" }) === true);
+  ok("★一覧が在れば、その中の方は止まる",
+    m.mayViewSummary({ ...OPEN, scope: "month", profile: { is_tester: false },
+      env: { NEXT_PUBLIC_GATE_TEST_USER_IDS: "aaa" }, userId: "aaa" }) === false);
+  // ★/billing も、同じ形であること。
+  const bill2 = readCode("app", "billing", "page.js");
+  ok("★/billing も、2枚めを見ている", /GATE_REQUIRES_TEST_LIST/.test(bill2));
   // ★画面から、ちゃんと渡していること。
   const vt2 = readCode("components", "VocalTracker.jsx");
   ok("★画面が、userId を渡している", /userId,\s*\n\s*env: \{ NEXT_PUBLIC_GATE_TEST_USER_IDS/.test(vt2));
@@ -221,6 +256,12 @@ function ok(label, cond) {
   ok("★締めの2行を出している", /GATE_CLOSING_LINES\.map/.test(bill));
   // ★★年齢の帯の門を、通していること。
   ok("★年齢の帯の門を通している", /<MinorConsentGate band=\{band\}/.test(bill));
+  // ★★2026-09-05 夜、★解約の入口が、この枝に無いことに気づきました。
+  //   ★特商法の表記には「アプリの中から、ご自身で手続きできます」と書いてあります。
+  //   ★★書いてあることと、実物が、食い違っていました。
+  ok("★★すでにお支払いの方には、解約の入口が出る", /<PortalButton/.test(bill));
+  ok("★契約の行を、この枝でも読んでいる", /paidSub/.test(bill));
+  ok("★申し込みと解約を、出し分けている", /paidSub \?/.test(bill));
   // ★★禁じた言い方が無いこと。
   const billBad = ["見られません", "できません", "無料期間", "制限されました"]
     .filter((w) => bill.includes(w));

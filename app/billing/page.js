@@ -7,7 +7,7 @@ import MinorConsentGate from "@/components/MinorConsentGate";
 //   ★この画面で並べ直さないこと。★2か所になります。
 import {
   PAID_GATE_ENABLED, GATE_STARTS_AT, PAID_FEATURES, NEVER_PAID,
-  featureLabel, GATE_CLOSING_LINES, gateAppliesTo
+  featureLabel, GATE_CLOSING_LINES, gateAppliesTo, GATE_REQUIRES_TEST_LIST
 } from "@/lib/freeTier";
 import { ageBandOf } from "@/lib/ageGate";
 import PortalButton from "@/components/PortalButton";
@@ -51,8 +51,17 @@ export default async function BillingPage() {
   const gateOnlyMe = gateAppliesTo(user.id, {
     NEXT_PUBLIC_GATE_TEST_USER_IDS: process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS
   });
-  const paidGateOpen = PAID_GATE_ENABLED && !!GATE_STARTS_AT && gateOnlyMe !== false;
+  //   ★★一覧が空のあいだは、★この画面も出しません（GATE_REQUIRES_TEST_LIST）。
+  //     ★門がかかっていないのに、★申し込みだけ見せないためです。
+  const paidGateOpen = PAID_GATE_ENABLED && !!GATE_STARTS_AT
+    && gateOnlyMe !== false
+    && !(gateOnlyMe === null && GATE_REQUIRES_TEST_LIST);
   if (!requireSubscription && paidGateOpen) {
+    // ★★すでにお支払いの方かどうかを、★ここで読みます。
+    //   ★読めなかったら null のまま。★申し込みのほうを出します（★安全側）。
+    const { data: paidSub } = await supabase
+      .from("subscriptions").select("status, current_period_end")
+      .eq("user_id", user.id).maybeSingle();
     return (
       <main style={{ maxWidth: 480, margin: "0 auto", padding: "56px 24px 96px" }}>
         <h1 className="ff-display italic" style={{ fontSize: "2rem", color: C.curtain }}>
@@ -99,11 +108,28 @@ export default async function BillingPage() {
           ))}
         </div>
 
-        {/* ★年齢の帯で、出すものが変わります。★門は MinorConsentGate が持ちます。
-            ★★画面で隠すだけにしないこと。★api/stripe/checkout も同じ帯で止めます。 */}
-        <div style={{ marginTop: 24 }}>
-          <MinorConsentGate band={band} userId={user.id} />
-        </div>
+        {/* ★★すでにお支払いの方には、★申し込みではなく、★解約の入口を出します
+            （2026-09-05 夜に足しました）。
+            ★★これが抜けていました。★⑤の手順6「解約する」に、★入口がありませんでした。
+            ★特商法の表記には「アプリの中から、ご自身で手続きできます」と
+              ★書いてあります。★書いてあることと、★実物を、合わせます。
+            ★解約そのものは、★Stripe の窓口（Customer Portal）で行います。
+              ★★カードの情報を、★こちらで扱わないためです。 */}
+        {paidSub ? (
+          <div style={{ marginTop: 24 }}>
+            <p style={{ fontSize: "1rem", color: C.ink, margin: "0 0 6px", lineHeight: 1.8 }}>
+              {paidSub.status === "trialing" ? "無料でお試しいただいています。" : "ご契約いただいています。"}
+            </p>
+            <p style={{ fontSize: "0.9375rem", color: C.inkSoft, margin: "0 0 14px", lineHeight: 1.8 }}>
+              お支払いの内容の確認と、解約は、こちらから行えます。
+            </p>
+            <PortalButton />
+          </div>
+        ) : (
+          <div style={{ marginTop: 24 }}>
+            <MinorConsentGate band={band} userId={user.id} />
+          </div>
+        )}
       </main>
     );
   }
