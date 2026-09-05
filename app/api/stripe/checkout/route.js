@@ -15,6 +15,8 @@ export async function POST(request) {
   //     ★api.stripe.com へ出てから拒否されます。
   //   ★/api/advice と同じ形です。閉じるほうへ倒します。
   if (!stripeConfigured()) {
+    // ★★どの鍵が無いのかを、★残します（★値は出しません。★名前だけです）。
+    console.error("★Stripe の鍵がありません: STRIPE_SECRET_KEY");
     return NextResponse.json(
       { error: "この機能は、いまお使いいただけません。" },
       { status: 503 }
@@ -62,6 +64,8 @@ export async function POST(request) {
     .single();
   const band = ageBandOf(prof);
   if (!offeredPlans(band).includes(planKey)) {
+    // ★★年齢の帯で止まりました。★どの帯かを残します（★個人は出しません）。
+    console.error("★年齢の帯で止めました: band=" + band + " plan=" + planKey);
     return NextResponse.json({ error: "plan_not_available" }, { status: 403 });
   }
 
@@ -69,6 +73,10 @@ export async function POST(request) {
   //   ★環境変数が無ければ、★ここで止めます。★通信は起きません。
   const priceId = priceIdFor(planKey, process.env);
   if (!priceId) {
+    // ★★どの環境変数が無いのかを、★残します（★値は出しません）。
+    console.error("★価格IDがありません: plan=" + planKey
+      + " monthly=" + (process.env.STRIPE_PRICE_ID_MONTHLY ? "有" : "★無")
+      + " annual=" + (process.env.STRIPE_PRICE_ID_ANNUAL ? "有" : "★無"));
     return NextResponse.json(
       { error: "この機能は、いまお使いいただけません。" },
       { status: 503 }

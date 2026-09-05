@@ -10,6 +10,29 @@ import { C } from "@/lib/tokens";
  * ★プランごとに1つずつ置きます。★1つのボタンで切り替えません。
  *   ★どちらを押したかが、★押す前に見えているようにします。
  */
+/**
+ * ★返ってきた状態から、★お客さまに出す言葉を決めます。
+ *
+ *   ★★中の言葉（plan_not_available など）を、★そのまま出さないこと。
+ *   ★★「エラー」で終わらせないこと。★することが分かる言葉にします。
+ *   ★禁じた言い方（「できません」）を使わないこと（⑫・裁定 §6-5）。
+ */
+export function checkoutMessage(status, data) {
+  const code = (data && data.error) || "";
+  if (status === 401) return "もう一度お入りください。";
+  if (status === 403 || code === "plan_not_available") {
+    return "このお支払いの方法は、いまお選びいただけません。設定の年齢のご確認をお願いします。";
+  }
+  if (status === 503) {
+    // ★★「できません」と書かないこと（⑫・裁定 §6-5）。★私が1度書きました。
+    return "いま、お申し込みの窓口が開いていません。少し置いて、もう一度お試しください。";
+  }
+  if (status === 502) {
+    return "お支払いの窓口につながりませんでした。少し置いて、もう一度お試しください。";
+  }
+  return "少し置いて、もう一度お試しください。";
+}
+
 export default function CheckoutButton({ planKey = "monthly", label }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -27,15 +50,23 @@ export default function CheckoutButton({ planKey = "monthly", label }) {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ plan: planKey })
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (data.url) {
         window.location.href = data.url;
-      } else {
-        setError("エラーが発生しました。時間をおいて再度お試しください。");
-        setLoading(false);
+        return;
       }
+      // ★★2026-09-05、★理由を1つも残していませんでした。
+      //   ★どの失敗でも、★同じ1文を出していました。
+      //   ★★止めないことと、★黙ることは、★別です。
+      //     ★黙ると、★なぜ進めないのかを、★誰も追えません。
+      //   ★お客さまには、★することが分かる言葉を出します。
+      //   ★私たちには、★console に、★状態と中身を残します。
+      console.error("★お申し込みに進めませんでした:", res.status, JSON.stringify(data));
+      setError(checkoutMessage(res.status, data));
+      setLoading(false);
     } catch (e) {
-      setError("エラーが発生しました。時間をおいて再度お試しください。");
+      console.error("★お申し込みを送れませんでした:", e && e.message);
+      setError("いま、つながりません。少し置いて、もう一度お試しください。");
       setLoading(false);
     }
   }
