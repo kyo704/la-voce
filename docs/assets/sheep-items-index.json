@@ -1,0 +1,2851 @@
+{
+  "version": "2026-09-05k",
+  "base": {
+    "body": "sheep_body.png",
+    "head": "sheep_head.png"
+  },
+  "order": [
+    "body",
+    "garment",
+    "neck",
+    "head",
+    "shoes",
+    "hat",
+    "prop"
+  ],
+  "groups": {
+    "season": "四季",
+    "wafuku": "和服",
+    "era": "時代",
+    "world": "世界",
+    "business": "ビジネス",
+    "armor": "甲冑",
+    "stage": "本番の装い",
+    "opera": "オペラの役",
+    "accessory": "小物",
+    "shoes": "靴"
+  },
+  "hands": {
+    "L": {
+      "cx": 322,
+      "cy": 702,
+      "box": [
+        300,
+        296
+      ],
+      "paws": []
+    },
+    "R": {
+      "cx": 700,
+      "cy": 702,
+      "box": [
+        300,
+        296
+      ],
+      "paws": []
+    },
+    "C": {
+      "cx": 516,
+      "cy": 690,
+      "box": [
+        440,
+        300
+      ],
+      "paws": []
+    }
+  },
+  "items": [
+    {
+      "key": "coatSpringCardigan",
+      "name": "春 うすもものカーディガン",
+      "group": "season",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/coatSpringCardigan.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "coatSummerVest",
+      "name": "夏 みずいろのベスト",
+      "group": "season",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/coatSummerVest.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "coatAutumnCamel",
+      "name": "秋 キャメルのコート",
+      "group": "season",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/coatAutumnCamel.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "coatWinterDuffle",
+      "name": "冬 こんのダッフル",
+      "group": "season",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/coatWinterDuffle.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "kimonoRedSakura",
+      "name": "和服・赤（桜）",
+      "group": "wafuku",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/kimonoRedSakura.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "kimonoYellowYagasuri",
+      "name": "和服・黄（矢絣）",
+      "group": "wafuku",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/kimonoYellowYagasuri.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "kimonoBlueSeigaiha",
+      "name": "和服・青（青海波）",
+      "group": "wafuku",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/kimonoBlueSeigaiha.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "kimonoManNavyHaori",
+      "name": "和服・男（紺＋羽織）",
+      "group": "wafuku",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/kimonoManNavyHaori.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatBeret",
+      "name": "ベレー帽",
+      "group": "accessory",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatBeret.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatKnit",
+      "name": "ニット帽",
+      "group": "accessory",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatKnit.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatStraw",
+      "name": "麦わら帽子",
+      "group": "accessory",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatStraw.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatTop",
+      "name": "シルクハット",
+      "group": "accessory",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatTop.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatCasquette",
+      "name": "キャスケット",
+      "group": "accessory",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatCasquette.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatFlowerCrown",
+      "name": "花かんむり",
+      "group": "accessory",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatFlowerCrown.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "scarfWine",
+      "name": "えんじのマフラー",
+      "group": "accessory",
+      "slot": "neck",
+      "z": 3,
+      "file": "items/scarfWine.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "scarfCheck",
+      "name": "チェックのマフラー",
+      "group": "accessory",
+      "slot": "neck",
+      "z": 3,
+      "file": "items/scarfCheck.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "snoodCream",
+      "name": "もこもこのスヌード",
+      "group": "accessory",
+      "slot": "neck",
+      "z": 3,
+      "file": "items/snoodCream.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "ribbonTie",
+      "name": "リボンタイ",
+      "group": "accessory",
+      "slot": "neck",
+      "z": 3,
+      "file": "items/ribbonTie.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propScore",
+      "name": "楽譜",
+      "group": "accessory",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propScore_L.png",
+        "right": "items/propScore_R.png",
+        "both": "items/propScore_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propMetronome",
+      "name": "メトロノーム",
+      "group": "accessory",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propMetronome_L.png",
+        "right": "items/propMetronome_R.png",
+        "both": "items/propMetronome_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propBottle",
+      "name": "水筒",
+      "group": "accessory",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propBottle_L.png",
+        "right": "items/propBottle_R.png",
+        "both": "items/propBottle_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propBouquet",
+      "name": "花束",
+      "group": "accessory",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propBouquet_L.png",
+        "right": "items/propBouquet_R.png",
+        "both": "items/propBouquet_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propTeacup",
+      "name": "あたたかい飲みもの",
+      "group": "accessory",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propTeacup_L.png",
+        "right": "items/propTeacup_R.png",
+        "both": "items/propTeacup_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "shoesBoots",
+      "name": "革のブーツ",
+      "group": "shoes",
+      "slot": "shoes",
+      "z": 5,
+      "file": "items/shoesBoots.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "shoesGeta",
+      "name": "下駄",
+      "group": "shoes",
+      "slot": "shoes",
+      "z": 5,
+      "file": "items/shoesGeta.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "shoesZori",
+      "name": "草履",
+      "group": "shoes",
+      "slot": "shoes",
+      "z": 5,
+      "file": "items/shoesZori.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "shoesSneakers",
+      "name": "スニーカー",
+      "group": "shoes",
+      "slot": "shoes",
+      "z": 5,
+      "file": "items/shoesSneakers.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "shoesMaryJane",
+      "name": "ストラップの靴",
+      "group": "shoes",
+      "slot": "shoes",
+      "z": 5,
+      "file": "items/shoesMaryJane.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "shoesRainBoots",
+      "name": "ながぐつ",
+      "group": "shoes",
+      "slot": "shoes",
+      "z": 5,
+      "file": "items/shoesRainBoots.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "shoesStagePumps",
+      "name": "本番の靴",
+      "group": "shoes",
+      "slot": "shoes",
+      "z": 5,
+      "file": "items/shoesStagePumps.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "shoesWaraji",
+      "name": "わらじ",
+      "group": "shoes",
+      "slot": "shoes",
+      "z": 5,
+      "file": "items/shoesWaraji.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "jomonKantoui",
+      "name": "縄文・貫頭衣（編布）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/jomonKantoui.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "jomonFur",
+      "name": "縄文・毛皮の重ね",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/jomonFur.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "yayoiKantoui",
+      "name": "弥生・貫頭衣（女）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/yayoiKantoui.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "yayoiKesa",
+      "name": "弥生・袈裟衣（男）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/yayoiKesa.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "kofunKinuHakama",
+      "name": "古墳・衣褌（男）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/kofunKinuHakama.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "kofunKinuMo",
+      "name": "古墳・衣裳（女）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/kofunKinuMo.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "asukaChofuku",
+      "name": "飛鳥・朝服（男）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/asukaChofuku.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "asukaHire",
+      "name": "飛鳥・領巾の女",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/asukaHire.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "naraHoueki",
+      "name": "奈良・闕腋袍（男）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/naraHoueki.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "naraKarniginu",
+      "name": "奈良・背子と裙（女）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/naraKarniginu.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "heianJunihitoe",
+      "name": "平安・十二単（女）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/heianJunihitoe.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "heianNoushi",
+      "name": "平安・直衣（男）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/heianNoushi.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "kamakuraHitatare",
+      "name": "鎌倉・直垂（男）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/kamakuraHitatare.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "kamakuraTsubo",
+      "name": "鎌倉・壺装束（女）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/kamakuraTsubo.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "muromachiSuou",
+      "name": "室町・素襖（男）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/muromachiSuou.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "muromachiKosode",
+      "name": "室町・小袖（女）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/muromachiKosode.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "momoyamaDoufuku",
+      "name": "安土桃山・胴服（男・南蛮）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/momoyamaDoufuku.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "momoyamaUchikake",
+      "name": "安土桃山・打掛（女・辻が花）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/momoyamaUchikake.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "edoShima",
+      "name": "江戸・縞の小袖と羽織（男）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/edoShima.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "edoFurisode",
+      "name": "江戸・振袖と幅広の帯（女）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/edoFurisode.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "meijiShosei",
+      "name": "明治・書生（男）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/meijiShosei.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "meijiRokumeikan",
+      "name": "明治・鹿鳴館のドレス（女）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/meijiRokumeikan.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "taishoModanBoy",
+      "name": "大正・モダンボーイ（男）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/taishoModanBoy.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "taishoJogakusei",
+      "name": "大正・女学生（女）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/taishoJogakusei.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "showaGakuran",
+      "name": "昭和・学生服（男）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/showaGakuran.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "showaOnepiece",
+      "name": "昭和・ワンピース（女）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/showaOnepiece.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "heiseiShibukaji",
+      "name": "平成・渋カジ（男）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/heiseiShibukaji.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "heiseiSeifuku",
+      "name": "平成・制服（女）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/heiseiSeifuku.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "reiwaOversize",
+      "name": "令和・オーバーサイズ（男）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/reiwaOversize.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "reiwaEarth",
+      "name": "令和・アースカラー（女）",
+      "group": "era",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/reiwaEarth.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatJomonBeads",
+      "name": "縄文・骨と貝の髪飾り",
+      "group": "era",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatJomonBeads.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatYayoiHachimaki",
+      "name": "弥生・布の髪飾り",
+      "group": "era",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatYayoiHachimaki.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatKofunBoushi",
+      "name": "古墳・埴輪の帽子",
+      "group": "era",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatKofunBoushi.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatAsukaKanmuri",
+      "name": "飛鳥・冠",
+      "group": "era",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatAsukaKanmuri.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatNaraZukin",
+      "name": "奈良・幞頭",
+      "group": "era",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatNaraZukin.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatHeianEboshi",
+      "name": "平安・立烏帽子",
+      "group": "era",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatHeianEboshi.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatIchimegasa",
+      "name": "鎌倉・市女笠",
+      "group": "era",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatIchimegasa.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatSamuraiEboshi",
+      "name": "室町・侍烏帽子",
+      "group": "era",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatSamuraiEboshi.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatNanban",
+      "name": "安土桃山・南蛮帽子",
+      "group": "era",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatNanban.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatSugegasa",
+      "name": "江戸・菅笠",
+      "group": "era",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatSugegasa.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatBowler",
+      "name": "明治・山高帽",
+      "group": "era",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatBowler.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatHunting",
+      "name": "大正・鳥打帽",
+      "group": "era",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatHunting.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatGakubo",
+      "name": "昭和・学帽",
+      "group": "era",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatGakubo.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatCap",
+      "name": "平成・キャップ",
+      "group": "era",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatCap.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatBucket",
+      "name": "令和・バケットハット",
+      "group": "era",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatBucket.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propJomonPot",
+      "name": "縄文・土器",
+      "group": "era",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propJomonPot_L.png",
+        "right": "items/propJomonPot_R.png",
+        "both": "items/propJomonPot_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propYayoiRice",
+      "name": "弥生・稲穂",
+      "group": "era",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propYayoiRice_L.png",
+        "right": "items/propYayoiRice_R.png",
+        "both": "items/propYayoiRice_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propKofunMagatama",
+      "name": "古墳・鏡と勾玉",
+      "group": "era",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propKofunMagatama_L.png",
+        "right": "items/propKofunMagatama_R.png",
+        "both": "items/propKofunMagatama_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propAsukaShaku",
+      "name": "飛鳥・笏",
+      "group": "era",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propAsukaShaku_L.png",
+        "right": "items/propAsukaShaku_R.png",
+        "both": "items/propAsukaShaku_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propNaraBiwa",
+      "name": "奈良・琵琶",
+      "group": "era",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propNaraBiwa_L.png",
+        "right": "items/propNaraBiwa_R.png",
+        "both": "items/propNaraBiwa_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propHeianOugi",
+      "name": "平安・檜扇",
+      "group": "era",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propHeianOugi_L.png",
+        "right": "items/propHeianOugi_R.png",
+        "both": "items/propHeianOugi_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propKamakuraMakimono",
+      "name": "鎌倉・巻物",
+      "group": "era",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propKamakuraMakimono_L.png",
+        "right": "items/propKamakuraMakimono_R.png",
+        "both": "items/propKamakuraMakimono_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propMuromachiNohmen",
+      "name": "室町・能面",
+      "group": "era",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propMuromachiNohmen_L.png",
+        "right": "items/propMuromachiNohmen_R.png",
+        "both": "items/propMuromachiNohmen_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propMomoyamaChawan",
+      "name": "安土桃山・茶碗と茶筅",
+      "group": "era",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propMomoyamaChawan_L.png",
+        "right": "items/propMomoyamaChawan_R.png",
+        "both": "items/propMomoyamaChawan_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propEdoChochin",
+      "name": "江戸・提灯",
+      "group": "era",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propEdoChochin_L.png",
+        "right": "items/propEdoChochin_R.png",
+        "both": "items/propEdoChochin_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propMeijiStick",
+      "name": "明治・ステッキ",
+      "group": "era",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propMeijiStick_L.png",
+        "right": "items/propMeijiStick_R.png",
+        "both": "items/propMeijiStick_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propTaishoGramophone",
+      "name": "大正・蓄音機",
+      "group": "era",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propTaishoGramophone_L.png",
+        "right": "items/propTaishoGramophone_R.png",
+        "both": "items/propTaishoGramophone_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propShowaCamera",
+      "name": "昭和・カメラ",
+      "group": "era",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propShowaCamera_L.png",
+        "right": "items/propShowaCamera_R.png",
+        "both": "items/propShowaCamera_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propHeiseiKeitai",
+      "name": "平成・ケータイ",
+      "group": "era",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propHeiseiKeitai_L.png",
+        "right": "items/propHeiseiKeitai_R.png",
+        "both": "items/propHeiseiKeitai_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propReiwaSmartphone",
+      "name": "令和・スマートフォン",
+      "group": "era",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propReiwaSmartphone_L.png",
+        "right": "items/propReiwaSmartphone_R.png",
+        "both": "items/propReiwaSmartphone_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearUSAWestern",
+      "name": "アメリカ・ウエスタン",
+      "group": "world",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearUSAWestern.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearHawaiiAloha",
+      "name": "ハワイ・アロハとムームー",
+      "group": "world",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearHawaiiAloha.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearItalyCarnival",
+      "name": "イタリア・カーニバルのマント",
+      "group": "world",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearItalyCarnival.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearGermanyLederhosen",
+      "name": "ドイツ・レーダーホーゼン",
+      "group": "world",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearGermanyLederhosen.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearFranceMariniere",
+      "name": "フランス・マリニエール",
+      "group": "world",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearFranceMariniere.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearNetherlandsVolendam",
+      "name": "オランダ・フォーレンダム",
+      "group": "world",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearNetherlandsVolendam.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearSwissAppenzell",
+      "name": "スイス・アッペンツェル",
+      "group": "world",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearSwissAppenzell.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearSpainFlamenco",
+      "name": "スペイン・フラメンコ",
+      "group": "world",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearSpainFlamenco.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearChinaHanfu",
+      "name": "中国・漢服",
+      "group": "world",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearChinaHanfu.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearKoreaHanbok",
+      "name": "韓国・韓服",
+      "group": "world",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearKoreaHanbok.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearRussiaSarafan",
+      "name": "ロシア・サラファン",
+      "group": "world",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearRussiaSarafan.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearAustriaCourt",
+      "name": "オーストリア・宮廷服",
+      "group": "world",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearAustriaCourt.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearUKKilt",
+      "name": "イギリス・キルト",
+      "group": "world",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearUKKilt.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatUSACowboy",
+      "name": "アメリカ・カウボーイハット",
+      "group": "world",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatUSACowboy.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatHawaiiHibiscus",
+      "name": "ハワイ・ハイビスカスの花冠",
+      "group": "world",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatHawaiiHibiscus.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatItalyTricorno",
+      "name": "イタリア・トリコルノ",
+      "group": "world",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatItalyTricorno.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatGermanyTirol",
+      "name": "ドイツ・チロル帽",
+      "group": "world",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatGermanyTirol.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatFranceBeret",
+      "name": "フランス・ベレー（黒）",
+      "group": "world",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatFranceBeret.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatNetherlandsCap",
+      "name": "オランダ・レースの帽子",
+      "group": "world",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatNetherlandsCap.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatSwissEdelweiss",
+      "name": "スイス・エーデルワイスの帽子",
+      "group": "world",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatSwissEdelweiss.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatSpainMantilla",
+      "name": "スペイン・マンティージャ",
+      "group": "world",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatSpainMantilla.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatChinaOrnament",
+      "name": "中国・花鈿の髪飾り",
+      "group": "world",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatChinaOrnament.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatKoreaJokduri",
+      "name": "韓国・チョクトゥリ",
+      "group": "world",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatKoreaJokduri.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatRussiaKokoshnik",
+      "name": "ロシア・ココシュニク",
+      "group": "world",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatRussiaKokoshnik.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatAustriaWig",
+      "name": "オーストリア・白いかつら",
+      "group": "world",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatAustriaWig.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatUKDeerstalker",
+      "name": "イギリス・ディアストーカー",
+      "group": "world",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatUKDeerstalker.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propUSAGuitar",
+      "name": "アメリカ・ギター",
+      "group": "world",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propUSAGuitar_L.png",
+        "right": "items/propUSAGuitar_R.png",
+        "both": "items/propUSAGuitar_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propHawaiiUkulele",
+      "name": "ハワイ・ウクレレ",
+      "group": "world",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propHawaiiUkulele_L.png",
+        "right": "items/propHawaiiUkulele_R.png",
+        "both": "items/propHawaiiUkulele_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propItalyMask",
+      "name": "イタリア・仮面",
+      "group": "world",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propItalyMask_L.png",
+        "right": "items/propItalyMask_R.png",
+        "both": "items/propItalyMask_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propGermanyPretzel",
+      "name": "ドイツ・プレッツェル",
+      "group": "world",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propGermanyPretzel_L.png",
+        "right": "items/propGermanyPretzel_R.png",
+        "both": "items/propGermanyPretzel_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propFranceBaguette",
+      "name": "フランス・バゲット",
+      "group": "world",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propFranceBaguette_L.png",
+        "right": "items/propFranceBaguette_R.png",
+        "both": "items/propFranceBaguette_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propNetherlandsTulip",
+      "name": "オランダ・チューリップと木靴",
+      "group": "world",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propNetherlandsTulip_L.png",
+        "right": "items/propNetherlandsTulip_R.png",
+        "both": "items/propNetherlandsTulip_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propSwissCheese",
+      "name": "スイス・チーズ",
+      "group": "world",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propSwissCheese_L.png",
+        "right": "items/propSwissCheese_R.png",
+        "both": "items/propSwissCheese_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propSpainAbanico",
+      "name": "スペイン・アバニコ",
+      "group": "world",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propSpainAbanico_L.png",
+        "right": "items/propSpainAbanico_R.png",
+        "both": "items/propSpainAbanico_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propChinaUchiwa",
+      "name": "中国・団扇",
+      "group": "world",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propChinaUchiwa_L.png",
+        "right": "items/propChinaUchiwa_R.png",
+        "both": "items/propChinaUchiwa_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propKoreaJanggu",
+      "name": "韓国・チャング",
+      "group": "world",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propKoreaJanggu_L.png",
+        "right": "items/propKoreaJanggu_R.png",
+        "both": "items/propKoreaJanggu_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propRussiaMatryoshka",
+      "name": "ロシア・マトリョーシカ",
+      "group": "world",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propRussiaMatryoshka_L.png",
+        "right": "items/propRussiaMatryoshka_R.png",
+        "both": "items/propRussiaMatryoshka_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propAustriaTorte",
+      "name": "オーストリア・ザッハトルテ",
+      "group": "world",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propAustriaTorte_L.png",
+        "right": "items/propAustriaTorte_R.png",
+        "both": "items/propAustriaTorte_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propUKTea",
+      "name": "イギリス・紅茶",
+      "group": "world",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propUKTea_L.png",
+        "right": "items/propUKTea_R.png",
+        "both": "items/propUKTea_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "suitNavy",
+      "name": "スーツ（紺）",
+      "group": "business",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/suitNavy.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "suitLadyGray",
+      "name": "スーツ（女性・グレー）",
+      "group": "business",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/suitLadyGray.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "tuxedo",
+      "name": "タキシード",
+      "group": "business",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/tuxedo.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "tailcoat",
+      "name": "燕尾服",
+      "group": "business",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/tailcoat.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatFedora",
+      "name": "中折れ帽",
+      "group": "business",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatFedora.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propBriefcase",
+      "name": "ブリーフケース",
+      "group": "business",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propBriefcase_L.png",
+        "right": "items/propBriefcase_R.png",
+        "both": "items/propBriefcase_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propMusicBag",
+      "name": "楽譜の鞄",
+      "group": "business",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propMusicBag_L.png",
+        "right": "items/propMusicBag_R.png",
+        "both": "items/propMusicBag_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propNewspaper",
+      "name": "新聞",
+      "group": "business",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propNewspaper_L.png",
+        "right": "items/propNewspaper_R.png",
+        "both": "items/propNewspaper_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propUmbrella",
+      "name": "傘",
+      "group": "business",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propUmbrella_L.png",
+        "right": "items/propUmbrella_R.png",
+        "both": "items/propUmbrella_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propCoffee",
+      "name": "コーヒー",
+      "group": "business",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propCoffee_L.png",
+        "right": "items/propCoffee_R.png",
+        "both": "items/propCoffee_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearOyoroi",
+      "name": "大鎧（源平のころ）",
+      "group": "armor",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearOyoroi.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearGusoku",
+      "name": "当世具足（戦国のころ）",
+      "group": "armor",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearGusoku.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearJinbaori",
+      "name": "陣羽織",
+      "group": "armor",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearJinbaori.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatKabuto",
+      "name": "兜（鍬形つき）",
+      "group": "armor",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatKabuto.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatJingasa",
+      "name": "陣笠",
+      "group": "armor",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatJingasa.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propTachi",
+      "name": "太刀",
+      "group": "armor",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propTachi_L.png",
+        "right": "items/propTachi_R.png",
+        "both": "items/propTachi_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propYumiya",
+      "name": "弓と矢",
+      "group": "armor",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propYumiya_L.png",
+        "right": "items/propYumiya_R.png",
+        "both": "items/propYumiya_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propGunbai",
+      "name": "軍配",
+      "group": "armor",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propGunbai_L.png",
+        "right": "items/propGunbai_R.png",
+        "both": "items/propGunbai_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearMasamune",
+      "name": "伊達政宗・黒漆五枚胴具足",
+      "group": "armor",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearMasamune.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearYukimura",
+      "name": "真田幸村・朱の赤備え",
+      "group": "armor",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearYukimura.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearIeyasu",
+      "name": "徳川家康・金陀美具足",
+      "group": "armor",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearIeyasu.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearShingen",
+      "name": "武田信玄・朱の伊予札",
+      "group": "armor",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearShingen.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearKenshin",
+      "name": "上杉謙信・金小札浅葱糸威",
+      "group": "armor",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearKenshin.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearKanetsugu",
+      "name": "直江兼続・紺糸威",
+      "group": "armor",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearKanetsugu.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearNobunaga",
+      "name": "織田信長・南蛮胴具足",
+      "group": "armor",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearNobunaga.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "wearNaomasa",
+      "name": "井伊直政・朱の桶側胴",
+      "group": "armor",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/wearNaomasa.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatKabutoMasamune",
+      "name": "政宗の兜（六十二間筋兜・弦月）",
+      "group": "armor",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatKabutoMasamune.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatKabutoYukimura",
+      "name": "幸村の兜（鹿角と六文銭）",
+      "group": "armor",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatKabutoYukimura.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatKabutoIeyasu",
+      "name": "家康の兜（大黒頭巾形・歯朶）",
+      "group": "armor",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatKabutoIeyasu.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatKabutoShingen",
+      "name": "信玄の兜（諏訪法性）",
+      "group": "armor",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatKabutoShingen.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatKabutoKenshin",
+      "name": "謙信の兜（日輪三日月）",
+      "group": "armor",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatKabutoKenshin.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatKabutoKanetsugu",
+      "name": "兼続の兜（愛）",
+      "group": "armor",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatKabutoKanetsugu.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatKabutoNobunaga",
+      "name": "信長の兜（南蛮兜）",
+      "group": "armor",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatKabutoNobunaga.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatKabutoNaomasa",
+      "name": "直政の兜（天衝脇立）",
+      "group": "armor",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatKabutoNaomasa.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "gownBlackLong",
+      "name": "本番の黒いドレス",
+      "group": "stage",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/gownBlackLong.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "gownWineMermaid",
+      "name": "ワインレッドのドレス",
+      "group": "stage",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/gownWineMermaid.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "gownGreenVelvet",
+      "name": "深緑のベルベット",
+      "group": "stage",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/gownGreenVelvet.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "gownGoldALine",
+      "name": "うすい金のドレス",
+      "group": "stage",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/gownGoldALine.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaQueenNight",
+      "name": "夜の女王（魔笛）",
+      "group": "stage",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaQueenNight.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaVioletta",
+      "name": "ヴィオレッタ（椿姫）",
+      "group": "stage",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaVioletta.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaPapageno",
+      "name": "パパゲーノ（魔笛）",
+      "group": "stage",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaPapageno.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaBruennhilde",
+      "name": "ブリュンヒルデ（ワルキューレ）",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaBruennhilde.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaTurandot",
+      "name": "トゥーランドット",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaTurandot.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaAida",
+      "name": "アイーダ",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaAida.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaNorma",
+      "name": "ノルマ",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaNorma.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaLucia",
+      "name": "ルチア（狂乱の場）",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaLucia.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaButterfly",
+      "name": "蝶々夫人（白無垢）",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaButterfly.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaMimi",
+      "name": "ミミ（ラ・ボエーム）",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaMimi.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaMusetta",
+      "name": "ムゼッタ",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaMusetta.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaCherubino",
+      "name": "ケルビーノ（フィガロの結婚）",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaCherubino.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaOlympia",
+      "name": "オランピア（ホフマン物語）",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaOlympia.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaGilda",
+      "name": "ジルダ（リゴレット）",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaGilda.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaCarmen2",
+      "name": "カルメン",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaCarmen2.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "gownCoutureFifties",
+      "name": "1950年代のクチュール（細身＋ストール）",
+      "group": "stage",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/gownCoutureFifties.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "gownTulleBall",
+      "name": "広がるチュールのボールガウン",
+      "group": "stage",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/gownTulleBall.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "gownBeadColumn",
+      "name": "ビーズのコラムドレス",
+      "group": "stage",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/gownBeadColumn.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "gownVelvetCape",
+      "name": "ベルベットとケープ",
+      "group": "stage",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/gownVelvetCape.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatValkyrie",
+      "name": "翼の兜（ワルキューレ）",
+      "group": "opera",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatValkyrie.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatTurandotCrown",
+      "name": "トゥーランドットの冠",
+      "group": "opera",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatTurandotCrown.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatNormaWreath",
+      "name": "ノルマの槲寄生の冠",
+      "group": "opera",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatNormaWreath.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatMusettaHat",
+      "name": "ムゼッタの帽子",
+      "group": "opera",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatMusettaHat.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatCherubinoHat",
+      "name": "ケルビーノの羽根帽",
+      "group": "opera",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatCherubinoHat.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatLuciaHair",
+      "name": "ルチアの乱れ髪",
+      "group": "opera",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatLuciaHair.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatButterflyTsuno",
+      "name": "蝶々夫人の角隠し",
+      "group": "opera",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatButterflyTsuno.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propSpear",
+      "name": "槍（ワルキューレ）",
+      "group": "opera",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propSpear_L.png",
+        "right": "items/propSpear_R.png",
+        "both": "items/propSpear_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propFanLace",
+      "name": "黒いレースの扇",
+      "group": "opera",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propFanLace_L.png",
+        "right": "items/propFanLace_R.png",
+        "both": "items/propFanLace_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaFigaro",
+      "name": "フィガロ（セビリアの理髪師）",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaFigaro.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaDonGiovanni",
+      "name": "ドン・ジョヴァンニ",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaDonGiovanni.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaRodolfo",
+      "name": "ロドルフォ（ラ・ボエーム）",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaRodolfo.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaEscamillo",
+      "name": "エスカミーリョ（闘牛士）",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaEscamillo.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaRigoletto",
+      "name": "リゴレット（道化）",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaRigoletto.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaTamino",
+      "name": "タミーノ（魔笛）",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaTamino.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaWotan",
+      "name": "ヴォータン（ワルキューレ）",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaWotan.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "operaCalaf",
+      "name": "カラフ（トゥーランドット）",
+      "group": "opera",
+      "slot": "garment",
+      "z": 2,
+      "file": "items/operaCalaf.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatMontera",
+      "name": "闘牛士のモンテラ",
+      "group": "opera",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatMontera.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatJester",
+      "name": "道化の鈴帽",
+      "group": "opera",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatJester.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatTricornBlack",
+      "name": "羽根つき三角帽",
+      "group": "opera",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatTricornBlack.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatWotanHat",
+      "name": "つば広の旅帽",
+      "group": "opera",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatWotanHat.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatHunterGreen",
+      "name": "狩人の帽子",
+      "group": "opera",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatHunterGreen.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propSword",
+      "name": "剣",
+      "group": "opera",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propSword_L.png",
+        "right": "items/propSword_R.png",
+        "both": "items/propSword_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propBaton",
+      "name": "指揮棒",
+      "group": "opera",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propBaton_L.png",
+        "right": "items/propBaton_R.png",
+        "both": "items/propBaton_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propRazorComb",
+      "name": "カミソリと櫛",
+      "group": "opera",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propRazorComb_L.png",
+        "right": "items/propRazorComb_R.png",
+        "both": "items/propRazorComb_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "propManuscript",
+      "name": "原稿の束",
+      "group": "opera",
+      "slot": "prop",
+      "z": 7,
+      "files": {
+        "left": "items/propManuscript_L.png",
+        "right": "items/propManuscript_R.png",
+        "both": "items/propManuscript_C.png"
+      },
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatCrownNight",
+      "name": "夜の女王のかんむり",
+      "group": "stage",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatCrownNight.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatCamellia",
+      "name": "椿の髪かざり",
+      "group": "stage",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatCamellia.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatRose",
+      "name": "薔薇の髪かざり",
+      "group": "stage",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatRose.png",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "hatFeatherCap",
+      "name": "羽根のかぶりもの",
+      "group": "stage",
+      "slot": "hat",
+      "z": 6,
+      "file": "items/hatFeatherCap.png",
+      "size": [
+        1024,
+        1024
+      ]
+    }
+  ]
+}

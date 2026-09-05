@@ -59,6 +59,11 @@ import ReauthGate from "@/components/ReauthGate";
 import RecoveryCodeCard from "@/components/RecoveryCodeCard";
 // ★★お知らせの画面（v3・2026-09-03 確定）。★文面は lib/notices.js が持ちます。
 import NoticeScreen from "@/components/NoticeScreen";
+// ★★羊の着せかえ（Stage 1・2026-09-05 夜）。★まだ坂本さんにしか出しません。
+import WardrobePanel from "@/components/WardrobePanel";
+import { mayUseWardrobe } from "@/lib/sheepWardrobe";
+// ★解放の判定は、lib/character.js が持っています。★作り直しません。
+import { computeUnlocked } from "@/lib/character";
 // ★★無料と有料の線（⑫・案B）。★判定は lib/freeTier.js が1か所で持ちます。
 //   ★画面で、条件を並べ直さないこと。
 import { scopeForPeriod, mayViewSummary } from "@/lib/freeTier";
@@ -9036,6 +9041,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★戻すと、★プロフィールの設定からやり直しになります。
   //   ★同意だけの1段（existingUser）を、★そのまま借ります。
   const [renewingConsent, setRenewingConsent] = useState(false);
+  // ★★着せかえ（PNG のほう）。★character_equipped.wardrobe に入れます。
+  //   ★いまの SVG の羊（hat / outfit / accessory）は、★1つも触りません。
+  //   ★★別の鍵にしてあるので、★戻すのも簡単です。
   // ★★お支払いの状態（⑫）。★サーバから取ります。
   //   ★★localStorage に持たないこと（権利と課金の線引き §2-2）。
   //   ★読めないうちは null。★null のあいだは、門をかけません（★渡しすぎる側に倒す）。
@@ -11436,6 +11444,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       setAdviceError(t("errorAdviceGeneration"));
     }
     setAdviceLoading(false);
+  }
+
+  // ★★着せかえたものを、保存します（2026-09-05 夜）。
+  //   ★character_equipped の中の「wardrobe」だけを差し替えます。
+  //   ★★いまの SVG の羊の分（hat / outfit / accessory）は、★触りません。
+  async function handleEquipWardrobe(next) {
+    const merged = { ...characterEquipped, wardrobe: next };
+    setCharacterEquipped(merged);
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("profiles").update({ character_equipped: merged }).eq("id", userId).select("id");
+    if (error) {
+      // ★★黙らないこと。★保存できていないのに、着たままに見えます。
+      console.error("★着せかえを保存できませんでした:", error.message);
+    }
   }
 
   async function handleSignOut() {
@@ -14438,7 +14461,31 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               )
             )}
 
+            {/* ★★着せかえ（Stage 1・2026-09-05 夜）。★まだ坂本さんにしか出ません。
+                ★NEXT_PUBLIC_WARDROBE_USER_IDS が空なら、★誰にも出ません。
+                ★決めは lib/sheepWardrobe.js が持ちます。★ここで並べ直しません。
+                ★★JSX のコメントを、★かたまりの中の先頭に置かないこと。
+                  ★今日3回、これで壊しました（return の直後・属性の間・ここ）。 */}
             {activeTab === "garden" && (
+              <>
+              {mayUseWardrobe(userId, {
+                NEXT_PUBLIC_WARDROBE_USER_IDS: process.env.NEXT_PUBLIC_WARDROBE_USER_IDS
+              }) && (
+                <div className="rounded-2xl p-4 border mb-4" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">着せかえ</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    217点あります。押すと着て、もう一度押すと外せます。
+                  </p>
+                  <WardrobePanel
+                    wearing={characterEquipped.wardrobe || {}}
+                    owned={ownedItemKeys}
+                    unlockedFlags={Object.fromEntries(
+                      [...computeUnlocked(entries)].map((k) => [k, true])
+                    )}
+                    todayISO={realTodayDate}
+                    onChange={(next) => handleEquipWardrobe(next)} />
+                </div>
+              )}
               <CharacterHome
                 professions={effectiveProfessions}
                 entries={entries}
@@ -14454,6 +14501,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 onSave={handleSaveCharacter}
                 t={t}
               />
+              </>
             )}
 
             {/* ★★大きい文字のとき、★4つの名前が2行に折り返していました（2026-09-05・実機）。
