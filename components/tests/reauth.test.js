@@ -101,6 +101,42 @@ function ok(label, cond) {
   ok("★断るときに、決めつけていない", !/間違って(います|いる)/.test(m.REAUTH_FAILED));
   ok("★急かす言葉・責める言葉が無い", !/必ず|忘れずに|注意してください/.test(copy));
 
+  console.log("\n④-2 ★★4つの操作に、つながっていること");
+  const vt = readCode("components", "VocalTracker.jsx");
+  // ★★書き出しは、丸ごと持ち出せます。★確かめを通します。
+  ok("★書き出しが、確かめを通っている", /function startExport\(\)/.test(vt));
+  ok("★書き出しのボタンが、直に走らない",
+    !/onClick=\{handleExportData\}/.test(vt));
+  ok("★5分以内なら、また聞かない", /reauthStillValid\(reauthAt/.test(vt));
+  ok("★確かめの画面を、出せる", /<ReauthGate/.test(vt));
+  // ★★画面が「確かめました」と決めないこと。★サーバに聞きます。
+  ok("★確かめは、サーバに頼んでいる", /\/api\/account\/reauth/.test(vt));
+  ok("★時刻は、サーバが返したものを持つ", /setReauthAt\(data\.at/.test(vt));
+
+  console.log("\n④-3 ★削除は、もともと正しい形でした（★触っていません）");
+  const del = readCode("app", "api", "account", "delete", "route.js");
+  // ★セッションを持たないクライアントで確かめています。
+  ok("★削除も、セッションを持たない形で確かめている",
+    /persistSession: false/.test(del));
+  // ★★5分以内の確かめがあれば、二度聞きません（Opus の指定）。
+  ok("★削除が、確かめの時刻を読んでいる", /reauthStillValid/.test(del));
+  ok("★削除が、reauth_at を読んでいる", /reauth_at/.test(del));
+  // ★画面の側の入力欄にも、Face ID が出ること。
+  ok("★削除の入力欄に current-password がある",
+    /autoComplete="current-password"/.test(readCode("components", "VocalTracker.jsx")));
+
+  console.log("\n④-4 ★確かめの route が、正しく作られていること");
+  const route = readCode("app", "api", "account", "reauth", "route.js");
+  // ★★アドレスを画面から渡させないこと。★他人のアドレスを試されます。
+  ok("★アドレスは、入っている方のものを使う", /email: user\.email/.test(route));
+  ok("★画面から渡されたアドレスを、使っていない", !/body\.email/.test(route));
+  // ★時刻は、サーバの時計で入れます。
+  ok("★時刻は、サーバが入れる", /new Date\(\)\.toISOString\(\)/.test(route));
+  ok("★画面から渡された時刻を、使っていない", !/body\.at\b/.test(route));
+  // ★理由を細かく返さないこと。
+  ok("★断る理由を、細かく分けていない", !/存在しません|登録されていません/.test(route));
+  ok("★つながらないときは 503（★入り直しを勧めない）", /status: 503/.test(route));
+
   console.log("\n⑤ ★この決めが、1か所にあること");
   // ★★復旧コードの側に、同じものが残っていないこと。
   const rc = readCode("lib", "recoveryCode.js");

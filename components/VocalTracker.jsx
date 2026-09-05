@@ -53,6 +53,10 @@ import { SCALES, DEFAULT_SCALE, SCALE_LABELS, SCALE_SAMPLE, normalizeScale,
 //   ★画面の側で「beforeinstallprompt が来たから Android」と決めていました。
 //   ★★それはパソコンにも来ます。★パソコンの方に手順が出ていました。
 import { osOf, installGuidePlatform } from "@/lib/platform";
+// ★★大事な操作の前に、もう一度確かめます（判断-メールを失うこと §4）。
+//   ★入ったままで長く使える形にしたぶん、★持ち出すときだけ、確かめます。
+import ReauthGate from "@/components/ReauthGate";
+import { REAUTH_ACTIONS, reauthStillValid } from "@/lib/reauth";
 import { SIMPLE_STEPS, SIMPLE_STEP_COUNT, remainingSteps, applyStep, skipStep,
   nextIndex, prevIndex, isFinished, SIMPLE_SKIP_LABEL, SIMPLE_BACK_LABEL, SIMPLE_DONE_TEXT } from "@/lib/simpleFlow";
 import { familyOf, mayStateFinding, EXPLORE, EXPLORE_NOTE,
@@ -8923,6 +8927,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   // ★本人確認のパスワード。★保存しません。送ったら消します。
   const [deletePassword, setDeletePassword] = useState("");
+  // ★確かめが済んだ時刻。★サーバが返したものを、そのまま持ちます。
+  //   ★★こちらの時計は使いません。★端末の時計は、ずれます。
+  const [reauthAt, setReauthAt] = useState(null);
+  // ★確かめの画面を出しているか。★出している間は、書き出しを始めません。
+  const [reauthFor, setReauthFor] = useState(null);
   const [deleteStatus, setDeleteStatus] = useState("idle"); // idle | working | error
   const [deleteError, setDeleteError] = useState("");
   // ★オーナーの退会を止めたときの、その教室の一覧（判断 2026-09-01）。
@@ -9034,6 +9043,40 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       setCloseOrgStatus("error");
       setCloseOrgError("通信に失敗しました。時間をおいてもう一度お試しください。");
     }
+  }
+
+  // ★★パスワードを、サーバに確かめてもらいます。
+  //   ★ここでは確かめません。★画面で確かめても、呼び出しを直に出されたら素通りします。
+  //   ★通ったら、★サーバが時刻を覚えます（profiles.reauth_at）。
+  async function askServerToConfirm(password) {
+    try {
+      const res = await fetch("/api/account/reauth", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ password })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        console.error("★確かめが通りませんでした:", data.error || res.status);
+        return false;
+      }
+      setReauthAt(data.at || null);
+      return true;
+    } catch (e) {
+      console.error("★確かめを送れませんでした:", e && e.message);
+      return false;
+    }
+  }
+
+  // ★★書き出しの前に、★もう一度確かめます（判断-メールを失うこと §4）。
+  //   ★丸ごと持ち出せる操作です。★端末を置き忘れたときのための、ひと手間です。
+  //   ★5分以内に確かめてあれば、★また聞きません。
+  function startExport() {
+    if (reauthStillValid(reauthAt, new Date())) {
+      handleExportData();
+      return;
+    }
+    setReauthFor(REAUTH_ACTIONS.EXPORT);
   }
 
   async function handleExportData() {
@@ -11292,6 +11335,30 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
   return (
     <div style={{ background: C.paper, color: C.ink, minHeight: "100vh" }}>
+      {/* ★★大事な操作の前の、もう一度の確かめ（判断-メールを失うこと §4）。
+          ★Face ID を、こちらで呼ぶのではありません。
+          ★パスワードの欄を出すと、★iPhone が自分で Face ID を出します。
+          ★★背景を押しても閉じません。★閉じるつもりが「やめる」になると、
+            ★押した方は、★何が起きたか分かりません。★出口はボタンだけです。 */}
+      {reauthFor && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
+          style={{ background: "rgba(36,25,20,0.35)" }}>
+          <div className="w-full sm:max-w-sm rounded-3xl p-6" style={{ background: C.paper }}>
+            <ReauthGate
+              action={reauthFor}
+              onPassed={async (password) => {
+                const ok = await askServerToConfirm(password);
+                if (!ok) return false;
+                const which = reauthFor;
+                setReauthFor(null);
+                // ★通ったら、★そのまま続けます。★もう一度押させません。
+                if (which === REAUTH_ACTIONS.EXPORT) handleExportData();
+                return true;
+              }}
+              onCancel={() => setReauthFor(null)} />
+          </div>
+        </div>
+      )}
       {toastMessage && (
         <div className="fixed left-1/2 z-50 tab-panel" style={{ bottom: 24, transform: "translateX(-50%)" }}>
           <div
@@ -17048,7 +17115,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </p>
 
                   {/* ★文字だけの案内にしないこと。★押せる控えを置きます。 */}
-                  <button type="button" onClick={handleExportData} disabled={exportStatus === "working"}
+                  <button type="button" onClick={startExport} disabled={exportStatus === "working"}
                     className="w-full py-2.5 rounded-full text-sm font-medium mb-3"
                     style={{ background: C.paper, color: C.ink, border: `1px solid ${C.line}` }}>
                     {exportStatus === "working" ? "書き出しています…" : "記録を書き出す"}
@@ -17108,7 +17175,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold }}>
                   <p className="text-sm font-medium mb-1">{t("deleteStep1ExportFirst")}</p>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("deleteStep1ExportNote")}</p>
-                  <button type="button" onClick={handleExportData} disabled={exportStatus === "working"}
+                  <button type="button" onClick={startExport} disabled={exportStatus === "working"}
                     className="w-full py-2.5 rounded-full text-sm font-medium flex items-center justify-center gap-2"
                     style={{ background: C.gold, color: "#FFFDF8", opacity: exportStatus === "working" ? 0.7 : 1 }}>
                     {exportStatus === "working" && <Loader2 size={15} className="animate-spin" />}
@@ -18642,7 +18709,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         {t("exportError")}
                       </p>
                     )}
-                    <button type="button" onClick={handleExportData} disabled={exportStatus === "working"}
+                    <button type="button" onClick={startExport} disabled={exportStatus === "working"}
                       className="w-full py-2.5 rounded-full text-sm font-medium flex items-center justify-center gap-2"
                       style={{ background: C.curtain, color: "#FFFDF8", opacity: exportStatus === "working" ? 0.7 : 1 }}>
                       {exportStatus === "working" && <Loader2 size={15} className="animate-spin" />}

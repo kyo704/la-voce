@@ -6,6 +6,7 @@ import { purgeAccount, severConnections } from "@/lib/accountDeletion";
 import { classifyOwnedOrgs, departingOwnerNotice, departingPayerNotice } from "@/lib/orgClosure";
 import { OPERATOR_CONTACT_EMAIL } from "@/lib/brand";
 import { getUserWithTimeout } from "@/lib/withTimeout";
+import { reauthStillValid } from "@/lib/reauth";
 
 // ============================================================================
 // アカウントの削除（統合実行ルートv4 G3-17 / 作業指示-公開前の実装.md A-4）
@@ -66,8 +67,24 @@ export async function POST(request) {
   //     cookie 付きのクライアントで signInWithPassword を呼ぶと、
   //     いまのセッションを書き換えてしまいます。
   // ==========================================================================
+  // ★★5分以内に、もう一度の確かめが済んでいれば、★また聞きません。
+  //   ★書き出してすぐ削除する、といったときのためです（Opus・2026-09-05）。
+  //   ★★覚えているのは、★サーバです。★画面の言い分は聞きません。
+  //   ★列がまだ無い本番では、42703 で来ます。★そのときは、聞きます。
+  //   ★★ここで service role のクライアントを作らないこと。
+  //     ★確かめる前に、★何でもできる鍵を手に持たないためです。
+  //     ★本人の行を読むだけなので、★いまのセッションで足ります（RLS が通します）。
+  //     ★（components/tests/delete-requires-password.test.js が、この順番を見ています）
+  let alreadyConfirmed = false;
+  {
+    const { data: prof, error: peekErr } = await supabase
+      .from("profiles").select("reauth_at").eq("id", user.id).maybeSingle();
+    if (peekErr) console.error("★確かめの時刻を読めませんでした:", peekErr.message);
+    else alreadyConfirmed = reauthStillValid(prof && prof.reauth_at, new Date());
+  }
+
   const password = typeof body.password === "string" ? body.password : "";
-  if (!password) {
+  if (!password && !alreadyConfirmed) {
     return NextResponse.json({ error: "パスワードをご入力ください。" }, { status: 400 });
   }
   const verifier = createPlainClient(
@@ -75,12 +92,15 @@ export async function POST(request) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } }
   );
-  const { error: pwError } = await verifier.auth.signInWithPassword({
-    email: user.email, password
-  });
-  if (pwError) {
-    // ★理由を細かく分けないこと。「このメールは存在する」を漏らさないためです。
-    return NextResponse.json({ error: "パスワードが一致しません。" }, { status: 401 });
+  // ★確かめが済んでいれば、★ここは通します。
+  if (!alreadyConfirmed) {
+    const { error: pwError } = await verifier.auth.signInWithPassword({
+      email: user.email, password
+    });
+    if (pwError) {
+      // ★理由を細かく分けないこと。「このメールは存在する」を漏らさないためです。
+      return NextResponse.json({ error: "パスワードが一致しません。" }, { status: 401 });
+    }
   }
 
   const admin = createAdminClient();

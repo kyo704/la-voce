@@ -91,7 +91,9 @@ MUST_STAY_FREE.forEach(({ name, fn }) => {
 console.log("\n=== ② 書き出し・削除のボタンが、支払いで隠れていない ===");
 // ボタンの前後に、プランで出し分ける条件が入っていないこと。
 [
-  { name: "書き出しのボタン", mark: "onClick={handleExportData}" },
+  // ★★2026-09-05、★書き出しの前に、もう一度確かめるようにしました。
+  //   ★押す先が startExport に変わっています。★隠れていないことは、変わりません。
+  { name: "書き出しのボタン", mark: "onClick={startExport}" },
   { name: "削除の入口", mark: 'setActiveTab("deleteAccount1")' }
 ].forEach(({ name, mark }) => {
   const at = ui.indexOf(mark);

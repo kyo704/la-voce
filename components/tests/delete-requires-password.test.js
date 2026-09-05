@@ -24,7 +24,13 @@ const tr = readRaw("lib", "translations.js");
 
 console.log("=== ★サーバ側で確かめる ===");
 assertTrue(/signInWithPassword\(\{/.test(route), "パスワードを検証している");
-assertTrue(/if \(!password\) \{/.test(route), "★パスワードが無ければ、その時点で止める");
+// ★★2026-09-05、★5分以内に確かめてあれば、二度聞かない形にしました（Opus の指定）。
+//   ★書き出してすぐ削除する、といったときのためです。
+//   ★★覚えているのはサーバです（profiles.reauth_at）。★画面の言い分は聞きません。
+assertTrue(/if \(!password && !alreadyConfirmed\) \{/.test(route),
+  "★パスワードも、5分以内の確かめも無ければ、その時点で止める");
+assertTrue(/reauthStillValid\(/.test(route), "★確かめの時刻は、1か所の決めで見る");
+assertTrue(/reauth_at/.test(route), "★確かめの時刻を、サーバから読んでいる");
 assertTrue(/status: 401/.test(route), "合わなければ 401");
 
 console.log("\n=== ★削除より前に確かめる（順番） ===");
