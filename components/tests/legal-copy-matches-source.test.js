@@ -28,13 +28,21 @@ function ok(label, cond) {
 }
 
 // ★空白・改行を落として比べます。★折り返しの違いで落ちないためです。
-const squash = (t) => String(t).replace(/\s+/g, "");
+//
+// ★★★（星）も落とします。★これは、こちらの中だけの印です。
+//   ★正の md では「ここが大事」の目印に使っています。
+//   ★★お客さまの画面には、★出しません。
+//   ★だから、★星の有無で落ちてはいけません。
+const squash = (t) => String(t).replace(/[\s★]+/g, "");
 
 // ★md の中から、1つの節を取り出します。
 function section(md, heading) {
   const i = md.indexOf(heading);
   if (i === -1) return "";
-  const j = md.indexOf("\n### ", i + heading.length);
+  // ★"### " と "## " の、どちらの見出しでも切れるようにします。
+  const a = md.indexOf("\n### ", i + heading.length);
+  const b = md.indexOf("\n## ", i + heading.length);
+  const j = (a === -1) ? b : (b === -1 ? a : Math.min(a, b));
   return md.slice(i, j === -1 ? md.length : j);
 }
 
@@ -52,6 +60,14 @@ const PAIRS = [
     md: ["docs", "legal", "privacy-ja-2026-09-v1.md"],
     page: ["app", "legal", "privacy", "page.js"],
     heading: "### 5　だれが見られるか"
+  },
+  {
+    // ★★2026-09-05 に作りました。★まだ公開していません。
+    //   ★公開の前でも、★正と写しは合っていること。
+    name: "特定商取引法に基づく表記",
+    md: ["docs", "legal", "tokushoho-ja-2026-09-v1.md"],
+    page: ["app", "legal", "tokushoho", "page.js"],
+    heading: "## §3 販売価格"
   },
   {
     name: "利用規約 第5条",

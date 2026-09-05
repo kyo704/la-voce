@@ -49,18 +49,32 @@ const walk = (d) => {
 console.log("\n① ★★壁として言わないこと");
 const BANNED = [
   { word: "無料期間が終わり", why: "★体験期間は作りません。終わる日がありません" },
-  { word: "体験期間", why: "★どんな体験期間も作りません（訂正2 §7）" },
+  // ★★「体験期間はありません」だけは、★書かなければならない文です。
+  //   ★特商法の表記に要ります。★だから、★そこだけ許します。
+  //   ★禁じたいのは「終わりました」「もうすぐ終わります」の側です。
+  { word: "体験期間", why: "★どんな体験期間も作りません（訂正2 §7）",
+    allow: "体験期間はありません" },
   { word: "無料期間", why: "★「期間」という言い方をしません" },
   { word: "過去が見られなくな", why: "★取り上げた、と読めます" },
   { word: "見られなくなりました", why: "★取り上げた、と読めます" },
   { word: "制限されました", why: "★罰のように読めます" },
   { word: "アップグレード", why: "★英語で言い換えて、ぼかさないこと" }
 ];
-for (const { word, why } of BANNED) {
-  const hits = files.filter((p) => readCode(p).includes(word));
+for (const { word, why, allow } of BANNED) {
+  const hits = files.filter((p) => {
+    // ★許した1文だけを外してから、★まだ残っているかを見ます。
+    //   ★★「許した」を丸ごと素通しにしないこと。★1文だけです。
+    const t = allow ? readCode(p).split(allow).join("") : readCode(p);
+    return t.includes(word);
+  });
   ok(`「${word}」を書いていない ${why}${hits.length ? "（★" + hits.join(" ") + "）" : ""}`,
     hits.length === 0);
 }
+
+// ★★許した1文は、★その形どおりに書かれていること。
+//   ★「体験期間はありません」以外の使い方をしていたら、上で落ちます。
+ok("★特商法の表記に「体験期間はありません」がある",
+  readCode("app", "legal", "tokushoho", "page.js").includes("体験期間はありません"));
 
 console.log("\n② ★消えないことを、必ず添えること");
 // ★★この2行が無いと、★「消えるのでは」と思われます。

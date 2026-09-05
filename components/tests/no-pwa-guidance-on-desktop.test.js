@@ -94,7 +94,11 @@ const UA = {
     "components/StartFlow.jsx",        // ★中で canAddToHome / nextStep を通します
     "components/VocalTracker.jsx",     // ★上の③で見ました
     "components/LegacyOriginNotice.jsx", // ★引っ越しのお知らせ（★案内ではありません）
-    "app/start/page.js"                // ★紙に刷る案内（★画面ではありません）
+    "app/start/page.js",               // ★紙に刷る案内（★画面ではありません）
+    // ★★特商法の表記は、★案内ではありません。★動作環境の説明です。
+    //   ★「スマートフォンでは」と書いてあり、★パソコンの方に勧めていません。
+    //   ★法律で求められている表示なので、★機械の種類で出し分けられません。
+    "app/legal/tokushoho/page.js"
   ].map((p) => p.split("/").join(path.sep));
   const offenders = [];
   const walk = (d) => {
@@ -112,6 +116,14 @@ const UA = {
   ["app", "components"].forEach(walk);
   ok(`★絞られていない案内が無い${offenders.length ? "（★" + offenders.join(" ") + "）" : ""}`,
     offenders.length === 0);
+
+  console.log("\n④-2 ★★除いた画面は、★中身も確かめること（★素通しにしない）");
+  // ★特商法の表記だけ、★一覧から除いています。★だから、ここで見ます。
+  const toku = readCode("app", "legal", "tokushoho", "page.js");
+  ok("★「スマートフォンでは」と限っている", /スマートフォンでは、ホーム画面に置いて/.test(toku));
+  ok("★押せるボタンや手順を出していない",
+    !/共有ボタン|右上の|⋮|手順|置きましょう/.test(toku));
+  ok("★「インストール」と書いていない", !/インストール/.test(toku));
 
   console.log(`\n★とおった ${pass} ／ ★落ちた ${fail}`);
   process.exit(fail === 0 ? 0 : 1);

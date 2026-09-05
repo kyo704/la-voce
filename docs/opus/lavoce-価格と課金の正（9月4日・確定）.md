@@ -356,6 +356,8 @@ docs/legal/terms-ja-（版）.md            価格・返金の条項
 docs/legal/privacy-ja-（版）.md          （価格の記載があれば）
 価格ページ（アプリ内・説明サイト）
 特定商取引法に基づく表記
+　　　★正 docs/legal/tokushoho-ja-2026-09-v1.md
+　　　★写し app/legal/tokushoho/page.js（★2026-09-05 に作りました。★未公開）
 Stripe の Price オブジェクト（2つ）
 作業指示 v3 §4
 営業ツール（woolsong-営業ツール-設計と引き継ぎ）
