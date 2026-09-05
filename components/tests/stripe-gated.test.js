@@ -49,11 +49,17 @@ console.log("\n④ ★無料のうちは、決済の入口へ進まないこと"
 const billing = readCode("app/billing/page.js");
 // ★見張るのは「ボタンがあるか」ではなく、★「無料のうちは、そこへ進まないか」です。
 //   REQUIRE_SUBSCRIPTION が無効なときの早期 return が、下を全部無効にします。
+// ★★2026-09-05、★⑫（無料と有料の線）で、★決めが1つ増えました。
+//   ★以前 … 無料のうちは、申し込みを出さない（REQUIRE_SUBSCRIPTION だけ）
+//   ★いま … ★2つの決めがあります
+//       REQUIRE_SUBSCRIPTION … 払わないと、アプリそのものが使えない（★休止中）
+//       PAID_GATE_ENABLED    … アプリは無料。★まとめだけが有料（⑫）
+//
+//   ★★見たいことは、変わっていません。
+//     ★「売るものが1つも無いときに、申し込みの入口を出さないこと」
+//   ★見る条件だけを、★2つに増やします。
 const 早期 = billing.indexOf("if (!requireSubscription)");
-// ★2026-09-04、/billing のボタンは MinorConsentGate の中へ移りました。
-//   ★年齢の帯で出し分けるためです。
-//   ★★見たいのは「無料のうちは、そこへ進まないか」です。
-//     ★部品の名前ではありません。★どちらの名前でも拾います。
+const 門 = billing.indexOf("PAID_GATE_ENABLED && !!GATE_STARTS_AT");
 const ボタン = Math.min(
   ...["<CheckoutButton", "<MinorConsentGate"]
     .map((n) => billing.indexOf(n)).filter((i) => i >= 0)
@@ -61,8 +67,23 @@ const ボタン = Math.min(
 ok("requireSubscription を読んでいる", /process\.env\.REQUIRE_SUBSCRIPTION === "true"/.test(billing));
 ok("★無効なときは早期 return する", 早期 !== -1);
 ok("★申し込みの入口が見つかる", Number.isFinite(ボタン) && ボタン > 0);
-ok("★入口は、その return より後ろにある（＝無料のうちは出ない）",
-  早期 !== -1 && ボタン !== -1 && 早期 < ボタン);
+// ★★⑫の門を、先に読んでいること。
+//   ★読まずに入口を出すと、★売るものが無いのに申し込みが出ます。
+ok("★⑫の門を読んでいる", 門 !== -1);
+ok("★★申し込みの入口は、どちらかの門の後ろにある",
+  ボタン > Math.min(...[早期, 門].filter((i) => i >= 0)));
+// ★★2つとも切ってあるときに、入口が出ないこと。
+//   ★lib/freeTier.js の既定が false のうちは、★門の枝に入りません。
+{
+  const fs2 = require("fs");
+  const ft = fs2.readFileSync(
+    require("path").join(__dirname, "..", "..", "lib", "freeTier.js"), "utf-8");
+  ok("★門は、まだ切ってある（PAID_GATE_ENABLED = false）",
+    /export const PAID_GATE_ENABLED = false;/.test(ft));
+  ok("★開ける日も、まだ決まっていない（GATE_STARTS_AT = null）",
+    /export const GATE_STARTS_AT = null;/.test(ft));
+}
+
 ok("★台帳が、到達しないことを書いている", /到達しません/.test(台));
 
 console.log("\n⑤ A型・B型の区別");

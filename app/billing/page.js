@@ -3,6 +3,12 @@ import { createClient } from "@/lib/supabase/server";
 import { isNativeApp } from "@/lib/isNativeApp";
 import { C } from "@/lib/tokens";
 import MinorConsentGate from "@/components/MinorConsentGate";
+// ★★無料と有料の線（⑫）。★何が無料で、何が有料かは、★lib/freeTier.js が持ちます。
+//   ★この画面で並べ直さないこと。★2か所になります。
+import {
+  PAID_GATE_ENABLED, GATE_STARTS_AT, PAID_FEATURES, NEVER_PAID,
+  featureLabel, GATE_CLOSING_LINES
+} from "@/lib/freeTier";
 import { ageBandOf } from "@/lib/ageGate";
 import PortalButton from "@/components/PortalButton";
 import { getUserWithTimeout } from "@/lib/withTimeout";
@@ -29,6 +35,71 @@ export default async function BillingPage() {
   const { data: profForBand } = await supabase
     .from("profiles").select("age_band, is_under_18").eq("id", user.id).single();
   const band = ageBandOf(profForBand);
+
+  // ★★門が開いているときの画面（⑫・2026-09-05）。
+  //
+  //   ★★REQUIRE_SUBSCRIPTION とは、★別の決めです。★混ぜないこと。
+  //     REQUIRE_SUBSCRIPTION … ★払わないと、アプリそのものが使えない（★休止中）
+  //     PAID_GATE_ENABLED    … ★アプリは無料。★まとめだけが有料（★⑫）
+  //
+  //   ★門から「くわしく見る」で来た方が、★ここに着きます。
+  //     ★★噛み合わない画面を出さないこと。★買えない画面に着かせないこと。
+  const paidGateOpen = PAID_GATE_ENABLED && !!GATE_STARTS_AT;
+  if (!requireSubscription && paidGateOpen) {
+    return (
+      <main style={{ maxWidth: 480, margin: "0 auto", padding: "56px 24px 96px" }}>
+        <h1 className="ff-display italic" style={{ fontSize: "2rem", color: C.curtain }}>
+          ご利用プラン
+        </h1>
+
+        {/* ★★先に「無料のもの」を出します。
+            ★あとで「増えるもの」を出します。
+            ★順番を逆にすると、★取り上げられたように読めます。 */}
+        <div style={{
+          marginTop: 24, padding: 16, borderRadius: 14,
+          border: `1px solid ${C.line}`, background: C.card
+        }}>
+          <p style={{ fontSize: "1rem", fontWeight: 600, marginBottom: 10 }}>
+            ずっと無料でお使いいただけるもの
+          </p>
+          {NEVER_PAID.map((k) => (
+            <p key={k} style={{ fontSize: "0.9375rem", color: C.ink, margin: "0 0 6px", lineHeight: 1.8 }}>
+              ・{featureLabel(k)}
+            </p>
+          ))}
+        </div>
+
+        <div style={{
+          marginTop: 16, padding: 16, borderRadius: 14,
+          border: `1px solid ${C.line}`, background: C.card
+        }}>
+          <p style={{ fontSize: "1rem", fontWeight: 600, marginBottom: 10 }}>
+            月580円でご覧いただけるもの
+          </p>
+          {PAID_FEATURES.map((k) => (
+            <p key={k} style={{ fontSize: "0.9375rem", color: C.ink, margin: "0 0 6px", lineHeight: 1.8 }}>
+              ・{featureLabel(k)}
+            </p>
+          ))}
+        </div>
+
+        {/* ★★この2行を、必ず添えること。★消えないことを、その場で言います。 */}
+        <div style={{ marginTop: 16, padding: 14, borderRadius: 12, background: C.paper }}>
+          {GATE_CLOSING_LINES.map((line) => (
+            <p key={line} style={{ fontSize: "0.9375rem", color: C.ink, margin: "0 0 4px", lineHeight: 1.8 }}>
+              {line}
+            </p>
+          ))}
+        </div>
+
+        {/* ★年齢の帯で、出すものが変わります。★門は MinorConsentGate が持ちます。
+            ★★画面で隠すだけにしないこと。★api/stripe/checkout も同じ帯で止めます。 */}
+        <div style={{ marginTop: 24 }}>
+          <MinorConsentGate band={band} userId={user.id} />
+        </div>
+      </main>
+    );
+  }
 
   // 実験公開期間中（無料開放中）は課金導線を出さず、案内のみ表示する
   if (!requireSubscription) {

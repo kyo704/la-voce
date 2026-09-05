@@ -76,8 +76,18 @@ const squash = (t) => String(t).replace(/[\s　]+/g, "");
   console.log("\n⑤ ★出し方");
   const vt = readCode("components", "VocalTracker.jsx");
   ok("★1度だけの仕掛けを通している", /shouldShowNotice\(noticeState, "consentApology2026"\)/.test(vt));
-  // ★★「あとで」を押した方には、★次にまた出ます。★責めません。
-  ok("★「あとで」で既読にしている", /onLater=\{\(\) => markNoticeShown\("consentApology2026"\)\}/.test(vt));
+  // ★★「あとで」を押した方には、★次にまた出ます（★正の文書のとおり）。
+  //   ★2026-09-05 夜、★私は逆を実装していました。
+  //     ★markNoticeShown を呼んでいて、★二度と出ない形でした。
+  //     ★自分で「次にまた出ます」と書いておきながら、です。
+  //   ★★いまは、★いまだけ閉じます。★既読にしません。
+  ok("★「あとで」で、既読にしていない",
+    !/onLater=\{\(\) => markNoticeShown/.test(vt));
+  ok("★「あとで」は、いまだけ閉じる", /onLater=\{\(\) => setNoticeHiddenNow\(true\)\}/.test(vt));
+  ok("★閉じた状態を、画面の中だけで持っている", /const \[noticeHiddenNow, setNoticeHiddenNow\] = useState\(false\)/.test(vt));
+  // ★★開き直したら、また出ること。★保存に書いていないこと。
+  ok("★閉じたことを、保存に書いていない",
+    !/noticeHiddenNow[\s\S]{0,120}(user_notices|upsert)/.test(vt));
   // ★同意し直した方には、二度と出ないこと。
   ok("★同意のあとに、既読にしている",
     /markNoticeShown\("consentApology2026"\)[\s\S]{0,80}setRenewingConsent\(false\)/.test(vt));

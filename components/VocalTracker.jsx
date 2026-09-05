@@ -9022,6 +9022,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★localStorage に持たないこと（権利と課金の線引き §2-2）。
   //   ★読めないうちは null。★null のあいだは、門をかけません（★渡しすぎる側に倒す）。
   const [subscribed, setSubscribed] = useState(null);
+  // ★★お知らせを、いまだけ閉じたか（2026-09-05 夜に直しました）。
+  //   ★「あとで」は、★この画面を閉じるだけです。
+  //   ★★既読にしません。★開き直すと、また出ます。
+  //   ★前は markNoticeShown を呼んでいました。★二度と出ない形でした。
+  //     ★自分で「次にまた出ます」と書いておきながら、★逆を実装していました。
+  const [noticeHiddenNow, setNoticeHiddenNow] = useState(false);
   const [deleteStatus, setDeleteStatus] = useState("idle"); // idle | working | error
   const [deleteError, setDeleteError] = useState("");
   // ★オーナーの退会を止めたときの、その教室の一覧（判断 2026-09-01）。
@@ -11903,10 +11909,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ★operator・tester・general の全部に出します。
                         ★internal だけは、shouldNotify が外します。 */}
                   {shouldShowNotice(noticeState, "consentApology2026")
+                    && !noticeHiddenNow
                     && shouldNotify(profile, ["operator", "tester", "general"]) && (
+                    /* ★★「あとで」は、いまだけ閉じます。★既読にしません。
+                       ★開き直すと、また出ます（★正の文書のとおり）。
+                       ★責めません。★催促の言葉も足しません。
+                       ★同意し直した方には、そのとき既読にします。
+                       ★★属性の間に JSX のコメントを置かないこと。★壊れます。 */
                     <NoticeScreen
                       onGoConsent={() => setRenewingConsent(true)}
-                      onLater={() => markNoticeShown("consentApology2026")} />
+                      onLater={() => setNoticeHiddenNow(true)} />
                   )}
                   {/* 1回だけの知らせ（lib/notices.js）。
                       ★出すのは、まだ既読でなく、かつ文字が既定の大きさのときだけ。

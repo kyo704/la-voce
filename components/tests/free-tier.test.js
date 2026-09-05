@@ -159,6 +159,35 @@ function ok(label, cond) {
   ok("★last7 と week を、絞り込みで分けて扱っている",
     /analysisPeriod === "last7" \|\| analysisPeriod === "week"/.test(vt));
 
+  console.log("\n■ ★お支払いの画面（/billing）── ★門から来た方が着く先");
+  const bill = readCode("app", "billing", "page.js");
+  // ★★REQUIRE_SUBSCRIPTION と PAID_GATE_ENABLED は、★別の決めです。
+  //   REQUIRE_SUBSCRIPTION … 払わないと、アプリそのものが使えない（★休止中）
+  //   PAID_GATE_ENABLED    … アプリは無料。★まとめだけが有料（⑫）
+  ok("★2つの決めを、分けて見ている",
+    /PAID_GATE_ENABLED && !!GATE_STARTS_AT/.test(bill));
+  ok("★REQUIRE_SUBSCRIPTION と混ぜていない",
+    /!requireSubscription && paidGateOpen/.test(bill));
+  // ★★何が無料で、何が有料かを、★画面で並べ直さないこと。
+  ok("★無料の一覧を、lib から出している", /NEVER_PAID\.map/.test(bill));
+  ok("★有料の一覧を、lib から出している", /PAID_FEATURES\.map/.test(bill));
+  ok("★名前も lib から取っている", /featureLabel\(k\)/.test(bill));
+  // ★★先に「無料のもの」、★あとで「増えるもの」。
+  ok("★無料のほうが、先に出る",
+    bill.indexOf("NEVER_PAID.map") < bill.indexOf("PAID_FEATURES.map"));
+  // ★★締めの2行を、必ず添えること。
+  ok("★締めの2行を出している", /GATE_CLOSING_LINES\.map/.test(bill));
+  // ★★年齢の帯の門を、通していること。
+  ok("★年齢の帯の門を通している", /<MinorConsentGate band=\{band\}/.test(bill));
+  // ★★禁じた言い方が無いこと。
+  const billBad = ["見られません", "できません", "無料期間", "制限されました"]
+    .filter((w) => bill.includes(w));
+  ok(`★禁じた言い方が無い${billBad.length ? "（★" + billBad.join(" ") + "）" : ""}`,
+    billBad.length === 0);
+  // ★鍵の名前を、そのまま画面に出していないこと。
+  ok("★鍵の名前に、全部見せる名前がある",
+    [...m.PAID_FEATURES, ...m.NEVER_PAID].every((k) => !!m.FEATURE_LABELS[k]));
+
   console.log("\n■ ★お支払いの状態を、手元に持たないこと（線引き §2-2）");
   ok("★localStorage を使っていない", !/localStorage/.test(src));
 
