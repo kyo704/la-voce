@@ -104,6 +104,22 @@ function ok(label, cond) {
   ok("★鍵が無ければ、0通（★止めない）",
     (await m.sendEmailChangedNotice({ fetchImpl: fake, apiKey: "", oldEmail: "a@b.c" })) === 0);
 
+  console.log("\n⑥-2 ★★止めないことと、黙ることは、別です（2026-09-05 夜）");
+  // ★お知らせが1通も届かず、★理由がどこにも残っていませんでした。
+  //   ★黙ると、★なぜ届かないのかを、★誰も追えません。
+  const mailSrc = readCode("lib", "securityMail.js");
+  ok("★鍵が無いときに、理由を残している", /RESEND_API_KEY が設定されていません/.test(mailSrc));
+  ok("★断られたときに、理由を残している", /断られました status=/.test(mailSrc));
+  ok("★断られた本文も残している", /res\.text\(\)/.test(mailSrc));
+  // ★★それでも、★呼んだ側は止めないこと。
+  let calls = 0;
+  const refuse = async () => { calls += 1; return { ok: false, status: 403, text: async () => "no" }; };
+  const n2 = await m.sendEmailChangedNotice({
+    fetchImpl: refuse, apiKey: "k", oldEmail: "a@b.c", newEmail: "d@e.f", changedVia: "recovery"
+  });
+  ok("★断られても、2通とも試している", calls === 2);
+  ok("★断られたら、0通と返す（★嘘をつかない）", n2 === 0);
+
   console.log("\n⑦ ★★お知らせの中身に、アドレスを全部書かないこと");
   // ★このメール自体が、★他人の手に渡ることがあります。
   ok("★アドレスを伏せている", m.maskEmail("sakamoto@example.com").includes("＊"));
