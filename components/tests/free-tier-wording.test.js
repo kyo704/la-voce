@@ -62,9 +62,14 @@ const BANNED = [
 ];
 for (const { word, why, allow } of BANNED) {
   const hits = files.filter((p) => {
+    let t = readCode(p);
+    // ★★禁じた言い方の「一覧」そのものは、外します（2026-09-05 夜）。
+    //   ★禁じるために書いてある言葉です。★画面には出ません。
+    //   ★★一覧の中だけを外します。★ファイルごと素通しにしないこと。
+    t = t.replace(/FORBIDDEN_GATE_PHRASES = Object\.freeze\(\[[\s\S]*?\]\);/, "");
     // ★許した1文だけを外してから、★まだ残っているかを見ます。
     //   ★★「許した」を丸ごと素通しにしないこと。★1文だけです。
-    const t = allow ? readCode(p).split(allow).join("") : readCode(p);
+    if (allow) t = t.split(allow).join("");
     return t.includes(word);
   });
   ok(`「${word}」を書いていない ${why}${hits.length ? "（★" + hits.join(" ") + "）" : ""}`,
@@ -75,6 +80,13 @@ for (const { word, why, allow } of BANNED) {
 //   ★「体験期間はありません」以外の使い方をしていたら、上で落ちます。
 ok("★特商法の表記に「体験期間はありません」がある",
   readCode("app", "legal", "tokushoho", "page.js").includes("体験期間はありません"));
+
+// ★★外した一覧が、★ちゃんと在ること（★素通しにしないため）。
+ok("★禁じた言い方の一覧が、lib/freeTier.js に在る",
+  /FORBIDDEN_GATE_PHRASES = Object\.freeze\(\[/.test(readCode("lib", "freeTier.js")));
+ok("★その一覧が、5つ以上ある",
+  (readCode("lib", "freeTier.js").match(/FORBIDDEN_GATE_PHRASES = Object\.freeze\(\[([\s\S]*?)\]\);/) || ["", ""])[1]
+    .split(",").filter((x) => x.trim()).length >= 5);
 
 console.log("\n② ★消えないことを、必ず添えること");
 // ★★この2行が無いと、★「消えるのでは」と思われます。
