@@ -56,6 +56,7 @@ import { osOf, installGuidePlatform } from "@/lib/platform";
 // ★★大事な操作の前に、もう一度確かめます（判断-メールを失うこと §4）。
 //   ★入ったままで長く使える形にしたぶん、★持ち出すときだけ、確かめます。
 import ReauthGate from "@/components/ReauthGate";
+import RecoveryCodeCard from "@/components/RecoveryCodeCard";
 import { REAUTH_ACTIONS, reauthStillValid } from "@/lib/reauth";
 import { SIMPLE_STEPS, SIMPLE_STEP_COUNT, remainingSteps, applyStep, skipStep,
   nextIndex, prevIndex, isFinished, SIMPLE_SKIP_LABEL, SIMPLE_BACK_LABEL, SIMPLE_DONE_TEXT } from "@/lib/simpleFlow";
@@ -8949,6 +8950,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [reauthAt, setReauthAt] = useState(null);
   // ★確かめの画面を出しているか。★出している間は、書き出しを始めません。
   const [reauthFor, setReauthFor] = useState(null);
+  // ★★メールアドレスの変更と、控えの出し直し（2026-09-05 夜）。
+  //   ★裁定（メールを失うこと §2①・§3）にあるのに、★抜けていました。
+  //   ★★入れているうちに変えられないと、★「失った方の道」を通ることになります。
+  const [emailPanel, setEmailPanel] = useState(false);   // 変更の欄を開いているか
+  const [newEmailInput, setNewEmailInput] = useState("");
+  const [newEmailInput2, setNewEmailInput2] = useState("");
+  const [emailBusy, setEmailBusy] = useState(false);
+  const [emailMsg, setEmailMsg] = useState("");
+  const [showReissue, setShowReissue] = useState(false); // 控えの出し直し
   const [deleteStatus, setDeleteStatus] = useState("idle"); // idle | working | error
   const [deleteError, setDeleteError] = useState("");
   // ★オーナーの退会を止めたときの、その教室の一覧（判断 2026-09-01）。
@@ -9081,6 +9091,44 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       return true;
     } catch (e) {
       console.error("★確かめを送れませんでした:", e && e.message);
+      return false;
+    }
+  }
+
+  // ★★メールアドレスを変える（判断-メールを失うこと §2①）。
+  //   ★確かめは route が見ます。★5分以内なら、また聞かれません。
+  //   ★足りなければ、route が needsPassword を返し、★確かめの画面を出します。
+  async function submitEmailChange(password) {
+    setEmailBusy(true);
+    setEmailMsg("");
+    try {
+      const res = await fetch("/api/account/email", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ newEmail: newEmailInput.trim(), password })
+      });
+      const data = await res.json().catch(() => ({}));
+      setEmailBusy(false);
+      if (res.status === 401 && data.needsPassword) {
+        setReauthFor(REAUTH_ACTIONS.CHANGE_EMAIL);
+        return false;
+      }
+      if (!res.ok) {
+        setEmailMsg(data.error || "いま、変更できません。");
+        return false;
+      }
+      // ★★変えたあとは、★新しいアドレスで入り直していただきます。
+      //   ★いまのセッションのままだと、★どちらのアドレスで入っているのか、
+      //   ★ご本人にも分からなくなります。
+      setEmailMsg("変えました。新しいアドレスで、もう一度お入りください。");
+      setNewEmailInput("");
+      setNewEmailInput2("");
+      setEmailPanel(false);
+      return true;
+    } catch (e) {
+      setEmailBusy(false);
+      console.error("★変更を送れませんでした:", e && e.message);
+      setEmailMsg("いま、変更できません。");
       return false;
     }
   }
@@ -11370,6 +11418,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 setReauthFor(null);
                 // ★通ったら、★そのまま続けます。★もう一度押させません。
                 if (which === REAUTH_ACTIONS.EXPORT) handleExportData();
+                // ★確かめが通ったら、★そのまま続けます。★もう一度押させません。
+                if (which === REAUTH_ACTIONS.CHANGE_EMAIL) await submitEmailChange();
+                if (which === REAUTH_ACTIONS.REISSUE_RECOVERY) setShowReissue(true);
                 return true;
               }}
               onCancel={() => setReauthFor(null)} />
@@ -18627,6 +18678,82 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </p>
                   </div>
                 )}
+
+                {/* ★★メールアドレスの変更（判断-メールを失うこと §2①）。
+                    ★裁定にあるのに、★2026-09-05 まで抜けていました。
+                    ★入れているうちに変えられないと、
+                      ★アドレスを変えたい方が「失った方の道」を通ることになります。
+                    ★大事な操作なので、★もう一度確かめます（§4）。
+                    ★新旧の両方にお知らせが飛びます（§7）。 */}
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-sm font-medium mb-1">メールアドレス</p>
+                  <p className="text-xs mb-3 ff-mono" style={{ color: C.inkSoft }}>{userEmail}</p>
+                  {!emailPanel ? (
+                    <button type="button" onClick={() => { setEmailPanel(true); setEmailMsg(""); }}
+                      className="w-full py-2.5 rounded-full text-sm font-medium"
+                      style={{ background: C.paper, color: C.ink, border: `1px solid ${C.line}` }}>
+                      アドレスを変える
+                    </button>
+                  ) : (
+                    <div>
+                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                        新しいアドレスに、番号が届きます。その番号でお入りください。
+                      </p>
+                      <input type="email" name="new-email" autoComplete="email" inputMode="email"
+                        value={newEmailInput} onChange={(e) => setNewEmailInput(e.target.value)}
+                        placeholder="mail@example.com"
+                        className="w-full rounded-lg border p-2 mb-2"
+                        style={{ borderColor: C.line, background: C.paper, fontSize: "max(16px, 0.875rem)" }} />
+                      {/* ★★2回入れていただきます。★打ち間違えると、入れなくなります。 */}
+                      <input type="email" name="new-email-confirm" autoComplete="off" inputMode="email"
+                        value={newEmailInput2} onChange={(e) => setNewEmailInput2(e.target.value)}
+                        placeholder="もう一度、同じアドレス"
+                        className="w-full rounded-lg border p-2 mb-2"
+                        style={{ borderColor: C.line, background: C.paper, fontSize: "max(16px, 0.875rem)" }} />
+                      {newEmailInput2.trim() && newEmailInput.trim().toLowerCase() !== newEmailInput2.trim().toLowerCase() && (
+                        <p className="text-xs mb-2" style={{ color: C.curtain }}>2つのアドレスが、そろっていません。</p>
+                      )}
+                      <div className="flex gap-2">
+                        <button type="button" disabled={emailBusy
+                          || !newEmailInput.trim()
+                          || newEmailInput.trim().toLowerCase() !== newEmailInput2.trim().toLowerCase()}
+                          onClick={() => submitEmailChange()}
+                          className="flex-1 py-2.5 rounded-full text-sm font-medium"
+                          style={{ background: C.curtain, color: "#FFFDF8" }}>
+                          {emailBusy ? "変えています…" : "変える"}
+                        </button>
+                        <button type="button" onClick={() => { setEmailPanel(false); setEmailMsg(""); }}
+                          className="flex-1 py-2.5 rounded-full text-sm font-medium"
+                          style={{ background: C.card, color: C.inkSoft, border: `1px solid ${C.line}` }}>
+                          やめる
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {emailMsg && <p className="text-xs mt-2" style={{ color: C.ink }}>{emailMsg}</p>}
+                </div>
+
+                {/* ★★復旧コードの出し直し（判断-メールを失うこと §3）。
+                    ★「★再発行できる（ログインできているうちなら、いつでも）」
+                    ★これも、★2026-09-05 まで抜けていました。
+                    ★登録の直後にしか出せず、★失くした方の逃げ道がありませんでした。 */}
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <p className="text-sm font-medium mb-1">復旧の番号（控え）</p>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                    メールが使えなくなったときに、入るための番号です。
+                    出し直すと、いまの番号は使えなくなります。
+                  </p>
+                  {showReissue ? (
+                    <RecoveryCodeCard reissue onDone={() => setShowReissue(false)} />
+                  ) : (
+                    <button type="button"
+                      onClick={() => setReauthFor(REAUTH_ACTIONS.REISSUE_RECOVERY)}
+                      className="w-full py-2.5 rounded-full text-sm font-medium"
+                      style={{ background: C.paper, color: C.ink, border: `1px solid ${C.line}` }}>
+                      新しい番号を出す
+                    </button>
+                  )}
+                </div>
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-sm font-medium mb-1">記録画面の切り替え時刻</p>

@@ -113,6 +113,34 @@ function ok(label, cond) {
   ok("★確かめは、サーバに頼んでいる", /\/api\/account\/reauth/.test(vt));
   ok("★時刻は、サーバが返したものを持つ", /setReauthAt\(data\.at/.test(vt));
 
+  console.log("\n④-2b ★★4つの操作、すべてに画面があること（2026-09-05 夜）");
+  // ★★2026-09-05、★2つ抜けていました。
+  //   ★メールの変更 … 裁定 §2① にあるのに、画面がありませんでした
+  //   ★控えの出し直し … 裁定 §3「再発行できる」なのに、
+  //     ★登録の直後にしか出せませんでした
+  //   ★決めの一覧に在るのに、★どこからも呼べない ── ★それは無いのと同じです。
+  ok("★メールの変更が、画面から呼べる", /REAUTH_ACTIONS\.CHANGE_EMAIL/.test(vt));
+  ok("★控えの出し直しが、画面から呼べる", /REAUTH_ACTIONS\.REISSUE_RECOVERY/.test(vt));
+  ok("★変更の経路がある", fs.existsSync(path.join(ROOT, "app", "api", "account", "email", "route.js")));
+  ok("★出し直しは、控えの画面を使い回している", /<RecoveryCodeCard reissue/.test(vt));
+  // ★★打ち間違いで、入れなくならないこと。
+  ok("★変更でも、アドレスを2回聞いている", /newEmailInput2/.test(vt));
+  // ★確かめが通ったら、そのまま続けること（★もう一度押させない）。
+  ok("★確かめのあと、そのまま続く",
+    /CHANGE_EMAIL\) await submitEmailChange\(\)/.test(vt));
+
+  console.log("\n④-2c ★変更の経路（★確かめと、お知らせ）");
+  const em = readCode("app", "api", "account", "email", "route.js");
+  ok("★5分以内なら、また聞かない", /reauthStillValid/.test(em));
+  ok("★足りなければ、パスワードを求める", /needsPassword: true/.test(em));
+  ok("★確かめは、セッションを持たない形", /verifyPassword/.test(em));
+  // ★★service role は、確かめてから作ること。
+  ok("★確かめる前に、service role を作っていない",
+    em.indexOf("reauthStillValid") < em.indexOf("createAdminClient()"));
+  ok("★履歴を残している（via: settings）", /via: "settings"/.test(em));
+  ok("★新旧の両方にお知らせしている", /sendEmailChangedNotice/.test(em));
+  ok("★同じアドレスには変えられない", /newEmail === oldEmail/.test(em));
+
   console.log("\n④-3 ★削除は、もともと正しい形でした（★触っていません）");
   const del = readCode("app", "api", "account", "delete", "route.js");
   // ★セッションを持たないクライアントで確かめています。
