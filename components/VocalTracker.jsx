@@ -12236,12 +12236,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   <>
                     <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
                       <button type="button" onClick={() => setRecordView("voice")}
-                        className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                        className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
                         style={{ background: recordView === "voice" ? C.curtain : "transparent", color: recordView === "voice" ? "#FFFDF8" : C.inkSoft }}>
                         声の記録
                       </button>
                       <button type="button" onClick={() => setRecordView("day")}
-                        className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                        className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
                         style={{ background: recordView === "day" ? C.curtain : "transparent", color: recordView === "day" ? "#FFFDF8" : C.inkSoft }}>
                         一日の記録
                       </button>
@@ -13501,14 +13501,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             {/* ★両方に当てはまる人にだけ出す。片方だけの人には出さない（大多数はこちら）。
                 生徒の詳細を開いている間も出さない（戻る導線があるため）。 */}
             {activeTab === "lesson" && showLessonRoleSwitch && !viewingStudentLink && (
-              <div className="flex rounded-full border p-1 mb-4" style={{ borderColor: C.line }}>
+              <div className="flex rounded-full border p-1 mb-4 overflow-x-auto nav-scroll" style={{ borderColor: C.line }}>
                 <button onClick={() => setLessonRoleChoice("learn")}
-                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
                   style={{ background: lessonRole === "learn" ? C.curtain : "transparent", color: lessonRole === "learn" ? "#FFFDF8" : C.inkSoft }}>
                   {t("lessonRoleLearn")}
                 </button>
                 <button onClick={() => setLessonRoleChoice("teach")}
-                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
                   style={{ background: lessonRole === "teach" ? C.curtain : "transparent", color: lessonRole === "teach" ? "#FFFDF8" : C.inkSoft }}>
                   {t("lessonRoleTeach")}
                 </button>
@@ -14196,20 +14196,24 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               />
             )}
 
+            {/* ★★大きい文字のとき、★4つの名前が2行に折り返していました（2026-09-05・実機）。
+                ★折り返すと、★どこまでが1つの名前か分からなくなります。
+                ★★流れるほうが、★「まだ続く」と読めます。
+                ★whitespace-nowrap で折り返しを止め、★入れ物を横に流します。 */}
             {activeTab === "notes" && (
-              <div className="flex rounded-full border p-1 mb-4" style={{ borderColor: C.line }}>
+              <div className="flex rounded-full border p-1 mb-4 overflow-x-auto nav-scroll" style={{ borderColor: C.line }}>
                 <button onClick={() => setNotesSubTab("calendar")}
-                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
                   style={{ background: notesSubTab === "calendar" ? C.curtain : "transparent", color: notesSubTab === "calendar" ? "#FFFDF8" : C.inkSoft }}>
                   カレンダー
                 </button>
                 <button onClick={() => setNotesSubTab("practice")}
-                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
                   style={{ background: notesSubTab === "practice" ? C.curtain : "transparent", color: notesSubTab === "practice" ? "#FFFDF8" : C.inkSoft }}>
                   稽古ノート
                 </button>
                 <button onClick={() => setNotesSubTab("memo")}
-                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
                   style={{ background: notesSubTab === "memo" ? C.curtain : "transparent", color: notesSubTab === "memo" ? "#FFFDF8" : C.inkSoft }}>
                   メモ
                 </button>
@@ -14217,7 +14221,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     同じ数字でも、置く場所で読まれ方が変わります。
                     分析は「判断が住む場所」、こちらは「記録がそのまま返る場所」です。 */}
                 <button onClick={() => { setNotesSubTab("own"); setOpenRecordField(null); }}
-                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
                   style={{ background: notesSubTab === "own" ? C.curtain : "transparent", color: notesSubTab === "own" ? "#FFFDF8" : C.inkSoft }}>
                   自分の記録
                 </button>
@@ -16416,17 +16420,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <h3 className="ff-display italic text-lg mb-2">{t("titleCorrelationStrength")}</h3>
                 <div className="flex rounded-full border p-1" style={{ borderColor: C.line }}>
                   <button onClick={() => setAnalysisTarget("performance")}
-                    className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                    className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
                     style={{ background: analysisTarget === "performance" ? C.curtain : "transparent", color: analysisTarget === "performance" ? "#FFFDF8" : C.inkSoft }}>
                     {t("targetPerformance")}
                   </button>
                   <button onClick={() => setAnalysisTarget("throat")}
-                    className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                    className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
                     style={{ background: analysisTarget === "throat" ? C.curtain : "transparent", color: analysisTarget === "throat" ? "#FFFDF8" : C.inkSoft }}>
                     {t("targetThroat")}
                   </button>
                   <button onClick={() => setAnalysisTarget("ease")}
-                    className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all"
+                    className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
                     style={{ background: analysisTarget === "ease" ? C.curtain : "transparent", color: analysisTarget === "ease" ? "#FFFDF8" : C.inkSoft }}>
                     {t("targetEase")}
                   </button>
