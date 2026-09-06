@@ -108,7 +108,10 @@ console.log("\n=== ★もっと を右端に固定する ===");
   assertTrue(/icon: MoreHorizontal/.test(src), "★アイコンは「…」（MoreHorizontal）");
   // ★src 全体を見ると practiceMenu（練習メニュー）に当たります。
   //   見るのは★タブの定義だけ。ここで三本線を選んでいないこと。
-  const tabDefs = src.slice(src.indexOf("const TABS = ["), src.indexOf("const TABS = [") + 400);
+  // ★★2026-09-07、★レッスンを TABS に足したので、★覚え書きのぶん長くなりました。
+  //   ★窓を、★TABS の終わりまでに広げます。
+  const tabDefs = src.slice(src.indexOf("const TABS = ["),
+    src.indexOf("];", src.indexOf("const TABS = [")));
   assertTrue(/icon: MoreHorizontal/.test(tabDefs), "★もっと のアイコンは「…」");
   assertTrue(!/icon: (Menu|AlignJustify|List)\b/.test(tabDefs), "★三本線を選んでいない");
   assertTrue(/<span className="hidden sm:inline">/.test(pinned),

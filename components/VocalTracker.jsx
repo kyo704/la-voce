@@ -460,6 +460,12 @@ const TABS = [
   { key: "home", labelKey: "tabHome", icon: Sun },
   { key: "today", labelKey: "tabToday", icon: Mic2 },
   { key: "analysis", labelKey: "tabAnalysis", icon: BarChart3 },
+  // ★★レッスンは、★いつでも帯に出します（★2026-09-07・坂本さんの決め）。
+  //   ★これまでは、教える方・習う方にだけ差しこんでいました。
+  //   ★★教室に入っていない方にも、★入口が見えるようにします。
+  //     ★見えないと、★あることに気づいていただけません。
+  //   ★先生1人につき5人まで無料、という枠が、★すでにあります。
+  { key: "lesson", labelKey: "tabLesson", icon: GraduationCap },
   { key: "garden", labelKey: "tabCharacter", icon: Home },
   { key: "notes", labelKey: "tabNotes", icon: NotebookPen },
   { key: "more", labelKey: "tabMore", icon: MoreHorizontal }
@@ -11664,13 +11670,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           //     ★レッスンが出る方は、★これで6つになります。
           //   ★★画面そのものは消していません。★activeTab === "more" は、
           //     ★これまでどおり出ます。★入口の場所が変わっただけです。
-          const displayTabs = [];
-          TABS.filter((tb) => tb.key !== "more").forEach((tab) => {
-            if (tab.key === "garden" && hasLessonTab) {
-              displayTabs.push({ key: "lesson", labelKey: null, label: t("tabLesson"), icon: GraduationCap });
-            }
-            displayTabs.push(tab);
-          });
+          // ★★レッスンは、★TABS に固定で入りました（2026-09-07）。
+          //   ★ここで差しこむのを、やめました。
+          //   ★「もっと」は、★おうちの右上の歯車から開きます。
+          const displayTabs = TABS.filter((tb) => tb.key !== "more");
           // ★横スクロールする帯。両端に、まだ続くことが分かる薄い影を出す（.nav-scroll）。
           //   右端の見切れだけでなく、左端も同じように隠れる。
           //   指標が無いと「切れている」だけに見えて、動かせると気づけない。
@@ -13832,6 +13835,30 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <p className="text-xs" style={{ color: C.inkSoft }}>
                   {t("lessonScheduleShareNotice")}
                 </p>
+
+                {/* ★★教室に入っていない方に、★空の画面を見せないこと（2026-09-07）。
+                    ★レッスンを帯に固定したので、★誰でもここへ来られます。
+                    ★★何のための場所かを書き、★入口を1つ置きます。
+                      ★招待コードの入力は「もっと」の中にあり、★見つかりません。
+                    ★★勧誘はしません。★あることを伝えるだけです。 */}
+                {myAllLessons.length === 0 && myTeacherLinks.length === 0 && !isEnrolledInOrg && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-sm mb-2" style={{ color: C.ink, lineHeight: 1.8 }}>
+                      先生や教室とつながると、レッスンの予定がここに出ます。
+                    </p>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft, lineHeight: 1.8 }}>
+                      つながらなくても、記録も分析も、これまでどおりお使いいただけます。
+                    </p>
+                    <button type="button" onClick={() => setActiveTab("more")}
+                      style={{
+                        width: "100%", minHeight: 48, padding: "12px", borderRadius: 999,
+                        border: `1px solid ${C.line}`, background: C.paper, color: C.ink,
+                        fontSize: "0.9375rem"
+                      }}>
+                      招待コードを入れる
+                    </button>
+                  </div>
+                )}
 
                 {myAllLessons.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>

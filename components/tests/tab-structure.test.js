@@ -25,8 +25,10 @@ const code = readCode("components", "VocalTracker.jsx");
 console.log("■ 帯に並ぶもの");
 const block = src.slice(src.indexOf("const TABS = ["), src.indexOf("];", src.indexOf("const TABS = [")));
 const keys = [...block.matchAll(/key: "([a-z]+)"/g)].map((m) => m[1]);
-ok("並びは home / today / analysis / garden / notes / more",
-  keys.join(",") === "home,today,analysis,garden,notes,more", keys.join(","));
+// ★★2026-09-07、★レッスンを帯に固定しました（坂本さんの決め）。
+//   ★教える方・習う方だけでなく、★誰にでも見えます。
+ok("並びは home / today / analysis / lesson / garden / notes / more",
+  keys.join(",") === "home,today,analysis,lesson,garden,notes,more", keys.join(","));
 // ★★おうち（garden）を、消さないこと。
 //   ★羊とおうちは、ここからしか行けません。
 ok("★おうち（garden）が入っている", keys.includes("garden"));
@@ -46,12 +48,19 @@ ok("読み上げの名前がある", /aria-label=\{`\$\{t\("tabMore"\)\}を開�
 // ★指で押せる大きさ（44）を守ること。
 ok("押せる大きさがある", /minHeight: 44[\s\S]{0,400}<Settings/.test(src));
 
-console.log("■ レッスンについて（★本番の姿）");
-// ★★レッスンは、★もともと帯に固定で入っていません。
-//   ★教える人・習う人だけに、★おうちの前に差しこまれます。
-ok("レッスンは、条件つきで差しこまれる",
-  /if \(tab\.key === "garden" && hasLessonTab\)/.test(code));
-ok("レッスンは、TABS に固定で入っていない", !keys.includes("lesson"));
+console.log("■ レッスンについて");
+ok("★レッスンは、帯に固定で入っている", keys.includes("lesson"));
+// ★★条件つきの差しこみは、もうしないこと。
+ok("条件つきの差しこみを、やめている",
+  !/if \(tab\.key === "garden" && hasLessonTab\)/.test(code));
+// ★★教室に入っていない方に、空の画面を見せないこと。
+//   ★招待コードの入力は「もっと」の中にあり、そのままでは見つかりません。
+ok("★何もない方に、案内を出している",
+  /先生や教室とつながると、レッスンの予定がここに出ます。/.test(code));
+ok("★入口が、押せるようになっている", /招待コードを入れる/.test(code));
+// ★★勧誘しないこと。★つながらなくてよい、と書いてあること。
+ok("★つながらなくてよい、と書いてある",
+  /つながらなくても、記録も分析も/.test(code));
 
 console.log(failed === 0 ? "\n✅ すべて通りました" : "\n❌ " + failed + " 件");
 process.exit(failed === 0 ? 0 : 1);

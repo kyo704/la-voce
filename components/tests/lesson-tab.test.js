@@ -67,8 +67,16 @@ function main() {
 
   console.log("=== テスト1: ★タブは1つだけ（同じラベルが2つ並ばない） ===");
   const code = stripComments(src);
-  const lessonPushes = (code.match(/displayTabs\.push\(\{[^}]*t\("tabLesson"\)/g) || []).length;
-  assertEqual(lessonPushes, 1, "★「レッスン」タブを積む箇所は1つだけ");
+  // ★★2026-09-07、★レッスンは TABS に固定で入りました（坂本さんの決め）。
+  //   ★以前は displayTabs に差しこんでいました。★もう差しこみません。
+  //   ★★同じラベルが2つ並ばないこと、という主張は変えていません。
+  //     ★見る場所を、TABS に移しただけです。
+  const tabDefs = src.slice(src.indexOf("const TABS = ["),
+    src.indexOf("];", src.indexOf("const TABS = [")));
+  const lessonInTabs = (tabDefs.match(/key: "lesson"/g) || []).length;
+  assertEqual(lessonInTabs, 1, "★「レッスン」は TABS に1つだけ");
+  assertEqual((code.match(/displayTabs\.push\(/g) || []).length, 0,
+    "★差しこみは、もうしていない");
   assertTrue(!/key: "students"/.test(code), "古い students タブの定義が残っていない");
   assertTrue(!/key: "mylessons"/.test(code), "古い mylessons タブの定義が残っていない");
   assertTrue(!/activeTab === "students"/.test(code), "古い students の出し分けが残っていない");
