@@ -81,6 +81,27 @@ function ok(name, cond, extra) {
   ok("すでに持っていたら、増やさない", /not exists/.test(sql));
   ok("確かめが、配り漏れを見る", /配り漏れ/.test(sql));
 
+  // ★★2026-09-07、★実際に1件、移りませんでした。
+  //   ★jsonb_set は、★path の途中の段が無いと、★何もせず、そのまま返します。
+  //     ★create_if_missing は「最後の1段」にしか効きません。
+  //   ★★character_equipped に wardrobe の段が無い方に、★黙って素通りでした。
+  //     ★失敗もしないので、★流したあとの照会でしか分かりませんでした。
+  //   ★★{wardrobe,○○} を jsonb_set で書かないこと。★|| で混ぜること。
+  ok("★jsonb_set で {wardrobe,…} を書いていない",
+    !/jsonb_set\s*\([^;]*\{wardrobe,/.test(sql));
+  ok("★|| で混ぜている（段が無くても作れる）",
+    /jsonb_build_object\(\s*'wardrobe'/.test(sql));
+  ok("★wardrobe の段を、必ず作っている",
+    /coalesce\(p\.character_equipped->'wardrobe', '\{\}'::jsonb\)/.test(sql));
+
+  // ★やり直しの SQL にも、同じ形が要ります。
+  const redo = readCode("supabase", "2026-09-07-④のやり直し-wardrobeの段が無い方.sql");
+  ok("やり直しも、jsonb_set を使っていない",
+    !/jsonb_set\s*\([^;]*\{wardrobe,/.test(redo));
+  ok("やり直しも、1行も消さない",
+    !/\bdelete\b/i.test(redo) && !/\btruncate\b/i.test(redo));
+  ok("やり直しは、先に形を見せる", /wardrobe の段があるか/.test(redo));
+
   console.log("■ お知らせ（★判断4：先に伝える）");
   ok("見出しがある", typeof m.LEGACY_NOTICE_TITLE === "string" && m.LEGACY_NOTICE_TITLE.length > 0);
   ok("★いずれ無くなることを、先に伝えている", /なくなるときは/.test(m.LEGACY_NOTICE_BODY));

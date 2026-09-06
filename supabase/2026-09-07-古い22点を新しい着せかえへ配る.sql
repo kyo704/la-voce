@@ -122,6 +122,12 @@ on conflict do nothing;
 -- ===========================================================================
 -- ④ 身につけたままの方を、新しい鍵へ移します
 -- ===========================================================================
+--   ★★2026-09-07 に直しました。★はじめ jsonb_set を使っていました。
+--     ★jsonb_set は、★path の途中の段が無いと、★何もせず、そのまま返します。
+--       ★create_if_missing は「最後の1段」にしか効きません。
+--     ★★character_equipped に wardrobe の段が無い方には、★黙って素通りでした。
+--       ★失敗もせず、★1件も当たりませんでした。
+--     ★|| で混ぜる形に直しました。★段が無くても作れます。
 --   ★★古いほうは消しません。★新しいほうに、同じ品を足すだけです。
 --     ★すでに新しいほうで何か着ておられたら、★上書きしません。
 --       ★ご本人が選ばれたものが、優先です。
@@ -151,12 +157,13 @@ with 対応(古い, 新しい, 種別) as (values
     ('accessory_pet_bottle', 'propTeacup', 'near')
 )
 update public.profiles p
-set character_equipped = jsonb_set(
-      coalesce(p.character_equipped, '{}'::jsonb),
-      '{wardrobe,hat}',
-      to_jsonb(対応.新しい),
-      true
-    )
+set character_equipped =
+      coalesce(p.character_equipped, '{}'::jsonb)
+      || jsonb_build_object(
+           'wardrobe',
+           coalesce(p.character_equipped->'wardrobe', '{}'::jsonb)
+             || jsonb_build_object('hat', 対応.新しい)
+         )
 from 対応
 where 対応.古い = p.character_equipped->>'hat'
   and p.character_equipped->'wardrobe'->>'hat' is null;
@@ -191,12 +198,13 @@ with 対応(古い, 新しい, 種別) as (values
     ('accessory_pet_bottle', 'propTeacup', 'near')
 )
 update public.profiles p
-set character_equipped = jsonb_set(
-      coalesce(p.character_equipped, '{}'::jsonb),
-      '{wardrobe,garment}',
-      to_jsonb(対応.新しい),
-      true
-    )
+set character_equipped =
+      coalesce(p.character_equipped, '{}'::jsonb)
+      || jsonb_build_object(
+           'wardrobe',
+           coalesce(p.character_equipped->'wardrobe', '{}'::jsonb)
+             || jsonb_build_object('garment', 対応.新しい)
+         )
 from 対応
 where 対応.古い = p.character_equipped->>'outfit'
   and 対応.古い <> 'outfit_scarf'
@@ -227,21 +235,26 @@ with 対応(古い, 新しい, 種別) as (values
     ('accessory_pet_bottle', 'propTeacup', 'near')
 )
 update public.profiles p
-set character_equipped = jsonb_set(
-      coalesce(p.character_equipped, '{}'::jsonb),
-      '{wardrobe,prop}',
-      to_jsonb(対応.新しい),
-      true
-    )
+set character_equipped =
+      coalesce(p.character_equipped, '{}'::jsonb)
+      || jsonb_build_object(
+           'wardrobe',
+           coalesce(p.character_equipped->'wardrobe', '{}'::jsonb)
+             || jsonb_build_object('prop', 対応.新しい)
+         )
 from 対応
 where 対応.古い = p.character_equipped->>'accessory'
   and p.character_equipped->'wardrobe'->>'prop' is null;
 
 -- ★マフラーだけ、置き場所が「襟まき」です。
 update public.profiles p
-set character_equipped = jsonb_set(
-      coalesce(p.character_equipped, '{}'::jsonb),
-      '{wardrobe,neck}', to_jsonb('scarfWine'::text), true)
+set character_equipped =
+      coalesce(p.character_equipped, '{}'::jsonb)
+      || jsonb_build_object(
+           'wardrobe',
+           coalesce(p.character_equipped->'wardrobe', '{}'::jsonb)
+             || jsonb_build_object('neck', 'scarfWine')
+         )
 where p.character_equipped->>'outfit' = 'outfit_scarf'
   and p.character_equipped->'wardrobe'->>'neck' is null;
 
