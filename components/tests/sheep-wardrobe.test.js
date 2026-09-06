@@ -28,7 +28,12 @@ function ok(label, cond) {
   const keys = new Set(idx.items.map((i) => i.key));
 
   console.log("\n① ★★絵が、全部そろっていること");
-  ok(`★品数が 217（いま ${idx.items.length}）`, idx.items.length === 217);
+  // ★★2026-09-07、★お箸とフォークを足して 219 点になりました。
+  //   ★古い22点を新しいほうへ一本化するため、★代わりの無かった2点を埋めました。
+  //   ★元の一式は217点です（★決定版11）。
+  ok(`★品数が 219（いま ${idx.items.length}）`, idx.items.length === 219);
+  ok("★足したのは、お箸とフォークの2点だけ",
+    ["propChopsticks", "propFork"].every((k) => idx.items.some((i) => i.key === k)));
   const missing = idx.items.filter((i) => {
     const files = i.files ? Object.values(i.files) : [i.file];
     return files.some((f) => !fs.existsSync(path.join(ROOT, "public", "sheep", f)));

@@ -277,7 +277,11 @@ export default function WardrobePanel({
       </div>
 
       {/* ★持ちものの置き場所（★左・まん中・右）。★持っているときだけ出します。 */}
-      {wearing.prop && (
+      {/* ★★左右の絵がある持ちものだけ、★置き場所を選べるようにします。
+          ★1枚だけの品（お箸・フォーク）では、★押しても何も変わりません。
+          ★★押しても何も起きないボタンを、★出さないこと。 */}
+      {wearing.prop && sheepItemByKey(wearing.prop) &&
+       sheepItemByKey(wearing.prop).files && (
         <div style={{ display: "flex", gap: 8, marginBottom: 16, justifyContent: "center" }}>
           {PROP_SIDES.map((s) => (
             <button key={s} type="button" onClick={() => setSide(s)}

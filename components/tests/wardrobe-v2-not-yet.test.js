@@ -72,7 +72,9 @@ function ok(name, cond, extra) {
   const strays = fs.readdirSync(live).filter((f) => !known.has(f));
   ok("一覧に無い絵が、置き場に増えていない", strays.length === 0,
     strays.slice(0, 8).join(", "));
-  ok("着せかえは、いまも217点", index.items.length === 217,
+  // ★★2026-09-07、★お箸とフォークを足しました（219点）。
+  //   ★古い22点を新しいほうへ一本化するために、★代わりの無い2点を埋めました。
+  ok("着せかえは、いま219点", index.items.length === 219,
     "実際は " + index.items.length);
   // ★足の絵は使いません。★脚はコードで描いています。
   for (const f of ["foot_L.png", "foot_R.png", "foot_shadow_L.png", "foot_shadow_R.png"]) {
