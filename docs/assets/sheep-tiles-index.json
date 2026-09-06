@@ -1,0 +1,192 @@
+{
+  "wall_natural": {
+    "cat": "wall",
+    "style": "natural",
+    "name": "ナチュラルの壁",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  },
+  "floor_natural": {
+    "cat": "floor",
+    "style": "natural",
+    "name": "ナチュラルの床",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  },
+  "wall_american": {
+    "cat": "wall",
+    "style": "american",
+    "name": "アメリカンの壁",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  },
+  "floor_american": {
+    "cat": "floor",
+    "style": "american",
+    "name": "アメリカンの床",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  },
+  "wall_modern": {
+    "cat": "wall",
+    "style": "modern",
+    "name": "モダンの壁",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  },
+  "floor_modern": {
+    "cat": "floor",
+    "style": "modern",
+    "name": "モダンの床",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  },
+  "wall_nordic": {
+    "cat": "wall",
+    "style": "nordic",
+    "name": "北欧の壁",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  },
+  "floor_nordic": {
+    "cat": "floor",
+    "style": "nordic",
+    "name": "北欧の床",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  },
+  "wall_asian": {
+    "cat": "wall",
+    "style": "asian",
+    "name": "アジアンの壁",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  },
+  "floor_asian": {
+    "cat": "floor",
+    "style": "asian",
+    "name": "アジアンの床",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  },
+  "wall_industrial": {
+    "cat": "wall",
+    "style": "industrial",
+    "name": "インダストリアルの壁",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  },
+  "floor_industrial": {
+    "cat": "floor",
+    "style": "industrial",
+    "name": "インダストリアルの床",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  },
+  "wall_country": {
+    "cat": "wall",
+    "style": "country",
+    "name": "カントリーの壁",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  },
+  "floor_country": {
+    "cat": "floor",
+    "style": "country",
+    "name": "カントリーの床",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  },
+  "wall_hotel": {
+    "cat": "wall",
+    "style": "hotel",
+    "name": "ホテルライクの壁",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  },
+  "floor_hotel": {
+    "cat": "floor",
+    "style": "hotel",
+    "name": "ホテルライクの床",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  },
+  "wall_mix": {
+    "cat": "wall",
+    "style": "mix",
+    "name": "ミックスの壁",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  },
+  "floor_mix": {
+    "cat": "floor",
+    "style": "mix",
+    "name": "ミックスの床",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  },
+  "wall_industrialBrick": {
+    "cat": "wall",
+    "style": "industrial",
+    "name": "インダストリアル（レンガ）の壁",
+    "size": [
+      256,
+      256
+    ],
+    "tile": true
+  }
+}

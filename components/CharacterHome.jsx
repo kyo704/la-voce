@@ -2,6 +2,11 @@
 
 import { useMemo, useState, useEffect, useRef } from "react";
 import { Loader2, Check } from "lucide-react";
+// ★★おうちの内装（2026-09-06）。★壁と床に、タイルの絵を敷けるようにします。
+//   ★絵が無いものは、★これまでどおり色で塗ります。★取り上げません。
+import { tileStyle, isNewMaterial } from "@/lib/sheepInterior";
+// ★★着せかえた羊。★出す・出さないは、呼ぶ側（VocalTracker）が決めます。
+import SheepDressed from "@/components/SheepDressed";
 import { C } from "@/lib/tokens";
 import {
   SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, PLACEMENT_LIMITS,
@@ -806,7 +811,21 @@ function SheepSleepingHead({ size }) {
 //   静的に読むかぎりコードは正しいのに、実機の結果が合いません。
 //   読むのをやめて、動いている値そのものを見ます。
 //   落ち着いたら消してください。
-function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWalking, isFarming, isSitting, isLying, isSweating, isCelebrating, diag }) {
+function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWalking, isFarming, isSitting, isLying, isSweating, isCelebrating, wardrobeOn = false, diag }) {
+  // ★★着せかえの羊（2026-09-06・案B）。
+  //   ★絵の羊が主で、★SVGの羊は小さなしるしとして残ります。
+  //   ★門が閉じている方には、★これまでどおり SVG の羊が出ます。★取り上げません。
+  const wearing = wardrobeOn ? (equipped && equipped.wardrobe) || {} : null;
+  const dressed = wearing !== null;
+  // ★★どの動きにするかは、★ここで1回だけ決めます。
+  //   ★寝ているときも、★服は着たままにします。
+  //   ★寝ると脱げる羊は、★不具合に見えます。★寝姿の絵はまだありません。
+  const motion = isLying ? "sleep"
+    : isCelebrating ? "celebrate"
+    : isFarming ? "farm"
+    : isWalking ? "walk"
+    : "still";
+
   const frontScale = LAYER_CONFIG.front.scale;
   const frontZ = LAYER_CONFIG.front.z;
   if (isLying) {
@@ -829,7 +848,10 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
         {/* ★ここでも影を足さない。SheepSleepingHead のSVGの中に入れてある。
             寝姿の枠は translate(-50%, -50%)（中心合わせ）なので、
             bottom を基準に外から置くと、そもそも足元に来ない。 */}
-        <SheepSleepingHead size={size * 0.62 * frontScale} />
+        {dressed
+          ? <SheepDressed wearing={wearing} size={size * frontScale} motion="sleep" travel={false}
+              alt="眠っている羊" />
+          : <SheepSleepingHead size={size * 0.62 * frontScale} />}
       </div>
     );
   }
@@ -855,9 +877,16 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
           本来の足元より下にずれた影がもう1枚できる。2枚が少しずれて重なり、
           止まっているのに滑って見える。実機でそう報告された。
           ★同じものが2か所にある、をここでも作ってしまった。 */}
-      <div style={{ transform: facingLeft ? "scaleX(-1)" : "none" }}>
-        <SheepCharacter equipped={equipped} size={size * frontScale} isWalking={isWalking} isFarming={isFarming} showBook={isSitting} isSweating={isSweating} isCelebrating={isCelebrating} />
-      </div>
+      {dressed ? (
+        // ★★向きは SheepDressed が持ちます。★外から scaleX を掛けないこと。
+        //   ★2枚重ねると、★裏返しが打ち消し合います。
+        <SheepDressed wearing={wearing} size={size * frontScale} motion={motion}
+          travel={false} facingLeft={facingLeft} alt="羊" />
+      ) : (
+        <div style={{ transform: facingLeft ? "scaleX(-1)" : "none" }}>
+          <SheepCharacter equipped={equipped} size={size * frontScale} isWalking={isWalking} isFarming={isFarming} showBook={isSitting} isSweating={isSweating} isCelebrating={isCelebrating} />
+        </div>
+      )}
     </div>
   );
 }
@@ -1218,7 +1247,7 @@ const GARDEN_ICON = { garden_bench: BenchIcon, garden_fountain: FountainIcon, ga
 const WALLHANG_ICON = { wallhang_painting: PaintingIcon, wallhang_lamp: WallLampIcon, wallhang_candle: WallCandleIcon, wallhang_hanger: WallHangerIcon, wallhang_clock: WallClockIcon };
 
 // ===== ショップ内のアイテムプレビュー（種類ごとに見た目を切り替える） =====
-function ShopItemPreview({ item }) {
+function ShopItemPreview({ item, wardrobeOn = false }) {
   const boxStyle = { width: 46, height: 46, borderRadius: 10, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: C.card, border: `1px solid ${C.line}`, overflow: "hidden" };
   if (item.category === "hat") {
     return (
@@ -1250,7 +1279,15 @@ function ShopItemPreview({ item }) {
   if (["floor", "wall", "window", "scenery"].includes(item.category)) {
     return (
       <div style={boxStyle}>
-        <div style={{ width: 30, height: 30, borderRadius: 7, background: MATERIAL_COLORS[item.key] || C.line }} />
+        {/* ★★絵のある材質は、★絵で見せます（2026-09-06）。
+            ★見本が全部おなじ四角だと、★どれを買うのか選べません。
+            ★絵の無い材質は、★これまでどおり色の四角です。 */}
+        <div style={{
+          width: 30, height: 30, borderRadius: 7,
+          background: MATERIAL_COLORS[item.key] || C.line,
+          // ★小さな見本なので、★1枚を大きく見せます。★敷きつめると潰れます。
+          ...((wardrobeOn && tileStyle(item.key, { sizePx: 30 })) || {})
+        }} />
       </div>
     );
   }
@@ -1509,8 +1546,12 @@ function DraggableItem({ left, top, width, layer = "mid", editMode, minLeft = 3,
 }
 
 // ===== 部屋のシーン（正面から見たシンプルな部屋。中央寄せはCSSのleft/topで固定） =====
-function FloorTexture({ material }) {
+function FloorTexture({ material, wardrobeOn = false }) {
   const box = { position: "absolute", inset: 0, width: "100%", height: "100%" };
+  // ★★タイルの絵が在れば、★そちらを敷きます（2026-09-06）。
+  //   ★無ければ、★下の SVG の模様に落ちます。★これまでどおりです。
+  const tile = wardrobeOn ? tileStyle(material, { sizePx: 72 }) : null;
+  if (tile) return <div style={{ ...box, ...tile }} aria-hidden="true" />;
   const line = "rgba(60,40,20,0.16)";
   if (material === "floor_tile") {
     return (
@@ -1608,8 +1649,11 @@ function FloorTexture({ material }) {
 }
 
 
-function WallTexture({ material }) {
+function WallTexture({ material, wardrobeOn = false }) {
   const box = { position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0 };
+  // ★★タイルの絵が在れば、★そちらを敷きます（2026-09-06）。
+  const tile = wardrobeOn ? tileStyle(material, { sizePx: 96 }) : null;
+  if (tile) return <div style={{ ...box, ...tile }} aria-hidden="true" />;
   if (material === "wall_stripe") {
     return (
       <svg viewBox="0 0 200 150" preserveAspectRatio="none" style={box}>
@@ -1703,7 +1747,7 @@ function WallTexture({ material }) {
   return null;
 }
 
-function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) {
+function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardrobeOn = false, t }) {
   const [editMode, setEditMode] = useState(false);
   const floorKey = equipped.floor || "floor_default";
   const wallKey = equipped.wall || "wall_default";
@@ -1751,9 +1795,9 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
 
   return (
     <div style={{ position: "relative", width: "100%", maxWidth: isRoomExpanded ? 700 : 480, margin: "0 auto", aspectRatio: isRoomExpanded ? "7 / 5" : "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor, transition: "max-width 0.4s ease, aspect-ratio 0.4s ease" }}>
-      <WallTexture material={wallKey} />
+      <WallTexture material={wallKey} wardrobeOn={wardrobeOn} />
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", background: floorColor, zIndex: 0, overflow: "hidden" }}>
-        <FloorTexture material={floorKey} />
+        <FloorTexture material={floorKey} wardrobeOn={wardrobeOn} />
       </div>
 
       <div style={{
@@ -2036,7 +2080,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, t }) 
         </DraggableItem>
       )}
 
-      <PositionedCharacter equipped={equipped} size={92} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isSitting={isSitting} isLying={isLying}
+      <PositionedCharacter wardrobeOn={wardrobeOn} equipped={equipped} size={92} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isSitting={isSitting} isLying={isLying}
         diag={{ bedTop: bedPosForDiag && bedPosForDiag.top, bedLeft: bedPosForDiag && bedPosForDiag.left }} />
 
       {/* ★ベッドと椅子は、上げられる高さを狭めてある（BED_MIN_TOP / CHAIR_MIN_TOP）。
@@ -2244,7 +2288,7 @@ function SpecialBackdropScene({ sceneKey }) {
   return null;
 }
 
-function GardenScene({ equipped, owned, onUpdatePosition, totalDaysRecorded = 0, t }) {
+function GardenScene({ equipped, owned, onUpdatePosition, totalDaysRecorded = 0, wardrobeOn = false, t }) {
   const [editMode, setEditMode] = useState(false);
   const placedList = equipped.garden || [];
   const placedOrnaments = placedList.filter((k) => GARDEN_ICON[k]);
@@ -2382,7 +2426,7 @@ function GardenScene({ equipped, owned, onUpdatePosition, totalDaysRecorded = 0,
         );
       })}
 
-      <PositionedCharacter equipped={equipped} size={100} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isFarming={isFarming} isSweating={isSweating} isCelebrating={isCelebrating} />
+      <PositionedCharacter wardrobeOn={wardrobeOn} equipped={equipped} size={100} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isFarming={isFarming} isSweating={isSweating} isCelebrating={isCelebrating} />
 
       {placedOrnaments.length > 0 && (
         <button type="button" onClick={() => setEditMode((v) => !v)}
@@ -2395,7 +2439,7 @@ function GardenScene({ equipped, owned, onUpdatePosition, totalDaysRecorded = 0,
   );
 }
 
-export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, onUpdatePosition, isDirty, saveStatus, onSave, professions = [], t }) {
+export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, onUpdatePosition, isDirty, saveStatus, onSave, professions = [], wardrobeOn = false, t }) {
   const [view, setView] = useState("room");
   const [shopCategory, setShopCategory] = useState("hat");
 
@@ -2408,8 +2452,12 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
 
   // B-2: 並び順の規則は lib/character.js が持つ。画面には書かない。
   //   買えるものが上、購入済みが下。同じ組では今月の新作 → 職業が合うもの → 安い順。
+  // ★★インテリア第1便は、★まだ坂本さんだけにお見せしています。
+  //   ★門が閉じているあいだは、★店にも並べません。
+  //   ★★並べてしまうと、★買えるのに敷けない、が起きます。
   const itemsInCategory = sortShopItems(
-    SHOP_ITEMS.filter((i) => i.category === shopCategory),
+    SHOP_ITEMS.filter((i) => i.category === shopCategory)
+      .filter((i) => wardrobeOn || !isNewMaterial(i.key)),
     { balance, owned: new Set(ownedKeys || []), professions: professions || [] }
   );
   const isMultiSlot = MULTI_SLOT_CATEGORIES.includes(shopCategory);
@@ -2435,8 +2483,8 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
         </div>
 
         {view === "room"
-          ? <RoomScene equipped={equipped} owned={ownedKeys} onTogglePlacement={onTogglePlacement} onUpdatePosition={onUpdatePosition} t={t} />
-          : <GardenScene equipped={equipped} owned={ownedKeys} onUpdatePosition={onUpdatePosition} totalDaysRecorded={totalDaysRecorded} t={t} />}
+          ? <RoomScene wardrobeOn={wardrobeOn} equipped={equipped} owned={ownedKeys} onTogglePlacement={onTogglePlacement} onUpdatePosition={onUpdatePosition} t={t} />
+          : <GardenScene wardrobeOn={wardrobeOn} equipped={equipped} owned={ownedKeys} onUpdatePosition={onUpdatePosition} totalDaysRecorded={totalDaysRecorded} t={t} />}
         {(equipped.furniture || []).length > 0 || (equipped.garden || []).length > 0 ? (
           <p className="text-xs mt-2 text-center" style={{ color: C.inkSoft }}>{t("noteDragToArrange")}</p>
         ) : null}
@@ -2502,7 +2550,7 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
             return (
               <div key={item.key} className="flex items-center justify-between rounded-xl p-2.5" style={{ background: C.paper }}>
                 <div className="flex items-center gap-3">
-                  <ShopItemPreview item={item} />
+                  <ShopItemPreview item={item} wardrobeOn={wardrobeOn} />
                   <div>
                     <div className="text-sm font-medium">{t(item.nameKey)}</div>
                     {!owned && <div className="text-xs ff-mono" style={{ color: item.cost === 0 ? C.sage : C.inkSoft, fontWeight: item.cost === 0 ? 600 : 400 }}>{item.cost === 0 ? t("labelFreeNow") : `${item.cost}pt`}</div>}

@@ -141,7 +141,13 @@ function ok(label, cond) {
   ok("★かたまりの外側を、動かしている", /sheep-dressed-move/.test(dressed2));
   ok("★1枚ずつには、動きを付けていない",
     !/layers\.map[\s\S]{0,400}animation:/.test(dressed2));
-  ok("★歩きの動きがある", /@keyframes sheepWalk/.test(dressed2));
+  // ★★2026-09-06、★動きは5つになりました。★名前に動きが混ざります。
+  //   ★混ぜないと、★画面に2匹いるとき、★あとの定義が先を消します。
+  ok("★はずみの動きがある", /@keyframes sheepBob\$\{motion\}/.test(dressed2));
+  ok("★歩く道のりの動きがある", /@keyframes sheepTravel\$\{motion\}/.test(dressed2));
+  // ★★数字を、画面の側に書き写さないこと。★2か所になります。
+  ok("★数字は lib が持っている", /motionOf\(motion\)/.test(dressed2));
+  ok("★画面に数字を書いていない", !/bobY: \d/.test(dressed2));
   // ★足もとを軸にすること。★頭を軸にすると、浮いて見えます。
   ok("★足もとを軸にしている", /transformOrigin: "50% 92%"/.test(dressed2));
   // ★★動きを減らす設定の方には、動かさないこと。
@@ -149,6 +155,17 @@ function ok(label, cond) {
   // ★裏返しと、はずみを、同じ入れ物でやらないこと（★打ち消し合います）。
   ok("★裏返しは外側、はずみは内側", /facingLeft \? "scaleX\(-1\)"/.test(dressed2));
   ok("★止まっているのが、既定", /motion = "still"/.test(dressed2));
+
+  // ★★規則：作ったものは、必ずどこかから呼ばれているか。
+  //   ★動きを5つ作って、★2つしか使っていない、をここで止めます。
+  console.log("■ 5つの動きが、すべて使われているか");
+  const home2 = readCode("components", "CharacterHome.jsx");
+  const panelSrc = readCode("components", "WardrobePanel.jsx");
+  const usedIn = home2 + panelSrc + dressed2;
+  for (const key of Object.keys(m.MOTIONS)) {
+    ok(`★「${key}」を、どこかで使っている`,
+      new RegExp('"' + key + '"').test(usedIn));
+  }
 
   const panel2 = readCode("components", "WardrobePanel.jsx");
   ok("★試しのボタンがある", /歩かせてみる/.test(panel2));

@@ -11461,6 +11461,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }
   }
 
+  // ★★着せかえを出すかどうかは、★1か所で決めます（2026-09-06）。
+  //   ★2か所で同じことを判定すると、★片方だけ直す日が来ます。
+  //   ★おうちの羊と、着せかえの棚は、★必ず同じ答えで動きます。
+  const wardrobeOn = mayUseWardrobe(userId, {
+    NEXT_PUBLIC_WARDROBE_USER_IDS: process.env.NEXT_PUBLIC_WARDROBE_USER_IDS
+  });
+
   async function handleSignOut() {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -14468,9 +14475,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   ★今日3回、これで壊しました（return の直後・属性の間・ここ）。 */}
             {activeTab === "garden" && (
               <>
-              {mayUseWardrobe(userId, {
-                NEXT_PUBLIC_WARDROBE_USER_IDS: process.env.NEXT_PUBLIC_WARDROBE_USER_IDS
-              }) && (
+              {wardrobeOn && (
                 <div className="rounded-2xl p-4 border mb-4" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">着せかえ</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -14487,6 +14492,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 </div>
               )}
               <CharacterHome
+                wardrobeOn={wardrobeOn}
                 professions={effectiveProfessions}
                 entries={entries}
                 ownedKeys={ownedItemKeys}

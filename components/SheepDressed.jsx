@@ -1,7 +1,7 @@
 "use client";
 
 import { SHEEP_BASE, SHEEP_ASSET_BASE, sheepItemByKey, sheepItemSrc } from "@/lib/sheepItems";
-import { LAYER_ORDER, PROP_SIDE_DEFAULT } from "@/lib/sheepWardrobe";
+import { LAYER_ORDER, PROP_SIDE_DEFAULT, motionOf } from "@/lib/sheepWardrobe";
 
 // ============================================================================
 // 着せかえた羊（★絵を重ねます・2026-09-05 夜）
@@ -28,7 +28,11 @@ export default function SheepDressed({
   //   ★"walk"  … 歩きます
   motion = "still",
   // ★左を向くか。★絵は右向きなので、★左のときだけ裏返します。
-  facingLeft = false
+  facingLeft = false,
+  // ★★実際に歩いて移動するか（2026-09-06）。
+  //   ★その場で はずむだけだと、★「歩いている」に見えません。
+  //   ★おうちの中では、★位置は外から決まります。★そのときは false にします。
+  travel = true
 }) {
   // ★重ねる絵を、順番どおりに並べます。
   const layers = [];
@@ -62,7 +66,17 @@ export default function SheepDressed({
   //
   //   ★★動きを減らす設定の方には、★動かしません。
   //     ★酔う方がいらっしゃいます。★羊は、それより大事ではありません。
-  const anim = motion === "walk" ? "sheepWalk 0.72s ease-in-out infinite" : "none";
+  //   ★★2026-09-06、★「その場で はずんでいるだけに見える」とご指摘。
+  //     ★上下 3→5、★傾き 1.2→2 にし、★左右の移動を足しました。
+  //
+  //   ★★数字は、★lib/sheepWardrobe.js の MOTIONS が持ちます。
+  //     ★ここには書きません。★あとで直すとき、★1か所で済みます。
+  const mo = motionOf(motion);
+  // ★はずみ（速い）。★止まっているときも、★息だけしています。
+  const anim = `sheepBob${motion} ${mo.sec}s ease-in-out infinite`;
+  // ★歩く道のり（ゆっくり）。★はずみ10回ぶんで、★1往復します。
+  const travelAnim = (mo.travelX > 0 && travel)
+    ? `sheepTravel${motion} ${(mo.sec * 10).toFixed(2)}s ease-in-out infinite` : "none";
 
   return (
     <div
@@ -76,16 +90,40 @@ export default function SheepDressed({
       }}
     >
       <style>{`
-        @keyframes sheepWalk {
-          0%, 100% { transform: translateY(0) rotate(0deg); }
-          25%      { transform: translateY(-3%) rotate(-1.2deg); }
-          50%      { transform: translateY(0) rotate(0deg); }
-          75%      { transform: translateY(-3%) rotate(1.2deg); }
+        /* ★★動きは、★かたまりごとです。★1枚ずつ動かすと、服と体がずれます。
+           ★数字は lib/sheepWardrobe.js の MOTIONS から来ています。 */
+        @keyframes sheepBob${motion} {
+          0%, 100% { transform: translateY(0) rotate(0deg) scaleY(1); }
+          25%      { transform: translateY(-${mo.bobY}%) rotate(-${mo.tilt}deg) scaleY(1); }
+          50%      { transform: translateY(0) rotate(0deg) scaleY(${motion === "sleep" ? 0.985 : 1}); }
+          75%      { transform: translateY(-${mo.bobY}%) rotate(${mo.tilt}deg) scaleY(1); }
         }
+        /* ★★歩いて移動します。★行って、向きを変えて、帰ってきます。
+           ★向きを変えるのは、★端で止まっている一瞬です。
+             ★歩きながら裏返ると、★すべって見えます。 */
+        /* ★★名前に動きを混ぜます。★混ぜないと、★画面に2匹いるとき、
+             ★あとから描かれたほうの定義が、★先のものを消します。
+           ★★2026-09-06、★庭の画面では、着せかえの見本と、おうちの羊が、
+             ★同時に出ています。★止まっている羊（移動0）の定義が勝つと、
+             ★見本の「歩かせてみる」が★その場で止まって見えます。 */
+        @keyframes sheepTravel${motion} {
+          0%   { transform: translateX(-${mo.travelX}%) scaleX(1); }
+          46%  { transform: translateX(${mo.travelX}%)  scaleX(1); }
+          50%  { transform: translateX(${mo.travelX}%)  scaleX(-1); }
+          96%  { transform: translateX(-${mo.travelX}%) scaleX(-1); }
+          100% { transform: translateX(-${mo.travelX}%) scaleX(1); }
+        }
+        /* ★★動きを減らす設定の方には、★動かしません。
+           ★酔う方がいらっしゃいます。★羊は、それより大事ではありません。 */
         @media (prefers-reduced-motion: reduce) {
           .sheep-dressed-move { animation: none !important; }
         }
       `}</style>
+      {/* ★★移動（ゆっくり）と、はずみ（速い）を、★別の入れ物にします。
+          ★1つにまとめると、★transform が上書きし合って、★片方が消えます。 */}
+      <div className="sheep-dressed-move"
+        style={{ position: "absolute", inset: 0, animation: travelAnim }}
+      >
       <div className="sheep-dressed-move"
         style={{
           position: "absolute", inset: 0,
@@ -111,6 +149,7 @@ export default function SheepDressed({
           }}
         />
       ))}
+      </div>
       </div>
     </div>
   );
