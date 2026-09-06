@@ -235,7 +235,7 @@ ${mo.gait ? `
                 rx={LEGS.width / 2} fill={LEGS.color} />
               <ellipse
                 cx={cx} cy={LEGS.bottomY - LEGS.hoofRy}
-                rx={LEGS.hoofRx} ry={LEGS.hoofRy} fill={LEGS.color} />
+                rx={LEGS.footW / 2} ry={LEGS.hoofRy} fill={LEGS.color} />
               {shoeSrc && (
                 <image
                   href={shoeSrc} x="0" y={LEGS.shoeDy}
