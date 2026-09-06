@@ -12389,9 +12389,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   {nextUnlock && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <p className="text-xs mb-2" style={{ color: C.ink }}>{nextUnlock.days}日で「{nextUnlock.label}」が開きます（いま{recordedDaysTotal}日）</p>
-                      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: C.paper }}>
-                        <div className="h-full rounded-full" style={{ width: `${Math.min(100, (recordedDaysTotal / nextUnlock.days) * 100)}%`, background: C.gold }} />
-                      </div>
+                      {/* ★★棒から丸に変えました（★2026-09-07・規約 §3-F）。
+                          ★棒と割合は、★「まだ足りない」を強く見せます。
+                          ★丸なら数えられます。★あと3つ、と分かります。
+                          ★★同じ丸は、★この画面に既にありました（上の ProgressDots）。
+                            ★新しく作らず、★それを呼びます。 */}
+                      <ProgressDots current={recordedDaysTotal} required={nextUnlock.days} />
                     </div>
                   )}
                 </div>

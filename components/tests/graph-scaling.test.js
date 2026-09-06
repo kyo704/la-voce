@@ -61,5 +61,21 @@ ok(`★viewBox の無い SVG は、1つだけ（いま ${noViewBox.length}）`, 
 ok("★その1つは、文字の脇の小さな線（flexShrink: 0）",
   noViewBox.length === 0 || /flexShrink: 0/.test(noViewBox[0]));
 
+// ★★進捗は、棒ではなく丸で出すこと（★2026-09-07・規約 §3-F、Opus の裁定）。
+//   ★棒と割合は、★「どこまで来たか」より「まだ足りない」を強く見せます。
+//   ★★同じ丸を2つ作らないこと。★ProgressDots は1つだけです。
+//     ★危うく2つ目を作るところでした。★既にあるものを呼びます。
+{
+  const vt2 = readCode("components", "VocalTracker.jsx");
+  const defs = (vt2.match(/function ProgressDots\(/g) || []).length;
+  ok(`★ProgressDots の定義は1つだけ（いま ${defs}）`, defs === 1);
+  const at = vt2.indexOf("nextUnlock &&");
+  const near = at >= 0 ? vt2.slice(at, at + 700) : "";
+  ok("★解放までの進捗に、割合の棒を使っていない",
+    at >= 0 && !/width: `\$\{Math\.min\(100/.test(near));
+  ok("★解放までの進捗は、丸で出している", /<ProgressDots/.test(near));
+  ok("★割合の数字を出していない", !/％/.test(near));
+}
+
 console.log(`\n★とおった ${pass} ／ ★落ちた ${fail}`);
 process.exit(fail === 0 ? 0 : 1);
