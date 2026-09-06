@@ -65,6 +65,9 @@ import NoticeScreen from "@/components/NoticeScreen";
 import WardrobePanel from "@/components/WardrobePanel";
 // ★「今日やるといいこと」の助言をやめ、数えて並べるだけにしました（2026-09-07）
 import { recentlyWritten, recentLine, RECENT_TITLE } from "@/lib/recentlyWritten";
+// ★レパートリー（歌った曲の控え）。★分析ではなく、控えです。ゲートは掛けません。
+import { repertoireLog, repertoireLine, toCsv as repertoireCsv,
+  exportFileName as repertoireFileName } from "@/lib/repertoireLog";
 import { mayUseWardrobe } from "@/lib/sheepWardrobe";
 // ★解放の判定は、lib/character.js が持っています。★作り直しません。
 import { computeUnlocked } from "@/lib/character";
@@ -7184,6 +7187,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     () => recentlyWritten(entries, realTodayDate),
     [entries, realTodayDate]
   );
+
+  // ★★レパートリー（★Opus §3・第1段）。
+  //   ★すでに書かれた曲名を、数え直すだけです。
+  //   ★★体について何も言わないので、★ゲートは掛けません。
+  const repertoire = useMemo(() => repertoireLog(entries), [entries]);
   const forecastChartData = useMemo(() => {
     return forecastResiduals.slice(-14).map((r) => {
       const low = Math.max(1, r.yhat - forecastResidualSD);
@@ -14590,6 +14598,62 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   style={{ background: notesSubTab === "own" ? C.curtain : "transparent", color: notesSubTab === "own" ? "#FFFDF8" : C.inkSoft }}>
                   自分の記録
                 </button>
+                {/* ★★レパートリー（★Opus §3・第1段・2026-09-07）。
+                    ★歌った曲を、数え直すだけの控えです。
+                    ★★分析ではないので、★ゲートを掛けません。
+                      ★体について、★何も言わないからです。
+                    ★★置き場所は「ノート」です。★分析ではありません。
+                      ★分析は「判断が住む場所」。★ここは「控え」です。 */}
+                <button onClick={() => setNotesSubTab("repertoire")}
+                  className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap"
+                  style={{ background: notesSubTab === "repertoire" ? C.curtain : "transparent", color: notesSubTab === "repertoire" ? "#FFFDF8" : C.inkSoft }}>
+                  レパートリー
+                </button>
+              </div>
+            )}
+
+            {/* ============================================================
+                ★レパートリー ── 歌った曲の控え
+                ★数えて、並べるだけ。★褒めない、勧めない、責めない。
+                ============================================================ */}
+            {activeTab === "notes" && notesSubTab === "repertoire" && (
+              <div className="space-y-4">
+                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <h3 className="ff-display italic text-lg mb-1">レパートリー</h3>
+                  <p className="text-xs mb-3" style={{ color: C.inkSoft, lineHeight: 1.8 }}>
+                    記録に書かれた曲名を、そのまま数えたものです。
+                  </p>
+
+                  {repertoire.length === 0 ? (
+                    <p className="text-sm" style={{ color: C.inkSoft, lineHeight: 1.8 }}>
+                      記録のときに曲名を入れると、ここに並びます。
+                    </p>
+                  ) : (
+                    <>
+                      <div className="space-y-2">
+                        {repertoire.map((it) => (
+                          <p key={it.name} className="text-sm" style={{ lineHeight: 1.8 }}>
+                            {repertoireLine(it)}
+                          </p>
+                        ))}
+                      </div>
+                      {/* ★書き出しは、いつでも無料です（⑫の決め）。 */}
+                      <button type="button"
+                        onClick={() => downloadFile(
+                          repertoireFileName(realTodayDate),
+                          repertoireCsv(repertoire),
+                          "text/csv;charset=utf-8"
+                        )}
+                        style={{
+                          width: "100%", marginTop: 16, minHeight: 48, padding: "12px",
+                          borderRadius: 999, border: `1px solid ${C.line}`,
+                          background: C.paper, color: C.ink, fontSize: "0.9375rem"
+                        }}>
+                        書き出す（CSV）
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             )}
             {/* ============================================================
