@@ -63,6 +63,8 @@ import RecoveryCodeCard from "@/components/RecoveryCodeCard";
 import NoticeScreen from "@/components/NoticeScreen";
 // ★★羊の着せかえ（Stage 1・2026-09-05 夜）。★まだ坂本さんにしか出しません。
 import WardrobePanel from "@/components/WardrobePanel";
+// ★「今日やるといいこと」の助言をやめ、数えて並べるだけにしました（2026-09-07）
+import { recentlyWritten, recentLine, RECENT_TITLE } from "@/lib/recentlyWritten";
 import { mayUseWardrobe } from "@/lib/sheepWardrobe";
 // ★解放の判定は、lib/character.js が持っています。★作り直しません。
 import { computeUnlocked } from "@/lib/character";
@@ -7107,6 +7109,35 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }).length;
     return { rate: Math.round((hits / recent.length) * 100), n: recent.length };
   }, [forecastResiduals, forecastResidualSD, forecastHitRateGate]);
+
+  // ★★きのうの予報が当たっていたか（★2026-09-07・坂本さんの決め）。
+  //
+  //   ★★的中率の数字は、★どこにも出しません。
+  //     ★天気予報も、★自分の的中率を出しません。★それと同じ立場です。
+  //   ★★外した日は、★何も言いません。★いつもの一言だけです。
+  //     ★言い訳も、★お詫びもしません。
+  //   ★当たった日だけ、★羊がときどき小さく喜びます。
+  //
+  //   ★★「ときどき」は、3〜4回に1回くらいです。
+  //     ★毎回だと、★嬉しさが薄れます。
+  //     ★稀すぎると、★気づいていただけません。
+  //
+  //   ★★日付から決めます。★乱数は使いません。
+  //     ★描き直すたびに出たり消えたりすると、★見た人が戸惑います。
+  //     ★同じ日なら、★何度描いても同じ答えになります。
+  const forecastHitToday = useMemo(() => {
+    if (!forecastResiduals || forecastResiduals.length === 0) return false;
+    const last = forecastResiduals[forecastResiduals.length - 1];
+    if (!last || typeof last.actual !== "number" || typeof last.yhat !== "number") return false;
+    const low = Math.max(1, last.yhat - forecastResidualSD);
+    const high = Math.min(5, last.yhat + forecastResidualSD);
+    if (!(last.actual >= low && last.actual <= high)) return false;
+    // ★日付の数字を足して、4で割った余りが0のときだけ出します。
+    const digits = String(last.date || realTodayDate).replace(/\D/g, "");
+    let sum = 0;
+    for (const ch of digits) sum += Number(ch);
+    return sum % 4 === 0;
+  }, [forecastResiduals, forecastResidualSD, realTodayDate]);
   const todayForecast = useMemo(() => {
     const realToday = realTodayDate;
     const yDate = addDays(realToday, -1);
@@ -7135,85 +7166,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }, [entries, acwrSeries, predictorMeans, throatMu, forecastResidualSD, personalizedBeta, realTodayDate]);
   // lavoce-画面レイアウト仕様_1.md §3.3: 提案は必ず1つだけ。予報の寄与のうち、
   // いちばん改善余地が大きい「行動可能」な項目を選ぶ（環境・前日症状などは提案しない）。
-  const HOME_SUGGESTION_TEXT = {
-    sleepHours: "今夜は少し早めに眠ってみましょう",
-    dinnerGap: "夕食を就寝の3時間以上前に済ませてみましょう",
-    waterL: "水分をもう少し摂ってみましょう",
-    alcohol: "今夜はアルコールを控えてみましょう",
-    prevLoad: "今日は発声の負荷を少し抑えてみましょう"
-  };
-  // 中核5項目の、項目ごとの記録日数（中核5項目 §2-4）。
-  // ★「率」ではなく「日数」を出します。率は分母が見えないと意味が取れません。
-  //   判定に要るのは各群10日なので、日数のほうが本人の実感に近い数です。
-  const coreFillCounts = useMemo(() => {
-    const dates = Object.keys(entries);
-    const has = (fn) => dates.filter((d) => fn(entries[d])).length;
-    return {
-      sleepHours: has((e) => typeof e.sleepHours === "number"),
-      offStageVoiceMinutes: has((e) => typeof e.nonPerformanceSpeechMinutes === "number"),
-      absoluteHumidity: has((e) => typeof e.temperature === "number" && typeof e.humidity === "number"),
-      // ★④本番・レッスンの翌日か。「その日が本番だったか」を数えます。
-      //   ★activity_type（旧列）を見ないこと。あの列は、いちばん長い活動しか
-      //     残しません。90分のレッスンと40分の本番があった日は「レッスン」に
-      //     なり、本番が消えます。hadPerformanceOrLesson は activities[] を見ます。
-      dayAfterPerformance: has((e) => Array.isArray(e.activities) && e.activities.length > 0),
-      // ★⑤起きたときのむくみ。0（なし）も「答えた」に数えます。
-      //   null（答えていない）だけを、埋まっていないとします。
-      morningEdema: has((e) => typeof e.morningEdema === "number")
-    };
-  }, [entries]);
-
-  // ★事実だけを書きます（憲章 §8-1・中核5項目 §2-4）。
-  //   「記録しましょう」「あと◯日です」と書かないこと。催促は、
-  //   調子が悪い日の記録率を下げます。
-  // ★キーの正は lib/analysisFamilies.js の CORE_FAMILY です。
-  //   画面のまとまりは作りませんが（§1-3）、集計の対象は1か所で決めます（§2）。
-  const CORE_FILL_LABEL = {
-    sleepHours: "睡眠時間",
-    offStageVoiceMinutes: "練習以外で話した時間",
-    absoluteHumidity: "気温と湿度",
-    dayAfterPerformance: "その日の活動",
-    morningEdema: "むくみ"
-  };
-  const coreFillNote = useMemo(() => {
-    const total = Object.keys(entries).length;
-    if (total < 3) return null;               // 記録がごく少ないうちは何も言わない
-    const behind = Object.entries(coreFillCounts)
-      .filter(([, n]) => n < total)            // 記録した日より少ないものだけ
-      .sort((a, b) => a[1] - b[1]);            // いちばん少ないものを1つだけ
-    if (behind.length === 0) return null;
-    const [key, n] = behind[0];
-    if (n >= NARRATIVE_MIN_N_PER_GROUP * 2) return null;  // 十分たまったら黙る
-    return `${CORE_FILL_LABEL[key]}は、まだ${n}日ぶんです`;
-  }, [coreFillCounts, entries]);
-
-  // ★中核カードの下に出す、事実だけの1行（中核5項目 §2-2①）。
-  //   ③絶対湿度と④活動は入力の欄がないので、埋まっているかだけを伝えます。
-  //   ★「記録しましょう」と書かないこと（憲章 §8-1）。
-  const coreDerivedNote = useMemo(() => {
-    const e = formData || {};
-    const hasHumidity = typeof e.temperature === "number" && typeof e.humidity === "number";
-    const hasActivity = Array.isArray(e.activities) && e.activities.length > 0;
-    const parts = [];
-    parts.push(hasHumidity ? "気温と湿度：記録あり" : "気温と湿度：まだです");
-    parts.push(hasActivity ? "今日の活動：記録あり" : "今日の活動：まだです");
-    return parts.join("　/　");
-  }, [formData]);
-
-  const todaySuggestion = useMemo(() => {
-    if (!todayForecast.hasData || !todayForecast.allContributions) return null;
-    const actionable = todayForecast.allContributions
-      .filter((c) => HOME_SUGGESTION_TEXT[c.key])
-      .sort((a, b) => a.contribution - b.contribution); // 最も足を引っ張っている項目を先頭に
-    const worst = actionable[0];
-    if (!worst || worst.contribution >= -0.05) return null; // 改善余地がほぼなければ提案しない
-    return HOME_SUGGESTION_TEXT[worst.key];
-  }, [todayForecast]);
-
-  // ★新しい枠は作りません（§2-4「既存の枠の使い道を変えるだけ」）。
-  //   予報からの提案が無い日にだけ、中核の埋まり具合を1行出します。
-  //   ★両方を同時に出さないこと。1つだけ、が §3.3 の決めごとです。
-  const todayOneLine = todaySuggestion || coreFillNote;
+  // ★★「今日やるといいこと」の助言を、まるごとやめました（2026-09-07）。
+  //   ★HOME_SUGGESTION_TEXT（助言の文の一覧）
+  //   ★todaySuggestion（いちばん足を引っぱっている項目から助言を作るもの）
+  //   ★coreFillNote（書けていない項目を知らせるもの）
+  //   ★★どれも「こうしたほうがよい」を言うものでした。
+  //     ★代わりに、★書かれたものを数えて並べるだけにします。
+  //   ★★coreFillNote も一緒に消えました。★書き漏れのお知らせです。
+  //     ★別の場所に戻したいときは、お知らせください。
+  const recentTags = useMemo(
+    () => recentlyWritten(entries, realTodayDate),
+    [entries, realTodayDate]
+  );
   const forecastChartData = useMemo(() => {
     return forecastResiduals.slice(-14).map((r) => {
       const low = Math.max(1, r.yhat - forecastResidualSD);
@@ -12290,27 +12254,35 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             {todayForecast.topFactor.label}が{todayForecast.topFactor.contribution >= 0 ? "良い方向に" : "厳しい方向に"}いちばん効いています。
                           </p>
                         )}
-                        {forecastHitRate ? (
-                          <div className="pt-2 border-t" style={{ borderColor: C.line }}>
-                            <p className="text-xs" style={{ color: C.inkSoft }}>
-                              的中率 {forecastHitRate.rate}%（直近{forecastHitRate.n}日）
-                            </p>
-                            <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("forecastHitDefinition")}</p>
-                            <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("forecastPurposeNote")}</p>
-                          </div>
-                        ) : forecastHitRateGate.message ? (
-                          <p className="text-xs pt-2 border-t" style={{ borderColor: C.line, color: C.inkSoft }}>{forecastHitRateGate.message}</p>
-                        ) : null}
+                        {/* ★★的中率の数字は、★出しません（★2026-09-07・坂本さんの決め）。
+                            ★天気予報も、★自分の的中率を出しません。★それと同じです。
+                            ★★外した日は、★何も言いません。
+                              ★当たった日だけ、★羊がときどき小さく喜びます。
+                              ★毎回だと、★嬉しさが薄れます。
+                            ★数字を出さないので、★「61%」と言い切る必要もなくなります。 */}
+                        {forecastHitToday && (
+                          <p className="text-xs pt-2 border-t" style={{ borderColor: C.line, color: C.inkSoft }}>
+                            あ、あたりました。
+                          </p>
+                        )}
                       </>
                     ) : (
                       <p className="text-sm" style={{ color: C.inkSoft }}>記録が増えると、ここに今日の声の予報が表示されます。</p>
                     )}
                   </div>
 
-                  {todayOneLine && !isRecordedToday && (
+                  {/* ★★「今日やるといいこと」を、やめました（★2026-09-07・坂本さんの決め）。
+                      ★助言をしません。★数えて、並べるだけにします。
+                      ★★枠と場所は、そのままです。★中身だけを入れ替えました。
+                      ★決めは lib/recentlyWritten.js が持ちます。 */}
+                  {recentTags.length > 0 && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                      <p className="text-xs mb-1" style={{ color: C.inkSoft }}>今日やるといいこと</p>
-                      <p className="text-sm font-medium">{todayOneLine}</p>
+                      <p className="text-xs mb-1" style={{ color: C.inkSoft }}>{RECENT_TITLE}</p>
+                      {recentTags.map((it) => (
+                        <p key={it.label} className="text-sm font-medium" style={{ lineHeight: 1.8 }}>
+                          {recentLine(it)}
+                        </p>
+                      ))}
                     </div>
                   )}
 
@@ -15498,15 +15470,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             予測区間 {todayForecast.low.toFixed(1)}〜{todayForecast.high.toFixed(1)}
                           </p>
                         </div>
-                        {forecastHitRate ? (
-                          <div className="text-right" style={{ maxWidth: 190 }}>
-                            <div className="ff-mono" style={{ fontSize: "1.2rem", color: C.ink }}>{forecastHitRate.rate}%</div>
-                            <p className="text-xs" style={{ color: C.inkSoft }}>直近{forecastHitRate.n}日の的中率</p>
-                            <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("forecastHitDefinition")}</p>
-                          </div>
-                        ) : forecastHitRateGate.message ? (
-                          <p className="text-xs text-right" style={{ color: C.inkSoft, maxWidth: 180 }}>{forecastHitRateGate.message}</p>
-                        ) : null}
+                        {/* ★的中率の数字は、出しません（2026-09-07）。 */}
                       </div>
                       <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                         {todayForecast.personalizationPct > 0

@@ -60,11 +60,17 @@ const raw = readRaw("components", "VocalTracker.jsx");
   assertTrue(!/dayAfterPerformance[\s\S]{0,120}(onChange|Selector|NumberField|Chip)/.test(vt),
     "★本番の翌日かを、利用者に聞いていない");
 
-  console.log("\n=== 記録率の対象は、lib の一覧と揃っている ===");
-  const block = vt.slice(vt.indexOf("const coreFillCounts"), vt.indexOf("const CORE_FILL_LABEL"));
-  fam.CORE_FAMILY.forEach((k) => {
-    assertTrue(block.includes(k + ":"), `記録率が ${k} を見ている`);
-  });
+  console.log("\n=== 記録率の数え（★2026-09-07 に、助言と一緒に消えました） ===");
+  // ★★coreFillCounts は、★coreFillNote（書き漏れのお知らせ）のためだけに
+  //   ★ありました。★その助言をやめたので、★数えるほうも要らなくなりました。
+  //   ★★これは事故ではありません。★坂本さんが決められた変更です（2026-09-07）。
+  //     ★「今日やるといいこと」の助言をやめ、★数えて並べるだけにする。
+  //   ★★書き漏れのお知らせが要るようになったら、★ここも戻します。
+  assertTrue(!/const coreFillCounts/.test(vt), "★記録率の数えは、もう無い");
+  assertTrue(!/const coreFillNote/.test(vt), "★書き漏れのお知らせも、もう無い");
+  // ★中核の一覧そのものは、★lib に残っていること（★消しすぎていないか）。
+  assertTrue(Array.isArray(fam.CORE_FAMILY) && fam.CORE_FAMILY.length > 0,
+    "★中核の一覧は、lib に残っている");
 
   console.log(`\n${failCount === 0 ? "✅ 全て通りました" : "❌ 失敗あり"}  成功:${passCount} 失敗:${failCount}`);
   process.exit(failCount === 0 ? 0 : 1);
