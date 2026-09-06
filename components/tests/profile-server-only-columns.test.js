@@ -35,16 +35,18 @@ function ok(name, cond, extra) {
     ok(`「${c}」が入っている`, LIST.includes(c));
   }
 
-  console.log("■ ①トリガー（既に当ててあるもの）と、そろっているか");
-  const trig = readRaw("supabase", "2026-09-05-reauth-at.sql");
+  console.log("■ ①トリガーと、そろっているか");
+  // ★★2026-09-08 に、is_internal を足しました。★これで7列そろいます。
+  //   ★見るのは、いちばん新しいトリガーの SQL です。
+  const trig = readRaw("supabase", "2026-09-08-is_internal-もトリガーで守る.sql");
   const guarded = [...trig.matchAll(/new\.([a-z_]+) is distinct from/g)].map((x) => x[1]);
   const notGuarded = LIST.filter((c) => !guarded.includes(c));
-  // ★★is_internal は、★トリガーにまだ入っていません（2026-09-06 に気づきました）。
-  //   ★列ごとの権限のほうで先に塞ぎ、★トリガーはあとで足します。
-  //   ★★ここに残しているのは、★忘れないためです。
-  ok("トリガーに入っていない列は、is_internal だけ",
-    notGuarded.length === 1 && notGuarded[0] === "is_internal",
+  ok("一覧の列が、すべてトリガーに入っている", notGuarded.length === 0,
     "入っていないもの: " + (notGuarded.join(", ") || "なし"));
+  const extraGuard = guarded.filter((c) => !LIST.includes(c));
+  ok("トリガーにだけ在る列が、無い", extraGuard.length === 0, extraGuard.join(", "));
+  ok("引き金を、付け直している",
+    /create trigger profiles_guard_server_only_columns/.test(trig));
 
   console.log("■ ②列ごとの権限の SQL と、そろっているか");
   const sql = readRaw("supabase", "2026-09-08-profiles-列ごとの権限.sql");
