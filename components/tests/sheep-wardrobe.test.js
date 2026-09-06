@@ -230,8 +230,16 @@ function ok(label, cond) {
     /\.sheep-leg \{ animation: none !important/.test(dressed2));
 
   console.log("■ 靴を、取り上げていないか");
-  ok("★脚があるとき、靴は脚の先へ回す",
-    /slot === "shoes" && showLegs/.test(dressed2));
+  // ★★2026-09-06・直し。★靴を重ねの列から外したのが、誤りでした。
+  //   ★脚の絵は体より後ろ(z=0)、★体と服の束はその上(z=1)。
+  //   ★列から外して脚の絵へ移すと、★靴が体に塗りつぶされます。
+  //   ★★列に残したまま、★描き方だけ変えます。
+  ok("★靴を、重ねの列から外していない",
+    !/slot === "shoes" && showLegs/.test(dressed2));
+  ok("★靴に、印を付けている", /isShoe: slot === "shoes"/.test(dressed2));
+  ok("★靴は、もとの重ねの場所で描く", /l\.isShoe && showLegs \?/.test(dressed2));
+  // ★軸と動きは、★1か所で決めること（★脚と靴がずれないように）。
+  ok("★軸と動きを、1か所で決めている", /const legGroupStyle = /.test(dressed2));
   ok("★靴の絵を、左右に切っている", m.SHOE_SPLIT_X === 511);
 
   // ★ほかの動きは、これまでどおりです。★巻きこまないこと。

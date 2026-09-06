@@ -52,6 +52,25 @@ export default function SheepDressed({
   const shoeItem = wearing.shoes ? sheepItemByKey(wearing.shoes) : null;
   const shoeSrc = shoeItem ? sheepItemSrc(shoeItem, null) : null;
 
+  // ★★脚の左右。★軸と動きは、★ここで1回だけ決めます。
+  //   ★★脚と靴で別々に書くと、★片方だけ直す日が来て、★ずれます。
+  const legSides = [["L", LEGS.leftX], ["R", LEGS.rightX]];
+  const legGroupStyle = (side, cx) => ({
+    // ★★軸は、★数字で決めます。
+    //   ★★fill-box は「そのかたまりの箱」を見ます。
+    //     ★靴の絵は x=0・y=0 の1024角なので、★履いた瞬間に箱が
+    //     ★画面ぜんたいへ広がり、★軸が (512, 0) へ飛びました。
+    //   ★view-box なら、★中身が変わっても軸は動きません。
+    transformBox: "view-box",
+    transformOrigin: `${cx}px ${LEGS.topY}px`,
+    // ★★動きは、★その場に書きます。★組の名前で書きません。
+    //   ★組の名前だと、★画面に2匹いるとき、★あとの羊の規則が
+    //   ★先の羊にも効き、★片方の脚が止まります。
+    animation: swingLegs
+      ? `sheepLeg${side}${motion} ${LEGS.sec}s ease-in-out infinite`
+      : "none"
+  });
+
   const layers = [];
   for (const slot of LAYER_ORDER) {
     if (slot === "body") {
@@ -62,9 +81,6 @@ export default function SheepDressed({
       layers.push({ key: "head", src: SHEEP_ASSET_BASE + SHEEP_BASE.head });
       continue;
     }
-    // ★★靴は、★脚があるときだけ、★脚の先へ回します（★案B1）。
-    //   ★重ねの列に残すと、★脚が振れても靴だけ元の場所に居残ります。
-    if (slot === "shoes" && showLegs) continue;
     const itemKey = wearing[slot];
     if (!itemKey) continue;
     const item = sheepItemByKey(itemKey);
@@ -72,7 +88,19 @@ export default function SheepDressed({
     // ★持ち物だけ、★置き場所（左・まん中・右）があります。
     const side = slot === "prop" ? (wearing.propSide || PROP_SIDE_DEFAULT) : null;
     const src = sheepItemSrc(item, side);
-    if (src) layers.push({ key: item.key + (side || ""), src, name: item.name });
+    // ★★靴は、★重ねの列に残したまま、★描き方だけ変えます（2026-09-06・直し）。
+    //   ★★列から外して脚の絵の中へ移したのが、★誤りでした。
+    //     ★脚の絵は、★体より後ろ（zIndex 0）にあります。
+    //     ★体の絵は 490〜951 が不透明で、★靴は 844〜976。
+    //     ★だから靴のほとんどが、★体に塗りつぶされていました。
+    //   ★★列に残せば、★これまでどおり体より前に出ます。
+    //     ★振れは、★描くときに脚と同じ軸で回してやります。
+    if (src) {
+      layers.push({
+        key: item.key + (side || ""), src, name: item.name,
+        isShoe: slot === "shoes"
+      });
+    }
   }
 
   // ★★動かすのは、★かたまりの外側だけです。
@@ -205,38 +233,8 @@ ${mo.gait ? `
             overflow: "visible", zIndex: 0, pointerEvents: "none"
           }}
         >
-          {shoeSrc && (
-            <defs>
-              {/* ★靴の絵は1枚に左右そろって入っています。★半分ずつ切ります。 */}
-              <clipPath id={`shoeL-${clipId}`}>
-                <rect x="0" y="0" width={SHOE_SPLIT_X} height="1024" />
-              </clipPath>
-              <clipPath id={`shoeR-${clipId}`}>
-                <rect x={SHOE_SPLIT_X} y="0" width={1024 - SHOE_SPLIT_X} height="1024" />
-              </clipPath>
-            </defs>
-          )}
-          {[["L", LEGS.leftX], ["R", LEGS.rightX]].map(([side, cx]) => (
-            <g key={side} className="sheep-leg"
-               style={{
-                 // ★★軸は、★数字で決めます（★2026-09-06・不具合の直し）。
-                 //   ★★fill-box は、★「そのかたまりの箱」を見ます。
-                 //     ★靴の絵は x=0・y=0 の1024角なので、
-                 //     ★靴を履いた瞬間、★箱が画面ぜんたいに広がります。
-                 //     ★すると軸が (512, 0) へ飛び、★脚が羊を横切りました。
-                 //     ★★「靴が脚に隠れる」「振れが大きすぎる」は、
-                 //       ★どちらもこれが原因です。
-                 //   ★view-box なら、★中身が変わっても軸は動きません。
-                 transformBox: "view-box",
-                 transformOrigin: `${cx}px ${LEGS.topY}px`,
-                 // ★★動きは、★その場に書きます。★組の名前で書きません。
-                 //   ★組の名前だと、★画面に2匹いるとき、
-                 //   ★あとから描かれたほうの規則が、★先の羊にも効きます。
-                 //   ★★庭の画面では、★見本とおうちの羊が同時に出ています。
-                 animation: swingLegs
-                   ? `sheepLeg${side}${motion} ${LEGS.sec}s ease-in-out infinite`
-                   : "none"
-               }}>
+          {legSides.map(([side, cx]) => (
+            <g key={side} className="sheep-leg" style={legGroupStyle(side, cx)}>
               <rect
                 x={cx - LEGS.width / 2} y={LEGS.topY}
                 width={LEGS.width}
@@ -244,18 +242,11 @@ ${mo.gait ? `
                 rx={LEGS.width / 2} fill={LEGS.color} />
               {/* ★★靴を履いていたら、★ひづめは描きません。
                   ★靴の底(〜976)より、★ひづめの下端(1002)のほうが下なので、
-                  ★描くと、★靴の下から足がはみ出して見えます。
-                  ★★靴が、★そのまま足になります。 */}
+                  ★描くと、★靴の下から足がはみ出して見えます。 */}
               {!shoeSrc && (
                 <ellipse
                   cx={cx} cy={LEGS.bottomY - LEGS.hoofRy}
                   rx={LEGS.footW / 2} ry={LEGS.hoofRy} fill={LEGS.color} />
-              )}
-              {shoeSrc && (
-                <image
-                  href={shoeSrc} x="0" y={LEGS.shoeDy}
-                  width="1024" height="1024"
-                  clipPath={`url(#shoe${side}-${clipId})`} />
               )}
             </g>
           ))}
@@ -269,6 +260,38 @@ ${mo.gait ? `
         transform: showLegs ? `translateY(${-(LEGS.lift / 1024) * 100}%)` : "none"
       }}>
       {layers.map((l, i) => (
+        // ★★靴は、★左右に切って、★それぞれの脚と一緒に振ります。
+        //   ★★重ねの列の、★もとの場所のまま描きます。
+        //     ★だから、★これまでどおり体より前に出ます。
+        l.isShoe && showLegs ? (
+          <svg
+            key={l.key}
+            viewBox="0 0 1024 1024"
+            aria-hidden="true"
+            style={{
+              position: "absolute", inset: 0, width: "100%", height: "100%",
+              overflow: "visible", zIndex: i, pointerEvents: "none"
+            }}
+          >
+            <defs>
+              {/* ★靴の絵は、1枚に左右そろって入っています。★x=511 で切ります。 */}
+              <clipPath id={`shoeL-${clipId}`}>
+                <rect x="0" y="0" width={SHOE_SPLIT_X} height="1024" />
+              </clipPath>
+              <clipPath id={`shoeR-${clipId}`}>
+                <rect x={SHOE_SPLIT_X} y="0" width={1024 - SHOE_SPLIT_X} height="1024" />
+              </clipPath>
+            </defs>
+            {legSides.map(([side, cx]) => (
+              <g key={side} className="sheep-leg" style={legGroupStyle(side, cx)}>
+                <image
+                  href={l.src} x="0" y={LEGS.shoeDy}
+                  width="1024" height="1024"
+                  clipPath={`url(#shoe${side}-${clipId})`} />
+              </g>
+            ))}
+          </svg>
+        ) : (
         // ★★同じ大きさで、同じ場所に重ねます。★ずらさないこと。
         <img
           key={l.key}
@@ -284,7 +307,7 @@ ${mo.gait ? `
             pointerEvents: "none"
           }}
         />
-      ))}
+      )))}
       </div>
       </div>
       </div>
