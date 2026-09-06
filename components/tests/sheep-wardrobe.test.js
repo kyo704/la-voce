@@ -156,6 +156,54 @@ function ok(label, cond) {
   ok("★裏返しは外側、はずみは内側", /facingLeft \? "scaleX\(-1\)"/.test(dressed2));
   ok("★止まっているのが、既定", /motion = "still"/.test(dressed2));
 
+  // ★★歩き（案B1・2026-09-06）。★脚をコードで描きました。絵は0枚です。
+  //   ★★坂本さんのご指示：★弾ませないこと。★脚を動かすこと。
+  console.log("■ 歩きが、跳ねる形に戻っていないか");
+  const w = m.MOTIONS.walk;
+  ok("★歩くとき、上下に弾まない", w.bobY === 0);
+  ok("★つぶれもしない", w.squash === 1 && w.stretch === 1);
+  ok("★脚を出す印がある", w.legs === true);
+  // ★★速さが変わると、脚が動いていてもすべって見えます。
+  ok("★歩くときは、速さが一定（linear）", /mo\.gait \? "linear"/.test(dressed2));
+  const home3 = readCode("components", "CharacterHome.jsx");
+  ok("★おうちの羊も、歩くときは速さが一定",
+    /isWalking\s*\?\s*"left 2\.2s linear/.test(home3));
+
+  console.log("■ 脚のかたち");
+  const L = m.LEGS;
+  ok("★色は、体の絵から拾った色", L.color === "#EDE4CE");
+  ok("★つけ根は、体に隠れる", L.topY < 951 - L.lift);
+  ok("★ひづめは、箱からはみ出さない", L.bottomY <= 1024);
+  ok("★体の下から、脚が見える", L.bottomY > 951 - L.lift);
+  // ★靴は、ひづめの位置に来ること。★浮いたり沈んだりしないこと。
+  ok("★靴の下端が、ひづめの下端に合う", 975 + L.shoeDy === L.bottomY,
+    "靴 " + (975 + L.shoeDy) + " ／ ひづめ " + L.bottomY);
+  ok("★左右は、体のこぶの中心に合わせている", L.leftX === 421 && L.rightX === 601);
+  ok("★左右が、逆向きに振れる", L.swing > 0);
+
+  console.log("■ 画面に2匹いても、脚が止まらないか");
+  // ★★組の名前で動きを書くと、★あとの羊の規則が先の羊にも効きます。
+  //   ★止まっている羊が勝つと、★見本の脚が動かなくなります。
+  ok("★脚の動きを、組の名前で書いていない",
+    !/\.sheep-leg-[LR]\s*\{[^}]*animation/.test(dressed2));
+  ok("★動きの名前に、動きが混ざっている",
+    /@keyframes sheepLegL\$\{motion\}/.test(dressed2));
+  // ★切り抜きの名前も、羊ごとに変えること（★靴が消えます）。
+  ok("★切り抜きの名前を、羊ごとに変えている", /useId\(\)/.test(dressed2));
+  ok("★動きを減らす設定では、脚も止まる",
+    /\.sheep-leg \{ animation: none !important/.test(dressed2));
+
+  console.log("■ 靴を、取り上げていないか");
+  ok("★脚があるとき、靴は脚の先へ回す",
+    /slot === "shoes" && showLegs/.test(dressed2));
+  ok("★靴の絵を、左右に切っている", m.SHOE_SPLIT_X === 511);
+
+  // ★ほかの動きは、これまでどおりです。★巻きこまないこと。
+  for (const k of ["still", "sleep", "celebrate", "farm"]) {
+    ok(`★「${k}」には、歩き方の印を付けていない`, !m.MOTIONS[k].gait);
+    ok(`★「${k}」では、脚を振らない`, !m.MOTIONS[k].legs);
+  }
+
   // ★★規則：作ったものは、必ずどこかから呼ばれているか。
   //   ★動きを5つ作って、★2つしか使っていない、をここで止めます。
   console.log("■ 5つの動きが、すべて使われているか");

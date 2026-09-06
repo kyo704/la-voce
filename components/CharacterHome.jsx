@@ -867,7 +867,14 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
         left: `${leftPct}%`,
         top: `${topPct}%`,
         transform: "translate(-50%, -100%)",
-        transition: "left 2.2s ease-in-out, top 2.2s ease-in-out",
+        // ★★歩いているあいだは、★速さを一定にします（★案C・2026-09-06）。
+        //   ★ease だと、★動きはじめと止まりぎわがゆっくりになります。
+        //   ★足の運びは一定なのに速さが変わるので、★すべって見えます。
+        //   ★★羊は「歩いて移動する」ので、★ここが効きます。
+        //     ★止まっているときは、これまでどおりです。
+        transition: isWalking
+          ? "left 2.2s linear, top 2.2s linear"
+          : "left 2.2s ease-in-out, top 2.2s ease-in-out",
         zIndex: frontZ
       }}
     >
