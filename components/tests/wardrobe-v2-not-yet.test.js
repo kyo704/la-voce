@@ -32,12 +32,28 @@ function ok(name, cond, extra) {
     ok(name + " の置き場がある", fs.existsSync(abs));
     if (!fs.existsSync(abs)) continue;
     const files = fs.readdirSync(abs);
-    ok(name + " は zip のまま",
-      files.length > 0 && files.every((f) => f.endsWith(".zip")),
-      "中身: " + files.join(", "));
+    // ★★絵は、★zip の中にあること。★ほどいて置かないこと。
+    //   ★仕様書（.md）は、★そのまま置いてよいことにしました。
+    //     ★読むためのもので、★絵と混ざりません。
+    const loose = files.filter((f) => !f.endsWith(".zip") && !f.endsWith(".md"));
+    ok(name + " は zip のまま（絵をほどいていない）",
+      files.some((f) => f.endsWith(".zip")) && loose.length === 0,
+      "ほどかれているもの: " + (loose.join(", ") || "なし"));
+    // ★念のため、★中に入れ子の置き場を作っていないことも見ます。
+    const dirs = files.filter((f) => fs.statSync(path.join(abs, f)).isDirectory());
+    ok(name + " の下に、置き場を作っていない", dirs.length === 0,
+      dirs.join(", "));
   }
   ok("開かないでください、と書いてある",
     /開かないこと/.test(fs.readFileSync(path.join(ROOT, "assets/README.md"), "utf-8")));
+
+  // ★★着せ替え画面のUI の仕様書も、★5番の段のものです。
+  //   ★いまの画面を、★この仕様に合わせないこと。
+  //   ★217点のまま画面だけ作り替えると、★実機で確かめている最中のものが
+  //   ★動いてしまい、★どこで壊れたのか分からなくなります。
+  ok("画面のUI の仕様書が、置いてある",
+    fs.existsSync(path.join(ROOT,
+      "assets/wardrobe-v2/lavoce-仕様-着せ替え画面のUI（9月6日）.md")));
 
   console.log("■ 絵が、いまの置き場に混ざっていないか");
   // ★166点の版だけにある名前。★これが public に在れば、開いて混ぜた印です。
