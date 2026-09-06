@@ -11461,6 +11461,22 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }
   }
 
+  // ★★保存した着せ方（コーデ）。★同じ列の中に入れます（2026-09-06）。
+  //   ★表は作りません。★character_equipped は jsonb で、書く道が既にあります。
+  //   ★★いま着ているものとは、★別の鍵に置きます。
+  //     ★混ぜると、★着替えるたびに保存が書き換わります。
+  async function handleSaveOutfits(nextOutfits) {
+    const merged = { ...characterEquipped, outfits: nextOutfits };
+    setCharacterEquipped(merged);
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("profiles").update({ character_equipped: merged }).eq("id", userId).select("id");
+    if (error) {
+      // ★★黙らないこと。★保存できていないのに、残ったように見えます。
+      console.error("★着せ方を保存できませんでした:", error.message);
+    }
+  }
+
   // ★★着せかえを出すかどうかは、★1か所で決めます（2026-09-06）。
   //   ★2か所で同じことを判定すると、★片方だけ直す日が来ます。
   //   ★おうちの羊と、着せかえの棚は、★必ず同じ答えで動きます。
@@ -14488,6 +14504,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       [...computeUnlocked(entries)].map((k) => [k, true])
                     )}
                     todayISO={realTodayDate}
+                    outfits={characterEquipped.outfits || []}
+                    onOutfitsChange={(next) => handleSaveOutfits(next)}
                     onChange={(next) => handleEquipWardrobe(next)} />
                 </div>
               )}
