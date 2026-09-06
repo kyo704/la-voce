@@ -25,7 +25,10 @@ function ok(name, cond, extra) {
   console.log("■ 荷物が、zip のまま置いてあるか");
   const packs = [
     ["assets/wardrobe-v2", "着せかえ166点"],
-    ["assets/interior-v2", "内装120点"]
+    ["assets/interior-v2", "内装120点"],
+    // ★★2026-09-06 に届いた、あつ森様式の作り直し（310点）。
+    //   ★いまの217点を置きかえるもの。★公開のあとに決めます。
+    ["assets/wardrobe-v3", "あつ森様式310点"]
   ];
   for (const [dir, name] of packs) {
     const abs = path.join(ROOT, dir);

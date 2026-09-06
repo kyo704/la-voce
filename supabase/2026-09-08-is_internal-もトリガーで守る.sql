@@ -77,8 +77,93 @@ where p.proname = 'profiles_guard_server_only_columns'
 -- ★★「★ありません」が1つでも出たら、★入れ替えに失敗しています。
 
 -- ③ 引き金が、付いているか
+--
+--   ★★2026-09-08、★ここを直しました。
+--     ★はじめ、こう書いていました。
+--         case when tgenabled = 'O' then '効いています' else tgenabled end
+--     ★これは誤りです。
+--       ★tgenabled は "char"（★1バイトだけの型）です。
+--       ★case の返す型が "char" に寄せられ、
+--       ★日本語が★先頭の1バイトに切られました。
+--       ★★「効」は UTF-8 で E5 8A B9。★先頭の E5 が、8進数で 345。
+--         ★だから \345 と出ました。★トリガーは正常でした。
+--     ★★型を text にそろえてから比べます。
+
 select tgname as 引き金の名前,
-       case when tgenabled = 'O' then '効いています' else tgenabled end as 状態
+       tgenabled::text as 生の値,
+       case tgenabled::text
+         when 'O' then '効いています（ふつうの状態）'
+         when 'D' then '★止まっています'
+         when 'R' then 'replica のときだけ効きます'
+         when 'A' then 'いつでも効きます'
+         else '★知らない値'
+       end as 状態
 from pg_trigger
 where tgrelid = 'public.profiles'::regclass
   and tgname = 'profiles_guard_server_only_columns';
+
+-- ---------------------------------------------------------------------------
+-- ④ ★★本当に効いているか、★書いてみて確かめます
+-- ---------------------------------------------------------------------------
+--   ★★付いているかどうかと、★効いているかどうかは、別です。
+--     ★カタログを見るだけでは、★分かりません。★実際に書いてみます。
+--
+--   ★★BEGIN / ROLLBACK は使いません。★戻らないことがあります（9月5日の事故）。
+--     ★代わりに、★1つの do ブロックの中で、書いて、必ず例外を投げます。
+--     ★例外を投げると、★そのブロックの中の書き込みは、★取り消されます。
+--     ★★データベース自身が取り消すので、★環境に左右されません。
+--
+--   ★<ここに、ご自身のユーザーID> を差し替えてから、流してください。
+
+do $probe$
+declare
+  uid uuid := '<ここに、ご自身のユーザーID>';
+  before_v boolean;
+begin
+  select is_internal into before_v from public.profiles where id = uid;
+
+  begin
+    perform set_config('role', 'authenticated', true);
+    perform set_config('request.jwt.claims',
+      json_build_object('sub', uid, 'role', 'authenticated')::text, true);
+
+    update public.profiles set is_internal = not coalesce(is_internal, false)
+     where id = uid;
+
+    -- ★ここに来たら、★書けてしまったということです。
+    raise exception 'PROBE_HOLE_OPEN';
+  exception when others then
+    if sqlerrm = 'PROBE_HOLE_OPEN' then
+      raise notice '★★穴があります。本人が is_internal を書けます。';
+    else
+      raise notice '★塞がっています： %', sqlerrm;
+    end if;
+  end;
+
+  raise notice '★もとの値： %（変わっていないはずです）', before_v;
+end
+$probe$;
+
+-- ★★「★塞がっています： SERVER_ONLY_COLUMN: is_internal」と出れば、済んでいます。
+
+-- ---------------------------------------------------------------------------
+-- ⑤ ★ふつうの保存が、まだ通ること（★塞ぎすぎていないか）
+-- ---------------------------------------------------------------------------
+do $probe$
+declare uid uuid := '<ここに、ご自身のユーザーID>';
+begin
+  begin
+    perform set_config('role', 'authenticated', true);
+    perform set_config('request.jwt.claims',
+      json_build_object('sub', uid, 'role', 'authenticated')::text, true);
+    update public.profiles set display_name = display_name where id = uid;
+    raise exception 'PROBE_SAVE_OK';
+  exception when others then
+    if sqlerrm = 'PROBE_SAVE_OK' then
+      raise notice '★ふつうの保存は、まだ通ります。';
+    else
+      raise notice '★★保存が止まっています： %', sqlerrm;
+    end if;
+  end;
+end
+$probe$;
