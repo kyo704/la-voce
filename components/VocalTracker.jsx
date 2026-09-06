@@ -6,7 +6,9 @@ import {
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
   Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot, MessageCircle, Home,
   Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe, Lock,
-  Volume2, Plane, AudioWaveform, Timer, MessageSquare, ClipboardList, GraduationCap, FileText, MoreHorizontal, HelpCircle,
+  Volume2, Plane, AudioWaveform, Timer, MessageSquare, ClipboardList, GraduationCap, FileText,
+  // ★「もっと」を、おうちの右上の歯車に移しました（2026-09-07・案い）
+  Settings, MoreHorizontal, HelpCircle,
   User, HeartPulse
 } from "lucide-react";
 import {
@@ -11686,8 +11688,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           // ★既につながっている人からは取り上げない（解除する手段まで消えるため）。
           // ★「レッスン」は必ず1つ。教える側と習う側は、この中で切り替える。
           //   判定は上の canTeachLessons / canLearnLessons に集約してある。
+          // ★★「もっと」は、★下の帯から外しました（★2026-09-07・案い）。
+          //   ★おうちの右上の歯車から開きます。
+          //   ★★帯が7つになると、★1つ1つが押しにくくなります。
+          //     ★レッスンが出る方は、★これで6つになります。
+          //   ★★画面そのものは消していません。★activeTab === "more" は、
+          //     ★これまでどおり出ます。★入口の場所が変わっただけです。
           const displayTabs = [];
-          TABS.forEach((tab) => {
+          TABS.filter((tb) => tb.key !== "more").forEach((tab) => {
             if (tab.key === "garden" && hasLessonTab) {
               displayTabs.push({ key: "lesson", labelKey: null, label: t("tabLesson"), icon: GraduationCap });
             }
@@ -11927,6 +11935,23 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               const isRecordedToday = !!todayEntry;
               return (
                 <div className="space-y-4">
+                  {/* ★★「もっと」の入口（★2026-09-07・案い）。
+                      ★下の帯から外したので、★ここに置きます。
+                      ★★歯車だけでは、★何が開くのか分かりません。
+                        ★字も添えます（★仕様書の「探させない」と同じ考えです）。 */}
+                  <div className="flex justify-end">
+                    <button type="button" onClick={() => setActiveTab("more")}
+                      aria-label={`${t("tabMore")}を開く`}
+                      className="flex items-center gap-1.5"
+                      style={{
+                        minHeight: 44, padding: "8px 14px", borderRadius: 999,
+                        border: `1px solid ${C.line}`, background: C.card,
+                        color: C.inkSoft, fontSize: "0.875rem"
+                      }}>
+                      <Settings size={16} aria-hidden="true" />
+                      {t("tabMore")}
+                    </button>
+                  </div>
                   {/* ★所属している教室のカード（2026-09-02・Opus の裁定）。
                       ★点はやめました。点は「未読」に読めます。
                         教室のつながりに未読はありません。消えない点は、
