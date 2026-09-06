@@ -6,6 +6,9 @@ import { stripe, stripeConfigured } from "@/lib/stripe";
 import { getUserWithTimeout } from "@/lib/withTimeout";
 import { PLAN_KEYS, priceIdFor } from "@/lib/plans";
 import { ageBandOf } from "@/lib/ageGate";
+// ★★3Dセキュアの求め方は、lib/minorBilling.js が持ちます。
+//   ★ここに "any" と書き写さないこと。★2か所になります。
+import { THREE_D_SECURE } from "@/lib/minorBilling";
 import { offeredPlans } from "@/lib/minorBilling";
 
 export async function POST(request) {
@@ -148,6 +151,18 @@ export async function POST(request) {
       //   ★採用する日が来たら、★ここを消して、税コードを付けます。
       //     ★そのときは、★手数料の話と一緒に決めてください。
       managed_payments: { enabled: false },
+      // ★★3Dセキュアを求めます（★2026-09-06 につなぎました）。
+      //   ★★lib/minorBilling.js に THREE_D_SECURE = "any" と★決めては
+      //     ★ありましたが、★ここへ渡していませんでした。
+      //     ★決めただけで、★効いていませんでした。
+      //   ★★規則：書いている値は、必ずどこかで読まれているか。
+      //     ★これが読まれていませんでした。
+      //   ★月額にも単発にも、同じものをかけます（minorBilling の決め）。
+      //   ★最後に決めるのはカード発行会社です。★こちらは求めるだけです。
+      //     ★通ると、★責任がカード発行会社へ移ります。
+      payment_method_options: {
+        card: { request_three_d_secure: THREE_D_SECURE }
+      },
       line_items: [{ price: priceId, quantity: 1 }],
       subscription_data: {
       // ★trial_period_days: 14 を消しました（2026-09-03・Opus §5）。

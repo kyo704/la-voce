@@ -10,7 +10,7 @@ const path = require("path");
 // ★禁じた言葉を探すときは、★必ずコメントを外した文字列で見ること。
 //   ★このリポジトリで2度やった失敗です（くり返す失敗の形 2）。
 //   ★仕様や理由を説明するコメントに、その言葉が出てくるためです。
-const { stripComments } = require("./_source");
+const { stripComments, readCode } = require("./_source");
 
 let 通 = 0, 否 = 0;
 const ok = (名, 条) => 条 ? (通++, console.log("  ✓ " + 名)) : (否++, console.log("  ✗ " + 名));
@@ -211,6 +211,22 @@ ok("★580×12 ＋ 500×4 ＝ 8,960", m.minorAnnualMaxYen(580) === 8960);
 // ★★数字を直書きしないこと。★値段が変われば、自動で変わります。
 ok("★★8960 を直書きしていない", !/8960|8,960/.test(code));
 ok("★3Dセキュアを求める", m.THREE_D_SECURE === "any");
+
+// ★★決めただけで終わっていないか（★2026-09-06）。
+//   ★★規則：書いている値は、必ずどこかで読まれているか。
+//     ★THREE_D_SECURE = "any" と決めてありましたが、
+//     ★決済の呼び出しへ渡しておらず、★効いていませんでした。
+//     ★弁護士への確認事項を書きながら、★見つけました。
+//   ★★「決めた」と「効いている」は、別です。★ここで見張ります。
+{
+  const route = readCode("app", "api", "stripe", "checkout", "route.js");
+  ok("★決済の呼び出しが、3Dセキュアを渡している",
+    /payment_method_options[\s\S]{0,200}request_three_d_secure/.test(route));
+  ok("★値は lib から引いている（書き写していない）",
+    /request_three_d_secure: THREE_D_SECURE/.test(route));
+  ok("★決済が、lib/minorBilling から読んでいる",
+    /from "@\/lib\/minorBilling"/.test(route));
+}
 
 console.log(`\n合計 ${通 + 否} 本：通過 ${通}／失敗 ${否}`);
 process.exit(否 ? 1 : 0);
