@@ -14,6 +14,8 @@
  */
 const fs = require("fs");
 const path = require("path");
+// ★禁じ手の検査は、★コメントを外してから行うこと（CLAUDE.md）。
+const { stripComments } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let passCount = 0, failCount = 0;
 function assertEqual(a, b, label) {
@@ -175,12 +177,18 @@ async function main() {
     "★点の描き分けに色を使っていない（ゾーンの色と衝突するため）");
   assertTrue(/fill=\{C\.card\}/.test(dotBlock), "推定の日は白抜きの点");
 
-  console.log("\n=== テスト12: ACWR の式に手を入れていない ===");
-  assertTrue(/const lambdaA = 2 \/ \(7 \+ 1\)/.test(ui), "★λA = 2/(7+1) のまま");
-  assertTrue(/const lambdaC = 2 \/ \(28 \+ 1\)/.test(ui), "★λC = 2/(28+1) のまま");
-  assertTrue(/A = A == null \? L : lambdaA \* L \+ \(1 - lambdaA\) \* A/.test(ui), "★EWMA の式がそのまま");
-  assertTrue(/C = C == null \? L : lambdaC \* L \+ \(1 - lambdaC\) \* C/.test(ui), "★EWMA の式がそのまま");
-  assertTrue(/acwr: C > 0 \? A \/ C : null/.test(ui), "★比の取り方もそのまま");
+  console.log("\n=== テスト12: 比（ACWR）は、もう出していない ===");
+  // ★★2026-09-07、★比をやめました。★坂本さんが決められた変更です。
+  //   ★出どころ Opus の文献の見直し（Impellizzeri 2021）。
+  //   ★★否定されたのは「比」です。★「数えること」ではありません。
+  assertTrue(!/const lambdaA = /.test(ui), "★λA は、もう無い");
+  assertTrue(!/const lambdaC = /.test(ui), "★λC は、もう無い");
+  assertTrue(!/acwr: C > 0 \? A \/ C/.test(ui), "★比（A/C）を計算していない");
+  // ★数えるほうは、残っていること。
+  assertTrue(/day: L,/.test(ui), "★その日の量は、残っている");
+  assertTrue(/week: recent\.reduce/.test(ui), "★7日ぶんの合計は、残っている");
+  // ★書かなかった日を 0 として数えること（★休んだ日も1日です）。
+  assertTrue(/recent\.push\(0\)/.test(ui), "★書かなかった日は0として数える");
 
   console.log("\n=== テスト13: ★過去も含めて同じ規則で計算する（坂本さんの判断・案A） ===");
   console.log("     ポイントとは扱いが違う。理由まで含めてここに残す。");
@@ -190,9 +198,14 @@ async function main() {
   const est = ui.slice(ui.indexOf("function withEstimatedMinutes"), ui.indexOf("function withEstimatedMinutes") + 1200);
   assertTrue(!/\d{4}-\d{2}-\d{2}/.test(est), "★推定の適用に、切り替え日を入れていない");
   assertTrue(!/_FROM\b/.test(est), "★「この日から」という定数を使っていない");
-  const seriesStart = ui.indexOf("const acwrSeries = useMemo");
-  const seriesBlock = ui.slice(seriesStart, seriesStart + 1800);
-  assertTrue(!/\d{4}-\d{2}-\d{2}/.test(seriesBlock), "★ACWR 系列の側にも切り替え日が無い");
+  // ★★日付の検査は、★コメントを外してから行います。
+  //   ★★2026-09-07、★覚え書きに書いた日付で落ちました。
+  //     ★探しているのは「この日から規則を変える」という★定数のほうです。
+  //     ★説明文に書いた日付は、★それではありません。
+  const uiCode = stripComments(ui);
+  const seriesStart = uiCode.indexOf("const acwrSeries = useMemo");
+  const seriesBlock = uiCode.slice(seriesStart, seriesStart + 1800);
+  assertTrue(!/\d{4}-\d{2}-\d{2}/.test(seriesBlock), "★系列の側にも切り替え日が無い");
   // ★ポイントの側には、意図的に切り替え日があります。
   //   ポイントは「本人が貯めた残高」なので、過去分を作り直すと取り上げになる。
   //   ACWR は「その場で計算して見せている値」で、誰も何も貯めていない。

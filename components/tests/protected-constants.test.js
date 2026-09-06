@@ -44,21 +44,29 @@ async function main() {
   const gatesSrc = readCode("lib", "displayGates.js");
   assertTrue(/0\.3/.test(gatesSrc), "相関の下限 0.3 が定義に在る");
 
-  console.log("\n=== EWMA のλ（ACWR） ===");
-  // ★式で書かれています。値としても正しいことを確かめます。
-  // ★λは2か所で定義されています（ACWRの計算が2つある）。
-  //   1か所だけ直しても落ちない、という状態にしないため、
-  //   ★「正しい書き方の数」と「その他の書き方が無いこと」の両方を見ます。
-  //   実際、片方だけ変えたときにテストが通ってしまいました（2026-08-29）。
-  const lambdaAs = (vt.match(/const lambdaA = 2 \/ \(7 \+ 1\);/g) || []).length;
-  const lambdaCs = (vt.match(/const lambdaC = 2 \/ \(28 \+ 1\);/g) || []).length;
-  const lambdaAAll = (vt.match(/const lambdaA = /g) || []).length;
-  const lambdaCAll = (vt.match(/const lambdaC = /g) || []).length;
-  assertEqual(lambdaAs, lambdaAAll, `★λa の定義すべてが 2/(7+1)（${lambdaAAll}箇所）`);
-  assertEqual(lambdaCs, lambdaCAll, `★λc の定義すべてが 2/(28+1)（${lambdaCAll}箇所）`);
-  assertTrue(lambdaAAll >= 1 && lambdaCAll >= 1, "λの定義が存在する");
-  assertEqual(Number((2 / (7 + 1)).toFixed(3)), 0.250, "★λa = 0.250");
-  assertEqual(Number((2 / (28 + 1)).toFixed(3)), 0.069, "★λc = 0.069");
+  console.log("\n=== EWMA のλ（★2026-09-07 に、まるごとやめました） ===");
+  // ★★比（急性÷慢性、ACWR）を出すのをやめたので、★λも要らなくなりました。
+  //   ★★これは事故ではありません。★坂本さんが決められた変更です（2026-09-07）。
+  //     ★出どころ Opus の文献の見直し（Impellizzeri 2021）。
+  //       ★分母を乱数に取り替えても同じ結果になり、
+  //       ★c統計量が 0.5 ＝ コイン投げと変わらない、と示されています。
+  //   ★★否定されたのは「比」です。★「数えること」ではありません。
+  //     ★日ごとの量と、7日ぶんの合計は、そのまま残っています。
+  //
+  //   ★★これからは「在ること」ではなく「無いこと」を守ります。
+  //     ★戻ってきたら、★ここで止めます。
+  assertEqual((vt.match(/const lambdaA = /g) || []).length, 0,
+    "★λa は、もう定義されていない");
+  assertEqual((vt.match(/const lambdaC = /g) || []).length, 0,
+    "★λc は、もう定義されていない");
+  assertEqual((vt.match(/acwr: C > 0 \? A \/ C/g) || []).length, 0,
+    "★比（A/C）を、もう計算していない");
+  // ★1.4 のような線も、引かないこと。
+  assertTrue(!/value <= 1\.[35]\) return \{ key:/.test(vt),
+    "★比に線を引く判定が、もう無い");
+  // ★数えるほうは、★残っていること（★消しすぎていないか）。
+  assertTrue(/computeDailyLoad\(/.test(vt), "★日ごとの量は、残っている");
+  assertTrue(/week: recent\.reduce/.test(vt), "★7日ぶんの合計は、残っている");
 
   console.log("\n=== 曲の負荷（レパートリー負荷パッチ） ===");
   assertTrue(/const REPERTOIRE_GAMMA = 1\.7;/.test(vt), "★GAMMA = 1.7");

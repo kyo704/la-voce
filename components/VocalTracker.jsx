@@ -923,7 +923,7 @@ const FORECAST_PRIORS = {
 const FORECAST_KEYS = Object.keys(FORECAST_PRIORS);
 const FORECAST_FACTOR_LABELS = {
   sleepHours: "睡眠時間", dinnerGap: "夕食から就寝までの間隔", waterL: "水分量", ease: "心の余裕",
-  alcohol: "アルコール", prevLoad: "前日の発声負荷（ACWR）", absHumidity: "絶対湿度", prevThroat: "前日の喉の状態"
+  alcohol: "アルコール", prevLoad: "前日の声の使用量", absHumidity: "絶対湿度", prevThroat: "前日の喉の状態"
 };
 // 前日の記録から、予報モデルの説明変数を取り出す。prevAcwr は前日時点のACWR値（acwrSeriesから取得して渡す）。
 function extractForecastPredictors(prevEntry, prevAcwr) {
@@ -6646,7 +6646,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       { days: 3, label: "症状カレンダー・音域マップ" },
       { days: 7, label: "コンディション偏差値" },
       { days: 14, label: "声の時差マップ・効いた習慣" },
-      { days: 28, label: "発声負荷バランス（ACWR）" }
+      { days: 28, label: "7日ぶんの、声の使用量" }
     ];
     return thresholds.find((t) => recordedDaysTotal < t.days) || null;
   }, [recordedDaysTotal]);
@@ -6942,7 +6942,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     resolveD: resolveRepertoireD
   }), [repertoireTessituraMap, comfortableRangeMidi, personalTessituraOffset]);
 
-  // 07. 発声負荷（ACWR）の日次系列。声の予報の「前日発声負荷」predictorにも使う。
+  // 07. 声の使用量の日次系列。声の予報の「前日の使用量」predictorにも使う。
+  //   ★比（ACWR）は 2026-09-07 にやめました。★数えるだけです。
   // 記録のない日は L=0 として扱わず、前日のEWMAをそのまま引き継ぐ（休んだのか未記録なのか区別できないため）。
   const acwrSeries = useMemo(() => {
     const allDates = Object.keys(entries).sort();
@@ -6950,24 +6951,39 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (allDates.length === 0) return series;
     const firstDate = allDates[0];
     const realToday = realTodayDate;
-    const lambdaA = 2 / (7 + 1);
-    const lambdaC = 2 / (28 + 1);
-    let A = null, C = null;
+    // ★★比（急性÷慢性、いわゆる ACWR）は、★もう出しません（2026-09-07）。
+    //   ★出どころ Opus の文献の見直し（Impellizzeri 2021）。
+    //     ★分母を乱数に取り替えても同じ結果になり、
+    //     ★c統計量が 0.5 ＝ コイン投げと変わらない、と示されています。
+    //   ★★否定されたのは「比」です。★「数えること」ではありません。
+    //     ★だから、★日ごとの量と、★7日ぶんの合計は残します。
+    //   ★1.4倍のような線も、もう引きません。
+    const recent = [];   // ★直近7日ぶんの、日ごとの量
     let d = firstDate;
     let guard = 0;
     while (d <= realToday && guard < 3660) { // 約10年分で打ち切る安全弁
       const entry = entries[d];
       if (entry) {
-        // ★実測が無い活動には、種別ごとの推定時間を補ってから式に渡す。
-        //   式（EWMA）は変えていない。補ったことは isEstimated で持ち回る。
         const { entry: entryForLoad, usedEstimate } = withEstimatedMinutes(entry);
         const L = computeDailyLoad(entryForLoad, songFactorResolver);
-        A = A == null ? L : lambdaA * L + (1 - lambdaA) * A;
-        C = C == null ? L : lambdaC * L + (1 - lambdaC) * C;
-        series[d] = { A, C, acwr: C > 0 ? A / C : null, isEstimated: usedEstimate };
-      } else if (A != null && C != null) {
-        // 記録のない日は、前日のEWMAを引き継ぐ（ここも従来どおり）。
-        series[d] = { A, C, acwr: C > 0 ? A / C : null, isEstimated: false, noRecord: true };
+        recent.push(L);
+        while (recent.length > 7) recent.shift();
+        series[d] = {
+          day: L,
+          week: recent.reduce((x, y) => x + y, 0),
+          days: recent.length,
+          isEstimated: usedEstimate
+        };
+      } else if (recent.length > 0) {
+        // ★書かなかった日は、★0として数えます。★休んだ日も、7日のうちの1日です。
+        recent.push(0);
+        while (recent.length > 7) recent.shift();
+        series[d] = {
+          day: 0,
+          week: recent.reduce((x, y) => x + y, 0),
+          days: recent.length,
+          isEstimated: false, noRecord: true
+        };
       }
       d = addDays(d, 1);
       guard += 1;
@@ -6988,7 +7004,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       if (!prevEntry) continue;
       const todayEntry = entries[d];
       const actual = todayEntry && typeof todayEntry.throatCondition === "number" ? todayEntry.throatCondition : null;
-      const prevAcwr = acwrSeries[prevD] ? acwrSeries[prevD].acwr : null;
+      // ★比をやめたので、★前日の「その日の量」を渡します（2026-09-07）。
+      const prevAcwr = acwrSeries[prevD] ? acwrSeries[prevD].day : null;
       rows.push({ date: d, predictors: extractForecastPredictors(prevEntry, prevAcwr), actual });
     }
     return rows;
@@ -7095,7 +7112,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const yDate = addDays(realToday, -1);
     const prevEntry = entries[yDate];
     if (!prevEntry) return { hasData: false, yesterdayDate: yDate };
-    const prevAcwr = acwrSeries[yDate] ? acwrSeries[yDate].acwr : null;
+    const prevAcwr = acwrSeries[yDate] ? acwrSeries[yDate].day : null;
     const predictors = extractForecastPredictors(prevEntry, prevAcwr);
     const pred = predictThroat(predictors, predictorMeans, throatMu, personalizedBeta.beta);
     if (!pred) return { hasData: false, yesterdayDate: yDate };
@@ -7890,7 +7907,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     { key: "dinnerGap", label: "夕食から就寝までの間隔", extract: (e) => computeTimeGapHours(e.dinnerTime, e.bedtime) },
     { key: "absHumidity", label: "絶対湿度", extract: (e) => computeAbsoluteHumidity(e.temperature, e.humidity) },
     { key: "alcohol", label: "アルコール摂取", extract: (e) => (e.dinnerTags || []).length ? ((e.dinnerTags || []).includes("アルコール") ? 1 : 0) : null },
-    { key: "load", label: "発声負荷（ACWR）", extract: (e, date) => acwrSeries[date] ? acwrSeries[date].acwr : null }
+    { key: "load", label: "その日の声の使用量", extract: (e, date) => acwrSeries[date] ? acwrSeries[date].day : null }
   ], [acwrSeries]);
   const lagCorrelationMap = useMemo(() => {
     const sortedDates = Object.keys(filteredEntries).sort();
@@ -7941,24 +7958,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }, [lagCorrelationMap]);
   // ---- 声の時差マップ 用データ ここまで ----
 
-  // ---- lavoce-指標設計図.md 07. 発声負荷バランス（ACWR） 用データ ----
+  // ---- 07. 7日ぶんの、声の使用量 用データ（★比はやめました・2026-09-07） ----
   // acwrSeries（フェーズ2の予報モデルで既に計算済み）をそのまま使い、
   // ゾーン判定・グラフ用の系列・「明日を休養にした場合」の1ステップ先予測を組み立てる。
-  function acwrZone(value) {
-    if (value == null) return null;
-    // ★値で色を変えない（§7-5）。言葉がそのまま状態を言っている。
-    if (value < 0.8) return { key: "low", label: "積み足りない" };
-    if (value <= 1.3) return { key: "good", label: "ちょうどいい" };
-    if (value <= 1.5) return { key: "caution", label: "増やしすぎ注意" };
-    return { key: "high", label: "喉を痛めやすい急増" };
-  }
+  // ★★「積み足りない」「増やしすぎ注意」「喉を痛めやすい急増」を、やめました。
+  //   ★どれも、★比の値に線を引いて言っていたものです（0.8 / 1.3 / 1.5）。
+  //   ★★その線に、根拠がありませんでした。
+  //     ★数を見せるだけにします。★良し悪しを、こちらから言いません。
   const acwrChartData = useMemo(() => {
     const dates = Object.keys(acwrSeries).sort().slice(-28);
     // ★推定を補った日が分かるようにする（改善タスクv2 §3-1「グラフ上で区別表示する」）。
     //   実測の日と推定の日を、同じ点で描いてはいけない。
     return dates.map((d) => ({
       date: d.slice(5),
-      acwr: acwrSeries[d].acwr != null ? roundTo1(acwrSeries[d].acwr) : null,
+      acwr: acwrSeries[d].week != null ? roundTo1(acwrSeries[d].week) : null,
       isEstimated: !!acwrSeries[d].isEstimated
     }));
   }, [acwrSeries]);
@@ -7977,14 +7990,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (dates.length === 0) return null;
     const lastDate = dates[dates.length - 1];
     const latest = acwrSeries[lastDate];
-    if (latest.acwr == null) return null;
-    const lambdaA = 2 / (7 + 1);
-    const lambdaC = 2 / (28 + 1);
-    // 明日を休養（発声負荷ゼロ）にした場合のEWMAをもう1ステップ進めた予測値
-    const restA = lambdaA * 0 + (1 - lambdaA) * latest.A;
-    const restC = lambdaC * 0 + (1 - lambdaC) * latest.C;
-    const restAcwr = restC > 0 ? restA / restC : null;
-    return { date: lastDate, value: roundTo1(latest.acwr), zone: acwrZone(latest.acwr), restProjection: restAcwr != null ? roundTo1(restAcwr) : null, restZone: acwrZone(restAcwr) };
+    if (latest.week == null) return null;
+    // ★★「明日休んだらこうなる」の見通しも、やめました（2026-09-07）。
+    //   ★比の先ゆきを出すためのものでした。★比そのものが無くなりました。
+    //   ★★休むことを、こちらから勧めない、という決めとも合います。
+    return { date: lastDate, value: roundTo1(latest.week), days: latest.days };
   }, [acwrSeries, acwrGate]);
   // ---- 発声負荷バランス 用データ ここまで ----
 
@@ -8064,10 +8074,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           });
         }
       } else if (tag === "stamina") {
-        const vals = dates28.map((d) => (acwrSeries[d] && acwrSeries[d].acwr != null ? { date: d, acwr: roundTo1(acwrSeries[d].acwr) } : null)).filter(Boolean);
+        const vals = dates28.map((d) => (acwrSeries[d] && acwrSeries[d].week != null ? { date: d, acwr: roundTo1(acwrSeries[d].week) } : null)).filter(Boolean);
         if (vals.length >= 2) {
           metrics.push({
-            tag, label: "発声負荷バランス（ACWR）の推移", data: vals.map((v) => ({ date: v.date.slice(5), value: v.acwr })),
+            tag, label: "7日ぶんの、声の使用量の推移", data: vals.map((v) => ({ date: v.date.slice(5), value: v.acwr })),
             summary: `直近: ${vals[vals.length - 1].acwr}`
           });
         }
@@ -8337,7 +8347,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         const e = entries[targetDate];
         if (!e) return;
         if (typeof e.sleepHours === "number") sleepVals.push(e.sleepHours);
-        if (acwrSeries[targetDate] && acwrSeries[targetDate].acwr != null) loadVals.push(acwrSeries[targetDate].acwr);
+        if (acwrSeries[targetDate] && acwrSeries[targetDate].week != null) loadVals.push(acwrSeries[targetDate].week);
         const waterMl = Object.values(e.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0);
         if (waterMl > 0) waterVals.push(waterMl);
       });
@@ -8361,7 +8371,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     for (let i = 27; i >= 0; i--) dates4w.push(addDays(realToday, -i));
     const scoreTrend = dates4w.map((d) => ({ date: d.slice(5), score: entries[d] ? computeDailyScore100(entries[d]) : null }));
     const symptomWeeks = dates4w.map((d) => ({ date: d, symptoms: entries[d] ? (entries[d].throatSymptoms || []) : null }));
-    const loadTrend = dates4w.map((d) => ({ date: d.slice(5), acwr: acwrSeries[d] ? roundTo1(acwrSeries[d].acwr) : null }));
+    const loadTrend = dates4w.map((d) => ({ date: d.slice(5), acwr: acwrSeries[d] ? roundTo1(acwrSeries[d].week) : null }));
     const allMidis = [];
     dates4w.forEach((d) => {
       const e = entries[d];
@@ -8635,15 +8645,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         });
       }
     }
-    if (acwrToday && acwrToday.zone && (acwrToday.zone.key === "caution" || acwrToday.zone.key === "high")) {
-      candidates.push({
-        id: "acwr-today",
-        icon: "⚠️",
-        text: `今日の発声負荷比は${acwrToday.value}。${acwrToday.zone.label}な状態です。`,
-        detail: acwrToday.restProjection != null ? `明日を休養にすると${acwrToday.restProjection}に戻ります` : "",
-        priority: Math.min(1, Math.abs(acwrToday.value - 1.1) / 1.0) * 1.0 * 0.8
-      });
-    }
+    // ★★「今日の発声負荷比は◯。◯◯な状態です」を、やめました（2026-09-07）。
+    //   ★比そのものを出さないことにしたためです。
+    //   ★条件に使っていた acwrToday.zone も、★もうありません。
+    //   ★「明日を休養にすると戻ります」も、同じ理由でやめました。
+    //   ★★数は、分析の画面に出ています。★ここで良し悪しを言いません。
     if (refluxDinnerTagEffectsWithFdr.length > 0) {
       const top = [...refluxDinnerTagEffectsWithFdr].sort((a, b) => Math.abs(b.g) - Math.abs(a.g))[0];
       if (top && effectStateOf(top) === EFFECT_SHOWN
@@ -8706,7 +8712,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         teaser: "8種類の症状を、日付×症状の格子で振り返れます",
         current: recordedDaysTotal, required: 3 },
       { key: "acwr", visible: true, unlocked: acwrGate.passed,
-        title: "発声負荷バランス（ACWR）",
+        title: "7日ぶんの、声の使用量",
         teaser: "歌い込みすぎ・積み足りないを1つの数字で管理できます",
         current: recordedDaysTotal, required: getGate("acwr").minDays },
       { key: "envComfort", visible: isAnalysisCardVisible("environment-comfort-zone", prof), unlocked: recordedDaysTotal >= 7,
@@ -11879,7 +11885,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             </div>
 
             <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-              <h3 className="ff-display italic text-lg mb-1">発声負荷（ACWR）</h3>
+              <h3 className="ff-display italic text-lg mb-1">声の使用量</h3>
               <div style={{ width: "100%", height: chartHeight(110) }}>
                 <ResponsiveContainer>
                   <LineChart data={lessonModeData.loadTrend} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
@@ -13182,7 +13188,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           騒がしい場所での会話が多かった（無意識に声が大きくなりやすい環境）
                         </label>
                         <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>
-                          「今日は歌っていない・収録していない」日でも、レッスンで教える・会議・電話などの発話は、発声負荷（ACWR）の計算に反映されます。
+                          「今日は歌っていない・収録していない」日でも、レッスンで教える・会議・電話などの発話は、声の使用量の計算に反映されます。
                         </p>
                         {/* ★一般に言われていることだけを書きます（職業別項目の再設計と学ぶ画面.md §9）。
                             ★その人の記録率や日数を、ここに出さないこと。
@@ -15838,7 +15844,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   acwrToday && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <div className="flex items-start justify-between gap-2 mb-1">
-                        <h3 className="ff-display italic text-lg">発声負荷バランス（ACWR）</h3>
+                        <h3 className="ff-display italic text-lg">7日ぶんの、声の使用量</h3>
                         {/* 改善タスクv2 §4-1(b): 期間セレクタが効かないカードであることを明示する */}
                         <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: C.paper, color: C.inkSoft }}>
                           {t("badgeFixedPeriodAll")}
@@ -15852,19 +15858,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           <span className="ff-display italic" style={{ fontSize: "2.6rem", color: acwrToday.zone ? acwrToday.zone.color : C.ink }}>
                             {acwrToday.value}
                           </span>
-                          {acwrToday.zone && (
-                            <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.ink }}>
-                              {acwrToday.zone.label}
-                            </span>
-                          )}
                         </div>
                       </div>
-                      {acwrToday.restProjection != null && (
-                        <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
-                          明日を休養にすると <span className="ff-mono font-medium">{acwrToday.restProjection}</span>
-                          {acwrToday.restZone && <>（{acwrToday.restZone.label}）</>}に戻ります。
-                        </p>
-                      )}
                       {acwrChartData.length > 0 && (
                         <div style={{ width: "100%", height: chartHeight(180) }}>
                           <ResponsiveContainer>
