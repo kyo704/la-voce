@@ -219,7 +219,16 @@ ${mo.gait ? `
           {[["L", LEGS.leftX], ["R", LEGS.rightX]].map(([side, cx]) => (
             <g key={side} className="sheep-leg"
                style={{
-                 transformBox: "fill-box", transformOrigin: "top center",
+                 // ★★軸は、★数字で決めます（★2026-09-06・不具合の直し）。
+                 //   ★★fill-box は、★「そのかたまりの箱」を見ます。
+                 //     ★靴の絵は x=0・y=0 の1024角なので、
+                 //     ★靴を履いた瞬間、★箱が画面ぜんたいに広がります。
+                 //     ★すると軸が (512, 0) へ飛び、★脚が羊を横切りました。
+                 //     ★★「靴が脚に隠れる」「振れが大きすぎる」は、
+                 //       ★どちらもこれが原因です。
+                 //   ★view-box なら、★中身が変わっても軸は動きません。
+                 transformBox: "view-box",
+                 transformOrigin: `${cx}px ${LEGS.topY}px`,
                  // ★★動きは、★その場に書きます。★組の名前で書きません。
                  //   ★組の名前だと、★画面に2匹いるとき、
                  //   ★あとから描かれたほうの規則が、★先の羊にも効きます。
@@ -233,9 +242,15 @@ ${mo.gait ? `
                 width={LEGS.width}
                 height={LEGS.bottomY - LEGS.hoofRy - LEGS.topY}
                 rx={LEGS.width / 2} fill={LEGS.color} />
-              <ellipse
-                cx={cx} cy={LEGS.bottomY - LEGS.hoofRy}
-                rx={LEGS.footW / 2} ry={LEGS.hoofRy} fill={LEGS.color} />
+              {/* ★★靴を履いていたら、★ひづめは描きません。
+                  ★靴の底(〜976)より、★ひづめの下端(1002)のほうが下なので、
+                  ★描くと、★靴の下から足がはみ出して見えます。
+                  ★★靴が、★そのまま足になります。 */}
+              {!shoeSrc && (
+                <ellipse
+                  cx={cx} cy={LEGS.bottomY - LEGS.hoofRy}
+                  rx={LEGS.footW / 2} ry={LEGS.hoofRy} fill={LEGS.color} />
+              )}
               {shoeSrc && (
                 <image
                   href={shoeSrc} x="0" y={LEGS.shoeDy}

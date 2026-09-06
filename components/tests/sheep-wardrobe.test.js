@@ -188,6 +188,35 @@ function ok(label, cond) {
   ok("★左右は、体のこぶの中心に合わせている", L.leftX === 421 && L.rightX === 601);
   ok("★左右が、逆向きに振れる", L.swing > 0);
 
+  console.log("■ 靴が、脚に隠れないか");
+  // ★★2026-09-06、実機で「靴が脚に隠れる」「振れが大きすぎる」。
+  //   ★どちらも原因は同じで、★軸の決め方でした。
+  //   ★★fill-box は「そのかたまりの箱」を見ます。
+  //     ★靴の絵は x=0・y=0 の1024角なので、★履いた瞬間に箱が画面ぜんたいへ
+  //     ★広がり、★軸が (512,0) へ飛びます。★脚が羊を横切りました。
+  ok("★軸を、かたまりの箱で決めていない",
+    !/transformBox: "fill-box"/.test(dressed2));
+  ok("★軸を、数字で決めている",
+    /transformOrigin: `\$\{cx\}px \$\{LEGS\.topY\}px`/.test(dressed2));
+  // ★靴は、脚より後に描くこと（後に描いたものが上に来ます）。
+  const gBlock = dressed2.slice(dressed2.indexOf('className="sheep-leg"'));
+  const iRect = gBlock.indexOf("<rect"), iImg = gBlock.indexOf("<image");
+  ok("★靴を、脚より後に描いている", iRect >= 0 && iImg > iRect);
+  // ★靴を履いたら、ひづめは描かないこと（靴の下から足がはみ出します）。
+  ok("★靴のときは、ひづめを描かない", /\{!shoeSrc && \(\s*<ellipse/.test(dressed2));
+
+  console.log("■ 振れが、大きすぎないか");
+  const arm = (L.bottomY - L.hoofRy) - L.topY;
+  const move = 2 * arm * Math.sin(L.swing * Math.PI / 360);
+  ok("★足先の動く量が、ひかえめ（1024のうち80まで）", move <= 80,
+    "実際は " + move.toFixed(0));
+  ok("★でも、動きが見える程度はある（30以上）", move >= 30,
+    "実際は " + move.toFixed(0));
+  // ★振れても、脚が体の下ぎわからはみ出さないこと。
+  ok("★振れても、脚は体に隠れている",
+    L.leftX - L.width / 2 - move / 2 >= 361,
+    "左端 " + (L.leftX - L.width / 2 - move / 2).toFixed(0) + " ／ 体は 361 から");
+
   console.log("■ 画面に2匹いても、脚が止まらないか");
   // ★★組の名前で動きを書くと、★あとの羊の規則が先の羊にも効きます。
   //   ★止まっている羊が勝つと、★見本の脚が動かなくなります。
