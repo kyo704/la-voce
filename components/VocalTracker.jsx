@@ -6981,19 +6981,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★体について何も言わないので、★ゲートは掛けません。
   const repertoire = useMemo(() => repertoireLog(entries), [entries]);
 
-  // ★★有料の門が、その方にかかっているか。★1か所で決めます（★2026-09-07）。
-  //   ★★2か所で別々に判定していたため、★食い違いが出ました。
-  //     ★壁の札は門の中、★「もっと」のカードは門の外にありました。
-  //     ★門の外の方がカードから /billing へ行くと、
-  //     ★「まだ始まっていません」と出ました。
-  //   ★決めそのものは lib/freeTier.js が持ちます。★ここは呼ぶだけです。
-  const paidGateApplies = !mayViewSummary({
-    scope: "summary",
-    profile,
-    subscribed: subscribed === true,
-    userId,
-    env: { NEXT_PUBLIC_GATE_TEST_USER_IDS: process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS }
-  });
+  // ★★有料の門の判定（paidGateApplies）は、★ここにありました。
+  //   ★subscribed の宣言より★前で読んでいて、★描くたびに落ちていました。
+  //   ★宣言のすぐ下へ移しました。
 
   // ★★D+1 の一問（本番モード §7）。★聞く本番を、1つだけ選びます。
   //   ★まとめて聞きません。★2つ並べると、どちらの話か分からなくなります。
@@ -8839,6 +8829,23 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★localStorage に持たないこと（権利と課金の線引き §2-2）。
   //   ★読めないうちは null。★null のあいだは、門をかけません（★渡しすぎる側に倒す）。
   const [subscribed, setSubscribed] = useState(null);
+
+  // ★★有料の門が、その方にかかっているか。★1か所で決めます（★2026-09-07）。
+  //   ★決めそのものは lib/freeTier.js が持ちます。★ここは呼ぶだけです。
+  //
+  //   ★★2026-09-07、★ここへ移しました。★以前は、ずっと上にありました。
+  //     ★subscribed は、★この行で初めて作られます。
+  //     ★それより前で読むと、★JavaScript は
+  //       ReferenceError: Cannot access ... before initialization
+  //       ★を投げます（★一時的死角・temporal dead zone）。
+  //     ★★描くたびに落ちるので、★ダッシュボードが開けませんでした。
+  const paidGateApplies = !mayViewSummary({
+    scope: "summary",
+    profile,
+    subscribed: subscribed === true,
+    userId,
+    env: { NEXT_PUBLIC_GATE_TEST_USER_IDS: process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS }
+  });
   // ★★お知らせを、いまだけ閉じたか（2026-09-05 夜に直しました）。
   //   ★「あとで」は、★この画面を閉じるだけです。
   //   ★★既読にしません。★開き直すと、また出ます。
