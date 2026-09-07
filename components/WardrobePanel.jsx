@@ -18,7 +18,7 @@ import WardrobeSheet from "@/components/WardrobeSheet";
 import { SHEEP_GROUPS, itemsByGroup, sheepItemSrc, sheepItemByKey } from "@/lib/sheepItems";
 import {
   inShopNow, currentSeason, SEASON_LABELS, isUnlockItem, unlockedItemKeys, applyWear,
-  groupBySlot, railSlotsWithItems, slotLabel, RAIL_GARMENT,
+  groupBySlot, railSlotsWithItems, slotLabel, SLOT_DISPLAY_ORDER, RAIL_GARMENT,
   PROP_SIDES, PROP_SIDE_DEFAULT, sortForShop
 } from "@/lib/sheepWardrobe";
 // ★★コーデと、シートの高さの決めは、lib が持ちます。
@@ -42,10 +42,6 @@ import {
 //     ・★達成で開くものは、★お金で買えません。★そう見えるように出します。
 //     ・★催促しないこと。★「あと◯日」を出さないこと。
 // ============================================================================
-
-const SLOT_LABELS = {
-  garment: "服", neck: "襟まき", shoes: "くつ", hat: "かぶりもの", prop: "持ちもの"
-};
 
 export default function WardrobePanel({
   wearing = {}, owned = [], unlockedFlags = {}, todayISO, onChange,
@@ -367,9 +363,17 @@ export default function WardrobePanel({
           colorKey={colors[wearing.top] || null}
           onChange={(k) => onColorChange(wearing.top, k)} />
       )}
-      {/* ★いま着ているものを、外せるように並べます。 */}
+      {/* ★★いま着ているものを、外せるように並べます。
+          ★★2026-09-08、★ここに置き場所の写しを持っていました。
+            ★服・襟まき・くつ・かぶりもの・持ちもの の★5つだけでした。
+            ★★2026-09-07 に足した4つ（上・下・羽織り・目元）が、
+              ★この写しに入っていませんでした。
+            ★★だから、★上や羽織りを着ても、★ここに1つも出ませんでした。
+              ★実機で「品物が出てこない」とご報告をいただきました。
+          ★★置き場所の名前と並びは lib/sheepWardrobe.js が持ちます。
+            ★ここでは持ちません。★写しを作らないこと。 */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16, justifyContent: "center" }}>
-        {Object.keys(SLOT_LABELS).map((slot) => {
+        {SLOT_DISPLAY_ORDER.map((slot) => {
           const it = wearing[slot] ? sheepItemByKey(wearing[slot]) : null;
           if (!it) return null;
           return (
@@ -379,7 +383,7 @@ export default function WardrobePanel({
                 border: `1px solid ${C.line}`, background: C.card, color: C.ink,
                 fontSize: "0.9375rem"
               }}>
-              {SLOT_LABELS[slot]}：{it.name}　×
+              {slotLabel(slot)}：{it.name}　×
             </button>
           );
         })}

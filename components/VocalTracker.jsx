@@ -96,6 +96,10 @@ import {
 import { REDRAWN_AS, withRedrawnKeys } from "@/lib/legacyWearables";
 // ★服の色。★式も、24色も、★どの品に塗れるかも、★あちらが持ちます。
 import { setColor as setClothColor } from "@/lib/clothColors";
+// ★栄養の合計。★何を出し、何を出さないかは、あちらが持ちます。
+import { mealMacroTotals, usualTotals, macroRows } from "@/lib/nutritionTotals";
+// ★ρ／r／n／q を、どこに出してよいか。★決めは、あちらが持ちます。
+import { correlationsToCsv, toCorrelationRow, correlationsFileName, bhQValues } from "@/lib/statNumbers";
 // ★解放の判定は、lib/character.js が持っています。★作り直しません。
 import { computeUnlocked } from "@/lib/character";
 // ★★無料と有料の線（⑫・案B）。★判定は lib/freeTier.js が1か所で持ちます。
@@ -123,7 +127,7 @@ import { medicalCaution } from "@/lib/medicalCaution";
 import { ACCOMPANIMENT_OPTIONS } from "@/lib/storedValues";
 import { mayShowLuxuryFields } from "@/lib/ageGate";
 import { weatherCarryDecision, isWeatherSource, isCarried, CARRIED_NOTE } from "@/lib/weatherCarry";
-import { CPPS_ENABLED } from "@/lib/pausedFeatures";
+import { CPPS_ENABLED, TONE_EVENNESS_CHART_ENABLED } from "@/lib/pausedFeatures";
 import { teacherWithHonorific, DEPARTED_TEACHER_LABEL } from "@/lib/teacherDisplay";
 import { shouldNotify } from "@/lib/noticeAudience";
 import { shouldShowNotice, withNoticeShown, noticeStateFromRows, NOTICE_TEXT } from "@/lib/notices";
@@ -1004,8 +1008,12 @@ function correlationLabel(r, t) {
 //   3ゲート（件数・効果量・FDR）は変えていない。§6-1 のまま。
 //   探索族はそもそも文章を出さないので、ゲートの対象外になる。
 //   だから族を分けても、ガードレールは1ミリも緩まない。
-function generateInsights(correlationResults, targetLabel, t) {
-  const withP = correlationResults.map((r) => {
+// ★★係数の計算を、★1か所にしました（★2026-09-08・再点検 6）。
+//   ★★画面に出す文と、★書き出しの CSV が、★同じ数を見るためです。
+//     ★別々に計算すると、★片方だけ直す日が来ます。
+//   ★★ここは計算だけです。★どこに出してよいかは lib/statNumbers.js が決めます。
+function correlationStats(correlationResults) {
+  const withP = (correlationResults || []).map((r) => {
     if (r.r == null || r.n < 3 || Math.abs(r.r) >= 1) return { ...r, pValue: null };
     const tStat = r.r * Math.sqrt((r.n - 2) / (1 - r.r * r.r));
     return { ...r, pValue: tDistPValue(tStat, r.n - 2) };
@@ -1023,6 +1031,30 @@ function generateInsights(correlationResults, targetLabel, t) {
     const passes = benjaminiHochberg(rows.map((x) => x.pValue), NARRATIVE_FDR_Q);
     rows.forEach((r, i) => { fdrByKey[r.key] = passes[i]; });
   });
+  return { withP, fdrByKey };
+}
+
+/**
+ * ★書き出し（CSV）に入れる、係数の一覧。
+ *
+ *   ★★画面には出しませんが、★ご自身の記録から出た数です。
+ *     ★ご自身が受け取れないのは、おかしなことです（lib/statNumbers.js）。
+ *   ★★門を通らなかったものも、★入れます。★gate_passed の列で分かります。
+ */
+function correlationExportRows(correlationResults, targetLabel) {
+  const { withP, fdrByKey } = correlationStats(correlationResults);
+  // ★★q 値も出します。★通ったかどうかだけでは、際どさが分かりません。
+  const qs = bhQValues(withP.map((r) => r.pValue));
+  return withP
+    .map((r, i) => toCorrelationRow(
+      r, targetLabel, qs[i],
+      evaluateGate("correlation.narrative",
+        { n: r.n, rho: r.r, fdrPass: fdrByKey[r.key] }, (k) => k).passed))
+    .filter(Boolean);
+}
+
+function generateInsights(correlationResults, targetLabel, t) {
+  const { withP, fdrByKey } = correlationStats(correlationResults);
   return withP
     .filter((r) => mayStateFinding(r.key))
     .filter((r) => evaluateGate("correlation.narrative", { n: r.n, rho: r.r, fdrPass: fdrByKey[r.key] }, t).passed)
@@ -1032,11 +1064,15 @@ function generateInsights(correlationResults, targetLabel, t) {
       const strength = Math.abs(r.r) >= 0.7 ? t("insightStrengthClear") : t("insightStrengthSome");
       const actionTemplate = r.r >= 0 ? t("insightActionPos") : t("insightActionNeg");
       const action = actionTemplate.replace(/\{factor\}/g, r.label).replace(/\{target\}/g, targetLabel);
-      const line = t("insightLine")
+      // ★★係数（r）と件数（n）を、★画面から外しました（★2026-09-08・再点検 6）。
+      //   ★★数そのものは、★書き出し（CSV）に残しています。★取り上げていません。
+      //     ★決めは lib/statNumbers.js が持ちます。★ここでは判じません。
+      //   ★★「r=0.42」は、★確からしさの幅を出さずに見せると、
+      //     ★その数の意味を知らない方には、★確かなものに見えます。
+      //     ★言えるのは「一緒に出ている」までです。★それは、文で言えます。
+      const line = t("insightLineNoStats")
         .replace(/\{factor\}/g, r.label)
-        .replace(/\{strength\}/g, strength)
-        .replace(/\{r\}/g, r.r.toFixed(2))
-        .replace(/\{n\}/g, r.n);
+        .replace(/\{strength\}/g, strength);
       return { key: r.key, text: `${line}${action}` };
     });
 }
@@ -6031,6 +6067,25 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (formData.proteinLevel == null && formData.calorieLevel == null) return null;
     return estimateSimpleMealMacros(nutritionTargets, formData.proteinLevel ?? 1, formData.calorieLevel ?? 1);
   }, [formData, nutritionTargets]);
+  // ★★書かれた食べものだけの合計（★2026-09-08・Opus の再点検 2b）。
+  //   ★★mealTotals とは、★別のものです。★1つにしないこと。
+  //     ★mealTotals は、★書かれていないとき 3択から推し量ります。
+  //       ★保存の値を作るために使っています（★entryToRow）。
+  //     ★★こちらは、★画面に出す値です。★推し量りを混ぜません。
+  //   ★★「保存のための値」と「画面に出す値」は、別の問いです。
+  const recordedMacroTotals = useMemo(
+    () => mealMacroTotals(formData ? formData.meals : null),
+    [formData]);
+
+  // ★★その方の「ふだん」（★ご自身の記録の中央値）。
+  //   ★★ほかの方の数は、★1つも混ぜません。★entries は、その方のものだけです。
+  //   ★7日ぶんに満たないときは、★null。★出しません。
+  const usualMacroTotals = useMemo(
+    // ★★いま書いている日は、★ふだんに入れません。
+    //   ★書いている途中のものと比べても、意味がありません。
+    () => usualTotals(entries, selectedDate),
+    [entries, selectedDate]);
+
   const mealTotals = useMemo(() => {
     const meals = formData ? formData.meals || [] : [];
     if (meals.length === 0 && simpleMealMacros) {
@@ -6195,10 +6250,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }, [correlationResults]);
 
   const scatterInfo = useMemo(() => correlationResults.find((r) => r.key === selectedFactorKey) || null, [correlationResults, selectedFactorKey]);
-  const insights = useMemo(() => {
-    const targetLabel = analysisTarget === "performance" ? t("targetPerformance") : analysisTarget === "ease" ? t("targetEase") : t("targetThroat");
-    return generateInsights(correlationResults, targetLabel, t);
-  }, [correlationResults, analysisTarget, t]);
+  // ★★比べている対象の名前。★文にも、書き出しにも、同じものを使います。
+  const targetLabelForExport = analysisTarget === "performance" ? t("targetPerformance")
+    : analysisTarget === "ease" ? t("targetEase") : t("targetThroat");
+  const insights = useMemo(
+    () => generateInsights(correlationResults, targetLabelForExport, t),
+    [correlationResults, targetLabelForExport, t]);
   const voiceMemoEntries = useMemo(() => {
     return Object.keys(filteredEntries)
       .filter((d) => (filteredEntries[d].voiceMemo || "").trim())
@@ -8001,6 +8058,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         } else {
           metrics.push({ tag, label: "最長発声時間（MPT）", data: null, summary: null, needsMoreData: true });
         }
+      } else if (tag === "evenness" && !TONE_EVENNESS_CHART_ENABLED) {
+        // ★★推移を、いったん止めています（lib/pausedFeatures.js・2026-09-08）。
+        //   ★★入力の欄は、そのままです。★書いていただけます。
+        //   ★★書かれた値も、消していません。★書き出しにも入っています。
+        //   ★★「まだ記録機能がありません」とは、書きません。★事実と違います。
+        metrics.push({ tag, label: "音色の均一感", data: null, summary: null, paused: true });
       } else if (tag === "evenness") {
         // ★★14番（音色の均一感）は、★いったん元のままにしてあります（2026-09-07）。
         //   ★一度外したところ、★下の枝に落ちて
@@ -9247,6 +9310,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
       const csv = entriesToCsv(Array.isArray(tables.entries) ? tables.entries : []);
       if (csv) downloadFile(`la-voce-entries-${stamp}.csv`, "\ufeff" + csv, "text/csv;charset=utf-8");
+
+      // ★★係数（ρ・n・p）は、★画面から外しました（★2026-09-08・再点検 6）。
+      //   ★★ですが、★ご自身の記録から出た数です。★受け取れないのは、おかしなことです。
+      //     ★だから、★書き出しには入れます。★どちらも無料です。
+      //   ★★門を通らなかったものも、入れます。★gate_passed の列で分かります。
+      const corrRows = correlationExportRows(correlationResults, targetLabelForExport);
+      if (corrRows.length > 0) {
+        downloadFile(correlationsFileName(stamp), "\ufeff" + correlationsToCsv(corrRows),
+          "text/csv;charset=utf-8");
+      }
 
       setExportStatus("done");
       setTimeout(() => setExportStatus((st) => (st === "done" ? "idle" : st)), 4000);
@@ -13816,28 +13889,49 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           </div>
                         </div>
                       </div>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
-                        <div className="rounded-xl p-2.5 text-center" style={{ background: C.paper }}>
-                          <div className="text-xs" style={{ color: C.inkSoft }}>{t("macroCarbs")}</div>
-                          <div className="ff-mono text-sm font-medium">{mealTotals.carbs.toFixed(0)}g</div>
+                      {/* ★★栄養の合計（★2026-09-08・Opus の再点検 2b）。
+                          ★★9月7日に、★目安との比べと一緒に、★合計そのものも外していました。
+                            ★再点検で「行きすぎ」とされ、★合計だけを戻します。
+                          ★★戻さないもの ── 目標線・基準線・判定・色分け。
+                            ★並べてよいのは、★ご自身のふだん（中央値）だけです。
+                          ★★はじめは閉じています（★坂本さんの決め）。
+                            ★開かなければ、★数は1つも目に入りません。
+                            ★数えて見せることが、★数えさせることになるためです。
+                          ★★3択からの推し量りは、★出しません。
+                            ★あれは目標の式から逆に出した数で、★基準線と同じものです。
+                            ★実際に書かれた食べものだけを、足します。
+                          ★決めは lib/nutritionTotals.js が持ちます。★ここでは判じません。 */}
+                      {recordedMacroTotals && (
+                      <details className="text-xs rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
+                        <summary className="cursor-pointer font-medium" style={{ color: C.ink }}>
+                          + 栄養の合計を見る
+                        </summary>
+                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mt-3">
+                          {macroRows(recordedMacroTotals, usualMacroTotals).map((r) => (
+                            <div key={r.key} className="rounded-xl p-2.5 text-center" style={{ background: C.card }}>
+                              <div className="text-xs" style={{ color: C.inkSoft }}>
+                                {r.labelKey ? t(r.labelKey) : r.label}
+                              </div>
+                              {/* ★★色を、変えません。★色分けは、判定と同じことです。 */}
+                              <div className="ff-mono text-sm font-medium" style={{ color: C.ink }}>
+                                {r.value.toFixed(0)}{r.unit}
+                              </div>
+                              {/* ★★並べてよいのは、★ご自身のふだん（中央値）だけです。
+                                  ★★ほかの方の数は、1つも混ぜません。
+                                  ★出せないときは、★行ごと出しません。「―」も書きません。 */}
+                              {r.usual != null && (
+                                <div className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
+                                  ふだん {r.usual.toFixed(0)}{r.unit}
+                                </div>
+                              )}
+                            </div>
+                          ))}
                         </div>
-                        <div className="rounded-xl p-2.5 text-center" style={{ background: C.paper }}>
-                          <div className="text-xs" style={{ color: C.inkSoft }}>{t("macroProtein")}</div>
-                          <div className="ff-mono text-sm font-medium">{mealTotals.protein.toFixed(0)}g</div>
-                        </div>
-                        <div className="rounded-xl p-2.5 text-center" style={{ background: C.paper }}>
-                          <div className="text-xs" style={{ color: C.inkSoft }}>{t("macroFat")}</div>
-                          <div className="ff-mono text-sm font-medium">{mealTotals.fat.toFixed(0)}g</div>
-                        </div>
-                        <div className="rounded-xl p-2.5 text-center" style={{ background: C.paper }}>
-                          <div className="text-xs" style={{ color: C.inkSoft }}>{t("macroFiber")}</div>
-                          <div className="ff-mono text-sm font-medium">{mealTotals.fiber.toFixed(0)}g</div>
-                        </div>
-                      </div>
-                      {simpleMealMacros && (formData.meals || []).length === 0 && (
-                        <p className="text-xs" style={{ color: C.inkSoft }}>
-                          ※ 上の数値は、選択した3択と目標値から推定した参考値です。実際に食べた食品を記録すると、より正確になります。
+                        <p className="text-xs mt-2" style={{ color: C.inkSoft, lineHeight: 1.8 }}>
+                          書いた食べものを、足しただけの数です。
+                          {usualMacroTotals ? "「ふだん」は、あなたご自身の記録のまん中の値です。" : ""}
                         </p>
+                      </details>
                       )}
 
                       {/* ★★栄養評価の枠を、まるごとやめました（★2026-09-08）。
@@ -15085,7 +15179,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <p className="text-sm font-medium mb-3">今週の振り返り</p>
                     {practiceGoalMetrics.map((m) => (
                       <div key={m.tag} className="mb-3">
-                        {m.notYetAvailable ? (
+                        {m.paused ? (
+                          /* ★★いったん止めています（lib/pausedFeatures.js）。
+                              ★★「記録機能がありません」とは、書きません。★事実と違います。
+                                ★入力の欄は在り、★書いた値も残っています。
+                              ★★「データが足りません」とも、書きません。★足りています。
+                                ★出していないのは、★こちらの都合です。★そう書きます。 */
+                          <p className="text-xs rounded-lg p-2" style={{ background: C.paper, color: C.inkSoft }}>
+                            {m.label}：いまは出していません。記録は残っていて、書き出しにも入ります。
+                          </p>
+                        ) : m.notYetAvailable ? (
                           <p className="text-xs rounded-lg p-2" style={{ background: C.paper, color: C.inkSoft }}>{m.label}：この指標はまだ記録機能がありません。</p>
                         ) : m.data ? (
                           <>
