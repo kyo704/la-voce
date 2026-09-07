@@ -63,7 +63,12 @@ const disabled = (vt.match(/disabled=\{deleteStatus === "working" \|\| !deleteCo
 assertTrue(disabled.length >= 2, `★猶予つきと今すぐ、両方のボタンで要求している（${disabled.length}件）`);
 // ★手元に残さないこと
 assertTrue(/setDeletePassword\(""\)/.test(vt), "★送ったら手元から消す");
-const sendAt = vt.indexOf("const data = await res.json()");
+// ★★目印は、★消去の処理の中から探します。
+//   ★2026-09-07、★"const data = await res.json()" だけを目印にしていたため、
+//     ★あとから書いた別の処理（品物を受け取る）に、★先に当たりました。
+//   ★★1語の目印は、★いつか必ず、よそに当たります。
+const deleteAt = vt.indexOf("password: deletePassword");
+const sendAt = vt.indexOf("await res.json()", deleteAt);
 assertTrue(/setDeletePassword\(""\)/.test(vt.slice(sendAt, sendAt + 300)),
   "★成否にかかわらず消している");
 

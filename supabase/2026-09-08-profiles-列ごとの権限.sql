@@ -17,6 +17,11 @@
 --     ★代わりに「渡さない列」だけを数え、★残りぜんぶを渡します。
 --     ★★数え落としても、★いまと同じ状態に留まります。安全側です。
 --     ★一覧の正は lib/profileServerOnlyColumns.js です。
+--
+--   ★★2026-09-07、★character_points_spent を足しました（8列）。
+--     ★持ちぶんは「記録から作った合計 − この数」で出しています。
+--     ★この数を小さく書けば、★記録しないままポイントが増えました。
+--     ★足すのは app/api/character/buy だけです。
 
 -- ===========================================================================
 -- ① いまの状態を見ます（★読むだけ）
@@ -45,7 +50,8 @@ with 渡さない(列) as (values
     'cohort',
     'teacher_beta_access',
     'deleted_at',
-    'reauth_at'
+    'reauth_at',
+    'character_points_spent'
 )
 select 列, case when c.column_name is null then '★ありません' else 'あります' end as 表にあるか
 from 渡さない
@@ -84,7 +90,8 @@ begin
     'cohort',
     'teacher_beta_access',
     'deleted_at',
-    'reauth_at'
+    'reauth_at',
+    'character_points_spent'
     );
 
   if cols is null then
@@ -112,7 +119,8 @@ where table_schema = 'public' and table_name = 'profiles'
     'cohort',
     'teacher_beta_access',
     'deleted_at',
-    'reauth_at'
+    'reauth_at',
+    'character_points_spent'
   );
 
 -- ④-2 渡すべきなのに、渡っていないもの
@@ -126,7 +134,8 @@ where c.table_schema = 'public' and c.table_name = 'profiles'
     'cohort',
     'teacher_beta_access',
     'deleted_at',
-    'reauth_at'
+    'reauth_at',
+    'character_points_spent'
   )
   and not exists (
     select 1 from information_schema.column_privileges p

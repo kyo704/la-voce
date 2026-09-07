@@ -55,13 +55,15 @@ async function main() {
   assertEqual(isAnalysisCardVisible("passaggio-stability", ["announcer"]), false, "アナウンサーにパッサッジョは出さない");
   assertEqual(isAnalysisCardVisible("speaking-pitch-diurnal", ["voice_actor"]), true, "声優にも話声位の日内変動を出す（設計書の判断）");
   assertEqual(isAnalysisCardVisible("performance-peaking-curve", ["announcer"]), false, "アナウンサーに本番ピーキング曲線は出さない");
-  assertEqual(isAnalysisCardVisible("environment-comfort-zone", ["announcer"]), true, "環境の快適帯は全職業に出す");
   assertEqual(isAnalysisCardVisible("deviation-score", ["announcer"]), true, "表に無いカードは職業を問わず出す");
   assertEqual(isAnalysisCardVisible("shout-recovery-curve", []), false, "職業が未設定なら、職業限定カードは出さない");
   assertEqual(isAnalysisCardVisible("shout-recovery-curve", ["singer", "voice_actor"]), true, "兼業なら、どちらかに該当すれば出す");
 
   console.log("\n=== テスト4: 画面側が、判定を1箇所からしか受け取っていない ===");
-  ["screamRecovery", "screamThreshold", "passaggio", "sffDiurnal", "tourEndurance", "peaking", "envComfort"].forEach((k) => {
+  // ★★envComfort を、この一覧から外しました（★2026-09-07・10番）。
+  //   ★カードを消したので、「参照していること」を求めると、必ず落ちます。
+  //   ★代わりに、下で「戻ってきていないこと」を確かめます。
+  ["screamRecovery", "screamThreshold", "passaggio", "sffDiurnal", "tourEndurance", "peaking"].forEach((k) => {
     assertTrue(trackerSrc.includes(`analysisLocks.map.${k}.visible`), `${k} が analysisLocks.map の visible を参照している`);
   });
   assertTrue(!/\(effectiveProfessions \|\| \[\]\)\.includes\("voice_actor"\) && \(\s*\n\s*analysisLocks/.test(trackerSrc),

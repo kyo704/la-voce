@@ -1,4 +1,10 @@
--- is_internal も、トリガーで守ります（2026年9月8日）
+-- profiles の「サーバの側だけ」の列を、トリガーで守ります（2026年9月8日）
+--
+--   ★★2026-09-07、★名前を変えました。
+--     ★もとは「is_internal も、トリガーで守る」でした。
+--     ★守る列が8つになったので、★1列の名前を題にしておけません。
+--     ★★中身は入れ替えるだけ（create or replace）なので、
+--       ★どちらの名前で流しても、★同じ結果になります。
 --
 --   ★★2026-09-06 に見つけました。
 --     ★9月5日に当てたトリガーは6列を守っていますが、
@@ -41,6 +47,13 @@ begin
   elsif new.reauth_at is distinct from old.reauth_at then guarded := 'reauth_at';
   -- ★★2026-09-08 追加。★お知らせの宛先を、本人に変えさせないこと。
   elsif new.is_internal is distinct from old.is_internal then guarded := 'is_internal';
+  -- ★★2026-09-07 追加。★使ったポイントの数です。
+  --   ★持ちぶんは「記録から作った合計 − この数」で出しています。
+  --   ★★だから、この数を小さく書けば、★記録せずにポイントが増えます。
+  --     ★ブラウザから直に書けていました（VocalTracker の買う処理）。
+  --   ★これからは app/api/character/buy が、★足すぶんだけを書きます。
+  elsif new.character_points_spent is distinct from old.character_points_spent
+    then guarded := 'character_points_spent';
   end if;
 
   if guarded is not null then

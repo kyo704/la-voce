@@ -98,7 +98,7 @@ import {
 import { medicalCaution } from "@/lib/medicalCaution";
 import { ACCOMPANIMENT_OPTIONS } from "@/lib/storedValues";
 import { mayShowLuxuryFields } from "@/lib/ageGate";
-import { weatherCarryDecision, isWeatherSource, isCarried, CARRIED_NOTE, mayUseAbsoluteHumidity } from "@/lib/weatherCarry";
+import { weatherCarryDecision, isWeatherSource, isCarried, CARRIED_NOTE } from "@/lib/weatherCarry";
 import { CPPS_ENABLED } from "@/lib/pausedFeatures";
 import { teacherWithHonorific, DEPARTED_TEACHER_LABEL } from "@/lib/teacherDisplay";
 import { rankPhrase } from "@/lib/rankWording";
@@ -7916,48 +7916,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       }))
       .filter((x) => x.ah != null && x.throat != null);
   }, [entries]);
-  // ①絶対湿度を2g/m³刻みでビン分けし、②喉スコア平均が「全体平均+0.3」を超える連続区間を快適帯とする。
-  // ★引き継いだ日が半分を超える期間では、絶対湿度を説明変数に使いません（§7）。
-  //   引き継ぎは「その日に測った値」ではないので、それが多数を占める期間の
-  //   相関は、何も言っていないのと同じです。結論を出さず、待っている状態を出します。
-  const absHumidityUsable = useMemo(() => {
-    const dates = Object.keys(entries).filter(
-      (d) => typeof entries[d].temperature === "number" && typeof entries[d].humidity === "number"
-    );
-    return mayUseAbsoluteHumidity(entries, dates);
-  }, [entries]);
-
-  const comfortZone1D = useMemo(() => {
-    if (!absHumidityUsable.allowed) return null;
-    if (envEntries.length < 5) return null;
-    const overallAvg = envEntries.reduce((s, x) => s + x.throat, 0) / envEntries.length;
-    const binSize = 2;
-    const byBin = {};
-    envEntries.forEach((x) => {
-      const bin = Math.floor(x.ah / binSize) * binSize;
-      if (!byBin[bin]) byBin[bin] = { sum: 0, n: 0 };
-      byBin[bin].sum += x.throat; byBin[bin].n += 1;
-    });
-    const bins = Object.keys(byBin).map(Number).sort((a, b) => a - b);
-    const binStats = bins.map((b) => ({ bin: b, avg: byBin[b].sum / byBin[b].n, n: byBin[b].n }));
-    const threshold = overallAvg + 0.3;
-    // n≥2のビンの中で、閾値を超える連続区間のうち最長のものを快適帯とする
-    let bestRun = [], currentRun = [];
-    binStats.forEach((s, i) => {
-      const qualifies = s.n >= 2 && s.avg > threshold;
-      const isContiguous = currentRun.length === 0 || s.bin === currentRun[currentRun.length - 1].bin + binSize;
-      if (qualifies && isContiguous) {
-        currentRun.push(s);
-      } else if (qualifies) {
-        currentRun = [s];
-      } else {
-        currentRun = [];
-      }
-      if (currentRun.length > bestRun.length) bestRun = currentRun;
-    });
-    if (bestRun.length === 0) return { overallAvg, binStats, range: null };
-    return { overallAvg, binStats, range: { low: bestRun[0].bin, high: bestRun[bestRun.length - 1].bin + binSize } };
-  }, [envEntries, absHumidityUsable]);
+  // ★★快適帯の計算を、まるごとやめました（★2026-09-07・10番）。
+  //   ★絶対湿度を2刻みで分けて、★喉のスコアが高い連続区間を「快適帯」と呼んでいました。
+  //   ★★カードを外したので、★この値を読む場所が、ひとつも無くなりました。
+  //     ★誰も読まない値を、作り続けないこと。
+  //   ★引き継ぎ日が多いときに止める判定（mayUseAbsoluteHumidity）も、
+  //     ★止める相手が無くなったので、一緒に外しました。
+  //   ★気温・湿度の記録と、その日の絶対湿度の表示は、そのまま残ります。
 
   // ---- 記録と分析の順番設計 §3.3: 各セクションが、その場で返すもの ----
   //
@@ -7984,16 +7949,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     };
     const signed = (v, digits, unit) => `${v >= 0 ? "+" : ""}${v.toFixed(digits)}${unit}`;
 
-    // 環境: 絶対湿度と、自分の快適域との関係
+    // 環境: 絶対湿度を、そのまま出します。
+    //   ★★「あなたの快適域より乾いています」を、やめました（★2026-09-07・10番）。
+    //     ★快適かどうかを、こちらが決めていました。
+    //     ★カードは外したのに、★同じ判定がここに残っていました。
+    //     ★★「1つの決めごとが2か所にある」の、いつもの形です。
+    //   ★測った値だけを出します。★どう感じるかは、書く人のものです。
     const ah = computeAbsoluteHumidity(Number(formData.temperature), Number(formData.humidity));
     if (ah != null && !isNaN(ah)) {
-      let rel = "";
-      if (comfortZone1D && comfortZone1D.range) {
-        if (ah < comfortZone1D.range.low) rel = "・あなたの快適域より乾いています";
-        else if (ah > comfortZone1D.range.high) rel = "・あなたの快適域より湿っています";
-        else rel = "・あなたの快適域の中です";
-      }
-      fb.env = `絶対湿度 ${ah.toFixed(1)} g/m³${rel}`;
+      fb.env = `絶対湿度 ${ah.toFixed(1)} g/m³`;
     }
 
     // 睡眠: 直近14日の自分の平均との差
@@ -8041,7 +8005,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (typeof formData.ease === "number") fb.mental = "記録しました";
 
     return fb;
-  }, [formData, entries, selectedDate, comfortZone1D, acwrGate, acwrToday, songFactorResolver]);
+  }, [formData, entries, selectedDate, acwrGate, acwrToday, songFactorResolver]);
 
   // ②気温4℃刻み×相対湿度10%刻みの2次元マップ
   const comfortZone2D = useMemo(() => {
@@ -8396,7 +8360,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         id: "lag-" + topLagFinding.variableKey,
         icon: "💡",
         text: `あなたの声は、${topLagFinding.variableLabel}の「${topLagFinding.lag}日後」にいちばん関係が出ています。`,
-        detail: `ρ = ${topLagFinding.rho.toFixed(2)}`,
+        // ★★係数の数字（ρ）を、出さないことにしました（★2026-09-07・6番）。
+        //   ★文そのものは、本物の3ゲート（lag.narrative）を通っています。
+        //   ★数字だけを外します。
+        detail: "",
         priority: Math.min(1, Math.abs(topLagFinding.rho)) * 1.0 * 0.6
       });
     }
@@ -8498,10 +8465,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         title: "7日ぶんの、声の使用量",
         teaser: "歌い込みすぎ・積み足りないを1つの数字で管理できます",
         current: recordedDaysTotal, required: getGate("acwr").minDays },
-      { key: "envComfort", visible: isAnalysisCardVisible("environment-comfort-zone", prof), unlocked: recordedDaysTotal >= 7,
-        title: "環境の快適帯",
-        teaser: "自分の喉が快適な気温・湿度のゾーンが分かります",
-        current: recordedDaysTotal, required: 7 },
+      // ★★envComfort を、一覧から外しました（★2026-09-07・10番）。
+      //   ★カードが無くなったので、★「あと◯日で見られます」と言えません。
+      //   ★★作った値は、必ずどこかで読まれること。
       { key: "peaking", visible: isAnalysisCardVisible("performance-peaking-curve", prof), unlocked: !!peakingCurve,
         title: "本番ピーキング曲線",
         teaser: "本番前後の仕上がり方の、あなた固有の型が分かります",
@@ -8648,20 +8614,40 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }).length;
   }
 
+  // ★★2026-09-07、★受け取る処理を、★サーバへ移しました。
+  //   ★以前は、ここから profiles.character_points_spent を直に書いていました。
+  //   ★★持ちぶんは「記録から作った合計 − この数」です。
+  //     ★この数を小さく書けば、★記録しないままポイントが増えました。
+  //   ★いまは app/api/character/buy が、★品物の名前だけを受け取り、
+  //     ★値段をサーバ側で引いて、★足すぶんを決めます。
+  //   ★列そのものも、★トリガーと列ごとの権限の2枚で守っています。
+  //     ★lib/profileServerOnlyColumns.js が、その一覧を持ちます。
   async function handlePurchaseItem(item) {
-    const supabase = createClient();
+    // ★先に画面を進めます。★押した手ごたえを、待たせません。
+    //   ★★しくじったら、★そのまま戻します。
     setOwnedItemKeys((prev) => [...prev, item.key]);
     setCharacterPointsSpent((prev) => prev + item.cost);
-    const { error } = await supabase.from("character_inventory").insert({ user_id: userId, item_key: item.key });
-    if (error) {
+    let res = null;
+    try {
+      res = await fetch("/api/character/buy", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ itemKey: item.key })
+      });
+    } catch (e) {
+      res = null;
+    }
+    if (!res || !res.ok) {
       setOwnedItemKeys((prev) => prev.filter((k) => k !== item.key));
       setCharacterPointsSpent((prev) => prev - item.cost);
       return;
     }
-    const newSpent = characterPointsSpent + item.cost;
-    const { data: spentData, error: spentError } = await supabase.from("profiles").update({ character_points_spent: newSpent }).eq("id", userId).select();
-    if (spentError || !spentData || spentData.length === 0) {
-      console.error("ポイント消費の保存に失敗しました:", spentError, "userId:", userId);
+    // ★★数の正は、サーバが返したものです。★こちらの足し算では、上書きしません。
+    try {
+      const bought = await res.json();
+      if (bought && typeof bought.pointsSpent === "number") setCharacterPointsSpent(bought.pointsSpent);
+    } catch (e) {
+      // ★読めなくても、★受け取りは済んでいます。★次に読み込んだときに、そろいます。
     }
     if (SINGLE_SLOT_CATEGORIES.includes(item.category)) {
       handleEquipItem(item.category, item.key);
@@ -12635,13 +12621,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           </div>
                         )}
 
-                        {/* 改善タスクv2 §4-2(a): 総合コンディションは「結果」なので、入力の前ではなく
-                            保存の後ろへ移した。まだ記録していない日に空の数字を見せない。 */}
-                        {entries[selectedDate] && (
-                          <div className="rounded-2xl p-5 border flex justify-center" style={{ background: C.card, borderColor: C.line }}>
-                            <Gauge score={currentScore} t={t} />
-                          </div>
-                        )}
+                        {/* ★★総合コンディションのメーターを、やめました（★2026-09-07）。
+                            ★「4.0 / 5」と、★針のあるメーターで出していました。
+                            ★★これも、点をつけることです。
+                              ★惹句に「声に点をつけません」と書いた、そのことを
+                              ★この画面がしていました。
+                            ★書いた項目は、そのまま残ります。★点だけをやめます。 */}
 
                         {/* 改善タスクv2 §4-2: 前日からの背景は参照情報なので、入力の流れに割り込ませず、
                             保存の後ろに畳んで置く（初期状態は閉じる）。 */}
@@ -15022,62 +15007,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </div>
                   );
                 })()}
-                <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
-                  {/* ★見出しと帯を、狭い画面では縦に積む。
-                      横並びのままだと、帯が whitespace-nowrap で縮まないため、
-                      見出し「声の調子スコア（直近2週間）」が2行に折れます。
-                      ★min-w-0 は付けないこと。縮みの下限が外れて、
-                        見出しのほうが1文字ずつに潰れます（2026-08-28 に一度やりました）。 */}
-                  <div className="flex flex-col gap-1 mb-1 sm:flex-row sm:items-start sm:justify-between sm:gap-2">
-                    <h3 className="ff-display italic text-lg">{t("titleVocalScore")}</h3>
-                    {/* 改善タスクv2 §4-1(b): 期間セレクタが効かないカードであることを明示する */}
-                    <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap self-start" style={{ background: C.paper, color: C.inkSoft }}>
-                      {t("badgeFixedPeriod").replace("{n}", 14)}
-                    </span>
-                  </div>
-                  <p className="text-xs mb-4" style={{ color: C.inkSoft }}>{t("noteVocalScore")}</p>
-                  {!vocalConditionScore.hasEnoughData ? (
-                    <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
-                      {t("noteVocalScoreNotEnough").replace("{count}", vocalConditionScore.daysCount)}
-                    </p>
-                  ) : (
-                    <>
-                      <div className="flex items-end gap-2 mb-4">
-                        <span className="ff-display italic" style={{ fontSize: "3.4rem", lineHeight: 1, color: C.ink }}>
-                          {vocalConditionScore.total}
-                        </span>
-                        <span className="text-sm mb-1.5" style={{ color: C.inkSoft }}>/ 100</span>
-                        {/* ★§3-A: 数字だけでは「今日が良い日なのか」が分からない。
-                            直近14日の推移を横に添えるだけで、同じ数字が読めるようになる。 */}
-                        <span className="ml-auto mb-1"><Sparkline values={dailyScoreSeries.map((d) => d.score)} /></span>
-                      </div>
-                      <div className="space-y-2">
-                        {vocalConditionScore.components.map((c) => (
-                          <div key={c.key}>
-                            <div className="flex items-center justify-between text-xs mb-1">
-                              <span style={{ color: C.inkSoft }}>{t(c.labelKey)}</span>
-                              <span className="ff-mono" style={{ color: C.ink }}>{Math.round(c.score)}</span>
-                            </div>
-                            <div className="h-1.5 rounded-full overflow-hidden" style={{ background: C.paper }}>
-                              <div className="h-full rounded-full" style={{ width: `${c.score}%`, background: C.gold }} />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                      {vocalConditionScore.topPullDown && (
-                        <p className="text-xs mt-3 rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
-                          <strong>{t(vocalConditionScore.topPullDown.labelKey)}</strong>が{Math.round(vocalConditionScore.topPullDown.score)}点で、
-                          ここが全体を約{vocalConditionScore.topPullDown.pullDown.toFixed(1)}点押し下げています。
-                        </p>
-                      )}
-                      <p className="text-xs mt-4" style={{ color: C.inkSoft }}>
-                        {/* ★注意書きは lib/medicalCaution.js が唯一の正。
-                            ここで言い換えないこと（4か所で言い方が違っていました）。 */}
-                        {t("noteVocalScoreDisclaimer")}{medicalCaution(language)}
-                      </p>
-                    </>
-                  )}
-                </div>
+                {/* ★★声の調子スコアのカードを、まるごとやめました（★2026-09-07）。
+                    ★出どころ Opus の指摘。★坂本さんの決め。
+                    ★★「69/100」「下位スコア6つ」「ここが全体を約11.2点押し下げています」
+                      ★点をつけていました。★惹句に「声に点をつけません」と書いた、
+                      ★そのことを、この画面がしていました。
+                    ★★下位の6つも、★押し下げの数字も、★一緒に消えます。
+                      ★「何が悪いか」を、こちらから言わないためです。 */}
 
                 {analysisLocks.map.deviation.unlocked ? (
                   deviationScore && (
@@ -16151,9 +16087,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   ) : null
                 )}
 
-                {/* ★同じ理由。快適帯もロケーションも無ければ、見出しを出さない。 */}
-                {((analysisLocks.map.envComfort.visible && analysisLocks.map.envComfort.unlocked)
-                  || locationStats.confident.length > 0 || locationStats.lowN.length > 0) && (
+                {/* ★中身が無ければ、見出しも出しません。
+                    ★★快適帯を外したので（★2026-09-07・10番）、
+                      ★この見出しが立つ理由は、場所の記録だけになりました。 */}
+                {(locationStats.confident.length > 0 || locationStats.lowN.length > 0) && (
                 <div className="pt-2 analysis-section-head">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("groupHeaderEnvironment")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -16162,110 +16099,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 </div>
                 )}
 
-                {analysisLocks.map.envComfort.visible && (
-                  analysisLocks.map.envComfort.unlocked ? (
-                  (!absHumidityUsable.allowed ? (
-                    /* ★引き継いだ日が半分を超えているので、結論を出しません（§7）。
-                       ★無言で消さないこと。何を待っているのかを事実として書きます。 */
-                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                      <h3 className="ff-display italic text-lg mb-1">環境の快適帯</h3>
-                      <p className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.7 }}>
-                        気温と湿度のうち、前の日から引き継いだ日が多いため、結論を出すには日数が足りません。
-                      </p>
-                      <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                        その日に記録した日：{absHumidityUsable.total - absHumidityUsable.carried} 日 ／
-                        引き継いだ日：{absHumidityUsable.carried} 日
-                      </p>
-                    </div>
-                  ) : null) || comfortZone1D && (
-                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                      <div className="flex items-start justify-between gap-2 mb-1">
-                        <h3 className="ff-display italic text-lg">環境の快適帯</h3>
-                        {/* 改善タスクv2 §4-1(b): 期間セレクタが効かないカードであることを明示する */}
-                        <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: C.paper, color: C.inkSoft }}>
-                          {t("badgeFixedPeriodAll")}
-                        </span>
-                      </div>
-                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                        相対湿度ではなく絶対湿度（空気中の実際の水分量）で見ています。気温が変わると、同じ％でも実際の水分量は変わるためです。
-                      </p>
-                      {comfortZone1D.range ? (
-                        <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
-                          あなたの喉の快適帯は <strong>絶対湿度 {comfortZone1D.range.low}〜{comfortZone1D.range.high} g/m³</strong>。
-                          {todayEnvPosition && (
-                            <>
-                              　今日{todayEnvPosition.location ? `の${todayEnvPosition.location}` : ""}
-                              （{todayEnvPosition.temp}℃/{todayEnvPosition.rh}%）は AH {todayEnvPosition.ah}
-                              で、{todayEnvPosition.ah >= comfortZone1D.range.low && todayEnvPosition.ah <= comfortZone1D.range.high ? "ちょうど快適帯の中です。" : "快適帯から外れています。"}
-                            </>
-                          )}
-                        </p>
-                      ) : (
-                        <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.inkSoft }}>
-                          まだ明確な快適帯は見えていません。気温・湿度・喉の記録が増えると精度が上がります。
-                        </p>
-                      )}
-                      <div style={{ width: "100%", height: chartHeight(140) }}>
-                        <ResponsiveContainer>
-                          <BarChart data={comfortZone1D.binStats.map((s) => ({ bin: `${s.bin}`, avg: roundTo1(s.avg), n: s.n }))} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                            <CartesianGrid stroke={C.line} />
-                            <XAxis dataKey="bin" tick={{ fontSize: "0.5625rem", fill: C.inkSoft }} label={{ value: "絶対湿度 g/m³", position: "insideBottom", offset: -2, fontSize: "0.625rem", fill: C.inkSoft }} />
-                            {/* ★棒グラフの縦軸は0から（描画仕様 §7-12）。
-                                1から始めると、3.0 と 3.5 の差が実際の何倍にも見える。
-                                線グラフは1〜5のままでよい（規則は棒グラフの話）。 */}
-                            <YAxis domain={[0, 5]} tick={{ fontSize: "0.625rem", fill: C.inkSoft }} />
-                            <Tooltip contentStyle={{ fontSize: "0.75rem", borderRadius: 8, borderColor: C.line }} formatter={(v, n, entry) => [`${v}（${entry.payload.n}件）`, "喉スコア平均"]} />
-                            <Bar dataKey="avg" radius={3}>
-                              {comfortZone1D.binStats.map((s, i) => (
-                                <Cell key={i} fill={s.n >= 2 ? C.sage : C.line} opacity={s.n >= 2 ? 0.8 : 0.4} />
-                              ))}
-                            </Bar>
-                          </BarChart>
-                        </ResponsiveContainer>
-                      </div>
-                      {comfortZone2D && (
-                        <div className="mt-4">
-                          <p className="text-xs font-medium mb-2">気温×湿度の2次元マップ</p>
-                          <div style={{ overflowX: "auto" }}>
-                            <table style={{ borderCollapse: "collapse" }}>
-                              <thead>
-                                <tr>
-                                  <th></th>
-                                  {comfortZone2D.rhBins.map((rh) => (
-                                    <th key={rh} style={{ fontSize: "0.5625rem", color: C.inkSoft, padding: "2px 4px" }}>{rh}%</th>
-                                  ))}
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {comfortZone2D.tBins.map((t) => (
-                                  <tr key={t}>
-                                    <td style={{ fontSize: "0.5625rem", color: C.inkSoft, padding: "2px 4px", whiteSpace: "nowrap" }}>{t}℃</td>
-                                    {comfortZone2D.rhBins.map((rh) => {
-                                      const cell = comfortZone2D.cells.find((c) => c.tBin === t && c.rhBin === rh);
-                                      if (!cell || cell.n < 2) {
-                                        return <td key={rh} style={{ padding: 2 }}><div style={{ width: 30, height: 24, borderRadius: 4, background: C.line, opacity: 0.3 }} /></td>;
-                                      }
-                                      const intensity = Math.max(0, Math.min(1, (cell.avg - 1) / 4));
-                                      return (
-                                        <td key={rh} style={{ padding: 2 }}>
-                                          <div title={`平均${cell.avg.toFixed(1)}（${cell.n}件）`} style={{ width: 30, height: 24, borderRadius: 4, background: `rgba(75,122,90,${0.15 + intensity * 0.7})` }} />
-                                        </td>
-                                      );
-                                    })}
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      )}
-                      <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
-                        ※ 記録数が少ないマスは灰色にしています。あくまで記録上の傾向です。
-                      </p>
-                    </div>
-                  )
-                  ) : null
-                )}
+                {/* ★★環境の快適帯を、まるごとやめました（★2026-09-07・10番）。
+                    ★「この範囲が快適です」と、★範囲を決めて見せていました。
+                    ★★掛かっていたゲートは env.comfortZone で、件数の下限が5です。
+                      ★3ゲートではありません。★効果量も多重比較も見ていません。
+                    ★★そして「快適」は、こちらが決めることではありません。
+                      ★気温と湿度の記録は、そのまま残ります。 */}
 
                 {(locationStats.confident.length > 0 || locationStats.lowN.length > 0) && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
@@ -16441,135 +16280,25 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </div>
                 )}
 
-                {can(viewer, "analysis.relations") && effectiveHabitRanking.length > 0 && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">効いた習慣ランキング</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      前日の行動があった日となかった日で、翌日の声のスコア（喉・声の平均）を比べています。件数・効果の大きさ・見かけ上の偶然を除く検定の3つをすべて通ったものだけ、結果をお伝えします。
-                    </p>
-                    <div className="space-y-3">
-                      {effectiveHabitRanking.slice(0, 8).map((r) => {
-                        // ★3つの表示状態（§3-4）。判定は displayGates が持ちます。
-                        const state = effectStateOf(r);
-                        const showNumbers = state === EFFECT_SHOWN;
-                        const direction = r.g >= 0 ? "良く" : "悪く";
-                        return (
-                          <div key={r.key} className="rounded-xl p-3" style={{ background: C.paper }}>
-                            <div className="flex items-center justify-between gap-2">
-                              <span className="text-sm font-medium">{r.label}</span>
+                {/* ★★効いた習慣ランキングを、まるごとやめました（★2026-09-07・8番と12番）。
+                    ★★順番をつけていました。★1位から8位まで並べていました。
+                      ★上にある習慣ほど「効く」と読めます。★そうは言えません。
+                    ★★横棒で、効果の大きさを描いていました（8番）。
+                      ★棒の長さそのものが、係数を語ります。
+                      ★数字を消しても、図が残れば同じことです。
+                    ★★「効果量 g=0.52」も出していました（6番）。
+                    ★★同じ材料から作る「関連の1文」は、残します。
+                      ★あちらは habit.narrative の3ゲートを通ります。
+                      ★順位も、棒も、係数も出しません。★1文だけです。 */}
 
-                            </div>
-                            <div style={{ position: "relative", height: 22, marginTop: 8, marginBottom: 4 }}>
-                              {(() => {
-                                const scaleMin = -2, scaleMax = 2;
-                                const pct = (v) => Math.max(0, Math.min(100, ((v - scaleMin) / (scaleMax - scaleMin)) * 100));
-                                return (
-                                  <>
-                                    <div style={{ position: "absolute", left: 0, right: 0, top: 10, height: 1, background: C.line }} />
-                                    <div style={{ position: "absolute", left: `${pct(0)}%`, top: 2, width: 1, height: 18, background: C.line }} />
-                                    {/* ★良い方向を緑、悪い方向を赤にしていた（§7-5・§1-4 違反）。
-                                        「この習慣は悪い」と色が言い切っていた。方向は0の縦線に対する
-                                        左右で読めるので、色を変える必要がない。
-                                        判断できないものだけ、淡いほうで描き分ける（濃さの違いではなく、
-                                        「まだ確からしくない」という別の意味を持たせている）。 */}
-                                    {/* ★通っていないときは、区間も点も描きません。
-                                        §3-4 ③「数字（効果量・q値）も出さない」。
-                                        図の位置そのものが効果量を語るためです。 */}
-                                    {showNumbers && (
-                                      <>
-                                        <div style={{ position: "absolute", left: `${pct(r.ciLow)}%`, width: `${pct(r.ciHigh) - pct(r.ciLow)}%`, top: 9, height: 3, borderRadius: 2, background: SERIES.pale }} />
-                                        <div style={{ position: "absolute", left: `calc(${pct(r.g)}% - 5px)`, top: 5, width: 10, height: 10, borderRadius: 999, background: SERIES.s1 }} />
-                                      </>
-                                    )}
-                                  </>
-                                );
-                              })()}
-                            </div>
-                            <p className="text-xs" style={{ color: C.inkSoft }}>
-                              {/* ★§3-4 の3状態。①待機 ②通過 ③不通過。
-                                  ★③で「関係なし」と書かないこと。見えなかったことと、
-                                    無いことは違います。★③でも数字を出さないこと。 */}
-                              {showNumbers
-                                ? `この行動があった日（${r.n1}件）は、翌日の声が平均で${direction}記録されています（効果量 g=${r.g.toFixed(2)}）。`
-                                : state === EFFECT_WAITING
-                                  ? "記録が増えると、判定を始められます。"
-                                  : "はっきりした関係は見えませんでした。"}
-                            </p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
-                      ※「◯◯すると声が良くなる」という保証ではなく、「◯◯した日の翌日は、平均して声が良く記録されている」という記録上の傾向です。
-                    </p>
-                  </div>
-                )}
-
-                {lagCorrelationMap.some((c) => c.n >= 14) && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">声の時差マップ</h3>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      生活の変化は、当日より数日後に声へ出ることがあります。行が生活の変数、列が「何日後に効くか」。色が濃いほど関係が強く、枠のついたマスは統計的にも裏付けのある関係です。
-                    </p>
-                    {topLagFinding && (
-                      <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
-                        見つかりました。<strong>{topLagFinding.variableLabel}の「{topLagFinding.lag}日後」</strong>に、声への関係がいちばん強く出ています（ρ = {topLagFinding.rho.toFixed(2)}）。
-                      </p>
-                    )}
-                    <div style={{ overflowX: "auto" }}>
-                      <table style={{ borderCollapse: "collapse", width: "100%" }}>
-                        <thead>
-                          <tr>
-                            <th style={{ textAlign: "left", fontSize: "0.6875rem", color: C.inkSoft, fontWeight: 500, padding: "2px 6px" }}></th>
-                            {[0, 1, 2, 3].map((lag) => (
-                              <th key={lag} style={{ fontSize: "0.6875rem", color: C.inkSoft, fontWeight: 500, padding: "2px 6px" }}>{lag}日後</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {LAG_VARIABLES.map((v) => (
-                            <tr key={v.key}>
-                              <td style={{ fontSize: "0.6875rem", color: C.ink, padding: "2px 6px", whiteSpace: "nowrap" }}>{v.label}</td>
-                              {[0, 1, 2, 3].map((lag) => {
-                                const cell = lagCorrelationMap.find((c) => c.variableKey === v.key && c.lag === lag);
-                                if (!cell || cell.n < 14) {
-                                  return (
-                                    <td key={lag} style={{ padding: 3 }}>
-                                      <div title={`記録${cell ? cell.n : 0}日分（14日で解放）`} style={{ width: 40, height: 28, borderRadius: 6, background: C.line, opacity: 0.35 }} />
-                                    </td>
-                                  );
-                                }
-                                const rho = cell.rho || 0;
-                                const intensity = Math.min(1, Math.abs(rho));
-                                const color = rho >= 0
-                                  ? `rgba(75,122,90,${0.15 + intensity * 0.7})`
-                                  : `rgba(184,49,49,${0.15 + intensity * 0.7})`;
-                                return (
-                                  <td key={lag} style={{ padding: 3 }}>
-                                    <div
-                                      title={`ρ=${rho.toFixed(2)}（n=${cell.n}）`}
-                                      style={{
-                                        width: 40, height: 28, borderRadius: 6, background: color,
-                                        border: cell.significant ? `2px solid ${C.ink}` : "2px solid transparent",
-                                        display: "flex", alignItems: "center", justifyContent: "center",
-                                        fontSize: "0.625rem", color: C.ink, fontFamily: "monospace"
-                                      }}
-                                    >
-                                      {rho.toFixed(1)}
-                                    </div>
-                                  </td>
-                                );
-                              })}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                    <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
-                      ※ 灰色のマスはまだ記録が14日分たまっていません。枠のついた濃い色のマスだけが、複数の比較を行った上でも統計的に裏付けのある関係です（それ以外は偶然の可能性があります）。
-                    </p>
-                  </div>
-                )}
+                {/* ★★声の時差マップを、まるごとやめました（★2026-09-07）。
+                    ★★緑と赤の升目で、★係数の強さを塗り分けていました。
+                      ★表示規約 §7-3「赤・黄・緑の信号色を使わない」
+                      ★§7-5「値の大小で色を変えない」に、両方当たります。
+                    ★★升目に「ρ=0.42（n=18）」と出していました。
+                      ★係数の数字も、★件数も、出しません（6番）。
+                    ★「◯日後に効く」は、★因果の言い方です。
+                      ★こちらが言えるのは「一緒に出ている」までです。 */}
 
                 {/* ★このまとまりは、誰にでも必ず出します（2026-08-31）。
                     見出しも、3つのボタンも、その下の説明も、消しません。

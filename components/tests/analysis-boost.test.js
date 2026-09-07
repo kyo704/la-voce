@@ -117,8 +117,11 @@ async function main() {
   // 本番・環境は、中身の条件で見出しを包んである
   assertTrue(/analysisLocks\.map\.peaking\.visible && analysisLocks\.map\.peaking\.unlocked && \(/.test(ui),
     "★本番の見出しが、中身があるときだけ出る");
-  assertTrue(/analysisLocks\.map\.envComfort\.unlocked\)\s*\|\| locationStats/.test(ui.replace(/\s+/g, " ")),
+  // ★★快適帯を外したので（★2026-09-07・10番）、
+  //   ★環境の見出しが立つ理由は、★場所の記録だけになりました。
+  assertTrue(/\{\(locationStats\.confident\.length > 0 \|\| locationStats\.lowN\.length > 0\) && \(/.test(ui),
     "★環境の見出しも、中身があるときだけ出る");
+  assertTrue(!/analysisLocks\.map\.envComfort/.test(ui), "★快適帯が戻ってきていない");
   // ロックされたカードは、上に残らず下へ集約されること
   assertTrue(/analysisLocks\.map\.peaking\.unlocked \? \(/.test(ui),
     "本番のカード自体は、ロック層を通っている");

@@ -45,9 +45,13 @@ function assertTrue(c, label) { if (c) { console.log(`  ✓ ${label}`); passCoun
   // ★lib/translations.js は他のモジュールを import できません
   //   （terminology.test.js が data:URL で読むため）。
   //   なので、注意書きは画面の側で足します。それが消えていないことを見ます。
+  // ★★2026-09-07、★声の調子スコア（69/100）を、まるごと外しました。
+  //   ★注意書きを付ける相手が、★無くなりました。
+  //   ★★だから「付いていること」ではなく、「戻っていないこと」を見ます。
+  //     ★スコアが戻るなら、★注意書きも一緒に戻さなければなりません。
   const vt = readCode("components", "VocalTracker.jsx");
-  assertTrue(/\{t\("noteVocalScoreDisclaimer"\)\}\{medicalCaution\(language\)\}/.test(vt),
-    "★声のスコアの下に、注意書きを足している");
+  assertTrue(!/noteVocalScoreDisclaimer/.test(vt),
+    "★声のスコアが、戻ってきていない（戻すなら注意書きも一緒に）");
   assertTrue(Object.keys(tr.TRANSLATIONS.noteVocalScoreDisclaimer).length === 9,
     "声のスコアの文そのものは9言語ある");
   assertTrue(!/診断/.test(tr.TRANSLATIONS.noteVocalScoreDisclaimer.ja),

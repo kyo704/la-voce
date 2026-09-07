@@ -65,25 +65,15 @@ const addDays = (iso, n) => { const d = new Date(iso + "T00:00:00"); d.setDate(d
   assertTrue(!/平常より|快適域|外れて/.test(block), "★判定の文は出さない");
   assertTrue(/color: C\.line/.test(block), "★控えめな色にしている");
 
-  console.log("\n=== ★⑤ 引き継ぎが半分を超えたら、分析に使わない ===");
-  assertTrue(w.MAX_CARRIED_RATIO === 0.5, "しきい値は半分");
-  const allCarried = w.mayUseAbsoluteHumidity(C, Object.keys(C));
-  assertTrue(allCarried.allowed === false, "★全部引き継ぎなら使わない");
-  // ★ちょうど半分は許す。半分を「超えた」ら止める（仕様 §7）。
-  const H = {
-    "2026-08-30": { temperature: 24, humidity: 55, weatherSource: "carried" },
-    "2026-08-31": { temperature: 26, humidity: 50, weatherSource: "entered" }
-  };
-  const half = w.mayUseAbsoluteHumidity(H, Object.keys(H));
-  eq([half.ratio, half.allowed], [0.5, true], "ちょうど半分なら使える");
-  // M は 3日中2日が引き継ぎ ＝ 2/3。半分を超えるので止まる
-  const twoThirds = w.mayUseAbsoluteHumidity(M, Object.keys(M));
-  assertTrue(twoThirds.allowed === false, "★半分を超えたら止める（2/3）");
-  assertTrue(/absHumidityUsable\.allowed/.test(vt), "★画面が判定を見ている");
-  // 無言で消さないこと
-  const waitBlock = vt.slice(vt.indexOf("!absHumidityUsable.allowed ?"), vt.indexOf("!absHumidityUsable.allowed ?") + 700);
-  assertTrue(/前の日から引き継いだ日が多いため/.test(waitBlock), "★待っている状態の文が出る");
-  assertTrue(/引き継いだ日：/.test(waitBlock), "★日数を事実として出す");
+  console.log("\n=== ★⑤ 絶対湿度で結論を出す画面は、もうありません ===");
+  // ★★2026-09-07、★環境の快適帯を、まるごとやめました（10番）。
+  //   ★「引き継ぎが半分を超えたら止める」は、★快適帯だけを止めていました。
+  //   ★止める相手が無くなったので、★仕組みごと外しました。
+  //   ★★戻ってきていないことを、ここで見張ります。
+  assertTrue(w.mayUseAbsoluteHumidity === undefined, "★止める仕組みは、外したまま");
+  assertTrue(w.MAX_CARRIED_RATIO === undefined, "★しきい値も、外したまま");
+  assertTrue(!/absHumidityUsable/.test(vt), "★画面にも、残っていない");
+  assertTrue(!/快適帯|快適域/.test(vt), "★快適帯そのものが、戻ってきていない");
 
   console.log("\n=== ★⑥ 「そのままで構いません」と書かない ===");
   eq(w.CARRIED_NOTE, "前の日の値です。変わっていたら、直してください。", "指定どおりの文言");
