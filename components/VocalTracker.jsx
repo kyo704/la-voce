@@ -13486,29 +13486,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               {t(NUTRITION_PHASE_KEYS[profile.nutrition_phase] || "phaseMaintain")}
                             </span>
                           </div>
-                          <div className="space-y-1.5">
-                            {[
-                              { label: t("macroProtein"), actual: mealTotals.protein, target: nutritionTargets.proteinTarget },
-                              { label: t("macroCarbs"), actual: mealTotals.carbs, target: nutritionTargets.carbsTarget },
-                              { label: t("macroFat"), actual: mealTotals.fat, target: nutritionTargets.fatTarget },
-                              { label: t("macroFiber"), actual: mealTotals.fiber, target: nutritionTargets.fiberTarget }
-                            ].map(({ label, actual, target }) => {
-                              const ev = evaluateIntake(actual, target);
-                              return (
-                                <div key={label} className="flex items-center justify-between text-xs">
-                                  <span style={{ color: C.inkSoft }}>{label}</span>
-                                  <span className="ff-mono">{actual.toFixed(0)}g / {t("labelTargetPrefix")}{target.toFixed(0)}g</span>
-                                  {ev && <span className="font-medium" style={{ color: C.ink }}>{t(ev.labelKey)}</span>}
-                                </div>
-                              );
-                            })}
-                            <div className="flex items-center justify-between text-xs pt-1 border-t" style={{ borderColor: C.line }}>
-                              <span style={{ color: C.inkSoft }}>{t("labelEstimatedCalorie")}</span>
-                              <span className="ff-mono">
-                                {(mealTotals.carbs * 4 + mealTotals.protein * 4 + mealTotals.fat * 9).toFixed(0)}kcal / {t("labelTargetPrefix")}{nutritionTargets.calorieTarget.toFixed(0)}kcal
-                              </span>
-                            </div>
-                          </div>
+                          {/* ★★栄養素の合計を、まるごとやめました（★2026-09-07・緊急）。
+                              ★出どころ Opus の指摘。★坂本さんの決め。
+                              ★★「タンパク質16g」「炭水化物133g」も、出しません。
+                                ★目安との比べだけでなく、★数そのものをやめます。
+                              ★★食べることは、体型のことと地続きです。
+                                ★数えて見せること自体が、★数えさせることになります。
+                                ★体型のことを言われやすいお仕事の方に、
+                                ★それをしてはいけません。
+                              ★★「何を食べたか」の記録は、そのまま残します。
+                                ★ご本人が書いたものです。★取り上げません。
+                                ★計算だけを、やめます。 */}
                           <p className="text-xs mt-2 leading-relaxed" style={{ color: C.inkSoft }}>
                             ※ {nutritionTargets.usedPreciseFormula
                               ? t("noteBMIFormulaPrecise")
@@ -15769,7 +15757,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ))}
                       </div>
                     )}
-                    {symptomChainStats.length > 0 && (
+                    {/* ★★「症状の連鎖」を止めました（★2026-09-07・緊急）。
+                        ★「◯◯の翌日に◯◯が出る確率は14%（7件中）」と出していました。
+                        ★★3ゲートを通っていませんでした。
+                          ★掛かっていたのは symptom.cooccurrence で、件数の下限が3です。
+                          ★10ではありません。★効果量も、多重比較も見ていません。
+                          ★代わりに lift >= 1.5 という独自の線を引いていました。
+                        ★本物の3ゲート（narrative: true）につなぎ直すまで、出しません。 */}
+                    {false && symptomChainStats.length > 0 && (
                       <div className="mt-3">
                         <p className="text-xs font-medium mb-1.5" style={{ color: C.ink }}>症状の連鎖</p>
                         <div className="space-y-1.5">
@@ -15967,45 +15962,24 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </p>
                 </div>
 
-                {(energyAvailabilityAnalysis.method === "ea"
-                  ? energyAvailabilityAnalysis.validEaCount >= 14
-                  : energyAvailabilityAnalysis.signalCount > 0) && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <div className="flex items-start justify-between gap-2 mb-1">
-                      <h3 className="ff-display italic text-lg">エネルギー可用性（月次まとめ）</h3>
-                      {/* 改善タスクv2 §4-1(b): 期間セレクタが効かないカードであることを明示する */}
-                      <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: C.paper, color: C.inkSoft }}>
-                        {t("badgeFixedPeriod").replace("{n}", 28)}
-                      </span>
-                    </div>
-                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                      体重や体型ではなく、「消費に対して摂取が足りているか」を見る指標です。日々の変動は水分でブレるため、ここでは長期の傾向だけをお伝えします。
-                    </p>
-                    {energyAvailabilityAnalysis.method === "ea" ? (
-                      <>
-                        <p className="text-sm rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
-                          {energyAvailabilityAnalysis.isLow
-                            ? `摂取エネルギーが、直近3週間ほど推定の必要量を下回る状態が続いています（1kgの除脂肪体重あたり約${energyAvailabilityAnalysis.recentAvg.toFixed(0)}kcal/日）。支える力に影響が出ることがあります。気になる場合は管理栄養士や医師にご相談ください。`
-                            : `直近のエネルギー可用性は、1kgの除脂肪体重あたり約${energyAvailabilityAnalysis.recentAvg.toFixed(0)}kcal/日です（目安45kcal前後）。`}
-                        </p>
-                        {energyAvailabilityAnalysis.isEstimated && (
-                          <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                            ※ 体脂肪率は身長・年齢・性別から推定した値を使っています（推定誤差は標準で約4%）。体組成計をお持ちの場合は「身体データ」欄への入力で精度が上がります。
-                          </p>
-                        )}
-                      </>
-                    ) : (
-                      <p className="text-sm rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
-                        {energyAvailabilityAnalysis.isLow
-                          ? "体重の減少・症状の頻度・休養後の回復・睡眠と疲労感のバランスのうち、複数の項目で気になる傾向が同時に出ています。気になる場合は管理栄養士や医師にご相談ください。"
-                          : "現時点では、複数の項目が同時に気になる傾向を示してはいません。"}
-                      </p>
-                    )}
-                    <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                      ※ あくまで記録上の傾向であり、医学的な診断ではありません。
-                    </p>
-                  </div>
-                )}
+                {/* ★★エネルギー可用性のカードを、まるごとやめました（★2026-09-07・緊急）。
+                    ★出どころ Opus の指摘。★坂本さんの決め。
+
+                    ★★何がまずかったか
+                      ★「約39kcal/kg、目安45kcal/kg」と出していました。
+                      ★★文献の基準値と、★その方の数字を、★並べて見せていました。
+                        ★分析画面の表示規約 §7-6「文献の基準線・目標線を引かない」
+                        ★に、正面から当たります。
+                      ★★そして、★摂食の障害（RED-S）と地続きの場所です。
+                        ★体型のことを言われやすいお仕事の方に、
+                        ★「足りていない」と読める数字を出していました。
+                      ★★これは、★出してよいものではありませんでした。
+
+                    ★計算（energyAvailabilityAnalysis）は、まだ残っています。
+                      ★画面から先に外しました。★消すのは、そのあとで確かめてから。
+                      ★★ただし、★どこからも呼ばれていない状態にはしません。
+                        ★次の作業で、計算ごと外します。 */}
+
                 <div className="pt-2 analysis-section-head">
                   <h2 className="ff-display italic text-xl mb-1" style={{ color: C.ink }}>{t("sectionMental")}</h2>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -17859,7 +17833,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                     {/* ★§2 一緒に起きていたこと。★条件を満たしたものだけが出ます
                         （symptom.cooccurrence の表示ゲートを通ったものだけ）。 */}
-                    {symptomChainStats.length > 0 && (
+                    {/* ★★「症状の連鎖」を止めました（★2026-09-07・緊急）。
+                        ★「◯◯の翌日に◯◯が出る確率は14%（7件中）」と出していました。
+                        ★★3ゲートを通っていませんでした。
+                          ★掛かっていたのは symptom.cooccurrence で、件数の下限が3です。
+                          ★10ではありません。★効果量も、多重比較も見ていません。
+                          ★代わりに lift >= 1.5 という独自の線を引いていました。
+                        ★本物の3ゲート（narrative: true）につなぎ直すまで、出しません。 */}
+                    {false && symptomChainStats.length > 0 && (
                       <>
                         <h3 className="text-sm font-medium mb-1.5">一緒に起きていたこと</h3>
                         <div className="mb-2 space-y-1">
@@ -17927,7 +17908,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
                   <div className="flex items-center gap-2 mb-2">
                     <Bot size={18} style={{ color: C.curtain }} />
-                    <h3 className="ff-display italic text-lg">{t("titleAIAdvice")}</h3>
+                    {/* ★★「AIアドバイス」という名前を、外しました（★2026-09-07）。
+                        ★規約 第7条4項「医学的助言を行うものではありません」と反していました。
+                        ★★入口（もっと の中）も外したので、★この画面へは来られません。
+                          ★画面ごと消すのは、★中身の見直しのあとにします。 */}
+                    <h3 className="ff-display italic text-lg">準備中</h3>
                   </div>
                   {!AI_ADVICE_ENABLED ? (
                     <div className="rounded-xl p-4 text-sm" style={{ background: C.paper, color: C.inkSoft }}>
@@ -18544,11 +18529,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <span style={{ color: C.inkSoft }}>→</span>
                       </button>
                     )}
-                    <button type="button" onClick={() => setActiveTab("advice")}
-                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
-                      <span className="flex items-center gap-2"><Bot size={16} style={{ color: C.gold }} />AIアドバイス</span>
-                      <span style={{ color: C.inkSoft }}>→</span>
-                    </button>
+{/* ★★「AIアドバイス」の入口を、やめました（★2026-09-07・緊急）。
+                        ★★規約 第7条4項と、正面からぶつかっていました。
+                          「本サービスは、医療行為、診断、治療または医学的助言を
+                          　行うものではありません。」
+                        ★「アドバイス」は、助言です。★名前が、規約に反していました。
+                        ★★画面そのもの（AI_ADVICE_ENABLED = false）は、
+                          ★もともと止まっています。★入口だけが残っていました。
+                        ★中身の見直しは、このあとです。★名前を先に外します。 */}
                   </div>
                 </div>
 

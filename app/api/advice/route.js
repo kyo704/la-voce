@@ -117,6 +117,6 @@ export async function POST() {
     );
     return NextResponse.json({ advice: advice || "アドバイスを生成できませんでした。" });
   } catch (e) {
-    return NextResponse.json({ error: "AIアドバイスの生成に失敗しました。時間をおいて再度お試しください。" }, { status: 502 });
+    return NextResponse.json({ error: "文章の生成に失敗しました。時間をおいて再度お試しください。" }, { status: 502 });
   }
 }

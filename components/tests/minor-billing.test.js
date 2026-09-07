@@ -25,8 +25,13 @@ const B = m.AGE_BAND, P = m.PLANS;
 
 console.log("\n① ★帯ごとに、出すプランが決まること");
 ok("18歳以上には、3つとも出す", m.offeredPlans(B.ADULT).length === 3);
-ok("★15〜17歳には、月額の1つだけ",
-  m.offeredPlans(B.TEEN).length === 1 && m.offeredPlans(B.TEEN)[0] === P.MONTHLY_INDIVIDUAL);
+// ★★2026-09-07、★案C を採りました（坂本さんの決め）。
+//   ★★18歳未満の方には、★何もお売りしません。
+//   ★以前は 15〜17歳に月額だけをお出ししていました。★やめました。
+//   ★理由：★「保護者の同意を得た」を、こちらは確かめられないため。
+ok("★15〜17歳には、1つも出さない", m.offeredPlans(B.TEEN).length === 0);
+ok("★15〜17歳は、決済の画面に入れない", m.mayReachCheckout(B.TEEN) === false);
+ok("★同意の画面を、もう出さない", m.needsMinorConsentScreen(B.TEEN) === false);
 ok("★15〜17歳に、年払いを出さない", !m.offeredPlans(B.TEEN).includes(P.ANNUAL_INDIVIDUAL));
 ok("★15〜17歳に、教室のプランを出さない", !m.offeredPlans(B.TEEN).includes(P.ORGANIZATION));
 ok("★15歳未満には、1つも出さない", m.offeredPlans(B.UNDER_15).length === 0);
@@ -39,11 +44,14 @@ ok("★帯が分からなければ、課金の画面に入れない", m.mayReach
 ok("★知らない値でも、売らない", m.mayReachCheckout("なにか") === false);
 ok("★undefined でも、売らない", m.mayReachCheckout(undefined) === false);
 ok("15歳未満は、課金の画面に入れない", m.mayReachCheckout(B.UNDER_15) === false);
-ok("15〜17歳は、入れる", m.mayReachCheckout(B.TEEN) === true);
+// ★★案C。★入れません。
+ok("★15〜17歳は、もう入れない", m.mayReachCheckout(B.TEEN) === false);
 ok("18歳以上は、入れる", m.mayReachCheckout(B.ADULT) === true);
 
-console.log("\n③ 同意画面を出す相手");
-ok("★15〜17歳にだけ出す", m.needsMinorConsentScreen(B.TEEN) === true);
+console.log("\n③ 同意画面は、もう出さない（★案C・2026-09-07）");
+// ★★売らないので、★同意をいただく相手がいません。
+ok("★どの帯にも、出さない",
+  [B.ADULT, B.TEEN, B.UNDER_15, null].every((b) => m.needsMinorConsentScreen(b) === false));
 ok("★18歳以上には出さない", m.needsMinorConsentScreen(B.ADULT) === false);
 ok("★15歳未満には出さない（そもそも到達しない）", m.needsMinorConsentScreen(B.UNDER_15) === false);
 
@@ -134,11 +142,15 @@ const { readRaw } = require("./_source");
 const gate = require("./_source").stripComments(readRaw("components", "MinorConsentGate.jsx"));
 const billing = require("./_source").stripComments(readRaw("app/billing", "page.js"));
 
-// ★★チェックは初期状態でオフ。★既定でオンにしないこと。
-ok("★チェックは初期状態でオフ", /useState\(false\)/.test(gate));
-ok("★★チェックしないと押せない", /disabled=\{!checked \|\| busy\}/.test(gate));
+// ★★チェックそのものを、やめました（★案C・2026-09-07）。
+//   ★「保護者の同意を得た」と申告していただく形が、無くなりました。
+//   ★得たかどうかを、こちらは確かめられませんでした。
+ok("★同意のチェックが、もう無い", !/useState\(false\)/.test(gate));
+ok("★「保護者の方の同意」と書いていない", !/保護者の方の同意/.test(gate));
+ok("★チェックが、もう無い", !/disabled=\{!checked/.test(gate));
 // ★★「認めます」の形であること。
-ok("★minorConsentCheckbox を使っている", /minorConsentCheckbox\(/.test(gate));
+// ★★同意の文も、もう使いません（★案C）。
+ok("★同意の文を、もう使っていない", !/minorConsentCheckbox\(/.test(gate));
 ok("★「同意します」と直に書いていない", !/この契約に同意します/.test(gate));
 // ★出せるプランが無い方には、★ボタンを出さないこと。
 ok("★プランが0なら、ボタンを出さない", /plans\.length === 0/.test(gate));
@@ -149,20 +161,26 @@ ok("★「法律で決まっている」と書いていない",
   !/法律で決まって|法律上必要/.test(gate));
 ok("★「私たちの決まりとして」と書いている", /私たちの決まりとして/.test(gate));
 // ★保護者の方へのページは、★見せるだけ。★フォームにしないこと。
-ok("★保護者のページへの案内がある", /href="\/parents"/.test(gate));
+// ★★保護者の方へのページは、★同意をお願いする画面のためのものでした。
+//   ★売らないので、★その画面ごと無くなりました（★案C）。
+ok("★同意の画面が、もう無い", !/この契約に同意します/.test(gate));
 // ★記録の4項目
-["age_band", "policy_version", "displayed_price_yen", "plan"].forEach((k) => {
-  ok(`★記録に ${k} を入れている`, new RegExp(k + ":").test(gate));
-});
+// ★★同意の記録そのものを、書かなくなりました（★案C・2026-09-07）。
+//   ★minor_billing_consents の行は、★消しません。★書くのをやめるだけです。
+//   ★過去に申告してくださった記録です。★取り上げません。
+ok("★同意の記録を、もう書いていない", !/minor_billing_consents/.test(gate));
+
 // ★★金額を直書きしないこと。
 ok("★★金額を直書きしていない", !/580/.test(gate));
-ok("★lib/plans.js から引いている", /PLANS\.find\(\(p\) => p\.key === "monthly"\)/.test(gate));
+ok("★lib/plans.js から引いている", /PLANS\.filter\(/.test(gate));
 // ★列の名前は declared。
-ok("★★declared という名前を使っている", /guardian_consent_declared_at/.test(gate));
+// ★★申告のしるしを、書かなくなりました（★案C）。
+//   ★minor_billing_consents の行は消しません。★書くのをやめるだけです。
+ok("★申告のしるしを、書いていない", !/guardian_consent_declared_at/.test(gate));
 ok("★★obtained を使っていない", !/guardian_consent_obtained/.test(gate));
 // ★保存で黙って失敗しないこと。
-ok("★0行を見ている", /updated\.length === 0/.test(gate));
-ok("★失敗を画面に出す", /setError\("保存できませんでした/.test(gate));
+// ★★保存そのものが無くなったので、★その確かめも要らなくなりました（★案C）。
+ok("★保存の処理が、もう無い", !/updated\.length === 0/.test(gate));
 
 console.log("\n⑩ ★画面の側でも、帯で出し分けていること");
 ok("★/billing が帯を読んでいる", /ageBandOf\(profForBand\)/.test(billing));

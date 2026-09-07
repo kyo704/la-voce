@@ -72,8 +72,8 @@ ok("★2択で「18歳以上」と答えた方は adult", 大人 === "adult");
 ok("★★その方が、月額を契約できる", mb.offeredPlans(大人).includes("monthly"));
 ok("★★その方が、年額も契約できる", mb.offeredPlans(大人).includes("annual"));
 const 十代 = ag.ageBandOf({ age_band: "teen" });
-ok("★15〜17歳は、月額だけ",
-  mb.offeredPlans(十代).includes("monthly") && !mb.offeredPlans(十代).includes("annual"));
+// ★★2026-09-07・案C。★18歳未満には、何も売りません。
+ok("★15〜17歳には、1つも出さない", mb.offeredPlans(十代).length === 0);
 
 console.log("\n④ ★決済の道が、価格IDを受け取らないこと");
 ok("★body から price を読んでいない", !/body\.price|body\["price"\]/.test(route));
@@ -131,7 +131,10 @@ ok("★ボタンは価格IDを送らない", !/price_/.test(button));
 //   ★年齢の帯で出し分けるためです。★見る先も、そちらへ移します。
 const gate = stripComments(read("components", "MinorConsentGate.jsx"));
 ok("★プランごとに1つずつ置く", /PLANS\.filter\(/.test(gate));
-ok("★常設の1行を置いている", /MINOR_NOTICE_LINE/.test(gate));
+// ★★「18歳未満の方は、保護者の方の同意が必要です」の1行を、やめました。
+//   ★売らないので、同意をいただく相手がいません（★案C）。
+ok("★保護者の同意の1行を、置いていない", !/MINOR_NOTICE_LINE/.test(gate));
+ok("★18歳未満には、売らないと書いてある", /18歳未満の方には、有料の機能をお売りしていません/.test(gate));
 ok("★/billing は、帯で出し分ける部品を置いている",
   /<MinorConsentGate band=\{band\}/.test(billing));
 

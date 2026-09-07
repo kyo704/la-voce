@@ -1,15 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import { C } from "@/lib/tokens";
+// ★「記録は残る／書き出しは無料」の2行。★lib/freeTier.js が持ちます。
+import { GATE_CLOSING_LINES } from "@/lib/freeTier";
 import CheckoutButton from "@/components/CheckoutButton";
 import { PLANS } from "@/lib/plans";
 import {
-  AGE_BAND, offeredPlans, needsMinorConsentScreen,
-  minorConsentCheckbox, minorConsentLines,
-  MINOR_CONSENT_VERSION, MINOR_NOTICE_LINE
+  // ★★同意の申告に使っていたものは、★もう読みません（★案C・2026-09-07）。
+  //   minorConsentCheckbox / minorConsentLines / MINOR_CONSENT_VERSION
+  //   MINOR_NOTICE_LINE（★「保護者の方の同意が必要です」）
+  AGE_BAND, offeredPlans
 } from "@/lib/minorBilling";
-import { createClient } from "@/lib/supabase/client";
 
 // ============================================================================
 // 未成年の方の、有料機能への同意（2026-09-04）
@@ -39,123 +40,69 @@ import { createClient } from "@/lib/supabase/client";
 
 export default function MinorConsentGate({ band, userId }) {
   const plans = offeredPlans(band);
-  const [checked, setChecked] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
-  const [declared, setDeclared] = useState(false);
 
   // ★出せるプランが1つも無い方（15歳未満・帯が分からない方）。
   //   ★★ボタンを出しません。★押せないものを見せないこと。
   if (plans.length === 0) {
+    // ★★2026-09-07、★案C。★18歳未満の方には、お売りしません。
+    //   ★★年齢をまだ伺っていない方と、★18歳未満の方を、書き分けます。
+    //     ★前者は、お答えいただけば進めます。★後者は、進めません。
+    //     ★同じ文で済ませると、★どちらの方にも正しくありません。
+    //   ★★「記録は、これまでどおり」を、必ず添えること。
+    //     ★書かないと、★「使えなくなった」と読まれます。
+    const notAnsweredYet = band !== AGE_BAND.TEEN && band !== AGE_BAND.UNDER_15;
     return (
       <div style={{ background: C.paper, borderRadius: 16, padding: 16 }}>
-        <p style={{ fontSize: "0.875rem", color: C.ink, margin: 0 }}>
-          いまは、有料の機能にお進みいただけません。
-        </p>
-        <p style={{ fontSize: "0.75rem", color: C.inkSoft, marginTop: 8 }}>
-          私たちの決まりとして、そうしています。記録の機能は、これまでどおりお使いいただけます。
-        </p>
+        {notAnsweredYet ? (
+          <>
+            <p style={{ fontSize: "0.875rem", color: C.ink, margin: 0, lineHeight: 1.8 }}>
+              お申し込みの前に、年齢をお尋ねしています。
+            </p>
+            <p style={{ fontSize: "0.75rem", color: C.inkSoft, marginTop: 8, lineHeight: 1.8 }}>
+              18歳以上の方に、有料の機能をお使いいただいています。
+            </p>
+          </>
+        ) : (
+          <>
+            <p style={{ fontSize: "0.875rem", color: C.ink, margin: 0, lineHeight: 1.8 }}>
+              18歳未満の方には、有料の機能をお売りしていません。
+            </p>
+            <p style={{ fontSize: "0.75rem", color: C.inkSoft, marginTop: 8, lineHeight: 1.8 }}>
+              私たちの決まりとして、そうしています。
+            </p>
+          </>
+        )}
+        {/* ★★どちらの方にも、★これを添えます。★消えないことを、その場で言います。 */}
+        <div style={{ marginTop: 12 }}>
+          {GATE_CLOSING_LINES.map((line) => (
+            <p key={line} style={{ fontSize: "0.8125rem", color: C.ink, margin: "0 0 4px", lineHeight: 1.8 }}>
+              {line}
+            </p>
+          ))}
+        </div>
       </div>
     );
   }
 
-  // ★18歳以上の方には、同意の画面を出しません。
-  if (!needsMinorConsentScreen(band) || declared) {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <PlanButtons plans={plans} />
-        <p style={{ fontSize: "0.75rem", color: C.inkSoft, marginTop: 4 }}>{MINOR_NOTICE_LINE}</p>
-      </div>
-    );
-  }
-
-  // ★金額は lib/plans.js から引きます。★ここに数字を書かないこと。
-  //   ★★書くと、値上げのときに片方だけが古くなります。
-  const monthlyPlan = PLANS.find((p) => p.key === "monthly");
-  const monthlyYen = monthlyPlan ? monthlyPlan.priceYen : null;
-
-  async function handleDeclare() {
-    if (!checked || busy) return;
-    setBusy(true);
-    setError("");
-    const supabase = createClient();
-    const now = new Date().toISOString();
-    // ★足すだけの表です。★書き換えません。
-    //   ★★「表示していた価格」を落とさないこと。
-    const { error: insErr } = await supabase.from("minor_billing_consents").insert({
-      user_id: userId,
-      age_band: band,
-      policy_version: MINOR_CONSENT_VERSION,
-      displayed_price_yen: monthlyYen,
-      plan: "monthly",
-      declared_at: now
-    });
-    if (insErr) {
-      console.error("★申告を記録できませんでした:", insErr);
-      setBusy(false);
-      setError("保存できませんでした。時間をおいて、もう一度お試しください。");
-      return;
-    }
-    // ★いまの状態も、profiles に置きます。★0行を見ます。
-    //   ★★列の名前は declared です。obtained ではありません。
-    //     ★得たかどうかを、アプリは知りません。
-    const { data: updated, error: upErr } = await supabase.from("profiles")
-      .update({ guardian_consent_declared_at: now }).eq("id", userId).select("id");
-    setBusy(false);
-    if (upErr || !updated || updated.length === 0) {
-      console.error("★申告のしるしを保存できませんでした:", upErr);
-      setError("保存できませんでした。時間をおいて、もう一度お試しください。");
-      return;
-    }
-    setDeclared(true);
-  }
-
+  // ★★同意の画面は、まるごとやめました（★案C・2026-09-07）。
+  //   ★売らないので、★同意をいただく相手がいません。
+  //   ★★「保護者の同意を得た」と申告していただく形も、やめました。
+  //     ★得たかどうかを、★こちらは確かめられませんでした。
   return (
-    <div style={{ background: C.paper, borderRadius: 16, padding: 16 }}>
-      <p style={{ fontSize: "0.9375rem", fontWeight: 600, margin: "0 0 10px" }}>18歳未満の方へ</p>
-      <p style={{ fontSize: "0.875rem", color: C.ink, margin: "0 0 12px" }}>
-        有料の機能をお使いいただくには、保護者の方の同意が必要です。
-      </p>
-
-      <div style={{ margin: "0 0 14px", paddingLeft: 12, borderLeft: `2px solid ${C.line}` }}>
-        {minorConsentLines(monthlyYen).map((l) => (
-          <p key={l} style={{ fontSize: "0.75rem", color: C.inkSoft, margin: "3px 0" }}>{l}</p>
-        ))}
-      </div>
-
-      {/* ★見せるだけのページです。★フォームではありません。 */}
-      <p style={{ fontSize: "0.8125rem", margin: "0 0 14px" }}>
-        <a href="/parents" target="_blank" rel="noopener noreferrer"
-          style={{ color: C.curtain }}>
-          → 保護者の方へ（説明のページ）
-        </a>
-      </p>
-
-      {/* ★★チェックは初期状態でオフ。★既定でオンにしないこと。 */}
-      <label style={{ display: "flex", gap: 8, alignItems: "flex-start", cursor: "pointer", marginBottom: 14 }}>
-        <input type="checkbox" checked={checked}
-          onChange={(e) => setChecked(e.target.checked)} style={{ marginTop: 3 }} />
-        <span style={{ fontSize: "0.8125rem", color: C.ink }}>{minorConsentCheckbox(monthlyYen)}</span>
-      </label>
-
-      {error && (
-        <p style={{ fontSize: "0.75rem", color: C.curtain, margin: "0 0 10px" }}>{error}</p>
-      )}
-
-      {/* ★チェックしないと押せません。 */}
-      <button type="button" onClick={handleDeclare} disabled={!checked || busy}
-        style={{
-          width: "100%", padding: "12px", borderRadius: 999, border: "none",
-          background: C.curtain, color: "#FFFDF8", fontWeight: 600, fontSize: "0.875rem",
-          opacity: (!checked || busy) ? 0.5 : 1
-        }}>
-        {busy ? "処理しています…" : "申し込みに進む"}
-      </button>
-
-      <p style={{ fontSize: "0.75rem", color: C.inkSoft, marginTop: 12 }}>{MINOR_NOTICE_LINE}</p>
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <PlanButtons plans={plans} />
     </div>
   );
 }
+
+// ★★同意の申告の一式を、まるごと外しました（★案C・2026-09-07）。
+//   ・handleDeclare（minor_billing_consents への書き込み）
+//   ・guardian_consent_declared_at のしるし
+//   ・チェックボックスと、その文
+//   ・「保護者の方の同意が必要です」の見出しと本文
+//   ★★売らないので、★同意をいただく相手がいません。
+//   ★★minor_billing_consents の行は、★消しません。★書くのをやめるだけです。
+//     ★過去に申告してくださった記録です。★取り上げません。
 
 function PlanButtons({ plans }) {
   // ★lib/plans.js の並びで出します。★ここで金額を書きません。
