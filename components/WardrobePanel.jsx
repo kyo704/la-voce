@@ -480,6 +480,24 @@ export default function WardrobePanel({
         </p>
       )}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(84px, 1fr))", gap: 10 }}>
+        {/* ★★「はずす」を、★いちばん前に置きます（★仕様 §5）。
+            ★★脱ぐ道が無いと、★一度着たら戻れません。
+              ★同じ品をもう一度押しても脱げますが、★それは気づけません。
+            ★いま何も着ていない場所では、★出しません。★押す先がありません。 */}
+        {wearing[sec.slot] && (
+          <button type="button"
+            onClick={() => onChange && onChange(applyWear(wearing,
+              { key: wearing[sec.slot], slot: sec.slot }, sheepItemByKey))}
+            aria-label={`${sec.label}をはずす`}
+            style={{
+              border: `1px solid ${C.line}`, borderRadius: 12, background: C.paper,
+              padding: 6, minHeight: 92, display: "flex", flexDirection: "column",
+              alignItems: "center", justifyContent: "center", gap: 4
+            }}>
+            <span style={{ fontSize: "1.25rem", color: C.inkSoft, lineHeight: 1 }}>−</span>
+            <span style={{ fontSize: "0.75rem", color: C.inkSoft }}>はずす</span>
+          </button>
+        )}
         {sec.items.map((it) => {
           const worn = wearing[it.slot] === it.key;
           const shop = inShopNow(it, todayISO);
@@ -497,17 +515,49 @@ export default function WardrobePanel({
             <button key={it.key} type="button" onClick={() => wear(it)}
               title={it.name}
               style={{
-                border: `1px solid ${worn ? C.curtain : C.line}`,
-                borderRadius: 12, background: C.card, padding: 6,
+                // ★★選んでいるものは、★わくを太くします（★仕様 §5）。
+                //   ★色だけで示さないこと。★色の見分けにくい方に伝わりません。
+                border: `${worn ? 3 : 1}px solid ${worn ? C.curtain : C.line}`,
+                borderRadius: 12, background: C.card,
+                padding: worn ? 4 : 6,
                 minHeight: 92, display: "flex", flexDirection: "column",
-                alignItems: "center", gap: 4,
+                alignItems: "center", gap: 4, position: "relative",
                 // ★★隠しません。★薄くして、★見えるようにします。
                 //   ★出さないなら、はじめから出さない。★ぼかさないこと。
-                opacity: (unlock && !openedYet) ? 0.45 : 1
+                // ★★暗くしすぎないこと（★仕様 §5）。★買う気が失せます。
+                //   ★0.45 は暗すぎたので、★0.62 にしました。
+                opacity: (!have) ? 0.62 : 1
               }}>
-              <img src={sheepItemSrc(it, wearing.propSide || PROP_SIDE_DEFAULT)} alt=""
-                aria-hidden="true"
-                style={{ width: "100%", aspectRatio: "1 / 1", objectFit: "contain" }} />
+              {/* ★★選んでいるしるし（★仕様 §5）。★右下に●。
+                  ★わくの太さと、2つで示します。★片方だけにしないこと。 */}
+              {worn && (
+                <span aria-hidden="true"
+                  style={{
+                    position: "absolute", right: 5, bottom: 5,
+                    width: 9, height: 9, borderRadius: 999, background: C.curtain
+                  }} />
+              )}
+              {/* ★★持っていないもののしるし（★仕様 §5）。★右上に鍵。
+                  ★★暗くして隠すのではなく、★理由が分かる形にします。 */}
+              {!have && (
+                <span aria-hidden="true"
+                  style={{
+                    position: "absolute", right: 4, top: 4,
+                    fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1
+                  }}>
+                  🔒
+                </span>
+              )}
+              {/* ★★見本は「羊に着せた姿」です（★仕様 §5）。
+                  ★「服だけを並べると、着たときの想像がつきません。
+                    ★ここは手を抜かないでください」と書かれています。
+                  ★★1点だけ着せます。★いま着ているものは、混ぜません。
+                    ★混ぜると、★どれがその品なのか分からなくなります。
+                  ★★thumb にすると、★動きの定義も脚も作りません。
+                    ★80個 並ぶので、★1つずつが軽くないと、開きません。 */}
+              <SheepDressed
+                wearing={{ [it.slot]: it.key, propSide: wearing.propSide || PROP_SIDE_DEFAULT }}
+                size={72} thumb travel={false} alt="" />
               <span style={{ fontSize: "0.75rem", color: C.inkSoft, lineHeight: 1.4, textAlign: "center" }}>
                 {it.name}
               </span>

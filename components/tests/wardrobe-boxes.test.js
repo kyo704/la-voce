@@ -188,6 +188,28 @@ function ok(name, cond, extra) {
     ok("★押していることが、読み上げにも分かる", /aria-pressed=\{activeSlot/.test(wp));
   }
 
+  console.log("■ 一覧の見せ方（★仕様 §5・2026-09-08）");
+  {
+    const wp = readCode("components", "WardrobePanel.jsx");
+    const sd = readCode("components", "SheepDressed.jsx");
+    // ★★見本は「羊に着せた姿」。★服だけの絵を並べないこと。
+    ok("★見本が、羊に着せた姿である", /<SheepDressed[\s\S]{0,200}thumb/.test(wp));
+    ok("★1点だけ着せている", /wearing=\{\{ \[it\.slot\]: it\.key/.test(wp));
+    // ★★80個 並ぶので、★1つずつが軽いこと。
+    ok("★見本のときは、動きの定義を作らない", /\{!thumb && \(\s*<style>/.test(sd));
+    ok("★見本のときは、動かさない", /const anim = thumb\s*\?\s*"none"/.test(sd));
+    ok("★見本のときは、脚を描かない", /const showLegs = !thumb/.test(sd));
+    // ★★「はずす」を先頭に固定（★仕様 §5）。
+    ok("★「はずす」がある", wp.includes("はずす"));
+    ok("★何も着ていない場所には、出さない", /\{wearing\[sec\.slot\] && \(/.test(wp));
+    // ★★選んでいるしるしは、★色だけにしないこと。
+    ok("★わくを太くしている", /\$\{worn \? 3 : 1\}px solid/.test(wp));
+    ok("★右下に●も出している", /right: 5, bottom: 5/.test(wp));
+    // ★★暗くしすぎないこと（★仕様 §5「買う気が失せます」）。
+    ok("★持っていないものを、暗くしすぎていない", /opacity: \(!have\) \? 0\.62 : 1/.test(wp));
+    ok("★鍵のしるしがある", wp.includes("🔒"));
+  }
+
   console.log("■ 数を、出さない");
   // ★「あと13ポイント」を、どこにも出さないこと（坂本さんの決め・2026-09-07）。
   ok("配り方の言葉に、数字が入っていない",

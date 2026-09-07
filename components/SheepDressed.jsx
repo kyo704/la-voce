@@ -34,7 +34,14 @@ export default function SheepDressed({
   // ★★実際に歩いて移動するか（2026-09-06）。
   //   ★その場で はずむだけだと、★「歩いている」に見えません。
   //   ★おうちの中では、★位置は外から決まります。★そのときは false にします。
-  travel = true
+  travel = true,
+  // ★★見本（サムネ）のとき（★2026-09-08・仕様 §5）。
+  //   ★一覧に、★羊に着せた姿を、★80個ほど並べます。
+  //   ★★1つ描くごとに、★キーフレームを4本 作っています。
+  //     ★80個 並べると、★320本になります。
+  //   ★★見本は、★動きません。★だから、★動きの定義ごと外します。
+  //     ★脚も描きません。★小さくて見えないうえ、★軸を4つ増やします。
+  thumb = false
 }) {
   // ★重ねる絵を、順番どおりに並べます。
   // ★★脚（★案B1・2026-09-06）。★絵は描いていません。コードで描きます。
@@ -46,7 +53,11 @@ export default function SheepDressed({
   //   ★庭の画面では、★見本とおうちの羊が同時に出ています。
   const clipId = useId().replace(/[^a-zA-Z0-9]/g, "");
 
-  const showLegs = true;
+  // ★★見本のときは、★脚を描きません（★2026-09-08）。
+  //   ★80px ほどでは見えず、★軸を4つ増やします（★脚2・靴2）。
+  //   ★★見本の目的は「着たときの想像がつく」ことです（★仕様 §5）。
+  //     ★脚が無くても、★服は分かります。
+  const showLegs = !thumb;
   const swingLegs = motionOf(motion).legs === true;
   // ★履いている靴の絵。★脚の先に付けます。★無ければ、はだしです。
   const shoeItem = wearing.shoes ? sheepItemByKey(wearing.shoes) : null;
@@ -66,7 +77,7 @@ export default function SheepDressed({
     // ★★動きは、★その場に書きます。★組の名前で書きません。
     //   ★組の名前だと、★画面に2匹いるとき、★あとの羊の規則が
     //   ★先の羊にも効き、★片方の脚が止まります。
-    animation: swingLegs
+    animation: (!thumb && swingLegs)
       ? `sheepLeg${side}${motion} ${LEGS.sec}s ease-in-out infinite`
       : "none"
   });
@@ -121,13 +132,18 @@ export default function SheepDressed({
   //     ★ここには書きません。★あとで直すとき、★1か所で済みます。
   const mo = motionOf(motion);
   // ★はずみ（速い）。★止まっているときも、★息だけしています。
-  const anim = `sheepBob${motion} ${mo.sec}s ${mo.gait ? "linear" : "ease-in-out"} infinite`;
+  // ★★見本のときは、★動かしません（★2026-09-08）。
+  //   ★定義そのものを作っていないので、★名前で呼ぶと、★何も起きません。
+  //   ★★「none」と はっきり書きます。★無い名前を書き残さないこと。
+  const anim = thumb
+    ? "none"
+    : `sheepBob${motion} ${mo.sec}s ${mo.gait ? "linear" : "ease-in-out"} infinite`;
   // ★★歩く道のり。★はずみ10回ぶんで、★1往復します。
   //   ★★歩くときは linear です（★案C・2026-09-06）。
   //     ★ease だと、★端でゆっくり・まん中で速くなります。
   //     ★歩幅は変わらないのに速さが変わるので、★すべって見えます。
   //     ★これが「歩いているように見えない」いちばんの原因でした。
-  const travelAnim = (mo.travelX > 0 && travel)
+  const travelAnim = (!thumb && mo.travelX > 0 && travel)
     ? `sheepTravel${motion} ${(mo.sec * 10).toFixed(2)}s ${mo.gait ? "linear" : "ease-in-out"} infinite`
     : "none";
 
@@ -142,6 +158,10 @@ export default function SheepDressed({
         transform: facingLeft ? "scaleX(-1)" : "none"
       }}
     >
+      {/* ★★見本のときは、★動きの定義を作りません（★2026-09-08）。
+          ★1つあたり4本。★80個 並べると320本になります。
+          ★見本は動かないので、★1本も要りません。 */}
+      {!thumb && (
       <style>{`
         /* ★★動きは、★かたまりごとです。★1枚ずつ動かすと、服と体がずれます。
            ★数字は lib/sheepWardrobe.js の MOTIONS から来ています。 */
@@ -209,6 +229,7 @@ ${mo.gait ? `
           .sheep-leg { animation: none !important; }
         }
       `}</style>
+      )}
       {/* ★★移動（ゆっくり）と、はずみ（速い）を、★別の入れ物にします。
           ★1つにまとめると、★transform が上書きし合って、★片方が消えます。 */}
       <div className="sheep-dressed-move"
