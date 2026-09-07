@@ -76,6 +76,9 @@ import WardrobePanel from "@/components/WardrobePanel";
 import Box2Gift from "@/components/Box2Gift";
 import { sheepItemByKey } from "@/lib/sheepItems";
 import { MEAL_MARKS, MEAL_MARK_KEYS, resolveMealMarks } from "@/lib/mealMarks";
+import {
+  SLEEP_SIDES, HEAD_RAISED, BELLY_TIGHT, refluxCareOn, toRow as refluxToRow
+} from "@/lib/refluxCare";
 // ★「今日やるといいこと」の助言をやめ、数えて並べるだけにしました（2026-09-07）
 import { recentlyWritten, recentLine, RECENT_TITLE } from "@/lib/recentlyWritten";
 // ★レパートリー（歌った曲の控え）。★分析ではなく、控えです。ゲートは掛けません。
@@ -1070,6 +1073,9 @@ function buildFormData(date, entries) {
       mentalTags: existing.mentalTags || [],
       meals: existing.meals || [],
       mealMarks: Array.isArray(existing.mealMarks) ? existing.mealMarks : null,
+      sleepSide: existing.sleepSide || null,
+      headRaised: existing.headRaised || null,
+      bellyTight: existing.bellyTight || null,
       exercises: existing.exercises || [],
       voiceCheckins: existing.voiceCheckins || {},
       waterBySlot: existing.waterBySlot || {},
@@ -1131,6 +1137,9 @@ function buildFormData(date, entries) {
     mealNotes: "",
     // ★null で始めます。★書いた文から、読むときに立てます。
     mealMarks: null,
+    sleepSide: null,
+    headRaised: null,
+    bellyTight: null,
     dinnerTime: "",
     dinnerTags: [],
     // 滞在地も、前日の値を引き継ぐと「今日そこに居た」ことになってしまう。
@@ -1659,6 +1668,11 @@ function rowToEntry(row) {
     //     ★空の配列 …「印は無い」と本人が決めた
     //   ★★この2つは、★別のことです（lib/mealMarks.js の resolveMealMarks）。
     mealMarks: Array.isArray(row.meal_marks) ? row.meal_marks : null,
+    // ★★寝るときの姿勢と、締めつけ（★2026-09-08・要配慮個人情報）。
+    //   ★同意が無ければ、★書き込みません（entryToRow で落とします）。
+    sleepSide: row.sleep_side || null,
+    headRaised: row.head_raised || null,
+    bellyTight: row.belly_tight || null,
     location: row.location || "",
     temperature: row.temperature,
     humidity: row.humidity,
@@ -2145,6 +2159,14 @@ function entryToRow(userId, e) {
     meal_notes: e.mealNotes,
     // ★★触っていなければ null のまま。★埋めないこと（★2026-09-07）。
     meal_marks: Array.isArray(e.mealMarks) ? e.mealMarks : null,
+    // ★★同意が無ければ、★1つも書きません（★食事と就寝の設計 §13-1）。
+    //   「★consentAt が null のまま記録を作らせない」
+    //   ★toRow が、★同意が無いときは3つとも null を返します。
+    //   ★知らない値も、★ここで落とします。
+    ...refluxToRow(
+      { sleepSide: e.sleepSide, headRaised: e.headRaised, bellyTight: e.bellyTight },
+      e.refluxCareAllowed === true
+    ),
     location: e.location,
     temperature: numOrNull(e.temperature),
     humidity: numOrNull(e.humidity),
@@ -4082,7 +4104,11 @@ function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
                         className="w-full rounded-lg border p-2 text-sm ff-mono"
                         style={{ borderColor: C.line, background: C.paper, color: C.ink }}
                       />
-                      <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("noteProteinCoefficientRange")}</p>
+                      {/* ★★「目安：維持1.2〜1.6、増量1.6〜2.2」を、やめました（★2026-09-08）。
+                          ★文献の値の幅を出して、★その方の入れた数と見比べさせるものです。
+                          ★「文献値を個人の記録に紐づけない」に、当たります。
+                          ★★係数そのものは、★残します。★ご自身で決めて入れるものです。
+                            ★決めた数を取り上げるのではなく、★こちらの「目安」をやめます。 */}
                     </div>
                   </div>
     </>
@@ -8028,7 +8054,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const water = Object.values(formData.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0);
     if (water > 0) {
       const w = Number(formData.weightKg) || getLatestWeight(entries, selectedDate);
-      if (w) fb.water = `体重比 ${Math.round(water / w)} ml/kg`;
+      // ★★「体重比 20 ml/kg」を、やめました（★2026-09-08）。
+      //   ★文献の値（体重1kgあたり◯ml）を、★その方の体重に当てるものです。
+      //   ★「文献値を個人の記録に紐づけない」に、当たります。
+      //   ★飲んだ量そのものは、★下でそのまま出ます。
+      if (w) fb.water = "";
       else {
         const r = avgOf(past.slice(-7), (e) => Object.values(e.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0) || null);
         if (r) fb.water = `直近${r.n}日の平均より ${signed(water - r.avg, 0, "ml")}`;
@@ -13456,13 +13486,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             const found = pastDates.find((d) => typeof entries[d].weightKg === "number");
                             if (found) weightKg = entries[found].weightKg;
                           }
-                          if (typeof weightKg === "number" && weightKg > 0) {
-                            return (
-                              <p className="text-xs rounded-lg p-2 mt-2" style={{ background: C.paper, color: C.inkSoft }}>
-                                体重比 {Math.round(waterTotal / weightKg)} ml/kg
-                              </p>
-                            );
-                          }
+                          // ★★「体重比 20 ml/kg」を、やめました（★2026-09-08）。
+                          //   ★文献の値（体重1kgあたり◯ml）を、
+                          //     ★その方の体重に当てるものでした。
+                          //   ★「文献値を個人の記録に紐づけない」に、当たります。
+                          //   ★★飲んだ量（ml）は、★そのまま出ています。
+                          //     ★下の「今週の平均より」も、★ご自身との比べなので残します。
                           const recentDates = Object.keys(entries).sort().slice(-7);
                           const recentVals = recentDates.map((d) => (entries[d].waterBySlot || {}).total).filter((v) => typeof v === "number" && v > 0);
                           if (recentVals.length < 3) return null;
@@ -13679,35 +13708,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </p>
                       )}
 
-                      {nutritionTargets ? (
-                        <div className="rounded-xl p-3" style={{ background: C.paper }}>
-                          <div className="flex items-center justify-between mb-2">
-                            <p className="text-xs font-medium">{t("labelNutritionEval")}</p>
-                            <span className="text-xs ff-mono rounded-full px-2 py-0.5" style={{ background: C.card, color: C.inkSoft, border: `1px solid ${C.line}` }}>
-                              {t(NUTRITION_PHASE_KEYS[profile.nutrition_phase] || "phaseMaintain")}
-                            </span>
-                          </div>
-                          {/* ★★栄養素の合計を、まるごとやめました（★2026-09-07・緊急）。
-                              ★出どころ Opus の指摘。★坂本さんの決め。
-                              ★★「タンパク質16g」「炭水化物133g」も、出しません。
-                                ★目安との比べだけでなく、★数そのものをやめます。
-                              ★★食べることは、体型のことと地続きです。
-                                ★数えて見せること自体が、★数えさせることになります。
-                                ★体型のことを言われやすいお仕事の方に、
-                                ★それをしてはいけません。
-                              ★★「何を食べたか」の記録は、そのまま残します。
-                                ★ご本人が書いたものです。★取り上げません。
-                                ★計算だけを、やめます。 */}
-                          <p className="text-xs mt-2 leading-relaxed" style={{ color: C.inkSoft }}>
-                            ※ {nutritionTargets.usedPreciseFormula
-                              ? t("noteBMIFormulaPrecise")
-                              : t("noteBMIFormulaSimple")}
-                            {" "}{t("noteNutritionAdvice")}
-                          </p>
-                        </div>
-                      ) : (
-                        <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteRecordWeightForTargets")}</p>
-                      )}
+                      {/* ★★栄養評価の枠を、まるごとやめました（★2026-09-08）。
+                          ★★数字（カロリー・タンパク質・炭水化物）は、9月7日に外していました。
+                            ★ところが、★枠と、★式の説明が残っていました。
+                            ★画面には「栄養評価（目安）維持」と出て、★何も評価していません。
+                          ★★Mifflin-St Jeor 式の説明も、一緒に外します。
+                            ★文献の式を、★その方の身長・年齢・体重に当てるものです。
+                            ★「文献値を個人の記録に紐づけない」に、まっすぐ当たります。
+                          ★★「体重を記録すると目安が出ます」という誘いも、外します。
+                            ★出す先が、無くなったためです。
+                          ★★食べたものの記録は、そのまま残ります。
+                            ★ご本人が書いたものです。★取り上げません。★計算だけをやめます。 */}
                       <SectionFeedback text={sectionFeedback.meal} />
                     </SectionCard>
                     )}
