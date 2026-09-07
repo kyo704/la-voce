@@ -147,6 +147,21 @@ function ok(name, cond, extra) {
     ok("★記念のものの棚を、まだ作っていない", !wp.includes("記念のものの棚"));
   }
 
+  console.log("■ 置き場所ごとに、分けている（★2026-09-08）");
+  {
+    const wp = readCode("components", "WardrobePanel.jsx");
+    ok("★分け方を、lib から取っている", /groupBySlot\(items\)/.test(wp));
+    // ★★中身のない置き場所に、見出しを出さないこと。
+    const sw = fs.readFileSync(path.join(ROOT, "lib", "sheepWardrobe.js"), "utf-8");
+    ok("★分け方が lib にある", /export function groupBySlot/.test(sw));
+    ok("★置き場所の名前も lib にある", /SLOT_LABELS/.test(sw) && /持ちもの/.test(sw));
+    // ★★見出しは、まとまりが2つ以上のときだけ。
+    ok("★1つしかないときは、見出しを出さない", /groupBySlot\(items\)\.length > 1/.test(wp));
+    // ★★描く順（LAYER_ORDER）と、探す順（SLOT_DISPLAY_ORDER）は、別のものです。
+    ok("★描く順と、探す順を、混ぜていない",
+      /SLOT_DISPLAY_ORDER/.test(sw) && !/SLOT_DISPLAY_ORDER = LAYER_ORDER/.test(sw));
+  }
+
   console.log("■ 数を、出さない");
   // ★「あと13ポイント」を、どこにも出さないこと（坂本さんの決め・2026-09-07）。
   ok("配り方の言葉に、数字が入っていない",

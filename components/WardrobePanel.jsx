@@ -11,6 +11,7 @@ import WardrobeSheet from "@/components/WardrobeSheet";
 import { SHEEP_GROUPS, itemsByGroup, sheepItemSrc, sheepItemByKey } from "@/lib/sheepItems";
 import {
   inShopNow, currentSeason, SEASON_LABELS, isUnlockItem, unlockedItemKeys, applyWear,
+  groupBySlot,
   PROP_SIDES, PROP_SIDE_DEFAULT, sortForShop
 } from "@/lib/sheepWardrobe";
 // ★★コーデと、シートの高さの決めは、lib が持ちます。
@@ -320,9 +321,23 @@ export default function WardrobePanel({
         ))}
       </div>
 
-      {/* ★品物。★絵で選びます。★名前だけでは、分かりません。 */}
+      {/* ★★品物。★絵で選びます。★名前だけでは、分かりません。
+          ★★2026-09-08、★置き場所ごとに分けました。
+            ★「ふだんぎ」を開くと、★上も靴も帽子も、★ひとつづきに並んでいました。
+            ★62点が1列に混ざって、★何を探しているのか分からなくなります。
+          ★分け方と並びは lib/sheepWardrobe.js の groupBySlot が持ちます。
+          ★★中身のない置き場所は、★見出しごと出しません。 */}
+      {groupBySlot(items).map((sec) => (
+      <div key={sec.slot}>
+      {/* ★見出しは、★まとまりが2つ以上あるときだけ出します。
+          ★1つしかないのに見出しを付けると、★かえって読みにくくなります。 */}
+      {groupBySlot(items).length > 1 && (
+        <p className="text-xs" style={{ color: C.inkSoft, margin: "10px 0 6px" }}>
+          {sec.label}
+        </p>
+      )}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(84px, 1fr))", gap: 10 }}>
-        {items.map((it) => {
+        {sec.items.map((it) => {
           const worn = wearing[it.slot] === it.key;
           const shop = inShopNow(it, todayISO);
           const unlock = isUnlockItem(it.key);
@@ -378,6 +393,8 @@ export default function WardrobePanel({
           );
         })}
       </div>
+      </div>
+      ))}
     </WardrobeSheet>
   );
 }
