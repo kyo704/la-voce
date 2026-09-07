@@ -10,6 +10,7 @@ import {
   featureLabel, GATE_CLOSING_LINES, gateAppliesTo, GATE_REQUIRES_TEST_LIST
 } from "@/lib/freeTier";
 import { ageBandOf } from "@/lib/ageGate";
+import { PLANS } from "@/lib/plans";
 import PortalButton from "@/components/PortalButton";
 import { getUserWithTimeout } from "@/lib/withTimeout";
 import ConnectionError from "@/components/ConnectionError";
@@ -89,8 +90,17 @@ export default async function BillingPage() {
           marginTop: 16, padding: 16, borderRadius: 14,
           border: `1px solid ${C.line}`, background: C.card
         }}>
-          <p style={{ fontSize: "1rem", fontWeight: 600, marginBottom: 10 }}>
-            月580円でご覧いただけるもの
+          {/* ★★値段を、ここに書かないこと（★2026-09-07）。
+              ★「月580円」と直に書いてありました。★lib/plans.js を読んでいません。
+              ★★年額を 5,800 → 4,800 に下げたとき、★ここだけ古いまま残りました。
+                ★同じものが2か所にある、の形です。
+              ★下の申し込みボタンは、★はじめから両方（月額・年額）出ています。
+                ★見出しだけが「月580円」だったので、★年額が無いように見えていました。 */}
+          <p style={{ fontSize: "1rem", fontWeight: 600, marginBottom: 4 }}>
+            ご覧いただけるもの
+          </p>
+          <p style={{ fontSize: "0.875rem", color: C.inkSoft, marginBottom: 10, lineHeight: 1.8 }}>
+            {PLANS.map((p) => p.priceLabel).join("　／　")}
           </p>
           {PAID_FEATURES.map((k) => (
             <p key={k} style={{ fontSize: "0.9375rem", color: C.ink, margin: "0 0 6px", lineHeight: 1.8 }}>

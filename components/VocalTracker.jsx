@@ -68,6 +68,9 @@ import { recentlyWritten, recentLine, RECENT_TITLE } from "@/lib/recentlyWritten
 // ★レパートリー（歌った曲の控え）。★分析ではなく、控えです。ゲートは掛けません。
 import { repertoireLog, repertoireLine, toCsv as repertoireCsv,
   exportFileName as repertoireFileName } from "@/lib/repertoireLog";
+// ★D+1 の一問（本番モード §7）。★本番モードの芯です。予報の部品ではありません。
+import PerformanceResultAsk from "@/components/PerformanceResultAsk";
+import { pickToAsk, buildResultRow } from "@/lib/performanceResult";
 import { mayUseWardrobe } from "@/lib/sheepWardrobe";
 // ★解放の判定は、lib/character.js が持っています。★作り直しません。
 import { computeUnlocked } from "@/lib/character";
@@ -5093,6 +5096,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setRecordView(hour >= boundary || hour < 5 ? "day" : "voice");
   }, [profile.day_record_boundary_hour]);
   const [ownedItemKeys, setOwnedItemKeys] = useState([]);
+  // ★★本番の日と、D+1 の答え（本番モード §1・§7）。
+  //   ★表は performances / performance_results。★行動ログの events とは別物です。
+  const [performances, setPerformances] = useState([]);
+  const [answeredPerfIds, setAnsweredPerfIds] = useState([]);
+  // ★「あとで」を押された日。★同じ日は、もう出しません。★翌日また出します。
+  //   ★★端末に覚えさせます。★DBに残すほどのことではありません。
+  //     ★忘れても、★もう一度お尋ねするだけです。
+  const [perfSnoozedOn, setPerfSnoozedOn] = useState(null);
   const [characterEquipped, setCharacterEquipped] = useState({});
   const [characterPointsSpent, setCharacterPointsSpent] = useState(0);
   const [profileLoading, setProfileLoading] = useState(true);
@@ -5676,6 +5687,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       }
       if (mounted && mode) {
         setProfile((prev) => ({ ...prev, record_mode: mode }));
+      }
+      // ★★本番の日と、D+1 の答え（本番モード §1・§7）。
+      //   ★読めなくても、★ほかの画面は動きます。★ここで止めません。
+      const { data: perfRows } = await supabase
+        .from("performances").select("id, performed_on, kind, label")
+        .eq("user_id", userId).order("performed_on", { ascending: false }).limit(60);
+      if (mounted && perfRows) setPerformances(perfRows);
+      const { data: resultRows } = await supabase
+        .from("performance_results").select("performance_id").eq("user_id", userId);
+      if (mounted && resultRows) setAnsweredPerfIds(resultRows.map((r) => r.performance_id));
+      try {
+        const v = window.localStorage.getItem("woolsong-perf-snoozed");
+        if (mounted && v) setPerfSnoozedOn(v);
+      } catch (e) {
+        // ★読めなくても、★もう一度お尋ねするだけです。★止めません。
       }
       const { data: inventoryRows } = await supabase.from("character_inventory").select("item_key").eq("user_id", userId);
       if (mounted && inventoryRows) {
@@ -6951,6 +6977,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★すでに書かれた曲名を、数え直すだけです。
   //   ★★体について何も言わないので、★ゲートは掛けません。
   const repertoire = useMemo(() => repertoireLog(entries), [entries]);
+
+  // ★★D+1 の一問（本番モード §7）。★聞く本番を、1つだけ選びます。
+  //   ★まとめて聞きません。★2つ並べると、どちらの話か分からなくなります。
+  //   ★決めは lib/performanceResult.js が持ちます。
+  const perfToAsk = useMemo(
+    () => pickToAsk(performances, {
+      answeredIds: answeredPerfIds, snoozedOn: perfSnoozedOn, todayISO: realTodayDate
+    }),
+    [performances, answeredPerfIds, perfSnoozedOn, realTodayDate]
+  );
   // ---- フェーズ2（02偏差値・01予報）用データ ここまで ----
 
   // ★4分割して平均を比べる計算は外した（分析画面の描画仕様 §3-G）。
@@ -11203,6 +11239,36 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★表は作りません。★character_equipped は jsonb で、書く道が既にあります。
   //   ★★いま着ているものとは、★別の鍵に置きます。
   //     ★混ぜると、★着替えるたびに保存が書き換わります。
+  // ★★D+1 の一問の答えを、保存します（本番モード §7）。
+  //   ★1つの本番に1件だけ。★押し直しは上書きします（unique + upsert）。
+  //   ★★これ以上、何も聞きません。★理由も、感想も、点数も。
+  async function handleAnswerPerformance(performanceId, result) {
+    const row = buildResultRow({
+      userId, performanceId, result, now: new Date().toISOString()
+    });
+    if (!row) return;
+    setAnsweredPerfIds((prev) => [...prev, performanceId]);
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("performance_results")
+      .upsert(row, { onConflict: "performance_id" }).select("id");
+    if (error) {
+      // ★★黙らないこと。★答えたのに、また聞かれることになります。
+      console.error("★本番の答えを保存できませんでした:", error.message);
+      setAnsweredPerfIds((prev) => prev.filter((id) => id !== performanceId));
+    }
+  }
+
+  // ★「あとで」。★同じ日は、もう出しません。★翌日また出します。
+  function handleSnoozePerformance() {
+    setPerfSnoozedOn(realTodayDate);
+    try {
+      window.localStorage.setItem("woolsong-perf-snoozed", realTodayDate);
+    } catch (e) {
+      // ★覚えられなくても、★止めません。
+    }
+  }
+
   async function handleSaveOutfits(nextOutfits) {
     const merged = { ...characterEquipped, outfits: nextOutfits };
     setCharacterEquipped(merged);
@@ -11668,6 +11734,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               const isRecordedToday = !!todayEntry;
               return (
                 <div className="space-y-4">
+                  {/* ★★D+1 の一問（本番モード §7）。★ホームのいちばん上に置きます。
+                      ★★これ以上、何も聞きません。★3つだけです。
+                      ★「あとで」を押せます。★出口のない画面を作らないこと。
+                      ★答えは、どれでも同じ言葉を返します。★評価はしません。 */}
+                  {perfToAsk && (
+                    <PerformanceResultAsk
+                      performance={perfToAsk}
+                      todayISO={realTodayDate}
+                      wearing={wardrobeOn ? (characterEquipped.wardrobe || {}) : {}}
+                      onAnswer={(result) => handleAnswerPerformance(perfToAsk.id, result)}
+                      onLater={handleSnoozePerformance} />
+                  )}
+
                   {/* ★★「もっと」の入口（★2026-09-07・案い）。
                       ★下の帯から外したので、★ここに置きます。
                       ★★歯車だけでは、★何が開くのか分かりません。

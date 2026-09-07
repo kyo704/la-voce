@@ -180,6 +180,10 @@ export default async function LandingPage({ searchParams }) {
             {tr("btnLogin", lang)}
           </a>
         </div>
+        {/* ★★値段は、ランディングに出しません（★2026-09-07・坂本さんの決め）。
+            ★世の中のふつうの作りに合わせます。
+            ★★代わりに、★有料の画面に触れたときと、★「もっと」の中で見せます。
+              ★押しつけずに、★自分で見つけられる場所に置く、という考えです。 */}
         <p style={{ color: C.gold, fontSize: "0.78125rem", marginTop: 16, fontWeight: 500 }}>
           {tr("noteFreeTrial", lang)}
         </p>
