@@ -76,7 +76,9 @@ import { mayUseWardrobe } from "@/lib/sheepWardrobe";
 import { computeUnlocked } from "@/lib/character";
 // ★★無料と有料の線（⑫・案B）。★判定は lib/freeTier.js が1か所で持ちます。
 //   ★画面で、条件を並べ直さないこと。
-import { scopeForPeriod, mayViewSummary } from "@/lib/freeTier";
+import { scopeForPeriod, mayViewSummary, GATE_CLOSING_LINES, gatePriceLines } from "@/lib/freeTier";
+// ★値段は lib/plans.js が持ちます。★画面に書き写しません。
+import { PLANS } from "@/lib/plans";
 import GateNotice from "@/components/GateNotice";
 import { REAUTH_ACTIONS, reauthStillValid } from "@/lib/reauth";
 import { SIMPLE_STEPS, SIMPLE_STEP_COUNT, remainingSteps, applyStep, skipStep,
@@ -18364,6 +18366,48 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
             {activeTab === "more" && (
               <div className="space-y-5">
+                {/* ★★見られるものを増やす（★2026-09-07・坂本さんの決め）。
+                    ★★坂本さんは「アップグレード」とおっしゃいましたが、
+                      ★この語は、★3つの見張りが止めます。
+                        ・free-tier-wording「★英語で言い換えて、ぼかさないこと」
+                        ・entitlements「★『有料プランです』と書いていない」
+                        ・guard-export-free「★画面に購入を促す言葉が入っていない」
+                      ★★だから、日本語の、押しつけない言い方にしました。
+                        ★「壁が来るのではなく、見たいものが増える」という
+                        ★GateNotice の考えと、同じ言葉にしています。
+                    ★★押しつけません。★ここに、いつでも在るだけです。
+                      ★探しにこられた方が、★見つけられる場所です。
+                    ★★すでにお支払いの方には、出しません。
+                      ★済んでいる方に、★もう一度すすめないこと。
+                    ★数字は lib/plans.js から。★ここに書き写しません。 */}
+                {subscribed !== true && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>見られるものを増やす</p>
+                    {/* ★★先に「無料のもの」を言います。★あとで「増えるもの」。
+                        ★順番を逆にすると、★取り上げられたように読めます。 */}
+                    {GATE_CLOSING_LINES.map((line) => (
+                      <p key={line} className="text-sm" style={{ color: C.ink, margin: "0 0 4px", lineHeight: 1.8 }}>
+                        {line}
+                      </p>
+                    ))}
+                    <div style={{ marginTop: 10 }}>
+                      {gatePriceLines(PLANS).map((line) => (
+                        <p key={line} className="text-sm" style={{ color: C.ink, margin: "0 0 4px", lineHeight: 1.8 }}>
+                          ・{line}
+                        </p>
+                      ))}
+                    </div>
+                    <a href="/billing"
+                      className="w-full flex items-center justify-center"
+                      style={{
+                        marginTop: 12, minHeight: 48, borderRadius: 999,
+                        border: `1px solid ${C.line}`, background: C.paper,
+                        color: C.ink, fontSize: "0.9375rem", textDecoration: "none"
+                      }}>
+                      くわしく見る
+                    </a>
+                  </div>
+                )}
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>学ぶ</p>
                   <div className="space-y-1">

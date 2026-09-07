@@ -38,7 +38,9 @@ function ok(name, cond, extra) {
     ["app", "billing", "page.js"],
     ["app", "page.js"],
     ["components", "StartFlow.jsx"],
-    ["components", "MinorConsentGate.jsx"]
+    ["components", "MinorConsentGate.jsx"],
+    // ★★2026-09-07、★壁の札と、もっとのカードにも値段が出るようになりました。
+    ["components", "GateNotice.jsx"]
   ];
   for (const parts of screens) {
     const code = readCode(...parts);
@@ -63,6 +65,33 @@ function ok(name, cond, extra) {
   // ★★見出しにも、両方の値段が出ていること。
   ok("★/billing の見出しが、両方の値段を出している",
     /PLANS\.map\(\(p\) => p\.priceLabel\)/.test(billing));
+
+  console.log("■ 壁の札と、もっとのカード");
+  // ★★lib/freeTier.js にも「月580円」が直に書いてありました（★2026-09-07 に外しました）。
+  //   ★年額を下げたとき、★ここも古いまま残るところでした。
+  const ft = readCode("lib", "freeTier.js");
+  ok("★GATE_LINES に、値段の直書きが無い",
+    !/[0-9][0-9,]{2,}\s?円/.test(ft.slice(ft.indexOf("GATE_LINES"), ft.indexOf("GATE_CLOSING_LINES"))));
+  ok("★値段の行は、lib/plans.js から作る", /export function gatePriceLines/.test(ft));
+  const gate = readCode("components", "GateNotice.jsx");
+  ok("★壁の札が、両方の値段を出している", /gatePriceLines\(PLANS\)/.test(gate));
+  // ★★モーダルにしないこと（権利と課金の線引き §6-3）。
+  ok("★画面を覆っていない", !/position: "fixed"|inset: 0/.test(gate));
+  ok("★閉じるボタンを置いていない", !/閉じる|×|onClose/.test(gate));
+  // ★★急かさないこと。
+  ok("★急かす言葉が無い", !/お得|今だけ|お早め|残り|期間限定/.test(gate));
+
+  const vt2 = readCode("components", "VocalTracker.jsx");
+  // ★★「アップグレード」とは書けません（★3つの見張りが止めます）。
+  //   ★free-tier-wording「★英語で言い換えて、ぼかさないこと」ほか。
+  //   ★★日本語の、押しつけない言い方にしてあります。
+  ok("★もっとに、見られるものを増やすカードがある",
+    /見られるものを増やす/.test(vt2));
+  ok("★「アップグレード」と書いていない", !/アップグレード/.test(vt2));
+  // ★★済んでいる方に、もう一度すすめないこと。
+  ok("★お支払いずみの方には、出さない", /subscribed !== true && \(/.test(vt2));
+  ok("★先に「無料のもの」を言っている",
+    vt2.indexOf("GATE_CLOSING_LINES.map") < vt2.indexOf("gatePriceLines(PLANS)"));
 
   console.log("■ ランディングには、値段を出さないこと");
   // ★★2026-09-07、★坂本さんの決めで、★ランディングに値段を出さないことにしました。

@@ -1,7 +1,9 @@
 "use client";
 
 import { C } from "@/lib/tokens";
-import { GATE_LINES, GATE_CLOSING_LINES } from "@/lib/freeTier";
+import { GATE_LINES, GATE_CLOSING_LINES, gatePriceLines } from "@/lib/freeTier";
+// ★値段は lib/plans.js が持ちます。★ここに書き写しません。
+import { PLANS } from "@/lib/plans";
 
 // ============================================================================
 // まとめが有料であることの、お伝え（⑫・2026-09-05）
@@ -37,6 +39,18 @@ export default function GateNotice({ onSeePlans }) {
             }}>{line}</p>
       ))}
 
+      {/* ★★月額と年額の、両方を出します（★2026-09-07・坂本さんの決め）。
+          ★年額が、買える場所に出ていませんでした。
+          ★★数字は lib/plans.js から。★ここに書き写しません。
+          ★「お得」「今だけ」とは書きません。★急かしません。
+            ★年額のほうが安いことは、★月あたりを添えるだけで伝わります。 */}
+      <div style={{ marginTop: 10 }}>
+        {gatePriceLines(PLANS).map((line) => (
+          <p key={line} style={{
+            fontSize: "1rem", color: C.ink, margin: "0 0 4px", lineHeight: 1.9
+          }}>・{line}</p>
+        ))}
+      </div>
       <button type="button" onClick={onSeePlans}
         style={{
           width: "100%", marginTop: 16, padding: "13px", borderRadius: 999,

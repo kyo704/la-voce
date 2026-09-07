@@ -13,7 +13,7 @@
  *   なので「無料ユーザーが200を受け取れるか」ではなく、
  *   ★「支払いを判定する語が、書き出しと削除の経路に入り込んでいないか」を見ます。
  */
-const { readCode, readRaw } = require("./_source");
+const { readCode, stripComments, readRaw } = require("./_source");
 let passCount = 0, failCount = 0;
 function assertTrue(c, label) { if (c) { console.log(`  ✓ ${label}`); passCount++; } else { console.log(`  ✗ ${label}`); failCount++; } }
 function assertEqual(a, b, label) {
@@ -144,7 +144,12 @@ assertTrue(!/plan|price|stripe|subscription|premium/i.test(entSrc),
   "★出し分けの表に、プラン・価格・課金の概念が入っていない");
 assertTrue(!/stripe|checkout|price_/i.test(uiRaw.replace(/\/\/.*$/gm, "")),
   "★画面に決済の導線が入っていない");
-assertTrue(!/有料プラン|アップグレード|購入/.test(uiRaw.replace(/\/\/.*$/gm, "")),
+// ★★覚え書きを外してから調べること（★2026-09-07）。
+//   ★これまで // の行だけを外しており、★JSX の {/* */} は残っていました。
+//   ★そのため、★「この語は禁じられています」と書いた覚え書き自体で落ちました。
+//   ★★CLAUDE.md に、★同じ罠が2度あったと書かれています。
+//   ★stripComments は、★JSX の覚え書きも外します。
+assertTrue(!/有料プラン|アップグレード|購入/.test(stripComments(uiRaw)),
   "★画面に購入を促す言葉が入っていない");
 assertTrue(/これは課金の実装ではありません/.test(readRaw("lib", "entitlements.js")),
   "★entitlements.js 自身が「課金ではない」と明記している");
