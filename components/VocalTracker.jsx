@@ -11562,7 +11562,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           // ★「レッスン」は必ず1つ。教える側と習う側は、この中で切り替える。
           //   判定は上の canTeachLessons / canLearnLessons に集約してある。
           // ★★「もっと」は、★下の帯から外しました（★2026-09-07・案い）。
-          //   ★おうちの右上の歯車から開きます。
+          //   ★おうちの右上の、歯車＋「もっと」の押しボタンから開きます。
+          //   ★★2026-09-07、★いちどホームに置いてありました。
+          //     ★坂本さんの決めで、★おうちへ移しました。
+          //     ★決めたときの言葉（おうちの右上）に、★実物を合わせた形です。
           //   ★★帯が7つになると、★1つ1つが押しにくくなります。
           //     ★レッスンが出る方は、★これで6つになります。
           //   ★★画面そのものは消していません。★activeTab === "more" は、
@@ -11818,23 +11821,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       onLater={handleSnoozePerformance} />
                   )}
 
-                  {/* ★★「もっと」の入口（★2026-09-07・案い）。
-                      ★下の帯から外したので、★ここに置きます。
-                      ★★歯車だけでは、★何が開くのか分かりません。
-                        ★字も添えます（★仕様書の「探させない」と同じ考えです）。 */}
-                  <div className="flex justify-end">
-                    <button type="button" onClick={() => setActiveTab("more")}
-                      aria-label={`${t("tabMore")}を開く`}
-                      className="flex items-center gap-1.5"
-                      style={{
-                        minHeight: 44, padding: "8px 14px", borderRadius: 999,
-                        border: `1px solid ${C.line}`, background: C.card,
-                        color: C.inkSoft, fontSize: "0.875rem"
-                      }}>
-                      <Settings size={16} aria-hidden="true" />
-                      {t("tabMore")}
-                    </button>
-                  </div>
+                  {/* ★★「もっと」の入口は、★おうちへ移しました（★2026-09-07）。
+                      ★いちど ここ（ホーム）に置いていましたが、
+                      ★坂本さんの決めで、★おうちの右上にします。
+                      ★★見張り components/tests/tab-structure.test.js が、
+                        ★場所を留めています。 */}
                   {/* ★所属している教室のカード（2026-09-02・Opus の裁定）。
                       ★点はやめました。点は「未読」に読めます。
                         教室のつながりに未読はありません。消えない点は、
@@ -14403,6 +14394,24 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   ★今日3回、これで壊しました（return の直後・属性の間・ここ）。 */}
             {activeTab === "garden" && (
               <>
+              {/* ★★「もっと」の入口（★2026-09-07・案い）。
+                  ★下の帯から外したので、★おうちの右上に置きます。
+                  ★★歯車だけでは、★何が開くのか分かりません。
+                    ★字も添えます（★仕様書の「探させない」と同じ考えです）。
+                  ★★押せる大きさを、★44px 下回らせないこと。 */}
+              <div className="flex justify-end mb-3">
+                <button type="button" onClick={() => setActiveTab("more")}
+                  aria-label={`${t("tabMore")}を開く`}
+                  className="flex items-center gap-1.5"
+                  style={{
+                    minHeight: 44, padding: "8px 14px", borderRadius: 999,
+                    border: `1px solid ${C.line}`, background: C.card,
+                    color: C.inkSoft, fontSize: "0.875rem"
+                  }}>
+                  <Settings size={16} aria-hidden="true" />
+                  {t("tabMore")}
+                </button>
+              </div>
               {wardrobeOn && (
                 <div className="rounded-2xl p-4 border mb-4" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">着せかえ</h3>
