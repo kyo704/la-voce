@@ -75,6 +75,7 @@ import NoticeScreen from "@/components/NoticeScreen";
 import WardrobePanel from "@/components/WardrobePanel";
 import Box2Gift from "@/components/Box2Gift";
 import { sheepItemByKey } from "@/lib/sheepItems";
+import { MEAL_MARKS, MEAL_MARK_KEYS, resolveMealMarks } from "@/lib/mealMarks";
 // ★「今日やるといいこと」の助言をやめ、数えて並べるだけにしました（2026-09-07）
 import { recentlyWritten, recentLine, RECENT_TITLE } from "@/lib/recentlyWritten";
 // ★レパートリー（歌った曲の控え）。★分析ではなく、控えです。ゲートは掛けません。
@@ -1068,6 +1069,7 @@ function buildFormData(date, entries) {
       mentalReason: existing.mentalReason || "",
       mentalTags: existing.mentalTags || [],
       meals: existing.meals || [],
+      mealMarks: Array.isArray(existing.mealMarks) ? existing.mealMarks : null,
       exercises: existing.exercises || [],
       voiceCheckins: existing.voiceCheckins || {},
       waterBySlot: existing.waterBySlot || {},
@@ -1127,6 +1129,8 @@ function buildFormData(date, entries) {
     bedtime: "",
     waterBySlot: {},
     mealNotes: "",
+    // ★null で始めます。★書いた文から、読むときに立てます。
+    mealMarks: null,
     dinnerTime: "",
     dinnerTags: [],
     // 滞在地も、前日の値を引き継ぐと「今日そこに居た」ことになってしまう。
@@ -1649,6 +1653,12 @@ function rowToEntry(row) {
     sleepQuality: row.sleep_quality,
     waterIntake: row.water_intake,
     mealNotes: row.meal_notes || "",
+    // ★★食事の印8つ（★2026-09-07・仕様 §5-1）。
+    //   ★null のままにします。★空の配列に、しないこと。
+    //     ★null …「まだ本人が直していない」。★自由記述から立て直します
+    //     ★空の配列 …「印は無い」と本人が決めた
+    //   ★★この2つは、★別のことです（lib/mealMarks.js の resolveMealMarks）。
+    mealMarks: Array.isArray(row.meal_marks) ? row.meal_marks : null,
     location: row.location || "",
     temperature: row.temperature,
     humidity: row.humidity,
@@ -2133,6 +2143,8 @@ function entryToRow(userId, e) {
     sleep_hours: numOrNull(e.sleepHours),
     sleep_quality: numOrNull(e.sleepQuality),
     meal_notes: e.mealNotes,
+    // ★★触っていなければ null のまま。★埋めないこと（★2026-09-07）。
+    meal_marks: Array.isArray(e.mealMarks) ? e.mealMarks : null,
     location: e.location,
     temperature: numOrNull(e.temperature),
     humidity: numOrNull(e.humidity),
@@ -13603,6 +13615,45 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <textarea value={formData.mealNotes} rows={2} placeholder={t("placeholderMealNotesExample")}
                           onChange={(e) => setFormData((f) => ({ ...f, mealNotes: e.target.value }))}
                           className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+
+                        {/* ★★食事の印8つ（★2026-09-07・仕様 §5-1）。
+                            ★書いた文から、★言葉の表で立てます。★AI は使いません。
+                              ★外へ何も送りません。★端末の中で終わります。
+                            ★★読み違えることがあります。★だから、押して直せます。
+                              ★一度でも押したら、★機械はもう上書きしません。
+                            ★★数を出しません。★「3つ立ちました」と書かないこと。 */}
+                        <div className="mt-2">
+                          <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>
+                            書いた内容から、印をつけました。ちがっていたら押して直せます。
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {MEAL_MARKS.map(({ key, label }) => {
+                              const on = resolveMealMarks(formData).includes(key);
+                              return (
+                                <button key={key} type="button"
+                                  aria-pressed={on}
+                                  onClick={() => setFormData((f) => {
+                                    // ★★押した時点で、★本人の答えになります。
+                                    //   ★それまでの「機械の読み」を、★そのまま元にします。
+                                    const now = resolveMealMarks(f);
+                                    const next = now.includes(key)
+                                      ? now.filter((k) => k !== key)
+                                      : [...now, key];
+                                    return { ...f, mealMarks: MEAL_MARK_KEYS.filter((k) => next.includes(k)) };
+                                  })}
+                                  className="text-xs px-2.5 rounded-full border"
+                                  style={{
+                                    minHeight: 36,
+                                    borderColor: on ? C.curtain : C.line,
+                                    background: on ? C.curtain : C.card,
+                                    color: on ? "#FFFDF8" : C.inkSoft
+                                  }}>
+                                  {label}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
                       </div>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
                         <div className="rounded-xl p-2.5 text-center" style={{ background: C.paper }}>

@@ -55,5 +55,23 @@ ok("★真偽だけを返している",
     `process\\.env\\.${n} \\|\\| ""\\)\\.trim\\(\\) !== ""`).test(flagsBlock)),
   flagsBlock.replace(/\s+/g, " ").slice(0, 120));
 
+// ★★数だけを返す counts も、★値を漏らしていないこと（★2026-09-07）。
+//   ★2026-09-07、★「38人か、1人か」を外から確かめる手立てが無く、
+//     ★管理画面を開かないと分からない状態でした。★数だけを足しました。
+{
+  const src = readCode("app", "api", "version", "route.js");
+  const i = src.indexOf("counts: {");
+  ok("★数を返す口がある", i > 0);
+  if (i > 0) {
+    const block = src.slice(i, src.indexOf("}", src.indexOf("gateTestIds", i)));
+    ok("★数だけで、値を返していない",
+      /\.filter\(Boolean\)\.length/.test(block) && !/join|slice\(0/.test(block),
+      block.replace(/\s+/g, " ").slice(0, 140));
+  }
+  // ★★返す本体に、id そのものが混ざっていないこと。
+  ok("★id を、そのまま返していない",
+    !/NEXT_PUBLIC_[A-Z_]*USER_IDS\s*\|\|\s*""\s*[,}]/.test(src));
+}
+
 console.log(failed === 0 ? "\n✅ すべて通りました" : "\n❌ " + failed + " 件");
 process.exit(failed === 0 ? 0 : 1);

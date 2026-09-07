@@ -43,6 +43,21 @@ export async function GET() {
       flags: {
         wardrobeIds: (process.env.NEXT_PUBLIC_WARDROBE_USER_IDS || "").trim() !== "",
         gateTestIds: (process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS || "").trim() !== ""
+      },
+      // ★★何人ぶん入っているか（★2026-09-07）。
+      //   ★★値そのものは、★決して出しません。★数だけです。
+      //     ★利用者の id は、★それ自体が個人を指します。
+      //   ★★なぜ数が要るのか。
+      //     ★2026-09-07、「38人が219点すべてを着られる状態か」を
+      //     ★確かめる手立てが、★外から1つもありませんでした。
+      //     ★真偽（入っているか）だけでは、★1人なのか38人なのか分かりません。
+      //     ★★管理画面を開かないと分からない、という状態を、なくします。
+      //   ★1 なら、★お一人だけです。★門は、その方にしか開いていません。
+      counts: {
+        wardrobeIds: (process.env.NEXT_PUBLIC_WARDROBE_USER_IDS || "")
+          .split(",").map((x) => x.trim()).filter(Boolean).length,
+        gateTestIds: (process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS || "")
+          .split(",").map((x) => x.trim()).filter(Boolean).length
       }
     }),
     {
