@@ -1,7 +1,8 @@
 // ============================================================================
 // 下の帯（タブ）の作り（2026-09-07・案い）
 //
-//   ★★坂本さんの決め：★「もっと」を、下の帯から外し、★歯車へ移す。
+//   ★★坂本さんの決め：★「もっと」を、下の帯から外す。
+//     ★入口は2つ、★中身はちがう（★2026-09-07・Opus の裁定）。
 //     ★★2026-09-07、★注釈を実物に合わせました。
 //       ★決めたときは「おうちの右上」でしたが、★実際に置かれたのは★ホームです。
 //       ★坂本さんの判断で、★画面はそのまま、★言葉のほうを直しました。
@@ -43,24 +44,44 @@ ok("帯を作るとき、more を除いている",
 // ★★画面そのものは、消していないこと。★入口が変わっただけです。
 ok("★「もっと」の画面は、消していない", /activeTab === "more"/.test(code));
 ok("歯車から開く", /setActiveTab\("more"\)/.test(code));
-// ★★歯車が、どの画面にあるか（★2026-09-07・坂本さんの決め）。
-//   ★いちどホームに置いてありましたが、★おうちの右上へ移しました。
-//   ★★ここで場所を留めます。★黙って動かないように。
+// ★★入口は2つ、★中身はちがう（★2026-09-07・Opus の裁定）。
+//   ホーム … アプリ全体（設定・アカウント・書き出し・同意の撤回・プラン・学ぶ）
+//   おうち … 家の中だけ（着せかえ・置きかた・お店）
+//   ★★同じ絵を2か所に置かないこと。★どちらが何か、分からなくなります。
 {
   const raw = readRaw("components", "VocalTracker.jsx");
+  const homeAt = raw.indexOf('activeTab === "home"');
   const gardenAt = raw.indexOf('activeTab === "garden"');
   const gearAt = raw.indexOf("<Settings size=");
-  ok("★歯車は、おうちの中にある", gardenAt > 0 && gearAt > gardenAt,
-    `おうち ${gardenAt} / 歯車 ${gearAt}`);
-  // ★★おうちの、いちばん上にあること（＝右上）。
-  //   ★羊の絵より下に埋もれると、★見つけていただけません。
-  const gardenBlock = raw.slice(gardenAt, gearAt);
-  ok("★歯車は、おうちの いちばん上にある",
-    !/<CharacterHome/.test(gardenBlock) && !/<WardrobePanel/.test(gardenBlock),
-    "羊や着せかえより後ろに来ています");
-  ok("★右に寄せてある", /justify-end[\s\S]{0,600}<Settings size=/.test(raw));
-  // ★ホームからは、外れていること（★2か所に置かないこと）
+
   ok("★歯車は、1つだけ", (raw.match(/<Settings size=/g) || []).length === 1);
+  ok("★歯車は、ホームの中にある", homeAt > 0 && gearAt > homeAt && gearAt < gardenAt,
+    `ホーム ${homeAt} / 歯車 ${gearAt} / おうち ${gardenAt}`);
+
+  // ★★アプリ全体の設定が、★おうちの奥に無いこと。
+  //   ★同意の撤回と、記録の書き出しは、★法で求められる道です。
+  //   ★プライバシーポリシーも「もっと ＞ …」と案内しています。
+  const gardenBlock = raw.slice(gardenAt, gardenAt + 4000);
+  ok("★おうちから「もっと」へ飛ばしていない", !/setActiveTab\("more"\)/.test(gardenBlock));
+
+  // ★おうちの側は、家の中の行き先だけ
+  for (const label of ["着せかえ", "置きかた", "お店"]) {
+    ok(`おうちに「${label}」の入口がある`, gardenBlock.includes(label));
+  }
+  // ★★行き先が、実際にあること。★押しても何も起きない、を作らないこと。
+  const home = readRaw("components", "CharacterHome.jsx");
+  for (const [id, where] of [["wardrobe-anchor", raw], ["room-anchor", home], ["shop-anchor", home]]) {
+    ok(`目印「${id}」が、実際に置かれている`, where.includes(`id="${id}"`));
+  }
+  // ★★無い画面への入口を、作らないこと。
+  //   ★「記念のものの棚」は、2026-09-07 の時点で、画面がありません。
+  // ★★禁じ手の検査は、★必ずコメントを剥がしてから（CLAUDE.md の罠）。
+  //   ★2026-09-07、★「記念のものの棚は入れていません」という
+  //     ★自分の説明文で落ちました。★今日4度目です。
+  const gardenCode = readCode("components", "VocalTracker.jsx")
+    .slice(readCode("components", "VocalTracker.jsx").indexOf('activeTab === "garden"'));
+  ok("★無い行き先（記念のものの棚）を出していない",
+    !gardenCode.slice(0, 3000).includes("記念のもの"));
 }
 
 console.log("■ 歯車の作り");

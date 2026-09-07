@@ -1801,7 +1801,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
   );
 
   return (
-    <div style={{ position: "relative", width: "100%", maxWidth: isRoomExpanded ? 700 : 480, margin: "0 auto", aspectRatio: isRoomExpanded ? "7 / 5" : "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor, transition: "max-width 0.4s ease, aspect-ratio 0.4s ease" }}>
+    <div id="room-anchor" style={{ position: "relative", width: "100%", maxWidth: isRoomExpanded ? 700 : 480, margin: "0 auto", aspectRatio: isRoomExpanded ? "7 / 5" : "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor, transition: "max-width 0.4s ease, aspect-ratio 0.4s ease" }}>
       <WallTexture material={wallKey} wardrobeOn={wardrobeOn} />
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", background: floorColor, zIndex: 0, overflow: "hidden" }}>
         <FloorTexture material={floorKey} wardrobeOn={wardrobeOn} />
@@ -2524,7 +2524,9 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
         </div>
       </div>
 
-      <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+      {/* ★おうちの上の「お店」から、ここへ飛びます（★2026-09-07）。
+          ★目印を消さないこと。★消すと、ボタンが何もしなくなります。 */}
+      <div id="shop-anchor" className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
         <h3 className="ff-display italic text-lg mb-3">{t("labelShop")}</h3>
         <div className="flex flex-wrap gap-1.5 mb-3">
           {Object.keys(CATEGORY_LABEL_KEYS).map((cat) => (

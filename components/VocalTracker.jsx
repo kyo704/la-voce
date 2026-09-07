@@ -5,9 +5,19 @@ import {
   Mic2, Moon, Droplets, Thermometer, Wind, MapPin, Music2, HeartHandshake,
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
   Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot, MessageCircle, Home,
+  Shirt, Armchair, Store,
   Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe, Lock,
   Volume2, Plane, AudioWaveform, Timer, MessageSquare, ClipboardList, GraduationCap, FileText,
-  // ★「もっと」を、おうちの右上の歯車に移しました（2026-09-07・案い）
+  // ★「もっと」を、下の帯から外しました（2026-09-07・案い）
+  //   ★★入口は2つです（★2026-09-07・Opus の裁定）。
+  //     ホーム … 歯車＋「もっと」。★アプリ全体（設定・アカウント・
+  //              書き出し・同意の撤回・プラン・学ぶ）
+  //     おうち … 服・椅子・お店の絵と字。★家の中の行き先だけ
+  //   ★★歯車は、★ホームの1つだけです。
+  //     ★同じ絵を2か所に置くと、★どちらが何か分からなくなります。
+  //   ★★アプリ全体の設定を、★おうちの奥に置かないこと。
+  //     ★同意の撤回と、記録の書き出しは、★法で求められる道です。
+  //     ★プライバシーポリシーも「もっと ＞ …」と案内しています。
   Settings, MoreHorizontal, HelpCircle,
   User, HeartPulse
 } from "lucide-react";
@@ -11645,17 +11655,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           // ★「レッスン」は必ず1つ。教える側と習う側は、この中で切り替える。
           //   判定は上の canTeachLessons / canLearnLessons に集約してある。
           // ★★「もっと」は、★下の帯から外しました（★2026-09-07・案い）。
-          //   ★おうちの右上の、歯車＋「もっと」の押しボタンから開きます。
-          //   ★★2026-09-07、★いちどホームに置いてありました。
-          //     ★坂本さんの決めで、★おうちへ移しました。
-          //     ★決めたときの言葉（おうちの右上）に、★実物を合わせた形です。
+          //   ★ホームの、歯車＋「もっと」の押しボタンから開きます。
+          //   ★おうちの側は、★家の中の行き先だけです（★別の絵・別の字）。
           //   ★★帯が7つになると、★1つ1つが押しにくくなります。
           //     ★レッスンが出る方は、★これで6つになります。
           //   ★★画面そのものは消していません。★activeTab === "more" は、
           //     ★これまでどおり出ます。★入口の場所が変わっただけです。
           // ★★レッスンは、★TABS に固定で入りました（2026-09-07）。
           //   ★ここで差しこむのを、やめました。
-          //   ★「もっと」は、★おうちの右上の歯車から開きます。
+          //   ★「もっと」は、★ホームの歯車から開きます。
           const displayTabs = TABS.filter((tb) => tb.key !== "more");
           // ★横スクロールする帯。両端に、まだ続くことが分かる薄い影を出す（.nav-scroll）。
           //   右端の見切れだけでなく、左端も同じように隠れる。
@@ -11904,11 +11912,26 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       onLater={handleSnoozePerformance} />
                   )}
 
-                  {/* ★★「もっと」の入口は、★おうちへ移しました（★2026-09-07）。
-                      ★いちど ここ（ホーム）に置いていましたが、
-                      ★坂本さんの決めで、★おうちの右上にします。
-                      ★★見張り components/tests/tab-structure.test.js が、
-                        ★場所を留めています。 */}
+                  {/* ★★アプリ全体の設定の入口（★2026-09-07・Opus の裁定）。
+                      ★★ここでなければ ならない理由があります。
+                        ★同意の撤回と、★記録の書き出しは、★法で求められる道です。
+                        ★おうち（羊の部屋）の奥に置くと、★探せません。
+                        ★プライバシーポリシーも「もっと ＞ …」と案内しています。
+                      ★歯車は、★ここ1つだけです。
+                        ★おうちの側は、★別の絵と別の言葉にしてあります。 */}
+                  <div className="flex justify-end">
+                    <button type="button" onClick={() => setActiveTab("more")}
+                      aria-label={`${t("tabMore")}を開く`}
+                      className="flex items-center gap-1.5"
+                      style={{
+                        minHeight: 44, padding: "8px 14px", borderRadius: 999,
+                        border: `1px solid ${C.line}`, background: C.card,
+                        color: C.inkSoft, fontSize: "0.875rem"
+                      }}>
+                      <Settings size={16} aria-hidden="true" />
+                      {t("tabMore")}
+                    </button>
+                  </div>
                   {/* ★所属している教室のカード（2026-09-02・Opus の裁定）。
                       ★点はやめました。点は「未読」に読めます。
                         教室のつながりに未読はありません。消えない点は、
@@ -14477,23 +14500,39 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   ★今日3回、これで壊しました（return の直後・属性の間・ここ）。 */}
             {activeTab === "garden" && (
               <>
-              {/* ★★「もっと」の入口（★2026-09-07・案い）。
-                  ★下の帯から外したので、★おうちの右上に置きます。
-                  ★★歯車だけでは、★何が開くのか分かりません。
-                    ★字も添えます（★仕様書の「探させない」と同じ考えです）。
-                  ★★押せる大きさを、★44px 下回らせないこと。 */}
-              <div className="flex justify-end mb-3">
-                <button type="button" onClick={() => setActiveTab("more")}
-                  aria-label={`${t("tabMore")}を開く`}
-                  className="flex items-center gap-1.5"
-                  style={{
-                    minHeight: 44, padding: "8px 14px", borderRadius: 999,
-                    border: `1px solid ${C.line}`, background: C.card,
-                    color: C.inkSoft, fontSize: "0.875rem"
-                  }}>
-                  <Settings size={16} aria-hidden="true" />
-                  {t("tabMore")}
-                </button>
+              {/* ★★おうちの中の行き先だけ（★2026-09-07・Opus の裁定）。
+                  ★★歯車を、★ここには置きません。
+                    ★同じ絵が2か所にあると、★どちらが何か分かりません。
+                    ★アプリ全体の設定は、★ホームの歯車です。
+                  ★★menu を開かせません。★3つとも、★はじめから押せる形で出します。
+                    ★「開いてから選ぶ」は、★1手 多くなります。
+                    ★選べるものは、★必ず押せる形で出すこと。
+                  ★★「記念のものの棚」は、★入れていません。
+                    ★2026-09-07、★探しました。★画面がありません。
+                    ★lib/freeTier.js に名前があるだけです。
+                    ★無いものへの入口を、★作らないこと。 */}
+              <div className="flex gap-2 mb-3 flex-wrap justify-end">
+                {[
+                  { id: "wardrobe-anchor", icon: Shirt, label: "着せかえ" },
+                  { id: "room-anchor", icon: Armchair, label: "置きかた" },
+                  { id: "shop-anchor", icon: Store, label: "お店" }
+                ].map(({ id, icon: Icon, label }) => (
+                  <button key={id} type="button"
+                    onClick={() => {
+                      const el = typeof document !== "undefined" && document.getElementById(id);
+                      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }}
+                    aria-label={`${label}へ移動`}
+                    className="flex items-center gap-1.5"
+                    style={{
+                      minHeight: 44, padding: "8px 14px", borderRadius: 999,
+                      border: `1px solid ${C.line}`, background: C.card,
+                      color: C.inkSoft, fontSize: "0.875rem"
+                    }}>
+                    <Icon size={16} aria-hidden="true" />
+                    {label}
+                  </button>
+                ))}
               </div>
               {/* ★★記録がたまったときの、よそおい（★裁定 §5・2026-09-07）。
                   ★着せかえの上に置きます。★先に目に入るようにします。
@@ -14505,7 +14544,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   onChoose={handleReceiveBox2} />
               )}
               {wardrobeOn && (
-                <div className="rounded-2xl p-4 border mb-4" style={{ background: C.card, borderColor: C.line }}>
+                <div id="wardrobe-anchor" className="rounded-2xl p-4 border mb-4" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">着せかえ</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                     217点あります。押すと着て、もう一度押すと外せます。
