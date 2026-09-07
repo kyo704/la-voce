@@ -1,0 +1,4294 @@
+[
+ {
+  "key": "hatBeret",
+  "name": "ベレー帽",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "src": "acc.py"
+ },
+ {
+  "key": "hatKnit",
+  "name": "ニット帽",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "src": "acc.py"
+ },
+ {
+  "key": "hatStraw",
+  "name": "麦わら帽子",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "src": "acc.py"
+ },
+ {
+  "key": "hatTop",
+  "name": "シルクハット",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "src": "acc.py"
+ },
+ {
+  "key": "hatCasquette",
+  "name": "キャスケット",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "src": "acc.py"
+ },
+ {
+  "key": "hatFlowerCrown",
+  "name": "花かんむり",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "src": "acc.py"
+ },
+ {
+  "key": "scarfWine",
+  "name": "えんじのマフラー",
+  "slot": "neck",
+  "occupies": [
+   "neck"
+  ],
+  "theme": "modern",
+  "src": "acc.py"
+ },
+ {
+  "key": "scarfCheck",
+  "name": "チェックのマフラー",
+  "slot": "neck",
+  "occupies": [
+   "neck"
+  ],
+  "theme": "modern",
+  "src": "acc.py"
+ },
+ {
+  "key": "snoodCream",
+  "name": "もこもこのスヌード",
+  "slot": "neck",
+  "occupies": [
+   "neck"
+  ],
+  "theme": "modern",
+  "src": "acc.py"
+ },
+ {
+  "key": "ribbonTie",
+  "name": "リボンタイ",
+  "slot": "neck",
+  "occupies": [
+   "neck"
+  ],
+  "theme": "modern",
+  "src": "acc.py"
+ },
+ {
+  "key": "propScore",
+  "name": "楽譜",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "work",
+  "src": "acc.py"
+ },
+ {
+  "key": "propMetronome",
+  "name": "メトロノーム",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "work",
+  "src": "acc.py"
+ },
+ {
+  "key": "propBottle",
+  "name": "水筒",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "modern",
+  "src": "acc.py"
+ },
+ {
+  "key": "propBouquet",
+  "name": "花束",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "stage",
+  "src": "acc.py"
+ },
+ {
+  "key": "propTeacup",
+  "name": "あたたかい飲みもの",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "modern",
+  "src": "acc.py"
+ },
+ {
+  "key": "wearOyoroi",
+  "name": "大鎧（源平のころ）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom",
+   "outer"
+  ],
+  "theme": "busho",
+  "src": "armor.py"
+ },
+ {
+  "key": "wearGusoku",
+  "name": "当世具足（戦国のころ）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom",
+   "outer"
+  ],
+  "theme": "busho",
+  "src": "armor.py"
+ },
+ {
+  "key": "wearJinbaori",
+  "name": "陣羽織",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom",
+   "outer"
+  ],
+  "theme": "busho",
+  "src": "armor.py"
+ },
+ {
+  "key": "hatKabuto",
+  "name": "兜（鍬形つき）",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "busho",
+  "src": "armor.py",
+  "pad": true
+ },
+ {
+  "key": "hatJingasa",
+  "name": "陣笠",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "busho",
+  "src": "armor.py"
+ },
+ {
+  "key": "propTachi",
+  "name": "太刀",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "busho",
+  "src": "armor.py"
+ },
+ {
+  "key": "propYumiya",
+  "name": "弓と矢",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "busho",
+  "src": "armor.py"
+ },
+ {
+  "key": "propGunbai",
+  "name": "軍配",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "busho",
+  "src": "armor.py"
+ },
+ {
+  "key": "suitNavy",
+  "name": "スーツ（紺）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "work",
+  "src": "biz.py"
+ },
+ {
+  "key": "suitLadyGray",
+  "name": "スーツ（女性・グレー）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "work",
+  "src": "biz.py"
+ },
+ {
+  "key": "tuxedo",
+  "name": "タキシード",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "stage",
+  "src": "biz.py"
+ },
+ {
+  "key": "tailcoat",
+  "name": "燕尾服",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "stage",
+  "src": "biz.py"
+ },
+ {
+  "key": "hatFedora",
+  "name": "中折れ帽",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "work",
+  "src": "biz.py"
+ },
+ {
+  "key": "propBriefcase",
+  "name": "ブリーフケース",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "work",
+  "src": "biz.py"
+ },
+ {
+  "key": "propMusicBag",
+  "name": "楽譜の鞄",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "work",
+  "src": "biz.py"
+ },
+ {
+  "key": "propNewspaper",
+  "name": "新聞",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "work",
+  "src": "biz.py"
+ },
+ {
+  "key": "propCoffee",
+  "name": "コーヒー",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "work",
+  "src": "biz.py"
+ },
+ {
+  "key": "wearMasamune",
+  "name": "伊達政宗の具足（黒漆五枚胴）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom",
+   "outer"
+  ],
+  "theme": "busho",
+  "src": "busho.py"
+ },
+ {
+  "key": "wearYukimura",
+  "name": "真田幸村の具足（朱の赤備え）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom",
+   "outer"
+  ],
+  "theme": "busho",
+  "src": "busho.py"
+ },
+ {
+  "key": "wearIeyasu",
+  "name": "徳川家康の具足（歯朶）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom",
+   "outer"
+  ],
+  "theme": "busho",
+  "src": "busho.py"
+ },
+ {
+  "key": "wearShingen",
+  "name": "武田信玄の具足（朱）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom",
+   "outer"
+  ],
+  "theme": "busho",
+  "src": "busho.py"
+ },
+ {
+  "key": "wearKenshin",
+  "name": "上杉謙信の具足（金小札浅葱威）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom",
+   "outer"
+  ],
+  "theme": "busho",
+  "src": "busho.py"
+ },
+ {
+  "key": "wearKanetsugu",
+  "name": "直江兼続の具足（紺）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom",
+   "outer"
+  ],
+  "theme": "busho",
+  "src": "busho.py"
+ },
+ {
+  "key": "hatKabutoMasamune",
+  "name": "政宗の兜（弦月）",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "busho",
+  "src": "busho.py",
+  "pad": true
+ },
+ {
+  "key": "hatKabutoYukimura",
+  "name": "幸村の兜（鹿角と六文銭）",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "busho",
+  "src": "busho.py",
+  "pad": true
+ },
+ {
+  "key": "hatKabutoIeyasu",
+  "name": "家康の兜（歯朶と獅噛）",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "busho",
+  "src": "busho.py",
+  "pad": true
+ },
+ {
+  "key": "hatKabutoShingen",
+  "name": "信玄の兜（諏訪法性）",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "busho",
+  "src": "busho.py",
+  "pad": true
+ },
+ {
+  "key": "hatKabutoKenshin",
+  "name": "謙信の兜（日輪三日月）",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "busho",
+  "src": "busho.py",
+  "pad": true
+ },
+ {
+  "key": "hatKabutoKanetsugu",
+  "name": "兼続の兜（愛）",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "busho",
+  "src": "busho.py",
+  "pad": true
+ },
+ {
+  "key": "wearNobunaga",
+  "name": "織田信長・南蛮胴具足",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom",
+   "outer"
+  ],
+  "theme": "busho",
+  "src": "busho2.py"
+ },
+ {
+  "key": "wearNaomasa",
+  "name": "井伊直政・朱の桶側胴",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom",
+   "outer"
+  ],
+  "theme": "busho",
+  "src": "busho2.py"
+ },
+ {
+  "key": "hatKabutoNobunaga",
+  "name": "信長の兜（南蛮兜）",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "busho",
+  "src": "busho2.py",
+  "pad": true
+ },
+ {
+  "key": "hatKabutoNaomasa",
+  "name": "直政の兜（天衝脇立）",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "busho",
+  "src": "busho2.py",
+  "pad": true
+ },
+ {
+  "key": "jomonKantoui",
+  "name": "縄文・貫頭衣（編布）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "jomonFur",
+  "name": "縄文・毛皮の重ね",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "yayoiKantoui",
+  "name": "弥生・貫頭衣（女）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "yayoiKesa",
+  "name": "弥生・袈裟衣（男）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "kofunKinuHakama",
+  "name": "古墳・衣褌（男）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "kofunKinuMo",
+  "name": "古墳・衣裳（女）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "asukaChofuku",
+  "name": "飛鳥・朝服（男）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "asukaHire",
+  "name": "飛鳥・領巾の女",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "naraHoueki",
+  "name": "奈良・闕腋袍（男）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "naraKarniginu",
+  "name": "奈良・背子と裙（女）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "heianJunihitoe",
+  "name": "平安・十二単（女）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom",
+   "outer"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "heianNoushi",
+  "name": "平安・直衣（男）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "kamakuraHitatare",
+  "name": "鎌倉・直垂（男）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "kamakuraTsubo",
+  "name": "鎌倉・壺装束（女）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "muromachiSuou",
+  "name": "室町・素襖（男）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "muromachiKosode",
+  "name": "室町・小袖（女）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "momoyamaDoufuku",
+  "name": "安土桃山・胴服（男・南蛮）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom",
+   "outer"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "momoyamaUchikake",
+  "name": "安土桃山・打掛（女・辻が花）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom",
+   "outer"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "edoShima",
+  "name": "江戸・縞の小袖と羽織（男）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom",
+   "outer"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "edoFurisode",
+  "name": "江戸・振袖と幅広の帯（女）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "meijiShosei",
+  "name": "明治・書生（男）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "meijiRokumeikan",
+  "name": "明治・鹿鳴館のドレス（女）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "taishoModanBoy",
+  "name": "大正・モダンボーイ（男）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "taishoJogakusei",
+  "name": "大正・女学生（女）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "showaGakuran",
+  "name": "昭和・学生服（男）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "showaOnepiece",
+  "name": "昭和・ワンピース（女）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "heiseiShibukaji",
+  "name": "平成・渋カジ（男）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "heiseiSeifuku",
+  "name": "平成・制服（女）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "reiwaOversize",
+  "name": "令和・オーバーサイズ（男）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "reiwaEarth",
+  "name": "令和・アースカラー（女）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "era",
+  "src": "era_defs.py"
+ },
+ {
+  "key": "gownBlackLong",
+  "name": "本番の黒いドレス",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "stage",
+  "src": "gown.py"
+ },
+ {
+  "key": "gownWineMermaid",
+  "name": "ワインレッドのドレス",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "stage",
+  "src": "gown.py"
+ },
+ {
+  "key": "gownGreenVelvet",
+  "name": "深緑のベルベット",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "stage",
+  "src": "gown.py"
+ },
+ {
+  "key": "gownGoldALine",
+  "name": "うすい金のドレス",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "stage",
+  "src": "gown.py"
+ },
+ {
+  "key": "operaQueenNight",
+  "name": "夜の女王（魔笛）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "stage",
+  "src": "gown.py"
+ },
+ {
+  "key": "operaVioletta",
+  "name": "ヴィオレッタ（椿姫）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "stage",
+  "src": "gown.py"
+ },
+ {
+  "key": "operaCarmen",
+  "name": "カルメン",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "stage",
+  "src": "gown.py"
+ },
+ {
+  "key": "operaPapageno",
+  "name": "パパゲーノ（魔笛）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "stage",
+  "src": "gown.py"
+ },
+ {
+  "key": "hatCrownNight",
+  "name": "夜の女王のかんむり",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "stage",
+  "src": "gown.py"
+ },
+ {
+  "key": "hatCamellia",
+  "name": "椿の髪かざり",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "stage",
+  "src": "gown.py"
+ },
+ {
+  "key": "hatRose",
+  "name": "薔薇の髪かざり",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "stage",
+  "src": "gown.py"
+ },
+ {
+  "key": "hatFeatherCap",
+  "name": "羽根のかぶりもの",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "stage",
+  "src": "gown.py"
+ },
+ {
+  "key": "hatJomonBeads",
+  "name": "縄文・骨と貝の髪飾り",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "era",
+  "src": "hats2.py"
+ },
+ {
+  "key": "hatYayoiHachimaki",
+  "name": "弥生・布の髪飾り",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "era",
+  "src": "hats2.py"
+ },
+ {
+  "key": "hatKofunBoushi",
+  "name": "古墳・埴輪の帽子",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "era",
+  "src": "hats2.py"
+ },
+ {
+  "key": "hatAsukaKanmuri",
+  "name": "飛鳥・冠",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "era",
+  "src": "hats2.py"
+ },
+ {
+  "key": "hatNaraZukin",
+  "name": "奈良・幞頭",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "era",
+  "src": "hats2.py"
+ },
+ {
+  "key": "hatHeianEboshi",
+  "name": "平安・立烏帽子",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "era",
+  "src": "hats2.py"
+ },
+ {
+  "key": "hatIchimegasa",
+  "name": "鎌倉・市女笠",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "era",
+  "src": "hats2.py"
+ },
+ {
+  "key": "hatSamuraiEboshi",
+  "name": "室町・侍烏帽子",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "era",
+  "src": "hats2.py"
+ },
+ {
+  "key": "hatNanban",
+  "name": "安土桃山・南蛮帽子",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "era",
+  "src": "hats2.py"
+ },
+ {
+  "key": "hatSugegasa",
+  "name": "江戸・菅笠",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "era",
+  "src": "hats2.py"
+ },
+ {
+  "key": "hatBowler",
+  "name": "明治・山高帽",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "era",
+  "src": "hats2.py"
+ },
+ {
+  "key": "hatHunting",
+  "name": "大正・鳥打帽",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "era",
+  "src": "hats2.py"
+ },
+ {
+  "key": "hatGakubo",
+  "name": "昭和・学帽",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "era",
+  "src": "hats2.py"
+ },
+ {
+  "key": "hatCap",
+  "name": "平成・キャップ",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "era",
+  "src": "hats2.py"
+ },
+ {
+  "key": "hatBucket",
+  "name": "令和・バケットハット",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "era",
+  "src": "hats2.py"
+ },
+ {
+  "key": "coatSpringCardigan",
+  "name": "春 うすもものカーディガン",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "season",
+  "src": "mkfinal.py"
+ },
+ {
+  "key": "coatSummerVest",
+  "name": "夏 みずいろのベスト",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "season",
+  "src": "mkfinal.py"
+ },
+ {
+  "key": "coatAutumnCamel",
+  "name": "秋 キャメルのコート",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "season",
+  "src": "mkfinal.py"
+ },
+ {
+  "key": "coatWinterDuffle",
+  "name": "冬 こんのダッフル",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "season",
+  "src": "mkfinal.py"
+ },
+ {
+  "key": "kimonoRedSakura",
+  "name": "和服・赤（桜）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "wa",
+  "src": "mkfinal.py"
+ },
+ {
+  "key": "kimonoYellowYagasuri",
+  "name": "和服・黄（矢絣）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "wa",
+  "src": "mkfinal.py"
+ },
+ {
+  "key": "kimonoBlueSeigaiha",
+  "name": "和服・青（青海波）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "wa",
+  "src": "mkfinal.py"
+ },
+ {
+  "key": "kimonoManNavyHaori",
+  "name": "和服・男（紺＋羽織）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "wa",
+  "src": "mkfinal.py"
+ },
+ {
+  "key": "operaBruennhilde",
+  "name": "ブリュンヒルデ（ワルキューレ）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "operaTurandot",
+  "name": "トゥーランドット",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "operaAida",
+  "name": "アイーダ",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "operaNorma",
+  "name": "ノルマ",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "operaLucia",
+  "name": "ルチア（狂乱の場）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "operaButterfly",
+  "name": "蝶々夫人（白無垢）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "operaMimi",
+  "name": "ミミ（ラ・ボエーム）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "operaMusetta",
+  "name": "ムゼッタ",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "operaCherubino",
+  "name": "ケルビーノ（フィガロの結婚）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "operaOlympia",
+  "name": "オランピア（ホフマン物語）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "operaGilda",
+  "name": "ジルダ（リゴレット）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "operaCarmen2",
+  "name": "カルメン",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "gownCoutureFifties",
+  "name": "1950年代のクチュール（細身＋ストール）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "stage",
+  "src": "opera.py"
+ },
+ {
+  "key": "gownTulleBall",
+  "name": "広がるチュールのボールガウン",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "stage",
+  "src": "opera.py"
+ },
+ {
+  "key": "gownBeadColumn",
+  "name": "ビーズのコラムドレス",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "stage",
+  "src": "opera.py"
+ },
+ {
+  "key": "gownVelvetCape",
+  "name": "ベルベットとケープ",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom",
+   "outer"
+  ],
+  "theme": "stage",
+  "src": "opera.py"
+ },
+ {
+  "key": "hatValkyrie",
+  "name": "翼の兜（ワルキューレ）",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "hatTurandotCrown",
+  "name": "トゥーランドットの冠",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "hatNormaWreath",
+  "name": "ノルマの槲寄生の冠",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "hatMusettaHat",
+  "name": "ムゼッタの帽子",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "hatCherubinoHat",
+  "name": "ケルビーノの羽根帽",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "hatLuciaHair",
+  "name": "ルチアの乱れ髪",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "hatButterflyTsuno",
+  "name": "蝶々夫人の角隠し",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "propSpear",
+  "name": "槍（ワルキューレ）",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "propFanLace",
+  "name": "黒いレースの扇",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "opera",
+  "src": "opera.py"
+ },
+ {
+  "key": "operaFigaro",
+  "name": "フィガロ（セビリアの理髪師）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "otoko.py"
+ },
+ {
+  "key": "operaDonGiovanni",
+  "name": "ドン・ジョヴァンニ",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "otoko.py"
+ },
+ {
+  "key": "operaRodolfo",
+  "name": "ロドルフォ（ラ・ボエーム）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "otoko.py"
+ },
+ {
+  "key": "operaEscamillo",
+  "name": "エスカミーリョ（闘牛士）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "otoko.py"
+ },
+ {
+  "key": "operaRigoletto",
+  "name": "リゴレット（道化）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "otoko.py"
+ },
+ {
+  "key": "operaTamino",
+  "name": "タミーノ（魔笛）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "otoko.py"
+ },
+ {
+  "key": "operaWotan",
+  "name": "ヴォータン（ワルキューレ）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "otoko.py"
+ },
+ {
+  "key": "operaCalaf",
+  "name": "カラフ（トゥーランドット）",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "opera",
+  "src": "otoko.py"
+ },
+ {
+  "key": "hatMontera",
+  "name": "闘牛士のモンテラ",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "opera",
+  "src": "otoko.py"
+ },
+ {
+  "key": "hatJester",
+  "name": "道化の鈴帽",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "opera",
+  "src": "otoko.py"
+ },
+ {
+  "key": "hatTricornBlack",
+  "name": "羽根つき三角帽",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "opera",
+  "src": "otoko.py"
+ },
+ {
+  "key": "hatWotanHat",
+  "name": "つば広の旅帽",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "opera",
+  "src": "otoko.py"
+ },
+ {
+  "key": "hatHunterGreen",
+  "name": "狩人の帽子",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "opera",
+  "src": "otoko.py"
+ },
+ {
+  "key": "propBaton",
+  "name": "指揮棒",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "stage",
+  "src": "otoko.py"
+ },
+ {
+  "key": "propRazorComb",
+  "name": "カミソリと櫛",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "opera",
+  "src": "otoko.py"
+ },
+ {
+  "key": "propManuscript",
+  "name": "原稿の束",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "opera",
+  "src": "otoko.py"
+ },
+ {
+  "key": "propJomonPot",
+  "name": "縄文・土器",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "era",
+  "src": "props2.py"
+ },
+ {
+  "key": "propYayoiRice",
+  "name": "弥生・稲穂",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "era",
+  "src": "props2.py"
+ },
+ {
+  "key": "propKofunMagatama",
+  "name": "古墳・鏡と勾玉",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "era",
+  "src": "props2.py"
+ },
+ {
+  "key": "propAsukaShaku",
+  "name": "飛鳥・笏",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "era",
+  "src": "props2.py"
+ },
+ {
+  "key": "propNaraBiwa",
+  "name": "奈良・琵琶",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "era",
+  "src": "props2.py"
+ },
+ {
+  "key": "propHeianOugi",
+  "name": "平安・檜扇",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "era",
+  "src": "props2.py"
+ },
+ {
+  "key": "propKamakuraMakimono",
+  "name": "鎌倉・巻物",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "era",
+  "src": "props2.py"
+ },
+ {
+  "key": "propMuromachiNohmen",
+  "name": "室町・能面",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "era",
+  "src": "props2.py"
+ },
+ {
+  "key": "propMomoyamaChawan",
+  "name": "安土桃山・茶碗と茶筅",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "era",
+  "src": "props2.py"
+ },
+ {
+  "key": "propEdoChochin",
+  "name": "江戸・提灯",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "era",
+  "src": "props2.py"
+ },
+ {
+  "key": "propMeijiStick",
+  "name": "明治・ステッキ",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "era",
+  "src": "props2.py"
+ },
+ {
+  "key": "propTaishoGramophone",
+  "name": "大正・蓄音機",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "era",
+  "src": "props2.py"
+ },
+ {
+  "key": "propShowaCamera",
+  "name": "昭和・カメラ",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "era",
+  "src": "props2.py"
+ },
+ {
+  "key": "propHeiseiKeitai",
+  "name": "平成・ケータイ",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "era",
+  "src": "props2.py"
+ },
+ {
+  "key": "propReiwaSmartphone",
+  "name": "令和・スマートフォン",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "era",
+  "src": "props2.py"
+ },
+ {
+  "key": "shoesBoots",
+  "name": "革のブーツ",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "modern",
+  "src": "shoes.py"
+ },
+ {
+  "key": "shoesGeta",
+  "name": "下駄",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "wa",
+  "src": "shoes.py"
+ },
+ {
+  "key": "shoesZori",
+  "name": "草履",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "wa",
+  "src": "shoes.py"
+ },
+ {
+  "key": "shoesSneakers",
+  "name": "スニーカー",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "modern",
+  "src": "shoes.py"
+ },
+ {
+  "key": "shoesMaryJane",
+  "name": "ストラップの靴",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "modern",
+  "src": "shoes.py"
+ },
+ {
+  "key": "shoesRainBoots",
+  "name": "ながぐつ",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "modern",
+  "src": "shoes.py"
+ },
+ {
+  "key": "shoesStagePumps",
+  "name": "本番の靴",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "stage",
+  "src": "shoes.py"
+ },
+ {
+  "key": "shoesWaraji",
+  "name": "わらじ",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "wa",
+  "src": "shoes.py"
+ },
+ {
+  "key": "propChopsticks",
+  "name": "お箸",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "modern",
+  "src": "tableware.py"
+ },
+ {
+  "key": "propFork",
+  "name": "フォーク",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "modern",
+  "src": "tableware.py"
+ },
+ {
+  "key": "wearUSAWestern",
+  "name": "アメリカ・ウエスタン",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "wearHawaiiAloha",
+  "name": "ハワイ・アロハとムームー",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "wearItalyCarnival",
+  "name": "イタリア・カーニバルのマント",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom",
+   "outer"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "wearGermanyLederhosen",
+  "name": "ドイツ・レーダーホーゼン",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "wearFranceMariniere",
+  "name": "フランス・マリニエール",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "wearNetherlandsVolendam",
+  "name": "オランダ・フォーレンダム",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "wearSwissAppenzell",
+  "name": "スイス・アッペンツェル",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "wearSpainFlamenco",
+  "name": "スペイン・フラメンコ",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "wearChinaHanfu",
+  "name": "中国・漢服",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "wearKoreaHanbok",
+  "name": "韓国・韓服",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "wearRussiaSarafan",
+  "name": "ロシア・サラファン",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "wearAustriaCourt",
+  "name": "オーストリア・宮廷服",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "wearUKKilt",
+  "name": "イギリス・キルト",
+  "slot": "set",
+  "occupies": [
+   "top",
+   "bottom"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "hatUSACowboy",
+  "name": "アメリカ・カウボーイハット",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "hatHawaiiHibiscus",
+  "name": "ハワイ・ハイビスカスの花冠",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "hatItalyTricorno",
+  "name": "イタリア・トリコルノ",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "hatGermanyTirol",
+  "name": "ドイツ・チロル帽",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "hatFranceBeret",
+  "name": "フランス・ベレー（黒）",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "hatNetherlandsCap",
+  "name": "オランダ・レースの帽子",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "hatSwissEdelweiss",
+  "name": "スイス・エーデルワイスの帽子",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "hatSpainMantilla",
+  "name": "スペイン・マンティージャ",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "hatChinaOrnament",
+  "name": "中国・花鈿の髪飾り",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "hatKoreaJokduri",
+  "name": "韓国・チョクトゥリ",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "hatRussiaKokoshnik",
+  "name": "ロシア・ココシュニク",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "hatAustriaWig",
+  "name": "オーストリア・白いかつら",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "hatUKDeerstalker",
+  "name": "イギリス・ディアストーカー",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "propUSAGuitar",
+  "name": "アメリカ・ギター",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "propHawaiiUkulele",
+  "name": "ハワイ・ウクレレ",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "propItalyMask",
+  "name": "イタリア・仮面",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "propGermanyPretzel",
+  "name": "ドイツ・プレッツェル",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "propFranceBaguette",
+  "name": "フランス・バゲット",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "propNetherlandsTulip",
+  "name": "オランダ・チューリップと木靴",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "propSwissCheese",
+  "name": "スイス・チーズ",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "propSpainAbanico",
+  "name": "スペイン・アバニコ",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "propChinaUchiwa",
+  "name": "中国・団扇",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "propKoreaJanggu",
+  "name": "韓国・チャング",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "propRussiaMatryoshka",
+  "name": "ロシア・マトリョーシカ",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "propAustriaTorte",
+  "name": "オーストリア・ザッハトルテ",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "propUKTea",
+  "name": "イギリス・紅茶",
+  "slot": "hold",
+  "occupies": [
+   "hold"
+  ],
+  "theme": "world",
+  "src": "world.py"
+ },
+ {
+  "key": "top_01",
+  "name": "シャツ",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_02",
+  "name": "ボタンダウン",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_03",
+  "name": "チェックシャツ",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_04",
+  "name": "ワークシャツ",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_05",
+  "name": "デニムシャツ",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_06",
+  "name": "ボーダー",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_07",
+  "name": "Ｔシャツ",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_08",
+  "name": "ポロ",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_09",
+  "name": "スウェット",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_10",
+  "name": "フーディ",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_11",
+  "name": "セーター（丸首）",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_12",
+  "name": "タートルネック",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_13",
+  "name": "ケーブルニット",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_14",
+  "name": "ベスト",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_15",
+  "name": "つなぎの上",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_16",
+  "name": "ジャージ",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_17",
+  "name": "タンクトップ",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_18",
+  "name": "ラガーシャツ",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_19",
+  "name": "ヘンリーネック",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_20",
+  "name": "モックネック",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_21",
+  "name": "ラグランＴ",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_22",
+  "name": "アロハシャツ",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_23",
+  "name": "甚平の上",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_24",
+  "name": "パジャマ",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_25",
+  "name": "ミリタリーシャツ",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_26",
+  "name": "ビッグシルエットＴ",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_27",
+  "name": "スポーツＴ",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_28",
+  "name": "ブラウス",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_29",
+  "name": "ボウタイブラウス",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_30",
+  "name": "パフスリーブ",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_31",
+  "name": "フリルブラウス",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_32",
+  "name": "リボンニット",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_33",
+  "name": "レーストップス",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_34",
+  "name": "カーディガン",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_35",
+  "name": "ロングカーディガン",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_36",
+  "name": "モヘアニット",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_37",
+  "name": "タートル（リブ）",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_38",
+  "name": "ペプラムトップス",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_39",
+  "name": "キャミソール",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_40",
+  "name": "チュニック",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_41",
+  "name": "ギンガムブラウス",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_42",
+  "name": "花柄ブラウス",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_43",
+  "name": "ドットブラウス",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_44",
+  "name": "レオパードニット",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_45",
+  "name": "ツイードのトップス",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_46",
+  "name": "オフショル",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_47",
+  "name": "ニットベスト",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_48",
+  "name": "セーラー風",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_49",
+  "name": "黒レースブラウス",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_50",
+  "name": "Ｙ２Ｋトップス",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_51",
+  "name": "韓国系ゆるニット",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_52",
+  "name": "もこもこパジャマ",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_53",
+  "name": "ボヘミアンブラウス",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "top_54",
+  "name": "レザートップス",
+  "slot": "top",
+  "occupies": [
+   "top"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 5,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_01",
+  "name": "デニム",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_02",
+  "name": "ダメージデニム",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_03",
+  "name": "ブラックデニム",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_04",
+  "name": "ワイドスラックス",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_05",
+  "name": "スラックス（紺）",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_06",
+  "name": "テーパードパンツ",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_07",
+  "name": "カーゴ",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_08",
+  "name": "チノ",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_09",
+  "name": "コーデュロイ",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_10",
+  "name": "ジャージパンツ",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_11",
+  "name": "ショーツ",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_12",
+  "name": "ハーフパンツ",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_13",
+  "name": "チェックのパンツ",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_14",
+  "name": "スウェットパンツ",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_15",
+  "name": "パジャマパンツ",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_16",
+  "name": "ミリタリーパンツ",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_17",
+  "name": "甚平の下",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_18",
+  "name": "スキニー",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_19",
+  "name": "ミディ丈スカート",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_20",
+  "name": "プリーツスカート",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_21",
+  "name": "ロングスカート",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_22",
+  "name": "ミニスカート",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_23",
+  "name": "チェックスカート",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_24",
+  "name": "デニムスカート",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_25",
+  "name": "フレアスカート",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_26",
+  "name": "チュールスカート",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_27",
+  "name": "花柄スカート",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_28",
+  "name": "コーデュロイスカート",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_29",
+  "name": "ワイドパンツ",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_30",
+  "name": "レギンス",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_31",
+  "name": "サロペット",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_32",
+  "name": "ガウチョ",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_33",
+  "name": "ペチコート",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_34",
+  "name": "レザースカート",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "bottom_35",
+  "name": "もこもこパンツ",
+  "slot": "bottom",
+  "occupies": [
+   "bottom"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 3,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_01",
+  "name": "テーラードジャケット",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_02",
+  "name": "スーツの上着",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_03",
+  "name": "ツイードジャケット",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_04",
+  "name": "デニムジャケット",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_05",
+  "name": "レザージャケット",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_06",
+  "name": "ブルゾン",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_07",
+  "name": "トラックジャケット",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_08",
+  "name": "マウンテンパーカ",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_09",
+  "name": "フリース",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_10",
+  "name": "ダウン（パファー）",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_11",
+  "name": "Ｍ-65（ミリタリー）",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_12",
+  "name": "トレンチコート",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_13",
+  "name": "ロングコート",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_14",
+  "name": "ステンカラーコート",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_15",
+  "name": "ＭＡ-1",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_16",
+  "name": "スタジャン",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_17",
+  "name": "半纏",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_18",
+  "name": "ベンチコート",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_19",
+  "name": "ジレ",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_20",
+  "name": "ノーカラーコート",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_21",
+  "name": "チェスターコート",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_22",
+  "name": "ダッフルコート",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_23",
+  "name": "ファーコート",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_24",
+  "name": "ケープ",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_25",
+  "name": "ショートジャケット",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_26",
+  "name": "ツイードジャケット（女）",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_27",
+  "name": "ガウン",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_28",
+  "name": "カーディガン（羽織）",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_29",
+  "name": "レースの羽織り",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_30",
+  "name": "キルティング",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_31",
+  "name": "ポンチョ",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_32",
+  "name": "ムートン",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_33",
+  "name": "ライダース（女）",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_34",
+  "name": "ロングガウン",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "outer_35",
+  "name": "ゴシックコート",
+  "slot": "outer",
+  "occupies": [
+   "outer"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "neck_01",
+  "name": "マフラー",
+  "slot": "neck",
+  "occupies": [
+   "neck"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 7,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "neck_02",
+  "name": "チェックのマフラー",
+  "slot": "neck",
+  "occupies": [
+   "neck"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 7,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "neck_03",
+  "name": "ストール",
+  "slot": "neck",
+  "occupies": [
+   "neck"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 7,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "neck_04",
+  "name": "ネクタイ",
+  "slot": "neck",
+  "occupies": [
+   "neck"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 7,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "neck_05",
+  "name": "蝶ネクタイ",
+  "slot": "neck",
+  "occupies": [
+   "neck"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 7,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "neck_06",
+  "name": "リボン",
+  "slot": "neck",
+  "occupies": [
+   "neck"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 7,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "neck_07",
+  "name": "ネックレス",
+  "slot": "neck",
+  "occupies": [
+   "neck"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 7,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "neck_08",
+  "name": "パールのくび飾り",
+  "slot": "neck",
+  "occupies": [
+   "neck"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 7,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "neck_09",
+  "name": "スカーフ",
+  "slot": "neck",
+  "occupies": [
+   "neck"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 7,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "neck_10",
+  "name": "チョーカー",
+  "slot": "neck",
+  "occupies": [
+   "neck"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 7,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "neck_11",
+  "name": "フード（下ろした）",
+  "slot": "neck",
+  "occupies": [
+   "neck"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 7,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "eyes_01",
+  "name": "メガネ（丸）",
+  "slot": "eyes",
+  "occupies": [
+   "eyes"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 9,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "eyes_02",
+  "name": "メガネ（四角）",
+  "slot": "eyes",
+  "occupies": [
+   "eyes"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 9,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "eyes_03",
+  "name": "金ぶちメガネ",
+  "slot": "eyes",
+  "occupies": [
+   "eyes"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 9,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "eyes_04",
+  "name": "サングラス",
+  "slot": "eyes",
+  "occupies": [
+   "eyes"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 9,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "eyes_05",
+  "name": "伊達メガネ",
+  "slot": "eyes",
+  "occupies": [
+   "eyes"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 9,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "eyes_06",
+  "name": "ゴーグル",
+  "slot": "eyes",
+  "occupies": [
+   "eyes"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 9,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "shoes_01",
+  "name": "スニーカー",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 4,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "shoes_02",
+  "name": "ハイカット",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "shoes_03",
+  "name": "ローファー",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 4,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "shoes_04",
+  "name": "革靴",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 4,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "shoes_05",
+  "name": "ブーツ",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "shoes_06",
+  "name": "ロングブーツ",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "shoes_07",
+  "name": "サンダル",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 4,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "shoes_08",
+  "name": "上履き",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 4,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "shoes_09",
+  "name": "スリッパ",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 4,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "shoes_10",
+  "name": "長ぐつ",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 6,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "shoes_11",
+  "name": "パンプス",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 4,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "shoes_12",
+  "name": "ミュール",
+  "slot": "shoes",
+  "occupies": [
+   "shoes"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 4,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "hats_01",
+  "name": "キャップ",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 10,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "hats_02",
+  "name": "ニット帽",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 10,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "hats_03",
+  "name": "ベレー",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 10,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "hats_04",
+  "name": "中折れハット",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "sex": "m",
+  "layer": 10,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "hats_05",
+  "name": "バケット",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 10,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "hats_06",
+  "name": "麦わら帽子",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 10,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "hats_07",
+  "name": "イヤーマフ",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 10,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "hats_08",
+  "name": "カチューシャ",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 10,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "hats_09",
+  "name": "フード",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 10,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "hats_10",
+  "name": "王冠",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 10,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "hats_11",
+  "name": "ヘアバンド",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "sex": "f",
+  "layer": 10,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "hats_12",
+  "name": "サンタ帽",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 10,
+  "src": "parts/manifest.json"
+ },
+ {
+  "key": "hats_13",
+  "name": "コック帽",
+  "slot": "hat",
+  "occupies": [
+   "hat"
+  ],
+  "theme": "modern",
+  "sex": "u",
+  "layer": 10,
+  "src": "parts/manifest.json"
+ }
+]

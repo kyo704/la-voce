@@ -26,7 +26,12 @@ const m = await import("data:text/javascript;base64," + Buffer.from(plansSrc).to
 console.log("\n① プランの表");
 ok("2つある", m.PLANS.length === 2);
 ok("月額は580円", m.planByKey("monthly").priceYen === 580);
-ok("年額は5800円", m.planByKey("annual").priceYen === 5800);
+// ★★2026-09-07、★5,800円 → 4,800円（坂本さんの決め）。
+// ★年額をお使いの方は0人だったので、引き継ぎの仕組みは要りませんでした。
+ok("年額は4800円", m.planByKey("annual").priceYen === 4800);
+// ★★月あたりが、月額より安いこと。★ここが逆だと、年額を選ぶ理由がありません。
+ok("★年額の月あたりが、月額より安い",
+  m.monthlyEquivalentYen("annual") < m.planByKey("monthly").priceYen);
 ok("★知らない名前は null", m.planByKey("なにか") === null);
 ok("★価格IDそのものを、表に書いていない", !/price_[A-Za-z0-9]/.test(plansSrc));
 ok("★環境変数の名前を持っている",
@@ -41,8 +46,8 @@ ok("★env が無くても落ちない", m.priceIdFor("monthly", undefined) === 
 
 console.log("\n③ 月あたりの金額（★年払いを、少なく見せない）");
 ok("月額はそのまま", m.monthlyEquivalentYen("monthly") === 580);
-// 5800 / 12 = 483.33… → ★切り上げて 484
-ok("★年払いは切り上げる", m.monthlyEquivalentYen("annual") === 484);
+// 4800 / 12 = 400 ちょうど → ★400
+ok("★年払いの月あたりは400円", m.monthlyEquivalentYen("annual") === 400);
 
 console.log("\n③-2 ★★2つのモジュールで、プランの名前がそろっていること");
 // ★★2026-09-04、ここが食い違っていて、★誰も契約できませんでした。
