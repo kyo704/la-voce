@@ -12271,6 +12271,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               ★当たった日だけ、★羊がときどき小さく喜びます。
                               ★毎回だと、★嬉しさが薄れます。
                             ★数字を出さないので、★「61%」と言い切る必要もなくなります。 */}
+                        {/* ★★2026-09-07・Opus が確定した言い方。★1文字も変えないこと。
+                            ★「予測しません」とは書きません。★予報は残るからです。
+                            ★書くのは「声を測っていない」「まだ確かめていない」の2つです。 */}
+                        <p className="text-xs pt-2 border-t" style={{ borderColor: C.line, color: C.inkSoft, lineHeight: 1.8 }}>
+                          {t("disclaimerForecast")}
+                        </p>
                         {forecastHitToday && (
                           <p className="text-xs pt-2 border-t" style={{ borderColor: C.line, color: C.inkSoft }}>
                             あ、あたりました。
@@ -15081,6 +15087,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
             {activeTab === "analysis" && (
               <div className="space-y-5">
+                {/* ★★2026-09-07・Opus が確定した言い方。★1文字も変えないこと。
+                    ★★分析の画面の、いちばん上に置きます。
+                      ★ここから下は、★並べ替えであって、★原因ではありません。
+                      ★3ゲートを通った文でも、★因果は言えません。 */}
+                <p className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.8 }}>
+                  {t("disclaimerAnalysis")}
+                </p>
                 {/* ★同意を撤回された方には、分析を作りません（2026-09-03・Opus §3.2）。
                     ★分析は、その方の端末で、その方のデータから作られます。
                       ★どこかへ送って集計しているわけではありません。
