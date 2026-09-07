@@ -18381,8 +18381,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ★済んでいる方に、★もう一度すすめないこと。
                     ★数字は lib/plans.js から。★ここに書き写しません。 */}
                 {subscribed !== true && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>見られるものを増やす</p>
+                  <div className="rounded-2xl p-5 border" style={{
+                    // ★★周りのカードと、地の色を変えます（★2026-09-07）。
+                    //   ★いちばん上に在るのに、★見た目が同じで埋もれていました。
+                    //   ★★色を「強く」しません。★違えるだけです。
+                    //     ★赤や黄で目を引くのは、★警告の作りです。★これは警告ではありません。
+                    background: C.paper, borderColor: C.line, borderWidth: 2
+                  }}>
+                    {/* ★見出しを、★ほかの節と同じ大きさにします（ff-display）。
+                        ★これまでは、★小さな灰色の札でした。 */}
+                    <h3 className="ff-display italic text-lg mb-2" style={{ color: C.ink }}>
+                      見られるものを増やす
+                    </h3>
                     {/* ★★先に「無料のもの」を言います。★あとで「増えるもの」。
                         ★順番を逆にすると、★取り上げられたように読めます。 */}
                     {GATE_CLOSING_LINES.map((line) => (
@@ -18397,12 +18407,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </p>
                       ))}
                     </div>
+                    {/* ★★壁の札（GateNotice）と、★同じ見た目のボタンにします。
+                        ★あちらは塗りつぶしで、★こちらだけ線でした。
+                        ★同じことをする入口は、★同じ見た目であるべきです。 */}
                     <a href="/billing"
                       className="w-full flex items-center justify-center"
                       style={{
-                        marginTop: 12, minHeight: 48, borderRadius: 999,
-                        border: `1px solid ${C.line}`, background: C.paper,
-                        color: C.ink, fontSize: "0.9375rem", textDecoration: "none"
+                        marginTop: 14, minHeight: 52, borderRadius: 999,
+                        border: "none", background: C.curtain,
+                        color: "#FFFDF8", fontSize: "1rem", fontWeight: 600,
+                        textDecoration: "none"
                       }}>
                       くわしく見る
                     </a>

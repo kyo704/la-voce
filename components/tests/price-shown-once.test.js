@@ -92,6 +92,16 @@ function ok(name, cond, extra) {
   ok("★お支払いずみの方には、出さない", /subscribed !== true && \(/.test(vt2));
   ok("★先に「無料のもの」を言っている",
     vt2.indexOf("GATE_CLOSING_LINES.map") < vt2.indexOf("gatePriceLines(PLANS)"));
+  // ★★目立たせても、★急かしてはいけません（★2026-09-07）。
+  //   ★色を「強く」しない。★赤や黄で目を引くのは、警告の作りです。
+  //   ★これは警告ではありません。
+  const card = vt2.slice(vt2.indexOf("見られるものを増やす") - 900,
+                         vt2.indexOf("見られるものを増やす") + 1400);
+  ok("★警告の色を使っていない", !/C\.rust|C\.gold/.test(card));
+  ok("★しるし（点・NEW）を付けていない", !/NEW|新着|●|badge/i.test(card));
+  ok("★急かす言葉が無い", !/お得|今だけ|お早め|期間限定|残り\d/.test(card));
+  // ★★同じことをする入口は、同じ見た目にすること。
+  ok("★壁の札と、同じ塗りのボタン", /background: C\.curtain/.test(card));
 
   console.log("■ ランディングには、値段を出さないこと");
   // ★★2026-09-07、★坂本さんの決めで、★ランディングに値段を出さないことにしました。
