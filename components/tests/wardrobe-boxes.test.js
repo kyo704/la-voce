@@ -67,29 +67,56 @@ function ok(name, cond, extra) {
   console.log("■ ④ 箱1に、買う道が無い");
   const b1 = boxes.filter((x) => x.box === 1).map((x) => x.key);
   ok("箱1が空ではない", b1.length > 0, "箱1: " + b1.length + "点");
-  ok("箱1のものは、お金で買えない",
-    b1.every((k) => !m.mayBuyWithMoney({ key: k }, byKey[k])));
-  ok("箱1のものは、ポイントでも交換できない",
-    b1.every((k) => !m.mayExchangeWithPoints({ key: k }, byKey[k])));
+  // ★★本物の品を渡すこと。★{ key } だけを作って渡さないこと。
+  //   ★2026-09-07、★作り物を渡していて、★propSword を取りこぼしました。
+  //   ★boxOf は group も見ます（★目録に無い品のための受け皿です）。
+  const itemOf = (k) => impl.find((i) => i.key === k) || { key: k };
+  const cantBuy = b1.filter((k) => m.mayBuyWithMoney(itemOf(k), byKey[k]));
+  ok("箱1のものは、お金で買えない", cantBuy.length === 0, cantBuy.join(", "));
+  const canExchange = b1.filter((k) => m.mayExchangeWithPoints(itemOf(k), byKey[k]));
+  ok("箱1のものは、ポイントでも交換できない", canExchange.length === 0, canExchange.join(", "));
   // ★★達成で開く5点が、★theme に関わらず箱1であること。
   //   ★propMetronome は theme が "work" です。★theme だけで数えると漏れます。
   for (const k of m.unlockKeys()) {
     ok(`達成で開く「${k}」が箱1にある`, m.boxOf({ key: k }, byKey[k]) === 1);
   }
 
-  console.log("■ 箱2は、いま空です（★zip を開けるまで作れません）");
-  ok("箱2の一覧が空である", m.BOX2_KEYS.length === 0);
-  // ★★空である理由が、★ファイルに書いてあること。
-  //   ★理由の無い空欄は、★あとで「埋め忘れ」として埋められます。
-  const raw = fs.readFileSync(path.join(ROOT, "lib", "wardrobeBoxes.js"), "utf-8");
-  ok("空である理由が書いてある", /zip/.test(raw) && /top が0点/.test(raw));
-  // ★★足りないことを、数で確かめます。★§3 の最低数に届かないこと。
-  const MIN = { top: 15, bottom: 10, outer: 8, shoes: 6, hat: 12, neck: 4, hold: 8, eyes: 2, set: 5 };
-  const have = {};
-  impl.forEach((i) => { const c = byKey[i.key]; if (c) have[c.slot] = (have[c.slot] || 0) + 1; });
-  const short = Object.keys(MIN).filter((k) => (have[k] || 0) < MIN[k]);
-  ok("いまの品では、§3 の最低数に届かない（だから空でよい）", short.length > 0,
-    "足りない部位: " + short.join(", "));
+  console.log("■ 箱2は、70点そろっている");
+  ok(`箱2が70点（いま ${m.BOX2_KEYS.length}）`, m.BOX2_KEYS.length === 70);
+  ok("箱2に、同じ鍵が2つ入っていない", m.BOX2_KEYS.length === new Set(m.BOX2_KEYS).size);
+  const haveKeys = new Set(impl.map((i) => i.key));
+  const notImpl = m.BOX2_KEYS.filter((k) => !haveKeys.has(k));
+  ok("箱2の鍵が、すべて実装されている", notImpl.length === 0, notImpl.join(", "));
+  // ★★箱1と箱2は、★重ねられません。
+  //   ★箱1は「買えない・交換もできない」箱です。
+  //   ★2026-09-07、★§3-2 の一覧に propMetronome（達成で開く品）が
+  //     ★入っていて、★実際に重なりました。★ここで見つけました。
+  const clash = m.BOX2_KEYS.filter((k) => m.unlockKeys().includes(k));
+  ok("★箱1と箱2が、重なっていない", clash.length === 0, clash.join(", "));
+  // ★部位ごとの最低数（§3）を満たしていること
+  const MIN = { top: 17, bottom: 11, outer: 9, shoes: 6, hat: 12, neck: 5, eyes: 2 };
+  const bySlot = {};
+  m.BOX2_KEYS.forEach((k) => {
+    const it = impl.find((i) => i.key === k);
+    if (it) bySlot[it.slot] = (bySlot[it.slot] || 0) + 1;
+  });
+  for (const [slot, n] of Object.entries(MIN)) {
+    ok(`箱2の「${slot}」が ${n} 点以上（いま ${bySlot[slot] || 0}）`, (bySlot[slot] || 0) >= n);
+  }
+
+  console.log("■ 目録に無い2点も、正しい箱に入る");
+  // ★★propSword は opera の持ちものです。★売り物に落としてはいけません。
+  for (const [key, want] of [["propSword", 1], ["propUmbrella", 2]]) {
+    const it = impl.find((i) => i.key === key);
+    ok(`${key} が箱${want}`, it && m.boxOf(it, byKey[key]) === want,
+      it ? "いま箱" + m.boxOf(it, byKey[key]) : "品が見つかりません");
+  }
+
+  console.log("■ 全身ものは、上・下・羽織りと同時に着られない");
+  const sets = impl.filter((i) => i.slot === "garment");
+  ok(`全身もの ${sets.length} 点すべてに occupies がある`,
+    sets.every((i) => Array.isArray(i.occupies)
+      && ["top", "bottom", "outer"].every((s) => i.occupies.includes(s))));
 
   console.log("■ 数を、出さない");
   // ★「あと13ポイント」を、どこにも出さないこと（坂本さんの決め・2026-09-07）。

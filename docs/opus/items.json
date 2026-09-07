@@ -915,17 +915,6 @@
   "src": "gown.py"
  },
  {
-  "key": "operaCarmen",
-  "name": "カルメン",
-  "slot": "set",
-  "occupies": [
-   "top",
-   "bottom"
-  ],
-  "theme": "stage",
-  "src": "gown.py"
- },
- {
   "key": "operaPapageno",
   "name": "パパゲーノ（魔笛）",
   "slot": "set",

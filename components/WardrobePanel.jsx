@@ -6,7 +6,7 @@ import SheepDressed from "@/components/SheepDressed";
 import WardrobeSheet from "@/components/WardrobeSheet";
 import { SHEEP_GROUPS, itemsByGroup, sheepItemSrc, sheepItemByKey } from "@/lib/sheepItems";
 import {
-  inShopNow, currentSeason, SEASON_LABELS, isUnlockItem, unlockedItemKeys,
+  inShopNow, currentSeason, SEASON_LABELS, isUnlockItem, unlockedItemKeys, applyWear,
   PROP_SIDES, PROP_SIDE_DEFAULT, sortForShop
 } from "@/lib/sheepWardrobe";
 // ★★コーデと、シートの高さの決めは、lib が持ちます。
@@ -62,11 +62,12 @@ export default function WardrobePanel({
 
   function wear(item) {
     if (!onChange) return;
-    const next = { ...wearing };
-    // ★同じものを押したら、★外します。
-    if (next[item.slot] === item.key) delete next[item.slot];
-    else next[item.slot] = item.key;
-    onChange(next);
+    // ★★決めは lib/sheepWardrobe.js の applyWear が持ちます。
+    //   ★ここで書かないこと。★2か所になると、片方だけが古くなります。
+    //   ★全身ものと、上・下・羽織りの、脱ぎ着もあちらが見ています。
+    //   ★sheepItemByKey を渡します。★渡さないと、
+    //     ★着物の上からシャツが出る向きを、★見られません。
+    onChange(applyWear(wearing, item, sheepItemByKey));
   }
 
   function setSide(side) {

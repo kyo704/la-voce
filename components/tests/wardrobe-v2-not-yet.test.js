@@ -72,10 +72,18 @@ function ok(name, cond, extra) {
   const strays = fs.readdirSync(live).filter((f) => !known.has(f));
   ok("一覧に無い絵が、置き場に増えていない", strays.length === 0,
     strays.slice(0, 8).join(", "));
-  // ★★2026-09-07、★お箸とフォークを足しました（219点）。
-  //   ★古い22点を新しいほうへ一本化するために、★代わりの無い2点を埋めました。
-  ok("着せかえは、いま219点", index.items.length === 219,
+  // ★★2026-09-07、★166点のうち★62点だけを取り込みました（→281点）。
+  //   ★出どころ docs/opus/woolsong-確定-アイテムの全体像と、箱2の作り方（9月7日・夜・訂正版）.md §3
+  //   ★★「後回し」の決めは、★覆していません。
+  //     ★zip は、★開けたまま置いてありません（★上で確かめています）。
+  //     ★箱2（記録で交換する70点）に、★上・下・羽織り・目元が要りました。
+  //     ★いまの品には、★top が0点・bottom が0点・eyes が0点しかなく、
+  //       ★無料の方の羊が、★裸になってしまうためです。
+  //   ★残りの104点は、★取り込んでいません。
+  ok("着せかえは、いま281点", index.items.length === 281,
     "実際は " + index.items.length);
+  const daily = index.items.filter((i) => i.group === "daily");
+  ok("取り込んだのは、ふだん着62点だけ", daily.length === 62, "実際は " + daily.length);
   // ★足の絵は使いません。★脚はコードで描いています。
   for (const f of ["foot_L.png", "foot_R.png", "foot_shadow_L.png", "foot_shadow_R.png"]) {
     ok("足の絵 " + f + " を、取りこんでいない", !fs.existsSync(path.join(live, f)));
