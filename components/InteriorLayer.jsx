@@ -2,7 +2,7 @@
 
 import {
   interiorOf, interiorItemByKey, interiorSrc, windowLayers,
-  FLOOR_LINE_Y, isSingleSlot, WINDOW_INNER_RATIO
+  floorLineOf, widthPctOf, isSingleSlot, WINDOW_INNER_RATIO
 } from "@/lib/sheepInteriorV2";
 
 // ============================================================================
@@ -40,13 +40,24 @@ const ROOM_FLOOR_BOTTOM_PCT = 34;
 // ★部屋は、幅：高さ ＝ およそ 4：3。★横の％を、縦の％に直すときに使います。
 const ROOM_ASPECT = 4 / 3;
 
+/**
+ * ★置き場所（★左右の位置と、壁のものの高さ）。
+ *
+ *   ★★大きさ（width）は、★ここでは決めません（★2026-09-08 の直し）。
+ *     ★★分類ごとに 22／15／12／16／26 と決め打ちしていました。
+ *       ★どれも同じ 320 の絵なのに、★庭だけ小さく出ていました。
+ *     ★いまは widthPctOf(item) が、★絵の幅から出します。
+ *
+ *   ★★扉は、★壁ぎわに寄せます。★中身は x14〜306（320の絵）なので、
+ *     ★絵の幅の半分だけ内側に置けば、★右の壁に接します。
+ */
 const SPOT = {
-  door: { left: 88, width: 16 },
-  window: { left: 50, top: 13, width: 26 },
-  wallart: { left: 20, top: 18, width: 12 },
-  furniture: { left: 34, width: 22 },
-  showa: { left: 62, width: 22 },
-  garden: { left: 50, width: 15 }
+  door: { left: 89 },
+  window: { left: 50, top: 13 },
+  wallart: { left: 20, top: 18 },
+  furniture: { left: 34 },
+  showa: { left: 62 },
+  garden: { left: 50 }
 };
 
 /**
@@ -68,11 +79,11 @@ const SPOT = {
 function floorBottomPct(item, widthPct) {
   const size = item && item.size ? item.size : [320, 320];
   const [w, h] = size;
-  // ★絵の高さは、★幅に対して h/w 倍。★部屋の幅の widthPct% を占めるので、
-  //   ★部屋の幅に対する高さは widthPct * (h/w) ％です。
-  //   ★★部屋は横長なので、★縦の％は、そのままでは使えません。
-  //   ★ですが、余白の割合そのものは、★絵の中の比です。
-  const padRatio = (h - FLOOR_LINE_Y) / h;      // ★絵の高さのうち、余白の割合
+  // ★★床に着く線は、★1点ずつ実測した値を使います（★2026-09-08 の直し）。
+  //   ★★どの絵も y300 だとして置いていました。★そろっていませんでした。
+  //     ★扉は 512 の絵で、★床の線は 503。★300 を当てると、2割ちかく浮きます。
+  //   ★実機で「扉が壁に接していない」とご指摘をいただきました。
+  const padRatio = (h - floorLineOf(item)) / h;  // ★絵の高さのうち、床より下の余白
   const heightPct = widthPct * (h / w);          // ★部屋の幅に対する、絵の高さ
   // ★部屋は、幅：高さ ＝ およそ 4：3。★縦の％に直します。
   return ROOM_FLOOR_BOTTOM_PCT - padRatio * heightPct * ROOM_ASPECT;
@@ -113,7 +124,6 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
     return {
       left: p && typeof p.left === "number" ? p.left : s.left,
       top: p && typeof p.top === "number" ? p.top : null,
-      width: s.width,
       wallTop: s.top
     };
   };
@@ -155,13 +165,13 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
           ★★そして、★2枚そろわなければ、★1枚も出しません（坂本さんの決め）。 */}
       {win.map((it) => {
         const isFrame = it.category === "window";
+        // ★★枠の大きさは、★絵の幅から出します（★決め打ちしません）。
+        const frameW = widthPctOf(win.find((x) => x.category === "window") || it);
         // ★枠は、そのまま。★景色は、枠の内側に収めます。
-        const w = isFrame
-          ? SPOT.window.width
-          : SPOT.window.width * WINDOW_INNER_RATIO;
+        const w = isFrame ? frameW : frameW * WINDOW_INNER_RATIO;
         // ★枠の中心と、景色の中心を、そろえます。
         //   ★枠は正方形なので、★中心は top + 幅/2 の高さです。
-        const centerTop = SPOT.window.top + SPOT.window.width * ROOM_ASPECT / 2;
+        const centerTop = SPOT.window.top + frameW * ROOM_ASPECT / 2;
         const vh = w * (it.size[1] / it.size[0]) * ROOM_ASPECT;
         return (
           <img key={it.key} src={interiorSrc(it)} alt="" aria-hidden="true"
@@ -184,8 +194,8 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
           style={{
             position: "absolute",
             left: `${SPOT.door.left}%`,
-            bottom: `${floorBottomPct(door, SPOT.door.width)}%`,
-            width: `${SPOT.door.width}%`,
+            bottom: `${floorBottomPct(door, widthPctOf(door))}%`,
+            width: `${widthPctOf(door)}%`,
             transform: "translate(-50%, 0)",
             zIndex: 1, pointerEvents: "none"
           }} />
@@ -197,6 +207,8 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
       {many.map((it, i) => {
         const s = spotOf(it);
         const onWall = it.category === "wallart";
+        // ★★大きさは、★絵の幅から出します（★分類ごとに決め打ちしません）。
+        const wpct = widthPctOf(it);
         // ★動かしていないものは、★重ならないよう、★少しずつずらします。
         const shift = pos[it.key] ? 0 : (i % 4) * 9 - 13;
         const left = s.left + shift;
@@ -208,8 +220,8 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
           left: `${left}%`,
           ...(top != null
             ? { top: `${top}%` }
-            : { bottom: `${floorBottomPct(it, s.width)}%` }),
-          width: `${s.width}%`,
+            : { bottom: `${floorBottomPct(it, wpct)}%` }),
+          width: `${wpct}%`,
           transform: "translate(-50%, 0)",
           zIndex: onWall ? 1 : 2
         };

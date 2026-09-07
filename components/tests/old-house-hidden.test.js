@@ -85,13 +85,30 @@ async function load(rel) {
   // ★★1行ずつ書く形に、戻っていないこと。
   ok(!/hideOldHouse\s*\?/.test(home), "★1行ずつ hideOldHouse ? … と書く形に、戻っていない");
 
-  console.log("⑦ 新しい窓は、2枚そろって はじめて出る");
+  console.log("⑦ 新しい窓は、いつも1組（★2026-09-08 夕・決めが変わりました）");
   const layer = readRaw("components/InteriorLayer.jsx");
   ok(/if \(!wardrobeOn\) return null;/.test(layer), "門の外の方には、新しい内装を1枚も出さない");
   const inter = readRaw("lib/sheepInteriorV2.js");
-  ok(/if \(!frame \|\| !view\) return \[\];/.test(inter), "枠と景色が そろわなければ、1枚も出さない");
+  ok(/interiorItemByKey\(DEFAULT_WINDOW\)/.test(inter) && /interiorItemByKey\(DEFAULT_VIEW\)/.test(inter),
+    "★選んでいないほうは、既定で埋める（★窓を消さない）");
   const panel = readRaw("components/InteriorPanel.jsx");
-  ok(/そろうと出ます/.test(panel), "★そろっていないときは、黙らずに、そう伝える");
+  ok(/いつも1つずつ出ています/.test(panel), "★いま何が出ているかを、黙らずに書く");
+
+  console.log("⑧ ★旧い窓を、門の中では1枚も描いていないか");
+  ok(/\{!wardrobeOn && \(/.test(home), "★旧い窓の枠を、門の中では出さない");
+  // ★★既定に差し替えるだけでは、★窓そのものは残ります。
+  ok(home.indexOf("{!wardrobeOn && (") < home.indexOf("boxLeft, top: boxTop"),
+    "★その門が、旧い窓の枠の前にある");
+  // ★★重ね順。★新しい層は、旧い床と旧い窓の★あとに描くこと。
+  const iL = home.indexOf("<InteriorLayer");
+  const oldFloor = home.indexOf("background: floorColor");
+  const oldWin = home.indexOf("{!wardrobeOn && (");
+  ok(iL > oldFloor, "★新しい層は、旧い床のあとに描く（★同じ zIndex では、あとが上）");
+  ok(iL < oldWin, "★旧い窓の枠より前でよい（★そちらは門で出さないため）");
+
+  console.log("⑨ ★動かせる押しどころが、門の中でも出るか");
+  ok(/wardrobeOn && hasMovableInterior\(equipped\)/.test(home),
+    "★新しい内装も、「並べかえる」の数に入れている");
 
   console.log(fail === 0 ? "\n★すべて通りました" : "\n★" + fail + "件、落ちました");
   process.exit(fail === 0 ? 0 : 1);

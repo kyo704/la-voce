@@ -56,20 +56,23 @@ function ok(name, cond, extra) {
   const two = m.windowLayers({ window: f.key, view: v.key });
   ok("2枚 返る", two.length === 2);
   ok("★景色が先、枠があと", two[0].category === "view" && two[1].category === "window");
-  // ★★2026-09-08、★決めが変わりました（坂本さんの決め）。
-  //   ★もとは「片方だけでも出す」でした。
-  //   ★★枠は 384×384、景色は 480×320 で、★縦横比が違います。
-  //     ★片方だけ置くと、★大きさが合わず、おかしく見えます。
-  //   ★★2枚そろって、はじめて1つの窓とします。
-  ok("★枠だけでは、出さない", m.windowLayers({ window: f.key }).length === 0);
-  ok("★景色だけでも、出さない", m.windowLayers({ view: v.key }).length === 0);
-  ok("★2枚そろえば、出る", m.windowLayers({ window: f.key, view: v.key }).length === 2);
-  ok("どちらも無ければ、空", m.windowLayers({}).length === 0);
-  // ★★黙って出さないのではなく、★足りないほうを言えること。
-  ok("★そろっているか、答えられる",
-    m.windowReady({ window: f.key, view: v.key }) === true && m.windowReady({ window: f.key }) === false);
-  ok("★どちらが足りないか、答えられる",
-    m.windowMissing({ window: f.key }) === "view" && m.windowMissing({ view: v.key }) === "window");
+  // ★★2026-09-08（夕）、★決めが また変わりました（坂本さんの決め）。
+  //   ★もとは「2枚そろわなければ、1枚も出さない」でした。
+  //   ★★片方だけ選ぶと、★窓が消えます。★壁に穴が空いたように見えます。
+  //   ★★だから、★いつも1組にします。★選んでいないほうは、既定で埋めます。
+  ok("★枠だけでも、1組 出る", m.windowLayers({ window: f.key }).length === 2);
+  ok("★景色だけでも、1組 出る", m.windowLayers({ view: v.key }).length === 2);
+  ok("★2枚そろえば、そのまま出る", m.windowLayers({ window: f.key, view: v.key }).length === 2);
+  ok("★何も選んでいなくても、既定の窓が出る", m.windowLayers({}).length === 2);
+  ok("★既定が、名簿に在る",
+    !!m.interiorItemByKey(m.DEFAULT_WINDOW) && !!m.interiorItemByKey(m.DEFAULT_VIEW));
+  ok("★選んだほうは、既定に上書きされない",
+    m.windowLayers({ window: f.key })[1].key === f.key);
+  ok("★いつも そろっている", m.windowReady({}) === true && m.windowReady({ window: f.key }) === true);
+  // ★★いま出ている窓が、何かを言えること（★画面の印に使います）。
+  ok("★いま出ている窓を、答えられる",
+    m.currentWindow({}).window === m.DEFAULT_WINDOW
+    && m.currentWindow({ view: v.key }).view === v.key);
   // ★★枠と景色は、縦横比が違うので、★同じ大きさで置けません。
   ok("★景色を、枠の内側に収める割合がある", typeof m.WINDOW_INNER_RATIO === "number");
   // ★★組み合わせの数を、画面に出さないこと（★数を見せない決め）。
@@ -149,7 +152,17 @@ function ok(name, cond, extra) {
     ok("★床のタイルは、床のところだけ", /floorTile && \(/.test(layer));
     ok("★1枚で部屋ぜんぶを覆っていない", !/placed\.tile\b/.test(layer));
     ok("★壁と床を、lib が分けている", m.wallTiles().length === 5 && m.floorTiles().length === 4);
-    ok("★床の線を、lib から取っている", /FLOOR_LINE_Y/.test(layer));
+    // ★★2026-09-08、★床の線を「どの絵も y300」としていました。
+    //   ★実測すると、★家具 247/301/309、★庭 289〜311、★扉 503 でした。
+    //   ★扉に 300 を当てると、2割ちかく浮きます（★実機のご指摘）。
+    ok("★床の線を、1点ずつ実測した値で取っている", /floorLineOf\(/.test(layer));
+    ok("★大きさも、絵の幅から出している", /widthPctOf\(/.test(layer));
+    ok("★分類ごとに、大きさを決め打ちしていない", !/width: 22|width: 15|width: 12|width: 16|width: 26/.test(layer));
+    // ★★名簿に、実測値が入っていること。
+    ok("★120点すべてに、床の線が入っている",
+      m.INTERIOR_ITEMS.every((i) => typeof i.floorY === "number"));
+    ok("★扉の床の線は 503（★300 ではない）",
+      m.floorLineOf(m.interiorItemByKey("door_01")) === 503);
 
     // ★★いまの101点を、壊していないこと。
     ok("★いまの壁の絵は、そのまま", /<WallTexture material=\{wallKey\}/.test(home));

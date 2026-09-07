@@ -12,6 +12,8 @@ import InteriorLayer from "@/components/InteriorLayer";
 import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
 } from "@/lib/oldHouseVisibility";
+// ★動かせる内装が在るか。★決めは、あちらが持ちます。
+import { hasMovableInterior } from "@/lib/sheepInteriorV2";
 import { C } from "@/lib/tokens";
 import {
   SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, PLACEMENT_LIMITS,
@@ -1865,16 +1867,28 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
   return (
     <div id="room-anchor" style={{ position: "relative", width: "100%", maxWidth: isRoomExpanded ? 700 : 480, margin: "0 auto", aspectRatio: isRoomExpanded ? "7 / 5" : "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor, transition: "max-width 0.4s ease, aspect-ratio 0.4s ease" }}>
       <WallTexture material={wallKey} wardrobeOn={wardrobeOn} />
-      {/* ★★内装120点（★2026-09-08）。★いまの見え方を、1つも変えません。
-          ★★これは、★上に重ねる別の層です。★門の外の方には1枚も出ません。
-          ★★壁の絵のすぐあとに置きます。★床より後ろ、家具より前です。 */}
-      <InteriorLayer equipped={equipped} wardrobeOn={wardrobeOn}
-        editMode={editMode} onUpdatePosition={onUpdatePosition}
-        Draggable={InteriorDraggable} />
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", background: floorColor, zIndex: 0, overflow: "hidden" }}>
         <FloorTexture material={floorKey} wardrobeOn={wardrobeOn} />
       </div>
 
+      {/* ★★内装120点（★2026-09-08）。
+          ★★2026-09-08、★ここより前に置いていました。
+            ★★同じ zIndex では、★あとに描いたほうが上に来ます。
+              ★だから、★旧い床が★新しい床タイルを覆い、
+              ★旧い窓が★新しい窓を覆っていました。
+            ★実機で「床のものが効かない」「旧い窓がまだ出る」と
+              ★ご指摘をいただきました。★そのとおりでした。
+          ★★だから、★旧い床と旧い窓の★あとに描きます。
+          ★門の外の方には、★1枚も出ません（★InteriorLayer が止めます）。 */}
+      <InteriorLayer equipped={equipped} wardrobeOn={wardrobeOn}
+        editMode={editMode} onUpdatePosition={onUpdatePosition}
+        Draggable={InteriorDraggable} />
+
+      {/* ★★旧い窓は、★門の中の方には★1枚も描きません（★2026-09-08）。
+          ★★既定の窓に差し替えるだけでは、★窓そのものは残ります。
+            ★新しい窓（枠＋景色）が、★その役を引き受けます。
+          ★門の外の方には、★これまでどおり出ます。★取り上げていません。 */}
+      {!wardrobeOn && (
       <div style={{
         position: "absolute", left: boxLeft, top: boxTop, width: boxWidth, height: boxHeight,
         background: isBamboo ? "repeating-conic-gradient(from 0deg, #C9B87C 0deg 7deg, #A8934F 7deg 14deg)" : windowFrameColor,
@@ -2140,6 +2154,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
           )}
         </div>
       </div>
+      )}
 
       {placedFurniture.includes("furniture_rug") && (
         <DraggableItem
@@ -2208,7 +2223,13 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
         );
       })}
 
-      {(placedFurniture.length > 0 || placedWallhang.length > 0) && (
+      {/* ★★「並べかえる」の押しどころ。
+          ★★2026-09-08、★旧い家具があるときだけ出していました。
+            ★門の中では旧い家具が0点なので、★押しどころが出ず、
+            ★新しい家具を1つも動かせませんでした。
+          ★★新しい内装も、★数に入れます。★判定は lib が持ちます。 */}
+      {(placedFurniture.length > 0 || placedWallhang.length > 0
+        || (wardrobeOn && hasMovableInterior(equipped))) && (
         <button type="button" onClick={() => setEditMode((v) => !v)}
           className="absolute bottom-2 right-2 text-xs px-3 py-1.5 rounded-full font-medium"
           style={{ background: editMode ? C.curtain : "rgba(255,253,248,0.9)", color: editMode ? "#FFFDF8" : C.ink, border: `1px solid ${C.line}`, zIndex: UI_CHROME_Z }}>
