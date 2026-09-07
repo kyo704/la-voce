@@ -6981,19 +6981,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★体について何も言わないので、★ゲートは掛けません。
   const repertoire = useMemo(() => repertoireLog(entries), [entries]);
 
-  // ★★有料の門が、その方にかかっているか。★1か所で決めます（★2026-09-07）。
-  //   ★★2か所で別々に判定していたため、★食い違いが出ました。
-  //     ★壁の札は門の中、★「もっと」のカードは門の外にありました。
-  //     ★門の外の方がカードから /billing へ行くと、
-  //     ★「まだ始まっていません」と出ました。
-  //   ★決めそのものは lib/freeTier.js が持ちます。★ここは呼ぶだけです。
-  const paidGateApplies = !mayViewSummary({
-    scope: "summary",
-    profile,
-    subscribed: subscribed === true,
-    userId,
-    env: { NEXT_PUBLIC_GATE_TEST_USER_IDS: process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS }
-  });
+  // ★★有料の門の判定（paidGateApplies）は、★ここにありました。
+  //   ★2026-09-07、★subscribed の宣言より★前で読んでいました。
+  //   ★★描くたびに ReferenceError で落ちていました（★本番の500）。
+  //   ★宣言のすぐ下へ移しました。★下を見てください。
 
   // ★★D+1 の一問（本番モード §7）。★聞く本番を、1つだけ選びます。
   //   ★まとめて聞きません。★2つ並べると、どちらの話か分からなくなります。
@@ -7897,7 +7888,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           const first = vals[0], last = vals[vals.length - 1];
           metrics.push({
             tag, label: "音色の均一感の推移", data: vals.map((v) => ({ date: v.date.slice(5), value: v.score })),
-            summary: `${first.score.toFixed(1)} → ${last.score.toFixed(1)}（5点満点）`
+            // ★★「（5点満点）」を外しました（★2026-09-07・14番・案あ）。
+            //   ★満点があると、★点をつけていることになります。
+            //   ★折れ線と入力欄は残します。★ご自身が入れた記録だからです。
+            summary: `${first.score.toFixed(1)} → ${last.score.toFixed(1)}`
           });
         } else {
           metrics.push({ tag, label: "音色の均一感", data: null, summary: null, needsMoreData: true });
@@ -8837,6 +8831,31 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★localStorage に持たないこと（権利と課金の線引き §2-2）。
   //   ★読めないうちは null。★null のあいだは、門をかけません（★渡しすぎる側に倒す）。
   const [subscribed, setSubscribed] = useState(null);
+
+  // ★★有料の門が、その方にかかっているか。★1か所で決めます（★2026-09-07）。
+  //   ★★2か所で別々に判定していたため、★食い違いが出ました。
+  //     ★壁の札は門の中、★「もっと」のカードは門の外にありました。
+  //     ★門の外の方がカードから /billing へ行くと、
+  //     ★「まだ始まっていません」と出ました。
+  //   ★決めそのものは lib/freeTier.js が持ちます。★ここは呼ぶだけです。
+  //
+  //   ★★2026-09-07、★ここへ移しました。★以前は、ずっと上にありました。
+  //     ★subscribed は、★この行で初めて作られます。
+  //     ★それより前で読むと、★JavaScript は
+  //       ReferenceError: Cannot access ... before initialization
+  //       ★を投げます（★一時的死角・temporal dead zone）。
+  //     ★★描くたびに落ちるので、★ダッシュボードが開けませんでした。
+  //   ★★const と let は、★書いた行より前では、★存在しないのと同じです。
+  //     ★var や function とは、★ここが違います。
+  //     ★next build も next lint も、★これを見つけません。
+  //     ★見張り components/tests/no-tdz.test.js を足しました。
+  const paidGateApplies = !mayViewSummary({
+    scope: "summary",
+    profile,
+    subscribed: subscribed === true,
+    userId,
+    env: { NEXT_PUBLIC_GATE_TEST_USER_IDS: process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS }
+  });
   // ★★お知らせを、いまだけ閉じたか（2026-09-05 夜に直しました）。
   //   ★「あとで」は、★この画面を閉じるだけです。
   //   ★★既読にしません。★開き直すと、また出ます。
@@ -11168,6 +11187,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setSaveStatus("saved");
     setTimeout(() => setSaveStatus("idle"), 1800);
     setSaveCardData({
+      // ★★どの日を書いたかを、持たせます（★2026-09-07）。
+      //   ★過去の日をまとめて入れるとき、★いちばん怖いのは
+      //     ★「ちがう日に書いてしまった」に、★気づかないことです。
+      //   ★だから、★保存のあとに、★書いた日を必ず出します。
+      date: clean.date,
       pointsBefore: balanceBefore,
       pointsAfter: balanceAfter,
       streak: streakAfter,
@@ -11411,7 +11435,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               .save-card-points { animation: saveCardPointsPop 0.5s ease-out; }
               @media (prefers-reduced-motion: reduce) { .save-card-points { animation: none; } }
             `}</style>
-            <p className="ff-display italic text-xl mb-3" style={{ color: C.curtain }}>✓ {t("labelRecordedCheck")}</p>
+            <p className="ff-display italic text-xl mb-1" style={{ color: C.curtain }}>✓ {t("labelRecordedCheck")}</p>
+            {/* ★★書いた日を、必ず出します（★2026-09-07）。
+                ★まとめて入れるときに、いちばん怖いのは
+                  ★ちがう日に書いたことに、★気づかないことです。
+                ★今日のときは、★出しません。★当たり前のことを言わないためです。 */}
+            {saveCardData.date && saveCardData.date < realTodayDate && (
+              <p className="text-sm mb-2" style={{ color: C.ink }}>
+                {formatDateLabel(saveCardData.date, language)}
+              </p>
+            )}
+            <div className="mb-3" />
             <p className="ff-mono save-card-points" style={{ fontSize: "1.75rem", color: C.ink }}>
               +{saveCardData.pointsAfter - saveCardData.pointsBefore}pt <span style={{ fontSize: "1.0rem", color: C.inkSoft }}>→ {saveCardData.pointsAfter}pt</span>
             </p>
@@ -11423,6 +11457,28 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <p className="text-xs mb-1" style={{ color: C.inkSoft }}>今日わかったこと</p>
                 <p className="text-sm">{saveCardData.discovery}</p>
               </div>
+            )}
+            {/* ★★過去の日を入れているときは、★次の日へ進む道を出します（★2026-09-07）。
+                ★昔の記録を、★手帳から書き写す方のためのものです。
+                ★★これまでは、★1日ぶん保存するたびに、
+                  ★上へ戻って、★日付を選び直していただいていました。
+                  ★1年ぶんだと、★同じ動きを365回くり返すことになります。
+                ★勝手に進めません。★押していただいたときだけ進みます。
+                  ★「気がついたら、ちがう日を書いていた」を作らないためです。
+                ★今日を書いたときは、★これまでどおりです。★出しません。 */}
+            {saveCardData.date && saveCardData.date < realTodayDate && (
+              <button type="button"
+                onClick={() => {
+                  const next = addDays(saveCardData.date, 1);
+                  setSaveCardData(null);
+                  setSelectedDate(next > realTodayDate ? realTodayDate : next);
+                  // ★書く欄は、上から始まります。★上へ戻します。
+                  if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
+                }}
+                className="w-full py-3 rounded-full text-sm font-medium mt-5"
+                style={{ background: C.curtain, color: "#FFFDF8" }}>
+                次の日（{formatDateLabel(addDays(saveCardData.date, 1), language)}）を書く
+              </button>
             )}
             <div className="flex gap-2 mt-5">
               <button type="button" onClick={() => { setSaveCardData(null); setActiveTab("garden"); }}
