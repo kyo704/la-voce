@@ -101,7 +101,6 @@ import { mayShowLuxuryFields } from "@/lib/ageGate";
 import { weatherCarryDecision, isWeatherSource, isCarried, CARRIED_NOTE } from "@/lib/weatherCarry";
 import { CPPS_ENABLED } from "@/lib/pausedFeatures";
 import { teacherWithHonorific, DEPARTED_TEACHER_LABEL } from "@/lib/teacherDisplay";
-import { rankPhrase } from "@/lib/rankWording";
 import { shouldNotify } from "@/lib/noticeAudience";
 import { shouldShowNotice, withNoticeShown, noticeStateFromRows, NOTICE_TEXT } from "@/lib/notices";
 import { cycleOptInDescription, mentionsCycleInDataLists } from "@/lib/cycleCopy";
@@ -6856,10 +6855,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const todayEntry = dailyScoreSeries[dailyScoreSeries.length - 1];
     const z = (todayEntry.score - mean) / sigma;
     const T = Math.min(80, Math.max(20, Math.round(50 + 10 * z)));
-    const position = values.filter((v) => v > todayEntry.score).length + 1; // 1位＝この期間でいちばん良い日
-    const topPercentPct = Math.max(1, Math.round((position / n) * 100));
-    // ★点列（§3-C）を描くために、分布そのものも返す。順位だけでは散らばりが見えない。
-    return { z, T, n, position, topPercentPct, today: Math.round(todayEntry.score), values };
+    // ★★position と topPercentPct を、★やめました（★2026-09-07・11番）。
+    //   ★「上から何番目か」「上位何%か」を出していました。
+    //   ★★順位は、★書いた日どうしを競わせます。
+    //   ★点の並び（values）は残します。★散らばりを見せるためのものです。
+    return { z, T, n, today: Math.round(todayEntry.score), values };
   }, [dailyScoreSeries]);
 
   // lavoce-レパートリー負荷パッチ.md §1.4: 「無理なく出せる音域」（任意）があればそちらを優先し、
@@ -7880,6 +7880,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           metrics.push({ tag, label: "最長発声時間（MPT）", data: null, summary: null, needsMoreData: true });
         }
       } else if (tag === "evenness") {
+        // ★★14番（音色の均一感）は、★いったん元のままにしてあります（2026-09-07）。
+        //   ★一度外したところ、★下の枝に落ちて
+        //     「この指標はまだ記録機能がありません」と出ました。★事実と違います。
+        //   ★★そして、この折れ線は★こちらが付けた点ではありません。
+        //     ★お客さまご自身が入れた記録を、★そのままお返ししています。
+        //     ★惹句「あなたが測ったこと、書いたことを、あとで、あなたに返します」
+        //       ★に、まっすぐ当たります。
+        //   ★★「5点満点」という言い方だけを外すのか、★折れ線ごと外すのか、
+        //     ★入力欄も外すのかを、★坂本さんにお尋ねしています。
         const vals = dates28.map((d) => {
           const scores = ((entries[d].voiceEntries || [])).map((v) => v.toneEvenness).filter((v) => typeof v === "number");
           return scores.length > 0 ? { date: d, score: scores.reduce((a, b) => a + b, 0) / scores.length } : null;
@@ -15046,28 +15055,29 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                 <span className="text-xs" style={{ color: C.inkSoft }}>偏差値</span>
                               </>
                             ) : (
-                              <>
-                                <span className="ff-display italic" style={{ fontSize: "1.7rem", color: C.ink }}>{deviationScore.position}</span>
-                                <span className="text-xs" style={{ color: C.inkSoft }}>／{deviationScore.n}日中</span>
-                              </>
+                              // ★★「5／20日中」も、★順位です（11番）。
+                              //   ★件数が足りないときは、★数字を出さず、★点の並びだけにします。
+                              null
                             )}
                           </div>
                           <DotStrip values={deviationScore.values} today={deviationScore.today} />
                           <p className="text-[10px]" style={{ color: C.inkSoft }}>低い ← → 高い</p>
                         </div>
-                        {gateAllows("deviation.tScore", { n: deviationScore.n }) ? (
+                        {/* ★★順位の文を、やめました（★2026-09-07・11番）。
+                            ★「この20日のうち、今日は高いほうから5番目です」と出していました。
+                            ★★順位は、★その日に、他の日との上下を付けます。
+                              ★書いた日どうしを、★競わせることになります。
+                            ★下の点の並びは、★残します。
+                              ★あちらは順位ではなく、★散らばりを見せるものです。
+                              ★今日がどこに居るかは見えますが、★何番目とは言いません。 */}
+                        {gateAllows("deviation.tScore", { n: deviationScore.n }) && (
                           <p className="text-xs" style={{ color: C.ink }}>
-                            今日は<strong>偏差値{deviationScore.T}</strong>。{rankPhrase(deviationScore.position, deviationScore.n).text}
-                          </p>
-                        ) : (
-                          <p className="text-xs" style={{ color: C.ink }}>
-                            {rankPhrase(deviationScore.position, deviationScore.n).text}
+                            今日は<strong>偏差値{deviationScore.T}</strong>です。
                           </p>
                         )}
                       </div>
-                      {!gateAllows("deviation.tScore", { n: deviationScore.n }) && (
-                        <p className="text-xs mt-3" style={{ color: C.inkSoft }}>{t("gateRankOnlyNote")}</p>
-                      )}
+                      {/* ★★「順位だけを表示しています」の断りも、外しました（11番）。
+                          ★順位を出さなくなったので、★断る相手がありません。 */}
                       <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
                         ※ 絶対値ではなく、自分自身の記録の中での相対的な位置を示す参考値です。
                       </p>

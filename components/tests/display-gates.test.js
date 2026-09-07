@@ -117,7 +117,9 @@ async function main() {
 
   console.log("\n=== テスト9: すべてのゲートの labelKey が translations.js に実在する ===");
   GATES.forEach((g) => assertTrue(translationKeyExists(g.labelKey), `${g.key} の labelKey「${g.labelKey}」が存在する`));
-  ["gateNeedDays", "gateNeedRecords", "gateNoClearTrend", "gateRankOnlyNote"].forEach((k) =>
+  // ★★gateRankOnlyNote を、一覧から外しました（★2026-09-07・11番）。
+  //   ★順位を出さなくなったので、★「順位だけです」と断る文も要りません。
+  ["gateNeedDays", "gateNeedRecords", "gateNoClearTrend"].forEach((k) =>
     assertTrue(translationKeyExists(k), `文言キー「${k}」が存在する`));
 
   console.log("\n=== テスト10（G2-4）: 白米の例が、実装として再現しないこと ===");
