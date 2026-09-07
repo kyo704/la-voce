@@ -89,14 +89,23 @@ function ok(name, cond, extra) {
     /見られるものを増やす/.test(vt2));
   ok("★「アップグレード」と書いていない", !/アップグレード/.test(vt2));
   // ★★済んでいる方に、もう一度すすめないこと。
-  ok("★お支払いずみの方には、出さない", /subscribed !== true && \(/.test(vt2));
+  // ★★2026-09-07、★門の判定も足しました（★カードだけ門の外に出ていた）。
+  ok("★お支払いずみの方には、出さない",
+    /subscribed !== true && paidGateApplies && \(/.test(vt2));
+  // ★★門の判定は、1か所で決めること。★2か所で判定して食い違いました。
+  ok("★門の判定を、1か所で決めている",
+    /const paidGateApplies = !mayViewSummary\(/.test(vt2));
   ok("★先に「無料のもの」を言っている",
     vt2.indexOf("GATE_CLOSING_LINES.map") < vt2.indexOf("gatePriceLines(PLANS)"));
   // ★★目立たせても、★急かしてはいけません（★2026-09-07）。
   //   ★色を「強く」しない。★赤や黄で目を引くのは、警告の作りです。
   //   ★これは警告ではありません。
-  const card = vt2.slice(vt2.indexOf("見られるものを増やす") - 900,
-                         vt2.indexOf("見られるものを増やす") + 1400);
+  // ★★カードの範囲だけを見ます。★広げすぎると、隣の「学ぶ」に届きます。
+  //   ★あちらは絵の色に C.gold を使っており、★正しい使い方です。
+  //   ★カードは、見出しから「くわしく見る」までです。
+  const cardStart = vt2.indexOf("見られるものを増やす") - 1200;
+  const cardEnd = vt2.indexOf("くわしく見る", vt2.indexOf("見られるものを増やす"));
+  const card = vt2.slice(cardStart, cardEnd);
   ok("★警告の色を使っていない", !/C\.rust|C\.gold/.test(card));
   ok("★しるし（点・NEW）を付けていない", !/NEW|新着|●|badge/i.test(card));
   ok("★急かす言葉が無い", !/お得|今だけ|お早め|期間限定|残り\d/.test(card));

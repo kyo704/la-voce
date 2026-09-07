@@ -76,7 +76,8 @@ import { mayUseWardrobe } from "@/lib/sheepWardrobe";
 import { computeUnlocked } from "@/lib/character";
 // ★★無料と有料の線（⑫・案B）。★判定は lib/freeTier.js が1か所で持ちます。
 //   ★画面で、条件を並べ直さないこと。
-import { scopeForPeriod, mayViewSummary, GATE_CLOSING_LINES, gatePriceLines } from "@/lib/freeTier";
+import { scopeForPeriod, mayViewSummary, GATE_CLOSING_LINES, gatePriceLines,
+  PAID_FEATURES, featureLabel } from "@/lib/freeTier";
 // ★値段は lib/plans.js が持ちます。★画面に書き写しません。
 import { PLANS } from "@/lib/plans";
 import GateNotice from "@/components/GateNotice";
@@ -6979,6 +6980,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★すでに書かれた曲名を、数え直すだけです。
   //   ★★体について何も言わないので、★ゲートは掛けません。
   const repertoire = useMemo(() => repertoireLog(entries), [entries]);
+
+  // ★★有料の門が、その方にかかっているか。★1か所で決めます（★2026-09-07）。
+  //   ★★2か所で別々に判定していたため、★食い違いが出ました。
+  //     ★壁の札は門の中、★「もっと」のカードは門の外にありました。
+  //     ★門の外の方がカードから /billing へ行くと、
+  //     ★「まだ始まっていません」と出ました。
+  //   ★決めそのものは lib/freeTier.js が持ちます。★ここは呼ぶだけです。
+  const paidGateApplies = !mayViewSummary({
+    scope: "summary",
+    profile,
+    subscribed: subscribed === true,
+    userId,
+    env: { NEXT_PUBLIC_GATE_TEST_USER_IDS: process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS }
+  });
 
   // ★★D+1 の一問（本番モード §7）。★聞く本番を、1つだけ選びます。
   //   ★まとめて聞きません。★2つ並べると、どちらの話か分からなくなります。
@@ -18380,7 +18395,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ★★すでにお支払いの方には、出しません。
                       ★済んでいる方に、★もう一度すすめないこと。
                     ★数字は lib/plans.js から。★ここに書き写しません。 */}
-                {subscribed !== true && (
+                {/* ★★門の中の方にだけ、お見せします（★2026-09-07・直し）。
+                    ★★これを忘れていました。★カードだけが門の外に出ていました。
+                      ★門の外の方がカードから /billing へ行くと、
+                      ★「まだ始まっていません」と出て、★食い違いました。
+                    ★★判定は、壁の札（GateNotice）と同じものを使います。
+                      ★2か所で別々に判定すると、★また食い違います。 */}
+                {subscribed !== true && paidGateApplies && (
                   <div className="rounded-2xl p-5 border" style={{
                     // ★★周りのカードと、地の色を変えます（★2026-09-07）。
                     //   ★いちばん上に在るのに、★見た目が同じで埋もれていました。
@@ -18400,7 +18421,22 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         {line}
                       </p>
                     ))}
-                    <div style={{ marginTop: 10 }}>
+                    {/* ★★何が見られるようになるかを、先に書きます（★2026-09-07）。
+                        ★値段だけを出しても、★読む理由がありません。
+                        ★★目立たせるより、★読む理由を作るほうが、この製品に合います。
+                        ★★一覧は lib/freeTier.js が持ちます。★ここに書き写しません。
+                          ★無い機能を並べないため。★消した機能は、あちらから外します。
+                          ★実際「今日の目安」が、消したあとも残っていました。 */}
+                    <p className="text-sm" style={{ color: C.ink, marginTop: 12, marginBottom: 6, lineHeight: 1.8 }}>
+                      見られるようになるもの
+                    </p>
+                    {PAID_FEATURES.map((k) => (
+                      <p key={k} className="text-sm" style={{ color: C.ink, margin: "0 0 4px", lineHeight: 1.8 }}>
+                        ・{featureLabel(k)}
+                      </p>
+                    ))}
+
+                    <div style={{ marginTop: 14 }}>
                       {gatePriceLines(PLANS).map((line) => (
                         <p key={line} className="text-sm" style={{ color: C.ink, margin: "0 0 4px", lineHeight: 1.8 }}>
                           ・{line}

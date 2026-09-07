@@ -23,7 +23,23 @@ export async function GET() {
       commit: sha,
       short: sha === "unknown" ? "unknown" : sha.slice(0, 7),
       builtAt: process.env.VERCEL_GIT_COMMIT_MESSAGE ? undefined : undefined,
-      env: process.env.VERCEL_ENV || "local"
+      env: process.env.VERCEL_ENV || "local",
+      // ★★環境変数が入っているかどうかだけを、返します（★2026-09-07）。
+      //   ★★値そのものは返しません。★入っているか、いないかだけです。
+      //     ★中に入っているのは、★人を指す ID です。★外へ出しません。
+      //   ★★なぜ要るか
+      //     ★2026-09-07、★着せかえが「消えた」というご報告がありました。
+      //     ★部品も配線も、★1つも欠けていませんでした。
+      //     ★★NEXT_PUBLIC_WARDROBE_USER_IDS が空だっただけです。
+      //     ★これは、★こちらからは見えません。★確かめる手段がありませんでした。
+      //   ★★NEXT_PUBLIC_ の変数は、★組み立てのときに埋めこまれます。
+      //     ★あとから足しても、★組み立て直すまで効きません。
+      //     ★★だから「入れたのに出ない」が起きます。★ここで見分けられます。
+      flags: {
+        wardrobeIds: (process.env.NEXT_PUBLIC_WARDROBE_USER_IDS || "").trim() !== "",
+        gateTestIds: (process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS || "").trim() !== "",
+        paidGateIds: (process.env.NEXT_PUBLIC_PAID_GATE_USER_IDS || "").trim() !== ""
+      }
     }),
     {
       status: 200,
