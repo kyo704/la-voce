@@ -6,6 +6,11 @@ import SheepDressed from "@/components/SheepDressed";
 // ★★どの箱かは、lib/wardrobeBoxes.js が持ちます（★裁定 §6-⑤）。
 //   ★画面で判定しないこと。★2か所になると、片方だけが古くなります。
 import { boxOf, BOX_KEEPSAKE, BOX_RECORD, BOX_DRESSUP } from "@/lib/wardrobeBoxes";
+// ★★絞り込みと印は、lib/wardrobeMarks.js が持ちます（★§4・§7・§11）。
+//   ★保存する場所は、★character_equipped の中です。★列を足していません。
+import {
+  FILTERS, STYLES, applyFilter, isFavorite, toggleFavorite, styleLabel
+} from "@/lib/wardrobeMarks";
 import CATALOG from "@/docs/opus/items.json";
 import WardrobeSheet from "@/components/WardrobeSheet";
 import { SHEEP_GROUPS, itemsByGroup, sheepItemSrc, sheepItemByKey } from "@/lib/sheepItems";
@@ -44,7 +49,14 @@ export default function WardrobePanel({
   wearing = {}, owned = [], unlockedFlags = {}, todayISO, onChange,
   // ★★コーデ（★仕様書 §6）。★保存した着せ方を、1押しで呼び戻します。
   //   ★保存先は profiles.character_equipped.outfits です（★表は作りません）。
-  outfits = [], onOutfitsChange
+  outfits = [], onOutfitsChange,
+  // ★★印（お気に入り・よく着る・いつ見たか）。★仕様 §4・§7・§11。
+  //   ★保存先は profiles.character_equipped です（★列を足していません）。
+  //   ★★marks を渡さない呼び方でも、★落ちないようにします。
+  marks = {}, onMarksChange,
+  // ★★いつ受け取ったか（★新着の判定に使います）。★{ 鍵: ISOの日時 }。
+  //   ★渡されなければ、★新着は1つも出ません（★分からないためです）。
+  receivedAt = {}
 }) {
   // ★★下から出るシート（★仕様書 §2）。★開くまでは、羊と入口だけ出します。
   //   ★★一覧を全画面にしないこと。★羊が見えなくなります。
@@ -65,6 +77,9 @@ export default function WardrobePanel({
   //     ★その中に上も靴も帽子も混ざっていました。
   //   ★★null は「全身もの」です。★レールの外にある、という意味です。
   const [railSlot, setRailSlot] = useState(RAIL_GARMENT);
+  // ★★絞り込み（★仕様 §4）。★1つだけ選べます。★重ねません。
+  const [filter, setFilter] = useState("all");
+  const [style, setStyle] = useState(null);
   const season = currentSeason(todayISO);
   const opened = new Set(unlockedItemKeys(unlockedFlags));
 
@@ -83,7 +98,11 @@ export default function WardrobePanel({
     (railSlot === RAIL_GARMENT && hasGarment) || railKeys.includes(railSlot)
       ? railSlot
       : (hasGarment ? RAIL_GARMENT : (railKeys[0] || null));
-  const items = groupItems.filter((i) => i.slot === activeSlot);
+  const slotItems = groupItems.filter((i) => i.slot === activeSlot);
+  // ★★絞り込みを、当てます（★§4）。★決めは lib です。
+  const items = applyFilter(slotItems, filter, style, {
+    owned, equipped: marks, receivedAt
+  });
 
   function wear(item) {
     if (!onChange) return;
@@ -368,6 +387,66 @@ export default function WardrobePanel({
         )}
       </div>
 
+      {/* ★★絞り込みの札（★仕様 §4）。★1つだけ選べます。
+          ★★重ねて選べる形にしないこと。★迷わせます。
+          ★★「持っていないものを隠す」は、★作りません（★仕様 §8）。
+            ★「もっている」を選んだときだけ、★絞ります。
+          ★★数を、書きません。★「12点」と出さないこと。 */}
+      <div className="flex gap-1.5 flex-wrap" style={{ marginBottom: 10 }}>
+        {FILTERS.map((f) => {
+          const on = filter === f.key;
+          return (
+            <button key={f.key} type="button"
+              aria-pressed={on}
+              onClick={() => {
+                setFilter(on && f.key !== "all" ? "all" : f.key);
+                if (f.key !== "style") setStyle(null);
+              }}
+              style={{
+                padding: "6px 12px", borderRadius: 999, minHeight: 36,
+                border: `1px solid ${on ? C.curtain : C.line}`,
+                background: on ? C.curtain : C.card,
+                color: on ? "#FFFDF8" : C.inkSoft,
+                fontSize: "0.8125rem"
+              }}>
+              {f.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ★★系統の第2列（★仕様 §4）。★「系統」を選んだときだけ出します。 */}
+      {filter === "style" && (
+        <div className="flex gap-1.5 flex-wrap" style={{ marginBottom: 10 }}>
+          {STYLES.map((st) => {
+            const on = style === st.key;
+            return (
+              <button key={st.key} type="button"
+                aria-pressed={on}
+                onClick={() => setStyle(on ? null : st.key)}
+                style={{
+                  padding: "6px 12px", borderRadius: 999, minHeight: 36,
+                  border: `1px solid ${on ? C.curtain : C.line}`,
+                  background: on ? C.curtain : C.paper,
+                  color: on ? "#FFFDF8" : C.inkSoft,
+                  fontSize: "0.8125rem"
+                }}>
+                {st.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ★★絞った結果が空のときは、★黙らないこと。
+          ★「無い」ではなく、★何を選べば戻れるかを書きます。 */}
+      {items.length === 0 && slotItems.length > 0 && (
+        <p className="text-xs" style={{ color: C.inkSoft, margin: "10px 0", lineHeight: 1.8 }}>
+          この絞り込みに当てはまるものは、ここにはありません。
+          「すべて」を押すと、戻ります。
+        </p>
+      )}
+
       {/* ★まとまりの選び分け。★横に流します（★折り返すと、名前が読めません）。 */}
       <div className="flex gap-2 overflow-x-auto nav-scroll" style={{ marginBottom: 14 }}>
         {groups.map((g) => (
@@ -432,6 +511,30 @@ export default function WardrobePanel({
               <span style={{ fontSize: "0.75rem", color: C.inkSoft, lineHeight: 1.4, textAlign: "center" }}>
                 {it.name}
               </span>
+              {/* ★★お気に入りの印（★仕様 §7）。
+                  ★★入れ子のボタンにしません（★押せなくなります）。
+                    ★品物の枠は button なので、★中に button を置けません。
+                    ★だから span にして、★押されたときに上へ伝えないようにします。
+                  ★★印そのものは、★数を出しません。 */}
+              {onMarksChange && (
+                <span role="button" tabIndex={0}
+                  aria-label={`${it.name}をお気に入りに${isFavorite(marks, it.key) ? "しない" : "する"}`}
+                  aria-pressed={isFavorite(marks, it.key)}
+                  onClick={(e) => { e.stopPropagation(); onMarksChange(toggleFavorite(marks, it.key)); }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault(); e.stopPropagation();
+                      onMarksChange(toggleFavorite(marks, it.key));
+                    }
+                  }}
+                  style={{
+                    fontSize: "0.875rem", lineHeight: 1,
+                    color: isFavorite(marks, it.key) ? C.gold : C.line,
+                    cursor: "pointer", padding: "2px 6px"
+                  }}>
+                  ★
+                </span>
+              )}
               {/* ★季節のものは、★いまの季節だけ店に並びます。
                   ★★持っていれば、いつでも着られます（★取り上げません）。 */}
               {!shop && (

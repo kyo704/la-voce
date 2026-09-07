@@ -14730,6 +14730,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     todayISO={realTodayDate}
                     outfits={characterEquipped.outfits || []}
                     onOutfitsChange={(next) => handleSaveOutfits(next)}
+                    // ★★印（お気に入り・よく着る・いつ見たか）は、
+                    //   ★character_equipped の中に持ちます。★列を足していません。
+                    marks={characterEquipped}
+                    onMarksChange={(next) => {
+                      setCharacterEquipped(next);
+                      setCharacterDirty(true);
+                    }}
+                    // ★★いつ受け取ったか。★新着の判定に使います。
+                    //   ★いまは持っていないので、★渡しません。
+                    //   ★★渡さなければ、★新着は1つも出ません（★分からないためです）。
+                    //     ★「たぶん新しい」を出さないこと。
                     onChange={(next) => handleEquipWardrobe(next)} />
                 </div>
               )}
