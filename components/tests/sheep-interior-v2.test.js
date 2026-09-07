@@ -108,6 +108,48 @@ function ok(name, cond, extra) {
   const overlap = m.INTERIOR_ITEMS.filter((i) => shopKeys.includes(i.key));
   ok("★鍵が、1つも重なっていない", overlap.length === 0, overlap.slice(0, 5).map((i) => i.key).join(", "));
 
+  console.log("■ 部屋に描く側（★2026-09-08）");
+  {
+    const layer = readCode("components", "InteriorLayer.jsx");
+    const home = readCode("components", "CharacterHome.jsx");
+    const panel = readCode("components", "InteriorPanel.jsx");
+    const vt = readCode("components", "VocalTracker.jsx");
+
+    // ★★門の外の方には、1枚も出さないこと。
+    ok("★門の外では、1枚も出さない", /if \(!wardrobeOn\) return null;/.test(layer));
+    ok("★部屋に置いている", /<InteriorLayer equipped=\{equipped\} wardrobeOn=\{wardrobeOn\} \/>/.test(home));
+
+    // ★★窓は2枚。★決めは lib から取ること。
+    ok("★窓の2枚を、lib から取っている", /windowLayers\(placed\)/.test(layer));
+    ok("★重ね順を、画面で決めていない", !/["']view["']\s*,\s*["']window["']/.test(layer));
+
+    // ★★大きさが5種類なので、★1つずつ高さを見ること。
+    ok("★絵の高さから、置き場所を出している", /item\.size\[1\]/.test(layer));
+    ok("★床の線を、lib から取っている", /FLOOR_LINE_Y/.test(layer));
+
+    // ★★いまの101点を、壊していないこと。
+    ok("★いまの壁の絵は、そのまま", /<WallTexture material=\{wallKey\}/.test(home));
+    ok("★いまの床の絵も、そのまま", /<FloorTexture material=\{floorKey\}/.test(home));
+    ok("★いまのお店を、触っていない", /SHOP_ITEMS\.filter\(\(i\) => i\.category === shopCategory\)/.test(home));
+
+    // ★★選ぶ画面。
+    ok("★分類の札がある", /INTERIOR_CATEGORIES\.filter/.test(panel));
+    ok("★中身のない分類は、出さない", /itemsByCategory\(c\.key\)\.length > 0/.test(panel));
+    ok("★1つだけ置ける分類は、そう書いている", panel.includes("ひとつだけ置けます"));
+    ok("★選んでいるものは、わくを太くしている", /\$\{on \? 3 : 1\}px solid/.test(panel));
+    // ★★数を、書かないこと。
+    for (const pat of [/[0-9０-９]{2,3}\s*点/, /あと\s*[0-9０-９{]/]) {
+      ok(`★数を書いていない（${pat}）`, !pat.test(panel));
+    }
+
+    // ★★丸ごと入れないこと（★2026-09-08 の不具合の教訓）。
+    const blk = vt.slice(vt.indexOf("<InteriorPanel"), vt.indexOf("<InteriorPanel") + 600);
+    ok("★変えた1つだけを、いまの形に重ねている",
+      /setCharacterEquipped\(\(prev\) => \(\{ \.\.\.prev, interior: next\.interior \}\)\)/.test(blk));
+    ok("★丸ごと入れていない", !/setCharacterEquipped\(next\)/.test(blk));
+    ok("★門の中だけに出している", /wardrobeOn && \(\s*<InteriorPanel/.test(vt));
+  }
+
   console.log("■ ★荷物は、zip のまま");
   const packs = fs.readdirSync(path.join(ROOT, "assets", "interior-v2"));
   ok("★内装の zip が、開かれていない", packs.some((f) => f.endsWith(".zip")));

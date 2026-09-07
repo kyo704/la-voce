@@ -75,6 +75,7 @@ import NoticeScreen from "@/components/NoticeScreen";
 import WardrobePanel from "@/components/WardrobePanel";
 import Box2Gift from "@/components/Box2Gift";
 import RefluxCareConsent from "@/components/RefluxCareConsent";
+import InteriorPanel from "@/components/InteriorPanel";
 import { sheepItemByKey } from "@/lib/sheepItems";
 import { MEAL_MARKS, MEAL_MARK_KEYS, resolveMealMarks } from "@/lib/mealMarks";
 import {
@@ -14726,6 +14727,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   choices={box2.choices}
                   wearing={characterEquipped.wardrobe || {}}
                   onChoose={handleReceiveBox2} />
+              )}
+              {/* ★★おうちのもの120点（★2026-09-08）。★門の中の方だけです。
+                  ★いまの101点のお店とは、★別の枠です。★鍵が1つも重なりません。 */}
+              {wardrobeOn && (
+                <InteriorPanel
+                  equipped={characterEquipped}
+                  onChange={(next) => {
+                    // ★★印のときと、同じ形にします（★2026-09-08 の不具合の教訓）。
+                    //   ★丸ごと入れると、★着せかえが消えます。
+                    //   ★変えた1つ（interior）だけを、★いまの形に重ねます。
+                    setCharacterEquipped((prev) => ({ ...prev, interior: next.interior }));
+                    setCharacterDirty(true);
+                  }} />
               )}
               {wardrobeOn && (
                 <div id="wardrobe-anchor" className="rounded-2xl p-4 border mb-4" style={{ background: C.card, borderColor: C.line }}>

@@ -7,6 +7,7 @@ import { Loader2, Check } from "lucide-react";
 import { tileStyle, isNewMaterial } from "@/lib/sheepInterior";
 // ★★着せかえた羊。★出す・出さないは、呼ぶ側（VocalTracker）が決めます。
 import SheepDressed from "@/components/SheepDressed";
+import InteriorLayer from "@/components/InteriorLayer";
 import { C } from "@/lib/tokens";
 import {
   SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, PLACEMENT_LIMITS,
@@ -1803,6 +1804,10 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
   return (
     <div id="room-anchor" style={{ position: "relative", width: "100%", maxWidth: isRoomExpanded ? 700 : 480, margin: "0 auto", aspectRatio: isRoomExpanded ? "7 / 5" : "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor, transition: "max-width 0.4s ease, aspect-ratio 0.4s ease" }}>
       <WallTexture material={wallKey} wardrobeOn={wardrobeOn} />
+      {/* ★★内装120点（★2026-09-08）。★いまの見え方を、1つも変えません。
+          ★★これは、★上に重ねる別の層です。★門の外の方には1枚も出ません。
+          ★★壁の絵のすぐあとに置きます。★床より後ろ、家具より前です。 */}
+      <InteriorLayer equipped={equipped} wardrobeOn={wardrobeOn} />
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", background: floorColor, zIndex: 0, overflow: "hidden" }}>
         <FloorTexture material={floorKey} wardrobeOn={wardrobeOn} />
       </div>
