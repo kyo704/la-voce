@@ -11436,8 +11436,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★character_equipped の中の「wardrobe」だけを差し替えます。
   //   ★★いまの SVG の羊の分（hat / outfit / accessory）は、★触りません。
   async function handleEquipWardrobe(next) {
-    const merged = { ...characterEquipped, wardrobe: next };
-    setCharacterEquipped(merged);
+    // ★★いまの形から作ります（★2026-09-08・不具合の直し）。
+    //   ★★外の characterEquipped から作ると、★続けて押したとき、
+    //     ★2つ目が、1つ目を消します。
+    //   ★同じ形の不具合を、★印の保存でも出しました。★2か所とも直します。
+    let merged = { ...characterEquipped, wardrobe: next };
+    setCharacterEquipped((prev) => {
+      merged = { ...prev, wardrobe: next };
+      return merged;
+    });
     const supabase = createClient();
     const { error } = await supabase
       .from("profiles").update({ character_equipped: merged }).eq("id", userId).select("id");
@@ -14734,7 +14741,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     //   ★character_equipped の中に持ちます。★列を足していません。
                     marks={characterEquipped}
                     onMarksChange={(next) => {
-                      setCharacterEquipped(next);
+                      // ★★印だけを、★重ねます（★2026-09-08・不具合の直し）。
+                      //   ★★next を丸ごと入れると、★着せかえが消えます。
+                      //     ★next は、★押した時点の characterEquipped から作られます。
+                      //     ★その直前に onChange が wardrobe を変えていますが、
+                      //       ★next は、★変わる前の wardrobe を持っています。
+                      //     ★★だから、★丸ごと入れると、★着たことが取り消されます。
+                      //   ★実際、9月8日の朝、★品物を押しても着られなくなりました。
+                      //   ★★だから、★変えた3つだけを、★いまの形に重ねます。
+                      //     ★prev から作ります。★外の値を見ないこと。
+                      setCharacterEquipped((prev) => ({
+                        ...prev,
+                        favorites: next.favorites,
+                        wearCounts: next.wearCounts,
+                        wardrobeSeenAt: next.wardrobeSeenAt
+                      }));
                       setCharacterDirty(true);
                     }}
                     // ★★いつ受け取ったか。★新着の判定に使います。

@@ -103,6 +103,27 @@ function ok(name, cond, extra) {
     ok(`★回数を出していない（${pat}）`, !pat.test(wp));
   }
 
+  console.log("■ ★着せかえを、印の保存で消さないこと（★2026-09-08 の不具合）");
+  {
+    // ★★9月8日の朝、★品物を押しても着られなくなりました。
+    //   ★★原因：着せかえと印を、★別々に2回 保存していました。
+    //     ★2回目が、★押した時点の古い形から作られていたため、
+    //     ★1回目の「着た」が、★取り消されていました。
+    //   ★★直し：どちらも「いまの形」から作ります（★関数で受け取る形）。
+    const vt = readCode("components", "VocalTracker.jsx");
+    ok("★印は、いまの形に重ねている",
+      /setCharacterEquipped\(\(prev\) => \(\{[\s\S]{0,200}favorites: next\.favorites/.test(vt));
+    ok("★印を、丸ごと入れていない", !/onMarksChange=\{\(next\) => \{\s*setCharacterEquipped\(next\)/.test(vt));
+    // ★★変えるのは、印の3つだけであること。
+    const block = vt.slice(vt.indexOf("onMarksChange={(next)"), vt.indexOf("onMarksChange={(next)") + 700);
+    ok("★変えるのは、印の3つだけ",
+      /favorites: next\.favorites/.test(block) && /wearCounts: next\.wearCounts/.test(block)
+      && /wardrobeSeenAt: next\.wardrobeSeenAt/.test(block) && !/wardrobe: /.test(block));
+    // ★★着せかえのほうも、いまの形から作ること（★続けて押したとき）。
+    ok("★着せかえも、いまの形から作っている",
+      /setCharacterEquipped\(\(prev\) => \{\s*merged = \{ \.\.\.prev, wardrobe: next \}/.test(vt));
+  }
+
   console.log("■ 見本（サムネ）が、軽いこと");
   const sd = readCode("components", "SheepDressed.jsx");
   ok("★見本では、動きの定義を作らない", /\{!thumb && \(\s*<style>/.test(sd));
