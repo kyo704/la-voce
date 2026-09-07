@@ -1,0 +1,1326 @@
+{
+ "version": "2026-09-08-int1",
+ "base": "/sheep/",
+ "items": [
+  {
+   "key": "furniture_01",
+   "name": "ナチュラル／木のベンチ＋布",
+   "category": "furniture",
+   "style": "ナチュラル",
+   "file": "interior/furniture_01.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_02",
+   "name": "ナチュラル／丸い木のテーブル",
+   "category": "furniture",
+   "style": "ナチュラル",
+   "file": "interior/furniture_02.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_03",
+   "name": "ナチュラル／麻のシェード",
+   "category": "furniture",
+   "style": "ナチュラル",
+   "file": "interior/furniture_03.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_04",
+   "name": "アメリカン／革の大きなソファ",
+   "category": "furniture",
+   "style": "アメリカン",
+   "file": "interior/furniture_04.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_05",
+   "name": "アメリカン／鉄脚のローテーブル",
+   "category": "furniture",
+   "style": "アメリカン",
+   "file": "interior/furniture_05.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_06",
+   "name": "アメリカン／琺瑯のペンダント",
+   "category": "furniture",
+   "style": "アメリカン",
+   "file": "interior/furniture_06.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_07",
+   "name": "モダン／直線の黒いソファ",
+   "category": "furniture",
+   "style": "モダン",
+   "file": "interior/furniture_07.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_08",
+   "name": "モダン／ガラスの天板",
+   "category": "furniture",
+   "style": "モダン",
+   "file": "interior/furniture_08.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_09",
+   "name": "モダン／細い金属のフロアランプ",
+   "category": "furniture",
+   "style": "モダン",
+   "file": "interior/furniture_09.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_10",
+   "name": "北欧／曲線の木脚チェア",
+   "category": "furniture",
+   "style": "北欧",
+   "file": "interior/furniture_10.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_11",
+   "name": "北欧／白い丸テーブル",
+   "category": "furniture",
+   "style": "北欧",
+   "file": "interior/furniture_11.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_12",
+   "name": "北欧／白い球のペンダント",
+   "category": "furniture",
+   "style": "北欧",
+   "file": "interior/furniture_12.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_13",
+   "name": "アジアン／ラタンのソファ",
+   "category": "furniture",
+   "style": "アジアン",
+   "file": "interior/furniture_13.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_14",
+   "name": "アジアン／竹の低い卓",
+   "category": "furniture",
+   "style": "アジアン",
+   "file": "interior/furniture_14.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_15",
+   "name": "アジアン／透かし彫りのランプ",
+   "category": "furniture",
+   "style": "アジアン",
+   "file": "interior/furniture_15.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_16",
+   "name": "インダストリアル／鉄と革のスツール",
+   "category": "furniture",
+   "style": "インダストリアル",
+   "file": "interior/furniture_16.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_17",
+   "name": "インダストリアル／足場板の作業机",
+   "category": "furniture",
+   "style": "インダストリアル",
+   "file": "interior/furniture_17.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_18",
+   "name": "インダストリアル／裸電球＋金属笠",
+   "category": "furniture",
+   "style": "インダストリアル",
+   "file": "interior/furniture_18.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_19",
+   "name": "カントリー／花柄のソファ",
+   "category": "furniture",
+   "style": "カントリー",
+   "file": "interior/furniture_19.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_20",
+   "name": "カントリー／木の食卓",
+   "category": "furniture",
+   "style": "カントリー",
+   "file": "interior/furniture_20.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_21",
+   "name": "カントリー／ステンドの傘",
+   "category": "furniture",
+   "style": "カントリー",
+   "file": "interior/furniture_21.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_22",
+   "name": "ホテルライク／低いラウンジチェア",
+   "category": "furniture",
+   "style": "ホテルライク",
+   "file": "interior/furniture_22.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_23",
+   "name": "ホテルライク／石の天板",
+   "category": "furniture",
+   "style": "ホテルライク",
+   "file": "interior/furniture_23.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_24",
+   "name": "ホテルライク／間接照明のスタンド",
+   "category": "furniture",
+   "style": "ホテルライク",
+   "file": "interior/furniture_24.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_25",
+   "name": "ミックス／座椅子",
+   "category": "furniture",
+   "style": "ミックス",
+   "file": "interior/furniture_25.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_26",
+   "name": "ミックス／木＋鉄の卓",
+   "category": "furniture",
+   "style": "ミックス",
+   "file": "interior/furniture_26.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "furniture_27",
+   "name": "ミックス／和紙のスタンド",
+   "category": "furniture",
+   "style": "ミックス",
+   "file": "interior/furniture_27.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "window_01",
+   "name": "ナチュラル／木の格子",
+   "category": "window",
+   "style": "ナチュラル",
+   "file": "interior/window_01.png",
+   "size": [
+    384,
+    384
+   ]
+  },
+  {
+   "key": "window_02",
+   "name": "アメリカン／白い格子",
+   "category": "window",
+   "style": "アメリカン",
+   "file": "interior/window_02.png",
+   "size": [
+    384,
+    384
+   ]
+  },
+  {
+   "key": "window_03",
+   "name": "モダン／黒い細枠",
+   "category": "window",
+   "style": "モダン",
+   "file": "interior/window_03.png",
+   "size": [
+    384,
+    384
+   ]
+  },
+  {
+   "key": "window_04",
+   "name": "北欧／丸窓",
+   "category": "window",
+   "style": "北欧",
+   "file": "interior/window_04.png",
+   "size": [
+    384,
+    384
+   ]
+  },
+  {
+   "key": "window_05",
+   "name": "アジアン／木の格子（細）",
+   "category": "window",
+   "style": "アジアン",
+   "file": "interior/window_05.png",
+   "size": [
+    384,
+    384
+   ]
+  },
+  {
+   "key": "window_06",
+   "name": "インダストリアル／鉄の枠",
+   "category": "window",
+   "style": "インダストリアル",
+   "file": "interior/window_06.png",
+   "size": [
+    384,
+    384
+   ]
+  },
+  {
+   "key": "window_07",
+   "name": "カントリー／アーチ窓",
+   "category": "window",
+   "style": "カントリー",
+   "file": "interior/window_07.png",
+   "size": [
+    384,
+    384
+   ]
+  },
+  {
+   "key": "window_08",
+   "name": "ホテルライク／掃き出し窓",
+   "category": "window",
+   "style": "ホテルライク",
+   "file": "interior/window_08.png",
+   "size": [
+    384,
+    384
+   ]
+  },
+  {
+   "key": "window_09",
+   "name": "ミックス／ステンドの小窓",
+   "category": "window",
+   "style": "ミックス",
+   "file": "interior/window_09.png",
+   "size": [
+    384,
+    384
+   ]
+  },
+  {
+   "key": "window_10",
+   "name": "昭和／木製サッシ＋すりガラス",
+   "category": "window",
+   "style": "昭和",
+   "file": "interior/window_10.png",
+   "size": [
+    384,
+    384
+   ]
+  },
+  {
+   "key": "window_11",
+   "name": "昭和／雪見障子",
+   "category": "window",
+   "style": "昭和",
+   "file": "interior/window_11.png",
+   "size": [
+    384,
+    384
+   ]
+  },
+  {
+   "key": "window_12",
+   "name": "昭和／欄間",
+   "category": "window",
+   "style": "昭和",
+   "file": "interior/window_12.png",
+   "size": [
+    384,
+    384
+   ]
+  },
+  {
+   "key": "window_13",
+   "name": "昭和／格子窓",
+   "category": "window",
+   "style": "昭和",
+   "file": "interior/window_13.png",
+   "size": [
+    384,
+    384
+   ]
+  },
+  {
+   "key": "door_01",
+   "name": "ナチュラル／木の框戸",
+   "category": "door",
+   "style": "ナチュラル",
+   "file": "interior/door_01.png",
+   "size": [
+    320,
+    512
+   ]
+  },
+  {
+   "key": "door_02",
+   "name": "アメリカン／ガラス入り",
+   "category": "door",
+   "style": "アメリカン",
+   "file": "interior/door_02.png",
+   "size": [
+    320,
+    512
+   ]
+  },
+  {
+   "key": "door_03",
+   "name": "モダン／鉄の枠",
+   "category": "door",
+   "style": "モダン",
+   "file": "interior/door_03.png",
+   "size": [
+    320,
+    512
+   ]
+  },
+  {
+   "key": "door_04",
+   "name": "北欧／白い框戸",
+   "category": "door",
+   "style": "北欧",
+   "file": "interior/door_04.png",
+   "size": [
+    320,
+    512
+   ]
+  },
+  {
+   "key": "door_05",
+   "name": "アジアン／引き戸",
+   "category": "door",
+   "style": "アジアン",
+   "file": "interior/door_05.png",
+   "size": [
+    320,
+    512
+   ]
+  },
+  {
+   "key": "door_06",
+   "name": "インダストリアル／鉄とガラス",
+   "category": "door",
+   "style": "インダストリアル",
+   "file": "interior/door_06.png",
+   "size": [
+    320,
+    512
+   ]
+  },
+  {
+   "key": "door_07",
+   "name": "カントリー／アーチ扉",
+   "category": "door",
+   "style": "カントリー",
+   "file": "interior/door_07.png",
+   "size": [
+    320,
+    512
+   ]
+  },
+  {
+   "key": "door_08",
+   "name": "ホテルライク／框戸（濃色）",
+   "category": "door",
+   "style": "ホテルライク",
+   "file": "interior/door_08.png",
+   "size": [
+    320,
+    512
+   ]
+  },
+  {
+   "key": "door_09",
+   "name": "ミックス／ガラスの引き戸",
+   "category": "door",
+   "style": "ミックス",
+   "file": "interior/door_09.png",
+   "size": [
+    320,
+    512
+   ]
+  },
+  {
+   "key": "door_10",
+   "name": "昭和／障子",
+   "category": "door",
+   "style": "昭和",
+   "file": "interior/door_10.png",
+   "size": [
+    320,
+    512
+   ]
+  },
+  {
+   "key": "door_11",
+   "name": "昭和／襖",
+   "category": "door",
+   "style": "昭和",
+   "file": "interior/door_11.png",
+   "size": [
+    320,
+    512
+   ]
+  },
+  {
+   "key": "door_12",
+   "name": "昭和／ガラスの框戸",
+   "category": "door",
+   "style": "昭和",
+   "file": "interior/door_12.png",
+   "size": [
+    320,
+    512
+   ]
+  },
+  {
+   "key": "view_01",
+   "name": "晴れ",
+   "category": "view",
+   "style": null,
+   "file": "interior/view_01.png",
+   "size": [
+    480,
+    320
+   ]
+  },
+  {
+   "key": "view_02",
+   "name": "夕暮れ",
+   "category": "view",
+   "style": null,
+   "file": "interior/view_02.png",
+   "size": [
+    480,
+    320
+   ]
+  },
+  {
+   "key": "view_03",
+   "name": "夜",
+   "category": "view",
+   "style": null,
+   "file": "interior/view_03.png",
+   "size": [
+    480,
+    320
+   ]
+  },
+  {
+   "key": "view_04",
+   "name": "雨",
+   "category": "view",
+   "style": null,
+   "file": "interior/view_04.png",
+   "size": [
+    480,
+    320
+   ]
+  },
+  {
+   "key": "view_05",
+   "name": "雪",
+   "category": "view",
+   "style": null,
+   "file": "interior/view_05.png",
+   "size": [
+    480,
+    320
+   ]
+  },
+  {
+   "key": "view_06",
+   "name": "森",
+   "category": "view",
+   "style": null,
+   "file": "interior/view_06.png",
+   "size": [
+    480,
+    320
+   ]
+  },
+  {
+   "key": "view_07",
+   "name": "海",
+   "category": "view",
+   "style": null,
+   "file": "interior/view_07.png",
+   "size": [
+    480,
+    320
+   ]
+  },
+  {
+   "key": "view_08",
+   "name": "町",
+   "category": "view",
+   "style": null,
+   "file": "interior/view_08.png",
+   "size": [
+    480,
+    320
+   ]
+  },
+  {
+   "key": "view_09",
+   "name": "田んぼ",
+   "category": "view",
+   "style": null,
+   "file": "interior/view_09.png",
+   "size": [
+    480,
+    320
+   ]
+  },
+  {
+   "key": "view_10",
+   "name": "昭和の路地",
+   "category": "view",
+   "style": null,
+   "file": "interior/view_10.png",
+   "size": [
+    480,
+    320
+   ]
+  },
+  {
+   "key": "view_11",
+   "name": "縁側から見た庭",
+   "category": "view",
+   "style": null,
+   "file": "interior/view_11.png",
+   "size": [
+    480,
+    320
+   ]
+  },
+  {
+   "key": "view_12",
+   "name": "桜",
+   "category": "view",
+   "style": null,
+   "file": "interior/view_12.png",
+   "size": [
+    480,
+    320
+   ]
+  },
+  {
+   "key": "view_13",
+   "name": "町の屋根",
+   "category": "view",
+   "style": null,
+   "file": "interior/view_13.png",
+   "size": [
+    480,
+    320
+   ]
+  },
+  {
+   "key": "garden_01",
+   "name": "鳥の水場",
+   "category": "garden",
+   "style": null,
+   "file": "interior/garden_01.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "garden_02",
+   "name": "灯籠",
+   "category": "garden",
+   "style": null,
+   "file": "interior/garden_02.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "garden_03",
+   "name": "鹿おどし",
+   "category": "garden",
+   "style": null,
+   "file": "interior/garden_03.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "garden_04",
+   "name": "ベンチ",
+   "category": "garden",
+   "style": null,
+   "file": "interior/garden_04.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "garden_05",
+   "name": "植木鉢",
+   "category": "garden",
+   "style": null,
+   "file": "interior/garden_05.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "garden_06",
+   "name": "白い柵",
+   "category": "garden",
+   "style": null,
+   "file": "interior/garden_06.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "garden_07",
+   "name": "ポスト",
+   "category": "garden",
+   "style": null,
+   "file": "interior/garden_07.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "garden_08",
+   "name": "風車",
+   "category": "garden",
+   "style": null,
+   "file": "interior/garden_08.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "garden_09",
+   "name": "かかし",
+   "category": "garden",
+   "style": null,
+   "file": "interior/garden_09.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "garden_10",
+   "name": "井戸",
+   "category": "garden",
+   "style": null,
+   "file": "interior/garden_10.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "garden_11",
+   "name": "焚き火",
+   "category": "garden",
+   "style": null,
+   "file": "interior/garden_11.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "garden_12",
+   "name": "物干し",
+   "category": "garden",
+   "style": null,
+   "file": "interior/garden_12.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "garden_13",
+   "name": "飛び石",
+   "category": "garden",
+   "style": null,
+   "file": "interior/garden_13.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "garden_14",
+   "name": "鳥居",
+   "category": "garden",
+   "style": null,
+   "file": "interior/garden_14.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "wallart_01",
+   "name": "風景の額",
+   "category": "wallart",
+   "style": null,
+   "file": "interior/wallart_01.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "wallart_02",
+   "name": "抽象の額",
+   "category": "wallart",
+   "style": null,
+   "file": "interior/wallart_02.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "wallart_03",
+   "name": "丸い時計",
+   "category": "wallart",
+   "style": null,
+   "file": "interior/wallart_03.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "wallart_04",
+   "name": "柱時計",
+   "category": "wallart",
+   "style": null,
+   "file": "interior/wallart_04.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "wallart_05",
+   "name": "鏡",
+   "category": "wallart",
+   "style": null,
+   "file": "interior/wallart_05.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "wallart_06",
+   "name": "飾り棚",
+   "category": "wallart",
+   "style": null,
+   "file": "interior/wallart_06.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "wallart_07",
+   "name": "帽子掛け",
+   "category": "wallart",
+   "style": null,
+   "file": "interior/wallart_07.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "wallart_08",
+   "name": "カレンダー",
+   "category": "wallart",
+   "style": null,
+   "file": "interior/wallart_08.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "wallart_09",
+   "name": "掛け軸",
+   "category": "wallart",
+   "style": null,
+   "file": "interior/wallart_09.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "wallart_10",
+   "name": "写真",
+   "category": "wallart",
+   "style": null,
+   "file": "interior/wallart_10.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "wallart_11",
+   "name": "トロフィー",
+   "category": "wallart",
+   "style": null,
+   "file": "interior/wallart_11.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "wallart_12",
+   "name": "楽譜の額",
+   "category": "wallart",
+   "style": null,
+   "file": "interior/wallart_12.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "wallart_13",
+   "name": "リース",
+   "category": "wallart",
+   "style": null,
+   "file": "interior/wallart_13.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_01",
+   "name": "石油ランプ",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_01.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_02",
+   "name": "柱時計",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_02.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_03",
+   "name": "桐たんす",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_03.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_04",
+   "name": "鏡台（三面鏡）",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_04.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_05",
+   "name": "足踏みミシン",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_05.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_06",
+   "name": "洋燈のシャンデリア",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_06.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_07",
+   "name": "ちゃぶ台",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_07.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_08",
+   "name": "茶箪笥",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_08.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_09",
+   "name": "火鉢",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_09.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_10",
+   "name": "黒電話と電話台",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_10.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_11",
+   "name": "真空管ラジオ",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_11.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_12",
+   "name": "座卓と座布団",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_12.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_13",
+   "name": "ブラウン管テレビ",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_13.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_14",
+   "name": "電気こたつ",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_14.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_15",
+   "name": "ステレオ",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_15.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_16",
+   "name": "扇風機",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_16.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_17",
+   "name": "応接セット",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_17.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_18",
+   "name": "サイドボード",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_18.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "showa_19",
+   "name": "★縁側",
+   "category": "showa",
+   "style": null,
+   "file": "interior/showa_19.png",
+   "size": [
+    320,
+    320
+   ]
+  },
+  {
+   "key": "tile_01",
+   "name": "壁／砂壁",
+   "category": "tile",
+   "style": "壁",
+   "file": "interior/tile_01.png",
+   "size": [
+    256,
+    256
+   ]
+  },
+  {
+   "key": "tile_02",
+   "name": "壁／繊維壁",
+   "category": "tile",
+   "style": "壁",
+   "file": "interior/tile_02.png",
+   "size": [
+    256,
+    256
+   ]
+  },
+  {
+   "key": "tile_03",
+   "name": "壁／土壁",
+   "category": "tile",
+   "style": "壁",
+   "file": "interior/tile_03.png",
+   "size": [
+    256,
+    256
+   ]
+  },
+  {
+   "key": "tile_04",
+   "name": "壁／花柄の古いクロス",
+   "category": "tile",
+   "style": "壁",
+   "file": "interior/tile_04.png",
+   "size": [
+    256,
+    256
+   ]
+  },
+  {
+   "key": "tile_05",
+   "name": "壁／モルタル",
+   "category": "tile",
+   "style": "壁",
+   "file": "interior/tile_05.png",
+   "size": [
+    256,
+    256
+   ]
+  },
+  {
+   "key": "tile_06",
+   "name": "床／畳",
+   "category": "tile",
+   "style": "床",
+   "file": "interior/tile_06.png",
+   "size": [
+    256,
+    256
+   ]
+  },
+  {
+   "key": "tile_07",
+   "name": "床／飴色の板の間",
+   "category": "tile",
+   "style": "床",
+   "file": "interior/tile_07.png",
+   "size": [
+    256,
+    256
+   ]
+  },
+  {
+   "key": "tile_08",
+   "name": "床／リノリウム",
+   "category": "tile",
+   "style": "床",
+   "file": "interior/tile_08.png",
+   "size": [
+    256,
+    256
+   ]
+  },
+  {
+   "key": "tile_09",
+   "name": "床／昭和の絨毯",
+   "category": "tile",
+   "style": "床",
+   "file": "interior/tile_09.png",
+   "size": [
+    256,
+    256
+   ]
+  }
+ ]
+}
