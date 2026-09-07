@@ -58,7 +58,7 @@ console.log("■ 靴が、体より前に出ているか");
 // ★本物の靴で試します。★8点ぜんぶ。
 const shoes = require(path.join(ROOT, "docs/assets/sheep-items-index.json"))
   .items.filter((i) => i.slot === "shoes");
-ok("靴は14点ある", shoes.length === 14, "実際は " + shoes.length);
+ok("靴は20点ある", shoes.length === 20, "実際は " + shoes.length);
 const behind = [];
 for (const sh of shoes) {
   const html = draw({ shoes: sh.key, garment: "coatWinterDuffle" });
@@ -69,7 +69,7 @@ for (const sh of shoes) {
     behind.push(sh.key + "（靴 " + iShoe + " / 体 " + iBody + " / 頭 " + iHead + "）");
   }
 }
-ok("14点とも、体と頭より前に描かれている", behind.length === 0,
+ok("20点とも、体と頭より前に描かれている", behind.length === 0,
   behind.join("\n      "));
 
 console.log("■ 脚は、体より後ろか");

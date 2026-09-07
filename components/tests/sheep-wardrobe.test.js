@@ -34,10 +34,12 @@ function ok(label, cond) {
   // ★★2026-09-07、★ふだん着62点を取り込んで 281 点になりました。
   //   ★箱2（記録で交換する70点）に、★上・下・羽織り・目元が要りました。
   //   ★出どころ docs/opus/woolsong-確定-アイテムの全体像と、箱2の作り方（9月7日・夜・訂正版）.md §3-2
-  ok(`★品数が 281（いま ${idx.items.length}）`, idx.items.length === 281);
-  // ★★足した62点が、★1点も欠けていないこと。
+  // ★★2026-09-08、★166点の残り104点も取り込んで 385点になりました。
+  //   ★目録384点＋実装だけの2点（傘・剣）− 目録から外した operaCarmen 1点。
+  ok(`★品数が 385（いま ${idx.items.length}）`, idx.items.length === 385);
+  // ★★166点ぜんぶが、★入っていること。
   const daily = idx.items.filter((i) => i.group === "daily");
-  ok(`★ふだん着が 62 点（いま ${daily.length}）`, daily.length === 62);
+  ok(`★ふだん着が 166 点（いま ${daily.length}）`, daily.length === 166);
   ok("★足したのは、お箸とフォークの2点だけ",
     ["propChopsticks", "propFork"].every((k) => idx.items.some((i) => i.key === k)));
   const missing = idx.items.filter((i) => {
