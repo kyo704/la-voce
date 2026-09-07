@@ -56,10 +56,22 @@ function ok(name, cond, extra) {
   const two = m.windowLayers({ window: f.key, view: v.key });
   ok("2枚 返る", two.length === 2);
   ok("★景色が先、枠があと", two[0].category === "view" && two[1].category === "window");
-  // ★★片方だけでも、成り立つこと。
-  ok("★枠だけでも出る", m.windowLayers({ window: f.key }).length === 1);
-  ok("★景色だけでも出る", m.windowLayers({ view: v.key }).length === 1);
+  // ★★2026-09-08、★決めが変わりました（坂本さんの決め）。
+  //   ★もとは「片方だけでも出す」でした。
+  //   ★★枠は 384×384、景色は 480×320 で、★縦横比が違います。
+  //     ★片方だけ置くと、★大きさが合わず、おかしく見えます。
+  //   ★★2枚そろって、はじめて1つの窓とします。
+  ok("★枠だけでは、出さない", m.windowLayers({ window: f.key }).length === 0);
+  ok("★景色だけでも、出さない", m.windowLayers({ view: v.key }).length === 0);
+  ok("★2枚そろえば、出る", m.windowLayers({ window: f.key, view: v.key }).length === 2);
   ok("どちらも無ければ、空", m.windowLayers({}).length === 0);
+  // ★★黙って出さないのではなく、★足りないほうを言えること。
+  ok("★そろっているか、答えられる",
+    m.windowReady({ window: f.key, view: v.key }) === true && m.windowReady({ window: f.key }) === false);
+  ok("★どちらが足りないか、答えられる",
+    m.windowMissing({ window: f.key }) === "view" && m.windowMissing({ view: v.key }) === "window");
+  // ★★枠と景色は、縦横比が違うので、★同じ大きさで置けません。
+  ok("★景色を、枠の内側に収める割合がある", typeof m.WINDOW_INNER_RATIO === "number");
   // ★★組み合わせの数を、画面に出さないこと（★数を見せない決め）。
   const libCode = readCode("lib", "sheepInteriorV2.js");
   ok("★169 を、文言として持っていない", !/"169|169通り/.test(libCode));
@@ -117,14 +129,26 @@ function ok(name, cond, extra) {
 
     // ★★門の外の方には、1枚も出さないこと。
     ok("★門の外では、1枚も出さない", /if \(!wardrobeOn\) return null;/.test(layer));
-    ok("★部屋に置いている", /<InteriorLayer equipped=\{equipped\} wardrobeOn=\{wardrobeOn\} \/>/.test(home));
+    ok("★部屋に置いている", /<InteriorLayer equipped=\{equipped\} wardrobeOn=\{wardrobeOn\}/.test(home));
+    // ★★動かせること（★2026-09-08・坂本さんの決め）。
+    //   ★いまの101点と、★同じ仕組み（onUpdatePosition）に乗せます。
+    ok("★動かす仕組みに、乗せている", /onUpdatePosition=\{onUpdatePosition\}/.test(home));
+    ok("★保存の形も、同じ", /onUpdatePosition\("interior", it\.key, nl, nt\)/.test(layer));
+    ok("★置きかたを直すときだけ、動かせる", /editMode && Draggable && onUpdatePosition/.test(layer));
+    ok("★部屋の外へ、出さない", /Math\.max\(4, Math\.min\(96/.test(home));
 
     // ★★窓は2枚。★決めは lib から取ること。
     ok("★窓の2枚を、lib から取っている", /windowLayers\(placed\)/.test(layer));
     ok("★重ね順を、画面で決めていない", !/["']view["']\s*,\s*["']window["']/.test(layer));
 
     // ★★大きさが5種類なので、★1つずつ高さを見ること。
-    ok("★絵の高さから、置き場所を出している", /item\.size\[1\]/.test(layer));
+    ok("★絵の高さから、置き場所を出している", /const \[w, h\] = size;/.test(layer));
+    // ★★壁と床を、★別のところに敷くこと（★2026-09-08 の直し）。
+    //   ★もとは部屋ぜんぶに敷いていて、★床の柄が壁まで変えていました。
+    ok("★壁のタイルは、壁のところだけ", /wallTile && \(/.test(layer));
+    ok("★床のタイルは、床のところだけ", /floorTile && \(/.test(layer));
+    ok("★1枚で部屋ぜんぶを覆っていない", !/placed\.tile\b/.test(layer));
+    ok("★壁と床を、lib が分けている", m.wallTiles().length === 5 && m.floorTiles().length === 4);
     ok("★床の線を、lib から取っている", /FLOOR_LINE_Y/.test(layer));
 
     // ★★いまの101点を、壊していないこと。

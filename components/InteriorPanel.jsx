@@ -4,7 +4,8 @@ import { useState } from "react";
 import { C } from "@/lib/tokens";
 import {
   INTERIOR_CATEGORIES, itemsByCategory, interiorSrc,
-  toggleInterior, isPlaced, isSingleSlot, categoryLabel
+  toggleInterior, isPlaced, isSingleSlot, categoryLabel,
+  windowMissing, interiorOf
 } from "@/lib/sheepInteriorV2";
 
 // ============================================================================
@@ -32,6 +33,8 @@ export default function InteriorPanel({ equipped, onChange }) {
   const [cat, setCat] = useState(cats[0] ? cats[0].key : null);
   if (!cat) return null;
   const items = itemsByCategory(cat);
+  // ★★窓が、片方だけになっていないか。★足りないほうを伝えます。
+  const missing = windowMissing(interiorOf(equipped));
 
   return (
     <div className="rounded-2xl p-4 border mb-4" style={{ background: C.card, borderColor: C.line }}>
@@ -40,7 +43,7 @@ export default function InteriorPanel({ equipped, onChange }) {
           ★何ができるかだけを、書きます。 */}
       <p className="text-xs mb-3" style={{ color: C.inkSoft, lineHeight: 1.8 }}>
         押すと置いて、もう一度押すと外せます。
-        窓は、枠と外の景色を、別々に選べます。
+        窓は、枠と外の景色が そろうと出ます。
       </p>
 
       {/* ★分類の札。★中身のないものは、出しません。 */}
@@ -64,6 +67,18 @@ export default function InteriorPanel({ equipped, onChange }) {
           );
         })}
       </div>
+
+      {/* ★★窓は、★2枚そろって1つです（★2026-09-08・坂本さんの決め）。
+          ★枠は 384×384、景色は 480×320 で、★縦横比が違います。
+          ★片方だけ置くと、★大きさが合わず、おかしく見えます。
+          ★★だから、★そろうまで出しません。
+            ★ただし、★黙りません。★あと何を選べばよいかを、書きます。 */}
+      {missing && (cat === "window" || cat === "view") && (
+        <p className="text-xs" style={{ color: C.inkSoft, margin: "0 0 8px", lineHeight: 1.8 }}>
+          窓は、枠と外の景色が そろうと出ます。
+          {missing === "view" ? "「窓の外」を、もうひとつ選んでください。" : "「窓枠」を、もうひとつ選んでください。"}
+        </p>
+      )}
 
       {/* ★★1つだけ置ける分類は、★そう書きます。
           ★押したときに、前のものが消える理由が分かるようにします。 */}

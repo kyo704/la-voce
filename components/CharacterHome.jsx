@@ -1755,6 +1755,47 @@ function WallTexture({ material, wardrobeOn = false }) {
   return null;
 }
 
+// ★★内装120点を、動かすための包み（★2026-09-08）。
+//   ★★いまの DraggableItem は、★位置も自分で持つ作りです。
+//     ★あちらは触りません。★101点の見え方を、変えないためです。
+//   ★ここは、★位置を外から受け取り、★動かし終わったときだけ知らせます。
+function InteriorDraggable({ itemKey, onDragEnd, children }) {
+  const ref = useRef(null);
+  const dragging = useRef(false);
+  function down(e) {
+    e.preventDefault();
+    dragging.current = true;
+    e.currentTarget.setPointerCapture(e.pointerId);
+  }
+  function move(e) {
+    if (!dragging.current || !ref.current) return;
+    const box = ref.current.parentElement && ref.current.parentElement.parentElement;
+    if (!box) return;
+    const r = box.getBoundingClientRect();
+    const l = ((e.clientX - r.left) / r.width) * 100;
+    const t = ((e.clientY - r.top) / r.height) * 100;
+    // ★部屋の外へ出さないこと。★出ると、二度と掴めません。
+    ref.current.dataset.l = String(Math.max(4, Math.min(96, l)));
+    ref.current.dataset.t = String(Math.max(4, Math.min(96, t)));
+    ref.current.style.transform = `translate(${l - 50}%, ${t - 50}%)`;
+  }
+  function up(e) {
+    if (!dragging.current) return;
+    dragging.current = false;
+    try { e.currentTarget.releasePointerCapture(e.pointerId); } catch (err) { /* ★掴んでいなければ、それでよい */ }
+    const l = Number(ref.current && ref.current.dataset.l);
+    const t = Number(ref.current && ref.current.dataset.t);
+    if (ref.current) ref.current.style.transform = "";
+    if (Number.isFinite(l) && Number.isFinite(t) && onDragEnd) onDragEnd(l, t);
+  }
+  return (
+    <div ref={ref} onPointerDown={down} onPointerMove={move} onPointerUp={up}
+      style={{ touchAction: "none", cursor: "grab" }}>
+      {children}
+    </div>
+  );
+}
+
 function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardrobeOn = false, t }) {
   const [editMode, setEditMode] = useState(false);
   const floorKey = equipped.floor || "floor_default";
@@ -1807,7 +1848,9 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
       {/* ★★内装120点（★2026-09-08）。★いまの見え方を、1つも変えません。
           ★★これは、★上に重ねる別の層です。★門の外の方には1枚も出ません。
           ★★壁の絵のすぐあとに置きます。★床より後ろ、家具より前です。 */}
-      <InteriorLayer equipped={equipped} wardrobeOn={wardrobeOn} />
+      <InteriorLayer equipped={equipped} wardrobeOn={wardrobeOn}
+        editMode={editMode} onUpdatePosition={onUpdatePosition}
+        Draggable={InteriorDraggable} />
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", background: floorColor, zIndex: 0, overflow: "hidden" }}>
         <FloorTexture material={floorKey} wardrobeOn={wardrobeOn} />
       </div>
