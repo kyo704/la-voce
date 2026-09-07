@@ -49,6 +49,10 @@ const SLOT_LABELS = {
 
 export default function WardrobePanel({
   wearing = {}, owned = [], unlockedFlags = {}, todayISO, onChange,
+  // ★★試していただく方（★操作者ご本人）── ★鍵を1つも出しません。
+  //   ★★渡さない呼び方では false です。★一般の方は、これまでどおりです。
+  //     ★§9 の「試着」は、そのままです。★鍵の付いた品も、押して見られます。
+  allOwned = false,
   // ★★コーデ（★仕様書 §6）。★保存した着せ方を、1押しで呼び戻します。
   //   ★保存先は profiles.character_equipped.outfits です（★表は作りません）。
   outfits = [], onOutfitsChange,
@@ -359,6 +363,7 @@ export default function WardrobePanel({
         <ClothColorRow
           itemKey={wearing.top}
           itemName={(sheepItemByKey(wearing.top) || {}).name}
+          itemSlot={(sheepItemByKey(wearing.top) || {}).slot}
           colorKey={colors[wearing.top] || null}
           onChange={(k) => onColorChange(wearing.top, k)} />
       )}
@@ -582,7 +587,9 @@ export default function WardrobePanel({
           //   ★★持っている品には、★何も出しません。
           //     ★手に入れたあとで「有料」と出ていると、★取り上げられそうに見えます。
           const box = boxOf(it, CATALOG.find((c) => c.key === it.key));
-          const have = (owned || []).includes(it.key) || openedYet;
+          // ★★試していただく方には、★すべて持っている扱いにします。
+          //   ★持ち物そのものは、★1つも書き替えていません。★見え方だけです。
+          const have = allOwned || (owned || []).includes(it.key) || openedYet;
           return (
             <button key={it.key} type="button" onClick={() => wear(it)}
               title={it.name}

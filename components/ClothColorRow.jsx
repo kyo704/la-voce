@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { C } from "@/lib/tokens";
 import {
-  CLOTH_COLORS, swatchHex, edgeHex, needsEdge, isColorable
+  CLOTH_COLORS, swatchHex, edgeHex, needsEdge, isColorable, colorByKey
 } from "@/lib/clothColors";
 
 // ============================================================================
@@ -24,6 +25,11 @@ import {
 //     ★★見本に pre を出すと、★お客さまの目には、★濁って見えます。
 //       ★お客さまが見るのは、★塗ったあとの色です。
 //
+//   ★★はじめは、閉じています（★2026-09-08・坂本さんの決め）。
+//     ★★いつも開いていると、★24個の丸が、★品物の一覧を押しのけます。
+//       ★着せかえに来た方の、★目当ては品物です。
+//     ★押すと開きます。★開けたことは、★この画面のあいだ おぼえています。
+//
 //   ★★数を、書きません。★「24色」と出さないこと。
 //
 //   ★★色の名前は、★文字でも出します。
@@ -32,17 +38,49 @@ import {
 //   ★見張り components/tests/cloth-colors.test.js
 // ============================================================================
 
-export default function ClothColorRow({ itemKey, itemName, colorKey, onChange }) {
+export default function ClothColorRow({ itemKey, itemName, itemSlot, colorKey, onChange }) {
+  // ★★はじめは閉じています。★押すと開きます。
+  //   ★★state は、★早めに置きます。★条件で return するより前です。
+  //     ★あとに置くと、★呼ばれる回数が変わり、React が落ちます。
+  const [open, setOpen] = useState(false);
+
   // ★★塗れない品のときは、★何も出しません。★灰色にして並べないこと。
-  if (!itemKey || !isColorable(itemKey)) return null;
+  //   ★全身ものと、★止めているあいだは、★isColorable が false を返します。
+  if (!itemKey || !isColorable(itemKey, itemSlot)) return null;
 
   const pick = (k) => { if (onChange) onChange(k); };
+  // ★★いま選んでいる色を、★閉じたままでも分かるようにします。
+  const now = colorKey ? colorByKey(colorKey) : null;
 
   return (
     <div style={{ marginBottom: 14 }}>
-      <p className="text-xs" style={{ color: C.inkSoft, margin: "0 0 6px", lineHeight: 1.8 }}>
-        {itemName ? `${itemName}の色` : "色"}
-      </p>
+      {/* ★★押しどころは、★1つの button です。
+          ★★「色」という字と、★いま選んでいる丸を、★両方 出します。
+            ★閉じているあいだも、★何色にしているかが分かるようにします。 */}
+      <button type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        style={{
+          display: "flex", alignItems: "center", gap: 8,
+          width: "100%", minHeight: 44, padding: "6px 10px",
+          borderRadius: 12, border: `1px solid ${C.line}`, background: C.card,
+          color: C.inkSoft, fontSize: "0.8125rem", marginBottom: open ? 8 : 0
+        }}>
+        <span>{itemName ? `${itemName}の色` : "色"}</span>
+        <span aria-hidden="true"
+          style={{
+            width: 18, height: 18, borderRadius: 999,
+            background: now ? swatchHex(now.key) : C.paper,
+            border: now && needsEdge(now.key)
+              ? `1.5px solid ${edgeHex(now.key)}`
+              : `1px solid ${C.line}`
+          }} />
+        <span style={{ fontSize: "0.75rem" }}>{now ? now.name : "もとの色"}</span>
+        <span aria-hidden="true" style={{ marginLeft: "auto", fontSize: "0.75rem" }}>
+          {open ? "とじる" : "えらぶ"}
+        </span>
+      </button>
+      {!open ? null : (
       <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 6 }}>
         {/* ★★もとの色。★いちばん前です。★戻る道を、必ず残します。 */}
         <button type="button"
@@ -99,6 +137,7 @@ export default function ClothColorRow({ itemKey, itemName, colorKey, onChange })
           );
         })}
       </div>
+      )}
     </div>
   );
 }

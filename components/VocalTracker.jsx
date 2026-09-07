@@ -89,7 +89,7 @@ import { repertoireLog, repertoireLine, toCsv as repertoireCsv,
 // ★D+1 の一問（本番モード §7）。★本番モードの芯です。予報の部品ではありません。
 import PerformanceResultAsk from "@/components/PerformanceResultAsk";
 import { pickToAsk, buildResultRow } from "@/lib/performanceResult";
-import { mayUseWardrobe, applyWear } from "@/lib/sheepWardrobe";
+import { mayUseWardrobe, mayWearEverything, applyWear } from "@/lib/sheepWardrobe";
 import {
   box2Rounds, box2ReceivedCount, roundAvailableDate, shouldAutoDeliver, pickBox2Choices
 } from "@/lib/wardrobeBoxes";
@@ -11514,6 +11514,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const wardrobeOn = mayUseWardrobe(userId, {
     NEXT_PUBLIC_WARDROBE_USER_IDS: process.env.NEXT_PUBLIC_WARDROBE_USER_IDS
   });
+  // ★★試していただく方（★操作者ご本人）には、★鍵を1つも出しません。
+  //   ★★門（wardrobeOn）とは、★別の名簿です。★一緒にしないこと。
+  //     ★門の名簿に、★これから試す方が増えても、★その方には鍵が出ます。
+  //   ★一般の方は、★§9 の「試着」のままです（★2026-09-08・坂本さんのお決め）。
+  const wardrobeAllItems = mayWearEverything(userId, {
+    NEXT_PUBLIC_WARDROBE_ALL_ITEMS_USER_IDS: process.env.NEXT_PUBLIC_WARDROBE_ALL_ITEMS_USER_IDS
+  });
 
   // ★★選ばないまま月が変わったら、★おまかせで1つ届けます（★裁定 §5）。
   //   ★溜めないためです。★残高にしない、という決めの、もう半分です。
@@ -14752,6 +14759,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   <WardrobePanel
                     wearing={characterEquipped.wardrobe || {}}
                     owned={ownedItemKeys}
+                    // ★★試していただく方には、★鍵を出しません（★2026-09-08）。
+                    allOwned={wardrobeAllItems}
                     unlockedFlags={Object.fromEntries(
                       [...computeUnlocked(entries)].map((k) => [k, true])
                     )}

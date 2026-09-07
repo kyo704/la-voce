@@ -9,6 +9,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { pathToFileURL } = require("url");
 const { stripComments, readCode, readRaw } = require("./_source");
 
 const ROOT = path.join(__dirname, "..", "..");
@@ -19,8 +20,14 @@ function ok(cond, msg) {
 }
 
 async function load(rel) {
+  // ★★@/ の借り先は、★file:// の形に直します。
+  //   ★data: から読むので、★ただの絶対パスでは解けません。
+  //   ★拡張子も付けます（★ESM は省略を許しません）。
   const src = fs.readFileSync(path.join(ROOT, rel), "utf8")
-    .replace(/from\s+"@\/([^"]+)"/g, (m, p) => `from "${path.join(ROOT, p)}"`);
+    .replace(/from\s+"@\/([^"]+)"/g, (m, rel2) => {
+      const abs = path.join(ROOT, /\.[a-z]+$/.test(rel2) ? rel2 : rel2 + ".js");
+      return `from "${pathToFileURL(abs).href}"`;
+    });
   return import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
 }
 
@@ -84,7 +91,25 @@ async function load(rel) {
     return it && it.group !== "daily";
   });
   ok(keepsake.length === 0, "記念のものは、1つも入っていない（★色を変えられない品）");
-  ok(cc.isColorable("top_01") === true && cc.isColorable("hat_01") === false, "塗れる品だけが true");
+  // ★★2026-09-08、★いったん止めました（lib/pausedFeatures.js）。
+  //   ★2枚方式の絵が、★出荷済みの217点と違う裁ち方で描かれているためです。
+  //   ★色を選ぶと、★上着が裾で90画素 長くなり、★下を覆いました。
+  const P = await load("lib/pausedFeatures.js");
+  const on = P.CLOTH_COLORS_ENABLED;
+  console.log("   （いま 服のいろは " + (on ? "出しています" : "★止めています") + "）");
+  ok(cc.isColorable("top_01") === on, "止めているあいだは、1点も塗れない");
+  ok(cc.isColorable("hat_01") === false, "もともと塗れない品は、いつでも false");
+  // ★★全身ものは、★いつでも塗れません（★坂本さんの決め・2026-09-08）。
+  ok(cc.NEVER_COLORABLE_SLOTS.includes("garment"), "全身ものは、色を変えられない");
+  ok(cc.isColorable("top_01", "garment") === false, "★全身ものの置き場所なら、塗れない");
+
+  console.log("⑤-2 ★絵の裁ち方が、出荷済みと同じか（★止めている理由）");
+  {
+    const paused = P.PAUSED_FEATURES.find((f) => f.key === "display.clothColors");
+    ok(!!paused, "台帳に載っている");
+    ok(paused && /90/.test(paused.evidence.join(" ")), "★裾が90画素 長いことを、根拠に書いてある");
+    ok(paused && /消しません/.test(paused.dataPolicy), "★選んだ色は、消さないと書いてある");
+  }
 
   console.log("⑥ 絵が 34枚そろっているか");
   let noFile = [];
@@ -132,6 +157,7 @@ async function load(rel) {
   const clothImg = readRaw("components/ClothImage.jsx");
   ok(/<ClothColorRow/.test(panel), "色を選ぶところが、着せかえの画面から出る");
   ok(/onColorChange=\{/.test(tracker), "選んだ色が、VocalTracker に届く");
+  ok(/itemSlot=\{/.test(panel), "★置き場所も渡している（★全身ものを止めるため）");
   ok(/setClothColor\(/.test(tracker), "選んだ色を、setColor で入れている（★丸ごと入れていない）");
   ok(/clothColors/.test(tracker), "character_equipped.clothColors に持つ（★列を足していない）");
   ok(/<ClothImage/.test(dressed), "羊が、塗った絵を出す");
@@ -149,6 +175,13 @@ async function load(rel) {
   ok(/もとの色/.test(rowRaw), "「もとの色」に戻す押しどころがある");
   ok(rowRaw.indexOf("もとの色にする") < rowRaw.indexOf("CLOTH_COLORS.map"),
     "「もとの色」が、いちばん前にある");
+
+  console.log("⑬ ★はじめは閉じている（★2026-09-08・坂本さんの決め）");
+  ok(/useState\(false\)/.test(rowRaw), "はじめは閉じている");
+  ok(/aria-expanded=\{open\}/.test(rowRaw), "開いているかを、読み上げにも伝えている");
+  ok(/\{open \? "とじる" : "えらぶ"\}/.test(rowRaw), "押しどころに、開くか閉じるかを書いている");
+  // ★★閉じていても、★いま何色かが分かること。
+  ok(/now \? now\.name : "もとの色"/.test(rowRaw), "★閉じていても、いま選んでいる色が分かる");
 
   console.log(fail === 0 ? "\n★すべて通りました" : "\n★" + fail + "件、落ちました");
   process.exit(fail === 0 ? 0 : 1);
