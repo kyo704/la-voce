@@ -29,7 +29,9 @@ function ok(name, cond, extra) {
   const idx = JSON.parse(fs.readFileSync(path.join(ROOT, "docs", "assets", "sheep-items-index.json"), "utf-8"));
 
   console.log("■ 絞り込みの札（★§4）");
-  ok("5つある", m.FILTERS.length === 5);
+  // ★★2026-09-08、★「よく着る」を足して6つになりました。
+  //   ★段による切り替えを、★札に移したためです。
+  ok("6つある", m.FILTERS.length === 6);
   ok("「すべて」が先頭", m.FILTERS[0].key === "all");
   // ★★「持っていないものを隠す」を作らないこと（★§8）。
   ok("★「隠す」という札が無い", !m.FILTERS.some((f) => /隠/.test(f.label)));
@@ -94,10 +96,25 @@ function ok(name, cond, extra) {
   ok("★着たときに数えている", /countWear\(marks, item\.key, todayISO\)/.test(wp));
   // ★★脱ぐときは、数えないこと。
   ok("★脱ぐときは、数えない", /wearing\[item\.slot\] !== item\.key/.test(wp));
-  ok("★「少しだけ」の段で、4点に絞る", /snap === "peek"/.test(wp));
-  // ★★黙って減らさないこと。
-  ok("★絞っていることを、書いている", wp.includes("よく着るものだけを出しています"));
-  ok("★戻り方も、書いている", wp.includes("上へ引き上げると、全部 出ます"));
+  // ★★段による切り替えを、やめました（★2026-09-08・坂本さんの決め）。
+  //   ★引き上げ具合で中身が変わるのは、★予告なく減ったように見えます。
+  ok("★段で、中身を変えていない", !/snap === "peek"/.test(wp));
+  ok("★「よく着る」が、札にある", m.FILTERS.some((f) => f.key === "often"));
+  ok("★段の状態を、持ち越していない", !/const \[snap, setSnap\]/.test(wp));
+
+  console.log("■ ★鍵と、できることを、そろえる（★2026-09-08 のご指摘）");
+  // ★★鍵が付いているのに着られて、★どちらが本当か分からない、と
+  //   ★実機でご指摘をいただきました。
+  // ★★仕様 §9 に、答えが書いてありました。
+  //   「タップすると、その羊に着せた姿を3秒だけ見せる（試着）。
+  //     そのあと『これは まだ です』とだけ出す」
+  //   ★止めるのではなく、★言葉で埋めます。
+  ok("★持っていない品も、着られる（試着）", !/if \(!owned[\s\S]{0,60}return;/.test(wp));
+  ok("★試着だと、書いている", wp.includes("これは まだ です"));
+  // ★★「まだ」以外の言葉を、足さないこと（★仕様 §9）。
+  for (const bad of ["購入", "今だけ", "お得", "残り"]) {
+    ok(`★「${bad}」と書いていない`, !wp.includes(bad));
+  }
   // ★★回数を、画面に出さないこと。
   for (const pat of [/[0-9０-９]\s*回\s*着/, /wearCounts\[[^\]]*\]\s*\}/]) {
     ok(`★回数を出していない（${pat}）`, !pat.test(wp));

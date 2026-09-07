@@ -92,7 +92,7 @@ import { mayUseWardrobe, applyWear } from "@/lib/sheepWardrobe";
 import {
   box2Rounds, box2ReceivedCount, roundAvailableDate, shouldAutoDeliver, pickBox2Choices
 } from "@/lib/wardrobeBoxes";
-import { REDRAWN_AS } from "@/lib/legacyWearables";
+import { REDRAWN_AS, withRedrawnKeys } from "@/lib/legacyWearables";
 // ★解放の判定は、lib/character.js が持っています。★作り直しません。
 import { computeUnlocked } from "@/lib/character";
 // ★★無料と有料の線（⑫・案B）。★判定は lib/freeTier.js が1か所で持ちます。
@@ -5811,7 +5811,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       }
       const { data: inventoryRows } = await supabase.from("character_inventory").select("item_key").eq("user_id", userId);
       if (mounted && inventoryRows) {
-        setOwnedItemKeys(inventoryRows.map((r) => r.item_key));
+        // ★★描き直しの4点を、★持ち物に重ねます（★2026-09-08・呼び忘れの直し）。
+        //   ★古いお店で買った麦わら帽子を持つ方は、★新しい鍵も持っています。
+        //   ★同じ品なので、★もう一度 受け取らせないためです。
+        //   ★★lib/legacyWearables.js に書いておきながら、★どこからも
+        //     ★呼んでいませんでした。★「作った関数は、必ず呼ばれているか」。
+        setOwnedItemKeys(withRedrawnKeys(inventoryRows.map((r) => r.item_key)));
       }
       if (mounted) setProfileLoading(false);
     })();

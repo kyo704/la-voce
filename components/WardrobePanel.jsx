@@ -14,7 +14,6 @@ import {
 } from "@/lib/wardrobeMarks";
 import CATALOG from "@/docs/opus/items.json";
 import WardrobeSheet from "@/components/WardrobeSheet";
-import { SHEET_DEFAULT } from "@/lib/wardrobeOutfits";
 import { SHEEP_GROUPS, itemsByGroup, sheepItemSrc, sheepItemByKey } from "@/lib/sheepItems";
 import {
   inShopNow, currentSeason, SEASON_LABELS, isUnlockItem, unlockedItemKeys, applyWear,
@@ -82,9 +81,11 @@ export default function WardrobePanel({
   // ★★絞り込み（★仕様 §4）。★1つだけ選べます。★重ねません。
   const [filter, setFilter] = useState("all");
   const [style, setStyle] = useState(null);
-  // ★★どの段にいるか（★仕様 §7）。★「少しだけ」では、4点だけ出します。
-  //   ★正は WardrobeSheet です。★ここは知らされるだけです。
-  const [snap, setSnap] = useState(SHEET_DEFAULT);
+  // ★★段（少しだけ／半分／全部）は、★もう見ていません（★2026-09-08）。
+  //   ★段で中身を変えるのを、★やめたためです。
+  //   ★誰も読まない状態を、★残さないこと。
+  // ★★試着していること（★仕様 §9）。★鍵と、着られることの、食い違いを埋めます。
+  const [tryOn, setTryOn] = useState(null);
   const season = currentSeason(todayISO);
   const opened = new Set(unlockedItemKeys(unlockedFlags));
 
@@ -106,27 +107,38 @@ export default function WardrobePanel({
   const slotItems = groupItems.filter((i) => i.slot === activeSlot);
   // ★★絞り込みを、当てます（★§4）。★決めは lib です。
   const filtered = applyFilter(slotItems, filter, style, {
-    owned, equipped: marks, receivedAt
+    owned, equipped: marks, receivedAt,
+    todayISO, slot: activeSlot,
+    itemSlotOf: (k) => (sheepItemByKey(k) || {}).slot
   });
   // ★★お気に入りを、先頭に集めます（★仕様 §7）。★落としません。
   const ordered = favoritesFirst(filtered, marks);
-  // ★★「少しだけ」の段では、★よく着るもの4点だけ（★仕様 §7）。
-  //   ★「多くの人は、166点のうち10点くらいしか使いません。
-  //     ★その10点に、1タップで届くようにするのが、いちばん効きます。」
-  //   ★★まだ1度も着ていない方には、★ふつうに全部 出します。
-  //     ★空の棚を出さないためです。
-  const often = oftenWorn(marks, {
-    limit: 4, todayISO,
-    itemSlotOf: (k) => (sheepItemByKey(k) || {}).slot,
-    slot: activeSlot
-  });
-  const peekOnly = snap === "peek" && often.length > 0 && filter === "all";
-  const items = peekOnly
-    ? ordered.filter((i) => often.includes(i.key))
-    : ordered;
+  // ★★段による切り替えを、★やめました（★2026-09-08・坂本さんの決め）。
+  //   ★★もとは「少しだけ」の段で、★よく着るもの4点だけにしていました。
+  //     ★引き上げ具合で中身が変わるので、★予告なく減ったように見えます。
+  //     ★実機で「分かりにくい」とご指摘をいただきました。
+  //   ★★いまは「よく着る」の札です。★押したときだけ変わります。
+  //     ★同じことが、★自分で選べる形になりました。
+  const items = ordered;
 
   function wear(item) {
     if (!onChange) return;
+    // ★★持っていない品も、★着られます（★仕様 §9「試着」）。
+    //   ★「タップすると、その羊に着せた姿を3秒だけ見せる（試着）。
+    //     ★そのあと『これは まだ です』とだけ出す」
+    //   ★★止めないこと。★止めると、着たときの想像がつきません。
+    //   ★★ただし、★黙らないこと。
+    //     ★2026-09-08、★鍵が付いているのに着られて、
+    //     ★どちらが本当なのか分からない、というご指摘をいただきました。
+    //     ★鍵は「持っていない」、着られるのは「試着」。★別のことです。
+    //     ★それを、★その場で1行 伝えます。
+    //   ★★「購入する」「今だけ」「残り◯点」は、書きません（★仕様 §9）。
+    //     ★「まだ」以外の言葉を、足さないこと。
+    if (!(owned || []).includes(item.key) && !opened.has(item.key)) {
+      setTryOn(item.key);
+    } else {
+      setTryOn(null);
+    }
     // ★★決めは lib/sheepWardrobe.js の applyWear が持ちます。
     //   ★ここで書かないこと。★2か所になると、片方だけが古くなります。
     //   ★全身ものと、上・下・羽織りの、脱ぎ着もあちらが見ています。
@@ -328,7 +340,7 @@ export default function WardrobePanel({
 
   // ★★開いているとき。★羊は上に出したまま、★一覧は下から出します。
   return (
-    <WardrobeSheet onClose={() => setOpen(false)} header={sheep} onSnapChange={setSnap}>
+    <WardrobeSheet onClose={() => setOpen(false)} header={sheep}>
       {outfitRow}
       {/* ★いま着ているものを、外せるように並べます。 */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16, justifyContent: "center" }}>
@@ -467,14 +479,18 @@ export default function WardrobePanel({
 
       {/* ★★絞った結果が空のときは、★黙らないこと。
           ★「無い」ではなく、★何を選べば戻れるかを書きます。 */}
-      {/* ★★「少しだけ」の段で絞っているときは、★そう書きます（★仕様 §7）。
-          ★★黙って減らさないこと。★「消えた」と思われます。
-          ★引き上げれば全部 出ることを、★その場で伝えます。 */}
-      {peekOnly && (
+      {/* ★★試着していることを、★1行で伝えます（★仕様 §9）。
+          ★「これは まだ です」だけ。★それ以外の言葉を足さないこと。
+          ★★「購入する」「今だけ」「残り◯点」は、書きません。 */}
+      {tryOn && (
         <p className="text-xs" style={{ color: C.inkSoft, margin: "0 0 8px", lineHeight: 1.8 }}>
-          よく着るものだけを出しています。上へ引き上げると、全部 出ます。
+          これは まだ です。着た姿だけ、見ていただけます。
         </p>
       )}
+
+      {/* ★★段による切り替えは、やめました（★2026-09-08）。
+          ★★引き上げ具合で中身が変わるのは、★予告なく減ったように見えます。
+            ★いまは「よく着る」の札です。★押したときだけ変わります。 */}
 
       {items.length === 0 && slotItems.length > 0 && (
         <p className="text-xs" style={{ color: C.inkSoft, margin: "10px 0", lineHeight: 1.8 }}>
