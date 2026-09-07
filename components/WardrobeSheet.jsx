@@ -19,8 +19,15 @@ import { SHEET_SNAPS, SHEET_DEFAULT, snapByKey, nearestSnap } from "@/lib/wardro
 //   ★★動きを減らす設定の方には、★動かしません。
 // ============================================================================
 
-export default function WardrobeSheet({ children, header, onClose }) {
-  const [snap, setSnap] = useState(SHEET_DEFAULT);
+export default function WardrobeSheet({ children, header, onClose, onSnapChange }) {
+  const [snap, setSnapRaw] = useState(SHEET_DEFAULT);
+  // ★★どの段にいるかを、★外へも伝えます（★2026-09-08・仕様 §7）。
+  //   ★「少しだけ」の段では、★よく着るもの4点だけを出すためです。
+  //   ★★状態を2つ持たないこと。★ここが正で、★外へは知らせるだけです。
+  const setSnap = (v) => {
+    setSnapRaw(v);
+    if (onSnapChange) onSnapChange(v);
+  };
   // ★指で持っているあいだの、いまの高さ。★離すと段に吸い付きます。
   const [dragTop, setDragTop] = useState(null);
   const startRef = useRef(null);

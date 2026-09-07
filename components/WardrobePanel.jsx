@@ -9,10 +9,12 @@ import { boxOf, BOX_KEEPSAKE, BOX_RECORD, BOX_DRESSUP } from "@/lib/wardrobeBoxe
 // ★★絞り込みと印は、lib/wardrobeMarks.js が持ちます（★§4・§7・§11）。
 //   ★保存する場所は、★character_equipped の中です。★列を足していません。
 import {
-  FILTERS, STYLES, applyFilter, isFavorite, toggleFavorite, styleLabel
+  FILTERS, STYLES, applyFilter, isFavorite, toggleFavorite, styleLabel,
+  favoritesFirst, oftenWorn, countWear
 } from "@/lib/wardrobeMarks";
 import CATALOG from "@/docs/opus/items.json";
 import WardrobeSheet from "@/components/WardrobeSheet";
+import { SHEET_DEFAULT } from "@/lib/wardrobeOutfits";
 import { SHEEP_GROUPS, itemsByGroup, sheepItemSrc, sheepItemByKey } from "@/lib/sheepItems";
 import {
   inShopNow, currentSeason, SEASON_LABELS, isUnlockItem, unlockedItemKeys, applyWear,
@@ -80,6 +82,9 @@ export default function WardrobePanel({
   // ★★絞り込み（★仕様 §4）。★1つだけ選べます。★重ねません。
   const [filter, setFilter] = useState("all");
   const [style, setStyle] = useState(null);
+  // ★★どの段にいるか（★仕様 §7）。★「少しだけ」では、4点だけ出します。
+  //   ★正は WardrobeSheet です。★ここは知らされるだけです。
+  const [snap, setSnap] = useState(SHEET_DEFAULT);
   const season = currentSeason(todayISO);
   const opened = new Set(unlockedItemKeys(unlockedFlags));
 
@@ -100,9 +105,25 @@ export default function WardrobePanel({
       : (hasGarment ? RAIL_GARMENT : (railKeys[0] || null));
   const slotItems = groupItems.filter((i) => i.slot === activeSlot);
   // ★★絞り込みを、当てます（★§4）。★決めは lib です。
-  const items = applyFilter(slotItems, filter, style, {
+  const filtered = applyFilter(slotItems, filter, style, {
     owned, equipped: marks, receivedAt
   });
+  // ★★お気に入りを、先頭に集めます（★仕様 §7）。★落としません。
+  const ordered = favoritesFirst(filtered, marks);
+  // ★★「少しだけ」の段では、★よく着るもの4点だけ（★仕様 §7）。
+  //   ★「多くの人は、166点のうち10点くらいしか使いません。
+  //     ★その10点に、1タップで届くようにするのが、いちばん効きます。」
+  //   ★★まだ1度も着ていない方には、★ふつうに全部 出します。
+  //     ★空の棚を出さないためです。
+  const often = oftenWorn(marks, {
+    limit: 4, todayISO,
+    itemSlotOf: (k) => (sheepItemByKey(k) || {}).slot,
+    slot: activeSlot
+  });
+  const peekOnly = snap === "peek" && often.length > 0 && filter === "all";
+  const items = peekOnly
+    ? ordered.filter((i) => often.includes(i.key))
+    : ordered;
 
   function wear(item) {
     if (!onChange) return;
@@ -112,6 +133,12 @@ export default function WardrobePanel({
     //   ★sheepItemByKey を渡します。★渡さないと、
     //     ★着物の上からシャツが出る向きを、★見られません。
     onChange(applyWear(wearing, item, sheepItemByKey));
+    // ★★着た回数を、1つ足します（★仕様 §7）。
+    //   ★★脱ぐときは、数えません。★着たことだけを数えます。
+    //   ★数は、画面に出しません。★並べ替えにだけ使います。
+    if (onMarksChange && wearing[item.slot] !== item.key) {
+      onMarksChange(countWear(marks, item.key, todayISO));
+    }
   }
 
   function setSide(side) {
@@ -301,7 +328,7 @@ export default function WardrobePanel({
 
   // ★★開いているとき。★羊は上に出したまま、★一覧は下から出します。
   return (
-    <WardrobeSheet onClose={() => setOpen(false)} header={sheep}>
+    <WardrobeSheet onClose={() => setOpen(false)} header={sheep} onSnapChange={setSnap}>
       {outfitRow}
       {/* ★いま着ているものを、外せるように並べます。 */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16, justifyContent: "center" }}>
@@ -440,6 +467,15 @@ export default function WardrobePanel({
 
       {/* ★★絞った結果が空のときは、★黙らないこと。
           ★「無い」ではなく、★何を選べば戻れるかを書きます。 */}
+      {/* ★★「少しだけ」の段で絞っているときは、★そう書きます（★仕様 §7）。
+          ★★黙って減らさないこと。★「消えた」と思われます。
+          ★引き上げれば全部 出ることを、★その場で伝えます。 */}
+      {peekOnly && (
+        <p className="text-xs" style={{ color: C.inkSoft, margin: "0 0 8px", lineHeight: 1.8 }}>
+          よく着るものだけを出しています。上へ引き上げると、全部 出ます。
+        </p>
+      )}
+
       {items.length === 0 && slotItems.length > 0 && (
         <p className="text-xs" style={{ color: C.inkSoft, margin: "10px 0", lineHeight: 1.8 }}>
           この絞り込みに当てはまるものは、ここにはありません。
