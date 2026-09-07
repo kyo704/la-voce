@@ -81,11 +81,16 @@ async function main() {
   console.log("\n=== テスト6: §6-4 の対象箇所が、すべてゲートとして定義されている ===");
   const required = [
     "combo.narrative", "rest.average", "location.average", "symptom.cooccurrence",
-    "mentalTag.trend", "timeOfDay.badge", "deviation.tScore", "forecast.hitRate", "acwr"
+    // ★★"forecast.hitRate" を外しました（★2026-09-07）。
+    //   ★声の予報そのものをやめたので、★呼ぶ人がいなくなりました。
+    "mentalTag.trend", "timeOfDay.badge", "deviation.tScore", "acwr"
   ];
   required.forEach((key) => assertTrue(!!getGate(key), `ゲート「${key}」が定義されている`));
-  assertEqual(evaluateGate("forecast.hitRate", { n: 13 }).passed, false, "的中率は13件では出さない");
-  assertEqual(evaluateGate("forecast.hitRate", { n: 14 }).passed, true, "的中率は14件から出す");
+
+  // ★★声の予報のゲートが、戻っていないこと（★2026-09-07）。
+  //   ★予報そのものをやめたので、★呼ぶ人がいなくなりました。
+  //   ★戻すときは、★予報の精度を先に確かめてください。
+  assertEqual(getGate("forecast.hitRate"), null, "★声の予報のゲートは、もう無い");
   assertEqual(evaluateGate("deviation.tScore", { n: 29 }).passed, false, "偏差値の数値は29件では出さない（順位のみ）");
   assertEqual(evaluateGate("deviation.tScore", { n: 30 }).passed, true, "偏差値の数値は30件から出す");
 
@@ -102,7 +107,6 @@ async function main() {
     assertTrue(!!verdict.message, `「${key}」は代わりに「あと◯で見える」文章を返す`);
   });
   assertEqual(evaluateGate("acwr", { days: EIGHT_DAYS }).passed, false, "記録8日ではACWRの警告も出ない（パネルと同一フラグ）");
-  assertEqual(evaluateGate("forecast.hitRate", { n: EIGHT_DAYS }).passed, false, "記録8日では的中率も出ない");
   assertEqual(evaluateGate("deviation.tScore", { n: EIGHT_DAYS }).passed, false, "記録8日では偏差値の数値も出ない（順位のみ）");
 
   console.log("\n=== テスト8: 未定義のキーは通さない（画面ごとの条件書きを防ぐ） ===");

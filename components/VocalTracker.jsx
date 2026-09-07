@@ -937,99 +937,15 @@ const FORECAST_FACTOR_LABELS = {
   alcohol: "アルコール", prevLoad: "前日の声の使用量", absHumidity: "絶対湿度", prevThroat: "前日の喉の状態"
 };
 // 前日の記録から、予報モデルの説明変数を取り出す。prevAcwr は前日時点のACWR値（acwrSeriesから取得して渡す）。
-function extractForecastPredictors(prevEntry, prevAcwr) {
-  if (!prevEntry) return null;
-  const sleepHours = typeof prevEntry.sleepHours === "number" ? prevEntry.sleepHours : null;
-  const dinnerGap = computeTimeGapHours(prevEntry.dinnerTime, prevEntry.bedtime);
-  const waterMl = Object.values(prevEntry.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0);
-  const waterL = waterMl > 0 ? waterMl / 1000 : null;
-  const ease = typeof prevEntry.ease === "number" ? prevEntry.ease : null;
-  const alcohol = (prevEntry.dinnerTags || []).includes("アルコール") ? 1 : 0;
-  const prevLoad = typeof prevAcwr === "number" ? prevAcwr : null;
-  const absHumidity = computeAbsoluteHumidity(prevEntry.temperature, prevEntry.humidity);
-  const prevThroat = typeof prevEntry.throatCondition === "number" ? prevEntry.throatCondition : null;
-  return { sleepHours, dinnerGap, waterL, ease, alcohol, prevLoad, absHumidity, prevThroat };
-}
-// ŷ = μ + Σ βⱼ(xⱼ − x̄ⱼ)。beta は β₀そのもの、または個人化後にブレンドした値を渡す。
-// 欠損した説明変数はその項を0（＝平均値で埋めたのと同じ）として無視する。
-function predictThroat(predictors, means, mu, beta) {
-  if (!predictors) return null;
-  const coeffs = beta || FORECAST_PRIORS;
-  let yhat = mu;
-  let missingCount = 0;
-  FORECAST_KEYS.forEach((k) => {
-    const x = predictors[k];
-    if (typeof x === "number" && typeof means[k] === "number") {
-      yhat += coeffs[k] * (x - means[k]);
-    } else {
-      missingCount += 1;
-    }
-  });
-  return { yhat: Math.max(1, Math.min(5, yhat)), missingCount };
-}
-// ---- ここから、リッジ回帰（個人化）用の小さな行列演算ヘルパー ----
-function matTranspose(A) {
-  return A[0].map((_, j) => A.map((row) => row[j]));
-}
-function matMultiply(A, B) {
-  const result = [];
-  for (let i = 0; i < A.length; i++) {
-    const row = [];
-    for (let j = 0; j < B[0].length; j++) {
-      let sum = 0;
-      for (let k = 0; k < B.length; k++) sum += A[i][k] * B[k][j];
-      row.push(sum);
-    }
-    result.push(row);
-  }
-  return result;
-}
-function matVecMultiply(A, v) {
-  return A.map((row) => row.reduce((sum, val, j) => sum + val * v[j], 0));
-}
-// ガウス・ジョルダン法による正方行列の逆行列（部分ピボッティングつき）。
-// λ（リッジの正則化項）を対角に足した後に呼ぶため、実務上は特異行列になりにくい。
-function matInverse(A) {
-  const n = A.length;
-  const aug = A.map((row, i) => [...row, ...Array.from({ length: n }, (_, j) => (i === j ? 1 : 0))]);
-  for (let col = 0; col < n; col++) {
-    let pivotRow = col;
-    for (let r = col + 1; r < n; r++) {
-      if (Math.abs(aug[r][col]) > Math.abs(aug[pivotRow][col])) pivotRow = r;
-    }
-    [aug[col], aug[pivotRow]] = [aug[pivotRow], aug[col]];
-    const pivot = aug[col][col];
-    if (Math.abs(pivot) < 1e-9) return null;
-    for (let j = 0; j < 2 * n; j++) aug[col][j] /= pivot;
-    for (let r = 0; r < n; r++) {
-      if (r === col) continue;
-      const factor = aug[r][col];
-      for (let j = 0; j < 2 * n; j++) aug[r][j] -= factor * aug[col][j];
-    }
-  }
-  return aug.map((row) => row.slice(n));
-}
-// リッジ回帰: β̂ = (XᵀX + λI)⁻¹Xᵀy。X は標準化済み、y はセンタリング済みを渡すこと。
-function fitRidgeRegression(X, y, lambda) {
-  if (X.length === 0) return null;
-  const p = X[0].length;
-  const Xt = matTranspose(X);
-  const XtX = matMultiply(Xt, X);
-  for (let i = 0; i < p; i++) XtX[i][i] += lambda;
-  const XtXInv = matInverse(XtX);
-  if (!XtXInv) return null;
-  const Xty = Xt.map((row) => row.reduce((sum, val, k) => sum + val * y[k], 0));
-  return matVecMultiply(XtXInv, Xty);
-}
-// ---- リッジ回帰ヘルパー ここまで ----
-// ★統計の計算は lib/analysisCore.js へ移しました（2026-09-03）。
-//   ★中身は1文字も変えていません。★同じ値が出ることを確かめてあります。
-//   ★ここに書き戻さないこと。★書き戻すと、測る道具と画面が別物になります。
-//   ★移したもの：pearson / rankArray / spearman / incompleteBeta /
-//     logGamma / tDistPValue / benjaminiHochberg / computeHedgesG /
-//     effectSortWeight
+// ★★声の予報を、まるごとやめました（★2026-09-07・坂本さんの決め）。
+//   ★ここには、予報だけが使っていた道具が並んでいました。
+//     ・extractForecastPredictors（前日から説明変数を取り出す）
+//     ・predictThroat（ŷ を出す）
+//     ・matTranspose / matMultiply / matVecMultiply / matInverse
+//     ・fitRidgeRegression（個人化。★「44%」の出どころ）
+//   ★★どれも、★予報からしか呼ばれていませんでした。★確かめて外しました。
+//   ★★行列の道具は、★ほかで使っていません。★戻すときは一緒に戻してください。
 
-// ---- 統計ヘルパー ここまで ----
 function getCorrelationData(entries, targetKey, targetFilter, t) {
   const list = Object.values(entries).filter(targetFilter);
   return FACTORS.filter((f) => f.key !== targetKey).map((f) => {
@@ -2073,7 +1989,12 @@ async function recordAndAnalyzeSFF(durationMs = 3000) {
 }
 // ---- CPPS計算用DSP ここまで ----
 // 前日の記録から、声のコンディションに影響しやすい要因を抽出する。
-// flagKey は「今日」タブの短い警告表示に、explainKey は分析タブの理論的な解説文に対応する。
+// ★★explainKey（理屈の説明）を、やめました（★2026-09-07・案い）。
+//   ★1日分の記録からの推論に、★理屈を付けていました。
+//   ★3ゲートを通りようがありません。★1日分に、群の比較はありません。
+//   ★★flagKey（書かれた事実）だけを残します。
+//     ★「前日は、食後2.6時間で横になりました」は、ご本人が書いたことです。
+//   ★規則：書いている値は、必ずどこかで読まれているか。★読まれないので外します。
 // 注意文に、その日の値を差し込む。★時刻の差は保存せず、毎回ここで作ります。
 function flagText(t, flagKey, values) {
   let text = t(flagKey);
@@ -2089,12 +2010,12 @@ function computeConditionFlags(y) {
   // ★評価語を使わず、事実だけを出します（判断の回答 §4-3）。
   //   時刻の差は保存せず、毎回ここで計算します。
   if (dinnerGap != null && dinnerGap < 3) {
-    flags.push({ flagKey: "flagDinnerGap", explainKey: "explainDinnerGap", hours: Math.round(dinnerGap * 10) / 10 });
+    flags.push({ flagKey: "flagDinnerGap", hours: Math.round(dinnerGap * 10) / 10 });
   }
-  if (typeof y.sleepHours === "number" && y.sleepHours < 6) flags.push({ flagKey: "flagShortSleep", explainKey: "explainShortSleep" });
-  if (entryHasActivityKind(y, "本番") || entryHasActivityKind(y, "リハーサル")) flags.push({ flagKey: "flagHeavyVoiceUse", explainKey: "explainHeavyVoiceUse" });
-  if ((y.dinnerTags || []).includes("アルコール")) flags.push({ flagKey: "flagAlcohol", explainKey: "explainAlcohol" });
-  if ((y.dinnerTags || []).includes("カフェイン")) flags.push({ flagKey: "flagCaffeine", explainKey: "explainCaffeine" });
+  if (typeof y.sleepHours === "number" && y.sleepHours < 6) flags.push({ flagKey: "flagShortSleep" });
+  if (entryHasActivityKind(y, "本番") || entryHasActivityKind(y, "リハーサル")) flags.push({ flagKey: "flagHeavyVoiceUse" });
+  if ((y.dinnerTags || []).includes("アルコール")) flags.push({ flagKey: "flagAlcohol" });
+  if ((y.dinnerTags || []).includes("カフェイン")) flags.push({ flagKey: "flagCaffeine" });
   return { dinnerGap, flags };
 }
 // activities[] の中から「その日の主たる活動」（時間が最長のブロック）を導出する。
@@ -7002,187 +6923,25 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     return series;
   }, [entries, songFactorResolver, realTodayDate]);
 
-  // 01. 声の予報：前夜の行動から翌朝の喉スコアを予測する。
-  // 記録14日未満は一般知見（β₀）だけで予報し、14日以上たまったらリッジ回帰で
-  // その人自身の係数（β̂）を推定し、経験ベイズ縮約で β₀ とブレンドする（β = n/(n+k)·β̂ + k/(n+k)·β₀、k=20）。
-  const forecastTrainingSet = useMemo(() => {
-    const realToday = realTodayDate;
-    const rows = [];
-    for (let i = 35; i >= 0; i--) {
-      const d = addDays(realToday, -i);
-      const prevD = addDays(d, -1);
-      const prevEntry = entries[prevD];
-      if (!prevEntry) continue;
-      const todayEntry = entries[d];
-      const actual = todayEntry && typeof todayEntry.throatCondition === "number" ? todayEntry.throatCondition : null;
-      // ★比をやめたので、★前日の「その日の量」を渡します（2026-09-07）。
-      const prevAcwr = acwrSeries[prevD] ? acwrSeries[prevD].day : null;
-      rows.push({ date: d, predictors: extractForecastPredictors(prevEntry, prevAcwr), actual });
-    }
-    return rows;
-  }, [entries, acwrSeries, realTodayDate]);
-  const predictorMeans = useMemo(() => {
-    const means = {};
-    FORECAST_KEYS.forEach((k) => {
-      const vals = forecastTrainingSet.map((r) => r.predictors && r.predictors[k]).filter((v) => typeof v === "number");
-      means[k] = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
-    });
-    return means;
-  }, [forecastTrainingSet]);
-  const predictorStds = useMemo(() => {
-    const stds = {};
-    FORECAST_KEYS.forEach((k) => {
-      const vals = forecastTrainingSet.map((r) => r.predictors && r.predictors[k]).filter((v) => typeof v === "number");
-      if (vals.length < 2) { stds[k] = 1; return; }
-      const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
-      const variance = vals.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / vals.length;
-      stds[k] = Math.sqrt(variance) || 1;
-    });
-    return stds;
-  }, [forecastTrainingSet]);
-  const throatMu = useMemo(() => {
-    const vals = Object.keys(entries).sort().slice(-28).map((d) => entries[d].throatCondition).filter((v) => typeof v === "number");
-    return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 3;
-  }, [entries]);
-  // 個人化（リッジ回帰）。n（学習に使える件数）が14未満なら β̂=0（＝β₀のみ）とみなす。
-  const personalizedBeta = useMemo(() => {
-    const trainRows = forecastTrainingSet.filter((r) => r.actual != null && r.predictors);
-    const n = trainRows.length;
-    const k = 20;
-    const blendRatio = n / (n + k);
-    if (n < 14) {
-      return { beta: FORECAST_PRIORS, n, personalizationPct: 0 };
-    }
-    // 標準化: (x - 平均) / SD。欠損は0（＝平均で埋めたのと同じ）として扱う。
-    const X = trainRows.map((r) =>
-      FORECAST_KEYS.map((key) => {
-        const x = r.predictors[key];
-        if (typeof x !== "number" || predictorMeans[key] == null) return 0;
-        const std = predictorStds[key] > 1e-6 ? predictorStds[key] : 1;
-        return (x - predictorMeans[key]) / std;
-      })
-    );
-    const y = trainRows.map((r) => r.actual - throatMu);
-    const betaStd = fitRidgeRegression(X, y, 1.0);
-    if (!betaStd) {
-      return { beta: FORECAST_PRIORS, n, personalizationPct: 0 };
-    }
-    const betaHat = {};
-    FORECAST_KEYS.forEach((key, i) => {
-      const std = predictorStds[key] > 1e-6 ? predictorStds[key] : 1;
-      betaHat[key] = betaStd[i] / std;
-    });
-    const blended = {};
-    FORECAST_KEYS.forEach((key) => {
-      blended[key] = blendRatio * betaHat[key] + (1 - blendRatio) * FORECAST_PRIORS[key];
-    });
-    return { beta: blended, n, personalizationPct: Math.round(blendRatio * 100) };
-  }, [forecastTrainingSet, predictorMeans, predictorStds, throatMu]);
-  const forecastResiduals = useMemo(() => {
-    return forecastTrainingSet
-      .map((r) => {
-        if (r.actual == null) return null;
-        const pred = predictThroat(r.predictors, predictorMeans, throatMu, personalizedBeta.beta);
-        if (!pred) return null;
-        return { date: r.date, actual: r.actual, yhat: pred.yhat, residual: r.actual - pred.yhat };
-      })
-      .filter((x) => x != null);
-  }, [forecastTrainingSet, predictorMeans, throatMu, personalizedBeta]);
-  const forecastResidualSD = useMemo(() => {
-    if (forecastResiduals.length < 3) return 0.8; // データが少ないうちの初期の目安幅
-    const vals = forecastResiduals.map((r) => r.residual);
-    const n = vals.length;
-    const mean = vals.reduce((a, b) => a + b, 0) / n;
-    const variance = vals.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / (n - 1);
-    return Math.sqrt(variance) || 0.8;
-  }, [forecastResiduals]);
-  // 統合実行ルートv4 §6-4: 的中率は14件未満では出さない。
-  // 6件で「的中率33%」と出していたのが、信頼を損なっていた場所（P1-3）。
-  const forecastHitRateGate = useMemo(
-    () => evaluateGate("forecast.hitRate", { n: forecastResiduals.slice(-30).length }, t),
-    [forecastResiduals, t]
-  );
-  // 統合実行ルートv4 G2-6 / P1-3: 「当たった」の定義を変える。
-  // 以前は「予報と実測の差が±0.5以内」という、画面のどこにも書いていない厳しい判定で、
-  // 記録6件で「的中率33%」と出ていた。数字が低いこと自体より、
-  // ユーザーが定義を確認できないことが問題だった。
-  // 新しい定義は「実測が、画面に出している予測区間（±1標準誤差）に入ったか」。
-  // 画面に描いている帯とそのまま一致するので、ユーザーが目で確かめられる。
-  const forecastHitRate = useMemo(() => {
-    if (!forecastHitRateGate.passed) return null;
-    const recent = forecastResiduals.slice(-30);
-    const hits = recent.filter((r) => {
-      const low = Math.max(1, r.yhat - forecastResidualSD);
-      const high = Math.min(5, r.yhat + forecastResidualSD);
-      return r.actual >= low && r.actual <= high;
-    }).length;
-    return { rate: Math.round((hits / recent.length) * 100), n: recent.length };
-  }, [forecastResiduals, forecastResidualSD, forecastHitRateGate]);
+  // ★★声の予報を、まるごとやめました（★2026-09-07・坂本さんの決め）。
+  //
+  //   ★実機で、★予報の線と実測の線が大きく離れているのをご覧になりました。
+  //     ★予報は1〜5を大きく振れ、★実測は2〜4に収まり、★ほとんど重なりません。
+  //   ★「この精度の低さでは必要ありません。あるだけ無駄です」とのご判断です。
+  //
+  //   ★★消したもの
+  //     ・リッジ回帰による個人化（★「44%個人化された式」の出どころ）
+  //     ・予測区間、残差、的中率、当たった日の一言
+  //     ・予報のグラフ
+  //   ★★残したもの
+  //     ・acwrSeries（★声の使用量の数え）。★分析の3か所が使っています
+  //     ・前日に書かれた事実（voicePrediction）。★理屈だけ外しました
+  //
+  //   ★★戻すときは、★精度を先に確かめてください。
+  //     ★当たるかどうかを確かめずに出したことが、★今回の問題でした。
 
-  // ★★きのうの予報が当たっていたか（★2026-09-07・坂本さんの決め）。
-  //
-  //   ★★的中率の数字は、★どこにも出しません。
-  //     ★天気予報も、★自分の的中率を出しません。★それと同じ立場です。
-  //   ★★外した日は、★何も言いません。★いつもの一言だけです。
-  //     ★言い訳も、★お詫びもしません。
-  //   ★当たった日だけ、★羊がときどき小さく喜びます。
-  //
-  //   ★★「ときどき」は、3〜4回に1回くらいです。
-  //     ★毎回だと、★嬉しさが薄れます。
-  //     ★稀すぎると、★気づいていただけません。
-  //
-  //   ★★日付から決めます。★乱数は使いません。
-  //     ★描き直すたびに出たり消えたりすると、★見た人が戸惑います。
-  //     ★同じ日なら、★何度描いても同じ答えになります。
-  const forecastHitToday = useMemo(() => {
-    if (!forecastResiduals || forecastResiduals.length === 0) return false;
-    const last = forecastResiduals[forecastResiduals.length - 1];
-    if (!last || typeof last.actual !== "number" || typeof last.yhat !== "number") return false;
-    const low = Math.max(1, last.yhat - forecastResidualSD);
-    const high = Math.min(5, last.yhat + forecastResidualSD);
-    if (!(last.actual >= low && last.actual <= high)) return false;
-    // ★日付の数字を足して、4で割った余りが0のときだけ出します。
-    const digits = String(last.date || realTodayDate).replace(/\D/g, "");
-    let sum = 0;
-    for (const ch of digits) sum += Number(ch);
-    return sum % 4 === 0;
-  }, [forecastResiduals, forecastResidualSD, realTodayDate]);
-  const todayForecast = useMemo(() => {
-    const realToday = realTodayDate;
-    const yDate = addDays(realToday, -1);
-    const prevEntry = entries[yDate];
-    if (!prevEntry) return { hasData: false, yesterdayDate: yDate };
-    const prevAcwr = acwrSeries[yDate] ? acwrSeries[yDate].day : null;
-    const predictors = extractForecastPredictors(prevEntry, prevAcwr);
-    const pred = predictThroat(predictors, predictorMeans, throatMu, personalizedBeta.beta);
-    if (!pred) return { hasData: false, yesterdayDate: yDate };
-    const intervalWidth = forecastResidualSD * (pred.missingCount > 0 ? 1.2 : 1);
-    const contributions = FORECAST_KEYS
-      .filter((k) => typeof predictors[k] === "number" && typeof predictorMeans[k] === "number")
-      .map((k) => ({ key: k, label: FORECAST_FACTOR_LABELS[k], contribution: personalizedBeta.beta[k] * (predictors[k] - predictorMeans[k]) }))
-      .sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution));
-    return {
-      hasData: true,
-      yesterdayDate: yDate,
-      yhat: pred.yhat,
-      low: Math.max(1, pred.yhat - intervalWidth),
-      high: Math.min(5, pred.yhat + intervalWidth),
-      topFactor: contributions[0] || null,
-      allContributions: contributions,
-      personalizationPct: personalizedBeta.personalizationPct,
-      trainN: personalizedBeta.n
-    };
-  }, [entries, acwrSeries, predictorMeans, throatMu, forecastResidualSD, personalizedBeta, realTodayDate]);
-  // lavoce-画面レイアウト仕様_1.md §3.3: 提案は必ず1つだけ。予報の寄与のうち、
-  // いちばん改善余地が大きい「行動可能」な項目を選ぶ（環境・前日症状などは提案しない）。
   // ★★「今日やるといいこと」の助言を、まるごとやめました（2026-09-07）。
-  //   ★HOME_SUGGESTION_TEXT（助言の文の一覧）
-  //   ★todaySuggestion（いちばん足を引っぱっている項目から助言を作るもの）
-  //   ★coreFillNote（書けていない項目を知らせるもの）
-  //   ★★どれも「こうしたほうがよい」を言うものでした。
-  //     ★代わりに、★書かれたものを数えて並べるだけにします。
-  //   ★★coreFillNote も一緒に消えました。★書き漏れのお知らせです。
-  //     ★別の場所に戻したいときは、お知らせください。
+  //   ★代わりに、★書かれたものを数えて並べるだけにします。
   const recentTags = useMemo(
     () => recentlyWritten(entries, realTodayDate),
     [entries, realTodayDate]
@@ -7192,13 +6951,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★すでに書かれた曲名を、数え直すだけです。
   //   ★★体について何も言わないので、★ゲートは掛けません。
   const repertoire = useMemo(() => repertoireLog(entries), [entries]);
-  const forecastChartData = useMemo(() => {
-    return forecastResiduals.slice(-14).map((r) => {
-      const low = Math.max(1, r.yhat - forecastResidualSD);
-      const high = Math.min(5, r.yhat + forecastResidualSD);
-      return { date: r.date.slice(5), actual: r.actual, yhat: Math.round(r.yhat * 10) / 10, low, bandWidth: Math.max(0, high - low) };
-    });
-  }, [forecastResiduals, forecastResidualSD]);
   // ---- フェーズ2（02偏差値・01予報）用データ ここまで ----
 
   // ★4分割して平均を比べる計算は外した（分析画面の描画仕様 §3-G）。
@@ -12241,7 +11993,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   )}
 
                   <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
-                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{isRecordedToday ? "今日の記録" : "今日の声"}</p>
+                    {/* ★★声の予報を、まるごとやめました（★2026-09-07・坂本さんの決め）。
+                        ★ホームのこの枠は、★空けたままにします。
+                        ★何を置くかは、★別に決めます。★こちらでは決めません。
+                        ★記録済みの日は、★これまでどおり点数が出ます。 */}
+                    {isRecordedToday && (
+                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>今日の記録</p>
+                    )}
                     {isRecordedToday ? (
                       <>
                         <div className="flex items-end gap-2 mb-2">
@@ -12252,40 +12010,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </div>
                         <p className="text-sm" style={{ color: C.ink }}>今日はもう記録済みです。お疲れさまでした。</p>
                       </>
-                    ) : todayForecast.hasData ? (
-                      <>
-                        <div className="flex items-end gap-2 mb-2">
-                          <span className="ff-display italic" style={{ fontSize: "2.6rem", lineHeight: 1, color: levelInk(todayForecast.yhat) }}>
-                            {todayForecast.yhat.toFixed(1)}
-                          </span>
-                          <span className="text-sm mb-1" style={{ color: C.inkSoft }}>/ 5（予報）</span>
-                        </div>
-                        {todayForecast.topFactor && (
-                          <p className="text-sm mb-2" style={{ color: C.ink }}>
-                            {todayForecast.topFactor.label}が{todayForecast.topFactor.contribution >= 0 ? "良い方向に" : "厳しい方向に"}いちばん効いています。
-                          </p>
-                        )}
-                        {/* ★★的中率の数字は、★出しません（★2026-09-07・坂本さんの決め）。
-                            ★天気予報も、★自分の的中率を出しません。★それと同じです。
-                            ★★外した日は、★何も言いません。
-                              ★当たった日だけ、★羊がときどき小さく喜びます。
-                              ★毎回だと、★嬉しさが薄れます。
-                            ★数字を出さないので、★「61%」と言い切る必要もなくなります。 */}
-                        {/* ★★2026-09-07・Opus が確定した言い方。★1文字も変えないこと。
-                            ★「予測しません」とは書きません。★予報は残るからです。
-                            ★書くのは「声を測っていない」「まだ確かめていない」の2つです。 */}
-                        <p className="text-xs pt-2 border-t" style={{ borderColor: C.line, color: C.inkSoft, lineHeight: 1.8 }}>
-                          {t("disclaimerForecast")}
-                        </p>
-                        {forecastHitToday && (
-                          <p className="text-xs pt-2 border-t" style={{ borderColor: C.line, color: C.inkSoft }}>
-                            あ、あたりました。
-                          </p>
-                        )}
-                      </>
-                    ) : (
-                      <p className="text-sm" style={{ color: C.inkSoft }}>記録が増えると、ここに今日の声の予報が表示されます。</p>
-                    )}
+                    ) : null}
                   </div>
 
                   {/* ★★「今日やるといいこと」を、やめました（★2026-09-07・坂本さんの決め）。
@@ -12855,9 +12580,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             )}
                             {yesterdayContext.flags.length > 0 && (
                               <div className="mt-3 space-y-1.5">
+                                {/* ★★⚠ と赤い下地を、やめました（★2026-09-07）。
+                                    ★それ自体が判定です（規約 §7-5）。
+                                    ★書かれた事実だけを、そのまま出します。 */}
                                 {yesterdayContext.flags.map(({ flagKey, hours }) => (
-                                  <div key={flagKey} className="text-xs rounded-lg p-2" style={{ background: "rgba(184,49,49,0.08)", color: C.curtain }}>
-                                    ⚠ {flagText(t, flagKey, { hours })}
+                                  <div key={flagKey} className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.8 }}>
+                                    {flagText(t, flagKey, { hours })}
                                   </div>
                                 ))}
                               </div>
@@ -15541,114 +15269,36 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </p>
                 </div>
 
-                {/* 改善タスクv2 §4-1(f): 「声の状態の予測」と「声の予報」が連続して2つあり、
-                    ユーザーから見て違いが分からなかった。1枚のカードに統合する。
-                    ★計算は一切変えていない。voicePrediction（前日の記録からの注意点）と
-                    todayForecast（回帰モデルの数値予報）は、どちらも従来のまま使っている。 */}
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                  <div className="flex items-start justify-between gap-2 mb-1">
-                    <h3 className="ff-display italic text-lg">声の予報</h3>
-                    {/* 改善タスクv2 §4-1(b): 期間セレクタが効かないカードであることを明示する */}
-                    <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: C.paper, color: C.inkSoft }}>
-                      {t("badgeFixedPeriodPrevDay")}
-                    </span>
-                  </div>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                    前夜の行動から、今日の喉の状態（1〜5）を数値で予報します。記録が14日分たまると、あなた自身の傾向（回帰係数）を一般知見とブレンドして、少しずつ個人化していきます。
-                  </p>
-                  {!todayForecast.hasData ? (
-                    <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
-                      前日の記録がまだ無いため、予報を組み立てられません。
-                    </p>
-                  ) : (
-                    <>
-                      <div className="flex items-end justify-between mb-3">
-                        <div>
-                          <div className="flex items-baseline gap-1.5">
-                            <span className="ff-display italic" style={{ fontSize: "2.4rem", color: levelInk(Math.round(todayForecast.yhat)) }}>
-                              {todayForecast.yhat.toFixed(1)}
-                            </span>
-                            <span className="text-sm" style={{ color: C.inkSoft }}>/ 5</span>
-                          </div>
-                          <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
-                            予測区間 {todayForecast.low.toFixed(1)}〜{todayForecast.high.toFixed(1)}
-                          </p>
-                        </div>
-                        {/* ★的中率の数字は、出しません（2026-09-07）。 */}
-                      </div>
-                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                        {todayForecast.personalizationPct > 0
-                          ? `記録${todayForecast.trainN}件をもとに、${todayForecast.personalizationPct}%個人化された式で予報しています。`
-                          : `まだ記録${todayForecast.trainN}件（14件で個人化が始まります）。一般知見のみの予報です。`}
-                      </p>
-                      {todayForecast.topFactor && (
-                        <p className="text-xs rounded-xl p-2.5 mb-3" style={{ background: C.paper, color: C.ink }}>
-                          {todayForecast.topFactor.label}が{todayForecast.topFactor.contribution >= 0 ? "良い方向に" : "厳しい方向に"}いちばん効いています。
-                        </p>
-                      )}
-                      {forecastChartData.length > 0 && (
-                        <div style={{ width: "100%", height: chartHeight(180) }}>
-                          <ResponsiveContainer>
-                            <ComposedChart data={forecastChartData} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
-                              <CartesianGrid stroke={C.line} />
-                              <XAxis dataKey="date" tick={{ fontSize: "0.625rem", fill: C.inkSoft }} />
-                              <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tick={{ fontSize: "0.6875rem", fill: C.inkSoft }} />
-                              <Tooltip contentStyle={{ fontSize: "0.75rem", borderRadius: 8, borderColor: C.line }} />
-                              <Area dataKey="low" stackId="band" stroke="none" fill="transparent" />
-                              <Area dataKey="bandWidth" stackId="band" stroke="none" fill={C.gold} fillOpacity={0.15} />
-                              <Line type="monotone" dataKey="yhat" name="予報" stroke={C.gold} strokeWidth={2} dot={{ r: 2 }} connectNulls />
-                              <Line type="monotone" dataKey="actual" name="実測" stroke={C.curtain} strokeWidth={2} dot={{ r: 3 }} connectNulls />
-                            </ComposedChart>
-                          </ResponsiveContainer>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-3 mt-2">
-                        <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
-                          <span style={{ width: 8, height: 2, background: C.gold, display: "inline-block" }} />予報
-                        </span>
-                        <span className="flex items-center gap-1 text-xs" style={{ color: C.inkSoft }}>
-                          <span style={{ width: 8, height: 2, background: C.curtain, display: "inline-block" }} />実測
-                        </span>
-                      </div>
-                    </>
-                  )}
-                  <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
-                    ※ 生理学的な一般知見にもとづく参考値であり、医学的な予測ではありません。
+                {/* ★★声の予報を、まるごとやめました（★2026-09-07・坂本さんの決め）。
+                    ★実機で、予報の線と実測の線が大きく離れているのをご覧になり、
+                    ★「この精度の低さでは必要ありません」とのご判断でした。
+                    ★★消したのは、★回帰の数値・予測区間・グラフ・
+                      ★「44%個人化された式」の文・的中率の一式です。
 
-                  {/* 統合前は別カードだった「声の状態の予測」。数値の下に、
-                      前夜の記録から見た注意点として置く。 */}
-                  <div className="mt-4 pt-3 border-t" style={{ borderColor: C.line }}>
-                    <p className="text-sm font-medium mb-1" style={{ color: C.ink }}>{t("titleVoicePrediction")}</p>
-                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("noteVoicePrediction")}</p>
-                    {!voicePrediction.hasData ? (
-                      <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
-                        {t("notePredictionNoData")}
-                      </p>
-                    ) : (
-                      <>
-                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
-                          {t("labelBasedOnDate").replace("{date}", formatDateLabel(voicePrediction.date, language))}
+                    ★★残したのは、★前日にご自身が書いた事実だけです（案い）。
+                      ★「前日は、食後2.6時間で横になりました」は、
+                      ★ご本人が書いたことです。★消すと、書いたものが返りません。
+                      ★★消したのは、★そこに付いていた理屈のほうです。
+                        ★「胃の内容物が食道へ逆流しやすくなります」など。
+                        ★1日分の記録からの推論で、★3ゲートを通っていません。
+                        ★通りようがありません。★1日分に、群の比較はありません。
+                      ★★⚠ と赤い下地も、やめました。
+                        ★それ自体が判定です（規約 §7-5）。 */}
+                {voicePrediction.hasData && voicePrediction.flags.length > 0 && (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <h3 className="ff-display italic text-lg mb-1">前日の記録</h3>
+                    <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                      {t("labelBasedOnDate").replace("{date}", formatDateLabel(voicePrediction.date, language))}
+                    </p>
+                    <div className="space-y-2">
+                      {voicePrediction.flags.map(({ flagKey, hours }) => (
+                        <p key={flagKey} className="text-sm" style={{ lineHeight: 1.8 }}>
+                          {flagText(t, flagKey, { hours })}
                         </p>
-                        {voicePrediction.flags.length === 0 ? (
-                          <p className="text-xs rounded-xl p-3" style={{ background: "rgba(122,150,109,0.12)", color: C.ink }}>
-                            ✓ {t("notePredictionNoFlags")}
-                          </p>
-                        ) : (
-                          <div className="space-y-2.5">
-                            {voicePrediction.flags.map(({ flagKey, explainKey, hours }) => (
-                              <div key={flagKey} className="rounded-xl p-3" style={{ background: "rgba(184,49,49,0.06)" }}>
-                                <p className="text-xs font-medium" style={{ color: C.curtain }}>⚠ {flagText(t, flagKey, { hours })}</p>
-                                <p className="text-xs mt-1.5 leading-relaxed" style={{ color: C.inkSoft }}>{t(explainKey)}</p>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </>
-                    )}
+                      ))}
+                    </div>
                   </div>
-                    ※ 生理学的な一般知見にもとづく参考値であり、医学的な予測ではありません。
-                  </p>
-                </div>
+                )}
 
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">{t("titleTimeOfDayTrend")}</h3>

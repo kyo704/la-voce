@@ -22,19 +22,34 @@ function ok(name, cond, extra) {
   const ROOT = path.join(__dirname, "..", "..");
   const vt = readCode("components", "VocalTracker.jsx");
 
-  console.log("■ ② 的中率の数字");
-  ok("★「的中率」という言葉が、画面に無い", !/的中率/.test(vt));
-  ok("★％で出していない", !/forecastHitRate\.rate/.test(vt));
-  ok("当たった日の一言はある", /あ、あたりました。/.test(vt));
-  // ★★外した日は、何も言わないこと。★お詫びも言い訳もしない。
-  //   ★予報のあたりだけを見ます（★曲名を外した、などは別の話です）。
-  const fi = vt.indexOf("forecastHitToday");
-  const forecastBlock = fi >= 0 ? vt.slice(fi, fi + 1200) : "";
-  ok("★外した日に、何も言っていない",
-    !/はずれ|当たりませんでした|すみません|ごめん/.test(forecastBlock));
-  // ★★描き直すたびに出たり消えたりしないこと。
-  ok("★乱数で決めていない", !/Math\.random/.test(forecastBlock));
-  ok("★日付から決めている", /sum % 4 === 0/.test(forecastBlock));
+  console.log("■ ② 声の予報（★2026-09-07 に、まるごとやめました）");
+  // ★★実機で、★予報の線と実測の線が大きく離れていました。
+  //   ★予報は1〜5を大きく振れ、★実測は2〜4に収まり、★ほとんど重なりません。
+  //   ★「この精度の低さでは必要ありません」との坂本さんのご判断です。
+  //   ★★9月7日の「残す」という決めを、★上書きしたものです。
+  //
+  //   ★★これからは「無いこと」を守ります。★戻ってきたら、ここで止めます。
+  //     ★戻すときは、★精度を先に確かめてください。
+  ok("★的中率という言葉が、無い", !/的中率/.test(vt));
+  ok("★予報の計算が、無い", !/const todayForecast = /.test(vt));
+  ok("★個人化（リッジ回帰）が、無い", !/fitRidgeRegression/.test(vt));
+  ok("★「◯%個人化された式」の文が、無い", !/個人化された式/.test(vt));
+  ok("★予測区間が、無い", !/forecastResidualSD/.test(vt));
+  ok("★当たった日の一言も、一緒に消えている", !/あ、あたりました。/.test(vt));
+  // ★★行列の道具も、予報だけのものでした。
+  ok("★行列の道具も、消えている", !/function matMultiply/.test(vt));
+  // ★★残すべきものが、消えていないこと。
+  ok("★声の使用量の数えは、残っている", /const acwrSeries = useMemo/.test(vt));
+
+  console.log("■ 前日の記録（★理屈だけ外し、事実は残す・案い）");
+  // ★★1日分の記録からの推論に、★理屈を付けないこと。
+  //   ★3ゲートを通りようがありません。★1日分に、群の比較はありません。
+  ok("★逆流の理屈が、無い", !/食道へ逆流しやすく/.test(vt));
+  ok("★explainKey を、画面で使っていない", !/t\(explainKey\)/.test(vt));
+  // ★★事実は、残すこと。★消すと、書いたものが返りません。
+  ok("★書かれた事実は、残っている", /flagText\(t, flagKey/.test(vt));
+  ok("★注意の印（⚠）を、付けていない",
+    !/⚠ \{flagText/.test(vt));
 
   console.log("■ ③ 今日やるといいこと");
   ok("★「今日やるといいこと」が、もう無い", !/今日やるといいこと/.test(vt));
