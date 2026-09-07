@@ -3,6 +3,10 @@
 import { useId, useState } from "react";
 import { C } from "@/lib/tokens";
 import SheepDressed from "@/components/SheepDressed";
+// ★★どの箱かは、lib/wardrobeBoxes.js が持ちます（★裁定 §6-⑤）。
+//   ★画面で判定しないこと。★2か所になると、片方だけが古くなります。
+import { boxOf, BOX_KEEPSAKE, BOX_RECORD, BOX_DRESSUP } from "@/lib/wardrobeBoxes";
+import CATALOG from "@/docs/opus/items.json";
 import WardrobeSheet from "@/components/WardrobeSheet";
 import { SHEEP_GROUPS, itemsByGroup, sheepItemSrc, sheepItemByKey } from "@/lib/sheepItems";
 import {
@@ -323,6 +327,14 @@ export default function WardrobePanel({
           const shop = inShopNow(it, todayISO);
           const unlock = isUnlockItem(it.key);
           const openedYet = opened.has(it.key);
+          // ★★どの箱か（★2026-09-08）。
+          //   ★箱1 記念　　… 買えません。交換もできません。★達成でだけ開きます
+          //   ★箱2 記録　　… 30日ぶんたまるごとに、3点から1つ選びます
+          //   ★箱3 よそおい… お金で得ます
+          //   ★★持っている品には、★何も出しません。
+          //     ★手に入れたあとで「有料」と出ていると、★取り上げられそうに見えます。
+          const box = boxOf(it, CATALOG.find((c) => c.key === it.key));
+          const have = (owned || []).includes(it.key) || openedYet;
           return (
             <button key={it.key} type="button" onClick={() => wear(it)}
               title={it.name}
@@ -347,6 +359,17 @@ export default function WardrobePanel({
                 <span style={{ fontSize: "0.6875rem", color: C.inkSoft }}>
                   {SEASON_LABELS[season]}のあいだは、お店にありません
                 </span>
+              )}
+              {/* ★★箱の札（★2026-09-08）。★持っている品には、出しません。
+                  ★数を書かないこと。「あと◯」も「◯点中」も出しません。 */}
+              {!have && box === BOX_KEEPSAKE && !unlock && (
+                <span style={{ fontSize: "0.6875rem", color: C.inkSoft }}>記念のもの</span>
+              )}
+              {!have && box === BOX_RECORD && (
+                <span style={{ fontSize: "0.6875rem", color: C.inkSoft }}>記録がたまると届きます</span>
+              )}
+              {!have && box === BOX_DRESSUP && (
+                <span style={{ fontSize: "0.6875rem", color: C.inkSoft }}>よそおいのお届けで</span>
               )}
               {unlock && !openedYet && (
                 <span style={{ fontSize: "0.6875rem", color: C.inkSoft }}>記録すると届きます</span>

@@ -118,6 +118,35 @@ function ok(name, cond, extra) {
     sets.every((i) => Array.isArray(i.occupies)
       && ["top", "bottom", "outer"].every((s) => i.occupies.includes(s))));
 
+  console.log("■ 箱を、画面に出している（★2026-09-08）");
+  {
+    const wp = readCode("components", "WardrobePanel.jsx");
+    // ★★判定は lib から取ること。★画面で theme を見ないこと。
+    ok("★箱の判定を、lib から取っている", /boxOf\(it,/.test(wp));
+    for (const label of ["記念のもの", "記録がたまると届きます", "よそおいのお届けで"]) {
+      ok(`「${label}」の札がある`, wp.includes(label));
+    }
+    // ★★持っている品に、札を出さないこと。
+    //   ★手に入れたあとで「有料」と出ていると、★取り上げられそうに見えます。
+    ok("★持っている品には、札を出していない", /!have && box === BOX_KEEPSAKE/.test(wp)
+      && /!have && box === BOX_RECORD/.test(wp) && /!have && box === BOX_DRESSUP/.test(wp));
+    // ★★数を書かないこと ── ★ただし、見るのは「品物の札」だけです。
+    //   ★2026-09-08、★ファイル全体を見て、★コーデの残り枠に当たりました。
+    //     　あと{outfitsLeft(outfits)}着
+    //   ★★あれは、★報酬までの距離ではありません。★入れ物の残りです。
+    //     ★20着でいっぱいになったら「どれかを消してください」と伝える決めがあり、
+    //     ★その数を隠すと、★何が起きたのか分からなくなります。
+    //   ★禁じているのは「あと13ポイントで、これが受け取れます」のほうです。
+    const grid = wp.slice(wp.indexOf("{items.map((it)"));
+    for (const pat of [/あと\s*[0-9０-９{]/, /残り\s*[0-9０-９{]/, /[0-9０-９]\s*点中/]) {
+      ok(`★品物の札に、数のついた言い方が無い（${pat}）`, !pat.test(grid));
+    }
+    // ★★コーデの残り枠は、★あってよいもの。★消えていないことを確かめます。
+    ok("★コーデの残り枠は、出したまま", /outfitsLeft\(outfits\)/.test(wp));
+    // ★★記念の棚は、★11月です。★いま作らないこと（裁定 §2）。
+    ok("★記念のものの棚を、まだ作っていない", !wp.includes("記念のものの棚"));
+  }
+
   console.log("■ 数を、出さない");
   // ★「あと13ポイント」を、どこにも出さないこと（坂本さんの決め・2026-09-07）。
   ok("配り方の言葉に、数字が入っていない",
