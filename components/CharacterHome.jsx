@@ -8,6 +8,10 @@ import { tileStyle, isNewMaterial } from "@/lib/sheepInterior";
 // ★★着せかえた羊。★出す・出さないは、呼ぶ側（VocalTracker）が決めます。
 import SheepDressed from "@/components/SheepDressed";
 import InteriorLayer from "@/components/InteriorLayer";
+// ★古い79点を、門の中の方から隠す決め。★ここ1か所が持ちます。
+import {
+  HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
+} from "@/lib/oldHouseVisibility";
 import { C } from "@/lib/tokens";
 import {
   SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, PLACEMENT_LIMITS,
@@ -1254,9 +1258,6 @@ function WallClockIcon() {
 //   ★門の中の方には、★お店にも部屋にも出しません。★消してはいません。
 //   ★★backdrop（背景10点）は、★入れません。
 //     ★新しい側に、★当たるものがないためです。
-const HIDDEN_WHEN_NEW_INTERIOR = Object.freeze([
-  "wall", "floor", "window", "scenery", "furniture", "garden", "wallhang"
-]);
 
 const FURNITURE_ICON = { furniture_bed: BedIcon, furniture_shelf: ShelfIcon, furniture_plant: PlantIcon, furniture_rug: RugIcon, furniture_chair: ChairIcon, furniture_piano: PianoIcon };
 const GARDEN_ICON = { garden_bench: BenchIcon, garden_fountain: FountainIcon, garden_lantern: LanternIcon, garden_flowerbed: FlowerBedIcon, garden_field: FieldIcon, garden_gazebo: GazeboIcon, garden_pond: PondIcon, garden_hay_bale: HayBaleIcon };
@@ -1814,22 +1815,20 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
   //     ★壁・床・窓・景色・家具・庭・壁かけ。
   //   ★★背景（backdrop 10点）だけは、★出したままにします。
   //     ★新しい側に、★当たるものがありません。
-  const hideOldHouse = wardrobeOn;
-  // ★★既定の名前に戻します。★null にしないこと。
-  //   ★色を引く先が MATERIAL_COLORS[...] なので、★null だと引けません。
-  const floorKey = hideOldHouse ? "floor_default" : (equipped.floor || "floor_default");
-  const wallKey = hideOldHouse ? "wall_default" : (equipped.wall || "wall_default");
+  // ★★隠すかどうかの決めは、★lib/oldHouseVisibility.js が持ちます。
+  //   ★★2026-09-08、★ここで1行ずつ書いていたため、
+  //     ★窓の3行を書き忘れ、★特大窓ガラスが部屋に残っていました。
+  //   ★★もう、ここで判じないこと。★9か所すべてを、同じ関数に通します。
+  const floorKey = oldHouseKey(equipped, "floor", wardrobeOn);
+  const wallKey = oldHouseKey(equipped, "wall", wardrobeOn);
   const floorColor = MATERIAL_COLORS[floorKey] || MATERIAL_COLORS.floor_default;
   const wallColor = MATERIAL_COLORS[wallKey] || MATERIAL_COLORS.wall_default;
-  const windowFrameColor = MATERIAL_COLORS[equipped.window || "window_default"] || MATERIAL_COLORS.window_default;
-  const sceneryColor = MATERIAL_COLORS[equipped.scenery || "scenery_default"] || MATERIAL_COLORS.scenery_default;
-  const placedList = hideOldHouse ? [] : (equipped.furniture || []);
-  const placedFurniture = placedList.filter((k) => FURNITURE_ICON[k]);
-  const placedWallhang = hideOldHouse
-    ? []
-    : (equipped.wallhang || []).filter((k) => WALLHANG_ICON[k]);
+  const windowFrameColor = MATERIAL_COLORS[oldHouseKey(equipped, "window", wardrobeOn)] || MATERIAL_COLORS.window_default;
+  const sceneryColor = MATERIAL_COLORS[oldHouseKey(equipped, "scenery", wardrobeOn)] || MATERIAL_COLORS.scenery_default;
+  const placedFurniture = oldHouseList(equipped, "furniture", wardrobeOn).filter((k) => FURNITURE_ICON[k]);
+  const placedWallhang = oldHouseList(equipped, "wallhang", wardrobeOn).filter((k) => WALLHANG_ICON[k]);
 
-  const windowKey = equipped.window || "window_default";
+  const windowKey = oldHouseKey(equipped, "window", wardrobeOn);
   const windowShape =
     windowKey === "window_chinese" ? { borderRadius: "50%", muntin: "none" }
     : (windowKey === "window_mediterranean" || windowKey === "window_indian") ? { borderRadius: "50% 50% 6px 6px", muntin: "none" }
@@ -1847,7 +1846,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
   const boxTop = isGrand ? "5%" : "8%";
   const isRoomExpanded = equipped.backdrop === "backdrop_room_expand";
 
-  const sceneryKey = hideOldHouse ? "scenery_default" : (equipped.scenery || "scenery_default");
+  const sceneryKey = oldHouseKey(equipped, "scenery", wardrobeOn);
 
   // ★家具の「いまの位置」を渡す。置いていなければ null。
   //   保存済みの位置があればそれを、無ければレイアウトの既定値を使う
@@ -2366,7 +2365,9 @@ function SpecialBackdropScene({ sceneKey }) {
 
 function GardenScene({ equipped, owned, onUpdatePosition, totalDaysRecorded = 0, wardrobeOn = false, t }) {
   const [editMode, setEditMode] = useState(false);
-  const placedList = equipped.garden || [];
+  // ★★ここも、門を通っていませんでした（★2026-09-08）。
+  //   ★お店の一覧からは庭を隠しながら、★置いてある庭は出したままでした。
+  const placedList = oldHouseList(equipped, "garden", wardrobeOn);
   const placedOrnaments = placedList.filter((k) => GARDEN_ICON[k]);
   const hasField = placedOrnaments.includes("garden_field");
   const { leftPct, topPct, facingLeft, isWalking, isFarming, isSweating, isCelebrating, birds, pkg } = useGardenLife(50, 80, 22, 6, hasField);
@@ -2568,7 +2569,10 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
         {view === "room"
           ? <RoomScene wardrobeOn={wardrobeOn} equipped={equipped} owned={ownedKeys} onTogglePlacement={onTogglePlacement} onUpdatePosition={onUpdatePosition} t={t} />
           : <GardenScene wardrobeOn={wardrobeOn} equipped={equipped} owned={ownedKeys} onUpdatePosition={onUpdatePosition} totalDaysRecorded={totalDaysRecorded} t={t} />}
-        {(equipped.furniture || []).length > 0 || (equipped.garden || []).length > 0 ? (
+        {/* ★★出ていないものを指して「動かせます」と書かないこと。
+            ★門の中の方には、★古い家具も庭も出ていません。 */}
+        {oldHouseList(equipped, "furniture", wardrobeOn).length > 0
+          || oldHouseList(equipped, "garden", wardrobeOn).length > 0 ? (
           <p className="text-xs mt-2 text-center" style={{ color: C.inkSoft }}>{t("noteDragToArrange")}</p>
         ) : null}
 

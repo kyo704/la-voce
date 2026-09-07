@@ -177,13 +177,21 @@ function ok(name, cond, extra) {
   console.log("■ ★古い79点を、隠す（★2026-09-08・案あ）");
   {
     const home = readCode("components", "CharacterHome.jsx");
+    // ★★2026-09-08、★決めを lib/oldHouseVisibility.js へ移しました。
+    //   ★★「特大窓ガラスが、まだ部屋に出ている」というご報告が理由です。
+    //     ★お店の側と部屋の側で、★別々に書いていたため、
+    //     ★窓と庭の3行を、★書き忘れていました。
+    //   ★★だから、★分類の一覧を見張る先も、★lib に移します。
+    //     ★中身の見張りは components/tests/old-house-hidden.test.js が持ちます。
+    const vis = readCode("lib", "oldHouseVisibility.js");
     // ★★隠すだけ。★消していないこと。
-    ok("★隠す分類を、1か所で持っている", /HIDDEN_WHEN_NEW_INTERIOR/.test(home));
+    ok("★隠す分類を、1か所で持っている", /HIDDEN_WHEN_NEW_INTERIOR/.test(vis));
+    ok("★画面側で、持ち直していない", !/const HIDDEN_WHEN_NEW_INTERIOR\s*=/.test(home));
     ok("★背景（backdrop）は、隠していない",
-      /HIDDEN_WHEN_NEW_INTERIOR = Object\.freeze\(\[[^\]]*\]/.test(home)
-      && !/HIDDEN_WHEN_NEW_INTERIOR = Object\.freeze\(\[[^\]]*backdrop/.test(home));
+      /HIDDEN_WHEN_NEW_INTERIOR = Object\.freeze\(\[[^\]]*\]/.test(vis)
+      && !/HIDDEN_WHEN_NEW_INTERIOR = Object\.freeze\(\[[^\]]*backdrop/.test(vis));
     ok("★7つを隠している",
-      /"wall", "floor", "window", "scenery", "furniture", "garden", "wallhang"/.test(home));
+      /"wall", "floor", "window", "scenery", "furniture", "garden", "wallhang"/.test(vis));
     // ★★消していないこと。★持ち物にも、置いた記録にも、触らない。
     ok("★持ち物を、消していない", !/delete .*character_inventory/.test(home));
     ok("★置いた記録を、消していない", !/delete equipped\.(furniture|wall|floor)/.test(home));
@@ -193,11 +201,18 @@ function ok(name, cond, extra) {
     ok("★空の札を、出していない",
       /\.filter\(\(cat\) => !wardrobeOn \|\| !HIDDEN_WHEN_NEW_INTERIOR\.includes\(cat\)\)/.test(home));
     // ★★部屋のほうも、隠すこと。
-    ok("★部屋の家具も、隠している", /const hideOldHouse = wardrobeOn;/.test(home));
+    //   ★★1行ずつ書くのを、やめました。★書き忘れが起きたためです。
+    //     ★9か所すべてが、★同じ関数を通ります。
+    ok("★部屋の家具も、隠している", /oldHouseList\(equipped, "furniture", wardrobeOn\)/.test(home));
+    ok("★★窓も、隠している（★特大窓ガラスの件）",
+      /oldHouseKey\(equipped, "window", wardrobeOn\)/.test(home));
+    ok("★★庭も、隠している", /oldHouseList\(equipped, "garden", wardrobeOn\)/.test(home));
     ok("★壁・床・景色は、既定に戻している",
-      /hideOldHouse \? "wall_default"/.test(home) && /hideOldHouse \? "floor_default"/.test(home));
+      /oldHouseKey\(equipped, "wall", wardrobeOn\)/.test(home)
+      && /oldHouseKey\(equipped, "floor", wardrobeOn\)/.test(home)
+      && /oldHouseKey\(equipped, "scenery", wardrobeOn\)/.test(home));
     // ★★null にしないこと（★色を引く先が引けなくなります）。
-    ok("★null にしていない", !/hideOldHouse \? null/.test(home));
+    ok("★null にしていない", !/OLD_HOUSE_DEFAULTS = Object\.freeze\(\{[^}]*null/.test(vis));
   }
 
   console.log("■ ★荷物は、zip のまま");
