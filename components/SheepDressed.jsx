@@ -4,6 +4,7 @@ import { useId } from "react";
 
 import { SHEEP_BASE, SHEEP_ASSET_BASE, sheepItemByKey, sheepItemSrc } from "@/lib/sheepItems";
 import { LAYER_ORDER, PROP_SIDE_DEFAULT, motionOf, LEGS, SHOE_SPLIT_X } from "@/lib/sheepWardrobe";
+import ClothImage from "@/components/ClothImage";
 
 // ============================================================================
 // 着せかえた羊（★絵を重ねます・2026-09-05 夜）
@@ -41,7 +42,11 @@ export default function SheepDressed({
   //     ★80個 並べると、★320本になります。
   //   ★★見本は、★動きません。★だから、★動きの定義ごと外します。
   //     ★脚も描きません。★小さくて見えないうえ、★軸を4つ増やします。
-  thumb = false
+  thumb = false,
+  // ★★選んでいる色（★2026-09-08）。★{ 品の鍵: 色の鍵 }。
+  //   ★★渡さない呼び方でも、★落ちません。★もとの色の絵が出ます。
+  //   ★どの品に色を塗れるかは lib/clothColors.js が決めます。★ここでは決めません。
+  colors = {}
 }) {
   // ★重ねる絵を、順番どおりに並べます。
   // ★★脚（★案B1・2026-09-06）。★絵は描いていません。コードで描きます。
@@ -109,7 +114,9 @@ export default function SheepDressed({
     if (src) {
       layers.push({
         key: item.key + (side || ""), src, name: item.name,
-        isShoe: slot === "shoes"
+        isShoe: slot === "shoes",
+        // ★★色は、★塗る側（ClothImage）が判じます。★ここでは渡すだけです。
+        itemKey: item.key, colorKey: (colors && colors[item.key]) || null
       });
     }
   }
@@ -314,11 +321,13 @@ ${mo.gait ? `
           </svg>
         ) : (
         // ★★同じ大きさで、同じ場所に重ねます。★ずらさないこと。
-        <img
+        //   ★★色を選んでいない品は、★もとの絵が、そのまま出ます。
+        //     ★ClothImage が、★色の鍵が無ければ src をそのまま使います。
+        <ClothImage
           key={l.key}
+          itemKey={l.itemKey}
+          colorKey={l.colorKey}
           src={l.src}
-          alt=""
-          aria-hidden="true"
           style={{
             position: "absolute", inset: 0,
             width: "100%", height: "100%",

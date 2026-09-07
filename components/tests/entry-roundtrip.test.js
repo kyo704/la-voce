@@ -64,13 +64,30 @@ function extractConst(source, name) {
   return source.slice(start, end);
 }
 
+/**
+ * ★VocalTracker が lib から借りている関数を、★そのまま持ってきます。
+ *
+ *   ★★entryToRow は、★lib/refluxCare.js の toRow を呼びます。
+ *     ★★これは VocalTracker の中の関数ではないので、
+ *       ★brace 合わせでは取り出せません。★だから、★源から読みます。
+ *   ★★偽物を置かないこと。★本物を読みます。
+ *     ★偽物を置くと、★検査が通っても、★本番では落ちます。
+ */
+function libPrelude() {
+  const reflux = fs.readFileSync(
+    path.join(__dirname, "..", "..", "lib", "refluxCare.js"), "utf-8")
+    .replace(/^export\s+/gm, "");
+  return reflux + "\nconst refluxToRow = toRow;\n";
+}
+
 function loadFunctions(names, constNames = []) {
   const source = fs.readFileSync(SOURCE_PATH, "utf-8");
   const funcSnippets = names.map((n) => extractFunction(source, n));
   const constSnippets = constNames.map((n) => extractConst(source, n));
   const sandbox = {};
   // 定数を先に、関数をあとに評価する（関数の中で定数を参照している場合があるため）。
-  const code = constSnippets.join("\n") + "\n" + funcSnippets.join("\n") + "\n" +
+  const code = libPrelude() + "\n" +
+    constSnippets.join("\n") + "\n" + funcSnippets.join("\n") + "\n" +
     names.concat(constNames).map((n) => `sandbox.${n} = ${n};`).join("\n");
   const fn = new Function("sandbox", code);
   fn(sandbox);

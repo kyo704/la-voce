@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 import { C } from "@/lib/tokens";
 import SheepDressed from "@/components/SheepDressed";
+import ClothColorRow from "@/components/ClothColorRow";
 // ★★どの箱かは、lib/wardrobeBoxes.js が持ちます（★裁定 §6-⑤）。
 //   ★画面で判定しないこと。★2か所になると、片方だけが古くなります。
 import { boxOf, BOX_KEEPSAKE, BOX_RECORD, BOX_DRESSUP } from "@/lib/wardrobeBoxes";
@@ -57,7 +58,12 @@ export default function WardrobePanel({
   marks = {}, onMarksChange,
   // ★★いつ受け取ったか（★新着の判定に使います）。★{ 鍵: ISOの日時 }。
   //   ★渡されなければ、★新着は1つも出ません（★分からないためです）。
-  receivedAt = {}
+  receivedAt = {},
+  // ★★服の色（★2026-09-08）。★{ 品の鍵: 色の鍵 }。
+  //   ★保存先は profiles.character_equipped.clothColors です（★列を足しません）。
+  //   ★★onColorChange を渡さない呼び方でも、★落ちません。
+  //     ★そのときは、★色を選ぶところが出ません。
+  colors = {}, onColorChange
 }) {
   // ★★下から出るシート（★仕様書 §2）。★開くまでは、羊と入口だけ出します。
   //   ★★一覧を全画面にしないこと。★羊が見えなくなります。
@@ -196,7 +202,7 @@ export default function WardrobePanel({
   // ★★羊。★シートを開いているあいだも、★ここが見えたままです。
   const sheep = (
     <>
-      <SheepDressed wearing={wearing} size={open ? 200 : 240}
+      <SheepDressed wearing={wearing} colors={colors} size={open ? 200 : 240}
         motion={walking ? "walk" : "still"} />
       <button type="button" onClick={() => setWalking((v) => !v)}
         style={{
@@ -237,7 +243,7 @@ export default function WardrobePanel({
                   border: "none", background: "transparent", padding: 0,
                   width: "100%", display: "block"
                 }}>
-                <SheepDressed wearing={outfitToWearing(o)} size={72}
+                <SheepDressed wearing={outfitToWearing(o)} colors={colors} size={72}
                   motion="still" travel={false} alt={o.label || "保存した着せ方"} />
                 <span style={{
                   display: "block", fontSize: "0.6875rem", color: C.ink,
@@ -342,6 +348,20 @@ export default function WardrobePanel({
   return (
     <WardrobeSheet onClose={() => setOpen(false)} header={sheep}>
       {outfitRow}
+      {/* ★★服の色（★2026-09-08）。
+          ★★いま着ている「上」の色を変えます。★あつ森と、同じ考え方です。
+            ★品を押して着てから、★その色を選びます。
+          ★★色を塗れる品を着ていないときは、★1つも出ません。
+            ★どの品に塗れるかは lib/clothColors.js が決めます。★ここでは決めません。
+          ★★上にいる羊も、★下の見本も、★同時に変わります。
+            ★同じ colors を見ているので、★2つに分かれません。 */}
+      {onColorChange && wearing.top && (
+        <ClothColorRow
+          itemKey={wearing.top}
+          itemName={(sheepItemByKey(wearing.top) || {}).name}
+          colorKey={colors[wearing.top] || null}
+          onChange={(k) => onColorChange(wearing.top, k)} />
+      )}
       {/* ★いま着ているものを、外せるように並べます。 */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16, justifyContent: "center" }}>
         {Object.keys(SLOT_LABELS).map((slot) => {
@@ -609,6 +629,7 @@ export default function WardrobePanel({
                     ★80個 並ぶので、★1つずつが軽くないと、開きません。 */}
               <SheepDressed
                 wearing={{ [it.slot]: it.key, propSide: wearing.propSide || PROP_SIDE_DEFAULT }}
+                colors={colors}
                 size={72} thumb travel={false} alt="" />
               <span style={{ fontSize: "0.75rem", color: C.inkSoft, lineHeight: 1.4, textAlign: "center" }}>
                 {it.name}

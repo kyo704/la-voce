@@ -94,6 +94,8 @@ import {
   box2Rounds, box2ReceivedCount, roundAvailableDate, shouldAutoDeliver, pickBox2Choices
 } from "@/lib/wardrobeBoxes";
 import { REDRAWN_AS, withRedrawnKeys } from "@/lib/legacyWearables";
+// ★服の色。★式も、24色も、★どの品に塗れるかも、★あちらが持ちます。
+import { setColor as setClothColor } from "@/lib/clothColors";
 // ★解放の判定は、lib/character.js が持っています。★作り直しません。
 import { computeUnlocked } from "@/lib/character";
 // ★★無料と有料の線（⑫・案B）。★判定は lib/freeTier.js が1か所で持ちます。
@@ -14775,6 +14777,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         wearCounts: next.wearCounts,
                         wardrobeSeenAt: next.wardrobeSeenAt
                       }));
+                      setCharacterDirty(true);
+                    }}
+                    // ★★服の色（★2026-09-08）。
+                    //   ★★character_equipped.clothColors に持ちます。★列を足していません。
+                    //   ★★印のときと、★同じ直し方をします。
+                    //     ★prev から作り、★clothColors だけを重ねます。
+                    //     ★丸ごと入れると、★着せかえが消えます（★9月8日の不具合）。
+                    colors={characterEquipped.clothColors || {}}
+                    onColorChange={(itemKey, colorKey) => {
+                      setCharacterEquipped((prev) =>
+                        setClothColor(prev, itemKey, colorKey));
                       setCharacterDirty(true);
                     }}
                     // ★★いつ受け取ったか。★新着の判定に使います。
