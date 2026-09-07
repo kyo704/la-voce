@@ -162,6 +162,32 @@ function ok(name, cond, extra) {
       /SLOT_DISPLAY_ORDER/.test(sw) && !/SLOT_DISPLAY_ORDER = LAYER_ORDER/.test(sw));
   }
 
+  console.log("■ レール（★仕様 §3・2026-09-08）");
+  {
+    const wp = readCode("components", "WardrobePanel.jsx");
+    const sw = fs.readFileSync(path.join(ROOT, "lib", "sheepWardrobe.js"), "utf-8");
+    ok("★レールの決めが lib にある", /export const RAIL_SLOTS/.test(sw));
+    ok("★8つ（背中は入れない）",
+      /"hat", "eyes", "neck", "top", "bottom", "outer", "shoes", "prop"/.test(sw));
+    ok("★全身ものは、レールの外", /RAIL_GARMENT/.test(sw) && /全身もの/.test(wp));
+    // ★★スクロールさせないこと（★仕様 §3）。
+    //   ★★2026-09-08、★窓が下のまとまり列まで届いていました。
+    //     ★あちらは、★横に流すのが正しい列です（名前が長いため）。
+    //   ★見るのは、★レールを包んでいる箱だけです。
+    const railOpen = wp.lastIndexOf("<div style={{ display: \"grid\"", wp.indexOf("railKeys.map"));
+    const railBlock = wp.slice(railOpen, wp.indexOf("railKeys.map"));
+    ok("★レールを、横に流していない", railOpen > 0 && !/overflow-x-auto|nav-scroll/.test(railBlock),
+      JSON.stringify(railBlock.slice(0, 120)));
+    ok("★画面幅に、そろえて入れている", /gridTemplateColumns: `repeat\(\$\{railKeys\.length\}/.test(wp));
+    // ★★空の札を、出さないこと。
+    ok("★品物のある置き場所だけ出す", /railSlotsWithItems\(groupItems\)/.test(wp));
+    // ★★選びが無効になったとき、★空の画面にしないこと。
+    ok("★選べない置き場所に移っても、空にならない", /const activeSlot =/.test(wp));
+    ok("★状態を書き替えて直していない",
+      !/useEffect\([^)]*setRailSlot/.test(wp));
+    ok("★押していることが、読み上げにも分かる", /aria-pressed=\{activeSlot/.test(wp));
+  }
+
   console.log("■ 数を、出さない");
   // ★「あと13ポイント」を、どこにも出さないこと（坂本さんの決め・2026-09-07）。
   ok("配り方の言葉に、数字が入っていない",

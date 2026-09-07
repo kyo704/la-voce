@@ -11,7 +11,7 @@ import WardrobeSheet from "@/components/WardrobeSheet";
 import { SHEEP_GROUPS, itemsByGroup, sheepItemSrc, sheepItemByKey } from "@/lib/sheepItems";
 import {
   inShopNow, currentSeason, SEASON_LABELS, isUnlockItem, unlockedItemKeys, applyWear,
-  groupBySlot,
+  groupBySlot, railSlotsWithItems, slotLabel, RAIL_GARMENT,
   PROP_SIDES, PROP_SIDE_DEFAULT, sortForShop
 } from "@/lib/sheepWardrobe";
 // ★★コーデと、シートの高さの決めは、lib が持ちます。
@@ -59,11 +59,31 @@ export default function WardrobePanel({
   const [walking, setWalking] = useState(false);
   const groups = Object.keys(SHEEP_GROUPS);
   const [group, setGroup] = useState(groups[0]);
+  // ★★レール（★§3・2026-09-08）。★どの置き場所を選んでいるか。
+  //   ★★これが、いちばん外の軸になりました。
+  //     ★これまでは「まとまり（時代・世界…）」が外側で、
+  //     ★その中に上も靴も帽子も混ざっていました。
+  //   ★★null は「全身もの」です。★レールの外にある、という意味です。
+  const [railSlot, setRailSlot] = useState(RAIL_GARMENT);
   const season = currentSeason(todayISO);
   const opened = new Set(unlockedItemKeys(unlockedFlags));
 
   // ★いま選んでいるまとまりの品物。★並び順は lib が決めます。
-  const items = sortForShop(itemsByGroup(group), { todayISO, unlockedFlags });
+  const groupItems = sortForShop(itemsByGroup(group), { todayISO, unlockedFlags });
+  // ★★レールに出すのは、★このまとまりに品物がある置き場所だけです。
+  //   ★空の札を並べません。★押せないものを出さないこと。
+  const railKeys = railSlotsWithItems(groupItems);
+  const hasGarment = groupItems.some((i) => i.slot === RAIL_GARMENT);
+  // ★★選んでいる置き場所が、★このまとまりに無いことがあります。
+  //   ★「オペラ」を見ていて「上」を選び、★「和服」へ移ると、★上はありません。
+  //   ★★そのとき、★何も出ない画面になります。★壊れて見えます。
+  //   ★だから、★選びは「希望」として持ち、★実際に出す先は、その場で決めます。
+  //     ★状態を直しに行かないこと。★書き替えると、★行ったり来たりします。
+  const activeSlot =
+    (railSlot === RAIL_GARMENT && hasGarment) || railKeys.includes(railSlot)
+      ? railSlot
+      : (hasGarment ? RAIL_GARMENT : (railKeys[0] || null));
+  const items = groupItems.filter((i) => i.slot === activeSlot);
 
   function wear(item) {
     if (!onChange) return;
@@ -303,6 +323,50 @@ export default function WardrobePanel({
           ))}
         </div>
       )}
+
+      {/* ★★レール（★仕様 §3・2026-09-08）。
+          ★★スクロールさせません。★8つを画面幅に入れます。
+            ★横に流すと、★右にまだ在ることに気づいていただけません。
+          ★★絵のアイコンではなく、★字にしました（★坂本さんの決め）。
+            ★絵は、★意味が伝わらないことがあります。★字なら、迷いません。
+          ★★「全身もの」は、★レールの外の、別の札です（★仕様 §3）。
+            ★全身ものを選ぶと、★上と下が同時に置き換わります。
+            ★同じ列に混ぜると、★その違いが伝わりません。 */}
+      <div style={{ marginBottom: 10 }}>
+        {hasGarment && (
+          <button type="button" onClick={() => setRailSlot(RAIL_GARMENT)}
+            aria-pressed={activeSlot === RAIL_GARMENT}
+            style={{
+              padding: "8px 14px", borderRadius: 999, minHeight: 40, marginBottom: 8,
+              border: `1px solid ${activeSlot === RAIL_GARMENT ? C.curtain : C.line}`,
+              background: activeSlot === RAIL_GARMENT ? C.curtain : C.card,
+              color: activeSlot === RAIL_GARMENT ? "#FFFDF8" : C.inkSoft,
+              fontSize: "0.875rem"
+            }}>
+            全身もの
+          </button>
+        )}
+        {railKeys.length > 0 && (
+          <div style={{ display: "grid", gridTemplateColumns: `repeat(${railKeys.length}, 1fr)`, gap: 4 }}>
+            {railKeys.map((k) => {
+              const on = activeSlot === k;
+              return (
+                <button key={k} type="button" onClick={() => setRailSlot(k)}
+                  aria-pressed={on}
+                  style={{
+                    padding: "8px 2px", borderRadius: 10, minHeight: 40,
+                    border: `1px solid ${on ? C.curtain : C.line}`,
+                    background: on ? C.curtain : C.card,
+                    color: on ? "#FFFDF8" : C.inkSoft,
+                    fontSize: "0.75rem", lineHeight: 1.2, whiteSpace: "nowrap"
+                  }}>
+                  {slotLabel(k)}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       {/* ★まとまりの選び分け。★横に流します（★折り返すと、名前が読めません）。 */}
       <div className="flex gap-2 overflow-x-auto nav-scroll" style={{ marginBottom: 14 }}>
