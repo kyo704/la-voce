@@ -35,10 +35,14 @@ export async function GET() {
       //   ★★NEXT_PUBLIC_ の変数は、★組み立てのときに埋めこまれます。
       //     ★あとから足しても、★組み立て直すまで効きません。
       //     ★★だから「入れたのに出ない」が起きます。★ここで見分けられます。
+      // ★★ここに並べてよいのは、★実際にコードが読んでいる変数だけです。
+      //   ★2026-09-07、★NEXT_PUBLIC_PAID_GATE_USER_IDS を並べてしまいました。
+      //     ★どこからも読まれていない名前です。★いつも false を返します。
+      //     ★★「何か足りない」と読めて、★かえって迷わせます。
+      //   ★足すときは、★その変数を読んでいる場所を、先に確かめること。
       flags: {
         wardrobeIds: (process.env.NEXT_PUBLIC_WARDROBE_USER_IDS || "").trim() !== "",
-        gateTestIds: (process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS || "").trim() !== "",
-        paidGateIds: (process.env.NEXT_PUBLIC_PAID_GATE_USER_IDS || "").trim() !== ""
+        gateTestIds: (process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS || "").trim() !== ""
       }
     }),
     {
