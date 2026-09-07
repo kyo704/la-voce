@@ -8383,7 +8383,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         id: "habit-" + top.key,
         icon: "✨",
         text: `${top.label}日は、翌日の声が平均で${top.g >= 0 ? "良く" : "悪く"}記録されています。`,
-        detail: `効果量 g=${top.g.toFixed(2)}`,
+        // ★★係数の数字を、出さないことにしました（★2026-09-07・6番）。
+        //   ★文は残ります。★3ゲートを通ったものだけが、ここに来ます。
+        detail: "",
         priority: Math.min(1, Math.abs(top.g) / 1.5) * 0.9
       });
     }
@@ -8417,7 +8419,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           id: "reflux-" + top.tag,
           icon: "💡",
           text: `前夜の${top.tag}は、翌朝の喉の違和感と関係がありそうです。`,
-          detail: `効果量 g=${top.g.toFixed(2)}`,
+          // ★★係数の数字を、出さないことにしました（★2026-09-07・6番）。
+          detail: "",
           priority: Math.min(1, Math.abs(top.g) / 1.5) * 0.7
         });
       }
@@ -15770,7 +15773,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               <span>{r.tag}</span>
                               <span className="ff-mono" style={{ color: C.inkSoft }}>
                                 {/* ★通ったときだけ数字を出す（§3-4 ③は数字も出さない）。 */}
-                                {mayShowEffectNumbers(r) ? `g=${r.g.toFixed(2)}`
+                                {/* ★★「g=0.52」を、やめました（★2026-09-07・6番）。
+                                    ★通っているかどうかの言葉だけを残します。 */}
+                                {mayShowEffectNumbers(r) ? ""
                                   : effectStateOf(r) === EFFECT_WAITING ? "まだ判断できません" : "はっきりした関係は見えませんでした"}
                               </span>
                             </div>
@@ -16278,7 +16283,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <div className="flex flex-wrap gap-1.5">
                           {roleLoadStats.lowN.map((r) => (
                             <span key={r.name} className="text-xs px-2 py-0.5 rounded-full" style={{ background: C.paper, color: C.inkSoft }}>
-                              {r.name}（{r.count}回、あと{Math.max(0, 3 - r.count)}回でランキングに入ります）
+                              {/* ★★「あと3回でランキングに入ります」を、やめました（★2026-09-07）。
+                                  ★★2つ、いけないことをしていました。
+                                    ★あと何回、という数の見せ方（★坂本さんの決め・4番）。
+                                    ★そして「ランキング」。★順位は、9月7日にやめました。
+                                  ★回数だけを、そのまま出します。 */}
+                              {r.name}（{r.count}回）
                             </span>
                           ))}
                         </div>
@@ -16415,9 +16425,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             <p className="text-xs mb-1" style={{ color: C.inkSoft }}>{sel.label}</p>
                             <CorrelationScatter pairs={sel.pairs} xLabel={sel.label} yLabel={yLabelForTarget} />
                             {canState ? (
-                              <p className="text-xs mt-1" style={{ color: C.inkSoft }}>
-                                ρ = {sel.r != null ? sel.r.toFixed(2) : "—"}（{sel.n}日）
-                              </p>
+                              // ★★「ρ = 0.42（18日）」を、やめました（★2026-09-07・6番）。
+                              //   ★係数も、★件数も、出しません。★絵は残ります。
+                              null
                             ) : (
                               <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{EXPLORE_NOTE}</p>
                             )}
@@ -16450,9 +16460,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           {passed ? (
                             <p className="text-xs mt-1" style={{ color: C.ink, lineHeight: 1.7 }}>
                               {labels.high}の喉のコンディションは、{labels.low}より
-                              {cycleFindings.g > 0 ? "高め" : "低め"}に記録されています
-                              （効果量 {Math.abs(cycleFindings.g).toFixed(2)}、
-                              95%区間 {cycleFindings.ciLow.toFixed(2)}〜{cycleFindings.ciHigh.toFixed(2)}）。
+                              {cycleFindings.g > 0 ? "高め" : "低め"}に記録されています。
+                              {/* ★★「効果量 0.52、95%区間 0.11〜0.93」を、やめました（6番）。
+                                  ★文そのものは残ります。★3ゲートを通っています。 */}
                             </p>
                           ) : (
                             <p className="text-xs mt-1" style={{ color: C.inkSoft, lineHeight: 1.7 }}>
@@ -16489,8 +16499,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                 {passed ? (
                                   <p className="text-xs mt-1" style={{ color: C.ink, lineHeight: 1.7 }}>
                                     {labels.high}の喉のコンディションは、{labels.low}より
-                                    {r.g > 0 ? "高め" : "低め"}に記録されています
-                                    （効果量 {Math.abs(r.g).toFixed(2)}、95%区間 {r.ciLow.toFixed(2)}〜{r.ciHigh.toFixed(2)}）。
+                                    {r.g > 0 ? "高め" : "低め"}に記録されています。
+                                    {/* ★★係数と区間の数字を、やめました（6番）。 */}
                                   </p>
                                 ) : (
                                   <p className="text-xs mt-1" style={{ color: C.inkSoft, lineHeight: 1.7 }}>
@@ -16526,7 +16536,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                         <div className="flex items-center justify-between mb-1 flex-wrap gap-1">
                           <h3 className="ff-display italic text-lg">{scatterInfo.label}の散布図</h3>
-                          <span className="text-xs ff-mono" style={{ color: C.inkSoft }}>r = {scatterInfo.r.toFixed(2)}（n={scatterInfo.n}）</span>
+                          {/* ★★「r = 0.38（n=22）」を、やめました（★2026-09-07・6番）。
+                              ★下の言葉（correlationLabel）は残します。★数字だけ外します。 */}
                         </div>
                         <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{correlationLabel(scatterInfo.r, t)}</p>
                         <p className="text-xs mb-3 leading-relaxed rounded-xl p-2.5" style={{ color: C.inkSoft, background: C.paper }}>
