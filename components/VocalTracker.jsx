@@ -63,6 +63,8 @@ import RecoveryCodeCard from "@/components/RecoveryCodeCard";
 import NoticeScreen from "@/components/NoticeScreen";
 // ★★羊の着せかえ（Stage 1・2026-09-05 夜）。★まだ坂本さんにしか出しません。
 import WardrobePanel from "@/components/WardrobePanel";
+import Box2Gift from "@/components/Box2Gift";
+import { sheepItemByKey } from "@/lib/sheepItems";
 // ★「今日やるといいこと」の助言をやめ、数えて並べるだけにしました（2026-09-07）
 import { recentlyWritten, recentLine, RECENT_TITLE } from "@/lib/recentlyWritten";
 // ★レパートリー（歌った曲の控え）。★分析ではなく、控えです。ゲートは掛けません。
@@ -71,7 +73,11 @@ import { repertoireLog, repertoireLine, toCsv as repertoireCsv,
 // ★D+1 の一問（本番モード §7）。★本番モードの芯です。予報の部品ではありません。
 import PerformanceResultAsk from "@/components/PerformanceResultAsk";
 import { pickToAsk, buildResultRow } from "@/lib/performanceResult";
-import { mayUseWardrobe } from "@/lib/sheepWardrobe";
+import { mayUseWardrobe, applyWear } from "@/lib/sheepWardrobe";
+import {
+  box2Rounds, box2ReceivedCount, roundAvailableDate, shouldAutoDeliver, pickBox2Choices
+} from "@/lib/wardrobeBoxes";
+import { REDRAWN_AS } from "@/lib/legacyWearables";
 // ★解放の判定は、lib/character.js が持っています。★作り直しません。
 import { computeUnlocked } from "@/lib/character";
 // ★★無料と有料の線（⑫・案B）。★判定は lib/freeTier.js が1か所で持ちます。
@@ -6543,6 +6549,25 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ---- ここから、lavoce-指標設計図.md フェーズ1の3指標用データ ----
   // 段階解放の判定に使う「これまでの総記録日数」（選んだ分析期間ではなく、全期間で数える）。
   const recordedDaysTotal = useMemo(() => Object.keys(entries).length, [entries]);
+
+  // ★★記録がたまったときの、よそおい（★裁定 §5・2026-09-07）。
+  //   ★30日ぶんたまるごとに、★箱2から3点をお見せして、★1つ選んでいただきます。
+  //   ★★残高を作りません。★受け取れる回数は、★記録から出します。
+  //     ★欄を作ると、★そこが残高になります。
+  //   ★★数を、画面に出しません。★「あと◯回」も「あと◯日」も出しません。
+  const box2 = useMemo(() => {
+    const owned = ownedItemKeys || [];
+    const received = box2ReceivedCount(owned, REDRAWN_AS);
+    const rounds = box2Rounds(recordedDaysTotal);
+    if (rounds <= received) return null;
+    const round = received + 1;              // ★いま受け取れる回
+    const dates = Object.keys(entries).sort();
+    return {
+      round,
+      availableAt: roundAvailableDate(dates, round),
+      choices: pickBox2Choices(owned, round)
+    };
+  }, [ownedItemKeys, recordedDaysTotal, entries]);
   // 実行順マスター Stage 2-2: 記録7日目に達し、まだ表示も回答もしていなければマイクロ調査を出す。
   useEffect(() => {
     if (recordedDaysTotal >= 7 && !profile.survey_day7_shown_at && !profile.survey_day7_response) {
@@ -8666,6 +8691,42 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         if (!withinLimit) return prev;
         return { ...prev, [item.category]: [...currentList, item.key] };
       });
+      setCharacterDirty(true);
+    }
+  }
+
+  // ★★記録がたまったときの、よそおいを受け取ります（★2026-09-07）。
+  //   ★ポイントは、1点も動きません。★箱2に値段はありません。
+  //   ★受け取れるかどうかは、★サーバが数え直します。
+  //     ★ここで数えた結果を、★向こうは見ません。
+  // ★★おまかせで届ける処理は、★下へ移しました（★2026-09-07）。
+  //   ★ここに置くと、★wardrobeOn の宣言より前で読むことになります。
+  //   ★★今朝の500と、まったく同じ形でした。
+  //     ★見張り（no-tdz.test.js）が、★書いた直後に見つけました。
+
+  async function handleReceiveBox2(itemKey) {
+    setOwnedItemKeys((prev) => (prev.includes(itemKey) ? prev : [...prev, itemKey]));
+    let res = null;
+    try {
+      res = await fetch("/api/character/gift", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ itemKey })
+      });
+    } catch (e) {
+      res = null;
+    }
+    if (!res || !res.ok) {
+      setOwnedItemKeys((prev) => prev.filter((k) => k !== itemKey));
+      return;
+    }
+    // ★受け取ったら、★そのまま着ていただきます。★探させません。
+    const item = sheepItemByKey(itemKey);
+    if (item && item.slot) {
+      setCharacterEquipped((prev) => ({
+        ...prev,
+        wardrobe: applyWear((prev && prev.wardrobe) || {}, item, sheepItemByKey)
+      }));
       setCharacterDirty(true);
     }
   }
@@ -11326,6 +11387,28 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const wardrobeOn = mayUseWardrobe(userId, {
     NEXT_PUBLIC_WARDROBE_USER_IDS: process.env.NEXT_PUBLIC_WARDROBE_USER_IDS
   });
+
+  // ★★選ばないまま月が変わったら、★おまかせで1つ届けます（★裁定 §5）。
+  //   ★溜めないためです。★残高にしない、という決めの、もう半分です。
+  //   ★★1回ぶんだけ届けます。★まとめて何個も届けません。
+  //   ★届いたことは、★次に開いたときに、羊が着ている形で分かります。
+  //
+  //   ★★ここに置いてある理由。
+  //     ★wardrobeOn は、★すぐ上の行で初めて作られます。
+  //     ★これより前で読むと、★描くたびに落ちます（★一時的死角）。
+  //     ★★2026-09-07 の朝、★まったく同じ形で本番が止まりました。
+  //       ★今回は、★書いた直後に no-tdz.test.js が見つけました。
+  useEffect(() => {
+    if (!wardrobeOn || !box2 || !box2.choices.length) return;
+    if (!shouldAutoDeliver(box2.availableAt, realTodayDate)) return;
+    let cancelled = false;
+    (async () => {
+      if (cancelled) return;
+      await handleReceiveBox2(box2.choices[0]);
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wardrobeOn, box2 && box2.round, box2 && box2.availableAt, realTodayDate]);
 
   async function handleSignOut() {
     const supabase = createClient();
@@ -14412,6 +14495,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   {t("tabMore")}
                 </button>
               </div>
+              {/* ★★記録がたまったときの、よそおい（★裁定 §5・2026-09-07）。
+                  ★着せかえの上に置きます。★先に目に入るようにします。
+                  ★★数は出しません。★1回ぶんだけ、静かに出します。 */}
+              {wardrobeOn && box2 && box2.choices.length > 0 && (
+                <Box2Gift
+                  choices={box2.choices}
+                  wearing={characterEquipped.wardrobe || {}}
+                  onChoose={handleReceiveBox2} />
+              )}
               {wardrobeOn && (
                 <div className="rounded-2xl p-4 border mb-4" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">着せかえ</h3>
