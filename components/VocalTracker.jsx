@@ -74,6 +74,7 @@ import NoticeScreen from "@/components/NoticeScreen";
 // ★★羊の着せかえ（Stage 1・2026-09-05 夜）。★まだ坂本さんにしか出しません。
 import WardrobePanel from "@/components/WardrobePanel";
 import Box2Gift from "@/components/Box2Gift";
+import RefluxCareConsent from "@/components/RefluxCareConsent";
 import { sheepItemByKey } from "@/lib/sheepItems";
 import { MEAL_MARKS, MEAL_MARK_KEYS, resolveMealMarks } from "@/lib/mealMarks";
 import {
@@ -3777,6 +3778,10 @@ function chartHeight(px) {
 //   showProfession … 職業はオンボーディングでは別のステップで聞くので、そこでは false
 // ============================================================================
 function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
+  // ★★同意画面を、いま出しているか（★2026-09-08）。
+  //   ★切り替えを押しただけでは、★立てません。
+  //   ★同意画面の「同意して、記録を始める」を押したときだけです。
+  const [showRefluxConsent, setShowRefluxConsent] = useState(false);
   // professions が空のまま登録された古いデータもあるので、単一値から補う。
   // ここが空だと、職業別の出し分けが丸ごと効かなくなる。
   const currentProfessions = (value.professions && value.professions.length > 0)
@@ -3968,6 +3973,42 @@ function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
                       スイッチ自体が見えず、オンにできないので「1日目」のボタンにも永久に
                       到達できなかった。性別は任意項目なので、未設定でも選べるようにする。
                       明示的に「男性」を選んだ人にだけ出さない。 */}
+                  {/* ★★寝るときの姿勢と、締めつけ（★2026-09-08・要配慮個人情報）。
+                      ★★切り替えを、いきなり置きません。
+                        ★オンにする前に、★専用の同意画面を通します（§13-1）。
+                        ★周期の記録より、★1段 重い扱いです。
+                      ★★病名を、★1文字も書きません（§14-1）。 */}
+                  <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-sm font-medium">寝るときの姿勢と、締めつけを記録する</p>
+                        <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>
+                          {refluxCareOn(value)
+                            ? "記録しています。やめても、それまでに書いたものは残ります。"
+                            : "病歴に関わる記録です。始める前に、内容をお読みいただきます。"}
+                        </p>
+                      </div>
+                      <TwoWaySwitch on={refluxCareOn(value)} simple={isSimpleDisplay(value)}
+                        onChange={(v) => {
+                          // ★★オンにするときは、★同意画面を先に出します。
+                          //   ★ここで直に立てないこと。★同意を飛ばすことになります。
+                          if (v) setShowRefluxConsent(true);
+                          else onChange({ reflux_care_consent_at: null });
+                        }}
+                        onLabel="記録する" offLabel="記録しない" />
+                    </div>
+                    {showRefluxConsent && !refluxCareOn(value) && (
+                      <div className="mt-3">
+                        <RefluxCareConsent
+                          onAgree={() => {
+                            onChange({ reflux_care_consent_at: new Date().toISOString() });
+                            setShowRefluxConsent(false);
+                          }}
+                          onCancel={() => setShowRefluxConsent(false)} />
+                      </div>
+                    )}
+                  </div>
+
                   {cycleFeatureApplies(value) && (
                     <div className="rounded-xl p-3 flex items-center justify-between gap-3" style={{ background: C.paper }}>
                       <div>
@@ -5507,7 +5548,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //     「門が読む列は、必ずここに入れること」。★見やすさも、門の一種です。
       const PROFILE_CONSENT_COLUMNS =
         "consent_health_data_withdrawn_at, age_band, age_band_answered_at, "
-        + "display_scale, simple_display";
+        + "display_scale, simple_display, "
+        // ★★寝るときの姿勢と締めつけの、門（★2026-09-08）。
+        //   ★★この組に入れる理由は、上に書いてあるとおりです。
+        //     ★取ってこないと undefined になり、★undefined は「同意なし」と
+        //     ★同じ形なので、★門は閉じたままです（★安全側です）。
+        //   ★★ですが、★同意した方の記録が、★開き直すと消えて見えます。
+        //     ★2026-09-03 と 2026-09-05 に、同じ形で2度つまずいています。
+        + "reflux_care_consent_at";
       // ★読めなかったことを、★覚えておきます。★黙って「撤回していない」に
       //   倒さないためです。画面に出します（設定の同意欄）。
       let consentColumnMissing = false;
@@ -5621,7 +5669,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           voice_mix: data.voice_mix || null,
           voice_mix_edited_at: data.voice_mix_edited_at || null,
           occupation_notice_shown_at: data.occupation_notice_shown_at || null,
-          track_cycle: data.track_cycle || false
+          track_cycle: data.track_cycle || false,
+          // ★★門の日時（★2026-09-08）。★null なら、記録させません。
+          reflux_care_consent_at: data.reflux_care_consent_at || null
         });
         setCharacterPointsSpent(data.character_points_spent || 0);
         setCharacterEquipped(data.character_equipped || {});
@@ -9266,7 +9316,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         professions: (draft.professions && draft.professions.length > 0)
           ? draft.professions
           : [draft.vocal_profession || "singer"],
-        track_cycle: !!draft.track_cycle
+        track_cycle: !!draft.track_cycle,
+        // ★★同意を受け取った日時（★2026-09-08）。
+        //   ★立てるのは、同意画面を通ったときだけです。
+        //   ★やめるときは null に戻します。★消すのではなく、null です。
+        reflux_care_consent_at: draft.reflux_care_consent_at || null
       })
       .eq("id", userId);
     // ★アレルギーと常用薬は、上の update に混ぜないこと。
@@ -11269,6 +11323,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const clean = { ...formData };
     if (!entryHasActivityKind(clean, "本番")) clean.performanceQuality = null;
     clean.simpleMealMacros = simpleMealMacros;
+    // ★★同意があるかを、★保存のときに渡します（★2026-09-08）。
+    //   ★entryToRow は、これが true でなければ、★3つとも null にします。
+    //   ★★門は refluxCareOn だけです。★ここで profile を直に見ないこと。
+    //   ★撤回されたあとに保存すると、★書いてあったものが null で上書きされます。
+    //     ★それが正しい形です。★同意が無いあいだは、★持ちません。
+    clean.refluxCareAllowed = refluxCareOn(profile);
     const supabase = createClient();
     const { error } = await writeEntryRow(supabase, entryToRow(userId, clean), profile);
     if (error) {
@@ -13136,6 +13196,56 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                         </div>
                       </div>
+
+                      {/* ★★寝るときの姿勢と、締めつけ（★2026-09-08・要配慮個人情報）。
+                          ★★同意を受け取っている方にだけ、出します。
+                            ★門は lib/refluxCare.js の refluxCareOn 1つです。
+                            ★ここで profile を直に見ないこと。
+                          ★★病名を、★1文字も書きません（§14-1）。
+                          ★★どれも「覚えていない」を置いています。
+                            ★思い出せない日があります。★選ばせないと、進めません。
+                          ★★点数も、高さ（cm）も、聞きません（§14-4・§14-5）。 */}
+                      {refluxCareOn(profile) && (
+                        <div className="space-y-2.5">
+                          {[
+                            { key: "sleepSide", label: "寝るときの向き", opts: SLEEP_SIDES },
+                            { key: "headRaised", label: "頭の側を上げたか", opts: HEAD_RAISED },
+                            { key: "bellyTight", label: "おなかの締めつけ", opts: BELLY_TIGHT }
+                          ].map(({ key, label, opts }) => (
+                            <div key={key}>
+                              <label className="text-sm font-medium block mb-1.5">{label}</label>
+                              <div className="flex flex-wrap gap-1.5">
+                                {opts.map((o) => {
+                                  const on = formData[key] === o.key;
+                                  return (
+                                    <button key={o.key} type="button"
+                                      aria-pressed={on}
+                                      onClick={() => setFormData((fd) => ({
+                                        // ★同じものを押したら、外します。★取り消せます。
+                                        ...fd, [key]: fd[key] === o.key ? null : o.key
+                                      }))}
+                                      className="text-xs px-2.5 rounded-full border"
+                                      style={{
+                                        minHeight: 36,
+                                        borderColor: on ? C.curtain : C.line,
+                                        background: on ? C.curtain : C.card,
+                                        color: on ? "#FFFDF8" : C.inkSoft
+                                      }}>
+                                      {o.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          ))}
+                          {/* ★★色分けも、判定も、付けません（§14-4）。
+                              ★「左向きが良い」と書かないこと。★書けば、それは助言です。 */}
+                          <p className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.7 }}>
+                            書いたものは、そのままお返しします。良し悪しは申しません。
+                          </p>
+                        </div>
+                      )}
+
                       {(() => {
                         if (typeof formData.sleepHours !== "number") return null;
                         const recentDates = Object.keys(entries).sort().slice(-14);

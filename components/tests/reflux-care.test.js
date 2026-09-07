@@ -110,6 +110,25 @@ function ok(name, cond, extra) {
   ok("行から読んでいる", /sleepSide: row\.sleep_side \|\| null/.test(vt));
   ok("★同意を見てから書いている", /refluxToRow\(/.test(vt) && /refluxCareAllowed === true/.test(vt));
 
+  console.log("■ 画面に、3つの欄が出る（★同意があるときだけ）");
+  ok("★門は refluxCareOn ただ1つ", /refluxCareOn\(profile\)/.test(vt));
+  // ★★画面が profile を直に見ていないこと（★2か所で判定しない）。
+  ok("★profile を直に見ていない", !/profile\.reflux_care_consent_at/.test(vt));
+  for (const label of ["寝るときの向き", "頭の側を上げたか", "おなかの締めつけ"]) {
+    ok(`「${label}」の欄がある`, vt.includes(label));
+  }
+  ok("★押して選べる（読み上げにも分かる）", /aria-pressed=\{on\}/.test(vt));
+  ok("★同じものを押したら、外せる", /fd\[key\] === o\.key \? null : o\.key/.test(vt));
+  // ★★良し悪しを言わないこと（§14-2・§14-4）。
+  ok("★良し悪しを言わないと、書いてある", vt.includes("良し悪しは申しません"));
+  ok("★保存のときに、同意を渡している", /clean\.refluxCareAllowed = refluxCareOn\(profile\)/.test(vt));
+
+  console.log("■ 設定の入口（★同意画面を、必ず通る）");
+  ok("★切り替えだけで立てていない", /if \(v\) setShowRefluxConsent\(true\)/.test(vt));
+  ok("★同意画面を押したときだけ立つ",
+    /onAgree=\{\(\) => \{\s*onChange\(\{ reflux_care_consent_at: new Date\(\)/.test(vt));
+  ok("★やめるときは、null に戻す", /onChange\(\{ reflux_care_consent_at: null \}\)/.test(vt));
+
   console.log("■ SQL");
   const sql = readCode("supabase", "2026-09-08-寝るときの姿勢と締めつけ.sql");
   ok("3つの列を足している", /add column if not exists sleep_side/.test(sql));
