@@ -1250,6 +1250,14 @@ function WallClockIcon() {
   );
 }
 
+// ★★新しい内装120点と、役目が重なる分類（★2026-09-08・案あ）。
+//   ★門の中の方には、★お店にも部屋にも出しません。★消してはいません。
+//   ★★backdrop（背景10点）は、★入れません。
+//     ★新しい側に、★当たるものがないためです。
+const HIDDEN_WHEN_NEW_INTERIOR = Object.freeze([
+  "wall", "floor", "window", "scenery", "furniture", "garden", "wallhang"
+]);
+
 const FURNITURE_ICON = { furniture_bed: BedIcon, furniture_shelf: ShelfIcon, furniture_plant: PlantIcon, furniture_rug: RugIcon, furniture_chair: ChairIcon, furniture_piano: PianoIcon };
 const GARDEN_ICON = { garden_bench: BenchIcon, garden_fountain: FountainIcon, garden_lantern: LanternIcon, garden_flowerbed: FlowerBedIcon, garden_field: FieldIcon, garden_gazebo: GazeboIcon, garden_pond: PondIcon, garden_hay_bale: HayBaleIcon };
 const WALLHANG_ICON = { wallhang_painting: PaintingIcon, wallhang_lamp: WallLampIcon, wallhang_candle: WallCandleIcon, wallhang_hanger: WallHangerIcon, wallhang_clock: WallClockIcon };
@@ -1798,15 +1806,28 @@ function InteriorDraggable({ itemKey, onDragEnd, children }) {
 
 function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardrobeOn = false, t }) {
   const [editMode, setEditMode] = useState(false);
-  const floorKey = equipped.floor || "floor_default";
-  const wallKey = equipped.wall || "wall_default";
+  // ★★門の中の方には、★古い79点を出しません（★2026-09-08・坂本さんの決め・案あ）。
+  //   ★★消していません。★隠すだけです。★門を閉じれば、そのまま戻ります。
+  //     ★持ち物（character_inventory）も、★置いている記録（equipped）も、
+  //     ★1行も触っていません。★「受け取ったものは取り上げない」を守ります。
+  //   ★★新しい120点と、★役目が重なるためです。
+  //     ★壁・床・窓・景色・家具・庭・壁かけ。
+  //   ★★背景（backdrop 10点）だけは、★出したままにします。
+  //     ★新しい側に、★当たるものがありません。
+  const hideOldHouse = wardrobeOn;
+  // ★★既定の名前に戻します。★null にしないこと。
+  //   ★色を引く先が MATERIAL_COLORS[...] なので、★null だと引けません。
+  const floorKey = hideOldHouse ? "floor_default" : (equipped.floor || "floor_default");
+  const wallKey = hideOldHouse ? "wall_default" : (equipped.wall || "wall_default");
   const floorColor = MATERIAL_COLORS[floorKey] || MATERIAL_COLORS.floor_default;
   const wallColor = MATERIAL_COLORS[wallKey] || MATERIAL_COLORS.wall_default;
   const windowFrameColor = MATERIAL_COLORS[equipped.window || "window_default"] || MATERIAL_COLORS.window_default;
   const sceneryColor = MATERIAL_COLORS[equipped.scenery || "scenery_default"] || MATERIAL_COLORS.scenery_default;
-  const placedList = equipped.furniture || [];
+  const placedList = hideOldHouse ? [] : (equipped.furniture || []);
   const placedFurniture = placedList.filter((k) => FURNITURE_ICON[k]);
-  const placedWallhang = (equipped.wallhang || []).filter((k) => WALLHANG_ICON[k]);
+  const placedWallhang = hideOldHouse
+    ? []
+    : (equipped.wallhang || []).filter((k) => WALLHANG_ICON[k]);
 
   const windowKey = equipped.window || "window_default";
   const windowShape =
@@ -1826,7 +1847,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
   const boxTop = isGrand ? "5%" : "8%";
   const isRoomExpanded = equipped.backdrop === "backdrop_room_expand";
 
-  const sceneryKey = equipped.scenery || "scenery_default";
+  const sceneryKey = hideOldHouse ? "scenery_default" : (equipped.scenery || "scenery_default");
 
   // ★家具の「いまの位置」を渡す。置いていなければ null。
   //   保存済みの位置があればそれを、無ければレイアウトの既定値を使う
@@ -2512,7 +2533,14 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
   //   ★★並べてしまうと、★買えるのに敷けない、が起きます。
   const itemsInCategory = sortShopItems(
     SHOP_ITEMS.filter((i) => i.category === shopCategory)
-      .filter((i) => wardrobeOn || !isNewMaterial(i.key)),
+      .filter((i) => wardrobeOn || !isNewMaterial(i.key))
+      // ★★門の中の方には、★古い79点を並べません（★2026-09-08・案あ）。
+      //   ★★消していません。★お店から隠すだけです。
+      //     ★すでにお持ちのものは、★持ち物に残ります。
+      //     ★門を閉じれば、★また並びます。
+      //   ★★背景（backdrop）だけは、★並べたままです。
+      //     ★新しい120点の側に、★当たるものがありません。
+      .filter((i) => !wardrobeOn || !HIDDEN_WHEN_NEW_INTERIOR.includes(i.category)),
     { balance, owned: new Set(ownedKeys || []), professions: professions || [] }
   );
   const isMultiSlot = MULTI_SLOT_CATEGORIES.includes(shopCategory);
@@ -2577,7 +2605,11 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
       <div id="shop-anchor" className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
         <h3 className="ff-display italic text-lg mb-3">{t("labelShop")}</h3>
         <div className="flex flex-wrap gap-1.5 mb-3">
-          {Object.keys(CATEGORY_LABEL_KEYS).map((cat) => (
+          {Object.keys(CATEGORY_LABEL_KEYS)
+            // ★★中身を隠した分類の札は、★出しません。
+            //   ★押しても何も出ない札を、★並べないこと。
+            .filter((cat) => !wardrobeOn || !HIDDEN_WHEN_NEW_INTERIOR.includes(cat))
+            .map((cat) => (
             <button key={cat} type="button" onClick={() => setShopCategory(cat)}
               className="px-3 py-1.5 rounded-full text-xs font-medium border"
               style={{

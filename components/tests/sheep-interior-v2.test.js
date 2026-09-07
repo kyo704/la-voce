@@ -174,6 +174,32 @@ function ok(name, cond, extra) {
     ok("★門の中だけに出している", /wardrobeOn && \(\s*<InteriorPanel/.test(vt));
   }
 
+  console.log("■ ★古い79点を、隠す（★2026-09-08・案あ）");
+  {
+    const home = readCode("components", "CharacterHome.jsx");
+    // ★★隠すだけ。★消していないこと。
+    ok("★隠す分類を、1か所で持っている", /HIDDEN_WHEN_NEW_INTERIOR/.test(home));
+    ok("★背景（backdrop）は、隠していない",
+      /HIDDEN_WHEN_NEW_INTERIOR = Object\.freeze\(\[[^\]]*\]/.test(home)
+      && !/HIDDEN_WHEN_NEW_INTERIOR = Object\.freeze\(\[[^\]]*backdrop/.test(home));
+    ok("★7つを隠している",
+      /"wall", "floor", "window", "scenery", "furniture", "garden", "wallhang"/.test(home));
+    // ★★消していないこと。★持ち物にも、置いた記録にも、触らない。
+    ok("★持ち物を、消していない", !/delete .*character_inventory/.test(home));
+    ok("★置いた記録を、消していない", !/delete equipped\.(furniture|wall|floor)/.test(home));
+    // ★★門の外の方には、★これまでどおり出ること。
+    ok("★門の外では、隠さない", /!wardrobeOn \|\| !HIDDEN_WHEN_NEW_INTERIOR/.test(home));
+    // ★★中身を隠した札は、出さないこと。
+    ok("★空の札を、出していない",
+      /\.filter\(\(cat\) => !wardrobeOn \|\| !HIDDEN_WHEN_NEW_INTERIOR\.includes\(cat\)\)/.test(home));
+    // ★★部屋のほうも、隠すこと。
+    ok("★部屋の家具も、隠している", /const hideOldHouse = wardrobeOn;/.test(home));
+    ok("★壁・床・景色は、既定に戻している",
+      /hideOldHouse \? "wall_default"/.test(home) && /hideOldHouse \? "floor_default"/.test(home));
+    // ★★null にしないこと（★色を引く先が引けなくなります）。
+    ok("★null にしていない", !/hideOldHouse \? null/.test(home));
+  }
+
   console.log("■ ★荷物は、zip のまま");
   const packs = fs.readdirSync(path.join(ROOT, "assets", "interior-v2"));
   ok("★内装の zip が、開かれていない", packs.some((f) => f.endsWith(".zip")));
