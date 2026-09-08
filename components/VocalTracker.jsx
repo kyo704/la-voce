@@ -517,8 +517,20 @@ const TABS = [
   //   ★先生1人につき5人まで無料、という枠が、★すでにあります。
   { key: "lesson", labelKey: "tabLesson", icon: GraduationCap },
   { key: "garden", labelKey: "tabCharacter", icon: Home },
-  { key: "notes", labelKey: "tabNotes", icon: NotebookPen },
-  { key: "more", labelKey: "tabMore", icon: MoreHorizontal }
+  { key: "notes", labelKey: "tabNotes", icon: NotebookPen }
+  // ★★「もっと」を、★下タブから外しました（★2026-09-08・第1便・§1-2）。
+  //   ★★画面は消えていません。★「きょう」の右上の歯車から開きます。
+  //     ★歯車は、★条件なしで出ています（★activeTab === "home" の中）。
+  //     ★同意の撤回と書き出しは、★法で求められる道です。★塞いでいません。
+  //
+  // ★★レッスンは、★まだ外しません（★第1便では、外せません）。
+  //   ★§9 は「レッスンタブを外す」と書いていますが、
+  //   ★★ホームのレッスンの入口は、myEnrollments.length > 0 の中にあります。
+  //     ★教室に入っていない方には、★出ません。
+  //   ★★いま外すと、★その方から入口が1つも無くなります。
+  //     ★2026-09-07 に「教室に入っていない方にも入口を見せる」と
+  //     ★決めたことを、★取り消すことになります。
+  //   ★★第2便で「きょう」の帯（§4）ができてから、★外します。
 ];
 // 職業ごとに専用の理論ページへ切り替える
 const PROFESSION_THEORY_PAGES = {
@@ -12044,21 +12056,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 ★文字が消えるので、読み上げ用の名前を付けます。
                   見た目から言葉が消えても、意味は消しません。
                 ★sm 以上では、これまでどおり文字も出します。 */}
-            {displayTabs.filter((tab) => tab.key === "more").map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                aria-label={tab.labelKey ? t(tab.labelKey) : tab.label}
-                className="flex items-center gap-1 px-[11px] text-xs sm:gap-1.5 sm:px-3.5 sm:text-sm py-2 rounded-full font-medium whitespace-nowrap shrink-0"
-                style={{ background: activeTab === tab.key ? C.curtain : C.paper,
-                         color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
-              >
-                <tab.icon size={15} />
-                <span className="hidden sm:inline">
-                  {tab.labelKey ? t(tab.labelKey) : tab.label}
-                </span>
-              </button>
-            ))}
+            {/* ★★「もっと」の固定ボタンを、外しました（★2026-09-08・第1便・§1-2）。
+                ★★もともと displayTabs は more を除いていたので、
+                  ★この枠は、★1度も描かれていませんでした（★死んでいました）。
+                ★★入口は、★「きょう」の右上の歯車です。★条件なしで出ています。
+                  ★同意の撤回と書き出しは、★法で求められる道です。★塞いでいません。 */}
             </div>
           );
         })()}

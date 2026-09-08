@@ -92,35 +92,20 @@ console.log("\n=== ★点は置かない（2026-09-02・裁定の見直し） ==
     "★ホームの「所属教室: 2」も出していない（カードに置き換え）");
 }
 
-console.log("\n=== ★もっと を右端に固定する ===");
+console.log("\n=== ★もっと の入口 ===");
 {
-  // ★もっと は「ここから先がある」と知らせる入口なのに、
-  //   その入口自身が画面の外に出ていました。
-  assertTrue(/displayTabs\.filter\(\(tab\) => tab\.key !== "more"\)/.test(src),
-    "流れる側から もっと を外している");
-  assertTrue(/displayTabs\.filter\(\(tab\) => tab\.key === "more"\)/.test(src),
-    "★もっと を、帯の外に別で置いている");
-  const pinned = src.slice(src.indexOf('displayTabs.filter((tab) => tab.key === "more")'),
-                           src.indexOf('displayTabs.filter((tab) => tab.key === "more")') + 1000);
-  assertTrue(/shrink-0/.test(pinned), "縮まない");
-  assertTrue(!/overflow-x-auto/.test(pinned), "★流れる帯の中に入れていない");
-  // ★狭い画面では「…」だけ。三本線にしないこと（「全部の献立」を思わせる）。
-  assertTrue(/icon: MoreHorizontal/.test(src), "★アイコンは「…」（MoreHorizontal）");
-  // ★src 全体を見ると practiceMenu（練習メニュー）に当たります。
-  //   見るのは★タブの定義だけ。ここで三本線を選んでいないこと。
-  // ★★2026-09-07、★レッスンを TABS に足したので、★覚え書きのぶん長くなりました。
-  //   ★窓を、★TABS の終わりまでに広げます。
-  const tabDefs = src.slice(src.indexOf("const TABS = ["),
-    src.indexOf("];", src.indexOf("const TABS = [")));
-  assertTrue(/icon: MoreHorizontal/.test(tabDefs), "★もっと のアイコンは「…」");
-  assertTrue(!/icon: (Menu|AlignJustify|List)\b/.test(tabDefs), "★三本線を選んでいない");
-  assertTrue(/<span className="hidden sm:inline">/.test(pinned),
-    "★狭い画面では文字を出さない（sm 以上では出す）");
-  assertTrue(/aria-label=\{tab\.labelKey \? t\(tab\.labelKey\) : tab\.label\}/.test(pinned),
-    "★文字が消えても、読み上げには名前が残る");
-  // ★並び順は変えていないこと（9月28日まで保留）
-  assertTrue(/key: "home"[\s\S]{0,400}key: "more"/.test(src),
-    "★TABS の並びは変えていない");
+  // ★★2026-09-08、★第1便（§1-2）で「もっと」を TABS から外しました。
+  //   ★★もともと displayTabs が more を除いていたので、★帯には出ていませんでした。
+  //     ★固定の枠は、★1度も描かれていませんでした（★死んでいました）。
+  //   ★★だから「帯の外に固定する」を、もう見張りません。
+  //     ★代わりに、★行き先が消えていないことを見張ります。
+  assertTrue(!/key: "more"/.test(src), "★もっと を、下タブから外した");
+  assertTrue(/setActiveTab\("more"\)/.test(src), "★もっと を開く道が、残っている");
+  assertTrue(src.includes("を開く`}"), "★「きょう」の歯車から開ける");
+  // ★★レッスンは、★まだ帯に残っていること（★第1便では外せません）。
+  //   ★ホームの入口は myEnrollments.length > 0 の中にあり、
+  //   ★教室に入っていない方には出ません。★いま外すと、入口が無くなります。
+  assertTrue(/key: "lesson"/.test(src), "★レッスンは、まだ帯に在る");
 }
 
 console.log("\n=== ★1文字だけ切れるのを直す ===");

@@ -280,13 +280,21 @@ async function main() {
     //   「まだ続く」は、固定した もっと が知らせます。
     assertTrue(/\.nav-scroll-wrap::before/.test(css),
       "左端に覆いがある（戻る先があると分かる）");
-    assertTrue(!/\.nav-scroll-wrap::after/.test(css),
-      "★右端の覆いは無い（固定した もっと が役目を引き継いだ）");
+    // ★★2026-09-08、★もっと を下タブから外しました（★第1便・§1-2）。
+    //   ★★役目を引き継いだ相手が、居なくなりました。
+    //   ★だから、★覆いを戻します。★ただし細く（14px）。
+    //     ★2026-09-02 に外した理由は「28px が名前を塗りつぶした」ことでした。
+    assertTrue(/\.nav-scroll-wrap::after/.test(css),
+      "★右端の覆いが在る（★まだ続くと分かる）");
+    assertTrue(/width: 14px/.test(css.slice(css.indexOf(".nav-scroll-wrap::after"))),
+      "★14px（★28px では名前を塗りつぶしました）");
+    assertTrue(/data-scale="large"\] \.nav-scroll-wrap::after/.test(css),
+      "★大きい文字のときは、外している");
     assertTrue(/pointer-events: none/.test(css.slice(css.indexOf(".nav-scroll-wrap::before"))),
       "★覆いがタブの上に乗っても、押せなくならない");
-    // ★もっと が帯の外に固定されていること（覆いの役目を引き継いだ相手）
-    assertTrue(/displayTabs\.filter\(\(tab\) => tab\.key === "more"\)/.test(uiCode),
-      "★もっと を右端に固定している");
+    // ★★もっと は、下タブに在りません（★第1便）。★歯車から開きます。
+    assertTrue(!/key: "more"/.test(uiCode), "★もっと を、下タブから外した");
+    assertTrue(/setActiveTab\("more"\)/.test(uiCode), "★開く道は、残っている");
     assertTrue(/nav-scroll-wrap/.test(uiCode), "画面が外枠を使っている");
     assertTrue(/scroll-padding-inline/.test(css), "端でタブが縁に貼りつかない");
 

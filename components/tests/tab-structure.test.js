@@ -32,8 +32,17 @@ const block = src.slice(src.indexOf("const TABS = ["), src.indexOf("];", src.ind
 const keys = [...block.matchAll(/key: "([a-z]+)"/g)].map((m) => m[1]);
 // ★★2026-09-07、★レッスンを帯に固定しました（坂本さんの決め）。
 //   ★教える方・習う方だけでなく、★誰にでも見えます。
-ok("並びは home / today / analysis / lesson / garden / notes / more",
-  keys.join(",") === "home,today,analysis,lesson,garden,notes,more", keys.join(","));
+// ★★2026-09-08、★第1便（§1-2）で「もっと」を TABS から外しました。
+//   ★★もともと displayTabs が more を除いていたので、★帯には出ていませんでした。
+//     ★TABS に残っていた1行は、★どこからも描かれない ★死んだ値でした。
+//   ★入口は「きょう」の右上の歯車です。★条件なしで出ています。
+// ★★レッスンは、★まだ外しません。★第2便で「きょう」の帯ができてからです。
+//   ★いま外すと、★教室に入っていない方から、★入口が1つも無くなります。
+ok("並びは home / today / analysis / lesson / garden / notes",
+  keys.join(",") === "home,today,analysis,lesson,garden,notes", keys.join(","));
+// ★★「もっと」を外しても、★行き先が消えていないこと。
+ok("★もっと を開く道が、残っている", /setActiveTab\("more"\)/.test(src));
+ok("★歯車から開ける", /aria-label=\{`\$\{t\("tabMore"\)\}を開く`\}/.test(src));
 // ★★おうち（garden）を、消さないこと。
 //   ★羊とおうちは、ここからしか行けません。
 ok("★おうち（garden）が入っている", keys.includes("garden"));
