@@ -15,14 +15,22 @@ import json, os, sys
 
 SIZE = 144
 OUT = "public/sheep/thumbs"
+# ★名簿の言い方 → 動くときの言い方（★lib/thumbs.js と 同じ表です）
+SIDE_FROM_FILES = {"left": "L", "both": "C", "right": "R"}
 
 def targets():
     out = []
     w = json.load(open("docs/assets/sheep-items-index.json"))
     for i in (w if isinstance(w, list) else w.get("items", [])):
         if i.get("file"): out.append((i["key"], "public/sheep/" + i["file"]))
+        # ★★持ちものの「置き場所」の 言い方は、★2つ あります。
+        #   ★名簿（files）　left ／ right ／ both
+        #   ★動くとき　　　 L ／ C ／ R（lib/sheepWardrobe.js の PROP_SIDES）
+        # ★★2026-09-09、★名簿の言い方で 作っていて、★実機で 404 が 出ました。
+        #   ★画面が 探すのは 動くときの言い方です。★そちらに そろえます。
         for side, ff in (i.get("files") or {}).items():
-            out.append((i["key"] + "__" + side, "public/sheep/" + ff))
+            code = SIDE_FROM_FILES.get(side, side)
+            out.append((i["key"] + "__" + code, "public/sheep/" + ff))
     n = json.load(open("docs/assets/sheep-interior-index.json"))
     for i in n.get("items", []):
         if i.get("file"): out.append((i["key"], "public/sheep/" + i["file"]))

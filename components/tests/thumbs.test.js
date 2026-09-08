@@ -42,14 +42,51 @@ function ok(name, cond, extra) {
   const missing = [];
   for (const i of wear) {
     if (i.file && !have.has(i.key)) missing.push(i.key);
+    // ★★持ちものの 置き場所は、★動くときの言い方（L／C／R）で 名づけます。
+    //   ★★名簿の言い方（left／right／both）では ありません。
+    //   ★2026-09-09、★ここを 取りちがえて 実機で 404 が 大量に 出ました。
     for (const side of Object.keys(i.files || {})) {
-      if (!have.has(i.key + "__" + side)) missing.push(i.key + "__" + side);
+      const code = m.SIDE_FROM_FILES[side] || side;
+      if (!have.has(i.key + "__" + code)) missing.push(i.key + "__" + code);
     }
   }
   const n = JSON.parse(fs.readFileSync(path.join(ROOT, "docs", "assets", "sheep-interior-index.json"), "utf-8"));
   for (const i of n.items) if (i.file && !have.has(i.key)) missing.push(i.key);
   ok(`★名簿の品すべてに 小さい絵がある（★いま ${have.size} 枚）`,
     missing.length === 0, missing.slice(0, 6).join(" "));
+
+  console.log("■ ★持ちものの 置き場所（★2026-09-09・実機で 404 が 大量に）");
+  {
+    // ★★言い方が 2つ あります。
+    //   ★名簿（files）　left ／ right ／ both
+    //   ★動くとき　　　 L ／ C ／ R（lib/sheepWardrobe.js の PROP_SIDES）
+    // ★★小さい絵を 名簿の言い方で 作っていて、★画面は 動くときの言い方で
+    //   ★探していました。★軒並み 見つかりませんでした。
+    ok("★言い方の 対応表が ある",
+      m.SIDE_FROM_FILES.left === "L" && m.SIDE_FROM_FILES.both === "C"
+      && m.SIDE_FROM_FILES.right === "R");
+    ok("★みちすじは 動くときの言い方",
+      m.thumbSrc("propScore", "R") === "/sheep/thumbs/propScore__R.png");
+    // ★★名簿の言い方の 絵が、★1枚も 残っていないこと。
+    const old = [...have].filter((k) => /__(left|right|both)$/.test(k));
+    ok("★★名簿の言い方の 絵が 残っていない", old.length === 0, old.slice(0, 4).join(" "));
+    // ★★持ちもの 49点 × 持っている面が、★すべて あること。
+    const props = wear.filter((i) => i.slot === "prop");
+    const back = { L: "left", C: "both", R: "right" };
+    const lack = [];
+    for (const i of props) {
+      for (const s2 of ["L", "C", "R"]) {
+        if (!(i.files && i.files[back[s2]])) continue;
+        if (!have.has(i.key + "__" + s2)) lack.push(i.key + "__" + s2);
+      }
+    }
+    ok(`★持ちもの ${props.length}点の 絵が そろっている`, lack.length === 0,
+      lack.slice(0, 6).join(" "));
+    // ★★作る側と 探す側が、★同じ表を 使っていること。
+    const gen = fs.readFileSync(path.join(ROOT, "scripts", "make-thumbs.py"), "utf-8");
+    ok("★★作る側も、同じ対応表を 使っている",
+      /SIDE_FROM_FILES = \{"left": "L", "both": "C", "right": "R"\}/.test(gen));
+  }
 
   console.log("■ ★使い分け");
   const vt = readCode("components", "VocalTracker.jsx");
