@@ -161,6 +161,7 @@ import { CPPS_ENABLED, TONE_EVENNESS_CHART_ENABLED } from "@/lib/pausedFeatures"
 import { teacherWithHonorific, DEPARTED_TEACHER_LABEL } from "@/lib/teacherDisplay";
 import { shouldNotify } from "@/lib/noticeAudience";
 import { shouldShowNotice, withNoticeShown, noticeStateFromRows, NOTICE_TEXT } from "@/lib/notices";
+import { NOTICE_KEY as PRICING_NOTICE_KEY, noticeIsDue, noticeParagraphs, GO_LIVE_DATE } from "@/lib/pricingNotice";
 import { cycleOptInDescription, mentionsCycleInDataLists } from "@/lib/cycleCopy";
 import { writeWithMissingColumnFallback } from "@/lib/entryWriteFallback";
 import { isFieldGroupVisible, DEFAULT_RECORD_MODE } from "@/lib/fieldGroups";
@@ -12648,6 +12649,38 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <NoticeScreen
                       onGoConsent={() => setRenewingConsent(true)}
                       onLater={() => setNoticeHiddenNow(true)} />
+                  )}
+                  {/* ★★有料化の お知らせ（★30日前・2026-09-09 に つなぎました）。
+                      ★★仕掛けは 2026-09-07 に できていましたが、
+                        ★★画面に つないでいませんでした。★メールの道だけでした。
+                        ★だから アプリの中には、★1度も 出ていません。
+                      ★★日付（GO_LIVE_DATE）が 決まるまで、★1度も 出ません。
+                        ★noticeIsDue が、★日付が null なら いつでも false です。
+                      ★★1度 見たら、★user_notices に 残します。★毎回 出しません。
+                      ★★急かしません。★「重要」「至急」と 書きません。
+                        ★文は lib/pricingNotice.js が 持ちます。★ここで 書きません。 */}
+                  {GO_LIVE_DATE && noticeIsDue(realTodayDate)
+                    && shouldShowNotice(noticeState, PRICING_NOTICE_KEY) && (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.sage }}>
+                      {noticeParagraphs(GO_LIVE_DATE).map((t) => (
+                        <p key={t} className="text-sm" style={{ color: C.ink, lineHeight: 1.9, whiteSpace: "pre-wrap", margin: "0 0 8px" }}>
+                          {t}
+                        </p>
+                      ))}
+                      <div className="flex gap-2 mt-2">
+                        <a href="/legal/tokushoho" target="_blank" rel="noopener noreferrer"
+                          className="flex-1 py-2.5 rounded-full text-sm font-medium text-center border"
+                          style={{ borderColor: C.line, color: C.ink }}>
+                          くわしく見る
+                        </a>
+                        <button type="button"
+                          onClick={() => markNoticeShown(PRICING_NOTICE_KEY)}
+                          className="flex-1 py-2.5 rounded-full text-sm font-medium border"
+                          style={{ borderColor: C.line, color: C.inkSoft }}>
+                          わかりました
+                        </button>
+                      </div>
+                    </div>
                   )}
                   {/* 1回だけの知らせ（lib/notices.js）。
                       ★出すのは、まだ既読でなく、かつ文字が既定の大きさのときだけ。

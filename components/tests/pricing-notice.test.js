@@ -32,6 +32,22 @@ function ok(name, cond, extra) {
   console.log("■ 日付が決まるまで、動かないこと");
   // ★★これが、いちばん大事です。★うっかり出さないための形です。
   ok("★開ける日が、まだ決まっていない", m.GO_LIVE_DATE === null);
+
+  // ★★2026-09-09、★画面に つないでいなかったことが 分かりました。
+  //   ★仕掛けは 2026-09-07 に できていましたが、★メールの道だけでした。
+  //   ★★アプリの中には、★1度も 出ていませんでした。
+  const vt = readCode("components", "VocalTracker.jsx");
+  ok("★★アプリの中にも 出す（★画面に つないである）",
+    /noticeIsDue\(realTodayDate\)/.test(vt) && /noticeParagraphs\(GO_LIVE_DATE\)/.test(vt));
+  ok("★日付が 決まるまで 出さない", /GO_LIVE_DATE && noticeIsDue/.test(vt));
+  ok("★1度 見たら 残す", /markNoticeShown\(PRICING_NOTICE_KEY\)/.test(vt));
+  // ★★文は lib が 持ちます。★画面で 書かないこと。
+  ok("★★画面に 文を 書いていない",
+    !/一部の機能が有料になります/.test(vt));
+  // ★★cron が 動く形に なっていること。
+  const vercel = JSON.parse(fs.readFileSync(path.join(ROOT, "vercel.json"), "utf-8"));
+  ok("★★cron が 予定に 入っている",
+    (vercel.crons || []).some((c) => c.path === "/api/cron/pricing-notice"));
   ok("★知らせ始める日も、決まらない", m.NOTICE_STARTS_AT === null);
   ok("★いつ聞かれても、知らせない", m.noticeIsDue("2099-12-31") === false);
   ok("30日前という決めがある", m.NOTICE_DAYS_BEFORE === 30);
