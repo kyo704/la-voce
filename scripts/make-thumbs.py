@@ -31,6 +31,14 @@ def targets():
         for side, ff in (i.get("files") or {}).items():
             code = SIDE_FROM_FILES.get(side, side)
             out.append((i["key"] + "__" + code, "public/sheep/" + ff))
+        # ★★面を 持たない 持ちもの（★食器2点）にも、★面の名前で 置きます。
+        #   ★★2026-09-09、★実機で __R が 404 でした。
+        #     ★呼ぶ側は 直しましたが、★古い束を 読んでいる方には まだ 出ます。
+        #   ★★どの面から 見ても 同じ絵なので、★3つとも 同じものを 置きます。
+        #     ★ごまかしでは ありません。★1枚しか無い品は、どの面でも その1枚です。
+        if i.get("slot") == "prop" and not i.get("files") and i.get("file"):
+            for code in ("L", "C", "R"):
+                out.append((i["key"] + "__" + code, "public/sheep/" + i["file"]))
     n = json.load(open("docs/assets/sheep-interior-index.json"))
     for i in n.get("items", []):
         if i.get("file"): out.append((i["key"], "public/sheep/" + i["file"]))

@@ -89,6 +89,13 @@ function ok(name, cond, extra) {
     ok(`★面を 持たない 持ちもの ${noFiles.length}点の 絵が ある`,
       noFiles.every((i) => have.has(i.key)),
       noFiles.filter((i) => !have.has(i.key)).map((i) => i.key).join(" "));
+    // ★★面の名前でも 置いてあること（★古い束を 読んでいる方のため）。
+    //   ★★2026-09-09、★呼ぶ側を 直したあとも、★実機で __R が 404 でした。
+    //     ★組み立て直した束が 届くまで、★古い呼び方が 残ります。
+    //   ★どの面から 見ても 同じ絵なので、★3つとも 同じものを 置きます。
+    ok("★面を 持たない 持ちものにも、面の名前の 絵がある",
+      noFiles.every((i) => ["L", "C", "R"].every((c) => have.has(i.key + "__" + c))),
+      noFiles.filter((i) => !have.has(i.key + "__R")).map((i) => i.key).join(" "));
     ok("★★面が あるかで 決めている（★slot だけで 決めない）",
       /\(it\.slot === "prop" && it\.files\)/.test(vtCode));
     // ★★作る側と 探す側が、★同じ表を 使っていること。
