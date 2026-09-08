@@ -403,23 +403,44 @@ function ok(name, cond, extra) {
   {
     // ★★もとは 古い家具の鍵だけを 見ていました。
     //   ★門の中の方には 古い79点を 隠しているので、★1度も 起きませんでした。
+    // ★★入れ物（object）を、★並び（array）と 取りちがえないこと。
+    //   ★★2026-09-08 夜、★for...of と new Set に 入れ物を 渡して
+    //     ★★実機が「is not iterable」で 落ちました。
+    //   ★平らにする所は、★lib が 1つ 持ちます。
+    ok("★入れ物を、平らな並びに できる",
+      JSON.stringify(m.placedKeys({ interior: {
+        wallTile: "tile_01", furniture: ["furniture_10", "furniture_04"], window: "window_03"
+      } })) === JSON.stringify(["tile_01", "window_03", "furniture_10", "furniture_04"]));
+    ok("★空でも 落ちない",
+      m.placedKeys({}).length === 0 && m.placedKeys(null).length === 0);
+    ok("★同じ鍵を 2度 数えない",
+      m.placedKeys({ interior: { furniture: ["a", "a"], showa: ["a"] } }).length === 1);
+    const pre = readCode("lib", "preloadRoom.js");
+    ok("★★入れ物を for...of で まわしていない",
+      !/for \(const [a-z]+ of interiorOf\(/.test(pre) && /placedKeys\(eq\)/.test(pre));
+    // ★★既定の場所は、★％で 返すこと（★絵の中の画素を そのまま 渡さない）。
+    const seat = m.seatPos({ interior: { furniture: ["furniture_10"] } }, {});
+    ok(`★既定の場所が 床の帯の中（いま ${seat && seat.top}）`,
+      seat && seat.top >= m.FLOOR_BAND[0] && seat.top <= m.FLOOR_BAND[1]);
     ok(`★座れる内装 ${m.SEAT_KEYS.length}点`, m.SEAT_KEYS.length === 8);
     ok("★座れる内装が、名簿に ある",
       m.SEAT_KEYS.every((k) => m.interiorItemByKey(k)));
     // ★★無いものを 指して「眠ります」と 書かないこと。
     ok("★★寝台は まだ 1点も 無い", m.BED_KEYS.length === 0);
-    ok("★置いていなければ null", m.seatPos([], {}) === null);
+    ok("★置いていなければ null", m.seatPos({}, {}) === null);
     ok("★置いていれば 場所を 返す",
-      m.seatPos(["furniture_10"], {}) !== null);
+      m.seatPos({ interior: { furniture: ["furniture_10"] } }, {}) !== null);
     // ★★動かした ぶんを 見ること。
-    const moved = m.seatPos(["furniture_10"], { furniture_10: { left: 22, top: 80 } });
+    const moved = m.seatPos({ interior: { furniture: ["furniture_10"] } },
+      { furniture_10: { left: 22, top: 80 } });
     ok("★動かした 場所を 見ている", moved && moved.left === 22);
     // ★★運を 使わないこと。★同じ部屋なら 同じ椅子です。
-    const a1 = m.seatPos(["furniture_25", "furniture_10"], {});
-    const a2 = m.seatPos(["furniture_25", "furniture_10"], {});
+    const eqq = { interior: { furniture: ["furniture_25", "furniture_10"] } };
+    const a1 = m.seatPos(eqq, {});
+    const a2 = m.seatPos(eqq, {});
     ok("★同じ部屋なら 同じ椅子", JSON.stringify(a1) === JSON.stringify(a2));
     const home4 = readCode("components", "CharacterHome.jsx");
-    ok("★新しい内装からも 探している", /seatPos\(interiorOf\(equipped\)/.test(home4));
+    ok("★新しい内装からも 探している", /seatPos\(equipped, equipped\.interiorPositions\)/.test(home4));
     ok("★古い方は これまでどおり",
       /furniturePos\("furniture_chair"\)\s*\n?\s*\|\|/.test(home4));
   }

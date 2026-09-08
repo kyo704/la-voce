@@ -2085,9 +2085,9 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
     //   ★古い方には、★これまでどおり 古い家具で 動きます。
     //   ★決めは lib/sheepInteriorV2.js が 持ちます。★ここでは 選びません。
     furniturePos("furniture_chair")
-      || (wardrobeOn ? seatPos(interiorOf(equipped), equipped.interiorPositions) : null),
+      || (wardrobeOn ? seatPos(equipped, equipped.interiorPositions) : null),
     furniturePos("furniture_bed")
-      || (wardrobeOn ? bedPos(interiorOf(equipped), equipped.interiorPositions) : null)
+      || (wardrobeOn ? bedPos(equipped, equipped.interiorPositions) : null)
   );
 
   // ★★しぐさの 時計。★立ち止まっている あいだだけです。

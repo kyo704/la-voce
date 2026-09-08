@@ -26,7 +26,7 @@ const code = readCode("lib", "preloadRoom.js");
 ok("★★一覧（SHEEP_ITEMS／INTERIOR_ITEMS の 全部）を 読んでいない",
   !/SHEEP_ITEMS/.test(code) && !/INTERIOR_ITEMS/.test(code));
 ok("★着ているものを 読む", /eq\.wardrobe/.test(code));
-ok("★置いているものを 読む", /interiorOf\(eq\)/.test(code));
+ok("★置いているものを 読む", /placedKeys\(eq\)/.test(code));
 ok("★羊の土台と 顔を 読む",
   /SHEEP_BASE\.body/.test(code) && /HEAD_NOFACE/.test(code) && /facePreloadList\(\)/.test(code));
 ok("★同じ絵を 2度 数えない", /\[\.\.\.new Set\(/.test(code));
