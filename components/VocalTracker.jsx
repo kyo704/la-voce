@@ -11979,6 +11979,25 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     NEXT_PUBLIC_WARDROBE_ALL_ITEMS_USER_IDS: process.env.NEXT_PUBLIC_WARDROBE_ALL_ITEMS_USER_IDS
   });
 
+  // ★★「持っている」の 決めは、★1か所です（★2026-09-08 夜の直し）。
+  //
+  //   ★★実機で「マフラー28点が 出ない」と ご報告をいただきました。
+  //     ★★品は 入っていました。★消していたのは、★私です。
+  //   ★★きょう v3追補①で、★棚の既定を「もっているもの」に しました。
+  //     ★そのとき、★門の中の方（★ぜんぶ着てよい方）のことを
+  //     ★★見落としていました。★あの方は、★買っていなくても 着られます。
+  //     ★けれど ownedItemKeys には 入っていないので、
+  //     ★★「もっているもの」で 絞ると、★ほとんど 消えます。
+  //
+  //   ★★だから、★棚も 見た目も、★ここ1つを 見ます。
+  //     ★2か所で 別々に 判じません。★また ずれます。
+  const effectiveOwnedKeys = useMemo(() => {
+    if (!wardrobeAllItems) return ownedItemKeys;
+    // ★★ぜんぶ着てよい方には、★着られる品を ぜんぶ「持っている」と します。
+    //   ★鍵を 出さない、という 決めと 同じ線です（★2026-09-08）。
+    return SHEEP_ITEMS.filter((i) => i.slot).map((i) => i.key);
+  }, [wardrobeAllItems, ownedItemKeys]);
+
   // ★★選ばないまま月が変わったら、★おまかせで1つ届けます（★裁定 §5）。
   //   ★溜めないためです。★残高にしない、という決めの、もう半分です。
   //   ★★1回ぶんだけ届けます。★まとめて何個も届けません。
@@ -15576,7 +15595,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ...searchQuery,
                         show: drawerShowAll ? SHOW_ALL : SHOW_OWNED
                       }, {
-                        owned: ownedItemKeys,
+                        owned: effectiveOwnedKeys,
                         colorOf: (k) => (characterEquipped.clothColors || {})[k] || null,
                         colorNameOf: (k) => {
                           const ck = (characterEquipped.clothColors || {})[k];
@@ -15603,7 +15622,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     isOn={(it) => (it.slot
                       ? (characterEquipped.wardrobe || {})[it.slot] === it.key
                       : isPlaced(characterEquipped, it))}
-                    isOwned={(it) => (it.slot ? ownedItemKeys.includes(it.key) : true)}
+                    isOwned={(it) => (it.slot ? effectiveOwnedKeys.includes(it.key) : true)}
                     // ★★押した瞬間に、★着ます（★2026-09-08 夕・坂本さんのお決め）。
                     //   ★★「見えているもの」と「いまの状態」を、★1つにします。
                     //     ★試着の姿と、いまの姿を、★分けません。

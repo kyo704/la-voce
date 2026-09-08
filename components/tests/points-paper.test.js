@@ -37,6 +37,19 @@ function ok(name, cond, extra) {
     /show: drawerShowAll \? SHOW_ALL : SHOW_OWNED/.test(vt)
     && /setDrawerShowAll\(\(q\.show \|\| SHOW_ALL\) === SHOW_ALL\)/.test(vt));
 
+  // ★★「持っている」の 決めは 1か所（★2026-09-08 夜の直し）。
+  //   ★★実機で「マフラーが 出ない」と ご報告をいただきました。
+  //     ★品は 入っていました。★棚の既定を「もっているもの」に したときに、
+  //     ★★門の中の方（ぜんぶ着てよい方）を 見落としていました。
+  //     ★あの方は 買っていなくても 着られますが、
+  //     ★ownedItemKeys には 入っていないので、★ほとんど 消えていました。
+  ok("★「持っている」を、1か所で 決めている", /const effectiveOwnedKeys = useMemo/.test(vt));
+  ok("★棚の絞りが、そこを 見ている", /owned: effectiveOwnedKeys,/.test(vt));
+  ok("★見た目も、そこを 見ている",
+    /isOwned=\{\(it\) => \(it\.slot \? effectiveOwnedKeys\.includes/.test(vt));
+  ok("★2か所で 別々に 判じていない",
+    !/owned: ownedItemKeys,/.test(vt) && !/isOwned=\{\(it\) => \(it\.slot \? ownedItemKeys/.test(vt));
+
   console.log("■ ★うすく（★②）");
   const grid = readCode("components", "DrawerItemGrid.jsx");
   ok("★まだの品は 不透明度 45%", /opacity: owned \? 1 : 0\.45/.test(grid));
