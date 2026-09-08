@@ -76,7 +76,7 @@ import WardrobePanel from "@/components/WardrobePanel";
 import Box2Gift from "@/components/Box2Gift";
 import RefluxCareConsent from "@/components/RefluxCareConsent";
 import InteriorPanel from "@/components/InteriorPanel";
-import { sheepItemByKey } from "@/lib/sheepItems";
+import { sheepItemByKey, SHEEP_ITEMS, sheepItemSrc } from "@/lib/sheepItems";
 import { MEAL_MARKS, MEAL_MARK_KEYS, resolveMealMarks } from "@/lib/mealMarks";
 import {
   SLEEP_SIDES, HEAD_RAISED, BELLY_TIGHT, refluxCareOn, toRow as refluxToRow
@@ -95,6 +95,14 @@ import { notOutDates, LOOK_BACK_FIELDS } from "@/lib/lookBack";
 // ★区切りマーカー。★理由の欄を作らない、という決めは、あちらが持ちます。
 import PeriodMarkerButton from "@/components/PeriodMarkerButton";
 import { markerRow } from "@/lib/periodMarkers";
+// ★おうち画面の作り直し（★2026-09-08・仕様 §3）。★決めは lib が持ちます。
+import HomeDrawer from "@/components/HomeDrawer";
+import DrawerItemGrid from "@/components/DrawerItemGrid";
+import { VIEW, DRESS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES } from "@/lib/homeDrawer";
+import { itemsFor, sortItems } from "@/lib/drawerItems";
+import {
+  INTERIOR_ITEMS, interiorSrc, isPlaced, toggleInterior, tileSurface
+} from "@/lib/sheepInteriorV2";
 import { mayUseWardrobe, mayWearEverything, applyWear } from "@/lib/sheepWardrobe";
 import {
   box2Rounds, box2ReceivedCount, roundAvailableDate, shouldAutoDeliver, pickBox2Choices
@@ -5267,6 +5275,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★★区切りマーカー（★2026-09-08）。★理由は持ちません。日付だけです。
   const [periodMarkers, setPeriodMarkers] = useState([]);
   const [markerBusy, setMarkerBusy] = useState(false);
+  // ★★おうち画面（★2026-09-08・仕様 §3）。
+  //   ★★ふだんは「ながめる」です。★道具を1つも出しません。
+  //     ★「したく」を押したときだけ、★引き出しが上がります。
+  //   ★状態の名前は lib/homeDrawer.js が持ちます。
+  const [homeState, setHomeState] = useState(VIEW);
+  const [drawerCat, setDrawerCat] = useState("wear");
+  const [drawerTab, setDrawerTab] = useState("all");
+  const [drawerSort, setDrawerSort] = useState("new");
   // ★「あとで」を押された日。★同じ日は、もう出しません。★翌日また出します。
   //   ★★端末に覚えさせます。★DBに残すほどのことではありません。
   //     ★忘れても、★もう一度お尋ねするだけです。
@@ -14927,6 +14943,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ★2026-09-07、★探しました。★画面がありません。
                     ★lib/freeTier.js に名前があるだけです。
                     ★無いものへの入口を、★作らないこと。 */}
+              {/* ★★飛び先の3つを、★やめました（★2026-09-08・仕様 §0・§4）。
+                  ★★ふだんは「ながめる」です。★道具を1つも出しません。
+                    ★一覧も、絞り込みも、並び順も、★出しません。
+                  ★★飛び先が要ったのは、★3つとも常に出ていたからです。
+                    ★引き出しにまとめたので、★飛ぶ先が ありません。 */}
+              {!wardrobeOn && (
               <div className="flex gap-2 mb-3 flex-wrap justify-end">
                 {[
                   { id: "wardrobe-anchor", icon: Shirt, label: "着せかえ" },
@@ -14950,6 +14972,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </button>
                 ))}
               </div>
+              )}
               {/* ★★記録がたまったときの、よそおい（★裁定 §5・2026-09-07）。
                   ★着せかえの上に置きます。★先に目に入るようにします。
                   ★★数は出しません。★1回ぶんだけ、静かに出します。 */}
@@ -14961,7 +14984,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               )}
               {/* ★★おうちのもの120点（★2026-09-08）。★門の中の方だけです。
                   ★いまの101点のお店とは、★別の枠です。★鍵が1つも重なりません。 */}
-              {wardrobeOn && (
+              {/* ★★内装の一覧を、★引き出しへ移しました（★2026-09-08・仕様 §4）。
+                  ★★ふだんは出しません。★「したく」の中の「おくもの」等に入ります。
+                  ★★消していません。★出す場所が変わっただけです。 */}
+              {false && wardrobeOn && (
                 <InteriorPanel
                   equipped={characterEquipped}
                   onChange={(next) => {
@@ -14972,7 +14998,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     setCharacterDirty(true);
                   }} />
               )}
-              {wardrobeOn && (
+              {/* ★★着せかえの一覧も、★引き出しへ移しました（★仕様 §4）。
+                  ★★ふだんは出しません。★「したく」の中の「きるもの」に入ります。 */}
+              {false && wardrobeOn && (
                 <div id="wardrobe-anchor" className="rounded-2xl p-4 border mb-4" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">着せかえ</h3>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
@@ -15044,6 +15072,71 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 onSave={handleSaveCharacter}
                 t={t}
               />
+
+              {/* ★★おうち画面の作り直し（★2026-09-08・仕様 §3）。
+                  ★★① ながめる ── ★ボタンは これ1つだけです。
+                    ★一覧・絞り込み・並び順を、★1つも出しません。
+                  ★★言葉は「したく」です（★§7-4「もようがえ」は使いません）。 */}
+              {wardrobeOn && homeState === VIEW && (
+                <button type="button" onClick={() => setHomeState(DRESS)}
+                  style={{
+                    position: "fixed", right: 16, bottom: 88, zIndex: 30,
+                    minHeight: 48, padding: "0 22px",
+                    // ★丸いピル型にしません（★§7-2「形」）。★角は小さめ、下に木の線。
+                    borderRadius: 8,
+                    border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
+                    background: C.curtain, color: "#FFFDF8",
+                    fontSize: "1rem", fontWeight: 600,
+                    boxShadow: "0 2px 10px rgba(89,66,51,0.18)"
+                  }}>
+                  {DRAWER_COPY.open}
+                </button>
+              )}
+
+              {/* ★★② したく ── ★引き出しが上がります。
+                  ★★絵は消えません（★§1-5）。★40% 残します。
+                  ★★何を並べるかは lib/drawerItems.js、★数は lib/homeDrawer.js。
+                    ★ここでは、どちらも決めません。
+                  ★★色の帯は、★絵が届くまで 出しません（★場所は空けてあります）。 */}
+              {wardrobeOn && homeState === DRESS && (
+                <HomeDrawer
+                  category={drawerCat}
+                  onCategory={(k) => { setDrawerCat(k); setDrawerTab("all"); }}
+                  tab={drawerTab} onTab={setDrawerTab}
+                  sort={drawerSort} onSort={setDrawerSort}
+                  onClose={() => setHomeState(VIEW)}
+                  onDone={() => { handleSaveCharacter(); setHomeState(VIEW); }}
+                  canUndo={false}>
+                  <DrawerItemGrid
+                    items={sortItems(
+                      itemsFor(drawerCat, drawerTab, {
+                        wearItems: SHEEP_ITEMS,
+                        interiorItems: INTERIOR_ITEMS,
+                        marks: characterEquipped,
+                        tileSurfaceOf: tileSurface
+                      }),
+                      drawerSort,
+                      { marks: characterEquipped })}
+                    srcOf={(it) => (it.slot
+                      ? sheepItemSrc(it, (characterEquipped.wardrobe || {}).propSide)
+                      : interiorSrc(it))}
+                    isOn={(it) => (it.slot
+                      ? (characterEquipped.wardrobe || {})[it.slot] === it.key
+                      : isPlaced(characterEquipped, it))}
+                    isOwned={(it) => (it.slot ? ownedItemKeys.includes(it.key) : true)}
+                    onTap={(it) => {
+                      if (it.slot) {
+                        handleEquipWardrobe(applyWear(
+                          characterEquipped.wardrobe || {}, it, sheepItemByKey));
+                      } else {
+                        setCharacterEquipped((prev) => ({
+                          ...prev, interior: toggleInterior(prev, it).interior
+                        }));
+                        setCharacterDirty(true);
+                      }
+                    }} />
+                </HomeDrawer>
+              )}
               </>
             )}
 
