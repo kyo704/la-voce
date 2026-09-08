@@ -1,6 +1,6 @@
 "use client";
 
-import { TIMING } from "@/lib/sheepSpeech";
+import { TIMING, BUBBLE } from "@/lib/sheepSpeech";
 
 // ============================================================================
 // 羊の 吹き出し（2026-09-08 夜）
@@ -24,6 +24,10 @@ import { TIMING } from "@/lib/sheepSpeech";
 
 export default function SpeechBubble({ text, small = false, leaving = false }) {
   if (!text) return null;
+  // ★★2行までに 収めます（★2026-09-08 夜・実機「読みにくい」）。
+  //   ★★数は lib が 持ちます。★ここで 決めません。
+  //   ★★見張りが、★70文すべてを 2行で 数え直します。
+  const sp = small ? BUBBLE.solo : BUBBLE.reply;
   return (
     <div
       aria-live="polite"
@@ -34,7 +38,7 @@ export default function SpeechBubble({ text, small = false, leaving = false }) {
         left: "72%", bottom: "62%",
         // ★★かぶりもの（60）より 上に 出します。
         zIndex: 100,
-        maxWidth: small ? 132 : 168,
+        maxWidth: sp.maxWidthPx,
         pointerEvents: "none",
         opacity: leaving ? 0 : (small ? 0.85 : 1),
         transform: leaving ? "translateY(0)" : "translateY(0)",
@@ -45,11 +49,13 @@ export default function SpeechBubble({ text, small = false, leaving = false }) {
         background: "#FCF9F3",
         border: "2px solid #E2D6C4",
         borderRadius: 16,
-        padding: small ? "5px 9px" : "7px 11px",
-        fontSize: small ? 16 : 20,
+        padding: small ? `5px ${sp.padXPx}px` : `7px ${sp.padXPx}px`,
+        fontSize: sp.fontPx,
         fontWeight: small ? 400 : 700,
         color: small ? "#807466" : "#483A2E",
         lineHeight: 1.5,
+        // ★★長い ひと続きでも、★はみ出させません。
+        overflowWrap: "anywhere",
         whiteSpace: "pre-wrap"
       }}>
         {text}

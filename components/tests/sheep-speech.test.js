@@ -75,6 +75,31 @@ function ok(name, cond, extra) {
   ok("★ひとりごとは みじかい（〜16字）", ks.every((l) => l.text.length <= 16),
     ks.filter((l) => l.text.length > 16).map((l) => l.text).join(" "));
 
+  console.log("■ ★吹き出しに 収まること（★2026-09-08 夜・実機「読みにくい」）");
+  {
+    // ★★2行までに 収めます。★3行になると 読みにくくなります。
+    //   ★★新しい文が 増えて 3行になったら、★ここで 落ちます。
+    const over = [];
+    for (const l of m.LINES) {
+      const sp = l.type === "K" ? m.BUBBLE.solo : m.BUBBLE.reply;
+      const n = m.bubbleLines(l.text, sp);
+      if (n > m.BUBBLE.maxLines) over.push(`${l.id}(${n}行) ${l.text}`);
+    }
+    ok(`★★70文すべてが 2行までに 収まる`, over.length === 0, over.slice(0, 4).join(" / "));
+    ok("★2行までと 決めている", m.BUBBLE.maxLines === 2);
+    ok("★ひとりごとは 幅168・字14",
+      m.BUBBLE.solo.maxWidthPx === 168 && m.BUBBLE.solo.fontPx === 14);
+    ok("★あいづちは 幅200・字17",
+      m.BUBBLE.reply.maxWidthPx === 200 && m.BUBBLE.reply.fontPx === 17);
+    // ★★部屋から はみ出さない幅で あること。
+    ok("★せまい部屋でも はみ出さない（〜200px）",
+      m.BUBBLE.reply.maxWidthPx <= 200 && m.BUBBLE.solo.maxWidthPx <= 200);
+    const b2 = readCode("components", "SpeechBubble.jsx");
+    ok("★画面で 大きさを 決め打ちしていない",
+      /maxWidth: sp\.maxWidthPx/.test(b2) && /fontSize: sp\.fontPx/.test(b2)
+      && !/maxWidth: small \? 132/.test(b2));
+  }
+
   console.log("■ ★えらび方");
   ok("★直近5つを 避ける", m.AVOID_RECENT === 5);
   const first = m.pickLine("K", [], 12, () => 0);
