@@ -2,7 +2,7 @@
 
 import {
   interiorOf, interiorItemByKey, interiorSrc, windowLayers,
-  floorLineOf, widthPctOf, isSingleSlot, WINDOW_INNER_RATIO
+  floorLineOf, widthPctOf, isSingleSlot, windowHole
 } from "@/lib/sheepInteriorV2";
 
 // ============================================================================
@@ -99,9 +99,11 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
   const wallTile = interiorItemByKey(placed.wallTile);
   const floorTile = interiorItemByKey(placed.floorTile);
 
-  // ★★窓は、★2枚です（★景色 → 枠）。
-  //   ★★片方だけでも出します。★選んだものは、そのまま出すこと。
+  // ★★窓は、★いつも1組です（★選んでいないほうは、既定で埋まります）。
+  //   ★重ね順は windowLayers が決めます（★景色 → 枠）。
   const win = windowLayers(placed);
+  const view = win.find((x) => x.category === "view") || null;
+  const frame = win.find((x) => x.category === "window") || null;
 
   // ★★いくつでも置けるもの。
   const many = ["furniture", "showa", "garden", "wallart"]
@@ -157,36 +159,56 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
           }} />
       )}
 
-      {/* ★★窓（★景色 → 枠の順）。★枠の中は抜けているので、景色が透けます。
-          ★★2026-09-08、★枠と景色を、同じ幅・同じ位置で置いていました。
-            ★枠は 384×384、景色は 480×320。★縦横比が違うので、そろいません。
-            ★実機でご指摘をいただきました。★そのとおりです。
-          ★★いまは、★景色を、★枠の内側（74%）に収めます。
-          ★★そして、★2枚そろわなければ、★1枚も出しません（坂本さんの決め）。 */}
-      {win.map((it) => {
-        const isFrame = it.category === "window";
-        // ★★枠の大きさは、★絵の幅から出します（★決め打ちしません）。
-        const frameW = widthPctOf(win.find((x) => x.category === "window") || it);
-        // ★枠は、そのまま。★景色は、枠の内側に収めます。
-        const w = isFrame ? frameW : frameW * WINDOW_INNER_RATIO;
-        // ★枠の中心と、景色の中心を、そろえます。
-        //   ★枠は正方形なので、★中心は top + 幅/2 の高さです。
-        const centerTop = SPOT.window.top + frameW * ROOM_ASPECT / 2;
-        const vh = w * (it.size[1] / it.size[0]) * ROOM_ASPECT;
+      {/* ★★窓 ── ★枠1枚と、★その穴にはめた景色。
+          ★★2026-09-08（夕）、★「枠と景色が、まるで合っていない」と
+            ★ご指摘をいただきました。★そのとおりでした。
+          ★★もとは「枠の幅 × 0.74」で景色を置いていました。
+            ★★13枚の穴を実測したところ、★どれも違いました。
+              ふつうの枠　0.805〜0.867
+              window_09 　0.617（★小さい丸窓）
+              window_11 　幅0.867 × ★高0.302（★低くて横長）
+              window_10 　★穴ではなく、すりガラス（半透明）
+            ★★「割合を1つ」では、★合うはずがありませんでした。
+          ★★いまは、★穴の四角に、★景色を切り抜いてはめます。
+            ★景色は 480×320、★穴は正方形のこともあります。
+            ★★引き伸ばしません。★はみ出しを切ります（★object-fit: cover）。
+              ★引き伸ばすと、★空も山も ゆがみます。
+          ★穴の場所は、★名簿に入っています（lib/sheepInteriorV2.js）。
+            ★★ここで数を書かないこと。 */}
+      {frame && (() => {
+        const w = widthPctOf(frame);
+        const [hx, hy, hw, hh] = windowHole(frame);
         return (
-          <img key={it.key} src={interiorSrc(it)} alt="" aria-hidden="true"
+          <div aria-hidden="true"
             style={{
               position: "absolute",
               left: `${SPOT.window.left}%`,
-              top: isFrame ? `${SPOT.window.top}%` : `${centerTop - vh / 2}%`,
+              top: `${SPOT.window.top}%`,
               width: `${w}%`,
+              // ★★枠は正方形の絵です。★高さは、CSS に出させます。
+              //   ★部屋の縦横比を掛け算しないこと。★ずれのもとです。
+              aspectRatio: `${frame.size[0]} / ${frame.size[1]}`,
               transform: "translate(-50%, 0)",
-              // ★景色が先（1）、枠があと（2）。★枠が上です。
-              zIndex: isFrame ? 2 : 1,
-              pointerEvents: "none"
-            }} />
+              zIndex: 1, pointerEvents: "none"
+            }}>
+            {/* ★★景色は、★穴の四角の中だけに出します。★はみ出しは切ります。 */}
+            {view && (
+              <div style={{
+                position: "absolute",
+                left: `${hx * 100}%`, top: `${hy * 100}%`,
+                width: `${hw * 100}%`, height: `${hh * 100}%`,
+                overflow: "hidden"
+              }}>
+                <img src={interiorSrc(view)} alt=""
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              </div>
+            )}
+            {/* ★枠は、いちばん上。★穴のふちが、景色を隠します。 */}
+            <img src={interiorSrc(frame)} alt=""
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block" }} />
+          </div>
         );
-      })}
+      })()}
 
       {/* ★扉。★320×512 で、★ほかより縦に長い絵です。 */}
       {door && (

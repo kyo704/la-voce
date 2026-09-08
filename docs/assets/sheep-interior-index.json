@@ -364,7 +364,13 @@
     384
    ],
    "floorY": 379,
-   "contentTop": 6
+   "contentTop": 6,
+   "hole": [
+    0.099,
+    0.099,
+    0.8203,
+    0.8203
+   ]
   },
   {
    "key": "window_02",
@@ -377,7 +383,13 @@
     384
    ],
    "floorY": 375,
-   "contentTop": 10
+   "contentTop": 10,
+   "hole": [
+    0.0938,
+    0.0938,
+    0.8151,
+    0.8151
+   ]
   },
   {
    "key": "window_03",
@@ -390,7 +402,13 @@
     384
    ],
    "floorY": 369,
-   "contentTop": 16
+   "contentTop": 16,
+   "hole": [
+    0.0807,
+    0.0807,
+    0.8411,
+    0.8411
+   ]
   },
   {
    "key": "window_04",
@@ -403,7 +421,13 @@
     384
    ],
    "floorY": 373,
-   "contentTop": 12
+   "contentTop": 12,
+   "hole": [
+    0.099,
+    0.099,
+    0.8047,
+    0.8047
+   ]
   },
   {
    "key": "window_05",
@@ -416,7 +440,13 @@
     384
    ],
    "floorY": 377,
-   "contentTop": 8
+   "contentTop": 8,
+   "hole": [
+    0.1016,
+    0.0885,
+    0.8125,
+    0.8255
+   ]
   },
   {
    "key": "window_06",
@@ -429,7 +459,13 @@
     384
    ],
    "floorY": 375,
-   "contentTop": 10
+   "contentTop": 10,
+   "hole": [
+    0.1042,
+    0.0938,
+    0.8047,
+    0.8151
+   ]
   },
   {
    "key": "window_07",
@@ -442,7 +478,13 @@
     384
    ],
    "floorY": 375,
-   "contentTop": 10
+   "contentTop": 10,
+   "hole": [
+    0.0938,
+    0.0938,
+    0.8151,
+    0.8151
+   ]
   },
   {
    "key": "window_08",
@@ -455,7 +497,13 @@
     384
    ],
    "floorY": 377,
-   "contentTop": 8
+   "contentTop": 8,
+   "hole": [
+    0.0729,
+    0.0729,
+    0.8568,
+    0.8568
+   ]
   },
   {
    "key": "window_09",
@@ -468,7 +516,13 @@
     384
    ],
    "floorY": 329,
-   "contentTop": 56
+   "contentTop": 56,
+   "hole": [
+    0.1927,
+    0.1927,
+    0.6172,
+    0.6172
+   ]
   },
   {
    "key": "window_10",
@@ -481,7 +535,14 @@
     384
    ],
    "floorY": 377,
-   "contentTop": 8
+   "contentTop": 8,
+   "hole": [
+    0.0885,
+    0.0859,
+    0.8255,
+    0.8281
+   ],
+   "frosted": true
   },
   {
    "key": "window_11",
@@ -494,7 +555,13 @@
     384
    ],
    "floorY": 377,
-   "contentTop": 8
+   "contentTop": 8,
+   "hole": [
+    0.0677,
+    0.6328,
+    0.8672,
+    0.3021
+   ]
   },
   {
    "key": "window_12",
@@ -507,7 +574,13 @@
     384
    ],
    "floorY": 377,
-   "contentTop": 8
+   "contentTop": 8,
+   "hole": [
+    0.0885,
+    0.0885,
+    0.8255,
+    0.8255
+   ]
   },
   {
    "key": "window_13",
@@ -520,7 +593,13 @@
     384
    ],
    "floorY": 377,
-   "contentTop": 8
+   "contentTop": 8,
+   "hole": [
+    0.1016,
+    0.0885,
+    0.8125,
+    0.8255
+   ]
   },
   {
    "key": "door_01",

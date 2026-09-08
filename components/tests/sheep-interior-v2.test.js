@@ -74,7 +74,29 @@ function ok(name, cond, extra) {
     m.currentWindow({}).window === m.DEFAULT_WINDOW
     && m.currentWindow({ view: v.key }).view === v.key);
   // ★★枠と景色は、縦横比が違うので、★同じ大きさで置けません。
-  ok("★景色を、枠の内側に収める割合がある", typeof m.WINDOW_INNER_RATIO === "number");
+  // ★★2026-09-08（夕）、★「割合を1つ」をやめました。
+  //   ★13枚の穴を実測したら、★どれも違いました。
+  //     ふつう 0.805〜0.867 ／ window_09 0.617 ／ window_11 高さ 0.302
+  //   ★★「枠と景色が、まるで合っていない」というご指摘の、そのものでした。
+  ok("★13枚すべてに、穴の場所が入っている",
+    m.windowFrames().every((f) => Array.isArray(f.hole) && f.hole.length === 4));
+  ok("★穴は、割合で持っている（0〜1）",
+    m.windowFrames().every((f) => f.hole.every((v) => v >= 0 && v <= 1)));
+  ok("★穴が、枠からはみ出していない",
+    m.windowFrames().every((f) => f.hole[0] + f.hole[2] <= 1.0001 && f.hole[1] + f.hole[3] <= 1.0001));
+  // ★★1つの割合では合わないこと自体を、見張ります。
+  const ws = m.windowFrames().map((f) => f.hole[2]);
+  const hs = m.windowFrames().map((f) => f.hole[3]);
+  ok(Math.max(...ws) - Math.min(...ws) > 0.2, "★枠によって、穴の幅が大きく違う（★" +
+    Math.min(...ws).toFixed(3) + "〜" + Math.max(...ws).toFixed(3) + "）");
+  ok(Math.max(...hs) - Math.min(...hs) > 0.4, "★高さは、もっと違う（★" +
+    Math.min(...hs).toFixed(3) + "〜" + Math.max(...hs).toFixed(3) + "）");
+  ok(m.windowHole(m.interiorItemByKey("window_11"))[3] < 0.4,
+    "★window_11 は、低くて横長の穴");
+  ok(m.windowHole(null)[2] === 0.82, "★分からない枠でも、まん中に置く（★消さない）");
+  ok(m.isFrostedWindow(m.interiorItemByKey("window_10")) === true,
+    "★window_10 は、すりガラス（★穴ではない）");
+  ok(m.isFrostedWindow(m.interiorItemByKey("window_01")) === false, "ふつうの枠は、違う");
   // ★★組み合わせの数を、画面に出さないこと（★数を見せない決め）。
   const libCode = readCode("lib", "sheepInteriorV2.js");
   ok("★169 を、文言として持っていない", !/"169|169通り/.test(libCode));
@@ -157,6 +179,12 @@ function ok(name, cond, extra) {
     //   ★扉に 300 を当てると、2割ちかく浮きます（★実機のご指摘）。
     ok("★床の線を、1点ずつ実測した値で取っている", /floorLineOf\(/.test(layer));
     ok("★大きさも、絵の幅から出している", /widthPctOf\(/.test(layer));
+    // ★★景色は、★穴に切り抜いてはめること。★引き伸ばさないこと。
+    ok("★穴の場所を、lib から取っている", /windowHole\(frame\)/.test(layer));
+    ok("★割合を1つで済ませていない", !/WINDOW_INNER_RATIO/.test(layer));
+    ok("★はみ出しを切っている", /overflow: "hidden"/.test(layer));
+    ok("★引き伸ばさず、はみ出しを切る（cover）", /objectFit: "cover"/.test(layer));
+    ok("★枠の高さは、絵の縦横比から出す", /aspectRatio: `\$\{frame\.size\[0\]\}/.test(layer));
     ok("★分類ごとに、大きさを決め打ちしていない", !/width: 22|width: 15|width: 12|width: 16|width: 26/.test(layer));
     // ★★名簿に、実測値が入っていること。
     ok("★120点すべてに、床の線が入っている",
