@@ -37,7 +37,7 @@ export default function DrawerItemGrid({
     <div style={{
       display: "grid",
       gridTemplateColumns: `repeat(${SIZES.gridColumns}, 1fr)`,
-      gap: 8
+      gap: SIZES.gridGapPx
     }}>
       {list.map((it) => {
         const on = isOn ? isOn(it) : false;
@@ -47,17 +47,23 @@ export default function DrawerItemGrid({
             onClick={() => onTap && onTap(it)}
             aria-pressed={on}
             title={it.name}
+            // ★★見本には、★字がありません。★絵だけです。
+            //   ★★字を付けると、★1つが2行ぶん高くなり、★3段目が見えません。
+            //     ★実機で「大きすぎる」とご指摘をいただきました。★そのとおりです。
+            //   ★★読み上げには、★名前を残します。★見た目から消しても、意味は消しません。
+            aria-label={it.name}
             style={{
-              minHeight: SIZES.cellPx,
+              // ★★四角にします。★字のぶんの高さを、足しません。
+              aspectRatio: "1 / 1",
               // ★★丸いピル型にしません（★§7-2「形」）。
               //   ★桐たんすの引き出しの前板に寄せます。★角は小さめ、★下に木の線。
               borderRadius: 6,
               border: `1px solid ${on ? C.curtain : C.line}`,
-              borderBottomWidth: on ? 3 : 2,
+              borderBottomWidth: on ? 2 : 1,
               background: on ? C.paper : C.card,
-              padding: 4,
+              padding: 3,
               display: "flex", flexDirection: "column",
-              alignItems: "center", justifyContent: "center", gap: 3,
+              alignItems: "center", justifyContent: "center",
               position: "relative",
               // ★★隠しません。★薄くして、★見えるようにします（★試着・§9）。
               opacity: owned ? 1 : 0.62
@@ -66,25 +72,22 @@ export default function DrawerItemGrid({
               ? renderThumb(it)
               : (srcOf && srcOf(it)
                 ? <img src={srcOf(it)} alt="" aria-hidden="true"
-                    style={{ width: "100%", aspectRatio: "1 / 1", objectFit: "contain" }} />
+                    style={{ width: "100%", height: "100%", objectFit: "contain" }} />
                 : null)}
-            <span style={{
-              fontSize: "0.625rem", color: C.inkSoft, lineHeight: 1.3,
-              textAlign: "center", overflow: "hidden", display: "-webkit-box",
-              WebkitLineClamp: 2, WebkitBoxOrient: "vertical"
-            }}>
-              {it.name}
-            </span>
             {/* ★★選んでいるしるし。★色だけにしないこと。 */}
             {on && (
               <span aria-hidden="true" style={{
-                position: "absolute", right: 4, bottom: 4,
-                width: 8, height: 8, borderRadius: 999, background: C.curtain
+                position: "absolute", right: 3, bottom: 3,
+                width: 7, height: 7, borderRadius: 999, background: C.curtain
               }} />
             )}
-            {/* ★★持っていないもの。★隠さず、★そう書きます。 */}
+            {/* ★★持っていないもの。★隠さず、★しるしを出します。
+                ★★字を1行足すと、★1つが高くなります。★角に小さく置きます。 */}
             {!owned && (
-              <span style={{ fontSize: "0.5625rem", color: C.inkSoft }}>まだ</span>
+              <span aria-hidden="true" style={{
+                position: "absolute", left: 3, top: 3,
+                fontSize: "0.5rem", color: C.inkSoft, lineHeight: 1
+              }}>まだ</span>
             )}
           </button>
         );

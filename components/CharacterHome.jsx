@@ -2581,7 +2581,15 @@ function GardenScene({ equipped, owned, onUpdatePosition, totalDaysRecorded = 0,
   );
 }
 
-export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, onUpdatePosition, isDirty, saveStatus, onSave, professions = [], wardrobeOn = false, t }) {
+/**
+ * @param roomOnly ★部屋だけを描きます（★2026-09-08・「したく」の上40%）。
+ *
+ *   ★★見本（案v2 ②〜⑤）では、★上40%が いつも部屋です。
+ *     ★説明も、切り替えも、お店も、★出しません。★部屋と羊だけです。
+ *   ★★消していません。★出さないだけです。
+ *     ★ふだんの「ひつじ」のタブでは、★これまでどおり ぜんぶ出ます。
+ */
+export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, onUpdatePosition, isDirty, saveStatus, onSave, professions = [], wardrobeOn = false, roomOnly = false, t }) {
   const [view, setView] = useState("room");
   const [shopCategory, setShopCategory] = useState("hat");
 
@@ -2610,6 +2618,17 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
     { balance, owned: new Set(ownedKeys || []), professions: professions || [] }
   );
   const isMultiSlot = MULTI_SLOT_CATEGORIES.includes(shopCategory);
+
+  // ★★「したく」の上40%では、★部屋だけを描きます（★2026-09-08）。
+  //   ★★説明・切り替え・お店・保存を、★出しません。
+  //     ★見本（案v2 ②〜⑤）に、★1つも写っていません。
+  //   ★★消していません。★ふだんの「ひつじ」では、これまでどおり出ます。
+  if (roomOnly) {
+    return (
+      <RoomScene wardrobeOn={wardrobeOn} equipped={equipped} owned={ownedKeys}
+        onTogglePlacement={onTogglePlacement} onUpdatePosition={onUpdatePosition} t={t} />
+    );
+  }
 
   return (
     <div className="space-y-5">

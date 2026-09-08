@@ -4,7 +4,7 @@ import { useState } from "react";
 import { C } from "@/lib/tokens";
 import {
   CATEGORIES, FIXED_TABS, subTabsFor, SORTS, nextSort, sortLabel,
-  SIZES, COPY, colorBandApplies, leftButtonLabel
+  SIZES, COPY, colorBandApplies, leftButtonLabel, BAND_IDLE
 } from "@/lib/homeDrawer";
 
 // ============================================================================
@@ -42,7 +42,14 @@ export default function HomeDrawer({
   children
 }) {
   const tabs = subTabsFor(category);
-  const showColor = colorBandApplies(category) && !!colorBand;
+  // ★★帯は「きるもの」のとき、★いつも出します（★見本①・2026-09-08）。
+  //   ★★もとは「1点えらんだ時だけ 出す」と読んでいました。★誤りでした。
+  //     ★見本①は、★帯を出したまま 灰色にしています。
+  //     ★「ここで色が かえられる」と、★先に分かるためです。
+  //     ★押しても何も起きないので、★間違えません。
+  //   ★★出したり消したりすると、★下の一覧の位置が ずれます。
+  //     ★見本②に「グリッドは そのまま。位置がずれません」と 書いてあります。
+  const showColor = colorBandApplies(category);
 
   return (
     <div
@@ -165,9 +172,19 @@ export default function HomeDrawer({
           height: SIZES.colorBandPx, flexShrink: 0,
           borderTop: `1px solid ${C.line}`, background: C.paper,
           display: "flex", alignItems: "center", padding: `0 ${SIZES.swatchGapPx}px`,
-          overflowX: "auto"
+          overflowX: "auto",
+          // ★★まだ えらんでいないときは、★薄く・灰色に（★§8-5）。
+          //   ★消しません。★出したままにします。
+          opacity: colorBand ? 1 : BAND_IDLE.opacity,
+          filter: colorBand ? "none" : `grayscale(${BAND_IDLE.grayscale})`,
+          pointerEvents: colorBand ? "auto" : "none",
+          justifyContent: colorBand ? "flex-start" : "center"
         }}>
-          {colorBand}
+          {colorBand || (
+            <span style={{ fontSize: "0.6875rem", color: C.inkSoft }}>
+              {COPY.colorHint}
+            </span>
+          )}
         </div>
       )}
 

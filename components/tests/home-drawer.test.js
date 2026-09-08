@@ -66,6 +66,35 @@ async function load(rel) {
     ok(H.colorBandApplies(c) === false, c + " では、出さない");
   });
 
+  console.log("④-2 ★帯は、いつも出す（★見本①・2026-09-08）");
+  // ★★もとは「1点えらんだ時だけ 出す」と読んでいました。★誤りでした。
+  //   ★見本①は、★帯を出したまま 灰色にしています。
+  //   ★「ここで色が かえられる」と、★先に分かるためです。
+  const drawerRaw = readRaw("components/HomeDrawer.jsx");
+  ok(/const showColor = colorBandApplies\(category\);/.test(drawerRaw),
+    "★えらんでいなくても、きるもの なら出す");
+  ok(/opacity: colorBand \? 1 : BAND_IDLE\.opacity/.test(drawerRaw), "★えらぶ前は、薄く");
+  ok(/grayscale\(\$\{BAND_IDLE\.grayscale\}\)/.test(drawerRaw), "★えらぶ前は、灰色に");
+  ok(/pointerEvents: colorBand \? "auto" : "none"/.test(drawerRaw),
+    "★押しても、何も起きない（★間違えないため）");
+  ok(/COPY\.colorHint/.test(drawerRaw), "★★中央に、案内文を出す");
+  ok(H.BAND_IDLE.opacity === 0.45 && H.BAND_IDLE.grayscale === 0.7, "§8-5 の数");
+  ok(/えらぶと/.test(H.COPY.colorHint), "案内文がある：" + H.COPY.colorHint);
+  ok(H.COPY.colorPattern === "がら", "★柄の2色目は、見せるだけ（★選ばせない）");
+
+  console.log("④-3 ★一覧は、字を出さない（★見本②）");
+  const gridRaw = readRaw("components/DrawerItemGrid.jsx");
+  ok(/aria-label=\{it\.name\}/.test(gridRaw), "★読み上げには、名前が残っている");
+  ok(!/\{it\.name\}\s*<\/span>/.test(gridRaw), "★見た目には、字を出さない");
+  ok(/aspectRatio: "1 \/ 1"/.test(gridRaw), "★四角（★字のぶんの高さを足さない）");
+  ok(/gap: SIZES\.gridGapPx/.test(gridRaw), "★あいだの数も、lib から");
+
+  console.log("④-4 ★部屋は、上40%に貼りつける（★見本②〜⑤）");
+  const vtRaw = readRaw("components/VocalTracker.jsx");
+  ok(/height: `\$\{DRAWER_SIZES\.roomPct\}%`/.test(vtRaw), "★上40%に、固定している");
+  ok(/roomOnly/.test(vtRaw), "★部屋だけを描いている（★説明も切り替えもお店も出さない）");
+  ok(H.SIZES.roomPct + H.SIZES.drawerPct === 100, "★40 ＋ 60 ＝ 100");
+
   console.log("⑤ ★言葉（★§7-2・§7-4）");
   ok(H.COPY.open === "したく", "★「したく」（★「もようがえ」ではない）");
   ok(H.COPY.undo === "さっきに もどす" && H.COPY.done === "これでいい", "下の帯の言葉");

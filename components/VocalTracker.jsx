@@ -15229,10 +15229,52 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               )}
 
               {/* ★★② したく ── ★引き出しが上がります。
+                  ★★2026-09-08、★実機で2つ ご指摘をいただきました。
+                    ★「部屋が つぶれて、上に少しだけしか見えない」
+                    ★「品物が 大きすぎる」
+                  ★★どちらも、私の作りの問題でした。
+                    ★引き出しを、★画面に貼りつけた（fixed）だけでした。
+                    ★上に残るのは「そのとき見えていたところ」で、
+                    ★★部屋とは限りません。★下へ流れていれば、部屋は画面の外です。
+                  ★★見本（案v2 ②〜⑤）は、★上40%が いつも部屋です。
+                    ★だから、★開いているあいだは、★画面ぜんたいを 40／60 に分けます。
+                    ★部屋を 上に貼りつけ、★ほかの中身は、その下に隠します。
                   ★★絵は消えません（★§1-5）。★40% 残します。
                   ★★何を並べるかは lib/drawerItems.js、★数は lib/homeDrawer.js。
                     ★ここでは、どちらも決めません。
                   ★★色の帯は、★絵が届くまで 出しません（★場所は空けてあります）。 */}
+              {/* ★★上の40%。★いつも部屋です。★流れません。 */}
+              {wardrobeOn && homeState === DRESS && (
+                <div style={{
+                  position: "fixed", left: 0, right: 0, top: 0,
+                  height: `${DRAWER_SIZES.roomPct}%`,
+                  background: C.paper, zIndex: 39,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  overflow: "hidden",
+                  paddingTop: "env(safe-area-inset-top)"
+                }}>
+                  {/* ★★部屋は 4：3 です。★高さに合わせて、はみ出させません。 */}
+                  <div style={{ width: "min(100%, calc((100vh - 0px) * 0.40 * 4 / 3))", maxWidth: 480 }}>
+                    <CharacterHome
+                      wardrobeOn={wardrobeOn}
+                      professions={effectiveProfessions}
+                      entries={entries}
+                      ownedKeys={ownedItemKeys}
+                      equipped={characterEquipped}
+                      pointsSpent={characterPointsSpent}
+                      onPurchase={handlePurchaseItem}
+                      onEquip={handleEquipItem}
+                      onTogglePlacement={handleTogglePlacement}
+                      onUpdatePosition={handleUpdatePosition}
+                      isDirty={characterDirty}
+                      saveStatus={characterSaveStatus}
+                      onSave={handleSaveCharacter}
+                      roomOnly
+                      t={t} />
+                  </div>
+                </div>
+              )}
+
               {wardrobeOn && homeState === DRESS && (
                 <HomeDrawer
                   category={drawerCat}
