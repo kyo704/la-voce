@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import {
   Mic2, Moon, Droplets, Thermometer, Wind, MapPin, Music2, HeartHandshake,
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
@@ -95,6 +95,10 @@ import { notOutDates, LOOK_BACK_FIELDS } from "@/lib/lookBack";
 // ★区切りマーカー。★理由の欄を作らない、という決めは、あちらが持ちます。
 import PeriodMarkerButton from "@/components/PeriodMarkerButton";
 import { markerRow } from "@/lib/periodMarkers";
+// ★「きょう」の帯（★第2便・§4）。★並び順と言葉は、あちらが持ちます。
+import TodayBand from "@/components/TodayBand";
+import { ATTENDANCE_KEYS } from "@/lib/todayBand";
+import * as unsentQueue from "@/lib/offlineQueue";
 // ★おうち画面の作り直し（★2026-09-08・仕様 §3）。★決めは lib が持ちます。
 import HomeDrawer from "@/components/HomeDrawer";
 import DrawerItemGrid from "@/components/DrawerItemGrid";
@@ -5292,6 +5296,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //     ★「したく」を押したときだけ、★引き出しが上がります。
   //   ★状態の名前は lib/homeDrawer.js が持ちます。
   const [homeState, setHomeState] = useState(VIEW);
+  // ★★送れなかった出欠（★§7-1）。★端末に積み、★電波が戻ったら送ります。
+  //   ★★消しません。★送れたものだけを、列から外します。
+  const [unsentAttendance, setUnsentAttendance] = useState([]);
   const [drawerCat, setDrawerCat] = useState("wear");
   const [drawerTab, setDrawerTab] = useState("all");
   const [drawerSort, setDrawerSort] = useState("new");
@@ -9161,6 +9168,87 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setMarkerBusy(false);
   }
 
+  /**
+   * ★出欠を押したとき（★§7-1・§7-2）。
+   *
+   *   ★★押した瞬間に、★画面へ反映します。★送れたかを待たせません。
+   *   ★★送れなかったら、★列に積みます。★電波が戻ったら、送ります。
+   *   ★★消しません。★送れたものだけを、列から外します。
+   *   ★status が null のときは「もどす」です。★押す前に戻します。
+   */
+  async function handleAttendance(lesson, status) {
+    if (!lesson || !lesson.id) return;
+    if (status !== null && !ATTENDANCE_KEYS.includes(status)) return;
+    const at = new Date().toISOString();
+    // ★★まず、画面。★待たせません（★楽観的更新）。
+    setMyTeachingLessons((ls) => ls.map((l) => (l.id === lesson.id
+      ? { ...l, attendance: status, attendance_at: status ? at : null } : l)));
+    const patch = status
+      ? { attendance: status, attendance_at: at, attendance_by: userId }
+      : { attendance: null, attendance_at: null, attendance_by: null };
+    const entry = { lessonId: lesson.id, status: status || "clear", at };
+    try {
+      const supabase = createClient();
+      // ★★.select() を付けます。★RLS や権限で弾かれた更新は、
+      //   ★★エラーになりません。★0行が変わって、error は null です。
+      //   ★2026-09-08、★まさにこれで「実施の記録」が静かに壊れました。
+      const { data, error } = await supabase.from("lessons")
+        .update(patch).eq("id", lesson.id).select("id");
+      if (error) throw error;
+      if (!data || data.length === 0) throw new Error("0行でした（権限が足りない可能性があります）");
+      // ★送れたので、★列から外します（★同じ行が積まれていれば）。
+      setUnsentAttendance((q) => {
+        const next = unsentQueue.dequeue(unsentQueue.enqueue(q, entry),
+          [unsentQueue.idemKey(entry)]);
+        unsentQueue.save(next);
+        return next;
+      });
+    } catch (e) {
+      // ★★黙って捨てません。★積んで、★あとで送ります。
+      setUnsentAttendance((q) => {
+        const next = unsentQueue.enqueue(q, { ...entry, patch });
+        unsentQueue.save(next);
+        return next;
+      });
+    }
+  }
+
+  // ★★積んだものを、★まとめて送ります（★§7-1）。
+  //   ★★送れたものだけを、★列から外します。★送れなかったものは、残します。
+  //   ★冪等キーが同じものは、★もう一度送っても1回になります。
+  const flushUnsent = useCallback(async () => {
+    const queue = unsentQueue.load();
+    if (queue.length === 0) return;
+    const supabase = createClient();
+    const sent = [];
+    for (const item of queue) {
+      if (!item || !item.lessonId || !item.patch) { sent.push(unsentQueue.idemKey(item)); continue; }
+      // ★★ここも .select() です。★0行を、成功と数えないこと。
+      const { data, error } = await supabase.from("lessons")
+        .update(item.patch).eq("id", item.lessonId).select("id");
+      if (!error && data && data.length > 0) sent.push(unsentQueue.idemKey(item));
+    }
+    if (sent.length === 0) return;
+    const next = unsentQueue.dequeue(queue, sent);
+    unsentQueue.save(next);
+    setUnsentAttendance(next);
+  }, []);
+
+  // ★★電波が戻ったら、★自動で送ります。★押し直させません。
+  //   ★★画面に戻ったときも、試します。★online が来ないことがあるためです。
+  useEffect(() => {
+    setUnsentAttendance(unsentQueue.load());
+    if (typeof window === "undefined") return undefined;
+    const go = () => { flushUnsent(); };
+    window.addEventListener("online", go);
+    window.addEventListener("focus", go);
+    go();
+    return () => {
+      window.removeEventListener("online", go);
+      window.removeEventListener("focus", go);
+    };
+  }, [flushUnsent]);
+
   function downloadFile(name, text, mime) {
     const blob = new Blob([text], { type: mime });
     const url = URL.createObjectURL(blob);
@@ -12231,6 +12319,26 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ★★これ以上、何も聞きません。★3つだけです。
                       ★「あとで」を押せます。★出口のない画面を作らないこと。
                       ★答えは、どれでも同じ言葉を返します。★評価はしません。 */}
+                  {/* ★★「きょう」の帯（★第2便・§4-1）。
+                      ★★該当がなければ、★その行を出しません。
+                        ★「今日のレッスンはありません」と、★書かないこと。
+                        ★★無いことを毎朝 知らせるのは、★催促と同じです。
+                      ★★先生のときは、★帯そのものが 出欠の表です（★§4-2）。
+                        ★「きょう」を開いた時点で、★もう並んでいます。★0タップです。
+                      ★★押した瞬間に確定します（★§7-2）。★確認を出しません。
+                      ★並び順・日数・言葉は lib/todayBand.js。★ここでは決めません。 */}
+                  <TodayBand
+                    todayISO={realTodayDate}
+                    lessons={myTeachingLessons.length > 0 ? myTeachingLessons : myAllLessons}
+                    teaching={myTeachingLessons.length > 0}
+                    performances={performances}
+                    orgEvents={Object.values(orgEvents).flat()}
+                    sheepLine={null}
+                    nameOf={(l) => orgDisplayName(l.student_id) || ""}
+                    unsent={unsentQueue.unsentCount(unsentAttendance)}
+                    onSeeAll={() => setActiveTab("lesson")}
+                    onAttend={handleAttendance} />
+
                   {perfToAsk && (
                     <PerformanceResultAsk
                       performance={perfToAsk}
