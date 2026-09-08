@@ -82,8 +82,14 @@ const NO_ACTION_COLUMNS = [
   //   ★★数を書いておくのは、★黙って増えたり減ったりしないためです。
   //     ★増やしたときは、★ここも一緒に直すこと。
   //     ★★直すときに「なぜ増えたか」を、1行書くこと。
-  assertTrue(d.USER_OWNED_TABLES.length === 21,
-    `一覧は21表（いまは ${d.USER_OWNED_TABLES.length}）`);
+  // ★2026-09-08、period_markers を足して22表。
+  //   ★区切りマーカー（★食事と就寝の設計 §6）。★日付だけの表です。
+  //   ★★理由の欄は、はじめから在りません。★本人のものです。
+  //   ★入れ忘れると、★退会しても、この方の日付が残ります。
+  assertTrue(d.USER_OWNED_TABLES.length === 22,
+    `一覧は22表（いまは ${d.USER_OWNED_TABLES.length}）`);
+  assertTrue(d.USER_OWNED_TABLES.includes("period_markers"),
+    "★区切りマーカーの表が、退会の一覧に入っている");
   assertTrue(d.USER_OWNED_TABLES.includes("org_event_participants"), "★出るという印が入っている");
   assertTrue(d.USER_OWNED_TABLES.includes("events"), "★events が入っている");
 

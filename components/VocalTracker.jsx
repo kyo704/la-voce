@@ -89,6 +89,12 @@ import { repertoireLog, repertoireLine, toCsv as repertoireCsv,
 // ★D+1 の一問（本番モード §7）。★本番モードの芯です。予報の部品ではありません。
 import PerformanceResultAsk from "@/components/PerformanceResultAsk";
 import { pickToAsk, buildResultRow } from "@/lib/performanceResult";
+// ★C1「出なかった日の前3日をひらく」。★何を出すかは、あちらが持ちます。
+import LookBackPanel from "@/components/LookBackPanel";
+import { notOutDates, LOOK_BACK_FIELDS } from "@/lib/lookBack";
+// ★区切りマーカー。★理由の欄を作らない、という決めは、あちらが持ちます。
+import PeriodMarkerButton from "@/components/PeriodMarkerButton";
+import { markerRow } from "@/lib/periodMarkers";
 import { mayUseWardrobe, mayWearEverything, applyWear } from "@/lib/sheepWardrobe";
 import {
   box2Rounds, box2ReceivedCount, roundAvailableDate, shouldAutoDeliver, pickBox2Choices
@@ -3816,7 +3822,15 @@ function chartHeight(px) {
 //   onChange   … 変更した項目だけを渡す（{ height_cm: 170 } のような形）
 //   showProfession … 職業はオンボーディングでは別のステップで聞くので、そこでは false
 // ============================================================================
-function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
+/**
+ * @param onConsentEvent ★同意台帳へ1行 足すための呼び出し。
+ *   ★★profiles に時刻を入れるだけでは、★歴史が残りません（★2026-09-08）。
+ *     ★consent_records は「歴史」を持ちます。★いまの状態は持ちません。
+ *     ★同意 → やめた → もう一度、が★行として並ぶ形です。
+ *   ★★逆流の同意だけ、★この1行が抜けていました。
+ *   ★渡されなければ、★何も起きません。★落ちません。
+ */
+function ProfileFieldGroups({ value, onChange, t, showProfession = true, onConsentEvent }) {
   // ★★同意画面を、いま出しているか（★2026-09-08）。
   //   ★切り替えを押しただけでは、★立てません。
   //   ★同意画面の「同意して、記録を始める」を押したときだけです。
@@ -4032,7 +4046,13 @@ function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
                           // ★★オンにするときは、★同意画面を先に出します。
                           //   ★ここで直に立てないこと。★同意を飛ばすことになります。
                           if (v) setShowRefluxConsent(true);
-                          else onChange({ reflux_care_consent_at: null });
+                          else {
+                            onChange({ reflux_care_consent_at: null });
+                            // ★★やめたことも、★台帳に1行 足します。
+                            //   ★★書いたものは消しません。★記録は残ります。
+                            //   ★「やめた」という事実だけを、★歴史に残します。
+                            if (onConsentEvent) onConsentEvent("health.reflux_care", "withdraw");
+                          }
                         }}
                         onLabel="記録する" offLabel="記録しない" />
                     </div>
@@ -4042,6 +4062,11 @@ function ProfileFieldGroups({ value, onChange, t, showProfession = true }) {
                           onAgree={() => {
                             onChange({ reflux_care_consent_at: new Date().toISOString() });
                             setShowRefluxConsent(false);
+                            // ★★同意台帳に、★1行 足します（★2026-09-08）。
+                            //   ★★profiles の時刻は「いまの状態」です。
+                            //     ★あとで上書きされると、★同意した事実が消えます。
+                            //   ★台帳は★足すだけです。★書き換えません。
+                            if (onConsentEvent) onConsentEvent("health.reflux_care", "grant");
                           }}
                           onCancel={() => setShowRefluxConsent(false)} />
                       </div>
@@ -5236,6 +5261,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★表は performances / performance_results。★行動ログの events とは別物です。
   const [performances, setPerformances] = useState([]);
   const [answeredPerfIds, setAnsweredPerfIds] = useState([]);
+  // ★★D+1 の答えを、行ごと持ちます（★2026-09-08・C1）。
+  //   ★「出なかった」と押した日を、★そこから取ります。
+  const [perfResults, setPerfResults] = useState([]);
+  // ★★区切りマーカー（★2026-09-08）。★理由は持ちません。日付だけです。
+  const [periodMarkers, setPeriodMarkers] = useState([]);
+  const [markerBusy, setMarkerBusy] = useState(false);
   // ★「あとで」を押された日。★同じ日は、もう出しません。★翌日また出します。
   //   ★★端末に覚えさせます。★DBに残すほどのことではありません。
   //     ★忘れても、★もう一度お尋ねするだけです。
@@ -5839,15 +5870,25 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         .from("performances").select("id, performed_on, kind, label")
         .eq("user_id", userId).order("performed_on", { ascending: false }).limit(60);
       if (mounted && perfRows) setPerformances(perfRows);
+      // ★★result も読みます（★2026-09-08・C1）。
+      //   ★「出なかった」と押した日を知るためです。★こちらでは決めません。
       const { data: resultRows } = await supabase
-        .from("performance_results").select("performance_id").eq("user_id", userId);
-      if (mounted && resultRows) setAnsweredPerfIds(resultRows.map((r) => r.performance_id));
+        .from("performance_results").select("performance_id, result").eq("user_id", userId);
+      if (mounted && resultRows) {
+        setAnsweredPerfIds(resultRows.map((r) => r.performance_id));
+        setPerfResults(resultRows);
+      }
       try {
         const v = window.localStorage.getItem("woolsong-perf-snoozed");
         if (mounted && v) setPerfSnoozedOn(v);
       } catch (e) {
         // ★読めなくても、★もう一度お尋ねするだけです。★止めません。
       }
+      // ★★区切りマーカー（★2026-09-08）。★日付だけです。★理由は在りません。
+      //   ★読めなくても、★ほかの画面は動きます。★ここで止めません。
+      const { data: markerRows } = await supabase
+        .from("period_markers").select("marked_on").eq("user_id", userId);
+      if (mounted && markerRows) setPeriodMarkers(markerRows);
       const { data: inventoryRows } = await supabase.from("character_inventory").select("item_key").eq("user_id", userId);
       if (mounted && inventoryRows) {
         // ★★描き直しの4点を、★持ち物に重ねます（★2026-09-08・呼び忘れの直し）。
@@ -6224,6 +6265,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const passes = benjaminiHochberg([pValue], NARRATIVE_FDR_Q);
     return { key: CYCLE_FACTOR, label: CYCLE_LABEL, ...res, pValue, fdrPass: passes[0] };
   }, [profile, cyclePeriods, filteredEntries, realTodayDate]);
+
+  // ★★C1 ── 「出なかった」と記録した日（★2026-09-08）。
+  //   ★★こちらで決めません。★ご本人が押した答えです。
+  //   ★ゲートは要りません。★何も主張しないためです。★1日目から動きます。
+  const notOutDays = useMemo(
+    () => notOutDates(performances, perfResults),
+    [performances, perfResults]);
 
   const correlationResults = useMemo(() => {
     if (analysisTarget === "performance") {
@@ -9030,6 +9078,60 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (recError) console.error("★同意の記録を残せませんでした:", recError);
   }
 
+
+  /**
+   * ★同意台帳に、1行 足します（★2026-09-08）。
+   *
+   *   ★★profiles の時刻は「いまの状態」です。★歴史は持ちません。
+   *     ★consent_records が「歴史」です。★足すだけで、書き換えません。
+   *     ★同意 → やめた → もう一度、が★行として並びます。
+   *
+   *   ★★逆流の同意だけ、★この1行が抜けていました。
+   *     ★profiles.reflux_care_consent_at は入れていましたが、
+   *     ★あれは上書きされる欄です。★上書きされたら、事実が消えます。
+   *
+   *   ★★失敗しても、★同意そのものは成立しています。★ここで止めません。
+   *     ★ただし、★黙って捨てません。
+   *   ★★IP は入れません（★consent.js が、はじめから入れない形です）。
+   */
+  async function recordConsentEvent(purposeKey, kind) {
+    const now = new Date().toISOString();
+    const row = kind === "withdraw"
+      ? buildConsentWithdrawalRow({ userId, purposeKey, now })
+      : buildConsentRow({ userId, purposeKey, locale: language, method: "button", now });
+    if (!row) return;
+    const supabase = createClient();
+    const { error } = await supabase.from("consent_records").insert(row);
+    if (error) console.error("★同意の記録を残せませんでした:", purposeKey, kind, error);
+  }
+
+  /**
+   * ★区切りマーカーを、置く・外す（★2026-09-08）。
+   *
+   *   ★★理由を、受け取りません。★引数にも、ありません。
+   *     ★足さないでください。★足した時点で、服薬の記録になります。
+   *   ★★同じ日に2つ置けません。★押すと、外れます。
+   *   ★★書き替えません。★置くか、外すか、それだけです。
+   *     ★update の権限も、渡していません（★SQL の③）。
+   */
+  async function handleTogglePeriodMarker(dateISO, next) {
+    if (markerBusy || !dateISO) return;
+    setMarkerBusy(true);
+    const supabase = createClient();
+    if (next) {
+      const row = markerRow({ userId, dateISO, now: new Date().toISOString() });
+      if (!row) { setMarkerBusy(false); return; }
+      const { error } = await supabase.from("period_markers").insert(row);
+      if (!error) setPeriodMarkers((m) => [...m, { marked_on: dateISO }]);
+      else console.error("★区切りを置けませんでした:", error);
+    } else {
+      const { error } = await supabase.from("period_markers")
+        .delete().eq("user_id", userId).eq("marked_on", dateISO);
+      if (!error) setPeriodMarkers((m) => m.filter((x) => x.marked_on !== dateISO));
+      else console.error("★区切りを外せませんでした:", error);
+    }
+    setMarkerBusy(false);
+  }
 
   function downloadFile(name, text, mime) {
     const blob = new Blob([text], { type: mime });
@@ -13960,6 +14062,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </SectionCard>
                     )}
 
+                    {/* ★★区切りマーカー（★2026-09-08・食事と就寝の設計 §6）。
+                        ★★「薬を飲み始めた」「受診した」「生活を変えた」──
+                          ★そういう区切りがあると、★前後で記録の意味が変わります。
+                        ★★ですが、★服薬や受診そのものを、★記録させません。
+                          ★治療の内容は、★要配慮性がさらに上がります。
+                          ★そのわりに、★分析には効きません。
+                        ★★★理由の入力欄を、★作らないこと。
+                          ★何があったかは、★ご本人だけが知っていれば足ります。
+                        ★決めは lib/periodMarkers.js が持ちます。★ここでは持ちません。 */}
+                    <PeriodMarkerButton
+                      dateISO={selectedDate}
+                      markers={periodMarkers}
+                      busy={markerBusy}
+                      onToggle={handleTogglePeriodMarker} />
+
                     {showGroup("exercise") && (
                     <SectionCard title={t("sectionExercise")} icon={Dumbbell}>
                       <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteExerciseHelp")}</p>
@@ -15484,6 +15601,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </div>
                 ) : (
                 <>
+                {/* ★★C1「出なかった日の、前3日をひらく」（★2026-09-08）。
+                    ★★分析の画面の、いちばん上に置きます。
+                      ★★これが、動機1の本体です。★1日目から動きます。
+                        ★くらべる（E群）は10回集めてから傾向を言う道具で、
+                        ★集まる前の10回、★この方は何も見られません。
+                    ★★ゲートは要りません。★何も主張しないためです。
+                      ★文章を添えません。★確率も、割合も、順位も、出しません。
+                      ★書いたことを、そのまま縦に並べるだけです。
+                    ★★無料です（★割りふり表 C群）。★門をかけないこと。
+                    ★出すものが1つも無いときは、★枠ごと出ません。 */}
+                <LookBackPanel dates={notOutDays} entries={entries} fields={LOOK_BACK_FIELDS} />
                 {/* ★★まとめが有料であることの、お伝え（⑫・2026-09-05）。
                     ★期間の札は、★いつでも押せます（★選ぶこと自体は無料です）。
                     ★★選んだ先が「まとめ」で、★お支払いがまだのときに、
@@ -17196,7 +17324,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   {/* ★共有の profile ではなく、下書きを渡すこと。
                       profile を渡すと、保存前の値がほかのタブに出ます。 */}
                   <ProfileFieldGroups value={profileDraft || profile} t={t}
-                    onChange={(patch) => setProfileDraft((d) => ({ ...(d || profile), ...patch }))} />
+                    onChange={(patch) => setProfileDraft((d) => ({ ...(d || profile), ...patch }))}
+                    onConsentEvent={recordConsentEvent} />
 
                   {/* ★以前は sticky bottom-0 をこのコンテナの最後の子に置いていたが、
                       sticky は「自分より下にまだ内容があるとき」しか浮かない。最後尾では
