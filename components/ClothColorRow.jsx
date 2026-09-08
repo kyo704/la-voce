@@ -1,143 +1,101 @@
 "use client";
 
-import { useState } from "react";
 import { C } from "@/lib/tokens";
 import {
   CLOTH_COLORS, swatchHex, edgeHex, needsEdge, isColorable, colorByKey
 } from "@/lib/clothColors";
+import { hasPattern, secondColor } from "@/lib/patternColors";
+import { SIZES, COPY } from "@/lib/homeDrawer";
 
 // ============================================================================
-// 服の色を、選ぶところ 24色（2026-09-08）
+// 服の色を、選ぶ帯 24色（2026-09-08）
 //
-//   ★出どころ docs/opus/woolsong-確定-服のいろ24色（9月8日）.md
+//   ★出どころ docs/opus/色をかえるしくみ.png ①②③
+//            docs/opus/woolsong-仕様-おうち画面の作り直し（9月8日）.md §8
 //
-//   ★★いま着ているものの色を変えます。★あつ森と、同じ考え方です。
-//     ★★色を塗れる品を着ているときだけ、★出します。
-//       ★塗れない品のときに、★灰色の見本を並べません。
-//       ★押せないものを並べるのは、★焦らしているのと同じです。
+//   ★★引き出しの いちばん下に、★1段 固定します（★§8-1）。
+//     ★① 位置が動かない　★上に出すと、見ていた品を見失います
+//     ★② 親指が届く　　　★片手で持ったとき、いちばん押しやすいのは 下です
+//     ★③ 読む順と合う　　★引き出し → 部位 → 品 → 色
 //
-//   ★★「もとの色」を、★いちばん前に置きます。
-//     ★★作った方が決めた色も、★1つの色です。★戻る道を、必ず残します。
-//     ★色を選んだあと、★もとに戻れないようにしないこと。
+//   ★★「もとの」を、★いちばん前に置きます。★戻る道を、必ず残します。
+//     ★作った方が決めた色も、★1つの色です。
 //
-//   ★★見本は「狙う色」で出します（★swatchHex）。
-//     ★実際に絵へ塗る値（★pre）は、★様式のぶんを差し引いた別の値です。
-//     ★★見本に pre を出すと、★お客さまの目には、★濁って見えます。
-//       ★お客さまが見るのは、★塗ったあとの色です。
+//   ★★柄ものは、★左端に「がら ■■」と出します（★見本③）。
+//     ★★2色目は、★選ばせません。★何色になるかだけ、見せます。
 //
-//   ★★はじめは、閉じています（★2026-09-08・坂本さんの決め）。
-//     ★★いつも開いていると、★24個の丸が、★品物の一覧を押しのけます。
-//       ★着せかえに来た方の、★目当ては品物です。
-//     ★押すと開きます。★開けたことは、★この画面のあいだ おぼえています。
+//   ★★見本に出すのは「狙う色」です（★swatchHex）。
+//     ★実際に絵へ塗る値（pre）は、★様式のぶんを差し引いた別の値です。
+//     ★見本に pre を出すと、★お客さまの目には 濁って見えます。
 //
 //   ★★数を、書きません。★「24色」と出さないこと。
-//
-//   ★★色の名前は、★文字でも出します。
-//     ★色だけで示すと、★色の見分けにくい方に、★何も伝わりません。
+//   ★★色の名前は、★読み上げに残します。★色だけで示さないためです。
 //
 //   ★見張り components/tests/cloth-colors.test.js
 // ============================================================================
 
-export default function ClothColorRow({ itemKey, itemName, itemSlot, colorKey, onChange }) {
-  // ★★はじめは閉じています。★押すと開きます。
-  //   ★★state は、★早めに置きます。★条件で return するより前です。
-  //     ★あとに置くと、★呼ばれる回数が変わり、React が落ちます。
-  const [open, setOpen] = useState(false);
-
+export default function ClothColorRow({ itemKey, itemSlot, colorKey, onChange }) {
   // ★★塗れない品のときは、★何も出しません。★灰色にして並べないこと。
-  //   ★全身ものと、★止めているあいだは、★isColorable が false を返します。
   if (!itemKey || !isColorable(itemKey, itemSlot)) return null;
 
   const pick = (k) => { if (onChange) onChange(k); };
-  // ★★いま選んでいる色を、★閉じたままでも分かるようにします。
   const now = colorKey ? colorByKey(colorKey) : null;
+  const pat = hasPattern(itemKey) ? secondColor(itemKey, null) : null;
 
   return (
-    <div style={{ marginBottom: 14 }}>
-      {/* ★★押しどころは、★1つの button です。
-          ★★「色」という字と、★いま選んでいる丸を、★両方 出します。
-            ★閉じているあいだも、★何色にしているかが分かるようにします。 */}
-      <button type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        style={{
-          display: "flex", alignItems: "center", gap: 8,
-          width: "100%", minHeight: 44, padding: "6px 10px",
-          borderRadius: 12, border: `1px solid ${C.line}`, background: C.card,
-          color: C.inkSoft, fontSize: "0.8125rem", marginBottom: open ? 8 : 0
-        }}>
-        <span>{itemName ? `${itemName}の色` : "色"}</span>
-        <span aria-hidden="true"
-          style={{
-            width: 18, height: 18, borderRadius: 999,
-            background: now ? swatchHex(now.key) : C.paper,
-            border: now && needsEdge(now.key)
-              ? `1.5px solid ${edgeHex(now.key)}`
-              : `1px solid ${C.line}`
-          }} />
-        <span style={{ fontSize: "0.75rem" }}>{now ? now.name : "もとの色"}</span>
-        <span aria-hidden="true" style={{ marginLeft: "auto", fontSize: "0.75rem" }}>
-          {open ? "とじる" : "えらぶ"}
-        </span>
-      </button>
-      {!open ? null : (
-      <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 6 }}>
-        {/* ★★もとの色。★いちばん前です。★戻る道を、必ず残します。 */}
-        <button type="button"
-          onClick={() => pick(null)}
-          aria-pressed={!colorKey}
-          aria-label="もとの色にする"
-          style={{
-            flex: "0 0 auto", minWidth: 52, minHeight: 60,
-            borderRadius: 12, background: C.card,
-            border: `${!colorKey ? 3 : 1}px solid ${!colorKey ? C.curtain : C.line}`,
-            padding: !colorKey ? 2 : 4,
-            display: "flex", flexDirection: "column", alignItems: "center", gap: 4
-          }}>
-          <span aria-hidden="true"
-            style={{
-              width: 26, height: 26, borderRadius: 999,
-              border: `1px solid ${C.line}`, background: C.paper,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: "0.75rem", color: C.inkSoft
-            }}>／</span>
-          <span style={{ fontSize: "0.625rem", color: C.inkSoft, lineHeight: 1.2 }}>もとの色</span>
-        </button>
+    <div style={{ display: "flex", alignItems: "center", gap: 6, width: "100%" }}>
+      <span style={{ fontSize: "0.6875rem", color: C.inkSoft, flexShrink: 0 }}>いろ</span>
 
+      {/* ★★「もとの」── ★いちばん前です。★戻る道を、必ず残します。 */}
+      <button type="button"
+        onClick={() => pick(null)}
+        aria-pressed={!colorKey}
+        aria-label="もとの色にする"
+        style={{
+          flexShrink: 0, minHeight: SIZES.swatchPx + 8, padding: "0 8px",
+          borderRadius: SIZES.swatchRadiusPx,
+          border: `${!colorKey ? 2 : 1}px solid ${!colorKey ? C.ink : C.line}`,
+          background: C.card, color: C.inkSoft, fontSize: "0.625rem"
+        }}>
+        {COPY.colorNone}
+      </button>
+
+      {/* ★★柄もの ── ★2色目は 選ばせません。★何色になるかだけ、見せます。 */}
+      {pat && (
+        <span style={{ display: "flex", alignItems: "center", gap: 3, flexShrink: 0 }}>
+          <span style={{ fontSize: "0.625rem", color: C.inkSoft }}>{COPY.colorPattern}</span>
+          <span aria-hidden="true" style={{
+            width: 12, height: 12, borderRadius: 2,
+            background: `rgb(${pat[0]},${pat[1]},${pat[2]})`,
+            border: `1px solid rgba(0,0,0,0.12)`
+          }} />
+        </span>
+      )}
+
+      <div style={{ display: "flex", gap: SIZES.swatchGapPx, overflowX: "auto", flex: 1 }}>
         {CLOTH_COLORS.map((c) => {
           const on = colorKey === c.key;
           return (
             <button key={c.key} type="button"
               onClick={() => pick(c.key)}
               aria-pressed={on}
+              // ★★色の名前は、★読み上げに残します。★色だけで示さないためです。
               aria-label={c.name}
               style={{
-                flex: "0 0 auto", minWidth: 52, minHeight: 60,
-                borderRadius: 12, background: C.card,
-                // ★選んでいるものは、★わくを太くします（★色だけにしません）。
-                border: `${on ? 3 : 1}px solid ${on ? C.curtain : C.line}`,
-                padding: on ? 2 : 4,
-                display: "flex", flexDirection: "column", alignItems: "center", gap: 4
-              }}>
-              {/* ★★白っぽい色は、★紙の上で消えます。★濃い縁を付けます。
-                  ★どの色に縁が要るかは lib/clothColors.js が決めます。 */}
-              <span aria-hidden="true"
-                style={{
-                  width: 26, height: 26, borderRadius: 999,
-                  background: swatchHex(c.key),
-                  border: needsEdge(c.key)
-                    ? `1.5px solid ${edgeHex(c.key)}`
-                    : `1px solid rgba(0,0,0,0.10)`
-                }} />
-              {/* ★★名前も出します。★色だけで示さないこと。 */}
-              <span style={{ fontSize: "0.625rem", color: C.inkSoft, lineHeight: 1.2, whiteSpace: "nowrap" }}>
-                {c.name}
-              </span>
-            </button>
+                flexShrink: 0,
+                width: SIZES.swatchPx, height: SIZES.swatchPx,
+                borderRadius: SIZES.swatchRadiusPx,
+                background: swatchHex(c.key),
+                // ★★選んでいるものは、★枠を太くして、少し大きくします（★§8-5）。
+                border: on
+                  ? `3px solid ${C.ink}`
+                  : (needsEdge(c.key) ? `1.5px solid ${edgeHex(c.key)}` : "1px solid rgba(0,0,0,0.10)"),
+                transform: on ? "scale(1.16)" : "none",
+                padding: 0
+              }} />
           );
         })}
       </div>
-      )}
     </div>
   );
 }

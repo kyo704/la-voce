@@ -114,7 +114,8 @@ import {
 } from "@/lib/wardrobeBoxes";
 import { REDRAWN_AS, withRedrawnKeys } from "@/lib/legacyWearables";
 // ★服の色。★式も、24色も、★どの品に塗れるかも、★あちらが持ちます。
-import { setColor as setClothColor } from "@/lib/clothColors";
+import { setColor as setClothColor, isColorable } from "@/lib/clothColors";
+import ClothColorRow from "@/components/ClothColorRow";
 // ★栄養の合計。★何を出し、何を出さないかは、あちらが持ちます。
 import { mealMacroTotals, usualTotals, macroRows } from "@/lib/nutritionTotals";
 // ★ρ／r／n／q を、どこに出してよいか。★決めは、あちらが持ちます。
@@ -15318,6 +15319,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ? (characterEquipped.wardrobe || {})[pickedItem.slot] === pickedItem.key
                     : isPlaced(characterEquipped, pickedItem))}
                   onCancelPick={() => setPickedItem(null)}
+                  // ★★色の帯（★2026-09-08）。★えらんだ品の色を、変えます。
+                  //   ★★「きるもの」のときだけ、★HomeDrawer が出します（★§8-4）。
+                  //   ★えらんでいないときは、★灰色の案内文が出ます（★見本①）。
+                  colorBand={pickedItem && isColorable(pickedItem.key, pickedItem.slot) ? (
+                    <ClothColorRow
+                      itemKey={pickedItem.key}
+                      itemName={null}
+                      itemSlot={pickedItem.slot}
+                      colorKey={(characterEquipped.clothColors || {})[pickedItem.key] || null}
+                      onChange={(k) => {
+                        setCharacterEquipped((prev) => setClothColor(prev, pickedItem.key, k));
+                        setCharacterDirty(true);
+                      }} />
+                  ) : null}
                   onWear={(it) => {
                     if (it.slot) {
                       handleEquipWardrobe(applyWear(

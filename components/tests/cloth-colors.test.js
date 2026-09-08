@@ -76,40 +76,47 @@ async function load(rel) {
   ok(Math.abs(cc.blendChannel(200, 50, 128) - 125.29) < 0.01, "まん中は、その間");
   ok(cc.blendChannel(120, 120, 200) === 120, "light と dark が同じところは、色が乗らない（★柄が残る）");
 
-  console.log("⑤ 色を塗れる品 17点");
-  ok(cc.COLORABLE_KEYS.length === 17, "17点（★実際 " + cc.COLORABLE_KEYS.length + "）");
+  console.log("⑤ ★色を塗れる品 ── ★ふだん着166点すべて（★2026-09-08）");
+  ok(cc.COLORABLE_KEYS.length === 166, "166点（★実際 " + cc.COLORABLE_KEYS.length + "）");
   const missing = cc.COLORABLE_KEYS.filter((k) => !catalog.some((i) => i.key === k));
-  ok(missing.length === 0, "17点すべてが、着せかえの名簿にある" + (missing.length ? "：" + missing.join(",") : ""));
-  const notTop = cc.COLORABLE_KEYS.filter((k) => {
+  ok(missing.length === 0, "166点すべてが、着せかえの名簿にある" + (missing.length ? "：" + missing.join(",") : ""));
+  // ★★上だけでは ありません。★靴も 目元も 入ります（★坂本さんのお決め）。
+  const slots = [...new Set(cc.COLORABLE_KEYS.map((k) => {
     const it = catalog.find((i) => i.key === k);
-    return it && it.slot !== "top";
-  });
-  ok(notTop.length === 0, "17点すべてが「上」の品である");
+    return it ? it.slot : null;
+  }).filter(Boolean))].sort();
+  ok(slots.length === 7, "★7つの置き場所（★" + slots.join("・") + "）");
+  ok(!slots.includes("garment"), "★★全身ものは、1点も入っていない");
   // ★★記念のもの（箱1）は、★色を変えられません。★そこに1つも入っていないこと。
   const keepsake = cc.COLORABLE_KEYS.filter((k) => {
     const it = catalog.find((i) => i.key === k);
     return it && it.group !== "daily";
   });
-  ok(keepsake.length === 0, "記念のものは、1つも入っていない（★色を変えられない品）");
-  // ★★2026-09-08、★いったん止めました（lib/pausedFeatures.js）。
-  //   ★2枚方式の絵が、★出荷済みの217点と違う裁ち方で描かれているためです。
-  //   ★色を選ぶと、★上着が裾で90画素 長くなり、★下を覆いました。
+  ok(keepsake.length === 0, "★記念のもの219点は、1つも入っていない");
+  // ★★2026-09-08、★止めていたのを 外しました。
+  //   ★新しい荷物（parts-v3-2026-09-08b）で、★裁ち方がそろったためです。
   const P = await load("lib/pausedFeatures.js");
   const on = P.CLOTH_COLORS_ENABLED;
-  console.log("   （いま 服のいろは " + (on ? "出しています" : "★止めています") + "）");
-  ok(cc.isColorable("top_01") === on, "止めているあいだは、1点も塗れない");
+  ok(on === true, "★服のいろを、出している");
+  ok(!P.PAUSED_FEATURES.some((f) => f.key === "display.clothColors"),
+    "★台帳から、外している");
+  ok(cc.isColorable("top_01") === true, "塗れる品は true");
   ok(cc.isColorable("hat_01") === false, "もともと塗れない品は、いつでも false");
   // ★★全身ものは、★いつでも塗れません（★坂本さんの決め・2026-09-08）。
   ok(cc.NEVER_COLORABLE_SLOTS.includes("garment"), "全身ものは、色を変えられない");
   ok(cc.isColorable("top_01", "garment") === false, "★全身ものの置き場所なら、塗れない");
 
-  console.log("⑤-2 ★絵の裁ち方が、出荷済みと同じか（★止めている理由）");
-  {
-    const paused = P.PAUSED_FEATURES.find((f) => f.key === "display.clothColors");
-    ok(!!paused, "台帳に載っている");
-    ok(paused && /90/.test(paused.evidence.join(" ")), "★裾が90画素 長いことを、根拠に書いてある");
-    ok(paused && /消しません/.test(paused.dataPolicy), "★選んだ色は、消さないと書いてある");
-  }
+  console.log("⑤-2 ★柄の2色目（★67点）");
+  const PC = await load("lib/patternColors.js");
+  ok(Object.keys(PC.BURNED_SECOND).length === 67, "★67点（★manifest のとおり）");
+  ok(PC.hasPattern("top_06") === true && PC.hasPattern("top_11") === false, "柄かどうかが分かる");
+  ok(Array.isArray(PC.secondColor("top_06")), "2色目が出る");
+  ok(PC.secondColor("top_11") === null, "★柄でない品は、null");
+  ok(PC.maskSrc("top_06") === "/sheep/mask/top_06.png", "★型の在りか");
+  // ★★2色目は、★お客さまに選ばせません。
+  const pcRaw = readRaw("lib/patternColors.js");
+  ok(!/onChange|えらぶ|選ばせ/.test(pcRaw.replace(/★[^\n]*/g, "")),
+    "★選ばせる作りに、なっていない");
 
   console.log("⑥ 絵が 34枚そろっているか");
   let noFile = [];
@@ -119,7 +126,11 @@ async function load(rel) {
       if (!fs.existsSync(path.join(ROOT, "public", rel.replace(/^\//, "")))) noFile.push(k + "_" + w);
     });
   });
-  ok(noFile.length === 0, "17点 × 2枚 ＝ 34枚、すべてある" + (noFile.length ? "：" + noFile.join(",") : ""));
+  ok(noFile.length === 0, "166点 × 2枚 ＝ 332枚、すべてある" + (noFile.length ? "：" + noFile.slice(0,5).join(",") : ""));
+  // ★★柄ものは、★3枚目（型）も要ります。
+  const noMask = Object.keys(PC.BURNED_SECOND).filter(
+    (k) => !fs.existsSync(path.join(ROOT, "public/sheep/mask", k + ".png")));
+  ok(noMask.length === 0, "★柄67点の型が、すべてある" + (noMask.length ? "：" + noMask.join(",") : ""));
 
   console.log("⑦ 選んだ色の持ちかた（★列を足していない）");
   let eq = { wardrobe: { top: "top_01" } };
@@ -176,12 +187,17 @@ async function load(rel) {
   ok(rowRaw.indexOf("もとの色にする") < rowRaw.indexOf("CLOTH_COLORS.map"),
     "「もとの色」が、いちばん前にある");
 
-  console.log("⑬ ★はじめは閉じている（★2026-09-08・坂本さんの決め）");
-  ok(/useState\(false\)/.test(rowRaw), "はじめは閉じている");
-  ok(/aria-expanded=\{open\}/.test(rowRaw), "開いているかを、読み上げにも伝えている");
-  ok(/\{open \? "とじる" : "えらぶ"\}/.test(rowRaw), "押しどころに、開くか閉じるかを書いている");
-  // ★★閉じていても、★いま何色かが分かること。
-  ok(/now \? now\.name : "もとの色"/.test(rowRaw), "★閉じていても、いま選んでいる色が分かる");
+  console.log("⑬ ★帯の形（★2026-09-08 夕・見本①②③のとおり）");
+  // ★★開け閉めを、やめました。★帯は「きるもの」のとき いつも出ています。
+  //   ★★出したり消したりすると、★下の一覧の位置が ずれます。
+  //     ★見本②に「グリッドは そのまま。位置がずれません」と書いてあります。
+  //   ★えらぶ前の灰色は、★HomeDrawer が受け持ちます。
+  ok(!/aria-expanded/.test(rowRaw), "★開け閉めを、やめた");
+  ok(/SIZES\.swatchPx/.test(rowRaw), "★見本の大きさを、lib から取っている");
+  ok(/scale\(1\.16\)/.test(rowRaw), "★選んだ色を、1.16倍にする（§8-5）");
+  ok(/aria-label=\{c\.name\}/.test(rowRaw), "★色の名前を、読み上げに残している");
+  ok(/COPY\.colorPattern/.test(rowRaw), "★柄ものは「がら」と出す");
+  ok(/hasPattern\(itemKey\)/.test(rowRaw), "★柄かどうかを、lib に聞いている");
 
   console.log(fail === 0 ? "\n★すべて通りました" : "\n★" + fail + "件、落ちました");
   process.exit(fail === 0 ? 0 : 1);

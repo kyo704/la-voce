@@ -3366,1992 +3366,2258 @@
    "name": "シャツ",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_01.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "top_06",
    "name": "ボーダー",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_06.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 834,
+   "patterned": true
   },
   {
    "key": "top_07",
    "name": "Ｔシャツ",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_07.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": false
   },
   {
    "key": "top_09",
    "name": "スウェット",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_09.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 834,
+   "patterned": false
   },
   {
    "key": "top_11",
    "name": "セーター（丸首）",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_11.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 834,
+   "patterned": false
   },
   {
    "key": "top_12",
    "name": "タートルネック",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_12.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 834,
+   "patterned": false
   },
   {
    "key": "top_14",
    "name": "ベスト",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_14.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": false
   },
   {
    "key": "top_24",
    "name": "パジャマ",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_24.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 834,
+   "patterned": true
   },
   {
    "key": "top_28",
    "name": "ブラウス",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_28.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": true
   },
   {
    "key": "top_30",
    "name": "パフスリーブ",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_30.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": false
   },
   {
    "key": "top_34",
    "name": "カーディガン",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_34.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 834,
+   "patterned": true
   },
   {
    "key": "top_35",
    "name": "ロングカーディガン",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 35,
    "file": "items/top_35.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 896,
+   "patterned": true
   },
   {
    "key": "top_37",
    "name": "タートル（リブ）",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_37.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 834,
+   "patterned": false
   },
   {
    "key": "top_39",
    "name": "キャミソール",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_39.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": false
   },
   {
    "key": "top_40",
    "name": "チュニック",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 35,
    "file": "items/top_40.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 900,
+   "patterned": false
   },
   {
    "key": "top_47",
    "name": "ニットベスト",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_47.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": false
   },
   {
    "key": "top_52",
    "name": "もこもこパジャマ",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 35,
    "file": "items/top_52.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 860,
+   "patterned": true
   },
   {
    "key": "bottom_01",
    "name": "デニム",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_01.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "bottom_05",
    "name": "スラックス（紺）",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_05.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "bottom_08",
    "name": "チノ",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_08.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "bottom_12",
    "name": "ハーフパンツ",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_12.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 906,
+   "patterned": false
   },
   {
    "key": "bottom_14",
    "name": "スウェットパンツ",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_14.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "bottom_15",
    "name": "パジャマパンツ",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_15.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "bottom_19",
    "name": "ミディ丈スカート",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_19.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 934,
+   "patterned": false
   },
   {
    "key": "bottom_20",
    "name": "プリーツスカート",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_20.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 944,
+   "patterned": false
   },
   {
    "key": "bottom_21",
    "name": "ロングスカート",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_21.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 988,
+   "patterned": false
   },
   {
    "key": "bottom_29",
    "name": "ワイドパンツ",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_29.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "bottom_30",
    "name": "レギンス",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_30.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "outer_01",
    "name": "テーラードジャケット",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_01.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 846,
+   "patterned": false
   },
   {
    "key": "outer_04",
    "name": "デニムジャケット",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_04.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 816,
+   "patterned": true
   },
   {
    "key": "outer_09",
    "name": "フリース",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_09.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 836,
+   "patterned": false
   },
   {
    "key": "outer_13",
    "name": "ロングコート",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_13.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 948,
+   "patterned": false
   },
   {
    "key": "outer_19",
    "name": "ジレ",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_19.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 830,
+   "patterned": false
   },
   {
    "key": "outer_20",
    "name": "ノーカラーコート",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_20.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 926,
+   "patterned": false
   },
   {
    "key": "outer_22",
    "name": "ダッフルコート",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_22.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 892,
+   "patterned": false
   },
   {
    "key": "outer_28",
    "name": "カーディガン（羽織）",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_28.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 906,
+   "patterned": false
   },
   {
    "key": "outer_30",
    "name": "キルティング",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_30.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 856,
+   "patterned": false
   },
   {
    "key": "shoes_01",
    "name": "スニーカー",
    "group": "daily",
    "slot": "shoes",
-   "z": 7,
+   "z": 30,
    "file": "items/shoes_01.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "shoes_03",
    "name": "ローファー",
    "group": "daily",
    "slot": "shoes",
-   "z": 7,
+   "z": 30,
    "file": "items/shoes_03.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "shoes_04",
    "name": "革靴",
    "group": "daily",
    "slot": "shoes",
-   "z": 7,
+   "z": 30,
    "file": "items/shoes_04.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "shoes_05",
    "name": "ブーツ",
    "group": "daily",
    "slot": "shoes",
-   "z": 7,
+   "z": 30,
    "file": "items/shoes_05.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "shoes_09",
    "name": "スリッパ",
    "group": "daily",
    "slot": "shoes",
-   "z": 7,
+   "z": 30,
    "file": "items/shoes_09.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "shoes_11",
    "name": "パンプス",
    "group": "daily",
    "slot": "shoes",
-   "z": 7,
+   "z": 30,
    "file": "items/shoes_11.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "hats_01",
    "name": "キャップ",
    "group": "daily",
    "slot": "hat",
-   "z": 9,
+   "z": 60,
    "file": "items/hats_01.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "hats_02",
    "name": "ニット帽",
    "group": "daily",
    "slot": "hat",
-   "z": 9,
+   "z": 60,
    "file": "items/hats_02.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "hats_03",
    "name": "ベレー",
    "group": "daily",
    "slot": "hat",
-   "z": 9,
+   "z": 60,
    "file": "items/hats_03.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "hats_04",
    "name": "中折れハット",
    "group": "daily",
    "slot": "hat",
-   "z": 9,
+   "z": 60,
    "file": "items/hats_04.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "hats_05",
    "name": "バケット",
    "group": "daily",
    "slot": "hat",
-   "z": 9,
+   "z": 60,
    "file": "items/hats_05.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "hats_06",
    "name": "麦わら帽子",
    "group": "daily",
    "slot": "hat",
-   "z": 9,
+   "z": 60,
    "file": "items/hats_06.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "hats_07",
    "name": "イヤーマフ",
    "group": "daily",
    "slot": "hat",
-   "z": 9,
+   "z": 60,
    "file": "items/hats_07.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "hats_08",
    "name": "カチューシャ",
    "group": "daily",
    "slot": "hat",
-   "z": 9,
+   "z": 60,
    "file": "items/hats_08.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "hats_09",
    "name": "フード",
    "group": "daily",
    "slot": "hat",
-   "z": 9,
+   "z": 60,
    "file": "items/hats_09.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "hats_11",
    "name": "ヘアバンド",
    "group": "daily",
    "slot": "hat",
-   "z": 9,
+   "z": 60,
    "file": "items/hats_11.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "hats_12",
    "name": "サンタ帽",
    "group": "daily",
    "slot": "hat",
-   "z": 9,
+   "z": 60,
    "file": "items/hats_12.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "hats_13",
    "name": "コック帽",
    "group": "daily",
    "slot": "hat",
-   "z": 9,
+   "z": 60,
    "file": "items/hats_13.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "neck_01",
    "name": "マフラー",
    "group": "daily",
    "slot": "neck",
-   "z": 5,
+   "z": 50,
    "file": "items/neck_01.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "neck_03",
    "name": "ストール",
    "group": "daily",
    "slot": "neck",
-   "z": 5,
+   "z": 50,
    "file": "items/neck_03.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "neck_04",
    "name": "ネクタイ",
    "group": "daily",
    "slot": "neck",
-   "z": 5,
+   "z": 50,
    "file": "items/neck_04.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "neck_05",
    "name": "蝶ネクタイ",
    "group": "daily",
    "slot": "neck",
-   "z": 5,
+   "z": 50,
    "file": "items/neck_05.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "neck_09",
    "name": "スカーフ",
    "group": "daily",
    "slot": "neck",
-   "z": 5,
+   "z": 50,
    "file": "items/neck_09.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "eyes_01",
    "name": "メガネ（丸）",
    "group": "daily",
    "slot": "eyes",
-   "z": 8,
+   "z": 55,
    "file": "items/eyes_01.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "eyes_02",
    "name": "メガネ（四角）",
    "group": "daily",
    "slot": "eyes",
-   "z": 8,
+   "z": 55,
    "file": "items/eyes_02.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "top_02",
    "name": "ボタンダウン",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_02.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "top_03",
    "name": "チェックシャツ",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_03.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "top_04",
    "name": "ワークシャツ",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_04.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "top_05",
    "name": "デニムシャツ",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_05.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "top_08",
    "name": "ポロ",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_08.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": true
   },
   {
    "key": "top_10",
    "name": "フーディ",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_10.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 834,
+   "patterned": false
   },
   {
    "key": "top_13",
    "name": "ケーブルニット",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_13.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 834,
+   "patterned": false
   },
   {
    "key": "top_15",
    "name": "つなぎの上",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_15.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": true
   },
   {
    "key": "top_16",
    "name": "ジャージ",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_16.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 834,
+   "patterned": false
   },
   {
    "key": "top_17",
    "name": "タンクトップ",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_17.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": false
   },
   {
    "key": "top_18",
    "name": "ラガーシャツ",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_18.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": true
   },
   {
    "key": "top_19",
    "name": "ヘンリーネック",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_19.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": false
   },
   {
    "key": "top_20",
    "name": "モックネック",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_20.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": false
   },
   {
    "key": "top_21",
    "name": "ラグランＴ",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_21.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": false
   },
   {
    "key": "top_22",
    "name": "アロハシャツ",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_22.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": true
   },
   {
    "key": "top_23",
    "name": "甚平の上",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_23.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": false
   },
   {
    "key": "top_25",
    "name": "ミリタリーシャツ",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_25.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": true
   },
   {
    "key": "top_26",
    "name": "ビッグシルエットＴ",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 35,
    "file": "items/top_26.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 872,
+   "patterned": false
   },
   {
    "key": "top_27",
    "name": "スポーツＴ",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_27.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": true
   },
   {
    "key": "top_29",
    "name": "ボウタイブラウス",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_29.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": true
   },
   {
    "key": "top_31",
    "name": "フリルブラウス",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_31.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": true
   },
   {
    "key": "top_32",
    "name": "リボンニット",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_32.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 834,
+   "patterned": true
   },
   {
    "key": "top_33",
    "name": "レーストップス",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_33.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": false
   },
   {
    "key": "top_36",
    "name": "モヘアニット",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_36.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 834,
+   "patterned": false
   },
   {
    "key": "top_38",
    "name": "ペプラムトップス",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 35,
    "file": "items/top_38.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 862,
+   "patterned": false
   },
   {
    "key": "top_41",
    "name": "ギンガムブラウス",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_41.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": true
   },
   {
    "key": "top_42",
    "name": "花柄ブラウス",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_42.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": true
   },
   {
    "key": "top_43",
    "name": "ドットブラウス",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_43.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": true
   },
   {
    "key": "top_44",
    "name": "レオパードニット",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_44.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 834,
+   "patterned": true
   },
   {
    "key": "top_45",
    "name": "ツイードのトップス",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_45.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 834,
+   "patterned": true
   },
   {
    "key": "top_46",
    "name": "オフショル",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_46.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": false
   },
   {
    "key": "top_48",
    "name": "セーラー風",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_48.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": true
   },
   {
    "key": "top_49",
    "name": "黒レースブラウス",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_49.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 806,
+   "patterned": true
   },
   {
    "key": "top_50",
    "name": "Ｙ２Ｋトップス",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_50.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 834,
+   "patterned": true
   },
   {
    "key": "top_51",
    "name": "韓国系ゆるニット",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 35,
    "file": "items/top_51.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 876,
+   "patterned": false
   },
   {
    "key": "top_53",
    "name": "ボヘミアンブラウス",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 35,
    "file": "items/top_53.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 868,
+   "patterned": true
   },
   {
    "key": "top_54",
    "name": "レザートップス",
    "group": "daily",
    "slot": "top",
-   "z": 2,
+   "z": 10,
    "file": "items/top_54.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 834,
+   "patterned": true
   },
   {
    "key": "bottom_02",
    "name": "ダメージデニム",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_02.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "bottom_03",
    "name": "ブラックデニム",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_03.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "bottom_04",
    "name": "ワイドスラックス",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_04.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "bottom_06",
    "name": "テーパードパンツ",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_06.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "bottom_07",
    "name": "カーゴ",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_07.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "bottom_09",
    "name": "コーデュロイ",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_09.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "bottom_10",
    "name": "ジャージパンツ",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_10.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "bottom_11",
    "name": "ショーツ",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_11.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 884,
+   "patterned": false
   },
   {
    "key": "bottom_13",
    "name": "チェックのパンツ",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_13.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "bottom_16",
    "name": "ミリタリーパンツ",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_16.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "bottom_17",
    "name": "甚平の下",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_17.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 896,
+   "patterned": false
   },
   {
    "key": "bottom_18",
    "name": "スキニー",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_18.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "bottom_22",
    "name": "ミニスカート",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_22.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 892,
+   "patterned": false
   },
   {
    "key": "bottom_23",
    "name": "チェックスカート",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_23.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 930,
+   "patterned": true
   },
   {
    "key": "bottom_24",
    "name": "デニムスカート",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_24.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 906,
+   "patterned": true
   },
   {
    "key": "bottom_25",
    "name": "フレアスカート",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_25.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 952,
+   "patterned": false
   },
   {
    "key": "bottom_26",
    "name": "チュールスカート",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_26.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 948,
+   "patterned": true
   },
   {
    "key": "bottom_27",
    "name": "花柄スカート",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_27.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 936,
+   "patterned": true
   },
   {
    "key": "bottom_28",
    "name": "コーデュロイスカート",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_28.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 926,
+   "patterned": false
   },
   {
    "key": "bottom_31",
    "name": "サロペット",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_31.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "bottom_32",
    "name": "ガウチョ",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_32.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 914,
+   "patterned": false
   },
   {
    "key": "bottom_33",
    "name": "ペチコート",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_33.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 956,
+   "patterned": false
   },
   {
    "key": "bottom_34",
    "name": "レザースカート",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_34.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 898,
+   "patterned": false
   },
   {
    "key": "bottom_35",
    "name": "もこもこパンツ",
    "group": "daily",
    "slot": "bottom",
-   "z": 1,
+   "z": 20,
    "file": "items/bottom_35.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "outer_02",
    "name": "スーツの上着",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_02.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 852,
+   "patterned": false
   },
   {
    "key": "outer_03",
    "name": "ツイードジャケット",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_03.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 838,
+   "patterned": true
   },
   {
    "key": "outer_05",
    "name": "レザージャケット",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_05.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 818,
+   "patterned": false
   },
   {
    "key": "outer_06",
    "name": "ブルゾン",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_06.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 816,
+   "patterned": false
   },
   {
    "key": "outer_07",
    "name": "トラックジャケット",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_07.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 820,
+   "patterned": false
   },
   {
    "key": "outer_08",
    "name": "マウンテンパーカ",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_08.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 852,
+   "patterned": false
   },
   {
    "key": "outer_10",
    "name": "ダウン（パファー）",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_10.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 862,
+   "patterned": false
   },
   {
    "key": "outer_11",
    "name": "Ｍ-65（ミリタリー）",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_11.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 868,
+   "patterned": false
   },
   {
    "key": "outer_12",
    "name": "トレンチコート",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_12.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 922,
+   "patterned": false
   },
   {
    "key": "outer_14",
    "name": "ステンカラーコート",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_14.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 930,
+   "patterned": false
   },
   {
    "key": "outer_15",
    "name": "ＭＡ-1",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_15.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 814,
+   "patterned": false
   },
   {
    "key": "outer_16",
    "name": "スタジャン",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_16.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 818,
+   "patterned": true
   },
   {
    "key": "outer_17",
    "name": "半纏",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_17.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 856,
+   "patterned": true
   },
   {
    "key": "outer_18",
    "name": "ベンチコート",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_18.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 966,
+   "patterned": false
   },
   {
    "key": "outer_21",
    "name": "チェスターコート",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_21.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 944,
+   "patterned": false
   },
   {
    "key": "outer_23",
    "name": "ファーコート",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_23.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 886,
+   "patterned": false
   },
   {
    "key": "outer_24",
    "name": "ケープ",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_24.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 846,
+   "patterned": false
   },
   {
    "key": "outer_25",
    "name": "ショートジャケット",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_25.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 800,
+   "patterned": false
   },
   {
    "key": "outer_26",
    "name": "ツイードジャケット（女）",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_26.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 828,
+   "patterned": true
   },
   {
    "key": "outer_27",
    "name": "ガウン",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_27.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 964,
+   "patterned": false
   },
   {
    "key": "outer_29",
    "name": "レースの羽織り",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_29.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 914,
+   "patterned": false
   },
   {
    "key": "outer_31",
    "name": "ポンチョ",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_31.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 902,
+   "patterned": true
   },
   {
    "key": "outer_32",
    "name": "ムートン",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_32.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 874,
+   "patterned": false
   },
   {
    "key": "outer_33",
    "name": "ライダース（女）",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_33.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 804,
+   "patterned": false
   },
   {
    "key": "outer_34",
    "name": "ロングガウン",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_34.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 976,
+   "patterned": false
   },
   {
    "key": "outer_35",
    "name": "ゴシックコート",
    "group": "daily",
    "slot": "outer",
-   "z": 3,
+   "z": 40,
    "file": "items/outer_35.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "hem": 952,
+   "patterned": true
   },
   {
    "key": "neck_02",
    "name": "チェックのマフラー",
    "group": "daily",
    "slot": "neck",
-   "z": 5,
+   "z": 50,
    "file": "items/neck_02.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "neck_06",
    "name": "リボン",
    "group": "daily",
    "slot": "neck",
-   "z": 5,
+   "z": 50,
    "file": "items/neck_06.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "neck_07",
    "name": "ネックレス",
    "group": "daily",
    "slot": "neck",
-   "z": 5,
+   "z": 50,
    "file": "items/neck_07.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "neck_08",
    "name": "パールのくび飾り",
    "group": "daily",
    "slot": "neck",
-   "z": 5,
+   "z": 50,
    "file": "items/neck_08.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "neck_10",
    "name": "チョーカー",
    "group": "daily",
    "slot": "neck",
-   "z": 5,
+   "z": 50,
    "file": "items/neck_10.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "neck_11",
    "name": "フード（下ろした）",
    "group": "daily",
    "slot": "neck",
-   "z": 5,
+   "z": 50,
    "file": "items/neck_11.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "eyes_03",
    "name": "金ぶちメガネ",
    "group": "daily",
    "slot": "eyes",
-   "z": 8,
+   "z": 55,
    "file": "items/eyes_03.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "eyes_04",
    "name": "サングラス",
    "group": "daily",
    "slot": "eyes",
-   "z": 8,
+   "z": 55,
    "file": "items/eyes_04.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "eyes_05",
    "name": "伊達メガネ",
    "group": "daily",
    "slot": "eyes",
-   "z": 8,
+   "z": 55,
    "file": "items/eyes_05.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "eyes_06",
    "name": "ゴーグル",
    "group": "daily",
    "slot": "eyes",
-   "z": 8,
+   "z": 55,
    "file": "items/eyes_06.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "shoes_02",
    "name": "ハイカット",
    "group": "daily",
    "slot": "shoes",
-   "z": 7,
+   "z": 30,
    "file": "items/shoes_02.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "shoes_06",
    "name": "ロングブーツ",
    "group": "daily",
    "slot": "shoes",
-   "z": 7,
+   "z": 30,
    "file": "items/shoes_06.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "shoes_07",
    "name": "サンダル",
    "group": "daily",
    "slot": "shoes",
-   "z": 7,
+   "z": 30,
    "file": "items/shoes_07.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "shoes_08",
    "name": "上履き",
    "group": "daily",
    "slot": "shoes",
-   "z": 7,
+   "z": 30,
    "file": "items/shoes_08.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "shoes_10",
    "name": "長ぐつ",
    "group": "daily",
    "slot": "shoes",
-   "z": 7,
+   "z": 30,
    "file": "items/shoes_10.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   },
   {
    "key": "shoes_12",
    "name": "ミュール",
    "group": "daily",
    "slot": "shoes",
-   "z": 7,
+   "z": 30,
    "file": "items/shoes_12.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": false
   },
   {
    "key": "hats_10",
    "name": "王冠",
    "group": "daily",
    "slot": "hat",
-   "z": 9,
+   "z": 60,
    "file": "items/hats_10.png",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "patterned": true
   }
  ]
 }
