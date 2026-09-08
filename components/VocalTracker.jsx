@@ -15248,7 +15248,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   ★★出すのは、★部屋と羊、★細い帯、★「したく」だけです。
                   ★★消していません。★門の外の方には、これまでどおり ぜんぶ出ます。 */}
               {wardrobeOn ? (
-                <div style={{ marginBottom: 12 }}>
+                /* ★★パソコンでの余白（★2026-09-08 夕・Opus の決め）。
+                    ★★おうち画面ぜんたいを 664px で まん中に寄せます。
+                    ★★横並びの作りは、★11月以降に 考えます。★いまは しません。
+                    ★数は lib/homeDrawer.js が持ちます。★ここで書かないこと。 */
+                <div style={{ maxWidth: DRAWER_SIZES.homeMaxWidthPx, margin: "0 auto 12px" }}>
                   {/* ★★細い帯（★見本①）。★ひつじ ／ ひとこと。 */}
                   <div className="flex items-center gap-2 mb-2">
                     <span style={{
@@ -15342,7 +15346,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               {/* ★★上の40%。★いつも部屋です。★流れません。 */}
               {wardrobeOn && homeState === DRESS && (
                 <div style={{
+                  // ★★パソコンでは、★664px で止めて まん中へ（★同じ決め）。
+                  //   ★left/right を 0 にしたうえで、★左右の余白を auto にすると、
+                  //   ★★貼りつけた（fixed）ものでも、★まん中に そろいます。
                   position: "fixed", left: 0, right: 0, top: 0,
+                  maxWidth: DRAWER_SIZES.homeMaxWidthPx, marginLeft: "auto", marginRight: "auto",
                   height: `${DRAWER_SIZES.roomPct}%`,
                   background: C.paper, zIndex: 39,
                   display: "flex", alignItems: "center", justifyContent: "center",

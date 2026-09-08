@@ -86,8 +86,9 @@ async function load(rel) {
   const gridRaw = readRaw("components/DrawerItemGrid.jsx");
   ok(/aria-label=\{it\.name\}/.test(gridRaw), "★読み上げには、名前が残っている");
   ok(!/\{it\.name\}\s*<\/span>/.test(gridRaw), "★見た目には、字を出さない");
-  ok(/aspectRatio: "1 \/ 1"/.test(gridRaw), "★四角（★字のぶんの高さを足さない）");
+  ok(/width: SIZES\.cellPx, height: SIZES\.cellPx/.test(gridRaw), "★四角（★72×72 固定）");
   ok(/gap: SIZES\.gridGapPx/.test(gridRaw), "★あいだの数も、lib から");
+  ok(/justifyContent: "center"/.test(gridRaw), "★まん中へ 寄せている");
 
   console.log("④-4 ★部屋は、上40%に貼りつける（★見本②〜⑤）");
   const vtRaw = readRaw("components/VocalTracker.jsx");
@@ -160,8 +161,28 @@ async function load(rel) {
   });
 
   console.log("⑥ ★数は、1か所で持つ");
-  ok(H.SIZES.drawerPct === 60 && H.SIZES.gridColumns === 4 && H.SIZES.cellPx === 74,
-    "§6 の数（引き出し60% ／ 4列 ／ 74px）");
+  // ★★1マスは 72×72 で 固定です（★2026-09-08 夕・Opus の決め）。
+  //   ★★機種で 変えません。★変えるのは 列の数だけです（auto-fill）。
+  ok(H.SIZES.drawerPct === 60 && H.SIZES.cellPx === 72 && H.SIZES.gridGapPx === 8,
+    "★引き出し60% ／ 1マス72px ／ すき間8px");
+  ok(H.SIZES.gridMaxWidthPx === 664 && H.SIZES.gridMaxHeightPx === 232,
+    "★横664px で止めて まん中へ ／ 高さ232px");
+  // ★★パソコンの余白（★2026-09-08 夕・Opus の決め）。
+  //   ★おうち画面ぜんたいを 664px で まん中に寄せます。
+  //   ★★一覧の幅と、★同じ数です。★別々に書くと、いつか ずれます。
+  ok(H.SIZES.homeMaxWidthPx === H.SIZES.gridMaxWidthPx,
+    "★画面の幅と 一覧の幅が、同じ数から 出ている");
+  const drawerRaw2 = readRaw("components/HomeDrawer.jsx");
+  ok(/maxWidth: SIZES\.homeMaxWidthPx, marginLeft: "auto", marginRight: "auto"/.test(drawerRaw2),
+    "★引き出しが、まん中に そろう");
+  const vtRaw2 = readRaw("components/VocalTracker.jsx");
+  ok((vtRaw2.match(/DRAWER_SIZES\.homeMaxWidthPx/g) || []).length === 2,
+    "★ながめる と したくの部屋、★両方が 同じ幅");
+  ok(H.SIZES.gridColumns === undefined, "★列の数を、決め打ちしていない");
+  const gridRaw2 = readRaw("components/DrawerItemGrid.jsx");
+  ok(/repeat\(auto-fill, \$\{SIZES\.cellPx\}px\)/.test(gridRaw2), "★auto-fill を使っている");
+  ok(/width: SIZES\.cellPx, height: SIZES\.cellPx/.test(gridRaw2), "★1マスが 固定の大きさ");
+  ok(!/aspectRatio: "1 \/ 1"/.test(gridRaw2), "★幅で割る形を、やめた");
   ok(H.SIZES.colorBandPx === 46 && H.SIZES.swatchPx === 25, "§8-5 の数（帯46 ／ 見本25）");
   const drawer = readCode("components", "HomeDrawer.jsx");
   ok(!/height: 60|gridTemplateColumns: "repeat\(4/.test(drawer), "★画面で、数を書いていない");

@@ -58,7 +58,10 @@ export default function HomeDrawer({
   return (
     <div
       style={{
+        // ★★パソコンでは、★664px で止めて まん中へ（★2026-09-08 夕・Opus の決め）。
+        //   ★上の部屋（40%）と、★同じ幅に そろえます。
         position: "fixed", left: 0, right: 0, bottom: 0,
+        maxWidth: SIZES.homeMaxWidthPx, marginLeft: "auto", marginRight: "auto",
         height: `${SIZES.drawerPct}%`,
         background: C.card,
         borderTop: `1px solid ${C.line}`,
@@ -167,9 +170,13 @@ export default function HomeDrawer({
         </button>
       </div>
 
-      {/* ★★品物。★4列（★§6）。★ここは、呼ぶ側が入れます。 */}
+      {/* ★★品物。★1マス72px・auto-fill（★2026-09-08 夕の決め）。
+          ★★横に広い画面では、★664px で止めて まん中へ寄せます。
+            ★横並びの作りは、★11月以降に 考えます（★Opus の決め）。 */}
       <div style={{ flex: 1, overflowY: "auto", padding: 10 }}>
-        {children}
+        <div style={{ maxWidth: SIZES.gridMaxWidthPx, margin: "0 auto" }}>
+          {children}
+        </div>
       </div>
 
       {/* ★★押した品の、名前と押しどころ（★2026-09-08・坂本さんのお決め）。

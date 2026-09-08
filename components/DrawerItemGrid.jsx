@@ -37,10 +37,20 @@ export default function DrawerItemGrid({
   }
 
   return (
+    /* ★★1マスは 72×72 で 固定です（★2026-09-08 夕・Opus の決め）。
+        ★★機種で 変えません。★変えるのは 列の数だけです（auto-fill）。
+          ★もとは「4列を 幅で割る」形で、★機種ごとに 大きさが 変わっていました。
+        ★★横に広い画面では、★664px で止めて、まん中へ寄せます。
+        ★数は lib が持ちます。★ここで書かないこと。 */
     <div style={{
       display: "grid",
-      gridTemplateColumns: `repeat(${SIZES.gridColumns}, 1fr)`,
-      gap: SIZES.gridGapPx
+      gridTemplateColumns: `repeat(auto-fill, ${SIZES.cellPx}px)`,
+      gap: SIZES.gridGapPx,
+      justifyContent: "center",
+      maxWidth: SIZES.gridMaxWidthPx,
+      margin: "0 auto",
+      maxHeight: SIZES.gridMaxHeightPx,
+      overflowY: "auto"
     }}>
       {list.map((it) => {
         const on = isOn ? isOn(it) : false;
@@ -57,8 +67,8 @@ export default function DrawerItemGrid({
             //   ★★読み上げには、★名前を残します。★見た目から消しても、意味は消しません。
             aria-label={it.name}
             style={{
-              // ★★四角にします。★字のぶんの高さを、足しません。
-              aspectRatio: "1 / 1",
+              // ★★72×72 で 固定です。★機種で 変えません。
+              width: SIZES.cellPx, height: SIZES.cellPx,
               // ★★丸いピル型にしません（★§7-2「形」）。
               //   ★桐たんすの引き出しの前板に寄せます。★角は小さめ、★下に木の線。
               borderRadius: 6,
