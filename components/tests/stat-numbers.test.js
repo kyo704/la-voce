@@ -5,9 +5,10 @@
 //     ・★画面には、出しません。
 //     ・★書き出し（CSV）には、残します。★どちらも無料です。
 //
-//   ★★受診用サマリーには、★足していません。
+//   ★★受診用サマリーには、★足しません（★2026-09-08・坂本さんの決め・確定）。
 //     ★あちらは §5.4 で「ラグ相関・効果量は絶対に載せない」と決めてあります。
-//     ★坂本さんにお尋ね中です。
+//     ★★係数が出るのは、★分析の画面（文だけ）と、★書き出しの CSV の2か所です。
+//       ★受診用サマリーは、3か所目には なりません。
 //
 //   node components/tests/stat-numbers.test.js
 // ============================================================================
@@ -102,10 +103,18 @@ async function load(rel) {
   ok(/const \{ withP, fdrByKey \} = correlationStats\(correlationResults\);/.test(vt),
     "文も書き出しも、同じ計算を見ている");
 
-  console.log("⑧ ★受診用サマリーには、足していない");
+  console.log("⑧ ★受診用サマリーには、足さない（★2026-09-08・確定）");
   const clinic = vt.slice(vt.indexOf("受診用サマリー") - 3000, vt.indexOf("受診用サマリー") + 3000);
-  ok(!/correlationExportRows|bhQValues|q_value/.test(clinic),
-    "★受診用サマリーに、係数を足していない（★お尋ね中）");
+  ok(!/correlationExportRows|bhQValues|q_value|correlationsToCsv/.test(clinic),
+    "★受診用サマリーに、係数を足していない");
+  // ★★§5.4 の「絶対に載せない」の一覧が、消えていないこと。
+  ok(/ラグ相関/.test(vt) && /効果量/.test(vt), "★§5.4 の一覧が、コードに残っている");
+  // ★★係数が出るのは、2か所だけ。
+  const sn = readCode("lib", "statNumbers.js");
+  ok(/受診用サマリー/.test(readRaw("lib/statNumbers.js")),
+    "★どこに出さないかを、決めの側に書いてある");
+  ok(sn.includes("STATS_ON_SCREEN") && sn.includes("STATS_IN_EXPORT"),
+    "★出す先の決めが、1か所にある");
 
   console.log(fail === 0 ? "\n★すべて通りました" : "\n★" + fail + "件、落ちました");
   process.exit(fail === 0 ? 0 : 1);
