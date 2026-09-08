@@ -371,6 +371,11 @@ function ok(name, cond, extra) {
     ok("★閉じているときは 押せない", /pointerEvents: open \? "auto" : "none"/.test(dr));
     const gr = readCode("components", "DrawerItemGrid.jsx");
     ok("★見えているものだけ 読み込む", /loading="lazy"/.test(gr));
+    // ★★ながめる → したく で、★部屋が 飛んで見えないこと。
+    //   ★前の場所を 覚え、★transform で 打ち消してから 滑らせます。
+    ok("★飛ばずに 滑る（★前の場所を 覚えている）",
+      /roomRectRef/.test(vt) && /translate\(\$\{dx\}px, \$\{dy\}px\) scale\(\$\{sx\}\)/.test(vt));
+    ok("★動きを 減らす設定では 滑らせない", /prefers-reduced-motion: reduce/.test(vt));
   }
 
   console.log("■ ★荷物は、zip のまま");

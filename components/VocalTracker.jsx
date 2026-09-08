@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback } from "react";
 import {
   Mic2, Moon, Droplets, Thermometer, Wind, MapPin, Music2, HeartHandshake,
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
@@ -5302,6 +5302,48 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //     ★「したく」を押したときだけ、★引き出しが上がります。
   //   ★状態の名前は lib/homeDrawer.js が持ちます。
   const [homeState, setHomeState] = useState(VIEW);
+  // ★★ながめる → したく で、★部屋が 飛んで見えないようにします
+  //   （★2026-09-08 夜・坂本さんのご指摘）。
+  //
+  //   ★★部屋は 1つのままです。★作り直していません。
+  //     ★けれど 置き場所が「流れの中」から「画面の上40%」へ 変わるので、
+  //     ★★次に描かれた瞬間に、★別の場所へ 跳んで見えます。
+  //
+  //   ★★だから、★跳ぶ前の場所を 覚えておき、
+  //     ★★いったん そこへ 戻してから、★新しい場所まで 滑らせます。
+  //       ① 変わった直後に、新しい場所を 測る
+  //       ② 前の場所との 差を、transform で 打ち消す（★間を 0 に）
+  //       ③ 次の描き直しで、transform を 戻す（★ここで 滑ります）
+  //     ★動かすのは transform だけです。★組み直しが 起きません。
+  //
+  //   ★★動きを 減らす設定の方には、★滑らせません。★すぐ そこに置きます。
+  const roomFlipRef = useRef(null);
+  const roomRectRef = useRef(null);
+  const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+  useIsoLayoutEffect(() => {
+    const el = roomFlipRef.current;
+    if (!el) return;
+    const prev = roomRectRef.current;
+    const now = el.getBoundingClientRect();
+    roomRectRef.current = now;
+    if (!prev || !prev.width || !now.width) return;
+    const reduce = typeof window !== "undefined" && window.matchMedia
+      && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+    const dx = prev.left - now.left;
+    const dy = prev.top - now.top;
+    const sx = prev.width / now.width;
+    // ★★ほとんど動いていないなら、★何もしません。
+    if (Math.abs(dx) < 1 && Math.abs(dy) < 1 && Math.abs(sx - 1) < 0.01) return;
+    el.style.transition = "none";
+    el.style.transformOrigin = "top left";
+    el.style.transform = `translate(${dx}px, ${dy}px) scale(${sx})`;
+    const id = requestAnimationFrame(() => {
+      el.style.transition = `transform ${DRAWER_SIZES.slideMs}ms cubic-bezier(0.22, 0.61, 0.36, 1)`;
+      el.style.transform = "translate(0px, 0px) scale(1)";
+    });
+    return () => cancelAnimationFrame(id);
+  }, [homeState]);
   // ★★送れなかった出欠（★§7-1）。★端末に積み、★電波が戻ったら送ります。
   //   ★★消しません。★送れたものだけを、列から外します。
   const [unsentAttendance, setUnsentAttendance] = useState([]);
@@ -15283,7 +15325,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </div>
                   {/* ★★したく のときは 4：3 のまま、★高さに 合わせます。
                       ★この入れ物も、★消さずに 姿だけ 変えます。 */}
-                  <div style={homeState === DRESS
+                  <div ref={roomFlipRef} style={homeState === DRESS
                     ? { width: "min(100%, calc((100vh - 0px) * 0.40 * 4 / 3))", maxWidth: 480 }
                     : { width: "100%" }}>
                     <CharacterHome
