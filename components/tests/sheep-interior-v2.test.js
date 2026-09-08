@@ -445,6 +445,35 @@ function ok(name, cond, extra) {
       /furniturePos\("furniture_chair"\)\s*\n?\s*\|\|/.test(home4));
   }
 
+  console.log("■ ★家具の 大きさ（★2026-09-09・実機「家具が 小さく見える」）");
+  {
+    // ★★見た目の幅は「絵の枠」ではなく「中身」で 決まります。
+    //   ★羊の体は 枠の 56.4％、★大ソファは 79.7％ しか 使っていません。
+    //   ★だから 枠の幅を くらべても 意味が ありません。
+    ok("★大きくする割合が 1つの数", m.FLOOR_ITEM_SCALE === 1.35);
+    // ★★窓・扉・壁・天井・タイルは、★1つも 変えないこと。
+    //   ★★窓は 枠の穴と 景色が 合っています。★動かすと ずれます。
+    //   ★タイルは 敷きつめるものです。★大きさに 意味が ありません。
+    const untouched = ["ceiling", "wall", "opening", "view", "outside", "surface"];
+    ok("★★窓・壁・天井・タイルは 変えていない",
+      untouched.every((p2) => !m.SCALED_PLACEMENTS.includes(p2)),
+      untouched.filter((p2) => m.SCALED_PLACEMENTS.includes(p2)).join(" "));
+    ok("★床・机の上・柱だけ 大きくしている",
+      JSON.stringify(m.SCALED_PLACEMENTS) === JSON.stringify(["floor", "tabletop", "structure"]));
+    const floorItem = m.INTERIOR_ITEMS.find((i) => i.placement === "floor");
+    const wallItem = m.INTERIOR_ITEMS.find((i) => i.placement === "wall");
+    ok("★床のものが 1.35倍に なっている",
+      Math.abs(m.widthPctOf(floorItem) - 22 * 1.35) < 0.01, String(m.widthPctOf(floorItem)));
+    ok("★壁のものは そのまま",
+      Math.abs(m.widthPctOf(wallItem) - 22) < 0.01, String(m.widthPctOf(wallItem)));
+    // ★★窓の枠と 景色が、★同じ物差しで 動くこと（★ずれたら 穴から はみ出します）。
+    const frame = m.INTERIOR_ITEMS.find((i) => i.placement === "opening" && i.size && i.size[0] === 384);
+    const view = m.INTERIOR_ITEMS.find((i) => i.placement === "view" && i.size && i.size[0] === 384);
+    if (frame && view) {
+      ok("★★窓の枠と 景色が、同じ幅", Math.abs(m.widthPctOf(frame) - m.widthPctOf(view)) < 0.01);
+    }
+  }
+
   console.log("■ ★荷物は、zip のまま");
   const packs = fs.readdirSync(path.join(ROOT, "assets", "interior-v2"));
   ok("★内装の zip が、開かれていない", packs.some((f) => f.endsWith(".zip")));
