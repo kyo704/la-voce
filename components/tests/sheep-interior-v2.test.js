@@ -354,6 +354,20 @@ function ok(name, cond, extra) {
     const home3 = readCode("components", "CharacterHome.jsx");
     ok("★画面で 画素を 決め打ちしていない", /size=\{sheepPx\}/.test(home3));
     ok("★測れるまで 出さない", /if \(!size\) return null;/.test(home3));
+    // ★★変形（transform）の かかった大きさを、★測らないこと
+    //   （★2026-09-08 夜・実機「羊の大きさが 変わる」）。
+    //   ★★getBoundingClientRect は 見えている大きさを 返します。
+    //     ★FLIP の scale が かかっている最中に 測ると、★倍率ぶん ずれ、
+    //     ★★形は 変わらないので、★もう一度 測り直されません。
+    //   ★★offsetWidth と border-box は、★組みつけの大きさです。
+    const meas = home3.slice(home3.indexOf("const roomBoxRef"),
+      home3.indexOf("const roomBoxRef") + 900);
+    ok("★★変形の影響を 受けない 測り方（offsetWidth）",
+      /setRoomBoxW\(el\.offsetWidth\)/.test(meas));
+    ok("★★見えている大きさで 測っていない",
+      !/getBoundingClientRect/.test(meas));
+    ok("★大きさが変わったときも、組みつけの大きさで 測る",
+      /borderBoxSize/.test(meas));
   }
 
   console.log("■ ★開くときの 軽さ（★2026-09-08 夜のご報告）");

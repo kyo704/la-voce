@@ -1903,10 +1903,30 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
   useEffect(() => {
     const el = roomBoxRef.current;
     if (!el) return;
-    const read = () => setRoomBoxW(el.getBoundingClientRect().width);
+    // ★★変形（transform）の かかった大きさを、★測らないこと
+    //   （★2026-09-08 夜・実機のご報告「羊の大きさが 変わる」）。
+    //
+    //   ★★getBoundingClientRect は、★見えている大きさを 返します。
+    //     ★親に scale が かかっていれば、★その ぶんだけ 大きく（小さく）出ます。
+    //   ★★ながめる → したく の 移りに、★滑らかにするための scale を
+    //     ★かけています（★FLIP）。★その最中に 測っていました。
+    //     ★★しかも、★変形が 終わっても もう一度は 測りません。
+    //       ★形（border-box）は 変わっていないからです。
+    //       ★だから 誤った値が、★そのまま 残りました。
+    //     ★★おわる と 小さく、★もう一度 したく で 大きく なったのは、
+    //       ★倍率が 交互に 積み重なっていたためです。
+    //
+    //   ★★offsetWidth と ResizeObserver の border-box は、
+    //     ★★組みつけの大きさです。★変形の 影響を 受けません。
+    const read = () => setRoomBoxW(el.offsetWidth);
     read();
     if (typeof ResizeObserver === "undefined") return;
-    const ro = new ResizeObserver(read);
+    const ro = new ResizeObserver((entries) => {
+      const e = entries && entries[0];
+      const box = e && e.borderBoxSize && e.borderBoxSize[0];
+      const w = box ? box.inlineSize : (e ? e.contentRect.width : 0);
+      setRoomBoxW(w || el.offsetWidth);
+    });
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
