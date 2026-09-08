@@ -80,6 +80,17 @@ export default function DrawerItemGrid({
               borderBottomWidth: picked ? 3 : (on ? 2 : 1),
               background: on ? C.paper : C.card,
               padding: 3,
+              // ★★1マスから、★はみ出させません（★2026-09-08 夜のご報告）。
+              //   ★★パソコンと iPad で、★帽子や首元の絵が
+              //     ★1マスの外へ はみ出す、と ご報告をいただきました。
+              //   ★★縦に並べる flex の 中では、★絵の「これ以上 縮まない下限」が
+              //     ★もとの絵の大きさ（1024px）に なることが あります。
+              //     ★height:100% を 書いても、★下限のほうが 勝ちます。
+              //   ★★だから 2つ入れます。
+              //     ① 絵に minWidth:0 / minHeight:0（★下限を 外す）
+              //     ② 1マスに overflow:hidden（★何があっても 外に出さない）
+              boxSizing: "border-box",
+              overflow: "hidden",
               display: "flex", flexDirection: "column",
               alignItems: "center", justifyContent: "center",
               position: "relative",
@@ -90,7 +101,18 @@ export default function DrawerItemGrid({
               ? renderThumb(it)
               : (srcOf && srcOf(it)
                 ? <img src={srcOf(it)} alt="" aria-hidden="true"
-                    style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                    // ★★見えているものだけ 読み込みます（★2026-09-08 夜）。
+                    //   ★★きるもの166点／おくもの111点／かべとゆか138点を、
+                    //     ★これまで 一度に ぜんぶ 読んでいました。
+                    //   ★★引き出しを いつも置く形に したので、
+                    //     ★これが 無いと、★おうち画面を開いた瞬間に ぜんぶ読みます。
+                    loading="lazy" decoding="async"
+                    style={{
+                      width: "100%", height: "100%", objectFit: "contain",
+                      // ★★縮まない下限を、外します（★上の説明のとおり）。
+                      minWidth: 0, minHeight: 0,
+                      maxWidth: "100%", maxHeight: "100%"
+                    }} />
                 : null)}
             {/* ★★選んでいるしるし。★色だけにしないこと。 */}
             {on && (

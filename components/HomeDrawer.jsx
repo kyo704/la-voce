@@ -30,6 +30,13 @@ import {
 // ============================================================================
 
 export default function HomeDrawer({
+  // ★★開いているか（★2026-09-08 夜・坂本さんのご要望）。
+  //   ★★ポケットキャンプの見本では、★画面は 切り替わりません。
+  //     ★奥の場面は 見えたまま、★板が 下から すっと 上がってきます。
+  //   ★★だから、★閉じているときも 消しません。★下に さげておきます。
+  //     ★消して 作り直すと、★開くたびに 中身が 作り直され、
+  //     ★★それが「重い」「切り替わった」に 見えます。
+  open = true,
   category, onCategory,
   tab, onTab,
   sort, onSort,
@@ -58,11 +65,25 @@ export default function HomeDrawer({
   return (
     <div
       style={{
-        // ★★パソコンでは、★664px で止めて まん中へ（★2026-09-08 夕・Opus の決め）。
-        //   ★上の部屋（40%）と、★同じ幅に そろえます。
+        // ★★板そのものは、★画面いっぱいに 広げます（★2026-09-08 夜の直し）。
+        //   ★★1度、★板ごと 664px に 縮めました。★誤りでした。
+        //     ★パソコンと iPad で、★板の 両脇から★下の画面が 覗いていました。
+        //   ★★664px は「中身を まん中に そろえる幅」であって、
+        //     ★「板の幅」では ありません。★中の入れ物（下）で そろえます。
         position: "fixed", left: 0, right: 0, bottom: 0,
-        maxWidth: SIZES.homeMaxWidthPx, marginLeft: "auto", marginRight: "auto",
         height: `${SIZES.drawerPct}%`,
+        // ★★下から 上がってきます（★見本のとおり）。
+        //   ★★transform だけを 動かします。★高さや 場所を 動かしません。
+        //     ★transform は 描き直しが 要らないので、★なめらかです。
+        //   ★★閉じているあいだは、★見えなくし、★押せなくします。
+        //     ★見えなくするのは 動きが 終わってから（★遅らせます）。
+        transform: open ? "translateY(0)" : "translateY(100%)",
+        visibility: open ? "visible" : "hidden",
+        pointerEvents: open ? "auto" : "none",
+        transitionProperty: "transform, visibility",
+        transitionDuration: `${SIZES.slideMs}ms, 0s`,
+        transitionTimingFunction: "cubic-bezier(0.22, 0.61, 0.36, 1)",
+        transitionDelay: open ? "0s, 0s" : `0s, ${SIZES.slideMs}ms`,
         background: C.card,
         borderTop: `1px solid ${C.line}`,
         borderTopLeftRadius: 18, borderTopRightRadius: 18,
@@ -70,6 +91,16 @@ export default function HomeDrawer({
         zIndex: 40,
         // ★iPhone の下の余白を、飲み込ませます。
         paddingBottom: "env(safe-area-inset-bottom)"
+      }}
+      className="home-drawer"
+      aria-hidden={open ? undefined : true}>
+
+      {/* ★★中身の柱。★パソコンでは 664px で止めて まん中へ（★§Opus）。
+          ★★板ではなく、★ここで そろえます。★脇から 下の画面が 覗きません。
+          ★minHeight:0 を 忘れないこと。★これが無いと、★中の一覧が 縮みません。 */}
+      <div style={{
+        width: "100%", maxWidth: SIZES.homeMaxWidthPx, margin: "0 auto",
+        flex: 1, minHeight: 0, display: "flex", flexDirection: "column"
       }}>
 
       {/* ★★第1段 ── 大分類 5つ。★字だけです。
@@ -262,6 +293,7 @@ export default function HomeDrawer({
           style={btn(true)}>
           {COPY.done}
         </button>
+      </div>
       </div>
     </div>
   );

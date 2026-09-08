@@ -15248,13 +15248,29 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   ★★出すのは、★部屋と羊、★細い帯、★「したく」だけです。
                   ★★消していません。★門の外の方には、これまでどおり ぜんぶ出ます。 */}
               {wardrobeOn ? (
-                /* ★★パソコンでの余白（★2026-09-08 夕・Opus の決め）。
-                    ★★おうち画面ぜんたいを 664px で まん中に寄せます。
-                    ★★横並びの作りは、★11月以降に 考えます。★いまは しません。
-                    ★数は lib/homeDrawer.js が持ちます。★ここで書かないこと。 */
-                <div style={{ maxWidth: DRAWER_SIZES.homeMaxWidthPx, margin: "0 auto 12px" }}>
-                  {/* ★★細い帯（★見本①）。★ひつじ ／ ひとこと。 */}
-                  <div className="flex items-center gap-2 mb-2">
+                /* ★★部屋は、★1つだけ 作ります（★2026-09-08 夜の直し）。
+                    ★★もとは、★ながめる用と したく用に、★2つ 作っていました。
+                      ★したく を開くと、★2つ目が その場で 生まれ、
+                      ★★壁・床・内装・着せかえの絵を、★1から 読み直していました。
+                      ★これが「画面が 切り替わる」「重い」の 正体です。
+                    ★★いまは、★同じ1つの 部屋の「置き場所」だけを 変えます。
+                      ★React から見て 同じ札なので、★作り直されません。
+                      ★★絵は 読み直されません。★羊も 立ったままです。
+                    ★★パソコンでの余白は 664px（★Opus の決め）。
+                      ★ただし したく のときは、★板は 画面いっぱいです。 */
+                <div style={homeState === DRESS ? {
+                  position: "fixed", left: 0, right: 0, top: 0,
+                  height: `${DRAWER_SIZES.roomPct}%`,
+                  background: C.paper, zIndex: 39,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  overflow: "hidden",
+                  paddingTop: "env(safe-area-inset-top)"
+                } : { maxWidth: DRAWER_SIZES.homeMaxWidthPx, margin: "0 auto 12px" }}>
+                  {/* ★★細い帯（★見本①）。★ひつじ ／ ひとこと。
+                      ★★したく のときは、★消さずに 隠します。
+                        ★消すと 並びが ずれ、★下の部屋が 作り直されます。 */}
+                  <div className="flex items-center gap-2 mb-2"
+                    style={{ display: homeState === DRESS ? "none" : undefined }}>
                     <span style={{
                       fontSize: "0.75rem", color: C.inkSoft,
                       borderLeft: `3px solid ${C.curtain}`, paddingLeft: 8
@@ -15264,23 +15280,29 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       borderLeft: `3px solid ${C.line}`, paddingLeft: 8
                     }}>きょうも 来てくれて ありがとう</span>
                   </div>
-                  <CharacterHome
-                    wardrobeOn={wardrobeOn}
-                    professions={effectiveProfessions}
-                    entries={entries}
-                    ownedKeys={ownedItemKeys}
-                    equipped={characterEquipped}
-                    pointsSpent={characterPointsSpent}
-                    onPurchase={handlePurchaseItem}
-                    onEquip={handleEquipItem}
-                    onTogglePlacement={handleTogglePlacement}
-                    onUpdatePosition={handleUpdatePosition}
-                    isDirty={characterDirty}
-                    saveStatus={characterSaveStatus}
-                    onSave={handleSaveCharacter}
-                    roomOnly
-                    t={t}
-                  />
+                  {/* ★★したく のときは 4：3 のまま、★高さに 合わせます。
+                      ★この入れ物も、★消さずに 姿だけ 変えます。 */}
+                  <div style={homeState === DRESS
+                    ? { width: "min(100%, calc((100vh - 0px) * 0.40 * 4 / 3))", maxWidth: 480 }
+                    : { width: "100%" }}>
+                    <CharacterHome
+                      wardrobeOn={wardrobeOn}
+                      professions={effectiveProfessions}
+                      entries={entries}
+                      ownedKeys={ownedItemKeys}
+                      equipped={characterEquipped}
+                      pointsSpent={characterPointsSpent}
+                      onPurchase={handlePurchaseItem}
+                      onEquip={handleEquipItem}
+                      onTogglePlacement={handleTogglePlacement}
+                      onUpdatePosition={handleUpdatePosition}
+                      isDirty={characterDirty}
+                      saveStatus={characterSaveStatus}
+                      onSave={handleSaveCharacter}
+                      roomOnly
+                      t={t}
+                    />
+                  </div>
                 </div>
               ) : (
               <CharacterHome
@@ -15344,43 +15366,22 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ★ここでは、どちらも決めません。
                   ★★色の帯は、★絵が届くまで 出しません（★場所は空けてあります）。 */}
               {/* ★★上の40%。★いつも部屋です。★流れません。 */}
-              {wardrobeOn && homeState === DRESS && (
-                <div style={{
-                  // ★★パソコンでは、★664px で止めて まん中へ（★同じ決め）。
-                  //   ★left/right を 0 にしたうえで、★左右の余白を auto にすると、
-                  //   ★★貼りつけた（fixed）ものでも、★まん中に そろいます。
-                  position: "fixed", left: 0, right: 0, top: 0,
-                  maxWidth: DRAWER_SIZES.homeMaxWidthPx, marginLeft: "auto", marginRight: "auto",
-                  height: `${DRAWER_SIZES.roomPct}%`,
-                  background: C.paper, zIndex: 39,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  overflow: "hidden",
-                  paddingTop: "env(safe-area-inset-top)"
-                }}>
-                  {/* ★★部屋は 4：3 です。★高さに合わせて、はみ出させません。 */}
-                  <div style={{ width: "min(100%, calc((100vh - 0px) * 0.40 * 4 / 3))", maxWidth: 480 }}>
-                    <CharacterHome
-                      wardrobeOn={wardrobeOn}
-                      professions={effectiveProfessions}
-                      entries={entries}
-                      ownedKeys={ownedItemKeys}
-                      equipped={characterEquipped}
-                      pointsSpent={characterPointsSpent}
-                      onPurchase={handlePurchaseItem}
-                      onEquip={handleEquipItem}
-                      onTogglePlacement={handleTogglePlacement}
-                      onUpdatePosition={handleUpdatePosition}
-                      isDirty={characterDirty}
-                      saveStatus={characterSaveStatus}
-                      onSave={handleSaveCharacter}
-                      roomOnly
-                      t={t} />
-                  </div>
-                </div>
-              )}
+              {/* ★★2つ目の部屋は、★外しました（★2026-09-08 夜）。
+                  ★★ここに、★同じ部屋を もう1つ 作っていました。
+                    ★したく を開くたびに、★壁・床・内装・着せかえの絵を
+                    ★★1から 読み直していました。★これが「重い」の 正体です。
+                  ★★いまは 上の1つを、★置き場所だけ 変えて 使い回します。 */}
 
-              {wardrobeOn && homeState === DRESS && (
+              {/* ★★閉じているときも、★消しません（★2026-09-08 夜のご要望）。
+                  ★★見本（ポケットキャンプ）では、★画面が 切り替わりません。
+                    ★奥の場面は 見えたまま、★板が 下から 上がってきます。
+                  ★★消して 作り直すと、★開くたびに 中身が 生まれ直します。
+                    ★それが「重い」「切り替わった」の 正体です。
+                  ★★絵は 下に さがっているあいだ 読み込まれません（loading="lazy"）。
+                    ★だから、★いつも置いていても、★重くなりません。 */}
+              {wardrobeOn && (
                 <HomeDrawer
+                  open={homeState === DRESS}
                   category={drawerCat}
                   onCategory={(k) => { setDrawerCat(k); setDrawerTab("all"); setPickedItem(null); }}
                   tab={drawerTab} onTab={setDrawerTab}

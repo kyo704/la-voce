@@ -173,16 +173,32 @@ async function load(rel) {
   ok(H.SIZES.homeMaxWidthPx === H.SIZES.gridMaxWidthPx,
     "★画面の幅と 一覧の幅が、同じ数から 出ている");
   const drawerRaw2 = readRaw("components/HomeDrawer.jsx");
-  ok(/maxWidth: SIZES\.homeMaxWidthPx, marginLeft: "auto", marginRight: "auto"/.test(drawerRaw2),
-    "★引き出しが、まん中に そろう");
   const vtRaw2 = readRaw("components/VocalTracker.jsx");
-  ok((vtRaw2.match(/DRAWER_SIZES\.homeMaxWidthPx/g) || []).length === 2,
-    "★ながめる と したくの部屋、★両方が 同じ幅");
+  // ★★2026-09-08 夜に 直しました。
+  //   ★もとは「板ごと 664px」でした。★パソコンと iPad で、
+  //   ★★板の 両脇から 下の画面（ロゴ・タブ）が 覗きました。
+  //   ★いまは「板は 画面いっぱい、★中身の柱が 664px」です。
+  ok((vtRaw2.match(/DRAWER_SIZES\.homeMaxWidthPx/g) || []).length === 1,
+    "★ながめる だけが 664px（★部屋の板は 画面いっぱい）");
   ok(H.SIZES.gridColumns === undefined, "★列の数を、決め打ちしていない");
   const gridRaw2 = readRaw("components/DrawerItemGrid.jsx");
   ok(/repeat\(auto-fill, \$\{SIZES\.cellPx\}px\)/.test(gridRaw2), "★auto-fill を使っている");
   ok(/width: SIZES\.cellPx, height: SIZES\.cellPx/.test(gridRaw2), "★1マスが 固定の大きさ");
   ok(!/aspectRatio: "1 \/ 1"/.test(gridRaw2), "★幅で割る形を、やめた");
+  // ★★1マスから、はみ出させないこと（★2026-09-08 夜のご報告）。
+  ok(/overflow: "hidden"/.test(gridRaw2) && /boxSizing: "border-box"/.test(gridRaw2),
+    "★1マスが、外に はみ出させない");
+  ok(/minWidth: 0, minHeight: 0/.test(gridRaw2), "★絵の「縮まない下限」を 外している");
+  // ★★板ではなく、★中身で そろえること（★2026-09-08 夜の直し）。
+  //   ★板ごと 664px に すると、★脇から 下の画面が 覗きます。
+  ok(!/maxWidth: SIZES\.homeMaxWidthPx, marginLeft: "auto", marginRight: "auto"/.test(drawerRaw2),
+    "★引き出しの板を、664px に 縮めていない");
+  ok(/position: "fixed", left: 0, right: 0, bottom: 0,\s*\n\s*height:/.test(drawerRaw2),
+    "★引き出しの板が、画面いっぱい");
+  ok(/width: "100%", maxWidth: SIZES\.homeMaxWidthPx, margin: "0 auto",/.test(drawerRaw2),
+    "★中身の柱が、664px で まん中");
+  ok((vtRaw2.match(/maxWidth: DRAWER_SIZES\.homeMaxWidthPx, marginLeft: "auto"/g) || []).length === 0,
+    "★部屋の板も、664px に 縮めていない");
   ok(H.SIZES.colorBandPx === 46 && H.SIZES.swatchPx === 25, "§8-5 の数（帯46 ／ 見本25）");
   const drawer = readCode("components", "HomeDrawer.jsx");
   ok(!/height: 60|gridTemplateColumns: "repeat\(4/.test(drawer), "★画面で、数を書いていない");

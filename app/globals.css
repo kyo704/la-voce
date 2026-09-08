@@ -560,3 +560,13 @@ body {
 :root[data-scale="xlarge"] .nav-scroll {
   scrollbar-width: none;
 }
+
+/* ★★したく の板は、下から すっと 上がります（★2026-09-08 夜）。
+   ★★動きを 減らす設定の方には、★動かしません。★出るか 出ないかだけです。
+     ★動きそのものを 取り上げるのでは なく、★間を 0 にします。 */
+@media (prefers-reduced-motion: reduce) {
+  .home-drawer {
+    transition-duration: 0s, 0s !important;
+    transition-delay: 0s, 0s !important;
+  }
+}

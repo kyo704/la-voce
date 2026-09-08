@@ -338,6 +338,41 @@ function ok(name, cond, extra) {
       "いま " + (posed.match(/pointerEvents: "none"/g) || []).length + " 件");
   }
 
+  console.log("■ ★羊の大きさ（★2026-09-08 夜・案A）");
+  {
+    // ★★家具は ％、★羊だけ 画素、という ずれを 直しました。
+    ok(`★羊は 部屋の幅の ${m.SHEEP_WIDTH_PCT}％`, m.SHEEP_WIDTH_PCT === 26);
+    ok("★部屋の幅から 画素を 出す", m.sheepSizePx(480) === 480 * 26 / 100);
+    ok("★測れていないときは 0", m.sheepSizePx(0) === 0 && m.sheepSizePx(undefined) === 0);
+    // ★★背の高い かぶりものが 切れないこと。
+    //   ★箱の高さ＝部屋の幅の◯％。★部屋の高さに 直すと ◯×4/3 ％。
+    //   ★足もとは いちばん上でも 70％（SHEEP_WANDER）。★引いて 残ること。
+    const boxPctOfHeight = m.SHEEP_WIDTH_PCT * 4 / 3 * 1.15; // ★front の 1.15 倍
+    const topmost = m.SHEEP_WANDER.centerTop - m.SHEEP_WANDER.rangeTop;
+    ok(`★どの機種でも 上に はみ出さない（残り ${(topmost - boxPctOfHeight).toFixed(1)}％）`,
+      topmost - boxPctOfHeight > 0);
+    const home3 = readCode("components", "CharacterHome.jsx");
+    ok("★画面で 画素を 決め打ちしていない", /size=\{sheepPx\}/.test(home3));
+    ok("★測れるまで 出さない", /if \(!size\) return null;/.test(home3));
+  }
+
+  console.log("■ ★開くときの 軽さ（★2026-09-08 夜のご報告）");
+  {
+    const vt = readCode("components", "VocalTracker.jsx");
+    // ★★部屋は 1つだけ。★2つ作ると、開くたびに 絵を 読み直します。
+    ok(`★部屋は 1つだけ（いま ${(vt.match(/roomOnly/g) || []).length} つ）`,
+      (vt.match(/roomOnly/g) || []).length === 1);
+    // ★★引き出しは、閉じているときも 消しません（★下から 上がるため）。
+    ok("★引き出しを 消していない（open で 上下する）",
+      /<HomeDrawer\s*\n\s*open=\{homeState === DRESS\}/.test(vt));
+    const dr = readCode("components", "HomeDrawer.jsx");
+    ok("★transform で 上がる（★高さを 動かさない）",
+      /transform: open \? "translateY\(0\)" : "translateY\(100%\)"/.test(dr));
+    ok("★閉じているときは 押せない", /pointerEvents: open \? "auto" : "none"/.test(dr));
+    const gr = readCode("components", "DrawerItemGrid.jsx");
+    ok("★見えているものだけ 読み込む", /loading="lazy"/.test(gr));
+  }
+
   console.log("■ ★荷物は、zip のまま");
   const packs = fs.readdirSync(path.join(ROOT, "assets", "interior-v2"));
   ok("★内装の zip が、開かれていない", packs.some((f) => f.endsWith(".zip")));

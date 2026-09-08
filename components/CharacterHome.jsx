@@ -13,7 +13,7 @@ import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
 } from "@/lib/oldHouseVisibility";
 // ★動かせる内装が在るか／羊の重ね順。★決めは、あちらが持ちます。
-import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, UI_CHROME_Z } from "@/lib/sheepInteriorV2";
+import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z } from "@/lib/sheepInteriorV2";
 import { C } from "@/lib/tokens";
 import {
   SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, PLACEMENT_LIMITS,
@@ -849,6 +849,10 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
   //   ★門の外の方（★内装が出ない方）には、★これまでどおり 6 です。
   //     ★あちらは、★古い家具と同じ物差しで動いています。
   const frontZ = wardrobeOn ? sheepZIndex(topPct) : LAYER_CONFIG.front.z;
+  // ★★大きさが まだ 測れていないときは、★出しません（★2026-09-08 夜・案A）。
+  //   ★中途半端な大きさで 一瞬 出すより、★1呼吸 待つほうが 静かです。
+  //   ★★庭は これまでどおり 画素で 渡すので、★ここは 通りません。
+  if (!size) return null;
   if (isLying) {
     return (
       <div
@@ -1881,6 +1885,26 @@ function InteriorDraggable({ itemKey, startLeft, startTop, band, onDragEnd, chil
 
 function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardrobeOn = false, t }) {
   const [editMode, setEditMode] = useState(false);
+  // ★★羊の大きさを、★部屋の幅から 出します（★2026-09-08 夜・案A）。
+  //   ★★家具は ％、★羊だけ 画素でした。★釣り合いが 機種ごとに 変わり、
+  //     ★背の高い かぶりものの 先が 切れていました。
+  //   ★★部屋の幅を 測って、★その◯％を 画素に 直します。
+  //     ★数は lib が持ちます（SHEEP_WIDTH_PCT）。★ここでは決めません。
+  //   ★★測れるまでは 0 です。★0 のあいだは 羊を 出しません。
+  //     ★中途半端な大きさで 一瞬出すより、★1呼吸 待つほうが 静かです。
+  const roomBoxRef = useRef(null);
+  const [roomBoxW, setRoomBoxW] = useState(0);
+  useEffect(() => {
+    const el = roomBoxRef.current;
+    if (!el) return;
+    const read = () => setRoomBoxW(el.getBoundingClientRect().width);
+    read();
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(read);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const sheepPx = sheepSizePx(roomBoxW);
   // ★★門の中の方には、★古い79点を出しません（★2026-09-08・坂本さんの決め・案あ）。
   //   ★★消していません。★隠すだけです。★門を閉じれば、そのまま戻ります。
   //     ★持ち物（character_inventory）も、★置いている記録（equipped）も、
@@ -1949,7 +1973,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
           ★どちらも、これが原因でした。
         ★★isolation: isolate で、★中の z が 外に出なくなります。
           ★見た目は、★1つも変わりません。 */
-    <div id="room-anchor" style={{ position: "relative", isolation: "isolate", zIndex: 0, width: "100%", maxWidth: isRoomExpanded ? 700 : 480, margin: "0 auto", aspectRatio: isRoomExpanded ? "7 / 5" : "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor, transition: "max-width 0.4s ease, aspect-ratio 0.4s ease" }}>
+    <div id="room-anchor" ref={roomBoxRef} style={{ position: "relative", isolation: "isolate", zIndex: 0, width: "100%", maxWidth: isRoomExpanded ? 700 : 480, margin: "0 auto", aspectRatio: isRoomExpanded ? "7 / 5" : "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor, transition: "max-width 0.4s ease, aspect-ratio 0.4s ease" }}>
       <WallTexture material={wallKey} wardrobeOn={wardrobeOn} />
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", background: floorColor, zIndex: 0, overflow: "hidden" }}>
         <FloorTexture material={floorKey} wardrobeOn={wardrobeOn} />
@@ -2257,7 +2281,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
       {/* ★★羊を、大きくしました（★2026-09-08 夕・坂本さんのご要望）。
           ★★「小さすぎる」とのことでした。★92 → ★SHEEP_SIZE。
           ★数は lib が持ちます。★ここで書かないこと。 */}
-      <PositionedCharacter wardrobeOn={wardrobeOn} equipped={equipped} size={SHEEP_SIZE} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isSitting={isSitting} isLying={isLying}
+      <PositionedCharacter wardrobeOn={wardrobeOn} equipped={equipped} size={sheepPx} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isSitting={isSitting} isLying={isLying}
         diag={{ bedTop: bedPosForDiag && bedPosForDiag.top, bedLeft: bedPosForDiag && bedPosForDiag.left }} />
 
       {/* ★ベッドと椅子は、上げられる高さを狭めてある（BED_MIN_TOP / CHAIR_MIN_TOP）。
