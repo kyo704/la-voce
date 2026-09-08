@@ -42,7 +42,12 @@ export async function GET() {
       //   ★足すときは、★その変数を読んでいる場所を、先に確かめること。
       flags: {
         wardrobeIds: (process.env.NEXT_PUBLIC_WARDROBE_USER_IDS || "").trim() !== "",
-        gateTestIds: (process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS || "").trim() !== ""
+        gateTestIds: (process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS || "").trim() !== "",
+        // ★★鍵を出さない方の名簿（★2026-09-08）。
+        //   ★★門（wardrobeIds）とは、★別の名簿です。
+        //   ★入れたのに効かない、を★外から見分けられるようにします。
+        //   ★読んでいる場所：lib/sheepWardrobe.js の mayWearEverything
+        allItemsIds: (process.env.NEXT_PUBLIC_WARDROBE_ALL_ITEMS_USER_IDS || "").trim() !== ""
       },
       // ★★何人ぶん入っているか（★2026-09-07）。
       //   ★★値そのものは、★決して出しません。★数だけです。
@@ -57,6 +62,8 @@ export async function GET() {
         wardrobeIds: (process.env.NEXT_PUBLIC_WARDROBE_USER_IDS || "")
           .split(",").map((x) => x.trim()).filter(Boolean).length,
         gateTestIds: (process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS || "")
+          .split(",").map((x) => x.trim()).filter(Boolean).length,
+        allItemsIds: (process.env.NEXT_PUBLIC_WARDROBE_ALL_ITEMS_USER_IDS || "")
           .split(",").map((x) => x.trim()).filter(Boolean).length
       }
     }),
