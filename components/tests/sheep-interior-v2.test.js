@@ -315,6 +315,29 @@ function ok(name, cond, extra) {
     ok("★null にしていない", !/OLD_HOUSE_DEFAULTS = Object\.freeze\(\{[^}]*null/.test(vis));
   }
 
+  console.log("■ ★動かせること（★2026-09-08 夜のご報告）");
+  {
+    // ★★「うごかす」は、★場面のどの品物よりも 前に出ていること。
+    //   ★★もとは 10 の 決め打ちでした。★内装は 500〜9100 です。
+    //     ★床材や壁材の 後ろに 隠れていました。
+    const maxBand = m.INTERIOR_ITEMS.reduce((x, i) => Math.max(x, m.zOf(i)), m.SHEEP_Z_BAND);
+    ok(`★場面の いちばん上は ${m.SCENE_MAX_Z}（★帯 ${maxBand}）`,
+      m.SCENE_MAX_Z === m.zIndexOf(maxBand, 100));
+    ok(`★操作ボタンは、それより前（${m.UI_CHROME_Z}）`, m.UI_CHROME_Z > m.SCENE_MAX_Z);
+    const home2 = readCode("components", "CharacterHome.jsx");
+    ok("★画面で 決め打ちしていない（★lib から もらう）",
+      !/const UI_CHROME_Z\s*=/.test(home2) && /UI_CHROME_Z.*from "@\/lib\/sheepInteriorV2"/.test(home2));
+    // ★★羊は 飾りです。★押したときの動きが 1つも ありません。
+    //   ★★前（7000台）にいるので、★下の家具の指を 受け止めていました。
+    //     ★2026-09-08、★羊を大きくして、★覆う面積が 増えました。
+    //   ★★立ち姿と 寝姿、★両方です。★片方だけでは、寝たときに 動かせません。
+    const posed = home2.slice(home2.indexOf("function PositionedCharacter"),
+      home2.indexOf("function PositionedCharacter") + 3600);
+    ok("★羊が、指を すり抜ける（★立ち姿と寝姿の2つ）",
+      (posed.match(/zIndex: frontZ,\s*\n\s*pointerEvents: "none"/g) || []).length === 2,
+      "いま " + (posed.match(/pointerEvents: "none"/g) || []).length + " 件");
+  }
+
   console.log("■ ★荷物は、zip のまま");
   const packs = fs.readdirSync(path.join(ROOT, "assets", "interior-v2"));
   ok("★内装の zip が、開かれていない", packs.some((f) => f.endsWith(".zip")));

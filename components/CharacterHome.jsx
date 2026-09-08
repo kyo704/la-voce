@@ -13,7 +13,7 @@ import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
 } from "@/lib/oldHouseVisibility";
 // ★動かせる内装が在るか／羊の重ね順。★決めは、あちらが持ちます。
-import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE } from "@/lib/sheepInteriorV2";
+import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, UI_CHROME_Z } from "@/lib/sheepInteriorV2";
 import { C } from "@/lib/tokens";
 import {
   SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, PLACEMENT_LIMITS,
@@ -863,7 +863,14 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
           top: `${topPct}%`,
           transform: "translate(-50%, -50%)",
           transition: "left 1.6s ease-in-out, top 1.6s ease-in-out",
-          zIndex: frontZ
+          zIndex: frontZ,
+          // ★★羊は、★押しどころを 奪いません（★2026-09-08 夜の直し）。
+          //   ★★羊には、押したときの動きが 1つも ありません。★飾りです。
+          //   ★★けれど 前（7000台）にいるので、★下の家具の指を 受け止めていました。
+          //     ★2026-09-08、★羊を 140 に大きくして、★覆う面積が 増えました。
+          //     ★★そのため「家具が 動かせない」と ご報告をいただきました。
+          //   ★指は、★羊を すり抜けて、★下の家具に とどきます。
+          pointerEvents: "none"
         }}
       >
         {/* ★ここでも影を足さない。SheepSleepingHead のSVGの中に入れてある。
@@ -896,7 +903,9 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
         transition: isWalking
           ? "left 2.2s linear, top 2.2s linear"
           : "left 2.2s ease-in-out, top 2.2s ease-in-out",
-        zIndex: frontZ
+        zIndex: frontZ,
+        // ★★羊は、★押しどころを 奪いません（★2026-09-08 夜の直し。★寝姿と同じ）。
+        pointerEvents: "none"
       }}
     >
       {/* ★羊には、ここで影を足さないこと。
@@ -1352,7 +1361,12 @@ function ShopItemPreview({ item, wardrobeOn = false }) {
 // ★場面の中の重なり（LAYER_CONFIG）と、場面の上に乗せる操作ボタンを混同しないこと。
 //   「模様替え」ボタンは場面の一部ではないので、羊より前に出てよい。
 //   場面の要素は front(6) を超えてはいけない（超えると羊を横切る）。
-const UI_CHROME_Z = 10;
+// ★★2026-09-08 夜、★この約束が こわれていました。
+//   ★★内装（500〜9100）と 羊（7000台）は、★6 を はるかに超えています。
+//     ★だから「うごかす」が、★床材や壁材の 後ろに 隠れていました。
+//   ★★数を、ここで 決め打ちしません。★帯を持っている lib から もらいます。
+//     ★UI_CHROME_Z は lib/sheepInteriorV2.js にあります（★16行目で取り込み）。
+//     ★新しい帯が届いても、★ここが 勝手に 追いつきます。
 
 // 羊が寝ている時間。★短いと、寝たそばから起きて歩き出すので休んで見えない。
 // 実機で「寝ているのに動き続ける」と報告されたのは、6秒で起きていたため。

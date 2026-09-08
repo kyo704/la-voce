@@ -26,7 +26,12 @@ assertTrue(/zIndex: LAYER_CONFIG\.back\.z/.test(ui), "柵は back 層");
 // ★場面の中に、羊より前に出る要素が無いこと（宅配便などが羊を横切らない）。
 //   操作ボタン（模様替え）は場面の一部ではないので、対象から外す。
 //   混同しないよう、コード側でも UI_CHROME_Z という別の名前にしてある。
-assertTrue(/const UI_CHROME_Z = /.test(ui), "操作ボタンの重なりが、場面の層と別の名前になっている");
+// ★★2026-09-08 夜、★この数を lib/sheepInteriorV2.js へ移しました。
+//   ★★別の名前であることは、★そのままです。★出どころが 変わっただけです。
+//     ★内装の帯（500〜9100）を 知っているのは lib のほうなので、
+//     ★★「場面より前」を 数えられるのも lib だけです。
+assertTrue(/UI_CHROME_Z.*from "@\/lib\/sheepInteriorV2"/.test(ui),
+  "操作ボタンの重なりが、場面の層と別の名前になっている（★lib から）");
 const zNums = (ui.match(/zIndex: (\d+)/g) || []).map((m) => Number(m.split(": ")[1]));
 assertTrue(zNums.every((n) => n <= z.front),
   `★場面の要素が羊(front=${z.front})を超えていない（最大 ${Math.max(...zNums, 0)}）`);
