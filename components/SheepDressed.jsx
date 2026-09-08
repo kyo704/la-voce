@@ -1,10 +1,11 @@
 "use client";
 
-import { useId } from "react";
+import { useId, useEffect, useState } from "react";
 
 import { SHEEP_BASE, SHEEP_ASSET_BASE, sheepItemByKey, sheepItemSrc } from "@/lib/sheepItems";
 import { LAYER_ORDER, PROP_SIDE_DEFAULT, motionOf, LEGS, SHOE_SPLIT_X, slotZ } from "@/lib/sheepWardrobe";
 import ClothImage, { ClothShoeImages } from "@/components/ClothImage";
+import { HEAD_NOFACE, FACE_Z, faceSrc, BLINK, nextBlinkMs, preloadList } from "@/lib/sheepFace";
 
 // ============================================================================
 // 着せかえた羊（★絵を重ねます・2026-09-05 夜）
@@ -24,8 +25,94 @@ import ClothImage, { ClothShoeImages } from "@/components/ClothImage";
 //     ★★同じ大きさで並べないこと。
 // ============================================================================
 
+/**
+ * ★まばたき（★face-v1・2026-09-08 夜）。
+ *
+ *   ★★3〜7秒に1回、★120ms だけ 目を とじます。
+ *   ★★見えているときだけ 動かします。
+ *     ★ほかのタブに いるとき（document.hidden）は 止めます。
+ *     ★★止めないと、★見えていない画面のために 時計が 回り続けます。
+ *   ★★動きを 減らす設定の方には、★まばたきも しません（★禁 6）。
+ *     ★これは「動きを減らす」であって、★「顔を消す」では ありません。
+ *     ★目は 開いたままです。
+ *
+ *   ★★顔で 体調や分析結果を 表しません（★禁 7）。
+ *     ★まばたきは、★記録の中身とも、★記録の有無とも、★関わりません。
+ *     ★ただ、生きている ということだけです。
+ */
+function useBlink(enabled) {
+  const [blinking, setBlinking] = useState(false);
+  useEffect(() => {
+    if (!enabled) return;
+    if (typeof window === "undefined") return;
+    const reduce = window.matchMedia
+      && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+
+    let openTimer = null;
+    let shutTimer = null;
+    let stopped = false;
+
+    const schedule = () => {
+      if (stopped) return;
+      openTimer = setTimeout(() => {
+        if (stopped) return;
+        // ★★伏せているあいだは、★またずに 次を 待ちます。★目は 開けたままです。
+        if (typeof document !== "undefined" && document.hidden) { schedule(); return; }
+        setBlinking(true);
+        shutTimer = setTimeout(() => {
+          setBlinking(false);
+          schedule();
+        }, BLINK.holdMs);
+      }, nextBlinkMs());
+    };
+    schedule();
+
+    // ★★戻ってきたら、★開いた状態から 数え直します。
+    const onVisible = () => {
+      if (typeof document !== "undefined" && document.hidden) setBlinking(false);
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
+    return () => {
+      stopped = true;
+      clearTimeout(openTimer); clearTimeout(shutTimer);
+      document.removeEventListener("visibilitychange", onVisible);
+      setBlinking(false);
+    };
+  }, [enabled]);
+  return blinking;
+}
+
+/**
+ * ★9枚を、先に 読んでおきます。
+ *
+ *   ★★切り替えの瞬間に、★白い顔が 出るのを 防ぎます。
+ *   ★1度だけです。★羊が いくつ出ても、★読むのは 1回です。
+ */
+let facesPreloaded = false;
+function usePreloadFaces(enabled) {
+  useEffect(() => {
+    if (!enabled || facesPreloaded) return;
+    if (typeof window === "undefined") return;
+    facesPreloaded = true;
+    for (const src of preloadList()) {
+      const im = new window.Image();
+      im.src = src;
+    }
+  }, [enabled]);
+}
+
 export default function SheepDressed({
   wearing = {}, size = 220, alt = "着せかえた羊",
+  // ★★顔（★face-v1・2026-09-08 夜）。
+  //   ★★いまは まばたきだけです。★残り8つは、★出す場面が まだ 決まっていません。
+  //   ★★顔で 体調や分析結果を 表さないこと（★禁 7）。
+  //     ★羊は「記録した行為」に反応し、「記録の中身」には 反応しません。
+  face = "normal",
+  // ★★まばたきするか。★おうちの部屋の羊だけ true です。
+  //   ★★一覧の小さい絵や、★見本には 要りません。
+  blink = false,
   // ★★動き（2026-09-06・案B）。★いまは "walk" だけ、試しに作っています。
   //   ★"still" … 止まっています（★既定）
   //   ★"walk"  … 歩きます
@@ -87,6 +174,12 @@ export default function SheepDressed({
       : "none"
   });
 
+  // ★★まばたきは、★渡された顔が「通常」のときだけ 差し替えます。
+  //   ★★にっこり・大喜びの 最中に 目を つむらせません。
+  const blinking = useBlink(blink);
+  usePreloadFaces(blink);
+  const shownFace = (blinking && face === "normal") ? "blink" : face;
+
   const layers = [];
   for (const slot of LAYER_ORDER) {
     if (slot === "body") {
@@ -94,7 +187,16 @@ export default function SheepDressed({
       continue;
     }
     if (slot === "head") {
-      layers.push({ key: "head", src: SHEEP_ASSET_BASE + SHEEP_BASE.head, z: slotZ("head") });
+      // ★★顔を 外した頭に しました（★2026-09-08 夜・face-v1）。
+      //   ★★もとの頭は、★目・鼻・口・ほおが 焼きこまれた1枚でした。
+      //     ★だから 表情が 1つだけで、★まばたきも できませんでした。
+      //   ★★「顔なしの頭 ＋ 01 通常」と もとの頭の ちがいは 平均 0.58 です
+      //     （★256階調・中身のある所だけ）。★見分けが つきません。★測りました。
+      //   ★鼻は 立体なので、★頭のほうに 残してあります。
+      layers.push({ key: "head", src: HEAD_NOFACE, z: slotZ("head") });
+      // ★★顔は z=46（★Opus の決め）。★頭45 と 首元50 の あいだです。
+      //   ★位置合わせの数値を 持ちません（★禁 4）。★1024×1024 を 重ねるだけです。
+      layers.push({ key: "face", src: faceSrc(shownFace), z: FACE_Z });
       continue;
     }
     const itemKey = wearing[slot];

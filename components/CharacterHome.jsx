@@ -881,6 +881,8 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
             寝姿の枠は translate(-50%, -50%)（中心合わせ）なので、
             bottom を基準に外から置くと、そもそも足元に来ない。 */}
         {dressed
+          // ★★眠っているときは、★まばたきしません（★2026-09-08 夜・face-v1）。
+          //   ★寝顔（08）は 絵として ありますが、★出す場面は まだ決めていません。
           ? <SheepDressed wearing={wearing} colors={clothColors} size={size * frontScale} motion="sleep" travel={false}
               alt="眠っている羊" />
           : <SheepSleepingHead size={size * 0.62 * frontScale} />}
@@ -921,7 +923,11 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
       {dressed ? (
         // ★★向きは SheepDressed が持ちます。★外から scaleX を掛けないこと。
         //   ★2枚重ねると、★裏返しが打ち消し合います。
-        <SheepDressed wearing={wearing} colors={clothColors} size={size * frontScale} motion={motion}
+        // ★★まばたきは、★部屋の羊だけです（★2026-09-08 夜・face-v1）。
+        //   ★★3〜7秒に1回、120ms。★見えているときだけ 動きます。
+        //   ★★顔で 体調や分析結果を 表しません（★禁 7）。
+        //     ★まばたきは、★記録の中身とも、記録の有無とも 関わりません。
+        <SheepDressed wearing={wearing} colors={clothColors} size={size * frontScale} motion={motion} blink
           travel={false} facingLeft={facingLeft} alt="羊" />
       ) : (
         <div style={{ transform: facingLeft ? "scaleX(-1)" : "none" }}>
