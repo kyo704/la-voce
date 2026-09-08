@@ -102,12 +102,13 @@ import * as unsentQueue from "@/lib/offlineQueue";
 // ★おうち画面の作り直し（★2026-09-08・仕様 §3）。★決めは lib が持ちます。
 import HomeDrawer from "@/components/HomeDrawer";
 import DrawerItemGrid from "@/components/DrawerItemGrid";
+import PointsPaper from "@/components/PointsPaper";
 import { thumbSrc } from "@/lib/thumbs";
 import { VIEW, DRESS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES, HOME_COLORS } from "@/lib/homeDrawer";
 import { itemsFor, sortItems } from "@/lib/drawerItems";
 // ★さがす（★§3-6）。★絞り込みは、ここにだけ 置きます。
 import DrawerSearch from "@/components/DrawerSearch";
-import { applySearch, emptyQuery, isEmptyQuery, COPY as SEARCH_COPY } from "@/lib/drawerSearch";
+import { applySearch, emptyQuery, isEmptyQuery, COPY as SEARCH_COPY, SHOW_ALL, SHOW_OWNED } from "@/lib/drawerSearch";
 import {
   INTERIOR_ITEMS, interiorSrc, isPlaced, toggleInterior, tileSurface,
   interiorOf, interiorItemByKey
@@ -5314,6 +5315,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }, [activeTab]);
 
   const [homeState, setHomeState] = useState(VIEW);
+  // ★★みせかた（★v3追補 ①）。★既定は「もっているもの」です。
+  //   ★★店を 作りません。★同じ棚に、★まだの品も 混ぜます。
+  const [drawerShowAll, setDrawerShowAll] = useState(false);
+  // ★★てんの紙（★v3追補 ②）。
+  //   ★★はじめて「したく」を開いた日だけ 1回、★あとは 数字を押したときだけ。
+  const [pointsPaperOpen, setPointsPaperOpen] = useState(false);
+  const [pointsPaperShownOnce, setPointsPaperShownOnce] = useState(false);
   // ★★ながめる → したく で、★部屋が 飛んで見えないようにします
   //   （★2026-09-08 夜・坂本さんのご指摘）。
   //
@@ -6886,6 +6894,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ---- ここから、lavoce-指標設計図.md フェーズ1の3指標用データ ----
   // 段階解放の判定に使う「これまでの総記録日数」（選んだ分析期間ではなく、全期間で数える）。
   const recordedDaysTotal = useMemo(() => Object.keys(entries).length, [entries]);
+  // ★★手持ちの てん（★v3追補 ③）。
+  //   ★★新しく 作りません。★もとからある 仕組み（computeBalance）を 使います。
+  //   ★★出す場所は「まだのものも」を見ているあいだと、★てんの紙だけです。
+  const characterBalance = useMemo(
+    () => computeBalance(entries, characterPointsSpent),
+    [entries, characterPointsSpent]
+  );
 
   // ★★記録がたまったときの、よそおい（★裁定 §5・2026-09-07）。
   //   ★30日ぶんたまるごとに、★箱2から3点をお見せして、★1つ選んでいただきます。
@@ -15400,6 +15415,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     // ★★開いたときの姿を、控えます。★戻せるようにするためです。
                     setEquippedBefore(characterEquipped);
                     setHomeState(DRESS);
+                    // ★★はじめて「したく」を開いた日だけ、★紙を 1回 出します
+                    //   （★v3追補 ②）。★2回目からは、★数字を押したときだけです。
+                    if (!pointsPaperShownOnce) {
+                      setPointsPaperShownOnce(true);
+                      setPointsPaperOpen(true);
+                    }
                   }}
                   style={{
                     position: "fixed", right: 16, bottom: 88, zIndex: 30,
@@ -15449,6 +15470,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               {wardrobeOn && (
                 <HomeDrawer
                   open={homeState === DRESS}
+                  // ★★みせかた（★v3追補 ①）。★既定は「もっているもの」です。
+                  showAll={drawerShowAll}
+                  onShowAll={(v) => { setDrawerShowAll(v); setPickedItem(null); }}
+                  // ★★てんは「買う場面」にだけ（★v3追補 ③）。
+                  //   ★★「まだのものも」を 見ているあいだ だけ 出ます。
+                  points={characterBalance}
+                  onPoints={() => setPointsPaperOpen(true)}
                   category={drawerCat}
                   onCategory={(k) => { setDrawerCat(k); setDrawerTab("all"); setPickedItem(null); }}
                   tab={drawerTab} onTab={setDrawerTab}
@@ -15517,7 +15545,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         //   ★★渡していませんでした。★だから、いつも空でした。
                         //   ★着ているものと、置いているもの、★両方です。
                         placed: placedForStore
-                      }), searchQuery, {
+                      }), {
+                        // ★★みせかた は 1つの決めです（★v3追補 ①）。
+                        //   ★★棚のチップと、★さがすの「みせかた」は、
+                        //   ★★同じ1つを 指します。★2つ持つと、いつか ずれます。
+                        ...searchQuery,
+                        show: drawerShowAll ? SHOW_ALL : SHOW_OWNED
+                      }, {
                         owned: ownedItemKeys,
                         colorOf: (k) => (characterEquipped.clothColors || {})[k] || null,
                         colorNameOf: (k) => {
@@ -15572,6 +15606,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               {/* ★★さがす（★§3-6・見本⑥）。★別の1枚です。
                   ★★絞り込みは、★ふだんの画面から 外しました。★ここにだけ 置きます。
                   ★★「けす」を、必ず置きます。★絞ったまま 戻れなくならないためです。 */}
+              {/* ★★てんの紙（★v3追補 ②）。★ふだんは 出しません。 */}
+              {wardrobeOn && pointsPaperOpen && (
+                <PointsPaper
+                  points={characterBalance}
+                  days={recordedDaysTotal}
+                  onClose={() => setPointsPaperOpen(false)} />
+              )}
+
               {wardrobeOn && homeState === DRESS && searchOpen && (
                 <DrawerSearch
                   initial={searchQuery}
@@ -15587,7 +15629,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     placed: placedForStore
                   })}
                   onCancel={() => setSearchOpen(false)}
-                  onApply={(q) => { setSearchQuery(q); setSearchOpen(false); }} />
+                  onApply={(q) => {
+                    setSearchQuery(q);
+                    // ★★さがすで えらんだ みせかたを、★棚のチップにも そろえます。
+                    setDrawerShowAll((q.show || SHOW_ALL) === SHOW_ALL);
+                    setSearchOpen(false);
+                  }} />
               )}
               </>
               </div>

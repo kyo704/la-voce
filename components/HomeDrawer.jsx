@@ -37,6 +37,14 @@ export default function HomeDrawer({
   //     ★消して 作り直すと、★開くたびに 中身が 作り直され、
   //     ★★それが「重い」「切り替わった」に 見えます。
   open = true,
+  // ★★みせかた（★v3追補 ①・2026-09-08）。
+  //   ★★店を 作りません。★同じ棚に、★まだの品も 混ぜます。
+  //   ★既定は「もっているもの」です。
+  showAll = false, onShowAll,
+  // ★★手持ちの てん（★v3追補 ③）。
+  //   ★★「まだのものも」を 見ているあいだだけ 出します。
+  //   ★★「あと◆てん」を 書かないこと。★出すのは 手持ちだけです。
+  points = null, onPoints,
   category, onCategory,
   tab, onTab,
   sort, onSort,
@@ -183,6 +191,36 @@ export default function HomeDrawer({
               fontSize: "0.8125rem"
             }}>
             {COPY.search}
+          </button>
+        )}
+        {/* ★★みせかた（★v3追補 ①）。★1つのチップで 行き来します。
+            ★★別の画面へ 行きません。★同じ棚の 見え方が 変わるだけです。 */}
+        {onShowAll && (
+          <button type="button" onClick={() => onShowAll(!showAll)}
+            aria-pressed={showAll}
+            style={{
+              minHeight: 32, padding: "0 10px", borderRadius: 4,
+              border: `1px solid ${showAll ? C.curtain : C.line}`,
+              borderBottomWidth: showAll ? 3 : 2,
+              background: showAll ? C.curtain : C.paper,
+              color: showAll ? "#FFFDF8" : C.inkSoft,
+              fontSize: "0.75rem", whiteSpace: "nowrap"
+            }}>
+            {showAll ? COPY.showAll : COPY.showOwned}
+          </button>
+        )}
+        {/* ★★てんは「買う場面」にだけ 出します（★v3追補 ③）。
+            ★★「まだのものも」を 見ているあいだ だけです。
+            ★★押すと、★てんの紙が 出ます。 */}
+        {showAll && points != null && (
+          <button type="button" onClick={() => onPoints && onPoints()}
+            style={{
+              minHeight: 32, padding: "0 8px", borderRadius: 4,
+              border: `1px solid ${C.line}`, borderBottomWidth: 2,
+              background: C.paper, color: C.inkSoft,
+              fontSize: "0.75rem", whiteSpace: "nowrap"
+            }}>
+            {COPY.pointsLeft(points)}
           </button>
         )}
         {/* ★★数を、書きません。★「54点」と出さないこと。 */}

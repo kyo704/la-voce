@@ -98,7 +98,11 @@ export default function DrawerItemGrid({
               alignItems: "center", justifyContent: "center",
               position: "relative",
               // ★★隠しません。★薄くして、★見えるようにします（★試着・§9）。
-              opacity: owned ? 1 : 0.62
+              // ★★まだの品は、★うすく 出します（★v3追補 ②・不透明度 45%）。
+              //   ★★隠しません。★錠前も 出しません。
+              //   ★★「あと◆てん」を 書かないこと。★足りないときは、
+              //     ★下のボタンが 押せない灰色に なるだけです。
+              opacity: owned ? 1 : 0.45
             }}>
             {renderThumb
               ? renderThumb(it)
