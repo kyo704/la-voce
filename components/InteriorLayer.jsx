@@ -2,7 +2,7 @@
 
 import {
   interiorOf, interiorItemByKey, interiorSrc, windowLayers,
-  floorLineOf, widthPctOf, isSingleSlot, windowHole,
+  floorLineOf, widthPctOf, flushRightLeftPct, isSingleSlot, windowHole,
   FLOOR_BAND, WALL_BAND, LEFT_BAND, clampToBand
 } from "@/lib/sheepInteriorV2";
 
@@ -53,7 +53,9 @@ const ROOM_ASPECT = 4 / 3;
  *     ★絵の幅の半分だけ内側に置けば、★右の壁に接します。
  */
 const SPOT = {
-  door: { left: 89 },
+  // ★★扉の left は、★flushRightLeftPct が出します（★中身の端を壁に合わせるため）。
+  //   ★ここには書きません。★書くと、また余白のぶん浮きます。
+  door: {},
   window: { left: 50, top: 13 },
   wallart: { left: 20, top: 18 },
   furniture: { left: 34 },
@@ -234,7 +236,10 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
         <img src={interiorSrc(door)} alt="" aria-hidden="true"
           style={{
             position: "absolute",
-            left: `${SPOT.door.left}%`,
+            // ★★絵の端ではなく、★中身の端を、右の壁に合わせます。
+            //   ★★2026-09-08、★left=89％ で置いていて、★0.89％ 内側に浮いていました。
+            //     ★扉の絵は 320 幅で、★中身は x14〜306。★右に余白があります。
+            left: `${flushRightLeftPct(door)}%`,
             bottom: `${floorBottomPct(door, widthPctOf(door))}%`,
             width: `${widthPctOf(door)}%`,
             transform: "translate(-50%, 0)",

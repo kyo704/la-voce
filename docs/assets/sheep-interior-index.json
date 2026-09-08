@@ -13,7 +13,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 118
+   "contentTop": 118,
+   "contentX": [
+    30,
+    291
+   ]
   },
   {
    "key": "furniture_02",
@@ -26,7 +30,11 @@
     320
    ],
    "floorY": 309,
-   "contentTop": 180
+   "contentTop": 180,
+   "contentX": [
+    40,
+    281
+   ]
   },
   {
    "key": "furniture_03",
@@ -39,7 +47,11 @@
     320
    ],
    "floorY": 247,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    88,
+    233
+   ]
   },
   {
    "key": "furniture_04",
@@ -52,7 +64,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 110
+   "contentTop": 110,
+   "contentX": [
+    34,
+    289
+   ]
   },
   {
    "key": "furniture_05",
@@ -65,7 +81,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 224
+   "contentTop": 224,
+   "contentX": [
+    38,
+    283
+   ]
   },
   {
    "key": "furniture_06",
@@ -78,7 +98,11 @@
     320
    ],
    "floorY": 247,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    84,
+    237
+   ]
   },
   {
    "key": "furniture_07",
@@ -91,7 +115,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 132
+   "contentTop": 132,
+   "contentX": [
+    34,
+    289
+   ]
   },
   {
    "key": "furniture_08",
@@ -104,7 +132,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 208
+   "contentTop": 208,
+   "contentX": [
+    38,
+    283
+   ]
   },
   {
    "key": "furniture_09",
@@ -117,7 +149,11 @@
     320
    ],
    "floorY": 309,
-   "contentTop": 40
+   "contentTop": 40,
+   "contentX": [
+    96,
+    225
+   ]
   },
   {
    "key": "furniture_10",
@@ -130,7 +166,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 104
+   "contentTop": 104,
+   "contentX": [
+    92,
+    238
+   ]
   },
   {
    "key": "furniture_11",
@@ -143,7 +183,11 @@
     320
    ],
    "floorY": 309,
-   "contentTop": 184
+   "contentTop": 184,
+   "contentX": [
+    40,
+    281
+   ]
   },
   {
    "key": "furniture_12",
@@ -156,7 +200,11 @@
     320
    ],
    "floorY": 247,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    98,
+    223
+   ]
   },
   {
    "key": "furniture_13",
@@ -169,7 +217,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 118
+   "contentTop": 118,
+   "contentX": [
+    34,
+    289
+   ]
   },
   {
    "key": "furniture_14",
@@ -182,7 +234,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 232
+   "contentTop": 232,
+   "contentX": [
+    38,
+    283
+   ]
   },
   {
    "key": "furniture_15",
@@ -195,7 +251,11 @@
     320
    ],
    "floorY": 247,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    96,
+    225
+   ]
   },
   {
    "key": "furniture_16",
@@ -208,7 +268,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 112
+   "contentTop": 112,
+   "contentX": [
+    92,
+    238
+   ]
   },
   {
    "key": "furniture_17",
@@ -221,7 +285,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 204
+   "contentTop": 204,
+   "contentX": [
+    38,
+    283
+   ]
   },
   {
    "key": "furniture_18",
@@ -234,7 +302,11 @@
     320
    ],
    "floorY": 247,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    80,
+    241
+   ]
   },
   {
    "key": "furniture_19",
@@ -247,7 +319,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 118
+   "contentTop": 118,
+   "contentX": [
+    30,
+    291
+   ]
   },
   {
    "key": "furniture_20",
@@ -260,7 +336,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 196
+   "contentTop": 196,
+   "contentX": [
+    38,
+    283
+   ]
   },
   {
    "key": "furniture_21",
@@ -273,7 +353,11 @@
     320
    ],
    "floorY": 247,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    88,
+    233
+   ]
   },
   {
    "key": "furniture_22",
@@ -286,7 +370,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 104
+   "contentTop": 104,
+   "contentX": [
+    92,
+    238
+   ]
   },
   {
    "key": "furniture_23",
@@ -299,7 +387,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 212
+   "contentTop": 212,
+   "contentX": [
+    38,
+    283
+   ]
   },
   {
    "key": "furniture_24",
@@ -312,7 +404,11 @@
     320
    ],
    "floorY": 309,
-   "contentTop": 44
+   "contentTop": 44,
+   "contentX": [
+    104,
+    217
+   ]
   },
   {
    "key": "furniture_25",
@@ -325,7 +421,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 112
+   "contentTop": 112,
+   "contentX": [
+    92,
+    238
+   ]
   },
   {
    "key": "furniture_26",
@@ -338,7 +438,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 216
+   "contentTop": 216,
+   "contentX": [
+    38,
+    283
+   ]
   },
   {
    "key": "furniture_27",
@@ -351,7 +455,11 @@
     320
    ],
    "floorY": 309,
-   "contentTop": 36
+   "contentTop": 36,
+   "contentX": [
+    104,
+    217
+   ]
   },
   {
    "key": "window_01",
@@ -370,6 +478,10 @@
     0.099,
     0.8203,
     0.8203
+   ],
+   "contentX": [
+    6,
+    379
    ]
   },
   {
@@ -389,6 +501,10 @@
     0.0938,
     0.8151,
     0.8151
+   ],
+   "contentX": [
+    10,
+    375
    ]
   },
   {
@@ -408,6 +524,10 @@
     0.0807,
     0.8411,
     0.8411
+   ],
+   "contentX": [
+    16,
+    369
    ]
   },
   {
@@ -427,6 +547,10 @@
     0.099,
     0.8047,
     0.8047
+   ],
+   "contentX": [
+    12,
+    373
    ]
   },
   {
@@ -446,6 +570,10 @@
     0.0885,
     0.8125,
     0.8255
+   ],
+   "contentX": [
+    8,
+    377
    ]
   },
   {
@@ -465,6 +593,10 @@
     0.0938,
     0.8047,
     0.8151
+   ],
+   "contentX": [
+    10,
+    375
    ]
   },
   {
@@ -484,6 +616,10 @@
     0.0938,
     0.8151,
     0.8151
+   ],
+   "contentX": [
+    10,
+    375
    ]
   },
   {
@@ -503,6 +639,10 @@
     0.0729,
     0.8568,
     0.8568
+   ],
+   "contentX": [
+    8,
+    377
    ]
   },
   {
@@ -522,6 +662,10 @@
     0.1927,
     0.6172,
     0.6172
+   ],
+   "contentX": [
+    56,
+    329
    ]
   },
   {
@@ -542,7 +686,11 @@
     0.8255,
     0.8281
    ],
-   "frosted": true
+   "frosted": true,
+   "contentX": [
+    8,
+    377
+   ]
   },
   {
    "key": "window_11",
@@ -561,6 +709,10 @@
     0.6328,
     0.8672,
     0.3021
+   ],
+   "contentX": [
+    8,
+    377
    ]
   },
   {
@@ -580,6 +732,10 @@
     0.0885,
     0.8255,
     0.8255
+   ],
+   "contentX": [
+    8,
+    377
    ]
   },
   {
@@ -599,6 +755,10 @@
     0.0885,
     0.8125,
     0.8255
+   ],
+   "contentX": [
+    8,
+    377
    ]
   },
   {
@@ -612,7 +772,11 @@
     512
    ],
    "floorY": 503,
-   "contentTop": 10
+   "contentTop": 10,
+   "contentX": [
+    14,
+    307
+   ]
   },
   {
    "key": "door_02",
@@ -625,7 +789,11 @@
     512
    ],
    "floorY": 503,
-   "contentTop": 10
+   "contentTop": 10,
+   "contentX": [
+    14,
+    307
+   ]
   },
   {
    "key": "door_03",
@@ -638,7 +806,11 @@
     512
    ],
    "floorY": 503,
-   "contentTop": 10
+   "contentTop": 10,
+   "contentX": [
+    14,
+    307
+   ]
   },
   {
    "key": "door_04",
@@ -651,7 +823,11 @@
     512
    ],
    "floorY": 503,
-   "contentTop": 10
+   "contentTop": 10,
+   "contentX": [
+    14,
+    307
+   ]
   },
   {
    "key": "door_05",
@@ -664,7 +840,11 @@
     512
    ],
    "floorY": 503,
-   "contentTop": 10
+   "contentTop": 10,
+   "contentX": [
+    8,
+    313
+   ]
   },
   {
    "key": "door_06",
@@ -677,7 +857,11 @@
     512
    ],
    "floorY": 503,
-   "contentTop": 10
+   "contentTop": 10,
+   "contentX": [
+    14,
+    307
+   ]
   },
   {
    "key": "door_07",
@@ -690,7 +874,11 @@
     512
    ],
    "floorY": 503,
-   "contentTop": 10
+   "contentTop": 10,
+   "contentX": [
+    14,
+    307
+   ]
   },
   {
    "key": "door_08",
@@ -703,7 +891,11 @@
     512
    ],
    "floorY": 503,
-   "contentTop": 10
+   "contentTop": 10,
+   "contentX": [
+    14,
+    307
+   ]
   },
   {
    "key": "door_09",
@@ -716,7 +908,11 @@
     512
    ],
    "floorY": 503,
-   "contentTop": 10
+   "contentTop": 10,
+   "contentX": [
+    8,
+    313
+   ]
   },
   {
    "key": "door_10",
@@ -729,7 +925,11 @@
     512
    ],
    "floorY": 503,
-   "contentTop": 10
+   "contentTop": 10,
+   "contentX": [
+    10,
+    311
+   ]
   },
   {
    "key": "door_11",
@@ -742,7 +942,11 @@
     512
    ],
    "floorY": 503,
-   "contentTop": 10
+   "contentTop": 10,
+   "contentX": [
+    10,
+    311
+   ]
   },
   {
    "key": "door_12",
@@ -755,7 +959,11 @@
     512
    ],
    "floorY": 503,
-   "contentTop": 10
+   "contentTop": 10,
+   "contentX": [
+    12,
+    309
+   ]
   },
   {
    "key": "view_01",
@@ -768,7 +976,11 @@
     320
    ],
    "floorY": 320,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    480
+   ]
   },
   {
    "key": "view_02",
@@ -781,7 +993,11 @@
     320
    ],
    "floorY": 320,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    480
+   ]
   },
   {
    "key": "view_03",
@@ -794,7 +1010,11 @@
     320
    ],
    "floorY": 320,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    480
+   ]
   },
   {
    "key": "view_04",
@@ -807,7 +1027,11 @@
     320
    ],
    "floorY": 320,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    480
+   ]
   },
   {
    "key": "view_05",
@@ -820,7 +1044,11 @@
     320
    ],
    "floorY": 320,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    480
+   ]
   },
   {
    "key": "view_06",
@@ -833,7 +1061,11 @@
     320
    ],
    "floorY": 320,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    480
+   ]
   },
   {
    "key": "view_07",
@@ -846,7 +1078,11 @@
     320
    ],
    "floorY": 320,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    480
+   ]
   },
   {
    "key": "view_08",
@@ -859,7 +1095,11 @@
     320
    ],
    "floorY": 320,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    480
+   ]
   },
   {
    "key": "view_09",
@@ -872,7 +1112,11 @@
     320
    ],
    "floorY": 320,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    480
+   ]
   },
   {
    "key": "view_10",
@@ -885,7 +1129,11 @@
     320
    ],
    "floorY": 320,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    480
+   ]
   },
   {
    "key": "view_11",
@@ -898,7 +1146,11 @@
     320
    ],
    "floorY": 320,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    480
+   ]
   },
   {
    "key": "view_12",
@@ -911,7 +1163,11 @@
     320
    ],
    "floorY": 320,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    480
+   ]
   },
   {
    "key": "view_13",
@@ -924,7 +1180,11 @@
     320
    ],
    "floorY": 320,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    480
+   ]
   },
   {
    "key": "garden_01",
@@ -937,7 +1197,11 @@
     320
    ],
    "floorY": 311,
-   "contentTop": 166
+   "contentTop": 166,
+   "contentX": [
+    100,
+    221
+   ]
   },
   {
    "key": "garden_02",
@@ -950,7 +1214,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 100
+   "contentTop": 100,
+   "contentX": [
+    106,
+    215
+   ]
   },
   {
    "key": "garden_03",
@@ -963,7 +1231,11 @@
     320
    ],
    "floorY": 309,
-   "contentTop": 180
+   "contentTop": 180,
+   "contentX": [
+    60,
+    247
+   ]
   },
   {
    "key": "garden_04",
@@ -976,7 +1248,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 160
+   "contentTop": 160,
+   "contentX": [
+    52,
+    269
+   ]
   },
   {
    "key": "garden_05",
@@ -989,7 +1265,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 128
+   "contentTop": 128,
+   "contentX": [
+    110,
+    210
+   ]
   },
   {
    "key": "garden_06",
@@ -1002,7 +1282,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 132
+   "contentTop": 132,
+   "contentX": [
+    32,
+    291
+   ]
   },
   {
    "key": "garden_07",
@@ -1015,7 +1299,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 84
+   "contentTop": 84,
+   "contentX": [
+    104,
+    217
+   ]
   },
   {
    "key": "garden_08",
@@ -1028,7 +1316,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 76
+   "contentTop": 76,
+   "contentX": [
+    96,
+    224
+   ]
   },
   {
    "key": "garden_09",
@@ -1041,7 +1333,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 96
+   "contentTop": 96,
+   "contentX": [
+    80,
+    241
+   ]
   },
   {
    "key": "garden_10",
@@ -1054,7 +1350,11 @@
     320
    ],
    "floorY": 309,
-   "contentTop": 60
+   "contentTop": 60,
+   "contentX": [
+    76,
+    245
+   ]
   },
   {
    "key": "garden_11",
@@ -1067,7 +1367,11 @@
     320
    ],
    "floorY": 307,
-   "contentTop": 168
+   "contentTop": 168,
+   "contentX": [
+    104,
+    217
+   ]
   },
   {
    "key": "garden_12",
@@ -1080,7 +1384,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 120
+   "contentTop": 120,
+   "contentX": [
+    44,
+    279
+   ]
   },
   {
    "key": "garden_13",
@@ -1093,7 +1401,11 @@
     320
    ],
    "floorY": 289,
-   "contentTop": 219
+   "contentTop": 219,
+   "contentX": [
+    46,
+    277
+   ]
   },
   {
    "key": "garden_14",
@@ -1106,7 +1418,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 110
+   "contentTop": 110,
+   "contentX": [
+    50,
+    271
+   ]
   },
   {
    "key": "wallart_01",
@@ -1119,7 +1435,11 @@
     320
    ],
    "floorY": 241,
-   "contentTop": 80
+   "contentTop": 80,
+   "contentX": [
+    46,
+    275
+   ]
   },
   {
    "key": "wallart_02",
@@ -1132,7 +1452,11 @@
     320
    ],
    "floorY": 261,
-   "contentTop": 60
+   "contentTop": 60,
+   "contentX": [
+    70,
+    251
+   ]
   },
   {
    "key": "wallart_03",
@@ -1145,7 +1469,11 @@
     320
    ],
    "floorY": 233,
-   "contentTop": 88
+   "contentTop": 88,
+   "contentX": [
+    88,
+    233
+   ]
   },
   {
    "key": "wallart_04",
@@ -1158,7 +1486,11 @@
     320
    ],
    "floorY": 273,
-   "contentTop": 40
+   "contentTop": 40,
+   "contentX": [
+    104,
+    217
+   ]
   },
   {
    "key": "wallart_05",
@@ -1171,7 +1503,11 @@
     320
    ],
    "floorY": 261,
-   "contentTop": 60
+   "contentTop": 60,
+   "contentX": [
+    90,
+    231
+   ]
   },
   {
    "key": "wallart_06",
@@ -1184,7 +1520,11 @@
     320
    ],
    "floorY": 197,
-   "contentTop": 104
+   "contentTop": 104,
+   "contentX": [
+    52,
+    269
+   ]
   },
   {
    "key": "wallart_07",
@@ -1197,7 +1537,11 @@
     320
    ],
    "floorY": 251,
-   "contentTop": 60
+   "contentTop": 60,
+   "contentX": [
+    90,
+    226
+   ]
   },
   {
    "key": "wallart_08",
@@ -1210,7 +1554,11 @@
     320
    ],
    "floorY": 251,
-   "contentTop": 70
+   "contentTop": 70,
+   "contentX": [
+    90,
+    231
+   ]
   },
   {
    "key": "wallart_09",
@@ -1223,7 +1571,11 @@
     320
    ],
    "floorY": 277,
-   "contentTop": 44
+   "contentTop": 44,
+   "contentX": [
+    116,
+    205
+   ]
   },
   {
    "key": "wallart_10",
@@ -1236,7 +1588,11 @@
     320
    ],
    "floorY": 241,
-   "contentTop": 74
+   "contentTop": 74,
+   "contentX": [
+    70,
+    293
+   ]
   },
   {
    "key": "wallart_11",
@@ -1249,7 +1605,11 @@
     320
    ],
    "floorY": 241,
-   "contentTop": 110
+   "contentTop": 110,
+   "contentX": [
+    100,
+    221
+   ]
   },
   {
    "key": "wallart_12",
@@ -1262,7 +1622,11 @@
     320
    ],
    "floorY": 237,
-   "contentTop": 90
+   "contentTop": 90,
+   "contentX": [
+    56,
+    265
+   ]
   },
   {
    "key": "wallart_13",
@@ -1275,7 +1639,11 @@
     320
    ],
    "floorY": 251,
-   "contentTop": 69
+   "contentTop": 69,
+   "contentX": [
+    70,
+    250
+   ]
   },
   {
    "key": "showa_01",
@@ -1288,7 +1656,11 @@
     320
    ],
    "floorY": 305,
-   "contentTop": 120
+   "contentTop": 120,
+   "contentX": [
+    116,
+    205
+   ]
   },
   {
    "key": "showa_02",
@@ -1301,7 +1673,11 @@
     320
    ],
    "floorY": 255,
-   "contentTop": 12
+   "contentTop": 12,
+   "contentX": [
+    102,
+    219
+   ]
   },
   {
    "key": "showa_03",
@@ -1314,7 +1690,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 106
+   "contentTop": 106,
+   "contentX": [
+    44,
+    277
+   ]
   },
   {
    "key": "showa_04",
@@ -1327,7 +1707,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 60
+   "contentTop": 60,
+   "contentX": [
+    70,
+    251
+   ]
   },
   {
    "key": "showa_05",
@@ -1340,7 +1724,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 110
+   "contentTop": 110,
+   "contentX": [
+    54,
+    267
+   ]
   },
   {
    "key": "showa_06",
@@ -1353,7 +1741,11 @@
     320
    ],
    "floorY": 181,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    54,
+    267
+   ]
   },
   {
    "key": "showa_07",
@@ -1366,7 +1758,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 190
+   "contentTop": 190,
+   "contentX": [
+    44,
+    277
+   ]
   },
   {
    "key": "showa_08",
@@ -1379,7 +1775,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 96
+   "contentTop": 96,
+   "contentX": [
+    58,
+    263
+   ]
   },
   {
    "key": "showa_09",
@@ -1392,7 +1792,11 @@
     320
    ],
    "floorY": 307,
-   "contentTop": 178
+   "contentTop": 178,
+   "contentX": [
+    76,
+    245
+   ]
   },
   {
    "key": "showa_10",
@@ -1405,7 +1809,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 142
+   "contentTop": 142,
+   "contentX": [
+    92,
+    229
+   ]
   },
   {
    "key": "showa_11",
@@ -1418,7 +1826,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 150
+   "contentTop": 150,
+   "contentX": [
+    70,
+    251
+   ]
   },
   {
    "key": "showa_12",
@@ -1431,7 +1843,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 200
+   "contentTop": 200,
+   "contentX": [
+    46,
+    275
+   ]
   },
   {
    "key": "showa_13",
@@ -1444,7 +1860,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 120
+   "contentTop": 120,
+   "contentX": [
+    62,
+    259
+   ]
   },
   {
    "key": "showa_14",
@@ -1457,7 +1877,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 208
+   "contentTop": 208,
+   "contentX": [
+    36,
+    285
+   ]
   },
   {
    "key": "showa_15",
@@ -1470,7 +1894,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 140
+   "contentTop": 140,
+   "contentX": [
+    46,
+    275
+   ]
   },
   {
    "key": "showa_16",
@@ -1483,7 +1911,11 @@
     320
    ],
    "floorY": 309,
-   "contentTop": 96
+   "contentTop": 96,
+   "contentX": [
+    84,
+    237
+   ]
   },
   {
    "key": "showa_17",
@@ -1496,7 +1928,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 150
+   "contentTop": 150,
+   "contentX": [
+    40,
+    281
+   ]
   },
   {
    "key": "showa_18",
@@ -1509,7 +1945,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 178
+   "contentTop": 178,
+   "contentX": [
+    36,
+    285
+   ]
   },
   {
    "key": "showa_19",
@@ -1522,7 +1962,11 @@
     320
    ],
    "floorY": 301,
-   "contentTop": 150
+   "contentTop": 150,
+   "contentX": [
+    0,
+    320
+   ]
   },
   {
    "key": "tile_01",
@@ -1535,7 +1979,11 @@
     256
    ],
    "floorY": 256,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    256
+   ]
   },
   {
    "key": "tile_02",
@@ -1548,7 +1996,11 @@
     256
    ],
    "floorY": 256,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    256
+   ]
   },
   {
    "key": "tile_03",
@@ -1561,7 +2013,11 @@
     256
    ],
    "floorY": 256,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    256
+   ]
   },
   {
    "key": "tile_04",
@@ -1574,7 +2030,11 @@
     256
    ],
    "floorY": 256,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    256
+   ]
   },
   {
    "key": "tile_05",
@@ -1587,7 +2047,11 @@
     256
    ],
    "floorY": 256,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    256
+   ]
   },
   {
    "key": "tile_06",
@@ -1600,7 +2064,11 @@
     256
    ],
    "floorY": 256,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    256
+   ]
   },
   {
    "key": "tile_07",
@@ -1613,7 +2081,11 @@
     256
    ],
    "floorY": 256,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    256
+   ]
   },
   {
    "key": "tile_08",
@@ -1626,7 +2098,11 @@
     256
    ],
    "floorY": 256,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    256
+   ]
   },
   {
    "key": "tile_09",
@@ -1639,7 +2115,11 @@
     256
    ],
    "floorY": 256,
-   "contentTop": 0
+   "contentTop": 0,
+   "contentX": [
+    0,
+    256
+   ]
   }
  ]
 }

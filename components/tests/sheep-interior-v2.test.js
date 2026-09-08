@@ -200,6 +200,30 @@ function ok(name, cond, extra) {
       m.INTERIOR_ITEMS.every((i) => typeof i.floorY === "number"));
     ok("★扉の床の線は 503（★300 ではない）",
       m.floorLineOf(m.interiorItemByKey("door_01")) === 503);
+    // ★★扉は、★右の壁に ぴったり寄せること（★2026-09-08 のご指摘）。
+    //   ★★縦は合っていました。★横でした。★絵の端ではなく、中身の端を合わせます。
+    ok(m.INTERIOR_ITEMS.every((i) => Array.isArray(i.contentX) && i.contentX.length === 2),
+      "★120点すべてに、中身の左右が入っている");
+    {
+      const door = m.interiorItemByKey("door_01");
+      const w = m.widthPctOf(door);
+      const left = m.flushRightLeftPct(door);
+      const contentRight = left - w / 2 + (door.contentX[1] / door.size[0]) * w;
+      ok(Math.abs(contentRight - 100) < 0.001,
+        "★扉の中身の右端が、ちょうど 100%（★実際 " + contentRight.toFixed(3) + "）");
+      ok(Math.abs(left - 89) > 0.5,
+        "★決め打ちの 89% では、なくなっている（★" + left.toFixed(2) + "%）");
+    }
+    ok(/left: `\$\{flushRightLeftPct\(door\)\}%`/.test(layer), "★画面が、それを使っている");
+    ok(!/door: \{ left: 89 \}/.test(layer), "★89% を、書き残していない");
+    // ★★縦は、もともと合っていました。★念のため見張ります。
+    {
+      const door = m.interiorItemByKey("door_01");
+      const [cw, ch] = door.size;
+      const w = m.widthPctOf(door);
+      const pad = (ch - m.floorLineOf(door)) / ch;
+      ok(pad < 0.02, "★扉の、床より下の余白は わずか（★" + (pad * 100).toFixed(2) + "%）");
+    }
 
     // ★★いまの101点を、壊していないこと。
     ok("★いまの壁の絵は、そのまま", /<WallTexture material=\{wallKey\}/.test(home));

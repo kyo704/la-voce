@@ -85,13 +85,41 @@ async function load(rel) {
       + daily.filter((i) => i.slot === s).length + "点）");
   });
 
-  console.log("⑥ 絵が、そろっているか");
-  ["top", "bottom", "outer", "eyes"].forEach((s) => {
+  console.log("⑥ ★絵が、そろっているか（★385点・全部）");
+  // ★★2026-09-08、★i.file だけを見て「持ちもの47点の絵が無い」と申し上げました。
+  //   ★★誤りでした。★持ちものは files（左・中・右の3枚）を使います。
+  //     ★i.file は undefined ですが、★絵は3枚とも在りました。
+  //   ★★見張りが、★同じ取り違えをしないようにします。
+  //     ★file か files か、★どちらの形でも見ます。
+  function imagePaths(it) {
+    if (it && it.files) return Object.values(it.files);
+    if (it && it.file) return [it.file];
+    return [];
+  }
+  const noPath = items.filter((i) => imagePaths(i).length === 0);
+  ok(noPath.length === 0, "★file も files も無い品が、1つも無い"
+    + (noPath.length ? "：" + noPath.slice(0, 5).map((i) => i.key).join(",") : ""));
+  let checked = 0;
+  const gone = [];
+  items.forEach((i) => imagePaths(i).forEach((f) => {
+    checked++;
+    if (!fs.existsSync(path.join(ROOT, "public/sheep", f))) gone.push(i.key + " → " + f);
+  }));
+  ok(gone.length === 0, "★" + items.length + "点／" + checked + "枚、すべて在る"
+    + (gone.length ? "★無い：" + gone.slice(0, 5).join(", ") : ""));
+  // ★★置き場所ごとにも、数えておきます。
+  ["top", "bottom", "outer", "eyes", "prop"].forEach((s) => {
     const list = items.filter((i) => i.slot === s);
-    const gone = list.filter((i) => !fs.existsSync(path.join(ROOT, "public/sheep", i.file)));
-    ok(gone.length === 0, W.SLOT_LABELS[s] + " の絵が、" + list.length + "点そろっている"
-      + (gone.length ? "★無い：" + gone.slice(0, 3).map((i) => i.key).join(",") : ""));
+    const bad = list.filter((i) => imagePaths(i).some(
+      (f) => !fs.existsSync(path.join(ROOT, "public/sheep", f))));
+    ok(bad.length === 0, W.SLOT_LABELS[s] + " " + list.length + "点の絵が、そろっている");
   });
+  // ★★持ちものは、★左・中・右の3枚そろっていること。
+  //   ★1枚でも欠けると、★その向きに持ったときだけ消えます。
+  const props = items.filter((i) => i.slot === "prop" && i.files);
+  const halfProps = props.filter((i) => !(i.files.left && i.files.right && i.files.both));
+  ok(halfProps.length === 0, "★3枚組の持ちもの " + props.length + "点が、左・中・右そろっている"
+    + (halfProps.length ? "：" + halfProps.map((i) => i.key).join(",") : ""));
 
   console.log(fail === 0 ? "\n★すべて通りました" : "\n★" + fail + "件、落ちました");
   process.exit(fail === 0 ? 0 : 1);
