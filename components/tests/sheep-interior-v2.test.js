@@ -445,6 +445,24 @@ function ok(name, cond, extra) {
       /furniturePos\("furniture_chair"\)\s*\n?\s*\|\|/.test(home4));
   }
 
+  console.log("■ ★歩く 速さと 間（★2026-09-09・坂本さんの ご承認）");
+  {
+    ok("★1回 歩くのは 3,200ms", m.WALK_MS === 3200);
+    ok("★次まで 4〜9秒",
+      m.nextWalkRestMs(() => 0) === 4000 && m.nextWalkRestMs(() => 1) === 9000);
+    const home5 = readCode("components", "CharacterHome.jsx");
+    // ★★CSS の 移りと、★歩く秒数を、★同じ数から 出すこと。
+    //   ★ずれると、★着く前に 止まったり、★着いてから 動いたりします。
+    ok("★★CSS の 移りも 同じ数から",
+      /left \$\{WALK_MS\}ms linear/.test(home5));
+    ok("★画面で 秒数を 決め打ちしていない",
+      !/2\.2s (linear|ease-in-out)/.test(home5) && !/moveTo\(nl, nt, 2200\)/.test(home5));
+    ok("★休む間も lib から", !/800 \+ Math\.random\(\) \* 1200/.test(home5));
+    // ★★歩いている割合が 半分より 少ないこと。
+    const ratio = m.WALK_MS / (m.WALK_MS + (m.WALK_REST_MIN_MS + m.WALK_REST_MAX_MS) / 2);
+    ok(`★歩いている割合が 半分より少ない（${Math.round(ratio * 100)}%）`, ratio < 0.5);
+  }
+
   console.log("■ ★家具の 大きさ（★2026-09-09・実機「家具が 小さく見える」）");
   {
     // ★★見た目の幅は「絵の枠」ではなく「中身」で 決まります。

@@ -13,10 +13,11 @@ import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
 } from "@/lib/oldHouseVisibility";
 // ★動かせる内装が在るか／羊の重ね順。★決めは、あちらが持ちます。
-import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf } from "@/lib/sheepInteriorV2";
+import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs } from "@/lib/sheepInteriorV2";
 import SpeechBubble from "@/components/SpeechBubble";
 import { SOLO, TIMING, FACE_FOR, pickLine, nextSoloMs, pushRecent } from "@/lib/sheepSpeech";
 import { pickGesture, nextGestureMs, mayGesture, pushRecent as pushGesture } from "@/lib/sheepGestures";
+import { faceNow, REPLY_FACE_MS, IDLE_SLEEP_MS } from "@/lib/sheepFace";
 import { C } from "@/lib/tokens";
 import {
   SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, PLACEMENT_LIMITS,
@@ -521,7 +522,10 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, chairPos, bedPo
     }
 
     function scheduleWander() {
-      const delay = 800 + Math.random() * 1200;
+      // ★★休む間（★2026-09-09・0.8〜2.0秒 から 4〜9秒 へ）。
+      //   ★★「速い」の正体は、★歩く速さより 休まないことでした。
+      //   ★数は lib が 持ちます。★ここで 書きません。
+      const delay = nextWalkRestMs();
       addTimer(() => {
         if (cancelled) return;
         if (busyRef.current) { scheduleWander(); return; }
@@ -533,7 +537,7 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, chairPos, bedPo
           tries += 1;
         } while (tries < 20);
         if (nl === undefined) { nl = centerLeft; nt = centerTop; }
-        moveTo(nl, nt, 2200);
+        moveTo(nl, nt, WALK_MS);
         scheduleWander();
       }, delay);
     }
@@ -662,7 +666,10 @@ function useGardenLife(centerLeft, centerTop, rangeLeft, rangeTop, hasField) {
     }
 
     function scheduleWander() {
-      const delay = 800 + Math.random() * 1200;
+      // ★★休む間（★2026-09-09・0.8〜2.0秒 から 4〜9秒 へ）。
+      //   ★★「速い」の正体は、★歩く速さより 休まないことでした。
+      //   ★数は lib が 持ちます。★ここで 書きません。
+      const delay = nextWalkRestMs();
       addTimer(() => {
         if (cancelled) return;
         if (busyRef.current) { scheduleWander(); return; }
@@ -674,7 +681,7 @@ function useGardenLife(centerLeft, centerTop, rangeLeft, rangeTop, hasField) {
           tries += 1;
         } while (tries < 20);
         if (nl === undefined) { nl = centerLeft; nt = centerTop; }
-        moveTo(nl, nt, 2200);
+        moveTo(nl, nt, WALK_MS);
         scheduleWander();
       }, delay);
     }
@@ -821,7 +828,7 @@ function SheepSleepingHead({ size }) {
 //   静的に読むかぎりコードは正しいのに、実機の結果が合いません。
 //   読むのをやめて、動いている値そのものを見ます。
 //   落ち着いたら消してください。
-function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWalking, isFarming, isSitting, isLying, isSweating, isCelebrating, wardrobeOn = false, diag, bubble = null, gesture = null }) {
+function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWalking, isFarming, isSitting, isLying, isSweating, isCelebrating, wardrobeOn = false, diag, bubble = null, gesture = null, face = "normal" }) {
   // ★★着せかえの羊（2026-09-06・案B）。
   //   ★絵の羊が主で、★SVGの羊は小さなしるしとして残ります。
   //   ★門が閉じている方には、★これまでどおり SVG の羊が出ます。★取り上げません。
@@ -912,8 +919,10 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
         //   ★★羊は「歩いて移動する」ので、★ここが効きます。
         //     ★止まっているときは、これまでどおりです。
         transition: isWalking
-          ? "left 2.2s linear, top 2.2s linear"
-          : "left 2.2s ease-in-out, top 2.2s ease-in-out",
+          // ★★歩く秒数と、★かならず 同じ数に すること（★2026-09-09）。
+          //   ★ずれると、★着く前に 止まったり、★着いてから 動いたりします。
+          ? `left ${WALK_MS}ms linear, top ${WALK_MS}ms linear`
+          : `left ${WALK_MS}ms ease-in-out, top ${WALK_MS}ms ease-in-out`,
         zIndex: frontZ,
         // ★★羊は、★押しどころを 奪いません（★2026-09-08 夜の直し。★寝姿と同じ）。
         pointerEvents: "none"
@@ -945,7 +954,7 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
         //   ★★3〜7秒に1回、120ms。★見えているときだけ 動きます。
         //   ★★顔で 体調や分析結果を 表しません（★禁 7）。
         //     ★まばたきは、★記録の中身とも、記録の有無とも 関わりません。
-        <SheepDressed wearing={wearing} colors={clothColors} colors2={clothColors2} size={size * frontScale} motion={motion} blink
+        <SheepDressed wearing={wearing} colors={clothColors} colors2={clothColors2} size={size * frontScale} motion={motion} blink face={face}
           travel={false} facingLeft={facingLeft} alt="羊" />
       ) : (
         <div style={{ transform: facingLeft ? "scaleX(-1)" : "none" }}>
@@ -1970,6 +1979,20 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
   //   ★★歩いている・すわっている・眠っている あいだは しません。
   //   ★★見えていないとき（document.hidden）は しません。
   //   ★★体調にも 記録にも、★1つも 関わりません。
+  // ★★顔（★2026-09-09・坂本さんの ご承認）。
+  //
+  //   ★★これまで、★顔は 1度も 変わっていませんでした。
+  //     ★SheepDressed は face を 受け取りますが、★呼ぶ側が 渡していませんでした。
+  //     ★FACE_FOR という表も 作ったきりで、★どこからも 呼んでいませんでした。
+  //     ★★「作った関数は、必ずどこかから 呼ばれているか」に 反していました。
+  //
+  //   ★★にっこり・大喜び・照れ は 4.0秒。★あいづちより 1秒 長くします。
+  //     ★★吹き出しが 消えたあとも 少し 笑っています。
+  //   ★★眠い・眠り は 状態です。★時間で 消しません。
+  //   ★★体調や 記録の中身では、★1つも 変えません（★禁 7）。
+  const [replyFace, setReplyFace] = useState(null);
+  const [idleSleep, setIdleSleep] = useState(false);
+  const replyFaceTimerRef = useRef(null);
   const [gesture, setGesture] = useState(null);
   const gestureRecentRef = useRef([]);
   const [bubble, setBubble] = useState(null);
@@ -1990,6 +2013,13 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
     if (!wardrobeOn || !say || !say.type) return;
     const line = pickLine(say.type, recentRef.current, new Date().getHours());
     showLine(line, false);
+    // ★★言うのと 一緒に、★顔も 変えます（★FACE_FOR の 表のとおり）。
+    const f = FACE_FOR[say.type];
+    if (f) {
+      setReplyFace(f);
+      clearTimeout(replyFaceTimerRef.current);
+      replyFaceTimerRef.current = setTimeout(() => setReplyFace(null), REPLY_FACE_MS);
+    }
     // ★★say は「何回目か」を 持ちます。★同じ操作を 2度 数えないためです。
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [say && say.seq]);
@@ -2089,6 +2119,26 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
     furniturePos("furniture_bed")
       || (wardrobeOn ? bedPos(equipped, equipped.interiorPositions) : null)
   );
+
+  // ★★何もしないで 60秒 たったら、★眠ります（★2026-09-09）。
+  //   ★★触るたびに 数え直します。
+  useEffect(() => {
+    if (!wardrobeOn) return;
+    if (typeof window === "undefined") return;
+    let t = null;
+    const reset = () => {
+      setIdleSleep(false);
+      clearTimeout(t);
+      t = setTimeout(() => setIdleSleep(true), IDLE_SLEEP_MS);
+    };
+    reset();
+    const ev = ["pointerdown", "keydown", "wheel", "touchstart"];
+    for (const e of ev) window.addEventListener(e, reset, { passive: true });
+    return () => {
+      clearTimeout(t);
+      for (const e of ev) window.removeEventListener(e, reset);
+    };
+  }, [wardrobeOn]);
 
   // ★★しぐさの 時計。★立ち止まっている あいだだけです。
   useEffect(() => {
@@ -2431,7 +2481,9 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
       {/* ★★羊を、大きくしました（★2026-09-08 夕・坂本さんのご要望）。
           ★★「小さすぎる」とのことでした。★92 → ★SHEEP_SIZE。
           ★数は lib が持ちます。★ここで書かないこと。 */}
-      <PositionedCharacter bubble={bubble} gesture={gesture} wardrobeOn={wardrobeOn} equipped={equipped} size={sheepPx} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isSitting={isSitting} isLying={isLying}
+      <PositionedCharacter bubble={bubble} gesture={gesture}
+        face={faceNow({ reply: replyFace, isLying, idle: idleSleep, hour: new Date().getHours() })}
+        wardrobeOn={wardrobeOn} equipped={equipped} size={sheepPx} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isSitting={isSitting} isLying={isLying}
         diag={{ bedTop: bedPosForDiag && bedPosForDiag.top, bedLeft: bedPosForDiag && bedPosForDiag.left }} />
 
       {/* ★ベッドと椅子は、上げられる高さを狭めてある（BED_MIN_TOP / CHAIR_MIN_TOP）。

@@ -65,6 +65,35 @@ function ok(name, cond, extra) {
   ok("★間は 3000〜7000 に 収まる",
     m.nextBlinkMs(() => 0) === 3000 && m.nextBlinkMs(() => 1) === 7000);
 
+  console.log("■ ★顔の 間（★2026-09-09・坂本さんの ご承認）");
+  ok("★にっこり・大喜び・照れ は 4.0秒", m.REPLY_FACE_MS === 4000);
+  ok("★眠い顔は 22:00〜翌05:00",
+    m.isSleepyHour(22) && m.isSleepyHour(2) && m.isSleepyHour(4)
+    && !m.isSleepyHour(21) && !m.isSleepyHour(5) && !m.isSleepyHour(12));
+  ok("★何もしないで 60秒で 眠る", m.IDLE_SLEEP_MS === 60000);
+  // ★★強いほうから 見ること。★2つの決めを 混ぜないためです。
+  ok("★あいづちが いちばん強い",
+    m.faceNow({ reply: "smile", isLying: true, idle: true, hour: 23 }) === "smile");
+  ok("★眠っていれば 眠り顔",
+    m.faceNow({ isLying: true, hour: 23 }) === "sleep");
+  ok("★60秒 放置でも 眠り顔",
+    m.faceNow({ idle: true, hour: 12 }) === "sleep");
+  ok("★夜は 眠い顔", m.faceNow({ hour: 23 }) === "sleepy");
+  ok("★ふだんは 通常", m.faceNow({ hour: 12 }) === "normal");
+  ok("★何も 渡さなくても 落ちない", m.faceNow({}) === "normal");
+
+  console.log("■ ★顔が、実際に 変わること");
+  {
+    const ch2 = readCode("components", "CharacterHome.jsx");
+    // ★★2026-09-09 まで、★顔は 1度も 変わっていませんでした。
+    //   ★呼ぶ側が face を 渡していませんでした。
+    ok("★★羊に 顔を 渡している", /face=\{faceNow\(\{/.test(ch2));
+    // ★★FACE_FOR は、★作ったきりで 呼ばれていませんでした。
+    ok("★★FACE_FOR を、実際に 使っている", /FACE_FOR\[say\.type\]/.test(ch2));
+    ok("★4.0秒で 戻す", /setReplyFace\(null\), REPLY_FACE_MS/.test(ch2));
+    ok("★触れば 数え直す", /IDLE_SLEEP_MS/.test(ch2) && /pointerdown/.test(ch2));
+  }
+
   console.log("■ ★重ね順と、出す場所");
   ok("★顔は z=46（★頭45 と 首元50 の あいだ）", m.FACE_Z === 46);
   ok("★頭は「顔なし」を 使っている", /src: HEAD_NOFACE/.test(sd));
