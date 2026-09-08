@@ -95,6 +95,41 @@ async function load(rel) {
   ok(/roomOnly/.test(vtRaw), "★部屋だけを描いている（★説明も切り替えもお店も出さない）");
   ok(H.SIZES.roomPct + H.SIZES.drawerPct === 100, "★40 ＋ 60 ＝ 100");
 
+  console.log("④-5 ★2段階（★2026-09-08・坂本さんのお決め）");
+  // ★★押すと すぐ着る、ではなく、★名前を見せてから 着ます。
+  //   ★「名前が分かったほうが、面白い」というご判断です。
+  //   ★★Opus の見本②は「タップで すぐ着ます」でした。★食い違っています。
+  //     ★坂本さんのお決めを、採りました。
+  const dr = readRaw("components/HomeDrawer.jsx");
+  const gr = readRaw("components/DrawerItemGrid.jsx");
+  const vt2 = readRaw("components/VocalTracker.jsx");
+  ok(/\{picked && \(/.test(dr), "★えらんだときだけ、段が出る");
+  ok(/\{picked\.name\}/.test(dr), "★★名前を、出している");
+  ok(/actionLabel\(category, pickedOn\)/.test(dr), "★押しどころの言葉を、lib から取っている");
+  ok(/onCancelPick/.test(dr), "★★やめる（✕）が、ある（★出口を作る）");
+  ok(/onTap=\{\(it\) => setPickedItem/.test(vt2), "★押しても、まだ着ない");
+  ok(/onWear=\{\(it\) => \{/.test(vt2), "★「身につける」で、着る");
+  ok(/isPicked=\{\(it\) => !!pickedItem/.test(vt2), "★えらんでいるしるしを、渡している");
+  // ★★着ている しるしと、★えらんでいる しるしを、混ぜないこと。
+  ok(/picked \? 2 : 1/.test(gr) && /right: 3, bottom: 3/.test(gr),
+    "★着ている（●）と、えらんでいる（太いわく）は、別のしるし");
+  // ★★言葉。★家具に「身につける」と出さないこと。
+  ok(H.actionLabel("wear", false) === "身につける", "きるもの … 身につける");
+  ok(H.actionLabel("wear", true) === "はずす", "着ていれば … はずす");
+  ok(H.actionLabel("place", false) === "おく", "★おくもの … おく（★身につける ではない）");
+  ok(H.actionLabel("store", false) === "しまう", "しまう … しまう");
+  ok(H.actionLabel("window", true) === "はずす", "置いていれば … はずす");
+
+  console.log("④-6 ★さがす は、まだ出さない");
+  // ★★押しどころだけ 先に出していました。★私の落ち度です。
+  //   ★押せるのに何も起きないものを、★出してはいけません。
+  ok(/\{onSearch && \(/.test(dr), "★渡した時だけ、出す");
+  ok(!/onSearch=\{/.test(vt2), "★いまは、渡していない（★まだ作っていないため）");
+
+  console.log("④-7 ★しまう は、置いているものを並べる");
+  ok(/placed: placedForStore/.test(vt2), "★いま置いているものを、渡している");
+  ok(/const placedForStore = useMemo/.test(vt2), "★着ているものと、置いているものを、集めている");
+
   console.log("⑤ ★言葉（★§7-2・§7-4）");
   ok(H.COPY.open === "したく", "★「したく」（★「もようがえ」ではない）");
   ok(H.COPY.undo === "さっきに もどす" && H.COPY.done === "これでいい", "下の帯の言葉");

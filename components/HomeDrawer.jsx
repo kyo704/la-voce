@@ -4,7 +4,7 @@ import { useState } from "react";
 import { C } from "@/lib/tokens";
 import {
   CATEGORIES, FIXED_TABS, subTabsFor, SORTS, nextSort, sortLabel,
-  SIZES, COPY, colorBandApplies, leftButtonLabel, BAND_IDLE
+  SIZES, COPY, colorBandApplies, leftButtonLabel, BAND_IDLE, actionLabel
 } from "@/lib/homeDrawer";
 
 // ============================================================================
@@ -36,6 +36,10 @@ export default function HomeDrawer({
   onSearch,
   onClose, onUndo, onDone,
   canUndo = false,
+  // ★★押した品（★2026-09-08・坂本さんのお決め「2段階」）。
+  //   ★★押すと すぐ着る、ではなく、★名前を見せてから 着ます。
+  //   ★渡されなければ、★この段は出ません。
+  picked = null, pickedOn = false, onWear, onCancelPick,
   // ★★色の帯（★きるもの・1点えらんだとき）。
   //   ★★渡されなければ、★1段ぶんの場所も 空けません。
   colorBand = null,
@@ -132,15 +136,21 @@ export default function HomeDrawer({
         display: "flex", alignItems: "center", gap: 8, padding: "0 10px",
         borderBottom: `1px solid ${C.line}`
       }}>
-        <button type="button" onClick={() => onSearch && onSearch()}
-          aria-label={COPY.search}
-          style={{
-            minWidth: 32, minHeight: 32, borderRadius: 6,
-            border: `1px solid ${C.line}`, background: C.paper, color: C.inkSoft,
-            fontSize: "0.8125rem"
-          }}>
-          さがす
-        </button>
+        {/* ★★「さがす」は、★まだ作っていません（★2026-09-08）。
+            ★★押しどころだけを、★先に出していました。★私の落ち度です。
+              ★押せるのに何も起きないものを、★出してはいけません。
+            ★★作ってから、★出します。★onSearch を渡した時だけ 出します。 */}
+        {onSearch && (
+          <button type="button" onClick={() => onSearch()}
+            aria-label={COPY.search}
+            style={{
+              minWidth: 32, minHeight: 32, borderRadius: 6,
+              border: `1px solid ${C.line}`, background: C.paper, color: C.inkSoft,
+              fontSize: "0.8125rem"
+            }}>
+            {COPY.search}
+          </button>
+        )}
         {/* ★★数を、書きません。★「54点」と出さないこと。 */}
         <span style={{ color: C.inkSoft, fontSize: "0.75rem", flex: 1 }} />
         {/* ★★並び順は、★1つのチップを押して巡回します（★§1-3・§6）。
@@ -161,6 +171,44 @@ export default function HomeDrawer({
       <div style={{ flex: 1, overflowY: "auto", padding: 10 }}>
         {children}
       </div>
+
+      {/* ★★押した品の、名前と押しどころ（★2026-09-08・坂本さんのお決め）。
+          ★★押すと すぐ着る、ではなく、★名前を見せてから 着ます。
+            ★「名前が分かったほうが、面白い」というご判断です。
+          ★★色の帯の すぐ上に置きます。★一覧の位置を、動かしません。
+            ★出したり消したりで 一覧がずれると、★見ていた品を見失います。
+          ★★やめる（✕）を、必ず置きます。★出口のない画面を作らないこと。 */}
+      {picked && (
+        <div style={{
+          flexShrink: 0, display: "flex", alignItems: "center", gap: 8,
+          padding: "8px 10px", borderTop: `1px solid ${C.line}`, background: C.paper
+        }}>
+          <span style={{
+            flex: 1, minWidth: 0, fontSize: "0.8125rem", color: C.ink,
+            overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"
+          }}>
+            {picked.name}
+          </span>
+          <button type="button" onClick={() => onCancelPick && onCancelPick()}
+            aria-label={COPY.cancel}
+            style={{
+              minWidth: 40, minHeight: 40, borderRadius: 6,
+              border: `1px solid ${C.line}`, borderBottomWidth: 2,
+              background: C.card, color: C.inkSoft, fontSize: "1rem"
+            }}>
+            ✕
+          </button>
+          <button type="button" onClick={() => onWear && onWear(picked)}
+            style={{
+              minHeight: 40, padding: "0 16px", borderRadius: 6,
+              border: `1px solid ${C.curtain}`, borderBottomWidth: 2,
+              background: C.curtain, color: "#FFFDF8",
+              fontSize: "0.875rem", fontWeight: 600, whiteSpace: "nowrap"
+            }}>
+            {actionLabel(category, pickedOn)}
+          </button>
+        </div>
+      )}
 
       {/* ★★色の帯 ── ★きるもの のときだけ、★1点えらんだ その時だけ（★§8-4）。
           ★★グリッドの下、★下の帯の上に、★固定で1段（★§8-1）。

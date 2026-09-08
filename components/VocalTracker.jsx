@@ -105,7 +105,8 @@ import DrawerItemGrid from "@/components/DrawerItemGrid";
 import { VIEW, DRESS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES } from "@/lib/homeDrawer";
 import { itemsFor, sortItems } from "@/lib/drawerItems";
 import {
-  INTERIOR_ITEMS, interiorSrc, isPlaced, toggleInterior, tileSurface
+  INTERIOR_ITEMS, interiorSrc, isPlaced, toggleInterior, tileSurface,
+  interiorOf, interiorItemByKey
 } from "@/lib/sheepInteriorV2";
 import { mayUseWardrobe, mayWearEverything, applyWear } from "@/lib/sheepWardrobe";
 import {
@@ -5302,6 +5303,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [drawerCat, setDrawerCat] = useState("wear");
   const [drawerTab, setDrawerTab] = useState("all");
   const [drawerSort, setDrawerSort] = useState("new");
+  // ★★品を押したとき（★2026-09-08・坂本さんのお決め）。
+  //   ★★押すと すぐ着る、ではなく、★名前を見せてから 着ます。
+  //     ★「名前が分かったほうが、面白い」というご判断です。
+  //   ★Opus の見本②は「すぐ着る」でしたが、★坂本さんのお決めを採ります。
+  const [pickedItem, setPickedItem] = useState(null);
   // ★「あとで」を押された日。★同じ日は、もう出しません。★翌日また出します。
   //   ★★端末に覚えさせます。★DBに残すほどのことではありません。
   //     ★忘れても、★もう一度お尋ねするだけです。
@@ -6304,6 +6310,25 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★★C1 ── 「出なかった」と記録した日（★2026-09-08）。
   //   ★★こちらで決めません。★ご本人が押した答えです。
   //   ★ゲートは要りません。★何も主張しないためです。★1日目から動きます。
+  // ★★「しまう」に並べるもの（★2026-09-08）。
+  //   ★★いま着ているもの と、★いま置いているもの、★両方です。
+  //     ★片方だけだと「しまえないものがある」ことになります。
+  //   ★★押すと、★外れます（★消しません。★持ち物は そのままです）。
+  const placedForStore = useMemo(() => {
+    const eq = characterEquipped || {};
+    const worn = Object.entries(eq.wardrobe || {})
+      .filter(([slot, key]) => slot !== "propSide" && key)
+      .map(([, key]) => sheepItemByKey(key))
+      .filter(Boolean);
+    const inter = interiorOf(eq);
+    const single = ["window", "view", "door", "wallTile", "floorTile"]
+      .map((k) => interiorItemByKey(inter[k])).filter(Boolean);
+    const many = ["furniture", "showa", "garden", "wallart"]
+      .flatMap((c) => (Array.isArray(inter[c]) ? inter[c] : []))
+      .map((k) => interiorItemByKey(k)).filter(Boolean);
+    return [...worn, ...single, ...many];
+  }, [characterEquipped]);
+
   const notOutDays = useMemo(
     () => notOutDates(performances, perfResults),
     [performances, perfResults]);
@@ -15278,19 +15303,45 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               {wardrobeOn && homeState === DRESS && (
                 <HomeDrawer
                   category={drawerCat}
-                  onCategory={(k) => { setDrawerCat(k); setDrawerTab("all"); }}
+                  onCategory={(k) => { setDrawerCat(k); setDrawerTab("all"); setPickedItem(null); }}
                   tab={drawerTab} onTab={setDrawerTab}
                   sort={drawerSort} onSort={setDrawerSort}
-                  onClose={() => setHomeState(VIEW)}
-                  onDone={() => { handleSaveCharacter(); setHomeState(VIEW); }}
-                  canUndo={false}>
+                  onClose={() => { setPickedItem(null); setHomeState(VIEW); }}
+                  onDone={() => { handleSaveCharacter(); setPickedItem(null); setHomeState(VIEW); }}
+                  canUndo={false}
+                  // ★★押した品（★2026-09-08・坂本さんのお決め「2段階」）。
+                  //   ★★押すと すぐ着る、ではなく、★名前を見せてから 着ます。
+                  //     ★「名前が分かったほうが、面白い」というご判断です。
+                  //   ★Opus の見本②は「すぐ着る」でした。★坂本さんのお決めを採ります。
+                  picked={pickedItem}
+                  pickedOn={!!pickedItem && (pickedItem.slot
+                    ? (characterEquipped.wardrobe || {})[pickedItem.slot] === pickedItem.key
+                    : isPlaced(characterEquipped, pickedItem))}
+                  onCancelPick={() => setPickedItem(null)}
+                  onWear={(it) => {
+                    if (it.slot) {
+                      handleEquipWardrobe(applyWear(
+                        characterEquipped.wardrobe || {}, it, sheepItemByKey));
+                    } else {
+                      setCharacterEquipped((prev) => ({
+                        ...prev, interior: toggleInterior(prev, it).interior
+                      }));
+                      setCharacterDirty(true);
+                    }
+                    // ★★えらんだままにします。★色の帯が、そのまま使えます。
+                    //   ★★消すと、★色を選ぶために もう一度 押すことになります。
+                  }}>
                   <DrawerItemGrid
                     items={sortItems(
                       itemsFor(drawerCat, drawerTab, {
                         wearItems: SHEEP_ITEMS,
                         interiorItems: INTERIOR_ITEMS,
                         marks: characterEquipped,
-                        tileSurfaceOf: tileSurface
+                        tileSurfaceOf: tileSurface,
+                        // ★★「しまう」は、★いま置いているものを並べます（★2026-09-08）。
+                        //   ★★渡していませんでした。★だから、いつも空でした。
+                        //   ★着ているものと、置いているもの、★両方です。
+                        placed: placedForStore
                       }),
                       drawerSort,
                       { marks: characterEquipped })}
@@ -15301,17 +15352,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ? (characterEquipped.wardrobe || {})[it.slot] === it.key
                       : isPlaced(characterEquipped, it))}
                     isOwned={(it) => (it.slot ? ownedItemKeys.includes(it.key) : true)}
-                    onTap={(it) => {
-                      if (it.slot) {
-                        handleEquipWardrobe(applyWear(
-                          characterEquipped.wardrobe || {}, it, sheepItemByKey));
-                      } else {
-                        setCharacterEquipped((prev) => ({
-                          ...prev, interior: toggleInterior(prev, it).interior
-                        }));
-                        setCharacterDirty(true);
-                      }
-                    }} />
+                    // ★★押しても、★まだ着ません（★2026-09-08・坂本さんのお決め）。
+                    //   ★★名前を見せてから、★「身につける」で 着ます。
+                    //     ★「名前が分かったほうが、面白い」というご判断です。
+                    //   ★★同じ品をもう一度押したら、★えらぶのをやめます。
+                    onTap={(it) => setPickedItem(
+                      (cur) => (cur && cur.key === it.key ? null : it))}
+                    isPicked={(it) => !!pickedItem && pickedItem.key === it.key} />
                 </HomeDrawer>
               )}
               </>

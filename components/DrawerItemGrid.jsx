@@ -20,7 +20,10 @@ import { SIZES } from "@/lib/homeDrawer";
 // ============================================================================
 
 export default function DrawerItemGrid({
-  items, srcOf, isOn, isOwned, onTap, emptyText, renderThumb
+  items, srcOf, isOn, isOwned, onTap, emptyText, renderThumb,
+  // ★★いま えらんでいる品（★2026-09-08・2段階）。
+  //   ★「着ている」とは、★別のしるしです。★混ぜないこと。
+  isPicked
 }) {
   const list = Array.isArray(items) ? items : [];
 
@@ -42,6 +45,7 @@ export default function DrawerItemGrid({
       {list.map((it) => {
         const on = isOn ? isOn(it) : false;
         const owned = isOwned ? isOwned(it) : true;
+        const picked = isPicked ? isPicked(it) : false;
         return (
           <button key={it.key} type="button"
             onClick={() => onTap && onTap(it)}
@@ -58,8 +62,12 @@ export default function DrawerItemGrid({
               // ★★丸いピル型にしません（★§7-2「形」）。
               //   ★桐たんすの引き出しの前板に寄せます。★角は小さめ、★下に木の線。
               borderRadius: 6,
-              border: `1px solid ${on ? C.curtain : C.line}`,
-              borderBottomWidth: on ? 2 : 1,
+              // ★★えらんでいる品は、★わくを太くします（★見本③の 濃い枠）。
+              //   ★★着ている品とは、★別のしるしです。
+              //     ★着ている … 右下に ●
+              //     ★えらんでいる … わくが太い
+              border: `${picked ? 2 : 1}px solid ${picked ? C.ink : (on ? C.curtain : C.line)}`,
+              borderBottomWidth: picked ? 3 : (on ? 2 : 1),
               background: on ? C.paper : C.card,
               padding: 3,
               display: "flex", flexDirection: "column",
