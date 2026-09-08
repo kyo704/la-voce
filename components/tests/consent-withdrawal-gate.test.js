@@ -52,6 +52,16 @@ ok("★TRUNCATE を 剥がしている",
 ok("★関数を anon に 渡していない",
   /revoke all on function public\.consent_withdrawn\(uuid\) from anon;/.test(sql));
 
+console.log("■ ★途中の姿も、ゆるく しないこと");
+// ★★2026-09-09、★坂本さんから ご報告をいただきました。
+//   ★「実行の順の都合で、一時的に anon に entries の全権限が残った」。
+//   ★★SQL エディタは、途中で止まっても 巻き戻しません。
+//   ★だから、★剥がすほうを 先に 書きます。
+const revokeAt = sql.indexOf("revoke all on public.entries from anon;");
+const dropAt = sql.indexOf('drop policy if exists "Users can manage own entries"');
+ok("★★剥がすのが、ポリシーの入れ直しより 先", revokeAt > 0 && dropAt > 0 && revokeAt < dropAt,
+  `revoke ${revokeAt} / drop ${dropAt}`);
+
 console.log("■ ★安全に 流せること");
 // ★★Supabase の SQL エディタは ROLLBACK を 効かせません（★2026-09-08）。
 ok("★★BEGIN / ROLLBACK で 包んでいない",

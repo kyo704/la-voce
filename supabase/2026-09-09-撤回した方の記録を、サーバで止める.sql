@@ -63,7 +63,24 @@ revoke all on function public.consent_withdrawn(uuid) from anon;
 grant execute on function public.consent_withdrawn(uuid) to authenticated;
 
 -- ---------------------------------------------------------------------------
--- ★③ 書き込みの ポリシーを、★入れ直します
+-- ★③ 2枚目 ── 権限（★先に 剥がします）
+--
+--   ★★ポリシーだけでは 1枚です。★権限も 見ます。
+--
+--   ★★2026-09-09、★坂本さんから ご報告をいただきました。
+--     ★「実行の順の 都合で、★一時的に anon に entries の 全権限が
+--       ★★残ってしまう ことが あった」。★④を 単独で 流し直して 解消。
+--   ★★だから、★剥がすほうを 先に します。
+--     ★SQL エディタは、★途中で 止まっても 巻き戻しません。
+--     ★★途中の どの姿も、★最後の姿より ゆるく しないこと。
+--   ★anon には、そもそも 用が ありません。★まとめて 剥がします。
+--   ★TRUNCATE は RLS が 効きません。★1文で 表が 空になります。
+-- ---------------------------------------------------------------------------
+revoke all on public.entries from anon;
+revoke truncate, trigger, references on public.entries from authenticated;
+
+-- ---------------------------------------------------------------------------
+-- ★④ 書き込みの ポリシーを、★入れ直します
 --
 --   ★★もとは 1枚で「for all」でした。★読み書き まとめてです。
 --     ★★これを 分けます。★読むのは そのまま、★書くのだけ 条件を 足します。
@@ -94,16 +111,6 @@ create policy "entries_update_own_not_withdrawn"
 create policy "entries_delete_own"
   on public.entries for delete
   using (auth.uid() = user_id);
-
--- ---------------------------------------------------------------------------
--- ★④ 2枚目 ── 権限
---
---   ★★ポリシーだけでは 1枚です。★権限も 見ます。
---   ★anon には、そもそも 用が ありません。★まとめて 剥がします。
---   ★TRUNCATE は RLS が 効きません。★1文で 表が 空になります。
--- ---------------------------------------------------------------------------
-revoke all on public.entries from anon;
-revoke truncate, trigger, references on public.entries from authenticated;
 
 -- ---------------------------------------------------------------------------
 -- ★⑤ 確かめ（★読むだけです）
