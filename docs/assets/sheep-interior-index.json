@@ -2509,7 +2509,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_02",
@@ -2526,7 +2529,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_03",
@@ -2543,7 +2549,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_04",
@@ -2560,7 +2569,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_05",
@@ -2577,7 +2590,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_06",
@@ -2594,7 +2610,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_07",
@@ -2611,7 +2630,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_08",
@@ -2628,7 +2650,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_09",
@@ -2645,7 +2670,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_10",
@@ -2662,7 +2690,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_11",
@@ -2679,7 +2710,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_12",
@@ -2696,7 +2730,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_13",
@@ -2713,7 +2751,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_14",
@@ -2730,7 +2772,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "和"
+   ]
   },
   {
    "key": "floor_15",
@@ -2747,7 +2793,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_16",
@@ -2764,7 +2813,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ]
   },
   {
    "key": "floor_17",
@@ -2781,7 +2834,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ]
   },
   {
    "key": "floor_18",
@@ -2798,7 +2855,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ]
   },
   {
    "key": "floor_19",
@@ -2815,7 +2876,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_20",
@@ -2832,7 +2896,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_21",
@@ -2849,7 +2916,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "和"
+   ]
   },
   {
    "key": "floor_22",
@@ -2866,7 +2937,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "和"
+   ]
   },
   {
    "key": "floor_23",
@@ -2883,7 +2958,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "和"
+   ]
   },
   {
    "key": "floor_24",
@@ -2900,7 +2979,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_25",
@@ -2917,7 +2999,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_26",
@@ -2934,7 +3019,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_27",
@@ -2951,7 +3039,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "和",
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_28",
@@ -2968,7 +3060,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "和",
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_29",
@@ -2985,7 +3081,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "和",
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_30",
@@ -3002,7 +3102,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "和",
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_31",
@@ -3019,7 +3123,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "和",
+    "あたたかい"
+   ]
   },
   {
    "key": "floor_32",
@@ -3036,7 +3144,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_33",
@@ -3053,7 +3165,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_34",
@@ -3070,7 +3186,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_35",
@@ -3087,7 +3207,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_36",
@@ -3104,7 +3228,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_37",
@@ -3121,7 +3249,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_38",
@@ -3138,7 +3270,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_39",
@@ -3155,7 +3291,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_40",
@@ -3172,7 +3312,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_41",
@@ -3189,7 +3333,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_42",
@@ -3206,7 +3354,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_43",
@@ -3223,7 +3375,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_44",
@@ -3240,7 +3396,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ]
   },
   {
    "key": "floor_45",
@@ -3257,7 +3417,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_46",
@@ -3274,7 +3438,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_47",
@@ -3291,7 +3459,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_48",
@@ -3308,7 +3480,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_49",
@@ -3325,7 +3501,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_50",
@@ -3342,7 +3522,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ]
   },
   {
    "key": "floor_51",
@@ -3359,7 +3543,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ]
   },
   {
    "key": "floor_52",
@@ -3376,7 +3564,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ]
   },
   {
    "key": "floor_53",
@@ -3393,7 +3585,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "ゆるい"
+   ]
   },
   {
    "key": "floor_54",
@@ -3410,7 +3605,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "ゆるい"
+   ]
   },
   {
    "key": "floor_55",
@@ -3427,7 +3625,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "ゆるい"
+   ]
   },
   {
    "key": "floor_56",
@@ -3444,7 +3645,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "ゆるい"
+   ]
   },
   {
    "key": "floor_57",
@@ -3461,7 +3665,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "ゆるい"
+   ]
   },
   {
    "key": "floor_58",
@@ -3478,7 +3685,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
   },
   {
    "key": "floor_59",
@@ -3495,7 +3706,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
   },
   {
    "key": "floor_60",
@@ -3512,7 +3727,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
   },
   {
    "key": "floor_61",
@@ -3529,7 +3748,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
   },
   {
    "key": "floor_62",
@@ -3546,7 +3769,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
   },
   {
    "key": "floor_63",
@@ -3563,7 +3790,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
   },
   {
    "key": "floor_64",
@@ -3580,7 +3811,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
   },
   {
    "key": "floor_65",
@@ -3597,7 +3832,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
   },
   {
    "key": "floor_66",
@@ -3614,7 +3853,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "ゆるい"
+   ]
   },
   {
    "key": "floor_67",
@@ -3631,7 +3873,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "ゆるい",
+    "和"
+   ]
   },
   {
    "key": "floor_68",
@@ -3648,7 +3894,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "ゆるい",
+    "きちんと"
+   ]
   },
   {
    "key": "floor_69",
@@ -3665,7 +3915,10 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "ゆるい"
+   ]
   },
   {
    "key": "floor_70",
@@ -3682,7 +3935,11 @@
    "surfaceKind": "floor",
    "anchor": "tile",
    "z": 50,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "ゆるい",
+    "きちんと"
+   ]
   },
   {
    "key": "wall_01",
@@ -3699,7 +3956,10 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと"
+   ]
   },
   {
    "key": "wall_02",
@@ -3716,7 +3976,10 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと"
+   ]
   },
   {
    "key": "wall_03",
@@ -3733,7 +3996,10 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと"
+   ]
   },
   {
    "key": "wall_04",
@@ -3750,7 +4016,10 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと"
+   ]
   },
   {
    "key": "wall_05",
@@ -3767,7 +4036,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "ゆるい"
+   ]
   },
   {
    "key": "wall_06",
@@ -3784,7 +4057,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "ゆるい"
+   ]
   },
   {
    "key": "wall_07",
@@ -3801,7 +4078,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "ゆるい"
+   ]
   },
   {
    "key": "wall_08",
@@ -3818,7 +4099,10 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと"
+   ]
   },
   {
    "key": "wall_09",
@@ -3835,7 +4119,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "ゆるい"
+   ]
   },
   {
    "key": "wall_10",
@@ -3852,7 +4140,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "ゆるい"
+   ]
   },
   {
    "key": "wall_11",
@@ -3869,7 +4161,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ]
   },
   {
    "key": "wall_12",
@@ -3886,7 +4182,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "和"
+   ]
   },
   {
    "key": "wall_13",
@@ -3903,7 +4203,10 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと"
+   ]
   },
   {
    "key": "wall_14",
@@ -3920,7 +4223,10 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと"
+   ]
   },
   {
    "key": "wall_15",
@@ -3937,7 +4243,10 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと"
+   ]
   },
   {
    "key": "wall_16",
@@ -3954,7 +4263,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "すずしい"
+   ]
   },
   {
    "key": "wall_17",
@@ -3971,7 +4284,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "すずしい"
+   ]
   },
   {
    "key": "wall_18",
@@ -3988,7 +4305,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "すずしい"
+   ]
   },
   {
    "key": "wall_19",
@@ -4005,7 +4326,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "すずしい"
+   ]
   },
   {
    "key": "wall_20",
@@ -4022,7 +4347,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "すずしい"
+   ]
   },
   {
    "key": "wall_21",
@@ -4039,7 +4368,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "すずしい"
+   ]
   },
   {
    "key": "wall_22",
@@ -4056,7 +4389,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "すずしい"
+   ]
   },
   {
    "key": "wall_23",
@@ -4073,7 +4410,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "すずしい"
+   ]
   },
   {
    "key": "wall_24",
@@ -4090,7 +4431,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "すずしい"
+   ]
   },
   {
    "key": "wall_25",
@@ -4107,7 +4452,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "すずしい"
+   ]
   },
   {
    "key": "wall_26",
@@ -4124,7 +4473,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "すずしい"
+   ]
   },
   {
    "key": "wall_27",
@@ -4141,7 +4494,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "きちんと",
+    "すずしい"
+   ]
   },
   {
    "key": "wall_28",
@@ -4158,7 +4515,10 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "wall_29",
@@ -4175,7 +4535,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ]
   },
   {
    "key": "wall_30",
@@ -4192,7 +4556,10 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "wall_31",
@@ -4209,7 +4576,10 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "wall_32",
@@ -4226,7 +4596,10 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "wall_33",
@@ -4243,7 +4616,10 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "wall_34",
@@ -4260,7 +4636,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "和"
+   ]
   },
   {
    "key": "wall_35",
@@ -4277,7 +4657,10 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "wall_36",
@@ -4294,7 +4677,10 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "wall_37",
@@ -4311,7 +4697,10 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい"
+   ]
   },
   {
    "key": "wall_38",
@@ -4328,7 +4717,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "wall_39",
@@ -4345,7 +4738,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "wall_40",
@@ -4362,7 +4759,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "wall_41",
@@ -4379,7 +4780,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "wall_42",
@@ -4396,7 +4801,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "wall_43",
@@ -4413,7 +4822,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "wall_44",
@@ -4430,7 +4843,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "wall_45",
@@ -4447,7 +4864,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "wall_46",
@@ -4464,7 +4885,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
   },
   {
    "key": "wall_47",
@@ -4481,7 +4906,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
   },
   {
    "key": "wall_48",
@@ -4498,7 +4927,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
   },
   {
    "key": "wall_49",
@@ -4515,7 +4948,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
   },
   {
    "key": "wall_50",
@@ -4532,7 +4969,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ]
   },
   {
    "key": "wall_51",
@@ -4549,7 +4990,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ]
   },
   {
    "key": "wall_52",
@@ -4566,7 +5011,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ]
   },
   {
    "key": "wall_53",
@@ -4583,7 +5032,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "和",
+    "きちんと"
+   ]
   },
   {
    "key": "wall_54",
@@ -4600,7 +5053,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "和",
+    "きちんと"
+   ]
   },
   {
    "key": "wall_55",
@@ -4617,7 +5074,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "和",
+    "きちんと"
+   ]
   },
   {
    "key": "wall_56",
@@ -4634,7 +5095,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "和",
+    "きちんと"
+   ]
   },
   {
    "key": "wall_57",
@@ -4651,7 +5116,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "和",
+    "きちんと"
+   ]
   },
   {
    "key": "wall_58",
@@ -4668,7 +5137,11 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "和",
+    "きちんと"
+   ]
   },
   {
    "key": "wall_59",
@@ -4685,7 +5158,10 @@
    "surfaceKind": "wall",
    "anchor": "tile",
    "z": 10,
-   "seamless": true
+   "seamless": true,
+   "kanji": [
+    "ゆるい"
+   ]
   }
  ]
 }

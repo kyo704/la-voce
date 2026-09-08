@@ -83,10 +83,11 @@ function ok(name, cond, extra) {
   // ★★2026-09-08、★166点を、ぜんぶ取り込みました（★坂本さんの決め）。
   //   ★9月7日は62点だけでした。★残り104点を、この日に足しています。
   //   ★★zip は、★開けたまま置いていません（★上で確かめています）。
-  ok("着せかえは、いま385点", index.items.length === 385,
+  // ★★2026-09-08 夜、★マフラー28点が 加わりました（385 ＋ 28 ＝ 413）。
+  ok("着せかえは、いま413点", index.items.length === 413,
     "実際は " + index.items.length);
   const daily = index.items.filter((i) => i.group === "daily");
-  ok("ふだん着が166点そろっている", daily.length === 166, "実際は " + daily.length);
+  ok("ふだん着が194点そろっている（★166 ＋ マフラー28）", daily.length === 194, "実際は " + daily.length);
   // ★足の絵は使いません。★脚はコードで描いています。
   for (const f of ["foot_L.png", "foot_R.png", "foot_shadow_L.png", "foot_shadow_R.png"]) {
     ok("足の絵 " + f + " を、取りこんでいない", !fs.existsSync(path.join(live, f)));

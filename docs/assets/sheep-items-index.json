@@ -3377,7 +3377,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "top_06",
@@ -3396,7 +3398,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "top_07",
@@ -3416,7 +3420,9 @@
     "すずしい",
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "みずいろ",
+   "defaultHex": "#9FB9CB"
   },
   {
    "key": "top_09",
@@ -3436,7 +3442,9 @@
     "すずしい",
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "はいいろ",
+   "defaultHex": "#89817A"
   },
   {
    "key": "top_11",
@@ -3456,7 +3464,9 @@
     "あたたかい",
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "やまぶき",
+   "defaultHex": "#B6812A"
   },
   {
    "key": "top_12",
@@ -3476,7 +3486,9 @@
     "あたたかい",
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "top_14",
@@ -3496,7 +3508,9 @@
     "あたたかい",
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "こん",
+   "defaultHex": "#2E3954"
   },
   {
    "key": "top_24",
@@ -3516,7 +3530,9 @@
     "きちんと",
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "みずいろ",
+   "defaultHex": "#9FB9CB"
   },
   {
    "key": "top_28",
@@ -3535,7 +3551,9 @@
    "kanji": [
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "top_30",
@@ -3554,7 +3572,9 @@
    "kanji": [
     "すずしい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "さくら",
+   "defaultHex": "#E3A6A9"
   },
   {
    "key": "top_34",
@@ -3574,7 +3594,9 @@
     "あたたかい",
     "きちんと"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "さくら",
+   "defaultHex": "#E3A6A9"
   },
   {
    "key": "top_35",
@@ -3594,7 +3616,9 @@
     "きちんと",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "top_37",
@@ -3614,7 +3638,9 @@
     "あたたかい",
     "ゆるい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ローズ",
+   "defaultHex": "#AA5D6A"
   },
   {
    "key": "top_39",
@@ -3633,7 +3659,9 @@
    "kanji": [
     "すずしい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ベージュ",
+   "defaultHex": "#C5A883"
   },
   {
    "key": "top_40",
@@ -3652,7 +3680,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ミント",
+   "defaultHex": "#ABC6B6"
   },
   {
    "key": "top_47",
@@ -3672,7 +3702,9 @@
     "あたたかい",
     "きちんと"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "やまぶき",
+   "defaultHex": "#B6812A"
   },
   {
    "key": "top_52",
@@ -3692,7 +3724,9 @@
     "あたたかい",
     "ゆるい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "さくら",
+   "defaultHex": "#E3A6A9"
   },
   {
    "key": "bottom_01",
@@ -3710,7 +3744,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "あお",
+   "defaultHex": "#4F6C97"
   },
   {
    "key": "bottom_05",
@@ -3728,7 +3764,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "こん",
+   "defaultHex": "#2E3954"
   },
   {
    "key": "bottom_08",
@@ -3746,7 +3784,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "ベージュ",
+   "defaultHex": "#C5A883"
   },
   {
    "key": "bottom_12",
@@ -3765,7 +3805,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "はいいろ",
+   "defaultHex": "#89817A"
   },
   {
    "key": "bottom_14",
@@ -3784,7 +3826,9 @@
     "すずしい",
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "はいいろ",
+   "defaultHex": "#89817A"
   },
   {
    "key": "bottom_15",
@@ -3802,7 +3846,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "みずいろ",
+   "defaultHex": "#9FB9CB"
   },
   {
    "key": "bottom_19",
@@ -3821,7 +3867,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ローズ",
+   "defaultHex": "#AA5D6A"
   },
   {
    "key": "bottom_20",
@@ -3840,7 +3888,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ミント",
+   "defaultHex": "#ABC6B6"
   },
   {
    "key": "bottom_21",
@@ -3859,7 +3909,9 @@
    "kanji": [
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "こげちゃ",
+   "defaultHex": "#594233"
   },
   {
    "key": "bottom_29",
@@ -3877,7 +3929,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "bottom_30",
@@ -3895,7 +3949,9 @@
    "kanji": [
     "あたたかい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "outer_01",
@@ -3915,7 +3971,9 @@
     "きちんと",
     "よそゆき"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "outer_04",
@@ -3935,7 +3993,9 @@
     "ゆるい",
     "よそゆき"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "あお",
+   "defaultHex": "#4F6C97"
   },
   {
    "key": "outer_09",
@@ -3955,7 +4015,9 @@
     "あたたかい",
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "outer_13",
@@ -3975,7 +4037,9 @@
     "きちんと",
     "よそゆき"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "こん",
+   "defaultHex": "#2E3954"
   },
   {
    "key": "outer_19",
@@ -3994,7 +4058,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "はいいろ",
+   "defaultHex": "#89817A"
   },
   {
    "key": "outer_20",
@@ -4014,7 +4080,9 @@
     "きちんと",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "outer_22",
@@ -4034,7 +4102,9 @@
     "きちんと",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きつね",
+   "defaultHex": "#D29B5E"
   },
   {
    "key": "outer_28",
@@ -4054,7 +4124,9 @@
     "あたたかい",
     "きちんと"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ミント",
+   "defaultHex": "#ABC6B6"
   },
   {
    "key": "outer_30",
@@ -4073,7 +4145,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ミント",
+   "defaultHex": "#ABC6B6"
   },
   {
    "key": "shoes_01",
@@ -4091,7 +4165,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "u"
+   "gender": "u",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "shoes_03",
@@ -4109,7 +4185,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "u"
+   "gender": "u",
+   "defaultColor": "こげちゃ",
+   "defaultHex": "#594233"
   },
   {
    "key": "shoes_04",
@@ -4127,7 +4205,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "shoes_05",
@@ -4145,7 +4225,9 @@
    "kanji": [
     "あたたかい"
    ],
-   "gender": "u"
+   "gender": "u",
+   "defaultColor": "ベージュ",
+   "defaultHex": "#C5A883"
   },
   {
    "key": "shoes_09",
@@ -4163,7 +4245,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "u"
+   "gender": "u",
+   "defaultColor": "さくら",
+   "defaultHex": "#E3A6A9"
   },
   {
    "key": "shoes_11",
@@ -4182,7 +4266,9 @@
     "よそゆき",
     "きちんと"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "こん",
+   "defaultHex": "#2E3954"
   },
   {
    "key": "hats_01",
@@ -4417,7 +4503,9 @@
    "kanji": [
     "あたたかい"
    ],
-   "gender": "u"
+   "gender": "u",
+   "defaultColor": "ローズ",
+   "defaultHex": "#AA5D6A"
   },
   {
    "key": "neck_03",
@@ -4436,7 +4524,9 @@
     "あたたかい",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ミント",
+   "defaultHex": "#ABC6B6"
   },
   {
    "key": "neck_04",
@@ -4454,7 +4544,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "こん",
+   "defaultHex": "#2E3954"
   },
   {
    "key": "neck_05",
@@ -4472,7 +4564,9 @@
    "kanji": [
     "よそゆき"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "neck_09",
@@ -4491,7 +4585,9 @@
     "よそゆき",
     "すずしい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "テラコッタ",
+   "defaultHex": "#BB664C"
   },
   {
    "key": "eyes_01",
@@ -4509,7 +4605,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "u"
+   "gender": "u",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "eyes_02",
@@ -4527,7 +4625,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "u"
+   "gender": "u",
+   "defaultColor": "こげちゃ",
+   "defaultHex": "#594233"
   },
   {
    "key": "top_02",
@@ -4545,7 +4645,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "みずいろ",
+   "defaultHex": "#9FB9CB"
   },
   {
    "key": "top_03",
@@ -4563,7 +4665,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "あか",
+   "defaultHex": "#B53C2F"
   },
   {
    "key": "top_04",
@@ -4581,7 +4685,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "オリーブ",
+   "defaultHex": "#6A6B43"
   },
   {
    "key": "top_05",
@@ -4600,7 +4706,9 @@
     "きちんと",
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "あお",
+   "defaultHex": "#4F6C97"
   },
   {
    "key": "top_08",
@@ -4620,7 +4728,9 @@
     "きちんと",
     "すずしい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "ミント",
+   "defaultHex": "#ABC6B6"
   },
   {
    "key": "top_10",
@@ -4640,7 +4750,9 @@
     "すずしい",
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "top_13",
@@ -4660,7 +4772,9 @@
     "あたたかい",
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "top_15",
@@ -4680,7 +4794,9 @@
     "きちんと",
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "はいいろ",
+   "defaultHex": "#89817A"
   },
   {
    "key": "top_16",
@@ -4700,7 +4816,9 @@
     "すずしい",
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "こん",
+   "defaultHex": "#2E3954"
   },
   {
    "key": "top_17",
@@ -4719,7 +4837,9 @@
    "kanji": [
     "すずしい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "みずいろ",
+   "defaultHex": "#9FB9CB"
   },
   {
    "key": "top_18",
@@ -4738,7 +4858,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "ふかもり",
+   "defaultHex": "#314639"
   },
   {
    "key": "top_19",
@@ -4757,7 +4879,9 @@
    "kanji": [
     "すずしい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "top_20",
@@ -4777,7 +4901,9 @@
     "あたたかい",
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "はいいろ",
+   "defaultHex": "#89817A"
   },
   {
    "key": "top_21",
@@ -4796,7 +4922,9 @@
    "kanji": [
     "すずしい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "top_22",
@@ -4816,7 +4944,9 @@
     "すずしい",
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "ふかみどり",
+   "defaultHex": "#47715D"
   },
   {
    "key": "top_23",
@@ -4836,7 +4966,9 @@
     "ゆるい",
     "和"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "こん",
+   "defaultHex": "#2E3954"
   },
   {
    "key": "top_25",
@@ -4855,7 +4987,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "はいいろ",
+   "defaultHex": "#89817A"
   },
   {
    "key": "top_26",
@@ -4874,7 +5008,9 @@
    "kanji": [
     "すずしい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "top_27",
@@ -4893,7 +5029,9 @@
    "kanji": [
     "すずしい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "ふかみどり",
+   "defaultHex": "#47715D"
   },
   {
    "key": "top_29",
@@ -4913,7 +5051,9 @@
     "きちんと",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "top_31",
@@ -4932,7 +5072,9 @@
    "kanji": [
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "top_32",
@@ -4952,7 +5094,9 @@
     "あたたかい",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ふじ",
+   "defaultHex": "#8E7B9D"
   },
   {
    "key": "top_33",
@@ -4972,7 +5116,9 @@
     "すずしい",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "top_36",
@@ -4992,7 +5138,9 @@
     "あたたかい",
     "ゆるい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ベージュ",
+   "defaultHex": "#C5A883"
   },
   {
    "key": "top_38",
@@ -5011,7 +5159,9 @@
    "kanji": [
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ふかみどり",
+   "defaultHex": "#47715D"
   },
   {
    "key": "top_41",
@@ -5031,7 +5181,9 @@
     "きちんと",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "top_42",
@@ -5050,7 +5202,9 @@
    "kanji": [
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "top_43",
@@ -5070,7 +5224,9 @@
     "すずしい",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "こん",
+   "defaultHex": "#2E3954"
   },
   {
    "key": "top_44",
@@ -5090,7 +5246,9 @@
     "あたたかい",
     "ゆるい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ベージュ",
+   "defaultHex": "#C5A883"
   },
   {
    "key": "top_45",
@@ -5109,7 +5267,9 @@
    "kanji": [
     "あたたかい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "top_46",
@@ -5128,7 +5288,9 @@
    "kanji": [
     "すずしい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "さくら",
+   "defaultHex": "#E3A6A9"
   },
   {
    "key": "top_48",
@@ -5148,7 +5310,9 @@
     "きちんと",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "top_49",
@@ -5168,7 +5332,9 @@
     "すずしい",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "top_50",
@@ -5187,7 +5353,9 @@
    "kanji": [
     "すずしい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ふじ",
+   "defaultHex": "#8E7B9D"
   },
   {
    "key": "top_51",
@@ -5207,7 +5375,9 @@
     "あたたかい",
     "ゆるい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "top_53",
@@ -5227,7 +5397,9 @@
     "あたたかい",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "top_54",
@@ -5246,7 +5418,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "bottom_02",
@@ -5264,7 +5438,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "みずいろ",
+   "defaultHex": "#9FB9CB"
   },
   {
    "key": "bottom_03",
@@ -5282,7 +5458,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "bottom_04",
@@ -5301,7 +5479,9 @@
     "きちんと",
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "bottom_06",
@@ -5319,7 +5499,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "はいいろ",
+   "defaultHex": "#89817A"
   },
   {
    "key": "bottom_07",
@@ -5337,7 +5519,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "オリーブ",
+   "defaultHex": "#6A6B43"
   },
   {
    "key": "bottom_09",
@@ -5355,7 +5539,9 @@
    "kanji": [
     "あたたかい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "こげちゃ",
+   "defaultHex": "#594233"
   },
   {
    "key": "bottom_10",
@@ -5373,7 +5559,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "こん",
+   "defaultHex": "#2E3954"
   },
   {
    "key": "bottom_11",
@@ -5392,7 +5580,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "こん",
+   "defaultHex": "#2E3954"
   },
   {
    "key": "bottom_13",
@@ -5410,7 +5600,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "はいいろ",
+   "defaultHex": "#89817A"
   },
   {
    "key": "bottom_16",
@@ -5428,7 +5620,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "はいいろ",
+   "defaultHex": "#89817A"
   },
   {
    "key": "bottom_17",
@@ -5448,7 +5642,9 @@
     "ゆるい",
     "和"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "こん",
+   "defaultHex": "#2E3954"
   },
   {
    "key": "bottom_18",
@@ -5466,7 +5662,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "bottom_22",
@@ -5485,7 +5683,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ふじ",
+   "defaultHex": "#8E7B9D"
   },
   {
    "key": "bottom_23",
@@ -5504,7 +5704,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "はいいろ",
+   "defaultHex": "#89817A"
   },
   {
    "key": "bottom_24",
@@ -5523,7 +5725,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "あお",
+   "defaultHex": "#4F6C97"
   },
   {
    "key": "bottom_25",
@@ -5542,7 +5746,9 @@
    "kanji": [
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "さくら",
+   "defaultHex": "#E3A6A9"
   },
   {
    "key": "bottom_26",
@@ -5562,7 +5768,9 @@
     "すずしい",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "bottom_27",
@@ -5581,7 +5789,9 @@
    "kanji": [
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ふかみどり",
+   "defaultHex": "#47715D"
   },
   {
    "key": "bottom_28",
@@ -5600,7 +5810,9 @@
    "kanji": [
     "あたたかい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "テラコッタ",
+   "defaultHex": "#BB664C"
   },
   {
    "key": "bottom_31",
@@ -5618,7 +5830,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "あお",
+   "defaultHex": "#4F6C97"
   },
   {
    "key": "bottom_32",
@@ -5637,7 +5851,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ミント",
+   "defaultHex": "#ABC6B6"
   },
   {
    "key": "bottom_33",
@@ -5657,7 +5873,9 @@
     "すずしい",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "bottom_34",
@@ -5676,7 +5894,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "bottom_35",
@@ -5694,7 +5914,9 @@
    "kanji": [
     "あたたかい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "さくら",
+   "defaultHex": "#E3A6A9"
   },
   {
    "key": "outer_02",
@@ -5714,7 +5936,9 @@
     "きちんと",
     "よそゆき"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "こん",
+   "defaultHex": "#2E3954"
   },
   {
    "key": "outer_03",
@@ -5734,7 +5958,9 @@
     "あたたかい",
     "よそゆき"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "outer_05",
@@ -5754,7 +5980,9 @@
     "きちんと",
     "よそゆき"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "outer_06",
@@ -5773,7 +6001,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "オリーブ",
+   "defaultHex": "#6A6B43"
   },
   {
    "key": "outer_07",
@@ -5793,7 +6023,9 @@
     "すずしい",
     "よそゆき"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "ふかみどり",
+   "defaultHex": "#47715D"
   },
   {
    "key": "outer_08",
@@ -5812,7 +6044,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "みずいろ",
+   "defaultHex": "#9FB9CB"
   },
   {
    "key": "outer_10",
@@ -5832,7 +6066,9 @@
     "あたたかい",
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "やまぶき",
+   "defaultHex": "#B6812A"
   },
   {
    "key": "outer_11",
@@ -5851,7 +6087,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "ふかもり",
+   "defaultHex": "#314639"
   },
   {
    "key": "outer_12",
@@ -5871,7 +6109,9 @@
     "きちんと",
     "よそゆき"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "きつね",
+   "defaultHex": "#D29B5E"
   },
   {
    "key": "outer_14",
@@ -5891,7 +6131,9 @@
     "きちんと",
     "よそゆき"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "はいいろ",
+   "defaultHex": "#89817A"
   },
   {
    "key": "outer_15",
@@ -5910,7 +6152,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "オリーブ",
+   "defaultHex": "#6A6B43"
   },
   {
    "key": "outer_16",
@@ -5929,7 +6173,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "こん",
+   "defaultHex": "#2E3954"
   },
   {
    "key": "outer_17",
@@ -5949,7 +6195,9 @@
     "あたたかい",
     "和"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "こん",
+   "defaultHex": "#2E3954"
   },
   {
    "key": "outer_18",
@@ -5969,7 +6217,9 @@
     "きちんと",
     "よそゆき"
    ],
-   "gender": "m"
+   "gender": "m",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "outer_21",
@@ -5989,7 +6239,9 @@
     "きちんと",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "はいいろ",
+   "defaultHex": "#89817A"
   },
   {
    "key": "outer_23",
@@ -6009,7 +6261,9 @@
     "あたたかい",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ベージュ",
+   "defaultHex": "#C5A883"
   },
   {
    "key": "outer_24",
@@ -6028,7 +6282,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ローズ",
+   "defaultHex": "#AA5D6A"
   },
   {
    "key": "outer_25",
@@ -6048,7 +6304,9 @@
     "すずしい",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "さくら",
+   "defaultHex": "#E3A6A9"
   },
   {
    "key": "outer_26",
@@ -6068,7 +6326,9 @@
     "あたたかい",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "outer_27",
@@ -6087,7 +6347,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "すみれ",
+   "defaultHex": "#5C4B71"
   },
   {
    "key": "outer_29",
@@ -6107,7 +6369,9 @@
     "すずしい",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "outer_31",
@@ -6127,7 +6391,9 @@
     "あたたかい",
     "きちんと"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "テラコッタ",
+   "defaultHex": "#BB664C"
   },
   {
    "key": "outer_32",
@@ -6147,7 +6413,9 @@
     "あたたかい",
     "きちんと"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "outer_33",
@@ -6166,7 +6434,9 @@
    "kanji": [
     "きちんと"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ローズ",
+   "defaultHex": "#AA5D6A"
   },
   {
    "key": "outer_34",
@@ -6186,7 +6456,9 @@
     "あたたかい",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "ふじ",
+   "defaultHex": "#8E7B9D"
   },
   {
    "key": "outer_35",
@@ -6206,7 +6478,9 @@
     "きちんと",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "neck_02",
@@ -6224,7 +6498,9 @@
    "kanji": [
     "あたたかい"
    ],
-   "gender": "u"
+   "gender": "u",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "neck_06",
@@ -6242,7 +6518,9 @@
    "kanji": [
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "さくら",
+   "defaultHex": "#E3A6A9"
   },
   {
    "key": "neck_07",
@@ -6260,7 +6538,9 @@
    "kanji": [
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きつね",
+   "defaultHex": "#D29B5E"
   },
   {
    "key": "neck_08",
@@ -6278,7 +6558,9 @@
    "kanji": [
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "neck_10",
@@ -6296,7 +6578,9 @@
    "kanji": [
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "neck_11",
@@ -6314,7 +6598,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "u"
+   "gender": "u",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "eyes_03",
@@ -6333,7 +6619,9 @@
     "きちんと",
     "よそゆき"
    ],
-   "gender": "u"
+   "gender": "u",
+   "defaultColor": "きつね",
+   "defaultHex": "#D29B5E"
   },
   {
    "key": "eyes_04",
@@ -6351,7 +6639,9 @@
    "kanji": [
     "すずしい"
    ],
-   "gender": "u"
+   "gender": "u",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "eyes_05",
@@ -6369,7 +6659,9 @@
    "kanji": [
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "さくら",
+   "defaultHex": "#E3A6A9"
   },
   {
    "key": "eyes_06",
@@ -6387,7 +6679,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "u"
+   "gender": "u",
+   "defaultColor": "こげちゃ",
+   "defaultHex": "#594233"
   },
   {
    "key": "shoes_02",
@@ -6405,7 +6699,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "u"
+   "gender": "u",
+   "defaultColor": "あか",
+   "defaultHex": "#B53C2F"
   },
   {
    "key": "shoes_06",
@@ -6424,7 +6720,9 @@
     "あたたかい",
     "よそゆき"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
   },
   {
    "key": "shoes_07",
@@ -6442,7 +6740,9 @@
    "kanji": [
     "すずしい"
    ],
-   "gender": "u"
+   "gender": "u",
+   "defaultColor": "ベージュ",
+   "defaultHex": "#C5A883"
   },
   {
    "key": "shoes_08",
@@ -6460,7 +6760,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "u"
+   "gender": "u",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "shoes_10",
@@ -6478,7 +6780,9 @@
    "kanji": [
     "ゆるい"
    ],
-   "gender": "u"
+   "gender": "u",
+   "defaultColor": "やまぶき",
+   "defaultHex": "#B6812A"
   },
   {
    "key": "shoes_12",
@@ -6497,7 +6801,9 @@
     "よそゆき",
     "すずしい"
    ],
-   "gender": "f"
+   "gender": "f",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
   },
   {
    "key": "hats_10",
@@ -6516,6 +6822,592 @@
     "よそゆき"
    ],
    "gender": "u"
+  },
+  {
+   "key": "scarf_01",
+   "name": "ひとまき",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_01.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": false,
+   "zLayer": 50,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ],
+   "gender": "u",
+   "defaultColor": "ローズ",
+   "defaultHex": "#AA5D6A"
+  },
+  {
+   "key": "scarf_02",
+   "name": "ひとまき（柄）",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_02.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": true,
+   "zLayer": 50,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ],
+   "gender": "u",
+   "defaultColor": "ローズ",
+   "defaultHex": "#AA5D6A"
+  },
+  {
+   "key": "scarf_03",
+   "name": "ふたまき",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_03.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": false,
+   "zLayer": 50,
+   "kanji": [
+    "あたたかい"
+   ],
+   "gender": "u",
+   "defaultColor": "こん",
+   "defaultHex": "#2E3954"
+  },
+  {
+   "key": "scarf_04",
+   "name": "ふたまき（柄）",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_04.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": true,
+   "zLayer": 50,
+   "kanji": [
+    "あたたかい"
+   ],
+   "gender": "u",
+   "defaultColor": "こん",
+   "defaultHex": "#2E3954"
+  },
+  {
+   "key": "scarf_05",
+   "name": "ひとむすび",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_05.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": false,
+   "zLayer": 50,
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ],
+   "gender": "u",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
+  },
+  {
+   "key": "scarf_06",
+   "name": "ひとむすび（柄）",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_06.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": true,
+   "zLayer": 50,
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ],
+   "gender": "u",
+   "defaultColor": "きなり",
+   "defaultHex": "#F1E5D9"
+  },
+  {
+   "key": "scarf_07",
+   "name": "パリまき",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_07.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": false,
+   "zLayer": 50,
+   "kanji": [
+    "よそゆき",
+    "きちんと"
+   ],
+   "gender": "u",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
+  },
+  {
+   "key": "scarf_08",
+   "name": "パリまき（柄）",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_08.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": true,
+   "zLayer": 50,
+   "kanji": [
+    "よそゆき",
+    "きちんと"
+   ],
+   "gender": "u",
+   "defaultColor": "すみ",
+   "defaultHex": "#2E2926"
+  },
+  {
+   "key": "scarf_09",
+   "name": "ミラノまき",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_09.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": false,
+   "zLayer": 50,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "u",
+   "defaultColor": "はいいろ",
+   "defaultHex": "#89817A"
+  },
+  {
+   "key": "scarf_10",
+   "name": "ミラノまき（柄）",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_10.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": true,
+   "zLayer": 50,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "u",
+   "defaultColor": "はいいろ",
+   "defaultHex": "#89817A"
+  },
+  {
+   "key": "scarf_11",
+   "name": "ニューヨークまき",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_11.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": false,
+   "zLayer": 50,
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ],
+   "gender": "u",
+   "defaultColor": "こげちゃ",
+   "defaultHex": "#594233"
+  },
+  {
+   "key": "scarf_12",
+   "name": "ニューヨークまき（柄）",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_12.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": true,
+   "zLayer": 50,
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ],
+   "gender": "u",
+   "defaultColor": "こげちゃ",
+   "defaultHex": "#594233"
+  },
+  {
+   "key": "scarf_13",
+   "name": "まえたらし",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_13.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": false,
+   "zLayer": 50,
+   "kanji": [
+    "ゆるい",
+    "あたたかい"
+   ],
+   "gender": "u",
+   "defaultColor": "ミント",
+   "defaultHex": "#ABC6B6"
+  },
+  {
+   "key": "scarf_14",
+   "name": "まえたらし（柄）",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_14.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": true,
+   "zLayer": 50,
+   "kanji": [
+    "ゆるい",
+    "あたたかい"
+   ],
+   "gender": "u",
+   "defaultColor": "ミント",
+   "defaultHex": "#ABC6B6"
+  },
+  {
+   "key": "scarf_15",
+   "name": "かたたらし",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_15.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": false,
+   "zLayer": 50,
+   "kanji": [
+    "ゆるい",
+    "よそゆき"
+   ],
+   "gender": "u",
+   "defaultColor": "ベージュ",
+   "defaultHex": "#C5A883"
+  },
+  {
+   "key": "scarf_16",
+   "name": "かたたらし（柄）",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_16.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": true,
+   "zLayer": 50,
+   "kanji": [
+    "ゆるい",
+    "よそゆき"
+   ],
+   "gender": "u",
+   "defaultColor": "ベージュ",
+   "defaultHex": "#C5A883"
+  },
+  {
+   "key": "scarf_17",
+   "name": "スヌード",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_17.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": false,
+   "zLayer": 50,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ],
+   "gender": "u",
+   "defaultColor": "さくら",
+   "defaultHex": "#E3A6A9"
+  },
+  {
+   "key": "scarf_18",
+   "name": "スヌード（柄）",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_18.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": true,
+   "zLayer": 50,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ],
+   "gender": "u",
+   "defaultColor": "さくら",
+   "defaultHex": "#E3A6A9"
+  },
+  {
+   "key": "scarf_19",
+   "name": "リボンむすび",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_19.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": false,
+   "zLayer": 50,
+   "kanji": [
+    "よそゆき",
+    "きちんと"
+   ],
+   "gender": "u",
+   "defaultColor": "ローズ",
+   "defaultHex": "#AA5D6A"
+  },
+  {
+   "key": "scarf_20",
+   "name": "リボンむすび（柄）",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_20.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": true,
+   "zLayer": 50,
+   "kanji": [
+    "よそゆき",
+    "きちんと"
+   ],
+   "gender": "u",
+   "defaultColor": "ローズ",
+   "defaultHex": "#AA5D6A"
+  },
+  {
+   "key": "scarf_21",
+   "name": "アスコット",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_21.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": false,
+   "zLayer": 50,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "u",
+   "defaultColor": "ふかみどり",
+   "defaultHex": "#47715D"
+  },
+  {
+   "key": "scarf_22",
+   "name": "アスコット（柄）",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_22.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": true,
+   "zLayer": 50,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "u",
+   "defaultColor": "ふかみどり",
+   "defaultHex": "#47715D"
+  },
+  {
+   "key": "scarf_23",
+   "name": "バンダナ",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_23.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": false,
+   "zLayer": 50,
+   "kanji": [
+    "和",
+    "すずしい"
+   ],
+   "gender": "u",
+   "defaultColor": "あか",
+   "defaultHex": "#B53C2F"
+  },
+  {
+   "key": "scarf_24",
+   "name": "バンダナ（柄）",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_24.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": true,
+   "zLayer": 50,
+   "kanji": [
+    "和",
+    "すずしい"
+   ],
+   "gender": "u",
+   "defaultColor": "あか",
+   "defaultHex": "#B53C2F"
+  },
+  {
+   "key": "scarf_25",
+   "name": "ケープまき",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_25.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": false,
+   "zLayer": 50,
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ],
+   "gender": "u",
+   "defaultColor": "はいいろ",
+   "defaultHex": "#89817A"
+  },
+  {
+   "key": "scarf_26",
+   "name": "ケープまき（柄）",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_26.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": true,
+   "zLayer": 50,
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ],
+   "gender": "u",
+   "defaultColor": "はいいろ",
+   "defaultHex": "#89817A"
+  },
+  {
+   "key": "scarf_27",
+   "name": "たすきがけ",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_27.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": false,
+   "zLayer": 50,
+   "kanji": [
+    "すずしい",
+    "ゆるい"
+   ],
+   "gender": "u",
+   "defaultColor": "ふじ",
+   "defaultHex": "#8E7B9D"
+  },
+  {
+   "key": "scarf_28",
+   "name": "たすきがけ（柄）",
+   "group": "daily",
+   "slot": "neck",
+   "z": 50,
+   "file": "items/scarf_28.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "patterned": true,
+   "zLayer": 50,
+   "kanji": [
+    "すずしい",
+    "ゆるい"
+   ],
+   "gender": "u",
+   "defaultColor": "ふじ",
+   "defaultHex": "#8E7B9D"
   }
  ]
 }

@@ -15551,6 +15551,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               {wardrobeOn && homeState === DRESS && searchOpen && (
                 <DrawerSearch
                   initial={searchQuery}
+                  // ★★いまの並びを 渡します（★2026-09-08 夜）。
+                  //   ★★0件になる かんじを、★押せない灰色に するためです。
+                  //   ★絞りこむ前の 並びです。★絞ったあとで 数えると、
+                  //     ★★押すたびに 押せる札が 減っていきます。
+                  items={itemsFor(drawerCat, drawerTab, {
+                    wearItems: SHEEP_ITEMS,
+                    interiorItems: INTERIOR_ITEMS,
+                    marks: characterEquipped,
+                    tileSurfaceOf: tileSurface,
+                    placed: placedForStore
+                  })}
                   onCancel={() => setSearchOpen(false)}
                   onApply={(q) => { setSearchQuery(q); setSearchOpen(false); }} />
               )}

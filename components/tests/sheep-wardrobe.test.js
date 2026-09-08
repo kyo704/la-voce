@@ -36,10 +36,12 @@ function ok(label, cond) {
   //   ★出どころ docs/opus/woolsong-確定-アイテムの全体像と、箱2の作り方（9月7日・夜・訂正版）.md §3-2
   // ★★2026-09-08、★166点の残り104点も取り込んで 385点になりました。
   //   ★目録384点＋実装だけの2点（傘・剣）− 目録から外した operaCarmen 1点。
-  ok(`★品数が 385（いま ${idx.items.length}）`, idx.items.length === 385);
+  // ★★2026-09-08 夜、★マフラー28点が 加わりました（385 ＋ 28 ＝ 413）。
+  ok(`★品数が 413（いま ${idx.items.length}）`, idx.items.length === 413);
   // ★★166点ぜんぶが、★入っていること。
   const daily = idx.items.filter((i) => i.group === "daily");
-  ok(`★ふだん着が 166 点（いま ${daily.length}）`, daily.length === 166);
+  // ★★マフラー28点も「ふだん着」です（166 ＋ 28 ＝ 194）。
+  ok(`★ふだん着が 194 点（いま ${daily.length}）`, daily.length === 194);
   ok("★足したのは、お箸とフォークの2点だけ",
     ["propChopsticks", "propFork"].every((k) => idx.items.some((i) => i.key === k)));
   const missing = idx.items.filter((i) => {
@@ -243,7 +245,10 @@ function ok(label, cond) {
   const move = 2 * arm * Math.sin(L.swing * Math.PI / 360);
   ok("★足先の動く量が、ひかえめ（1024のうち80まで）", move <= 80,
     "実際は " + move.toFixed(0));
-  ok("★でも、動きが見える程度はある（30以上）", move >= 30,
+  // ★★2026-09-08 夜、★坂本さんから「振れすぎ」とのご指摘をいただき、
+  //   ★★swing を 14 → 7 に、★およそ半分にしました。
+  //   ★下限も、それに 合わせます。★動きが 見えることは 変わりません。
+  ok("★でも、動きが見える程度はある（15以上）", move >= 15,
     "実際は " + move.toFixed(0));
   // ★振れても、脚が体の下ぎわからはみ出さないこと。
   ok("★振れても、脚は体に隠れている",

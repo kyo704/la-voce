@@ -77,7 +77,10 @@ async function load(rel) {
   ok(cc.blendChannel(120, 120, 200) === 120, "light と dark が同じところは、色が乗らない（★柄が残る）");
 
   console.log("⑤ ★色を塗れる品 ── ★ふだん着166点すべて（★2026-09-08）");
-  ok(cc.COLORABLE_KEYS.length === 166, "166点（★実際 " + cc.COLORABLE_KEYS.length + "）");
+  // ★★2026-09-08 夜、★マフラー28点（scarf_01〜28）が 加わりました。
+  //   ★166 ＋ 28 ＝ 194。★neck_01／02／03 は 棚から下げましたが、
+  //   ★★鍵は 消していません（★着ている方が いるかもしれないため）。
+  ok(cc.COLORABLE_KEYS.length === 194, "194点（★実際 " + cc.COLORABLE_KEYS.length + "）");
   const missing = cc.COLORABLE_KEYS.filter((k) => !catalog.some((i) => i.key === k));
   ok(missing.length === 0, "166点すべてが、着せかえの名簿にある" + (missing.length ? "：" + missing.join(",") : ""));
   // ★★上だけでは ありません。★靴も 目元も 入ります（★坂本さんのお決め）。

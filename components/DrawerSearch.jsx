@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { C } from "@/lib/tokens";
 import {
-  KANJI, SHOW_OWNED, SHOW_ALL, COPY, emptyQuery, toggleKanji, isEmptyQuery
+  KANJI, SHOW_OWNED, SHOW_ALL, COPY, emptyQuery, toggleKanji, isEmptyQuery,
+  disabledKanji
 } from "@/lib/drawerSearch";
 import { CLOTH_COLORS, swatchHex, needsEdge, edgeHex } from "@/lib/clothColors";
 import { SIZES } from "@/lib/homeDrawer";
@@ -22,8 +23,15 @@ import { SIZES } from "@/lib/homeDrawer";
 //   ★見張り components/tests/drawer-search.test.js
 // ============================================================================
 
-export default function DrawerSearch({ initial, onApply, onCancel }) {
+export default function DrawerSearch({ initial, onApply, onCancel, items }) {
   const [q, setQ] = useState(initial || emptyQuery());
+  // ★★0件になる かんじは、★押せない灰色に します
+  //   （★2026-09-08 夜・Opus の決め）。
+  //   ★★押せるのに 0件、は「壊れている」に 見えます。
+  //   ★★数は 数えますが、★表には 出しません（★「12点」と書かないこと）。
+  //   ★★いまの並びから 数えます。★決め打ちの一覧を 持ちません。
+  //     ★品が増えたら、★ここが 勝手に 追いつきます。
+  const off = disabledKanji(items || []);
 
   return (
     <div style={{
@@ -56,7 +64,14 @@ export default function DrawerSearch({ initial, onApply, onCancel }) {
             return (
               <button key={c.key} type="button"
                 aria-pressed={on} aria-label={c.name}
-                onClick={() => setQ((v) => ({ ...v, color: on ? null : c.key }))}
+                // ★★いろを えらんだら、★みせかたを「もっているもの」に します
+                //   （★2026-09-08 夜・Opus の訂正）。
+                //   ★★まだの品は 24色 どれにでも なれるので、
+                //     ★色で 絞ることに 意味が ありません。
+                //   ★★外したときは、★戻しません。★勝手に 広げないためです。
+                onClick={() => setQ((v) => (on
+                  ? { ...v, color: null }
+                  : { ...v, color: c.key, show: SHOW_OWNED }))}
                 style={{
                   width: SIZES.swatchPx, height: SIZES.swatchPx,
                   borderRadius: SIZES.swatchRadiusPx, background: swatchHex(c.key),
@@ -75,10 +90,16 @@ export default function DrawerSearch({ initial, onApply, onCancel }) {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
           {KANJI.map((k) => {
             const on = (q.kanji || []).includes(k);
+            // ★★この並びに 1点も 無い かんじは、★押せなくします。
+            //   ★消しません。★あることは 見えたままにします。
+            const dead = off.includes(k) && !on;
             return (
               <button key={k} type="button" aria-pressed={on}
+                disabled={dead}
+                // ★★なぜ押せないかを、★読み上げにも 残します。
+                title={dead ? "ここには ありません" : undefined}
                 onClick={() => setQ((v) => toggleKanji(v, k))}
-                style={chip(on)}>
+                style={{ ...chip(on), opacity: dead ? 0.4 : 1 }}>
                 {k}
               </button>
             );
