@@ -111,10 +111,13 @@ async function load(rel) {
   //   ★★「見えているもの」と「いまの状態」を、★1つにするためです。
   //   ★ボタンは「けってい」。★変えるためではなく、★残すためのものです。
   ok(/onTap=\{\(it\) => \{/.test(vt2), "★押した瞬間に、着る");
-  ok(/handleEquipWardrobe\(applyWear\([\s\S]{0,200}\)\);[\s\S]{0,300}\}\}/.test(vt2),
-    "★押したときに、着せている");
-  ok(/onWear=\{\(\) => \{ handleSaveCharacter\(\); setPickedItem\(null\); \}\}/.test(vt2),
-    "★★けってい は、残すだけ（★着せません）");
+  ok(/persist: false/.test(vt2), "★押したときは、まだ 保存しない（★下書き）");
+  ok(/equippedBefore/.test(vt2), "★開いたときの姿を、控えている");
+  ok(/onWear=\{\(\) => \{[\s\S]{0,200}handleSaveCharacter\(\);/.test(vt2),
+    "★★けってい で、はじめて 残す");
+  // ★★「おわり」「さっきに もどす」で、もとに戻せること。
+  ok(/if \(equippedBefore\) setCharacterEquipped\(equippedBefore\);/.test(vt2),
+    "★けってい を押さずに出たら、もとに戻す");
   ok(/isPicked=\{\(it\) => !!pickedItem/.test(vt2), "★えらんでいるしるしを、渡している");
   // ★★着ている しるしと、★えらんでいる しるしを、混ぜないこと。
   ok(/picked \? 2 : 1/.test(gr) && /right: 3, bottom: 3/.test(gr),
@@ -130,7 +133,9 @@ async function load(rel) {
   // ★★押しどころだけ 先に出していました。★私の落ち度です。
   //   ★押せるのに何も起きないものを、★出してはいけません。
   ok(/\{onSearch && \(/.test(dr), "★渡した時だけ、出す");
-  ok(!/onSearch=\{/.test(vt2), "★いまは、渡していない（★まだ作っていないため）");
+  // ★★2026-09-08 夕、★さがす を 作りました（★§3-6・見本⑥）。
+  ok(/onSearch=\{\(\) => setSearchOpen\(true\)\}/.test(vt2), "★渡している（★作りました）");
+  ok(/<DrawerSearch/.test(vt2), "★別の1枚として、出している");
 
   console.log("④-7 ★しまう は、置いているものを並べる");
   ok(/placed: placedForStore/.test(vt2), "★いま置いているものを、渡している");

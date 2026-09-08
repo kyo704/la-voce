@@ -13,7 +13,7 @@ import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
 } from "@/lib/oldHouseVisibility";
 // ★動かせる内装が在るか／羊の重ね順。★決めは、あちらが持ちます。
-import { hasMovableInterior, sheepZIndex } from "@/lib/sheepInteriorV2";
+import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE } from "@/lib/sheepInteriorV2";
 import { C } from "@/lib/tokens";
 import {
   SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, PLACEMENT_LIMITS,
@@ -1916,8 +1916,12 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
     ? resolvePos((equipped.furniturePositions || {})[key], FURNITURE_LAYOUT[key])
     : null);
   const bedPosForDiag = furniturePos("furniture_bed");
+  // ★★歩く範囲は、★lib が持ちます（★2026-09-08・坂本さんのご指摘）。
+  //   ★★もとは 50±18（★32〜68）で、★まん中3分の1だけでした。
+  //   ★端まで歩けるようにしました。★壁には めり込みません。
   const [leftPct, topPct, facingLeft, isWalking, isSitting, isLying] = useRoomLife(
-    50, 78, 18, 6,
+    SHEEP_WANDER.centerLeft, SHEEP_WANDER.centerTop,
+    SHEEP_WANDER.rangeLeft, SHEEP_WANDER.rangeTop,
     furniturePos("furniture_chair"),
     furniturePos("furniture_bed")
   );
@@ -2236,7 +2240,10 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
         </DraggableItem>
       )}
 
-      <PositionedCharacter wardrobeOn={wardrobeOn} equipped={equipped} size={92} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isSitting={isSitting} isLying={isLying}
+      {/* ★★羊を、大きくしました（★2026-09-08 夕・坂本さんのご要望）。
+          ★★「小さすぎる」とのことでした。★92 → ★SHEEP_SIZE。
+          ★数は lib が持ちます。★ここで書かないこと。 */}
+      <PositionedCharacter wardrobeOn={wardrobeOn} equipped={equipped} size={SHEEP_SIZE} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isSitting={isSitting} isLying={isLying}
         diag={{ bedTop: bedPosForDiag && bedPosForDiag.top, bedLeft: bedPosForDiag && bedPosForDiag.left }} />
 
       {/* ★ベッドと椅子は、上げられる高さを狭めてある（BED_MIN_TOP / CHAIR_MIN_TOP）。

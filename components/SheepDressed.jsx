@@ -4,7 +4,7 @@ import { useId } from "react";
 
 import { SHEEP_BASE, SHEEP_ASSET_BASE, sheepItemByKey, sheepItemSrc } from "@/lib/sheepItems";
 import { LAYER_ORDER, PROP_SIDE_DEFAULT, motionOf, LEGS, SHOE_SPLIT_X, slotZ } from "@/lib/sheepWardrobe";
-import ClothImage from "@/components/ClothImage";
+import ClothImage, { ClothShoeImages } from "@/components/ClothImage";
 
 // ============================================================================
 // 着せかえた羊（★絵を重ねます・2026-09-05 夜）
@@ -328,14 +328,14 @@ ${mo.gait ? `
                 <rect x={SHOE_SPLIT_X} y="0" width={1024 - SHOE_SPLIT_X} height="1024" />
               </clipPath>
             </defs>
-            {legSides.map(([side, cx]) => (
-              <g key={side} className="sheep-leg" style={legGroupStyle(side, cx)}>
-                <image
-                  href={l.src} x="0" y={LEGS.shoeDy}
-                  width="1024" height="1024"
-                  clipPath={`url(#shoe${side}-${clipId})`} />
-              </g>
-            ))}
+            {/* ★★靴にも、★色を塗ります（★2026-09-08 夕の直し）。
+                ★★靴だけ svg の枝で描いていたので、★色が乗っていませんでした。
+                  ★実機でご報告をいただきました。★そのとおりです。
+                ★塗り方は、★ほかの品と まったく同じです。 */}
+            <ClothShoeImages
+              itemKey={l.itemKey} colorKey={l.colorKey} src={l.src}
+              clipId={clipId} dy={LEGS.shoeDy}
+              sides={legSides.map(([side, cx]) => [side, cx, legGroupStyle(side, cx)])} />
           </svg>
         ) : (
         // ★★同じ大きさで、同じ場所に重ねます。★ずらさないこと。

@@ -225,9 +225,16 @@ function ok(label, cond) {
   ok("★軸を、数字で決めている",
     /transformOrigin: `\$\{cx\}px \$\{LEGS\.topY\}px`/.test(dressed2));
   // ★靴は、脚より後に描くこと（後に描いたものが上に来ます）。
-  const gBlock = dressed2.slice(dressed2.indexOf('className="sheep-leg"'));
-  const iRect = gBlock.indexOf("<rect"), iImg = gBlock.indexOf("<image");
-  ok("★靴を、脚より後に描いている", iRect >= 0 && iImg > iRect);
+  // ★★2026-09-08 夕、★靴にも 色を塗るため、★別の部品へ移しました。
+  //   ★★靴だけ svg の枝で描いていたので、★色が乗っていませんでした。
+  //   ★描く順は、★変えていません。★脚の rect のあとに、靴の部品が来ます。
+  const iRect = dressed2.indexOf("<rect");
+  const iShoe = dressed2.indexOf("<ClothShoeImages");
+  ok("★靴を、脚より後に描いている", iRect >= 0 && iShoe > iRect);
+  // ★★靴も、★脚と同じ軸で 振れること。
+  const shoeComp = fs.readFileSync(path.join(ROOT, "components", "ClothImage.jsx"), "utf-8");
+  ok("★靴も、脚と一緒に振れる", /className="sheep-leg"/.test(shoeComp));
+  ok("★靴にも、色が乗る", /usePaintedSrc\(itemKey, colorKey\)/.test(shoeComp));
   // ★靴を履いたら、ひづめは描かないこと（靴の下から足がはみ出します）。
   ok("★靴のときは、ひづめを描かない", /\{!shoeSrc && \(\s*<ellipse/.test(dressed2));
 

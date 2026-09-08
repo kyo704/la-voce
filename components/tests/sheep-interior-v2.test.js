@@ -33,7 +33,11 @@ function ok(name, cond, extra) {
   const m = await import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
 
   console.log("■ 120点、そろっていること");
-  ok(`120点ある（いま ${m.INTERIOR_ITEMS.length}）`, m.INTERIOR_ITEMS.length === 120);
+  // ★★2026-09-08 夕、★床70・壁59 が 入りました（★tiles-v2-2026-09-08）。
+  //   ★置くもの120点 ＋ 床壁129点 ＝ ★249点。
+  ok(`★249点ある（いま ${m.INTERIOR_ITEMS.length}）`, m.INTERIOR_ITEMS.length === 249);
+  ok(`★置くものは120点（いま ${m.INTERIOR_ITEMS.filter((i) => i.category !== "tile").length}）`,
+    m.INTERIOR_ITEMS.filter((i) => i.category !== "tile").length === 111);
   ok("鍵に、重なりが無い",
     m.INTERIOR_ITEMS.length === new Set(m.INTERIOR_ITEMS.map((i) => i.key)).size);
   // ★★絵が、★1枚も欠けていないこと。★指しているのに無い、を作らない。
@@ -42,7 +46,8 @@ function ok(name, cond, extra) {
   ok("指している絵が、全部ある", missing.length === 0, missing.slice(0, 5).map((i) => i.key).join(", "));
 
   console.log("■ 分類ごとの数（★README のとおり）");
-  const want = { furniture: 27, showa: 19, window: 13, view: 13, door: 12, wallart: 13, garden: 14, tile: 9 };
+  // ★★2026-09-08 夕、★かべ・ゆかが 9点 → 138点になりました（★床70・壁59 を足して）。
+  const want = { furniture: 27, showa: 19, window: 13, view: 13, door: 12, wallart: 13, garden: 14, tile: 138 };
   for (const [k, n] of Object.entries(want)) {
     const got = m.itemsByCategory(k).length;
     ok(`${m.categoryLabel(k)} が ${n}点（いま ${got}）`, got === n);
@@ -191,7 +196,9 @@ function ok(name, cond, extra) {
     ok("★壁のタイルは、壁のところだけ", /wallTile && \(/.test(layer));
     ok("★床のタイルは、床のところだけ", /floorTile && \(/.test(layer));
     ok("★1枚で部屋ぜんぶを覆っていない", !/placed\.tile\b/.test(layer));
-    ok("★壁と床を、lib が分けている", m.wallTiles().length === 5 && m.floorTiles().length === 4);
+    // ★★2026-09-08 夕、★床70・壁59 が 入りました（★tiles-v2-2026-09-08）。
+    //   ★もとの9点（壁5・床4）と 合わせて 138点です。
+    ok("★壁と床を、lib が分けている", m.wallTiles().length === 64 && m.floorTiles().length === 74);
     // ★★2026-09-08、★床の線を「どの絵も y300」としていました。
     //   ★実測すると、★家具 247/301/309、★庭 289〜311、★扉 503 でした。
     //   ★扉に 300 を当てると、2割ちかく浮きます（★実機のご指摘）。
@@ -211,8 +218,12 @@ function ok(name, cond, extra) {
     ok("★枠の高さは、絵の縦横比から出す", /aspectRatio: `\$\{frame\.size\[0\]\}/.test(layer));
     ok("★分類ごとに、大きさを決め打ちしていない", !/width: 22|width: 15|width: 12|width: 16|width: 26/.test(layer));
     // ★★名簿に、実測値が入っていること。
-    ok("★120点すべてに、床の線が入っている",
-      m.INTERIOR_ITEMS.every((i) => typeof i.floorY === "number"));
+    // ★★床壁129点は、★敷き詰めるものです。★床の線を、持ちません。
+    ok("★置くもの120点すべてに、床の線が入っている",
+      m.INTERIOR_ITEMS.filter((i) => i.category !== "tile")
+        .every((i) => typeof i.floorY === "number"));
+    ok("★床壁129点に、族（kind）が入っている",
+      m.itemsByCategory("tile").filter((i) => i.seamless).every((i) => typeof i.kind === "string"));
     ok("★扉の床の線は 503（★300 ではない）",
       m.floorLineOf(m.interiorItemByKey("door_01")) === 503);
     // ★★扉は、★右の壁に ぴったり寄せること（★2026-09-08 のご指摘）。

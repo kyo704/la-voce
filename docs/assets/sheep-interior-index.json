@@ -2493,6 +2493,2199 @@
    "placement": "surface",
    "anchor": "tile",
    "z": 50
+  },
+  {
+   "key": "floor_01",
+   "name": "オーク（りゃんこ張り）",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_01.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_02",
+   "name": "オーク（乱尺張り）",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_02.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_03",
+   "name": "ウォルナット",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_03.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_04",
+   "name": "メープル（白木）",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_04.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_05",
+   "name": "パイン（節あり）",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_05.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_06",
+   "name": "チェリー（赤み）",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_06.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_07",
+   "name": "チーク",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_07.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_08",
+   "name": "アッシュ（灰）",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_08.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_09",
+   "name": "幅広の一枚板",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_09.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_10",
+   "name": "縁甲板（細幅）",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_10.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_11",
+   "name": "古材（ヴィンテージ）",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_11.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_12",
+   "name": "白いペンキの床",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_12.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_13",
+   "name": "グレーウォッシュ",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_13.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_14",
+   "name": "焼き杉（黒）",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_14.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_15",
+   "name": "飴色の板の間（昭和）",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_15.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_16",
+   "name": "ヘリンボーン（オーク）",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_16.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_17",
+   "name": "ヘリンボーン（ウォルナット）",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_17.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_18",
+   "name": "ヘリンボーン（細）",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_18.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_19",
+   "name": "シェブロン",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_19.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_20",
+   "name": "シェブロン（濃）",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_20.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_21",
+   "name": "市松（寄木）",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_21.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_22",
+   "name": "市松（大）",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_22.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_23",
+   "name": "網代（バスケット）",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_23.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_24",
+   "name": "すだれ張り",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_24.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_25",
+   "name": "斜め張り",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_25.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_26",
+   "name": "朝鮮張り",
+   "category": "tile",
+   "style": "床",
+   "kind": "木",
+   "file": "interior/tiles/floor_26.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_27",
+   "name": "畳（縁あり）",
+   "category": "tile",
+   "style": "床",
+   "kind": "畳",
+   "file": "interior/tiles/floor_27.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_28",
+   "name": "畳（黒縁）",
+   "category": "tile",
+   "style": "床",
+   "kind": "畳",
+   "file": "interior/tiles/floor_28.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_29",
+   "name": "畳（紺の縁）",
+   "category": "tile",
+   "style": "床",
+   "kind": "畳",
+   "file": "interior/tiles/floor_29.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_30",
+   "name": "琉球畳（縁なし・市松）",
+   "category": "tile",
+   "style": "床",
+   "kind": "畳",
+   "file": "interior/tiles/floor_30.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_31",
+   "name": "日焼けした畳（昭和）",
+   "category": "tile",
+   "style": "床",
+   "kind": "畳",
+   "file": "interior/tiles/floor_31.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_32",
+   "name": "サブウェイタイル（馬目地）",
+   "category": "tile",
+   "style": "床",
+   "kind": "タイル",
+   "file": "interior/tiles/floor_32.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_33",
+   "name": "サブウェイタイル（黒目地）",
+   "category": "tile",
+   "style": "床",
+   "kind": "タイル",
+   "file": "interior/tiles/floor_33.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_34",
+   "name": "大判タイル（グレー）",
+   "category": "tile",
+   "style": "床",
+   "kind": "タイル",
+   "file": "interior/tiles/floor_34.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_35",
+   "name": "磁器タイル（白）",
+   "category": "tile",
+   "style": "床",
+   "kind": "タイル",
+   "file": "interior/tiles/floor_35.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_36",
+   "name": "テラコッタ",
+   "category": "tile",
+   "style": "床",
+   "kind": "タイル",
+   "file": "interior/tiles/floor_36.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_37",
+   "name": "素焼きレンガの床",
+   "category": "tile",
+   "style": "床",
+   "kind": "タイル",
+   "file": "interior/tiles/floor_37.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_38",
+   "name": "市松の白黒",
+   "category": "tile",
+   "style": "床",
+   "kind": "タイル",
+   "file": "interior/tiles/floor_38.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_39",
+   "name": "大理石（白）",
+   "category": "tile",
+   "style": "床",
+   "kind": "タイル",
+   "file": "interior/tiles/floor_39.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_40",
+   "name": "大理石（黒）",
+   "category": "tile",
+   "style": "床",
+   "kind": "タイル",
+   "file": "interior/tiles/floor_40.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_41",
+   "name": "大理石（グレー）",
+   "category": "tile",
+   "style": "床",
+   "kind": "タイル",
+   "file": "interior/tiles/floor_41.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_42",
+   "name": "テラゾー（人研ぎ）",
+   "category": "tile",
+   "style": "床",
+   "kind": "タイル",
+   "file": "interior/tiles/floor_42.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_43",
+   "name": "テラゾー（黒）",
+   "category": "tile",
+   "style": "床",
+   "kind": "タイル",
+   "file": "interior/tiles/floor_43.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_44",
+   "name": "洗い出し（豆砂利）",
+   "category": "tile",
+   "style": "床",
+   "kind": "石",
+   "file": "interior/tiles/floor_44.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_45",
+   "name": "モザイクタイル（多色）",
+   "category": "tile",
+   "style": "床",
+   "kind": "タイル",
+   "file": "interior/tiles/floor_45.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_46",
+   "name": "モザイクタイル（青）",
+   "category": "tile",
+   "style": "床",
+   "kind": "タイル",
+   "file": "interior/tiles/floor_46.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_47",
+   "name": "六角タイル（白）",
+   "category": "tile",
+   "style": "床",
+   "kind": "タイル",
+   "file": "interior/tiles/floor_47.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_48",
+   "name": "六角タイル（灰）",
+   "category": "tile",
+   "style": "床",
+   "kind": "タイル",
+   "file": "interior/tiles/floor_48.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_49",
+   "name": "ペニーラウンド",
+   "category": "tile",
+   "style": "床",
+   "kind": "タイル",
+   "file": "interior/tiles/floor_49.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_50",
+   "name": "乱張りの石",
+   "category": "tile",
+   "style": "床",
+   "kind": "石",
+   "file": "interior/tiles/floor_50.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_51",
+   "name": "石畳（御影石）",
+   "category": "tile",
+   "style": "床",
+   "kind": "石",
+   "file": "interior/tiles/floor_51.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_52",
+   "name": "飛び石と苔",
+   "category": "tile",
+   "style": "床",
+   "kind": "石",
+   "file": "interior/tiles/floor_52.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_53",
+   "name": "リノリウム（昭和）",
+   "category": "tile",
+   "style": "床",
+   "kind": "その他",
+   "file": "interior/tiles/floor_53.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_54",
+   "name": "リノリウム（緑）",
+   "category": "tile",
+   "style": "床",
+   "kind": "その他",
+   "file": "interior/tiles/floor_54.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_55",
+   "name": "Ｐタイル（学校）",
+   "category": "tile",
+   "style": "床",
+   "kind": "その他",
+   "file": "interior/tiles/floor_55.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_56",
+   "name": "クッションフロア（木目調）",
+   "category": "tile",
+   "style": "床",
+   "kind": "その他",
+   "file": "interior/tiles/floor_56.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_57",
+   "name": "クッションフロア（石目調）",
+   "category": "tile",
+   "style": "床",
+   "kind": "その他",
+   "file": "interior/tiles/floor_57.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_58",
+   "name": "昭和の絨毯（花柄）",
+   "category": "tile",
+   "style": "床",
+   "kind": "布",
+   "file": "interior/tiles/floor_58.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_59",
+   "name": "絨毯（えんじ）",
+   "category": "tile",
+   "style": "床",
+   "kind": "布",
+   "file": "interior/tiles/floor_59.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_60",
+   "name": "絨毯（生成り）",
+   "category": "tile",
+   "style": "床",
+   "kind": "布",
+   "file": "interior/tiles/floor_60.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_61",
+   "name": "絨毯（こん）",
+   "category": "tile",
+   "style": "床",
+   "kind": "布",
+   "file": "interior/tiles/floor_61.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_62",
+   "name": "ループカーペット",
+   "category": "tile",
+   "style": "床",
+   "kind": "布",
+   "file": "interior/tiles/floor_62.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_63",
+   "name": "ループカーペット（緑）",
+   "category": "tile",
+   "style": "床",
+   "kind": "布",
+   "file": "interior/tiles/floor_63.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_64",
+   "name": "タイルカーペット",
+   "category": "tile",
+   "style": "床",
+   "kind": "布",
+   "file": "interior/tiles/floor_64.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_65",
+   "name": "ラグ（幾何柄）",
+   "category": "tile",
+   "style": "床",
+   "kind": "布",
+   "file": "interior/tiles/floor_65.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_66",
+   "name": "籐むしろ",
+   "category": "tile",
+   "style": "床",
+   "kind": "その他",
+   "file": "interior/tiles/floor_66.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_67",
+   "name": "竹の床",
+   "category": "tile",
+   "style": "床",
+   "kind": "その他",
+   "file": "interior/tiles/floor_67.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_68",
+   "name": "モルタル（土間）",
+   "category": "tile",
+   "style": "床",
+   "kind": "その他",
+   "file": "interior/tiles/floor_68.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_69",
+   "name": "三和土（たたき）",
+   "category": "tile",
+   "style": "床",
+   "kind": "その他",
+   "file": "interior/tiles/floor_69.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "floor_70",
+   "name": "コンクリート",
+   "category": "tile",
+   "style": "床",
+   "kind": "その他",
+   "file": "interior/tiles/floor_70.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "floor",
+   "anchor": "tile",
+   "z": 50,
+   "seamless": true
+  },
+  {
+   "key": "wall_01",
+   "name": "白い無地（石目調）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "クロス",
+   "file": "interior/tiles/wall_01.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_02",
+   "name": "生成りの無地",
+   "category": "tile",
+   "style": "壁",
+   "kind": "クロス",
+   "file": "interior/tiles/wall_02.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_03",
+   "name": "灰色の無地",
+   "category": "tile",
+   "style": "壁",
+   "kind": "クロス",
+   "file": "interior/tiles/wall_03.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_04",
+   "name": "織物クロス（布目）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "クロス",
+   "file": "interior/tiles/wall_04.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_05",
+   "name": "縦ストライプ",
+   "category": "tile",
+   "style": "壁",
+   "kind": "クロス",
+   "file": "interior/tiles/wall_05.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_06",
+   "name": "太い縦ストライプ",
+   "category": "tile",
+   "style": "壁",
+   "kind": "クロス",
+   "file": "interior/tiles/wall_06.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_07",
+   "name": "小花柄（カントリー）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "クロス",
+   "file": "interior/tiles/wall_07.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_08",
+   "name": "北欧の幾何",
+   "category": "tile",
+   "style": "壁",
+   "kind": "クロス",
+   "file": "interior/tiles/wall_08.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_09",
+   "name": "ボタニカル（大柄）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "クロス",
+   "file": "interior/tiles/wall_09.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_10",
+   "name": "昭和の花柄クロス",
+   "category": "tile",
+   "style": "壁",
+   "kind": "クロス",
+   "file": "interior/tiles/wall_10.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_11",
+   "name": "ダマスク",
+   "category": "tile",
+   "style": "壁",
+   "kind": "クロス",
+   "file": "interior/tiles/wall_11.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_12",
+   "name": "麻の葉（和柄）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "クロス",
+   "file": "interior/tiles/wall_12.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_13",
+   "name": "水玉",
+   "category": "tile",
+   "style": "壁",
+   "kind": "クロス",
+   "file": "interior/tiles/wall_13.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_14",
+   "name": "千鳥格子",
+   "category": "tile",
+   "style": "壁",
+   "kind": "クロス",
+   "file": "interior/tiles/wall_14.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_15",
+   "name": "十字の小紋",
+   "category": "tile",
+   "style": "壁",
+   "kind": "クロス",
+   "file": "interior/tiles/wall_15.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_16",
+   "name": "漆喰（こて跡）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "塗り壁",
+   "file": "interior/tiles/wall_16.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_17",
+   "name": "珪藻土（粗い）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "塗り壁",
+   "file": "interior/tiles/wall_17.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_18",
+   "name": "プラスター（西洋漆喰）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "塗り壁",
+   "file": "interior/tiles/wall_18.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_19",
+   "name": "大津磨き",
+   "category": "tile",
+   "style": "壁",
+   "kind": "塗り壁",
+   "file": "interior/tiles/wall_19.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_20",
+   "name": "聚楽壁",
+   "category": "tile",
+   "style": "壁",
+   "kind": "塗り壁",
+   "file": "interior/tiles/wall_20.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_21",
+   "name": "砂壁",
+   "category": "tile",
+   "style": "壁",
+   "kind": "塗り壁",
+   "file": "interior/tiles/wall_21.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_22",
+   "name": "繊維壁",
+   "category": "tile",
+   "style": "壁",
+   "kind": "塗り壁",
+   "file": "interior/tiles/wall_22.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_23",
+   "name": "土壁（藁すさ）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "塗り壁",
+   "file": "interior/tiles/wall_23.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_24",
+   "name": "ベンガラの赤壁",
+   "category": "tile",
+   "style": "壁",
+   "kind": "塗り壁",
+   "file": "interior/tiles/wall_24.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_25",
+   "name": "スタッコ（粗い）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "塗り壁",
+   "file": "interior/tiles/wall_25.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_26",
+   "name": "モルタル（グレー）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "塗り壁",
+   "file": "interior/tiles/wall_26.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_27",
+   "name": "コンクリート打ちっぱなし",
+   "category": "tile",
+   "style": "壁",
+   "kind": "塗り壁",
+   "file": "interior/tiles/wall_27.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_28",
+   "name": "板張り（縦・パイン）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "板",
+   "file": "interior/tiles/wall_28.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_29",
+   "name": "板張り（縦・白）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "板",
+   "file": "interior/tiles/wall_29.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_30",
+   "name": "板張り（横・ウォルナット）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "板",
+   "file": "interior/tiles/wall_30.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_31",
+   "name": "板張り（横・オーク）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "板",
+   "file": "interior/tiles/wall_31.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_32",
+   "name": "羽目板（さねはぎ）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "板",
+   "file": "interior/tiles/wall_32.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_33",
+   "name": "ビーズボード（細い縦溝）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "板",
+   "file": "interior/tiles/wall_33.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_34",
+   "name": "焼き杉（黒）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "板",
+   "file": "interior/tiles/wall_34.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_35",
+   "name": "木の格子（ルーバー）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "板",
+   "file": "interior/tiles/wall_35.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_36",
+   "name": "ログハウス（丸太）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "板",
+   "file": "interior/tiles/wall_36.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_37",
+   "name": "腰壁（下が板・上が塗り）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "板",
+   "file": "interior/tiles/wall_37.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_38",
+   "name": "サブウェイタイル（白・馬目地）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "タイル",
+   "file": "interior/tiles/wall_38.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_39",
+   "name": "サブウェイタイル（黒目地）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "タイル",
+   "file": "interior/tiles/wall_39.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_40",
+   "name": "サブウェイタイル（縦張り）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "タイル",
+   "file": "interior/tiles/wall_40.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_41",
+   "name": "サブウェイ（ヘリンボーン）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "タイル",
+   "file": "interior/tiles/wall_41.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_42",
+   "name": "サブウェイ（緑）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "タイル",
+   "file": "interior/tiles/wall_42.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_43",
+   "name": "サブウェイ（青）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "タイル",
+   "file": "interior/tiles/wall_43.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_44",
+   "name": "六角タイル（壁）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "タイル",
+   "file": "interior/tiles/wall_44.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_45",
+   "name": "モザイクタイル（多色）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "タイル",
+   "file": "interior/tiles/wall_45.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_46",
+   "name": "モザイクタイル（白）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "タイル",
+   "file": "interior/tiles/wall_46.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_47",
+   "name": "レンガ（赤）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "レンガ",
+   "file": "interior/tiles/wall_47.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_48",
+   "name": "レンガ（白ペンキ）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "レンガ",
+   "file": "interior/tiles/wall_48.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_49",
+   "name": "レンガ（アンティーク）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "レンガ",
+   "file": "interior/tiles/wall_49.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_50",
+   "name": "大谷石",
+   "category": "tile",
+   "style": "壁",
+   "kind": "石",
+   "file": "interior/tiles/wall_50.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_51",
+   "name": "石積み（乱張り）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "石",
+   "file": "interior/tiles/wall_51.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_52",
+   "name": "テラゾーの壁",
+   "category": "tile",
+   "style": "壁",
+   "kind": "石",
+   "file": "interior/tiles/wall_52.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_53",
+   "name": "障子",
+   "category": "tile",
+   "style": "壁",
+   "kind": "和",
+   "file": "interior/tiles/wall_53.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_54",
+   "name": "襖（金）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "和",
+   "file": "interior/tiles/wall_54.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_55",
+   "name": "襖（銀）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "和",
+   "file": "interior/tiles/wall_55.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_56",
+   "name": "網代（竹）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "和",
+   "file": "interior/tiles/wall_56.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_57",
+   "name": "よしず（葦）",
+   "category": "tile",
+   "style": "壁",
+   "kind": "和",
+   "file": "interior/tiles/wall_57.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_58",
+   "name": "板目＋長押",
+   "category": "tile",
+   "style": "壁",
+   "kind": "和",
+   "file": "interior/tiles/wall_58.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
+  },
+  {
+   "key": "wall_59",
+   "name": "黒板",
+   "category": "tile",
+   "style": "壁",
+   "kind": "その他",
+   "file": "interior/tiles/wall_59.png",
+   "size": [
+    256,
+    256
+   ],
+   "placement": "surface",
+   "surfaceKind": "wall",
+   "anchor": "tile",
+   "z": 10,
+   "seamless": true
   }
  ]
 }

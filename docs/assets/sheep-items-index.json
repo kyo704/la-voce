@@ -3373,7 +3373,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_06",
@@ -3388,7 +3392,11 @@
    ],
    "hem": 834,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_07",
@@ -3403,7 +3411,12 @@
    ],
    "hem": 806,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_09",
@@ -3418,7 +3431,12 @@
    ],
    "hem": 834,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "すずしい",
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_11",
@@ -3433,7 +3451,12 @@
    ],
    "hem": 834,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_12",
@@ -3448,7 +3471,12 @@
    ],
    "hem": 834,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_14",
@@ -3463,7 +3491,12 @@
    ],
    "hem": 806,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_24",
@@ -3478,7 +3511,12 @@
    ],
    "hem": 834,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "きちんと",
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_28",
@@ -3493,7 +3531,11 @@
    ],
    "hem": 806,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_30",
@@ -3508,7 +3550,11 @@
    ],
    "hem": 806,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "すずしい"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_34",
@@ -3523,7 +3569,12 @@
    ],
    "hem": 834,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_35",
@@ -3538,7 +3589,12 @@
    ],
    "hem": 896,
    "patterned": true,
-   "zLayer": 35
+   "zLayer": 35,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_37",
@@ -3553,7 +3609,12 @@
    ],
    "hem": 834,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_39",
@@ -3568,7 +3629,11 @@
    ],
    "hem": 806,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "すずしい"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_40",
@@ -3583,7 +3648,11 @@
    ],
    "hem": 900,
    "patterned": false,
-   "zLayer": 35
+   "zLayer": 35,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_47",
@@ -3598,7 +3667,12 @@
    ],
    "hem": 806,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_52",
@@ -3613,7 +3687,12 @@
    ],
    "hem": 860,
    "patterned": true,
-   "zLayer": 35
+   "zLayer": 35,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ],
+   "gender": "f"
   },
   {
    "key": "bottom_01",
@@ -3627,7 +3706,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "bottom_05",
@@ -3641,7 +3724,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "bottom_08",
@@ -3655,7 +3742,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "bottom_12",
@@ -3670,7 +3761,11 @@
    ],
    "hem": 906,
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "bottom_14",
@@ -3684,7 +3779,12 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "すずしい",
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "bottom_15",
@@ -3698,7 +3798,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "bottom_19",
@@ -3713,7 +3817,11 @@
    ],
    "hem": 934,
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "f"
   },
   {
    "key": "bottom_20",
@@ -3728,7 +3836,11 @@
    ],
    "hem": 944,
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "f"
   },
   {
    "key": "bottom_21",
@@ -3743,7 +3855,11 @@
    ],
    "hem": 988,
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "bottom_29",
@@ -3757,7 +3873,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "f"
   },
   {
    "key": "bottom_30",
@@ -3771,7 +3891,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "あたたかい"
+   ],
+   "gender": "f"
   },
   {
    "key": "outer_01",
@@ -3786,7 +3910,12 @@
    ],
    "hem": 846,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_04",
@@ -3801,7 +3930,12 @@
    ],
    "hem": 816,
    "patterned": true,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "ゆるい",
+    "よそゆき"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_09",
@@ -3816,7 +3950,12 @@
    ],
    "hem": 836,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_13",
@@ -3831,7 +3970,12 @@
    ],
    "hem": 948,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_19",
@@ -3846,7 +3990,11 @@
    ],
    "hem": 830,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_20",
@@ -3861,7 +4009,12 @@
    ],
    "hem": 926,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "outer_22",
@@ -3876,7 +4029,12 @@
    ],
    "hem": 892,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "outer_28",
@@ -3891,7 +4049,12 @@
    ],
    "hem": 906,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ],
+   "gender": "f"
   },
   {
    "key": "outer_30",
@@ -3906,7 +4069,11 @@
    ],
    "hem": 856,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "f"
   },
   {
    "key": "shoes_01",
@@ -3920,7 +4087,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 30
+   "zLayer": 30,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "u"
   },
   {
    "key": "shoes_03",
@@ -3934,7 +4105,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 30
+   "zLayer": 30,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "u"
   },
   {
    "key": "shoes_04",
@@ -3948,7 +4123,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 30
+   "zLayer": 30,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "shoes_05",
@@ -3962,7 +4141,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 30
+   "zLayer": 30,
+   "kanji": [
+    "あたたかい"
+   ],
+   "gender": "u"
   },
   {
    "key": "shoes_09",
@@ -3976,7 +4159,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 30
+   "zLayer": 30,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "u"
   },
   {
    "key": "shoes_11",
@@ -3990,7 +4177,12 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 30
+   "zLayer": 30,
+   "kanji": [
+    "よそゆき",
+    "きちんと"
+   ],
+   "gender": "f"
   },
   {
    "key": "hats_01",
@@ -4004,7 +4196,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 60
+   "zLayer": 60,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "u"
   },
   {
    "key": "hats_02",
@@ -4018,7 +4214,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 60
+   "zLayer": 60,
+   "kanji": [
+    "あたたかい"
+   ],
+   "gender": "u"
   },
   {
    "key": "hats_03",
@@ -4032,7 +4232,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 60
+   "zLayer": 60,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "u"
   },
   {
    "key": "hats_04",
@@ -4046,7 +4250,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 60
+   "zLayer": 60,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "hats_05",
@@ -4060,7 +4268,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 60
+   "zLayer": 60,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "u"
   },
   {
    "key": "hats_06",
@@ -4074,7 +4286,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 60
+   "zLayer": 60,
+   "kanji": [
+    "すずしい"
+   ],
+   "gender": "u"
   },
   {
    "key": "hats_07",
@@ -4088,7 +4304,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 60
+   "zLayer": 60,
+   "kanji": [
+    "あたたかい"
+   ],
+   "gender": "u"
   },
   {
    "key": "hats_08",
@@ -4102,7 +4322,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 60
+   "zLayer": 60,
+   "kanji": [
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "hats_09",
@@ -4116,7 +4340,12 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 60
+   "zLayer": 60,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ],
+   "gender": "u"
   },
   {
    "key": "hats_11",
@@ -4130,7 +4359,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 60
+   "zLayer": 60,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "f"
   },
   {
    "key": "hats_12",
@@ -4144,7 +4377,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 60
+   "zLayer": 60,
+   "kanji": [
+    "あたたかい"
+   ],
+   "gender": "u"
   },
   {
    "key": "hats_13",
@@ -4158,7 +4395,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 60
+   "zLayer": 60,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "u"
   },
   {
    "key": "neck_01",
@@ -4172,7 +4413,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 50
+   "zLayer": 50,
+   "kanji": [
+    "あたたかい"
+   ],
+   "gender": "u"
   },
   {
    "key": "neck_03",
@@ -4186,7 +4431,12 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 50
+   "zLayer": 50,
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "neck_04",
@@ -4200,7 +4450,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 50
+   "zLayer": 50,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "neck_05",
@@ -4214,7 +4468,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 50
+   "zLayer": 50,
+   "kanji": [
+    "よそゆき"
+   ],
+   "gender": "m"
   },
   {
    "key": "neck_09",
@@ -4228,7 +4486,12 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 50
+   "zLayer": 50,
+   "kanji": [
+    "よそゆき",
+    "すずしい"
+   ],
+   "gender": "f"
   },
   {
    "key": "eyes_01",
@@ -4242,7 +4505,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 55
+   "zLayer": 55,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "u"
   },
   {
    "key": "eyes_02",
@@ -4256,7 +4523,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 55
+   "zLayer": 55,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "u"
   },
   {
    "key": "top_02",
@@ -4270,7 +4541,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_03",
@@ -4284,7 +4559,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_04",
@@ -4298,7 +4577,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_05",
@@ -4312,7 +4595,12 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "きちんと",
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_08",
@@ -4327,7 +4615,12 @@
    ],
    "hem": 806,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "きちんと",
+    "すずしい"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_10",
@@ -4342,7 +4635,12 @@
    ],
    "hem": 834,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "すずしい",
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_13",
@@ -4357,7 +4655,12 @@
    ],
    "hem": 834,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_15",
@@ -4372,7 +4675,12 @@
    ],
    "hem": 806,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "きちんと",
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_16",
@@ -4387,7 +4695,12 @@
    ],
    "hem": 834,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "すずしい",
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_17",
@@ -4402,7 +4715,11 @@
    ],
    "hem": 806,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "すずしい"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_18",
@@ -4417,7 +4734,11 @@
    ],
    "hem": 806,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_19",
@@ -4432,7 +4753,11 @@
    ],
    "hem": 806,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "すずしい"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_20",
@@ -4447,7 +4772,12 @@
    ],
    "hem": 806,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_21",
@@ -4462,7 +4792,11 @@
    ],
    "hem": 806,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "すずしい"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_22",
@@ -4477,7 +4811,12 @@
    ],
    "hem": 806,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_23",
@@ -4492,7 +4831,12 @@
    ],
    "hem": 806,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "ゆるい",
+    "和"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_25",
@@ -4507,7 +4851,11 @@
    ],
    "hem": 806,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_26",
@@ -4522,7 +4870,11 @@
    ],
    "hem": 872,
    "patterned": false,
-   "zLayer": 35
+   "zLayer": 35,
+   "kanji": [
+    "すずしい"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_27",
@@ -4537,7 +4889,11 @@
    ],
    "hem": 806,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "すずしい"
+   ],
+   "gender": "m"
   },
   {
    "key": "top_29",
@@ -4552,7 +4908,12 @@
    ],
    "hem": 806,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_31",
@@ -4567,7 +4928,11 @@
    ],
    "hem": 806,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_32",
@@ -4582,7 +4947,12 @@
    ],
    "hem": 834,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_33",
@@ -4597,7 +4967,12 @@
    ],
    "hem": 806,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_36",
@@ -4612,7 +4987,12 @@
    ],
    "hem": 834,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_38",
@@ -4627,7 +5007,11 @@
    ],
    "hem": 862,
    "patterned": false,
-   "zLayer": 35
+   "zLayer": 35,
+   "kanji": [
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_41",
@@ -4642,7 +5026,12 @@
    ],
    "hem": 806,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_42",
@@ -4657,7 +5046,11 @@
    ],
    "hem": 806,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_43",
@@ -4672,7 +5065,12 @@
    ],
    "hem": 806,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_44",
@@ -4687,7 +5085,12 @@
    ],
    "hem": 834,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_45",
@@ -4702,7 +5105,11 @@
    ],
    "hem": 834,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "あたたかい"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_46",
@@ -4717,7 +5124,11 @@
    ],
    "hem": 806,
    "patterned": false,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "すずしい"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_48",
@@ -4732,7 +5143,12 @@
    ],
    "hem": 806,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_49",
@@ -4747,7 +5163,12 @@
    ],
    "hem": 806,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_50",
@@ -4762,7 +5183,11 @@
    ],
    "hem": 834,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "すずしい"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_51",
@@ -4777,7 +5202,12 @@
    ],
    "hem": 876,
    "patterned": false,
-   "zLayer": 35
+   "zLayer": 35,
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_53",
@@ -4792,7 +5222,12 @@
    ],
    "hem": 868,
    "patterned": true,
-   "zLayer": 35
+   "zLayer": 35,
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "top_54",
@@ -4807,7 +5242,11 @@
    ],
    "hem": 834,
    "patterned": true,
-   "zLayer": 10
+   "zLayer": 10,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "f"
   },
   {
    "key": "bottom_02",
@@ -4821,7 +5260,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "bottom_03",
@@ -4835,7 +5278,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "bottom_04",
@@ -4849,7 +5296,12 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "きちんと",
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "bottom_06",
@@ -4863,7 +5315,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "bottom_07",
@@ -4877,7 +5333,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "bottom_09",
@@ -4891,7 +5351,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "あたたかい"
+   ],
+   "gender": "m"
   },
   {
    "key": "bottom_10",
@@ -4905,7 +5369,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "bottom_11",
@@ -4920,7 +5388,11 @@
    ],
    "hem": 884,
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "bottom_13",
@@ -4934,7 +5406,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "bottom_16",
@@ -4948,7 +5424,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "bottom_17",
@@ -4963,7 +5443,12 @@
    ],
    "hem": 896,
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい",
+    "和"
+   ],
+   "gender": "m"
   },
   {
    "key": "bottom_18",
@@ -4977,7 +5462,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "m"
   },
   {
    "key": "bottom_22",
@@ -4992,7 +5481,11 @@
    ],
    "hem": 892,
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "f"
   },
   {
    "key": "bottom_23",
@@ -5007,7 +5500,11 @@
    ],
    "hem": 930,
    "patterned": true,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "f"
   },
   {
    "key": "bottom_24",
@@ -5022,7 +5519,11 @@
    ],
    "hem": 906,
    "patterned": true,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "f"
   },
   {
    "key": "bottom_25",
@@ -5037,7 +5538,11 @@
    ],
    "hem": 952,
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "bottom_26",
@@ -5052,7 +5557,12 @@
    ],
    "hem": 948,
    "patterned": true,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "bottom_27",
@@ -5067,7 +5577,11 @@
    ],
    "hem": 936,
    "patterned": true,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "bottom_28",
@@ -5082,7 +5596,11 @@
    ],
    "hem": 926,
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "あたたかい"
+   ],
+   "gender": "f"
   },
   {
    "key": "bottom_31",
@@ -5096,7 +5614,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "f"
   },
   {
    "key": "bottom_32",
@@ -5111,7 +5633,11 @@
    ],
    "hem": 914,
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "f"
   },
   {
    "key": "bottom_33",
@@ -5126,7 +5652,12 @@
    ],
    "hem": 956,
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "bottom_34",
@@ -5141,7 +5672,11 @@
    ],
    "hem": 898,
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "f"
   },
   {
    "key": "bottom_35",
@@ -5155,7 +5690,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 20
+   "zLayer": 20,
+   "kanji": [
+    "あたたかい"
+   ],
+   "gender": "f"
   },
   {
    "key": "outer_02",
@@ -5170,7 +5709,12 @@
    ],
    "hem": 852,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_03",
@@ -5185,7 +5729,12 @@
    ],
    "hem": 838,
    "patterned": true,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_05",
@@ -5200,7 +5749,12 @@
    ],
    "hem": 818,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_06",
@@ -5215,7 +5769,11 @@
    ],
    "hem": 816,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_07",
@@ -5230,7 +5788,12 @@
    ],
    "hem": 820,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_08",
@@ -5245,7 +5808,11 @@
    ],
    "hem": 852,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_10",
@@ -5260,7 +5827,12 @@
    ],
    "hem": 862,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_11",
@@ -5275,7 +5847,11 @@
    ],
    "hem": 868,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_12",
@@ -5290,7 +5866,12 @@
    ],
    "hem": 922,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_14",
@@ -5305,7 +5886,12 @@
    ],
    "hem": 930,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_15",
@@ -5320,7 +5906,11 @@
    ],
    "hem": 814,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_16",
@@ -5335,7 +5925,11 @@
    ],
    "hem": 818,
    "patterned": true,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_17",
@@ -5350,7 +5944,12 @@
    ],
    "hem": 856,
    "patterned": true,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "あたたかい",
+    "和"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_18",
@@ -5365,7 +5964,12 @@
    ],
    "hem": 966,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "m"
   },
   {
    "key": "outer_21",
@@ -5380,7 +5984,12 @@
    ],
    "hem": 944,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "outer_23",
@@ -5395,7 +6004,12 @@
    ],
    "hem": 886,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "outer_24",
@@ -5410,7 +6024,11 @@
    ],
    "hem": 846,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "f"
   },
   {
    "key": "outer_25",
@@ -5425,7 +6043,12 @@
    ],
    "hem": 800,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "outer_26",
@@ -5440,7 +6063,12 @@
    ],
    "hem": 828,
    "patterned": true,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "outer_27",
@@ -5455,7 +6083,11 @@
    ],
    "hem": 964,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "f"
   },
   {
    "key": "outer_29",
@@ -5470,7 +6102,12 @@
    ],
    "hem": 914,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "outer_31",
@@ -5485,7 +6122,12 @@
    ],
    "hem": 902,
    "patterned": true,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ],
+   "gender": "f"
   },
   {
    "key": "outer_32",
@@ -5500,7 +6142,12 @@
    ],
    "hem": 874,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ],
+   "gender": "f"
   },
   {
    "key": "outer_33",
@@ -5515,7 +6162,11 @@
    ],
    "hem": 804,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと"
+   ],
+   "gender": "f"
   },
   {
    "key": "outer_34",
@@ -5530,7 +6181,12 @@
    ],
    "hem": 976,
    "patterned": false,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "outer_35",
@@ -5545,7 +6201,12 @@
    ],
    "hem": 952,
    "patterned": true,
-   "zLayer": 40
+   "zLayer": 40,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "neck_02",
@@ -5559,7 +6220,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 50
+   "zLayer": 50,
+   "kanji": [
+    "あたたかい"
+   ],
+   "gender": "u"
   },
   {
    "key": "neck_06",
@@ -5573,7 +6238,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 50
+   "zLayer": 50,
+   "kanji": [
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "neck_07",
@@ -5587,7 +6256,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 50
+   "zLayer": 50,
+   "kanji": [
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "neck_08",
@@ -5601,7 +6274,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 50
+   "zLayer": 50,
+   "kanji": [
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "neck_10",
@@ -5615,7 +6292,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 50
+   "zLayer": 50,
+   "kanji": [
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "neck_11",
@@ -5629,7 +6310,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 50
+   "zLayer": 50,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "u"
   },
   {
    "key": "eyes_03",
@@ -5643,7 +6328,12 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 55
+   "zLayer": 55,
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ],
+   "gender": "u"
   },
   {
    "key": "eyes_04",
@@ -5657,7 +6347,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 55
+   "zLayer": 55,
+   "kanji": [
+    "すずしい"
+   ],
+   "gender": "u"
   },
   {
    "key": "eyes_05",
@@ -5671,7 +6365,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 55
+   "zLayer": 55,
+   "kanji": [
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "eyes_06",
@@ -5685,7 +6383,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 55
+   "zLayer": 55,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "u"
   },
   {
    "key": "shoes_02",
@@ -5699,7 +6401,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 30
+   "zLayer": 30,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "u"
   },
   {
    "key": "shoes_06",
@@ -5713,7 +6419,12 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 30
+   "zLayer": 30,
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ],
+   "gender": "f"
   },
   {
    "key": "shoes_07",
@@ -5727,7 +6438,11 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 30
+   "zLayer": 30,
+   "kanji": [
+    "すずしい"
+   ],
+   "gender": "u"
   },
   {
    "key": "shoes_08",
@@ -5741,7 +6456,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 30
+   "zLayer": 30,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "u"
   },
   {
    "key": "shoes_10",
@@ -5755,7 +6474,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 30
+   "zLayer": 30,
+   "kanji": [
+    "ゆるい"
+   ],
+   "gender": "u"
   },
   {
    "key": "shoes_12",
@@ -5769,7 +6492,12 @@
     1024
    ],
    "patterned": false,
-   "zLayer": 30
+   "zLayer": 30,
+   "kanji": [
+    "よそゆき",
+    "すずしい"
+   ],
+   "gender": "f"
   },
   {
    "key": "hats_10",
@@ -5783,7 +6511,11 @@
     1024
    ],
    "patterned": true,
-   "zLayer": 60
+   "zLayer": 60,
+   "kanji": [
+    "よそゆき"
+   ],
+   "gender": "u"
   }
  ]
 }

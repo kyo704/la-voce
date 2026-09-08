@@ -1,0 +1,1577 @@
+{
+ "version": "kanji-2026-09-08",
+ "kinds": [
+  "あたたかい",
+  "すずしい",
+  "きちんと",
+  "ゆるい",
+  "和",
+  "よそゆき"
+ ],
+ "count": 166,
+ "note": "1品につき1〜2つ。「さがす」の絞り込み用。表示はしない。★機械で下書きし、帽子・首元・靴・目元の45点は手で直した。★残りも坂本さんが直せる形にしてある",
+ "items": [
+  {
+   "slot": "top",
+   "key": "top_01",
+   "name": "シャツ",
+   "gender": "m",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_02",
+   "name": "ボタンダウン",
+   "gender": "m",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_03",
+   "name": "チェックシャツ",
+   "gender": "m",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_04",
+   "name": "ワークシャツ",
+   "gender": "m",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_05",
+   "name": "デニムシャツ",
+   "gender": "m",
+   "kanji": [
+    "きちんと",
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_06",
+   "name": "ボーダー",
+   "gender": "m",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_07",
+   "name": "Ｔシャツ",
+   "gender": "m",
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_08",
+   "name": "ポロ",
+   "gender": "m",
+   "kanji": [
+    "きちんと",
+    "すずしい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_09",
+   "name": "スウェット",
+   "gender": "m",
+   "kanji": [
+    "すずしい",
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_10",
+   "name": "フーディ",
+   "gender": "m",
+   "kanji": [
+    "すずしい",
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_11",
+   "name": "セーター（丸首）",
+   "gender": "m",
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_12",
+   "name": "タートルネック",
+   "gender": "m",
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_13",
+   "name": "ケーブルニット",
+   "gender": "m",
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_14",
+   "name": "ベスト",
+   "gender": "m",
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_15",
+   "name": "つなぎの上",
+   "gender": "m",
+   "kanji": [
+    "きちんと",
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_16",
+   "name": "ジャージ",
+   "gender": "m",
+   "kanji": [
+    "すずしい",
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_17",
+   "name": "タンクトップ",
+   "gender": "m",
+   "kanji": [
+    "すずしい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_18",
+   "name": "ラガーシャツ",
+   "gender": "m",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_19",
+   "name": "ヘンリーネック",
+   "gender": "m",
+   "kanji": [
+    "すずしい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_20",
+   "name": "モックネック",
+   "gender": "m",
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_21",
+   "name": "ラグランＴ",
+   "gender": "m",
+   "kanji": [
+    "すずしい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_22",
+   "name": "アロハシャツ",
+   "gender": "m",
+   "kanji": [
+    "すずしい",
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_23",
+   "name": "甚平の上",
+   "gender": "m",
+   "kanji": [
+    "ゆるい",
+    "和"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_24",
+   "name": "パジャマ",
+   "gender": "m",
+   "kanji": [
+    "きちんと",
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_25",
+   "name": "ミリタリーシャツ",
+   "gender": "m",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_26",
+   "name": "ビッグシルエットＴ",
+   "gender": "m",
+   "kanji": [
+    "すずしい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_27",
+   "name": "スポーツＴ",
+   "gender": "m",
+   "kanji": [
+    "すずしい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_28",
+   "name": "ブラウス",
+   "gender": "f",
+   "kanji": [
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_29",
+   "name": "ボウタイブラウス",
+   "gender": "f",
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_30",
+   "name": "パフスリーブ",
+   "gender": "f",
+   "kanji": [
+    "すずしい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_31",
+   "name": "フリルブラウス",
+   "gender": "f",
+   "kanji": [
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_32",
+   "name": "リボンニット",
+   "gender": "f",
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_33",
+   "name": "レーストップス",
+   "gender": "f",
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_34",
+   "name": "カーディガン",
+   "gender": "f",
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_35",
+   "name": "ロングカーディガン",
+   "gender": "f",
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_36",
+   "name": "モヘアニット",
+   "gender": "f",
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_37",
+   "name": "タートル（リブ）",
+   "gender": "f",
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_38",
+   "name": "ペプラムトップス",
+   "gender": "f",
+   "kanji": [
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_39",
+   "name": "キャミソール",
+   "gender": "f",
+   "kanji": [
+    "すずしい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_40",
+   "name": "チュニック",
+   "gender": "f",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_41",
+   "name": "ギンガムブラウス",
+   "gender": "f",
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_42",
+   "name": "花柄ブラウス",
+   "gender": "f",
+   "kanji": [
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_43",
+   "name": "ドットブラウス",
+   "gender": "f",
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_44",
+   "name": "レオパードニット",
+   "gender": "f",
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_45",
+   "name": "ツイードのトップス",
+   "gender": "f",
+   "kanji": [
+    "あたたかい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_46",
+   "name": "オフショル",
+   "gender": "f",
+   "kanji": [
+    "すずしい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_47",
+   "name": "ニットベスト",
+   "gender": "f",
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_48",
+   "name": "セーラー風",
+   "gender": "f",
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_49",
+   "name": "黒レースブラウス",
+   "gender": "f",
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_50",
+   "name": "Ｙ２Ｋトップス",
+   "gender": "f",
+   "kanji": [
+    "すずしい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_51",
+   "name": "韓国系ゆるニット",
+   "gender": "f",
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_52",
+   "name": "もこもこパジャマ",
+   "gender": "f",
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_53",
+   "name": "ボヘミアンブラウス",
+   "gender": "f",
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "top",
+   "key": "top_54",
+   "name": "レザートップス",
+   "gender": "f",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_01",
+   "name": "デニム",
+   "gender": "m",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_02",
+   "name": "ダメージデニム",
+   "gender": "m",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_03",
+   "name": "ブラックデニム",
+   "gender": "m",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_04",
+   "name": "ワイドスラックス",
+   "gender": "m",
+   "kanji": [
+    "きちんと",
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_05",
+   "name": "スラックス（紺）",
+   "gender": "m",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_06",
+   "name": "テーパードパンツ",
+   "gender": "m",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_07",
+   "name": "カーゴ",
+   "gender": "m",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_08",
+   "name": "チノ",
+   "gender": "m",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_09",
+   "name": "コーデュロイ",
+   "gender": "m",
+   "kanji": [
+    "あたたかい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_10",
+   "name": "ジャージパンツ",
+   "gender": "m",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_11",
+   "name": "ショーツ",
+   "gender": "m",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_12",
+   "name": "ハーフパンツ",
+   "gender": "m",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_13",
+   "name": "チェックのパンツ",
+   "gender": "m",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_14",
+   "name": "スウェットパンツ",
+   "gender": "m",
+   "kanji": [
+    "すずしい",
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_15",
+   "name": "パジャマパンツ",
+   "gender": "m",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_16",
+   "name": "ミリタリーパンツ",
+   "gender": "m",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_17",
+   "name": "甚平の下",
+   "gender": "m",
+   "kanji": [
+    "ゆるい",
+    "和"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_18",
+   "name": "スキニー",
+   "gender": "m",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_19",
+   "name": "ミディ丈スカート",
+   "gender": "f",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_20",
+   "name": "プリーツスカート",
+   "gender": "f",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_21",
+   "name": "ロングスカート",
+   "gender": "f",
+   "kanji": [
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_22",
+   "name": "ミニスカート",
+   "gender": "f",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_23",
+   "name": "チェックスカート",
+   "gender": "f",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_24",
+   "name": "デニムスカート",
+   "gender": "f",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_25",
+   "name": "フレアスカート",
+   "gender": "f",
+   "kanji": [
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_26",
+   "name": "チュールスカート",
+   "gender": "f",
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_27",
+   "name": "花柄スカート",
+   "gender": "f",
+   "kanji": [
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_28",
+   "name": "コーデュロイスカート",
+   "gender": "f",
+   "kanji": [
+    "あたたかい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_29",
+   "name": "ワイドパンツ",
+   "gender": "f",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_30",
+   "name": "レギンス",
+   "gender": "f",
+   "kanji": [
+    "あたたかい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_31",
+   "name": "サロペット",
+   "gender": "f",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_32",
+   "name": "ガウチョ",
+   "gender": "f",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_33",
+   "name": "ペチコート",
+   "gender": "f",
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_34",
+   "name": "レザースカート",
+   "gender": "f",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "bottom",
+   "key": "bottom_35",
+   "name": "もこもこパンツ",
+   "gender": "f",
+   "kanji": [
+    "あたたかい"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_01",
+   "name": "テーラードジャケット",
+   "gender": "m",
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_02",
+   "name": "スーツの上着",
+   "gender": "m",
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_03",
+   "name": "ツイードジャケット",
+   "gender": "m",
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_04",
+   "name": "デニムジャケット",
+   "gender": "m",
+   "kanji": [
+    "ゆるい",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_05",
+   "name": "レザージャケット",
+   "gender": "m",
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_06",
+   "name": "ブルゾン",
+   "gender": "m",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_07",
+   "name": "トラックジャケット",
+   "gender": "m",
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_08",
+   "name": "マウンテンパーカ",
+   "gender": "m",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_09",
+   "name": "フリース",
+   "gender": "m",
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_10",
+   "name": "ダウン（パファー）",
+   "gender": "m",
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_11",
+   "name": "Ｍ-65（ミリタリー）",
+   "gender": "m",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_12",
+   "name": "トレンチコート",
+   "gender": "m",
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_13",
+   "name": "ロングコート",
+   "gender": "m",
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_14",
+   "name": "ステンカラーコート",
+   "gender": "m",
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_15",
+   "name": "ＭＡ-1",
+   "gender": "m",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_16",
+   "name": "スタジャン",
+   "gender": "m",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_17",
+   "name": "半纏",
+   "gender": "m",
+   "kanji": [
+    "あたたかい",
+    "和"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_18",
+   "name": "ベンチコート",
+   "gender": "m",
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_19",
+   "name": "ジレ",
+   "gender": "m",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_20",
+   "name": "ノーカラーコート",
+   "gender": "f",
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_21",
+   "name": "チェスターコート",
+   "gender": "f",
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_22",
+   "name": "ダッフルコート",
+   "gender": "f",
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_23",
+   "name": "ファーコート",
+   "gender": "f",
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_24",
+   "name": "ケープ",
+   "gender": "f",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_25",
+   "name": "ショートジャケット",
+   "gender": "f",
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_26",
+   "name": "ツイードジャケット（女）",
+   "gender": "f",
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_27",
+   "name": "ガウン",
+   "gender": "f",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_28",
+   "name": "カーディガン（羽織）",
+   "gender": "f",
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_29",
+   "name": "レースの羽織り",
+   "gender": "f",
+   "kanji": [
+    "すずしい",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_30",
+   "name": "キルティング",
+   "gender": "f",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_31",
+   "name": "ポンチョ",
+   "gender": "f",
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_32",
+   "name": "ムートン",
+   "gender": "f",
+   "kanji": [
+    "あたたかい",
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_33",
+   "name": "ライダース（女）",
+   "gender": "f",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_34",
+   "name": "ロングガウン",
+   "gender": "f",
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "outer",
+   "key": "outer_35",
+   "name": "ゴシックコート",
+   "gender": "f",
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "hat",
+   "key": "hat_01",
+   "name": "キャップ",
+   "gender": "u",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "hat",
+   "key": "hat_02",
+   "name": "ニット帽",
+   "gender": "u",
+   "kanji": [
+    "あたたかい"
+   ]
+  },
+  {
+   "slot": "hat",
+   "key": "hat_03",
+   "name": "ベレー",
+   "gender": "u",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "hat",
+   "key": "hat_04",
+   "name": "中折れハット",
+   "gender": "m",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "hat",
+   "key": "hat_05",
+   "name": "バケット",
+   "gender": "u",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "hat",
+   "key": "hat_06",
+   "name": "麦わら帽子",
+   "gender": "u",
+   "kanji": [
+    "すずしい"
+   ]
+  },
+  {
+   "slot": "hat",
+   "key": "hat_07",
+   "name": "イヤーマフ",
+   "gender": "u",
+   "kanji": [
+    "あたたかい"
+   ]
+  },
+  {
+   "slot": "hat",
+   "key": "hat_08",
+   "name": "カチューシャ",
+   "gender": "f",
+   "kanji": [
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "hat",
+   "key": "hat_09",
+   "name": "フード",
+   "gender": "u",
+   "kanji": [
+    "あたたかい",
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "hat",
+   "key": "hat_10",
+   "name": "王冠",
+   "gender": "u",
+   "kanji": [
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "hat",
+   "key": "hat_11",
+   "name": "ヘアバンド",
+   "gender": "f",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "hat",
+   "key": "hat_12",
+   "name": "サンタ帽",
+   "gender": "u",
+   "kanji": [
+    "あたたかい"
+   ]
+  },
+  {
+   "slot": "hat",
+   "key": "hat_13",
+   "name": "コック帽",
+   "gender": "u",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "neck",
+   "key": "neck_01",
+   "name": "マフラー",
+   "gender": "u",
+   "kanji": [
+    "あたたかい"
+   ]
+  },
+  {
+   "slot": "neck",
+   "key": "neck_02",
+   "name": "チェックのマフラー",
+   "gender": "u",
+   "kanji": [
+    "あたたかい"
+   ]
+  },
+  {
+   "slot": "neck",
+   "key": "neck_03",
+   "name": "ストール",
+   "gender": "f",
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "neck",
+   "key": "neck_04",
+   "name": "ネクタイ",
+   "gender": "m",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "neck",
+   "key": "neck_05",
+   "name": "蝶ネクタイ",
+   "gender": "m",
+   "kanji": [
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "neck",
+   "key": "neck_06",
+   "name": "リボン",
+   "gender": "f",
+   "kanji": [
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "neck",
+   "key": "neck_07",
+   "name": "ネックレス",
+   "gender": "f",
+   "kanji": [
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "neck",
+   "key": "neck_08",
+   "name": "パールのくび飾り",
+   "gender": "f",
+   "kanji": [
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "neck",
+   "key": "neck_09",
+   "name": "スカーフ",
+   "gender": "f",
+   "kanji": [
+    "よそゆき",
+    "すずしい"
+   ]
+  },
+  {
+   "slot": "neck",
+   "key": "neck_10",
+   "name": "チョーカー",
+   "gender": "f",
+   "kanji": [
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "neck",
+   "key": "neck_11",
+   "name": "フード（下ろした）",
+   "gender": "u",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "shoes",
+   "key": "shoes_01",
+   "name": "スニーカー",
+   "gender": "u",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "shoes",
+   "key": "shoes_02",
+   "name": "ハイカット",
+   "gender": "u",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "shoes",
+   "key": "shoes_03",
+   "name": "ローファー",
+   "gender": "u",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "shoes",
+   "key": "shoes_04",
+   "name": "革靴",
+   "gender": "m",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "shoes",
+   "key": "shoes_05",
+   "name": "ブーツ",
+   "gender": "u",
+   "kanji": [
+    "あたたかい"
+   ]
+  },
+  {
+   "slot": "shoes",
+   "key": "shoes_06",
+   "name": "ロングブーツ",
+   "gender": "f",
+   "kanji": [
+    "あたたかい",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "shoes",
+   "key": "shoes_07",
+   "name": "サンダル",
+   "gender": "u",
+   "kanji": [
+    "すずしい"
+   ]
+  },
+  {
+   "slot": "shoes",
+   "key": "shoes_08",
+   "name": "上履き",
+   "gender": "u",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "shoes",
+   "key": "shoes_09",
+   "name": "スリッパ",
+   "gender": "u",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "shoes",
+   "key": "shoes_10",
+   "name": "長ぐつ",
+   "gender": "u",
+   "kanji": [
+    "ゆるい"
+   ]
+  },
+  {
+   "slot": "shoes",
+   "key": "shoes_11",
+   "name": "パンプス",
+   "gender": "f",
+   "kanji": [
+    "よそゆき",
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "shoes",
+   "key": "shoes_12",
+   "name": "ミュール",
+   "gender": "f",
+   "kanji": [
+    "よそゆき",
+    "すずしい"
+   ]
+  },
+  {
+   "slot": "eyes",
+   "key": "eyes_01",
+   "name": "メガネ（丸）",
+   "gender": "u",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "eyes",
+   "key": "eyes_02",
+   "name": "メガネ（四角）",
+   "gender": "u",
+   "kanji": [
+    "きちんと"
+   ]
+  },
+  {
+   "slot": "eyes",
+   "key": "eyes_03",
+   "name": "金ぶちメガネ",
+   "gender": "u",
+   "kanji": [
+    "きちんと",
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "eyes",
+   "key": "eyes_04",
+   "name": "サングラス",
+   "gender": "u",
+   "kanji": [
+    "すずしい"
+   ]
+  },
+  {
+   "slot": "eyes",
+   "key": "eyes_05",
+   "name": "伊達メガネ",
+   "gender": "f",
+   "kanji": [
+    "よそゆき"
+   ]
+  },
+  {
+   "slot": "eyes",
+   "key": "eyes_06",
+   "name": "ゴーグル",
+   "gender": "u",
+   "kanji": [
+    "ゆるい"
+   ]
+  }
+ ]
+}

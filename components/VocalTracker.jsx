@@ -102,8 +102,11 @@ import * as unsentQueue from "@/lib/offlineQueue";
 // ★おうち画面の作り直し（★2026-09-08・仕様 §3）。★決めは lib が持ちます。
 import HomeDrawer from "@/components/HomeDrawer";
 import DrawerItemGrid from "@/components/DrawerItemGrid";
-import { VIEW, DRESS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES } from "@/lib/homeDrawer";
+import { VIEW, DRESS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES, HOME_COLORS } from "@/lib/homeDrawer";
 import { itemsFor, sortItems } from "@/lib/drawerItems";
+// ★さがす（★§3-6）。★絞り込みは、ここにだけ 置きます。
+import DrawerSearch from "@/components/DrawerSearch";
+import { applySearch, emptyQuery, isEmptyQuery, COPY as SEARCH_COPY } from "@/lib/drawerSearch";
 import {
   INTERIOR_ITEMS, interiorSrc, isPlaced, toggleInterior, tileSurface,
   interiorOf, interiorItemByKey
@@ -114,7 +117,7 @@ import {
 } from "@/lib/wardrobeBoxes";
 import { REDRAWN_AS, withRedrawnKeys } from "@/lib/legacyWearables";
 // ★服の色。★式も、24色も、★どの品に塗れるかも、★あちらが持ちます。
-import { setColor as setClothColor, isColorable } from "@/lib/clothColors";
+import { setColor as setClothColor, isColorable, CLOTH_COLORS } from "@/lib/clothColors";
 import ClothColorRow from "@/components/ClothColorRow";
 // ★栄養の合計。★何を出し、何を出さないかは、あちらが持ちます。
 import { mealMacroTotals, usualTotals, macroRows } from "@/lib/nutritionTotals";
@@ -5309,6 +5312,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //     ★「名前が分かったほうが、面白い」というご判断です。
   //   ★Opus の見本②は「すぐ着る」でしたが、★坂本さんのお決めを採ります。
   const [pickedItem, setPickedItem] = useState(null);
+  // ★★さがす（★§3-6）。★絞り込みは、ふだんの画面に 出しません。
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(emptyQuery());
+  // ★★「したく」を開いたときの姿（★2026-09-08 夕）。
+  //   ★★「おわり」「さっきに もどす」で、★ここへ戻します。
+  //   ★★「けってい」を押さずに 出た方の 画面が、★勝手に 変わらないためです。
+  const [equippedBefore, setEquippedBefore] = useState(null);
   // ★「あとで」を押された日。★同じ日は、もう出しません。★翌日また出します。
   //   ★★端末に覚えさせます。★DBに残すほどのことではありません。
   //     ★忘れても、★もう一度お尋ねするだけです。
@@ -11784,7 +11794,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★★着せかえたものを、保存します（2026-09-05 夜）。
   //   ★character_equipped の中の「wardrobe」だけを差し替えます。
   //   ★★いまの SVG の羊の分（hat / outfit / accessory）は、★触りません。
-  async function handleEquipWardrobe(next) {
+  /**
+   * ★着ます。
+   *
+   *   ★★persist（★2026-09-08 夕・坂本さんのご指摘）。
+   *     ★★「したく」の中では、★まだ 保存しません。★下書きです。
+   *       ★押した瞬間に 保存していたので、★「けってい」を 押さなくても
+   *       ★★残ってしまっていました。★確かめる段が、意味を失っていました。
+   *     ★「けってい」を押したときだけ、★残します。
+   *     ★「おわり」「さっきに もどす」で、★もとに戻せます。
+   *   ★★ふだんの画面（★門の外の方など）からは、これまでどおり すぐ保存します。
+   */
+  async function handleEquipWardrobe(next, { persist = true } = {}) {
     // ★★いまの形から作ります（★2026-09-08・不具合の直し）。
     //   ★★外の characterEquipped から作ると、★続けて押したとき、
     //     ★2つ目が、1つ目を消します。
@@ -11794,6 +11815,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       merged = { ...prev, wardrobe: next };
       return merged;
     });
+    // ★★下書きのときは、★ここで止めます。★DB へ 書きません。
+    if (!persist) { setCharacterDirty(true); return; }
     const supabase = createClient();
     const { error } = await supabase
       .from("profiles").update({ character_equipped: merged }).eq("id", userId).select("id");
@@ -15279,14 +15302,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ★一覧・絞り込み・並び順を、★1つも出しません。
                   ★★言葉は「したく」です（★§7-4「もようがえ」は使いません）。 */}
               {wardrobeOn && homeState === VIEW && (
-                <button type="button" onClick={() => setHomeState(DRESS)}
+                <button type="button"
+                  onClick={() => {
+                    // ★★開いたときの姿を、控えます。★戻せるようにするためです。
+                    setEquippedBefore(characterEquipped);
+                    setHomeState(DRESS);
+                  }}
                   style={{
                     position: "fixed", right: 16, bottom: 88, zIndex: 30,
                     minHeight: 48, padding: "0 22px",
                     // ★丸いピル型にしません（★§7-2「形」）。★角は小さめ、下に木の線。
                     borderRadius: 8,
-                    border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
-                    background: C.curtain, color: "#FFFDF8",
+                    // ★★見本①の色は こげちゃ です（★§7-2）。★えんじ ではありません。
+                    //   ★服の24色から 取った色です。★数は lib が持ちます。
+                    border: `1px solid ${HOME_COLORS.kogecha}`, borderBottomWidth: 3,
+                    background: HOME_COLORS.kogecha, color: "#FFFDF8",
                     fontSize: "1rem", fontWeight: 600,
                     boxShadow: "0 2px 10px rgba(89,66,51,0.18)"
                   }}>
@@ -15347,9 +15377,28 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   onCategory={(k) => { setDrawerCat(k); setDrawerTab("all"); setPickedItem(null); }}
                   tab={drawerTab} onTab={setDrawerTab}
                   sort={drawerSort} onSort={setDrawerSort}
-                  onClose={() => { setPickedItem(null); setHomeState(VIEW); }}
-                  onDone={() => { handleSaveCharacter(); setPickedItem(null); setHomeState(VIEW); }}
-                  canUndo={false}
+                  onSearch={() => setSearchOpen(true)}
+                  // ★★おわり ── ★けってい を押していなければ、★もとに戻します。
+                  //   ★★勝手に 残しません。★確かめる段の、意味を守ります。
+                  onClose={() => {
+                    if (equippedBefore) setCharacterEquipped(equippedBefore);
+                    setCharacterDirty(false);
+                    setPickedItem(null); setHomeState(VIEW);
+                  }}
+                  // ★★さっきに もどす ── ★開いたときの姿へ 戻します。
+                  //   ★★閉じません。★続けて 選べます。
+                  onUndo={() => {
+                    if (equippedBefore) setCharacterEquipped(equippedBefore);
+                    setCharacterDirty(false);
+                    setPickedItem(null);
+                  }}
+                  // ★★けってい ── ★ここで はじめて 残します。
+                  onDone={() => {
+                    handleSaveCharacter();
+                    setEquippedBefore(null);
+                    setPickedItem(null); setHomeState(VIEW);
+                  }}
+                  canUndo={!!equippedBefore && characterDirty}
                   // ★★押した品（★2026-09-08・坂本さんのお決め「2段階」）。
                   //   ★★押すと すぐ着る、ではなく、★名前を見せてから 着ます。
                   //     ★「名前が分かったほうが、面白い」というご判断です。
@@ -15376,10 +15425,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   // ★★「けってい」── ★変えるためでは ありません。★残すためです。
                   //   ★★押した瞬間に、★もう着ています。
                   //   ★ここでは、★いまの姿を 保存して、★えらぶのを おしまいにします。
-                  onWear={() => { handleSaveCharacter(); setPickedItem(null); }}>
+                  onWear={() => {
+                    handleSaveCharacter();
+                    setEquippedBefore(characterEquipped);
+                    setPickedItem(null);
+                  }}>
                   <DrawerItemGrid
                     items={sortItems(
-                      itemsFor(drawerCat, drawerTab, {
+                      applySearch(itemsFor(drawerCat, drawerTab, {
                         wearItems: SHEEP_ITEMS,
                         interiorItems: INTERIOR_ITEMS,
                         marks: characterEquipped,
@@ -15388,9 +15441,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         //   ★★渡していませんでした。★だから、いつも空でした。
                         //   ★着ているものと、置いているもの、★両方です。
                         placed: placedForStore
+                      }), searchQuery, {
+                        owned: ownedItemKeys,
+                        colorOf: (k) => (characterEquipped.clothColors || {})[k] || null,
+                        colorNameOf: (k) => {
+                          const ck = (characterEquipped.clothColors || {})[k];
+                          const c = ck ? CLOTH_COLORS.find((x) => x.key === ck) : null;
+                          return c ? c.name : "";
+                        }
                       }),
                       drawerSort,
                       { marks: characterEquipped })}
+                    emptyText={isEmptyQuery(searchQuery) ? undefined : SEARCH_COPY.empty}
                     srcOf={(it) => (it.slot
                       ? sheepItemSrc(it, (characterEquipped.wardrobe || {}).propSide)
                       : interiorSrc(it))}
@@ -15406,8 +15468,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     onTap={(it) => {
                       setPickedItem((cur) => (cur && cur.key === it.key ? null : it));
                       if (it.slot) {
+                        // ★★まだ 保存しません（★下書き）。★「けってい」で 残します。
                         handleEquipWardrobe(applyWear(
-                          characterEquipped.wardrobe || {}, it, sheepItemByKey));
+                          characterEquipped.wardrobe || {}, it, sheepItemByKey),
+                          { persist: false });
                       } else {
                         setCharacterEquipped((prev) => ({
                           ...prev, interior: toggleInterior(prev, it).interior
@@ -15417,6 +15481,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     }}
                     isPicked={(it) => !!pickedItem && pickedItem.key === it.key} />
                 </HomeDrawer>
+              )}
+
+              {/* ★★さがす（★§3-6・見本⑥）。★別の1枚です。
+                  ★★絞り込みは、★ふだんの画面から 外しました。★ここにだけ 置きます。
+                  ★★「けす」を、必ず置きます。★絞ったまま 戻れなくならないためです。 */}
+              {wardrobeOn && homeState === DRESS && searchOpen && (
+                <DrawerSearch
+                  initial={searchQuery}
+                  onCancel={() => setSearchOpen(false)}
+                  onApply={(q) => { setSearchQuery(q); setSearchOpen(false); }} />
               )}
               </>
             )}
