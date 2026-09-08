@@ -181,8 +181,12 @@ function ok(label, cond) {
   // ★★速さが変わると、脚が動いていてもすべって見えます。
   ok("★歩くときは、速さが一定（linear）", /mo\.gait \? "linear"/.test(dressed2));
   const home3 = readCode("components", "CharacterHome.jsx");
+  // ★★2026-09-09、★秒数を lib に 移しました（★2.2秒 → 3.2秒）。
+  //   ★★見るのは「秒数」では なく「速さが 一定（linear）か」です。
+  //     ★秒数で 見ると、★数を 変えるたびに ここが 落ちます。
+  //     ★★守りたいのは「★すべって 見えないこと」です。
   ok("★おうちの羊も、歩くときは速さが一定",
-    /isWalking\s*\?\s*"left 2\.2s linear/.test(home3));
+    /isWalking\s*\n?\s*[\s\S]{0,400}?left \$\{WALK_MS\}ms linear/.test(home3));
 
   console.log("■ 脚のかたち");
   const L = m.LEGS;
