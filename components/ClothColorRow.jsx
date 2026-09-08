@@ -5,6 +5,7 @@ import {
   CLOTH_COLORS, swatchHex, edgeHex, needsEdge, isColorable, colorByKey
 } from "@/lib/clothColors";
 import { hasPattern, secondColor } from "@/lib/patternColors";
+import { paintHex, hexToRgb } from "@/lib/clothColors";
 import { SIZES, COPY } from "@/lib/homeDrawer";
 
 // ============================================================================
@@ -40,7 +41,10 @@ export default function ClothColorRow({ itemKey, itemSlot, colorKey, onChange })
 
   const pick = (k) => { if (onChange) onChange(k); };
   const now = colorKey ? colorByKey(colorKey) : null;
-  const pat = hasPattern(itemKey) ? secondColor(itemKey, null) : null;
+  // ★★柄の2色目。★1色目から 表を引いて 決まります（★選ばせません）。
+  //   ★見本③のとおり、★何色になるかだけを 見せます。
+  const pat = hasPattern(itemKey)
+    ? secondColor(itemKey, colorKey, hexToRgb, paintHex) : null;
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 6, width: "100%" }}>

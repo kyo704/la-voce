@@ -2,8 +2,10 @@
 
 import {
   interiorOf, interiorItemByKey, interiorSrc, windowLayers,
-  floorLineOf, widthPctOf, flushRightLeftPct, isSingleSlot, windowHole,
-  FLOOR_BAND, WALL_BAND, LEFT_BAND, clampToBand
+  floorLineOf, widthPctOf, flushRightLeftPct, isSingleSlot, windowHoleMask,
+  FLOOR_BAND, WALL_BAND, LEFT_BAND, clampToBand,
+  placementOf, anchorOf, zOf,
+  CEILING_TOP_PCT, WALL_CENTER_PCT, TABLETOP_FEET_PCT
 } from "@/lib/sheepInteriorV2";
 
 // ============================================================================
@@ -198,7 +200,6 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
             ★★ここで数を書かないこと。 */}
       {frame && (() => {
         const w = widthPctOf(frame);
-        const [hx, hy, hw, hh] = windowHole(frame);
         return (
           <div aria-hidden="true"
             style={{
@@ -207,24 +208,34 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
               top: `${SPOT.window.top}%`,
               width: `${w}%`,
               // ★★枠は正方形の絵です。★高さは、CSS に出させます。
-              //   ★部屋の縦横比を掛け算しないこと。★ずれのもとです。
               aspectRatio: `${frame.size[0]} / ${frame.size[1]}`,
               transform: "translate(-50%, 0)",
-              zIndex: 1, pointerEvents: "none"
+              zIndex: zOf(frame), pointerEvents: "none"
             }}>
-            {/* ★★景色は、★穴の四角の中だけに出します。★はみ出しは切ります。 */}
-            {view && (
+            {/* ★★景色は、★枠の「抜けているところ」だけに 出します。
+                ★★2026-09-08、★3回 直しました。
+                  ★① 穴の「四角」で切る　→ ★丸い枠で、四隅に はみ出しました
+                  ★② 枠の絵を 型にする　→ ★枠の外も透けているので、そこにも出ます
+                  ★③ ★★「外から届かない、透けているところ」だけを 白にした型
+                    ★13枚 作りました。★これで、どんな形でも はみ出しません。
+                ★★型は名簿が持ちます（holeMask）。★ここで作らないこと。
+                ★★2026-09-08、★景色が 384×384 になりました（★枠と同じ寸法）。
+                  ★だから、★同じ大きさ・同じ場所に 重ねるだけです。 */}
+            {view && windowHoleMask(frame) && (
               <div style={{
-                position: "absolute",
-                left: `${hx * 100}%`, top: `${hy * 100}%`,
-                width: `${hw * 100}%`, height: `${hh * 100}%`,
-                overflow: "hidden"
+                position: "absolute", inset: 0, overflow: "hidden",
+                WebkitMaskImage: `url(${windowHoleMask(frame)})`,
+                maskImage: `url(${windowHoleMask(frame)})`,
+                WebkitMaskSize: "100% 100%",
+                maskSize: "100% 100%",
+                WebkitMaskRepeat: "no-repeat",
+                maskRepeat: "no-repeat"
               }}>
                 <img src={interiorSrc(view)} alt=""
                   style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               </div>
             )}
-            {/* ★枠は、いちばん上。★穴のふちが、景色を隠します。 */}
+            {/* ★枠は、いちばん上。 */}
             <img src={interiorSrc(frame)} alt=""
               style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block" }} />
           </div>
@@ -260,7 +271,15 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
             ★② 落とした先の「足もと」を、★床の帯に収めます。★浮きません。 */}
       {many.map((it, i) => {
         const s = spotOf(it);
-        const onWall = it.category === "wallart";
+        // ★★置き場所は、★名簿が決めます（★2026-09-08・placement-120.json）。
+        //   ★★2026-09-08 まで、★分類（wallart か どうか）で判じていました。
+        //     ★だから、★天井から下げるもの（電球・シャンデリア）が、
+        //     ★★床に置かれていました。★実機でご指摘をいただきました。
+        //   ★★9種類のうち、ここに来るのは floor / ceiling / wall / tabletop / outside です。
+        const place = placementOf(it);
+        const anchor = anchorOf(it);
+        const onWall = anchor === "center";
+        const onCeiling = anchor === "top-center";
         // ★★大きさは、★絵の幅から出します（★分類ごとに決め打ちしません）。
         const wpct = widthPctOf(it);
         // ★動かしていないものは、★重ならないよう、★少しずつずらします。
@@ -268,23 +287,37 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
         const left = clampToBand(s.left + shift, LEFT_BAND);
         // ★★壁のものは「上端」、★床のものは「足もと」で置きます。
         //   ★★同じ数の意味が2つに割れないよう、★分けて持ちます。
+        // ★★天井から下げるものは、★上端を 天井に合わせます。
+        //   ★★足もとでは ありません。★anchor が top-center だからです。
+        const ceilTop = onCeiling
+          ? (s.top != null ? Math.max(0, Math.min(40, s.top)) : CEILING_TOP_PCT)
+          : null;
         const wallTop = onWall
-          ? clampToBand(s.top != null ? s.top : s.wallTop, WALL_BAND)
+          ? clampToBand(s.top != null ? s.top : (s.wallTop != null ? s.wallTop : WALL_CENTER_PCT), WALL_BAND)
           : null;
         // ★★足もと。★動かしていなければ、★床の線のまま。
         //   ★★古い自由な位置（top）は、★足もととして読み替えません。
         //     ★あれは「浮いていた高さ」です。★読み替えると、動いてしまいます。
         //     ★消しもしません。★足もと（feet）が入るまで、★床の線に戻します。
-        const feet = !onWall ? clampToBand(s.feet, FLOOR_BAND) : null;
+        // ★★台の上に置くものは、★床より少し上です。
+        const defaultFeet = place === "tabletop" ? TABLETOP_FEET_PCT : null;
+        const feet = (!onWall && !onCeiling)
+          ? (s.feet != null ? clampToBand(s.feet, FLOOR_BAND) : defaultFeet)
+          : null;
         const style = {
           position: "absolute",
           left: `${left}%`,
-          ...(onWall
-            ? { top: `${wallTop}%` }
-            : { bottom: `${feet != null ? bottomForFeet(it, wpct, feet) : floorBottomPct(it, wpct)}%` }),
+          ...(onCeiling
+            ? { top: `${ceilTop}%` }
+            : onWall
+              ? { top: `${wallTop}%` }
+              : { bottom: `${feet != null ? bottomForFeet(it, wpct, feet) : floorBottomPct(it, wpct)}%` }),
           width: `${wpct}%`,
           transform: "translate(-50%, 0)",
-          zIndex: onWall ? 1 : 2
+          // ★★重ね順も、★名簿が決めます（★小さい順に描く）。
+          //   ★outside 5 ／ 壁材 10 ／ view 20 ／ opening 30 ／ wall 40
+          //   ★structure 60 ／ floor・tabletop 70 ／ ceiling 90
+          zIndex: zOf(it)
         };
         const img = (
           <img src={interiorSrc(it)} alt="" aria-hidden="true"
@@ -296,15 +329,18 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
           // ★★いまの位置を、★そのまま渡します。
           //   ★★動かした分を、★ここに足します。★指の位置を使いません。
           //     ★指の位置を保存していたので、★跳んでいました。
-          const startTop = onWall ? wallTop : (feet != null ? feet : FLOOR_BAND[0]);
+          const startTop = onCeiling ? ceilTop
+            : onWall ? wallTop
+            : (feet != null ? feet : FLOOR_BAND[0]);
           return (
             <div key={it.key} style={style}>
               <Draggable
                 itemKey={it.key}
                 startLeft={left} startTop={startTop}
-                band={onWall ? WALL_BAND : FLOOR_BAND}
+                band={onCeiling ? [0, 40] : (onWall ? WALL_BAND : FLOOR_BAND)}
                 onDragEnd={(nl, nt) =>
-                  onUpdatePosition("interior", it.key, nl, nt, onWall ? "top" : "feet")}>
+                  onUpdatePosition("interior", it.key, nl, nt,
+                    (onWall || onCeiling) ? "top" : "feet")}>
                 {img}
               </Draggable>
             </div>

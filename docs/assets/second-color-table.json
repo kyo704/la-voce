@@ -1,0 +1,248 @@
+{
+ "version": "second-color-2026-09-08",
+ "count": 24,
+ "what": "柄の2色目を、1色目から自動で決める対応表。★ユーザーは2色目を選びません",
+ "formula": "out = dark + (light - dark) / 255 * 色1 + mask / 255 * 色2   （★mask はグレースケール1枚。柄もの67点だけ）",
+ "how_to_use": "ユーザーが選んだ24色のどれかが 色1。★この表を引いて 色2 を決める。★計算は不要です",
+ "rule": [
+  "① 1色目と同じ族（むさい／あか／き／みどり／あお）の中から選ぶ",
+  "② その中で、1色目との明るさの対比（WCAG）が ★2.2 以上のもの",
+  "③ ②を満たすうちで、★対比がいちばん小さいもの（＝同系のなじみを優先する）",
+  "④ ②を満たすものが1つも無ければ、1色目が暗ければ「きなり」、明るければ「すみ」",
+  "★24色すべてが ① 〜 ③ で決まりました。④ は使いません（今後 色を足したときの備え）"
+ ],
+ "contrast_range": {
+  "min": 2.3,
+  "max": 4.58
+ },
+ "families": {
+  "むさい": [
+   "すみ",
+   "はいいろ",
+   "きなり",
+   "くろ"
+  ],
+  "あか": [
+   "えんじ",
+   "あか",
+   "テラコッタ",
+   "さくら",
+   "ローズ"
+  ],
+  "き": [
+   "やまぶき",
+   "からし",
+   "きつね",
+   "こげちゃ",
+   "ベージュ"
+  ],
+  "みどり": [
+   "ふかみどり",
+   "オリーブ",
+   "もえぎ",
+   "ミント",
+   "ふかもり"
+  ],
+  "あお": [
+   "こん",
+   "あお",
+   "みずいろ",
+   "ふじ",
+   "すみれ"
+  ]
+ },
+ "table": [
+  {
+   "first": "すみ",
+   "first_hex": "#2E2926",
+   "family": "むさい",
+   "second": "はいいろ",
+   "second_hex": "#89817A",
+   "contrast": 3.75
+  },
+  {
+   "first": "はいいろ",
+   "first_hex": "#89817A",
+   "family": "むさい",
+   "second": "きなり",
+   "second_hex": "#F1E5D9",
+   "contrast": 3.09
+  },
+  {
+   "first": "きなり",
+   "first_hex": "#F1E5D9",
+   "family": "むさい",
+   "second": "はいいろ",
+   "second_hex": "#89817A",
+   "contrast": 3.09
+  },
+  {
+   "first": "くろ",
+   "first_hex": "#1A191A",
+   "family": "むさい",
+   "second": "はいいろ",
+   "second_hex": "#89817A",
+   "contrast": 4.58
+  },
+  {
+   "first": "えんじ",
+   "first_hex": "#7B1125",
+   "family": "あか",
+   "second": "ローズ",
+   "second_hex": "#AA5D6A",
+   "contrast": 2.3
+  },
+  {
+   "first": "あか",
+   "first_hex": "#B53C2F",
+   "family": "あか",
+   "second": "さくら",
+   "second_hex": "#E3A6A9",
+   "contrast": 2.82
+  },
+  {
+   "first": "テラコッタ",
+   "first_hex": "#BB664C",
+   "family": "あか",
+   "second": "えんじ",
+   "second_hex": "#7B1125",
+   "contrast": 2.63
+  },
+  {
+   "first": "さくら",
+   "first_hex": "#E3A6A9",
+   "family": "あか",
+   "second": "ローズ",
+   "second_hex": "#AA5D6A",
+   "contrast": 2.3
+  },
+  {
+   "first": "ローズ",
+   "first_hex": "#AA5D6A",
+   "family": "あか",
+   "second": "さくら",
+   "second_hex": "#E3A6A9",
+   "contrast": 2.3
+  },
+  {
+   "first": "やまぶき",
+   "first_hex": "#B6812A",
+   "family": "き",
+   "second": "こげちゃ",
+   "second_hex": "#594233",
+   "contrast": 2.74
+  },
+  {
+   "first": "からし",
+   "first_hex": "#A28034",
+   "family": "き",
+   "second": "こげちゃ",
+   "second_hex": "#594233",
+   "contrast": 2.52
+  },
+  {
+   "first": "きつね",
+   "first_hex": "#D29B5E",
+   "family": "き",
+   "second": "こげちゃ",
+   "second_hex": "#594233",
+   "contrast": 3.81
+  },
+  {
+   "first": "こげちゃ",
+   "first_hex": "#594233",
+   "family": "き",
+   "second": "からし",
+   "second_hex": "#A28034",
+   "contrast": 2.52
+  },
+  {
+   "first": "ベージュ",
+   "first_hex": "#C5A883",
+   "family": "き",
+   "second": "こげちゃ",
+   "second_hex": "#594233",
+   "contrast": 4.13
+  },
+  {
+   "first": "ふかみどり",
+   "first_hex": "#47715D",
+   "family": "みどり",
+   "second": "ミント",
+   "second_hex": "#ABC6B6",
+   "contrast": 3.03
+  },
+  {
+   "first": "オリーブ",
+   "first_hex": "#6A6B43",
+   "family": "みどり",
+   "second": "ミント",
+   "second_hex": "#ABC6B6",
+   "contrast": 3.02
+  },
+  {
+   "first": "もえぎ",
+   "first_hex": "#7D935B",
+   "family": "みどり",
+   "second": "ふかもり",
+   "second_hex": "#314639",
+   "contrast": 3.0
+  },
+  {
+   "first": "ミント",
+   "first_hex": "#ABC6B6",
+   "family": "みどり",
+   "second": "オリーブ",
+   "second_hex": "#6A6B43",
+   "contrast": 3.02
+  },
+  {
+   "first": "ふかもり",
+   "first_hex": "#314639",
+   "family": "みどり",
+   "second": "もえぎ",
+   "second_hex": "#7D935B",
+   "contrast": 3.0
+  },
+  {
+   "first": "こん",
+   "first_hex": "#2E3954",
+   "family": "あお",
+   "second": "ふじ",
+   "second_hex": "#8E7B9D",
+   "contrast": 2.99
+  },
+  {
+   "first": "あお",
+   "first_hex": "#4F6C97",
+   "family": "あお",
+   "second": "みずいろ",
+   "second_hex": "#9FB9CB",
+   "contrast": 2.62
+  },
+  {
+   "first": "みずいろ",
+   "first_hex": "#9FB9CB",
+   "family": "あお",
+   "second": "あお",
+   "second_hex": "#4F6C97",
+   "contrast": 2.62
+  },
+  {
+   "first": "ふじ",
+   "first_hex": "#8E7B9D",
+   "family": "あお",
+   "second": "こん",
+   "second_hex": "#2E3954",
+   "contrast": 2.99
+  },
+  {
+   "first": "すみれ",
+   "first_hex": "#5C4B71",
+   "family": "あお",
+   "second": "みずいろ",
+   "second_hex": "#9FB9CB",
+   "contrast": 3.81
+  }
+ ]
+}

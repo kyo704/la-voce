@@ -101,12 +101,18 @@ function ok(name, cond, extra) {
   const libCode = readCode("lib", "sheepInteriorV2.js");
   ok("★169 を、文言として持っていない", !/"169|169通り/.test(libCode));
 
-  console.log("■ 大きさが5種類（★1024の1種類ではない）");
+  console.log("■ 大きさ（★1024の1種類ではない）");
   const sizes = new Set(m.INTERIOR_ITEMS.map((i) => i.size.join("x")));
-  ok(`5種類ある（いま ${sizes.size}）`, sizes.size === 5, [...sizes].join(" / "));
-  for (const s of ["320x320", "384x384", "320x512", "480x320", "256x256"]) {
+  // ★★2026-09-08、★窓の外が 480×320 → ★384×384 になりました。
+  //   ★★まど枠と、同じ寸法です。★前は ずれていました（★荷物の note）。
+  //   ★だから、★4種類になりました。
+  ok(`4種類ある（いま ${sizes.size}）`, sizes.size === 4, [...sizes].join(" / "));
+  for (const s of ["320x320", "384x384", "320x512", "256x256"]) {
     ok(`${s} がある`, sizes.has(s));
   }
+  ok("★窓の外が、まど枠と同じ寸法になった", !sizes.has("480x320"));
+  ok("★まど枠と、窓の外が、同じ大きさ",
+    m.windowFrames()[0].size.join("x") === m.windowViews()[0].size.join("x"));
   // ★★床の線は、★lib が1か所で持つこと。
   ok("★床の線を、lib が持っている", m.FLOOR_LINE_Y === 300);
 
@@ -163,7 +169,10 @@ function ok(name, cond, extra) {
     //   ★"feet" … 床のものの、足もと
     //   ★1つの欄に両方を入れると、★意味が割れます（★古い top は「浮いていた高さ」）。
     ok("★保存の形も、同じ", /onUpdatePosition\("interior", it\.key, nl, nt,/.test(layer));
-    ok("★縦の欄を、分けている", /onWall \? "top" : "feet"/.test(layer));
+    // ★★2026-09-08、★天井から下げるものが 加わりました。
+    ok("★縦の欄を、分けている", /\(onWall \|\| onCeiling\) \? "top" : "feet"/.test(layer));
+    ok("★置き場所を、名簿から取っている", /placementOf\(it\)/.test(layer));
+    ok("★分類で判じるのを、やめた", !/it\.category === "wallart"/.test(layer));
     ok("★置きかたを直すときだけ、動かせる", /editMode && Draggable && onUpdatePosition/.test(layer));
     // ★★部屋の外へ出さないこと。★出ると、二度と掴めません。
     //   ★★帯は lib が持ちます（★2026-09-08 の直し）。★画面で数を書きません。
@@ -189,7 +198,13 @@ function ok(name, cond, extra) {
     ok("★床の線を、1点ずつ実測した値で取っている", /floorLineOf\(/.test(layer));
     ok("★大きさも、絵の幅から出している", /widthPctOf\(/.test(layer));
     // ★★景色は、★穴に切り抜いてはめること。★引き伸ばさないこと。
-    ok("★穴の場所を、lib から取っている", /windowHole\(frame\)/.test(layer));
+    // ★★2026-09-08、★穴の「四角」で切るのを、やめました。
+    //   ★丸い枠で、★四隅に はみ出していました。
+    //   ★★「外から届かない、透けているところ」だけを白にした型を、13枚 作りました。
+    ok("★穴だけの型を、使っている", /windowHoleMask\(frame\)/.test(layer));
+    ok("★型は、名簿が持っている", m.INTERIOR_ITEMS.filter((i) => i.category === "window")
+      .every((i) => typeof i.holeMask === "string"));
+    ok("★四角で切っていない", !/windowHole\(frame\)/.test(layer));
     ok("★割合を1つで済ませていない", !/WINDOW_INNER_RATIO/.test(layer));
     ok("★はみ出しを切っている", /overflow: "hidden"/.test(layer));
     ok("★引き伸ばさず、はみ出しを切る（cover）", /objectFit: "cover"/.test(layer));

@@ -110,8 +110,30 @@ async function load(rel) {
   const PC = await load("lib/patternColors.js");
   ok(Object.keys(PC.BURNED_SECOND).length === 67, "★67点（★manifest のとおり）");
   ok(PC.hasPattern("top_06") === true && PC.hasPattern("top_11") === false, "柄かどうかが分かる");
-  ok(Array.isArray(PC.secondColor("top_06")), "2色目が出る");
-  ok(PC.secondColor("top_11") === null, "★柄でない品は、null");
+  ok(Array.isArray(PC.secondColor("top_06", null)), "2色目が出る");
+  ok(PC.secondColor("top_11", null) === null, "★柄でない品は、null");
+
+  console.log("⑤-3 ★1色目から2色目を出す表（★正本・2026-09-08）");
+  // ★★お客さまには、選ばせません。★1色目から、表を引いて 決めます。
+  ok(Object.keys(PC.SECOND_BY_FIRST).length === 24, "★24行（★24色すべて）");
+  // ★★24色すべてに、行き先が在ること。★行き止まりを作らないこと。
+  const noSecond = cc.CLOTH_COLOR_KEYS.filter((k) => !PC.SECOND_BY_FIRST[k]);
+  ok(noSecond.length === 0, "★24色すべてに、2色目がある" + (noSecond.length ? "：" + noSecond.join(",") : ""));
+  // ★★行き先も、24色の中であること。
+  const outside = Object.values(PC.SECOND_BY_FIRST).filter((k) => !cc.CLOTH_COLOR_KEYS.includes(k));
+  ok(outside.length === 0, "★2色目も、24色の中である" + (outside.length ? "：" + outside.join(",") : ""));
+  // ★★自分自身を、返さないこと（★同じ色だと 柄が消えます）。
+  const same = Object.entries(PC.SECOND_BY_FIRST).filter(([a2, b2]) => a2 === b2);
+  ok(same.length === 0, "★★自分と同じ色を、返していない" + (same.length ? "：" + same.map((x) => x[0]).join(",") : ""));
+  ok(PC.secondColorKey("ao") === "mizuiro", "あお → みずいろ");
+  ok(PC.secondColorKey(null) === null, "★選んでいなければ、null");
+  // ★★選んでいないときは、★焼かれた色のまま（★見える絵と同じ）。
+  ok(Array.isArray(PC.secondColor("top_06", null)), "★もとの色のときは、焼かれた色");
+  // ★★こちらでは、1つも計算していないこと（★決めを2か所に置かない）。
+  const pcCode = readCode("lib", "patternColors.js");
+  ok(!/contrast|WCAG|luminance|relativeLum/i.test(pcCode), "★対比を、こちらで計算していない");
+  // ★★族（family）も、こちらで持たないこと。
+  ok(!/むさい|families/.test(pcCode), "★族の分けを、こちらで持っていない");
   ok(PC.maskSrc("top_06") === "/sheep/mask/top_06.png", "★型の在りか");
   // ★★2色目は、★お客さまに選ばせません。
   const pcRaw = readRaw("lib/patternColors.js");

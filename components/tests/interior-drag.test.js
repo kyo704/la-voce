@@ -79,7 +79,15 @@ async function load(rel) {
   // ★★古い top は「浮いていた高さ」。★足もととして読み替えないこと。
   ok(/feet: p && typeof p\.feet === "number"/.test(layer), "★足もとは、別の欄で持つ");
   ok(!/feet: p && typeof p\.top/.test(layer), "★古い top を、足もとに読み替えていない");
-  ok(/onWall \? "top" : "feet"/.test(layer), "★どちらの欄かを、渡している");
+  // ★★2026-09-08、★天井から下げるものが 加わりました（★placement-120.json）。
+  //   ★★天井のものも、★上端で置きます。★足もとでは ありません。
+  ok(/\(onWall \|\| onCeiling\) \? "top" : "feet"/.test(layer),
+    "★どちらの欄かを、渡している（★壁と天井は top）");
+  ok(/const onCeiling = anchor === "top-center"/.test(layer),
+    "★天井かどうかを、名簿の基準点で判じている");
+  ok(/placementOf\(it\)/.test(layer), "★置き場所を、名簿から取っている");
+  ok(!/it\.category === "wallart"/.test(layer),
+    "★★分類（wallart か）で判じるのを、やめた");
   ok(/topField = "top"/.test(vt), "★受け取る側も、欄を選べる");
   ok(/\.\.\.base,/.test(vt), "★古い値を、消していない");
 
