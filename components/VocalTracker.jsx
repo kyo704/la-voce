@@ -102,6 +102,7 @@ import * as unsentQueue from "@/lib/offlineQueue";
 // ★おうち画面の作り直し（★2026-09-08・仕様 §3）。★決めは lib が持ちます。
 import HomeDrawer from "@/components/HomeDrawer";
 import DrawerItemGrid from "@/components/DrawerItemGrid";
+import { thumbSrc } from "@/lib/thumbs";
 import { VIEW, DRESS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES, HOME_COLORS } from "@/lib/homeDrawer";
 import { itemsFor, sortItems } from "@/lib/drawerItems";
 // ★さがす（★§3-6）。★絞り込みは、ここにだけ 置きます。
@@ -15462,7 +15463,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       drawerSort,
                       { marks: characterEquipped })}
                     emptyText={isEmptyQuery(searchQuery) ? undefined : SEARCH_COPY.empty}
-                    srcOf={(it) => (it.slot
+                    // ★★一覧には、★小さい絵を 使います（★2026-09-08 夜）。
+                    //   ★★もとの絵は 1024×1024。★72px に描くために、
+                    //     ★1枚ごとに 100万画素を 展開していました。
+                    //   ★★小さい絵は 144×144（2万画素）です。★50分の1 です。
+                    //   ★★着ているときの絵は、★1枚も 変えていません。
+                    //     ★羊が着るのは、これまでどおり もとの絵です。
+                    srcOf={(it) => thumbSrc(it.key,
+                      it.slot === "prop" ? ((characterEquipped.wardrobe || {}).propSide || null) : null)}
+                    // ★★小さい絵が 無いときは、★もとの絵に 戻します。
+                    //   ★★出ない、を 作らないためです。
+                    fallbackSrcOf={(it) => (it.slot
                       ? sheepItemSrc(it, (characterEquipped.wardrobe || {}).propSide)
                       : interiorSrc(it))}
                     isOn={(it) => (it.slot

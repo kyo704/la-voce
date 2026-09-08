@@ -21,6 +21,9 @@ import { SIZES } from "@/lib/homeDrawer";
 
 export default function DrawerItemGrid({
   items, srcOf, isOn, isOwned, onTap, emptyText, renderThumb,
+  // ★★小さい絵が 無いときの、★戻り先（★2026-09-08 夜）。
+  //   ★★渡されなければ、★戻しません。★出ないまま にはしません。
+  fallbackSrcOf,
   // ★★いま えらんでいる品（★2026-09-08・2段階）。
   //   ★「着ている」とは、★別のしるしです。★混ぜないこと。
   isPicked
@@ -101,6 +104,15 @@ export default function DrawerItemGrid({
               ? renderThumb(it)
               : (srcOf && srcOf(it)
                 ? <img src={srcOf(it)} alt="" aria-hidden="true"
+                    // ★★小さい絵が 無ければ、★もとの絵に 戻します。
+                    //   ★1度だけです。★戻した絵も 無ければ、そこで やめます。
+                    onError={(e) => {
+                      const alt = fallbackSrcOf && fallbackSrcOf(it);
+                      if (alt && e.currentTarget.src !== alt && !e.currentTarget.dataset.fell) {
+                        e.currentTarget.dataset.fell = "1";
+                        e.currentTarget.src = alt;
+                      }
+                    }}
                     // ★★見えているものだけ 読み込みます（★2026-09-08 夜）。
                     //   ★★きるもの166点／おくもの111点／かべとゆか138点を、
                     //     ★これまで 一度に ぜんぶ 読んでいました。
