@@ -86,6 +86,12 @@ function ok(name, cond, extra) {
   const pc = readCode("lib", "patternColors.js");
   ok("★★選ばなければ、表のとおり", /const k = chosen \|\| secondColorKey\(firstKey\)/.test(pc));
   const cp = readCode("lib", "clothPaint.js");
+  // ★★2色目を 変えたら、★塗り直すこと（★2026-09-08 夜・実機「効かない」）。
+  //   ★★usePaintedSrc の 見張り（依存）に second が 無く、
+  //     ★塗り直しが 1度も 起きませんでした。
+  const ci = readCode("components", "ClothImage.jsx");
+  ok("★★2色目が 変わったら 塗り直す", /\}, \[itemKey, colorKey, second\]\);/.test(ci));
+  ok("★塗る側にも 渡している", /paintCloth\(itemKey, colorKey, second\)/.test(ci));
   ok("★★覚え書きの鍵に、2色目が 入っている",
     /colorKey \+ \(second \? ":" \+ second : ""\)/.test(cp));
 

@@ -52,6 +52,10 @@ export default function SpeechBubble({ text, small = false, leaving = false }) {
         width: sp.maxWidthPx,
         // ★★かぶりもの（60）より 上に 出します。
         zIndex: 100,
+        // ★★外の枠は、★幅を はっきり 決めます（★横書きに するため）。
+        //   ★★中の 吹き出しは、★字の ぶんだけに 縮みます（★下）。
+        //     ★これが 無いと、★「ふぅ。」でも 168px の 白い箱が 出ます。
+        //     ★2026-09-08 夜、★実機で「余白が 多い」と ご報告をいただきました。
         maxWidth: sp.maxWidthPx,
         // ★★横書きです。★縦書きに しません。
         writingMode: "horizontal-tb",
@@ -62,6 +66,10 @@ export default function SpeechBubble({ text, small = false, leaving = false }) {
         animation: leaving ? "none" : `sheepBubbleIn ${TIMING.riseMs}ms ease-out`
       }}>
       <div style={{
+        // ★★字の ぶんだけに 縮みます。★余白を 残しません。
+        //   ★★ただし 外の枠より 広くは なりません（★2行までに 収めるため）。
+        width: "max-content",
+        maxWidth: "100%",
         background: "#FCF9F3",
         border: "2px solid #E2D6C4",
         borderRadius: 16,

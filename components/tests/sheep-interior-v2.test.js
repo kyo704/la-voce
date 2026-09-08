@@ -399,6 +399,31 @@ function ok(name, cond, extra) {
     ok("★はじめから 作ってはいない", /useState\(false\);\s*\n\s*useEffect\(\(\) => \{\s*\n\s*if \(activeTab === "garden"\)/.test(vt));
   }
 
+  console.log("■ ★すわる・眠る（★2026-09-08 夜・実機「歩くだけ」）");
+  {
+    // ★★もとは 古い家具の鍵だけを 見ていました。
+    //   ★門の中の方には 古い79点を 隠しているので、★1度も 起きませんでした。
+    ok(`★座れる内装 ${m.SEAT_KEYS.length}点`, m.SEAT_KEYS.length === 8);
+    ok("★座れる内装が、名簿に ある",
+      m.SEAT_KEYS.every((k) => m.interiorItemByKey(k)));
+    // ★★無いものを 指して「眠ります」と 書かないこと。
+    ok("★★寝台は まだ 1点も 無い", m.BED_KEYS.length === 0);
+    ok("★置いていなければ null", m.seatPos([], {}) === null);
+    ok("★置いていれば 場所を 返す",
+      m.seatPos(["furniture_10"], {}) !== null);
+    // ★★動かした ぶんを 見ること。
+    const moved = m.seatPos(["furniture_10"], { furniture_10: { left: 22, top: 80 } });
+    ok("★動かした 場所を 見ている", moved && moved.left === 22);
+    // ★★運を 使わないこと。★同じ部屋なら 同じ椅子です。
+    const a1 = m.seatPos(["furniture_25", "furniture_10"], {});
+    const a2 = m.seatPos(["furniture_25", "furniture_10"], {});
+    ok("★同じ部屋なら 同じ椅子", JSON.stringify(a1) === JSON.stringify(a2));
+    const home4 = readCode("components", "CharacterHome.jsx");
+    ok("★新しい内装からも 探している", /seatPos\(interiorOf\(equipped\)/.test(home4));
+    ok("★古い方は これまでどおり",
+      /furniturePos\("furniture_chair"\)\s*\n?\s*\|\|/.test(home4));
+  }
+
   console.log("■ ★荷物は、zip のまま");
   const packs = fs.readdirSync(path.join(ROOT, "assets", "interior-v2"));
   ok("★内装の zip が、開かれていない", packs.some((f) => f.endsWith(".zip")));

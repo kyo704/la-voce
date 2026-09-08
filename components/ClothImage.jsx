@@ -44,7 +44,12 @@ export function usePaintedSrc(itemKey, colorKey, second) {
       // ★塗れなくても、★黙って、もとの絵のままにします。
       .catch(() => {});
     return () => { alive = false; };
-  }, [itemKey, colorKey]);
+    // ★★second を、★忘れないこと（★2026-09-08 夜・実機「2色目が 効かない」）。
+    //   ★★入れていませんでした。★だから 2色目を 変えても、
+    //     ★塗り直しが 1度も 起きませんでした。
+    //   ★★塗る側も、覚え書きの鍵も、★2色目を 見ていました。
+    //     ★★見ていなかったのは、★ここ 1行だけです。
+  }, [itemKey, colorKey, second]);
 
   return painted;
 }

@@ -13,7 +13,7 @@ import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
 } from "@/lib/oldHouseVisibility";
 // ★動かせる内装が在るか／羊の重ね順。★決めは、あちらが持ちます。
-import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z } from "@/lib/sheepInteriorV2";
+import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf } from "@/lib/sheepInteriorV2";
 import SpeechBubble from "@/components/SpeechBubble";
 import { SOLO, TIMING, FACE_FOR, pickLine, nextSoloMs, pushRecent } from "@/lib/sheepSpeech";
 import { C } from "@/lib/tokens";
@@ -2057,8 +2057,16 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
   const [leftPct, topPct, facingLeft, isWalking, isSitting, isLying] = useRoomLife(
     SHEEP_WANDER.centerLeft, SHEEP_WANDER.centerTop,
     SHEEP_WANDER.rangeLeft, SHEEP_WANDER.rangeTop,
-    furniturePos("furniture_chair"),
+    // ★★椅子と 寝台は、★新しい内装からも 探します（★2026-09-08 夜の直し）。
+    //   ★★もとは 古い家具の鍵だけを 見ていました。
+    //     ★門の中の方には 古い79点を 隠しているので、
+    //     ★★すわることも 眠ることも、★1度も 起きませんでした。
+    //   ★古い方には、★これまでどおり 古い家具で 動きます。
+    //   ★決めは lib/sheepInteriorV2.js が 持ちます。★ここでは 選びません。
+    furniturePos("furniture_chair")
+      || (wardrobeOn ? seatPos(interiorOf(equipped), equipped.interiorPositions) : null),
     furniturePos("furniture_bed")
+      || (wardrobeOn ? bedPos(interiorOf(equipped), equipped.interiorPositions) : null)
   );
 
   return (

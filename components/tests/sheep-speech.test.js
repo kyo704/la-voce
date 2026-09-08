@@ -103,6 +103,10 @@ function ok(name, cond, extra) {
     ok("★★幅を、数で 決めている（★入れ物の 残りに 縮ませない）",
       /width: sp\.maxWidthPx,/.test(b2));
     ok("★横書きと 書いてある", /writingMode: "horizontal-tb"/.test(b2));
+    // ★★余白を 残さないこと（★2026-09-08 夜・実機のご報告）。
+    //   ★★外の枠は 幅を決め、★中の吹き出しは 字のぶんだけに 縮みます。
+    ok("★★吹き出しは 字のぶんだけ（★余白を 残さない）",
+      /width: "max-content",/.test(b2) && /maxWidth: "100%",/.test(b2));
     ok("★画面で 大きさを 決め打ちしていない",
       /maxWidth: sp\.maxWidthPx/.test(b2) && /fontSize: sp\.fontPx/.test(b2)
       && !/maxWidth: small \? 132/.test(b2));
