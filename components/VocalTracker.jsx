@@ -15712,8 +15712,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     //   ★★小さい絵は 144×144（2万画素）です。★50分の1 です。
                     //   ★★着ているときの絵は、★1枚も 変えていません。
                     //     ★羊が着るのは、これまでどおり もとの絵です。
+                    // ★★面（置き場所）が ある持ちものだけ、★面を 付けます
+                    //   （★2026-09-09・実機で propChopsticks／propFork が 404）。
+                    //   ★★持ちものでも、★面を 持たない品が あります（★食器2点）。
+                    //     ★あれは 1枚きりで、★files を 持ちません。
+                    //   ★★それに __R を 付けると、★見つかりません。
+                    //     ★★slot だけで 決めては いけません。★files が あるかで 決めます。
                     srcOf={(it) => thumbSrc(it.key,
-                      it.slot === "prop" ? ((characterEquipped.wardrobe || {}).propSide || null) : null)}
+                      (it.slot === "prop" && it.files)
+                        ? ((characterEquipped.wardrobe || {}).propSide || null) : null)}
                     // ★★小さい絵が 無いときは、★もとの絵に 戻します。
                     //   ★★出ない、を 作らないためです。
                     fallbackSrcOf={(it) => (it.slot

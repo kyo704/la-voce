@@ -24,6 +24,7 @@ function ok(name, cond, extra) {
 }
 
 (async () => {
+  const vtCode = readCode("components", "VocalTracker.jsx");
   const src = fs.readFileSync(path.join(ROOT, "lib", "thumbs.js"), "utf-8");
   const m = await import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
 
@@ -82,6 +83,14 @@ function ok(name, cond, extra) {
     }
     ok(`★持ちもの ${props.length}点の 絵が そろっている`, lack.length === 0,
       lack.slice(0, 6).join(" "));
+    // ★★面を 持たない 持ちものに、★面を 付けないこと
+    //   （★2026-09-09・実機で propChopsticks／propFork が 404）。
+    const noFiles = props.filter((i) => !i.files);
+    ok(`★面を 持たない 持ちもの ${noFiles.length}点の 絵が ある`,
+      noFiles.every((i) => have.has(i.key)),
+      noFiles.filter((i) => !have.has(i.key)).map((i) => i.key).join(" "));
+    ok("★★面が あるかで 決めている（★slot だけで 決めない）",
+      /\(it\.slot === "prop" && it\.files\)/.test(vtCode));
     // ★★作る側と 探す側が、★同じ表を 使っていること。
     const gen = fs.readFileSync(path.join(ROOT, "scripts", "make-thumbs.py"), "utf-8");
     ok("★★作る側も、同じ対応表を 使っている",
@@ -89,7 +98,7 @@ function ok(name, cond, extra) {
   }
 
   console.log("■ ★使い分け");
-  const vt = readCode("components", "VocalTracker.jsx");
+  const vt = vtCode;
   ok("★一覧は 小さい絵を 使う", /srcOf=\{\(it\) => thumbSrc\(/.test(vt));
   ok("★無いときの 戻り先が ある", /fallbackSrcOf=\{\(it\) =>/.test(vt));
   // ★★着ているときの絵は、★もとの絵の ままであること。
