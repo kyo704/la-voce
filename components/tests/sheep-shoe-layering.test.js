@@ -59,17 +59,22 @@ console.log("■ 靴が、体より前に出ているか");
 const shoes = require(path.join(ROOT, "docs/assets/sheep-items-index.json"))
   .items.filter((i) => i.slot === "shoes");
 ok("靴は20点ある", shoes.length === 20, "実際は " + shoes.length);
+// ★★2026-09-08、★重ね順を Opus の決めに合わせました。
+//   ★くつ30 ／ ★頭45。★頭のほうが 手前になりました。
+//   ★★もともとの不具合は「靴が★体に塗りつぶされる」ことでした。
+//     ★体（0）より前であることが、★守るべき線です。
+//   ★★頭と靴は、★重なりません（★頭は上、靴は下）。
+//     ★だから、★どちらが前でも 見た目は変わりません。
 const behind = [];
 for (const sh of shoes) {
   const html = draw({ shoes: sh.key, garment: "coatWinterDuffle" });
   const iShoe = html.indexOf(sh.key + ".png");
   const iBody = html.indexOf("sheep_body.png");
-  const iHead = html.indexOf("sheep_head.png");
-  if (iShoe < 0 || iShoe < iBody || iShoe < iHead) {
-    behind.push(sh.key + "（靴 " + iShoe + " / 体 " + iBody + " / 頭 " + iHead + "）");
+  if (iShoe < 0 || iShoe < iBody) {
+    behind.push(sh.key + "（靴 " + iShoe + " / 体 " + iBody + "）");
   }
 }
-ok("20点とも、体と頭より前に描かれている", behind.length === 0,
+ok("20点とも、★体より前に描かれている", behind.length === 0,
   behind.join("\n      "));
 
 console.log("■ 脚は、体より後ろか");

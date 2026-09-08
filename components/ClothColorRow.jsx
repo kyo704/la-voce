@@ -76,7 +76,13 @@ export default function ClothColorRow({ itemKey, itemSlot, colorKey, onChange })
         </span>
       )}
 
-      <div style={{ display: "flex", gap: SIZES.swatchGapPx, overflowX: "auto", flex: 1 }}>
+      {/* ★★高さを、決めておきます。★中身で変わらないようにします。
+          ★★輪（boxShadow）が はみ出せるよう、★上下に少し余白を取ります。 */}
+      <div style={{
+        display: "flex", alignItems: "center",
+        gap: SIZES.swatchGapPx, overflowX: "auto", overflowY: "hidden",
+        flex: 1, height: SIZES.swatchPx + 8, padding: "0 4px"
+      }}>
         {CLOTH_COLORS.map((c) => {
           const on = colorKey === c.key;
           return (
@@ -90,11 +96,19 @@ export default function ClothColorRow({ itemKey, itemSlot, colorKey, onChange })
                 width: SIZES.swatchPx, height: SIZES.swatchPx,
                 borderRadius: SIZES.swatchRadiusPx,
                 background: swatchHex(c.key),
-                // ★★選んでいるものは、★枠を太くして、少し大きくします（★§8-5）。
-                border: on
-                  ? `3px solid ${C.ink}`
-                  : (needsEdge(c.key) ? `1.5px solid ${edgeHex(c.key)}` : "1px solid rgba(0,0,0,0.10)"),
-                transform: on ? "scale(1.16)" : "none",
+                // ★★枠の太さを、★変えません（★2026-09-08 の直し）。
+                //   ★★太さが変わると、★見本の大きさが変わり、
+                //     ★★横に並んだもの全部が ずれます。★帯が 揺れて見えます。
+                //     ★実機でご報告をいただきました。★そのとおりです。
+                //   ★★だから、★選んだしるしは boxShadow で出します。
+                //     ★boxShadow は、★場所を取りません。
+                border: needsEdge(c.key)
+                  ? `1px solid ${edgeHex(c.key)}`
+                  : "1px solid rgba(0,0,0,0.10)",
+                boxShadow: on ? `0 0 0 3px ${C.ink}` : "none",
+                // ★★大きさも、変えません。★1.16倍にすると、★同じく ずれます。
+                //   ★§8-5 は 1.16倍と書いていますが、★横に流す帯では 揺れます。
+                //   ★★しるしは、★枠の輪で じゅうぶん伝わります。
                 padding: 0
               }} />
           );

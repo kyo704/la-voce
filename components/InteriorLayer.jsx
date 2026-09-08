@@ -4,7 +4,7 @@ import {
   interiorOf, interiorItemByKey, interiorSrc, windowLayers,
   floorLineOf, widthPctOf, flushRightLeftPct, isSingleSlot, windowHoleMask,
   FLOOR_BAND, WALL_BAND, LEFT_BAND, clampToBand,
-  placementOf, anchorOf, zOf,
+  placementOf, anchorOf, zOf, zIndexOf,
   CEILING_TOP_PCT, WALL_CENTER_PCT, TABLETOP_FEET_PCT
 } from "@/lib/sheepInteriorV2";
 
@@ -163,7 +163,7 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
         <div aria-hidden="true"
           style={{
             position: "absolute", left: 0, right: 0, top: 0,
-            height: `${100 - ROOM_FLOOR_BOTTOM_PCT}%`, zIndex: 0,
+            height: `${100 - ROOM_FLOOR_BOTTOM_PCT}%`, zIndex: zIndexOf(zOf(wallTile), 0),
             backgroundImage: `url(${interiorSrc(wallTile)})`,
             backgroundRepeat: "repeat", backgroundSize: "22%",
             pointerEvents: "none"
@@ -175,7 +175,7 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
         <div aria-hidden="true"
           style={{
             position: "absolute", left: 0, right: 0, bottom: 0,
-            height: `${ROOM_FLOOR_BOTTOM_PCT}%`, zIndex: 0,
+            height: `${ROOM_FLOOR_BOTTOM_PCT}%`, zIndex: zIndexOf(zOf(floorTile), 0),
             backgroundImage: `url(${interiorSrc(floorTile)})`,
             backgroundRepeat: "repeat", backgroundSize: "22%",
             pointerEvents: "none"
@@ -210,7 +210,7 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
               // ★★枠は正方形の絵です。★高さは、CSS に出させます。
               aspectRatio: `${frame.size[0]} / ${frame.size[1]}`,
               transform: "translate(-50%, 0)",
-              zIndex: zOf(frame), pointerEvents: "none"
+              zIndex: zIndexOf(zOf(frame), 0), pointerEvents: "none"
             }}>
             {/* ★★景色は、★枠の「抜けているところ」だけに 出します。
                 ★★2026-09-08、★3回 直しました。
@@ -254,7 +254,8 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
             bottom: `${floorBottomPct(door, widthPctOf(door))}%`,
             width: `${widthPctOf(door)}%`,
             transform: "translate(-50%, 0)",
-            zIndex: 1, pointerEvents: "none"
+            // ★扉は opening（★30）。★羊（★70の帯）より、うしろです。
+            zIndex: zIndexOf(zOf(door), 0), pointerEvents: "none"
           }} />
       )}
 
@@ -317,7 +318,9 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
           // ★★重ね順も、★名簿が決めます（★小さい順に描く）。
           //   ★outside 5 ／ 壁材 10 ／ view 20 ／ opening 30 ／ wall 40
           //   ★structure 60 ／ floor・tabletop 70 ／ ceiling 90
-          zIndex: zOf(it)
+          // ★★帯の順は Opus の決め、★床の中の前後は 足もとの y です。
+          //   ★★羊も、同じ物差しで置きます（★lib/sheepInteriorV2.js）。
+          zIndex: zIndexOf(zOf(it), feet != null ? feet : (onCeiling ? 0 : 66))
         };
         const img = (
           <img src={interiorSrc(it)} alt="" aria-hidden="true"

@@ -3,7 +3,7 @@
 import { useId } from "react";
 
 import { SHEEP_BASE, SHEEP_ASSET_BASE, sheepItemByKey, sheepItemSrc } from "@/lib/sheepItems";
-import { LAYER_ORDER, PROP_SIDE_DEFAULT, motionOf, LEGS, SHOE_SPLIT_X } from "@/lib/sheepWardrobe";
+import { LAYER_ORDER, PROP_SIDE_DEFAULT, motionOf, LEGS, SHOE_SPLIT_X, slotZ } from "@/lib/sheepWardrobe";
 import ClothImage from "@/components/ClothImage";
 
 // ============================================================================
@@ -90,11 +90,11 @@ export default function SheepDressed({
   const layers = [];
   for (const slot of LAYER_ORDER) {
     if (slot === "body") {
-      layers.push({ key: "body", src: SHEEP_ASSET_BASE + SHEEP_BASE.body });
+      layers.push({ key: "body", src: SHEEP_ASSET_BASE + SHEEP_BASE.body, z: slotZ("body") });
       continue;
     }
     if (slot === "head") {
-      layers.push({ key: "head", src: SHEEP_ASSET_BASE + SHEEP_BASE.head });
+      layers.push({ key: "head", src: SHEEP_ASSET_BASE + SHEEP_BASE.head, z: slotZ("head") });
       continue;
     }
     const itemKey = wearing[slot];
@@ -115,11 +115,22 @@ export default function SheepDressed({
       layers.push({
         key: item.key + (side || ""), src, name: item.name,
         isShoe: slot === "shoes",
+        // ★★重ね順は、★名簿が持ちます（★2026-09-08・Opus の決め）。
+        //   ★★「ながい上」は 35 です。★上（10）とは 別の値です。
+        //   ★名簿に無い品（★記念のもの219点）は、★置き場所の既定を使います。
+        z: (typeof item.z === "number") ? item.z : slotZ(slot),
         // ★★色は、★塗る側（ClothImage）が判じます。★ここでは渡すだけです。
         itemKey: item.key, colorKey: (colors && colors[item.key]) || null
       });
     }
   }
+
+  // ★★重ね順で、並べ替えます（★2026-09-08 の直し）。
+  //   ★★もとは LAYER_ORDER の順に そのまま描いていました。
+  //     ★あの並びは 下 → 上 で、★上が 下の前に来ていました。
+  //     ★★Opus の決めは 逆です（上10 → 下20）。
+  //   ★★同じ z のときは、★もとの順を守ります（★安定な並べ替え）。
+  layers.sort((a, b) => (a.z - b.z));
 
   // ★★動かすのは、★かたまりの外側だけです。
   //   ★1枚ずつ動かすと、★服と体がずれます。

@@ -12,8 +12,8 @@ import InteriorLayer from "@/components/InteriorLayer";
 import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
 } from "@/lib/oldHouseVisibility";
-// ★動かせる内装が在るか。★決めは、あちらが持ちます。
-import { hasMovableInterior } from "@/lib/sheepInteriorV2";
+// ★動かせる内装が在るか／羊の重ね順。★決めは、あちらが持ちます。
+import { hasMovableInterior, sheepZIndex } from "@/lib/sheepInteriorV2";
 import { C } from "@/lib/tokens";
 import {
   SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, PLACEMENT_LIMITS,
@@ -824,6 +824,12 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
   //   ★門が閉じている方には、★これまでどおり SVG の羊が出ます。★取り上げません。
   const wearing = wardrobeOn ? (equipped && equipped.wardrobe) || {} : null;
   const dressed = wearing !== null;
+  // ★★選んだ色を、★羊まで運びます（★2026-09-08 の直し）。
+  //   ★★着せかえの画面の羊には 渡していましたが、
+  //     ★★部屋の羊には、★1つも渡していませんでした。
+  //   ★だから、★色を選んでも、★部屋の羊が 変わりませんでした。
+  //   ★実機でご報告をいただきました。★そのとおりです。
+  const clothColors = (equipped && equipped.clothColors) || {};
   // ★★どの動きにするかは、★ここで1回だけ決めます。
   //   ★寝ているときも、★服は着たままにします。
   //   ★寝ると脱げる羊は、★不具合に見えます。★寝姿の絵はまだありません。
@@ -834,7 +840,15 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
     : "still";
 
   const frontScale = LAYER_CONFIG.front.scale;
-  const frontZ = LAYER_CONFIG.front.z;
+  // ★★羊の重ね順（★2026-09-08 の直し）。
+  //   ★★もとは LAYER_CONFIG.front.z（★6）の 決め打ちでした。
+  //     ★内装は Opus の決めで、★窓が30・壁が40・床が70 です。
+  //     ★★だから、★羊が 窓の後ろに隠れていました。
+  //   ★★Opus の決め ── 羊は floor と同じ帯（70）に入れ、
+  //     ★★足もとの y で 前後を決めます。
+  //   ★門の外の方（★内装が出ない方）には、★これまでどおり 6 です。
+  //     ★あちらは、★古い家具と同じ物差しで動いています。
+  const frontZ = wardrobeOn ? sheepZIndex(topPct) : LAYER_CONFIG.front.z;
   if (isLying) {
     return (
       <div
@@ -856,7 +870,7 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
             寝姿の枠は translate(-50%, -50%)（中心合わせ）なので、
             bottom を基準に外から置くと、そもそも足元に来ない。 */}
         {dressed
-          ? <SheepDressed wearing={wearing} size={size * frontScale} motion="sleep" travel={false}
+          ? <SheepDressed wearing={wearing} colors={clothColors} size={size * frontScale} motion="sleep" travel={false}
               alt="眠っている羊" />
           : <SheepSleepingHead size={size * 0.62 * frontScale} />}
       </div>
@@ -894,7 +908,7 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
       {dressed ? (
         // ★★向きは SheepDressed が持ちます。★外から scaleX を掛けないこと。
         //   ★2枚重ねると、★裏返しが打ち消し合います。
-        <SheepDressed wearing={wearing} size={size * frontScale} motion={motion}
+        <SheepDressed wearing={wearing} colors={clothColors} size={size * frontScale} motion={motion}
           travel={false} facingLeft={facingLeft} alt="羊" />
       ) : (
         <div style={{ transform: facingLeft ? "scaleX(-1)" : "none" }}>

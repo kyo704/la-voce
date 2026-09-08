@@ -216,7 +216,14 @@ async function load(rel) {
   //   ★えらぶ前の灰色は、★HomeDrawer が受け持ちます。
   ok(!/aria-expanded/.test(rowRaw), "★開け閉めを、やめた");
   ok(/SIZES\.swatchPx/.test(rowRaw), "★見本の大きさを、lib から取っている");
-  ok(/scale\(1\.16\)/.test(rowRaw), "★選んだ色を、1.16倍にする（§8-5）");
+  // ★★2026-09-08、★1.16倍と 太い枠を、やめました。
+  //   ★★見本の大きさが変わると、★横に並んだもの全部が ずれます。
+  //     ★帯が 揺れて見えます。★実機でご報告をいただきました。
+  //   ★★しるしは boxShadow で出します。★場所を取りません。
+  ok(!/scale\(1\.16\)/.test(rowRaw), "★大きさを、変えていない");
+  ok(/boxShadow: on \?/.test(rowRaw), "★選んだしるしは、輪で出す");
+  ok(!/border: on\s*\?/.test(rowRaw), "★枠の太さを、変えていない");
+  ok(/height: SIZES\.swatchPx \+ 8/.test(rowRaw), "★帯の高さを、決めてある");
   ok(/aria-label=\{c\.name\}/.test(rowRaw), "★色の名前を、読み上げに残している");
   ok(/COPY\.colorPattern/.test(rowRaw), "★柄ものは「がら」と出す");
   ok(/hasPattern\(itemKey\)/.test(rowRaw), "★柄かどうかを、lib に聞いている");
