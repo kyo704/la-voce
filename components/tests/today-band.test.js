@@ -124,24 +124,39 @@ async function load(rel) {
   ok(/grant update \(attendance, attendance_at, attendance_by\)/.test(sql),
     "★渡すのは、その3列だけ");
 
-  console.log("⑨ ★★剥がした権限を、返しているか（★2026-09-08 の誤り）");
-  // ★★revoke update on lessons で、★held（実施の記録）まで剥がしていました。
-  //   ★アプリが update する列を、★コードから数えて 返します。
-  const fix = readCode("supabase", "2026-09-08-レッスンの出欠-直し.sql");
-  ok(/grant update \(held, attendance, attendance_at, attendance_by\)/.test(fix),
-    "★held を、返している");
-  // ★★アプリが update している列が、★ぜんぶ入っていること。
+  console.log("⑨ ★★held は、どこにも在りません（★2026-09-08 に分かりました）");
+  // ★★lessons.held の列は、★一度も作られていませんでした。
+  //   ★migration_lesson_held.sql は、★書かれないままでした。
+  //   ★だから「実施した」を押すと 42703 で失敗し、
+  //   ★★この画面は、★最初から動いていませんでした。
+  //   ★★私は「私の SQL が壊した」と申し上げました。★誤りでした。
   const vt = readCode("components", "VocalTracker.jsx");
-  const updates = [...vt.matchAll(/from\("lessons"\)[\s\S]{0,120}?\.update\(\{([^}]*)\}/g)]
-    .flatMap((m) => [...m[1].matchAll(/(\w+):/g)].map((x) => x[1]));
-  const uniq = [...new Set(updates)];
-  console.log("   （コードが update する列：" + (uniq.join(", ") || "（直書きなし）") + "）");
-  const granted = ["held", "attendance", "attendance_at", "attendance_by"];
-  const missing = uniq.filter((c) => !granted.includes(c));
-  ok(missing.length === 0,
-    "★update する列が、すべて渡されている" + (missing.length ? "★足りない：" + missing.join(",") : ""));
-  // ★★表ぜんたいの UPDATE を、★戻していないこと。
-  ok(!/^grant update on public\.lessons/m.test(fix), "★表ぜんたいには、戻していない");
+  ok(!/\{ held:/.test(vt), "★held を、書きに行っていない");
+  ok(!/l\.held ===/.test(vt), "★held を、読みに行っていない");
+  // ★★update する列が、★渡されている列に収まっていること。
+  const updates = [...vt.matchAll(/from\("lessons"\)[\s\S]{0,400}?\.update\(/g)];
+  const cols = [...vt.matchAll(/attendance(_at|_by)?:/g)].map((m) => m[0].replace(":", ""));
+  const granted = ["attendance", "attendance_at", "attendance_by"];
+  ok(updates.length >= 2, "★lessons を update するところが、★2か所ある");
+  ok(cols.every((c) => granted.includes(c)),
+    "★書きに行く列が、すべて渡されている列である");
+  // ★★1つの決めを、★2つの列で持たないこと。
+  const counts = readCode("lib", "lessonCounts.js");
+  ok(/attendanceOf/.test(counts), "★数える側も、attendance を読む");
+
+  console.log("⑩ ★私が足したポリシーを、消す（★坂本さんのご指摘）");
+  // ★★RLS の「許す」ポリシーは OR で足されます。★狭められません。
+  //   ★そのうえ「auth.uid() = teacher_id」が、★古い2枚に無い道でした。
+  //   ★★org の行で、★can_view_ops を通らずに書けてしまいます。
+  const fix2 = readCode("supabase", "2026-09-08-レッスンの出欠-直し2.sql");
+  ok(/drop policy if exists lessons_attendance_teacher_update/.test(fix2),
+    "★私のポリシーを、消している");
+  ok(!/create policy/.test(fix2), "★新しいポリシーを、足していない");
+  ok(!/add column/.test(fix2), "★列を、足していない");
+  ok(!/^grant /m.test(fix2), "★権限を、これ以上 渡していない");
+  // ★★1回目の直し（held を返す）は、★捨てたこと。
+  ok(!fs.existsSync(path.join(ROOT, "supabase/2026-09-08-レッスンの出欠-直し.sql")),
+    "★誤っていた1回目の直しを、残していない");
 
   console.log(fail === 0 ? "\n★すべて通りました" : "\n★" + fail + "件、落ちました");
   process.exit(fail === 0 ? 0 : 1);

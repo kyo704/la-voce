@@ -164,7 +164,7 @@ import { symptomsByLocation, dinnerToBedSummary, LOCATION_FOOTNOTE } from "@/lib
 //   ★suggestActivityKind は、ここに import されていましたが★一度も使われていません。
 //     「予定から活動の種類を先に選んでおく」は、まだ画面につながっていません。
 import OrgEventList from "@/components/OrgEventList";
-import { countHeldLessons, heldCountLine } from "@/lib/lessonCounts";
+import { countHeldLessons, heldCountLine, attendanceOf } from "@/lib/lessonCounts";
 import { CONSENT_POLICY_VERSION, buildConsentRow, buildConsentWithdrawalRow } from "@/lib/consent";
 import { mayWriteRecords, mayUseForAnalysis, withdrawnAt } from "@/lib/consentGate";
 import {
@@ -10338,13 +10338,26 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★数えるだけです。金額は1円も扱いません。
   //   ★理由は聞きません（欠席理由は要配慮個人情報）。
   //   ★もう一度押すと未回答に戻せます。間違えて触ったまま直せない、を作らない。
-  async function handleSetLessonHeld(lessonId, nextHeld, linkId) {
+  /**
+   * ★レッスンの答えを書きます（★2026-09-08・attendance へ移しました）。
+   *
+   *   ★★もとは { held: nextHeld } と書いていました。
+   *     ★★lessons.held の列は、★一度も作られていませんでした。
+   *       ★migration_lesson_held.sql は、★書かれないままでした。
+   *     ★だから、★この画面は 最初から動いていませんでした（★42703）。
+   *   ★★attendance（came / absent / canceled）が、★同じことを指します。
+   *     ★列を2つ持ちません。★1つの決めは、1か所です。
+   */
+  async function handleSetLessonHeld(lessonId, nextStatus, linkId) {
     const supabase = createClient();
+    if (nextStatus !== null && !ATTENDANCE_KEYS.includes(nextStatus)) return;
     // ★.select() を付けて、何行変わったかを見ます。
     //   RLS で弾かれた更新は★エラーになりません。0行が変わって error は null です。
     //   lessons を書き換えられるのは先生だけ（2026-09-02 のポリシー）。
     const { data, error } = await supabase.from("lessons")
-      .update({ held: nextHeld })
+      .update(nextStatus
+        ? { attendance: nextStatus, attendance_at: new Date().toISOString(), attendance_by: userId }
+        : { attendance: null, attendance_at: null, attendance_by: null })
       .eq("id", lessonId)
       .select("id");
     if (error) {
@@ -14561,10 +14574,22 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                     {new Date(l.scheduled_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric" })}
                                   </span>
                                   <span className="flex-1" />
-                                  {[{ v: true, label: "実施した" }, { v: false, label: "しなかった" }].map(({ v, label }) => {
-                                    const on = l.held === v;
+                                  {/* ★★2026-09-08、★書く先を attendance に寄せました。
+                                      ★★書いていた held の列が、★在りませんでした。
+                                        ★migration_lesson_held.sql は、書かれないままでした。
+                                        ★だから、この画面は★最初から動いていませんでした。
+                                      ★★ですが、★2択のままにします。★3つにしません。
+                                        ★この画面は「回数を数える」ためのものです。
+                                        ★★「欠席」という値を作らない、と決めてあります
+                                          （components/tests/lesson-counts.test.js）。
+                                        ★休んだ理由を、★尋ねないためです。
+                                      ★★帯（§4-2）は3つです。★あちらは出欠を見る画面で、
+                                        ★ここは回数を数える画面です。★問いが違います。 */}
+                                  {[{ v: "came", label: "実施した" },
+                                    { v: "canceled", label: "しなかった" }].map(({ v, label }) => {
+                                    const on = attendanceOf(l) === v;
                                     return (
-                                      <button key={String(v)} type="button"
+                                      <button key={v} type="button"
                                         onClick={() => handleSetLessonHeld(l.id, on ? null : v, link.id)}
                                         className="px-2.5 py-1 rounded-full flex-shrink-0"
                                         style={{
