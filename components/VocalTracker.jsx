@@ -15217,6 +15217,45 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     onChange={(next) => handleEquipWardrobe(next)} />
                 </div>
               )}
+              {/* ★★① ながめる（★見本①・2026-09-08 夕・坂本さんのお決め）。
+                  ★★道具を、★1つも出しません。
+                    ★説明も、お部屋／お庭の切り替えも、保存の字も、
+                    ★ポイントも、お店も、★出しません。
+                    ★見本①に、★1つも写っていません。
+                  ★★出すのは、★部屋と羊、★細い帯、★「したく」だけです。
+                  ★★消していません。★門の外の方には、これまでどおり ぜんぶ出ます。 */}
+              {wardrobeOn ? (
+                <div style={{ marginBottom: 12 }}>
+                  {/* ★★細い帯（★見本①）。★ひつじ ／ ひとこと。 */}
+                  <div className="flex items-center gap-2 mb-2">
+                    <span style={{
+                      fontSize: "0.75rem", color: C.inkSoft,
+                      borderLeft: `3px solid ${C.curtain}`, paddingLeft: 8
+                    }}>ひつじ</span>
+                    <span style={{
+                      fontSize: "0.75rem", color: C.inkSoft,
+                      borderLeft: `3px solid ${C.line}`, paddingLeft: 8
+                    }}>きょうも 来てくれて ありがとう</span>
+                  </div>
+                  <CharacterHome
+                    wardrobeOn={wardrobeOn}
+                    professions={effectiveProfessions}
+                    entries={entries}
+                    ownedKeys={ownedItemKeys}
+                    equipped={characterEquipped}
+                    pointsSpent={characterPointsSpent}
+                    onPurchase={handlePurchaseItem}
+                    onEquip={handleEquipItem}
+                    onTogglePlacement={handleTogglePlacement}
+                    onUpdatePosition={handleUpdatePosition}
+                    isDirty={characterDirty}
+                    saveStatus={characterSaveStatus}
+                    onSave={handleSaveCharacter}
+                    roomOnly
+                    t={t}
+                  />
+                </div>
+              ) : (
               <CharacterHome
                 wardrobeOn={wardrobeOn}
                 professions={effectiveProfessions}
@@ -15233,6 +15272,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 onSave={handleSaveCharacter}
                 t={t}
               />
+              )}
 
               {/* ★★おうち画面の作り直し（★2026-09-08・仕様 §3）。
                   ★★① ながめる ── ★ボタンは これ1つだけです。
@@ -15333,19 +15373,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         setCharacterDirty(true);
                       }} />
                   ) : null}
-                  onWear={(it) => {
-                    if (it.slot) {
-                      handleEquipWardrobe(applyWear(
-                        characterEquipped.wardrobe || {}, it, sheepItemByKey));
-                    } else {
-                      setCharacterEquipped((prev) => ({
-                        ...prev, interior: toggleInterior(prev, it).interior
-                      }));
-                      setCharacterDirty(true);
-                    }
-                    // ★★えらんだままにします。★色の帯が、そのまま使えます。
-                    //   ★★消すと、★色を選ぶために もう一度 押すことになります。
-                  }}>
+                  // ★★「けってい」── ★変えるためでは ありません。★残すためです。
+                  //   ★★押した瞬間に、★もう着ています。
+                  //   ★ここでは、★いまの姿を 保存して、★えらぶのを おしまいにします。
+                  onWear={() => { handleSaveCharacter(); setPickedItem(null); }}>
                   <DrawerItemGrid
                     items={sortItems(
                       itemsFor(drawerCat, drawerTab, {
@@ -15367,12 +15398,23 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ? (characterEquipped.wardrobe || {})[it.slot] === it.key
                       : isPlaced(characterEquipped, it))}
                     isOwned={(it) => (it.slot ? ownedItemKeys.includes(it.key) : true)}
-                    // ★★押しても、★まだ着ません（★2026-09-08・坂本さんのお決め）。
-                    //   ★★名前を見せてから、★「身につける」で 着ます。
-                    //     ★「名前が分かったほうが、面白い」というご判断です。
-                    //   ★★同じ品をもう一度押したら、★えらぶのをやめます。
-                    onTap={(it) => setPickedItem(
-                      (cur) => (cur && cur.key === it.key ? null : it))}
+                    // ★★押した瞬間に、★着ます（★2026-09-08 夕・坂本さんのお決め）。
+                    //   ★★「見えているもの」と「いまの状態」を、★1つにします。
+                    //     ★試着の姿と、いまの姿を、★分けません。
+                    //   ★★名前も、同時に出します（★「名前が分かるほうが面白い」）。
+                    //   ★下のボタンは「けってい」。★変えるためではなく、★残すためです。
+                    onTap={(it) => {
+                      setPickedItem((cur) => (cur && cur.key === it.key ? null : it));
+                      if (it.slot) {
+                        handleEquipWardrobe(applyWear(
+                          characterEquipped.wardrobe || {}, it, sheepItemByKey));
+                      } else {
+                        setCharacterEquipped((prev) => ({
+                          ...prev, interior: toggleInterior(prev, it).interior
+                        }));
+                        setCharacterDirty(true);
+                      }
+                    }}
                     isPicked={(it) => !!pickedItem && pickedItem.key === it.key} />
                 </HomeDrawer>
               )}

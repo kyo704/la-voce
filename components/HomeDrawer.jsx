@@ -205,7 +205,7 @@ export default function HomeDrawer({
               background: C.curtain, color: "#FFFDF8",
               fontSize: "0.875rem", fontWeight: 600, whiteSpace: "nowrap"
             }}>
-            {actionLabel(category, pickedOn)}
+            {actionLabel(category)}
           </button>
         </div>
       )}

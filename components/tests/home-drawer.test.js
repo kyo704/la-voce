@@ -105,20 +105,26 @@ async function load(rel) {
   const vt2 = readRaw("components/VocalTracker.jsx");
   ok(/\{picked && \(/.test(dr), "★えらんだときだけ、段が出る");
   ok(/\{picked\.name\}/.test(dr), "★★名前を、出している");
-  ok(/actionLabel\(category, pickedOn\)/.test(dr), "★押しどころの言葉を、lib から取っている");
+  ok(/actionLabel\(category\)/.test(dr), "★押しどころの言葉を、lib から取っている");
   ok(/onCancelPick/.test(dr), "★★やめる（✕）が、ある（★出口を作る）");
-  ok(/onTap=\{\(it\) => setPickedItem/.test(vt2), "★押しても、まだ着ない");
-  ok(/onWear=\{\(it\) => \{/.test(vt2), "★「身につける」で、着る");
+  // ★★2026-09-08 夕、★押した瞬間に 着る形に 変わりました（★坂本さんのお決め）。
+  //   ★★「見えているもの」と「いまの状態」を、★1つにするためです。
+  //   ★ボタンは「けってい」。★変えるためではなく、★残すためのものです。
+  ok(/onTap=\{\(it\) => \{/.test(vt2), "★押した瞬間に、着る");
+  ok(/handleEquipWardrobe\(applyWear\([\s\S]{0,200}\)\);[\s\S]{0,300}\}\}/.test(vt2),
+    "★押したときに、着せている");
+  ok(/onWear=\{\(\) => \{ handleSaveCharacter\(\); setPickedItem\(null\); \}\}/.test(vt2),
+    "★★けってい は、残すだけ（★着せません）");
   ok(/isPicked=\{\(it\) => !!pickedItem/.test(vt2), "★えらんでいるしるしを、渡している");
   // ★★着ている しるしと、★えらんでいる しるしを、混ぜないこと。
   ok(/picked \? 2 : 1/.test(gr) && /right: 3, bottom: 3/.test(gr),
     "★着ている（●）と、えらんでいる（太いわく）は、別のしるし");
   // ★★言葉。★家具に「身につける」と出さないこと。
-  ok(H.actionLabel("wear", false) === "身につける", "きるもの … 身につける");
-  ok(H.actionLabel("wear", true) === "はずす", "着ていれば … はずす");
-  ok(H.actionLabel("place", false) === "おく", "★おくもの … おく（★身につける ではない）");
-  ok(H.actionLabel("store", false) === "しまう", "しまう … しまう");
-  ok(H.actionLabel("window", true) === "はずす", "置いていれば … はずす");
+  ok(H.actionLabel("wear") === "けってい", "★きるもの … けってい");
+  ok(H.actionLabel("place") === "けってい", "★おくもの も … けってい（★1つだけ）");
+  ok(H.actionLabel("store") === "しまう", "★しまう だけ、言葉が違う");
+  // ★★「身につける」は、もう使いません。
+  ok(!/身につける/.test(readCode("lib", "homeDrawer.js")), "★「身につける」を、書いていない");
 
   console.log("④-6 ★さがす は、まだ出さない");
   // ★★押しどころだけ 先に出していました。★私の落ち度です。

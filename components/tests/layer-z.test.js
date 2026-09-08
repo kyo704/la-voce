@@ -64,7 +64,15 @@ async function load(rel) {
   console.log("③ ★羊が、並べ替えているか");
   const sd = readCode("components", "SheepDressed.jsx");
   ok(/layers\.sort\(\(a, b\) => \(a\.z - b\.z\)\)/.test(sd), "★z で、並べ替えている");
-  ok(/typeof item\.z === "number"/.test(sd), "★名簿の z を、先に見ている");
+  // ★★名簿には、★古い z（★1〜10 の別の物差し）が 残っています。
+  //   ★かぶりもの74点のうち 61点が z=9 で、★帽子が 羊の後ろに隠れました。
+  //   ★★だから、★新しい重ね順は zLayer に入れ、★そちらだけを見ます。
+  ok(/typeof item\.zLayer === "number"/.test(sd), "★zLayer を、先に見ている");
+  ok(!/typeof item\.z === "number"/.test(sd), "★★古い z を、読んでいない");
+  ok(daily.every((i) => typeof i.zLayer === "number"), "★166点すべてに、zLayer がある");
+  const hats = items.filter((i) => i.slot === "hat");
+  ok(hats.filter((i) => i.z === 9).length > 0, "★古い z=9 の帽子が、名簿に残っている");
+  ok(W.slotZ("hat") === 60, "★zLayer が無ければ、置き場所の既定（60）");
   ok(/slotZ\(slot\)/.test(sd), "★名簿に無ければ、置き場所の既定");
   ok(/z: slotZ\("body"\)/.test(sd) && /z: slotZ\("head"\)/.test(sd), "体と頭にも、z がある");
 

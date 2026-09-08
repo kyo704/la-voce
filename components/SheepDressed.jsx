@@ -118,7 +118,14 @@ export default function SheepDressed({
         // ★★重ね順は、★名簿が持ちます（★2026-09-08・Opus の決め）。
         //   ★★「ながい上」は 35 です。★上（10）とは 別の値です。
         //   ★名簿に無い品（★記念のもの219点）は、★置き場所の既定を使います。
-        z: (typeof item.z === "number") ? item.z : slotZ(slot),
+        //
+        // ★★★z ではなく zLayer を見ます（★2026-09-08 の直し）。
+        //   ★★名簿には、★古い z（★1〜10 の別の物差し）が 残っています。
+        //     ★かぶりもの74点のうち 61点が z=9 でした。
+        //     ★それを読んでいたので、★帽子が 羊の後ろに 隠れていました。
+        //   ★実機でご報告をいただきました。★そのとおりです。
+        //   ★★古い z は、★消していません。★ほかから読まれているかもしれません。
+        z: (typeof item.zLayer === "number") ? item.zLayer : slotZ(slot),
         // ★★色は、★塗る側（ClothImage）が判じます。★ここでは渡すだけです。
         itemKey: item.key, colorKey: (colors && colors[item.key]) || null
       });

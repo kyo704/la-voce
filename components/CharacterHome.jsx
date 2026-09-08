@@ -1923,7 +1923,15 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
   );
 
   return (
-    <div id="room-anchor" style={{ position: "relative", width: "100%", maxWidth: isRoomExpanded ? 700 : 480, margin: "0 auto", aspectRatio: isRoomExpanded ? "7 / 5" : "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor, transition: "max-width 0.4s ease, aspect-ratio 0.4s ease" }}>
+    /* ★★重ね順を、★この枠の中に 閉じ込めます（★2026-09-08 の直し）。
+        ★★中の品は、★Opus の決めで z が 7000・9000 になりました。
+          ★★枠が「重ね順の入れ物」になっていないと、★その数が 外へ 漏れます。
+          ★漏れると、★画面いちばん上の帯にも、★引き出しにも、★かぶさります。
+        ★実機で「部屋が二重に見える」「タブと重なる」とご報告をいただきました。
+          ★どちらも、これが原因でした。
+        ★★isolation: isolate で、★中の z が 外に出なくなります。
+          ★見た目は、★1つも変わりません。 */
+    <div id="room-anchor" style={{ position: "relative", isolation: "isolate", zIndex: 0, width: "100%", maxWidth: isRoomExpanded ? 700 : 480, margin: "0 auto", aspectRatio: isRoomExpanded ? "7 / 5" : "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor, transition: "max-width 0.4s ease, aspect-ratio 0.4s ease" }}>
       <WallTexture material={wallKey} wardrobeOn={wardrobeOn} />
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", background: floorColor, zIndex: 0, overflow: "hidden" }}>
         <FloorTexture material={floorKey} wardrobeOn={wardrobeOn} />
@@ -2475,7 +2483,9 @@ function GardenScene({ equipped, owned, onUpdatePosition, totalDaysRecorded = 0,
 
   return (
     <div style={{
-      position: "relative", width: "100%", maxWidth: isGardenExpanded ? 700 : 480, margin: "0 auto", aspectRatio: isGardenExpanded ? "7 / 5" : "4 / 3",
+      // ★★庭の枠も、★重ね順を 閉じ込めます（★部屋と同じ理由）。
+      position: "relative", isolation: "isolate", zIndex: 0,
+      width: "100%", maxWidth: isGardenExpanded ? 700 : 480, margin: "0 auto", aspectRatio: isGardenExpanded ? "7 / 5" : "4 / 3",
       borderRadius: 18, overflow: "hidden", transition: "max-width 0.4s ease, aspect-ratio 0.4s ease",
       background: "linear-gradient(to bottom, #7EB8E0 0%, #A8D4EC 35%, #D9EDDB 72%, #D9EDDB 100%)"
     }}>
