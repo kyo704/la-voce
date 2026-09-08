@@ -27,6 +27,8 @@ function ok(name, cond, extra) {
   const cc = fs.readFileSync(path.join(ROOT, "lib", "clothColors.js"), "utf-8");
   const src = fs.readFileSync(path.join(ROOT, "lib", "secondColorChoice.js"), "utf-8")
     .replace('import table from "@/docs/assets/second-color-table.json";', "const table = " + tbl + ";")
+    .replace('import { mayChooseSecondColorByTier } from "@/lib/tiers";',
+      fs.readFileSync(path.join(ROOT, "lib", "tiers.js"), "utf-8").replace(/^export /gm, ""))
     .replace('import { CLOTH_COLORS } from "@/lib/clothColors";',
       "const CLOTH_COLORS = " + JSON.stringify(
         [...cc.matchAll(/\{\s*key:\s*"([a-zA-Z0-9_]+)"\s*,\s*name:\s*"([^"]+)"/g)]

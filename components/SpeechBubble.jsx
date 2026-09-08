@@ -35,10 +35,26 @@ export default function SpeechBubble({ text, small = false, leaving = false }) {
         position: "absolute",
         // ★★羊の 頭の 右上。★頭の bbox は (228, 71, 795, 598) です。
         //   ★羊の箱に対する 割合で 置きます。★画素で 決め打ちしません。
-        left: "72%", bottom: "62%",
+        // ★★幅を、はっきり 決めます（★2026-09-08 夜・実機「縦書きに 見える」）。
+        //
+        //   ★★writing-mode は、★1度も 書いていません。
+        //     ★縦書きに 見えたのは、★幅が 足りていなかったからです。
+        //   ★★吹き出しの 入れ物は、★羊の箱（★部屋の 26％＝100px ほど）です。
+        //     ★left:72% だけを 決めて、★幅を 決めていませんでした。
+        //     ★★すると 幅は「入れ物の 残り」に 縮みます。
+        //       ★100px の 72％ から 右は、★28px しか ありません。
+        //       ★★28px では、★1行に 1文字しか 入りません。
+        //       ★それが 縦書きに 見えていました。
+        //   ★★幅を 数で 決めれば、★入れ物より 広くても かまいません。
+        //     ★はみ出したぶんは、★部屋の中に 出ます。
+        //   ★左を 50％に 寄せました。★右端にいる羊でも、部屋に 収まりやすくなります。
+        left: "50%", bottom: "62%",
+        width: sp.maxWidthPx,
         // ★★かぶりもの（60）より 上に 出します。
         zIndex: 100,
         maxWidth: sp.maxWidthPx,
+        // ★★横書きです。★縦書きに しません。
+        writingMode: "horizontal-tb",
         pointerEvents: "none",
         opacity: leaving ? 0 : (small ? 0.85 : 1),
         transform: leaving ? "translateY(0)" : "translateY(0)",

@@ -95,6 +95,14 @@ function ok(name, cond, extra) {
     ok("★せまい部屋でも はみ出さない（〜200px）",
       m.BUBBLE.reply.maxWidthPx <= 200 && m.BUBBLE.solo.maxWidthPx <= 200);
     const b2 = readCode("components", "SpeechBubble.jsx");
+    // ★★縦書きに ならないこと（★2026-09-08 夜・実機のご報告）。
+    //   ★★writing-mode は 1度も 書いていませんでした。
+    //     ★縦書きに 見えたのは、★幅を 決めていなかったからです。
+    //     ★入れ物（羊の箱 100px）の 72％から 右は 28px しか なく、
+    //     ★★1行に 1文字しか 入りませんでした。
+    ok("★★幅を、数で 決めている（★入れ物の 残りに 縮ませない）",
+      /width: sp\.maxWidthPx,/.test(b2));
+    ok("★横書きと 書いてある", /writingMode: "horizontal-tb"/.test(b2));
     ok("★画面で 大きさを 決め打ちしていない",
       /maxWidth: sp\.maxWidthPx/.test(b2) && /fontSize: sp\.fontPx/.test(b2)
       && !/maxWidth: small \? 132/.test(b2));

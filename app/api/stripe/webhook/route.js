@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { tierFromPriceId } from "@/lib/tiers";
 import { stripe, stripeConfigured } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -75,6 +76,30 @@ export async function POST(request) {
         //   ★checkout のときに、metadata へ入れています。
         //   ★★Stripe の価格から逆算しません。★契約時の申告を、そのまま残します。
         plan: (subscription.metadata && subscription.metadata.plan) || null,
+        // ★★段（tier）── 無料／¥580／¥1,280（★2026-09-08 夜）。
+        //   ★★決めるのは、★Stripe の 値段の鍵です。
+        //     ★契約したときの 申告（metadata.plan）では ありません。
+        //     ★あちらは 人が 入れる値なので、★取りちがえが 起きます。
+        //   ★★どの鍵が どの段かは、★lib/plans.js が 持ちます。
+        //     ★ここでは 判じません。
+        //   ★★知らない鍵なら、★書き換えません（★null を 入れません）。
+        //     ★★無料に 落とすと、★お金を払った方から 取り上げることに なります。
+        //     ★分からないときは、★いまの値を そのままに します。
+        ...(() => {
+          const item = subscription.items && subscription.items.data && subscription.items.data[0];
+          const priceId = item && item.price && item.price.id;
+          const t = tierFromPriceId(priceId, {
+            STRIPE_PRICE_ID_MONTHLY: process.env.STRIPE_PRICE_ID_MONTHLY,
+            STRIPE_PRICE_ID_ANNUAL: process.env.STRIPE_PRICE_ID_ANNUAL,
+            STRIPE_PRICE_ID_FULL: process.env.STRIPE_PRICE_ID_FULL
+          });
+          if (!t) {
+            // ★★黙らないこと。★どの鍵が 分からなかったかを 残します。
+            if (priceId) console.error("★段が 分からない 値段の鍵: " + priceId);
+            return priceId ? { stripe_price_id: priceId } : {};
+          }
+          return { tier: t, stripe_price_id: priceId };
+        })(),
         // ★★契約したときに「表示していた価格」（未成年に売る形 §10）。
         //   ★あとで値上げしたとき、★そのとき何円だったかが争点になります。
         //   ★item の金額を使います。★プランの表に書いてある数字ではありません。

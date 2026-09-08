@@ -5334,9 +5334,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★段（¥580 と ¥1,280）を 見分ける手がかりが、★まだ ありません。
   //     ★subscriptions は status だけで、★段を 持っていません。
   //   ★だから いまは、★門の名簿で 出し入れします。★空なら どなたにも 出しません。
+
+  // ★★お支払いの 段（★2026-09-08 夜）。★null は「まだ決めていない」＝無料です。
+  const [subscription, setSubscription] = useState(null);
+
   const maySecondColor = mayChooseSecondColor(userId, {
     NEXT_PUBLIC_SECOND_COLOR_USER_IDS: process.env.NEXT_PUBLIC_SECOND_COLOR_USER_IDS
-  });
+  }, subscription);
 
   const [homeState, setHomeState] = useState(VIEW);
   // ★★みせかた（★v3追補 ①）。★既定は「もっているもの」です。
@@ -5955,11 +5959,28 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //   ★trialing / active のときだけ true にします。
       //   ★読めなかったら null のままにします（★false にしないこと。
       //     ★false にすると、★読めなかった方に門がかかります）。
-      const { data: subRow, error: subErr } = await supabase
-        .from("subscriptions").select("status").eq("user_id", userId).maybeSingle();
+      // ★★段（tier）も 読みます（★2026-09-08 夜。★列は 足しました）。
+      //   ★★status だけでは、★無料／¥580／¥1,280 を 見分けられません。
+      //   ★★読めなくても 落ちないように、★寛容に 読みます。
+      //     ★★列が まだ無い環境が ありえます。★そのときは status だけで 進みます。
+      let subRow = null, subErr = null;
+      {
+        const r = await supabase
+          .from("subscriptions").select("status, tier").eq("user_id", userId).maybeSingle();
+        if (r.error) {
+          const r2 = await supabase
+            .from("subscriptions").select("status").eq("user_id", userId).maybeSingle();
+          subRow = r2.data; subErr = r2.error;
+        } else { subRow = r.data; subErr = null; }
+      }
       if (mounted) {
         if (subErr) console.error("★お支払いの状態を読めませんでした:", subErr.message);
-        else setSubscribed(!!subRow && ["trialing", "active"].includes(subRow.status));
+        else {
+          setSubscribed(!!subRow && ["trialing", "active"].includes(subRow.status));
+          // ★★段は、★そのまま 持ちます。★null は「まだ決めていない」です。
+          //   ★読むときに 無料として 扱います（lib/tiers.js）。
+          setSubscription(subRow || null);
+        }
       }
       // ★cohort を先に読みます。無い環境では is_tester に落ちます（viewerOf が判断）。
       // 1回だけ出す知らせ。★表がまだ無い環境でも落ちないよう、別に寛容に読む。
