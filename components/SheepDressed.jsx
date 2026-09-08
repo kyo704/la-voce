@@ -5,7 +5,7 @@ import { useId, useEffect, useState } from "react";
 import { SHEEP_BASE, SHEEP_ASSET_BASE, sheepItemByKey, sheepItemSrc } from "@/lib/sheepItems";
 import { LAYER_ORDER, PROP_SIDE_DEFAULT, motionOf, LEGS, SHOE_SPLIT_X, slotZ } from "@/lib/sheepWardrobe";
 import ClothImage, { ClothShoeImages } from "@/components/ClothImage";
-import { HEAD_NOFACE, FACE_Z, faceSrc, BLINK, nextBlinkMs, preloadList } from "@/lib/sheepFace";
+import { HEAD_NOFACE, FACE_Z, faceSrc, BLINK, nextBlinkMs, preloadList, laterPreloadList } from "@/lib/sheepFace";
 
 // ============================================================================
 // 着せかえた羊（★絵を重ねます・2026-09-05 夜）
@@ -136,10 +136,24 @@ function usePreloadFaces(enabled) {
     if (!enabled || facesPreloaded) return;
     if (typeof window === "undefined") return;
     facesPreloaded = true;
+    // ★★はじめは 2枚だけ（★通常・まばたき）。★2026-09-09。
     for (const src of preloadList()) {
       const im = new window.Image();
       im.src = src;
     }
+    // ★★残り7枚は、★手が空いたときに 読みます。
+    //   ★★出す場面が 来てから でも 間に合いますが、
+    //     ★そのとき 白が 出ないよう、★静かに 用意しておきます。
+    const idle = window.requestIdleCallback
+      ? (fn) => window.requestIdleCallback(fn, { timeout: 4000 })
+      : (fn) => window.setTimeout(fn, 1500);
+    idle(() => {
+      for (const src of laterPreloadList()) {
+        const im = new window.Image();
+        im.decoding = "async";
+        im.src = src;
+      }
+    });
   }, [enabled]);
 }
 
