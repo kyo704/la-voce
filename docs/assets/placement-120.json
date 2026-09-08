@@ -1,0 +1,2073 @@
+{
+ "version": "placement-2026-09-08b",
+ "count": 120,
+ "note": "内装120点の「置き場所」。★絵を1点ずつ見て決めました（名前からの推し量りではありません）",
+ "placements": {
+  "floor": "ゆかに置く。接地するので前後は足もとのyで決める",
+  "tabletop": "つくえ・たなの上に置く。ゆかにも置ける（canFloor）",
+  "wall": "かべに掛ける。高さを選べる",
+  "ceiling": "てんじょうから下げる。上のはしが てんじょう",
+  "opening": "かべのあな（まど・とびら）。かべ材の上に重ねる",
+  "view": "まどの外の景色。★openingの うしろにだけ置ける",
+  "outside": "外（えんがわの向こう）。★部屋の中には置けない",
+  "surface": "ゆか材・かべ材。貼るもの",
+  "structure": "部屋の一部。動かせない"
+ },
+ "draw_order": "zの小さい順：外5／かべ材10／景色20／あな30／かべ掛け40／ゆか材50／えんがわ60／ゆか置き70（同じzは足もとのyが小さい順に奥から）／てんじょう90",
+ "items": [
+  {
+   "key": "furniture_01",
+   "name": "ナチュラル／木のベンチ＋布",
+   "category": "furniture",
+   "style": "ナチュラル",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    30,
+    118,
+    291,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_02",
+   "name": "ナチュラル／丸い木のテーブル",
+   "category": "furniture",
+   "style": "ナチュラル",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    40,
+    180,
+    281,
+    309
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_03",
+   "name": "ナチュラル／麻のシェード",
+   "category": "furniture",
+   "style": "ナチュラル",
+   "placement": "ceiling",
+   "anchor": "top-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    88,
+    0,
+    233,
+    247
+   ],
+   "z": 90
+  },
+  {
+   "key": "furniture_04",
+   "name": "アメリカン／革の大きなソファ",
+   "category": "furniture",
+   "style": "アメリカン",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    34,
+    110,
+    289,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_05",
+   "name": "アメリカン／鉄脚のローテーブル",
+   "category": "furniture",
+   "style": "アメリカン",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    38,
+    224,
+    283,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_06",
+   "name": "アメリカン／琺瑯のペンダント",
+   "category": "furniture",
+   "style": "アメリカン",
+   "placement": "ceiling",
+   "anchor": "top-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    84,
+    0,
+    237,
+    247
+   ],
+   "z": 90
+  },
+  {
+   "key": "furniture_07",
+   "name": "モダン／直線の黒いソファ",
+   "category": "furniture",
+   "style": "モダン",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    34,
+    132,
+    289,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_08",
+   "name": "モダン／ガラスの天板",
+   "category": "furniture",
+   "style": "モダン",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    38,
+    208,
+    283,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_09",
+   "name": "モダン／細い金属のフロアランプ",
+   "category": "furniture",
+   "style": "モダン",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    96,
+    40,
+    225,
+    309
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_10",
+   "name": "北欧／曲線の木脚チェア",
+   "category": "furniture",
+   "style": "北欧",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    92,
+    104,
+    238,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_11",
+   "name": "北欧／白い丸テーブル",
+   "category": "furniture",
+   "style": "北欧",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    40,
+    184,
+    281,
+    309
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_12",
+   "name": "北欧／白い球のペンダント",
+   "category": "furniture",
+   "style": "北欧",
+   "placement": "ceiling",
+   "anchor": "top-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    98,
+    0,
+    223,
+    247
+   ],
+   "z": 90
+  },
+  {
+   "key": "furniture_13",
+   "name": "アジアン／ラタンのソファ",
+   "category": "furniture",
+   "style": "アジアン",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    34,
+    118,
+    289,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_14",
+   "name": "アジアン／竹の低い卓",
+   "category": "furniture",
+   "style": "アジアン",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    38,
+    232,
+    283,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_15",
+   "name": "アジアン／透かし彫りのランプ",
+   "category": "furniture",
+   "style": "アジアン",
+   "placement": "ceiling",
+   "anchor": "top-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    96,
+    0,
+    225,
+    247
+   ],
+   "z": 90
+  },
+  {
+   "key": "furniture_16",
+   "name": "インダストリアル／鉄と革のスツール",
+   "category": "furniture",
+   "style": "インダストリアル",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    92,
+    112,
+    238,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_17",
+   "name": "インダストリアル／足場板の作業机",
+   "category": "furniture",
+   "style": "インダストリアル",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    38,
+    204,
+    283,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_18",
+   "name": "インダストリアル／裸電球＋金属笠",
+   "category": "furniture",
+   "style": "インダストリアル",
+   "placement": "ceiling",
+   "anchor": "top-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    80,
+    0,
+    241,
+    247
+   ],
+   "z": 90
+  },
+  {
+   "key": "furniture_19",
+   "name": "カントリー／花柄のソファ",
+   "category": "furniture",
+   "style": "カントリー",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    30,
+    118,
+    291,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_20",
+   "name": "カントリー／木の食卓",
+   "category": "furniture",
+   "style": "カントリー",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    38,
+    196,
+    283,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_21",
+   "name": "カントリー／ステンドの傘",
+   "category": "furniture",
+   "style": "カントリー",
+   "placement": "ceiling",
+   "anchor": "top-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    88,
+    0,
+    233,
+    247
+   ],
+   "z": 90
+  },
+  {
+   "key": "furniture_22",
+   "name": "ホテルライク／低いラウンジチェア",
+   "category": "furniture",
+   "style": "ホテルライク",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    92,
+    104,
+    238,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_23",
+   "name": "ホテルライク／石の天板",
+   "category": "furniture",
+   "style": "ホテルライク",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    38,
+    212,
+    283,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_24",
+   "name": "ホテルライク／間接照明のスタンド",
+   "category": "furniture",
+   "style": "ホテルライク",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    104,
+    44,
+    217,
+    309
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_25",
+   "name": "ミックス／座椅子",
+   "category": "furniture",
+   "style": "ミックス",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    92,
+    112,
+    238,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_26",
+   "name": "ミックス／木＋鉄の卓",
+   "category": "furniture",
+   "style": "ミックス",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    38,
+    216,
+    283,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "furniture_27",
+   "name": "ミックス／和紙のスタンド",
+   "category": "furniture",
+   "style": "ミックス",
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    104,
+    36,
+    217,
+    309
+   ],
+   "z": 70
+  },
+  {
+   "key": "window_01",
+   "name": "ナチュラル／木の格子",
+   "category": "window",
+   "style": "ナチュラル",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 384,
+   "height": 384,
+   "bbox": [
+    6,
+    6,
+    379,
+    379
+   ],
+   "z": 30
+  },
+  {
+   "key": "window_02",
+   "name": "アメリカン／白い格子",
+   "category": "window",
+   "style": "アメリカン",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 384,
+   "height": 384,
+   "bbox": [
+    10,
+    10,
+    375,
+    375
+   ],
+   "z": 30
+  },
+  {
+   "key": "window_03",
+   "name": "モダン／黒い細枠",
+   "category": "window",
+   "style": "モダン",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 384,
+   "height": 384,
+   "bbox": [
+    16,
+    16,
+    369,
+    369
+   ],
+   "z": 30
+  },
+  {
+   "key": "window_04",
+   "name": "北欧／丸窓",
+   "category": "window",
+   "style": "北欧",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 384,
+   "height": 384,
+   "bbox": [
+    12,
+    12,
+    373,
+    373
+   ],
+   "z": 30
+  },
+  {
+   "key": "window_05",
+   "name": "アジアン／木の格子（細）",
+   "category": "window",
+   "style": "アジアン",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 384,
+   "height": 384,
+   "bbox": [
+    8,
+    8,
+    377,
+    377
+   ],
+   "z": 30
+  },
+  {
+   "key": "window_06",
+   "name": "インダストリアル／鉄の枠",
+   "category": "window",
+   "style": "インダストリアル",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 384,
+   "height": 384,
+   "bbox": [
+    10,
+    10,
+    375,
+    375
+   ],
+   "z": 30
+  },
+  {
+   "key": "window_07",
+   "name": "カントリー／アーチ窓",
+   "category": "window",
+   "style": "カントリー",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 384,
+   "height": 384,
+   "bbox": [
+    10,
+    10,
+    375,
+    375
+   ],
+   "z": 30
+  },
+  {
+   "key": "window_08",
+   "name": "ホテルライク／掃き出し窓",
+   "category": "window",
+   "style": "ホテルライク",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 384,
+   "height": 384,
+   "bbox": [
+    8,
+    8,
+    377,
+    377
+   ],
+   "z": 30
+  },
+  {
+   "key": "window_09",
+   "name": "ミックス／ステンドの小窓",
+   "category": "window",
+   "style": "ミックス",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 384,
+   "height": 384,
+   "bbox": [
+    56,
+    56,
+    329,
+    329
+   ],
+   "z": 30
+  },
+  {
+   "key": "window_10",
+   "name": "昭和／木製サッシ＋すりガラス",
+   "category": "window",
+   "style": "昭和",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 384,
+   "height": 384,
+   "bbox": [
+    8,
+    8,
+    377,
+    377
+   ],
+   "z": 30
+  },
+  {
+   "key": "window_11",
+   "name": "昭和／雪見障子",
+   "category": "window",
+   "style": "昭和",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 384,
+   "height": 384,
+   "bbox": [
+    8,
+    8,
+    377,
+    377
+   ],
+   "z": 30
+  },
+  {
+   "key": "window_12",
+   "name": "昭和／欄間",
+   "category": "window",
+   "style": "昭和",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 384,
+   "height": 384,
+   "bbox": [
+    8,
+    8,
+    377,
+    377
+   ],
+   "z": 30
+  },
+  {
+   "key": "window_13",
+   "name": "昭和／格子窓",
+   "category": "window",
+   "style": "昭和",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 384,
+   "height": 384,
+   "bbox": [
+    8,
+    8,
+    377,
+    377
+   ],
+   "z": 30
+  },
+  {
+   "key": "door_01",
+   "name": "ナチュラル／木の框戸",
+   "category": "door",
+   "style": "ナチュラル",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 320,
+   "height": 512,
+   "bbox": [
+    14,
+    10,
+    307,
+    503
+   ],
+   "z": 30
+  },
+  {
+   "key": "door_02",
+   "name": "アメリカン／ガラス入り",
+   "category": "door",
+   "style": "アメリカン",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 320,
+   "height": 512,
+   "bbox": [
+    14,
+    10,
+    307,
+    503
+   ],
+   "z": 30
+  },
+  {
+   "key": "door_03",
+   "name": "モダン／鉄の枠",
+   "category": "door",
+   "style": "モダン",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 320,
+   "height": 512,
+   "bbox": [
+    14,
+    10,
+    307,
+    503
+   ],
+   "z": 30
+  },
+  {
+   "key": "door_04",
+   "name": "北欧／白い框戸",
+   "category": "door",
+   "style": "北欧",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 320,
+   "height": 512,
+   "bbox": [
+    14,
+    10,
+    307,
+    503
+   ],
+   "z": 30
+  },
+  {
+   "key": "door_05",
+   "name": "アジアン／引き戸",
+   "category": "door",
+   "style": "アジアン",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 320,
+   "height": 512,
+   "bbox": [
+    8,
+    10,
+    313,
+    503
+   ],
+   "z": 30
+  },
+  {
+   "key": "door_06",
+   "name": "インダストリアル／鉄とガラス",
+   "category": "door",
+   "style": "インダストリアル",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 320,
+   "height": 512,
+   "bbox": [
+    14,
+    10,
+    307,
+    503
+   ],
+   "z": 30
+  },
+  {
+   "key": "door_07",
+   "name": "カントリー／アーチ扉",
+   "category": "door",
+   "style": "カントリー",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 320,
+   "height": 512,
+   "bbox": [
+    14,
+    10,
+    307,
+    503
+   ],
+   "z": 30
+  },
+  {
+   "key": "door_08",
+   "name": "ホテルライク／框戸（濃色）",
+   "category": "door",
+   "style": "ホテルライク",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 320,
+   "height": 512,
+   "bbox": [
+    14,
+    10,
+    307,
+    503
+   ],
+   "z": 30
+  },
+  {
+   "key": "door_09",
+   "name": "ミックス／ガラスの引き戸",
+   "category": "door",
+   "style": "ミックス",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 320,
+   "height": 512,
+   "bbox": [
+    8,
+    10,
+    313,
+    503
+   ],
+   "z": 30
+  },
+  {
+   "key": "door_10",
+   "name": "昭和／障子",
+   "category": "door",
+   "style": "昭和",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 320,
+   "height": 512,
+   "bbox": [
+    10,
+    10,
+    311,
+    503
+   ],
+   "z": 30
+  },
+  {
+   "key": "door_11",
+   "name": "昭和／襖",
+   "category": "door",
+   "style": "昭和",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 320,
+   "height": 512,
+   "bbox": [
+    10,
+    10,
+    311,
+    503
+   ],
+   "z": 30
+  },
+  {
+   "key": "door_12",
+   "name": "昭和／ガラスの框戸",
+   "category": "door",
+   "style": "昭和",
+   "placement": "opening",
+   "anchor": "center",
+   "width": 320,
+   "height": 512,
+   "bbox": [
+    12,
+    10,
+    309,
+    503
+   ],
+   "z": 30
+  },
+  {
+   "key": "view_01",
+   "name": "晴れ",
+   "category": "view",
+   "style": null,
+   "placement": "view",
+   "anchor": "center",
+   "width": 480,
+   "height": 320,
+   "bbox": [
+    0,
+    0,
+    480,
+    320
+   ],
+   "z": 20
+  },
+  {
+   "key": "view_02",
+   "name": "夕暮れ",
+   "category": "view",
+   "style": null,
+   "placement": "view",
+   "anchor": "center",
+   "width": 480,
+   "height": 320,
+   "bbox": [
+    0,
+    0,
+    480,
+    320
+   ],
+   "z": 20
+  },
+  {
+   "key": "view_03",
+   "name": "夜",
+   "category": "view",
+   "style": null,
+   "placement": "view",
+   "anchor": "center",
+   "width": 480,
+   "height": 320,
+   "bbox": [
+    0,
+    0,
+    480,
+    320
+   ],
+   "z": 20
+  },
+  {
+   "key": "view_04",
+   "name": "雨",
+   "category": "view",
+   "style": null,
+   "placement": "view",
+   "anchor": "center",
+   "width": 480,
+   "height": 320,
+   "bbox": [
+    0,
+    0,
+    480,
+    320
+   ],
+   "z": 20
+  },
+  {
+   "key": "view_05",
+   "name": "雪",
+   "category": "view",
+   "style": null,
+   "placement": "view",
+   "anchor": "center",
+   "width": 480,
+   "height": 320,
+   "bbox": [
+    0,
+    0,
+    480,
+    320
+   ],
+   "z": 20
+  },
+  {
+   "key": "view_06",
+   "name": "森",
+   "category": "view",
+   "style": null,
+   "placement": "view",
+   "anchor": "center",
+   "width": 480,
+   "height": 320,
+   "bbox": [
+    0,
+    0,
+    480,
+    320
+   ],
+   "z": 20
+  },
+  {
+   "key": "view_07",
+   "name": "海",
+   "category": "view",
+   "style": null,
+   "placement": "view",
+   "anchor": "center",
+   "width": 480,
+   "height": 320,
+   "bbox": [
+    0,
+    0,
+    480,
+    320
+   ],
+   "z": 20
+  },
+  {
+   "key": "view_08",
+   "name": "町",
+   "category": "view",
+   "style": null,
+   "placement": "view",
+   "anchor": "center",
+   "width": 480,
+   "height": 320,
+   "bbox": [
+    0,
+    0,
+    480,
+    320
+   ],
+   "z": 20
+  },
+  {
+   "key": "view_09",
+   "name": "田んぼ",
+   "category": "view",
+   "style": null,
+   "placement": "view",
+   "anchor": "center",
+   "width": 480,
+   "height": 320,
+   "bbox": [
+    0,
+    0,
+    480,
+    320
+   ],
+   "z": 20
+  },
+  {
+   "key": "view_10",
+   "name": "昭和の路地",
+   "category": "view",
+   "style": null,
+   "placement": "view",
+   "anchor": "center",
+   "width": 480,
+   "height": 320,
+   "bbox": [
+    0,
+    0,
+    480,
+    320
+   ],
+   "z": 20
+  },
+  {
+   "key": "view_11",
+   "name": "縁側から見た庭",
+   "category": "view",
+   "style": null,
+   "placement": "view",
+   "anchor": "center",
+   "width": 480,
+   "height": 320,
+   "bbox": [
+    0,
+    0,
+    480,
+    320
+   ],
+   "z": 20
+  },
+  {
+   "key": "view_12",
+   "name": "桜",
+   "category": "view",
+   "style": null,
+   "placement": "view",
+   "anchor": "center",
+   "width": 480,
+   "height": 320,
+   "bbox": [
+    0,
+    0,
+    480,
+    320
+   ],
+   "z": 20
+  },
+  {
+   "key": "view_13",
+   "name": "町の屋根",
+   "category": "view",
+   "style": null,
+   "placement": "view",
+   "anchor": "center",
+   "width": 480,
+   "height": 320,
+   "bbox": [
+    0,
+    0,
+    480,
+    320
+   ],
+   "z": 20
+  },
+  {
+   "key": "garden_01",
+   "name": "鳥の水場",
+   "category": "garden",
+   "style": null,
+   "placement": "outside",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    100,
+    166,
+    221,
+    311
+   ],
+   "z": 5
+  },
+  {
+   "key": "garden_02",
+   "name": "灯籠",
+   "category": "garden",
+   "style": null,
+   "placement": "outside",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    106,
+    100,
+    215,
+    301
+   ],
+   "z": 5
+  },
+  {
+   "key": "garden_03",
+   "name": "鹿おどし",
+   "category": "garden",
+   "style": null,
+   "placement": "outside",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    60,
+    180,
+    247,
+    309
+   ],
+   "z": 5
+  },
+  {
+   "key": "garden_04",
+   "name": "ベンチ",
+   "category": "garden",
+   "style": null,
+   "placement": "outside",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    52,
+    160,
+    269,
+    301
+   ],
+   "z": 5
+  },
+  {
+   "key": "garden_05",
+   "name": "植木鉢",
+   "category": "garden",
+   "style": null,
+   "placement": "outside",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    110,
+    128,
+    210,
+    301
+   ],
+   "z": 5
+  },
+  {
+   "key": "garden_06",
+   "name": "白い柵",
+   "category": "garden",
+   "style": null,
+   "placement": "outside",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    32,
+    132,
+    291,
+    301
+   ],
+   "z": 5
+  },
+  {
+   "key": "garden_07",
+   "name": "ポスト",
+   "category": "garden",
+   "style": null,
+   "placement": "outside",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    104,
+    84,
+    217,
+    301
+   ],
+   "z": 5
+  },
+  {
+   "key": "garden_08",
+   "name": "風車",
+   "category": "garden",
+   "style": null,
+   "placement": "outside",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    96,
+    76,
+    224,
+    301
+   ],
+   "z": 5
+  },
+  {
+   "key": "garden_09",
+   "name": "かかし",
+   "category": "garden",
+   "style": null,
+   "placement": "outside",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    80,
+    96,
+    241,
+    301
+   ],
+   "z": 5
+  },
+  {
+   "key": "garden_10",
+   "name": "井戸",
+   "category": "garden",
+   "style": null,
+   "placement": "outside",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    76,
+    60,
+    245,
+    309
+   ],
+   "z": 5
+  },
+  {
+   "key": "garden_11",
+   "name": "焚き火",
+   "category": "garden",
+   "style": null,
+   "placement": "outside",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    104,
+    168,
+    217,
+    307
+   ],
+   "z": 5
+  },
+  {
+   "key": "garden_12",
+   "name": "物干し",
+   "category": "garden",
+   "style": null,
+   "placement": "outside",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    44,
+    120,
+    279,
+    301
+   ],
+   "z": 5
+  },
+  {
+   "key": "garden_13",
+   "name": "飛び石",
+   "category": "garden",
+   "style": null,
+   "placement": "outside",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    46,
+    219,
+    277,
+    289
+   ],
+   "z": 5
+  },
+  {
+   "key": "garden_14",
+   "name": "鳥居",
+   "category": "garden",
+   "style": null,
+   "placement": "outside",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    50,
+    110,
+    271,
+    301
+   ],
+   "z": 5
+  },
+  {
+   "key": "wallart_01",
+   "name": "風景の額",
+   "category": "wallart",
+   "style": null,
+   "placement": "wall",
+   "anchor": "center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    46,
+    80,
+    275,
+    241
+   ],
+   "z": 40
+  },
+  {
+   "key": "wallart_02",
+   "name": "抽象の額",
+   "category": "wallart",
+   "style": null,
+   "placement": "wall",
+   "anchor": "center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    70,
+    60,
+    251,
+    261
+   ],
+   "z": 40
+  },
+  {
+   "key": "wallart_03",
+   "name": "丸い時計",
+   "category": "wallart",
+   "style": null,
+   "placement": "wall",
+   "anchor": "center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    88,
+    88,
+    233,
+    233
+   ],
+   "z": 40
+  },
+  {
+   "key": "wallart_04",
+   "name": "柱時計",
+   "category": "wallart",
+   "style": null,
+   "placement": "wall",
+   "anchor": "center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    104,
+    40,
+    217,
+    273
+   ],
+   "z": 40
+  },
+  {
+   "key": "wallart_05",
+   "name": "鏡",
+   "category": "wallart",
+   "style": null,
+   "placement": "wall",
+   "anchor": "center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    90,
+    60,
+    231,
+    261
+   ],
+   "z": 40
+  },
+  {
+   "key": "wallart_06",
+   "name": "飾り棚",
+   "category": "wallart",
+   "style": null,
+   "placement": "wall",
+   "anchor": "center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    52,
+    104,
+    269,
+    197
+   ],
+   "z": 40,
+   "hasTop": true
+  },
+  {
+   "key": "wallart_07",
+   "name": "帽子掛け",
+   "category": "wallart",
+   "style": null,
+   "placement": "wall",
+   "anchor": "center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    90,
+    60,
+    226,
+    251
+   ],
+   "z": 40
+  },
+  {
+   "key": "wallart_08",
+   "name": "カレンダー",
+   "category": "wallart",
+   "style": null,
+   "placement": "wall",
+   "anchor": "center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    90,
+    70,
+    231,
+    251
+   ],
+   "z": 40
+  },
+  {
+   "key": "wallart_09",
+   "name": "掛け軸",
+   "category": "wallart",
+   "style": null,
+   "placement": "wall",
+   "anchor": "center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    116,
+    44,
+    205,
+    277
+   ],
+   "z": 40
+  },
+  {
+   "key": "wallart_10",
+   "name": "写真",
+   "category": "wallart",
+   "style": null,
+   "placement": "wall",
+   "anchor": "center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    70,
+    74,
+    293,
+    241
+   ],
+   "z": 40
+  },
+  {
+   "key": "wallart_11",
+   "name": "トロフィー",
+   "category": "wallart",
+   "style": null,
+   "placement": "tabletop",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    100,
+    110,
+    221,
+    241
+   ],
+   "z": 70,
+   "canFloor": true
+  },
+  {
+   "key": "wallart_12",
+   "name": "楽譜の額",
+   "category": "wallart",
+   "style": null,
+   "placement": "wall",
+   "anchor": "center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    56,
+    90,
+    265,
+    237
+   ],
+   "z": 40
+  },
+  {
+   "key": "wallart_13",
+   "name": "リース",
+   "category": "wallart",
+   "style": null,
+   "placement": "wall",
+   "anchor": "center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    70,
+    69,
+    250,
+    251
+   ],
+   "z": 40
+  },
+  {
+   "key": "showa_01",
+   "name": "石油ランプ",
+   "category": "showa",
+   "style": null,
+   "placement": "tabletop",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    116,
+    120,
+    205,
+    305
+   ],
+   "z": 70,
+   "canFloor": true
+  },
+  {
+   "key": "showa_02",
+   "name": "柱時計",
+   "category": "showa",
+   "style": null,
+   "placement": "wall",
+   "anchor": "center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    102,
+    12,
+    219,
+    255
+   ],
+   "z": 40
+  },
+  {
+   "key": "showa_03",
+   "name": "桐たんす",
+   "category": "showa",
+   "style": null,
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    44,
+    106,
+    277,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "showa_04",
+   "name": "鏡台（三面鏡）",
+   "category": "showa",
+   "style": null,
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    70,
+    60,
+    251,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "showa_05",
+   "name": "足踏みミシン",
+   "category": "showa",
+   "style": null,
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    54,
+    110,
+    267,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "showa_06",
+   "name": "洋燈のシャンデリア",
+   "category": "showa",
+   "style": null,
+   "placement": "ceiling",
+   "anchor": "top-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    54,
+    0,
+    267,
+    181
+   ],
+   "z": 90
+  },
+  {
+   "key": "showa_07",
+   "name": "ちゃぶ台",
+   "category": "showa",
+   "style": null,
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    44,
+    190,
+    277,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "showa_08",
+   "name": "茶箪笥",
+   "category": "showa",
+   "style": null,
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    58,
+    96,
+    263,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "showa_09",
+   "name": "火鉢",
+   "category": "showa",
+   "style": null,
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    76,
+    178,
+    245,
+    307
+   ],
+   "z": 70
+  },
+  {
+   "key": "showa_10",
+   "name": "黒電話と電話台",
+   "category": "showa",
+   "style": null,
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    92,
+    142,
+    229,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "showa_11",
+   "name": "真空管ラジオ",
+   "category": "showa",
+   "style": null,
+   "placement": "tabletop",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    70,
+    150,
+    251,
+    301
+   ],
+   "z": 70,
+   "canFloor": true
+  },
+  {
+   "key": "showa_12",
+   "name": "座卓と座布団",
+   "category": "showa",
+   "style": null,
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    46,
+    200,
+    275,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "showa_13",
+   "name": "ブラウン管テレビ",
+   "category": "showa",
+   "style": null,
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    62,
+    120,
+    259,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "showa_14",
+   "name": "電気こたつ",
+   "category": "showa",
+   "style": null,
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    36,
+    208,
+    285,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "showa_15",
+   "name": "ステレオ",
+   "category": "showa",
+   "style": null,
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    46,
+    140,
+    275,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "showa_16",
+   "name": "扇風機",
+   "category": "showa",
+   "style": null,
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    84,
+    96,
+    237,
+    309
+   ],
+   "z": 70,
+   "canTabletop": true
+  },
+  {
+   "key": "showa_17",
+   "name": "応接セット",
+   "category": "showa",
+   "style": null,
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    40,
+    150,
+    281,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "showa_18",
+   "name": "サイドボード",
+   "category": "showa",
+   "style": null,
+   "placement": "floor",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    36,
+    178,
+    285,
+    301
+   ],
+   "z": 70
+  },
+  {
+   "key": "showa_19",
+   "name": "★縁側",
+   "category": "showa",
+   "style": null,
+   "placement": "structure",
+   "anchor": "bottom-center",
+   "width": 320,
+   "height": 320,
+   "bbox": [
+    0,
+    150,
+    320,
+    301
+   ],
+   "z": 60
+  },
+  {
+   "key": "tile_01",
+   "name": "壁／砂壁",
+   "category": "tile",
+   "style": "壁",
+   "placement": "surface",
+   "anchor": "tile",
+   "width": 256,
+   "height": 256,
+   "bbox": [
+    0,
+    0,
+    256,
+    256
+   ],
+   "surfaceKind": "wall",
+   "z": 10
+  },
+  {
+   "key": "tile_02",
+   "name": "壁／繊維壁",
+   "category": "tile",
+   "style": "壁",
+   "placement": "surface",
+   "anchor": "tile",
+   "width": 256,
+   "height": 256,
+   "bbox": [
+    0,
+    0,
+    256,
+    256
+   ],
+   "surfaceKind": "wall",
+   "z": 10
+  },
+  {
+   "key": "tile_03",
+   "name": "壁／土壁",
+   "category": "tile",
+   "style": "壁",
+   "placement": "surface",
+   "anchor": "tile",
+   "width": 256,
+   "height": 256,
+   "bbox": [
+    0,
+    0,
+    256,
+    256
+   ],
+   "surfaceKind": "wall",
+   "z": 10
+  },
+  {
+   "key": "tile_04",
+   "name": "壁／花柄の古いクロス",
+   "category": "tile",
+   "style": "壁",
+   "placement": "surface",
+   "anchor": "tile",
+   "width": 256,
+   "height": 256,
+   "bbox": [
+    0,
+    0,
+    256,
+    256
+   ],
+   "surfaceKind": "wall",
+   "z": 10
+  },
+  {
+   "key": "tile_05",
+   "name": "壁／モルタル",
+   "category": "tile",
+   "style": "壁",
+   "placement": "surface",
+   "anchor": "tile",
+   "width": 256,
+   "height": 256,
+   "bbox": [
+    0,
+    0,
+    256,
+    256
+   ],
+   "surfaceKind": "wall",
+   "z": 10
+  },
+  {
+   "key": "tile_06",
+   "name": "床／畳",
+   "category": "tile",
+   "style": "床",
+   "placement": "surface",
+   "anchor": "tile",
+   "width": 256,
+   "height": 256,
+   "bbox": [
+    0,
+    0,
+    256,
+    256
+   ],
+   "surfaceKind": "floor",
+   "z": 50
+  },
+  {
+   "key": "tile_07",
+   "name": "床／飴色の板の間",
+   "category": "tile",
+   "style": "床",
+   "placement": "surface",
+   "anchor": "tile",
+   "width": 256,
+   "height": 256,
+   "bbox": [
+    0,
+    0,
+    256,
+    256
+   ],
+   "surfaceKind": "floor",
+   "z": 50
+  },
+  {
+   "key": "tile_08",
+   "name": "床／リノリウム",
+   "category": "tile",
+   "style": "床",
+   "placement": "surface",
+   "anchor": "tile",
+   "width": 256,
+   "height": 256,
+   "bbox": [
+    0,
+    0,
+    256,
+    256
+   ],
+   "surfaceKind": "floor",
+   "z": 50
+  },
+  {
+   "key": "tile_09",
+   "name": "床／昭和の絨毯",
+   "category": "tile",
+   "style": "床",
+   "placement": "surface",
+   "anchor": "tile",
+   "width": 256,
+   "height": 256,
+   "bbox": [
+    0,
+    0,
+    256,
+    256
+   ],
+   "surfaceKind": "floor",
+   "z": 50
+  }
+ ]
+}
