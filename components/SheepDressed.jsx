@@ -85,6 +85,46 @@ function useBlink(enabled) {
 }
 
 /**
+ * ★重ねる絵が、★ぜんぶ 描ける状態に なるまで 待ちます。
+ *
+ *   ★★実機のご報告（★2026-09-09）
+ *     ★「脚だけ 先に 出て、★体と服が あとから 出る」。
+ *
+ *   ★★＜img＞は、★読めた順に 出ます。★だから 順番が ばらばらに なります。
+ *     ★★decode() を 待てば、★描ける状態に なったかが 分かります。
+ *   ★★ぜんぶ そろってから 出します。★1枚でも 欠けたら 出しません。
+ *     ★★「脚だけ」の 姿を、★1度も 見せません。
+ *
+ *   ★★1枚が 読めなくても、★止まりません。
+ *     ★読めない絵は あきらめて、★残りで 出します。
+ *     ★★黙って 真っ白に しません。
+ *
+ *   ★★見本（thumb）では 待ちません。★1枚ずつ 出てよいところです。
+ */
+function useLayersReady(srcs, enabled) {
+  const [ready, setReady] = useState(false);
+  const joined = srcs.join("|");
+  useEffect(() => {
+    if (!enabled) { setReady(true); return; }
+    if (typeof window === "undefined") { setReady(true); return; }
+    let alive = true;
+    setReady(false);
+    const list = joined ? joined.split("|") : [];
+    if (list.length === 0) { setReady(true); return; }
+    Promise.all(list.map((src) => new Promise((done) => {
+      const im = new window.Image();
+      im.decoding = "async";
+      im.onload = () => (im.decode ? im.decode().then(done, done) : done());
+      // ★★読めなくても 進みます。★1枚のために 止めません。
+      im.onerror = () => done();
+      im.src = src;
+    }))).then(() => { if (alive) setReady(true); });
+    return () => { alive = false; };
+  }, [joined, enabled]);
+  return ready;
+}
+
+/**
  * ★9枚を、先に 読んでおきます。
  *
  *   ★★切り替えの瞬間に、★白い顔が 出るのを 防ぎます。
@@ -245,6 +285,11 @@ export default function SheepDressed({
   //   ★★同じ z のときは、★もとの順を守ります（★安定な並べ替え）。
   layers.sort((a, b) => (a.z - b.z));
 
+  // ★★ぜんぶ 描ける状態に なるまで、★出しません（★2026-09-09）。
+  //   ★★「脚だけ 先に 出る」を、★1度も 見せないためです。
+  //   ★見本（thumb）では 待ちません。★1枚ずつ 出てよいところです。
+  const ready = useLayersReady(layers.map((l) => l.src).filter(Boolean), !thumb);
+
   // ★★動かすのは、★かたまりの外側だけです。
   //   ★1枚ずつ動かすと、★服と体がずれます。
   //   ★羊も服も、★一緒に動かないと、★着ているように見えません。
@@ -286,7 +331,14 @@ export default function SheepDressed({
         position: "relative", width: size, height: size, flexShrink: 0,
         // ★裏返しと、はずみを、★同じ入れ物でやると打ち消し合います。
         //   ★だから、★裏返しは外側、★はずみは内側にします。
-        transform: facingLeft ? "scaleX(-1)" : "none"
+        transform: facingLeft ? "scaleX(-1)" : "none",
+        // ★★ぜんぶ 描ける状態に なるまで、★見せません（★2026-09-09）。
+        //   ★★消しません。★場所は 取ったまま、★見えなくするだけです。
+        //     ★消すと、★出た瞬間に 部屋が がたつきます。
+        //   ★★0.2秒で ふわっと 出します。★ぱっと 出ると 驚きます。
+        //   ★★動きを 減らす設定の方には、★globals.css で 止めます。
+        opacity: ready ? 1 : 0,
+        transition: "opacity 0.2s ease-out"
       }}
     >
       {/* ★★見本のときは、★動きの定義を作りません（★2026-09-08）。

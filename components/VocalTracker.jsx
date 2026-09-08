@@ -105,6 +105,7 @@ import DrawerItemGrid from "@/components/DrawerItemGrid";
 import PointsPaper from "@/components/PointsPaper";
 import { thumbSrc } from "@/lib/thumbs";
 import { roomAssetUrls, preloadUrls } from "@/lib/preloadRoom";
+import { recallEquipped, rememberEquipped } from "@/lib/equippedCache";
 import { VIEW, DRESS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES, HOME_COLORS } from "@/lib/homeDrawer";
 import { itemsFor, sortItems } from "@/lib/drawerItems";
 // ★さがす（★§3-6）。★絞り込みは、ここにだけ 置きます。
@@ -5417,7 +5418,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★端末に覚えさせます。★DBに残すほどのことではありません。
   //     ★忘れても、★もう一度お尋ねするだけです。
   const [perfSnoozedOn, setPerfSnoozedOn] = useState(null);
-  const [characterEquipped, setCharacterEquipped] = useState({});
+  // ★★前に着ていた姿で、★先に 描きます（★2026-09-09・実機のご報告）。
+  //   ★★装備は プロフィールの 大きな問い合わせに 乗っています。
+  //     ★返事が 来るまで、★何を着ているか 分かりませんでした。
+  //     ★★だから 脚だけが 先に 出て、★服が あとから 出ていました。
+  //   ★★この端末の中だけの 覚えです。★サーバへ 送りません。
+  //   ★★返事が 来たら、★サーバの姿に そろえます。★覚えは 正では ありません。
+  const [characterEquipped, setCharacterEquipped] = useState(() => recallEquipped(userId) || {});
 
   const [characterPointsSpent, setCharacterPointsSpent] = useState(0);
   const [profileLoading, setProfileLoading] = useState(true);
@@ -5892,6 +5899,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         });
         setCharacterPointsSpent(data.character_points_spent || 0);
         setCharacterEquipped(data.character_equipped || {});
+        // ★★次に 開くときのために、★覚えておきます。
+        rememberEquipped(userId, data.character_equipped || {});
         // ★登録画面で選んだ職業を、ここで profiles へ移す（初回ログインの1回だけ）。
         //   すでに本人が選んでいれば adoptSignupOccupation が null を返し、
         //   何もしません（設定で選び直した値を上書きしないため）。
@@ -9034,6 +9043,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       return;
     }
     setCharacterDirty(false);
+    // ★★保存できたら、★覚えも 新しくします（★2026-09-09）。
+    //   ★★保存の前に 覚えないこと。★失敗したのに 覚えると、
+    //     ★次に 開いたとき、★保存できていない姿が 出ます。
+    rememberEquipped(userId, characterEquipped);
     setCharacterSaveStatus("saved");
     // ★★J3 片づけ・もようがえの直後（★仕様「3本に分ける」②）。
     //   ★★羊は「した こと」に 応えます。★中身には 触れません。
