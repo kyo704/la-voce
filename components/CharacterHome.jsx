@@ -16,6 +16,7 @@ import {
 import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf } from "@/lib/sheepInteriorV2";
 import SpeechBubble from "@/components/SpeechBubble";
 import { SOLO, TIMING, FACE_FOR, pickLine, nextSoloMs, pushRecent } from "@/lib/sheepSpeech";
+import { pickGesture, nextGestureMs, mayGesture, pushRecent as pushGesture } from "@/lib/sheepGestures";
 import { C } from "@/lib/tokens";
 import {
   SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, PLACEMENT_LIMITS,
@@ -820,7 +821,7 @@ function SheepSleepingHead({ size }) {
 //   静的に読むかぎりコードは正しいのに、実機の結果が合いません。
 //   読むのをやめて、動いている値そのものを見ます。
 //   落ち着いたら消してください。
-function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWalking, isFarming, isSitting, isLying, isSweating, isCelebrating, wardrobeOn = false, diag, bubble = null }) {
+function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWalking, isFarming, isSitting, isLying, isSweating, isCelebrating, wardrobeOn = false, diag, bubble = null, gesture = null }) {
   // ★★着せかえの羊（2026-09-06・案B）。
   //   ★絵の羊が主で、★SVGの羊は小さなしるしとして残ります。
   //   ★門が閉じている方には、★これまでどおり SVG の羊が出ます。★取り上げません。
@@ -928,6 +929,15 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
           ★★上の帯では ありません。★出どころが 体と つながっていること。
           ★羊の箱に対する 割合で 置きます。★画素で 決め打ちしません。 */}
       {bubble && <SpeechBubble text={bubble.text} small={bubble.small} />}
+      {/* ★★しぐさ（★第1段・2026-09-08 夜）。★絵を 増やしません。
+          ★★足もとを 動かしません（transform-origin: bottom center）。
+            ★足が 浮くと、★床から 離れて 見えます。
+          ★★置き場所の transform とは、★別の入れ物で かけます。
+            ★同じ所に かけると、★translate(-50%,-100%) が 消えます。 */}
+      <div className={gesture ? "sheep-gesture" : undefined}
+        style={gesture ? {
+          animation: `sheep${gesture.key.charAt(0).toUpperCase()}${gesture.key.slice(1)} ${gesture.ms}ms ease-in-out`
+        } : undefined}>
       {dressed ? (
         // ★★向きは SheepDressed が持ちます。★外から scaleX を掛けないこと。
         //   ★2枚重ねると、★裏返しが打ち消し合います。
@@ -942,6 +952,7 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
           <SheepCharacter equipped={equipped} size={size * frontScale} isWalking={isWalking} isFarming={isFarming} showBook={isSitting} isSweating={isSweating} isCelebrating={isCelebrating} />
         </div>
       )}
+      </div>
     </div>
   );
 }
@@ -1952,6 +1963,15 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
   //
   //   ★★中身の線 ── 羊は「記録した行為」に反応し、「記録の中身」には
   //     ★反応しません。★どの文も、★体調にも 声にも 触れません（★lib で 見張ります）。
+  // ★★しぐさ（★第1段・2026-09-08 夜・実機「歩くだけに 見える」）。
+  //
+  //   ★★立ち止まっている あいだに、★12〜25秒に1回。
+  //     ★のび／あくび／足ぶみ／見まわす。★絵を 1枚も 増やしません。
+  //   ★★歩いている・すわっている・眠っている あいだは しません。
+  //   ★★見えていないとき（document.hidden）は しません。
+  //   ★★体調にも 記録にも、★1つも 関わりません。
+  const [gesture, setGesture] = useState(null);
+  const gestureRecentRef = useRef([]);
   const [bubble, setBubble] = useState(null);
   const recentRef = useRef([]);
   const bubbleTimerRef = useRef(null);
@@ -1973,6 +1993,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
     // ★★say は「何回目か」を 持ちます。★同じ操作を 2度 数えないためです。
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [say && say.seq]);
+
 
   // ★★③ひとりごと。★ながめている間だけです。
   useEffect(() => {
@@ -2068,6 +2089,30 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
     furniturePos("furniture_bed")
       || (wardrobeOn ? bedPos(interiorOf(equipped), equipped.interiorPositions) : null)
   );
+
+  // ★★しぐさの 時計。★立ち止まっている あいだだけです。
+  useEffect(() => {
+    if (!wardrobeOn) return;
+    if (typeof window === "undefined") return;
+    let stopped = false;
+    let t = null;
+    const tick = () => {
+      if (stopped) return;
+      t = setTimeout(() => {
+        if (stopped) return;
+        if (typeof document !== "undefined" && document.hidden) { tick(); return; }
+        // ★★歩いている・すわっている・眠っている あいだは しません。
+        if (!mayGesture({ isWalking, isSitting, isLying })) { tick(); return; }
+        const g = pickGesture(gestureRecentRef.current);
+        gestureRecentRef.current = pushGesture(gestureRecentRef.current, g.key);
+        setGesture(g);
+        setTimeout(() => setGesture(null), g.ms);
+        tick();
+      }, nextGestureMs());
+    };
+    tick();
+    return () => { stopped = true; clearTimeout(t); setGesture(null); };
+  }, [wardrobeOn, isWalking, isSitting, isLying]);
 
   return (
     /* ★★重ね順を、★この枠の中に 閉じ込めます（★2026-09-08 の直し）。
@@ -2386,7 +2431,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
       {/* ★★羊を、大きくしました（★2026-09-08 夕・坂本さんのご要望）。
           ★★「小さすぎる」とのことでした。★92 → ★SHEEP_SIZE。
           ★数は lib が持ちます。★ここで書かないこと。 */}
-      <PositionedCharacter bubble={bubble} wardrobeOn={wardrobeOn} equipped={equipped} size={sheepPx} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isSitting={isSitting} isLying={isLying}
+      <PositionedCharacter bubble={bubble} gesture={gesture} wardrobeOn={wardrobeOn} equipped={equipped} size={sheepPx} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isSitting={isSitting} isLying={isLying}
         diag={{ bedTop: bedPosForDiag && bedPosForDiag.top, bedLeft: bedPosForDiag && bedPosForDiag.left }} />
 
       {/* ★ベッドと椅子は、上げられる高さを狭めてある（BED_MIN_TOP / CHAIR_MIN_TOP）。

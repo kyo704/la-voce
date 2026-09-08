@@ -7369,7 +7369,7 @@
   },
   {
    "key": "scarf_27",
-   "name": "たすきがけ",
+   "name": "八の字むすび",
    "group": "daily",
    "slot": "neck",
    "z": 50,
@@ -7381,8 +7381,8 @@
    "patterned": false,
    "zLayer": 50,
    "kanji": [
-    "すずしい",
-    "ゆるい"
+    "あたたかい",
+    "きちんと"
    ],
    "gender": "u",
    "defaultColor": "ふじ",
@@ -7390,7 +7390,7 @@
   },
   {
    "key": "scarf_28",
-   "name": "たすきがけ（柄）",
+   "name": "八の字むすび（柄）",
    "group": "daily",
    "slot": "neck",
    "z": 50,
@@ -7402,8 +7402,8 @@
    "patterned": true,
    "zLayer": 50,
    "kanji": [
-    "すずしい",
-    "ゆるい"
+    "あたたかい",
+    "きちんと"
    ],
    "gender": "u",
    "defaultColor": "ふじ",

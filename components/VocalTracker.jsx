@@ -104,6 +104,7 @@ import HomeDrawer from "@/components/HomeDrawer";
 import DrawerItemGrid from "@/components/DrawerItemGrid";
 import PointsPaper from "@/components/PointsPaper";
 import { thumbSrc } from "@/lib/thumbs";
+import { roomAssetUrls, preloadUrls } from "@/lib/preloadRoom";
 import { VIEW, DRESS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES, HOME_COLORS } from "@/lib/homeDrawer";
 import { itemsFor, sortItems } from "@/lib/drawerItems";
 // ★さがす（★§3-6）。★絞り込みは、ここにだけ 置きます。
@@ -5313,6 +5314,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //     ★1度も 開かない方に、★羊と部屋の絵を 読ませないためです。
   //   ★★1度 開いたら、★そのあとは 隠すだけです。
   //     ★2度目からは、★ほぼ 待たずに 出ます。
+
   const [wardrobeMountedOnce, setWardrobeMountedOnce] = useState(false);
   useEffect(() => {
     if (activeTab === "garden") setWardrobeMountedOnce(true);
@@ -5415,6 +5417,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //     ★忘れても、★もう一度お尋ねするだけです。
   const [perfSnoozedOn, setPerfSnoozedOn] = useState(null);
   const [characterEquipped, setCharacterEquipped] = useState({});
+
   const [characterPointsSpent, setCharacterPointsSpent] = useState(0);
   const [profileLoading, setProfileLoading] = useState(true);
   // 学ぶ統合設計書 4-3: 音名ルールの説明は初回のみ自動展開する。
@@ -12003,6 +12006,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const wardrobeOn = mayUseWardrobe(userId, {
     NEXT_PUBLIC_WARDROBE_USER_IDS: process.env.NEXT_PUBLIC_WARDROBE_USER_IDS
   });
+
+  // ★★ひつじの画面の絵を、★裏で 先に 読んでおきます（★2026-09-08 夜・案2）。
+  //
+  //   ★★「はじめて 開くと 1秒かかる」への 答えです。
+  //   ★★読むのは「いま着ている・置いている物」だけです（★20〜30枚・700KB ほど）。
+  //     ★★一覧の 414点は 読みません。★あちらは 小さい絵で、見えたぶんだけです。
+  //   ★★手が空いたときに、★1枚ずつ 読みます（requestIdleCallback）。
+  //     ★★記録の画面の じゃまを しません。
+  //   ★★ひつじタブを 開いていなくても 読みます。★そこが 案2の 眼目です。
+  //     ★ただし、★門の中の方だけです。★出ない方に 読ませても 無駄です。
+  useEffect(() => {
+    if (!wardrobeOn) return;
+    if (!characterEquipped) return;
+    return preloadUrls(roomAssetUrls(characterEquipped));
+  }, [wardrobeOn, characterEquipped]);
   // ★★試していただく方（★操作者ご本人）には、★鍵を1つも出しません。
   //   ★★門（wardrobeOn）とは、★別の名簿です。★一緒にしないこと。
   //     ★門の名簿に、★これから試す方が増えても、★その方には鍵が出ます。

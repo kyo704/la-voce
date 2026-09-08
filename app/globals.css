@@ -582,3 +582,38 @@ body {
 @media (prefers-reduced-motion: reduce) {
   [aria-live="polite"] { animation: none !important; }
 }
+
+/* ★★羊の しぐさ（★第1段・2026-09-08 夜）。
+   ★★絵を 1枚も 増やしません。★体を CSS で 動かすだけです。
+     ★羊の顔の 禁5「体の動きのために 顔を増やさない」と 同じ考えです。
+   ★★どれも、★足もとを 動かしません（transform-origin: bottom center）。
+     ★足が 浮くと、★床から 離れて 見えます。 */
+.sheep-gesture { transform-origin: bottom center; }
+/* ★のび ── ★背を のばして、★もどります。 */
+@keyframes sheepStretch {
+  0%, 100% { transform: scaleY(1) translateY(0); }
+  35%      { transform: scaleY(1.08) translateY(-3%); }
+  60%      { transform: scaleY(1.05) translateY(-2%); }
+}
+/* ★あくび ── ★ふわっと ふくらんで、★しぼみます。 */
+@keyframes sheepYawn {
+  0%, 100% { transform: scale(1); }
+  40%      { transform: scale(1.05, 1.04); }
+  70%      { transform: scale(0.99, 0.98); }
+}
+/* ★足ぶみ ── ★左右に 小さく ゆれます。 */
+@keyframes sheepStep {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25%      { transform: translateX(-1.5%) rotate(-1.2deg); }
+  75%      { transform: translateX(1.5%) rotate(1.2deg); }
+}
+/* ★見まわす ── ★首を ふる代わりに、★体を わずかに ひねります。 */
+@keyframes sheepLookAround {
+  0%, 100% { transform: rotate(0deg); }
+  30%      { transform: rotate(-2.5deg); }
+  70%      { transform: rotate(2.5deg); }
+}
+/* ★★動きを 減らす設定の方には しません。 */
+@media (prefers-reduced-motion: reduce) {
+  .sheep-gesture { animation: none !important; }
+}
