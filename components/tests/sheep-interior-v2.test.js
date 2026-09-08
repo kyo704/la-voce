@@ -376,6 +376,13 @@ function ok(name, cond, extra) {
     ok("★飛ばずに 滑る（★前の場所を 覚えている）",
       /roomRectRef/.test(vt) && /translate\(\$\{dx\}px, \$\{dy\}px\) scale\(\$\{sx\}\)/.test(vt));
     ok("★動きを 減らす設定では 滑らせない", /prefers-reduced-motion: reduce/.test(vt));
+    // ★★ひつじの画面を、★1度開いたら 捨てないこと（★2026-09-08 夜・案A）。
+    //   ★★もとは タブを離れると 消え、★戻るたびに 1から 作り直していました。
+    ok("★1度開いたら 捨てない", /wardrobeMountedOnce/.test(vt));
+    ok("★隠すだけ（display:none）",
+      /display: activeTab === "garden" \? undefined : "none"/.test(vt));
+    // ★★はじめから 作らないこと。★1度も開かない方に 読ませないためです。
+    ok("★はじめから 作ってはいない", /useState\(false\);\s*\n\s*useEffect\(\(\) => \{\s*\n\s*if \(activeTab === "garden"\)/.test(vt));
   }
 
   console.log("■ ★荷物は、zip のまま");

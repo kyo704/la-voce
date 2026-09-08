@@ -60,7 +60,13 @@ ok("歯車から開く", /setActiveTab\("more"\)/.test(code));
 {
   const raw = readRaw("components", "VocalTracker.jsx");
   const homeAt = raw.indexOf('activeTab === "home"');
-  const gardenAt = raw.indexOf('activeTab === "garden"');
+  // ★★2026-09-08 夜、★ひつじの画面を「捨てない」形に しました（★案A）。
+  //   ★★そのため activeTab === "garden" が、★2か所に 出ます。
+  //     ① 1度開いたかを 覚える useEffect（★画面の ずっと前）
+  //     ② 画面そのもの（★{wardrobeMountedOnce && ( … )}）
+  //   ★★ここで 欲しいのは ② です。★はじめの1つでは ありません。
+  //     ★はじめの1つを 取ると、★前後の 比べが すべて 狂います。
+  const gardenAt = raw.indexOf("{wardrobeMountedOnce && (");
   const gearAt = raw.indexOf("<Settings size=");
 
   ok("★歯車は、1つだけ", (raw.match(/<Settings size=/g) || []).length === 1);

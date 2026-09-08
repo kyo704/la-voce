@@ -5301,6 +5301,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★ふだんは「ながめる」です。★道具を1つも出しません。
   //     ★「したく」を押したときだけ、★引き出しが上がります。
   //   ★状態の名前は lib/homeDrawer.js が持ちます。
+  // ★★ひつじの画面を、★1度 開いたら、★もう 捨てません
+  //   （★2026-09-08 夜・坂本さんのお決め「案A」）。
+  //
+  //   ★★はじめから 作っては いません。
+  //     ★1度も 開かない方に、★羊と部屋の絵を 読ませないためです。
+  //   ★★1度 開いたら、★そのあとは 隠すだけです。
+  //     ★2度目からは、★ほぼ 待たずに 出ます。
+  const [wardrobeMountedOnce, setWardrobeMountedOnce] = useState(false);
+  useEffect(() => {
+    if (activeTab === "garden") setWardrobeMountedOnce(true);
+  }, [activeTab]);
+
   const [homeState, setHomeState] = useState(VIEW);
   // ★★ながめる → したく で、★部屋が 飛んで見えないようにします
   //   （★2026-09-08 夜・坂本さんのご指摘）。
@@ -15157,7 +15169,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 ★決めは lib/sheepWardrobe.js が持ちます。★ここで並べ直しません。
                 ★★JSX のコメントを、★かたまりの中の先頭に置かないこと。
                   ★今日3回、これで壊しました（return の直後・属性の間・ここ）。 */}
-            {activeTab === "garden" && (
+            {/* ★★ひつじの画面は、★捨てません（★2026-09-08 夜・坂本さんのお決め「案A」）。
+                ★★もとは「出す・出さない」ではなく、★「作る・捨てる」でした。
+                  ★タブを離れると 中身が 消え、★戻ると 1から 作り直していました。
+                  ★★だから 2度目に開いても、★1度目と 同じだけ かかりました。
+                    ★羊と部屋の絵は 1024×1024 です。★16枚なら 1600万画素を
+                    ★展開し直していました。★これが「1秒かかる」の 正体です。
+                ★★いまは、★隠すだけです（display:none）。
+                  ★2度目からは、★ほぼ 待たずに 出ます。
+                  ★★引きかえに、★最初の1回だけ 少し 重くなります。
+                ★★隠すと、★中の 貼りついた板（部屋・引き出し）も 一緒に 隠れます。
+                  ★display:none は、★中身ぜんぶに 効きます。 */}
+            {wardrobeMountedOnce && (
+              <div style={{ display: activeTab === "garden" ? undefined : "none" }}>
               <>
               {/* ★★おうちの中の行き先だけ（★2026-09-07・Opus の裁定）。
                   ★★歯車を、★ここには置きません。
@@ -15566,6 +15590,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   onApply={(q) => { setSearchQuery(q); setSearchOpen(false); }} />
               )}
               </>
+              </div>
             )}
 
             {/* ★★大きい文字のとき、★4つの名前が2行に折り返していました（2026-09-05・実機）。
