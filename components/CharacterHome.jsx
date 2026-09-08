@@ -14,6 +14,8 @@ import {
 } from "@/lib/oldHouseVisibility";
 // ★動かせる内装が在るか／羊の重ね順。★決めは、あちらが持ちます。
 import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z } from "@/lib/sheepInteriorV2";
+import SpeechBubble from "@/components/SpeechBubble";
+import { SOLO, TIMING, FACE_FOR, pickLine, nextSoloMs, pushRecent } from "@/lib/sheepSpeech";
 import { C } from "@/lib/tokens";
 import {
   SHOP_ITEMS, SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, PLACEMENT_LIMITS,
@@ -818,7 +820,7 @@ function SheepSleepingHead({ size }) {
 //   静的に読むかぎりコードは正しいのに、実機の結果が合いません。
 //   読むのをやめて、動いている値そのものを見ます。
 //   落ち着いたら消してください。
-function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWalking, isFarming, isSitting, isLying, isSweating, isCelebrating, wardrobeOn = false, diag }) {
+function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWalking, isFarming, isSitting, isLying, isSweating, isCelebrating, wardrobeOn = false, diag, bubble = null }) {
   // ★★着せかえの羊（2026-09-06・案B）。
   //   ★絵の羊が主で、★SVGの羊は小さなしるしとして残ります。
   //   ★門が閉じている方には、★これまでどおり SVG の羊が出ます。★取り上げません。
@@ -920,6 +922,10 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
           本来の足元より下にずれた影がもう1枚できる。2枚が少しずれて重なり、
           止まっているのに滑って見える。実機でそう報告された。
           ★同じものが2か所にある、をここでも作ってしまった。 */}
+      {/* ★★吹き出しは、★羊から 出します（★2026-09-08 夜・仕様 §③）。
+          ★★上の帯では ありません。★出どころが 体と つながっていること。
+          ★羊の箱に対する 割合で 置きます。★画素で 決め打ちしません。 */}
+      {bubble && <SpeechBubble text={bubble.text} small={bubble.small} />}
       {dressed ? (
         // ★★向きは SheepDressed が持ちます。★外から scaleX を掛けないこと。
         //   ★2枚重ねると、★裏返しが打ち消し合います。
@@ -1889,7 +1895,7 @@ function InteriorDraggable({ itemKey, startLeft, startTop, band, onDragEnd, chil
   );
 }
 
-function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardrobeOn = false, t }) {
+function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardrobeOn = false, say = null, t }) {
   const [editMode, setEditMode] = useState(false);
   // ★★羊の大きさを、★部屋の幅から 出します（★2026-09-08 夜・案A）。
   //   ★★家具は ％、★羊だけ 画素でした。★釣り合いが 機種ごとに 変わり、
@@ -1931,6 +1937,69 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
     return () => ro.disconnect();
   }, []);
   const sheepPx = sheepSizePx(roomBoxW);
+
+  // ★★羊が しゃべります（★2026-09-08 夜・仕様「3本に分ける」）。
+  //
+  //   ★★②あいづち ── 操作した直後。★3.0秒。★say から 来ます。
+  //   ★★③ひとりごと ── ながめている間。★45〜90秒に1回。★2.5秒。
+  //
+  //   ★★同時に 2つ 出しません。★②が 出ているあいだは ③を 止めます。
+  //   ★★見えているときだけです。★伏せているあいだ（document.hidden）は 止めます。
+  //   ★★直近5つは 出しません。★短い文は、繰り返しが すぐ ばれます。
+  //   ★★履歴に 残しません。★60日の履歴を持つのは ①だけです。
+  //
+  //   ★★中身の線 ── 羊は「記録した行為」に反応し、「記録の中身」には
+  //     ★反応しません。★どの文も、★体調にも 声にも 触れません（★lib で 見張ります）。
+  const [bubble, setBubble] = useState(null);
+  const recentRef = useRef([]);
+  const bubbleTimerRef = useRef(null);
+
+  const showLine = (line, small) => {
+    if (!line) return;
+    recentRef.current = pushRecent(recentRef.current, line.id);
+    setBubble({ text: line.text, small });
+    clearTimeout(bubbleTimerRef.current);
+    bubbleTimerRef.current = setTimeout(
+      () => setBubble(null), small ? TIMING.soloMs : TIMING.replyMs);
+  };
+
+  // ★★②あいづち。★1回の操作に 1つです。
+  useEffect(() => {
+    if (!wardrobeOn || !say || !say.type) return;
+    const line = pickLine(say.type, recentRef.current, new Date().getHours());
+    showLine(line, false);
+    // ★★say は「何回目か」を 持ちます。★同じ操作を 2度 数えないためです。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [say && say.seq]);
+
+  // ★★③ひとりごと。★ながめている間だけです。
+  useEffect(() => {
+    if (!wardrobeOn) return;
+    if (typeof window === "undefined") return;
+    let stopped = false;
+    let timer = null;
+    const tick = () => {
+      if (stopped) return;
+      timer = setTimeout(() => {
+        if (stopped) return;
+        // ★★伏せているときは、★言いません。★また 待ちます。
+        if (typeof document !== "undefined" && document.hidden) { tick(); return; }
+        // ★★②が 出ているあいだは、★重ねません。
+        setBubble((cur) => {
+          if (cur) return cur;
+          const line = pickLine(SOLO, recentRef.current, new Date().getHours());
+          if (!line) return cur;
+          recentRef.current = pushRecent(recentRef.current, line.id);
+          clearTimeout(bubbleTimerRef.current);
+          bubbleTimerRef.current = setTimeout(() => setBubble(null), TIMING.soloMs);
+          return { text: line.text, small: true };
+        });
+        tick();
+      }, nextSoloMs());
+    };
+    tick();
+    return () => { stopped = true; clearTimeout(timer); clearTimeout(bubbleTimerRef.current); };
+  }, [wardrobeOn]);
   // ★★門の中の方には、★古い79点を出しません（★2026-09-08・坂本さんの決め・案あ）。
   //   ★★消していません。★隠すだけです。★門を閉じれば、そのまま戻ります。
   //     ★持ち物（character_inventory）も、★置いている記録（equipped）も、
@@ -2307,7 +2376,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
       {/* ★★羊を、大きくしました（★2026-09-08 夕・坂本さんのご要望）。
           ★★「小さすぎる」とのことでした。★92 → ★SHEEP_SIZE。
           ★数は lib が持ちます。★ここで書かないこと。 */}
-      <PositionedCharacter wardrobeOn={wardrobeOn} equipped={equipped} size={sheepPx} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isSitting={isSitting} isLying={isLying}
+      <PositionedCharacter bubble={bubble} wardrobeOn={wardrobeOn} equipped={equipped} size={sheepPx} leftPct={leftPct} topPct={topPct} facingLeft={facingLeft} isWalking={isWalking} isSitting={isSitting} isLying={isLying}
         diag={{ bedTop: bedPosForDiag && bedPosForDiag.top, bedLeft: bedPosForDiag && bedPosForDiag.left }} />
 
       {/* ★ベッドと椅子は、上げられる高さを狭めてある（BED_MIN_TOP / CHAIR_MIN_TOP）。
@@ -2684,7 +2753,7 @@ function GardenScene({ equipped, owned, onUpdatePosition, totalDaysRecorded = 0,
  *   ★★消していません。★出さないだけです。
  *     ★ふだんの「ひつじ」のタブでは、★これまでどおり ぜんぶ出ます。
  */
-export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, onUpdatePosition, isDirty, saveStatus, onSave, professions = [], wardrobeOn = false, roomOnly = false, t }) {
+export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, onUpdatePosition, isDirty, saveStatus, onSave, professions = [], wardrobeOn = false, roomOnly = false, say = null, t }) {
   const [view, setView] = useState("room");
   const [shopCategory, setShopCategory] = useState("hat");
 
@@ -2721,7 +2790,8 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
   if (roomOnly) {
     return (
       <RoomScene wardrobeOn={wardrobeOn} equipped={equipped} owned={ownedKeys}
-        onTogglePlacement={onTogglePlacement} onUpdatePosition={onUpdatePosition} t={t} />
+        onTogglePlacement={onTogglePlacement} onUpdatePosition={onUpdatePosition}
+        say={say} t={t} />
     );
   }
 

@@ -570,3 +570,15 @@ body {
     transition-delay: 0s, 0s !important;
   }
 }
+
+/* ★★羊の吹き出しは、ふわっと出ます（★2026-09-08 夜・仕様 §③）。
+   ★0.18秒で opacity 0→1、y を +6px から 0 へ。 */
+@keyframes sheepBubbleIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+/* ★★動きを 減らす設定の方には、★ふわっとを やめます。
+   ★★ただし「出しっぱなし」には しません。★消える時間は 同じです。 */
+@media (prefers-reduced-motion: reduce) {
+  [aria-live="polite"] { animation: none !important; }
+}

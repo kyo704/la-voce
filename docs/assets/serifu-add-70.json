@@ -1,0 +1,1079 @@
+{
+ "version": "serifu-add-2026-09-08",
+ "count": 70,
+ "note": "★台詞集（9月6日）への追加。★型J＝あいづち（操作の直後）／★型K＝ひとりごと（ながめている間）",
+ "types": {
+  "J1": "記録を保存した直後",
+  "J2": "てんで もらった直後",
+  "J3": "片づけ・もようがえの直後",
+  "K": "ひとりごと（ながめている間・45〜90秒に1回）"
+ },
+ "style": {
+  "J": "★8〜16字。★3秒で消える。★吹き出しは 羊の右上から",
+  "K": "★6〜14字。★2.5秒で消える。★小さく・うすく（不透明度70%）"
+ },
+ "items": [
+  {
+   "id": "j_save_001",
+   "type": "J1",
+   "text": "かきましたね。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_save_002",
+   "type": "J1",
+   "text": "きょうの ぶんです。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_save_003",
+   "type": "J1",
+   "text": "ペンを おきました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_save_004",
+   "type": "J1",
+   "text": "のこりました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_save_005",
+   "type": "J1",
+   "text": "とじて おきます。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_save_006",
+   "type": "J1",
+   "text": "ここに あります。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_save_007",
+   "type": "J1",
+   "text": "たなに いれました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_save_008",
+   "type": "J1",
+   "text": "一行 ふえました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_save_009",
+   "type": "J1",
+   "text": "きょうの ところに、しるしを つけました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_save_010",
+   "type": "J1",
+   "text": "おなじ たなに、ならべました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_save_011",
+   "type": "J1",
+   "text": "インクが、すこし へりました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_save_012",
+   "type": "J1",
+   "text": "きろくが、あつく なりました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_get_001",
+   "type": "J2",
+   "text": "とどきました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_get_002",
+   "type": "J2",
+   "text": "あけて みます。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_get_003",
+   "type": "J2",
+   "text": "たなに おきました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_get_004",
+   "type": "J2",
+   "text": "すぐ きて みました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_get_005",
+   "type": "J2",
+   "text": "つつみを、といて います。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_get_006",
+   "type": "J2",
+   "text": "きょうから、これです。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_get_007",
+   "type": "J2",
+   "text": "しまう ばしょを、かんがえて います。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_get_008",
+   "type": "J2",
+   "text": "かがみを、みに いきます。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_room_001",
+   "type": "J3",
+   "text": "すっきり しました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_room_002",
+   "type": "J3",
+   "text": "ばしょが、かわりました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_room_003",
+   "type": "J3",
+   "text": "まえより、ひろいです。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_room_004",
+   "type": "J3",
+   "text": "ゆかが、みえます。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_room_005",
+   "type": "J3",
+   "text": "ここに あると、おちつきます。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_room_006",
+   "type": "J3",
+   "text": "すこし、うごかして みました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_room_007",
+   "type": "J3",
+   "text": "ならべなおしました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "j_room_008",
+   "type": "J3",
+   "text": "あかりの むきを、かえました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_001",
+   "type": "K",
+   "text": "ふぅ。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_002",
+   "type": "K",
+   "text": "……",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_003",
+   "type": "K",
+   "text": "おなかが すきました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_004",
+   "type": "K",
+   "text": "ねむいです。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_005",
+   "type": "K",
+   "text": "まどの そと。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_006",
+   "type": "K",
+   "text": "ほこりが おちて きます。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_007",
+   "type": "K",
+   "text": "ゆかが、つめたい。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_008",
+   "type": "K",
+   "text": "いま、なんじ でしょう。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_009",
+   "type": "K",
+   "text": "おゆが、わいた かも。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_010",
+   "type": "K",
+   "text": "とりの こえ。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_011",
+   "type": "K",
+   "text": "かぜ。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_012",
+   "type": "K",
+   "text": "きしむ。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_013",
+   "type": "K",
+   "text": "とんとん。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_014",
+   "type": "K",
+   "text": "あ。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_015",
+   "type": "K",
+   "text": "なにか、わすれて います。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_016",
+   "type": "K",
+   "text": "かべの しみ、ふえた かな。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_017",
+   "type": "K",
+   "text": "うでを のばします。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_018",
+   "type": "K",
+   "text": "すわりなおしました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_019",
+   "type": "K",
+   "text": "ひざが、あたたかい。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_020",
+   "type": "K",
+   "text": "むこうの へやが、しずかです。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_021",
+   "type": "K",
+   "text": "はっぱの おと。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_022",
+   "type": "K",
+   "text": "かさ、どこ だっけ。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_023",
+   "type": "K",
+   "text": "おちゃを いれます。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_024",
+   "type": "K",
+   "text": "ひとやすみ。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_025",
+   "type": "K",
+   "text": "くつしたが、ずれます。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_026",
+   "type": "K",
+   "text": "まぶたが、おもいです。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_027",
+   "type": "K",
+   "text": "のびを しました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_028",
+   "type": "K",
+   "text": "とけいの おと。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_029",
+   "type": "K",
+   "text": "うしろが、きに なります。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_030",
+   "type": "K",
+   "text": "きょうは、しずかです。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_031",
+   "type": "K",
+   "text": "あしおとが しました。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_032",
+   "type": "K",
+   "text": "だれも いません。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_033",
+   "type": "K",
+   "text": "ゆびさきが、つめたい。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_034",
+   "type": "K",
+   "text": "においが します。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_035",
+   "type": "K",
+   "text": "いい かおり。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_036",
+   "type": "K",
+   "text": "ちいさい むし。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_037",
+   "type": "K",
+   "text": "くもが、うごいて います。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_solo_038",
+   "type": "K",
+   "text": "まだ、ここに います。",
+   "when": {
+    "season": null,
+    "hour": null,
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_day_001",
+   "type": "K",
+   "text": "そとが、あかるい。",
+   "when": {
+    "season": null,
+    "hour": [
+     6,
+     17
+    ],
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_day_002",
+   "type": "K",
+   "text": "ひざしが、あたります。",
+   "when": {
+    "season": null,
+    "hour": [
+     6,
+     17
+    ],
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_night_001",
+   "type": "K",
+   "text": "そとが、くらい。",
+   "when": {
+    "season": null,
+    "hour": [
+     18,
+     5
+    ],
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  },
+  {
+   "id": "k_night_002",
+   "type": "K",
+   "text": "あかりを、つけました。",
+   "when": {
+    "season": null,
+    "hour": [
+     18,
+     5
+    ],
+    "date": null
+   },
+   "needs": {
+    "equipped": null,
+    "record": null
+   },
+   "weight": 1
+  }
+ ]
+}

@@ -109,6 +109,7 @@ import { itemsFor, sortItems } from "@/lib/drawerItems";
 // ★さがす（★§3-6）。★絞り込みは、ここにだけ 置きます。
 import DrawerSearch from "@/components/DrawerSearch";
 import { applySearch, emptyQuery, isEmptyQuery, COPY as SEARCH_COPY, SHOW_ALL, SHOW_OWNED } from "@/lib/drawerSearch";
+import { SAVED, RECEIVED, TIDIED } from "@/lib/sheepSpeech";
 import {
   INTERIOR_ITEMS, interiorSrc, isPlaced, toggleInterior, tileSurface,
   interiorOf, interiorItemByKey
@@ -5314,6 +5315,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (activeTab === "garden") setWardrobeMountedOnce(true);
   }, [activeTab]);
 
+  // ★★羊の あいづち（★2026-09-08 夜・仕様「3本に分ける」②）。
+  //   ★★操作した直後に、★1回だけ 言います。
+  //     ★seq は「何回目か」です。★同じ操作を 2度 数えないためにあります。
+  //   ★★J1 記録を保存した直後／J2 てんで もらった直後／J3 片づけ・もようがえの直後。
+  //   ★★羊は「記録した行為」に反応し、「記録の中身」には 反応しません。
+  const [sheepSay, setSheepSay] = useState(null);
+  const saySeqRef = useRef(0);
+  const saySheep = useCallback((type) => {
+    saySeqRef.current += 1;
+    setSheepSay({ type, seq: saySeqRef.current });
+  }, []);
+
   const [homeState, setHomeState] = useState(VIEW);
   // ★★みせかた（★v3追補 ①）。★既定は「もっているもの」です。
   //   ★★店を 作りません。★同じ棚に、★まだの品も 混ぜます。
@@ -8986,6 +8999,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }
     setCharacterDirty(false);
     setCharacterSaveStatus("saved");
+    // ★★J3 片づけ・もようがえの直後（★仕様「3本に分ける」②）。
+    //   ★★羊は「した こと」に 応えます。★中身には 触れません。
+    saySheep(TIDIED);
     setTimeout(() => setCharacterSaveStatus((s) => (s === "saved" ? "idle" : s)), 2000);
   }
 
@@ -9091,6 +9107,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       }));
       setCharacterDirty(true);
     }
+    // ★★J2 もらった直後（★仕様「3本に分ける」②）。
+    //   ★★「とどきました。」── ★受け取った という 行為に 応えます。
+    saySheep(RECEIVED);
   }
 
   function handleEquipItem(category, itemKey) {
@@ -11787,6 +11806,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setEntries((prev) => ({ ...prev, [clean.date]: clean }));
     setUndoableSave({ date: clean.date, previous: previousEntry, at: Date.now() });
     setSaveStatus("saved");
+    // ★★J1 記録を保存した直後（★仕様「3本に分ける」②）。
+    //   ★★「かきましたね。」── ★書いた という 行為に だけ 応えます。
+    //     ★★何を書いたかには、★1文字も 触れません（★禁 7 と 同じ線）。
+    saySheep(SAVED);
     setTimeout(() => setSaveStatus("idle"), 1800);
     setSaveCardData({
       // ★★どの日を書いたかを、持たせます（★2026-09-07）。
@@ -15382,6 +15405,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       saveStatus={characterSaveStatus}
                       onSave={handleSaveCharacter}
                       roomOnly
+                      say={sheepSay}
                       t={t}
                     />
                   </div>
