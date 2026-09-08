@@ -110,6 +110,9 @@ import { itemsFor, sortItems } from "@/lib/drawerItems";
 import DrawerSearch from "@/components/DrawerSearch";
 import { applySearch, emptyQuery, isEmptyQuery, COPY as SEARCH_COPY, SHOW_ALL, SHOW_OWNED } from "@/lib/drawerSearch";
 import { SAVED, RECEIVED, TIDIED } from "@/lib/sheepSpeech";
+import ClothSecondColorRow from "@/components/ClothSecondColorRow";
+import { mayChooseSecondColor, chosenSecond, setSecond, clearSecond } from "@/lib/secondColorChoice";
+import { hasPattern } from "@/lib/patternColors";
 import {
   INTERIOR_ITEMS, interiorSrc, isPlaced, toggleInterior, tileSurface,
   interiorOf, interiorItemByKey
@@ -5326,6 +5329,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     saySeqRef.current += 1;
     setSheepSay({ type, seq: saySeqRef.current });
   }, []);
+
+  // ★★柄の 2色目を 選び直せる方か（★2026-09-08 夜・override）。
+  //   ★★段（¥580 と ¥1,280）を 見分ける手がかりが、★まだ ありません。
+  //     ★subscriptions は status だけで、★段を 持っていません。
+  //   ★だから いまは、★門の名簿で 出し入れします。★空なら どなたにも 出しません。
+  const maySecondColor = mayChooseSecondColor(userId, {
+    NEXT_PUBLIC_SECOND_COLOR_USER_IDS: process.env.NEXT_PUBLIC_SECOND_COLOR_USER_IDS
+  });
 
   const [homeState, setHomeState] = useState(VIEW);
   // ★★みせかた（★v3追補 ①）。★既定は「もっているもの」です。
@@ -15566,6 +15577,23 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       colorKey={(characterEquipped.clothColors || {})[pickedItem.key] || null}
                       onChange={(k) => {
                         setCharacterEquipped((prev) => setClothColor(prev, pickedItem.key, k));
+                        setCharacterDirty(true);
+                      }} />
+                  ) : null}
+                  // ★★色の帯の 2段目（★柄もの ＋ ¥1,280 のときだけ）。
+                  //   ★★1色目を えらんでいないときは 出しません。
+                  //     ★2色目は 1色目から 決まるので、★先が 要ります。
+                  colorBand2={pickedItem && maySecondColor && hasPattern(pickedItem.key)
+                    && (characterEquipped.clothColors || {})[pickedItem.key] ? (
+                    <ClothSecondColorRow
+                      firstKey={(characterEquipped.clothColors || {})[pickedItem.key]}
+                      chosen={chosenSecond(characterEquipped, pickedItem.key)}
+                      onChange={(k) => {
+                        setCharacterEquipped((prev) => setSecond(prev, pickedItem.key, k));
+                        setCharacterDirty(true);
+                      }}
+                      onReset={() => {
+                        setCharacterEquipped((prev) => clearSecond(prev, pickedItem.key));
                         setCharacterDirty(true);
                       }} />
                   ) : null}

@@ -26,18 +26,20 @@ import { paintCloth, paintedUrl } from "@/lib/clothPaint";
  *       ★そちらは ClothImage を通らないので、★色が乗りませんでした。
  *   ★★だから、★塗る仕組みを ここに出します。★2つの枝が、同じものを使います。
  */
-export function usePaintedSrc(itemKey, colorKey) {
+// ★★second ── 選び直した 2色目（★¥1,280 の方だけ。★2026-09-08 夜）。
+//   ★★渡さなければ、★これまでと 1つも 変わりません。
+export function usePaintedSrc(itemKey, colorKey, second) {
   // ★もう塗ってあるなら、★はじめから、それを出します（★ちらつかせないため）。
   const [painted, setPainted] = useState(() =>
-    (itemKey && colorKey) ? paintedUrl(itemKey, colorKey) : null);
+    (itemKey && colorKey) ? paintedUrl(itemKey, colorKey, second) : null);
 
   useEffect(() => {
     let alive = true;
     if (!itemKey || !colorKey) { setPainted(null); return; }
-    const have = paintedUrl(itemKey, colorKey);
+    const have = paintedUrl(itemKey, colorKey, second);
     if (have) { setPainted(have); return; }
     setPainted(null);
-    paintCloth(itemKey, colorKey)
+    paintCloth(itemKey, colorKey, second)
       .then((u) => { if (alive) setPainted(u || null); })
       // ★塗れなくても、★黙って、もとの絵のままにします。
       .catch(() => {});
@@ -47,8 +49,8 @@ export function usePaintedSrc(itemKey, colorKey) {
   return painted;
 }
 
-export default function ClothImage({ itemKey, colorKey, src, style, alt = "" }) {
-  const painted = usePaintedSrc(itemKey, colorKey);
+export default function ClothImage({ itemKey, colorKey, second, src, style, alt = "" }) {
+  const painted = usePaintedSrc(itemKey, colorKey, second);
   return (
     <img src={painted || src} alt={alt} aria-hidden={alt ? undefined : "true"} style={style} />
   );

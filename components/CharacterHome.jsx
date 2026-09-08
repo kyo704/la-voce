@@ -832,6 +832,8 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
   //   ★だから、★色を選んでも、★部屋の羊が 変わりませんでした。
   //   ★実機でご報告をいただきました。★そのとおりです。
   const clothColors = (equipped && equipped.clothColors) || {};
+  // ★★選び直した 2色目（★2026-09-08 夜）。★無ければ 空です（★表のとおり）。
+  const clothColors2 = (equipped && equipped.clothColors2) || {};
   // ★★どの動きにするかは、★ここで1回だけ決めます。
   //   ★寝ているときも、★服は着たままにします。
   //   ★寝ると脱げる羊は、★不具合に見えます。★寝姿の絵はまだありません。
@@ -885,7 +887,7 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
         {dressed
           // ★★眠っているときは、★まばたきしません（★2026-09-08 夜・face-v1）。
           //   ★寝顔（08）は 絵として ありますが、★出す場面は まだ決めていません。
-          ? <SheepDressed wearing={wearing} colors={clothColors} size={size * frontScale} motion="sleep" travel={false}
+          ? <SheepDressed wearing={wearing} colors={clothColors} colors2={clothColors2} size={size * frontScale} motion="sleep" travel={false}
               alt="眠っている羊" />
           : <SheepSleepingHead size={size * 0.62 * frontScale} />}
       </div>
@@ -933,7 +935,7 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
         //   ★★3〜7秒に1回、120ms。★見えているときだけ 動きます。
         //   ★★顔で 体調や分析結果を 表しません（★禁 7）。
         //     ★まばたきは、★記録の中身とも、記録の有無とも 関わりません。
-        <SheepDressed wearing={wearing} colors={clothColors} size={size * frontScale} motion={motion} blink
+        <SheepDressed wearing={wearing} colors={clothColors} colors2={clothColors2} size={size * frontScale} motion={motion} blink
           travel={false} facingLeft={facingLeft} alt="羊" />
       ) : (
         <div style={{ transform: facingLeft ? "scaleX(-1)" : "none" }}>

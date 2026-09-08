@@ -133,7 +133,10 @@ export default function SheepDressed({
   // ★★選んでいる色（★2026-09-08）。★{ 品の鍵: 色の鍵 }。
   //   ★★渡さない呼び方でも、★落ちません。★もとの色の絵が出ます。
   //   ★どの品に色を塗れるかは lib/clothColors.js が決めます。★ここでは決めません。
-  colors = {}
+  colors = {},
+  // ★★選び直した 2色目（★柄もの ＋ ¥1,280 の方だけ・2026-09-08 夜）。
+  //   ★★渡さなければ、★これまでと 1つも 変わりません（★表のとおり）。
+  colors2 = {}
 }) {
   // ★重ねる絵を、順番どおりに並べます。
   // ★★脚（★案B1・2026-09-06）。★絵は描いていません。コードで描きます。
@@ -229,7 +232,8 @@ export default function SheepDressed({
         //   ★★古い z は、★消していません。★ほかから読まれているかもしれません。
         z: (typeof item.zLayer === "number") ? item.zLayer : slotZ(slot),
         // ★★色は、★塗る側（ClothImage）が判じます。★ここでは渡すだけです。
-        itemKey: item.key, colorKey: (colors && colors[item.key]) || null
+        itemKey: item.key, colorKey: (colors && colors[item.key]) || null,
+        second: (colors2 && colors2[item.key]) || null
       });
     }
   }
@@ -447,6 +451,7 @@ ${mo.gait ? `
           key={l.key}
           itemKey={l.itemKey}
           colorKey={l.colorKey}
+          second={l.second}
           src={l.src}
           style={{
             // ★★下ぞろえで 重ねます（★2026-09-08 夜・Opus の裁定 kabuto-v10）。
