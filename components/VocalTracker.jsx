@@ -8926,16 +8926,27 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }
 
   // ドラッグで決めた配置アイテムの位置（left/top%）をローカルの状態に反映する
-  function handleUpdatePosition(category, itemKey, leftPct, topPct) {
+  /**
+   * ★置いた場所を、覚えます。
+   *
+   *   ★★topField（★2026-09-08）。★縦の意味が、2つあります。
+   *     ★"top"  … 壁のものの、上端
+   *     ★"feet" … 床のものの、足もと
+   *   ★★1つの欄に両方を入れると、★意味が割れます。
+   *     ★古い "top" は「浮いていた高さ」でした。★足もととして読み替えません。
+   *   ★★古い値は、★消しません。★そのまま残して、★新しい欄を足します。
+   */
+  function handleUpdatePosition(category, itemKey, leftPct, topPct, topField = "top") {
     setCharacterEquipped((prev) => {
       const posKey = `${category}Positions`;
       const currentPositions = prev[posKey] || {};
       const existing = currentPositions[itemKey];
-      const existingTop = existing && typeof existing === "object" ? existing.top : undefined;
+      const base = existing && typeof existing === "object" ? existing : {};
       const entry = {
-        left: Math.round(leftPct * 10) / 10,
-        top: topPct !== undefined ? Math.round(topPct * 10) / 10 : existingTop
+        ...base,
+        left: Math.round(leftPct * 10) / 10
       };
+      if (topPct !== undefined) entry[topField] = Math.round(topPct * 10) / 10;
       const nextPositions = { ...currentPositions, [itemKey]: entry };
       return { ...prev, [posKey]: nextPositions };
     });

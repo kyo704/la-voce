@@ -158,9 +158,18 @@ function ok(name, cond, extra) {
     // ★★動かせること（★2026-09-08・坂本さんの決め）。
     //   ★いまの101点と、★同じ仕組み（onUpdatePosition）に乗せます。
     ok("★動かす仕組みに、乗せている", /onUpdatePosition=\{onUpdatePosition\}/.test(home));
-    ok("★保存の形も、同じ", /onUpdatePosition\("interior", it\.key, nl, nt\)/.test(layer));
+    // ★★2026-09-08、★縦の欄を2つに分けました。
+    //   ★"top"  … 壁のものの、上端
+    //   ★"feet" … 床のものの、足もと
+    //   ★1つの欄に両方を入れると、★意味が割れます（★古い top は「浮いていた高さ」）。
+    ok("★保存の形も、同じ", /onUpdatePosition\("interior", it\.key, nl, nt,/.test(layer));
+    ok("★縦の欄を、分けている", /onWall \? "top" : "feet"/.test(layer));
     ok("★置きかたを直すときだけ、動かせる", /editMode && Draggable && onUpdatePosition/.test(layer));
-    ok("★部屋の外へ、出さない", /Math\.max\(4, Math\.min\(96/.test(home));
+    // ★★部屋の外へ出さないこと。★出ると、二度と掴めません。
+    //   ★★帯は lib が持ちます（★2026-09-08 の直し）。★画面で数を書きません。
+    ok("★部屋の外へ、出さない", /Math\.max\(6, Math\.min\(94/.test(home));
+    ok("★上下も、帯の中に収める", /Math\.max\(lo, Math\.min\(hi/.test(home));
+    ok("★帯は、lib が持っている", /FLOOR_BAND, WALL_BAND, LEFT_BAND, clampToBand/.test(layer));
 
     // ★★窓は2枚。★決めは lib から取ること。
     ok("★窓の2枚を、lib から取っている", /windowLayers\(placed\)/.test(layer));

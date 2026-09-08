@@ -2,7 +2,8 @@
 
 import {
   interiorOf, interiorItemByKey, interiorSrc, windowLayers,
-  floorLineOf, widthPctOf, isSingleSlot, windowHole
+  floorLineOf, widthPctOf, isSingleSlot, windowHole,
+  FLOOR_BAND, WALL_BAND, LEFT_BAND, clampToBand
 } from "@/lib/sheepInteriorV2";
 
 // ============================================================================
@@ -76,6 +77,20 @@ const SPOT = {
  *   @param item      置く品
  *   @param widthPct  部屋の幅に対する、絵の幅（％）
  */
+/**
+ * ★足もとを、その高さに置いたときの bottom（★％）。
+ *
+ *   ★★落とした先に、★足もとが来るようにします。
+ *   ★絵の下にある余白は、★ここで差し引きます。
+ */
+function bottomForFeet(item, widthPct, feetPct) {
+  const size = item && item.size ? item.size : [320, 320];
+  const [w, h] = size;
+  const padRatio = (h - floorLineOf(item)) / h;
+  const heightPct = widthPct * (h / w);
+  return (100 - feetPct) - padRatio * heightPct * ROOM_ASPECT;
+}
+
 function floorBottomPct(item, widthPct) {
   const size = item && item.size ? item.size : [320, 320];
   const [w, h] = size;
@@ -125,7 +140,11 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
     const p = pos[it.key];
     return {
       left: p && typeof p.left === "number" ? p.left : s.left,
+      // ★壁のものの上端（★古い自由な位置も、ここに入ります）
       top: p && typeof p.top === "number" ? p.top : null,
+      // ★★床のものの足もと。★新しく足した値です。
+      //   ★★古い top は、★ここに読み替えません。★意味が違います。
+      feet: p && typeof p.feet === "number" ? p.feet : null,
       wallTop: s.top
     };
   };
@@ -223,9 +242,17 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
           }} />
       )}
 
-      {/* ★★いくつでも置けるもの。★重ならないよう、少しずつずらします。
-          ★★動かせるようにするのは、次の段です。
-            ★いまは、置いた順に並べます。★消えるより、重なるほうがましです。 */}
+      {/* ★★いくつでも置けるもの。
+          ★★2026-09-08、★2つ 誤りがありました（★実機のご報告）。
+            ★① 指に、品物が付いてきませんでした。
+              ★部屋に対する％を、★CSS の translate に渡していました。
+              ★★CSS の％は、★その要素じしんの大きさに対する割合です。
+              ★だから、★家具では★4.5倍の遅れになり、
+              ★離した瞬間に、★指の位置へ跳んでいました。
+            ★② 一度動かすと、★床の線を見なくなり、★宙に浮いていました。
+          ★★いまは、
+            ★① 動かしているあいだは、★画素で1対1に動かします。
+            ★② 落とした先の「足もと」を、★床の帯に収めます。★浮きません。 */}
       {many.map((it, i) => {
         const s = spotOf(it);
         const onWall = it.category === "wallart";
@@ -233,16 +260,23 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
         const wpct = widthPctOf(it);
         // ★動かしていないものは、★重ならないよう、★少しずつずらします。
         const shift = pos[it.key] ? 0 : (i % 4) * 9 - 13;
-        const left = s.left + shift;
-        const top = s.top != null
-          ? s.top
-          : (onWall ? s.wallTop : null);
+        const left = clampToBand(s.left + shift, LEFT_BAND);
+        // ★★壁のものは「上端」、★床のものは「足もと」で置きます。
+        //   ★★同じ数の意味が2つに割れないよう、★分けて持ちます。
+        const wallTop = onWall
+          ? clampToBand(s.top != null ? s.top : s.wallTop, WALL_BAND)
+          : null;
+        // ★★足もと。★動かしていなければ、★床の線のまま。
+        //   ★★古い自由な位置（top）は、★足もととして読み替えません。
+        //     ★あれは「浮いていた高さ」です。★読み替えると、動いてしまいます。
+        //     ★消しもしません。★足もと（feet）が入るまで、★床の線に戻します。
+        const feet = !onWall ? clampToBand(s.feet, FLOOR_BAND) : null;
         const style = {
           position: "absolute",
           left: `${left}%`,
-          ...(top != null
-            ? { top: `${top}%` }
-            : { bottom: `${floorBottomPct(it, wpct)}%` }),
+          ...(onWall
+            ? { top: `${wallTop}%` }
+            : { bottom: `${feet != null ? bottomForFeet(it, wpct, feet) : floorBottomPct(it, wpct)}%` }),
           width: `${wpct}%`,
           transform: "translate(-50%, 0)",
           zIndex: onWall ? 1 : 2
@@ -254,11 +288,18 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
         // ★★動かせるのは、★置きかたを直しているときだけです。
         //   ★ふだんは押せません（★羊を押すのと、まぎれないため）。
         if (editMode && Draggable && onUpdatePosition) {
+          // ★★いまの位置を、★そのまま渡します。
+          //   ★★動かした分を、★ここに足します。★指の位置を使いません。
+          //     ★指の位置を保存していたので、★跳んでいました。
+          const startTop = onWall ? wallTop : (feet != null ? feet : FLOOR_BAND[0]);
           return (
             <div key={it.key} style={style}>
               <Draggable
                 itemKey={it.key}
-                onDragEnd={(nl, nt) => onUpdatePosition("interior", it.key, nl, nt)}>
+                startLeft={left} startTop={startTop}
+                band={onWall ? WALL_BAND : FLOOR_BAND}
+                onDragEnd={(nl, nt) =>
+                  onUpdatePosition("interior", it.key, nl, nt, onWall ? "top" : "feet")}>
                 {img}
               </Draggable>
             </div>

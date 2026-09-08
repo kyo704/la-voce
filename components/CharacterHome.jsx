@@ -1770,37 +1770,81 @@ function WallTexture({ material, wardrobeOn = false }) {
 //   ★★いまの DraggableItem は、★位置も自分で持つ作りです。
 //     ★あちらは触りません。★101点の見え方を、変えないためです。
 //   ★ここは、★位置を外から受け取り、★動かし終わったときだけ知らせます。
-function InteriorDraggable({ itemKey, onDragEnd, children }) {
+function InteriorDraggable({ itemKey, startLeft, startTop, band, onDragEnd, children }) {
   const ref = useRef(null);
-  const dragging = useRef(false);
+  // ★★掴んだときの、指の画素の位置と、品物のいまの％。
+  //   ★★2026-09-08、★ここが誤っていました（★実機のご報告）。
+  //     ★もとは、★部屋に対する％を、★CSS の translate に渡していました。
+  //     ★★CSS の translate の％は、★その要素じしんの大きさに対する割合です。
+  //       ★品物は部屋の 22％ ほどなので、
+  //       ★指が 10％ 動いても、★品物は 2.2％ しか動きません（★4.5倍の遅れ）。
+  //     ★★そのうえ、★離すと★指の位置を保存していました。
+  //       ★だから、★ゆっくり付いてきた品物が、★最後に指へ跳んでいました。
+  //   ★★いまは、★画素の差で動かします。★1対1で、指に付いてきます。
+  //     ★保存するのも「もとの位置＋動かした分」です。★指の位置ではありません。
+  //     ★★動かしているあいだの見た目と、★置かれる場所が、★同じになります。
+  const grab = useRef(null);
+
+  function roomBox() {
+    // ★品物の入れ物の、そのまた親が、部屋です。
+    const wrap = ref.current && ref.current.parentElement;
+    return wrap && wrap.parentElement ? wrap.parentElement : null;
+  }
+
   function down(e) {
+    const box = roomBox();
+    if (!box) return;
     e.preventDefault();
-    dragging.current = true;
+    const r = box.getBoundingClientRect();
+    grab.current = {
+      x: e.clientX, y: e.clientY, w: r.width, h: r.height,
+      left: typeof startLeft === "number" ? startLeft : 50,
+      top: typeof startTop === "number" ? startTop : 50
+    };
     e.currentTarget.setPointerCapture(e.pointerId);
   }
+
+  // ★いま、どこに置かれるか（★％）。★見た目と保存で、同じ関数を使います。
+  function nextPos(e) {
+    const g = grab.current;
+    if (!g || !g.w || !g.h) return null;
+    const lo = band ? band[0] : 4;
+    const hi = band ? band[1] : 96;
+    return {
+      left: Math.max(6, Math.min(94, g.left + ((e.clientX - g.x) / g.w) * 100)),
+      top: Math.max(lo, Math.min(hi, g.top + ((e.clientY - g.y) / g.h) * 100)),
+      dx: e.clientX - g.x,
+      dy: e.clientY - g.y
+    };
+  }
+
   function move(e) {
-    if (!dragging.current || !ref.current) return;
-    const box = ref.current.parentElement && ref.current.parentElement.parentElement;
-    if (!box) return;
-    const r = box.getBoundingClientRect();
-    const l = ((e.clientX - r.left) / r.width) * 100;
-    const t = ((e.clientY - r.top) / r.height) * 100;
-    // ★部屋の外へ出さないこと。★出ると、二度と掴めません。
-    ref.current.dataset.l = String(Math.max(4, Math.min(96, l)));
-    ref.current.dataset.t = String(Math.max(4, Math.min(96, t)));
-    ref.current.style.transform = `translate(${l - 50}%, ${t - 50}%)`;
+    const g = grab.current;
+    if (!g || !ref.current) return;
+    const n = nextPos(e);
+    if (!n) return;
+    // ★★画素で動かします。★％にすると、★品物じしんの大きさが混ざります。
+    //   ★★帯からはみ出した分は、★見た目にも出しません。
+    //     ★出すと、★置ける場所と、★見えている場所が、別になります。
+    const px = ((n.left - g.left) / 100) * g.w;
+    const py = ((n.top - g.top) / 100) * g.h;
+    ref.current.style.transform = `translate(${px}px, ${py}px)`;
   }
+
   function up(e) {
-    if (!dragging.current) return;
-    dragging.current = false;
+    const g = grab.current;
+    if (!g) return;
+    const n = nextPos(e);
+    grab.current = null;
     try { e.currentTarget.releasePointerCapture(e.pointerId); } catch (err) { /* ★掴んでいなければ、それでよい */ }
-    const l = Number(ref.current && ref.current.dataset.l);
-    const t = Number(ref.current && ref.current.dataset.t);
     if (ref.current) ref.current.style.transform = "";
-    if (Number.isFinite(l) && Number.isFinite(t) && onDragEnd) onDragEnd(l, t);
+    // ★★動かしていないなら、★保存しません。★押しただけで動かさないためです。
+    if (n && (Math.abs(n.dx) > 2 || Math.abs(n.dy) > 2) && onDragEnd) onDragEnd(n.left, n.top);
   }
+
   return (
-    <div ref={ref} onPointerDown={down} onPointerMove={move} onPointerUp={up}
+    <div ref={ref} onPointerDown={down} onPointerMove={move}
+      onPointerUp={up} onPointerCancel={up}
       style={{ touchAction: "none", cursor: "grab" }}>
       {children}
     </div>
