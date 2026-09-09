@@ -6,7 +6,9 @@
 
 // エラー応答を取り込んでしまった古いキャッシュを捨てるため、版を上げる。
 // ★版を上げると、activate で古い版（la-voce-shell-v2 など）が消えます。
-const CACHE_NAME = "woolsong-shell-v5";
+// ★★2026-09-10、★v6 に 上げました。★上げると activate で 古い 版が 消えます。
+//   ★★消したい ものが あります ── ★/dashboard の HTML です（★下の 註）。
+const CACHE_NAME = "woolsong-shell-v6";
 
 // オフラインのときに必ず出せる画面。★install で焼き込みます。
 //   これが無いと、キャッシュに無いURLへ移動したときに
@@ -94,7 +96,28 @@ self.addEventListener("fetch", (event) => {
         // 以前はステータスを見ずに cache.put していたため、504 などのエラー応答まで
         // キャッシュに入り、障害が復旧したあとも「キャッシュ済みの504」が
         // 返り続けることがあった（オフライン時のフォールバックが壊れる）。
-        if (response && response.ok && response.type === "basic") {
+        // ★★画面の 移動（HTML）は、★覚えません（★2026-09-10）。
+        //
+        //   ★★これが、★「配信したのに 実機が 変わらない」の 正体でした。
+        //     ★① /dashboard の HTML には、★束（.js）の 名前が 書いてあります。
+        //     ★② その 名前は、★中身から 作られます。★組み立てるたび 変わります。
+        //     ★③ 束は「1年 覚えてよい・二度と 変わらない」と 配られます
+        //        （★cache-control: immutable。★名前が 変わるので 安全な 決めです）。
+        //     ★④ ★ここが、★成功した HTML を 覚えていました。
+        //     ★⑤ ★通信が 1度でも つまずくと、★覚えた 古い HTML を 返します。
+        //     ★⑥ ★その HTML は、★古い 束の 名前を 指します。
+        //     ★⑦ ★古い 束は、★1年ぶん CDN に 残っています。★取れてしまいます。
+        //     ★★→ ★古い 画面が、★何事も なかったように 立ち上がります。
+        //
+        //   ★★/api/version は 移動では ないので、★横取りしていません。
+        //     ★だから「版は 新しいのに、画面は 古い」に なりました。
+        //     ★★版の 番号が 合っていても、★中身の 証しには ならない、という
+        //       ★坂本さんの ご指摘の とおりでした。
+        //
+        //   ★★オフラインで 真っ白に しない 役目は、★/offline.html が 担います。
+        //     ★install で 焼き込んであります。★覚え直す 必要が ありません。
+        if (response && response.ok && response.type === "basic"
+            && event.request.mode !== "navigate") {
           const responseClone = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseClone);
