@@ -108,6 +108,8 @@ import { roomAssetUrls, preloadUrls } from "@/lib/preloadRoom";
 import { recallEquipped, rememberEquipped } from "@/lib/equippedCache";
 import { mayUseLayoutV2 } from "@/lib/layoutV2";
 import HomeV2 from "@/components/HomeV2";
+import RecordV2Head from "@/components/RecordV2Head";
+import { applyConditionWord } from "@/lib/recordV2";
 import { readProfileExtras } from "@/lib/profileExtras";
 import { VIEW, DRESS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES, HOME_COLORS } from "@/lib/homeDrawer";
 import { itemsFor, sortItems } from "@/lib/drawerItems";
@@ -13119,6 +13121,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             })()}
             {activeTab === "today" && (
               <div className="space-y-5">
+                {/* ★★見本③の いちばん上（★2026-09-09）。★2タップで 終わります。
+                    ★★名簿に 載っている方にだけ 出します（★lib/layoutV2.js）。
+                      ★一般の 38人には 出ません。★下の欄は 1つも 変えていません。
+                    ★★行き先を ここで 決めません。★lib/recordV2.js だけが 決めます。 */}
+                {layoutV2 && formData && (
+                  <RecordV2Head
+                    entry={formData}
+                    dateLabel={formData.date}
+                    saving={saveStatus === "saving"}
+                    onPick={(w) => setFormData((f) => applyConditionWord(f, w))}
+                    onSave={handleSave} />
+                )}
                 {/* ★かんたん表示の「1画面に1つ」（見やすさ §3-3）。
                     ★下のふつうの記録欄は消していない。ここで答えても、
                       下の欄に反映される。同じ項目に書いているため。
