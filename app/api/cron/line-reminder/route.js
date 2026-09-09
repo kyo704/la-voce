@@ -10,6 +10,13 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { absoluteUrl } from "@/lib/baseUrl";
+import { mayCall, QUIET_BEFORE_DAYS, QUIET_AFTER_DAYS } from "@/lib/quietDays";
+
+/** ★ISO の 日付を ずらします。★UTC で 組み立てます（★時差で ずれないため）。 */
+function shiftISO(iso, days) {
+  const t = Date.UTC(Number(iso.slice(0, 4)), Number(iso.slice(5, 7)) - 1, Number(iso.slice(8, 10)));
+  return new Date(t + days * 86400000).toISOString().slice(0, 10);
+}
 
 function todayISO() {
   const d = new Date();
@@ -61,8 +68,41 @@ export async function GET(req) {
     return new Response(JSON.stringify({ error: profilesError.message }), { status: 500 });
   }
 
+  // ★★静かにする期間（★2026-09-09・坂本さんのご指示・最優先）。
+  //   ★★本番の 3日前〜翌々日は、★こちらから 呼びに行きません。
+  //     ★いちばん張りつめている 数日に、★催促を 足さないためです。
+  //   ★★決めるのは lib/quietDays.js だけです。★ここで 日を 数えません。
+  //   ★★1人ずつ 尋ねません。★窓のぶんを 1回で 引きます。
+  //     ★人数ぶん 尋ねると、★増えたときに 時間切れで 誰にも 届かなくなります。
+  //   ★今日が 静かに なる本番は、★[今日-翌々日, 今日+3日前] の 間にあります。
+  const windowFrom = shiftISO(today, -QUIET_AFTER_DAYS);
+  const windowTo = shiftISO(today, QUIET_BEFORE_DAYS);
+  const { data: perfRows, error: perfError } = await admin
+    .from("performances")
+    .select("user_id, performed_on")
+    .gte("performed_on", windowFrom)
+    .lte("performed_on", windowTo);
+  // ★★読めなかったときは、★送りません（★fail closed）。
+  //   ★★読めないまま 送ると、★静かにする約束を 破ります。
+  //     ★★届かない日が 1日 あるより、★張りつめた日に 催促が 届くほうが 重い。
+  if (perfError) {
+    console.error("本番の日を読めませんでした。静かにする期間を守れないため、送信を見送ります:", perfError);
+    return new Response(JSON.stringify({ error: perfError.message, sentCount: 0 }), { status: 500 });
+  }
+  const perfByUser = new Map();
+  (perfRows || []).forEach((r) => {
+    if (!r || !r.user_id || !r.performed_on) return;
+    const list = perfByUser.get(r.user_id) || [];
+    list.push(r.performed_on);
+    perfByUser.set(r.user_id, list);
+  });
+
   let sentCount = 0;
+  let quietCount = 0;
   for (const p of targets || []) {
+    // ★★静かにする日は、★記録の有無を 尋ねる前に 抜けます。
+    //   ★尋ねる必要が ありません。★どちらでも 送らないからです。
+    if (!mayCall(today, perfByUser.get(p.id))) { quietCount += 1; continue; }
     const { data: todayEntry } = await admin
       .from("entries")
       .select("date")
@@ -79,7 +119,9 @@ export async function GET(req) {
     sentCount += 1;
   }
 
-  return new Response(JSON.stringify({ ok: true, sentCount, totalTargets: (targets || []).length }), {
+  // ★quietCount は 数えた数です。★誰かに 見せる 数では ありません。
+  //   ★静かにできているかを、★こちらで 確かめるためだけに 返します。
+  return new Response(JSON.stringify({ ok: true, sentCount, quietCount, totalTargets: (targets || []).length }), {
     status: 200,
     headers: { "Content-Type": "application/json" }
   });
