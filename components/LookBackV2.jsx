@@ -6,6 +6,7 @@ import LookBackPanel from "@/components/LookBackPanel";
 import { LOOK_BACK_FIELDS, hardDays, lookBackableDays } from "@/lib/lookBack";
 import { PERIODS, LINE_UP_NOTE, datesBack, seriesOf, sungMinutes } from "@/lib/lineUp";
 import { SYMPTOM_LOCATION } from "@/lib/symptomLocations";
+import { isLaterWritten } from "@/lib/entrySource";
 
 // ============================================================================
 // 「ふりかえる」の画面（見本④⑤ ／ 2026-09-09）
@@ -35,8 +36,12 @@ function mmdd(iso) {
 }
 
 /** ★一色の 濃淡の 帯（★見本④）。★値の 数字を 添えません。 */
-function Bars({ title, rows, tint }) {
+function Bars({ title, rows, tint, entries }) {
   if (!rows) return null;
+  // ★★あとから書いた日が 1日でも あれば、★凡例を 出します（★見本⑫）。
+  //   ★1日も 無ければ 出しません。★読む人に、要らない断りを 増やしません。
+  const anyLater = (entries || rows) &&
+    rows.some((r) => isLaterWritten(((entries || {})[r.date] || {}).source));
   return (
     <div style={card}>
       <p style={{ fontSize: "0.8125rem", color: C.ink, marginBottom: 10 }}>{title}</p>
@@ -48,15 +53,33 @@ function Bars({ title, rows, tint }) {
               {r.density == null ? null : (
                 // ★★長さも 濃さも、★同じ1つの 値から 作ります。
                 //   ★2つの 見え方に 分けると、★2つのことを 言ったことに なります。
-                <div style={{
-                  width: `${Math.round(r.density * 100)}%`, height: "100%", borderRadius: 999,
-                  background: tint, opacity: 0.35 + 0.65 * r.density
-                }} />
+                //
+                // ★★あとから書いた日は、★中を 抜きます（★見本⑫の ○）。
+                //   ★★消しません。★同じ長さで、★同じ所に 出ます。
+                //     ★「目では見えますが、判定には 入れていません」（★見本⑫）。
+                //   ★決めるのは lib/entrySource.js だけです。★ここで 決めません。
+                isLaterWritten(((entries || {})[r.date] || {}).source) ? (
+                  <div style={{
+                    width: `${Math.round(r.density * 100)}%`, height: "100%", borderRadius: 999,
+                    border: `1.4px solid ${tint}`, opacity: 0.55
+                  }} />
+                ) : (
+                  <div style={{
+                    width: `${Math.round(r.density * 100)}%`, height: "100%", borderRadius: 999,
+                    background: tint, opacity: 0.35 + 0.65 * r.density
+                  }} />
+                )
               )}
             </div>
           </div>
         ))}
       </div>
+      {/* ★★凡例（★見本⑫）。★あとから書いた日が あるときだけ 出します。 */}
+      {anyLater ? (
+        <p style={{ ...small, marginTop: 8 }}>
+          ○は あとから書いた日です。目では見えますが、判定には 入れていません。
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -141,9 +164,9 @@ export default function LookBackV2({ entries, todayISO, notOutDays }) {
             ))}
           </div>
           {/* ★★書いた日が 1日も 無ければ、★その帯を 出しません。★空の枠を 置きません。 */}
-          <Bars title="こえの ちょうし" tint={C.curtain}
+          <Bars title="こえの ちょうし" tint={C.curtain} entries={entries}
             rows={seriesOf(entries, dates, (e) => e.throatCondition)} />
-          <Bars title="歌った 時間" tint={C.sage}
+          <Bars title="歌った 時間" tint={C.sage} entries={entries}
             rows={seriesOf(entries, dates, (e) => sungMinutes(e))} />
           <Symptoms entries={entries} dates={dates} />
         </>

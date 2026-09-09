@@ -1776,6 +1776,13 @@ function rowToEntry(row) {
     // ★?? を使うこと。|| だと 0（むくみなし）が null になります。
     morningEdema: row.morning_edema ?? null,
     weatherSource: row.weather_source ?? null,
+    // ★★「あとから書いた」印（★2026-09-09・査読 §7）。★読むだけです。
+    //   ★★entryToRow では 書きません。★印を つけるのは データベースです。
+    //     ★画面から 送ると、★直すたびに 印が 変わります。
+    //     ★今日 書いた記録を 来月 直したとき、★「あとから書いた」に
+    //       ★変わってしまっては いけません。
+    //   ★null は「分からない」です（★この列より 前の記録）。★埋めません。
+    source: row.source ?? null,
     // ★?? を使うこと。|| だと false（吸わなかった）が null になります。
     smokedToday: row.smoked_today ?? null,
     drankToday: row.drank_today ?? null,
