@@ -81,9 +81,17 @@ function eq(a, b, label) { ok(a === b, label + "  （得た値: " + JSON.stringi
     const v = readRaw("components", "VocalTracker.jsx");
     const h = readRaw("components", "HomeV2.jsx");
     // ★① 帯は 下に
-    ok(/position: "fixed", left: 0, right: 0, bottom: 0/.test(v), "★帯は 画面の 下");
-    ok(/paddingBottom: "calc\(72px \+ env\(safe-area-inset-bottom\)\)"/.test(v),
+    //   ★★前は、★VocalTracker の 中の 書き方を そのまま 見ていました。
+    //     ★帯を 別の 部品（TabBarV2）に 出した とたん、★落ちました。
+    //     ★★中身は 何も 悪く なっていないのに、★見張りが 落ちる ── ★見張りの ほうが
+    //       ★「どう 書いてあるか」を 見て、★「どう なるか」を 見ていませんでした。
+    //   ★★だから、★どの 部品に 書いてあっても 通るように 直します。
+    const bar = readRaw("components", "TabBarV2.jsx");
+    ok(/position: "fixed"/.test(bar) && /bottom: 0/.test(bar), "★帯は 画面の 下");
+    ok(/paddingBottom: `calc\(\$\{TAB_BAR_HEIGHT \+ 16\}px \+ env\(safe-area-inset-bottom\)\)`/.test(v),
       "★最後の1枚が 帯に 隠れない");
+    ok(/import \{ TAB_BAR_HEIGHT \} from "@\/lib\/uiKit"/.test(v),
+      "★帯の 高さは 1か所（lib/uiKit.js）から 来る");
     // ★② 並び
     ok(/TABS_V2_ORDER = \["home", "today", "analysis", "notes", "garden"\]/.test(v),
       "★きょう／記録／ふりかえる／ノート／ひつじ の 順");

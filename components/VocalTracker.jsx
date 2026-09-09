@@ -98,6 +98,8 @@ import PeriodMarkerButton from "@/components/PeriodMarkerButton";
 import { markerRow } from "@/lib/periodMarkers";
 // ★「きょう」の帯（★第2便・§4）。★並び順と言葉は、あちらが持ちます。
 import TodayBand from "@/components/TodayBand";
+import TabBarV2 from "@/components/TabBarV2";
+import { TAB_BAR_HEIGHT } from "@/lib/uiKit";
 import { ATTENDANCE_KEYS } from "@/lib/todayBand";
 import * as unsentQueue from "@/lib/offlineQueue";
 // ★おうち画面の作り直し（★2026-09-08・仕様 §3）。★決めは lib が持ちます。
@@ -12681,6 +12683,23 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           //   右端の見切れだけでなく、左端も同じように隠れる。
           //   指標が無いと「切れている」だけに見えて、動かせると気づけない。
           //   ★スクロールの棒は出さない（携帯では場所を取り、しばらくすると消えるため）。
+          // ★★門の中は、★見本の 帯です（★A01〜A09 の .tabs ／ design.zip）。
+          //   ★★5つ 等分・絵の印なし・選ばれた所の 上に 2px の 線。
+          //   ★★2026-09-09 の 実機で、★いちばん右の「ひつじ」が 切れていました。
+          //     ★5つ しか 無いのに 切れたのは、★門の外の「横に 流れる 帯」を
+          //     ★そのまま 使っていたからです。★流れる 必要が ありません。
+          //   ★★門の外（38人）の 帯は、★下の まま。★1つも 変えません。
+          if (layoutV2) {
+            return (
+              <TabBarV2
+                tabs={displayTabs.map((tb) => ({
+                  key: tb.key,
+                  label: tb.labelKey ? t(tb.labelKey) : tb.label
+                }))}
+                activeKey={activeTab}
+                onSelect={setActiveTab} />
+            );
+          }
           return (
             // ★もっと を右端に固定します（2026-09-02・Opus の裁定）。
             //   ★もっと は「ここから先がある」と知らせる入口なのに、
@@ -12688,20 +12707,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             //   真ん中のタブは、その下を流れます。
             //   ★並び順は変えません（9月28日まで保留）。
             //     位置ではなく、★見えるかどうかだけを直します。
-            // ★★門の中では、★帯を 画面の 下に 貼りつけます（★見本のとおり）。
-            //   ★★見本①〜⑨は、★どれも 下に 帯が あります。
-            //   ★★同じ <nav> を 使います。★作り直しません。
-            //     ★2つ 作ると、★片方だけ 直ります。
-            //   ★門の外（38人）は、★これまでどおり 上です。★1つも 変えません。
-            <div className={layoutV2
-              ? "flex items-center gap-1"
-              : "max-w-3xl mx-auto mt-5 flex items-center gap-1"}
-              style={layoutV2 ? {
-                position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 20,
-                background: "#FFF9F1", borderTop: `1px solid ${C.line}`,
-                padding: "0 8px",
-                paddingBottom: "env(safe-area-inset-bottom)"
-              } : undefined}>
+            // ★★ここから下は、★門の外（38人）だけです。
+            //   ★★門の中は、★上の TabBarV2 で 返し終えています。
+            //     ★★layoutV2 の 分かれ道を ここに 残していました。★落としました。
+            //       ★通らない 枝を 残すと、★まだ 効いていると 読めます。
+            <div className="max-w-3xl mx-auto mt-5 flex items-center gap-1">
             <div className="flex-1 min-w-0 nav-scroll-wrap">
             {/* ★文字を 1px 小さく、左右の余白を少し詰めます（③）。
                 「レッスン」の最後の1文字だけが切れる状態が、いちばん良くない。
@@ -12756,7 +12766,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       {/* ★★門の中では、★帯が 下に 貼りついています。
           ★★その ぶんの 余白を 取ります。★最後の 1枚が 隠れないように。 */}
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 pb-16"
-        style={layoutV2 ? { paddingBottom: "calc(72px + env(safe-area-inset-bottom))" } : undefined}>
+        style={layoutV2 ? {
+          // ★★帯の 高さ ＋ 16px。★数を ここに 書き写しません。
+          //   ★書き写すと、★帯の 高さを 変えたとき、★片方だけ 直ります。
+          paddingBottom: `calc(${TAB_BAR_HEIGHT + 16}px + env(safe-area-inset-bottom))`
+        } : undefined}>
         {/* ★記録が読み込めなかったことを、必ず本人に伝える。
             黙って空の画面を出すと「記録が消えた」に見える。消えていない。 */}
         {entriesLoadError && (

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { C } from "@/lib/tokens";
 import {
-  buildBand, timeOf, ATTENDANCE, attendanceLabel, UNDO_SECONDS, COPY
+  buildBand, timeOf, monthDayLabel, ATTENDANCE, attendanceLabel, UNDO_SECONDS, COPY
 } from "@/lib/todayBand";
+import { TYPE, SPACE, obiStyle, speakStyle } from "@/lib/uiKit";
 
 // ============================================================================
 // 「きょう」の帯 ── 第2便（2026-09-08）
@@ -30,7 +31,7 @@ import {
 export default function TodayBand({
   todayISO, tz, lessons, performances, orgEvents, sheepLine,
   teaching = false, nameOf, onAttend, onSeeAll, onCalendar, unsent = 0, onUnsent,
-  sheepFirst = false
+  sheepFirst = false, v2 = false
 }) {
   const rows = buildBand({
     todayISO, tz, lessons, performances, orgEvents, sheepLine, teaching, sheepFirst
@@ -46,8 +47,105 @@ export default function TodayBand({
     setTimeout(() => setUndoFor((u) => (u && u.id === lesson.id ? null : u)), UNDO_SECONDS * 1000);
   }
 
+  /**
+   * ★見本の 服を 着た 1行（★A01・design.zip）。
+   *
+   *   ★★出す行を 決めているのは buildBand です。★ここでは 決めません。
+   *     ★同じ r を、★v1 と v2 が 別の 服で 描いているだけです。
+   *   ★★言葉も v1 と 同じものを 使います（★COPY・attendanceLabel）。
+   *     ★言い回しを ここで 作り直すと、★2か所に 分かれます。
+   */
+  function renderV2(r) {
+    if (r.key === "lessonToday") {
+      return (
+        <BandRowV2 key={r.key}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <ObiTitle>
+              {/* ★★人数です。★点数でも、順位でも、達成度でも ありません。 */}
+              {r.teaching ? `${COPY.teachingToday} ${r.count}人` : "きょう"}
+            </ObiTitle>
+            {onSeeAll && (
+              <button type="button" onClick={onSeeAll}
+                style={{
+                  marginLeft: "auto", marginTop: -10, marginBottom: -10,
+                  minHeight: SPACE.tapMin, padding: "0 10px",
+                  borderRadius: 6, border: `1px solid ${C.line}`,
+                  background: C.paper, color: C.inkSoft, fontSize: 11.5
+                }}>
+                {r.teaching ? COPY.seeAll : COPY.calendar}
+              </button>
+            )}
+          </div>
+          {r.lessons.map((l) => {
+            const done = l.attendance || null;
+            const undoing = undoFor && undoFor.id === l.id;
+            return (
+              <div key={l.id} style={{
+                display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap",
+                ...TYPE.body
+              }}>
+                <span style={{ color: C.inkSoft, minWidth: 42 }}>
+                  {timeOf(l.scheduled_at, tz) || ""}
+                </span>
+                <span style={{ flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {nameOf ? nameOf(l) : ""}
+                </span>
+                {/* ★★先生のときだけ、★押せます。★生徒は 見るだけです。 */}
+                {!r.teaching ? null : undoing ? (
+                  <button type="button"
+                    onClick={() => { setUndoFor(null); if (onAttend) onAttend(l, null); }}
+                    style={pill(true)}>
+                    {COPY.undo}
+                  </button>
+                ) : done ? (
+                  <span style={{ fontSize: 11.5, color: C.inkSoft }}>
+                    {COPY.done} {attendanceLabel(done)}
+                  </span>
+                ) : (
+                  ATTENDANCE.map((a) => (
+                    <button key={a.key} type="button" onClick={() => tap(l, a.key)} style={pill(false)}>
+                      {a.label}
+                    </button>
+                  ))
+                )}
+              </div>
+            );
+          })}
+        </BandRowV2>
+      );
+    }
+    if (r.key === "performanceSoon") {
+      // ★★見本① は、★本番を 1本ずつ 別の 帯に しています（★「9月14日」が 帯の 題）。
+      //   ★★「あと2日」では なく 日付です。★どちらも ご本人が 入れた 予定の 事実です。
+      return (
+        <Fragment key={r.key}>
+          {r.items.map((x) => (
+            <BandRowV2 key={x.id}>
+              <ObiTitle>{monthDayLabel(x.performed_on || x.date)}</ObiTitle>
+              <div style={TYPE.body}>{x.label || x.title || "本番"}</div>
+            </BandRowV2>
+          ))}
+        </Fragment>
+      );
+    }
+    if (r.key === "orgEventSoon") {
+      return (
+        <Fragment key={r.key}>
+          {r.items.map((e) => (
+            <BandRowV2 key={e.id}>
+              <ObiTitle>{monthDayLabel(e.event_date)}</ObiTitle>
+              <div style={TYPE.body}>{e.title || e.kind || ""}</div>
+            </BandRowV2>
+          ))}
+        </Fragment>
+      );
+    }
+    // ★★羊の ひとこと（★見本 .speak）。★空なら 出しません。
+    return r.line ? <BandRowV2 key={r.key} speak>{r.line}</BandRowV2> : null;
+  }
+
   return (
-    <div className="space-y-2 mb-3">
+    <div className={v2 ? undefined : "space-y-2 mb-3"}>
       {/* ★★未送信。★右上に、小さく（★§7-1）。
           ★★0件のときは、★出しません。★いつも出ていると、目に入らなくなります。 */}
       {unsent > 0 && (
@@ -63,6 +161,11 @@ export default function TodayBand({
       )}
 
       {rows.map((r) => {
+        // ★★見本の 服（★A01 の .speak / .obi）。
+        //   ★★出す行を 決めているのは、★上の buildBand です。★v1 と 同じです。
+        //     ★ここで 変えているのは、★見た目だけです。
+        //   ★★門の外（38人）には 渡しません（★v2 の 既定は false）。
+        if (v2) return renderV2(r);
         if (r.key === "lessonToday") {
           return (
             <div key={r.key} className="rounded-2xl p-3 border"
@@ -144,7 +247,7 @@ export default function TodayBand({
               style={{ background: C.card, borderColor: C.line }}>
               {r.items.map((e) => (
                 <p key={e.id} className="text-sm" style={{ color: C.ink }}>
-                  {String(e.event_date).slice(5).replace("-", "月") + "日"}　{e.title || e.kind || ""}
+                  {monthDayLabel(e.event_date)}　{e.title || e.kind || ""}
                 </p>
               ))}
             </div>
@@ -160,6 +263,31 @@ export default function TodayBand({
       })}
     </div>
   );
+}
+
+/**
+ * ★見本の 服を 着せた 1行（★A01 ／ design.zip・2026-09-10）。
+ *
+ *   .speak  ★羊の ひとこと ── ★白・角16・内側 11/13・13.5px
+ *   .obi    ★予定の 帯　　 ── ★白・角14・内側 10/12
+ *     .t    ★山吹・10.5px・700・字間 .08em（★「きょう」「9月14日」）
+ *     .m    ★13.5px（★「15:00　○○先生のレッスン」）
+ *
+ *   ★★見本には 帯どうしの あいだ 9px が 入ります（.obi{margin-bottom:9px}）。
+ */
+function BandRowV2({ children, speak = false }) {
+  return (
+    <div style={{
+      ...(speak ? speakStyle : obiStyle),
+      marginBottom: SPACE.cardGap
+    }}>
+      {children}
+    </div>
+  );
+}
+
+function ObiTitle({ children }) {
+  return <div style={{ ...TYPE.obiTitle, marginBottom: 4 }}>{children}</div>;
 }
 
 function pill(primary) {
