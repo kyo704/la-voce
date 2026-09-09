@@ -109,6 +109,7 @@ import { roomAssetUrls, preloadUrls } from "@/lib/preloadRoom";
 import { recallEquipped, rememberEquipped } from "@/lib/equippedCache";
 import { mayUseLayoutV2 } from "@/lib/layoutV2";
 import HomeV2 from "@/components/HomeV2";
+import NotesV2 from "@/components/NotesV2";
 import OpsShell from "@/components/OpsShell";
 import OpsSchedule from "@/components/OpsSchedule";
 import OpsRoster from "@/components/OpsRoster";
@@ -5185,6 +5186,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★入っているあいだ、★個人のアプリは 描きません。
   //     ★「2つのアプリが 1つに入っている形」（★§3-3）。
   //   ★null なら 入っていません。★org の id を 持ちます。
+  // ★★ノート（★見本⑥）。★表は 2026-09-09 に 作りました。
+  const [myNotes, setMyNotes] = useState([]);
+  const [noteSaving, setNoteSaving] = useState(false);
   const [opsOrgId, setOpsOrgId] = useState(null);
   // ★日程で 見ている日。★地図から 押すと、ここが 変わります。
   const [opsDate, setOpsDate] = useState(() => todayISO());
@@ -9294,6 +9298,65 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }
   }
 
+  // ★★ノートを 読みます（★見本⑥・2026-09-09）。
+  //   ★★消したもの（deleted_at）は 読みません。★行は 残っています。
+  const fetchNotes = useCallback(async () => {
+    const supabase = createClient();
+    const { data, error } = await supabase.from("notes")
+      .select("id, kind, body, source_label, created_at, updated_at")
+      .eq("user_id", userId).is("deleted_at", null)
+      .order("updated_at", { ascending: false });
+    // ★★読めなくても、★ほかの画面は 動きます。★ここで 止めません。
+    if (error) { console.error("ノートを読めませんでした:", error); return; }
+    setMyNotes(data || []);
+  }, [userId]);
+
+  /**
+   * ★ノートを 書きます。★保存ボタンは ありません。
+   *
+   *   ★★送れたかどうかを 返します。★呼ぶ側が、★閉じてよいかを 決めます。
+   *     ★★送れていないのに 閉じると、★書いたものが 消えます。
+   *   ★★.select() を 付けます。★0行の 更新は エラーに なりません。
+   */
+  async function handleSaveNote({ id, kind, body }) {
+    setNoteSaving(true);
+    try {
+      const supabase = createClient();
+      if (id) {
+        const { data, error } = await supabase.from("notes")
+          .update({ body, kind, updated_at: new Date().toISOString() })
+          .eq("id", id).select("id");
+        if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      } else {
+        const { data, error } = await supabase.from("notes")
+          .insert({ user_id: userId, kind, body }).select("id");
+        if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      }
+      await fetchNotes();
+      return true;
+    } catch (e) {
+      console.error("ノートを保存できませんでした:", e);
+      return false;
+    } finally {
+      setNoteSaving(false);
+    }
+  }
+
+  /**
+   * ★ノートを 消します。
+   *
+   *   ★★行を 消しません。★deleted_at を 入れるだけです。
+   *     ★「受け取ったもの・書いたものを 黙って 消さない」という 決めです。
+   *   ★退会のときは、★台帳（lib/accountDeletion.js）が まとめて 消します。
+   */
+  async function handleDeleteNote(id) {
+    const supabase = createClient();
+    const { error } = await supabase.from("notes")
+      .update({ deleted_at: new Date().toISOString() }).eq("id", id).select("id");
+    if (error) { console.error("ノートを消せませんでした:", error); return; }
+    await fetchNotes();
+  }
+
   // ★★積んだものを、★まとめて送ります（★§7-1）。
   //   ★★送れたものだけを、★列から外します。★送れなかったものは、残します。
   //   ★冪等キーが同じものは、★もう一度送っても1回になります。
@@ -9314,6 +9377,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     unsentQueue.save(next);
     setUnsentAttendance(next);
   }, []);
+
+  // ★★ノートは、★その帯を 開いたときに はじめて 読みます。
+  //   ★★はじめの 尋ねごとを 増やしません。★19回 → 8〜9回に 減らした ところです。
+  //   ★門の外の方は、★1度も 読みません。
+  useEffect(() => {
+    if (!layoutV2) return;
+    if (activeTab !== "notes") return;
+    void fetchNotes();
+  }, [layoutV2, activeTab, fetchNotes]);
 
   // ★★電波が戻ったら、★自動で送ります。★押し直させません。
   //   ★★画面に戻ったときも、試します。★online が来ないことがあるためです。
@@ -15894,7 +15966,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 ★折り返すと、★どこまでが1つの名前か分からなくなります。
                 ★★流れるほうが、★「まだ続く」と読めます。
                 ★whitespace-nowrap で折り返しを止め、★入れ物を横に流します。 */}
-            {activeTab === "notes" && (
+            {/* ★★新しい「ノート」（★見本⑥・2026-09-09）。
+                ★★名簿に 載っている方にだけ 出します（★lib/layoutV2.js）。
+                  ★一般の 38人には、★これまでの ノートが 出ます。
+                ★★タイトル欄も 保存ボタンも ありません。 */}
+            {activeTab === "notes" && layoutV2 && (
+              <NotesV2
+                notes={myNotes}
+                saving={noteSaving}
+                onSave={handleSaveNote}
+                onDelete={handleDeleteNote} />
+            )}
+            {activeTab === "notes" && !layoutV2 && (
               <div className="flex rounded-full border p-1 mb-4 overflow-x-auto nav-scroll" style={{ borderColor: C.line }}>
                 <button onClick={() => setNotesSubTab("calendar")}
                   className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
@@ -15937,7 +16020,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 ★レパートリー ── 歌った曲の控え
                 ★数えて、並べるだけ。★褒めない、勧めない、責めない。
                 ============================================================ */}
-            {activeTab === "notes" && notesSubTab === "repertoire" && (
+            {activeTab === "notes" && !layoutV2 && notesSubTab === "repertoire" && (
               <div className="space-y-4">
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <h3 className="ff-display italic text-lg mb-1">レパートリー</h3>
@@ -15986,7 +16069,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 ★良い／悪いの色を付けないこと（信号機の色は使わない）。
                 ★合計や平均を勝手に足さないこと。要るなら別の項目にします。
                 ============================================================ */}
-            {activeTab === "notes" && notesSubTab === "own" && (() => {
+            {activeTab === "notes" && !layoutV2 && notesSubTab === "own" && (() => {
               const fields = recordedFieldsFor(entries);
               const labelOf = (f) => ownRecordLabel(f, currentOccupation, language, termLabel);
               if (fields.length === 0) {
@@ -16090,7 +16173,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 </div>
               );
             })()}
-            {activeTab === "notes" && notesSubTab === "practice" && (
+            {activeTab === "notes" && !layoutV2 && notesSubTab === "practice" && (
               <div className="space-y-5">
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <p className="text-xs mb-2" style={{ color: C.inkSoft }}>いまの目標</p>
@@ -16208,7 +16291,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               </div>
             )}
 
-            {(activeTab === "history" || (activeTab === "notes" && notesSubTab === "calendar")) && (
+            {(activeTab === "history" || (activeTab === "notes" && !layoutV2 && notesSubTab === "calendar")) && (
               <div className="space-y-5">
                 {/* ★教室の予定（2026-09-02）。★写しは作りません。
                     押すのは「出ます」の印だけで、記録には1行も書きません。
@@ -16377,7 +16460,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               </div>
             )}
 
-            {activeTab === "notes" && notesSubTab === "memo" && (
+            {activeTab === "notes" && !layoutV2 && notesSubTab === "memo" && (
               <div className="space-y-5">
                 {voiceMemoEntriesAllTime.length > 0 ? (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
