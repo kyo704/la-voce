@@ -229,6 +229,20 @@ const USER_ID = "test-user-id";
   assertEqual(rv2.sectionIsOpen("しらない節", { layoutV2: true, openFold: null }), true,
     "★表に無い節は 畳まない（★載せ忘れで 消えないため）");
 
+  console.log("\n=== ⑩ ◎ ○ △ の 印（★見本③・2026-09-10） ===");
+  {
+    assertEqual(rv2.conditionMark("出た"), "◎", "出た は ◎");
+    assertEqual(rv2.conditionMark("ふつう"), "○", "ふつう は ○");
+    assertEqual(rv2.conditionMark("出づらい"), "△", "出づらい は △");
+    assertEqual(rv2.conditionMark("しらない"), "", "★知らない 言葉は 空");
+    const head = readRaw("components", "RecordV2Head.jsx");
+    assertTrue(/conditionMark\(w\)/.test(head), "★画面が 印を 出している");
+    assertTrue(/aria-hidden="true"/.test(head), "★読み上げでは 二度 言わない");
+    // ★★色で 分けていないこと（★3つとも 同じ 字の色）
+    const btn = head.slice(head.indexOf("CONDITION_CHOICES.map"), head.indexOf("CONDITION_CHOICES.map") + 1400);
+    assertTrue(!/C\.(sage|rust|gold)/.test(btn), "★色で 分けていない（★形で 分ける）");
+  }
+
   console.log("\n=== ⑨ 折りたたみを 開けば、中身が 出る（★2026-09-10 の 直し） ===");
   {
     const vt = readRaw("components", "VocalTracker.jsx");

@@ -1,7 +1,7 @@
 "use client";
 
 import { C } from "@/lib/tokens";
-import { CONDITION_CHOICES, conditionValue, mayUseQuickCondition, readConditionValue, RECORD_FOLDS } from "@/lib/recordV2";
+import { CONDITION_CHOICES, conditionValue, conditionMark, mayUseQuickCondition, readConditionValue, RECORD_FOLDS } from "@/lib/recordV2";
 
 // ============================================================================
 // 「記録」の いちばん上（見本③ ／ 2026-09-09）
@@ -47,12 +47,21 @@ export default function RecordV2Head({
                 <button key={w} type="button" onClick={() => onPick(w)}
                   aria-pressed={on}
                   style={{
-                    minHeight: 56, borderRadius: 10,
-                    border: `1px solid ${on ? C.ink : C.line}`,
+                    minHeight: 72, borderRadius: 10,
+                    border: `1px solid ${on ? C.curtain : C.line}`,
                     borderBottomWidth: on ? 3 : 1,
                     background: on ? C.paper : C.card,
-                    color: C.ink, fontSize: "0.9375rem"
-                  }}>{w}</button>
+                    color: C.ink, fontSize: "0.8125rem",
+                    display: "flex", flexDirection: "column",
+                    alignItems: "center", justifyContent: "center", gap: 4
+                  }}>
+                  {/* ★★印は 形で 分けます（★見本③の ◎ ○ △）。
+                      ★★色では 分けません。★色だけに 意味を 持たせないためです。 */}
+                  <span aria-hidden="true" style={{ fontSize: "1.5rem", lineHeight: 1, color: C.ink }}>
+                    {conditionMark(w)}
+                  </span>
+                  <span>{w}</span>
+                </button>
               );
             })}
           </div>

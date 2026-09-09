@@ -30,7 +30,12 @@ async function load(rel) {
 
   console.log("① ★並び順（★§4-1）");
   ok(B.ROWS.join(",") === "lessonToday,performanceSoon,orgEventSoon,sheep", "1→2→3→4 の順");
-  ok(B.PERFORMANCE_WITHIN_DAYS === 3 && B.ORG_EVENT_WITHIN_DAYS === 7, "3日 と 7日");
+  // ★★2026-09-10、★本番を 3日 → 7日 に 広げました（★お決め・案B）。
+  //   ★見本①の「9月14日 実技試験」が、★3日では 出ませんでした。
+  ok(B.PERFORMANCE_WITHIN_DAYS === 7 && B.ORG_EVENT_WITHIN_DAYS === 7, "★どちらも 7日");
+  // ★★「静かにする期間」と 混ぜていないこと（★別のものです）。
+  ok(!/QUIET|静かに/.test(fs.readFileSync(path.join(ROOT, "lib", "todayBand.js"), "utf-8")
+    .replace(/★★「静かにする期間」[\s\S]{0,200}/g, "")), "★静かにする期間と 混ぜていない");
 
   console.log("② ★該当がなければ、その行を出さない");
   const empty = B.buildBand({ todayISO: TODAY });
