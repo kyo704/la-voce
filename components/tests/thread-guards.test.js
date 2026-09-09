@@ -66,10 +66,64 @@ if (tables.length === 0) {
     });
   });
 
-  console.log("\n=== ★開示請求の断り書きが出ている ===");
-  const vt = readRaw("components", "VocalTracker.jsx");
-  assertTrue(/ご本人から開示を求められた場合/.test(vt),
-    "★スレッドを作る画面に、断り書きがある");
+  console.log("\n=== ★どちらの 連絡かで、要る 断り書きが ちがう ===");
+  // ★★2026-09-10、★門下の連絡（§6-1）の 表を 作りました。
+  //   ★★この検査は、もともと ★先生どうしの連絡（§6-2）のために 書いたものです。
+  //     ★あちらは「生徒を 1人も 入れない」が 要で、
+  //     ★★書かれたものを ご本人が 開示請求できる、という 断りが 要ります。
+  //   ★★門下の連絡（§6-1）は、★生徒が 入るのが 正しい姿です。
+  //     ★★だから「student_id が 無い」を、★門下の表に 当ててはいけません。
+  //     ★★要る 断りも ちがいます。★見本⑤の 1行です。
+  //       「ここに書いたことは、門下の全員と先生、学校の運営の方が読みます。」
+  //   ★どちらの 守りも 弱めません。★当てる先を 分けるだけです。
+  const STUDIO = ["org_messages", "org_message_reads"];   // ★§6-1 門下の連絡
+  const teacherThreads = tables.filter((t) => !STUDIO.includes(t));
+  const studioTables = tables.filter((t) => STUDIO.includes(t));
+
+  if (teacherThreads.length > 0) {
+    // ★★§6-2。★生徒を 1人も 入れないこと。★開示の 断りが 要ること。
+    teacherThreads.forEach((tbl) => {
+      const block = (allSql.match(new RegExp(`create table[^;]*public\\.${tbl}[\\s\\S]*?;`, "i")) || [""])[0];
+      assertTrue(!/student_id/.test(block), `★${tbl} に student_id が無い（生徒を参加者にしない）`);
+    });
+    const vt = readRaw("components", "VocalTracker.jsx");
+    assertTrue(/ご本人から開示を求められた場合/.test(vt),
+      "★先生どうしの連絡に、開示請求の断り書きがある");
+  } else {
+    assertTrue(true, "★先生どうしの連絡（§6-2）は、まだ作っていない");
+  }
+
+  if (studioTables.length > 0) {
+    // ★★門下の 表にも、★student_id を 置きません。★わけが ちがいます。
+    //   ★★§6-1「★assignments で すでに 表現できている。
+    //     ★新しいテーブルを 作らないでください」。
+    //   ★★student_id を 置くと、★誰が 門下かを 2か所で 持つことに なります。
+    //     ★担当が 終わった 人が、★片方にだけ 残ります。
+    studioTables.forEach((tbl) => {
+      const block = (allSql.match(new RegExp(`create table[^;]*public\\.${tbl}[\\s\\S]*?;`, "i")) || [""])[0];
+      assertTrue(!/student_id/.test(block),
+        `★${tbl} に student_id が無い（★門下は assignments が 持つ）`);
+    });
+
+    // ★★§6-1。★書く画面が できたら、★見本⑤の 1行が 要ります。
+    //   ★★いまは 表だけです。★画面は これから 作ります。
+    //   ★画面が できた ときに、★この検査が 中身を 見ます。
+    const LINE = "ここに書いたことは、門下の全員と先生、学校の運営の方が読みます。";
+    const files = fs.readdirSync(path.join(root, "components"))
+      .filter((f) => /^Renraku|^Threads|^OpsThreads/.test(f));
+    if (files.length === 0) {
+      assertTrue(true, "★門下の連絡の画面は、まだ作っていない（★できたら 中身を見ます）");
+    } else {
+      const body = files.map((f) => fs.readFileSync(path.join(root, "components", f), "utf8")).join("\n");
+      assertTrue(body.includes(LINE), "★書く欄の下に、いつも 1行 出ている（★見本⑤）");
+      assertTrue(/体調のことは、書かなくて構いません/.test(body), "★体調は 書かなくてよい、と 書いてある");
+    }
+    // ★★中身を サーバーが 検査していないこと（★§6-1 の 対処③）
+    assertTrue(!/create (or replace )?function[^;]*org_messages/i.test(allSql),
+      "★書いたものを 調べる 関数が 無い");
+    assertTrue(!/create trigger[^;]*org_messages/i.test(allSql),
+      "★書いたものを 調べる 引き金が 無い");
+  }
 }
 
 console.log("\n=== 憲章に、決まりが書いてある ===");
