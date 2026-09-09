@@ -264,8 +264,11 @@ const SPEECH_MINUTE_CHOICES = [
 const QUESTIONNAIRES = {
   rsi: {
     key: "rsi",
-    name: "RSI（逆流症状インデックス）",
-    fullName: "Reflux Symptom Index",
+    // ★★病名と 原尺度名を、★画面から 外しました（★2026-09-09・査読 §4・§6）。
+    //   ★★「あなたは逆流です」とは 一言も 言っていません。★それが この直しの 芯です。
+    //   ★出典は「学ぶ」の記事に、★参考文献として 残しています（★§6）。
+    name: "のどのようす",
+    fullName: "",
     citation: "Belafsky et al., 2002",
     frequency: "月1回の記録を推奨",
     scaleMax: 5,
@@ -287,8 +290,8 @@ const QUESTIONNAIRES = {
   },
   vfi: {
     key: "vfi",
-    name: "VFI（声の疲労インデックス）",
-    fullName: "Vocal Fatigue Index",
+    name: "声のつかれ",
+    fullName: "",
     citation: "Nanjundeswaran et al., 2015",
     frequency: "週1回の記録を推奨",
     scaleMax: 4,
@@ -324,8 +327,8 @@ const QUESTIONNAIRES = {
   },
   svhi10: {
     key: "svhi10",
-    name: "SVHI-10（歌声支障インデックス）",
-    fullName: "Singing Voice Handicap Index-10",
+    name: "歌うことの困りごと",
+    fullName: "",
     citation: "Cohen et al., 2009",
     frequency: "月1回の記録を推奨",
     scaleMax: 4,
@@ -348,8 +351,8 @@ const QUESTIONNAIRES = {
   },
   ease: {
     key: "ease",
-    name: "EASE（歌いやすさ評価）",
-    fullName: "Evaluation of the Ability to Sing Easily",
+    name: "歌いやすさ",
+    fullName: "",
     citation: "Phyland et al., 2013",
     frequency: "本番・リハ直後の記録を推奨",
     scaleMax: 3,
@@ -18696,7 +18699,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           <div className="flex items-center justify-between gap-3">
                             <div>
                               <h3 className="ff-display italic text-lg">{def.name}</h3>
-                              <p className="text-xs" style={{ color: C.inkSoft }}>{def.fullName}（{def.citation}）・{def.frequency}</p>
+                              {/* ★★原尺度名と 出典を、★画面から 外しました（★2026-09-09・査読 §6）。
+                                  ★★合計点も 閾値も 出していないので、★尺度として 使っていません。
+                                    ★なら、★名前を 借りる理由が ありません。
+                                  ★出典は「学ぶ」の記事（C3-8）に 残しています。 */}
+                              <p className="text-xs" style={{ color: C.inkSoft }}>{def.frequency}</p>
                             </div>
                             <button
                               type="button"
