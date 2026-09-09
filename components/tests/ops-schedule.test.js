@@ -102,15 +102,13 @@ function eq(a, b, label) {
     t(!/%|パーセント/.test(shown), "★読み手に ％を 見せない");
   }
 
-  console.log("\n=== ⑥ 先生・事務を 数えない ===");
-  eq(m.NOT_COUNTED_ROLES.slice().sort(), ["admin", "owner", "staff", "teacher"], "★4つとも 数えない");
-  eq(m.billableCount([
-    { role: "student" }, { role: "teacher" }, { role: "staff" },
-    { role: "owner" }, { role: "admin" }, { role: "student" }
-  ]), 2, "★生徒だけ 数える");
-  eq(m.billableCount([{ role: "student", status: "paused" }]), 0, "★休会中は 数えない");
-  eq(m.billableCount([]), 0, "空は 0");
-  eq(m.billableCount(null), 0, "無くても 落ちない");
+  console.log("\n=== ⑥ 名簿の 人数は、日程が 持たない ===");
+  // ★★2026-09-09、★lib/orgRoster.js へ 移しました。
+  //   ★日程の 決めでは ありません。★名簿と お金の 決めです。
+  t(typeof m.billableCount === "undefined", "★日程が 人数を 数えていない");
+  t(typeof m.NOT_COUNTED_ROLES === "undefined", "★役割の 一覧も 持っていない");
+  t(!/rosterCount|monthlyFee/.test(readCode("lib", "opsSchedule.js")),
+    "★お金の 計算も 持っていない");
 
   console.log("\n=== ⑦ 健康の 記録に たどりつけない ===");
   ["throatCondition", "voiceQuality", "sleepHours", "entries", "throat_symptoms", "健康", "体調"]

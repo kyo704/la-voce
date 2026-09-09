@@ -111,6 +111,8 @@ import { mayUseLayoutV2 } from "@/lib/layoutV2";
 import HomeV2 from "@/components/HomeV2";
 import OpsShell from "@/components/OpsShell";
 import OpsSchedule from "@/components/OpsSchedule";
+import OpsRoster from "@/components/OpsRoster";
+import { maySeeMoney } from "@/lib/opsShell";
 import { mayEnterOps } from "@/lib/opsShell";
 import RecordV2Head from "@/components/RecordV2Head";
 import LookBackV2 from "@/components/LookBackV2";
@@ -12087,6 +12089,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   nameOf={(id) => orgDisplayName(id) || ""}
                   studentNameOf={(id) => orgDisplayName(id) || ""}
                   onPickDate={(d) => setOpsDate(d)} />
+              );
+            }
+            if (tabKey === "roster") {
+              // ★★名簿（★見本③⑦）。★1行を 1枚の カードに。
+              //   ★★先生・事務は 数えません。★決めは lib/orgRoster.js です。
+              //   ★お金は 責任者だけ（★§1-1）。
+              const members = orgMembers[opsOrgId] || [];
+              return (
+                <OpsRoster
+                  members={members}
+                  nameOf={(id) => orgDisplayName(id) || ""}
+                  teacherNameOf={(id) => orgDisplayName(id) || ""}
+                  canSeeMoney={maySeeMoney(role)} />
               );
             }
             // ★★まだ 作っていない帯。★空の画面を 置きません。
