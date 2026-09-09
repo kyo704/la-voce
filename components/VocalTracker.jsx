@@ -101,6 +101,7 @@ import TodayBand from "@/components/TodayBand";
 import TabBarV2 from "@/components/TabBarV2";
 import { TAB_BAR_HEIGHT } from "@/lib/uiKit";
 import { ScreenHead, HeadRound } from "@/components/UiV2";
+import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
 import { ATTENDANCE_KEYS } from "@/lib/todayBand";
 import * as unsentQueue from "@/lib/offlineQueue";
 // ★おうち画面の作り直し（★2026-09-08・仕様 §3）。★決めは lib が持ちます。
@@ -10194,6 +10195,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //     ★閉じていれば 2タップ、★開けば 全部 ── ★切替は 要りません。
   //   ★★保存してある 値は 変えません。★読むときだけ「しっかり」として 扱います。
   //     ★門の外に 戻ったとき、★その方の 選んだ かんたん／しっかり は そのままです。
+  // ★★「どちらとして 見るか」（★2026-09-10・坂本さんの ご提案）。
+  //   ★★門の中だけです。★一般の 方は、★これまでどおり じどう です。
+  //   ★★端末ごとに 覚えます。★決めは lib/viewAs.js が 持ちます。
+  //   ★★はじめは "auto" です。★端末から 読むのは、★描いた あとです
+  //     （★サーバーで 描くときに localStorage は 見られません）。
+  const [viewAs, setViewAs] = useState("auto");
+  useEffect(() => { if (layoutV2) setViewAs(readViewAs()); }, [layoutV2]);
+  function chooseViewAs(v) { setViewAs(writeViewAs(v)); }
+
   const recordModeInUse = layoutV2 ? "full" : profile.record_mode;
   const showGroup = (key) => isFieldGroupVisible(key, { mode: recordModeInUse, foldedGroups: profile.folded_groups });
 
@@ -12954,9 +12964,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                      ★★門の外と 同じものを、★同じ値で 渡します。
                      ★★写しを 作りません。★並び順も 出欠も 未送信も、
                        ★lib/todayBand.js と components/TodayBand.jsx が 持ちます。 */
+                /* ★★「どちらとして 見るか」を、★帯にも 効かせます（★2026-09-10）。
+                     ★★見え方の 選びです。★権限では ありません。
+                       ★先生として 見ても、★その日の レッスンが 無ければ
+                       ★出欠の 帯は 出ません（★lessons が 空だからです）。 */
+                viewAs={viewAs}
+                onViewAs={chooseViewAs}
+                canChooseViewAs={layoutV2}
+                hasTeachingToday={myTeachingLessons.length > 0}
                 band={{
                   lessons: myTeachingLessons.length > 0 ? myTeachingLessons : myAllLessons,
-                  teaching: myTeachingLessons.length > 0,
+                  teaching: resolveTeaching({ mode: viewAs, hasTeachingToday: myTeachingLessons.length > 0 }),
                   performances,
                   orgEvents: Object.values(orgEvents).flat(),
                   sheepLine: SHEEP_LINE + "。",

@@ -9,7 +9,8 @@ import {
   TYPE, SPACE, FONT_STACK, SHEEP_WIDTH_RATIO, SHEEP_WIDTH_RATIO_TEACHING,
   sheepCssSize, cardStyle, primaryButtonStyle
 } from "@/lib/uiKit";
-import { ScreenHead, HeadRound, H3 } from "@/components/UiV2";
+import { ScreenHead, HeadRound, H3, Seg, Note } from "@/components/UiV2";
+import { VIEW_AS_MODES, viewAsWord } from "@/lib/viewAs";
 
 // ============================================================================
 // 「きょう」の画面 ── ★A01（★design.zip ／ 2026-09-10）
@@ -38,7 +39,8 @@ import { ScreenHead, HeadRound, H3 } from "@/components/UiV2";
 
 export default function HomeV2({
   entries, todayISO, wearing, clothColors, clothColors2,
-  band, onRecord, onOpenMore, children
+  band, onRecord, onOpenMore, children,
+  viewAs = "auto", onViewAs, canChooseViewAs = false, hasTeachingToday = false
 }) {
   const today = (entries || {})[todayISO] || null;
   const cond = today ? conditionWord(today.throatCondition) : null;
@@ -52,9 +54,13 @@ export default function HomeV2({
   //   ★★SheepDressed は px しか 受け取りません。★だから、★実際に 測ります。
   //   ★★測る 前も、★入れものが 場所を 取っています（★下の aspectRatio）。
   //     ★取らないと、★測り終えた 瞬間に 下の 帯が がたつきます。
-  // ★★きょう おしえる 日は、★見本② の 姿に なります。
-  //   ★★出欠の 帯が 先、★羊は そのあと、★羊は 控えめ（150／186）。
-  //   ★★こえの調子・ねむり・みつけたこと は、★見本② に ありません。
+  // ★★きょう おしえる 日は、★見本② の 姿に なります（★案B・2026-09-10）。
+  //   ★★案B で 進める、と お決めを いただきました。
+  //     ★A02 に するのは、★羊の 大きさ（150／186）と、★帯の 並びだけです。
+  //     ★★こえの調子・ねむり・みつけたこと は、★教える日も 出します。
+  //   ★★見本② には、★その 3つが 描かれていません。
+  //     ★けれど 坂本さんは、★教える日も ご自分の 声を 記録なさいます。
+  //     ★★教える日だけ 自分の 記録が 見えなく なるのは、★取り上げに 近い。
   //   ★決めているのは、★呼ぶ側が 渡した teaching です。★ここで 数えません。
   const teaching = !!(band && band.teaching);
   const ratio = teaching ? SHEEP_WIDTH_RATIO_TEACHING : SHEEP_WIDTH_RATIO;
@@ -80,6 +86,24 @@ export default function HomeV2({
       <ScreenHead title="きょう" right={
         <HeadRound mark="⚙" label="もっとを開く" onClick={onOpenMore} />
       } />
+
+      {/* ★★「どちらとして 見るか」（★2026-09-10・坂本さんの ご提案）。
+          ★★門の中だけに 出ます。★一般の 方は、★これまでどおり じどう です。
+          ★★これまでは、★その日に レッスンが あるかで 勝手に 決めていました。
+            ★★どちらに 決まったかが、★どこにも 出ていませんでした。
+            ★★作った 側も 使う 側も 分からず、★同じ 1行を 4度 直しました。
+          ★★勝手に 決めるなら、★せめて どちらに 決めたかが 見えなければ なりません。
+            ★見えないなら、★選べる ほうが よい。
+          ★★これは 見え方の 選びです。★権限では ありません。 */}
+      {canChooseViewAs && onViewAs ? (
+        <>
+          <Seg activeKey={viewAs} onSelect={onViewAs} items={VIEW_AS_MODES} />
+          <Note style={{ margin: "-6px 0 10px" }}>
+            {viewAsWord({ mode: viewAs, hasTeachingToday })}　の 画面です。
+            この 選びは、この 端末だけに 残ります。
+          </Note>
+        </>
+      ) : null}
 
       {/* ★★ひとこと・きょうの予定・近い本番（★見本 .speak と .obi）。
           ★★作り直しません。★門の外で もう 動いている TodayBand を、そのまま 呼びます。
@@ -124,10 +148,10 @@ export default function HomeV2({
       {/* ★★こえの調子 と ねむり（★見本 .two）。★2つ 並べます。
           ★★点数を 出しません。★言葉と、★あなたの ふだん だけです。
           ★★足りなければ、★黙って 空けます。「データ不足」と 書きません。 */}
-      {/* ★★見本②（先生）に、★この 2枚は ありません。
-          ★★きょう おしえる 日は、★出欠の 帯が 主です。
-          ★消していません。★おしえない 日は、★これまでどおり 出ます。 */}
-      {!teaching && (cond || sleep) && (
+      {/* ★★教える日も 出します（★案B・2026-09-10・坂本さんの お決め）。
+          ★★見本② には 描かれていませんが、★出さないと、
+            ★教える日だけ ご自分の 記録が 見えなく なります。 */}
+      {(cond || sleep) && (
         <div style={{ display: "flex", gap: SPACE.cardGap, marginBottom: SPACE.cardGap }}>
           <div style={{ ...cardStyle, flex: 1, minWidth: 0 }}>
             <p style={TYPE.mini}>こえの調子</p>
@@ -168,13 +192,9 @@ export default function HomeV2({
             ★見本① に、★見出しだけの 姿でも 成り立つように 描かれています。
             ★★「まだ 何も ありません」とは 書きません。★責めに なります。
           ★中身は 呼ぶ側が 入れます（★分析の 側が 持っています）。 */}
-      {/* ★★見本②（先生）に、★みつけたこと は ありません。 */}
-      {teaching ? null : (
-        <>
-          <H3>みつけたこと</H3>
-          {children}
-        </>
-      )}
+      {/* ★★教える日も 出します（★案B・2026-09-10・坂本さんの お決め）。 */}
+      <H3>みつけたこと</H3>
+      {children}
     </div>
   );
 }
