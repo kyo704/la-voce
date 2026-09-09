@@ -12338,7 +12338,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       )}
       <header
         className="px-4 sm:px-6 pb-4 sticky top-0 z-10"
-        style={{ background: C.paper, borderBottom: `1px solid ${C.line}`, paddingTop: "calc(env(safe-area-inset-top) + 1.5rem)" }}
+        style={{
+          background: C.paper,
+          // ★★門の中では、★この帯を 出しません（★2026-09-10・見本のとおり）。
+          //   ★★見本①〜⑨の どれにも、★上の帯は ありません。
+          //     ★見出し（きょう）と 歯車は、★中の画面が 自分で 出します。
+          //   ★★言語は、★先に「もっと」へ 移しました。★道を 消してから 作りません。
+          //   ★プラン・お問い合わせ・出るは、★もとから「もっと」に あります。
+          //   ★門の外（38人）には、★これまでどおり 出します。
+          display: layoutV2 ? "none" : undefined,
+          borderBottom: `1px solid ${C.line}`,
+          paddingTop: "calc(env(safe-area-inset-top) + 1.5rem)"
+        }}
       >
         {/* ★携帯では、横に並べるのをやめて上下に分けます。
             右側（言語＋アイコン4つ）だけで 240〜290px あり、375px の画面では
@@ -12357,8 +12368,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 ★副題は行の高さを明示します。ff-mono と text-xs が組み合わさると、
                   大きくなった文字が小さい行の箱に入り、上の見出しと重なっていました。
                   ここが「左上が読みにくい」の正体です。 */}
-            <h1 className="ff-display italic app-wordmark whitespace-nowrap" style={{ color: C.curtain }}>Woolsong</h1>
-            <p className="ff-mono app-tagline tracking-widest uppercase" style={{ color: C.inkSoft }}>{t("appTagline")}</p>
+            {/* ★★門の中では、★名乗りを 出しません（★2026-09-10・見本のとおり）。
+                ★★見本①〜⑨の どれにも、★上に「Woolsong」は ありません。
+                  ★見出しは「きょう」で、★その 右に 歯車が 1つ。それだけです。
+                ★★自分の 名前を、★毎日 見せる 必要は ありません。
+                  ★開いた人は、★何の アプリかを 知っています。
+                ★門の外（38人）には、★これまでどおり 出します。★変えません。 */}
+            {!layoutV2 ? (
+              <>
+                <h1 className="ff-display italic app-wordmark whitespace-nowrap" style={{ color: C.curtain }}>Woolsong</h1>
+                <p className="ff-mono app-tagline tracking-widest uppercase" style={{ color: C.inkSoft }}>{t("appTagline")}</p>
+              </>
+            ) : null}
           </div>
           <div className="flex items-center gap-1 shrink-0 self-end sm:self-auto sm:mt-1">
             <div className="relative flex items-center">
@@ -19717,6 +19738,24 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
             {activeTab === "more" && (
               <div className="space-y-5">
+                {/* ★★ことばの 選び（★2026-09-10）。
+                    ★★門の中では、★上の 帯を 出さなく なりました（★見本のとおり）。
+                      ★★言語を 選ぶ 口が、★そこにしか ありませんでした。
+                      ★★先に ここへ 移します。★道を 消してから 作りません。
+                    ★門の外の方は、★上の 帯からも 選べます。★両方 効きます。 */}
+                {layoutV2 ? (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("languageLabel")}</p>
+                    <select
+                      value={language}
+                      onChange={(e) => setLanguage(e.target.value)}
+                      aria-label={t("languageLabel")}
+                      className="w-full rounded-lg border px-3 appearance-none"
+                      style={{ borderColor: C.line, color: C.ink, background: C.paper, minHeight: 44, fontSize: "1rem" }}>
+                      {LANGUAGES.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
+                    </select>
+                  </div>
+                ) : null}
                 {/* ★★見られるものを増やす（★2026-09-07・坂本さんの決め）。
                     ★★坂本さんは「アップグレード」とおっしゃいましたが、
                       ★この語は、★3つの見張りが止めます。

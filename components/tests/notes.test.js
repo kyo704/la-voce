@@ -83,7 +83,14 @@ function eq(a, b, label) {
   t(/is\("deleted_at", null\)/.test(vt), "★読むときも 外している");
 
   console.log("\n=== ⑤ 帯は 4つ ===");
-  eq(m.NOTE_KINDS.map((k) => k.label), ["稽古", "レパートリー", "門下", "受診用"], "★見本⑥の 4つ");
+  // ★★3つ目は「連絡」です（★見本④・2026-09-10）。
+  //   ★見本⑥は「門下」でしたが、★見本④で「連絡」に なりました。
+  //   ★★これだけ、★ノートでは ありません。★門下の 連絡板が 開きます。
+  //     ★見本④「★ノートの中。★タブは 増やしません」。
+  eq(m.NOTE_KINDS.map((k) => k.label), ["稽古", "レパートリー", "連絡", "受診用"], "★見本④の 4つ");
+  eq(m.isRenrakuKind("studio"), true, "★「連絡」は ノートでは ない");
+  ["practice", "repertoire", "clinic"].forEach((k) =>
+    eq(m.isRenrakuKind(k), false, `★「${k}」は ノート`));
   eq(m.kindOrDefault("うそ"), "practice", "★知らない帯は 既定に 戻す");
   eq(m.kindOrDefault("clinic"), "clinic", "知っている帯は そのまま");
   t(/kind text not null default 'practice'/.test(sql), "★表の 既定も 同じ");

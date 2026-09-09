@@ -76,6 +76,26 @@ function eq(a, b, label) { ok(a === b, label + "  （得た値: " + JSON.stringi
   ok(!/\/100|点\b|score/i.test(home.replace(/onRecord|records?/gi, "")), "点数を 出さない");
   ok(!/あと\s*\d|あと[０-９]/.test(home), "「あと◯」と 数えない");
 
+  console.log("⑧ 上の帯を 出さない（★2026-09-10・見本のとおり）");
+  {
+    const v = readRaw("components", "VocalTracker.jsx");
+    // ★★見本①〜⑨の どれにも、★上に「Woolsong」は ありません。
+    ok(/display: layoutV2 \? "none" : undefined/.test(v), "★門の中では、上の帯を 出さない");
+    // ★★門の外（38人）には、★これまでどおり あること
+    ok(/app-wordmark/.test(v), "★名乗りそのものは 消していない（★門の外に 残る）");
+    ok(/\{!layoutV2 \? \(\s*\n\s*<>\s*\n\s*<h1 className="ff-display italic app-wordmark/.test(v),
+      "★名乗りは 門の外だけ");
+    // ★★道を 消してから 作らないこと
+    //   ★言語を 選ぶ 口が、★上の帯にしか ありませんでした。★先に 移しました。
+    const more = v.slice(v.indexOf('activeTab === "more" && ('), v.indexOf('activeTab === "more" && (') + 1600);
+    ok(/setLanguage/.test(more), "★ことばの選びが「もっと」に ある");
+    ok(/minHeight: 44/.test(more), "★44pt 以上");
+    // ★見出しと 歯車は、中の画面が 出すこと
+    const h = readRaw("components", "HomeV2.jsx");
+    ok(/>きょう</.test(h), "★見出し「きょう」は HomeV2 が 出す");
+    ok(/aria-label="もっとを開く"/.test(h), "★歯車も HomeV2 が 出す");
+  }
+
   console.log("⑦ きょうの帯（★第2便・§3-2）");
   {
     const h = readRaw("components", "HomeV2.jsx");

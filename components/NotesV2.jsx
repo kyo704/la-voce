@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { C } from "@/lib/tokens";
 import {
-  NOTE_KINDS, DEFAULT_KIND, kindOrDefault, visibleNotes,
+  NOTE_KINDS, DEFAULT_KIND, kindOrDefault, visibleNotes, isRenrakuKind,
   titleOf, previewOf, isEmpty, dayWord, AUTOSAVE_MS
 } from "@/lib/notes";
 
@@ -33,7 +33,7 @@ import {
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
 const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
 
-export default function NotesV2({ notes, onSave, onDelete, saving }) {
+export default function NotesV2({ notes, onSave, onDelete, saving, renraku }) {
   const [kind, setKind] = useState(DEFAULT_KIND);
   const [q, setQ] = useState("");
   const [editing, setEditing] = useState(null);   // ★{ id, body } ★null なら 一覧
@@ -139,7 +139,10 @@ export default function NotesV2({ notes, onSave, onDelete, saving }) {
         ))}
       </div>
 
-      {list.length === 0 ? (
+      {/* ★★「連絡」の 帯だけ、★ノートでは なく 連絡板が 開きます（★見本④）。
+          ★★タブを 増やさずに 置くための 形です。
+          ★何を 出すかは lib/notes.js が 決めます。★ここでは 決めません。 */}
+      {isRenrakuKind(kind) ? renraku : list.length === 0 ? (
         <div style={card}>
           <p style={small}>
             {q.trim() ? "見つかりませんでした。" : "＋から、思いついたことを書けます。"}
@@ -166,6 +169,10 @@ export default function NotesV2({ notes, onSave, onDelete, saving }) {
         ))
       )}
 
+      {/* ★★連絡の 帯では、★ノートの さがすを 出しません。
+          ★★探す 相手が ちがいます。★連絡は 連絡の 中で 探します。 */}
+      {isRenrakuKind(kind) ? null : (
+      <>
       {/* ★★この中から さがす（★見本⑥）。★一覧の あとです。
           ★★見本⑥では、★さがすが 下に あります。★そのとおりに します。
             ★ノートは 一覧を 眺めて 思い出すもので、★名簿とは ちがいます。 */}
@@ -178,6 +185,8 @@ export default function NotesV2({ notes, onSave, onDelete, saving }) {
           border: `1px solid ${C.line}`, background: C.card, color: C.ink,
           fontSize: "1rem"
         }} />
+      </>
+      )}
     </div>
   );
 }
