@@ -100,6 +100,7 @@ import { markerRow } from "@/lib/periodMarkers";
 import TodayBand from "@/components/TodayBand";
 import TabBarV2 from "@/components/TabBarV2";
 import { TAB_BAR_HEIGHT } from "@/lib/uiKit";
+import { ScreenHead, HeadRound } from "@/components/UiV2";
 import { ATTENDANCE_KEYS } from "@/lib/todayBand";
 import * as unsentQueue from "@/lib/offlineQueue";
 // ★おうち画面の作り直し（★2026-09-08・仕様 §3）。★決めは lib が持ちます。
@@ -594,6 +595,11 @@ const TABS = [
 //     ★★見本と 入れ替わっていました（★2026-09-10・実機のご指摘）。
 //   ★TABS（★門の外・38人）は 触りません。★並びを 変えません。
 //   ★★ここで、★見本の 順に 並べ直します。
+// ★★羊の ひとこと（★見本 A01・A02・A07）。
+//   ★★A07（ひつじ）と A01（きょう）に、★同じ 言葉が 出ます。★同じ 羊です。
+//   ★2か所に 書くと、★片方だけ 直ります。
+const SHEEP_LINE = "きょうも 来てくれて ありがとう";
+
 const TABS_V2_ORDER = ["home", "today", "analysis", "notes", "garden"];
 const TABS_V2 = TABS_V2_ORDER
   .map((k) => TABS.find((tb) => tb.key === k))
@@ -12953,7 +12959,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   teaching: myTeachingLessons.length > 0,
                   performances,
                   orgEvents: Object.values(orgEvents).flat(),
-                  sheepLine: "きょうも 来てくれて ありがとう。",
+                  sheepLine: SHEEP_LINE + "。",
                   nameOf: (l) => orgDisplayName(l.student_id) || "",
                   unsent: unsentQueue.unsentCount(unsentAttendance),
                   onSeeAll: () => setActiveTab("lesson"),
@@ -15876,6 +15882,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             {wardrobeMountedOnce && (
               <div style={{ display: activeTab === "garden" ? undefined : "none" }}>
               <>
+              {/* ★★見本 A07 の 頭。★題「ひつじ」と、★歯車（★「もっと」へ）。
+                  ★★これまで、★この画面に 題が ありませんでした。
+                    ★下の 帯が「ひつじ」を 押した 状態に なるだけでした。
+                  ★★ひとことは、★きょうの 画面と 同じ 言葉です（★同じ 羊です）。
+                    ★言葉を 2か所に 書きません。 */}
+              {layoutV2 && (
+                <>
+                  <ScreenHead title="ひつじ" right={
+                    <HeadRound mark="⚙" label="もっとを開く" onClick={() => setActiveTab("more")} />
+                  } />
+                  <div style={{ fontSize: 12, color: C.inkSoft, margin: "-2px 0 6px 2px" }}>
+                    {SHEEP_LINE}
+                  </div>
+                </>
+              )}
               {/* ★★おうちの中の行き先だけ（★2026-09-07・Opus の裁定）。
                   ★★歯車を、★ここには置きません。
                     ★同じ絵が2か所にあると、★どちらが何か分かりません。

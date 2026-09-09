@@ -81,7 +81,15 @@ ok("歯車から開く", /setActiveTab\("more"\)/.test(code));
   //   ★同意の撤回と、記録の書き出しは、★法で求められる道です。
   //   ★プライバシーポリシーも「もっと ＞ …」と案内しています。
   const gardenBlock = raw.slice(gardenAt, gardenAt + 4000);
-  ok("★おうちから「もっと」へ飛ばしていない", !/setActiveTab\("more"\)/.test(gardenBlock));
+  // ★★2026-09-10、★見本 A07（design.zip）に、★ひつじの 画面にも 歯車が ありました。
+  //   ★★もとの 言い分は「★アプリ全体の 設定が、★おうちの 奥に 無いこと」でした。
+  //     ★つまり、★ホームから 行けなく なっていないこと、です。
+  //     ★★おうちにも 入口が ある のは、★埋めることでは ありません。★増やすことです。
+  //   ★★同意の 撤回と 書き出しは、★法で 求められる 道です。
+  //     ★★だから 見るべきは「★ホームから 行けるか」です。★そちらを 確かめます。
+  ok("★ホームから「もっと」へ 行ける", /setActiveTab\("more"\)/.test(raw.slice(homeAt, gardenAt)));
+  ok("★おうちの 歯車は、★同じ「もっと」へ 行く（★別の 設定を 作っていない）",
+    !/setActiveTab\("settings"|activeTab === "settings"/.test(gardenBlock));
 
   // ★おうちの側は、家の中の行き先だけ
   for (const label of ["着せかえ", "置きかた", "お店"]) {
