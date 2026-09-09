@@ -109,6 +109,8 @@ import { roomAssetUrls, preloadUrls } from "@/lib/preloadRoom";
 import { recallEquipped, rememberEquipped } from "@/lib/equippedCache";
 import { mayUseLayoutV2 } from "@/lib/layoutV2";
 import HomeV2 from "@/components/HomeV2";
+import OpsShell from "@/components/OpsShell";
+import { mayEnterOps } from "@/lib/opsShell";
 import RecordV2Head from "@/components/RecordV2Head";
 import LookBackV2 from "@/components/LookBackV2";
 import { applyConditionWord, RECORD_FOLDS, sectionIsOpen } from "@/lib/recordV2";
@@ -5172,6 +5174,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [learnSearchQuery, setLearnSearchQuery] = useState("");
   // 作業指示-教室プラン §B・C・E: 教室プラン用のstate
   const [myOrgs, setMyOrgs] = useState([]); // 自分がメンバーである組織一覧（role付き）
+  // ★★運営モード（★第3便・§3-3）。★別のシェルです。
+  //   ★★入っているあいだ、★個人のアプリは 描きません。
+  //     ★「2つのアプリが 1つに入っている形」（★§3-3）。
+  //   ★null なら 入っていません。★org の id を 持ちます。
+  const [opsOrgId, setOpsOrgId] = useState(null);
   // ★自分が作ったのに、自分の membership が無い教室（2026-09-02）。
   //   ensureOwnOrg は「教室を作る」と「オーナーとして入る」が別の操作です。
   //   後者だけ失敗すると、教室はあるのに誰も居ない行が残り、
@@ -12036,6 +12043,37 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     );
   }
 
+  // ★★運営モード（★第3便・§3-3）。★別のシェルです。
+  //   ★★入っているあいだ、★個人のアプリは 1つも 描きません。
+  //     ★出し分けで 重ねません。★ここで 返して 終わります。
+  //     ★★「この画面から、生徒の健康の記録には たどりつけません」（★§3-3）を、
+  //       ★★描かないことで 守ります。★隠すのでは ありません。
+  //   ★役割で 入れるかを 決めます（★lib/opsShell.js）。★ここでは 決めません。
+  if (opsOrgId) {
+    const membership = myOrgs.find((mm) => mm.org_id === opsOrgId);
+    const role = membership ? membership.role : null;
+    if (mayEnterOps(role)) {
+      return (
+        <OpsShell
+          orgName={membership && membership.org ? membership.org.name : "教室"}
+          role={role}
+          onBack={() => setOpsOrgId(null)}>
+          {/* ★★中身は、これから 便ごとに 足します（★第3便の 続き）。
+              ★★空の画面を 置きません。★何の画面かを 書きます。 */}
+          <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+            <p className="text-sm" style={{ color: C.ink, lineHeight: 1.9 }}>
+              ここは、教室の運営の画面です。
+            </p>
+            <p className="text-xs mt-2" style={{ color: C.inkSoft, lineHeight: 1.9 }}>
+              日程・名簿・行事・連絡を、これから足していきます。<br />
+              生徒さんの health の記録は、この画面からは開けません。
+            </p>
+          </div>
+        </OpsShell>
+      );
+    }
+  }
+
   return (
     <div style={{ background: C.paper, color: C.ink, minHeight: "100vh" }}>
       {/* ★★大事な操作の前の、もう一度の確かめ（判断-メールを失うこと §4）。
@@ -14645,6 +14683,23 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       2か所に出しますが、判定も見え方も1か所にあります。 */}
                 <OrgEventList events={myOrgEvents} joins={myEventJoins} todayISO={todayISO()}
                   onToggleJoin={handleToggleEventJoin} onDismiss={handleDismissEventNotice} />
+
+                {/* ★★運営モードへの 入口（★第3便・§3-3）。
+                    ★★「きょう」の右上の歯車 →「◯◯の運営」→ 運営モードへ。
+                    ★★入れる役割の方にだけ 出します（★lib/opsShell.js）。
+                      ★teacher には 出しません。★§3-2 の 帯で 足ります。
+                      ★★入れないのに 入口を 出すと、★押しても 何も 起きません。 */}
+                {myOrgs.filter((mm) => mayEnterOps(mm.role)).map((mm) => (
+                  <button key={mm.org_id} type="button"
+                    onClick={() => setOpsOrgId(mm.org_id)}
+                    className="w-full rounded-2xl p-4 border flex items-center justify-between"
+                    style={{ background: C.card, borderColor: C.line, minHeight: 56 }}>
+                    <span className="text-sm" style={{ color: C.ink }}>
+                      {mm.org ? mm.org.name : "教室"} の運営
+                    </span>
+                    <span style={{ color: C.inkSoft }}>›</span>
+                  </button>
+                ))}
 
                 {myEnrollments.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
