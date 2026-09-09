@@ -112,8 +112,12 @@ import HomeV2 from "@/components/HomeV2";
 import OpsShell from "@/components/OpsShell";
 import OpsSchedule from "@/components/OpsSchedule";
 import OpsRoster from "@/components/OpsRoster";
+import OpsHome from "@/components/OpsHome";
+import OpsEvents from "@/components/OpsEvents";
+import OpsSettings from "@/components/OpsSettings";
 import { maySeeMoney } from "@/lib/opsShell";
 import { mayEnterOps } from "@/lib/opsShell";
+import { rosterCount } from "@/lib/orgRoster";
 import RecordV2Head from "@/components/RecordV2Head";
 import LookBackV2 from "@/components/LookBackV2";
 import { applyConditionWord, RECORD_FOLDS, sectionIsOpen } from "@/lib/recordV2";
@@ -12064,18 +12068,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           role={role}
           onBack={() => setOpsOrgId(null)}
           renderTab={(tabKey) => {
+            // ★★役割を、★等号を 並べる 書き方に しません。★一覧で 書きます。
+            //   ★★teacher-org-card.test.js が、★役割を くらべる 字を 目印に
+            //     ★講師のカードを 切り出しています。
+            //   ★★同じ字が ここに あると、★目印が こちらへ 移り、
+            //     ★★別の場所を 調べてしまいます。★実際に そうなりました。
+            //     ★★この注記に 目印の字を 書くことでも 起きます。★書きません。
+            const SCHEDULE_ROLES = ["teacher", "owner", "admin"];
             if (tabKey === "schedule") {
               // ★★日程（★見本②⑥⑧⑨⑩）。★1つの日程を、3つの 見せ方で。
               //   ★★渡すのは 1つの 並びだけです。★見せ方は あちらが 決めます。
-              const members = orgMembers[opsOrgId] || [];
-              // ★★役割を、★等号を 並べる 書き方に しません。★一覧で 書きます。
-              //   ★★teacher-org-card.test.js が、★役割を くらべる 字を 目印に
-              //     ★講師のカードを 切り出しています。
-              //   ★★同じ字が ここに あると、★目印が こちらへ 移り、
-              //     ★★別の場所を 調べてしまいます。★実際に そうなりました。
-              //     ★★この注記に 目印の字を 書くことでも 起きます。★書きません。
-              const SCHEDULE_ROLES = ["teacher", "owner", "admin"];
-              const teacherList = members
+              const teacherList = opsMembers
                 .filter((mm) => SCHEDULE_ROLES.includes(mm.role))
                 .map((mm) => ({ id: mm.user_id }));
               const week = [];
@@ -12090,6 +12093,38 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   studentNameOf={(id) => orgDisplayName(id) || ""}
                   onPickDate={(d) => setOpsDate(d)} />
               );
+            }
+            const opsMembers = orgMembers[opsOrgId] || [];
+            const opsLessons = orgLessons[opsOrgId] || [];
+            const opsEventList = orgEvents[opsOrgId] || [];
+            // ★★行事の 対象の 人数。★いまは 名簿ぜんぶを 対象と します。
+            //   ★★対象を 絞る 仕組み（学年など）は、★まだ ありません。
+            //     ★無いものを、★在るように 見せません。
+            const opsTargetOf = () => rosterCount(opsMembers);
+            if (tabKey === "home") {
+              return (
+                <OpsHome
+                  todayISO={opsDate}
+                  lessons={opsLessons}
+                  members={opsMembers}
+                  events={opsEventList}
+                  participants={[]}
+                  targetOf={opsTargetOf}
+                  teacherCount={opsMembers.filter((mm) => SCHEDULE_ROLES.includes(mm.role)).length}
+                  nameOf={(id) => orgDisplayName(id) || ""}
+                  studentNameOf={(id) => orgDisplayName(id) || ""} />
+              );
+            }
+            if (tabKey === "events") {
+              return (
+                <OpsEvents
+                  events={opsEventList}
+                  participants={[]}
+                  targetOf={opsTargetOf} />
+              );
+            }
+            if (tabKey === "settings") {
+              return <OpsSettings members={opsMembers} staffLines={[]} />;
             }
             if (tabKey === "roster") {
               // ★★名簿（★見本③⑦）。★1行を 1枚の カードに。
