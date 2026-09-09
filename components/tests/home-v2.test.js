@@ -108,9 +108,33 @@ function eq(a, b, label) { ok(a === b, label + "  （得た値: " + JSON.stringi
     //   ★★SheepDressed の size は 1か所（外側の div の width/height）だけです。
     //     ★中の 品は ぜんぶ ％です。★だから "100%" で 足ります。
     //   ★★測る 手が 無ければ、★測り損ねる 道も ありません。
-    ok(/size="100%"/.test(h), "★羊は 入れ物いっぱい（★測らない）");
-    ok(!/ResizeObserver|clientWidth/.test(h), "★測る しかけを 持っていない");
-    ok(/aspectRatio: "1 \/ 1"/.test(h), "★正方形の 入れ物が 高さを 決める");
+    // ★★4度目の 直しです（★2026-09-10）。
+    //   ① useEffect で 測る　★入れ物より 先に 走った
+    //   ② callback ref で 測る ★効かなかった
+    //   ③ size="100%"　　　　★効かなかった
+    //   ④ CSS 1つの 式　　　★親の 高さを 尋ねない・測らない・％も 使わない
+    //   ★★①②③ とも、★組み上がった ものには 正しく 入っていました。
+    //     ★配信も 一致していました。★連鎖の どこかで 高さが 決まらなかった、
+    //     ★という ところまでしか 分かっていません。
+    //   ★★だから、★連鎖そのものを 断ちました。
+    ok(/size=\{sheepCssSize\(ratio\)\}/.test(h), "★羊の 大きさは 1つの 式から 来る");
+    // ★★注記を 外して 数えます。★上の 注記に、★その語が 出てきます（★7回目）。
+    const hCode = readCode("components", "HomeV2.jsx");
+    ok(!/ResizeObserver|clientWidth|useEffect|useRef/.test(hCode), "★測る しかけを 持っていない");
+    ok(!/aspectRatio/.test(hCode), "★親の 高さに 頼っていない");
+    // ★★式そのものは lib/uiKit.js が 持ちます。★実際に 動かして 確かめます。
+    {
+      const src = readRaw("lib", "uiKit.js");
+      const m = src.match(/export function sheepCssSize[\s\S]*?\n}/);
+      ok(!!m, "★式が lib/uiKit.js に ある");
+      const f = new Function("SHEEP_WIDTH_RATIO", m[0].replace("export ", "") + "; return sheepCssSize;")(186 / 330);
+      // ★画面 390px の とき、★見本の 51.7% に なること。
+      const px = (390 - 32) * (186 / 330);
+      ok(Math.abs(px / 390 - 0.517) < 0.01,
+        "★画面 390px で、★見本の 51.7%（" + (px / 390 * 100).toFixed(1) + "%）");
+      ok(/^min\(calc\(\(100vw - 32px\) \* [0-9.]+\), \d+px\)$/.test(f(186 / 330)),
+        "★幅も 高さも 同じ 式（" + f(186 / 330) + "）");
+    }
     // ★⑤ みつけたこと
     ok(/みつけたこと/.test(h), "★みつけたこと の 見出しが ある");
     ok(/topDiscoveries\.map/.test(v), "★中身は 分析の 側から もらう");

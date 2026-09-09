@@ -6,7 +6,7 @@ import { conditionWord, sleepParts, usualOf } from "@/lib/todayCard";
 import TodayBand from "@/components/TodayBand";
 import {
   TYPE, SPACE, FONT_STACK, SHEEP_WIDTH_RATIO, SHEEP_WIDTH_RATIO_TEACHING,
-  cardStyle, primaryButtonStyle
+  sheepCssSize, cardStyle, primaryButtonStyle
 } from "@/lib/uiKit";
 import { ScreenHead, HeadRound, H3 } from "@/components/UiV2";
 
@@ -104,17 +104,13 @@ export default function HomeV2({
                ★★置き場所は 帯が 決めます。★A01 は いちばん上、
                  ★A02（先生）は 出欠の 帯の あとです。
                  ★★並べ方を ここに もう1つ 書くと、★片方だけ 直ります。 */
-            <div style={{ marginTop: 2 }}>
-              {/* ★★入れものが 大きさを 決めます。★羊の 枠は 正方形です。
-                  ★★はじめから 場所を 取るので、★下が 跳ねません。 */}
-              <div style={{
-                width: `${(ratio * 100).toFixed(2)}%`,
-                aspectRatio: "1 / 1",
-                margin: "0 auto"
-              }}>
-                <SheepDressed wearing={wearing || {}} colors={clothColors || {}} colors2={clothColors2 || {}}
-                  size="100%" motion="still" blink alt="羊" />
-              </div>
+            <div style={{ marginTop: 2, display: "flex", justifyContent: "center" }}>
+              {/* ★★大きさは、★1つの CSS の 式で 決まります（lib/uiKit.js）。
+                  ★★親の 高さを 尋ねません。★測りません。★％も 使いません。
+                    ★どれも、★3度 試して 3度とも 効きませんでした。
+                  ★★幅も 高さも 同じ 式なので、★必ず 正方形に なります。 */}
+              <SheepDressed wearing={wearing || {}} colors={clothColors || {}} colors2={clothColors2 || {}}
+                size={sheepCssSize(ratio)} motion="still" blink alt="羊" />
             </div>
           } />
       ) : null}
