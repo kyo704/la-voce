@@ -123,6 +123,19 @@ function useLayersReady(srcs, enabled) {
     if (!everRef.current) setReady(false);
     const list = joined ? joined.split("|") : [];
     if (list.length === 0) { setReady(true); return; }
+    // ★★どれか 1枚が 返って こないと、★羊は いつまでも 出ません。
+    //   ★★onload も onerror も 呼ばれない 道が あります ──
+    //     ★取り消された 求め、★寝ていた 端末、★中身の 決まりで 止められた とき。
+    //   ★★2026-09-10、★実機の 実測で opacity 0 を 見ました。
+    //     ★大きさは 正しく 174px でした。★見えていなかっただけです。
+    //   ★★2.5秒 待って 揃わなければ、★そのまま 出します。
+    //     ★★半分の 羊は、★見えない 羊より ましです。
+    //     ★この しかけは、★出す 方向にしか 働きません。★隠しません。
+    const late = setTimeout(() => {
+      if (!alive) return;
+      everRef.current = true;
+      setReady(true);
+    }, 2500);
     Promise.all(list.map((src) => new Promise((done) => {
       const im = new window.Image();
       im.decoding = "async";
@@ -132,10 +145,11 @@ function useLayersReady(srcs, enabled) {
       im.src = src;
     }))).then(() => {
       if (!alive) return;
+      clearTimeout(late);
       everRef.current = true;
       setReady(true);
     });
-    return () => { alive = false; };
+    return () => { alive = false; clearTimeout(late); };
   }, [joined, enabled]);
   return ready;
 }

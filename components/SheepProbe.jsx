@@ -25,10 +25,14 @@ export default function SheepProbe({ cssSize, ratio, teaching }) {
   const [m, setM] = useState(null);
 
   useEffect(() => {
-    // ★★描き終わってから 測ります。★2回 待つのは、★絵が 入ってからの ためです。
+    // ★★2度 測ります（★2026-09-10・1度目の 実測を 受けて）。
+    //   ★★1度目は 描いた 直後（★約 32ms）です。★絵は まだ 届いていません。
+    //     ★そこで opacity 0 と 出ました。★★大きさの 話では ありませんでした。
+    //   ★★2度目は 3秒 後です。★落ち着いた 姿を 見ます。
+    //   ★★どちらも 出します。★「いつ 測ったか」で 意味が 変わるからです。
     let id2 = 0;
-    const id1 = requestAnimationFrame(() => {
-      id2 = requestAnimationFrame(() => {
+    let t = 0;
+    const take = () => {
         const el = ref.current;
         if (!el) return;
         // ★★羊は、★この枠の すぐ 上の きょうだいです。
@@ -41,7 +45,7 @@ export default function SheepProbe({ cssSize, ratio, teaching }) {
         };
         const cs = sheep && typeof window !== "undefined"
           ? window.getComputedStyle(sheep) : null;
-        setM({
+        setM((prev) => ({
           screen: Math.round(document.documentElement.clientWidth),
           dpr: window.devicePixelRatio || 1,
           box: r(box),
@@ -49,11 +53,18 @@ export default function SheepProbe({ cssSize, ratio, teaching }) {
           styleW: cs ? cs.width : "（羊が 見つかりません）",
           styleH: cs ? cs.height : "",
           opacity: cs ? cs.opacity : "",
+          first: prev ? prev.first : (cs ? cs.opacity : ""),
           found: !!sheep
-        });
+        }));
+    };
+    const id1 = requestAnimationFrame(() => {
+      id2 = requestAnimationFrame(() => {
+        take();
+        // ★★3秒 後に もう一度。★絵が 届いてからの 姿です。
+        t = setTimeout(take, 3000);
       });
     });
-    return () => { cancelAnimationFrame(id1); cancelAnimationFrame(id2); };
+    return () => { cancelAnimationFrame(id1); cancelAnimationFrame(id2); clearTimeout(t); };
   }, [cssSize]);
 
   const row = (k, v) => (
@@ -72,7 +83,10 @@ export default function SheepProbe({ cssSize, ratio, teaching }) {
         羊の寸法（調べるための枠・9月10日）
       </div>
       {row("式", cssSize)}
-      {row("割合", (ratio * 100).toFixed(2) + "%" + (teaching ? "（先生の日）" : ""))}
+      {row("割合", (ratio * 100).toFixed(2) + "%")}
+      {row("画面", teaching
+        ? "A02（先生・きょう おしえる日）"
+        : "A01（生徒・きょう）")}
       {m ? (
         <>
           {row("画面の幅", m.screen + "px（×" + m.dpr + "）")}
@@ -80,7 +94,8 @@ export default function SheepProbe({ cssSize, ratio, teaching }) {
           {row("羊の箱", m.sheep ? m.sheep.w + " × " + m.sheep.h : "（見つかりません）")}
           {row("羊のwidth", m.styleW)}
           {row("羊のheight", m.styleH)}
-          {row("見え方", m.opacity === "1" ? "出ています" : "opacity " + m.opacity)}
+          {row("見え方（いま）", m.opacity === "1" ? "出ています" : "opacity " + m.opacity)}
+          {row("見え方（描いた直後）", m.first === "1" ? "出ています" : "opacity " + m.first)}
           {row("画面に対して", m.sheep && m.screen
             ? Math.round((m.sheep.w / m.screen) * 100) + "%（見本は 51.7%）"
             : "—")}
