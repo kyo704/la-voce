@@ -71,7 +71,9 @@ export default function HomeV2({
           ★★該当がなければ、★その行を 出しません。
             ★「今日のレッスンはありません」と 書かないこと。
             ★★無いことを 毎朝 知らせるのは、★催促と 同じです。 */}
-      {band ? <TodayBand {...band} todayISO={todayISO} /> : null}
+      {/* ★★A01（HTML・正）では、★ひとことが 予定より 上です。
+          ★§3-2 は 下と 書いていますが、★README「HTMLが 正です」に 従います。 */}
+      {band ? <TodayBand {...band} todayISO={todayISO} sheepFirst /> : null}
 
       {/* ★★こえの調子 と ねむり。★2つ 並べます。
           ★★点数を 出しません。★言葉と、★あなたの ふだん だけです。

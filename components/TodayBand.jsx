@@ -29,10 +29,11 @@ import {
 
 export default function TodayBand({
   todayISO, tz, lessons, performances, orgEvents, sheepLine,
-  teaching = false, nameOf, onAttend, onSeeAll, onCalendar, unsent = 0, onUnsent
+  teaching = false, nameOf, onAttend, onSeeAll, onCalendar, unsent = 0, onUnsent,
+  sheepFirst = false
 }) {
   const rows = buildBand({
-    todayISO, tz, lessons, performances, orgEvents, sheepLine, teaching
+    todayISO, tz, lessons, performances, orgEvents, sheepLine, teaching, sheepFirst
   });
   // ★★3秒だけ出る「もどす」。★確認より速く、★間違いも直せます。
   const [undoFor, setUndoFor] = useState(null);
