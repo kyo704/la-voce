@@ -78,6 +78,7 @@ import RefluxCareConsent from "@/components/RefluxCareConsent";
 import InteriorPanel from "@/components/InteriorPanel";
 import { sheepItemByKey, SHEEP_ITEMS, sheepItemSrc } from "@/lib/sheepItems";
 import { MEAL_MARKS, MEAL_MARK_KEYS, resolveMealMarks } from "@/lib/mealMarks";
+import { timeGapHours as computeTimeGapHours } from "@/lib/timeGap";
 import {
   SLEEP_SIDES, HEAD_RAISED, BELLY_TIGHT, refluxCareOn, toRow as refluxToRow
 } from "@/lib/refluxCare";
@@ -109,6 +110,7 @@ import { recallEquipped, rememberEquipped } from "@/lib/equippedCache";
 import { mayUseLayoutV2 } from "@/lib/layoutV2";
 import HomeV2 from "@/components/HomeV2";
 import RecordV2Head from "@/components/RecordV2Head";
+import LookBackV2 from "@/components/LookBackV2";
 import { applyConditionWord, RECORD_FOLDS, sectionIsOpen } from "@/lib/recordV2";
 import { readProfileExtras } from "@/lib/profileExtras";
 import { VIEW, DRESS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES, HOME_COLORS } from "@/lib/homeDrawer";
@@ -1822,15 +1824,10 @@ function intOrNull(v) {
   const n = Number(v);
   return Number.isFinite(n) ? Math.round(n) : null;
 }
-function computeTimeGapHours(startTime, endTime) {
-  if (!startTime || !endTime) return null;
-  const [sh, sm] = startTime.split(":").map(Number);
-  const [eh, em] = endTime.split(":").map(Number);
-  if ([sh, sm, eh, em].some((n) => Number.isNaN(n))) return null;
-  let diff = (eh * 60 + em) - (sh * 60 + sm);
-  if (diff < 0) diff += 24 * 60; // 日をまたぐ場合（例: 夕食19:00→就寝1:00）
-  return roundTo1(diff / 60);
-}
+// ★★computeTimeGapHours は lib/timeGap.js へ 移しました（★2026-09-09）。
+//   ★★「ふりかえる」の画面（★見本⑤「寝るまでの間」）からも 要るように なりました。
+//   ★写しを 作らず、★同じ1つを 両方から 読みます。
+//   ★呼ぶ側（7か所）は、★これまでと 同じ名前の ままです。
 // lavoce-収集データ拡張案.md D節: スマホのマイクで環境騒音レベルを測定する（A-2の自動版）。
 // キャリブレーションされたマイクではないため、あくまで「参考値」としての推定dB。
 // マイクの音声データ自体は端末内で処理するだけで、サーバーには送らない・保存しない。
@@ -16242,7 +16239,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               </div>
             )}
 
-            {activeTab === "analysis" && (
+            {/* ★★新しい「ふりかえる」（★見本④⑤・2026-09-09）。
+                ★★名簿に 載っている方にだけ 出します（★lib/layoutV2.js）。
+                  ★一般の 38人には、★下の これまでの 分析画面が 出ます。
+                ★★統計を 1つも 出しません。★書いたものを 並べ直すだけです。
+                  ★だから 表示ゲートを 通しません。★何も 言っていないからです。
+                ★数と 言葉は lib/lookBack.js が 持ちます。 */}
+            {activeTab === "analysis" && layoutV2 && mayUseForAnalysis(profile) && (
+              <LookBackV2 entries={entries} todayISO={realTodayDate} notOutDays={notOutDays} />
+            )}
+            {activeTab === "analysis" && !layoutV2 && (
               <div className="space-y-5">
                 {/* ★★2026-09-07・Opus が確定した言い方。★1文字も変えないこと。
                     ★★分析の画面の、いちばん上に置きます。
