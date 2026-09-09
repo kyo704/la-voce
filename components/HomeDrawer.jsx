@@ -254,11 +254,19 @@ export default function HomeDrawer({
               ★★だから 762枚の 小さい絵が、★閉じたまま 読まれていました。
             ★★display:none なら、★1枚も 読みません。★これは 確かです。
               ★消しては いません。★組み立ては 残るので、★開くのは 速いままです。 */}
-        <div style={{
-          display: open ? undefined : "none",
-          maxWidth: SIZES.gridMaxWidthPx, margin: "0 auto"
-        }}>
-          {children}
+        <div style={{ maxWidth: SIZES.gridMaxWidthPx, margin: "0 auto" }}>
+          {/* ★★閉じているあいだは、★中身を 1つも 作りません（★2026-09-09 の 直し）。
+              ★★はじめ display:none に しました。★逆でした。
+                ★★loading="lazy" の 絵は、★display:none の 中では
+                　★「いつ 見えるか」を 決められません。
+                ★★だから Chrome は、★待たずに すぐ 読みます。
+                ★実機の 記録で、★一覧の はじめの5枚（scarf_24〜28）が
+                　★944〜950ms かけて 読まれていました。★そのとおりです。
+              ★★作らなければ、★1枚も 読みません。★これが 確かです。
+              ★★引き出しの 枠は 残ります。★下から 上がる 動きは そのままです。
+                ★開いたときに 中身を 作りますが、★マスを 並べるだけです。
+                ★絵は、★見えたぶんから 順に 読まれます。 */}
+          {open ? children : null}
         </div>
       </div>
 

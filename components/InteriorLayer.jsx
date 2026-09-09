@@ -3,7 +3,7 @@
 import { fallbackToPng } from "@/lib/imageFormat";
 import {
   interiorOf, interiorItemByKey, interiorSrc, windowLayers,
-  floorLineOf, widthPctOf, flushRightLeftPct, isSingleSlot, windowHoleMask,
+  floorLineOf, widthPctOf, flushRightLeftPct, isSingleSlot, windowHoleMask, hitInsetOf,
   FLOOR_BAND, WALL_BAND, LEFT_BAND, clampToBand,
   placementOf, anchorOf, zOf, zIndexOf,
   CEILING_TOP_PCT, WALL_CENTER_PCT, TABLETOP_FEET_PCT
@@ -342,6 +342,9 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
             <div key={it.key} style={style}>
               <Draggable
                 itemKey={it.key}
+                // ★★掴めるのは、★絵の中身のところだけ（★2026-09-09）。
+                //   ★決めは lib/sheepInteriorV2.js の hitInsetOf が 持ちます。
+                hit={hitInsetOf(it)}
                 startLeft={left} startTop={startTop}
                 band={onCeiling ? [0, 40] : (onWall ? WALL_BAND : FLOOR_BAND)}
                 onDragEnd={(nl, nt) =>
