@@ -12452,28 +12452,24 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 wearing={wardrobeOn ? (characterEquipped.wardrobe || {}) : {}}
                 clothColors={characterEquipped.clothColors || {}}
                 clothColors2={characterEquipped.clothColors2 || {}}
-                hitokoto="きょうも 来てくれて ありがとう。"
-                /* ★★きょうの けいこ は、まだ 入れていません。
-                     ★けいこの 予定は、いま、教室の 画面の 中でだけ 読んでいます。
-                     ★ここへ 出すには、★はじめに もう1本 尋ねることに なります。
-                     ★★はじめの 尋ねごとを 増やさない、という 約束が あります。
-                     ★見本の この行は、★けいこの 便を 進めるときに、そこで 足します。 */
-                upcoming={performances
-                  .filter((pf) => pf.performed_on && pf.performed_on >= realTodayDate)
-                  .sort((x, y) => (x.performed_on < y.performed_on ? -1 : 1))
-                  .slice(0, 2)
-                  .map((pf) => ({
-                    id: pf.id,
-                    dateLabel: pf.performed_on === realTodayDate
-                      ? "きょう"
-                      : `${Number(pf.performed_on.slice(5, 7))}月${Number(pf.performed_on.slice(8, 10))}日`,
-                    label: pf.label || pf.kind || "本番",
-                    badge: pf.performed_on === realTodayDate ? "出ます" : null
-                  }))}
+                /* ★★「きょう」の帯（★第2便・§3-2）。
+                     ★★門の外と 同じものを、★同じ値で 渡します。
+                     ★★写しを 作りません。★並び順も 出欠も 未送信も、
+                       ★lib/todayBand.js と components/TodayBand.jsx が 持ちます。 */
+                band={{
+                  lessons: myTeachingLessons.length > 0 ? myTeachingLessons : myAllLessons,
+                  teaching: myTeachingLessons.length > 0,
+                  performances,
+                  orgEvents: Object.values(orgEvents).flat(),
+                  sheepLine: "きょうも 来てくれて ありがとう。",
+                  nameOf: (l) => orgDisplayName(l.student_id) || "",
+                  unsent: unsentQueue.unsentCount(unsentAttendance),
+                  onSeeAll: () => setActiveTab("lesson"),
+                  onAttend: handleAttendance
+                }}
                 onRecord={() => setActiveTab("today")}
                 onOpenMore={() => setActiveTab("more")} />
-            )}
-            {activeTab === "home" && !layoutV2 && (() => {
+            )}            {activeTab === "home" && !layoutV2 && (() => {
               const realToday = realTodayDate;
               const hour = greetingHour;
               const greeting = hour < 5 ? "こんばんは" : hour < 11 ? "おはようございます" : hour < 18 ? "こんにちは" : "こんばんは";

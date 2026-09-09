@@ -3,6 +3,7 @@
 import { C } from "@/lib/tokens";
 import SheepDressed from "@/components/SheepDressed";
 import { conditionWord, sleepWord, usualOf } from "@/lib/todayCard";
+import TodayBand from "@/components/TodayBand";
 
 // ============================================================================
 // 「きょう」の画面（見本① ／ 2026-09-09）
@@ -25,7 +26,7 @@ import { conditionWord, sleepWord, usualOf } from "@/lib/todayCard";
 
 export default function HomeV2({
   entries, todayISO, wearing, clothColors, clothColors2,
-  hitokoto, todayLessons, upcoming, onRecord, onOpenMore, children
+  band, onRecord, onOpenMore, children
 }) {
   const today = (entries || {})[todayISO] || null;
   const cond = today ? conditionWord(today.throatCondition) : null;
@@ -57,40 +58,16 @@ export default function HomeV2({
           size={180} motion="still" blink alt="羊" />
       </div>
 
-      {/* ★★ひとこと。★1日じゅう 変わりません（★台詞集 §3-3）。 */}
-      {hitokoto ? (
-        <div style={card}>
-          <p style={{ fontSize: "0.875rem", color: C.ink, lineHeight: 1.8, margin: 0 }}>{hitokoto}</p>
-        </div>
-      ) : null}
-
-      {/* ★★きょうの 予定。★無ければ 出しません。 */}
-      {(todayLessons || []).length > 0 && (
-        <div style={card}>
-          <p style={{ ...small, marginBottom: 4 }}>きょう</p>
-          {todayLessons.map((l) => (
-            <p key={l.id} style={{ fontSize: "0.875rem", color: C.ink, margin: "2px 0" }}>
-              {l.time}　{l.label}
-            </p>
-          ))}
-        </div>
-      )}
-
-      {/* ★★この先の 予定。★本番など。★無ければ 出しません。 */}
-      {(upcoming || []).map((u) => (
-        <div key={u.id} style={card}>
-          <p style={{ ...small, marginBottom: 4, color: C.curtain }}>{u.dateLabel}</p>
-          <div className="flex items-center gap-2">
-            <p style={{ fontSize: "0.875rem", color: C.ink, margin: 0 }}>{u.label}</p>
-            {u.badge ? (
-              <span style={{
-                fontSize: "0.625rem", color: "#FFFDF8", background: C.curtain,
-                borderRadius: 999, padding: "2px 8px"
-              }}>{u.badge}</span>
-            ) : null}
-          </div>
-        </div>
-      ))}
+      {/* ★★「きょう」の帯（★第2便・§3-2）。
+          ★★作り直しません。★門の外で もう 動いている TodayBand を、そのまま 呼びます。
+          ★★はじめ、★ここに「きょうの予定」「この先の予定」「ひとこと」を
+            ★手で 書いていました。★同じことを 2か所に 書いていました。
+            ★並び順（★§3-2 の 4行）も、★先生の 出欠も、★未送信の数も、
+            ★★あちらが 持っています。★こちらの 写しは 消しました。
+          ★★該当がなければ、★その行を 出しません。
+            ★「今日のレッスンはありません」と 書かないこと。
+            ★★無いことを 毎朝 知らせるのは、★催促と 同じです。 */}
+      {band ? <TodayBand {...band} todayISO={todayISO} /> : null}
 
       {/* ★★こえの調子 と ねむり。★2つ 並べます。
           ★★点数を 出しません。★言葉と、★あなたの ふだん だけです。

@@ -76,6 +76,25 @@ function eq(a, b, label) { ok(a === b, label + "  （得た値: " + JSON.stringi
   ok(!/\/100|点\b|score/i.test(home.replace(/onRecord|records?/gi, "")), "点数を 出さない");
   ok(!/あと\s*\d|あと[０-９]/.test(home), "「あと◯」と 数えない");
 
+  console.log("⑦ きょうの帯（★第2便・§3-2）");
+  {
+    const h = readRaw("components", "HomeV2.jsx");
+    // ★★写しを 作らないこと。★帯は 1つです。
+    ok(/<TodayBand/.test(h), "★門の中でも、同じ TodayBand を 呼んでいる");
+    ok(!/todayLessons|upcoming/.test(h), "★手書きの 予定の 写しが 残っていない");
+    ok(!/きょうの レッスンは ありません|予定は ありません/.test(readCode("components", "HomeV2.jsx")),
+      "★無いことを 書かない（★催促に しない）");
+    // ★★門の外と 同じ値を 渡していること
+    const v = readRaw("components", "VocalTracker.jsx");
+    const inner = v.slice(v.indexOf("activeTab === \"home\" && layoutV2"),
+      v.indexOf("activeTab === \"home\" && !layoutV2"));
+    ["lessons:", "teaching:", "performances", "orgEvents", "unsent:", "onAttend:"].forEach((k) => {
+      ok(inner.includes(k), `★帯に「${k}」を 渡している`);
+    });
+    ok(/unsentQueue\.unsentCount/.test(inner), "★未送信の数も、門の中に 出る");
+    ok(/handleAttendance/.test(inner), "★出欠を 押せる（★先生のとき）");
+  }
+
   console.log("⑥ 門（★38人の画面を 変えない）");
   const vt = readRaw("components", "VocalTracker.jsx");
   ok(/activeTab === "home" && layoutV2 && \(\s*\n\s*<HomeV2/.test(vt),
