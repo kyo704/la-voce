@@ -13512,7 +13512,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 {layoutV2 && formData && (
                   <RecordV2Head
                     entry={formData}
-                    dateLabel={formData.date}
                     saved={saveStatus === "saved"}
                     openFold={openFold}
                     onToggleFold={(k) => setOpenFold((cur) => (cur === k ? null : k))}
