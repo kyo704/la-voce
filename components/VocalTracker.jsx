@@ -106,6 +106,7 @@ import PointsPaper from "@/components/PointsPaper";
 import { thumbSrc } from "@/lib/thumbs";
 import { roomAssetUrls, preloadUrls } from "@/lib/preloadRoom";
 import { recallEquipped, rememberEquipped } from "@/lib/equippedCache";
+import { readProfileExtras } from "@/lib/profileExtras";
 import { VIEW, DRESS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES, HOME_COLORS } from "@/lib/homeDrawer";
 import { itemsFor, sortItems } from "@/lib/drawerItems";
 // ★さがす（★§3-6）。★絞り込みは、ここにだけ 置きます。
@@ -5916,19 +5917,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       // ★上の本体クエリには足さない。supabase/migration_record_mode.sql を
       //   まだ実行していない環境では列が無く、本体クエリごと失敗してしまうため。
       //   ここだけ別に取り、失敗したら既定（しっかり記録）のまま動かす。
-      const { data: modeRow } = await supabase
-        .from("profiles").select("record_mode").eq("id", userId).maybeSingle();
+      // ★★あとから足した列を、★1回で 読みます（★2026-09-09・案B）。
+      //   ★★もとは 6回、★1〜2列ずつ 引いていました（★約1秒）。
+      //   ★★列が 無い環境では、★これまでどおり 組ごとに 読み直します。
+      //     ★決めは lib/profileExtras.js が 持ちます。
+      const extras = await readProfileExtras(supabase, userId);
+      const modeRow = extras.rows.mode;
       // アレルギー・常用薬も、migration_profile_health_fields.sql 未実行の環境が
       // ありうるので、本体クエリとは分けて寛容に読む（record_mode と同じ理由）。
       // 削除の猶予期間中かどうか。migration_account_soft_delete.sql が未実行の
       // 環境では列が無いので、本体クエリとは分けて寛容に読む。
-      const { data: delRow } = await supabase
-        .from("profiles").select("deleted_at").eq("id", userId).maybeSingle();
+      const delRow = extras.rows.deleted;
       if (mounted && delRow) setProfile((prev) => ({ ...prev, deleted_at: delRow.deleted_at || null }));
 
       // 周期をホームに出すか（§4-3 の3段階の②）。列が無い環境でも壊さない。
-      const { data: cycleRow } = await supabase
-        .from("profiles").select("cycle_show_on_home").eq("id", userId).maybeSingle();
+      const cycleRow = extras.rows.cycle;
       if (mounted && cycleRow && cycleRow.cycle_show_on_home != null) {
         setProfile((prev) => ({ ...prev, cycle_show_on_home: cycleRow.cycle_show_on_home }));
       }
@@ -5937,8 +5940,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       // ありうるので、本体クエリとは分けて寛容に読む（record_mode と同じ理由）。
       // ★列が無くて読めなくても、profile.is_under_18 は null のまま＝未成年扱い。
       //   落ちる方向が安全側なので、ここでは何も補いません。
-      const { data: ageRow, error: ageError } = await supabase
-        .from("profiles").select("is_under_18, age_question_shown_at").eq("id", userId).maybeSingle();
+      const ageRow = extras.rows.age;
+      const ageError = extras.errors.age;
       // ★列がまだ無いときは、質問そのものを出さない。
       //   出してしまうと、答えても保存できず、消えない1枚が残る。
       //   読めたときだけ true にして、その場合にだけたずねる。
@@ -5998,12 +6001,23 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       // ★cohort を先に読みます。無い環境では is_tester に落ちます（viewerOf が判断）。
       // 1回だけ出す知らせ。★表がまだ無い環境でも落ちないよう、別に寛容に読む。
       //   読めなければ noticeState は null のままで、知らせを出しません。
-      const { data: noticeRows, error: noticeError } = await supabase
-        .from("user_notices").select("notice_key, shown_at").eq("user_id", userId);
+      // ★★互いに 待つ理由の 無いものを、★同時に 走らせます（★2026-09-09・案A）。
+      //   ★★もとは 6回、★1つずつ 順に 待っていました（★約1秒）。
+      //   ★★1つ 失敗しても、★ほかは 進みます。★allSettled では なく、
+      //     ★どれも 自分で 誤りを 抱えて 返る 形なので、★all で 足ります。
+      //   ★順に 使いたいものは、★ここに 入れません（★プロフィール本体など）。
+      const [noticeRes, perfRes, resultRes, markerRes, inventoryRes] = await Promise.all([
+        supabase.from("user_notices").select("notice_key, shown_at").eq("user_id", userId),
+        supabase.from("performances").select("id, performed_on, kind, label")
+          .eq("user_id", userId).order("performed_on", { ascending: false }).limit(60),
+        supabase.from("performance_results").select("performance_id, result").eq("user_id", userId),
+        supabase.from("period_markers").select("marked_on").eq("user_id", userId),
+        supabase.from("character_inventory").select("item_key").eq("user_id", userId)
+      ]);
+      const noticeRows = noticeRes.data, noticeError = noticeRes.error;
       if (mounted && !noticeError) setNoticeState(noticeStateFromRows(noticeRows));
 
-      const { data: cohortRow } = await supabase
-        .from("profiles").select("cohort, is_internal").eq("id", userId).maybeSingle();
+      const cohortRow = extras.rows.cohort;
       // ★★is_internal も、ここで一緒に取ります（2026-09-05 夜）。
       //   ★お知らせの宛先を決めるのに要ります。
       //   ★取らないと undefined で、★「試験用ではない」に倒れます。
@@ -6014,14 +6028,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       if (mounted && cohortRow && cohortRow.cohort) {
         setProfile((prev) => ({ ...prev, cohort: cohortRow.cohort }));
       }
-      const { data: testerRow } = await supabase
-        .from("profiles").select("is_tester").eq("id", userId).maybeSingle();
+      const testerRow = extras.rows.tester;
       if (mounted && testerRow) {
         setProfile((prev) => ({ ...prev, is_tester: testerRow.is_tester === true }));
       }
 
-      const { data: healthRow } = await supabase
-        .from("profiles").select("allergies, regular_medications").eq("id", userId).maybeSingle();
+      const healthRow = extras.rows.health;
       if (mounted && healthRow) {
         setProfile((prev) => ({
           ...prev,
@@ -6039,14 +6051,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       }
       // ★★本番の日と、D+1 の答え（本番モード §1・§7）。
       //   ★読めなくても、★ほかの画面は動きます。★ここで止めません。
-      const { data: perfRows } = await supabase
-        .from("performances").select("id, performed_on, kind, label")
-        .eq("user_id", userId).order("performed_on", { ascending: false }).limit(60);
+      const perfRows = perfRes.data;
       if (mounted && perfRows) setPerformances(perfRows);
       // ★★result も読みます（★2026-09-08・C1）。
       //   ★「出なかった」と押した日を知るためです。★こちらでは決めません。
-      const { data: resultRows } = await supabase
-        .from("performance_results").select("performance_id, result").eq("user_id", userId);
+      const resultRows = resultRes.data;
       if (mounted && resultRows) {
         setAnsweredPerfIds(resultRows.map((r) => r.performance_id));
         setPerfResults(resultRows);
@@ -6059,10 +6068,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       }
       // ★★区切りマーカー（★2026-09-08）。★日付だけです。★理由は在りません。
       //   ★読めなくても、★ほかの画面は動きます。★ここで止めません。
-      const { data: markerRows } = await supabase
-        .from("period_markers").select("marked_on").eq("user_id", userId);
+      const markerRows = markerRes.data;
       if (mounted && markerRows) setPeriodMarkers(markerRows);
-      const { data: inventoryRows } = await supabase.from("character_inventory").select("item_key").eq("user_id", userId);
+      const inventoryRows = inventoryRes.data;
       if (mounted && inventoryRows) {
         // ★★描き直しの4点を、★持ち物に重ねます（★2026-09-08・呼び忘れの直し）。
         //   ★古いお店で買った麦わら帽子を持つ方は、★新しい鍵も持っています。

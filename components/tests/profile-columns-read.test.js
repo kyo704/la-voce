@@ -48,6 +48,13 @@ function readColumns() {
   while ((m = re.exec(vt)) !== null) {
     for (const n of m[1].matchAll(/[a-z_][a-z0-9_]*/g)) names.add(n[0]);
   }
+  // ★★2026-09-09、★あとから足した列を lib へ 移しました（★案B）。
+  //   ★★決まりは「使う列は、どこかで必ず読むこと」です。
+  //   ★★どこで 読むかは 決まりでは ありません。★lib も 見ます。
+  //     ★ここを 見ないと、★速くしただけで 見張りが 落ちます。
+  const extras = readCode("lib", "profileExtras.js");
+  const gm = /EXTRA_GROUPS = Object\.freeze\(\{([\s\S]*?)\}\);/.exec(extras);
+  if (gm) for (const n of gm[1].matchAll(/"([a-z_][a-z0-9_]*)"/g)) names.add(n[1]);
   return names;
 }
 

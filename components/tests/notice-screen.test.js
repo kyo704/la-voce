@@ -105,7 +105,12 @@ const squash = (t) => String(t).replace(/[\s　]+/g, "");
   ok("★宛先の module を通している", /shouldNotify\(profile, \["operator", "tester", "general"\]\)/.test(vt));
   ok("★宛先の module を import している", /from "@\/lib\/noticeAudience"/.test(vt));
   // ★★is_internal を読んでいないと、★undefined ＝「試験用ではない」に倒れます。
-  ok("★is_internal を読んでいる", /select\("cohort, is_internal"\)/.test(vt));
+  // ★★2026-09-09、★あとから足した列を lib へ 移しました（★案B）。
+  //   ★★読んでいることは 変わりません。★読む場所が 変わりました。
+  ok("★is_internal を読んでいる",
+    /select\("cohort, is_internal"\)/.test(vt)
+    || (/extras\.rows\.cohort/.test(vt)
+        && /cohort: \["cohort", "is_internal"\]/.test(readCode("lib", "profileExtras.js"))));
   ok("★is_internal の既定を置いている", /is_internal: false,/.test(vt));
 
   const aud = await import("data:text/javascript;base64," +
