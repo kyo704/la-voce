@@ -47,7 +47,7 @@ function ok(name, cond, extra) {
     !/supabase|fetch\(|axios/.test(cache) && /localStorage/.test(cache));
   ok("★人ごとに 分けている", /KEY_PREFIX \+ String\(userId/.test(cache));
 
-  console.log("■ ★② ぜんぶ そろってから 出す");
+  console.log("■ ★② はじめの1回だけ、そろってから 出す");
   const sd = readCode("components", "SheepDressed.jsx");
   ok("★描ける状態に なるまで 待つ", /useLayersReady\(/.test(sd));
   ok("★decode\\(\\) を 待っている", /im\.decode\(\)\.then\(done, done\)/.test(sd));
@@ -55,6 +55,13 @@ function ok(name, cond, extra) {
   // ★★消さずに、見えなくするだけ（★出た瞬間の がたつきを 避ける）。
   ok("★★消さずに 見えなくしている", /opacity: ready \? 1 : 0/.test(sd));
   ok("★見本では 待たない", /useLayersReady\(layers\.map\(\(l\) => l\.src\)\.filter\(Boolean\), !thumb\)/.test(sd));
+  // ★★1度 出したら、★2度と 隠さないこと（★2026-09-09・実機「羊が 消える」）。
+  //   ★★まばたきは 3〜7秒に1回。★顔が 差し替わります。
+  //     ★そのたびに 隠していたので、★羊ぜんたいが 一瞬 消えていました。
+  ok("★★1度 出したら、2度と 隠さない",
+    /const everRef = useRef\(false\);/.test(sd)
+    && /if \(!everRef\.current\) setReady\(false\);/.test(sd));
+  ok("★出せたことを 覚える", /everRef\.current = true;\s*\n\s*setReady\(true\);/.test(sd));
 
   console.log("■ ★⑥ 動かすのは、かたまりの外側だけ");
   // ★★1枚ずつ 動かすと、★服と体が ずれます。

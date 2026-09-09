@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useEffect, useState } from "react";
+import { useId, useEffect, useState, useRef } from "react";
 
 import { SHEEP_BASE, SHEEP_ASSET_BASE, sheepItemByKey, sheepItemSrc } from "@/lib/sheepItems";
 import { LAYER_ORDER, PROP_SIDE_DEFAULT, motionOf, LEGS, SHOE_SPLIT_X, slotZ } from "@/lib/sheepWardrobe";
@@ -104,12 +104,23 @@ function useBlink(enabled) {
  */
 function useLayersReady(srcs, enabled) {
   const [ready, setReady] = useState(false);
+  // ★★1度 出したら、★2度と 隠しません（★2026-09-09・実機「羊が 消える」）。
+  //
+  //   ★★もとは、★絵の 顔ぶれが 変わるたびに 隠していました。
+  //     ★★まばたきは 3〜7秒に1回 来ます。★顔が 差し替わります。
+  //     ★★そのたびに、★羊ぜんたいが 一瞬 消えていました。
+  //   ★★隠すのは「★はじめの 1回」だけで 足ります。
+  //     ★あれは「脚だけ 先に 出る」を 見せないための ものでした。
+  //   ★★2枚目からは、★前の姿を そのままに します。
+  //     ★新しい絵が 来るまで、★古い絵が 出たままです。
+  const everRef = useRef(false);
   const joined = srcs.join("|");
   useEffect(() => {
-    if (!enabled) { setReady(true); return; }
-    if (typeof window === "undefined") { setReady(true); return; }
+    if (!enabled) { setReady(true); everRef.current = true; return; }
+    if (typeof window === "undefined") { setReady(true); everRef.current = true; return; }
     let alive = true;
-    setReady(false);
+    // ★★1度 出したあとは、★隠しません。
+    if (!everRef.current) setReady(false);
     const list = joined ? joined.split("|") : [];
     if (list.length === 0) { setReady(true); return; }
     Promise.all(list.map((src) => new Promise((done) => {
@@ -119,7 +130,11 @@ function useLayersReady(srcs, enabled) {
       // ★★読めなくても 進みます。★1枚のために 止めません。
       im.onerror = () => done();
       im.src = src;
-    }))).then(() => { if (alive) setReady(true); });
+    }))).then(() => {
+      if (!alive) return;
+      everRef.current = true;
+      setReady(true);
+    });
     return () => { alive = false; };
   }, [joined, enabled]);
   return ready;

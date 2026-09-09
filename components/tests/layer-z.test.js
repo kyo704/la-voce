@@ -89,7 +89,13 @@ async function load(rel) {
   ok(V.sheepZIndex(66) === V.zIndexOf(70, 66), "羊も、同じ物差し");
   ok(V.zIndexOf(null, null) === 7000, "こわれた値でも、落ちない");
   const home = readCode("components", "CharacterHome.jsx");
-  ok(/sheepZIndex\(topPct\)/.test(home), "★羊の重ね順を、足もとから出している");
+  // ★★2026-09-09、★前後を「歩きの半ば」で 入れ替える形に しました。
+  //   ★★足もとの y から 出すことは 変わりません。
+  //     ★変わったのは「★いつ 入れ替えるか」だけです。
+  //   ★y は 動き出す瞬間に 変わるのに、体は 3.2秒 かけて 進みます。
+  //     ★だから 遅らせた y（zTop）から 出します。
+  ok(/sheepZIndex\(zTop\)/.test(home), "★羊の重ね順を、足もとから出している");
+  ok(/setZTop\(topPct\)/.test(home), "★遅らせているのは、足もとの y そのもの");
   ok(!/const frontZ = LAYER_CONFIG\.front\.z;$/m.test(home),
     "★★z=6 の決め打ちを、やめた");
   const layer = readCode("components", "InteriorLayer.jsx");

@@ -13,7 +13,7 @@ import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
 } from "@/lib/oldHouseVisibility";
 // ★動かせる内装が在るか／羊の重ね順。★決めは、あちらが持ちます。
-import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs, nextSitMs } from "@/lib/sheepInteriorV2";
+import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs, nextSitMs, zSwitchDelayMs } from "@/lib/sheepInteriorV2";
 import SpeechBubble from "@/components/SpeechBubble";
 import { SOLO, TIMING, FACE_FOR, pickLine, nextSoloMs, pushRecent } from "@/lib/sheepSpeech";
 import { pickGesture, nextGestureMs, mayGesture, pushRecent as pushGesture } from "@/lib/sheepGestures";
@@ -869,7 +869,20 @@ function PositionedCharacter({ equipped, size, leftPct, topPct, facingLeft, isWa
   //     ★★足もとの y で 前後を決めます。
   //   ★門の外の方（★内装が出ない方）には、★これまでどおり 6 です。
   //     ★あちらは、★古い家具と同じ物差しで動いています。
-  const frontZ = wardrobeOn ? sheepZIndex(topPct) : LAYER_CONFIG.front.z;
+  // ★★前後は、★歩きの 半ばで 入れ替えます（★2026-09-09・実機のご報告）。
+  //
+  //   ★★重ね順は 足もとの y から 出しますが、★y は 動き出す瞬間に 変わります。
+  //     ★体は そのあと 3.2秒 かけて 進みます。
+  //     ★★だから、★まだ 動いていないうちに 前後が 入れ替わっていました。
+  //   ★★歩いていないとき（★座る・寝る・置き直し）は、★すぐ 入れ替えます。
+  //     ★あちらは 位置が すぐ 変わるので、★遅らせると 逆に ずれます。
+  const [zTop, setZTop] = useState(topPct);
+  useEffect(() => {
+    if (!isWalking) { setZTop(topPct); return; }
+    const t = setTimeout(() => setZTop(topPct), zSwitchDelayMs());
+    return () => clearTimeout(t);
+  }, [topPct, isWalking]);
+  const frontZ = wardrobeOn ? sheepZIndex(zTop) : LAYER_CONFIG.front.z;
   // ★★大きさが まだ 測れていないときは、★出しません（★2026-09-08 夜・案A）。
   //   ★中途半端な大きさで 一瞬 出すより、★1呼吸 待つほうが 静かです。
   //   ★★庭は これまでどおり 画素で 渡すので、★ここは 通りません。

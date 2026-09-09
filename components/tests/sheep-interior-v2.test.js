@@ -482,6 +482,14 @@ function ok(name, cond, extra) {
     ok("★座りに行くのは 60〜150秒に1回",
       m.nextSitMs(() => 0) === 60000 && m.nextSitMs(() => 1) === 150000);
     ok("★頻度も lib から", !/20000 \+ Math\.random\(\) \* 20000/.test(home5));
+    // ★★前後は、歩きの半ばで 入れ替えること（★2026-09-09・実機「唐突」）。
+    //   ★★y は 動き出す瞬間に 変わるのに、体は 3.2秒 かけて 進みます。
+    //     ★だから、まだ動いていないうちに 入れ替わっていました。
+    ok("★入れ替えは 歩きの半ば", m.zSwitchDelayMs() === Math.round(m.WALK_MS * 0.5));
+    ok("★★重ね順は、遅らせた y から 出している",
+      /sheepZIndex\(zTop\)/.test(home5) && !/sheepZIndex\(topPct\)/.test(home5));
+    // ★★歩いていないときは、すぐ 入れ替えること。
+    ok("★★歩いていなければ すぐ", /if \(!isWalking\) \{ setZTop\(topPct\); return; \}/.test(home5));
     // ★★歩いている割合が 半分より 少ないこと。
     const ratio = m.WALK_MS / (m.WALK_MS + (m.WALK_REST_MIN_MS + m.WALK_REST_MAX_MS) / 2);
     ok(`★歩いている割合が 半分より少ない（${Math.round(ratio * 100)}%）`, ratio < 0.5);

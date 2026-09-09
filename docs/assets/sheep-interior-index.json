@@ -20,7 +20,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    118,
+    301
+   ]
   },
   {
    "key": "furniture_02",
@@ -40,7 +44,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    180,
+    309
+   ]
   },
   {
    "key": "furniture_03",
@@ -60,7 +68,11 @@
    ],
    "placement": "ceiling",
    "anchor": "top-center",
-   "z": 90
+   "z": 90,
+   "contentY": [
+    0,
+    247
+   ]
   },
   {
    "key": "furniture_04",
@@ -80,7 +92,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    110,
+    301
+   ]
   },
   {
    "key": "furniture_05",
@@ -100,7 +116,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    224,
+    301
+   ]
   },
   {
    "key": "furniture_06",
@@ -120,7 +140,11 @@
    ],
    "placement": "ceiling",
    "anchor": "top-center",
-   "z": 90
+   "z": 90,
+   "contentY": [
+    0,
+    247
+   ]
   },
   {
    "key": "furniture_07",
@@ -140,7 +164,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    132,
+    301
+   ]
   },
   {
    "key": "furniture_08",
@@ -160,7 +188,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    208,
+    301
+   ]
   },
   {
    "key": "furniture_09",
@@ -180,7 +212,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    40,
+    309
+   ]
   },
   {
    "key": "furniture_10",
@@ -200,7 +236,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    104,
+    301
+   ]
   },
   {
    "key": "furniture_11",
@@ -220,7 +260,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    184,
+    309
+   ]
   },
   {
    "key": "furniture_12",
@@ -240,7 +284,11 @@
    ],
    "placement": "ceiling",
    "anchor": "top-center",
-   "z": 90
+   "z": 90,
+   "contentY": [
+    0,
+    247
+   ]
   },
   {
    "key": "furniture_13",
@@ -260,7 +308,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    118,
+    301
+   ]
   },
   {
    "key": "furniture_14",
@@ -280,7 +332,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    232,
+    301
+   ]
   },
   {
    "key": "furniture_15",
@@ -300,7 +356,11 @@
    ],
    "placement": "ceiling",
    "anchor": "top-center",
-   "z": 90
+   "z": 90,
+   "contentY": [
+    0,
+    247
+   ]
   },
   {
    "key": "furniture_16",
@@ -320,7 +380,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    112,
+    301
+   ]
   },
   {
    "key": "furniture_17",
@@ -340,7 +404,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    204,
+    301
+   ]
   },
   {
    "key": "furniture_18",
@@ -360,7 +428,11 @@
    ],
    "placement": "ceiling",
    "anchor": "top-center",
-   "z": 90
+   "z": 90,
+   "contentY": [
+    0,
+    247
+   ]
   },
   {
    "key": "furniture_19",
@@ -380,7 +452,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    118,
+    301
+   ]
   },
   {
    "key": "furniture_20",
@@ -400,7 +476,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    196,
+    301
+   ]
   },
   {
    "key": "furniture_21",
@@ -420,7 +500,11 @@
    ],
    "placement": "ceiling",
    "anchor": "top-center",
-   "z": 90
+   "z": 90,
+   "contentY": [
+    0,
+    247
+   ]
   },
   {
    "key": "furniture_22",
@@ -440,7 +524,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    104,
+    301
+   ]
   },
   {
    "key": "furniture_23",
@@ -460,7 +548,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    212,
+    301
+   ]
   },
   {
    "key": "furniture_24",
@@ -480,7 +572,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    44,
+    309
+   ]
   },
   {
    "key": "furniture_25",
@@ -500,7 +596,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    112,
+    301
+   ]
   },
   {
    "key": "furniture_26",
@@ -520,7 +620,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    216,
+    301
+   ]
   },
   {
    "key": "furniture_27",
@@ -540,7 +644,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    36,
+    309
+   ]
   },
   {
    "key": "window_01",
@@ -567,7 +675,11 @@
    "placement": "opening",
    "anchor": "center",
    "z": 30,
-   "holeMask": "windowhole/window_01.png"
+   "holeMask": "windowhole/window_01.png",
+   "contentY": [
+    6,
+    379
+   ]
   },
   {
    "key": "window_02",
@@ -594,7 +706,11 @@
    "placement": "opening",
    "anchor": "center",
    "z": 30,
-   "holeMask": "windowhole/window_02.png"
+   "holeMask": "windowhole/window_02.png",
+   "contentY": [
+    10,
+    375
+   ]
   },
   {
    "key": "window_03",
@@ -621,7 +737,11 @@
    "placement": "opening",
    "anchor": "center",
    "z": 30,
-   "holeMask": "windowhole/window_03.png"
+   "holeMask": "windowhole/window_03.png",
+   "contentY": [
+    16,
+    369
+   ]
   },
   {
    "key": "window_04",
@@ -648,7 +768,11 @@
    "placement": "opening",
    "anchor": "center",
    "z": 30,
-   "holeMask": "windowhole/window_04.png"
+   "holeMask": "windowhole/window_04.png",
+   "contentY": [
+    12,
+    373
+   ]
   },
   {
    "key": "window_05",
@@ -675,7 +799,11 @@
    "placement": "opening",
    "anchor": "center",
    "z": 30,
-   "holeMask": "windowhole/window_05.png"
+   "holeMask": "windowhole/window_05.png",
+   "contentY": [
+    8,
+    377
+   ]
   },
   {
    "key": "window_06",
@@ -702,7 +830,11 @@
    "placement": "opening",
    "anchor": "center",
    "z": 30,
-   "holeMask": "windowhole/window_06.png"
+   "holeMask": "windowhole/window_06.png",
+   "contentY": [
+    10,
+    375
+   ]
   },
   {
    "key": "window_07",
@@ -729,7 +861,11 @@
    "placement": "opening",
    "anchor": "center",
    "z": 30,
-   "holeMask": "windowhole/window_07.png"
+   "holeMask": "windowhole/window_07.png",
+   "contentY": [
+    10,
+    375
+   ]
   },
   {
    "key": "window_08",
@@ -756,7 +892,11 @@
    "placement": "opening",
    "anchor": "center",
    "z": 30,
-   "holeMask": "windowhole/window_08.png"
+   "holeMask": "windowhole/window_08.png",
+   "contentY": [
+    8,
+    377
+   ]
   },
   {
    "key": "window_09",
@@ -783,7 +923,11 @@
    "placement": "opening",
    "anchor": "center",
    "z": 30,
-   "holeMask": "windowhole/window_09.png"
+   "holeMask": "windowhole/window_09.png",
+   "contentY": [
+    56,
+    329
+   ]
   },
   {
    "key": "window_10",
@@ -811,7 +955,11 @@
    "placement": "opening",
    "anchor": "center",
    "z": 30,
-   "holeMask": "windowhole/window_10.png"
+   "holeMask": "windowhole/window_10.png",
+   "contentY": [
+    8,
+    377
+   ]
   },
   {
    "key": "window_11",
@@ -838,7 +986,11 @@
    "placement": "opening",
    "anchor": "center",
    "z": 30,
-   "holeMask": "windowhole/window_11.png"
+   "holeMask": "windowhole/window_11.png",
+   "contentY": [
+    8,
+    377
+   ]
   },
   {
    "key": "window_12",
@@ -865,7 +1017,11 @@
    "placement": "opening",
    "anchor": "center",
    "z": 30,
-   "holeMask": "windowhole/window_12.png"
+   "holeMask": "windowhole/window_12.png",
+   "contentY": [
+    8,
+    377
+   ]
   },
   {
    "key": "window_13",
@@ -892,7 +1048,11 @@
    "placement": "opening",
    "anchor": "center",
    "z": 30,
-   "holeMask": "windowhole/window_13.png"
+   "holeMask": "windowhole/window_13.png",
+   "contentY": [
+    8,
+    377
+   ]
   },
   {
    "key": "door_01",
@@ -912,7 +1072,11 @@
    ],
    "placement": "opening",
    "anchor": "center",
-   "z": 30
+   "z": 30,
+   "contentY": [
+    10,
+    503
+   ]
   },
   {
    "key": "door_02",
@@ -932,7 +1096,11 @@
    ],
    "placement": "opening",
    "anchor": "center",
-   "z": 30
+   "z": 30,
+   "contentY": [
+    10,
+    503
+   ]
   },
   {
    "key": "door_03",
@@ -952,7 +1120,11 @@
    ],
    "placement": "opening",
    "anchor": "center",
-   "z": 30
+   "z": 30,
+   "contentY": [
+    10,
+    503
+   ]
   },
   {
    "key": "door_04",
@@ -972,7 +1144,11 @@
    ],
    "placement": "opening",
    "anchor": "center",
-   "z": 30
+   "z": 30,
+   "contentY": [
+    10,
+    503
+   ]
   },
   {
    "key": "door_05",
@@ -992,7 +1168,11 @@
    ],
    "placement": "opening",
    "anchor": "center",
-   "z": 30
+   "z": 30,
+   "contentY": [
+    10,
+    503
+   ]
   },
   {
    "key": "door_06",
@@ -1012,7 +1192,11 @@
    ],
    "placement": "opening",
    "anchor": "center",
-   "z": 30
+   "z": 30,
+   "contentY": [
+    10,
+    503
+   ]
   },
   {
    "key": "door_07",
@@ -1032,7 +1216,11 @@
    ],
    "placement": "opening",
    "anchor": "center",
-   "z": 30
+   "z": 30,
+   "contentY": [
+    10,
+    503
+   ]
   },
   {
    "key": "door_08",
@@ -1052,7 +1240,11 @@
    ],
    "placement": "opening",
    "anchor": "center",
-   "z": 30
+   "z": 30,
+   "contentY": [
+    10,
+    503
+   ]
   },
   {
    "key": "door_09",
@@ -1072,7 +1264,11 @@
    ],
    "placement": "opening",
    "anchor": "center",
-   "z": 30
+   "z": 30,
+   "contentY": [
+    10,
+    503
+   ]
   },
   {
    "key": "door_10",
@@ -1092,7 +1288,11 @@
    ],
    "placement": "opening",
    "anchor": "center",
-   "z": 30
+   "z": 30,
+   "contentY": [
+    10,
+    503
+   ]
   },
   {
    "key": "door_11",
@@ -1112,7 +1312,11 @@
    ],
    "placement": "opening",
    "anchor": "center",
-   "z": 30
+   "z": 30,
+   "contentY": [
+    10,
+    503
+   ]
   },
   {
    "key": "door_12",
@@ -1132,7 +1336,11 @@
    ],
    "placement": "opening",
    "anchor": "center",
-   "z": 30
+   "z": 30,
+   "contentY": [
+    10,
+    503
+   ]
   },
   {
    "key": "view_01",
@@ -1152,7 +1360,11 @@
    ],
    "placement": "view",
    "anchor": "center",
-   "z": 20
+   "z": 20,
+   "contentY": [
+    0,
+    384
+   ]
   },
   {
    "key": "view_02",
@@ -1172,7 +1384,11 @@
    ],
    "placement": "view",
    "anchor": "center",
-   "z": 20
+   "z": 20,
+   "contentY": [
+    0,
+    384
+   ]
   },
   {
    "key": "view_03",
@@ -1192,7 +1408,11 @@
    ],
    "placement": "view",
    "anchor": "center",
-   "z": 20
+   "z": 20,
+   "contentY": [
+    0,
+    384
+   ]
   },
   {
    "key": "view_04",
@@ -1212,7 +1432,11 @@
    ],
    "placement": "view",
    "anchor": "center",
-   "z": 20
+   "z": 20,
+   "contentY": [
+    0,
+    384
+   ]
   },
   {
    "key": "view_05",
@@ -1232,7 +1456,11 @@
    ],
    "placement": "view",
    "anchor": "center",
-   "z": 20
+   "z": 20,
+   "contentY": [
+    0,
+    384
+   ]
   },
   {
    "key": "view_06",
@@ -1252,7 +1480,11 @@
    ],
    "placement": "view",
    "anchor": "center",
-   "z": 20
+   "z": 20,
+   "contentY": [
+    0,
+    384
+   ]
   },
   {
    "key": "view_07",
@@ -1272,7 +1504,11 @@
    ],
    "placement": "view",
    "anchor": "center",
-   "z": 20
+   "z": 20,
+   "contentY": [
+    0,
+    384
+   ]
   },
   {
    "key": "view_08",
@@ -1292,7 +1528,11 @@
    ],
    "placement": "view",
    "anchor": "center",
-   "z": 20
+   "z": 20,
+   "contentY": [
+    0,
+    384
+   ]
   },
   {
    "key": "view_09",
@@ -1312,7 +1552,11 @@
    ],
    "placement": "view",
    "anchor": "center",
-   "z": 20
+   "z": 20,
+   "contentY": [
+    0,
+    384
+   ]
   },
   {
    "key": "view_10",
@@ -1332,7 +1576,11 @@
    ],
    "placement": "view",
    "anchor": "center",
-   "z": 20
+   "z": 20,
+   "contentY": [
+    0,
+    384
+   ]
   },
   {
    "key": "view_11",
@@ -1352,7 +1600,11 @@
    ],
    "placement": "view",
    "anchor": "center",
-   "z": 20
+   "z": 20,
+   "contentY": [
+    0,
+    384
+   ]
   },
   {
    "key": "view_12",
@@ -1372,7 +1624,11 @@
    ],
    "placement": "view",
    "anchor": "center",
-   "z": 20
+   "z": 20,
+   "contentY": [
+    0,
+    384
+   ]
   },
   {
    "key": "view_13",
@@ -1392,7 +1648,11 @@
    ],
    "placement": "view",
    "anchor": "center",
-   "z": 20
+   "z": 20,
+   "contentY": [
+    0,
+    384
+   ]
   },
   {
    "key": "garden_01",
@@ -1412,7 +1672,11 @@
    ],
    "placement": "outside",
    "anchor": "bottom-center",
-   "z": 5
+   "z": 5,
+   "contentY": [
+    112,
+    320
+   ]
   },
   {
    "key": "garden_02",
@@ -1432,7 +1696,11 @@
    ],
    "placement": "outside",
    "anchor": "bottom-center",
-   "z": 5
+   "z": 5,
+   "contentY": [
+    74,
+    320
+   ]
   },
   {
    "key": "garden_03",
@@ -1452,7 +1720,11 @@
    ],
    "placement": "outside",
    "anchor": "bottom-center",
-   "z": 5
+   "z": 5,
+   "contentY": [
+    140,
+    320
+   ]
   },
   {
    "key": "garden_04",
@@ -1472,7 +1744,11 @@
    ],
    "placement": "outside",
    "anchor": "bottom-center",
-   "z": 5
+   "z": 5,
+   "contentY": [
+    130,
+    320
+   ]
   },
   {
    "key": "garden_05",
@@ -1492,7 +1768,11 @@
    ],
    "placement": "outside",
    "anchor": "bottom-center",
-   "z": 5
+   "z": 5,
+   "contentY": [
+    86,
+    320
+   ]
   },
   {
    "key": "garden_06",
@@ -1512,7 +1792,11 @@
    ],
    "placement": "outside",
    "anchor": "bottom-center",
-   "z": 5
+   "z": 5,
+   "contentY": [
+    132,
+    320
+   ]
   },
   {
    "key": "garden_07",
@@ -1532,7 +1816,11 @@
    ],
    "placement": "outside",
    "anchor": "bottom-center",
-   "z": 5
+   "z": 5,
+   "contentY": [
+    76,
+    320
+   ]
   },
   {
    "key": "garden_08",
@@ -1552,7 +1840,11 @@
    ],
    "placement": "outside",
    "anchor": "bottom-center",
-   "z": 5
+   "z": 5,
+   "contentY": [
+    54,
+    320
+   ]
   },
   {
    "key": "garden_09",
@@ -1572,7 +1864,11 @@
    ],
    "placement": "outside",
    "anchor": "bottom-center",
-   "z": 5
+   "z": 5,
+   "contentY": [
+    26,
+    320
+   ]
   },
   {
    "key": "garden_10",
@@ -1592,7 +1888,11 @@
    ],
    "placement": "outside",
    "anchor": "bottom-center",
-   "z": 5
+   "z": 5,
+   "contentY": [
+    33,
+    320
+   ]
   },
   {
    "key": "garden_11",
@@ -1612,7 +1912,11 @@
    ],
    "placement": "outside",
    "anchor": "bottom-center",
-   "z": 5
+   "z": 5,
+   "contentY": [
+    93,
+    320
+   ]
   },
   {
    "key": "garden_12",
@@ -1632,7 +1936,11 @@
    ],
    "placement": "outside",
    "anchor": "bottom-center",
-   "z": 5
+   "z": 5,
+   "contentY": [
+    104,
+    320
+   ]
   },
   {
    "key": "garden_13",
@@ -1652,7 +1960,11 @@
    ],
    "placement": "outside",
    "anchor": "bottom-center",
-   "z": 5
+   "z": 5,
+   "contentY": [
+    84,
+    289
+   ]
   },
   {
    "key": "garden_14",
@@ -1672,7 +1984,11 @@
    ],
    "placement": "outside",
    "anchor": "bottom-center",
-   "z": 5
+   "z": 5,
+   "contentY": [
+    70,
+    320
+   ]
   },
   {
    "key": "wallart_01",
@@ -1692,7 +2008,11 @@
    ],
    "placement": "wall",
    "anchor": "center",
-   "z": 40
+   "z": 40,
+   "contentY": [
+    74,
+    261
+   ]
   },
   {
    "key": "wallart_02",
@@ -1712,7 +2032,11 @@
    ],
    "placement": "wall",
    "anchor": "center",
-   "z": 40
+   "z": 40,
+   "contentY": [
+    50,
+    283
+   ]
   },
   {
    "key": "wallart_03",
@@ -1732,7 +2056,11 @@
    ],
    "placement": "wall",
    "anchor": "center",
-   "z": 40
+   "z": 40,
+   "contentY": [
+    44,
+    289
+   ]
   },
   {
    "key": "wallart_04",
@@ -1752,7 +2080,11 @@
    ],
    "placement": "wall",
    "anchor": "center",
-   "z": 40
+   "z": 40,
+   "contentY": [
+    20,
+    307
+   ]
   },
   {
    "key": "wallart_05",
@@ -1772,7 +2104,11 @@
    ],
    "placement": "wall",
    "anchor": "center",
-   "z": 40
+   "z": 40,
+   "contentY": [
+    31,
+    302
+   ]
   },
   {
    "key": "wallart_06",
@@ -1792,7 +2128,11 @@
    ],
    "placement": "wall",
    "anchor": "center",
-   "z": 40
+   "z": 40,
+   "contentY": [
+    86,
+    225
+   ]
   },
   {
    "key": "wallart_07",
@@ -1812,7 +2152,11 @@
    ],
    "placement": "wall",
    "anchor": "center",
-   "z": 40
+   "z": 40,
+   "contentY": [
+    89,
+    288
+   ]
   },
   {
    "key": "wallart_08",
@@ -1832,7 +2176,11 @@
    ],
    "placement": "wall",
    "anchor": "center",
-   "z": 40
+   "z": 40,
+   "contentY": [
+    54,
+    293
+   ]
   },
   {
    "key": "wallart_09",
@@ -1852,7 +2200,11 @@
    ],
    "placement": "wall",
    "anchor": "center",
-   "z": 40
+   "z": 40,
+   "contentY": [
+    10,
+    299
+   ]
   },
   {
    "key": "wallart_10",
@@ -1872,7 +2224,11 @@
    ],
    "placement": "wall",
    "anchor": "center",
-   "z": 40
+   "z": 40,
+   "contentY": [
+    50,
+    299
+   ]
   },
   {
    "key": "wallart_11",
@@ -1892,7 +2248,11 @@
    ],
    "placement": "tabletop",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    74,
+    301
+   ]
   },
   {
    "key": "wallart_12",
@@ -1912,7 +2272,11 @@
    ],
    "placement": "wall",
    "anchor": "center",
-   "z": 40
+   "z": 40,
+   "contentY": [
+    86,
+    251
+   ]
   },
   {
    "key": "wallart_13",
@@ -1932,7 +2296,11 @@
    ],
    "placement": "wall",
    "anchor": "center",
-   "z": 40
+   "z": 40,
+   "contentY": [
+    26,
+    267
+   ]
   },
   {
    "key": "showa_01",
@@ -1952,7 +2320,11 @@
    ],
    "placement": "tabletop",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    104,
+    320
+   ]
   },
   {
    "key": "showa_02",
@@ -1972,7 +2344,11 @@
    ],
    "placement": "wall",
    "anchor": "center",
-   "z": 40
+   "z": 40,
+   "contentY": [
+    10,
+    269
+   ]
   },
   {
    "key": "showa_03",
@@ -1992,7 +2368,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    98,
+    320
+   ]
   },
   {
    "key": "showa_04",
@@ -2012,7 +2392,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    58,
+    320
+   ]
   },
   {
    "key": "showa_05",
@@ -2032,7 +2416,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    72,
+    320
+   ]
   },
   {
    "key": "showa_06",
@@ -2052,7 +2440,11 @@
    ],
    "placement": "ceiling",
    "anchor": "top-center",
-   "z": 90
+   "z": 90,
+   "contentY": [
+    0,
+    193
+   ]
   },
   {
    "key": "showa_07",
@@ -2072,7 +2464,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    152,
+    320
+   ]
   },
   {
    "key": "showa_08",
@@ -2092,7 +2488,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    88,
+    320
+   ]
   },
   {
    "key": "showa_09",
@@ -2112,7 +2512,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    148,
+    320
+   ]
   },
   {
    "key": "showa_10",
@@ -2132,7 +2536,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    88,
+    320
+   ]
   },
   {
    "key": "showa_11",
@@ -2152,7 +2560,11 @@
    ],
    "placement": "tabletop",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    130,
+    320
+   ]
   },
   {
    "key": "showa_12",
@@ -2172,7 +2584,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    162,
+    320
+   ]
   },
   {
    "key": "showa_13",
@@ -2192,7 +2608,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    112,
+    320
+   ]
   },
   {
    "key": "showa_14",
@@ -2212,7 +2632,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    168,
+    320
+   ]
   },
   {
    "key": "showa_15",
@@ -2232,7 +2656,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    168,
+    320
+   ]
   },
   {
    "key": "showa_16",
@@ -2252,7 +2680,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    44,
+    320
+   ]
   },
   {
    "key": "showa_17",
@@ -2272,7 +2704,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    148,
+    320
+   ]
   },
   {
    "key": "showa_18",
@@ -2292,7 +2728,11 @@
    ],
    "placement": "floor",
    "anchor": "bottom-center",
-   "z": 70
+   "z": 70,
+   "contentY": [
+    158,
+    320
+   ]
   },
   {
    "key": "showa_19",
@@ -2312,7 +2752,11 @@
    ],
    "placement": "structure",
    "anchor": "bottom-center",
-   "z": 60
+   "z": 60,
+   "contentY": [
+    40,
+    320
+   ]
   },
   {
    "key": "tile_01",
@@ -2332,7 +2776,11 @@
    ],
    "placement": "surface",
    "anchor": "tile",
-   "z": 10
+   "z": 10,
+   "contentY": [
+    0,
+    256
+   ]
   },
   {
    "key": "tile_02",
@@ -2352,7 +2800,11 @@
    ],
    "placement": "surface",
    "anchor": "tile",
-   "z": 10
+   "z": 10,
+   "contentY": [
+    0,
+    256
+   ]
   },
   {
    "key": "tile_03",
@@ -2372,7 +2824,11 @@
    ],
    "placement": "surface",
    "anchor": "tile",
-   "z": 10
+   "z": 10,
+   "contentY": [
+    0,
+    256
+   ]
   },
   {
    "key": "tile_04",
@@ -2392,7 +2848,11 @@
    ],
    "placement": "surface",
    "anchor": "tile",
-   "z": 10
+   "z": 10,
+   "contentY": [
+    0,
+    256
+   ]
   },
   {
    "key": "tile_05",
@@ -2412,7 +2872,11 @@
    ],
    "placement": "surface",
    "anchor": "tile",
-   "z": 10
+   "z": 10,
+   "contentY": [
+    0,
+    256
+   ]
   },
   {
    "key": "tile_06",
@@ -2432,7 +2896,11 @@
    ],
    "placement": "surface",
    "anchor": "tile",
-   "z": 50
+   "z": 50,
+   "contentY": [
+    0,
+    256
+   ]
   },
   {
    "key": "tile_07",
@@ -2452,7 +2920,11 @@
    ],
    "placement": "surface",
    "anchor": "tile",
-   "z": 50
+   "z": 50,
+   "contentY": [
+    0,
+    256
+   ]
   },
   {
    "key": "tile_08",
@@ -2472,7 +2944,11 @@
    ],
    "placement": "surface",
    "anchor": "tile",
-   "z": 50
+   "z": 50,
+   "contentY": [
+    0,
+    256
+   ]
   },
   {
    "key": "tile_09",
@@ -2492,7 +2968,11 @@
    ],
    "placement": "surface",
    "anchor": "tile",
-   "z": 50
+   "z": 50,
+   "contentY": [
+    0,
+    256
+   ]
   },
   {
    "key": "floor_01",
@@ -2512,6 +2992,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2532,6 +3020,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2552,6 +3048,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2573,6 +3077,14 @@
    "kanji": [
     "あたたかい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2593,6 +3105,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2613,6 +3133,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2633,6 +3161,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2653,6 +3189,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2673,6 +3217,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2693,6 +3245,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2713,6 +3273,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2734,6 +3302,14 @@
    "kanji": [
     "あたたかい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2755,6 +3331,14 @@
    "kanji": [
     "あたたかい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2776,6 +3360,14 @@
    "kanji": [
     "あたたかい",
     "和"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2796,6 +3388,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2817,6 +3417,14 @@
    "kanji": [
     "あたたかい",
     "よそゆき"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2838,6 +3446,14 @@
    "kanji": [
     "あたたかい",
     "よそゆき"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2859,6 +3475,14 @@
    "kanji": [
     "あたたかい",
     "よそゆき"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2879,6 +3503,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2899,6 +3531,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2920,6 +3560,14 @@
    "kanji": [
     "あたたかい",
     "和"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2941,6 +3589,14 @@
    "kanji": [
     "あたたかい",
     "和"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2962,6 +3618,14 @@
    "kanji": [
     "あたたかい",
     "和"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -2982,6 +3646,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3002,6 +3674,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3022,6 +3702,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3043,6 +3731,14 @@
    "kanji": [
     "和",
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3064,6 +3760,14 @@
    "kanji": [
     "和",
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3085,6 +3789,14 @@
    "kanji": [
     "和",
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3106,6 +3818,14 @@
    "kanji": [
     "和",
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3127,6 +3847,14 @@
    "kanji": [
     "和",
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3148,6 +3876,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3169,6 +3905,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3190,6 +3934,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3211,6 +3963,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3232,6 +3992,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3253,6 +4021,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3274,6 +4050,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3295,6 +4079,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3316,6 +4108,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3337,6 +4137,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3358,6 +4166,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3379,6 +4195,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3400,6 +4224,14 @@
    "kanji": [
     "すずしい",
     "よそゆき"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3421,6 +4253,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3442,6 +4282,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3463,6 +4311,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3484,6 +4340,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3505,6 +4369,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3526,6 +4398,14 @@
    "kanji": [
     "すずしい",
     "よそゆき"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3547,6 +4427,14 @@
    "kanji": [
     "すずしい",
     "よそゆき"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3568,6 +4456,14 @@
    "kanji": [
     "すずしい",
     "よそゆき"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3588,6 +4484,14 @@
    "seamless": true,
    "kanji": [
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3608,6 +4512,14 @@
    "seamless": true,
    "kanji": [
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3628,6 +4540,14 @@
    "seamless": true,
    "kanji": [
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3648,6 +4568,14 @@
    "seamless": true,
    "kanji": [
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3668,6 +4596,14 @@
    "seamless": true,
    "kanji": [
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3689,6 +4625,14 @@
    "kanji": [
     "あたたかい",
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3710,6 +4654,14 @@
    "kanji": [
     "あたたかい",
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3731,6 +4683,14 @@
    "kanji": [
     "あたたかい",
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3752,6 +4712,14 @@
    "kanji": [
     "あたたかい",
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3773,6 +4741,14 @@
    "kanji": [
     "あたたかい",
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3794,6 +4770,14 @@
    "kanji": [
     "あたたかい",
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3815,6 +4799,14 @@
    "kanji": [
     "あたたかい",
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3836,6 +4828,14 @@
    "kanji": [
     "あたたかい",
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3856,6 +4856,14 @@
    "seamless": true,
    "kanji": [
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3877,6 +4885,14 @@
    "kanji": [
     "ゆるい",
     "和"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3898,6 +4914,14 @@
    "kanji": [
     "ゆるい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3918,6 +4942,14 @@
    "seamless": true,
    "kanji": [
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3939,6 +4971,14 @@
    "kanji": [
     "ゆるい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3959,6 +4999,14 @@
    "seamless": true,
    "kanji": [
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3979,6 +5027,14 @@
    "seamless": true,
    "kanji": [
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -3999,6 +5055,14 @@
    "seamless": true,
    "kanji": [
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4019,6 +5083,14 @@
    "seamless": true,
    "kanji": [
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4040,6 +5112,14 @@
    "kanji": [
     "きちんと",
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4061,6 +5141,14 @@
    "kanji": [
     "きちんと",
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4082,6 +5170,14 @@
    "kanji": [
     "きちんと",
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4102,6 +5198,14 @@
    "seamless": true,
    "kanji": [
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4123,6 +5227,14 @@
    "kanji": [
     "きちんと",
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4144,6 +5256,14 @@
    "kanji": [
     "きちんと",
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4165,6 +5285,14 @@
    "kanji": [
     "きちんと",
     "よそゆき"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4186,6 +5314,14 @@
    "kanji": [
     "きちんと",
     "和"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4206,6 +5342,14 @@
    "seamless": true,
    "kanji": [
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4226,6 +5370,14 @@
    "seamless": true,
    "kanji": [
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4246,6 +5398,14 @@
    "seamless": true,
    "kanji": [
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4267,6 +5427,14 @@
    "kanji": [
     "きちんと",
     "すずしい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4288,6 +5456,14 @@
    "kanji": [
     "きちんと",
     "すずしい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4309,6 +5485,14 @@
    "kanji": [
     "きちんと",
     "すずしい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4330,6 +5514,14 @@
    "kanji": [
     "きちんと",
     "すずしい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4351,6 +5543,14 @@
    "kanji": [
     "きちんと",
     "すずしい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4372,6 +5572,14 @@
    "kanji": [
     "きちんと",
     "すずしい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4393,6 +5601,14 @@
    "kanji": [
     "きちんと",
     "すずしい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4414,6 +5630,14 @@
    "kanji": [
     "きちんと",
     "すずしい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4435,6 +5659,14 @@
    "kanji": [
     "きちんと",
     "すずしい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4456,6 +5688,14 @@
    "kanji": [
     "きちんと",
     "すずしい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4477,6 +5717,14 @@
    "kanji": [
     "きちんと",
     "すずしい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4498,6 +5746,14 @@
    "kanji": [
     "きちんと",
     "すずしい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4518,6 +5774,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4539,6 +5803,14 @@
    "kanji": [
     "あたたかい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4559,6 +5831,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4579,6 +5859,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4599,6 +5887,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4619,6 +5915,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4640,6 +5944,14 @@
    "kanji": [
     "あたたかい",
     "和"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4660,6 +5972,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4680,6 +6000,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4700,6 +6028,14 @@
    "seamless": true,
    "kanji": [
     "あたたかい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4721,6 +6057,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4742,6 +6086,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4763,6 +6115,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4784,6 +6144,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4805,6 +6173,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4826,6 +6202,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4847,6 +6231,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4868,6 +6260,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4889,6 +6289,14 @@
    "kanji": [
     "すずしい",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4910,6 +6318,14 @@
    "kanji": [
     "あたたかい",
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4931,6 +6347,14 @@
    "kanji": [
     "あたたかい",
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4952,6 +6376,14 @@
    "kanji": [
     "あたたかい",
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4973,6 +6405,14 @@
    "kanji": [
     "すずしい",
     "よそゆき"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -4994,6 +6434,14 @@
    "kanji": [
     "すずしい",
     "よそゆき"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -5015,6 +6463,14 @@
    "kanji": [
     "すずしい",
     "よそゆき"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -5036,6 +6492,14 @@
    "kanji": [
     "和",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -5057,6 +6521,14 @@
    "kanji": [
     "和",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -5078,6 +6550,14 @@
    "kanji": [
     "和",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -5099,6 +6579,14 @@
    "kanji": [
     "和",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -5120,6 +6608,14 @@
    "kanji": [
     "和",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -5141,6 +6637,14 @@
    "kanji": [
     "和",
     "きちんと"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   },
   {
@@ -5161,6 +6665,14 @@
    "seamless": true,
    "kanji": [
     "ゆるい"
+   ],
+   "contentX": [
+    0,
+    256
+   ],
+   "contentY": [
+    0,
+    256
    ]
   }
  ]

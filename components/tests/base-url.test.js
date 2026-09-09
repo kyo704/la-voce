@@ -172,6 +172,15 @@ async function main() {
   //   ★★版は、★中身を 変えるたびに 上げます。★上げるのが 正しい形です。
   //   ★数で 見ると、★正しく 上げたときに ここが 落ちます。
   //   ★★見たいのは「★版が 入っているか」です。★いくつか、では ありません。
+  // ★★Service Worker が 受けるのは、★画面の移動と 外枠だけ（★2026-09-09）。
+  //   ★★実機の 記録で、★Supabase への 問い合わせまで 通っていました。
+  //     ★0.8kB の 問い合わせに 1.05秒。★遠回りの ぶんです。
+  assertTrue(/function shouldHandle\(request\)/.test(sw),
+    "★★受けるものを 選んでいる（★全部は 受けない）");
+  assertTrue(/u\.origin !== self\.location\.origin\) return false/.test(sw),
+    "★★よその家のもの（Supabase など）は 触らない");
+  assertTrue(/request\.mode === "navigate"\) return true/.test(sw),
+    "★画面の移動は 受ける（★真っ白を 防ぐ 役目）");
   assertTrue(/CACHE_NAME = "woolsong-shell-v\d+"/.test(sw),
       "キャッシュ名を上げた（古い版が activate で消える）");
   }

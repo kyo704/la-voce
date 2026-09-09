@@ -6,7 +6,7 @@
 
 // エラー応答を取り込んでしまった古いキャッシュを捨てるため、版を上げる。
 // ★版を上げると、activate で古い版（la-voce-shell-v2 など）が消えます。
-const CACHE_NAME = "woolsong-shell-v4";
+const CACHE_NAME = "woolsong-shell-v5";
 
 // オフラインのときに必ず出せる画面。★install で焼き込みます。
 //   これが無いと、キャッシュに無いURLへ移動したときに
@@ -52,10 +52,31 @@ self.addEventListener("activate", (event) => {
 //     ★★そのほうが 速く、★Service Worker より 確かです。
 //   ★★外枠（HTML／CSS／JS）は、これまでどおり 面倒を見ます。
 //     ★オフラインで 真っ白に しない、という 役目は 変わりません。
-function isAsset(url) {
+// ★★横取りするのは、★この 3つだけです（★2026-09-09 の 直し）。
+//
+//   ★★実機の 記録で、★Supabase への 問い合わせが すべて
+//     ★sw.js を 経由して いました。★0.8kB の 問い合わせに 1.05秒。
+//   ★★この Service Worker の 役目は 1つだけです。
+//     ★「★オフラインでも 真っ白に しない」。
+//     ★★それには、★画面の 移動と、★外枠（HTML／CSS／JS）だけで 足ります。
+//   ★★問い合わせも、絵も、★横取りする 理由が ありません。
+//     ★★横取りすると、★1つ ずつ 遠回りに なります。
+//
+//   ★★これまで、★すべての GET を 受けていました。
+//     ★2026-09-09、★まず 絵（/sheep/）を 外しました。
+//     ★★それでも 問い合わせが 残っていました。★ここで 全部 外します。
+function shouldHandle(request) {
   try {
-    const u = new URL(url);
-    return u.pathname.startsWith("/sheep/");
+    const u = new URL(request.url);
+    // ★★よその 家のものは、★1つも 触りません（★Supabase・Stripe など）。
+    if (u.origin !== self.location.origin) return false;
+    // ★★画面の 移動は 受けます。★これが 真っ白を 防ぐ 役目です。
+    if (request.mode === "navigate") return true;
+    // ★★外枠だけ 受けます。★Next.js の 束と、素の 見た目のもの。
+    if (u.pathname.startsWith("/_next/")) return true;
+    if (u.pathname === "/manifest.json" || u.pathname === "/offline.html") return true;
+    // ★★そのほか（★絵・問い合わせ・音）は、★触りません。
+    return false;
   } catch (e) {
     return false;
   }
@@ -63,9 +84,9 @@ function isAsset(url) {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
-  // ★★絵は 横取りしません。★respondWith を 呼ばなければ、
-  //   ★ブラウザが ふだんどおり 取りに行きます。
-  if (isAsset(event.request.url)) return;
+  // ★★受けるものだけ 受けます。★respondWith を 呼ばなければ、
+  //   ★ブラウザが ふだんどおり 取りに行きます。★いちばん 速い道です。
+  if (!shouldHandle(event.request)) return;
   event.respondWith(
     fetch(event.request)
       .then((response) => {
