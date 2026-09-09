@@ -1,5 +1,6 @@
 "use client";
 
+import { fallbackToPng } from "@/lib/imageFormat";
 import {
   interiorOf, interiorItemByKey, interiorSrc, windowLayers,
   floorLineOf, widthPctOf, flushRightLeftPct, isSingleSlot, windowHoleMask,
@@ -324,6 +325,8 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
         };
         const img = (
           <img src={interiorSrc(it)} alt="" aria-hidden="true"
+            // ★★WebP が 読めない端末では、★PNG に 戻します（★2026-09-09）。
+            onError={fallbackToPng}
             style={{ width: "100%", display: "block", pointerEvents: "none" }} />
         );
         // ★★動かせるのは、★置きかたを直しているときだけです。

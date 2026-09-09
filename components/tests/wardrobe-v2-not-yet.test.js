@@ -69,7 +69,12 @@ function ok(name, cond, extra) {
     if (it.file) known.add(path.basename(it.file));
     if (it.files) for (const v of Object.values(it.files)) known.add(path.basename(v));
   }
-  const strays = fs.readdirSync(live).filter((f) => !known.has(f));
+  // ★★2026-09-09、★WebP を 足しました（★同じ絵の 別の形です）。
+  //   ★★中身は 同じなので、★「増えた絵」では ありません。
+  //   ★png に 読み替えて 数えます。★webp だけが 増えることは ありません。
+  const strays = fs.readdirSync(live)
+    .map((f) => (f.endsWith(".webp") ? f.slice(0, -5) + ".png" : f))
+    .filter((f) => !known.has(f));
   ok("一覧に無い絵が、置き場に増えていない", strays.length === 0,
     strays.slice(0, 8).join(", "));
   // ★★2026-09-07、★166点のうち★62点だけを取り込みました（→281点）。

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { paintCloth, paintedUrl } from "@/lib/clothPaint";
+import { fallbackToPng } from "@/lib/imageFormat";
 
 // ============================================================================
 // 色を塗った服の絵、1枚（2026-09-08）
@@ -57,7 +58,11 @@ export function usePaintedSrc(itemKey, colorKey, second) {
 export default function ClothImage({ itemKey, colorKey, second, src, style, alt = "" }) {
   const painted = usePaintedSrc(itemKey, colorKey, second);
   return (
-    <img src={painted || src} alt={alt} aria-hidden={alt ? undefined : "true"} style={style} />
+    // ★★WebP が 読めない端末では、★PNG に 戻します（★2026-09-09）。
+    //   ★★1度だけ 戻します。★2度 繰り返すと 止まらなくなります。
+    //   ★塗った絵（painted）は canvas から 作るので、★戻す先が ありません。
+    <img src={painted || src} alt={alt} aria-hidden={alt ? undefined : "true"} style={style}
+      onError={painted ? undefined : fallbackToPng} />
   );
 }
 

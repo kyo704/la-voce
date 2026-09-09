@@ -28,6 +28,11 @@ function ok(name, cond, extra) {
   const idx = JSON.parse(fs.readFileSync(
     path.join(ROOT, "docs", "assets", "sheep-interior-index.json"), "utf-8"));
   const src = fs.readFileSync(path.join(ROOT, "lib", "sheepInteriorV2.js"), "utf-8")
+    // ★★imageFormat も 差し込みます（★2026-09-09・WebP を 入れたため）。
+
+    .replace('import { webp } from "@/lib/imageFormat";',
+
+      fs.readFileSync(path.join(ROOT, "lib", "imageFormat.js"), "utf-8").replace(/^export /gm, ""))
     .replace('import index from "@/docs/assets/sheep-interior-index.json";',
       "const index = " + JSON.stringify(idx) + ";");
   const m = await import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));

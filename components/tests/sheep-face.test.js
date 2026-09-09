@@ -26,7 +26,10 @@ function ok(name, cond, extra) {
 }
 
 (async () => {
-  const src = fs.readFileSync(path.join(ROOT, "lib", "sheepFace.js"), "utf-8");
+  // ★★imageFormat も 差し込みます（★2026-09-09・WebP を 入れたため）。
+  const src = fs.readFileSync(path.join(ROOT, "lib", "sheepFace.js"), "utf-8")
+    .replace('import { webp } from "@/lib/imageFormat";',
+      fs.readFileSync(path.join(ROOT, "lib", "imageFormat.js"), "utf-8").replace(/^export /gm, ""));
   const m = await import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
 
   console.log("■ ★絵");

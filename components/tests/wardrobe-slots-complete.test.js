@@ -27,6 +27,11 @@ function ok(c, m) { console.log((c ? "  ✓ " : "  ✗ ") + m); if (!c) fail++; 
 
 async function load(rel) {
   let src = fs.readFileSync(path.join(ROOT, rel), "utf8")
+    // ★★imageFormat も 差し込みます（★2026-09-09・WebP を 入れたため）。
+
+    .replace('import { webp } from "@/lib/imageFormat";',
+
+      fs.readFileSync(path.join(ROOT, "lib", "imageFormat.js"), "utf-8").replace(/^export /gm, ""))
     .replace(/from\s+"@\/([^"]+)"/g, (m, r) => {
       const abs = path.join(ROOT, /\.[a-z]+$/.test(r) ? r : r + ".js");
       return `from "${pathToFileURL(abs).href}"`;

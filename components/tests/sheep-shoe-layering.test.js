@@ -68,8 +68,10 @@ ok("靴は20点ある", shoes.length === 20, "実際は " + shoes.length);
 const behind = [];
 for (const sh of shoes) {
   const html = draw({ shoes: sh.key, garment: "coatWinterDuffle" });
-  const iShoe = html.indexOf(sh.key + ".png");
-  const iBody = html.indexOf("sheep_body.png");
+  // ★★2026-09-09、★WebP に なりました。★どちらでも 見つかるように します。
+  //   ★見たいのは「★どちらが 先に 描かれるか」です。★形では ありません。
+  const iShoe = Math.max(html.indexOf(sh.key + ".webp"), html.indexOf(sh.key + ".png"));
+  const iBody = Math.max(html.indexOf("sheep_body.webp"), html.indexOf("sheep_body.png"));
   if (iShoe < 0 || iShoe < iBody) {
     behind.push(sh.key + "（靴 " + iShoe + " / 体 " + iBody + "）");
   }
@@ -82,7 +84,7 @@ console.log("■ 脚は、体より後ろか");
   const html = draw({ garment: "coatWinterDuffle" });
   // ★脚の絵（rect）は、★体の絵より先に出てくること＝後ろに描かれる。
   const iLeg = html.indexOf("<rect");
-  const iBody = html.indexOf("sheep_body.png");
+  const iBody = Math.max(html.indexOf("sheep_body.webp"), html.indexOf("sheep_body.png"));
   ok("脚は、体より先に描かれている（＝後ろ）", iLeg >= 0 && iLeg < iBody,
     "脚 " + iLeg + " / 体 " + iBody);
 }

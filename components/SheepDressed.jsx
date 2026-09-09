@@ -5,6 +5,7 @@ import { useId, useEffect, useState } from "react";
 import { SHEEP_BASE, SHEEP_ASSET_BASE, sheepItemByKey, sheepItemSrc } from "@/lib/sheepItems";
 import { LAYER_ORDER, PROP_SIDE_DEFAULT, motionOf, LEGS, SHOE_SPLIT_X, slotZ } from "@/lib/sheepWardrobe";
 import ClothImage, { ClothShoeImages } from "@/components/ClothImage";
+import { webp } from "@/lib/imageFormat";
 import { HEAD_NOFACE, FACE_Z, faceSrc, BLINK, nextBlinkMs, preloadList, laterPreloadList } from "@/lib/sheepFace";
 
 // ============================================================================
@@ -240,7 +241,8 @@ export default function SheepDressed({
   const layers = [];
   for (const slot of LAYER_ORDER) {
     if (slot === "body") {
-      layers.push({ key: "body", src: SHEEP_ASSET_BASE + SHEEP_BASE.body, z: slotZ("body") });
+      // ★★WebP を 先に（★2026-09-09）。★読めなければ PNG に 戻ります。
+      layers.push({ key: "body", src: webp(SHEEP_ASSET_BASE + SHEEP_BASE.body), z: slotZ("body") });
       continue;
     }
     if (slot === "head") {
