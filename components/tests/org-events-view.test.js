@@ -30,8 +30,16 @@ function eq(a, b, label) {
 }
 
 (async () => {
-  const src = fs.readFileSync(path.join(__dirname, "..", "..", "lib", "orgEventsView.js"), "utf8");
-  const m = await import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
+  // ★★orgEventsView は lib/smallGroups.js を 読みます（★2026-09-10）。
+  //   ★連れも 一緒に 写します。★本物を 読みます。★偽物を 置きません。
+  const os = require("os");
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "oev-"));
+  ["orgEventsView", "smallGroups"].forEach((n) => {
+    fs.writeFileSync(path.join(dir, n + ".js"),
+      fs.readFileSync(path.join(__dirname, "..", "..", "lib", n + ".js"), "utf8")
+        .replace(/@\/lib\/([a-zA-Z]+)/g, "./$1.js"));
+  });
+  const m = await import("file://" + path.join(dir, "orgEventsView.js"));
 
   const evs = [
     { id: 1, event_date: "2026-09-14", title: "実技試験" },

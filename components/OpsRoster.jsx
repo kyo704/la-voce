@@ -6,6 +6,7 @@ import {
   rosterCount, countsByStatus, statusLabel, isCounted,
   monthlyFee, perHead, yen, MONTHLY_FLOOR
 } from "@/lib/orgRoster";
+import { safeBreakdown, TOO_SMALL_NOTE } from "@/lib/smallGroups";
 
 // ============================================================================
 // 名簿 ── 見本③⑦（2026-09-09・第3便）
@@ -143,13 +144,25 @@ export default function OpsRoster({ members, nameOf, teacherNameOf, canSeeMoney,
           <span>数える人数</span>
           <span>{counted}人</span>
         </div>
-        {by.paused > 0 || by.invited > 0 ? (
-          <p style={small}>
-            {by.paused > 0 ? `休会中 ${by.paused}人` : ""}
-            {by.paused > 0 && by.invited > 0 ? "　／　" : ""}
-            {by.invited > 0 ? `返事まち ${by.invited}人` : ""}
-          </p>
-        ) : null}
+        {/* ★★内訳は、★5人に 満たなければ 出しません（★2026-09-10）。
+            ★★54人の 中の「休会中 2人」は、★近い人には 見当が つきます。
+            ★★合計（数える人数）は 出します。★あれは かたまりでは ありません。
+            ★決めるのは lib/smallGroups.js だけです。 */}
+        {(() => {
+          const safe = safeBreakdown(by);
+          const parts = [];
+          if (safe.paused != null && safe.paused > 0) parts.push(`休会中 ${safe.paused}人`);
+          if (safe.invited != null && safe.invited > 0) parts.push(`返事まち ${safe.invited}人`);
+          const hidden = (safe.paused == null) || (safe.invited == null);
+          if (parts.length === 0 && !hidden) return null;
+          return (
+            <p style={small}>
+              {parts.join("　／　")}
+              {hidden ? (parts.length > 0 ? <br /> : null) : null}
+              {hidden ? TOO_SMALL_NOTE : null}
+            </p>
+          );
+        })()}
         {canSeeMoney ? (
           <>
             <div className="flex items-center justify-between" style={{ fontSize: "0.8125rem", color: C.ink }}>
