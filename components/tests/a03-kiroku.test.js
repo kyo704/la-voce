@@ -98,7 +98,41 @@ function ok(cond, label) {
   // ★3択は 内側 16＋印30＋5＋12 で 44 を 越えます。★折りたたみは 12＋9×2＋13 で 越えます。
   ok(/padding: "9px 0"/.test(head), "★折りたたみの 行は 上下 9px（★見本 .li）");
 
-  console.log("⑥ 門の外（38人）を 変えない");
+  console.log("⑥ 見本に 無いものを、★門の中では 出さない（★2026-09-10・お決め）");
+  {
+    const v = readRaw("components", "VocalTracker.jsx");
+    // ★★どれも「消して」いません。★門の中で 出さない、だけです。
+    //   ★★消すと 38人から 取り上げることに なります。
+    [
+      ["!layoutV2 && isSimpleDisplay(profile) && formData", "★かんたん表示の 一問ずつ"],
+      ["!layoutV2 && (() => {\n                  // ★読み込みが終わるまで formData は null", "★「もう少しで◯◯が 加わります」＋点"],
+      ["{!layoutV2 && (\n                <div className=\"rounded-2xl p-3 border\"", "★かんたん／しっかり の 切替"],
+      ["!layoutV2 && !!entries[addDays(selectedDate, -1)]", "★前日をコピー"],
+      ["!layoutV2 && showCopiedNotice", "★コピーの 知らせ"],
+      ["{!layoutV2 && dateBandNode}", "★日付の帯は 門の外だけ ここ"]
+    ].forEach(([needle, label]) => ok(v.includes(needle), label + "が 門の中で 出ない"));
+    ok(/dateBand=\{dateBandNode\}/.test(v), "★日付の帯は 門の中では 題の 近く");
+    ok((v.match(/const dateBandNode = \(/g) || []).length === 1,
+      "★日付の帯の 中身は 1つだけ（★2つ 作っていない）");
+    // ★★切替を 出さないので、★中が 空に ならないよう しっかり として 読みます。
+    ok(/const recordModeInUse = layoutV2 \? "full" : profile\.record_mode;/.test(v),
+      "★門の中では しっかり として 読む（★折りたたみの 中が 空に ならない）");
+    ok(/mode: recordModeInUse/.test(v), "★節の 出し分けが その 値を 使っている");
+    // ★★保存の ボタンは、★開いている ときだけ。★消していません。
+    ok(/\(!layoutV2 \|\| openFold\) && \(/.test(v),
+      "★保存ボタンは、★折りたたみを 開いた ときだけ（★消していない）");
+    // ★★節は 11 とも 折りたたみに 載っていること。
+    //   ★載っていない節は、★閉じていても 出つづけます。
+    const folds2 = require("fs").readFileSync(path.join(ROOT, "lib", "recordV2.js"), "utf8");
+    const mapped = [...folds2.matchAll(/sections: \[([^\]]*)\]/g)]
+      .flatMap((m) => m[1].split(",").map((x) => x.trim().replace(/"/g, ""))).filter(Boolean);
+    const used = [...new Set([...v.matchAll(/fold="([a-zA-Z]+)"/g)].map((m) => m[1]))];
+    ok(used.every((k) => mapped.includes(k)),
+      "★節は ぜんぶ 折りたたみに 載っている  （載っていない: " +
+      JSON.stringify(used.filter((k) => !mapped.includes(k))) + "）");
+  }
+
+  console.log("⑦ 門の外（38人）を 変えない");
   const v = readRaw("components", "VocalTracker.jsx");
   ok(/\{layoutV2 && formData && \(\s*<RecordV2Head/.test(v), "★新しい 頭は 門の中だけ");
   ok(/sectionIsOpen/.test(readRaw("lib", "recordV2.js")), "★節の 出し分けは 1か所");

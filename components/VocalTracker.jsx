@@ -10181,7 +10181,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       console.warn("知らせを出したことを保存できませんでした。", error);
     }
   }
-  const showGroup = (key) => isFieldGroupVisible(key, { mode: profile.record_mode, foldedGroups: profile.folded_groups });
+  // ★★門の中では、★かんたん／しっかり の 切替を 出しません（★2026-09-10・お決め⑬）。
+  //   ★★切替を 消したまま「かんたん」に 留まると、★折りたたみを 開いても
+  //     ★中が ほとんど 空に なります。★それは 書けなく なった、ということです。
+  //   ★★見本③の 考え方では、★「かんたんさ」は 折りたたみが 担います。
+  //     ★閉じていれば 2タップ、★開けば 全部 ── ★切替は 要りません。
+  //   ★★保存してある 値は 変えません。★読むときだけ「しっかり」として 扱います。
+  //     ★門の外に 戻ったとき、★その方の 選んだ かんたん／しっかり は そのままです。
+  const recordModeInUse = layoutV2 ? "full" : profile.record_mode;
+  const showGroup = (key) => isFieldGroupVisible(key, { mode: recordModeInUse, foldedGroups: profile.folded_groups });
 
   // 型ごとの追加項目（職業を声の型で切り直す §5-2）。
   // ★occupation を必ず渡すこと。渡さないと「その他」の人にも項目が出ます。
@@ -13499,7 +13507,27 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 </div>
               );
             })()}
-            {activeTab === "today" && (
+            {activeTab === "today" && (() => {
+              // ★★日付の帯。★門の中は 上（題の 近く）、★門の外は これまでの 場所。
+              //   ★★中身は 1つです。★置く場所だけが 2つです。
+              const dateBandNode = (
+                <div className="flex items-center justify-between rounded-2xl p-3 border" style={{ background: C.card, borderColor: C.line }}>
+                  <button onClick={() => setSelectedDate((d) => addDays(d, -1))}
+                    className="w-9 h-9 rounded-full border flex items-center justify-center" style={{ borderColor: C.line }}>
+                    <ChevronLeft size={16} />
+                  </button>
+                  <div className="text-center">
+                    <div className="font-medium text-sm">{formatDateLabel(selectedDate, language)}</div>
+                    <input type="date" value={selectedDate} max={todayISO()} onChange={(e) => setSelectedDate(e.target.value)}
+                      className="text-xs ff-mono mt-1 bg-transparent border-none" style={{ color: C.inkSoft }} />
+                  </div>
+                  <button onClick={() => setSelectedDate((d) => addDays(d, 1))} disabled={selectedDate >= todayISO()}
+                    className="w-9 h-9 rounded-full border flex items-center justify-center disabled:opacity-30" style={{ borderColor: C.line }}>
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+              );
+              return (
               // ★★折りたたみの いまを、★節へ 渡します（★見本③）。
               //   ★★門の外は { layoutV2:false } なので、★節は 全部 出ます。
               //     ★38人の 画面を、★1つも 変えません。
@@ -13512,6 +13540,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 {layoutV2 && formData && (
                   <RecordV2Head
                     entry={formData}
+                    dateBand={dateBandNode}
                     saved={saveStatus === "saved"}
                     openFold={openFold}
                     onToggleFold={(k) => setOpenFold((cur) => (cur === k ? null : k))}
@@ -13532,7 +13561,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       その日の記録が丸ごと消える。
                     ★とばした数を数えない。「未入力」「不足」「完了度」を
                       出さないため（統合実行ルート v4 §11）。 */}
-                {isSimpleDisplay(profile) && formData && !isFinished(simpleStepIndex) && (() => {
+                {/* ★★門の中では 出しません（★2026-09-10・お決め「見本に 無いものは 外す」）。
+                    ★★見本③に この 一問ずつの 姿は ありません。
+                    ★★同じことを 3つの 仕組みで やっていました ──
+                      ★折りたたみ（見本）／ かんたん表示の 一問ずつ ／ かんたん・しっかり の 切替。
+                    ★★門の外（38人）には、★これまでどおり 出ます。
+                      ★かんたん表示を 選んでいる方から、★取り上げません。 */}
+                {!layoutV2 && isSimpleDisplay(profile) && formData && !isFinished(simpleStepIndex) && (() => {
                   const step = SIMPLE_STEPS[simpleStepIndex];
                   const left = remainingSteps(simpleStepIndex);
                   return (
@@ -13588,7 +13623,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </div>
                   );
                 })()}
-                {isSimpleDisplay(profile) && isFinished(simpleStepIndex) && (
+                {!layoutV2 && isSimpleDisplay(profile) && isFinished(simpleStepIndex) && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.paper, borderColor: C.line }}>
                     <p className="text-sm" style={{ color: C.ink, lineHeight: 1.7 }}>{SIMPLE_DONE_TEXT}</p>
                     <button type="button" onClick={() => setSimpleStepIndex(0)}
@@ -13598,23 +13633,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </button>
                   </div>
                 )}
-                <div className="flex items-center justify-between rounded-2xl p-3 border" style={{ background: C.card, borderColor: C.line }}>
-                  <button onClick={() => setSelectedDate((d) => addDays(d, -1))}
-                    className="w-9 h-9 rounded-full border flex items-center justify-center" style={{ borderColor: C.line }}>
-                    <ChevronLeft size={16} />
-                  </button>
-                  <div className="text-center">
-                    <div className="font-medium text-sm">{formatDateLabel(selectedDate, language)}</div>
-                    <input type="date" value={selectedDate} max={todayISO()} onChange={(e) => setSelectedDate(e.target.value)}
-                      className="text-xs ff-mono mt-1 bg-transparent border-none" style={{ color: C.inkSoft }} />
-                  </div>
-                  <button onClick={() => setSelectedDate((d) => addDays(d, 1))} disabled={selectedDate >= todayISO()}
-                    className="w-9 h-9 rounded-full border flex items-center justify-center disabled:opacity-30" style={{ borderColor: C.line }}>
-                    <ChevronRight size={16} />
-                  </button>
-                </div>
+                {/* ★★門の中では、★この帯を 上（題の 近く）に 出します（★お決め⑪）。
+                    ★★同じ帯を 2つ 作りません。★1つを、★置く場所だけ 変えます。
+                      ★2つ 作ると、★片方だけ 直ります。
+                    ★門の外（38人）は、★これまでどおり ここです。 */}
+                {!layoutV2 && dateBandNode}
 
-                {(() => {
+                {/* ★★門の中では 出しません（★2026-09-10・お決め⑫）。
+                    ★★「もう少しで『◯◯』が 加わります」は、
+                      ★★アプリが 与えるものへの 残りの 表示です。
+                      ★「ごほうびへの 残りを 出さない」という お決めと 同じ形でした。
+                    ★★見本③にも ありません。
+                    ★門の外（38人）には、★これまでどおり 出ます。 */}
+                {!layoutV2 && (() => {
                   // ★読み込みが終わるまで formData は null（:5219）。
                   //   進み具合は、まだ数えられません。
                   if (!formData) return null;
@@ -13654,7 +13685,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                 {/* 統合実行ルートv4 G2-8 / §2 瞬間④: 30秒で終わる道が常にあること。
                     調子が悪い日ほど、項目の多さが「開かない理由」になる。
-                    ★かんたん記録は劣った記録ではない。減点表示（未入力・完了度）を出さないこと（§11）。 */}
+                    ★かんたん記録は劣った記録ではない。減点表示（未入力・完了度）を出さないこと（§11）。
+                    ★★門の中では 出しません（★2026-09-10・お決め⑬）。
+                      ★★見本③では、★「30秒で 終わる道」を 折りたたみが 担います。
+                        ★閉じていれば 2タップ、★開けば 全部。
+                      ★★切替を 消したまま「かんたん」に 留まると 中が 空に なるので、
+                        ★門の中では しっかり として 読みます（★recordModeInUse）。
+                        ★★保存してある 値は 変えません。★門の外に 戻れば そのままです。
+                    ★門の外（38人）には、★これまでどおり 出ます。 */}
+                {!layoutV2 && (
                 <div className="rounded-2xl p-3 border" style={{ background: C.card, borderColor: C.line }}>
                   <div className="flex rounded-full border p-1 overflow-x-auto nav-scroll" style={{ borderColor: C.line }}>
                     {[["simple", "recordModeSimple"], ["full", "recordModeFull"]].map(([mode, labelKey]) => (
@@ -13675,15 +13714,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{t("recordModeSwitchHint")}</p>
                   )}
                 </div>
+                )}
 
-                {!!entries[addDays(selectedDate, -1)] && (
+                {/* ★★門の中では 出しません（★2026-09-10・お決め⑭）。★見本③に ありません。
+                    ★★機能は 消していません。★門の外（38人）には これまでどおり 出ます。 */}
+                {!layoutV2 && !!entries[addDays(selectedDate, -1)] && (
                   <button type="button" onClick={handleCopyPreviousDay}
                     className="w-full rounded-xl border py-2 text-xs font-medium flex items-center justify-center gap-1.5"
                     style={{ borderColor: C.line, color: C.inkSoft, background: C.card }}>
                     <NotebookPen size={12} />前日をコピー（食事・身体データ・環境）
                   </button>
                 )}
-                {showCopiedNotice && (
+                {!layoutV2 && showCopiedNotice && (
                   <p className="text-xs text-center rounded-lg p-2" style={{ background: "rgba(212,160,23,0.12)", color: C.ink }}>
                     前日の内容をコピーしました。内容を確認・編集してください。
                   </p>
@@ -15050,6 +15092,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </SectionCard>
                     )}
 
+                    {/* ★★門の中では、★折りたたみを 開いている ときだけ 出します
+                        （★2026-09-10・お決め「見本に 無いものは 外す」）。
+                        ★★見本③に 保存の ボタンは ありません。「ここで もう 保存されています」。
+                          ★3択は、★押した その場で 保存されます。★だから 閉じている 間は 要りません。
+                        ★★けれど、★折りたたみを 開いて 書いたものは、
+                          ★★このボタンでしか 保存されません。★消すと 書けなく なります。
+                          ★「消えた」は、★書けなく なった、ということです。
+                        ★★だから「消す」では なく「閉じている 間は 出さない」に しました。
+                        ★門の外（38人）には、★これまでどおり いつも 出ます。 */}
+                    {(!layoutV2 || openFold) && (
+                    <>
                     <button onClick={() => handleSave()} disabled={saveStatus === "saving"}
                       className="w-full rounded-2xl py-3.5 font-medium flex items-center justify-center gap-2 transition-all"
                       style={{ background: C.curtain, color: "#FFFDF8" }}>
@@ -15060,13 +15113,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     {saveStatus === "error" && saveError && (
                       <p className="text-xs text-center" style={{ color: C.curtain }}>{saveError}</p>
                     )}
+                    </>
+                    )}
                       </>
                     )}
                   </>
                 )}
               </div>
               </RecordFoldContext.Provider>
-            )}
+              );
+            })()}
 
             {/* ★両方に当てはまる人にだけ出す。片方だけの人には出さない（大多数はこちら）。
                 生徒の詳細を開いている間も出さない（戻る導線があるため）。 */}

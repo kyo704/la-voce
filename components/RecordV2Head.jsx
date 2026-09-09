@@ -42,7 +42,7 @@ import { TYPE, SPACE, FONT_STACK, cardStyle } from "@/lib/uiKit";
 // ============================================================================
 
 export default function RecordV2Head({
-  entry, onPick, saved, openFold, onToggleFold, onSkip
+  entry, onPick, saved, openFold, onToggleFold, onSkip, dateBand
 }) {
   const quick = mayUseQuickCondition(entry);
   const current = readConditionValue(entry);
@@ -62,6 +62,14 @@ export default function RecordV2Head({
           <span style={{ fontSize: 11.5, color: C.sage }}>保存しました</span>
         ) : null}
       </div>
+
+      {/* ★★日付の 帯（★2026-09-10・坂本さんの お決め⑪「上に、移動してください」）。
+          ★★見本③に この帯は ありません。★けれど 消せません ──
+            ★消すと、★前の日を 書けなく なります。
+            ★「消えた」は、★書けなく なった、ということです。
+          ★★下（折りたたみの あと）に ありました。★題の 近くへ 上げました。
+          ★★中身は 呼ぶ側の ままです。★作り直していません。 */}
+      {dateBand || null}
 
       {/* ★★こえの ちょうし（★見本 .h3）。
           ★★A01 は「こえの調子」、★A03 は「こえの ちょうし」です。
