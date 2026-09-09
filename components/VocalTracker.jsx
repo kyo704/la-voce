@@ -13384,6 +13384,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                 {formData && (
                   <>
+                    {/* ★★門の中では、★この切替を 出しません（★2026-09-10）。
+                        ★★見本③は、★5つの 折りたたみ だけです。★切替は ありません。
+                        ★★折りたたみと 切替が 重なると、
+                          ★「＋ねむり」を 開いても、★声の記録の 側に いるため
+                          ★★中身が 1つも 出ません。★実機で そうなっていました。
+                        ★門の外は、★これまでどおり 2つの 帯で 切り替えます。 */}
+                    {!layoutV2 && (
                     <div className="flex rounded-full border p-1 overflow-x-auto nav-scroll" style={{ borderColor: C.line }}>
                       <button type="button" onClick={() => setRecordView("voice")}
                         className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
@@ -13396,8 +13403,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         一日の記録
                       </button>
                     </div>
+                    )}
 
-                    {recordView === "voice" && (
+                    {/* ★★門の中では、★両方 出します。★絞るのは 折りたたみです。
+                        ★★1つの 折りたたみが、★両側の 節を 持つことが あります
+                          （★「からだのこと」＝ 声・のど ＋ からだ ＋ 環境 ＋ 運動）。
+                        ★★片側しか 出さないと、★開いても 半分しか 出ません。 */}
+                    {(layoutV2 || recordView === "voice") && (
                       <>
                         <SectionCard title={t("sectionVoiceThroat")} icon={Mic2} fold="voice">
                           <div className="space-y-2">
@@ -13696,7 +13708,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       </>
                     )}
 
-                    {recordView === "day" && (
+                    {(layoutV2 || recordView === "day") && (
                       <>
                     {showGroup("body") && (
                     <SectionCard title={t("sectionTodayBody")} icon={Scale} fold="body">

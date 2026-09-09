@@ -115,8 +115,15 @@ if (tables.length === 0) {
       assertTrue(true, "★門下の連絡の画面は、まだ作っていない（★できたら 中身を見ます）");
     } else {
       const body = files.map((f) => fs.readFileSync(path.join(root, "components", f), "utf8")).join("\n");
-      assertTrue(body.includes(LINE), "★書く欄の下に、いつも 1行 出ている（★見本⑤）");
-      assertTrue(/体調のことは、書かなくて構いません/.test(body), "★体調は 書かなくてよい、と 書いてある");
+      // ★★言葉そのものは lib/renraku.js が 持ちます（★1か所）。
+      //   ★画面は、★それを 出しているか どうかを 見ます。
+      //   ★★画面に 書き写させません。★写すと、★片方だけ 直ります。
+      const libBody = fs.readFileSync(path.join(root, "lib", "renraku.js"), "utf8");
+      assertTrue(libBody.includes(LINE), "★1行の 言葉が lib に ある（★見本⑤）");
+      assertTrue(/体調のことは、書かなくて構いません/.test(libBody),
+        "★体調は 書かなくてよい、と lib に 書いてある");
+      assertTrue(/NOTICE_LINE/.test(body), "★書く欄の 下に、★その1行を 出している");
+      assertTrue(!body.includes(LINE), "★画面に 書き写していない（★決めは lib 1か所）");
     }
     // ★★中身を サーバーが 検査していないこと（★§6-1 の 対処③）
     assertTrue(!/create (or replace )?function[^;]*org_messages/i.test(allSql),

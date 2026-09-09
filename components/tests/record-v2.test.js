@@ -229,6 +229,25 @@ const USER_ID = "test-user-id";
   assertEqual(rv2.sectionIsOpen("しらない節", { layoutV2: true, openFold: null }), true,
     "★表に無い節は 畳まない（★載せ忘れで 消えないため）");
 
+  console.log("\n=== ⑨ 折りたたみを 開けば、中身が 出る（★2026-09-10 の 直し） ===");
+  {
+    const vt = readRaw("components", "VocalTracker.jsx");
+    // ★★実機で「開いても 何も 出ない」が 起きました。
+    //   ★節は recordView（声の記録／一日の記録）で 2つに 分かれており、
+    //   ★★折りたたみは それを 知りませんでした。
+    //   ★門の中では、★両側とも 出し、★絞るのは 折りたたみだけに します。
+    assertTrue(/\(layoutV2 \|\| recordView === "voice"\) &&/.test(vt),
+      "★門の中では、声の側を いつも 出す");
+    assertTrue(/\(layoutV2 \|\| recordView === "day"\) &&/.test(vt),
+      "★門の中では、一日の側も いつも 出す");
+    assertTrue(/\{!layoutV2 && \(\s*\n\s*<div className="flex rounded-full border p-1/.test(vt),
+      "★門の中では、声／一日の 切替を 出さない（★見本③に 無い）");
+    // ★★1つの 折りたたみが 両側に またがること
+    const sing = rv2.RECORD_FOLDS.find((f) => f.key === "body");
+    assertTrue(sing.sections.includes("voice") && sing.sections.includes("body"),
+      "★「からだのこと」は、声の側と 一日の側の 両方を 持つ");
+  }
+
   console.log("\n=== ⑧ 見本③の 但し書き ===");
   {
     const head = readCode("components", "RecordV2Head.jsx");
