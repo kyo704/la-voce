@@ -1,6 +1,5 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
 import { C } from "@/lib/tokens";
 import SheepDressed from "@/components/SheepDressed";
 import { conditionWord, sleepParts, usualOf } from "@/lib/todayCard";
@@ -59,28 +58,15 @@ export default function HomeV2({
   const teaching = !!(band && band.teaching);
   const ratio = teaching ? SHEEP_WIDTH_RATIO_TEACHING : SHEEP_WIDTH_RATIO;
 
-  // ★★2026-09-10、★ここが 羊を 出さなく していました。
-  //   ★★前は useRef ＋ useEffect でした。★effect は 1度だけ 走ります。
-  //     ★★羊の 入れ物は、★帯（TodayBand）の 中に あります。
-  //       ★帯は band が 揃うまで 出ません。
-  //     ★★だから effect が 走った ときには、★まだ 入れ物が ありませんでした。
-  //       ★早い 返しで 抜けて、★二度と 走りませんでした。
-  //   ★★入れ物が ついた その瞬間に 測る 形（callback ref）に 変えます。
-  //     ★いつ 出てきても、★必ず 測ります。
-  const roRef = useRef(null);
-  const [sheepPx, setSheepPx] = useState(0);
-  const boxRef = useCallback((el) => {
-    if (roRef.current) { roRef.current.disconnect(); roRef.current = null; }
-    if (!el) return;
-    const measure = () => setSheepPx(Math.round(el.clientWidth * ratio));
-    measure();
-    if (typeof ResizeObserver === "undefined") return;
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    roRef.current = ro;
-  }, [ratio]);
-  // ★★片づけ。★画面を 離れたら、★見張りを 外します。
-  useEffect(() => () => { if (roRef.current) roRef.current.disconnect(); }, []);
+  // ★★羊の 大きさは、★測りません（★2026-09-10・2度目の 直し）。
+  //   ★★1度目は useEffect で 測りました。★入れ物より 先に 走りました。
+  //   ★★2度目は callback ref で 測りました。★それでも 大きく なりませんでした。
+  //   ★★3度目に、★測る 必要そのものが 無いと 分かりました。
+  //     ★SheepDressed の size は、★外側の div の width と height の
+  //     ★★1か所でしか 使われていません（★SheepDressed.jsx:356）。
+  //     ★中の 品は ぜんぶ ％で 置かれています。
+  //   ★→ ★"100%" を 渡します。★入れ物の 幅が、そのまま 羊の 幅です。
+  //     ★★測る 手が 無ければ、★測り損ねる 道も ありません。
 
   return (
     // ★★ゴシックで 固定します（★tokens.md §2「明朝は 使いません」）。
@@ -118,18 +104,16 @@ export default function HomeV2({
                ★★置き場所は 帯が 決めます。★A01 は いちばん上、
                  ★A02（先生）は 出欠の 帯の あとです。
                  ★★並べ方を ここに もう1つ 書くと、★片方だけ 直ります。 */
-            <div ref={boxRef} style={{ marginTop: 2 }}>
-              {/* ★★入れものが、★先に 場所を 取ります。★羊の 枠は 正方形です。
-                  ★★測り終える 前でも 高さが 決まるので、★下が 跳ねません。 */}
+            <div style={{ marginTop: 2 }}>
+              {/* ★★入れものが 大きさを 決めます。★羊の 枠は 正方形です。
+                  ★★はじめから 場所を 取るので、★下が 跳ねません。 */}
               <div style={{
                 width: `${(ratio * 100).toFixed(2)}%`,
                 aspectRatio: "1 / 1",
                 margin: "0 auto"
               }}>
-                {sheepPx > 0 ? (
-                  <SheepDressed wearing={wearing || {}} colors={clothColors || {}} colors2={clothColors2 || {}}
-                    size={sheepPx} motion="still" blink alt="羊" />
-                ) : null}
+                <SheepDressed wearing={wearing || {}} colors={clothColors || {}} colors2={clothColors2 || {}}
+                  size="100%" motion="still" blink alt="羊" />
               </div>
             </div>
           } />

@@ -57,60 +57,136 @@ function valueWord(itemKey, v) {
 }
 
 /**
- * ★点の 散らばり（★見本⑫）。
+ * ★目盛りの 刻み。★3〜5本に なる、★切りの よい 数を えらびます。
  *
- *   ★★軸に 数を 添えます。★点そのものには 添えません。
+ *   ★★見本 B01 は 0時間・2時間・4時間・6時間 の 4本です。
+ *   ★★点に 数を 添えません。★軸に だけ 添えます。
+ */
+function niceTicks(lo, hi) {
+  const span = (hi - lo) || 1;
+  const raw = span / 3;
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((x) => x >= raw) || mag * 10;
+  const first = Math.ceil((lo - 1e-9) / step) * step;
+  const out = [];
+  for (let v = first; v <= hi + 1e-9 && out.length < 8; v += step) {
+    out.push(Number(v.toFixed(6)));
+  }
+  return out;
+}
+
+/**
+ * ★点の 散らばり（★見本 B01）。
+ *
+ *   ★出どころ docs/design/pack/screens/B01-くらべるまだ出ていない.html
+ *     .dp  高さ 206px ／ 上に 12px
+ *     .dpg 左 40px（★目盛りの ぶん）・右 2px・上 10px・下 22px
+ *     .d   8px の 丸。★あとから 書いた日は 中を 抜く（.d.o）
+ *     .gl  横の 目盛り線 1px（--line2）／ .yl 9px の 目盛りの 字
+ *     .med まんなかの 破線 1.6px（★えんじ）／ .medl その 数
+ *     .xl  下の 名前 10.5px ＋ 日数 9px
+ *
+ *   ★★2026-09-10、★実機で「見本と 全く ちがう」と ご指摘を いただきました。
+ *     ★★軸も 目盛りも ありませんでした。★点の 高さが 何を 指すのか、
+ *       ★画面から 読み取れませんでした。
+ *
  *   ★★色は えんじ 1色。★群で 変えません。★良し悪しを 言わないためです。
  *   ★★あとから書いた点は、★中を 抜きます（★○）。★消しません。
+ *     ★「目では 見えますが、判定には 入れていません」。
  */
 function Scatter({ data, itemKey }) {
   const pts = data.good.concat(data.hard);
   if (pts.length === 0) return null;
   const vals = pts.map((p) => p.value);
-  const lo = Math.min(...vals);
-  const hi = Math.max(...vals);
-  const span = hi - lo || 1;
-  const H = 190;
-  const y = (v) => H - 26 - ((v - lo) / span) * (H - 46);
+  let lo = Math.min(...vals);
+  let hi = Math.max(...vals);
+  const ticks = niceTicks(lo, hi);
+  if (ticks.length > 0) {
+    lo = Math.min(lo, ticks[0]);
+    hi = Math.max(hi, ticks[ticks.length - 1]);
+  }
+  const span = (hi - lo) || 1;
 
-  const col = (list, leftPct, label) => (
-    <div style={{ position: "absolute", left: `${leftPct}%`, width: "34%", top: 0, bottom: 0 }}>
-      {list.map((p, i) => (
-        <span key={p.date} aria-hidden="true" style={{
-          position: "absolute", width: 8, height: 8, borderRadius: "50%",
-          // ★同じ値の点が 重ならないよう、★左右に わずかに ずらします。
-          left: `${28 + ((i * 37) % 44)}%`, top: y(p.value), marginLeft: -4, marginTop: -4,
-          background: p.judged ? C.curtain : "transparent",
-          border: p.judged ? "none" : `1.4px solid ${C.curtain}`,
-          opacity: p.judged ? 0.85 : 0.55
-        }} />
-      ))}
-      <span style={{
-        position: "absolute", bottom: 0, left: 0, right: 0, textAlign: "center",
-        fontSize: "0.6875rem", color: C.inkSoft
-      }}>{label}<br /><span style={{ fontSize: "0.625rem" }}>{list.length}日</span></span>
-    </div>
-  );
+  // ★見本の 寸法。★画素で そのまま 置きます。
+  const H = 206, AXIS = 40, TOP = 10, BOTTOM = 22, RIGHT = 2;
+  const plotH = H - TOP - BOTTOM;
+  /** ★値 → .dp の 中の 上からの 画素。 */
+  const yOf = (v) => TOP + (1 - (v - lo) / span) * plotH;
 
-  const medLine = (v, leftPct) => {
+  // ★2つの かたまりの 中心（★.dpg の 幅に 対する ％）。
+  const CENTER = [25, 75];
+
+  const dots = (list, ci) => list.map((p, i) => (
+    <span key={p.date} aria-hidden="true" style={{
+      position: "absolute",
+      // ★★同じ値の点が 重ならないよう、★左右に わずかに ずらします。
+      //   ★ずらすのは 見るためだけです。★値を 変えていません。
+      left: `${CENTER[ci] + (((i * 7) % 9) - 4) * 1.6}%`,
+      top: yOf(p.value) - TOP,
+      width: 8, height: 8, borderRadius: "50%", margin: "-4px 0 0 -4px",
+      background: p.judged ? C.curtain : "transparent",
+      border: p.judged ? "none" : `1.4px solid ${C.curtain}`,
+      opacity: p.judged ? 0.8 : 0.55
+    }} />
+  ));
+
+  const medLine = (v, ci) => {
     if (v == null) return null;
     return (
-      <div style={{ position: "absolute", left: `${leftPct}%`, width: "34%", top: y(v) }}>
-        <div style={{ borderTop: `1.6px dashed ${C.curtain}`, opacity: 0.85 }} />
+      <div key={"m" + ci} style={{ position: "absolute", left: 0, right: 0, top: yOf(v) - TOP }}>
+        <div style={{
+          position: "absolute", left: `${CENTER[ci]}%`, width: 44, marginLeft: -22,
+          borderTop: `1.6px dashed ${C.curtain}`, opacity: 0.85
+        }} />
         <span style={{
-          position: "absolute", right: 0, top: -8, fontSize: "0.625rem", color: C.curtain,
-          background: C.card, padding: "1px 3px", borderRadius: 3, whiteSpace: "nowrap"
+          position: "absolute", left: `${CENTER[ci]}%`, marginLeft: 24,
+          transform: "translateY(-50%)",
+          fontSize: 9, color: C.curtain, background: C.card,
+          padding: "1px 3px", borderRadius: 3, whiteSpace: "nowrap"
         }}>{valueWord(itemKey, v)}</span>
       </div>
     );
   };
 
+  const xLabel = (label, n, ci) => (
+    <span key={label} style={{
+      position: "absolute", bottom: 0,
+      left: `calc(${AXIS}px + (100% - ${AXIS + RIGHT}px) * ${CENTER[ci] / 100})`,
+      transform: "translateX(-50%)",
+      fontSize: 10.5, color: C.inkSoft, textAlign: "center", whiteSpace: "nowrap"
+    }}>
+      {label}
+      {/* ★★日数です。★点数でも 割合でも ありません。 */}
+      <span style={{ display: "block", fontSize: 9, color: C.inkSoft, marginTop: 2 }}>{n}日</span>
+    </span>
+  );
+
   return (
-    <div style={{ position: "relative", height: H, margin: "10px 0 2px" }}>
-      {col(data.good, 14, "よく出た日")}
-      {col(data.hard, 56, "出なかった日")}
-      {medLine(data.goodMedian, 14)}
-      {medLine(data.hardMedian, 56)}
+    <div style={{ position: "relative", height: H, margin: "12px 0 2px" }}>
+      {/* ★★横の 目盛り線と、★その 数（★見本の .gl と .yl）。
+          ★★数を 添えるのは 軸だけです。★点には 添えません。 */}
+      {ticks.map((v) => (
+        <span key={"t" + v}>
+          <span style={{
+            position: "absolute", left: AXIS, right: RIGHT, top: yOf(v),
+            height: 1, background: C.line2
+          }} />
+          <span style={{
+            position: "absolute", left: 0, width: AXIS - 4, top: yOf(v),
+            transform: "translateY(-50%)", textAlign: "right",
+            fontSize: 9, color: C.inkSoft
+          }}>{valueWord(itemKey, v)}</span>
+        </span>
+      ))}
+      {/* ★★点の 置き場（★見本の .dpg）。 */}
+      <div style={{ position: "absolute", left: AXIS, right: RIGHT, top: TOP, bottom: BOTTOM }}>
+        {dots(data.good, 0)}
+        {dots(data.hard, 1)}
+        {medLine(data.goodMedian, 0)}
+        {medLine(data.hardMedian, 1)}
+      </div>
+      {xLabel("よく出た日", data.good.length, 0)}
+      {xLabel("出なかった日", data.hard.length, 1)}
     </div>
   );
 }

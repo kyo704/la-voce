@@ -103,6 +103,14 @@ function eq(a, b, label) { ok(a === b, label + "  （得た値: " + JSON.stringi
     //     ★見本の 割合そのものは a01-kyou.test.js が 見本の HTML と 突き合わせます。
     ok(/SHEEP_WIDTH_RATIO/.test(h), "★羊の 大きさは lib/uiKit.js の 割合から 来る");
     ok(!/size=\{\d+\}/.test(h), "★px を 直に 書いていない");
+    // ★★測っていないこと（★2026-09-10・3度目の 直し）。
+    //   ★★1度目 useEffect、★2度目 callback ref ── ★どちらも 大きく なりませんでした。
+    //   ★★SheepDressed の size は 1か所（外側の div の width/height）だけです。
+    //     ★中の 品は ぜんぶ ％です。★だから "100%" で 足ります。
+    //   ★★測る 手が 無ければ、★測り損ねる 道も ありません。
+    ok(/size="100%"/.test(h), "★羊は 入れ物いっぱい（★測らない）");
+    ok(!/ResizeObserver|clientWidth/.test(h), "★測る しかけを 持っていない");
+    ok(/aspectRatio: "1 \/ 1"/.test(h), "★正方形の 入れ物が 高さを 決める");
     // ★⑤ みつけたこと
     ok(/みつけたこと/.test(h), "★みつけたこと の 見出しが ある");
     ok(/topDiscoveries\.map/.test(v), "★中身は 分析の 側から もらう");
