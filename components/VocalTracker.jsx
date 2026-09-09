@@ -9323,17 +9323,41 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
    */
   const fetchRenrakuStudios = useCallback(async (orgId) => {
     const supabase = createClient();
-    const q = supabase.from("assignments").select("teacher_id, student_id").is("ended_at", null);
+    // ★★org_id も 受け取ります（★2026-09-10・直し）。
+    //   ★★はじめ myOrgs[0] を 使っていました。
+    //     ★教室を 2つ 持つ方で、★別の教室の 門下に 書いてしまいます。
+    //   ★門下ごとに、★どの教室の ものかを 持たせます。
+    const q = supabase.from("assignments")
+      .select("org_id, teacher_id, student_id").is("ended_at", null);
     const { data, error } = orgId ? await q.eq("org_id", orgId) : await q;
     if (error) { console.error("門下を読めませんでした:", error); return; }
     const rows = data || [];
     // ★自分が 関わる 門下（★学生として／先生として）
-    const mine = new Set(rows.filter((r) => r.student_id === userId).map((r) => r.teacher_id));
-    if (rows.some((r) => r.teacher_id === userId)) mine.add(userId);
+    const mine = new Map();
+    rows.forEach((r) => {
+      if (r.student_id === userId || r.teacher_id === userId) mine.set(r.teacher_id, r.org_id);
+    });
     const counts = new Map();
     rows.forEach((r) => counts.set(r.teacher_id, (counts.get(r.teacher_id) || 0) + 1));
-    setRenrakuStudios([...mine].map((tid) => ({
-      teacherId: tid, memberCount: counts.get(tid) || 0, lastAt: null
+
+    // ★★最終更新（★見本①の「きのう」「9月6日」「まだ ありません」）。
+    //   ★★1つずつ 尋ねません。★まとめて 1回で 引きます。
+    const ids = [...mine.keys()];
+    let lastBy = new Map();
+    if (ids.length > 0) {
+      const { data: msgs } = await supabase.from("org_messages")
+        .select("teacher_id, created_at")
+        .in("teacher_id", ids).is("withdrawn_at", null)
+        .order("created_at", { ascending: false });
+      (msgs || []).forEach((r) => {
+        if (!lastBy.has(r.teacher_id)) lastBy.set(r.teacher_id, r.created_at);
+      });
+    }
+    setRenrakuStudios(ids.map((tid) => ({
+      teacherId: tid,
+      orgId: mine.get(tid),
+      memberCount: counts.get(tid) || 0,
+      lastAt: lastBy.get(tid) || null
     })));
   }, [userId]);
 
@@ -9520,8 +9544,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     void fetchNotes();
     // ★★門下は、★その帯を 開いたときに はじめて 読みます。
     //   ★はじめの 尋ねごとを 増やしません。
-    void fetchRenrakuStudios(myOrgs[0] && myOrgs[0].org_id);
-    void fetchRenraku(myOrgs[0] && myOrgs[0].org_id, null);
+    // ★★教室を 指定しません。★入っている 門下を ぜんぶ 拾います。
+    //   ★門（RLS）が、★見てよい ものだけを 返します。
+    void fetchRenrakuStudios(null);
+    void fetchRenraku(null, null);
   }, [layoutV2, activeTab, fetchNotes, fetchRenrakuStudios, fetchRenraku, myOrgs]);
 
   // ★運営モードに 入ったら、★その教室の 門下を 読みます。
@@ -16209,7 +16235,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       openStudio={openStudio}
                       onOpenStudio={(tid) => {
                         setOpenStudio(tid);
-                        if (tid) void fetchRenraku(myOrgs[0] && myOrgs[0].org_id, tid);
+                        if (!tid) return;
+                        const st = renrakuStudios.find((x) => x.teacherId === tid);
+                        void fetchRenraku(st && st.orgId, tid);
                       }}
                       role={null}
                       isTeacherOf={(tid) => tid === userId}
@@ -16217,7 +16245,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       nameOf={(id) => orgDisplayName(id) || ""}
                       teacherNameOf={(id) => orgDisplayName(id) || ""}
                       posting={renrakuPosting}
-                      onPost={(body) => handlePostRenraku(myOrgs[0] && myOrgs[0].org_id, openStudio, body)}
+                      onPost={(body) => {
+                        // ★★その門下の 教室に 書きます（★2026-09-10・直し）。
+                        //   ★myOrgs[0] では、★教室を 2つ 持つ方で ずれます。
+                        const st = renrakuStudios.find((x) => x.teacherId === openStudio);
+                        return handlePostRenraku(st && st.orgId, openStudio, body);
+                      }}
                       reads={renrakuReads} />
                     {/* ★★休むことは、★連絡板に 書かせません（★§6-1 の 対処②）。
                         ★★別の道を、★連絡の すぐ下に 置きます（★見本④）。 */}

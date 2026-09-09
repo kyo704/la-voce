@@ -41,6 +41,7 @@ function eq(a, b, label) {
   const ui = readCode("components", "Renraku.jsx");
   const raw = readRaw("components", "Renraku.jsx");
   const vt = readCode("components", "VocalTracker.jsx");
+  const raw_vt = readRaw("components", "VocalTracker.jsx");
   const sql = readRaw("supabase", "2026-09-10-連絡と、読んだ記録.sql");
 
   console.log("=== ① 90日 ===");
@@ -164,6 +165,28 @@ function eq(a, b, label) {
     "★assignments から 組み立てている");
   t(/is\("ended_at", null\)/.test(vt.slice(vt.indexOf("fetchRenrakuStudios"), vt.indexOf("fetchRenrakuStudios") + 700)),
     "★担当が 終わった 門下は 出さない");
+
+  console.log("\n=== 教室が 2つ以上でも ずれない（★2026-09-10・直し） ===");
+  {
+    const blk = vt.slice(vt.indexOf("fetchRenrakuStudios"), vt.indexOf("fetchRenrakuStudios") + 1800);
+    t(/select\("org_id, teacher_id, student_id"\)/.test(blk), "★門下ごとに org_id を 持つ");
+    t(/orgId: mine\.get\(tid\)/.test(blk), "★その門下の 教室を 返す");
+    // ★★書くときに myOrgs[0] を 使っていないこと
+    // ★★呼んでいるか を 見るときは readCode（★注記の中の 名前を 拾わないため）。
+    //   ★注記に「myOrgs[0] では ずれます」と 書いてあります。★今日 5度目です。
+    const post = vt.slice(vt.indexOf("onPost={(body) => {"), vt.indexOf("onPost={(body) => {") + 400);
+    t(/st && st\.orgId/.test(post), "★書くのは、その門下の 教室へ");
+    t(!/myOrgs\[0\]/.test(post), "★myOrgs[0] を 使っていない");
+  }
+
+  console.log("\n=== 最終更新（★見本①） ===");
+  {
+    const blk = vt.slice(vt.indexOf("fetchRenrakuStudios"), vt.indexOf("fetchRenrakuStudios") + 1800);
+    t(/lastAt: lastBy\.get\(tid\)/.test(blk), "★最終更新を 返す");
+    t(/\.in\("teacher_id", ids\)/.test(blk), "★1つずつ 尋ねず、まとめて 引く");
+    t(/is\("withdrawn_at", null\)/.test(blk), "★取り消したものを、最終更新に しない");
+    t(/まだ ありません/.test(raw), "★無いときの 言葉が ある（★見本①）");
+  }
 
   console.log("\n=== 添付は できない ===");
   t(m.NO_ATTACH_LINE.includes("添付は できません"), "★そう 書いてある");
