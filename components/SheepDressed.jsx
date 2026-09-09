@@ -6,7 +6,7 @@ import { SHEEP_BASE, SHEEP_ASSET_BASE, sheepItemByKey, sheepItemSrc } from "@/li
 import { LAYER_ORDER, PROP_SIDE_DEFAULT, motionOf, LEGS, SHOE_SPLIT_X, slotZ } from "@/lib/sheepWardrobe";
 import ClothImage, { ClothShoeImages } from "@/components/ClothImage";
 import { webp } from "@/lib/imageFormat";
-import { HEAD_NOFACE, FACE_Z, faceSrc, BLINK, nextBlinkMs, preloadList, laterPreloadList } from "@/lib/sheepFace";
+import { HEAD_NOFACE, FACE_Z, faceSrc, BLINK, nextBlinkMs, preloadList } from "@/lib/sheepFace";
 
 // ============================================================================
 // 着せかえた羊（★絵を重ねます・2026-09-05 夜）
@@ -142,19 +142,13 @@ function usePreloadFaces(enabled) {
       const im = new window.Image();
       im.src = src;
     }
-    // ★★残り7枚は、★手が空いたときに 読みます。
-    //   ★★出す場面が 来てから でも 間に合いますが、
-    //     ★そのとき 白が 出ないよう、★静かに 用意しておきます。
-    const idle = window.requestIdleCallback
-      ? (fn) => window.requestIdleCallback(fn, { timeout: 4000 })
-      : (fn) => window.setTimeout(fn, 1500);
-    idle(() => {
-      for (const src of laterPreloadList()) {
-        const im = new window.Image();
-        im.decoding = "async";
-        im.src = src;
-      }
-    });
+    // ★★残り7枚は、★先に 読みません（★2026-09-09 の 直し）。
+    //   ★★手が空いたときに 読む形に していましたが、★結局 9枚とも
+    //     ★読まれていました。★実機の 記録の とおりです。
+    //   ★★出す場面が 来てから、★そのとき 読めば 足ります。
+    //     ★にっこりは 記録を保存したとき。★眠りは 60秒 たってから。
+    //   ★★差し替わるまで 一瞬 前の顔の ままかもしれません。
+    //     ★白い顔よりは、★そのほうが よいところです。
   }, [enabled]);
 }
 

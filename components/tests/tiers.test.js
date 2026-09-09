@@ -63,6 +63,38 @@ function ok(name, cond, extra) {
   ok("★知らない段なら 無料",
     m.effectiveTier({ status: "active", tier: "きんいろ" }) === m.FREE);
 
+  console.log("■ ★買い切り（★2026-09-09）");
+  const soon = "2027-09-09T00:00:00.000Z";
+  ok("★生きている", m.purchaseAlive({ status: "active", ends_at: soon }, "2026-10-01T00:00:00.000Z"));
+  // ★★status だけを 見ないこと。★期限が 過ぎても active の ままです。
+  ok("★★期限が 過ぎたら 生きていない",
+    !m.purchaseAlive({ status: "active", ends_at: "2026-01-01T00:00:00.000Z" }, "2026-10-01T00:00:00.000Z"));
+  ok("★終わっていれば 生きていない",
+    !m.purchaseAlive({ status: "expired", ends_at: soon }, "2026-10-01T00:00:00.000Z"));
+  ok("★終わる日が 無ければ 生きていない", !m.purchaseAlive({ status: "active" }));
+  ok("★何も 渡さなくても 落ちない", !m.purchaseAlive(null));
+  // ★★弱いほうで 上書きしないこと。★取り上げることに なります。
+  ok("★★契約と 買い切りの、強いほうを 見る",
+    m.effectiveTierWith({ status: "canceled" },
+      [{ status: "active", tier: "full", ends_at: soon }], "2026-10-01T00:00:00.000Z") === m.FULL);
+  ok("★買い切りが 切れていれば、契約のほう",
+    m.effectiveTierWith({ status: "active", tier: "basic" },
+      [{ status: "active", tier: "full", ends_at: "2026-01-01T00:00:00.000Z" }],
+      "2026-10-01T00:00:00.000Z") === m.BASIC);
+  ok("★どちらも 無ければ 無料", m.effectiveTierWith(null, [], "2026-10-01T00:00:00.000Z") === m.FREE);
+
+  console.log("■ ★webhook が 買い切りを 残すこと");
+  const wh2 = readCode("app/api/stripe", "webhook/route.js");
+  ok("★payment のときに 残す", /if \(session\.mode === "payment"\) \{\s*\n\s*await recordPurchase\(session\);/.test(wh2));
+  ok("★purchases に 入れる", /admin\.from\("purchases"\)\.insert\(/.test(wh2));
+  // ★★同じ知らせが 2度 来ても、★誤りとして 騒がないこと。
+  ok("★★2度目（23505）を 誤りに しない", /error\.code !== "23505"/.test(wh2));
+  ok("★終わる日は お申し込みから1年", /ends_at: oneYearFrom\(startedAt\)/.test(wh2));
+  // ★★持ち主が 分からないまま 通り過ぎないこと。
+  ok("★★持ち主が 分からなければ、黙らずに 書き残す",
+    /★買い切りの持ち主が分かりませんでした/.test(fs.readFileSync(
+      path.join(ROOT, "app", "api", "stripe", "webhook", "route.js"), "utf-8")));
+
   console.log("■ ★2色目");
   ok("★¥1,280 だけ", m.mayChooseSecondColorByTier({ status: "active", tier: "full" }) === true
     && m.mayChooseSecondColorByTier({ status: "active", tier: "basic" }) === false

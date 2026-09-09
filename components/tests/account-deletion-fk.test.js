@@ -86,8 +86,9 @@ const NO_ACTION_COLUMNS = [
   //   ★区切りマーカー（★食事と就寝の設計 §6）。★日付だけの表です。
   //   ★★理由の欄は、はじめから在りません。★本人のものです。
   //   ★入れ忘れると、★退会しても、この方の日付が残ります。
-  assertTrue(d.USER_OWNED_TABLES.length === 22,
-    `一覧は22表（いまは ${d.USER_OWNED_TABLES.length}）`);
+  // ★★2026-09-09、★purchases（買い切り）を 足しました（22 → 23）。
+  assertTrue(d.USER_OWNED_TABLES.length === 23,
+    `一覧は23表（いまは ${d.USER_OWNED_TABLES.length}）`);
   assertTrue(d.USER_OWNED_TABLES.includes("period_markers"),
     "★区切りマーカーの表が、退会の一覧に入っている");
   assertTrue(d.USER_OWNED_TABLES.includes("org_event_participants"), "★出るという印が入っている");

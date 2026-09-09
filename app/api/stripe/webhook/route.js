@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { tierFromPriceId } from "@/lib/tiers";
+import { tierFromPriceId, oneYearFrom } from "@/lib/tiers";
 import { stripe, stripeConfigured } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -62,6 +62,67 @@ export async function POST(request) {
     // ★★黙らないこと。★誰の契約か分からないまま、通り過ぎるのが、いちばん悪い形です。
     console.error("★契約の持ち主が分かりませんでした: sub=" + subscription.id);
     return null;
+  }
+
+  /**
+   * ★買い切りを、★purchases に 1行 残します（★2026-09-09）。
+   *
+   *   ★★同じ知らせが 2度 来ても、★2行に しません。
+   *     ★stripe_session_id を unique に してあります。
+   *     ★Stripe は、同じ知らせを 2度 送ることが あります。
+   *
+   *   ★★終わる日は「お申し込みの日から 1年」です。
+   *     ★★1月1日では ありません。★あれは「よそおいの 年のテーマ」が
+   *       ★変わる日で、★お金の日では ありません（★2026-09-08 の決め）。
+   *
+   *   ★★段（tier）は、★値段の鍵から 決めます。★申告では ありません。
+   *     ★知らない鍵なら null に します。★勝手に 上げません。
+   *
+   *   ★★黙らないこと。★誰の買い物か 分からないまま 通り過ぎるのが、
+   *     ★いちばん 悪い形です。
+   */
+  async function recordPurchase(session) {
+    const meta = session.metadata || {};
+    const userId = meta.supabase_user_id || null;
+    if (!userId) {
+      console.error("★買い切りの持ち主が分かりませんでした: session=" + session.id);
+      return;
+    }
+    // ★★何を 買ったか。★値段の鍵は、★品目から 引きます。
+    let priceId = null, amount = null;
+    try {
+      const items = await stripe.checkout.sessions.listLineItems(session.id, { limit: 1 });
+      const first = items && items.data && items.data[0];
+      priceId = (first && first.price && first.price.id) || null;
+      amount = (first && first.amount_total) || session.amount_total || null;
+    } catch (e) {
+      // ★★品目が 引けなくても、★行は 残します。★買った事実が 消えるより ましです。
+      console.error("★買い切りの品目を読めませんでした:", e && e.message);
+      amount = session.amount_total || null;
+    }
+    const tier = tierFromPriceId(priceId, {
+      STRIPE_PRICE_ID_MONTHLY: process.env.STRIPE_PRICE_ID_MONTHLY,
+      STRIPE_PRICE_ID_ANNUAL: process.env.STRIPE_PRICE_ID_ANNUAL,
+      STRIPE_PRICE_ID_FULL: process.env.STRIPE_PRICE_ID_FULL
+    });
+    const startedAt = new Date().toISOString();
+    const { error } = await admin.from("purchases").insert({
+      user_id: userId,
+      plan: meta.plan || null,
+      tier: tier || null,
+      stripe_session_id: session.id,
+      stripe_payment_intent: session.payment_intent || null,
+      stripe_price_id: priceId,
+      amount_yen: amount,
+      started_at: startedAt,
+      ends_at: oneYearFrom(startedAt),
+      status: "active"
+    });
+    // ★★2度目は、unique で はじかれます（23505）。★それは 正しい形です。
+    //   ★★はじかれたことを、★誤りとして 騒がないこと。
+    if (error && error.code !== "23505") {
+      console.error("★買い切りを残せませんでした:", error.message, "session=" + session.id);
+    }
   }
 
   async function syncSubscription(subscription) {
@@ -140,6 +201,14 @@ export async function POST(request) {
       if (session.mode === "subscription" && session.subscription) {
         const subscription = await stripe.subscriptions.retrieve(session.subscription);
         await syncSubscription(subscription);
+      }
+      // ★★買い切り（1回払い）── ★2026-09-09 の 方向転換。
+      //   ★★年払いは「1年間 有効な 利用権の 買い切り」です。
+      //     ★subscription では ないので、★上の道を 通りません。
+      //   ★★purchases に 1行 入れます。★subscriptions には 入れません。
+      //     ★同じ表に 混ぜると、★status の 意味が 2つに なります。
+      if (session.mode === "payment") {
+        await recordPurchase(session);
       }
       break;
     }
