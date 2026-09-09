@@ -201,6 +201,48 @@ const USER_ID = "test-user-id";
       `★場面が1つ空いている日：${w} が throat_condition ${v} で 届く`);
   });
 
+  console.log("\n=== ⑦ 折りたたみ 5つ（見本③） ===");
+  assertEqual(rv2.RECORD_FOLDS.map((f) => f.label),
+    ["歌った時間", "からだのこと", "ねむり", "食べたもの", "ひとこと"],
+    "★見本③の 5つ、その並びのまま");
+  {
+    // ★★節を 1つも 落とさないこと。★落ちた節は、★書けなくなった節です。
+    const vt = readRaw("components", "VocalTracker.jsx");
+    const inUi = (vt.match(/fold="([a-zA-Z]+)"/g) || []).map((m) => m.slice(6, -1));
+    const inTable = rv2.RECORD_FOLDS.flatMap((f) => f.sections);
+    assertEqual(inUi.length, 11, "★画面の節は 11 で、すべて fold を 渡している");
+    assertEqual(inUi.filter((k) => !inTable.includes(k)), [],
+      "★画面の節は、すべて 表に 載っている（★載せ忘れが 無い）");
+    assertEqual(inTable.filter((k) => !inUi.includes(k)), [],
+      "★表の節は、すべて 画面に ある（★死んだ行が 無い）");
+    assertEqual(inTable.length, new Set(inTable).size,
+      "★同じ節が 2つの 折りたたみに 入っていない");
+  }
+  assertEqual(rv2.sectionIsOpen("meal", { layoutV2: false, openFold: null }), true,
+    "★門の外では、★節は いつも 出る（★38人の画面を 変えない）");
+  assertEqual(rv2.sectionIsOpen("meal", { layoutV2: true, openFold: null }), false,
+    "門の中で 閉じていれば 出ない");
+  assertEqual(rv2.sectionIsOpen("meal", { layoutV2: true, openFold: "meal" }), true,
+    "開いていれば 出る");
+  assertEqual(rv2.sectionIsOpen("meal", { layoutV2: true, openFold: "sleep" }), false,
+    "ほかが 開いていても 出ない（★1つずつ）");
+  assertEqual(rv2.sectionIsOpen("しらない節", { layoutV2: true, openFold: null }), true,
+    "★表に無い節は 畳まない（★載せ忘れで 消えないため）");
+
+  console.log("\n=== ⑧ 見本③の 但し書き ===");
+  {
+    const head = readCode("components", "RecordV2Head.jsx");
+    assertTrue(/「完了」はありません/.test(head), "★「完了」を 作らないと 書いてある");
+    assertTrue(/きょうは、書かない/.test(head), "★出口（きょうは、書かない）が ある");
+    assertTrue(!/完了度|未入力|あと\s*\d/.test(head), "★数え上げを 出さない");
+    // ★★押した その場で 保存すること（★見本③「ここでもう保存されています」）。
+    const vt2 = readRaw("components", "VocalTracker.jsx");
+    assertTrue(/const next = applyConditionWord\(formData, w\);[\s\S]{0,120}handleSave\(next\)/.test(vt2),
+      "★押した姿を そのまま 保存に 渡している（★古い formData を 保存しない）");
+    assertTrue(!/onClick=\{handleSave\}/.test(vt2),
+      "★handleSave を 押しどころに 裸で 渡していない（★event が override に なる）");
+  }
+
   console.log("\n=== ⑤⑥ 門と、見本の 決まり ===");
   const head = readCode("components", "RecordV2Head.jsx");
   assertTrue(!/あと\s*\d|あと[０-９]|データ不足/.test(head), "「あと◯」「データ不足」と 書かない");

@@ -1,7 +1,7 @@
 "use client";
 
 import { C } from "@/lib/tokens";
-import { CONDITION_CHOICES, conditionValue, mayUseQuickCondition, readConditionValue } from "@/lib/recordV2";
+import { CONDITION_CHOICES, conditionValue, mayUseQuickCondition, readConditionValue, RECORD_FOLDS } from "@/lib/recordV2";
 
 // ============================================================================
 // 「記録」の いちばん上（見本③ ／ 2026-09-09）
@@ -18,13 +18,21 @@ import { CONDITION_CHOICES, conditionValue, mayUseQuickCondition, readConditionV
 //   ★見張り components/tests/record-v2.test.js
 // ============================================================================
 
-export default function RecordV2Head({ entry, dateLabel, onPick, onSave, saving }) {
+export default function RecordV2Head({
+  entry, dateLabel, onPick, saved, openFold, onToggleFold, onSkip
+}) {
   const quick = mayUseQuickCondition(entry);
   const current = readConditionValue(entry);
 
   return (
     <div className="space-y-3">
-      <p style={{ fontSize: "0.6875rem", color: C.inkSoft }}>{dateLabel}</p>
+      {/* ★★見本③の 右上。★「保存しました」。★押しどころでは ありません。 */}
+      <div className="flex items-center justify-between">
+        <p style={{ fontSize: "0.6875rem", color: C.inkSoft }}>{dateLabel}</p>
+        {saved ? (
+          <p style={{ fontSize: "0.6875rem", color: C.curtain }}>保存しました</p>
+        ) : null}
+      </div>
 
       {/* ★★こえのちょうし。★これ1つで、★その日の記録が 成り立ちます。 */}
       {quick ? (
@@ -64,17 +72,48 @@ export default function RecordV2Head({ entry, dateLabel, onPick, onSave, saving 
         </div>
       )}
 
-      {/* ★★きろくする。★いつでも 押せます。★3択を 選ばなくても 押せます。
-          ★★止めません。★止めると、★その日の記録が まるごと 消えます。 */}
-      <button type="button" onClick={onSave} disabled={saving}
+      {/* ★★見本③の 但し書き。★「完了」を 作りません。
+          ★★完了があると、★埋まっていない日が 未完成に なります。
+            ★書かない日を、★失敗に しません。 */}
+      <p style={{ fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.7 }}>
+        ここでもう保存されています。「完了」はありません。<br />
+        この先は、足したい人だけ。
+      </p>
+
+      {/* ★★折りたたみ 5つ（★見本③）。★開いた時点で 並んでいます＝0タップ。
+          ★★1つずつ 開きます。★開くと、ほかは 閉じます。
+          ★★中身が どこに あるかは lib/recordV2.js が 持ちます。
+            ★節そのものは 動かしていません。★出し分けているだけです。 */}
+      <div className="space-y-2">
+        {RECORD_FOLDS.map((f) => {
+          const on = openFold === f.key;
+          return (
+            <button key={f.key} type="button" onClick={() => onToggleFold(f.key)}
+              aria-expanded={on}
+              className="w-full flex items-center justify-between"
+              style={{
+                minHeight: 52, borderRadius: 12, padding: "0 14px",
+                border: `1px solid ${on ? C.ink : C.line}`,
+                background: on ? C.paper : C.card,
+                color: C.ink, fontSize: "0.9375rem"
+              }}>
+              <span>{on ? "−" : "＋"}　{f.label}</span>
+              <span style={{ color: C.inkSoft }}>{on ? "﹀" : "›"}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ★★「きょうは、書かない」（★見本③）。
+          ★★出口の ない画面を 作らないこと。★答えられない日が あります。
+          ★★とばした数を 数えません。★「未入力」も「完了度」も 出しません。 */}
+      <button type="button" onClick={onSkip}
         className="w-full"
         style={{
-          minHeight: 52, borderRadius: 10,
-          border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
-          background: saving ? C.line : C.curtain, color: "#FFFDF8",
-          fontSize: "1rem", fontWeight: 600
+          minHeight: 44, border: "none", background: "transparent",
+          color: C.inkSoft, fontSize: "0.8125rem"
         }}>
-        {saving ? "きろく中" : "きろくする"}
+        きょうは、書かない
       </button>
     </div>
   );

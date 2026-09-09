@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback } from "react";
+import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback, createContext, useContext } from "react";
 import {
   Mic2, Moon, Droplets, Thermometer, Wind, MapPin, Music2, HeartHandshake,
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
@@ -109,7 +109,7 @@ import { recallEquipped, rememberEquipped } from "@/lib/equippedCache";
 import { mayUseLayoutV2 } from "@/lib/layoutV2";
 import HomeV2 from "@/components/HomeV2";
 import RecordV2Head from "@/components/RecordV2Head";
-import { applyConditionWord } from "@/lib/recordV2";
+import { applyConditionWord, RECORD_FOLDS, sectionIsOpen } from "@/lib/recordV2";
 import { readProfileExtras } from "@/lib/profileExtras";
 import { VIEW, DRESS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES, HOME_COLORS } from "@/lib/homeDrawer";
 import { itemsFor, sortItems } from "@/lib/drawerItems";
@@ -2511,13 +2511,23 @@ function SectionFeedback({ text }) {
     </p>
   );
 }
-function SectionCard({ title, icon: Icon, children, id, highlighted }) {
+// ★★折りたたみの いま（★見本③・2026-09-09）。
+//   ★★門の外では、★いつも { layoutV2:false } です。★何も 変わりません。
+//   ★節ごとに 判定を 書かないため、★ここ1つに 持たせます。
+const RecordFoldContext = createContext({ layoutV2: false, openFold: null });
+
+function SectionCard({ title, icon: Icon, children, id, highlighted, fold }) {
   const ref = useRef(null);
+  const foldState = useContext(RecordFoldContext);
   useEffect(() => {
     if (highlighted && ref.current) {
       ref.current.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   }, [highlighted]);
+  // ★★閉じている折りたたみの 節は、★描きません（★見本③）。
+  //   ★★出し分けを 決めるのは lib/recordV2.js だけです。★ここで 決めません。
+  //   ★★fold を 渡していない節は、★畳みません。★渡し忘れで 消えないためです。
+  if (fold && !sectionIsOpen(fold, foldState)) return null;
   return (
     <div ref={ref} id={id} className="rounded-2xl p-4 sm:p-5 border" style={{
       background: C.card, borderColor: highlighted ? C.gold : C.line, borderWidth: highlighted ? 2 : 1,
@@ -5173,6 +5183,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [pendingOrgInvitation, setPendingOrgInvitation] = useState(null);
   const [myAllLessons, setMyAllLessons] = useState([]); // 生徒として、教室をまたいで統合した全レッスン
   const [formData, setFormData] = useState(null);
+  // ★★いま開いている 折りたたみ（★見本③・2026-09-09）。★1つだけ 開きます。
+  //   ★★門の外では 使いません。★節は これまでどおり 全部 出ます。
+  const [openFold, setOpenFold] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
   const [saveError, setSaveError] = useState("");
   const [toastMessage, setToastMessage] = useState(null);
@@ -11652,15 +11665,25 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setFormData((f) => ({ ...f, exercises: (f.exercises || []).filter((x) => x.id !== id) }));
   }
 
-  async function handleSave() {
-    if (!formData) return;
+  /**
+   * ★記録を 保存します。
+   *
+   *   ★★override（★2026-09-09・見本③）。
+   *     ★★見本③は、★3択を 押した その場で 保存します（★「完了」はありません）。
+   *     ★★setFormData の 直後に 呼ぶと、★formData は まだ 古い姿です。
+   *       ★押した値が 抜けたまま 保存されます。
+   *     ★だから、★保存したい姿を そのまま 渡せるようにします。
+   */
+  async function handleSave(override) {
+    const source = override || formData;
+    if (!source) return;
     const saveStartedAt = Date.now();
     setSaveStatus("saving");
     setSaveError("");
     // ★保存する前の姿を控えておく。取り消しはこれを書き戻すだけ。
     //   「無かった」と「あった」を取り違えないよう、null をそのまま持つ。
-    const previousEntry = entries[formData.date] ? { ...entries[formData.date] } : null;
-    const clean = { ...formData };
+    const previousEntry = entries[source.date] ? { ...entries[source.date] } : null;
+    const clean = { ...source };
     if (!entryHasActivityKind(clean, "本番")) clean.performanceQuality = null;
     clean.simpleMealMacros = simpleMealMacros;
     // ★★同意があるかを、★保存のときに渡します（★2026-09-08）。
@@ -12945,6 +12968,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               );
             })()}
             {activeTab === "today" && (
+              // ★★折りたたみの いまを、★節へ 渡します（★見本③）。
+              //   ★★門の外は { layoutV2:false } なので、★節は 全部 出ます。
+              //     ★38人の 画面を、★1つも 変えません。
+              <RecordFoldContext.Provider value={{ layoutV2, openFold }}>
               <div className="space-y-5">
                 {/* ★★見本③の いちばん上（★2026-09-09）。★2タップで 終わります。
                     ★★名簿に 載っている方にだけ 出します（★lib/layoutV2.js）。
@@ -12954,9 +12981,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   <RecordV2Head
                     entry={formData}
                     dateLabel={formData.date}
-                    saving={saveStatus === "saving"}
-                    onPick={(w) => setFormData((f) => applyConditionWord(f, w))}
-                    onSave={handleSave} />
+                    saved={saveStatus === "saved"}
+                    openFold={openFold}
+                    onToggleFold={(k) => setOpenFold((cur) => (cur === k ? null : k))}
+                    onSkip={() => { setOpenFold(null); setActiveTab("home"); }}
+                    onPick={(w) => {
+                      // ★★押した その場で 保存します（★見本③「ここでもう保存されています」）。
+                      //   ★★setFormData の あとの formData は まだ 古い姿です。
+                      //     ★だから、★作った姿を そのまま handleSave に 渡します。
+                      const next = applyConditionWord(formData, w);
+                      setFormData(next);
+                      handleSave(next);
+                    }} />
                 )}
                 {/* ★かんたん表示の「1画面に1つ」（見やすさ §3-3）。
                     ★下のふつうの記録欄は消していない。ここで答えても、
@@ -13139,7 +13175,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                     {recordView === "voice" && (
                       <>
-                        <SectionCard title={t("sectionVoiceThroat")} icon={Mic2}>
+                        <SectionCard title={t("sectionVoiceThroat")} icon={Mic2} fold="voice">
                           <div className="space-y-2">
                         {(formData.voiceEntries || []).slice().sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0)).map((entry) => (
                           editingVoiceEntryId === entry.id ? (
@@ -13280,7 +13316,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     )}
 
                     {typeFieldsForToday.length > 0 && (
-                    <SectionCard title="お仕事に合わせた記録" icon={Mic2}>
+                    <SectionCard title="お仕事に合わせた記録" icon={Mic2} fold="typeFields">
                       <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                         どれも任意です。空欄のままでも保存できます。
                       </p>
@@ -13339,7 +13375,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </SectionCard>
                     )}
 
-                        <button type="button" onClick={handleSave} disabled={saveStatus === "saving"}
+                        <button type="button" onClick={() => handleSave()} disabled={saveStatus === "saving"}
                           className="w-full rounded-2xl py-3.5 font-medium flex items-center justify-center gap-2 transition-all"
                           style={{ background: C.curtain, color: "#FFFDF8" }}>
                           {saveStatus === "saving" && <Loader2 size={16} className="animate-spin" />}
@@ -13439,7 +13475,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     {recordView === "day" && (
                       <>
                     {showGroup("body") && (
-                    <SectionCard title={t("sectionTodayBody")} icon={Scale}>
+                    <SectionCard title={t("sectionTodayBody")} icon={Scale} fold="body">
                       {/* ★むくみは、からだの記録として1日の記録にも置きます。
                           かんたんモードにもありますが、どちらも同じ formData を見ます。
                           ★「中核」という名前で囲わないこと（§1-3）。 */}
@@ -13538,7 +13574,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     )}
 
                     {showGroup("env") && (
-                    <SectionCard title={t("sectionClimate")} icon={Thermometer}>
+                    <SectionCard title={t("sectionClimate")} icon={Thermometer} fold="env">
                       <div>
                         <label className="text-sm font-medium block mb-1.5">{t("labelLocation")}</label>
                         <div className="flex items-center gap-2 rounded-lg border p-2" style={{ borderColor: C.line, background: C.paper }}>
@@ -13672,7 +13708,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </SectionCard>
                     )}
 
-                    <SectionCard title={t("sectionSleep")} icon={Moon} id="record-section-sleep" highlighted={highlightSection === "sleep"}>
+                    <SectionCard title={t("sectionSleep")} icon={Moon} id="record-section-sleep" highlighted={highlightSection === "sleep"} fold="sleep">
                       <NumberField label={t("labelSleepHours")} icon={Moon} value={formData.sleepHours} step={0.5} min={0} max={16} suffix={t("unitHours")}
                         onChange={(v) => setFormData((f) => ({ ...f, sleepHours: v }))} />
                       <div className="grid grid-cols-2 gap-3">
@@ -13754,7 +13790,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       <SectionFeedback text={sectionFeedback.sleep} />
                     </SectionCard>
 
-                    <SectionCard title={t("sectionPractice")} icon={Music2} id="record-section-practice" highlighted={highlightSection === "practice"}>
+                    <SectionCard title={t("sectionPractice")} icon={Music2} id="record-section-practice" highlighted={highlightSection === "practice"} fold="practice">
                       <div>
                         <span className="text-sm font-medium block mb-2">本番外の発話（レッスン・会議・電話・授業・打合せなど）</span>
                         {/* ★4択にします（中核5項目 §2-3）。
@@ -14048,7 +14084,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </SectionCard>
 
                     {showGroup("hydration") && (
-                    <SectionCard title={t("sectionWater")} icon={Droplets} id="record-section-water" highlighted={highlightSection === "water"}>
+                    <SectionCard title={t("sectionWater")} icon={Droplets} id="record-section-water" highlighted={highlightSection === "water"} fold="hydration">
                       <div>
                         <div className="flex items-center gap-3">
                           <button type="button"
@@ -14106,7 +14142,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     )}
 
                     {showGroup("meal") && (
-                    <SectionCard title={t("sectionMealDetail")} icon={Wheat} id="record-section-meal" highlighted={highlightSection === "meal"}>
+                    <SectionCard title={t("sectionMealDetail")} icon={Wheat} id="record-section-meal" highlighted={highlightSection === "meal"} fold="meal">
                       <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteMealAutoCalc")}</p>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
@@ -14357,7 +14393,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       onToggle={handleTogglePeriodMarker} />
 
                     {showGroup("exercise") && (
-                    <SectionCard title={t("sectionExercise")} icon={Dumbbell}>
+                    <SectionCard title={t("sectionExercise")} icon={Dumbbell} fold="exercise">
                       <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteExerciseHelp")}</p>
                       {(formData.exercises || []).length === 0 && !showExerciseDetail ? (
                         <>
@@ -14423,7 +14459,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     )}
 
                     {showGroup("mental") && (
-                    <SectionCard title={t("sectionMental")} icon={HeartHandshake} id="record-section-mental" highlighted={highlightSection === "mental"}>
+                    <SectionCard title={t("sectionMental")} icon={HeartHandshake} id="record-section-mental" highlighted={highlightSection === "mental"} fold="mental">
                       <DotSelector label={t("labelMentalEase")} icon={HeartHandshake} value={formData.ease} lowLabel={t("lowTension")} highLabel={t("highCalm")}
                         onChange={(v) => setFormData((f) => ({ ...f, ease: v }))} />
                       {typeof formData.ease === "number" && (
@@ -14460,14 +14496,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     )}
 
                     {showGroup("practiceNote") && (
-                    <SectionCard title={t("sectionMemo")} icon={NotebookPen}>
+                    <SectionCard title={t("sectionMemo")} icon={NotebookPen} fold="practiceNote">
                       <textarea value={formData.notes} rows={3} placeholder={t("placeholderGeneralNotes")}
                         onChange={(e) => setFormData((f) => ({ ...f, notes: e.target.value }))}
                         className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                     </SectionCard>
                     )}
 
-                    <button onClick={handleSave} disabled={saveStatus === "saving"}
+                    <button onClick={() => handleSave()} disabled={saveStatus === "saving"}
                       className="w-full rounded-2xl py-3.5 font-medium flex items-center justify-center gap-2 transition-all"
                       style={{ background: C.curtain, color: "#FFFDF8" }}>
                       {saveStatus === "saving" && <Loader2 size={16} className="animate-spin" />}
@@ -14482,6 +14518,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </>
                 )}
               </div>
+              </RecordFoldContext.Provider>
             )}
 
             {/* ★両方に当てはまる人にだけ出す。片方だけの人には出さない（大多数はこちら）。
