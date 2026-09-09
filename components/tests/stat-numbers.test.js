@@ -54,7 +54,11 @@ async function load(rel) {
 
   console.log("③ ★画面が、新しい文を呼んでいるか");
   const vt = readRaw("components/VocalTracker.jsx");
-  ok(/t\("insightLineNoStats"\)/.test(vt), "新しい文を、呼んでいる");
+  // ★★2026-09-09、★「気づき（最大3つ）」を やめました（★Opus の方針）。
+  //   ★★この文は、★気づきの中でだけ 使っていました。
+  //   ★★守りたいのは「★係数や件数を、画面に 出さないこと」です。
+  //     ★文が 無ければ、★数も 出ません。★いちばん 確かな形です。
+  ok(!/t\("insightLineNoStats"\)/.test(vt), "★★気づきの文を、呼んでいない");
   ok(!/t\("insightLine"\)/.test(vt), "★古い文（r と n の入ったもの）を、呼んでいない");
   const code = readCode("components", "VocalTracker.jsx");
   ok(!/\.replace\(\/\\\{r\\\}\/g/.test(code), "★{r} を、埋めていない");

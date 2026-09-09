@@ -96,8 +96,13 @@ async function main() {
       "族ごとの結果を、項目ごとに持ち直している");
     assertTrue(/if \(fam === EXPLORE\) return;/.test(ui),
       "★探索族を、検定の対象から外している（計算もしない）");
-    assertTrue(/\.filter\(\(r\) => mayStateFinding\(r\.key\)\)/.test(ui),
-      "★文章を出してよいのは中核族だけ、という判定を通している");
+    // ★★2026-09-09、★「気づき（最大3つ）」を やめました（★Opus の方針）。
+    //   ★★あれが、★mayStateFinding を 通していた 唯一の 文章でした。
+    //   ★★いま 文章は 1つも 出ません。★だから 通す先が ありません。
+    //     ★守りたいのは「★中核族の 外を 文章にしないこと」です。
+    //     ★★文章そのものが 無ければ、★それは 守られています。
+    assertTrue(!/insightLineNoStats/.test(ui),
+      "★★文章を 1つも 出していない（★気づきを やめました）");
     assertTrue(!/benjaminiHochberg\(withP\.map/.test(ui),
       "★全部まとめて補正する古い書き方が、残っていない");
     assertTrue(/Object\.values\(byFamily\)\.forEach/.test(ui),

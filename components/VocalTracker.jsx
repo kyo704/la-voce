@@ -534,7 +534,6 @@ const TABS = [
   //   ★★教室に入っていない方にも、★入口が見えるようにします。
   //     ★見えないと、★あることに気づいていただけません。
   //   ★先生1人につき5人まで無料、という枠が、★すでにあります。
-  { key: "lesson", labelKey: "tabLesson", icon: GraduationCap },
   { key: "garden", labelKey: "tabCharacter", icon: Home },
   { key: "notes", labelKey: "tabNotes", icon: NotebookPen }
   // ★★「もっと」を、★下タブから外しました（★2026-09-08・第1便・§1-2）。
@@ -542,14 +541,20 @@ const TABS = [
   //     ★歯車は、★条件なしで出ています（★activeTab === "home" の中）。
   //     ★同意の撤回と書き出しは、★法で求められる道です。★塞いでいません。
   //
-  // ★★レッスンは、★まだ外しません（★第1便では、外せません）。
-  //   ★§9 は「レッスンタブを外す」と書いていますが、
-  //   ★★ホームのレッスンの入口は、myEnrollments.length > 0 の中にあります。
-  //     ★教室に入っていない方には、★出ません。
-  //   ★★いま外すと、★その方から入口が1つも無くなります。
-  //     ★2026-09-07 に「教室に入っていない方にも入口を見せる」と
-  //     ★決めたことを、★取り消すことになります。
-  //   ★★第2便で「きょう」の帯（§4）ができてから、★外します。
+  // ★★レッスンを、★下タブから外しました（★2026-09-09・第1便・§9）。
+  //   ★★タブは 6つ → 5つ です。
+  //     きょう ／ 記録 ／ ふりかえる ／ ひつじ ／ ノート
+  //
+  //   ★★画面は 消えていません。★入口は 2つ 残っています。
+  //     ① ホームの 教室の札（★myEnrollments.length > 0 のとき）
+  //     ② ホームの 予定の「すべて見る」
+  //   ★★教室に 入っている方は、★これまでどおり 行けます。
+  //
+  //   ★★入っていない方には、★入口が 出なくなります。
+  //     ★2026-09-07 に「入っていない方にも 見せる」と 決めましたが、
+  //     ★★2026-09-08 の §9 で、★外す、と 決まりました。
+  //     ★坂本さんに 確かめて、★そのとおりに しています（★2026-09-09）。
+  //   ★★第2便の「きょう」の帯（§4）で、★入口を 戻します。
 ];
 // 職業ごとに専用の理論ページへ切り替える
 const PROFESSION_THEORY_PAGES = {
@@ -1098,29 +1103,11 @@ function correlationExportRows(correlationResults, targetLabel) {
     .filter(Boolean);
 }
 
-function generateInsights(correlationResults, targetLabel, t) {
-  const { withP, fdrByKey } = correlationStats(correlationResults);
-  return withP
-    .filter((r) => mayStateFinding(r.key))
-    .filter((r) => evaluateGate("correlation.narrative", { n: r.n, rho: r.r, fdrPass: fdrByKey[r.key] }, t).passed)
-    .sort((a, b) => Math.abs(b.r) - Math.abs(a.r))
-    .slice(0, 3)
-    .map((r) => {
-      const strength = Math.abs(r.r) >= 0.7 ? t("insightStrengthClear") : t("insightStrengthSome");
-      const actionTemplate = r.r >= 0 ? t("insightActionPos") : t("insightActionNeg");
-      const action = actionTemplate.replace(/\{factor\}/g, r.label).replace(/\{target\}/g, targetLabel);
-      // ★★係数（r）と件数（n）を、★画面から外しました（★2026-09-08・再点検 6）。
-      //   ★★数そのものは、★書き出し（CSV）に残しています。★取り上げていません。
-      //     ★決めは lib/statNumbers.js が持ちます。★ここでは判じません。
-      //   ★★「r=0.42」は、★確からしさの幅を出さずに見せると、
-      //     ★その数の意味を知らない方には、★確かなものに見えます。
-      //     ★言えるのは「一緒に出ている」までです。★それは、文で言えます。
-      const line = t("insightLineNoStats")
-        .replace(/\{factor\}/g, r.label)
-        .replace(/\{strength\}/g, strength);
-      return { key: r.key, text: `${line}${action}` };
-    });
-}
+// ★★generateInsights を、★消しました（★2026-09-09・Opus の方針）。
+//   ★★「気づき（最大3つ）」を やめました。★材料は「関係の強さ」と 同じで、
+//     ★数を 文に 言い直したものでした。★同じことを 2度 言いません。
+//   ★★呼ばれない関数を、★残しません（★「作った関数は、必ず呼ばれているか」）。
+//   ★★消しています。★コメントで 囲んでは いません。★残すと、いつか また 出ます。
 // ★「周期◯日目」の計算は lib/cyclePeriods.js に一本化した。
 //   以前はここに entries.cycle_start から数える版があり、ホームの新しい
 //   ボタン（cycle_periods に書く）と置き場所が分かれていた。
@@ -6501,9 +6488,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★★比べている対象の名前。★文にも、書き出しにも、同じものを使います。
   const targetLabelForExport = analysisTarget === "performance" ? t("targetPerformance")
     : analysisTarget === "ease" ? t("targetEase") : t("targetThroat");
-  const insights = useMemo(
-    () => generateInsights(correlationResults, targetLabelForExport, t),
-    [correlationResults, targetLabelForExport, t]);
   const voiceMemoEntries = useMemo(() => {
     return Object.keys(filteredEntries)
       .filter((d) => (filteredEntries[d].voiceMemo || "").trim())
@@ -17965,19 +17949,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       </div>
                     )}
 
-                    {insights.length > 0 && (
-                      <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                        <h3 className="ff-display italic text-lg mb-2">{t("titleInsights")}</h3>
-                        <div className="space-y-2">
-                          {insights.map((ins) => (
-                            <p key={ins.key} className="text-xs leading-relaxed rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
-                              {ins.text}
-                            </p>
-                          ))}
-                        </div>
-                        <p className="text-xs mt-2" style={{ color: C.inkSoft }}>{t("noteInsightsDisclaimer")}</p>
-                      </div>
-                    )}
+                    {/* ★★「気づき（最大3つ）」を、★やめました（★2026-09-09・Opus の方針）。
+                        ★★材料は「関係の強さ」と 同じです。★数を 文に 言い直したものでした。
+                        ★★同じことを 2度 言うより、★1度で よい、という 決めです。
+                        ★★消しています。★畳んでは いません。★残すと、いつか また 出ます。 */}
 
                     {scatterInfo && scatterInfo.r != null && (
                       <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>

@@ -102,10 +102,15 @@ console.log("\n=== ★もっと の入口 ===");
   assertTrue(!/key: "more"/.test(src), "★もっと を、下タブから外した");
   assertTrue(/setActiveTab\("more"\)/.test(src), "★もっと を開く道が、残っている");
   assertTrue(src.includes("を開く`}"), "★「きょう」の歯車から開ける");
-  // ★★レッスンは、★まだ帯に残っていること（★第1便では外せません）。
-  //   ★ホームの入口は myEnrollments.length > 0 の中にあり、
-  //   ★教室に入っていない方には出ません。★いま外すと、入口が無くなります。
-  assertTrue(/key: "lesson"/.test(src), "★レッスンは、まだ帯に在る");
+  // ★★2026-09-09、★レッスンを 下タブから 外しました（★第1便・§9）。
+  //   ★★教室に 入っている方の 入口は、★ホームに 残っています。
+  //     ★myEnrollments.length > 0 の 教室の札と、★予定の「すべて見る」。
+  //   ★★入っていない方には 出なくなります。★§9 の 決めどおりです。
+  //   ★★見たいのは「★入っている方が、行けなくなっていないか」です。
+  assertTrue(!/key: "lesson"/.test(src), "★レッスンは、帯から外れている");
+  assertTrue(/myEnrollments\.length > 0 && \(/.test(src),
+    "★★教室に入っている方の入口が、ホームに残っている");
+  assertTrue(/setActiveTab\("lesson"\)/.test(src), "★レッスンを開く道が、残っている");
 }
 
 console.log("\n=== ★1文字だけ切れるのを直す ===");

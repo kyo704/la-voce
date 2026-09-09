@@ -38,8 +38,10 @@ const keys = [...block.matchAll(/key: "([a-z]+)"/g)].map((m) => m[1]);
 //   ★入口は「きょう」の右上の歯車です。★条件なしで出ています。
 // ★★レッスンは、★まだ外しません。★第2便で「きょう」の帯ができてからです。
 //   ★いま外すと、★教室に入っていない方から、★入口が1つも無くなります。
-ok("並びは home / today / analysis / lesson / garden / notes",
-  keys.join(",") === "home,today,analysis,lesson,garden,notes", keys.join(","));
+// ★★2026-09-09、★レッスンを 下タブから 外しました（★第1便・§9）。
+//   ★★見本（2026-09-09 の 11画面）も、★5つで 固定と 書いています。
+ok("並びは home / today / analysis / garden / notes",
+  keys.join(",") === "home,today,analysis,garden,notes", keys.join(","));
 // ★★「もっと」を外しても、★行き先が消えていないこと。
 ok("★もっと を開く道が、残っている", /setActiveTab\("more"\)/.test(src));
 ok("★歯車から開ける", /aria-label=\{`\$\{t\("tabMore"\)\}を開く`\}/.test(src));
@@ -108,7 +110,9 @@ ok("読み上げの名前がある", /aria-label=\{`\$\{t\("tabMore"\)\}を開�
 ok("押せる大きさがある", /minHeight: 44[\s\S]{0,400}<Settings/.test(src));
 
 console.log("■ レッスンについて");
-ok("★レッスンは、帯に固定で入っている", keys.includes("lesson"));
+ok("★レッスンは、帯から外れている", !keys.includes("lesson"));
+// ★★外した先が、必ず在ること。★出口のない画面を 作らないこと。
+ok("★レッスンを開く道が、残っている", /setActiveTab\("lesson"\)/.test(src));
 // ★★条件つきの差しこみは、もうしないこと。
 ok("条件つきの差しこみを、やめている",
   !/if \(tab\.key === "garden" && hasLessonTab\)/.test(code));

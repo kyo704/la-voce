@@ -149,19 +149,25 @@ export default function PrivacyPage() {
       <h2 style={{ fontWeight: 600, marginTop: 28, marginBottom: 8 }}>11　あなたができること</h2>
       <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>見る          いつでも、ご自身の記録をご覧いただけます</p>
-        <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>　　　　　　　（「今日」「ノート」「分析」の各画面）</p>
+        {/* ★★2026-09-09、★画面の名前と 道を、★いまのものに 直しました。
+            ★★「もっと」は 下タブから 外れています（★2026-09-08）。
+              ★いまは「きょう」の画面の ボタンです。
+            ★★書き出し・削除・同意の撤回は、★法で求められる 道です。
+              ★★道が 違って 書いてあるのが、★いちばん まずい形です。
+            ★正は docs/legal/privacy-ja-2026-09-v1.md です。★あちらを 先に 直しました。 */}
+        <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>　　　　　　　（「記録」「ノート」「ふりかえる」の各画面）</p>
         <p style={{ height: 10 }} />
-        <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>書き出す      「もっと ＞ アカウント ＞ データの書き出し」から、</p>
+        <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>書き出す      「きょう」の画面の「もっと」＞ アカウント ＞ データの書き出し から、</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>　　　　　　　ファイルとして取り出せます</p>
         <p style={{ height: 10 }} />
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>直す          誤りがあれば、その場で直せます</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>　　　　　　　（記録した日を開いて、書き直してください）</p>
         <p style={{ height: 10 }} />
-        <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>消す          「もっと ＞ アカウント ＞ アカウントの削除」から、</p>
+        <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>消す          「きょう」の画面の「もっと」＞ アカウント ＞ アカウントの削除 から、</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>　　　　　　　いつでも削除できます</p>
         <p style={{ height: 10 }} />
-        <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>同意をやめる  「もっと ＞ 設定 ＞ プロフィール・記録項目 ＞</p>
-        <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>　　　　　　　　記録データの同意状況」から、いつでも撤回できます</p>
+        <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>同意をやめる  「きょう」の画面の「もっと」＞ 設定 ＞ プロフィール・記録項目</p>
+        <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>　　　　　　　　＞ 記録データの同意状況 から、いつでも撤回できます</p>
       </div>
       <p>撤回されても、これまでの記録は消えません。ご覧いただくことも、書き出すことも、削除することも、同意の状態とは関わりなくできます。</p>
       <p>これらのほか、法の定めにより、利用目的の通知、開示、訂正、利用の停止、消去、第三者提供の停止をご請求いただけます（法32条〜35条）。</p>
