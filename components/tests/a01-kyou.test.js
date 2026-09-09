@@ -66,6 +66,20 @@ function ok(cond, label) {
   const tabsFlex = /\.tabs\{[^}]*flex:\s*0\s+0\s+([0-9.]+)px/.exec(mihon);
   ok(tabsFlex && Number(tabsFlex[1]) === kit.TAB_BAR_HEIGHT, "★下の タブ 56px");
   ok(kit.SPACE.tapMin === 44, "★押せるところは 44 以上（tokens.md §5）");
+  // ★★羊の 割合を、★見本の CSS から 直に 出します（★書き写しません）。
+  //   .sheep{width:186px} ／ .ph{width:360px} ／ .bd{padding:0 15px}
+  //   ★羊が 入っているのは 本文の 列＝360 − 15×2 ＝ 330 です。
+  {
+    const sheepW = cssNum(".sheep", "width");
+    const phW = cssNum(".ph", "width");
+    const bdPad = /\.bd\{[^}]*padding:\s*0\s+([0-9.]+)px/.exec(mihon);
+    ok(sheepW && phW && bdPad, "★見本から 羊と 画面の 幅が 読めた");
+    const colW = phW - Number(bdPad[1]) * 2;
+    ok(Math.abs(kit.SHEEP_WIDTH_RATIO - sheepW / colW) < 1e-9,
+      "★羊の 割合が 見本と 合っている（★列に 対して " + (sheepW / colW * 100).toFixed(1) + "%）");
+    ok(Math.abs(sheepW / phW - 0.517) < 0.001,
+      "★画面に 対しては 51.7%（★坂本さんの お決めの 数）");
+  }
 
   console.log("② 明朝を 使わない（tokens.md §2）");
   // ★★2026-09-09 の 実機で、★ねむりが「6時間o分」と 出ていました。

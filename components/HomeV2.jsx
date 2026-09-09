@@ -1,11 +1,12 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { C } from "@/lib/tokens";
 import SheepDressed from "@/components/SheepDressed";
 import { conditionWord, sleepParts, usualOf } from "@/lib/todayCard";
 import TodayBand from "@/components/TodayBand";
 import {
-  TYPE, SPACE, FONT_STACK, cardStyle, primaryButtonStyle
+  TYPE, SPACE, FONT_STACK, SHEEP_WIDTH_RATIO, cardStyle, primaryButtonStyle
 } from "@/lib/uiKit";
 
 // ============================================================================
@@ -45,6 +46,27 @@ export default function HomeV2({
   const sleep = today ? sleepParts(today.sleepHours) : null;
   const sleepUsual = sleepParts(usualOf(entries, todayISO, (e) => e && e.sleepHours));
 
+  // ★★羊の 大きさは、★端末の 幅で 決まります（★見本の 割合・lib/uiKit.js）。
+  //   ★★SheepDressed は px しか 受け取りません。★だから、★実際に 測ります。
+  //   ★★測る 前も、★入れものが 場所を 取っています（★下の aspectRatio）。
+  //     ★取らないと、★測り終えた 瞬間に 下の 帯が がたつきます。
+  const boxRef = useRef(null);
+  const [sheepPx, setSheepPx] = useState(0);
+  useEffect(() => {
+    const el = boxRef.current;
+    if (!el) return undefined;
+    const measure = () => setSheepPx(Math.round(el.clientWidth * SHEEP_WIDTH_RATIO));
+    measure();
+    if (typeof ResizeObserver === "undefined") {
+      // ★★古い 端末には ResizeObserver が ありません。★向きを 変えたときだけ 測り直します。
+      window.addEventListener("resize", measure);
+      return () => window.removeEventListener("resize", measure);
+    }
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   return (
     // ★★ゴシックで 固定します（★tokens.md §2「明朝は 使いません」）。
     //   ★★これを 書かないと、★親から .ff-display が 降りてきたときに
@@ -80,15 +102,24 @@ export default function HomeV2({
       </div>
 
       {/* ★★羊。★見本では、★部屋を 出しません。★羊だけです。
-          ★★大きさは 120 の ままに しています（★2026-09-10）。
-            ★見本① は 幅の 51.7%（186／360）で、★いまの 実機は 約 22% です。
-            ★★けれど 坂本さんから「180 では 大きすぎる」と 伺っています。
-            ★★見本と お決めが 食い違う 1点なので、★勝手に 大きくしません。
-              ★docs/design/compare/A01-きょう-見本と実機.html の ⑤に 数を 出し、
-              ★お決めを いただいてから 変えます。 */}
-      <div style={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
-        <SheepDressed wearing={wearing || {}} colors={clothColors || {}} colors2={clothColors2 || {}}
-          size={120} motion="still" blink alt="羊" />
+          ★★大きさは 見本の 割合です（★2026-09-10・坂本さんの お決め）。
+            ★「以前の 判断（120px）を 優先せず、★見本の サイズ
+              （幅186px／画面360px＝51.7%）に、★合わせてください」
+            ★★前は 120px でした。★実機で 幅の 約22% しか ありませんでした。
+            ★★数を ここに 書きません。★割合は lib/uiKit.js が 持ちます。 */}
+      <div ref={boxRef} style={{ marginTop: 2 }}>
+        {/* ★★入れものが、★先に 場所を 取ります。★羊の 枠は 正方形です。
+            ★★測り終える 前でも 高さが 決まるので、★下が 跳ねません。 */}
+        <div style={{
+          width: `${(SHEEP_WIDTH_RATIO * 100).toFixed(2)}%`,
+          aspectRatio: "1 / 1",
+          margin: "0 auto"
+        }}>
+          {sheepPx > 0 ? (
+            <SheepDressed wearing={wearing || {}} colors={clothColors || {}} colors2={clothColors2 || {}}
+              size={sheepPx} motion="still" blink alt="羊" />
+          ) : null}
+        </div>
       </div>
 
       {/* ★★ひとこと・きょうの予定・近い本番（★見本 .speak と .obi）。

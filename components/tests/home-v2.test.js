@@ -96,8 +96,13 @@ function eq(a, b, label) { ok(a === b, label + "  （得た値: " + JSON.stringi
     ok(/TABS_V2_ORDER = \["home", "today", "analysis", "notes", "garden"\]/.test(v),
       "★きょう／記録／ふりかえる／ノート／ひつじ の 順");
     // ★③ 羊の 大きさ
-    ok(/size=\{120\}/.test(h), "★羊は 控えめ（120）");
-    ok(!/size=\{180\}/.test(h), "★180 では ない");
+    //   ★★前は「120 であること」を 見ていました。
+    //     ★2026-09-10、★坂本さんが「見本の サイズ（51.7%）に 合わせて」と
+    //     ★お決めに なりました。★見張りが 古い 判断を 抱えたままでした。
+    //   ★★数では なく、★「1か所から 来ていること」を 見ます。
+    //     ★見本の 割合そのものは a01-kyou.test.js が 見本の HTML と 突き合わせます。
+    ok(/SHEEP_WIDTH_RATIO/.test(h), "★羊の 大きさは lib/uiKit.js の 割合から 来る");
+    ok(!/size=\{\d+\}/.test(h), "★px を 直に 書いていない");
     // ★⑤ みつけたこと
     ok(/みつけたこと/.test(h), "★みつけたこと の 見出しが ある");
     ok(/topDiscoveries\.map/.test(v), "★中身は 分析の 側から もらう");
