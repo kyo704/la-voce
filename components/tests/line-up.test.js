@@ -111,11 +111,16 @@ function eq(a, b, label) {
   //   ★★見張りを 消さずに、★言い分の ほうを そのまま 確かめます。
   //     ★帯に あるなら、★その 中身が あること。
   //     ★中身が 無いなら、★帯に 出さないこと。
+  // ★★帯に あるなら、★その 中身が あること。★中身が 無いなら、★帯に 出さないこと。
+  //   ★2026-09-09、★くらべる（見本⑫）と かぞえる（見本⑭）を 作りました。
   t(/setTab\("kuraberu"\)/.test(uiCode) === /<CompareV2/.test(uiCode),
     "★「くらべる」は、帯と 中身が そろっている");
-  t(!/setTab\("kazoeru"\)/.test(uiCode), "★「かぞえる」は、まだ 帯に 出していない（★中身が まだ）");
-  t(!/かぞえる<\/button>/.test(readRaw("components", "LookBackV2.jsx")),
-    "★押しどころとしての「かぞえる」が 無い");
+  t(/setTab\("kazoeru"\)/.test(uiCode) === /<CountV2/.test(uiCode),
+    "★「かぞえる」も、帯と 中身が そろっている");
+  // ★★4つ とも そろったこと（★見本の 帯のとおり）
+  ["narabe", "sakanobore", "kuraberu", "kazoeru"].forEach((k) => {
+    t(new RegExp(`setTab\\("${k}"\\)`).test(uiCode), `★帯に「${k}」が ある`);
+  });
 
   console.log("\n=== ⑦ 門 ===");
   const vt = readRaw("components", "VocalTracker.jsx");
