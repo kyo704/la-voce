@@ -140,6 +140,7 @@ import { mealMacroTotals, usualTotals, macroRows } from "@/lib/nutritionTotals";
 import { correlationsToCsv, toCorrelationRow, correlationsFileName, bhQValues } from "@/lib/statNumbers";
 // ★解放の判定は、lib/character.js が持っています。★作り直しません。
 import { computeUnlocked } from "@/lib/character";
+import { countRecordedDays, isRecordedDay } from "@/lib/recordedDay";
 // ★★無料と有料の線（⑫・案B）。★判定は lib/freeTier.js が1か所で持ちます。
 //   ★画面で、条件を並べ直さないこと。
 import { scopeForPeriod, mayViewSummary, GATE_CLOSING_LINES, gatePriceLines,
@@ -6884,7 +6885,34 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
   // ---- ここから、lavoce-指標設計図.md フェーズ1の3指標用データ ----
   // 段階解放の判定に使う「これまでの総記録日数」（選んだ分析期間ではなく、全期間で数える）。
+  // ★★新しい画面づくりの 門（★2026-09-09・坂本さんの お指図）。
+  //   ★★「一般の 38人の 画面は、★一切 変えないこと」。
+  //   ★名簿が 空なら、★どなたにも 出ません。★勝手に 開けません。
+  const layoutV2 = mayUseLayoutV2(userId, {
+    NEXT_PUBLIC_LAYOUT_V2_USER_IDS: process.env.NEXT_PUBLIC_LAYOUT_V2_USER_IDS
+  });
+
+  // ★★2つの「日数」を、★はっきり 分けます（★2026-09-09・査読 §10）。
+  //
+  //   ★recordedDaysTotal　… ★開いて 何か 書いてくださった日。★広いほうです。
+  //     ★てん・箱2の よそおい・7日目のお尋ね が これを 使います。
+  //     ★★狭めると、★もう 書いた日が「書いていない日」に なります。
+  //       ★受け取ったものを 取り上げない、という 決めに 反します。
+  //
+  //   ★analysisDaysTotal … ★夜の3項目が そろった日（★§10）。★狭いほうです。
+  //     ★分析の 開き方と、★表示の門（gateAllows）が これを 使います。
+  //     ★★くらべる 材料に なるのは、★声の3つが そろった日だけ だからです。
+  //
+  //   ★★1つに しないこと。★別の問いに 答えています。
+  //     ★決めるのは lib/recordedDay.js です。★ここでは 決めません。
   const recordedDaysTotal = useMemo(() => Object.keys(entries).length, [entries]);
+  //   ★★門の 中だけです（★2026-09-09・お指図）。
+  //     ★★§10 は 数え方を 狭くします。★開いていた分析が、★閉じ直ることが あります。
+  //       ★一般の 38人の 画面を 変えない、という お決めが 先に あります。
+  //     ★★門の外では、★これまでどおり entries の 日数です。★1つも 変わりません。
+  const analysisDaysTotal = useMemo(
+    () => (layoutV2 ? countRecordedDays(entries) : Object.keys(entries).length),
+    [entries, layoutV2]);
   // ★★手持ちの てん（★v3追補 ③）。
   //   ★★新しく 作りません。★もとからある 仕組み（computeBalance）を 使います。
   //   ★★出す場所は「まだのものも」を見ているあいだと、★てんの紙だけです。
@@ -6976,8 +7004,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       { days: 14, label: "声の時差マップ・効いた習慣" },
       { days: 28, label: "7日ぶんの、声の使用量" }
     ];
-    return thresholds.find((t) => recordedDaysTotal < t.days) || null;
-  }, [recordedDaysTotal]);
+    return thresholds.find((t) => analysisDaysTotal < t.days) || null;
+  }, [analysisDaysTotal]);
   // ---- ホーム 用データ（前半）ここまで ----
 
 
@@ -8125,7 +8153,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // 統合実行ルートv4 §6-4 / P0-2: ACWRのパネルがロック中なのに、トップに警告だけが
   // 出ていた。★ロックと警告は必ずこの同一フラグを見ること。ここで null にすることで、
   // パネルも「今日の一言」も、同時にしか出られないようにする。
-  const acwrGate = useMemo(() => evaluateGate("acwr", { days: recordedDaysTotal }, t), [recordedDaysTotal, t]);
+  const acwrGate = useMemo(() => evaluateGate("acwr", { days: analysisDaysTotal }, t), [analysisDaysTotal, t]);
   const acwrToday = useMemo(() => {
     if (!acwrGate.passed) return null;
     const dates = Object.keys(acwrSeries).sort();
@@ -8662,7 +8690,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const candidates = [];
     // 統合実行ルートv4 §6-4: 「今日の一言」は、根拠となる指標がロック中でないかを
     // 指標ごとに確認すること。ACWRで起きたことが、他の指標でも起きうるため。
-    if (topLagFinding && gateAllows("lag.narrative", { days: recordedDaysTotal, n: topLagFinding.n, rho: topLagFinding.rho, fdrPass: topLagFinding.significant })) {
+    if (topLagFinding && gateAllows("lag.narrative", { days: analysisDaysTotal, n: topLagFinding.n, rho: topLagFinding.rho, fdrPass: topLagFinding.significant })) {
       candidates.push({
         id: "lag-" + topLagFinding.variableKey,
         icon: "💡",
@@ -8675,7 +8703,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       });
     }
     if (effectiveHabitRanking.length > 0 && effectStateOf(effectiveHabitRanking[0]) === EFFECT_SHOWN
-        && gateAllows("habit.narrative", { days: recordedDaysTotal, n1: effectiveHabitRanking[0].n1, n0: effectiveHabitRanking[0].n0, effectSize: effectiveHabitRanking[0].g, fdrPass: effectiveHabitRanking[0].fdrPass })) {
+        && gateAllows("habit.narrative", { days: analysisDaysTotal, n1: effectiveHabitRanking[0].n1, n0: effectiveHabitRanking[0].n0, effectSize: effectiveHabitRanking[0].g, fdrPass: effectiveHabitRanking[0].fdrPass })) {
       const top = effectiveHabitRanking[0];
       candidates.push({
         id: "habit-" + top.key,
@@ -8731,7 +8759,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     //     ★体について、★こちらから 言う言葉です。★言いません。
     //   ★計算（energyAvailabilityAnalysis）も、★これで 誰も 読みません。
     return candidates.sort((a, b) => b.priority - a.priority).slice(0, 3);
-  }, [topLagFinding, effectiveHabitRanking, roleLoadStats, acwrToday, refluxDinnerTagEffectsWithFdr, recordedDaysTotal]);
+  }, [topLagFinding, effectiveHabitRanking, roleLoadStats, acwrToday, refluxDinnerTagEffectsWithFdr, analysisDaysTotal]);
   // ---- 発見カード 用データ ここまで ----
 
   // ---- 改善タスクv2 §4-1(a): 分析タブのロック判定を1箇所に集約する ----
@@ -8749,26 +8777,26 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const prof = effectiveProfessions || [];
     const defs = [
       { key: "deviation", visible: true,
-        unlocked: gateAllows("deviation.card", { days: recordedDaysTotal }),
+        unlocked: gateAllows("deviation.card", { days: analysisDaysTotal }),
         title: "コンディション偏差値",
         teaser: "今日が「自分比でどのくらい良い日か」を偏差値で見られます",
-        current: recordedDaysTotal, required: getGate("deviation.card").minDays },
-      { key: "warmup", visible: true, unlocked: recordedDaysTotal >= 3,
+        current: analysisDaysTotal, required: getGate("deviation.card").minDays },
+      { key: "warmup", visible: true, unlocked: analysisDaysTotal >= 3,
         title: "ウォームアップ効率",
         teaser: "起き抜けとルーティン後の声の差を、半音数で毎朝チェックできます",
-        current: recordedDaysTotal, required: 3 },
-      { key: "rangeMap", visible: true, unlocked: recordedDaysTotal >= 3,
+        current: analysisDaysTotal, required: 3 },
+      { key: "rangeMap", visible: true, unlocked: analysisDaysTotal >= 3,
         title: "音域到達マップ",
         teaser: "記録した声の高さを鍵盤の上で確認できます",
-        current: recordedDaysTotal, required: 3 },
-      { key: "symptomCalendar", visible: true, unlocked: recordedDaysTotal >= 3,
+        current: analysisDaysTotal, required: 3 },
+      { key: "symptomCalendar", visible: true, unlocked: analysisDaysTotal >= 3,
         title: "症状カレンダーと連鎖",
         teaser: "8種類の症状を、日付×症状の格子で振り返れます",
-        current: recordedDaysTotal, required: 3 },
+        current: analysisDaysTotal, required: 3 },
       { key: "acwr", visible: true, unlocked: acwrGate.passed,
         title: "7日ぶんの、声の使用量",
         teaser: "歌い込みすぎ・積み足りないを1つの数字で管理できます",
-        current: recordedDaysTotal, required: getGate("acwr").minDays },
+        current: analysisDaysTotal, required: getGate("acwr").minDays },
       // ★★envComfort を、一覧から外しました（★2026-09-07・10番）。
       //   ★カードが無くなったので、★「あと◯日で見られます」と言えません。
       //   ★★作った値は、必ずどこかで読まれること。
@@ -8809,7 +8837,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       .filter((d) => d.visible && !d.unlocked)
       .sort((a, b) => (b.current / b.required) - (a.current / a.required));
     return { map, pending };
-  }, [effectiveProfessions, recordedDaysTotal, acwrGate, peakingCurve, pastPerformanceDates,
+  }, [effectiveProfessions, analysisDaysTotal, acwrGate, peakingCurve, pastPerformanceDates,
       screamRecoveryCurve, screamTakeThreshold, passaggioStability, sffDiurnalVariation, tourEnduranceCurve]);
   // ---- ロック判定の集約 ここまで ----
 
@@ -8846,7 +8874,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     });
     // ②ロックされた分析。改善量は 1.0（解放）。
     if (nextUnlock) {
-      const daysNeeded = nextUnlock.days - recordedDaysTotal;
+      const daysNeeded = nextUnlock.days - analysisDaysTotal;
       candidates.push({
         id: "unlock-boost-" + nextUnlock.label,
         title: nextUnlock.label,
@@ -8855,7 +8883,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         //   実際には早まらない条件を約束することになる。
         body: describeUnlockCondition({ daysNeeded }),
         daysNeeded,
-        current: recordedDaysTotal, required: nextUnlock.days,
+        current: analysisDaysTotal, required: nextUnlock.days,
         improvement: IMPROVEMENT.unlock,
         section: null,   // 特定のセクションではなく、記録全般
         locked: true
@@ -8863,7 +8891,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }
     // R1・R5・R6 の適用は lib/analysisBoost.js が持つ。
     return selectBoostCandidates(candidates);
-  }, [effectiveHabitRanking, nextUnlock, recordedDaysTotal]);
+  }, [effectiveHabitRanking, nextUnlock, analysisDaysTotal]);
   // ---- 「この分析を強くする」用データ ここまで ----
 
 
@@ -11869,12 +11897,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     NEXT_PUBLIC_WARDROBE_USER_IDS: process.env.NEXT_PUBLIC_WARDROBE_USER_IDS
   });
 
-  // ★★新しい画面づくりの 門（★2026-09-09・坂本さんの お指図）。
-  //   ★★「一般の 38人の 画面は、★一切 変えないこと」。
-  //   ★名簿が 空なら、★どなたにも 出ません。★勝手に 開けません。
-  const layoutV2 = mayUseLayoutV2(userId, {
-    NEXT_PUBLIC_LAYOUT_V2_USER_IDS: process.env.NEXT_PUBLIC_LAYOUT_V2_USER_IDS
-  });
+  // ★★門（layoutV2）は、★上へ 移しました（★2026-09-09）。
+  //   ★★analysisDaysTotal が、★ここより 5000行 上で これを 読みます。
+  //     ★const は 巻き上がらないので、★ここに 置いたままだと
+  //     ★「Cannot access 'layoutV2' before initialization」で 落ちます。
+  //   ★★ビルドも lint も 通ってしまいます。★実機で はじめて 落ちる形です。
 
   // ★★ひつじの画面の絵を、★裏で 先に 読んでおきます（★2026-09-08 夜・案2）。
   //
@@ -12952,13 +12979,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                   {nextUnlock && (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                      <p className="text-xs mb-2" style={{ color: C.ink }}>{nextUnlock.days}日で「{nextUnlock.label}」が開きます（いま{recordedDaysTotal}日）</p>
+                      <p className="text-xs mb-2" style={{ color: C.ink }}>{nextUnlock.days}日で「{nextUnlock.label}」が開きます（いま{analysisDaysTotal}日）</p>
                       {/* ★★棒から丸に変えました（★2026-09-07・規約 §3-F）。
                           ★棒と割合は、★「まだ足りない」を強く見せます。
                           ★丸なら数えられます。★あと3つ、と分かります。
                           ★★同じ丸は、★この画面に既にありました（上の ProgressDots）。
                             ★新しく作らず、★それを呼びます。 */}
-                      <ProgressDots current={recordedDaysTotal} required={nextUnlock.days} />
+                      <ProgressDots current={analysisDaysTotal} required={nextUnlock.days} />
                     </div>
                   )}
                 </div>
@@ -16376,8 +16403,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     );
                   }
                   const nextLine = nextUnlock
-                    ? `記録${recordedDaysTotal}日目。あと${nextUnlock.days - recordedDaysTotal}日で「${nextUnlock.label}」がひらきます`
-                    : `記録${recordedDaysTotal}日目です`;
+                    ? `記録${analysisDaysTotal}日目。あと${nextUnlock.days - analysisDaysTotal}日で「${nextUnlock.label}」がひらきます`
+                    : `記録${analysisDaysTotal}日目です`;
                   return (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <p className="text-sm" style={{ color: C.inkSoft }}>{nextLine}</p>
