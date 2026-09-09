@@ -8,6 +8,7 @@ import { tileStyle, isNewMaterial } from "@/lib/sheepInterior";
 // ★★着せかえた羊。★出す・出さないは、呼ぶ側（VocalTracker）が決めます。
 import SheepDressed from "@/components/SheepDressed";
 import InteriorLayer from "@/components/InteriorLayer";
+import { cameraOf, cameraStyle } from "@/lib/roomCamera";
 // ★古い79点を、門の中の方から隠す決め。★ここ1か所が持ちます。
 import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
@@ -1960,7 +1961,7 @@ function InteriorDraggable({ itemKey, startLeft, startTop, band, onDragEnd, hit,
   );
 }
 
-function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardrobeOn = false, say = null, t }) {
+function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardrobeOn = false, say = null, t, cameraOn = false }) {
   const [editMode, setEditMode] = useState(false);
   // ★★羊の大きさを、★部屋の幅から 出します（★2026-09-08 夜・案A）。
   //   ★★家具は ％、★羊だけ 画素でした。★釣り合いが 機種ごとに 変わり、
@@ -2135,6 +2136,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
   const boxTop = isGrand ? "5%" : "8%";
   const isRoomExpanded = equipped.backdrop === "backdrop_room_expand";
 
+
   const sceneryKey = oldHouseKey(equipped, "scenery", wardrobeOn);
 
   // ★家具の「いまの位置」を渡す。置いていなければ null。
@@ -2162,6 +2164,27 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
     furniturePos("furniture_bed")
       || (wardrobeOn ? bedPos(equipped, equipped.interiorPositions) : null)
   );
+  // ★★羊の 居場所が 決まってから 出します（★2026-09-10）。
+  //   ★★はじめ、★部屋の 形を 決める ところに 書いていました。
+  //     ★leftPct・topPct を、★宣言より 前で 読んでいました。
+  //   ★★const は 巻き上がりません。★実機だけが 落ちます。
+  //     ★build も lint も 通りました。★見張り（no-tdz）が 見つけました。
+  // ★★カメラ（★2026-09-08 の お決め「安いほうの形」）。
+  //   ★★追う・寄る。★奥ゆきは 付けません。
+  //   ★★「うごかす」を 押したら、★部屋ぜんぶに 戻します。
+  //     ★★戻すのは 見た目の ためでは ありません。
+  //       ★変形が かかったまま 掴むと、★指の 位置と 家具の 位置が ずれます。
+  //       ★恒等に 戻せば、★ずれる 余地が ありません。
+  //   ★★数は lib/roomCamera.js が 持ちます。★ここで 決めません。
+  //   ★羊の 高さを、★部屋の 高さに 対する ％に 直して 渡します。
+  const roomBoxH = roomBoxW * (isRoomExpanded ? 5 / 7 : 3 / 4);
+  const cam = cameraOf({
+    on: cameraOn,
+    editMode,
+    leftPct,
+    topPct,
+    sheepPct: roomBoxH > 0 ? (sheepPx / roomBoxH) * 100 : 0
+  });
 
   // ★★何もしないで 60秒 たったら、★眠ります（★2026-09-09）。
   //   ★★触るたびに 数え直します。
@@ -2217,6 +2240,14 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
         ★★isolation: isolate で、★中の z が 外に出なくなります。
           ★見た目は、★1つも変わりません。 */
     <div id="room-anchor" ref={roomBoxRef} style={{ position: "relative", isolation: "isolate", zIndex: 0, width: "100%", maxWidth: isRoomExpanded ? 700 : 480, margin: "0 auto", aspectRatio: isRoomExpanded ? "7 / 5" : "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor, transition: "max-width 0.4s ease, aspect-ratio 0.4s ease" }}>
+      {/* ★★カメラの 入れ物。★場面ぜんぶに、★1つの 変形を かけます。
+          ★★層ごとに 別の 速さで 動かしません（★それが「奥ゆき」です）。
+            ★奥ゆきを 付けると、★層の 数だけ 座標の 計算が 増えます。
+          ★★「うごかす」の あいだは 恒等（1倍・ずれ 0）です。
+            ★掴む 位置が ずれる 余地が、★構造として ありません。
+          ★★「うごかす」の 押しどころは、★この 外に あります。
+            ★中に 入れると、★寄ったとき 一緒に 大きくなり、★端で 消えます。 */}
+      <div style={cameraStyle(cam, editMode)}>
       <WallTexture material={wallKey} wardrobeOn={wardrobeOn} />
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", background: floorColor, zIndex: 0, overflow: "hidden" }}>
         <FloorTexture material={floorKey} wardrobeOn={wardrobeOn} />
@@ -2584,6 +2615,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
             ★門の中では旧い家具が0点なので、★押しどころが出ず、
             ★新しい家具を1つも動かせませんでした。
           ★★新しい内装も、★数に入れます。★判定は lib が持ちます。 */}
+      </div>
       {(placedFurniture.length > 0 || placedWallhang.length > 0
         || (wardrobeOn && hasMovableInterior(equipped))) && (
         <button type="button" onClick={() => setEditMode((v) => !v)}
@@ -2903,7 +2935,7 @@ function GardenScene({ equipped, owned, onUpdatePosition, totalDaysRecorded = 0,
  *   ★★消していません。★出さないだけです。
  *     ★ふだんの「ひつじ」のタブでは、★これまでどおり ぜんぶ出ます。
  */
-export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, onUpdatePosition, isDirty, saveStatus, onSave, professions = [], wardrobeOn = false, roomOnly = false, say = null, t }) {
+export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, onUpdatePosition, isDirty, saveStatus, onSave, professions = [], wardrobeOn = false, roomOnly = false, say = null, t, cameraOn = false }) {
   const [view, setView] = useState("room");
   const [shopCategory, setShopCategory] = useState("hat");
 
@@ -2966,7 +2998,7 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
         </div>
 
         {view === "room"
-          ? <RoomScene wardrobeOn={wardrobeOn} equipped={equipped} owned={ownedKeys} onTogglePlacement={onTogglePlacement} onUpdatePosition={onUpdatePosition} t={t} />
+          ? <RoomScene wardrobeOn={wardrobeOn} cameraOn={cameraOn} equipped={equipped} owned={ownedKeys} onTogglePlacement={onTogglePlacement} onUpdatePosition={onUpdatePosition} t={t} />
           : <GardenScene wardrobeOn={wardrobeOn} equipped={equipped} owned={ownedKeys} onUpdatePosition={onUpdatePosition} totalDaysRecorded={totalDaysRecorded} t={t} />}
         {/* ★★出ていないものを指して「動かせます」と書かないこと。
             ★門の中の方には、★古い家具も庭も出ていません。 */}

@@ -16067,6 +16067,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ? { width: "min(100%, calc((100vh - 0px) * 0.40 * 4 / 3))", maxWidth: 480 }
                     : { width: "100%" }}>
                     <CharacterHome
+                      cameraOn={layoutV2}
                       wardrobeOn={wardrobeOn}
                       professions={effectiveProfessions}
                       entries={entries}
@@ -16088,6 +16089,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 </div>
               ) : (
               <CharacterHome
+                cameraOn={layoutV2}
                 wardrobeOn={wardrobeOn}
                 professions={effectiveProfessions}
                 entries={entries}
