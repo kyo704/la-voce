@@ -28,7 +28,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 // ★通信は必ず時間制限を付ける。返ってこないまま待ち続けると、画面が止まる。
 import { withTimeout, QUERY_TIMEOUT_MS, AUTH_TIMEOUT_MS } from "@/lib/withTimeout";
-import { C, LEVEL_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC, CYCLE_BAND, SERIES } from "@/lib/tokens";
+import { C, LEVEL_COLORS, LEVEL_TEXT_COLORS, LEVEL_DYNAMICS, LEVEL_DYNAMIC_DESC, CYCLE_BAND, SERIES } from "@/lib/tokens";
 import { FOOD_PRESETS, DISH_GROUP_ALIASES, CATEGORY_SEARCH_ALIASES } from "@/lib/foodPresets";
 import { SINGLE_SLOT_CATEGORIES, MULTI_SLOT_CATEGORIES, SHOP_ITEMS, PLACEMENT_LIMITS, computeBalance } from "@/lib/character";
 import { LANGUAGES, createTranslator } from "@/lib/translations";
@@ -2374,8 +2374,10 @@ function DynamicsSelector({ label, icon: Icon, value, onChange, t }) {
               className="flex-1 py-2.5 ff-display italic transition-all"
               style={{
                 fontSize: active ? "1.35rem" : "1.05rem",
+                // ★★1色の 濃淡です（★2026-09-10・案A）。★良し悪しを 色で 言いません。
+                //   ★★字の色は、★段ごとに 変えます。★薄い段に 白い字を のせません。
                 background: active ? LEVEL_COLORS[i] : C.card,
-                color: active ? "#FFFDF8" : C.inkSoft,
+                color: active ? LEVEL_TEXT_COLORS[i] : C.inkSoft,
                 borderRight: i < 4 ? `1px solid ${C.line}` : "none"
               }}
             >

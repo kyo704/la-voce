@@ -114,6 +114,24 @@ function ratio(a, b) {
     t(bad.length === 0, `★C.sageSoft を 字に 使っていない${bad.length ? "：" + bad.join(", ") : ""}`);
   }
 
+  console.log("\n=== 5段の 目盛りは、1色の 濃淡（★2026-09-10・案A） ===");
+  {
+    const L5 = m.LEVEL_COLORS, T5 = m.LEVEL_TEXT_COLORS;
+    t(L5.length === 5 && T5.length === 5, "★5段と、5つの 字の色");
+    // ★★どの段でも、★のせた 字が 読めること（★大きい字なので 3.0 以上）
+    L5.forEach((bg, i) => {
+      const r = ratio(bg, T5[i]);
+      t(r >= 3.0, `★段${i + 1}（${bg}）の 字 ${r.toFixed(2)}`);
+    });
+    // ★★濃さが、★だんだん 濃くなること（★段が 見分けられること）
+    const lums = L5.map(lum);
+    t(lums.every((v, i) => i === 0 || v < lums[i - 1]), "★だんだん 濃くなる");
+    // ★★信号の 色に 戻っていないこと
+    t(!L5.includes(C.sage) && !L5.includes(C.sageSoft), "★緑を 使っていない");
+    t(!L5.includes(C.gold) && !L5.includes(C.rust), "★山吹・錆を 使っていない");
+    t(/濃さで 段を 示します/.test(readRaw("lib", "tokens.js")), "★わけが 書いてある");
+  }
+
   console.log("\n=== 罫線は、薄くてよい ===");
   // ★★C.line は 罫線です。★字では ありません。★4.5 を 求めません。
   t(ratio(C.line, PAPER) < 3.0, `★C.line は 罫線（${ratio(C.line, PAPER).toFixed(2)}）★字に 使わないこと`);

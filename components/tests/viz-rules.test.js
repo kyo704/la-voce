@@ -74,8 +74,37 @@ specOnly.forEach((hex) => {
 const allHex = (tokCode.match(/#[0-9A-Fa-f]{6}/g) || []).map((h) => h.toUpperCase());
 const cHex = (tokCode.match(/export const C = \{[\s\S]*?\};/)[0].match(/#[0-9A-Fa-f]{6}/g) || []).map((h) => h.toUpperCase());
 const outsideC = [...new Set(allHex.filter((h) => !cHex.includes(h)))];
-assertTrue(outsideC.length <= 2,
-  `C の外にある色が${outsideC.length}件だけ（${outsideC.join(", ")}）= 帯の色と s2-pale`);
+
+// ★★同じ色の 濃淡は、★新しい色では ありません（★2026-09-10）。
+//   ★★この見張りの 言い分は「★4つ目の系列色を 作らないこと（§1-2）」です。
+//     ★新しい 色みを 増やすな、という ことです。
+//   ★★2026-09-10、★5段の 目盛りを ★えんじ1色の 濃淡に しました（★案A）。
+//     ★4つの 値が 増えましたが、★どれも えんじ（C.curtain）を
+//     ★札（C.card）で 薄めた ものです。★色みは 1つの ままです。
+//   ★★数を 数える のでは なく、★混ぜ色かどうかを 見ます。
+//     ★数を 増やすだけ だと、★次に 本当の 新色が 入っても 気づけません。
+function hexToRgb(h) {
+  const x = h.replace("#", "");
+  return [0, 2, 4].map((i) => parseInt(x.slice(i, i + 2), 16));
+}
+/** ★fg を bg で 薄めた 色か（★丸めの ぶん ±2 を 許す）。 */
+function isTintOf(hex, fg, bg) {
+  const [r, g, b] = hexToRgb(hex);
+  const F = hexToRgb(fg), B = hexToRgb(bg);
+  // ★どれか 1つの 通り道から 混ぜ具合を 出し、★残りが 合うかを 見ます。
+  const span = F[0] - B[0];
+  if (span === 0) return false;
+  const a = (r - B[0]) / span;
+  if (a < 0 || a > 1) return false;
+  return [0, 1, 2].every((i) => Math.abs((F[i] * a + B[i] * (1 - a)) - [r, g, b][i]) <= 2);
+}
+const CURTAIN = (tokCode.match(/curtain: "(#[0-9A-Fa-f]{6})"/) || [])[1];
+const CARD = (tokCode.match(/card: "(#[0-9A-Fa-f]{6})"/) || [])[1];
+const tints = outsideC.filter((h) => CURTAIN && CARD && isTintOf(h, CURTAIN, CARD));
+const newHues = outsideC.filter((h) => !tints.includes(h));
+assertTrue(tints.length > 0, `★えんじの濃淡が ある（${tints.join(", ")}）`);
+assertTrue(newHues.length <= 2,
+  `★新しい色みは${newHues.length}件だけ（${newHues.join(", ")}）= 帯の色と s2-pale`);
 assertTrue(tokCode.includes("#DFC28D"), "s2-pale（山吹の淡いほう）だけを新しく足した");
 
 console.log("\n=== §1-2: 4色目を作らず、形で区別する ===");
