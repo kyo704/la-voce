@@ -98,10 +98,23 @@ function ok(name, cond, extra) {
   ok("★先生に共有しないと書いている",
     /先生や教室には、一切共有されません/.test(fs.readFileSync(path.join(ROOT, "lib", "consent.js"), "utf-8")));
 
-  console.log("■ ★同意の文面を、あとから書き替えていない");
-  // ★★textHash があるので、文面を変えると、同意ずみの方の記録が合わなくなります。
+  console.log("■ ★同意の文面と、版");
+  // ★★textHash があるので、★文面を変えたら、★版も 一緒に 上げること。
+  //   ★片方だけ 動くと、★同じ版に 2つの 文面が ぶら下がります。
+  //
+  //   ★★2026-09-09、★文面を 変えました（★査読 §4-1・病名を 外す）。
+  //     ★だから 版も 上げました。★"2026-08-v2" → "ja-2026-09-v1"。
+  //     ★★これまでの見張りは「版を 上げていない」ことを 確かめていました。
+  //       ★勝手に 上がるのを 止めるためです。★いまは 上げたのが 正です。
+  //       ★★見張りを 消さずに、★向きを 変えます。
   const consentLib = fs.readFileSync(path.join(ROOT, "lib", "consent.js"), "utf-8");
-  ok("版を、上げていない", /CONSENT_POLICY_VERSION = "2026-08-v2"/.test(consentLib));
+  ok("★版が、いまの版になっている", /CONSENT_POLICY_VERSION = "ja-2026-09-v1"/.test(consentLib));
+  ok("★同意の文から、病名（逆流）が消えている",
+    !/text: "[^"]*逆流[^"]*"/.test(consentLib));
+  ok("★食事と就寝の目的は、残っている（★取る中身は変えていない）",
+    /食事の内容と時刻、就寝時刻を保存し/.test(consentLib));
+  ok("★言い換えたことが、書いてある",
+    /食事と夜の習慣の分析に使います/.test(consentLib));
   ok("もとからある4つの目的が、残っている",
     ["health.record", "health.cycle", "health.meal_sleep", "research.anonymized"]
       .every((k) => consentLib.includes(`key: "${k}"`)));
