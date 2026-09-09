@@ -40,8 +40,8 @@ const keys = [...block.matchAll(/key: "([a-z]+)"/g)].map((m) => m[1]);
 //   ★いま外すと、★教室に入っていない方から、★入口が1つも無くなります。
 // ★★2026-09-09、★レッスンを 下タブから 外しました（★第1便・§9）。
 //   ★★見本（2026-09-09 の 11画面）も、★5つで 固定と 書いています。
-ok("並びは home / today / analysis / garden / notes",
-  keys.join(",") === "home,today,analysis,garden,notes", keys.join(","));
+ok("並びは home / today / analysis / lesson / garden / notes",
+  keys.join(",") === "home,today,analysis,lesson,garden,notes", keys.join(","));
 // ★★「もっと」を外しても、★行き先が消えていないこと。
 ok("★もっと を開く道が、残っている", /setActiveTab\("more"\)/.test(src));
 ok("★歯車から開ける", /aria-label=\{`\$\{t\("tabMore"\)\}を開く`\}/.test(src));
@@ -50,8 +50,10 @@ ok("★歯車から開ける", /aria-label=\{`\$\{t\("tabMore"\)\}を開く`\}/.
 ok("★おうち（garden）が入っている", keys.includes("garden"));
 
 console.log("■ 「もっと」は、帯から外れているか");
+// ★★2026-09-09、★門で 帯を 選ぶ形に しました（★名簿の方だけ 5つ）。
+//   ★★「more を 除く」ことは 変わりません。★選び方が 増えただけです。
 ok("帯を作るとき、more を除いている",
-  /TABS\.filter\(\(tb\) => tb\.key !== "more"\)/.test(code));
+  /\(layoutV2 \? TABS_V2 : TABS\)\.filter\(\(tb\) => tb\.key !== "more"\)/.test(code));
 // ★★画面そのものは、消していないこと。★入口が変わっただけです。
 ok("★「もっと」の画面は、消していない", /activeTab === "more"/.test(code));
 ok("歯車から開く", /setActiveTab\("more"\)/.test(code));
@@ -110,7 +112,12 @@ ok("読み上げの名前がある", /aria-label=\{`\$\{t\("tabMore"\)\}を開�
 ok("押せる大きさがある", /minHeight: 44[\s\S]{0,400}<Settings/.test(src));
 
 console.log("■ レッスンについて");
-ok("★レッスンは、帯から外れている", !keys.includes("lesson"));
+  // ★★2026-09-09、★新しい帯（5つ）は、★名簿の方だけです（★お指図）。
+  //   ★★一般の 38人には、★これまでどおり 6つ 出ます。★1つも 変えません。
+  //   ★見るのは、★一般の方の TABS です（★TABS_V2 では ありません）。
+ok("★★一般の方の 帯には、レッスンが 残っている", keys.includes("lesson"));
+ok("★名簿の方は、外れている（TABS_V2）",
+  /const TABS_V2 = TABS\.filter\(\(tb\) => tb\.key !== "lesson"\);/.test(src));
 // ★★外した先が、必ず在ること。★出口のない画面を 作らないこと。
 ok("★レッスンを開く道が、残っている", /setActiveTab\("lesson"\)/.test(src));
 // ★★条件つきの差しこみは、もうしないこと。

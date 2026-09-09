@@ -107,7 +107,7 @@ console.log("\n=== ★もっと の入口 ===");
   //     ★myEnrollments.length > 0 の 教室の札と、★予定の「すべて見る」。
   //   ★★入っていない方には 出なくなります。★§9 の 決めどおりです。
   //   ★★見たいのは「★入っている方が、行けなくなっていないか」です。
-  assertTrue(!/key: "lesson"/.test(src), "★レッスンは、帯から外れている");
+  assertTrue(/key: "lesson"/.test(src), "★★一般の方の 帯には、レッスンが 残っている");
   assertTrue(/myEnrollments\.length > 0 && \(/.test(src),
     "★★教室に入っている方の入口が、ホームに残っている");
   assertTrue(/setActiveTab\("lesson"\)/.test(src), "★レッスンを開く道が、残っている");

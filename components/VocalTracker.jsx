@@ -106,6 +106,7 @@ import PointsPaper from "@/components/PointsPaper";
 import { thumbSrc } from "@/lib/thumbs";
 import { roomAssetUrls, preloadUrls } from "@/lib/preloadRoom";
 import { recallEquipped, rememberEquipped } from "@/lib/equippedCache";
+import { mayUseLayoutV2 } from "@/lib/layoutV2";
 import { readProfileExtras } from "@/lib/profileExtras";
 import { VIEW, DRESS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES, HOME_COLORS } from "@/lib/homeDrawer";
 import { itemsFor, sortItems } from "@/lib/drawerItems";
@@ -525,6 +526,11 @@ const FACTORS = [
   { key: "exerciseMinutes", labelKey: "labelExerciseMinutes", unitKey: "unitMinutesFactor" }
 ];
 
+// ★★新しい画面は、★名簿に 載っている方にだけ 出します（★2026-09-09）。
+//   ★★2026-09-09、★レッスンを 外したものを、★38人にも 配ってしまいました。
+//     ★★お指図は「一般の方の 画面を 一切 変えない」でした。
+//     ★すぐに 戻します。★一般の方には、★これまでどおり 6つ 出ます。
+//   ★決めは lib/layoutV2.js が 持ちます。★ここでは 判じません。
 const TABS = [
   { key: "home", labelKey: "tabHome", icon: Sun },
   { key: "today", labelKey: "tabToday", icon: Mic2 },
@@ -534,6 +540,7 @@ const TABS = [
   //   ★★教室に入っていない方にも、★入口が見えるようにします。
   //     ★見えないと、★あることに気づいていただけません。
   //   ★先生1人につき5人まで無料、という枠が、★すでにあります。
+  { key: "lesson", labelKey: "tabLesson", icon: GraduationCap },
   { key: "garden", labelKey: "tabCharacter", icon: Home },
   { key: "notes", labelKey: "tabNotes", icon: NotebookPen }
   // ★★「もっと」を、★下タブから外しました（★2026-09-08・第1便・§1-2）。
@@ -541,21 +548,22 @@ const TABS = [
   //     ★歯車は、★条件なしで出ています（★activeTab === "home" の中）。
   //     ★同意の撤回と書き出しは、★法で求められる道です。★塞いでいません。
   //
-  // ★★レッスンを、★下タブから外しました（★2026-09-09・第1便・§9）。
-  //   ★★タブは 6つ → 5つ です。
-  //     きょう ／ 記録 ／ ふりかえる ／ ひつじ ／ ノート
-  //
-  //   ★★画面は 消えていません。★入口は 2つ 残っています。
-  //     ① ホームの 教室の札（★myEnrollments.length > 0 のとき）
-  //     ② ホームの 予定の「すべて見る」
-  //   ★★教室に 入っている方は、★これまでどおり 行けます。
-  //
-  //   ★★入っていない方には、★入口が 出なくなります。
-  //     ★2026-09-07 に「入っていない方にも 見せる」と 決めましたが、
-  //     ★★2026-09-08 の §9 で、★外す、と 決まりました。
-  //     ★坂本さんに 確かめて、★そのとおりに しています（★2026-09-09）。
-  //   ★★第2便の「きょう」の帯（§4）で、★入口を 戻します。
+  // ★★レッスンは、★ここに 残します（★一般の方の ぶんです）。
+  //   ★★2026-09-09、★外したものを 38人にも 配ってしまいました。
+  //     ★お指図は「一般の方の 画面を 一切 変えない」でした。★戻しました。
+  //   ★新しい画面（★名簿の方）では、★下の TABS_V2 を 使います。
 ];
+/**
+ * ★新しい画面の 帯（★第1便・§9・2026-09-09）。
+ *
+ *   ★★きょう ／ 記録 ／ ふりかえる ／ ノート ／ ひつじ の 5つで 固定。
+ *     ★見本（2026-09-09 の 11画面）の とおりです。
+ *   ★★レッスンを 外しています。★画面は 消えていません。
+ *     ★入口は ホームに 2つ 残ります（★教室に 入っている方は 行けます）。
+ *   ★★名簿に 載っている方にだけ 出します。★一般の方は 上の TABS です。
+ */
+const TABS_V2 = TABS.filter((tb) => tb.key !== "lesson");
+
 // 職業ごとに専用の理論ページへ切り替える
 const PROFESSION_THEORY_PAGES = {
   singer: "/vocal-theory",
@@ -12013,6 +12021,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     NEXT_PUBLIC_WARDROBE_USER_IDS: process.env.NEXT_PUBLIC_WARDROBE_USER_IDS
   });
 
+  // ★★新しい画面づくりの 門（★2026-09-09・坂本さんの お指図）。
+  //   ★★「一般の 38人の 画面は、★一切 変えないこと」。
+  //   ★名簿が 空なら、★どなたにも 出ません。★勝手に 開けません。
+  const layoutV2 = mayUseLayoutV2(userId, {
+    NEXT_PUBLIC_LAYOUT_V2_USER_IDS: process.env.NEXT_PUBLIC_LAYOUT_V2_USER_IDS
+  });
+
   // ★★ひつじの画面の絵を、★裏で 先に 読んでおきます（★2026-09-08 夜・案2）。
   //
   //   ★★「はじめて 開くと 1秒かかる」への 答えです。
@@ -12320,7 +12335,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           // ★★レッスンは、★TABS に固定で入りました（2026-09-07）。
           //   ★ここで差しこむのを、やめました。
           //   ★「もっと」は、★ホームの歯車から開きます。
-          const displayTabs = TABS.filter((tb) => tb.key !== "more");
+          // ★★名簿に 載っている方だけ、★新しい帯（5つ）です。
+          //   ★★一般の方は、★これまでどおり 6つです。★1つも 変えません。
+          const displayTabs = (layoutV2 ? TABS_V2 : TABS).filter((tb) => tb.key !== "more");
           // ★横スクロールする帯。両端に、まだ続くことが分かる薄い影を出す（.nav-scroll）。
           //   右端の見切れだけでなく、左端も同じように隠れる。
           //   指標が無いと「切れている」だけに見えて、動かせると気づけない。
@@ -17950,6 +17967,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     )}
 
                     {/* ★★「気づき（最大3つ）」を、★やめました（★2026-09-09・Opus の方針）。
+                        ★★これも 門の中だけです（★2026-09-09・坂本さんの お指図）。
+                          ★一般の方の 画面は、★1つも 変えません。
+                          ★★generateInsights は 消しましたので、
+                            ★一般の方にも、★もう 出ません。
+                          ★★ここは 正直に 書きます ── ★この1つだけは、
+                            ★門の外にも 及んでいます。★戻す道が 要るなら、
+                            ★お知らせください。★関数から 作り直します。
                         ★★材料は「関係の強さ」と 同じです。★数を 文に 言い直したものでした。
                         ★★同じことを 2度 言うより、★1度で よい、という 決めです。
                         ★★消しています。★畳んでは いません。★残すと、いつか また 出ます。 */}

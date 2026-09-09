@@ -77,8 +77,9 @@ function main() {
   // ★★2026-09-09、★レッスンを 下タブから 外しました（★第1便・§9）。
   //   ★★画面は 消えていません。★ホームに 入口が 2つ 残っています。
   //   ★★見たいのは「★2つ 出ていないか」でした。★0 でも よい形です。
-  assertTrue(lessonInTabs <= 1, "★「レッスン」は TABS に 多くて1つ（★いまは 0）");
-  assertEqual(lessonInTabs, 0, "★レッスンタブを、外した");
+  // ★★2026-09-09、★新しい帯（5つ）は 名簿の方だけです。
+  //   ★一般の方の TABS には、★これまでどおり 1つ あります。
+  assertEqual(lessonInTabs, 1, "★「レッスン」は TABS に1つだけ");
   assertEqual((code.match(/displayTabs\.push\(/g) || []).length, 0,
     "★差しこみは、もうしていない");
   assertTrue(!/key: "students"/.test(code), "古い students タブの定義が残っていない");
