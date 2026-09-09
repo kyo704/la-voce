@@ -87,8 +87,11 @@ const NO_ACTION_COLUMNS = [
   //   ★★理由の欄は、はじめから在りません。★本人のものです。
   //   ★入れ忘れると、★退会しても、この方の日付が残ります。
   // ★★2026-09-09、★purchases（買い切り）を 足しました（22 → 23）。
-  assertTrue(d.USER_OWNED_TABLES.length === 23,
-    `一覧は23表（いまは ${d.USER_OWNED_TABLES.length}）`);
+  // ★★2026-09-09、★notes（見本⑥のノート）を 足して 24表に なりました。
+  //   ★この数は、★足し忘れ／消し忘れに 気づくための ものです。
+  //   ★表を 足したら、★ここも 一緒に 動かすこと。
+  assertTrue(d.USER_OWNED_TABLES.length === 24,
+    `一覧は24表（いまは ${d.USER_OWNED_TABLES.length}）`);
   assertTrue(d.USER_OWNED_TABLES.includes("period_markers"),
     "★区切りマーカーの表が、退会の一覧に入っている");
   assertTrue(d.USER_OWNED_TABLES.includes("org_event_participants"), "★出るという印が入っている");
