@@ -390,6 +390,12 @@ function ok(name, cond, extra) {
     ok("★閉じているときは 押せない", /pointerEvents: open \? "auto" : "none"/.test(dr));
     const gr = readCode("components", "DrawerItemGrid.jsx");
     ok("★見えているものだけ 読み込む", /loading="lazy"/.test(gr));
+    // ★★閉じているあいだは、★1枚も 読まないこと（★2026-09-09・実機の記録）。
+    //   ★★lazy は、★画面から 少し 下でも 読みに行きます。
+    //     ★閉じた引き出しは すぐ下に あるので、★762枚が 読まれていました。
+    const dr2 = readCode("components", "HomeDrawer.jsx");
+    ok("★★閉じているあいだは 描かない（display:none）",
+      /display: open \? undefined : "none",/.test(dr2));
     // ★★ながめる → したく で、★部屋が 飛んで見えないこと。
     //   ★前の場所を 覚え、★transform で 打ち消してから 滑らせます。
     ok("★飛ばずに 滑る（★前の場所を 覚えている）",

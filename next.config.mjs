@@ -18,6 +18,26 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_BUILD_SHA: sha.slice(0, 7),
     NEXT_PUBLIC_BUILD_AT: new Date().toISOString()
+  },
+  // ★★羊と部屋の絵に、★長い覚え書きを 付けます（★2026-09-09）。
+  //
+  //   ★★実機の 記録で、★1,089 の 求めと 16.31秒 でした。
+  //     ★★絵は 1枚も 変わりません。★名前が 変われば 別の絵です。
+  //     ★だから 1年 覚えていて かまいません。
+  //   ★★immutable を 付けると、★ブラウザは「変わらない」と 分かるので、
+  //     ★2度目からは 聞きに 行きません（★304 すら 出しません）。
+  //
+  //   ★★これが 無いと、★毎回 サーバに 聞きに 行きます。
+  //     ★1枚ずつ 往復するので、★枚数が 多いほど 効きます。
+  async headers() {
+    return [
+      {
+        source: "/sheep/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" }
+        ]
+      }
+    ];
   }
 };
 

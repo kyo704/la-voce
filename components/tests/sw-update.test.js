@@ -102,7 +102,11 @@ async function main() {
   const sw = readRaw("public", "sw.js");
   assertTrue(/self\.skipWaiting\(\)/.test(sw), "skipWaiting がある");
   assertTrue(/self\.clients\.claim\(\)/.test(sw), "clients.claim がある");
-  assertTrue(/CACHE_NAME = "woolsong-shell-v3"/.test(sw), "キャッシュ名に版が入っている（§3-3）");
+  // ★★版の 数を 決め打ちで 見ないこと（★2026-09-09）。
+  //   ★★版は、★中身を 変えるたびに 上げます。★上げるのが 正しい形です。
+  //   ★数で 見ると、★正しく 上げたときに ここが 落ちます。
+  //   ★★見たいのは「★版が 入っているか」です。★いくつか、では ありません。
+  assertTrue(/CACHE_NAME = "woolsong-shell-v\d+"/.test(sw), "キャッシュ名に版が入っている（§3-3）");
   assertTrue(/keys\s*\n?\s*\.filter\(\(key\) => key !== CACHE_NAME\)/.test(sw.replace(/\s+/g, " ").replace(/ /g, " ")) || /key !== CACHE_NAME/.test(sw),
     "activate で古いキャッシュを消す（§3-3）");
   // ★2026-08-29: オフライン画面を返す形に変わりました。確かめたいことは同じです。

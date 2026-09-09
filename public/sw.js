@@ -6,7 +6,7 @@
 
 // エラー応答を取り込んでしまった古いキャッシュを捨てるため、版を上げる。
 // ★版を上げると、activate で古い版（la-voce-shell-v2 など）が消えます。
-const CACHE_NAME = "woolsong-shell-v3";
+const CACHE_NAME = "woolsong-shell-v4";
 
 // オフラインのときに必ず出せる画面。★install で焼き込みます。
 //   これが無いと、キャッシュに無いURLへ移動したときに
@@ -40,8 +40,32 @@ self.addEventListener("activate", (event) => {
 });
 
 // ネットワーク優先、失敗したときだけキャッシュにフォールバックする（データの新しさを優先するため）。
+// ★★羊と部屋の絵は、★横取りしません（★2026-09-09）。
+//
+//   ★★実機の 記録で、★1,089 の 求めと 16.31秒 でした。
+//     ★顔の 絵 1枚に 1.67秒 かかっていました。
+//   ★★この Service Worker は、★すべての GET を 横取りして、
+//     ★成功した応答を 1つずつ Cache Storage に 書き写していました。
+//     ★★絵が 何百枚も あると、★その書き写しが 積み上がります。
+//   ★★絵は、★ブラウザの ふつうの 覚え書きに まかせます。
+//     ★next.config.mjs で immutable を 付けました。★1年 覚えます。
+//     ★★そのほうが 速く、★Service Worker より 確かです。
+//   ★★外枠（HTML／CSS／JS）は、これまでどおり 面倒を見ます。
+//     ★オフラインで 真っ白に しない、という 役目は 変わりません。
+function isAsset(url) {
+  try {
+    const u = new URL(url);
+    return u.pathname.startsWith("/sheep/");
+  } catch (e) {
+    return false;
+  }
+}
+
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+  // ★★絵は 横取りしません。★respondWith を 呼ばなければ、
+  //   ★ブラウザが ふだんどおり 取りに行きます。
+  if (isAsset(event.request.url)) return;
   event.respondWith(
     fetch(event.request)
       .then((response) => {

@@ -247,7 +247,17 @@ export default function HomeDrawer({
           ★★横に広い画面では、★664px で止めて まん中へ寄せます。
             ★横並びの作りは、★11月以降に 考えます（★Opus の決め）。 */}
       <div style={{ flex: 1, overflowY: "auto", padding: 10 }}>
-        <div style={{ maxWidth: SIZES.gridMaxWidthPx, margin: "0 auto" }}>
+        {/* ★★閉じているあいだは、★中身を 描きません（★2026-09-09）。
+            ★★実機の 記録で、★1,089 の 求めと 16.31秒 でした。
+            ★★loading="lazy" は、★画面から 少し 下でも 読みに行きます。
+              ★閉じた引き出しは translateY(100%) で、★すぐ 下に あります。
+              ★★だから 762枚の 小さい絵が、★閉じたまま 読まれていました。
+            ★★display:none なら、★1枚も 読みません。★これは 確かです。
+              ★消しては いません。★組み立ては 残るので、★開くのは 速いままです。 */}
+        <div style={{
+          display: open ? undefined : "none",
+          maxWidth: SIZES.gridMaxWidthPx, margin: "0 auto"
+        }}>
           {children}
         </div>
       </div>

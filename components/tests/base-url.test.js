@@ -168,7 +168,11 @@ async function main() {
       "★画面への移動なら、オフライン画面を返す");
     assertTrue(!/\.catch\(\(\) => caches\.match\(event\.request\)\)/.test(sw),
       "★落ちる書き方が残っていない");
-    assertTrue(/CACHE_NAME = "woolsong-shell-v3"/.test(sw),
+    // ★★版の 数を 決め打ちで 見ないこと（★2026-09-09）。
+  //   ★★版は、★中身を 変えるたびに 上げます。★上げるのが 正しい形です。
+  //   ★数で 見ると、★正しく 上げたときに ここが 落ちます。
+  //   ★★見たいのは「★版が 入っているか」です。★いくつか、では ありません。
+  assertTrue(/CACHE_NAME = "woolsong-shell-v\d+"/.test(sw),
       "キャッシュ名を上げた（古い版が activate で消える）");
   }
 

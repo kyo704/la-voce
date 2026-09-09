@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { stripe, stripeConfigured } from "@/lib/stripe";
 import { getUserWithTimeout } from "@/lib/withTimeout";
-import { PLAN_KEYS, priceIdFor } from "@/lib/plans";
+import { PLAN_KEYS, priceIdFor, isBuyOnce } from "@/lib/plans";
 import { ageBandOf } from "@/lib/ageGate";
 // ★★3Dセキュアの求め方は、lib/minorBilling.js が持ちます。
 //   ★ここに "any" と書き写さないこと。★2か所になります。
@@ -137,9 +137,14 @@ export async function POST(request) {
 
   let session;
   try {
+    // ★★買い切りか、毎月か（★2026-09-09 の 方向転換）。
+    //   ★★年払いは「1年間 有効な 利用権の 買い切り」に なりました。
+    //     ★mode: "payment"。★自動更新は ありません。
+    //   ★★2か所で 判じません。★lib/plans.js の isBuyOnce を 見ます。
+    const buyOnce = isBuyOnce(planKey);
     session = await createSessionOrThrow({
       customer: customerId,
-      mode: "subscription",
+      mode: buyOnce ? "payment" : "subscription",
       // ★Managed Payments を、この決済では使いません（2026-09-04）。
       //   ★Stripe のアカウントで★既定で有効になっています。
       //   ★有効のままだと、★商品に税コードが要り、
@@ -164,6 +169,17 @@ export async function POST(request) {
         card: { request_three_d_secure: THREE_D_SECURE }
       },
       line_items: [{ price: priceId, quantity: 1 }],
+      // ★★買い切りのときは、★subscription_data を 渡しません。
+      //   ★★渡すと Stripe が 投げます（★mode が 合いません）。
+      //   ★★代わりに、★session そのものに 覚え書きを 付けます。
+      //     ★webhook は、★そちらから 誰の買い物かを 知ります。
+      ...(buyOnce ? {
+        metadata: {
+          supabase_user_id: user.id,
+          plan: planKey,
+          age_band: band
+        }
+      } : {
       subscription_data: {
       // ★trial_period_days: 14 を消しました（2026-09-03・Opus §5）。
       //   ★文言の嘘は3か所ありましたが、★動きの側にもありました。
@@ -180,7 +196,8 @@ export async function POST(request) {
         // ★契約した時点の帯。★あとで「そのとき何歳の帯だったか」を問われます。
         age_band: band
       }
-    },
+    }
+      }),
       success_url: absoluteUrl("/dashboard"),
       cancel_url: absoluteUrl("/billing")
     });
