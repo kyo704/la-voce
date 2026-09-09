@@ -62,6 +62,40 @@ function eq(a, b, label) {
   eq(q.isQuietDay("2026-10-01", ["2026-09-30"]), true, "★月をまたいでも 数えられる");
   eq(q.isQuietDay("2027-01-01", ["2026-12-31"]), true, "★年をまたいでも 数えられる");
 
+  console.log("\n=== ⑥ 画面の側（★見本⑮） ===");
+  {
+    const P = ["2026-10-02"];
+    // ★★休むのは「言い当てる」2つだけ。★並べ直すだけの2つは 休まない。
+    eq(q.QUIET_TABS.slice().sort(), ["kazoeru", "kuraberu"], "★休むのは くらべる・かぞえる の2つ");
+    eq(q.ALWAYS_TABS.slice().sort(), ["naraberu", "sakanoboru"], "★休まないのは ならべる・さかのぼる");
+    eq(q.tabIsOpen("naraberu", "2026-09-30", P), true, "ならべる は 静かな日も 見られる");
+    eq(q.tabIsOpen("sakanoboru", "2026-09-30", P), true, "さかのぼる は 静かな日も 見られる");
+    eq(q.tabIsOpen("kuraberu", "2026-09-30", P), false, "くらべる は 静かな日は お休み");
+    eq(q.tabIsOpen("kazoeru", "2026-09-30", P), false, "かぞえる は 静かな日は お休み");
+    eq(q.tabIsOpen("kuraberu", "2026-10-05", P), true, "離れた日は 出る");
+    eq(q.tabIsOpen("しらない帯", "2026-09-30", P), true, "★知らない帯は 出す（★足し忘れで 消さない）");
+
+    // ★見本⑮の 数と 合っているか
+    const r = q.quietReason("2026-09-30", P);
+    eq(r && r.performedOn, "2026-10-02", "★どの本番で 休んでいるか");
+    eq(r && r.daysUntil, 2, "★「本番まで あと2日です」と 同じ数");
+    eq(r && r.resumeOn, "2026-10-05", "★また 出る日");
+    eq(q.quietReason("2026-10-05", P), null, "★休みが 明けたら null");
+    eq(q.quietReason("2026-10-02", P).daysUntil, 0, "★本番の日は 0");
+    eq(q.quietReason("2026-10-04", P).daysUntil, -2, "★過ぎた日は 負の数");
+    // ★★近いほうを 1つだけ 返すこと（★2つ 並べない）
+    {
+      const two = ["2026-10-02", "2026-10-01"];
+      eq(q.quietReason("2026-09-30", two).performedOn, "2026-10-01", "★近いほうを 1つ 返す");
+    }
+    // ★★これから来るものを 先に（★過ぎたものより）
+    {
+      const both = ["2026-09-29", "2026-10-01"];
+      eq(q.quietReason("2026-09-30", both).performedOn, "2026-10-01",
+        "★これから来る本番を 先に 選ぶ");
+    }
+  }
+
   console.log("\n=== ② 呼びに行く道は、すべて 門を通る ===");
   const routes = fs.readdirSync(path.join(__dirname, "..", "..", "app", "api", "cron"));
   const callers = routes.filter((r) => {
