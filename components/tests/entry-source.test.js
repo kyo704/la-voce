@@ -114,10 +114,16 @@ function eq(a, b, label) {
     t(/isLaterWritten\(/.test(ui), "★画面は lib に 尋ねている");
     t(!/=== "later"|=== "import"/.test(ui), "★画面で 印を 見分けていない（★決めは lib 1か所）");
     // ★★消していないこと。★同じ長さで 出ること。
-    const bars = ui.slice(ui.indexOf("function Bars"), ui.indexOf("function Symptoms"));
-    const widths = (bars.match(/width: `\$\{Math\.round\(r\.density \* 100\)\}%`/g) || []).length;
+    //   ★★棒を 描くのは、★いまは components/UiV2.jsx の BarRow です（★design.zip）。
+    //     ★44画面が 同じ 形を 使うので、★1か所に 出しました。
+    //   ★★前は LookBackV2 の 中の 書き方を 見ていました。★出した とたん 落ちました。
+    //     ★中身は 何も 悪く なっていません。★見張りの 向きを 変えます。
+    t(/hollow=\{isLaterWritten\(/.test(ui), "★画面は「あとから書いた日か」を 棒に 渡している");
+    const bar = readCode("components", "UiV2.jsx");
+    const widths = (bar.match(/width: `\$\{Math\.round\(ratio \* 100\)\}%`/g) || []).length;
     t(widths === 2, `★あとから書いた日も、★同じ長さで 出る（${widths}か所）`);
-    t(/border: `1\.4px solid/.test(bars), "★中を 抜いて 見せている（★○）");
+    t(/border: `1\.4px solid \$\{tint\}`/.test(bar), "★中を 抜いて 見せている（★○）");
+    t(!/hollow \? null/.test(bar), "★あとから書いた日を 消していない");
     const raw = readRaw("components", "LookBackV2.jsx");
     t(/○は あとから書いた日です。目では見えますが、判定には 入れていません。/.test(raw),
       "★見本⑫の 凡例を、1文字も 変えずに 出している");

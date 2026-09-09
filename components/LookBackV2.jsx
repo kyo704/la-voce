@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { C } from "@/lib/tokens";
+import { C, CONCERN_STEPS } from "@/lib/tokens";
+import { TYPE, SPACE, cardStyle } from "@/lib/uiKit";
+import { ScreenHead, Card, Seg, Pill, Warn, BarRow } from "@/components/UiV2";
 import LookBackPanel from "@/components/LookBackPanel";
 import { LOOK_BACK_FIELDS, hardDays, lookBackableDays } from "@/lib/lookBack";
 import { PERIODS, LINE_UP_NOTE, datesBack, seriesOf, sungMinutes } from "@/lib/lineUp";
@@ -31,8 +33,10 @@ import { tabIsOpen, quietReason } from "@/lib/quietDays";
 //   ★見張り components/tests/line-up.test.js
 // ============================================================================
 
-const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
-const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.7 };
+// ★★大きさ・間・色は lib/uiKit.js と lib/tokens.js が 持ちます（★design.zip）。
+//   ★ここで 決めません。
+const card = { ...cardStyle, marginBottom: SPACE.cardGap };
+const small = { ...TYPE.note, lineHeight: 1.7 };
 
 function mmdd(iso) {
   return `${Number(iso.slice(5, 7))}/${Number(iso.slice(8, 10))}`;
@@ -46,44 +50,27 @@ function Bars({ title, rows, tint, entries }) {
   const anyLater = (entries || rows) &&
     rows.some((r) => isLaterWritten(((entries || {})[r.date] || {}).source));
   return (
-    <div style={card}>
-      <p style={{ fontSize: "0.8125rem", color: C.ink, marginBottom: 10 }}>{title}</p>
-      <div className="space-y-1.5">
-        {rows.map((r) => (
-          <div key={r.date} className="flex items-center gap-2">
-            <span className="ff-mono" style={{ ...small, minWidth: 34 }}>{mmdd(r.date)}</span>
-            <div style={{ flex: 1, height: 10, borderRadius: 999, background: C.paper }}>
-              {r.density == null ? null : (
-                // ★★長さも 濃さも、★同じ1つの 値から 作ります。
-                //   ★2つの 見え方に 分けると、★2つのことを 言ったことに なります。
-                //
-                // ★★あとから書いた日は、★中を 抜きます（★見本⑫の ○）。
-                //   ★★消しません。★同じ長さで、★同じ所に 出ます。
-                //     ★「目では見えますが、判定には 入れていません」（★見本⑫）。
-                //   ★決めるのは lib/entrySource.js だけです。★ここで 決めません。
-                isLaterWritten(((entries || {})[r.date] || {}).source) ? (
-                  <div style={{
-                    width: `${Math.round(r.density * 100)}%`, height: "100%", borderRadius: 999,
-                    border: `1.4px solid ${tint}`, opacity: 0.55
-                  }} />
-                ) : (
-                  <div style={{
-                    width: `${Math.round(r.density * 100)}%`, height: "100%", borderRadius: 999,
-                    background: tint, opacity: 0.35 + 0.65 * r.density
-                  }} />
-                )
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
+    <Card>
+      {/* ★★見本④の .mini（★11.5px・ink2）。 */}
+      <div style={{ ...TYPE.mini, marginBottom: 8 }}>{title}</div>
+      {rows.map((r) => (
+        // ★★長さも 濃さも、★同じ1つの 値から 作ります（★UiV2 の BarRow）。
+        //   ★2つの 見え方に 分けると、★2つのことを 言ったことに なります。
+        //
+        // ★★あとから書いた日は、★中を 抜きます（★見本⑫の ○）。
+        //   ★★消しません。★同じ長さで、★同じ所に 出ます。
+        //     ★「目では見えますが、判定には 入れていません」（★見本⑫）。
+        //   ★決めるのは lib/entrySource.js だけです。★ここで 決めません。
+        <BarRow key={r.date} label={mmdd(r.date)} tint={tint} ratio={r.density}
+          hollow={isLaterWritten(((entries || {})[r.date] || {}).source)} />
+      ))}
       {/* ★★凡例（★見本⑫）。★あとから書いた日が あるときだけ 出します。 */}
       {anyLater ? (
         <p style={{ ...small, marginTop: 8 }}>
           ○は あとから書いた日です。目では見えますが、判定には 入れていません。
         </p>
       ) : null}
-    </div>
+    </Card>
   );
 }
 
@@ -96,33 +83,39 @@ function Bars({ title, rows, tint, entries }) {
  *   ★1つも 書かれていなければ、★升目ごと 出しません。
  */
 function Symptoms({ entries, dates }) {
-  const names = Object.keys(SYMPTOM_LOCATION);
-  const rows = dates
-    .map((d) => ({ date: d, on: ((entries[d] || {}).throatSymptoms) || [] }))
-    .filter((r) => r.on.length > 0);
-  if (rows.length === 0) return null;
+  // ★★見本④の 升目（.cal）── ★7つずつ 並べ、★1色の 濃淡 3段で 塗ります。
+  //   ★出どころ tokens.md §1-4「気になったこと ★#EFE7D6 → #E3CDD2 → #D7AFB7（3段）」
+  //
+  //   ★★前は、★1日 1行・症状ごとに 縦の 帯を 出していました。
+  //     ★見本④は、★7つずつの 升目 1枚です。★そちらに 合わせます。
+  //
+  //   ★★3段は「強さ」では ありません。★<b>書いた 場所の 数</b>です。
+  //     ★★強さを 出すと、★「ひどい日」を こちらが 決めることに なります。
+  //     ★場所が 1つの日と 3つの日は、★ご本人が 書き分けた ちがいです。
+  //   ★★数字を 添えません。★「7日中5日」と 書きません。
+  const rows = dates.map((d) => ({
+    date: d,
+    n: (((entries[d] || {}).throatSymptoms) || []).length
+  }));
+  if (rows.every((r) => r.n === 0)) return null;
   return (
-    <div style={card}>
-      <p style={{ fontSize: "0.8125rem", color: C.ink, marginBottom: 10 }}>気になったこと</p>
-      <div className="space-y-1.5">
+    <Card>
+      <div style={{ ...TYPE.mini, marginBottom: 8 }}>気になったこと</div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4 }}>
         {rows.map((r) => (
-          <div key={r.date} className="flex items-center gap-2">
-            <span className="ff-mono" style={{ ...small, minWidth: 34 }}>{mmdd(r.date)}</span>
-            <div style={{ display: "flex", gap: 3, flex: 1 }}>
-              {names.map((n) => (
-                <div key={n} title={n} style={{
-                  flex: 1, height: 12, borderRadius: 3,
-                  background: r.on.includes(n) ? C.curtain : C.paper,
-                  opacity: r.on.includes(n) ? 0.75 : 1
-                }} />
-              ))}
-            </div>
-          </div>
+          <span key={r.date}
+            title={`${mmdd(r.date)}${r.n > 0 ? "　書いた日" : ""}`}
+            style={{
+              display: "block", height: 16, borderRadius: 3,
+              background: CONCERN_STEPS[Math.min(r.n, CONCERN_STEPS.length - 1)]
+            }} />
         ))}
       </div>
       {/* ★★何の升目かを 書きます。★色の 意味を 当てさせないこと。 */}
-      <p style={{ ...small, marginTop: 8 }}>{names.join("・")}　の順</p>
-    </div>
+      <p style={{ ...small, marginTop: 8 }}>
+        {dates.length > 0 ? `${mmdd(dates[0])} から ${mmdd(dates[dates.length - 1])}　濃いほど、書いた 場所が 多い日です。` : ""}
+      </p>
+    </Card>
   );
 }
 
@@ -133,39 +126,42 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
   const period = PERIODS.find((p) => p.key === periodKey) || PERIODS[0];
   const dates = datesBack(todayISO, period.days);
 
+  // ★★押しどころの 形は UiV2 が 持ちます。★ここで 作りません（★design.zip）。
   const chip = (on) => ({
-    minHeight: 36, padding: "0 14px", borderRadius: 999,
+    minHeight: SPACE.tapMin, padding: "0 14px", borderRadius: 999,
     border: `1px solid ${on ? C.curtain : C.line}`,
     background: on ? C.curtain : C.card,
-    color: on ? "#FFFDF8" : C.inkSoft, fontSize: "0.8125rem"
+    color: on ? "#FFFDF8" : C.inkSoft, fontSize: 11.5
   });
 
   return (
-    <div className="space-y-3">
-      <h2 className="ff-display italic" style={{ fontSize: "1.5rem", color: C.ink }}>ふりかえる</h2>
+    <div>
+      {/* ★★見本④ .hd。★ゴシック 17px。★明朝を 使いません（tokens.md §2）。 */}
+      <ScreenHead title="ふりかえる" />
 
-      {/* ★★見本④の 但し書き。★1文字も 変えないこと。
+      {/* ★★見本④の 但し書き（.warn）。★1文字も 変えないこと。
           ★★飾りでは ありません。★この画面が 何を していないかの 断りです。 */}
-      <div style={{ ...card, background: C.paper }}>
-        <p style={{ ...small, whiteSpace: "pre-line" }}>{LINE_UP_NOTE}</p>
-      </div>
+      <Warn>
+        <span style={{ whiteSpace: "pre-line" }}>{LINE_UP_NOTE}</span>
+      </Warn>
 
-      {/* ★★帯（★見本⑫〜⑮）。★「かぞえる」は、まだ 置きません。
-          ★★押せるのに 何も 起きないものを、★出しません。 */}
-      <div className="flex gap-2">
-        <button type="button" onClick={() => setTab("narabe")} style={chip(tab === "narabe")}>ならべる</button>
-        <button type="button" onClick={() => setTab("sakanobore")} style={chip(tab === "sakanobore")}>さかのぼる</button>
-        <button type="button" onClick={() => setTab("kuraberu")} style={chip(tab === "kuraberu")}>くらべる</button>
-        <button type="button" onClick={() => setTab("kazoeru")} style={chip(tab === "kazoeru")}>かぞえる</button>
-      </div>
+      {/* ★★切替（★見本④⑤ .seg）。★4つを 横に 並べます。★流れません。 */}
+      <Seg activeKey={tab} onSelect={setTab}
+        items={[
+          { key: "narabe", label: "ならべる" },
+          { key: "sakanobore", label: "さかのぼる" },
+          { key: "kuraberu", label: "くらべる" },
+          { key: "kazoeru", label: "かぞえる" }
+        ]} />
 
       {tab === "narabe" && (
         <>
-          <div className="flex gap-2">
+          {/* ★★期間（★見本④ .pill）。★あいだ 6px・下に 11px。 */}
+          <div style={{ display: "flex", gap: 6, marginBottom: 11 }}>
             {PERIODS.map((p) => (
-              <button key={p.key} type="button" onClick={() => setPeriodKey(p.key)} style={chip(periodKey === p.key)}>
+              <Pill key={p.key} on={periodKey === p.key} onClick={() => setPeriodKey(p.key)}>
                 {p.label}
-              </button>
+              </Pill>
             ))}
           </div>
           {/* ★★書いた日が 1日も 無ければ、★その帯を 出しません。★空の枠を 置きません。 */}

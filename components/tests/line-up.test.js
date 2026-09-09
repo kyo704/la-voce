@@ -113,14 +113,20 @@ function eq(a, b, label) {
   //     ★中身が 無いなら、★帯に 出さないこと。
   // ★★帯に あるなら、★その 中身が あること。★中身が 無いなら、★帯に 出さないこと。
   //   ★2026-09-09、★くらべる（見本⑫）と かぞえる（見本⑭）を 作りました。
-  t(/setTab\("kuraberu"\)/.test(uiCode) === /<CompareV2/.test(uiCode),
+  // ★★帯は、いまは 見本の 切替（UiV2 の Seg）に 渡す 一覧です（★design.zip A04）。
+  //   ★★前は setTab("…") の 書き方を 数えていました。★切替に 移した とたん 落ちました。
+  //     ★中身は 何も 悪く なっていません。★見張りの 向きを 変えます。
+  const inSeg = (k) => new RegExp(`key: "${k}", label:`).test(uiCode);
+  t(inSeg("kuraberu") === /<CompareV2/.test(uiCode),
     "★「くらべる」は、帯と 中身が そろっている");
-  t(/setTab\("kazoeru"\)/.test(uiCode) === /<CountV2/.test(uiCode),
+  t(inSeg("kazoeru") === /<CountV2/.test(uiCode),
     "★「かぞえる」も、帯と 中身が そろっている");
-  // ★★4つ とも そろったこと（★見本の 帯のとおり）
+  // ★★4つ とも そろったこと（★見本④⑤の 切替のとおり）
   ["narabe", "sakanobore", "kuraberu", "kazoeru"].forEach((k) => {
-    t(new RegExp(`setTab\\("${k}"\\)`).test(uiCode), `★帯に「${k}」が ある`);
+    t(inSeg(k), `★帯に「${k}」が ある`);
   });
+  // ★★4つ ちょうど。★見本に 無い 5つ目を 増やしていないこと。
+  t((uiCode.match(/key: "[a-z]+", label:/g) || []).length === 4, "★帯は 4つ ちょうど");
 
   console.log("\n=== ⑦ 門 ===");
   const vt = readRaw("components", "VocalTracker.jsx");
