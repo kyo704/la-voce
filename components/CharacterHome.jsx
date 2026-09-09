@@ -13,7 +13,7 @@ import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
 } from "@/lib/oldHouseVisibility";
 // ★動かせる内装が在るか／羊の重ね順。★決めは、あちらが持ちます。
-import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs } from "@/lib/sheepInteriorV2";
+import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs, nextSitMs } from "@/lib/sheepInteriorV2";
 import SpeechBubble from "@/components/SpeechBubble";
 import { SOLO, TIMING, FACE_FOR, pickLine, nextSoloMs, pushRecent } from "@/lib/sheepSpeech";
 import { pickGesture, nextGestureMs, mayGesture, pushRecent as pushGesture } from "@/lib/sheepGestures";
@@ -543,7 +543,9 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, chairPos, bedPo
     }
 
     function scheduleSitting() {
-      const delay = 20000 + Math.random() * 20000;
+      // ★★座りに行く 頻度（★2026-09-09・実機「多すぎる」）。
+      //   ★もとは 20〜40秒に1回。★60〜150秒に1回に します。
+      const delay = nextSitMs();
       addTimer(() => {
         if (cancelled) return;
         // ★何かしている最中（歩いている・座っている・寝ている）は割り込まない。
@@ -557,7 +559,13 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, chairPos, bedPo
         const chairFloorTop = chairPos.top;
         const chairSeatTop = Math.max(ROOM_FLOOR_LINE, chairPos.top - SEAT_ABOVE_FLOOR);
         busyRef.current = true;
-        moveTo(chairLeft, chairFloorTop, 2000);
+        // ★★歩く秒数は、★1つの数から 出します（★2026-09-09 の 直し）。
+        //   ★★2026-09-09、★歩きを 3.2秒に しましたが、
+        //     ★ここだけ 2.0秒の ままでした。
+        //   ★★足は 2.0秒で 止まり、★体は 3.2秒 かけて 進みます。
+        //     ★★だから「座ったあと 足が 動かない」ように 見えていました。
+        //   ★実機で ご報告を いただきました。★そのとおりです。
+        moveTo(chairLeft, chairFloorTop, WALK_MS);
         addTimer(() => {
           if (cancelled) return;
           setLeftPct(chairLeft);
@@ -571,7 +579,7 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, chairPos, bedPo
             leftRef.current = chairLeft;
             busyRef.current = false;
           }, 5500);
-        }, 2100);
+        }, WALK_MS + 100);
         scheduleSitting();
       }, delay);
     }
@@ -593,7 +601,8 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, chairPos, bedPo
         //   ドラッグの制限は、これから動かすときにしか効かないため。
         const pillowTop = Math.max(ROOM_FLOOR_LINE, bedPos.top - PILLOW_ABOVE_FLOOR);
         busyRef.current = true;
-        moveTo(bedApproachLeft, bedFloorTop, 2000);
+        // ★★寝台へ行く道も、同じ数から（★上と 同じ理由）。
+        moveTo(bedApproachLeft, bedFloorTop, WALK_MS);
         addTimer(() => {
           if (cancelled) return;
           setLeftPct(pillowLeft);
@@ -614,7 +623,7 @@ function useRoomLife(centerLeft, centerTop, rangeLeft, rangeTop, chairPos, bedPo
             leftRef.current = bedApproachLeft;
             busyRef.current = false;
           }, SLEEP_DURATION_MS);
-        }, 2100);
+        }, WALK_MS + 100);
         scheduleLying();
       }, delay);
     }

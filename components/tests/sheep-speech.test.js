@@ -129,8 +129,9 @@ function ok(name, cond, extra) {
   console.log("■ ★間と、顔");
   ok("★あいづちは 3.0秒／ひとりごとは 2.5秒",
     m.TIMING.replyMs === 3000 && m.TIMING.soloMs === 2500);
-  ok("★ひとりごとは 45〜90秒に1回",
-    m.nextSoloMs(() => 0) === 45000 && m.nextSoloMs(() => 1) === 90000);
+  // ★★2026-09-09、★実機「もっと ひんぱんに」。★45〜90秒 → 25〜55秒。
+  ok("★ひとりごとは 25〜55秒に1回",
+    m.nextSoloMs(() => 0) === 25000 && m.nextSoloMs(() => 1) === 55000);
   // ★★かなしい顔を 出さないこと。
   ok("★★かなしい顔と 組んでいない",
     !Object.values(m.FACE_FOR).some((f) => ["sad", "trouble", "disappoint"].includes(f)));
