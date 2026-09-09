@@ -110,6 +110,9 @@ import { recallEquipped, rememberEquipped } from "@/lib/equippedCache";
 import { mayUseLayoutV2 } from "@/lib/layoutV2";
 import HomeV2 from "@/components/HomeV2";
 import NotesV2 from "@/components/NotesV2";
+import Renraku from "@/components/Renraku";
+import TellTeacher from "@/components/TellTeacher";
+import { shouldLogRead } from "@/lib/renraku";
 import OpsShell from "@/components/OpsShell";
 import OpsSchedule from "@/components/OpsSchedule";
 import OpsRoster from "@/components/OpsRoster";
@@ -5188,6 +5191,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★入っているあいだ、★個人のアプリは 描きません。
   //     ★「2つのアプリが 1つに入っている形」（★§3-3）。
   //   ★null なら 入っていません。★org の id を 持ちます。
+  // ★★連絡（★見本①〜⑤・2026-09-10）。
+  //   ★門下は assignments が 持ちます。★新しい表を 作っていません（★§6-1）。
+  const [renrakuStudios, setRenrakuStudios] = useState([]);   // ★[{teacherId, memberCount, lastAt}]
+  const [renrakuMessages, setRenrakuMessages] = useState([]);
+  const [renrakuAnnouncements, setRenrakuAnnouncements] = useState([]);
+  const [renrakuReads, setRenrakuReads] = useState([]);
+  const [openStudio, setOpenStudio] = useState(null);
+  // ★「先生に 伝える」を 開いている レッスン（★見本⑥）。
+  const [tellLesson, setTellLesson] = useState(null);
+  const [renrakuPosting, setRenrakuPosting] = useState(false);
+
   // ★★ノート（★見本⑥）。★表は 2026-09-09 に 作りました。
   const [myNotes, setMyNotes] = useState([]);
   const [noteSaving, setNoteSaving] = useState(false);
@@ -9300,6 +9314,123 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }
   }
 
+  /**
+   * ★連絡：★門下の 一覧を 作ります（★§6-1）。
+   *
+   *   ★★新しい表を 作りません。★assignments から 組み立てます。
+   *     ★★担当が 終わった 門下は、★出なくなります（★見本④）。
+   *   ★自分が 学生の 門下と、★自分が 先生の 門下、その両方です。
+   */
+  const fetchRenrakuStudios = useCallback(async (orgId) => {
+    const supabase = createClient();
+    const q = supabase.from("assignments").select("teacher_id, student_id").is("ended_at", null);
+    const { data, error } = orgId ? await q.eq("org_id", orgId) : await q;
+    if (error) { console.error("門下を読めませんでした:", error); return; }
+    const rows = data || [];
+    // ★自分が 関わる 門下（★学生として／先生として）
+    const mine = new Set(rows.filter((r) => r.student_id === userId).map((r) => r.teacher_id));
+    if (rows.some((r) => r.teacher_id === userId)) mine.add(userId);
+    const counts = new Map();
+    rows.forEach((r) => counts.set(r.teacher_id, (counts.get(r.teacher_id) || 0) + 1));
+    setRenrakuStudios([...mine].map((tid) => ({
+      teacherId: tid, memberCount: counts.get(tid) || 0, lastAt: null
+    })));
+  }, [userId]);
+
+  /**
+   * ★連絡：★書き込みを 読みます。
+   *
+   *   ★★90日を 過ぎた ものは、★画面の 側で 落とします（★lib/renraku.js）。
+   *     ★消すのは 別の 定期処理です。★ここでは 消しません。
+   */
+  const fetchRenraku = useCallback(async (orgId, teacherId) => {
+    const supabase = createClient();
+    const [msgRes, annRes] = await Promise.all([
+      teacherId
+        ? supabase.from("org_messages")
+            .select("id, org_id, teacher_id, author_id, body, created_at, withdrawn_at")
+            .eq("teacher_id", teacherId).order("created_at", { ascending: true })
+        : Promise.resolve({ data: [] }),
+      supabase.from("org_messages")
+        .select("id, org_id, teacher_id, author_id, body, created_at, withdrawn_at")
+        .is("teacher_id", null).order("created_at", { ascending: false }).limit(5)
+    ]);
+    if (msgRes && !msgRes.error) setRenrakuMessages(msgRes.data || []);
+    if (annRes && !annRes.error) setRenrakuAnnouncements(annRes.data || []);
+  }, []);
+
+  /**
+   * ★連絡：★開いた記録を 残します（★坂本さんのご指示・2026-09-10）。
+   *
+   *   ★★運営の方が 門下を 開いた ときだけ です（★lib/renraku.js）。
+   *     ★先生と 学生は、★自分の 門下です。★残しません。
+   *   ★★残せなくても、★画面は 止めません。★読めることが 先です。
+   */
+  const logRenrakuRead = useCallback(async (orgId, teacherId, role) => {
+    const supabase = createClient();
+    const { error } = await supabase.from("org_message_reads")
+      .insert({ org_id: orgId, teacher_id: teacherId, reader_id: userId, reader_role: role });
+    if (error) console.error("開いた記録を残せませんでした:", error);
+  }, [userId]);
+
+  /** ★連絡：★開いた記録を 読みます。★読んだ側にも、読まれた側にも 見せます。 */
+  const fetchRenrakuReads = useCallback(async (teacherId) => {
+    const supabase = createClient();
+    const { data, error } = await supabase.from("org_message_reads")
+      .select("id, teacher_id, reader_id, reader_role, read_at")
+      .eq("teacher_id", teacherId).order("read_at", { ascending: false }).limit(20);
+    if (!error) setRenrakuReads(data || []);
+  }, []);
+
+  /**
+   * ★連絡：★書きます。
+   *
+   *   ★★運営の方は 書けません。★門（RLS）が 止めます。
+   *     ★画面でも 出しませんが、★門が 本体です。
+   *   ★送れたかを 返します。★呼ぶ側が、★欄を 空にするかを 決めます。
+   */
+  async function handlePostRenraku(orgId, teacherId, body) {
+    if (!String(body || "").trim()) return false;
+    setRenrakuPosting(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("org_messages")
+        .insert({ org_id: orgId, teacher_id: teacherId, author_id: userId, body: body.trim() })
+        .select("id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      await fetchRenraku(orgId, teacherId);
+      return true;
+    } catch (e) {
+      console.error("連絡を出せませんでした:", e);
+      return false;
+    } finally {
+      setRenrakuPosting(false);
+    }
+  }
+
+  /**
+   * ★「先生に 伝える」（★見本⑥）。★連絡板では ありません。
+   *
+   *   ★★担当の 先生 おひとりに 届きます。
+   *     ★門下にも、★学校の運営の方にも 届きません。
+   *   ★★理由は 受け取りません。★欄が ありません（★§6-1 の 対処②）。
+   *   ★取り消しは null を 渡します。
+   */
+  async function handleTellTeacher(lessonId, notice) {
+    const supabase = createClient();
+    const { data, error } = await supabase.from("lessons")
+      .update({
+        student_notice: notice,
+        student_notice_at: notice ? new Date().toISOString() : null
+      })
+      .eq("id", lessonId).select("id");
+    if (error || !data || data.length === 0) {
+      console.error("先生に伝えられませんでした:", error);
+      return false;
+    }
+    return true;
+  }
+
   // ★★ノートを 読みます（★見本⑥・2026-09-09）。
   //   ★★消したもの（deleted_at）は 読みません。★行は 残っています。
   const fetchNotes = useCallback(async () => {
@@ -9387,7 +9518,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (!layoutV2) return;
     if (activeTab !== "notes") return;
     void fetchNotes();
-  }, [layoutV2, activeTab, fetchNotes]);
+    // ★★門下は、★その帯を 開いたときに はじめて 読みます。
+    //   ★はじめの 尋ねごとを 増やしません。
+    void fetchRenrakuStudios(myOrgs[0] && myOrgs[0].org_id);
+    void fetchRenraku(myOrgs[0] && myOrgs[0].org_id, null);
+  }, [layoutV2, activeTab, fetchNotes, fetchRenrakuStudios, fetchRenraku, myOrgs]);
+
+  // ★運営モードに 入ったら、★その教室の 門下を 読みます。
+  useEffect(() => {
+    if (!opsOrgId) return;
+    void fetchRenrakuStudios(opsOrgId);
+    void fetchRenraku(opsOrgId, null);
+  }, [opsOrgId, fetchRenrakuStudios, fetchRenraku]);
 
   // ★★電波が戻ったら、★自動で送ります。★押し直させません。
   //   ★★画面に戻ったときも、試します。★online が来ないことがあるためです。
@@ -12195,6 +12337,38 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   events={opsEventList}
                   participants={[]}
                   targetOf={opsTargetOf} />
+              );
+            }
+            if (tabKey === "threads") {
+              // ★★連絡（★見本①③）。★運営の方は 読むだけです。
+              //   ★★書けないのは、★門（RLS）が 止めるからです。
+              //     ★画面でも 出しませんが、★門が 本体です。
+              //   ★★開いたら、★1行 残します（★坂本さんのご指示・2026-09-10）。
+              //     ★決めるのは lib/renraku.js です。★ここで 決めません。
+              return (
+                <Renraku
+                  studios={renrakuStudios}
+                  announcements={renrakuAnnouncements}
+                  messages={renrakuMessages}
+                  openStudio={openStudio}
+                  onOpenStudio={(tid) => {
+                    setOpenStudio(tid);
+                    if (!tid) return;
+                    void fetchRenraku(opsOrgId, tid);
+                    void fetchRenrakuReads(tid);
+                    // ★★運営の方が 開いた ときだけ 残します。
+                    if (shouldLogRead({ role, isTeacher: tid === userId, isMember: false })) {
+                      void logRenrakuRead(opsOrgId, tid, role);
+                    }
+                  }}
+                  role={role}
+                  isTeacherOf={(tid) => tid === userId}
+                  isMemberOf={() => false}
+                  nameOf={(id) => orgDisplayName(id) || ""}
+                  teacherNameOf={(id) => orgDisplayName(id) || ""}
+                  posting={renrakuPosting}
+                  onPost={(body) => handlePostRenraku(opsOrgId, openStudio, body)}
+                  reads={renrakuReads} />
               );
             }
             if (tabKey === "settings") {
@@ -16009,12 +16183,59 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 ★★名簿に 載っている方にだけ 出します（★lib/layoutV2.js）。
                   ★一般の 38人には、★これまでの ノートが 出ます。
                 ★★タイトル欄も 保存ボタンも ありません。 */}
-            {activeTab === "notes" && layoutV2 && (
+            {/* ★★「先生に 伝える」（★見本⑥）。★開いているあいだ、★これだけ 出します。
+                ★★連絡板では ありません。★別の道です。 */}
+            {activeTab === "notes" && layoutV2 && tellLesson ? (
+              <TellTeacher
+                lesson={tellLesson}
+                teacherName={orgDisplayName(tellLesson.teacher_id) || ""}
+                onTell={handleTellTeacher}
+                onClose={() => setTellLesson(null)} />
+            ) : null}
+            {activeTab === "notes" && layoutV2 && !tellLesson && (
               <NotesV2
                 notes={myNotes}
                 saving={noteSaving}
                 onSave={handleSaveNote}
-                onDelete={handleDeleteNote} />
+                onDelete={handleDeleteNote}
+                renraku={
+                  /* ★★ノートの 帯の「連絡」（★見本④）。★タブを 増やしません。
+                       ★門下は assignments が 持ちます。★新しい表を 作っていません。 */
+                  <>
+                    <Renraku
+                      studios={renrakuStudios}
+                      announcements={renrakuAnnouncements}
+                      messages={renrakuMessages}
+                      openStudio={openStudio}
+                      onOpenStudio={(tid) => {
+                        setOpenStudio(tid);
+                        if (tid) void fetchRenraku(myOrgs[0] && myOrgs[0].org_id, tid);
+                      }}
+                      role={null}
+                      isTeacherOf={(tid) => tid === userId}
+                      isMemberOf={(tid) => renrakuStudios.some((x) => x.teacherId === tid)}
+                      nameOf={(id) => orgDisplayName(id) || ""}
+                      teacherNameOf={(id) => orgDisplayName(id) || ""}
+                      posting={renrakuPosting}
+                      onPost={(body) => handlePostRenraku(myOrgs[0] && myOrgs[0].org_id, openStudio, body)}
+                      reads={renrakuReads} />
+                    {/* ★★休むことは、★連絡板に 書かせません（★§6-1 の 対処②）。
+                        ★★別の道を、★連絡の すぐ下に 置きます（★見本④）。 */}
+                    {!openStudio && myAllLessons.length > 0 ? (
+                      <div className="rounded-2xl p-4 border mt-3" style={{ background: C.card, borderColor: C.line }}>
+                        <p className="text-xs mb-2" style={{ color: C.inkSoft }}>レッスンを 休むとき</p>
+                        <button type="button" onClick={() => setTellLesson(myAllLessons[0])}
+                          className="w-full" style={{
+                            minHeight: 48, borderRadius: 10, border: `1px solid ${C.line}`,
+                            background: C.paper, color: C.ink, fontSize: "0.875rem"
+                          }}>先生に 伝える</button>
+                        <p className="text-xs mt-2" style={{ color: C.inkSoft, lineHeight: 1.8 }}>
+                          連絡には 書きません。<br />担当の先生 おひとりにだけ 届きます。
+                        </p>
+                      </div>
+                    ) : null}
+                  </>
+                } />
             )}
             {activeTab === "notes" && !layoutV2 && (
               <div className="flex rounded-full border p-1 mb-4 overflow-x-auto nav-scroll" style={{ borderColor: C.line }}>
