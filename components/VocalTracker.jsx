@@ -107,6 +107,7 @@ import { thumbSrc } from "@/lib/thumbs";
 import { roomAssetUrls, preloadUrls } from "@/lib/preloadRoom";
 import { recallEquipped, rememberEquipped } from "@/lib/equippedCache";
 import { mayUseLayoutV2 } from "@/lib/layoutV2";
+import HomeV2 from "@/components/HomeV2";
 import { readProfileExtras } from "@/lib/profileExtras";
 import { VIEW, DRESS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES, HOME_COLORS } from "@/lib/homeDrawer";
 import { itemsFor, sortItems } from "@/lib/drawerItems";
@@ -12554,7 +12555,41 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           </div>
         ) : (
           <div key={activeTab} className="tab-panel">
-            {activeTab === "home" && (() => {
+            {/* ★★新しい「きょう」の画面（★見本①・2026-09-09）。
+                ★★名簿に 載っている方にだけ 出します（★lib/layoutV2.js）。
+                  ★一般の 38人には、★下の これまでの ホームが 出ます。
+                  ★★1つも 変えません。★お指図の とおりです。
+                ★★グラフを 1つも 置きません。★点数も 出しません。
+                ★数と 言葉は lib/todayCard.js が 持ちます。 */}
+            {activeTab === "home" && layoutV2 && (
+              <HomeV2
+                entries={entries}
+                todayISO={realTodayDate}
+                wearing={wardrobeOn ? (characterEquipped.wardrobe || {}) : {}}
+                clothColors={characterEquipped.clothColors || {}}
+                clothColors2={characterEquipped.clothColors2 || {}}
+                hitokoto="きょうも 来てくれて ありがとう。"
+                /* ★★きょうの けいこ は、まだ 入れていません。
+                     ★けいこの 予定は、いま、教室の 画面の 中でだけ 読んでいます。
+                     ★ここへ 出すには、★はじめに もう1本 尋ねることに なります。
+                     ★★はじめの 尋ねごとを 増やさない、という 約束が あります。
+                     ★見本の この行は、★けいこの 便を 進めるときに、そこで 足します。 */
+                upcoming={performances
+                  .filter((pf) => pf.performed_on && pf.performed_on >= realTodayDate)
+                  .sort((x, y) => (x.performed_on < y.performed_on ? -1 : 1))
+                  .slice(0, 2)
+                  .map((pf) => ({
+                    id: pf.id,
+                    dateLabel: pf.performed_on === realTodayDate
+                      ? "きょう"
+                      : `${Number(pf.performed_on.slice(5, 7))}月${Number(pf.performed_on.slice(8, 10))}日`,
+                    label: pf.label || pf.kind || "本番",
+                    badge: pf.performed_on === realTodayDate ? "出ます" : null
+                  }))}
+                onRecord={() => setActiveTab("today")}
+                onOpenMore={() => setActiveTab("more")} />
+            )}
+            {activeTab === "home" && !layoutV2 && (() => {
               const realToday = realTodayDate;
               const hour = greetingHour;
               const greeting = hour < 5 ? "こんばんは" : hour < 11 ? "おはようございます" : hour < 18 ? "こんにちは" : "こんばんは";
