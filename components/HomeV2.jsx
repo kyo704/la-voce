@@ -54,8 +54,12 @@ export default function HomeV2({
 
       {/* ★★羊。★見本では、★部屋を 出しません。★羊だけです。 */}
       <div style={{ display: "flex", justifyContent: "center", padding: "4px 0" }}>
+        {/* ★★見本①の 羊は、★控えめです（★2026-09-10・実機のご指摘）。
+            ★★180 では 大きすぎました。★見本では、札の はばの 3分の1ほどです。
+            ★羊を 見にいらしたのでは ありません。★きょうの ことを 見に 来ています。
+            ★★大きく 見たいときは、★「ひつじ」の 帯が あります。 */}
         <SheepDressed wearing={wearing || {}} colors={clothColors || {}} colors2={clothColors2 || {}}
-          size={180} motion="still" blink alt="羊" />
+          size={120} motion="still" blink alt="羊" />
       </div>
 
       {/* ★★「きょう」の帯（★第2便・§3-2）。
@@ -103,8 +107,15 @@ export default function HomeV2({
         きょうを 記録する
       </button>
 
-      {/* ★★みつけたこと。★呼ぶ側が 入れます。 */}
-      {children}
+      {/* ★★みつけたこと（★見本①の いちばん下）。
+          ★★見出しは いつも 出します。★中身が 無くても 出します。
+            ★見本① に、★見出しだけの 姿で 描かれています。
+            ★★「まだ 何も ありません」とは 書きません。★責めに なります。
+          ★中身は 呼ぶ側が 入れます（★分析の 側が 持っています）。 */}
+      <div style={{ marginTop: 4 }}>
+        <p style={{ ...small, letterSpacing: "0.08em" }}>みつけたこと</p>
+        {children}
+      </div>
     </div>
   );
 }

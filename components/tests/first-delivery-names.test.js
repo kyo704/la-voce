@@ -62,7 +62,13 @@ function eq(a, b, label) {
   const tabs = vt.slice(vt.indexOf("const TABS = ["), vt.indexOf("const TABS_V2"));
   t(/key: "lesson"/.test(tabs), "★一般の方の TABS に レッスンが 残っている（★38人の画面を 変えない）");
   const v2 = vt.slice(vt.indexOf("const TABS_V2"), vt.indexOf("const TABS_V2") + 400);
-  t(/tb\.key !== "lesson"/.test(v2), "★門の中の TABS_V2 だけが レッスンを 外している");
+  // ★★2026-09-10、★見本の 並びに 合わせて 書き方を 変えました。
+  //   ★前は TABS.filter(… !== "lesson") でした。
+  //   ★★確かめるのは 書き方では なく、★結果です。
+  //     ★「レッスンが 入っていないこと」を、★一覧そのもので 見ます。
+  t(/TABS_V2_ORDER = \["home", "today", "analysis", "notes", "garden"\]/.test(vt),
+    "★門の中は 5つ、★見本の 並び（きょう／記録／ふりかえる／ノート／ひつじ）");
+  t(!/TABS_V2_ORDER = \[[^\]]*"lesson"/.test(vt), "★レッスンが 入っていない");
   t(/mayUseLayoutV2/.test(vt), "★門を 通して 選んでいる");
 
   console.log("\n=== ④ 見本の 5つと 合っているか ===");

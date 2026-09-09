@@ -49,7 +49,8 @@ function ok(name, cond, extra) {
   ok("★★一般の方には、レッスンが 残っている", keys.includes("lesson"));
   // ★★名簿の方の 帯は 5つ。
   ok("★名簿の方は、レッスンを 外す",
-    /const TABS_V2 = TABS\.filter\(\(tb\) => tb\.key !== "lesson"\);/.test(vt));
+    /TABS_V2_ORDER = \["home", "today", "analysis", "notes", "garden"\]/.test(vt)
+    && !/TABS_V2_ORDER = \[[^\]]*"lesson"/.test(vt));
   ok("★門で 切り替えている",
     /\(layoutV2 \? TABS_V2 : TABS\)/.test(vt));
   // ★★画面で 判じないこと。

@@ -587,7 +587,15 @@ const TABS = [
  *     ★入口は ホームに 2つ 残ります（★教室に 入っている方は 行けます）。
  *   ★★名簿に 載っている方にだけ 出します。★一般の方は 上の TABS です。
  */
-const TABS_V2 = TABS.filter((tb) => tb.key !== "lesson");
+// ★★見本の 帯は、★きょう／記録／ふりかえる／ノート／ひつじ の 順です。
+//   ★★TABS は garden（ひつじ）→ notes（ノート）の 順でした。
+//     ★★見本と 入れ替わっていました（★2026-09-10・実機のご指摘）。
+//   ★TABS（★門の外・38人）は 触りません。★並びを 変えません。
+//   ★★ここで、★見本の 順に 並べ直します。
+const TABS_V2_ORDER = ["home", "today", "analysis", "notes", "garden"];
+const TABS_V2 = TABS_V2_ORDER
+  .map((k) => TABS.find((tb) => tb.key === k))
+  .filter(Boolean);
 
 // 職業ごとに専用の理論ページへ切り替える
 const PROFESSION_THEORY_PAGES = {
@@ -12560,7 +12568,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         </div>
       )}
       <header
-        className="px-4 sm:px-6 pb-4 sticky top-0 z-10"
+        className={layoutV2 ? "px-4 sm:px-6" : "px-4 sm:px-6 pb-4 sticky top-0 z-10"}
         style={{
           background: C.paper,
           // ★★2026-09-10、★ここに display: none を 置いて、★タブごと 消しました。
@@ -12680,7 +12688,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             //   真ん中のタブは、その下を流れます。
             //   ★並び順は変えません（9月28日まで保留）。
             //     位置ではなく、★見えるかどうかだけを直します。
-            <div className="max-w-3xl mx-auto mt-5 flex items-center gap-1">
+            // ★★門の中では、★帯を 画面の 下に 貼りつけます（★見本のとおり）。
+            //   ★★見本①〜⑨は、★どれも 下に 帯が あります。
+            //   ★★同じ <nav> を 使います。★作り直しません。
+            //     ★2つ 作ると、★片方だけ 直ります。
+            //   ★門の外（38人）は、★これまでどおり 上です。★1つも 変えません。
+            <div className={layoutV2
+              ? "flex items-center gap-1"
+              : "max-w-3xl mx-auto mt-5 flex items-center gap-1"}
+              style={layoutV2 ? {
+                position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 20,
+                background: "#FFF9F1", borderTop: `1px solid ${C.line}`,
+                padding: "0 8px",
+                paddingBottom: "env(safe-area-inset-bottom)"
+              } : undefined}>
             <div className="flex-1 min-w-0 nav-scroll-wrap">
             {/* ★文字を 1px 小さく、左右の余白を少し詰めます（③）。
                 「レッスン」の最後の1文字だけが切れる状態が、いちばん良くない。
@@ -12732,7 +12753,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         })()}
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 pb-16">
+      {/* ★★門の中では、★帯が 下に 貼りついています。
+          ★★その ぶんの 余白を 取ります。★最後の 1枚が 隠れないように。 */}
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 pb-16"
+        style={layoutV2 ? { paddingBottom: "calc(72px + env(safe-area-inset-bottom))" } : undefined}>
         {/* ★記録が読み込めなかったことを、必ず本人に伝える。
             黙って空の画面を出すと「記録が消えた」に見える。消えていない。 */}
         {entriesLoadError && (
@@ -12914,7 +12938,25 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   onAttend: handleAttendance
                 }}
                 onRecord={() => setActiveTab("today")}
-                onOpenMore={() => setActiveTab("more")} />
+                onOpenMore={() => setActiveTab("more")}>
+                {/* ★★みつけたこと（★見本①）。★分析の 側が 持っています。
+                    ★★3つの門を 通ったものだけです（★gateAllows）。
+                      ★通っていなければ、★見出しだけが 残ります。
+                    ★ここで 数を 作りません。★topDiscoveries を そのまま 使います。 */}
+                {topDiscoveries.length > 0 ? (
+                  <div className="space-y-2" style={{ marginTop: 6 }}>
+                    {topDiscoveries.map((d) => (
+                      <div key={d.id} className="rounded-2xl p-4 border"
+                        style={{ background: C.card, borderColor: C.line }}>
+                        <p className="text-sm" style={{ color: C.ink, lineHeight: 1.7 }}>{d.text}</p>
+                        {d.detail ? (
+                          <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{d.detail}</p>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+              </HomeV2>
             )}            {activeTab === "home" && !layoutV2 && (() => {
               const realToday = realTodayDate;
               const hour = greetingHour;

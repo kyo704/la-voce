@@ -76,6 +76,29 @@ function eq(a, b, label) { ok(a === b, label + "  （得た値: " + JSON.stringi
   ok(!/\/100|点\b|score/i.test(home.replace(/onRecord|records?/gi, "")), "点数を 出さない");
   ok(!/あと\s*\d|あと[０-９]/.test(home), "「あと◯」と 数えない");
 
+  console.log("⑨ 見本①に そろえる（★2026-09-10・実機のご指摘）");
+  {
+    const v = readRaw("components", "VocalTracker.jsx");
+    const h = readRaw("components", "HomeV2.jsx");
+    // ★① 帯は 下に
+    ok(/position: "fixed", left: 0, right: 0, bottom: 0/.test(v), "★帯は 画面の 下");
+    ok(/paddingBottom: "calc\(72px \+ env\(safe-area-inset-bottom\)\)"/.test(v),
+      "★最後の1枚が 帯に 隠れない");
+    // ★② 並び
+    ok(/TABS_V2_ORDER = \["home", "today", "analysis", "notes", "garden"\]/.test(v),
+      "★きょう／記録／ふりかえる／ノート／ひつじ の 順");
+    // ★③ 羊の 大きさ
+    ok(/size=\{120\}/.test(h), "★羊は 控えめ（120）");
+    ok(!/size=\{180\}/.test(h), "★180 では ない");
+    // ★⑤ みつけたこと
+    ok(/みつけたこと/.test(h), "★みつけたこと の 見出しが ある");
+    ok(/topDiscoveries\.map/.test(v), "★中身は 分析の 側から もらう");
+    // ★★禁じた語は、★注記を 外した本文で（★CLAUDE.md）。
+    //   ★注記に「まだ何もありませんとは書きません」と 書いてあります。
+    ok(!/まだ 何も ありません/.test(readCode("components", "HomeV2.jsx")),
+      "★無いときに 責める言葉を 出さない");
+  }
+
   console.log("⑧ 上の帯を 出さない（★2026-09-10・見本のとおり）");
   {
     const v = readRaw("components", "VocalTracker.jsx");

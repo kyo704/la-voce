@@ -116,8 +116,11 @@ console.log("■ レッスンについて");
   //   ★★一般の 38人には、★これまでどおり 6つ 出ます。★1つも 変えません。
   //   ★見るのは、★一般の方の TABS です（★TABS_V2 では ありません）。
 ok("★★一般の方の 帯には、レッスンが 残っている", keys.includes("lesson"));
+// ★★2026-09-10、★見本の 並びに 合わせて 書き方を 変えました。
+//   ★確かめるのは 書き方では なく、★結果です。
 ok("★名簿の方は、外れている（TABS_V2）",
-  /const TABS_V2 = TABS\.filter\(\(tb\) => tb\.key !== "lesson"\);/.test(src));
+  /TABS_V2_ORDER = \["home", "today", "analysis", "notes", "garden"\]/.test(src)
+  && !/TABS_V2_ORDER = \[[^\]]*"lesson"/.test(src));
 // ★★外した先が、必ず在ること。★出口のない画面を 作らないこと。
 ok("★レッスンを開く道が、残っている", /setActiveTab\("lesson"\)/.test(src));
 // ★★条件つきの差しこみは、もうしないこと。

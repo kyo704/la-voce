@@ -68,8 +68,9 @@ async function load(rel) {
   //   ★見るのは、★一般の方の TABS です（★TABS_V2 では ありません）。
   ok(keys.includes("lesson"), "★★一般の方には、レッスンが 残っている");
   ok(keys.length === 6, `★一般の方は 6つ（いま ${keys.length}）`);
-  ok(/const TABS_V2 = TABS\.filter\(\(tb\) => tb\.key !== "lesson"\);/.test(vt),
-    "★名簿の方は 5つ（★TABS_V2）");
+  ok(/TABS_V2_ORDER = \["home", "today", "analysis", "notes", "garden"\]/.test(vt)
+    && !/TABS_V2_ORDER = \[[^\]]*"lesson"/.test(vt),
+    "★名簿の方は 5つ・見本の並び（★TABS_V2）");
   // ★★外した先が、必ず在ること。★出口のない画面を 作らないこと。
   ok(/setActiveTab\("lesson"\)/.test(vt), "★レッスンを開く道が、残っている");
   // ★★ホームのレッスンの入口は、教室に入っている方にしか出ません。
