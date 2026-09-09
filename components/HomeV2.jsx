@@ -4,6 +4,7 @@ import { C } from "@/lib/tokens";
 import SheepDressed from "@/components/SheepDressed";
 import { conditionWord, sleepParts, usualOf } from "@/lib/todayCard";
 import TodayBand from "@/components/TodayBand";
+import SheepProbe from "@/components/SheepProbe";
 import {
   TYPE, SPACE, FONT_STACK, SHEEP_WIDTH_RATIO, SHEEP_WIDTH_RATIO_TEACHING,
   sheepCssSize, cardStyle, primaryButtonStyle
@@ -104,6 +105,7 @@ export default function HomeV2({
                ★★置き場所は 帯が 決めます。★A01 は いちばん上、
                  ★A02（先生）は 出欠の 帯の あとです。
                  ★★並べ方を ここに もう1つ 書くと、★片方だけ 直ります。 */
+            <>
             <div style={{ marginTop: 2, display: "flex", justifyContent: "center" }}>
               {/* ★★大きさは、★1つの CSS の 式で 決まります（lib/uiKit.js）。
                   ★★親の 高さを 尋ねません。★測りません。★％も 使いません。
@@ -112,6 +114,10 @@ export default function HomeV2({
               <SheepDressed wearing={wearing || {}} colors={clothColors || {}} colors2={clothColors2 || {}}
                 size={sheepCssSize(ratio)} motion="still" blink alt="羊" />
             </div>
+            {/* ★★調べるための 枠（★2026-09-10）。★終わったら 外します。
+                ★★この 枠が 出ること 自体が、★新しい コードが 動いている 証しです。 */}
+            <SheepProbe cssSize={sheepCssSize(ratio)} ratio={ratio} teaching={teaching} />
+            </>
           } />
       ) : null}
 
