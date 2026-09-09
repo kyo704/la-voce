@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { C } from "@/lib/tokens";
+import { TYPE, SPACE, cardStyle } from "@/lib/uiKit";
+import { ScreenHead, HeadRound, H3, Card, Seg, Li } from "@/components/UiV2";
 import {
   NOTE_KINDS, DEFAULT_KIND, kindOrDefault, visibleNotes, isRenrakuKind,
   titleOf, previewOf, isEmpty, dayWord, AUTOSAVE_MS
@@ -113,31 +115,17 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku }) {
   }
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <h2 className="ff-display italic" style={{ fontSize: "1.5rem", color: C.ink }}>ノート</h2>
-        {/* ★★＋。★押した その場で 書けます。★名前を 先に 聞きません。 */}
-        <button type="button" onClick={() => { setEditing({ id: null, body: "" }); setError(""); }}
-          aria-label="ノートを書く"
-          style={{
-            minWidth: 44, minHeight: 44, borderRadius: 999,
-            border: `1px solid ${C.line}`, background: C.card, color: C.ink,
-            fontSize: "1.125rem"
-          }}>＋</button>
-      </div>
+    <div>
+      {/* ★★見本⑥ .hd。★右は ＋ の 丸です（★歯車では ありません）。
+          ★★押した その場で 書けます。★名前を 先に 聞きません。 */}
+      <ScreenHead title="ノート" right={
+        <HeadRound mark="＋" label="ノートを書く"
+          onClick={() => { setEditing({ id: null, body: "" }); setError(""); }} />
+      } />
 
-      {/* ★★帯 4つ（★見本⑥）。★増やしません。 */}
-      <div className="flex gap-2 overflow-x-auto nav-scroll">
-        {NOTE_KINDS.map((k) => (
-          <button key={k.key} type="button" onClick={() => setKind(k.key)}
-            style={{
-              minHeight: 44, padding: "0 14px", borderRadius: 999, whiteSpace: "nowrap",
-              border: `1px solid ${kind === k.key ? C.curtain : C.line}`,
-              background: kind === k.key ? C.curtain : C.card,
-              color: kind === k.key ? "#FFFDF8" : C.inkSoft, fontSize: "0.8125rem"
-            }}>{k.label}</button>
-        ))}
-      </div>
+      {/* ★★帯 4つ（★見本⑥ .seg）。★増やしません。★流れません。 */}
+      <Seg activeKey={kind} onSelect={setKind}
+        items={NOTE_KINDS.map((k) => ({ key: k.key, label: k.label }))} />
 
       {/* ★★「連絡」の 帯だけ、★ノートでは なく 連絡板が 開きます（★見本④）。
           ★★タブを 増やさずに 置くための 形です。
@@ -150,22 +138,24 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku }) {
         </div>
       ) : (
         list.map((n) => (
-          <button key={n.id} type="button"
-            onClick={() => { setEditing({ id: n.id, body: n.body || "" }); setError(""); }}
-            className="w-full text-left"
-            style={{ ...card, minHeight: 44, display: "block" }}>
-            {/* ★★見出しは 本文の 1行目です。★列に していません。 */}
-            <p style={{ fontSize: "0.875rem", color: C.ink, lineHeight: 1.8 }}>
+          // ★★見本⑥の 1枚 ── ★本文が 2行、★その下に 日付（.usu）。
+          //   ★★見出しと 抜粋を 別の 大きさに していました。
+          //     ★見本は 同じ 大きさの 本文 2行です。★そちらに 合わせます。
+          //   ★★見出しが 本文の 1行目である、という 決めは そのままです
+          //     （★lib/notes.js の titleOf）。★見え方だけ 変えました。
+          //   ★★狭い画面の 話です。★広い画面（決まりB）は 名前と 日付だけで、
+          //     ★本文の 抜粋を 出しません。★あちらは 人に 見られる 画面です。
+          <Card key={n.id} style={{ minHeight: 44 }}
+            onClick={() => { setEditing({ id: n.id, body: n.body || "" }); setError(""); }}>
+            <div style={{ ...TYPE.body, lineHeight: 1.7 }}>
               {titleOf(n.body) || "（まだ何も書いていません）"}
-            </p>
-            {previewOf(n.body) ? (
-              <p style={{ ...small, marginTop: 2 }}>{previewOf(n.body)}</p>
-            ) : null}
-            <p style={{ ...small, marginTop: 4 }}>
+              {previewOf(n.body) ? <><br />{previewOf(n.body)}</> : null}
+            </div>
+            <div style={{ ...TYPE.usual, marginTop: 7 }}>
               {dayWord(String(n.updated_at || n.created_at || "").slice(0, 10))}
               {n.source_label ? `　${n.source_label}` : ""}
-            </p>
-          </button>
+            </div>
+          </Card>
         ))
       )}
 
@@ -176,15 +166,19 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku }) {
       {/* ★★この中から さがす（★見本⑥）。★一覧の あとです。
           ★★見本⑥では、★さがすが 下に あります。★そのとおりに します。
             ★ノートは 一覧を 眺めて 思い出すもので、★名簿とは ちがいます。 */}
-      <p style={small}>この中から さがす</p>
-      <input
-        type="search" value={q} onChange={(e) => setQ(e.target.value)}
-        placeholder="ことばで さがす"
-        style={{
-          width: "100%", minHeight: 44, borderRadius: 12, padding: "0 14px",
-          border: `1px solid ${C.line}`, background: C.card, color: C.ink,
-          fontSize: "1rem"
-        }} />
+      <H3>この中から さがす</H3>
+      {/* ★★見本⑥は、★1枚の カードの 中の 1行です。★入力欄の 枠を 見せません。 */}
+      <div style={{ ...cardStyle, marginBottom: SPACE.cardGap }}>
+        <input
+          type="search" value={q} onChange={(e) => setQ(e.target.value)}
+          placeholder="🔍　ことばで さがす"
+          style={{
+            width: "100%", minHeight: SPACE.tapMin, padding: 0,
+            border: "none", background: "transparent", color: C.ink,
+            // ★★iOS で 画面が 寄らないよう、★16px を 下回らせません（globals.css）。
+            fontSize: 16
+          }} />
+      </div>
       </>
       )}
     </div>

@@ -118,9 +118,13 @@ function ok(cond, label) {
   ok(/background: on \? C\.curtain : "transparent"/.test(bar), "★選ばれた 印は 線の 色だけ");
 
   console.log("⑤ 歯車 ── 見た目 26px ／ 押せるところ 44px");
+  //   ★★丸そのものは components/UiV2.jsx の HeadRound です（★44画面で 同じ）。
+  //     ★A01・A06・A07・A09 が、★⚙ ／ ＋ ／ × を 差し替えて 使います。
   const home = readRaw("components", "HomeV2.jsx");
-  ok(/width: SPACE\.tapMin, height: SPACE\.tapMin/.test(home), "★押せるところは 44");
-  ok(/width: 26, height: 26, borderRadius: "50%"/.test(home), "★見えるのは 26 の 丸");
+  const round = readRaw("components", "UiV2.jsx");
+  ok(/<HeadRound mark="⚙"/.test(home), "★A01 の 頭に 歯車が ある");
+  ok(/width: SPACE\.tapMin, height: SPACE\.tapMin/.test(round), "★押せるところは 44");
+  ok(/width: 26, height: 26, borderRadius: "50%"/.test(round), "★見えるのは 26 の 丸");
 
   console.log("⑥ 門の外（38人）を 変えない");
   const v = readRaw("components", "VocalTracker.jsx");

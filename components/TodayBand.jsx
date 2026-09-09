@@ -31,7 +31,7 @@ import { TYPE, SPACE, obiStyle, speakStyle } from "@/lib/uiKit";
 export default function TodayBand({
   todayISO, tz, lessons, performances, orgEvents, sheepLine,
   teaching = false, nameOf, onAttend, onSeeAll, onCalendar, unsent = 0, onUnsent,
-  sheepFirst = false, v2 = false
+  sheepFirst = false, v2 = false, sheepSlot = null
 }) {
   const rows = buildBand({
     todayISO, tz, lessons, performances, orgEvents, sheepLine, teaching, sheepFirst
@@ -140,8 +140,18 @@ export default function TodayBand({
         </Fragment>
       );
     }
-    // ★★羊の ひとこと（★見本 .speak）。★空なら 出しません。
-    return r.line ? <BandRowV2 key={r.key} speak>{r.line}</BandRowV2> : null;
+    // ★★羊の 絵と、★羊の ひとこと（★見本 .speak）。
+    //   ★★絵は、★いつも ひとことの すぐ 上です。
+    //     ★A01（生徒）… ひとことが いちばん上 → ★絵も いちばん上。
+    //     ★A02（先生）… 出欠の 帯が 先 → ★絵は その あと。
+    //   ★★見本 2枚の ちがいは、★これ 1つで 出ます。
+    //     ★2つの 並べ方を 書き分けると、★片方だけ 直ります。
+    return (
+      <Fragment key={r.key}>
+        {sheepSlot}
+        {r.line ? <BandRowV2 speak>{r.line}</BandRowV2> : null}
+      </Fragment>
+    );
   }
 
   return (

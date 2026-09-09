@@ -143,9 +143,11 @@ function eq(a, b, label) { ok(a === b, label + "  （得た値: " + JSON.stringi
     ok(/setLanguage/.test(more), "★ことばの選びが「もっと」に ある");
     ok(/minHeight: 44/.test(more), "★44pt 以上");
     // ★見出しと 歯車は、中の画面が 出すこと
+    //   ★★頭の 形そのものは components/UiV2.jsx（★44画面で 同じ）です。
+    //     ★出すことを 決めているのは HomeV2 の ままです。★そこを 見ます。
     const h = readRaw("components", "HomeV2.jsx");
-    ok(/>きょう</.test(h), "★見出し「きょう」は HomeV2 が 出す");
-    ok(/aria-label="もっとを開く"/.test(h), "★歯車も HomeV2 が 出す");
+    ok(/<ScreenHead title="きょう"/.test(h), "★見出し「きょう」は HomeV2 が 出す");
+    ok(/label="もっとを開く"/.test(h), "★歯車も HomeV2 が 出す");
   }
 
   console.log("⑦ きょうの帯（★第2便・§3-2）");

@@ -6,8 +6,10 @@ import SheepDressed from "@/components/SheepDressed";
 import { conditionWord, sleepParts, usualOf } from "@/lib/todayCard";
 import TodayBand from "@/components/TodayBand";
 import {
-  TYPE, SPACE, FONT_STACK, SHEEP_WIDTH_RATIO, cardStyle, primaryButtonStyle
+  TYPE, SPACE, FONT_STACK, SHEEP_WIDTH_RATIO, SHEEP_WIDTH_RATIO_TEACHING,
+  cardStyle, primaryButtonStyle
 } from "@/lib/uiKit";
+import { ScreenHead, HeadRound, H3 } from "@/components/UiV2";
 
 // ============================================================================
 // 「きょう」の画面 ── ★A01（★design.zip ／ 2026-09-10）
@@ -50,12 +52,19 @@ export default function HomeV2({
   //   ★★SheepDressed は px しか 受け取りません。★だから、★実際に 測ります。
   //   ★★測る 前も、★入れものが 場所を 取っています（★下の aspectRatio）。
   //     ★取らないと、★測り終えた 瞬間に 下の 帯が がたつきます。
+  // ★★きょう おしえる 日は、★見本② の 姿に なります。
+  //   ★★出欠の 帯が 先、★羊は そのあと、★羊は 控えめ（150／186）。
+  //   ★★こえの調子・ねむり・みつけたこと は、★見本② に ありません。
+  //   ★決めているのは、★呼ぶ側が 渡した teaching です。★ここで 数えません。
+  const teaching = !!(band && band.teaching);
+  const ratio = teaching ? SHEEP_WIDTH_RATIO_TEACHING : SHEEP_WIDTH_RATIO;
+
   const boxRef = useRef(null);
   const [sheepPx, setSheepPx] = useState(0);
   useEffect(() => {
     const el = boxRef.current;
     if (!el) return undefined;
-    const measure = () => setSheepPx(Math.round(el.clientWidth * SHEEP_WIDTH_RATIO));
+    const measure = () => setSheepPx(Math.round(el.clientWidth * ratio));
     measure();
     if (typeof ResizeObserver === "undefined") {
       // ★★古い 端末には ResizeObserver が ありません。★向きを 変えたときだけ 測り直します。
@@ -65,7 +74,7 @@ export default function HomeV2({
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [ratio]);
 
   return (
     // ★★ゴシックで 固定します（★tokens.md §2「明朝は 使いません」）。
@@ -75,52 +84,9 @@ export default function HomeV2({
 
       {/* ★★見出しと 歯車（★見本 .hd）。★歯車は「もっと」へ 行きます。
           ★★同意の撤回と 書き出しは、★法で 求められる 道です。★塞ぎません。 */}
-      <div style={{
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "10px 1px 6px"
-      }}>
-        <h2 style={TYPE.title}>きょう</h2>
-        {/* ★★見本の 歯車は 26px の 丸です。★けれど 26px は 指に 小さすぎます。
-            ★tokens.md §5「★押せるところは、どの段でも 44 以上」。
-            ★★だから、★見えるのは 26px の まま、★押せるのは 44px に します。
-              ★44 の 枠を 置き、★負の 余白で 行の 高さを 26 に 戻します。
-              ★見た目は 見本と 同じ、★指は 44 ── ★どちらも 譲りません。 */}
-        <button type="button" onClick={onOpenMore} aria-label="もっとを開く"
-          style={{
-            width: SPACE.tapMin, height: SPACE.tapMin,
-            margin: `-9px -9px -9px 0`,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            background: "transparent", border: "none", padding: 0
-          }}>
-          <span aria-hidden="true" style={{
-            width: 26, height: 26, borderRadius: "50%",
-            border: `1px solid ${C.line}`, background: C.card,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            color: C.inkSoft, fontSize: 12
-          }}>⚙</span>
-        </button>
-      </div>
-
-      {/* ★★羊。★見本では、★部屋を 出しません。★羊だけです。
-          ★★大きさは 見本の 割合です（★2026-09-10・坂本さんの お決め）。
-            ★「以前の 判断（120px）を 優先せず、★見本の サイズ
-              （幅186px／画面360px＝51.7%）に、★合わせてください」
-            ★★前は 120px でした。★実機で 幅の 約22% しか ありませんでした。
-            ★★数を ここに 書きません。★割合は lib/uiKit.js が 持ちます。 */}
-      <div ref={boxRef} style={{ marginTop: 2 }}>
-        {/* ★★入れものが、★先に 場所を 取ります。★羊の 枠は 正方形です。
-            ★★測り終える 前でも 高さが 決まるので、★下が 跳ねません。 */}
-        <div style={{
-          width: `${(SHEEP_WIDTH_RATIO * 100).toFixed(2)}%`,
-          aspectRatio: "1 / 1",
-          margin: "0 auto"
-        }}>
-          {sheepPx > 0 ? (
-            <SheepDressed wearing={wearing || {}} colors={clothColors || {}} colors2={clothColors2 || {}}
-              size={sheepPx} motion="still" blink alt="羊" />
-          ) : null}
-        </div>
-      </div>
+      <ScreenHead title="きょう" right={
+        <HeadRound mark="⚙" label="もっとを開く" onClick={onOpenMore} />
+      } />
 
       {/* ★★ひとこと・きょうの予定・近い本番（★見本 .speak と .obi）。
           ★★作り直しません。★門の外で もう 動いている TodayBand を、そのまま 呼びます。
@@ -134,12 +100,42 @@ export default function HomeV2({
             ★★無いことを 毎朝 知らせるのは、★催促と 同じです。
           ★★A01（HTML・正）では、★ひとことが 予定より 上です。
             ★§3-2 は 下と 書いていますが、★README「HTMLが 正です」に 従います。 */}
-      {band ? <TodayBand {...band} todayISO={todayISO} sheepFirst v2 /> : null}
+      {band ? (
+        <TodayBand {...band} todayISO={todayISO} v2
+          sheepFirst={!teaching}
+          sheepSlot={
+            /* ★★羊。★見本では、★部屋を 出しません。★羊だけです。
+               ★★大きさは 見本の 割合です（★2026-09-10・坂本さんの お決め）。
+                 ★「以前の 判断（120px）を 優先せず、★見本の サイズ
+                   （幅186px／画面360px＝51.7%）に、★合わせてください」
+                 ★★数を ここに 書きません。★割合は lib/uiKit.js が 持ちます。
+               ★★置き場所は 帯が 決めます。★A01 は いちばん上、
+                 ★A02（先生）は 出欠の 帯の あとです。
+                 ★★並べ方を ここに もう1つ 書くと、★片方だけ 直ります。 */
+            <div ref={boxRef} style={{ marginTop: 2 }}>
+              {/* ★★入れものが、★先に 場所を 取ります。★羊の 枠は 正方形です。
+                  ★★測り終える 前でも 高さが 決まるので、★下が 跳ねません。 */}
+              <div style={{
+                width: `${(ratio * 100).toFixed(2)}%`,
+                aspectRatio: "1 / 1",
+                margin: "0 auto"
+              }}>
+                {sheepPx > 0 ? (
+                  <SheepDressed wearing={wearing || {}} colors={clothColors || {}} colors2={clothColors2 || {}}
+                    size={sheepPx} motion="still" blink alt="羊" />
+                ) : null}
+              </div>
+            </div>
+          } />
+      ) : null}
 
       {/* ★★こえの調子 と ねむり（★見本 .two）。★2つ 並べます。
           ★★点数を 出しません。★言葉と、★あなたの ふだん だけです。
           ★★足りなければ、★黙って 空けます。「データ不足」と 書きません。 */}
-      {(cond || sleep) && (
+      {/* ★★見本②（先生）に、★この 2枚は ありません。
+          ★★きょう おしえる 日は、★出欠の 帯が 主です。
+          ★消していません。★おしえない 日は、★これまでどおり 出ます。 */}
+      {!teaching && (cond || sleep) && (
         <div style={{ display: "flex", gap: SPACE.cardGap, marginBottom: SPACE.cardGap }}>
           <div style={{ ...cardStyle, flex: 1, minWidth: 0 }}>
             <p style={TYPE.mini}>こえの調子</p>
@@ -180,10 +176,13 @@ export default function HomeV2({
             ★見本① に、★見出しだけの 姿でも 成り立つように 描かれています。
             ★★「まだ 何も ありません」とは 書きません。★責めに なります。
           ★中身は 呼ぶ側が 入れます（★分析の 側が 持っています）。 */}
-      <p style={{ ...TYPE.h3, margin: `${SPACE.h3Top}px 0 ${SPACE.h3Bottom}px` }}>
-        みつけたこと
-      </p>
-      {children}
+      {/* ★★見本②（先生）に、★みつけたこと は ありません。 */}
+      {teaching ? null : (
+        <>
+          <H3>みつけたこと</H3>
+          {children}
+        </>
+      )}
     </div>
   );
 }
