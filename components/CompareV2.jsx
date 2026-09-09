@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { C } from "@/lib/tokens";
+import { TYPE, SPACE, FONT_STACK, cardStyle } from "@/lib/uiKit";
+import { Card, Pill, Note, H3 } from "@/components/UiV2";
 import { LAGS, ITEMS, defaultLagOf, judgingLagOf } from "@/lib/lagChoice";
 import { FIRST_DAY_ONLY_LABEL } from "@/lib/compareGroups";
 import { buildCompare } from "@/lib/compareView";
@@ -28,8 +30,9 @@ import { buildCompare } from "@/lib/compareView";
 //   ★見張り components/tests/compare-view.test.js
 // ============================================================================
 
-const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
-const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
+// ★★大きさ・間は lib/uiKit.js が 持ちます。★ここで 決めません（★design.zip B01・B02）。
+const card = { ...cardStyle, marginBottom: SPACE.cardGap };
+const small = { ...TYPE.note, lineHeight: 1.8 };
 
 /** ★時間の 値を 言葉に します。★項目に よって 単位が ちがいます。 */
 function valueWord(itemKey, v) {
@@ -122,25 +125,20 @@ export default function CompareV2({ entries, dates }) {
   const judging = judgingLagOf(itemKey, null);
   const data = buildCompare(entries, dates, itemKey, shownLag, { firstDayOnly });
 
-  const chip = (on) => ({
-    minHeight: 34, padding: "0 12px", borderRadius: 999,
-    border: `1px solid ${on ? C.curtain : C.line}`,
-    background: on ? C.curtain : C.card,
-    color: on ? "#FFFDF8" : C.inkSoft, fontSize: "0.75rem"
-  });
-
   return (
-    <div className="space-y-3">
-      <div style={card}>
-        <p style={{ fontSize: "0.8125rem", color: C.ink, marginBottom: 10 }}>{item.label}</p>
+    <div>
+      {/* ★★見本 B01 の 1枚（★内側 11px 12px 9px）。 */}
+      <Card style={{ padding: "11px 12px 9px" }}>
+        <div style={{ ...TYPE.mini, marginBottom: 2 }}>{item.label}</div>
 
-        {/* ★★時間差 4種。★見た目は 4つとも 選べます。
+        {/* ★★時間差 4種（★見本 B01 の .pill・10.5px）。
+            ★★見た目は 4つとも 選べます。
             ★★判定に 使うのは 1つだけです（★§2）。★下に そう 書きます。 */}
-        <div className="flex gap-1.5 flex-wrap" style={{ marginBottom: 4 }}>
+        <div style={{ display: "flex", gap: 5, margin: "7px 0 2px", flexWrap: "wrap" }}>
           {LAGS.map((l) => (
-            <button key={l.key} type="button" onClick={() => setLag(l.key)} style={chip(shownLag === l.key)}>
+            <Pill key={l.key} on={shownLag === l.key} onClick={() => setLag(l.key)}>
               {l.label}
-            </button>
+            </Pill>
           ))}
         </div>
 
@@ -164,55 +162,60 @@ export default function CompareV2({ entries, dates }) {
           // ★★点が 1つも 無い日。★空の枠を 置きません。
           <p style={small}>この期間に、くらべられる記録がまだありません。</p>
         )}
-      </div>
+      </Card>
 
-      {/* ★★見本⑫の 但し書き。★1文字も 変えないこと。
+      {/* ★★見本 B01 の 但し書き（.q）。★1文字も 変えないこと。
           ★★「まだ 出ていません」は、★責める言葉では ありません。
             ★何が 足りないかを 言わず、★このまま でよい、と 言います。 */}
-      <div style={{ ...card, background: C.paper }}>
-        <p style={{ fontSize: "0.8125rem", color: C.ink, marginBottom: 4 }}>
-          まだ、はっきりした差は 見えていません。
-        </p>
-        <p style={small}>
+      <div style={{
+        background: C.paper, border: `1px solid ${C.line}`, borderRadius: 12,
+        padding: "11px 12px", fontSize: 12.5, lineHeight: 1.75, color: C.ink
+      }}>
+        まだ、はっきりした差は 見えていません。<br />
+        <span style={{ fontSize: 11, color: C.inkSoft }}>
           {data && data.nHard > 0
             ? `出なかった日が ${data.nHard}日 たまりました。この形のまま つづけてください。`
             : "この形のまま つづけてください。"}
-        </p>
+        </span>
       </div>
 
       {/* ★★2つの 断り（★見本⑫）。★1文字も 変えないこと。 */}
-      {data && data.anyLater ? (
-        <p style={small}>
-          ○は あとから書いた日です。目では見えますが、判定には 入れていません。
-        </p>
-      ) : null}
-      <p style={small}>
+      {/* ★★2つの 断り（★見本 B01 の .note・上に 9px）。★1文字も 変えないこと。 */}
+      <Note style={{ marginTop: 9 }}>
+        {data && data.anyLater ? (
+          <>○は あとから書いた日です。目では見えますが、判定には 入れていません。<br /></>
+        ) : null}
         判定に使うのは「{(LAGS.find((l) => l.key === judging) || {}).label}」だけです。ほかの3つは、見るためのものです。
-      </p>
+      </Note>
 
-      {/* ★★しらべる 項目を 変える。★見本⑬の「疑っている順」の 手前の 形です。
+      {/* ★★しらべる 項目を 変える。★見本 B02 の「疑っている順」の 手前の 形です。
           ★★順番の 仕組みは、★1文が 出るように なってから 作ります。
             ★いまは 誰にも 出ないので、★順番だけ 先に 作っても 確かめられません。 */}
-      <div style={card}>
-        <p style={{ ...small, marginBottom: 8 }}>しらべていること</p>
-        <div className="flex gap-1.5 flex-wrap">
+      <H3>しらべていること</H3>
+      <Card>
+        <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
           {ITEMS.map((it) => (
-            <button key={it.key} type="button"
-              onClick={() => { setItemKey(it.key); setLag(null); }}
-              style={chip(itemKey === it.key)}>{it.label}</button>
+            <Pill key={it.key} on={itemKey === it.key}
+              onClick={() => { setItemKey(it.key); setLag(null); }}>{it.label}</Pill>
           ))}
         </div>
-      </div>
+      </Card>
 
       {/* ★★見本⑬の 切替。★既定は 入（★§1）。 */}
+      {/* ★★見本 B02 の 切替（.sw）。★角 12・内側 10/12・12.5px。★既定は 入（★§1）。 */}
       <button type="button" onClick={() => setFirstDayOnly((v) => !v)}
         aria-pressed={firstDayOnly}
-        className="w-full flex items-center justify-between"
-        style={{ ...card, minHeight: 52, fontSize: "0.8125rem", color: C.ink }}>
+        style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          width: "100%", textAlign: "left",
+          background: C.card, border: `1px solid ${C.line}`, borderRadius: 12,
+          padding: "10px 12px", marginBottom: SPACE.cardGap,
+          minHeight: SPACE.tapMin, fontSize: 12.5, color: C.ink, fontFamily: FONT_STACK
+        }}>
         <span>
           {FIRST_DAY_ONLY_LABEL}
           <span style={{
-            fontSize: "0.625rem", color: C.inkSoft, background: C.paper,
+            fontSize: 10, color: C.inkSoft, background: C.paper,
             borderRadius: 6, padding: "2px 7px", marginLeft: 6
           }}>既定</span>
         </span>

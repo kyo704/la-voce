@@ -16935,7 +16935,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 ★数と 言葉は lib/lookBack.js が 持ちます。 */}
             {activeTab === "analysis" && layoutV2 && mayUseForAnalysis(profile) && (
               <LookBackV2 entries={entries} todayISO={realTodayDate} notOutDays={notOutDays}
-                performanceDays={performances.map((pf) => pf.performed_on).filter(Boolean)} />
+                performanceDays={performances.map((pf) => pf.performed_on).filter(Boolean)}
+                onOpenMore={() => setActiveTab("more")} />
             )}
             {activeTab === "analysis" && !layoutV2 && (
               <div className="space-y-5">

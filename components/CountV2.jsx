@@ -1,6 +1,8 @@
 "use client";
 
 import { C } from "@/lib/tokens";
+import { TYPE } from "@/lib/uiKit";
+import { H3, Card, Kv, Note } from "@/components/UiV2";
 import { USUAL_ROWS, usualOf, writtenDays, histogramOf, marksPerWeek } from "@/lib/countView";
 
 // ============================================================================
@@ -24,8 +26,8 @@ import { USUAL_ROWS, usualOf, writtenDays, histogramOf, marksPerWeek } from "@/l
 //   ★見張り components/tests/count-view.test.js
 // ============================================================================
 
-const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
-const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
+// ★★大きさ・間は lib/uiKit.js が 持ちます。★ここで 決めません（★design.zip B03）。
+const small = { ...TYPE.note, lineHeight: 1.8 };
 
 /** ★単位に あわせて 言葉に します。★数だけを 裸で 出しません。 */
 function word(unit, v) {
@@ -59,40 +61,32 @@ export default function CountV2({ entries, dates, todayISO }) {
   const maxCount = hist ? Math.max(...hist.bars.map((b) => b.count), 1) : 1;
 
   return (
-    <div className="space-y-3">
+    <div>
       {/* ★★あなたの ふだん。★1つも 出せなければ、★枠ごと 出しません。 */}
       {rows.length > 0 || written > 0 ? (
         <>
-          <p style={{ ...small, letterSpacing: "0.08em" }}>あなたの ふだん</p>
-          <div style={card}>
+          <H3>あなたの ふだん</H3>
+          <Card>
             {rows.map((r) => (
-              <div key={r.key} className="flex items-center justify-between"
-                style={{ padding: "9px 0", borderBottom: `1px solid ${C.line}`, fontSize: "0.8125rem" }}>
-                <span style={{ color: C.ink }}>{r.label}</span>
-                <span style={{ color: C.ink }}>{word(r.unit, r.got.value)}</span>
-              </div>
+              <Kv key={r.key} right={word(r.unit, r.got.value)}>{r.label}</Kv>
             ))}
-            <div className="flex items-center justify-between"
-              style={{ padding: "9px 0", fontSize: "0.8125rem" }}>
-              <span style={{ color: C.ink }}>書いた 日</span>
-              <span style={{ color: C.ink }}>{written}日</span>
-            </div>
-          </div>
+            <Kv right={`${written}日`} last>書いた 日</Kv>
+          </Card>
           {/* ★★見本⑭の 但し書き。★1文字も 変えないこと。
               ★★これが、★この画面の 芯です。★よそと くらべません。 */}
-          <p style={small}>
+          <Note style={{ margin: "-1px 0 10px" }}>
             まんなかの値です。くらべる先は、あなた自身です。よその目安は 出しません。
-          </p>
+          </Note>
         </>
       ) : null}
 
       {/* ★★分布（★見本⑭）。★数えるだけです。★多い・少ないを 言いません。 */}
       {hist ? (
-        <div style={card}>
-          <p style={{ fontSize: "0.8125rem", color: C.ink, marginBottom: 8 }}>
+        <Card>
+          <div style={TYPE.mini}>
             食べ終えてから 寝るまで（{hist.n}日）
-          </p>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: 5, height: 88 }}>
+          </div>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 5, height: 88, margin: "8px 0 3px" }}>
             {hist.bars.map((b) => (
               <div key={b.label} style={{
                 flex: 1, background: C.curtain, borderRadius: "3px 3px 0 0",
@@ -104,37 +98,35 @@ export default function CountV2({ entries, dates, todayISO }) {
           </div>
           <div style={{ display: "flex", gap: 5 }}>
             {hist.bars.map((b) => (
-              <span key={b.label} style={{ flex: 1, textAlign: "center", fontSize: "0.53rem", color: C.inkSoft }}>
+              <span key={b.label} style={{ flex: 1, textAlign: "center", fontSize: 8.5, color: C.inkSoft }}>
                 {b.label}
               </span>
             ))}
           </div>
-          <p style={{ ...small, textAlign: "right" }}>時間</p>
-        </div>
+          <div style={{ ...TYPE.usual, textAlign: "right" }}>時間</div>
+        </Card>
       ) : null}
 
       {/* ★★印の 1週間あたり（★見本⑭）。★7日に 満たなければ 出しません。 */}
       {marks ? (
-        <div style={card}>
-          <p style={{ fontSize: "0.8125rem", color: C.ink, marginBottom: 4 }}>印の 1週間あたり</p>
-          {marks.rows.map((r) => (
-            <div key={r.key} className="flex items-center justify-between"
-              style={{ padding: "8px 0", borderTop: `1px solid ${C.line}`, fontSize: "0.8125rem" }}>
-              <span style={{ color: C.ink }}>{r.label}</span>
-              <span style={{ color: C.ink }}>{r.perWeek}回</span>
-            </div>
+        <Card>
+          <div style={{ ...TYPE.mini, marginBottom: 7 }}>印の 1週間あたり</div>
+          {marks.rows.map((r, i) => (
+            <Kv key={r.key} right={`${r.perWeek}回`} last={i === marks.rows.length - 1}>
+              {r.label}
+            </Kv>
           ))}
-        </div>
+        </Card>
       ) : null}
 
       {/* ★★何も 出せない期間。★空の枠を 置かず、★何が あれば 出るかだけ 置きます。
           ★★「データ不足」と 書きません。★足りないことを 責めに しません。 */}
       {rows.length === 0 && !hist && !marks ? (
-        <div style={card}>
-          <p style={{ fontSize: "0.8125rem", color: C.inkSoft, lineHeight: 1.9 }}>
+        <Card>
+          <p style={{ ...TYPE.li, color: C.inkSoft, lineHeight: 1.9, margin: 0 }}>
             この期間に、数えられる記録がまだありません。
           </p>
-        </div>
+        </Card>
       ) : null}
     </div>
   );

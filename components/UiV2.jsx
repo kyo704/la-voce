@@ -184,6 +184,42 @@ export function Li({ children, right, last, style }) {
 }
 
 /**
+ * ★名前と 値の 1行（.kv）。★見本 B02・B03 の カードの 中身。
+ *
+ *   ★★左の 名前は ink2、★右の 値は ink（★濃い）。★見本の とおりです。
+ *   ★★値の ほうを 濃くします。★読みに 来ているのは 値だからです。
+ */
+export function Kv({ children, right, last }) {
+  return (
+    <div style={{
+      display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8,
+      fontSize: 11.5, color: C.inkSoft, padding: "5px 0",
+      borderBottom: last ? "none" : `1px solid ${C.line2}`
+    }}>
+      <span style={{ minWidth: 0 }}>{children}</span>
+      {right != null ? <span style={{ color: C.ink, flex: "none" }}>{right}</span> : null}
+    </div>
+  );
+}
+
+/**
+ * ★「しらべる」の 小さな 札（.lock）。
+ *
+ *   ★★まだ 見ていない、という 印です。★「未達」でも「不足」でも ありません。
+ *   ★★数を 出しません。★あと何日、と 書きません。
+ */
+export function Lock({ children = "しらべる", onClick }) {
+  const style = {
+    fontSize: 9.5, color: C.inkSoft,
+    border: `1px solid ${C.line}`, borderRadius: 5, padding: "1px 5px",
+    marginLeft: "auto", background: "transparent", flex: "none",
+    fontFamily: FONT_STACK
+  };
+  if (!onClick) return <span style={style}>{children}</span>;
+  return <button type="button" onClick={onClick} style={{ ...style, minHeight: SPACE.tapMin }}>{children}</button>;
+}
+
+/**
  * ★1色の 濃淡の 棒（.rowb ＋ .bar）。
  *
  *   ★★長さも 濃さも、★同じ 1つの 値から 作ります。

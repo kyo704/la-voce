@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { C, CONCERN_STEPS } from "@/lib/tokens";
-import { TYPE, SPACE, cardStyle } from "@/lib/uiKit";
-import { ScreenHead, Card, Seg, Pill, Warn, BarRow } from "@/components/UiV2";
+import { TYPE, SPACE, FONT_STACK, cardStyle } from "@/lib/uiKit";
+import { ScreenHead, HeadRound, Card, Seg, Pill, Warn, Note, BarRow } from "@/components/UiV2";
 import LookBackPanel from "@/components/LookBackPanel";
 import { LOOK_BACK_FIELDS, hardDays, lookBackableDays } from "@/lib/lookBack";
 import { PERIODS, LINE_UP_NOTE, datesBack, seriesOf, sungMinutes } from "@/lib/lineUp";
@@ -119,7 +119,56 @@ function Symptoms({ entries, dates }) {
   );
 }
 
-export default function LookBackV2({ entries, todayISO, notOutDays, performanceDays }) {
+/**
+ * ★お休みの 画面（★見本 B04）。
+ *
+ *   ★★くらべる と かぞえる の 2か所に、★同じものを 書いていました。
+ *     ★★この 製品で 何度も 直してきた 形です。★1つに します。
+ *   ★★出すか どうかを 決めるのは lib/quietDays.js だけです。★ここでは 決めません。
+ */
+function QuietScreen({ reason, onGo }) {
+  const ghostBtn = {
+    background: C.card, color: C.ink, border: `1px solid ${C.line}`,
+    borderRadius: 13, padding: "11px 0", fontSize: 13, fontWeight: 400,
+    minHeight: SPACE.tapMin, fontFamily: FONT_STACK
+  };
+  const q = reason;
+  return (
+    <>
+      {/* ★★見本 B04 は、★上を 120px 空けて、★真ん中に 1枚 置きます。 */}
+      <div style={{ height: 120 }} />
+      <Card style={{ textAlign: "center", padding: "22px 16px" }}>
+        <div style={{ fontSize: 15, color: C.ink, lineHeight: 1.9 }}>
+          くらべる と かぞえる は、<br />いまは お休みです。
+        </div>
+        {q ? (
+          <div style={{ ...TYPE.usual, marginTop: 12, lineHeight: 1.9 }}>
+            {/* ★★「あと◯日」は、★ご本人が 入れた 予定までの 日数です。
+                ★ごほうびへの 残りでは ありません。★事実の 表示です。 */}
+            {q.daysUntil > 0
+              ? `${Number(q.performedOn.slice(5, 7))}月${Number(q.performedOn.slice(8, 10))}日の 本番まで あと${q.daysUntil}日です。`
+              : `${Number(q.performedOn.slice(5, 7))}月${Number(q.performedOn.slice(8, 10))}日の 本番のあとです。`}
+            <br />本番の 翌々日から、また 出ます。
+          </div>
+        ) : null}
+      </Card>
+      <Note style={{ textAlign: "center", margin: "6px 0 16px" }}>
+        ならべる と さかのぼる は、いつでも 見られます。<br />
+        記録も、いつもどおり 書けます。
+      </Note>
+      <div style={{ display: "flex", gap: 9 }}>
+        <button type="button" onClick={() => onGo("narabe")} style={{ ...ghostBtn, flex: 1 }}>
+          ならべる を見る
+        </button>
+        <button type="button" onClick={() => onGo("sakanobore")} style={{ ...ghostBtn, flex: 1 }}>
+          さかのぼる を見る
+        </button>
+      </div>
+    </>
+  );
+}
+
+export default function LookBackV2({ entries, todayISO, notOutDays, performanceDays, onOpenMore }) {
   const [tab, setTab] = useState("narabe");
   const [periodKey, setPeriodKey] = useState("14d");
 
@@ -136,8 +185,15 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
 
   return (
     <div>
-      {/* ★★見本④ .hd。★ゴシック 17px。★明朝を 使いません（tokens.md §2）。 */}
-      <ScreenHead title="ふりかえる" />
+      {/* ★★見本 .hd。★ゴシック 17px。★明朝を 使いません（tokens.md §2）。
+          ★★歯車について。★見本の 中で 揺れています ──
+            ★A04・A05 に 歯車は ありません。★B01〜B04 には あります。
+            ★★同じ 画面なので、★どちらかに 決めるしか ありません。
+            ★★4枚（B群）が 出しているので、★出す ほうを 採ります。
+              ★歯車は「もっと」への 入口です。★塞ぐと 行き場が 減ります。 */}
+      <ScreenHead title="ふりかえる" right={
+        onOpenMore ? <HeadRound mark="⚙" label="もっとを開く" onClick={onOpenMore} /> : null
+      } />
 
       {/* ★★見本④の 但し書き（.warn）。★1文字も 変えないこと。
           ★★飾りでは ありません。★この画面が 何を していないかの 断りです。 */}
@@ -200,33 +256,7 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
         //   ★決めるのは lib/quietDays.js だけです。★ここで 日を 数えません。
         if (!tabIsOpen("kuraberu", todayISO, performanceDays)) {
           const q = quietReason(todayISO, performanceDays);
-          return (
-            <div style={{ ...card, textAlign: "center", padding: "28px 16px" }}>
-              <p style={{ fontSize: "1rem", color: C.ink, lineHeight: 1.9, marginBottom: 10 }}>
-                くらべる と かぞえる は、<br />いまは お休みです。
-              </p>
-              {q ? (
-                <p style={{ ...small, marginBottom: 14 }}>
-                  {q.daysUntil > 0
-                    ? `${Number(q.performedOn.slice(5, 7))}月${Number(q.performedOn.slice(8, 10))}日の 本番まで あと${q.daysUntil}日です。`
-                    : `${Number(q.performedOn.slice(5, 7))}月${Number(q.performedOn.slice(8, 10))}日の 本番のあとです。`}
-                  <br />本番の 翌々日から、また 出ます。
-                </p>
-              ) : null}
-              <p style={small}>
-                ならべる と さかのぼる は、いつでも 見られます。<br />
-                記録も、いつもどおり 書けます。
-              </p>
-              <div className="flex gap-2" style={{ marginTop: 14 }}>
-                <button type="button" onClick={() => setTab("narabe")} style={{ ...chip(false), flex: 1 }}>
-                  ならべる を見る
-                </button>
-                <button type="button" onClick={() => setTab("sakanobore")} style={{ ...chip(false), flex: 1 }}>
-                  さかのぼる を見る
-                </button>
-              </div>
-            </div>
-          );
+          return <QuietScreen reason={q} onGo={setTab} />;
         }
         return <CompareV2 entries={entries} dates={dates} />;
       })()}
@@ -236,33 +266,7 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
         //   ★★「あなたの ふだんは これです」も、★言い当てる ことばです。
         if (!tabIsOpen("kazoeru", todayISO, performanceDays)) {
           const q = quietReason(todayISO, performanceDays);
-          return (
-            <div style={{ ...card, textAlign: "center", padding: "28px 16px" }}>
-              <p style={{ fontSize: "1rem", color: C.ink, lineHeight: 1.9, marginBottom: 10 }}>
-                くらべる と かぞえる は、<br />いまは お休みです。
-              </p>
-              {q ? (
-                <p style={{ ...small, marginBottom: 14 }}>
-                  {q.daysUntil > 0
-                    ? `${Number(q.performedOn.slice(5, 7))}月${Number(q.performedOn.slice(8, 10))}日の 本番まで あと${q.daysUntil}日です。`
-                    : `${Number(q.performedOn.slice(5, 7))}月${Number(q.performedOn.slice(8, 10))}日の 本番のあとです。`}
-                  <br />本番の 翌々日から、また 出ます。
-                </p>
-              ) : null}
-              <p style={small}>
-                ならべる と さかのぼる は、いつでも 見られます。<br />
-                記録も、いつもどおり 書けます。
-              </p>
-              <div className="flex gap-2" style={{ marginTop: 14 }}>
-                <button type="button" onClick={() => setTab("narabe")} style={{ ...chip(false), flex: 1 }}>
-                  ならべる を見る
-                </button>
-                <button type="button" onClick={() => setTab("sakanobore")} style={{ ...chip(false), flex: 1 }}>
-                  さかのぼる を見る
-                </button>
-              </div>
-            </div>
-          );
+          return <QuietScreen reason={q} onGo={setTab} />;
         }
         return <CountV2 entries={entries} dates={dates} todayISO={todayISO} />;
       })()}
