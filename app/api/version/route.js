@@ -47,7 +47,13 @@ export async function GET() {
         //   ★★門（wardrobeIds）とは、★別の名簿です。
         //   ★入れたのに効かない、を★外から見分けられるようにします。
         //   ★読んでいる場所：lib/sheepWardrobe.js の mayWearEverything
-        allItemsIds: (process.env.NEXT_PUBLIC_WARDROBE_ALL_ITEMS_USER_IDS || "").trim() !== ""
+        allItemsIds: (process.env.NEXT_PUBLIC_WARDROBE_ALL_ITEMS_USER_IDS || "").trim() !== "",
+        // ★★新しい画面づくりの 門（★2026-09-09）。
+        //   ★★NEXT_PUBLIC_ は 組み立てのときに 埋まります。
+        //     ★あとから 足しても、★組み立て直すまで 効きません。
+        //     ★★だから「入れたのに 出ない」が 起きます。★ここで 見分けられます。
+        secondColorIds: (process.env.NEXT_PUBLIC_SECOND_COLOR_USER_IDS || "").trim() !== "",
+        layoutV2Ids: (process.env.NEXT_PUBLIC_LAYOUT_V2_USER_IDS || "").trim() !== ""
       },
       // ★★何人ぶん入っているか（★2026-09-07）。
       //   ★★値そのものは、★決して出しません。★数だけです。
@@ -64,6 +70,10 @@ export async function GET() {
         gateTestIds: (process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS || "")
           .split(",").map((x) => x.trim()).filter(Boolean).length,
         allItemsIds: (process.env.NEXT_PUBLIC_WARDROBE_ALL_ITEMS_USER_IDS || "")
+          .split(",").map((x) => x.trim()).filter(Boolean).length,
+        secondColorIds: (process.env.NEXT_PUBLIC_SECOND_COLOR_USER_IDS || "")
+          .split(",").map((x) => x.trim()).filter(Boolean).length,
+        layoutV2Ids: (process.env.NEXT_PUBLIC_LAYOUT_V2_USER_IDS || "")
           .split(",").map((x) => x.trim()).filter(Boolean).length
       }
     }),

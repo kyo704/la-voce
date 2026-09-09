@@ -26,7 +26,12 @@ const route = readCode("app", "api", "version", "route.js");
 //     ★あれは Vercel が入れるもので、★こちらの旗ではありません。
 const flagsBlock = route.slice(route.indexOf("flags: {"),
   route.indexOf("}", route.indexOf("flags: {")));
-const watched = [...flagsBlock.matchAll(/process\.env\.(NEXT_PUBLIC_[A-Z_]+)/g)].map((m) => m[1]);
+// ★★名前に 数字が 入ることが あります（★2026-09-09）。
+//   ★★NEXT_PUBLIC_LAYOUT_V2_USER_IDS の「2」を 拾えず、
+//     ★★NEXT_PUBLIC_LAYOUT_V までで 切れて、★合わないと 出ていました。
+//   ★見張りの ほうの 誤りです。★変数の 名前は 変えません
+//     （★もう Vercel に 登録していただいています）。
+const watched = [...flagsBlock.matchAll(/process\.env\.(NEXT_PUBLIC_[A-Z0-9_]+)/g)].map((m) => m[1]);
 
 console.log("■ 並べた変数が、どこかで読まれているか");
 // ★アプリの側（route 以外）で、その名前が使われているかを見ます。
