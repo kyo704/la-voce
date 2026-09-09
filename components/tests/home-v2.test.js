@@ -80,7 +80,23 @@ function eq(a, b, label) { ok(a === b, label + "  （得た値: " + JSON.stringi
   {
     const v = readRaw("components", "VocalTracker.jsx");
     // ★★見本①〜⑨の どれにも、★上に「Woolsong」は ありません。
-    ok(/display: layoutV2 \? "none" : undefined/.test(v), "★門の中では、上の帯を 出さない");
+    // ★★2026-09-10、★<header> ごと 消して、★下のタブまで 消しました。
+    //   ★★タブは、★この <header> の 中に あります。
+    //   ★★入れ物では なく、★中身（名乗りの行）を 選んで 消すこと。
+    ok(/display: layoutV2 \? "none" : undefined/.test(v), "★門の中では、名乗りの行を 出さない");
+    {
+      // ★★<header> そのものに display:none が 付いていないこと
+      const h = v.slice(v.indexOf("<header"), v.indexOf("<header") + 900);
+      ok(!/display: layoutV2 \? "none"/.test(h), "★★<header> ごと 消していない（★タブが 消えます）");
+      ok(/paddingTop: layoutV2/.test(h), "★名乗りが 無いぶん、上の余白を 詰めている");
+    }
+    {
+      // ★★タブが <header> の 中に あること（★消してはいけない わけ）
+      const hs = v.indexOf("<header");
+      const nav = v.indexOf("displayTabs.filter", hs);
+      const close = v.indexOf("</header>", hs);
+      ok(nav > hs && nav < close, "★★下のタブは <header> の 中に ある（★だから 帯ごと 消せない）");
+    }
     // ★★門の外（38人）には、★これまでどおり あること
     ok(/app-wordmark/.test(v), "★名乗りそのものは 消していない（★門の外に 残る）");
     ok(/\{!layoutV2 \? \(\s*\n\s*<>\s*\n\s*<h1 className="ff-display italic app-wordmark/.test(v),

@@ -112,6 +112,7 @@ import HomeV2 from "@/components/HomeV2";
 import NotesV2 from "@/components/NotesV2";
 import Renraku from "@/components/Renraku";
 import TellTeacher from "@/components/TellTeacher";
+import AnnouncementCompose from "@/components/AnnouncementCompose";
 import { shouldLogRead } from "@/lib/renraku";
 import OpsShell from "@/components/OpsShell";
 import OpsSchedule from "@/components/OpsSchedule";
@@ -5200,6 +5201,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [openStudio, setOpenStudio] = useState(null);
   // ★「先生に 伝える」を 開いている レッスン（★見本⑥）。
   const [tellLesson, setTellLesson] = useState(null);
+  // ★「おしらせを 書く」を 開いているか（★見本②）。
+  const [composing, setComposing] = useState(false);
   const [renrakuPosting, setRenrakuPosting] = useState(false);
 
   // ★★ノート（★見本⑥）。★表は 2026-09-09 に 作りました。
@@ -12371,11 +12374,31 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               //     ★画面でも 出しませんが、★門が 本体です。
               //   ★★開いたら、★1行 残します（★坂本さんのご指示・2026-09-10）。
               //     ★決めるのは lib/renraku.js です。★ここで 決めません。
+              // ★★おしらせを 書く（★見本②）。★開いているあいだ、★これだけ 出します。
+              if (composing) {
+                const mem = orgMembers[opsOrgId] || [];
+                return (
+                  <AnnouncementCompose
+                    orgName={(myOrgs.find((mm) => mm.org_id === opsOrgId) || {}).org
+                      ? myOrgs.find((mm) => mm.org_id === opsOrgId).org.name : "学校"}
+                    memberCount={rosterCount(mem)}
+                    studios={renrakuStudios}
+                    teacherNameOf={(id) => orgDisplayName(id) || ""}
+                    posting={renrakuPosting}
+                    onPost={async (teacherId, body) => {
+                      const ok = await handlePostRenraku(opsOrgId, teacherId, body);
+                      if (ok) await fetchRenraku(opsOrgId, openStudio);
+                      return ok;
+                    }}
+                    onClose={() => setComposing(false)} />
+                );
+              }
               return (
                 <Renraku
                   studios={renrakuStudios}
                   announcements={renrakuAnnouncements}
                   messages={renrakuMessages}
+                  onCompose={() => setComposing(true)}
                   openStudio={openStudio}
                   onOpenStudio={(tid) => {
                     setOpenStudio(tid);
@@ -12540,15 +12563,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         className="px-4 sm:px-6 pb-4 sticky top-0 z-10"
         style={{
           background: C.paper,
-          // ★★門の中では、★この帯を 出しません（★2026-09-10・見本のとおり）。
-          //   ★★見本①〜⑨の どれにも、★上の帯は ありません。
-          //     ★見出し（きょう）と 歯車は、★中の画面が 自分で 出します。
-          //   ★★言語は、★先に「もっと」へ 移しました。★道を 消してから 作りません。
-          //   ★プラン・お問い合わせ・出るは、★もとから「もっと」に あります。
-          //   ★門の外（38人）には、★これまでどおり 出します。
-          display: layoutV2 ? "none" : undefined,
+          // ★★2026-09-10、★ここに display: none を 置いて、★タブごと 消しました。
+          //   ★★下のタブは、★この <header> の 中に あります。
+          //     ★帯を 消すと、★タブも 一緒に 消えます。★実機で そうなりました。
+          //   ★★だから、★消すのは 中の「名乗りの行」だけに します。
+          //     ★★入れ物では なく、★中身を 選んで 消すこと。
           borderBottom: `1px solid ${C.line}`,
-          paddingTop: "calc(env(safe-area-inset-top) + 1.5rem)"
+          // ★名乗りが 無いときは、★上の 余白も 詰めます。
+          paddingTop: layoutV2
+            ? "calc(env(safe-area-inset-top) + 0.5rem)"
+            : "calc(env(safe-area-inset-top) + 1.5rem)"
         }}
       >
         {/* ★携帯では、横に並べるのをやめて上下に分けます。
@@ -12559,7 +12583,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               まさにロゴが「La / Voce」に割れ、副題が1文字ずつ縦に崩れた原因でした。
               私が入れた指定です。幅を与えるつもりで、床を外していました。
             広い画面（sm以上）では、これまでどおり横に並べます。 */}
-        <div className="max-w-3xl mx-auto flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
+        {/* ★★門の中では、★名乗りの行だけを 出しません（★2026-09-10・見本のとおり）。
+            ★★見本①〜⑨の どれにも、★上に「Woolsong」は ありません。
+              ★見出し（きょう）と 歯車は、★中の画面が 自分で 出します。
+            ★★下のタブは、★この <header> の 中に あります。★消しません。
+              ★★帯ごと 消して、★タブまで 消したことが ありました（★同日）。
+            ★門の外（38人）には、★これまでどおり 出します。 */}
+        <div className="max-w-3xl mx-auto flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3"
+          style={{ display: layoutV2 ? "none" : undefined }}>
           <div>
             {/* ★ヘッダーは、見やすさの設定につながっていませんでした（G2-14.5 の抜け）。
                 text-3xl は rem なので html 基点になった今は伸びますが、

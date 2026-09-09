@@ -90,7 +90,7 @@ function Message({ m, nameOf }) {
 export default function Renraku({
   studios, announcements, messages, openStudio, onOpenStudio,
   role, isTeacherOf, isMemberOf, nameOf, teacherNameOf,
-  onPost, reads, posting
+  onPost, reads, posting, onCompose
 }) {
   const [draft, setDraft] = useState("");
   const width = useWidth();
@@ -120,6 +120,18 @@ export default function Renraku({
           ))}
         </>
       ) : null}
+      {/* ★★おしらせを 書く（★見本①）。
+          ★★書ける方にだけ 出します。★決めるのは lib/renraku.js です。
+            ★★押せるのに 何も 起きないものを 出さない、という 決めです。 */}
+      {onCompose && mayPost({ role, isAnnouncement: true }) ? (
+        <button type="button" onClick={onCompose}
+          className="w-full"
+          style={{
+            minHeight: 48, borderRadius: 12, border: `1px solid ${C.line}`,
+            background: C.card, color: C.ink, fontSize: "0.875rem"
+          }}>＋ おしらせを 書く</button>
+      ) : null}
+
       <p style={small}>門下の 連絡</p>
       {(studios || []).map((s) => {
         const on = openStudio === s.teacherId;
