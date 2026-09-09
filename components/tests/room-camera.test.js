@@ -26,6 +26,9 @@ function near(a, b, label) { ok(Math.abs(a - b) < 1e-6, label + "  （得た値:
   const src = fs.readFileSync(path.join(ROOT, "lib", "roomCamera.js"), "utf8");
   const m = await import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
   const { cameraOf, cameraStyle, ZOOM } = m;
+  // ★羊の 歩く 速さ。★カメラは、★これと 同じ 数・同じ 進み方で なければ なりません。
+  const sheepSrc = fs.readFileSync(path.join(ROOT, "lib", "sheepInteriorV2.js"), "utf8");
+  const WALK_MS = Number((sheepSrc.match(/export const WALK_MS = (\d+)/) || [])[1]);
 
   console.log("① 「うごかす」の あいだは 恒等");
   const moving = cameraOf({ on: true, editMode: true, leftPct: 20, topPct: 80 });
@@ -58,12 +61,34 @@ function near(a, b, label) { ok(Math.abs(a - b) < 1e-6, label + "  （得た値:
 
   console.log("⑤ 奥ゆきを 付けていない");
   ok(!/perspective|translateZ|parallax|rotateX|rotateY/.test(src), "★奥ゆきの 語が 1つも ない");
-  const st = cameraStyle(cameraOf({ on: true, leftPct: 30, topPct: 70 }), false);
+  const st = cameraStyle(cameraOf({ on: true, leftPct: 30, topPct: 70 }), { walkMs: WALK_MS });
   ok(/^translate\(-?[0-9.]+%, -?[0-9.]+%\) scale\([0-9.]+\)$/.test(st.transform),
     "★変形は ずらす と 寄る の 2つだけ  （得た値: " + st.transform + "）");
   ok(st.transformOrigin === "0 0", "★基準は 左上（★％の 計算と 合っている）");
-  ok(cameraStyle(cameraOf({ on: true, editMode: true }), true).transition === "none",
+  ok(cameraStyle(cameraOf({ on: true, editMode: true }), { editMode: true }).transition === "none",
     "★掴んでいる あいだは、★部屋が まだ 動いていない");
+
+  console.log("⑥ ★羊と 同じ 速さで 追う（★2026-09-10・実機のご指摘）");
+  // ★★「カメラが 先に 動いて、羊が 置いてけぼりに なる」と ご報告を いただきました。
+  //   ★★原因は 2つ ── ★速さが ちがう ／ ★進み方が ちがう。
+  //   ★★羊は 歩くあいだ linear、★カメラは ease-in-out でした。
+  //     ★ease-in-out は はじめが 速いので、★先に 行きます。
+  ok(WALK_MS > 0, "★羊の 歩く 速さが 読めた（" + WALK_MS + "ms）");
+  const walking = cameraStyle(cameraOf({ on: true, leftPct: 30, topPct: 70 }),
+    { walking: true, walkMs: WALK_MS });
+  ok(walking.transition === `transform ${WALK_MS}ms linear`,
+    "★歩くあいだは、★羊と 同じ 速さ・linear  （得た値: " + walking.transition + "）");
+  const still = cameraStyle(cameraOf({ on: true, leftPct: 30, topPct: 70 }),
+    { walking: false, walkMs: WALK_MS });
+  ok(still.transition === `transform ${WALK_MS}ms ease-in-out`,
+    "★止まるときは、★羊と 同じ 速さ・ease-in-out  （得た値: " + still.transition + "）");
+  // ★★数を 書き写していないこと。★羊の 側を 変えたら、★カメラも 一緒に 変わること。
+  ok(!/900|EASE_MS/.test(readCode("lib", "roomCamera.js")),
+    "★カメラの 側に 別の 速さを 書いていない");
+  ok(/walkMs: WALK_MS/.test(readRaw("components", "CharacterHome.jsx")),
+    "★画面が、★羊と 同じ WALK_MS を 渡している");
+  ok(/walking: isWalking/.test(readRaw("components", "CharacterHome.jsx")),
+    "★歩いているかどうかも 渡している");
 
   console.log("⑥ 画面の 側");
   const ui = readCode("components", "CharacterHome.jsx");
@@ -82,7 +107,7 @@ function near(a, b, label) { ok(Math.abs(a - b) < 1e-6, label + "  （得た値:
   //   ★中に 入れると、★寄ったとき 一緒に 大きくなり、★端で 画面の外へ 出ます。
   {
     const r = readRaw("components", "CharacterHome.jsx");
-    const camAt = r.indexOf("<div style={cameraStyle(cam, editMode)}>");
+    const camAt = r.indexOf("<div style={cameraStyle(cam, {");
     const endAt = r.indexOf("      </div>\n      {(placedFurniture.length > 0");
     const btnAt = r.indexOf("setEditMode((v) => !v)", camAt);
     ok(camAt > 0 && endAt > camAt, "★カメラの 入れ物が 閉じている");

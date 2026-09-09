@@ -111,13 +111,29 @@ async function load(rel) {
   console.log("⑥ ★1文も、添えていない");
   const lib = readCode("lib", "lookBack.js");
   const panel = readCode("components", "LookBackPanel.jsx");
+  // ★★「%」は、★見た目の 単位でも 使います（★borderRadius: "50%"）。
+  //   ★★2026-09-10、★丸い 点を 置いたら、★ここが 鳴りました。
+  //     ★言い分は「★割合を 画面に 出さない」です。★CSS の 単位では ありません。
+  //   ★★だから、★見た目の 決めごとを 外してから 数えます。
+  const shown = panel
+    .replace(/style=\{\{[\s\S]*?\}\}/g, "")   // ★見た目の かたまり
+    .replace(/:\s*"[^"]*%"/g, "")               // ★"50%" のような 単位
+    .replace(/\$\{[^}]*\}%/g, "");             // ★`${n}%` のような 単位
   ["でしょう", "かもしれません", "傾向", "原因", "せい", "%", "確率", "割合", "順位"].forEach((w) => {
-    ok(!panel.includes(w), "★画面に「" + w + "」が無い");
+    ok(!shown.includes(w), "★画面に「" + w + "」が無い");
   });
   ok(!/toFixed|Math\.round|reduce\(/.test(lib.replace(/^import[\s\S]*?;$/gm, "")),
     "★数を、作っていない（★合計も平均も出さない）");
   // ★★色を、値で変えないこと。
-  ok(!/value.*[<>].*C\.|LEVEL_COLORS/.test(panel), "★値の大小で、色を変えていない");
+  //   ★★言い分は「★値の 大小で 色を 変えない」です。
+  //     ★決まった 1色を 枠に 使うのは、★大小では ありません。
+  //   ★★2026-09-10、★見本 A05 の 枠の 色（#E0C9CE に あたるもの）を
+  //     ★手元の 濃淡から 取ったら、★名前だけで 鳴りました。
+  //     ★★新しい色を 増やさないための 選び方でした。★見る先を 変えます。
+  ok(!/(value|r\.value|v)\s*[<>]=?[\s\S]{0,60}(C\.|LEVEL_COLORS|#[0-9A-Fa-f]{3,6})/.test(panel),
+    "★値の大小で、色を変えていない");
+  ok(!/LEVEL_COLORS\[\s*(?!0\s*\])/.test(panel),
+    "★段ごとの 色を 使っていない（★使うのは 1色だけ）");
 
   console.log("⑦ ★書いていない日も、そう書く");
   const raw = readRaw("components/LookBackPanel.jsx");

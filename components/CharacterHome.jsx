@@ -14,7 +14,7 @@ import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
 } from "@/lib/oldHouseVisibility";
 // ★動かせる内装が在るか／羊の重ね順。★決めは、あちらが持ちます。
-import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs, nextSitMs, zSwitchDelayMs } from "@/lib/sheepInteriorV2";
+import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, sheepSizePxV2, ROOM_ASPECT_V2, FLOOR_PCT_V2, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs, nextSitMs, zSwitchDelayMs } from "@/lib/sheepInteriorV2";
 import SpeechBubble from "@/components/SpeechBubble";
 import { SOLO, TIMING, FACE_FOR, pickLine, nextSoloMs, pushRecent } from "@/lib/sheepSpeech";
 import { pickGesture, nextGestureMs, mayGesture, pushRecent as pushGesture } from "@/lib/sheepGestures";
@@ -2002,7 +2002,12 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
-  const sheepPx = sheepSizePx(roomBoxW);
+  // ★★門の中は、★見本 A07 の 寸法です（★2026-09-10）。
+  //   ★枠が 縦に 長く（330：452）、★羊は その 高さの 67.6％。
+  //   ★門の外（38人）は、★これまでどおり 4：3・幅の 26％です。★変えません。
+  //   ★数は lib/sheepInteriorV2.js が 持ちます。★ここで 決めません。
+  const roomBoxHV2 = roomBoxW * (452 / 330);
+  const sheepPx = cameraOn ? sheepSizePxV2(roomBoxHV2) : sheepSizePx(roomBoxW);
 
   // ★★羊が しゃべります（★2026-09-08 夜・仕様「3本に分ける」）。
   //
@@ -2239,7 +2244,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
           ★どちらも、これが原因でした。
         ★★isolation: isolate で、★中の z が 外に出なくなります。
           ★見た目は、★1つも変わりません。 */
-    <div id="room-anchor" ref={roomBoxRef} style={{ position: "relative", isolation: "isolate", zIndex: 0, width: "100%", maxWidth: isRoomExpanded ? 700 : 480, margin: "0 auto", aspectRatio: isRoomExpanded ? "7 / 5" : "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor, transition: "max-width 0.4s ease, aspect-ratio 0.4s ease" }}>
+    <div id="room-anchor" ref={roomBoxRef} style={{ position: "relative", isolation: "isolate", zIndex: 0, width: "100%", maxWidth: isRoomExpanded ? 700 : 480, margin: "0 auto", aspectRatio: cameraOn && !isRoomExpanded ? ROOM_ASPECT_V2 : (isRoomExpanded ? "7 / 5" : "4 / 3"), borderRadius: cameraOn ? 16 : 18, overflow: "hidden", background: wallColor, transition: "max-width 0.4s ease, aspect-ratio 0.4s ease" }}>
       {/* ★★カメラの 入れ物。★場面ぜんぶに、★1つの 変形を かけます。
           ★★層ごとに 別の 速さで 動かしません（★それが「奥ゆき」です）。
             ★奥ゆきを 付けると、★層の 数だけ 座標の 計算が 増えます。
@@ -2247,9 +2252,9 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
             ★掴む 位置が ずれる 余地が、★構造として ありません。
           ★★「うごかす」の 押しどころは、★この 外に あります。
             ★中に 入れると、★寄ったとき 一緒に 大きくなり、★端で 消えます。 */}
-      <div style={cameraStyle(cam, editMode)}>
+      <div style={cameraStyle(cam, { editMode, walking: isWalking, walkMs: WALK_MS })}>
       <WallTexture material={wallKey} wardrobeOn={wardrobeOn} />
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", background: floorColor, zIndex: 0, overflow: "hidden" }}>
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: cameraOn && !isRoomExpanded ? `${FLOOR_PCT_V2.toFixed(1)}%` : "34%", background: floorColor, zIndex: 0, overflow: "hidden" }}>
         <FloorTexture material={floorKey} wardrobeOn={wardrobeOn} />
       </div>
 

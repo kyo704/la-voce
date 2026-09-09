@@ -174,6 +174,10 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
 
   const period = PERIODS.find((p) => p.key === periodKey) || PERIODS[0];
   const dates = datesBack(todayISO, period.days);
+  // ★★「かぞえる」は、★書いた ぶん ぜんぶを 見ます（★見本 B03）。
+  //   ★ならべる の 窓（14日・4週・3か月）とは 別です。
+  //   ★きょうより 先の 日は 入れません。
+  const allDates = Object.keys(entries || {}).filter((d) => d <= todayISO).sort();
 
   // ★★押しどころの 形は UiV2 が 持ちます。★ここで 作りません（★design.zip）。
   const chip = (on) => ({
@@ -268,7 +272,17 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
           const q = quietReason(todayISO, performanceDays);
           return <QuietScreen reason={q} onGo={setTab} />;
         }
-        return <CountV2 entries={entries} dates={dates} todayISO={todayISO} />;
+        // ★★2026-09-10、★ここが ③と 同じ形の 穴でした。
+        //   ★★かぞえる に、★ならべる の 窓（★既定 14日）を 渡していました。
+        //     ★★けれど 期間の 札は、★ならべる のときにしか 出ません。
+        //     ★★だから かぞえる は、★いつも 14日 だけを 見ており、
+        //       ★その 窓を 変える 手が、★画面に 1つも ありませんでした。
+        //   ★★「ふだん」は 5日 いります。★14日中 5日 書いていない 項目は、
+        //     ★何年 書きつづけても 出ません。
+        //   ★★見本 B03 は「書いた 日 54日」「…（54日）」です。
+        //     ★かぞえる は、★書いた ぶん ぜんぶを 見る 画面です。
+        //   ★→ ★窓を 外しました。★書いた 日 ぜんぶを 渡します。
+        return <CountV2 entries={entries} dates={allDates} todayISO={todayISO} />;
       })()}
     </div>
   );
