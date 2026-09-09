@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { sendAlertOncePerDay } from "@/lib/systemAlert";
 
 // ============================================================================
 // Supabase の自動停止よけ（無料プラン）
@@ -45,7 +46,19 @@ export async function GET(req) {
   if (error) {
     // 失敗しても、次の日にまた走る。ここで例外にして落とす必要はない。
     console.error("停止よけの読み取りに失敗しました:", error.message);
-    return Response.json({ ok: false, error: error.message }, { status: 500 });
+    // ★★止まったことに 気づく（★2026-09-10・坂本さんの お決め）。
+    //   ★★1日1通が 上限です。★落ちつづけても、★毎回は 届きません。
+    //     ★数えるのでは なく、★控えの 一意の 決まりで 守ります。
+    //   ★★知らせが 送れなくても、★この道は 止めません。
+    //     ★止めると、★Vercel の 記録にも 残らなく なります。
+    const alerted = await sendAlertOncePerDay(admin, {
+      kind: "keep-alive",
+      detail: error.message,
+      apiKey: process.env.RESEND_API_KEY,
+      to: process.env.FEEDBACK_FROM_EMAIL,
+      from: process.env.FEEDBACK_FROM_EMAIL
+    });
+    return Response.json({ ok: false, error: error.message, alerted }, { status: 500 });
   }
 
   return Response.json({ ok: true, profiles: count ?? null, at: new Date().toISOString() });

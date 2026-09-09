@@ -1,0 +1,75 @@
+# ============================================================================
+# 毎日の 控え（★2026-09-10・坂本さんの お決め）
+#
+#   ★★「日次で 自動実行、★30日 保持」
+#
+#   ★★秘密（接続の 文字列）は、★GitHub の Secrets に 入れます。
+#     ★★坂本さんが 入れてください。★私は 本番の 鍵を 扱いません。
+#     道　GitHub → Settings → Secrets and variables → Actions → New secret
+#     名　BACKUP_DATABASE_URL
+#     値　Supabase → Project Settings → Database → Connection string（URI）
+#
+#   ★★30日 保持は、★2か所で 効きます。
+#     ① ★GitHub に 残す ぶん　retention-days: 30
+#     ② ★台本の 中　　　　　 RETENTION_DAYS=30（★scripts/backup-dump.sh）
+#
+#   ★★取れなかったら、★GitHub から 坂本さんへ 知らせが 届きます
+#     （★Settings → Notifications → Actions）。
+#     ★止まったことに 気づく 仕組みの、★もう半分です。
+# ============================================================================
+name: 毎日の控え
+
+on:
+  schedule:
+    # ★毎日 18:10 UTC ＝ 日本時間の 翌 3:10。★人の 少ない 時刻に します。
+    - cron: "10 18 * * *"
+  # ★手でも 走らせられます（★試すため）。
+  workflow_dispatch:
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    # ★★秘密が 無ければ、★走りません。★空の 控えを 作らないためです。
+    if: ${{ github.repository_owner != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # ★★pg_dump を 入れます。★Supabase は Postgres 15 です。
+      #   ★★版が 古いと「server version mismatch」で 落ちます。
+      - name: pg_dump を 入れる
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-16
+          pg_dump --version
+
+      - name: 控えを 取る
+        env:
+          BACKUP_DATABASE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
+        run: |
+          if [ -z "${BACKUP_DATABASE_URL:-}" ]; then
+            echo "✗ BACKUP_DATABASE_URL が ありません。" >&2
+            echo "  GitHub → Settings → Secrets and variables → Actions に" >&2
+            echo "  BACKUP_DATABASE_URL を 入れてください。" >&2
+            exit 1
+          fi
+          ./scripts/backup-dump.sh
+
+      # ★★30日 だけ 残します。★それより 前のものは、GitHub が 消します。
+      - name: 控えを しまう（30日）
+        uses: actions/upload-artifact@v4
+        with:
+          name: woolsong-backup-${{ github.run_id }}
+          path: backups/*.sql
+          retention-days: 30
+          if-no-files-found: error
+
+      # ★★控えの 中身は、★ここに 残しません。
+      #   ★★要配慮個人情報と、ログインの パスワードが 入っています。
+      #   ★artifact は GitHub が 預かります。★リポジトリには 入りません。
+      - name: 後片づけ
+        if: always()
+        run: rm -f backups/*.sql

@@ -18,7 +18,16 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-PGBIN="/Applications/Postgres.app/Contents/Versions/latest/bin"
+# ★★pg_dump の 在り処。★2つの 場所を 見ます（★2026-09-10）。
+#   ★★毎日 自動で 取るように しました（★.github/workflows/backup.yml）。
+#     ★そちらは Linux で 動きます。★Postgres.app は ありません。
+#   ★手元（macOS）では、これまでどおり Postgres.app を 使います。
+#   ★★どちらでも 同じ 1つの 台本が 走ります。★2つに 分けません。
+if command -v pg_dump >/dev/null 2>&1; then
+  PGBIN="$(dirname "$(command -v pg_dump)")"
+else
+  PGBIN="/Applications/Postgres.app/Contents/Versions/latest/bin"
+fi
 ENV_FILE=".env.backup.local"
 OUT_DIR="backups"
 
@@ -41,7 +50,11 @@ echo "・pg_dump: $("$PGBIN/pg_dump" --version)"
 # ---------------------------------------------------------------------------
 # ② 接続先。★ここに書かず、.env.backup.local から読みます
 # ---------------------------------------------------------------------------
-if [ ! -f "$ENV_FILE" ]; then
+# ★★自動で 走らせる ときは、★環境変数から 受け取ります（★秘密は 私が 触りません）。
+#   ★手元では これまでどおり .env.backup.local を 読みます。
+if [ -n "${BACKUP_DATABASE_URL:-}" ]; then
+  echo "・接続先は 環境変数から 受け取りました"
+elif [ ! -f "$ENV_FILE" ]; then
   cat >&2 <<'MSG'
 ✗ .env.backup.local がありません。
 
@@ -57,7 +70,7 @@ MSG
 fi
 
 # shellcheck disable=SC1090
-set -a; . "./$ENV_FILE"; set +a
+if [ -z "${BACKUP_DATABASE_URL:-}" ]; then set -a; . "./$ENV_FILE"; set +a; fi
 
 if [ -z "${BACKUP_DATABASE_URL:-}" ]; then
   echo "✗ .env.backup.local に BACKUP_DATABASE_URL がありません。" >&2
