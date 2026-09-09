@@ -13830,7 +13830,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             //   数字だけを、控えめに出します。
                             if (isCarried(formData)) {
                               return (
-                                <p className="text-xs rounded-lg p-2" style={{ background: C.paper, color: C.line }}>
+                                // ★★色を 直しました（★2026-09-10）。
+                                //   ★前は C.line（★罫線の色）でした。★紙の上で 1.21。
+                                //   ★★控えめに 出すつもりが、★読めなく なっていました。
+                                //   ★控えめは、★小さい字で 足ります。★色で 消しません。
+                                <p className="text-xs rounded-lg p-2" style={{ background: C.paper, color: C.inkSoft }}>
                                   絶対湿度 {absH.toFixed(1)} g/m³
                                 </p>
                               );

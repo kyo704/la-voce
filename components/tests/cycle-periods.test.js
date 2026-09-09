@@ -195,7 +195,8 @@ async function main() {
   if (band) {
     const r = parseInt(band.slice(1, 3), 16), g = parseInt(band.slice(3, 5), 16), b = parseInt(band.slice(5, 7), 16);
     assertTrue(!(r > g + 40 && r > b + 40), "★濃い赤・ピンクではない（赤成分が突出していない）");
-    const levels = ["#7A1F2B", "#A8583F", "#B8863B", "#7C9A6B", "#4F7562"];
+    // ★★山吹を 濃くしました（★2026-09-10）。★#B8863B → #8C6115。
+    const levels = ["#7A1F2B", "#A8583F", "#8C6115", "#7C9A6B", "#4F7562"];
     assertTrue(!levels.includes(band.toUpperCase()), "★声の調子の5色と同じ色ではない");
   }
 

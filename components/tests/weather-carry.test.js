@@ -63,7 +63,13 @@ const addDays = (iso, n) => { const d = new Date(iso + "T00:00:00"); d.setDate(d
   const block = vt.slice(vt.indexOf("if (isCarried(formData)) {"), vt.indexOf("if (isCarried(formData)) {") + 400);
   assertTrue(/絶対湿度 \{absH\.toFixed\(1\)\} g\/m³/.test(block), "数字は出す");
   assertTrue(!/平常より|快適域|外れて/.test(block), "★判定の文は出さない");
-  assertTrue(/color: C\.line/.test(block), "★控えめな色にしている");
+  // ★★2026-09-10、★色を 直しました（★Opus の 指摘・文字の 読みやすさ）。
+  //   ★★ここは C.line（★罫線の色）を 求めていました。★紙の上で 1.21 です。
+  //     ★★控えめに するつもりが、★読めない ところまで 行っていました。
+  //   ★★控えめは、★小さい字で 足ります。★色で 消しません。
+  //   ★見張りの ほうが 誤っていました。★向きを 変えます。
+  assertTrue(/color: C\.inkSoft/.test(block), "★控えめな色にしている（★読める濃さで）");
+  assertTrue(!/color: C\.line/.test(block), "★罫線の色を、字に 使っていない");
 
   console.log("\n=== ★⑤ 絶対湿度で結論を出す画面は、もうありません ===");
   // ★★2026-09-07、★環境の快適帯を、まるごとやめました（10番）。
