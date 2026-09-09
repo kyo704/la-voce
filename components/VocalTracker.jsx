@@ -17825,7 +17825,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     これまでどおり誰にでも出ます（線引き §3・§4）。 */}
                 {can(viewer, "analysis.reflux") && hasRefluxCondition && (refluxDinnerGapBins.some((b) => b.n >= 5) || refluxDinnerTagEffects.length > 0) && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-1">逆流と喉の違和感の傾向</h3>
+                    {/* ★★見出しから 病名を 外しました（★2026-09-10・訂正 §2-2）。
+                        ★★前「逆流と喉の違和感の傾向」→ 後「食事と夜の習慣」。
+                        ★★記録・同意・列名は、★1つも 変えていません。
+                          ★消したのでは ありません。★呼び名だけです。
+                        ★★同じ 直しを、★同意の 文には 9月10日に 入れてあります。
+                          ★画面の 見出しだけが、★病名の まま 残っていました。 */}
+                    <h3 className="ff-display italic text-lg mb-1">食事と夜の習慣</h3>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                       既往症に登録されている方にだけ表示しています。夕食の内容・時刻と、翌朝の喉の違和感の記録上の関係です。
                     </p>
