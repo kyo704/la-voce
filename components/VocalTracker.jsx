@@ -15887,16 +15887,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ★下の 帯が「ひつじ」を 押した 状態に なるだけでした。
                   ★★ひとことは、★きょうの 画面と 同じ 言葉です（★同じ 羊です）。
                     ★言葉を 2か所に 書きません。 */}
-              {layoutV2 && (
-                <>
-                  <ScreenHead title="ひつじ" right={
-                    <HeadRound mark="⚙" label="もっとを開く" onClick={() => setActiveTab("more")} />
-                  } />
-                  <div style={{ fontSize: 12, color: C.inkSoft, margin: "-2px 0 6px 2px" }}>
-                    {SHEEP_LINE}
-                  </div>
-                </>
-              )}
+              {/* ★★見本 A07 の 頭は、★下の 部屋の 入れ物の 中に あります。
+                  ★★はじめ ここにも 置き、★同じものが 2つ 出ていました。
+                    ★上（門の外にも 出る 場所）に 置いたのが 誤りでした。 */}
               {/* ★★おうちの中の行き先だけ（★2026-09-07・Opus の裁定）。
                   ★★歯車を、★ここには置きません。
                     ★同じ絵が2か所にあると、★どちらが何か分かりません。
@@ -15977,7 +15970,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     // ★★試していただく方には、★鍵を出しません（★2026-09-08）。
                     allOwned={wardrobeAllItems}
                     unlockedFlags={Object.fromEntries(
-                      [...computeUnlocked(entries)].map((k) => [k, true])
+                      [...computeUnlocked(entries, profile)].map((k) => [k, true])
                     )}
                     todayISO={realTodayDate}
                     outfits={characterEquipped.outfits || []}
@@ -16047,19 +16040,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   overflow: "hidden",
                   paddingTop: "env(safe-area-inset-top)"
                 } : { maxWidth: DRAWER_SIZES.homeMaxWidthPx, margin: "0 auto 12px" }}>
-                  {/* ★★細い帯（★見本①）。★ひつじ ／ ひとこと。
+                  {/* ★★見本 A07 の 頭。★題「ひつじ」＋ 歯車、★その下に ひとこと。
+                      ★★2026-09-10、★ここに 細い帯（ひつじ ／ ひとこと）が あり、
+                        ★上に 置いた 題と、★同じことを 2つ 言っていました。
+                        ★★1つに しました。★ひとことは SHEEP_LINE から 取ります。
                       ★★したく のときは、★消さずに 隠します。
                         ★消すと 並びが ずれ、★下の部屋が 作り直されます。 */}
-                  <div className="flex items-center gap-2 mb-2"
-                    style={{ display: homeState === DRESS ? "none" : undefined }}>
-                    <span style={{
-                      fontSize: "0.75rem", color: C.inkSoft,
-                      borderLeft: `3px solid ${C.curtain}`, paddingLeft: 8
-                    }}>ひつじ</span>
-                    <span style={{
-                      fontSize: "0.75rem", color: C.inkSoft,
-                      borderLeft: `3px solid ${C.line}`, paddingLeft: 8
-                    }}>きょうも 来てくれて ありがとう</span>
+                  <div style={{ display: homeState === DRESS ? "none" : undefined }}>
+                    <ScreenHead title="ひつじ" right={
+                      <HeadRound mark="⚙" label="もっとを開く" onClick={() => setActiveTab("more")} />
+                    } />
+                    <div style={{ fontSize: 12, color: C.inkSoft, margin: "-2px 0 6px 2px" }}>
+                      {SHEEP_LINE}
+                    </div>
                   </div>
                   {/* ★★したく のときは 4：3 のまま、★高さに 合わせます。
                       ★この入れ物も、★消さずに 姿だけ 変えます。 */}

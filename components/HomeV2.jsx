@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { C } from "@/lib/tokens";
 import SheepDressed from "@/components/SheepDressed";
 import { conditionWord, sleepParts, usualOf } from "@/lib/todayCard";
@@ -59,22 +59,28 @@ export default function HomeV2({
   const teaching = !!(band && band.teaching);
   const ratio = teaching ? SHEEP_WIDTH_RATIO_TEACHING : SHEEP_WIDTH_RATIO;
 
-  const boxRef = useRef(null);
+  // ★★2026-09-10、★ここが 羊を 出さなく していました。
+  //   ★★前は useRef ＋ useEffect でした。★effect は 1度だけ 走ります。
+  //     ★★羊の 入れ物は、★帯（TodayBand）の 中に あります。
+  //       ★帯は band が 揃うまで 出ません。
+  //     ★★だから effect が 走った ときには、★まだ 入れ物が ありませんでした。
+  //       ★早い 返しで 抜けて、★二度と 走りませんでした。
+  //   ★★入れ物が ついた その瞬間に 測る 形（callback ref）に 変えます。
+  //     ★いつ 出てきても、★必ず 測ります。
+  const roRef = useRef(null);
   const [sheepPx, setSheepPx] = useState(0);
-  useEffect(() => {
-    const el = boxRef.current;
-    if (!el) return undefined;
+  const boxRef = useCallback((el) => {
+    if (roRef.current) { roRef.current.disconnect(); roRef.current = null; }
+    if (!el) return;
     const measure = () => setSheepPx(Math.round(el.clientWidth * ratio));
     measure();
-    if (typeof ResizeObserver === "undefined") {
-      // ★★古い 端末には ResizeObserver が ありません。★向きを 変えたときだけ 測り直します。
-      window.addEventListener("resize", measure);
-      return () => window.removeEventListener("resize", measure);
-    }
+    if (typeof ResizeObserver === "undefined") return;
     const ro = new ResizeObserver(measure);
     ro.observe(el);
-    return () => ro.disconnect();
+    roRef.current = ro;
   }, [ratio]);
+  // ★★片づけ。★画面を 離れたら、★見張りを 外します。
+  useEffect(() => () => { if (roRef.current) roRef.current.disconnect(); }, []);
 
   return (
     // ★★ゴシックで 固定します（★tokens.md §2「明朝は 使いません」）。

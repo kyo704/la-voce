@@ -132,7 +132,12 @@ function ok(label, cond) {
   ok("★いまの羊の鍵（hat/outfit/accessory）を消していない",
     !/delete characterEquipped\.(hat|outfit|accessory)/.test(vt));
   // ★解放の判定を、作り直していないこと。
-  ok("★解放は、いまある関数から取っている", /computeUnlocked\(entries\)/.test(vt));
+  //   ★★2026-09-10、★computeUnlocked が profile も 受け取るように なりました。
+  //     ★practiceGoalDone は、★練習の 目標と 振り返り（profiles）を 見ます。
+  //     ★entries だけでは 見えないので、★1度も 配られていませんでした。
+  //   ★★言い分は「★作り直していないこと」です。★引数の 数では ありません。
+  ok("★解放は、いまある関数から取っている", /computeUnlocked\(entries/.test(vt));
+  ok("★練習の目標も 見るように、profile を 渡している", /computeUnlocked\(entries, profile\)/.test(vt));
   // ★保存できなかったら、黙らないこと。
   ok("★保存に失敗したら、理由を残す", /着せかえを保存できませんでした/.test(vt));
 

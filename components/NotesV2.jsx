@@ -131,11 +131,21 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku }) {
           ★★タブを 増やさずに 置くための 形です。
           ★何を 出すかは lib/notes.js が 決めます。★ここでは 決めません。 */}
       {isRenrakuKind(kind) ? renraku : list.length === 0 ? (
-        <div style={card}>
-          <p style={small}>
-            {q.trim() ? "見つかりませんでした。" : "＋から、思いついたことを書けます。"}
-          </p>
-        </div>
+        // ★★2026-09-10、★ここが 押せませんでした。
+        //   ★★「＋から、思いついたことを 書けます」と 書いてあるのに、
+        //     ★ただの 文でした。★押しても 何も 開きません。
+        //   ★★お決めが あります ──「★行き先を 出すなら、
+        //     ★その行き先は 押せる ものに すること」。
+        //   ★★探して 見つからなかった ときは、★別の 話です。
+        //     ★そこは 押しても 意味が ないので、★文の ままです。
+        q.trim() ? (
+          <Card><p style={{ ...small, margin: 0 }}>見つかりませんでした。</p></Card>
+        ) : (
+          <Card style={{ minHeight: 44 }}
+            onClick={() => { setEditing({ id: null, body: "" }); setError(""); }}>
+            <p style={{ ...small, margin: 0 }}>＋から、思いついたことを書けます。</p>
+          </Card>
+        )
       ) : (
         list.map((n) => (
           // ★★見本⑥の 1枚 ── ★本文が 2行、★その下に 日付（.usu）。

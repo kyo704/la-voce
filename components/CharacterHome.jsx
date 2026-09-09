@@ -2970,8 +2970,13 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
   //     ★見本（案v2 ②〜⑤）に、★1つも写っていません。
   //   ★★消していません。★ふだんの「ひつじ」では、これまでどおり出ます。
   if (roomOnly) {
+    // ★★2026-09-10、★ここが cameraOn を 落としていました。
+    //   ★★下の RoomScene には 渡していたのに、★この 早い 返しには
+    //     ★渡していませんでした。★ひつじの 画面は こちらを 通ります。
+    //   ★★だから カメラは、★1度も 動きませんでした。
+    //   ★★早い 返しを 見ずに「渡した」と 言っていました。
     return (
-      <RoomScene wardrobeOn={wardrobeOn} equipped={equipped} owned={ownedKeys}
+      <RoomScene wardrobeOn={wardrobeOn} cameraOn={cameraOn} equipped={equipped} owned={ownedKeys}
         onTogglePlacement={onTogglePlacement} onUpdatePosition={onUpdatePosition}
         say={say} t={t} />
     );
