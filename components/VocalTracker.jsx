@@ -718,12 +718,10 @@ const CONDITION_OPTIONS = [
 // 一時的に起きる種類のエラーを見分けるためのもの。
 // 記録と分析の順番設計 §7: 「1日あたりの平均入力項目数」を計測するための、記入済みセクション数の
 // 概算カウント。DAY_RECORD_ORDER相当の主要セクションだけを対象にする（曲目の中身などは数えない）。
-// 統合実行ルートv4 §11: かんたん記録を選んだ人に「未入力」「完了度◯%」を見せないこと。
-// かんたん記録では、そもそも出していない項目を分母に入れない（コアの3つだけを数える）。
-// 満タンにできない目盛りを見せるのは、事実上の減点表示になるため。
-export function countedSectionTotal(mode) {
-  return mode === "simple" ? 3 : 9;
-}
+// ★★countedSectionTotal を 落としました（★2026-09-10・お決め⑫）。
+//   ★目盛り（点8つ）の 分母でした。★目盛りごと 消したので、★呼ぶ所が 無くなりました。
+//   ★★作った 関数は、★どこかから 呼ばれていること。★呼ばれない ものは 残しません。
+//   ★記録 docs/reports/消したものの記録.md
 function countFilledSectionsCore(entry) {
   let n = 0;
   if ((entry.voiceEntries || []).length > 0) n += 1;
@@ -13663,49 +13661,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ★門の外（38人）は、★これまでどおり ここです。 */}
                 {!layoutV2 && dateBandNode}
 
-                {/* ★★門の中では 出しません（★2026-09-10・お決め⑫）。
-                    ★★「もう少しで『◯◯』が 加わります」は、
-                      ★★アプリが 与えるものへの 残りの 表示です。
-                      ★「ごほうびへの 残りを 出さない」という お決めと 同じ形でした。
-                    ★★見本③にも ありません。
-                    ★門の外（38人）には、★これまでどおり 出ます。 */}
-                {!layoutV2 && (() => {
-                  // ★読み込みが終わるまで formData は null（:5219）。
-                  //   進み具合は、まだ数えられません。
-                  if (!formData) return null;
-                  // 記録と分析の順番設計 §3.4: 進捗の見せ方。「未入力」「不足」「空欄」は使わない。
-                  // 満タンを目標に見せず、赤くしない（羊のおうち仕様 §1の「罰を作らない」を記録画面にも適用）。
-                  const filled = countFilledSections(formData, profile.record_mode);
-                  const total = countedSectionTotal(profile.record_mode);
-                  const dots = Array.from({ length: total }, (_, i) => i < filled);
-                  // 実際にまだ埋まっていない項目の中から1つだけ選び、それが加わると何につながるかを添える。
-                  const pendingBenefits = [
-                    { done: (formData.dinnerTime || (formData.dinnerTags || []).length > 0 || typeof formData.proteinLevel === "number"), label: "食事の影響" },
-                    { done: ((formData.activities || []).some((a) => (a.items || []).length > 0)), label: "曲目ごとの負荷" },
-                    { done: ((formData.symptoms || []).length > 0), label: "症状の推移" }
-                  ];
-                  const nextBenefit = profile.record_mode === "simple"
-                    ? null
-                    : (pendingBenefits.find((b) => !b.done) || {}).label;
-                  return (
-                    <div className="flex items-center justify-between px-1">
-                      <div className="flex items-center gap-2">
-                        <div className="flex gap-1">
-                          {dots.map((on, i) => (
-                            <span key={i} style={{
-                              display: "inline-block", width: 7, height: 7, borderRadius: "50%",
-                              background: on ? C.gold : C.line
-                            }} />
-                          ))}
-                        </div>
-                        <span className="text-xs" style={{ color: C.inkSoft }}>今日の記録　{filled}項目</span>
-                      </div>
-                      {nextBenefit && (
-                        <span className="text-xs" style={{ color: C.inkSoft }}>もう少しで「{nextBenefit}」が加わります</span>
-                      )}
-                    </div>
-                  );
-                })()}
+                {/* ★★消しました（★2026-09-10・坂本さんの お決め⑫）。
+                    ★★何を　「今日の記録 ◯項目」＋点8つ＋「もう少しで『◯◯』が 加わります」
+                    ★★なぜ　★進捗の 表示であり、★アプリが 与えるものへの 残りだからです。
+                      ★「ごほうびへの 残りを 出さない」という お決めに 触れます。
+                    ★★誰に　★38人にも 出ていました。★門の中だけでは ありません。
+                      ★★「禁じた ものを 出しつづけるのは 筋が 通らない」との お決めで、
+                        ★38人の 画面が 変わることより、★消すほうを 採りました。
+                    ★★記録は 1件も 消していません。★数えて 出していただけです。
+                    ★記録　docs/reports/消したものの記録.md */}
 
                 {/* 統合実行ルートv4 G2-8 / §2 瞬間④: 30秒で終わる道が常にあること。
                     調子が悪い日ほど、項目の多さが「開かない理由」になる。

@@ -10,6 +10,7 @@
  */
 const fs = require("fs");
 const path = require("path");
+const { readCode } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let passCount = 0, failCount = 0;
 function assertEqual(a, b, label) {
@@ -58,11 +59,21 @@ async function main() {
   assertTrue(tracker.includes("const showGroup ="), "showGroup 経由に集約されている");
   assertTrue(tracker.includes('isFieldGroupVisible'), "lib/fieldGroups.js を参照している");
 
-  console.log("\n=== テスト6: かんたん記録に減点表示を出していない（v4 §11） ===");
-  assertTrue(tracker.includes("countedSectionTotal"), "目盛りの分母がモードで変わる");
-  assertTrue(/countFilledSections\(formData, profile\.record_mode\)/.test(tracker), "数える側もモードを見ている");
-  assertTrue(/record_mode === "simple"\s*\n?\s*\? null/.test(tracker), "かんたんでは「もう少しで◯◯」を出さない");
+  console.log("\n=== テスト6: 減点表示を出していない（v4 §11） ===");
+  // ★★2026-09-10、★目盛り（点8つ）ごと 消しました（★坂本さんの お決め⑫）。
+  //   ★★もとの 言い分は「★かんたん記録の 人に 減点表示を 見せない」でした。
+  //     ★分母を モードで 変えるのは、★その ための 工夫でした。
+  //   ★★いまは、★誰にも 出していません。★言い分は、★より 強く 満たされています。
+  //   ★★見張りを 消さずに、★「出していないこと」を 見るように 直します。
+  const code = readCode("components", "VocalTracker.jsx");
+  assertTrue(!code.includes("countedSectionTotal"), "★目盛りの分母が、もう無い");
+  assertTrue(!/もう少しで「/.test(code), "★「もう少しで◯◯が加わります」を出していない");
+  assertTrue(!/今日の記録　\{filled\}/.test(code), "★「今日の記録 ◯項目」を出していない");
   ["完了度", "未入力"].forEach((w) => assertTrue(!tracker.includes(w + "</"), `UIに「${w}」を出していない`));
+  // ★★数える 側は 残っています。★点の ためでは なく、
+  //   ★保存の ときの 数え（★ポイント）に 使っています。★そちらは 画面に 出ません。
+  assertTrue(/countFilledSections\(clean, profile\.record_mode\)/.test(tracker),
+    "★数える側は 残っている（★保存のとき）");
 
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }

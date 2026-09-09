@@ -116,8 +116,14 @@ assertTrue(unguarded.length === 0,
 console.log("\n=== 落ちていた2か所 ===");
 assertTrue(lines.some((l) => l.includes("{!isRecordedToday && formData && (")),
   "★ホームの「30秒で記録」が守られている");
-assertTrue(lines.some((l) => l.includes("if (!formData) return null;")),
-  "★「今日」の進み具合が守られている");
+// ★★2026-09-10、★「今日」の 進み具合の 枠を 消しました（★お決め⑫）。
+//   ★★この 行は、★その 枠の 中の 守りを 見ていました。
+//   ★★守るべき ものが 無くなった ので、★見る先を 変えます。
+//     ★言い分は「★守られていない formData. の 読み取りが 無い」です。
+//     ★それは 上の 113行目が、★いまも 見ています。
+//   ★★消えた ことも 確かめます。★戻ってきたら 気づけるように。
+assertTrue(!lines.join("\n").includes("もう少しで「"),
+  "★「今日」の進み具合の枠が、もう無い（★2026-09-10・お決め⑫）");
 
 console.log(`\n${failCount === 0 ? "✅ 全て通りました" : "❌ 失敗あり"}  成功:${passCount} 失敗:${failCount}`);
 process.exit(failCount === 0 ? 0 : 1);

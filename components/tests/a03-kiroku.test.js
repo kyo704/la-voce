@@ -105,12 +105,19 @@ function ok(cond, label) {
     //   ★★消すと 38人から 取り上げることに なります。
     [
       ["!layoutV2 && isSimpleDisplay(profile) && formData", "★かんたん表示の 一問ずつ"],
-      ["!layoutV2 && (() => {\n                  // ★読み込みが終わるまで formData は null", "★「もう少しで◯◯が 加わります」＋点"],
+      // ★★2026-09-10、★これは「門の中で 出さない」から「消す」に なりました
+      //   （★坂本さんの お決め⑫）。★38人にも 出ていた ものです。
+      //   ★★消えたことを 見ます。★戻ってきたら 気づけるように。
       ["{!layoutV2 && (\n                <div className=\"rounded-2xl p-3 border\"", "★かんたん／しっかり の 切替"],
       ["!layoutV2 && !!entries[addDays(selectedDate, -1)]", "★前日をコピー"],
       ["!layoutV2 && showCopiedNotice", "★コピーの 知らせ"],
       ["{!layoutV2 && dateBandNode}", "★日付の帯は 門の外だけ ここ"]
     ].forEach(([needle, label]) => ok(v.includes(needle), label + "が 門の中で 出ない"));
+    // ★★⑫だけは、★門の中だけでなく、★誰にも 出さないことに なりました。
+    // ★★注記を 外して 数えます。★上の 註に、★その語が 出てきます（★8回目）。
+    const vCode = readCode("components", "VocalTracker.jsx");
+    ok(!/もう少しで「/.test(vCode), "★「もう少しで◯◯が 加わります」が、もう 無い");
+    ok(!/countedSectionTotal/.test(vCode), "★点8つの 分母も、もう 無い");
     ok(/dateBand=\{dateBandNode\}/.test(v), "★日付の帯は 門の中では 題の 近く");
     ok((v.match(/const dateBandNode = \(/g) || []).length === 1,
       "★日付の帯の 中身は 1つだけ（★2つ 作っていない）");
