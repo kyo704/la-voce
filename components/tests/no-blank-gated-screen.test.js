@@ -21,12 +21,15 @@
  * ★だから、形で見張ります。
  *   画面まるごとを権限で囲んだら、ここで落とします。
  */
-const { readRaw } = require("./_source");
+const { readRaw, readCode } = require("./_source");
 
 let passCount = 0, failCount = 0;
 function assertTrue(c, label) { if (c) { console.log(`  ✓ ${label}`); passCount++; } else { console.log(`  ✗ ${label}`); failCount++; } }
 
 const raw = readRaw("components", "VocalTracker.jsx");
+// ★★禁じた語を探すときは、★必ずコメントを外した本文で（★_source.js）。
+//   ★消したことを 説明するコメントに、★消したはずの名前が 書いてあります。
+const code = readCode("components", "VocalTracker.jsx");
 
 console.log("=== ★画面まるごとを権限で囲んでいない ===");
 {
@@ -61,14 +64,36 @@ console.log("\n=== 受診用サマリーは、誰でも使える ===");
 
 console.log("\n=== 止めている機能は、行き先で説明する ===");
 {
-  // AI の助言は止まっていますが、行き先で「準備中です」と説明しています。
-  // ★これが正しい形です。入口を消すのではなく、行き先で言う。
-  const at = raw.indexOf('{activeTab === "advice" && (');
-  assertTrue(at > 0, "AIアドバイスの画面がある");
-  assertTrue(/!AI_ADVICE_ENABLED \?/.test(raw.slice(at, at + 900)),
-    "★止まっているときの分岐がある");
-  assertTrue(/labelAdviceComingSoon/.test(raw.slice(at, at + 900)),
-    "★止まっていることを、行き先で説明している");
+  // ★★2026-09-09、★AIアドバイスは 画面ごと 外しました（★削除17点の3番）。
+  //
+  //   ★以前は「入口を消すのではなく、行き先で『準備中』と言う」を 正としていました。
+  //   ★★ところが、★入口を 9月7日に 外したまま、★画面だけが 残っていました。
+  //     ★たどり着けない画面に「準備中」と 書いてあるのは、
+  //     ★これから 出る、という 約束に 読めます。★約束していません。
+  //
+  //   ★★憲章 §10 が 禁じているのは、★「たどり着けるのに 何も描かない画面」です。
+  //     ★入口も 画面も 無いことは、★§10 に 反しません。
+  //
+  //   ★★だから、見張る中身を 入れ替えます。
+  //     ★★入口と 画面は、★そろって 有るか、★そろって 無いか、どちらかであること。
+  //       ★片方だけ 残っている状態を、★二度と 作らないためです。
+  const hasScreen = raw.indexOf('{activeTab === "advice" && (') > 0;
+  const hasEntry  = /setActiveTab\("advice"\)/.test(raw);
+  assertTrue(hasScreen === hasEntry,
+    "★入口と画面が、そろって有るか、そろって無いか（★片方だけを残さない）");
+
+  if (hasScreen) {
+    // ★画面を 戻すときは、★止まっていることを 行き先で 説明すること。
+    const at = raw.indexOf('{activeTab === "advice" && (');
+    assertTrue(/labelAdviceComingSoon|準備中/.test(raw.slice(at, at + 900)),
+      "★画面があるなら、止まっていることを行き先で説明している");
+  } else {
+    // ★画面が 無いなら、★止めの札も 覚えも 残っていないこと（★呼ばれない物を残さない）。
+    assertTrue(!/const AI_ADVICE_ENABLED/.test(raw),
+      "★画面が無いなら、止めの札も残っていない");
+    assertTrue(!/\badviceText\b|\bhandleGenerateAdvice\b/.test(code),
+      "★画面が無いなら、覚えも呼び出しも残っていない");
+  }
 }
 
 console.log("\n=== 憲章に、決まりが書いてある ===");

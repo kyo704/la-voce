@@ -4,7 +4,7 @@ import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback } fr
 import {
   Mic2, Moon, Droplets, Thermometer, Wind, MapPin, Music2, HeartHandshake,
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
-  Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, Bot, MessageCircle, Home,
+  Loader2, Check, Plus, Minus, Sparkles, Utensils, LogOut, CreditCard, MessageCircle, Home,
   Shirt, Armchair, Store,
   Wheat, Egg, Droplet, Leaf, Dumbbell, Ruler, Scale, BookOpen, X, Sunrise, Sun, Sunset, Globe, Lock,
   Volume2, Plane, AudioWaveform, Timer, MessageSquare, ClipboardList, GraduationCap, FileText,
@@ -163,7 +163,7 @@ import { medicalCaution } from "@/lib/medicalCaution";
 import { ACCOMPANIMENT_OPTIONS } from "@/lib/storedValues";
 import { mayShowLuxuryFields } from "@/lib/ageGate";
 import { weatherCarryDecision, isWeatherSource, isCarried, CARRIED_NOTE } from "@/lib/weatherCarry";
-import { CPPS_ENABLED, TONE_EVENNESS_CHART_ENABLED } from "@/lib/pausedFeatures";
+import { CPPS_ENABLED, TONE_EVENNESS_CHART_ENABLED, TONE_EVENNESS_INPUT_ENABLED } from "@/lib/pausedFeatures";
 import { teacherWithHonorific, DEPARTED_TEACHER_LABEL } from "@/lib/teacherDisplay";
 import { shouldNotify } from "@/lib/noticeAudience";
 import { shouldShowNotice, withNoticeShown, noticeStateFromRows, NOTICE_TEXT } from "@/lib/notices";
@@ -497,7 +497,9 @@ const NUTRITION_PHASES = ["維持", "増量", "減量"];
 const NUTRITION_PHASE_KEYS = { "維持": "phaseMaintain", "増量": "phaseBulk", "減量": "phaseCut" };
 const REST_METHODS = ["睡眠・休息", "入浴", "マッサージ", "読書", "散歩", "瞑想", "趣味の時間", "その他"];
 const REST_METHOD_KEYS = { "睡眠・休息": "restSleep", "入浴": "restBath", "マッサージ": "restMassage", "読書": "restReading", "散歩": "restWalk", "瞑想": "restMeditate", "趣味の時間": "restHobby", "その他": "optionOther" };
-const AI_ADVICE_ENABLED = false; // 準備中。有効にする場合は true にしてください（ANTHROPIC_API_KEYの設定も必要です）
+// ★★AI_ADVICE_ENABLED を、★外しました（★2026-09-09・削除17点の3番）。
+//   ★画面ごと 消したので、★この止めの札を 読む所が ありません。
+//   ★app/api/advice/route.js は 残っています。★画面を 消しただけです。
 const CARING_MESSAGE_KEYS = [
   "caringMsg1", "caringMsg2", "caringMsg3", "caringMsg4", "caringMsg5",
   "caringMsg6", "caringMsg7", "caringMsg8", "caringMsg9", "caringMsg10"
@@ -1290,31 +1292,15 @@ function computeBMI(weightKg, heightCm) {
   const h = heightCm / 100;
   return weightKg / (h * h);
 }
-// lavoce-記録項目の再設計v2.md §3.5: BMI・体重レンジ表示を廃止し、エネルギー可用性（EA）に置換する。
-// Deurenberg et al. (1991) の式による体脂肪率の推定。標準誤差は約4.1%BF（変動係数16%）で、
-// 鍛えている人・痩せている人ほど誤差が大きいため、推定値である旨を必ず画面に明示すること。
-function estimateBodyFatPct(bmi, age, sex) {
-  if (bmi == null || age == null || (sex !== "男性" && sex !== "女性")) return null;
-  const sexFactor = sex === "男性" ? 1 : 0;
-  return 1.20 * bmi + 0.23 * age - 10.8 * sexFactor - 5.4;
-}
-// 除脂肪体重 FFM。体組成計の実測（体脂肪率）があれば優先し、なければDeurenberg式で推定する。
-function computeFFM(weightKg, heightCm, age, sex, measuredBodyFatPct) {
-  if (!weightKg) return null;
-  if (typeof measuredBodyFatPct === "number") {
-    return { ffm: weightKg * (1 - measuredBodyFatPct / 100), isEstimated: false };
-  }
-  const bmi = computeBMI(weightKg, heightCm);
-  const estimated = estimateBodyFatPct(bmi, age, sex);
-  if (estimated == null) return null;
-  return { ffm: weightKg * (1 - estimated / 100), isEstimated: true };
-}
-// エネルギー可用性 EA = (摂取エネルギー − 運動によるエネルギー消費) / FFM(kg)。
-// 目安は45kcal/kgFFM/日前後が十分、30を下回る状態が継続すると低EA。単一日では断定しない。
-function computeEnergyAvailability(intakeKcal, exerciseKcal, ffmKg) {
-  if (!ffmKg || ffmKg <= 0 || intakeKcal == null) return null;
-  return (intakeKcal - (exerciseKcal || 0)) / ffmKg;
-}
+// ★★体脂肪率の推定（estimateBodyFatPct）・除脂肪体重（computeFFM）・
+//   エネルギー可用性（computeEnergyAvailability）の 3つを、★外しました
+//   （★2026-09-09・削除17点の1番）。
+//   ★エネルギー可用性を まるごと やめたので、★3つとも どこからも 呼ばれません。
+//   ★★推定した体脂肪率を 使う所は、★ほかに 1つも ありません。
+//     ★はじめ「体脂肪率の表示が読んでいる」と 書きましたが、★誤りでした。
+//     ★数えたら、★私の書いた この注記のほかに 参照が ありませんでした。
+//   ★computeBMI は 残します。★記録画面（6264）が 読んでいます。
+//   ★★記録そのもの（体重・体脂肪率）は、★1つも 消していません。
 function sumMacro(meals, key) {
   return (meals || []).reduce((total, m) => total + (Number(m[key]) || 0), 0);
 }
@@ -1396,17 +1382,12 @@ function estimateSimpleMealMacros(targets, proteinLevel, calorieLevel) {
   const fatG = remainingTargetKcal > 0 ? (remainingKcal * (fatKcalTarget / remainingTargetKcal)) / 9 : 0;
   return { proteinG, carbsG, fatG, fiberG: targets.fiberTarget || 0, totalKcal };
 }
-function evaluateIntake(actual, target) {
-  if (!target || target <= 0) return null;
-  const ratio = actual / target;
-  // ★値で色を変えない（分析画面の描画仕様 §7-5）。
-  //   ★金と緑は文字に使わない（見やすさ §5。実測で 2.80 / 2.76 しかない）。
-  //   言葉のほうが、色より正確に伝わる。色は足さず、文字で読ませる。
-  if (ratio < 0.8) return { labelKey: "evalInsufficient" };
-  if (ratio <= 1.1) return { labelKey: "evalAppropriate" };
-  if (ratio <= 1.3) return { labelKey: "evalSlightlyExcess" };
-  return { labelKey: "evalExcess" };
-}
+// ★★evaluateIntake を、★外しました（★2026-09-09・削除17点の2'番）。
+//   ★★摂取量を 目安と くらべて「不足／適量／やや過剰／過剰」と 言う 判定でした。
+//   ★どこからも 呼ばれていませんでした。★画面には 出ていません。
+//   ★★「不足」は、★体について こちらから 言う言葉です。★持ちません。
+//   ★★栄養素の 合計そのものは 残します（★9月8日の 撤回・2番）。
+//     ★数えて お見せするのと、★足りないと 言うのは、★別のことです。
 function newExerciseItem() {
   return { id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, type: "有酸素運動", minutes: "", intensity: 3, memo: "" };
 }
@@ -4606,11 +4587,20 @@ function VoiceEntryEditor({ entry, onChange, onRemove, onClose, professions, t, 
             )}
           </div>
         </div>
-        <div className="mt-3">
-          <DotSelector label="音色の均一感（音域全体で音色が揃っていたか）" icon={Music2}
-            value={entry.toneEvenness ?? 3} lowLabel="バラつく" highLabel="揃う"
-            onChange={(v) => onChange({ toneEvenness: v })} />
-        </div>
+        {/* ★★音色の均一感の 入力を、★止めました（★2026-09-09・削除17点の14番）。
+            ★★語が、★測ったもののように 読めます。★マイクは 使っていません。
+              ★ご自分の耳での ご判断を、★5段階で 尋ねていました。
+            ★★列（tone_evenness）も、★これまでに 書かれた値も、
+              ★1つも 消していません。★新しく 尋ねないだけです。
+              ★書き出しにも、★そのまま 入っています。
+            ★止めを 決めるのは lib/pausedFeatures.js だけです。★ここで 決めません。 */}
+        {TONE_EVENNESS_INPUT_ENABLED && (
+          <div className="mt-3">
+            <DotSelector label="音色の均一感（音域全体で音色が揃っていたか）" icon={Music2}
+              value={entry.toneEvenness ?? 3} lowLabel="バラつく" highLabel="揃う"
+              onChange={(v) => onChange({ toneEvenness: v })} />
+          </div>
+        )}
         {isAnnouncer && (
           <div className="mt-3">
             <p className="text-xs font-medium mb-1.5" style={{ color: C.ink }}>話声位（SFF）</p>
@@ -5231,10 +5221,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [analysisPeriod, setAnalysisPeriod] = useState("all"); // "week" | "month" | "year" | "all" | "custom"
   const [analysisCustomStart, setAnalysisCustomStart] = useState("");
   const [analysisCustomEnd, setAnalysisCustomEnd] = useState("");
-  const [adviceText, setAdviceText] = useState("");
-  const [adviceLoading, setAdviceLoading] = useState(false);
-  const [adviceError, setAdviceError] = useState("");
-  const [adviceGeneratedAt, setAdviceGeneratedAt] = useState(null);
+  // ★★AIアドバイスの 覚え（4つ）を、★外しました（★2026-09-09・削除17点の3番）。
+  //   ★画面を 消したので、★どこからも 読み書きされません。
   const [profile, setProfile] = useState({ height_cm: "", voice_type: "", nutrition_phase: "維持", protein_coefficient: 1.6, age: "", sex: "", garden_theme: "rose", vocal_range_low: "", vocal_range_high: "", comfort_range_low: "", comfort_range_high: "", technical_goal: "", health_notes: "", vocal_profession: "singer", voice_occupation: null, voice_mix: null, voice_mix_edited_at: null, occupation_notice_shown_at: null, conditions: [], allergies: [], regular_medications: [], onboarding_completed: null, professions: [], goal_focus: "", practice_goal: "", practice_goal_tags: [], practice_goal_started_at: null, practice_reviews: [], folded_groups: [], survey_day7_shown_at: null, survey_day7_response: "", line_user_id: null, line_link_code: null, line_linked_at: null, line_notification_enabled: true, day_record_boundary_hour: 21, teacher_beta_access: false, display_name: "", is_admin: false, record_mode: DEFAULT_RECORD_MODE, deleted_at: null, cycle_show_on_home: true,
     // ★18歳未満か（A-7）。null は「まだ答えていない」＝未成年として扱う。
     //   既定を false にしないこと。答えていないことが、そのまま安全側になる。
@@ -6288,11 +6276,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     return estimateSimpleMealMacros(nutritionTargets, formData.proteinLevel ?? 1, formData.calorieLevel ?? 1);
   }, [formData, nutritionTargets]);
   // ★★書かれた食べものだけの合計（★2026-09-08・Opus の再点検 2b）。
-  //   ★★mealTotals とは、★別のものです。★1つにしないこと。
-  //     ★mealTotals は、★書かれていないとき 3択から推し量ります。
-  //       ★保存の値を作るために使っています（★entryToRow）。
-  //     ★★こちらは、★画面に出す値です。★推し量りを混ぜません。
-  //   ★★「保存のための値」と「画面に出す値」は、別の問いです。
+  //   ★★推し量りを 混ぜません。★書かれたものだけを 数えます。
+  //   ★★保存の値は、★entryToRow が 別に 作ります（★sumMacro）。
+  //     ★「保存のための値」と「画面に出す値」は、★別の問いです。
+  //     ★★2026-09-09、★画面側にあった mealTotals を 外しました。
+  //       ★どこからも 呼ばれていませんでした。★保存側は そのままです。
   const recordedMacroTotals = useMemo(
     () => mealMacroTotals(formData ? formData.meals : null),
     [formData]);
@@ -6306,18 +6294,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     () => usualTotals(entries, selectedDate),
     [entries, selectedDate]);
 
-  const mealTotals = useMemo(() => {
-    const meals = formData ? formData.meals || [] : [];
-    if (meals.length === 0 && simpleMealMacros) {
-      return { carbs: simpleMealMacros.carbsG, protein: simpleMealMacros.proteinG, fat: simpleMealMacros.fatG, fiber: simpleMealMacros.fiberG };
-    }
-    return {
-      carbs: sumMacro(meals, "carbs"),
-      protein: sumMacro(meals, "protein"),
-      fat: sumMacro(meals, "fat"),
-      fiber: sumMacro(meals, "fiber")
-    };
-  }, [formData, simpleMealMacros]);
+  // ★★mealTotals を、★外しました（★2026-09-09）。
+  //   ★どこからも 呼ばれていませんでした。
+  //   ★★いま 画面に 出ている 合計は、★recordedMacroTotals と
+  //     usualMacroTotals です（★14477 あたり）。★そちらは 残ります。
+  //   ★同じことを 数える所が 2つ あり、★片方が 誰にも 読まれずに
+  //     残っていた、★いつもの形です。
   const sortedDates = useMemo(() => Object.keys(entries).sort().reverse(), [entries]);
   const monthEntries = useMemo(() => {
     const prefix = `${viewMonth.year}-${String(viewMonth.month + 1).padStart(2, "0")}`;
@@ -6564,75 +6546,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       lowN: all.filter((s) => !gateAllows("rest.average", { n: s.n })).sort((a, b) => b.n - a.n)
     };
   }, [filteredEntries]);
-  // 声の調子スコア（過去2週間の平均から算出する、100点満点の参考指標）。
-  // 医学的な診断値ではなく、これまで記録してきた項目を独自の重み付けで統合したもの。
-  // 各項目の内訳も併せて返し、ブラックボックスにしない。
-  const vocalConditionScore = useMemo(() => {
-    const realToday = realTodayDate;
-    const startDate = addDays(realToday, -13);
-    const days = [];
-    for (let i = 0; i < 14; i++) {
-      const d = addDays(startDate, i);
-      if (entries[d]) days.push(entries[d]);
-    }
-    if (days.length < 3) return { hasEnoughData: false, daysCount: days.length };
-
-    const avg = (arr) => (arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null);
-
-    const throatVals = days.map((e) => e.throatCondition).filter((v) => typeof v === "number");
-    const voiceVals = days.map((e) => e.voiceQuality).filter((v) => typeof v === "number");
-    const easeVals = days.map((e) => e.ease).filter((v) => typeof v === "number");
-    const sleepHoursVals = days.map((e) => e.sleepHours).filter((v) => typeof v === "number");
-    const sleepQualityVals = days.map((e) => e.sleepQuality).filter((v) => typeof v === "number");
-    const waterVals = days
-      .map((e) => Object.values(e.waterBySlot || {}).reduce((s, v) => s + (Number(v) || 0), 0))
-      .filter((v) => v > 0);
-
-    const throatScore = throatVals.length ? (avg(throatVals) / 5) * 100 : null;
-    const voiceScore = voiceVals.length ? (avg(voiceVals) / 5) * 100 : null;
-    const easeScore = easeVals.length ? (avg(easeVals) / 5) * 100 : null;
-
-    let sleepHoursScore = null;
-    if (sleepHoursVals.length) {
-      const h = avg(sleepHoursVals);
-      if (h >= 7 && h <= 9) sleepHoursScore = 100;
-      else if (h < 7) sleepHoursScore = Math.max(0, 100 - (7 - h) * 20);
-      else sleepHoursScore = Math.max(0, 100 - (h - 9) * 15);
-    }
-    const sleepQualityScore = sleepQualityVals.length ? (avg(sleepQualityVals) / 5) * 100 : null;
-    let sleepScore = null;
-    if (sleepHoursScore != null && sleepQualityScore != null) sleepScore = (sleepHoursScore + sleepQualityScore) / 2;
-    else sleepScore = sleepHoursScore ?? sleepQualityScore;
-
-    const symptomDays = days.filter((e) => (e.throatSymptoms || []).length > 0).length;
-    const symptomScore = 100 - (symptomDays / days.length) * 100;
-
-    const waterScore = waterVals.length ? Math.min(100, (avg(waterVals) / 2000) * 100) : null;
-
-    const components = [
-      { key: "throat", labelKey: "scoreCompThroat", score: throatScore, weight: 25 },
-      { key: "voice", labelKey: "scoreCompVoice", score: voiceScore, weight: 20 },
-      { key: "sleep", labelKey: "scoreCompSleep", score: sleepScore, weight: 20 },
-      { key: "mental", labelKey: "scoreCompMental", score: easeScore, weight: 15 },
-      { key: "symptom", labelKey: "scoreCompSymptom", score: symptomScore, weight: 10 },
-      { key: "water", labelKey: "scoreCompWater", score: waterScore, weight: 10 }
-    ];
-
-    const validComponents = components.filter((c) => c.score != null);
-    const totalWeight = validComponents.reduce((s, c) => s + c.weight, 0);
-    if (totalWeight === 0) return { hasEnoughData: false, daysCount: days.length };
-    const weightedSum = validComponents.reduce((s, c) => s + c.score * c.weight, 0);
-    const total = Math.round(weightedSum / totalWeight);
-
-    // 数字の作法③: 各サブスコアの「押し下げ量」= 全体に対する重みの割合 × (100点との差)。
-    // 総合点そのものより、「どの項目がいちばん効いているか」の方が行動につながる。
-    const withPullDown = validComponents
-      .map((c) => ({ ...c, pullDown: (c.weight / totalWeight) * (100 - c.score) }))
-      .sort((a, b) => b.pullDown - a.pullDown);
-    const topPullDown = withPullDown[0] && withPullDown[0].pullDown >= 1 ? withPullDown[0] : null;
-
-    return { hasEnoughData: true, total, components, pullDowns: withPullDown, topPullDown, daysCount: days.length };
-  }, [entries, realTodayDate]);
+  // ★★声の調子スコア（vocalConditionScore）を、★外しました
+  //   （★2026-09-09・削除17点の4番）。
+  //   ★★9月7日に カードを 消し、★計算だけ 残っていました。
+  //     ★どこからも 呼ばれていませんでした。
+  //   ★★「69/100」も、★下位スコア6つも、★押し下げの数字も、
+  //     ★これで 作られなくなります。★点を つけません。
+  //   ★★記録そのものは、★1つも 消していません。
   const timeSeries = useMemo(() => {
     const dates = Object.keys(filteredEntries).sort();
     return dates.map((date) => {
@@ -8351,18 +8271,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }, [profile.practice_goal_tags, entries, acwrSeries]);
   // ---- 稽古ノート 用データ ここまで ----
 
-  // ---- lavoce-指標設計図.md 09. 環境の快適帯 用データ ----
-  // 相対湿度ではなく絶対湿度（AH）で見る。気温が変わると同じ%でも実際の水分量が変わるため。
-  const envEntries = useMemo(() => {
-    return Object.values(entries)
-      .map((e) => ({
-        ah: computeAbsoluteHumidity(e.temperature, e.humidity),
-        temp: typeof e.temperature === "number" ? e.temperature : null,
-        rh: typeof e.humidity === "number" ? e.humidity : null,
-        throat: typeof e.throatCondition === "number" ? e.throatCondition : null
-      }))
-      .filter((x) => x.ah != null && x.throat != null);
-  }, [entries]);
+  // ★★環境の快適帯（envEntries）を、★外しました（★2026-09-09・削除17点の10番）。
+  //   ★★快適帯の2次元マップを やめたので、★これを 読む所が なくなりました。
+  //   ★気温・湿度の 記録そのものは、★1つも 消していません。
+  //     ★記録画面でも 書けますし、★書き出しにも 入っています。
   // ★★快適帯の計算を、まるごとやめました（★2026-09-07・10番）。
   //   ★絶対湿度を2刻みで分けて、★喉のスコアが高い連続区間を「快適帯」と呼んでいました。
   //   ★★カードを外したので、★この値を読む場所が、ひとつも無くなりました。
@@ -8458,24 +8370,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     return fb;
   }, [formData, entries, selectedDate, acwrGate, acwrToday, songFactorResolver]);
 
-  // ②気温4℃刻み×相対湿度10%刻みの2次元マップ
-  const comfortZone2D = useMemo(() => {
-    if (envEntries.length < 10) return null;
-    const cells = {};
-    envEntries.forEach((x) => {
-      if (x.temp == null || x.rh == null) return;
-      const tBin = Math.floor(x.temp / 4) * 4;
-      const rhBin = Math.floor(x.rh / 10) * 10;
-      const key = `${tBin}_${rhBin}`;
-      if (!cells[key]) cells[key] = { tBin, rhBin, sum: 0, n: 0 };
-      cells[key].sum += x.throat; cells[key].n += 1;
-    });
-    const list = Object.values(cells).map((c) => ({ ...c, avg: c.sum / c.n }));
-    if (list.length === 0) return null;
-    const tBins = [...new Set(list.map((c) => c.tBin))].sort((a, b) => a - b);
-    const rhBins = [...new Set(list.map((c) => c.rhBin))].sort((a, b) => a - b);
-    return { cells: list, tBins, rhBins };
-  }, [envEntries]);
+  // ★★快適帯の2次元マップ（comfortZone2D）を、★外しました
+  //   （★2026-09-09・削除17点の10番）。
+  //   ★★9月7日に 画面から 外し、★計算だけ 残っていました。
+  //     ★どこからも 呼ばれていませんでした。
+  //   ★「作った関数は、必ずどこかから 呼ばれているか」という 決めに 従います。
+  //   ★★気温・湿度の 記録そのものは、★1つも 消していません。
   const todayEnvPosition = useMemo(() => {
     const realToday = realTodayDate;
     const e = entries[realToday];
@@ -8737,67 +8637,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }, [refluxDinnerTagEffects]);
   // ---- 逆流専用の分析 用データ ここまで ----
 
-  // ---- lavoce-記録項目の再設計v2.md §3.5: エネルギー可用性（EA） 用データ ----
-  // 日次では出さない（体重は水分でブレるため）。件数が十分溜まったときだけ、月1回のまとめとして表示する。
-  const energyAvailabilityAnalysis = useMemo(() => {
-    const realToday = realTodayDate;
-    const dates28 = [];
-    for (let i = 27; i >= 0; i--) dates28.push(addDays(realToday, -i));
-    const nutritionTargets28 = dates28.map((d) => {
-      const e = entries[d];
-      if (!e) return null;
-      const w = e.weightKg || getLatestWeight(entries, d);
-      const targets = computeNutritionTargets(w, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient);
-      const intakeKcal = (e.carbs || 0) * 4 + (e.protein || 0) * 4 + (e.fat || 0) * 9;
-      const exerciseKcal = (e.exercises || []).reduce((s, x) => s + 0.1 * (w || 60) * (Number(x.minutes) || 0) * ((typeof x.intensity === "number" ? x.intensity : 3) / 3), 0);
-      const ffmResult = computeFFM(w, profile.height_cm ? Number(profile.height_cm) : null, profile.age ? Number(profile.age) : null, profile.sex, e.bodyFatPct);
-      const ea = ffmResult && intakeKcal > 0 ? computeEnergyAvailability(intakeKcal, exerciseKcal, ffmResult.ffm) : null;
-      return { date: d, intakeKcal, ea, isEstimatedFFM: ffmResult ? ffmResult.isEstimated : null };
-    });
-    const validEaCount = nutritionTargets28.filter((x) => x && x.ea != null).length;
-    // カロリー記録が十分に揃っている（28日中14日以上）場合はEAで判定する
-    if (validEaCount >= 14) {
-      const eaVals = nutritionTargets28.filter((x) => x && x.ea != null).map((x) => x.ea);
-      const recentAvg = eaVals.slice(-21).reduce((a, b) => a + b, 0) / Math.min(21, eaVals.length);
-      const earlierSlice = eaVals.slice(0, Math.max(0, eaVals.length - 13));
-      const earlierAvg = earlierSlice.length ? earlierSlice.reduce((a, b) => a + b, 0) / earlierSlice.length : recentAvg;
-      const isLow = recentAvg < 30 && earlierAvg < 30; // 2週間程度の継続を簡易的に確認（両端で判定）
-      const isEstimated = nutritionTargets28.some((x) => x && x.isEstimatedFFM);
-      return { method: "ea", recentAvg, isLow, isEstimated, validEaCount };
-    }
-    // カロリー記録が足りない場合は、既存データだけで組める複合サインにフォールバックする
-    const dates56 = [];
-    for (let i = 55; i >= 0; i--) dates56.push(addDays(realToday, -i));
-    const weightsRecent = dates56.slice(28).map((d) => entries[d] && entries[d].weightKg).filter((v) => typeof v === "number");
-    const weightsEarlier = dates56.slice(0, 28).map((d) => entries[d] && entries[d].weightKg).filter((v) => typeof v === "number");
-    const signal1 = weightsRecent.length >= 3 && weightsEarlier.length >= 3 &&
-      (weightsEarlier.reduce((a, b) => a + b, 0) / weightsEarlier.length - weightsRecent.reduce((a, b) => a + b, 0) / weightsRecent.length) /
-      (weightsEarlier.reduce((a, b) => a + b, 0) / weightsEarlier.length) >= 0.03;
-    const dates14 = dates28.slice(-14);
-    const symptomDayRatio = dates14.filter((d) => entries[d] && (entries[d].throatSymptoms || []).length > 0).length / 14;
-    const signal2 = symptomDayRatio > 0.5;
-    let recoveryNotBackCount = 0;
-    const sortedDates = Object.keys(entries).sort();
-    sortedDates.forEach((date, i) => {
-      const e = entries[date];
-      if (!(e.activities && e.activities.length === 0 && e.recovery)) return;
-      const nextDate = sortedDates[i + 1];
-      if (!nextDate || addDays(date, 1) !== nextDate) return;
-      const nextEntry = entries[nextDate];
-      if (typeof nextEntry.throatCondition === "number" && overallThroatBaseline != null && nextEntry.throatCondition < overallThroatBaseline) {
-        recoveryNotBackCount += 1;
-      }
-    });
-    const signal3 = recoveryNotBackCount >= 3;
-    const sleepVals14 = dates14.map((d) => entries[d] && entries[d].sleepHours).filter((v) => typeof v === "number");
-    const avgSleep14 = sleepVals14.length ? sleepVals14.reduce((a, b) => a + b, 0) / sleepVals14.length : null;
-    const fatigueDayCount = dates14.filter((d) => entries[d] && (entries[d].mentalTags || []).includes("疲労・過労")).length;
-    const signal5 = avgSleep14 != null && avgSleep14 >= 7 && fatigueDayCount >= 7;
-    // 月経周期の乱れ（signal4）は現状のデータでは信頼できる判定ができないため対象外とする
-    const signalCount = [signal1, signal2, signal3, signal5].filter(Boolean).length;
-    return { method: "composite", signalCount, isLow: signalCount >= 3, signals: { signal1, signal2, signal3, signal5 } };
-  }, [entries, profile.height_cm, profile.age, profile.sex, profile.nutrition_phase, profile.protein_coefficient, overallThroatBaseline, realTodayDate]);
-  // ---- エネルギー可用性 用データ ここまで ----
+  // ★★エネルギー可用性（EA）の 計算を、★まるごと 外しました（★2026-09-09・削除17点の1番）。
+  //   ★★9月7日に カードを 消し、★計算だけ 残していました。
+  //     ★そのとき「次の作業で、計算ごと外します」と 書いた、★その作業です。
+  //   ★★出口を 1つ 見落としていました（★「今日の一言」の 文）。
+  //     ★出口を 塞いだので、★もう どこからも 読まれません。
+  //   ★「作った関数は、必ずどこかから 呼ばれているか」という 決めに 従います。
+  //   ★★記録そのもの（体重・食事）は、★1つも 消していません。
 
   // ---- lavoce-画面レイアウト仕様_1.md §5.3: 発見カード（今週の発見） 用データ ----
   // priority = |効果量（正規化）| × 確度係数 × 行動可能性。既存の各分析結果から候補を集め、
@@ -8867,21 +8713,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         });
       }
     }
-    // §6-4: EAの警告も「今日の一言」に出るので、同じレイヤーで件数を確認する。
-    // 複合サインで判定した場合（method:"composite"）は EA の実測値が足りていないので、
-    // 警告としては出さない（パネル側の説明は従来どおり残る）。
-    if (energyAvailabilityAnalysis && energyAvailabilityAnalysis.isLow
-        && gateAllows("energyAvailability", { n: energyAvailabilityAnalysis.validEaCount })) {
-      candidates.push({
-        id: "ea-low",
-        icon: "⚠️",
-        text: "摂取エネルギーが、推定の必要量を下回る状態が続いています。",
-        detail: "エネルギー可用性（月次まとめ）",
-        priority: 0.7 * 1.0 * 0.5
-      });
-    }
+    // ★★エネルギー可用性の 警告文を、★外しました（★2026-09-09・削除17点の1番）。
+    //   ★★9月7日に カードを 消したとき、★計算だけ 残しました。
+    //     ★ところが、★出口が ここに 1つ 残っていました。
+    //     ★「今日の一言」として、★文は 出つづけていました。
+    //   ★★「摂取エネルギーが、推定の必要量を下回る」は、
+    //     ★体について、★こちらから 言う言葉です。★言いません。
+    //   ★計算（energyAvailabilityAnalysis）も、★これで 誰も 読みません。
     return candidates.sort((a, b) => b.priority - a.priority).slice(0, 3);
-  }, [topLagFinding, effectiveHabitRanking, roleLoadStats, acwrToday, refluxDinnerTagEffectsWithFdr, energyAvailabilityAnalysis, recordedDaysTotal]);
+  }, [topLagFinding, effectiveHabitRanking, roleLoadStats, acwrToday, refluxDinnerTagEffectsWithFdr, recordedDaysTotal]);
   // ---- 発見カード 用データ ここまで ----
 
   // ---- 改善タスクv2 §4-1(a): 分析タブのロック判定を1箇所に集約する ----
@@ -11918,23 +11758,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setConfirmDeleteDate(null);
   }
 
-  async function handleGenerateAdvice() {
-    setAdviceLoading(true);
-    setAdviceError("");
-    try {
-      const res = await fetch("/api/advice", { method: "POST" });
-      const data = await res.json();
-      if (!res.ok) {
-        setAdviceError(data.error || t("errorAdviceGeneration"));
-      } else {
-        setAdviceText(data.advice);
-        setAdviceGeneratedAt(new Date());
-      }
-    } catch (e) {
-      setAdviceError(t("errorAdviceGeneration"));
-    }
-    setAdviceLoading(false);
-  }
+  // ★★handleGenerateAdvice を、★外しました（★2026-09-09・削除17点の3番）。
+  //   ★押しどころが 無くなったので、★どこからも 呼ばれません。
 
   // ★★着せかえたものを、保存します（2026-09-05 夜）。
   //   ★character_equipped の中の「wardrobe」だけを差し替えます。
@@ -19149,53 +18974,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 </div>
               );
             })()}
-            {activeTab === "advice" && (
-              <div className="space-y-5">
-                <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <Bot size={18} style={{ color: C.curtain }} />
-                    {/* ★★「AIアドバイス」という名前を、外しました（★2026-09-07）。
-                        ★規約 第7条4項「医学的助言を行うものではありません」と反していました。
-                        ★★入口（もっと の中）も外したので、★この画面へは来られません。
-                          ★画面ごと消すのは、★中身の見直しのあとにします。 */}
-                    <h3 className="ff-display italic text-lg">準備中</h3>
-                  </div>
-                  {!AI_ADVICE_ENABLED ? (
-                    <div className="rounded-xl p-4 text-sm" style={{ background: C.paper, color: C.inkSoft }}>
-                      {t("labelAdviceComingSoon")}
-                    </div>
-                  ) : (
-                    <>
-                      <p className="text-xs mb-4" style={{ color: C.inkSoft }}>
-                        直近2週間の記録（食事メモ・自由メモを含む）をもとに、AIが傾向を読み取ってアドバイスします。
-                      </p>
-                      <button onClick={handleGenerateAdvice} disabled={adviceLoading}
-                        className="rounded-full px-5 py-2.5 text-sm font-medium flex items-center gap-2"
-                        style={{ background: C.curtain, color: "#FFFDF8" }}>
-                        {adviceLoading && <Loader2 size={14} className="animate-spin" />}
-                        {adviceLoading ? t("labelAnalyzing") : t("labelGenerateAdvice")}
-                      </button>
-                      {adviceError && <p className="text-xs mt-3" style={{ color: C.curtain }}>{adviceError}</p>}
-                      {adviceText && (
-                        <div className="mt-4 rounded-xl p-4 text-sm leading-relaxed whitespace-pre-wrap" style={{ background: C.paper, border: `1px solid ${C.line}` }}>
-                          {adviceText}
-                        </div>
-                      )}
-                      {adviceGeneratedAt && (
-                        <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                          生成日時: {adviceGeneratedAt.toLocaleString("ja-JP")}
-                        </p>
-                      )}
-                    </>
-                  )}
-                </div>
-                {AI_ADVICE_ENABLED && (
-                  <p className="text-xs leading-relaxed px-1" style={{ color: C.inkSoft }}>
-                    ※ このアドバイスはAIによる一般的な提案であり、医学的な診断ではありません。体調に不安がある場合は医療専門家にご相談ください。
-                  </p>
-                )}
-              </div>
-            )}
+            {/* ★★「準備中」の 空のカードを、★画面ごと 外しました
+                  （★2026-09-09・削除17点の3番）。
+                ★★9月7日に 名前と 入口を 外し、★「画面ごと消すのは、中身の
+                  見直しのあとに」と 書きました。★その見直しは 済んでいます。
+                ★★入口が 無いのに 画面だけ 残っていました。
+                  ★たどり着けない画面に「準備中」と 書いてあるのは、
+                  ★これから 出る、という 約束に 読めます。★約束していません。
+                ★api/advice のルートは 残します。★画面を 消しただけです。 */}
 
             {activeTab === "learn" && (() => {
               const currentProfession = learnProfession || profile.vocal_profession || "singer";
@@ -19780,9 +19566,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           「本サービスは、医療行為、診断、治療または医学的助言を
                           　行うものではありません。」
                         ★「アドバイス」は、助言です。★名前が、規約に反していました。
-                        ★★画面そのもの（AI_ADVICE_ENABLED = false）は、
-                          ★もともと止まっています。★入口だけが残っていました。
-                        ★中身の見直しは、このあとです。★名前を先に外します。 */}
+                        ★★2026-09-09、★画面ごと 外しました（★削除17点の3番）。
+                          ★止めの札（AI_ADVICE_ENABLED）も、★覚えも、★呼び出しも、
+                          ★1つ残らず 消しました。★入口も 画面も ありません。
+                        ★app/api/advice/route.js は 残っています。★呼ぶ所が ありません。 */}
                   </div>
                 </div>
 

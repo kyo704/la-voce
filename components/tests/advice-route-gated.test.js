@@ -57,11 +57,19 @@ console.log("\n=== ★閉じているときは、記録を読まない ===");
 
 console.log("\n=== ★画面の定数は、門の代わりにならない ===");
 {
-  // 画面側の定数は残してよい（ボタンを隠す役目）。ただし★これだけに頼らない。
-  assertTrue(/const AI_ADVICE_ENABLED = false/.test(ui),
-    "画面の定数は、ボタンを隠すために残っている");
+  // ★★2026-09-09、★画面を まるごと 外しました（★削除17点の3番）。
+  //   ★以前は「画面側の定数が、ボタンを隠すために残っている」ことを 見張っていました。
+  //   ★★いまは 画面そのものが 無いので、★定数も ありません。
+  //   ★★門は ルート側だけです。★それが、この見張りの 本来の言い分でした。
+  assertTrue(!/const AI_ADVICE_ENABLED/.test(ui),
+    "★画面側の定数は、もう無い（★画面ごと外したため）");
   assertTrue(!/AI_ADVICE_ENABLED/.test(route.replace(/process\.env\.AI_ADVICE_ENABLED/g, "")),
     "★ルートが画面の定数を import していない");
+  // ★★ルート側の門は、★画面が消えても 立っていること。
+  //   ★画面が無いから安全、では ありません。★誰でも POST できます。
+  assertTrue(/process\.env\.AI_ADVICE_ENABLED/.test(route) || /AI_ADVICE/.test(route)
+             || /return .*(401|403|503)/.test(route) || /getUser\(\)/.test(route),
+    "★ルート側の門は、画面が消えても立っている");
 }
 
 console.log(`\n${failCount === 0 ? "✅ 全て通りました" : "❌ 失敗あり"}  成功:${passCount} 失敗:${failCount}`);
