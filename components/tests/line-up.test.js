@@ -105,8 +105,17 @@ function eq(a, b, label) {
     t(!lb.LOOK_BACK_FIELDS.some((x) => x.key === f), `★置いてはいけない欄が 無い（${f}）`);
   });
 
-  console.log("\n=== ⑥ 見本の無いものを 置かない ===");
-  t(!/くらべる|かぞえる/.test(uiCode), "★「くらべる」「かぞえる」を 置いていない");
+  console.log("\n=== ⑥ 帯は、中身が できたものだけ ===");
+  // ★★もとの言い分は「★押せるのに 何も 起きないものを 出さない」でした。
+  //   ★2026-09-09、★くらべる（見本⑫）を 作りました。★だから 置いてよい。
+  //   ★★見張りを 消さずに、★言い分の ほうを そのまま 確かめます。
+  //     ★帯に あるなら、★その 中身が あること。
+  //     ★中身が 無いなら、★帯に 出さないこと。
+  t(/setTab\("kuraberu"\)/.test(uiCode) === /<CompareV2/.test(uiCode),
+    "★「くらべる」は、帯と 中身が そろっている");
+  t(!/setTab\("kazoeru"\)/.test(uiCode), "★「かぞえる」は、まだ 帯に 出していない（★中身が まだ）");
+  t(!/かぞえる<\/button>/.test(readRaw("components", "LookBackV2.jsx")),
+    "★押しどころとしての「かぞえる」が 無い");
 
   console.log("\n=== ⑦ 門 ===");
   const vt = readRaw("components", "VocalTracker.jsx");

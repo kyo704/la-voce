@@ -7,6 +7,8 @@ import { LOOK_BACK_FIELDS, hardDays, lookBackableDays } from "@/lib/lookBack";
 import { PERIODS, LINE_UP_NOTE, datesBack, seriesOf, sungMinutes } from "@/lib/lineUp";
 import { SYMPTOM_LOCATION } from "@/lib/symptomLocations";
 import { isLaterWritten } from "@/lib/entrySource";
+import CompareV2 from "@/components/CompareV2";
+import { tabIsOpen, quietReason } from "@/lib/quietDays";
 
 // ============================================================================
 // 「ふりかえる」の画面（見本④⑤ ／ 2026-09-09）
@@ -123,7 +125,7 @@ function Symptoms({ entries, dates }) {
   );
 }
 
-export default function LookBackV2({ entries, todayISO, notOutDays }) {
+export default function LookBackV2({ entries, todayISO, notOutDays, performanceDays }) {
   const [tab, setTab] = useState("narabe");
   const [periodKey, setPeriodKey] = useState("14d");
 
@@ -147,11 +149,12 @@ export default function LookBackV2({ entries, todayISO, notOutDays }) {
         <p style={{ ...small, whiteSpace: "pre-line" }}>{LINE_UP_NOTE}</p>
       </div>
 
-      {/* ★★帯。★見本には 4つ ありますが、★見本が 届いた 2つだけ 置きます。
+      {/* ★★帯（★見本⑫〜⑮）。★「かぞえる」は、まだ 置きません。
           ★★押せるのに 何も 起きないものを、★出しません。 */}
       <div className="flex gap-2">
         <button type="button" onClick={() => setTab("narabe")} style={chip(tab === "narabe")}>ならべる</button>
         <button type="button" onClick={() => setTab("sakanobore")} style={chip(tab === "sakanobore")}>さかのぼる</button>
+        <button type="button" onClick={() => setTab("kuraberu")} style={chip(tab === "kuraberu")}>くらべる</button>
       </div>
 
       {tab === "narabe" && (
@@ -190,6 +193,44 @@ export default function LookBackV2({ entries, todayISO, notOutDays }) {
           );
         }
         return <LookBackPanel dates={days} entries={entries} fields={LOOK_BACK_FIELDS} />;
+      })()}
+
+      {tab === "kuraberu" && (() => {
+        // ★★本番の 前後は お休みです（★見本⑮・査読 §1）。
+        //   ★★「あなたは こうです」と 言う 2つだけを 休みます。
+        //   ★ならべる と さかのぼる は、★いつでも 見られます。
+        //   ★決めるのは lib/quietDays.js だけです。★ここで 日を 数えません。
+        if (!tabIsOpen("kuraberu", todayISO, performanceDays)) {
+          const q = quietReason(todayISO, performanceDays);
+          return (
+            <div style={{ ...card, textAlign: "center", padding: "28px 16px" }}>
+              <p style={{ fontSize: "1rem", color: C.ink, lineHeight: 1.9, marginBottom: 10 }}>
+                くらべる と かぞえる は、<br />いまは お休みです。
+              </p>
+              {q ? (
+                <p style={{ ...small, marginBottom: 14 }}>
+                  {q.daysUntil > 0
+                    ? `${Number(q.performedOn.slice(5, 7))}月${Number(q.performedOn.slice(8, 10))}日の 本番まで あと${q.daysUntil}日です。`
+                    : `${Number(q.performedOn.slice(5, 7))}月${Number(q.performedOn.slice(8, 10))}日の 本番のあとです。`}
+                  <br />本番の 翌々日から、また 出ます。
+                </p>
+              ) : null}
+              <p style={small}>
+                ならべる と さかのぼる は、いつでも 見られます。<br />
+                記録も、いつもどおり 書けます。
+              </p>
+              <div className="flex gap-2" style={{ marginTop: 14 }}>
+                <button type="button" onClick={() => setTab("narabe")} style={{ ...chip(false), flex: 1 }}>
+                  ならべる を見る
+                </button>
+                <button type="button" onClick={() => setTab("sakanobore")} style={{ ...chip(false), flex: 1 }}>
+                  さかのぼる を見る
+                </button>
+              </div>
+            </div>
+          );
+        }
+        return <CompareV2 entries={entries} dates={dates} />;
       })()}
     </div>
   );
