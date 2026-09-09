@@ -71,14 +71,19 @@ function eq(a, b, label) {
   });
   t(!/supabase|createClient/.test(ui), "★この画面じしんが データベースを 引かない");
 
-  console.log("\n=== ⑤ §4-7 の 一覧だけが パソコン ===");
-  eq(m.mayShowWideTable(390), false, "iPhone では 横並びの 表を 出さない");
-  eq(m.mayShowWideTable(834), false, "iPad でも 出さない（★見るだけ・§4-7）");
-  eq(m.mayShowWideTable(1024), true, "パソコンなら 出す");
-  eq(m.mayShowWideTable(null), false, "★はばが 分からないうちは 出さない");
-  eq(m.WIDE_TABLE_NOTE, "先生を横に並べた表は、パソコンでご覧ください。", "★1行だけの 断り");
-  t(!/ご利用いただけません|使えません|対応していません/.test(m.WIDE_TABLE_NOTE),
+  console.log("\n=== ⑤ §4-7 は 撤回。★残るのは「うごかす」だけ ===");
+  // ★★2026-09-09・Opus の裁定。★見ることは iPhone でも できます。
+  t(typeof m.mayShowWideTable === "undefined", "★「一覧はパソコンだけ」の判定は、もう無い");
+  eq(m.mayDragBlocks(390), false, "★iPhone では コマを 動かせない");
+  eq(m.mayDragBlocks(834), false, "★iPad も 見るだけ（★見本⑧）");
+  eq(m.mayDragBlocks(1024), true, "パソコンなら 動かせる");
+  eq(m.mayDragBlocks(null), false, "★はばが 分からないうちは 動かせない");
+  eq(m.DRAG_NOTE, "コマの入れ替えは、パソコンでできます。", "★1行だけの 断り");
+  t(!/ご利用いただけません|使えません|対応していません/.test(m.DRAG_NOTE),
     "★責める言葉に なっていない");
+  // ★★シェルは、★もう はばを 見ないこと
+  t(!/useWidth|innerWidth/.test(readCode("components", "OpsShell.jsx")),
+    "★シェルは はばを 見ない（★見せ方は 日程の画面が 決める）");
 
   console.log("\n=== ★運営モード全体は、iPhone でも 出る ===");
   // ★★2026-09-09 の お決め。★はばで シェルごと 止めていないこと。

@@ -110,6 +110,7 @@ import { recallEquipped, rememberEquipped } from "@/lib/equippedCache";
 import { mayUseLayoutV2 } from "@/lib/layoutV2";
 import HomeV2 from "@/components/HomeV2";
 import OpsShell from "@/components/OpsShell";
+import OpsSchedule from "@/components/OpsSchedule";
 import { mayEnterOps } from "@/lib/opsShell";
 import RecordV2Head from "@/components/RecordV2Head";
 import LookBackV2 from "@/components/LookBackV2";
@@ -5179,6 +5180,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //     ★「2つのアプリが 1つに入っている形」（★§3-3）。
   //   ★null なら 入っていません。★org の id を 持ちます。
   const [opsOrgId, setOpsOrgId] = useState(null);
+  // ★日程で 見ている日。★地図から 押すと、ここが 変わります。
+  const [opsDate, setOpsDate] = useState(() => todayISO());
   // ★自分が作ったのに、自分の membership が無い教室（2026-09-02）。
   //   ensureOwnOrg は「教室を作る」と「オーナーとして入る」が別の操作です。
   //   後者だけ失敗すると、教室はあるのに誰も居ない行が残り、
@@ -12057,19 +12060,48 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         <OpsShell
           orgName={membership && membership.org ? membership.org.name : "教室"}
           role={role}
-          onBack={() => setOpsOrgId(null)}>
-          {/* ★★中身は、これから 便ごとに 足します（★第3便の 続き）。
-              ★★空の画面を 置きません。★何の画面かを 書きます。 */}
-          <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-            <p className="text-sm" style={{ color: C.ink, lineHeight: 1.9 }}>
-              ここは、教室の運営の画面です。
-            </p>
-            <p className="text-xs mt-2" style={{ color: C.inkSoft, lineHeight: 1.9 }}>
-              日程・名簿・行事・連絡を、これから足していきます。<br />
-              生徒さんの health の記録は、この画面からは開けません。
-            </p>
-          </div>
-        </OpsShell>
+          onBack={() => setOpsOrgId(null)}
+          renderTab={(tabKey) => {
+            if (tabKey === "schedule") {
+              // ★★日程（★見本②⑥⑧⑨⑩）。★1つの日程を、3つの 見せ方で。
+              //   ★★渡すのは 1つの 並びだけです。★見せ方は あちらが 決めます。
+              const members = orgMembers[opsOrgId] || [];
+              // ★★役割を、★等号を 並べる 書き方に しません。★一覧で 書きます。
+              //   ★★teacher-org-card.test.js が、★役割を くらべる 字を 目印に
+              //     ★講師のカードを 切り出しています。
+              //   ★★同じ字が ここに あると、★目印が こちらへ 移り、
+              //     ★★別の場所を 調べてしまいます。★実際に そうなりました。
+              //     ★★この注記に 目印の字を 書くことでも 起きます。★書きません。
+              const SCHEDULE_ROLES = ["teacher", "owner", "admin"];
+              const teacherList = members
+                .filter((mm) => SCHEDULE_ROLES.includes(mm.role))
+                .map((mm) => ({ id: mm.user_id }));
+              const week = [];
+              for (let i = 0; i < 7; i++) week.push(addDaysISO(opsDate, i - 3));
+              return (
+                <OpsSchedule
+                  lessons={(orgLessons[opsOrgId] || [])}
+                  teachers={teacherList}
+                  dateISO={opsDate}
+                  weekDays={week.filter(Boolean)}
+                  nameOf={(id) => orgDisplayName(id) || ""}
+                  studentNameOf={(id) => orgDisplayName(id) || ""}
+                  onPickDate={(d) => setOpsDate(d)} />
+              );
+            }
+            // ★★まだ 作っていない帯。★空の画面を 置きません。
+            //   ★何の画面かだけを 書きます。★押しどころを 先に 出しません。
+            return (
+              <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                <p className="text-sm" style={{ color: C.ink, lineHeight: 1.9 }}>
+                  この画面は、これから作ります。
+                </p>
+                <p className="text-xs mt-2" style={{ color: C.inkSoft, lineHeight: 1.9 }}>
+                  生徒さんの記録は、この画面からは開けません。
+                </p>
+              </div>
+            );
+          }} />
       );
     }
   }

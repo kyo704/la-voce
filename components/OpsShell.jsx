@@ -1,10 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { C } from "@/lib/tokens";
-import {
-  tabsFor, maySeeMoney, mayShowWideTable, WIDE_TABLE_NOTE
-} from "@/lib/opsShell";
+import { tabsFor, maySeeMoney } from "@/lib/opsShell";
 
 // ============================================================================
 // 運営モード ── 別のシェル（見本⑪ ／ 2026-09-09・第3便）
@@ -33,23 +31,14 @@ import {
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
 const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
 
-/** ★いまの 画面の 横はば。★§4-7 の 判定に 使います。 */
-function useWidth() {
-  const [w, setW] = useState(null);
-  useEffect(() => {
-    if (typeof window === "undefined") return undefined;
-    const on = () => setW(window.innerWidth);
-    on();
-    window.addEventListener("resize", on);
-    return () => window.removeEventListener("resize", on);
-  }, []);
-  return w;
-}
+// ★★はばを 見る仕掛けは、★ここから 外しました（★2026-09-09）。
+//   ★§4-7 の「パソコンだけ」が 撤回され、★シェルは 幅を 見なくなりました。
+//   ★★日程の 見せ方を 変えるための はばは、★日程の 画面が 自分で 見ます。
+//     ★使わないものを、★ここに 残しません。
 
-export default function OpsShell({ orgName, role, onBack, children }) {
+export default function OpsShell({ orgName, role, onBack, renderTab, children }) {
   const tabs = tabsFor(role);
   const [tab, setTab] = useState(tabs.length > 0 ? tabs[0].key : null);
-  const width = useWidth();
 
   // ★★入れない役割に、★空のシェルを 出しません。
   //   ★呼ぶ側が 門を かけますが、★ここでも 止めます。★二重に します。
@@ -78,22 +67,12 @@ export default function OpsShell({ orgName, role, onBack, children }) {
       </div>
 
       <div style={{ flex: 1, overflowY: "auto", padding: "12px 14px 16px" }}>
-        {cur === "schedule" ? (
-          <div className="space-y-3">
-            {children}
-            {/* ★★§4-7。★先生を 横に並べる 表は パソコンだけ。
-                ★★1行だけ 書きます。★責める言葉に しません。
-                ★★運営モード 全体を 止めるものでは ありません。
-                  ★この行が 出ていても、★日程の ほかの ことは できます。 */}
-            {!mayShowWideTable(width) ? (
-              <div style={{ ...card, background: C.paper }}>
-                <p style={small}>{WIDE_TABLE_NOTE}</p>
-              </div>
-            ) : null}
-          </div>
-        ) : (
-          <div className="space-y-3">{children}</div>
-        )}
+        {/* ★★§4-7 の「パソコンだけ」は 撤回されました（★2026-09-09）。
+            ★★幅で 中身を 止めません。★見せ方を 変えるだけです。
+              ★どの 見せ方に するかは lib/opsSchedule.js が 決めます。
+            ★★どの帯に 何を 出すかは、★呼ぶ側が 決めます（renderTab）。
+              ★シェルは 入れものです。★中身を 知りません。 */}
+        <div className="space-y-3">{renderTab ? renderTab(cur) : children}</div>
 
         {/* ★★お金は owner だけ（★§1-1）。★admin には 出しません。 */}
         {cur === "settings" && !maySeeMoney(role) ? (
