@@ -161,7 +161,10 @@ function QuietScreen({ reason, onGo }) {
           </div>
         ) : null}
       </Card>
-      <Note style={{ textAlign: "center", margin: "6px 0 16px" }}>
+      {/* ★★見本は .note を 畳んでいます（foldNotes・★2026-09-11 夜の 訂正）。
+          ★★畳むのは .note だけです。★図の 見方（見本の .usu）は 畳みません。
+            ★★畳むと、★図の 色や 印の 意味が 分からなく なります。 */}
+      <Note fold style={{ textAlign: "center", margin: "6px 0 16px" }}>
         ならべる と さかのぼる は、いつでも 見られます。<br />
         記録も、いつもどおり 書けます。
       </Note>
@@ -328,8 +331,9 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
             rows={seriesOf(entries, dates, (e) => sungMinutes(e))} />
           <Symptoms entries={entries} dates={dates} />
 
-          {/* ★★何を している 画面かを、★下に 3行 置きます（★見本の .note）。 */}
-          <Note>
+          {/* ★★何を している 画面かを、★下に 3行 置きます（★見本の .note）。
+              ★★見本は これを 畳んでいます（foldNotes）。 */}
+          <Note fold>
             {LINE_UP_STACK_NOTE.map((line, i) => (
               <span key={i}>{i > 0 ? <br /> : null}{line}</span>
             ))}

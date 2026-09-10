@@ -296,14 +296,20 @@ const USER_ID = "test-user-id";
     "★門の外では、★節は いつも 出る（★38人の画面を 変えない）");
   assertEqual(rv2.sectionIsOpen("meal", { layoutV2: false, openSheet: "からだ" }), true,
     "★門の外では、1枚が 開いていても 全部 出る");
-  // ★★2026-09-11、★お決め ㋐。★1枚に 入る 節は、★門の中では 出しません。
-  //   ★★「詳しく」に 畳む 形（㋒）は、★私が 独自に 足した ものでした。
-  //     ★見本 4本に <details> は 0件です。★外しました。
-  //   ★★列も 記録も 消していません。★画面に 出さないだけです。
-  assertEqual(rv2.sectionIsOpen("meal", { layoutV2: true, openSheet: null }), false,
-    "門の中では 出さない");
+  // ★★2026-09-11 夜、★坂本さんが お決め ㋐ を 訂正されました。
+  //   ★★「隠す のでは なく、★見本と 同じ 畳む しくみを 使ってください」
+  //   ★★私が「見本に 畳む しくみは ない」と 誤って ご報告したためです。
+  //     ★見本は <details> を 使わず、★JavaScript で 畳んで いました
+  //     （★foldNotes ／ ★シートの「詳しく 書く（分で）」）。
+  //   ★★隠すと、★入口が 1つも 無くなり、★書けなく なります。
+  assertEqual(rv2.sectionIsOpen("meal", { layoutV2: true, openSheet: null }), true,
+    "門の中でも 出す（★畳んで）");
+  assertEqual(rv2.sectionIsFolded("meal", { layoutV2: true }), true,
+    "★ただし 畳む");
+  // ★★1枚が かぶさっている あいだは 出しません。
+  //   ★★下に 節が 並ぶと、★閉じた ときに 古い 画面に 見えます。
   assertEqual(rv2.sectionIsOpen("meal", { layoutV2: true, openSheet: "たべ" }), false,
-    "★1枚を 開いても 出さない");
+    "★1枚が 開いている あいだは 出さない");
   assertEqual(rv2.sectionIsOpen("meal", { layoutV2: true, openSheet: "からだ" }), false,
     "ほかの 1枚が 開いていても 出ない");
   assertEqual(rv2.sectionIsOpen("env", { layoutV2: true, openSheet: null }), true,

@@ -56,8 +56,21 @@ t(/fold = false/.test(ui), "★既定は 畳まない（★38人の 画面を �
     .filter((f) => f !== "UiV2.jsx")
     .filter((f) => /<Note fold[ >]/.test(stripComments(
       fs2.readFileSync(path.join(dir, f), "utf8"))));
-  t(users.length > 0 && users.every((f) => f === "CompareV2.jsx"),
-    "★いま 畳んでいるのは くらべる だけ（" + (users.join("／") || "なし") + "）");
+  // ★★㋐（★2026-09-11 夜・坂本さんの お決め）で、★1画面ずつ 移します。
+  //   ★★門の 外の 画面（LookBackPanel／OpsPosts／RangeCalendar）は、
+  //     ★1つも 畳みません。★38人の 画面を 変えないためです。
+  const OUTSIDE = ["LookBackPanel.jsx", "OpsPosts.jsx", "RangeCalendar.jsx"];
+  t(!users.some((f) => OUTSIDE.includes(f)),
+    "★門の 外の 画面を 畳んでいない（" + users.join("／") + "）");
+  t(users.includes("CompareV2.jsx"), "★くらべる（B01）が 済んでいる");
+  t(users.includes("LookBackV2.jsx"), "★ふりかえる が 済んでいる");
+}
+{
+  // ★★畳むのは .note だけです。★図の 見方（★見本の .usu）は 畳みません。
+  //   ★★畳むと、★色や 印の 意味が 分からなく なります。
+  const look = readCode("components", "LookBackV2.jsx");
+  t(/<Note>\{tx\("右から/.test(look), "★図の 見方（右から…）を 畳んでいない");
+  t(/<Note>\s*\n\s*\{tx\("たての 帯/.test(look), "★図の 見方（たての 帯…）を 畳んでいない");
 }
 t(/useState\(false\)/.test(ui), "★はじめは 閉じている");
 t(/fold && !open \? "none"/.test(ui), "★閉じている あいだは 出さない");
