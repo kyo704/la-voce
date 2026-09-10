@@ -6,9 +6,10 @@ import {
   rosterCount, countsByStatus, statusLabel, isCounted,
   monthlyFee, perHead, yen, MONTHLY_FLOOR,
   ROSTER_CHIPS, chipCounts, matchesChip,
-  teacherFilterOptions, matchesTeacher, TEACHER_FILTER_ALL
+  teacherFilterOptions, matchesTeacher, TEACHER_FILTER_ALL,
+  gradeFilterOptions, matchesGrade, GRADE_FILTER_ALL
 } from "@/lib/orgRoster";
-import { safeBreakdown, TOO_SMALL_NOTE } from "@/lib/smallGroups";
+import { safeBreakdown, TOO_SMALL_NOTE, MIN_GROUP } from "@/lib/smallGroups";
 
 // ============================================================================
 // 名簿 ── 見本③⑦（2026-09-09・第3便）
@@ -32,6 +33,39 @@ import { safeBreakdown, TOO_SMALL_NOTE } from "@/lib/smallGroups";
 // ============================================================================
 
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
+
+/**
+ * ★絞りの 1段（★状態／学年／先生）。
+ *
+ *   ★★3つとも 同じ 形です。★1か所で 作ります。
+ *   ★★押した その場で 効きます。★決める ボタンは ありません。
+ */
+function FilterRow({ title, options, value, onChange }) {
+  return (
+    <>
+      <h3 style={{ fontSize: "0.65625rem", color: C.inkSoft, letterSpacing: "0.08em",
+        margin: "12px 0 7px" }}>{title}</h3>
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+        {options.map((o) => {
+          const on = value === o.id;
+          return (
+            <button key={o.id} type="button" onClick={() => onChange(o.id)}
+              aria-pressed={on}
+              style={{
+                minHeight: 44, padding: "0 11px", borderRadius: 999,
+                fontSize: "0.71875rem", whiteSpace: "nowrap",
+                border: `1px solid ${on ? C.curtain : C.line}`,
+                background: on ? C.curtain : C.card,
+                color: on ? "#FFFDF8" : C.inkSoft
+              }}>
+              {o.label}{o.count != null ? ` ${o.count}` : ""}
+            </button>
+          );
+        })}
+      </div>
+    </>
+  );
+}
 const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
 
 /** ★入った日。★「2024年4月」。★日にちまでは 出しません。 */
@@ -51,25 +85,35 @@ export default function OpsRoster({ members, nameOf, teacherNameOf, canSeeMoney,
   //   ★★押すたびに 一覧が 変わると、★何人に なるかが 分かりません。
   //     ★「この しぼりで 見る」を 押したときに、★はじめて 効きます。
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [sheetPick, setSheetPick] = useState(TEACHER_FILTER_ALL);
+  // ★★2026-09-11、★新しい 動く見本（SH['shiboru']）に そろえました。
+  //   ★★えらんだ その場で 効きます。★「この しぼりで 見る」は やめました。
+  //     ★見本に その ボタンが ありません。★1枚は 開いた ままで 一覧が 動きます。
+  //   ★★学年も 足しました。
+  const [grade, setGrade] = useState(GRADE_FILTER_ALL);
 
   const chips = useMemo(() => chipCounts(members), [members]);
   const teacherOptions = useMemo(
     () => teacherFilterOptions(members, teacherNameOf), [members, teacherNameOf]);
+  // ★★学年は、★名簿に 実際に 入っている ものだけです。
+  //   ★1つも 無ければ 空。★空なら 札を 出しません（★押せない 札を 置かない）。
+  const gradeOptions = useMemo(() => gradeFilterOptions(members), [members]);
 
   const list = useMemo(() => {
     const s = q.trim();
     return (members || []).filter((m) => {
       if (!matchesChip(m, chip)) return false;
       if (!matchesTeacher(m, teacher)) return false;
+      if (!matchesGrade(m, grade)) return false;
       if (!s) return true;
       const n = nameOf ? nameOf(m.user_id) : "";
       const tn = (m.teacher_ids || []).map((id) => (teacherNameOf ? teacherNameOf(id) : "")).join(" ");
       return `${n} ${tn}`.includes(s);
     });
-  }, [members, q, chip, teacher, nameOf, teacherNameOf]);
+  }, [members, q, chip, teacher, grade, nameOf, teacherNameOf]);
 
   const teacherLabel = (teacherOptions.find((o) => o.id === teacher) || {}).label || "";
+  const narrowed = chip !== "all" || teacher !== TEACHER_FILTER_ALL
+    || grade !== GRADE_FILTER_ALL || q.trim() !== "";
 
   const counted = rosterCount(members);
   const by = countsByStatus(members);
@@ -122,15 +166,15 @@ export default function OpsRoster({ members, nameOf, teacherNameOf, canSeeMoney,
       {/* ★★担当の先生で しぼる（★見本 G07）。
           ★★開く 口は ここです。★いま 何で しぼっているかも、ここに 出します。
             ★★絞ったまま 忘れると、★「1人 減った」に 見えます。 */}
-      <button type="button" onClick={() => { setSheetPick(teacher); setSheetOpen(true); }}
+      <button type="button" onClick={() => setSheetOpen(true)}
         style={{
           width: "100%", minHeight: 44, borderRadius: 12, padding: "0 13px",
           border: `1px solid ${C.line}`, background: C.card, color: C.ink,
           fontSize: "0.8125rem", textAlign: "left"
         }}>
-        担当の先生で しぼる
+        絞る
         <span style={{ float: "right", color: C.inkSoft }}>
-          {teacher === TEACHER_FILTER_ALL ? "すべて" : teacherLabel}　›
+          {narrowed ? "しぼっています" : "すべて"}　›
         </span>
       </button>
 
@@ -141,11 +185,14 @@ export default function OpsRoster({ members, nameOf, teacherNameOf, canSeeMoney,
           {/* ★★「いません」と「絞ったので 見えません」を、★言い分けます。
               ★★絞ったまま 忘れると、★人が 減ったように 見えます。
               ★★出口は、★押せる ボタンで 置きます。★字だけの 案内に しません。 */}
-          {(chip !== "all" || teacher !== TEACHER_FILTER_ALL || q.trim()) ? (
+          {narrowed ? (
             <>
               <p style={small}>いまの しぼりでは、どなたも 出ません。</p>
               <button type="button"
-                onClick={() => { setQ(""); setChip("all"); setTeacher(TEACHER_FILTER_ALL); }}
+                onClick={() => {
+                  setQ(""); setChip("all");
+                  setTeacher(TEACHER_FILTER_ALL); setGrade(GRADE_FILTER_ALL);
+                }}
                 style={{
                   marginTop: 8, minHeight: 44, padding: "0 14px", borderRadius: 10,
                   border: `1px solid ${C.line}`, background: C.paper, color: C.ink,
@@ -246,10 +293,14 @@ export default function OpsRoster({ members, nameOf, teacherNameOf, canSeeMoney,
         ) : null}
       </div>
 
-      {/* ★★担当の先生で しぼる ── 下から 上がる 1枚（★見本 G07 の .sheetup）。
-          ★★えらんだ だけでは 効きません。「この しぼりで 見る」で 効きます。
-            ★★押すたびに 一覧が 動くと、★何人 いるかを 読めません。
-          ★★閉じる 道を 2つ 置きます（★暗い ところと「やめる」）。
+      {/* ★★絞る ── 下から 上がる 1枚（★新しい 動く見本 SH['shiboru'] ／ 2026-09-11）。
+          ★★えらんだ その場で 効きます。★決める ボタンは ありません。
+            ★★はじめ「この しぼりで 見る」を 置いていました（★静止画 G07）。
+              ★新しい 見本に その ボタンが ないため、外しました。
+              ★1枚は 開いた まま、★後ろの 一覧が 動きます。
+          ★★状態は、★上の 札と ここの 両方に あります（★見本も そうです）。
+            ★★同じ 1つの 値を 見ています。★決めが 2つに なっていません。
+          ★★閉じる 道を 2つ 置きます（★暗い ところと「閉じる」）。
             ★出口の ない 1枚を 作らないこと。 */}
       {sheetOpen ? (
         <>
@@ -258,7 +309,7 @@ export default function OpsRoster({ members, nameOf, teacherNameOf, canSeeMoney,
               position: "fixed", inset: 0, zIndex: 70,
               background: "rgba(36,25,20,0.35)"
             }} />
-          <div role="dialog" aria-label="担当の先生で しぼる"
+          <div role="dialog" aria-label="絞る"
             style={{
               position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 71,
               maxHeight: "70vh", overflowY: "auto",
@@ -270,46 +321,33 @@ export default function OpsRoster({ members, nameOf, teacherNameOf, canSeeMoney,
               width: 40, height: 4, borderRadius: 2, background: "#DFD4BE",
               margin: "0 auto 12px"
             }} />
-            <h3 style={{ fontSize: "0.65625rem", color: C.inkSoft, letterSpacing: "0.08em",
-              marginBottom: 7 }}>担当の先生で しぼる</h3>
+            <div style={{ fontSize: "0.9375rem", fontWeight: 700, marginBottom: 10 }}>絞る</div>
 
-            {teacherOptions.map((o) => {
-              const on = sheetPick === o.id;
-              return (
-                <button key={o.id} type="button" onClick={() => setSheetPick(o.id)}
-                  aria-pressed={on}
-                  style={{
-                    display: "flex", alignItems: "center", justifyContent: "space-between",
-                    width: "100%", minHeight: 46, marginBottom: 6,
-                    background: C.card, border: `1px solid ${C.line}`,
-                    borderRadius: 11, padding: "0 12px",
-                    fontSize: "0.8125rem", color: C.ink, textAlign: "left"
-                  }}>
-                  <span>{o.label}{o.count != null ? `　${o.count}人` : ""}</span>
-                  {/* ★★丸は 印です。★色だけに 意味を 持たせません。
-                      ★えらんだ ものは、★中が 埋まります（★見本 .ck.on）。 */}
-                  <span aria-hidden="true" style={{
-                    width: 20, height: 20, borderRadius: "50%", flex: "none",
-                    border: `1.5px solid ${on ? C.curtain : C.line}`,
-                    background: on ? C.curtain : "transparent"
-                  }} />
-                </button>
-              );
-            })}
+            <FilterRow title="状態"
+              options={ROSTER_CHIPS.map((c) => ({ id: c.key, label: c.label, count: chips[c.key] }))}
+              value={chip} onChange={setChip} />
 
-            <button type="button"
-              onClick={() => { setTeacher(sheetPick); setSheetOpen(false); }}
-              style={{
-                width: "100%", minHeight: 52, marginTop: 8, borderRadius: 12,
-                border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
-                background: C.curtain, color: "#FFFDF8", fontSize: "0.9375rem"
-              }}>この しぼりで 見る</button>
+            {/* ★★学年は、★名簿に 入っているときだけ 出します。
+                ★1つも 無いのに 札を 並べると、★押しても 何も 起きません。 */}
+            {gradeOptions.length > 0 ? (
+              <FilterRow title="学年" options={gradeOptions} value={grade} onChange={setGrade} />
+            ) : null}
+
+            <FilterRow title="先生" options={teacherOptions} value={teacher} onChange={setTeacher} />
+
+            {/* ★★見本の 但し書き（★1文字も 変えないこと）。
+                ★仕組みは lib/smallGroups.js に 前から あります。
+                ★言葉が 画面に 出ていませんでした。 */}
+            <p style={{ ...small, marginTop: 12 }}>
+              下から 出します（iPhoneでは 上に 置きません）。{MIN_GROUP}人未満の かたまりは、数を 出しません。
+            </p>
+
             <button type="button" onClick={() => setSheetOpen(false)}
               style={{
-                width: "100%", minHeight: 44, marginTop: 6, borderRadius: 12,
-                border: "none", background: "transparent", color: C.inkSoft,
-                fontSize: "0.8125rem"
-              }}>やめる</button>
+                width: "100%", minHeight: 48, marginTop: 10, borderRadius: 12,
+                border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+                fontSize: "0.875rem"
+              }}>閉じる</button>
           </div>
         </>
       ) : null}

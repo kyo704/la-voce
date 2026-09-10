@@ -81,12 +81,37 @@ function ok(cond, label) {
   ok(!/rosterCount\(list\)/.test(ui), "★絞った あとから 数えていない");
   ok(/chipCounts\(members\)/.test(ui), "★札の 数も members から");
   ok(!/chipCounts\(list\)/.test(ui), "★札の 数を 絞った あとから 数えていない");
-  ok(/この しぼりで 見る/.test(ui), "★見本の ボタンの 言葉");
-  ok(/setTeacher\(sheetPick\)/.test(ui), "★押したときに はじめて 効く");
+  // ★★2026-09-11、★新しい 動く見本（SH['shiboru']）に そろえました。
+  //   ★★「この しぼりで 見る」は、★新しい 見本に ありません。外しました。
+  //     ★見張るのは 言葉では なく、★「押した その場で 効く」ことです。
+  ok(!/この しぼりで 見る/.test(ui), "★決める ボタンを 置いていない");
+  ok(/onChange=\{setChip\}/.test(ui) && /onChange=\{setTeacher\}/.test(ui),
+    "★押した その場で 効く");
+  ok(/絞る/.test(ui), "★見本の 題（絞る）");
+  // ★★学年（★新しい 見本に あります）。
+  ok(/gradeFilterOptions/.test(ui) && /matchesGrade/.test(ui), "★学年で しぼれる");
+  ok(/gradeOptions\.length > 0/.test(ui), "★学年が 無ければ、札を 出さない");
+  // ★★5人未満の 断り。★仕組みは 前から あり、★言葉が 出ていませんでした。
+  ok(/人未満の かたまりは、数を 出しません/.test(ui), "★5人未満の 断りが 出る");
+  ok(/MIN_GROUP/.test(ui), "★5 を 書き写していない（★lib から 引く）");
   // ★★出口。★字だけの 案内に しない（★2026-09-05 の お決め）。
   ok(/しぼりを けす/.test(ui), "★0人の ときに、しぼりを けす ボタンが ある");
-  ok(/やめる/.test(ui), "★1枚を 閉じる 道が ある");
+  ok(/閉じる/.test(ui), "★1枚を 閉じる 道が ある");
   ok(/いまの しぼりでは、どなたも 出ません/.test(ui), "★「いません」と 言い分けている");
+
+  console.log("⑤-2 学年は、名簿に あるものだけ");
+  const M2 = [
+    { user_id: "a", status: "enrolled", grade_label: "声楽3年", teacher_ids: [] },
+    { user_id: "b", status: "enrolled", grade_label: "声楽1年", teacher_ids: [] },
+    { user_id: "c", status: "enrolled", teacher_ids: [] }
+  ];
+  const g = R.gradeFilterOptions(M2);
+  ok(g.length === 3 && g[0].id === R.GRADE_FILTER_ALL, "★すべて ＋ 実際に ある 2つ");
+  ok(!g.some((o) => o.label === "1年"), "★1年〜4年 と 決め打ちに していない");
+  ok(R.gradeFilterOptions([{ user_id: "x", status: "enrolled" }]).length === 0,
+    "★1つも 無ければ 空（★押せない 札を 出さない）");
+  ok(M2.filter((m) => R.matchesGrade(m, "声楽3年")).length === 1, "★学年で 絞れる");
+  ok(M2.filter((m) => R.matchesGrade(m, R.GRADE_FILTER_ALL)).length === 3, "★すべてなら 落とさない");
 
   console.log("⑥ 画面は 数えない");
   ok(!/teacher_ids \|\| \[\]\)\.forEach/.test(ui), "★先生ごとの 数を、画面が 数えていない");

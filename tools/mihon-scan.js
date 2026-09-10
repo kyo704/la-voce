@@ -1,8 +1,8 @@
 // ============================================================================
 // 動く見本を JavaScript として 読み、★1画面ずつ 数える
 //
-//   ★出どころ docs/design/pack-final/00-動く見本-iPhone.html
-//            docs/design/pack-final/00-動く見本-PC.html
+//   ★出どころ docs/design/pack-final/00-動く見本（さわれる・全画面）.html
+//            docs/design/pack-final/00-動く見本-PC・iPad（運営）.html
 //
 //   ★★見本を 書き写しません。★ファイルから 取り出します。
 //   ★★かっこは 数えて 切ります。★正規表現で 切りません
@@ -87,7 +87,7 @@ function moves(body) {
   return { push: [...new Set(push)], sheet: [...new Set(sheet)], go: [...new Set(go)] };
 }
 
-const ip = fs.readFileSync(path.join(ROOT, "docs/design/pack-final/00-動く見本-iPhone.html"), "utf8");
+const ip = fs.readFileSync(path.join(ROOT, "docs/design/pack-final/00-動く見本（さわれる・全画面）.html"), "utf8");
 const SC = collect(ip, "SC");
 const SH = collect(ip, "SH");
 
