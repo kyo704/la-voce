@@ -107,7 +107,7 @@ import { markerRow } from "@/lib/periodMarkers";
 // ★「きょう」の帯（★第2便・§4）。★並び順と言葉は、あちらが持ちます。
 import TodayBand from "@/components/TodayBand";
 import TabBarV2 from "@/components/TabBarV2";
-import { TAB_BAR_HEIGHT, TYPE, SPACE, FONT_STACK, cardStyle } from "@/lib/uiKit";
+import { TAB_BAR_HEIGHT, TYPE, SPACE, FONT_STACK, cardStyle, rem, RADIUS } from "@/lib/uiKit";
 import { ScreenHead, HeadRound, H3, Card, Li, Seg } from "@/components/UiV2";
 import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
 import { moreSections } from "@/lib/moreMenu";
@@ -2453,8 +2453,89 @@ function Gauge({ score, t }) {
   );
 }
 
+// ★★いま 開いている 1枚（★動く見本 ／ 2026-09-11 に 作り直しました）。
+//   ★★門の外では、★いつも { layoutV2:false } です。★何も 変わりません。
+//   ★★9月9日は「折りたたみ 5つ」でした。★正しい 見本は
+//     「あさ／よる／足す」と、★＋の行から 下から 上がる 1枚です。
+//   ★節ごとに 判定を 書かないため、★ここ1つに 持たせます。
+//   ★★2026-09-11、★ここを 上へ 移しました。
+//     ★★入力の 部品（Chip・NumberField ほか）が、★見た目を ここに 尋ねます。
+const RecordFoldContext = createContext({ layoutV2: false, openSheet: null });
+
+/**
+ * ★見本の 姿で 描くか。
+ *
+ *   ★出どころ docs/design/pack-final/00-動く見本（さわれる・全画面）.html
+ *     .pill / .fl / .inp / .mini / .usu / .sw
+ *   ★決め　　docs/design/pack-final/古い機能の扱い-訂正.md §2 ①
+ *     「DotSelector（5段階の入力）★部品・入力・値 そのまま。★色・名前・並びだけ」
+ *
+ *   ★★門の中（記録の 画面と、その 1枚の 中）でだけ true です。
+ *     ★★38人の 画面は、★1つも 変わりません。
+ *   ★★見た目の 決めを、★部品ごとに 書きません。★ここ 1つに 尋ねます。
+ *     ★1か所 直せば、★ぜんぶ そろいます。
+ *
+ *   ★見張り components/tests/sheet-look.test.js
+ */
+function useRecordV2Look() {
+  const st = useContext(RecordFoldContext);
+  return !!(st && st.layoutV2);
+}
+
+/** ★見本の .mini（★小見出し）。 */
+function LookMini({ children, style }) {
+  return <div style={{ ...TYPE.mini, marginBottom: 8, ...style }}>{children}</div>;
+}
+
+/** ★見本の .pill。★押されている ときは えんじ。 */
+function lookPill(on) {
+  return {
+    display: "inline-block", border: `1px solid ${on ? C.curtain : C.line}`,
+    borderRadius: 99, padding: "7px 12px", fontSize: rem(11.5),
+    color: on ? "#FFFDF8" : C.inkSoft, background: on ? C.curtain : C.card,
+    fontWeight: on ? 700 : 400, fontFamily: FONT_STACK,
+    minHeight: 36, cursor: "pointer"
+  };
+}
+
 function DynamicsSelector({ label, icon: Icon, value, onChange, t }) {
   const dynDescKeys = ["dynDesc1", "dynDesc2", "dynDesc3", "dynDesc4", "dynDesc5"];
+  // ★★門の中では、★見本の 姿に します（★2026-09-11）。
+  //   ★★5段の 目盛りも、★pp〜ff の 言葉も そのままです。
+  //     ★見出しを .mini に、★枠を 角12に、★下の 一行を .usu に します。
+  const v2 = useRecordV2Look();
+  if (v2) {
+    return (
+      <div>
+        <LookMini>{label}</LookMini>
+        <div style={{
+          display: "flex", borderRadius: 12, overflow: "hidden",
+          border: `1px solid ${C.line}`
+        }}>
+          {LEVEL_DYNAMICS.map((dyn, i) => {
+            const v = i + 1;
+            const on = value === v;
+            return (
+              <button key={dyn} type="button" onClick={() => onChange(v)}
+                style={{
+                  flex: 1, minHeight: 44, padding: "8px 0",
+                  fontSize: rem(on ? 16 : 13), fontFamily: FONT_STACK,
+                  // ★★1色の 濃淡です。★良し悪しを 色で 言いません。
+                  background: on ? C.curtain : C.card,
+                  color: on ? "#FFFDF8" : C.inkSoft,
+                  fontWeight: on ? 700 : 400,
+                  borderRight: i < 4 ? `1px solid ${C.line}` : "none",
+                  border: "none"
+                }}>{dyn}</button>
+            );
+          })}
+        </div>
+        <div style={{ ...TYPE.usual, marginTop: 4, textAlign: "right" }}>
+          {t ? t(dynDescKeys[value - 1]) : LEVEL_DYNAMIC_DESC[value - 1]}
+        </div>
+      </div>
+    );
+  }
   return (
     <div>
       <div className="flex items-center gap-2 mb-2">
@@ -2506,6 +2587,25 @@ const EDEMA_CHOICES = [
 // あり／なし の2択。★もう一度押すと取り消せます（答えない、に戻せる）。
 //   ★null（答えていない）と false（しなかった）を分けます。
 function YesNoField({ label, value, onChange }) {
+  // ★★門の中では、★見本の .pill 2つに します。
+  const v2 = useRecordV2Look();
+  if (v2) {
+    return (
+      <div style={{ flex: 1 }}>
+        <LookMini>{label}</LookMini>
+        <div style={{ display: "flex", gap: 7 }}>
+          {[{ v: true, l: "あり" }, { v: false, l: "なし" }].map(({ v, l }) => {
+            const on = value === v;
+            return (
+              <button key={String(v)} type="button"
+                onClick={() => onChange(on ? null : v)}
+                style={{ ...lookPill(on), flex: 1, textAlign: "center" }}>{l}</button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="flex-1">
       <span className="text-xs font-medium block mb-1.5" style={{ color: C.inkSoft }}>{label}</span>
@@ -2530,6 +2630,25 @@ function YesNoField({ label, value, onChange }) {
   );
 }
 function EdemaSelector({ value, onChange }) {
+  // ★★門の中では、★見本の .pill 3つに します。
+  const v2 = useRecordV2Look();
+  if (v2) {
+    return (
+      <div>
+        <LookMini>起きたときの むくみ</LookMini>
+        <div style={{ display: "flex", gap: 7 }}>
+          {EDEMA_CHOICES.map((c) => {
+            const on = value === c.value;
+            return (
+              <button key={c.value} type="button"
+                onClick={() => onChange(on ? null : c.value)}
+                style={{ ...lookPill(on), flex: 1, textAlign: "center" }}>{c.label}</button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
   return (
     <div>
       <div className="flex items-center gap-2 mb-2">
@@ -2557,6 +2676,37 @@ function EdemaSelector({ value, onChange }) {
   );
 }
 function DotSelector({ label, icon: Icon, value, onChange, lowLabel, highLabel }) {
+  // ★★門の中では、★見本の 姿に します（★2026-09-11）。
+  //   ★★部品も 値も そのままです（★古い機能の扱い-訂正 §2 ①）。
+  //     ★★5段の 目盛りを 消しません。★色を 1色の 濃淡に し、
+  //       ★見出しを .mini に、★端の 字を .usu に します。
+  //   ★★数を 出しません。★「3/5」と 書かないこと。
+  const v2 = useRecordV2Look();
+  if (v2) {
+    return (
+      <div>
+        <LookMini>{label}</LookMini>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ ...TYPE.usual, width: 44 }}>{lowLabel}</span>
+          <div style={{ display: "flex", gap: 8, flex: 1, justifyContent: "center" }}>
+            {[1, 2, 3, 4, 5].map((v) => (
+              <button key={v} type="button" onClick={() => onChange(v)}
+                aria-label={`${label} ${v}`}
+                style={{
+                  width: value === v ? 26 : 20, height: value === v ? 26 : 20,
+                  minHeight: 0, borderRadius: "50%",
+                  background: v <= value ? C.curtain : C.card,
+                  border: `1.5px solid ${v <= value ? C.curtain : C.line}`,
+                  // ★★1色の 濃淡です。★段ごとに 色を 変えません。
+                  opacity: v <= value ? 0.45 + 0.11 * v : 1
+                }} />
+            ))}
+          </div>
+          <span style={{ ...TYPE.usual, width: 44, textAlign: "right" }}>{highLabel}</span>
+        </div>
+      </div>
+    );
+  }
   return (
     <div>
       <div className="flex items-center gap-2 mb-2">
@@ -2603,6 +2753,22 @@ function DotSelector({ label, icon: Icon, value, onChange, lowLabel, highLabel }
 //   ★InDevelopmentCard を作り直さないでください。
 
 function Chip({ label, active, onClick, pending }) {
+  // ★★門の中では、★見本の .pill の 姿に します（★2026-09-11）。
+  //   ★★中身も 値も 変えません。★見せ方だけです（★古い機能の扱い-訂正 §2 ①）。
+  const v2 = useRecordV2Look();
+  if (v2) {
+    return (
+      <button type="button" onClick={onClick}
+        style={{
+          ...lookPill(!!active),
+          // ★保存待ちは、★薄く 塗ります。★成功の 印は 出しません。
+          opacity: pending ? 0.7 : 1,
+          borderColor: (active || pending) ? C.curtain : C.line
+        }}>
+        {label}
+      </button>
+    );
+  }
   return (
     <button
       type="button"
@@ -2623,19 +2789,19 @@ function Chip({ label, active, onClick, pending }) {
 // 記録と分析の順番設計 §3.3: 入力した欄が、その場で1行返す。
 // ★自分比の事実だけを返す。良し悪しの判定はしない（罰を作らない原則）。
 function SectionFeedback({ text }) {
+  const v2 = useRecordV2Look();
   if (!text) return null;
+  if (v2) {
+    // ★★門の中では、★見本の .usu です。★枠を 付けません。
+    //   ★★枠を 付けると、★1枚の 中に 小さな 箱が いくつも 並びます。
+    return <p style={{ ...TYPE.usual, marginTop: 8, lineHeight: 1.8 }}>{text}</p>;
+  }
   return (
     <p className="text-xs mt-3 rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
       {text}
     </p>
   );
 }
-// ★★いま 開いている 1枚（★動く見本 ／ 2026-09-11 に 作り直しました）。
-//   ★★門の外では、★いつも { layoutV2:false } です。★何も 変わりません。
-//   ★★9月9日は「折りたたみ 5つ」でした。★正しい 見本は
-//     「あさ／よる／足す」と、★＋の行から 下から 上がる 1枚です。
-//   ★節ごとに 判定を 書かないため、★ここ1つに 持たせます。
-const RecordFoldContext = createContext({ layoutV2: false, openSheet: null });
 
 /**
  * ★引っ越してきた 節を、★開いている 1枚の 中へ 送ります（★2026-09-11）。
@@ -3205,6 +3371,48 @@ function PianoKeyboard({ lowMidi, highMidi, bestLow, bestHigh, currentLow, curre
 function NumberField({ label, value, onChange, step = 1, min = -Infinity, max = Infinity, suffix, icon: Icon }) {
   const round = (n) => Math.round(n * 100) / 100;
   const clamp = (n) => round(Math.max(min, Math.min(max, n)));
+  // ★★門の中では、★見本の .fl ＋ .inp の 姿に します（★2026-09-11）。
+  //   ★★−／＋ の 押しどころは 残します。★数字を 打たせない ための 道です。
+  //     ★見本には ありませんが、★消すと 打つしか なくなります。
+  //   ★★飾りの 絵（icon）は 出しません。★見本の 欄に 絵は ありません。
+  const v2 = useRecordV2Look();
+  if (v2) {
+    const rnd = {
+      width: 40, height: 40, minHeight: 40, flex: "none", borderRadius: 999,
+      border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+      display: "flex", alignItems: "center", justifyContent: "center"
+    };
+    return (
+      <div>
+        <div style={{
+          ...TYPE.h3, margin: `${SPACE.h3Top}px 0 5px`, letterSpacing: "0.08em"
+        }}>{label}</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <button type="button" style={rnd}
+            onClick={() => onChange(clamp((Number(value) || 0) - step))}>
+            <Minus size={14} />
+          </button>
+          <input type="number" value={value}
+            onChange={(e) => onChange(e.target.value === "" ? "" : Number(e.target.value))}
+            onBlur={(e) => { if (e.target.value !== "") onChange(clamp(Number(e.target.value))); }}
+            onWheel={(e) => e.target.blur()}
+            aria-label={label}
+            style={{
+              width: "100%", textAlign: "center", borderRadius: 12,
+              border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+              padding: 12, fontSize: 16, fontFamily: FONT_STACK
+            }} />
+          <button type="button" style={rnd}
+            onClick={() => onChange(clamp((Number(value) || 0) + step))}>
+            <Plus size={14} />
+          </button>
+          {suffix ? (
+            <span style={{ ...TYPE.usual, flex: "none", width: 28 }}>{suffix}</span>
+          ) : null}
+        </div>
+      </div>
+    );
+  }
   return (
     <div>
       <div className="flex items-center gap-1.5 mb-1.5">
@@ -14027,7 +14235,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               //   ★★門の外は { layoutV2:false } なので、★節は 全部 出ます。
               //     ★38人の 画面を、★1つも 変えません。
               <RecordFoldContext.Provider value={{ layoutV2, openSheet: recordSheet }}>
-              <div className="space-y-5">
+              {/* ★★門の中の 記録の 画面に 印を 付けます（★2026-09-11・お決め ㋐）。
+                  ★★節の 中の 生の <input>・<select>・<textarea> を、
+                    ★app/globals.css の .record-v2 が 見本の 姿に そろえます。
+                  ★★門の外（38人）には 付きません。★1つも 変わりません。 */}
+              <div className={layoutV2 ? "space-y-5 record-v2" : "space-y-5"}>
                 {/* ★★記録の 画面（★動く見本の S_kiroku ／ 2026-09-11 に 作り直し）。
                     ★★名簿に 載っている方にだけ 出します（★lib/layoutV2.js）。
                       ★一般の 38人には 出ません。★下の欄は 1つも 変えていません。
@@ -14616,11 +14828,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <SectionCard title={t("sectionTodayBody")} icon={Scale} fold="body">
                       {/* ★むくみは、からだの記録として1日の記録にも置きます。
                           かんたんモードにもありますが、どちらも同じ formData を見ます。
-                          ★「中核」という名前で囲わないこと（§1-3）。 */}
-                      <div className="mb-4">
-                        <EdemaSelector value={formData.morningEdema}
-                          onChange={(v) => setFormData((f) => ({ ...f, morningEdema: v }))} />
-                      </div>
+                          ★「中核」という名前で囲わないこと（§1-3）。
+                          ★★門の中では 出しません（★2026-09-11・C ㋐ と 同じ 理由）。
+                            ★★記録の 画面の いちばん上、★「あさ」の 3択が
+                              ★同じ morning_edema に 書いています。★入口が 2つ ありました。
+                            ★★門の外（38人）には、★これまでどおり 出ます。 */}
+                      {!layoutV2 && (
+                        <div className="mb-4">
+                          <EdemaSelector value={formData.morningEdema}
+                            onChange={(v) => setFormData((f) => ({ ...f, morningEdema: v }))} />
+                        </div>
+                      )}
                       {/* ★嗜好品（用語辞書の拡張と嗜好品の記録.md §7）。
                           ★未成年には欄ごと出しません。灰色にするのでも
                             押せなくするのでもなく、無い状態にします。
@@ -14954,6 +15172,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </SectionCard>
 
                     <SectionCard title={t("sectionPractice")} icon={Music2} id="record-section-practice" highlighted={highlightSection === "practice"} fold="practice">
+                      {/* ★★門の中では 出しません（★2026-09-11・C ㋐ と 同じ 理由）。
+                          ★★「本番以外で 声を使った時間」の 1枚に、★同じ 4択と、
+                            ★分で 書く 欄が あります。★入口が 2つ ありました。
+                          ★★門の外（38人）には、★これまでどおり 出ます。 */}
+                      {!layoutV2 && (
                       <div>
                         <span className="text-sm font-medium block mb-2">本番外の発話（レッスン・会議・電話・授業・打合せなど）</span>
                         {/* ★4択にします（中核5項目 §2-3）。
@@ -15015,6 +15238,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           </details>
                         )}
                       </div>
+                      )}
 
                       <div>
                         <span className="text-sm font-medium block mb-2">{t("labelTodayActivity")}</span>

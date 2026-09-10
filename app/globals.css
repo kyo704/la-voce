@@ -617,3 +617,91 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .sheep-gesture { animation: none !important; }
 }
+
+/* ============================================================================
+   記録の 画面（★門の中）の 生の 部品を、★見本の 姿に そろえる
+   ★出どころ docs/design/pack-final/00-動く見本（さわれる・全画面）.html
+     .inp{border:1px solid var(--line);border-radius:12px;background:#fff;
+          padding:12px;font-size:13.5px}
+     .fl {font-size:10.5px;color:var(--ink3);letter-spacing:.08em;margin:12px 0 5px}
+
+   ★★2026-09-11、★坂本さんの お決め ㋐「見本の 見た目に 作り直す」。
+     ★★節の 中には、★部品を 通さない 生の <input>・<select>・<textarea> が
+       ★18 ほど あります。★1つずつ 直すと 18か所に 決めが 散ります。
+     ★★だから、★記録の 画面の 器に .record-v2 を 付け、★ここ 1か所で そろえます。
+   ★★この 決めが 効くのは .record-v2 の 中だけです。
+     ★★38人の 画面には .record-v2 が 付きません。★1つも 変わりません。
+   ★★色は 直に 書きます。★lib/tokens.js の C.line ／ C.card ／ C.inkSoft と
+     ★同じ 値です。★ここを 変えるときは、★あちらも 一緒に 変えること。
+   ★見張り components/tests/sheet-look.test.js
+   ========================================================================== */
+.record-v2 input[type="text"],
+.record-v2 input[type="time"],
+.record-v2 input[type="date"],
+.record-v2 input[type="number"],
+.record-v2 select,
+.record-v2 textarea {
+  border: 1px solid #E4DCC9 !important;
+  border-radius: 12px !important;
+  background: #FFFDF8 !important;
+  color: #241914 !important;
+  padding: 12px !important;
+  /* ★iOS で 拡大しない 大きさ（★app/globals.css の 決めと 同じ 16px） */
+  font-size: 16px !important;
+  min-height: 44px;
+  width: 100%;
+}
+.record-v2 textarea {
+  min-height: 88px;
+  line-height: 1.8;
+}
+/* ★見本の .fl。★欄の 名前は 小さく、★字間を あけます。 */
+.record-v2 label {
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: #6b5d52;
+  font-weight: 400;
+}
+/* ★★節の 中の 小さな 箱を、★平らに します。
+   ★★1枚の 中に 箱が いくつも 入れ子に なると、★古い 画面に 見えます。 */
+.record-v2 .rounded-xl,
+.record-v2 .rounded-2xl {
+  border-radius: 12px;
+}
+
+/* ★★見出しと 折りたたみの 字を、★見本の 字づかいに そろえます。
+   ★出どころ docs/design/pack-final/tokens.md §2
+     「★アプリは 全部ゴシック」──★明朝の 斜体は 使いません。
+   ★★節の 中には、★昔の 見出し（.text-sm.font-medium）と
+     ★明朝斜体の <summary> が 残っています。★字だけを そろえます。
+   ★★中身も 押しどころも 1つも 変えていません。 */
+.record-v2 .ff-display {
+  font-family: inherit !important;
+  font-style: normal !important;
+}
+.record-v2 summary {
+  font-size: 11.5px;
+  color: #6b5d52;
+  font-weight: 400;
+  font-style: normal;
+  list-style: none;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.record-v2 summary::-webkit-details-marker { display: none; }
+.record-v2 .text-sm.font-medium,
+.record-v2 .text-sm.font-medium.block {
+  font-size: 11.5px;
+  color: #6b5d52;
+  font-weight: 400;
+}
+/* ★★節の 中の 小さな 箱を 平らに します。
+   ★★1枚の 中に 箱が 入れ子に なると、★古い 画面に 見えます。
+   ★背景だけを 紙の色に そろえ、★枠は 残します（★区切りが 要ります）。 */
+.record-v2 .rounded-xl.p-3,
+.record-v2 .rounded-xl.p-2\.5,
+.record-v2 .rounded-lg.p-2 {
+  background: #FFFDF8;
+  border: 1px solid #F0E9DA;
+}

@@ -61,7 +61,11 @@ export function SheetSlot({ label }) {
           <span aria-hidden="true" style={{ flex: 1, height: 1, background: C.line }} />
         </div>
       ) : null}
-      <div ref={ctx ? ctx.setNode : null} style={{ marginTop: rem(8) }} />
+      {/* ★★1枚の 中にも 同じ 印を 付けます（★2026-09-11）。
+          ★★引っ越してきた 節は、★ここへ 差し込まれます。
+            ★★記録の 画面の 器の 外に 出るので、★印を もう一度 付けます。 */}
+      <div className="record-v2" ref={ctx ? ctx.setNode : null}
+        style={{ marginTop: rem(8) }} />
     </>
   );
 }
