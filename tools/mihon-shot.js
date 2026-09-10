@@ -51,13 +51,13 @@ const SCREENS = [
   { key: "B01-くらべる-前の日", run: "go('ふりかえる');setFk('くらべる');S.lag=1;draw()" },
   { key: "B03-かぞえる", run: "go('ふりかえる');setFk('かぞえる')" },
   { key: "A06-ノート", run: "go('ノート')" },
-  { key: "A06-ノート-レパートリー", run: "go('ノート');S.nt='レパートリー';draw()" },
-  { key: "A06-ノート-連絡", run: "go('ノート');S.nt='連絡';draw()" },
-  { key: "A06-ノート-受診用", run: "go('ノート');S.nt='受診用';draw()" },
-  { key: "J01-ひつじ-ながめる", run: "go('ひつじ');S.hs='ながめる';draw()" },
-  { key: "J02-ひつじ-おうち", run: "go('ひつじ');S.hs='おうち';draw()" },
-  { key: "A08-ひつじ-したく", run: "go('ひつじ');openSheet('したく')" },
-  { key: "J04-ひつじ-たな", run: "go('ひつじ');S.hs='たな';draw()" },
+  { key: "A06-ノート-レパートリー", run: "go('ノート');S.note='レパートリー';draw()" },
+  { key: "A06-ノート-連絡", run: "go('ノート');S.note='連絡';draw()" },
+  { key: "A06-ノート-受診用", run: "go('ノート');S.note='受診用';draw()" },
+  { key: "J01-ひつじ-ながめる", run: "go('ひつじ');S.hj='ながめる';draw()" },
+  { key: "J02-ひつじ-おうち", run: "go('ひつじ');S.hj='おうち';draw()" },
+  { key: "A08-ひつじ-したく", run: "go('ひつじ');S.hj='したく';S.k1='きるもの';S.k2='全部';draw();openSheet('したく')" },
+  { key: "J04-ひつじ-たな", run: "go('ひつじ');S.hj='たな';draw()" },
   { key: "A10-もっと", run: "push('もっと')" }
 ];
 
@@ -66,7 +66,10 @@ const SCREENS = [
   fs.mkdirSync(OUT, { recursive: true });
   const browser = await chromium.launch({ channel: "chrome" });
   const ctx = await browser.newContext({
-    viewport: { width: 460, height: 1000 }, deviceScaleFactor: 2,
+    // ★★実機と 同じ 倍率で 撮ります（★iPhone 12 は 3）。
+    //   ★★見本の 電話の 枠は 360px です。★実装は 390px です。
+    //     ★★並べる ときに 同じ 幅へ そろえるので、★倍率だけ 合わせます。
+    viewport: { width: 460, height: 1000 }, deviceScaleFactor: 3,
     locale: "ja-JP", timezoneId: "Asia/Tokyo"
   });
   const page = await ctx.newPage();

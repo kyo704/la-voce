@@ -84,16 +84,26 @@ const SCREENS = [
 ];
 
 async function capture(env) {
-  const { chromium } = require("playwright");
+  const { chromium, devices } = require("playwright");
   fs.mkdirSync(FRAMES, { recursive: true });
   const base = env.E2E_BASE_URL || "https://woolsong.app";
   const browser = await chromium.launch({ channel: "chrome" });
   const missed = [];
 
-  for (const vp of [{ w: 390, h: 844, m: true }, { w: 1280, h: 900, m: false }]) {
+  // ★★実機の 機種を、★そのまま 真似ます（★2026-09-11・坂本さんの お指図）。
+  //   ★★幅の 数字だけを 合わせても、★実機とは ちがいます。
+  //     ★倍率（devicePixelRatio 3）・タッチ・名乗り（UA）が ちがうと、
+  //     ★字の 太さも、★出し分けも 変わることが あります。
+  //   ★★iPhone 12（390×844・倍率3）を 使います。
+  //     ★坂本さんの 写真が 390×844 の 形でした。
+  //   ★★高さだけは 844 に します（★Playwright の 既定は 664 で、
+  //     ★これは 画面の 見える ぶんだけの 数字です）。
+  //     ★★fullPage で 撮るので、★高さは 絵に 影響しません。
+  const IPHONE = devices["iPhone 12"];
+  for (const vp of [{ name: "390", dev: IPHONE }]) {
     const ctx = await browser.newContext({
-      viewport: { width: vp.w, height: vp.h },
-      deviceScaleFactor: 1, isMobile: vp.m, hasTouch: vp.m,
+      ...vp.dev,
+      viewport: { width: vp.dev.viewport.width, height: 844 },
       locale: "ja-JP", timezoneId: "Asia/Tokyo"
     });
     const page = await ctx.newPage();
@@ -102,7 +112,7 @@ async function capture(env) {
     await page.locator('input[type="password"]').first().fill(env.E2E_PASSWORD);
     await page.locator('button[type="submit"], button:has-text("ログイン")').first().click();
     await page.waitForURL(/\/dashboard/, { timeout: 45000 });
-    console.log("★" + vp.w + "px で 撮ります");
+    console.log("★" + vp.name + "px（iPhone 12・倍率" + vp.dev.deviceScaleFactor + "）で 撮ります");
 
     const close = async () => {
       // ★★1枚を 閉じると、★保存が 走り、★そのあとに「記録しました」の
@@ -168,12 +178,12 @@ async function capture(env) {
           });
           await page.waitForTimeout(500);
         }
-        const file = path.join(FRAMES, sc.key + "@" + vp.w + ".png");
+        const file = path.join(FRAMES, sc.key + "@" + vp.name + ".png");
         await page.screenshot({ path: file, fullPage: true });
-        console.log("  ✓ " + sc.key + "@" + vp.w);
+        console.log("  ✓ " + sc.key + "@" + vp.name);
       } catch (e) {
-        missed.push(sc.key + "@" + vp.w + "  " + String(e.message).split("\n")[0].slice(0, 70));
-        console.log("  ✗ " + sc.key + "@" + vp.w);
+        missed.push(sc.key + "@" + vp.name + "  " + String(e.message).split("\n")[0].slice(0, 70));
+        console.log("  ✗ " + sc.key + "@" + vp.name);
       }
     }
     await ctx.close();
