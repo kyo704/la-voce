@@ -147,6 +147,11 @@ import { maySeeMoney } from "@/lib/opsShell";
 import { mayEnterOps, mayEditRoster } from "@/lib/opsShell";
 import { rosterCount } from "@/lib/orgRoster";
 import RecordV2Head from "@/components/RecordV2Head";
+import { KoeSheet, NemuriSheet, SheetRow, ListSheet } from "@/components/RecordSheets";
+import {
+  KOE, NEMURI, sleepWord, ACCOUNT_ROWS, TSUCHI_ROWS, TSUCHI_NOTE,
+  YOUSU_CHOICES, YOUSU_NOTE
+} from "@/lib/recordSheets";
 import LookBackV2 from "@/components/LookBackV2";
 import { applyConditionWord, RECORD_FOLDS, sectionIsOpen } from "@/lib/recordV2";
 import { readProfileExtras } from "@/lib/profileExtras";
@@ -5448,6 +5453,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★★もっているもの（★見本 J05・J06 ／ 2026-09-11）。
   //   ★★台帳は、★開いたときに 読みます。★ふだんは 引きません。
   //     ★毎日 見る ものでは ないからです。
+  // ★★下から 上がる 1枚（★2026-09-11・第1便）。
+  //   ★★どれが 開いているかを、★1つの 名前で 持ちます。
+  //     ★1枚ごとに 真偽値を 置くと、★2枚 同時に 開く 形が 作れてしまいます。
+  const [recordSheet, setRecordSheet] = useState(null);
   const [ownedOpen, setOwnedOpen] = useState(false);
   const [ledgerRows, setLedgerRows] = useState([]);
   useEffect(() => {
@@ -13817,6 +13826,28 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       handleSave(next);
                     }} />
                 )}
+                {/* ★★＋の 行（★見本の rowIn ／ 2026-09-11・第1便）。
+                    ★★見本では「＋の 行を 押すと 下から シートが 出ます」。
+                      ★★これまで、★押しても 何も 起きませんでした。
+                    ★★しまう 欄は これまでどおりです。★新しい 欄を 作っていません。
+                      ★ねむり … bedtime ＋ sleepHours
+                      ★こえ　 … nonPerformanceSpeechMinutes
+                    ★★食べたもの・からだのことは、★言葉が いまの ものと 違うので
+                      ★坂本さんに お尋ね中です（★2026-09-11）。ここには まだ 置きません。 */}
+                {layoutV2 && formData && (
+                  <div style={{ marginTop: 12 }}>
+                    <SheetRow
+                      label={NEMURI.title}
+                      value={typeof formData.sleepHours === "number"
+                        ? sleepWord(formData.sleepHours) : null}
+                      onOpen={() => setRecordSheet("ねむり")} />
+                    <SheetRow
+                      label={KOE.title}
+                      value={(SPEECH_MINUTE_CHOICES.find(
+                        (c) => c.value === formData.nonPerformanceSpeechMinutes) || {}).label || null}
+                      onOpen={() => setRecordSheet("こえ")} />
+                  </div>
+                )}
                 {/* ★かんたん表示の「1画面に1つ」（見やすさ §3-3）。
                     ★下のふつうの記録欄は消していない。ここで答えても、
                       下の欄に反映される。同じ項目に書いているため。
@@ -20726,6 +20757,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                     //   （★見本 J05・J06 ／ 2026-09-11）。
                                     //   ★もっとの 中に 節を 作りません。★見本が 別画面です。
                                     if (r.key === "もっているもの") { setOwnedOpen(true); return; }
+                                    // ★★1枚で 出す ものは、★節を 開きません（★見本の openSheet）。
+                                    if (r.sheet) { setRecordSheet(r.key); return; }
                                     if (r.key === "書き出す" || r.key === "退会") setMoreSection("じぶんの記録");
                                     else setMoreSection(r.key);
                                   }}
@@ -21496,6 +21529,43 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           </div>
         )}
       </main>
+
+      {/* ★★下から 上がる 1枚（★2026-09-11・第1便）。
+          ★★いちばん 外に 置きます。★後ろの 画面より 上に 出すためです。
+          ★★門の 中の 方だけです。★38人の 画面は 変わりません。 */}
+      {layoutV2 && formData && recordSheet === "ねむり" && (
+        <NemuriSheet
+          bedtime={formData.bedtime}
+          sleepHours={typeof formData.sleepHours === "number" ? formData.sleepHours : null}
+          onDone={(bed, hours) => {
+            // ★★押した その場で 保存します（★記録の 画面と 同じ 決め）。
+            //   ★★setFormData の あとの formData は まだ 古い姿なので、
+            //     ★作った 姿を そのまま 渡します。
+            const next = { ...formData, bedtime: bed, sleepHours: hours };
+            setFormData(next);
+            handleSave(next);
+          }}
+          onClose={() => setRecordSheet(null)} />
+      )}
+      {layoutV2 && formData && recordSheet === "こえ" && (
+        <KoeSheet
+          choices={SPEECH_MINUTE_CHOICES}
+          value={formData.nonPerformanceSpeechMinutes}
+          onChange={(v) => {
+            const next = { ...formData, nonPerformanceSpeechMinutes: v };
+            setFormData(next);
+            handleSave(next);
+          }}
+          onClose={() => setRecordSheet(null)} />
+      )}
+      {layoutV2 && recordSheet === "アカウント" && (
+        <ListSheet title="アカウント" rows={ACCOUNT_ROWS}
+          onClose={() => setRecordSheet(null)} />
+      )}
+      {layoutV2 && recordSheet === "お知らせ" && (
+        <ListSheet title="お知らせ" rows={TSUCHI_ROWS} note={TSUCHI_NOTE}
+          onClose={() => setRecordSheet(null)} />
+      )}
 
       {/* ★★もっているもの（★見本 J05・J06 ／ 2026-09-11）。
           ★★いちばん 外に 置きます。★どの タブから 開いても 同じ 1枚です。
