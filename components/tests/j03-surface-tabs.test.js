@@ -70,19 +70,18 @@ function ok(cond, label) {
   ok(floor.every((i) => i.category === "tile"), "★ゆか にも 混ざらない");
   ok(wall.length === 59 && floor.length === 70, "★かべ 59 ／ ゆか 70（★これまでどおり）");
 
-  console.log("⑤ J02 は 見送り ── 座標を 消していない");
+  console.log("⑤ 座標を 消していない");
+  // ★★2026-09-11、★J02 が 進むことに なりました（★Opus の 裁定 ＋ 坂本さんの お決め）。
+  //   ★★見張るのは「見送りかどうか」では ありません。
+  //     ★★書いてある 座標を 消していない こと、です。★そこは 変わりません。
   const vt = readCode("components", "VocalTracker.jsx");
-  // ★★見送りの あいだ、★これまでどおり 置けること。
   ok(/function handleUpdatePosition/.test(vt), "★置いた 場所を 覚える 道が 残っている");
   ok(/furniturePositions|\$\{category\}Positions/.test(vt), "★座標の 欄が 残っている");
-  // ★★これは 注記そのものを 見る 確かめです。★readRaw を 使います
-  //   （★禁じた語 の 検査では ありません）。
   const homeRaw = readRaw("lib", "homeDrawer.js");
-  ok(/J02（おくスロット・7か所）は、★見送りです/.test(homeRaw),
-    "★見送りの わけが 書いてある");
-  // ★★7か所を 作りかけて いないこと。★中途半端が いちばん こわいです。
-  ok(!/ROOM_SLOTS|SLOT_RECTS/.test(readCode("lib", "homeDrawer.js") + readCode("lib", "sheepInteriorV2.js")),
-    "★7か所の 仕組みを、作りかけていない");
+  ok(/とだな/.test(homeRaw) && /とびら/.test(homeRaw),
+    "★置き場所の 名まえが 書き残されている");
+  ok(!/「たな」　置くもの|たな　　置くもの/.test(homeRaw),
+    "★J02 の「たな」は、もう 使っていない（★J04 と 重なるため）");
 
   console.log("⑥ 色は まだ 出さない");
   const panel = readCode("components", "InteriorPanel.jsx");
