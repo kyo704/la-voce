@@ -2754,38 +2754,12 @@ function Sparkline({ values, width = 96, height = 26 }) {
 // §3-C: 1次元の点列。★リング表示の置き換え。
 // リングは「7／9日中」しか言えないが、点列は順位と散らばりを同時に見せる。
 // 良い日と悪い日がどれくらい離れているかが分かる。
-function DotStrip({ values, today, height = 46 }) {
-  const vals = (values || []).filter((v) => typeof v === "number");
-  if (vals.length < 2) return null;
-  const min = Math.min(...vals), max = Math.max(...vals);
-  const span = max - min || 1;
-  const pad = 10;
-  const w = 100;
-  const x = (v) => pad + ((v - min) / span) * (w - pad * 2);
-  // ★上限を、文字の倍率に合わせて広げます（2026-09-05 夜）。
-  return (
-    <svg viewBox={`0 0 ${w} ${height}`}
-      style={{ width: "100%", maxWidth: "min(100%, calc(260px * var(--scale)))" }} aria-hidden="true">
-      {/* 目盛りは3本だけ（§3-C） */}
-      {[0, 0.5, 1].map((f) => (
-        <line key={f} x1={pad + f * (w - pad * 2)} x2={pad + f * (w - pad * 2)}
-          y1={height - 14} y2={height - 10} stroke={SERIES.grid} strokeWidth={0.6} />
-      ))}
-      <line x1={pad} x2={w - pad} y1={height - 12} y2={height - 12} stroke={SERIES.grid} strokeWidth={0.6} />
-      {/* 過去の日。★色は増やさず、淡いほうで描く */}
-      {vals.map((v, i) => (
-        <circle key={i} cx={x(v)} cy={height - 22} r={2.2} fill={SERIES.pale} opacity={0.85} />
-      ))}
-      {/* 今日。少し大きく、上にラベル */}
-      {typeof today === "number" && (
-        <>
-          <circle cx={x(today)} cy={height - 22} r={3.6} fill={SERIES.s1} />
-          <text x={x(today)} y={height - 30} textAnchor="middle" style={{ fontSize: "0.5625rem", fill: SERIES.axis }}>今日</text>
-        </>
-      )}
-    </svg>
-  );
-}
+// ★★DotStrip（点列）を 落としました（★2026-09-10 の 裁定）。
+//   ★★「リングを 点列に 置き換える」は 古い案です。★無効です。
+//     ★リングも 点列も 出しません。★置き換えの 図は ありません。
+//   ★★偏差値の カードを 消したので、★呼ぶ所が 無くなりました。
+//   ★作った 部品は、★どこかから 呼ばれていること。
+//   ★記録 docs/reports/消したものの記録.md
 
 // 分析画面の描画仕様.md §3-F: 進捗ドット。件数が足りない全てのカードで使う。
 // ★「データがありません」と書かないための部品（§7-11）。
@@ -4352,7 +4326,11 @@ function OnboardingFlow({ existingUser, onComplete, t }) {
             <p className="text-sm mb-1 font-medium">何のために使うか</p>
             <ul className="text-xs space-y-1 mb-4" style={{ color: C.inkSoft }}>
               <li>・あなた自身が声の調子の傾向を振り返るため</li>
-              <li>・記録をもとに、あなた専用の分析（偏差値・発声負荷など）を表示するため</li>
+              {/* ★★同意の 文から「偏差値」を 外しました（★2026-09-10 の 裁定）。
+                  ★★無くなった ものへの 同意を、★求めつづけないためです。
+                  ★★同意の 版は 上げません。★減らした だけで、
+                    ★新しく 何かを 求めては いないからです。 */}
+              <li>・記録をもとに、あなた専用の分析を表示するため</li>
             </ul>
             <div className="rounded-xl p-3 mb-3" style={{ background: C.paper }}>
               <p className="text-xs font-medium mb-1">上記の記録・分析のための取得（必須）</p>
@@ -4473,7 +4451,9 @@ function OnboardingFlow({ existingUser, onComplete, t }) {
               <li>✓ 症状のカレンダー</li>
               <li>✓ 音域マップ</li>
             </ul>
-            <p className="text-sm mb-4">が見られるようになります。<br />7日で「コンディション偏差値」、14日で「あなただけの法則」が出ます。</p>
+            {/* ★★「7日で コンディション偏差値」を 外しました（★2026-09-10 の 裁定）。
+                ★★無くなった ものを、★入会の ときに 約束していました。 */}
+            <p className="text-sm mb-4">が見られるようになります。</p>
             <button type="button" onClick={handleFinish} disabled={saving}
               className="w-full py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: saving ? 0.6 : 1 }}>
               {saving ? "はじめています…" : "はじめる"}
@@ -7294,32 +7274,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       .map((d) => ({ date: d, score: computeDailyScore100(entries[d]) }))
       .filter((x) => x.score != null);
   }, [entries, realTodayDate]);
-  const deviationScore = useMemo(() => {
-    if (dailyScoreSeries.length < 7) return null;
-    const values = dailyScoreSeries.map((d) => d.score);
-    const n = values.length;
-    const mean = values.reduce((a, b) => a + b, 0) / n;
-    let sigma;
-    if (n < 14) {
-      const sorted = [...values].sort((a, b) => a - b);
-      const median = n % 2 === 1 ? sorted[(n - 1) / 2] : (sorted[n / 2 - 1] + sorted[n / 2]) / 2;
-      const absDevs = values.map((v) => Math.abs(v - median)).sort((a, b) => a - b);
-      const mad = absDevs.length % 2 === 1 ? absDevs[(absDevs.length - 1) / 2] : (absDevs[absDevs.length / 2 - 1] + absDevs[absDevs.length / 2]) / 2;
-      sigma = 1.4826 * mad;
-    } else {
-      const variance = values.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / (n - 1);
-      sigma = Math.sqrt(variance);
-    }
-    sigma = Math.max(sigma, 0.5);
-    const todayEntry = dailyScoreSeries[dailyScoreSeries.length - 1];
-    const z = (todayEntry.score - mean) / sigma;
-    const T = Math.min(80, Math.max(20, Math.round(50 + 10 * z)));
-    // ★★position と topPercentPct を、★やめました（★2026-09-07・11番）。
-    //   ★「上から何番目か」「上位何%か」を出していました。
-    //   ★★順位は、★書いた日どうしを競わせます。
-    //   ★点の並び（values）は残します。★散らばりを見せるためのものです。
-    return { z, T, n, today: Math.round(todayEntry.score), values };
-  }, [dailyScoreSeries]);
+  // ★★deviationScore（★合成する 計算）を 消しました。
+  //   ★出どころ 2026-09-10 の 裁定／2026-09-11 に 出どころを 確かめました
+  //   ★「★消すのは 合成する計算と、その画面だけ。★元の記録は 1件も 消しません」
+  //   ★★材料（dailyScoreSeries）は 残します。★ほかも 使っています。
+  //   ★★「リングを 点列に 置き換える」は 古い案です。★無効です。
+  //     ★リングも 点列も 出しません。★置き換えの 図は ありません。
+  //   ★記録 docs/reports/消したものの記録.md
 
   // lavoce-レパートリー負荷パッチ.md §1.4: 「無理なく出せる音域」（任意）があればそちらを優先し、
   // なければ全音域を使う。ACWR（発声負荷）の計算で曲のsongFactorを使うため、ACWRより前に置く。
@@ -8765,19 +8726,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         priority: Math.min(1, Math.abs(topLagFinding.rho)) * 1.0 * 0.6
       });
     }
-    if (effectiveHabitRanking.length > 0 && effectStateOf(effectiveHabitRanking[0]) === EFFECT_SHOWN
-        && gateAllows("habit.narrative", { days: analysisDaysTotal, n1: effectiveHabitRanking[0].n1, n0: effectiveHabitRanking[0].n0, effectSize: effectiveHabitRanking[0].g, fdrPass: effectiveHabitRanking[0].fdrPass })) {
-      const top = effectiveHabitRanking[0];
-      candidates.push({
-        id: "habit-" + top.key,
-        icon: "✨",
-        text: `${top.label}日は、翌日の声が平均で${top.g >= 0 ? "良く" : "悪く"}記録されています。`,
-        // ★★係数の数字を、出さないことにしました（★2026-09-07・6番）。
-        //   ★文は残ります。★3ゲートを通ったものだけが、ここに来ます。
-        detail: "",
-        priority: Math.min(1, Math.abs(top.g) / 1.5) * 0.9
-      });
-    }
+    // ★★1位の 習慣を えらんで 1文に していました。★外しました
+    //   （★2026-09-08 の 確定／★9月11日に 出どころを 確かめました）。
+    //   ★★「★順位（1位・2位…）と 並べ替えを 消す」
+    //     ★★[0] を 取ることは、★並べ替えて 1位を 出すことです。
+    //   ★★「良く／悪く 記録されています」も、★良し悪しの 言い切りでした。
+    //   ★★計算（effectiveHabitRanking）は 消していません。★くらべる の 材料です。
+    //   ★★置き換えは「くらべる」です ── ★2群の 件数と、点の 散らばり。
+    //     ★順位 1つより、★両群の 件数のほうが 多くを 語ります。
+    //   ★記録 docs/reports/消したものの記録.md
     if (roleLoadStats.confident.length > 0) {
       const divergent = [...roleLoadStats.confident].sort((a, b) => Math.abs(b.rankGap) - Math.abs(a.rankGap))[0];
       // 役ごとの負荷には、まだ効果量も多重比較の補正も無い（順位の差だけ）。
@@ -8839,11 +8796,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const analysisLocks = useMemo(() => {
     const prof = effectiveProfessions || [];
     const defs = [
-      { key: "deviation", visible: true,
-        unlocked: gateAllows("deviation.card", { days: analysisDaysTotal }),
-        title: "コンディション偏差値",
-        teaser: "今日が「自分比でどのくらい良い日か」を偏差値で見られます",
-        current: analysisDaysTotal, required: getGate("deviation.card").minDays },
+      // ★★偏差値の カードを 一覧からも 外しました（★2026-09-10 の 裁定）。
+      //   ★★残すと、★鍵の かかった 姿だけが 出つづけます。
+      //     ★開く 先が 無いのに、★「あと◯日で 開きます」を 見せることに なります。
       { key: "warmup", visible: true, unlocked: analysisDaysTotal >= 3,
         title: "ウォームアップ効率",
         teaser: "起き抜けとルーティン後の声の差を、半音数で毎朝チェックできます",
@@ -8924,8 +8879,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       if (!section) return;
       candidates.push({
         id: "habit-boost-" + h.key,
-        title: "「効いた習慣」の判定に、あと少しです",
-        body: `${h.label.replace(/^前夜の|^前夜、|^前日、/, "")}の記録を あと${daysNeeded}日 続けると、判定を始められます`,
+        // ★★「効いた」という 名前を 外しました（★2026-09-08 の 確定）。
+        //   ★★「効いた」＝ 因果の 主張です。★うちが 言えるのは
+        //     ★「一緒に 出ています」までです。
+        //   ★★「あと◯日」も 外しました（★あと◯日を 出さない）。
+        title: "くらべるに、もうすこしで 出せます",
+        body: `${h.label.replace(/^前夜の|^前夜、|^前日、/, "")}の記録が たまると、くらべるで 見られます`,
         daysNeeded,
         // ★ロック中のカードと同じ進捗の点を描くため、件数も持たせる。
         current: minN, required: NARRATIVE_MIN_N_PER_GROUP,
@@ -17059,66 +17018,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ★★下位の6つも、★押し下げの数字も、★一緒に消えます。
                       ★「何が悪いか」を、こちらから言わないためです。 */}
 
-                {analysisLocks.map.deviation.unlocked ? (
-                  deviationScore && (
-                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                      <div className="flex items-start justify-between gap-2 mb-1">
-                        <h3 className="ff-display italic text-lg">コンディション偏差値</h3>
-                        <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: C.paper, color: C.inkSoft }}>
-                          {t("badgeFixedPeriod").replace("{n}", deviationScore.n)}
-                        </span>
-                      </div>
-                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                        100点満点の絶対評価だと、良い日も悪い日も似た点数に集まりがちです。自分の直近{deviationScore.n}日の分布の中で、今日がどこにいるかで見ます。
-                      </p>
-                      {/* ★★大きい文字のとき、★右の文が1行に1文字ずつ縦に並んでいました
-                          （2026-09-05・実機）。
-                          ★となりの箱に flexShrink: 0 が付いていて、★縮みません。
-                          ★★日本語は、★どこでも折り返せます。
-                            ★だから、★縮められる側は、★字1つぶんまで細くなります。
-                          ★入りきらないときは、★下に回します。★横に潰しません。 */}
-                      <div className="flex items-center gap-5 flex-wrap">
-                        {/* ★§3-C: リングを点列に置き換えた。
-                            リングは「7／9日中」しか言えない。点列なら、順位と散らばりを
-                            同時に見せられる。良い日と悪い日がどれくらい離れているかが分かる。
-                            ★リングの色も、値によって緑・金・赤に変えていた（§7-5 違反）。 */}
-                        <div style={{ flexShrink: 0, minWidth: 0 }}>
-                          <div className="flex items-baseline gap-1.5">
-                            {gateAllows("deviation.tScore", { n: deviationScore.n }) ? (
-                              <>
-                                <span className="ff-display italic" style={{ fontSize: "1.7rem", color: C.ink }}>{deviationScore.T}</span>
-                                <span className="text-xs" style={{ color: C.inkSoft }}>偏差値</span>
-                              </>
-                            ) : (
-                              // ★★「5／20日中」も、★順位です（11番）。
-                              //   ★件数が足りないときは、★数字を出さず、★点の並びだけにします。
-                              null
-                            )}
-                          </div>
-                          <DotStrip values={deviationScore.values} today={deviationScore.today} />
-                          <p className="text-[10px]" style={{ color: C.inkSoft }}>低い ← → 高い</p>
-                        </div>
-                        {/* ★★順位の文を、やめました（★2026-09-07・11番）。
-                            ★「この20日のうち、今日は高いほうから5番目です」と出していました。
-                            ★★順位は、★その日に、他の日との上下を付けます。
-                              ★書いた日どうしを、★競わせることになります。
-                            ★下の点の並びは、★残します。
-                              ★あちらは順位ではなく、★散らばりを見せるものです。
-                              ★今日がどこに居るかは見えますが、★何番目とは言いません。 */}
-                        {gateAllows("deviation.tScore", { n: deviationScore.n }) && (
-                          <p className="text-xs" style={{ color: C.ink }}>
-                            今日は<strong>偏差値{deviationScore.T}</strong>です。
-                          </p>
-                        )}
-                      </div>
-                      {/* ★★「順位だけを表示しています」の断りも、外しました（11番）。
-                          ★順位を出さなくなったので、★断る相手がありません。 */}
-                      <p className="text-xs mt-3" style={{ color: C.inkSoft }}>
-                        ※ 絶対値ではなく、自分自身の記録の中での相対的な位置を示す参考値です。
-                      </p>
-                    </div>
-                  )
-                ) : null}
+                {/* ★★コンディション偏差値の カードを、★まるごと 消しました。
+                    ★出どころ 2026-09-10 の 裁定（★9月11日に 出どころを 確かめました）
+                    ★★中には「この14日間で ◯番目に 良い日です（上から◯%）」の 文も
+                      ★ありました。★順位と ％と 良し悪しが、★1文に 3つ 入っていました。
+                    ★★「リングを 点列に 置き換える」は 古い案です。★無効です。
+                      ★リングも 点列も 出しません。★置き換えの 図は ありません。
+                    ★★元の記録は 1件も 消していません。
+                      ★睡眠・練習時間・声の調子・体重は、
+                      ★いまは「ならべる」「くらべる」の 材料です。
+                    ★記録 docs/reports/消したものの記録.md */}
 
                 {analysisLocks.map.screamRecovery.visible && (
                   analysisLocks.map.screamRecovery.unlocked ? (
@@ -17284,7 +17193,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                 {popMusicalEffects.length > 0 && (
                   <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <h3 className="ff-display italic text-lg mb-3">ツアー中の効いた・響いた習慣</h3>
+                    {/* ★★「効いた」を 外しました（★2026-09-08 の 確定）。
+                        ★「効いた」は 因果の 主張です。★並びの 話に 直します。 */}
+                    <h3 className="ff-display italic text-lg mb-3">ツアー中に 一緒に 出ていたこと</h3>
                     <div className="space-y-3">
                       {popMusicalEffects.map((r) => (
                         <div key={r.key} className="rounded-xl p-3" style={{ background: C.paper }}>

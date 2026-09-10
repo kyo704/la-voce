@@ -158,11 +158,16 @@ assertTrue(!/<XAxis|<YAxis|axis/i.test(sp), "★軸・目盛りを付けてい�
 assertTrue(/slice\(-14\)/.test(sp), "直近14日");
 assertTrue(/<circle/.test(sp) && (sp.match(/<circle/g) || []).length === 1, "★点は最新の1つだけ");
 
-console.log("\n=== §3-C: リングを点列に置き換えた ===");
-assertTrue(/function DotStrip/.test(ui), "点列の部品がある");
+console.log("\n=== §3-C: 偏差値は、リングも 点列も 出さない ===");
+// ★★この 節は「★リングを 点列に 置き換えた」ことを 見ていました。
+//   ★★2026-09-10 の 裁定で、★その 案は 無効に なりました ──
+//     「★『リングを 点列に 置き換える』は 古い案です。
+//       ★リングも 点列も 出しません。★置き換えの 図は ありません」
+//   ★★偏差値は、★画面から 消えました。★見張りも そちらへ 向け直します。
+assertTrue(!/function DotStrip/.test(ui), "★点列の部品が、もう無い");
 assertTrue(!/strokeDasharray=\{`\$\{\(Math\.min\(100/.test(ui), "★偏差値のリングが残っていない");
-assertTrue(!/deviationScore\.T >= 60 \? C\.sage/.test(ui), "★リングの色を値で変えていた箇所が無い");
-assertTrue(/DotStrip values=\{deviationScore\.values\}/.test(ui), "分布そのものを渡している（順位だけでは散らばりが見えない）");
+assertTrue(!/deviationScore/.test(ui), "★偏差値の 計算が、もう無い");
+assertTrue(!/コンディション偏差値/.test(ui), "★偏差値の カードが、もう無い");
 
 console.log("\n=== §3-D: 本番・レッスンの日を、色と大きさの両方で区別 ===");
 assertTrue(/function trendDot/.test(ui), "点の描き分けが部品になっている");
