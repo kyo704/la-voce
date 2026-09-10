@@ -54,6 +54,13 @@ const SCREENS = [
   { key: "A06-ノート-レパートリー", run: "go('ノート');S.note='レパートリー';draw()" },
   { key: "A06-ノート-連絡", run: "go('ノート');S.note='連絡';draw()" },
   { key: "A06-ノート-受診用", run: "go('ノート');S.note='受診用';draw()" },
+  // ★★「＋」を 押した ときの 画面（★2026-09-11・坂本さんの ご要望）。
+  //   ★★Fable の 決まりの「every sheet / modal / collapsible opened」
+  //     ★に あたる ぶんです。★一覧だけでは、★突き合わせに なりません。
+  { key: "A06-ノート-稽古-書く", run: "go('ノート');S.note='稽古';draw();push('稽古を書く')" },
+  { key: "A06-ノート-レパートリー-足す", run: "go('ノート');S.note='レパートリー';draw();openSheet('newrep')" },
+  { key: "A06-ノート-新しく書く", run: "go('ノート');S.note='稽古';draw();openSheet('newnote')" },
+  { key: "A06-ノート-日付と先生", run: "go('ノート');S.note='稽古';draw();openSheet('notemeta')" },
   { key: "J01-ひつじ-ながめる", run: "go('ひつじ');S.hj='ながめる';draw()" },
   { key: "J02-ひつじ-おうち", run: "go('ひつじ');S.hj='おうち';draw()" },
   { key: "A08-ひつじ-したく", run: "go('ひつじ');S.hj='したく';S.k1='きるもの';S.k2='全部';draw();openSheet('したく')" },
