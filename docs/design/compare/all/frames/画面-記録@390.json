@@ -1,0 +1,370 @@
+[
+ {
+  "tag": "button",
+  "text": "きょう"
+ },
+ {
+  "tag": "button",
+  "text": "記録"
+ },
+ {
+  "tag": "button",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "button",
+  "text": "ノート"
+ },
+ {
+  "tag": "button",
+  "text": "ひつじ"
+ },
+ {
+  "tag": "h2",
+  "text": "記録"
+ },
+ {
+  "tag": "div",
+  "text": "2026年9月11日(金)"
+ },
+ {
+  "tag": "p",
+  "text": "あさ"
+ },
+ {
+  "tag": "div",
+  "text": "起きたときの むくみ"
+ },
+ {
+  "tag": "span",
+  "text": "◎"
+ },
+ {
+  "tag": "span",
+  "text": "ない"
+ },
+ {
+  "tag": "span",
+  "text": "○"
+ },
+ {
+  "tag": "span",
+  "text": "すこし"
+ },
+ {
+  "tag": "span",
+  "text": "△"
+ },
+ {
+  "tag": "span",
+  "text": "ある"
+ },
+ {
+  "tag": "span",
+  "text": "昨夜の 睡眠"
+ },
+ {
+  "tag": "span",
+  "text": "›"
+ },
+ {
+  "tag": "p",
+  "text": "よる"
+ },
+ {
+  "tag": "div",
+  "text": "のどの 調子"
+ },
+ {
+  "tag": "span",
+  "text": "◎"
+ },
+ {
+  "tag": "span",
+  "text": "よい"
+ },
+ {
+  "tag": "span",
+  "text": "○"
+ },
+ {
+  "tag": "span",
+  "text": "ふつう"
+ },
+ {
+  "tag": "span",
+  "text": "△"
+ },
+ {
+  "tag": "span",
+  "text": "わるい"
+ },
+ {
+  "tag": "div",
+  "text": "声の 出来"
+ },
+ {
+  "tag": "span",
+  "text": "◎"
+ },
+ {
+  "tag": "span",
+  "text": "出た"
+ },
+ {
+  "tag": "span",
+  "text": "○"
+ },
+ {
+  "tag": "span",
+  "text": "ふつう"
+ },
+ {
+  "tag": "span",
+  "text": "△"
+ },
+ {
+  "tag": "span",
+  "text": "出づらい"
+ },
+ {
+  "tag": "span",
+  "text": "本番以外で 声を使った時間"
+ },
+ {
+  "tag": "span",
+  "text": "›"
+ },
+ {
+  "tag": "div",
+  "text": "部屋の しめり は こちらで 取ります。本番・レッスンの 翌日かどうかも、予定から 分かります。この2つは 聞きません。"
+ },
+ {
+  "tag": "p",
+  "text": "足す（どれも 任意）"
+ },
+ {
+  "tag": "span",
+  "text": "本番・レッスン"
+ },
+ {
+  "tag": "span",
+  "text": "あり ›"
+ },
+ {
+  "tag": "span",
+  "text": "食べたもの"
+ },
+ {
+  "tag": "span",
+  "text": "›"
+ },
+ {
+  "tag": "span",
+  "text": "からだのこと"
+ },
+ {
+  "tag": "span",
+  "text": "›"
+ },
+ {
+  "tag": "span",
+  "text": "ひとこと"
+ },
+ {
+  "tag": "span",
+  "text": "›"
+ },
+ {
+  "tag": "button",
+  "text": "きょうは 書かない"
+ },
+ {
+  "tag": "button",
+  "text": "出す"
+ },
+ {
+  "tag": "span",
+  "text": "「n/5」を 出しません。"
+ },
+ {
+  "tag": "span",
+  "text": "書かなかった行に 赤い印を つけません。必須は 1つも ありません。"
+ },
+ {
+  "tag": "span",
+  "text": "「夜の3つが 入れば その日は 記録した日」── この規則を 画面に 書きません。"
+ },
+ {
+  "tag": "h3",
+  "text": "声・喉"
+ },
+ {
+  "tag": "button",
+  "text": "詳しく 書く"
+ },
+ {
+  "tag": "p",
+  "text": "呼び方をお仕事に合わせました。記録はそのままです。"
+ },
+ {
+  "tag": "button",
+  "text": "わかりました"
+ },
+ {
+  "tag": "h3",
+  "text": "お仕事に合わせた記録"
+ },
+ {
+  "tag": "button",
+  "text": "詳しく 書く"
+ },
+ {
+  "tag": "h3",
+  "text": "今日の身体"
+ },
+ {
+  "tag": "button",
+  "text": "詳しく 書く"
+ },
+ {
+  "tag": "h3",
+  "text": "気候・滞在地"
+ },
+ {
+  "tag": "label",
+  "text": "滞在地・公演地"
+ },
+ {
+  "tag": "div",
+  "text": "気温"
+ },
+ {
+  "tag": "span",
+  "text": "℃"
+ },
+ {
+  "tag": "label",
+  "text": "天気"
+ },
+ {
+  "tag": "span",
+  "text": "環境騒音レベル"
+ },
+ {
+  "tag": "button",
+  "text": "騒音レベルを測定する"
+ },
+ {
+  "tag": "p",
+  "text": "今いる場所にスマホを置いて測定すると、2秒間の音を録音データに残さず、その場で数値化します。校正されたマイクではないため"
+ },
+ {
+  "tag": "span",
+  "text": "今日の環境（あてはまるものすべて）"
+ },
+ {
+  "tag": "button",
+  "text": "乾燥を感じた"
+ },
+ {
+  "tag": "button",
+  "text": "空調が直接あたる"
+ },
+ {
+  "tag": "button",
+  "text": "マスク着用"
+ },
+ {
+  "tag": "button",
+  "text": "大声を出す場所にいた"
+ },
+ {
+  "tag": "button",
+  "text": "喫煙環境"
+ },
+ {
+  "tag": "button",
+  "text": "粉塵・スモーク"
+ },
+ {
+  "tag": "summary",
+  "text": "移動・時差の記録（任意）"
+ },
+ {
+  "tag": "div",
+  "text": "フライト時間"
+ },
+ {
+  "tag": "span",
+  "text": "時間"
+ },
+ {
+  "tag": "div",
+  "text": "時差"
+ },
+ {
+  "tag": "span",
+  "text": "時間"
+ },
+ {
+  "tag": "p",
+  "text": "機内の乾燥と時差ぼけは、どちらも喉と体調に影響しやすいとされています。遠征のあった日だけ記録してください。"
+ },
+ {
+  "tag": "h3",
+  "text": "睡眠"
+ },
+ {
+  "tag": "button",
+  "text": "詳しく 書く"
+ },
+ {
+  "tag": "h3",
+  "text": "練習・公演"
+ },
+ {
+  "tag": "button",
+  "text": "詳しく 書く"
+ },
+ {
+  "tag": "h3",
+  "text": "水分"
+ },
+ {
+  "tag": "button",
+  "text": "詳しく 書く"
+ },
+ {
+  "tag": "h3",
+  "text": "食事の詳細記録"
+ },
+ {
+  "tag": "button",
+  "text": "詳しく 書く"
+ },
+ {
+  "tag": "h3",
+  "text": "運動記録"
+ },
+ {
+  "tag": "button",
+  "text": "詳しく 書く"
+ },
+ {
+  "tag": "h3",
+  "text": "メンタル"
+ },
+ {
+  "tag": "button",
+  "text": "詳しく 書く"
+ },
+ {
+  "tag": "h3",
+  "text": "メモ"
+ },
+ {
+  "tag": "button",
+  "text": "詳しく 書く"
+ }
+]

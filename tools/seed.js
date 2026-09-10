@@ -53,7 +53,8 @@ function planFor(i) {
   const r = (n, m) => n + ((i * 7 + m * 13) % 5);
   return {
     // ★あさ ── むくみ（ない／すこし／ある）
-    edema: ["ない", "すこし", "ある"][(i * 3) % 3],
+    //   ★★(i*3)%3 は いつも 0 でした。★30日とも 同じ 値でした（★2026-09-11）。
+    edema: ["ない", "すこし", "ある"][(i * 2 + 1) % 3],
     // ★よる ── のどの 調子／声の 出来
     throat: ["よい", "ふつう", "わるい"][(i * 5) % 3],
     deki: ["出た", "ふつう", "出づらい"][(i * 2) % 3],
@@ -64,6 +65,13 @@ function planFor(i) {
     koe: ["15分", "30分", "1時間", "2時間以上"][(i * 7) % 4],
     // ★食べたもの
     tabe: [["揚げ物"], ["あっさり"], ["炭酸", "カフェイン"], []][(i * 11) % 4],
+    // ★食べ終えた 時刻
+    //   ★★くらべる が はじめに 調べるのは
+    //     「食べ終えてから 寝るまでの間」です（★見本の SIRA[0]）。
+    //   ★★これを 入れないと、★点が 1つも 出ません。
+    //     ★★2026-09-11、★30日 入れても くらべる が 空の ままでした。
+    //       ★原因は これです。★時刻を 1度も 入れて いませんでした。
+    yushoku: ["19:00", "20:00", "21:00", "22:00", "23:00"][(i * 3) % 5],
     // ★からだのこと
     karada: [["のどが 渇く"], [], ["乾燥", "せきばらい"], ["肩が こわばる"]][(i * 13) % 4],
     _r: r
@@ -117,6 +125,8 @@ async function main() {
   };
 
   let done = 0;
+  // ★★押せなかった ものを 覚えます。★黙って 飛ばしません。
+  const miss = [];
   for (let back = days - 1; back >= 0; back--) {
     const plan = planFor(back);
     try {
@@ -129,9 +139,20 @@ async function main() {
       await page.waitForTimeout(900);
 
       // ★あさ・よる の 3択
-      for (const w of [plan.edema, plan.throat, plan.deki]) {
-        await page.locator(`button:has-text("${w}")`).first().click({ timeout: 4000 })
-          .catch(() => {});
+      //
+      //   ★★2026-09-11、★ここで 誤った 札を 押していました。
+      //     ★★has-text は 中に 入っていれば 当たります。
+      //       ★「ない」で 探すと、★「きょうは 書かない」に 当たります。
+      //     ★★「ふつう」は のどの調子 と 声の出来 の 両方に あります。
+      //       ★.first() は いつも のどの調子 を 押していました。
+      //   ★★だから、★字が そのまま 同じ 札だけを 探し、★何番目かで 選びます。
+      //     ★のどの調子 が 先、★声の出来 が あと（★見本の 並び）。
+      for (const [w, nth] of [[plan.edema, 0], [plan.throat, 0], [plan.deki, 1]]) {
+        const b = page.getByRole("button", { name: w, exact: true });
+        const n = await b.count();
+        if (n === 0) { miss.push(iso(back) + " 「" + w + "」の 札が ありません"); continue; }
+        await b.nth(Math.min(nth, n - 1)).click({ timeout: 4000 })
+          .catch(() => miss.push(iso(back) + " 「" + w + "」を 押せません"));
         await page.waitForTimeout(400);
         await closeOverlay();
       }
@@ -158,15 +179,25 @@ async function main() {
       await page.keyboard.press("Escape").catch(() => {});
       await page.waitForTimeout(300);
 
-      // ★食べたもの
-      if (plan.tabe.length) {
+      // ★食べたもの ── ★時刻は 毎日 入れます（★くらべる の 1番目です）
+      {
         await closeOverlay();
         await page.getByRole("button", { name: /食べたもの/ }).first().click({ timeout: 6000 });
         await page.waitForTimeout(500);
         for (const w of plan.tabe) {
-          await page.locator(`text="${w}"`).first().click({ timeout: 3000 }).catch(() => {});
+          await page.getByRole("button", { name: w, exact: true }).first()
+            .click({ timeout: 3000 })
+            .catch(() => miss.push(iso(back) + " 「" + w + "」を 押せません"));
           await page.waitForTimeout(150);
         }
+        const y = page.getByRole("button", { name: plan.yushoku, exact: true });
+        if (await y.count()) {
+          await y.first().click({ timeout: 3000 })
+            .catch(() => miss.push(iso(back) + " 夕食 " + plan.yushoku + " を 押せません"));
+        } else {
+          miss.push(iso(back) + " 夕食の 時刻の 札（" + plan.yushoku + "）が ありません");
+        }
+        await page.waitForTimeout(200);
         await page.keyboard.press("Escape").catch(() => {});
         await page.waitForTimeout(300);
       }
@@ -199,6 +230,13 @@ async function main() {
   }
   await browser.close();
   console.log("\n★入れた 日数: " + done + " / " + days);
+  // ★★押せなかった ものを、★そのまま 出します。★黙って 通しません。
+  if (miss.length) {
+    console.log("★押せなかった もの: " + miss.length + " 件");
+    miss.slice(0, 20).forEach((m) => console.log("  ✗ " + m));
+  } else {
+    console.log("★押せなかった もの: 0 件");
+  }
 }
 
 main().catch((e) => { console.error(String(e).slice(0, 400)); process.exit(1); });

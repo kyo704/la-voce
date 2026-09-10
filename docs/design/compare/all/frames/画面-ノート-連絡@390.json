@@ -1,0 +1,50 @@
+[
+ {
+  "tag": "button",
+  "text": "きょう"
+ },
+ {
+  "tag": "button",
+  "text": "記録"
+ },
+ {
+  "tag": "button",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "button",
+  "text": "ノート"
+ },
+ {
+  "tag": "button",
+  "text": "ひつじ"
+ },
+ {
+  "tag": "h2",
+  "text": "ノート"
+ },
+ {
+  "tag": "button",
+  "text": "稽古"
+ },
+ {
+  "tag": "button",
+  "text": "レパートリー"
+ },
+ {
+  "tag": "button",
+  "text": "連絡"
+ },
+ {
+  "tag": "button",
+  "text": "受診用"
+ },
+ {
+  "tag": "p",
+  "text": "門下の 連絡"
+ },
+ {
+  "tag": "p",
+  "text": "ここの書き込みは、 90 日で 消えます。 書かれたものを、こちらで 読み取って 調べることは しません。"
+ }
+]

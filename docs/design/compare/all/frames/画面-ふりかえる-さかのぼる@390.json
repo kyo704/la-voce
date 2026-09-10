@@ -1,0 +1,242 @@
+[
+ {
+  "tag": "button",
+  "text": "きょう"
+ },
+ {
+  "tag": "button",
+  "text": "記録"
+ },
+ {
+  "tag": "button",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "button",
+  "text": "ノート"
+ },
+ {
+  "tag": "button",
+  "text": "ひつじ"
+ },
+ {
+  "tag": "h2",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "span",
+  "text": "⚙"
+ },
+ {
+  "tag": "span",
+  "text": "ここに出るのは、あなたが書いたことの並びです。 原因かどうかは、分かりません。疑いながら 見てください。"
+ },
+ {
+  "tag": "button",
+  "text": "ならべる"
+ },
+ {
+  "tag": "button",
+  "text": "さかのぼる"
+ },
+ {
+  "tag": "button",
+  "text": "くらべる"
+ },
+ {
+  "tag": "button",
+  "text": "かぞえる"
+ },
+ {
+  "tag": "p",
+  "text": "出なかった日を選ぶと、その前の3日に書いたことが そのまま出ます。"
+ },
+ {
+  "tag": "button",
+  "text": "09/09"
+ },
+ {
+  "tag": "button",
+  "text": "09/06"
+ },
+ {
+  "tag": "button",
+  "text": "09/03"
+ },
+ {
+  "tag": "button",
+  "text": "08/31"
+ },
+ {
+  "tag": "div",
+  "text": "出づらい と書いた日"
+ },
+ {
+  "tag": "p",
+  "text": "前の日 9月8日（火）"
+ },
+ {
+  "tag": "span",
+  "text": "声の 出来"
+ },
+ {
+  "tag": "span",
+  "text": "◎出た"
+ },
+ {
+  "tag": "span",
+  "text": "のどの 調子"
+ },
+ {
+  "tag": "span",
+  "text": "◎よい"
+ },
+ {
+  "tag": "span",
+  "text": "昨夜の 睡眠"
+ },
+ {
+  "tag": "span",
+  "text": "7.5時間"
+ },
+ {
+  "tag": "span",
+  "text": "声を使った 時間"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "食べたもの"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "からだのこと"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "p",
+  "text": "2日まえ 9月7日（月）"
+ },
+ {
+  "tag": "span",
+  "text": "声の 出来"
+ },
+ {
+  "tag": "span",
+  "text": "◎出た"
+ },
+ {
+  "tag": "span",
+  "text": "のどの 調子"
+ },
+ {
+  "tag": "span",
+  "text": "◎よい"
+ },
+ {
+  "tag": "span",
+  "text": "昨夜の 睡眠"
+ },
+ {
+  "tag": "span",
+  "text": "8.5時間"
+ },
+ {
+  "tag": "span",
+  "text": "声を使った 時間"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "食べたもの"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "からだのこと"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "p",
+  "text": "3日まえ 9月6日（日）"
+ },
+ {
+  "tag": "span",
+  "text": "声の 出来"
+ },
+ {
+  "tag": "span",
+  "text": "○ふつう"
+ },
+ {
+  "tag": "span",
+  "text": "のどの 調子"
+ },
+ {
+  "tag": "span",
+  "text": "○ふつう"
+ },
+ {
+  "tag": "span",
+  "text": "昨夜の 睡眠"
+ },
+ {
+  "tag": "span",
+  "text": "7.5時間"
+ },
+ {
+  "tag": "span",
+  "text": "声を使った 時間"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "食べたもの"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "からだのこと"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "書いたものを そのまま 出しています。"
+ },
+ {
+  "tag": "span",
+  "text": "文章を 添えません。確率も 割合も 出しません。「これが 原因です」と 言いません。"
+ },
+ {
+  "tag": "span",
+  "text": "見て、ご自分で 気づくための 画面です。"
+ }
+]

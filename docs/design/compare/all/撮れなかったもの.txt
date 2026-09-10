@@ -1,4 +1,5 @@
-★撮れなかった もの（1件）
+★撮れなかった もの（2件）
 ★黙って 飛ばしていません。★理由を そのまま 残します。
 
-A06-ノート-新しく書く@390  locator.evaluate: Timeout 30000ms exceeded.
+画面-ふりかえる-くらべる-前の日@390  locator.evaluate: Timeout 30000ms exceeded.
+SC-順番@390  locator.evaluate: Timeout 30000ms exceeded.

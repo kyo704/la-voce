@@ -1,0 +1,62 @@
+[
+ {
+  "tag": "button",
+  "text": "きょう"
+ },
+ {
+  "tag": "button",
+  "text": "記録"
+ },
+ {
+  "tag": "button",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "button",
+  "text": "ノート"
+ },
+ {
+  "tag": "button",
+  "text": "ひつじ"
+ },
+ {
+  "tag": "button",
+  "text": "‹ もどる"
+ },
+ {
+  "tag": "label",
+  "text": "いつ"
+ },
+ {
+  "tag": "label",
+  "text": "だれに"
+ },
+ {
+  "tag": "label",
+  "text": "みた曲"
+ },
+ {
+  "tag": "label",
+  "text": "言われたこと"
+ },
+ {
+  "tag": "p",
+  "text": "そのまま 書いてください。まとめなくて かまいません。"
+ },
+ {
+  "tag": "label",
+  "text": "次に 自分が すること"
+ },
+ {
+  "tag": "p",
+  "text": "1つだけ。"
+ },
+ {
+  "tag": "label",
+  "text": "できるように なったこと"
+ },
+ {
+  "tag": "p",
+  "text": "書かなくて かまいません。"
+ }
+]

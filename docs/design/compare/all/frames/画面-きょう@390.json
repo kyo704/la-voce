@@ -1,0 +1,58 @@
+[
+ {
+  "tag": "button",
+  "text": "きょう"
+ },
+ {
+  "tag": "button",
+  "text": "記録"
+ },
+ {
+  "tag": "button",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "button",
+  "text": "ノート"
+ },
+ {
+  "tag": "button",
+  "text": "ひつじ"
+ },
+ {
+  "tag": "h2",
+  "text": "きょう"
+ },
+ {
+  "tag": "span",
+  "text": "⚙"
+ },
+ {
+  "tag": "button",
+  "text": "じどう"
+ },
+ {
+  "tag": "button",
+  "text": "先生として"
+ },
+ {
+  "tag": "button",
+  "text": "生徒として"
+ },
+ {
+  "tag": "p",
+  "text": "じどう（いまは 生徒） の 画面です。 この 選びは、この 端末だけに 残ります。"
+ },
+ {
+  "tag": "div",
+  "text": "きょうも 来てくれて ありがとう。。"
+ },
+ {
+  "tag": "button",
+  "text": "きょうを 記録する"
+ },
+ {
+  "tag": "p",
+  "text": "みつけたこと"
+ }
+]

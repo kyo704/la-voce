@@ -1,0 +1,134 @@
+[
+ {
+  "tag": "button",
+  "text": "きょう"
+ },
+ {
+  "tag": "button",
+  "text": "記録"
+ },
+ {
+  "tag": "button",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "button",
+  "text": "ノート"
+ },
+ {
+  "tag": "button",
+  "text": "ひつじ"
+ },
+ {
+  "tag": "h2",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "span",
+  "text": "⚙"
+ },
+ {
+  "tag": "span",
+  "text": "ここに出るのは、あなたが書いたことの並びです。 原因かどうかは、分かりません。疑いながら 見てください。"
+ },
+ {
+  "tag": "button",
+  "text": "ならべる"
+ },
+ {
+  "tag": "button",
+  "text": "さかのぼる"
+ },
+ {
+  "tag": "button",
+  "text": "くらべる"
+ },
+ {
+  "tag": "button",
+  "text": "かぞえる"
+ },
+ {
+  "tag": "p",
+  "text": "あなたの ふだん"
+ },
+ {
+  "tag": "span",
+  "text": "食べ終えてから 寝るまで"
+ },
+ {
+  "tag": "span",
+  "text": "2時間45分"
+ },
+ {
+  "tag": "span",
+  "text": "寝た 時刻"
+ },
+ {
+  "tag": "span",
+  "text": "23時15分"
+ },
+ {
+  "tag": "span",
+  "text": "書いた 日"
+ },
+ {
+  "tag": "span",
+  "text": "2日"
+ },
+ {
+  "tag": "p",
+  "text": "まんなかの値です。くらべる先は、あなた自身です。よその目安は 出しません。"
+ },
+ {
+  "tag": "div",
+  "text": "食べ終えてから 寝るまで（ 30 日）"
+ },
+ {
+  "tag": "span",
+  "text": "0"
+ },
+ {
+  "tag": "span",
+  "text": "1"
+ },
+ {
+  "tag": "span",
+  "text": "2"
+ },
+ {
+  "tag": "span",
+  "text": "3"
+ },
+ {
+  "tag": "span",
+  "text": "4"
+ },
+ {
+  "tag": "span",
+  "text": "5"
+ },
+ {
+  "tag": "span",
+  "text": "6"
+ },
+ {
+  "tag": "span",
+  "text": "7+"
+ },
+ {
+  "tag": "div",
+  "text": "時間"
+ },
+ {
+  "tag": "div",
+  "text": "印の 1週間あたり"
+ },
+ {
+  "tag": "span",
+  "text": "脂"
+ },
+ {
+  "tag": "span",
+  "text": "0.2回"
+ }
+]

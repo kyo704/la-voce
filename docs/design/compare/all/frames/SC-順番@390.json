@@ -1,0 +1,138 @@
+[
+ {
+  "tag": "button",
+  "text": "きょう"
+ },
+ {
+  "tag": "button",
+  "text": "記録"
+ },
+ {
+  "tag": "button",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "button",
+  "text": "ノート"
+ },
+ {
+  "tag": "button",
+  "text": "ひつじ"
+ },
+ {
+  "tag": "h2",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "span",
+  "text": "⚙"
+ },
+ {
+  "tag": "span",
+  "text": "ここに出るのは、あなたが書いたことの並びです。 原因かどうかは、分かりません。疑いながら 見てください。"
+ },
+ {
+  "tag": "button",
+  "text": "ならべる"
+ },
+ {
+  "tag": "button",
+  "text": "さかのぼる"
+ },
+ {
+  "tag": "button",
+  "text": "くらべる"
+ },
+ {
+  "tag": "button",
+  "text": "かぞえる"
+ },
+ {
+  "tag": "button",
+  "text": "‹ くらべる"
+ },
+ {
+  "tag": "p",
+  "text": "調べていることの 順番"
+ },
+ {
+  "tag": "div",
+  "text": "疑っている 順に、5つまで。 、補正なしで 見ます。"
+ },
+ {
+  "tag": "span",
+  "text": "1"
+ },
+ {
+  "tag": "span",
+  "text": "食べ終えてから 寝るまでの間"
+ },
+ {
+  "tag": "button",
+  "text": "↑"
+ },
+ {
+  "tag": "span",
+  "text": "2"
+ },
+ {
+  "tag": "span",
+  "text": "昨夜の 睡眠"
+ },
+ {
+  "tag": "button",
+  "text": "↑"
+ },
+ {
+  "tag": "span",
+  "text": "3"
+ },
+ {
+  "tag": "span",
+  "text": "声を使った 時間"
+ },
+ {
+  "tag": "button",
+  "text": "↑"
+ },
+ {
+  "tag": "span",
+  "text": "4"
+ },
+ {
+  "tag": "span",
+  "text": "起きたときの むくみ"
+ },
+ {
+  "tag": "button",
+  "text": "↑"
+ },
+ {
+  "tag": "span",
+  "text": "5"
+ },
+ {
+  "tag": "span",
+  "text": "部屋の しめり"
+ },
+ {
+  "tag": "button",
+  "text": "↑"
+ },
+ {
+  "tag": "div",
+  "text": "1番目 食べ終えてから 寝るまでの間 2番目から先"
+ },
+ {
+  "tag": "span",
+  "text": "いま 見ています"
+ },
+ {
+  "tag": "span",
+  "text": "1番目で 差が 見えなかったので、ここで 止まっています"
+ },
+ {
+  "tag": "button",
+  "text": "くわしい 決まりを 見る"
+ }
+]

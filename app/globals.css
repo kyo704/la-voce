@@ -750,10 +750,29 @@ body {
 }
 /* ★★下地と カードは、★いまの 色を 使っている ところを そのまま 塗り替えます。
    ★★inline の 色は CSS より 強いので、★!important が 要ります。
-   ★★門の外には この 印が 付かないので、★1つも 効きません。 */
-.woolsong-v2 [style*="#F6F1E7"], .woolsong-v2 [style*="rgb(246, 241, 231)"] {
+   ★★門の外には この 印が 付かないので、★1つも 効きません。
+
+   ★★2026-09-11、★ここに 重い 間違いが ありました。
+     ★★[style*="#FFFDF8"] は、★字の 色に 使っている ところにも 当たります。
+       ★選ばれた 札は「地＝えんじ／字＝#FFFDF8」です。
+       ★★その 地が 白に 塗り替えられ、★白地に 白字に なりました。
+         ★くらべる の「前の夜」と、★順番 の 1番目の 丸が 消えていました。
+     ★★だから、★「地」と 書いてある ところだけを 選びます。
+       ★React は 書いたままの 字で 出します（background:#FFFDF8）。
+       ★CSSOM から 置いた ものは rgb() に なるので、★両方 書きます。 */
+.woolsong-v2 [style*="background:#F6F1E7"],
+.woolsong-v2 [style*="background: #F6F1E7"],
+.woolsong-v2 [style*="background-color:#F6F1E7"],
+.woolsong-v2 [style*="background-color: #F6F1E7"],
+.woolsong-v2 [style*="background: rgb(246, 241, 231)"],
+.woolsong-v2 [style*="background-color: rgb(246, 241, 231)"] {
   background-color: var(--wl-paper) !important;
 }
-.woolsong-v2 [style*="#FFFDF8"], .woolsong-v2 [style*="rgb(255, 253, 248)"] {
+.woolsong-v2 [style*="background:#FFFDF8"],
+.woolsong-v2 [style*="background: #FFFDF8"],
+.woolsong-v2 [style*="background-color:#FFFDF8"],
+.woolsong-v2 [style*="background-color: #FFFDF8"],
+.woolsong-v2 [style*="background: rgb(255, 253, 248)"],
+.woolsong-v2 [style*="background-color: rgb(255, 253, 248)"] {
   background-color: var(--wl-card) !important;
 }

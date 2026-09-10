@@ -1,0 +1,278 @@
+[
+ {
+  "tag": "button",
+  "text": "きょう"
+ },
+ {
+  "tag": "button",
+  "text": "記録"
+ },
+ {
+  "tag": "button",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "button",
+  "text": "ノート"
+ },
+ {
+  "tag": "button",
+  "text": "ひつじ"
+ },
+ {
+  "tag": "h2",
+  "text": "記録"
+ },
+ {
+  "tag": "div",
+  "text": "2026年9月11日(金)"
+ },
+ {
+  "tag": "p",
+  "text": "あさ"
+ },
+ {
+  "tag": "div",
+  "text": "起きたときの むくみ"
+ },
+ {
+  "tag": "span",
+  "text": "◎"
+ },
+ {
+  "tag": "span",
+  "text": "ない"
+ },
+ {
+  "tag": "span",
+  "text": "○"
+ },
+ {
+  "tag": "span",
+  "text": "すこし"
+ },
+ {
+  "tag": "span",
+  "text": "△"
+ },
+ {
+  "tag": "span",
+  "text": "ある"
+ },
+ {
+  "tag": "span",
+  "text": "昨夜の 睡眠"
+ },
+ {
+  "tag": "span",
+  "text": "›"
+ },
+ {
+  "tag": "p",
+  "text": "よる"
+ },
+ {
+  "tag": "div",
+  "text": "のどの 調子"
+ },
+ {
+  "tag": "span",
+  "text": "◎"
+ },
+ {
+  "tag": "span",
+  "text": "よい"
+ },
+ {
+  "tag": "span",
+  "text": "○"
+ },
+ {
+  "tag": "span",
+  "text": "ふつう"
+ },
+ {
+  "tag": "span",
+  "text": "△"
+ },
+ {
+  "tag": "span",
+  "text": "わるい"
+ },
+ {
+  "tag": "div",
+  "text": "声の 出来"
+ },
+ {
+  "tag": "span",
+  "text": "◎"
+ },
+ {
+  "tag": "span",
+  "text": "出た"
+ },
+ {
+  "tag": "span",
+  "text": "○"
+ },
+ {
+  "tag": "span",
+  "text": "ふつう"
+ },
+ {
+  "tag": "span",
+  "text": "△"
+ },
+ {
+  "tag": "span",
+  "text": "出づらい"
+ },
+ {
+  "tag": "span",
+  "text": "本番以外で 声を使った時間"
+ },
+ {
+  "tag": "span",
+  "text": "›"
+ },
+ {
+  "tag": "div",
+  "text": "部屋の しめり は こちらで 取ります。本番・レッスンの 翌日かどうかも、予定から 分かります。この2つは 聞きません。"
+ },
+ {
+  "tag": "p",
+  "text": "足す（どれも 任意）"
+ },
+ {
+  "tag": "span",
+  "text": "本番・レッスン"
+ },
+ {
+  "tag": "span",
+  "text": "あり ›"
+ },
+ {
+  "tag": "span",
+  "text": "食べたもの"
+ },
+ {
+  "tag": "span",
+  "text": "›"
+ },
+ {
+  "tag": "span",
+  "text": "からだのこと"
+ },
+ {
+  "tag": "span",
+  "text": "›"
+ },
+ {
+  "tag": "span",
+  "text": "ひとこと"
+ },
+ {
+  "tag": "span",
+  "text": "›"
+ },
+ {
+  "tag": "button",
+  "text": "きょうは 書かない"
+ },
+ {
+  "tag": "button",
+  "text": "出す"
+ },
+ {
+  "tag": "span",
+  "text": "「n/5」を 出しません。"
+ },
+ {
+  "tag": "span",
+  "text": "書かなかった行に 赤い印を つけません。必須は 1つも ありません。"
+ },
+ {
+  "tag": "span",
+  "text": "「夜の3つが 入れば その日は 記録した日」── この規則を 画面に 書きません。"
+ },
+ {
+  "tag": "div",
+  "text": "食べたもの"
+ },
+ {
+  "tag": "div",
+  "text": "当てはまるものに 印を（いくつでも）"
+ },
+ {
+  "tag": "button",
+  "text": "揚げ物"
+ },
+ {
+  "tag": "button",
+  "text": "あっさり"
+ },
+ {
+  "tag": "button",
+  "text": "炭酸"
+ },
+ {
+  "tag": "button",
+  "text": "トマト系"
+ },
+ {
+  "tag": "button",
+  "text": "カフェイン"
+ },
+ {
+  "tag": "button",
+  "text": "アルコール"
+ },
+ {
+  "tag": "button",
+  "text": "からいもの"
+ },
+ {
+  "tag": "button",
+  "text": "乳製品"
+ },
+ {
+  "tag": "button",
+  "text": "チョコレート"
+ },
+ {
+  "tag": "button",
+  "text": "冷たいもの"
+ },
+ {
+  "tag": "div",
+  "text": "食べ終えた 時刻"
+ },
+ {
+  "tag": "button",
+  "text": "19:00"
+ },
+ {
+  "tag": "button",
+  "text": "20:00"
+ },
+ {
+  "tag": "button",
+  "text": "21:00"
+ },
+ {
+  "tag": "button",
+  "text": "22:00"
+ },
+ {
+  "tag": "button",
+  "text": "23:00"
+ },
+ {
+  "tag": "div",
+  "text": "良い・悪いを 決めません。食べたことを、そのまま 残すだけです。"
+ },
+ {
+  "tag": "button",
+  "text": "これでいい"
+ }
+]
