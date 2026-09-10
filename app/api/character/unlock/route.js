@@ -36,8 +36,14 @@ import { writeAcquisitions } from "@/lib/itemLedgerServer";
 
 export async function POST() {
   const supabase = createClient();
-  const { data: { user } = {}, error: authError } = await getUserWithTimeout(supabase);
-  if (authError || !user) {
+  // ★★2026-09-11、★同じ まちがいが ここにも ありました。
+  //   ★getUserWithTimeout は { user, unreachable } を 返します。
+  //   ★★台帳に「開いた もの」が 1件も 入っていなかった 理由が これです。
+  const { user, unreachable } = await getUserWithTimeout(supabase, "開いたものを台帳に残すときの認証確認");
+  if (unreachable) {
+    return NextResponse.json({ error: "いま、つながりません。" }, { status: 503 });
+  }
+  if (!user) {
     return NextResponse.json({ error: "ログインが必要です。" }, { status: 401 });
   }
 

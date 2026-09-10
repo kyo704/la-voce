@@ -59,8 +59,16 @@ function mayTouchPosts(member, perms) {
 
 export async function POST(request) {
   const supabase = createClient();
-  const { data: { user } = {}, error: authError } = await getUserWithTimeout(supabase);
-  if (authError || !user) {
+  // ★★2026-09-11、★受け取り方を まちがえていました。
+  //   ★getUserWithTimeout が 返すのは { user, unreachable } です。
+  //   ★★{ data: { user } } で 受けていたので、★user が いつも undefined。
+  //     ★★どなたでも 401 に なっていました（★実機で ご報告を いただきました）。
+  //   ★「確かめられなかった」と「入っておられない」を、★分けます。
+  const { user, unreachable } = await getUserWithTimeout(supabase, "役職を触るときの認証確認");
+  if (unreachable) {
+    return NextResponse.json({ error: tx("いま、つながりません。") }, { status: 503 });
+  }
+  if (!user) {
     return NextResponse.json({ error: tx("ログインが必要です。") }, { status: 401 });
   }
 
