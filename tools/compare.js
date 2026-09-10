@@ -80,7 +80,7 @@ const SCREENS = [
   { key: "J02-ひつじ-おうち", tab: "ひつじ", steps: ["おうち"] },
   { key: "A08-ひつじ-したく", tab: "ひつじ", steps: ["したく"] },
   { key: "J04-ひつじ-たな", tab: "ひつじ", steps: ["たな"] },
-  { key: "A10-もっと", tab: "きょう", steps: ["⚙"] }
+  { key: "A10-もっと", tab: "きょう", steps: ["もっとを開く"] }
 ];
 
 async function capture(env) {
@@ -105,19 +105,31 @@ async function capture(env) {
     console.log("★" + vp.w + "px で 撮ります");
 
     const close = async () => {
-      for (let k = 0; k < 3; k++) {
+      // ★★1枚を 閉じると、★保存が 走り、★そのあとに「記録しました」の
+      //   ★1枚が 出ます。★★先に 閉じてから 待つと、★間に合いません。
+      //   ★★2026-09-11、★これで A04 が 撮れませんでした。
+      //     ★閉じる → 待つ → もう一度 閉じる、の 順に します。
+      await page.keyboard.press("Escape").catch(() => {});
+      await page.waitForTimeout(1200);
+      for (let k = 0; k < 4; k++) {
         const o = page.locator("div.fixed.inset-0.z-50");
         if (!(await o.count())) break;
         await o.locator('button:has-text("閉じる")').first().click({ timeout: 2500 })
           .catch(() => page.keyboard.press("Escape").catch(() => {}));
-        await page.waitForTimeout(400);
+        await page.waitForTimeout(600);
       }
-      await page.keyboard.press("Escape").catch(() => {});
       await page.waitForTimeout(300);
     };
 
     for (const sc of SCREENS) {
       try {
+        // ★★1コマごとに、★まっさらから 始めます（★2026-09-11）。
+        //   ★★前の 画面で 開いた もの（引き出し・かぶさる 1枚）が 残ると、
+        //     ★★次の 押しどころに 手が 届きません。
+        //   ★★閉じ方を 1つずつ 覚えるより、★読み込み直す ほうが 確かです。
+        //     ★★遅く なりますが、★撮れない ほうが 困ります。
+        await page.goto(base + "/dashboard", { waitUntil: "domcontentloaded" });
+        await page.waitForTimeout(1800);
         await close();
         await page.locator(`nav >> text=${sc.tab}`).first().click({ timeout: 8000 })
           .catch(async () => {
@@ -125,10 +137,17 @@ async function capture(env) {
           });
         await page.waitForTimeout(1000);
         for (const step of (sc.steps || [])) {
+          // ★★画面の 外に ある 押しどころは、★寄せてから 押します。
           await page.getByRole("button", { name: new RegExp(step) }).first()
-            .click({ timeout: 7000 })
+            .scrollIntoViewIfNeeded({ timeout: 4000 }).catch(() => {});
+          const target = page.getByRole("button", { name: new RegExp(step) }).first();
+          await target.click({ timeout: 7000 })
             .catch(async () => {
-              await page.locator(`text=${step}`).first().click({ timeout: 7000 });
+              // ★★何かが かぶさって いても、★押しどころ そのものを 押します。
+              //   ★★絵を 撮る ための 手です。★配信する 画面は 変えません。
+              //   ★★2026-09-11、★ひつじの したく／たな と もっとが、
+              //     ★かぶさりで 押せませんでした。
+              await target.evaluate((el) => el.click());
             });
           await page.waitForTimeout(800);
         }

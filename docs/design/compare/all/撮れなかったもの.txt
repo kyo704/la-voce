@@ -1,11 +1,4 @@
-★撮れなかった もの（8件）
+★撮れなかった もの（1件）
 ★黙って 飛ばしていません。★理由を そのまま 残します。
 
-A04-ならべる@390  locator.click: Timeout 8000ms exceeded.
-A08-ひつじ-したく@390  locator.click: Timeout 8000ms exceeded.
-J04-ひつじ-たな@390  locator.click: Timeout 8000ms exceeded.
-A10-もっと@390  locator.click: Timeout 8000ms exceeded.
-A04-ならべる@1280  locator.click: Timeout 7000ms exceeded.
-A08-ひつじ-したく@1280  locator.click: Timeout 8000ms exceeded.
-J04-ひつじ-たな@1280  locator.click: Timeout 8000ms exceeded.
-A10-もっと@1280  locator.click: Timeout 8000ms exceeded.
+A05-さかのぼる@1280  locator.click: Timeout 8000ms exceeded.
