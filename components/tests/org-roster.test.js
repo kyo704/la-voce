@@ -124,7 +124,14 @@ function eq(a, b, label) {
   t(!/role === "owner"/.test(ui), "★役割の 判定を 画面で していない");
   {
     const vt = readCode("components", "VocalTracker.jsx");
-    t(/canSeeMoney=\{maySeeMoney\(role\)\}/.test(vt), "★呼ぶ側が lib に 尋ねている");
+    // ★★2026-09-11、★役職への 一本化の 3段目。
+    //   ★役割（role）では なく、★できこと（gate）を 渡すように なりました。
+    //   ★★見張るのは「lib に 尋ねている」ことです。★何を 渡すかでは ありません。
+    t(/canSeeMoney=\{maySeeMoney\((role|gate)\)\}/.test(vt), "★呼ぶ側が lib に 尋ねている");
+    // ★★受け皿。★役職が 無ければ、★これまでどおり 役割で 分けます。
+    //   ★★これが 無いと、★切り替えた その日に 全員が タブを 失います。
+    t(/permsOfMember\(opsMembership, opsPostsById\) \|\| role/.test(vt),
+      "★役職が 無ければ、役割に 戻る（受け皿）");
   }
 
   console.log("\n=== 「席」と 呼ばない（★§10-1） ===");

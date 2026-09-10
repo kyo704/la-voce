@@ -9,6 +9,10 @@ import {
   teacherFilterOptions, matchesTeacher, TEACHER_FILTER_ALL,
   gradeFilterOptions, matchesGrade, GRADE_FILTER_ALL
 } from "@/lib/orgRoster";
+import {
+  mayGrantPost, mayChangePerson, CANNOT_CHANGE_REASON
+} from "@/lib/opsPerms";
+import { tx } from "@/lib/t";
 import { safeBreakdown, TOO_SMALL_NOTE, MIN_GROUP } from "@/lib/smallGroups";
 
 // ============================================================================
@@ -82,7 +86,11 @@ export default function OpsRoster({
   //     ★notOutDates と 同じ 形の 穴です。
   //   ★★「その人」の 画面（★見本 SC['その人']）の、はじめの 1欄です。
   //     ★のこりは、その画面を 作る ときに 足します。
-  canEdit, onSetGrade
+  canEdit, onSetGrade,
+  // ★★役職（★2026-09-11・裁定 §7 ／ 3段目）。
+  //   ★★posts が 渡されなければ、★役職の 行を 出しません。
+  //     ★1段目の SQL を 流す 前でも、★画面が 壊れません。
+  posts, postsById, myPerms, onSetPost
 }) {
   const [q, setQ] = useState("");
   // ★★しぼり込み（★見本 G07 ／ 2026-09-11）。
@@ -102,6 +110,9 @@ export default function OpsRoster({
   // ★いま 学年を 入れている 方（★user_id）と、打っている 途中の 文字。
   const [gradeEdit, setGradeEdit] = useState(null);
   const [gradeDraft, setGradeDraft] = useState("");
+  // ★いま 役職を えらんでいる 方と、★だめだった わけ。
+  const [postEdit, setPostEdit] = useState(null);
+  const [postMessage, setPostMessage] = useState("");
 
   const chips = useMemo(() => chipCounts(members), [members]);
   const teacherOptions = useMemo(
@@ -291,10 +302,81 @@ export default function OpsRoster({
                   <p style={small}>学年・コース　{m.grade_label}</p>
                 ) : null
               )}
+
+              {/* ★★役職（★見本 SC['役職を変える'] ／ 2026-09-11・3段目）。
+                  ★★渡せない 役職は 灰色。★押すと わけを 出します。★隠しません。
+                    ★★守りは サーバに あります（★/api/org/posts の assign）。
+                  ★★いま 付いている 役職を 触れない ときは、★はじめから 開きません。
+                    ★自分より 強い 方を 降ろせない ため（★裁定 §7-4）。 */}
+              {posts && posts.length > 0 ? (() => {
+                const mine = m.post_id ? (postsById || {})[m.post_id] : null;
+                const label = mine ? mine.name : tx("—");
+                if (!canEdit || !onSetPost) {
+                  return mine ? <p style={small}>{tx("役職　")}{label}</p> : null;
+                }
+                const mayTouch = mayChangePerson(myPerms, mine);
+                if (postEdit !== m.user_id) {
+                  return (
+                    <button type="button"
+                      onClick={() => {
+                        setPostMessage("");
+                        if (!mayTouch) { setPostMessage(CANNOT_CHANGE_REASON); return; }
+                        setPostEdit(m.user_id);
+                      }}
+                      style={{
+                        marginTop: 4, minHeight: 44, padding: 0, textAlign: "left",
+                        background: "transparent", border: "none",
+                        color: mayTouch ? C.inkSoft : "#A0917F", fontSize: "0.6875rem"
+                      }}>
+                      {tx("役職　")}{label}　›
+                    </button>
+                  );
+                }
+                return (
+                  <div style={{ marginTop: 6 }}>
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                      {[{ id: null, name: tx("役職なし") }, ...posts].map((p) => {
+                        const on = (m.post_id || null) === p.id;
+                        const allowed = p.id === null ? true : mayGrantPost(myPerms, p);
+                        return (
+                          <button key={p.id || "none"} type="button"
+                            onClick={() => {
+                              if (!allowed) { setPostMessage(CANNOT_CHANGE_REASON); return; }
+                              onSetPost(m.user_id, p.id);
+                              setPostEdit(null);
+                            }}
+                            style={{
+                              minHeight: 44, padding: "0 11px", borderRadius: 999,
+                              fontSize: "0.71875rem", whiteSpace: "nowrap",
+                              border: `1px solid ${on ? C.curtain : C.line}`,
+                              background: on ? C.curtain : C.card,
+                              color: on ? "#FFFDF8" : (allowed ? C.inkSoft : "#A0917F")
+                            }}>
+                            {p.name}{on ? tx("　✓ いま") : ""}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <button type="button" onClick={() => setPostEdit(null)}
+                      style={{
+                        minHeight: 44, padding: 0, background: "transparent", border: "none",
+                        color: C.inkSoft, fontSize: "0.6875rem"
+                      }}>{tx("やめる")}</button>
+                  </div>
+                );
+              })() : null}
             </div>
           );
         })
       )}
+
+      {/* ★★渡せない ときの わけ。★字だけの 案内に しません。
+          ★★出しっぱなしに しません。★次に えらぶと 消えます。 */}
+      {postMessage ? (
+        <div style={{ ...card, background: C.paper, borderColor: C.line }}>
+          <p style={small}>{postMessage}</p>
+        </div>
+      ) : null}
 
       {/* ★★操作は、★画面の 下半分に（★裁定）。
           ★★上に 置くと、★片手で 持ったとき 親指が 届きません。 */}

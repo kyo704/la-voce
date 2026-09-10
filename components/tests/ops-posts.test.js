@@ -68,6 +68,23 @@ ok((ui.match(/tx\(/g) || []).length >= 20, "★画面の 言葉を 包んでい�
 ok(/tx\("\{n\}人"\)\.replace\("\{n\}", held\)/.test(ui), "★数は replace で 入れる");
 ok(!/tx\([^)]*\+/.test(ui + api), "★つないだ 文字を 包んでいない");
 
+console.log("⑧-2 人に 役職を 付ける（★3段目）");
+// ★★決まりは 2つ（★裁定 §7-4）。★どちらも サーバで 確かめること。
+ok(/action === "assign"/.test(api), "★付ける 道が ある");
+ok(/action === "unassign"/.test(api), "★外す 道が ある");
+ok(/mayGrantPost\(perms, target\)/.test(api), "★① 付ける 役職を、自分が 渡せるか");
+ok(/mayChangePerson\(perms, cur\)/.test(api), "★② いま 付いている 役職を、自分が 触れるか");
+// ★★②が 無いと、★自分より 強い 方を 降ろせて しまいます。
+ok((api.match(/mayChangePerson\(perms, cur\)/g) || []).length === 2,
+  "★付けるときも 外すときも、両方で 確かめている");
+ok(/update\(\{ post_id: null \}\)/.test(api), "★外すのは 役職だけ（★人を 消さない）");
+const roster = readCode("components", "OpsRoster.jsx");
+ok(/mayGrantPost\(myPerms, p\)/.test(roster), "★画面も lib に 尋ねている");
+ok(/mayChangePerson\(myPerms, mine\)/.test(roster), "★触れるかも lib に 尋ねている");
+ok(/CANNOT_CHANGE_REASON/.test(roster), "★渡せない わけを 出す");
+ok(/#A0917F/.test(roster), "★灰色に する。★隠さない");
+ok(/posts && posts\.length > 0/.test(roster), "★役職が 無ければ、行を 出さない");
+
 console.log("⑨ 生徒の 記録に たどりつかない");
 ["entries", "throat", "voice_quality", "sleep_hours", "throat_symptoms"].forEach((w) => {
   ok(!ui.includes(w) && !api.includes(w), `★「${w}」を 触っていない`);

@@ -11428,7 +11428,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       const json = await res.json().catch(() => ({}));
       await fetchOrgPosts(orgId);
       // ★★名簿も 引き直します。★役職を 消すと、★その方の 役職が 外れます。
-      if (payload.action === "delete") await fetchOrgDetail(orgId);
+      // ★★名簿の 側も 変わる ものは、★引き直します。
+      if (["delete", "assign", "unassign"].includes(payload.action)) {
+        await fetchOrgDetail(orgId);
+      }
       return res.ok ? null : (json.error || "うまくいきませんでした。");
     } catch (e) {
       return "いま、つながりません。";
@@ -12641,11 +12644,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   if (opsOrgId) {
     const membership = myOrgs.find((mm) => mm.org_id === opsOrgId);
     const role = membership ? membership.role : null;
-    if (mayEnterOps(role)) {
+    // ★★2026-09-11、★役職への 一本化の 3段目です（★裁定 §7）。
+    //   ★★役職が 決まっていれば、★その「できること」で 分けます。
+    //   ★★決まっていなければ、★これまでどおり 役割で 分けます。
+    //     ★★いま 役職を 持つ 方は 0人です。★誰も 締め出されません。
+    //     ★役職を 付けた 方だけが、★新しい 形に なります。
+    //   ★出し分けは 権限から 導く（★引き継ぎの 実装原則）。
+    const opsMembership = (orgMembers[opsOrgId] || [])
+      .find((m) => m.user_id === userId) || null;
+    const opsPostsById = Object.fromEntries((orgPosts[opsOrgId] || []).map((x) => [x.id, x]));
+    const gate = permsOfMember(opsMembership, opsPostsById) || role;
+    if (mayEnterOps(gate)) {
       return (
         <OpsShell
           orgName={membership && membership.org ? membership.org.name : "教室"}
-          role={role}
+          role={gate}
           onBack={() => setOpsOrgId(null)}
           renderTab={(tabKey) => {
             // ★★役割を、★等号を 並べる 書き方に しません。★一覧で 書きます。
@@ -12759,10 +12772,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               // ★★役職と できること（★裁定 §7 ／ 2026-09-11・2段目）。
               //   ★★設定の 中に 置きます（★見本 SC['役職の一覧'] の 戻り先が「設定」）。
               //   ★★書くのは サーバの 道です。★画面には 書く 権限が ありません。
-              const myMembership = (orgMembers[opsOrgId] || [])
-                .find((m) => m.user_id === userId) || null;
-              const byId = Object.fromEntries((orgPosts[opsOrgId] || []).map((x) => [x.id, x]));
-              const myPerms = permsOfMember(myMembership, byId);
+              // ★★上で 出した gate を そのまま 使います。★2度 数えません。
+              const myPerms = permsOfMember(opsMembership, opsPostsById);
               const countByPost = {};
               (orgMembers[opsOrgId] || []).forEach((m) => {
                 if (m.post_id) countByPost[m.post_id] = (countByPost[m.post_id] || 0) + 1;
@@ -12793,12 +12804,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   members={members}
                   nameOf={(id) => orgDisplayName(id) || ""}
                   teacherNameOf={(id) => orgDisplayName(id) || ""}
-                  canSeeMoney={maySeeMoney(role)}
+                  canSeeMoney={maySeeMoney(gate)}
                   // ★★名簿を 直せるのは owner と admin だけです。
                   //   ★役職の 名前で 分けません。★できること で 分けます。
-                  canEdit={mayEditRoster(role)}
+                  canEdit={mayEditRoster(gate)}
                   onSetGrade={(memberUserId, label) =>
-                    handleSetMemberGrade(opsOrgId, memberUserId, label)} />
+                    handleSetMemberGrade(opsOrgId, memberUserId, label)}
+                  // ★★役職（★2026-09-11・3段目）。
+                  //   ★★役職の 表が まだ 無ければ、★行を 出しません。
+                  posts={orgPosts[opsOrgId] || []}
+                  postsById={opsPostsById}
+                  myPerms={permsOfMember(opsMembership, opsPostsById)}
+                  onSetPost={(memberUserId, postId) => handleOrgPosts(opsOrgId, postId
+                    ? { action: "assign", userId: memberUserId, postId }
+                    : { action: "unassign", userId: memberUserId })} />
               );
             }
             // ★★まだ 作っていない帯。★空の画面を 置きません。

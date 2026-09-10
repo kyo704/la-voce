@@ -131,6 +131,29 @@ function ok(cond, label) {
   ok(P.maySeeBill(fukugakucho.perms), "★副学長は ご請求を 見られる");
   ok(!P.mayPay(fukugakucho.perms), "★★副学長は 支払い方法を 変えられない");
 
+  console.log("④-4 人に 役職を 付ける ときの 決まり（★裁定 §7-4）");
+  const T = Object.fromEntries(P.TEMPLATE_POSTS.map((p) => [p.name, { perms: p.perms }]));
+  const gakkacho2 = T["学科長"].perms;
+  ok(!P.mayGrantPost(gakkacho2, T["学長"]), "★学科長は 学長を 作れない");
+  ok(P.mayGrantPost(gakkacho2, T["教授"]), "★学科長は 教授を 作れる");
+  // ★★これが 無いと、★自分より 強い 方を 降ろせて しまいます。
+  ok(!P.mayChangePerson(gakkacho2, T["学長"]), "★学科長は 学長を 降ろせない");
+  ok(P.mayChangePerson(gakkacho2, null), "★役職の 無い 方は 触れる");
+  ok(P.mayGrantPost(T["学長"].perms, T["学長"]), "★学長は 学長を 作れる");
+  // ★★持ち上げが 起きない こと ── ★どの 役職も、自分を 超える 役職を 作れない。
+  let lift = 0;
+  P.TEMPLATE_POSTS.forEach((me) => {
+    P.TEMPLATE_POSTS.forEach((other) => {
+      if (!P.mayGrantPost(me.perms, other)) return;
+      // ★作れるなら、★相手の 学校ぜんぶの できことを、★自分が ぜんぶ 持っている はず。
+      const mine = new Set(me.perms);
+      other.perms.forEach((k) => {
+        if (P.isSchoolWide(k) && !mine.has(k)) lift++;
+      });
+    });
+  });
+  ok(lift === 0, `★持ち上げが 1つも 起きない（いまは ${lift}）`);
+
   console.log("⑤ 役職の 名前で 分けていない（★引き継ぎの 実装原則）");
   const code = readCode("lib", "opsPerms.js");
   // ★★判じる ところに、役職の 名前が 出てこない こと。

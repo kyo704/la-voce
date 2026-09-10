@@ -114,9 +114,25 @@ function eq(a, b, label) {
     t(/myOrgs\.filter\(\(mm\) => mayEnterOps\(mm\.role\)\)/.test(vt),
       "★入口は、入れる役割にだけ 出る");
     // ★★別のシェルであること（★個人のアプリと 重ねない）
-    t(/if \(opsOrgId\) \{[\s\S]{0,400}return \([\s\S]{0,120}<OpsShell/.test(vt),
-      "★運営モードは、個人のアプリより 前に 返す（★重ねない）");
-    t(/mayEnterOps\(role\)/.test(vt), "★役割で 入れるかを 確かめてから 描く");
+    // ★★2026-09-11、★文字数の 窓（400）で 数えていました。
+    //   ★注記を 足したら 窓から あふれて 落ちました。★数え方が もろい。
+    //   ★★見張るのは「順番」です。★文字数では ありません。
+    //     ★opsOrgId の 判じ → OpsShell を 返す → その あとに 個人の 画面。
+    {
+      const at = vt.indexOf("if (opsOrgId) {");
+      const shellAt = vt.indexOf("<OpsShell", at);
+      const opsRet = vt.indexOf("return (", at);
+      t(at > 0 && shellAt > at && opsRet > at && opsRet < shellAt,
+        "★運営モードは、個人のアプリより 前に 返す（★重ねない）");
+      // ★★その あいだに、個人の 画面を 描いていない こと。
+      t(!/<HomeV2|<RecordV2Head|<LookBackV2/.test(vt.slice(at, shellAt)),
+        "★返すまでに 個人の 画面を 描いていない");
+    }
+    // ★★2026-09-11、★役割（role）では なく できこと（gate）で 確かめます。
+    //   ★受け皿つきです ── ★役職が 無ければ role に 戻ります。
+    t(/mayEnterOps\((role|gate)\)/.test(vt), "★入れるかを 確かめてから 描く");
+    t(/const gate = permsOfMember\([^)]*\) \|\| role;/.test(vt),
+      "★できことで 分け、★無ければ 役割に 戻る");
     // ★★もどれること
     t(/onBack=\{\(\) => setOpsOrgId\(null\)\}/.test(vt), "★もどると、個人のアプリへ 帰る");
     // ★★役割を 画面で 決めていないこと

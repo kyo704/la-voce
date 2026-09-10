@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getUserWithTimeout } from "@/lib/withTimeout";
-import { PERM_KEYS, isSchoolWide, permSet, TEMPLATE_POSTS } from "@/lib/opsPerms";
+import {
+  PERM_KEYS, isSchoolWide, permSet, TEMPLATE_POSTS,
+  mayGrantPost, mayChangePerson, CANNOT_CHANGE_REASON
+} from "@/lib/opsPerms";
 import { tx } from "@/lib/t";
 
 // ============================================================================
@@ -109,6 +112,29 @@ export async function POST(request) {
     return NextResponse.json({ ok: true });
   }
 
+  // ★★役職を 外す。★postId は 要りません。
+  //   ★★人を 消しません。★役職だけを 外します。
+  if (action === "unassign") {
+    const targetUser = body && typeof body.userId === "string" ? body.userId : null;
+    if (!targetUser) {
+      return NextResponse.json({ error: tx("足りない指定があります。") }, { status: 400 });
+    }
+    const { data: them } = await admin.from("memberships")
+      .select("user_id, post_id").eq("org_id", orgId).eq("user_id", targetUser).maybeSingle();
+    if (!them) return NextResponse.json({ error: tx("見つかりませんでした。") }, { status: 404 });
+    if (them.post_id) {
+      const { data: cur } = await admin.from("org_posts")
+        .select("perms").eq("id", them.post_id).maybeSingle();
+      if (!mayChangePerson(perms, cur)) {
+        return NextResponse.json({ error: CANNOT_CHANGE_REASON }, { status: 403 });
+      }
+    }
+    const { error } = await admin.from("memberships")
+      .update({ post_id: null }).eq("org_id", orgId).eq("user_id", targetUser);
+    if (error) return NextResponse.json({ error: tx("いま、つながりません。") }, { status: 503 });
+    return NextResponse.json({ ok: true });
+  }
+
   const postId = body && typeof body.postId === "string" ? body.postId : null;
   if (!postId) return NextResponse.json({ error: tx("足りない指定があります。") }, { status: 400 });
 
@@ -149,6 +175,38 @@ export async function POST(request) {
     const { error } = await admin.from("org_posts").update({ perms: next }).eq("id", postId);
     if (error) return NextResponse.json({ error: tx("いま、つながりません。") }, { status: 503 });
     return NextResponse.json({ perms: next });
+  }
+
+  // ★★人に 役職を 付ける／外す（★見本 SC['役職を変える']）。
+  //   ★★決まりは 2つ（★裁定 §7-4）。
+  //     ① 付ける 役職の「学校ぜんぶに かかる」ことを、★自分が ぜんぶ 持っていること
+  //     ② いま 付いている 役職の それも、★ぜんぶ 持っていること
+  //   ★★②が 無いと、★自分より 強い 人を 降ろせて しまいます。
+  if (action === "assign") {
+    const targetUser = body && typeof body.userId === "string" ? body.userId : null;
+    if (!targetUser) {
+      return NextResponse.json({ error: tx("足りない指定があります。") }, { status: 400 });
+    }
+    const { data: them } = await admin.from("memberships")
+      .select("user_id, post_id").eq("org_id", orgId).eq("user_id", targetUser).maybeSingle();
+    if (!them) return NextResponse.json({ error: tx("見つかりませんでした。") }, { status: 404 });
+
+    // ★① 付ける ほう
+    if (!mayGrantPost(perms, target)) {
+      return NextResponse.json({ error: CANNOT_CHANGE_REASON }, { status: 403 });
+    }
+    // ★② いま 付いている ほう
+    if (them.post_id) {
+      const { data: cur } = await admin.from("org_posts")
+        .select("perms").eq("id", them.post_id).maybeSingle();
+      if (!mayChangePerson(perms, cur)) {
+        return NextResponse.json({ error: CANNOT_CHANGE_REASON }, { status: 403 });
+      }
+    }
+    const { error } = await admin.from("memberships")
+      .update({ post_id: postId }).eq("org_id", orgId).eq("user_id", targetUser);
+    if (error) return NextResponse.json({ error: tx("いま、つながりません。") }, { status: 503 });
+    return NextResponse.json({ ok: true });
   }
 
   if (action === "delete") {
