@@ -103,7 +103,7 @@ import { markerRow } from "@/lib/periodMarkers";
 // ★「きょう」の帯（★第2便・§4）。★並び順と言葉は、あちらが持ちます。
 import TodayBand from "@/components/TodayBand";
 import TabBarV2 from "@/components/TabBarV2";
-import { TAB_BAR_HEIGHT } from "@/lib/uiKit";
+import { TAB_BAR_HEIGHT, TYPE } from "@/lib/uiKit";
 import { ScreenHead, HeadRound, H3, Card, Li } from "@/components/UiV2";
 import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
 import { moreSections } from "@/lib/moreMenu";
@@ -114,7 +114,9 @@ import {
   HOURS_OF_DAY, MINUTES, parseTime, formatTime
 } from "@/lib/wheelPicker";
 import { readAsk, writeAsk } from "@/lib/dailyAsk";
-import { notesForRepertoire, practiceTitle } from "@/lib/practiceNote";
+import {
+  notesForRepertoire, practiceTitle, REPERTOIRE_FIELDS, REPERTOIRE_STATUS
+} from "@/lib/practiceNote";
 import {
   CLINIC_ALWAYS, CLINIC_OPTIONAL, CLINIC_NOTICE, CLINIC_HEADINGS,
   isOn, togglePick, readPick, writePick
@@ -5745,7 +5747,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             dOverride: row.d_override,
             confidence: row.confidence || "entered",
             usageCount: row.usage_count || 0,
-            singingLanguage: row.singing_language || null
+            singingLanguage: row.singing_language || null,
+            // ★★2026-09-11 に 足した 4つ（★裁定 9/10夜 §1「曲を 足す」）。
+            //   ★古い 行は ぜんぶ null です。★埋めていません。
+            composer: row.composer || null,
+            positionIn: row.position_in || null,
+            bottomNote: row.bottom_note || null,
+            status: row.status || null
           };
         });
         setRepertoireTessituraMap(map);
@@ -9460,6 +9468,42 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
    *     ★★送れていないのに 閉じると、★書いたものが 消えます。
    *   ★★.select() を 付けます。★0行の 更新は エラーに なりません。
    */
+  /**
+   * ★曲の 台帳の、★足した 4つを 書きます（★2026-09-11・裁定 §1）。
+   *
+   *   ★★upsert です。★行が 無ければ 作ります。
+   *   ★★ほかの 列に 触りません。★音域も ことばも そのままです。
+   *   ★★ようすは 表の check が 見張っています。★知らない 値は 入りません。
+   */
+  async function handleSaveRepertoireFields(name, patch) {
+    const key = String(name || "").trim();
+    if (!key) return false;
+    setRepertoireSaveError(null);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.from("repertoire_tessitura")
+        .upsert({ user_id: userId, repertoire_name: key, ...patch },
+          { onConflict: "user_id,repertoire_name" });
+      if (error) throw error;
+      setRepertoireTessituraMap((prev) => ({
+        ...prev,
+        [key]: {
+          ...(prev[key] || {}),
+          composer: patch.composer ?? (prev[key] || {}).composer ?? null,
+          positionIn: patch.position_in ?? (prev[key] || {}).positionIn ?? null,
+          bottomNote: patch.bottom_note ?? (prev[key] || {}).bottomNote ?? null,
+          status: patch.status ?? (prev[key] || {}).status ?? null
+        }
+      }));
+      return true;
+    } catch (err) {
+      // ★★黙って 失いません。★書けなかったことを、★画面に 出します。
+      console.error("曲の台帳を書けませんでした:", err);
+      setRepertoireSaveError("書けませんでした。もう一度お試しください。");
+      return false;
+    }
+  }
+
   async function handleSaveNote({ id, kind, body, ...fields }) {
     setNoteSaving(true);
     try {
@@ -16122,21 +16166,33 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ★★1つに しました。★ひとことは SHEEP_LINE から 取ります。
                       ★★したく のときは、★消さずに 隠します。
                         ★消すと 並びが ずれ、★下の部屋が 作り直されます。 */}
-                  <div style={{ display: homeState === DRESS ? "none" : undefined }}>
-                    <ScreenHead title="ひつじ" right={
-                      <HeadRound mark="⚙" label="もっとを開く" onClick={() => setActiveTab("more")} />
-                    } />
-                    <div style={{ fontSize: 12, color: C.inkSoft, margin: "-2px 0 6px 2px" }}>
+                  {/* ★★上に 細い帯 1本だけ（★裁定 9/10夜 §3）。
+                      ★★題と 歯車と ひとことを、★1行に まとめました。
+                        ★2行 使うと、★その ぶん 部屋が 低く なります。
+                      ★★したく の ときは、★消さずに 隠します。 */}
+                  <div style={{
+                    display: homeState === DRESS ? "none" : "flex",
+                    alignItems: "center", gap: 8, padding: "6px 1px"
+                  }}>
+                    <h2 style={{ ...TYPE.title, flex: "none" }}>ひつじ</h2>
+                    <span style={{ fontSize: 12, color: C.inkSoft, flex: 1, minWidth: 0,
+                      overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {SHEEP_LINE}
-                    </div>
+                    </span>
+                    <HeadRound mark="⚙" label="もっとを開く" onClick={() => setActiveTab("more")} />
                   </div>
                   {/* ★★したく のときは 4：3 のまま、★高さに 合わせます。
                       ★この入れ物も、★消さずに 姿だけ 変えます。 */}
                   <div ref={roomFlipRef} style={homeState === DRESS
                     ? { width: "min(100%, calc((100vh - 0px) * 0.40 * 4 / 3))", maxWidth: 480 }
                     : { width: "100%" }}>
+                    {/* ★★ふだんの ときだけ、★部屋を 画面いっぱいに します
+                        （★裁定 9/10夜 §3「画面ぜんぶが おうちに」）。
+                        ★★したく の ときは、★上に 部屋が 残る 形の ままです。
+                          ★裁定「★したく（いまの実装は 崩しません）」。 */}
                     <CharacterHome
                       cameraOn={layoutV2}
+                      fullBleed={layoutV2 && homeState !== DRESS}
                       wardrobeOn={wardrobeOn}
                       professions={effectiveProfessions}
                       entries={entries}
@@ -16632,7 +16688,86 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                     </div>
                                   );
                                 })()}
-                                <p className="text-xs font-medium mb-1.5">直す</p>
+                                {/* ★★曲の 台帳の 4つ（★裁定 9/10夜 §1「曲を 足す」）。
+                                    ★★2026-09-11、★列は 足したのに 画面が ありませんでした。
+                                      ★書く 手が 無ければ、★列は 空の ままです。
+                                    ★★出来ばえ・点数の 欄は ありません。★作らないこと。
+                                    ★1つも 必須に しません。★空の ままで かまいません。 */}
+                                {(() => {
+                                  const rec = repertoireTessituraMap[it.name] || {};
+                                  const now = {
+                                    composer: rec.composer || "",
+                                    position_in: rec.positionIn || "",
+                                    bottom_note: rec.bottomNote || "",
+                                    status: rec.status || ""
+                                  };
+                                  return (
+                                    <div style={{ marginBottom: 10 }}>
+                                      {REPERTOIRE_FIELDS.map((f) => (
+                                        <div key={f.key} style={{ marginBottom: 7 }}>
+                                          <label htmlFor={"rf-" + it.name + "-" + f.key}
+                                            className="text-xs" style={{ color: C.inkSoft, display: "block", marginBottom: 2 }}>
+                                            {f.label}
+                                          </label>
+                                          {f.kind === "choice" ? (
+                                            <select id={"rf-" + it.name + "-" + f.key}
+                                              value={now[f.key]}
+                                              onChange={(e) => handleSaveRepertoireFields(it.name, { [f.key]: e.target.value || null })}
+                                              style={{
+                                                width: "100%", minHeight: 44, borderRadius: 10, padding: "0 12px",
+                                                border: `1px solid ${C.line}`, background: C.card, color: C.ink, fontSize: 16
+                                              }}>
+                                              <option value="">きめない</option>
+                                              {REPERTOIRE_STATUS.map((v) => <option key={v} value={v}>{v}</option>)}
+                                            </select>
+                                          ) : (
+                                            <input id={"rf-" + it.name + "-" + f.key}
+                                              type="text" defaultValue={now[f.key]}
+                                              onBlur={(e) => {
+                                                const v = e.target.value.trim();
+                                                if (v !== now[f.key]) handleSaveRepertoireFields(it.name, { [f.key]: v || null });
+                                              }}
+                                              style={{
+                                                width: "100%", minHeight: 44, borderRadius: 10, padding: "0 12px",
+                                                border: `1px solid ${C.line}`, background: C.card, color: C.ink, fontSize: 16
+                                              }} />
+                                          )}
+                                        </div>
+                                      ))}
+                                      {/* ★★ことばと 高い音は、★前から あります。★ここにも 出します。
+                                          ★★入れる 口を 増やしません。★いまの 値を 見せるだけです。 */}
+                                      <p className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.9 }}>
+                                        ことば　{rec.singingLanguage || "—"}　／　
+                                        いちばん高い音　{rec.topNote || "—"}
+                                      </p>
+                                      {repertoireSaveError ? (
+                                        <p className="text-xs" style={{ color: C.curtain }}>{repertoireSaveError}</p>
+                                      ) : null}
+                                    </div>
+                                  );
+                                })()}
+
+                                {/* ★★本番の 予定（★裁定 §1「本番の 予定」）。
+                                    ★★曲と 結びました（performances.repertoire_name）。
+                                    ★★無ければ 出しません。★空の 枠を 置きません。 */}
+                                {(() => {
+                                  const ps = (performances || [])
+                                    .filter((x) => String(x.repertoire_name || "").trim() === it.name)
+                                    .sort((a, b) => String(a.performed_on || "").localeCompare(String(b.performed_on || "")));
+                                  if (ps.length === 0) return null;
+                                  return (
+                                    <div style={{ marginBottom: 10 }}>
+                                      <p className="text-xs font-medium mb-1.5">本番の 予定</p>
+                                      {ps.map((x) => (
+                                        <p key={x.id} className="text-xs" style={{ color: C.ink, lineHeight: 1.9 }}>
+                                          {String(x.performed_on || "").slice(5).replace("-", "月")}日　{x.label || x.title || "本番"}
+                                        </p>
+                                      ))}
+                                    </div>
+                                  );
+                                })()}
+
+                                <p className="text-xs font-medium mb-1.5">名前を 直す</p>
                                 <input value={repRenameTo}
                                   onChange={(e) => setRepRenameTo(e.target.value)}
                                   aria-label="曲名"

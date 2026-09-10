@@ -90,7 +90,7 @@ function eq(a, b, label) { ok(a === b, label + "  （得た値: " + JSON.stringi
     ok(/position: "fixed"/.test(bar) && /bottom: 0/.test(bar), "★帯は 画面の 下");
     ok(/paddingBottom: `calc\(\$\{TAB_BAR_HEIGHT \+ 16\}px \+ env\(safe-area-inset-bottom\)\)`/.test(v),
       "★最後の1枚が 帯に 隠れない");
-    ok(/import \{ TAB_BAR_HEIGHT \} from "@\/lib\/uiKit"/.test(v),
+    ok(/import \{[^}]*TAB_BAR_HEIGHT[^}]*\} from "@\/lib\/uiKit"/.test(v),
       "★帯の 高さは 1か所（lib/uiKit.js）から 来る");
     // ★② 並び
     ok(/TABS_V2_ORDER = \["home", "today", "analysis", "notes", "garden"\]/.test(v),

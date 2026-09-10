@@ -1961,7 +1961,7 @@ function InteriorDraggable({ itemKey, startLeft, startTop, band, onDragEnd, hit,
   );
 }
 
-function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardrobeOn = false, say = null, t, cameraOn = false }) {
+function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardrobeOn = false, say = null, t, cameraOn = false, fullBleed = false }) {
   const [editMode, setEditMode] = useState(false);
   // ★★羊の大きさを、★部屋の幅から 出します（★2026-09-08 夜・案A）。
   //   ★★家具は ％、★羊だけ 画素でした。★釣り合いが 機種ごとに 変わり、
@@ -2251,7 +2251,20 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
           ★どちらも、これが原因でした。
         ★★isolation: isolate で、★中の z が 外に出なくなります。
           ★見た目は、★1つも変わりません。 */
-    <div id="room-anchor" ref={roomBoxRef} style={{ position: "relative", isolation: "isolate", zIndex: 0, width: "100%", maxWidth: isRoomExpanded ? 700 : 480, margin: "0 auto", aspectRatio: isRoomExpanded ? "7 / 5" : "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor, transition: "max-width 0.4s ease, aspect-ratio 0.4s ease" }}>
+    <div id="room-anchor" ref={roomBoxRef} style={fullBleed ? {
+      // ★★ふだんの 画面は、★部屋と 羊で 画面ぜんぶです（★裁定 9/10夜 §3）。
+      //   ★★「ポケ森の マップ画面と 同じ考えです」
+      //   ★★上に 細い帯 1本だけ。★道具は「したく」1つだけ。
+      //   ★★入れ物（main）に 左右の 余白が あるので、★そこから 出ます。
+      //     ★★100vw ＋ calc(50% - 50vw) で、★画面の 端まで 届きます。
+      //   ★★高さは 画面から 取ります。★下の タブと 上の 帯の ぶんを 引きます。
+      //     ★dvh を 使います。★iOS の 帯が 出入りしても ずれません。
+      position: "relative", isolation: "isolate", zIndex: 0,
+      width: "100vw", marginLeft: "calc(50% - 50vw)", marginRight: "calc(50% - 50vw)",
+      height: "calc(100dvh - 210px - env(safe-area-inset-bottom))",
+      minHeight: 320,
+      borderRadius: 0, overflow: "hidden", background: wallColor
+    } : { position: "relative", isolation: "isolate", zIndex: 0, width: "100%", maxWidth: isRoomExpanded ? 700 : 480, margin: "0 auto", aspectRatio: isRoomExpanded ? "7 / 5" : "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor, transition: "max-width 0.4s ease, aspect-ratio 0.4s ease" }}>
       {/* ★★カメラの 入れ物。★場面ぜんぶに、★1つの 変形を かけます。
           ★★層ごとに 別の 速さで 動かしません（★それが「奥ゆき」です）。
             ★奥ゆきを 付けると、★層の 数だけ 座標の 計算が 増えます。
@@ -2947,7 +2960,7 @@ function GardenScene({ equipped, owned, onUpdatePosition, totalDaysRecorded = 0,
  *   ★★消していません。★出さないだけです。
  *     ★ふだんの「ひつじ」のタブでは、★これまでどおり ぜんぶ出ます。
  */
-export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, onUpdatePosition, isDirty, saveStatus, onSave, professions = [], wardrobeOn = false, roomOnly = false, say = null, t, cameraOn = false }) {
+export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpent, onPurchase, onEquip, onTogglePlacement, onUpdatePosition, isDirty, saveStatus, onSave, professions = [], wardrobeOn = false, roomOnly = false, say = null, t, cameraOn = false, fullBleed = false }) {
   const [view, setView] = useState("room");
   const [shopCategory, setShopCategory] = useState("hat");
 
@@ -2982,13 +2995,15 @@ export default function CharacterHome({ entries, ownedKeys, equipped, pointsSpen
   //     ★見本（案v2 ②〜⑤）に、★1つも写っていません。
   //   ★★消していません。★ふだんの「ひつじ」では、これまでどおり出ます。
   if (roomOnly) {
+    // ★★早い 返しです。★渡しそこねると、★何も 効きません。
+    //   ★★きょう cameraOn で それを しました。★同じ 誤りを 繰り返しません。
     // ★★2026-09-10、★ここが cameraOn を 落としていました。
     //   ★★下の RoomScene には 渡していたのに、★この 早い 返しには
     //     ★渡していませんでした。★ひつじの 画面は こちらを 通ります。
     //   ★★だから カメラは、★1度も 動きませんでした。
     //   ★★早い 返しを 見ずに「渡した」と 言っていました。
     return (
-      <RoomScene wardrobeOn={wardrobeOn} cameraOn={cameraOn} equipped={equipped} owned={ownedKeys}
+      <RoomScene wardrobeOn={wardrobeOn} cameraOn={cameraOn} fullBleed={fullBleed} equipped={equipped} owned={ownedKeys}
         onTogglePlacement={onTogglePlacement} onUpdatePosition={onUpdatePosition}
         say={say} t={t} />
     );
