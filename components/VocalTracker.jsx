@@ -12476,8 +12476,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           </div>
         </div>
       )}
+      {/* ★★知らせの 帯は、★押しごとを 1つも 受け取りません（★2026-09-11）。
+          ★★Opus の 裁定（9月10日夜・§8）で、★同じ 不具合が 見つかりました。
+            ★「.toast.on { pointer-events: auto } が 原因」。
+            ★★うちも 同じでした。★pointerEvents を 書いていませんでした。
+          ★★この 帯は 画面の 下 24px に、★z-50 で 出ます。
+            ★下の タブ（zIndex 20・高さ 56px）の 上に 重なります。
+            ★★「記録しました。」が 出ている 3.2秒の あいだ、
+              ★★まんなか下の 押しどころが、★ぜんぶ 死んでいました。
+          ★★中に 押すものが 1つも 無いので、★帯ごと 素通しに します。
+            ★見えます。★けれど 指は 下の ボタンに とどきます。
+          ★★羊の したく の 不具合も、★これと 同じ 形でした。 */}
       {toastMessage && (
-        <div className="fixed left-1/2 z-50 tab-panel" style={{ bottom: 24, transform: "translateX(-50%)" }}>
+        <div className="fixed left-1/2 z-50 tab-panel"
+          style={{ bottom: 24, transform: "translateX(-50%)", pointerEvents: "none" }}>
           <div
             className="rounded-full px-5 py-3 ff-display italic text-sm"
             style={{ background: C.curtain, color: "#FFFDF8", boxShadow: "0 8px 24px rgba(36,25,20,0.25)" }}
@@ -18612,9 +18624,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       滑る余地がゼロで、静的な要素と同じ挙動になっていた。fixed にする。
                       保存の結果も、以前は画面の一番上に出していたため、下までスクロールして
                       ボタンを押すユーザーには画面外で見えなかった。ボタンと同じ場所に置く。 */}
+                  {/* ★★上の 38% は、★透けた ぼかしです（★gradient の 上半分）。
+                      ★★見た目は 何も 無いのに、★押しごとを 受け取っていました。
+                        ★下に ある ものが、★そこだけ 押せなく なります。
+                      ★★裁定（9月10日夜・§8）と 同じ 形です。
+                        ★「帯と 重なる 位置に ある ボタンは、ぜんぶ 同じ 目に 遭っていました」
+                      ★★外は 素通し、★中の 押しどころだけ 受け取ります。 */}
                   <div className="fixed left-0 right-0 bottom-0 z-40 px-4 sm:px-6 pt-6 pb-4"
-                    style={{ background: `linear-gradient(to top, ${C.paper} 62%, rgba(246,241,231,0))` }}>
-                    <div className="max-w-3xl mx-auto">
+                    style={{
+                      background: `linear-gradient(to top, ${C.paper} 62%, rgba(246,241,231,0))`,
+                      pointerEvents: "none"
+                    }}>
+                    <div className="max-w-3xl mx-auto" style={{ pointerEvents: "auto" }}>
                       {/* ★下書きがあるあいだは、そのことを伝えます。
                           下書きを分けたことで、編集してもほかのタブが
                           変わらなくなりました。その代わり「変えたつもり」

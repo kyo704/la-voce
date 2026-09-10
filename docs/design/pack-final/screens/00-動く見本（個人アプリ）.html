@@ -1,0 +1,397 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Woolsong 動く見本</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--enji:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
+ --line:#E4DAC4;--line2:#F0E9DA;--ink:#261913;--ink2:#6D5D50;--ink3:#7C6C5E;--bg:#EFE7D6}
+body{background:var(--bg);font-family:"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;color:var(--ink);
+ display:flex;flex-direction:column;align-items:center;padding:24px 14px 50px;gap:14px;line-height:1.7}
+h1{font-size:19px;letter-spacing:.04em}
+.lead{font-size:12.5px;color:var(--ink2);max-width:560px;text-align:center;line-height:1.9}
+.ph{width:360px;height:812px;background:var(--paper);border-radius:30px;border:1px solid #DFD4BE;
+ box-shadow:0 1px 0 rgba(0,0,0,.03),0 10px 30px rgba(90,72,48,.14);overflow:hidden;
+ display:flex;flex-direction:column;position:relative}
+.st{flex:0 0 26px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:9.5px;color:var(--ink3);letter-spacing:.08em}
+.bd{flex:1;overflow-y:auto;padding:0 15px 18px}
+.tabs{flex:0 0 56px;border-top:1px solid var(--line);display:flex;background:#FFFDF7}
+.tb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:10px;color:var(--ink3);cursor:pointer}
+.tb i{width:16px;height:2px;background:transparent;border-radius:2px;display:block}
+.tb.on{color:var(--enji);font-weight:700}.tb.on i{background:var(--enji)}
+.hd{display:flex;align-items:center;justify-content:space-between;padding:10px 1px 6px}
+.hd h2{font-size:17px;letter-spacing:.06em}
+.gear{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;
+ justify-content:center;color:var(--ink2);font-size:12px;cursor:pointer;background:#fff}
+.h3{font-size:10.5px;color:var(--ink3);letter-spacing:.12em;margin:14px 0 7px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 13px;margin-bottom:9px}
+.mini{font-size:11.5px;color:var(--ink2)}
+.usu{font-size:11px;color:var(--ink3);margin-top:2px}
+.note{font-size:11px;color:var(--ink2);line-height:1.85;margin-top:9px}
+.warn{background:#F6F1E4;border:1px solid #E8DFC8;border-radius:12px;padding:9px 11px;font-size:11px;color:var(--ink2);line-height:1.75;margin-bottom:10px}
+.seg{display:flex;background:#F3ECDD;border-radius:11px;padding:3px;margin:2px 0 10px}
+.seg div{flex:1;text-align:center;font-size:11.5px;padding:8px 0;border-radius:9px;color:var(--ink2);cursor:pointer}
+.seg div.on{background:#fff;color:var(--enji);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:7px 12px;font-size:11.5px;color:var(--ink2);background:#fff;cursor:pointer}
+.pill.on{background:var(--enji);color:#fff;border-color:var(--enji);font-weight:700}
+.pills{display:flex;gap:6px;margin-bottom:11px;flex-wrap:wrap}
+.li{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line2);font-size:13px;cursor:pointer;min-height:44px}
+.li:last-child{border:none}
+.li s{color:var(--ink3);font-size:11.5px;text-decoration:none;text-align:right}
+.btn{display:block;width:100%;border:0;background:var(--enji);color:#fff;border-radius:13px;padding:14px 0;
+ font:inherit;font-size:15px;font-weight:700;text-align:center;cursor:pointer}
+.btn.g{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:400;font-size:13.5px;padding:12px 0}
+.two{display:flex;gap:9px}.two>*{flex:1}
+.rowb{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.rowb s{width:30px;font-size:9.5px;color:var(--ink3);text-decoration:none;flex:none}
+.bar{height:8px;border-radius:4px;background:var(--enji)}
+/* 気になったこと */
+.mk{margin-top:2px}
+.mkrow{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.mkrow .nm{flex:0 0 96px;font-size:10.5px;color:var(--ink2);line-height:1.3}
+.mkrow .cells{flex:1;display:flex;gap:2px}
+.mkrow .cells i{flex:1;height:15px;border-radius:3px;background:#F0E9DA;display:block}
+.mkrow .cells i.on{background:var(--enji);opacity:.85}
+.mkrow .n{flex:0 0 30px;text-align:right;font-size:10px;color:var(--ink3)}
+.mkx{display:flex;gap:2px;margin:2px 0 0 102px;font-size:8.5px;color:var(--ink3)}
+.mkx span{flex:1;text-align:center}
+.wk{display:flex;align-items:flex-end;gap:2px;height:30px}
+.wk i{flex:1;background:var(--enji);border-radius:2px 2px 0 0;display:block;opacity:.85}
+/* ノート */
+.nt{background:#fff;border:1px solid var(--line);border-radius:13px;padding:12px 13px;margin-bottom:8px;cursor:pointer}
+.nt .t{font-size:13.5px;line-height:1.7}
+.nt .m{font-size:10.5px;color:var(--ink3);margin-top:6px}
+.rep{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px 12px;margin-bottom:8px;cursor:pointer}
+.rep .t{font-size:14px;font-weight:700}.rep .s{font-size:10.5px;color:var(--ink3);margin-top:2px}
+.rep .r{margin-left:auto;font-size:10.5px;color:var(--ink3);text-align:right}
+.tag{display:inline-block;background:#F3ECDD;color:var(--ink2);border-radius:6px;padding:2px 7px;font-size:10px;margin-left:6px}
+.post{background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px 12px;margin-bottom:8px}
+.post .ph2{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.post .av{width:24px;height:24px;border-radius:50%;background:#F0E4D2;flex:none;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink2)}
+.post .nm3{font-size:12.5px;font-weight:700}.post .dt{font-size:10px;color:var(--ink3);margin-left:auto}
+.post .bd2{font-size:13.5px;line-height:1.75}
+.post.t{border-color:#E0C9CE;background:#FFFCFC}.post.t .nm3{color:var(--enji)}
+.wl{background:#F6EFDF;border:1px solid #E8DFC8;border-radius:12px;padding:9px 11px;font-size:11px;color:var(--ink2);line-height:1.7;margin-top:8px}
+.room{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.shelf{background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px 12px;margin-bottom:8px;cursor:pointer}
+.gr{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.gr .c{background:#fff;border:1px solid var(--line);border-radius:11px;height:60px;display:flex;align-items:center;
+ justify-content:center;font-size:9.5px;color:var(--ink3);text-align:center;line-height:1.3;cursor:pointer}
+.gr .c.sel{border:2px solid var(--enji);color:var(--enji);font-weight:700}
+.dots{display:flex;gap:6px}
+.dots div{flex:1;border:1px solid var(--line);border-radius:11px;padding:10px 0 8px;text-align:center;font-size:11.5px;color:var(--ink2);background:#FDFAF3;cursor:pointer;min-height:44px}
+.dots div .d{display:block;width:13px;height:13px;border-radius:50%;margin:0 auto 5px;background:var(--enji)}
+.dots div.on{border:2px solid var(--enji);color:var(--enji);font-weight:700;padding:9px 0 7px;background:#fff}
+.mask{position:absolute;inset:0;background:rgba(38,25,19,.28);opacity:0;pointer-events:none;transition:.2s;z-index:5}
+.mask.on{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--paper);border-radius:22px 22px 0 0;z-index:6;
+ box-shadow:0 -10px 30px rgba(90,72,48,.2);padding:10px 15px 16px;transform:translateY(105%);transition:.23s cubic-bezier(.3,.9,.3,1);max-height:78%;overflow-y:auto}
+.sheet.on{transform:translateY(0)}
+.grab{width:40px;height:4px;border-radius:2px;background:#DFD4BE;margin:0 auto 12px}
+.legend{max-width:560px;font-size:12.5px;color:var(--ink2);background:#fff;border:1px solid var(--line);
+ border-radius:14px;padding:14px 16px;line-height:1.95}
+.legend b{color:var(--enji)}.legend ul{margin:6px 0 0 1.2em}
+.back{font-size:12.5px;color:var(--enji);cursor:pointer;padding:8px 0;display:inline-block}
+</style></head><body>
+<h1>Woolsong ── 動く見本</h1>
+<p class="lead">下のタブと、画面の中の切替・行を 押してください。★中身は 画面ごとに 別のものが 入っています。</p>
+<div class="ph">
+ <div class="st"><span>9:41</span><span>●●● ▮</span></div>
+ <div class="bd" id="bd"></div>
+ <div class="tabs" id="tabs"></div>
+ <div class="mask" id="mask"></div>
+ <div class="sheet" id="sheet"><div class="grab"></div><div id="sh"></div></div>
+</div>
+<div class="legend" id="lg"></div>
+<script>
+/* ---------- データ（90日ぶん） ---------- */
+var MK=['のどが いがらっぽい','せきばらい','のどが 渇く','鼻が つまる','肩が こわばる','胃が もたれる'];
+var DAY=[];(function(){var s=20260610;
+ for(var i=89;i>=0;i--){var d=new Date(2026,8,9);d.setDate(d.getDate()-i);
+  var r=function(n){s=(s*9301+49297)%233280;return s/233280*n};
+  var marks=MK.filter(function(){return r(1)<0.16});
+  DAY.push({d:d,voice:[3,2,1][Math.floor(r(3))],sing:30+Math.floor(r(9))*15,
+   sleep:5.5+r(3),marks:marks,hard:r(1)<0.28});}
+})();
+function md(d){return (d.getMonth()+1)+'/'+d.getDate()}
+function last(n){return DAY.slice(-n)}
+
+/* ---------- 状態 ---------- */
+var S={tab:'ふりかえる',fk:'ならべる',span:14,note:'稽古',hj:'ながめる',rep:null,mk:null};
+var TABS=['きょう','記録','ふりかえる','ノート','ひつじ'];
+function $(s){return document.querySelector(s)}
+function go(t){S.tab=t;draw()}
+function seg(list,cur,fn){return '<div class="seg">'+list.map(function(x){
+ return '<div class="'+(x===cur?'on':'')+'" onclick="'+fn+'(\''+x+'\')">'+x+'</div>'}).join('')+'</div>'}
+
+/* ---------- きょう ---------- */
+function S_kyou(){return '<div class="hd"><h2>きょう</h2><div class="gear" onclick="sheet(\'motto\')">⚙</div></div>'
+ +'<div class="card" style="text-align:center;padding:16px 13px"><div style="font-size:14px;line-height:1.8">きょうも 来てくれて ありがとう</div>'
+ +'<div class="usu">羊は、記録した行為に 反応します</div></div>'
+ +'<div class="h3">きょうの よてい</div><div class="card" style="padding:4px 12px">'
+ +'<div class="li"><span>16:00　声楽A　斎藤先生</span><s>第1教室</s></div>'
+ +'<div class="li"><span>19:00　自主練</span><s>第3練習室</s></div></div>'
+ +'<div class="h3">近い 行事</div><div class="card" style="padding:4px 12px">'
+ +'<div class="li" onclick="sheet(\'gyoji\')"><span>9月14日　実技試験</span><s>出ます ›</s></div></div>'
+ +'<div class="btn" style="margin-top:14px" onclick="go(\'記録\')">きょうを 記録する</div>'
+ +'<div class="note">★点数も、きょうの調子の 判定も 出しません。<br>★羊を 押しても 何も 起きません。</div>'}
+
+/* ---------- 記録 ---------- */
+var R={muku:null,nodo:null,deki:null};
+function S_kiroku(){return '<div class="hd"><h2>記録</h2></div>'
+ +'<div class="h3">あさ</div>'
+ +dots('muku','起きたときの むくみ',['ない','すこし','ある'])
+ +row('昨夜の 睡眠','7時間30分（23:30→7:00）')
+ +'<div class="h3">よる</div>'
+ +dots('nodo','のどの 調子',['よい','ふつう','わるい'])
+ +dots('deki','声の 出来',['出た','ふつう','出づらい'])
+ +row('本番以外で 声を使った時間','1時間30分')
+ +'<div class="warn" style="margin-top:9px">湿度は こちらで 取ります。本番・レッスンの 翌日かどうかも、予定から 分かります。</div>'
+ +'<div class="h3">足す（どれも 任意）</div>'
+ +row('本番・レッスン','')+row('食べたもの','')+row('からだのこと','')+row('ひとこと','')
+ +'<div class="note">★「○/5」を 出しません。★書かなかった行に 印を つけません。</div>'}
+function dots(k,t,L){return '<div class="card"><div class="mini" style="margin-bottom:9px">'+t+'</div><div class="dots">'
+ +L.map(function(v,i){return '<div class="'+(R[k]===v?'on':'')+'" onclick="pick(\''+k+'\',\''+v+'\')">'
+ +'<span class="d" style="opacity:'+[.92,.6,.3][i]+'"></span>'+v+'</div>'}).join('')+'</div></div>'}
+function pick(k,v){R[k]=v;draw()}
+function row(t,v){return '<div class="li" style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px;margin-bottom:9px">'
+ +'<span><b style="color:'+(v?'var(--midori)':'var(--enji)')+';margin-right:8px">'+(v?'✓':'＋')+'</b>'+t+'</span><s>'+(v||'')+' ›</s></div>'}
+
+/* ---------- ふりかえる ---------- */
+function S_furi(){
+ var body='<div class="hd"><h2>ふりかえる</h2><div class="gear" onclick="sheet(\'motto\')">⚙</div></div>'
+  +seg(['ならべる','さかのぼる','くらべる','かぞえる'],S.fk,'setFk');
+ if(S.fk==='ならべる')body+=narabe();
+ if(S.fk==='さかのぼる')body+=sakanobo();
+ if(S.fk==='くらべる')body+=kuraberu();
+ if(S.fk==='かぞえる')body+=kazoeru();
+ return body}
+function setFk(v){S.fk=v;draw()}
+function setSpan(v){S.span=+v;draw()}
+function narabe(){
+ var n=S.span,D=last(n),wk=n>=90;
+ var h='<div class="warn">ここに出るのは、あなたが書いたことの 並びです。原因かどうかは 分かりません。</div>'
+ +'<div class="pills">'+[14,28,90].map(function(v){return '<span class="pill '+(S.span===v?'on':'')+'" onclick="setSpan('+v+')">'+(v===14?'14日':v===28?'4週':'3か月')+'</span>'}).join('')+'</div>';
+ /* こえのちょうし */
+ h+='<div class="card"><div class="mini" style="margin-bottom:8px">こえの ちょうし</div>';
+ if(n<=28){h+=D.map(function(x,i){var w=[40,65,88][x.voice-1];
+   return '<div class="rowb"><s>'+(n<=14?md(x.d):(i%7===0?md(x.d):''))+'</s><div class="bar" style="width:'+w+'%;opacity:'+(0.5+x.voice*0.15)+'"></div></div>'}).join('');}
+ else{h+='<div style="display:flex;align-items:flex-end;gap:2px;height:64px">'+D.map(function(x){
+   return '<i style="flex:1;display:block;background:var(--enji);opacity:'+(0.35+x.voice*0.2)+';height:'+[35,62,92][x.voice-1]+'%"></i>'}).join('')+'</div>'
+   +'<div class="usu" style="text-align:right">1本＝1日</div>';}
+ h+='</div>';
+ /* 気になったこと ── 項目ごとの行 */
+ h+='<div class="card"><div class="mini" style="margin-bottom:9px">気になったこと</div><div class="mk">';
+ MK.forEach(function(m){
+  var days=D.map(function(x){return x.marks.indexOf(m)>=0});
+  var cnt=days.filter(Boolean).length;
+  if(n<=28){
+   h+='<div class="mkrow"><span class="nm">'+m+'</span><span class="cells">'
+    +days.map(function(b){return '<i class="'+(b?'on':'')+'"></i>'}).join('')
+    +'</span><span class="n">'+cnt+'日</span></div>';
+  }else{
+   var W=[];for(var i=0;i<days.length;i+=7)W.push(days.slice(i,i+7).filter(Boolean).length);
+   h+='<div class="mkrow"><span class="nm">'+m+'</span><span class="cells wk">'
+    +W.map(function(c){return '<i style="background:'+(c?'#840C24':'#F0E9DA')+';height:'+(c?Math.round(30+c/7*70):8)+'%;opacity:'+(c?(0.4+c/7*0.55):1)+'"></i>'}).join('')
+    +'</span><span class="n">'+cnt+'日</span></div>';
+  }
+ });
+ h+='</div>';
+ if(n<=14)h+='<div class="mkx">'+last(14).map(function(x,i){return '<span>'+(i%3===0?x.d.getDate():'')+'</span>'}).join('')+'</div>';
+ h+='<div class="usu" style="margin-top:7px">'+(n<=28?'●＝その日 あった':'1本＝1週間。高さ＝その週に あった日数')+'</div></div>';
+ h+='<div class="note">★項目ごとに 1行にしました。★色の濃さでは 何のことか 分かりません。<br>'
+  +'★3か月にすると、日ごとを やめて 週ごとに します（★つぶれるからです）。</div>';
+ return h}
+function sakanobo(){
+ var hd=DAY.filter(function(x){return x.hard}).slice(-6).reverse();
+ return '<div class="note" style="margin:0 0 10px">出なかった日を 選ぶと、その前の3日に 書いたことが そのまま 出ます。</div>'
+ +'<div class="card" style="padding:4px 12px">'+hd.map(function(x,i){
+   return '<div class="li" onclick="sheet(\'saka'+i+'\')"><span>'+md(x.d)+'　出づらい と書いた日</span><s>前の3日 ›</s></div>'}).join('')+'</div>'
+ +'<div class="note">★文章を 添えません。★確率も 割合も 出しません。</div>'}
+function kuraberu(){
+ return '<div class="warn">ここに出るのは、あなたが書いたことの 並びです。原因かどうかは 分かりません。</div>'
+ +'<div class="card"><div class="mini">食べ終えてから 寝るまでの間</div>'
+ +'<div class="pills" style="margin:8px 0 6px">'+['前の夜','前の日','2日まえ','その日の朝'].map(function(v,i){
+   return '<span class="pill '+(i===0?'on':'')+'" style="padding:4px 9px;font-size:10.5px">'+v+'</span>'}).join('')+'</div>'
+ +dotplot()
+ +'<div class="usu">● 書いた日　　○ あとから書いた日　　- - - まんなか</div></div>'
+ +'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><div style="font-size:12.5px;line-height:1.75">まだ、はっきりした差は 見えていません。<br>'
+ +'<span style="font-size:11px;color:var(--ink2)">出なかった日が 11日 たまりました。この形のまま つづけてください。</span></div></div>'
+ +'<div class="note">★「あと◯日」を 出しません。★画面を 消しません。</div>'}
+function dotplot(){
+ var G=[3.2,4.1,3.8,4.6,2.9,5.1,3.5,4.3,3.0,4.8,3.9,2.7,4.4,3.6],B=[1.4,2.1,.9,1.8,2.6,1.2,3.1,1.6,2.3,.7,2.0];
+ var H=150,W=300,sx=function(c,i){return c+((i*37)%29)-14},sy=function(v){return H-v/6*H};
+ var p='';[0,2,4,6].forEach(function(v){p+='<line x1="34" y1="'+sy(v)+'" x2="300" y2="'+sy(v)+'" stroke="#F0E9DA"/>'
+  +'<text x="30" y="'+(sy(v)+3)+'" font-size="8" fill="#7C6C5E" text-anchor="end">'+v+'時間</text>'});
+ G.forEach(function(v,i){p+='<circle cx="'+sx(110,i)+'" cy="'+sy(v)+'" r="4" fill="#840C24" opacity=".8"/>'});
+ B.forEach(function(v,i){p+='<circle cx="'+sx(230,i)+'" cy="'+sy(v)+'" r="4" '+(i===2||i===7?'fill="none" stroke="#840C24" stroke-width="1.4" opacity=".55"':'fill="#840C24" opacity=".8"')+'/>'});
+ [[110,3.85],[230,1.8]].forEach(function(m){p+='<line x1="'+(m[0]-24)+'" y1="'+sy(m[1])+'" x2="'+(m[0]+24)+'" y2="'+sy(m[1])+'" stroke="#840C24" stroke-width="1.6" stroke-dasharray="4 3"/>'});
+ p+='<text x="110" y="'+(H+13)+'" font-size="9.5" fill="#5E5045" text-anchor="middle">よく出た日 14日</text>';
+ p+='<text x="230" y="'+(H+13)+'" font-size="9.5" fill="#5E5045" text-anchor="middle">出なかった日 11日</text>';
+ return '<svg viewBox="0 0 310 '+(H+20)+'" width="100%" style="display:block">'+p+'</svg>'}
+function kazoeru(){
+ var H=[2,5,9,14,11,7,4,2],mx=14;
+ return '<div class="h3" style="margin-top:2px">あなたの ふだん</div><div class="card" style="padding:4px 12px">'
+ +'<div class="li"><span>食べ終えてから 寝るまで</span><s>2時間40分</s></div>'
+ +'<div class="li"><span>寝た 時刻</span><s>0時50分</s></div>'
+ +'<div class="li"><span>声を使った 時間</span><s>2時間10分</s></div>'
+ +'<div class="li"><span>書いた 日</span><s>54日</s></div></div>'
+ +'<div class="note" style="margin:-2px 0 11px">まんなかの値です。くらべる先は、あなた自身です。よその目安は 出しません。</div>'
+ +'<div class="card"><div class="mini">食べ終えてから 寝るまで（54日）</div>'
+ +'<div style="display:flex;align-items:flex-end;gap:5px;height:84px;margin:9px 0 3px">'
+ +H.map(function(v){return '<div style="flex:1;background:var(--enji);border-radius:3px 3px 0 0;height:'+(v/mx*100)+'%"></div>'}).join('')+'</div>'
+ +'<div style="display:flex;gap:5px;font-size:8.5px;color:var(--ink3)">'+['0','1','2','3','4','5','6','7+'].map(function(s){return '<span style="flex:1;text-align:center">'+s+'</span>'}).join('')+'</div>'
+ +'<div class="usu" style="text-align:right">時間</div></div>'}
+
+/* ---------- ノート（★4つは 別のもの） ---------- */
+var REP=[{t:'ラ・ボエーム',c:'プッチーニ　ミミ',st:'本番済み',d:'2026年4月12日',n:38,s:2},
+         {t:'冬の旅',c:'シューベルト',st:'さらい中',d:'2026年6月3日',n:21,s:1},
+         {t:'からたちの花',c:'山田耕筰',st:'はじめたばかり',d:'2026年7月20日',n:9,s:0}];
+function S_note(){
+ if(S.rep!==null)return repDetail();
+ var b='<div class="hd"><h2>ノート</h2><div class="gear" onclick="sheet(\'newnote\')">＋</div></div>'
+  +seg(['稽古','レパートリー','連絡','受診用'],S.note,'setNote');
+ if(S.note==='稽古')b+=nKeiko();
+ if(S.note==='レパートリー')b+=nRep();
+ if(S.note==='連絡')b+=nRen();
+ if(S.note==='受診用')b+=nJushin();
+ return b}
+function setNote(v){S.note=v;S.rep=null;draw()}
+function nKeiko(){return '<div class="li" style="background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-bottom:10px"><span style="color:var(--ink3)">🔍　ことばで さがす</span></div>'
+ +[['下降形で 喉が上がる。肋骨をひらいたまま 息を回す。次に、自分が言うこと ──','9月8日（月）　斎藤先生'],
+   ['母音の 移り変わりで 顎が動く。「あ→お」は 唇だけ。','9月1日（月）　斎藤先生'],
+   ['ミミの3幕、pp の 支え。息を 止めない。','8月25日（月）　斎藤先生']].map(function(x){
+   return '<div class="nt" onclick="sheet(\'note\')"><div class="t">'+x[0]+'</div><div class="m">'+x[1]+'</div></div>'}).join('')
+ +'<div class="note">★レッスンの メモです。★先生には 送られません。</div>'}
+function nRep(){return REP.map(function(r,i){
+  return '<div class="rep" onclick="openRep('+i+')"><div><div class="t">'+r.t+'</div><div class="s">'+r.c+'</div></div>'
+  +'<div class="r">'+r.st+'<br><span style="color:var(--ink2)">記録 '+r.n+'日</span></div></div>'}).join('')
+ +'<div class="note">★曲ごとの 台帳です。★「たな」と 同じ中身を 見ています。<br>★出来や 点数は ありません。</div>'}
+function openRep(i){S.rep=i;draw()}
+function repDetail(){var r=REP[S.rep];
+ return '<div class="back" onclick="S.rep=null;draw()">‹ レパートリー</div>'
+ +'<div class="hd" style="padding-top:2px"><h2>'+r.t+'</h2></div>'
+ +'<div class="usu" style="margin-bottom:11px">'+r.c+'</div>'
+ +'<div class="card" style="padding:4px 12px">'
+ +'<div class="li"><span>はじめて 記録した日</span><s>'+r.d+'</s></div>'
+ +'<div class="li"><span>記録した 日</span><s>'+r.n+'日</s></div>'
+ +'<div class="li"><span>本番</span><s>'+(r.s?r.s+'回':'なし')+'</s></div>'
+ +'<div class="li"><span>ようす</span><s>'+r.st+'</s></div></div>'
+ +'<div class="h3">この曲を さらった日の 声の調子</div>'
+ +'<div class="card">'+last(14).slice(0,8).map(function(x){
+   return '<div class="rowb"><s>'+md(x.d)+'</s><div class="bar" style="width:'+[40,65,88][x.voice-1]+'%;opacity:'+(0.5+x.voice*0.15)+'"></div></div>'}).join('')+'</div>'
+ +(r.s?'<div class="btn g" style="margin-top:10px" onclick="setFk2()">この曲で そろえて 見る</div>':'')
+ +'<div class="h3">この曲の メモ</div>'
+ +'<div class="nt"><div class="t">3幕の pp。息を 止めない。</div><div class="m">8月25日（月）</div></div>'
+ +'<div class="note">★曲と 記録が つながっています。<br>★出来や 点数は 出しません。★数えるのは 日数と 回数だけ。</div>'}
+function setFk2(){S.rep=null;S.tab='ふりかえる';S.fk='ならべる';draw();sheet('sorae')}
+function nRen(){return '<div class="post t"><div class="ph2"><span class="av">校</span><span class="nm3">○○音楽大学</span><span class="dt">9月8日</span></div>'
+ +'<div class="bd2">10月5日（月）は 学園祭のため、レッスンは 休講です。</div></div>'
+ +'<div class="h3">門下</div>'
+ +'<div class="rep" onclick="sheet(\'monka\')"><div><div class="t">斎藤先生の 門下</div><div class="s">12人</div></div><div class="r">きのう</div></div>'
+ +'<div class="rep" onclick="sheet(\'monka\')"><div><div class="t">渡辺先生の 門下</div><div class="s">7人</div></div><div class="r">9月1日</div></div>'
+ +'<div class="h3">レッスンを 休むとき</div>'
+ +'<div class="btn g" onclick="sheet(\'yasumu\')">先生に 伝える</div>'
+ +'<div class="note">★連絡には 書きません。★担当の先生 おひとりにだけ 届きます。</div>'}
+function nJushin(){return '<div class="warn">お医者さんに 見せる 1枚を 作ります。★あなたが 選んだものだけ 載ります。</div>'
+ +'<div class="h3">期間</div><div class="pills"><span class="pill on">この3か月</span><span class="pill">この1年</span><span class="pill">選ぶ</span></div>'
+ +'<div class="h3">載せるもの</div><div class="card" style="padding:4px 12px">'
+ +[['のどの 調子',1],['声の 出来',1],['睡眠',1],['食べ終えてから 寝るまで',1],['からだのこと',1],['ひとこと',0],['ノートの 中身',0]].map(function(x){
+   return '<div class="li"><span>'+x[0]+'</span><s>'+(x[1]?'✓ 載せる':'載せない')+'</s></div>'}).join('')+'</div>'
+ +'<div class="btn" style="margin-top:11px" onclick="sheet(\'pdf\')">1枚に して 出す</div>'
+ +'<div class="note">★アプリの中から 先生や 学校へは 送れません。<br>★端末に 書き出して、ご自分で お持ちください。<br>★安全に かかわるものは、すべて 無料です。</div>'}
+
+/* ---------- ひつじ ---------- */
+function S_hitsuji(){
+ var b='<div class="hd"><h2>ひつじ</h2><div class="gear" onclick="sheet(\'motteru\')">⚙</div></div>'
+  +seg(['ながめる','おうち','したく','たな'],S.hj,'setHj');
+ if(S.hj==='ながめる')b+='<div class="card" style="text-align:center;padding:26px 13px">'
+  +'<div style="font-size:52px">🐑</div><div style="font-size:14px;margin-top:10px">きょうも 来てくれて ありがとう</div></div>'
+  +'<div class="btn g" onclick="setHj(\'したく\')">したく</div>'
+  +'<div class="note">★道具を 1つも 出しません。★調子への 反応は しません。</div>';
+ if(S.hj==='おうち')b+=roomSvg()
+  +'<div class="two" style="margin-top:11px"><div class="btn g" onclick="sheet(\'oku\')">おく</div><div class="btn g" onclick="sheet(\'kabe\')">かべ・ゆか</div></div>'
+  +'<div class="note">★置く場所は 7か所。★自由に 動かせません。</div>';
+ if(S.hj==='したく')b+='<div class="pills"><span class="pill on">うわぎ</span><span class="pill">くつ</span><span class="pill">かぶりもの</span></div>'
+  +'<div class="gr">'+['燕尾服','ドレス','ニット','コート','シャツ','ケープ','はおり','？'].map(function(v,i){
+    return '<div class="c '+(i===0?'sel':'')+'">'+(v==='？'?'まだ':v)+'</div>'}).join('')+'</div>'
+  +'<div class="two" style="margin-top:11px"><div class="btn g">もとにもどす</div><div class="btn">これでいい</div></div>'
+  +'<div class="note">★羊は 40% 見えたままです。</div>';
+ if(S.hj==='たな')b+='<div class="note" style="margin:0 0 11px">歌ってきたものが、ここに 並びます。</div>'
+  +REP.map(function(r,i){return '<div class="shelf" onclick="S.tab=\'ノート\';S.note=\'レパートリー\';S.rep='+i+';draw()">'
+   +'<div style="font-size:14px;font-weight:700">'+r.t+'</div><div class="usu">'+r.c+'</div>'
+   +'<div style="font-size:10.5px;color:var(--ink2);margin-top:6px">はじめて 記録した日　'+r.d+'<br>記録した日　'+r.n+'日　／　本番　'+(r.s?r.s+'回':'なし')+'</div></div>'}).join('')
+  +'<div class="note">★飾りでは ありません。★ノートの レパートリーと つながっています。</div>';
+ return b}
+function setHj(v){S.hj=v;draw()}
+function roomSvg(){return '<div class="room"><svg viewBox="0 0 330 210" width="100%" style="display:block">'
+ +'<rect width="330" height="210" fill="#FBF6EA"/><rect y="150" width="330" height="60" fill="#E9DCC4"/>'
+ +'<rect y="145" width="330" height="6" fill="#DCCBAE"/>'
+ +'<rect x="26" y="30" width="80" height="66" rx="3" fill="#CBD9DC" stroke="#C9B79E" stroke-width="2.5"/>'
+ +'<path d="M26 82 L52 60 L70 76 L106 50 L106 96 L26 96 Z" fill="#A9C0A4" opacity=".85"/>'
+ +'<rect x="136" y="36" width="48" height="36" rx="2" fill="#FFFDF8" stroke="#C9B79E" stroke-width="2"/>'
+ +'<rect x="250" y="72" width="60" height="5" fill="#C9A87C"/><rect x="250" y="112" width="60" height="5" fill="#C9A87C"/>'
+ +'<rect x="256" y="54" width="11" height="18" fill="#840C24"/><rect x="272" y="52" width="11" height="20" fill="#447862"/><rect x="288" y="56" width="11" height="16" fill="#8C6115"/>'
+ +'<rect x="52" y="128" width="80" height="6" rx="2" fill="#B98F5E"/><rect x="58" y="134" width="5" height="20" fill="#B98F5E"/><rect x="121" y="134" width="5" height="20" fill="#B98F5E"/>'
+ +'<ellipse cx="180" cy="180" rx="92" ry="20" fill="#D9C7AC"/><text x="180" y="172" font-size="46" text-anchor="middle">🐑</text>'
+ +'</svg></div>'}
+
+/* ---------- シート ---------- */
+var SHEETS={
+ motto:['もっと',['設定','毎日、聞いてほしいこと（5つまで）','アカウント','プラン','学ぶ','書き出す（CSV・JSON）','同意を とりけす','退会する','○○音楽大学 の 運営'],
+   '★法律の 行き先を 1か所に 集めています。★この画面の 題は「もっと」です（規約が この語で 書かれています）。'],
+ motteru:['もっているもの',['台帳（いつ・何で 手に入ったか）','ぜんぶ','まだ 見えていないもの　8つ'],
+   '★記録を 消しても、手に入れたものは なくなりません。★「あと◯日」は 出しません。'],
+ gyoji:['9月14日　実技試験',['出ます','出ません','まだ 決めていない'],'★出欠は 学校に 届きます。★体調は 届きません。'],
+ saka0:['9月6日（金）の 前3日',['前の日 9/5　声：出た／歌った 3時間20分／寝るまで 1時間10分／印：脂・酒','2日まえ 9/4　声：ふつう／歌った 1時間40分／寝るまで 3時間00分','3日まえ 9/3　声：出た／歌った 2時間00分'],
+   '★文章を 添えません。★確率も 割合も 出しません。'],
+ note:['稽古の メモ',['本文を 直す','日付と 先生を 直す','消す'],'★誰にも 送られません。'],
+ newnote:['新しく 書く',['稽古の メモ','レパートリーに 曲を 足す','受診用の 1枚'],''],
+ monka:['斎藤先生の 門下',['斎藤先生　9/8　実技試験の 集合は 12時30分','高木 みなみ（代表）　9/8　並び順は 前回と 同じで よいですか'],
+   '★ここに書いたことは、門下の全員と先生、学校の運営の方が 読みます。★体調のことは、書かなくて 構いません。'],
+ yasumu:['先生に 伝える',['休みます','遅れます','行けるように なりました'],
+   '★斎藤先生 おひとりに 届きます。★門下の12人には 届きません。★理由の欄は ありません。'],
+ pdf:['1枚に して 出す',['端末に 保存する','印刷する'],'★アプリの中から 送る道は ありません。'],
+ sorae:['本番で そろえる',['本番 2回ぶん では 重ねられません','3回から 重ねて 見られます'],'★「あと1回」とは 書きません。'],
+ oku:['おく（7か所）',['まど','かべ1','かべ2','たな','つくえ','いす','ゆか'],'★自由に 動かせません。★座標を 保存しません。'],
+ kabe:['かべ・ゆか',['しっくい 生成り','板張り 白','和紙 生成り','レンガ くすみ'],'★色は 24色から えらべます（服と 同じ 色）。']};
+function sheet(k){var s=SHEETS[k];if(!s)return;
+ $('#sh').innerHTML='<div style="font-size:16px;font-weight:700;margin-bottom:10px">'+s[0]+'</div>'
+  +'<div class="card" style="padding:4px 12px">'+s[1].map(function(x){return '<div class="li"><span>'+x+'</span><s>›</s></div>'}).join('')+'</div>'
+  +(s[2]?'<div class="wl">'+s[2]+'</div>':'')
+  +'<div class="btn g" style="margin-top:11px" onclick="closeSheet()">とじる</div>';
+ $('#sheet').classList.add('on');$('#mask').classList.add('on')}
+function closeSheet(){$('#sheet').classList.remove('on');$('#mask').classList.remove('on')}
+$('#mask').onclick=closeSheet;
+
+/* ---------- 描く ---------- */
+function draw(){
+ var m={'きょう':S_kyou,'記録':S_kiroku,'ふりかえる':S_furi,'ノート':S_note,'ひつじ':S_hitsuji};
+ $('#bd').innerHTML=m[S.tab]();
+ $('#tabs').innerHTML=TABS.map(function(t){return '<div class="tb '+(t===S.tab?'on':'')+'" onclick="go(\''+t+'\')"><i></i>'+t+'</div>'}).join('');
+ $('#bd').scrollTop=0;
+ $('#lg').innerHTML=LG[S.tab]||LG['きょう'];
+}
+var LG={
+'ふりかえる':'<b>直したところ ── 気になったこと</b><ul>'
+ +'<li><b>前：</b>色の濃さだけの 帯。★何が 気になったのか 分かりませんでした</li>'
+ +'<li><b>いま：</b>項目ごとに 1行。左に 名前、右に 実数（◯日）</li>'
+ +'<li><b>期間を 広げたら、粒度を 変えます。</b>14日・4週は 日ごと。<b>3か月は 週ごと</b>（1本＝1週間・高さ＝その週に あった日数）</li>'
+ +'<li>こえのちょうしも 同じ。14日・4週は 横棒、3か月は 縦棒に 切り替えます</li></ul>'
+ +'<b>押してみてください</b>：14日 → 4週 → 3か月',
+'ノート':'<b>直したところ ── ノートの4つは 別のものです</b><ul>'
+ +'<li><b>稽古</b>　レッスンの メモ。日付と 先生。★送られません</li>'
+ +'<li><b>レパートリー</b>　曲の 台帳。<b>曲を 押すと 中に 入ります</b>（記録日数・本番・その曲の 声の調子・メモ）</li>'
+ +'<li><b>連絡</b>　学校からの おしらせ ＋ 門下。★「休むとき」は 別の道</li>'
+ +'<li><b>受診用</b>　<b>載せるものを 自分で 選ぶ</b>1枚。★送る道は ありません</li></ul>'
+ +'<b>押してみてください</b>：レパートリー → 曲名 → 「この曲で そろえて 見る」',
+'ひつじ':'<b>ひつじ ── 4つ</b><ul><li><b>ながめる</b>　道具を 出さない</li>'
+ +'<li><b>おうち</b>　7か所の スロット。★自由配置なし</li>'
+ +'<li><b>したく</b>　着せかえ。羊は 40% 見えたまま</li>'
+ +'<li><b>たな</b>　歌ってきたもの。<b>押すと レパートリーの その曲へ</b></li></ul>'
+ +'★羊の絵は 仮です。★本番の素材は 別に お渡しします。',
+'きょう':'<b>きょう</b> ── その日に することが 1画面で。<ul><li>⚙ → もっと（法律の行き先）</li>'
+ +'<li>行事 → 出欠を その場で</li><li>「きょうを 記録する」→ 記録へ</li></ul>',
+'記録':'<b>記録 ── 中核5項目</b><ul><li>のどの調子／声の出来／昨夜の睡眠／起きたときのむくみ／本番以外で 声を使った時間</li>'
+ +'<li>湿度は 自動。「本番の翌日か」は 予定から</li><li>下の4つは <b>5つの外</b>。任意です</li></ul>'};
+draw();
+</script></body></html>
