@@ -1,0 +1,139 @@
+<!doctype html><meta charset="utf-8"><title>⑤ 設定・ご請求</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--enji:#840C24;--yama:#BF8722;--midori:#447862;--paper:#FBF6EA;--card:#FFF;
+ --line:#E4DAC4;--line2:#F0E9DA;--ink:#261913;--ink2:#6D5D50;--ink3:#A79684;--bg:#EFE7D6;
+ --red:#B23A48;--sh:0 1px 0 rgba(0,0,0,.03),0 8px 24px rgba(90,72,48,.08)}
+body{background:var(--bg);font-family:"Noto Sans CJK JP","Noto Sans JP",system-ui,sans-serif;color:var(--ink)}
+.sheet{padding:40px}
+h1{font-size:30px;letter-spacing:.04em;margin-bottom:6px}
+.lead{font-size:14.5px;color:var(--ink2);margin-bottom:30px;line-height:2}
+.blk{margin-bottom:44px}
+.cap{font-size:15px;margin-bottom:10px}
+.cap b{font-size:17px}
+.cap s{color:var(--ink3);text-decoration:none;font-size:13px;margin-left:10px}
+.dev{background:#fff;border:1px solid #D9CDB4;border-radius:14px;box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column}
+.pc{width:1400px;height:880px}
+.ipadL{width:1180px;height:830px}
+.ipadP{width:830px;height:1120px}
+/* 上のバー */
+.top{flex:0 0 52px;background:var(--enji);color:#fff;display:flex;align-items:center;
+ justify-content:space-between;padding:0 20px;font-size:14.5px;letter-spacing:.04em}
+.top .l{display:flex;align-items:center;gap:16px}
+.top .back{border:1px solid rgba(255,255,255,.45);border-radius:8px;padding:5px 11px;font-size:12.5px}
+.top .r{display:flex;align-items:center;gap:14px;font-size:12.5px}
+.badge{background:rgba(255,255,255,.18);border-radius:7px;padding:4px 9px;font-size:12px}
+.badge.w{background:#F0C24B;color:#4A3510;font-weight:700}
+/* 健康の線 */
+.wall{flex:0 0 30px;background:#F6EFDF;border-bottom:1px solid var(--line);
+ display:flex;align-items:center;padding:0 20px;font-size:12px;color:var(--ink2);gap:8px}
+.wall i{width:7px;height:7px;border-radius:50%;background:var(--midori);display:block}
+.main{flex:1;display:flex;overflow:hidden}
+.side{flex:0 0 190px;background:#FDF9F0;border-right:1px solid var(--line);padding:14px 0}
+.side .nv{padding:12px 20px;font-size:14.5px;color:var(--ink2);display:flex;align-items:center;gap:10px}
+.side .nv.on{background:#fff;color:var(--enji);font-weight:700;box-shadow:inset 3px 0 0 var(--enji)}
+.side .gp{font-size:10.5px;color:var(--ink3);letter-spacing:.14em;padding:16px 20px 6px}
+.body{flex:1;padding:20px 24px;overflow:hidden;background:var(--paper)}
+h2{font-size:22px;margin-bottom:3px;letter-spacing:.03em}
+.sub{font-size:12.5px;color:var(--ink2);margin-bottom:16px}
+.cards{display:flex;gap:12px;margin-bottom:18px}
+.kpi{flex:1;background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+.kpi .t{font-size:12px;color:var(--ink2);margin-bottom:4px}
+.kpi .v{font-size:30px;font-weight:700;letter-spacing:-.01em}
+.kpi .v s{font-size:14px;font-weight:400;color:var(--ink2);text-decoration:none;margin-left:3px}
+.kpi.al{border-color:#E7C2C6;background:#FDF6F6}
+.kpi.al .v{color:var(--red)}
+.h3{font-size:12px;color:var(--ink3);letter-spacing:.12em;margin:16px 0 8px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.li{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line2);font-size:14px}
+.li:last-child{border:none}
+.li s{color:var(--ink3);text-decoration:none;font-size:13px}
+.li.al{background:#FDF6F6}
+.li.al span{color:var(--red)}
+.btn{background:var(--enji);color:#fff;border-radius:9px;padding:9px 18px;font-size:13.5px;font-weight:700;display:inline-block}
+.btn.g{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:400}
+/* 週表 */
+.wk{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.wkh{display:grid;grid-template-columns:64px repeat(6,1fr);background:#F6EFDF;border-bottom:1px solid var(--line)}
+.wkh div{padding:9px 6px;font-size:13px;text-align:center;border-left:1px solid var(--line2)}
+.wkh div:first-child{border:none}
+.wkh div b{display:block;font-size:14px}
+.wkh div s{display:block;font-size:11px;color:var(--ink3);text-decoration:none}
+.wkb{position:relative}
+.wkr{display:grid;grid-template-columns:64px repeat(6,1fr);border-bottom:1px solid var(--line2);height:44px}
+.wkr>div{border-left:1px solid var(--line2);position:relative}
+.wkr>div:first-child{border:none;font-size:11.5px;color:var(--ink3);text-align:right;padding:2px 8px 0 0}
+.ls{position:absolute;left:3px;right:3px;top:2px;border-radius:7px;padding:5px 7px;font-size:12px;line-height:1.35;overflow:hidden}
+.a{background:#EDF2EE;border:1px solid #C6D8CD;color:#2F4A3C}
+.b{background:#F2EEF6;border:1px solid #D4CBE0;color:#443A54}
+.c{background:#F6F0E4;border:1px solid #DFD0AE;color:#5A4820}
+.ov{background:#FBECEE;border:1.5px solid var(--red);color:#7A2230}
+.ls b{display:block;font-size:12.5px}
+.ls s{font-size:11px;opacity:.8;text-decoration:none}
+.legend{display:flex;gap:16px;align-items:center;font-size:12px;color:var(--ink2);margin-top:12px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px}
+.tbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.tbar .g{display:flex;align-items:center;gap:10px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 13px;font-size:13px;color:var(--ink2)}
+.chip.on{background:var(--enji);color:#fff;border-color:var(--enji)}
+table.t{width:100%;border-collapse:collapse;background:#fff;font-size:13.5px}
+table.t th{background:#F6EFDF;text-align:left;padding:10px 14px;font-weight:700;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--ink2)}
+table.t td{padding:11px 14px;border-bottom:1px solid var(--line2)}
+table.t tr:last-child td{border:none}
+.tagm{display:inline-block;border-radius:6px;padding:2px 8px;font-size:11.5px;background:#EDF2EE;color:#2F4A3C}
+.tagm.y{background:#F6F0E4;color:#5A4820}
+.tagm.g{background:#F1ECE2;color:var(--ink3)}
+/* iPad 出欠 */
+.att{display:flex;gap:8px}
+.att div{flex:1;text-align:center;border:1px solid var(--line);border-radius:10px;padding:13px 0;font-size:15px;background:#fff}
+.att div.done{background:var(--midori);color:#fff;border-color:var(--midori);font-weight:700}
+.big2{font-size:19px;font-weight:700}
+.undo{background:#2F2A24;color:#fff;border-radius:9px;padding:9px 15px;font-size:13px;display:inline-flex;gap:14px;align-items:center}
+.note{font-size:12px;color:var(--ink3);line-height:1.9;margin-top:10px}
+.tabsb{flex:0 0 60px;border-top:1px solid var(--line);display:flex;background:#FFFDF7}
+.tabsb div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:12px;color:var(--ink3)}
+.tabsb div.on{color:var(--enji);font-weight:700}
+.tabsb i{width:18px;height:2px;border-radius:2px;background:transparent}
+.tabsb div.on i{background:var(--enji)}
+
+body{margin:24px;background:#EFE7D6}</style><div class="dev pc"><div class="top"><div class="l"><span class="back">‹ もどる</span>
+      <span>○○音楽大学　の運営</span></div>
+      <div class="r"><span class="badge w">未送信 2件</span>
+      <span class="badge">owner</span><span>坂本 響</span></div></div>
+    <div class="wall"><i></i>この画面から、生徒の健康の記録には たどりつけません（画面そのものが ありません）</div><div class="main"><div class="side"><div class="nv ">ホーム</div><div class="nv ">日程</div><div class="nv ">名簿</div><div class="nv ">行事</div><div class="nv ">連絡</div><div class="gp">おかね</div>
+      <div class="nv on">設定・ご請求</div></div><div class="body">
+ <h2>設定・ご請求</h2><div class="sub">2026年9月ぶん</div>
+ <div class="cards">
+  <div class="kpi"><div class="t">数える人数</div><div class="v">52<s>人</s></div></div>
+  <div class="kpi"><div class="t">1人あたり</div><div class="v">400<s>円</s></div></div>
+  <div class="kpi"><div class="t">今月の ご請求</div><div class="v">20,800<s>円</s></div></div>
+  <div class="kpi"><div class="t">お支払い</div><div class="v" style="font-size:19px;padding-top:7px">当月末しめ<br><s style="margin:0">翌月末 銀行振込</s></div></div>
+ </div>
+ <div style="display:flex;gap:16px">
+  <div style="flex:1">
+   <div class="h3">料金の 決まり</div>
+   <div class="panel">
+    <div class="li"><span>名簿1人あたり</span><s>月 400円</s></div>
+    <div class="li"><span>月額の 下限</span><s>12,800円</s></div>
+    <div class="li"><span>名簿100人以上</span><s>1人 月 350円</s></div>
+    <div class="li"><span>名簿300人以上</span><s>1人 月 250円</s></div>
+    <div class="li"><span>先生・事務の方</span><s>★何人でも 数えません</s></div>
+    <div class="li"><span>休会中の方</span><s>★数えません</s></div>
+    <div class="li"><span>年の 一括前払い</span><s>2か月分を 引きます</s></div>
+   </div>
+  </div>
+  <div style="flex:1">
+   <div class="h3">人の 役わり</div>
+   <div class="panel">
+    <div class="li"><span>坂本 響</span><s>owner ／ おかねも見る</s></div>
+    <div class="li"><span>斎藤・三浦・小林・田中・渡辺・佐藤</span><s>先生 ／ 自分の担当だけ</s></div>
+    <div class="li"><span>事務 2人</span><s>★日程と出欠だけ</s></div>
+   </div>
+   <div class="h3">この教室が 見られないもの</div>
+   <div class="panel" style="background:#F6EFDF">
+    <div class="li"><span>生徒の 声の記録</span><s>★画面が ありません</s></div>
+    <div class="li"><span>生徒の からだの記録</span><s>★画面が ありません</s></div>
+    <div class="li"><span>生徒の ノート</span><s>★画面が ありません</s></div>
+   </div>
+  </div>
+ </div>
+</div></div></div>

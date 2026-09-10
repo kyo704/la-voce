@@ -3022,30 +3022,28 @@ function TwoWaySwitch({ on, onChange, simple, onLabel = "あり", offLabel = "�
     </button>
   );
 }
-function ProgressDots({ current, required }) {
-  const total = 10;
-  const filled = required > 0 ? Math.min(total, Math.round((current / required) * total)) : 0;
-  const remaining = Math.max(0, required - current);
+/**
+ * ★たまった 日数を、★1行だけ 書きます。
+ *
+ *   ★★2026-09-11、★点の 帯（進捗バー）と「あと◯日」を 消しました。
+ *     ★出どころ 坂本さんの お決め（★2026-09-11）
+ *       「置ける点数、まだの枠、これらは 進捗バーの 一種として 禁止事項に 当たります」
+ *              裁定-ふりかえる・とだな・もっと（9月10日 その7）§2-4
+ *       「✕ 門①を『あと○日』と 書く
+ *         ◯『10日の うち　◎7日　△4日 たまりました』（★進んだ側から 書く）」
+ *
+ *   ★★消したのは 2つです。
+ *     ① 10個の 点の 帯 ── ★どこまで 進んだかを 絵に していました
+ *     ②「あと◯日で、判定を 始められます」── ★残りの 数え上げ
+ *   ★★残したのは「◯日分 たまりました」だけです。★進んだ側です。
+ *
+ *   ★required は もう 使いません。★呼ぶ側の 形は 変えていません。
+ */
+function ProgressDots({ current }) {
   return (
-    <div>
-      <div className="flex gap-[5px] my-1" aria-hidden="true">
-        {Array.from({ length: total }).map((_, i) => (
-          <span key={i} style={{
-            width: 9, height: 9, borderRadius: "50%", display: "block",
-            background: i < filled ? SERIES.s2 : SERIES.grid
-          }} />
-        ))}
-      </div>
-      {/* ★「傾向を出せます」と書いてはいけない（分析の検出力と族の設計.md §2-2）。
-          あと4日でたまるのは「判定を始められる件数」であって、
-          はっきりした関係が見えるまでには、ふつう3〜4か月かかります。
-          4日で何か分かるかのように書くのは、事実と違います。 */}
-      <p className="text-xs" style={{ color: SERIES.axis }}>
-        {remaining > 0
-          ? `${current}日分たまりました。あと${remaining}日で、判定を始められます。`
-          : `${current}日分たまりました。`}
-      </p>
-    </div>
+    <p className="text-xs" style={{ color: SERIES.axis }}>
+      {`${current}日分たまりました。`}
+    </p>
   );
 }
 
@@ -3094,7 +3092,7 @@ function LockedCard({ title, teaser, current, required, action }) {
             記録と分析の順番設計 §5.4 の「ぼかし＋進捗＋具体的な条件」の3点セットは
             そのまま満たしている（進捗の見せ方が棒から点に変わっただけ）。 */}
         <div className="w-full max-w-[220px] mt-1 flex flex-col items-center">
-          <ProgressDots current={current} required={required} />
+          <ProgressDots current={current} />
         </div>
       </div>
     </Tag>

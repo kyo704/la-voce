@@ -130,18 +130,28 @@ assertTrue(/clampLevel\(c\.entry\.throatCondition\)/.test(cal), "点の大きさ
 console.log("\n=== §7-4: メーターに危険ゾーンを塗らない ===");
 assertTrue(!/color: LEVEL_COLORS\[i\]/.test(ui), "★メーターの弧を段階ごとに塗り分けていない");
 
-console.log("\n=== §3-F: 「データがありません」ではなく進捗ドット ===");
-assertTrue(/function ProgressDots/.test(ui), "進捗ドットの部品がある");
-const dots = ui.slice(ui.indexOf("function ProgressDots"), ui.indexOf("function ProgressDots") + 1200);
-assertTrue(/width: 9, height: 9/.test(dots), "9px の丸（§3-F）");
-assertTrue(/length: total/.test(dots) && /const total = 10/.test(dots), "10個");
-// ★描画仕様 §3-F の「傾向を出せます」は、分析の検出力と族の設計.md §2-2 が
-//   改めています。あと4日でたまるのは「判定を始められる件数」であって、
-//   はっきりした関係が見えるまでには、ふつう3〜4か月かかります。
+console.log("\n=== §3-F: 「データがありません」ではなく、たまった日数 ===");
+// ★★2026-09-11、★点の 帯（10個の 丸）と「あと◯日で、判定を 始められます」を
+//   ★消しました。★出どころ 坂本さんの お決め（★2026-09-11）
+//     「置ける点数、まだの枠、これらは 進捗バーの 一種として 禁止事項に 当たります」
+//   ＋ 裁定-ふりかえる・とだな・もっと（9月10日 その7）§2-4
+//     「✕ 門①を『あと○日』と 書く ／ ◯ 進んだ側から 書く」
+//
+// ★★描画仕様 §3-F は「データがありません と 書かない」ことを 求めています。
+//   ★そこは 変わりません。★代わりに 出すのが、★点の 帯 では なく
+//   ★★「◯日分 たまりました」の 1行に なりました。
+assertTrue(/function ProgressDots/.test(ui), "たまった日数を出す部品がある");
+const dots = ui.slice(ui.indexOf("function ProgressDots"), ui.indexOf("function ProgressDots") + 900);
 assertTrue(/日分たまりました/.test(dots), "◯日分たまりました");
-assertTrue(/判定を始められます/.test(dots), "★「判定を始められます」（新しい指定）");
+assertTrue(!/データがありません/.test(dots), "★「データがありません」と書いていない（§3-F）");
+// ★★消えていること。★戻ってきたら、ここで 止めます。
+assertTrue(!/width: 9, height: 9/.test(dots), "★9px の丸を もう 描いていない");
+assertTrue(!/const total = 10/.test(dots), "★10個の 帯を もう 描いていない");
+assertTrue(!/判定を始められます/.test(dots), "★「判定を始められます」を もう 書いていない");
 assertTrue(!/傾向を出せます/.test(dots), "★「傾向を出せます」と書いていない（事実と違う）");
-assertTrue(/SERIES\.s2/.test(dots) && /SERIES\.grid/.test(dots), "たまった分と残りを色で分けている（2色のみ）");
+assertTrue(!/SERIES\.s2/.test(dots) && !/SERIES\.grid/.test(dots),
+  "★たまった分と残りを 色で 分けていない（★進捗バーです）");
+assertTrue(!/あと/.test(dots), "★「あと」と 書いていない");
 
 console.log("\n=== §5: 3つの状態 ===");
 const tr = readRaw("lib", "translations.js");

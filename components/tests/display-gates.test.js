@@ -71,11 +71,34 @@ async function main() {
   assertEqual(evaluateGate("lag.narrative", { days: 20, n: 12, rho: 0.35, fdrPass: true }).passed, true, "ρ が 0.3 以上なら通る");
   assertEqual(evaluateGate("lag.narrative", { days: 20, n: 12, rho: 0.12, fdrPass: true }).reason, "effect", "ρ が 0.3 未満なら落ちる");
 
-  console.log("\n=== テスト5: 日数のゲートは「あと◯日」を返す（§6-3） ===");
+  console.log("\n=== テスト5: 日数のゲートは、たまった側を返す（★2026-09-11 に 直しました） ===");
+  // ★★もとは remaining（★あと20日）を 返していました。
+  //   ★出どころ 裁定-ふりかえる・とだな・もっと（9月10日 その7）§2-4
+  //     「✕ 門①を『あと○日』と 書く
+  //       ◯『10日の うち ◎7日 △4日 たまりました』（★進んだ側から 書く）」
+  //   ★★返り値に 残しておくと、★いつか 誰かが 帯を 描きます。
+  //     ★実際、★描いていました（★ProgressDots）。
   const acwr8 = evaluateGate("acwr", { days: 8 });
   assertEqual(acwr8.passed, false, "記録8日では ACWR は通らない");
   assertEqual(acwr8.reason, "days", "落ちた理由は日数である");
-  assertEqual(acwr8.remaining, 20, "あと20日と算出される（28 − 8）");
+  assertTrue(!("remaining" in acwr8), "★remaining を もう 返していない");
+  // ★★言葉は スタブ（鍵を そのまま 返す）なので、★中身は translations.js で 見ます。
+  const jaOf = (key) => {
+    const m = new RegExp(`\\n\\s{2}${key}:\\s*\\{\\s*ja:\\s*"([^"]*)"`).exec(translationsSource);
+    return m ? m[1] : null;
+  };
+  ["gateNeedDays", "gateNeedRecords"].forEach((k) => {
+    const ja = jaOf(k);
+    assertTrue(ja != null, `★${k} が ある`);
+    assertTrue(/\{total\}/.test(ja) && /\{done\}/.test(ja),
+      `★${k} が、目標と いまの数を 並べている`);
+    assertTrue(!/あと/.test(ja), `★${k} に「あと」と 書いていない`);
+  });
+  // ★★入れ替えの 穴が 残っていない こと（★{total} のまま 画面に 出さない）。
+  const gateSrc = fs.readFileSync(SOURCE_PATH, "utf-8");
+  assertTrue(/\.replace\("\{total\}", gate\.minNPerGroup\)/.test(gateSrc),
+    "★件数の ほうも {total} を 入れ替えている");
+  assertTrue(/\.replace\("\{done\}", n\)/.test(gateSrc), "★件数の ほうも {done} を 入れ替えている");
   assertEqual(evaluateGate("acwr", { days: 28 }).passed, true, "28日そろえば通る");
 
   console.log("\n=== テスト6: §6-4 の対象箇所が、すべてゲートとして定義されている ===");

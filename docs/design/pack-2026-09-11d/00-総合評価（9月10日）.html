@@ -1,0 +1,657 @@
+<title>Woolsong 総合評価</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --bg:#EFE7D6; --paper:#FBF6EA; --card:#FFFFFF;
+  --line:#E4DAC4; --line2:#F0E9DA; --sunk:#F5EEDF;
+  --ink:#261913; --ink2:#6D5D50; --ink3:#7C6C5E;
+  --enji:#840C24; --enji-soft:rgba(132,12,36,.10); --enji-mid:rgba(132,12,36,.26);
+  --yama:#8C6115; --yama-soft:rgba(140,97,21,.11);
+  --midori:#447862; --midori-soft:rgba(68,120,98,.12);
+  --sh:0 1px 0 rgba(0,0,0,.03), 0 8px 24px rgba(90,72,48,.08);
+  --rule:1px solid var(--line);
+  --mincho:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",YuMincho,"Noto Serif JP",serif;
+  --goth:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic Medium","Yu Gothic","Noto Sans JP","Meiryo",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#161010; --paper:#1F1815; --card:#292019; --line:#41332A; --line2:#332821; --sunk:#241C17;
+    --ink:#F3EADB; --ink2:#C2AF9C; --ink3:#9C8A79;
+    --enji:#E4788E; --enji-soft:rgba(228,120,142,.13); --enji-mid:rgba(228,120,142,.30);
+    --yama:#D8A84A; --yama-soft:rgba(216,168,74,.14);
+    --midori:#83BFA3; --midori-soft:rgba(131,191,163,.15);
+    --sh:0 1px 0 rgba(0,0,0,.25), 0 10px 26px rgba(0,0,0,.34);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#161010; --paper:#1F1815; --card:#292019; --line:#41332A; --line2:#332821; --sunk:#241C17;
+  --ink:#F3EADB; --ink2:#C2AF9C; --ink3:#9C8A79;
+  --enji:#E4788E; --enji-soft:rgba(228,120,142,.13); --enji-mid:rgba(228,120,142,.30);
+  --yama:#D8A84A; --yama-soft:rgba(216,168,74,.14);
+  --midori:#83BFA3; --midori-soft:rgba(131,191,163,.15);
+  --sh:0 1px 0 rgba(0,0,0,.25), 0 10px 26px rgba(0,0,0,.34);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--goth);
+  font-size:15px;line-height:1.95;-webkit-font-smoothing:antialiased;
+  font-feature-settings:"palt" 1;}
+.wrap{max-width:940px;margin:0 auto;padding-inline:20px;padding-block:0 72px}
+
+/* ── masthead ───────────────────────────── */
+.top{background:var(--paper);border-bottom:2px solid var(--enji);margin-bottom:0}
+.top .wrap{padding-block:44px 34px}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink3);margin:0 0 14px}
+h1{font-family:var(--mincho);font-weight:900;font-size:clamp(30px,6.4vw,50px);line-height:1.24;
+  margin:0 0 6px;text-wrap:balance;letter-spacing:.01em}
+.sub1{font-family:var(--mincho);font-size:clamp(15px,2.6vw,19px);color:var(--ink2);margin:0 0 22px;line-height:1.7}
+.byline{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:12.5px;color:var(--ink3);
+  border-top:var(--rule);padding-top:14px}
+.byline b{color:var(--ink2);font-weight:500}
+
+/* ── grade tiles ────────────────────────── */
+.grades{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:26px 0 0}
+.grade{background:var(--card);border:var(--rule);border-top:3px solid var(--enji);
+  padding:16px 18px 18px;box-shadow:var(--sh)}
+.grade.g2{border-top-color:var(--yama)}
+.grade.g3{border-top-color:var(--ink3)}
+.grade .lab{font-size:12.5px;color:var(--ink2);letter-spacing:.04em}
+.grade .val{font-family:var(--mincho);font-weight:700;font-size:44px;line-height:1.05;margin:4px 0 6px;
+  color:var(--enji);font-variant-numeric:tabular-nums}
+.grade.g2 .val{color:var(--yama)} .grade.g3 .val{color:var(--ink3)}
+.grade .why{font-size:12.5px;color:var(--ink2);line-height:1.75}
+
+/* ── sections ───────────────────────────── */
+section{margin-top:56px}
+h2{font-family:var(--mincho);font-weight:700;font-size:clamp(20px,3.6vw,27px);line-height:1.45;
+  margin:0 0 4px;text-wrap:balance;display:flex;gap:14px;align-items:baseline}
+h2 .no{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--enji);flex:0 0 auto;
+  letter-spacing:.06em}
+.h2rule{height:2px;background:var(--enji);opacity:.85;margin:12px 0 22px}
+h3{font-family:var(--mincho);font-weight:700;font-size:17.5px;margin:34px 0 10px;line-height:1.55}
+h4{font-size:14px;font-weight:700;margin:22px 0 8px;color:var(--ink2);letter-spacing:.03em}
+p{margin:0 0 15px;max-width:66ch}
+.lead{font-size:16.5px;line-height:2.0}
+strong{font-weight:700}
+em{font-style:normal;background:var(--enji-soft);padding:1px 4px;border-radius:2px;font-weight:600}
+
+/* ── finding rows ───────────────────────── */
+.finds{display:flex;flex-direction:column;gap:0;border-top:var(--rule);margin:18px 0 8px}
+.find{display:grid;grid-template-columns:34px 1fr;gap:0 16px;padding:15px 2px;border-bottom:var(--rule);
+  align-items:start}
+.mk{font-family:var(--mincho);font-size:21px;line-height:1.3;text-align:center;font-weight:700}
+.mk.good{color:var(--midori)} .mk.ok{color:var(--ink3)} .mk.warn{color:var(--yama)} .mk.bad{color:var(--enji)}
+.find .ttl{font-weight:700;font-size:15px;margin:0 0 3px;line-height:1.6}
+.find .txt{font-size:14px;color:var(--ink2);line-height:1.85;margin:0;max-width:62ch}
+.find .txt + .txt{margin-top:7px}
+
+/* ── callout ────────────────────────────── */
+.call{background:var(--sunk);border-left:3px solid var(--enji);padding:16px 20px;margin:20px 0;
+  font-size:14.5px;line-height:1.9}
+.call.y{border-left-color:var(--yama)}
+.call.g{border-left-color:var(--midori)}
+.call p{margin:0 0 8px;max-width:64ch} .call p:last-child{margin:0}
+.call .k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink3);display:block;margin-bottom:7px}
+
+/* ── tables ─────────────────────────────── */
+.tw{overflow-x:auto;margin:18px 0 8px;border:var(--rule);background:var(--card);box-shadow:var(--sh)}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:13.5px}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line2);vertical-align:top;line-height:1.7}
+thead th{background:var(--sunk);font-size:12px;font-weight:700;color:var(--ink2);letter-spacing:.04em;
+  border-bottom:var(--rule);white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+td.k{font-weight:700;white-space:nowrap}
+tr.hl td{background:var(--enji-soft)}
+.cap{font-size:12px;color:var(--ink3);margin:8px 0 0;line-height:1.75;max-width:64ch}
+
+/* ── score meter ────────────────────────── */
+.scores{display:flex;flex-direction:column;border-top:var(--rule);margin:18px 0 0}
+.srow{display:grid;grid-template-columns:1fr 118px 46px;gap:12px;align-items:center;
+  padding:11px 2px;border-bottom:var(--rule)}
+.srow .nm{font-size:14px;line-height:1.55}
+.meter{display:flex;gap:2px}
+.cell{flex:1;height:15px;background:var(--sunk);border:1px solid var(--line)}
+.cell.on{background:var(--enji-mid);border-color:transparent}
+.cell.half{background:linear-gradient(90deg,var(--enji-mid) 50%,var(--sunk) 50%)}
+.srow .num{font-family:var(--mono);font-size:14px;font-weight:600;text-align:right;
+  font-variant-numeric:tabular-nums;color:var(--ink2)}
+
+/* ── chart ──────────────────────────────── */
+figure{margin:22px 0 8px;background:var(--card);border:var(--rule);box-shadow:var(--sh);padding:18px 16px 14px}
+.chartbox{overflow-x:auto}
+svg{display:block;width:100%;min-width:560px;height:auto}
+.ax{stroke:var(--line);stroke-width:1;fill:none}
+.gridl{stroke:var(--line2);stroke-width:1;fill:none}
+.lbl{fill:var(--ink3);font-family:var(--mono);font-size:10.5px}
+.lblb{fill:var(--ink2);font-family:var(--goth);font-size:11.5px;font-weight:700}
+.lineR{fill:none;stroke:var(--enji);stroke-width:2.4;stroke-linejoin:round}
+.lineM{fill:none;stroke:var(--ink3);stroke-width:2.2;stroke-dasharray:6 4;stroke-linejoin:round}
+.gap{fill:var(--enji-mid)}
+.dot{fill:var(--enji)}
+figcaption{font-size:12px;color:var(--ink3);line-height:1.8;margin-top:12px;max-width:66ch}
+.legend{display:flex;flex-wrap:wrap;gap:8px 22px;margin:0 0 6px;font-size:12.5px;color:var(--ink2)}
+.legend span{display:flex;align-items:center;gap:8px}
+.sw{width:22px;height:3px;background:var(--enji);flex:0 0 auto}
+.sw.d{background:transparent;border-top:2.5px dashed var(--ink3);height:0}
+.sw.f{height:12px;background:var(--enji-mid)}
+
+/* ── priority list ──────────────────────── */
+.prio{counter-reset:p;list-style:none;padding:0;margin:18px 0 0;border-top:var(--rule)}
+.prio li{counter-increment:p;display:grid;grid-template-columns:38px 1fr;gap:0 14px;
+  padding:16px 2px;border-bottom:var(--rule)}
+.prio li::before{content:counter(p);font-family:var(--mono);font-size:13px;font-weight:600;
+  color:var(--enji);padding-top:3px}
+.prio .pt{font-weight:700;font-size:15px;margin:0 0 4px;line-height:1.6}
+.prio .pd{font-size:13.5px;color:var(--ink2);margin:0;line-height:1.85;max-width:62ch}
+.when{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;
+  border:1px solid var(--line);color:var(--ink2);padding:1px 7px;margin-left:8px;
+  vertical-align:2px;background:var(--sunk);white-space:nowrap}
+.when.now{border-color:var(--enji);color:var(--enji);background:var(--enji-soft)}
+
+/* ── quiet footer ───────────────────────── */
+footer{margin-top:64px;border-top:2px solid var(--enji);padding-top:18px;font-size:12.5px;
+  color:var(--ink3);line-height:1.9}
+footer b{color:var(--ink2);font-weight:500}
+ul.plain{margin:0 0 15px;padding-left:1.25em;max-width:64ch}
+ul.plain li{margin-bottom:6px;line-height:1.85;font-size:14px}
+@media (max-width:520px){
+  .srow{grid-template-columns:1fr 84px 40px}
+  .find{grid-template-columns:26px 1fr;gap:0 11px}
+  body{font-size:14.5px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Assessment ／ 2026.09.10</p>
+    <h1>Woolsong 総合評価</h1>
+    <p class="sub1">見本4本・裁定22本・営業資料v5・収益設計レポートから素材を抜き、<br>製品／商売／使う人の評価を出しました。</p>
+    <div class="byline">
+      <span><b>差出</b> Opus（設計）</span>
+      <span><b>宛先</b> 坂本 響</span>
+      <span><b>版</b> 2026年9月10日</span>
+      <span><b>販売開始まで</b> 39日</span>
+    </div>
+
+    <div class="grades">
+      <div class="grade">
+        <div class="lab">製品として</div>
+        <div class="val">A−</div>
+        <p class="why">設計思想の一貫性は、この規模の個人開発では稀な水準。落とすのは実装の堅さと点検の薄さ。</p>
+      </div>
+      <div class="grade g2">
+        <div class="lab">商売として</div>
+        <div class="val">C+</div>
+        <p class="why">値段の考え方は正しい。ただし市場が小さく、見本の請求計算が裁定と食い違っている。</p>
+      </div>
+      <div class="grade g3">
+        <div class="lab">世界で使う準備</div>
+        <div class="val">D</div>
+        <p class="why">日本語・日本の学校の形・円・日本の法令が、分けられずに埋まっている。</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ══════════ 0 ══════════ -->
+<section>
+  <h2><span class="no">00</span><span>結論</span></h2>
+  <div class="h2rule"></div>
+
+  <p class="lead"><strong>これは「よく出来た製品」であり、「まだ商売になっていない事業」です。</strong>この2つは別々に評価しないと、判断を間違えます。</p>
+
+  <p>製品の側は強い。25項目の禁止事項、8項目の「消してはならないもの」、10種の役職 × 14種の権限、そのすべてが同じ1つの考え方から出ていて、矛盾がありません。ふつう、この規模の設計は途中で必ずほころびます。ほころんでいないのは、判断を毎回文書に落としてきたからです。</p>
+
+  <p>商売の側は、まだ立っていません。理由は3つあります。<em>①市場が小さい</em>（日本の音大は42機関）。<em>②いちばん数の多い帯（20〜36人の教室）を、下限12,800円が弾いている</em>。<em>③見本の請求計算が裁定と違っていて、大きい学科ほど取りこぼす</em>。③は<strong>39日以内に直せます</strong>。①②は、直すのに半年かかります。</p>
+
+  <div class="call">
+    <span class="k">いちばん重い1行</span>
+    <p><strong>10月19日は、販売開始の日であり、制作者が欧州へ発つ日でもあります。</strong>同じ日に、いちばん壊れやすい状態のものを世に出して、直せる人がその場を離れます。機能を1つ足すより、この日程そのものを見直すほうが、事業には効きます。</p>
+  </div>
+</section>
+
+<!-- ══════════ 1 ══════════ -->
+<section>
+  <h2><span class="no">01</span><span>何を見て、何を数えたか</span></h2>
+  <div class="h2rule"></div>
+
+  <p>評価の素材は、憶測ではなく手元のファイルから数えました。</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>素材</th><th class="n">量</th><th>そこから分かること</th></tr></thead>
+      <tbody>
+        <tr><td class="k">動く見本（スマホ）</td><td class="n">516 KB</td><td>下位画面 76・シート 22・関数 236。個人5タブ＋運営6タブ</td></tr>
+        <tr><td class="k">動く見本（PC・運営）</td><td class="n">265 KB</td><td>画面関数 41。名簿・日程・行事・連絡・設定・請求・帳票</td></tr>
+        <tr><td class="k">動く見本（PC・個人）</td><td class="n">222 KB</td><td>5タブ。90日の線グラフ・記録5項目1画面・羊のおうち8か所</td></tr>
+        <tr><td class="k">画面の機能（functions.md）</td><td class="n">52 画面</td><td>A〜J の10群。各画面に「読む／書く／押す／出さない」</td></tr>
+        <tr><td class="k">裁定・仕様の文書</td><td class="n">22 本</td><td>9月9日〜10日だけで13本。判断が毎回残っている</td></tr>
+        <tr><td class="k">仕様シート（見本に映らないもの）</td><td class="n">60 行</td><td>禁止25・置き場所9・消せないもの8・サーバの見張り8・UI規約10</td></tr>
+        <tr><td class="k">役職と権限</td><td class="n">10 × 14</td><td>学長〜職員。全校権限9・自分の範囲5</td></tr>
+        <tr><td class="k">営業資料 v5</td><td class="n">7 ページ</td><td>個人・学科の料金、導入の流れ、渡す書類</td></tr>
+        <tr><td class="k">収益設計レポート＋査読</td><td class="n">2 本</td><td>RevenueCat 2026・自己決定理論・実装意図 d≈0.65 ほか</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">見本3本は、いずれも自動点検（全画面の走査・onclick 属性の妥当性・暗い画面の輝度走査）を通しています。直近の結果はエラー0件。</p>
+
+  <h3>いま決まっている値段</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>誰が</th><th>何を</th><th class="n">いくら</th><th>形</th></tr></thead>
+      <tbody>
+        <tr><td class="k">個人</td><td>記録・グラフ・さかのぼる・受診用・羊（年56点）</td><td class="n">0円</td><td>ずっと無料</td></tr>
+        <tr><td class="k">個人</td><td>しらべる</td><td class="n">580円／月</td><td>月払い</td></tr>
+        <tr><td class="k">個人</td><td>一年のしらべ</td><td class="n">4,800円</td><td>買い切り・自動更新なし</td></tr>
+        <tr><td class="k">個人</td><td>よそおい ぜんぶ</td><td class="n">1,280円／月</td><td>月払い</td></tr>
+        <tr><td class="k">個人</td><td>一年のよそおい</td><td class="n">12,800円</td><td>買い切り＋未経過月×400円返金</td></tr>
+        <tr><td class="k">学科</td><td>名簿1人あたり</td><td class="n">400円／月</td><td>下限 12,800円／月</td></tr>
+        <tr><td class="k">学科</td><td>100人以上</td><td class="n">350円／月</td><td>安いほうを自動で当てる</td></tr>
+        <tr><td class="k">学科</td><td>300人以上</td><td class="n">250円／月</td><td>年一括は2か月引き</td></tr>
+        <tr><td class="k">学科</td><td>導入支援（50人以上・1回）</td><td class="n">100,000円</td><td>初年度のみ</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════ 2 ══════════ -->
+<section>
+  <h2><span class="no">02</span><span>見つけた食い違い ── 最優先</span></h2>
+  <div class="h2rule"></div>
+
+  <p>「これを最終稿で実行させます」という前提で見本を読み直したところ、<strong>請求の計算が、9月9日の裁定と3か所で食い違って</strong>いました。見本のまま実装すると、そのまま値付けの誤りになります。</p>
+
+  <div class="finds">
+    <div class="find">
+      <div class="mk bad">✕</div>
+      <div>
+        <p class="ttl">300人を超える学科から、取りこぼす</p>
+        <p class="txt">見本の3つ目の料金は <code>'300人 × 250円' = 75,000</code> と<strong>固定値</strong>で書かれています。裁定と営業資料v5は「1人 250円」なので、人数に比例して上がるはずです。</p>
+        <p class="txt">500人の学科：営業資料 <strong>125,000円／月</strong>　→　見本 <strong>75,000円／月</strong>。<strong>年間60万円の取りこぼし</strong>です。800人なら年150万円。</p>
+      </div>
+    </div>
+    <div class="find">
+      <div class="mk bad">✕</div>
+      <div>
+        <p class="ttl">100人未満の学科に、350円を当ててしまう</p>
+        <p class="txt">350円は「名簿100人以上」の値です。見本は人数の条件を落としていて、50人の学科にも 350円を当てます（17,500円／月）。裁定では 400円なので 20,000円／月。<strong>1学科あたり月2,500円</strong>の差です。</p>
+      </div>
+    </div>
+    <div class="find">
+      <div class="mk warn">△</div>
+      <div>
+        <p class="ttl">400円の行が、絶対に選ばれない「おとり」になっている</p>
+        <p class="txt">見本は3つの料金を並べて、いちばん安いものに「← いちばん 安いもの」と印を付けます。ところが 400円は 350円より常に高いので、<strong>この行は永久に負けます</strong>。</p>
+        <p class="txt">結果として、選ばせない選択肢をわざと並べる形＝<strong>おとり効果</strong>になっています。9月7日の査読で「おとり配置は採らない」と自分で決めた、まさにその形です。②を直せば自然に消えます。</p>
+      </div>
+    </div>
+    <div class="find">
+      <div class="mk warn">△</div>
+      <div>
+        <p class="ttl">「1年まとめて」の説明文の掛け算が合っていない</p>
+        <p class="txt">画面には「216人 × 75,000円 × 10か月ぶん ＝ 750,000円」と出ます。75,000円は<strong>1人あたりではなく総額</strong>なので、この式は成り立ちません。「75,000円 × 10か月ぶん」が正です。学長に見せる画面なので、ここが合わないと信用を落とします。</p>
+      </div>
+    </div>
+  </div>
+
+  <figure>
+    <div class="legend">
+      <span><i class="sw"></i>裁定・営業資料v5（正）</span>
+      <span><i class="sw d"></i>いまの見本</span>
+      <span><i class="sw f"></i>取りこぼし</span>
+    </div>
+    <div class="chartbox">
+      <svg viewBox="0 0 760 372" role="img" aria-label="名簿の人数と月額の関係。裁定どおりの料金と、見本の料金の差">
+        <!-- grid -->
+        <line class="gridl" x1="78" y1="310" x2="740" y2="310"></line>
+        <line class="gridl" x1="78" y1="265" x2="740" y2="265"></line>
+        <line class="gridl" x1="78" y1="220" x2="740" y2="220"></line>
+        <line class="gridl" x1="78" y1="175" x2="740" y2="175"></line>
+        <line class="gridl" x1="78" y1="130" x2="740" y2="130"></line>
+        <line class="gridl" x1="78" y1="85" x2="740" y2="85"></line>
+        <line class="gridl" x1="78" y1="40" x2="740" y2="40"></line>
+        <!-- y labels -->
+        <text class="lbl" x="70" y="314" text-anchor="end">0</text>
+        <text class="lbl" x="70" y="269" text-anchor="end">25,000</text>
+        <text class="lbl" x="70" y="224" text-anchor="end">50,000</text>
+        <text class="lbl" x="70" y="179" text-anchor="end">75,000</text>
+        <text class="lbl" x="70" y="134" text-anchor="end">100,000</text>
+        <text class="lbl" x="70" y="89" text-anchor="end">125,000</text>
+        <text class="lbl" x="70" y="44" text-anchor="end">150,000</text>
+        <text class="lblb" x="78" y="24">月額（円）</text>
+        <!-- axes -->
+        <line class="ax" x1="78" y1="40" x2="78" y2="310"></line>
+        <!-- gap fill: 300→600 -->
+        <path class="gap" d="M399,175 L720,40 L720,175 Z"></path>
+        <!-- small gap 33→100 -->
+        <path class="gap" d="M113,286 L185,247 L185,247 L172,254.6 L117.6,286.7 Z"></path>
+        <!-- mock line -->
+        <polyline class="lineM" points="84.4,287 116.5,287 117.6,286.7 307,175.2 308,175 720,175"></polyline>
+        <!-- ruling line -->
+        <polyline class="lineR" points="84.4,287 112.2,287 113.3,286.2 171.1,247.4 185,247 307,175.2 399,175 720,40"></polyline>
+        <!-- markers -->
+        <circle class="dot" cx="613" cy="85" r="4"></circle>
+        <text class="lblb" x="601" y="72" text-anchor="end">500人＝125,000円</text>
+        <circle class="dot" cx="613" cy="175" r="3" opacity=".45"></circle>
+        <text class="lbl" x="622" y="192">見本は 75,000円</text>
+        <!-- x labels -->
+        <text class="lbl" x="78" y="330" text-anchor="middle">0</text>
+        <text class="lbl" x="185" y="330" text-anchor="middle">100</text>
+        <text class="lbl" x="292" y="330" text-anchor="middle">200</text>
+        <text class="lbl" x="399" y="330" text-anchor="middle">300</text>
+        <text class="lbl" x="506" y="330" text-anchor="middle">400</text>
+        <text class="lbl" x="613" y="330" text-anchor="middle">500</text>
+        <text class="lbl" x="720" y="330" text-anchor="middle">600</text>
+        <text class="lblb" x="399" y="352" text-anchor="middle">名簿の人数</text>
+      </svg>
+    </div>
+    <figcaption>下限12,800円までは両者が重なります。33〜99人で小さく開き、300人を超えると大きく開きます。見本は 75,000円で頭打ちになるため、大きい学科ほど安くなってしまいます。</figcaption>
+  </figure>
+
+  <div class="call y">
+    <span class="k">補足</span>
+    <p>ただし、この4件は<strong>いずれも「見本の中の話」</strong>です。裁定と営業資料は正しく書かれています。直すのは <code>billPlans()</code> の3行と説明文1行だけで、半日かかりません。</p>
+  </div>
+</section>
+
+<!-- ══════════ 3 ══════════ -->
+<section>
+  <h2><span class="no">03</span><span>性能の評価</span></h2>
+  <div class="h2rule"></div>
+
+  <h3>強いところ</h3>
+  <div class="finds">
+    <div class="find">
+      <div class="mk good">◎</div>
+      <div>
+        <p class="ttl">禁止事項が、画面ではなく仕組みで守られている</p>
+        <p class="txt">「先生は生徒の記録を見られない」を、権限で隠すのではなく <code>shareScope</code> の<strong>列ごと消す</strong>と決めています。隠すだけなら運用の話ですが、列がなければ設計の話になります。この違いを分かって設計している例は多くありません。</p>
+      </div>
+    </div>
+    <div class="find">
+      <div class="mk good">◎</div>
+      <div>
+        <p class="ttl">権限の持ち上げが起きない</p>
+        <p class="txt">「学校ぜんぶにかかることは、自分が持っていないと渡せません」という1本の規則で、10役職すべての昇格経路が閉じています。事務長に「ご請求を見る」を与えて「払う」を与えていないのも、学長を作れてしまうのを防ぐためです。</p>
+      </div>
+    </div>
+    <div class="find">
+      <div class="mk good">◎</div>
+      <div>
+        <p class="ttl">「消せないもの」が8項目、先に決めてある</p>
+        <p class="txt">開いた記録・読み込みの記録・役職を変えた記録・領収書の固定化。事故が起きてから足すのではなく、先に決めています。<strong>学校に売るときに効く</strong>のは、機能ではなくここです。</p>
+      </div>
+    </div>
+    <div class="find">
+      <div class="mk good">◎</div>
+      <div>
+        <p class="ttl">老眼と暗い画面への手当てが、後付けでない</p>
+        <p class="txt">文字4段階・押せるところ44px以上・「もっと」以上で2列が上下に積み替わる。暗い画面は全画面の全要素を輝度走査して、明るいままの面が0になるまで詰めています。声のプロは<strong>50代60代が主要層</strong>なので、ここは売りになります。</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>弱いところ</h3>
+  <div class="finds">
+    <div class="find">
+      <div class="mk bad">✕</div>
+      <div>
+        <p class="ttl">1日で6件の事故が見つかった ── しかも全部「既にある機能」</p>
+        <p class="txt">職員が学校ぜんぶの名簿を書き出せた／「全部出席」が効かなかった／iPhone版のJSが途中で切れていた。どれも新機能ではなく、動いていたはずのものです。</p>
+        <p class="txt">同じ日の午後、さらに3件出ました。PC個人の「並べる」が売り文句どおり上下に並べていなかった／「くらべる」に3つの門がなく比べていなかった／PC個人に「もっと」がなく運営モードへ移れなかった。<strong>1日で6件。すべて「作ったつもりで作っていなかった」ものです。</strong></p>
+        <p class="txt"><strong>これは点検の網が粗いという意味です。</strong>通しの自動点検はありますが、①権限の組み合わせを総当たりする検査（10役職 × 主要12画面 = 120通り）と、②営業資料に書いた売り文句と画面を突き合わせる検査が、どちらもありません。機能を足すより、この2つを先に置いてください。</p>
+      </div>
+    </div>
+    <div class="find">
+      <div class="mk warn">△</div>
+      <div>
+        <p class="ttl">1タップごとに画面を全部描き直している</p>
+        <p class="txt">実測：216人の名簿で1回の描き直しに <strong>約146ミリ秒</strong>（速いPCのChromium・中央値）。他の画面も50〜70ミリ秒。学校のiPadや5年前の事務用PCでは3〜5倍かかるので、<strong>0.5秒前後</strong>になります。</p>
+        <p class="txt">表の横スクロール位置を毎回覚えて戻す仕組み（<code>keepScroll</code>）が要るのは、全部描き直しているからです。500人・1,000人の名簿では、この作りは持ちません。</p>
+      </div>
+    </div>
+    <div class="find">
+      <div class="mk warn">△</div>
+      <div>
+        <p class="ttl">見本が「正」だが、見本には仮のものが混ざっている</p>
+        <p class="txt">部屋の絵・帳票の書式・216人の名簿・90日ぶんの記録は、すべて作りものです。「見本を正とする」という規則と、「見本の中に仮がある」という事実が同居していて、<strong>Codeが取り違える余地</strong>が残っています（引き継ぎ文書で線を引きましたが、線は文書の外には効きません）。</p>
+      </div>
+    </div>
+    <div class="find">
+      <div class="mk warn">△</div>
+      <div>
+        <p class="ttl">学校向けの値段に、裁定文書がない</p>
+        <p class="txt">個人の値段には確定文書があります（年払い買い切り＋B案）。学校の 400／350／250 と下限12,800は、9月9日の「整理」文書に案として書かれ、営業資料に入り、見本に実装されましたが、<strong>「これで確定」と書いた文書が1本もありません</strong>。だから見本が食い違っても誰も気づきませんでした。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 4 ══════════ -->
+<section>
+  <h2><span class="no">04</span><span>商売の評価</span></h2>
+  <div class="h2rule"></div>
+
+  <h3>市場の大きさ ── 正直に数えると小さい</h3>
+
+  <p>日本の音楽大学・音楽学部は、短大を含めて<strong>およそ42機関</strong>です。声楽科だけなら1機関120〜240人、全学に開いても500人級。営業資料の想定どおりに全部が入っても、学校からの売上はこうなります。</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>前提</th><th class="n">1機関あたり年額</th><th class="n">42機関ぜんぶ</th><th>現実的な浸透（15%）</th></tr></thead>
+      <tbody>
+        <tr><td class="k">声楽科だけ 150人</td><td class="n">630,000円</td><td class="n">2,646万円</td><td class="n">約400万円</td></tr>
+        <tr><td class="k">全学 500人</td><td class="n">1,500,000円</td><td class="n">6,300万円</td><td class="n">約950万円</td></tr>
+        <tr class="hl"><td class="k">全学 500人（見本のまま）</td><td class="n">900,000円</td><td class="n">3,780万円</td><td class="n">約570万円</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">毎月払いの金額。年一括なら2か月引きでさらに17%下がります。最下段は §02 の食い違いを直さなかった場合。</p>
+
+  <p><strong>つまり、日本の音大だけを相手にするかぎり、学校事業は年間数百万円の規模です。</strong>これは失敗ではありません。ただ、<em>学校は収益源ではなく、生徒への配布経路として評価すべき</em>だ、ということです。300人の学科が1つ入れば、300人が個人アプリを持ちます。そちらのほうが値打ちがあります。</p>
+
+  <h3>いちばん数の多い帯を、下限が弾いている</h3>
+
+  <p>音楽教室・声楽教室・ボイトレ教室は、全国に何千とあります。ただし大半は生徒20〜40人です。ここに下限12,800円が当たると、こうなります。</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th class="n">名簿</th><th class="n">月額</th><th class="n">1人あたり</th><th>生徒が自分で払うと</th><th>判定</th></tr></thead>
+      <tbody>
+        <tr><td class="n">10人</td><td class="n">12,800円</td><td class="n">1,280円</td><td class="n">5,800円（10人分）</td><td>取れない</td></tr>
+        <tr class="hl"><td class="n">20人</td><td class="n">12,800円</td><td class="n">640円</td><td class="n">11,600円（20人分）</td><td>説明が要る</td></tr>
+        <tr><td class="n">32人</td><td class="n">12,800円</td><td class="n">400円</td><td class="n">18,560円</td><td>ここから有利</td></tr>
+        <tr><td class="n">50人</td><td class="n">20,000円</td><td class="n">400円</td><td class="n">29,000円</td><td>有利</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">「生徒が自分で払う」は しらべる 580円／月 × 人数。営業資料は「教室が買っているのは事務であって生徒のアクセスではない」と説明していますが、生徒20人の教室に事務システムは必要ありません。手帳で足ります。</p>
+
+  <div class="call y">
+    <span class="k">ここが商売の要</span>
+    <p>この帯を取るかどうかで、事業の大きさが1桁変わります。取るなら下限を下げる（9,800円案は既に検討済み）。取らないなら、<strong>営業の的を「教室」ではなく「学科・養成所」に絞り、教室向けの営業をやめる</strong>。いま両方に手を出していて、どちらにも刺さらない資料になっています。</p>
+  </div>
+
+  <h3>初年度の売上は、ほぼ立ちません（設計どおり）</h3>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>期間</th><th>学校から</th><th>個人から</th><th class="n">合計の見込み</th></tr></thead>
+      <tbody>
+        <tr><td class="k">2026年10月〜2027年3月</td><td>0円（導入期間）＋導入支援 10万円×契約数</td><td>販売開始 10/19</td><td class="n">25万〜200万円</td></tr>
+        <tr><td class="k">2027年4月〜2028年3月</td><td>契約学科の月額が始まる</td><td>継続＋新規</td><td class="n">300万〜800万円</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">個人の見込みは、査読で確認済みの実測（フリーミアムのD35転換 2.1%）と、平均年間支払い6,000円前後（4,800円／12,800円の混在）から。初年度DL 2,000〜8,000を仮定。</p>
+
+  <p>初年度に売上が立たないこと自体は、意図した設計です（0円導入期間）。ただし<strong>その事実が事業計画のどこにも書かれていない</strong>ので、10月19日に「販売開始したのに入ってこない」と感じることになります。先に数字を置いておくべきです。</p>
+
+  <h3>競合 ── 直接の相手はいない</h3>
+
+  <p>声のアプリ（音程判定・発声メニュー）と、健康アプリ（睡眠・歩数）は別々に存在しますが、<strong>両方を同じ日付の軸に並べる製品は見つかりません</strong>。学校側も同じで、スクール管理システムは月額1万〜4万円が相場ですが、生徒の体調記録を扱う製品はありません。</p>
+
+  <p>ただし、この「競合がいない」は<em>市場が小さいことの言い換えでもあります</em>。守りやすい代わりに、伸びにくい。</p>
+</section>
+
+<!-- ══════════ 5 ══════════ -->
+<section>
+  <h2><span class="no">05</span><span>使う人からの評価予想</span></h2>
+  <div class="h2rule"></div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>誰</th><th class="n">予想</th><th>喜ぶところ</th><th>不満が出るところ</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="k">生徒・学生</td><td class="n">★4.5</td>
+          <td>30秒で終わる／点数が出ない／羊／怒られない</td>
+          <td>「書いても何も返ってこない」と感じる人が一定数出ます</td>
+        </tr>
+        <tr>
+          <td class="k">先生</td><td class="n">★3.5</td>
+          <td>出席がその場で付く／空きコマ／日程の自動組み／自分の予定が学校に中身を見せない</td>
+          <td><strong>「生徒の記録が見たい」は必ず言われます。</strong>断り続ける覚悟が要ります</td>
+        </tr>
+        <tr>
+          <td class="k">事務</td><td class="n">★4.5</td>
+          <td>名簿・書き出し・重なりの検出・請求。<strong>いちばん得をする人</strong></td>
+          <td>読み込みが meibo かつ master でないと使えない。実際の担当者が持っていない可能性</td>
+        </tr>
+        <tr>
+          <td class="k">学長・経営</td><td class="n">★3.5</td>
+          <td>健康情報を学科が預からない設計。責任が発生しない</td>
+          <td>月75,000円の稟議を通す数字がまだない（導入期間中に測る予定）</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">App Store の総合は 4.3〜4.6 を見込みます。ただし<strong>レビュー件数は少なくなります</strong>。催促しない設計は、レビュー依頼も出さないからです。</p>
+
+  <h3>いちばん大きな読み違いの危険</h3>
+
+  <div class="call">
+    <span class="k">継続率について</span>
+    <p>記録アプリの継続日数は、実測で<strong>中央値5.5日・54.6%が初日で放棄</strong>（Pratap 2020, n=109,914）。ふつうのアプリはこれを、連続日数・進捗バー・通知で戦います。</p>
+    <p><strong>Woolsong は、その武器を全部、自分で禁じています。</strong>連続日数を数えない。進捗バーを出さない。催促しない。残っている継続装置は<em>羊だけ</em>です。</p>
+    <p>これは間違いではありません。自己決定理論（Deci &amp; Ryan）が、外的報酬が内発的動機を損なうことを示していて、声のプロの動機は「自分の声を守る」という強い内発的動機だからです。<strong>ただし、その結果として継続率の数字は業界平均より悪く出ます。</strong>それを見て慌てて連続日数を足す、というのがいちばんありそうな失敗です。先に「この数字は悪く出る」と決めておいてください。</p>
+  </div>
+</section>
+
+<!-- ══════════ 6 ══════════ -->
+<section>
+  <h2><span class="no">06</span><span>点数</span></h2>
+  <div class="h2rule"></div>
+
+  <p style="font-size:13.5px;color:var(--ink2)">アプリの中では点数を使いません。この評価文書だけ、比べるために使います。</p>
+
+  <div class="scores">
+    <div class="srow"><div class="nm">設計思想の一貫性</div><div class="meter"><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell half"></i></div><div class="num">9.5</div></div>
+    <div class="srow"><div class="nm">画面の完成度（見本）</div><div class="meter"><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell"></i></div><div class="num">9.0</div></div>
+    <div class="srow"><div class="nm">使いやすさ・見やすさ</div><div class="meter"><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell half"></i><i class="cell"></i></div><div class="num">8.5</div></div>
+    <div class="srow"><div class="nm">市場での位置（競合のなさ）</div><div class="meter"><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell half"></i><i class="cell"></i><i class="cell"></i></div><div class="num">7.5</div></div>
+    <div class="srow"><div class="nm">個人向けの商売</div><div class="meter"><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell half"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i></div><div class="num">6.5</div></div>
+    <div class="srow"><div class="nm">実装の堅さ・点検</div><div class="meter"><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i></div><div class="num">6.0</div></div>
+    <div class="srow"><div class="nm">学校向けの商売</div><div class="meter"><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell half"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i></div><div class="num">5.5</div></div>
+    <div class="srow"><div class="nm">10月19日への間に合い</div><div class="meter"><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell half"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i></div><div class="num">5.5</div></div>
+    <div class="srow"><div class="nm">世界で使う準備</div><div class="meter"><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i></div><div class="num">3.0</div></div>
+  </div>
+
+  <h3>「世界中で使われるアプリにしたい」との距離</h3>
+
+  <p>ここだけは、はっきり書きます。<strong>いまの作りは、日本の外に出られません。</strong></p>
+
+  <ul class="plain">
+    <li><strong>言葉</strong> ── 画面の文字がコードの中に直接書かれています。差し替えの仕組みがありません。</li>
+    <li><strong>学校の形</strong> ── 学部・学科・学年・分野・コマ・限が、構造として埋まっています。欧州の音楽院は<em>Hauptfach／Klasse</em>のような別の形です。</li>
+    <li><strong>お金</strong> ── 円が26か所に直接書かれています。通貨・税・請求書の形式が日本仕様です。</li>
+    <li><strong>法令</strong> ── 特商法・消費者契約法・返品特約を前提に組んであります。EUなら消費者権利指令とGDPRで、返金の考え方から変わります。</li>
+    <li><strong>文体</strong> ── ひらがな分かち書きの独特の言い回しは、この製品の価値の一部ですが、<strong>翻訳できません</strong>。英語版は「別の製品を作る」に近い作業になります。</li>
+  </ul>
+
+  <p>これは今すぐ直すことではありません。ただし<em>いま2つだけやっておくと、後で1桁安くなります</em>。①画面の文字を1か所のファイルにまとめる。②「学部・学科・学年」を「組織の階層（名前は各校が決める）」という形にしておく。この2つは10月19日には不要ですが、2027年に手を付けるときの費用が全く変わります。</p>
+</section>
+
+<!-- ══════════ 7 ══════════ -->
+<section>
+  <h2><span class="no">07</span><span>直すこと</span></h2>
+  <div class="h2rule"></div>
+
+  <ol class="prio">
+    <li>
+      <div>
+        <p class="pt">請求の計算を、裁定に合わせる<span class="when now">10月19日まで</span></p>
+        <p class="pd"><code>billPlans()</code> の3つ目を <code>n*250</code>（300人以上のときだけ）に、2つ目に「100人以上」の条件を付ける。「1年まとめて」の説明文から人数の掛け算を外す。<strong>半日。取りこぼしは学科1つあたり年60万円。</strong></p>
+      </div>
+    </li>
+    <li>
+      <div>
+        <p class="pt">学校の値段の「確定文書」を1本書く<span class="when now">10月19日まで</span></p>
+        <p class="pd">個人の値段には確定文書があるのに、学校にはありません。それが今回の食い違いを生みました。400／350／250・下限12,800・導入支援10万円・「安いほうを自動で当てる」を、1枚に確定として書く。</p>
+      </div>
+    </li>
+    <li>
+      <div>
+        <p class="pt">機能を足すのをやめて、権限の総当たりを機械で回す<span class="when now">10月19日まで</span></p>
+        <p class="pd">10役職 × 主要12画面 = 120通り。見えてはいけないものが見えないか、押せてはいけないものが押せないかを自動で確かめる。<strong>1日で3件の事故が出たという事実が、これが要る証拠です。</strong></p>
+      </div>
+    </li>
+    <li>
+      <div>
+        <p class="pt">10月19日の意味を、2つに分ける<span class="when now">いま決める</span></p>
+        <p class="pd">同じ日に「販売開始」と「制作者の出国」を置くのは危険です。<strong>個人向けの販売を10月5日ごろに前倒しし、学校向けの契約開始だけを10月19日に置く</strong>と、実機で壊れる期間を出発前に確保できます。日程は動かせないものだと聞いていますが、これは動かす価値があります。</p>
+      </div>
+    </li>
+    <li>
+      <div>
+        <p class="pt">20〜36人の帯を、取るか捨てるか決める<span class="when">2026年11月</span></p>
+        <p class="pd">取るなら下限を9,800円に下げる（検討済み案B）。捨てるなら営業資料から「教室」の語を外し、学科・養成所に絞る。<strong>どちらでもよいが、両方に見える資料をやめる。</strong></p>
+      </div>
+    </li>
+    <li>
+      <div>
+        <p class="pt">事務の時間が何分減ったかを、測る仕組みを先に入れる<span class="when">2026年11月</span></p>
+        <p class="pd">2027年1月の「半年の使われ方」1枚が、稟議の武器になります。いまの計画では導入期間中に聞き取りで測ることになっていますが、<strong>打刻の回数だけは自動で取れるようにしておく</strong>と、資料の説得力が変わります。</p>
+      </div>
+    </li>
+    <li>
+      <div>
+        <p class="pt">全部描き直しの作りを、名簿だけでも見直す<span class="when">2026年12月</span></p>
+        <p class="pd">500人の名簿を学校のiPadで開いたときに耐えるか、実機で確かめる。耐えないなら、名簿だけ行の差分更新にする。他の画面はいまのままで構いません。</p>
+      </div>
+    </li>
+    <li>
+      <div>
+        <p class="pt">羊への投資を、いちばん上に置く<span class="when">継続的に</span></p>
+        <p class="pd">連続日数も進捗バーも通知も禁じた以上、<strong>継続を支えているのは羊だけ</strong>です。まだ描いていない外の景色14点・壁掛け20点・まど12点・家具33点は、「あとで作るもの」ではなく<em>継続率そのもの</em>です。機能を1つ足すより、家具を10点足すほうが効きます。</p>
+      </div>
+    </li>
+    <li>
+      <div>
+        <p class="pt">画面の文字を1か所に集め、学校の形を「階層」に抽象化する<span class="when">2027年</span></p>
+        <p class="pd">世界に出すための下ごしらえ。10月19日には要りません。ただし、これをやらずに2027年を迎えると、英語版は作り直しになります。</p>
+      </div>
+    </li>
+    <li>
+      <div>
+        <p class="pt">音楽演奏不安（MPA）の文献の空白を埋める<span class="when">半日</span></p>
+        <p class="pd">9月7日の査読で指摘した唯一の空白です。「なぜ点数を出さないか」「なぜ本番前に何も出さないか」の根拠が、いまは一般論で支えられています。K-MPAI などの研究で埋めると、<strong>大学への営業でそのまま使えます</strong>。</p>
+      </div>
+    </li>
+  </ol>
+</section>
+
+<footer>
+  <p><b>この評価が変わる条件</b> ── 「商売として C+」は、市場の小ささから来ています。学科・音大以外の隣接市場（声優養成所・ミュージカルスクール・合唱団・アナウンサー・ボイストレーナー・コールセンター研修）のどれか1つで足がかりが取れれば、B に上がります。「世界で使う準備 D」は、上記9番を済ませれば C+ になります。「製品として A−」を A にするのは、点検の網だけです。</p>
+  <p style="margin-top:14px"><b>素材</b> ── design/ の見本3本・裁定22本・functions.md・tokens.md、lavoce/ の営業資料v5・価格階層の整理、プロジェクト文書3本（年払い買い切りB案・収益設計レポート・その査読）。数値のうち、描き直しの所要時間は Chromium 実測、音楽大学42機関は公開情報、転換率と継続日数は査読で一次確認済みの数字です。<strong>見本の中の金額・人数・記録は、すべて作りものです。</strong></p>
+</footer>
+
+</div>

@@ -155,8 +155,13 @@ async function main() {
   // LockedCard 側が action を受け取れること
   assertTrue(/function LockedCard\(\{ title, teaser, current, required, action \}\)/.test(ui),
     "LockedCard が action を受け取る");
-  assertTrue(/ProgressDots current=\{current\} required=\{required\}/.test(ui),
-    "★型のほうに進捗の点がある（1か所）");
+  // ★★2026-09-11、★進捗の 点の 帯を 消しました。
+  //   ★出どころ 坂本さんの お決め（★2026-09-11）
+  //     「置ける点数、まだの枠、これらは 進捗バーの 一種として 禁止事項に 当たります」
+  //   ★★見張るのは「点が ある」では なく「点が 無い」に なりました。
+  assertTrue(/ProgressDots current=\{current\} \/>/.test(ui),
+    "★型のほうに、たまった日数の1行がある（1か所）");
+  assertTrue(!/required=\{required\}/.test(ui), "★required を もう 渡していない");
 
   console.log(`\n合計: ${passCount}件成功 / ${failCount}件失敗`);
   if (failCount > 0) { console.log("\n⚠ 失敗があります。"); process.exit(1); }

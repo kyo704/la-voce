@@ -38,12 +38,20 @@ function ok(cond, label) {
 
   console.log("② 1か所につき 最低2点（★裁定 §2-2）");
   ok(R.MIN_PER_SLOT === 2, "★下限は 2点");
-  const counts = R.slotCounts(items);
+  // ★★2026-09-11、★slotCounts() を 消しました。
+  //   ★出どころ 「9月10日・回答-とだなの数字はどこか §3」＋ 坂本さんの お決め。
+  //   ★★あの 数は どの 画面にも 出ていませんでした。★進捗バーの 一種です。
+  //   ★★見張りは 残します。★ここで 数えます。
+  //     ★試験が 自分で 数えるのは、★出す ためでは ないので かまいません。
+  const counts = R.SLOTS.map((s2) => ({
+    label: s2.label, count: R.itemsForSlot(s2.key, items).length }));
   counts.forEach((c) => {
-    ok(c.enough, `★${c.label} が ${c.count}点（2点以上）`);
+    ok(c.count >= R.MIN_PER_SLOT, `★${c.label} が ${c.count}点（2点以上）`);
   });
-  // ★★1点だと「選ぶ」ことに なりません。★0点なら 開いても 空です。
   ok(counts.every((c) => c.count >= 2), "★どこも 空に ならない");
+  // ★★数える 関数を、★lib に 残していない こと。
+  ok(typeof R.slotCounts === "undefined", "★slotCounts を 消した");
+  ok(!readCode("lib", "roomSlots.js").includes("enough"), "★「足りている」の 判じも 消した");
 
   console.log("③ 行き先の 無い 品");
   const orphan = items.filter((i) => R.slotOfItem(i) === null);
