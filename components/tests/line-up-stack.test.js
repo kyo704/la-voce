@@ -131,6 +131,18 @@ function ok(cond, label) {
   ok(/W = 880, pl = 66, pr = 16, pt = 10, laneH = 46, gap = 17, pb = 28/.test(chart),
     "★見本の 寸法の まま");
 
+  console.log("⑥-2 ★消したつもりの なかった もの（★2026-09-11 に 戻しました）");
+  // ★★5本レーンに 作り直した とき、★2つを 巻き込んで 消していました。
+  //   ★★静止画 A04 の 札は「こえの ちょうし／歌った 時間／気になったこと」です。
+  //   ★どちらも ご本人が 書いた ものです。★消しません。
+  ok(/<Bars title=\{tx\("歌った 時間"\)\}/.test(ui), "★歌った 時間 が 出ている");
+  ok(/<Symptoms entries=\{entries\} dates=\{dates\} \/>/.test(ui), "★気になったこと が 出ている");
+  ok(/function Symptoms/.test(ui) && /function Bars/.test(ui), "★部品も 残っている");
+  // ★★2つは 別の ものです。★1つに まとめないこと。
+  ok(/sungMinutes/.test(ui), "★歌った 時間 は 活動の 合計");
+  ok(L.LANES.some((x) => x.field === "nonPerformanceSpeechMinutes"),
+    "★声を 使った 時間 は 別の 欄");
+
   console.log("⑦ 画面は 並べるだけ");
   ok(/LANES\.map/.test(ui), "★札を lib から 出している");
   ok(/toggleLane\(laneKeys, lane\.key\)/.test(ui), "★出し入れの 決めも lib");

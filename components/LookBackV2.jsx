@@ -316,6 +316,18 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
           </Card>
           <Note>{tx("右から　いちばん 多い日　／　いちばん 少ない日　／　まんなか")}</Note>
 
+          {/* ★★2026-09-11、★5本レーンに 作り直した とき、★この 2つを
+              ★★巻き込んで 消していました。★記録も 残していませんでした。
+                ★A群の 見直しで 見つけました（★tools/screen-check.js）。
+              ★★どちらも ご本人が 書いた ものです。★消しません（★4分類の ②）。
+                ★静止画 A04 に、★2つとも 出ています。
+              ★★図の 下に 置きます。★図は 5本まで。★こちらは 別の 見せ方です。
+                ★「歌った 時間」と「声を 使った 時間」は 別の ものです。
+                ★前者は 活動の 合計、★後者は 本番以外で 声を 使った 時間。 */}
+          <Bars title={tx("歌った 時間")} tint={C.sage} entries={entries}
+            rows={seriesOf(entries, dates, (e) => sungMinutes(e))} />
+          <Symptoms entries={entries} dates={dates} />
+
           {/* ★★何を している 画面かを、★下に 3行 置きます（★見本の .note）。 */}
           <Note>
             {LINE_UP_STACK_NOTE.map((line, i) => (

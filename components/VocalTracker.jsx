@@ -141,6 +141,7 @@ import OpsShell from "@/components/OpsShell";
 import OpsSchedule from "@/components/OpsSchedule";
 import OpsRoster from "@/components/OpsRoster";
 import OpsPosts from "@/components/OpsPosts";
+import AndroidInstallPrompt from "@/components/AndroidInstallPrompt";
 import OpsHome from "@/components/OpsHome";
 import OpsEvents from "@/components/OpsEvents";
 import OpsSettings from "@/components/OpsSettings";
@@ -655,7 +656,9 @@ const TABS = [
 // ★★羊の ひとこと（★見本 A01・A02・A07）。
 //   ★★A07（ひつじ）と A01（きょう）に、★同じ 言葉が 出ます。★同じ 羊です。
 //   ★2か所に 書くと、★片方だけ 直ります。
-const SHEEP_LINE = "きょうも 来てくれて ありがとう";
+// ★★見本は 句点つきです（★A01/A02/J01 の .speak）。
+//   ★2026-09-11、★A群の 見直しで 1文字 足りないことに 気づきました。
+const SHEEP_LINE = "きょうも 来てくれて ありがとう。";
 
 const TABS_V2_ORDER = ["home", "today", "analysis", "notes", "garden"];
 const TABS_V2 = TABS_V2_ORDER
@@ -21655,6 +21658,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           </div>
         )}
       </main>
+
+      {/* ★★Android の「ホーム画面に 置く」案内（★2026-09-11 に つなぎました）。
+          ★★部品も 決めも 見張りも 前から ありましたが、
+            ★★どこからも 呼ばれて いませんでした。
+            ★Android の 方に、★1度も 出ていませんでした（★notOutDates と 同じ 形）。
+          ★★出す かどうかは lib/platform.js の mayShowAndroidInstall が 決めます。
+            ★Android で ／ ブラウザで 開いていて ／ 置ける 合図が 来ていて ／
+            ★断られていなくて ／ 記録が 1つでも ある とき だけです。
+          ★★門の 外の 方にも 出します。★これは 見た目の 作り直しでは なく、
+            ★★前から ある 案内です（★38人にも 有用です）。 */}
+      <AndroidInstallPrompt enteredFirstRecord={recordedDaysTotal > 0} />
 
       {/* ★★下から 上がる 1枚（★2026-09-11・第1便）。
           ★★いちばん 外に 置きます。★後ろの 画面より 上に 出すためです。
