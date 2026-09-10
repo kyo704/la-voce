@@ -25,18 +25,22 @@ import { useMemo, useState } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
 import { ScreenHead, HeadRound, Seg, Card, H3, Li, Note } from "@/components/UiV2";
-import { ledgerLine, sortLedger, UNSEEN_HINTS, UNSEEN_TILES, NO_DATE_TEXT } from "@/lib/itemLedger";
+import { ledgerLine, sortLedger, NO_DATE_TEXT, OWNED_EMPTY_TEXT, OWNED_ONLY_NOTE } from "@/lib/itemLedger";
 
+// ★★2026-09-11、★「まだ」の 札を 消しました。
+//   ★出どころ docs/opus/回答-とだなの数字はどこか（9月10日）.md §3-2
+//     「★『まだ』を 見せるのは、★欲しがらせる 装置です。★催促の 一種です」
+//     「★枠が あれば、★数えられます。★出さないのと 同じに なりません」
+//   ＋ 坂本さんの お決め（★2026-09-11）
+//   ★★品も 台帳も、★1件も 触っていません。★出すのを やめただけです。
 const TABS = [
   { key: "ledger", label: "台帳" },
-  { key: "all", label: "ぜんぶ" },
-  { key: "unseen", label: "まだ" }
+  { key: "all", label: "ぜんぶ" }
 ];
 
 export default function OwnedLedger({
   ledger = [],          // ★item_acquisitions の 行
   ownedKeys = [],       // ★手もとに ある 鍵
-  unseenKeys = [],      // ★まだ 見えていない 鍵（★中身は 出しません）
   nameOf,               // ★鍵 → 品の 名前
   onClose
 }) {
@@ -113,58 +117,27 @@ export default function OwnedLedger({
       )}
 
       {tab === "all" && (
-        <Card style={{ padding: `${rem(4)} ${rem(12)}` }}>
-          {owned.length === 0
-            ? <Li last>まだ、1つも ありません。</Li>
-            : owned.map((k, i) => (
-              <Li key={k} last={i === owned.length - 1}>{label(k)}</Li>
-            ))}
-        </Card>
-      )}
-
-      {tab === "unseen" && (
         <>
-          {/* ★★中身を 見せません（★J06 の 注記）。★伏せた 札を 並べるだけです。 */}
-          <div aria-hidden="true" style={{
-            display: "grid", gridTemplateColumns: "repeat(4, 1fr)",
-            gap: rem(7), marginBottom: rem(11)
-          }}>
-            {Array.from({ length: UNSEEN_TILES }, (_, i) => (
-              <div key={i} style={{
-                background: C.paper, border: `1px dashed ${C.line}`,
-                borderRadius: 11, height: rem(78),
-                display: "flex", alignItems: "center", justifyContent: "center",
-                // ★★見本は #C0B09C（★.gr2 .c.no）ですが、★紙の上で 1.9 しか ありません。
-                //   ★この家の 決め（★見やすさ・contrast の 見張り）は 4.5 です。
-                //   ★★見本の ほうを 譲りました。★精査のときに、坂本さんへ お尋ねします。
-                color: C.inkSoft, ...TYPE.title
-              }}>？</div>
-            ))}
-          </div>
-
-          <div style={{
-            ...cardStyle, background: C.paper, borderColor: C.line,
-            ...TYPE.body, lineHeight: 1.75
-          }}>
-            まだ 見えていないものが <b>{unseenKeys.length}つ</b> あります。
-          </div>
-
-          <H3>手に入る きっかけ</H3>
           <Card style={{ padding: `${rem(4)} ${rem(12)}` }}>
-            {UNSEEN_HINTS.map((h, i) => (
-              <Li key={h.label} last={i === UNSEEN_HINTS.length - 1} right={h.note}>
-                {h.label}
-              </Li>
-            ))}
+            {owned.length === 0
+              ? (
+                // ★★「あと◯日」と 書きません。★「いつか」です（★§3-3）。
+                <Li last>
+                  {OWNED_EMPTY_TEXT.split("\n").map((line, i) => (
+                    <span key={i}>{i > 0 ? <br /> : null}{line}</span>
+                  ))}
+                </Li>
+              )
+              : owned.map((k, i) => (
+                <Li key={k} last={i === owned.length - 1}>{label(k)}</Li>
+              ))}
           </Card>
-
-          {/* ★★「あと◯日」を 書きません。★きっかけの 種類だけです。
-              ★調子の 良し悪しでは 手に入りません（★J06 の 注記）。 */}
-          <Note style={{ marginTop: rem(10) }}>
-            記録した、という行為だけで 手に入ります。
-          </Note>
+          {/* ★★隠しているように 見えます。★それで いいです（★§3-3）。
+              ★見せて 欲しがらせるより、★見せないほうが この製品に 合っています。 */}
+          <Note style={{ marginTop: rem(10) }}>{OWNED_ONLY_NOTE}</Note>
         </>
       )}
+
     </div>
   );
 }

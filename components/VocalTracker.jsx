@@ -170,13 +170,12 @@ import {
   INTERIOR_ITEMS, interiorSrc, isPlaced, toggleInterior, tileSurface,
   interiorOf, interiorItemByKey
 } from "@/lib/sheepInteriorV2";
-import { mayUseWardrobe, mayWearEverything, applyWear, unlockedItemKeys } from "@/lib/sheepWardrobe";
+import { mayUseWardrobe, mayWearEverything, applyWear } from "@/lib/sheepWardrobe";
 import {
-  box2Rounds, box2ReceivedCount, roundAvailableDate, shouldAutoDeliver, pickBox2Choices,
-  BOX2_KEYS, unlockKeys
+  box2Rounds, box2ReceivedCount, roundAvailableDate, shouldAutoDeliver, pickBox2Choices
 } from "@/lib/wardrobeBoxes";
 import OwnedLedger from "@/components/OwnedLedger";
-import { LEDGER_TABLE, unseenKeys } from "@/lib/itemLedger";
+import { LEDGER_TABLE } from "@/lib/itemLedger";
 import { REDRAWN_AS, withRedrawnKeys } from "@/lib/legacyWearables";
 // ★服の色。★式も、24色も、★どの品に塗れるかも、★あちらが持ちます。
 import { setColor as setClothColor, isColorable, CLOTH_COLORS } from "@/lib/clothColors";
@@ -5508,29 +5507,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     return key;
   }, []);
 
-  // ★★「まだ 見えていないもの」。★何が それに あたるかは lib/itemLedger.js が 決めます。
-  //   ★★点で 買える ものは 入れません。★向こうから 来る ものだけです。
-  //
-  //   ★★「持っている」に、★開いた ものを 足します。
-  //     ★開いた ものは character_inventory に 行が 立ちません。
-  //     ★足さないと、★開いた 5点が、★いつまでも「まだ」に 残ります。
-  //   ★★effectiveOwnedKeys（★ぜんぶ着てよい方の ぶん）は 使いません。
-  //     ★あちらは「着られるか」の 話で、★ここは「届いたか」の 話です。
+  // ★★2026-09-11、★「まだ 見えていないもの」を 数えるのを やめました。
+  //   ★出どころ docs/opus/回答-とだなの数字はどこか（9月10日）.md §3-2
+  //     「★『まだ』を 見せるのは、★欲しがらせる 装置です。★催促の 一種です」
+  //   ＋ 坂本さんの お決め（★2026-09-11）
+  //   ★★数えた 値が、★どの 画面にも 出なく なりました。★だから 消します。
+  //     ★「出す先の 決まっていない 計算」は 置いておきません（★§5 の 見分け方）。
+  //   ★★品も 台帳も、★1件も 触っていません。
   // ★★たな（★見本 J04・2026-09-11）。★歌ってきたもの。
   //   ★★数え方は lib/repertoireLog.js の shelfRows() です。★ここでは 数えません。
   //   ★作曲家と 役は、★曲の 台帳（repertoire_tessitura）から 取ります。
   const shelfRowsForSheep = useMemo(
     () => shelfRows(entries, repertoireTessituraMap),
     [entries, repertoireTessituraMap]);
-
-  const notYetSeen = useMemo(() => {
-    const flags = Object.fromEntries(
-      [...computeUnlocked(entries, profile)].map((k) => [k, true]));
-    return unseenKeys({
-      arrivingKeys: [...unlockKeys(), ...BOX2_KEYS],
-      ownedKeys: [...(ownedItemKeys || []), ...unlockedItemKeys(flags)]
-    });
-  }, [entries, profile, ownedItemKeys]);
   const [pointsPaperShownOnce, setPointsPaperShownOnce] = useState(false);
   // ★★ながめる → したく で、★部屋が 飛んで見えないようにします
   //   （★2026-09-08 夜・坂本さんのご指摘）。
@@ -21639,7 +21628,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         <OwnedLedger
           ledger={ledgerRows}
           ownedKeys={ownedItemKeys}
-          unseenKeys={notYetSeen}
           nameOf={itemNameOf}
           onClose={() => setOwnedOpen(false)} />
       )}

@@ -63,14 +63,22 @@ function ok(cond, label) {
     now: new Date("2026-09-11T16:00:00Z") }).acquired_on === "2026-09-12",
     "★UTC 9/11 25時 は、日本の 9/12");
 
-  console.log("④ まだ 見えていないもの");
-  ok(L.unseenKeys({ arrivingKeys: ["a", "b", "c"], ownedKeys: ["b"] }).join(",") === "a,c",
-    "★持っている ものを 除く");
-  ok(L.unseenKeys({ arrivingKeys: ["a", "a", "b"], ownedKeys: [] }).length === 2, "★重なりを 数えない");
-  ok(L.unseenKeys({}).length === 0, "★何も 渡されなければ 0");
-  ok(L.UNSEEN_HINTS.length === 3, "★きっかけは 3行");
-  ok(L.UNSEEN_HINTS.map((h) => h.label).join("／")
-    === "記録した 日が たまる／本番を 記録する／季節・行事", "★見本の 3行と 同じ");
+  console.log("④ 「まだ」を 出さない（★2026-09-11 に まるごと 消しました）");
+  // ★出どころ docs/opus/回答-とだなの数字はどこか（9月10日）.md §3-2・§3-3
+  //   「★『まだ』を 見せるのは、★欲しがらせる 装置です。★催促の 一種です」
+  //   「★枠が あれば、★数えられます。★出さないのと 同じに なりません」
+  // ＋ 坂本さんの お決め（★2026-09-11）
+  ok(typeof L.unseenKeys === "undefined", "★数える 関数を 消した");
+  ok(typeof L.UNSEEN_TILES === "undefined", "★伏せ札を 消した");
+  ok(typeof L.UNSEEN_HINTS === "undefined", "★きっかけの 3行を 消した");
+  // ★★代わりに 出すのは、★§3-3 の 2行だけです。
+  ok(L.OWNED_EMPTY_TEXT.includes("いつか 届きます"), "★「いつか」と 書く（★「あと◯日」では ない）");
+  ok(!/あと/.test(L.OWNED_EMPTY_TEXT), "★「あと」と 書いていない");
+  ok(L.OWNED_ONLY_NOTE === "持っているものだけを 並べます。まだ 手に入れていないものは、枠も 数も 出しません。",
+    "★下の 1行が 見本の まま");
+  const led = readCode("components", "OwnedLedger.jsx");
+  ok(!/label: "まだ"/.test(led), "★「まだ」の 札が 画面から 消えた");
+  ok(!/？/.test(led), "★伏せ札の ？ が 消えた");
 
   console.log("⑤ 並びは 新しい順");
   const sorted = L.sortLedger([
