@@ -42,8 +42,17 @@ export default function HomeV2({
   viewAs = "auto", onViewAs, canChooseViewAs = false, hasTeachingToday = false
 }) {
   const today = (entries || {})[todayISO] || null;
-  const cond = today ? conditionWord(today.throatCondition) : null;
-  const condUsual = conditionWord(usualOf(entries, todayISO, (e) => e && e.throatCondition));
+  // ★★「こえの調子」は 声の 出来です（★voiceQuality ／ 2026-09-11 に 直しました）。
+  //   ★★前は throatCondition（★のどの 身体感覚）を 読んでいました。
+  //     ★★9月9日の 古い見本は 3択が 1つだけで、★「出た／ふつう／出づらい」を
+  //       ★のどの 列に 書いていました。★言葉と 列が ずれていました。
+  //   ★★正しい 見本（S_kiroku）は 3択が 2つです ──
+  //     ★のどの 調子（よい／ふつう／わるい）→ throat_condition
+  //     ★声の 出来（出た／ふつう／出づらい）→ voice_quality
+  //   ★★conditionWord が 返すのは「出た／ふつう／出づらい」なので、
+  //     ★読むのは voiceQuality です。★38人が 声の出来の 目盛りで 書いてきた 列です。
+  const cond = today ? conditionWord(today.voiceQuality) : null;
+  const condUsual = conditionWord(usualOf(entries, todayISO, (e) => e && e.voiceQuality));
   // ★★ねむりは、★数と 単位で 大きさが ちがいます（★見本 .big / .big s）。
   //   ★だから 1本の 文字列では 出せません。★分けて 受け取ります。
   const sleep = today ? sleepParts(today.sleepHours) : null;

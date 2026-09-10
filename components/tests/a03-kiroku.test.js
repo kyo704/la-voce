@@ -1,166 +1,194 @@
-
-// ★★2026-09-11、★静止画（screens/*.html）を 参照元から 外しました。
-//   ★出どころ docs/opus/00-はじめに読む-正誤表（9月10日）.md §1
-//     「screens/（138ファイル）★9月9日 10:55　★24時間 古い。
-//       ★裁定20本ぶん 反映なし」
-//   ★★正は 4本の 動く見本だけです（★同 §2）。
-//   ★★この 節は、★静止画を 読んでいたので 止めました。
-//     ★消していません。★動く見本で 見張る 形に 作り直すまでの あいだです。
-
-console.log("★この見張りは、いったん 止めています（★静止画が 参照元から 外れたため）。");
-console.log("★動く見本で 見張る 形に 作り直します。");
-process.exit(0);
+#!/usr/bin/env node
 
 // ============================================================================
-// A03「記録 ／ 2タップで完成」を、★見本に そろえた ことの 見張り
+// A03「記録」を、★動く見本に そろえた ことの 見張り
 //
-//   ★出どころ docs/design/pack-final/screens/A03-記録2タップで完成.html（★HTML が 正）
-//            docs/design/pack-final/screens/A03-記録2タップで完成.txt（★画面に 出る 文字）
-//            docs/design/pack-final/screens/A03-記録2タップで完成.notes.md（★画面に 出ない 注記）
+//   ★出どころ docs/design/pack-final/00-動く見本（さわれる・全画面）.html
+//     の S_kiroku()。★これが 唯一の 正です。
+//
+//   ★★2026-09-11、★静止画（screens/*.html）を 参照元から 外して
+//     作り直しました（★正誤表 §1「24時間 古い。★裁定20本ぶん 反映なし」）。
+//     ★★前の この見張りは、★その 静止画を 読んで 14/14 と 報告していました。
+//       ★実機は まったく 違う 形でした。★同じ 誤りを 繰り返さないため、
+//       ★★見本の HTML から 字を 取り出して 突き合わせます。★書き写しません。
 //
 //   ★★確かめること
-//     ① 画面に 出る 文字が、★見本の .txt と 食い違わないこと。
-//        ★★とくに、★.notes.md の 注記を 画面に 写していないこと。
-//     ② 折りたたみ 5つの 名前が、★見本の とおりであること。
-//     ③ 3択の 形と 大きさが、★見本の CSS と 合っていること。
-//     ④ 「完了」を 作らないこと。★数え上げを 出さないこと。
-//     ⑤ 押せるところが 44px を 下回らないこと。
-//     ⑥ 門の外（38人）の 記録画面が 1つも 変わらないこと。
+//     ① 見出し（あさ／よる／足す）が 見本の 字と 1文字も 違わないこと
+//     ② 3択 3つの 題と 選択肢が 見本と 一致すること
+//     ③ しるし（部屋の しめり…／下の 3行）が 見本と 一致すること
+//     ④ 3択の 行き先が、★別々の 列で あること（★上書きし合わない）
+//     ⑤ 折りたたみ 5つ（古い見本）が 残っていないこと
+//     ⑥ 数を 出していないこと（★「n/5」「あと◯」）
+//     ⑦ 引っ越し先の 表に、★節が もれなく 載っていること
+//     ⑧ ①消す の 2つが、★門の中でだけ 出ないこと（★38人には 出る）
 // ============================================================================
 
 const fs = require("fs");
 const path = require("path");
 const { readCode, readRaw } = require("./_source");
 
-let failed = 0;
+let ng = 0;
 function ok(cond, label) {
-  if (cond) { console.log("  ok  " + label); }
-  else { console.log("  NG  " + label); failed++; }
+  if (cond) { console.log("  ✓ " + label); return; }
+  ng += 1; console.log("  ✗ " + label);
+}
+function eq(a, b, label) {
+  if (a === b) { console.log("  ✓ " + label); return; }
+  ng += 1;
+  console.log("  ✗ " + label);
+  console.log("      見本 " + JSON.stringify(b));
+  console.log("      実装 " + JSON.stringify(a));
 }
 
-(async () => {
-  const ROOT = path.join(__dirname, "..", "..");
-  const dir = ["docs", "design", "pack-final", "screens"];
-  const html = readRaw(...dir, "A03-記録2タップで完成.html");
-  const txt = readRaw(...dir, "A03-記録2タップで完成.txt");
-  const notes = readRaw(...dir, "A03-記録2タップで完成.notes.md");
-  const head = readRaw("components", "RecordV2Head.jsx");
-  const headText = readCode("components", "RecordV2Head.jsx");
+const ROOT = path.join(__dirname, "..", "..");
+const MIHON = path.join(ROOT, "docs", "design", "pack-final",
+  "00-動く見本（さわれる・全画面）.html");
 
-  console.log("① 画面に 出る 文字（★見本の .txt が 正）");
-  // ★★見本の .txt に 並ぶ 言葉が、★画面の 側にも あること。
-  ["記録", "保存しました", "こえの ちょうし", "きょうは、書かない"].forEach((w) => {
-    ok(headText.includes(w), "★「" + w + "」が 画面に ある");
+console.log("A03（記録）── 動く見本との 突き合わせ");
+
+if (!fs.existsSync(MIHON)) {
+  console.log("  ✗ 動く見本が ありません: " + MIHON);
+  process.exit(1);
+}
+const mihon = fs.readFileSync(MIHON, "utf8");
+
+// ★★見本の S_kiroku() だけを 切り出します。
+const from = mihon.indexOf("function S_kiroku(){");
+const to = mihon.indexOf("function tri(", from);
+if (from < 0 || to < 0) {
+  console.log("  ✗ 見本の S_kiroku() が 見つかりません");
+  process.exit(1);
+}
+const kiroku = mihon.slice(from, to);
+
+const recordV2 = readCode("lib", "recordV2.js");
+const recordV2Raw = readRaw("lib", "recordV2.js");
+const head = readCode("components", "RecordV2Head.jsx");
+const tracker = readCode("components", "VocalTracker.jsx");
+const sheets = readCode("lib", "recordSheets.js");
+
+// ── ① 見出し ───────────────────────────────────────────────
+console.log("\n① 見出し（★見本の .h3）");
+const heads = [...kiroku.matchAll(/<div class="h3">([^<]+)<\/div>/g)].map((m) => m[1]);
+eq(heads.length, 3, "見本の 見出しは 3つ");
+heads.forEach((h) => {
+  ok(recordV2.includes(`"${h}"`), `「${h}」が lib/recordV2.js に ある`);
+});
+
+// ── ② 3択 ─────────────────────────────────────────────────
+console.log("\n② 3択（★見本の tri）");
+const tris = [...kiroku.matchAll(/tri\('(\w+)','([^']+)',\[(.+?)\]\)/g)].map((m) => ({
+  key: m[1],
+  title: m[2],
+  words: [...m[3].matchAll(/\['(?:◎|○|△)','([^']+)'\]/g)].map((x) => x[1])
+}));
+eq(tris.length, 3, "見本の 3択は 3つ");
+tris.forEach((t) => {
+  ok(recordV2.includes(`"${t.title}"`), `題「${t.title}」が ある`);
+  t.words.forEach((w) => {
+    ok(recordV2.includes(`"${w}"`), `　選択肢「${w}」が ある`);
   });
-  // ★★3択の 言葉は、★画面に 書いてありません。★lib/recordV2.js が 持っています。
-  //   ★★書く側（記録）と 読む側（きょう）で、★組が ずれないためです。
-  //   ★はじめ、★画面の 本文で 数えて 落ちました。★数える 場所が ちがいました。
-  ok(/CONDITION_CHOICES\.map/.test(headText), "★3択は 1か所の 組から 出している");
-  // ★★注記は、★画面に 写さないこと。
-  //   ★★design.zip の 決め ──「★で始まる行は、画面に出ない、実装への注記です」
-  ok(/「完了」は ありません/.test(notes), "★注記の ほうに 但し書きが ある");
-  ok(!/「完了」はありません/.test(txt), "★画面の 文の ほうには 無い");
-  ok(!/ここでもう保存されて|「完了」はありません/.test(headText),
-    "★注記を 画面に 写していない");
+});
+ok(/MARKS\s*=\s*Object\.freeze\(\["◎", "○", "△"\]\)/.test(recordV2),
+  "印は ◎○△ の 順（★左が よいほう）");
+ok(head.includes("markOf("), "印を 組ごとに 書き写していない（★markOf で 出す）");
 
-  const foldSrc = fs.readFileSync(path.join(ROOT, "lib", "recordV2.js"), "utf8");
-  const folds = await import("data:text/javascript;base64," + Buffer.from(foldSrc).toString("base64"));
-  // ★見本の 3択を、★HTML から 直に 拾って 突き合わせます。
-  const marks = [...html.matchAll(/font-size:30px[^>]*>([◎○△])<\/div><div style="font-size:12px[^>]*>([^<]+)</g)]
-    .map((m) => ({ mark: m[1], word: m[2] }));
-  ok(marks.length === 3, "★見本に 3択が ある  （得た値: " + JSON.stringify(marks) + "）");
-  ok(JSON.stringify(folds.CONDITION_CHOICES) === JSON.stringify(marks.map((x) => x.word)),
-    "★3択の 言葉も 順も 見本と 同じ");
-  ok(marks.every((x) => folds.CONDITION_MARKS[x.word] === x.mark),
-    "★◎ ／ ○ ／ △ の 割り当ても 見本と 同じ");
+// ── ③ しるし ───────────────────────────────────────────────
+console.log("\n③ しるし（★見本の .warn ／ .note）");
+const warn = /<div class="warn"[^>]*>(.+?)<\/div>/.exec(kiroku);
+ok(!!warn, "見本に しるしが ある");
+if (warn) {
+  const plain = warn[1].replace(/<[^>]+>/g, "");
+  const askNote = /A03_ASK_NOTE\s*=\s*([\s\S]*?);/.exec(recordV2);
+  const mine = askNote ? askNote[1].replace(/[\s"+\n]/g, "") : "";
+  eq(mine, plain.replace(/[\s"+\n]/g, ""), "「この2つは 聞きません」の 一文が 一致する");
+}
+["n/5", "赤い印", "夜の3つ"].forEach((frag) => {
+  ok(recordV2.includes(frag), `下の 3行に「${frag}」が ある`);
+});
 
-  console.log("② 折りたたみ 5つの 名前");
-  // ★見本から「＋ ◯◯」を 直に 拾います。★書き写しません。
-  const want = [...html.matchAll(/＋\s*([^<›]+?)<\/span>/g)].map((m) => m[1].trim());
-  ok(want.length === 5, "★見本に 折りたたみが 5つ  （得た値: " + JSON.stringify(want) + "）");
-  ok(JSON.stringify(folds.RECORD_FOLDS.map((f) => f.label)) === JSON.stringify(want),
-    "★名前も 順も 見本と 同じ");
+// ── ④ 行き先 ───────────────────────────────────────────────
+console.log("\n④ 3択の 行き先（★別々の 列であること）");
+ok(/applyEdemaWord[\s\S]*?morningEdema/.test(recordV2), "むくみ → morningEdema");
+ok(/applyThroatWord[\s\S]*?throatCondition/.test(recordV2), "のどの調子 → throatCondition");
+ok(/applyDekiWord[\s\S]*?voiceQuality/.test(recordV2), "声の出来 → voiceQuality");
+// ★★同じ 列に 2つ 書くと、★片方を 押した とたん もう片方が 消えます。
+const throatFn = /export function applyThroatWord[\s\S]*?\n}/.exec(recordV2)[0];
+const dekiFn = /export function applyDekiWord[\s\S]*?\n}/.exec(recordV2)[0];
+ok(!throatFn.includes("voiceQuality"), "のどの調子は 声の出来の 列に 触らない");
+ok(!dekiFn.includes("throatCondition"), "声の出来は のどの列に 触らない");
+ok(!throatFn.includes("quality:"), "のどの調子は quality に 触らない");
+ok(!dekiFn.includes("bodyFeel"), "声の出来は bodyFeel に 触らない");
 
-  console.log("③ 3択の 形（★見本の CSS）");
-  function inlineNum(needle, prop) {
-    const i = html.indexOf(needle);
-    if (i < 0) return null;
-    const seg = html.slice(i, i + 260);
-    const m = new RegExp(prop + ":\\s*([0-9.]+)").exec(seg);
-    return m ? Number(m[1]) : null;
+// ── ⑤ 古い 折りたたみ ─────────────────────────────────────
+console.log("\n⑤ 9月9日の 折りたたみ 5つ が 残っていないこと");
+["RECORD_FOLDS", "foldOfSection", "openFold"].forEach((name) => {
+  ok(!recordV2.includes(name), `lib/recordV2.js に ${name} が ない`);
+  ok(!head.includes(name), `RecordV2Head に ${name} が ない`);
+  ok(!tracker.includes(name), `VocalTracker に ${name} が ない`);
+});
+
+// ── ⑥ 数を 出さない ───────────────────────────────────────
+console.log("\n⑥ 数を 出していないこと");
+// ★★下の 3行は「出しません」と 書いてある 行です。★先に 外してから 探します
+//   （★これを 忘れると、★但し書き 自身に つまずきます）。
+const headNoDisclaimer = head.replace(/A03_NOTES[\s\S]*?\}\)\}/g, "");
+ok(!/あと\s*\{/.test(headNoDisclaimer), "「あと◯」を 出していない");
+ok(!/\/\s*5/.test(headNoDisclaimer), "「◯/5」を 出していない");
+ok(!/length\s*\+\s*"つ"|\$\{[^}]*length[^}]*\}つ/.test(head), "「◯つ」を 出していない");
+
+// ── ⑦ 引っ越し先の 表 ─────────────────────────────────────
+console.log("\n⑦ 節が もれなく 引っ越し先に 載っていること");
+const folds = [...tracker.matchAll(/fold="([a-zA-Z_]+)"/g)].map((m) => m[1]);
+const uniqueFolds = [...new Set(folds)];
+const listed = [...recordV2.matchAll(/sections: Object\.freeze\(\[([^\]]*)\]\)/g)]
+  .flatMap((m) => [...m[1].matchAll(/"([a-zA-Z_]+)"/g)].map((x) => x[1]));
+// ★★気候・滞在地（env）だけは、★わざと 表に 載せていません。
+//   ★坂本さんの お決め 5-b ㋒「当面、そのまま、下に残す」。
+const EXPECTED_OUT = ["env"];
+uniqueFolds.forEach((f) => {
+  if (EXPECTED_OUT.includes(f)) {
+    ok(!listed.includes(f), `${f} は わざと 表に 載せていない（★お決め 5-b ㋒）`);
+  } else {
+    ok(listed.includes(f), `${f} が 引っ越し先の 表に ある`);
   }
-  ok(inlineNum('class="two" style="gap:7px', "gap") === 7, "★3枚の あいだ 7px");
-  ok(/gap: 7/.test(head), "★実装も 7px");
-  ok(inlineNum('padding:16px 6px', "padding") === 16, "★カードの 内側 上下 16px");
-  ok(/padding: "16px 6px"/.test(head), "★実装も 16px 6px");
-  // ★★2026-09-11。★px から rem に 替えました（文字の大きさの 設定を 効かせるため）。
-  //   ★数は 見本の まま。★包み方だけが rem(...) に なりました。
-  ok(/font-size:30px/.test(html) && /fontSize: rem\(30\)/.test(head), "★印は 30px");
-  ok(/font-size:12px;margin-top:5px/.test(html) && /fontSize: rem\(12\), marginTop: rem\(5\)/.test(head),
-    "★言葉は 12px・上に 5px");
-  ok(/border:2px solid var\(--enji\)/.test(html) && /2px solid \$\{C\.curtain\}/.test(head),
-    "★選ばれたら 枠が 2px");
-  // ★★色だけに 意味を 持たせないこと。★形（◎○△）が 先に あること。
-  ok(/◎/.test(html) && /conditionMark/.test(head), "★印は 形で 分けている");
+});
+listed.forEach((k) => {
+  ok(uniqueFolds.includes(k), `表の ${k} は、実際に ある 節`);
+});
+// ★★入れ物は 1つだけ。★2つ あると、★どちらに 出たか 分からなく なります。
+const slotCount = (readRaw("components", "RecordSheets.jsx")
+  .match(/id=\{SHEET_SLOT_ID\}/g) || []).length;
+eq(slotCount, 1, "節が 入る ところは 1か所だけ");
 
-  console.log("④ 「完了」を 作らない・数えない");
-  ok(!/>\s*完了\s*<|完了する|完了度|未入力/.test(headText), "★「完了」も「未入力」も 出さない");
-  ok(!/あと\s*\d|あと[０-９]/.test(headText), "★「あと◯」と 数えない");
-  ok(/きょうは、書かない/.test(headText), "★出口が ある");
+// ── ⑧ ①消す が 門の中だけ ────────────────────────────────
+console.log("\n⑧ ①消す の 2つ（★門の外の 38人には 残る）");
+ok(tracker.includes("{!layoutV2 && yesterdayContext && ("),
+  "前日からのコンディション背景は 門の中で 出さない");
+ok(/\{!layoutV2 && \(\s*<NumberField label=\{t\("labelHumidity"\)\}/.test(tracker),
+  "湿度の 入力欄は 門の中で 出さない");
+ok(tracker.includes("labelHumidity"), "湿度の 欄そのものは 消していない（★38人には 出る）");
+ok(recordV2Raw.includes("morningEdema") && !recordV2Raw.includes("delete "),
+  "列を 1つも 落としていない");
 
-  console.log("⑤ 押せるところ");
-  ok(/minHeight: SPACE\.tapMin/.test(head), "★「書かない」は 44px 以上");
-  // ★3択は 内側 16＋印30＋5＋12 で 44 を 越えます。★折りたたみは 12＋9×2＋13 で 越えます。
-  ok(/padding: "9px 0"/.test(head), "★折りたたみの 行は 上下 9px（★見本 .li）");
+// ── ⑨ 引っ越し（お決め 10） ───────────────────────────────
+console.log("\n⑨ ここから区切りをつける の 引っ越し（★お決め 10 ㋑）");
+const more = readCode("lib", "moreMenu.js");
+ok(more.includes("ここから区切りをつける"), "もっと の 行に ある");
+ok(tracker.includes('moreSection === "区切り"'), "もっと で 開ける");
+ok(/\{!layoutV2 && \(\s*<PeriodMarkerButton/.test(tracker),
+  "記録の 画面には 門の外だけ 出る");
 
-  console.log("⑥ 見本に 無いものを、★門の中では 出さない（★2026-09-10・お決め）");
-  {
-    const v = readRaw("components", "VocalTracker.jsx");
-    // ★★どれも「消して」いません。★門の中で 出さない、だけです。
-    //   ★★消すと 38人から 取り上げることに なります。
-    [
-      ["!layoutV2 && isSimpleDisplay(profile) && formData", "★かんたん表示の 一問ずつ"],
-      // ★★2026-09-10、★これは「門の中で 出さない」から「消す」に なりました
-      //   （★坂本さんの お決め⑫）。★38人にも 出ていた ものです。
-      //   ★★消えたことを 見ます。★戻ってきたら 気づけるように。
-      ["{!layoutV2 && (\n                <div className=\"rounded-2xl p-3 border\"", "★かんたん／しっかり の 切替"],
-      ["!layoutV2 && !!entries[addDays(selectedDate, -1)]", "★前日をコピー"],
-      ["!layoutV2 && showCopiedNotice", "★コピーの 知らせ"],
-      ["{!layoutV2 && dateBandNode}", "★日付の帯は 門の外だけ ここ"]
-    ].forEach(([needle, label]) => ok(v.includes(needle), label + "が 門の中で 出ない"));
-    // ★★⑫だけは、★門の中だけでなく、★誰にも 出さないことに なりました。
-    // ★★注記を 外して 数えます。★上の 註に、★その語が 出てきます（★8回目）。
-    const vCode = readCode("components", "VocalTracker.jsx");
-    ok(!/もう少しで「/.test(vCode), "★「もう少しで◯◯が 加わります」が、もう 無い");
-    ok(!/countedSectionTotal/.test(vCode), "★点8つの 分母も、もう 無い");
-    ok(/dateBand=\{dateBandNode\}/.test(v), "★日付の帯は 門の中では 題の 近く");
-    ok((v.match(/const dateBandNode = \(/g) || []).length === 1,
-      "★日付の帯の 中身は 1つだけ（★2つ 作っていない）");
-    // ★★切替を 出さないので、★中が 空に ならないよう しっかり として 読みます。
-    ok(/const recordModeInUse = layoutV2 \? "full" : profile\.record_mode;/.test(v),
-      "★門の中では しっかり として 読む（★折りたたみの 中が 空に ならない）");
-    ok(/mode: recordModeInUse/.test(v), "★節の 出し分けが その 値を 使っている");
-    // ★★保存の ボタンは、★開いている ときだけ。★消していません。
-    ok(/\(!layoutV2 \|\| openFold\) && \(/.test(v),
-      "★保存ボタンは、★折りたたみを 開いた ときだけ（★消していない）");
-    // ★★節は 11 とも 折りたたみに 載っていること。
-    //   ★載っていない節は、★閉じていても 出つづけます。
-    const folds2 = require("fs").readFileSync(path.join(ROOT, "lib", "recordV2.js"), "utf8");
-    const mapped = [...folds2.matchAll(/sections: \[([^\]]*)\]/g)]
-      .flatMap((m) => m[1].split(",").map((x) => x.trim().replace(/"/g, ""))).filter(Boolean);
-    const used = [...new Set([...v.matchAll(/fold="([a-zA-Z]+)"/g)].map((m) => m[1]))];
-    ok(used.every((k) => mapped.includes(k)),
-      "★節は ぜんぶ 折りたたみに 載っている  （載っていない: " +
-      JSON.stringify(used.filter((k) => !mapped.includes(k))) + "）");
-  }
+// ── ⑩ 足す の 行 ─────────────────────────────────────────
+console.log("\n⑩ 足す の 行（★見本 4つ ＋ お決め 2 ㋐ の 1つ）");
+const rowIns = [...kiroku.matchAll(/rowIn\('([^']+)'/g)].map((m) => m[1]);
+eq(rowIns.length, 6, "見本の ＋の行は 6つ");
+rowIns.forEach((label) => {
+  ok(sheets.includes(`"${label}"`), `「${label}」が lib/recordSheets.js に ある`);
+});
+ok(sheets.includes('"お仕事に合わせた記録"'), "7つめ（お決め 2 ㋐）が ある");
 
-  console.log("⑦ 門の外（38人）を 変えない");
-  const v = readRaw("components", "VocalTracker.jsx");
-  ok(/\{layoutV2 && formData && \(\s*<RecordV2Head/.test(v), "★新しい 頭は 門の中だけ");
-  ok(/sectionIsOpen/.test(readRaw("lib", "recordV2.js")), "★節の 出し分けは 1か所");
-  ok(/if \(!layoutV2\) return true;/.test(readRaw("lib", "recordV2.js")),
-    "★門の外では、★節が ぜんぶ 出る");
-
-  console.log(failed === 0 ? "\n全て ok" : "\n" + failed + "件 NG");
-  process.exit(failed === 0 ? 0 : 1);
-})();
+console.log(ng === 0
+  ? "\n★すべて 通りました。"
+  : `\n★${ng} 件 落ちました。`);
+process.exit(ng === 0 ? 0 : 1);

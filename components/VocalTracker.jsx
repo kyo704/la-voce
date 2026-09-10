@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback, createContext, useContext } from "react";
+import { createPortal } from "react-dom";
 import {
   Mic2, Moon, Droplets, Thermometer, Wind, MapPin, Music2, HeartHandshake,
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
@@ -149,13 +150,17 @@ import { maySeeMoney } from "@/lib/opsShell";
 import { mayEnterOps, mayEditRoster, permsOfMember } from "@/lib/opsShell";
 import { rosterCount } from "@/lib/orgRoster";
 import RecordV2Head from "@/components/RecordV2Head";
-import { KoeSheet, NemuriSheet, MarksSheet, SheetRow, ListSheet } from "@/components/RecordSheets";
+import {
+  KoeSheet, NemuriSheet, MarksSheet, SheetRow, ListSheet, SectionSheet, SHEET_SLOT_ID
+} from "@/components/RecordSheets";
 import {
   KOE, NEMURI, KARADA, TABE, sleepWord, ACCOUNT_ROWS, TSUCHI_ROWS, TSUCHI_NOTE,
-  YOUSU_CHOICES, YOUSU_NOTE
+  YOUSU_CHOICES, YOUSU_NOTE, HONBAN, HITOKOTO, SHIGOTO
 } from "@/lib/recordSheets";
 import LookBackV2 from "@/components/LookBackV2";
-import { applyConditionWord, RECORD_FOLDS, sectionIsOpen } from "@/lib/recordV2";
+import {
+  applyThroatWord, applyDekiWord, applyEdemaWord, sectionIsOpen, SECTION_SHEETS
+} from "@/lib/recordV2";
 import { readProfileExtras } from "@/lib/profileExtras";
 import { VIEW, DRESS, SHELF, SEG_TABS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES, HOME_COLORS } from "@/lib/homeDrawer";
 import SheepShelf from "@/components/SheepShelf";
@@ -2609,10 +2614,38 @@ function SectionFeedback({ text }) {
     </p>
   );
 }
-// ★★折りたたみの いま（★見本③・2026-09-09）。
+// ★★いま 開いている 1枚（★動く見本 ／ 2026-09-11 に 作り直しました）。
 //   ★★門の外では、★いつも { layoutV2:false } です。★何も 変わりません。
+//   ★★9月9日は「折りたたみ 5つ」でした。★正しい 見本は
+//     「あさ／よる／足す」と、★＋の行から 下から 上がる 1枚です。
 //   ★節ごとに 判定を 書かないため、★ここ1つに 持たせます。
-const RecordFoldContext = createContext({ layoutV2: false, openFold: null });
+const RecordFoldContext = createContext({ layoutV2: false, openSheet: null });
+
+/**
+ * ★引っ越してきた 節を、★開いている 1枚の 中へ 送ります（★2026-09-11）。
+ *
+ *   ★★節そのものを 動かしていません。★JSX の 場所は これまでどおりです。
+ *     ★★動かすと、★入れ子の 条件（showGroup・型ごとの項目）が ずれます。
+ *     ★★描く 先だけを 移すので、★中の 打ちかけの 字も 消えません
+ *       （★React の 木の 上では 同じ 場所に 居ます）。
+ *   ★★門の外（38人）では、★何も しません。★そのまま その場に 描きます。
+ *   ★★1枚が 開いていない ときも、★そのまま その場に 描きます。
+ *     ★そのとき 出るのは、★どの 1枚にも 入らない 節だけです
+ *       （★いまは 気候・滞在地 ひとつ。★お決め 5-b ㋒）。
+ *   ★★行き先の 入れ物は、★1枚が 描かれた あとに 現れます。
+ *     ★だから 描き終わってから 探します（★useEffect）。
+ */
+function RecordSectionHost({ layoutV2, openSheet, children }) {
+  const [slot, setSlot] = useState(null);
+  useEffect(() => {
+    if (!layoutV2 || !openSheet) { setSlot(null); return; }
+    setSlot(document.getElementById(SHEET_SLOT_ID));
+  }, [layoutV2, openSheet]);
+  if (layoutV2 && openSheet) {
+    return slot ? createPortal(children, slot) : null;
+  }
+  return children;
+}
 
 function SectionCard({ title, icon: Icon, children, id, highlighted, fold }) {
   const ref = useRef(null);
@@ -5311,9 +5344,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [pendingOrgInvitation, setPendingOrgInvitation] = useState(null);
   const [myAllLessons, setMyAllLessons] = useState([]); // 生徒として、教室をまたいで統合した全レッスン
   const [formData, setFormData] = useState(null);
-  // ★★いま開いている 折りたたみ（★見本③・2026-09-09）。★1つだけ 開きます。
-  //   ★★門の外では 使いません。★節は これまでどおり 全部 出ます。
-  const [openFold, setOpenFold] = useState(null);
+  // ★★「いま開いている 折りたたみ（openFold）」は 外しました（★2026-09-11）。
+  //   ★★折りたたみ 5つは 9月9日の 古い見本の ものでした。
+  //     ★正しい 見本は「あさ／よる／足す」と、★＋の行から 出る 1枚です。
+  //   ★★いま どの 1枚が 開いているかは recordSheet が 持ちます。
+  //     ★台を 2つ 持つと、★片方だけ 変わります。
   const [saveStatus, setSaveStatus] = useState("idle");
   const [saveError, setSaveError] = useState("");
   const [toastMessage, setToastMessage] = useState(null);
@@ -10440,6 +10475,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
   const recordModeInUse = layoutV2 ? "full" : profile.record_mode;
   const showGroup = (key) => isFieldGroupVisible(key, { mode: recordModeInUse, foldedGroups: profile.folded_groups });
+  // ★★中身の 無い 1枚を 開かせないこと（★2026-09-11）。
+  //   ★★引っ越してきた 節だけの 1枚（本番・レッスン／ひとこと）は、
+  //     ★その節を 畳んでいる方には、★真っ白な 1枚に なります。
+  //   ★★「開けたのに 何も 無い」を 作らないため、★行そのものを 出しません。
+  //   ★★節を 消してはいません。★畳みを 解けば、★行も 戻ります。
+  const sheetHasSections = (key) => {
+    const spec = SECTION_SHEETS.find((x) => x.sheet === key);
+    return !spec || spec.sections.some((k) => showGroup(k));
+  };
 
   // 型ごとの追加項目（職業を声の型で切り直す §5-2）。
   // ★occupation を必ず渡すこと。渡さないと「その他」の人にも項目が出ます。
@@ -13920,62 +13964,78 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               // ★★折りたたみの いまを、★節へ 渡します（★見本③）。
               //   ★★門の外は { layoutV2:false } なので、★節は 全部 出ます。
               //     ★38人の 画面を、★1つも 変えません。
-              <RecordFoldContext.Provider value={{ layoutV2, openFold }}>
+              <RecordFoldContext.Provider value={{ layoutV2, openSheet: recordSheet }}>
               <div className="space-y-5">
-                {/* ★★見本③の いちばん上（★2026-09-09）。★2タップで 終わります。
+                {/* ★★記録の 画面（★動く見本の S_kiroku ／ 2026-09-11 に 作り直し）。
                     ★★名簿に 載っている方にだけ 出します（★lib/layoutV2.js）。
                       ★一般の 38人には 出ません。★下の欄は 1つも 変えていません。
-                    ★★行き先を ここで 決めません。★lib/recordV2.js だけが 決めます。 */}
+                    ★★行き先を ここで 決めません。★lib/recordV2.js だけが 決めます。
+                    ★★＋の 行を 押すと、★下から 1枚が 上がります。
+                      ★その 1枚の 中に、★これまでの 節が 引っ越してきます
+                      （★どれが どこへ 入るかは SECTION_SHEETS が 持ちます）。 */}
                 {layoutV2 && formData && (
                   <RecordV2Head
                     entry={formData}
                     dateBand={dateBandNode}
                     saved={saveStatus === "saved"}
-                    openFold={openFold}
-                    onToggleFold={(k) => setOpenFold((cur) => (cur === k ? null : k))}
-                    onSkip={() => { setOpenFold(null); setActiveTab("home"); }}
-                    onPick={(w) => {
-                      // ★★押した その場で 保存します（★見本③「ここでもう保存されています」）。
-                      //   ★★setFormData の あとの formData は まだ 古い姿です。
-                      //     ★だから、★作った姿を そのまま handleSave に 渡します。
-                      const next = applyConditionWord(formData, w);
-                      setFormData(next);
-                      handleSave(next);
-                    }} />
-                )}
-                {/* ★★＋の 行（★見本の rowIn ／ 2026-09-11・第1便）。
-                    ★★見本では「＋の 行を 押すと 下から シートが 出ます」。
-                      ★★これまで、★押しても 何も 起きませんでした。
-                    ★★しまう 欄は これまでどおりです。★新しい 欄を 作っていません。
-                      ★ねむり … bedtime ＋ sleepHours
-                      ★こえ　 … nonPerformanceSpeechMinutes
-                    ★★食べたもの・からだのことは、★言葉が いまの ものと 違うので
-                      ★坂本さんに お尋ね中です（★2026-09-11）。ここには まだ 置きません。 */}
-                {layoutV2 && formData && (
-                  <div style={{ marginTop: 12 }}>
-                    <SheetRow
-                      label={NEMURI.title}
-                      value={typeof formData.sleepHours === "number"
-                        ? sleepWord(formData.sleepHours) : null}
-                      onOpen={() => setRecordSheet("ねむり")} />
-                    <SheetRow
-                      label={KOE.title}
-                      value={(SPEECH_MINUTE_CHOICES.find(
-                        (c) => c.value === formData.nonPerformanceSpeechMinutes) || {}).label || null}
-                      onOpen={() => setRecordSheet("こえ")} />
-                    {/* ★★足す（どれも 任意）── 見本の 見出しの ままです。
-                        ★★数を 出しません。★「◯つ」と 書かない こと
-                          （★見本は「3つ」と 出しますが、★この家は 数を 出しません）。
-                          ★入っているか どうかだけを、★✓ で 出します。 */}
-                    <SheetRow
-                      label={TABE.title}
-                      value={(formData.dinnerTags || []).length > 0 ? "あり" : null}
-                      onOpen={() => setRecordSheet("たべ")} />
-                    <SheetRow
-                      label={KARADA.title}
-                      value={(formData.throatSymptoms || []).length > 0 ? "あり" : null}
-                      onOpen={() => setRecordSheet("からだ")} />
-                  </div>
+                    onPickEdema={(w) => { const n = applyEdemaWord(formData, w); setFormData(n); handleSave(n); }}
+                    onPickThroat={(w) => { const n = applyThroatWord(formData, w); setFormData(n); handleSave(n); }}
+                    onPickDeki={(w) => { const n = applyDekiWord(formData, w); setFormData(n); handleSave(n); }}
+                    onSkip={() => { setRecordSheet(null); setActiveTab("home"); }}
+                    onSubmit={() => handleSave()}
+                    sleepRow={(
+                      <SheetRow
+                        label={NEMURI.title}
+                        value={typeof formData.sleepHours === "number"
+                          ? sleepWord(formData.sleepHours) : null}
+                        onOpen={() => setRecordSheet("ねむり")} />
+                    )}
+                    koeRow={(
+                      <SheetRow
+                        label={KOE.title}
+                        value={(SPEECH_MINUTE_CHOICES.find(
+                          (c) => c.value === formData.nonPerformanceSpeechMinutes) || {}).label || null}
+                        onOpen={() => setRecordSheet("こえ")} />
+                    )}
+                    addRows={(
+                      <>
+                        {/* ★★数を 出しません。★「◯つ」と 書かない こと
+                            （★見本は「3つ」と 出しますが、★この家は 数を 出しません）。
+                            ★入っているか どうかだけを、★✓ で 出します。 */}
+                        {sheetHasSections("ほんばん") && (
+                          <SheetRow
+                            label={HONBAN.title}
+                            value={(formData.activities || []).length > 0 ? "あり" : null}
+                            onOpen={() => setRecordSheet("ほんばん")} />
+                        )}
+                        <SheetRow
+                          label={TABE.title}
+                          value={(formData.dinnerTags || []).length > 0 ? "あり" : null}
+                          onOpen={() => setRecordSheet("たべ")} />
+                        <SheetRow
+                          label={KARADA.title}
+                          value={(formData.throatSymptoms || []).length > 0 ? "あり" : null}
+                          onOpen={() => setRecordSheet("からだ")} />
+                        {sheetHasSections("ひとこと") && (
+                          <SheetRow
+                            label={HITOKOTO.title}
+                            value={formData.notes ? "あり" : null}
+                            onOpen={() => setRecordSheet("ひとこと")} />
+                        )}
+                        {/* ★★足す の 7つめ（★坂本さんの お決め 2 ㋐・2026-09-11）。
+                            ★★見本に この行は ありません。★お決めで 足しました。
+                            ★★その日 出す 項目が 1つも 無い方には、★行を 出しません。
+                              ★中身の 無い 1枚を 開かせない ため。 */}
+                        {typeFieldsForToday.length > 0 && (
+                          <SheetRow
+                            label={SHIGOTO.title}
+                            value={typeFieldsForToday.some(
+                              (f) => (formData.typeFields || {})[f.key] != null
+                                && (formData.typeFields || {})[f.key] !== "") ? "あり" : null}
+                            onOpen={() => setRecordSheet("しごと")} />
+                        )}
+                      </>
+                    )} />
                 )}
                 {/* ★かんたん表示の「1画面に1つ」（見やすさ §3-3）。
                     ★下のふつうの記録欄は消していない。ここで答えても、
@@ -14121,7 +14181,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 )}
 
                 {formData && (
-                  <>
+                  <RecordSectionHost layoutV2={layoutV2} openSheet={recordSheet}>
                     {/* ★★門の中では、★この切替を 出しません（★2026-09-10）。
                         ★★見本③は、★5つの 折りたたみ だけです。★切替は ありません。
                         ★★折りたたみと 切替が 重なると、
@@ -14275,7 +14335,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ★「その他」を選んだ人には、配合を自分で動かすまで出しません。 */}
                     {/* 呼び方が変わったことの知らせ（§8③）。★1回だけ。
                         記録は何も変わっていない、と先に伝えます。 */}
-                    {showOccupationNotice && (
+                    {/* ★★1枚が 開いている あいだは 出しません（★2026-09-11）。
+                        ★★この知らせは 節では ないので、★どの 1枚にも 属しません。
+                          ★そのままだと、★「食べたもの」を 開いた 1枚の 中に
+                          ★★呼び方の 知らせが 出てしまいます。
+                        ★門の外（38人）では、★これまでどおり いつも 出ます。 */}
+                    {(!layoutV2 || !recordSheet) && showOccupationNotice && (
                       <div className="rounded-2xl p-4 mb-3 border"
                         style={{ background: C.paper, borderColor: C.line }}>
                         <p className="text-sm mb-2" style={{ color: C.ink }}>
@@ -14394,7 +14459,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                         {/* 改善タスクv2 §4-2: 前日からの背景は参照情報なので、入力の流れに割り込ませず、
                             保存の後ろに畳んで置く（初期状態は閉じる）。 */}
-                        {yesterdayContext && (
+                        {/* ★★①消す（★坂本さんの お決め・2026-09-11／仕分けの §3）。
+                            ★★何を　「前日からのコンディション背景」の 帯。
+                            ★★なぜ　★動く見本の 記録の 画面に ありません。
+                              ★★前日の ご自分の 記録を もう一度 見せているだけで、
+                                ★書く 欄では ありません。
+                              ★「ふりかえる → さかのぼる」が 同じことを、もっと 広く します。
+                            ★★元の記録は 1件も 消えていません。★表示だけを やめました。
+                            ★★門の外（38人）には、★これまでどおり 出ます。
+                            ★記録　docs/reports/消したものの記録.md */}
+                        {!layoutV2 && yesterdayContext && (
                           <details className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                             <summary className="cursor-pointer ff-display italic text-lg">{t("titleYesterdayContext")}</summary>
                             <p className="text-xs mt-1 mb-3" style={{ color: C.inkSoft }}>{t("noteYesterdayContext")}</p>
@@ -14563,8 +14637,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           <div className="grid grid-cols-2 gap-4">
                             <NumberField label={t("labelTemperature")} icon={Thermometer} value={formData.temperature ?? ""} step={1} min={-30} max={50} suffix="℃"
                               onChange={(v) => setFormData((f) => ({ ...f, temperature: v, weatherSource: "entered" }))} />
-                            <NumberField label={t("labelHumidity")} icon={Wind} value={formData.humidity ?? ""} step={5} min={0} max={100} suffix="%"
-                              onChange={(v) => setFormData((f) => ({ ...f, humidity: v, weatherSource: "entered" }))} />
+                            {/* ★★①消す（★坂本さんの お決め・2026-09-11／仕分けの §3 の 5-a）。
+                                ★★見本が 画面で 約束しています ──
+                                  「部屋の しめり は こちらで 取ります。…この2つは 聞きません。」
+                                ★★聞かないと 書いておいて 欄を 出すのは、★筋が 通りません。
+                                ★★humidity の 列も、★これまでに 書かれた 値も そのままです。
+                                ★★門の外（38人）には、★これまでどおり 出ます。
+                                ★記録　docs/reports/消したものの記録.md */}
+                            {!layoutV2 && (
+                              <NumberField label={t("labelHumidity")} icon={Wind} value={formData.humidity ?? ""} step={5} min={0} max={100} suffix="%"
+                                onChange={(v) => setFormData((f) => ({ ...f, humidity: v, weatherSource: "entered" }))} />
+                            )}
                           </div>
                           {/* ★引き継いだ値には、必ずこの一行を添えます（§5）。
                               「そのままで構いません」とは書かないこと。
@@ -15364,11 +15447,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ★★★理由の入力欄を、★作らないこと。
                           ★何があったかは、★ご本人だけが知っていれば足ります。
                         ★決めは lib/periodMarkers.js が持ちます。★ここでは持ちません。 */}
-                    <PeriodMarkerButton
-                      dateISO={selectedDate}
-                      markers={periodMarkers}
-                      busy={markerBusy}
-                      onToggle={handleTogglePeriodMarker} />
+                    {/* ★★③引っ越しました（★坂本さんの お決め 10 ㋑・2026-09-11）。
+                        ★★門の中では、★もっと ▸ じぶんの記録 ▸ ここから区切りをつける です。
+                        ★★門の外（38人）には、★これまでどおり ここに 出ます。 */}
+                    {!layoutV2 && (
+                      <PeriodMarkerButton
+                        dateISO={selectedDate}
+                        markers={periodMarkers}
+                        busy={markerBusy}
+                        onToggle={handleTogglePeriodMarker} />
+                    )}
 
                     {showGroup("exercise") && (
                     <SectionCard title={t("sectionExercise")} icon={Dumbbell} fold="exercise">
@@ -15490,7 +15578,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           ★「消えた」は、★書けなく なった、ということです。
                         ★★だから「消す」では なく「閉じている 間は 出さない」に しました。
                         ★門の外（38人）には、★これまでどおり いつも 出ます。 */}
-                    {(!layoutV2 || openFold) && (
+                    {!layoutV2 && (
                     <>
                     <button onClick={() => handleSave()} disabled={saveStatus === "saving"}
                       className="w-full rounded-2xl py-3.5 font-medium flex items-center justify-center gap-2 transition-all"
@@ -15506,7 +15594,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     )}
                       </>
                     )}
-                  </>
+                  </RecordSectionHost>
                 )}
               </div>
               </RecordFoldContext.Provider>
@@ -20913,6 +21001,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   <DailyAskPicker value={dailyAsk}
                     onChange={(next) => setDailyAsk(writeAsk(next))} />
                 ) : null}
+                {/* ★★ここから区切りをつける（★記録の 画面から 引っ越し・2026-09-11）。
+                    ★★坂本さんの お決め 10 ㋑。★消していません。★場所だけ 変わりました。
+                    ★★どの日に つけるかは、★記録の 画面で 選んでいる 日です。
+                      ★日を 選ぶ 口を、★ここに もう1つ 作りません。
+                      ★2つ あると、★どちらの 日に ついたか 分からなく なります。
+                    ★決めは lib/periodMarkers.js が 持ちます。★ここでは 持ちません。 */}
+                {layoutV2 && moreSection === "区切り" ? (
+                  <div>
+                    <p style={{ ...TYPE.usual, marginBottom: 9 }}>
+                      {formatDateLabel(selectedDate, language)}
+                    </p>
+                    <PeriodMarkerButton dateISO={selectedDate} markers={periodMarkers}
+                      busy={markerBusy} onToggle={handleTogglePeriodMarker} />
+                  </div>
+                ) : null}
                 {layoutV2 && moreSection !== null ? (
                   <button type="button" onClick={() => setMoreSection(null)}
                     style={{ display: "block", background: "transparent", border: "none",
@@ -21729,6 +21832,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             handleSave(next);
           }}
           onClose={() => setRecordSheet(null)} />
+      )}
+      {/* ★★引っ越してきた 節 だけの 1枚（★坂本さんの お決め・2026-09-11）。
+          ★★見本の 札を ここに 作り直しません。
+            ★同じ 列への 入口が 2つに なると、★片方で 書いて もう片方で 消えます。
+          ★★中身は SECTION_SHEETS が 決めます（★lib/recordV2.js）。
+            ★ほんばん … 練習・公演 ／ ひとこと … メモ ／ しごと … お仕事に合わせた記録 */}
+      {layoutV2 && formData && recordSheet === "ほんばん" && (
+        <SectionSheet spec={HONBAN} onClose={() => setRecordSheet(null)} />
+      )}
+      {layoutV2 && formData && recordSheet === "ひとこと" && (
+        <SectionSheet spec={HITOKOTO} onClose={() => setRecordSheet(null)} />
+      )}
+      {layoutV2 && formData && recordSheet === "しごと" && (
+        <SectionSheet spec={SHIGOTO} onClose={() => setRecordSheet(null)} />
       )}
       {layoutV2 && recordSheet === "アカウント" && (
         <ListSheet title="アカウント" rows={ACCOUNT_ROWS}

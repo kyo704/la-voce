@@ -82,7 +82,6 @@ files.forEach((f) => {
 //     ★減らすのは いつでも できます。★増やすと、★ここが 落ちます。
 //   ★★直したら、★この 表から その 行を 減らしてください。
 const BASELINE = {
-"record-v2.test.js": 5,
   "teacher-org-card.test.js": 3,
   "vocal-dose.test.js": 1,
   "start-flow.test.js": 1,
@@ -103,7 +102,6 @@ const BASELINE = {
   "compare-groups.test.js": 1,
   "analysis-families.test.js": 1,
   "analysis-core.test.js": 1,
-  "a03-kiroku.test.js": 1,
 };
 
 const byFile = {};

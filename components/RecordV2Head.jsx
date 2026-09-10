@@ -2,50 +2,116 @@
 
 import { C } from "@/lib/tokens";
 import {
-  CONDITION_CHOICES, conditionValue, conditionMark,
-  mayUseQuickCondition, readConditionValue, RECORD_FOLDS
+  EDEMA_CHOICES, THROAT_CHOICES, DEKI_CHOICES,
+  A03_HEADS, A03_TITLES, A03_ASK_NOTE, A03_NOTES, A03_SKIP, A03_SUBMIT,
+  markOf, fiveOf, mayUseQuickCondition,
+  readThroatValue, readDekiValue
 } from "@/lib/recordV2";
 import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
 
 // ============================================================================
-// 「記録」の いちばん上 ── ★A03「2タップで完成」（★design.zip ／ 2026-09-10）
+// 「記録」の 画面（A03）── ★動く見本の S_kiroku() の 形
 //
-//   ★出どころ docs/design/pack/screens/A03-記録2タップで完成.html（★HTML が 正）
-//            docs/design/pack/screens/A03-記録2タップで完成.txt（★画面に 出る 文字）
+//   ★出どころ docs/design/pack-final/00-動く見本（さわれる・全画面）.html
+//     の S_kiroku()（★616〜690行）。★これが 唯一の 正です。
 //
-//   ★★見本の 並び
-//     hd（記録＋保存しました）／ こえの ちょうし ／ 3択 ／
-//     折りたたみ 5つ ／ きょうは、書かない
+//   ★★2026-09-11、★9月9日の「折りたたみ 5つ」から 作り直しました。
+//     ★★静止画（screens/*.html）は 24時間 古く、★裁定20本ぶん 反映が
+//       ありませんでした（★正誤表 §1）。★あれを 見て 作っていました。
+//     ★★正しい 形は「あさ／よる／足す」の 3つの 見出しです。
 //
-//   ★★2タップで 終わります。★3択を1つ 押すと、★その場で 保存されます。
-//     ★「きろくする」も「完了」も ありません（★A03 の 注記）。
-//     ★★完了が あると、★埋まっていない日が 未完成に なります。
-//       ★書かない日を、★失敗に しません。
-//
-//   ★★但し書きを 画面から 外しました（★2026-09-10）。
-//     ★前は「ここでもう保存されています。「完了」はありません。」を 出していました。
-//     ★★design.zip の 決め ──「★で始まる行は、画面に出ない、実装への注記です」
-//       ★あの文は A03-….notes.md に 書かれた 注記でした。
-//       ★★.txt（画面に 出る 文字だけ）にも、★入っていません。
-//     ★★注記を 画面に 写していました。★外しました。
-//
-//   ★★日付を ここから 外しました。
-//     ★見本の hd は「記録」と「保存しました」だけです。
-//     ★★すぐ 下に 日付の 帯（‹ 9月9日 ›）が 出ており、★消えていません。
+//   ★★並び
+//     hd（記録＋保存しました）／ 日付の帯 ／
+//     あさ … むくみ3択 ＋ 昨夜の睡眠 ／
+//     よる … のど3択 ＋ 出来3択 ＋ 声を使った時間 ／ しるし ／
+//     足す … 本番レッスン・食べたもの・からだのこと・ひとこと・お仕事 ／
+//     ［きょうは 書かない］［出す］／ しるし 3行
 //
 //   ★★行き先を ここで 決めません。★lib/recordV2.js だけが 決めます。
 //   ★★大きさ・間・書体は lib/uiKit.js が 持ちます。★ここで 決めません。
-//   ★★数を 出しません。★「4」も「あと◯つ」も 出しません。
+//   ★★数を 出しません。★「n/5」も「あと◯つ」も 出しません。
+//     ★★見本は「3つ」と 出しますが、★見本自身が「この見本の 説明用です」と
+//       断っています。★この家では 出しません。
+//
+//   ★★「?（記録のきまり）」を 置いていません。
+//     ★見本には ありますが、★行き先の 画面が まだ ありません。
+//     ★★押せない ボタンを 置かない、という 決めです。
 //
 //   ★見張り components/tests/record-v2.test.js
 //         components/tests/a03-kiroku.test.js
 // ============================================================================
 
+/** ★見本の .h3（★小見出し）。 */
+function H3({ children }) {
+  return (
+    <p style={{ ...TYPE.h3, margin: `${SPACE.h3Top}px 0 ${SPACE.h3Bottom}px` }}>
+      {children}
+    </p>
+  );
+}
+
+/**
+ * ★3択（★見本の tri）。
+ *
+ *   ★★印（◎○△）は 並びから 出します。★組ごとに 書き写しません。
+ *   ★★選ばれた 印は、★2px の 枠です。★色は その 上の 念押しです。
+ *     ★色だけに 意味を 持たせていません。
+ */
+function Tri({ title, choices, current, onPick }) {
+  return (
+    <div style={{ ...cardStyle, marginBottom: SPACE.cardGap }}>
+      <div style={{ ...TYPE.mini, marginBottom: rem(9) }}>{title}</div>
+      <div style={{ display: "flex", gap: 7 }}>
+        {choices.map((w, i) => {
+          const on = current === w;
+          return (
+            <button key={w} type="button" onClick={() => onPick(w)}
+              aria-pressed={on}
+              style={{
+                ...cardStyle,
+                flex: 1, minWidth: 0,
+                minHeight: SPACE.tapMin,
+                padding: "13px 6px",
+                textAlign: "center",
+                border: on ? `2px solid ${C.curtain}` : cardStyle.border,
+                fontFamily: FONT_STACK
+              }}>
+              <span aria-hidden="true" style={{
+                display: "block", fontSize: rem(26), lineHeight: 1,
+                color: on ? C.curtain : C.ink,
+                // ★★見本は 濃さで 3段に します（★opacity 1／.72／.5）。
+                //   ★★選ばれていない ときだけ 薄くします。
+                opacity: on ? 1 : [1, 0.72, 0.5][i]
+              }}>
+                {markOf(choices, w)}
+              </span>
+              <span style={{
+                display: "block", fontSize: rem(12), marginTop: rem(5),
+                color: on ? C.curtain : C.ink,
+                fontWeight: on ? 700 : 400
+              }}>{w}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function RecordV2Head({
-  entry, onPick, saved, openFold, onToggleFold, onSkip, dateBand
+  entry, saved, dateBand,
+  onPickEdema, onPickThroat, onPickDeki,
+  sleepRow, koeRow, addRows,
+  onSkip, onSubmit
 }) {
   const quick = mayUseQuickCondition(entry);
-  const current = readConditionValue(entry);
+  const throatNow = readThroatValue(entry);
+  const dekiNow = readDekiValue(entry);
+  const edemaNow = entry ? entry.morningEdema : null;
+
+  // ★★1〜5 を 言葉に 戻します。★書いたのと 同じ 切り方で 読みます。
+  const wordOf = (choices, v) =>
+    (choices.find((w) => fiveOf(choices, w) === v) || null);
 
   return (
     <div style={{ fontFamily: FONT_STACK }}>
@@ -63,116 +129,84 @@ export default function RecordV2Head({
         ) : null}
       </div>
 
-      {/* ★★日付の 帯（★2026-09-10・坂本さんの お決め⑪「上に、移動してください」）。
-          ★★見本③に この帯は ありません。★けれど 消せません ──
-            ★消すと、★前の日を 書けなく なります。
-            ★「消えた」は、★書けなく なった、ということです。
-          ★★下（折りたたみの あと）に ありました。★題の 近くへ 上げました。
-          ★★中身は 呼ぶ側の ままです。★作り直していません。 */}
+      {/* ★★日付の 帯。★見本は 日付を 字で 出すだけですが、★消せません ──
+          ★消すと、★前の日を 書けなく なります。
+          ★「消えた」は、★書けなく なった、ということです。 */}
       {dateBand || null}
 
-      {/* ★★こえの ちょうし（★見本 .h3）。
-          ★★A01 は「こえの調子」、★A03 は「こえの ちょうし」です。
-            ★見本の 中で 揺れていますが、★画面ごとの HTML に 従います。
-            ★★どちらかに 寄せると、★寄せた ほうが 見本と ずれます。 */}
-      <p style={{ ...TYPE.h3, margin: `${SPACE.h3Top}px 0 ${SPACE.h3Bottom}px` }}>
-        こえの ちょうし
-      </p>
+      {/* ══════ あさ ══════ */}
+      <H3>{A03_HEADS.morning}</H3>
+      <Tri title={A03_TITLES.edema} choices={EDEMA_CHOICES}
+        current={typeof edemaNow === "number" ? EDEMA_CHOICES[edemaNow] : null}
+        onPick={(w) => onPickEdema(w)} />
+      {sleepRow || null}
 
+      {/* ══════ よる ══════ */}
+      <H3>{A03_HEADS.night}</H3>
       {quick ? (
-        // ★★カード 3枚（★見本 .two ── gap 7 ／ 下に 12）。
-        <div style={{ display: "flex", gap: 7, marginBottom: 12 }}>
-          {CONDITION_CHOICES.map((w) => {
-            const on = current != null && conditionValue(w) === current;
-            return (
-              <button key={w} type="button" onClick={() => onPick(w)}
-                aria-pressed={on}
-                style={{
-                  ...cardStyle,
-                  flex: 1, minWidth: 0,
-                  padding: "16px 6px",
-                  textAlign: "center",
-                  // ★★選ばれた 印は、★2px の 枠です。★色は その 上の 念押しです。
-                  //   ★★形（◎○△）と 枠と 太さで 分かります。
-                  //     ★色だけに 意味を 持たせていません。
-                  border: on ? `2px solid ${C.curtain}` : cardStyle.border,
-                  fontFamily: FONT_STACK
-                }}>
-                <span aria-hidden="true" style={{
-                  display: "block", fontSize: rem(30), lineHeight: 1,
-                  color: on ? C.curtain : C.ink
-                }}>
-                  {conditionMark(w)}
-                </span>
-                <span style={{
-                  display: "block", fontSize: rem(12), marginTop: rem(5),
-                  color: on ? C.curtain : C.ink,
-                  fontWeight: on ? 700 : 400
-                }}>{w}</span>
-              </button>
-            );
-          })}
-        </div>
+        <>
+          <Tri title={A03_TITLES.throat} choices={THROAT_CHOICES}
+            current={wordOf(THROAT_CHOICES, throatNow)}
+            onPick={(w) => onPickThroat(w)} />
+          <Tri title={A03_TITLES.deki} choices={DEKI_CHOICES}
+            current={wordOf(DEKI_CHOICES, dekiNow)}
+            onPick={(w) => onPickDeki(w)} />
+        </>
       ) : (
         // ★★場面ごとに もう 書いてある日です。★3択を 出しません。
         //   ★出すと、★書いてあるものを 1つの答えで 上書きしてしまいます。
         //   ★★この姿は 見本に ありません。★見本が 描いていない 日の ことです。
-        <div style={{ ...cardStyle, marginBottom: 12 }}>
+        <div style={{ ...cardStyle, marginBottom: SPACE.cardGap }}>
           <p style={{ ...TYPE.body, margin: 0 }}>
             きょうは、場面ごとに 書いてくださっています。
           </p>
           <p style={{ ...TYPE.usual, margin: "6px 0 0" }}>
-            直すときは、下の「声・のど」から どうぞ。
+            直すときは、下の「本番以外で 声を使った時間」から どうぞ。
           </p>
         </div>
       )}
+      {koeRow || null}
 
-      {/* ★★折りたたみ 5つ（★見本の .card ＋ .li）。
-          ★★開いた時点で 並んでいます＝0タップ。★タブを 増やしません。
-          ★★1つずつ 開きます。★開くと、ほかは 閉じます。
-            ★2つ開くと、★下まで 見に行くことに なります。
-          ★★中身が どこに あるかは lib/recordV2.js が 持ちます。
-            ★節そのものは 動かしていません。★出し分けているだけです。
-          ★★開いた 姿は 見本に ありません（★見本は 5つとも 閉じています）。
-            ★印を「＋」から「−」に 変え、★枠を 濃くするだけに しています。 */}
-      {RECORD_FOLDS.map((f) => {
-        const on = openFold === f.key;
-        return (
-          <button key={f.key} type="button" onClick={() => onToggleFold(f.key)}
-            aria-expanded={on}
-            style={{
-              ...cardStyle,
-              display: "block", width: "100%", textAlign: "left",
-              marginBottom: SPACE.cardGap,
-              border: on ? `1px solid ${C.ink}` : cardStyle.border,
-              fontFamily: FONT_STACK
-            }}>
-            {/* ★★見本 .li ── ★上下 9px、★13px、★右に「›」。 */}
-            <span style={{
-              display: "flex", alignItems: "center", justifyContent: "space-between",
-              padding: "9px 0", ...TYPE.li
-            }}>
-              <span>{on ? "−" : "＋"} {f.label}</span>
-              <span style={{ color: C.inkSoft, fontSize: rem(11.5) }}>{on ? "﹀" : "›"}</span>
-            </span>
-          </button>
-        );
-      })}
+      {/* ★★見本 .warn。★「この2つは 聞きません」と 画面で 約束しています。
+          ★★だから、★湿度の 入力欄を 門の中では 出していません。
+            ★書いてあることと、★していることを、★合わせています。 */}
+      <div style={{
+        background: "#F6F1E4", border: "1px solid #E8DFC8", borderRadius: 12,
+        padding: `${rem(9)} ${rem(11)}`, marginBottom: rem(10),
+        ...TYPE.note
+      }}>{A03_ASK_NOTE}</div>
 
-      {/* ★★「きょうは、書かない」（★見本 ── 中央・12px・上に 14）。
+      {/* ══════ 足す（どれも 任意） ══════ */}
+      <H3>{A03_HEADS.add}</H3>
+      {addRows || null}
+
+      {/* ★★見本 .two。★左が「きょうは 書かない」、★右が「出す」。
           ★★出口の ない画面を 作らないこと。★答えられない日が あります。
-          ★★とばした数を 数えません。★「未入力」も「完了度」も 出しません。
-          ★★見本の 色は --ink3 ですが、★小さい字には 使いません
-            （★2026-09-10・坂本さんの お決め）。★ink2 に します。 */}
-      <div style={{ marginTop: SPACE.h3Top, textAlign: "center" }}>
+          ★★とばした数を 数えません。★「未入力」も「完了度」も 出しません。 */}
+      <div style={{ display: "flex", gap: 9, marginTop: 12 }}>
         <button type="button" onClick={onSkip}
           style={{
-            minHeight: SPACE.tapMin, padding: "0 16px",
-            border: "none", background: "transparent",
-            color: C.inkSoft, fontSize: rem(12), fontFamily: FONT_STACK
-          }}>
-          きょうは、書かない
-        </button>
+            flex: 1, minHeight: 48, borderRadius: 13,
+            border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+            ...TYPE.li, fontFamily: FONT_STACK
+          }}>{A03_SKIP}</button>
+        <button type="button" onClick={onSubmit}
+          style={{
+            flex: 1, minHeight: 48, borderRadius: 13,
+            border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
+            background: C.curtain, color: "#FFFDF8",
+            ...TYPE.li, fontWeight: 700, fontFamily: FONT_STACK
+          }}>{A03_SUBMIT}</button>
+      </div>
+
+      {/* ★★見本 .note の 3行。★1文字も 変えないこと。
+          ★★ここは「出しません」と 書いてある 行です。
+            ★★見張りが 禁じ手の 語を 探すときは、★この 3行を 先に 外すこと
+              （★components/tests/_source.js の 但し書き外し）。 */}
+      <div style={{ ...TYPE.note, marginTop: rem(9) }}>
+        {A03_NOTES.map((line, i) => (
+          <span key={i}>{i > 0 ? <br /> : null}{line}</span>
+        ))}
       </div>
     </div>
   );

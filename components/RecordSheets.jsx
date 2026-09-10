@@ -24,6 +24,45 @@ function Mini({ children, style }) {
 }
 
 /**
+ * ★1枚の 中の、★引っ越してきた 節が 入る ところ。
+ *
+ *   ★★節そのものは 動かしていません（★JSX の 場所は これまでどおり）。
+ *     ★描く 先だけを、★開いている 1枚の 中へ 移します（★createPortal）。
+ *   ★★動かすと、★入れ子の 条件（showGroup・型ごとの項目）が ずれます。
+ *     ★「消えた」より「動かしていない」ほうが、★はるかに 安全です。
+ *
+ *   ★★だから 入れ物は 1つだけです。★22枚に 1つずつ 作りません。
+ *     ★2つ あると、★節が どちらに 出たか 分からなく なります。
+ */
+export const SHEET_SLOT_ID = "record-sheet-slot";
+
+export function SheetSlot() {
+  return <div id={SHEET_SLOT_ID} style={{ marginTop: rem(14) }} />;
+}
+
+/**
+ * ★引っ越してきた 節 だけの 1枚（★本番・レッスン ／ ひとこと ／ お仕事）。
+ *
+ *   ★★見本の 札を ここに 作り直しません。
+ *     ★同じ 列への 入口が 2つに なると、★片方で 書いて もう片方で 消えます。
+ *   ★★これが「③引っ越す ── 機能は そのまま。置き場所だけ」の 意味です。
+ */
+export function SectionSheet({ spec, onClose }) {
+  return (
+    <BottomSheet title={spec.title} onClose={onClose} closeLabel={spec.done}>
+      <SheetSlot />
+      {spec.note ? (
+        <SheetNote>
+          {spec.note.split("\n").map((line, i) => (
+            <span key={i}>{i > 0 ? <br /> : null}{line}</span>
+          ))}
+        </SheetNote>
+      ) : null}
+    </BottomSheet>
+  );
+}
+
+/**
  * ★本番以外で 声を使った 時間。
  *
  *   ★★選択肢は 渡してもらいます。★ここに 書き写しません。
@@ -52,6 +91,7 @@ export function KoeSheet({ choices, value, onChange, onDetail, onClose }) {
             ...TYPE.li, fontFamily: FONT_STACK
           }}>{KOE.detail}</button>
       ) : null}
+      <SheetSlot />
     </BottomSheet>
   );
 }
@@ -106,6 +146,7 @@ export function NemuriSheet({ bedtime, sleepHours, onDone, onClose }) {
           ...TYPE.li, background: C.curtain, color: "#FFFDF8",
           fontWeight: 700, fontFamily: FONT_STACK
         }}>{NEMURI.done}</button>
+      <SheetSlot />
     </BottomSheet>
   );
 }
@@ -137,6 +178,7 @@ export function MarksSheet({ spec, options, value, onChange, time, onTime, times
         </>
       ) : null}
       <SheetNote>{spec.note}</SheetNote>
+      <SheetSlot />
     </BottomSheet>
   );
 }
