@@ -34,12 +34,22 @@ import { buildCompare } from "@/lib/compareView";
 const card = { ...cardStyle, marginBottom: SPACE.cardGap };
 const small = { ...TYPE.note, lineHeight: 1.8 };
 
-/** ★時間の 値を 言葉に します。★項目に よって 単位が ちがいます。 */
-function valueWord(itemKey, v) {
+/**
+ * ★時間の 値を 言葉に します。★項目に よって 単位が ちがいます。
+ *
+ *   @param short ★軸の 目盛り用。★短く します。
+ *
+ *   ★★2026-09-11、★実機で 軸の 字が 2行に 折れ、★線と 重なっていました。
+ *     ★「5時間00分」は 9px でも 54px あり、★軸の 幅 40px に 入りません。
+ *     ★★目盛りは 切りの よい 数なので、★分は たいてい 00 です。
+ *       ★★00分の ときは 書きません。★短くすると 折れません。
+ */
+function valueWord(itemKey, v, short) {
   if (typeof v !== "number" || !Number.isFinite(v)) return null;
   if (itemKey === "dinnerToBed" || itemKey === "sleepHours") {
     const h = Math.floor(v);
     const m = Math.round((v - h) * 60);
+    if (short && m === 0) return `${h}時間`;
     return `${h}時間${String(m).padStart(2, "0")}分`;
   }
   if (itemKey === "bedtime") {
@@ -108,7 +118,12 @@ function Scatter({ data, itemKey }) {
   const span = (hi - lo) || 1;
 
   // ★見本の 寸法。★画素で そのまま 置きます。
-  const H = 206, AXIS = 40, TOP = 10, BOTTOM = 22, RIGHT = 2;
+  //   ★★2026-09-11、★軸と 下の 余白を 広げました。
+  //     ★軸 40 → 56　★「5時間00分」が 入らず、2行に 折れていました。
+  //     ★下 22 → 36　★下の 名前は 2行（名前＋日数）です。★22 では 足りません。
+  //   ★★見本の 寸法から 離れます。★けれど 見本の 図は 3行の 字を 持ちません。
+  //     ★字が 重なったままより、★入る ほうを 採ります。
+  const H = 214, AXIS = 56, TOP = 14, BOTTOM = 36, RIGHT = 2;
   const plotH = H - TOP - BOTTOM;
   /** ★値 → .dp の 中の 上からの 画素。 */
   const yOf = (v) => TOP + (1 - (v - lo) / span) * plotH;
@@ -132,17 +147,26 @@ function Scatter({ data, itemKey }) {
 
   const medLine = (v, ci) => {
     if (v == null) return null;
+    // ★★2026-09-11、★数を 線の 横から 上へ 移しました。
+    //   ★★横に 置くと、★下の ほうの まんなかで、
+    //     ★★下の 名前（「よく出た日」）と 重なっていました。
+    //     ★実機の 写真で「よく出た日3時間06分」と 重なって 見えていました。
+    //   ★★上に 置けば、★下の 名前とは 決して ぶつかりません。
+    //   ★★いちばん 上に 近い ときだけ、★下に 出します（★はみ出さないため）。
+    const y = yOf(v) - TOP;
+    const above = y > 16;
     return (
-      <div key={"m" + ci} style={{ position: "absolute", left: 0, right: 0, top: yOf(v) - TOP }}>
+      <div key={"m" + ci} style={{ position: "absolute", left: 0, right: 0, top: y }}>
         <div style={{
-          position: "absolute", left: `${CENTER[ci]}%`, width: 44, marginLeft: -22,
+          position: "absolute", left: `${CENTER[ci]}%`, width: 52, marginLeft: -26,
           borderTop: `1.6px dashed ${C.curtain}`, opacity: 0.85
         }} />
         <span style={{
-          position: "absolute", left: `${CENTER[ci]}%`, marginLeft: 24,
-          transform: "translateY(-50%)",
+          position: "absolute", left: `${CENTER[ci]}%`,
+          transform: "translateX(-50%)",
+          top: above ? -13 : 4,
           fontSize: rem(9), color: C.curtain, background: C.card,
-          padding: "1px 3px", borderRadius: 3, whiteSpace: "nowrap"
+          padding: "1px 4px", borderRadius: 3, whiteSpace: "nowrap"
         }}>{valueWord(itemKey, v)}</span>
       </div>
     );
@@ -153,6 +177,8 @@ function Scatter({ data, itemKey }) {
       position: "absolute", bottom: 0,
       left: `calc(${AXIS}px + (100% - ${AXIS + RIGHT}px) * ${CENTER[ci] / 100})`,
       transform: "translateX(-50%)",
+      // ★★下の 名前は 2行です（★名前と 日数）。★重ならないよう 行の 高さを 決めます。
+      lineHeight: 1.4,
       fontSize: rem(10.5), color: C.inkSoft, textAlign: "center", whiteSpace: "nowrap"
     }}>
       {label}
@@ -172,10 +198,12 @@ function Scatter({ data, itemKey }) {
             height: 1, background: C.line2
           }} />
           <span style={{
-            position: "absolute", left: 0, width: AXIS - 4, top: yOf(v),
+            position: "absolute", left: 0, width: AXIS - 6, top: yOf(v),
             transform: "translateY(-50%)", textAlign: "right",
-            fontSize: rem(9), color: C.inkSoft
-          }}>{valueWord(itemKey, v)}</span>
+            fontSize: rem(9), color: C.inkSoft,
+            // ★★折り返させません。★折れると 線と 重なります。
+            whiteSpace: "nowrap", overflow: "hidden"
+          }}>{valueWord(itemKey, v, true)}</span>
         </span>
       ))}
       {/* ★★点の 置き場（★見本の .dpg）。 */}
