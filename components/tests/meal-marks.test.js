@@ -102,8 +102,20 @@ function ok(name, cond, extra) {
   ok("★「◯つ立ちました」と書いていない", !/[0-9０-９]\s*つ(立|つき|付)/.test(vt));
 
   console.log("■ ★いまある dinner_tags を、書き替えていない");
-  ok("6つのタグは、そのまま",
-    /const DINNER_TAGS = \["揚げ物", "あっさり", "炭酸", "トマト系", "カフェイン", "アルコール"\]/.test(vt));
+  // ★★2026-09-11、★見本の SH['tabe'] の 言葉を 4つ 足しました。
+  //   ★★見張るのは「6つ ちょうど」では ありません。
+  //     ★「もとの 6つが、★1つも 消えず、★順も 変わっていない」ことです。
+  //     ★★消したり 並べ替えたり すると、★これまでの 記録が 読めなく なります。
+  const dt = vt.slice(vt.indexOf("const DINNER_TAGS = ["));
+  const head = dt.slice(0, dt.indexOf("]") + 1);
+  ok("もとの6つが、順のまま先頭にある",
+    /^const DINNER_TAGS = \["揚げ物", "あっさり", "炭酸", "トマト系", "カフェイン", "アルコール"/.test(head));
+  // ★★足したものにも、必ず 鍵が あること。★鍵が 無いと events に 出ません。
+  const keys = vt.slice(vt.indexOf("const DINNER_TAG_KEYS"));
+  const keyHead = keys.slice(0, keys.indexOf("};") + 2);
+  const tags = [...head.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+  ok("足したものにも鍵がある",
+    tags.every((t) => keyHead.includes(`"${t}":`)) && tags.length >= 6);
 
   console.log("■ SQL");
   const sql = readCode("supabase", "2026-09-07-食事の印8つ.sql");

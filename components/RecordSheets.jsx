@@ -111,6 +111,37 @@ export function NemuriSheet({ bedtime, sleepHours, onDone, onClose }) {
 }
 
 /**
+ * ★からだのこと ／ 食べたもの（★SH['karada'] ／ SH['tabe']）。
+ *
+ *   ★★いくつでも 選べます。★もう一度 押すと 外れます。
+ *   ★★数を 出しません。★「◯つ 選びました」と 書きません。
+ *   ★★良い・悪いを 決めません（★見本の 但し書き）。
+ */
+export function MarksSheet({ spec, options, value, onChange, time, onTime, times, timeLabel, onClose }) {
+  const chosen = Array.isArray(value) ? value : [];
+  const toggle = (v) =>
+    onChange(chosen.includes(v) ? chosen.filter((x) => x !== v) : [...chosen, v]);
+  return (
+    <BottomSheet title={spec.title} onClose={onClose} closeLabel={spec.done}>
+      <div style={{ ...TYPE.usual, color: C.inkSoft, marginBottom: rem(11) }}>{spec.lead}</div>
+      <Pills options={options} value={chosen} onSelect={toggle} multiple />
+      {/* ★★食べ終えた 時刻は、★食べたもの の ときだけ 出します。
+          ★渡されなければ 出しません。★空の 見出しを 置かない ため。 */}
+      {times ? (
+        <>
+          <Mini style={{ marginTop: rem(12) }}>{timeLabel}</Mini>
+          <div style={{ marginTop: rem(7) }}>
+            <Pills options={[...times]} value={time}
+              onSelect={(v) => onTime(v === time ? null : v)} small />
+          </div>
+        </>
+      ) : null}
+      <SheetNote>{spec.note}</SheetNote>
+    </BottomSheet>
+  );
+}
+
+/**
  * ★＋の 行（★見本の rowIn）。
  *
  *   ★★入っていれば みどりの ✓、★入っていなければ えんじの ＋。

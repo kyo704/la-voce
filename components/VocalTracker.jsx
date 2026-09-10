@@ -147,9 +147,9 @@ import { maySeeMoney } from "@/lib/opsShell";
 import { mayEnterOps, mayEditRoster } from "@/lib/opsShell";
 import { rosterCount } from "@/lib/orgRoster";
 import RecordV2Head from "@/components/RecordV2Head";
-import { KoeSheet, NemuriSheet, SheetRow, ListSheet } from "@/components/RecordSheets";
+import { KoeSheet, NemuriSheet, MarksSheet, SheetRow, ListSheet } from "@/components/RecordSheets";
 import {
-  KOE, NEMURI, sleepWord, ACCOUNT_ROWS, TSUCHI_ROWS, TSUCHI_NOTE,
+  KOE, NEMURI, KARADA, TABE, sleepWord, ACCOUNT_ROWS, TSUCHI_ROWS, TSUCHI_NOTE,
   YOUSU_CHOICES, YOUSU_NOTE
 } from "@/lib/recordSheets";
 import LookBackV2 from "@/components/LookBackV2";
@@ -277,10 +277,33 @@ import {
 import CharacterHome from "@/components/CharacterHome";
 
 /* ---------- constants ---------- */
-const SYMPTOM_OPTIONS = ["乾燥", "嗄れ", "痛み", "違和感", "鼻づまり", "咳", "裏返り", "喉の張り感"];
-const SYMPTOM_KEYS = { "乾燥": "symptomDry", "嗄れ": "symptomHoarse", "痛み": "symptomPain", "違和感": "symptomDiscomfort", "鼻づまり": "symptomStuffyNose", "咳": "symptomCough", "裏返り": "symptomBreak", "喉の張り感": "symptomTightness" };
-const DINNER_TAGS = ["揚げ物", "あっさり", "炭酸", "トマト系", "カフェイン", "アルコール"];
-const DINNER_TAG_KEYS = { "揚げ物": "dinnerFried", "あっさり": "dinnerLight", "炭酸": "dinnerCarbonated", "トマト系": "dinnerTomato", "カフェイン": "dinnerCaffeine", "アルコール": "dinnerAlcohol" };
+// ★★2026-09-11、★見本の SH['karada'] の 言葉を 足しました。
+//   ★★1つも 消していません（★坂本さんの お決め ①㋐）。
+//     ★消すと、★これまでに 書かれた 記録が 読めなく なります。
+//     ★38人が すでに 書いておられます。
+//   ★★見本の 6つの うち、★5つを 足しました。
+//     ★「鼻が つまる」だけ 足していません。
+//     ★★同じ ものが もう あるからです ──「鼻づまり」。
+//       ★同じ ことを 2つの 言葉で 聞くと、★記録が 2つに 割れます。
+//       ★「鼻の つまりを 出す」という お決め（★2026-09-11 ②）は、
+//       ★★すでに 満たされています。
+//   ★★列は 増えていません。throat_symptoms は 文字の 並びです。
+const SYMPTOM_OPTIONS = ["乾燥", "嗄れ", "痛み", "違和感", "鼻づまり", "咳", "裏返り", "喉の張り感",
+  "のどが いがらっぽい", "せきばらい", "のどが 渇く", "胃が もたれる", "肩が こわばる"];
+const SYMPTOM_KEYS = { "乾燥": "symptomDry", "嗄れ": "symptomHoarse", "痛み": "symptomPain", "違和感": "symptomDiscomfort", "鼻づまり": "symptomStuffyNose", "咳": "symptomCough", "裏返り": "symptomBreak", "喉の張り感": "symptomTightness",
+  "のどが いがらっぽい": "symptomScratchy", "せきばらい": "symptomThroatClear", "のどが 渇く": "symptomThirsty", "胃が もたれる": "symptomStomachHeavy", "肩が こわばる": "symptomShoulder" };
+// ★★2026-09-11、★見本の SH['tabe'] の 言葉を 足しました。
+//   ★★1つも 消していません（★坂本さんの お決め ①㋐）。
+//   ★★見本の 8つの うち、★4つだけ 足しています。
+//     ★「脂っこいもの」… ★「揚げ物」が もう あります。
+//     ★「お酒」　　　　… ★「アルコール」が もう あります。
+//     ★「炭酸」「カフェイン」… ★もう あります。
+//     ★★同じ ことを 2つの 言葉で 聞くと、★記録が 2つに 割れます。
+//   ★★列は 増えていません。dinner_tags は 文字の 並びです。
+const DINNER_TAGS = ["揚げ物", "あっさり", "炭酸", "トマト系", "カフェイン", "アルコール",
+  "からいもの", "乳製品", "チョコレート", "冷たいもの"];
+const DINNER_TAG_KEYS = { "揚げ物": "dinnerFried", "あっさり": "dinnerLight", "炭酸": "dinnerCarbonated", "トマト系": "dinnerTomato", "カフェイン": "dinnerCaffeine", "アルコール": "dinnerAlcohol",
+  "からいもの": "dinnerSpicy", "乳製品": "dinnerDairy", "チョコレート": "dinnerChocolate", "冷たいもの": "dinnerCold" };
 // lavoce-収集データ拡張案.md C-2: 服薬タグ。DINNER_TAGSと同じ複数選択タグの形式。
 const MEDICATION_OPTIONS = ["抗ヒスタミン薬", "吸入ステロイド", "経口避妊薬", "NSAIDs", "利尿薬"];
 
@@ -13846,6 +13869,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       value={(SPEECH_MINUTE_CHOICES.find(
                         (c) => c.value === formData.nonPerformanceSpeechMinutes) || {}).label || null}
                       onOpen={() => setRecordSheet("こえ")} />
+                    {/* ★★足す（どれも 任意）── 見本の 見出しの ままです。
+                        ★★数を 出しません。★「◯つ」と 書かない こと
+                          （★見本は「3つ」と 出しますが、★この家は 数を 出しません）。
+                          ★入っているか どうかだけを、★✓ で 出します。 */}
+                    <SheetRow
+                      label={TABE.title}
+                      value={(formData.dinnerTags || []).length > 0 ? "あり" : null}
+                      onOpen={() => setRecordSheet("たべ")} />
+                    <SheetRow
+                      label={KARADA.title}
+                      value={(formData.throatSymptoms || []).length > 0 ? "あり" : null}
+                      onOpen={() => setRecordSheet("からだ")} />
                   </div>
                 )}
                 {/* ★かんたん表示の「1画面に1つ」（見やすさ §3-3）。
@@ -21544,6 +21579,38 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             const next = { ...formData, bedtime: bed, sleepHours: hours };
             setFormData(next);
             handleSave(next);
+          }}
+          onClose={() => setRecordSheet(null)} />
+      )}
+      {layoutV2 && formData && recordSheet === "たべ" && (
+        <MarksSheet
+          spec={TABE}
+          options={DINNER_TAGS}
+          value={formData.dinnerTags}
+          onChange={(next) => {
+            const nx = { ...formData, dinnerTags: next };
+            setFormData(nx);
+            handleSave(nx);
+          }}
+          times={TABE.TIMES}
+          timeLabel={TABE.timeLabel}
+          time={formData.dinnerTime}
+          onTime={(v) => {
+            const nx = { ...formData, dinnerTime: v || "" };
+            setFormData(nx);
+            handleSave(nx);
+          }}
+          onClose={() => setRecordSheet(null)} />
+      )}
+      {layoutV2 && formData && recordSheet === "からだ" && (
+        <MarksSheet
+          spec={KARADA}
+          options={SYMPTOM_OPTIONS}
+          value={formData.throatSymptoms}
+          onChange={(next) => {
+            const nx = { ...formData, throatSymptoms: next };
+            setFormData(nx);
+            handleSave(nx);
           }}
           onClose={() => setRecordSheet(null)} />
       )}
