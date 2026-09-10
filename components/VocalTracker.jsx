@@ -103,7 +103,7 @@ import { markerRow } from "@/lib/periodMarkers";
 // ★「きょう」の帯（★第2便・§4）。★並び順と言葉は、あちらが持ちます。
 import TodayBand from "@/components/TodayBand";
 import TabBarV2 from "@/components/TabBarV2";
-import { TAB_BAR_HEIGHT, TYPE } from "@/lib/uiKit";
+import { TAB_BAR_HEIGHT, TYPE, SPACE, FONT_STACK, cardStyle } from "@/lib/uiKit";
 import { ScreenHead, HeadRound, H3, Card, Li } from "@/components/UiV2";
 import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
 import { moreSections } from "@/lib/moreMenu";
@@ -2586,6 +2586,32 @@ function SectionCard({ title, icon: Icon, children, id, highlighted, fold }) {
   //   ★★出し分けを 決めるのは lib/recordV2.js だけです。★ここで 決めません。
   //   ★★fold を 渡していない節は、★畳みません。★渡し忘れで 消えないためです。
   if (fold && !sectionIsOpen(fold, foldState)) return null;
+  // ★★門の中では、★見本の 形に します（★2026-09-11・design.zip / tokens.md）。
+  //   ★★節は 11 ありますが、★枠を 作っているのは ここ 1か所です。
+  //     ★1つ 直せば、★折りたたみの 中身が ぜんぶ そろいます。
+  //   ★★明朝を やめます（★tokens.md §2「アプリは 全部ゴシック」）。
+  //     ★★見出しが 明朝の 斜体で、★大きすぎました。
+  //   ★★角 14 ／ 内側 12・13 ／ カードどうし 9（★tokens.md §4・§5）。
+  //   ★門の外（38人）は、★これまでどおりです。★1つも 変えません。
+  const v2 = !!(foldState && foldState.layoutV2);
+  if (v2) {
+    return (
+      <div ref={ref} id={id} style={{
+        ...cardStyle,
+        marginBottom: SPACE.cardGap,
+        borderColor: highlighted ? C.gold : C.line,
+        borderWidth: highlighted ? 2 : 1,
+        fontFamily: FONT_STACK,
+        transition: "border-color 2s ease, border-width 2s ease"
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
+          <Icon size={13} style={{ color: C.inkSoft }} aria-hidden="true" />
+          <h3 style={{ ...TYPE.mini, color: C.inkSoft }}>{title}</h3>
+        </div>
+        <div className="space-y-4">{children}</div>
+      </div>
+    );
+  }
   return (
     <div ref={ref} id={id} className="rounded-2xl p-4 sm:p-5 border" style={{
       background: C.card, borderColor: highlighted ? C.gold : C.line, borderWidth: highlighted ? 2 : 1,

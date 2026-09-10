@@ -5,7 +5,7 @@ import {
   CONDITION_CHOICES, conditionValue, conditionMark,
   mayUseQuickCondition, readConditionValue, RECORD_FOLDS
 } from "@/lib/recordV2";
-import { TYPE, SPACE, FONT_STACK, cardStyle } from "@/lib/uiKit";
+import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
 
 // ============================================================================
 // 「記録」の いちばん上 ── ★A03「2タップで完成」（★design.zip ／ 2026-09-10）
@@ -99,13 +99,13 @@ export default function RecordV2Head({
                   fontFamily: FONT_STACK
                 }}>
                 <span aria-hidden="true" style={{
-                  display: "block", fontSize: 30, lineHeight: 1,
+                  display: "block", fontSize: rem(30), lineHeight: 1,
                   color: on ? C.curtain : C.ink
                 }}>
                   {conditionMark(w)}
                 </span>
                 <span style={{
-                  display: "block", fontSize: 12, marginTop: 5,
+                  display: "block", fontSize: rem(12), marginTop: rem(5),
                   color: on ? C.curtain : C.ink,
                   fontWeight: on ? 700 : 400
                 }}>{w}</span>

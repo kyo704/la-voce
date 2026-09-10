@@ -53,12 +53,21 @@ function ok(cond, label) {
     const n = new RegExp(prop + ":\\s*(-?[0-9.]+)").exec(m[1]);
     return n ? Number(n[1]) : null;
   }
-  ok(cssNum(".big", "font-size") === kit.TYPE.big.fontSize, "★大きな数字 26px");
-  ok(cssNum(".big s", "font-size") === kit.TYPE.bigUnit.fontSize, "★その 単位 12px");
-  ok(cssNum(".h3", "font-size") === kit.TYPE.h3.fontSize, "★小見出し 10.5px");
-  ok(cssNum(".btn", "font-size") === kit.TYPE.btn.fontSize, "★主ボタン 16px");
-  ok(cssNum(".mini", "font-size") === kit.TYPE.mini.fontSize, "★カードの 小見出し 11.5px");
-  ok(cssNum(".usu", "font-size") === kit.TYPE.usual.fontSize, "★あなたのふだん 11px");
+  // ★★2026-09-11。★TYPE の 文字の 大きさを rem に 替えました。
+  //   ★理由は「文字の大きさ」の 設定が px では 1つも 効かなかったからです。
+  //   ★見張りは「見本の 数と 合っているか」を 見ます。★書き方は 見ません。
+  //     ★"1.625rem" → 26 に 直してから くらべます（1rem ＝ 16px）。
+  function px(v) {
+    if (typeof v === "number") return v;
+    const m = /^([0-9.]+)rem$/.exec(String(v));
+    return m ? Number(m[1]) * 16 : null;
+  }
+  ok(cssNum(".big", "font-size") === px(kit.TYPE.big.fontSize), "★大きな数字 26px");
+  ok(cssNum(".big s", "font-size") === px(kit.TYPE.bigUnit.fontSize), "★その 単位 12px");
+  ok(cssNum(".h3", "font-size") === px(kit.TYPE.h3.fontSize), "★小見出し 10.5px");
+  ok(cssNum(".btn", "font-size") === px(kit.TYPE.btn.fontSize), "★主ボタン 16px");
+  ok(cssNum(".mini", "font-size") === px(kit.TYPE.mini.fontSize), "★カードの 小見出し 11.5px");
+  ok(cssNum(".usu", "font-size") === px(kit.TYPE.usual.fontSize), "★あなたのふだん 11px");
   ok(cssNum(".card", "border-radius") === kit.RADIUS.card, "★カードの 角 14");
   ok(cssNum(".btn", "border-radius") === kit.RADIUS.btn, "★主ボタンの 角 13");
   ok(cssNum(".speak", "border-radius") === kit.RADIUS.speak, "★ひとことの 角 16");

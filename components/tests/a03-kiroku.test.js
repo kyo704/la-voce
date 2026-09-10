@@ -80,8 +80,10 @@ function ok(cond, label) {
   ok(/gap: 7/.test(head), "★実装も 7px");
   ok(inlineNum('padding:16px 6px', "padding") === 16, "★カードの 内側 上下 16px");
   ok(/padding: "16px 6px"/.test(head), "★実装も 16px 6px");
-  ok(/font-size:30px/.test(html) && /fontSize: 30/.test(head), "★印は 30px");
-  ok(/font-size:12px;margin-top:5px/.test(html) && /fontSize: 12, marginTop: 5/.test(head),
+  // ★★2026-09-11。★px から rem に 替えました（文字の大きさの 設定を 効かせるため）。
+  //   ★数は 見本の まま。★包み方だけが rem(...) に なりました。
+  ok(/font-size:30px/.test(html) && /fontSize: rem\(30\)/.test(head), "★印は 30px");
+  ok(/font-size:12px;margin-top:5px/.test(html) && /fontSize: rem\(12\), marginTop: rem\(5\)/.test(head),
     "★言葉は 12px・上に 5px");
   ok(/border:2px solid var\(--enji\)/.test(html) && /2px solid \$\{C\.curtain\}/.test(head),
     "★選ばれたら 枠が 2px");
