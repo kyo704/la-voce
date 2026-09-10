@@ -80,8 +80,12 @@ function ok(cond, label) {
   const homeRaw = readRaw("lib", "homeDrawer.js");
   ok(/とだな/.test(homeRaw) && /とびら/.test(homeRaw),
     "★置き場所の 名まえが 書き残されている");
-  ok(!/「たな」　置くもの|たな　　置くもの/.test(homeRaw),
-    "★J02 の「たな」は、もう 使っていない（★J04 と 重なるため）");
+  // ★★「たな を 使っていない」ことは、★ここでは 数えません。
+  //   ★注記に「もと『たな』でした」と 書いてあるので、
+  //   ★★生の 本文で 数えると、★自分の 説明で 落ちます。
+  //     ★きょう、★見張り（_meta-absence-checks）に 捕まえてもらいました。
+  //   ★★数えるべきは 言葉では なく、★置き場所の 名まえ そのものです。
+  //     ★components/tests/room-slots.test.js が、SLOTS の label を 見ています。
 
   console.log("⑥ 色は まだ 出さない");
   const panel = readCode("components", "InteriorPanel.jsx");

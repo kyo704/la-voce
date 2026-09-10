@@ -1,6 +1,7 @@
 "use client";
 
 import { fallbackToPng } from "@/lib/imageFormat";
+import { slotOfItem, slotByKey } from "@/lib/roomSlots";
 import {
   interiorOf, interiorItemByKey, interiorSrc, windowLayers,
   floorLineOf, widthPctOf, flushRightLeftPct, isSingleSlot, windowHoleMask, hitInsetOf,
@@ -140,15 +141,46 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
   //   ★★動かしていないものは、★既定の場所に出ます。
   //     ★null のままにします。★いっせいに埋めません。
   const pos = (equipped && equipped.interiorPositions) || {};
+
+  // ★★置き場所（★9か所・2026-09-11・Opus の 裁定 ／ 見本 J02）。
+  //
+  //   ★★「★置く場所は 決まっています。★自由に 動かせません。
+  //     ★座標を 保存しません」（★J02-おくスロット.notes.md）。
+  //
+  //   ★★書いてある 座標は、★1つも 消していません。
+  //     ★読むときに、★置き場所の ほうを 使います。
+  //     ★★消さないので、★あとで 戻せます。
+  //     ★★「動かせた ころの 場所」は、★台帳では ありません。
+  //       ★品そのものは、★1点も 減っていません（★裁定 §4 ⑤）。
+  //
+  //   ★★かべ は 左右 2か所 あります。★どちらに 出すかは、
+  //     ★置いた 順で 決めます（★1つ目が 左、2つ目が 右、以降は 交互）。
+  //     ★★選ばせません。★選ばせると、また 座標の 話に なります。
+  const wallSeen = new Map();
   const spotOf = (it) => {
+    const slotKey = slotOfItem(it);
+    let slot = slotKey ? slotByKey(slotKey) : null;
+    if (slotKey === "wall") {
+      // ★左・右の 振り分け。★同じ 品は いつも 同じ 側に 出ます。
+      if (!wallSeen.has(it.key)) wallSeen.set(it.key, wallSeen.size);
+      slot = slotByKey(wallSeen.get(it.key) % 2 === 0 ? "wallL" : "wallR");
+    }
+    if (slot) {
+      return {
+        left: slot.left,
+        top: typeof slot.top === "number" ? slot.top : null,
+        feet: null,
+        wallTop: typeof slot.top === "number" ? slot.top : undefined
+      };
+    }
+    // ★★置き場所の 決まっていない ものは、★これまでどおりです。
+    //   ★庭（外）と、★お尋ね中の 縁側が これに あたります。
+    //   ★★ここを 消すと、★出ていた ものが 出なく なります。
     const s = SPOT[it.category] || SPOT.furniture;
     const p = pos[it.key];
     return {
       left: p && typeof p.left === "number" ? p.left : s.left,
-      // ★壁のものの上端（★古い自由な位置も、ここに入ります）
       top: p && typeof p.top === "number" ? p.top : null,
-      // ★★床のものの足もと。★新しく足した値です。
-      //   ★★古い top は、★ここに読み替えません。★意味が違います。
       feet: p && typeof p.feet === "number" ? p.feet : null,
       wallTop: s.top
     };
@@ -329,9 +361,16 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
             onError={fallbackToPng}
             style={{ width: "100%", display: "block", pointerEvents: "none" }} />
         );
+        // ★★置き場所の 決まっている 品は、★動かせません（★見本 J02 の 注記）。
+        //   「★置く場所は 決まっています。★自由に 動かせません。
+        //     ★座標を 保存しません。」
+        //   ★★掴めないように するだけです。★品は 消しません。
+        //     ★★いま 掴めた ものが 掴めなく なるので、
+        //       ★これは「見せ方を 変える」に あたります（★4分類の ②）。
+        const inSlot = slotOfItem(it) !== null;
         // ★★動かせるのは、★置きかたを直しているときだけです。
         //   ★ふだんは押せません（★羊を押すのと、まぎれないため）。
-        if (editMode && Draggable && onUpdatePosition) {
+        if (!inSlot && editMode && Draggable && onUpdatePosition) {
           // ★★いまの位置を、★そのまま渡します。
           //   ★★動かした分を、★ここに足します。★指の位置を使いません。
           //     ★指の位置を保存していたので、★跳んでいました。
