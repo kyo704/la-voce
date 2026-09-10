@@ -177,7 +177,7 @@ import { isAnalysisCardVisible } from "@/lib/analysisCardVisibility";
 // 「この分析を強くする」の選び方（記録と分析の順番設計.md §5.3 の R1〜R6）。
 // ★規則は画面に書かず、必ずこのモジュールを通すこと。
 import {
-  selectBoostCandidates, describeUnlockCondition, IMPROVEMENT, MAX_BOOST_CARDS
+  selectBoostCandidates, IMPROVEMENT, MAX_BOOST_CARDS
 } from "@/lib/analysisBoost";
 // 記録項目の表示・非表示は必ずこのレイヤーを通す（記録項目の再設計v2 §3.3）
 import { medicalCaution } from "@/lib/medicalCaution";
@@ -7060,16 +7060,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★途切れた日を「なかったこと」にできない形だったので、やめました。
   //   累計の日数（recordedDaysTotal）だけを使います。
   //   ★ここに連続の計算を戻さないこと。
-  // 次に解放される指標までの進捗（3/7/14/28日のうち、まだ届いていない最初のもの）
-  const nextUnlock = useMemo(() => {
-    const thresholds = [
-      { days: 3, label: "症状カレンダー・音域マップ" },
-      { days: 7, label: "コンディション偏差値" },
-      { days: 14, label: "声の時差マップ・効いた習慣" },
-      { days: 28, label: "7日ぶんの、声の使用量" }
-    ];
-    return thresholds.find((t) => analysisDaysTotal < t.days) || null;
-  }, [analysisDaysTotal]);
+  // ★★nextUnlock を 消しました（★2026-09-10・坂本さんの お決め）。
+  //   ★何を　「◯日で『◯◯』が 開きます（いま◯日）」／「あと◯日で ひらきます」
+  //   ★なぜ　★アプリが 与えるものへの 残りだからです。
+  //        ★「あと◯日を 出さない」という 原則に、★はっきり 触れます。
+  //        ★⑫と 同じ 原則です。
+  //   ★誰に　★38人にも 出ていました。
+  //   ★★解放そのものは 残っています。★日が 来れば、★黙って 開きます。
+  //     ★消したのは「★あと どれだけか」を 言う ことだけです。
+  //   ★記録 docs/reports/消したものの記録.md
   // ---- ホーム 用データ（前半）ここまで ----
 
 
@@ -8936,26 +8935,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         neverUsed: minN === 0
       });
     });
-    // ②ロックされた分析。改善量は 1.0（解放）。
-    if (nextUnlock) {
-      const daysNeeded = nextUnlock.days - analysisDaysTotal;
-      candidates.push({
-        id: "unlock-boost-" + nextUnlock.label,
-        title: nextUnlock.label,
-        // ★R4: 日数と項目の両方を書く。ただし、項目の条件が本当に分かっている
-        //   ときだけ書くこと。分からないのに「または◯◯を5日」と書くと、
-        //   実際には早まらない条件を約束することになる。
-        body: describeUnlockCondition({ daysNeeded }),
-        daysNeeded,
-        current: analysisDaysTotal, required: nextUnlock.days,
-        improvement: IMPROVEMENT.unlock,
-        section: null,   // 特定のセクションではなく、記録全般
-        locked: true
-      });
-    }
+    // ★★②ロックされた分析の 候補を、★外しました（★2026-09-10・お決め）。
+    //   ★★body が「あと◯日」を 言う 形でした（describeUnlockCondition）。
+    //   ★★残りの 候補（★書いていない 項目）は、★そのままです。
+    //     ★あちらは「まだ 書いていない ところ」であって、
+    //     ★★アプリが 与えるものへの 残りでは ありません。
     // R1・R5・R6 の適用は lib/analysisBoost.js が持つ。
     return selectBoostCandidates(candidates);
-  }, [effectiveHabitRanking, nextUnlock, analysisDaysTotal]);
+  }, [effectiveHabitRanking]);
   // ---- 「この分析を強くする」用データ ここまで ----
 
 
@@ -13515,17 +13502,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </>
                   )}
 
-                  {nextUnlock && (
-                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                      <p className="text-xs mb-2" style={{ color: C.ink }}>{nextUnlock.days}日で「{nextUnlock.label}」が開きます（いま{analysisDaysTotal}日）</p>
-                      {/* ★★棒から丸に変えました（★2026-09-07・規約 §3-F）。
-                          ★棒と割合は、★「まだ足りない」を強く見せます。
-                          ★丸なら数えられます。★あと3つ、と分かります。
-                          ★★同じ丸は、★この画面に既にありました（上の ProgressDots）。
-                            ★新しく作らず、★それを呼びます。 */}
-                      <ProgressDots current={analysisDaysTotal} required={nextUnlock.days} />
-                    </div>
-                  )}
+                  {/* ★★「◯日で『◯◯』が 開きます」を 消しました
+                      （★2026-09-10・坂本さんの お決め）。★上の 註のとおりです。 */}
                 </div>
               );
             })()}
@@ -17063,9 +17041,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       </div>
                     );
                   }
-                  const nextLine = nextUnlock
-                    ? `記録${analysisDaysTotal}日目。あと${nextUnlock.days - analysisDaysTotal}日で「${nextUnlock.label}」がひらきます`
-                    : `記録${analysisDaysTotal}日目です`;
+                  // ★★「あと◯日で ひらきます」を 消しました（★2026-09-10・お決め）。
+                  //   ★★日数だけを 言います。★これは ご本人の 記録の 数です。
+                  //     ★アプリが 与えるものへの 残りでは ありません。
+                  const nextLine = `記録${analysisDaysTotal}日目です`;
                   return (
                     <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                       <p className="text-sm" style={{ color: C.inkSoft }}>{nextLine}</p>

@@ -73,12 +73,18 @@ ok("★その1つは、文字の脇の小さな線（flexShrink: 0）",
   const vt2 = readCode("components", "VocalTracker.jsx");
   const defs = (vt2.match(/function ProgressDots\(/g) || []).length;
   ok(`★ProgressDots の定義は1つだけ（いま ${defs}）`, defs === 1);
-  const at = vt2.indexOf("nextUnlock &&");
-  const near = at >= 0 ? vt2.slice(at, at + 700) : "";
-  ok("★解放までの進捗に、割合の棒を使っていない",
-    at >= 0 && !/width: `\$\{Math\.min\(100/.test(near));
-  ok("★解放までの進捗は、丸で出している", /<ProgressDots/.test(near));
-  ok("★割合の数字を出していない", !/％/.test(near));
+  // ★★2026-09-10、★解放までの 進捗そのものを 消しました（★坂本さんの お決め）。
+  //   ★★言い分は「★進捗を 棒（割合）で 見せない」でした。
+  //     ★見せなく なった のだから、★言い分は より 強く 満たされています。
+  //   ★★残った 丸（ProgressDots）は、★鍵の かかった カードの ほうです。
+  //     ★そちらは まだ ありますので、★棒に なっていないことを 見ます。
+  ok("★解放までの進捗が、もう無い", vt2.indexOf("nextUnlock &&") < 0);
+  const lock = vt2.indexOf("<ProgressDots current={current}");
+  const nearLock = lock >= 0 ? vt2.slice(Math.max(0, lock - 700), lock + 200) : "";
+  ok("★鍵の かかった カードの 進捗は、丸で 出している", lock >= 0);
+  ok("★そこにも、割合の 棒を 使っていない",
+    lock >= 0 && !/width: `\$\{Math\.min\(100/.test(nearLock));
+  ok("★割合の数字を出していない", !/％/.test(nearLock));
 }
 
 console.log(`\n★とおった ${pass} ／ ★落ちた ${fail}`);

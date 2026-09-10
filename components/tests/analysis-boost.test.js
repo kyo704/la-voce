@@ -30,7 +30,13 @@ const C = (o) => ({ body: "★★★★ になります", improvement: 0.6, ...o
 async function main() {
   const src = fs.readFileSync(path.join(ROOT, "lib", "analysisBoost.js"), "utf-8");
   const m = await import("data:text/javascript;base64," + Buffer.from(src, "utf-8").toString("base64"));
-    const ui = fs.readFileSync(path.join(ROOT, "components", "VocalTracker.jsx"), "utf-8");
+    // ★★注記を 外して 読みます（★2026-09-10）。
+    //   ★★この 中で「無いこと」を 数えます。★注記に 同じ語が 出てきます
+    //     （★「門が開きます」「穴が開きます」）。★9回目の 取りちがえでした。
+    //   ★構えを 見る 検査（selectBoostCandidates を 呼んでいるか 等）にも、
+    //     ★注記を 外した 本文で 足ります。
+    const { readCode } = require("./_source");
+    const ui = readCode("components", "VocalTracker.jsx");
   // ★禁止語の検査は、コメントを外してから行うこと。
   //   コメントには「こう書かないこと」という説明としてその語が出てくる。
   //   外さずに調べると、自分が書いた説明文で落ちる（CLAUDE.md に既出の罠）。
@@ -98,11 +104,19 @@ async function main() {
 
   console.log("\n=== 画面側が、規則を自前で書いていないこと ===");
   assertTrue(/selectBoostCandidates\(candidates\)/.test(ui), "★選定はモジュールを通している");
-  assertTrue(/describeUnlockCondition\(/.test(ui), "文言もモジュールを通している");
+  // ★★2026-09-10、★解放の 候補を 外しました（★坂本さんの お決め）。
+  //   ★★body が「あと◯日」を 言う 形でした（describeUnlockCondition）。
+  //   ★★言い分は「★画面側が 規則を 自前で 書いていない」です。
+  //     ★呼ばなく なった のだから、★自前で 書いていない ことは 変わりません。
+  //   ★★見る先を、★「消えたこと」と「★自前で 書き直していないこと」に 変えます。
+  assertTrue(!/describeUnlockCondition\(/.test(ui), "★解放の 文言を 呼んでいない（★候補ごと 消しました）");
+  assertTrue(!/がひらきます|が開きます/.test(ui), "★画面側に「◯日で ひらきます」を 書き直していない");
   assertTrue(!/\.slice\(0, 2\)/.test(ui.slice(ui.indexOf("analysisBoostCandidates"), ui.indexOf("analysisBoostCandidates") + 2000)),
     "★画面側に「2枚まで」を書いていない");
-  assertTrue(/IMPROVEMENT\.star/.test(ui) && /IMPROVEMENT\.unlock/.test(ui),
-    "改善量の値も、画面に直接書いていない");
+  // ★★unlock の 候補を 外したので、★IMPROVEMENT.unlock は 呼ばれません。
+  //   ★言い分は「★改善量の 値を 画面に 直接 書いていない」です。★数字が 無いこと を 見ます。
+  assertTrue(/IMPROVEMENT\.star/.test(ui), "★残った 候補も、改善量は モジュールから");
+  assertTrue(!/improvement:\s*[0-9.]/.test(ui), "★改善量の 値を、画面に 直接 書いていない");
 
   console.log("\n=== 見出しが1つにまとまっている ===");
   assertTrue(!/titleUpcomingAnalyses/.test(uiCode),
