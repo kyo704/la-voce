@@ -481,8 +481,6 @@ var KEIKO=[
 /* ══════════════════ 状態 ══════════════════ */
 var S={dev:'pc',tab:'きょう',stack:[],st:'ふつう',
  fk:'並べる',span:14,item:'voice',note:'稽古',ni:0,im:'受診',
- nara:{voice:1,nodo:1,sing:1,sleep:1,muku:0},kura:['sleep'],sira:0,
- wake:'声の 出来',rep:'ぜんぶ',
  R:{muku:null,nodo:null,deki:null,sleep:null,koe:null,honban:null},
  jkH:1,showPerm:0};
 function $(x){return document.querySelector(x)}
@@ -614,264 +612,82 @@ function P_kiroku(){
  +'合計点も 平均も 出しません。3つの 印は <b>同じ色の 濃さ</b>で、良し悪しの 色分けを しません。</div>'}
 
 /* ══════════════════ ③ ふりかえる ══════════════════ */
-/* 色は 2系統だけ（tokens.md）。3択＝--enji の 濃淡／量＝--midori の 濃淡。
-   ★系列ごとに 色相を 変えません。★信号色を 使いません。
-   [key, 名前, CSS変数, 濃さ, 型('3'=◎○△ ／ 'n'=数), 単位] */
-var ITEMS=[['voice','声の 出来','--enji',.95,'3',''],
- ['nodo','のどの 調子','--enji',.66,'3',''],
- ['muku','起きたときの むくみ','--enji',.42,'3',''],
- ['sing','声を 使った 時間','--midori',.95,'n','分'],
- ['sleep','昨夜の 睡眠','--midori',.60,'n','時間']];
-function itSt(it,what){return (what||'stroke')+':var('+it[2]+');opacity:'+it[3]}
-function itVal(it,v){return it[4]==='3'?['','△','○','◎'][v]:(it[0]==='sleep'?v.toFixed(1):Math.round(v))+it[5]}
+var ITEMS=[['voice','声の 出来','#840C24'],['nodo','のどの 調子','#8C6115'],
+ ['sing','声を 使った 時間','#447862'],['sleep','昨夜の 睡眠','#6D5D50'],['muku','むくみ','#B23A48']];
 function itemOf(k){for(var i=0;i<ITEMS.length;i++)if(ITEMS[i][0]===k)return ITEMS[i];return ITEMS[0]}
 function P_furi(){
  var sb=stBlock('まだ、並べる ものが ありません。','記録を 2日ぶん 書くと、ここに 並びはじめます。');
  if(sb)return '<h2>ふりかえる</h2>'+sb;
- var L=DAY.slice(-Math.min(S.span,DAY.length));
- var WAY=[['並べる','ぜんぶを 上下に','書いたものを <b>同じ日付の 線の上に 上下に 並べます</b>。上下に 見比べるのが、この画面の 仕事です。'],
-  ['くらべる','2つに 分けて',(S.sira&&S.wake==='できごと'
-    ?'<b>'+DEKI.n+' まえ</b>と <b>あと</b>で、選んだ ものに 違いが あったかを 見ます。'
-    :'<b>声が 出た日</b>と <b>出づらかった日</b>で、選んだ ものに 違いが あったかを 見ます。')],
-  ['さかのぼる','前の3日を 出す','出づらかった日の <b>前の3日</b>に 何を 書いていたかを、そのまま 出します。'],
-  ['本番で そろえる','0日目で 重ねる','これまでの 本番を、<b>本番当日を 0日目</b>に して 重ねます。']];
- var cur=WAY.filter(function(w){return w[0]===S.fk})[0]||WAY[0];
- return '<h2>ふりかえる</h2><div class="sub">'+cur[2]+'</div>'
+ var L=DAY.slice(-S.span);
+ return '<h2>ふりかえる</h2><div class="sub">パソコンでは、<b>90日ぶんを 横に 並べて</b> 見られます</div>'
  +'<div class="col2" style="align-items:flex-start">'
- +'<div style="flex:0 0 214px">'
+ +'<div style="flex:0 0 230px">'
  +'<div class="h3" style="margin-top:0">やり方</div><div class="card p0">'
- +WAY.map(function(w){var on=S.fk===w[0],lock=(w[0]==='本番で そろえる')&&!S.sira;
-   return '<div class="li" style="'+(on?'color:var(--enji);font-weight:700':(lock?'opacity:.55':''))+'" '
-   +'onclick="'+(lock?'push(\'しらべる\')':'S.fk=\''+w[0]+'\';draw()')+'">'
-   +'<span>'+w[0]+'<br><span class="usu">'+w[1]+'</span></span>'
-   +'<s>'+(lock?'<b style="font-size:10.5px;color:var(--yama)">しらべる</b>':(on?'●':'›'))+'</s></div>'}).join('')+'</div>'
+ +['並べる','くらべる','さかのぼる','本番で そろえる'].map(function(v){
+   return '<div class="li" style="'+(S.fk===v?'color:var(--enji);font-weight:700':'')+'" onclick="S.fk=\''+v+'\';draw()"><span>'+v+'</span><s>›</s></div>'}).join('')+'</div>'
  +'<div class="h3">どのくらい</div><div class="pills">'+[[14,'14日'],[28,'4週'],[90,'3か月']].map(function(x){
-   return '<span class="pill sm '+(S.span===x[0]?'on':'')+'" onclick="S.span='+x[0]+';draw()">'+x[1]+'</span>'}).join('')
- +(S.sira?[[154,'22週'],[365,'去年の 同じ時期']].map(function(x){
-    return '<span class="pill sm '+(S.span===x[0]?'on':'')+'" onclick="S.span='+x[0]+';draw()">'+x[1]+'</span>'}).join('')
-   :lockPill('22週')+lockPill('去年の 同じ時期'))+'</div>'
- +'<div class="usu" style="margin-top:9px">いま <b>'+L.length+'日ぶん</b>を 見ています。</div>'
+   return '<span class="pill sm '+(S.span===x[0]?'on':'')+'" onclick="S.span='+x[0]+';draw()">'+x[1]+'</span>'}).join('')+'</div>'
+ +'<div class="h3">何を</div><div class="card p0">'
+ +ITEMS.map(function(x){return '<div class="li" onclick="S.item=\''+x[0]+'\';draw()">'
+   +'<span><i style="display:inline-block;width:14px;height:3px;border-radius:2px;background:'+x[2]+';margin-right:7px;vertical-align:middle"></i>'+x[1]+'</span>'
+   +'<s>'+(S.item===x[0]?'<b style="color:var(--midori)">✓</b>':'')+'</s></div>'}).join('')+'</div>'
  +'</div>'
- +'<div style="flex:1;min-width:0">'+furiBody(L)+'</div></div>'}
-
+ +'<div style="flex:1;min-width:0">'+furiBody(L)+'</div></div>'
+ +'<div class="note">線は 記録の 形です。<b>予報では ありません</b>。<br>'
+ +'点数も 平均も 出しません。良い・悪いの 色分けを しません。<br>'
+ +'重ねるのは <b>あなたが 選んだもの</b>だけです。こちらから 勝手に 重ねません。</div>'}
 function furiBody(L){
  if(S.fk==='くらべる')return kuraBody(L);
  if(S.fk==='さかのぼる')return sakaBody();
  if(S.fk==='本番で そろえる')return honbanBody();
- return naraBody(L)}
-
-/* ══════ 有料の 出し分け（functions.md §1-4）══════
-   有料のものは 隠しません。見せて、押せなくします。
-   押したら「しらべる」の 案内へ（1画面）。戻ると 元の場所。
-   札は「しらべる」の1語だけ。「PRO」「プレミアム」と 書きません。
-   催促しません。案内は 押したときだけ 出します。 */
-function lockPill(label,extra){
- return '<span class="pill sm" style="opacity:.62;border-style:dashed;cursor:pointer'+(extra||'')+'" '
- +'onclick="push(\'しらべる\')">'+label
- +'<b style="margin-left:8px;font-size:10.5px;color:var(--yama)">しらべる</b></span>'}
-function SC_sira(){
- var A=[['確かめたいことを 5つまで','いまは 1つです。5つ 並べて 見られます'],
-  ['本番の日を そろえて 重ねる','本番当日を 0日目に して、これまでの 本番を 重ねます'],
-  ['曲ごとに 見る','その曲を さらっていた 時期だけを 取り出します'],
-  ['できごとの 前と後で 分ける','引っ越し・留学・治療など、自分で 印を つけた日で 分けます'],
-  ['長い目で 見る','22週間ぶんの まとめ／去年の 同じ時期／季節ごとの 1枚']];
- return bk('もどる')+'<h2>しらべる</h2>'
- +'<div class="sub">確かめられることが、<b>1つから 5つに</b> 増えます</div>'
- +'<div class="col2" style="align-items:flex-start">'
- +'<div style="flex:1;min-width:320px"><div class="card p0">'
- +A.map(function(x){return '<div class="li plain"><span>'+x[0]+'<br><span class="usu">'+x[1]+'</span></span></div>'}).join('')
- +'</div></div>'
- +'<div style="flex:0 0 300px">'
- +'<div class="card"><div class="li plain" style="padding-left:0;padding-right:0">'
- +'<span><b>しらべる</b><br><span class="usu">月ごと</span></span><s><b>580円</b>／月</s></div>'
- +'<div class="li plain" style="padding-left:0;padding-right:0;border-top:1px solid var(--line2)">'
- +'<span><b>一年の しらべ</b><br><span class="usu">1回払い。自動では 更新されません</span></span>'
- +'<s><b>4,800円</b><br><span class="usu">月あたり 400円</span></s></div>'
- +'<div style="margin-top:12px"><span class="btn" onclick="setSira(1);pop();toast(\'見本を「入っている」に しました\')">'
- +'14日 ためす（見本）</span></div>'
- +'<div class="usu" style="margin-top:9px"><b>カードの 登録は 要りません。</b><br>'
- +'終わる 3日前に、日付で 1回だけ お知らせします。<br>それ以上は 言いません。</div>'
- +'</div>'
- +'<div class="warn" style="margin-top:12px">記録・並べる・さかのぼる・受診用の 1枚・羊は、<br>'
- +'<b>ずっと 無料</b>です。記録を 人質に しません。<br>書き出し（CSV・JSON）も 無料です。</div>'
- +'</div></div>'
- +'<div class="note">この画面は、<b>押したときだけ</b> 出ます。こちらから 案内を 出しません。<br>'
- +'有料のものを 隠しません。見せて、押せなくします。<br>'
- +'札は「しらべる」の1語だけです。「PRO」「プレミアム」と 書きません。<br>'
- +'18歳未満の方には、月ごとの「しらべる」だけを ご案内します。</div>'}
-
-/* ══════ ① 並べる ── 同じ日付の 上下に 並べます ══════ */
-function narKeys(){return ITEMS.filter(function(x){return S.nara[x[0]]}).map(function(x){return x[0]})}
-function narTog(k){var n=narKeys();
- if(S.nara[k]&&n.length<2){toast('1つは 残します');return}
- S.nara[k]=!S.nara[k];draw()}
-function naraBody(L){
- var keys=narKeys();
- return '<div class="fl" style="margin-top:0">並べるもの　<span class="usu">押すと 出し入れできます。こちらから 勝手に 足しません</span></div>'
- +'<div class="pills">'+ITEMS.map(function(x){var on=!!S.nara[x[0]];
-   return '<span class="pill sm '+(on?'on':'')+'" onclick="narTog(\''+x[0]+'\')">'
-   +'<i style="display:inline-block;width:13px;height:3px;border-radius:2px;'+itSt(x,'background')+';margin-right:7px;vertical-align:middle"></i>'
-   +x[1]+'</span>'}).join('')+'</div>'
- +'<div class="chart" style="padding:12px 8px 4px">'+stackSVG(L,keys)+'</div>'
- +'<div class="lg2"><span><i style="width:4px;height:14px;border-radius:1px;background:var(--ink3);opacity:.45"></i>本番・レッスンの あった日</span>'
- +'<span class="usu">◎＝出た／よい・ない　○＝ふつう・すこし　△＝出づらい・わるい・ある</span></div>'
- +'<div class="fl">数えたもの</div>'
- +'<div class="tblwrap" style="max-height:none;max-width:760px"><table>'
- +'<tr><th class="stick">並べたもの</th><th>いちばん 多い日</th><th>いちばん 少ない日</th><th>まんなか</th></tr>'
- +keys.map(function(k){var it=itemOf(k),v=L.map(function(d){return d[k]}).slice().sort(function(a,b){return a-b});
-   return '<tr><td class="stick">'+it[1]+'</td><td>'+itVal(it,v[v.length-1])+'</td><td>'+itVal(it,v[0])+'</td>'
-   +'<td>'+itVal(it,v[Math.floor(v.length/2)])+'</td></tr>'}).join('')
- +'<tr><td class="stick">本番・レッスン</td><td colspan="3">'+L.filter(function(d){return d.hard}).length+'日</td></tr>'
- +'</table></div>'
- +'<div class="note">線は <b>記録の 形</b>です。予報では ありません。<br>'
- +'平均も 点数も 合計も 出しません。良い・悪いの 色分けを しません。<br>'
- +'並べるのは <b>あなたが 選んだもの</b>だけです。こちらから 勝手に 重ねません。</div>'}
-
-function stackSVG(L,keys){
- var W=880,pl=66,pr=16,pt=10,laneH=46,gap=17,pb=28;
- var iw=W-pl-pr,H=pt+keys.length*laneH+(keys.length-1)*gap+pb,bot=H-pb;
+ return '<div class="chart">'+lineSVG(L,S.item)+'</div>'
+ +'<div class="lg2"><span><i style="background:'+itemOf(S.item)[2]+'"></i>'+itemOf(S.item)[1]+'</span>'
+ +'<span><i style="background:#C9BCA6"></i>本番・レッスンの あった日</span></div>'
+ +'<div class="h3">数えたもの</div><div class="card p0">'
+ +[['記録した日数',L.filter(function(d){return d.voice}).length+' / '+L.length+'日'],
+   ['本番・レッスン',L.filter(function(d){return d.hard}).length+'日'],
+   ['声を 使った 時間（1日あたり）',Math.round(L.reduce(function(a,d){return a+d.sing},0)/L.length)+'分']].map(function(x){
+   return '<div class="li plain"><span>'+x[0]+'</span><s>'+x[1]+'</s></div>'}).join('')+'</div>'}
+function lineSVG(L,key){
+ var W=880,H=250,pl=42,pr=14,pt=14,pb=26;
+ var iw=W-pl-pr,ih=H-pt-pb;
+ var vals=L.map(function(d){return key==='sing'?d.sing:(key==='sleep'?d.sleep:d[key])});
+ var mx=Math.max.apply(null,vals),mn=Math.min.apply(null,vals);
+ if(mx===mn){mx=mn+1}
  var x=function(i){return pl+(L.length<2?iw/2:iw*i/(L.length-1))};
- var p='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block" role="img" aria-label="記録を 同じ日付の 上下に 並べた図">';
- L.forEach(function(d,i){if(d.hard)p+='<rect x="'+(x(i)-1.6).toFixed(1)+'" y="'+pt+'" width="3.2" height="'+(bot-pt)+'" style="fill:var(--ink3);opacity:.30"/>'});
- keys.forEach(function(k,j){
-  var it=itemOf(k),top=pt+j*(laneH+gap),three=it[4]==='3';
-  var vals=L.map(function(d){return d[k]});
-  var mx=Math.max.apply(null,vals),mn=Math.min.apply(null,vals);
-  if(three){mx=3;mn=1}
-  if(mx===mn)mx=mn+1;
-  var y=function(v){return top+laneH-(v-mn)/(mx-mn)*laneH};
-  [0,.5,1].forEach(function(g){var yy=(top+laneH*g).toFixed(1);
-    p+='<line x1="'+pl+'" y1="'+yy+'" x2="'+(W-pr)+'" y2="'+yy+'" style="stroke:var(--line);stroke-width:1"/>'});
-  var dd=vals.map(function(v,i){return (i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)}).join(' ');
-  p+='<path d="'+dd+'" fill="none" style="'+itSt(it)+';stroke-width:2;stroke-linejoin:round;stroke-linecap:round"/>';
-  if(L.length<=32)vals.forEach(function(v,i){
-    p+='<circle cx="'+x(i).toFixed(1)+'" cy="'+y(v).toFixed(1)+'" r="2.5" style="'+itSt(it,'fill')+'"/>'});
-  p+='<text x="'+(pl+6)+'" y="'+(top+14)+'" font-size="12.5" paint-order="stroke" '
-   +'style="fill:var(--ink);stroke:var(--paper);stroke-width:4;stroke-linejoin:round">'+it[1]+'</text>';
-  p+='<text x="'+(pl-8)+'" y="'+(top+9)+'" font-size="10" text-anchor="end" style="fill:var(--ink3)">'+(three?'◎':itVal(it,mx))+'</text>';
-  p+='<text x="'+(pl-8)+'" y="'+(top+laneH+3)+'" font-size="10" text-anchor="end" style="fill:var(--ink3)">'+(three?'△':itVal(it,mn))+'</text>';
- });
- var step=Math.max(1,Math.ceil(L.length/9));
+ var y=function(v){return pt+ih-(v-mn)/(mx-mn)*ih};
+ var c=itemOf(key)[2];
+ var p='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">';
+ for(var g=0;g<=4;g++){var yy=pt+ih*g/4;
+   p+='<line x1="'+pl+'" y1="'+yy+'" x2="'+(W-pr)+'" y2="'+yy+'" stroke="#E4DAC4" stroke-width="1"/>'}
+ L.forEach(function(d,i){if(d.hard)p+='<rect x="'+(x(i)-2)+'" y="'+pt+'" width="4" height="'+ih+'" fill="#C9BCA6" opacity=".35"/>'});
+ var dd=vals.map(function(v,i){return (i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)}).join(' ');
+ p+='<path d="'+dd+'" fill="none" stroke="'+c+'" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>';
+ vals.forEach(function(v,i){p+='<circle cx="'+x(i).toFixed(1)+'" cy="'+y(v).toFixed(1)+'" r="2.6" fill="'+c+'"/>'});
+ var step=Math.ceil(L.length/8);
  L.forEach(function(d,i){if(i%step===0||i===L.length-1)
-   p+='<text x="'+x(i).toFixed(1)+'" y="'+(H-9)+'" font-size="10.5" text-anchor="middle" style="fill:var(--ink3)">'+md(d.d)+'</text>'});
- p+='<line x1="'+pl+'" y1="'+bot+'" x2="'+(W-pr)+'" y2="'+bot+'" style="stroke:var(--line);stroke-width:1"/>';
+   p+='<text x="'+x(i).toFixed(1)+'" y="'+(H-7)+'" font-size="10" fill="#7C6C5E" text-anchor="middle">'+md(d.d)+'</text>'});
+ p+='<text x="6" y="'+(pt+8)+'" font-size="10" fill="#7C6C5E">'+(key==='sing'?mx+'分':(key==='sleep'?mx.toFixed(1)+'時間':'◎'))+'</text>';
+ p+='<text x="6" y="'+(pt+ih)+'" font-size="10" fill="#7C6C5E">'+(key==='sing'?mn+'分':(key==='sleep'?mn.toFixed(1)+'時間':'△'))+'</text>';
  return p+'</svg>'}
-
-/* ══════ ② くらべる ── 2つに 分けて、3つの門を 通ったときだけ 1文 ══════ */
-var KURA=[['sleep','昨夜の 睡眠','時間'],['sing','声を 使った 時間','分'],
- ['nodo','のどの 調子',''],['muku','起きたときの むくみ',''],['yuu','食べ終えてから 寝るまで','時間']];
-function kuraGet(d,k){if(k!=='yuu')return d[k];
- /* 見本のための 作りもの。本番では 記録から 取ります */
- return 2.0+((d.d.getDate()*7+d.sing)%13)/4}
-function kuraTog(k){
- var n=S.kura.length,on=S.kura.indexOf(k)>=0,lim=S.sira?5:1;
- if(on){if(n<2){toast('1つは 残します');return}S.kura.splice(S.kura.indexOf(k),1)}
- else{if(n>=lim){toast(lim===1?'無料では 1つです。「しらべる」で 5つまで 選べます':'5つまでです');return}S.kura.push(k)}
- draw()}
-function med(a){var v=a.slice().sort(function(x,y){return x-y});return v.length?v[Math.floor(v.length/2)]:0}
-function sd(a,m){if(a.length<2)return 0;
- return Math.sqrt(a.reduce(function(s,v){return s+(v-m)*(v-m)},0)/(a.length-1))}
-function kuraCalc(L,k){
- var W=wakeOf(L),A=W.a,B=W.b;
- var av=A.map(function(d){return kuraGet(d,k)}),bv=B.map(function(d){return kuraGet(d,k)});
- var ma=av.length?av.reduce(function(s,v){return s+v},0)/av.length:0;
- var mb=bv.length?bv.reduce(function(s,v){return s+v},0)/bv.length:0;
- var sp=Math.sqrt((sd(av,ma)*sd(av,ma)+sd(bv,mb)*sd(bv,mb))/2);
- var dd=sp?Math.abs(ma-mb)/sp:0;
- return {A:av,B:bv,ma:ma,mb:mb,d:dd,
-  g1:(av.length>=10&&bv.length>=10),
-  g2:(dd>=0.5),
-  g3:(dd>=0.5+0.12*(S.kura.length-1))}}
 function kuraBody(L){
- var lim=S.sira?5:1,W=wakeOf(L);
- return '<div class="fl" style="margin-top:0">分けかた　<span class="usu">'
- +(S.sira?'「しらべる」では、できごとの 前と後でも 分けられます':'無料では、声の 出来だけです')+'</span></div>'
- +'<div class="pills">'
- +'<span class="pill sm '+(S.wake==='声の 出来'?'on':'')+'" onclick="S.wake=\'声の 出来\';draw()">声の 出来（◎と△）</span>'
- +(S.sira?'<span class="pill sm '+(S.wake==='できごと'?'on':'')+'" onclick="S.wake=\'できごと\';draw()">'
-    +DEKI.n+'の 前と後</span>':lockPill('できごとの 前と後'))+'</div>'
- +'<div class="card p0" style="max-width:780px;margin-top:9px"><div class="li plain">'
- +'<span><b>'+W.an+'</b>　と　<b>'+W.bn+'</b></span>'
- +'<s>'+W.a.length+'日　／　'+W.b.length+'日</s></div>'
- +(W.cn?'<div class="li plain"><span class="usu">'+W.cn+'</span><s class="usu">'+W.c+'日</s></div>':'')
- +'</div>'
-
- +'<div class="fl">曲で しぼる　<span class="usu">'+(S.sira?'その曲を さらっていた 時期だけを 取り出します':'「しらべる」で 使えます')+'</span></div>'
- +'<div class="pills">'+(S.sira
-   ?['ぜんぶ'].concat(REP.map(function(r){return r.t})).map(function(v){
-     return '<span class="pill sm '+(S.rep===v?'on':'')+'" onclick="S.rep=\''+v+'\';draw()">'+v+'</span>'}).join('')
-   :'<span class="pill sm on">ぜんぶ</span>'+REP.map(function(r){return lockPill(r.t)}).join(''))+'</div>'
-
- +'<div class="fl">くらべるもの　<span class="usu">'+(S.sira?'5つまで 選べます':'無料では 1つ。押すと 案内が 出ます')+'</span></div>'
- +'<div class="pills">'+KURA.map(function(x,i){var on=S.kura.indexOf(x[0])>=0;
-   if(!S.sira&&!on)return lockPill(x[1]);
-   return '<span class="pill sm '+(on?'on':'')+'" onclick="kuraTog(\''+x[0]+'\')">'+x[1]+'</span>'}).join('')+'</div>'
- +(S.sira?'<div class="usu" style="margin-top:6px">いま '+S.kura.length+'つ。<b>選ぶほど 門③は 厳しくなります</b>（数を 撃てば 当たる、を なくすため）。</div>':'')
- +S.kura.map(function(k){return kuraOne(L,k)}).join('')
- +'<div class="note">3つの 門を ぜんぶ 通ったときだけ、1文に します。<br>'
- +'通らないあいだは <b>「まだ、はっきりした 差は 見えていません」</b>と 出します。<br>'
- +'「効いた・効かない」の 言い方を しません。原因だとも 言いません。<br>'
- +'有料のものを 隠しません。<b>見せて、押せなくします。</b>催促しません。</div>'}
-
-/* 分けかた。無料＝声の出来（◎／△）。しらべる＝できごとの 前と後 も 選べます */
-var DEKI={n:'留学から 帰った',d:new Date(2026,6,15)};
-function repOf(d){return REP[(d.getDate()+d.getMonth())%REP.length].t}
-function kuraFilt(L){return S.sira&&S.rep!=='ぜんぶ'?L.filter(function(d){return repOf(d.d)===S.rep}):L}
-function wakeOf(L0){
- var L=kuraFilt(L0);
- if(S.sira&&S.wake==='できごと')
-  return {a:L.filter(function(d){return d.d>=DEKI.d}),b:L.filter(function(d){return d.d<DEKI.d}),
-   an:DEKI.n+' あと',bn:DEKI.n+' まえ',c:0,cn:''};
- return {a:L.filter(function(d){return d.voice===3}),b:L.filter(function(d){return d.voice===1}),
-  an:'声が 出た日（◎）',bn:'出づらかった日（△）',
-  c:L.filter(function(d){return d.voice===2}).length,cn:'「ふつう（○）」と 書いた日は、どちらにも 入れません'}}
-function kuraOne(L,k){
- var nm=KURA.filter(function(x){return x[0]===k})[0],c=kuraCalc(L,k),it=itemOf(k);
- var col=k==='nodo'||k==='muku'?'--enji':'--midori';
- var all=c.A.concat(c.B),mx=Math.max.apply(null,all),mn=Math.min.apply(null,all);
- if(mx===mn)mx=mn+1;
- var W=760,pl=132,pr=54,H=118,iw=W-pl-pr;
- var xx=function(v){return pl+(v-mn)/(mx-mn)*iw};
- var fm=function(v){return k==='nodo'||k==='muku'?['','△','○','◎'][Math.round(v)]||v.toFixed(1)
-   :(k==='sing'?Math.round(v)+'分':v.toFixed(1)+(nm[2]||''))};
- var lane=function(ttl,arr,yy,op){
-  var m=med(arr),o='';
-  o+='<text x="'+(pl-12)+'" y="'+(yy+4)+'" font-size="12" text-anchor="end" style="fill:var(--ink)">'+ttl+'</text>';
-  o+='<line x1="'+pl+'" y1="'+yy+'" x2="'+(W-pr)+'" y2="'+yy+'" style="stroke:var(--line);stroke-width:1"/>';
-  arr.forEach(function(v){o+='<circle cx="'+xx(v).toFixed(1)+'" cy="'+yy+'" r="5" style="fill:var('+col+');opacity:'+op+'"/>'});
-  o+='<line x1="'+xx(m).toFixed(1)+'" y1="'+(yy-13)+'" x2="'+xx(m).toFixed(1)+'" y2="'+(yy+13)+'" style="stroke:var('+col+');stroke-width:2.4"/>';
-  o+='<text x="'+xx(m).toFixed(1)+'" y="'+(yy-18)+'" font-size="11" text-anchor="middle" style="fill:var(--ink2)">'+fm(m)+'</text>';
-  o+='<text x="'+(W-pr+8)+'" y="'+(yy+4)+'" font-size="11" style="fill:var(--ink3)">'+arr.length+'日</text>';
-  return o};
- var gate=function(no,ttl,ok,det){
-  return '<div class="li plain"><span>'+no+'　'+ttl+'<br><span class="usu">'+det+'</span></span>'
-  +'<s style="color:'+(ok?'var(--midori)':'var(--ink3)')+'">'+(ok?'◎ 通りました':'－ まだ')+'</s></div>'};
- var pass=c.g1&&c.g2&&c.g3;
- return '<div class="card" style="max-width:780px;margin-top:14px">'
- +'<div class="h3" style="margin-top:0">'+nm[1]+(S.sira&&S.rep!=='ぜんぶ'?'　<span class="usu">'+S.rep+'の 時期だけ</span>':'')+'</div>'
- +'<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block" role="img" aria-label="'+nm[1]+'を 2つに 分けて 並べた図">'
- +'<text x="'+pl+'" y="14" font-size="10.5" style="fill:var(--ink3)">'+fm(mn)+'</text>'
- +'<text x="'+(W-pr)+'" y="14" font-size="10.5" text-anchor="end" style="fill:var(--ink3)">'+fm(mx)+'</text>'
- +lane(wakeOf(L).an,c.A,48,.5)
- +lane(wakeOf(L).bn,c.B,92,.5)
- +'</svg>'
- +'<div class="usu" style="margin-top:6px">丸は 1日ぶんです。濃いところは 日が 重なっています。縦の 線は <b>まんなかの 値</b>です。</div>'
- +'<div class="fl">3つの 門</div><div class="card p0">'
- +gate('①','それぞれ 10日以上 あること',c.g1,c.g1?(c.A.length+'日　と　'+c.B.length+'日'):('10日の うち　'+Math.min(10,c.A.length)+'日　と　'+Math.min(10,c.B.length)+'日 たまりました'))
- +gate('②','差が 偶然では 説明しにくい 大きさ',c.g2,'散らばりに くらべた ひらき '+c.d.toFixed(2)+'（0.50 から）')
- +gate('③','たくさん 調べたぶんの 補正',c.g3,'いま '+S.kura.length+'つ 選んでいます。'+(0.5+0.12*(S.kura.length-1)).toFixed(2)+' から')
- +'</div>'
- +(pass
-  ?'<div class="warn" style="margin-top:10px"><b>'+nm[1]+'が '+fm(c.ma)+'に 近い日に、'+wakeOf(L).an+'が 多く 出ています。</b><br>'
-   +'<span class="usu">原因だとは 言いません。一緒に 出ている、という ことだけです。</span></div>'
-  :'<div class="empty" style="margin-top:10px"><div class="t">まだ、はっきりした 差は 見えていません。</div>'
-   +'<div class="s">'+(c.g1?'日数は 足りています。ひらきが まだ 小さいです。':'記録が たまると、ここに 出ます。期間を 3か月に すると 変わることが あります。')+'</div></div>')
- +'</div>'}
-
+ var a=L.filter(function(d){return d.hard}),b=L.filter(function(d){return !d.hard});
+ var avg=function(x,k){return x.length?(x.reduce(function(s,d){return s+d[k]},0)/x.length):0};
+ return '<div class="warn">くらべるのは <b>あなたが 選んだ 2つの まとまり</b>です。こちらから 勝手に 選びません。</div>'
+ +'<div class="chart">'+lineSVG(L,S.item)+'</div>'
+ +'<div class="h3">2つの まとまり</div>'
+ +'<div class="tblwrap" style="max-height:none;max-width:720px"><table>'
+ +'<tr><th class="stick">まとまり</th><th>日数</th><th>声を 使った 時間</th><th>昨夜の 睡眠</th></tr>'
+ +[['本番・レッスンの あった日',a],['そうでない日',b]].map(function(x){
+   return '<tr><td class="stick">'+x[0]+'</td><td>'+x[1].length+'日</td>'
+   +'<td>'+Math.round(avg(x[1],'sing'))+'分</td><td>'+avg(x[1],'sleep').toFixed(1)+'時間</td></tr>'}).join('')
+ +'</table></div>'
+ +'<div class="note">差が 何を 意味するかを、こちらから 書きません。<br>'
+ +'「効いた・効かない」の 言い方を しません。<b>数と 形を 出すだけ</b>です。</div>'}
 function sakaBody(){
  var L=DAY.filter(function(d){return d.voice===1}).slice(-6);
  return '<div class="warn">声が <b>出づらかった日</b>から、その <b>前の3日</b>へ さかのぼります。</div>'
- +(L.length?'<div class="card p0" style="max-width:760px">'+L.map(function(d){
+ +(L.length?'<div class="card p0" style="max-width:720px">'+L.map(function(d,i){
    return '<div class="li" onclick="toast(\'前の3日を 出します（見本）\')"><span>'+mdw(d.d)
    +'<br><span class="usu">声を 使った 時間 '+d.sing+'分　／　昨夜の 睡眠 '+d.sleep.toFixed(1)+'時間</span></span>'
    +'<s>前の3日 ›</s></div>'}).join('')+'</div>'
@@ -1062,111 +878,35 @@ function ichiOut(kind){
 var SLOTS=['まど','とびら','かべ（左）','かべ（右）','とだな','いす','つくえ','ゆか'];
 function P_hitsuji(){
  S.slot=S.slot||'まど';
- var KATA={'まど':'部屋の 形','とびら':'部屋の 形'};
- var MONO={'まど':[['木の まど',1],['すりガラス',1],['丸まど',0],['ステンドグラス',0],['よしず',0],['雨戸',0]],
-  'とびら':[['板の とびら',1],['格子の とびら',0],['ガラス戸',0]],
-  'かべ（左）':[['しっくい',1],['板張り',1],['花の 壁紙',0]],
-  'かべ（右）':[['しっくい',1],['柱時計',1],['額（風景）',0]],
-  'とだな':[['木の とだな',1],['ガラスの とだな',0]],
-  'いす':[['丸いす',1],['ロッキングチェア',0]],
-  'つくえ':[['小さな つくえ',1],['文机',0]],
-  'ゆか':[['板の ゆか',1],['ラグ（生成り）',1],['ラグ（えんじ）',0]]};
- var lst=MONO[S.slot]||[];
- var TAMA=[['記録した 日','78','日','累計です。休んでも 減りません'],
-  ['歌ってきたもの','3','曲','とだなに 並んでいる 数です'],
-  ['本番','1','回','記録した 本番の 数です']];
  return '<h2>ひつじ</h2><div class="sub">おうちと よそおい　／　手に入れたものは <b>1つも 取り上げません</b></div>'
  +'<div class="col2" style="align-items:flex-start">'
- +'<div style="flex:0 0 452px">'
- +'<div class="house" style="min-height:392px"><div class="fl2"></div>'
- +'<div class="lab">'+S.slot+(KATA[S.slot]?'（'+KATA[S.slot]+'）':'')+'</div>'
- +'<img src="'+SHEEP.dress+'" alt="羊" style="width:228px"></div>'
- +'<div class="fl" style="margin-top:10px">置くところ　<span class="usu">8か所。動かせません</span></div>'
- +'<div class="pills">'+SLOTS.map(function(v){
+ +'<div style="flex:0 0 460px">'
+ +'<div class="house" style="min-height:400px"><div class="fl2"></div>'
+ +'<div class="lab">'+S.slot+' に 置きます</div>'
+ +'<img src="'+SHEEP.dress+'" alt="羊" style="width:230px"></div>'
+ +'<div class="pills" style="margin-top:10px">'+SLOTS.map(function(v){
    return '<span class="pill sm '+(S.slot===v?'on':'')+'" onclick="S.slot=\''+v+'\';draw()">'+v+'</span>'}).join('')+'</div>'
- +'<div class="usu" style="margin-top:7px">まど・とびらは <b>部屋の 形</b>です。家具とは 別に 数えます。</div>'
+ +'<div class="usu">まど・とびらは <b>部屋の 形</b>です。家具とは 別に 数えます。</div>'
  +'</div>'
-
  +'<div style="flex:1;min-width:320px">'
- /* ── 1つめ：いま 選んでいる 置き場所に 置けるもの ── */
- +'<div class="h3" style="margin-top:0">「'+S.slot+'」に 置けるもの</div>'
- +'<div class="shelf2">'+lst.map(function(x){
-   return '<div style="'+(x[1]?'':'opacity:.45')+'"><b>'+x[0]+'</b>'
-   +'<span class="usu">'+(x[1]?'持っています':'まだ')+'</span></div>'}).join('')+'</div>'
- +'<div class="usu" style="margin-top:6px">押すと 置き替えられます（見本では 動きません）。'
- +'<b>「まだ」の ものは、中身も、いつ 届くかも 出しません。</b></div>'
-
- /* ── 2つめ：とだな＝歌ってきたもの。飾りでは ありません ── */
- +'<div class="h3">とだな　── 歌ってきたもの</div>'
- +'<div class="usu" style="margin-bottom:7px">ノートの レパートリーと つながっています。'
- +'<b>出来・点数・順位は 1つも 出しません。</b></div>'
- +'<div class="tblwrap" style="max-height:none;max-width:640px"><table>'
- +'<tr><th class="stick">曲</th><th>はじめて 記録した日</th><th>記録した 日数</th><th>本番</th></tr>'
- +REP.map(function(r){
-   return '<tr><td class="stick"><b>'+r.t+'</b><br><span class="usu">'+r.c+'</span></td>'
-   +'<td>'+r.d+'</td><td>'+r.n+'日</td><td>'+r.s+'回</td></tr>'}).join('')
- +'</table></div>'
-
- /* ── 3つめ：たまっているもの。よそおいが 届く きっかけ ── */
- +'<div class="h3">いま たまっているもの</div>'
- +'<div class="usu" style="margin-bottom:9px">この3つが たまると、よそおいや 家具が 届きます。'
- +'<b>いつ・何が 届くかは 出しません。</b>「あと○日」も 出しません。</div>'
- +'<div class="rec5">'+TAMA.map(function(x){
-   return '<div style="text-align:left"><div class="usu" style="margin-bottom:2px">'+x[0]+'</div>'
-   +'<div style="font-size:27px;font-weight:700;color:var(--enji);line-height:1.15">'+x[1]
-   +'<span style="font-size:14px;font-weight:400;color:var(--ink2)">'+x[2]+'</span></div>'
-   +'<div class="usu" style="margin-top:3px;line-height:1.7">'+x[3]+'</div></div>'}).join('')+'</div>'
+ +'<div class="h3" style="margin-top:0">'+S.slot+' に 置けるもの</div>'
+ +'<div class="shelf2">'+[['木の まど','持っています'],['すりガラス','持っています'],['丸まど','まだ'],
+   ['ステンドグラス','まだ'],['よしず','まだ'],['雨戸','まだ']].map(function(x){
+   return '<div><b>'+x[0]+'</b><span class="usu">'+x[1]+'</span></div>'}).join('')+'</div>'
+ +'<div class="h3">とだな（歌ってきたもの）</div>'
+ +'<div class="card p0">'+REP.map(function(r){
+   return '<div class="li plain"><span>'+r.t+'<br><span class="usu">'+r.c+'</span></span><s>記録 '+r.n+'日</s></div>'}).join('')+'</div>'
+ +'<div class="h3">手に入れかた</div><div class="card p0">'
+ +[['記録した日（累計）','78日'],['歌ってきたもの','3曲'],['本番','1回']].map(function(x){
+   return '<div class="li plain"><span>'+x[0]+'</span><s>'+x[1]+'</s></div>'}).join('')+'</div>'
  +'</div></div>'
-
- +'<div class="note">部屋の 絵は <b>仮</b>です。本番の 絵は 別に お渡しします。Code に 描かせないでください。<br>'
- +'手に入るのは <b>記録した という 行為</b>からです。調子・順位・点数では ありません。<br>'
+ +'<div class="note">手に入るのは <b>記録した という 行為</b>からです。調子・順位・点数では ありません。<br>'
  +'<b>連続日数では 数えません。</b>累計です。休んでも 減りません。<br>'
  +'手に入れたものを <b>1つも 取り上げません</b>。<br>'
  +'解放しても 知らせを 出しません。羊は 悲しい顔を しません。</div>'}
 
 /* ══════════════════ 下の 画面 ══════════════════ */
-var SC={'よてい':SC_yotei,'時間割':SC_jikan,'本番の予定':SC_honban,'もっと':SC_motto,'しらべる':SC_sira};
-/* ══════════════════ もっと（⚙）══════════════════
-   A10。法律の導線を 1か所に 集めます。題は「もっと」のまま（規約が この語で 書かれています）。
-   ここから 運営モード（教室機能）へ 移ります。 */
-function SC_motto(){
- var G=[['設定','文字の 大きさ・明るさ・羊の 動き'],
-  ['毎日 聞いてほしいこと','5つまで　／　いつ書くかも 自分で 決めます'],
-  ['アカウント','名前・入っている 教室'],
-  ['プラン','いま：無料　／　しらべる・よそおい'],
-  ['学ぶ','声のしくみ・湿度・逆流・記録の 読み方'],
-  ['書き出す','CSV と JSON。ぜんぶ 出せます。無料です'],
-  ['同意を とりけす','教室ごとに 外せます。記録は 消えません'],
-  ['退会する','隠しません。引き止めは 1回だけです']];
- return bk('きょう')+'<h2>もっと</h2>'
- +'<div class="col2" style="align-items:flex-start">'
- +'<div style="flex:1;min-width:320px">'
- +'<div class="card p0">'+G.map(function(x){
-   return '<div class="li" onclick="toast(\''+esc(x[0])+'（見本では 開きません）\')">'
-   +'<span>'+x[0]+'<br><span class="usu">'+x[1]+'</span></span><s>›</s></div>'}).join('')+'</div>'
- +'<div class="note">この画面の 題は <b>「もっと」</b>です。規約が この語で 書かれています。<br>'
- +'退会を 隠しません。引き止めを 2回以上 出しません。<br>'
- +'書き出しは <b>無料</b>です。有料の 壁に しません。</div>'
- +'</div>'
- +'<div style="flex:0 0 330px">'
- +'<div class="h3" style="margin-top:0">○○音楽大学の 運営</div>'
- +'<div class="card">'
- +'<div class="usu" style="line-height:1.95">役職の ある方にだけ 出ます。<br>'
- +'押すと <b>運営モード</b>（別の シェル）に 移ります。<br>'
- +'個人アプリの 中に、もう1つの アプリが 入っている形です。</div>'
- +'<div style="margin-top:12px"><span class="btn" onclick="opsOpen()">運営モードへ ›</span></div>'
- +'<div class="usu" style="margin-top:10px">この 見本では、運営は <b>別ファイル</b>です（PC・iPad 運営）。<br>'
- +'本番では 同じアプリの 中で 切り替わります。</div>'
- +'</div>'
- +'<div class="warn" style="margin-top:12px">運営モードには、<b>健康に関するものが 1つも ありません</b>。<br>'
- +'名簿・日程・出欠・行事・連絡・ご請求だけです。</div>'
- +'</div></div>'}
-function opsOpen(){
- var u=location.href.replace('（個人）','（運営）').replace('-PC個人','-PC');
- if(u===location.href){toast('運営の 見本は 別ファイルです ── 00-動く見本-PC・iPad（運営）.html');return}
- var w=window.open(u,'_blank');
- if(!w)toast('別ファイルを 開きます ── 00-動く見本-PC・iPad（運営）.html');}
-
+var SC={'よてい':SC_yotei,'時間割':SC_jikan,'本番の予定':SC_honban};
 function SC_honban(){
  return bk('きょう')+'<h2>本番の 予定</h2>'
  +'<div style="max-width:620px">'
@@ -1340,7 +1080,6 @@ function draw(){
  +'<div class="r">'
  +'<span class="rl" title="文字を 大きく（'+zLab()+'）" style="width:auto;padding:0 11px;border-radius:99px;font-size:13px" onclick="zCycle()">あ '+zLab()+'</span>'
  +'<span class="rl" title="明るさ（'+thLab()+'）" style="width:auto;padding:0 11px;border-radius:99px;font-size:13px" onclick="thCycle()">'+thIcon()+' '+thLab()+'</span>'
- +'<span class="rl" title="もっと（設定・プラン・運営モード）" style="width:auto;padding:0 11px;border-radius:99px;font-size:13px" onclick="push(\'もっと\')">⚙ もっと</span>'
  +'<span class="rl" title="最初から やり直す" onclick="location.reload()">↻</span></div></div>'
  +(S.st==='オフライン'?'<div class="wall" style="background:#F6F1E4;color:#8C6115"><i style="background:#8C6115"></i>いま つながっていません。書けます。あとで 送ります</div>':'')
  +'<div class="wall"><i></i>この画面の 記録は、先生にも 学校にも 運営にも 届きません</div>'
@@ -1367,12 +1106,7 @@ function drawDemo(){
  $('#demo').innerHTML='<div class="t">デモの 切替</div>'
  +r('端末',[['パソコン 1400×880','pc'],['iPad よこ 1180×830','ipadL'],['iPad たて 830×1120','ipadP']],S.dev,'setDev')
  +r('状態',[['ふつう','ふつう'],['空','空'],['読み込み中','読み込み中'],['失敗','失敗'],['オフライン','オフライン']],S.st,'setSt')
- +r('しらべる',[['入っていない（無料）','0'],['入っている（有料）','1']],String(S.sira),'setSira')
- +'<div class="usu">状態を 変えると、普段 見えない 画面（空・読み込み中・失敗・オフライン）が 出ます。<br>'
- +'<b>しらべる</b>を 切り替えると、<b>ふりかえる</b>の 出し分けが 変わります（くらべる・期間・本番でそろえる）。<br>'
- +'有料のものは <b>隠しません</b>。見せて、押せなくします。押すと 案内が 1画面 出ます。</div>'}
-function setSira(v){S.sira=+v;if(!S.sira){S.kura=S.kura.slice(0,1);S.wake='声の 出来';S.rep='ぜんぶ';
- if(S.span>90)S.span=90;if(S.fk==='本番で そろえる')S.fk='くらべる'}draw()}
+ +'<div class="usu">状態を 変えると、普段 見えない 画面（空・読み込み中・失敗・オフライン）が 出ます。</div>'}
 function legend(){
  var t=S.stack.length?topOf().s:S.tab;
  var L={'きょう':'<b>きょう ── パソコンの 入口</b><ul>'
