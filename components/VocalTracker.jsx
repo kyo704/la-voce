@@ -100,6 +100,9 @@ import LookBackPanel from "@/components/LookBackPanel";
 import { notOutDates, LOOK_BACK_FIELDS } from "@/lib/lookBack";
 // ★区切りマーカー。★理由の欄を作らない、という決めは、あちらが持ちます。
 import PeriodMarkerButton from "@/components/PeriodMarkerButton";
+import {
+  PERFORMANCE_FORMS, PERFORMANCE_FORM_LABEL, PERFORMANCE_FORM_NOTE, performanceFormOf
+} from "@/lib/performanceForm";
 import { markerRow } from "@/lib/periodMarkers";
 // ★「きょう」の帯（★第2便・§4）。★並び順と言葉は、あちらが持ちます。
 import TodayBand from "@/components/TodayBand";
@@ -159,7 +162,8 @@ import {
 } from "@/lib/recordSheets";
 import LookBackV2 from "@/components/LookBackV2";
 import {
-  applyThroatWord, applyDekiWord, applyEdemaWord, sectionIsOpen, SECTION_SHEETS
+  applyThroatWord, applyDekiWord, applyEdemaWord, sectionIsOpen, SECTION_SHEETS,
+  mergeSceneSymptoms
 } from "@/lib/recordV2";
 import { readProfileExtras } from "@/lib/profileExtras";
 import { VIEW, DRESS, SHELF, SEG_TABS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES, HOME_COLORS } from "@/lib/homeDrawer";
@@ -2318,7 +2322,19 @@ function entryToRow(userId, e) {
     type_fields: (e.typeFields && Object.keys(e.typeFields).length > 0) ? e.typeFields : null,
     throat_condition: numOrNull(voiceLegacy ? voiceLegacy.throatCondition : e.throatCondition),
     voice_quality: numOrNull(voiceLegacy ? voiceLegacy.voiceQuality : e.voiceQuality),
-    throat_symptoms: (voiceLegacy ? voiceLegacy.throatSymptoms : e.throatSymptoms) || [],
+    // ★★2026-09-11、★直しました。★ここで 印が 消えていました。
+    //   ★★前は「場面が 1つでも あれば、★場面から 作った ものを 使う」でした。
+    //     ★★「からだのこと」の 1枚で つけた 印が、★黙って 捨てられていました。
+    //     ★★場面は 1度 保存して 読み直せば 必ず 1件 できるので、
+    //       ★2度目の 保存から 必ず 消えていました。
+    //   ★★いまは その日 ぜんぶの 印（e.throatSymptoms）を そのまま 書きます。
+    //     ★場面の 印を 触ったときは、★mergeSceneSymptoms が ここへ 映します。
+    //     ★★どちらの 入口から 書いても 列に 届きます。
+    //   ★出どころ docs/reports/2026-09-11-A03シートの精査.md §1
+    //   ★見張り components/tests/symptom-write.test.js
+    throat_symptoms: (Array.isArray(e.throatSymptoms)
+      ? e.throatSymptoms
+      : (voiceLegacy ? voiceLegacy.throatSymptoms : e.throatSymptoms)) || [],
     sleep_hours: numOrNull(e.sleepHours),
     sleep_quality: numOrNull(e.sleepQuality),
     meal_notes: e.mealNotes,
@@ -4594,7 +4610,14 @@ const SIMPLE_QUALITY_STEPS = [
   { value: 7.5, label: "良い" },
   { value: 10, label: "とても\n良い" }
 ];
-function VoiceEntryEditor({ entry, onChange, onRemove, onClose, professions, t, simple = false }) {
+// ★★hideSymptoms（★2026-09-11・お決め C-3 ㋐）。
+//   ★★気になったことの 列（throat_symptoms）は 1つですが、
+//     ★門の中では 入口が 2つに なっていました ──
+//       ★「からだのこと」の 1枚 と、★ここ（場面ごと）です。
+//   ★★1つに します。★門の中では「からだのこと」の 1枚 だけが 書きます。
+//   ★★列も、★これまでに 書かれた 印も 触っていません。★欄を 出さないだけです。
+//   ★★門の外（38人）には、★これまでどおり 出ます。
+function VoiceEntryEditor({ entry, onChange, onRemove, onClose, professions, t, simple = false, hideSymptoms = false }) {
   const [mptRunning, setMptRunning] = useState(false);
   const [mptElapsed, setMptElapsed] = useState(0);
   const mptStartRef = useRef(null);
@@ -4698,6 +4721,7 @@ function VoiceEntryEditor({ entry, onChange, onRemove, onClose, professions, t, 
             className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
         </div>
       </div>
+      {!hideSymptoms && (
       <div className="mt-3">
         <span className="text-xs block mb-1.5" style={{ color: C.inkSoft }}>症状（あれば）</span>
         <div className="flex flex-wrap gap-1.5">
@@ -4707,6 +4731,7 @@ function VoiceEntryEditor({ entry, onChange, onRemove, onClose, professions, t, 
           ))}
         </div>
       </div>
+      )}
       <div className="mt-3">
         <input type="text" value={entry.note || ""} placeholder="ひとこと（任意）"
           onChange={(e) => onChange({ note: e.target.value })}
@@ -4881,6 +4906,24 @@ function ActivityBlockEditor({
       )}
       {activity.kind === "本番" && (
         <div className="mt-3 pt-2 border-t space-y-3" style={{ borderColor: C.line }}>
+          {/* ★★本番の かたち（★2026-09-11・坂本さんの お決め F-2 ㋐）。
+              ★★見本の SH['honban'] は「本番（ソロ）」「本番（合唱・アンサンブル）」を
+                ★別の 札に しています。★この家は「本番」1つでした。
+              ★★選択肢と 言葉は lib/performanceForm.js が 持ちます。★ここで 決めません。
+              ★★新しい 列を 作っていません。★activities の detail に 入ります。
+              ★★もう一度 押すと 外れます。★選び直せない 形に しないこと。 */}
+          <div>
+            <span className="text-sm font-medium block mb-2">{PERFORMANCE_FORM_LABEL}</span>
+            <div className="flex flex-wrap gap-2">
+              {PERFORMANCE_FORMS.map((form) => (
+                <Chip key={form} label={form} active={detail.performanceForm === form}
+                  onClick={() => onDetailChange({
+                    performanceForm: detail.performanceForm === form ? null : form
+                  })} />
+              ))}
+            </div>
+            <p className="text-xs mt-1.5" style={{ color: C.inkSoft }}>{PERFORMANCE_FORM_NOTE}</p>
+          </div>
           <DynamicsSelector t={t} label={t("targetPerformance")} icon={Sparkles} value={detail.performanceQuality || 3}
             onChange={(v) => onDetailChange({ performanceQuality: v })} />
           <textarea value={detail.performanceComment || ""} rows={2} placeholder={t("placeholderPerformanceComment")}
@@ -12250,11 +12293,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       return { ...f, voiceEntries: [...entries, newEntry] };
     });
   }
+  // ★★場面の 記録を 触ったら、★その日 ぜんぶの 印にも 映します（★2026-09-11）。
+  //   ★★列は throat_symptoms 1つ、★入口は 2つです。
+  //     ★映さないと、★場面で つけた 印が 列に 届きません。
+  //   ★★決めは lib/recordV2.js の mergeSceneSymptoms が 持ちます。★ここでは 持ちません。
   function updateVoiceEntry(id, patch) {
-    setFormData((f) => ({ ...f, voiceEntries: (f.voiceEntries || []).map((v) => (v.id === id ? { ...v, ...patch } : v)) }));
+    setFormData((f) => {
+      const next = (f.voiceEntries || []).map((v) => (v.id === id ? { ...v, ...patch } : v));
+      return { ...f, voiceEntries: next, throatSymptoms: mergeSceneSymptoms(f, next) };
+    });
   }
   function removeVoiceEntry(id) {
-    setFormData((f) => ({ ...f, voiceEntries: (f.voiceEntries || []).filter((v) => v.id !== id) }));
+    setFormData((f) => {
+      const next = (f.voiceEntries || []).filter((v) => v.id !== id);
+      return { ...f, voiceEntries: next, throatSymptoms: mergeSceneSymptoms(f, next) };
+    });
     setEditingVoiceEntryId((cur) => (cur === id ? null : cur));
   }
   function removeActivityBlock(id) {
@@ -14002,10 +14055,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         {/* ★★数を 出しません。★「◯つ」と 書かない こと
                             （★見本は「3つ」と 出しますが、★この家は 数を 出しません）。
                             ★入っているか どうかだけを、★✓ で 出します。 */}
+                        {/* ★★かたちを 書いた日は、★その 言葉を 出します（★お決め F-2 ㋐）。
+                            ★★書いた 値が どこにも 出ないと、★書く 意味が ありません
+                              （★「その計算の 値が、どれか1つの 画面に 実際に 出ますか」）。
+                            ★★数は 出しません。★「◯つ」と 書かないこと。 */}
                         {sheetHasSections("ほんばん") && (
                           <SheetRow
                             label={HONBAN.title}
-                            value={(formData.activities || []).length > 0 ? "あり" : null}
+                            value={performanceFormOf(formData)
+                              || ((formData.activities || []).length > 0 ? "あり" : null)}
                             onOpen={() => setRecordSheet("ほんばん")} />
                         )}
                         <SheetRow
@@ -14214,6 +14272,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         {(formData.voiceEntries || []).slice().sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0)).map((entry) => (
                           editingVoiceEntryId === entry.id ? (
                             <VoiceEntryEditor key={entry.id} entry={entry} professions={effectiveProfessions} t={t}
+                              hideSymptoms={layoutV2}
                               simple={isSimpleDisplay(profile)}
                               onChange={(patch) => updateVoiceEntry(entry.id, patch)}
                               onRemove={() => removeVoiceEntry(entry.id)}
@@ -14414,6 +14473,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </SectionCard>
                     )}
 
+                        {/* ★★門の中では 出しません（★2026-09-11・B-1／B-2）。
+                            ★★見本の 記録の 画面は［きょうは 書かない］［出す］の 2つだけです。
+                            ★★節では ないので、★引っ越しの 仕組みが 効きませんでした。
+                              ★1枚を 開くと、★この ボタンが 1枚の 中にも 出ていました。
+                            ★★門の外（38人）には、★これまでどおり 出ます。
+                            ★出どころ docs/reports/2026-09-11-A03シートの精査.md §2 */}
+                        {!layoutV2 && (
+                          <>
                         <button type="button" onClick={() => handleSave()} disabled={saveStatus === "saving"}
                           className="w-full rounded-2xl py-3.5 font-medium flex items-center justify-center gap-2 transition-all"
                           style={{ background: C.curtain, color: "#FFFDF8" }}>
@@ -14424,13 +14491,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         {saveStatus === "error" && saveError && (
                           <p className="text-xs text-center" style={{ color: C.curtain }}>{saveError}</p>
                         )}
+                          </>
+                        )}
 
                         {/* ★保存のあと30秒、「取り消す」を出しておく（見やすさ §4-2）。
                             ★消える通知にしない。画面の中に残し、自分で閉じる（§4-1）。
                               読み終わる前に消えるのが、いちばん不安を生む。
                             ★30秒は数えて出さない。数字が減っていくのを見せると、
                               急かされているように読める。 */}
-                        {undoableSave && (
+                        {/* ★★門の中では 出しません（★2026-09-11・B-3）。
+                            ★★見本に ありません。★節でも ないので、
+                              ★1枚を 開くと 1枚の 中にも 出ていました。
+                            ★★取り消しの 仕組みは 消していません。
+                              ★門の外（38人）には これまでどおり 出ます。
+                            ★★門の中で 押し間違えたときは、★同じ 3択を 押し直せば 直ります。 */}
+                        {!layoutV2 && undoableSave && (
                           <div className="rounded-2xl p-3 border flex items-center justify-between gap-3"
                             style={{ background: C.paper, borderColor: C.line }}>
                             <p className="text-sm" style={{ color: C.ink }}>{t("undoSaveDone")}</p>
@@ -14512,11 +14587,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           </details>
                         )}
 
-                        <button type="button" onClick={() => setRecordView("day")}
-                          className="w-full flex items-center justify-between rounded-xl p-3 text-sm" style={{ background: C.card, color: C.inkSoft }}>
-                          夜に、睡眠や食事をまとめて記録します
-                          <ChevronRight size={14} />
-                        </button>
+                        {/* ★★門の中では 出しません（★2026-09-11・B-4）。
+                            ★★声／一日 の 切替そのものを 門の中では 出していないので、
+                              ★これは 押しても 何も 起きない ボタンでした。
+                            ★★門の外（38人）には、★これまでどおり 出ます。 */}
+                        {!layoutV2 && (
+                          <button type="button" onClick={() => setRecordView("day")}
+                            className="w-full flex items-center justify-between rounded-xl p-3 text-sm" style={{ background: C.card, color: C.inkSoft }}>
+                            夜に、睡眠や食事をまとめて記録します
+                            <ChevronRight size={14} />
+                          </button>
+                        )}
                       </>
                     )}
 
@@ -14770,6 +14851,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     )}
 
                     <SectionCard title={t("sectionSleep")} icon={Moon} id="record-section-sleep" highlighted={highlightSection === "sleep"} fold="sleep">
+                      {/* ★★門の中では 出しません（★2026-09-11・お決め C-1 ㋐）。
+                          ★★この 節は「昨夜の 睡眠」の 1枚の 中に 引っ越しました。
+                            ★★1枚の 上に 見本の 札（寝た時刻・起きた時刻）が あるので、
+                              ★同じ 列に 入口が 2つ できていました。
+                            ★★2つ あると、★片方で 書いて もう片方で 上書きされます。
+                          ★★列も 記録も 触っていません。★欄を 出さないだけです。
+                          ★★門の外（38人）には、★これまでどおり 出ます。
+                          ★出どころ docs/reports/2026-09-11-A03シートの精査.md §4 ① */}
+                      {!layoutV2 && (
+                        <>
                       <NumberField label={t("labelSleepHours")} icon={Moon} value={formData.sleepHours} step={0.5} min={0} max={16} suffix={t("unitHours")}
                         onChange={(v) => setFormData((f) => ({ ...f, sleepHours: v }))} />
                       <div className="grid grid-cols-2 gap-3">
@@ -14780,6 +14871,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                         </div>
                       </div>
+                        </>
+                      )}
 
                       {/* ★★寝るときの姿勢と、締めつけ（★2026-09-08・要配慮個人情報）。
                           ★★同意を受け取っている方にだけ、出します。
@@ -15205,13 +15298,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     {showGroup("meal") && (
                     <SectionCard title={t("sectionMealDetail")} icon={Wheat} id="record-section-meal" highlighted={highlightSection === "meal"} fold="meal">
                       <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteMealAutoCalc")}</p>
+                      {/* ★★夕食の 時刻は、★門の中では 出しません（★お決め C-2 ㋐）。
+                          ★★「食べたもの」の 1枚の 上に、★見本の 札（食べ終えた 時刻）が あります。
+                            ★同じ dinner_time に 入口が 2つ できていました。
+                          ★★門の外（38人）には、★これまでどおり 出ます。 */}
                       <div className="grid grid-cols-2 gap-3">
+                        {!layoutV2 && (
                         <div>
                           <label className="text-sm font-medium block mb-1.5">{t("labelDinnerTime")}</label>
                           <input type="time" value={formData.dinnerTime}
                             onChange={(e) => setFormData((f) => ({ ...f, dinnerTime: e.target.value }))}
                             className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                         </div>
+                        )}
                         <div className="flex flex-col justify-end">
                           {(() => {
                             const gap = computeTimeGapHours(formData.dinnerTime, formData.bedtime);
@@ -15225,6 +15324,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           })()}
                         </div>
                       </div>
+                      {/* ★★門の中では 出しません（★2026-09-11・お決め C-2 ㋐）。
+                          ★★「食べたもの」の 1枚の 上に、★同じ 札が すでに あります。
+                            ★同じ dinner_tags に 入口が 2つ ありました。
+                          ★★門の外（38人）には、★これまでどおり 出ます。 */}
+                      {!layoutV2 && (
                       <div>
                         <span className="text-sm font-medium block mb-2">{t("labelDinnerTags")}</span>
                         <div className="flex flex-wrap gap-2">
@@ -15239,6 +15343,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           ))}
                         </div>
                       </div>
+                      )}
                       {(formData.meals || []).length === 0 && !showMealDetail ? (
                         <>
                           <div>
@@ -21777,9 +21882,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           ★★いちばん 外に 置きます。★後ろの 画面より 上に 出すためです。
           ★★門の 中の 方だけです。★38人の 画面は 変わりません。 */}
       {layoutV2 && formData && recordSheet === "ねむり" && (
+        // ★★きのうの 値を 渡します（★2026-09-11・お決め D-1）。
+        //   ★★1枚が「きのうの値を 初めから 入れています」と 言っているので、
+        //     ★言葉の ほうでは なく、★実装の ほうを 合わせました。
+        //   ★★渡すだけです。★保存は「これでいい」を 押したときだけ です。
         <NemuriSheet
           bedtime={formData.bedtime}
           sleepHours={typeof formData.sleepHours === "number" ? formData.sleepHours : null}
+          prevBedtime={(entries[addDays(selectedDate, -1)] || {}).bedtime || ""}
+          prevSleepHours={typeof (entries[addDays(selectedDate, -1)] || {}).sleepHours === "number"
+            ? entries[addDays(selectedDate, -1)].sleepHours : null}
           onDone={(bed, hours) => {
             // ★★押した その場で 保存します（★記録の 画面と 同じ 決め）。
             //   ★★setFormData の あとの formData は まだ 古い姿なので、

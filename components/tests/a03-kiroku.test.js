@@ -188,6 +188,63 @@ rowIns.forEach((label) => {
 });
 ok(sheets.includes('"お仕事に合わせた記録"'), "7つめ（お決め 2 ㋐）が ある");
 
+// ── ⑪ 1枚の 中の 重なり（★お決め C ㋐） ────────────────────
+console.log("\n⑪ 1枚の 中で、同じ 列を 2度 聞いていないこと");
+{
+  // ★★節の 側の 欄を、★門の中では 出しません。
+  //   ★★見本の 札と 重なると、★片方で 書いて もう片方で 上書きされます。
+  //   ★出どころ docs/reports/2026-09-11-A03シートの精査.md §4
+  const pairs = [
+    ['t("labelSleepHours")', "睡眠時間（★ねむり の 1枚）"],
+    ['t("labelBedtime")', "就寝時刻（★ねむり の 1枚）"],
+    ['t("labelDinnerTime")', "夕食の 時刻（★たべ の 1枚）"],
+    ['t("labelDinnerTags")', "夕食の 札（★たべ の 1枚）"]
+  ];
+  const lines = readRaw("components", "VocalTracker.jsx").split("\n");
+  pairs.forEach(([needle, name]) => {
+    let found = false;
+    lines.forEach((l, i) => {
+      if (!l.includes(needle)) return;
+      // ★★その 上 12行に !layoutV2 が あること。
+      const above = lines.slice(Math.max(0, i - 12), i).join("\n");
+      if (/!layoutV2/.test(above)) found = true;
+    });
+    ok(found, `${name} は 門の中で 出さない`);
+  });
+  // ★★場面ごとの 印の 欄も 同じです（★からだのこと の 1枚と 取り合っていました）。
+  ok(/hideSymptoms=\{layoutV2\}/.test(tracker), "場面ごとの 印の 欄は 門の中で 出さない");
+  ok(/hideSymptoms = false/.test(tracker), "★既定は 出す（★38人の 画面を 変えない）");
+}
+
+// ── ⑫ きのうの 値（★お決め D-1） ────────────────────────────
+console.log("\n⑫ 「きのうの値を 入れています」が 本当か");
+{
+  const sheets = readCode("components", "RecordSheets.jsx");
+  ok(/prevBedtime/.test(sheets) && /prevSleepHours/.test(sheets),
+    "1枚が きのうの 値を 受け取る");
+  ok(/const carried = /.test(sheets), "きのうから 持ってきたかを 見分けている");
+  ok(/\{carried \? <SheetNote>\{NEMURI\.note\}<\/SheetNote> : null\}/.test(sheets),
+    "★持ってきていない 日には、その 但し書きを 出さない");
+  ok(/prevBedtime=\{\(entries\[addDays\(selectedDate, -1\)\]/.test(tracker),
+    "呼ぶ側が、前の日の 記録を 渡している");
+}
+
+// ── ⑬ 見本に あって 出ていなかった もの（★F-1・F-2） ──────────
+console.log("\n⑬ 見本の ボタンが、実際に 出ること");
+{
+  const sheets = readCode("components", "RecordSheets.jsx");
+  // ★★F-1。★前は 呼ぶ側が onDetail を 渡さず、★1度も 出ませんでした。
+  ok(!/onDetail/.test(sheets), "★「詳しく 書く（分で）」は 外から 渡してもらわない");
+  ok(/setDetail\(true\)/.test(sheets), "★1枚の 中だけで 開ける（★渡し忘れが 起きない）");
+  ok(/KOE\.minuteLabel/.test(sheets), "★分で 書く 欄が ある");
+  // ★★F-2。★本番の かたち。
+  const pf = readCode("lib", "performanceForm.js");
+  ok(/"ソロ"/.test(pf) && /"合唱・アンサンブル"/.test(pf), "★本番の かたちが 2つ ある");
+  ok(/performanceFormOf/.test(tracker), "★書いた かたちを、画面が 読んでいる");
+  ok(!/performance_form/.test(readRaw("components", "VocalTracker.jsx")),
+    "★新しい 列を 作っていない（★activities の 中に しまう）");
+}
+
 console.log(ng === 0
   ? "\n★すべて 通りました。"
   : `\n★${ng} 件 落ちました。`);

@@ -68,7 +68,18 @@ export function SectionSheet({ spec, onClose }) {
  *   ★★選択肢は 渡してもらいます。★ここに 書き写しません。
  *     ★いまの SPEECH_MINUTE_CHOICES と 見本の 4つは 同じです。
  */
-export function KoeSheet({ choices, value, onChange, onDetail, onClose }) {
+export function KoeSheet({ choices, value, onChange, onClose }) {
+  // ★★「詳しく 書く（分で）」（★見本の btn g）。
+  //   ★★2026-09-11 まで、★呼ぶ側が onDetail を 渡していなかったので、
+  //     ★★このボタンは 1度も 出たことが ありませんでした（★notOutDates と 同じ形）。
+  //   ★★だから、★外から 渡してもらう のを やめました。
+  //     ★開くのも 閉じるのも、★この 1枚の 中で 完結します。
+  //     ★渡し忘れの 起きようが ない 形に します。
+  const [detail, setDetail] = useState(false);
+  const known = (choices || []).some((c) => c.value === value);
+  // ★★4つに 無い 数が すでに 入っている 日は、★初めから 開けます。
+  //   ★★閉じたままだと、★その 数を 直す 道が ありません。
+  const open = detail || (typeof value === "number" && !known);
   return (
     <BottomSheet title={KOE.title} onClose={onClose} closeLabel={KOE.done}>
       <div style={{ ...TYPE.usual, color: C.inkSoft, marginBottom: rem(11) }}>{KOE.lead}</div>
@@ -81,16 +92,32 @@ export function KoeSheet({ choices, value, onChange, onDetail, onClose }) {
           <span key={i}>{i > 0 ? <br /> : null}{line}</span>
         ))}
       </SheetNote>
-      {/* ★★「詳しく 書く（分で）」。★毎日 数字を 打たせない ための 逃げ道です。
-          ★★渡されなければ 出しません。★押せない ボタンを 置かない ため。 */}
-      {onDetail ? (
-        <button type="button" onClick={onDetail}
+      {open ? (
+        <div style={{ marginTop: rem(11) }}>
+          <Mini>{KOE.minuteLabel}</Mini>
+          <div style={{ display: "flex", alignItems: "center", gap: rem(8), marginTop: rem(7) }}>
+            <input type="number" inputMode="numeric" min="0" max="1440"
+              value={typeof value === "number" ? value : ""}
+              onChange={(e) => onChange(e.target.value === ""
+                ? null
+                : Math.max(0, Math.min(1440, Number(e.target.value))))}
+              aria-label={KOE.minuteLabel}
+              style={{
+                width: 120, minHeight: 44, borderRadius: 12, padding: `0 ${rem(12)}`,
+                border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+                ...TYPE.li, fontFamily: FONT_STACK
+              }} />
+            <span style={{ ...TYPE.usual }}>分</span>
+          </div>
+        </div>
+      ) : (
+        <button type="button" onClick={() => setDetail(true)}
           style={{
             width: "100%", minHeight: 48, marginTop: rem(11), borderRadius: 12,
             border: `1px solid ${C.line}`, background: C.card, color: C.ink,
             ...TYPE.li, fontFamily: FONT_STACK
           }}>{KOE.detail}</button>
-      ) : null}
+      )}
       <SheetSlot />
     </BottomSheet>
   );
@@ -106,13 +133,29 @@ export function KoeSheet({ choices, value, onChange, onDetail, onClose }) {
  *   @param sleepHours しまってある 長さ（★7.5）
  *   @param onDone     (bedtime, hours) を 受け取ります
  */
-export function NemuriSheet({ bedtime, sleepHours, onDone, onClose }) {
-  // ★★初めから 入っている 値。★きのうの ぶんです。
-  //   ★★無ければ 見本の 既定（23:30 / 7:00）です。
-  const [bed, setBed] = useState(bedtime || NEMURI.BED_DEFAULT);
+export function NemuriSheet({
+  bedtime, sleepHours, prevBedtime, prevSleepHours, onDone, onClose
+}) {
+  // ★★初めから 入っている 値（★2026-09-11 に 直しました）。
+  //   ★★1枚の 下に「きのうの値を 初めから 入れています」と 書いてあるのに、
+  //     ★★きのうを 1度も 見ていませんでした。
+  //     ★書いてあることを していない、★という 形でした。
+  //   ★★順は こうです。
+  //     ★① その日に すでに 書いてある 値（★書いた ものが 最優先）
+  //     ★② きのう 書いた 値（★但し書きが 約束している もの）
+  //     ★③ 見本の 既定（23:30 / 7:00）
+  //   ★★ここで しまいません。★「これでいい」を 押すまで、★1文字も 保存しません。
+  //     ★引き継ぎを 黙って 記録に しない、という この家の 決めの ままです。
+  const hasOwn = !!bedtime || typeof sleepHours === "number";
+  const baseBed = hasOwn ? bedtime : prevBedtime;
+  const baseHours = hasOwn ? sleepHours : prevSleepHours;
+  const [bed, setBed] = useState(baseBed || NEMURI.BED_DEFAULT);
   const [wake, setWake] = useState(
-    wakeFromBed(bedtime || NEMURI.BED_DEFAULT, sleepHours) || NEMURI.WAKE_DEFAULT);
+    wakeFromBed(baseBed || NEMURI.BED_DEFAULT, baseHours) || NEMURI.WAKE_DEFAULT);
   const hours = sleepLength(bed, wake);
+  // ★★きのうから 持ってきた ときだけ、★その 断りを 出します。
+  //   ★★その日に 書いてある 値を「きのうの値です」と 言わないこと。
+  const carried = !hasOwn && (!!prevBedtime || typeof prevSleepHours === "number");
 
   return (
     <BottomSheet title={NEMURI.title} onClose={onClose} closeLabel={null}>
@@ -136,7 +179,9 @@ export function NemuriSheet({ bedtime, sleepHours, onDone, onClose }) {
         <div style={{ ...TYPE.usual, color: C.inkSoft }}>{bed} → {wake}</div>
       </div>
 
-      <SheetNote>{NEMURI.note}</SheetNote>
+      {/* ★★但し書きは、★実際に きのうから 持ってきた ときだけ 出します。
+          ★★持ってきていない 日に 出すと、★また 嘘に なります。 */}
+      {carried ? <SheetNote>{NEMURI.note}</SheetNote> : null}
 
       <button type="button"
         onClick={() => { onDone(bed, hours); onClose(); }}
