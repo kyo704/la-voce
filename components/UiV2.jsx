@@ -171,6 +171,15 @@ export function Warn({ children }) {
  *       ★押すと 開き、★札の 字が「閉じる」に なります。
  *     ★★だから 見本の 画面には、★注記の 本文が 出ていません。
  *
+ *   ★★はじめは 畳みません（fold={false} が 既定）。
+ *     ★★Note は、★門（layoutV2）の 外の 画面でも 使われています。
+ *       ★components/LookBackPanel.jsx（★分析タブの !layoutV2 の 側）
+ *       ★components/OpsPosts.jsx／components/RangeCalendar.jsx
+ *     ★★既定で 畳むと、★38人の 画面が 変わります。★それは できません。
+ *       ★★2026-09-11、★一度 既定を「畳む」に して しまい、
+ *         ★呼び出し元を 数えて 気づきました。★戻しました。
+ *     ★★畳ませたい 画面で <Note fold> と 書きます。★1画面ずつ 移します。
+ *
  *   ★★これは、★私の 前の 報告の 訂正です。
  *     ★★9月11日、★私は「見本に 畳む しくみは ありません」と 申しました。
  *       ★<details>／<summary> を 数えて、★0 だったからです。
@@ -183,7 +192,7 @@ export function Warn({ children }) {
  *   ★★札の 色は ink2 です。★見本の CSS は --ink3 ですが、
  *     ★この 帳面の 決まり（★上の 見出し）で ink2 に します。
  */
-export function Note({ children, style, fold = true }) {
+export function Note({ children, style, fold = false }) {
   const [open, setOpen] = useState(false);
   const body = (
     <p style={{

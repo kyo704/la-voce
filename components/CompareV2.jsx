@@ -316,7 +316,8 @@ function OrderScreen({ order, onChange, onBack, message }) {
           <span style={{ ...TYPE.usual }}>{ORDER_COPY.restNote}</span>
         </div>
       </div>
-      <Note>
+      {/* ★★見本は .note を 畳んでいます（foldNotes）。 */}
+      <Note fold>
         {ORDER_COPY.notes.map((line, i) => (
           <span key={i}>{i > 0 ? <br /> : null}{line}</span>
         ))}
@@ -363,7 +364,7 @@ export default function CompareV2({ entries, dates }) {
     return (
       <div>
         <Empty />
-        <Note>{NOTES.map((line, i) => (
+        <Note fold>{NOTES.map((line, i) => (
           <span key={i}>{i > 0 ? <br /> : null}{line}</span>
         ))}</Note>
       </div>
@@ -467,8 +468,9 @@ export default function CompareV2({ entries, dates }) {
         </Li>
       </Card>
 
-      {/* ★★見本の note 4行。★1文字も 変えないこと。 */}
-      <Note>
+      {/* ★★見本の note 4行。★1文字も 変えないこと。
+          ★★見本は .note を 畳んでいます（foldNotes）。★fold を 渡します。 */}
+      <Note fold>
         {NOTES.map((line, i) => (
           <span key={i}>{i > 0 ? <br /> : null}{line}</span>
         ))}
