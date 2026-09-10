@@ -8814,8 +8814,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     //     ★カードは外したのに、★同じ判定がここに残っていました。
     //     ★★「1つの決めごとが2か所にある」の、いつもの形です。
     //   ★測った値だけを出します。★どう感じるかは、書く人のものです。
-    const ah = computeAbsoluteHumidity(Number(formData.temperature), Number(formData.humidity));
-    if (ah != null && !isNaN(ah)) {
+    // ★★2026-09-11、★「絶対湿度 0.0 g/m³」が 空の日にも 出ていました。
+    //   ★★Number("") は 0 です。★空欄を Number() に 通すと、
+    //     ★★0℃・湿度0% として 計算され、★0.0 が 出ていました。
+    //   ★★computeAbsoluteHumidity は、★数でなければ null を 返します。
+    //     ★せっかくの 守りを、★Number() で 外していました。
+    //   ★★測っていない ものを、★測ったかのように 出さないこと。
+    //   ★出どころ 撮った 絵（artifacts/shots/記録.png ／ 2026-09-11）
+    //   ★見張り components/tests/abs-humidity.test.js
+    const hasBoth = typeof formData.temperature === "number"
+      && typeof formData.humidity === "number";
+    const ah = hasBoth
+      ? computeAbsoluteHumidity(formData.temperature, formData.humidity)
+      : null;
+    if (ah != null && Number.isFinite(ah)) {
       fb.env = `絶対湿度 ${ah.toFixed(1)} g/m³`;
     }
 

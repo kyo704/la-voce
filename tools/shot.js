@@ -161,6 +161,10 @@ async function main() {
     console.log("★id を 読めませんでした（★撮ることは できます）。");
   }
   // ★★門の中に 居るかどうかを、★画面の 字から 見ます。
+  //   ★★記録の 画面に 行ってから 見ます（★2026-09-11 の 直し）。
+  //     ★入った 直後は「きょう」なので、★この字は そこに ありません。
+  await page.locator("nav >> text=記録").first().click({ timeout: 8000 }).catch(() => {});
+  await page.waitForTimeout(1200);
   const inGate = await page.locator("text=足す（どれも 任意）").count()
     .catch(() => 0);
   console.log("★門の中か : " + (inGate > 0 ? "はい" : "いいえ（★38人の 画面です）"));
@@ -170,6 +174,11 @@ async function main() {
   const list = only.length ? SCREENS.filter((s) => only.includes(s.key)) : SCREENS;
   for (const sc of list) {
     try {
+      // ★★前の 1枚を 閉じてから 進みます（★2026-09-11）。
+      //   ★★開いたままだと、★後ろの 押しどころに 手が 届きません。
+      //   ★BottomSheet は Esc で 閉じます（★出口を 3つ 置いた うちの 1つ）。
+      await page.keyboard.press("Escape").catch(() => {});
+      await page.waitForTimeout(400);
       await page.locator(`nav >> text=${sc.tab}`).first().click({ timeout: 8000 })
         .catch(async () => { await page.locator(`text=${sc.tab}`).last().click({ timeout: 8000 }); });
       await page.waitForTimeout(900);
@@ -177,8 +186,28 @@ async function main() {
         await page.locator(`text=${step}`).first().click({ timeout: 8000 });
         await page.waitForTimeout(700);
       }
+      // ★★1枚（シート）は、★下まで 見えるように してから 撮ります。
+      //   ★★2026-09-11、★坂本さんの ご指摘。
+      //     ★★見えている ぶんだけ 撮って、「確かめました」と 申し上げていました。
+      //     ★★1枚は max-height 82% の 中で 自分で 送ります。
+      //       ★だから 下の ほうは 写っていませんでした。
+      //   ★★高さの 上限を 外し、★はみ出しても 見えるように してから 撮ります。
+      //     ★見た目の 確かめの ための 細工です。★配信する 画面は 変えません。
+      if (sc.steps) {
+        await page.evaluate(() => {
+          const d = document.querySelector('[role="dialog"]');
+          if (!d) return;
+          d.style.maxHeight = "none";
+          d.style.overflow = "visible";
+          d.style.position = "absolute";
+          d.style.top = "0";
+          d.style.bottom = "auto";
+          document.body.style.overflow = "visible";
+        });
+        await page.waitForTimeout(500);
+      }
       const file = path.join(OUT, sc.key + ".png");
-      await page.screenshot({ path: file, fullPage: !sc.steps });
+      await page.screenshot({ path: file, fullPage: true });
       console.log("  ✓ " + sc.key);
     } catch (e) {
       console.log("  ✗ " + sc.key + "  " + String(e.message).split("\n")[0].slice(0, 90));
