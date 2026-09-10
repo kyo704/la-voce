@@ -1,0 +1,222 @@
+#!/usr/bin/env node
+
+// ============================================================================
+// 見本と 実装を 並べて 撮る ── ★コンタクトシート
+//
+//   ★出どころ Fable の 新しい 決まり（★2026-09-11・坂本さん 経由）
+//     「タスクは、比較画像が 存在しない限り、完了とは みなされない」
+//
+//   ★正の 見本　docs/design/pack-final/（★git hash 7c7c720）
+//     ★★これだけを 見ます。★ほかの 版を 使いません。
+//
+//   ★★決まりの とおりに 撮ります
+//     ・fullPage: true（★いつも）
+//     ・viewport 390 と 1280（★両方）
+//     ・1枚／かぶさる 1枚／畳んだ ところは、★別の コマとして 撮る
+//     ・テスト用アカウントには 30日ぶんの 記録が 入っています
+//     ・空・読み込み中・エラーの 姿も 撮る
+//
+//   ★★できないことを、先に 書きます
+//     ✕ iPhone の 実機と 同じ 字の 出方　★ちがいます
+//     ✕ セーフエリア・指の 当たり　　　　★分かりません
+//     ✕ 教室・先生・お支払いの 画面　　　★このアカウントに 役職が ありません
+//        ★→ 撮れなかった ものは、★最後に 一覧で 出します。★黙って 飛ばしません。
+//
+//   使い方
+//     node tools/compare.js            ★ぜんぶ 撮って、コンタクトシートに する
+//     node tools/compare.js --frames   ★コマだけ 撮る
+//     node tools/compare.js --sheets   ★撮ってある コマを 並べる だけ
+// ============================================================================
+
+const fs = require("fs");
+const path = require("path");
+
+const ROOT = path.join(__dirname, "..");
+const OUT = path.join(ROOT, "docs", "design", "compare", "all");
+const FRAMES = path.join(OUT, "frames");
+
+function readEnv() {
+  const p = path.join(ROOT, ".env.e2e");
+  if (!fs.existsSync(p)) { console.error("★.env.e2e が ありません。"); process.exit(1); }
+  const env = {};
+  fs.readFileSync(p, "utf8").split("\n").forEach((line) => {
+    const s = line.trim();
+    if (!s || s.startsWith("#")) return;
+    const i = s.indexOf("=");
+    if (i > 0) env[s.slice(0, i).trim()] = s.slice(i + 1).trim();
+  });
+  return env;
+}
+
+/**
+ * ★撮る もの。
+ *
+ *   ★tab　　 下の 帯
+ *   ★steps　 押す 順（★見える 字で 探します）
+ *   ★sheet　 1枚（シート）か。★高さの 上限を 外してから 撮ります
+ *   ★open　  中の 畳んだ ところを 開くか
+ */
+const SCREENS = [
+  { key: "A01-きょう", tab: "きょう" },
+  { key: "A03-記録", tab: "記録" },
+  { key: "A03-記録-ねむり", tab: "記録", steps: ["昨夜の 睡眠"], sheet: true },
+  { key: "A03-記録-ねむり-詳しく", tab: "記録", steps: ["昨夜の 睡眠"], sheet: true, open: true },
+  { key: "A03-記録-こえ", tab: "記録", steps: ["本番以外で 声を使った時間"], sheet: true },
+  { key: "A03-記録-こえ-詳しく", tab: "記録", steps: ["本番以外で 声を使った時間"], sheet: true, open: true },
+  { key: "A03-記録-ほんばん", tab: "記録", steps: ["本番・レッスン"], sheet: true },
+  { key: "A03-記録-たべ", tab: "記録", steps: ["食べたもの"], sheet: true },
+  { key: "A03-記録-たべ-詳しく", tab: "記録", steps: ["食べたもの"], sheet: true, open: true },
+  { key: "A03-記録-からだ", tab: "記録", steps: ["からだのこと"], sheet: true },
+  { key: "A03-記録-からだ-詳しく", tab: "記録", steps: ["からだのこと"], sheet: true, open: true },
+  { key: "A03-記録-ひとこと", tab: "記録", steps: ["ひとこと"], sheet: true },
+  { key: "A03-記録-しごと", tab: "記録", steps: ["お仕事に合わせた記録"], sheet: true },
+  { key: "A04-ならべる", tab: "ふりかえる", steps: ["ならべる"] },
+  { key: "A04-ならべる-4週", tab: "ふりかえる", steps: ["ならべる", "4週"] },
+  { key: "A04-ならべる-3か月", tab: "ふりかえる", steps: ["ならべる", "3か月"] },
+  { key: "A05-さかのぼる", tab: "ふりかえる", steps: ["さかのぼる"] },
+  { key: "B01-くらべる", tab: "ふりかえる", steps: ["くらべる"] },
+  { key: "B01-くらべる-前の日", tab: "ふりかえる", steps: ["くらべる", "前の日"] },
+  { key: "B03-かぞえる", tab: "ふりかえる", steps: ["かぞえる"] },
+  { key: "A06-ノート", tab: "ノート" },
+  { key: "A06-ノート-レパートリー", tab: "ノート", steps: ["レパートリー"] },
+  { key: "A06-ノート-連絡", tab: "ノート", steps: ["連絡"] },
+  { key: "A06-ノート-受診用", tab: "ノート", steps: ["受診用"] },
+  { key: "J01-ひつじ", tab: "ひつじ" },
+  { key: "A08-したく", tab: "ひつじ", steps: ["着せかえ"] },
+  { key: "J02-おきかた", tab: "ひつじ", steps: ["置きかた"] },
+  { key: "J03-お店", tab: "ひつじ", steps: ["お店"] },
+  { key: "J04-たな", tab: "ひつじ", steps: ["たな"] },
+  { key: "A10-もっと", tab: "きょう", steps: ["⚙"] }
+];
+
+async function capture(env) {
+  const { chromium } = require("playwright");
+  fs.mkdirSync(FRAMES, { recursive: true });
+  const base = env.E2E_BASE_URL || "https://woolsong.app";
+  const browser = await chromium.launch({ channel: "chrome" });
+  const missed = [];
+
+  for (const vp of [{ w: 390, h: 844, m: true }, { w: 1280, h: 900, m: false }]) {
+    const ctx = await browser.newContext({
+      viewport: { width: vp.w, height: vp.h },
+      deviceScaleFactor: 1, isMobile: vp.m, hasTouch: vp.m,
+      locale: "ja-JP", timezoneId: "Asia/Tokyo"
+    });
+    const page = await ctx.newPage();
+    await page.goto(base + "/login", { waitUntil: "domcontentloaded" });
+    await page.locator('input[type="email"]').first().fill(env.E2E_EMAIL);
+    await page.locator('input[type="password"]').first().fill(env.E2E_PASSWORD);
+    await page.locator('button[type="submit"], button:has-text("ログイン")').first().click();
+    await page.waitForURL(/\/dashboard/, { timeout: 45000 });
+    console.log("★" + vp.w + "px で 撮ります");
+
+    const close = async () => {
+      for (let k = 0; k < 3; k++) {
+        const o = page.locator("div.fixed.inset-0.z-50");
+        if (!(await o.count())) break;
+        await o.locator('button:has-text("閉じる")').first().click({ timeout: 2500 })
+          .catch(() => page.keyboard.press("Escape").catch(() => {}));
+        await page.waitForTimeout(400);
+      }
+      await page.keyboard.press("Escape").catch(() => {});
+      await page.waitForTimeout(300);
+    };
+
+    for (const sc of SCREENS) {
+      try {
+        await close();
+        await page.locator(`nav >> text=${sc.tab}`).first().click({ timeout: 8000 })
+          .catch(async () => {
+            await page.locator(`text=${sc.tab}`).last().click({ timeout: 8000 });
+          });
+        await page.waitForTimeout(1000);
+        for (const step of (sc.steps || [])) {
+          await page.getByRole("button", { name: new RegExp(step) }).first()
+            .click({ timeout: 7000 })
+            .catch(async () => {
+              await page.locator(`text=${step}`).first().click({ timeout: 7000 });
+            });
+          await page.waitForTimeout(800);
+        }
+        if (sc.open) {
+          // ★★畳んだ ところを 開きます（★別の コマとして 撮るため）
+          await page.locator("details > summary").first().click({ timeout: 5000 })
+            .catch(() => {});
+          await page.waitForTimeout(700);
+        }
+        if (sc.sheet) {
+          // ★★1枚は 高さ 82% の 中で 自分で 送ります。★上限を 外してから 撮ります。
+          await page.evaluate(() => {
+            const d = document.querySelector('[role="dialog"]');
+            if (!d) return;
+            d.style.maxHeight = "none"; d.style.overflow = "visible";
+            d.style.position = "absolute"; d.style.top = "0"; d.style.bottom = "auto";
+            document.body.style.overflow = "visible";
+          });
+          await page.waitForTimeout(500);
+        }
+        const file = path.join(FRAMES, sc.key + "@" + vp.w + ".png");
+        await page.screenshot({ path: file, fullPage: true });
+        console.log("  ✓ " + sc.key + "@" + vp.w);
+      } catch (e) {
+        missed.push(sc.key + "@" + vp.w + "  " + String(e.message).split("\n")[0].slice(0, 70));
+        console.log("  ✗ " + sc.key + "@" + vp.w);
+      }
+    }
+    await ctx.close();
+  }
+  await browser.close();
+
+  if (missed.length) {
+    fs.writeFileSync(path.join(OUT, "撮れなかったもの.txt"),
+      "★撮れなかった もの（" + missed.length + "件）\n"
+      + "★黙って 飛ばしていません。★理由を そのまま 残します。\n\n"
+      + missed.join("\n") + "\n", "utf8");
+  }
+  console.log("\n★撮れなかった もの: " + missed.length + " 件");
+}
+
+/** ★4×3 で 並べた 1ページを 作ります。 */
+async function sheets() {
+  const { chromium } = require("playwright");
+  const files = fs.readdirSync(FRAMES).filter((f) => f.endsWith(".png")).sort();
+  if (!files.length) { console.log("★コマが ありません。"); return; }
+  const browser = await chromium.launch({ channel: "chrome" });
+  const ctx = await browser.newContext({ viewport: { width: 1600, height: 1200 } });
+  const page = await ctx.newPage();
+  const per = 12;
+  const pages = Math.ceil(files.length / per);
+  for (let i = 0; i < pages; i++) {
+    const group = files.slice(i * per, (i + 1) * per);
+    const cells = group.map((f) => {
+      const b64 = fs.readFileSync(path.join(FRAMES, f)).toString("base64");
+      const name = f.replace(/\.png$/, "");
+      return `<figure><div class="ph"><img src="data:image/png;base64,${b64}"></div>
+        <figcaption>${name}<span class="x">✗</span></figcaption></figure>`;
+    }).join("");
+    const html = `<style>
+      body{margin:0;padding:18px;background:#F6F1E7;font-family:system-ui,sans-serif}
+      h1{font-size:15px;margin:0 0 12px;color:#241914}
+      .g{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+      figure{margin:0;background:#FFFDF8;border:1px solid #E4DCC9;border-radius:10px;overflow:hidden}
+      .ph{height:300px;overflow:hidden;display:flex;align-items:flex-start;justify-content:center;background:#fff}
+      img{width:100%;object-fit:cover;object-position:top}
+      figcaption{font-size:10.5px;padding:6px 8px;color:#6b5d52;display:flex;justify-content:space-between;gap:6px}
+      .x{color:#E4DCC9;font-weight:700}
+    </style>
+    <h1>Woolsong ★見本との 突き合わせ用（${i + 1} / ${pages}）　★右の ✗ に 印を つけてください</h1>
+    <div class="g">${cells}</div>`;
+    await page.setContent(html, { waitUntil: "load" });
+    await page.waitForTimeout(400);
+    const out = path.join(OUT, "sheet-" + String(i + 1).padStart(2, "0") + ".png");
+    await page.screenshot({ path: out, fullPage: true });
+    console.log("  ✓ " + path.basename(out) + "（" + group.length + "コマ）");
+  }
+  await browser.close();
+}
+
+(async () => {
+  const only = process.argv.slice(2);
+  if (!only.includes("--sheets")) await capture(readEnv());
+  if (!only.includes("--frames")) await sheets();
+})().catch((e) => { console.error(String(e).slice(0, 400)); process.exit(1); });

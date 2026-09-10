@@ -1,0 +1,5 @@
+★撮れなかった もの（2件）
+★黙って 飛ばしていません。★理由を そのまま 残します。
+
+J04-たな@390  locator.click: Timeout 7000ms exceeded.
+J04-たな@1280  locator.click: Timeout 7000ms exceeded.
