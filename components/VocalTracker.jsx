@@ -104,7 +104,7 @@ import { markerRow } from "@/lib/periodMarkers";
 import TodayBand from "@/components/TodayBand";
 import TabBarV2 from "@/components/TabBarV2";
 import { TAB_BAR_HEIGHT, TYPE, SPACE, FONT_STACK, cardStyle } from "@/lib/uiKit";
-import { ScreenHead, HeadRound, H3, Card, Li } from "@/components/UiV2";
+import { ScreenHead, HeadRound, H3, Card, Li, Seg } from "@/components/UiV2";
 import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
 import { moreSections } from "@/lib/moreMenu";
 import DailyAskPicker from "@/components/DailyAskPicker";
@@ -150,7 +150,9 @@ import RecordV2Head from "@/components/RecordV2Head";
 import LookBackV2 from "@/components/LookBackV2";
 import { applyConditionWord, RECORD_FOLDS, sectionIsOpen } from "@/lib/recordV2";
 import { readProfileExtras } from "@/lib/profileExtras";
-import { VIEW, DRESS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES, HOME_COLORS } from "@/lib/homeDrawer";
+import { VIEW, DRESS, SHELF, SEG_TABS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES, HOME_COLORS } from "@/lib/homeDrawer";
+import SheepShelf from "@/components/SheepShelf";
+import { shelfRows } from "@/lib/repertoireLog";
 import { itemsFor, sortItems } from "@/lib/drawerItems";
 // ★さがす（★§3-6）。★絞り込みは、ここにだけ 置きます。
 import DrawerSearch from "@/components/DrawerSearch";
@@ -5484,6 +5486,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //     ★足さないと、★開いた 5点が、★いつまでも「まだ」に 残ります。
   //   ★★effectiveOwnedKeys（★ぜんぶ着てよい方の ぶん）は 使いません。
   //     ★あちらは「着られるか」の 話で、★ここは「届いたか」の 話です。
+  // ★★たな（★見本 J04・2026-09-11）。★歌ってきたもの。
+  //   ★★数え方は lib/repertoireLog.js の shelfRows() です。★ここでは 数えません。
+  //   ★作曲家と 役は、★曲の 台帳（repertoire_tessitura）から 取ります。
+  const shelfRowsForSheep = useMemo(
+    () => shelfRows(entries, repertoireTessituraMap),
+    [entries, repertoireTessituraMap]);
+
   const notYetSeen = useMemo(() => {
     const flags = Object.fromEntries(
       [...computeUnlocked(entries, profile)].map((k) => [k, true]));
@@ -16259,11 +16268,39 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </span>
                     <HeadRound mark="⚙" label="もっとを開く" onClick={() => setActiveTab("more")} />
                   </div>
+                  {/* ★★4つの 札（★見本 J01〜J04 の .seg ／ 2026-09-11）。
+                      ★★札は lib/homeDrawer.js が 持ちます。★ここで 並べません。
+                      ★★「おうち」と「したく」は、★同じ 引き出しの 別の 棚を 開けます。
+                        ★見本の J02・J03 の 形には、★まだ なっていません。
+                        ★★それでも 4つとも 押せます。★押せない 札を 置きません。 */}
+                  <div style={{ display: homeState === DRESS ? "none" : "block" }}>
+                    <Seg items={SEG_TABS}
+                      activeKey={homeState === SHELF ? SHELF : VIEW}
+                      onSelect={(k) => {
+                        if (k === SHELF) { setHomeState(SHELF); return; }
+                        if (k === VIEW) { setHomeState(VIEW); return; }
+                        // ★★おうち／したく は、★どちらも 引き出しを 上げます。
+                        //   ★開く 棚だけが ちがいます。
+                        setEquippedBefore(characterEquipped);
+                        setDrawerCat(k === "home" ? "place" : "wear");
+                        setDrawerTab("all");
+                        setHomeState(DRESS);
+                        if (!pointsPaperShownOnce) {
+                          setPointsPaperShownOnce(true);
+                          setPointsPaperOpen(true);
+                        }
+                      }} />
+                  </div>
+                  {/* ★★たな の ときは、★部屋を 出しません（★見本 J04）。
+                      ★★消さずに 隠します。★消すと 部屋が 作り直されます。 */}
+                  {homeState === SHELF && (
+                    <SheepShelf rows={shelfRowsForSheep} />
+                  )}
                   {/* ★★したく のときは 4：3 のまま、★高さに 合わせます。
                       ★この入れ物も、★消さずに 姿だけ 変えます。 */}
                   <div ref={roomFlipRef} style={homeState === DRESS
                     ? { width: "min(100%, calc((100vh - 0px) * 0.40 * 4 / 3))", maxWidth: 480 }
-                    : { width: "100%" }}>
+                    : { width: "100%", display: homeState === SHELF ? "none" : undefined }}>
                     {/* ★★ふだんの ときだけ、★部屋を 画面いっぱいに します
                         （★裁定 9/10夜 §3「画面ぜんぶが おうちに」）。
                         ★★したく の ときは、★上に 部屋が 残る 形の ままです。
