@@ -38,7 +38,14 @@ async function main() {
   console.log("=== 3つの門（表示ゲート） ===");
   const G = await load("displayGates.js");
   assertEqual(G.NARRATIVE_MIN_N_PER_GROUP, 10, "各群 n ≥ 10");
-  assertEqual(G.NARRATIVE_MIN_EFFECT_SIZE, 0.4, "|Hedges' g| ≥ 0.4");
+  // ★★2026-09-11、★0.4 → 0.50 に 上げました。
+  //   ★出どころ 裁定-ふりかえる・とだな・もっと（9月10日 その7）§2-2
+  //     「★② 散らばりに くらべた ひらき ≧ 0.50」
+  //   ＋ 坂本さんの お決め（★2026-09-11）
+  //   ★★この 見張りの 役は「★緩めない」ことです。★0.50 は 緩和では なく 強化です。
+  //   ★★だから、★下限を 割らない ことを 見ます。★数の べた書きに 戻しません。
+  assertTrue(G.NARRATIVE_MIN_EFFECT_SIZE >= 0.50, "★下限を 割らない");
+  assertEqual(G.NARRATIVE_MIN_EFFECT_SIZE, 0.50, "|Hedges' g| ≥ 0.50");
   assertEqual(G.NARRATIVE_FDR_Q, 0.10, "BH-FDR q < 0.10");
   // 相関のときの下限（|ρ| ≥ 0.3）
   const gatesSrc = readCode("lib", "displayGates.js");

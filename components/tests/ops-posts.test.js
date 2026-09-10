@@ -85,6 +85,29 @@ ok(/CANNOT_CHANGE_REASON/.test(roster), "★渡せない わけを 出す");
 ok(/#A0917F/.test(roster), "★灰色に する。★隠さない");
 ok(/posts && posts\.length > 0/.test(roster), "★役職が 無ければ、行を 出さない");
 
+console.log("⑧-3 ★黙って 失敗しない（★2026-09-11・実機の ご報告）");
+// ★★0件の ときに、★わけを 出す 場所が ありませんでした。
+//   ★★押しても 何も 起きない、に なっていました。
+const opsUi = readRaw("components", "OpsPosts.jsx");
+const zeroBranch = opsUi.indexOf("{posts.length === 0 ? (");
+const msgAt = opsUi.indexOf("{message ? (");
+ok(msgAt > 0 && msgAt < zeroBranch, "★わけは、枝の 外に ある（★どの姿でも 見える）");
+ok(/送っています…/.test(opsUi), "★押した ことが すぐ 目に 見える");
+const vt = readCode("components", "VocalTracker.jsx");
+ok(/console\.error\("役職の道が断りました:"/.test(vt), "★断られたら 記録に 残す");
+ok(/\$\{res\.status\}/.test(vt), "★番号も 出す（★どこで 止まったか 分かる）");
+ok(/console\.error\("名簿を読めませんでした:"/.test(api), "★名簿の 読み落ちを 黙らせない");
+ok(/はじめの ひな型は、学校を 作った方が 作れます/.test(api), "★なぜ だめかを 言う");
+
+console.log("⑧-4 ★色を、あとから 上書きされていない");
+// ★★TYPE.li は color を 持ちます。★白を 先に 書くと、★黒が 勝ちます。
+//   ★実機で「ボタンの 中の 文字が 黒」と ご報告を いただきました。★そのとおりです。
+[["OpsPosts", opsUi], ["RecordSheets", readRaw("components", "RecordSheets.jsx")]]
+  .forEach(([n, src]) => {
+    ok(!/color: "#FFFDF8", \.\.\.TYPE/.test(src),
+      `★${n}：白の あとに TYPE を 展開していない`);
+  });
+
 console.log("⑨ 生徒の 記録に たどりつかない");
 ["entries", "throat", "voice_quality", "sleep_hours", "throat_symptoms"].forEach((w) => {
   ok(!ui.includes(w) && !api.includes(w), `★「${w}」を 触っていない`);

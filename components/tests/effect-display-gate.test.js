@@ -50,12 +50,19 @@ async function main() {
 
   console.log("\n=== しきい値は displayGates の定数と同じか ===");
   assertEqual(G.NARRATIVE_MIN_N_PER_GROUP, 10, "各群 n ≥ 10");
-  assertEqual(G.NARRATIVE_MIN_EFFECT_SIZE, 0.4, "|g| ≥ 0.4");
+  // ★★2026-09-11、★0.4 → 0.50 に 上げました。
+  //   ★出どころ 裁定-ふりかえる・とだな・もっと（9月10日 その7）§2-2
+  //     「★② 散らばりに くらべた ひらき ≧ 0.50」
+  //   ＋ 坂本さんの お決め（★2026-09-11）
+  //   ★★この 見張りの 役は「★緩めない」ことです。★0.50 は 緩和では なく 強化です。
+  //   ★★だから、★下限を 割らない ことを 見ます。★数の べた書きに 戻しません。
+  assertTrue(G.NARRATIVE_MIN_EFFECT_SIZE >= 0.50, "|g| の 下限が 0.50 を 割らない");
+  assertEqual(G.NARRATIVE_MIN_EFFECT_SIZE, 0.50, "|g| ≥ 0.50（いまの 決め）");
   assertEqual(G.NARRATIVE_FDR_Q, 0.10, "q < 0.10");
   // ★しきい値を直に書き換えても通る、という自己参照にしないため、値を固定する
   const src2 = readCode("lib", "displayGates.js");
   assertTrue(/NARRATIVE_MIN_N_PER_GROUP = 10;/.test(src2), "★n の下限が 10 と書いてある");
-  assertTrue(/NARRATIVE_MIN_EFFECT_SIZE = 0\.4;/.test(src2), "★効果量の下限が 0.4 と書いてある");
+  assertTrue(/NARRATIVE_MIN_EFFECT_SIZE = 0\.50;/.test(src2), "★効果量の下限が 0.50 と書いてある");
 
   console.log("\n=== ★星は、どこにも残っていない ===");
   const vt = readCode("components", "VocalTracker.jsx");

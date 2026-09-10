@@ -30,8 +30,12 @@ import { tx } from "@/lib/t";
 
 /** ★その方の、その学校での「できること」。★役職が 無ければ null。 */
 async function permsOf(admin, orgId, userId) {
-  const { data: me } = await admin.from("memberships")
+  const { data: me, error } = await admin.from("memberships")
     .select("role, post_id").eq("org_id", orgId).eq("user_id", userId).maybeSingle();
+  // ★★黙って 落とさない こと（★2026-09-11・実機の ご報告）。
+  //   ★★はじめ error を 捨てていました。★列が 無い・行が 2つ ある などで
+  //     ★me が null に なり、★「見つかりません」に 化けていました。
+  if (error) console.error("名簿を読めませんでした:", error, { orgId, userId });
   if (!me) return { member: null, perms: null };
   if (!me.post_id) return { member: me, perms: null };
   const { data: post } = await admin.from("org_posts")
@@ -76,8 +80,13 @@ export async function POST(request) {
     return NextResponse.json({ error: tx("見つかりませんでした。") }, { status: 404 });
   }
   if (!mayTouchPosts(member, perms)) {
-    return NextResponse.json(
-      { error: tx("あなたの役職では、役職を変えられません。") }, { status: 403 });
+    console.error("役職を触れませんでした:", { role: member.role, hasPerms: !!perms, action });
+    return NextResponse.json({
+      // ★★なぜ だめかを 言います。★黙って 断りません。
+      error: perms
+        ? tx("あなたの役職には「ひとの 役職を 変える」が ありません。")
+        : tx("まだ 役職が ありません。はじめの ひな型は、学校を 作った方が 作れます。")
+    }, { status: 403 });
   }
 
   // ★★ひな型を 作る（★はじめの 1回）。

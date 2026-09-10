@@ -103,7 +103,7 @@ export function NemuriSheet({ bedtime, sleepHours, onDone, onClose }) {
         style={{
           width: "100%", minHeight: 52, marginTop: rem(11), borderRadius: 12,
           border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
-          background: C.curtain, color: "#FFFDF8", ...TYPE.li,
+          ...TYPE.li, background: C.curtain, color: "#FFFDF8",
           fontWeight: 700, fontFamily: FONT_STACK
         }}>{NEMURI.done}</button>
     </BottomSheet>

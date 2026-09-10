@@ -57,9 +57,11 @@ export default function OpsPosts({
 
   const open = posts.find((p) => p.id === openId) || null;
   const run = async (payload) => {
-    setMessage("");
+    // ★★押した ことが、★すぐ 目に 見えるように します。
+    //   ★★通信が 遅いと、★押しても 何も 起きないように 見えます。
+    setMessage(tx("送っています…"));
     const err = await onAction(payload);
-    if (err) setMessage(err);
+    setMessage(err || "");
   };
 
   // ── 中身 ─────────────────────────────────────────────
@@ -159,6 +161,17 @@ export default function OpsPosts({
         {tx("足す・消す・できることを 変える ── 全部 この学校の 中だけです。")}
       </Warn>
 
+      {/* ★★2026-09-11、★ここに わけが 出ていませんでした。
+          ★★0件の ときの 枝の 中に、message を 書いていなかったためです。
+            ★★ボタンを 押して 失敗しても、★画面に 何も 出ませんでした。
+            ★実機で「押しても 何も 起きない」と ご報告を いただきました。★そのとおりです。
+          ★★だから、★枝の 外に 出しました。★どの 姿でも 見えます。 */}
+      {message ? (
+        <div style={{ ...cardStyle, background: C.paper, borderColor: C.line, marginBottom: rem(9) }}>
+          <p style={{ ...TYPE.li, color: C.ink }}>{message}</p>
+        </div>
+      ) : null}
+
       {posts.length === 0 ? (
         <>
           {/* ★★1つも 無いとき。★こちらで 勝手に 作りません（★器の SQL §4）。
@@ -171,7 +184,7 @@ export default function OpsPosts({
             style={{
               width: "100%", minHeight: 52, marginTop: rem(10), borderRadius: 12,
               border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
-              background: C.curtain, color: "#FFFDF8", ...TYPE.li,
+              ...TYPE.li, background: C.curtain, color: "#FFFDF8",
               fontWeight: 700, fontFamily: FONT_STACK
             }}>{tx("はじめの ひな型を 作る")}</button>
           <Note>
@@ -217,11 +230,10 @@ export default function OpsPosts({
               onClick={() => run({ action: "add", name: newName.trim() }).then(() => setNewName(""))}
               style={{
                 width: 84, minHeight: 48, borderRadius: 12, flex: "none",
-                border: `1px solid ${C.curtain}`, background: C.curtain, color: "#FFFDF8",
-                ...TYPE.li, fontFamily: FONT_STACK
+                border: `1px solid ${C.curtain}`, ...TYPE.li,
+                background: C.curtain, color: "#FFFDF8", fontFamily: FONT_STACK
               }}>{tx("足す")}</button>
           </div>
-          {message ? <Warn>{message}</Warn> : null}
           <Note>
             {tx("足した 役職は、はじめは できることが 1つも ありません。押して 決めてください。")}<br />
             {tx("自分が 持っていない できることは、役職にも 付けられません。")}<br />

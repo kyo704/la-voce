@@ -45,11 +45,19 @@ async function main() {
   );
   if (stubbed === raw) throw new Error("translations の import 行が見つかりませんでした。スタブの置き換えに失敗しています。");
   const mod = await import("data:text/javascript;base64," + Buffer.from(stubbed, "utf-8").toString("base64"));
-  const { GATES, getGate, evaluateGate, gateAllows, NARRATIVE_MIN_N_PER_GROUP, NARRATIVE_MIN_EFFECT_SIZE, NARRATIVE_FDR_Q } = mod;
+  const { GATES, getGate, evaluateGate, gateAllows, NARRATIVE_MIN_N_PER_GROUP, NARRATIVE_MIN_EFFECT_SIZE, NARRATIVE_FDR_Q, minEffectSizeFor } = mod;
 
   console.log("=== テスト1: §6-1 の3条件が、確定した数値のまま保たれている ===");
   assertEqual(NARRATIVE_MIN_N_PER_GROUP, 10, "各群の件数の下限は 10");
-  assertEqual(NARRATIVE_MIN_EFFECT_SIZE, 0.4, "効果量の下限は |g| ≥ 0.4");
+  // ★★2026-09-11、★0.4 → 0.50 に 上げました（★裁定 その7 §2-2 ／ 坂本さんの お決め）。
+  //   ★★緩めた のでは ありません。★厳しく しました。
+  //   ★この 見張りは「勝手に 緩めない」ための ものです。★上げるのは 決定が 要ります。
+  assertEqual(NARRATIVE_MIN_EFFECT_SIZE, 0.50, "効果量の下限は |g| ≥ 0.50");
+  // ★★選んだ 数だけ 厳しく（0.50 ＋ 0.12 ×（選んだ数−1））。
+  assertEqual(minEffectSizeFor(1), 0.50, "1つ選ぶと 0.50");
+  assertEqual(Number(minEffectSizeFor(5).toFixed(2)), 0.98, "5つ選ぶと 0.98");
+  assertTrue(minEffectSizeFor(5) > minEffectSizeFor(1), "★選ぶほど 厳しくなる");
+  assertEqual(minEffectSizeFor(0), 0.50, "★0 や 変な数でも 1つぶん");
   assertEqual(NARRATIVE_FDR_Q, 0.10, "BH-FDR の q は 0.10");
 
   console.log("\n=== テスト2: 白米の例（件数は足りるが効果量ゼロ）は、文章を出さない ===");

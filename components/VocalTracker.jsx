@@ -289,9 +289,13 @@ import CharacterHome from "@/components/CharacterHome";
 //       ★★すでに 満たされています。
 //   ★★列は 増えていません。throat_symptoms は 文字の 並びです。
 const SYMPTOM_OPTIONS = ["乾燥", "嗄れ", "痛み", "違和感", "鼻づまり", "咳", "裏返り", "喉の張り感",
-  "のどが いがらっぽい", "せきばらい", "のどが 渇く", "胃が もたれる", "肩が こわばる"];
+  "のどが いがらっぽい", "せきばらい", "のどが 渇く", "胃が もたれる", "肩が こわばる",
+  // ★★2026-09-11、★営業資料 v5 の 1ページ目に 例として 挙がっています。
+  //   「気になったこと（かすれ・痛み・★息が続かない など）」
+  //   ★★売り文句に 書いてあるのに、★選べませんでした。
+  "息が 続かない"];
 const SYMPTOM_KEYS = { "乾燥": "symptomDry", "嗄れ": "symptomHoarse", "痛み": "symptomPain", "違和感": "symptomDiscomfort", "鼻づまり": "symptomStuffyNose", "咳": "symptomCough", "裏返り": "symptomBreak", "喉の張り感": "symptomTightness",
-  "のどが いがらっぽい": "symptomScratchy", "せきばらい": "symptomThroatClear", "のどが 渇く": "symptomThirsty", "胃が もたれる": "symptomStomachHeavy", "肩が こわばる": "symptomShoulder" };
+  "のどが いがらっぽい": "symptomScratchy", "せきばらい": "symptomThroatClear", "のどが 渇く": "symptomThirsty", "胃が もたれる": "symptomStomachHeavy", "肩が こわばる": "symptomShoulder", "息が 続かない": "symptomBreath" };
 // ★★2026-09-11、★見本の SH['tabe'] の 言葉を 足しました。
 //   ★★1つも 消していません（★坂本さんの お決め ①㋐）。
 //   ★★見本の 8つの うち、★4つだけ 足しています。
@@ -11426,15 +11430,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         body: JSON.stringify({ orgId, ...payload })
       });
       const json = await res.json().catch(() => ({}));
+      // ★★何が 起きたかを、★必ず 残します（★2026-09-11・実機の ご報告）。
+      //   ★★黙って 失敗するのが、★いちばん 困ります。
+      if (!res.ok) console.error("役職の道が断りました:", res.status, json);
       await fetchOrgPosts(orgId);
       // ★★名簿も 引き直します。★役職を 消すと、★その方の 役職が 外れます。
       // ★★名簿の 側も 変わる ものは、★引き直します。
       if (["delete", "assign", "unassign"].includes(payload.action)) {
         await fetchOrgDetail(orgId);
       }
-      return res.ok ? null : (json.error || "うまくいきませんでした。");
+      // ★★わけと 一緒に、★番号も 出します。★どこで 止まったかが 分かります。
+      return res.ok ? null : `${json.error || "うまくいきませんでした。"}（${res.status}）`;
     } catch (e) {
-      return "いま、つながりません。";
+      console.error("役職の道につながりませんでした:", e);
+      return `いま、つながりません。（${e && e.message ? e.message : "?"}）`;
     } finally {
       setPostsBusy(false);
     }

@@ -62,8 +62,13 @@ export default function OpsShell({ orgName, role, onBack, renderTab, children })
           fontSize: "0.8125rem", overflow: "hidden", textOverflow: "ellipsis",
           whiteSpace: "nowrap", flex: 1, textAlign: "center"
         }}>{orgName} の運営</span>
-        {/* ★役割を 出します。★お金の欄が 出る／出ないの わけが 分かるように。 */}
-        <span style={{ fontSize: "0.6875rem", opacity: 0.8, flex: "none" }}>{role}</span>
+        {/* ★役割を 出します。★お金の欄が 出る／出ないの わけが 分かるように。
+            ★★2026-09-11、★ここに「できこと（Set）」が 渡るように なりました。
+              ★★Set を そのまま 描くと、★何も 出ません。
+              ★★役職で 分けている ときは「役職」と だけ 出します。 */}
+        <span style={{ fontSize: "0.6875rem", opacity: 0.8, flex: "none" }}>
+          {typeof role === "string" ? role : "役職"}
+        </span>
       </div>
 
       <div style={{ flex: 1, overflowY: "auto", padding: "12px 14px 16px" }}>

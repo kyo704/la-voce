@@ -52,7 +52,14 @@ async function main() {
   //
   //   出典: 統合実行ルート v4 §6／分析の検出力と族の設計.md
   assertEqual(NARRATIVE_MIN_N_PER_GROUP, 10, "★各群の下限は 10（緩めない）");
-  assertEqual(NARRATIVE_MIN_EFFECT_SIZE, 0.4, "★効果量の下限は 0.4（緩めない）");
+  // ★★2026-09-11、★0.4 → 0.50 に 上げました。
+  //   ★出どころ 裁定-ふりかえる・とだな・もっと（9月10日 その7）§2-2
+  //     「★② 散らばりに くらべた ひらき ≧ 0.50」
+  //   ＋ 坂本さんの お決め（★2026-09-11）
+  //   ★★この 見張りの 役は「★緩めない」ことです。★0.50 は 緩和では なく 強化です。
+  //   ★★だから、★下限を 割らない ことを 見ます。★数の べた書きに 戻しません。
+  assertTrue(NARRATIVE_MIN_EFFECT_SIZE >= 0.50, "★効果量の下限が 0.50 を 割らない（緩めない）");
+  assertEqual(NARRATIVE_MIN_EFFECT_SIZE, 0.50, "★いまの 決めは 0.50");
   assertEqual(NARRATIVE_FDR_Q, 0.10, "★BH-FDR の q は 0.10（緩めない）");
 
   console.log("\n=== 3つ全部そろえば通る ===");
