@@ -99,6 +99,23 @@ async function main() {
     return d.toISOString().slice(0, 10);
   };
 
+  /**
+   * ★かぶさっている 1枚を 閉じます。
+   *
+   *   ★★2026-09-11、★記録を 保存すると、★「記録しました」の 1枚が
+   *     ★かぶさり、★次の 押しどころに 手が 届きませんでした。
+   *   ★★出るのが ふつうです。★消す のでは なく、★閉じてから 進みます。
+   */
+  const closeOverlay = async () => {
+    for (let k = 0; k < 3; k++) {
+      const ov = page.locator("div.fixed.inset-0.z-50");
+      if ((await ov.count()) === 0) return;
+      await ov.locator('button:has-text("閉じる")').first().click({ timeout: 3000 })
+        .catch(async () => { await page.keyboard.press("Escape").catch(() => {}); });
+      await page.waitForTimeout(500);
+    }
+  };
+
   let done = 0;
   for (let back = days - 1; back >= 0; back--) {
     const plan = planFor(back);
@@ -115,10 +132,12 @@ async function main() {
       for (const w of [plan.edema, plan.throat, plan.deki]) {
         await page.locator(`button:has-text("${w}")`).first().click({ timeout: 4000 })
           .catch(() => {});
-        await page.waitForTimeout(200);
+        await page.waitForTimeout(400);
+        await closeOverlay();
       }
 
       // ★ねむり の 1枚
+      await closeOverlay();
       await page.getByRole("button", { name: /昨夜の 睡眠/ }).first()
         .scrollIntoViewIfNeeded().catch(() => {});
       await page.getByRole("button", { name: /昨夜の 睡眠/ }).first().click({ timeout: 6000 });
@@ -132,6 +151,7 @@ async function main() {
       await page.waitForTimeout(300);
 
       // ★こえ の 1枚
+      await closeOverlay();
       await page.getByRole("button", { name: /本番以外で 声を使った時間/ }).first().click({ timeout: 6000 });
       await page.waitForTimeout(500);
       await page.locator(`text="${plan.koe}"`).first().click({ timeout: 4000 }).catch(() => {});
@@ -140,6 +160,7 @@ async function main() {
 
       // ★食べたもの
       if (plan.tabe.length) {
+        await closeOverlay();
         await page.getByRole("button", { name: /食べたもの/ }).first().click({ timeout: 6000 });
         await page.waitForTimeout(500);
         for (const w of plan.tabe) {
@@ -152,6 +173,7 @@ async function main() {
 
       // ★からだのこと
       if (plan.karada.length) {
+        await closeOverlay();
         await page.getByRole("button", { name: /からだのこと/ }).first().click({ timeout: 6000 });
         await page.waitForTimeout(500);
         for (const w of plan.karada) {
@@ -163,14 +185,16 @@ async function main() {
       }
 
       // ★出す
+      await closeOverlay();
       await page.locator('button:has-text("出す")').first().click({ timeout: 5000 })
         .catch(() => {});
       await page.waitForTimeout(900);
+      await closeOverlay();
       done += 1;
       process.stdout.write("  " + iso(back) + " ✓\n");
     } catch (e) {
-      process.stdout.write("  " + iso(back) + " ✗ "
-        + String(e.message).split("\n")[0].slice(0, 60) + "\n");
+      process.stdout.write("  " + iso(back) + " ✗\n"
+        + String(e.message).split("\n").slice(0, 12).map((x) => "      " + x).join("\n") + "\n");
     }
   }
   await browser.close();

@@ -7592,24 +7592,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // lavoce-作業計画v2-構造変更の分離.md §3.4③: 平常値との比較。
   // m=中央値, MAD=中央絶対偏差、z = 0.6745×(今日の値−m)/MAD。z≤−1.5が3日以上続いたら知らせる。
   // むくみ・診断語は使わず「平常値よりN半音低い日がN日続いている」という事実提示に留める（§7.1）。
-  const pianissimoTrend = useMemo(() => {
-    const dates = Object.keys(entries).sort();
-    const vals = dates.map((d) => ({ date: d, midi: noteToMidi(entries[d].pianissimoHighNote) })).filter((x) => x.midi != null);
-    if (vals.length < 3) return null;
-    const last28 = vals.slice(-28);
-    const sortedMidis = last28.map((x) => x.midi).sort((a, b) => a - b);
-    const n = sortedMidis.length;
-    const m = n % 2 === 1 ? sortedMidis[(n - 1) / 2] : (sortedMidis[n / 2 - 1] + sortedMidis[n / 2]) / 2;
-    const absDevs = last28.map((x) => Math.abs(x.midi - m)).sort((a, b) => a - b);
-    const madRaw = absDevs.length % 2 === 1 ? absDevs[(absDevs.length - 1) / 2] : (absDevs[absDevs.length / 2 - 1] + absDevs[absDevs.length / 2]) / 2;
-    const mad = madRaw > 0 ? madRaw : 0.5;
-    const withZ = last28.map((x) => ({ ...x, z: 0.6745 * (x.midi - m) / mad }));
-    let streak = 0;
-    for (let i = withZ.length - 1; i >= 0; i--) {
-      if (withZ[i].z <= -1.5) streak += 1; else break;
-    }
-    return { median: m, latest: withZ[withZ.length - 1], streak, isLow: streak >= 3 };
-  }, [entries]);
+  // ★★①消しました（★2026-09-11・坂本さんの お決め）。
+  //   ★★何を　pianissimoTrend ── ★弱声の最高音が 平常より 低い 日の 連続数。
+  //   ★★なぜ　★出す 先（「◯日続いています」）を 消したので、
+  //     ★どこからも 呼ばれなく なりました。
+  //     ★「作った関数は、必ず どこかから 呼ばれているか」──★いいえ、でした。
+  //   ★★残すと、★いつかまた 呼ばれます。★そのときには 理由が 分かりません。
+  //   ★★記録（弱声の最高音）は 1件も 触っていません。★数え方を 消しただけです。
+  //   ★記録　docs/reports/消したものの記録.md
+
   // 起き抜け最低音の30日移動平均（下がり続けていたら疲労蓄積の目安）
   const wakeLowNote30dTrend = useMemo(() => {
     const dates = Object.keys(entries).sort().slice(-30);
@@ -12677,15 +12668,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       setTimeout(() => setSaveStatus("idle"), 4000);
       return;
     }
-    // 記録と分析の順番設計 §3.5: 保存直後のカードに必要な数値を、保存の前後で計算する。
-    const balanceBefore = computeBalance(entries, characterPointsSpent);
+    // ★★点数と 連続日数の 計算を、★①消しました（★2026-09-11）。
+    //   ★★出す 先が 無くなりました。★「書き込んでいる値は、
+    //     ★必ず どこかで 読まれているか」──★読まれなくなったので 消します。
+    //   ★★computeBalance は 残っています。★お店で 使います。
     const mergedEntries = { ...entries, [clean.date]: clean };
-    const balanceAfter = computeBalance(mergedEntries, characterPointsSpent);
-    let streakAfter = 0;
-    {
-      let d = clean.date;
-      while (mergedEntries[d]) { streakAfter += 1; d = addDays(d, -1); }
-    }
     const discovery = computeTodaysDiscovery(mergedEntries, clean.date);
     // 保存カードの「N項目」も、かんたん記録では分母を合わせる（v4 §11）
     const filledCount = countFilledSections(clean, profile.record_mode);
@@ -12705,10 +12692,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //     ★「ちがう日に書いてしまった」に、★気づかないことです。
       //   ★だから、★保存のあとに、★書いた日を必ず出します。
       date: clean.date,
-      pointsBefore: balanceBefore,
-      pointsAfter: balanceAfter,
-      streak: streakAfter,
-      totalDays: Object.keys(mergedEntries).length,
       discovery
     });
 
@@ -13250,13 +13233,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 {formatDateLabel(saveCardData.date, language)}
               </p>
             )}
+            {/* ★★①消しました（★2026-09-11・坂本さんの お決め）。
+                ★★何を　「+◯pt → ◯pt」の 点数と、「◯日つづいています」の 連続日数。
+                ★★なぜ（点数）　★現在値だけであっても、★点数という 形での
+                  ★可視化そのものが、★この製品の「点数化しない」という
+                  ★核心的な 原則に 反するためです（★坂本さん）。
+                ★★なぜ（連続）　★見本が 2か所で 禁じています ──
+                  ★S_kyou「「連続◯日」を 出しません。」
+                  ★J05「連続日数を 出しません。」
+                  ★古い機能の扱い-訂正 §8-1「連続は 使いません」。
+                ★★記録は 1件も 触っていません。★数えて 出していただけです。
+                ★★羊の 点数の 仕組み（computeBalance）は 残っています。
+                  ★お店で 使います。★消したのは、★保存の あとに 見せる 数だけです。
+                ★記録　docs/reports/消したものの記録.md */}
             <div className="mb-3" />
-            <p className="ff-mono save-card-points" style={{ fontSize: "1.75rem", color: C.ink }}>
-              +{saveCardData.pointsAfter - saveCardData.pointsBefore}pt <span style={{ fontSize: "1.0rem", color: C.inkSoft }}>→ {saveCardData.pointsAfter}pt</span>
-            </p>
-            {saveCardData.streak > 1 && (
-              <p className="text-sm mt-2" style={{ color: C.inkSoft }}>{saveCardData.streak}日つづいています</p>
-            )}
             {saveCardData.discovery && (
               <div className="rounded-xl p-3 mt-4" style={{ background: C.card }}>
                 <p className="text-xs mb-1" style={{ color: C.inkSoft }}>今日わかったこと</p>
@@ -18696,11 +18686,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               ? <>選んだ期間の音域は、自己ベストの<span className="ff-mono" style={{ fontWeight: 600 }}> {rangeFullnessPct}%</span>まで戻ってきています。</>
                               : null}
                         </p>
-                        {pianissimoTrend && pianissimoTrend.isLow && (
-                          <p className="text-xs mt-2 rounded-xl p-2.5" style={{ background: C.paper, color: C.ink }}>
-                            弱声の最高音が、あなたの平常値（直近28日の中央値 {midiToNoteLabel(pianissimoTrend.median)}）より低い日が{pianissimoTrend.streak}日続いています。
-                          </p>
-                        )}
+                        {/* ★★①消しました（★2026-09-11・坂本さんの お決め）。
+                            ★★「…より低い日が◯日続いています」── ★連続日数です。
+                            ★★保存の あとの 1枚と 同じ 性質なので、★同じく 消します。
+                            ★★記録（弱声の最高音）は 1件も 触っていません。
+                            ★記録　docs/reports/消したものの記録.md */}
                       </>
                     ) : (
                       <p className="text-xs rounded-xl p-3" style={{ background: C.paper, color: C.inkSoft }}>
