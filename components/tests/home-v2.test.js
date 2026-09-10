@@ -171,7 +171,18 @@ function eq(a, b, label) { ok(a === b, label + "  （得た値: " + JSON.stringi
       "★名乗りは 門の外だけ");
     // ★★道を 消してから 作らないこと
     //   ★言語を 選ぶ 口が、★上の帯にしか ありませんでした。★先に 移しました。
-    const more = v.slice(v.indexOf('activeTab === "more" && ('), v.indexOf('activeTab === "more" && (') + 1600);
+    // ★★「もっと」の 中ぜんぶを 見ます（★2026-09-11）。
+    //   ★★前は はじめの 1600文字だけを 見ていました。
+    //     ★見本 A10 の 9行を 頭に 置いたので、★言語の 枠が その 外に 出ました。
+    //   ★★言い分は「★ことばを 選ぶ 口が『もっと』に ある」です。★場所では ありません。
+    //   ★★括弧を 数えて、★まとまり ぜんぶを 取ります。
+    const moreAt = v.indexOf('activeTab === "more" && (');
+    let mi = v.lastIndexOf("{", moreAt), md = 0, mEnd = -1;
+    for (; mi < v.length; mi++) {
+      if (v[mi] === "{") md++;
+      else if (v[mi] === "}") { md--; if (md === 0) { mEnd = mi; break; } }
+    }
+    const more = v.slice(moreAt, mEnd + 1);
     ok(/setLanguage/.test(more), "★ことばの選びが「もっと」に ある");
     ok(/minHeight: 44/.test(more), "★44pt 以上");
     // ★見出しと 歯車は、中の画面が 出すこと

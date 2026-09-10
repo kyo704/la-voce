@@ -100,8 +100,9 @@ import { markerRow } from "@/lib/periodMarkers";
 import TodayBand from "@/components/TodayBand";
 import TabBarV2 from "@/components/TabBarV2";
 import { TAB_BAR_HEIGHT } from "@/lib/uiKit";
-import { ScreenHead, HeadRound } from "@/components/UiV2";
+import { ScreenHead, HeadRound, H3, Card, Li } from "@/components/UiV2";
 import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
+import { moreSections } from "@/lib/moreMenu";
 import { ATTENDANCE_KEYS } from "@/lib/todayBand";
 import * as unsentQueue from "@/lib/offlineQueue";
 // ★おうち画面の作り直し（★2026-09-08・仕様 §3）。★決めは lib が持ちます。
@@ -10144,6 +10145,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★端末ごとに 覚えます。★決めは lib/viewAs.js が 持ちます。
   //   ★★はじめは "auto" です。★端末から 読むのは、★描いた あとです
   //     （★サーバーで 描くときに localStorage は 見られません）。
+  // ★★「もっと」の 中の、★いま 開いている まとまり（★見本 A10）。
+  //   ★★null なら 9行の 一覧。★選ぶと、★その まとまりだけ 出ます。
+  //   ★★門の外（38人）は、★これまでどおり ぜんぶ 縦に 並びます。★1つも 変えません。
+  const [moreSection, setMoreSection] = useState(null);
+  /**
+   * ★その 枠を、★いま 出すか。
+   *
+   *   ★★返すのは display の 値です。★undefined なら これまでどおり。
+   *   ★★消しません。★隠すだけです。★中の 書きかけも 残ります。
+   */
+  function inMore(section) {
+    if (!layoutV2) return undefined;
+    return moreSection === section ? undefined : "none";
+  }
+
   const [viewAs, setViewAs] = useState("auto");
   useEffect(() => { if (layoutV2) setViewAs(readViewAs()); }, [layoutV2]);
   function chooseViewAs(v) { setViewAs(writeViewAs(v)); }
@@ -20029,13 +20045,77 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
             {activeTab === "more" && (
               <div className="space-y-5">
+                {/* ★★見本 A10 の 9行（★2026-09-11・坂本さんの お決め）。
+                    ★★シートに しません。★1画面の ままです。
+                      ★同意の 撤回と 退会は 法で 求められる 道なので、
+                      ★重なりの 中に 埋もれないほうが 確かです。
+                    ★★題は「もっと」の ままです。★規約が この語で 書かれています。
+                    ★★まだ 置いていない 行が 2つ あります。
+                      ★「同意を とりけす」… ★押した先が まだ ありません。
+                        ★押せない 行を 置くのは、★約束を もう1つ 増やすことです。
+                      ★「毎日、聞いてほしいこと」… ★いま あるものと 同じか
+                        ★調べて ご報告してから 置きます。
+                    ★★門の外（38人）には 出ません。★これまでどおり 縦に 並びます。
+                    ★行の 決めは lib/moreMenu.js が 持ちます。★ここで 決めません。 */}
+                {layoutV2 && moreSection === null ? (
+                  <div>
+                    <ScreenHead title="もっと" />
+                    {moreSections({
+                      hasOrgRole: myOrgs.some((mm) => mayEnterOps(mm.role))
+                    }).map((sec) => (
+                      <div key={sec.group || "top"}>
+                        {sec.group ? <H3>{sec.group}</H3> : null}
+                        <Card>
+                          {sec.rows.map((r, i) => (
+                            r.key === "運営"
+                              ? myOrgs.filter((mm) => mayEnterOps(mm.role)).map((mm, j, all) => (
+                                  <button key={mm.org_id} type="button"
+                                    onClick={() => setOpsOrgId(mm.org_id)}
+                                    style={{ display: "block", width: "100%", textAlign: "left",
+                                      background: "transparent", border: "none", padding: 0,
+                                      minHeight: 44 }}>
+                                    <Li right="›" last={j === all.length - 1}>
+                                      {(mm.org ? mm.org.name : "教室") + " の 運営"}
+                                    </Li>
+                                  </button>
+                                ))
+                              : (
+                                <button key={r.key} type="button"
+                                  onClick={() => {
+                                    if (r.key === "書き出す" || r.key === "退会") setMoreSection("じぶんの記録");
+                                    else setMoreSection(r.key);
+                                  }}
+                                  style={{ display: "block", width: "100%", textAlign: "left",
+                                    background: "transparent", border: "none", padding: 0,
+                                    minHeight: 44 }}>
+                                  <Li right={r.right || "›"} last={i === sec.rows.length - 1}>
+                                    {/* ★★赤で 出すのは、★見本の .x です（★退会）。 */}
+                                    <span style={r.danger ? { color: C.rust } : undefined}>{r.label}</span>
+                                  </Li>
+                                </button>
+                              )
+                          ))}
+                        </Card>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+                {/* ★★まとまりを 開いている あいだ、★戻る 道を 置きます。
+                    ★出口の ない 画面を 作らないこと。 */}
+                {layoutV2 && moreSection !== null ? (
+                  <button type="button" onClick={() => setMoreSection(null)}
+                    style={{ display: "block", background: "transparent", border: "none",
+                      padding: "10px 1px", minHeight: 44, color: C.inkSoft, fontSize: 13 }}>
+                    ‹　もっと　／　{moreSection}
+                  </button>
+                ) : null}
                 {/* ★★ことばの 選び（★2026-09-10）。
                     ★★門の中では、★上の 帯を 出さなく なりました（★見本のとおり）。
                       ★★言語を 選ぶ 口が、★そこにしか ありませんでした。
                       ★★先に ここへ 移します。★道を 消してから 作りません。
                     ★門の外の方は、★上の 帯からも 選べます。★両方 効きます。 */}
                 {layoutV2 ? (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
                     <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("languageLabel")}</p>
                     <select
                       value={language}
@@ -20069,6 +20149,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ★2か所で別々に判定すると、★また食い違います。 */}
                 {subscribed !== true && paidGateApplies && (
                   <div className="rounded-2xl p-5 border" style={{
+                    display: inMore("プラン"),
                     // ★★周りのカードと、地の色を変えます（★2026-09-07）。
                     //   ★いちばん上に在るのに、★見た目が同じで埋もれていました。
                     //   ★★色を「強く」しません。★違えるだけです。
@@ -20124,7 +20205,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </a>
                   </div>
                 )}
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                <div className="rounded-2xl p-4 border" style={{ display: inMore("学ぶ"), background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>学ぶ</p>
                   <div className="space-y-1">
                     <button type="button" onClick={() => { setActiveTab("learn"); setLearnProfession(learnProfession || profile.vocal_profession); }}
@@ -20142,7 +20223,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                 {/* ★名前は「見やすさ」。「シニアモード」と書かないこと（§0-②）。
                     ★年齢からは何も決めない。本人に直接、見え方を選んでもらう。 */}
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>見やすさ</p>
                   <p className="text-sm mb-2" style={{ color: C.ink }}>文字の大きさ</p>
                   {/* ★見本を実寸で出す。「大きい」という言葉では伝わらない（§1-1）。 */}
@@ -20190,7 +20271,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </div>
                 </div>
 
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>ツール</p>
                   <div className="space-y-1">
                     <button type="button" onClick={() => setActiveTab("questionnaires")}
@@ -20371,7 +20452,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </details>
                   )}
 
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>設定</p>
                   <div className="space-y-1">
                     <button type="button" onClick={() => setActiveTab("profile")}
@@ -20383,7 +20464,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 </div>
 
                 {unusedFieldGroupSuggestions.filter((s) => !dismissedFoldSuggestions.includes(s.key)).length > 0 && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
                     <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>使っていない項目</p>
                     <div className="space-y-3">
                       {unusedFieldGroupSuggestions.filter((s) => !dismissedFoldSuggestions.includes(s.key)).map((s) => (
@@ -20416,7 +20497,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   <Plus size={14} />記録する項目を増やす
                 </button>
                 {showFieldGroupManager && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                  <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.gold, borderWidth: 2 }}>
                     <div className="flex items-center justify-between mb-3">
                       <p className="text-sm font-medium">記録する項目</p>
                       <button type="button" onClick={() => setShowFieldGroupManager(false)} className="w-7 h-7 rounded-full flex items-center justify-center" style={{ color: C.inkSoft }}>
@@ -20460,7 +20541,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ★機械の種類で絞ります。★来たかどうかでは絞りません。 */}
                 {!isPwaInstalled && pwaInstallPrompt
                   && installGuidePlatform({ os: deviceOs, standalone: isPwaInstalled }) === "android" && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                  <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.gold, borderWidth: 2 }}>
                     <p className="text-sm font-medium mb-1">アプリとしてインストール</p>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                       ホーム画面に追加すると、ブラウザを開かずワンタップで記録できます。
@@ -20472,7 +20553,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </div>
                 )}
                 {!isPwaInstalled && isIosSafari && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                  <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.gold, borderWidth: 2 }}>
                     <p className="text-sm font-medium mb-1">アプリとしてインストール</p>
                     <p className="text-xs" style={{ color: C.inkSoft }}>
                       画面下部(または上部)の共有ボタン(四角から矢印が出ているアイコン)をタップし、「ホーム画面に追加」を選んでください。
@@ -20486,7 +20567,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ★アドレスを変えたい方が「失った方の道」を通ることになります。
                     ★大事な操作なので、★もう一度確かめます（§4）。
                     ★新旧の両方にお知らせが飛びます（§7）。 */}
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                <div className="rounded-2xl p-4 border" style={{ display: inMore("アカウント"), background: C.card, borderColor: C.line }}>
                   <p className="text-sm font-medium mb-1">メールアドレス</p>
                   <p className="text-xs mb-3 ff-mono" style={{ color: C.inkSoft }}>{userEmail}</p>
                   {!emailPanel ? (
@@ -20538,7 +20619,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ★「★再発行できる（ログインできているうちなら、いつでも）」
                     ★これも、★2026-09-05 まで抜けていました。
                     ★登録の直後にしか出せず、★失くした方の逃げ道がありませんでした。 */}
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                <div className="rounded-2xl p-4 border" style={{ display: inMore("アカウント"), background: C.card, borderColor: C.line }}>
                   <p className="text-sm font-medium mb-1">復旧の番号（控え）</p>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                     メールが使えなくなったときに、入るための番号です。
@@ -20556,7 +20637,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   )}
                 </div>
 
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
                   <p className="text-sm font-medium mb-1">記録画面の切り替え時刻</p>
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                     この時刻より前は「声の記録」、以降は「一日の記録」を最初に開きます。いつでも上部のタブで行き来できます。
@@ -20575,7 +20656,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     導線・Webhookの設定）が固まるまで一般ユーザーに出さない。
                     設定が済んでいない環境では、入口だけあっても連携できない。 */}
                 {canSeeLineLink(profile) && (
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
                   <p className="text-sm font-medium mb-1">LINE通知（毎朝のリマインド）</p>
                   {profile.line_user_id ? (
                     <>
@@ -20641,7 +20722,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 </div>
                 )}
 
-                <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                <div className="rounded-2xl p-4 border" style={{ display: inMore("じぶんの記録"), background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>アカウント</p>
                   {/* 統合実行ルートv4 G3-16: データの書き出し。
                       ★アカウント削除（G3-17）の1ページ目から「先に書き出す」で
@@ -20691,7 +20772,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     入れると、全職業の入力欄とチップが同時に出ます。
                     ★一般の利用者には、この枠ごと出ません。 */}
                 {profile.is_admin && (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
                     <label className="flex items-start gap-2" style={{ cursor: "pointer" }}>
                       <input type="checkbox" className="mt-0.5" checked={adminShowAllProfessions}
                         onChange={(e) => {
