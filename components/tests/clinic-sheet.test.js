@@ -90,6 +90,25 @@ function ok(cond, label) {
   ok(isOn([], "period") === true, "★はじめから 入っているものは、いつも 載る");
   ok(Array.isArray(writePick(["sleep"])), "★端末が 無くても 書ける");
 
+  console.log("⑧ 画面に、★決めが 効いていること");
+  const v = readRaw("components", "VocalTracker.jsx");
+  // ★★足すものは ぜんぶ、★選ばれなければ 出ないこと。
+  const gated = (v.match(/isOn\(clinicPick, "/g) || []).length;
+  ok(gated === 6, "★足すものの 節が、★6つ とも 出し分けられている（いま " + gated + "）");
+  ["name", "speech", "sleep", "history", "ownWords", "dinnerToBed"].forEach((k) => {
+    ok(new RegExp('isOn\\(clinicPick, "' + k + '"\\)').test(v), "★「" + k + "」が 出し分けの 中");
+  });
+  // ★★はじめから 入っている 2つは、★出し分けの 外に あること。
+  ok(!/isOn\(clinicPick, "period"\)/.test(v), "★期間は いつも 載る");
+  ok(!/isOn\(clinicPick, "hardDays"\)/.test(v), "★出づらかった日も いつも 載る");
+  // ★★5行の 断りが、★画面に 出ていること。
+  ok(/CLINIC_NOTICE\.map/.test(v), "★5行の 断りを 出している");
+  ok(/CLINIC_HEADINGS\.always/.test(v) && /CLINIC_HEADINGS\.enough/.test(v),
+    "★見出しも 決めから 取っている（★画面に 書き写していない）");
+  // ★★既定が 空なので、★はじめて 開いた方には 2項目だけ 出ます。
+  ok(/useState\(\[\]\)/.test(v.slice(v.indexOf("const [clinicPick"), v.indexOf("const [clinicPick") + 80)),
+    "★はじめは 空（★足すものは 1つも 載らない）");
+
   console.log(failed === 0 ? "\n全て ok" : "\n" + failed + "件 NG");
   process.exit(failed === 0 ? 0 : 1);
 })();

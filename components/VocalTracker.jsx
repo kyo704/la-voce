@@ -106,6 +106,10 @@ import { moreSections } from "@/lib/moreMenu";
 import DailyAskPicker from "@/components/DailyAskPicker";
 import RangeCalendar from "@/components/RangeCalendar";
 import { readAsk, writeAsk } from "@/lib/dailyAsk";
+import {
+  CLINIC_ALWAYS, CLINIC_OPTIONAL, CLINIC_NOTICE, CLINIC_HEADINGS,
+  isOn, togglePick, readPick, writePick
+} from "@/lib/clinicSheet";
 import { ATTENDANCE_KEYS } from "@/lib/todayBand";
 import * as unsentQueue from "@/lib/offlineQueue";
 // ★おうち画面の作り直し（★2026-09-08・仕様 §3）。★決めは lib が持ちます。
@@ -10156,6 +10160,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★決めは lib/dailyAsk.js が 持ちます。★ここで 決めません。
   const [dailyAsk, setDailyAsk] = useState(null);
   useEffect(() => { if (layoutV2) setDailyAsk(readAsk()); }, [layoutV2]);
+  // ★★受診用の 1枚に、★何を 載せるか（★裁定 §14）。
+  //   ★★既定は 空です。★足すものは 1つも 載せません。
+  //     ★「個人情報の 塊を、既定で 出していました」の 直しです。
+  //   ★端末ごとに 覚えます。★サーバに 送りません。
+  const [clinicPick, setClinicPick] = useState([]);
+  useEffect(() => { setClinicPick(readPick()); }, []);
   /**
    * ★その 枠を、★いま 出すか。
    *
@@ -19549,6 +19559,51 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           }} />
                       </div>
                     )}
+                    {/* ★★何を 載せるか（★裁定 §14・2026-09-11）。
+                        ★★「個人情報の 塊を、既定で 出していました」の 直しです。
+                        ★★足すものは、★ぜんぶ 既定が「載せない」です。
+                          ★名前も 既定で 載せません。★窓口で ご自分で 書き足せます。
+                        ★★見出しに「かならず」を 使いません。★強すぎます。
+                          ★2項目の ままでも、★それで 完成です。
+                        ★★数えません。★「あと◯項目」を 出しません。
+                        ★決めは lib/clinicSheet.js が 持ちます。★ここで 決めません。 */}
+                    <div className="mt-4 no-print">
+                      <p className="text-xs font-medium mb-1">{CLINIC_HEADINGS.always}</p>
+                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                        {CLINIC_ALWAYS.map((x) => x.label).join(" ／ ")}
+                      </p>
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        {CLINIC_HEADINGS.enough}
+                      </p>
+                      <p className="text-xs font-medium mb-1.5">{CLINIC_HEADINGS.optional}</p>
+                      <div className="flex flex-wrap gap-1.5 mb-3">
+                        {CLINIC_OPTIONAL.map((x) => {
+                          const on = isOn(clinicPick, x.key);
+                          return (
+                            <button key={x.key} type="button"
+                              aria-pressed={on}
+                              onClick={() => setClinicPick(writePick(togglePick(clinicPick, x.key)))}
+                              style={{
+                                minHeight: 44, padding: "0 11px", borderRadius: 999, fontSize: 11.5,
+                                border: `1px solid ${on ? C.curtain : C.line}`,
+                                background: on ? C.curtain : C.card,
+                                color: on ? "#FFFDF8" : C.inkSoft
+                              }}>
+                              {on ? "✓ " : "＋ "}{x.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {/* ★★5行の 断り。★1文字も 変えないこと。
+                          ★★5行目が いちばん 大事です ──「迷ったら、少ないほうを」。 */}
+                      <div className="rounded-xl p-2.5" style={{ background: C.paper }}>
+                        {CLINIC_NOTICE.map((line, i) => (
+                          <p key={i} className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.9 }}>
+                            ・{line}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
                     <button type="button" onClick={() => window.print()}
                       className="mt-3 px-3.5 py-1.5 rounded-full text-xs font-medium"
                       style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
@@ -19562,12 +19617,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </p>
                     <p className="text-xs mb-4" style={{ color: C.inkSoft }}>期間：{start} 〜 {end}</p>
 
+                    {/* ★★「基本情報」は「足すなら」です。★既定は 載せません（★裁定 §14）。 */}
+                    <div style={{ display: isOn(clinicPick, "name") ? undefined : "none" }}>
                     <h3 className="text-sm font-medium mb-1.5">基本情報</h3>
                     <p className="text-xs mb-4" style={{ color: C.ink }}>
                       年齢：{profile.age || "未登録"}　性別：{profile.sex ? t(profile.sex === "男性" ? "sexMale" : profile.sex === "女性" ? "sexFemale" : "sexNotAnswer") : "未登録"}
                       　職業：{t(PROFESSION_LABEL_KEYS[profile.vocal_profession] || "professionSinger")}
                       {clinicWeeklyVoiceUsage.length > 0 && <>　1日あたりの平均発声時間：約{roundTo1(clinicWeeklyVoiceUsage.reduce((a, w) => a + w.hours, 0) / (clinicWeeklyVoiceUsage.length * 7))}時間</>}
                     </p>
+                    </div>
 
                     {/* ★§1 どこに、どれくらい。★感じた場所で並べます。
                         原因の系統では分けません（それは診断です）。 */}
@@ -19616,7 +19674,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     )}
 
                     {/* ★§4 食事と就寝。★記録した時刻をそのまま出します。 */}
-                    {clinicDinnerToBed && (
+                    {/* ★★「食事と就寝」も「足すなら」です（★裁定 §14）。
+                        ★★すでに 条件の 中に あるので、★条件を 1つ 足すだけです。
+                          ★囲みを 増やしません。 */}
+                    {clinicDinnerToBed && isOn(clinicPick, "dinnerToBed") && (
                       <>
                         <h3 className="text-sm font-medium mb-1.5">食事と就寝</h3>
                         <p className="text-xs mb-4" style={{ color: C.ink }}>
@@ -19626,6 +19687,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       </>
                     )}
 
+                    {/* ★★「声の使用量（週あたり）」は「足すなら」です。★既定は 載せません（★裁定 §14）。 */}
+                    <div style={{ display: isOn(clinicPick, "speech") ? undefined : "none" }}>
                     <h3 className="text-sm font-medium mb-1.5">声の使用量（週あたり）</h3>
                     {clinicWeeklyVoiceUsage.length > 0 ? (
                       <div style={{ width: "100%", height: chartHeight(140) }} className="mb-4">
@@ -19642,22 +19705,32 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ) : (
                       <p className="text-xs mb-4" style={{ color: C.inkSoft }}>この期間に活動時間の記録はありません。</p>
                     )}
+                    </div>
 
+                    {/* ★★「睡眠時間の平均」は「足すなら」です。★既定は 載せません（★裁定 §14）。 */}
+                    <div style={{ display: isOn(clinicPick, "sleep") ? undefined : "none" }}>
                     <h3 className="text-sm font-medium mb-1.5">睡眠時間の平均</h3>
                     <p className="text-xs mb-4" style={{ color: C.ink }}>
                       {clinicSleepAverage != null ? `${clinicSleepAverage}時間` : "記録なし"}
                     </p>
+                    </div>
 
+                    {/* ★★「既往・服薬」は「足すなら」です。★既定は 載せません（★裁定 §14）。 */}
+                    <div style={{ display: isOn(clinicPick, "history") ? undefined : "none" }}>
                     <h3 className="text-sm font-medium mb-1.5">既往・服薬</h3>
                     <p className="text-xs mb-4" style={{ color: C.ink }}>
                       {clinicMedications.length > 0 ? clinicMedications.join("・") : "この期間の登録はありません"}
                     </p>
+                    </div>
 
+                    {/* ★★「自由記入欄」は「足すなら」です。★既定は 載せません（★裁定 §14）。 */}
+                    <div style={{ display: isOn(clinicPick, "ownWords") ? undefined : "none" }}>
                     <h3 className="text-sm font-medium mb-1.5">自由記入欄</h3>
                     <textarea value={clinicFreeNote} onChange={(e) => setClinicFreeNote(e.target.value)}
                       placeholder="受診時に手書きで書き足す場合は、このまま余白としてご利用いただけます。"
                       className="w-full rounded-lg border p-2 text-xs no-print" rows={4} style={{ borderColor: C.line, background: C.paper }} />
                     <div className="hidden print:block" style={{ borderBottom: `1px solid ${C.line}`, height: 80 }} />
+                    </div>
                   </div>
                 </div>
               );
