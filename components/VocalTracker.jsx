@@ -104,6 +104,7 @@ import { ScreenHead, HeadRound, H3, Card, Li } from "@/components/UiV2";
 import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
 import { moreSections } from "@/lib/moreMenu";
 import DailyAskPicker from "@/components/DailyAskPicker";
+import RangeCalendar from "@/components/RangeCalendar";
 import { readAsk, writeAsk } from "@/lib/dailyAsk";
 import { ATTENDANCE_KEYS } from "@/lib/todayBand";
 import * as unsentQueue from "@/lib/offlineQueue";
@@ -19526,13 +19527,26 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </button>
                       ))}
                     </div>
+                    {/* ★★カレンダーに しました（★2026-09-11・裁定 §2）。
+                        ★★「受診用の『選ぶ』を 押しても、何も 出なかった」の 直しです。
+                          ★これまでは 日付の 入力欄が 2つ 並んでいました。
+                          ★★iOS では、★空の 入力欄は 何も 起きないように 見えます。
+                        ★★はじめの日 → おわりの日 の 順に 押します。
+                          ★途中の日は うすい色で つながります。
+                          ★もう一度 押すと やり直せます。
+                        ★「先週」「今月」「先月」の 早押しも 置きました。
+                        ★★行事の「日」からも、★この 同じ ものを 使います。
+                          ★2つ 作りません。 */}
                     {clinicPeriodMode === "custom" && (
-                      <div className="flex items-center gap-2 mt-3">
-                        <input type="date" value={clinicCustomStart} onChange={(e) => setClinicCustomStart(e.target.value)}
-                          className="rounded-lg border px-2.5 py-1.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
-                        <span className="text-xs" style={{ color: C.inkSoft }}>〜</span>
-                        <input type="date" value={clinicCustomEnd} onChange={(e) => setClinicCustomEnd(e.target.value)}
-                          className="rounded-lg border px-2.5 py-1.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
+                      <div className="mt-3">
+                        <RangeCalendar
+                          value={{ start: clinicCustomStart || null, end: clinicCustomEnd || null }}
+                          todayISO={realTodayDate}
+                          max={realTodayDate}
+                          onChange={(r) => {
+                            setClinicCustomStart(r.start || "");
+                            setClinicCustomEnd(r.end || "");
+                          }} />
                       </div>
                     )}
                     <button type="button" onClick={() => window.print()}
