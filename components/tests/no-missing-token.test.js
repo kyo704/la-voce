@@ -26,16 +26,55 @@ function ok(cond, label) {
   else { console.log("  NG  " + label); failed++; }
 }
 
-// ★★tokens.js の C に、★実際に ある 名前を 取り出します。
-const tokens = readCode("lib", "tokens.js");
-const cBlock = tokens.slice(tokens.indexOf("export const C = {"),
-  tokens.indexOf("};", tokens.indexOf("export const C = {")));
-const known = new Set([...cBlock.matchAll(/^\s{2}([a-zA-Z][a-zA-Z0-9]*):/gm)].map((m) => m[1]));
+/**
+ * ★物の 中の 名前を、★かっこを 数えて 拾います。
+ *
+ *   ★★1行で 書いた もの（RADIUS）と、★何行にも 書いた もの（TYPE）が あります。
+ *   ★★はじめ「行頭 2字下げ」だけを 数えて、★1行の ものを 見落としました。
+ *     ★道具の 間違いで「無い」と 言いました。★数え方を 直しました。
+ */
+function membersOf(file, name) {
+  const src = readCode(...file.split("/"));
+  const at = src.indexOf(`export const ${name} = {`);
+  if (at < 0) return null;
+  let depth = 0, i = src.indexOf("{", at), end = i;
+  for (; i < src.length; i++) {
+    if (src[i] === "{") depth++;
+    else if (src[i] === "}") { depth--; if (depth === 0) { end = i; break; } }
+  }
+  const body = src.slice(src.indexOf("{", at) + 1, end);
+  let d = 0, out = new Set(), cur = "";
+  for (let k = 0; k < body.length; k++) {
+    const c = body[k];
+    if (c === "{" || c === "[") d++;
+    else if (c === "}" || c === "]") d--;
+    else if (d === 0) {
+      if (c === ",") { cur = ""; continue; }
+      if (c === ":") { const m = /([a-zA-Z][a-zA-Z0-9]*)\s*$/.exec(cur); if (m) out.add(m[1]); cur = ""; continue; }
+      cur += c;
+    }
+  }
+  return out;
+}
+
+const known = membersOf("lib/tokens.js", "C");
 
 console.log("① 色の 一覧が 読めている");
 ok(known.size >= 8, `★${known.size} 色（${[...known].slice(0, 5).join("・")}…）`);
 ok(known.has("paper") && known.has("card") && known.has("ink"), "★おもな 色が ある");
 ok(!known.has("bg"), "★bg は 無い（★これが 事故の もとでした）");
+
+console.log("①-2 ★形（TYPE・SPACE・RADIUS）の 名前も 数える");
+// ★★2026-09-11、★TYPE.note と RADIUS.pill が ありませんでした。
+//   ★★TYPE.note は、★Note と Warn が 読んでいました。
+//     ★undefined を 展開しても JS は 落ちません。★何も 起きないだけです。
+//     ★→ ★但し書きの 字の 大きさも 色も、★1つも 効いていませんでした。
+//   ★C だけを 数えていて、★形の ほうを 数えていませんでした。
+const BAGS = [
+  { as: "TYPE", from: "lib/uiKit.js" },
+  { as: "SPACE", from: "lib/uiKit.js" },
+  { as: "RADIUS", from: "lib/uiKit.js" }
+];
 
 console.log("② C.◯◯ と 書いた 名前が、ぜんぶ ある");
 const files = [];
@@ -58,6 +97,22 @@ files.forEach((rel) => {
 });
 ok(bad.length === 0, "★無い 色を 読んでいる ところが ない"
   + (bad.length ? "（" + [...new Set(bad)].slice(0, 5).join(" / ") + "）" : ""));
+
+BAGS.forEach((bag) => {
+  const set = membersOf(bag.from, bag.as);
+  ok(set && set.size > 0, `★${bag.as} の 一覧が 読める（${set ? set.size : 0}）`);
+  if (!set) return;
+  const miss = [];
+  files.forEach((rel) => {
+    if (rel === bag.from.split("/").join(path.sep)) return;
+    const code = readCode(...rel.split(path.sep));
+    [...code.matchAll(new RegExp(`\\b${bag.as}\\.([a-zA-Z][a-zA-Z0-9]*)\\b`, "g"))].forEach((m) => {
+      if (!set.has(m[1])) miss.push(`${rel} → ${bag.as}.${m[1]}`);
+    });
+  });
+  ok(miss.length === 0, `★無い ${bag.as} を 読んでいない`
+    + (miss.length ? "（" + [...new Set(miss)].slice(0, 4).join(" / ") + "）" : ""));
+});
 
 console.log("③ 背景を 決めずに、画面を 覆っていない");
 // ★★画面いっぱいを 覆う 1枚は、★必ず 背景を 持つこと。

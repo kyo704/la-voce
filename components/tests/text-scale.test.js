@@ -41,7 +41,12 @@ const typeEnd = code.indexOf("\n};", typeAt);
 const type = code.slice(typeAt, typeEnd);
 const bare = [...type.matchAll(/fontSize: (\d)/g)].map((m) => m[0]);
 ok(bare.length === 0, "★裸の px が ない" + (bare.length ? "（" + bare.join(", ") + "）" : ""));
-ok((type.match(/fontSize: rem\(/g) || []).length === 11, "★11 とも rem を 通している");
+// ★★2026-09-11、★note を 足して 12に なりました。
+//   ★★数を 書き写す 見張りは、★足すたびに 落ちます。
+//     ★見るべきは「★ぜんぶ rem を 通っている」ことです。★数では ありません。
+const sizes = (type.match(/fontSize:/g) || []).length;
+const rems = (type.match(/fontSize: rem\(/g) || []).length;
+ok(sizes === rems && rems >= 11, `★${sizes} とも rem を 通している（rem ${rems}）`);
 
 console.log("② 枠線・角丸・押せる 大きさは px の まま");
 ok(/borderRadius: RADIUS\.card/.test(code), "★角丸は 数の まま");
