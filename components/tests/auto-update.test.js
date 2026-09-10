@@ -101,6 +101,35 @@ function ok(cond, label) {
     ok(raw.includes(w), "★" + w + " を 見ている");
   });
 
+  console.log("⑨ 手で 読み込み直す（★もっと ＞ 設定）");
+  const { reloadNow } = m;
+  let asked = false, reloaded = false;
+  await reloadNow({
+    navigator: { serviceWorker: { getRegistration: async () => ({ update: async () => { asked = true; } }) } },
+    location: { reload: () => { reloaded = true; } }
+  });
+  ok(asked === true, "★Service Worker にも 聞く");
+  ok(reloaded === true, "★読み込み直す");
+  // ★★聞けなくても 進むこと。★読み込み直すのが 目的です。
+  let r2 = false;
+  await reloadNow({
+    navigator: { serviceWorker: { getRegistration: async () => { throw new Error("だめ"); } } },
+    location: { reload: () => { r2 = true; } }
+  });
+  ok(r2 === true, "★聞けなくても 読み込み直す");
+  await reloadNow({ navigator: null, location: { reload: () => {} } });
+  ok(true, "★Service Worker が 無くても 落ちない");
+  // ★★消えるものが あるなら、★先に 言うこと。
+  ok(/いま 書きかけが あります。読み込み直すと、その ぶんは 消えます。/.test(raw),
+    "★書きかけが あるとき、★先に 言う");
+  ok(/onClick=\{\(\) => reloadNow\(\)\}/.test(raw), "★押すと 読み込み直す");
+{
+    const pAt = raw.indexOf(">アプリを 読み込み直す</p>");
+    ok(pAt > 0, "★枠の 中の 見出しが ある");
+    ok(/inMore\("設定"\)/.test(raw.slice(Math.max(0, pAt - 300), pAt)),
+      "★「設定」の まとまりに ある");
+  }
+
   console.log(failed === 0 ? "\n全て ok" : "\n" + failed + "件 NG");
   process.exit(failed === 0 ? 0 : 1);
 })();

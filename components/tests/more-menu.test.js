@@ -65,8 +65,21 @@ function ok(cond, label) {
   // ★★display で 隠すだけです。★枠を 動かしていません。
   ok(/return moreSection === section \? undefined : "none";/.test(v),
     "★隠すだけ（★消さない・動かさない）");
-  const tagged = (v.match(/display: inMore\("/g) || []).length;
-  ok(tagged === 16, "★16の枠 ぜんぶに 印が ついている（いま " + tagged + "）");
+  {
+    const at = v.indexOf('activeTab === "more" && (');
+    let i = v.lastIndexOf("{", at), d = 0, end = -1;
+    for (; i < v.length; i++) {
+      if (v[i] === "{") d++;
+      else if (v[i] === "}") { d--; if (d === 0) { end = i; break; } }
+    }
+    const block = v.slice(at, end + 1);
+    const cards = (block.match(/className="rounded-2xl p-[45] border"/g) || []).length;
+    const tagged = (block.match(/display: inMore\("/g) || []).length;
+    ok(cards > 0, "★「もっと」に 枠が ある（" + cards + "）");
+    // ★★数を 書きません。★枠が 増えるたびに 落ちます。
+    //   ★「ぜんぶに 印が ついている」ことだけを 見ます。
+    ok(tagged >= cards, "★枠 ぜんぶに 印が ついている（★枠 " + cards + " ／ 印 " + tagged + "）");
+  }
   // ★★書きかけも 残ります。★display なので、★中の 状態が 消えません。
   ok(!/moreSection === section && </.test(v), "★条件で 外していない（★状態が 消えない）");
 

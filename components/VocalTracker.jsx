@@ -37,7 +37,7 @@ import { isLegacyOrigin } from "@/lib/baseUrl";
 import { watchForUpdates, reloadOnceOnControllerChange } from "@/lib/swUpdate";
 import {
   POLL_MS, bakedSha, fetchLiveSha, shouldReload, isStale,
-  readLastReloadAt, markReloaded
+  readLastReloadAt, markReloaded, reloadNow
 } from "@/lib/autoUpdate";
 // 曲目の「同じ曲か」。★引くときも書くときも、必ずこれを通すこと。
 //   生の名前をそのまま鍵にすると、末尾の空白や全角半角の違いで別の曲になります。
@@ -20443,6 +20443,41 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </select>
                   </div>
                 ) : null}
+                {/* ★★アプリを 読み込み直す（★2026-09-11・坂本さんの お決め）。
+                    ★★自動の 更新は 別に あります（lib/autoUpdate.js）。
+                      ★20分ごとに 見て、★新しければ 黙って 新しく なります。
+                    ★★これは、★待てないときの 手です。
+                      ★きょう、★配信したのに 画面が 変わらないことが ありました。
+                      ★そのときは、★アプリを 完全に 閉じるしか ありませんでした。
+                      ★★手元に 1つ あれば、★それで 済みます。
+                    ★★自動の ほうは「迷ったら しない」。
+                      ★こちらは ご本人が 選ばれたので、★止めません。
+                      ★★ただし、★消えるものが あるなら 先に 言います。 */}
+                <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
+                  <p className="text-sm font-medium mb-1">アプリを 読み込み直す</p>
+                  <p className="text-xs mb-2.5" style={{ color: C.inkSoft, lineHeight: 1.8 }}>
+                    ふだんは 何もしなくても、新しい版に なります。
+                    画面が 古いままに 見えるときに お使いください。
+                  </p>
+                  {hasDraft ? (
+                    <p className="text-xs mb-2 rounded-lg px-2.5 py-1.5"
+                      style={{ background: C.paper, color: C.ink, lineHeight: 1.8 }}>
+                      いま 書きかけが あります。読み込み直すと、その ぶんは 消えます。
+                    </p>
+                  ) : null}
+                  <button type="button" onClick={() => reloadNow()}
+                    style={{
+                      width: "100%", minHeight: 44, borderRadius: 999,
+                      border: `1px solid ${C.line}`, background: C.paper,
+                      color: C.ink, fontSize: 13
+                    }}>
+                    読み込み直す
+                  </button>
+                  <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
+                    いまの版　{process.env.NEXT_PUBLIC_BUILD_SHA || "手元"}
+                  </p>
+                </div>
+
                 {/* ★★見られるものを増やす（★2026-09-07・坂本さんの決め）。
                     ★★坂本さんは「アップグレード」とおっしゃいましたが、
                       ★この語は、★3つの見張りが止めます。
