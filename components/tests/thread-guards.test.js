@@ -32,11 +32,20 @@ const sqlFiles = fs.readdirSync(path.join(root, "supabase")).filter((f) => f.end
 const allSql = sqlFiles.map((f) => fs.readFileSync(path.join(root, "supabase", f), "utf8")).join("\n");
 
 /** スレッドらしい表が作られたか。 */
+// ★★名前に post が 入っていても、★連絡の 表とは 限りません。
+//   ★2026-09-11、★org_posts（★役職と できること）を 作りました。
+//     ★★「post」は「投稿」では なく「役職」です。
+//     ★この 見張りが、★役職の 表を 連絡の 表と 読み違えて 落ちました。
+//   ★★名前で 当てる 検査の 限界です。★除く ものを 名指しで 書きます。
+const NOT_THREADS = ["org_posts"];
+
 function threadTables() {
   const hits = [];
   const re = /create table (?:if not exists )?public\.(\w*(?:thread|message|post)\w*)/gi;
   let m;
-  while ((m = re.exec(allSql)) !== null) hits.push(m[1]);
+  while ((m = re.exec(allSql)) !== null) {
+    if (!NOT_THREADS.includes(m[1])) hits.push(m[1]);
+  }
   return [...new Set(hits)];
 }
 

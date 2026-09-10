@@ -31,7 +31,11 @@ function eq(a, b, label) {
 }
 
 (async () => {
-  const src = fs.readFileSync(path.join(__dirname, "..", "..", "lib", "opsShell.js"), "utf8");
+  // ★★別名（@/lib/…）は Next のビルドが 解きます。★ここでは 道を 書き換えます。
+  //   ★2026-09-11、★opsShell が opsPerms を 取り寄せるように なりました。
+  const src = fs.readFileSync(path.join(__dirname, "..", "..", "lib", "opsShell.js"), "utf8")
+    .replace(/from "@\/lib\/([a-zA-Z0-9]+)"/g, (mm, n) => `from "${
+      "file://" + path.join(__dirname, "..", "..", "lib", n + ".js")}"`);
   const m = await import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
   const label = (r) => m.tabsFor(r).map((x) => x.label);
 

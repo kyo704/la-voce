@@ -64,7 +64,14 @@ const POSTS = readPosts();
 const shellSrc = fs.readFileSync(path.join(ROOT, "lib/opsShell.js"), "utf8")
   .replace(/^export /gm, "").replace(/import[^\n]*\n/g, "");
 // eslint-disable-next-line no-new-func
-const shell = new Function(shellSrc + "; return { tabsFor, mayEnterOps, maySeeMoney, mayEditRoster, OPS_TABS };")();
+const permsSrc = fs.readFileSync(path.join(ROOT, "lib/opsPerms.js"), "utf8")
+  .replace(/^export /gm, "");
+// eslint-disable-next-line no-new-func
+const P = new Function(permsSrc
+  + "; return { tabsForPerms, can, mayGrant, maySeeBill, mayPay, TEMPLATE_POSTS };")();
+const shell = new Function(
+  permsSrc + "\n" + shellSrc
+  + "; return { tabsFor, mayEnterOps, maySeeMoney, mayEditRoster, OPS_TABS };")();
 
 console.log("見本の できること:", PERM.length, "／ 役職:", POSTS.length, "／ 画面:", SCREENS.length);
 console.log("総当たり:", POSTS.length * SCREENS.length, "通り\n");
@@ -80,7 +87,11 @@ for (const post of POSTS) {
     // ★いまの 実装が 言う「開けるか」
     // ★★tabsFor は {key,label} の 並びを 返します。★鍵だけに します。
     //   ★はじめ 中身を そのまま 数えて、★ぜんぶ 食い違いに 見えていました。
+    // ★★2つの 道で 数えます（★2026-09-11）。
+    //   ★いま　… ★古い 4つの 役割（★3段目の 前）
+    //   ★あと　… ★できこと（★3段目の あと）
     const tabs = shell.tabsFor(post.base).map((t) => t.key);
+    const ptabs = shell.tabsFor([...post.perms]).map((t) => t.key);
     let have;
     if (sc.key === "bill" || sc.key === "pay") have = shell.maySeeMoney(post.base);
     else if (sc.key === "roster") have = tabs.includes("roster");
@@ -88,12 +99,22 @@ for (const post of POSTS) {
     else if (sc.key === "monka") have = post.base === "teacher";
     else if (sc.key === "post" || sc.key === "koma") have = shell.mayEditRoster(post.base);
     else have = tabs.includes(sc.key);
+    // ★できことで 決めた ときの 答え
+    let after;
+    if (sc.key === "bill") after = P.maySeeBill([...post.perms]);
+    else if (sc.key === "pay") after = P.mayPay([...post.perms]);
+    else if (sc.key === "roster") after = ptabs.includes("roster");
+    else if (sc.key === "attend") after = post.perms.has("shukketsu");
+    else if (sc.key === "monka") after = ptabs.includes("monka");
+    else if (sc.key === "post") after = post.perms.has("post");
+    else if (sc.key === "koma") after = post.perms.has("koma") || post.perms.has("koma_mine");
+    else after = ptabs.includes(sc.key);
     const ok = want === have;
     if (!ok) mismatch++;
     // ★★いちばん 危ないのは「見本は だめ、実装は 出す」です。
     const leak = !want && have;
     if (leak) cannot++;
-    rows.push({ post: post.name, base: post.base, screen: sc.label, want, have, leak });
+    rows.push({ post: post.name, base: post.base, screen: sc.label, want, have, leak, after });
   }
 }
 
@@ -113,7 +134,17 @@ console.log("  " + PERM.filter((p) => p.schoolWide).map((p) => p.label).join("�
 console.log("★その方 自身にだけ かかる（" + (PERM.length - wide.length) + "）");
 console.log("  " + PERM.filter((p) => !p.schoolWide).map((p) => p.label).join("／"));
 
-console.log("\n★★食い違いの 中身");
+// ★★3段目（できことで 決める）に したら どう なるか
+const afterBad = rows.filter((r) => r.want !== r.after);
+const afterLeak = afterBad.filter((r) => !r.want && r.after);
+console.log(`\n★★できことで 決めたら ── 食い違い ${afterBad.length} 通り（うち 漏れ ${afterLeak.length} 通り）`);
+if (afterBad.length) {
+  const by2 = {};
+  afterBad.forEach((r) => { (by2[r.screen] = by2[r.screen] || []).push(r.post); });
+  Object.entries(by2).forEach(([sc, list]) => console.log(`  ${sc}: ${list.join("・")}`));
+}
+
+console.log("\n★★食い違いの 中身（★いま）");
 const bad = rows.filter((r) => r.want !== r.have);
 const by = {};
 bad.forEach((r) => { (by[r.screen] = by[r.screen] || []).push(r.post + (r.leak ? "（漏）" : "")); });
