@@ -6,7 +6,7 @@ import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
 import { ScreenHead, HeadRound, Card, Seg, Pill, Warn, Note, BarRow } from "@/components/UiV2";
 import LookBackPanel from "@/components/LookBackPanel";
 import { LOOK_BACK_FIELDS, hardDays, lookBackableDays } from "@/lib/lookBack";
-import { PERIODS, LINE_UP_NOTE, datesBack, seriesOf, sungMinutes } from "@/lib/lineUp";
+import { PERIODS, LINE_UP_NOTE, LINE_UP_STACK_NOTE, STACK_ROWS, datesBack, seriesOf, sungMinutes } from "@/lib/lineUp";
 import { SYMPTOM_LOCATION } from "@/lib/symptomLocations";
 import { isLaterWritten } from "@/lib/entrySource";
 import CompareV2 from "@/components/CompareV2";
@@ -43,7 +43,7 @@ function mmdd(iso) {
 }
 
 /** ★一色の 濃淡の 帯（★見本④）。★値の 数字を 添えません。 */
-function Bars({ title, rows, tint, entries }) {
+function Bars({ title, rows, tint, entries, foot }) {
   if (!rows) return null;
   // ★★あとから書いた日が 1日でも あれば、★凡例を 出します（★見本⑫）。
   //   ★1日も 無ければ 出しません。★読む人に、要らない断りを 増やしません。
@@ -64,6 +64,10 @@ function Bars({ title, rows, tint, entries }) {
         <BarRow key={r.date} label={mmdd(r.date)} tint={tint} ratio={r.density}
           hollow={isLaterWritten(((entries || {})[r.date] || {}).source)} />
       ))}
+      {/* ★★目もりの 断り（★見本の「4〜9時間」）。★渡されたときだけ 出します。 */}
+      {foot ? (
+        <p style={{ ...small, marginTop: 6, textAlign: "right" }}>{foot}</p>
+      ) : null}
       {/* ★★凡例（★見本⑫）。★あとから書いた日が あるときだけ 出します。 */}
       {anyLater ? (
         <p style={{ ...small, marginTop: 8 }}>
@@ -224,12 +228,37 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
               </Pill>
             ))}
           </div>
-          {/* ★★書いた日が 1日も 無ければ、★その帯を 出しません。★空の枠を 置きません。 */}
-          <Bars title="こえの ちょうし" tint={C.curtain} entries={entries}
-            rows={seriesOf(entries, dates, (e) => e.throatCondition)} />
-          <Bars title="歌った 時間" tint={C.sage} entries={entries}
-            rows={seriesOf(entries, dates, (e) => sungMinutes(e))} />
-          <Symptoms entries={entries} dates={dates} />
+          {/* ★★同じ 日付の 軸に、★上下に 並べます（★見本 narabe()）。
+              ★★2026-09-11 の 点検で 見つけた こと。
+                ★「こえの ちょうし」の 札で、★のどの 値を 出していました。
+                ★★名前と 中身が 食い違っていました。★直しました。
+              ★★何を どの順で 並べるかは lib/lineUp.js の STACK_ROWS です。
+                ★ここで 決めません。★2か所に なります。
+              ★★書いた日が 1日も 無ければ、★その帯を 出しません。★空の枠を 置きません。 */}
+          {STACK_ROWS.map((row) => {
+            if (row.key === "marks") {
+              return <Symptoms key={row.key} entries={entries} dates={dates} />;
+            }
+            if (row.key === "sung") {
+              return (
+                <Bars key={row.key} title={row.title} tint={C.sage} entries={entries}
+                  rows={seriesOf(entries, dates, (e) => sungMinutes(e))} />
+              );
+            }
+            // ★★睡眠は みどり、★こえと のどは えんじ（★見本の 色分け）。
+            return (
+              <Bars key={row.key} title={row.title}
+                tint={row.key === "sleep" ? C.sage : C.curtain}
+                entries={entries} foot={row.foot}
+                rows={seriesOf(entries, dates, (e) => e[row.field])} />
+            );
+          })}
+          {/* ★★何を している 画面かを、★下に 3行 置きます（★見本の .note）。 */}
+          <Note>
+            {LINE_UP_STACK_NOTE.map((line, i) => (
+              <span key={i}>{i > 0 ? <br /> : null}{line}</span>
+            ))}
+          </Note>
         </>
       )}
 
