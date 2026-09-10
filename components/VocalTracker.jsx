@@ -103,6 +103,8 @@ import { TAB_BAR_HEIGHT } from "@/lib/uiKit";
 import { ScreenHead, HeadRound, H3, Card, Li } from "@/components/UiV2";
 import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
 import { moreSections } from "@/lib/moreMenu";
+import DailyAskPicker from "@/components/DailyAskPicker";
+import { readAsk, writeAsk } from "@/lib/dailyAsk";
 import { ATTENDANCE_KEYS } from "@/lib/todayBand";
 import * as unsentQueue from "@/lib/offlineQueue";
 // ★おうち画面の作り直し（★2026-09-08・仕様 §3）。★決めは lib が持ちます。
@@ -10149,6 +10151,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★null なら 9行の 一覧。★選ぶと、★その まとまりだけ 出ます。
   //   ★★門の外（38人）は、★これまでどおり ぜんぶ 縦に 並びます。★1つも 変えません。
   const [moreSection, setMoreSection] = useState(null);
+  // ★★毎日 聞く 5つ（★見本 A10）。★端末ごとに 覚えます。★サーバに 送りません。
+  //   ★決めは lib/dailyAsk.js が 持ちます。★ここで 決めません。
+  const [dailyAsk, setDailyAsk] = useState(null);
+  useEffect(() => { if (layoutV2) setDailyAsk(readAsk()); }, [layoutV2]);
   /**
    * ★その 枠を、★いま 出すか。
    *
@@ -20123,6 +20129,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 ) : null}
                 {/* ★★まとまりを 開いている あいだ、★戻る 道を 置きます。
                     ★出口の ない 画面を 作らないこと。 */}
+                {/* ★★毎日、聞いてほしいこと（★見本 A10 ／ 2026-09-11）。 */}
+                {layoutV2 && moreSection === "聞く" ? (
+                  <DailyAskPicker value={dailyAsk}
+                    onChange={(next) => setDailyAsk(writeAsk(next))} />
+                ) : null}
                 {layoutV2 && moreSection !== null ? (
                   <button type="button" onClick={() => setMoreSection(null)}
                     style={{ display: "block", background: "transparent", border: "none",
