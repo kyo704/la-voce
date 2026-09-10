@@ -64,7 +64,11 @@ export default function OwnedLedger({
   return (
     <div style={{
       position: "fixed", inset: 0, zIndex: 60, overflowY: "auto",
-      background: C.bg, fontFamily: FONT_STACK,
+      // ★★2026-09-11、★C.bg と 書いていました。★そんな 色は ありません。
+      //   ★★background: undefined に なり、★下の 画面が 透けていました
+      //     （★実機で ご報告を いただきました）。
+      //   ★lib/tokens.js に あるのは ink／inkSoft／paper／card／… です。
+      background: C.paper, fontFamily: FONT_STACK,
       padding: `0 ${rem(SPACE.cardPadX)} calc(${rem(24)} + env(safe-area-inset-bottom))`
     }}>
       <ScreenHead title="もっているもの"

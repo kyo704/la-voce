@@ -28,36 +28,72 @@ function ok(cond, label) {
       "file://" + path.join(__dirname, "..", "..", "lib", n + ".js")}"`);
   const L = await import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
 
-  console.log("① 見本の 順");
-  const titles = L.STACK_ROWS.map((r) => r.title);
-  ok(titles.slice(0, 4).join("／") === "こえの ちょうし／のどの 調子／昨夜の 睡眠／気になったこと",
-    "★見本の 4つが、見本の 順（いまは " + titles.slice(0, 4).join("／") + "）");
-  ok(titles.length === 5 && titles[4] === "歌った 時間",
-    "★見本に 無い「歌った 時間」は、あとに 置く（★消さない）");
+  const ui = readCode("components", "LookBackV2.jsx");
+
+  console.log("① 見本の 5本 ＋ 営業資料の 2本");
+  // ★出どころ 動く見本-PC・iPad（個人）.html の var ITEMS（★5本）
+  //          ＋ 営業資料 v5 1ページ目「眠りと、夕食の時刻と、湿度を」（★2本）
+  ok(L.LANES.length === 7, "★7本から えらぶ（いまは " + L.LANES.length + "）");
+  ok(L.LANES.slice(0, 5).map((x) => x.label).join("／")
+    === "声の 出来／のどの 調子／起きたときの むくみ／声を 使った 時間／昨夜の 睡眠",
+    "★はじめの 5本は 見本の とおり・同じ 順");
+  ok(L.LANES.slice(5).map((x) => x.label).join("／") === "食べ終えてから 寝るまで／湿度",
+    "★営業資料の 2本を 足してある");
+  ok(L.LANE_MAX === 5, "★同時に 出せるのは 5本まで（★裁定 §1-2）");
+  ok(L.LANE_MIN === 1, "★1つは 残す");
 
   console.log("② 札の 名前と 値が 合っている");
-  // ★★これが 2026-09-11 の 点検で 見つけた 不具合です。
+  // ★★2026-09-11 の 点検で 見つけた 不具合です。
   //   ★「こえの ちょうし」の 札で、★のどの 値を 出していました。
-  const byTitle = Object.fromEntries(L.STACK_ROWS.map((r) => [r.title, r.field]));
-  ok(byTitle["こえの ちょうし"] === "voiceQuality", "★こえ は voiceQuality（★声の調子）");
-  ok(byTitle["のどの 調子"] === "throatCondition", "★のど は throatCondition（★喉の状態）");
-  ok(byTitle["昨夜の 睡眠"] === "sleepHours", "★ねむり は sleepHours");
-  // ★★言葉の 出どころも 確かめます。★取り違えの 元は ここでした。
+  const byLabel = Object.fromEntries(L.LANES.map((x) => [x.label, x.field]));
+  ok(byLabel["声の 出来"] === "voiceQuality", "★こえ は voiceQuality");
+  ok(byLabel["のどの 調子"] === "throatCondition", "★のど は throatCondition");
+  ok(byLabel["起きたときの むくみ"] === "morningEdema", "★むくみ は morningEdema");
+  ok(byLabel["昨夜の 睡眠"] === "sleepHours", "★ねむり は sleepHours");
+  ok(byLabel["湿度"] === "humidity", "★湿度 は humidity");
   const tr = readRaw("lib", "translations.js");
   ok(/labelThroatCondition: \{ ja: "喉の状態"/.test(tr), "★throatCondition ＝ 喉の状態");
   ok(/labelVoiceQuality: \{ ja: "声の調子/.test(tr), "★voiceQuality ＝ 声の調子");
 
-  console.log("③ 画面は 並べるだけ");
-  const ui = readCode("components", "LookBackV2.jsx");
-  ok(/STACK_ROWS\.map/.test(ui), "★並びを lib から 取っている");
-  ok(!/title="こえの ちょうし"/.test(ui), "★札の 名前を 画面に 書き写していない");
-  ok(/sungMinutes/.test(ui), "★歌った 時間が 残っている");
+  console.log("③ 出し入れの 決まり");
+  ok(L.toggleLane([...L.LANE_DEFAULT], "shitsu") === null, "★5本の ときは 足せない");
+  ok(L.toggleLane(["voice"], "voice") === null, "★1本の ときは 外せない");
+  const after = L.toggleLane(L.toggleLane([...L.LANE_DEFAULT], "muku"), "shitsu");
+  ok(after.length === 5 && after.includes("shitsu") && !after.includes("muku"),
+    "★外してから 足せる");
+  // ★★並びは いつも 同じ（★押した 順に しない）。
+  ok(after.join(",") === L.LANES.filter((x) => after.includes(x.key)).map((x) => x.key).join(","),
+    "★並びは LANES の 順");
+  ok(L.LANE_MIN_REASON === "1つは 残します", "★わけの 言葉（少ない側）");
+  ok(L.LANE_MAX_REASON === "同時に 出せるのは 5つまでです", "★わけの 言葉（多い側）");
+
+  console.log("③-2 食べ終えてから 寝るまで");
+  ok(L.laneValue({ dinnerTime: "19:00", bedtime: "23:30" }, "yuu") === 4.5, "★4.5時間");
+  ok(L.laneValue({ dinnerTime: "21:00", bedtime: "0:30" }, "yuu") === 3.5, "★日を またいでも 出る");
+  ok(L.laneValue({ dinnerTime: "", bedtime: "23:30" }, "yuu") === null, "★片方 無ければ 出さない");
+  // ★★12時間を 超えるのは、★書き間違いか、★昼に 食べた 日です。
+  ok(L.laneValue({ dinnerTime: "8:00", bedtime: "23:00" }, "yuu") === null, "★15時間は 出さない");
+
+  console.log("③-3 数えたもの（★平均を 出さない）");
+  const E = {
+    "2026-09-01": { sleepHours: 7.2 }, "2026-09-02": { sleepHours: 5.5 },
+    "2026-09-03": {}, "2026-09-04": { sleepHours: 6.0 }
+  };
+  const D = ["2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04"];
+  const sum = L.laneSummary(E, D, "sleep");
+  ok(sum.most === 7.2 && sum.least === 5.5, "★いちばん 多い日・少ない日");
+  ok(sum.middle === 6.0, "★まんなか");
+  ok(sum.days === 3, "★書いていない 日は 数えない（★0 で 埋めない）");
+  ok(!("average" in sum) && !("mean" in sum), "★★平均を 出していない");
+  ok(L.laneSummary(E, ["2026-09-03"], "sleep") === null, "★1日も 無ければ null");
 
   console.log("④ 下の 3行");
   ok(L.LINE_UP_STACK_NOTE.length === 3, "★3行");
   ok(L.LINE_UP_STACK_NOTE[0] === "同じ 日付の 軸に、書いたことを 縦に 並べます（鏡です）。",
     "★1行目は 見本の まま");
   ok(/LINE_UP_STACK_NOTE\.map/.test(ui), "★画面が それを 出している");
+  ok(/たての 帯　本番・レッスンの あった日/.test(ui), "★帯が 何かを 書いてある");
+  ok(/◎＝出た／よい・ない/.test(ui), "★◎○△ が 何かを 書いてある");
 
   console.log("⑤ 出さないもの");
   // ★★但し書き そのものを 数えない こと。
@@ -79,10 +115,27 @@ function ok(cond, label) {
   // ★★色で 良し悪しを 言わない。★1色の 濃淡だけ。
   ok(!/red|green|信号/.test(ui), "★信号の 色を 使っていない");
 
-  console.log("⑥ 目もりの 断り");
-  ok((L.STACK_ROWS.find((r) => r.key === "sleep") || {}).foot === "4〜9時間",
-    "★ねむりに「4〜9時間」");
-  ok(/foot \? \(/.test(ui), "★渡されたときだけ 出す（★空の 断りを 置かない）");
+  console.log("⑥ 図の 決まり（★見本 stackSVG）");
+  const chart = readCode("components", "LineUpChart.jsx");
+  // ★★本番・レッスンの 日は、★縦の 帯が 全部の レーンを 貫きます（★裁定 §1-2）。
+  ok(/hadPerformanceOrLesson/.test(chart), "★本番・レッスンの 日を 見ている");
+  ok(/height=\{bot - pt\}/.test(chart), "★帯が 全部の レーンを 貫く");
+  // ★★色は 2系統だけ（★裁定 §1-3）。
+  ok(/tone === "midori" \? C\.sage : C\.curtain/.test(chart), "★えんじ と みどり の 2つだけ");
+  ok(!/#[0-9a-fA-F]{6}/.test(chart.replace(/#FFFDF8/g, "")), "★色を べた書きしていない");
+  // ★★書いていない 日で 線を つながない こと。
+  //   ★つなぐと、★書いていない 日にも 値が あったように 見えます。
+  ok(/if \(v == null\) \{ if \(cur\.length > 1\) segs\.push\(cur\); cur = \[\]; return; \}/.test(chart),
+    "★書いていない 日で 線を 切る");
+  // ★★見本の 数を 変えていない こと。
+  ok(/W = 880, pl = 66, pr = 16, pt = 10, laneH = 46, gap = 17, pb = 28/.test(chart),
+    "★見本の 寸法の まま");
+
+  console.log("⑦ 画面は 並べるだけ");
+  ok(/LANES\.map/.test(ui), "★札を lib から 出している");
+  ok(/toggleLane\(laneKeys, lane\.key\)/.test(ui), "★出し入れの 決めも lib");
+  ok(/laneSummary\(entries, dates, k\)/.test(ui), "★数えるのも lib");
+  ok(!/平均|average/.test(ui + chart), "★平均を 出していない");
 
   console.log(failed === 0 ? "\n全て ok" : "\n" + failed + "件 NG");
   process.exit(failed === 0 ? 0 : 1);

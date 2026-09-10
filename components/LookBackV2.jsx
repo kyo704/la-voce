@@ -3,10 +3,15 @@
 import { useState } from "react";
 import { C, CONCERN_STEPS } from "@/lib/tokens";
 import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
-import { ScreenHead, HeadRound, Card, Seg, Pill, Warn, Note, BarRow } from "@/components/UiV2";
+import { ScreenHead, HeadRound, Card, Seg, Pill, Warn, Note, BarRow, Li } from "@/components/UiV2";
 import LookBackPanel from "@/components/LookBackPanel";
 import { LOOK_BACK_FIELDS, hardDays, lookBackableDays } from "@/lib/lookBack";
-import { PERIODS, LINE_UP_NOTE, LINE_UP_STACK_NOTE, STACK_ROWS, datesBack, seriesOf, sungMinutes } from "@/lib/lineUp";
+import {
+  PERIODS, LINE_UP_NOTE, LINE_UP_STACK_NOTE, datesBack, seriesOf, sungMinutes,
+  LANES, LANE_DEFAULT, LANE_MIN_REASON, LANE_MAX_REASON, toggleLane, laneSummary, laneWord
+} from "@/lib/lineUp";
+import LineUpChart from "@/components/LineUpChart";
+import { tx } from "@/lib/t";
 import { SYMPTOM_LOCATION } from "@/lib/symptomLocations";
 import { isLaterWritten } from "@/lib/entrySource";
 import CompareV2 from "@/components/CompareV2";
@@ -174,6 +179,10 @@ function QuietScreen({ reason, onGo }) {
 
 export default function LookBackV2({ entries, todayISO, notOutDays, performanceDays, onOpenMore }) {
   const [tab, setTab] = useState("narabe");
+  // ★★並べるもの（★7つの うち 5つまで・1つは 残す）。
+  //   ★★はじめは 見本の 5本です。
+  const [laneKeys, setLaneKeys] = useState([...LANE_DEFAULT]);
+  const [laneMessage, setLaneMessage] = useState("");
   const [periodKey, setPeriodKey] = useState("14d");
 
   const period = PERIODS.find((p) => p.key === periodKey) || PERIODS[0];
@@ -228,31 +237,85 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
               </Pill>
             ))}
           </div>
-          {/* ★★同じ 日付の 軸に、★上下に 並べます（★見本 narabe()）。
-              ★★2026-09-11 の 点検で 見つけた こと。
-                ★「こえの ちょうし」の 札で、★のどの 値を 出していました。
-                ★★名前と 中身が 食い違っていました。★直しました。
-              ★★何を どの順で 並べるかは lib/lineUp.js の STACK_ROWS です。
-                ★ここで 決めません。★2か所に なります。
-              ★★書いた日が 1日も 無ければ、★その帯を 出しません。★空の枠を 置きません。 */}
-          {STACK_ROWS.map((row) => {
-            if (row.key === "marks") {
-              return <Symptoms key={row.key} entries={entries} dates={dates} />;
-            }
-            if (row.key === "sung") {
+          {/* ★★並べるもの（★見本 naraBody の 札）。
+              ★★押すと 出し入れできます。★こちらから 勝手に 足しません。
+              ★★7つの うち 5つまで。★1つは 残します。
+                ★決めは lib/lineUp.js です。★ここでは 決めません。 */}
+          <div style={{ ...TYPE.mini, color: C.inkSoft, marginBottom: 6 }}>
+            {tx("並べるもの　")}
+            <span style={{ ...TYPE.usual }}>
+              {tx("押すと 出し入れできます。こちらから 勝手に 足しません")}
+            </span>
+          </div>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 9 }}>
+            {LANES.map((lane) => {
+              const on = laneKeys.includes(lane.key);
               return (
-                <Bars key={row.key} title={row.title} tint={C.sage} entries={entries}
-                  rows={seriesOf(entries, dates, (e) => sungMinutes(e))} />
+                <button key={lane.key} type="button"
+                  onClick={() => {
+                    const next = toggleLane(laneKeys, lane.key);
+                    if (!next) {
+                      setLaneMessage(on ? LANE_MIN_REASON : LANE_MAX_REASON);
+                      return;
+                    }
+                    setLaneMessage("");
+                    setLaneKeys(next);
+                  }}
+                  aria-pressed={on}
+                  style={{
+                    minHeight: 44, padding: `0 ${rem(11)}`, borderRadius: 999,
+                    whiteSpace: "nowrap", fontSize: rem(10.5),
+                    border: `1px solid ${on ? C.curtain : C.line}`,
+                    background: on ? C.curtain : C.card,
+                    color: on ? "#FFFDF8" : C.inkSoft, fontFamily: FONT_STACK
+                  }}>
+                  {/* ★★どの 線かが 分かるように、★色の しるしを 付けます。
+                      ★★色だけに 意味を 持たせません。★名前が 先に あります。 */}
+                  <i aria-hidden="true" style={{
+                    display: "inline-block", width: 13, height: 3, borderRadius: 2,
+                    verticalAlign: "middle", marginRight: 7,
+                    background: lane.tone === "midori" ? C.sage : C.curtain,
+                    opacity: on ? 1 : lane.opacity
+                  }} />
+                  {lane.label}
+                </button>
               );
-            }
-            // ★★睡眠は みどり、★こえと のどは えんじ（★見本の 色分け）。
-            return (
-              <Bars key={row.key} title={row.title}
-                tint={row.key === "sleep" ? C.sage : C.curtain}
-                entries={entries} foot={row.foot}
-                rows={seriesOf(entries, dates, (e) => e[row.field])} />
-            );
-          })}
+            })}
+          </div>
+          {laneMessage ? <Note>{laneMessage}</Note> : null}
+
+          {/* ★★同じ 日付の 軸に、★上下に 並べます。★これが この画面の 仕事です。 */}
+          <Card>
+            <LineUpChart entries={entries} dates={dates} keys={laneKeys} />
+          </Card>
+
+          {/* ★★何の 帯かを 書きます。★色の 意味を 当てさせないこと。 */}
+          <Note>
+            {tx("たての 帯　本番・レッスンの あった日")}<br />
+            {tx("◎＝出た／よい・ない　○＝ふつう・すこし　△＝出づらい・わるい・ある")}
+          </Note>
+
+          {/* ★★数えたもの。★いちばん 多い日／少ない日／まんなか の 3つだけ。
+              ★★平均を 出しません（★裁定 §1-2「合成した 数だからです」）。 */}
+          <div style={{ ...TYPE.mini, color: C.inkSoft, margin: "12px 0 6px" }}>
+            {tx("数えたもの")}
+          </div>
+          <Card style={{ padding: `${rem(4)} ${rem(12)}` }}>
+            {laneKeys.map((k, i) => {
+              const sum = laneSummary(entries, dates, k);
+              const lane = LANES.find((l) => l.key === k);
+              return (
+                <Li key={k} last={i === laneKeys.length - 1}
+                  right={sum
+                    ? `${laneWord(k, sum.most)}　${laneWord(k, sum.least)}　${laneWord(k, sum.middle)}`
+                    : tx("まだ ありません")}>
+                  {lane.label}
+                </Li>
+              );
+            })}
+          </Card>
+          <Note>{tx("右から　いちばん 多い日　／　いちばん 少ない日　／　まんなか")}</Note>
+
           {/* ★★何を している 画面かを、★下に 3行 置きます（★見本の .note）。 */}
           <Note>
             {LINE_UP_STACK_NOTE.map((line, i) => (
