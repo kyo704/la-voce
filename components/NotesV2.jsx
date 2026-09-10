@@ -3,7 +3,10 @@
 import { useState, useEffect, useRef } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, SPACE, cardStyle } from "@/lib/uiKit";
-import { ScreenHead, HeadRound, H3, Card, Seg, Li } from "@/components/UiV2";
+import { ScreenHead, HeadRound, H3, Card, Seg, Li, Note } from "@/components/UiV2";
+import {
+  PRACTICE_FIELDS, isPractice, emptyPractice, pickFields, practiceTitle, practiceSub
+} from "@/lib/practiceNote";
 import {
   NOTE_KINDS, DEFAULT_KIND, kindOrDefault, visibleNotes, isRenrakuKind,
   titleOf, previewOf, isEmpty, dayWord, AUTOSAVE_MS
@@ -35,7 +38,7 @@ import {
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
 const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
 
-export default function NotesV2({ notes, onSave, onDelete, saving, renraku }) {
+export default function NotesV2({ notes, onSave, onDelete, saving, renraku, todayISO, repertoireNames }) {
   const [kind, setKind] = useState(DEFAULT_KIND);
   const [q, setQ] = useState("");
   const [editing, setEditing] = useState(null);   // ★{ id, body } ★null なら 一覧
@@ -56,13 +59,20 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku }) {
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(() => { void push(editing); }, AUTOSAVE_MS);
     return () => { if (timer.current) clearTimeout(timer.current); };
-  }, [editing && editing.body]);
+    // ★★稽古の メモは、★6つの 欄の どれが 変わっても 書きます。
+    //   ★本文だけを 見ていると、★分けた とたん 1文字も 残らなく なります。
+  }, [editing && editing.body, editing && PRACTICE_FIELDS.map((f) => editing[f.key]).join("\u0001")]);
 
   async function push(draft) {
     if (!draft || !onSave) return true;
     // ★★何も 書いていないものは、★送りません。★空の行を 作りません。
     if (isEmpty(draft)) return true;
-    const ok = await onSave({ id: draft.id, kind, body: draft.body });
+    // ★★稽古の メモは、★6つの 欄も 一緒に 渡します（★裁定 §1）。
+    //   ★★知らない 欄は 落とします（pickFields）。
+    const ok = await onSave({
+      id: draft.id, kind, body: draft.body,
+      ...(isPractice(kind) ? pickFields(draft) : {})
+    });
     if (!ok) { setError("まだ送れていません。開いたままにしています。"); return false; }
     setError("");
     return true;
@@ -88,17 +98,78 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku }) {
             }}>‹ もどる</button>
           <span style={small}>{saving ? "書いています" : ""}</span>
         </div>
-        {/* ★★タイトルの 欄が ありません。★本文だけです。 */}
-        <textarea
-          ref={boxRef}
-          value={editing.body}
-          onChange={(e) => setEditing({ ...editing, body: e.target.value })}
-          placeholder="ここに書きます"
-          style={{
-            width: "100%", minHeight: "56vh", borderRadius: 14, padding: 14,
-            border: `1px solid ${C.line}`, background: C.card, color: C.ink,
-            fontSize: "1rem", lineHeight: 1.9, resize: "vertical"
-          }} />
+        {/* ★★稽古の メモは、★聞く項目を 分けます（★裁定 9月10日夜 §1）。
+            ★★「＋を 押しても 同じ 白紙が 出ていました。
+              ★書くことが 違うので、聞く項目を 分けました」
+            ★★出来ばえ・点数の 欄は ありません。★作らないこと。
+            ★★「みた曲」は レパートリーから 選びます。★自由に 打たせません。
+              ★打たせると、★同じ曲が 2つの 名前で 増えます。
+              ★★そうなると「その曲の 稽古の メモ」が 引けません。
+            ★★1つも 必須に しません。★書けない 日が あります。 */}
+        {isPractice(kind) ? (
+          <div>
+            {PRACTICE_FIELDS.map((f) => (
+              <div key={f.key} style={{ marginBottom: 10 }}>
+                <label htmlFor={"pf-" + f.key}
+                  style={{ ...TYPE.mini, display: "block", marginBottom: 3 }}>{f.label}</label>
+                {f.kind === "date" ? (
+                  <input id={"pf-" + f.key} type="date"
+                    value={editing[f.key] || ""}
+                    onChange={(e) => setEditing({ ...editing, [f.key]: e.target.value })}
+                    style={{
+                      width: "100%", minHeight: 44, borderRadius: 10, padding: "0 12px",
+                      border: `1px solid ${C.line}`, background: C.card, color: C.ink, fontSize: 16
+                    }} />
+                ) : f.kind === "repertoire" ? (
+                  <select id={"pf-" + f.key}
+                    value={editing[f.key] || ""}
+                    onChange={(e) => setEditing({ ...editing, [f.key]: e.target.value })}
+                    style={{
+                      width: "100%", minHeight: 44, borderRadius: 10, padding: "0 12px",
+                      border: `1px solid ${C.line}`, background: C.card, color: C.ink, fontSize: 16
+                    }}>
+                    <option value="">えらばない</option>
+                    {(repertoireNames || []).map((n) => (
+                      <option key={n} value={n}>{n}</option>
+                    ))}
+                  </select>
+                ) : f.kind === "area" ? (
+                  <textarea id={"pf-" + f.key}
+                    value={editing[f.key] || ""}
+                    onChange={(e) => setEditing({ ...editing, [f.key]: e.target.value })}
+                    rows={f.key === "said_text" ? 6 : 3}
+                    style={{
+                      width: "100%", borderRadius: 10, padding: 12,
+                      border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+                      fontSize: 16, lineHeight: 1.9, resize: "vertical"
+                    }} />
+                ) : (
+                  <input id={"pf-" + f.key} type="text"
+                    value={editing[f.key] || ""}
+                    onChange={(e) => setEditing({ ...editing, [f.key]: e.target.value })}
+                    style={{
+                      width: "100%", minHeight: 44, borderRadius: 10, padding: "0 12px",
+                      border: `1px solid ${C.line}`, background: C.card, color: C.ink, fontSize: 16
+                    }} />
+                )}
+                {f.note ? <Note style={{ marginTop: 2 }}>{f.note}</Note> : null}
+              </div>
+            ))}
+          </div>
+        ) : (
+          /* ★★ほかの 帯は、★これまでどおり 本文だけです。
+              ★タイトルの 欄が ありません。 */
+          <textarea
+            ref={boxRef}
+            value={editing.body}
+            onChange={(e) => setEditing({ ...editing, body: e.target.value })}
+            placeholder="ここに書きます"
+            style={{
+              width: "100%", minHeight: "56vh", borderRadius: 14, padding: 14,
+              border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+              fontSize: "1rem", lineHeight: 1.9, resize: "vertical"
+            }} />
+        )}
         {error ? <p style={{ ...small, color: C.curtain }}>{error}</p> : null}
         {/* ★★消すのは、★下半分に。★誤って 触らないためです。 */}
         {editing.id && onDelete ? (
@@ -120,7 +191,14 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku }) {
           ★★押した その場で 書けます。★名前を 先に 聞きません。 */}
       <ScreenHead title="ノート" right={
         <HeadRound mark="＋" label="ノートを書く"
-          onClick={() => { setEditing({ id: null, body: "" }); setError(""); }} />
+          onClick={() => {
+            // ★★稽古の メモは、★はじめから 6つの 欄を 持たせます。
+            //   ★「いつ」だけ、★きょうを 入れておきます。★あとは 空です。
+            setEditing(isPractice(kind)
+              ? { id: null, body: "", ...emptyPractice(todayISO) }
+              : { id: null, body: "" });
+            setError("");
+          }} />
       } />
 
       {/* ★★帯 4つ（★見本⑥ .seg）。★増やしません。★流れません。 */}
@@ -156,10 +234,27 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku }) {
           //   ★★狭い画面の 話です。★広い画面（決まりB）は 名前と 日付だけで、
           //     ★本文の 抜粋を 出しません。★あちらは 人に 見られる 画面です。
           <Card key={n.id} style={{ minHeight: 44 }}
-            onClick={() => { setEditing({ id: n.id, body: n.body || "" }); setError(""); }}>
+            onClick={() => {
+              // ★★開くときも、★6つの 欄を 一緒に 持ってきます。
+              setEditing(isPractice(kind)
+                ? {
+                  id: n.id, body: n.body || "",
+                  ...emptyPractice(todayISO), ...pickFields(n),
+                  lesson_on: n.lesson_on || todayISO || null
+                }
+                : { id: n.id, body: n.body || "" });
+              setError("");
+            }}>
             <div style={{ ...TYPE.body, lineHeight: 1.7 }}>
-              {titleOf(n.body) || "（まだ何も書いていません）"}
-              {previewOf(n.body) ? <><br />{previewOf(n.body)}</> : null}
+              {/* ★★稽古の メモには 本文が ありません。
+                  ★言われたことの 1行目を 見出しに します。
+                  ★★点も 出来ばえも 出しません。 */}
+              {isPractice(kind)
+                ? (practiceTitle(n) || "（まだ何も書いていません）")
+                : (titleOf(n.body) || "（まだ何も書いていません）")}
+              {isPractice(kind)
+                ? (practiceSub(n) ? <><br />{practiceSub(n)}</> : null)
+                : (previewOf(n.body) ? <><br />{previewOf(n.body)}</> : null)}
             </div>
             <div style={{ ...TYPE.usual, marginTop: 7 }}>
               {dayWord(String(n.updated_at || n.created_at || "").slice(0, 10))}

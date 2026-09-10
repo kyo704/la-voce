@@ -114,6 +114,7 @@ import {
   HOURS_OF_DAY, MINUTES, parseTime, formatTime
 } from "@/lib/wheelPicker";
 import { readAsk, writeAsk } from "@/lib/dailyAsk";
+import { notesForRepertoire, practiceTitle } from "@/lib/practiceNote";
 import {
   CLINIC_ALWAYS, CLINIC_OPTIONAL, CLINIC_NOTICE, CLINIC_HEADINGS,
   isOn, togglePick, readPick, writePick
@@ -9440,7 +9441,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const fetchNotes = useCallback(async () => {
     const supabase = createClient();
     const { data, error } = await supabase.from("notes")
-      .select("id, kind, body, source_label, created_at, updated_at")
+      // ★★稽古の 6つの 欄も 読みます（★2026-09-11・裁定 §1）。
+      //   ★★足した ばかりの 列です。★古い 行は ぜんぶ null です。
+      //     ★埋めていません。★「書いていない」と「空」は 同じでよいところです。
+      .select("id, kind, body, source_label, created_at, updated_at, "
+        + "lesson_on, teacher_label, repertoire_name, said_text, next_action, gained_text")
       .eq("user_id", userId).is("deleted_at", null)
       .order("updated_at", { ascending: false });
     // ★★読めなくても、★ほかの画面は 動きます。★ここで 止めません。
@@ -9455,18 +9460,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
    *     ★★送れていないのに 閉じると、★書いたものが 消えます。
    *   ★★.select() を 付けます。★0行の 更新は エラーに なりません。
    */
-  async function handleSaveNote({ id, kind, body }) {
+  async function handleSaveNote({ id, kind, body, ...fields }) {
     setNoteSaving(true);
     try {
       const supabase = createClient();
       if (id) {
+        // ★★稽古の 6つの 欄も 一緒に 書きます。
+        //   ★★知らない 欄は NotesV2 が 落としています（pickFields）。
         const { data, error } = await supabase.from("notes")
-          .update({ body, kind, updated_at: new Date().toISOString() })
+          .update({ body, kind, ...fields, updated_at: new Date().toISOString() })
           .eq("id", id).select("id");
         if (error || !data || data.length === 0) throw error || new Error("0行でした");
       } else {
         const { data, error } = await supabase.from("notes")
-          .insert({ user_id: userId, kind, body }).select("id");
+          .insert({ user_id: userId, kind, body, ...fields }).select("id");
         if (error || !data || data.length === 0) throw error || new Error("0行でした");
       }
       await fetchNotes();
@@ -16445,10 +16452,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 onTell={handleTellTeacher}
                 onClose={() => setTellLesson(null)} />
             ) : null}
+            {/* ★★「みた曲」は、★レパートリーから 選びます（★裁定 §1）。
+                ★自由に 打たせません。★同じ曲が 2つの 名前で 増えるからです。
+                ★★増えると「その曲の 稽古の メモ」が 引けなく なります。 */}
             {activeTab === "notes" && layoutV2 && !tellLesson && (
               <NotesV2
                 notes={myNotes}
                 saving={noteSaving}
+                todayISO={realTodayDate}
+                repertoireNames={repertoire.map((r) => r.name)}
                 onSave={handleSaveNote}
                 onDelete={handleDeleteNote}
                 renraku={
@@ -16588,6 +16600,38 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                     ★★無い 欄を 出しては いけません。★打っても 残らないからです。
                                       ★今後の 課題に 残しました
                                       （docs/reports/2026-09-11-実装の順番.md §5）。 */}
+                                {/* ★★その曲の 稽古の メモ（★裁定 §1）。
+                                    ★★「稽古で『みた曲』を 選ぶと、
+                                      ★レパートリーの その曲にも 同じメモが 出ます」
+                                    ★★写しを 作りません。★同じ 1件を、
+                                      ★別の 入口から 見ているだけです。
+                                    ★★点も 出来ばえも 出しません。 */}
+                                {(() => {
+                                  const ns = notesForRepertoire(myNotes, it.name);
+                                  if (ns.length === 0) return null;
+                                  return (
+                                    <div style={{ marginBottom: 10 }}>
+                                      <p className="text-xs font-medium mb-1.5">この曲の 稽古</p>
+                                      {ns.slice(0, 5).map((n) => (
+                                        <button key={n.id} type="button"
+                                          onClick={() => { setNotesSubTab("practice"); setActiveTab("notes"); }}
+                                          style={{
+                                            display: "block", width: "100%", textAlign: "left",
+                                            minHeight: 44, padding: "6px 0", background: "transparent",
+                                            border: "none", borderBottom: `1px solid ${C.line2}`
+                                          }}>
+                                          <span className="text-xs" style={{ color: C.inkSoft }}>
+                                            {(n.lesson_on || String(n.created_at || "").slice(0, 10) || "").slice(5).replace("-", "/")}
+                                            {n.teacher_label ? "　" + n.teacher_label : ""}
+                                          </span>
+                                          <span className="text-xs" style={{ color: C.ink, display: "block", lineHeight: 1.7 }}>
+                                            {practiceTitle(n) || "（まだ何も書いていません）"}
+                                          </span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  );
+                                })()}
                                 <p className="text-xs font-medium mb-1.5">直す</p>
                                 <input value={repRenameTo}
                                   onChange={(e) => setRepRenameTo(e.target.value)}
