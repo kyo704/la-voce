@@ -74,7 +74,16 @@ function joinedWord(iso) {
   return `${iso.slice(0, 4)}年${Number(iso.slice(5, 7))}月`;
 }
 
-export default function OpsRoster({ members, nameOf, teacherNameOf, canSeeMoney, onInvite }) {
+export default function OpsRoster({
+  members, nameOf, teacherNameOf, canSeeMoney, onInvite,
+  // ★★学年を 入れる 道（★2026-09-11）。
+  //   ★★これが 無いと、★学年の 札が 永久に 出ません。
+  //     ★読む 道だけ 作って、★書く 道を 作らない ── これが
+  //     ★notOutDates と 同じ 形の 穴です。
+  //   ★★「その人」の 画面（★見本 SC['その人']）の、はじめの 1欄です。
+  //     ★のこりは、その画面を 作る ときに 足します。
+  canEdit, onSetGrade
+}) {
   const [q, setQ] = useState("");
   // ★★しぼり込み（★見本 G07 ／ 2026-09-11）。
   //   ★★決めは lib/orgRoster.js が 持ちます。★ここでは 数えません。
@@ -90,6 +99,9 @@ export default function OpsRoster({ members, nameOf, teacherNameOf, canSeeMoney,
   //     ★見本に その ボタンが ありません。★1枚は 開いた ままで 一覧が 動きます。
   //   ★★学年も 足しました。
   const [grade, setGrade] = useState(GRADE_FILTER_ALL);
+  // ★いま 学年を 入れている 方（★user_id）と、打っている 途中の 文字。
+  const [gradeEdit, setGradeEdit] = useState(null);
+  const [gradeDraft, setGradeDraft] = useState("");
 
   const chips = useMemo(() => chipCounts(members), [members]);
   const teacherOptions = useMemo(
@@ -230,6 +242,55 @@ export default function OpsRoster({ members, nameOf, teacherNameOf, canSeeMoney,
               <p style={{ ...small, color: on ? C.inkSoft : C.inkSoft }}>
                 {on ? "ご請求に数えます" : "ご請求には数えません"}
               </p>
+              {/* ★★学年・コース（★見本 SC['その人'] の はじめの 1欄）。
+                  ★★学校が 決める 文字です。★1年〜4年と 決め打ちに しません。
+                  ★★入っていない ときは「—」です。★勝手に 埋めません。 */}
+              {canEdit && onSetGrade ? (
+                gradeEdit === m.user_id ? (
+                  <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
+                    <input
+                      type="text" value={gradeDraft} autoFocus
+                      onChange={(e) => setGradeDraft(e.target.value.slice(0, 40))}
+                      placeholder="れい：声楽3年"
+                      style={{
+                        flex: 1, minWidth: 0, minHeight: 44, borderRadius: 10,
+                        padding: "0 10px", border: `1px solid ${C.line}`,
+                        background: C.paper, color: C.ink, fontSize: "1rem"
+                      }} />
+                    <button type="button"
+                      onClick={() => { onSetGrade(m.user_id, gradeDraft.trim()); setGradeEdit(null); }}
+                      style={{
+                        minHeight: 44, padding: "0 14px", borderRadius: 10,
+                        border: `1px solid ${C.curtain}`, background: C.curtain,
+                        color: "#FFFDF8", fontSize: "0.8125rem", flex: "none"
+                      }}>入れる</button>
+                    {/* ★★やめる 道を 置きます。★打ちかけを 捨てられる ように。 */}
+                    <button type="button" onClick={() => setGradeEdit(null)}
+                      style={{
+                        minHeight: 44, padding: "0 10px", borderRadius: 10,
+                        border: "none", background: "transparent",
+                        color: C.inkSoft, fontSize: "0.8125rem", flex: "none"
+                      }}>やめる</button>
+                  </div>
+                ) : (
+                  <button type="button"
+                    onClick={() => {
+                      setGradeDraft(m.grade_label || "");
+                      setGradeEdit(m.user_id);
+                    }}
+                    style={{
+                      marginTop: 4, minHeight: 44, padding: 0,
+                      background: "transparent", border: "none",
+                      color: C.inkSoft, fontSize: "0.6875rem", textAlign: "left"
+                    }}>
+                    学年・コース　{m.grade_label || "—"}　›
+                  </button>
+                )
+              ) : (
+                m.grade_label ? (
+                  <p style={small}>学年・コース　{m.grade_label}</p>
+                ) : null
+              )}
             </div>
           );
         })

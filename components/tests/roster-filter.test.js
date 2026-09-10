@@ -116,6 +116,24 @@ function ok(cond, label) {
   console.log("⑥ 画面は 数えない");
   ok(!/teacher_ids \|\| \[\]\)\.forEach/.test(ui), "★先生ごとの 数を、画面が 数えていない");
 
+  console.log("⑥-2 学年は、読む道と 書く道が そろっている");
+  // ★★読む 道だけ 作って 書く 道を 作らないと、
+  //   ★札が 永久に 出ません（★notOutDates と 同じ 形の 穴）。
+  ok(/grade_label/.test(ui), "★画面が 学年を 読んでいる");
+  ok(/onSetGrade/.test(ui), "★学年を 入れる 道が 画面に ある");
+  const vt2 = readCode("components", "VocalTracker.jsx");
+  ok(/handleSetMemberGrade/.test(vt2), "★入れる 道が 本体に ある");
+  ok(/grade_label: value/.test(vt2), "★本当に 書いている");
+  ok(/mayEditRoster/.test(vt2), "★直せる 方を、権限で 決めている");
+  // ★★役職の 名前で 分けないこと（★引き継ぎ §「最も重要な 実装原則」）。
+  const shell = readCode("lib", "opsShell.js");
+  ok(/export function mayEditRoster/.test(shell), "★できることが lib に ある");
+  ok(!/post ===|役職名/.test(shell.slice(shell.indexOf("mayEditRoster"), shell.indexOf("mayEditRoster") + 300)),
+    "★役職の 名前で 分岐していない");
+  // ★★空の 文字と null を、2つの 形に しないこと。
+  ok(/trim\(\) !== "" \? label\.trim\(\) : null/.test(vt2),
+    "★空は null に する（★「入れていない」と 1つの 形）");
+
   console.log("⑦ この 画面から 健康の 記録に 行けない");
   ["entries", "throat", "voice_quality", "sleep_hours"].forEach((w) => {
     ok(!ui.includes(w), `★「${w}」を 触っていない`);

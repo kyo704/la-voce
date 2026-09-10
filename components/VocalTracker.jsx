@@ -144,7 +144,7 @@ import OpsHome from "@/components/OpsHome";
 import OpsEvents from "@/components/OpsEvents";
 import OpsSettings from "@/components/OpsSettings";
 import { maySeeMoney } from "@/lib/opsShell";
-import { mayEnterOps } from "@/lib/opsShell";
+import { mayEnterOps, mayEditRoster } from "@/lib/opsShell";
 import { rosterCount } from "@/lib/orgRoster";
 import RecordV2Head from "@/components/RecordV2Head";
 import LookBackV2 from "@/components/LookBackV2";
@@ -11343,6 +11343,33 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       .update({ dismissed_at: new Date().toISOString() }).eq("id", j.id);
     fetchMyOrgEvents();
   }
+  /**
+   * ★名簿の 1人に、★学年・コースを 入れます（★2026-09-11）。
+   *
+   *   ★★空の 文字は null に します。★「空文字」と「入れていない」を
+   *     ★2つの 形に しません。★絞りの 側は null だけを 見ます。
+   *   ★★消す 道も、これで 兼ねます（★空にして「入れる」）。
+   *     ★★勝手に 消しません。★その方が 消したときだけ 消えます。
+   */
+  async function handleSetMemberGrade(orgId, memberUserId, label) {
+    if (!orgId || !memberUserId) return;
+    const value = typeof label === "string" && label.trim() !== "" ? label.trim() : null;
+    const supabase = createClient();
+    const { error } = await supabase.from("memberships")
+      .update({ grade_label: value })
+      .eq("org_id", orgId).eq("user_id", memberUserId);
+    if (error) {
+      console.error("学年を入れられませんでした:", error);
+      return;
+    }
+    // ★★画面の 側も、★その場で 合わせます。★引き直しません。
+    setOrgMembers((prev) => ({
+      ...prev,
+      [orgId]: (prev[orgId] || []).map((m) =>
+        m.user_id === memberUserId ? { ...m, grade_label: value } : m)
+    }));
+  }
+
   async function fetchOrgDetail(orgId) {
     const supabase = createClient();
     const [{ data: members }, { data: enrollments }, { data: assignments }, { data: lessons }] = await Promise.all([
@@ -12671,7 +12698,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   members={members}
                   nameOf={(id) => orgDisplayName(id) || ""}
                   teacherNameOf={(id) => orgDisplayName(id) || ""}
-                  canSeeMoney={maySeeMoney(role)} />
+                  canSeeMoney={maySeeMoney(role)}
+                  // ★★名簿を 直せるのは owner と admin だけです。
+                  //   ★役職の 名前で 分けません。★できること で 分けます。
+                  canEdit={mayEditRoster(role)}
+                  onSetGrade={(memberUserId, label) =>
+                    handleSetMemberGrade(opsOrgId, memberUserId, label)} />
               );
             }
             // ★★まだ 作っていない帯。★空の画面を 置きません。
