@@ -3398,9 +3398,14 @@ function NumberField({ label, value, onChange, step = 1, min = -Infinity, max = 
             onWheel={(e) => e.target.blur()}
             aria-label={label}
             style={{
-              width: "100%", textAlign: "center", borderRadius: 12,
+              // ★★minWidth: 0 が 要ります（★2026-09-11）。
+              //   ★★flex の 中の 欄は、★既定では 中身より 小さく なれません。
+              //     ★狭い 枠では、★左右の 余白に 押されて 字が 切れます。
+              //     ★★実機で 気温の「25」が「2」に 見えていました。
+              //   ★★左右の 余白を 8 に します。★上下は 12 の ままです。
+              width: "100%", minWidth: 0, textAlign: "center", borderRadius: 12,
               border: `1px solid ${C.line}`, background: C.card, color: C.ink,
-              padding: 12, fontSize: 16, fontFamily: FONT_STACK
+              padding: "12px 8px", fontSize: 16, fontFamily: FONT_STACK
             }} />
           <button type="button" style={rnd}
             onClick={() => onChange(clamp((Number(value) || 0) + step))}>
@@ -14942,7 +14947,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       </div>
                       {showGroup("env") && (
                         <>
-                          <div className="grid grid-cols-2 gap-4">
+                          {/* ★★門の中では 1列に します（★2026-09-11）。
+                              ★★湿度の 欄を 出さなく したのに、★2列の 枠が 残っていました。
+                                ★★気温の 欄が 半分の 幅に なり、★「25」が「2」に 見えていました。
+                                ★★値は 正しく 25 でした。★絶対湿度 21.8 g/m³ は
+                                  ★2℃ では 起こりえません（★2℃ の 上限は 5.6 g/m³）。
+                              ★★引き継ぎ（weatherCarryDecision）は 正しく 動いていました。
+                                ★壊れていたのは 見せ方だけです。
+                              ★門の外（38人）は、★これまでどおり 2列です。 */}
+                          <div className={layoutV2 ? "grid grid-cols-1 gap-4" : "grid grid-cols-2 gap-4"}>
                             <NumberField label={t("labelTemperature")} icon={Thermometer} value={formData.temperature ?? ""} step={1} min={-30} max={50} suffix="℃"
                               onChange={(v) => setFormData((f) => ({ ...f, temperature: v, weatherSource: "entered" }))} />
                             {/* ★★①消す（★坂本さんの お決め・2026-09-11／仕分けの §3 の 5-a）。

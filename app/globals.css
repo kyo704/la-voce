@@ -635,6 +635,13 @@ body {
      ★同じ 値です。★ここを 変えるときは、★あちらも 一緒に 変えること。
    ★見張り components/tests/sheet-look.test.js
    ========================================================================== */
+/* ★★数の 欄は、★左右の 余白を 狭くします（★2026-09-11）。
+   ★★狭い 枠の 中で、★12px の 余白 2つに 押されて 字が 切れていました。
+     ★実機で「25」が「2」に 見えていました。 */
+.record-v2 input[type="number"] {
+  padding: 12px 8px !important;
+  min-width: 0;
+}
 .record-v2 input[type="text"],
 .record-v2 input[type="time"],
 .record-v2 input[type="date"],
