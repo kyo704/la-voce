@@ -2273,6 +2273,27 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
           ★★「うごかす」の 押しどころは、★この 外に あります。
             ★中に 入れると、★寄ったとき 一緒に 大きくなり、★端で 消えます。 */}
       <div style={cameraStyle(cam, { editMode, walking: isWalking, walkMs: WALK_MS })}>
+      {/* ★★場面の 入れ物（★2026-09-11・実機の ご報告）。
+          ★★何が 起きていたか。
+            ★したく（★4：3 の 箱）では 正しく、★閉じると 崩れる。
+            ★★ふだんの 箱は 100vw ×（100dvh − 210px）です。
+              ★iPhone で およそ 414 × 686 ── ★縦横比 0.60。
+              ★したくの 4：3（1.33）とは、★2倍以上 ちがいます。
+            ★★中の 置き場所は ぜんぶ ％です。★％は 箱の 形に ついていきます。
+              ★→ ★床は 高さの 34%。★背の 高い 箱では、★壁が 66% を 占め、
+              ★★「天井が 異常に 高い」に なります。
+              ★→ ★窓や 品物の 縦の 位置も、★同じだけ 上へ ずれます。
+          ★★直し方 ── ★箱は 画面いっぱいの まま、
+            ★★場面だけを 4：3 に して、★下端に 貼りつけます。
+            ★余った 上は、★壁の 色が そのまま 続きます。
+            ★★これで、★％の 計算は 1つも 変わりません。
+              ★したくと ふだんで、★同じ 形の 場面に なります。
+          ★★以前の「きょうの 羊の 大きさ」も、★同じ 形でした
+            （★寸法が 連なって ずれる）。★坂本さんの ご指摘の とおりです。 */}
+      <div style={fullBleed ? {
+        position: "absolute", left: 0, right: 0, bottom: 0,
+        aspectRatio: "4 / 3", maxHeight: "100%"
+      } : { position: "absolute", inset: 0 }}>
       <WallTexture material={wallKey} wardrobeOn={wardrobeOn} />
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", background: floorColor, zIndex: 0, overflow: "hidden" }}>
         <FloorTexture material={floorKey} wardrobeOn={wardrobeOn} />
@@ -2640,7 +2661,8 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
             ★門の中では旧い家具が0点なので、★押しどころが出ず、
             ★新しい家具を1つも動かせませんでした。
           ★★新しい内装も、★数に入れます。★判定は lib が持ちます。 */}
-      </div>
+      </div>{/* ★場面の 入れ物（★4：3・下端ぞろえ）を 閉じます */}
+      </div>{/* ★カメラを 閉じます */}
       {(placedFurniture.length > 0 || placedWallhang.length > 0
         || (wardrobeOn && hasMovableInterior(equipped))) && (
         <button type="button" onClick={() => setEditMode((v) => !v)}
