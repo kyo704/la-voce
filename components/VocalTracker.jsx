@@ -140,11 +140,12 @@ import { shouldLogRead } from "@/lib/renraku";
 import OpsShell from "@/components/OpsShell";
 import OpsSchedule from "@/components/OpsSchedule";
 import OpsRoster from "@/components/OpsRoster";
+import OpsPosts from "@/components/OpsPosts";
 import OpsHome from "@/components/OpsHome";
 import OpsEvents from "@/components/OpsEvents";
 import OpsSettings from "@/components/OpsSettings";
 import { maySeeMoney } from "@/lib/opsShell";
-import { mayEnterOps, mayEditRoster } from "@/lib/opsShell";
+import { mayEnterOps, mayEditRoster, permsOfMember } from "@/lib/opsShell";
 import { rosterCount } from "@/lib/orgRoster";
 import RecordV2Head from "@/components/RecordV2Head";
 import { KoeSheet, NemuriSheet, MarksSheet, SheetRow, ListSheet } from "@/components/RecordSheets";
@@ -5291,6 +5292,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [myOrphanOrgs, setMyOrphanOrgs] = useState([]);
   const [viewingOrgId, setViewingOrgId] = useState(null);
   const [orgMembers, setOrgMembers] = useState({}); // orgId -> memberships[]
+  // ★★役職と できること（★2026-09-11・裁定 §7）。orgId -> org_posts[]
+  const [orgPosts, setOrgPosts] = useState({});
+  const [postsBusy, setPostsBusy] = useState(false);
   const [orgEnrollments, setOrgEnrollments] = useState({}); // orgId -> enrollments[]
   const [orgAssignments, setOrgAssignments] = useState({}); // orgId -> assignments[]
   const [orgLessons, setOrgLessons] = useState({}); // orgId -> lessons[]
@@ -11389,6 +11393,50 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }));
   }
 
+  /**
+   * ★役職を 読みます。★書くのは サーバの 道です（★/api/org/posts）。
+   *
+   *   ★★表が まだ 無い ときも、★静かに 進みます。
+   *     ★1段目の SQL を 流す 前でも、★画面が 壊れません。
+   */
+  async function fetchOrgPosts(orgId) {
+    if (!orgId) return;
+    const supabase = createClient();
+    const { data, error } = await supabase.from("org_posts")
+      .select("id, name, perms, sort_order")
+      .eq("org_id", orgId)
+      .order("sort_order", { ascending: true });
+    if (error) { console.error("役職を読めませんでした:", error); return; }
+    setOrgPosts((prev) => ({ ...prev, [orgId]: data || [] }));
+  }
+
+  /**
+   * ★役職を 足す・直す・消す。
+   *
+   *   ★★守りは サーバに あります。★ここでは 送るだけです。
+   *   @returns {Promise<string|null>}  ★だめだった わけ（★無ければ null）
+   */
+  async function handleOrgPosts(orgId, payload) {
+    if (!orgId || !payload) return null;
+    setPostsBusy(true);
+    try {
+      const res = await fetch("/api/org/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orgId, ...payload })
+      });
+      const json = await res.json().catch(() => ({}));
+      await fetchOrgPosts(orgId);
+      // ★★名簿も 引き直します。★役職を 消すと、★その方の 役職が 外れます。
+      if (payload.action === "delete") await fetchOrgDetail(orgId);
+      return res.ok ? null : (json.error || "うまくいきませんでした。");
+    } catch (e) {
+      return "いま、つながりません。";
+    } finally {
+      setPostsBusy(false);
+    }
+  }
+
   async function fetchOrgDetail(orgId) {
     const supabase = createClient();
     const [{ data: members }, { data: enrollments }, { data: assignments }, { data: lessons }] = await Promise.all([
@@ -11398,6 +11446,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       supabase.from("lessons").select("*").eq("org_id", orgId).order("scheduled_at", { ascending: true })
     ]);
     setOrgMembers((prev) => ({ ...prev, [orgId]: members || [] }));
+    // ★★役職も、★名簿と 一緒に 読みます（★2026-09-11）。
+    //   ★名簿の post_id を 引き当てるのに 要ります。
+    void fetchOrgPosts(orgId);
     setOrgEnrollments((prev) => ({ ...prev, [orgId]: enrollments || [] }));
     setOrgAssignments((prev) => ({ ...prev, [orgId]: assignments || [] }));
     setOrgLessons((prev) => ({ ...prev, [orgId]: lessons || [] }));
@@ -12705,7 +12756,32 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               );
             }
             if (tabKey === "settings") {
-              return <OpsSettings members={opsMembers} staffLines={[]} />;
+              // ★★役職と できること（★裁定 §7 ／ 2026-09-11・2段目）。
+              //   ★★設定の 中に 置きます（★見本 SC['役職の一覧'] の 戻り先が「設定」）。
+              //   ★★書くのは サーバの 道です。★画面には 書く 権限が ありません。
+              const myMembership = (orgMembers[opsOrgId] || [])
+                .find((m) => m.user_id === userId) || null;
+              const byId = Object.fromEntries((orgPosts[opsOrgId] || []).map((x) => [x.id, x]));
+              const myPerms = permsOfMember(myMembership, byId);
+              const countByPost = {};
+              (orgMembers[opsOrgId] || []).forEach((m) => {
+                if (m.post_id) countByPost[m.post_id] = (countByPost[m.post_id] || 0) + 1;
+              });
+              return (
+                <>
+                  <OpsSettings members={opsMembers} staffLines={[]} />
+                  <div style={{ marginTop: 16 }}>
+                    <OpsPosts
+                      posts={orgPosts[opsOrgId] || []}
+                      countByPost={countByPost}
+                      // ★★役職が まだ 無い 方は null です。
+                      //   ★★そのときは、★学校を 作った方だけが 触れます（★サーバが 決めます）。
+                      myPerms={myPerms}
+                      busy={postsBusy}
+                      onAction={(payload) => handleOrgPosts(opsOrgId, payload)} />
+                  </div>
+                </>
+              );
             }
             if (tabKey === "roster") {
               // ★★名簿（★見本③⑦）。★1行を 1枚の カードに。
