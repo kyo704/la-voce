@@ -105,6 +105,10 @@ import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
 import { moreSections } from "@/lib/moreMenu";
 import DailyAskPicker from "@/components/DailyAskPicker";
 import RangeCalendar from "@/components/RangeCalendar";
+import WheelPicker from "@/components/WheelPicker";
+import {
+  HOURS_OF_DAY, MINUTES, parseTime, formatTime
+} from "@/lib/wheelPicker";
 import { readAsk, writeAsk } from "@/lib/dailyAsk";
 import {
   CLINIC_ALWAYS, CLINIC_OPTIONAL, CLINIC_NOTICE, CLINIC_HEADINGS,
@@ -15385,9 +15389,25 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       <div className="flex gap-1.5">
                         <input type="date" value={newLessonDate} onChange={(e) => setNewLessonDate(e.target.value)}
                           className="rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.paper }} />
-                        <input type="time" value={newLessonTime} onChange={(e) => setNewLessonTime(e.target.value)}
-                          className="rounded-lg border p-1.5 text-xs" style={{ borderColor: C.line, background: C.paper }} />
                       </div>
+                      {/* ★★時刻を スワイプの ホイールに しました（★裁定 §9・2026-09-11）。
+                          ★★「±ボタンは 数が 多いと つらい」。
+                          ★★上に いまの 時刻が 大きく 出ます。
+                          ★★決め打ちの ボタン（30分／45分／60分）を 置きません。
+                            ★学校ごとに 時間の わり方が ちがいます。★1分きざみです。
+                          ★★転がせない 方の ために、★数を 打つ 道も 残しています。 */}
+                      {(() => {
+                        const t = parseTime(newLessonTime) || { h: 19, m: 0 };
+                        return (
+                          <WheelPicker
+                            head={formatTime(t.h, t.m)}
+                            pad2
+                            leftLabel="時" leftValues={HOURS_OF_DAY} leftValue={t.h}
+                            onLeft={(h) => setNewLessonTime(formatTime(h, t.m))}
+                            rightLabel="分" rightValues={MINUTES} rightValue={t.m}
+                            onRight={(m) => setNewLessonTime(formatTime(t.h, m))} />
+                        );
+                      })()}
                       <input type="text" value={newLessonNote} onChange={(e) => setNewLessonNote(e.target.value)}
                         placeholder="メモ（任意）" maxLength={100}
                         className="w-full rounded-lg border p-1.5 text-xs mt-1.5" style={{ borderColor: C.line, background: C.paper }} />
