@@ -296,10 +296,14 @@ const USER_ID = "test-user-id";
     "★門の外では、★節は いつも 出る（★38人の画面を 変えない）");
   assertEqual(rv2.sectionIsOpen("meal", { layoutV2: false, openSheet: "からだ" }), true,
     "★門の外では、1枚が 開いていても 全部 出る");
+  // ★★2026-09-11、★お決め ㋐。★1枚に 入る 節は、★門の中では 出しません。
+  //   ★★「詳しく」に 畳む 形（㋒）は、★私が 独自に 足した ものでした。
+  //     ★見本 4本に <details> は 0件です。★外しました。
+  //   ★★列も 記録も 消していません。★画面に 出さないだけです。
   assertEqual(rv2.sectionIsOpen("meal", { layoutV2: true, openSheet: null }), false,
-    "門の中で 1枚が 閉じていれば 出ない");
-  assertEqual(rv2.sectionIsOpen("meal", { layoutV2: true, openSheet: "たべ" }), true,
-    "その 1枚が 開いていれば 出る");
+    "門の中では 出さない");
+  assertEqual(rv2.sectionIsOpen("meal", { layoutV2: true, openSheet: "たべ" }), false,
+    "★1枚を 開いても 出さない");
   assertEqual(rv2.sectionIsOpen("meal", { layoutV2: true, openSheet: "からだ" }), false,
     "ほかの 1枚が 開いていても 出ない");
   assertEqual(rv2.sectionIsOpen("env", { layoutV2: true, openSheet: null }), true,

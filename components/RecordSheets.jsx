@@ -10,12 +10,13 @@
 //   ★★ここは「並べるだけ」です。★数えません。★決めません。
 // ============================================================================
 
-import { useState, useContext, createContext } from "react";
+import { useState } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, FONT_STACK, rem, cardStyle } from "@/lib/uiKit";
 import BottomSheet, { SheetNote, Pills } from "@/components/BottomSheet";
 import {
-  KOE, NEMURI, sleepLength, sleepWord, wakeFromBed
+  KOE, NEMURI, HONBAN, HITOKOTO, HONBAN_CHOICES, HONBAN_REPERTOIRE_LABEL,
+  sleepLength, sleepWord, wakeFromBed
 } from "@/lib/recordSheets";
 
 /** ★見本の .mini（★1枚の 中の 小見出し）。 */
@@ -34,59 +35,67 @@ function Mini({ children, style }) {
  *   ★★だから 入れ物は 1つだけです。★22枚に 1つずつ 作りません。
  *     ★2つ あると、★節が どちらに 出たか 分からなく なります。
  */
-export const SheetSlotContext = createContext(null);
+// ★★SheetSlotContext ／ SheetSlot を 外しました（★2026-09-11・お決め ㋐）。
+//   ★★1枚の 中に 節を 入れなく なったので、★差し込み口が 要りません。
+//   ★★「作った ものは、必ず どこかから 呼ばれているか」──★いいえ、でした。
+//   ★節そのものは 消していません。★門の外（38人）では これまでどおり 出ます。
 
-export function SheetSlot({ label }) {
-  const ctx = useContext(SheetSlotContext);
-  // ★★2026-09-11、★坂本さんの お決め ㋒。
-  //   ★★見本に 無い ものは、★畳んで おきます。
-  //     ★開かなければ 見本と 同じに 見えます。
-  //     ★書く 道は 残ります。★欄を 1つも 減らしていません。
-  //   ★★はじめは 閉じています（★open を 付けません）。
-  //   ★★中身は 閉じていても 木の 上に あります。★打ちかけの 字も 消えません。
-  const slot = (
-    <div className="record-v2" ref={ctx ? ctx.setNode : null} />
-  );
-  // ★★入る ものが 無い 1枚では、★仕切りを 出しません。
-  //   ★空の「詳しく」を 開かせない ため。
-  if (!label) return <div style={{ marginTop: rem(8) }}>{slot}</div>;
+/**
+ * ★本番・レッスン（★見本 SH['honban']）。
+ *
+ *   ★★見本の 5つの 札です。★節を 入れません（★お決め ㋐）。
+ *   ★★「本番の 予定を 書く」の ボタンは 置いていません。
+ *     ★★押した 先（本番の 予定を 書く 画面）が、★まだ ありません。
+ *     ★押せない ボタンを 置かない、という 決めです。
+ */
+export function HonbanSheet({ choice, onPick, repertoire, picked, onPickSong, onClose }) {
+  const isHonban = choice === "本番（ソロ）" || choice === "本番（合唱・アンサンブル）";
   return (
-    <details style={{ marginTop: rem(14) }}>
-      <summary style={{
-        display: "flex", alignItems: "center", gap: rem(8),
-        minHeight: 44, cursor: "pointer", listStyle: "none",
-        ...TYPE.mini, color: C.inkSoft, fontFamily: FONT_STACK
-      }}>
-        <span>{label}</span>
-        <span aria-hidden="true" style={{ flex: 1, height: 1, background: C.line }} />
-        {/* ★★開くための 目印。★字で 出します。★色だけに 意味を 持たせません。 */}
-        <span aria-hidden="true" style={{ ...TYPE.usual }}>ひらく</span>
-      </summary>
-      <div style={{ marginTop: rem(8) }}>{slot}</div>
-    </details>
+    <BottomSheet title={HONBAN.title} onClose={onClose} closeLabel={HONBAN.done}>
+      <div style={{ marginTop: rem(10) }}>
+        <Pills
+          options={HONBAN_CHOICES.map((c) => c.label)}
+          value={choice}
+          onSelect={(v) => onPick(v === choice ? null : v)} />
+      </div>
+      {/* ★★曲は、★本番を 選んだ ときだけ 出ます（★見本の とおり）。 */}
+      {isHonban && (repertoire || []).length > 0 ? (
+        <>
+          <Mini style={{ marginTop: rem(12) }}>{HONBAN_REPERTOIRE_LABEL}</Mini>
+          <div style={{ marginTop: rem(7) }}>
+            <Pills options={[...repertoire]} value={picked} onSelect={onPickSong} multiple small />
+          </div>
+        </>
+      ) : null}
+      <SheetNote>
+        {HONBAN.note.split("\n").map((line, i) => (
+          <span key={i}>{i > 0 ? <br /> : null}{line}</span>
+        ))}
+      </SheetNote>
+    </BottomSheet>
   );
 }
 
 /**
- * ★引っ越してきた 節 だけの 1枚（★本番・レッスン ／ ひとこと ／ お仕事）。
+ * ★ひとこと（★見本 SH['hito']）。
  *
- *   ★★見本の 札を ここに 作り直しません。
- *     ★同じ 列への 入口が 2つに なると、★片方で 書いて もう片方で 消えます。
- *   ★★これが「③引っ越す ── 機能は そのまま。置き場所だけ」の 意味です。
+ *   ★★見本の とおり、★書く枠 1つだけです。★節を 入れません。
+ *   ★★但し書きは 見本の まま。★1文字も 変えないこと。
  */
-export function SectionSheet({ spec, onClose, detailLabel }) {
+export function HitokotoSheet({ value, onChange, onClose }) {
   return (
-    <BottomSheet title={spec.title} onClose={onClose} closeLabel={spec.done}>
-      {/* ★★この 1枚は、★引っ越してきた 節そのものが 中身です。
-          ★★だから 仕切りを 出しません。★上に 何も ありません。 */}
-      <SheetSlot />
-      {spec.note ? (
-        <SheetNote>
-          {spec.note.split("\n").map((line, i) => (
-            <span key={i}>{i > 0 ? <br /> : null}{line}</span>
-          ))}
-        </SheetNote>
-      ) : null}
+    <BottomSheet title={HITOKOTO.title} onClose={onClose} closeLabel={HITOKOTO.done}>
+      <textarea
+        value={value || ""}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={HITOKOTO.placeholder}
+        aria-label={HITOKOTO.title}
+        style={{
+          width: "100%", minHeight: 110, marginTop: rem(9), borderRadius: 12,
+          border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+          padding: rem(12), fontSize: 16, lineHeight: 1.8, fontFamily: FONT_STACK
+        }} />
+      <SheetNote>{HITOKOTO.note}</SheetNote>
     </BottomSheet>
   );
 }
@@ -97,7 +106,7 @@ export function SectionSheet({ spec, onClose, detailLabel }) {
  *   ★★選択肢は 渡してもらいます。★ここに 書き写しません。
  *     ★いまの SPEECH_MINUTE_CHOICES と 見本の 4つは 同じです。
  */
-export function KoeSheet({ choices, value, onChange, onClose, detailLabel }) {
+export function KoeSheet({ choices, value, onChange, onClose }) {
   // ★★「詳しく 書く（分で）」（★見本の btn g）。
   //   ★★2026-09-11 まで、★呼ぶ側が onDetail を 渡していなかったので、
   //     ★★このボタンは 1度も 出たことが ありませんでした（★notOutDates と 同じ形）。
@@ -147,7 +156,6 @@ export function KoeSheet({ choices, value, onChange, onClose, detailLabel }) {
             ...TYPE.li, fontFamily: FONT_STACK
           }}>{KOE.detail}</button>
       )}
-      <SheetSlot label={detailLabel} />
     </BottomSheet>
   );
 }
@@ -163,7 +171,7 @@ export function KoeSheet({ choices, value, onChange, onClose, detailLabel }) {
  *   @param onDone     (bedtime, hours) を 受け取ります
  */
 export function NemuriSheet({
-  bedtime, sleepHours, prevBedtime, prevSleepHours, onDone, onClose, detailLabel
+  bedtime, sleepHours, prevBedtime, prevSleepHours, onDone, onClose
 }) {
   // ★★初めから 入っている 値（★2026-09-11 に 直しました）。
   //   ★★1枚の 下に「きのうの値を 初めから 入れています」と 書いてあるのに、
@@ -220,7 +228,6 @@ export function NemuriSheet({
           ...TYPE.li, background: C.curtain, color: "#FFFDF8",
           fontWeight: 700, fontFamily: FONT_STACK
         }}>{NEMURI.done}</button>
-      <SheetSlot label={detailLabel} />
     </BottomSheet>
   );
 }
@@ -232,7 +239,7 @@ export function NemuriSheet({
  *   ★★数を 出しません。★「◯つ 選びました」と 書きません。
  *   ★★良い・悪いを 決めません（★見本の 但し書き）。
  */
-export function MarksSheet({ spec, options, value, onChange, time, onTime, times, timeLabel, onClose, detailLabel }) {
+export function MarksSheet({ spec, options, value, onChange, time, onTime, times, timeLabel, onClose }) {
   const chosen = Array.isArray(value) ? value : [];
   const toggle = (v) =>
     onChange(chosen.includes(v) ? chosen.filter((x) => x !== v) : [...chosen, v]);
@@ -252,7 +259,6 @@ export function MarksSheet({ spec, options, value, onChange, time, onTime, times
         </>
       ) : null}
       <SheetNote>{spec.note}</SheetNote>
-      <SheetSlot label={detailLabel} />
     </BottomSheet>
   );
 }

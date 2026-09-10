@@ -156,30 +156,25 @@ uniqueFolds.forEach((f) => {
 listed.forEach((k) => {
   ok(uniqueFolds.includes(k), `表の ${k} は、実際に ある 節`);
 });
-// ★★入れ物は 1つだけ。★2つ あると、★どちらに 出たか 分からなく なります。
-const sheetsRaw = readRaw("components", "RecordSheets.jsx");
-eq((sheetsRaw.match(/export function SheetSlot\(/g) || []).length, 1,
-  "節が 入る ところを 作る 場所は 1か所だけ");
-// ★★2026-09-11、★探しに 行くのを やめました。
-//   ★★getElementById は、★見つからなくても 黙って 何も 出しません。
-//     ★★失敗が 誰にも 見えない 形でした。
-//   ★★いまは 入れ物の ほうが ref で 名乗ります。★探し損ねる 道が ありません。
-{
-  // ★★見るのは、★差し込みの 器（RecordSectionHost）の 中だけです。
-  //   ★★画面には ほかにも getElementById を 使う 所が あります
-  //     （★節へ 送る 動きなど）。★それは この話では ありません。
-  const vt = readCode("components", "VocalTracker.jsx");
-  const from = vt.indexOf("function RecordSectionHost(");
-  const host = from < 0 ? "" : vt.slice(from, vt.indexOf("function SectionCard(", from));
-  ok(from >= 0, "★差し込みの 器が ある");
-  ok(!/getElementById/.test(host),
-    "★節の 差し込みに getElementById を 使っていない");
-  ok(/createPortal\(children, slot\)/.test(host), "★渡された 場所へ 差し込む");
-}
-ok(/SheetSlotContext/.test(sheetsRaw) && /ctx \? ctx\.setNode : null/.test(sheetsRaw),
-  "★入れ物が ref で 名乗る");
-ok(/<SheetSlotContext\.Provider/.test(readCode("components", "VocalTracker.jsx")),
-  "★受け取り手が 置いてある");
+// ★★2026-09-11、★お決め ㋐。★1枚に 節を 入れなく なりました。
+//   ★★前は「差し込み口が 1つ あること」を 見ていました。
+//     ★★その 仕組みごと 外したので、★見る ものが 変わります。
+//   ★★いまは「1枚に 入る 節が、★門の中では 出ないこと」を 見ます。
+// ★★注記を 外した 本文で 見ます（★components/tests/_source.js）。
+//   ★★この 帳面の 註にも「SheetSlot」と 書いてあります。
+//     ★生の 本文で 探すと、★自分の 説明に つまずきます。
+//   ★★この 罠は、★この repo で 何度も 踏んでいます。
+const sheetsCode = readCode("components", "RecordSheets.jsx");
+ok(!/SheetSlot/.test(sheetsCode), "★節を 差し込む 口が 残っていない");
+// ★★節の 差し込みで getElementById を 使っていないこと。
+//   ★★画面には ほかにも 使う 所が あります（★節へ 送る 動き）。
+//     ★★そちらは この話では ありません。★器の 中だけを 見ます。
+ok(!/RecordSectionHost/.test(readCode("components", "VocalTracker.jsx")),
+  "★節を 送る 器が 残っていない");
+ok(!/createPortal/.test(readCode("components", "VocalTracker.jsx")),
+  "★差し込みの 仕組みが 残っていない");
+ok(/if \(sheet != null\) return false;/.test(readCode("lib", "recordV2.js")),
+  "★1枚に 入る 節は、門の中では 出さない");
 
 // ── ⑧ ①消す が 門の中だけ ────────────────────────────────
 console.log("\n⑧ ①消す の 2つ（★門の外の 38人には 残る）");

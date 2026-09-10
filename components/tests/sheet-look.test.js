@@ -100,8 +100,9 @@ t(/\.record-v2 select/.test(CSS), "生の えらぶ 欄");
 t(/\.record-v2 textarea/.test(CSS), "生の 書く 欄");
 t(/\.record-v2 label/.test(CSS), "欄の 名前（.fl）");
 t(/font-size: 16px !important;/.test(CSS), "★iOS で 拡大しない 大きさ");
-t(/className="record-v2" ref=\{ctx \? ctx\.setNode : null\}/.test(SHEETS),
-  "★1枚の 中の 差し込み口にも 印が 付く");
+// ★★1枚の 中の 差し込み口は、★2026-09-11 に 無くなりました（★お決め ㋐）。
+//   ★節を 1枚に 入れなく なったので、★印を 付ける 先が ありません。
+t(!/record-v2/.test(SHEETS), "★1枚に 節を 入れないので、印も 要らない");
 
 console.log("\n⑤ 欄を 1つも 減らしていない");
 // ★★見た目を 変えただけで、★書ける ものが 減っていないこと。
@@ -148,19 +149,30 @@ const rec = (() => {
 t(!/display: layoutV2 \? "none"/.test(rec),
   "★記録の 中で「隠す」を 使っていない（★描かない ことで 外す）");
 
-console.log("\n⑧ 見本に 無い ものは、畳んで おくこと（★お決め ㋒）");
+console.log("\n⑧ 見本に 無い ものを、画面から 出さないこと（★お決め ㋐）");
 {
-  // ★★2026-09-11、★坂本さんの お決め ㋒。
-  //   ★★見本に 無い 欄を 消すと、★書く 道が なくなります（★欄は 減らさない）。
-  //   ★★出したままだと、★見本と ちがう 画面に なります。
-  //   ★→ ★畳んで おきます。★開かなければ 見本と 同じ、★開けば 書けます。
-  t(/<details style=\{\{ marginTop: rem\(14\) \}\}>/.test(SHEETS),
-    "★「詳しく」は 畳んである");
-  t(!/<details open/.test(SHEETS), "★はじめから 開いていない");
-  t(/if \(!label\) return <div style=\{\{ marginTop: rem\(8\) \}\}>\{slot\}<\/div>;/.test(SHEETS),
-    "★入る ものが 無い 1枚には、仕切りを 出さない");
-  t(/<span>\{label\}<\/span>/.test(SHEETS), "★仕切りに 名前が ある");
-  t(/ひらく/.test(SHEETS), "★開けることが 字で 分かる（★色だけに 頼らない）");
+  // ★★2026-09-11、★坂本さんの お決め ㋐。
+  //   ★★㋒（「詳しく」に 畳む）は、★私が 独自に 足した 仕組みでした。
+  //     ★見本 4本に <details> は 0件、★<summary> も 0件です。
+  //     ★「詳しく」の 語は 4か所 ありますが、★どれも 別の 機能の 名前です。
+  //   ★★列も 記録も 消していません。★画面に 出さないだけです。
+  t(!/<details/.test(SHEETS), "★1枚に 畳む 仕組みが 残っていない");
+  t(!/SheetSlot/.test(SHEETS), "★節を 差し込む 口が 残っていない");
+  t(!/RecordSectionHost/.test(VT), "★節を 送る 器が 残っていない");
+  t(!/createPortal/.test(VT), "★差し込みの 仕組みが 残っていない");
+  t(/if \(sheet != null\) return false;/.test(readCode("lib", "recordV2.js")),
+    "★1枚に 入る 節は、門の中では 出さない");
+  // ★★見本の 中身を 持つ 1枚に なっていること
+  t(/export function HonbanSheet\(/.test(SHEETS), "★本番・レッスンは 見本の 札");
+  t(/export function HitokotoSheet\(/.test(SHEETS), "★ひとことは 見本の 書く枠");
+  t(/placeholder: "思ったことを、そのまま"/.test(readCode("lib", "recordSheets.js")),
+    "★ひとことの 案内文が 見本の まま");
+  t(!/SHIGOTO/.test(VT), "★「お仕事に合わせた記録」の 行を 出していない");
+  // ★★門の外（38人）の 節は、★1つも 消していないこと
+  ["sectionSleep", "sectionMealDetail", "sectionMental", "sectionExercise",
+    "sectionWater", "sectionTodayBody", "sectionPractice", "sectionMemo"].forEach((k) => {
+    t(VT.includes(`t("${k}")`), `${k} の 節は 消していない`);
+  });
 }
 
 console.log("\n⑦ 狭い 枠で 字が 切れないこと");

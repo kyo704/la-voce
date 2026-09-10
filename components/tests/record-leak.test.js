@@ -32,8 +32,10 @@ function t(cond, label) {
 }
 
 const L = readRaw("components", "VocalTracker.jsx").split("\n");
-const start = L.findIndex((l) => l.includes("<RecordSectionHost layoutV2=")) + 1;
-const end = L.findIndex((l, i) => i > start && l.includes("</RecordSectionHost>")) + 1;
+// ★★2026-09-11、★節を 送る 器（RecordSectionHost）を 外しました。
+//   ★★かたまりの 端を、★節の 出し分けの 器で 探します。
+const start = L.findIndex((l) => l.includes("<RecordFoldContext.Provider")) + 1;
+const end = L.findIndex((l, i) => i > start && l.includes("</RecordFoldContext.Provider>")) + 1;
 
 console.log("記録の かたまり: " + (start + 1) + " 〜 " + end);
 t(start > 0 && end > start, "★記録の かたまりが 見つかる");
@@ -57,7 +59,11 @@ function guardsOf(target) {
   const stack = [];
   for (let i = start; i < target - 1; i++) {
     const line = L[i];
-    const opensCond = /\{[^}]*&&\s*\($/.test(line) || /\{[^}]*\?\s*\($/.test(line);
+    // ★★条件の 開きは 3つの 形が あります（★2026-09-11 に 足しました）。
+    //   ★{a && (            … ふつう
+    //   ★{a ? (             … 三つ
+    //   ★{a && (() => {     … その場の 関数（★これを 見落としていました）
+    const opensCond = /\{[^}]*&&\s*\(/.test(line) || /\{[^}]*\?\s*\(/.test(line);
     const o = (line.match(/\(/g) || []).length;
     const c = (line.match(/\)/g) || []).length;
     if (opensCond) stack.push({ text: line.trim(), d: depth });
@@ -74,6 +80,9 @@ const leaks = [];
 for (let i = start; i < end; i++) {
   if (inCard[i]) continue;
   if (!DRAWS.test(L[i])) continue;
+  // ★★かたまり そのものの 入れ物は 数えません。
+  //   ★これは 記録の 画面の 外枠で、★門の 中か 外かを 自分で 分けています。
+  if (/className=\{layoutV2 \?/.test(L[i])) continue;
   const g = guardsOf(i + 1);
   // ★★門の外だけに 出す か、★1枚が 開いていない ときだけ 出す なら よい。
   const guarded = g.some((x) => /!layoutV2/.test(x) || /!recordSheet/.test(x));

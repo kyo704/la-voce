@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback, createContext, useContext } from "react";
-import { createPortal } from "react-dom";
 import {
   Mic2, Moon, Droplets, Thermometer, Wind, MapPin, Music2, HeartHandshake,
   NotebookPen, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Trash2,
@@ -154,11 +153,11 @@ import { mayEnterOps, mayEditRoster, permsOfMember } from "@/lib/opsShell";
 import { rosterCount } from "@/lib/orgRoster";
 import RecordV2Head from "@/components/RecordV2Head";
 import {
-  KoeSheet, NemuriSheet, MarksSheet, SheetRow, ListSheet, SectionSheet, SheetSlotContext
+  KoeSheet, NemuriSheet, MarksSheet, SheetRow, ListSheet, HonbanSheet, HitokotoSheet
 } from "@/components/RecordSheets";
 import {
   KOE, NEMURI, KARADA, TABE, sleepWord, ACCOUNT_ROWS, TSUCHI_ROWS, TSUCHI_NOTE,
-  YOUSU_CHOICES, YOUSU_NOTE, HONBAN, HITOKOTO, SHIGOTO
+  YOUSU_CHOICES, YOUSU_NOTE, HONBAN, HITOKOTO, HONBAN_CHOICES, honbanChoiceOf
 } from "@/lib/recordSheets";
 import LookBackV2 from "@/components/LookBackV2";
 import {
@@ -2817,16 +2816,10 @@ function SectionFeedback({ text }) {
  *   ★★行き先の 入れ物は、★1枚が 描かれた あとに 現れます。
  *     ★だから 描き終わってから 探します（★useEffect）。
  */
-function RecordSectionHost({ layoutV2, openSheet, slot, children }) {
-  // ★★2026-09-11、★探しに 行くのを やめました。
-  //   ★★前は 1枚が 描かれた あとに getElementById で 探していました。
-  //     ★★見つからなければ 何も 出しません。★★失敗が 誰にも 見えません。
-  //   ★★いまは、★1枚の 入れ物が ref で 名乗り、★それを 受け取ります。
-  if (layoutV2 && openSheet) {
-    return slot ? createPortal(children, slot) : null;
-  }
-  return children;
-}
+// ★★RecordSectionHost を 外しました（★2026-09-11・お決め ㋐）。
+//   ★★1枚の 中に 節を 送らなく なったので、★送り先が 要りません。
+//   ★節そのものは 消していません。★門の外（38人）では これまでどおり 出ます。
+//   ★出し分けを 決めるのは lib/recordV2.js の sectionIsOpen 1つだけです。
 
 function SectionCard({ title, icon: Icon, children, id, highlighted, fold }) {
   const ref = useRef(null);
@@ -5778,12 +5771,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★どれが 開いているかを、★1つの 名前で 持ちます。
   //     ★1枚ごとに 真偽値を 置くと、★2枚 同時に 開く 形が 作れてしまいます。
   const [recordSheet, setRecordSheet] = useState(null);
-  // ★★引っ越してきた 節を 置く 場所（★2026-09-11）。
-  //   ★★1枚の 中の 入れ物が、★ref で ここに 名乗ります。
-  //     ★★探しに 行かないので、★探し損ねる 道が ありません。
-  //   ★★1枚を 閉じたら null に 戻ります（★ref の 外し忘れが 起きません）。
-  const [sheetSlot, setSheetSlot] = useState(null);
-  const sheetSlotCtx = useMemo(() => ({ setNode: setSheetSlot }), []);
   const [ownedOpen, setOwnedOpen] = useState(false);
   const [ledgerRows, setLedgerRows] = useState([]);
   useEffect(() => {
@@ -13160,10 +13147,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }
 
   return (
-    // ★★1枚の 中の 入れ物と、★引っ越してきた 節の 受け渡し（★2026-09-11）。
-    //   ★★記録の 画面と、★下から 上がる 1枚は、★木の 上で 離れています。
-    //     ★だから 場所を 直に 渡せません。★ここ 1つで つなぎます。
-    <SheetSlotContext.Provider value={sheetSlotCtx}>
     <div style={{ background: C.paper, color: C.ink, minHeight: "100vh" }}>
       {/* ★★大事な操作の前の、もう一度の確かめ（判断-メールを失うこと §4）。
           ★Face ID を、こちらで呼ぶのではありません。
@@ -14308,18 +14291,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             value={formData.notes ? "あり" : null}
                             onOpen={() => setRecordSheet("ひとこと")} />
                         )}
-                        {/* ★★足す の 7つめ（★坂本さんの お決め 2 ㋐・2026-09-11）。
-                            ★★見本に この行は ありません。★お決めで 足しました。
-                            ★★その日 出す 項目が 1つも 無い方には、★行を 出しません。
-                              ★中身の 無い 1枚を 開かせない ため。 */}
-                        {typeFieldsForToday.length > 0 && (
-                          <SheetRow
-                            label={SHIGOTO.title}
-                            value={typeFieldsForToday.some(
-                              (f) => (formData.typeFields || {})[f.key] != null
-                                && (formData.typeFields || {})[f.key] !== "") ? "あり" : null}
-                            onOpen={() => setRecordSheet("しごと")} />
-                        )}
+                        {/* ★★「お仕事に合わせた記録」の 行を 外しました
+                            （★2026-09-11・坂本さんの お決め ①）。
+                            ★★見本の 足す は 4行です。★7つめは 私が 足したもので、
+                              ★見本に ありません。
+                            ★★中の 欄（パッサッジョの通りにくさ・高音の出しやすさ）は、
+                              ★1〜5 の 数字でした。★画面から 隠します。
+                            ★★列も、これまでに 書かれた 値も 消していません。
+                              ★門の外（38人）には、★これまでどおり 出ます。
+                            ★★どこに 置き直すかは、★すべての 画面が 見本どおりに
+                              なった あとで 改めて お決めいただきます。 */}
                       </>
                     )} />
                 )}
@@ -14467,7 +14448,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 )}
 
                 {formData && (
-                  <RecordSectionHost layoutV2={layoutV2} openSheet={recordSheet} slot={sheetSlot}>
+                      <>
                     {/* ★★門の中では、★この切替を 出しません（★2026-09-10）。
                         ★★見本③は、★5つの 折りたたみ だけです。★切替は ありません。
                         ★★折りたたみと 切替が 重なると、
@@ -15947,7 +15928,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     )}
                       </>
                     )}
-                  </RecordSectionHost>
+                  </>
                 )}
               </div>
               </RecordFoldContext.Provider>
@@ -22197,19 +22178,54 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           detailLabel={sheetHasSections("こえ") ? "詳しく" : null}
           onClose={() => setRecordSheet(null)} />
       )}
-      {/* ★★引っ越してきた 節 だけの 1枚（★坂本さんの お決め・2026-09-11）。
-          ★★見本の 札を ここに 作り直しません。
-            ★同じ 列への 入口が 2つに なると、★片方で 書いて もう片方で 消えます。
-          ★★中身は SECTION_SHEETS が 決めます（★lib/recordV2.js）。
-            ★ほんばん … 練習・公演 ／ ひとこと … メモ ／ しごと … お仕事に合わせた記録 */}
+      {/* ★★見本の 中身を 持つ 1枚（★2026-09-11・お決め ㋐）。
+          ★★それまでは、★節を そのまま 1枚に 入れていました。
+            ★★節を 画面から 外したので、★見本の 札が 要ります。
+          ★★新しい 列を 作っていません。★activities ／ notes に しまいます。 */}
       {layoutV2 && formData && recordSheet === "ほんばん" && (
-        <SectionSheet spec={HONBAN} onClose={() => setRecordSheet(null)} />
+        <HonbanSheet
+          choice={honbanChoiceOf(formData)}
+          repertoire={repertoire.map((r) => r.name)}
+          picked={(formData.activities || []).flatMap(
+            (a) => (a.items || []).map((x) => x.repertoireName)).filter(Boolean)}
+          onPickSong={(name) => {
+            // ★★曲は 本番の かたまりに ぶら下がります。★別の 列を 作りません。
+            const acts = (formData.activities || []).map((a) => {
+              if (a.kind !== "本番") return a;
+              const items = a.items || [];
+              const has = items.some((x) => x.repertoireName === name);
+              return {
+                ...a,
+                items: has
+                  ? items.filter((x) => x.repertoireName !== name)
+                  : [...items, { repertoireName: name, minutesOverride: null, order: items.length }]
+              };
+            });
+            const next = { ...formData, activities: acts };
+            setFormData(next);
+            handleSave(next);
+          }}
+          onPick={(label) => {
+            const c = HONBAN_CHOICES.find((x) => x.label === label);
+            // ★★「なし」と、もう一度 押したときは、★かたまりを 作りません。
+            //   ★★「なし」という 名前の 本番を 作らない ため。
+            const acts = (!c || c.kind == null)
+              ? []
+              : [{
+                ...newActivityBlock(c.kind, 0),
+                detail: c.form ? { performanceForm: c.form } : {}
+              }];
+            const next = { ...formData, activities: acts };
+            setFormData(next);
+            handleSave(next);
+          }}
+          onClose={() => setRecordSheet(null)} />
       )}
       {layoutV2 && formData && recordSheet === "ひとこと" && (
-        <SectionSheet spec={HITOKOTO} onClose={() => setRecordSheet(null)} />
-      )}
-      {layoutV2 && formData && recordSheet === "しごと" && (
-        <SectionSheet spec={SHIGOTO} onClose={() => setRecordSheet(null)} />
+        <HitokotoSheet
+          value={formData.notes}
+          onChange={(v) => setFormData((f) => ({ ...f, notes: v }))}
+          onClose={() => { handleSave(); setRecordSheet(null); }} />
       )}
       {layoutV2 && recordSheet === "アカウント" && (
         <ListSheet title="アカウント" rows={ACCOUNT_ROWS}
@@ -22231,6 +22247,5 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           onClose={() => setOwnedOpen(false)} />
       )}
     </div>
-    </SheetSlotContext.Provider>
   );
 }
