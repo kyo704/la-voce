@@ -33,7 +33,10 @@ function eq(a, b, label) {
 (async () => {
   // ★本物を 読みます。★偽物を 置きません。
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "cmp-"));
-  ["lookBack", "timeGap", "compareGroups", "lagChoice", "entrySource", "mealMarks", "compareView"]
+  // ★★2026-09-11、★3つの門を 足したので、★読む帳面が 増えました。
+  //   ★偽物を 置きません。★displayGates も analysisCore も 本物を 読みます。
+  ["lookBack", "timeGap", "compareGroups", "lagChoice", "entrySource", "mealMarks",
+    "translations", "displayGates", "analysisCore", "compareView"]
     .forEach((n) => {
       const src = fs.readFileSync(path.join(__dirname, "..", "..", "lib", n + ".js"), "utf8")
         .replace(/@\/lib\/([a-zA-Z]+)/g, "./$1.js");
@@ -43,16 +46,16 @@ function eq(a, b, label) {
 
   const E = {};
   const mk = (d, tc, dinner, bed, source) => {
-    E[d] = { date: d, throatCondition: tc, dinnerTime: dinner, bedtime: bed, source };
+    E[d] = { date: d, voiceQuality: tc, dinnerTime: dinner, bedtime: bed, source };
   };
 
   console.log("=== ① 群の 分け方 ===");
-  eq(m.isGoodDay({ throatCondition: 5 }), true, "5 は よく出た日");
-  eq(m.isGoodDay({ throatCondition: 4 }), true, "4 も よく出た日");
-  eq(m.isGoodDay({ throatCondition: 3 }), false, "3 は どちらでもない");
-  eq(m.isHardDay({ throatCondition: 3 }), false, "3 は どちらでもない");
-  eq(m.isHardDay({ throatCondition: 2 }), true, "2 は 出なかった日");
-  eq(m.isHardDay({ throatCondition: 1 }), true, "1 も 出なかった日");
+  eq(m.isGoodDay({ voiceQuality: 5 }), true, "5 は よく出た日");
+  eq(m.isGoodDay({ voiceQuality: 4 }), true, "4 も よく出た日");
+  eq(m.isGoodDay({ voiceQuality: 3 }), false, "3 は どちらでもない");
+  eq(m.isHardDay({ voiceQuality: 3 }), false, "3 は どちらでもない");
+  eq(m.isHardDay({ voiceQuality: 2 }), true, "2 は 出なかった日");
+  eq(m.isHardDay({ voiceQuality: 1 }), true, "1 も 出なかった日");
   eq(m.isGoodDay({}), false, "書いていなければ どちらでもない");
   eq(m.isHardDay(null), false, "無くても 落ちない");
 

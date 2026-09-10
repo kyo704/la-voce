@@ -34,6 +34,7 @@ function eq(a, b, label) {
 (async () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "cnt-"));
   ["lookBack", "timeGap", "compareGroups", "lagChoice", "entrySource", "mealMarks",
+    "translations", "displayGates", "analysisCore",
    "compareView", "todayCard", "recordedDay", "countView"].forEach((n) => {
     const src = fs.readFileSync(path.join(__dirname, "..", "..", "lib", n + ".js"), "utf8")
       .replace(/@\/lib\/([a-zA-Z]+)/g, "./$1.js");
