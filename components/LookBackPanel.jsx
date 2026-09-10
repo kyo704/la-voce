@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { C, LEVEL_COLORS } from "@/lib/tokens";
-import { buildLookBack, hasAnything } from "@/lib/lookBack";
+import { buildLookBack, hasAnything, lookBackThree, lookBackValue, LOOK_BACK_ROWS, LOOK_BACK_NOTE } from "@/lib/lookBack";
 import { TYPE, SPACE, cardStyle } from "@/lib/uiKit";
 import { H3, Card, Pill, Li, Note } from "@/components/UiV2";
 
@@ -41,12 +41,25 @@ function dayLabel(iso) {
   return `${Number(m[2])}月${Number(m[3])}日（${WEEK[w]}）`;
 }
 
+/**
+ * ★さかのぼる（★見本 SC['前3日']）。
+ *
+ *   ★★2026-09-11、★作り直しました。
+ *     ★前は LOOK_BACK_FIELDS の **24項目**を 出していました。
+ *     ★★見本は **6項目 × 3日**です。★選んで あります。
+ *     ★24 出すと、★見に 来た 目的が 埋もれます。
+ *   ★★fields を 渡された ときは、★これまでどおり その 一覧で 出します。
+ *     ★前から ある 画面（★notOutDays）を 壊さない ためです。
+ */
 export default function LookBackPanel({ dates, entries, fields }) {
   const list = Array.isArray(dates) ? dates : [];
   const [open, setOpen] = useState(list.length ? list[0] : null);
   if (list.length === 0) return null;
 
-  const sections = open ? buildLookBack(open, entries, fields) : [];
+  // ★★古い 呼び方（fields つき）は、★そのまま 動かします。
+  const legacy = Array.isArray(fields) && fields.length > 0;
+  const sections = open && legacy ? buildLookBack(open, entries, fields) : [];
+  const three = open && !legacy ? lookBackThree(open) : [];
 
   return (
     <div>
@@ -55,9 +68,7 @@ export default function LookBackPanel({ dates, entries, fields }) {
         出なかった日を選ぶと、その前の3日に書いたことが そのまま出ます。
       </Note>
 
-      {/* ★★日を えらびます。★新しい順です。
-          ★★見本には 1日ぶんしか 描かれていませんが、★選ぶ 手が 要ります。
-            ★選べないと、★いちばん 新しい日しか 見られません。 */}
+      {/* ★★日を えらびます。★新しい順です。 */}
       <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 10 }}>
         {list.map((d) => (
           <Pill key={d} on={open === d} onClick={() => setOpen(open === d ? null : d)}>
@@ -66,9 +77,7 @@ export default function LookBackPanel({ dates, entries, fields }) {
         ))}
       </div>
 
-      {/* ★★えらんだ日（★見本 A05 の 1枚目）。★枠の 色を すこし 変えます。
-          ★★色は 手元の 濃淡から 取ります（★LEVEL_COLORS[0]）。
-            ★見本の #E0C9CE と ほぼ 同じ 色みです。★新しい色を 増やしません。 */}
+      {/* ★★えらんだ日（★見本の「この日」）。★枠の 色を すこし 変えます。 */}
       {open ? (
         <Card style={{ borderColor: LEVEL_COLORS[0] }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -81,27 +90,24 @@ export default function LookBackPanel({ dates, entries, fields }) {
         </Card>
       ) : null}
 
-      {open && !hasAnything(sections) && (
+      {/* ★★古い 呼び方 ── ★これまでどおり。 */}
+      {legacy && open && !hasAnything(sections) && (
         <Card>
           <p style={{ ...TYPE.note, lineHeight: 1.8, margin: 0 }}>
             この日の前には、まだ何も書かれていません。
           </p>
         </Card>
       )}
-
-      {open && hasAnything(sections) && sections.map((s) => (
+      {legacy && open && hasAnything(sections) && sections.map((s) => (
         <div key={s.key}>
-          {/* ★★見本 A05 の 小見出し「まえの日　9月5日（木）」。 */}
           <H3>{s.label}　{dayLabel(s.date)}</H3>
           {s.rows.length === 0 ? (
-            /* ★★黙って飛ばしません。★書いていないことも、事実です。 */
             <Card>
               <p style={{ ...TYPE.note, margin: 0 }}>書いていません。</p>
             </Card>
           ) : (
             <Card>
               {s.rows.map((r, i) => (
-                // ★★色を変えません。★値の大小で、色を変えないこと。
                 <Li key={r.key} right={r.value} last={i === s.rows.length - 1}>
                   {r.label}
                 </Li>
@@ -110,6 +116,33 @@ export default function LookBackPanel({ dates, entries, fields }) {
           )}
         </div>
       ))}
+
+      {/* ★★見本の 形 ── ★6行 × 3日。
+          ★★書いていない ものは「—」です。★行ごと 消しません。
+            ★「聞いていない」と「無かった」は 別の ことです。 */}
+      {!legacy && three.map((d) => (
+        <div key={d.key}>
+          <H3>{d.label}　{dayLabel(d.date)}</H3>
+          <Card>
+            {LOOK_BACK_ROWS.map((r, i) => (
+              // ★★色を 変えません。★値の 大小で 色を 変えないこと。
+              <Li key={r.key} last={i === LOOK_BACK_ROWS.length - 1}
+                right={lookBackValue((entries || {})[d.date], r.key)}>
+                {r.label}
+              </Li>
+            ))}
+          </Card>
+        </div>
+      ))}
+
+      {/* ★★下の 3行（★見本の .note）。★1文字も 変えないこと。 */}
+      {!legacy ? (
+        <Note>
+          {LOOK_BACK_NOTE.map((line, i) => (
+            <span key={i}>{i > 0 ? <br /> : null}{line}</span>
+          ))}
+        </Note>
+      ) : null}
 
       {/* ★★ここに、まとめの1文を置かないこと。
           ★「前の夜は遅かったようです」も、★書きません。

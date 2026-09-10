@@ -354,7 +354,11 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
             </div>
           );
         }
-        return <LookBackPanel dates={days} entries={entries} fields={LOOK_BACK_FIELDS} />;
+        // ★★2026-09-11、★見本 SC['前3日'] の 形に しました。
+        //   ★★fields を 渡しません。★渡すと 古い 24項目の 形に なります。
+        //   ★前から ある 画面（★VocalTracker の notOutDays）は、
+        //     ★これまでどおり fields を 渡して 動きます。
+        return <LookBackPanel dates={days} entries={entries} />;
       })()}
 
       {tab === "kuraberu" && (() => {

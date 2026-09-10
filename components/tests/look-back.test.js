@@ -122,8 +122,34 @@ async function load(rel) {
   ["でしょう", "かもしれません", "傾向", "原因", "せい", "%", "確率", "割合", "順位"].forEach((w) => {
     ok(!shown.includes(w), "★画面に「" + w + "」が無い");
   });
-  ok(!/toFixed|Math\.round|reduce\(/.test(lib.replace(/^import[\s\S]*?;$/gm, "")),
-    "★数を、作っていない（★合計も平均も出さない）");
+  // ★★2026-09-11、★言い分けました。
+  //   ★★禁じているのは「★数を 作る」ことです ── ★合計・平均・割合。
+  //   ★★1つの 値の「★書き方」は 別です ── ★7.2 を「7.2時間」に する、など。
+  //     ★見本 SC['前3日'] が、★p.sleep.toFixed(1)＋'時間' と 書いています。
+  //     ★これを 禁じると、★見本の とおりに 作れません。
+  //   ★★だから、★足し合わせる 形だけを 止めます。
+  // ★★但し書き そのものを 数えない こと。
+  //   ★見本の 3行は「確率も 割合も 出しません」と 言っています。
+  //   ★★注記では なく 画面に 出る 文字列なので、readCode では 消えません。
+  //     ★_source.js の 冒頭が、★この 形を 名指しで 断っています。
+  //   ★★この 取り違えは、★この家で 何度も 起きています。
+  //     ★禁じた 語を 数えるときは、★先に 断りを 外すこと。
+  let body = lib.replace(/^import[\s\S]*?;$/gm, "");
+  [
+    "書いたものを そのまま 出しています。",
+    "文章を 添えません。確率も 割合も 出しません。「これが 原因です」と 言いません。",
+    "見て、ご自分で 気づくための 画面です。"
+  ].forEach((line) => { body = body.split(line).join(""); });
+  ok(!/reduce\(/.test(body), "★足し合わせていない（★reduce が 無い）");
+  ok(!/\+=/.test(body), "★数を 積み上げていない");
+  ok(!/合計|平均|割合/.test(body), "★合計・平均・割合と 書いていない");
+  // ★★書き方（toFixed／Math.round）は、★1つの 値に しか 使わない こと。
+  //   ★lookBackValue の 中だけに あることを 見ます。
+  const fmtAt = body.indexOf("export function lookBackValue");
+  const fmtEnd = body.indexOf("\n}", fmtAt);
+  const outside = body.slice(0, fmtAt) + body.slice(fmtEnd);
+  ok(!/toFixed|Math\.round/.test(outside),
+    "★書き方の 道具は、1つの 値の ところだけ");
   // ★★色を、値で変えないこと。
   //   ★★言い分は「★値の 大小で 色を 変えない」です。
   //     ★決まった 1色を 枠に 使うのは、★大小では ありません。
@@ -150,6 +176,31 @@ async function load(rel) {
   const before = vt.slice(at - 700, at);
   ok(!/mayViewSummary|subscribed|freeTier/.test(before), "★門を、かけていない");
 
-  console.log(fail === 0 ? "\n★すべて通りました" : "\n★" + fail + "件、落ちました");
+  
+  console.log("★さかのぼる ── 見本 SC['前3日'] と 同じ（★2026-09-11 に 作り直しました）");
+  {
+    // ★★静止画 A05 は、★動く見本より 古い 版です。
+    //   ★静止画　こえの ちょうし／歌った時間／寝るまでの間／印／ひとこと（★5行）
+    //   ★動く版　声の 出来／のどの 調子／昨夜の 睡眠／声を使った 時間／
+    //   　　　　　食べたもの／からだのこと（★6行 × 3日）
+    //   ★★新しい ほうに 合わせました。
+    const all2 = readCode("lib", "lookBack.js") + readCode("components", "LookBackPanel.jsx");
+    [
+      "声の 出来", "のどの 調子", "昨夜の 睡眠", "声を使った 時間", "食べたもの", "からだのこと",
+      "前の日", "2日まえ", "3日まえ",
+      "◎出た", "○ふつう", "△出づらい", "◎よい", "△わるい"
+    ].forEach((w) => ok(all2.includes(w), "★「" + w + "」が ある"));
+    // ★★24項目の 古い 形を、★この 画面に 渡していない こと。
+    const v2 = readCode("components", "LookBackV2.jsx");
+    ok(!/<LookBackPanel dates=\{days\} entries=\{entries\} fields=/.test(v2),
+      "★さかのぼる に、古い 24項目を 渡していない");
+    // ★★前から ある 画面は、★これまでどおり 動くこと。
+    const vt2 = readCode("components", "VocalTracker.jsx");
+    ok(/fields=\{LOOK_BACK_FIELDS\}/.test(vt2), "★前から ある 画面は これまでどおり");
+    // ★★書いていない ものは「—」。★行ごと 消さない。
+    ok(/LOOK_BACK_NONE = "—"/.test(readCode("lib", "lookBack.js")), "★書いていなければ「—」");
+  }
+
+console.log(fail === 0 ? "\n★すべて通りました" : "\n★" + fail + "件、落ちました");
   process.exit(fail === 0 ? 0 : 1);
 })();
