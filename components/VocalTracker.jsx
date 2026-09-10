@@ -10164,6 +10164,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★既定は 空です。★足すものは 1つも 載せません。
   //     ★「個人情報の 塊を、既定で 出していました」の 直しです。
   //   ★端末ごとに 覚えます。★サーバに 送りません。
+  // ★★レパートリーの「…」（★裁定 9月11日 §13）。
+  //   ★★直す・消すの 仕組みは 前から あります（handleRenameRepertoire ／
+  //     ★handleDeleteRepertoire）。★入口だけが ありませんでした。
+  //   ★★新しく 作りません。★あるものを 呼びます。
+  const [repMenu, setRepMenu] = useState(null);      // ★開いている 曲の 名前
+  const [repRenameTo, setRepRenameTo] = useState(""); // ★直すときの 新しい 名前
+  const [repConfirmDelete, setRepConfirmDelete] = useState(null); // ★消す 前の 1回の 確認
+
   const [clinicPick, setClinicPick] = useState([]);
   useEffect(() => { setClinicPick(readPick()); }, []);
   /**
@@ -16450,10 +16458,102 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   ) : (
                     <>
                       <div className="space-y-2">
+                        {/* ★★曲を ひらく →「…」→ 直す ／ 消す（★裁定 9月11日 §13）。
+                            ★★直す・消すの 仕組みは 前から あります。★入口を 置きました。
+                            ★★消しても、★毎日の 記録は 消えません。
+                              ★曲名を 外すだけで、★練習の 分数は そのまま 残ります。
+                              ★稽古の メモも 残ります。
+                            ★★確認は 1回だけ 出します（★見本のとおり）。 */}
                         {repertoire.map((it) => (
-                          <p key={it.name} className="text-sm" style={{ lineHeight: 1.8 }}>
-                            {repertoireLine(it)}
-                          </p>
+                          <div key={it.name} style={{ marginBottom: 4 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                              <p className="text-sm" style={{ lineHeight: 1.8, flex: 1, minWidth: 0 }}>
+                                {repertoireLine(it)}
+                              </p>
+                              <button type="button"
+                                aria-label={it.name + "を 直す・消す"}
+                                onClick={() => {
+                                  setRepMenu(repMenu === it.name ? null : it.name);
+                                  setRepRenameTo(it.name);
+                                  setRepConfirmDelete(null);
+                                }}
+                                style={{
+                                  minWidth: 44, minHeight: 44, margin: "-10px 0",
+                                  background: "transparent", border: "none",
+                                  color: C.inkSoft, fontSize: 15
+                                }}>…</button>
+                            </div>
+                            {repMenu === it.name && (
+                              <div className="rounded-xl p-3" style={{ background: C.paper, marginTop: 4 }}>
+                                {/* ★★直す ── ★いまは 曲名だけです。
+                                    ★★見本には「作曲家・役 ／ ようす ／ はじめて記録した日」も
+                                      ★ありますが、★いまの 記録に その欄が ありません。
+                                    ★★無い 欄を 出しては いけません。★打っても 残らないからです。
+                                      ★今後の 課題に 残しました
+                                      （docs/reports/2026-09-11-実装の順番.md §5）。 */}
+                                <p className="text-xs font-medium mb-1.5">直す</p>
+                                <input value={repRenameTo}
+                                  onChange={(e) => setRepRenameTo(e.target.value)}
+                                  aria-label="曲名"
+                                  className="w-full rounded-lg border px-2.5 mb-2"
+                                  style={{ borderColor: C.line, background: C.card, minHeight: 44, fontSize: 16 }} />
+                                <div className="flex gap-2 mb-3">
+                                  <button type="button"
+                                    disabled={mergeInProgress || !repRenameTo.trim() || repRenameTo.trim() === it.name}
+                                    onClick={async () => {
+                                      await handleRenameRepertoire(it.name, repRenameTo.trim());
+                                      setRepMenu(null);
+                                    }}
+                                    style={{
+                                      flex: 1, minHeight: 44, borderRadius: 999, border: "none",
+                                      background: C.curtain, color: "#FFFDF8", fontSize: 13,
+                                      opacity: (mergeInProgress || !repRenameTo.trim() || repRenameTo.trim() === it.name) ? 0.45 : 1
+                                    }}>名前を 直す</button>
+                                  <button type="button" onClick={() => setRepMenu(null)}
+                                    style={{
+                                      flex: 1, minHeight: 44, borderRadius: 999,
+                                      border: `1px solid ${C.line}`, background: C.card,
+                                      color: C.inkSoft, fontSize: 13
+                                    }}>やめる</button>
+                                </div>
+                                {/* ★★消す ── ★確認を 1回。★2回 聞きません。 */}
+                                {repConfirmDelete === it.name ? (
+                                  <>
+                                    <p className="text-xs mb-2" style={{ color: C.ink, lineHeight: 1.8 }}>
+                                      「{it.name}」を 消します。<br />
+                                      ★毎日の 記録は 消えません。曲名を 外すだけで、練習の 分数は そのまま 残ります。
+                                    </p>
+                                    <div className="flex gap-2">
+                                      <button type="button" disabled={mergeInProgress}
+                                        onClick={async () => {
+                                          await handleDeleteRepertoire(it.name);
+                                          setRepConfirmDelete(null);
+                                          setRepMenu(null);
+                                        }}
+                                        style={{
+                                          flex: 1, minHeight: 44, borderRadius: 999, border: "none",
+                                          background: C.rust, color: "#FFFDF8", fontSize: 13,
+                                          opacity: mergeInProgress ? 0.45 : 1
+                                        }}>消す</button>
+                                      <button type="button" onClick={() => setRepConfirmDelete(null)}
+                                        style={{
+                                          flex: 1, minHeight: 44, borderRadius: 999,
+                                          border: `1px solid ${C.line}`, background: C.card,
+                                          color: C.inkSoft, fontSize: 13
+                                        }}>やめる</button>
+                                    </div>
+                                  </>
+                                ) : (
+                                  <button type="button" onClick={() => setRepConfirmDelete(it.name)}
+                                    style={{
+                                      width: "100%", minHeight: 44, borderRadius: 999,
+                                      border: `1px solid ${C.line}`, background: C.card,
+                                      color: C.rust, fontSize: 13
+                                    }}>この曲を 消す</button>
+                                )}
+                              </div>
+                            )}
+                          </div>
                         ))}
                       </div>
                       {/* ★書き出しは、いつでも無料です（⑫の決め）。 */}
