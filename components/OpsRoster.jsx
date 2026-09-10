@@ -4,7 +4,9 @@ import { useState, useMemo } from "react";
 import { C } from "@/lib/tokens";
 import {
   rosterCount, countsByStatus, statusLabel, isCounted,
-  monthlyFee, perHead, yen, MONTHLY_FLOOR
+  monthlyFee, perHead, yen, MONTHLY_FLOOR,
+  ROSTER_CHIPS, chipCounts, matchesChip,
+  teacherFilterOptions, matchesTeacher, TEACHER_FILTER_ALL
 } from "@/lib/orgRoster";
 import { safeBreakdown, TOO_SMALL_NOTE } from "@/lib/smallGroups";
 
@@ -40,16 +42,34 @@ function joinedWord(iso) {
 
 export default function OpsRoster({ members, nameOf, teacherNameOf, canSeeMoney, onInvite }) {
   const [q, setQ] = useState("");
+  // ★★しぼり込み（★見本 G07 ／ 2026-09-11）。
+  //   ★★決めは lib/orgRoster.js が 持ちます。★ここでは 数えません。
+  //   ★★2段 あります。★上の 札（ようす）と、★下から 上がる 1枚（担当の先生）。
+  const [chip, setChip] = useState("all");
+  const [teacher, setTeacher] = useState(TEACHER_FILTER_ALL);
+  // ★★1枚が 開いている あいだの、★まだ 決めていない えらび。
+  //   ★★押すたびに 一覧が 変わると、★何人に なるかが 分かりません。
+  //     ★「この しぼりで 見る」を 押したときに、★はじめて 効きます。
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [sheetPick, setSheetPick] = useState(TEACHER_FILTER_ALL);
+
+  const chips = useMemo(() => chipCounts(members), [members]);
+  const teacherOptions = useMemo(
+    () => teacherFilterOptions(members, teacherNameOf), [members, teacherNameOf]);
 
   const list = useMemo(() => {
     const s = q.trim();
-    if (!s) return members || [];
     return (members || []).filter((m) => {
+      if (!matchesChip(m, chip)) return false;
+      if (!matchesTeacher(m, teacher)) return false;
+      if (!s) return true;
       const n = nameOf ? nameOf(m.user_id) : "";
       const tn = (m.teacher_ids || []).map((id) => (teacherNameOf ? teacherNameOf(id) : "")).join(" ");
       return `${n} ${tn}`.includes(s);
     });
-  }, [members, q, nameOf, teacherNameOf]);
+  }, [members, q, chip, teacher, nameOf, teacherNameOf]);
+
+  const teacherLabel = (teacherOptions.find((o) => o.id === teacher) || {}).label || "";
 
   const counted = rosterCount(members);
   const by = countsByStatus(members);
@@ -79,13 +99,62 @@ export default function OpsRoster({ members, nameOf, teacherNameOf, canSeeMoney,
           fontSize: "1rem"
         }} />
 
+      {/* ★★ようす の 札（★見本 G02・G07 の .chips）。
+          ★★数は しぼっても 変わりません。★名簿ぜんぶの 数です。
+            ★「いま 何人 見えているか」では なく、★「何人 いるか」です。 */}
+      <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 2 }}>
+        {ROSTER_CHIPS.map((c) => {
+          const on = chip === c.key;
+          return (
+            <button key={c.key} type="button" onClick={() => setChip(c.key)}
+              aria-pressed={on}
+              style={{
+                whiteSpace: "nowrap", minHeight: 44, padding: "0 11px",
+                borderRadius: 999, fontSize: "0.71875rem",
+                border: `1px solid ${on ? C.curtain : C.line}`,
+                background: on ? C.curtain : C.card,
+                color: on ? "#FFFDF8" : C.inkSoft
+              }}>{c.label} {chips[c.key]}</button>
+          );
+        })}
+      </div>
+
+      {/* ★★担当の先生で しぼる（★見本 G07）。
+          ★★開く 口は ここです。★いま 何で しぼっているかも、ここに 出します。
+            ★★絞ったまま 忘れると、★「1人 減った」に 見えます。 */}
+      <button type="button" onClick={() => { setSheetPick(teacher); setSheetOpen(true); }}
+        style={{
+          width: "100%", minHeight: 44, borderRadius: 12, padding: "0 13px",
+          border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+          fontSize: "0.8125rem", textAlign: "left"
+        }}>
+        担当の先生で しぼる
+        <span style={{ float: "right", color: C.inkSoft }}>
+          {teacher === TEACHER_FILTER_ALL ? "すべて" : teacherLabel}　›
+        </span>
+      </button>
+
       {/* ★★1行を 1枚の カードに（★裁定）。★表に しません。
           ★★狭い画面で 表を 出すと、★横に 切れるか、★字が 読めなくなります。 */}
       {list.length === 0 ? (
         <div style={card}>
-          <p style={small}>
-            {q.trim() ? "見つかりませんでした。" : "まだどなたも名簿にいません。"}
-          </p>
+          {/* ★★「いません」と「絞ったので 見えません」を、★言い分けます。
+              ★★絞ったまま 忘れると、★人が 減ったように 見えます。
+              ★★出口は、★押せる ボタンで 置きます。★字だけの 案内に しません。 */}
+          {(chip !== "all" || teacher !== TEACHER_FILTER_ALL || q.trim()) ? (
+            <>
+              <p style={small}>いまの しぼりでは、どなたも 出ません。</p>
+              <button type="button"
+                onClick={() => { setQ(""); setChip("all"); setTeacher(TEACHER_FILTER_ALL); }}
+                style={{
+                  marginTop: 8, minHeight: 44, padding: "0 14px", borderRadius: 10,
+                  border: `1px solid ${C.line}`, background: C.paper, color: C.ink,
+                  fontSize: "0.8125rem"
+                }}>しぼりを けす</button>
+            </>
+          ) : (
+            <p style={small}>まだどなたも名簿にいません。</p>
+          )}
         </div>
       ) : (
         list.map((m) => {
@@ -176,6 +245,74 @@ export default function OpsRoster({ members, nameOf, teacherNameOf, canSeeMoney,
           </>
         ) : null}
       </div>
+
+      {/* ★★担当の先生で しぼる ── 下から 上がる 1枚（★見本 G07 の .sheetup）。
+          ★★えらんだ だけでは 効きません。「この しぼりで 見る」で 効きます。
+            ★★押すたびに 一覧が 動くと、★何人 いるかを 読めません。
+          ★★閉じる 道を 2つ 置きます（★暗い ところと「やめる」）。
+            ★出口の ない 1枚を 作らないこと。 */}
+      {sheetOpen ? (
+        <>
+          <div onClick={() => setSheetOpen(false)}
+            style={{
+              position: "fixed", inset: 0, zIndex: 70,
+              background: "rgba(36,25,20,0.35)"
+            }} />
+          <div role="dialog" aria-label="担当の先生で しぼる"
+            style={{
+              position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 71,
+              maxHeight: "70vh", overflowY: "auto",
+              background: C.paper, borderRadius: "18px 18px 0 0",
+              border: `1px solid ${C.line}`, borderBottom: "none",
+              padding: "12px 13px calc(14px + env(safe-area-inset-bottom))"
+            }}>
+            <div aria-hidden="true" style={{
+              width: 40, height: 4, borderRadius: 2, background: "#DFD4BE",
+              margin: "0 auto 12px"
+            }} />
+            <h3 style={{ fontSize: "0.65625rem", color: C.inkSoft, letterSpacing: "0.08em",
+              marginBottom: 7 }}>担当の先生で しぼる</h3>
+
+            {teacherOptions.map((o) => {
+              const on = sheetPick === o.id;
+              return (
+                <button key={o.id} type="button" onClick={() => setSheetPick(o.id)}
+                  aria-pressed={on}
+                  style={{
+                    display: "flex", alignItems: "center", justifyContent: "space-between",
+                    width: "100%", minHeight: 46, marginBottom: 6,
+                    background: C.card, border: `1px solid ${C.line}`,
+                    borderRadius: 11, padding: "0 12px",
+                    fontSize: "0.8125rem", color: C.ink, textAlign: "left"
+                  }}>
+                  <span>{o.label}{o.count != null ? `　${o.count}人` : ""}</span>
+                  {/* ★★丸は 印です。★色だけに 意味を 持たせません。
+                      ★えらんだ ものは、★中が 埋まります（★見本 .ck.on）。 */}
+                  <span aria-hidden="true" style={{
+                    width: 20, height: 20, borderRadius: "50%", flex: "none",
+                    border: `1.5px solid ${on ? C.curtain : C.line}`,
+                    background: on ? C.curtain : "transparent"
+                  }} />
+                </button>
+              );
+            })}
+
+            <button type="button"
+              onClick={() => { setTeacher(sheetPick); setSheetOpen(false); }}
+              style={{
+                width: "100%", minHeight: 52, marginTop: 8, borderRadius: 12,
+                border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
+                background: C.curtain, color: "#FFFDF8", fontSize: "0.9375rem"
+              }}>この しぼりで 見る</button>
+            <button type="button" onClick={() => setSheetOpen(false)}
+              style={{
+                width: "100%", minHeight: 44, marginTop: 6, borderRadius: 12,
+                border: "none", background: "transparent", color: C.inkSoft,
+                fontSize: "0.8125rem"
+              }}>やめる</button>
+          </div>
+        </>
+      ) : null}
     </div>
   );
 }
