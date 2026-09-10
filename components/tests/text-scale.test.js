@@ -60,16 +60,18 @@ Object.keys(want).forEach((px) => {
 // ★1rem ＝ 16px。★倍率 1 では、★見た目が 1つも 変わらないこと。
 ok(/\(Number\(px\) \/ 16\)/.test(code), "★1rem ＝ 16px で 割っている");
 
-console.log("④ 画面の 側にも、★大きな 裸の px が 残っていないか");
-// ★★小さい 数（★9・10 など）は 目盛りや 印の 字で、★見本も px で 書いています。
-//   ★ここでは、★本文の 大きさ（★13 以上）だけを 見ます。
-[["components/UiV2.jsx", "UiV2"], ["components/HomeV2.jsx", "HomeV2"],
- ["components/RecordV2Head.jsx", "RecordV2Head"]].forEach(([f, name]) => {
-  const c = readCode(...f.split("/"));
-  const big = [...c.matchAll(/fontSize: (\d\d(?:\.\d)?)(?![0-9a-zA-Z])/g)]
-    .map((m) => Number(m[1])).filter((n) => n >= 13);
-  ok(big.length === 0, "★" + name + " に 大きな 裸の px が ない"
-    + (big.length ? "（" + big.join(", ") + "）" : ""));
+console.log("④ 画面の 側に、★裸の px が 1つも 残っていないか");
+// ★★はじめは「13 以上だけ」を 見ていました。★甘すぎました（★2026-09-11）。
+//   ★11.5px の 札の 字も、★文字の 大きさの 設定で 変わるべき ものです。
+//   ★★見本が px で 書いているのは、★見本が 1つの 大きさしか 持たないからです。
+//     ★アプリには 3つの 大きさが あります。★ぜんぶ rem です。
+[["UiV2"], ["HomeV2"], ["RecordV2Head"], ["LookBackV2"], ["NotesV2"],
+ ["CompareV2"], ["CountV2"], ["TodayBand"], ["RangeCalendar"],
+ ["WheelPicker"], ["DailyAskPicker"], ["OwnedLedger"]].forEach(([name]) => {
+  const c = readCode("components", name + ".jsx");
+  const bare = [...c.matchAll(/fontSize: (\d+(?:\.\d+)?)(?![\w.(])/g)].map((m) => m[1]);
+  ok(bare.length === 0, "★" + name + " に 裸の px が ない"
+    + (bare.length ? "（" + bare.join(", ") + "）" : ""));
 });
 
 console.log("⑤ 決めが 1か所に ある");

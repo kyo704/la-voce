@@ -1,7 +1,7 @@
 "use client";
 
 import { C } from "@/lib/tokens";
-import { TYPE } from "@/lib/uiKit";
+import { TYPE, rem } from "@/lib/uiKit";
 import { H3, Card, Kv, Note } from "@/components/UiV2";
 import { USUAL_ROWS, usualOf, writtenDays, histogramOf, marksPerWeek } from "@/lib/countView";
 
@@ -98,7 +98,7 @@ export default function CountV2({ entries, dates, todayISO }) {
           </div>
           <div style={{ display: "flex", gap: 5 }}>
             {hist.bars.map((b) => (
-              <span key={b.label} style={{ flex: 1, textAlign: "center", fontSize: 8.5, color: C.inkSoft }}>
+              <span key={b.label} style={{ flex: 1, textAlign: "center", fontSize: rem(8.5), color: C.inkSoft }}>
                 {b.label}
               </span>
             ))}

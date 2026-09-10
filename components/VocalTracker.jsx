@@ -163,10 +163,13 @@ import {
   INTERIOR_ITEMS, interiorSrc, isPlaced, toggleInterior, tileSurface,
   interiorOf, interiorItemByKey
 } from "@/lib/sheepInteriorV2";
-import { mayUseWardrobe, mayWearEverything, applyWear } from "@/lib/sheepWardrobe";
+import { mayUseWardrobe, mayWearEverything, applyWear, unlockedItemKeys } from "@/lib/sheepWardrobe";
 import {
-  box2Rounds, box2ReceivedCount, roundAvailableDate, shouldAutoDeliver, pickBox2Choices
+  box2Rounds, box2ReceivedCount, roundAvailableDate, shouldAutoDeliver, pickBox2Choices,
+  BOX2_KEYS, unlockKeys
 } from "@/lib/wardrobeBoxes";
+import OwnedLedger from "@/components/OwnedLedger";
+import { LEDGER_TABLE, unseenKeys } from "@/lib/itemLedger";
 import { REDRAWN_AS, withRedrawnKeys } from "@/lib/legacyWearables";
 // ★服の色。★式も、24色も、★どの品に塗れるかも、★あちらが持ちます。
 import { setColor as setClothColor, isColorable, CLOTH_COLORS } from "@/lib/clothColors";
@@ -5440,6 +5443,55 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★★てんの紙（★v3追補 ②）。
   //   ★★はじめて「したく」を開いた日だけ 1回、★あとは 数字を押したときだけ。
   const [pointsPaperOpen, setPointsPaperOpen] = useState(false);
+  // ★★もっているもの（★見本 J05・J06 ／ 2026-09-11）。
+  //   ★★台帳は、★開いたときに 読みます。★ふだんは 引きません。
+  //     ★毎日 見る ものでは ないからです。
+  const [ownedOpen, setOwnedOpen] = useState(false);
+  const [ledgerRows, setLedgerRows] = useState([]);
+  useEffect(() => {
+    if (!ownedOpen || !userId) return;
+    let alive = true;
+    (async () => {
+      // ★★先に、★開いた ものを 台帳に 残してもらいます。
+      //   ★★数えるのは サーバです。★こちらは 呼ぶだけです。
+      //     ★「開きました」を こちらから 言うと、★好きな 日を 入れられます。
+      //   ★★失敗しても 進みます。★台帳が 少し 遅れるだけです。
+      try { await fetch("/api/character/unlock", { method: "POST" }); } catch (e) { /* ★黙って 進みます */ }
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from(LEDGER_TABLE)
+        .select("item_key, acquired_on, acquired_by, count_kind, count_value, created_at")
+        .eq("user_id", userId);
+      if (alive && !error) setLedgerRows(data || []);
+    })();
+    return () => { alive = false; };
+  }, [ownedOpen, userId]);
+
+  /** ★鍵から 品の 名前。★着るものと 部屋のもの、両方を 見ます。 */
+  const itemNameOf = useCallback((key) => {
+    const w = sheepItemByKey(key);
+    if (w && w.name) return w.name;
+    const it = interiorItemByKey(key);
+    if (it && it.name) return it.name;
+    return key;
+  }, []);
+
+  // ★★「まだ 見えていないもの」。★何が それに あたるかは lib/itemLedger.js が 決めます。
+  //   ★★点で 買える ものは 入れません。★向こうから 来る ものだけです。
+  //
+  //   ★★「持っている」に、★開いた ものを 足します。
+  //     ★開いた ものは character_inventory に 行が 立ちません。
+  //     ★足さないと、★開いた 5点が、★いつまでも「まだ」に 残ります。
+  //   ★★effectiveOwnedKeys（★ぜんぶ着てよい方の ぶん）は 使いません。
+  //     ★あちらは「着られるか」の 話で、★ここは「届いたか」の 話です。
+  const notYetSeen = useMemo(() => {
+    const flags = Object.fromEntries(
+      [...computeUnlocked(entries, profile)].map((k) => [k, true]));
+    return unseenKeys({
+      arrivingKeys: [...unlockKeys(), ...BOX2_KEYS],
+      ownedKeys: [...(ownedItemKeys || []), ...unlockedItemKeys(flags)]
+    });
+  }, [entries, profile, ownedItemKeys]);
   const [pointsPaperShownOnce, setPointsPaperShownOnce] = useState(false);
   // ★★ながめる → したく で、★部屋が 飛んで見えないようにします
   //   （★2026-09-08 夜・坂本さんのご指摘）。
@@ -16491,6 +16543,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   onClose={() => setPointsPaperOpen(false)} />
               )}
 
+              {/* ★★もっているもの（★見本 J05・J06）。★もっと から 開きます。
+                  ★★ここに 置いてある 理由。★ひつじの 枠の 中です。
+                    ★ほかの タブから 開いても、★同じ 1枚が 出ます。 */}
               {wardrobeOn && homeState === DRESS && searchOpen && (
                 <DrawerSearch
                   initial={searchQuery}
@@ -20598,6 +20653,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               : (
                                 <button key={r.key} type="button"
                                   onClick={() => {
+                                    // ★★もっているもの だけは、★別の 1枚を 開きます
+                                    //   （★見本 J05・J06 ／ 2026-09-11）。
+                                    //   ★もっとの 中に 節を 作りません。★見本が 別画面です。
+                                    if (r.key === "もっているもの") { setOwnedOpen(true); return; }
                                     if (r.key === "書き出す" || r.key === "退会") setMoreSection("じぶんの記録");
                                     else setMoreSection(r.key);
                                   }}
@@ -21368,6 +21427,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           </div>
         )}
       </main>
+
+      {/* ★★もっているもの（★見本 J05・J06 ／ 2026-09-11）。
+          ★★いちばん 外に 置きます。★どの タブから 開いても 同じ 1枚です。
+          ★★門の 中の 方だけです。★38人の 画面は 変わりません。 */}
+      {layoutV2 && ownedOpen && (
+        <OwnedLedger
+          ledger={ledgerRows}
+          ownedKeys={ownedItemKeys}
+          unseenKeys={notYetSeen}
+          nameOf={itemNameOf}
+          onClose={() => setOwnedOpen(false)} />
+      )}
     </div>
   );
 }

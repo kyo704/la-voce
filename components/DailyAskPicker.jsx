@@ -1,7 +1,7 @@
 "use client";
 
 import { C } from "@/lib/tokens";
-import { TYPE, SPACE, FONT_STACK, cardStyle } from "@/lib/uiKit";
+import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
 import { ScreenHead, H3, Card, Pill, Warn, Note } from "@/components/UiV2";
 import {
   DAILY_ASK_MAX, normalizeAsk, askItem, addAsk, removeAsk, restOf, canAdd
@@ -57,7 +57,7 @@ export default function DailyAskPicker({ value, onChange }) {
               borderBottom: i === list.length - 1 ? "none" : `1px solid ${C.line2}`
             }}>
               <span style={{
-                width: 15, flex: "none", fontSize: 11, color: C.inkSoft
+                width: 15, flex: "none", fontSize: rem(11), color: C.inkSoft
               }}>{i + 1}</span>
               <span style={{ flex: 1, minWidth: 0 }}>{it ? it.label : k}</span>
               <button type="button" onClick={() => onChange(removeAsk(list, k))}
@@ -65,7 +65,7 @@ export default function DailyAskPicker({ value, onChange }) {
                 style={{
                   minWidth: SPACE.tapMin, minHeight: SPACE.tapMin,
                   margin: "-11px 0", background: "transparent", border: "none",
-                  color: C.inkSoft, fontSize: 15
+                  color: C.inkSoft, fontSize: rem(15)
                 }}>×</button>
             </div>
           );

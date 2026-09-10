@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { C, CONCERN_STEPS } from "@/lib/tokens";
-import { TYPE, SPACE, FONT_STACK, cardStyle } from "@/lib/uiKit";
+import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
 import { ScreenHead, HeadRound, Card, Seg, Pill, Warn, Note, BarRow } from "@/components/UiV2";
 import LookBackPanel from "@/components/LookBackPanel";
 import { LOOK_BACK_FIELDS, hardDays, lookBackableDays } from "@/lib/lookBack";
@@ -129,7 +129,7 @@ function Symptoms({ entries, dates }) {
 function QuietScreen({ reason, onGo }) {
   const ghostBtn = {
     background: C.card, color: C.ink, border: `1px solid ${C.line}`,
-    borderRadius: 13, padding: "11px 0", fontSize: 13, fontWeight: 400,
+    borderRadius: 13, padding: "11px 0", fontSize: rem(13), fontWeight: 400,
     minHeight: SPACE.tapMin, fontFamily: FONT_STACK
   };
   const q = reason;
@@ -138,7 +138,7 @@ function QuietScreen({ reason, onGo }) {
       {/* ★★見本 B04 は、★上を 120px 空けて、★真ん中に 1枚 置きます。 */}
       <div style={{ height: 120 }} />
       <Card style={{ textAlign: "center", padding: "22px 16px" }}>
-        <div style={{ fontSize: 15, color: C.ink, lineHeight: 1.9 }}>
+        <div style={{ fontSize: rem(15), color: C.ink, lineHeight: 1.9 }}>
           くらべる と かぞえる は、<br />いまは お休みです。
         </div>
         {q ? (
@@ -184,7 +184,7 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
     minHeight: SPACE.tapMin, padding: "0 14px", borderRadius: 999,
     border: `1px solid ${on ? C.curtain : C.line}`,
     background: on ? C.curtain : C.card,
-    color: on ? "#FFFDF8" : C.inkSoft, fontSize: 11.5
+    color: on ? "#FFFDF8" : C.inkSoft, fontSize: rem(11.5)
   });
 
   return (

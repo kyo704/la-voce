@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { C } from "@/lib/tokens";
-import { TYPE, SPACE, FONT_STACK, cardStyle } from "@/lib/uiKit";
+import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
 import { ROW_H, VISIBLE_PAD, WHEEL_H, indexAt, topOf } from "@/lib/wheelPicker";
 
 // ============================================================================
@@ -91,7 +91,7 @@ function Column({ values, value, onChange, label, format }) {
         style={{
           width: "100%", minHeight: SPACE.tapMin, marginTop: 4,
           border: `1px solid ${C.line}`, borderRadius: 8, background: C.card,
-          color: C.ink, fontSize: 16, textAlign: "center", fontFamily: FONT_STACK
+          color: C.ink, fontSize: rem(16), textAlign: "center", fontFamily: FONT_STACK
         }} />
     </div>
   );
@@ -128,7 +128,7 @@ export default function WheelPicker({
           style={{
             width: "100%", minHeight: SPACE.tapMin, marginTop: 8,
             borderRadius: 999, border: `1px solid ${C.line}`,
-            background: C.card, color: C.inkSoft, fontSize: 13, fontFamily: FONT_STACK
+            background: C.card, color: C.inkSoft, fontSize: rem(13), fontFamily: FONT_STACK
           }}>{unsetLabel}</button>
       ) : null}
     </div>

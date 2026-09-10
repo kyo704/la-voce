@@ -5,7 +5,7 @@ import { C } from "@/lib/tokens";
 import {
   buildBand, timeOf, monthDayLabel, ATTENDANCE, attendanceLabel, UNDO_SECONDS, COPY
 } from "@/lib/todayBand";
-import { TYPE, SPACE, obiStyle, speakStyle } from "@/lib/uiKit";
+import { TYPE, SPACE, obiStyle, speakStyle, rem } from "@/lib/uiKit";
 
 // ============================================================================
 // 「きょう」の帯 ── 第2便（2026-09-08）
@@ -70,7 +70,7 @@ export default function TodayBand({
                   marginLeft: "auto", marginTop: -10, marginBottom: -10,
                   minHeight: SPACE.tapMin, padding: "0 10px",
                   borderRadius: 6, border: `1px solid ${C.line}`,
-                  background: C.paper, color: C.inkSoft, fontSize: 11.5
+                  background: C.paper, color: C.inkSoft, fontSize: rem(11.5)
                 }}>
                 {r.teaching ? COPY.seeAll : COPY.calendar}
               </button>
@@ -98,7 +98,7 @@ export default function TodayBand({
                     {COPY.undo}
                   </button>
                 ) : done ? (
-                  <span style={{ fontSize: 11.5, color: C.inkSoft }}>
+                  <span style={{ fontSize: rem(11.5), color: C.inkSoft }}>
                     {COPY.done} {attendanceLabel(done)}
                   </span>
                 ) : (

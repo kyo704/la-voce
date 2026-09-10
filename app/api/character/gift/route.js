@@ -4,6 +4,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { getUserWithTimeout } from "@/lib/withTimeout";
 import { BOX2_KEYS, box2Rounds, box2ReceivedCount, pickBox2Choices } from "@/lib/wardrobeBoxes";
 import { REDRAWN_AS } from "@/lib/legacyWearables";
+import { ACQUIRED_BY, COUNT_KIND, buildAcquisition } from "@/lib/itemLedger";
+import { writeAcquisition } from "@/lib/itemLedgerServer";
 
 // ============================================================================
 // 記録がたまったときの、よそおいを受け取る（2026-09-07）
@@ -84,6 +86,18 @@ export async function POST(request) {
   if (insError) {
     return NextResponse.json({ error: "受け取れませんでした。" }, { status: 503 });
   }
+
+  // ★★手に入れた日を、台帳に 残します（★J05・2026-09-11）。
+  //   ★★記録した 日数は、★この道が すでに 数えています（上の recordedDays）。
+  //     ★数え直しません。★贈りものが 来る 区切りそのものだからです。
+  //   ★★失敗しても 止めません。★品物は もう お手もとに あります。
+  await writeAcquisition(admin, buildAcquisition({
+    userId: user.id,
+    itemKey,
+    acquiredBy: ACQUIRED_BY.GIFT,
+    countKind: COUNT_KIND.RECORD_DAYS,
+    countValue: recordedDays
+  }));
 
   // ★★ポイントには、★触れていません。★これが、この道の要点です。
   return NextResponse.json({ itemKey });

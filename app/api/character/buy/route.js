@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getUserWithTimeout } from "@/lib/withTimeout";
 import { SHOP_ITEMS, POINTS_RULE_V2_FROM, DAILY_POINTS } from "@/lib/character";
+import { ACQUIRED_BY, COUNT_KIND, buildAcquisition } from "@/lib/itemLedger";
+import { writeAcquisition } from "@/lib/itemLedgerServer";
 
 // ============================================================================
 // おうちの品物を、ポイントで受け取る（2026-09-07）
@@ -126,6 +128,24 @@ export async function POST(request) {
   if (invError) {
     return NextResponse.json({ error: "受け取れませんでした。" }, { status: 503 });
   }
+
+  // ★★手に入れた日を、台帳に 残します（★J05・2026-09-11）。
+  //   ★★きょうの 日は、きょうしか 分かりません。
+  //     あとから 埋められない ので、ここで 残します。
+  //   ★★数は「記録した 日」です。★点は 記録から しか 生まれないからです。
+  //   ★★失敗しても、★品物は もう お手もとに あります。止めません。
+  //     ★日が 残らない ことは ありますが、★取り上げる ほうが 悪いです。
+  const { count: recordedDays } = await admin
+    .from("entries")
+    .select("date", { count: "exact", head: true })
+    .eq("user_id", user.id);
+  await writeAcquisition(admin, buildAcquisition({
+    userId: user.id,
+    itemKey,
+    acquiredBy: ACQUIRED_BY.SHOP,
+    countKind: COUNT_KIND.RECORD_DAYS,
+    countValue: Number.isInteger(recordedDays) ? recordedDays : undefined
+  }));
 
   const { data: updated, error: updError } = await admin
     .from("profiles")

@@ -59,7 +59,7 @@ export default function RecordV2Head({
       }}>
         <h2 style={TYPE.title}>記録</h2>
         {saved ? (
-          <span style={{ fontSize: 11.5, color: C.sage }}>保存しました</span>
+          <span style={{ fontSize: rem(11.5), color: C.sage }}>保存しました</span>
         ) : null}
       </div>
 
@@ -153,7 +153,7 @@ export default function RecordV2Head({
               padding: "9px 0", ...TYPE.li
             }}>
               <span>{on ? "−" : "＋"} {f.label}</span>
-              <span style={{ color: C.inkSoft, fontSize: 11.5 }}>{on ? "﹀" : "›"}</span>
+              <span style={{ color: C.inkSoft, fontSize: rem(11.5) }}>{on ? "﹀" : "›"}</span>
             </span>
           </button>
         );
@@ -169,7 +169,7 @@ export default function RecordV2Head({
           style={{
             minHeight: SPACE.tapMin, padding: "0 16px",
             border: "none", background: "transparent",
-            color: C.inkSoft, fontSize: 12, fontFamily: FONT_STACK
+            color: C.inkSoft, fontSize: rem(12), fontFamily: FONT_STACK
           }}>
           きょうは、書かない
         </button>

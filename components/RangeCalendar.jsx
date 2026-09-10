@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { C } from "@/lib/tokens";
-import { TYPE, SPACE, FONT_STACK, cardStyle } from "@/lib/uiKit";
+import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
 import { Pill, Note } from "@/components/UiV2";
 import {
   WEEK_LABELS, partsOf, monthGrid, shiftMonth, pickDay, inRange, isEdge,
@@ -58,16 +58,16 @@ export default function RangeCalendar({ value, onChange, todayISO, max }) {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
           <button type="button" onClick={() => step(-1)} aria-label="前の月"
             style={{ minWidth: SPACE.tapMin, minHeight: SPACE.tapMin, margin: -10,
-              background: "transparent", border: "none", color: C.inkSoft, fontSize: 15 }}>‹</button>
+              background: "transparent", border: "none", color: C.inkSoft, fontSize: rem(15) }}>‹</button>
           <span style={{ ...TYPE.li, fontWeight: 700 }}>{view.y}年 {view.m}月</span>
           <button type="button" onClick={() => step(1)} aria-label="次の月"
             style={{ minWidth: SPACE.tapMin, minHeight: SPACE.tapMin, margin: -10,
-              background: "transparent", border: "none", color: C.inkSoft, fontSize: 15 }}>›</button>
+              background: "transparent", border: "none", color: C.inkSoft, fontSize: rem(15) }}>›</button>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 2 }}>
           {WEEK_LABELS.map((w) => (
-            <span key={w} style={{ textAlign: "center", fontSize: 9, color: C.inkSoft, paddingBottom: 2 }}>{w}</span>
+            <span key={w} style={{ textAlign: "center", fontSize: rem(9), color: C.inkSoft, paddingBottom: 2 }}>{w}</span>
           ))}
           {cells.map((iso, i) => {
             if (!iso) return <span key={"e" + i} />;
@@ -87,7 +87,7 @@ export default function RangeCalendar({ value, onChange, todayISO, max }) {
                   background: edge ? C.curtain : (on ? C.paper : "transparent"),
                   color: edge ? "#FFFDF8" : (over ? C.line : C.ink),
                   borderRadius: edge ? 8 : 0,
-                  fontSize: 12, opacity: over ? 0.5 : 1,
+                  fontSize: rem(12), opacity: over ? 0.5 : 1,
                   fontFamily: FONT_STACK
                 }}>
                 {Number(iso.slice(8, 10))}

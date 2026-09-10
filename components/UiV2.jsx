@@ -1,7 +1,7 @@
 "use client";
 
 import { C } from "@/lib/tokens";
-import { TYPE, SPACE, RADIUS, FONT_STACK, cardStyle } from "@/lib/uiKit";
+import { TYPE, SPACE, RADIUS, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
 
 // ============================================================================
 // ★見本の 共通の 部品（★design.zip ／ 2026-09-10）
@@ -55,7 +55,7 @@ export function HeadRound({ mark, label, onClick }) {
         width: 26, height: 26, borderRadius: "50%",
         border: `1px solid ${C.line}`, background: C.card,
         display: "flex", alignItems: "center", justifyContent: "center",
-        color: C.inkSoft, fontSize: 12
+        color: C.inkSoft, fontSize: rem(12)
       }}>{mark}</span>
     </button>
   );
@@ -106,7 +106,7 @@ export function Seg({ items, activeKey, onSelect }) {
               //   ★中の 白い 札は 見本の 高さの まま、★指の 当たる 所だけ 広げます。
               minHeight: SPACE.tapMin,
               padding: "7px 2px", borderRadius: 9, border: "none",
-              fontSize: 11.5, fontWeight: on ? 700 : 400,
+              fontSize: rem(11.5), fontWeight: on ? 700 : 400,
               background: on ? C.card : "transparent",
               color: on ? C.curtain : C.inkSoft,
               boxShadow: on ? "0 1px 3px rgba(0,0,0,.06)" : "none",
@@ -127,7 +127,7 @@ export function Pill({ children, on, disabled, onClick }) {
     borderRadius: RADIUS.pill, padding: "5px 11px",
     // ★押せるところは 44 以上（★見た目は 見本の まま、★上下に 透明な 余白）。
     minHeight: onClick ? SPACE.tapMin : undefined,
-    fontSize: 11.5, fontWeight: on ? 700 : 400,
+    fontSize: rem(11.5), fontWeight: on ? 700 : 400,
     border: `1px solid ${on ? C.curtain : C.line}`,
     background: on ? C.curtain : C.card,
     color: on ? "#FFFDF8" : C.inkSoft,
@@ -177,7 +177,7 @@ export function Li({ children, right, last, style }) {
     }}>
       <span style={{ minWidth: 0 }}>{children}</span>
       {right != null ? (
-        <span style={{ color: C.inkSoft, fontSize: 11.5, flex: "none", marginLeft: 8 }}>{right}</span>
+        <span style={{ color: C.inkSoft, fontSize: rem(11.5), flex: "none", marginLeft: 8 }}>{right}</span>
       ) : null}
     </div>
   );
@@ -193,7 +193,7 @@ export function Kv({ children, right, last }) {
   return (
     <div style={{
       display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8,
-      fontSize: 11.5, color: C.inkSoft, padding: "5px 0",
+      fontSize: rem(11.5), color: C.inkSoft, padding: "5px 0",
       borderBottom: last ? "none" : `1px solid ${C.line2}`
     }}>
       <span style={{ minWidth: 0 }}>{children}</span>
@@ -210,7 +210,7 @@ export function Kv({ children, right, last }) {
  */
 export function Lock({ children = "しらべる", onClick }) {
   const style = {
-    fontSize: 9.5, color: C.inkSoft,
+    fontSize: rem(9.5), color: C.inkSoft,
     border: `1px solid ${C.line}`, borderRadius: 5, padding: "1px 5px",
     marginLeft: "auto", background: "transparent", flex: "none",
     fontFamily: FONT_STACK
@@ -229,7 +229,7 @@ export function Lock({ children = "しらべる", onClick }) {
 export function BarRow({ label, ratio, tint, hollow }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
-      <span style={{ width: 34, flex: "none", fontSize: 10, color: C.inkSoft }}>{label}</span>
+      <span style={{ width: 34, flex: "none", fontSize: rem(10), color: C.inkSoft }}>{label}</span>
       <div style={{ flex: 1, height: 8 }}>
         {ratio == null ? null : hollow ? (
           // ★★あとから 書いた日は、★中を 抜きます。★消しません。

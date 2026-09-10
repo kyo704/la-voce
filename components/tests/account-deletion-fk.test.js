@@ -90,8 +90,12 @@ const NO_ACTION_COLUMNS = [
   // ★★2026-09-09、★notes（見本⑥のノート）を 足して 24表に なりました。
   //   ★この数は、★足し忘れ／消し忘れに 気づくための ものです。
   //   ★表を 足したら、★ここも 一緒に 動かすこと。
-  assertTrue(d.USER_OWNED_TABLES.length === 24,
-    `一覧は24表（いまは ${d.USER_OWNED_TABLES.length}）`);
+  // ★★2026-09-11、★item_acquisitions（手に入れた日の台帳・J05）を 足して 25表。
+  //   ★退会したら、この方の 台帳も 消します。
+  assertTrue(d.USER_OWNED_TABLES.length === 25,
+    `一覧は25表（いまは ${d.USER_OWNED_TABLES.length}）`);
+  assertTrue(d.USER_OWNED_TABLES.includes("item_acquisitions"),
+    "★手に入れた日の台帳が、退会の消し込みに 入っている");
   assertTrue(d.USER_OWNED_TABLES.includes("period_markers"),
     "★区切りマーカーの表が、退会の一覧に入っている");
   assertTrue(d.USER_OWNED_TABLES.includes("org_event_participants"), "★出るという印が入っている");

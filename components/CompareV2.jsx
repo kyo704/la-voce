@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { C } from "@/lib/tokens";
-import { TYPE, SPACE, FONT_STACK, cardStyle } from "@/lib/uiKit";
+import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
 import { Card, Pill, Note, H3 } from "@/components/UiV2";
 import { LAGS, ITEMS, defaultLagOf, judgingLagOf } from "@/lib/lagChoice";
 import { FIRST_DAY_ONLY_LABEL } from "@/lib/compareGroups";
@@ -141,7 +141,7 @@ function Scatter({ data, itemKey }) {
         <span style={{
           position: "absolute", left: `${CENTER[ci]}%`, marginLeft: 24,
           transform: "translateY(-50%)",
-          fontSize: 9, color: C.curtain, background: C.card,
+          fontSize: rem(9), color: C.curtain, background: C.card,
           padding: "1px 3px", borderRadius: 3, whiteSpace: "nowrap"
         }}>{valueWord(itemKey, v)}</span>
       </div>
@@ -153,11 +153,11 @@ function Scatter({ data, itemKey }) {
       position: "absolute", bottom: 0,
       left: `calc(${AXIS}px + (100% - ${AXIS + RIGHT}px) * ${CENTER[ci] / 100})`,
       transform: "translateX(-50%)",
-      fontSize: 10.5, color: C.inkSoft, textAlign: "center", whiteSpace: "nowrap"
+      fontSize: rem(10.5), color: C.inkSoft, textAlign: "center", whiteSpace: "nowrap"
     }}>
       {label}
       {/* ★★日数です。★点数でも 割合でも ありません。 */}
-      <span style={{ display: "block", fontSize: 9, color: C.inkSoft, marginTop: 2 }}>{n}日</span>
+      <span style={{ display: "block", fontSize: rem(9), color: C.inkSoft, marginTop: 2 }}>{n}日</span>
     </span>
   );
 
@@ -174,7 +174,7 @@ function Scatter({ data, itemKey }) {
           <span style={{
             position: "absolute", left: 0, width: AXIS - 4, top: yOf(v),
             transform: "translateY(-50%)", textAlign: "right",
-            fontSize: 9, color: C.inkSoft
+            fontSize: rem(9), color: C.inkSoft
           }}>{valueWord(itemKey, v)}</span>
         </span>
       ))}
@@ -245,10 +245,10 @@ export default function CompareV2({ entries, dates }) {
             ★何が 足りないかを 言わず、★このまま でよい、と 言います。 */}
       <div style={{
         background: C.paper, border: `1px solid ${C.line}`, borderRadius: 12,
-        padding: "11px 12px", fontSize: 12.5, lineHeight: 1.75, color: C.ink
+        padding: "11px 12px", fontSize: rem(12.5), lineHeight: 1.75, color: C.ink
       }}>
         まだ、はっきりした差は 見えていません。<br />
-        <span style={{ fontSize: 11, color: C.inkSoft }}>
+        <span style={{ fontSize: rem(11), color: C.inkSoft }}>
           {data && data.nHard > 0
             ? `出なかった日が ${data.nHard}日 たまりました。この形のまま つづけてください。`
             : "この形のまま つづけてください。"}
@@ -286,12 +286,12 @@ export default function CompareV2({ entries, dates }) {
           width: "100%", textAlign: "left",
           background: C.card, border: `1px solid ${C.line}`, borderRadius: 12,
           padding: "10px 12px", marginBottom: SPACE.cardGap,
-          minHeight: SPACE.tapMin, fontSize: 12.5, color: C.ink, fontFamily: FONT_STACK
+          minHeight: SPACE.tapMin, fontSize: rem(12.5), color: C.ink, fontFamily: FONT_STACK
         }}>
         <span>
           {FIRST_DAY_ONLY_LABEL}
           <span style={{
-            fontSize: 10, color: C.inkSoft, background: C.paper,
+            fontSize: rem(10), color: C.inkSoft, background: C.paper,
             borderRadius: 6, padding: "2px 7px", marginLeft: 6
           }}>既定</span>
         </span>

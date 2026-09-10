@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { C } from "@/lib/tokens";
-import { TYPE, SPACE, cardStyle } from "@/lib/uiKit";
+import { TYPE, SPACE, cardStyle, rem } from "@/lib/uiKit";
 import { ScreenHead, HeadRound, H3, Card, Seg, Li, Note } from "@/components/UiV2";
 import {
   PRACTICE_FIELDS, isPractice, emptyPractice, pickFields, practiceTitle, practiceSub
@@ -118,7 +118,7 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
                     onChange={(e) => setEditing({ ...editing, [f.key]: e.target.value })}
                     style={{
                       width: "100%", minHeight: 44, borderRadius: 10, padding: "0 12px",
-                      border: `1px solid ${C.line}`, background: C.card, color: C.ink, fontSize: 16
+                      border: `1px solid ${C.line}`, background: C.card, color: C.ink, fontSize: rem(16)
                     }} />
                 ) : f.kind === "repertoire" ? (
                   <select id={"pf-" + f.key}
@@ -126,7 +126,7 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
                     onChange={(e) => setEditing({ ...editing, [f.key]: e.target.value })}
                     style={{
                       width: "100%", minHeight: 44, borderRadius: 10, padding: "0 12px",
-                      border: `1px solid ${C.line}`, background: C.card, color: C.ink, fontSize: 16
+                      border: `1px solid ${C.line}`, background: C.card, color: C.ink, fontSize: rem(16)
                     }}>
                     <option value="">えらばない</option>
                     {(repertoireNames || []).map((n) => (
@@ -141,7 +141,7 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
                     style={{
                       width: "100%", borderRadius: 10, padding: 12,
                       border: `1px solid ${C.line}`, background: C.card, color: C.ink,
-                      fontSize: 16, lineHeight: 1.9, resize: "vertical"
+                      fontSize: rem(16), lineHeight: 1.9, resize: "vertical"
                     }} />
                 ) : (
                   <input id={"pf-" + f.key} type="text"
@@ -149,7 +149,7 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
                     onChange={(e) => setEditing({ ...editing, [f.key]: e.target.value })}
                     style={{
                       width: "100%", minHeight: 44, borderRadius: 10, padding: "0 12px",
-                      border: `1px solid ${C.line}`, background: C.card, color: C.ink, fontSize: 16
+                      border: `1px solid ${C.line}`, background: C.card, color: C.ink, fontSize: rem(16)
                     }} />
                 )}
                 {f.note ? <Note style={{ marginTop: 2 }}>{f.note}</Note> : null}
@@ -281,7 +281,7 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
             width: "100%", minHeight: SPACE.tapMin, padding: 0,
             border: "none", background: "transparent", color: C.ink,
             // ★★iOS で 画面が 寄らないよう、★16px を 下回らせません（globals.css）。
-            fontSize: 16
+            fontSize: rem(16)
           }} />
       </div>
       </>
