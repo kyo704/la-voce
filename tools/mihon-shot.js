@@ -35,37 +35,39 @@ const OUT = path.join(ROOT, "docs", "design", "compare", "all", "mihon");
  *   ★run　 見本の 中で 呼ぶ こと
  */
 const SCREENS = [
-  { key: "A01-きょう", run: "go('きょう')" },
-  { key: "A03-記録", run: "go('記録')" },
-  { key: "A03-記録-ねむり", run: "go('記録');openSheet('ねむり')" },
-  { key: "A03-記録-こえ", run: "go('記録');openSheet('こえ')" },
-  { key: "A03-記録-ほんばん", run: "go('記録');openSheet('honban')" },
-  { key: "A03-記録-たべ", run: "go('記録');openSheet('tabe')" },
-  { key: "A03-記録-からだ", run: "go('記録');openSheet('karada')" },
-  { key: "A03-記録-ひとこと", run: "go('記録');openSheet('hito')" },
-  { key: "A04-ならべる", run: "go('ふりかえる');setFk('並べる')" },
-  { key: "A04-ならべる-4週", run: "go('ふりかえる');setFk('並べる');setSpan(28)" },
-  { key: "A04-ならべる-3か月", run: "go('ふりかえる');setFk('並べる');setSpan(90)" },
-  { key: "A05-さかのぼる", run: "go('ふりかえる');setFk('さかのぼる')" },
-  { key: "B01-くらべる", run: "go('ふりかえる');setFk('くらべる')" },
-  { key: "B01-くらべる-前の日", run: "go('ふりかえる');setFk('くらべる');S.lag=1;draw()" },
-  { key: "B03-かぞえる", run: "go('ふりかえる');setFk('かぞえる')" },
-  { key: "A06-ノート", run: "go('ノート')" },
-  { key: "A06-ノート-レパートリー", run: "go('ノート');S.note='レパートリー';draw()" },
-  { key: "A06-ノート-連絡", run: "go('ノート');S.note='連絡';draw()" },
-  { key: "A06-ノート-受診用", run: "go('ノート');S.note='受診用';draw()" },
+  { key: "画面-きょう", run: "go('きょう')" },
+  { key: "画面-記録", run: "go('記録')" },
+  { key: "SH-ねむり", run: "go('記録');openSheet('ねむり')" },
+  { key: "SH-こえ", run: "go('記録');openSheet('こえ')" },
+  { key: "SH-honban", run: "go('記録');openSheet('honban')" },
+  { key: "SH-tabe", run: "go('記録');openSheet('tabe')" },
+  { key: "SH-karada", run: "go('記録');openSheet('karada')" },
+  { key: "SH-hito", run: "go('記録');openSheet('hito')" },
+  { key: "画面-ふりかえる-並べる", run: "go('ふりかえる');setFk('並べる')" },
+  { key: "画面-ふりかえる-並べる-4週", run: "go('ふりかえる');setFk('並べる');setSpan(28)" },
+  { key: "画面-ふりかえる-並べる-3か月", run: "go('ふりかえる');setFk('並べる');setSpan(90)" },
+  { key: "画面-ふりかえる-さかのぼる", run: "go('ふりかえる');setFk('さかのぼる')" },
+  { key: "画面-ふりかえる-くらべる", run: "go('ふりかえる');setFk('くらべる')" },
+  { key: "画面-ふりかえる-くらべる-前の日", run: "go('ふりかえる');setFk('くらべる');S.lag=1;draw()" },
+  { key: "画面-ふりかえる-かぞえる", run: "go('ふりかえる');setFk('かぞえる')" },
+  // ★★くらべる の 中から 押して 開く 画面です（★SC['順番']）。
+  { key: "SC-順番", run: "go('ふりかえる');setFk('くらべる');push('順番')" },
+  { key: "画面-ノート", run: "go('ノート')" },
+  { key: "画面-ノート-レパートリー", run: "go('ノート');S.note='レパートリー';draw()" },
+  { key: "画面-ノート-連絡", run: "go('ノート');S.note='連絡';draw()" },
+  { key: "画面-ノート-受診用", run: "go('ノート');S.note='受診用';draw()" },
   // ★★「＋」を 押した ときの 画面（★2026-09-11・坂本さんの ご要望）。
   //   ★★Fable の 決まりの「every sheet / modal / collapsible opened」
   //     ★に あたる ぶんです。★一覧だけでは、★突き合わせに なりません。
-  { key: "A06-ノート-稽古-書く", run: "go('ノート');S.note='稽古';draw();push('稽古を書く')" },
-  { key: "A06-ノート-レパートリー-足す", run: "go('ノート');S.note='レパートリー';draw();openSheet('newrep')" },
-  { key: "A06-ノート-新しく書く", run: "go('ノート');S.note='稽古';draw();openSheet('newnote')" },
-  { key: "A06-ノート-日付と先生", run: "go('ノート');S.note='稽古';draw();openSheet('notemeta')" },
-  { key: "J01-ひつじ-ながめる", run: "go('ひつじ');S.hj='ながめる';draw()" },
-  { key: "J02-ひつじ-おうち", run: "go('ひつじ');S.hj='おうち';draw()" },
-  { key: "A08-ひつじ-したく", run: "go('ひつじ');S.hj='したく';S.k1='きるもの';S.k2='全部';draw();openSheet('したく')" },
-  { key: "J04-ひつじ-たな", run: "go('ひつじ');S.hj='たな';draw()" },
-  { key: "A10-もっと", run: "push('もっと')" }
+  { key: "SC-稽古を書く", run: "go('ノート');S.note='稽古';draw();push('稽古を書く')" },
+  { key: "SH-newrep", run: "go('ノート');S.note='レパートリー';draw();openSheet('newrep')" },
+  { key: "SH-newnote", run: "go('ノート');S.note='稽古';draw();openSheet('newnote')" },
+  { key: "SH-notemeta", run: "go('ノート');S.note='稽古';draw();openSheet('notemeta')" },
+  { key: "画面-ひつじ-ながめる", run: "go('ひつじ');S.hj='ながめる';draw()" },
+  { key: "画面-ひつじ-おうち", run: "go('ひつじ');S.hj='おうち';draw()" },
+  { key: "SH-したく", run: "go('ひつじ');S.hj='したく';S.k1='きるもの';S.k2='全部';draw();openSheet('したく')" },
+  { key: "画面-ひつじ-たな", run: "go('ひつじ');S.hj='たな';draw()" },
+  { key: "SC-もっと", run: "push('もっと')" }
 ];
 
 (async () => {
@@ -109,6 +111,26 @@ const SCREENS = [
       await page.waitForTimeout(400);
       const el = await page.locator(".ph").first();
       await el.screenshot({ path: path.join(OUT, sc.key + ".png") });
+      // ★★見本の 中身も 書き出します。★並び順を くらべる ための ものです。
+      //   ★★電話の 枠（.ph）の 中だけを 拾います。
+      //     ★見本の ページの 見出しや 説明は、★画面では ありません。
+      const dump = await page.evaluate(() => {
+        const root = document.querySelector(".ph");
+        const out = [];
+        const walk = (e) => {
+          const st = window.getComputedStyle(e);
+          if (st.display === "none" || st.visibility === "hidden") return;
+          const tag = e.tagName.toLowerCase();
+          const own = [...e.childNodes].filter((n) => n.nodeType === 3)
+            .map((n) => n.textContent.trim()).join(" ").trim();
+          if (own) out.push({ tag, text: own.replace(/\s+/g, " ").slice(0, 60) });
+          [...e.children].forEach(walk);
+        };
+        if (root) walk(root);
+        return out;
+      });
+      fs.writeFileSync(path.join(OUT, sc.key + ".json"),
+        JSON.stringify(dump, null, 1), "utf8");
       console.log("  ✓ " + sc.key);
     } catch (e) {
       missed.push(sc.key + "  " + String(e.message).split("\n")[0].slice(0, 70));

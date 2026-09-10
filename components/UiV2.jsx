@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, SPACE, RADIUS, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
 
@@ -161,10 +162,54 @@ export function Warn({ children }) {
   );
 }
 
-/** ★注記（.note）。★11px・ink2。★薄い 色に しません。 */
-export function Note({ children, style }) {
-  return <p style={{ ...TYPE.note, lineHeight: 1.8, ...style }}>{children}</p>;
+/**
+ * ★注記（.note）。★11px・ink2。★薄い 色に しません。
+ *
+ *   ★★2026-09-11、★見本の 中に foldNotes() という 関数を 見つけました。
+ *     ★★見本は、★描くたびに .note を すべて 畳んでいます。
+ *       ★はじめは 閉じていて、★「くわしい 決まりを 見る」の 札だけが 見えます。
+ *       ★押すと 開き、★札の 字が「閉じる」に なります。
+ *     ★★だから 見本の 画面には、★注記の 本文が 出ていません。
+ *
+ *   ★★これは、★私の 前の 報告の 訂正です。
+ *     ★★9月11日、★私は「見本に 畳む しくみは ありません」と 申しました。
+ *       ★<details>／<summary> を 数えて、★0 だったからです。
+ *     ★★見本は <details> を 使わず、★JavaScript で 畳んでいました。
+ *       ★数え方が 誤っていました。★坂本さんは、★誤った 前提の 上で
+ *       ★㋐（畳まず 隠す）を お決めに なりました。
+ *     ★★このまま 開いて 出すか、★見本どおり 畳むかは、★お決めください。
+ *       ★fold={false} を 渡すと、★畳まずに 出ます。
+ *
+ *   ★★札の 色は ink2 です。★見本の CSS は --ink3 ですが、
+ *     ★この 帳面の 決まり（★上の 見出し）で ink2 に します。
+ */
+export function Note({ children, style, fold = true }) {
+  const [open, setOpen] = useState(false);
+  const body = (
+    <p style={{
+      ...TYPE.note, lineHeight: 1.8, marginTop: 9,
+      display: fold && !open ? "none" : undefined, ...style
+    }}>{children}</p>
+  );
+  if (!fold) return body;
+  return (
+    <div>
+      <button type="button" onClick={() => setOpen(!open)}
+        style={{
+          display: "inline-block", marginTop: 14, fontSize: rem(11.5),
+          color: open ? C.curtain : C.inkSoft,
+          border: `1px solid ${open ? "#CFC0A4" : C.line}`,
+          borderRadius: 99, padding: "5px 12px", background: C.paper,
+          minHeight: SPACE.tapMin, fontFamily: FONT_STACK
+        }}>{open ? NOTE_CLOSE : NOTE_OPEN}</button>
+      {body}
+    </div>
+  );
 }
+
+/** ★畳んだ 注記の 札（★見本 foldNotes の textContent、★1文字も 変えない）。 */
+export const NOTE_OPEN = "くわしい 決まりを 見る";
+export const NOTE_CLOSE = "閉じる";
 
 /** ★一覧の 1行（.li）。★左に 名前、★右に 値。★最後の行に 線を 引きません。 */
 export function Li({ children, right, last, style }) {

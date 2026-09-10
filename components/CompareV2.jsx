@@ -1,12 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
-import { Card, Pill, Note, H3 } from "@/components/UiV2";
+import { Card, Pill, Note, H3, Li } from "@/components/UiV2";
 import { LAGS, ITEMS, defaultLagOf, judgingLagOf } from "@/lib/lagChoice";
 import { FIRST_DAY_ONLY_LABEL } from "@/lib/compareGroups";
-import { buildCompare } from "@/lib/compareView";
+import {
+  buildCompare, compareVerdict, compareSentence,
+  STOP_DAYS, STOP_EFFECT, STOP_Q, STOP_NO_DATA
+} from "@/lib/compareView";
+import {
+  ORDER_COPY, ORDER_MAX, readOrder, writeOrder, moveUp, firstOf, testedCount
+} from "@/lib/compareOrder";
 
 // ============================================================================
 // くらべる（見本⑫ ／ 2026-09-09）
@@ -219,25 +225,179 @@ function Scatter({ data, itemKey }) {
   );
 }
 
+/**
+ * ★空の 姿（★見本 stateBlock）。
+ *
+ *   ★★白紙に しません。★「まだ ありません」だけで 終わりません。
+ *   ★★何を すると 埋まるかを 1行 書きます（★見本の 決め）。
+ */
+function Empty() {
+  return (
+    <>
+      <div style={{
+        ...cardStyle, textAlign: "center", padding: "26px 16px",
+        marginBottom: SPACE.cardGap
+      }}>
+        <div style={{ ...TYPE.body, marginBottom: 6 }}>まだ、くらべる ものが ありません。</div>
+        <div style={{ ...TYPE.usual, lineHeight: 1.9 }}>
+          記録を 10日ぶん 書くと、点が 2つの 山に 分かれて 出ます。
+        </div>
+      </div>
+    </>
+  );
+}
+
+/**
+ * ★調べていることの 順番（★見本 SC['順番']）。
+ *
+ *   ★★「疑っている 順に、5つまで。★1番目だけ、補正なしで 見ます。」
+ *   ★★入れ替えたら、★そこから 数え直します。
+ *     ★見てから 選び直せると、★いちばん よく見える 組を 選べてしまいます。
+ */
+function OrderScreen({ order, onChange, onBack, message }) {
+  const label = (k) => (ITEMS.find((x) => x.key === k) || {}).label || k;
+  return (
+    <div>
+      <button type="button" onClick={onBack}
+        style={{
+          display: "block", background: "transparent", border: "none",
+          padding: "10px 1px", minHeight: SPACE.tapMin,
+          color: C.inkSoft, fontSize: rem(13), fontFamily: FONT_STACK
+        }}>‹　くらべる</button>
+      <H3>{ORDER_COPY.title}</H3>
+      <div style={{
+        background: "#F6F1E4", border: "1px solid #E8DFC8", borderRadius: 12,
+        padding: `${rem(9)} ${rem(11)}`, marginBottom: rem(10), ...TYPE.note
+      }}>
+        {ORDER_COPY.warnA}<b>{ORDER_COPY.warnB}</b>{ORDER_COPY.warnC}
+      </div>
+      <Card style={{ padding: "0 12px" }}>
+        {order.map((k, i) => (
+          <div key={k} style={{
+            display: "flex", alignItems: "center", gap: rem(9),
+            padding: `${rem(10)} 0`, minHeight: SPACE.tapMin,
+            borderBottom: i === order.length - 1 ? "none" : `1px solid ${C.line2}`,
+            ...TYPE.li
+          }}>
+            {/* ★★番号は 順番です。★点数では ありません。 */}
+            <span style={{
+              flex: "none", width: 22, height: 22, borderRadius: "50%",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: rem(11),
+              background: i === 0 ? C.curtain : C.paper,
+              color: i === 0 ? "#FFFDF8" : C.inkSoft
+            }}>{i + 1}</span>
+            <span style={{ flex: 1 }}>{label(k)}</span>
+            <button type="button"
+              onClick={() => (i > 0 ? onChange(moveUp(order, i)) : null)}
+              disabled={i === 0}
+              aria-label={label(k) + " を 上へ"}
+              style={{
+                flex: "none", minHeight: SPACE.tapMin, padding: "0 10px",
+                background: "transparent", border: "none",
+                color: C.inkSoft, opacity: i === 0 ? 0.25 : 1,
+                fontSize: rem(15), fontFamily: FONT_STACK
+              }}>↑</button>
+          </div>
+        ))}
+      </Card>
+      {message ? (
+        <p style={{ ...TYPE.usual, margin: `0 0 ${rem(9)}` }}>{message}</p>
+      ) : null}
+      <div style={{
+        ...cardStyle, background: "#F6F1E4", borderColor: "#E8DFC8",
+        marginBottom: SPACE.cardGap
+      }}>
+        <div style={{ ...TYPE.li, lineHeight: 1.8 }}>
+          {ORDER_COPY.firstLabel}　{label(order[0] || "")}<br />
+          <span style={{ ...TYPE.usual }}>{ORDER_COPY.firstNote}</span>
+          <br /><br />
+          {ORDER_COPY.restLabel}<br />
+          <span style={{ ...TYPE.usual }}>{ORDER_COPY.restNote}</span>
+        </div>
+      </div>
+      <Note>
+        {ORDER_COPY.notes.map((line, i) => (
+          <span key={i}>{i > 0 ? <br /> : null}{line}</span>
+        ))}
+      </Note>
+    </div>
+  );
+}
+
 export default function CompareV2({ entries, dates }) {
-  const [itemKey, setItemKey] = useState(ITEMS[0].key);
+  // ★★調べる ものは、★順番の 1番目です。★好きに 選べません（★見本）。
+  //   ★見てから 選び直せると、★いちばん よく見える 組を 選べてしまいます。
+  const known = ITEMS.map((x) => x.key);
+  const [order, setOrder] = useState(() => readOrder(known));
   const [lag, setLag] = useState(null);
   const [firstDayOnly, setFirstDayOnly] = useState(true);
+  const [showOrder, setShowOrder] = useState(false);
+  const [orderMsg, setOrderMsg] = useState("");
+  useEffect(() => { setOrder(readOrder(known)); /* eslint-disable-next-line */ }, []);
 
+  const itemKey = firstOf(order) || ITEMS[0].key;
   const item = ITEMS.find((x) => x.key === itemKey) || ITEMS[0];
   const shownLag = lag || defaultLagOf(itemKey);
   const judging = judgingLagOf(itemKey, null);
   const data = buildCompare(entries, dates, itemKey, shownLag, { firstDayOnly });
+  const verdict = compareVerdict(data, testedCount());
+  const sentence = compareSentence(itemKey, verdict);
+
+  if (showOrder) {
+    return (
+      <OrderScreen
+        order={order}
+        message={orderMsg}
+        onChange={(next) => {
+          setOrder(writeOrder(next, known));
+          // ★★入れ替えたら、★そこから 数え直します（★見本）。
+          setOrderMsg(ORDER_COPY.recount);
+        }}
+        onBack={() => { setShowOrder(false); setOrderMsg(""); }} />
+    );
+  }
+
+  const hasPoints = !!data && data.good.length + data.hard.length > 0;
+  if (!hasPoints) {
+    return (
+      <div>
+        <Empty />
+        <Note>{NOTES.map((line, i) => (
+          <span key={i}>{i > 0 ? <br /> : null}{line}</span>
+        ))}</Note>
+      </div>
+    );
+  }
 
   return (
     <div>
-      {/* ★★見本 B01 の 1枚（★内側 11px 12px 9px）。 */}
-      <Card style={{ padding: "11px 12px 9px" }}>
-        <div style={{ ...TYPE.mini, marginBottom: 2 }}>{item.label}</div>
+      {/* ★★1文は、★3つの門（10日以上／差の大きさ／q）を 通ったときだけ 出ます。
+          ★★通っていない 日は、★1文を 出しません。★下の 但し書きだけです。 */}
+      {sentence ? (
+        <div style={{
+          ...cardStyle, borderColor: "#C9A0AB", background: "#FFFCFC",
+          marginBottom: SPACE.cardGap
+        }}>
+          <div style={{ fontSize: rem(15), lineHeight: 1.85, fontWeight: 700, color: C.ink }}>
+            {sentence}
+          </div>
+          {/* ★★数は 3つだけです。★点数でも 順位でも ありません。
+              ★★q は 確率では ありません。★「たまたま」を どこで 切ったかです。 */}
+          <div style={{ ...TYPE.usual, marginTop: rem(9), lineHeight: 1.8 }}>
+            書いた日 {verdict.n}日／差の 大きさ {Math.abs(verdict.g).toFixed(2)}
+            ／q = {verdict.q.toFixed(2)}<br />
+            くらべた先は、あなた自身の 普段です
+          </div>
+        </div>
+      ) : null}
 
-        {/* ★★時間差 4種（★見本 B01 の .pill・10.5px）。
-            ★★見た目は 4つとも 選べます。
-            ★★判定に 使うのは 1つだけです（★§2）。★下に そう 書きます。 */}
+      <Card style={{ padding: "11px 12px 9px" }}>
+        {/* ★★いま 何番目を 見ているか（★見本「（いま 1番目）」）。 */}
+        <div style={{ ...TYPE.mini, marginBottom: 2 }}>
+          {item.label}　<span style={{ color: C.inkSoft }}>（いま 1番目）</span>
+        </div>
+
         <div style={{ display: "flex", gap: 5, margin: "7px 0 2px", flexWrap: "wrap" }}>
           {LAGS.map((l) => (
             <Pill key={l.key} on={shownLag === l.key} onClick={() => setLag(l.key)}>
@@ -246,93 +406,86 @@ export default function CompareV2({ entries, dates }) {
           ))}
         </div>
 
-        {data && data.good.length + data.hard.length > 0 ? (
-          <>
-            <Scatter data={data} itemKey={itemKey} />
-            {/* ★★凡例（★見本⑫）。 */}
-            <div className="flex gap-3" style={{ ...small, alignItems: "center" }}>
-              <span><span style={{
-                display: "inline-block", width: 8, height: 8, borderRadius: "50%",
-                background: C.curtain, marginRight: 4, verticalAlign: -1
-              }} />書いた日</span>
-              <span><span style={{
-                display: "inline-block", width: 8, height: 8, borderRadius: "50%",
-                border: `1.4px solid ${C.curtain}`, marginRight: 4, verticalAlign: -1
-              }} />あとから書いた日</span>
-              <span>--- まんなか</span>
-            </div>
-          </>
-        ) : (
-          // ★★点が 1つも 無い日。★空の枠を 置きません。
-          <p style={small}>この期間に、くらべられる記録がまだありません。</p>
-        )}
-      </Card>
-
-      {/* ★★見本 B01 の 但し書き（.q）。★1文字も 変えないこと。
-          ★★「まだ 出ていません」は、★責める言葉では ありません。
-            ★何が 足りないかを 言わず、★このまま でよい、と 言います。 */}
-      <div style={{
-        background: C.paper, border: `1px solid ${C.line}`, borderRadius: 12,
-        padding: "11px 12px", fontSize: rem(12.5), lineHeight: 1.75, color: C.ink
-      }}>
-        まだ、はっきりした差は 見えていません。<br />
-        <span style={{ fontSize: rem(11), color: C.inkSoft }}>
-          {data && data.nHard > 0
-            ? `出なかった日が ${data.nHard}日 たまりました。この形のまま つづけてください。`
-            : "この形のまま つづけてください。"}
-        </span>
-      </div>
-
-      {/* ★★2つの 断り（★見本⑫）。★1文字も 変えないこと。 */}
-      {/* ★★2つの 断り（★見本 B01 の .note・上に 9px）。★1文字も 変えないこと。 */}
-      <Note style={{ marginTop: 9 }}>
-        {data && data.anyLater ? (
-          <>○は あとから書いた日です。目では見えますが、判定には 入れていません。<br /></>
-        ) : null}
-        判定に使うのは「{(LAGS.find((l) => l.key === judging) || {}).label}」だけです。ほかの3つは、見るためのものです。
-      </Note>
-
-      {/* ★★しらべる 項目を 変える。★見本 B02 の「疑っている順」の 手前の 形です。
-          ★★順番の 仕組みは、★1文が 出るように なってから 作ります。
-            ★いまは 誰にも 出ないので、★順番だけ 先に 作っても 確かめられません。 */}
-      <H3>しらべていること</H3>
-      <Card>
-        <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
-          {ITEMS.map((it) => (
-            <Pill key={it.key} on={itemKey === it.key}
-              onClick={() => { setItemKey(it.key); setLag(null); }}>{it.label}</Pill>
-          ))}
+        <Scatter data={data} itemKey={itemKey} />
+        {/* ★★見本の 凡例。★1文字も 変えないこと。 */}
+        <div style={{ ...TYPE.usual, lineHeight: 1.8 }}>
+          ● 書いた日　○ あとから 書いた日　- - - まんなか
+        </div>
+        <div style={{ ...TYPE.usual, marginTop: 5, lineHeight: 1.8 }}>
+          時間差を 変えても、<b>判定は「{(LAGS.find((l) => l.key === judging) || {}).label}」に 固定</b>です。ここは 見るだけ。
         </div>
       </Card>
 
-      {/* ★★見本⑬の 切替。★既定は 入（★§1）。 */}
-      {/* ★★見本 B02 の 切替（.sw）。★角 12・内側 10/12・12.5px。★既定は 入（★§1）。 */}
-      <button type="button" onClick={() => setFirstDayOnly((v) => !v)}
-        aria-pressed={firstDayOnly}
-        style={{
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          width: "100%", textAlign: "left",
-          background: C.card, border: `1px solid ${C.line}`, borderRadius: 12,
-          padding: "10px 12px", marginBottom: SPACE.cardGap,
-          minHeight: SPACE.tapMin, fontSize: rem(12.5), color: C.ink, fontFamily: FONT_STACK
+      {/* ★★1文が 出ない 日の 姿（★見本）。★責める 言葉に しないこと。 */}
+      {!sentence ? (
+        <div style={{
+          ...cardStyle, background: "#F6F1E4", borderColor: "#E8DFC8",
+          marginBottom: SPACE.cardGap
         }}>
-        <span>
+          <div style={{ fontSize: rem(12.5), lineHeight: 1.75, color: C.ink }}>
+            まだ、はっきりした差は 見えていません。<br />
+            <span style={{ ...TYPE.usual }}>
+              {verdict.nHard > 0
+                ? `出なかった日が ${verdict.nHard}日 たまりました。この形のまま 続けてください。`
+                : "この形のまま 続けてください。"}
+            </span>
+          </div>
+        </div>
+      ) : null}
+
+      {/* ★★見本の box。★2行です。 */}
+      <Card style={{ padding: "0 12px" }}>
+        <button type="button" onClick={() => setShowOrder(true)}
+          style={{
+            display: "block", width: "100%", textAlign: "left",
+            background: "transparent", border: "none", padding: 0,
+            minHeight: SPACE.tapMin
+          }}>
+          <Li right={`${order.length}つ ›`}>{ORDER_COPY.row}</Li>
+        </button>
+        {/* ★★見本の 切替（.sw）。★44×26・つまみ 20。★既定は 入。 */}
+        <Li last right={(
+          <span onClick={() => setFirstDayOnly((v) => !v)}
+            role="switch" aria-checked={firstDayOnly} tabIndex={0}
+            aria-label={FIRST_DAY_ONLY_LABEL}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setFirstDayOnly((v) => !v); }}
+            style={{
+              display: "block", width: 44, height: 26, borderRadius: 99,
+              position: "relative", cursor: "pointer",
+              background: firstDayOnly ? C.curtain : "#DFD4BE"
+            }}>
+            <span style={{
+              position: "absolute", top: 3, left: firstDayOnly ? 21 : 3,
+              width: 20, height: 20, borderRadius: "50%", background: "#fff",
+              boxShadow: "0 1px 2px rgba(0,0,0,.2)", transition: ".16s"
+            }} />
+          </span>
+        )}>
           {FIRST_DAY_ONLY_LABEL}
-          <span style={{
-            fontSize: rem(10), color: C.inkSoft, background: C.paper,
-            borderRadius: 6, padding: "2px 7px", marginLeft: 6
-          }}>既定</span>
-        </span>
-        <span style={{
-          width: 36, height: 20, borderRadius: 999, position: "relative", flex: "none",
-          background: firstDayOnly ? C.curtain : C.line
-        }}>
-          <span style={{
-            position: "absolute", width: 16, height: 16, borderRadius: "50%",
-            background: "#FFFDF8", top: 2, left: firstDayOnly ? 18 : 2
-          }} />
-        </span>
-      </button>
+          <br />
+          <span style={{ ...TYPE.usual }}>本番が 続いた日を 1日目に そろえます</span>
+        </Li>
+      </Card>
+
+      {/* ★★見本の note 4行。★1文字も 変えないこと。 */}
+      <Note>
+        {NOTES.map((line, i) => (
+          <span key={i}>{i > 0 ? <br /> : null}{line}</span>
+        ))}
+      </Note>
     </div>
   );
 }
+
+/**
+ * ★いちばん下の 4行（★見本 kuraberu の note）。
+ *
+ *   ★★「出しません」と 書いてある 行です。
+ *     ★★見張りが 禁じ手の 語を 探すときは、★この 4行を 先に 外すこと。
+ */
+const NOTES = [
+  "「あと◯日」を 出しません。この画面を 消しません。確率を 出しません。",
+  "あとから 書いた日は ○の 白抜き。判定からは 外します。",
+  "1文は、3つの門（10日以上／差の大きさ／q）を 通ったときだけ 出ます。",
+  "2番目から先の 結果は 出しません。止まった理由だけ 出します。"
+];

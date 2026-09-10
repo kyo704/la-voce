@@ -189,7 +189,15 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
     <div>
       {/* ★★見本⑥ .hd。★右は ＋ の 丸です（★歯車では ありません）。
           ★★押した その場で 書けます。★名前を 先に 聞きません。 */}
-      <ScreenHead title="ノート" right={
+      {/* ★★「連絡」の 帯では、★＋を 出しません（★2026-09-11・Opus の 裁定 案A）。
+          ★★不具合　★連絡の 帯で ＋を 押すと、★稽古の メモが 開いていました。
+            ★★書く 先が ちがいます。★書いたつもりの ものが、
+              ★連絡板では なく 稽古の ノートに 入ります。
+          ★★裁定の 理由　★連絡は 読む ところで、★書く 場所では ありません。
+            ★★書く 道は すでに あります（★「◯◯先生に 伝える」）。
+            ★★入口を 2つに しません。
+          ★★＋そのものを 消していません。★ほかの 3つの 帯では 出ます。 */}
+      <ScreenHead title="ノート" right={isRenrakuKind(kind) ? null : (
         <HeadRound mark="＋" label="ノートを書く"
           onClick={() => {
             // ★★稽古の メモは、★はじめから 6つの 欄を 持たせます。
@@ -199,7 +207,7 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
               : { id: null, body: "" });
             setError("");
           }} />
-      } />
+      )} />
 
       {/* ★★帯 4つ（★見本⑥ .seg）。★増やしません。★流れません。 */}
       <Seg activeKey={kind} onSelect={setKind}

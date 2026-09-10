@@ -13147,7 +13147,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }
 
   return (
-    <div style={{ background: C.paper, color: C.ink, minHeight: "100vh" }}>
+    // ★★門の中では、★見本の 色に します（★2026-09-11・坂本さんの お指図）。
+    //   ★★色の 数字は app/globals.css の .woolsong-v2 が 持ちます。
+    //     ★lib/tokens.js は 触っていません。★38人の 画面は 1つも 変わりません。
+    <div className={layoutV2 ? "woolsong-v2" : undefined}
+      style={{ background: C.paper, color: C.ink, minHeight: "100vh" }}>
       {/* ★★大事な操作の前の、もう一度の確かめ（判断-メールを失うこと §4）。
           ★Face ID を、こちらで呼ぶのではありません。
           ★パスワードの欄を出すと、★iPhone が自分で Face ID を出します。

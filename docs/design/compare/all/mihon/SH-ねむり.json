@@ -1,0 +1,338 @@
+[
+ {
+  "tag": "span",
+  "text": "9:41"
+ },
+ {
+  "tag": "span",
+  "text": "●●● ▮"
+ },
+ {
+  "tag": "h2",
+  "text": "記録"
+ },
+ {
+  "tag": "div",
+  "text": "?"
+ },
+ {
+  "tag": "div",
+  "text": "9月9日（水）"
+ },
+ {
+  "tag": "div",
+  "text": "あさ"
+ },
+ {
+  "tag": "div",
+  "text": "起きたときの むくみ"
+ },
+ {
+  "tag": "span",
+  "text": "◎"
+ },
+ {
+  "tag": "span",
+  "text": "ない"
+ },
+ {
+  "tag": "span",
+  "text": "○"
+ },
+ {
+  "tag": "span",
+  "text": "すこし"
+ },
+ {
+  "tag": "span",
+  "text": "△"
+ },
+ {
+  "tag": "span",
+  "text": "ある"
+ },
+ {
+  "tag": "span",
+  "text": "昨夜の 睡眠"
+ },
+ {
+  "tag": "b",
+  "text": "＋"
+ },
+ {
+  "tag": "s",
+  "text": "›"
+ },
+ {
+  "tag": "div",
+  "text": "よる"
+ },
+ {
+  "tag": "div",
+  "text": "のどの 調子"
+ },
+ {
+  "tag": "span",
+  "text": "◎"
+ },
+ {
+  "tag": "span",
+  "text": "よい"
+ },
+ {
+  "tag": "span",
+  "text": "○"
+ },
+ {
+  "tag": "span",
+  "text": "ふつう"
+ },
+ {
+  "tag": "span",
+  "text": "△"
+ },
+ {
+  "tag": "span",
+  "text": "わるい"
+ },
+ {
+  "tag": "div",
+  "text": "声の 出来"
+ },
+ {
+  "tag": "span",
+  "text": "◎"
+ },
+ {
+  "tag": "span",
+  "text": "出た"
+ },
+ {
+  "tag": "span",
+  "text": "○"
+ },
+ {
+  "tag": "span",
+  "text": "ふつう"
+ },
+ {
+  "tag": "span",
+  "text": "△"
+ },
+ {
+  "tag": "span",
+  "text": "出づらい"
+ },
+ {
+  "tag": "span",
+  "text": "本番以外で 声を使った時間"
+ },
+ {
+  "tag": "b",
+  "text": "＋"
+ },
+ {
+  "tag": "s",
+  "text": "›"
+ },
+ {
+  "tag": "div",
+  "text": "部屋の しめり は こちらで 取ります。本番・レッスンの 翌日かどうかも、予定から 分かります。"
+ },
+ {
+  "tag": "b",
+  "text": "この2つは 聞きません。"
+ },
+ {
+  "tag": "div",
+  "text": "足す（どれも 任意）"
+ },
+ {
+  "tag": "span",
+  "text": "本番・レッスン"
+ },
+ {
+  "tag": "b",
+  "text": "＋"
+ },
+ {
+  "tag": "s",
+  "text": "›"
+ },
+ {
+  "tag": "span",
+  "text": "食べたもの"
+ },
+ {
+  "tag": "b",
+  "text": "＋"
+ },
+ {
+  "tag": "s",
+  "text": "›"
+ },
+ {
+  "tag": "span",
+  "text": "からだのこと"
+ },
+ {
+  "tag": "b",
+  "text": "＋"
+ },
+ {
+  "tag": "s",
+  "text": "›"
+ },
+ {
+  "tag": "span",
+  "text": "ひとこと"
+ },
+ {
+  "tag": "b",
+  "text": "＋"
+ },
+ {
+  "tag": "s",
+  "text": "›"
+ },
+ {
+  "tag": "div",
+  "text": "きょうは 書かない"
+ },
+ {
+  "tag": "div",
+  "text": "出す"
+ },
+ {
+  "tag": "div",
+  "text": "くわしい 決まりを 見る"
+ },
+ {
+  "tag": "div",
+  "text": "きょう"
+ },
+ {
+  "tag": "div",
+  "text": "記録"
+ },
+ {
+  "tag": "div",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "div",
+  "text": "ノート"
+ },
+ {
+  "tag": "div",
+  "text": "ひつじ"
+ },
+ {
+  "tag": "div",
+  "text": "昨夜の 睡眠"
+ },
+ {
+  "tag": "div",
+  "text": "寝た時刻と 起きた時刻を 選ぶと、長さが 出ます"
+ },
+ {
+  "tag": "div",
+  "text": "寝た 時刻"
+ },
+ {
+  "tag": "span",
+  "text": "22:00"
+ },
+ {
+  "tag": "span",
+  "text": "22:30"
+ },
+ {
+  "tag": "span",
+  "text": "23:00"
+ },
+ {
+  "tag": "span",
+  "text": "23:30"
+ },
+ {
+  "tag": "span",
+  "text": "0:00"
+ },
+ {
+  "tag": "span",
+  "text": "0:30"
+ },
+ {
+  "tag": "span",
+  "text": "1:00"
+ },
+ {
+  "tag": "span",
+  "text": "1:30"
+ },
+ {
+  "tag": "div",
+  "text": "起きた 時刻"
+ },
+ {
+  "tag": "span",
+  "text": "5:30"
+ },
+ {
+  "tag": "span",
+  "text": "6:00"
+ },
+ {
+  "tag": "span",
+  "text": "6:30"
+ },
+ {
+  "tag": "span",
+  "text": "7:00"
+ },
+ {
+  "tag": "span",
+  "text": "7:30"
+ },
+ {
+  "tag": "span",
+  "text": "8:00"
+ },
+ {
+  "tag": "span",
+  "text": "8:30"
+ },
+ {
+  "tag": "span",
+  "text": "9:00"
+ },
+ {
+  "tag": "div",
+  "text": "7時間30分"
+ },
+ {
+  "tag": "div",
+  "text": "23:30 → 7:00"
+ },
+ {
+  "tag": "div",
+  "text": "きのうの値を 初めから 入れています。変わっていたら 直してください。"
+ },
+ {
+  "tag": "div",
+  "text": "これでいい"
+ },
+ {
+  "tag": "div",
+  "text": "あ"
+ },
+ {
+  "tag": "div",
+  "text": "◐"
+ },
+ {
+  "tag": "div",
+  "text": "↻"
+ }
+]

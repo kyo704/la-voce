@@ -712,3 +712,48 @@ body {
   background: #FFFDF8;
   border: 1px solid #F0E9DA;
 }
+
+/* ============================================================================
+   ★見本の 色（★2026-09-11・坂本さんの お指図「画面のベースとなっている色も合わせて」）
+
+   ★出どころ docs/design/pack-final/00-動く見本（さわれる・全画面）.html の :root
+     --paper:#FBF6EA  --card:#fff     --line:#E4DAC4  --line2:#F0E9DA
+     --ink:#261913    --ink2:#6D5D50  --ink3:#7C6C5E
+     --enji:#840C24   --yama:#8C6115  --midori:#447862
+
+   ★★実際に ずれていました（★数字で 確かめました）。
+     下地 5 ／ カードの白 7 ／ 枠の線 5 ／ えんじ 19 ／ 緑 11。
+
+   ★★lib/tokens.js の C は、★38人の 画面にも 使われています。
+     ★★そこを 変えると、★全員の 画面が 変わります。
+     ★「38人の 画面を 1つも 変えない」という お決めに 触れます。
+   ★→ ★門の中だけに 効く 形に します。★根に 印（.woolsong-v2）を 付け、
+     ★その 中でだけ 色を 差し替えます。★門の外には 印が 付きません。
+
+   ★★読みやすさを 確かめました（★4.5 が 目安）。
+     字 15.82 ／ うすい字 5.84 ／ えんじ 9.46 ／ 山吹 5.08 ／ 緑 4.74。
+     ★どれも 超えています。★読みにくく なりません。
+   ★見張り components/tests/mihon-color.test.js
+   ========================================================================== */
+.woolsong-v2 {
+  --wl-paper: #FBF6EA;
+  --wl-card: #FFFFFF;
+  --wl-line: #E4DAC4;
+  --wl-line2: #F0E9DA;
+  --wl-ink: #261913;
+  --wl-ink2: #6D5D50;
+  --wl-enji: #840C24;
+  --wl-yama: #8C6115;
+  --wl-midori: #447862;
+  background: var(--wl-paper);
+  color: var(--wl-ink);
+}
+/* ★★下地と カードは、★いまの 色を 使っている ところを そのまま 塗り替えます。
+   ★★inline の 色は CSS より 強いので、★!important が 要ります。
+   ★★門の外には この 印が 付かないので、★1つも 効きません。 */
+.woolsong-v2 [style*="#F6F1E7"], .woolsong-v2 [style*="rgb(246, 241, 231)"] {
+  background-color: var(--wl-paper) !important;
+}
+.woolsong-v2 [style*="#FFFDF8"], .woolsong-v2 [style*="rgb(255, 253, 248)"] {
+  background-color: var(--wl-card) !important;
+}

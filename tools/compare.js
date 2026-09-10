@@ -57,37 +57,45 @@ function readEnv() {
  *   ★open　  中の 畳んだ ところを 開くか
  */
 const SCREENS = [
-  { key: "A01-きょう", tab: "きょう" },
-  { key: "A03-記録", tab: "記録" },
-  { key: "A03-記録-ねむり", tab: "記録", steps: ["昨夜の 睡眠"], sheet: true },
-  { key: "A03-記録-こえ", tab: "記録", steps: ["本番以外で 声を使った時間"], sheet: true },
-  { key: "A03-記録-ほんばん", tab: "記録", steps: ["本番・レッスン"], sheet: true },
-  { key: "A03-記録-たべ", tab: "記録", steps: ["食べたもの"], sheet: true },
-  { key: "A03-記録-からだ", tab: "記録", steps: ["からだのこと"], sheet: true },
-  { key: "A03-記録-ひとこと", tab: "記録", steps: ["ひとこと"], sheet: true },
-  { key: "A04-ならべる", tab: "ふりかえる", steps: ["ならべる"] },
-  { key: "A04-ならべる-4週", tab: "ふりかえる", steps: ["ならべる", "4週"] },
-  { key: "A04-ならべる-3か月", tab: "ふりかえる", steps: ["ならべる", "3か月"] },
-  { key: "A05-さかのぼる", tab: "ふりかえる", steps: ["さかのぼる"] },
-  { key: "B01-くらべる", tab: "ふりかえる", steps: ["くらべる"] },
-  { key: "B01-くらべる-前の日", tab: "ふりかえる", steps: ["くらべる", "前の日"] },
-  { key: "B03-かぞえる", tab: "ふりかえる", steps: ["かぞえる"] },
-  { key: "A06-ノート", tab: "ノート" },
-  { key: "A06-ノート-レパートリー", tab: "ノート", steps: ["レパートリー"] },
-  { key: "A06-ノート-連絡", tab: "ノート", steps: ["連絡"] },
-  { key: "A06-ノート-受診用", tab: "ノート", steps: ["受診用"] },
+  { key: "画面-きょう", tab: "きょう" },
+  { key: "画面-記録", tab: "記録" },
+  { key: "SH-ねむり", tab: "記録", steps: ["昨夜の 睡眠"], sheet: true },
+  { key: "SH-こえ", tab: "記録", steps: ["本番以外で 声を使った時間"], sheet: true },
+  { key: "SH-honban", tab: "記録", steps: ["本番・レッスン"], sheet: true },
+  { key: "SH-tabe", tab: "記録", steps: ["食べたもの"], sheet: true },
+  { key: "SH-karada", tab: "記録", steps: ["からだのこと"], sheet: true },
+  { key: "SH-hito", tab: "記録", steps: ["ひとこと"], sheet: true },
+  { key: "画面-ふりかえる-並べる", tab: "ふりかえる", steps: ["ならべる"] },
+  { key: "画面-ふりかえる-並べる-4週", tab: "ふりかえる", steps: ["ならべる", "4週"] },
+  { key: "画面-ふりかえる-並べる-3か月", tab: "ふりかえる", steps: ["ならべる", "3か月"] },
+  { key: "画面-ふりかえる-さかのぼる", tab: "ふりかえる", steps: ["さかのぼる"] },
+  { key: "画面-ふりかえる-くらべる", tab: "ふりかえる", steps: ["くらべる"] },
+  { key: "画面-ふりかえる-くらべる-前の日", tab: "ふりかえる", steps: ["くらべる", "前の日"] },
+  { key: "画面-ふりかえる-かぞえる", tab: "ふりかえる", steps: ["かぞえる"] },
+  // ★★くらべる の 中の 行を 押して 開く 画面です（★見本 SC['順番']）。
+  { key: "SC-順番", tab: "ふりかえる", steps: ["くらべる", "調べていることの 順番"] },
+  { key: "画面-ノート", tab: "ノート" },
+  { key: "画面-ノート-レパートリー", tab: "ノート", steps: ["レパートリー"] },
+  { key: "画面-ノート-連絡", tab: "ノート", steps: ["連絡"] },
+  { key: "画面-ノート-受診用", tab: "ノート", steps: ["受診用"] },
   // ★★「＋」を 押した ときの 画面（★2026-09-11・坂本さんの ご要望）。
   //   ★★Fable の 決まり「every sheet / modal / collapsible opened and
   //     captured as separate frames」に あたる ぶんです。
   //   ★★一覧だけでは、★書く ときの 画面が 突き合わせから 抜けます。
-  { key: "A06-ノート-稽古-書く", tab: "ノート", steps: ["稽古", "＋"] },
-  { key: "A06-ノート-レパートリー-足す", tab: "ノート", steps: ["レパートリー", "＋"] },
-  { key: "A06-ノート-新しく書く", tab: "ノート", steps: ["連絡", "＋"] },
-  { key: "J01-ひつじ-ながめる", tab: "ひつじ", steps: ["ながめる"] },
-  { key: "J02-ひつじ-おうち", tab: "ひつじ", steps: ["おうち"] },
-  { key: "A08-ひつじ-したく", tab: "ひつじ", steps: ["したく"] },
-  { key: "J04-ひつじ-たな", tab: "ひつじ", steps: ["たな"] },
-  { key: "A10-もっと", tab: "きょう", steps: ["もっとを開く"] }
+  { key: "SC-稽古を書く", tab: "ノート", steps: ["稽古", "＋"] },
+  { key: "SH-newrep", tab: "ノート", steps: ["レパートリー", "＋"] },
+  // ★★SH-newnote は、★実装の 辿り方が まだ 分かっていません。
+  //   ★★見本では 稽古の 中の シートです。★実装では「稽古」＋「＋」を 押すと
+  //     ★SC-稽古を書く（★1枚の 画面）に なります。★別の シートが ありません。
+  //   ★★2026-09-11、★「連絡」＋「＋」で 撮っていました。★誤りです。
+  //     ★連絡の ＋ は、★Opus の 裁定（★案A）で 出さない ように しました。
+  //   ★★見つかるまで、★撮りません。★あるふりを しません。
+  //     ★くらべる 絵には「★ありません」と 出ます。
+  { key: "画面-ひつじ-ながめる", tab: "ひつじ", steps: ["ながめる"] },
+  { key: "画面-ひつじ-おうち", tab: "ひつじ", steps: ["おうち"] },
+  { key: "SH-したく", tab: "ひつじ", steps: ["したく"] },
+  { key: "画面-ひつじ-たな", tab: "ひつじ", steps: ["たな"] },
+  { key: "SC-もっと", tab: "きょう", steps: ["もっとを開く"] }
 ];
 
 async function capture(env) {
@@ -187,6 +195,31 @@ async function capture(env) {
         }
         const file = path.join(FRAMES, sc.key + "@" + vp.name + ".png");
         await page.screenshot({ path: file, fullPage: true });
+        // ★★絵と いっしょに、★画面の 中身も 書き出します（★2026-09-11）。
+        //   ★★Fable の 決まり ⑤ の ための 土台です。
+        //     ★(a) 並び順を くらべる　★(b) 出ては いけない 部品を 見張る
+        //   ★★絵は 人が 見る もの。★この 書き出しは 機械が 見る ものです。
+        //   ★★見える ものだけを 拾います（★display:none は 入れません）。
+        const dump = await page.evaluate(() => {
+          const out = [];
+          const walk = (el) => {
+            const st = window.getComputedStyle(el);
+            if (st.display === "none" || st.visibility === "hidden") return;
+            const tag = el.tagName.toLowerCase();
+            const own = [...el.childNodes]
+              .filter((n) => n.nodeType === 3)
+              .map((n) => n.textContent.trim()).join(" ").trim();
+            if (own && ["button", "h1", "h2", "h3", "p", "span", "label",
+              "summary", "div", "a", "li", "figcaption"].includes(tag)) {
+              out.push({ tag, text: own.replace(/\s+/g, " ").slice(0, 60) });
+            }
+            [...el.children].forEach(walk);
+          };
+          walk(document.body);
+          return out;
+        });
+        fs.writeFileSync(file.replace(/\.png$/, ".json"),
+          JSON.stringify(dump, null, 1), "utf8");
         console.log("  ✓ " + sc.key + "@" + vp.name);
       } catch (e) {
         missed.push(sc.key + "@" + vp.name + "  " + String(e.message).split("\n")[0].slice(0, 70));
