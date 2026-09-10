@@ -38,35 +38,32 @@ export const SheetSlotContext = createContext(null);
 
 export function SheetSlot({ label }) {
   const ctx = useContext(SheetSlotContext);
-  // ★★2026-09-11、★getElementById を やめました。
-  //   ★★前は「1枚が 描かれた あとに 探す」形でした。
-  //     ★★見つからなくても 黙って 何も 出しません。★失敗が 見えません。
-  //   ★★いまは、★入れ物の ほうから 名乗ります（★ref）。
-  //     ★探しに 行かないので、★探し損ねる 道が ありません。
-  //   ★★受け取り手が いなければ、★入れ物も 置きません。
+  // ★★2026-09-11、★坂本さんの お決め ㋒。
+  //   ★★見本に 無い ものは、★畳んで おきます。
+  //     ★開かなければ 見本と 同じに 見えます。
+  //     ★書く 道は 残ります。★欄を 1つも 減らしていません。
+  //   ★★はじめは 閉じています（★open を 付けません）。
+  //   ★★中身は 閉じていても 木の 上に あります。★打ちかけの 字も 消えません。
+  const slot = (
+    <div className="record-v2" ref={ctx ? ctx.setNode : null} />
+  );
+  // ★★入る ものが 無い 1枚では、★仕切りを 出しません。
+  //   ★空の「詳しく」を 開かせない ため。
+  if (!label) return <div style={{ marginTop: rem(8) }}>{slot}</div>;
   return (
-    <>
-      {/* ★★仕切り（★2026-09-11）。
-          ★★引っ越してきた 節が ある ときだけ 出します。
-            ★★無い ときに 出すと、★空の 見出しに なります。
-          ★★出どころ 坂本さんの ご報告（★「分で書く 機能しか ない ようです」）。
-            ★★実は 下に 入っていましたが、★仕切りが 無く、
-              ★1枚を 下まで 送らないと 見えませんでした。 */}
-      {label ? (
-        <div style={{
-          display: "flex", alignItems: "center", gap: rem(8),
-          marginTop: rem(16), marginBottom: rem(2)
-        }}>
-          <span style={{ ...TYPE.mini, color: C.inkSoft }}>{label}</span>
-          <span aria-hidden="true" style={{ flex: 1, height: 1, background: C.line }} />
-        </div>
-      ) : null}
-      {/* ★★1枚の 中にも 同じ 印を 付けます（★2026-09-11）。
-          ★★引っ越してきた 節は、★ここへ 差し込まれます。
-            ★★記録の 画面の 器の 外に 出るので、★印を もう一度 付けます。 */}
-      <div className="record-v2" ref={ctx ? ctx.setNode : null}
-        style={{ marginTop: rem(8) }} />
-    </>
+    <details style={{ marginTop: rem(14) }}>
+      <summary style={{
+        display: "flex", alignItems: "center", gap: rem(8),
+        minHeight: 44, cursor: "pointer", listStyle: "none",
+        ...TYPE.mini, color: C.inkSoft, fontFamily: FONT_STACK
+      }}>
+        <span>{label}</span>
+        <span aria-hidden="true" style={{ flex: 1, height: 1, background: C.line }} />
+        {/* ★★開くための 目印。★字で 出します。★色だけに 意味を 持たせません。 */}
+        <span aria-hidden="true" style={{ ...TYPE.usual }}>ひらく</span>
+      </summary>
+      <div style={{ marginTop: rem(8) }}>{slot}</div>
+    </details>
   );
 }
 
