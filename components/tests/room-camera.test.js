@@ -108,7 +108,10 @@ function near(a, b, label) { ok(Math.abs(a - b) < 1e-6, label + "  （得た値:
   {
     const r = readRaw("components", "CharacterHome.jsx");
     const camAt = r.indexOf("<div style={cameraStyle(cam, {");
-    const endAt = r.indexOf("      </div>\n      {(placedFurniture.length > 0");
+    // ★★2026-09-11、★場面の 入れ物（★4：3・下端ぞろえ）を 足しました。
+    //   ★閉じが 1つ 増えたので、★探す 文字も 変わりました。
+    //   ★★見張るのは「閉じている」ことです。★文字の 形では ありません。
+    const endAt = r.indexOf("</div>{/* ★カメラを 閉じます */}");
     const btnAt = r.indexOf("setEditMode((v) => !v)", camAt);
     ok(camAt > 0 && endAt > camAt, "★カメラの 入れ物が 閉じている");
     ok(btnAt > endAt, "★「うごかす」の 押しどころは、★カメラの 外に ある");

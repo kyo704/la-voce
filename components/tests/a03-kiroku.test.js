@@ -1,9 +1,9 @@
 // ============================================================================
 // A03「記録 ／ 2タップで完成」を、★見本に そろえた ことの 見張り
 //
-//   ★出どころ docs/design/pack/screens/A03-記録2タップで完成.html（★HTML が 正）
-//            docs/design/pack/screens/A03-記録2タップで完成.txt（★画面に 出る 文字）
-//            docs/design/pack/screens/A03-記録2タップで完成.notes.md（★画面に 出ない 注記）
+//   ★出どころ docs/design/pack-final/screens/A03-記録2タップで完成.html（★HTML が 正）
+//            docs/design/pack-final/screens/A03-記録2タップで完成.txt（★画面に 出る 文字）
+//            docs/design/pack-final/screens/A03-記録2タップで完成.notes.md（★画面に 出ない 注記）
 //
 //   ★★確かめること
 //     ① 画面に 出る 文字が、★見本の .txt と 食い違わないこと。
@@ -27,7 +27,7 @@ function ok(cond, label) {
 
 (async () => {
   const ROOT = path.join(__dirname, "..", "..");
-  const dir = ["docs", "design", "pack", "screens"];
+  const dir = ["docs", "design", "pack-final", "screens"];
   const html = readRaw(...dir, "A03-記録2タップで完成.html");
   const txt = readRaw(...dir, "A03-記録2タップで完成.txt");
   const notes = readRaw(...dir, "A03-記録2タップで完成.notes.md");

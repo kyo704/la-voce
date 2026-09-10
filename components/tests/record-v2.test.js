@@ -271,7 +271,7 @@ const USER_ID = "test-user-id";
     //     ★★.txt（画面に 出る 文字だけ）にも 入っていません。
     //   ★★見張りが、★注記を 画面に 写した 状態を 固定していました。
     //     ★消さずに、★向きを 変えます ── ★「注記を 画面に 写していないこと」。
-    const a03txt = readRaw("docs", "design", "pack", "screens", "A03-記録2タップで完成.txt");
+    const a03txt = readRaw("docs", "design", "pack-final", "screens", "A03-記録2タップで完成.txt");
     assertTrue(!/「完了」はありません/.test(a03txt),
       "★見本の 画面の 文に、★但し書きは 入っていない");
     assertTrue(!/「完了」はありません|ここでもう保存されて/.test(head),

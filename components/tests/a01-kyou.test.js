@@ -1,7 +1,7 @@
 // ============================================================================
 // A01「きょう ／ 生徒」を、★見本に そろえた ことの 見張り
 //
-//   ★出どころ docs/design/pack/screens/A01-きょう生徒.html（★HTML が 正）
+//   ★出どころ docs/design/pack-final/screens/A01-きょう生徒.html（★HTML が 正）
 //            docs/design/pack/tokens.md（tokens-2026-09-10）
 //
 //   ★★確かめること
@@ -29,10 +29,10 @@ function ok(cond, label) {
 
 (async () => {
   const ROOT = path.join(__dirname, "..", "..");
-  const MIHON = path.join(ROOT, "docs", "design", "pack", "screens", "A01-きょう生徒.html");
+  const MIHON = path.join(ROOT, "docs", "design", "pack-final", "screens", "A01-きょう生徒.html");
 
   console.log("⓪ 見本が 手元に ある");
-  ok(fs.existsSync(MIHON), "★A01 の HTML が docs/design/pack/screens/ に ある");
+  ok(fs.existsSync(MIHON), "★A01 の HTML が docs/design/pack-final/screens/ に ある");
   const mihon = fs.readFileSync(MIHON, "utf8");
 
   const src = fs.readFileSync(path.join(ROOT, "lib", "uiKit.js"), "utf8");
