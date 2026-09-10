@@ -10,7 +10,7 @@
 //   ★★ここは「並べるだけ」です。★数えません。★決めません。
 // ============================================================================
 
-import { useState } from "react";
+import { useState, useContext, createContext } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, FONT_STACK, rem, cardStyle } from "@/lib/uiKit";
 import BottomSheet, { SheetNote, Pills } from "@/components/BottomSheet";
@@ -34,10 +34,36 @@ function Mini({ children, style }) {
  *   ★★だから 入れ物は 1つだけです。★22枚に 1つずつ 作りません。
  *     ★2つ あると、★節が どちらに 出たか 分からなく なります。
  */
-export const SHEET_SLOT_ID = "record-sheet-slot";
+export const SheetSlotContext = createContext(null);
 
-export function SheetSlot() {
-  return <div id={SHEET_SLOT_ID} style={{ marginTop: rem(14) }} />;
+export function SheetSlot({ label }) {
+  const ctx = useContext(SheetSlotContext);
+  // ★★2026-09-11、★getElementById を やめました。
+  //   ★★前は「1枚が 描かれた あとに 探す」形でした。
+  //     ★★見つからなくても 黙って 何も 出しません。★失敗が 見えません。
+  //   ★★いまは、★入れ物の ほうから 名乗ります（★ref）。
+  //     ★探しに 行かないので、★探し損ねる 道が ありません。
+  //   ★★受け取り手が いなければ、★入れ物も 置きません。
+  return (
+    <>
+      {/* ★★仕切り（★2026-09-11）。
+          ★★引っ越してきた 節が ある ときだけ 出します。
+            ★★無い ときに 出すと、★空の 見出しに なります。
+          ★★出どころ 坂本さんの ご報告（★「分で書く 機能しか ない ようです」）。
+            ★★実は 下に 入っていましたが、★仕切りが 無く、
+              ★1枚を 下まで 送らないと 見えませんでした。 */}
+      {label ? (
+        <div style={{
+          display: "flex", alignItems: "center", gap: rem(8),
+          marginTop: rem(16), marginBottom: rem(2)
+        }}>
+          <span style={{ ...TYPE.mini, color: C.inkSoft }}>{label}</span>
+          <span aria-hidden="true" style={{ flex: 1, height: 1, background: C.line }} />
+        </div>
+      ) : null}
+      <div ref={ctx ? ctx.setNode : null} style={{ marginTop: rem(8) }} />
+    </>
+  );
 }
 
 /**
@@ -47,9 +73,11 @@ export function SheetSlot() {
  *     ★同じ 列への 入口が 2つに なると、★片方で 書いて もう片方で 消えます。
  *   ★★これが「③引っ越す ── 機能は そのまま。置き場所だけ」の 意味です。
  */
-export function SectionSheet({ spec, onClose }) {
+export function SectionSheet({ spec, onClose, detailLabel }) {
   return (
     <BottomSheet title={spec.title} onClose={onClose} closeLabel={spec.done}>
+      {/* ★★この 1枚は、★引っ越してきた 節そのものが 中身です。
+          ★★だから 仕切りを 出しません。★上に 何も ありません。 */}
       <SheetSlot />
       {spec.note ? (
         <SheetNote>
@@ -68,7 +96,7 @@ export function SectionSheet({ spec, onClose }) {
  *   ★★選択肢は 渡してもらいます。★ここに 書き写しません。
  *     ★いまの SPEECH_MINUTE_CHOICES と 見本の 4つは 同じです。
  */
-export function KoeSheet({ choices, value, onChange, onClose }) {
+export function KoeSheet({ choices, value, onChange, onClose, detailLabel }) {
   // ★★「詳しく 書く（分で）」（★見本の btn g）。
   //   ★★2026-09-11 まで、★呼ぶ側が onDetail を 渡していなかったので、
   //     ★★このボタンは 1度も 出たことが ありませんでした（★notOutDates と 同じ形）。
@@ -118,7 +146,7 @@ export function KoeSheet({ choices, value, onChange, onClose }) {
             ...TYPE.li, fontFamily: FONT_STACK
           }}>{KOE.detail}</button>
       )}
-      <SheetSlot />
+      <SheetSlot label={detailLabel} />
     </BottomSheet>
   );
 }
@@ -134,7 +162,7 @@ export function KoeSheet({ choices, value, onChange, onClose }) {
  *   @param onDone     (bedtime, hours) を 受け取ります
  */
 export function NemuriSheet({
-  bedtime, sleepHours, prevBedtime, prevSleepHours, onDone, onClose
+  bedtime, sleepHours, prevBedtime, prevSleepHours, onDone, onClose, detailLabel
 }) {
   // ★★初めから 入っている 値（★2026-09-11 に 直しました）。
   //   ★★1枚の 下に「きのうの値を 初めから 入れています」と 書いてあるのに、
@@ -191,7 +219,7 @@ export function NemuriSheet({
           ...TYPE.li, background: C.curtain, color: "#FFFDF8",
           fontWeight: 700, fontFamily: FONT_STACK
         }}>{NEMURI.done}</button>
-      <SheetSlot />
+      <SheetSlot label={detailLabel} />
     </BottomSheet>
   );
 }
@@ -203,7 +231,7 @@ export function NemuriSheet({
  *   ★★数を 出しません。★「◯つ 選びました」と 書きません。
  *   ★★良い・悪いを 決めません（★見本の 但し書き）。
  */
-export function MarksSheet({ spec, options, value, onChange, time, onTime, times, timeLabel, onClose }) {
+export function MarksSheet({ spec, options, value, onChange, time, onTime, times, timeLabel, onClose, detailLabel }) {
   const chosen = Array.isArray(value) ? value : [];
   const toggle = (v) =>
     onChange(chosen.includes(v) ? chosen.filter((x) => x !== v) : [...chosen, v]);
@@ -223,7 +251,7 @@ export function MarksSheet({ spec, options, value, onChange, time, onTime, times
         </>
       ) : null}
       <SheetNote>{spec.note}</SheetNote>
-      <SheetSlot />
+      <SheetSlot label={detailLabel} />
     </BottomSheet>
   );
 }

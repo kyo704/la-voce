@@ -154,7 +154,7 @@ import { mayEnterOps, mayEditRoster, permsOfMember } from "@/lib/opsShell";
 import { rosterCount } from "@/lib/orgRoster";
 import RecordV2Head from "@/components/RecordV2Head";
 import {
-  KoeSheet, NemuriSheet, MarksSheet, SheetRow, ListSheet, SectionSheet, SHEET_SLOT_ID
+  KoeSheet, NemuriSheet, MarksSheet, SheetRow, ListSheet, SectionSheet, SheetSlotContext
 } from "@/components/RecordSheets";
 import {
   KOE, NEMURI, KARADA, TABE, sleepWord, ACCOUNT_ROWS, TSUCHI_ROWS, TSUCHI_NOTE,
@@ -2651,12 +2651,11 @@ const RecordFoldContext = createContext({ layoutV2: false, openSheet: null });
  *   ★★行き先の 入れ物は、★1枚が 描かれた あとに 現れます。
  *     ★だから 描き終わってから 探します（★useEffect）。
  */
-function RecordSectionHost({ layoutV2, openSheet, children }) {
-  const [slot, setSlot] = useState(null);
-  useEffect(() => {
-    if (!layoutV2 || !openSheet) { setSlot(null); return; }
-    setSlot(document.getElementById(SHEET_SLOT_ID));
-  }, [layoutV2, openSheet]);
+function RecordSectionHost({ layoutV2, openSheet, slot, children }) {
+  // ★★2026-09-11、★探しに 行くのを やめました。
+  //   ★★前は 1枚が 描かれた あとに getElementById で 探していました。
+  //     ★★見つからなければ 何も 出しません。★★失敗が 誰にも 見えません。
+  //   ★★いまは、★1枚の 入れ物が ref で 名乗り、★それを 受け取ります。
   if (layoutV2 && openSheet) {
     return slot ? createPortal(children, slot) : null;
   }
@@ -5566,6 +5565,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★どれが 開いているかを、★1つの 名前で 持ちます。
   //     ★1枚ごとに 真偽値を 置くと、★2枚 同時に 開く 形が 作れてしまいます。
   const [recordSheet, setRecordSheet] = useState(null);
+  // ★★引っ越してきた 節を 置く 場所（★2026-09-11）。
+  //   ★★1枚の 中の 入れ物が、★ref で ここに 名乗ります。
+  //     ★★探しに 行かないので、★探し損ねる 道が ありません。
+  //   ★★1枚を 閉じたら null に 戻ります（★ref の 外し忘れが 起きません）。
+  const [sheetSlot, setSheetSlot] = useState(null);
+  const sheetSlotCtx = useMemo(() => ({ setNode: setSheetSlot }), []);
   const [ownedOpen, setOwnedOpen] = useState(false);
   const [ledgerRows, setLedgerRows] = useState([]);
   useEffect(() => {
@@ -12947,6 +12952,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }
 
   return (
+    // ★★1枚の 中の 入れ物と、★引っ越してきた 節の 受け渡し（★2026-09-11）。
+    //   ★★記録の 画面と、★下から 上がる 1枚は、★木の 上で 離れています。
+    //     ★だから 場所を 直に 渡せません。★ここ 1つで つなぎます。
+    <SheetSlotContext.Provider value={sheetSlotCtx}>
     <div style={{ background: C.paper, color: C.ink, minHeight: "100vh" }}>
       {/* ★★大事な操作の前の、もう一度の確かめ（判断-メールを失うこと §4）。
           ★Face ID を、こちらで呼ぶのではありません。
@@ -14239,7 +14248,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 )}
 
                 {formData && (
-                  <RecordSectionHost layoutV2={layoutV2} openSheet={recordSheet}>
+                  <RecordSectionHost layoutV2={layoutV2} openSheet={recordSheet} slot={sheetSlot}>
                     {/* ★★門の中では、★この切替を 出しません（★2026-09-10）。
                         ★★見本③は、★5つの 折りたたみ だけです。★切替は ありません。
                         ★★折りたたみと 切替が 重なると、
@@ -21900,6 +21909,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             setFormData(next);
             handleSave(next);
           }}
+          detailLabel={sheetHasSections("ねむり") ? "詳しく" : null}
           onClose={() => setRecordSheet(null)} />
       )}
       {layoutV2 && formData && recordSheet === "たべ" && (
@@ -21920,6 +21930,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             setFormData(nx);
             handleSave(nx);
           }}
+          detailLabel={sheetHasSections("たべ") ? "詳しく" : null}
           onClose={() => setRecordSheet(null)} />
       )}
       {layoutV2 && formData && recordSheet === "からだ" && (
@@ -21932,6 +21943,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             setFormData(nx);
             handleSave(nx);
           }}
+          detailLabel={sheetHasSections("からだ") ? "詳しく" : null}
           onClose={() => setRecordSheet(null)} />
       )}
       {layoutV2 && formData && recordSheet === "こえ" && (
@@ -21943,6 +21955,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             setFormData(next);
             handleSave(next);
           }}
+          detailLabel={sheetHasSections("こえ") ? "詳しく" : null}
           onClose={() => setRecordSheet(null)} />
       )}
       {/* ★★引っ越してきた 節 だけの 1枚（★坂本さんの お決め・2026-09-11）。
@@ -21979,5 +21992,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           onClose={() => setOwnedOpen(false)} />
       )}
     </div>
+    </SheetSlotContext.Provider>
   );
 }

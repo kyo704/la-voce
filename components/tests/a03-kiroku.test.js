@@ -157,9 +157,29 @@ listed.forEach((k) => {
   ok(uniqueFolds.includes(k), `表の ${k} は、実際に ある 節`);
 });
 // ★★入れ物は 1つだけ。★2つ あると、★どちらに 出たか 分からなく なります。
-const slotCount = (readRaw("components", "RecordSheets.jsx")
-  .match(/id=\{SHEET_SLOT_ID\}/g) || []).length;
-eq(slotCount, 1, "節が 入る ところは 1か所だけ");
+const sheetsRaw = readRaw("components", "RecordSheets.jsx");
+eq((sheetsRaw.match(/export function SheetSlot\(/g) || []).length, 1,
+  "節が 入る ところを 作る 場所は 1か所だけ");
+// ★★2026-09-11、★探しに 行くのを やめました。
+//   ★★getElementById は、★見つからなくても 黙って 何も 出しません。
+//     ★★失敗が 誰にも 見えない 形でした。
+//   ★★いまは 入れ物の ほうが ref で 名乗ります。★探し損ねる 道が ありません。
+{
+  // ★★見るのは、★差し込みの 器（RecordSectionHost）の 中だけです。
+  //   ★★画面には ほかにも getElementById を 使う 所が あります
+  //     （★節へ 送る 動きなど）。★それは この話では ありません。
+  const vt = readCode("components", "VocalTracker.jsx");
+  const from = vt.indexOf("function RecordSectionHost(");
+  const host = from < 0 ? "" : vt.slice(from, vt.indexOf("function SectionCard(", from));
+  ok(from >= 0, "★差し込みの 器が ある");
+  ok(!/getElementById/.test(host),
+    "★節の 差し込みに getElementById を 使っていない");
+  ok(/createPortal\(children, slot\)/.test(host), "★渡された 場所へ 差し込む");
+}
+ok(/SheetSlotContext/.test(sheetsRaw) && /ctx \? ctx\.setNode : null/.test(sheetsRaw),
+  "★入れ物が ref で 名乗る");
+ok(/<SheetSlotContext\.Provider/.test(readCode("components", "VocalTracker.jsx")),
+  "★受け取り手が 置いてある");
 
 // ── ⑧ ①消す が 門の中だけ ────────────────────────────────
 console.log("\n⑧ ①消す の 2つ（★門の外の 38人には 残る）");
