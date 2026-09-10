@@ -35,6 +35,10 @@ import { LANGUAGES, createTranslator } from "@/lib/translations";
 import { BRAND, OPERATOR_CONTACT_EMAIL } from "@/lib/brand";
 import { isLegacyOrigin } from "@/lib/baseUrl";
 import { watchForUpdates, reloadOnceOnControllerChange } from "@/lib/swUpdate";
+import {
+  POLL_MS, bakedSha, fetchLiveSha, shouldReload, isStale,
+  readLastReloadAt, markReloaded
+} from "@/lib/autoUpdate";
 // 曲目の「同じ曲か」。★引くときも書くときも、必ずこれを通すこと。
 //   生の名前をそのまま鍵にすると、末尾の空白や全角半角の違いで別の曲になります。
 import { repertoireKey, lookupRepertoire, resolveRepertoireName, isSameRepertoire } from "@/lib/repertoireTitle";
@@ -10090,6 +10094,79 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   下書きを分け、★保存に成功したときだけ profile に移します。
   //   163か所の読み取りは profile のまま（＝保存済みの真実）です。
   const [profileDraft, setProfileDraft] = useState(null);
+
+  // ============================================================================
+  // ★自動で 新しい版に する（★2026-09-11・坂本さんの お決め）
+  //
+  //   ★★「書きかけが あるときは、★次に その画面を 離れるまで 待つ。
+  //     ★通知も 出さない」
+  //
+  //   ★★見るのは、★この 画面が 焼かれた 版と、★いま 配信されている 版です。
+  //     ★Service Worker の 版では ありません。
+  //     ★★きょうの 詰まりは、★SW の 版では なく 覚えた HTML でした。
+  //     ★★この 形なら、★何が 古いものを 持っていても 効きます。
+  //
+  //   ★★決めは lib/autoUpdate.js が 持ちます。★ここで 決めません。
+  // ============================================================================
+  // ★★書きかけが あるか。★1つでも あれば、★読み込み直しません。
+  //   ★★保存の 途中／記録の 書きかけ／羊の 着せかえ／人となりの 下書き／
+  //     ★まだ 送れていない 出欠。
+  const hasDraft = saveStatus === "saving"
+    || characterDirty
+    || profileDraft != null
+    || (unsentAttendance || []).length > 0
+    || activeTab === "today";
+  const hasDraftRef = useRef(hasDraft);
+  useEffect(() => { hasDraftRef.current = hasDraft; }, [hasDraft]);
+  // ★★新しい 版が 出ていることを 覚えておきます。
+  //   ★書きかけが 済んだ 瞬間に、★もう一度 聞きに 行かずに 済みます。
+  const liveRef = useRef(null);
+  const didReloadRef = useRef(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const baked = bakedSha();
+    if (!baked) return undefined;   // ★手元の 組み立てでは 何も しません
+    let alive = true;
+
+    const tryReload = () => {
+      if (!alive || didReloadRef.current) return;
+      const ok = shouldReload({
+        baked,
+        live: liveRef.current,
+        dirty: hasDraftRef.current,
+        already: didReloadRef.current,
+        lastAt: readLastReloadAt(),
+        now: Date.now()
+      });
+      if (!ok) return;
+      didReloadRef.current = true;
+      markReloaded(Date.now());
+      // ★★通知を 出しません（★お決め）。★黙って 新しく なります。
+      window.location.reload();
+    };
+
+    const check = async () => {
+      if (!alive || didReloadRef.current) return;
+      const live = await fetchLiveSha();
+      if (!alive || !live) return;
+      liveRef.current = live;
+      // ★★新しい 版が 出ているか（★書きかけは 見ません）。
+      //   ★出ていなければ、★何も しません。
+      if (!isStale(baked, live)) return;
+      tryReload();
+    };
+
+    // ★★戻ってきた ときにも 見ます。★何日も 開いたままの 方の ためです。
+    const onShow = () => { if (document.visibilityState === "visible") check(); };
+    document.addEventListener("visibilitychange", onShow);
+    const timer = setInterval(check, POLL_MS);
+    check();
+    // ★★画面を 移ったら、★待っていた ぶんを ここで 済ませます。
+    //   ★「次に その画面を 離れるまで 待つ」の、★「離れた」ところです。
+    tryReload();
+    return () => { alive = false; clearInterval(timer); document.removeEventListener("visibilitychange", onShow); };
+  }, [activeTab]);
   // ★下書きが「在る」ことと、「変わった」ことは、別です（2026-09-03）。
   //   ★下書きは、プロフィールの画面を開いただけで作られます（9331）。
   //     ★だから、1文字も編集していなくても「保存されていません」が出ていました。
