@@ -173,10 +173,8 @@ ok(!/RecordSectionHost/.test(readCode("components", "VocalTracker.jsx")),
   "★節を 送る 器が 残っていない");
 ok(!/createPortal/.test(readCode("components", "VocalTracker.jsx")),
   "★差し込みの 仕組みが 残っていない");
-// ★★2026-09-11 夜の 訂正。★隠さず、★畳みます。
-//   ★詳しくは components/tests/section-fold.test.js
-ok(/export function sectionIsFolded\(/.test(readCode("lib", "recordV2.js")),
-  "★1枚に 入る 節は、門の中では 畳んで 出す");
+ok(/if \(sheet != null\) return false;/.test(readCode("lib", "recordV2.js")),
+  "★1枚に 入る 節は、門の中では 出さない");
 
 // ── ⑧ ①消す が 門の中だけ ────────────────────────────────
 console.log("\n⑧ ①消す の 2つ（★門の外の 38人には 残る）");

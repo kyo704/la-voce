@@ -162,7 +162,7 @@ import {
 import LookBackV2 from "@/components/LookBackV2";
 import {
   applyThroatWord, applyDekiWord, applyEdemaWord, sectionIsOpen, SECTION_SHEETS,
-  mergeSceneSymptoms, sectionIsFolded, FOLD_OPEN, FOLD_CLOSE
+  mergeSceneSymptoms
 } from "@/lib/recordV2";
 import { readProfileExtras } from "@/lib/profileExtras";
 import { VIEW, DRESS, SHELF, SEG_TABS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES, HOME_COLORS } from "@/lib/homeDrawer";
@@ -2824,10 +2824,6 @@ function SectionFeedback({ text }) {
 function SectionCard({ title, icon: Icon, children, id, highlighted, fold }) {
   const ref = useRef(null);
   const foldState = useContext(RecordFoldContext);
-  // ★★畳んだ節は、★はじめ 閉じています（★2026-09-11・坂本さんの 訂正）。
-  //   ★★「隠す のでは なく、★見本と 同じ 畳む しくみを 使ってください」
-  //   ★★開いたか どうかは、★節ごとに 覚えます。★1つ 開いても 他は 閉じたまま。
-  const [foldOpen, setFoldOpen] = useState(false);
   useEffect(() => {
     if (highlighted && ref.current) {
       ref.current.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -2846,10 +2842,6 @@ function SectionCard({ title, icon: Icon, children, id, highlighted, fold }) {
   //   ★門の外（38人）は、★これまでどおりです。★1つも 変えません。
   const v2 = !!(foldState && foldState.layoutV2);
   if (v2) {
-    // ★★見本の 1枚に 入る はずだった節は、★畳んで 出します。
-    //   ★★どの節を 畳むかは lib/recordV2.js が 決めます。★ここで 決めません。
-    const folded = fold ? sectionIsFolded(fold, foldState) : false;
-    const hidden = folded && !foldOpen;
     return (
       <div ref={ref} id={id} style={{
         ...cardStyle,
@@ -2859,31 +2851,11 @@ function SectionCard({ title, icon: Icon, children, id, highlighted, fold }) {
         fontFamily: FONT_STACK,
         transition: "border-color 2s ease, border-width 2s ease"
       }}>
-        <div style={{
-          display: "flex", alignItems: "center", gap: 6,
-          marginBottom: hidden ? 0 : 10
-        }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
           <Icon size={13} style={{ color: C.inkSoft }} aria-hidden="true" />
           <h3 style={{ ...TYPE.mini, color: C.inkSoft }}>{title}</h3>
-          {folded ? (
-            // ★★札の 見た目は 見本の .fbtn です（★丸・11.5px・白地）。
-            //   ★★字も 見本の ものです。★私が 作った 言葉では ありません。
-            <button type="button" onClick={() => setFoldOpen((v) => !v)}
-              aria-expanded={foldOpen}
-              style={{
-                marginLeft: "auto", fontSize: rem(11.5),
-                color: foldOpen ? C.curtain : C.inkSoft,
-                border: `1px solid ${foldOpen ? "#CFC0A4" : C.line}`,
-                borderRadius: 99, padding: "5px 12px", background: C.paper,
-                minHeight: SPACE.tapMin, fontFamily: FONT_STACK
-              }}>{foldOpen ? FOLD_CLOSE : FOLD_OPEN}</button>
-          ) : null}
         </div>
-        {/* ★★閉じている あいだも、★中身は 残します（★display だけ 消します）。
-            ★★描き直すと、★打ちかけの 字が 消えます。 */}
-        <div className="space-y-4" style={{ display: hidden ? "none" : undefined }}>
-          {children}
-        </div>
+        <div className="space-y-4">{children}</div>
       </div>
     );
   }

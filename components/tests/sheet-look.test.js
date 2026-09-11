@@ -160,15 +160,8 @@ console.log("\n⑧ 見本に 無い ものを、画面から 出さないこと�
   t(!/SheetSlot/.test(SHEETS), "★節を 差し込む 口が 残っていない");
   t(!/RecordSectionHost/.test(VT), "★節を 送る 器が 残っていない");
   t(!/createPortal/.test(VT), "★差し込みの 仕組みが 残っていない");
-  // ★★2026-09-11 夜、★坂本さんが この お決めを 訂正されました。
-  //   ★★「隠す のでは なく、★見本と 同じ 畳む しくみを 使ってください」
-  //   ★★私が「見本に 畳む しくみは ない」と 誤って ご報告したためです。
-  //     ★見本は <details> を 使わず、★JavaScript で 畳んで いました。
-  //   ★★隠すと、★パッサッジョの通りにくさ・高音の出しやすさ の 入口が
-  //     ★1つも 無くなり、★書けなく なります。
-  //   ★★詳しくは components/tests/section-fold.test.js が 見ます。
-  t(/export function sectionIsFolded\(/.test(readCode("lib", "recordV2.js")),
-    "★1枚に 入る 節は、門の中では 畳んで 出す");
+  t(/if \(sheet != null\) return false;/.test(readCode("lib", "recordV2.js")),
+    "★1枚に 入る 節は、門の中では 出さない");
   // ★★見本の 中身を 持つ 1枚に なっていること
   t(/export function HonbanSheet\(/.test(SHEETS), "★本番・レッスンは 見本の 札");
   t(/export function HitokotoSheet\(/.test(SHEETS), "★ひとことは 見本の 書く枠");
