@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
-import { Card, Pill, Note, Li, Warn } from "@/components/UiV2";
+import { Card, Pill, Note, Li, Warn, Back, Switch } from "@/components/UiV2";
 import { LAGS, ITEMS, defaultLagOf, judgingLagOf } from "@/lib/lagChoice";
 import { LINE_UP_NOTE } from "@/lib/lineUp";
 import { FIRST_DAY_ONLY_LABEL } from "@/lib/compareGroups";
@@ -311,12 +311,10 @@ function OrderScreen({ order, onChange, onBack, message }) {
   const label = (k) => (ITEMS.find((x) => x.key === k) || {}).label || k;
   return (
     <div>
-      <button type="button" onClick={onBack}
-        style={{
-          display: "block", background: "transparent", border: "none",
-          padding: "10px 1px", minHeight: SPACE.tapMin,
-          color: C.inkSoft, fontSize: rem(13), fontFamily: FONT_STACK
-        }}>‹　くらべる</button>
+      {/* ★★戻る は 共通の 部品です（★見本 .back）。
+          ★★2026-09-11 まで、★ここに 写しが ありました。
+            ★色も ちがって いました（★ink2 ／ 見本は えんじ）。 */}
+      <Back onClick={onBack}>くらべる</Back>
       {/* ★★見本は 画面の 題です（.hd > h2・17px）。★小さな 見出しでは ありません。
           ★★2026-09-11、★比較画像で 11.5px の 小見出しに なっていました。 */}
       <div style={{ padding: "2px 1px 6px" }}>
@@ -527,22 +525,10 @@ export default function CompareV2({ entries, dates, stacked, onStack }) {
           <Li right={`${order.length}つ ›`}>{ORDER_COPY.row}</Li>
         </button>
         {/* ★★見本の 切替（.sw）。★44×26・つまみ 20。★既定は 入。 */}
+        {/* ★★切替は 共通の 部品です（★見本 .sw）。★写しを 置きません。 */}
         <Li last right={(
-          <span onClick={() => setFirstDayOnly((v) => !v)}
-            role="switch" aria-checked={firstDayOnly} tabIndex={0}
-            aria-label={FIRST_DAY_ONLY_LABEL}
-            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setFirstDayOnly((v) => !v); }}
-            style={{
-              display: "block", width: 44, height: 26, borderRadius: 99,
-              position: "relative", cursor: "pointer",
-              background: firstDayOnly ? C.curtain : "#DFD4BE"
-            }}>
-            <span style={{
-              position: "absolute", top: 3, left: firstDayOnly ? 21 : 3,
-              width: 20, height: 20, borderRadius: "50%", background: "#fff",
-              boxShadow: "0 1px 2px rgba(0,0,0,.2)", transition: ".16s"
-            }} />
-          </span>
+          <Switch on={firstDayOnly} onChange={setFirstDayOnly}
+            label={FIRST_DAY_ONLY_LABEL} />
         )}>
           {FIRST_DAY_ONLY_LABEL}
           <br />

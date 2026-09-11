@@ -121,5 +121,35 @@ console.log("\n④ 押しどころは 44 以上");
   t(/SPACE\.tapMin/.test(body), "★" + n + " が 44 を 守って いる");
 });
 
+console.log("\n⑤ 写しが 残って いないこと");
+// ★★同じ 形を 画面ごとに 書き写すと、★1つ 直しても ほかが 残ります。
+//   ★★2026-09-11 の 一斉の 確かめで、★これが いちばん 多い 形でした。
+//   ★★門の外（!layoutV2）の 画面は 数えません。★38人の 画面は 変えません。
+const V2 = [
+  "CompareV2.jsx", "LookBackV2.jsx", "NotesV2.jsx", "CountV2.jsx",
+  "DailyAskPicker.jsx", "RecordSheets.jsx", "HomeV2.jsx", "RecordV2Head.jsx"
+];
+const fs2 = require("fs");
+const dir = path.join(__dirname, "..");
+function codeOf(f) {
+  const p2 = path.join(dir, f);
+  return fs2.existsSync(p2) ? readCode("components", f) : "";
+}
+[
+  [/width: 44, height: 26/, "切替（.sw）の 写し"],
+  [/‹\s*(?:　|\s)*(?:もどる|くらべる)/, "戻る（.back）の 写し"],
+  [/const ghostBtn = \{/, "枠だけの ボタン（.btn.g）の 写し"]
+].forEach(([re, label]) => {
+  const hit = V2.filter((f) => re.test(codeOf(f)));
+  t(hit.length === 0, "★" + label + "（" + (hit.join("／") || "なし") + "）");
+});
+// ★★部品を 使って いる ことの 確かめ。★片道の 見張りに しないため。
+t(/<Back onClick/.test(codeOf("CompareV2.jsx")), "★くらべる が Back を 使って いる");
+t(/<Switch on=/.test(codeOf("CompareV2.jsx")), "★くらべる が Switch を 使って いる");
+t(/<Back onClick/.test(codeOf("NotesV2.jsx")), "★ノート が Back を 使って いる");
+t(/<Input /.test(codeOf("NotesV2.jsx")), "★ノート が Input を 使って いる");
+t(/<TextArea /.test(codeOf("NotesV2.jsx")), "★ノート が TextArea を 使って いる");
+t(/<Btn ghost/.test(codeOf("LookBackV2.jsx")), "★ふりかえる が Btn を 使って いる");
+
 console.log(ng === 0 ? `\n★すべて 通りました（${ok}）` : `\n★${ng} 件 落ちました`);
 process.exit(ng === 0 ? 0 : 1);

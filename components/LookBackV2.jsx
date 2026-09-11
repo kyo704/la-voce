@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { C, CONCERN_STEPS } from "@/lib/tokens";
 import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
-import { ScreenHead, HeadRound, Card, Seg, Pill, Warn, Note, BarRow, Li } from "@/components/UiV2";
+import {
+  ScreenHead, HeadRound, Card, Seg, Pill, Warn, Note, BarRow, Li, Btn, Two
+} from "@/components/UiV2";
 import LookBackPanel from "@/components/LookBackPanel";
 import { LOOK_BACK_FIELDS, hardDays, lookBackableDays } from "@/lib/lookBack";
 import {
@@ -136,11 +138,7 @@ function Symptoms({ entries, dates }) {
  *   ★★出すか どうかを 決めるのは lib/quietDays.js だけです。★ここでは 決めません。
  */
 function QuietScreen({ reason, onGo }) {
-  const ghostBtn = {
-    background: C.card, color: C.ink, border: `1px solid ${C.line}`,
-    borderRadius: 13, padding: "11px 0", fontSize: rem(13), fontWeight: 400,
-    minHeight: SPACE.tapMin, fontFamily: FONT_STACK
-  };
+  // ★★枠だけの ボタンは 共通の 部品です（★見本 .btn.g）。★写しを 置きません。
   const q = reason;
   return (
     <>
@@ -168,14 +166,11 @@ function QuietScreen({ reason, onGo }) {
         並べる と さかのぼる は、いつでも 見られます。<br />
         記録も、いつもどおり 書けます。
       </Note>
-      <div style={{ display: "flex", gap: 9 }}>
-        <button type="button" onClick={() => onGo("narabe")} style={{ ...ghostBtn, flex: 1 }}>
-          並べるを 見る
-        </button>
-        <button type="button" onClick={() => onGo("sakanobore")} style={{ ...ghostBtn, flex: 1 }}>
-          さかのぼるを 見る
-        </button>
-      </div>
+      {/* ★★見本 restBlock は .two（横に 2つ）です。 */}
+      <Two>
+        <Btn ghost onClick={() => onGo("narabe")} style={{ flex: 1 }}>並べるを 見る</Btn>
+        <Btn ghost onClick={() => onGo("sakanobore")} style={{ flex: 1 }}>さかのぼるを 見る</Btn>
+      </Two>
     </>
   );
 }

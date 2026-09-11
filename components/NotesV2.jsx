@@ -3,7 +3,9 @@
 import { useState, useEffect, useRef } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, SPACE, cardStyle, rem } from "@/lib/uiKit";
-import { ScreenHead, HeadRound, H3, Card, Seg, Li, Note } from "@/components/UiV2";
+import {
+  ScreenHead, HeadRound, H3, Card, Seg, Li, Note, Back, Input, TextArea, FieldLabel
+} from "@/components/UiV2";
 import {
   PRACTICE_FIELDS, isPractice, emptyPractice, pickFields, practiceTitle, practiceSub
 } from "@/lib/practiceNote";
@@ -90,12 +92,9 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
     return (
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          {/* ★★「もどる」で 閉じます。★「保存」は ありません。 */}
-          <button type="button" onClick={close}
-            style={{
-              minHeight: 44, border: "none", background: "transparent",
-              color: C.curtain, fontSize: "0.875rem", padding: 0
-            }}>‹ もどる</button>
+          {/* ★★「もどる」で 閉じます。★「保存」は ありません。
+              ★★戻る は 共通の 部品です（★見本 .back）。★写しを 置きません。 */}
+          <Back onClick={close}>もどる</Back>
           <span style={small}>{saving ? "書いています" : ""}</span>
         </div>
         {/* ★★稽古の メモは、★聞く項目を 分けます（★裁定 9月10日夜 §1）。
@@ -110,16 +109,13 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
           <div>
             {PRACTICE_FIELDS.map((f) => (
               <div key={f.key} style={{ marginBottom: 10 }}>
-                <label htmlFor={"pf-" + f.key}
-                  style={{ ...TYPE.mini, display: "block", marginBottom: 3 }}>{f.label}</label>
+                <FieldLabel htmlFor={"pf-" + f.key} style={{ margin: "0 0 3px" }}>
+                  {f.label}
+                </FieldLabel>
                 {f.kind === "date" ? (
-                  <input id={"pf-" + f.key} type="date"
+                  <Input id={"pf-" + f.key} type="date"
                     value={editing[f.key] || ""}
-                    onChange={(e) => setEditing({ ...editing, [f.key]: e.target.value })}
-                    style={{
-                      width: "100%", minHeight: 44, borderRadius: 10, padding: "0 12px",
-                      border: `1px solid ${C.line}`, background: C.card, color: C.ink, fontSize: rem(16)
-                    }} />
+                    onChange={(e) => setEditing({ ...editing, [f.key]: e.target.value })} />
                 ) : f.kind === "repertoire" ? (
                   <select id={"pf-" + f.key}
                     value={editing[f.key] || ""}
@@ -134,23 +130,15 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
                     ))}
                   </select>
                 ) : f.kind === "area" ? (
-                  <textarea id={"pf-" + f.key}
+                  <TextArea id={"pf-" + f.key}
                     value={editing[f.key] || ""}
                     onChange={(e) => setEditing({ ...editing, [f.key]: e.target.value })}
                     rows={f.key === "said_text" ? 6 : 3}
-                    style={{
-                      width: "100%", borderRadius: 10, padding: 12,
-                      border: `1px solid ${C.line}`, background: C.card, color: C.ink,
-                      fontSize: rem(16), lineHeight: 1.9, resize: "vertical"
-                    }} />
+                    style={{ lineHeight: 1.9 }} />
                 ) : (
-                  <input id={"pf-" + f.key} type="text"
+                  <Input id={"pf-" + f.key} type="text"
                     value={editing[f.key] || ""}
-                    onChange={(e) => setEditing({ ...editing, [f.key]: e.target.value })}
-                    style={{
-                      width: "100%", minHeight: 44, borderRadius: 10, padding: "0 12px",
-                      border: `1px solid ${C.line}`, background: C.card, color: C.ink, fontSize: rem(16)
-                    }} />
+                    onChange={(e) => setEditing({ ...editing, [f.key]: e.target.value })} />
                 )}
                 {f.note ? <Note style={{ marginTop: 2 }}>{f.note}</Note> : null}
               </div>
