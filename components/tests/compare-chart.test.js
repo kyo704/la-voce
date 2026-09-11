@@ -48,9 +48,21 @@ t(/valueWord\(itemKey, v, true\)/.test(SRC), "★軸だけ 短い 書き方を �
 t(/whiteSpace: "nowrap", overflow: "hidden"/.test(SRC), "★軸の 字は 折り返さない");
 
 console.log("\n② 下の 余白");
-// ★★下の 名前は 2行（★名前 10.5px ＋ 日数 9px）。★行の 高さ 1.4 で およそ 28px。
-t(BOTTOM >= 28, `下の 名前 2行が 入る（${BOTTOM}px ≧ 28px）`);
-t(/lineHeight: 1\.4,/.test(SRC), "★2行の 行の 高さを 決めている");
+// ★★2026-09-11、★下の 名前を 1行に 戻しました。
+//   ★★見本の dotplot は「よく出た日 14日」で 1行です（★<text> 1つ）。
+//     ★2行に 割っていたのは、★私が 足した 形でした。
+//   ★★1行（10.5px・行の 高さ 1.4）で およそ 15px。★22px で 入ります。
+t(BOTTOM >= 16, `下の 名前 1行が 入る（${BOTTOM}px ≧ 16px）`);
+t(/\{label\}　\{n\}日/.test(SRC), "★名前と 日数が 1行（★見本の とおり）");
+
+console.log("\n②-2 軸の 始まり");
+// ★★見本の dotplot は 0・2・4・6時間 の 固定です（★sy(v)=H-v/6*H）。
+t(/const ZERO_BASED = \[/.test(SRC), "★0 から 始める 項目を 決めている");
+t(/ZERO_BASED\.includes\(itemKey\)\) lo = Math\.min\(0, lo\)/.test(SRC),
+  "★長さの 項目は 0 から 始める");
+// ★★湿度・むくみは 0 から 始めません。★下に 潰れます。
+t(!/ZERO_BASED = \[[^\]]*humidity/.test(SRC), "★湿度は 0 から 始めない");
+t(!/ZERO_BASED = \[[^\]]*morningEdema/.test(SRC), "★むくみは 0 から 始めない");
 
 console.log("\n③ まんなかの 数の 置き場");
 t(/const above = y > 16;/.test(SRC), "★上に 出すか 下に 出すかを 決めている");

@@ -111,12 +111,26 @@ function niceTicks(lo, hi) {
  *   ★★あとから書いた点は、★中を 抜きます（★○）。★消しません。
  *     ★「目では 見えますが、判定には 入れていません」。
  */
+/**
+ * ★軸を 0 から 始めるか。
+ *
+ *   ★★見本の dotplot は、★0・2・4・6時間 の 4本で 固定です
+ *     （★sy(v) = H - v/6*H）。★0 から 始まります。
+ *   ★★長さ（時間・分）は、★0 に 意味が あります。
+ *     ★「食べ終えてから 寝るまで 0時間」は、★食べて すぐ 寝た、です。
+ *   ★★むくみ（0〜2）や 湿度（％）は、★0 から 始めません。
+ *     ★湿度を 0 から 描くと、★40〜70％ が 下の ほうに 潰れます。
+ *   ★★2026-09-11、★比較画像で 軸が 2時間から 始まって いました。
+ */
+const ZERO_BASED = ["dinnerToBed", "sleepHours", "sungMinutes", "speechMinutes"];
+
 function Scatter({ data, itemKey }) {
   const pts = data.good.concat(data.hard);
   if (pts.length === 0) return null;
   const vals = pts.map((p) => p.value);
   let lo = Math.min(...vals);
   let hi = Math.max(...vals);
+  if (ZERO_BASED.includes(itemKey)) lo = Math.min(0, lo);
   const ticks = niceTicks(lo, hi);
   if (ticks.length > 0) {
     lo = Math.min(lo, ticks[0]);
@@ -130,7 +144,7 @@ function Scatter({ data, itemKey }) {
   //     ★下 22 → 36　★下の 名前は 2行（名前＋日数）です。★22 では 足りません。
   //   ★★見本の 寸法から 離れます。★けれど 見本の 図は 3行の 字を 持ちません。
   //     ★字が 重なったままより、★入る ほうを 採ります。
-  const H = 214, AXIS = 56, TOP = 14, BOTTOM = 36, RIGHT = 2;
+  const H = 214, AXIS = 56, TOP = 14, BOTTOM = 22, RIGHT = 2;
   const plotH = H - TOP - BOTTOM;
   /** ★値 → .dp の 中の 上からの 画素。 */
   const yOf = (v) => TOP + (1 - (v - lo) / span) * plotH;
@@ -166,7 +180,9 @@ function Scatter({ data, itemKey }) {
       <div key={"m" + ci} style={{ position: "absolute", left: 0, right: 0, top: y }}>
         <div style={{
           position: "absolute", left: `${CENTER[ci]}%`, width: 52, marginLeft: -26,
-          borderTop: `1.6px dashed ${C.curtain}`, opacity: 0.85
+          // ★★見本は stroke-width 1.6・stroke-dasharray "4 3" の 実線の 破線です。
+          //   ★★2026-09-11、★薄くて 見えませんでした。★濃さを 上げます。
+          borderTop: `1.6px dashed ${C.curtain}`, opacity: 1
         }} />
         <span style={{
           position: "absolute", left: `${CENTER[ci]}%`,
@@ -188,9 +204,10 @@ function Scatter({ data, itemKey }) {
       lineHeight: 1.4,
       fontSize: rem(10.5), color: C.inkSoft, textAlign: "center", whiteSpace: "nowrap"
     }}>
-      {label}
-      {/* ★★日数です。★点数でも 割合でも ありません。 */}
-      <span style={{ display: "block", fontSize: rem(9), color: C.inkSoft, marginTop: 2 }}>{n}日</span>
+      {/* ★★見本は「よく出た日 14日」で 1行です（★dotplot の <text>）。
+          ★★2026-09-11 まで 2行に 割って いました。★1行に 戻します。
+            ★★下の 余白（BOTTOM）も、★2行ぶんから 1行ぶんに 戻します。 */}
+      {label}　{n}日
     </span>
   );
 

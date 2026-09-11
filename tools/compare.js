@@ -65,9 +65,9 @@ const SCREENS = [
   { key: "SH-tabe", tab: "記録", steps: ["食べたもの"], sheet: true },
   { key: "SH-karada", tab: "記録", steps: ["からだのこと"], sheet: true },
   { key: "SH-hito", tab: "記録", steps: ["ひとこと"], sheet: true },
-  { key: "画面-ふりかえる-並べる", tab: "ふりかえる", steps: ["ならべる"] },
-  { key: "画面-ふりかえる-並べる-4週", tab: "ふりかえる", steps: ["ならべる", "4週"] },
-  { key: "画面-ふりかえる-並べる-3か月", tab: "ふりかえる", steps: ["ならべる", "3か月"] },
+  { key: "画面-ふりかえる-並べる", tab: "ふりかえる", steps: ["並べる"] },
+  { key: "画面-ふりかえる-並べる-4週", tab: "ふりかえる", steps: ["並べる", "4週"] },
+  { key: "画面-ふりかえる-並べる-3か月", tab: "ふりかえる", steps: ["並べる", "3か月"] },
   { key: "画面-ふりかえる-さかのぼる", tab: "ふりかえる", steps: ["さかのぼる"] },
   { key: "画面-ふりかえる-くらべる", tab: "ふりかえる", steps: ["くらべる"] },
   { key: "画面-ふりかえる-くらべる-前の日", tab: "ふりかえる", steps: ["くらべる", "前の日"] },
@@ -216,8 +216,13 @@ async function capture(env) {
           const gap = doc.scrollHeight - (document.querySelector("main")
             ? document.querySelector("main").getBoundingClientRect().bottom + window.scrollY
             : doc.scrollHeight);
+          // ★★ページの いちばん下へ 移します。
+          //   ★★static に するだけでは、★組み立ての 順に 出ます ──
+          //     ★帯は <main> より 前に あるので、★画面の 上に 来ます。
+          //     ★★2026-09-11、★1度 そうなりました。
           nav.style.position = "static";
           nav.style.marginTop = "0";
+          document.body.appendChild(nav);
           return { gap: Math.round(gap), barH };
         }, 56);
         if (hidden && hidden.gap < 0) {

@@ -43,7 +43,10 @@ function eq(a, b, label) {
 
   console.log("=== ① 「初日だけ」は 既定。★売り物では ない ===");
   eq(g.FIRST_DAY_ONLY_DEFAULT, true, "★既定は true");
-  eq(g.FIRST_DAY_ONLY_LABEL, "つづいた日は、初日だけで くらべる", "★見本⑬の 言葉のまま");
+  // ★★2026-09-11、★動く見本に そろえました。
+  //   ★前の 字は 9月9日の 古い 見本⑬の もので、
+  //     ★頭に「つづいた日は、」が 付いて いました。
+  eq(g.FIRST_DAY_ONLY_LABEL, "初日だけで くらべる", "★動く見本の 言葉のまま");
   // ★★有料の 鍵を 作っていないこと（★§1「置く場所を 間違えていました」）
   const ent = readRaw("lib", "entitlements.js");
   t(!/firstDayOnly|E3|初日だけ/.test(ent), "★entitlements に 鍵を 作っていない");

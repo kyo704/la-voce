@@ -1,5 +1,6 @@
-★撮れなかった もの（2件）
+★撮れなかった もの（3件）
 ★黙って 飛ばしていません。★理由を そのまま 残します。
 
-画面-ふりかえる-くらべる-前の日@390  locator.evaluate: Timeout 30000ms exceeded.
-SC-順番@390  locator.evaluate: Timeout 30000ms exceeded.
+画面-ふりかえる-並べる@390  locator.evaluate: Timeout 30000ms exceeded.
+画面-ふりかえる-並べる-4週@390  locator.evaluate: Timeout 30000ms exceeded.
+画面-ふりかえる-並べる-3か月@390  locator.evaluate: Timeout 30000ms exceeded.
