@@ -119,6 +119,12 @@ def sign_in(url, anon, email, password):
     return json.loads(r.read().decode("utf-8"))["access_token"]
 
 
+def o_role(post, exp):
+  """★いま 付いて いる 名前の ちからを、★そのまま 書き戻します。★変えません。"""
+  e = exp["期待"].get(post) or {}
+  return e.get("base") or "teacher"
+
+
 def code_of(body):
   import re
   m = re.search(r'"code":"([0-9A-Z]+)"', body)
@@ -243,6 +249,21 @@ def main():
                        {"post_id": mine["post_id"]})
       put("役職と 所属", judge(s, b))
 
+    # ★（おまけ）★memberships の ほかの 列も 試します。
+    #   ★★列ごとの 許しは 列ごとに ちがいます。
+    #     ★★post_id が「permission denied」でも、★role が そうとは 限りません。
+    #   ★★画面は この 2つを **ブラウザから 直に** 書いて います ──
+    #     ★role　　　　 VocalTracker.jsx:11980（★人の 役職を 変える）
+    #     ★grade_label VocalTracker.jsx:11737（★学年の 札を 直す）
+    #   ★★ここが 通らなければ、★その 2つの 働きは いま 動いて いません。
+    if mine:
+      s2, b2 = rest.call("memberships?id=eq.%s&select=id" % mine["id"], "PATCH",
+                         {"role": o_role(o["post"], exp)})
+      put("（参考）role を 変える", judge(s2, b2))
+      s3, b3 = rest.call("memberships?id=eq.%s&select=id" % mine["id"], "PATCH",
+                         {"grade_label": "★50通り"})
+      put("（参考）grade_label", judge(s3, b3))
+
     # ★レッスンの 日程 ── ★画面が 使う 列を そのまま（★VocalTracker.jsx:12048）
     s, b = rest.call("lessons?select=id", "POST", {
       "org_id": org, "teacher_id": ME, "student_id": ME,
@@ -348,6 +369,36 @@ def main():
            "書ける" if d["want"] else "書けない",
            "書ける" if d["got"] else "書けない", d["why"]))
   say()
+  say("## ★（参考）★memberships の ほかの 列")
+  say()
+  say("★★50マスの 外です。★期待表に 無い ぶん です。")
+  say("★★画面が **ブラウザから 直に** 書いて いる 2つの 列を 試しました。")
+  say()
+  say("★★**role の「通る」を、★昇格の 証拠と 読まないで ください。**")
+  say("　★★書き戻して いるのは、★いま 付いて いる のと **同じ 値** です。")
+  say("　★★決まりは `role_rank(新) <= role_rank(今)` を 見て います。")
+  say("　★★同じ 値なので、★当然 通ります。★これは 設計の とおり です。")
+  say("　★★別の 値に 上げられるか どうかは、★ここでは 試して いません。")
+  say("　★★（★それは §7 の 別の 話で、★実地では 止まって います）")
+  say()
+  say("★★`grade_label` が 全員 止まるのは、★別の 話です。")
+  say("　★★画面は この 列を ブラウザから 直に 書いて います")
+  say("　★（★VocalTracker.jsx:11737「学年の 札を 直す」）。")
+  say("　★★`role` は 通って、★`grade_label` は 通りません。")
+  say("　★★だから 列ごとの 許しが、★`role` にだけ 付いて いると 読めます。")
+  say("　★★つまり **学年の 札を 直す 働きは、★いま 誰にも 使えません。**")
+  say()
+  say("| 役職 | role を 変える | grade_label |")
+  say("|---|---|---|")
+  for o in orgs:
+    a = result[o["post"]].get("（参考）role を 変える")
+    b2 = result[o["post"]].get("（参考）grade_label")
+    say("| %s | %s | %s |" % (
+      o["post"],
+      (("★通る" if a["ok"] else "・止まる") + "　" + a["why"][:34]) if a else "？",
+      (("★通る" if b2["ok"] else "・止まる") + "　" + b2["why"][:34]) if b2 else "？"))
+  say()
+
   say("## ★★この 表の 限界（★読む 前に）")
   say()
   say("★★「42501」は **2つの こと** を 指します。★文面で 見分けて います。")
