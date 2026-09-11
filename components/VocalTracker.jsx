@@ -10089,6 +10089,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [newEmailInput2, setNewEmailInput2] = useState("");
   const [emailBusy, setEmailBusy] = useState(false);
   const [emailMsg, setEmailMsg] = useState("");
+  const [passwordPanel, setPasswordPanel] = useState(false);
+  const [newPasswordInput, setNewPasswordInput] = useState("");
+  const [newPasswordInput2, setNewPasswordInput2] = useState("");
+  const [passwordBusy, setPasswordBusy] = useState(false);
+  const [passwordMsg, setPasswordMsg] = useState("");
+  const [devicePanel, setDevicePanel] = useState(false);
   const [showReissue, setShowReissue] = useState(false); // 控えの出し直し
   // ★★お知らせから、同意の画面へ進んでいる最中か（2026-09-05）。
   //   ★onboarding_completed を false に戻しません。
@@ -10304,6 +10310,44 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       console.error("★変更を送れませんでした:", e && e.message);
       setEmailMsg("いま、変更できません。");
       return false;
+    }
+  }
+
+  // ★★パスワードを変える。
+  //   ★★メールと違い、サーバの持ち物（プロフィール等）を書き換えないため、
+  //     ここでは Supabase の auth.updateUser を直に呼びます。
+  //   ★8文字未満・2つの入力が食い違っているときは、送りません（ボタン側でも防ぎます）。
+  async function submitPasswordChange() {
+    if (newPasswordInput.length < 8 || newPasswordInput !== newPasswordInput2) return;
+    setPasswordBusy(true);
+    setPasswordMsg("");
+    const supabase = createClient();
+    const { error } = await supabase.auth.updateUser({ password: newPasswordInput });
+    setPasswordBusy(false);
+    setNewPasswordInput("");
+    setNewPasswordInput2("");
+    if (error) {
+      console.error("パスワードの変更に失敗しました:", error);
+      setPasswordMsg("パスワードを変更できませんでした。時間をおいて、もう一度お試しください。");
+      return;
+    }
+    setPasswordPanel(false);
+    setPasswordMsg("パスワードを変更しました。");
+  }
+
+  // ★★「アカウント」の一覧（ListSheet）の行を押したときに、
+  //     ★そのまま「もっと ＞ アカウント」の欄を開き、該当の欄を広げます。
+  function openAccountAction(action) {
+    setRecordSheet(null);
+    setMoreSection("アカウント");
+    if (action === "email") {
+      setEmailPanel(true);
+      setEmailMsg("");
+    } else if (action === "password") {
+      setPasswordPanel(true);
+      setPasswordMsg("");
+    } else if (action === "device") {
+      setDevicePanel(true);
     }
   }
 
@@ -22019,6 +22063,62 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   {emailMsg && <p className="text-xs mt-2" style={{ color: C.ink }}>{emailMsg}</p>}
                 </div>
 
+                {/* ★★パスワードの変更。
+                    ★★メールと違い、乗っ取りの入口ではないため、もう一度の確かめ（§4）は求めません。
+                      ★いま入っているセッションで、Supabase の auth.updateUser を直に呼びます。 */}
+                <div className="rounded-2xl p-4 border" style={{ display: inMore("アカウント"), background: C.card, borderColor: C.line }}>
+                  <p className="text-sm font-medium mb-1">パスワード</p>
+                  {!passwordPanel ? (
+                    <button type="button" onClick={() => { setPasswordPanel(true); setPasswordMsg(""); }}
+                      className="w-full py-2.5 rounded-full text-sm font-medium"
+                      style={{ background: C.paper, color: C.ink, border: `1px solid ${C.line}` }}>
+                      パスワードを変える
+                    </button>
+                  ) : (
+                    <div>
+                      <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
+                        8文字以上の、新しいパスワードを入れてください。
+                      </p>
+                      <input type="password" name="new-password" autoComplete="new-password"
+                        value={newPasswordInput} onChange={(e) => setNewPasswordInput(e.target.value)}
+                        placeholder="新しいパスワード"
+                        className="w-full rounded-lg border p-2 mb-2"
+                        style={{ borderColor: C.line, background: C.paper, fontSize: "max(16px, 0.875rem)" }} />
+                      {/* ★★2回入れていただきます。★打ち間違えると、入れなくなります。 */}
+                      <input type="password" name="new-password-confirm" autoComplete="new-password"
+                        value={newPasswordInput2} onChange={(e) => setNewPasswordInput2(e.target.value)}
+                        placeholder="もう一度、同じパスワード"
+                        className="w-full rounded-lg border p-2 mb-2"
+                        style={{ borderColor: C.line, background: C.paper, fontSize: "max(16px, 0.875rem)" }} />
+                      {newPasswordInput && newPasswordInput.length < 8 && (
+                        <p className="text-xs mb-2" style={{ color: C.curtain }}>8文字以上にしてください。</p>
+                      )}
+                      {newPasswordInput2 && newPasswordInput !== newPasswordInput2 && (
+                        <p className="text-xs mb-2" style={{ color: C.curtain }}>2つのパスワードが、そろっていません。</p>
+                      )}
+                      <div className="flex gap-2">
+                        <button type="button" disabled={passwordBusy
+                          || newPasswordInput.length < 8
+                          || newPasswordInput !== newPasswordInput2}
+                          onClick={() => submitPasswordChange()}
+                          className="flex-1 py-2.5 rounded-full text-sm font-medium"
+                          style={{ background: C.curtain, color: "#FFFDF8" }}>
+                          {passwordBusy ? "変えています…" : "変える"}
+                        </button>
+                        <button type="button" onClick={() => {
+                          setPasswordPanel(false); setPasswordMsg("");
+                          setNewPasswordInput(""); setNewPasswordInput2("");
+                        }}
+                          className="flex-1 py-2.5 rounded-full text-sm font-medium"
+                          style={{ background: C.card, color: C.inkSoft, border: `1px solid ${C.line}` }}>
+                          やめる
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {passwordMsg && <p className="text-xs mt-2" style={{ color: C.ink }}>{passwordMsg}</p>}
+                </div>
+
                 {/* ★★復旧コードの出し直し（判断-メールを失うこと §3）。
                     ★「★再発行できる（ログインできているうちなら、いつでも）」
                     ★これも、★2026-09-05 まで抜けていました。
@@ -22354,7 +22454,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           onClose={() => { handleSave(); setRecordSheet(null); }} />
       )}
       {layoutV2 && recordSheet === "アカウント" && (
-        <ListSheet title="アカウント" rows={ACCOUNT_ROWS}
+        <ListSheet
+          title="アカウント"
+          rows={ACCOUNT_ROWS.map((label) => {
+            if (label === "ログアウト") return { label, onClick: handleSignOut };
+            // ★★「パスワードを 変える」だけ、いま 押せます。
+            //   ★★「メールアドレス」「端末を 見る」は、まだ ここから 開けません。
+            //     ★★「メールアドレス」は、もっと ＞ アカウント の 欄に すでに あります。
+            //     ★★「端末を 見る」は、台帳（API）が まだ 無いため、押せません。
+            if (label === "パスワードを 変える") {
+              return { label, onClick: () => openAccountAction("password") };
+            }
+            return label;
+          })}
+          note={signOutError || undefined}
           onClose={() => setRecordSheet(null)} />
       )}
       {layoutV2 && recordSheet === "お知らせ" && (
