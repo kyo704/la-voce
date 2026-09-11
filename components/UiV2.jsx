@@ -147,15 +147,27 @@ export function Pill({ children, on, disabled, onClick }) {
 /**
  * ★断り書きの 箱（.warn）。
  *
- *   ★★「ここに出るのは、あなたが書いたことの並びです。
- *      原因かどうかは、分かりません。疑いながら 見てください。」
- *   ★★この文は、★1文字も 変えないこと。
+ *   ★見本 .warn{background:#F6F1E4;border:1px solid #E8DFC8;border-radius:12px;
+ *              padding:9px 11px;font-size:11px;color:var(--ink2);
+ *              line-height:1.75;margin-bottom:10px}
+ *
+ *   ★★2026-09-11、★地と 枠が 見本と ちがって いました。
+ *     ★地　C.paper（#F6F1E7）→ ★見本は #F6F1E4
+ *     ★枠　C.line（#E4DCC9）→ ★見本は #E8DFC8
+ *   ★★近い 色ですが、★同じでは ありません。
+ *     ★★この 箱は「ここに出るのは…」の 断りに 使います。
+ *       ★下地（.paper）と 同じ 色だと、★箱に 見えません。
+ *     ★★見本は、★下地より わずかに 濃くして 箱に 見せて います。
+ *
+ *   ★★Wl（.wl・#F6EFDF）とは 別の 箱です。★1つに まとめません。
+ *     ★見本が 2つを 使い分けて います。
  */
-export function Warn({ children }) {
+export function Warn({ children, style }) {
   return (
     <div style={{
-      background: C.paper, border: `1px solid ${C.line}`, borderRadius: 12,
-      padding: "9px 11px", ...TYPE.note, lineHeight: 1.75, marginBottom: 10
+      background: "#F6F1E4", border: "1px solid #E8DFC8", borderRadius: 12,
+      padding: "9px 11px", ...TYPE.note, lineHeight: 1.75, marginBottom: 10,
+      ...style
     }}>
       {children}
     </div>
@@ -300,5 +312,267 @@ export function BarRow({ label, ratio, tint, hollow }) {
         )}
       </div>
     </div>
+  );
+}
+
+
+// ============================================================================
+// ★足りて いなかった 共通の 部品（★2026-09-11・坂本さんの ㋑）
+//
+//   ★出どころ docs/design/pack-final/00-動く見本（さわれる・全画面）.html
+//     の <style>（★git hash 7c7c720）
+//
+//   ★★一斉の 確かめ（tools/audit-source.js）で 分かった こと ──
+//     ★31画面の うち 24画面が、★見本と 半分も 合って いませんでした。
+//     ★★「余分な もの」が 20件を 超える 画面が 12 ありました。
+//     ★★その 多くは、★同じ 形を 画面ごとに 書き写した もの でした。
+//       ★入力欄 12か所　★枠だけの ボタン 20か所　★戻る 6か所
+//       ★cardStyle じかに 28か所　★TYPE.usual じかに 25か所
+//
+//   ★★写しが あると、★1つ 直しても、★ほかが 残ります。
+//     ★だから、★ここに 1つずつ 置きます。
+//
+//   ★★値は 見本の CSS の ままです。★2つだけ 変えます。
+//     ★① ink3 は 小さい字に 使いません（★2026-09-10・坂本さんの お決め）。
+//       ★見本が var(--ink3) と 書いて いる ところも、★ink2 に します。
+//     ★② 入力欄の 字は 16px です（★見本は 13.5px）。
+//       ★iOS は 16px 未満の 入力欄で、★触ると 画面を 拡大します。
+//       ★app/globals.css が すでに そう しています。★そろえます。
+//
+//   ★見張り components/tests/ui-parts.test.js
+// ============================================================================
+
+/**
+ * ★白地の 入れもの（.box）。★中に Li を 並べます。
+ *
+ *   ★見本 .box{background:#fff;border:1px solid var(--line);
+ *              border-radius:14px;padding:0 12px;margin-bottom:9px}
+ *   ★★Card（.card）とは ちがいます。★padding が 上下 0 です。
+ *     ★★行（.li）が 自分で 上下の 余白を 持つ からです。
+ */
+export function Box({ children, style }) {
+  return (
+    <div style={{
+      background: C.card, border: `1px solid ${C.line}`,
+      borderRadius: RADIUS.card, padding: "0 12px", marginBottom: SPACE.cardGap,
+      ...style
+    }}>{children}</div>
+  );
+}
+
+/**
+ * ★小さな そえ字（.usu）。★11px。
+ *
+ *   ★見本 .usu{font-size:11px;color:var(--ink3);margin-top:2px}
+ *   ★★色は ink2 に します（★上の お決め ①）。
+ */
+export function Usu({ children, style }) {
+  return <span style={{ ...TYPE.usual, display: "block", marginTop: 2, ...style }}>{children}</span>;
+}
+
+/**
+ * ★入力欄の 上の 見出し（.fl）。
+ *
+ *   ★見本 .fl{font-size:10.5px;color:var(--ink3);letter-spacing:.08em;margin:12px 0 5px}
+ */
+export function FieldLabel({ children, htmlFor, style }) {
+  return (
+    <label htmlFor={htmlFor} style={{
+      display: "block", fontSize: rem(10.5), color: C.inkSoft,
+      letterSpacing: "0.08em", margin: "12px 0 5px", ...style
+    }}>{children}</label>
+  );
+}
+
+/**
+ * ★白い 断りの 帯（.wl）。★Warn（.warn）より 明るい 地です。
+ *
+ *   ★見本 .wl{background:#F6EFDF;border:1px solid #E8DFC8;border-radius:12px;
+ *             padding:9px 11px;font-size:11px;color:var(--ink2);…}
+ *   ★★Warn は #F6F1E4。★1つ 上の 明るさです。★見分けが つきます。
+ *     ★見本は 2つを 使い分けて います。★1つに まとめません。
+ */
+export function Wl({ children, style }) {
+  return (
+    <div style={{
+      background: "#F6EFDF", border: "1px solid #E8DFC8", borderRadius: 12,
+      padding: "9px 11px", ...TYPE.note, lineHeight: 1.75, marginBottom: 10, ...style
+    }}>{children}</div>
+  );
+}
+
+/** ★2つ 横に 並べる（.two）。★あいだ 9px。 */
+export function Two({ children, style }) {
+  return <div style={{ display: "flex", gap: SPACE.cardGap, ...style }}>{children}</div>;
+}
+
+/**
+ * ★1行の 入力欄（.inp）。
+ *
+ *   ★見本 .inp{width:100%;border:1px solid var(--line);border-radius:12px;
+ *              background:#fff;padding:12px;font-size:13.5px;color:var(--ink)}
+ *   ★★字は 16px に します（★上の お決め ②）。
+ *     ★iOS は 16px 未満の 入力欄で、★触ると 画面を 拡大します。
+ *   ★★高さは 44 以上です（★どの 押しどころも 44 以上）。
+ */
+export function Input({ style, ...rest }) {
+  return (
+    <input {...rest} style={{
+      width: "100%", minHeight: SPACE.tapMin, boxSizing: "border-box",
+      border: `1px solid ${C.line}`, borderRadius: 12,
+      background: C.card, padding: 12, fontFamily: FONT_STACK,
+      fontSize: rem(16), color: C.ink, ...style
+    }} />
+  );
+}
+
+/**
+ * ★書く枠（.ta）。
+ *
+ *   ★見本 .ta{width:100%;border:1px solid var(--line);border-radius:12px;
+ *             background:#fff;padding:11px;font-size:13px;min-height:74px;
+ *             resize:none;color:var(--ink);line-height:1.7}
+ *   ★★字は 16px に します（★上の お決め ②）。
+ *   ★★resize は 止めません。★見本は none ですが、★長い 文を 書く 方が います。
+ *     ★★取り上げに なります。★縦だけ 伸ばせる ように します。
+ */
+export function TextArea({ style, ...rest }) {
+  return (
+    <textarea {...rest} style={{
+      width: "100%", boxSizing: "border-box",
+      border: `1px solid ${C.line}`, borderRadius: 12,
+      background: C.card, padding: 11, fontFamily: FONT_STACK,
+      fontSize: rem(16), color: C.ink, lineHeight: 1.7,
+      minHeight: 74, resize: "vertical", ...style
+    }} />
+  );
+}
+
+/** ★1枚の 題（.sht）。★16px・700。 */
+export function SheetTitle({ children, style }) {
+  return (
+    <div style={{
+      fontSize: rem(16), fontWeight: 700, color: C.ink,
+      marginBottom: 4, ...style
+    }}>{children}</div>
+  );
+}
+
+/**
+ * ★何も 無い ときの 枠（.empty）。
+ *
+ *   ★見本 .empty{text-align:center;padding:26px 14px;background:#fff;
+ *                border:1px dashed var(--line);border-radius:14px}
+ *   ★★白紙に しません。★何を すると 埋まるかを 1行 書きます（★見本の 決め）。
+ *   ★★責める 言葉を 書きません。★「まだ」「未入力」「不足」を 使わないこと。
+ */
+export function EmptyBox({ title, sub, style }) {
+  return (
+    <div style={{
+      textAlign: "center", padding: "26px 14px", background: C.card,
+      border: `1px dashed ${C.line}`, borderRadius: RADIUS.card,
+      marginBottom: SPACE.cardGap, ...style
+    }}>
+      <div style={{ ...TYPE.li, color: C.ink }}>{title}</div>
+      {sub ? <Usu style={{ marginTop: 6 }}>{sub}</Usu> : null}
+    </div>
+  );
+}
+
+/**
+ * ★切替（.sw）。★44×26・つまみ 20。
+ *
+ *   ★見本 .sw{width:44px;height:26px;border-radius:99px;background:#DFD4BE}
+ *         .sw.on{background:var(--enji)}
+ *         .sw i{top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff}
+ *   ★★押しどころは 44 以上 要ります。★見た目は 26px です。
+ *     ★だから、★外側に 透明な 余白を 置きます。★見た目を 変えません。
+ */
+export function Switch({ on, onChange, label }) {
+  return (
+    <span role="switch" aria-checked={!!on} aria-label={label} tabIndex={0}
+      onClick={() => onChange && onChange(!on)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onChange && onChange(!on); }
+      }}
+      style={{
+        display: "inline-flex", alignItems: "center", justifyContent: "center",
+        minHeight: SPACE.tapMin, minWidth: SPACE.tapMin, cursor: "pointer", flex: "none"
+      }}>
+      <span style={{
+        display: "block", width: 44, height: 26, borderRadius: 99,
+        position: "relative", background: on ? C.curtain : "#DFD4BE",
+        transition: ".16s"
+      }}>
+        <span style={{
+          position: "absolute", top: 3, left: on ? 21 : 3,
+          width: 20, height: 20, borderRadius: "50%", background: "#fff",
+          boxShadow: "0 1px 2px rgba(0,0,0,.2)", transition: ".16s"
+        }} />
+      </span>
+    </span>
+  );
+}
+
+/**
+ * ★戻る（.back）。★「‹ ◯◯」。
+ *
+ *   ★見本 .back{font-size:12.5px;color:var(--enji);padding:9px 0 3px;display:inline-block}
+ *   ★★行き先の 名前を 書きます。★「戻る」だけに しません。
+ *     ★どこへ 戻るのかが 分からないと、★押せません。
+ */
+export function Back({ children, onClick }) {
+  return (
+    <button type="button" onClick={onClick} style={{
+      display: "inline-block", background: "transparent", border: "none",
+      padding: "9px 1px 3px", minHeight: SPACE.tapMin,
+      color: C.curtain, fontSize: rem(12.5), fontFamily: FONT_STACK,
+      textAlign: "left"
+    }}>‹　{children}</button>
+  );
+}
+
+/**
+ * ★ボタン（.btn）。
+ *
+ *   ★見本 .btn{width:100%;background:var(--enji);color:#fff;border-radius:13px;
+ *              padding:14px 0;font-size:15px;font-weight:700}
+ *         .btn.g{background:#fff;color:var(--ink);border:1px solid var(--line);
+ *                font-weight:400;font-size:13.5px;padding:12px 0}
+ *         .btn.sm{font-size:12.5px;padding:10px 0}
+ *
+ *   @param ghost ★枠だけ（.btn.g）
+ *   @param small ★小さく（.btn.sm）
+ */
+export function Btn({ children, onClick, ghost, small, disabled, style, type = "button" }) {
+  const pad = small ? "10px 0" : (ghost ? "12px 0" : "14px 0");
+  const size = small ? 12.5 : (ghost ? 13.5 : 15);
+  return (
+    <button type={type} onClick={onClick} disabled={disabled} style={{
+      display: "block", width: "100%", borderRadius: RADIUS.btn,
+      padding: pad, minHeight: SPACE.tapMin,
+      border: ghost ? `1px solid ${C.line}` : "none",
+      background: ghost ? C.card : C.curtain,
+      color: ghost ? C.ink : "#FFFDF8",
+      fontFamily: FONT_STACK, fontSize: rem(size),
+      fontWeight: ghost ? 400 : 700, textAlign: "center",
+      opacity: disabled ? 0.45 : 1, ...style
+    }}>{children}</button>
+  );
+}
+
+/**
+ * ★小さな 札（.tag）。★教室の 名前など。
+ *
+ *   ★見本 .tag{background:#F3ECDD;color:var(--ink2);border-radius:6px;
+ *              padding:2px 7px;font-size:10px;margin-left:6px}
+ */
+export function Tag({ children, style }) {
+  return (
+    <span style={{
+      display: "inline-block", background: "#F3ECDD", color: C.inkSoft,
+      borderRadius: 6, padding: "2px 7px", fontSize: rem(10),
+      marginLeft: 6, whiteSpace: "nowrap", lineHeight: 1.5, ...style
+    }}>{children}</span>
   );
 }
