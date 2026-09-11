@@ -109,9 +109,31 @@ export async function POST(request) {
       org_id: orgId, name: p.name, sort_order: i,
       perms: Object.fromEntries(p.perms.map((k) => [k, true]))
     }));
-    const { error } = await admin.from("org_posts").insert(rows);
+    const { data: made, error } = await admin.from("org_posts").insert(rows).select("id, name");
     if (error) return NextResponse.json({ error: tx("いま、つながりません。") }, { status: 503 });
-    return NextResponse.json({ made: rows.length });
+
+    // ★★作った方に、★いちばん 上の 役職を その場で お付けします。
+    //   ★★2026-09-11、★行き止まりが 1つ ありました。
+    //     ★★役職の 無い 方は、★ここで 10を 作れます。
+    //       ★けれど mayGrantPost が、★学校ぜんぶに かかる できこと（meibo・post …）を
+    //       ★★「自分が 持っていない ものは 人に 渡せない」として 落とします。
+    //     ★★だから、★10を 作った その方が、★その どれも 名乗れませんでした。
+    //       ★名乗れるのは 教授・准教授・講師だけ（★学校ぜんぶに かからない ため）。
+    //     ★★新しい 学校が、★誰も 学長の いない まま 始まっていました。
+    //   ★★ここで 力は 1つも 増えません。
+    //     ★その方は たった今、★10すべてを 自分で 決められたのですから。
+    //   ★★付けるのは、★まだ 役職を お持ちでない ときだけです。
+    //     ★上書きしません（★この家の「黙って 消さない」の ままです）。
+    const top = (made || []).find((r) => r.name === TEMPLATE_POSTS[0].name);
+    let mine = null;
+    if (top && !member.post_id) {
+      const { error: e2 } = await admin.from("memberships")
+        .update({ post_id: top.id }).eq("org_id", orgId).eq("user_id", user.id);
+      // ★★付けられなくても、★10は できています。★そこは 巻き戻しません。
+      //   ★★返事で はっきり お伝えします（★mine が null のまま）。
+      if (!e2) mine = top.name;
+    }
+    return NextResponse.json({ made: rows.length, mine });
   }
 
   // ★★役職を 足す。★はじめは できることが 1つも ありません（★見本の 注記）。
