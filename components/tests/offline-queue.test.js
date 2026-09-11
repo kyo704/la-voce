@@ -46,7 +46,10 @@ function eq(actual, expected, label) {
   eq(m.unsentCount(null), 0, "壊れた一覧は0件");
 
   console.log("\n④ 圏外判定");
-  const navigatorObject = globalThis.navigator || {};
+  const hadNavigator = Object.prototype.hasOwnProperty.call(globalThis, "navigator");
+  const previousNavigator = globalThis.navigator;
+  const navigatorObject = previousNavigator || {};
+  globalThis.navigator = navigatorObject;
   const onLineDescriptor = Object.getOwnPropertyDescriptor(navigatorObject, "onLine");
   Object.defineProperty(navigatorObject, "onLine", { configurable: true, value: false });
   ok(m.surelyOffline(), "明らかな圏外を判定");
@@ -54,6 +57,8 @@ function eq(actual, expected, label) {
   ok(!m.surelyOffline(), "オンラインを圏外扱いしない");
   if (onLineDescriptor) Object.defineProperty(navigatorObject, "onLine", onLineDescriptor);
   else delete navigatorObject.onLine;
+  if (hadNavigator) globalThis.navigator = previousNavigator;
+  else delete globalThis.navigator;
 
   console.log(failed === 0 ? "\n★すべて通りました" : `\n★${failed}件、落ちました`);
   process.exit(failed ? 1 : 0);
