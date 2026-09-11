@@ -46,6 +46,13 @@ WHOSE = {
 }
 
 WRITE = re.compile(r"\.(insert|update|upsert)\(")
+
+# ★★2026-09-11、★実際に PATCH を 投げて 確かめた 列。
+#   ★★どれも `42501 permission denied for table memberships`。
+#   ★★つまり authenticated に、★その 列の UPDATE が 付いて いません。
+#   ★★思い出しでは なく、★投げた 返事です。
+NO_UPDATE_GRANT = {"org_id", "user_id", "display_title", "created_at", "id",
+                   "display_title_updated_by", "display_title_updated_at"}
 FROM = re.compile(r'from\("([a-z_]+)"\)')
 
 
@@ -81,7 +88,7 @@ def writers(table):
       block = "\n".join(src[max(0, i - 14):i + 8])
       admin = "admin.from(" in "\n".join(src[max(0, i - 3):i + 1])
       how = ("裏口" if admin else "サーバ") if path.startswith("app/api/") else "ブラウザ 直"
-      found.append((path, i + 1, block, how))
+      found.append((path, i + 1, block, how, WRITE.search(line).group(1)))
   return found
 
 
@@ -120,29 +127,55 @@ def main():
   for c in sorted(cols):
     whose, note = WHOSE.get(c, ("？", "★お決めが まだ です。"))
     mine = [x for x in w if re.search(r"\b" + re.escape(c) + r"\b\s*:", x[2])]
-    if mine:
-      ways = sorted({x[3] for x in mine})
-      where = "／".join(ways) + "（%d か所）" % len(mine)
+    # ★★入れる ときだけか、★直す ときも か。★ここを 分けます。
+    #   ★★2026-09-11、★分けて いなかった ために、
+    #     ★org_id／user_id を「歯止め 無し」と 書いて しまいました。
+    #     ★★あれは **入れる ときだけ** 書かれる 列で、
+    #       ★直す 道は 1つも ありません。★別の 話でした。
+    ins = [x for x in mine if x[4] == "insert"]
+    upd = [x for x in mine if x[4] != "insert"]
+    if upd:
+      where = "／".join(sorted({x[3] for x in upd})) + "（直す・%d か所）" % len(upd)
+    elif ins:
+      where = "★入れる ときだけ（%d か所）" % len(ins)
     else:
       where = "★書いて いない"
+    # ★★歯止めは、★**実地で 投げた 返事**から 書きます（★2026-09-11）。
+    #   ★★思い出しで 書きません。
     if c == "role":
-      guard = "★決まり（role_rank）"
+      guard = "★決まり（role_rank）★実地で 確かめ済み"
     elif c == "grade_label":
-      guard = "★★No.004 で 引き金を 立てる（★まだ）"
+      guard = "★許し（列）＋ 引き金 guard_grade_label（★No.004）"
     elif c == "post_id":
-      guard = "★許し 無し ＋ 止める 決まり"
+      guard = "★許し 無し（42501）＋ 止める 決まり"
+    elif c in NO_UPDATE_GRANT:
+      guard = "★許し 無し（42501）★実地で 確かめ済み"
+    elif not upd and ins:
+      guard = "★直す 道が 無い"
     elif not mine:
       guard = "──"
     else:
       guard = "★★**無し**"
-      if whose == "学校":
-        todo.append(c)
-      elif whose == "？":
-        todo.append(c)
+      todo.append(c)
     say("| `%s` | %s | %s | %s | %s |" % (c, whose, where, guard, note))
   say()
 
   say("## ★歯止めの 無い 列")
+  say()
+  say("★★2026-09-11、★ここに 書き まちがえが ありました。")
+  say("　★★`org_id` と `user_id` を「歯止め 無し」と 出して いました。")
+  say("　★★けれど 要約には「ありません」と 書いて いて、★表と 食い違って いました。")
+  say("　★★正しいのは **要約の ほう**でした。★表が まちがって いました。")
+  say()
+  say("　★★2つの ことを、★分けて いなかった ためです ──")
+  say("　　★① その 列を 書いて いる（★入れる ときか、★直す ときか）")
+  say("　　★② その 列に 手が 届く（★許しが 付いて いるか）")
+  say()
+  say("　★★`org_id`／`user_id` は、★**入れる ときだけ** 書かれます。")
+  say("　　★直す 道は、★帳面の 中に 1つも ありません。")
+  say("　★★そのうえ、★直に PATCH を 投げても 通りません ──")
+  say("　　★`42501 permission denied for table memberships`")
+  say("　　★★これは 推し量りでは なく、★投げた 返事です（2026-09-11）。")
   say()
   if todo:
     for c in todo:

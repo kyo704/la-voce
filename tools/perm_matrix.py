@@ -108,6 +108,17 @@ class Rest:
       return 0, str(e)[:200]
 
 
+def sign_in_full(url, anon, email, password):
+  """★通行証を まるごと 返します（★cookie を 組み立てる ため）。"""
+  req = urllib.request.Request(
+    url.rstrip("/") + "/auth/v1/token?grant_type=password", method="POST")
+  req.add_header("apikey", anon)
+  req.add_header("Content-Type", "application/json")
+  body = json.dumps({"email": email, "password": password}).encode("utf-8")
+  with urllib.request.urlopen(req, body, timeout=30) as r:
+    return json.loads(r.read().decode("utf-8"))
+
+
 def sign_in(url, anon, email, password):
   """★使い捨ての アカウントで 通行証を もらいます。"""
   req = urllib.request.Request(
