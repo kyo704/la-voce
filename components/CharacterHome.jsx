@@ -1859,7 +1859,7 @@ function WallTexture({ material, wardrobeOn = false }) {
 //   ★★いまの DraggableItem は、★位置も自分で持つ作りです。
 //     ★あちらは触りません。★101点の見え方を、変えないためです。
 //   ★ここは、★位置を外から受け取り、★動かし終わったときだけ知らせます。
-function InteriorDraggable({ itemKey, startLeft, startTop, band, onDragEnd, hit, children }) {
+function InteriorDraggable({ itemKey, startLeft, startTop, band, onDragEnd, hit, style, children }) {
   const ref = useRef(null);
   // ★★掴んだときの、指の画素の位置と、品物のいまの％。
   //   ★★2026-09-08、★ここが誤っていました（★実機のご報告）。
@@ -1945,7 +1945,7 @@ function InteriorDraggable({ itemKey, startLeft, startTop, band, onDragEnd, hit,
     //   ★中身の範囲は 名簿が 持ちます（contentX / contentY・★1点ずつ 実測）。
     <div ref={ref} onPointerDown={down} onPointerMove={move}
       onPointerUp={up} onPointerCancel={up}
-      style={{ touchAction: "none", cursor: "grab", pointerEvents: "none" }}>
+      style={{ ...style, touchAction: "none", cursor: "grab", pointerEvents: "none" }}>
       {children}
       <div aria-hidden="true"
         style={{

@@ -160,6 +160,16 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
   const spotOf = (it) => {
     const slotKey = slotOfItem(it);
     let slot = slotKey ? slotByKey(slotKey) : null;
+    const movable = ["furniture", "showa", "garden", "wallart"].includes(it.category);
+    const saved = pos[it.key];
+    if (movable && saved && typeof saved.left === "number") {
+      return {
+        left: saved.left,
+        top: typeof saved.top === "number" ? saved.top : null,
+        feet: typeof saved.feet === "number" ? saved.feet : null,
+        wallTop: typeof saved.top === "number" ? saved.top : undefined
+      };
+    }
     if (slotKey === "wall") {
       // ★左・右の 振り分け。★同じ 品は いつも 同じ 側に 出ます。
       if (!wallSeen.has(it.key)) wallSeen.set(it.key, wallSeen.size);
@@ -233,27 +243,23 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
             ★★ここで数を書かないこと。 */}
       {frame && (() => {
         const w = widthPctOf(frame);
-        return (
-          <div aria-hidden="true"
-            style={{
-              position: "absolute",
-              left: `${SPOT.window.left}%`,
-              top: `${SPOT.window.top}%`,
-              width: `${w}%`,
-              // ★★枠は正方形の絵です。★高さは、CSS に出させます。
-              aspectRatio: `${frame.size[0]} / ${frame.size[1]}`,
-              transform: "translate(-50%, 0)",
-              zIndex: zIndexOf(zOf(frame), 0), pointerEvents: "none"
-            }}>
-            {/* ★★景色は、★枠の「抜けているところ」だけに 出します。
-                ★★2026-09-08、★3回 直しました。
-                  ★① 穴の「四角」で切る　→ ★丸い枠で、四隅に はみ出しました
-                  ★② 枠の絵を 型にする　→ ★枠の外も透けているので、そこにも出ます
-                  ★③ ★★「外から届かない、透けているところ」だけを 白にした型
-                    ★13枚 作りました。★これで、どんな形でも はみ出しません。
-                ★★型は名簿が持ちます（holeMask）。★ここで作らないこと。
-                ★★2026-09-08、★景色が 384×384 になりました（★枠と同じ寸法）。
-                  ★だから、★同じ大きさ・同じ場所に 重ねるだけです。 */}
+        const windowPos = pos.window;
+        const windowLeft = windowPos && typeof windowPos.left === "number"
+          ? windowPos.left : SPOT.window.left;
+        const windowTop = windowPos && typeof windowPos.top === "number"
+          ? windowPos.top : SPOT.window.top;
+        const windowStyle = {
+          position: "absolute",
+          left: `${windowLeft}%`,
+          top: `${windowTop}%`,
+          width: `${w}%`,
+          aspectRatio: `${frame.size[0]} / ${frame.size[1]}`,
+          transform: "translate(-50%, 0)",
+          zIndex: zIndexOf(zOf(frame), 0),
+          pointerEvents: "none"
+        };
+        const windowContents = (
+          <>
             {view && windowHoleMask(frame) && (
               <div style={{
                 position: "absolute", inset: 0, overflow: "hidden",
@@ -268,10 +274,22 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
                   style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               </div>
             )}
-            {/* ★枠は、いちばん上。 */}
             <img src={interiorSrc(frame)} alt=""
               style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block" }} />
-          </div>
+          </>
+        );
+        const windowImage = <div aria-hidden="true" style={windowStyle}>{windowContents}</div>;
+        return (
+          editMode && Draggable && onUpdatePosition ? (
+            <Draggable itemKey="window" startLeft={windowLeft} startTop={windowTop}
+              band={WALL_BAND}
+              style={windowStyle}
+              onDragEnd={(left, top) => onUpdatePosition("interior", "window", left, top, "top")}>
+              <div aria-hidden="true" style={{ position: "relative", width: "100%", height: "100%" }}>
+                {windowContents}
+              </div>
+            </Draggable>
+          ) : windowImage
         );
       })()}
 
