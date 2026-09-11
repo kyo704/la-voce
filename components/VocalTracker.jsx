@@ -9589,6 +9589,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★月経周期・既往症・アレルギー・常用薬も必ず含める。先生には共有しない設定だが、
   //   本人が自分のデータを持ち出す権利は別の話（ルート文書 G3 の注記）。
   const [exportStatus, setExportStatus] = useState("idle"); // idle | working | done | error
+  const [signOutError, setSignOutError] = useState("");
   // ★同意の撤回（2026-09-03）。★削除とは別のものです。
   //   ★withdrawAlsoDelete は★既定でオフ。戻せるほうを既定にします。
   const [withdrawAlsoDelete, setWithdrawAlsoDelete] = useState(false);
@@ -12965,8 +12966,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }, [wardrobeOn, box2 && box2.round, box2 && box2.availableAt, realTodayDate]);
 
   async function handleSignOut() {
+    setSignOutError("");
     const supabase = createClient();
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("ログアウトに失敗しました:", error);
+      setSignOutError("ログアウトできませんでした。通信状態を確認して、もう一度お試しください。");
+      return;
+    }
     window.location.href = "/";
   }
 
@@ -13434,7 +13441,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             <a href="/billing" title={t("navPlan")} className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line, color: C.inkSoft }}>
               <CreditCard size={14} />
             </a>
-            <button onClick={handleSignOut} title={t("navSignOut")} className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line, color: C.inkSoft }}>
+            <button type="button" onClick={handleSignOut} title={t("navSignOut")} className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0" style={{ borderColor: C.line, color: C.inkSoft }}>
               <LogOut size={14} />
             </button>
           </div>
@@ -21834,6 +21841,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </details>
                   )}
 
+                {canSeeBetaFeatures(profile) && myOrgs.filter((m) => m.role === "owner" || m.role === "admin").length === 0 && (
+                  <details className="rounded-2xl border" style={{ background: C.card, borderColor: C.gold, borderWidth: 2 }}>
+                    <summary className="p-4 text-sm font-medium cursor-pointer">{t("createClassroomTitle")}</summary>
+                    <div className="px-4 pb-4">
+                      <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
+                        {t("createClassroomDesc")}
+                      </p>
+                      <button type="button" onClick={async () => { await ensureOwnOrg(); fetchMyOrgs(); }}
+                        className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                        {t("createClassroomTitle")}
+                      </button>
+                    </div>
+                  </details>
+                )}
+
                 <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>設定</p>
                   <div className="space-y-1">
@@ -22143,7 +22165,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <span className="flex items-center gap-2"><Trash2 size={16} />{t("labelDeleteAccount")}</span>
                     <span style={{ color: C.inkSoft }}>→</span>
                   </button>
-                  <button onClick={handleSignOut}
+                  {signOutError && (
+                    <p className="text-xs mb-2 rounded-lg p-2.5" style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>
+                      {signOutError}
+                    </p>
+                  )}
+                  <button type="button" onClick={handleSignOut}
                     className="w-full flex items-center gap-2 py-2.5 px-1 text-sm" style={{ color: C.curtain }}>
                     <LogOut size={16} />ログアウト
                   </button>
