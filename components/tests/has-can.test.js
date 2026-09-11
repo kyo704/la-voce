@@ -90,6 +90,53 @@ const sql = raw.split("\n").filter((l) => !/^\s*--/.test(l)).join("\n");
   t(missing.length === 0,
     "★学校ぜんぶに かかる ものが そろって いる" + (missing.length ? "（★抜け " + missing.join("／") + "）" : ""));
 
+  console.log("\n⑧ 第3段の 下ごしらえ（★関数 2つ）");
+  const P3 = path.join(__dirname, "..", "..", "supabase",
+    "2026-09-11-7-3-第3段の下ごしらえ（関数2つと、決まりの読み取り）.sql");
+  const raw3 = fs.readFileSync(P3, "utf8");
+  const sql3 = raw3.split("\n").filter((l) => !/^\s*--/.test(l)).join("\n");
+
+  t(/create or replace function public\.school_wide_perms\(\)/.test(sql3),
+    "★school_wide_perms が ある");
+  t(/create or replace function public\.can_grant_post\(p_org_id uuid, p_post_id uuid\)/.test(sql3),
+    "★can_grant_post が ある");
+  t(/\bimmutable\b/.test(sql3), "★一覧の 関数は immutable");
+  t(/security definer[\s\S]*can_grant_post|can_grant_post[\s\S]*security definer/.test(sql3),
+    "★can_grant_post は 決まりを 飛び越える");
+  t(!/create policy|drop policy|alter policy/.test(sql3), "★決まりを 触って いない");
+
+  console.log("\n⑨ ★★学校ぜんぶの 一覧が、★lib と ぴったり 同じ こと");
+  // ★★同じ ものが 2か所に 住みます。★ずれると 事故に なります。
+  //   ★★だから、★ここで 突き合わせます。★ずれたら 落ちます。
+  const arr = sql3.match(/select array\[([\s\S]*?)\]::text\[\]/);
+  t(!!arr, "★一覧が 読み取れる");
+  if (arr) {
+    const inSql = [...arr[1].matchAll(/'([a-z_]+)'/g)].map((x) => x[1]).sort();
+    const inLib = m.PERMS.filter((p) => p.schoolWide).map((p) => p.key).sort();
+    t(JSON.stringify(inSql) === JSON.stringify(inLib),
+      "★SQL と lib が 同じ（SQL " + inSql.length + " ／ lib " + inLib.length + "）");
+    const only1 = inSql.filter((k) => !inLib.includes(k));
+    const only2 = inLib.filter((k) => !inSql.includes(k));
+    t(only1.length === 0, "★SQL だけに ある ものが 無い" + (only1.length ? "（" + only1.join("／") + "）" : ""));
+    t(only2.length === 0, "★lib だけに ある ものが 無い" + (only2.length ? "（" + only2.join("／") + "）" : ""));
+  }
+
+  console.log("\n⑩ 第2段が「広くなる」側に 触れて いないこと");
+  const P2 = path.join(__dirname, "..", "..", "supabase",
+    "2026-09-11-7-3-第2段-役職の無い方に役職を付ける.sql");
+  const raw2 = fs.readFileSync(P2, "utf8");
+  const sql2 = raw2.split("\n").filter((l) => !/^\s*--/.test(l)).join("\n");
+  // ★★自分の ぶんの できことは、★1つも 付けません。
+  //   ★★⑥の 突き合わせに 入って いないので、★見張りに かかりません。
+  //   ★★見張りに かからない ところで 広げる ── ★いちばん 危ない 形です。
+  ["sched_mine", "monka_write", "koma_mine", "shukketsu"].forEach((k) => {
+    t(!new RegExp('"' + k + '":true').test(sql2), "★" + k + " を 付けて いない");
+  });
+  t(/'teacher', '（移行）先生', 903, '\{\}'/.test(sql2), "★先生は 空の 役職");
+  // ★★owner に post が ある こと。★これで 3行目が 閉じます。
+  t(/'owner',\s*'（移行）学校ぜんぶ',\s*900,[\s\S]{0,300}"post":true/.test(sql2),
+    "★owner に post が ある（★mayTouchPosts の 3行目が 閉じる）");
+
   console.log(ng === 0 ? `\n★すべて 通りました（${ok}）` : `\n★${ng} 件 落ちました`);
   process.exit(ng === 0 ? 0 : 1);
 })();
