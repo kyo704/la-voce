@@ -113,20 +113,37 @@ function readEnv() {
       body: { action: "assign", orgId: ORG,
         userId: "f7520dc1-9154-4524-a350-ba0bcddbf0b2",
         postId: POST_BOSS },
-      why: "★通れば、★自分を 学長に できます。★名簿の 書き出しより 重い 穴です。"
+      why: "★通れば、★自分を 学長に できます。★名簿の 書き出しより 重い 穴です。",
+      // ★★通って しまったら、★職員に 戻します。
+      undo: {
+        url: "/api/org/posts",
+        body: (staff) => (staff
+          ? { action: "assign", orgId: ORG,
+              userId: "f7520dc1-9154-4524-a350-ba0bcddbf0b2", postId: staff }
+          : { action: "unassign", orgId: ORG,
+              userId: "f7520dc1-9154-4524-a350-ba0bcddbf0b2" })
+      }
     },
     {
       key: "☐1-b", title: "★役職そのものを 作る（★できことを 自分で 決める）",
       url: "/api/org/posts",
       body: { action: "create", orgId: ORG,
         name: "★probe", perms: { post: true, meibo: true } },
-      why: "★通れば、★できことを 自分で 書けます。★役職を 変えるのと 同じ ことです。"
+      why: "★通れば、★できことを 自分で 書けます。★役職を 変えるのと 同じ ことです。",
+      // ★★作れて しまったら、★消します。★id が 返って きた ときだけ。
+      undo: null
     },
     {
       key: "☐1-c", title: "★できことを 1つ 足す（perm）",
       url: "/api/org/posts",
       body: { action: "perm", orgId: ORG, postId: POST_BOSS, perm: "post", on: true },
-      why: "★通れば、★いまの 役職に「役職を 変える」を 足せます。"
+      why: "★通れば、★いまの 役職に「役職を 変える」を 足せます。",
+      // ★★足せて しまったら、★外します。
+      undo: {
+        url: "/api/org/posts",
+        body: () => ({ action: "perm", orgId: ORG, postId: POST_BOSS,
+          perm: "post", on: false })
+      }
     },
     {
       key: "☐2", title: "職員の 資格で、★行事を 書き換える",
@@ -140,8 +157,17 @@ function readEnv() {
   note("");
   note("| | 何を | 返って きた 数 | 中身 |");
   note("|---|---|---|---|");
+  const POST_STAFF = process.argv[4] || env.PROBE_POST_STAFF || null;
+  const undone = [];
   for (const c of CHECKS) {
     const r = await call(c.url, c.body);
+    // ★★通って しまった ときは、★すぐ 元に 戻します。
+    //   ★★確かめの ために 上がった ままに しません。
+    //   ★★戻せた かどうかも 書き留めます。★黙って 済ませません。
+    if (r.status === 200 && c.undo) {
+      const u = await call(c.undo.url, c.undo.body(POST_STAFF));
+      undone.push(c.key + "　戻し → " + u.status + "　" + u.body.slice(0, 80));
+    }
     const verdict = r.status === 200 ? "★★通って しまいました"
       : (r.status === 403 ? "★断られました（403）"
         : (r.status === 404 ? "★見つかりません（404）"
@@ -153,13 +179,43 @@ function readEnv() {
 
   await browser.close();
 
-  note("## ★この 確かめの 限り");
+  if (undone.length) {
+    note("## ★戻した もの");
+    note("");
+    undone.forEach((u) => note("- " + u));
+    note("");
+  }
+
+  note("## ★答えの 読み方");
   note("");
-  note("★★教室の id を 持って いません。★だから 0000… を 投げて います。");
-  note("　★★404（見つかりません）が 返る のは、★**判じの 前に 止まった**という ことです。");
-  note("　★★判じそのものを 通る には、★本物の 教室の id が 要ります。");
-  note("★★捨てて よい 教室を 作る SQL（①）を 流して いただければ、");
-  note("　★その id で もう一度 投げて、★判じを 通した 答えが 取れます。");
+  note("| 返って きた 数 | 意味 |");
+  note("|---|---|");
+  note("| **200** | ★★通って しまいました。★穴です |");
+  note("| **403** | ★判じに 断られました。★★守れて います |");
+  note("| **404** | ★判じの **手前**で 止まりました。★確かめに なって いません |");
+  note("| **401** | ★ログインが 切れて います |");
+  note("");
+  note("## ★この 確かめが 見て いない ところ");
+  note("");
+  note("★★`mayTouchPosts` には、★もう 1本の 道が あります。");
+  note("");
+  note("```js");
+  note("function mayTouchPosts(member, perms) {");
+  note("  if (!member) return false;");
+  note("  if (perms) return perms.has(\"post\");   // ★← ★ここを 通りました");
+  note("  return member.role === \"owner\";        // ★← ★ここは 通って いません");
+  note("}");
+  note("```");
+  note("");
+  note("★★3行目が 効くのは、★**役職（post）を 1つも 持って いない** ときだけ です。");
+  note("　★★いまの 確かめでは、★使い捨ての アカウントは 役職を 持って います。");
+  note("　　★だから 2行目で 判じが つき、★3行目まで 行きません。");
+  note("★★3行目を 通すには、★**役職を 持たない `role='owner'` の 方**が 要ります。");
+  note("　★★そこが、★§7 の 言う「役職名で 分岐」の 残り です。");
+  note("");
+  note("★★行事（☐2）は、★API の 入口が そもそも ありません。");
+  note("　★app/api に org/events は 無く、★画面から 台帳に 直に 書いて います。");
+  note("　★★だから ☐2 の 道は 1本だけ。★その道は 権限（GRANT）で 止まりました。");
   note("");
 
   fs.writeFileSync(path.join(ROOT, "docs", "reports", "_perm-probe.md"),
