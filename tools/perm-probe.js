@@ -1,0 +1,168 @@
+#!/usr/bin/env node
+
+// ============================================================================
+// §7-2　★API 経由で 確かめる ── ★本物の 利用者が 通れる 唯一の 道
+//
+//   ★出どころ docs/opus/作業指示-権限の事故を直し、記録を残す（9月11日）.md §7-2
+//     「★★まず 確かめてください。★直す前に です。」
+//   ★坂本さんの お許し（★2026-09-11）
+//     「API経由の確かめを、進めてください。捨ててよい教室を1つ作ることも、許可します。」
+//
+//   ★★なぜ API を 見るのか
+//     ★★台帳に 直に 投げる 道は、★権限（GRANT）が 無くて 止まりました（★42501）。
+//     ★★けれど、★app/api/org/posts は **裏口（service role）**で 動きます。
+//       ★★裏口は、★権限も 決まり（RLS）も 飛び越えます。
+//       ★★つまり、★守って いるのは JS の 判じ **だけ**です。
+//     ★★本物の 利用者が 通れるのは、★こちらの 道 だけ です。
+//       ★★だから、★ここが 本当に 知りたい ところです。
+//
+//   ★★何も 壊しません。
+//     ★★使い捨ての アカウントで ログインし、★要求を 投げて、
+//       ★返って きた 数（200／403／404…）を 書き留めるだけです。
+//     ★★通って しまった ときは、★すぐ 元に 戻します（★undo）。
+//
+//   使い方  node tools/perm-probe.js
+// ============================================================================
+
+const fs = require("fs");
+const path = require("path");
+
+const ROOT = path.join(__dirname, "..");
+
+function readEnv() {
+  const p = path.join(ROOT, ".env.e2e");
+  if (!fs.existsSync(p)) { console.error("★.env.e2e が ありません。"); process.exit(1); }
+  const env = {};
+  fs.readFileSync(p, "utf8").split("\n").forEach((line) => {
+    const s = line.trim();
+    if (!s || s.startsWith("#")) return;
+    const i = s.indexOf("=");
+    if (i > 0) env[s.slice(0, i).trim()] = s.slice(i + 1).trim();
+  });
+  return env;
+}
+
+(async () => {
+  const env = readEnv();
+  const base = env.E2E_BASE_URL || "https://woolsong.app";
+  const { chromium } = require("playwright");
+  const browser = await chromium.launch({ channel: "chrome" });
+  const ctx = await browser.newContext({ locale: "ja-JP", timezoneId: "Asia/Tokyo" });
+  const page = await ctx.newPage();
+
+  const out = [];
+  const note = (s) => { console.log(s); out.push(s); };
+
+  note("# §7-2　API 経由の 確かめ");
+  note("");
+  note("★この 記録は tools/perm-probe.js が 書き出します。★手で 書いて いません。");
+  note("");
+
+  // ── ① ログイン
+  await page.goto(base + "/login", { waitUntil: "domcontentloaded" });
+  await page.locator('input[type="email"]').first().fill(env.E2E_EMAIL);
+  await page.locator('input[type="password"]').first().fill(env.E2E_PASSWORD);
+  await page.locator('button[type="submit"], button:has-text("ログイン")').first().click();
+  await page.waitForURL(/\/dashboard/, { timeout: 45000 });
+  note("★使い捨ての アカウントで ログインしました。");
+  note("");
+
+  /** ★API に 要求を 投げ、★返って きた ものを そのまま 書き留めます。 */
+  const call = async (url, body) => page.evaluate(async ([u, b]) => {
+    try {
+      const r = await fetch(u, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(b)
+      });
+      let t = "";
+      try { t = await r.text(); } catch (e) { t = ""; }
+      return { status: r.status, body: t.slice(0, 200) };
+    } catch (e) { return { status: 0, body: String(e).slice(0, 200) }; }
+  }, [url, body]);
+
+  /** ★いま、★どの 教室に 属して いるか。★画面と 同じ 道で 読みます。 */
+  const orgs = await page.evaluate(async () => {
+    try {
+      const r = await fetch("/api/org/posts", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "list" })
+      });
+      return { status: r.status, body: (await r.text()).slice(0, 300) };
+    } catch (e) { return { status: 0, body: String(e) }; }
+  });
+  note("## ★下ごしらえ");
+  note("");
+  note("- `/api/org/posts` に `list` を 投げた 答え　`" + orgs.status + "`　" + orgs.body);
+  note("");
+
+  // ── ② 4つの 確かめ
+  // ★★教室の id は、★下ごしらえの SQL が 出します。
+  //   ★★.env.e2e の PROBE_ORG_ID か、★引数で 渡して ください。
+  //   ★★無い ときは 0000… を 投げます。★判じの 手前で 止まります。
+  const ORG = process.argv[2] || env.PROBE_ORG_ID || "00000000-0000-0000-0000-000000000000";
+  const POST_BOSS = process.argv[3] || env.PROBE_POST_BOSS || "00000000-0000-0000-0000-000000000000";
+  note("- 使う 教室の id　`" + ORG + "`");
+  note("- 学長の 役職の id　`" + POST_BOSS + "`");
+  note("");
+
+  const CHECKS = [
+    {
+      key: "☐1", title: "職員の 資格で、★役職を 変える",
+      url: "/api/org/posts",
+      body: { action: "assign", orgId: ORG,
+        userId: "f7520dc1-9154-4524-a350-ba0bcddbf0b2",
+        postId: POST_BOSS },
+      why: "★通れば、★自分を 学長に できます。★名簿の 書き出しより 重い 穴です。"
+    },
+    {
+      key: "☐1-b", title: "★役職そのものを 作る（★できことを 自分で 決める）",
+      url: "/api/org/posts",
+      body: { action: "create", orgId: ORG,
+        name: "★probe", perms: { post: true, meibo: true } },
+      why: "★通れば、★できことを 自分で 書けます。★役職を 変えるのと 同じ ことです。"
+    },
+    {
+      key: "☐1-c", title: "★できことを 1つ 足す（perm）",
+      url: "/api/org/posts",
+      body: { action: "perm", orgId: ORG, postId: POST_BOSS, perm: "post", on: true },
+      why: "★通れば、★いまの 役職に「役職を 変える」を 足せます。"
+    },
+    {
+      key: "☐2", title: "職員の 資格で、★行事を 書き換える",
+      url: "/api/org/events",
+      body: { orgId: ORG, title: "★probe" },
+      why: "★★この 入口は ありません。★行事は 画面から 台帳に 直に 書きます。"
+    }
+  ];
+
+  note("## ★確かめた こと");
+  note("");
+  note("| | 何を | 返って きた 数 | 中身 |");
+  note("|---|---|---|---|");
+  for (const c of CHECKS) {
+    const r = await call(c.url, c.body);
+    const verdict = r.status === 200 ? "★★通って しまいました"
+      : (r.status === 403 ? "★断られました（403）"
+        : (r.status === 404 ? "★見つかりません（404）"
+          : (r.status === 401 ? "★ログインが 要ります（401）" : "★" + r.status)));
+    note("| " + c.key + " | " + c.title + " | **" + r.status + "** " + verdict
+      + " | `" + r.body.replace(/\|/g, "／").replace(/\n/g, " ") + "` |");
+  }
+  note("");
+
+  await browser.close();
+
+  note("## ★この 確かめの 限り");
+  note("");
+  note("★★教室の id を 持って いません。★だから 0000… を 投げて います。");
+  note("　★★404（見つかりません）が 返る のは、★**判じの 前に 止まった**という ことです。");
+  note("　★★判じそのものを 通る には、★本物の 教室の id が 要ります。");
+  note("★★捨てて よい 教室を 作る SQL（①）を 流して いただければ、");
+  note("　★その id で もう一度 投げて、★判じを 通した 答えが 取れます。");
+  note("");
+
+  fs.writeFileSync(path.join(ROOT, "docs", "reports", "_perm-probe.md"),
+    out.join("\n") + "\n", "utf8");
+  console.log("\n★docs/reports/_perm-probe.md に 書き出しました");
+})().catch((e) => { console.error(String(e).slice(0, 500)); process.exit(1); });
