@@ -9,9 +9,10 @@ import {
   sheepCssSize, rem
 } from "@/lib/uiKit";
 import {
-  ScreenHead, HeadRound, H3, Seg, Note, Card, Two, Btn, Usu
+  ScreenHead, HeadRound, H3, Seg, Note, Card, Two, Btn, Usu, Box, Li
 } from "@/components/UiV2";
 import { VIEW_AS_MODES, viewAsWord } from "@/lib/viewAs";
+import { planToday, PLAN_COPY } from "@/lib/todayBand";
 
 // ============================================================================
 // 「きょう」の画面 ── ★A01（★design.zip ／ 2026-09-10）
@@ -40,11 +41,13 @@ import { VIEW_AS_MODES, viewAsWord } from "@/lib/viewAs";
 
 export default function HomeV2({
   entries, todayISO, wearing, clothColors, clothColors2,
-  band, onRecord, onOpenMore, children, performances,
+  band, onRecord, onOpenMore, onTimetable, children, performances,
   viewAs = "auto", onViewAs, canChooseViewAs = false, hasTeachingToday = false
 }) {
   // ★★本番の 朝の ことば（★見本 577〜582行）。★決めは lib/todayCard.js。
   const morning = morningWordsFor(performances, todayISO);
+  // ★★きょうの よてい（★見本 594〜600行）。★決めは lib/todayBand.js。
+  const plan = planToday((band && band.lessons) || null, todayISO, band && band.tz);
   // ★★こえの調子・ねむり の 計算は、★2026-09-11 に 外しました（★お決め ㋑）。
   //   ★★N-1 の 決まり ──「作った 関数は、必ず どこかから 呼ばれて いるか」。
   //     ★出す 場所を 消したので、★計算も 残しません。
@@ -199,6 +202,29 @@ export default function HomeV2({
 
       {/* ★★記録へ（★見本 .btn）。★いちばん大きい 押しどころです。 */}
       <Btn onClick={onRecord}>きょうを 記録する</Btn>
+
+      {/* ★★きょうの よてい（★見本 S_kyou・594〜606行／★裁定 その15 ⑥⑦）。
+          ★★教室の 札（★どの 教室の ぶんか）は 出しません。★後回しです。
+          ★★「重なり ◯件」も 出しません。★後回しです。
+          ★★1件も 無い ときも、★枠を 出します（★見本）。
+            ★★枠が 消えると、★「時間割を 入れる」への 入口も 消えます。
+          ★★字は 見本の ままです。★lib/todayBand.js が 1か所で 持ちます。 */}
+      <H3>{PLAN_COPY.head}</H3>
+      <Box>
+        {plan.length > 0
+          ? plan.map((p, i) => (
+            <Li key={p.id || i} last={i === plan.length - 1}>{p.label}</Li>
+          ))
+          : <Li last><Usu style={{ marginTop: 0 }}>{PLAN_COPY.none}</Usu></Li>}
+      </Box>
+      {onTimetable ? (
+        <Two style={{ marginTop: -1 }}>
+          <Btn ghost small onClick={onTimetable} style={{ flex: 1 }}>
+            {PLAN_COPY.timetable}
+          </Btn>
+        </Two>
+      ) : null}
+      <Usu style={{ marginTop: 5, marginBottom: 6 }}>{PLAN_COPY.note}</Usu>
 
       {/* ★★㋒ 見出し「みつけたこと」を 消しました。
           ★出どころ Opus の 裁定（★2026-09-11・その15）㋒
