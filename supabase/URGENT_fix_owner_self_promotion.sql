@@ -105,7 +105,15 @@ create policy "memberships_restrict_role_insert"
       and role = 'owner'
       and exists (select 1 from public.organizations o
                    where o.id = org_id and o.created_by = auth.uid())
-      and not exists (select 1 from public.memberships m where m.org_id = org_id)
+      -- ★★2026-09-11、★ここに 誤りが ありました。
+      --   ★★`org_id` に 表の 名前を 付けて いませんでした。
+      --   ★★中に m（＝memberships）が 居て、★m にも org_id が あります。
+      --     ★だから 近い ほう＝ m.org_id と 読まれ、★いつでも 真に なります。
+      --   ★★ゆるい 決まりと 止める 決まりは かつ（AND）です。
+      --     ★★ゆるい ほうだけ 直しても、★ここが 止め続けます。
+      --   ★直し supabase/URGENT_2026-09-11-同じバグが もう1か所（restrictive）.sql
+      and not exists (select 1 from public.memberships m
+                       where m.org_id = memberships.org_id)
     )
   );
 

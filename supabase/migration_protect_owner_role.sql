@@ -134,7 +134,13 @@ create policy "memberships_restrict_role_insert"
       and role = 'owner'
       and exists (select 1 from public.organizations o
                    where o.id = org_id and o.created_by = auth.uid())
-      and not exists (select 1 from public.memberships m where m.org_id = org_id)
+      -- ★★2026-09-11、★ここに 誤りが ありました（★同じ 形が 帳面に 5か所）。
+      --   ★★`org_id` に 表の 名前を 付けて いませんでした。
+      --   ★★中の m（＝memberships）にも org_id が あるので、
+      --     ★近い ほう＝ m.org_id と 読まれ、★いつでも 真に なります。
+      --   ★★この 台本を もう一度 流すと、★誤りが 戻って きます。★だから 直します。
+      and not exists (select 1 from public.memberships m
+                       where m.org_id = memberships.org_id)
     )
   );
 
