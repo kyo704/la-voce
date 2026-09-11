@@ -64,7 +64,13 @@ function ok(cond, label) {
   ok(/canChooseViewAs && onViewAs \? \(/.test(home), "★選べる ときだけ 出す");
   ok(/canChooseViewAs = false/.test(home), "★既定は 出さない");
   const v = readRaw("components", "VocalTracker.jsx");
-  ok(/canChooseViewAs=\{layoutV2\}/.test(v), "★門の中だけに 渡している");
+  // ★★2026-09-11、★条件を 1つ 足しました（★Opus の 裁定 その15 ㋐ の ④）。
+  //   ★「役職のない人には、切替を出さない」
+  //   ★★門の中に いる だけでは 出しません。★教える 立場の 方だけです。
+  //     ★★それまでは、★生徒の 方にも「先生として」が 見えて いました。
+  ok(/const mayChooseViewAs = layoutV2 && canTeachLessons;/.test(v),
+    "★門の中の、★教える 立場の 方だけに 渡している");
+  ok(/canChooseViewAs=\{mayChooseViewAs\}/.test(v), "★それを 渡している");
   ok(/if \(layoutV2\) setViewAs\(readViewAs\(\)\)/.test(v), "★端末から 読むのも 門の中だけ");
 
   console.log("⑥ ★権限では ない ── ★見え方だけ");

@@ -2,13 +2,15 @@
 
 import { C } from "@/lib/tokens";
 import SheepDressed from "@/components/SheepDressed";
-import { conditionWord, sleepParts, usualOf, TODAY_NOTE } from "@/lib/todayCard";
+import { TODAY_NOTE, morningWordsFor, MORNING_WORDS_FOOT } from "@/lib/todayCard";
 import TodayBand from "@/components/TodayBand";
 import {
   TYPE, SPACE, FONT_STACK, SHEEP_WIDTH_RATIO, SHEEP_WIDTH_RATIO_TEACHING,
-  sheepCssSize
+  sheepCssSize, rem
 } from "@/lib/uiKit";
-import { ScreenHead, HeadRound, H3, Seg, Note, Card, Two, Btn } from "@/components/UiV2";
+import {
+  ScreenHead, HeadRound, H3, Seg, Note, Card, Two, Btn, Usu
+} from "@/components/UiV2";
 import { VIEW_AS_MODES, viewAsWord } from "@/lib/viewAs";
 
 // ============================================================================
@@ -38,25 +40,16 @@ import { VIEW_AS_MODES, viewAsWord } from "@/lib/viewAs";
 
 export default function HomeV2({
   entries, todayISO, wearing, clothColors, clothColors2,
-  band, onRecord, onOpenMore, children,
+  band, onRecord, onOpenMore, children, performances,
   viewAs = "auto", onViewAs, canChooseViewAs = false, hasTeachingToday = false
 }) {
-  const today = (entries || {})[todayISO] || null;
-  // ★★「こえの調子」は 声の 出来です（★voiceQuality ／ 2026-09-11 に 直しました）。
-  //   ★★前は throatCondition（★のどの 身体感覚）を 読んでいました。
-  //     ★★9月9日の 古い見本は 3択が 1つだけで、★「出た／ふつう／出づらい」を
-  //       ★のどの 列に 書いていました。★言葉と 列が ずれていました。
-  //   ★★正しい 見本（S_kiroku）は 3択が 2つです ──
-  //     ★のどの 調子（よい／ふつう／わるい）→ throat_condition
-  //     ★声の 出来（出た／ふつう／出づらい）→ voice_quality
-  //   ★★conditionWord が 返すのは「出た／ふつう／出づらい」なので、
-  //     ★読むのは voiceQuality です。★38人が 声の出来の 目盛りで 書いてきた 列です。
-  const cond = today ? conditionWord(today.voiceQuality) : null;
-  const condUsual = conditionWord(usualOf(entries, todayISO, (e) => e && e.voiceQuality));
-  // ★★ねむりは、★数と 単位で 大きさが ちがいます（★見本 .big / .big s）。
-  //   ★だから 1本の 文字列では 出せません。★分けて 受け取ります。
-  const sleep = today ? sleepParts(today.sleepHours) : null;
-  const sleepUsual = sleepParts(usualOf(entries, todayISO, (e) => e && e.sleepHours));
+  // ★★本番の 朝の ことば（★見本 577〜582行）。★決めは lib/todayCard.js。
+  const morning = morningWordsFor(performances, todayISO);
+  // ★★こえの調子・ねむり の 計算は、★2026-09-11 に 外しました（★お決め ㋑）。
+  //   ★★N-1 の 決まり ──「作った 関数は、必ず どこかから 呼ばれて いるか」。
+  //     ★出す 場所を 消したので、★計算も 残しません。
+  //   ★★conditionWord ／ sleepParts ／ usualOf は lib/todayCard.js に あります。
+  //     ★「ふりかえる → かぞえる」が 使って います。★消して いません。
 
   // ★★羊の 大きさは、★端末の 幅で 決まります（★見本の 割合・lib/uiKit.js）。
   //   ★★SheepDressed は px しか 受け取りません。★だから、★実際に 測ります。
@@ -94,6 +87,24 @@ export default function HomeV2({
       <ScreenHead title="きょう" right={
         <HeadRound mark="⚙" label="もっとを開く" onClick={onOpenMore} />
       } />
+
+      {/* ★★本番の 朝だけ、★ご本人が 前に 書いた ことばを そのまま 返します。
+          ★見本 S_kyou 577〜582行（★Opus の 裁定・2026-09-11・その15 ②）
+          ★★アプリは 1文字も 足しません。★要約しません。★知らせも 出しません。
+            ★書くように 誘いません。★書いて いない 方には、★枠ごと 出ません。
+          ★★決めるのは lib/todayCard.js の morningWordsFor です。★ここで 決めません。
+          ★★見本の 色　border-color:#CFC0A4 ／ background:#FDFAF3 */}
+      {morning ? (
+        <Card style={{ borderColor: "#CFC0A4", background: "#FDFAF3" }}>
+          {morning.label ? <Usu style={{ marginTop: 0 }}>{morning.label}</Usu> : null}
+          {/* ★★書かれた ままを 出します。★改行も そのままです。 */}
+          <div style={{
+            fontSize: rem(16), lineHeight: 1.95, margin: "7px 0 6px",
+            color: C.ink, whiteSpace: "pre-wrap"
+          }}>{morning.words}</div>
+          <Usu style={{ marginTop: 0 }}>{MORNING_WORDS_FOOT}</Usu>
+        </Card>
+      ) : null}
 
       {/* ★★「どちらとして 見るか」（★2026-09-10・坂本さんの ご提案）。
           ★★門の中だけに 出ます。★一般の 方は、★これまでどおり じどう です。
@@ -163,54 +174,50 @@ export default function HomeV2({
           } />
       ) : null}
 
-      {/* ★★こえの調子 と ねむり（★見本 .two）。★2つ 並べます。
-          ★★点数を 出しません。★言葉と、★あなたの ふだん だけです。
-          ★★足りなければ、★黙って 空けます。「データ不足」と 書きません。 */}
-      {/* ★★教える日も 出します（★案B・2026-09-10・坂本さんの お決め）。
-          ★★見本② には 描かれていませんが、★出さないと、
-            ★教える日だけ ご自分の 記録が 見えなく なります。 */}
-      {(cond || sleep) && (
-        <Two style={{ marginBottom: SPACE.cardGap }}>
-          <Card style={{ flex: 1, minWidth: 0 }}>
-            <p style={TYPE.mini}>こえの調子</p>
-            <p style={{ ...TYPE.big, margin: 0 }}>{cond || "—"}</p>
-            {condUsual ? (
-              <p style={{ ...TYPE.usual, marginTop: 2 }}>あなたのふだん　{condUsual}</p>
-            ) : null}
-          </Card>
-          <Card style={{ flex: 1, minWidth: 0 }}>
-            <p style={TYPE.mini}>ねむり</p>
-            <p style={{ ...TYPE.big, margin: 0 }}>
-              {sleep ? sleep.map((p, i) => (
-                <span key={i}>
-                  {p.n}
-                  {/* ★★単位は 小さく（★見本 .big s ── 12px・400・左に 3px）。
-                      ★★「6時間20分」を ぜんぶ 同じ 大きさで 出すと、
-                        ★数が 読み取りにくく なります。 */}
-                  <span style={{ ...TYPE.bigUnit, marginLeft: 3 }}>{p.u}</span>
-                </span>
-              )) : "—"}
-            </p>
-            {sleepUsual ? (
-              <p style={{ ...TYPE.usual, marginTop: 2 }}>
-                あなたのふだん　{sleepUsual.map((p) => p.n + p.u).join("")}
-              </p>
-            ) : null}
-          </Card>
-        </Two>
-      )}
+      {/* ★★㋑ 2枚の カード（こえの調子・ねむり）を 消しました。
+          ★出どころ Opus の 裁定（★2026-09-11・その15）㋑
+            「①消す（引っ越すではない）。理由は、行き先に、既に同じものがあり、
+              かつ、朝に、昨日までの数字を見せることが、暗黙の判定に
+              なってしまうためです。記録は消さず、消したことを、記録に
+              残してください。」
+
+          ★★2つの 理由を、★どちらも 書いて おきます。
+            ★① 行き先に すでに 同じ ものが あります
+              ★「ふりかえる → かぞえる」が「あなたの ふだん」を 持って います。
+            ★② 朝に 昨日までの 数を 見せる ことが、★暗黙の 判定に なります
+              ★★「ふだんより 低い」と、★画面が 言わなくても 読めて しまいます。
+              ★★この 帳面は「きょうの調子の 判定を 出さない」と 決めて います
+                （★見本 S_kyou の .note の 1行目）。
+
+          ★★記録は 1つも 消して いません。★列も そのままです。
+            ★消したのは「きょうの 画面に 出す」ことだけです。
+          ★★消した ことは docs/reports/消したものの記録.md に 残しました。
+
+          ★★出どころだった 見本（docs/design/pack/screens/A01-きょう生徒.html）は、
+            ★2026-09-11 に 無効に なりました。★正は 4本の 動く見本 だけです。
+            ★★いまの 見本 S_kyou に、★この 2枚は ありません。 */}
 
       {/* ★★記録へ（★見本 .btn）。★いちばん大きい 押しどころです。 */}
       <Btn onClick={onRecord}>きょうを 記録する</Btn>
 
-      {/* ★★みつけたこと（★見本 .h3 ＋ .card）。
-          ★★見出しは いつも 出します。★中身が 無くても 出します。
-            ★見本① に、★見出しだけの 姿でも 成り立つように 描かれています。
-            ★★「まだ 何も ありません」とは 書きません。★責めに なります。
-          ★中身は 呼ぶ側が 入れます（★分析の 側が 持っています）。 */}
-      {/* ★★教える日も 出します（★案B・2026-09-10・坂本さんの お決め）。 */}
-      <H3>みつけたこと</H3>
-      {children}
+      {/* ★★㋒ 見出し「みつけたこと」を 消しました。
+          ★出どころ Opus の 裁定（★2026-09-11・その15）㋒
+            「①消す。ただし、その計算が、他で使われていないか、grepで確認して
+              から、消してください。」
+
+          ★★確かめました（★2026-09-11）。
+            ★topDiscoveries は、★ほかにも 2か所で 使われて います ──
+              ★components/VocalTracker.jsx:18157（★分析タブの 1文）
+              ★components/VocalTracker.jsx:18387（★その 続き）
+            ★★どちらも activeTab === "analysis" && !layoutV2 の 中です。
+              ★★門の外（38人）の 古い 分析画面です。
+            ★★だから、★計算は 残します。★消すと 38人の 画面が 壊れます。
+              ★消したのは「きょうの 画面に 出す」ことだけです。
+
+          ★★出どころだった 見本（A01-きょう生徒.html）は 無効に なりました。
+            ★いまの 見本 S_kyou に、★この 見出しは ありません。
+          ★★中身も、★いま 1つも 出て いませんでした（★比較画像）。
+            ★見出しだけが 立って いる 状態でした。 */}
 
       {/* ★★いちばん下の 3行（★見本 S_kyou の .note・613行）。
           ★★2026-09-11、★比較画像で 抜けて いました。

@@ -78,6 +78,55 @@ function t(cond, label) {
   t(/linear-gradient\(#F6EEDC,#EFE4CC\)/.test(home), "★羊の 地が 見本の 色");
   t(mihon.includes("linear-gradient(#F6EEDC,#EFE4CC)"), "★その 色が 見本に ある");
 
+  console.log("\n⑤ 本番の 朝の ことば（★裁定 2026-09-11・その15 ②）");
+  // ★★見本 577〜582行。★アプリは 1文字も 足しません。
+  t(tc.MORNING_WORDS_FOOT === "前に あなたが 書いた ことばです", "★下の 1行が 見本の まま");
+  t(mihon.includes(tc.MORNING_WORDS_FOOT), "★その 字が 見本に ある");
+  t(mihon.includes("border-color:#CFC0A4;background:#FDFAF3"), "★見本の 色");
+  t(/borderColor: "#CFC0A4", background: "#FDFAF3"/.test(home), "★実装も 同じ 色");
+  // ★★その日の 本番だけ。★前の日も 次の日も 出しません。
+  const P = [{ performed_on: "2026-09-11", label: "秋の 演奏会", morning_words: "ことば" }];
+  t(tc.morningWordsFor(P, "2026-09-11").words === "ことば", "★その日は 出す");
+  t(tc.morningWordsFor(P, "2026-09-10") === null, "★前の日は 出さない");
+  t(tc.morningWordsFor(P, "2026-09-12") === null, "★次の日は 出さない");
+  // ★★書いて いない 方には、★枠ごと 出しません。
+  t(tc.morningWordsFor([{ performed_on: "2026-09-11" }], "2026-09-11") === null,
+    "★書いて いなければ 出さない");
+  t(tc.morningWordsFor([{ performed_on: "2026-09-11", morning_words: "  " }], "2026-09-11") === null,
+    "★空白だけなら 出さない");
+  t(tc.morningWordsFor(null, "2026-09-11") === null, "★予定が 無くても 落ちない");
+  // ★★1文字も 足しません。★要約しません。
+  const long = "あ\nい\nう";
+  t(tc.morningWordsFor([{ performed_on: "2026-09-11", morning_words: long }], "2026-09-11").words === long,
+    "★書かれた ままを 返す（★改行も そのまま）");
+  t(/whiteSpace: "pre-wrap"/.test(home), "★改行を 画面でも そのまま 出す");
+  // ★★誘いません。★知らせません。
+  t(!/書きませんか|書いてみ|おすすめ/.test(home), "★書くように 誘って いない");
+
+  console.log("\n⑥ 消した もの（★お決め ㋑・㋒）");
+  t(!/こえの調子/.test(home), "★2枚の カードが 無い");
+  t(!/みつけたこと/.test(home), "★見出し「みつけたこと」が 無い");
+  // ★★出す ために だけ あった 計算も 外して います（★N-1 の 決まり）。
+  t(!/const cond = /.test(home), "★出す ための 計算も 残して いない");
+  // ★★記録も 列も 消して いません。★計算は lib に 残って います。
+  t(/export function conditionWord/.test(readCode("lib", "todayCard.js")),
+    "★conditionWord は lib に 残って いる");
+  // ★★topDiscoveries は 門の外で 使われて います。★消して いません。
+  const vt2 = readCode("components", "VocalTracker.jsx");
+  t(/const topDiscoveries = useMemo/.test(vt2), "★みつけたことの 計算は 残って いる");
+
+  console.log("\n⑦ 切替の 条件（★裁定 ㋐ の 4つ）");
+  // ★④ 役職の ない人には 出さない。
+  t(/const mayChooseViewAs = layoutV2 && canTeachLessons;/.test(vt2),
+    "★④ 教える 立場の 方だけに 出す");
+  t(/canChooseViewAs=\{mayChooseViewAs\}/.test(vt2), "★それを 渡して いる");
+  // ★③ 既定は じどう。
+  const va = readCode("lib", "viewAs.js");
+  t(/return KEYS\.includes\(v\) \? v : "auto";/.test(va), "★③ 知らない 値は じどう");
+  t(/\{ key: "auto", label: "じどう" \}/.test(va), "★じどう が 1つめ");
+  // ★① 見え方だけ。★台帳を 分けません。
+  t(!/supabase|from\("/.test(va), "★① 台帳に 触って いない（★見え方だけ）");
+
   console.log(ng === 0 ? `\n★すべて 通りました（${ok}）` : `\n★${ng} 件 落ちました`);
   process.exit(ng === 0 ? 0 : 1);
 })();

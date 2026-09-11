@@ -155,7 +155,10 @@ t(/<EmptyBox/.test(codeOf("CompareV2.jsx")), "★くらべる が EmptyBox を �
 t(/<Card>/.test(codeOf("RecordV2Head.jsx")), "★記録の 頭が Card を 使って いる");
 t(/<Warn>/.test(codeOf("RecordV2Head.jsx")), "★記録の 頭が Warn を 使って いる");
 t(/<Btn ghost onClick=\{onSkip\}/.test(codeOf("RecordV2Head.jsx")), "★記録の 頭が Btn を 使って いる");
-t(/<Card style=\{\{ flex: 1/.test(codeOf("HomeV2.jsx")), "★きょう が Card を 使って いる");
+// ★★2026-09-11、★2枚の カードを 消しました（★お決め ㋑）。
+//   ★いま きょうで Card を 使って いるのは、★本番の 朝の ことば です。
+t(/<Card style=\{\{ borderColor: "#CFC0A4"/.test(codeOf("HomeV2.jsx")),
+  "★きょう が Card を 使って いる（★本番の 朝の ことば）");
 
 console.log("\n⑥ 空・読み込み中・しくじった ときの 1枚");
 // ★★見本の stateBlock（546〜556行）を、★1か所で 持ちます。

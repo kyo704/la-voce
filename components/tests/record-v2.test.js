@@ -201,11 +201,17 @@ const USER_ID = "test-user-id";
       `A01 の 読み方と そろう：${w}`);
   });
   {
+    // ★★2026-09-11、★A01 の 2枚の カードを 消しました（★お決め ㋑）。
+    //   ★★だから HomeV2 は もう conditionWord を 呼びません。
+    //     ★消した ことは docs/reports/消したものの記録.md に あります。
+    //   ★★のどの列を「出た／出づらい」で 読んで いない ことは、★まだ 見ます。
+    //     ★★この 取りちがえが、★9月11日に 実際に 起きました。
+    //       ★9月9日の 古い 見本が、★言葉と 列を ずらして いました。
     const home = readCode("components", "HomeV2.jsx");
-    assertTrue(/conditionWord\(today\.voiceQuality\)/.test(home),
-      "★A01 の「こえの調子」は 声の出来（voiceQuality）を 読む");
     assertTrue(!/conditionWord\(today\.throatCondition\)/.test(home),
       "★のどの列を「出た／出づらい」の 言葉で 読んでいない");
+    assertTrue(!/こえの調子/.test(home),
+      "★A01 に 2枚の カードが 無い（★お決め ㋑・2026-09-11）");
   }
 
   console.log("\n=== ② 上書きを しない ===");

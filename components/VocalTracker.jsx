@@ -2881,6 +2881,31 @@ function SectionCard({ title, icon: Icon, children, id, highlighted, fold }) {
 // 同じ月送りの仕組み（monthMeta/shiftMonth）を再利用する。先生用ページ・レッスンモードの両方で使う。
 // lavoce-カレンダー連携パッチ.md §4.2: 1件ずつ「カレンダーに追加」（即時）。
 // 外部連携（OAuth）は一切不要。テンプレートURLと.icsファイルの生成だけで成立する。
+/**
+ * ★本番の 予定を 取る。
+ *
+ *   ★★morning_words は、★2026-09-11 に 足した 列です。
+ *     ★★台帳に まだ 無い ことが あります。
+ *       ★無い 列を select すると、★行ごと 取れなく なります。
+ *     ★★だから、★足した 列つきで 1度 試し、★だめなら 元の 列だけで 取り直します。
+ *   ★★戻りの 形は、★どちらの 道でも 同じです。
+ *     ★morning_words が 無ければ、★undefined に なるだけです。
+ *     ★lib/todayCard.js の morningWordsFor は、★それを null に します。
+ */
+const PERF_COLUMNS = "id, performed_on, kind, label";
+async function fetchPerformances(supabase, userId) {
+  const q = (cols) => supabase.from("performances").select(cols)
+    .eq("user_id", userId).order("performed_on", { ascending: false }).limit(60);
+  const withWords = await q(PERF_COLUMNS + ", morning_words");
+  if (!withWords.error) return withWords;
+  // ★★列が 無い ときだけ 取り直します。★ほかの 誤りは そのまま 返します。
+  //   ★PostgREST は、★知らない 列を 42703 で 返します。
+  const code = String(withWords.error.code || "");
+  const msg = String(withWords.error.message || "");
+  if (code !== "42703" && !/morning_words/.test(msg)) return withWords;
+  return q(PERF_COLUMNS);
+}
+
 function formatDateForGoogleCalendar(date) {
   // Googleカレンダーのテンプレート URLはUTC基準の "YYYYMMDDTHHMMSSZ" 形式を期待する。
   return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
@@ -6475,8 +6500,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //   ★順に 使いたいものは、★ここに 入れません（★プロフィール本体など）。
       const [noticeRes, perfRes, resultRes, markerRes, inventoryRes] = await Promise.all([
         supabase.from("user_notices").select("notice_key, shown_at").eq("user_id", userId),
-        supabase.from("performances").select("id, performed_on, kind, label")
-          .eq("user_id", userId).order("performed_on", { ascending: false }).limit(60),
+        // ★★morning_words は、★本番の 朝に そのまま 返す ことばです
+        //   （★裁定 2026-09-11・その15 ②／★supabase/2026-09-11-本番の朝に返すことば.sql）。
+        //   ★★アプリは この 字を 読みません。★そのまま 出すだけです。
+        //
+        //   ★★列が まだ 無い 台帳でも 落ちない ように します。
+        //     ★★無い 列を select すると、★行ごと 取れなく なります。
+        //       ★本番の 予定が まるごと 消えます。★38人の 画面も です。
+        //     ★★2026-08-30 に 同じ ことが 2度 起きました
+        //       （★type_fields ／ morning_edema ／ lib/entryWriteFallback.js）。
+        //   ★★だから、★足した 列つきで 1度 試し、★だめなら 元の 列だけで 取り直します。
+        //     ★SQL を 流して いただく 前でも、★これまでどおり 動きます。
+        fetchPerformances(supabase, userId),
         supabase.from("performance_results").select("performance_id, result").eq("user_id", userId),
         supabase.from("period_markers").select("marked_on").eq("user_id", userId),
         supabase.from("character_inventory").select("item_key").eq("user_id", userId)
@@ -8297,6 +8332,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   生徒の画面に既に「担当の先生」（assignedTeacherLabel）があり、
   //   同じ語が両側で逆向きの意味になるため避けた。行為で言い分ければ迷わない。
   const canTeachLessons = canSeeTeacherFeatures(profile, { hasStudentLinks: myStudentLinks.length > 0 });
+  /**
+   * ★「どちらとして 見るか」の 切替を 出してよいか。
+   *
+   *   ★出どころ Opus の 裁定（★2026-09-11・その15）の 条件④
+   *     「役職のない人には、切替を出さない」
+   *
+   *   ★★門の中に いる だけでは 出しません。★教える 立場に ある 方だけです。
+   *   ★★2026-09-11 まで、★門の中の 方 全員に 出て いました。
+   *     ★生徒の 方に「先生として」が 見えて いました。
+   *     ★★選んでも 何も 起きません（★出欠は レッスンが あって はじめて 出ます）。
+   *       ★けれど、★見えては いけません。
+   */
+  const mayChooseViewAs = layoutV2 && canTeachLessons;
   // ★在籍しているだけの生徒にも、レッスンのタブを出します（2026-09-02）。
   //   ★これまで、この条件は teacher_student_links と指導者ベータしか見て
   //     いませんでした。ところが「所属している教室」を出す唯一の画面が
@@ -13640,6 +13688,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               <HomeV2
                 entries={entries}
                 todayISO={realTodayDate}
+                performances={performances}
                 wearing={wardrobeOn ? (characterEquipped.wardrobe || {}) : {}}
                 clothColors={characterEquipped.clothColors || {}}
                 clothColors2={characterEquipped.clothColors2 || {}}
@@ -13653,7 +13702,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                        ★出欠の 帯は 出ません（★lessons が 空だからです）。 */
                 viewAs={viewAs}
                 onViewAs={chooseViewAs}
-                canChooseViewAs={layoutV2}
+                canChooseViewAs={mayChooseViewAs}
                 hasTeachingToday={myTeachingLessons.length > 0}
                 band={{
                   lessons: myTeachingLessons.length > 0 ? myTeachingLessons : myAllLessons,
