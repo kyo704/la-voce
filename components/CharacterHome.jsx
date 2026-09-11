@@ -1861,6 +1861,7 @@ function WallTexture({ material, wardrobeOn = false }) {
 //   ★ここは、★位置を外から受け取り、★動かし終わったときだけ知らせます。
 function InteriorDraggable({ itemKey, startLeft, startTop, band, onDragEnd, hit, style, children }) {
   const ref = useRef(null);
+  const baseTransform = style && style.transform ? style.transform : "";
   // ★★掴んだときの、指の画素の位置と、品物のいまの％。
   //   ★★2026-09-08、★ここが誤っていました（★実機のご報告）。
   //     ★もとは、★部屋に対する％を、★CSS の translate に渡していました。
@@ -1917,7 +1918,7 @@ function InteriorDraggable({ itemKey, startLeft, startTop, band, onDragEnd, hit,
     //     ★出すと、★置ける場所と、★見えている場所が、別になります。
     const px = ((n.left - g.left) / 100) * g.w;
     const py = ((n.top - g.top) / 100) * g.h;
-    ref.current.style.transform = `translate(${px}px, ${py}px)`;
+    ref.current.style.transform = `${baseTransform} translate(${px}px, ${py}px)`.trim();
   }
 
   function up(e) {
@@ -1926,7 +1927,7 @@ function InteriorDraggable({ itemKey, startLeft, startTop, band, onDragEnd, hit,
     const n = nextPos(e);
     grab.current = null;
     try { e.currentTarget.releasePointerCapture(e.pointerId); } catch (err) { /* ★掴んでいなければ、それでよい */ }
-    if (ref.current) ref.current.style.transform = "";
+    if (ref.current) ref.current.style.transform = baseTransform;
     // ★★動かしていないなら、★保存しません。★押しただけで動かさないためです。
     if (n && (Math.abs(n.dx) > 2 || Math.abs(n.dy) > 2) && onDragEnd) onDragEnd(n.left, n.top);
   }
