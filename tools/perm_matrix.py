@@ -125,6 +125,30 @@ def code_of(body):
   return m.group(1) if m else ""
 
 
+def message_of(body):
+  import re
+  m = re.search(r'"message":"(.*?)(?<!\\)"', body)
+  return m.group(1) if m else ""
+
+
+def why_42501(body):
+  """
+  ★★42501 は 2つの ことを 指します。★取りちがえては いけません。
+
+    ★「permission denied for table X」　　　　★許し（GRANT）が 無い
+    ★「new row violates row-level security」　★決まり（RLS）が 落とした
+
+  ★★2026-09-11、★私は この 2つを 同じ ものとして 数えて いました。
+    ★★番号だけを 見て いた ためです。★文面を 読みます。
+  """
+  msg = message_of(body)
+  if "row-level security" in msg or "row level security" in msg:
+    return "42501 決まり（RLS）が 落とした　── " + msg[:90]
+  if "permission denied" in msg:
+    return "42501 許し（GRANT）が 無い　── " + msg[:90]
+  return "42501 " + (msg[:90] or "（文面 なし）")
+
+
 def judge(status, body, no_row=False):
   """
   ★返って きた 番号で、★書けたか どうかを 決めます。
@@ -137,7 +161,7 @@ def judge(status, body, no_row=False):
   """
   code = code_of(body)
   if code == "42501":
-    return {"ok": False, "why": "42501 許し（GRANT）が 無い", "code": code}
+    return {"ok": False, "why": why_42501(body), "code": code}
   if code in ("23502", "23503", "23505", "23514"):
     return {"ok": True, "why": code + " 決まりは 通った（★中身の 話）", "code": code}
   if no_row and 200 <= status < 300:
@@ -255,7 +279,7 @@ def main():
       "p_kind": "本番", "p_title": "★50通り"})
     c = code_of(b)
     if c == "42501":
-      put("行事", {"ok": False, "why": "42501 許し（GRANT）が 無い", "code": c})
+      put("行事", {"ok": False, "why": why_42501(b), "code": c})
     elif 200 <= s < 300:
       v = b.strip()
       if v in ("null", ""):
@@ -326,11 +350,20 @@ def main():
   say()
   say("## ★★この 表の 限界（★読む 前に）")
   say()
-  say("★★「42501」は、★許し（GRANT）で 止まった しるしです。")
-  say("　★★許しは 決まり（RLS）より 先に 見られます。")
-  say("　★★だから これは「その 役職に 力が 無い」では ありません。")
-  say("　★★「ブラウザから その 表・その 列へ 書く 許しが、★はじめから 無い」です。")
-  say("　★★役職と 関わりが ありません。★どの 役職でも 同じ 答えに なります。")
+  say("★★「42501」は **2つの こと** を 指します。★文面で 見分けて います。")
+  say("　★「permission denied for table X」　　　★許し（GRANT）が 無い")
+  say("　★「new row violates row-level security」★決まり（RLS）が 落とした")
+  say("★★どちらも 番号は 同じです。★番号だけを 見ると、★取りちがえます。")
+  say()
+  say("★★memberships の「許しが 無い」は、★役職と 関わりが ありません。")
+  say("　★★どの 役職でも 同じ 答えです。★画面も この道を 通って いません ──")
+  say("　★★役職の 付け替えは すべて app/api/org/posts/route.js（★裏口）を 通ります。")
+  say("　★★つまり この 10マスは、★私が ちがう 道を 試した ものです。")
+  say()
+  say("★★lessons の「決まりが 落とした」は、★学長でも 落ちて います。")
+  say("　★★`can_view_ops` は、★在籍（enrollments）と 受け持ち（assignments）を 見ます。")
+  say("　★★使い捨ての 10校には、★その どちらも 置いて いません。")
+  say("　★★だから これも、★下ごしらえ不足の 疑いが 濃い です。★断定しません。")
   say()
   say("★★出席で「行が 無いので 決まりは 未確認」と 出た マスは、")
   say("　★★列の 許しまでは 見ました。★決まりまでは 見て いません。")
