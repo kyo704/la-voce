@@ -128,18 +128,21 @@ export default function MyTimetable({ userId, onBack }) {
           }}>？ 説明</button>
       )}
 
-      {/* ★★表。★横に すべります（★見本 3305行 overflow-x:auto）。 */}
+      {/* ★★月〜土を、横に動かさず一画面へ収めます。列幅とマスの高さは固定です。 */}
       <Card style={{ padding: 7 }}>
-        <div style={{ overflowX: "auto" }}>
+        <div style={{ width: "100%", overflow: "hidden" }}>
           <table style={{
-            borderCollapse: "collapse", minWidth: 334, width: "100%",
+            borderCollapse: "collapse", width: "100%", tableLayout: "fixed",
             ...TYPE.usual
           }}>
+            <colgroup>
+              <col style={{ width: "15%" }} />
+              {DAYS.map((d) => <col key={d} style={{ width: `${85 / DAYS.length}%` }} />)}
+            </colgroup>
             <tbody>
               <tr>
                 <th style={{
-                  position: "sticky", left: 0, background: C.card,
-                  padding: "4px 6px", textAlign: "left", ...TYPE.mini
+                  background: C.card, padding: "4px 2px", textAlign: "left", ...TYPE.mini
                 }}>コマ</th>
                 {DAYS.map((d) => (
                   <th key={d} style={{ padding: "4px 2px", ...TYPE.mini }}>{d}</th>
@@ -148,8 +151,8 @@ export default function MyTimetable({ userId, onBack }) {
               {grid.map((r) => (
                 <tr key={r.period.ord}>
                   <td style={{
-                    position: "sticky", left: 0, background: C.card,
-                    padding: "4px 6px", textAlign: "left", whiteSpace: "nowrap"
+                    background: C.card, padding: "4px 2px", textAlign: "left",
+                    whiteSpace: "nowrap", overflow: "hidden"
                   }}>
                     <b style={{ fontSize: rem(11.5), color: C.ink }}>{r.period.name}</b><br />
                     <span style={{ fontSize: rem(9), color: C.inkSoft }}>
@@ -157,7 +160,7 @@ export default function MyTimetable({ userId, onBack }) {
                     </span>
                   </td>
                   {r.cells.map((c) => (
-                    <td key={c.key} style={{ padding: 2 }}>
+                    <td key={c.key} style={{ padding: 2, verticalAlign: "top" }}>
                       <button type="button"
                         onClick={() => {
                           setCell({ weekday: c.weekday, period: r.period, row: c.row });
@@ -165,7 +168,8 @@ export default function MyTimetable({ userId, onBack }) {
                         }}
                         aria-label={cellLabel(c.weekday, r.period)}
                         style={{
-                          width: "100%", minHeight: SPACE.tapMin,
+                          width: "100%", height: 58, minHeight: 58,
+                          overflow: "hidden",
                           background: CELL_BG[c.state], border: `1px solid ${C.line2}`,
                           borderRadius: 6, padding: "4px 2px",
                           fontFamily: FONT_STACK, fontSize: rem(9.5),
