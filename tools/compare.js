@@ -74,10 +74,9 @@ const SCREENS = [
   { key: "画面-ふりかえる-かぞえる", tab: "ふりかえる", steps: ["かぞえる"] },
   // ★★くらべる の 中の 行を 押して 開く 画面です（★見本 SC['順番']）。
   { key: "SC-順番", tab: "ふりかえる", steps: ["くらべる", "調べていることの 順番"] },
-  { key: "画面-ノート", tab: "ノート" },
   { key: "画面-ノート-レパートリー", tab: "ノート", steps: ["レパートリー"] },
   { key: "画面-ノート-連絡", tab: "ノート", steps: ["連絡"] },
-  { key: "画面-ノート-受診用", tab: "ノート", steps: ["受診用"] },
+  
   // ★★「＋」を 押した ときの 画面（★2026-09-11・坂本さんの ご要望）。
   //   ★★Fable の 決まり「every sheet / modal / collapsible opened and
   //     captured as separate frames」に あたる ぶんです。
@@ -94,11 +93,26 @@ const SCREENS = [
   //   ★★実装では、★稽古の 書く 画面の 中の 欄です（★PRACTICE_FIELDS）。
   //     ★シートに なっていません。★同じ 中身が、★別の 形で 出ます。
   //   ★★だから、★実装側は「稽古を書く」の 画面を 相手に します。
-  { key: "画面-ひつじ-ながめる", tab: "ひつじ", steps: ["ながめる"] },
-  { key: "画面-ひつじ-おうち", tab: "ひつじ", steps: ["おうち"] },
+  { key: "SC-まだ", tab: "ひつじ", steps: ["ながめる"] },
+  { key: "SC-全部", tab: "ひつじ", steps: ["おうち"] },
   { key: "SH-したく", tab: "ひつじ", steps: ["したく"] },
-  { key: "画面-ひつじ-たな", tab: "ひつじ", steps: ["たな"] },
-  { key: "SC-もっと", tab: "きょう", steps: ["もっとを開く"] }
+  
+  { key: "SC-もっと", tab: "きょう", steps: ["もっとを開く"] },
+  // ★★もっと の 中の 画面（★見本の SC の 名前で 並べます）。
+  //   ★★実装の 一覧の 行は、★字が <span> で 押しどころは その 外側です。
+  //     ★上の 探し方 ② で 押します。
+  { key: "SC-設定", tab: "きょう", steps: ["もっとを開く", "設定"] },
+  { key: "SC-聞いてほしいこと", tab: "きょう", steps: ["もっとを開く", "毎日、聞いてほしいこと"] },
+  { key: "SC-プラン", tab: "きょう", steps: ["もっとを開く", "プラン"] },
+  { key: "SC-学ぶ", tab: "きょう", steps: ["もっとを開く", "学ぶ"] },
+  { key: "SC-台帳", tab: "きょう", steps: ["もっとを開く", "もっているもの"] },
+  { key: "SC-書き出す", tab: "きょう", steps: ["もっとを開く", "書き出す"] },
+  { key: "SC-退会", tab: "きょう", steps: ["もっとを開く", "退会する"] },
+  // ★★ノートの 帯（★見本は「1枚」、★実装は「受診用」）。★字が ちがいます。
+  { key: "画面-ノート-稽古", tab: "ノート", steps: ["稽古"] },
+  { key: "画面-ノート-1枚", tab: "ノート", steps: ["受診用"] },
+  // ★★ひつじ（★見本の 名前で 並べます）。
+  { key: "SC-たな", tab: "ひつじ", steps: ["たな"] }
 ];
 
 async function capture(env) {
@@ -165,17 +179,39 @@ async function capture(env) {
           });
         await page.waitForTimeout(1000);
         for (const step of (sc.steps || [])) {
-          // ★★画面の 外に ある 押しどころは、★寄せてから 押します。
-          await page.getByRole("button", { name: new RegExp(step) }).first()
-            .scrollIntoViewIfNeeded({ timeout: 4000 }).catch(() => {});
-          const target = page.getByRole("button", { name: new RegExp(step) }).first();
+          // ★★押しどころの 探し方は 2通りです。
+          //   ★① 押しどころ（button）の 名前
+          //   ★② 字そのもの。★その 字を 囲む 押せる ものを 押します。
+          //   ★★もっと の 一覧の 行は、★字が <span> で、
+          //     ★押しどころは その 外側です。★①では 見つかりません。
+          //     ★★2026-09-11、★ここで 7画面が 撮れませんでした。
+          let target = page.getByRole("button", { name: new RegExp(step) }).first();
+          if (!(await target.count())) {
+            target = page.locator(
+              `button:has-text("${step}"), [role="button"]:has-text("${step}"), a:has-text("${step}")`
+            ).first();
+          }
+          if (!(await target.count())) {
+            // ★★それでも 無ければ、★字を 押します。
+            //   ★押せる 親が あれば、★そちらへ 上がります。
+            target = page.getByText(step, { exact: false }).first();
+          }
+          await target.scrollIntoViewIfNeeded({ timeout: 4000 }).catch(() => {});
           await target.click({ timeout: 7000 })
             .catch(async () => {
               // ★★何かが かぶさって いても、★押しどころ そのものを 押します。
               //   ★★絵を 撮る ための 手です。★配信する 画面は 変えません。
               //   ★★2026-09-11、★ひつじの したく／たな と もっとが、
               //     ★かぶさりで 押せませんでした。
-              await target.evaluate((el) => el.click());
+              await target.evaluate((el) => {
+                let n = el;
+                for (let k = 0; k < 4 && n; k++) {
+                  if (n.tagName === "BUTTON" || n.tagName === "A"
+                    || n.getAttribute("role") === "button") break;
+                  n = n.parentElement;
+                }
+                (n || el).click();
+              });
             });
           await page.waitForTimeout(800);
         }

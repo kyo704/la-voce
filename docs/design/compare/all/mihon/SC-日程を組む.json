@@ -1,0 +1,874 @@
+[
+ {
+  "tag": "span",
+  "text": "9:41"
+ },
+ {
+  "tag": "span",
+  "text": "●●● ▮"
+ },
+ {
+  "tag": "div",
+  "text": "‹ 戻る"
+ },
+ {
+  "tag": "h2",
+  "text": "レッスンの 日程を 組む"
+ },
+ {
+  "tag": "span",
+  "text": "0／8"
+ },
+ {
+  "tag": "span",
+  "text": "‹ 前の週"
+ },
+ {
+  "tag": "b",
+  "text": "9/7〜9/12"
+ },
+ {
+  "tag": "span",
+  "text": "今週"
+ },
+ {
+  "tag": "span",
+  "text": "次の週 ›"
+ },
+ {
+  "tag": "span",
+  "text": "日を えらぶ（カレンダー）▼"
+ },
+ {
+  "tag": "div",
+  "text": "直す先"
+ },
+ {
+  "tag": "span",
+  "text": "毎週"
+ },
+ {
+  "tag": "span",
+  "text": "この週だけ"
+ },
+ {
+  "tag": "div",
+  "text": "いつの 日程ですか"
+ },
+ {
+  "tag": "span",
+  "text": "通年"
+ },
+ {
+  "tag": "span",
+  "text": "前期"
+ },
+ {
+  "tag": "span",
+  "text": "後期"
+ },
+ {
+  "tag": "span",
+  "text": "期間を選ぶ"
+ },
+ {
+  "tag": "span",
+  "text": "臨時（1日）"
+ },
+ {
+  "tag": "div",
+  "text": "2026年4月1日 〜 2027年3月31日"
+ },
+ {
+  "tag": "div",
+  "text": "普段は です。変わる週だけ「臨時」で 上書きします。"
+ },
+ {
+  "tag": "b",
+  "text": "通年（1年 同じ）"
+ },
+ {
+  "tag": "th",
+  "text": "コマ"
+ },
+ {
+  "tag": "th",
+  "text": "月"
+ },
+ {
+  "tag": "span",
+  "text": "9/7"
+ },
+ {
+  "tag": "th",
+  "text": "火"
+ },
+ {
+  "tag": "span",
+  "text": "9/8"
+ },
+ {
+  "tag": "th",
+  "text": "水"
+ },
+ {
+  "tag": "span",
+  "text": "9/9"
+ },
+ {
+  "tag": "th",
+  "text": "木"
+ },
+ {
+  "tag": "span",
+  "text": "9/10"
+ },
+ {
+  "tag": "th",
+  "text": "金"
+ },
+ {
+  "tag": "span",
+  "text": "9/11"
+ },
+ {
+  "tag": "th",
+  "text": "土"
+ },
+ {
+  "tag": "span",
+  "text": "9/12"
+ },
+ {
+  "tag": "td",
+  "text": "1限"
+ },
+ {
+  "tag": "span",
+  "text": "まとめて"
+ },
+ {
+  "tag": "span",
+  "text": "西洋音･校"
+ },
+ {
+  "tag": "span",
+  "text": "3人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "3人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "4人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "3人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "3人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "td",
+  "text": "2限"
+ },
+ {
+  "tag": "span",
+  "text": "まとめて"
+ },
+ {
+  "tag": "span",
+  "text": "4人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "2人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "教授会･校"
+ },
+ {
+  "tag": "span",
+  "text": "2人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "5人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "3人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "td",
+  "text": "3限"
+ },
+ {
+  "tag": "span",
+  "text": "まとめて"
+ },
+ {
+  "tag": "span",
+  "text": "3人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "2人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "1人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "3人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "3人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "1人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "td",
+  "text": "4限"
+ },
+ {
+  "tag": "span",
+  "text": "まとめて"
+ },
+ {
+  "tag": "span",
+  "text": "2人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "2人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "5人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "3人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "2人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "2人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "td",
+  "text": "5限"
+ },
+ {
+  "tag": "span",
+  "text": "まとめて"
+ },
+ {
+  "tag": "span",
+  "text": "2人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "2人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "4人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "3人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "合唱 ･校"
+ },
+ {
+  "tag": "span",
+  "text": "3人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "td",
+  "text": "6限"
+ },
+ {
+  "tag": "span",
+  "text": "まとめて"
+ },
+ {
+  "tag": "span",
+  "text": "5人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "2人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "3人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "3人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "1人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "span",
+  "text": "5人"
+ },
+ {
+  "tag": "span",
+  "text": "＋予定"
+ },
+ {
+  "tag": "div",
+  "text": "数＝ ／ ＝置いた ／ 灰＝ （画面を 切り替えなくて かまいません）。 曜日・コマの 見出しを 押すと、 （レッスンの"
+ },
+ {
+  "tag": "b",
+  "text": "その時間に 来られる人数"
+ },
+ {
+  "tag": "span",
+  "text": "緑"
+ },
+ {
+  "tag": "b",
+  "text": "自分の 予定（レッスンは 入りません）"
+ },
+ {
+  "tag": "b",
+  "text": "マスの「＋予定」を 押すと、その場で 自分の 予定に なります"
+ },
+ {
+  "tag": "b",
+  "text": "その列・その行を まとめて"
+ },
+ {
+  "tag": "span",
+  "text": "時間の 割り方"
+ },
+ {
+  "tag": "span",
+  "text": "場所"
+ },
+ {
+  "tag": "div",
+  "text": "レッスン以外の予定"
+ },
+ {
+  "tag": "div",
+  "text": "自分 0コマ ／ 学校 3コマ"
+ },
+ {
+  "tag": "div",
+  "text": "① どこに"
+ },
+ {
+  "tag": "span",
+  "text": "月"
+ },
+ {
+  "tag": "span",
+  "text": "火"
+ },
+ {
+  "tag": "span",
+  "text": "水"
+ },
+ {
+  "tag": "span",
+  "text": "木"
+ },
+ {
+  "tag": "span",
+  "text": "金"
+ },
+ {
+  "tag": "span",
+  "text": "土"
+ },
+ {
+  "tag": "span",
+  "text": "1限"
+ },
+ {
+  "tag": "span",
+  "text": "2限"
+ },
+ {
+  "tag": "span",
+  "text": "3限"
+ },
+ {
+  "tag": "span",
+  "text": "4限"
+ },
+ {
+  "tag": "span",
+  "text": "5限"
+ },
+ {
+  "tag": "span",
+  "text": "6限"
+ },
+ {
+  "tag": "div",
+  "text": "表のマスを押しても選べます"
+ },
+ {
+  "tag": "div",
+  "text": "② 何の予定"
+ },
+ {
+  "tag": "span",
+  "text": "学校の用"
+ },
+ {
+  "tag": "span",
+  "text": "自分の用"
+ },
+ {
+  "tag": "span",
+  "text": "予定"
+ },
+ {
+  "tag": "span",
+  "text": "講義"
+ },
+ {
+  "tag": "span",
+  "text": "会議"
+ },
+ {
+  "tag": "span",
+  "text": "非常勤"
+ },
+ {
+  "tag": "span",
+  "text": "入試"
+ },
+ {
+  "tag": "span",
+  "text": "行事"
+ },
+ {
+  "tag": "span",
+  "text": "移動"
+ },
+ {
+  "tag": "div",
+  "text": "名前を覚える"
+ },
+ {
+  "tag": "div",
+  "text": "③ どうする"
+ },
+ {
+  "tag": "div",
+  "text": "先に ① で どこかを選んでください。"
+ },
+ {
+  "tag": "div",
+  "text": "まとめて"
+ },
+ {
+  "tag": "span",
+  "text": "月曜"
+ },
+ {
+  "tag": "span",
+  "text": "火曜"
+ },
+ {
+  "tag": "span",
+  "text": "水曜"
+ },
+ {
+  "tag": "span",
+  "text": "木曜"
+ },
+ {
+  "tag": "span",
+  "text": "金曜"
+ },
+ {
+  "tag": "span",
+  "text": "土曜"
+ },
+ {
+  "tag": "span",
+  "text": "1限"
+ },
+ {
+  "tag": "span",
+  "text": "2限"
+ },
+ {
+  "tag": "span",
+  "text": "3限"
+ },
+ {
+  "tag": "span",
+  "text": "4限"
+ },
+ {
+  "tag": "span",
+  "text": "5限"
+ },
+ {
+  "tag": "span",
+  "text": "6限"
+ },
+ {
+  "tag": "div",
+  "text": "自分の予定だけ 全部外す"
+ },
+ {
+  "tag": "div",
+  "text": "学校が入れた 3コマは残ります"
+ },
+ {
+  "tag": "div",
+  "text": "です（事務には「予定あり」だけ）。"
+ },
+ {
+  "tag": "b",
+  "text": "置いたレッスンの上にはかぶせません。"
+ },
+ {
+  "tag": "b",
+  "text": "中身が見えるのはあなただけ"
+ },
+ {
+  "tag": "div",
+  "text": "マスを 押すと、 が 出ます。"
+ },
+ {
+  "tag": "b",
+  "text": "その時間に 来られる方"
+ },
+ {
+  "tag": "div",
+  "text": "門下の 名簿（8人）"
+ },
+ {
+  "tag": "span",
+  "text": "佐々木 りん"
+ },
+ {
+  "tag": "span",
+  "text": "声楽1年"
+ },
+ {
+  "tag": "s",
+  "text": "置ける枠を 見る ›"
+ },
+ {
+  "tag": "span",
+  "text": "まだ"
+ },
+ {
+  "tag": "span",
+  "text": "山口 そら"
+ },
+ {
+  "tag": "span",
+  "text": "声楽1年"
+ },
+ {
+  "tag": "s",
+  "text": "置ける枠を 見る ›"
+ },
+ {
+  "tag": "span",
+  "text": "まだ"
+ },
+ {
+  "tag": "span",
+  "text": "小林 あきら"
+ },
+ {
+  "tag": "span",
+  "text": "声楽1年"
+ },
+ {
+  "tag": "s",
+  "text": "置ける枠を 見る ›"
+ },
+ {
+  "tag": "span",
+  "text": "まだ"
+ },
+ {
+  "tag": "span",
+  "text": "大野 ひかる"
+ },
+ {
+  "tag": "span",
+  "text": "声楽2年"
+ },
+ {
+  "tag": "s",
+  "text": "置ける枠を 見る ›"
+ },
+ {
+  "tag": "span",
+  "text": "まだ"
+ },
+ {
+  "tag": "span",
+  "text": "田中 ゆい"
+ },
+ {
+  "tag": "span",
+  "text": "声楽2年"
+ },
+ {
+  "tag": "s",
+  "text": "置ける枠を 見る ›"
+ },
+ {
+  "tag": "span",
+  "text": "まだ"
+ },
+ {
+  "tag": "span",
+  "text": "井上 かなで"
+ },
+ {
+  "tag": "span",
+  "text": "声楽3年"
+ },
+ {
+  "tag": "s",
+  "text": "置ける枠を 見る ›"
+ },
+ {
+  "tag": "span",
+  "text": "まだ"
+ },
+ {
+  "tag": "span",
+  "text": "高木 みなみ"
+ },
+ {
+  "tag": "span",
+  "text": "声楽3年"
+ },
+ {
+  "tag": "s",
+  "text": "置ける枠を 見る ›"
+ },
+ {
+  "tag": "span",
+  "text": "まだ"
+ },
+ {
+  "tag": "span",
+  "text": "中村 はる"
+ },
+ {
+  "tag": "span",
+  "text": "声楽4年"
+ },
+ {
+  "tag": "s",
+  "text": "置ける枠を 見る ›"
+ },
+ {
+  "tag": "span",
+  "text": "まだ"
+ },
+ {
+  "tag": "div",
+  "text": "全部 自動で 振り分ける"
+ },
+ {
+  "tag": "div",
+  "text": "やり直す"
+ },
+ {
+  "tag": "div",
+  "text": "公開"
+ },
+ {
+  "tag": "div",
+  "text": "くわしい 決まりを 見る"
+ },
+ {
+  "tag": "div",
+  "text": "きょう"
+ },
+ {
+  "tag": "div",
+  "text": "記録"
+ },
+ {
+  "tag": "div",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "div",
+  "text": "ノート"
+ },
+ {
+  "tag": "div",
+  "text": "ひつじ"
+ },
+ {
+  "tag": "div",
+  "text": "あ"
+ },
+ {
+  "tag": "div",
+  "text": "◐"
+ },
+ {
+  "tag": "div",
+  "text": "↻"
+ }
+]

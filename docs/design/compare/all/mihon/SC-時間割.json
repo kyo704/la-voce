@@ -1,0 +1,398 @@
+[
+ {
+  "tag": "span",
+  "text": "9:41"
+ },
+ {
+  "tag": "span",
+  "text": "●●● ▮"
+ },
+ {
+  "tag": "div",
+  "text": "‹ きょう"
+ },
+ {
+  "tag": "h2",
+  "text": "時間割を 入れる"
+ },
+ {
+  "tag": "div",
+  "text": "授業を 入れてください。 に なります。 先生に 見えるのは です。授業の 名前・先生・教室・備考は 。"
+ },
+ {
+  "tag": "b",
+  "text": "入れなかった ところが「空きコマ」"
+ },
+ {
+  "tag": "b",
+  "text": "空いている 時間だけ"
+ },
+ {
+  "tag": "b",
+  "text": "送られません"
+ },
+ {
+  "tag": "span",
+  "text": "✕"
+ },
+ {
+  "tag": "th",
+  "text": "コマ"
+ },
+ {
+  "tag": "th",
+  "text": "月"
+ },
+ {
+  "tag": "th",
+  "text": "火"
+ },
+ {
+  "tag": "th",
+  "text": "水"
+ },
+ {
+  "tag": "th",
+  "text": "木"
+ },
+ {
+  "tag": "th",
+  "text": "金"
+ },
+ {
+  "tag": "th",
+  "text": "土"
+ },
+ {
+  "tag": "b",
+  "text": "1限"
+ },
+ {
+  "tag": "span",
+  "text": "9:00"
+ },
+ {
+  "tag": "b",
+  "text": "合唱"
+ },
+ {
+  "tag": "span",
+  "text": "第2教室"
+ },
+ {
+  "tag": "span",
+  "text": "あき"
+ },
+ {
+  "tag": "b",
+  "text": "イタリア語"
+ },
+ {
+  "tag": "span",
+  "text": "第2教室"
+ },
+ {
+  "tag": "span",
+  "text": "あき"
+ },
+ {
+  "tag": "b",
+  "text": "西洋音楽史"
+ },
+ {
+  "tag": "span",
+  "text": "第2教室"
+ },
+ {
+  "tag": "b",
+  "text": "合唱"
+ },
+ {
+  "tag": "span",
+  "text": "第2教室"
+ },
+ {
+  "tag": "b",
+  "text": "2限"
+ },
+ {
+  "tag": "span",
+  "text": "10:40"
+ },
+ {
+  "tag": "b",
+  "text": "副科ピアノ"
+ },
+ {
+  "tag": "span",
+  "text": "第2教室"
+ },
+ {
+  "tag": "b",
+  "text": "ソルフェージュ"
+ },
+ {
+  "tag": "span",
+  "text": "第2教室"
+ },
+ {
+  "tag": "b",
+  "text": "副科ピアノ"
+ },
+ {
+  "tag": "span",
+  "text": "第2教室"
+ },
+ {
+  "tag": "span",
+  "text": "あき"
+ },
+ {
+  "tag": "b",
+  "text": "イタリア語"
+ },
+ {
+  "tag": "span",
+  "text": "第2教室"
+ },
+ {
+  "tag": "span",
+  "text": "あき"
+ },
+ {
+  "tag": "b",
+  "text": "3限"
+ },
+ {
+  "tag": "span",
+  "text": "13:00"
+ },
+ {
+  "tag": "b",
+  "text": "ソルフェージュ"
+ },
+ {
+  "tag": "span",
+  "text": "第2教室"
+ },
+ {
+  "tag": "b",
+  "text": "合唱"
+ },
+ {
+  "tag": "span",
+  "text": "第2教室"
+ },
+ {
+  "tag": "b",
+  "text": "ソルフェージュ"
+ },
+ {
+  "tag": "span",
+  "text": "第2教室"
+ },
+ {
+  "tag": "span",
+  "text": "あき"
+ },
+ {
+  "tag": "span",
+  "text": "あき"
+ },
+ {
+  "tag": "span",
+  "text": "あき"
+ },
+ {
+  "tag": "b",
+  "text": "4限"
+ },
+ {
+  "tag": "span",
+  "text": "14:40"
+ },
+ {
+  "tag": "span",
+  "text": "あき"
+ },
+ {
+  "tag": "b",
+  "text": "副科ピアノ"
+ },
+ {
+  "tag": "span",
+  "text": "第2教室"
+ },
+ {
+  "tag": "b",
+  "text": "合唱"
+ },
+ {
+  "tag": "span",
+  "text": "第2教室"
+ },
+ {
+  "tag": "span",
+  "text": "レッスン"
+ },
+ {
+  "tag": "b",
+  "text": "△△声楽"
+ },
+ {
+  "tag": "b",
+  "text": "西洋音楽史"
+ },
+ {
+  "tag": "span",
+  "text": "第2教室"
+ },
+ {
+  "tag": "span",
+  "text": "あき"
+ },
+ {
+  "tag": "b",
+  "text": "5限"
+ },
+ {
+  "tag": "span",
+  "text": "16:20"
+ },
+ {
+  "tag": "span",
+  "text": "レッスン"
+ },
+ {
+  "tag": "b",
+  "text": "△△声楽"
+ },
+ {
+  "tag": "b",
+  "text": "合唱"
+ },
+ {
+  "tag": "span",
+  "text": "第2教室"
+ },
+ {
+  "tag": "span",
+  "text": "あき"
+ },
+ {
+  "tag": "span",
+  "text": "あき"
+ },
+ {
+  "tag": "span",
+  "text": "あき"
+ },
+ {
+  "tag": "b",
+  "text": "副科ピアノ"
+ },
+ {
+  "tag": "span",
+  "text": "第2教室"
+ },
+ {
+  "tag": "b",
+  "text": "6限"
+ },
+ {
+  "tag": "span",
+  "text": "18:00"
+ },
+ {
+  "tag": "span",
+  "text": "あき"
+ },
+ {
+  "tag": "span",
+  "text": "あき"
+ },
+ {
+  "tag": "b",
+  "text": "副科ピアノ"
+ },
+ {
+  "tag": "span",
+  "text": "第2教室"
+ },
+ {
+  "tag": "b",
+  "text": "イタリア語"
+ },
+ {
+  "tag": "span",
+  "text": "第2教室"
+ },
+ {
+  "tag": "span",
+  "text": "あき"
+ },
+ {
+  "tag": "span",
+  "text": "あき"
+ },
+ {
+  "tag": "div",
+  "text": "先生に 見える あき ／ 押すと 直せます"
+ },
+ {
+  "tag": "b",
+  "text": "16コマ"
+ },
+ {
+  "tag": "div",
+  "text": "あき あきだが 来られない 授業 ほかの 教室"
+ },
+ {
+  "tag": "span",
+  "text": "去年と 同じ"
+ },
+ {
+  "tag": "span",
+  "text": "全部 消す"
+ },
+ {
+  "tag": "div",
+  "text": "出す"
+ },
+ {
+  "tag": "div",
+  "text": "くわしい 決まりを 見る"
+ },
+ {
+  "tag": "div",
+  "text": "きょう"
+ },
+ {
+  "tag": "div",
+  "text": "記録"
+ },
+ {
+  "tag": "div",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "div",
+  "text": "ノート"
+ },
+ {
+  "tag": "div",
+  "text": "ひつじ"
+ },
+ {
+  "tag": "div",
+  "text": "あ"
+ },
+ {
+  "tag": "div",
+  "text": "◐"
+ },
+ {
+  "tag": "div",
+  "text": "↻"
+ }
+]

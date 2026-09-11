@@ -124,6 +124,25 @@ function niceTicks(lo, hi) {
  */
 const ZERO_BASED = ["dinnerToBed", "sleepHours", "sungMinutes", "speechMinutes"];
 
+/**
+ * ★端が 動かない 軸（★坂本さんの お決め・2026-09-11）。
+ *
+ *   ★「見本どおり（0〜6時間の 固定）に してください。6時間を 超える 点は
+ *     外に 出ることに なりますが、実際の 利用データを 見て、必要であれば、
+ *     後で、調整します。」
+ *
+ *   ★★見本の dotplot は sy(v) = H - v/6*H です。★0〜6時間の 固定。
+ *     ★その 図は「食べ終えてから 寝るまでの間」の ものです。
+ *
+ *   ★★ほかの 項目に 0〜6 を そのまま あてると、★おかしく なります。
+ *     ★昨夜の 睡眠は 7〜8時間が ふつうです。★ほとんどの 点が 外に 出ます。
+ *     ★声を使った 時間は 分です。★6分では ありません。
+ *   ★★だから、★見本に 図が ある 1つだけを 固定に します。
+ *     ★ほかは 0 から 始めて、★上だけ 点に 合わせます。
+ *     ★★この 判断を、★坂本さんに お伝えします。★黙って 広げません。
+ */
+const FIXED_AXIS = Object.freeze({ dinnerToBed: [0, 6] });
+
 function Scatter({ data, itemKey }) {
   const pts = data.good.concat(data.hard);
   if (pts.length === 0) return null;
@@ -131,8 +150,10 @@ function Scatter({ data, itemKey }) {
   let lo = Math.min(...vals);
   let hi = Math.max(...vals);
   if (ZERO_BASED.includes(itemKey)) lo = Math.min(0, lo);
+  const fixed = FIXED_AXIS[itemKey];
+  if (fixed) { lo = fixed[0]; hi = fixed[1]; }
   const ticks = niceTicks(lo, hi);
-  if (ticks.length > 0) {
+  if (ticks.length > 0 && !fixed) {
     lo = Math.min(lo, ticks[0]);
     hi = Math.max(hi, ticks[ticks.length - 1]);
   }
@@ -152,7 +173,12 @@ function Scatter({ data, itemKey }) {
   // ★2つの かたまりの 中心（★.dpg の 幅に 対する ％）。
   const CENTER = [25, 75];
 
-  const dots = (list, ci) => list.map((p, i) => (
+  // ★★端の 外の 点は、★描きません。★端に 貼り付けると、
+  //   ★★そこに 点が あるように 見えます。★嘘に なります。
+  //   ★★何件 外に 出たかは、★図の 下に 書きます。★黙って 消しません。
+  const outside = pts.filter((p) => p.value < lo || p.value > hi).length;
+
+  const dots = (list, ci) => list.filter((p) => p.value >= lo && p.value <= hi).map((p, i) => (
     <span key={p.date} aria-hidden="true" style={{
       position: "absolute",
       // ★★同じ値の点が 重ならないよう、★左右に わずかに ずらします。
@@ -239,6 +265,15 @@ function Scatter({ data, itemKey }) {
       </div>
       {xLabel("よく出た日", data.good.length, 0)}
       {xLabel("出なかった日", data.hard.length, 1)}
+      {/* ★★端の 外に 出た 点が あれば、★数だけ 書きます。
+          ★★黙って 消しません。★「無かった」ことに しません。
+          ★責める 言葉に しません。★数と、どこまでの 図か、だけ です。 */}
+      {outside > 0 ? (
+        <span style={{
+          position: "absolute", right: RIGHT, top: 0,
+          fontSize: rem(9), color: C.inkSoft
+        }}>{valueWord(itemKey, hi, true)}より 外に {outside}日</span>
+      ) : null}
     </div>
   );
 }

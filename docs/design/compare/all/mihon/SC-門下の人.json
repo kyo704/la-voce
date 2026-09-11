@@ -1,0 +1,346 @@
+[
+ {
+  "tag": "span",
+  "text": "9:41"
+ },
+ {
+  "tag": "span",
+  "text": "●●● ▮"
+ },
+ {
+  "tag": "div",
+  "text": "‹ 門下"
+ },
+ {
+  "tag": "h2",
+  "text": "高木 みなみ"
+ },
+ {
+  "tag": "span",
+  "text": "代表"
+ },
+ {
+  "tag": "span",
+  "text": "学年"
+ },
+ {
+  "tag": "s",
+  "text": "声楽3年"
+ },
+ {
+  "tag": "span",
+  "text": "時間割"
+ },
+ {
+  "tag": "span",
+  "text": "✓ 出ています"
+ },
+ {
+  "tag": "span",
+  "text": "空いている コマ"
+ },
+ {
+  "tag": "s",
+  "text": "15コマ"
+ },
+ {
+  "tag": "span",
+  "text": "レッスンの 枠"
+ },
+ {
+  "tag": "s",
+  "text": "まだ 置ける枠を 見る ›"
+ },
+ {
+  "tag": "div",
+  "text": "来られる 時間"
+ },
+ {
+  "tag": "th",
+  "text": "コマ"
+ },
+ {
+  "tag": "th",
+  "text": "月"
+ },
+ {
+  "tag": "th",
+  "text": "火"
+ },
+ {
+  "tag": "th",
+  "text": "水"
+ },
+ {
+  "tag": "th",
+  "text": "木"
+ },
+ {
+  "tag": "th",
+  "text": "金"
+ },
+ {
+  "tag": "th",
+  "text": "土"
+ },
+ {
+  "tag": "td",
+  "text": "9:00"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "来られる"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "来られる"
+ },
+ {
+  "tag": "span",
+  "text": "来られる"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "td",
+  "text": "10:40"
+ },
+ {
+  "tag": "span",
+  "text": "来られる"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "来られる"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "来られる"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "td",
+  "text": "13:00"
+ },
+ {
+  "tag": "span",
+  "text": "来られる"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "来られる"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "td",
+  "text": "14:40"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "来られる"
+ },
+ {
+  "tag": "span",
+  "text": "来られる"
+ },
+ {
+  "tag": "span",
+  "text": "来られる"
+ },
+ {
+  "tag": "td",
+  "text": "16:20"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "来られる"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "来られる"
+ },
+ {
+  "tag": "td",
+  "text": "18:00"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "—"
+ },
+ {
+  "tag": "span",
+  "text": "来られる"
+ },
+ {
+  "tag": "span",
+  "text": "来られる"
+ },
+ {
+  "tag": "div",
+  "text": "何の授業かは 分かりません。空いているか どうかだけです。"
+ },
+ {
+  "tag": "div",
+  "text": "見られないもの"
+ },
+ {
+  "tag": "span",
+  "text": "声の記録"
+ },
+ {
+  "tag": "s",
+  "text": "画面が ありません"
+ },
+ {
+  "tag": "span",
+  "text": "からだの記録"
+ },
+ {
+  "tag": "s",
+  "text": "画面が ありません"
+ },
+ {
+  "tag": "span",
+  "text": "ノート"
+ },
+ {
+  "tag": "s",
+  "text": "画面が ありません"
+ },
+ {
+  "tag": "span",
+  "text": "授業の 名前・教室・備考"
+ },
+ {
+  "tag": "s",
+  "text": "画面が ありません"
+ },
+ {
+  "tag": "span",
+  "text": "本番の 予定"
+ },
+ {
+  "tag": "s",
+  "text": "画面が ありません"
+ },
+ {
+  "tag": "span",
+  "text": "来られない 理由"
+ },
+ {
+  "tag": "s",
+  "text": "画面が ありません"
+ },
+ {
+  "tag": "div",
+  "text": "くわしい 決まりを 見る"
+ },
+ {
+  "tag": "div",
+  "text": "きょう"
+ },
+ {
+  "tag": "div",
+  "text": "記録"
+ },
+ {
+  "tag": "div",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "div",
+  "text": "ノート"
+ },
+ {
+  "tag": "div",
+  "text": "ひつじ"
+ },
+ {
+  "tag": "div",
+  "text": "あ"
+ },
+ {
+  "tag": "div",
+  "text": "◐"
+ },
+ {
+  "tag": "div",
+  "text": "↻"
+ }
+]

@@ -1,0 +1,150 @@
+[
+ {
+  "tag": "h2",
+  "text": "毎日、聞いてほしいこと"
+ },
+ {
+  "tag": "div",
+  "text": "記録の 画面に 出す ものを 選べます。 。"
+ },
+ {
+  "tag": "span",
+  "text": "1"
+ },
+ {
+  "tag": "span",
+  "text": "のどの 調子"
+ },
+ {
+  "tag": "button",
+  "text": "×"
+ },
+ {
+  "tag": "span",
+  "text": "2"
+ },
+ {
+  "tag": "span",
+  "text": "声の 出来"
+ },
+ {
+  "tag": "button",
+  "text": "×"
+ },
+ {
+  "tag": "span",
+  "text": "3"
+ },
+ {
+  "tag": "span",
+  "text": "昨夜の 睡眠"
+ },
+ {
+  "tag": "button",
+  "text": "×"
+ },
+ {
+  "tag": "span",
+  "text": "4"
+ },
+ {
+  "tag": "span",
+  "text": "起きたときの むくみ"
+ },
+ {
+  "tag": "button",
+  "text": "×"
+ },
+ {
+  "tag": "span",
+  "text": "5"
+ },
+ {
+  "tag": "span",
+  "text": "声を使った 時間"
+ },
+ {
+  "tag": "button",
+  "text": "×"
+ },
+ {
+  "tag": "p",
+  "text": "足せるもの"
+ },
+ {
+  "tag": "button",
+  "text": "＋ 食べ終えてから 寝るまで"
+ },
+ {
+  "tag": "button",
+  "text": "＋ 部屋の しめり"
+ },
+ {
+  "tag": "button",
+  "text": "＋ 運動"
+ },
+ {
+  "tag": "button",
+  "text": "＋ 水を 飲んだ量"
+ },
+ {
+  "tag": "button",
+  "text": "＋ 薬"
+ },
+ {
+  "tag": "button",
+  "text": "＋ 生理"
+ },
+ {
+  "tag": "p",
+  "text": "★中核の 5つを 外しても かまいません（分析に 使うのは 5つですが、強制しません）。 ★足りない項目を 責めません。"
+ },
+ {
+  "tag": "p",
+  "text": "ここで 選ばなかった ものも、記録の 画面の 折りたたみから いつでも 書けます。 書けなく なる ものは、1つも あり"
+ },
+ {
+  "tag": "button",
+  "text": "‹ もっと ／ 聞く"
+ },
+ {
+  "tag": "summary",
+  "text": "先生とつながる"
+ },
+ {
+  "tag": "p",
+  "text": "先生から受け取った招待コードを入力してください。"
+ },
+ {
+  "tag": "button",
+  "text": "確認する"
+ },
+ {
+  "tag": "button",
+  "text": "記録する項目を増やす"
+ },
+ {
+  "tag": "p",
+  "text": "バージョン 05f85d3 最終更新 9月11日 10:11"
+ },
+ {
+  "tag": "button",
+  "text": "きょう"
+ },
+ {
+  "tag": "button",
+  "text": "記録"
+ },
+ {
+  "tag": "button",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "button",
+  "text": "ノート"
+ },
+ {
+  "tag": "button",
+  "text": "ひつじ"
+ }
+]

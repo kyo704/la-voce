@@ -1,0 +1,414 @@
+[
+ {
+  "tag": "span",
+  "text": "9:41"
+ },
+ {
+  "tag": "span",
+  "text": "●●● ▮"
+ },
+ {
+  "tag": "div",
+  "text": "‹ 戻る"
+ },
+ {
+  "tag": "h2",
+  "text": "自分の 予定"
+ },
+ {
+  "tag": "span",
+  "text": "3コマ"
+ },
+ {
+  "tag": "div",
+  "text": "を、ここに 入れます。 （手でも 自動でも） で 入ります。名前は 入れなくて かまいません。 ほかの 人には「予定あり"
+ },
+ {
+  "tag": "b",
+  "text": "対面レッスン いがいの 予定"
+ },
+ {
+  "tag": "b",
+  "text": "ここに 入れた ところには、レッスンが 入りません。"
+ },
+ {
+  "tag": "b",
+  "text": "押すだけ"
+ },
+ {
+  "tag": "b",
+  "text": "中身が 見えるのは あなただけです。"
+ },
+ {
+  "tag": "div",
+  "text": "どちらの 予定ですか"
+ },
+ {
+  "tag": "span",
+  "text": "学校の 予定"
+ },
+ {
+  "tag": "span",
+  "text": "自分の 予定"
+ },
+ {
+  "tag": "div",
+  "text": "学校の 用です（講義・会議・入試・行事）。行事と ぶつかったとき、事務が 相談に 来ます。"
+ },
+ {
+  "tag": "div",
+  "text": "押したときの 名前"
+ },
+ {
+  "tag": "span",
+  "text": "（選ばなくても かまいません）"
+ },
+ {
+  "tag": "span",
+  "text": "予定"
+ },
+ {
+  "tag": "span",
+  "text": "講義"
+ },
+ {
+  "tag": "span",
+  "text": "会議"
+ },
+ {
+  "tag": "span",
+  "text": "非常勤"
+ },
+ {
+  "tag": "span",
+  "text": "入試"
+ },
+ {
+  "tag": "span",
+  "text": "行事"
+ },
+ {
+  "tag": "span",
+  "text": "移動"
+ },
+ {
+  "tag": "span",
+  "text": "＋ 自分で 書く"
+ },
+ {
+  "tag": "th",
+  "text": "コマ"
+ },
+ {
+  "tag": "th",
+  "text": "月"
+ },
+ {
+  "tag": "span",
+  "text": "まとめて"
+ },
+ {
+  "tag": "th",
+  "text": "火"
+ },
+ {
+  "tag": "span",
+  "text": "まとめて"
+ },
+ {
+  "tag": "th",
+  "text": "水"
+ },
+ {
+  "tag": "span",
+  "text": "まとめて"
+ },
+ {
+  "tag": "th",
+  "text": "木"
+ },
+ {
+  "tag": "span",
+  "text": "まとめて"
+ },
+ {
+  "tag": "th",
+  "text": "金"
+ },
+ {
+  "tag": "span",
+  "text": "まとめて"
+ },
+ {
+  "tag": "th",
+  "text": "土"
+ },
+ {
+  "tag": "span",
+  "text": "まとめて"
+ },
+ {
+  "tag": "td",
+  "text": "1限"
+ },
+ {
+  "tag": "span",
+  "text": "まとめて"
+ },
+ {
+  "tag": "span",
+  "text": "西洋音"
+ },
+ {
+  "tag": "span",
+  "text": "直す ›"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "td",
+  "text": "2限"
+ },
+ {
+  "tag": "span",
+  "text": "まとめて"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "教授会"
+ },
+ {
+  "tag": "span",
+  "text": "直す ›"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "td",
+  "text": "3限"
+ },
+ {
+  "tag": "span",
+  "text": "まとめて"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "td",
+  "text": "4限"
+ },
+ {
+  "tag": "span",
+  "text": "まとめて"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "td",
+  "text": "5限"
+ },
+ {
+  "tag": "span",
+  "text": "まとめて"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "合唱"
+ },
+ {
+  "tag": "span",
+  "text": "直す ›"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "td",
+  "text": "6限"
+ },
+ {
+  "tag": "span",
+  "text": "まとめて"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "span",
+  "text": "＋"
+ },
+ {
+  "tag": "div",
+  "text": "空きを 押す＝ 入っているのを 押す＝ （押しただけでは 消えません） 曜日・コマの 見出しを 押すと、 ／ 全部 3コ"
+ },
+ {
+  "tag": "b",
+  "text": "「予定」（学校）が 入ります"
+ },
+ {
+  "tag": "b",
+  "text": "直す 画面へ"
+ },
+ {
+  "tag": "b",
+  "text": "その列・その行を まとめて"
+ },
+ {
+  "tag": "div",
+  "text": "全部 「予定」に"
+ },
+ {
+  "tag": "div",
+  "text": "全部 空きに"
+ },
+ {
+  "tag": "div",
+  "text": "くわしい 決まりを 見る"
+ },
+ {
+  "tag": "div",
+  "text": "きょう"
+ },
+ {
+  "tag": "div",
+  "text": "記録"
+ },
+ {
+  "tag": "div",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "div",
+  "text": "ノート"
+ },
+ {
+  "tag": "div",
+  "text": "ひつじ"
+ },
+ {
+  "tag": "div",
+  "text": "あ"
+ },
+ {
+  "tag": "div",
+  "text": "◐"
+ },
+ {
+  "tag": "div",
+  "text": "↻"
+ }
+]

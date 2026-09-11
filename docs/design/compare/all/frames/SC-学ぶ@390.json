@@ -1,0 +1,66 @@
+[
+ {
+  "tag": "button",
+  "text": "‹ もっと ／ 学ぶ"
+ },
+ {
+  "tag": "p",
+  "text": "学ぶ"
+ },
+ {
+  "tag": "span",
+  "text": "学ぶ"
+ },
+ {
+  "tag": "span",
+  "text": "→"
+ },
+ {
+  "tag": "span",
+  "text": "健康情報"
+ },
+ {
+  "tag": "span",
+  "text": "→"
+ },
+ {
+  "tag": "summary",
+  "text": "先生とつながる"
+ },
+ {
+  "tag": "p",
+  "text": "先生から受け取った招待コードを入力してください。"
+ },
+ {
+  "tag": "button",
+  "text": "確認する"
+ },
+ {
+  "tag": "button",
+  "text": "記録する項目を増やす"
+ },
+ {
+  "tag": "p",
+  "text": "バージョン 05f85d3 最終更新 9月11日 10:11"
+ },
+ {
+  "tag": "button",
+  "text": "きょう"
+ },
+ {
+  "tag": "button",
+  "text": "記録"
+ },
+ {
+  "tag": "button",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "button",
+  "text": "ノート"
+ },
+ {
+  "tag": "button",
+  "text": "ひつじ"
+ }
+]

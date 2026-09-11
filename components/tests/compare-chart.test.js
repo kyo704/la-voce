@@ -55,6 +55,21 @@ console.log("\n② 下の 余白");
 t(BOTTOM >= 16, `下の 名前 1行が 入る（${BOTTOM}px ≧ 16px）`);
 t(/\{label\}　\{n\}日/.test(SRC), "★名前と 日数が 1行（★見本の とおり）");
 
+console.log("\n②-1 端の 動かない 軸（★坂本さんの お決め・2026-09-11）");
+// ★★見本の dotplot は 0〜6時間の 固定です（★sy(v)=H-v/6*H）。
+t(/const FIXED_AXIS = Object\.freeze\(\{ dinnerToBed: \[0, 6\] \}\)/.test(SRC),
+  "★食べ終えてから 寝るまでは 0〜6時間の 固定");
+// ★★睡眠を 0〜6 に すると、★7〜8時間の 点が ほとんど 外に 出ます。
+t(!/FIXED_AXIS = Object\.freeze\(\{[^}]*sleepHours/.test(SRC),
+  "★昨夜の 睡眠は 固定に しない");
+t(!/FIXED_AXIS = Object\.freeze\(\{[^}]*speechMinutes/.test(SRC),
+  "★声を使った 時間は 固定に しない");
+// ★★端の 外の 点を、★端に 貼り付けません。★そこに あるように 見えます。
+t(/p\.value >= lo && p\.value <= hi/.test(SRC), "★端の 外の 点は 描かない");
+// ★★黙って 消しません。★何日 外に 出たかを 書きます。
+t(/const outside = pts\.filter/.test(SRC), "★外に 出た 数を 数えている");
+t(/より 外に \{outside\}日/.test(SRC), "★外に 出た 数を 画面に 書いている");
+
 console.log("\n②-2 軸の 始まり");
 // ★★見本の dotplot は 0・2・4・6時間 の 固定です（★sy(v)=H-v/6*H）。
 t(/const ZERO_BASED = \[/.test(SRC), "★0 から 始める 項目を 決めている");
