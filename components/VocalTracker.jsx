@@ -165,6 +165,7 @@ import {
   mergeSceneSymptoms
 } from "@/lib/recordV2";
 import { readProfileExtras } from "@/lib/profileExtras";
+import { sheepThanks } from "@/lib/todayCard";
 import { VIEW, DRESS, SHELF, SEG_TABS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES, HOME_COLORS } from "@/lib/homeDrawer";
 import SheepShelf from "@/components/SheepShelf";
 import { shelfRows } from "@/lib/repertoireLog";
@@ -13659,7 +13660,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   teaching: resolveTeaching({ mode: viewAs, hasTeachingToday: myTeachingLessons.length > 0 }),
                   performances,
                   orgEvents: Object.values(orgEvents).flat(),
-                  sheepLine: SHEEP_LINE + "。",
+                  // ★★見本の 文です（★lib/todayCard.js）。
+                  //   ★★2026-09-11、★句点が 2つ 出て いました。
+                  //     ★SHEEP_LINE が すでに 句点を 持って いて、★ここで また 足して いました。
+                  //   ★★見本に 句点は ありません。★書いたか どうかで 文が 変わります。
+                  sheepLine: layoutV2
+                    ? sheepThanks(entries[realTodayDate])
+                    : SHEEP_LINE + "。",
                   nameOf: (l) => orgDisplayName(l.student_id) || "",
                   unsent: unsentQueue.unsentCount(unsentAttendance),
                   onSeeAll: () => setActiveTab("lesson"),

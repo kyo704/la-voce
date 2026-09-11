@@ -6,6 +6,7 @@ import {
   buildBand, timeOf, monthDayLabel, ATTENDANCE, attendanceLabel, UNDO_SECONDS, COPY
 } from "@/lib/todayBand";
 import { TYPE, SPACE, obiStyle, speakStyle, rem } from "@/lib/uiKit";
+import { SHEEP_SUB } from "@/lib/todayCard";
 
 // ============================================================================
 // 「きょう」の帯 ── 第2便（2026-09-08）
@@ -146,10 +147,23 @@ export default function TodayBand({
     //     ★A02（先生）… 出欠の 帯が 先 → ★絵は その あと。
     //   ★★見本 2枚の ちがいは、★これ 1つで 出ます。
     //     ★2つの 並べ方を 書き分けると、★片方だけ 直ります。
+    //   ★★下に 1行 添えます（★見本 S_kyou の .usu）。
+    //     ★「羊は「記録した行為」に 反応します。中身には 反応しません」
+    //     ★★2026-09-11、★比較画像で 抜けて いました。
+    //       ★★この 1行が 無いと、★羊が 体調に 応えて いるように 読めます。
+    //         ★羊は 書いた という 行為に だけ 応えます。★中身を 見ません。
     return (
       <Fragment key={r.key}>
         {sheepSlot}
-        {r.line ? <BandRowV2 speak>{r.line}</BandRowV2> : null}
+        {r.line ? (
+          <BandRowV2 speak>
+            {r.line}
+            <span style={{
+              display: "block", marginTop: 4,
+              ...TYPE.usual, color: C.inkSoft
+            }}>{SHEEP_SUB}</span>
+          </BandRowV2>
+        ) : null}
       </Fragment>
     );
   }

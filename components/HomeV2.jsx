@@ -2,7 +2,7 @@
 
 import { C } from "@/lib/tokens";
 import SheepDressed from "@/components/SheepDressed";
-import { conditionWord, sleepParts, usualOf } from "@/lib/todayCard";
+import { conditionWord, sleepParts, usualOf, TODAY_NOTE } from "@/lib/todayCard";
 import TodayBand from "@/components/TodayBand";
 import {
   TYPE, SPACE, FONT_STACK, SHEEP_WIDTH_RATIO, SHEEP_WIDTH_RATIO_TEACHING,
@@ -137,7 +137,22 @@ export default function HomeV2({
                ★★置き場所は 帯が 決めます。★A01 は いちばん上、
                  ★A02（先生）は 出欠の 帯の あとです。
                  ★★並べ方を ここに もう1つ 書くと、★片方だけ 直ります。 */
-            <div style={{ marginTop: 2, display: "flex", justifyContent: "center" }}>
+            /* ★★見本の 舞台（.stage）。★2026-09-11、★比較画像で 地が
+                 ★ありませんでした。★羊が 紙の 上に 浮いて 見えて いました。
+               ★★見本の CSS（77行）
+                 background: linear-gradient(#F6EEDC,#EFE4CC)
+                 border: 1px solid var(--line) ／ border-radius: 14 ／ height: 236
+               ★★高さは 236 では なく、★羊の 大きさに 合わせます。
+                 ★実装の 羊は 端末の 幅で 決まります（★見本は 132px の 固定）。
+                 ★固定に すると、★大きい 端末で 上が 空きます。
+               ★★影（.shadow）は 置きません。★見本は 動いて いますが、
+                 ★この 帳面の 羊は motion="still" です。★動かない 影は 嘘に なります。 */
+            <div style={{
+              marginTop: 2, display: "flex", justifyContent: "center",
+              background: "linear-gradient(#F6EEDC,#EFE4CC)",
+              border: `1px solid ${C.line}`, borderRadius: 14,
+              overflow: "hidden", marginBottom: 9
+            }}>
               {/* ★★大きさは、★1つの CSS の 式で 決まります（lib/uiKit.js）。
                   ★★親の 高さを 尋ねません。★測りません。★％も 使いません。
                     ★どれも、★3度 試して 3度とも 効きませんでした。
@@ -198,6 +213,17 @@ export default function HomeV2({
       {/* ★★教える日も 出します（★案B・2026-09-10・坂本さんの お決め）。 */}
       <H3>みつけたこと</H3>
       {children}
+
+      {/* ★★いちばん下の 3行（★見本 S_kyou の .note・613行）。
+          ★★2026-09-11、★比較画像で 抜けて いました。
+            ★★どれも「出しません」と 書いてある 行です。
+              ★この 画面が 何を して いないかの 断りです。★飾りでは ありません。
+          ★★見本は .note を 畳んで います（foldNotes）。★fold を 渡します。 */}
+      <Note fold>
+        {TODAY_NOTE.map((line, i) => (
+          <span key={i}>{i > 0 ? <br /> : null}{line}</span>
+        ))}
+      </Note>
     </div>
   );
 }
