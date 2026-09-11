@@ -12,7 +12,7 @@ import {
   ScreenHead, HeadRound, H3, Seg, Note, Card, Two, Btn, Usu, Box, Li
 } from "@/components/UiV2";
 import { VIEW_AS_MODES, viewAsWord } from "@/lib/viewAs";
-import { planToday, PLAN_COPY } from "@/lib/todayBand";
+import { planToday, PLAN_COPY } from "@/lib/todayPlan";
 
 // ============================================================================
 // 「きょう」の画面 ── ★A01（★design.zip ／ 2026-09-10）
