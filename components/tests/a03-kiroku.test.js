@@ -175,6 +175,20 @@ ok(!/createPortal/.test(readCode("components", "VocalTracker.jsx")),
   "★差し込みの 仕組みが 残っていない");
 ok(/if \(sheet != null\) return false;/.test(readCode("lib", "recordV2.js")),
   "★1枚に 入る 節は、門の中では 出さない");
+// ★★2026-09-11、★気候・滞在地（env）も 消しました（★坂本さんの お決め）。
+//   ★★見本に 入力欄が 1つも ありません。
+//   ★★画面が 自分と 食い違って いました ──
+//     ★.warn が「この2つは 聞きません」と 約束した すぐ下で、
+//     ★★気温と 天気を 聞いて いました。
+//   ★★列も 記録も 消して いません。★画面に 出さないだけです。
+{
+  const rv = readCode("lib", "recordV2.js");
+  const body = rv.split("export function sectionIsOpen")[1] || "";
+  ok(/return false;\s*\}/.test(body.slice(0, 3000)),
+    "★門の中では、★どの 節も 出さない（★env を 含む）");
+  ok(/if \(!layoutV2\) return true;/.test(body),
+    "★門の外（38人）には、★これまでどおり 出る");
+}
 
 // ── ⑧ ①消す が 門の中だけ ────────────────────────────────
 console.log("\n⑧ ①消す の 2つ（★門の外の 38人には 残る）");

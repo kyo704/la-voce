@@ -289,8 +289,10 @@ const USER_ID = "test-user-id";
     const vt = readRaw("components", "VocalTracker.jsx");
     const inUi = [...new Set((vt.match(/fold="([a-zA-Z]+)"/g) || []).map((m) => m.slice(6, -1)))];
     const inTable = rv2.SECTION_SHEETS.flatMap((f) => f.sections);
-    // ★★気候・滞在地（env）だけは わざと 表に 載せていません
-    //   （★坂本さんの お決め 5-b ㋒「当面、そのまま、下に残す」）。
+    // ★★気候・滞在地（env）だけは、★表に 載せていません。
+    //   ★★2026-09-11、★お決めが ①消す に なりました。
+    //     ★1枚に 入れるのでは なく、★画面から 消します。
+    //     ★だから、★これからも 表には 載りません。
     assertEqual(inUi.filter((k) => !inTable.includes(k)), ["env"],
       "★表に 載っていない節は、気候・滞在地 ひとつだけ");
     assertEqual(inTable.filter((k) => !inUi.includes(k)), [],
@@ -314,10 +316,18 @@ const USER_ID = "test-user-id";
     "★1枚を 開いても 出さない");
   assertEqual(rv2.sectionIsOpen("meal", { layoutV2: true, openSheet: "からだ" }), false,
     "ほかの 1枚が 開いていても 出ない");
-  assertEqual(rv2.sectionIsOpen("env", { layoutV2: true, openSheet: null }), true,
-    "★気候・滞在地は、1枚が 閉じている あいだ 画面に 出る（★お決め 5-b ㋒）");
-  assertEqual(rv2.sectionIsOpen("env", { layoutV2: true, openSheet: "からだ" }), false,
-    "★1枚が 開いている あいだは 出ない（★1枚の 中に 紛れ込ませない）");
+  // ★★2026-09-11、★5-b の お決めが ㋒ から ①消す に 変わりました。
+  //   ★★見本に 気候・滞在地の 入力欄が 1つも ありません。
+  //     ★気温・天気・滞在地・公演地・騒音・フライト・時差 … すべて 0件。
+  //   ★★画面が 自分と 食い違って いました ──
+  //     ★.warn が「この2つは 聞きません」と 約束した すぐ下で、
+  //     ★★気温と 天気を 聞いて いました。
+  //   ★★列も 記録も 消して いません。★画面に 出さないだけです。
+  //   ★記録　docs/reports/消したものの記録.md
+  assertEqual(rv2.sectionIsOpen("env", { layoutV2: true, openSheet: null }), false,
+    "★気候・滞在地は、門の中では 出さない（★お決め ①消す・2026-09-11）");
+  assertEqual(rv2.sectionIsOpen("env", { layoutV2: false, openSheet: null }), true,
+    "★門の外（38人）には、★これまでどおり 出る");
   assertEqual(rv2.sheetOfSection("しらない節"), null, "★表に無い節は null");
 
   console.log("\n=== ⑦ 数え上げを 出さない ===");
