@@ -2274,12 +2274,12 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
             ★中に 入れると、★寄ったとき 一緒に 大きくなり、★端で 消えます。 */}
       <div style={cameraStyle(cam, { editMode, walking: isWalking, walkMs: WALK_MS })}>
       {/* ★★場面は、★全画面の箱いっぱいに広げます。
-          ★★床は下34％、壁は上66％を使うため、縦長の端末でも
+          ★★床は下42％、壁は上58％を使うため、縦長の端末でも
             壁の高さと床の長さが画面全体に追従します。
           ★★家具の位置は％で保持するので、既存の配置データもそのまま使えます。 */}
       <div style={{ position: "absolute", inset: 0 }}>
       <WallTexture material={wallKey} wardrobeOn={wardrobeOn} />
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%", background: floorColor, zIndex: 0, overflow: "hidden" }}>
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "42%", background: floorColor, zIndex: 0, overflow: "hidden" }}>
         <FloorTexture material={floorKey} wardrobeOn={wardrobeOn} />
       </div>
 

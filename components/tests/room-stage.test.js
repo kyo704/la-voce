@@ -33,9 +33,9 @@ ok(/\<div style=\{\{ position: "absolute", inset: 0 \}\}/.test(home),
   "★画面いっぱいの箱を使っている");
 
 console.log("② 縦横比の 決め打ちが、どこに あるか");
-ok(/ROOM_FLOOR_BOTTOM_PCT = 34/.test(layer), "★床は 高さの 34%");
-// ★★CharacterHome の 床も 同じ 34% で あること。★2か所に ある 数です。
-ok(/height: "34%", background: floorColor/.test(home), "★部屋の 床も 34%");
+ok(/ROOM_FLOOR_BOTTOM_PCT = 42/.test(layer), "★床は 高さの 42%");
+// ★★CharacterHome の 床も 同じ 42% で あること。★2か所に ある 数です。
+ok(/height: "42%", background: floorColor/.test(home), "★部屋の 床も 42%");
 
 console.log("③ 画面いっぱいの 箱は そのまま");
 // ★★裁定 9/10夜 §3「画面ぜんぶが おうちに」。★箱は 狭めません。

@@ -36,11 +36,11 @@ import {
  *   ★★数を、ここ1か所で持ちます。★画面のあちこちに書かないこと。
  *   ★いまは決め打ちです。★動かせるようにするのは、次の段です。
  */
-// ★★部屋の床は、★上から66%（＝下から34%）から下です。
-//   ★CharacterHome の ROOM_FLOOR_LINE = 66 と、★同じ数です。
+// ★★部屋の床は、★上から58%（＝下から42%）から下です。
+//   ★CharacterHome の床の高さと、★同じ数です。
 //   ★★2か所に書いています。★あちらを import できないため、
 //     ★ここに書き、★検査で「同じ数であること」を見張ります。
-const ROOM_FLOOR_BOTTOM_PCT = 34;
+const ROOM_FLOOR_BOTTOM_PCT = 42;
 
 // ★部屋は、幅：高さ ＝ およそ 4：3。★横の％を、縦の％に直すときに使います。
 const ROOM_ASPECT = 4 / 3;
@@ -203,7 +203,7 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
           }} />
       )}
 
-      {/* ★★床のタイル。★床のところ（下から34%）だけに敷きます。 */}
+      {/* ★★床のタイル。★床のところ（下から42%）だけに敷きます。 */}
       {floorTile && (
         <div aria-hidden="true"
           style={{
