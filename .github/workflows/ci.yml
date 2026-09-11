@@ -1,0 +1,33 @@
+# ============================================================================
+# push / pull request の 確認（★2026-09-11）
+#
+#   ★★追加した見張りテストを含む、★全テストとビルドを自動で確認します。
+#   ★★テストやビルドが落ちた変更は、★取り込む前に気づけるようにします。
+# ============================================================================
+name: テストとビルド
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # ★★Next.js 14.2.5に合わせ、★既存の控えと同じNode.js 20を使います。
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      # ★★lockfileに固定された依存関係だけを入れます。
+      - name: 依存関係を 入れる
+        run: npm ci
+
+      - name: 全テストを 走らせる
+        run: npm test
+
+      - name: ビルドを 走らせる
+        run: npm run build

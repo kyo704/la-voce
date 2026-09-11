@@ -20,3 +20,6 @@ docs/inbox/*.txt
 # ★見た目の 確認に 使う テスト用の 鍵。★決して git に 入れないこと。
 .env.e2e
 artifacts/
+
+# Supabase CLI のローカル一時ファイル（接続先・プロジェクト情報を含むためコミットしない）
+supabase/.temp/
