@@ -160,6 +160,7 @@ import {
   YOUSU_CHOICES, YOUSU_NOTE, HONBAN, HITOKOTO, HONBAN_CHOICES, honbanChoiceOf
 } from "@/lib/recordSheets";
 import LookBackV2 from "@/components/LookBackV2";
+import MyTimetable from "@/components/MyTimetable";
 import {
   applyThroatWord, applyDekiWord, applyEdemaWord, sectionIsOpen, SECTION_SHEETS,
   mergeSceneSymptoms
@@ -10739,6 +10740,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★★「もっと」の 中の、★いま 開いている まとまり（★見本 A10）。
   //   ★★null なら 9行の 一覧。★選ぶと、★その まとまりだけ 出ます。
   //   ★★門の外（38人）は、★これまでどおり ぜんぶ 縦に 並びます。★1つも 変えません。
+  // ★★時間割（★個人の もの・★裁定 2026-09-11・その15 ⑦）。
+  //   ★★教室の ものでは ありません。★学校の コマも 出て きません。
+  const [showTimetable, setShowTimetable] = useState(false);
   const [moreSection, setMoreSection] = useState(null);
   // ★★毎日 聞く 5つ（★見本 A10）。★端末ごとに 覚えます。★サーバに 送りません。
   //   ★決めは lib/dailyAsk.js が 持ちます。★ここで 決めません。
@@ -13684,11 +13688,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   ★★1つも 変えません。★お指図の とおりです。
                 ★★グラフを 1つも 置きません。★点数も 出しません。
                 ★数と 言葉は lib/todayCard.js が 持ちます。 */}
-            {activeTab === "home" && layoutV2 && (
+            {/* ★★時間割（★個人の もの・★裁定 2026-09-11・その15 ⑦）。
+                ★★「きょう」の いちばん上に かぶせます。★見本の push と 同じ 形です。
+                ★★教室の ものでは ありません。★学校の コマも 出て きません。 */}
+            {activeTab === "home" && layoutV2 && showTimetable && (
+              <MyTimetable userId={userId}
+                onBack={() => setShowTimetable(false)} />
+            )}
+            {activeTab === "home" && layoutV2 && !showTimetable && (
               <HomeV2
                 entries={entries}
                 todayISO={realTodayDate}
                 performances={performances}
+                onTimetable={() => setShowTimetable(true)}
                 wearing={wardrobeOn ? (characterEquipped.wardrobe || {}) : {}}
                 clothColors={characterEquipped.clothColors || {}}
                 clothColors2={characterEquipped.clothColors2 || {}}

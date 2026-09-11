@@ -90,6 +90,14 @@ create table if not exists public.my_timetable (
   teacher     text,
   room        text,
   memo        text,
+  -- ★★3つめの 姿（★見本 SC['授業を入れる'] の NG）。
+  --   ★★1つの マスは、★3つの どれかです ──
+  --     ★㋐ 授業が ある　　★㋑ 来られない　　★㋒ あき（★行が 無い）
+  --   ★★「来られない」は、★授業では ありません。★けれど「あき」でも ありません。
+  --     ★見本「バイト・通学・体の 都合など。理由は 聞きません」
+  --   ★★だから、★理由の 欄を 作りません。★真偽だけ です。
+  --     ★★作ると、★書かせて しまいます。★聞かない と 決めた ものです。
+  unavailable boolean not null default false,
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now(),
   constraint my_timetable_weekday_ok check (weekday between 0 and 6),
@@ -97,6 +105,12 @@ create table if not exists public.my_timetable (
   constraint my_timetable_teacher_len check (teacher is null or char_length(teacher) <= 20),
   constraint my_timetable_room_len   check (room    is null or char_length(room)    <= 20),
   constraint my_timetable_memo_len   check (memo    is null or char_length(memo)    <= 200),
+  -- ★★「来られない」マスに、★授業の 中身は 入りません。
+  --   ★★2つは 同時に 立ちません。★見本も そう して います。
+  constraint my_timetable_either_ok  check (
+    unavailable = false
+    or (title is null and teacher is null and room is null and memo is null)
+  ),
   -- ★1つの マスに 1つだけ。
   constraint my_timetable_uniq       unique (user_id, weekday, period_id)
 );

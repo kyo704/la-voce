@@ -107,8 +107,17 @@ begin
              and o.created_by = auth.uid()
         )
         and not exists (
+          -- ★★2026-09-11、★ここに 誤りが ありました。
+          --   ★★`org_id` に 表の 名前を 付けて いませんでした。
+          --   ★★中には m（＝memberships）が 居て、★m にも org_id が あります。
+          --     ★だから `org_id` は 近い ほう＝ m.org_id と 読まれました。
+          --   ★★結果 m.org_id = m.org_id ＝ いつでも 真。
+          --     ★memberships に 1行でも あれば、★この 決まりは 通りません。
+          --     ★★誰も 新しい 教室の owner に なれませんでした。
+          --   ★★すぐ上の exists は 正しいです。★中に organizations しか 居ないので、
+          --     ★`org_id` が 外の 行を 指します。
           select 1 from public.memberships m
-           where m.org_id = org_id
+           where m.org_id = memberships.org_id
         )
       );
   end if;
