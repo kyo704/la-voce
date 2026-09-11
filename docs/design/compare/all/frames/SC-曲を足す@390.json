@@ -1,6 +1,10 @@
 [
  {
   "tag": "button",
+  "text": "‹ もどる"
+ },
+ {
+  "tag": "button",
   "text": "きょう"
  },
  {
@@ -18,9 +22,5 @@
  {
   "tag": "button",
   "text": "ひつじ"
- },
- {
-  "tag": "button",
-  "text": "‹ もどる"
  }
 ]

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
-import { Card, Pill, Note, H3, Li, Warn } from "@/components/UiV2";
+import { Card, Pill, Note, Li, Warn } from "@/components/UiV2";
 import { LAGS, ITEMS, defaultLagOf, judgingLagOf } from "@/lib/lagChoice";
 import { LINE_UP_NOTE } from "@/lib/lineUp";
 import { FIRST_DAY_ONLY_LABEL } from "@/lib/compareGroups";
@@ -282,7 +282,11 @@ function OrderScreen({ order, onChange, onBack, message }) {
           padding: "10px 1px", minHeight: SPACE.tapMin,
           color: C.inkSoft, fontSize: rem(13), fontFamily: FONT_STACK
         }}>‹　くらべる</button>
-      <H3>{ORDER_COPY.title}</H3>
+      {/* ★★見本は 画面の 題です（.hd > h2・17px）。★小さな 見出しでは ありません。
+          ★★2026-09-11、★比較画像で 11.5px の 小見出しに なっていました。 */}
+      <div style={{ padding: "2px 1px 6px" }}>
+        <h2 style={TYPE.title}>{ORDER_COPY.title}</h2>
+      </div>
       <div style={{
         background: "#F6F1E4", border: "1px solid #E8DFC8", borderRadius: 12,
         padding: `${rem(9)} ${rem(11)}`, marginBottom: rem(10), ...TYPE.note
@@ -293,7 +297,10 @@ function OrderScreen({ order, onChange, onBack, message }) {
         {order.map((k, i) => (
           <div key={k} style={{
             display: "flex", alignItems: "center", gap: rem(9),
-            padding: `${rem(10)} 0`, minHeight: SPACE.tapMin,
+            // ★★上下の 余白を 入れません。★↑ の 押しどころ（44px）が 高さを 決めます。
+            //   ★★2026-09-11、★両方 入れていて、★1行 64px に なっていました。
+            //     ★見本の .ord は 46px です。
+            padding: 0, minHeight: SPACE.tapMin,
             borderBottom: i === order.length - 1 ? "none" : `1px solid ${C.line2}`,
             ...TYPE.li
           }}>

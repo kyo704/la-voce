@@ -1,25 +1,5 @@
 [
  {
-  "tag": "button",
-  "text": "きょう"
- },
- {
-  "tag": "button",
-  "text": "記録"
- },
- {
-  "tag": "button",
-  "text": "ふりかえる"
- },
- {
-  "tag": "button",
-  "text": "ノート"
- },
- {
-  "tag": "button",
-  "text": "ひつじ"
- },
- {
   "tag": "h2",
   "text": "ふりかえる"
  },
@@ -73,6 +53,10 @@
  },
  {
   "tag": "span",
+  "text": "0時間"
+ },
+ {
+  "tag": "span",
   "text": "2時間"
  },
  {
@@ -89,19 +73,11 @@
  },
  {
   "tag": "span",
-  "text": "よく出た日"
+  "text": "よく出た日 5 日"
  },
  {
   "tag": "span",
-  "text": "5 日"
- },
- {
-  "tag": "span",
-  "text": "出なかった日"
- },
- {
-  "tag": "span",
-  "text": "5 日"
+  "text": "出なかった日 5 日"
  },
  {
   "tag": "div",
@@ -129,7 +105,7 @@
  },
  {
   "tag": "span",
-  "text": "つづいた日は、初日だけで くらべる"
+  "text": "初日だけで くらべる"
  },
  {
   "tag": "span",
@@ -138,5 +114,25 @@
  {
   "tag": "button",
   "text": "くわしい 決まりを 見る"
+ },
+ {
+  "tag": "button",
+  "text": "きょう"
+ },
+ {
+  "tag": "button",
+  "text": "記録"
+ },
+ {
+  "tag": "button",
+  "text": "ふりかえる"
+ },
+ {
+  "tag": "button",
+  "text": "ノート"
+ },
+ {
+  "tag": "button",
+  "text": "ひつじ"
  }
 ]
