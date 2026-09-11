@@ -264,6 +264,52 @@ def main():
                          {"grade_label": "★50通り"})
       put("（参考）grade_label", judge(s3, b3))
 
+    # ★（参考）★自分の 名前の ちからを **上げられるか**
+    #
+    #   ★★さきの「role を 変える」は、★同じ 値の 書き戻しでした。
+    #     ★★通って 当たり前で、★昇格の 証拠には なりません。
+    #   ★★ここでは、★はっきり **owner へ 上げよう** と します。
+    #
+    #   ★★決まりの 文面は こう 読めます ──
+    #     ★`case when auth.uid() = user_id
+    #        then role_rank(role) <= role_rank(いまの role) else … end`
+    #     ★`org_role_rank` は owner 3／admin 2／teacher 1／その他 0。
+    #   ★★けれど 決まりは 5本 あり、★permissive は **または** で つながります。
+    #     ★★1本でも 素通しが あれば、★そちらが 勝ちます。
+    #     ★★だから 文面では 決まりません。★投げて 確かめます。
+    #
+    #   ★★通って しまった ときは、★**その場で 戻します。**
+    #     ★★2026-09-11 の 教訓 ── ★巻き戻ると 思って いた 確かめが
+    #       ★巻き戻らず、★昇格が 残りました。★戻すのは 道具の 仕事です。
+    if mine:
+      before = o_role(o["post"], exp)
+      s4, b4 = rest.call("memberships?id=eq.%s&select=id,role" % mine["id"], "PATCH",
+                         {"role": "owner"})
+      j4 = judge(s4, b4)
+      rose = False
+      try:
+        rose = bool(json.loads(b4)) and json.loads(b4)[0].get("role") == "owner"
+      except Exception:                                         # noqa: BLE001
+        rose = False
+      if rose and before != "owner":
+        # ★★上がって しまいました。★すぐ 戻します。
+        rest.call("memberships?id=eq.%s&select=id" % mine["id"], "PATCH",
+                  {"role": before})
+        s5, b5 = rest.call("memberships?id=eq.%s&select=role" % mine["id"])
+        back = ""
+        try:
+          back = json.loads(b5)[0]["role"]
+        except Exception:                                       # noqa: BLE001
+          back = "（読めません）"
+        j4 = {"ok": True,
+              "why": "★★上がって しまいました。★戻しました → " + back,
+              "code": ""}
+      elif before == "owner":
+        j4 = {"ok": False, "why": "もともと owner（★試せません）", "code": ""}
+      else:
+        j4 = {"ok": False, "why": "止まった　" + j4["why"], "code": j4.get("code", "")}
+      put("（参考）owner へ 上げる", j4)
+
     # ★レッスンの 日程 ── ★画面が 使う 列を そのまま（★VocalTracker.jsx:12048）
     s, b = rest.call("lessons?select=id", "POST", {
       "org_id": org, "teacher_id": ME, "student_id": ME,
@@ -388,17 +434,43 @@ def main():
   say("　★★だから 列ごとの 許しが、★`role` にだけ 付いて いると 読めます。")
   say("　★★つまり **学年の 札を 直す 働きは、★いま 誰にも 使えません。**")
   say()
-  say("| 役職 | role を 変える | grade_label |")
-  say("|---|---|---|")
+  say("| 役職 | role を 変える | grade_label | **owner へ 上げる** |")
+  say("|---|---|---|---|")
   for o in orgs:
     a = result[o["post"]].get("（参考）role を 変える")
     b2 = result[o["post"]].get("（参考）grade_label")
-    say("| %s | %s | %s |" % (
+    c2 = result[o["post"]].get("（参考）owner へ 上げる")
+    say("| %s | %s | %s | %s |" % (
       o["post"],
-      (("★通る" if a["ok"] else "・止まる") + "　" + a["why"][:34]) if a else "？",
-      (("★通る" if b2["ok"] else "・止まる") + "　" + b2["why"][:34]) if b2 else "？"))
+      (("★通る" if a["ok"] else "・止まる") + "　" + a["why"][:28]) if a else "？",
+      (("★通る" if b2["ok"] else "・止まる") + "　" + b2["why"][:28]) if b2 else "？",
+      (("★★上がった" if c2["ok"] else "・止まる") + "　" + c2["why"][:44]) if c2 else "？"))
+  say()
+  rose = [o["post"] for o in orgs
+          if (result[o["post"]].get("（参考）owner へ 上げる") or {}).get("ok")]
+  if rose:
+    say("★★**上がって しまった 役職　" + "／".join(rose) + "**")
+    say("　★★その場で 戻して います（★表の 右端に 戻した 先が 出ます）。")
+  else:
+    say("★★どの 役職も、★自分を owner に 上げられません でした。")
+    say("　★★決まりは 5本 ありますが、★素通しの 1本は ありません でした。")
   say()
 
+  say("## ★下ごしらえの あとで 変わった こと")
+  say()
+  say("★★在籍（enrollments）と 受け持ち（assignments）を 10校に 置く 前は、")
+  say("　★★レッスンの 日程が **10校 とも** 落ちて いました ──")
+  say("　★`42501　new row violates row-level security policy for table \"lessons\"`")
+  say("　★★学長でも 落ちて いました。★役職の 話では ありません でした。")
+  say()
+  say("★★置いた あとは、★**10校 とも 通ります**。")
+  say("　★★`can_view_ops` は 在籍と 受け持ちを 見る、という 読みが 当たりました。")
+  say("　★★あれは **私の 下ごしらえ不足**で、★不具合では ありません。")
+  say()
+  say("★★同じ 下ごしらえで、★出席も 本物の 行で 試せる ように なりました。")
+  say("　★★だから 出席の「行が 無いので 未確認」は、★もう ありません。")
+  say("　★★教授・准教授・講師の 3マスは、★**決まりまで 通り抜けて** います。")
+  say()
   say("## ★★この 表の 限界（★読む 前に）")
   say()
   say("★★「42501」は **2つの こと** を 指します。★文面で 見分けて います。")
