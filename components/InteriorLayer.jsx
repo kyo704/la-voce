@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { fallbackToPng } from "@/lib/imageFormat";
 import { slotOfItem, slotByKey } from "@/lib/roomSlots";
 import {
@@ -111,6 +112,9 @@ function floorBottomPct(item, widthPct) {
 }
 
 export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdatePosition, Draggable }) {
+  const [localPositions, setLocalPositions] = useState({});
+  const pos = (equipped && equipped.interiorPositions) || {};
+  const effectivePos = { ...pos, ...localPositions };
   // ★★門の外の方には、★1枚も出しません。
   //   ★ここで止めます。★呼ぶ側に任せないこと。
   if (!wardrobeOn) return null;
@@ -140,7 +144,13 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
   //   ★保存の場所は character_equipped.interiorPositions です。
   //   ★★動かしていないものは、★既定の場所に出ます。
   //     ★null のままにします。★いっせいに埋めません。
-  const pos = (equipped && equipped.interiorPositions) || {};
+  function updateInteriorPosition(itemKey, left, vertical, field) {
+    setLocalPositions((current) => ({
+      ...current,
+      [itemKey]: { ...(current[itemKey] || {}), left, [field]: vertical }
+    }));
+    onUpdatePosition("interior", itemKey, left, vertical, field);
+  }
 
   // ★★置き場所（★9か所・2026-09-11・Opus の 裁定 ／ 見本 J02）。
   //
@@ -161,7 +171,7 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
     const slotKey = slotOfItem(it);
     let slot = slotKey ? slotByKey(slotKey) : null;
     const movable = ["furniture", "showa", "garden", "wallart"].includes(it.category);
-    const saved = pos[it.key];
+    const saved = effectivePos[it.key];
     if (movable && saved && typeof saved.left === "number") {
       return {
         left: saved.left,
@@ -187,7 +197,7 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
     //   ★庭（外）と、★お尋ね中の 縁側が これに あたります。
     //   ★★ここを 消すと、★出ていた ものが 出なく なります。
     const s = SPOT[it.category] || SPOT.furniture;
-    const p = pos[it.key];
+    const p = effectivePos[it.key];
     return {
       left: p && typeof p.left === "number" ? p.left : s.left,
       top: p && typeof p.top === "number" ? p.top : null,
@@ -243,7 +253,7 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
             ★★ここで数を書かないこと。 */}
       {frame && (() => {
         const w = widthPctOf(frame);
-        const windowPos = pos.window;
+        const windowPos = effectivePos.window;
         const windowLeft = windowPos && typeof windowPos.left === "number"
           ? windowPos.left : SPOT.window.left;
         const windowTop = windowPos && typeof windowPos.top === "number"
@@ -284,7 +294,7 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
             <Draggable itemKey="window" startLeft={windowLeft} startTop={windowTop}
               band={WALL_BAND}
               style={windowStyle}
-              onDragEnd={(left, top) => onUpdatePosition("interior", "window", left, top, "top")}>
+              onDragEnd={(left, top) => updateInteriorPosition("window", left, top, "top")}>
               <div aria-hidden="true" style={{ position: "relative", width: "100%", height: "100%" }}>
                 {windowContents}
               </div>
@@ -335,7 +345,7 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
         // ★★大きさは、★絵の幅から出します（★分類ごとに決め打ちしません）。
         const wpct = widthPctOf(it);
         // ★動かしていないものは、★重ならないよう、★少しずつずらします。
-        const shift = pos[it.key] ? 0 : (i % 4) * 9 - 13;
+        const shift = effectivePos[it.key] ? 0 : (i % 4) * 9 - 13;
         const left = clampToBand(s.left + shift, LEFT_BAND);
         // ★★壁のものは「上端」、★床のものは「足もと」で置きます。
         //   ★★同じ数の意味が2つに割れないよう、★分けて持ちます。
@@ -409,7 +419,7 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
                 startLeft={left} startTop={startTop}
                 band={onCeiling ? [0, 40] : (onWall ? WALL_BAND : FLOOR_BAND)}
                 onDragEnd={(nl, nt) =>
-                  onUpdatePosition("interior", it.key, nl, nt,
+                updateInteriorPosition(it.key, nl, nt,
                     (onWall || onCeiling) ? "top" : "feet")}>
                 {img}
               </Draggable>

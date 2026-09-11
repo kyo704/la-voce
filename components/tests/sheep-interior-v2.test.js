@@ -178,7 +178,7 @@ function ok(name, cond, extra) {
     //   ★"top"  … 壁のものの、上端
     //   ★"feet" … 床のものの、足もと
     //   ★1つの欄に両方を入れると、★意味が割れます（★古い top は「浮いていた高さ」）。
-    ok("★保存の形も、同じ", /onUpdatePosition\("interior", it\.key, nl, nt,/.test(layer));
+    ok("★保存の形も、同じ", /updateInteriorPosition\(it\.key, nl, nt,/.test(layer));
     // ★★2026-09-08、★天井から下げるものが 加わりました。
     ok("★縦の欄を、分けている", /\(onWall \|\| onCeiling\) \? "top" : "feet"/.test(layer));
     ok("★置き場所を、名簿から取っている", /placementOf\(it\)/.test(layer));
@@ -194,7 +194,7 @@ function ok(name, cond, extra) {
     ok("★窓の2枚を、lib から取っている", /windowLayers\(placed\)/.test(layer));
     ok("★重ね順を、画面で決めていない", !/["']view["']\s*,\s*["']window["']/.test(layer));
     ok("★窓の位置を保存している", /itemKey="window"/.test(layer)
-      && /onUpdatePosition\("interior", "window", left, top, "top"\)/.test(layer));
+      && /updateInteriorPosition\("window", left, top, "top"\)/.test(layer));
     ok("★保存した家具位置を、既定位置より優先している",
       /if \(movable && saved && typeof saved\.left === "number"\)/.test(layer));
 
