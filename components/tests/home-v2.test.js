@@ -214,8 +214,16 @@ function eq(a, b, label) { ok(a === b, label + "  （得た値: " + JSON.stringi
 
   console.log("⑥ 門（★38人の画面を 変えない）");
   const vt = readRaw("components", "VocalTracker.jsx");
-  ok(/activeTab === "home" && layoutV2 && \(\s*\n\s*<HomeV2/.test(vt),
+  // ★★2026-09-11、★時間割（★裁定 その15 ⑦）を かぶせる ように なりました。
+  //   ★★だから 条件が 1つ 増えて います ── !showTimetable。
+  //   ★★見るのは「layoutV2 の 中でだけ 出る」ことです。★そこは 変わりません。
+  ok(/activeTab === "home" && layoutV2 && !showTimetable && \(\s*\n\s*<HomeV2/.test(vt),
     "HomeV2 は layoutV2 の 中でだけ 出る");
+  // ★★時間割も、★門の 中だけです。
+  ok(/activeTab === "home" && layoutV2 && showTimetable && \(/.test(vt),
+    "★時間割も 門の 中だけ");
+  // ★★門の外（38人）に、★時間割が 出る 道が 無いこと。
+  ok(!/showTimetable[\s\S]{0,80}!layoutV2/.test(vt), "★門の外に 時間割が 出ない");
   ok(vt.includes('activeTab === "home" && !layoutV2 && (() => {'),
     "これまでの ホームが 門の外に 残っている");
   ok(!/import HomeV2[\s\S]{0,200}NEXT_PUBLIC_LAYOUT_V2_USER_IDS/.test(readCode("components", "HomeV2.jsx")),
