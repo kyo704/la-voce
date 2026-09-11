@@ -73,16 +73,47 @@ where o.name like '★50通り-%';
 
 
 -- ────────────────────────────────────────────────────────────────
+-- ②-2 ★role に 入れてよい 値を 見せてください
+--
+--   ★★2026-09-11、★私は ここも 当てずっぽうで 'member' と 書いて 落としました。
+--     ★★owner_id に つづいて 2度目です。★台帳を 読む 手が 無いのに、
+--       ★★思い出しで 書きました。★確かめてから 書きます。
+--   ★★コードに 出てくるのは owner / admin / teacher の 3つだけです。
+--     ★期待表は staff も 使います。★通るか どうかを ここで 見ます。
+-- ────────────────────────────────────────────────────────────────
+select conname as "決まりの 名前", pg_get_constraintdef(oid) as "中身"
+from pg_constraint
+where conrelid = 'public.memberships'::regclass and contype = 'c';
+
+
+-- ────────────────────────────────────────────────────────────────
 -- ③ ★使い捨ての 方を、★10校に 1つずつ 入れる
---    ★★role は member です。★役職の ちからだけを 確かめる ため、
---      ★★owner／admin の 名前による ちからを 混ぜません。
+--
+--   ★★role は、★期待表の base を そのまま 使います。
+--     ★学長=owner／副学長・事務長・学部長・学科長=admin／
+--     ★教授・准教授・講師=teacher／課長・職員=staff
+--   ★★はじめ 'member' で 揃えようと しました。★まちがいです。
+--     ★★期待表は「役職 × 名前の ちから」の 組を 書いた 表なので、
+--       ★★名前の ちからを 消して しまうと、★別の ものを 測ります。
+--
+--   ★★②-2 で staff が 通らない ことが 分かった ときは、
+--     ★★そこで 止めて ください。★私が 書き直します。
+--       ★★勝手に 別の 値に 置き換えないで ください ──
+--         ★★測る ものが 変わって しまいます。
 -- ────────────────────────────────────────────────────────────────
 insert into public.memberships (org_id, user_id, role, post_id)
-select o.id, 'f7520dc1-9154-4524-a350-ba0bcddbf0b2', 'member', q.id
+select o.id, 'f7520dc1-9154-4524-a350-ba0bcddbf0b2', p.base, q.id
 from public.organizations o
 join public.org_posts q on q.org_id = o.id
+join (values
+  ('学長','owner'),('副学長','admin'),('事務長','admin'),
+  ('学部長','admin'),('学科長','admin'),
+  ('教授','teacher'),('准教授','teacher'),('講師','teacher'),
+  ('課長','staff'),('職員','staff')
+) as p(name, base) on p.name = q.name
 where o.name like '★50通り-%'
-on conflict (org_id, user_id) do update set role = 'member', post_id = excluded.post_id;
+on conflict (org_id, user_id) do update
+  set role = excluded.role, post_id = excluded.post_id;
 
 
 -- ────────────────────────────────────────────────────────────────
@@ -97,7 +128,7 @@ join public.memberships m on m.org_id = o.id
 where o.name like '★50通り-%'
 order by o.name;
 
--- ★★期待 ── 10行。★名前の ちからは すべて member。
+-- ★★期待 ── 10行。★名前の ちからは 期待表の base の とおり。
 --   ★学長 10・副学長 9・事務長 9・学部長 8・学科長 5・
 --   ★教授 4・准教授 4・講師 4・課長 5・職員 3。
 --   ★★この 10行を、★そのまま お戻しください（★道具が 学校の id を 使います）。

@@ -1,0 +1,125 @@
+{
+ "版": "2026-09-11",
+ "出どころ": "作業指示-権限の事故を直し、記録を残す（9月11日）§2-1・§3",
+ "規則": {
+  "名簿": "meibo",
+  "役職と 所属": "post OR master",
+  "レッスンの 日程": "sched_all OR sched_mine",
+  "レッスンの 出席": "shukketsu AND (sched_all OR meibo)",
+  "行事": "gyoji",
+  "読み込み": "meibo AND master",
+  "既定": "知らない表は false"
+ },
+ "期待": {
+  "学長": {
+   "base": "owner",
+   "書き出し": {
+    "名簿": true,
+    "役職と 所属": true,
+    "レッスンの 日程": true,
+    "レッスンの 出席": true,
+    "行事": true
+   },
+   "読み込み": true
+  },
+  "副学長": {
+   "base": "admin",
+   "書き出し": {
+    "名簿": true,
+    "役職と 所属": true,
+    "レッスンの 日程": true,
+    "レッスンの 出席": true,
+    "行事": true
+   },
+   "読み込み": true
+  },
+  "事務長": {
+   "base": "admin",
+   "書き出し": {
+    "名簿": true,
+    "役職と 所属": true,
+    "レッスンの 日程": true,
+    "レッスンの 出席": true,
+    "行事": true
+   },
+   "読み込み": true
+  },
+  "学部長": {
+   "base": "admin",
+   "書き出し": {
+    "名簿": true,
+    "役職と 所属": true,
+    "レッスンの 日程": true,
+    "レッスンの 出席": true,
+    "行事": true
+   },
+   "読み込み": true
+  },
+  "学科長": {
+   "base": "admin",
+   "書き出し": {
+    "名簿": true,
+    "役職と 所属": false,
+    "レッスンの 日程": true,
+    "レッスンの 出席": true,
+    "行事": true
+   },
+   "読み込み": false
+  },
+  "教授": {
+   "base": "teacher",
+   "書き出し": {
+    "名簿": false,
+    "役職と 所属": false,
+    "レッスンの 日程": true,
+    "レッスンの 出席": false,
+    "行事": false
+   },
+   "読み込み": false
+  },
+  "准教授": {
+   "base": "teacher",
+   "書き出し": {
+    "名簿": false,
+    "役職と 所属": false,
+    "レッスンの 日程": true,
+    "レッスンの 出席": false,
+    "行事": false
+   },
+   "読み込み": false
+  },
+  "講師": {
+   "base": "teacher",
+   "書き出し": {
+    "名簿": false,
+    "役職と 所属": false,
+    "レッスンの 日程": true,
+    "レッスンの 出席": false,
+    "行事": false
+   },
+   "読み込み": false
+  },
+  "課長": {
+   "base": "staff",
+   "書き出し": {
+    "名簿": false,
+    "役職と 所属": true,
+    "レッスンの 日程": true,
+    "レッスンの 出席": true,
+    "行事": false
+   },
+   "読み込み": false
+  },
+  "職員": {
+   "base": "staff",
+   "書き出し": {
+    "名簿": false,
+    "役職と 所属": false,
+    "レッスンの 日程": true,
+    "レッスンの 出席": true,
+    "行事": false
+   },
+   "読み込み": false
+  }
+ }
+}
