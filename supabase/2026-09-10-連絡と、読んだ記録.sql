@@ -216,7 +216,15 @@ begin
   end if;
 
   -- ★★取り消し。★自分が 書いたものだけ。★withdrawn_at を 入れるだけです。
-  --   ★★with check を 必ず 付けます。★無いと using が 代わりに 使われます。
+--   ★★2026-09-11、★この 説明は 誤りでした。★訂正します。
+--     ★★PostgreSQL は、★with check を 書かなかった とき、
+--       ★using の 式を 書くときの 確かめにも 使います。
+--       ★★しかも、★確かめるのは 書き換えた **あとの** 行です。
+--     ★★だから、★using が auth.uid() = user_id なら、
+--       ★他人の user_id へ 変える 道は、★はじめから ありません。
+--     ★★それでも はっきり 書きます。★理由は 2つ ──
+--       ★① あとで using を 広げた とき、★書く 側も 黙って 広がります。
+--       ★② 空欄は「決めて いない」のか「使い回して いる」のか 分かりません。
   if not exists (select 1 from pg_policies
                   where tablename = 'org_messages' and policyname = 'org_messages_withdraw') then
     create policy "org_messages_withdraw" on public.org_messages
