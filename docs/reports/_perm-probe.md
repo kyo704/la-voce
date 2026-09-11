@@ -15,10 +15,15 @@
 
 | | 何を | 返って きた 数 | 中身 |
 |---|---|---|---|
-| ☐1 | 職員の 資格で、★役職を 変える | **403** ★断られました（403） | `{"error":"あなたの役職には「ひとの 役職を 変える」が ありません。"}` |
-| ☐1-b | ★役職そのものを 作る（★できことを 自分で 決める） | **403** ★断られました（403） | `{"error":"あなたの役職には「ひとの 役職を 変える」が ありません。"}` |
-| ☐1-c | ★できことを 1つ 足す（perm） | **403** ★断られました（403） | `{"error":"あなたの役職には「ひとの 役職を 変える」が ありません。"}` |
+| ☐1 | 職員の 資格で、★役職を 変える | **403** ★断られました（403） | `{"error":"あなたが 持っていない できことは、渡せません。"}` |
+| ☐1-b | ★役職そのものを 作る（add） | **200** ★★通って しまいました | `{"ok":true}` |
+| ☐1-c | ★できことを 1つ 足す（perm） | **403** ★断られました（403） | `{"error":"学校全部に かかる ことは、自分が 持っていないと 渡せません。"}` |
+| ☐1-d | ★学校ぜんぶに かからない できことを 足す（koma_mine） | **200** ★★通って しまいました | `{"perms":{"bill":true,"koma":true,"post":true,"gyoji":true,"meibo":true,"master":true,"bill_pay":true,"sched_all":true,"shukketsu":true,"renraku_all":true,"koma_mine":true}}` |
 | ☐2 | 職員の 資格で、★行事を 書き換える | **404** ★見つかりません（404） | `<!DOCTYPE html><html lang="ja" class="__variable_6adbea __variable_88a990 __variable_46fe82"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1, viewport-f` |
+
+## ★戻した もの
+
+- ☐1-d　戻し → 200　{"perms":{"bill":true,"koma":true,"post":true,"gyoji":true,"meibo":true,"master"
 
 ## ★答えの 読み方
 

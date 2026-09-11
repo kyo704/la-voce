@@ -125,10 +125,12 @@ function readEnv() {
       }
     },
     {
-      key: "☐1-b", title: "★役職そのものを 作る（★できことを 自分で 決める）",
+      key: "☐1-b", title: "★役職そのものを 作る（add）",
       url: "/api/org/posts",
-      body: { action: "create", orgId: ORG,
-        name: "★probe", perms: { post: true, meibo: true } },
+      // ★★2026-09-11、★1度目は action を 取りちがえて いました（create）。
+      //   ★★400「足りない指定があります」は、★判じの あとの 形の 誤りでした。
+      //   ★★入口の 名前は add です。★できことは 渡せません（★はじめは 空）。
+      body: { action: "add", orgId: ORG, name: "★probe" },
       why: "★通れば、★できことを 自分で 書けます。★役職を 変えるのと 同じ ことです。",
       // ★★作れて しまったら、★消します。★id が 返って きた ときだけ。
       undo: null
@@ -136,13 +138,30 @@ function readEnv() {
     {
       key: "☐1-c", title: "★できことを 1つ 足す（perm）",
       url: "/api/org/posts",
-      body: { action: "perm", orgId: ORG, postId: POST_BOSS, perm: "post", on: true },
+      // ★★2026-09-11、★1度目は 欄の 名前を 取りちがえて いました（perm）。
+      //   ★★400「知らない項目です」は、★判じの 手前の 形の 誤りでした。
+      //   ★★正しくは key です。
+      body: { action: "perm", orgId: ORG, postId: POST_BOSS, key: "post", on: true },
       why: "★通れば、★いまの 役職に「役職を 変える」を 足せます。",
       // ★★足せて しまったら、★外します。
       undo: {
         url: "/api/org/posts",
         body: () => ({ action: "perm", orgId: ORG, postId: POST_BOSS,
-          perm: "post", on: false })
+          key: "post", on: false })
+      }
+    },
+    {
+      key: "☐1-d", title: "★学校ぜんぶに かからない できことを 足す（koma_mine）",
+      url: "/api/org/posts",
+      // ★★7-4 は「学校ぜんぶに かかる こと」だけを 止めます。
+      //   ★★かからない もの（koma_mine）は、★止まりません。
+      //   ★★それが 決めの とおりか、★確かめます。
+      body: { action: "perm", orgId: ORG, postId: POST_BOSS, key: "koma_mine", on: true },
+      why: "★7-4 の 線が、★どこに 引かれて いるかを 見ます。",
+      undo: {
+        url: "/api/org/posts",
+        body: () => ({ action: "perm", orgId: ORG, postId: POST_BOSS,
+          key: "koma_mine", on: false })
       }
     },
     {
