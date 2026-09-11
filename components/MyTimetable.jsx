@@ -6,11 +6,11 @@ import { C } from "@/lib/tokens";
 import { TYPE, SPACE, FONT_STACK, rem } from "@/lib/uiKit";
 import {
   ScreenHead, Card, Box, Li, Btn, Two, FieldLabel, Input, TextArea,
-  Switch, Back, Warn, Note, Usu, H3, EmptyBox, StateBlock
+  Switch, Back, Warn, Note, Usu, EmptyBox, StateBlock
 } from "@/components/UiV2";
 import {
-  DAYS, TT_COPY, hhmm, toMin, periodsOf, isOwnPeriods,
-  buildGrid, freeCount, cellLabel, cellState, periodError, DEFAULT_PERIODS
+  DAYS, TT_COPY, hhmm, periodsOf, isOwnPeriods,
+  buildGrid, freeCount, cellLabel, DEFAULT_PERIODS
 } from "@/lib/myTimetable";
 
 // ============================================================================
