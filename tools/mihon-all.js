@@ -191,7 +191,16 @@ function homeOf(name) {
   }
   await browser.close();
 
+  // ★★いつでも 書き直します。★いつ 撮ったかも 書きます。
+  //   ★★実装の 側で、★古い 失敗の 記録が 残った ことが あります（★2026-09-11）。
+  const d = new Date();
+  const p2 = (n) => String(n).padStart(2, "0");
+  const stamp = d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate())
+    + " " + p2(d.getHours()) + ":" + p2(d.getMinutes());
   const lines = [];
+  lines.push("★撮ったのは " + stamp + " です。★コマの 時刻と 合っているか 見てください。");
+  lines.push("★この 記録は、★撮るたびに 書き直します（★0件でも）。");
+  lines.push("");
   lines.push("★見本を ぜんぶ 撮りました（" + (shots.length - missed.length)
     + " / " + shots.length + "）");
   lines.push("");

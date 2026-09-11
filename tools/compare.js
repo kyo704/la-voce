@@ -115,12 +115,28 @@ const SCREENS = [
   { key: "SC-たな", tab: "ひつじ", steps: ["たな"] }
 ];
 
+/**
+ * ★いつ 撮ったか。
+ *
+ *   ★★記録に 時刻を 入れます。★コマの 時刻と くらべられる ように。
+ *   ★★これが 無かった せいで、★1時間 前の 記録が
+ *     ★いまの ものとして 読まれました（★2026-09-11）。
+ */
+function nowStamp() {
+  const d = new Date();
+  const p = (n) => String(n).padStart(2, "0");
+  return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate())
+    + " " + p(d.getHours()) + ":" + p(d.getMinutes());
+}
+
 async function capture(env) {
   const { chromium, devices } = require("playwright");
   fs.mkdirSync(FRAMES, { recursive: true });
   const base = env.E2E_BASE_URL || "https://woolsong.app";
   const browser = await chromium.launch({ channel: "chrome" });
   const missed = [];
+  let shot = 0;
+  const stamp = nowStamp();
 
   // ★★実機の 機種を、★そのまま 真似ます（★2026-09-11・坂本さんの お指図）。
   //   ★★幅の 数字だけを 合わせても、★実機とは ちがいます。
@@ -293,6 +309,7 @@ async function capture(env) {
         });
         fs.writeFileSync(file.replace(/\.png$/, ".json"),
           JSON.stringify(dump, null, 1), "utf8");
+        shot++;
         console.log("  ✓ " + sc.key + "@" + vp.name);
       } catch (e) {
         missed.push(sc.key + "@" + vp.name + "  " + String(e.message).split("\n")[0].slice(0, 70));
@@ -303,12 +320,24 @@ async function capture(env) {
   }
   await browser.close();
 
-  if (missed.length) {
-    fs.writeFileSync(path.join(OUT, "撮れなかったもの.txt"),
-      "★撮れなかった もの（" + missed.length + "件）\n"
-      + "★黙って 飛ばしていません。★理由を そのまま 残します。\n\n"
-      + missed.join("\n") + "\n", "utf8");
-  }
+  // ★★いつでも 書き直します。★0件でも 書きます。
+  //
+  //   ★★2026-09-11、★重い 間違いが ありました。
+  //     ★★前は「if (missed.length)」で 囲んで いました。
+  //       ★1件も 落ちなかった 回は、★書き直しません でした。
+  //     ★★だから、★古い 失敗の 記録が そのまま 残り、
+  //       ★撮り直して 直った あとも、★失敗した ように 読めました。
+  //     ★★9月11日 09:40 の 記録が、★10:40 の 撮影の あとも 残って いて、
+  //       ★坂本さんに「3件 失敗して います」と 伝わって しまいました。
+  //   ★★黙って 消さない ための 仕組みが、★黙って 古い ままに なって いました。
+  //     ★いつ 撮った ものかを、★1行目に 書きます。
+  fs.writeFileSync(path.join(OUT, "撮れなかったもの.txt"),
+    "★撮れなかった もの（" + missed.length + "件）\n"
+    + "★この 記録は、★撮るたびに 書き直します（★0件でも）。\n"
+    + "★撮ったのは " + stamp + " です。★コマの 時刻と 合っているか 見てください。\n"
+    + "★黙って 飛ばしていません。★理由を そのまま 残します。\n\n"
+    + (missed.length ? missed.join("\n") + "\n"
+      : "　★1件も ありません。★" + shot + " コマ すべて 撮れました。\n"), "utf8");
   console.log("\n★撮れなかった もの: " + missed.length + " 件");
 }
 
