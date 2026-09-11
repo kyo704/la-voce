@@ -12678,7 +12678,27 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
    *       ★押した値が 抜けたまま 保存されます。
    *     ★だから、★保存したい姿を そのまま 渡せるようにします。
    */
-  async function handleSave(override) {
+  /**
+   * ★記録を 保存します。
+   *
+   *   @param override ★保存する 姿（★省くと いまの formData）
+   *   @param opts.card ★保存の あと、★1枚を 出すか
+   *
+   *   ★★2026-09-11、★坂本さんから 実機の ご報告 ──
+   *     「記録するたびに『保存しました』という 画面が 出て、鬱陶しい」
+   *   ★★門の中の 記録画面は「選んだ 瞬間に 保存」です。
+   *     ★★3択を 1つ 押すたびに、★全画面の 1枚が 出て いました。
+   *     ★★これは「保存ボタンを 作らない」という 決めと 食い違います。
+   *       ★★ボタンを 消した のに、★知らせだけが 残って いました。
+   *   ★★だから、★1枚を 出すのは 2つの ときだけ に します。
+   *     ★① ご自分で「出す」を 押した とき
+   *     ★② きょうより 前の 日を 書いた とき
+   *        ★★まとめて 入れる とき、★いちばん 怖いのは
+   *          ★「ちがう日に 書いて しまった」に 気づかない ことです。
+   *          ★だから、★そこだけは 出します。
+   *   ★★門の外（38人）は、★これまでどおり 毎回 出ます。★1つも 変えません。
+   */
+  async function handleSave(override, opts) {
     const source = override || formData;
     if (!source) return;
     const saveStartedAt = Date.now();
@@ -12726,7 +12746,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     //     ★★何を書いたかには、★1文字も 触れません（★禁 7 と 同じ線）。
     saySheep(SAVED);
     setTimeout(() => setSaveStatus("idle"), 1800);
-    setSaveCardData({
+    // ★★1枚を 出すか（★上の 覚え書き）。
+    //   ★★門の外では これまでどおり。★門の中では、★2つの ときだけ。
+    const wantCard = !layoutV2
+      || !!(opts && opts.card)
+      || clean.date < realTodayDate;
+    if (wantCard) setSaveCardData({
       // ★★どの日を書いたかを、持たせます（★2026-09-07）。
       //   ★過去の日をまとめて入れるとき、★いちばん怖いのは
       //     ★「ちがう日に書いてしまった」に、★気づかないことです。
@@ -12734,6 +12759,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       date: clean.date,
       discovery
     });
+    // ★★出さない ときも、★保存は しています。
+    //   ★★静かに 済みます。★羊が 1度 うなずくだけ です（saySheep）。
 
     // 計測（計測とユーザー調査仕様.md §3）。★lib/events.js を必ず経由すること。
     //   以前はここで直接 insert しており、列名も仕様と違っていました
@@ -14318,7 +14345,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     onPickThroat={(w) => { const n = applyThroatWord(formData, w); setFormData(n); handleSave(n); }}
                     onPickDeki={(w) => { const n = applyDekiWord(formData, w); setFormData(n); handleSave(n); }}
                     onSkip={() => { setRecordSheet(null); setActiveTab("home"); }}
-                    onSubmit={() => handleSave()}
+                    onSubmit={() => handleSave(null, { card: true })}
                     sleepRow={(
                       <SheetRow
                         label={NEMURI.title}

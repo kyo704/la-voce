@@ -32,20 +32,40 @@ import { TYPE, FONT_STACK, rem } from "@/lib/uiKit";
 
 export default function BottomSheet({ title, onClose, children, closeLabel = "閉じる" }) {
   const ref = useRef(null);
+  // ★★いちばん 新しい onClose を、★描き直しを またいで 持ちます。
+  //   ★★下の 効き目（useEffect）の 頼りに 入れない ため です。
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
 
+  // ★★開いた ときに 1度だけ すること。
+  //
+  //   ★★2026-09-11、★坂本さんから 実機の ご報告 ──
+  //     「ひとことを 打つと、★1文字ごとに キーボードが 閉じる」
+  //
+  //   ★★原因は、★この 効き目の 頼り（依存）が [onClose] だった ことです。
+  //     ★★呼ぶ 側は onClose={() => { … }} と 書いて います。
+  //       ★★その場で 作る ので、★描き直すたびに **別の もの**に なります。
+  //     ★★だから 1文字 打つ たびに（★setFormData → 描き直し）、
+  //       ★★この 効き目が もう一度 走り、★ref.current.focus() が
+  //       ★★焦点を 入力欄から 1枚の 枠へ 移して いました。
+  //     ★★焦点が 外れると、★端末は キーボードを 閉じます。
+  //
+  //   ★★だから、★焦点を 移すのは **開いた とき 1度だけ** に します。
+  //     ★頼りを 空（[]）に します。★描き直しでは 走りません。
   useEffect(() => {
-    const onKey = (e) => { if (e.key === "Escape") onClose(); };
-    document.addEventListener("keydown", onKey);
-    // ★★後ろを 止めます。★戻すのを 忘れないこと。
     const before = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    // ★★開いたら、★1枚の 中へ 読み上げを 移します。
     if (ref.current) ref.current.focus();
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = before;
-    };
-  }, [onClose]);
+    return () => { document.body.style.overflow = before; };
+  }, []);
+
+  // ★★Esc で 閉じる。★こちらは 毎回 付け替えても 害が ありません。
+  //   ★★けれど、★onClose を 頼りに 入れません。★上と 同じ 形に します。
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") closeRef.current(); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
 
   return (
     <>
