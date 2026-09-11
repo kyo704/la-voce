@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { C, CONCERN_STEPS } from "@/lib/tokens";
-import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
+import { TYPE, SPACE, FONT_STACK, rem } from "@/lib/uiKit";
 import {
-  ScreenHead, HeadRound, Card, Seg, Pill, Warn, Note, BarRow, Li, Btn, Two
+  ScreenHead, HeadRound, Card, Seg, Pill, Warn, Note, BarRow, Li, Btn, Two, EmptyBox
 } from "@/components/UiV2";
 import LookBackPanel from "@/components/LookBackPanel";
 import { LOOK_BACK_FIELDS, hardDays, lookBackableDays } from "@/lib/lookBack";
@@ -42,7 +42,6 @@ import { tabIsOpen, quietReason } from "@/lib/quietDays";
 
 // ★★大きさ・間・色は lib/uiKit.js と lib/tokens.js が 持ちます（★design.zip）。
 //   ★ここで 決めません。
-const card = { ...cardStyle, marginBottom: SPACE.cardGap };
 const small = { ...TYPE.note, lineHeight: 1.7 };
 
 function mmdd(iso) {
@@ -366,14 +365,16 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
         //     ★見本⑤は 後者です。★どちらも 要ります。★1つに しません。
         const days = lookBackableDays(notOutDays, hardDays(entries, todayISO, period.days));
         if (days.length === 0) {
-          // ★★「まだ ありません」と 書きません。★責めに なります。
-          //   ★何が あれば 出るかだけを、★静かに 置きます。
+          // ★★共通の 部品です（★見本 stateBlock・797行）。★写しを 置きません。
+          //   ★★字も 見本の ものに そろえました。★私が 書いた 字では ありません。
+          //     ★前　「「出づらい」と書いた日が、この期間にはありません。」
+          //     ★見本「まだ、出づらいと 書いた日が ありません。」
+          //         ＋「記録の「声の 出来」に △出づらい を つけた日が、ここに 並びます。」
+          //   ★★何が あれば 出るかを 1行 書きます。★白紙に しません。
           return (
-            <div style={card}>
-              <p style={{ fontSize: "0.8125rem", color: C.inkSoft, lineHeight: 1.8 }}>
-                「出づらい」と書いた日が、この期間にはありません。
-              </p>
-            </div>
+            <EmptyBox
+              title="まだ、出づらいと 書いた日が ありません。"
+              sub="記録の「声の 出来」に △出づらい を つけた日が、ここに 並びます。" />
           );
         }
         // ★★2026-09-11、★見本 SC['前3日'] の 形に しました。

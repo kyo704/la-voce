@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { C } from "@/lib/tokens";
-import { TYPE, SPACE, cardStyle, rem } from "@/lib/uiKit";
+import { TYPE, SPACE, rem } from "@/lib/uiKit";
 import {
   ScreenHead, HeadRound, H3, Card, Seg, Li, Note, Back, Input, TextArea, FieldLabel
 } from "@/components/UiV2";
@@ -269,7 +269,7 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
             ★ノートは 一覧を 眺めて 思い出すもので、★名簿とは ちがいます。 */}
       <H3>この中から さがす</H3>
       {/* ★★見本⑥は、★1枚の カードの 中の 1行です。★入力欄の 枠を 見せません。 */}
-      <div style={{ ...cardStyle, marginBottom: SPACE.cardGap }}>
+      <Card>
         <input
           type="search" value={q} onChange={(e) => setQ(e.target.value)}
           placeholder="🔍　ことばで さがす"
@@ -279,7 +279,7 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
             // ★★iOS で 画面が 寄らないよう、★16px を 下回らせません（globals.css）。
             fontSize: rem(16)
           }} />
-      </div>
+      </Card>
       </>
       )}
     </div>

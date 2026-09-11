@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { C } from "@/lib/tokens";
-import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
-import { Card, Pill, Note, Li, Warn, Back, Switch } from "@/components/UiV2";
+import { TYPE, SPACE, FONT_STACK, rem } from "@/lib/uiKit";
+import {
+  Card, Pill, Note, Li, Warn, Back, Switch, EmptyBox
+} from "@/components/UiV2";
 import { LAGS, ITEMS, defaultLagOf, judgingLagOf } from "@/lib/lagChoice";
 import { LINE_UP_NOTE } from "@/lib/lineUp";
 import { FIRST_DAY_ONLY_LABEL } from "@/lib/compareGroups";
@@ -38,7 +40,6 @@ import {
 // ============================================================================
 
 // ★★大きさ・間は lib/uiKit.js が 持ちます。★ここで 決めません（★design.zip B01・B02）。
-const card = { ...cardStyle, marginBottom: SPACE.cardGap };
 const small = { ...TYPE.note, lineHeight: 1.8 };
 
 /**
@@ -285,19 +286,12 @@ function Scatter({ data, itemKey }) {
  *   ★★何を すると 埋まるかを 1行 書きます（★見本の 決め）。
  */
 function Empty() {
-  return (
-    <>
-      <div style={{
-        ...cardStyle, textAlign: "center", padding: "26px 16px",
-        marginBottom: SPACE.cardGap
-      }}>
-        <div style={{ ...TYPE.body, marginBottom: 6 }}>まだ、くらべる ものが ありません。</div>
-        <div style={{ ...TYPE.usual, lineHeight: 1.9 }}>
-          記録を 10日ぶん 書くと、点が 2つの 山に 分かれて 出ます。
-        </div>
-      </div>
-    </>
-  );
+  // ★★共通の 部品です（★見本 stateBlock・550行）。★写しを 置きません。
+  //   ★★2026-09-11 まで、★ここで .card（実線）を 使って いました。
+  //     ★見本の 空の 姿は .empty（★破線）です。★枠の 形が ちがいました。
+  return <EmptyBox
+    title="まだ、くらべる ものが ありません。"
+    sub="記録を 10日ぶん 書くと、点が 2つの 山に 分かれて 出ます。" />;
 }
 
 /**
@@ -362,10 +356,9 @@ function OrderScreen({ order, onChange, onBack, message }) {
       {message ? (
         <p style={{ ...TYPE.usual, margin: `0 0 ${rem(9)}` }}>{message}</p>
       ) : null}
-      <div style={{
-        ...cardStyle, background: "#F6F1E4", borderColor: "#E8DFC8",
-        marginBottom: SPACE.cardGap
-      }}>
+      {/* ★★見本は .card に 色を 足した ものです（★S_kyou・kuraberu と 同じ 形）。
+          ★色は Warn と 同じ #F6F1E4／#E8DFC8 です。 */}
+      <Card style={{ background: "#F6F1E4", borderColor: "#E8DFC8" }}>
         <div style={{ ...TYPE.li, lineHeight: 1.8 }}>
           {ORDER_COPY.firstLabel}　{label(order[0] || "")}<br />
           <span style={{ ...TYPE.usual }}>{ORDER_COPY.firstNote}</span>
@@ -373,7 +366,7 @@ function OrderScreen({ order, onChange, onBack, message }) {
           {ORDER_COPY.restLabel}<br />
           <span style={{ ...TYPE.usual }}>{ORDER_COPY.restNote}</span>
         </div>
-      </div>
+      </Card>
       {/* ★★見本は .note を 畳んでいます（foldNotes）。 */}
       <Note fold>
         {ORDER_COPY.notes.map((line, i) => (
@@ -455,11 +448,9 @@ export default function CompareV2({ entries, dates, stacked, onStack }) {
 
       {/* ★★1文は、★3つの門（10日以上／差の大きさ／q）を 通ったときだけ 出ます。
           ★★通っていない 日は、★1文を 出しません。★下の 但し書きだけです。 */}
+      {/* ★★見本 kuraberu の 1文の カード（★border-color:#C9A0AB・background:#FFFCFC）。 */}
       {sentence ? (
-        <div style={{
-          ...cardStyle, borderColor: "#C9A0AB", background: "#FFFCFC",
-          marginBottom: SPACE.cardGap
-        }}>
+        <Card style={{ borderColor: "#C9A0AB", background: "#FFFCFC" }}>
           <div style={{ fontSize: rem(15), lineHeight: 1.85, fontWeight: 700, color: C.ink }}>
             {sentence}
           </div>
@@ -470,7 +461,7 @@ export default function CompareV2({ entries, dates, stacked, onStack }) {
             ／q = {verdict.q.toFixed(2)}<br />
             くらべた先は、あなた自身の 普段です
           </div>
-        </div>
+        </Card>
       ) : null}
 
       <Card style={{ padding: "11px 12px 9px" }}>
@@ -499,10 +490,7 @@ export default function CompareV2({ entries, dates, stacked, onStack }) {
 
       {/* ★★1文が 出ない 日の 姿（★見本）。★責める 言葉に しないこと。 */}
       {!sentence ? (
-        <div style={{
-          ...cardStyle, background: "#F6F1E4", borderColor: "#E8DFC8",
-          marginBottom: SPACE.cardGap
-        }}>
+        <Card style={{ background: "#F6F1E4", borderColor: "#E8DFC8" }}>
           <div style={{ fontSize: rem(12.5), lineHeight: 1.75, color: C.ink }}>
             まだ、はっきりした差は 見えていません。<br />
             <span style={{ ...TYPE.usual }}>
@@ -511,7 +499,7 @@ export default function CompareV2({ entries, dates, stacked, onStack }) {
                 : "この形のまま 続けてください。"}
             </span>
           </div>
-        </div>
+        </Card>
       ) : null}
 
       {/* ★★見本の box。★2行です。 */}

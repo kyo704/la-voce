@@ -6,9 +6,9 @@ import { conditionWord, sleepParts, usualOf, TODAY_NOTE } from "@/lib/todayCard"
 import TodayBand from "@/components/TodayBand";
 import {
   TYPE, SPACE, FONT_STACK, SHEEP_WIDTH_RATIO, SHEEP_WIDTH_RATIO_TEACHING,
-  sheepCssSize, cardStyle, primaryButtonStyle
+  sheepCssSize
 } from "@/lib/uiKit";
-import { ScreenHead, HeadRound, H3, Seg, Note } from "@/components/UiV2";
+import { ScreenHead, HeadRound, H3, Seg, Note, Card, Two, Btn } from "@/components/UiV2";
 import { VIEW_AS_MODES, viewAsWord } from "@/lib/viewAs";
 
 // ============================================================================
@@ -170,15 +170,15 @@ export default function HomeV2({
           ★★見本② には 描かれていませんが、★出さないと、
             ★教える日だけ ご自分の 記録が 見えなく なります。 */}
       {(cond || sleep) && (
-        <div style={{ display: "flex", gap: SPACE.cardGap, marginBottom: SPACE.cardGap }}>
-          <div style={{ ...cardStyle, flex: 1, minWidth: 0 }}>
+        <Two style={{ marginBottom: SPACE.cardGap }}>
+          <Card style={{ flex: 1, minWidth: 0 }}>
             <p style={TYPE.mini}>こえの調子</p>
             <p style={{ ...TYPE.big, margin: 0 }}>{cond || "—"}</p>
             {condUsual ? (
               <p style={{ ...TYPE.usual, marginTop: 2 }}>あなたのふだん　{condUsual}</p>
             ) : null}
-          </div>
-          <div style={{ ...cardStyle, flex: 1, minWidth: 0 }}>
+          </Card>
+          <Card style={{ flex: 1, minWidth: 0 }}>
             <p style={TYPE.mini}>ねむり</p>
             <p style={{ ...TYPE.big, margin: 0 }}>
               {sleep ? sleep.map((p, i) => (
@@ -196,14 +196,12 @@ export default function HomeV2({
                 あなたのふだん　{sleepUsual.map((p) => p.n + p.u).join("")}
               </p>
             ) : null}
-          </div>
-        </div>
+          </Card>
+        </Two>
       )}
 
       {/* ★★記録へ（★見本 .btn）。★いちばん大きい 押しどころです。 */}
-      <button type="button" onClick={onRecord} style={primaryButtonStyle}>
-        きょうを 記録する
-      </button>
+      <Btn onClick={onRecord}>きょうを 記録する</Btn>
 
       {/* ★★みつけたこと（★見本 .h3 ＋ .card）。
           ★★見出しは いつも 出します。★中身が 無くても 出します。

@@ -473,9 +473,101 @@ export function EmptyBox({ title, sub, style }) {
       border: `1px dashed ${C.line}`, borderRadius: RADIUS.card,
       marginBottom: SPACE.cardGap, ...style
     }}>
-      <div style={{ ...TYPE.li, color: C.ink }}>{title}</div>
-      {sub ? <Usu style={{ marginTop: 6 }}>{sub}</Usu> : null}
+      {/* ★見本 .empty .t{font-size:13.5px;line-height:1.8} */}
+      <div style={{ fontSize: rem(13.5), lineHeight: 1.8, color: C.ink }}>{title}</div>
+      {/* ★見本 .empty .s{font-size:11.5px;color:var(--ink2);margin-top:8px;line-height:1.8} */}
+      {sub ? (
+        <div style={{
+          fontSize: rem(11.5), color: C.inkSoft, marginTop: 8, lineHeight: 1.8
+        }}>{sub}</div>
+      ) : null}
     </div>
+  );
+}
+
+/**
+ * ★読み込み中の 灰色の 形（.sk）。
+ *
+ *   ★見本 .sk{background:#F0E9DA;border-radius:8px;height:13px;margin-bottom:8px}
+ *         .sk.b{height:64px;border-radius:12px}
+ *   ★★ぐるぐるを 使いません（★見本の 注記）。
+ *     「ぐるぐるを 使いません。灰色の 形を 置きます。0.3秒 未満なら 何も 出しません。」
+ */
+export function Skeleton({ w, big }) {
+  return (
+    <div style={{
+      background: "#F0E9DA", borderRadius: big ? 12 : 8,
+      height: big ? 64 : 13, marginBottom: 8,
+      width: w || "100%"
+    }} />
+  );
+}
+
+/**
+ * ★空・読み込み中・しくじった ときの 1枚（★見本 stateBlock・546〜556行）。
+ *
+ *   ★★見本は、★どの 画面も これを 先に 呼びます。
+ *     ★だから、★3つの 姿は 画面ごとに 書きません。★ここに 1つ 置きます。
+ *
+ *   ★★見本の 注記（★1文字も 変えないこと）
+ *     ★読み込み中「ぐるぐるを 使いません。灰色の 形を 置きます。0.3秒 未満なら
+ *                何も 出しません。」
+ *     ★空　　　　「白紙に しません。「まだ ありません」だけで 終わりません。
+ *                何を すると 埋まるかを 1行 書きます。」
+ *     ★失敗　　　「書いたものを、失敗で 消しません。これが 一番重い決まりです。」
+ *
+ *   ★★しくじった ときも、★書いた ものを 消しません。★これが いちばん 重い 決まりです。
+ *
+ *   @param state "空" | "読み込み中" | "失敗"
+ *   @param what  ★空の とき、★何が 無いか
+ *   @param how   ★空の とき、★何を すると 埋まるか
+ *   @param onRetry ★失敗の とき、★もう一度
+ */
+export const STATE_NOTE = Object.freeze({
+  "読み込み中": "ぐるぐるを 使いません。灰色の 形を 置きます。0.3秒 未満なら 何も 出しません。",
+  "空": "白紙に しません。「まだ ありません」だけで 終わりません。何を すると 埋まるかを 1行 書きます。",
+  "失敗": "書いたものを、失敗で 消しません。これが 一番重い決まりです。"
+});
+
+export const STATE_FAIL_LINES = Object.freeze([
+  "いま つながりません。",
+  "書いたものは、この端末に 残っています。"
+]);
+
+export function StateBlock({ state, what, how, onRetry }) {
+  if (state === "読み込み中") {
+    return (
+      <>
+        <Card>
+          <Skeleton w="45%" />
+          <Skeleton big />
+          <Skeleton w="70%" />
+          <Skeleton w="55%" />
+        </Card>
+        <Note fold>{STATE_NOTE["読み込み中"]}</Note>
+      </>
+    );
+  }
+  if (state === "失敗") {
+    return (
+      <>
+        <Card style={{ background: "#F6F1E4", borderColor: "#E8DFC8" }}>
+          <div style={{ fontSize: rem(13), lineHeight: 1.8, color: C.ink }}>
+            {STATE_FAIL_LINES[0]}<br />{STATE_FAIL_LINES[1]}
+          </div>
+          {onRetry ? (
+            <Btn ghost onClick={onRetry} style={{ marginTop: 10 }}>もう一度</Btn>
+          ) : null}
+        </Card>
+        <Note fold>{STATE_NOTE["失敗"]}</Note>
+      </>
+    );
+  }
+  return (
+    <>
+      <EmptyBox title={what} sub={how} />
+      <Note fold>{STATE_NOTE["空"]}</Note>
+    </>
   );
 }
 

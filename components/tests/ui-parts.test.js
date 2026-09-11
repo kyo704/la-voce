@@ -150,6 +150,31 @@ t(/<Back onClick/.test(codeOf("NotesV2.jsx")), "★ノート が Back を 使っ
 t(/<Input /.test(codeOf("NotesV2.jsx")), "★ノート が Input を 使って いる");
 t(/<TextArea /.test(codeOf("NotesV2.jsx")), "★ノート が TextArea を 使って いる");
 t(/<Btn ghost/.test(codeOf("LookBackV2.jsx")), "★ふりかえる が Btn を 使って いる");
+t(/<EmptyBox/.test(codeOf("LookBackV2.jsx")), "★ふりかえる が EmptyBox を 使って いる");
+t(/<EmptyBox/.test(codeOf("CompareV2.jsx")), "★くらべる が EmptyBox を 使って いる");
+t(/<Card>/.test(codeOf("RecordV2Head.jsx")), "★記録の 頭が Card を 使って いる");
+t(/<Warn>/.test(codeOf("RecordV2Head.jsx")), "★記録の 頭が Warn を 使って いる");
+t(/<Btn ghost onClick=\{onSkip\}/.test(codeOf("RecordV2Head.jsx")), "★記録の 頭が Btn を 使って いる");
+t(/<Card style=\{\{ flex: 1/.test(codeOf("HomeV2.jsx")), "★きょう が Card を 使って いる");
+
+console.log("\n⑥ 空・読み込み中・しくじった ときの 1枚");
+// ★★見本の stateBlock（546〜556行）を、★1か所で 持ちます。
+t(/export function StateBlock\(/.test(ui), "★StateBlock が ある");
+t(/export function Skeleton\(/.test(ui), "★Skeleton（灰色の 形）が ある");
+[
+  "ぐるぐるを 使いません。灰色の 形を 置きます。0.3秒 未満なら 何も 出しません。",
+  "白紙に しません。「まだ ありません」だけで 終わりません。何を すると 埋まるかを 1行 書きます。",
+  "書いたものを、失敗で 消しません。これが 一番重い決まりです。",
+  "いま つながりません。",
+  "書いたものは、この端末に 残っています。"
+].forEach((w) => {
+  t(M.includes(w), "★見本に「" + w.slice(0, 22) + "」");
+  t(ui.includes(w), "★実装に 同じ 字");
+});
+// ★★空の 枠は 破線です（★.empty）。★実線の カードでは ありません。
+t(/1px dashed/.test(ui), "★空の 枠は 破線");
+t(has(".sk", "background:#F0E9DA"), "★見本の 灰色の 形の 色");
+t(/"#F0E9DA"/.test(ui), "★実装も 同じ 色");
 
 console.log(ng === 0 ? `\n★すべて 通りました（${ok}）` : `\n★${ng} 件 落ちました`);
 process.exit(ng === 0 ? 0 : 1);

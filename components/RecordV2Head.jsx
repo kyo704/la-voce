@@ -7,7 +7,8 @@ import {
   markOf, fiveOf, mayUseQuickCondition,
   readThroatValue, readDekiValue
 } from "@/lib/recordV2";
-import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
+import { TYPE, SPACE, FONT_STACK, rem, cardStyle } from "@/lib/uiKit";
+import { Card, Warn, Note, Two, Btn, H3 } from "@/components/UiV2";
 
 // ============================================================================
 // 「記録」の 画面（A03）── ★動く見本の S_kiroku() の 形
@@ -41,14 +42,9 @@ import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
 //         components/tests/a03-kiroku.test.js
 // ============================================================================
 
-/** ★見本の .h3（★小見出し）。 */
-function H3({ children }) {
-  return (
-    <p style={{ ...TYPE.h3, margin: `${SPACE.h3Top}px 0 ${SPACE.h3Bottom}px` }}>
-      {children}
-    </p>
-  );
-}
+// ★★小見出し（.h3）は 共通の 部品です（★components/UiV2.jsx）。
+//   ★★2026-09-11 まで、★ここに 写しが ありました。
+//     ★同じ 形を 2か所に 置くと、★片方だけ 直ります。
 
 /**
  * ★3択（★見本の tri）。
@@ -59,7 +55,7 @@ function H3({ children }) {
  */
 function Tri({ title, choices, current, onPick }) {
   return (
-    <div style={{ ...cardStyle, marginBottom: SPACE.cardGap }}>
+    <Card>
       <div style={{ ...TYPE.mini, marginBottom: rem(9) }}>{title}</div>
       <div style={{ display: "flex", gap: 7 }}>
         {choices.map((w, i) => {
@@ -94,7 +90,7 @@ function Tri({ title, choices, current, onPick }) {
           );
         })}
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -156,25 +152,21 @@ export default function RecordV2Head({
         // ★★場面ごとに もう 書いてある日です。★3択を 出しません。
         //   ★出すと、★書いてあるものを 1つの答えで 上書きしてしまいます。
         //   ★★この姿は 見本に ありません。★見本が 描いていない 日の ことです。
-        <div style={{ ...cardStyle, marginBottom: SPACE.cardGap }}>
+        <Card>
           <p style={{ ...TYPE.body, margin: 0 }}>
             きょうは、場面ごとに 書いてくださっています。
           </p>
           <p style={{ ...TYPE.usual, margin: "6px 0 0" }}>
             直すときは、下の「本番以外で 声を使った時間」から どうぞ。
           </p>
-        </div>
+        </Card>
       )}
       {koeRow || null}
 
       {/* ★★見本 .warn。★「この2つは 聞きません」と 画面で 約束しています。
           ★★だから、★湿度の 入力欄を 門の中では 出していません。
             ★書いてあることと、★していることを、★合わせています。 */}
-      <div style={{
-        background: "#F6F1E4", border: "1px solid #E8DFC8", borderRadius: 12,
-        padding: `${rem(9)} ${rem(11)}`, marginBottom: rem(10),
-        ...TYPE.note
-      }}>{A03_ASK_NOTE}</div>
+      <Warn>{A03_ASK_NOTE}</Warn>
 
       {/* ══════ 足す（どれも 任意） ══════ */}
       <H3>{A03_HEADS.add}</H3>
@@ -183,31 +175,22 @@ export default function RecordV2Head({
       {/* ★★見本 .two。★左が「きょうは 書かない」、★右が「出す」。
           ★★出口の ない画面を 作らないこと。★答えられない日が あります。
           ★★とばした数を 数えません。★「未入力」も「完了度」も 出しません。 */}
-      <div style={{ display: "flex", gap: 9, marginTop: 12 }}>
-        <button type="button" onClick={onSkip}
-          style={{
-            flex: 1, minHeight: 48, borderRadius: 13,
-            border: `1px solid ${C.line}`, background: C.card, color: C.ink,
-            ...TYPE.li, fontFamily: FONT_STACK
-          }}>{A03_SKIP}</button>
-        <button type="button" onClick={onSubmit}
-          style={{
-            flex: 1, minHeight: 48, borderRadius: 13,
-            border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
-            background: C.curtain, color: "#FFFDF8",
-            ...TYPE.li, fontWeight: 700, fontFamily: FONT_STACK
-          }}>{A03_SUBMIT}</button>
-      </div>
+      <Two style={{ marginTop: 12 }}>
+        {/* ★★共通の 部品です（★見本 .btn.g ／ .btn）。★写しを 置きません。 */}
+        <Btn ghost onClick={onSkip} style={{ flex: 1 }}>{A03_SKIP}</Btn>
+        <Btn onClick={onSubmit} style={{ flex: 1 }}>{A03_SUBMIT}</Btn>
+      </Two>
 
       {/* ★★見本 .note の 3行。★1文字も 変えないこと。
           ★★ここは「出しません」と 書いてある 行です。
             ★★見張りが 禁じ手の 語を 探すときは、★この 3行を 先に 外すこと
               （★components/tests/_source.js の 但し書き外し）。 */}
-      <div style={{ ...TYPE.note, marginTop: rem(9) }}>
+      {/* ★★見本は .note を 畳んで います（foldNotes）。 */}
+      <Note fold>
         {A03_NOTES.map((line, i) => (
           <span key={i}>{i > 0 ? <br /> : null}{line}</span>
         ))}
-      </div>
+      </Note>
     </div>
   );
 }
