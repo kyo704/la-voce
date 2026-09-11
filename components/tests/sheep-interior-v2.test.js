@@ -193,6 +193,10 @@ function ok(name, cond, extra) {
     // ★★窓は2枚。★決めは lib から取ること。
     ok("★窓の2枚を、lib から取っている", /windowLayers\(placed\)/.test(layer));
     ok("★重ね順を、画面で決めていない", !/["']view["']\s*,\s*["']window["']/.test(layer));
+    ok("★窓の位置を保存している", /itemKey="window"/.test(layer)
+      && /onUpdatePosition\("interior", "window", left, top, "top"\)/.test(layer));
+    ok("★保存した家具位置を、既定位置より優先している",
+      /if \(movable && saved && typeof saved\.left === "number"\)/.test(layer));
 
     // ★★大きさが5種類なので、★1つずつ高さを見ること。
     ok("★絵の高さから、置き場所を出している", /const \[w, h\] = size;/.test(layer));
