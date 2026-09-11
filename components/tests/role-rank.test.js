@@ -72,8 +72,15 @@ console.log("\n=== ★SQL の形 ===");
   assertTrue(!/role <> 'admin' or/.test(sqlCode),
     "★名前で場合分けする古い形が残っていない（★コメントを外して検査）");
   assertTrue(/security definer/.test(sql), "再帰を避けるため SECURITY DEFINER");
-  assertTrue(/not exists \(select 1 from public\.memberships m where m\.org_id = org_id\)/.test(sql),
-    "★最初の1人（bootstrap）は通る");
+  // ★★2026-09-11、★この 式に 誤りが 見つかりました。
+  //   ★★`where m.org_id = org_id` は、★中の m にも org_id が ある ので、
+  //     ★m.org_id = m.org_id ＝ いつでも 真 に なって いました。
+  //   ★★つまり「最初の1人」の 条件は、★1度も 通りません でした。
+  //   ★直し　`m.org_id = memberships.org_id`
+  assertTrue(/not exists \(select 1 from public\.memberships m\s*\n?\s*where m\.org_id = memberships\.org_id\)/.test(sql),
+    "★最初の1人（bootstrap）の 条件に、★表の 名前が 付いて いる");
+  assertTrue(!/where m\.org_id = org_id\)/.test(sql),
+    "★いつでも 真に なる 形が 残って いない");
   assertTrue(/revoke all on function public\.my_org_role_rank\(uuid\) from public, anon/.test(sql),
     "★anon には渡さない");
 }
