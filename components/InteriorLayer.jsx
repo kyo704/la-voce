@@ -367,10 +367,14 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
         //   ★★掴めないように するだけです。★品は 消しません。
         //     ★★いま 掴めた ものが 掴めなく なるので、
         //       ★これは「見せ方を 変える」に あたります（★4分類の ②）。
-        const inSlot = slotOfItem(it) !== null;
+        // Furniture remains draggable even when the placement manifest gives it
+        // a suggested slot. Structural items (walls, windows, doors, and tiles)
+        // stay fixed to their room positions.
+        const fixedBySlot = slotOfItem(it) !== null
+          && !["furniture", "showa", "garden", "wallart"].includes(it.category);
         // ★★動かせるのは、★置きかたを直しているときだけです。
         //   ★ふだんは押せません（★羊を押すのと、まぎれないため）。
-        if (!inSlot && editMode && Draggable && onUpdatePosition) {
+        if (!fixedBySlot && editMode && Draggable && onUpdatePosition) {
           // ★★いまの位置を、★そのまま渡します。
           //   ★★動かした分を、★ここに足します。★指の位置を使いません。
           //     ★指の位置を保存していたので、★跳んでいました。
