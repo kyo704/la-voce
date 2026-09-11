@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sonnet Chat</title>
+  <style>
+    :root { color-scheme: light; --ink: #28231f; --muted: #786f67; --paper: #f7f1e8; --card: #fffdfa; --line: #dfd3c6; --accent: #9b4c35; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; color: var(--ink); background: radial-gradient(circle at top right, #ead7c5 0, transparent 35%), var(--paper); font-family: Georgia, "Hiragino Mincho ProN", serif; }
+    main { width: min(860px, 100%); min-height: 100vh; margin: 0 auto; padding: 40px 20px 24px; display: flex; flex-direction: column; }
+    header { padding: 0 4px 24px; }
+    h1 { margin: 0; font-size: clamp(28px, 6vw, 48px); font-weight: 500; letter-spacing: .02em; }
+    .subtitle { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
+    #messages { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 18px 0 24px; }
+    .message { max-width: 82%; padding: 14px 16px; border: 1px solid var(--line); border-radius: 4px 16px 16px 16px; background: var(--card); white-space: pre-wrap; line-height: 1.7; }
+    .message.user { align-self: flex-end; border-color: #c88f7d; border-radius: 16px 4px 16px 16px; background: #f0d9ce; }
+    .message.assistant { align-self: flex-start; }
+    .label { display: block; margin-bottom: 4px; color: var(--muted); font-size: 11px; }
+    form { display: flex; gap: 10px; align-items: flex-end; padding-top: 14px; border-top: 1px solid var(--line); }
+    textarea { flex: 1; min-height: 54px; max-height: 180px; resize: vertical; padding: 13px 14px; border: 1px solid var(--line); border-radius: 4px; background: var(--card); color: var(--ink); font: inherit; line-height: 1.5; }
+    button { min-height: 54px; padding: 0 22px; border: 0; border-radius: 4px; background: var(--accent); color: white; font: inherit; cursor: pointer; }
+    button:disabled { cursor: wait; opacity: .55; }
+    #status { min-height: 20px; margin: 8px 2px 0; color: var(--muted); font-size: 12px; }
+    @media (max-width: 520px) {
+      main { padding: 28px 14px 16px; }
+      .message { max-width: 92%; }
+      form { align-items: stretch; }
+      button { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Sonnet</h1>
+      <p class="subtitle">契約中の Anthropic API と対話します</p>
+    </header>
+
+    <section id="messages" aria-live="polite"></section>
+
+    <form id="chat-form">
+      <textarea id="prompt" placeholder="メッセージを書く" aria-label="メッセージ" required></textarea>
+      <button id="send" type="submit">送る</button>
+    </form>
+
+    <p id="status" role="status"></p>
+  </main>
+
+  <script>
+    const conversation = [];
+    const messages = document.querySelector("#messages");
+    const form = document.querySelector("#chat-form");
+    const prompt = document.querySelector("#prompt");
+    const send = document.querySelector("#send");
+    const status = document.querySelector("#status");
+
+    function renderMessage(role, content) {
+      const article = document.createElement("article");
+      article.className = `message ${role}`;
+
+      const label = document.createElement("span");
+      label.className = "label";
+      label.textContent = role === "user" ? "あなた" : "Sonnet";
+
+      article.append(label, document.createTextNode(content));
+      messages.append(article);
+      article.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const content = prompt.value.trim();
+      if (!content || send.disabled) return;
+
+      conversation.push({ role: "user", content });
+      renderMessage("user", content);
+
+      prompt.value = "";
+      send.disabled = true;
+      status.textContent = "考えています…";
+
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ messages: conversation })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "送信に失敗しました。");
+        }
+
+        conversation.push({ role: "assistant", content: data.message });
+        renderMessage("assistant", data.message);
+        status.textContent = "";
+      } catch (error) {
+        conversation.pop();
+        status.textContent = error.message;
+      } finally {
+        send.disabled = false;
+        prompt.focus();
+      }
+    });
+  </script>
+</body>
+</html>
