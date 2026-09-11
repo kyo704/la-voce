@@ -137,6 +137,54 @@ const sql = raw.split("\n").filter((l) => !/^\s*--/.test(l)).join("\n");
   t(/'owner',\s*'（移行）学校ぜんぶ',\s*900,[\s\S]{0,300}"post":true/.test(sql2),
     "★owner に post が ある（★mayTouchPosts の 3行目が 閉じる）");
 
+  console.log("\n⑪ 第3段の 本体（★狭める ことしか できない 形）");
+  const PB = path.join(__dirname, "..", "..", "supabase",
+    "2026-09-11-7-3-第3段の本体（できことを かつ で 足す）.sql");
+  const rawB = fs.readFileSync(PB, "utf8");
+  const sqlB = rawB.split("\n").filter((l) => !/^\s*--/.test(l)).join("\n");
+
+  // ★★足す のは「止める 決まり」だけ。★かつ（AND）で つながるので、★広がりません。
+  const creates = [...sqlB.matchAll(/create policy "([^"]+)"[\s\S]{0,200}?as restrictive/g)];
+  const allCreates = [...sqlB.matchAll(/create policy "([^"]+)"/g)];
+  t(allCreates.length > 0, "★決まりを 作って いる（" + allCreates.length + "）");
+  t(creates.length === allCreates.length,
+    "★作るのは 止める 決まりだけ（★" + creates.length + " / " + allCreates.length + "）");
+
+  // ★★いまの 決まりに 触れて いない こと。
+  t(!/drop policy if exists "memberships_update_role_management"/.test(sqlB),
+    "★いまの memberships の 決まりを 消して いない");
+  t(!/drop policy if exists "org_events_write_admin"/.test(sqlB),
+    "★いまの org_events の 決まりを 消して いない");
+  // ★★drop するのは、★自分が 作る ものだけ。
+  const drops = [...sqlB.matchAll(/drop policy if exists "([^"]+)"/g)].map((x) => x[1]);
+  const made = allCreates.map((x) => x[1]);
+  const strange = drops.filter((d) => !made.includes(d));
+  t(strange.length === 0,
+    "★消すのは 自分が 作る ものだけ" + (strange.length ? "（" + strange.join("／") + "）" : ""));
+
+  console.log("\n⑫ 読む ほうに かけて いないこと");
+  // ★★行事の 読みに かけると、★誰にも 見えなく なります。
+  t(!/on public\.org_events as restrictive for all/.test(sqlB),
+    "★org_events に for all を 使って いない");
+  t(!/on public\.org_events as restrictive for select/.test(sqlB),
+    "★org_events の 読みに かけて いない");
+  ["insert", "update", "delete"].forEach((c) => {
+    t(new RegExp("org_events as restrictive for " + c).test(sqlB),
+      "★書く（" + c + "）には かけて いる");
+  });
+
+  console.log("\n⑬ 決まりの 中に 条件を 書いて いないこと（★§7-3）");
+  // ★★「決まりごとに 条件を 書かないでください」。★has_can を 呼ぶだけ。
+  t(!/\brole\s*=\s*'/.test(sqlB), "★役割の 名前で くらべて いない");
+  t(!/is_org_owner_or_admin/.test(sqlB), "★古い 判じの 関数を 呼んで いない");
+  t(/public\.has_can\(org_id, 'post'\)/.test(sqlB), "★has_can を 呼んで いる（post）");
+  t(/public\.has_can\(org_id, 'gyoji'\)/.test(sqlB), "★has_can を 呼んで いる（gyoji）");
+  t(/public\.can_grant_post\(org_id, post_id\)/.test(sqlB), "★§7-4 を 呼んで いる");
+
+  console.log("\n⑭ 戻し方が 書いて あること");
+  t(/drop policy if exists "memberships_update_needs_can_post"/.test(rawB),
+    "★戻し方が ある");
+
   console.log(ng === 0 ? `\n★すべて 通りました（${ok}）` : `\n★${ng} 件 落ちました`);
   process.exit(ng === 0 ? 0 : 1);
 })();
