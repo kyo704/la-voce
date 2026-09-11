@@ -1,0 +1,10 @@
+★50通り-01-学長   owner    fde3d596-247b-4829-89d5-0b4eae9e8dc4
+★50通り-02-副学長 admin    a0738d03-4eb3-484d-8e88-ddd942c07fef
+★50通り-03-事務長 admin    0f0dc4dc-5164-453c-a63a-018fd25d1e49
+★50通り-04-学部長 admin    6b4b1787-6b15-4fc2-a36f-e442c9216a54
+★50通り-05-学科長 admin    528b6b9c-e7cf-4eca-a0e6-3a04fbcccfa5
+★50通り-06-教授   teacher  1f682aa2-bd95-4220-a129-737fd5dc9dc0
+★50通り-07-准教授 teacher  6254d567-0d91-4787-8ee9-57a92ac8f586
+★50通り-08-講師   teacher  cc803344-4671-40a9-bb6b-1dbcf5cd2eb7
+★50通り-09-課長   staff    1eb5a201-b886-409a-9ad9-f837a5c2cbd3
+★50通り-10-職員   staff    872efe1f-8b89-416d-aa78-29dc1c4eaa46
