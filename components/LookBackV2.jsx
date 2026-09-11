@@ -165,15 +165,15 @@ function QuietScreen({ reason, onGo }) {
           ★★畳むのは .note だけです。★図の 見方（見本の .usu）は 畳みません。
             ★★畳むと、★図の 色や 印の 意味が 分からなく なります。 */}
       <Note fold style={{ textAlign: "center", margin: "6px 0 16px" }}>
-        ならべる と さかのぼる は、いつでも 見られます。<br />
+        並べる と さかのぼる は、いつでも 見られます。<br />
         記録も、いつもどおり 書けます。
       </Note>
       <div style={{ display: "flex", gap: 9 }}>
         <button type="button" onClick={() => onGo("narabe")} style={{ ...ghostBtn, flex: 1 }}>
-          ならべる を見る
+          並べるを 見る
         </button>
         <button type="button" onClick={() => onGo("sakanobore")} style={{ ...ghostBtn, flex: 1 }}>
-          さかのぼる を見る
+          さかのぼるを 見る
         </button>
       </div>
     </>
@@ -182,6 +182,11 @@ function QuietScreen({ reason, onGo }) {
 
 export default function LookBackV2({ entries, todayISO, notOutDays, performanceDays, onOpenMore }) {
   const [tab, setTab] = useState("narabe");
+  // ★★くらべる の 中の「順番」は、★画面ごと 入れ替わります（★見本 push('順番')）。
+  //   ★★見本は 1枚の 画面です。★頭（ふりかえる）も 4つの 札も 出ません。
+  //   ★★2026-09-11、★比較画像で 入れ子に なっていました。
+  //     ★だから、★開いているかを ここで 持ちます。
+  const [orderOpen, setOrderOpen] = useState(false);
   // ★★並べるもの（★7つの うち 5つまで・1つは 残す）。
   //   ★★はじめは 見本の 5本です。
   const [laneKeys, setLaneKeys] = useState([...LANE_DEFAULT]);
@@ -203,6 +208,19 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
     color: on ? "#FFFDF8" : C.inkSoft, fontSize: rem(11.5)
   });
 
+  // ★★順番の 画面は、★1枚の 画面です（★見本 SC['順番']）。
+  //   ★★頭（ふりかえる）も、★4つの 札も 出しません。
+  //     ★見本の push() は、★画面を 積み替えます。★中に 入れません。
+  //   ★★戻る「‹ くらべる」は、★くらべる の 中に あります。
+  if (orderOpen && tab === "kuraberu") {
+    return (
+      <div>
+        <CompareV2 entries={entries} dates={dates}
+          stacked onStack={setOrderOpen} />
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* ★★見本 .hd。★ゴシック 17px。★明朝を 使いません（tokens.md §2）。
@@ -215,16 +233,18 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
         onOpenMore ? <HeadRound mark="⚙" label="もっとを開く" onClick={onOpenMore} /> : null
       } />
 
-      {/* ★★見本④の 但し書き（.warn）。★1文字も 変えないこと。
-          ★★飾りでは ありません。★この画面が 何を していないかの 断りです。 */}
-      <Warn>
-        <span style={{ whiteSpace: "pre-line" }}>{LINE_UP_NOTE}</span>
-      </Warn>
-
-      {/* ★★切替（★見本④⑤ .seg）。★4つを 横に 並べます。★流れません。 */}
+      {/* ★★切替（★見本④⑤ .seg）。★4つを 横に 並べます。★流れません。
+          ★★但し書き（.warn）は、★ここより 下です。
+            ★★見本の S_furi は、★hd → seg → 各タブ の 順で 組み立て、
+              ★.warn は narabe() と kuraberu() の 中に あります。
+            ★★さかのぼる と かぞえる には、★.warn が ありません。
+            ★★2026-09-11、★比較画像で 上下が 逆に なっていました。 */}
       <Seg activeKey={tab} onSelect={setTab}
         items={[
-          { key: "narabe", label: "ならべる" },
+          // ★★見本は 漢字の「並べる」です（★S_furi の seg）。
+          //   ★★2026-09-11、★比較画像で ひらがなに なっていました。
+          //   ★★鍵（narabe）は そのままです。★覚えた ものが 外れません。
+          { key: "narabe", label: "並べる" },
           { key: "sakanobore", label: "さかのぼる" },
           { key: "kuraberu", label: "くらべる" },
           { key: "kazoeru", label: "かぞえる" }
@@ -232,6 +252,9 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
 
       {tab === "narabe" && (
         <>
+          {/* ★★見本④の 但し書き（.warn）。★1文字も 変えないこと。
+              ★★飾りでは ありません。★この画面が 何を していないかの 断りです。 */}
+          <Warn>{LINE_UP_NOTE}</Warn>
           {/* ★★期間（★見本④ .pill）。★あいだ 6px・下に 11px。 */}
           <div style={{ display: "flex", gap: 6, marginBottom: 11 }}>
             {PERIODS.map((p) => (
@@ -374,7 +397,10 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
           const q = quietReason(todayISO, performanceDays);
           return <QuietScreen reason={q} onGo={setTab} />;
         }
-        return <CompareV2 entries={entries} dates={dates} />;
+        return (
+          <CompareV2 entries={entries} dates={dates}
+            stacked={orderOpen} onStack={setOrderOpen} />
+        );
       })()}
 
       {tab === "kazoeru" && (() => {

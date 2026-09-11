@@ -60,9 +60,21 @@ const SCREENS = [
   //   ★★Fable の 決まりの「every sheet / modal / collapsible opened」
   //     ★に あたる ぶんです。★一覧だけでは、★突き合わせに なりません。
   { key: "SC-稽古を書く", run: "go('ノート');S.note='稽古';draw();push('稽古を書く')" },
-  { key: "SH-newrep", run: "go('ノート');S.note='レパートリー';draw();openSheet('newrep')" },
-  { key: "SH-newnote", run: "go('ノート');S.note='稽古';draw();openSheet('newnote')" },
-  { key: "SH-notemeta", run: "go('ノート');S.note='稽古';draw();openSheet('notemeta')" },
+  // ★★2026-09-11、★見本の 中を 数え直しました（★坂本さんの ご指示）。
+  //   ★★＋を 押したとき 何が 出るかは、★見本の newNote()（★2756行）です。
+  //     ★レパートリー → push('曲を足す')　★1枚の 画面です。★シートでは ありません。
+  //     ★受診用　　　 → push('日を選ぶ')
+  //     ★稽古（と その他）→ push('稽古を書く')
+  //   ★★SH['newrep'] は 定義だけで、★どこからも 呼ばれて いません。
+  //     ★これまで SH-newrep として 撮っていましたが、★実装の ＋ と
+  //     ★くらべる 相手が ちがって いました。★SC['曲を足す'] が 正しい 相手です。
+  //   ★★SH['newnote'] も、★定義だけで 呼ばれて いません（★1235行 のみ）。
+  //     ★見本の 中に 入口が ありません。★撮る 相手が いません。
+  { key: "SC-曲を足す", run: "go('ノート');S.note='レパートリー';draw();push('曲を足す')" },
+  // ★★SH['notemeta'] は、★稽古の メモの 本文の 画面から 開きます（★1079行）。
+  //   ★SC['ノート本文'] の「日付と 先生」を 押します。
+  { key: "SH-notemeta", run: "go('ノート');S.note='稽古';draw();push('ノート本文',0);openSheet('notemeta')" },
+  { key: "SC-ノート本文", run: "go('ノート');S.note='稽古';draw();push('ノート本文',0)" },
   { key: "画面-ひつじ-ながめる", run: "go('ひつじ');S.hj='ながめる';draw()" },
   { key: "画面-ひつじ-おうち", run: "go('ひつじ');S.hj='おうち';draw()" },
   { key: "SH-したく", run: "go('ひつじ');S.hj='したく';S.k1='きるもの';S.k2='全部';draw();openSheet('したく')" },

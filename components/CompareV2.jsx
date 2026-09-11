@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
-import { Card, Pill, Note, H3, Li } from "@/components/UiV2";
+import { Card, Pill, Note, H3, Li, Warn } from "@/components/UiV2";
 import { LAGS, ITEMS, defaultLagOf, judgingLagOf } from "@/lib/lagChoice";
+import { LINE_UP_NOTE } from "@/lib/lineUp";
 import { FIRST_DAY_ONLY_LABEL } from "@/lib/compareGroups";
 import {
   buildCompare, compareVerdict, compareSentence,
@@ -326,14 +327,29 @@ function OrderScreen({ order, onChange, onBack, message }) {
   );
 }
 
-export default function CompareV2({ entries, dates }) {
+/**
+ * ★くらべる。
+ *
+ *   @param stacked      ★順番の 画面を 出しているか（★親が 持ちます）
+ *   @param onStack      ★順番の 画面を 開く／閉じる（★親へ 知らせます）
+ *
+ *   ★★2026-09-11、★順番の 画面が「ふりかえる」の 中に 入れ子で 出ていました。
+ *     ★★見本の push('順番') は、★画面ごと 入れ替えます。
+ *       ★頭（ふりかえる）も、★4つの 札も 出ません。
+ *     ★★だから、★開いているか どうかを 親（LookBackV2）が 持ちます。
+ *       ★親は、★開いている あいだ 頭と 札を 描きません。
+ */
+export default function CompareV2({ entries, dates, stacked, onStack }) {
   // ★★調べる ものは、★順番の 1番目です。★好きに 選べません（★見本）。
   //   ★見てから 選び直せると、★いちばん よく見える 組を 選べてしまいます。
   const known = ITEMS.map((x) => x.key);
   const [order, setOrder] = useState(() => readOrder(known));
   const [lag, setLag] = useState(null);
   const [firstDayOnly, setFirstDayOnly] = useState(true);
-  const [showOrder, setShowOrder] = useState(false);
+  // ★★開いているかは 親が 持ちます。★親が いない ときだけ 自分で 持ちます。
+  const [ownOrder, setOwnOrder] = useState(false);
+  const showOrder = onStack ? !!stacked : ownOrder;
+  const setShowOrder = onStack || setOwnOrder;
   const [orderMsg, setOrderMsg] = useState("");
   useEffect(() => { setOrder(readOrder(known)); /* eslint-disable-next-line */ }, []);
 
@@ -373,6 +389,13 @@ export default function CompareV2({ entries, dates }) {
 
   return (
     <div>
+      {/* ★★但し書き（.warn）。★見本の kuraberu() の 1行目です。
+          ★★2026-09-11、★比較画像で これが 画面の いちばん上に あり、
+            ★★切替の 札より 上に 出ていました。★見本では 下です。
+          ★★何も 出ていない ときは 出しません。
+            ★見本の kuraberu() は、★stateBlock で 先に 返します。 */}
+      <Warn>{LINE_UP_NOTE}</Warn>
+
       {/* ★★1文は、★3つの門（10日以上／差の大きさ／q）を 通ったときだけ 出ます。
           ★★通っていない 日は、★1文を 出しません。★下の 但し書きだけです。 */}
       {sentence ? (

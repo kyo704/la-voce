@@ -83,14 +83,17 @@ const SCREENS = [
   //     captured as separate frames」に あたる ぶんです。
   //   ★★一覧だけでは、★書く ときの 画面が 突き合わせから 抜けます。
   { key: "SC-稽古を書く", tab: "ノート", steps: ["稽古", "＋"] },
-  { key: "SH-newrep", tab: "ノート", steps: ["レパートリー", "＋"] },
-  // ★★SH-newnote は、★実装の 辿り方が まだ 分かっていません。
-  //   ★★見本では 稽古の 中の シートです。★実装では「稽古」＋「＋」を 押すと
-  //     ★SC-稽古を書く（★1枚の 画面）に なります。★別の シートが ありません。
-  //   ★★2026-09-11、★「連絡」＋「＋」で 撮っていました。★誤りです。
-  //     ★連絡の ＋ は、★Opus の 裁定（★案A）で 出さない ように しました。
-  //   ★★見つかるまで、★撮りません。★あるふりを しません。
-  //     ★くらべる 絵には「★ありません」と 出ます。
+  // ★★2026-09-11、★見本の 中を 数え直しました（★坂本さんの ご指示）。
+  //   ★★SH['newrep'] は 定義だけで、★見本の どこからも 呼ばれて いません。
+  //     ★レパートリーの ＋ は push('曲を足す')── ★1枚の 画面です。
+  //     ★だから、★くらべる 相手は SC['曲を足す'] です。
+  { key: "SC-曲を足す", tab: "ノート", steps: ["レパートリー", "＋"] },
+  // ★★SH['newnote'] は、★見本の 中に 入口が ありません（★定義だけ）。
+  //   ★くらべる 相手が いません。★撮りません。
+  // ★★SH['notemeta']（日付と 先生）は、★見本では 本文の 画面の シートです。
+  //   ★★実装では、★稽古の 書く 画面の 中の 欄です（★PRACTICE_FIELDS）。
+  //     ★シートに なっていません。★同じ 中身が、★別の 形で 出ます。
+  //   ★★だから、★実装側は「稽古を書く」の 画面を 相手に します。
   { key: "画面-ひつじ-ながめる", tab: "ひつじ", steps: ["ながめる"] },
   { key: "画面-ひつじ-おうち", tab: "ひつじ", steps: ["おうち"] },
   { key: "SH-したく", tab: "ひつじ", steps: ["したく"] },
@@ -193,6 +196,35 @@ async function capture(env) {
           });
           await page.waitForTimeout(500);
         }
+        // ★★下の 帯を、★ページの いちばん下へ 移してから 撮ります。
+        //
+        //   ★★2026-09-11、★比較画像で 帯が 画面の 途中に かぶさって いました。
+        //     ★★実機の 不具合では ありません。★撮り方の くせです。
+        //       ★position:fixed の ものは、★fullPage で 撮ると
+        //       ★最初の 1画面ぶんの 位置に 焼き付きます。
+        //     ★★実機では 下に 貼りついていて、★中身は 隠れません。
+        //       ★中身の 下に 56＋16px の 余白が あります
+        //       （★components/VocalTracker.jsx:13478）。
+        //   ★★見本の 側でも、★電話の 枠の 高さの 上限を 外して 撮っています。
+        //     ★同じ 扱いに そろえます。★配信する 画面は 変えません。
+        //   ★★隠れて いないことは、★下の ② で 数えて 確かめます。
+        const hidden = await page.evaluate((barH) => {
+          const nav = document.querySelector('nav[aria-label="画面を えらぶ"]');
+          if (!nav) return null;
+          // ★中身が 帯の 下に 潜っていないか、★動かす 前に 数えます。
+          const doc = document.documentElement;
+          const gap = doc.scrollHeight - (document.querySelector("main")
+            ? document.querySelector("main").getBoundingClientRect().bottom + window.scrollY
+            : doc.scrollHeight);
+          nav.style.position = "static";
+          nav.style.marginTop = "0";
+          return { gap: Math.round(gap), barH };
+        }, 56);
+        if (hidden && hidden.gap < 0) {
+          missed.push(sc.key + "@" + vp.name
+            + "  ★中身が 帯の 下に " + (-hidden.gap) + "px 潜っています");
+        }
+        await page.waitForTimeout(200);
         const file = path.join(FRAMES, sc.key + "@" + vp.name + ".png");
         await page.screenshot({ path: file, fullPage: true });
         // ★★絵と いっしょに、★画面の 中身も 書き出します（★2026-09-11）。
