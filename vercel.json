@@ -1,24 +1,17 @@
 {
+  "buildCommand": "npm ci && npm run build",
+  "devCommand": "npm run dev",
+  "framework": "nextjs",
+  "nodeVersion": "20.x",
+  "env": {
+    "NEXT_PUBLIC_SUPABASE_URL": "@next_public_supabase_url",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@next_public_supabase_anon_key"
+  },
   "crons": [
-    {
-      "path": "/api/cron/line-reminder",
-      "schedule": "0 22 * * *"
-    },
-    {
-      "path": "/api/cron/purge-deleted",
-      "schedule": "30 3 * * *"
-    },
-    {
-      "path": "/api/cron/keep-alive",
-      "schedule": "0 12 * * *"
-    },
-    {
-      "path": "/api/cron/purge-events",
-      "schedule": "0 6 * * *"
-    },
-    {
-      "path": "/api/cron/pricing-notice",
-      "schedule": "0 1 * * *"
-    }
+    {"path": "/api/cron/line-reminder", "schedule": "0 22 * * *"},
+    {"path": "/api/cron/purge-deleted", "schedule": "30 3 * * *"},
+    {"path": "/api/cron/keep-alive", "schedule": "0 12 * * *"},
+    {"path": "/api/cron/purge-events", "schedule": "0 6 * * *"},
+    {"path": "/api/cron/pricing-notice", "schedule": "0 1 * * *"}
   ]
 }
