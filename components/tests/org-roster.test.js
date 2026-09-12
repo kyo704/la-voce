@@ -72,9 +72,12 @@ function eq(a, b, label) {
   eq(m.monthlyFee(20), 12800, "★20人でも 下限");
   eq(m.monthlyFee(32), 12800, "★32人（12,800円ちょうど）");
   eq(m.monthlyFee(0), 0, "★0人なら 0円（★下限を 当てない）");
+  eq(m.monthlyFee(5), 0, "★5人以下なら 0円（★無料枠）");
+  eq(m.monthlyFee(6), 12800, "★6人から 下限");
+  eq(m.monthlyFee(500), 125000, "★500人 → 125,000円（★250円の段）");
   eq(m.monthlyFee(null), 0, "★人数が 無ければ 0円");
   eq(m.setupFee(49), 0, "★49人なら 初期費用 なし");
-  eq(m.setupFee(50), 50000, "★50人から 50,000円");
+  eq(m.setupFee(50), 100000, "★50人から 100,000円");
   eq(m.yearlyFee(52), 20800 * 10, "★年は 2か月ぶん 引く");
   eq(m.yen(20800), "20,800", "読みやすく");
 

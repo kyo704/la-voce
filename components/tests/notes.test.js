@@ -119,6 +119,12 @@ function eq(a, b, label) {
       `★これまでの「${k}」が 門の外に 残っている`);
   });
   t(!/NEXT_PUBLIC/.test(ui), "★画面じしんは 環境変数を 読まない");
+  t(ui.indexOf("この中から さがす") < ui.indexOf("list.map"),
+    "★見本どおり、検索欄を一覧より上に置く");
+  t(/まだ、稽古の メモが ありません。/.test(raw)
+    && /まだ、レパートリーが ありません。/.test(raw)
+    && /まだ、受診用の 1枚が ありません。/.test(raw),
+    "★種類ごとに空状態を案内する");
 
   console.log("\n=== ⑦ 台帳に 入っている ===");
   t(/table: "notes"/.test(readRaw("lib", "exportData.js")), "★書き出しに ある");

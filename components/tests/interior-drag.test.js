@@ -96,11 +96,19 @@ async function load(rel) {
   ok(/topField = "top"/.test(vt), "★受け取る側も、欄を選べる");
   ok(/\.\.\.base,/.test(vt), "★古い値を、消していない");
 
-  console.log("⑥ ★門の外の方には、1枚も出さないまま");
+  console.log("⑥ ★表示の切り替えで、動かしている位置を戻さない");
+  ok(/const previousPosRef = useRef\(pos\)/.test(layer),
+    "★保存前の位置を、前回の保存状態と比べる");
+  ok(/Object\.keys\(current\)\.forEach\(\(itemKey\) =>/.test(layer),
+    "★別の品物の保存では、一時位置を残す");
+  ok(/if \(JSON\.stringify\(before\) !== JSON\.stringify\(after\)\)/.test(layer),
+    "★その品物自身が保存されたときだけ、一時位置を確定する");
+
+  console.log("⑦ ★門の外の方には、1枚も出さないまま");
   ok(/if \(!wardrobeOn\) return null;/.test(readRaw("components/InteriorLayer.jsx")),
     "門の外では、新しい内装を出さない");
 
-  console.log("⑦ ★遅れの大きさ（★直す前は、どれだけ動かなかったか）");
+  console.log("⑧ ★遅れの大きさ（★直す前は、どれだけ動かなかったか）");
   // ★★22％の品物では、★指の10％に対して 2.2％。★4.5倍の遅れでした。
   const wpct = 22, finger = 10;
   ok(Math.abs(finger / (finger / 100 * wpct) - 4.5454) < 0.01,

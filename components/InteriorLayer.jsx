@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fallbackToPng } from "@/lib/imageFormat";
 import { slotOfItem, slotByKey } from "@/lib/roomSlots";
 import {
@@ -116,8 +116,21 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
   const pos = (equipped && equipped.interiorPositions) || {};
   const effectivePos = { ...pos, ...localPositions };
   const persistedPositionKey = JSON.stringify(pos);
+  const previousPosRef = useRef(pos);
   useEffect(() => {
-    setLocalPositions({});
+    const previousPos = previousPosRef.current;
+    setLocalPositions((current) => {
+      const next = { ...current };
+      Object.keys(current).forEach((itemKey) => {
+        const before = previousPos[itemKey];
+        const after = pos[itemKey];
+        if (JSON.stringify(before) !== JSON.stringify(after)) {
+          delete next[itemKey];
+        }
+      });
+      return next;
+    });
+    previousPosRef.current = pos;
   }, [persistedPositionKey]);
   // ★★門の外の方には、★1枚も出しません。
   //   ★ここで止めます。★呼ぶ側に任せないこと。

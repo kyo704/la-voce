@@ -305,9 +305,15 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
           {laneMessage ? <Note>{laneMessage}</Note> : null}
 
           {/* ★★同じ 日付の 軸に、★上下に 並べます。★これが この画面の 仕事です。 */}
-          <Card>
-            <LineUpChart entries={entries} dates={dates} keys={laneKeys} />
-          </Card>
+          {dates.some((date) => entries && entries[date]) ? (
+            <Card>
+              <LineUpChart entries={entries} dates={dates} keys={laneKeys} />
+            </Card>
+          ) : (
+            <EmptyBox
+              title="まだ、並べる ものが ありません。"
+              sub="記録を 2日ぶん 書くと、ここに 縦に 並びはじめます。" />
+          )}
 
           {/* ★★何の 帯かを 書きます。★色の 意味を 当てさせないこと。 */}
           <Note>

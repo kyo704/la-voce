@@ -201,6 +201,25 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
       <Seg activeKey={kind} onSelect={setKind}
         items={NOTE_KINDS.map((k) => ({ key: k.key, label: k.label }))} />
 
+      {/* ★★一覧より先に置きます（★見本⑥）。
+          ★★書いたものを探す入口を、最初に見つけられるようにします。 */}
+      {isRenrakuKind(kind) ? null : (
+        <>
+          <H3>この中から さがす</H3>
+          <Card>
+            <input
+              type="search" value={q} onChange={(e) => setQ(e.target.value)}
+              placeholder="🔍　ことばで さがす"
+              style={{
+                width: "100%", minHeight: SPACE.tapMin, padding: 0,
+                border: "none", background: "transparent", color: C.ink,
+                // ★★iOS で画面が寄らないよう、16pxを下回らせません。
+                fontSize: rem(16)
+              }} />
+          </Card>
+        </>
+      )}
+
       {/* ★★「連絡」の 帯だけ、★ノートでは なく 連絡板が 開きます（★見本④）。
           ★★タブを 増やさずに 置くための 形です。
           ★何を 出すかは lib/notes.js が 決めます。★ここでは 決めません。 */}
@@ -215,9 +234,30 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
         q.trim() ? (
           <Card><p style={{ ...small, margin: 0 }}>見つかりませんでした。</p></Card>
         ) : (
-          <Card style={{ minHeight: 44 }}
-            onClick={() => { setEditing({ id: null, body: "" }); setError(""); }}>
-            <p style={{ ...small, margin: 0 }}>＋から、思いついたことを書けます。</p>
+          <Card style={{ minHeight: 44, cursor: "pointer" }}
+            role="button"
+            tabIndex={0}
+            onClick={() => {
+              if (isPractice(kind)) {
+                setEditing({ id: null, body: "", ...emptyPractice(todayISO) });
+              } else {
+                setEditing({ id: null, body: "" });
+              }
+              setError("");
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") e.currentTarget.click();
+            }}>
+            <p style={{ ...TYPE.body, margin: 0 }}>
+              {isPractice(kind)
+                ? "まだ、稽古の メモが ありません。"
+                : kind === "repertoire"
+                  ? "まだ、レパートリーが ありません。"
+                  : "まだ、受診用の 1枚が ありません。"}
+            </p>
+            <p style={{ ...small, margin: "4px 0 0" }}>
+              右上の ＋ から、書きはじめられます。
+            </p>
           </Card>
         )
       ) : (
@@ -260,28 +300,6 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
         ))
       )}
 
-      {/* ★★連絡の 帯では、★ノートの さがすを 出しません。
-          ★★探す 相手が ちがいます。★連絡は 連絡の 中で 探します。 */}
-      {isRenrakuKind(kind) ? null : (
-      <>
-      {/* ★★この中から さがす（★見本⑥）。★一覧の あとです。
-          ★★見本⑥では、★さがすが 下に あります。★そのとおりに します。
-            ★ノートは 一覧を 眺めて 思い出すもので、★名簿とは ちがいます。 */}
-      <H3>この中から さがす</H3>
-      {/* ★★見本⑥は、★1枚の カードの 中の 1行です。★入力欄の 枠を 見せません。 */}
-      <Card>
-        <input
-          type="search" value={q} onChange={(e) => setQ(e.target.value)}
-          placeholder="🔍　ことばで さがす"
-          style={{
-            width: "100%", minHeight: SPACE.tapMin, padding: 0,
-            border: "none", background: "transparent", color: C.ink,
-            // ★★iOS で 画面が 寄らないよう、★16px を 下回らせません（globals.css）。
-            fontSize: rem(16)
-          }} />
-      </Card>
-      </>
-      )}
     </div>
   );
 }

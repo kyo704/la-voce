@@ -125,6 +125,9 @@ function eq(a, b, label) {
     "★「くらべる」は、帯と 中身が そろっている");
   t(inSeg("kazoeru") === /<CountV2/.test(uiCode),
     "★「かぞえる」も、帯と 中身が そろっている");
+  t(/まだ、並べる ものが ありません。/.test(uiCode)
+    && /記録を 2日ぶん 書くと、ここに 縦に 並びはじめます。/.test(uiCode),
+    "★記録が無いときは、空の図ではなく案内を出す");
   // ★★4つ とも そろったこと（★見本④⑤の 切替のとおり）
   ["narabe", "sakanobore", "kuraberu", "kazoeru"].forEach((k) => {
     t(inSeg(k), `★帯に「${k}」が ある`);
