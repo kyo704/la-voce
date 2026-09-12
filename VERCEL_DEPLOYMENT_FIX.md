@@ -1,102 +1,84 @@
-# Vercel デプロイ修正（2026-09-12）
+# Vercel デプロイ修正（2026-09-12 第2版・根本対応）
 
-## ✅ 修正内容
+## 🔴 実際に起きていた2つの障害
 
-### 問題
-GitHub Actions の `Deploy to Vercel` ステップが失敗していた。
-
-### 原因
-`.github/workflows/deploy.yml` の設定が不完全だった：
-- `VERCEL_TOKEN` が `env` セクションに定義されていない
-- デプロイステップが `secrets` を直接参照していた
-
-### 修正内容
-```yaml
-# 修正前
-env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  # VERCEL_TOKEN なし ❌
-
-# 修正後
-env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}  # ✅ 追加
+### 障害1：`vercel/action@v5` は存在しない
+```
+GitHub上に `vercel/action` というActionは存在しない（404）
+→ .github/workflows/deploy.yml の全runが「Set up job」の時点で失敗
 ```
 
-デプロイステップ：
-```yaml
-# 修正前
-with:
-  vercel-token: ${{ secrets.VERCEL_TOKEN }}
-  vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-  vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+**Vercel公式ドキュメントの結論：**
+> Vercelは GitHubリポジトリをインポートするだけで、push毎に自動デプロイする
+> 「ビルトインGit連携」を持っている。ほとんどのチームにパイプラインは不要。
 
-# 修正後
-with:
-  vercel-token: ${{ env.VERCEL_TOKEN }}       # ✅ env から参照
-  vercel-org-id: ${{ env.VERCEL_ORG_ID }}
-  vercel-project-id: ${{ env.VERCEL_PROJECT_ID }}
+→ **`.github/workflows/deploy.yml` を削除**し、Vercelのビルトイン連携を使う方式に変更。
+
+### 障害2：`テストとビルド`（ci.yml）が新規テストで失敗
+```
+components/tests/email-restrictions.test.js を Jest形式（describe/it/expect）
+で書いていた。
+このリポジトリの test は Jest ではなく、素の Node.js で
+components/tests/*.test.js を1本ずつ実行する自作の仕組み
+→ describe is not defined でクラッシュ
 ```
 
-### コミット
+さらに、参照先の `lib/emailRestrictions.js` / `lib/emailAuthGuard.js` を
+`module.exports`（CommonJS）で書いていたが、このリポジトリの lib/ は
+すべて `export function`（ESM）形式。テストは動的importでソースを読むため、
+ESM以外は動かない。
+
+**修正：**
+- `lib/emailRestrictions.js` を ESM に書き直し
+- `lib/emailAuthGuard.js` も ESM に書き直し
+- `email-restrictions.test.js` を、他のテストと同じ自作アサーション形式に書き直し
+
+---
+
+## ✅ 修正後の確認結果（ローカル）
+
 ```
-ff03d76 fix: github actions vercel deployment config - add VERCEL_TOKEN to env
+node components/tests/email-restrictions.test.js → 20件 通過 / 0件 不合格
+npm test（全291+テスト）→ 失敗0件
+npm run build → 正常終了（既存の警告のみ、新規エラーなし）
 ```
 
 ---
 
-## 🔧 次のステップ
+## 🚀 Vercel デプロイの正しい手順（GitHub Actions不要）
 
-### 必須確認：GitHub Secrets の設定
-
-デプロイを成功させるには、以下5つの GitHub Secrets が必要です：
-
-**URL:**
+### ステップ1：Vercelにプロジェクトをインポート
 ```
-https://github.com/kyo704/la-voce/settings/secrets/actions
+1. https://vercel.com/new
+2. Import Git Repository → kyo704/la-voce を選択
+3. Framework Preset: Next.js（自動検出）
+4. Environment Variables に設定：
+   - NEXT_PUBLIC_SUPABASE_URL
+   - NEXT_PUBLIC_SUPABASE_ANON_KEY
+5. Deploy をクリック
 ```
 
-**必須の環境変数：**
-- [ ] `VERCEL_TOKEN` - Vercel API トークン
-- [ ] `VERCEL_ORG_ID` - Vercel Organization ID
-- [ ] `VERCEL_PROJECT_ID` - Vercel Project ID
-- [ ] `NEXT_PUBLIC_SUPABASE_URL` - Supabase プロジェクト URL
-- [ ] `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Supabase Anon Key
+以後は push するたびに Vercel が自動でビルド・デプロイします。
+GitHub Actions は不要（既存の ci.yml・backup.yml はテスト・控え用として残す）。
 
-**取得方法：**
-
-#### VERCEL_TOKEN
-1. https://vercel.com/account/tokens
-2. Create Token → Full Access
-3. コピー
-
-#### VERCEL_ORG_ID
-1. https://vercel.com/account/settings
-2. Team ID をコピー
-
-#### VERCEL_PROJECT_ID
-1. https://vercel.com/dashboard
-2. la-voce > Settings > General
-3. Project ID をコピー
-
-#### Supabase情報
-1. https://app.supabase.com/
-2. Settings > API
-3. Project URL / anon public をコピー
+### ステップ2：以後の運用
+```bash
+git push origin main
+# → Vercel が自動検知して本番デプロイ
+```
 
 ---
 
-## ✅ 設定後の動作フロー
+## 📋 今回の変更ファイル
 
-1. GitHub Secrets すべて設定 ✅
-2. `git push origin main` を実行
-3. GitHub Actions が自動トリガー
-4. テスト実行 → ビルド実行 → Vercel へデプロイ
-5. Vercel ダッシュボードで `green ✓` を確認
-6. `https://la-voce.vercel.app/` で本番アクセス確認
+| ファイル | 変更内容 |
+|---|---|
+| `.github/workflows/deploy.yml` | 削除（存在しないActionを参照していたため） |
+| `lib/emailRestrictions.js` | CommonJS → ESM に書き直し |
+| `lib/emailAuthGuard.js` | CommonJS → ESM に書き直し |
+| `components/tests/email-restrictions.test.js` | 自作アサーション形式に書き直し |
 
 ---
 
-**実行準備：** GitHub Secrets の5つが設定されるまで、再度のデプロイは失敗します。
+**更新日：** 2026年9月12日  
+**状態：** ローカルでテスト・ビルド確認済み。Vercelインポート待ち。
