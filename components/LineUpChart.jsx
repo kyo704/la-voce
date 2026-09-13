@@ -10,48 +10,75 @@ function valueOf(entry, key) {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
+function horizontalValue(value, min = 1, max = 3) {
+  if (value == null) return 0;
+  return [40, 65, 88][Math.max(0, Math.min(2, Math.round(value) - min))] || ((value - min) / Math.max(1, max - min)) * 100;
+}
+
 function Metric({ title, dates, entries, field, tint = C.curtain, min = 1, max = 3, sleep = false }) {
   const values = dates.map((date) => valueOf(entries[date], field));
   const filled = values.filter((value) => value != null);
   if (filled.length === 0) return null;
-  const height = 56;
+  const horizontal = dates.length <= 28;
+  const height = sleep ? 72 : 64;
   return (
-    <div className="card" style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14, marginBottom: 9 }}>
+    <div className="card" style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14, marginBottom: 9, minHeight: sleep ? 126 : horizontal ? 170 : 126, boxSizing: "border-box" }}>
       <div style={{ ...TYPE.mini, marginBottom: 8 }}>{title}</div>
-      <div style={{ display: "flex", alignItems: "flex-end", gap: dates.length <= 14 ? 4 : 2, height }}>
-        {values.map((value, index) => (
-          <i key={dates[index]} title={value == null ? mmdd(dates[index]) : `${mmdd(dates[index])} ${value}`}
-            style={{
-              flex: 1, display: "block", minWidth: 0, height: value == null ? 0 : `${Math.max(10, ((value - min) / Math.max(1, max - min)) * 100)}%`,
-              background: tint, opacity: value == null ? 0 : 0.45 + ((value - min) / Math.max(1, max - min)) * 0.45,
-              borderRadius: "2px 2px 0 0"
-            }} />
-        ))}
-      </div>
-      <div style={{ ...TYPE.usual, textAlign: "right", marginTop: 5 }}>
-        {sleep ? "4〜9時間" : dates.length <= 14 ? dates.filter((_, i) => i % 3 === 0).map((d) => mmdd(d)).join("　") : "1本＝1日"}
-      </div>
+      {horizontal && !sleep ? (
+        <div style={{ display: "grid", gap: 4 }}>
+          {values.map((value, index) => (
+            <div key={dates[index]} style={{ display: "flex", alignItems: "center", gap: 6, minHeight: 20 }}>
+              <s style={{ width: 31, ...TYPE.usual, textDecoration: "none", color: C.inkSoft, flexShrink: 0 }}>
+                {dates.length <= 14 || index % 7 === 0 ? mmdd(dates[index]) : ""}
+              </s>
+              <span style={{ flex: 1, height: 12, background: value == null ? "transparent" : tint, opacity: value == null ? 0 : 0.45 + ((value - min) / Math.max(1, max - min)) * 0.15, borderRadius: 2, width: `${horizontalValue(value, min, max)}%` }} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div style={{ display: "flex", alignItems: "flex-end", gap: dates.length <= 14 ? 4 : 2, height }}>
+          {values.map((value, index) => (
+            <i key={dates[index]} title={value == null ? mmdd(dates[index]) : `${mmdd(dates[index])} ${value}`}
+              style={{
+                flex: 1, display: "block", minWidth: 0, height: value == null ? 0 : `${Math.max(10, ((value - min) / Math.max(1, max - min)) * 100)}%`,
+                background: tint, opacity: value == null ? 0 : 0.45 + ((value - min) / Math.max(1, max - min)) * 0.45,
+                borderRadius: "2px 2px 0 0"
+              }} />
+          ))}
+        </div>
+      )}
+      <div style={{ ...TYPE.usual, textAlign: "right", marginTop: 7 }}>{sleep ? "4〜9時間" : !horizontal ? "1本＝1日" : ""}</div>
     </div>
   );
 }
 
 function Concerns({ dates, entries }) {
-  const marks = dates.map((date) => Array.isArray(entries[date]?.throatSymptoms) && entries[date].throatSymptoms.length > 0);
-  if (!marks.some(Boolean)) return null;
+  const symptoms = ["のどが いがらっぽい", "せきばらい", "のどが 渇く", "鼻が つまる", "肩が こわばる", "胃が もたれる"];
+  const rows = symptoms.map((symptom) => {
+    const days = dates.map((date) => (entries[date]?.throatSymptoms || []).includes(symptom));
+    return { symptom, days, count: days.filter(Boolean).length };
+  });
+  if (!rows.some((row) => row.count > 0)) return null;
+  const horizontal = dates.length <= 28;
   return (
-    <div className="card" style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 }}>
+    <div className="card" style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14, minHeight: 218, boxSizing: "border-box" }}>
       <div style={{ ...TYPE.mini, marginBottom: 9 }}>気になったこと</div>
       <div style={{ display: "grid", gap: 6 }}>
-        {["気になったこと"].map((label) => (
-          <div key={label} style={{ display: "flex", alignItems: "center", gap: 7 }}>
-            <span style={{ minWidth: 92, ...TYPE.usual }}>{label}</span>
-            <span style={{ display: "flex", flex: 1, gap: 2 }}>
-              {marks.map((on, i) => <i key={dates[i]} style={{ flex: 1, height: 14, borderRadius: 2, background: on ? C.curtain : C.line2, opacity: on ? 0.7 : 1 }} />)}
+        {rows.map(({ symptom, days, count }) => {
+          const weeks = [];
+          for (let i = 0; i < days.length; i += 7) weeks.push(days.slice(i, i + 7).filter(Boolean).length);
+          return (
+          <div key={symptom} style={{ display: "flex", alignItems: "center", gap: 7, minHeight: 18 }}>
+            <span style={{ width: 112, ...TYPE.usual, flexShrink: 0 }}>{symptom}</span>
+            <span style={{ display: "flex", flex: 1, gap: 2, alignItems: "center", height: horizontal ? 14 : 32 }}>
+              {(horizontal ? days : weeks).map((amount, i) => <i key={i} style={{ flex: 1, height: horizontal ? 14 : `${amount ? 30 + (amount / 7) * 70 : 8}%`, minHeight: horizontal ? 14 : 3, borderRadius: 2, background: amount ? C.curtain : C.line2, opacity: amount ? 0.7 : 1 }} />)}
             </span>
+            <span style={{ width: 30, textAlign: "right", ...TYPE.usual, flexShrink: 0 }}>{count}日</span>
           </div>
-        ))}
+          );
+        })}
       </div>
-      <div style={{ ...TYPE.usual, marginTop: 7 }}>●＝その日 あった</div>
+      <div style={{ ...TYPE.usual, marginTop: 7 }}>{horizontal ? "●＝その日 あった" : "1本＝1週間。高さ＝その週に あった日数"}</div>
     </div>
   );
 }
