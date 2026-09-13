@@ -172,7 +172,12 @@ input[type="number"] {
 .practice-editor .practice-pills .pill {
   min-height: 0 !important;
   padding: 5px 9px;
-  font-size: 10.5px;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: clamp(9px, 2.7vw, 10.5px);
 }
 
 .practice-editor .practice-field-lesson_on input {

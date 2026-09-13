@@ -422,14 +422,7 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
               if (e.key === "Enter" || e.key === " ") e.currentTarget.click();
             }}>
             <p style={{ ...TYPE.body, margin: 0 }}>
-              {isPractice(kind)
-                ? "まだ、稽古の メモが ありません。"
-                : kind === "repertoire"
-                  ? "まだ、レパートリーが ありません。"
-                  : "まだ、受診用の 1枚が ありません。"}
-            </p>
-            <p style={{ ...small, margin: "4px 0 0" }}>
-              右上の ＋ から、書きはじめられます。
+              {isPractice(kind) ? "まだ、稽古の メモが ありません。" : kind === "repertoire" ? "曲を 足す" : "まだ、受診用の 1枚が ありません。"}
             </p>
           </Card>
         )
@@ -443,7 +436,7 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
           //     （★lib/notes.js の titleOf）。★見え方だけ 変えました。
           //   ★★狭い画面の 話です。★広い画面（決まりB）は 名前と 日付だけで、
           //     ★本文の 抜粋を 出しません。★あちらは 人に 見られる 画面です。
-          <Card key={n.id} className={isPractice(kind) ? "nt" : kind === "repertoire" ? "rep" : "nt"} style={{ minHeight: 44 }}
+          <Card key={`${n.id || n.noteId || "repertoire"}-${n.name || n.body || ""}`} className={isPractice(kind) ? "nt" : kind === "repertoire" ? "rep" : "nt"} style={{ minHeight: 44 }}
             onClick={() => {
               // ★★開くときも、★6つの 欄を 一緒に 持ってきます。
               setEditing(isPractice(kind)
@@ -469,7 +462,7 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
                   ★言われたことの 1行目を 見出しに します。 */}
               {isPractice(kind)
                 ? (practiceTitle(n) || "（まだ何も書いていません）")
-                : (titleOf(n.body) || "（まだ何も書いていません）")}
+                : (titleOf(n.body) || n.name || "（まだ何も書いていません）")}
               {isPractice(kind)
                 ? (practiceSub(n) ? <><br />{practiceSub(n)}</> : null)
                 : (previewOf(n.body) ? <><br />{previewOf(n.body)}</> : null)}
@@ -481,11 +474,12 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
           </Card>
         ))}
         {kind === "repertoire" ? (
-          <Note fold>
-            レパートリーは <b>曲の 台帳</b>です。稽古の メモとは 別の 項目です。<br />
-            判定欄は ありません。「様子」は ご自分で 選ぶ段階です。<br />
-            足した曲は、<b>稽古の「みた 曲」</b>にも 選べるようになります。
-          </Note>
+          <Card onClick={() => {
+            setEditing({ id: null, body: "", repertoire_name: "", composer: "", position_in: "", language: "イタリア語", high_note: "", low_note: "", status: "はじめたばかり", performance: "" });
+            setError("");
+          }} style={{ minHeight: 44, cursor: "pointer" }}>
+            <p style={{ ...TYPE.body, margin: 0 }}>曲を 足す</p>
+          </Card>
         ) : null}
         </>
       )}

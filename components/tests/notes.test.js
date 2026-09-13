@@ -122,7 +122,7 @@ function eq(a, b, label) {
   t(ui.indexOf("この中から さがす") < Math.max(ui.indexOf("list.map"), ui.indexOf("rows.map")),
     "★見本どおり、検索欄を一覧より上に置く");
   t(/まだ、稽古の メモが ありません。/.test(raw)
-    && /まだ、レパートリーが ありません。/.test(raw)
+    && /曲を 足す/.test(raw)
     && /まだ、受診用の 1枚が ありません。/.test(raw),
     "★種類ごとに空状態を案内する");
 
