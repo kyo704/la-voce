@@ -13155,6 +13155,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             //     ★★別の場所を 調べてしまいます。★実際に そうなりました。
             //     ★★この注記に 目印の字を 書くことでも 起きます。★書きません。
             const SCHEDULE_ROLES = ["teacher", "owner", "admin"];
+            // ★★2026-09-13、★ここで 運営モードが 落ちて いました。
+            //   ★実機の ご報告 ──「Cannot access 'l' before initialization」。
+            //   ★★下の「日程」の 枝が、★この 並びを 使って います。
+            //     ★★けれど 宣言は、★その 枝の **あと**に ありました。
+            //     ★★const は 巻き上がりません（★時間的な 死角・TDZ）。
+            //       ★だから「日程」を 開いた 方は、★誰でも 落ちました。
+            //       ★★課長だから では ありません。★役職と 関わりが ありません。
+            //   ★★`no-undef` は これを 見つけられません。★名前は 在るからです。
+            //     ★見張り ops-render-order.test.js を 足しました。
+            const opsMembers = orgMembers[opsOrgId] || [];
             if (tabKey === "schedule") {
               // ★★日程（★見本②⑥⑧⑨⑩）。★1つの日程を、3つの 見せ方で。
               //   ★★渡すのは 1つの 並びだけです。★見せ方は あちらが 決めます。
@@ -13174,7 +13184,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   onPickDate={(d) => setOpsDate(d)} />
               );
             }
-            const opsMembers = orgMembers[opsOrgId] || [];
             const opsLessons = orgLessons[opsOrgId] || [];
             const opsEventList = orgEvents[opsOrgId] || [];
             // ★★行事の 対象の 人数。★いまは 名簿ぜんぶを 対象と します。
