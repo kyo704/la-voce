@@ -12296,6 +12296,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setDOverrideChoice(null);
     setShowTessituraAccordion(false);
     setDuplicateWarning(null);
+    // ★★ここで true を返さないと、呼び出し元（onAddRepertoire）は
+    //   ★undefined を「失敗」と受け取り、書き込みが 成功していても
+    //     ★「まだ足せていません」と 出ていました（2026-09-12）。
+    return true;
   }
 
   // ==========================================================================
@@ -12519,7 +12523,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setMergeInProgress(false);
   }
 
-  async function handleDeleteRepertoire(targetName) {
+  // ★★同じ名前の 関数が 2つ ありました（★2026-09-12・発見）。
+  //   ★★あとに 書いた こちらが 勝つため、★NotesV2 の
+  //     onDeleteRepertoire にも、★この（一覧画面むけの）ほうが
+  //     つながっていました。★「この曲を消す」「もどる」が
+  //     おかしく見えていた 一因です。★名前を分けます。
+  async function handleDeleteRepertoireFromList(targetName) {
     const from = (targetName || "").trim();
     if (!from) return;
     setMergeInProgress(true);
@@ -17446,7 +17455,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     language: extra.singingLanguage || "イタリア語",
                     highNote: extra.topNote || "",
                     lowNote: extra.bottomNote || extra.tessituraNote || "",
-                    status: extra.status || "はじめたばかり"
+                    status: extra.status || "はじめたばかり",
+                    // ★見本「記録 38日」。★曲ごとに 記録の あった 日数（★repertoireUsageCounts）。
+                    recordDays: repertoireUsageCounts[repertoireKey(name)]?.count || 0
                   };
                 })}
                 teacherOptions={[...new Set([
@@ -17770,7 +17781,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                     <div className="flex gap-2">
                                       <button type="button" disabled={mergeInProgress}
                                         onClick={async () => {
-                                          await handleDeleteRepertoire(it.name);
+                                          await handleDeleteRepertoireFromList(it.name);
                                           setRepConfirmDelete(null);
                                           setRepMenu(null);
                                         }}
@@ -20266,7 +20277,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               <div className="flex gap-1.5">
                                 <button type="button" disabled={mergeInProgress}
                                   onClick={async () => {
-                                    await handleDeleteRepertoire(editRepertoireName);
+                                    await handleDeleteRepertoireFromList(editRepertoireName);
                                     setEditRepertoireName(""); setRenameRepertoireTo(""); setDeleteRepertoireConfirming(false);
                                   }}
                                   className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: mergeInProgress ? 0.6 : 1 }}>

@@ -57,6 +57,11 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
   const [clinicGenerated, setClinicGenerated] = useState(false);
   const timer = useRef(null);
   const boxRef = useRef(null);
+  // ★★見本の レパートリー一覧 ── ★曲を 開くと、★右上の … から 直す・消す。
+  //   ★直す は 既存の 編集画面を そのまま 開きます（★同じ 入口）。
+  //   ★消す は 確認を 1回だけ 出してから 送ります。
+  const [repMenuOpen, setRepMenuOpen] = useState(null);
+  const [repDeleteConfirm, setRepDeleteConfirm] = useState(null);
 
   const list = visibleNotes(notes, kind, isPractice(kind) ? q : "");
   const noteRows = list.map((n) => n);
@@ -422,13 +427,73 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
               if (e.key === "Enter" || e.key === " ") e.currentTarget.click();
             }}>
             <p style={{ ...TYPE.body, margin: 0 }}>
-              {isPractice(kind) ? "まだ、稽古の メモが ありません。" : kind === "repertoire" ? "曲を 足す" : "まだ、受診用の 1枚が ありません。"}
+              {isPractice(kind) ? "まだ、稽古の メモが ありません。" : kind === "repertoire" ? "＋ 曲を 足す" : "まだ、受診用の 1枚が ありません。"}
             </p>
           </Card>
         )
       ) : (
         <>
         {rows.map((n) => (
+          kind === "repertoire" ? (
+            // ★★見本の レパートリー一覧 ── ★曲名（太字）／作曲家　役／ようす／記録N日。
+            //   ★末尾に「＋ 曲を 足す」を 常に 1つだけ 置きます（★下に あります）。
+            <Card key={`${n.noteId || "repertoire"}-${n.name || ""}`} className="rep" style={{ minHeight: 44 }}>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                <div style={{ ...TYPE.body, lineHeight: 1.8, flex: 1, minWidth: 0 }}>
+                  <b>{n.name || "（曲名 まだ）"}</b>
+                  {(n.composer || n.positionIn) ? (
+                    <><br />{n.composer}{n.composer && n.positionIn ? "　" : ""}{n.positionIn}</>
+                  ) : null}
+                  {n.status ? <><br />{n.status}</> : null}
+                  <br />記録 {n.recordDays || 0}日
+                </div>
+                <button type="button"
+                  aria-label={(n.name || "曲") + "を 直す・消す"}
+                  onClick={() => {
+                    setRepMenuOpen(repMenuOpen === n.name ? null : n.name);
+                    setRepDeleteConfirm(null);
+                  }}
+                  style={{
+                    minWidth: 44, minHeight: 44, margin: "-10px -6px",
+                    background: "transparent", border: "none",
+                    color: C.inkSoft, fontSize: 15
+                  }}>…</button>
+              </div>
+              {repMenuOpen === n.name ? (
+                <div className="rounded-xl" style={{ background: C.paper, marginTop: 8, padding: 10 }}>
+                  {repDeleteConfirm === n.name ? (
+                    <>
+                      <p style={{ ...small, marginBottom: 8 }}>
+                        「{n.name}」を 消します。もとに 戻せません。
+                      </p>
+                      <Two>
+                        <Btn ghost onClick={() => setRepDeleteConfirm(null)}>やめる</Btn>
+                        <Btn onClick={async () => {
+                          const ok = onDeleteRepertoire ? await onDeleteRepertoire(n.name, n.noteId) : false;
+                          if (ok !== false) { setRepMenuOpen(null); setRepDeleteConfirm(null); }
+                        }}>消す</Btn>
+                      </Two>
+                    </>
+                  ) : (
+                    <Two>
+                      <Btn ghost onClick={() => {
+                        setEditing({
+                          id: n.noteId || null, body: n.name || "",
+                          repertoire_name: n.name || "",
+                          composer: n.composer || "", position_in: n.positionIn || "",
+                          language: n.language || "イタリア語", high_note: n.highNote || "",
+                          low_note: n.lowNote || "", status: n.status || "はじめたばかり",
+                          performance: n.performance || ""
+                        });
+                        setError(""); setRepMenuOpen(null);
+                      }}>直す</Btn>
+                      <Btn onClick={() => setRepDeleteConfirm(n.name)}>消す</Btn>
+                    </Two>
+                  )}
+                </div>
+              ) : null}
+            </Card>
+          ) : (
           // ★★見本⑥の 1枚 ── ★本文が 2行、★その下に 日付（.usu）。
           //   ★★見出しと 抜粋を 別の 大きさに していました。
           //     ★見本は 同じ 大きさの 本文 2行です。★そちらに 合わせます。
@@ -436,7 +501,7 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
           //     （★lib/notes.js の titleOf）。★見え方だけ 変えました。
           //   ★★狭い画面の 話です。★広い画面（決まりB）は 名前と 日付だけで、
           //     ★本文の 抜粋を 出しません。★あちらは 人に 見られる 画面です。
-          <Card key={`${n.id || n.noteId || "repertoire"}-${n.name || n.body || ""}`} className={isPractice(kind) ? "nt" : kind === "repertoire" ? "rep" : "nt"} style={{ minHeight: 44 }}
+          <Card key={n.id || `note-${n.body || ""}`} className="nt" style={{ minHeight: 44 }}
             onClick={() => {
               // ★★開くときも、★6つの 欄を 一緒に 持ってきます。
               setEditing(isPractice(kind)
@@ -445,15 +510,6 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
                   ...emptyPractice(todayISO), ...pickFields(n),
                   lesson_on: n.lesson_on || todayISO || null
                 }
-                : kind === "repertoire"
-                  ? {
-                    id: n.noteId || null, body: n.name || n.body || "",
-                    repertoire_name: n.name || n.body || "",
-                    composer: n.composer || "", position_in: n.positionIn || "",
-                    language: n.language || "イタリア語", high_note: n.highNote || "",
-                    low_note: n.lowNote || "", status: n.status || "はじめたばかり",
-                    performance: n.performance || ""
-                  }
                 : { id: n.id, body: n.body || "" });
               setError("");
             }}>
@@ -462,7 +518,7 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
                   ★言われたことの 1行目を 見出しに します。 */}
               {isPractice(kind)
                 ? (practiceTitle(n) || "（まだ何も書いていません）")
-                : (titleOf(n.body) || n.name || "（まだ何も書いていません）")}
+                : (titleOf(n.body) || "（まだ何も書いていません）")}
               {isPractice(kind)
                 ? (practiceSub(n) ? <><br />{practiceSub(n)}</> : null)
                 : (previewOf(n.body) ? <><br />{previewOf(n.body)}</> : null)}
@@ -472,14 +528,20 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
               {n.source_label ? `　${n.source_label}` : ""}
             </div>
           </Card>
+          )
         ))}
         {kind === "repertoire" ? (
-          <Card onClick={() => {
-            setEditing({ id: null, body: "", repertoire_name: "", composer: "", position_in: "", language: "イタリア語", high_note: "", low_note: "", status: "はじめたばかり", performance: "" });
-            setError("");
-          }} style={{ minHeight: 44, cursor: "pointer" }}>
-            <p style={{ ...TYPE.body, margin: 0 }}>曲を 足す</p>
-          </Card>
+          <>
+            <Card onClick={() => {
+              setEditing({ id: null, body: "", repertoire_name: "", composer: "", position_in: "", language: "イタリア語", high_note: "", low_note: "", status: "はじめたばかり", performance: "" });
+              setError("");
+            }} style={{ minHeight: 44, cursor: "pointer" }}>
+              <p style={{ ...TYPE.body, margin: 0 }}>＋ 曲を 足す</p>
+            </Card>
+            <Note>
+              曲を 開くと、右上の … から 直す・消す ことが できます。
+            </Note>
+          </>
         ) : null}
         </>
       )}
