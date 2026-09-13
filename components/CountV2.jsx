@@ -2,8 +2,8 @@
 
 import { C } from "@/lib/tokens";
 import { TYPE, rem } from "@/lib/uiKit";
-import { H3, Card, Kv, Note } from "@/components/UiV2";
-import { USUAL_ROWS, usualOf, writtenDays, histogramOf, marksPerWeek } from "@/lib/countView";
+import { H3, Card, Kv, Note, Li } from "@/components/UiV2";
+import { USUAL_ROWS, usualOf, writtenDays, histogramOf } from "@/lib/countView";
 
 // ============================================================================
 // かぞえる（見本⑭ ／ 2026-09-09）
@@ -57,7 +57,6 @@ export default function CountV2({ entries, dates, todayISO }) {
     .filter((r) => r.got);
   const written = writtenDays(entries, dates);
   const hist = histogramOf(entries, dates, "dinnerToBed");
-  const marks = marksPerWeek(entries, dates);
   const maxCount = hist ? Math.max(...hist.bars.map((b) => b.count), 1) : 1;
 
   return (
@@ -70,7 +69,7 @@ export default function CountV2({ entries, dates, todayISO }) {
             {rows.map((r) => (
               <Kv key={r.key} right={word(r.unit, r.got.value)}>{r.label}</Kv>
             ))}
-            <Kv right={`${written}日`} last>書いた 日</Kv>
+            <Kv right={`${written}日`} last>書いた日</Kv>
           </Card>
           {/* ★★見本⑭の 但し書き。★1文字も 変えないこと。
               ★★これが、★この画面の 芯です。★よそと くらべません。 */}
@@ -107,21 +106,26 @@ export default function CountV2({ entries, dates, todayISO }) {
         </Card>
       ) : null}
 
-      {/* ★★印の 1週間あたり（★見本⑭）。★7日に 満たなければ 出しません。 */}
-      {marks ? (
-        <Card>
-          <div style={{ ...TYPE.mini, marginBottom: 7 }}>印の 1週間あたり</div>
-          {marks.rows.map((r, i) => (
-            <Kv key={r.key} right={`${r.perWeek}回`} last={i === marks.rows.length - 1}>
-              {r.label}
-            </Kv>
-          ))}
-        </Card>
-      ) : null}
+      <H3>詳しく 数える</H3>
+      <Card>
+        {[
+          "本番の 前の 3日だけ",
+          "出づらかった日の 普段",
+          "曜日ごとの 普段"
+        ].map((label, i) => (
+          <Li key={label} right={<span style={{ color: C.inkSoft }}>調べる</span>} last={i === 2}>
+            {label}
+          </Li>
+        ))}
+      </Card>
+      <Note>
+        有料のものを 隠しません。見せて、押せなくします。押したときだけ 案内へ。<br />
+        札は「調べる」の 1語だけ。催促しません。
+      </Note>
 
       {/* ★★何も 出せない期間。★空の枠を 置かず、★何が あれば 出るかだけ 置きます。
           ★★「データ不足」と 書きません。★足りないことを 責めに しません。 */}
-      {rows.length === 0 && !hist && !marks ? (
+      {rows.length === 0 && !hist ? (
         <Card>
           <p style={{ ...TYPE.li, color: C.inkSoft, lineHeight: 1.9, margin: 0 }}>
             この期間に、数えられる記録がまだありません。
