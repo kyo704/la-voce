@@ -85,6 +85,20 @@ export default function LookBackPanel({ dates, entries, fields }) {
         ))}
       </div>
 
+      {!legacy && open ? (
+        <Card style={{ borderColor: "#C9A0AB", background: "#FFFCFC", padding: "11px 13px" }}>
+          <div style={{ ...TYPE.mini }}>この日</div>
+          <div style={{ ...TYPE.h3, fontSize: 14, margin: "5px 0 0", color: C.ink }}>
+            声の 出来　{lookBackValue((entries || {})[open], "voice")}
+          </div>
+          <div style={{ ...TYPE.usual, marginTop: 4 }}>
+            のど {lookBackValue((entries || {})[open], "nodo")}／
+            睡眠 {lookBackValue((entries || {})[open], "sleep")}／
+            声を使った {lookBackValue((entries || {})[open], "sing")}
+          </div>
+        </Card>
+      ) : null}
+
       {/* ★★古い 呼び方 ── ★これまでどおり。 */}
       {legacy && open && !hasAnything(sections) && (
         <Card>
