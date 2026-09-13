@@ -10025,25 +10025,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     await fetchNotes();
   }
 
-  async function handleDeleteRepertoire(name, noteId) {
-    const key = String(name || "").trim();
-    if (!key) return false;
-    const supabase = createClient();
-    const { error } = await supabase.from("repertoire_tessitura")
-      .delete().eq("user_id", userId).eq("repertoire_name", key);
-    if (error) {
-      console.error("レパートリーを消せませんでした:", error);
-      return false;
-    }
-    if (noteId) await handleDeleteNote(noteId);
-    setRepertoireTessituraMap((prev) => {
-      const next = { ...prev };
-      delete next[key];
-      return next;
-    });
-    return true;
-  }
-
   // ★★積んだものを、★まとめて送ります（★§7-1）。
   //   ★★送れたものだけを、★列から外します。★送れなかったものは、残します。
   //   ★冪等キーが同じものは、★もう一度送っても1回になります。
@@ -12540,14 +12521,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setMergeInProgress(false);
   }
 
-  // ★★同じ名前の 関数が 2つ ありました（★2026-09-12・発見）。
-  //   ★★あとに 書いた こちらが 勝つため、★NotesV2 の
-  //     onDeleteRepertoire にも、★この（一覧画面むけの）ほうが
-  //     つながっていました。★「この曲を消す」「もどる」が
-  //     おかしく見えていた 一因です。★名前を分けます。
-  async function handleDeleteRepertoireFromList(targetName) {
+  // ★★レパートリーを 消します。
+  //   ★曲名だけを 外します。練習の 分数・活動種別は そのまま 残ります（★見本 SH['repDel']）。
+  //   ★repertoire_tessitura, role_master, project_master, notes（曲目）からも 外します。
+  async function handleDeleteRepertoire(targetName, noteId) {
     const from = (targetName || "").trim();
-    if (!from) return;
+    if (!from) return false;
     setMergeInProgress(true);
     setMergeResult("");
     const affectedDates = findAffectedDatesForRepertoire(from);
@@ -12572,16 +12551,29 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       if (delError) throw delError;
       await supabase.from("role_master").delete().eq("user_id", userId).eq("role_name", from);
       await supabase.from("project_master").delete().eq("user_id", userId).eq("project_name", from);
+      if (noteId) {
+        await handleDeleteNote(noteId);
+      } else {
+        const matchingNotes = (myNotes || []).filter(
+          (n) => n.kind === "repertoire" && isSameRepertoire(n.body, from) && !n.deleted_at
+        );
+        for (const n of matchingNotes) {
+          if (n.id) await handleDeleteNote(n.id);
+        }
+      }
       setEntries((prev) => ({ ...prev, ...updatedEntries }));
       setRepertoireTessituraMap((prev) => { const n = { ...prev }; delete n[from]; return n; });
       setRoleMasterMap((prev) => { const n = { ...prev }; delete n[from]; return n; });
       setProjectMasterMap((prev) => { const n = { ...prev }; delete n[from]; return n; });
       setMergeResult(`「${from}」を消しました（${affectedDates.length}日ぶんの記録から曲名を外しました。練習の分数はそのまま残っています）。`);
+      return true;
     } catch (err) {
       console.error("曲目の削除に失敗しました:", err);
       setMergeResult("消せませんでした。もう一度お試しください。");
+      return false;
+    } finally {
+      setMergeInProgress(false);
     }
-    setMergeInProgress(false);
   }
 
   // lavoce-曲目複数化パッチ.md §2.0/§2.1: 活動ブロック・曲目アイテムの操作関数
@@ -17813,7 +17805,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                     <div className="flex gap-2">
                                       <button type="button" disabled={mergeInProgress}
                                         onClick={async () => {
-                                          await handleDeleteRepertoireFromList(it.name);
+                                          await handleDeleteRepertoire(it.name);
                                           setRepConfirmDelete(null);
                                           setRepMenu(null);
                                         }}
@@ -20309,7 +20301,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               <div className="flex gap-1.5">
                                 <button type="button" disabled={mergeInProgress}
                                   onClick={async () => {
-                                    await handleDeleteRepertoireFromList(editRepertoireName);
+                                    await handleDeleteRepertoire(editRepertoireName);
                                     setEditRepertoireName(""); setRenameRepertoireTo(""); setDeleteRepertoireConfirming(false);
                                   }}
                                   className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: mergeInProgress ? 0.6 : 1 }}>
