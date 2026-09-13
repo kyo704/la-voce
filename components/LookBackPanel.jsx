@@ -4,7 +4,7 @@ import { useState } from "react";
 import { C, LEVEL_COLORS } from "@/lib/tokens";
 import { buildLookBack, hasAnything, lookBackThree, lookBackValue, LOOK_BACK_ROWS, LOOK_BACK_NOTE } from "@/lib/lookBack";
 import { TYPE, SPACE, cardStyle } from "@/lib/uiKit";
-import { H3, Card, Pill, Li, Note } from "@/components/UiV2";
+import { H3, Card, Li, Note } from "@/components/UiV2";
 
 // ============================================================================
 // C1 ── 出なかった日の、前3日をひらく（2026-09-08）
@@ -68,27 +68,22 @@ export default function LookBackPanel({ dates, entries, fields }) {
         出なかった日を選ぶと、その前の3日に書いたことが そのまま出ます。
       </Note>
 
-      {/* ★★日を えらびます。★新しい順です。 */}
-      <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 10 }}>
+      {/* ★★日を えらびます。★見本の白い一覧です。 */}
+      <div style={{ marginBottom: 10 }}>
         {list.map((d) => (
-          <Pill key={d} on={open === d} onClick={() => setOpen(open === d ? null : d)}>
-            {d.slice(5).replace("-", "/")}
-          </Pill>
+          <Card key={d} onClick={() => setOpen(open === d ? null : d)}
+            style={{ padding: "10px 12px", borderColor: open === d ? LEVEL_COLORS[0] : undefined }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span>
+                <b style={{ ...TYPE.usual, color: C.ink }}>{open === d ? "選んだ日　" : ""}{dayLabel(d)}</b>
+                <br />
+                <span style={{ ...TYPE.mini }}>{open === d ? "出づらい と書いた日" : "前の3日を 見る"}</span>
+              </span>
+              <span style={{ ...TYPE.usual, color: C.inkSoft }}>前の3日 ›</span>
+            </div>
+          </Card>
         ))}
       </div>
-
-      {/* ★★えらんだ日（★見本の「この日」）。★枠の 色を すこし 変えます。 */}
-      {open ? (
-        <Card style={{ borderColor: LEVEL_COLORS[0] }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <b style={{ fontSize: 14, color: C.ink }}>{dayLabel(open)}</b>
-            <span aria-hidden="true" style={{
-              width: 9, height: 9, borderRadius: "50%", background: C.curtain, display: "inline-block"
-            }} />
-          </div>
-          <div style={{ ...TYPE.mini, marginTop: 4 }}>出づらい と書いた日</div>
-        </Card>
-      ) : null}
 
       {/* ★★古い 呼び方 ── ★これまでどおり。 */}
       {legacy && open && !hasAnything(sections) && (
@@ -121,9 +116,11 @@ export default function LookBackPanel({ dates, entries, fields }) {
           ★★書いていない ものは「—」です。★行ごと 消しません。
             ★「聞いていない」と「無かった」は 別の ことです。 */}
       {!legacy && three.map((d) => (
-        <div key={d.key}>
-          <H3>{d.label}　{dayLabel(d.date)}</H3>
-          <Card>
+        <Card key={d.key} style={{ padding: 0, overflow: "hidden" }}>
+          <div style={{ padding: "11px 13px", borderBottom: `1px solid ${C.line}` }}>
+            <b style={{ ...TYPE.usual, color: C.ink }}>{d.label}　{dayLabel(d.date)}</b>
+          </div>
+          <div style={{ padding: "0 12px" }}>
             {LOOK_BACK_ROWS.map((r, i) => (
               // ★★色を 変えません。★値の 大小で 色を 変えないこと。
               <Li key={r.key} last={i === LOOK_BACK_ROWS.length - 1}
@@ -131,8 +128,8 @@ export default function LookBackPanel({ dates, entries, fields }) {
                 {r.label}
               </Li>
             ))}
-          </Card>
-        </div>
+          </div>
+        </Card>
       ))}
 
       {/* ★★下の 3行（★見本の .note）。★1文字も 変えないこと。 */}
