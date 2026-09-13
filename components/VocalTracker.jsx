@@ -2897,14 +2897,23 @@ const PERF_COLUMNS = "id, performed_on, kind, label";
 async function fetchPerformances(supabase, userId) {
   const q = (cols) => supabase.from("performances").select(cols)
     .eq("user_id", userId).order("performed_on", { ascending: false }).limit(60);
-  const withWords = await q(PERF_COLUMNS + ", morning_words");
-  if (!withWords.error) return withWords;
-  // ★★列が 無い ときだけ 取り直します。★ほかの 誤りは そのまま 返します。
+  // ★★repertoire_name は「どの曲の 本番か」を 結ぶ 列（見本 SC['曲']「本番」）。
+  //   ★列が 無い 環境も あるので、★ある 分だけ 段々に 落として 取り直します。
   //   ★PostgREST は、★知らない 列を 42703 で 返します。
-  const code = String(withWords.error.code || "");
-  const msg = String(withWords.error.message || "");
-  if (code !== "42703" && !/morning_words/.test(msg)) return withWords;
-  return q(PERF_COLUMNS);
+  const attempts = [
+    PERF_COLUMNS + ", repertoire_name, morning_words",
+    PERF_COLUMNS + ", repertoire_name",
+    PERF_COLUMNS + ", morning_words",
+    PERF_COLUMNS
+  ];
+  let last = null;
+  for (const cols of attempts) {
+    const res = await q(cols);
+    last = res;
+    if (!res.error) return res;
+    if (String(res.error.code || "") !== "42703") return res;
+  }
+  return last;
 }
 
 function formatDateForGoogleCalendar(date) {
@@ -7917,9 +7926,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★ただし、旧列に「曲A、曲B」と入っている行は1件の「曲A、曲B」になります。
   //   「、」で割らないこと。曲名そのものに「、」が入りうるためです。
   //   直す前と同じ鍵なので、これまでより悪くはなりません。
+  // ★★見本 SC['曲']「はじめて 記録した日」「この曲を さらった日の 声の調子」
+  //   の 材料も、★同じ 集計で 持ちます。★別に 数え直すと、鍵の 決めが
+  //   ずれる おそれが あるためです（★repertoireKey は ここでしか 使わない）。
   const repertoireUsageCounts = useMemo(() => {
     const counts = {};
-    Object.values(entries).forEach((e) => {
+    Object.keys(entries).sort().forEach((date) => {
+      const e = entries[date];
       const seenToday = new Set();
       (e.activities || []).forEach((a) => {
         (a.items || []).forEach((it) => {
@@ -7931,8 +7944,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           const k = repertoireKey(raw);
           if (!k || seenToday.has(k)) return;
           seenToday.add(k);
-          if (!counts[k]) counts[k] = { count: 0, displayName: raw };
+          if (!counts[k]) counts[k] = { count: 0, displayName: raw, firstDate: date, voiceHistory: [] };
           counts[k].count += 1;
+          if (!counts[k].firstDate || date < counts[k].firstDate) counts[k].firstDate = date;
+          if (typeof e.voiceQuality === "number") {
+            counts[k].voiceHistory.push({ date, voiceQuality: e.voiceQuality });
+          }
         });
       });
     });
@@ -17447,6 +17464,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 ])].filter(Boolean).map((name) => {
                   const note = myNotes.find((n) => n.kind === "repertoire" && n.body === name && !n.deleted_at);
                   const extra = repertoireTessituraMap[name] || {};
+                  const usage = repertoireUsageCounts[repertoireKey(name)] || {};
+                  // ★見本 SC['曲']「この曲を さらった日の 声の調子」。
+                  //   ★直近14日の うち、この曲を さらった日だけを 最大8件（新しい順）。
+                  const voiceHistory = [...(usage.voiceHistory || [])]
+                    .sort((a, b) => String(b.date).localeCompare(String(a.date)))
+                    .slice(0, 8)
+                    .reverse();
                   return {
                     name,
                     noteId: note && note.id,
@@ -17457,7 +17481,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     lowNote: extra.bottomNote || extra.tessituraNote || "",
                     status: extra.status || "はじめたばかり",
                     // ★見本「記録 38日」。★曲ごとに 記録の あった 日数（★repertoireUsageCounts）。
-                    recordDays: repertoireUsageCounts[repertoireKey(name)]?.count || 0
+                    recordDays: usage.count || 0,
+                    // ★見本「はじめて 記録した日」。
+                    firstDate: usage.firstDate || null,
+                    voiceHistory,
+                    // ★見本「本番」。★曲と 結んだ 本番（performances.repertoire_name）の 回数。
+                    performanceCount: (performances || []).filter(
+                      (p) => String(p.repertoire_name || "").trim() === name
+                    ).length
                   };
                 })}
                 teacherOptions={[...new Set([
@@ -17488,6 +17519,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 onSave={handleSaveNote}
                 onDelete={handleDeleteNote}
                 onDeleteRepertoire={handleDeleteRepertoire}
+                onGoToNarabe={() => setActiveTab("analysis")}
                 onOpenClinicSummary={({ mode, range, pick, ownWords } = {}) => {
                   if (range) {
                     setClinicPeriodMode("custom");
