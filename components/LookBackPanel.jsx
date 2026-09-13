@@ -4,7 +4,7 @@ import { useState } from "react";
 import { C, LEVEL_COLORS } from "@/lib/tokens";
 import { buildLookBack, hasAnything, lookBackThree, lookBackValue, LOOK_BACK_ROWS, LOOK_BACK_NOTE } from "@/lib/lookBack";
 import { TYPE, SPACE, cardStyle } from "@/lib/uiKit";
-import { H3, Card, Li, Note } from "@/components/UiV2";
+import { H3, Card, Li, Note, Back } from "@/components/UiV2";
 
 // ============================================================================
 // C1 ── 出なかった日の、前3日をひらく（2026-09-08）
@@ -53,7 +53,7 @@ function dayLabel(iso) {
  */
 export default function LookBackPanel({ dates, entries, fields }) {
   const list = Array.isArray(dates) ? dates : [];
-  const [open, setOpen] = useState(list.length ? list[0] : null);
+  const [open, setOpen] = useState(Array.isArray(fields) && fields.length > 0 && list.length ? list[0] : null);
   if (list.length === 0) return null;
 
   // ★★古い 呼び方（fields つき）は、★そのまま 動かします。
@@ -69,34 +69,37 @@ export default function LookBackPanel({ dates, entries, fields }) {
       </Note>
 
       {/* ★★日を えらびます。★見本の白い一覧です。 */}
-      <div style={{ marginBottom: 10 }}>
+      {!open ? <div style={{ marginBottom: 10 }}>
         {list.map((d) => (
-          <Card key={d} onClick={() => setOpen(open === d ? null : d)}
-            style={{ padding: "10px 12px", borderColor: open === d ? LEVEL_COLORS[0] : undefined }}>
+          <Card key={d} onClick={() => setOpen(d)} style={{ padding: "10px 12px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span>
-                <b style={{ ...TYPE.usual, color: C.ink }}>{open === d ? "選んだ日　" : ""}{dayLabel(d)}</b>
+                <b style={{ ...TYPE.usual, color: C.ink }}>{dayLabel(d)}</b>
                 <br />
-                <span style={{ ...TYPE.mini }}>{open === d ? "出づらい と書いた日" : "前の3日を 見る"}</span>
+                <span style={{ ...TYPE.mini }}>前の3日を 見る</span>
               </span>
               <span style={{ ...TYPE.usual, color: C.inkSoft }}>前の3日 ›</span>
             </div>
           </Card>
         ))}
-      </div>
+      </div> : null}
 
       {!legacy && open ? (
-        <Card style={{ borderColor: "#C9A0AB", background: "#FFFCFC", padding: "11px 13px" }}>
-          <div style={{ ...TYPE.mini }}>この日</div>
-          <div style={{ ...TYPE.h3, fontSize: 14, margin: "5px 0 0", color: C.ink }}>
-            声の 出来　{lookBackValue((entries || {})[open], "voice")}
-          </div>
-          <div style={{ ...TYPE.usual, marginTop: 4 }}>
-            のど {lookBackValue((entries || {})[open], "nodo")}／
-            睡眠 {lookBackValue((entries || {})[open], "sleep")}／
-            声を使った {lookBackValue((entries || {})[open], "sing")}
-          </div>
-        </Card>
+        <>
+          <Back onClick={() => setOpen(null)}>さかのぼる</Back>
+          <div style={{ ...TYPE.h3, fontSize: 16, margin: "5px 0 9px", color: C.ink }}>{dayLabel(open)}</div>
+          <Card style={{ borderColor: "#C9A0AB", background: "#FFFCFC", padding: "11px 13px" }}>
+            <div style={{ ...TYPE.mini }}>この日</div>
+            <div style={{ ...TYPE.h3, fontSize: 14, margin: "5px 0 0", color: C.ink }}>
+              声の 出来　{lookBackValue((entries || {})[open], "voice")}
+            </div>
+            <div style={{ ...TYPE.usual, marginTop: 4 }}>
+              のど {lookBackValue((entries || {})[open], "nodo")}／
+              睡眠 {lookBackValue((entries || {})[open], "sleep")}／
+              声を使った {lookBackValue((entries || {})[open], "sing")}
+            </div>
+          </Card>
+        </>
       ) : null}
 
       {/* ★★古い 呼び方 ── ★これまでどおり。 */}
