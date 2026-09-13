@@ -37,7 +37,11 @@ function Metric({ title, dates, entries, field, tint = C.curtain, min = 1, max =
               <s style={{ width: 31, ...TYPE.usual, textDecoration: "none", color: C.inkSoft, flexShrink: 0 }}>
                 {dates.length <= 14 || index % 7 === 0 ? mmdd(dates[index]) : ""}
               </s>
-              <span style={{ flex: 1, height: 12, background: value == null ? "transparent" : tint, opacity: value == null ? 0 : 0.35 + ratioOf(value, min, max) * 0.6, borderRadius: 2, width: `${horizontalValue(value, min, max)}%` }} />
+              <span style={{ flex: 1, height: 12, borderRadius: 2, background: C.line2, position: "relative", overflow: "hidden" }}>
+                {value != null && (
+                  <span style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${horizontalValue(value, min, max)}%`, background: tint, opacity: 0.35 + ratioOf(value, min, max) * 0.6, borderRadius: 2 }} />
+                )}
+              </span>
             </div>
           ))}
         </div>
