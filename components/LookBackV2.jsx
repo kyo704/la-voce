@@ -208,7 +208,7 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
   //   ★★戻る「‹ くらべる」は、★くらべる の 中に あります。
   if (orderOpen && tab === "kuraberu") {
     return (
-      <div>
+      <div className="reference-ui">
         <CompareV2 entries={entries} dates={dates}
           stacked onStack={setOrderOpen} />
       </div>

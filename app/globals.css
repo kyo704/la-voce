@@ -56,6 +56,88 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+/* 動く見本.html の個人画面部品。表示専用のクラス名を揃え、
+   既存の状態管理・保存処理とは分離している。 */
+.reference-ui {
+  --enji: #840C24;
+  --yama: #8C6115;
+  --midori: #447862;
+  --paper: #FBF6EA;
+  --card: #fff;
+  --line: #E4DAC4;
+  --line2: #F0E9DA;
+  --ink: #261913;
+  --ink2: #6D5D50;
+  --ink3: #7C6C5E;
+  color: var(--ink);
+}
+
+.reference-ui .hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 1px 6px;
+}
+
+.reference-ui .hd h2 {
+  font-size: 17px;
+  letter-spacing: .06em;
+}
+
+.reference-ui .seg {
+  display: flex;
+  background: #F3ECDD;
+  border-radius: 11px;
+  padding: 3px;
+  margin: 2px 0 10px;
+}
+
+.reference-ui .seg > button {
+  flex: 1;
+  min-width: 0;
+  border-radius: 9px;
+  color: var(--ink2);
+  white-space: nowrap;
+}
+
+.reference-ui .seg > button[aria-current="true"] {
+  background: #fff;
+  color: var(--enji);
+  font-weight: 700;
+}
+
+.reference-ui .card,
+.reference-ui .nt,
+.reference-ui .rep {
+  background: var(--card);
+  border-color: var(--line);
+  border-radius: 14px;
+}
+
+.reference-ui .nt,
+.reference-ui .rep {
+  display: block;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.reference-ui .warn {
+  background: #F6F1E4;
+  border: 1px solid #E8DFC8;
+  border-radius: 12px;
+  color: var(--ink2);
+}
+
+.reference-ui .note {
+  color: var(--ink2);
+}
+
+.reference-ui .empty {
+  background: #fff;
+  border-color: var(--line);
+}
+
 /* スクロールバーの見た目を軽く整える（iPadでの横スクロールタブなど） */
 .overflow-x-auto {
   scrollbar-width: thin;

@@ -90,12 +90,24 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
 
   if (editing) {
     return (
-      <div className="space-y-3">
+      <div className="reference-ui space-y-3">
         <div className="flex items-center justify-between">
           {/* ★★「もどる」で 閉じます。★「保存」は ありません。
               ★★戻る は 共通の 部品です（★見本 .back）。★写しを 置きません。 */}
           <Back onClick={close}>もどる</Back>
           <span style={small}>{saving ? "書いています" : ""}</span>
+        </div>
+        <div className="hd" style={{ paddingTop: 2 }}>
+          <h2 style={{ ...TYPE.title }}>
+            {isPractice(kind) ? "稽古の メモ" : kind === "repertoire" ? "曲を 足す" : "受診用の 1枚"}
+          </h2>
+        </div>
+        <div className="warn">
+          {isPractice(kind)
+            ? <>稽古と レパートリーは、<b>書くことが 違います</b>。ここは <b>その日 言われたこと</b>を 残す場所です。</>
+            : kind === "repertoire"
+              ? <>レパートリーは <b>曲の 台帳</b>です。稽古の メモとは 別の 項目を 聞きます。</>
+              : <>受診のときに持っていく、記録のまとめです。必要な期間を選んで使います。</>}
         </div>
         {/* ★★稽古の メモは、★聞く項目を 分けます（★裁定 9月10日夜 §1）。
             ★★「＋を 押しても 同じ 白紙が 出ていました。
@@ -174,7 +186,7 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
   }
 
   return (
-    <div>
+    <div className="reference-ui">
       {/* ★★見本⑥ .hd。★右は ＋ の 丸です（★歯車では ありません）。
           ★★押した その場で 書けます。★名前を 先に 聞きません。 */}
       {/* ★★「連絡」の 帯では、★＋を 出しません（★2026-09-11・Opus の 裁定 案A）。
@@ -269,7 +281,7 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
           //     （★lib/notes.js の titleOf）。★見え方だけ 変えました。
           //   ★★狭い画面の 話です。★広い画面（決まりB）は 名前と 日付だけで、
           //     ★本文の 抜粋を 出しません。★あちらは 人に 見られる 画面です。
-          <Card key={n.id} style={{ minHeight: 44 }}
+          <Card key={n.id} className={isPractice(kind) ? "nt" : kind === "repertoire" ? "rep" : "nt"} style={{ minHeight: 44 }}
             onClick={() => {
               // ★★開くときも、★6つの 欄を 一緒に 持ってきます。
               setEditing(isPractice(kind)

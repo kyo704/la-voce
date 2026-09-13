@@ -27,7 +27,7 @@ import { TYPE, SPACE, RADIUS, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
 /** ★画面の 頭（.hd）。★題と、★右の 1つ。 */
 export function ScreenHead({ title, right }) {
   return (
-    <div style={{
+    <div className="hd" style={{
       display: "flex", alignItems: "center", justifyContent: "space-between",
       padding: "10px 1px 6px"
     }}>
@@ -46,7 +46,7 @@ export function ScreenHead({ title, right }) {
  */
 export function HeadRound({ mark, label, onClick }) {
   return (
-    <button type="button" onClick={onClick} aria-label={label}
+    <button className="gear" type="button" onClick={onClick} aria-label={label}
       style={{
         width: SPACE.tapMin, height: SPACE.tapMin, margin: "-9px -9px -9px 0",
         display: "flex", alignItems: "center", justifyContent: "center",
@@ -65,18 +65,19 @@ export function HeadRound({ mark, label, onClick }) {
 /** ★小見出し（.h3）。★10.5px・字間 .12em・上 14 ／ 下 7。 */
 export function H3({ children }) {
   return (
-    <p style={{ ...TYPE.h3, margin: `${SPACE.h3Top}px 0 ${SPACE.h3Bottom}px` }}>
+    <p className="h3" style={{ ...TYPE.h3, margin: `${SPACE.h3Top}px 0 ${SPACE.h3Bottom}px` }}>
       {children}
     </p>
   );
 }
 
 /** ★カード（.card）。★角 14・内側 12/13・下に 9。 */
-export function Card({ children, style, onClick, ...rest }) {
+export function Card({ children, style, onClick, className, ...rest }) {
   const s = { ...cardStyle, marginBottom: SPACE.cardGap, ...style };
-  if (!onClick) return <div style={s} {...rest}>{children}</div>;
+  const classes = className ? `card ${className}` : "card";
+  if (!onClick) return <div className={classes} style={s} {...rest}>{children}</div>;
   return (
-    <button type="button" onClick={onClick}
+    <button className={classes} type="button" onClick={onClick}
       style={{ ...s, display: "block", width: "100%", textAlign: "left", fontFamily: FONT_STACK }}
       {...rest}>
       {children}
@@ -92,7 +93,7 @@ export function Card({ children, style, onClick, ...rest }) {
  */
 export function Seg({ items, activeKey, onSelect }) {
   return (
-    <div style={{
+    <div className="seg" style={{
       display: "flex", background: C.paper, borderRadius: 11, padding: 3,
       margin: "2px 0 10px"
     }}>
@@ -136,9 +137,9 @@ export function Pill({ children, on, disabled, onClick }) {
     // ★★0件に なる 組み合わせは、★押せない 灰色に します（★A09 の 注記）。
     opacity: disabled ? 0.45 : 1
   };
-  if (!onClick) return <span style={style}>{children}</span>;
+  if (!onClick) return <span className={on ? "pill on" : "pill"} style={style}>{children}</span>;
   return (
-    <button type="button" onClick={onClick} disabled={disabled} aria-pressed={!!on} style={style}>
+    <button className={on ? "pill on" : "pill"} type="button" onClick={onClick} disabled={disabled} aria-pressed={!!on} style={style}>
       {children}
     </button>
   );
@@ -164,7 +165,7 @@ export function Pill({ children, on, disabled, onClick }) {
  */
 export function Warn({ children, style }) {
   return (
-    <div style={{
+    <div className="warn" style={{
       background: "#F6F1E4", border: "1px solid #E8DFC8", borderRadius: 12,
       padding: "9px 11px", ...TYPE.note, lineHeight: 1.75, marginBottom: 10,
       ...style
@@ -207,7 +208,7 @@ export function Warn({ children, style }) {
 export function Note({ children, style, fold = false }) {
   const [open, setOpen] = useState(false);
   const body = (
-    <p style={{
+    <p className="note" style={{
       ...TYPE.note, lineHeight: 1.8, marginTop: 9,
       display: fold && !open ? "none" : undefined, ...style
     }}>{children}</p>
@@ -235,7 +236,7 @@ export const NOTE_CLOSE = "閉じる";
 /** ★一覧の 1行（.li）。★左に 名前、★右に 値。★最後の行に 線を 引きません。 */
 export function Li({ children, right, last, style }) {
   return (
-    <div style={{
+    <div className="li" style={{
       display: "flex", justifyContent: "space-between", alignItems: "center",
       padding: "9px 0", ...TYPE.li,
       borderBottom: last ? "none" : `1px solid ${C.line2}`,
@@ -257,7 +258,7 @@ export function Li({ children, right, last, style }) {
  */
 export function Kv({ children, right, last }) {
   return (
-    <div style={{
+    <div className="kv" style={{
       display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8,
       fontSize: rem(11.5), color: C.inkSoft, padding: "5px 0",
       borderBottom: last ? "none" : `1px solid ${C.line2}`
@@ -294,18 +295,18 @@ export function Lock({ children = "しらべる", onClick }) {
  */
 export function BarRow({ label, ratio, tint, hollow }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
+    <div className="rowb" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
       <span style={{ width: 34, flex: "none", fontSize: rem(10), color: C.inkSoft }}>{label}</span>
       <div style={{ flex: 1, height: 8 }}>
         {ratio == null ? null : hollow ? (
           // ★★あとから 書いた日は、★中を 抜きます。★消しません。
           //   ★「目では 見えますが、判定には 入れていません」。
-          <div style={{
+          <div className="empty" style={{
             width: `${Math.round(ratio * 100)}%`, height: 8, borderRadius: 4,
             border: `1.4px solid ${tint}`, opacity: 0.6
           }} />
         ) : (
-          <div style={{
+          <div className="bar" style={{
             width: `${Math.round(ratio * 100)}%`, height: 8, borderRadius: 4,
             background: tint, opacity: 0.47 + 0.45 * ratio
           }} />
@@ -377,7 +378,7 @@ export function Usu({ children, style }) {
  */
 export function FieldLabel({ children, htmlFor, style }) {
   return (
-    <label htmlFor={htmlFor} style={{
+    <label className="fl" htmlFor={htmlFor} style={{
       display: "block", fontSize: rem(10.5), color: C.inkSoft,
       letterSpacing: "0.08em", margin: "12px 0 5px", ...style
     }}>{children}</label>
@@ -403,7 +404,7 @@ export function Wl({ children, style }) {
 
 /** ★2つ 横に 並べる（.two）。★あいだ 9px。 */
 export function Two({ children, style }) {
-  return <div style={{ display: "flex", gap: SPACE.cardGap, ...style }}>{children}</div>;
+  return <div className="two" style={{ display: "flex", gap: SPACE.cardGap, ...style }}>{children}</div>;
 }
 
 /**
@@ -417,7 +418,7 @@ export function Two({ children, style }) {
  */
 export function Input({ style, ...rest }) {
   return (
-    <input {...rest} style={{
+    <input className="inp" {...rest} style={{
       width: "100%", minHeight: SPACE.tapMin, boxSizing: "border-box",
       border: `1px solid ${C.line}`, borderRadius: 12,
       background: C.card, padding: 12, fontFamily: FONT_STACK,
@@ -438,7 +439,7 @@ export function Input({ style, ...rest }) {
  */
 export function TextArea({ style, ...rest }) {
   return (
-    <textarea {...rest} style={{
+    <textarea className="ta" {...rest} style={{
       width: "100%", boxSizing: "border-box",
       border: `1px solid ${C.line}`, borderRadius: 12,
       background: C.card, padding: 11, fontFamily: FONT_STACK,
@@ -468,7 +469,7 @@ export function SheetTitle({ children, style }) {
  */
 export function EmptyBox({ title, sub, style }) {
   return (
-    <div style={{
+    <div className="empty" style={{
       textAlign: "center", padding: "26px 14px", background: C.card,
       border: `1px dashed ${C.line}`, borderRadius: RADIUS.card,
       marginBottom: SPACE.cardGap, ...style
@@ -615,7 +616,7 @@ export function Switch({ on, onChange, label }) {
  */
 export function Back({ children, onClick }) {
   return (
-    <button type="button" onClick={onClick} style={{
+    <button className="back" type="button" onClick={onClick} style={{
       display: "inline-block", background: "transparent", border: "none",
       padding: "9px 1px 3px", minHeight: SPACE.tapMin,
       color: C.curtain, fontSize: rem(12.5), fontFamily: FONT_STACK,
@@ -640,7 +641,7 @@ export function Btn({ children, onClick, ghost, small, disabled, style, type = "
   const pad = small ? "10px 0" : (ghost ? "12px 0" : "14px 0");
   const size = small ? 12.5 : (ghost ? 13.5 : 15);
   return (
-    <button type={type} onClick={onClick} disabled={disabled} style={{
+    <button className={`btn${ghost ? " g" : ""}${small ? " sm" : ""}`} type={type} onClick={onClick} disabled={disabled} style={{
       display: "block", width: "100%", borderRadius: RADIUS.btn,
       padding: pad, minHeight: SPACE.tapMin,
       border: ghost ? `1px solid ${C.line}` : "none",
