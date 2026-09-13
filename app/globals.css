@@ -6,6 +6,10 @@
   box-sizing: border-box;
 }
 
+html, body {
+  overflow-x: hidden;
+}
+
 html {
   /* iPhone/iPadでの慣性スクロールを滑らかにする */
   -webkit-overflow-scrolling: touch;
@@ -112,6 +116,17 @@ input[type="number"] {
   background: var(--card);
   border-color: var(--line);
   border-radius: 14px;
+}
+
+.reference-ui .rep {
+  overflow: hidden;
+}
+
+.reference-ui .rep > div {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .reference-ui .nt,

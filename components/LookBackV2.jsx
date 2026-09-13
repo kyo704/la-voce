@@ -8,10 +8,7 @@ import {
 } from "@/components/UiV2";
 import LookBackPanel from "@/components/LookBackPanel";
 import { LOOK_BACK_FIELDS, hardDays, lookBackableDays } from "@/lib/lookBack";
-import {
-  PERIODS, LINE_UP_NOTE, LINE_UP_STACK_NOTE, datesBack, seriesOf, sungMinutes,
-  LANES, LANE_DEFAULT, LANE_MIN_REASON, LANE_MAX_REASON, toggleLane, laneSummary, laneWord
-} from "@/lib/lineUp";
+import { PERIODS, LINE_UP_NOTE, LINE_UP_STACK_NOTE, datesBack } from "@/lib/lineUp";
 import LineUpChart from "@/components/LineUpChart";
 import { tx } from "@/lib/t";
 import { SYMPTOM_LOCATION } from "@/lib/symptomLocations";
@@ -181,10 +178,6 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
   //   ★★2026-09-11、★比較画像で 入れ子に なっていました。
   //     ★だから、★開いているかを ここで 持ちます。
   const [orderOpen, setOrderOpen] = useState(false);
-  // ★★並べるもの（★7つの うち 5つまで・1つは 残す）。
-  //   ★★はじめは 見本の 5本です。
-  const [laneKeys, setLaneKeys] = useState([...LANE_DEFAULT]);
-  const [laneMessage, setLaneMessage] = useState("");
   const [periodKey, setPeriodKey] = useState("14d");
 
   const period = PERIODS.find((p) => p.key === periodKey) || PERIODS[0];
@@ -257,102 +250,16 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
               </Pill>
             ))}
           </div>
-          {/* ★★並べるもの（★見本 naraBody の 札）。
-              ★★押すと 出し入れできます。★こちらから 勝手に 足しません。
-              ★★7つの うち 5つまで。★1つは 残します。
-                ★決めは lib/lineUp.js です。★ここでは 決めません。 */}
-          <div style={{ ...TYPE.mini, color: C.inkSoft, marginBottom: 6 }}>
-            {tx("並べるもの　")}
-            <span style={{ ...TYPE.usual }}>
-              {tx("押すと 出し入れできます。こちらから 勝手に 足しません")}
-            </span>
-          </div>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 9 }}>
-            {LANES.map((lane) => {
-              const on = laneKeys.includes(lane.key);
-              return (
-                <button key={lane.key} type="button"
-                  onClick={() => {
-                    const next = toggleLane(laneKeys, lane.key);
-                    if (!next) {
-                      setLaneMessage(on ? LANE_MIN_REASON : LANE_MAX_REASON);
-                      return;
-                    }
-                    setLaneMessage("");
-                    setLaneKeys(next);
-                  }}
-                  aria-pressed={on}
-                  style={{
-                    minHeight: 44, padding: `0 ${rem(11)}`, borderRadius: 999,
-                    whiteSpace: "nowrap", fontSize: rem(10.5),
-                    border: `1px solid ${on ? C.curtain : C.line}`,
-                    background: on ? C.curtain : C.card,
-                    color: on ? "#FFFDF8" : C.inkSoft, fontFamily: FONT_STACK
-                  }}>
-                  {/* ★★どの 線かが 分かるように、★色の しるしを 付けます。
-                      ★★色だけに 意味を 持たせません。★名前が 先に あります。 */}
-                  <i aria-hidden="true" style={{
-                    display: "inline-block", width: 13, height: 3, borderRadius: 2,
-                    verticalAlign: "middle", marginRight: 7,
-                    background: lane.tone === "midori" ? C.sage : C.curtain,
-                    opacity: on ? 1 : lane.opacity
-                  }} />
-                  {lane.label}
-                </button>
-              );
-            })}
-          </div>
-          {laneMessage ? <Note>{laneMessage}</Note> : null}
-
           {/* ★★同じ 日付の 軸に、★上下に 並べます。★これが この画面の 仕事です。 */}
           {dates.some((date) => entries && entries[date]) ? (
             <Card>
-              <LineUpChart entries={entries} dates={dates} keys={laneKeys} />
+              <LineUpChart entries={entries} dates={dates} />
             </Card>
           ) : (
             <EmptyBox
               title="まだ、並べる ものが ありません。"
               sub="記録を 2日ぶん 書くと、ここに 縦に 並びはじめます。" />
           )}
-
-          {/* ★★何の 帯かを 書きます。★色の 意味を 当てさせないこと。 */}
-          <Note>
-            {tx("たての 帯　本番・レッスンの あった日")}<br />
-            {tx("◎＝出た／よい・ない　○＝ふつう・すこし　△＝出づらい・わるい・ある")}
-          </Note>
-
-          {/* ★★数えたもの。★いちばん 多い日／少ない日／まんなか の 3つだけ。
-              ★★平均を 出しません（★裁定 §1-2「合成した 数だからです」）。 */}
-          <div style={{ ...TYPE.mini, color: C.inkSoft, margin: "12px 0 6px" }}>
-            {tx("数えたもの")}
-          </div>
-          <Card style={{ padding: `${rem(4)} ${rem(12)}` }}>
-            {laneKeys.map((k, i) => {
-              const sum = laneSummary(entries, dates, k);
-              const lane = LANES.find((l) => l.key === k);
-              return (
-                <Li key={k} last={i === laneKeys.length - 1}
-                  right={sum
-                    ? `${laneWord(k, sum.most)}　${laneWord(k, sum.least)}　${laneWord(k, sum.middle)}`
-                    : tx("まだ ありません")}>
-                  {lane.label}
-                </Li>
-              );
-            })}
-          </Card>
-          <Note>{tx("右から　いちばん 多い日　／　いちばん 少ない日　／　まんなか")}</Note>
-
-          {/* ★★2026-09-11、★5本レーンに 作り直した とき、★この 2つを
-              ★★巻き込んで 消していました。★記録も 残していませんでした。
-                ★A群の 見直しで 見つけました（★tools/screen-check.js）。
-              ★★どちらも ご本人が 書いた ものです。★消しません（★4分類の ②）。
-                ★静止画 A04 に、★2つとも 出ています。
-              ★★図の 下に 置きます。★図は 5本まで。★こちらは 別の 見せ方です。
-                ★「歌った 時間」と「声を 使った 時間」は 別の ものです。
-                ★前者は 活動の 合計、★後者は 本番以外で 声を 使った 時間。 */}
-          <Bars title={tx("歌った 時間")} tint={C.sage} entries={entries}
-            rows={seriesOf(entries, dates, (e) => sungMinutes(e))} />
-          <Symptoms entries={entries} dates={dates} />
 
           {/* ★★何を している 画面かを、★下に 3行 置きます（★見本の .note）。
               ★★見本は これを 畳んでいます（foldNotes）。 */}
