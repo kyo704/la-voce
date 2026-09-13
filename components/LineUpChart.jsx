@@ -10,12 +10,18 @@ function valueOf(entry, key) {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
-function horizontalValue(value, min = 1, max = 3) {
+// 長さ＝値の割合、色の濃さ＝値の割合、の両方で差を見せる（長さだけの濃淡表現をやめる）。
+function ratioOf(value, min, max) {
   if (value == null) return 0;
-  return [40, 65, 88][Math.max(0, Math.min(2, Math.round(value) - min))] || ((value - min) / Math.max(1, max - min)) * 100;
+  return Math.max(0, Math.min(1, (value - min) / Math.max(1, max - min)));
 }
 
-function Metric({ title, dates, entries, field, tint = C.curtain, min = 1, max = 3, sleep = false }) {
+function horizontalValue(value, min, max) {
+  if (value == null) return 0;
+  return 15 + ratioOf(value, min, max) * 85;
+}
+
+function Metric({ title, dates, entries, field, tint = C.curtain, min = 1, max = 5, sleep = false }) {
   const values = dates.map((date) => valueOf(entries[date], field));
   const filled = values.filter((value) => value != null);
   if (filled.length === 0) return null;
@@ -31,7 +37,7 @@ function Metric({ title, dates, entries, field, tint = C.curtain, min = 1, max =
               <s style={{ width: 31, ...TYPE.usual, textDecoration: "none", color: C.inkSoft, flexShrink: 0 }}>
                 {dates.length <= 14 || index % 7 === 0 ? mmdd(dates[index]) : ""}
               </s>
-              <span style={{ flex: 1, height: 12, background: value == null ? "transparent" : tint, opacity: value == null ? 0 : 0.45 + ((value - min) / Math.max(1, max - min)) * 0.15, borderRadius: 2, width: `${horizontalValue(value, min, max)}%` }} />
+              <span style={{ flex: 1, height: 12, background: value == null ? "transparent" : tint, opacity: value == null ? 0 : 0.35 + ratioOf(value, min, max) * 0.6, borderRadius: 2, width: `${horizontalValue(value, min, max)}%` }} />
             </div>
           ))}
         </div>
@@ -40,8 +46,8 @@ function Metric({ title, dates, entries, field, tint = C.curtain, min = 1, max =
           {values.map((value, index) => (
             <i key={dates[index]} title={value == null ? mmdd(dates[index]) : `${mmdd(dates[index])} ${value}`}
               style={{
-                flex: 1, display: "block", minWidth: 0, height: value == null ? 0 : `${Math.max(10, ((value - min) / Math.max(1, max - min)) * 100)}%`,
-                background: tint, opacity: value == null ? 0 : 0.45 + ((value - min) / Math.max(1, max - min)) * 0.45,
+                flex: 1, display: "block", minWidth: 0, height: value == null ? 0 : `${Math.max(10, ratioOf(value, min, max) * 100)}%`,
+                background: tint, opacity: value == null ? 0 : 0.35 + ratioOf(value, min, max) * 0.6,
                 borderRadius: "2px 2px 0 0"
               }} />
           ))}
