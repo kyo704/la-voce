@@ -12213,13 +12213,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   上書きしてしまい、歌唱言語や最高音が消えます（下のコメント参照）。
   //   「直す」ときだけ、空にできる必要があります。
   async function handleSaveRepertoire(typedName, { topNote, tessituraNote, dOverride, replace } = {}) {
-    if (!typedName) return;
+    if (!typedName) return false;
     // ★すでにある曲なら、その名前に書きます。打った通りに書くと、
     //   表記が少し違うだけの行がもう1つできます。
     const repertoireName = resolveRepertoireName(repertoireTessituraMap, typedName);
-    if (!replace && !topNote && !tessituraNote && dOverride == null) return;
+    if (!replace && !topNote && !tessituraNote && dOverride == null) return true;
     // ★直すときも、全部空にはさせない。行の意味が無くなるため。
-    if (replace && !topNote && !tessituraNote && dOverride == null) return;
+    if (replace && !topNote && !tessituraNote && dOverride == null) return true;
     setTessituraSaving(true);
     const confidence = tessituraNote ? "entered" : topNote ? "estimated" : "coarse";
     const supabase = createClient();
@@ -12246,7 +12246,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (error) {
       console.error("レパートリーの登録に失敗しました:", error);
       setRepertoireSaveError({ name: repertoireName, message: "保存できませんでした。時間をおいて、もう一度お試しください。" });
-      return;
+      return false;
     }
     setRepertoireSaveError(null);
     // ★画面の状態も、既存を残したまま重ねること。
@@ -12309,7 +12309,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }
     setRepertoireSaveError(null);
     setPendingChip(null);   // ★成功したときだけ解く
-    setRoleMasterMap((prev) => ({ ...prev, [roleName]: { workTitle: workTitle || "", pitchLowNote: pitchLowNote || null, pitchHighNote: pitchHighNote || null, voiceQuality: voiceQuality || null } }));
+    setRoleMasterMap((prev) => ({ ...prev, [roleName]: { workTitle: workTitle || "", pitchLowNote: pitchLowNote || null, pitchHighNote: pitchHighNote || null, voiceQuality: voiceQuality || null }     }));
+    return true;
   }
   async function handleSaveProject(projectName, { scriptType, speechSpeed, isLive } = {}) {
     if (!projectName) return;
@@ -17398,7 +17399,29 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 notes={myNotes}
                 saving={noteSaving}
                 todayISO={realTodayDate}
-                repertoireNames={repertoire.map((r) => r.name)}
+                repertoireNames={[...new Set([
+                  ...repertoire.map((r) => r.name),
+                  ...myNotes.filter((n) => n.kind === "repertoire" && n.body).map((n) => n.body)
+                ])]}
+                onAddRepertoire={async ({ id, name, composer, positionIn, language, highNote, lowNote, status, performance }) => {
+                  const key = String(name || "").trim();
+                  if (!key) return false;
+                  const fieldsOk = await handleSaveRepertoireFields(key, {
+                    composer: composer || null,
+                    position_in: positionIn || null,
+                    bottom_note: lowNote || null,
+                    status: status || null
+                  });
+                  if (!fieldsOk) return false;
+                  if (highNote || lowNote) {
+                    await handleSaveRepertoire(key, {
+                      topNote: highNote || null,
+                      tessituraNote: lowNote || null,
+                      replace: true
+                    });
+                  }
+                  return handleSaveNote({ id, kind: "repertoire", body: key });
+                }}
                 onSave={handleSaveNote}
                 onDelete={handleDeleteNote}
                 renraku={

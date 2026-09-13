@@ -6,7 +6,7 @@
 //       ★書くことが 違うので、聞く項目を 分けました」
 //     「★稽古で『みた曲』を 選ぶと、
 //       ★レパートリーの その曲にも 同じメモが 出ます」
-//     「★どちらにも 出来ばえ・点数の 欄は ありません」
+//     「★どちらにも 判定欄は ありません」
 //
 //   ★★確かめること
 //     ① 6つの 欄が あること。★裁定の 並びの まま。
@@ -46,7 +46,7 @@ function ok(cond, label) {
   ["いつ", "だれに", "みた曲", "言われたこと", "次に 自分が すること", "できるように なったこと"]
     .forEach((w, i) => ok(PRACTICE_FIELDS[i].label === w, "★" + (i + 1) + "つ目は「" + w + "」"));
 
-  console.log("② 出来ばえ・点数の 欄が 無い");
+  console.log("② 判定欄が 無い");
   const all = PRACTICE_FIELDS.concat(REPERTOIRE_FIELDS).map((f) => f.key + " " + f.label).join(" ");
   ["点", "スコア", "出来ばえ", "評価", "score", "rating"].forEach((w) => {
     ok(!all.includes(w), "★「" + w + "」の 欄が 無い");

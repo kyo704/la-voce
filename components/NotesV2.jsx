@@ -4,10 +4,10 @@ import { useState, useEffect, useRef } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, SPACE, rem } from "@/lib/uiKit";
 import {
-  ScreenHead, HeadRound, H3, Card, Seg, Li, Note, Back, Input, TextArea, FieldLabel
+  ScreenHead, HeadRound, H3, Card, Seg, Pill, Btn, Two, Li, Note, Back, Input, TextArea, FieldLabel
 } from "@/components/UiV2";
 import {
-  PRACTICE_FIELDS, isPractice, emptyPractice, pickFields, practiceTitle, practiceSub
+  PRACTICE_FIELDS, REPERTOIRE_STATUS, isPractice, emptyPractice, pickFields, practiceTitle, practiceSub
 } from "@/lib/practiceNote";
 import {
   NOTE_KINDS, DEFAULT_KIND, kindOrDefault, visibleNotes, isRenrakuKind,
@@ -40,7 +40,7 @@ import {
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
 const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
 
-export default function NotesV2({ notes, onSave, onDelete, saving, renraku, todayISO, repertoireNames }) {
+export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, saving, renraku, todayISO, repertoireNames }) {
   const [kind, setKind] = useState(DEFAULT_KIND);
   const [q, setQ] = useState("");
   const [editing, setEditing] = useState(null);   // ★{ id, body } ★null なら 一覧
@@ -48,7 +48,7 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
   const timer = useRef(null);
   const boxRef = useRef(null);
 
-  const list = visibleNotes(notes, kind, q);
+  const list = visibleNotes(notes, kind, isPractice(kind) ? q : "");
 
   // ★★開いたら、★すぐ 書けます（★見本⑥「1文字目までを いちばん短く」）。
   useEffect(() => {
@@ -71,6 +71,17 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
     if (isEmpty(draft)) return true;
     // ★★稽古の メモは、★6つの 欄も 一緒に 渡します（★裁定 §1）。
     //   ★★知らない 欄は 落とします（pickFields）。
+    if (kind === "repertoire" && onAddRepertoire) {
+      const ok = await onAddRepertoire({
+        id: draft.id, name: draft.repertoire_name, composer: draft.composer,
+        positionIn: draft.position_in, language: draft.language,
+        highNote: draft.high_note, lowNote: draft.low_note,
+        status: draft.status, performance: draft.performance
+      });
+      if (!ok) { setError("まだ足せていません。開いたままにしています。"); return false; }
+      setError("");
+      return true;
+    }
     const ok = await onSave({
       id: draft.id, kind, body: draft.body,
       ...(isPractice(kind) ? pickFields(draft) : {})
@@ -90,7 +101,7 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
 
   if (editing) {
     return (
-      <div className="reference-ui space-y-3">
+      <div className="reference-ui practice-editor">
         <div className="flex items-center justify-between">
           {/* ★★「もどる」で 閉じます。★「保存」は ありません。
               ★★戻る は 共通の 部品です（★見本 .back）。★写しを 置きません。 */}
@@ -103,50 +114,73 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
           </h2>
         </div>
         <div className="warn">
-          {isPractice(kind)
-            ? <>稽古と レパートリーは、<b>書くことが 違います</b>。ここは <b>その日 言われたこと</b>を 残す場所です。</>
-            : kind === "repertoire"
-              ? <>レパートリーは <b>曲の 台帳</b>です。稽古の メモとは 別の 項目を 聞きます。</>
-              : <>受診のときに持っていく、記録のまとめです。必要な期間を選んで使います。</>}
+          {isPractice(kind) ? (
+            <>
+              稽古と レパートリーは、<b>書くことが 違います</b>。ここは <b>その日 言われたこと</b>を 残す場所です。<br />
+            </>
+          ) : kind === "repertoire" ? (
+            <>
+              レパートリーは <b>曲の 台帳</b>です。稽古の メモとは 別の 項目を 聞きます。<br />
+            </>
+          ) : null}
+          打ったものは、ほかを 押しても <b>消えません</b>。
         </div>
         {/* ★★稽古の メモは、★聞く項目を 分けます（★裁定 9月10日夜 §1）。
             ★★「＋を 押しても 同じ 白紙が 出ていました。
               ★書くことが 違うので、聞く項目を 分けました」
-            ★★出来ばえ・点数の 欄は ありません。★作らないこと。
+            ★★不要な 判定欄は 作らないこと。
             ★★「みた曲」は レパートリーから 選びます。★自由に 打たせません。
               ★打たせると、★同じ曲が 2つの 名前で 増えます。
               ★★そうなると「その曲の 稽古の メモ」が 引けません。
             ★★1つも 必須に しません。★書けない 日が あります。 */}
         {isPractice(kind) ? (
-          <div>
+          <div className="practice-fields">
             {PRACTICE_FIELDS.map((f) => (
-              <div key={f.key} style={{ marginBottom: 10 }}>
+              <div key={f.key} className={`practice-field practice-field-${f.key}`}>
                 <FieldLabel htmlFor={"pf-" + f.key} style={{ margin: "0 0 3px" }}>
-                  {f.label}
+                  {f.key === "repertoire_name" ? "みた 曲（レパートリーから）"
+                    : f.key === "next_action" ? "次に 自分が すること（1つ）" : f.label}
                 </FieldLabel>
-                {f.kind === "date" ? (
+                {f.key === "teacher_label" ? (
+                  <div className="pills practice-pills">
+                    {["斎藤 めぐみ", "渡辺 たける", "自主練"].map((name) => (
+                      <Pill key={name} on={editing[f.key] === name}
+                        onClick={() => setEditing({ ...editing, [f.key]: name })}>
+                        {name}
+                      </Pill>
+                    ))}
+                  </div>
+                ) : f.kind === "date" ? (
                   <Input id={"pf-" + f.key} type="date"
                     value={editing[f.key] || ""}
                     onChange={(e) => setEditing({ ...editing, [f.key]: e.target.value })} />
                 ) : f.kind === "repertoire" ? (
-                  <select id={"pf-" + f.key}
-                    value={editing[f.key] || ""}
-                    onChange={(e) => setEditing({ ...editing, [f.key]: e.target.value })}
-                    style={{
-                      width: "100%", minHeight: 44, borderRadius: 10, padding: "0 12px",
-                      border: `1px solid ${C.line}`, background: C.card, color: C.ink, fontSize: rem(16)
-                    }}>
-                    <option value="">えらばない</option>
+                  <>
+                    <select id={"pf-" + f.key} value={editing[f.key] || ""}
+                      onChange={(e) => setEditing({ ...editing, [f.key]: e.target.value })}
+                      aria-hidden="true" tabIndex={-1} className="practice-selection-source">
+                      <option value="">えらばない</option>
+                      {(repertoireNames || []).map((n) => <option key={n} value={n}>{n}</option>)}
+                    </select>
+                    <div className="pills practice-pills">
                     {(repertoireNames || []).map((n) => (
-                      <option key={n} value={n}>{n}</option>
+                      <Pill key={n} on={editing[f.key] === n}
+                        onClick={() => setEditing({ ...editing, [f.key]: n })}>
+                        {n}
+                      </Pill>
                     ))}
-                  </select>
+                    <Pill on={false} onClick={() => setEditing({ ...editing, [f.key]: "" })}>えらばない</Pill>
+                    </div>
+                  </>
                 ) : f.kind === "area" ? (
                   <TextArea id={"pf-" + f.key}
                     value={editing[f.key] || ""}
                     onChange={(e) => setEditing({ ...editing, [f.key]: e.target.value })}
-                    rows={f.key === "said_text" ? 6 : 3}
-                    style={{ lineHeight: 1.9 }} />
+                    rows={f.key === "said_text" ? 4 : 2}
+                    placeholder={f.key === "said_text" ? "そのまま、聞いたとおりに"
+                      : f.key === "next_action" ? "れい：下降形で 肋骨を 開いたまま"
+                        : "書かなくても かまいません"}
+                    style={{ minHeight: f.key === "said_text" ? 88 : 52, lineHeight: 1.7 }} />
                 ) : (
                   <Input id={"pf-" + f.key} type="text"
                     value={editing[f.key] || ""}
@@ -155,6 +189,49 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
                 {f.note ? <Note style={{ marginTop: 2 }}>{f.note}</Note> : null}
               </div>
             ))}
+          </div>
+        ) : kind === "repertoire" ? (
+          <div className="repertoire-editor">
+            <div className="fl">曲名</div>
+            <Input value={editing.repertoire_name || ""} placeholder="れい：ラ・ボエーム"
+              onChange={(e) => setEditing({ ...editing, repertoire_name: e.target.value })} />
+            <div className="fl">作曲家</div>
+            <Input value={editing.composer || ""} placeholder="れい：プッチーニ"
+              onChange={(e) => setEditing({ ...editing, composer: e.target.value })} />
+            <div className="fl">役・曲集の中の 位置（あれば）</div>
+            <Input value={editing.position_in || ""} placeholder="れい：ミミ／第3幕"
+              onChange={(e) => setEditing({ ...editing, position_in: e.target.value })} />
+            <div className="fl">ことば</div>
+            <div className="pills practice-pills">
+              {["イタリア語", "ドイツ語", "フランス語", "日本語", "英語", "ラテン語", "ロシア語"].map((v) => (
+                <Pill key={v} on={editing.language === v}
+                  onClick={() => setEditing({ ...editing, language: v })}>{v}</Pill>
+              ))}
+            </div>
+            <div className="fl">一番高い音・低い音（あれば）</div>
+            <Two>
+              <Input value={editing.high_note || ""} placeholder="高い　れい：B♭4"
+                onChange={(e) => setEditing({ ...editing, high_note: e.target.value })} />
+              <Input value={editing.low_note || ""} placeholder="低い　れい：G3"
+                onChange={(e) => setEditing({ ...editing, low_note: e.target.value })} />
+            </Two>
+            <div className="fl">様子</div>
+            <div className="pills practice-pills">
+              {REPERTOIRE_STATUS.map((v) => (
+                <Pill key={v} on={editing.status === v}
+                  onClick={() => setEditing({ ...editing, status: v })}>{v}</Pill>
+              ))}
+            </div>
+            <div className="fl">本番の 予定（あれば）</div>
+            <Input value={editing.performance || ""} placeholder="れい：11月20日 定期演奏会"
+              onChange={(e) => setEditing({ ...editing, performance: e.target.value })} />
+            <div className="card repertoire-preview">
+              <div style={{ fontSize: 12, lineHeight: 1.85 }}>
+                いま 入っているもの<br />
+                <b>{editing.repertoire_name || "（曲名 まだ）"}</b>{"　"}{editing.composer || ""}{"　"}{editing.position_in || ""}<br />
+                {editing.language || "ことば 未選択"}{"　／　"}{editing.high_note || "—"}{" 〜 "}{editing.low_note || "—"}{"　／　"}{editing.status || "ようす 未選択"}
+              </div>
+            </div>
           </div>
         ) : (
           /* ★★ほかの 帯は、★これまでどおり 本文だけです。
@@ -171,6 +248,10 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
             }} />
         )}
         {error ? <p style={{ ...small, color: C.curtain }}>{error}</p> : null}
+        <Two style={{ marginTop: 12 }}>
+          <Btn ghost onClick={() => { if (timer.current) clearTimeout(timer.current); setEditing(null); setError(""); }}>やめる</Btn>
+          <Btn onClick={close}>しまう</Btn>
+        </Two>
         {/* ★★消すのは、★下半分に。★誤って 触らないためです。 */}
         {editing.id && onDelete ? (
           <button type="button"
@@ -204,7 +285,9 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
             //   ★「いつ」だけ、★きょうを 入れておきます。★あとは 空です。
             setEditing(isPractice(kind)
               ? { id: null, body: "", ...emptyPractice(todayISO) }
-              : { id: null, body: "" });
+              : kind === "repertoire"
+                ? { id: null, body: "", repertoire_name: "", composer: "", position_in: "", language: "イタリア語", high_note: "", low_note: "", status: "はじめたばかり", performance: "" }
+                : { id: null, body: "" });
             setError("");
           }} />
       )} />
@@ -215,7 +298,7 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
 
       {/* ★★一覧より先に置きます（★見本⑥）。
           ★★書いたものを探す入口を、最初に見つけられるようにします。 */}
-      {isRenrakuKind(kind) ? null : (
+      {isPractice(kind) ? (
         <>
           <H3>この中から さがす</H3>
           <Card>
@@ -230,7 +313,7 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
               }} />
           </Card>
         </>
-      )}
+      ) : null}
 
       {/* ★★「連絡」の 帯だけ、★ノートでは なく 連絡板が 開きます（★見本④）。
           ★★タブを 増やさずに 置くための 形です。
@@ -243,7 +326,7 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
         //     ★その行き先は 押せる ものに すること」。
         //   ★★探して 見つからなかった ときは、★別の 話です。
         //     ★そこは 押しても 意味が ないので、★文の ままです。
-        q.trim() ? (
+        isPractice(kind) && q.trim() ? (
           <Card><p style={{ ...small, margin: 0 }}>見つかりませんでした。</p></Card>
         ) : (
           <Card style={{ minHeight: 44, cursor: "pointer" }}
@@ -252,6 +335,8 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
             onClick={() => {
               if (isPractice(kind)) {
                 setEditing({ id: null, body: "", ...emptyPractice(todayISO) });
+              } else if (kind === "repertoire") {
+                setEditing({ id: null, body: "", repertoire_name: "", composer: "", position_in: "", language: "イタリア語", high_note: "", low_note: "", status: "はじめたばかり", performance: "" });
               } else {
                 setEditing({ id: null, body: "" });
               }
@@ -273,7 +358,8 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
           </Card>
         )
       ) : (
-        list.map((n) => (
+        <>
+        {list.map((n) => (
           // ★★見本⑥の 1枚 ── ★本文が 2行、★その下に 日付（.usu）。
           //   ★★見出しと 抜粋を 別の 大きさに していました。
           //     ★見本は 同じ 大きさの 本文 2行です。★そちらに 合わせます。
@@ -290,13 +376,14 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
                   ...emptyPractice(todayISO), ...pickFields(n),
                   lesson_on: n.lesson_on || todayISO || null
                 }
+                : kind === "repertoire"
+                  ? { id: n.id, body: n.body || "", repertoire_name: n.body || "", composer: "", position_in: "", language: "イタリア語", high_note: "", low_note: "", status: "はじめたばかり", performance: "" }
                 : { id: n.id, body: n.body || "" });
               setError("");
             }}>
             <div style={{ ...TYPE.body, lineHeight: 1.7 }}>
               {/* ★★稽古の メモには 本文が ありません。
-                  ★言われたことの 1行目を 見出しに します。
-                  ★★点も 出来ばえも 出しません。 */}
+                  ★言われたことの 1行目を 見出しに します。 */}
               {isPractice(kind)
                 ? (practiceTitle(n) || "（まだ何も書いていません）")
                 : (titleOf(n.body) || "（まだ何も書いていません）")}
@@ -309,7 +396,15 @@ export default function NotesV2({ notes, onSave, onDelete, saving, renraku, toda
               {n.source_label ? `　${n.source_label}` : ""}
             </div>
           </Card>
-        ))
+        ))}
+        {kind === "repertoire" ? (
+          <Note fold>
+            レパートリーは <b>曲の 台帳</b>です。稽古の メモとは 別の 項目です。<br />
+            判定欄は ありません。「様子」は ご自分で 選ぶ段階です。<br />
+            足した曲は、<b>稽古の「みた 曲」</b>にも 選べるようになります。
+          </Note>
+        ) : null}
+        </>
       )}
 
     </div>

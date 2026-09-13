@@ -138,6 +138,66 @@ input[type="number"] {
   border-color: var(--line);
 }
 
+.practice-editor .practice-field {
+  margin-bottom: 12px;
+}
+
+.practice-editor .practice-field-said_text {
+  margin-top: 2px;
+}
+
+.practice-editor .practice-pills {
+  margin-top: 5px;
+}
+
+.practice-editor .practice-selection-source {
+  display: none;
+}
+
+.practice-editor .practice-pills .pill {
+  min-height: 0 !important;
+  padding: 5px 9px;
+  font-size: 10.5px;
+}
+
+.practice-editor .practice-field-lesson_on input {
+  min-height: 44px;
+  padding: 12px;
+}
+
+.practice-editor .practice-field-next_action,
+.practice-editor .practice-field-gained_text {
+  margin-bottom: 0;
+}
+
+.practice-editor .practice-field-next_action {
+  margin-top: 2px;
+}
+
+.practice-editor .practice-fields + .two {
+  margin-top: 12px;
+}
+
+.repertoire-editor .fl {
+  margin-top: 12px;
+}
+
+.repertoire-editor .practice-pills {
+  margin-top: 5px;
+}
+
+.repertoire-editor .practice-pills .pill {
+  min-height: 0 !important;
+  padding: 5px 9px;
+  font-size: 10.5px;
+}
+
+.repertoire-editor .repertoire-preview {
+  background: #F6F1E4;
+  border-color: #E8DFC8;
+  margin-top: 12px;
+}
+
 /* スクロールバーの見た目を軽く整える（iPadでの横スクロールタブなど） */
 .overflow-x-auto {
   scrollbar-width: thin;
