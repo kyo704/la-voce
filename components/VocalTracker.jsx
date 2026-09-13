@@ -17482,7 +17482,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       (p) => String(p.repertoire_name || "").trim() === name
                     ).length
                   };
-                })}
+                }).sort((a, b) => (a.name || "").localeCompare(b.name || "", "ja"))}
                 teacherOptions={[...new Set([
                   ...renrakuStudios.map((s) => orgDisplayName(s.teacherId)).filter(Boolean),
                   "自主練"

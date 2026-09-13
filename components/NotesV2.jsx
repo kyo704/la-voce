@@ -73,7 +73,9 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
 
   const list = visibleNotes(notes, kind, isPractice(kind) ? q : "");
   const noteRows = list.map((n) => n);
-  const rows = kind === "repertoire" ? repertoireItems : noteRows;
+  const rows = kind === "repertoire"
+    ? [...repertoireItems].sort((a, b) => (a.name || "").localeCompare(b.name || "", "ja"))
+    : noteRows;
 
   // ★★見本 SH['repMenu'] の「直す」。★既存の 編集画面（曲を 直す）を そのまま 開きます。
   function openEditFor(item) {
