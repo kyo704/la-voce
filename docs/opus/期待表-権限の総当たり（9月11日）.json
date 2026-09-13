@@ -3,7 +3,7 @@
  "出どころ": "作業指示-権限の事故を直し、記録を残す（9月11日）§2-1・§3",
  "規則": {
   "名簿": "meibo",
-  "役職と 所属": "post OR master",
+  "役職と 所属": "post",
   "レッスンの 日程": "sched_all OR sched_mine",
   "レッスンの 出席": "shukketsu AND (sched_all OR meibo)",
   "行事": "gyoji",
@@ -48,7 +48,7 @@
    "base": "admin",
    "書き出し": {
     "名簿": true,
-    "役職と 所属": true,
+    "役職と 所属": false,
     "レッスンの 日程": true,
     "レッスンの 出席": true,
     "行事": true

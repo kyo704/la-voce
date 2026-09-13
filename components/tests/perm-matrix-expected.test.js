@@ -25,16 +25,40 @@ const t = (c, l) => { if (c) { console.log("  ✓ " + l); ok++; } else { console
 const EXP = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "..",
   "docs", "opus", "期待表-権限の総当たり（9月11日）.json"), "utf8"));
 
-// ★★期待表の 規則を、★そのまま 写します（★言い換えません）。
-//   ★★"meibo" → その できことを 持っているか。
-const RULE = {
-  "名簿":            (h) => h("meibo"),
-  "役職と 所属":     (h) => h("post") || h("master"),
-  "レッスンの 日程": (h) => h("sched_all") || h("sched_mine"),
-  "レッスンの 出席": (h) => h("shukketsu") && (h("sched_all") || h("meibo")),
-  "行事":            (h) => h("gyoji")
-};
-const READ_RULE = (h) => h("meibo") && h("master");
+// ★★規則は 期待表から **読み取ります**。★写しを 持ちません。
+//
+//   ★★2026-09-13、★ここに 写しを 置いて いました。
+//     ★★期待表の ほうを「post OR master」→「post」に 直したのに、
+//       ★★この 写しが 古い まま で、★見張りが 落ちました。
+//     ★★同じ 決めごとが 2か所に ある、★この 帳面が いちばん 繰り返して きた 形です。
+//     ★★だから 写しを 捨てて、★期待表の 字から その場で 組み立てます。
+//
+//   ★★字の 形は 小さいので、★そのまま 読めます ──
+//     `meibo` ／ `post` ／ `A OR B` ／ `A AND (B OR C)`
+const RULE_SRC = EXP.規則;
+
+/** ★規則の 字を 読んで、★はい／いいえ を 返します。 */
+function evalRule(src, has) {
+  // ★★丸かっこの 中を 先に 片づけます。
+  let t = String(src);
+  for (let i = 0; i < 8 && t.includes("("); i++) {
+    t = t.replace(/\(([^()]*)\)/, (m, inner) => (evalRule(inner, has) ? "TRUE" : "FALSE"));
+  }
+  // ★★AND は OR より 強く つなぎます。
+  return t.split(/\s+OR\s+/).some((orPart) =>
+    orPart.split(/\s+AND\s+/).every((k) => {
+      const key = k.trim();
+      if (key === "TRUE") return true;
+      if (key === "FALSE") return false;
+      return has(key);
+    }));
+}
+
+const RULE = {};
+["名簿", "役職と 所属", "レッスンの 日程", "レッスンの 出席", "行事"].forEach((w) => {
+  RULE[w] = (h) => evalRule(RULE_SRC[w], h);
+});
+const READ_RULE = (h) => evalRule(RULE_SRC["読み込み"], h);
 
 (async () => {
   const src = fs.readFileSync(path.join(__dirname, "..", "..", "lib", "opsPerms.js"), "utf8");
@@ -80,12 +104,21 @@ const READ_RULE = (h) => h("meibo") && h("master");
     "    ✗ ★" + d.name + " × 読み込み　期待 " + d.want + " / 実装 " + d.got));
   t(rdiff.length === 0, "★読み込み 10マス すべて 期待表の とおり");
 
-  console.log("\n④ 規則の 写しちがいが ないこと");
-  // ★★私が 規則を 言い換えて いないか。★期待表の 字と つき合わせます。
-  t(EXP.規則["レッスンの 出席"] === "shukketsu AND (sched_all OR meibo)",
-    "★出席の 規則を そのまま 写している");
-  t(EXP.規則["読み込み"] === "meibo AND master", "★読み込みの 規則を そのまま 写している");
+  console.log("\n④ 規則の 字が 読めて いること");
+  // ★★写しを 持たなく なったので、★「言い換えて いないか」は 問いません。
+  //   ★★代わりに、★字を 読む 仕掛けが 正しく 動くかを 見ます。
+  //   ★★読めない 字が 来たら、★黙って false に せず、★ここで 気づける ように。
+  const H = (set) => (k) => set.includes(k);
+  t(evalRule("meibo", H(["meibo"])) === true, "★1つの 鍵");
+  t(evalRule("meibo", H([])) === false, "★持って いなければ いいえ");
+  t(evalRule("a OR b", H(["b"])) === true, "★または");
+  t(evalRule("a AND b", H(["a"])) === false, "★かつ（★片方 だけ）");
+  t(evalRule("a AND (b OR c)", H(["a", "c"])) === true, "★かっこの 中の または");
+  t(evalRule("a AND (b OR c)", H(["a"])) === false, "★かっこの 中が どちらも 無い");
   t(EXP.規則["既定"].includes("false"), "★知らない 表は false");
+  // ★★いま 期待表に 書いて ある 字を、★そのまま 並べて おきます。
+  //   ★★人が 読んで 気づける ように（★機械は 上で 見て います）。
+  Object.entries(EXP.規則).forEach(([k, v]) => console.log("    " + k + "　" + v));
 
   console.log("\n★★この見張りが 見ていないこと");
   console.log("　★決まり（RLS）が 実際に 止めるか ── ★台帳の 層");
