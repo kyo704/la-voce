@@ -63,7 +63,10 @@ export async function GET() {
         //     ★あとから 足しても、★組み立て直すまで 効きません。
         //     ★★だから「入れたのに 出ない」が 起きます。★ここで 見分けられます。
         secondColorIds: (process.env.NEXT_PUBLIC_SECOND_COLOR_USER_IDS || "").trim() !== "",
-        layoutV2Ids: (process.env.NEXT_PUBLIC_LAYOUT_V2_USER_IDS || "").trim() !== ""
+        layoutV2Ids: (process.env.NEXT_PUBLIC_LAYOUT_V2_USER_IDS || "").trim() !== "",
+        // ★★運営モードの 直しの 門（★2026-09-13・lib/opsFixGate.js）。
+        //   ★★お名前は 出しません。★入って いるか どうか だけ。
+        opsFixEmails: (process.env.NEXT_PUBLIC_OPS_FIX_ALLOWLIST || "").trim() !== ""
       },
       // ★★配信されている コードが 出す、★羊の 大きさの 式。
       //   ★★これが 新しい 形なら、★配信の 経路は 塞がっていません。
@@ -91,6 +94,9 @@ export async function GET() {
         secondColorIds: (process.env.NEXT_PUBLIC_SECOND_COLOR_USER_IDS || "")
           .split(",").map((x) => x.trim()).filter(Boolean).length,
         layoutV2Ids: (process.env.NEXT_PUBLIC_LAYOUT_V2_USER_IDS || "")
+          .split(",").map((x) => x.trim()).filter(Boolean).length,
+        // ★★何人 入って いるか だけ。★どなたかは 出しません。
+        opsFixEmails: (process.env.NEXT_PUBLIC_OPS_FIX_ALLOWLIST || "")
           .split(",").map((x) => x.trim()).filter(Boolean).length
       }
     }),

@@ -134,6 +134,7 @@ import { thumbSrc } from "@/lib/thumbs";
 import { roomAssetUrls, preloadUrls } from "@/lib/preloadRoom";
 import { recallEquipped, rememberEquipped } from "@/lib/equippedCache";
 import { mayUseLayoutV2 } from "@/lib/layoutV2";
+import { mayLoadOpsDetail } from "@/lib/opsFixGate";
 import HomeV2 from "@/components/HomeV2";
 import NotesV2 from "@/components/NotesV2";
 import Renraku from "@/components/Renraku";
@@ -10061,12 +10062,35 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     void fetchRenraku(null, null);
   }, [layoutV2, activeTab, fetchNotes, fetchRenrakuStudios, fetchRenraku, myOrgs]);
 
+  // ★★運営モードの 直しの 門（★2026-09-13・lib/opsFixGate.js）。
+  //   ★★画面で 判じません。★決めは lib が 持ちます。
+  const opsFixOn = useMemo(
+    () => mayLoadOpsDetail(userEmail, {
+      NEXT_PUBLIC_OPS_FIX_ALLOWLIST: process.env.NEXT_PUBLIC_OPS_FIX_ALLOWLIST
+    }),
+    [userEmail]);
+
   // ★運営モードに 入ったら、★その教室の 門下を 読みます。
+  //
+  //   ★★2026-09-13、★名簿と 役職も 読む ように しました。
+  //     ★★読んで いなかった ので、★`orgMembers` が 空の まま でした。
+  //       ★★すると `permsOfMember(null, …)` が null を 返し、
+  //         ★タブの 決めが「できこと」から「名前の ちから」に 落ちます。
+  //       ★★課長（staff）の 方に、★日程の タブ 1つ しか 出ませんでした
+  //         （★実機の ご報告）。★設定が 出ない のは、★そのためです。
+  //     ★★読む 道は もとから ありました（★fetchOrgDetail）。
+  //       ★もっとの「教室の詳細」を 開いた ときだけ 呼ばれて いました。
+  //       ★★だから、★入り方で タブの 出方が 変わって いました。
+  //
+  //   ★★まだ お二人だけ です。★38人の 画面を、★お決めの 前に 変えません。
+  //     ★★直すと、★役職を お持ちの 方の タブの 出方が 変わります。
+  //       ★★9月11日に 11人へ 役職を 付けました。★その方々に 効きます。
   useEffect(() => {
     if (!opsOrgId) return;
+    if (opsFixOn) void fetchOrgDetail(opsOrgId);
     void fetchRenrakuStudios(opsOrgId);
     void fetchRenraku(opsOrgId, null);
-  }, [opsOrgId, fetchRenrakuStudios, fetchRenraku]);
+  }, [opsOrgId, opsFixOn, fetchRenrakuStudios, fetchRenraku]);
 
   // ★★電波が戻ったら、★自動で送ります。★押し直させません。
   //   ★★画面に戻ったときも、試します。★online が来ないことがあるためです。
