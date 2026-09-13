@@ -28,13 +28,18 @@ function ok(cond, label) {
       "file://" + path.join(__dirname, "..", "..", "lib", n + ".js")}"`);
   const R = await import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
 
-  // ★見本 G07 と 同じ 形の 名簿を 組みます。
+  // ★★2026-09-13、★台帳に ある 形に 直しました。
+  //   ★★前は status が enrolled／paused／invited でした。
+  //     ★★どれも 台帳に ありません（★許すのは active／left の 2つ）。
+  //     ★★作り物の 行だったので 見張りは 通り、★実物は 1行も 出ませんでした。
+  //   ★★生徒は enrollments に 居ます。★role を 持ちません（★裁定 その21）。
   const M = [
-    { user_id: "a", status: "enrolled", teacher_ids: ["t1"] },
-    { user_id: "b", status: "enrolled", teacher_ids: ["t2", "t3"] },  // ★2人に つく
-    { user_id: "c", status: "enrolled", teacher_ids: ["t3"] },
-    { user_id: "d", status: "paused", teacher_ids: ["t1"] },
-    { user_id: "e", status: "invited", teacher_ids: [] },
+    { user_id: "a", status: "active", teacher_ids: ["t1"] },
+    { user_id: "b", status: "active", teacher_ids: ["t2", "t3"] },  // ★2人に つく
+    { user_id: "c", status: "active", teacher_ids: ["t3"] },
+    { user_id: "d", status: "left", teacher_ids: ["t1"] },
+    { user_id: "e", status: "left", teacher_ids: [] },
+    // ★★役割の 付いた 行（★memberships）は、★これまでどおり 数えません。
     { user_id: "t1", role: "teacher", teacher_ids: [] },
     { user_id: "s1", role: "staff", teacher_ids: [] }
   ];
@@ -43,13 +48,22 @@ function ok(cond, label) {
   console.log("① 札の 数");
   const c = R.chipCounts(M);
   ok(c.all === 5, "★すべて は 5（★先生・事務を 抜く）");
-  ok(c.enrolled === 3 && c.paused === 1 && c.invited === 1, "★数えます 3／休会 1／返事まち 1");
-  ok(R.ROSTER_CHIPS.map((x) => x.label).join("／") === "すべて／数えます／休会／返事まち",
-    "★見本の 4つと 同じ 言葉・同じ 順");
+  // ★★2026-09-13、★札を 2つに しました。
+  //   ★★見本には 在籍・休会・招待中・退会 の 4つが あります。
+  //   ★★けれど 台帳が 許す ようすは active／left の 2つ だけ です
+  //     （★enrollments_status_check）。★休会・招待中は しまえません。
+  //   ★★無い ものを 在る ように 見せません（★坂本さんの お決め）。
+  //     ★★入れる ことに なったら、★先に 台帳の 側を 作ります。
+  ok(c.active === 3 && c.left === 2, "★数えます 3／退会 2");
+  ok(R.ROSTER_CHIPS.map((x) => x.label).join("／") === "すべて／数えます／退会",
+    "★札は 3つ。★台帳に ある ようす だけ");
 
   console.log("② 札で しぼる");
   ok(M.filter((m) => R.matchesChip(m, "all")).length === 5, "★すべて で 5人");
-  ok(M.filter((m) => R.matchesChip(m, "paused")).length === 1, "★休会 で 1人");
+  ok(M.filter((m) => R.matchesChip(m, "left")).length === 2, "★退会 で 2人");
+  // ★★台帳に 無い ようすで しぼると、★1人も 残りません。
+  //   ★★札に 出さないので 押せませんが、★念の ため。
+  ok(M.filter((m) => R.matchesChip(m, "paused")).length === 0, "★休会 は 0人（★台帳に 無い）");
   ok(M.filter((m) => R.matchesChip(m, "all")).every((m) => !m.role), "★先生・事務は 出ない");
 
   console.log("③ 先生で しぼる");

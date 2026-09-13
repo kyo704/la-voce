@@ -151,7 +151,7 @@ import OpsEvents from "@/components/OpsEvents";
 import OpsSettings from "@/components/OpsSettings";
 import { maySeeMoney } from "@/lib/opsShell";
 import { mayEnterOps, mayEditRoster, permsOfMember } from "@/lib/opsShell";
-import { rosterCount } from "@/lib/orgRoster";
+import { rosterCount, toRosterRows } from "@/lib/orgRoster";
 import RecordV2Head from "@/components/RecordV2Head";
 import {
   KoeSheet, NemuriSheet, MarksSheet, SheetRow, ListSheet, HonbanSheet, HitokotoSheet
@@ -11824,6 +11824,35 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
    *   ★★消す 道も、これで 兼ねます（★空にして「入れる」）。
    *     ★★勝手に 消しません。★その方が 消したときだけ 消えます。
    */
+  /**
+   * ★生徒の 学年の 札を 入れる（★2026-09-13・裁定 その18＋その21）。
+   *
+   *   ★★置き場は enrollments です。★生徒が そこに 居る ため。
+   *   ★★守りは 台帳の 引き金（guard_enrollment_grade_label）です。
+   *     ★★`has_can(org_id, 'meibo')` が 無ければ 42501 で 断られます。
+   *     ★★画面の canEdit は 見た目の 絞りです。★門は 台帳の ほう。
+   */
+  async function handleSetEnrollmentGrade(orgId, studentId, label) {
+    if (!orgId || !studentId) return;
+    const value = typeof label === "string" && label.trim() !== "" ? label.trim() : null;
+    const supabase = createClient();
+    const { data, error } = await supabase.from("enrollments")
+      .update({ grade_label: value })
+      .eq("org_id", orgId).eq("student_id", studentId).select("id");
+    if (error) { console.error("学年を入れられませんでした:", error); return; }
+    // ★★0行は 誤りに なりません。★断られた ことを 見落とさない ため 残します。
+    if (!data || data.length === 0) {
+      console.error("学年を入れられませんでした（0行）。権限が足りない可能性があります。",
+        { orgId, studentId });
+      return;
+    }
+    setOrgEnrollments((prev) => ({
+      ...prev,
+      [orgId]: (prev[orgId] || []).map((e) =>
+        e.student_id === studentId ? { ...e, grade_label: value } : e)
+    }));
+  }
+
   async function handleSetMemberGrade(orgId, memberUserId, label) {
     if (!orgId || !memberUserId) return;
     const value = typeof label === "string" && label.trim() !== "" ? label.trim() : null;
@@ -13316,28 +13345,32 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             }
             if (tabKey === "roster") {
               // ★★名簿（★見本③⑦）。★1行を 1枚の カードに。
-              //   ★★先生・事務は 数えません。★決めは lib/orgRoster.js です。
-              //   ★お金は 責任者だけ（★§1-1）。
-              const members = orgMembers[opsOrgId] || [];
+              //
+              //   ★★2026-09-13、★読む 先を 変えました（★裁定 その21・㋑）。
+              //     ★★前は memberships を 渡して いました。
+              //       ★★けれど matchesChip が owner／admin／teacher／staff を
+              //         ★行ごと 落とし、★台帳の role は その 4つ しか 許しません。
+              //       ★★だから 名簿は **どの 学校でも 1行も 出ません**でした。
+              //         ★ご請求の 人数も 0 の ままでした。
+              //     ★★生徒は enrollments に 居ます。★そちらを 読みます。
+              //   ★★列の 読み替えは lib/orgRoster.js の toRosterRows が します。
+              //     ★ここで 組み立てません。★決めは lib が 持ちます。
+              const members = toRosterRows(
+                orgEnrollments[opsOrgId] || [],
+                orgAssignments[opsOrgId] || []);
               return (
                 <OpsRoster
                   members={members}
                   nameOf={(id) => orgDisplayName(id) || ""}
                   teacherNameOf={(id) => orgDisplayName(id) || ""}
                   canSeeMoney={maySeeMoney(gate)}
-                  // ★★名簿を 直せるのは owner と admin だけです。
-                  //   ★役職の 名前で 分けません。★できること で 分けます。
+                  // ★★名簿を 直せるのは「学校ぜんぶの 名簿」（meibo）を 持つ 方。
                   canEdit={mayEditRoster(gate)}
-                  onSetGrade={(memberUserId, label) =>
-                    handleSetMemberGrade(opsOrgId, memberUserId, label)}
-                  // ★★役職（★2026-09-11・3段目）。
-                  //   ★★役職の 表が まだ 無ければ、★行を 出しません。
-                  posts={orgPosts[opsOrgId] || []}
-                  postsById={opsPostsById}
-                  myPerms={permsOfMember(opsMembership, opsPostsById)}
-                  onSetPost={(memberUserId, postId) => handleOrgPosts(opsOrgId, postId
-                    ? { action: "assign", userId: memberUserId, postId }
-                    : { action: "unassign", userId: memberUserId })} />
+                  onSetGrade={(studentId, label) =>
+                    handleSetEnrollmentGrade(opsOrgId, studentId, label)} />
+                  // ★★役職は 渡しません（★2026-09-13）。
+                  //   ★★生徒は 役職を 持ちません。★学校で 働く 方の ものです。
+                  //   ★★posts を 渡さなければ、★役職の 行は 出ません。
               );
             }
             // ★★まだ 作っていない帯。★空の画面を 置きません。

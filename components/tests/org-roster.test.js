@@ -47,10 +47,19 @@ function eq(a, b, label) {
   eq(m.rosterCount([{ role: "student", status: "invited" }]), 0, "★返事まちも 数えない");
   eq(m.rosterCount([]), 0, "空は 0");
   eq(m.rosterCount(null), 0, "無くても 落ちない");
+  // ★★2026-09-13、★ここは 台帳に 無い 値で 書かれて いました。
+  //   ★`role:"student"` … ★memberships_role_check が 許しません
+  //     （★owner／admin／teacher／staff の 4つ だけ・NOT NULL）。
+  //   ★`status:"paused"／"invited"` … ★そんな 列も 値も ありません。
+  //   ★★作り物の 行だったので 見張りは 通り、★実物は 1行も 出ませんでした。
+  // ★★いまは enrollments の 形で 書きます ── ★status は active／left だけ。
   eq(m.countsByStatus([
-    { role: "student" }, { role: "student", status: "paused" },
-    { role: "student", status: "invited" }, { role: "teacher" }
-  ]), { counted: 1, paused: 1, invited: 1, notCounted: 1 }, "ようす ごとに 数えられる");
+    { status: "active" }, { status: "active" },
+    { status: "left" }, { status: null }
+  ]), { counted: 3, left: 1, notCounted: 0 }, "ようす ごとに 数えられる（active／left）");
+  // ★★役割の 付いた 行（★memberships）は、★これまでどおり 数えません。
+  eq(m.countsByStatus([{ role: "teacher" }, { role: "owner" }]),
+    { counted: 0, left: 0, notCounted: 2 }, "役割の 付いた 行は 数えない");
 
   console.log("\n=== ② 段の 境目で 逆転しない（★§10「安いほうを 当てます」） ===");
   let bad = [];
