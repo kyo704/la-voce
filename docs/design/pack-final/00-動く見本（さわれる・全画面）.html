@@ -2438,12 +2438,12 @@ function setZai(i,v){
  var m=MEI[i],old=m[3];if(old===v)return;m[3]=v;
  draw();toast(m[0]+' を '+v+' にしました。数える人数は '+zaisekiN()+'人 になりました')}
 function billN(){return zaisekiN()}
-/* 料金＝いちばん安いもの。下限 12,800円 */
+/* 料金＝いちばん安いもの。下限 9,800円（★2026-09-13 改定。前は 12,800円） */
 function billPlans(){var n=billN();return [[n+'人 × 400円',n*400],[n+'人 × 350円',n*350],['300人 × 250円',75000]]}
-function billYen(){var v=Math.min.apply(null,billPlans().map(function(x){return x[1]}));return Math.max(12800,v)}
+function billYen(){var v=Math.min.apply(null,billPlans().map(function(x){return x[1]}));return Math.max(9800,v)}
 function billWl(){var y=billYen();
  return billPlans().map(function(x){return (x[1]===y?'<b>':'')+x[0]+'　＝ '+yen(x[1])+'円'+(x[1]===y?'　←　いちばん 安いもの</b>':'')}).join('<br>')
- +'<br>下限 12,800円（下回りません）'}
+ +'<br>下限 9,800円（下回りません）'}
 function zaisekiN(){return MEI.filter(function(m){return m[3]==='在籍'}).length}
 SC['その人']=function(i){var m=MEI[i];
  return bk('名簿')+'<div class="hd" style="padding-top:2px"><h2>'+m[0]+'</h2><span class="role">'+m[3]+'</span></div>'

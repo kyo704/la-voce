@@ -25,12 +25,27 @@ import {
 } from "@/lib/opsPerms";
 import { tx } from "@/lib/t";
 
-/** ★つまみ（★見本の .sw）。★色だけに 意味を 持たせません。★形でも 分かります。 */
+/**
+ * ★つまみ（★見本の .sw）。★色だけに 意味を 持たせません。★形でも 分かります。
+ *
+ *   ★★2026-09-13、★2つの ことを 1つの 色で 言って いました ──
+ *     ★「入って いる／切れて いる」と「触れる／触れない」。
+ *     ★★`on かつ disabled` の 背が `C.line` で、★**切れて いる ときと 同じ 色**。
+ *       ★★だから「入って いるが 触れない」が、★「切れて いる」に 見えました。
+ *       ★★実機で「動かない」と ご報告を いただいた ときの、★見え方の 根です
+ *         （★実際には 動いて いました）。
+ *
+ *   ★★いまは 2つを 分けて います ──
+ *     ★背　　… ★入って いるか どうか（★curtain／line）
+ *     ★薄さ … ★触れるか どうか（★1／0.55）
+ *     ★玉の 位置 … ★入って いるか どうか（★右／左）
+ *   ★★1つの ことに 1つの しるし。★重ねません。
+ */
 function Switch({ on, disabled }) {
   return (
     <span aria-hidden="true" style={{
       width: 44, height: 26, borderRadius: 999, position: "relative", flex: "none",
-      background: on ? (disabled ? C.line : C.curtain) : C.line,
+      background: on ? C.curtain : C.line,
       opacity: disabled ? 0.55 : 1
     }}>
       <span style={{
@@ -61,7 +76,15 @@ export default function OpsPosts({
     //   ★★通信が 遅いと、★押しても 何も 起きないように 見えます。
     setMessage(tx("送っています…"));
     const err = await onAction(payload);
-    setMessage(err || "");
+    if (err) { setMessage(err); return; }
+    // ★★済んだ ことを、★字でも 言います（★2026-09-13）。
+    //   ★★つまみは 絵です。★絵だけだと、★変わったかが 分かりにくい。
+    //   ★★とくに 通信が 2秒ほど かかるので、★その あいだ 何も 起きません。
+    if (payload.action === "perm") {
+      setMessage(payload.on ? tx("入れました") : tx("外しました"));
+    } else {
+      setMessage("");
+    }
   };
 
   // ── 中身 ─────────────────────────────────────────────
