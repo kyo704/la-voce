@@ -171,7 +171,7 @@ function QuietScreen({ reason, onGo }) {
   );
 }
 
-export default function LookBackV2({ entries, todayISO, notOutDays, performanceDays, onOpenMore }) {
+export default function LookBackV2({ entries, todayISO, notOutDays, performanceDays, onOpenMore, profile, userEmail }) {
   const [tab, setTab] = useState("narabe");
   // ★★くらべる の 中の「順番」は、★画面ごと 入れ替わります（★見本 push('順番')）。
   //   ★★見本は 1枚の 画面です。★頭（ふりかえる）も 4つの 札も 出ません。
@@ -329,7 +329,7 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
         //   ★★見本 B03 は「書いた 日 54日」「…（54日）」です。
         //     ★かぞえる は、★書いた ぶん ぜんぶを 見る 画面です。
         //   ★→ ★窓を 外しました。★書いた 日 ぜんぶを 渡します。
-        return <CountV2 entries={entries} dates={allDates} todayISO={todayISO} />;
+        return <CountV2 entries={entries} dates={allDates} todayISO={todayISO} profile={profile} userEmail={userEmail} />;
       })()}
     </div>
   );

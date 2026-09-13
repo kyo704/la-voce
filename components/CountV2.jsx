@@ -4,7 +4,9 @@ import { useState } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, rem } from "@/lib/uiKit";
 import { H3, Card, Kv, Note, Li, Back, Btn } from "@/components/UiV2";
-import { USUAL_ROWS, usualOf, writtenDays, histogramOf } from "@/lib/countView";
+import { USUAL_ROWS, usualOf, writtenDays, histogramOf, detailedCountsOf } from "@/lib/countView";
+import { isAlwaysFree } from "@/lib/freeTier";
+import { viewerOf } from "@/lib/entitlements";
 
 // ============================================================================
 // かぞえる（見本⑭ ／ 2026-09-09）
@@ -49,16 +51,54 @@ function word(unit, v) {
   return String(v);
 }
 
-export default function CountV2({ entries, dates, todayISO }) {
+export default function CountV2({ entries, dates, todayISO, profile, userEmail, isPaidOverride }) {
   const [detail, setDetail] = useState(null);
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+  const [localPaid, setLocalPaid] = useState(false);
+  const [showFoldedNote, setShowFoldedNote] = useState(false);
+
+  // ★テスター / 無料全解放 / 支払済み判定
+  const email = String(userEmail || profile?.email || "").trim().toLowerCase();
+  const isPaidAccount = localPaid || isPaidOverride || isAlwaysFree(profile) ||
+    ["kyo0703opera@gmail.com", "kyo0703opera+forcode@gmail.com"].includes(email) ||
+    profile?.is_tester === true ||
+    viewerOf(profile) === "tester";
+
+  // ★「あなたのふだん」：minDays=1 を渡してデータがあれば1日分でも表示
   const rows = USUAL_ROWS
-    .map((r) => ({ ...r, got: usualOf(entries, dates, r.key, todayISO) }))
+    .map((r) => ({ ...r, got: usualOf(entries, dates, r.key, todayISO, 1) }))
     .filter((r) => r.got);
   const written = writtenDays(entries, dates);
   const hist = histogramOf(entries, dates, "dinnerToBed");
   const maxCount = hist ? Math.max(...hist.bars.map((b) => b.count), 1) : 1;
 
-  if (rows.length === 0 && !hist) {
+  // ★詳しく数えるの有料用データ
+  const detailedRows = detailedCountsOf(entries, dates);
+
+  // Stripe 支払い画面への遷移ハンドラ
+  const handleStartStripe = async () => {
+    setIsCheckoutLoading(true);
+    setLocalPaid(true); // 即時有料表示をオン
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan: "monthly" })
+      });
+      const data = await res.json();
+      if (data && data.url) {
+        window.location.href = data.url;
+        return;
+      }
+    } catch (e) {
+      console.error("Stripe checkout error:", e);
+    } finally {
+      setIsCheckoutLoading(false);
+      setDetail(null);
+    }
+  };
+
+  if (rows.length === 0 && !hist && written === 0) {
     return (
       <Card>
         <p style={{ ...TYPE.li, color: C.inkSoft, lineHeight: 1.9, margin: 0 }}>
@@ -69,11 +109,12 @@ export default function CountV2({ entries, dates, todayISO }) {
     );
   }
 
-  if (detail === "investigate" || detail === "rules") {
+  // 「調べる」画面
+  if (detail === "investigate") {
     return (
       <div>
         <Back onClick={() => setDetail(null)}>かぞえる</Back>
-        <h2 style={{ ...TYPE.h2, margin: "5px 0 10px" }}>{detail === "rules" ? "詳しい決まり" : "調べる"}</h2>
+        <h2 style={{ ...TYPE.h2, margin: "5px 0 10px" }}>調べる</h2>
         <Card>
           <div style={{ ...TYPE.lead }}>くらべる・かぞえるを、<br />もっと こまかく 見られます。</div>
           <div style={{ ...TYPE.usual, marginTop: 9, lineHeight: 1.9 }}>
@@ -91,8 +132,53 @@ export default function CountV2({ entries, dates, todayISO }) {
           記録・並べる・さかのぼる・ノート・ひつじ・受診用の 1枚は、これからも 無料です。<br />
           安全に かかわるものに、お金を いただきません。
         </div>
-        <Btn onClick={() => setDetail(null)} style={{ marginTop: 11 }}>はじめる</Btn>
+        <Btn onClick={handleStartStripe} style={{ marginTop: 11 }}>
+          {isCheckoutLoading ? "処理中..." : "はじめる"}
+        </Btn>
         <Btn ghost onClick={() => setDetail(null)} style={{ marginTop: 8 }}>いまは やめておく</Btn>
+
+        <div style={{ marginTop: 14 }}>
+          <button
+            type="button"
+            onClick={() => setShowFoldedNote((v) => !v)}
+            style={{
+              background: "none", border: "none", color: C.curtain,
+              fontSize: rem(13), padding: "6px 0", cursor: "pointer", textDecoration: "underline"
+            }}>
+            {showFoldedNote ? "閉じる" : "くわしい 決まりを 見る"}
+          </button>
+          {showFoldedNote ? (
+            <div style={{ ...TYPE.note, marginTop: 6, lineHeight: 1.8 }}>
+              戻ると、元の場所に 帰ります（1画面だけ）。催促を しません。<br />
+              いつでも 解約・変更が 可能です。
+            </div>
+          ) : null}
+        </div>
+      </div>
+    );
+  }
+
+  // 「詳しい決まり」画面
+  if (detail === "rules") {
+    return (
+      <div>
+        <Back onClick={() => setDetail(null)}>かぞえる</Back>
+        <h2 style={{ ...TYPE.h2, margin: "5px 0 10px" }}>詳しい決まり</h2>
+        <Card>
+          <div style={{ ...TYPE.lead }}>記録と利用の 決まり</div>
+          <div style={{ ...TYPE.usual, marginTop: 9, lineHeight: 1.95 }}>
+            ・通信の失敗等で 記録を 勝手に消しません<br />
+            ・基本機能（記録・並べる・さかのぼる・ノート・ひつじ・受診用の1枚）は これからも永久無料です<br />
+            ・よその人と 比べたり、評価を 出したり しません<br />
+            ・有料機能（調べる）は いつでも 解約・停止が 可能です
+          </div>
+        </Card>
+        <Card>
+          <Kv right="無料">記録・並べる・さかのぼる・ノート</Kv>
+          <Kv right="無料">ひつじの部屋・受診用の1枚</Kv>
+          <Kv right="580円／月（または年額）" last>詳しく数える（調べる）</Kv>
+        </Card>
+        <Btn ghost onClick={() => setDetail(null)} style={{ marginTop: 11 }}>閉じる</Btn>
       </div>
     );
   }
@@ -112,7 +198,7 @@ export default function CountV2({ entries, dates, todayISO }) {
         </>
       ) : null}
 
-      <Card onClick={() => setDetail("rules")} style={{ padding: "10px 12px" }}>
+      <Card onClick={() => setDetail("rules")} style={{ padding: "10px 12px", cursor: "pointer" }}>
         <div style={{ ...TYPE.usual, color: C.curtain }}>詳しい決まりを見る　›</div>
       </Card>
 
@@ -145,13 +231,21 @@ export default function CountV2({ entries, dates, todayISO }) {
 
       <H3>詳しく 数える</H3>
       <Card>
-        {[
-          "本番の 前の 3日だけ",
-          "出づらかった日の 普段",
-          "曜日ごとの 普段"
-        ].map((label, i) => (
-          <Li key={label} onClick={() => setDetail("investigate")} right={<span style={{ color: C.curtain }}>調べる</span>} last={i === 2}>
-            {label}
+        {detailedRows.map((r, i) => (
+          <Li
+            key={r.key}
+            onClick={() => {
+              if (!isPaidAccount) setDetail("investigate");
+            }}
+            right={
+              isPaidAccount ? (
+                <s style={{ color: C.ink, textDecoration: "none" }}>{r.value}</s>
+              ) : (
+                <span style={{ color: C.curtain }}>調べる</span>
+              )
+            }
+            last={i === detailedRows.length - 1}>
+            {r.label}
           </Li>
         ))}
       </Card>

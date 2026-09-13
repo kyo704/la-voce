@@ -5716,7 +5716,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const showAgeQuestion = ageColumnsReady && shouldAskAgeQuestion(profile);
 
   // ★テスター先行公開の区分。課金ではありません（lib/entitlements.js の冒頭を参照）。
-  const viewer = useMemo(() => viewerOf({ ...profile, email: userEmail }), [profile, userEmail]);
+  const viewer = useMemo(() => viewerOf(profile), [profile]);
 
   const effectiveProfessions = useMemo(() => {
     return (profile.is_admin && adminShowAllProfessions)
@@ -18260,7 +18260,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             {activeTab === "analysis" && layoutV2 && mayUseForAnalysis(profile) && (
               <LookBackV2 entries={entries} todayISO={realTodayDate} notOutDays={notOutDays}
                 performanceDays={performances.map((pf) => pf.performed_on).filter(Boolean)}
-                onOpenMore={() => setActiveTab("more")} />
+                onOpenMore={() => setActiveTab("more")}
+                profile={profile}
+                userEmail={userEmail} />
             )}
             {activeTab === "analysis" && !layoutV2 && (
               <div className="space-y-5">
