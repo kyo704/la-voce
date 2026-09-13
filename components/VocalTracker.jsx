@@ -9814,13 +9814,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const supabase = createClient();
     const [msgRes, annRes] = await Promise.all([
       teacherId
-        ? supabase.from("org_messages")
+        ? (() => {
+          let query = supabase.from("org_messages")
             .select("id, org_id, teacher_id, author_id, body, created_at, withdrawn_at")
-            .eq("teacher_id", teacherId).order("created_at", { ascending: true })
+            .eq("teacher_id", teacherId);
+          if (orgId) query = query.eq("org_id", orgId);
+          return query.order("created_at", { ascending: true });
+        })()
         : Promise.resolve({ data: [] }),
-      supabase.from("org_messages")
-        .select("id, org_id, teacher_id, author_id, body, created_at, withdrawn_at")
-        .is("teacher_id", null).order("created_at", { ascending: false }).limit(5)
+      (() => {
+        let query = supabase.from("org_messages")
+          .select("id, org_id, teacher_id, author_id, body, created_at, withdrawn_at")
+          .is("teacher_id", null);
+        if (orgId) query = query.eq("org_id", orgId);
+        return query.order("created_at", { ascending: false }).limit(5);
+      })()
     ]);
     if (msgRes && !msgRes.error) setRenrakuMessages(msgRes.data || []);
     if (annRes && !annRes.error) setRenrakuAnnouncements(annRes.data || []);
@@ -17402,6 +17410,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 repertoireNames={[...new Set([
                   ...repertoire.map((r) => r.name),
                   ...myNotes.filter((n) => n.kind === "repertoire" && n.body).map((n) => n.body)
+                ])]}
+                teacherOptions={[...new Set([
+                  ...renrakuStudios.map((s) => orgDisplayName(s.teacherId)).filter(Boolean),
+                  "自主練"
                 ])]}
                 onAddRepertoire={async ({ id, name, composer, positionIn, language, highNote, lowNote, status, performance }) => {
                   const key = String(name || "").trim();

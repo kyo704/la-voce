@@ -40,7 +40,7 @@ import {
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
 const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
 
-export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, saving, renraku, todayISO, repertoireNames }) {
+export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, saving, renraku, todayISO, repertoireNames, teacherOptions = [] }) {
   const [kind, setKind] = useState(DEFAULT_KIND);
   const [q, setQ] = useState("");
   const [editing, setEditing] = useState(null);   // ★{ id, body } ★null なら 一覧
@@ -143,7 +143,7 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, savi
                 </FieldLabel>
                 {f.key === "teacher_label" ? (
                   <div className="pills practice-pills">
-                    {["斎藤 めぐみ", "渡辺 たける", "自主練"].map((name) => (
+                    {(teacherOptions.length > 0 ? teacherOptions : ["斎藤 めぐみ", "渡辺 たける", "自主練"]).map((name) => (
                       <Pill key={name} on={editing[f.key] === name}
                         onClick={() => setEditing({ ...editing, [f.key]: name })}>
                         {name}
@@ -278,12 +278,14 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, savi
             ★★書く 道は すでに あります（★「◯◯先生に 伝える」）。
             ★★入口を 2つに しません。
           ★★＋そのものを 消していません。★ほかの 3つの 帯では 出ます。 */}
-      <ScreenHead title="ノート" right={isRenrakuKind(kind) ? null : (
+      <ScreenHead title="ノート" right={(
         <HeadRound mark="＋" label="ノートを書く"
           onClick={() => {
+            const nextKind = isRenrakuKind(kind) ? "practice" : kind;
+            if (nextKind !== kind) setKind(nextKind);
             // ★★稽古の メモは、★はじめから 6つの 欄を 持たせます。
             //   ★「いつ」だけ、★きょうを 入れておきます。★あとは 空です。
-            setEditing(isPractice(kind)
+            setEditing(isRenrakuKind(kind) || isPractice(kind)
               ? { id: null, body: "", ...emptyPractice(todayISO) }
               : kind === "repertoire"
                 ? { id: null, body: "", repertoire_name: "", composer: "", position_in: "", language: "イタリア語", high_note: "", low_note: "", status: "はじめたばかり", performance: "" }
@@ -333,7 +335,7 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, savi
             role="button"
             tabIndex={0}
             onClick={() => {
-              if (isPractice(kind)) {
+              if (isRenrakuKind(kind) || isPractice(kind)) {
                 setEditing({ id: null, body: "", ...emptyPractice(todayISO) });
               } else if (kind === "repertoire") {
                 setEditing({ id: null, body: "", repertoire_name: "", composer: "", position_in: "", language: "イタリア語", high_note: "", low_note: "", status: "はじめたばかり", performance: "" });
