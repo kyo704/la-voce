@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, rem } from "@/lib/uiKit";
-import { H3, Card, Kv, Note, Li } from "@/components/UiV2";
+import { H3, Card, Kv, Note, Li, Back, Btn } from "@/components/UiV2";
 import { USUAL_ROWS, usualOf, writtenDays, histogramOf } from "@/lib/countView";
 
 // ============================================================================
@@ -49,6 +50,7 @@ function word(unit, v) {
 }
 
 export default function CountV2({ entries, dates, todayISO }) {
+  const [detail, setDetail] = useState(null);
   const rows = USUAL_ROWS
     .map((r) => ({ ...r, got: usualOf(entries, dates, r.key, todayISO) }))
     .filter((r) => r.got);
@@ -67,6 +69,34 @@ export default function CountV2({ entries, dates, todayISO }) {
     );
   }
 
+  if (detail === "investigate") {
+    return (
+      <div>
+        <Back onClick={() => setDetail(null)}>かぞえる</Back>
+        <h2 style={{ ...TYPE.h2, margin: "5px 0 10px" }}>調べる</h2>
+        <Card>
+          <div style={{ ...TYPE.lead }}>くらべる・かぞえるを、<br />もっと こまかく 見られます。</div>
+          <div style={{ ...TYPE.usual, marginTop: 9, lineHeight: 1.9 }}>
+            ・本番の 前の3日だけを 数える<br />
+            ・出づらかった日の 普段<br />
+            ・曜日ごとの 普段<br />
+            ・調べることを 5つまで 選ぶ
+          </div>
+        </Card>
+        <Card>
+          <Kv right="580円（税込）">ひと月ごと</Kv>
+          <Kv right="5,800円（税込）" last>1年ぶん まとめて</Kv>
+        </Card>
+        <div style={{ ...TYPE.note, background: "#F6EFDF", borderRadius: 12, padding: 11, lineHeight: 1.8 }}>
+          記録・並べる・さかのぼる・ノート・ひつじ・受診用の 1枚は、これからも 無料です。<br />
+          安全に かかわるものに、お金を いただきません。
+        </div>
+        <Btn onClick={() => setDetail(null)} style={{ marginTop: 11 }}>はじめる</Btn>
+        <Btn ghost onClick={() => setDetail(null)} style={{ marginTop: 8 }}>いまは やめておく</Btn>
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* ★★あなたの ふだん。★1つも 出せなければ、★枠ごと 出しません。 */}
@@ -79,13 +109,12 @@ export default function CountV2({ entries, dates, todayISO }) {
             ))}
             <Kv right={`${written}日`} last>書いた日</Kv>
           </Card>
-          {/* ★★見本⑭の 但し書き。★1文字も 変えないこと。
-              ★★これが、★この画面の 芯です。★よそと くらべません。 */}
-          <Note style={{ margin: "-1px 0 10px" }}>
-            まんなかの値です。くらべる先は、あなた自身です。よその目安は 出しません。
-          </Note>
         </>
       ) : null}
+
+      <Card onClick={() => setDetail("rules")} style={{ padding: "10px 12px" }}>
+        <div style={{ ...TYPE.usual, color: C.curtain }}>詳しい決まりを見る　›</div>
+      </Card>
 
       {/* ★★分布（★見本⑭）。★数えるだけです。★多い・少ないを 言いません。 */}
       {hist ? (
@@ -121,7 +150,7 @@ export default function CountV2({ entries, dates, todayISO }) {
           "出づらかった日の 普段",
           "曜日ごとの 普段"
         ].map((label, i) => (
-          <Li key={label} right={<span style={{ color: C.inkSoft }}>調べる</span>} last={i === 2}>
+          <Li key={label} onClick={() => setDetail("investigate")} right={<span style={{ color: C.curtain }}>調べる</span>} last={i === 2}>
             {label}
           </Li>
         ))}

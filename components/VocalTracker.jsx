@@ -5716,7 +5716,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const showAgeQuestion = ageColumnsReady && shouldAskAgeQuestion(profile);
 
   // ★テスター先行公開の区分。課金ではありません（lib/entitlements.js の冒頭を参照）。
-  const viewer = useMemo(() => viewerOf(profile), [profile]);
+  const viewer = useMemo(() => viewerOf({ ...profile, email: userEmail }), [profile, userEmail]);
 
   const effectiveProfessions = useMemo(() => {
     return (profile.is_admin && adminShowAllProfessions)
@@ -10156,7 +10156,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //     ★見張り components/tests/no-tdz.test.js を足しました。
   const paidGateApplies = !mayViewSummary({
     scope: "summary",
-    profile,
+    profile: { ...profile, email: userEmail },
     subscribed: subscribed === true,
     userId,
     env: { NEXT_PUBLIC_GATE_TEST_USER_IDS: process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS }
@@ -18317,7 +18317,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ★門が切ってあるうちは、★1度も出ません。 */}
                 {!mayViewSummary({
                   scope: scopeForPeriod(analysisPeriod),
-                  profile,
+                  profile: { ...profile, email: userEmail },
                   subscribed: subscribed === true,
                   // ★★試すあいだ、★自分にだけ門をかけるため（lib/freeTier.js ①-2）。
                   //   ★環境変数が空なら、★何もしません。
