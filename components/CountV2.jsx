@@ -26,9 +26,6 @@ import { USUAL_ROWS, usualOf, writtenDays, histogramOf } from "@/lib/countView";
 //   ★見張り components/tests/count-view.test.js
 // ============================================================================
 
-// ★★大きさ・間は lib/uiKit.js が 持ちます。★ここで 決めません（★design.zip B03）。
-const small = { ...TYPE.note, lineHeight: 1.8 };
-
 /** ★単位に あわせて 言葉に します。★数だけを 裸で 出しません。 */
 function word(unit, v) {
   if (typeof v !== "number" || !Number.isFinite(v)) return null;
@@ -58,6 +55,17 @@ export default function CountV2({ entries, dates, todayISO }) {
   const written = writtenDays(entries, dates);
   const hist = histogramOf(entries, dates, "dinnerToBed");
   const maxCount = hist ? Math.max(...hist.bars.map((b) => b.count), 1) : 1;
+
+  if (rows.length === 0 && !hist) {
+    return (
+      <Card>
+        <p style={{ ...TYPE.li, color: C.inkSoft, lineHeight: 1.9, margin: 0 }}>
+          まだ、数える ものが ありません。<br />
+          記録が 10日ぶん たまると、あなたの 普段の 値が 出ます。
+        </p>
+      </Card>
+    );
+  }
 
   return (
     <div>
@@ -119,19 +127,10 @@ export default function CountV2({ entries, dates, todayISO }) {
         ))}
       </Card>
       <Note>
-        有料のものを 隠しません。見せて、押せなくします。押したときだけ 案内へ。<br />
-        札は「調べる」の 1語だけ。催促しません。
+        有料のものを <b>隠しません</b>。見せて、押せなくします。押したときだけ 案内へ。<br />
+        札は「調べる」の 1語だけ。「PRO」「プレミアム」と 書きません。催促しません。<br />
+        ％を 出しません。良い／悪いを 言いません。
       </Note>
-
-      {/* ★★何も 出せない期間。★空の枠を 置かず、★何が あれば 出るかだけ 置きます。
-          ★★「データ不足」と 書きません。★足りないことを 責めに しません。 */}
-      {rows.length === 0 && !hist ? (
-        <Card>
-          <p style={{ ...TYPE.li, color: C.inkSoft, lineHeight: 1.9, margin: 0 }}>
-            この期間に、数えられる記録がまだありません。
-          </p>
-        </Card>
-      ) : null}
     </div>
   );
 }
