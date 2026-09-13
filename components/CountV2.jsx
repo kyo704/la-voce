@@ -69,11 +69,11 @@ export default function CountV2({ entries, dates, todayISO }) {
     );
   }
 
-  if (detail === "investigate") {
+  if (detail === "investigate" || detail === "rules") {
     return (
       <div>
         <Back onClick={() => setDetail(null)}>かぞえる</Back>
-        <h2 style={{ ...TYPE.h2, margin: "5px 0 10px" }}>調べる</h2>
+        <h2 style={{ ...TYPE.h2, margin: "5px 0 10px" }}>{detail === "rules" ? "詳しい決まり" : "調べる"}</h2>
         <Card>
           <div style={{ ...TYPE.lead }}>くらべる・かぞえるを、<br />もっと こまかく 見られます。</div>
           <div style={{ ...TYPE.usual, marginTop: 9, lineHeight: 1.9 }}>

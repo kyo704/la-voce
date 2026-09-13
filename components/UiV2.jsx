@@ -234,12 +234,15 @@ export const NOTE_OPEN = "くわしい 決まりを 見る";
 export const NOTE_CLOSE = "閉じる";
 
 /** ★一覧の 1行（.li）。★左に 名前、★右に 値。★最後の行に 線を 引きません。 */
-export function Li({ children, right, last, style }) {
+export function Li({ children, right, last, style, onClick }) {
   return (
-    <div className="li" style={{
+    <div className="li" onClick={onClick} role={onClick ? "button" : undefined} tabIndex={onClick ? 0 : undefined} onKeyDown={onClick ? (event) => {
+      if (event.key === "Enter" || event.key === " ") onClick(event);
+    } : undefined} style={{
       display: "flex", justifyContent: "space-between", alignItems: "center",
       padding: "9px 0", ...TYPE.li,
       borderBottom: last ? "none" : `1px solid ${C.line2}`,
+      cursor: onClick ? "pointer" : undefined,
       ...style
     }}>
       <span style={{ minWidth: 0 }}>{children}</span>
