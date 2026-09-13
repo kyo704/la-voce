@@ -9954,7 +9954,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           composer: patch.composer ?? (prev[key] || {}).composer ?? null,
           positionIn: patch.position_in ?? (prev[key] || {}).positionIn ?? null,
           bottomNote: patch.bottom_note ?? (prev[key] || {}).bottomNote ?? null,
-          status: patch.status ?? (prev[key] || {}).status ?? null
+          status: patch.status ?? (prev[key] || {}).status ?? null,
+          singingLanguage: patch.singing_language ?? (prev[key] || {}).singingLanguage ?? null
         }
       }));
       return true;
@@ -10005,6 +10006,25 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       .update({ deleted_at: new Date().toISOString() }).eq("id", id).select("id");
     if (error) { console.error("ノートを消せませんでした:", error); return; }
     await fetchNotes();
+  }
+
+  async function handleDeleteRepertoire(name, noteId) {
+    const key = String(name || "").trim();
+    if (!key) return false;
+    const supabase = createClient();
+    const { error } = await supabase.from("repertoire_tessitura")
+      .delete().eq("user_id", userId).eq("repertoire_name", key);
+    if (error) {
+      console.error("レパートリーを消せませんでした:", error);
+      return false;
+    }
+    if (noteId) await handleDeleteNote(noteId);
+    setRepertoireTessituraMap((prev) => {
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+    return true;
   }
 
   // ★★積んだものを、★まとめて送ります（★§7-1）。
@@ -17411,6 +17431,24 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   ...repertoire.map((r) => r.name),
                   ...myNotes.filter((n) => n.kind === "repertoire" && n.body).map((n) => n.body)
                 ])]}
+                repertoireItems={[...new Set([
+                  ...repertoire.map((r) => r.name),
+                  ...Object.keys(repertoireTessituraMap),
+                  ...myNotes.filter((n) => n.kind === "repertoire" && n.body).map((n) => n.body)
+                ])].filter(Boolean).map((name) => {
+                  const note = myNotes.find((n) => n.kind === "repertoire" && n.body === name && !n.deleted_at);
+                  const extra = repertoireTessituraMap[name] || {};
+                  return {
+                    name,
+                    noteId: note && note.id,
+                    composer: extra.composer || "",
+                    positionIn: extra.positionIn || "",
+                    language: extra.singingLanguage || "イタリア語",
+                    highNote: extra.topNote || "",
+                    lowNote: extra.bottomNote || extra.tessituraNote || "",
+                    status: extra.status || "はじめたばかり"
+                  };
+                })}
                 teacherOptions={[...new Set([
                   ...renrakuStudios.map((s) => orgDisplayName(s.teacherId)).filter(Boolean),
                   "自主練"
@@ -17422,20 +17460,33 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     composer: composer || null,
                     position_in: positionIn || null,
                     bottom_note: lowNote || null,
-                    status: status || null
+                    status: status || null,
+                    singing_language: language || null
                   });
                   if (!fieldsOk) return false;
                   if (highNote || lowNote) {
-                    await handleSaveRepertoire(key, {
+                    const tessituraOk = await handleSaveRepertoire(key, {
                       topNote: highNote || null,
                       tessituraNote: lowNote || null,
                       replace: true
                     });
+                    if (!tessituraOk) return false;
                   }
                   return handleSaveNote({ id, kind: "repertoire", body: key });
                 }}
                 onSave={handleSaveNote}
                 onDelete={handleDeleteNote}
+                onDeleteRepertoire={handleDeleteRepertoire}
+                onOpenClinicSummary={({ mode, range, pick, ownWords } = {}) => {
+                  if (range) {
+                    setClinicPeriodMode("custom");
+                    setClinicCustomStart(range.start || "");
+                    setClinicCustomEnd(range.end || "");
+                  }
+                  if (Array.isArray(pick)) setClinicPick(pick);
+                  if (typeof ownWords === "string") setClinicFreeNote(ownWords);
+                  setActiveTab("clinicSummary");
+                }}
                 renraku={
                   /* ★★ノートの 帯の「連絡」（★見本④）。★タブを 増やしません。
                        ★門下は assignments が 持ちます。★新しい表を 作っていません。 */

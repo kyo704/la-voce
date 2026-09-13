@@ -87,7 +87,7 @@ function eq(a, b, label) {
   //   ★見本⑥は「門下」でしたが、★見本④で「連絡」に なりました。
   //   ★★これだけ、★ノートでは ありません。★門下の 連絡板が 開きます。
   //     ★見本④「★ノートの中。★タブは 増やしません」。
-  eq(m.NOTE_KINDS.map((k) => k.label), ["稽古", "レパートリー", "連絡", "受診用"], "★見本④の 4つ");
+  eq(m.NOTE_KINDS.map((k) => k.label), ["稽古", "レパートリー", "連絡", "1枚"], "★見本④の 4つ");
   eq(m.isRenrakuKind("studio"), true, "★「連絡」は ノートでは ない");
   ["practice", "repertoire", "clinic"].forEach((k) =>
     eq(m.isRenrakuKind(k), false, `★「${k}」は ノート`));
@@ -119,7 +119,7 @@ function eq(a, b, label) {
       `★これまでの「${k}」が 門の外に 残っている`);
   });
   t(!/NEXT_PUBLIC/.test(ui), "★画面じしんは 環境変数を 読まない");
-  t(ui.indexOf("この中から さがす") < ui.indexOf("list.map"),
+  t(ui.indexOf("この中から さがす") < Math.max(ui.indexOf("list.map"), ui.indexOf("rows.map")),
     "★見本どおり、検索欄を一覧より上に置く");
   t(/まだ、稽古の メモが ありません。/.test(raw)
     && /まだ、レパートリーが ありません。/.test(raw)

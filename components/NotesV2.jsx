@@ -13,6 +13,11 @@ import {
   NOTE_KINDS, DEFAULT_KIND, kindOrDefault, visibleNotes, isRenrakuKind,
   titleOf, previewOf, isEmpty, dayWord, AUTOSAVE_MS
 } from "@/lib/notes";
+import RangeCalendar from "@/components/RangeCalendar";
+import {
+  CLINIC_ALWAYS, CLINIC_OPTIONAL, CLINIC_DEFAULT, CLINIC_HEADINGS,
+  CLINIC_NOTICE, isOn, togglePick, writePick
+} from "@/lib/clinicSheet";
 
 // ============================================================================
 // ノート ── Apple メモ方式（見本⑥ ／ 2026-09-09）
@@ -40,16 +45,69 @@ import {
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
 const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
 
-export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, saving, renraku, todayISO, repertoireNames, teacherOptions = [] }) {
+export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDeleteRepertoire, saving, renraku, todayISO, repertoireNames, repertoireItems = [], teacherOptions = [], onOpenClinicSummary }) {
   const [kind, setKind] = useState(DEFAULT_KIND);
   const [q, setQ] = useState("");
   const [editing, setEditing] = useState(null);   // ★{ id, body } ★null なら 一覧
   const [error, setError] = useState("");
+  const [clinicMode, setClinicMode] = useState("doctor");
+  const [clinicRange, setClinicRange] = useState({});
+  const [clinicPick, setClinicPick] = useState(CLINIC_DEFAULT);
+  const [clinicOwnWords, setClinicOwnWords] = useState("");
+  const [clinicGenerated, setClinicGenerated] = useState(false);
   const timer = useRef(null);
   const boxRef = useRef(null);
 
   const list = visibleNotes(notes, kind, isPractice(kind) ? q : "");
+  const noteRows = list.map((n) => n);
+  const rows = kind === "repertoire" ? repertoireItems : noteRows;
 
+  function clinicScreen() {
+    const days = (notes || []).filter((n) => n && !n.deleted_at && String(n.created_at || n.updated_at || "").slice(0, 10)
+      >= String(clinicRange.start || "0000-00-00").slice(0, 10)
+      && String(n.created_at || n.updated_at || "").slice(0, 10)
+      <= String(clinicRange.end || "9999-99-99").slice(0, 10)).length;
+    if (clinicGenerated) {
+      return (
+        <div className="reference-ui clinic-editor">
+          <Back onClick={() => setClinicGenerated(false)}>もどる</Back>
+          <div className="hd"><h2>{clinicMode === "doctor" ? "お医者さんに 見せる 1枚" : "レッスンに 持っていく 1枚"}</h2></div>
+          <Card>
+            <b>{clinicRange.start && clinicRange.end ? `${clinicRange.start} 〜 ${clinicRange.end}` : "期間未選択"}</b>
+            <p style={small}>この期間に 記録した日数：{days}日</p>
+            {clinicPick.map((key) => <p key={key} style={small}>{CLINIC_OPTIONAL.find((x) => x.key === key)?.label}</p>)}
+            {clinicOwnWords ? <p style={{ whiteSpace: "pre-wrap", lineHeight: 1.8 }}>{clinicOwnWords}</p> : null}
+          </Card>
+          <Btn onClick={() => onOpenClinicSummary?.({ mode: clinicMode, range: clinicRange, pick: clinicPick, ownWords: clinicOwnWords })}>一枚を 表示する</Btn>
+        </div>
+      );
+    }
+    return (
+      <div className="reference-ui clinic-editor">
+        <div className="pills">
+          <Pill on={clinicMode === "doctor"} onClick={() => setClinicMode("doctor")}>お医者さんに 見せる 1枚</Pill>
+          <Pill on={clinicMode === "lesson"} onClick={() => setClinicMode("lesson")}>レッスンに 持っていく 1枚</Pill>
+        </div>
+        <div className="warn">この1枚を作ります。<br /><b>載せるものは、自分で1つずつ選びます。</b></div>
+        <FieldLabel>期間</FieldLabel>
+        <RangeCalendar value={clinicRange} todayISO={todayISO} max={todayISO} onChange={setClinicRange} />
+        <FieldLabel>{CLINIC_HEADINGS.always}</FieldLabel>
+        <Card>{CLINIC_ALWAYS.map((x) => <div key={x.key} className="li">{x.label}<span>載せる</span></div>)}</Card>
+        <FieldLabel>{CLINIC_HEADINGS.optional}</FieldLabel>
+        <Card>{CLINIC_OPTIONAL.map((x) => (
+          <button key={x.key} type="button" className="li w-full text-left"
+            onClick={() => setClinicPick(writePick(togglePick(clinicPick, x.key)))}>
+            <span>{x.label}</span><span>{isOn(clinicPick, x.key) ? "✓ 載せる" : "載せない"}</span>
+          </button>
+        ))}</Card>
+        <FieldLabel>本人の ことば</FieldLabel>
+        <TextArea value={clinicOwnWords} onChange={(e) => setClinicOwnWords(e.target.value)}
+          placeholder="例：高い音の 入りが 不安です。息が 続かない日が ありました。" style={{ minHeight: 90 }} />
+        <Btn onClick={() => setClinicGenerated(true)}>2項目で 1枚に する</Btn>
+        <Note>{CLINIC_NOTICE.map((line) => <span key={line}>・{line}<br /></span>)}</Note>
+      </div>
+    );
+  }
   // ★★開いたら、★すぐ 書けます（★見本⑥「1文字目までを いちばん短く」）。
   useEffect(() => {
     if (editing && boxRef.current) boxRef.current.focus();
@@ -68,7 +126,7 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, savi
   async function push(draft) {
     if (!draft || !onSave) return true;
     // ★★何も 書いていないものは、★送りません。★空の行を 作りません。
-    if (isEmpty(draft)) return true;
+    if (kind !== "repertoire" && isEmpty(draft)) return true;
     // ★★稽古の メモは、★6つの 欄も 一緒に 渡します（★裁定 §1）。
     //   ★★知らない 欄は 落とします（pickFields）。
     if (kind === "repertoire" && onAddRepertoire) {
@@ -97,6 +155,17 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, savi
     const ok = await push(editing);
     // ★★送れなかったら、★開いたまま に します。★黙って 閉じません。
     if (ok) { setEditing(null); setError(""); }
+  }
+
+  if (!editing && kind === "clinic") {
+    return (
+      <div className="reference-ui">
+        <ScreenHead title="ノート" right={<HeadRound mark="＋" label="ノートを書く" onClick={() => setClinicGenerated(false)} />} />
+        <Seg activeKey={kind} onSelect={setKind}
+          items={NOTE_KINDS.map((k) => ({ key: k.key, label: k.label }))} />
+        {clinicScreen()}
+      </div>
+    );
   }
 
   if (editing) {
@@ -253,14 +322,19 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, savi
           <Btn onClick={close}>しまう</Btn>
         </Two>
         {/* ★★消すのは、★下半分に。★誤って 触らないためです。 */}
-        {editing.id && onDelete ? (
+        {((kind === "repertoire" && onDeleteRepertoire && editing.repertoire_name) || (kind !== "repertoire" && editing.id && onDelete)) ? (
           <button type="button"
-            onClick={async () => { await onDelete(editing.id); setEditing(null); }}
+            onClick={async () => {
+              const ok = kind === "repertoire"
+                ? await onDeleteRepertoire(editing.repertoire_name, editing.id)
+                : await onDelete(editing.id);
+              if (ok !== false) setEditing(null);
+            }}
             className="w-full"
             style={{
               minHeight: 48, borderRadius: 10, border: `1px solid ${C.line}`,
               background: C.card, color: C.inkSoft, fontSize: "0.8125rem"
-            }}>このノートを 消す</button>
+            }}>この{kind === "repertoire" ? "曲" : "ノート"}を 消す</button>
         ) : null}
       </div>
     );
@@ -320,7 +394,7 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, savi
       {/* ★★「連絡」の 帯だけ、★ノートでは なく 連絡板が 開きます（★見本④）。
           ★★タブを 増やさずに 置くための 形です。
           ★何を 出すかは lib/notes.js が 決めます。★ここでは 決めません。 */}
-      {isRenrakuKind(kind) ? renraku : list.length === 0 ? (
+      {isRenrakuKind(kind) ? renraku : (kind === "repertoire" ? repertoireItems : list).length === 0 ? (
         // ★★2026-09-10、★ここが 押せませんでした。
         //   ★★「＋から、思いついたことを 書けます」と 書いてあるのに、
         //     ★ただの 文でした。★押しても 何も 開きません。
@@ -361,7 +435,7 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, savi
         )
       ) : (
         <>
-        {list.map((n) => (
+        {rows.map((n) => (
           // ★★見本⑥の 1枚 ── ★本文が 2行、★その下に 日付（.usu）。
           //   ★★見出しと 抜粋を 別の 大きさに していました。
           //     ★見本は 同じ 大きさの 本文 2行です。★そちらに 合わせます。
@@ -379,7 +453,14 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, savi
                   lesson_on: n.lesson_on || todayISO || null
                 }
                 : kind === "repertoire"
-                  ? { id: n.id, body: n.body || "", repertoire_name: n.body || "", composer: "", position_in: "", language: "イタリア語", high_note: "", low_note: "", status: "はじめたばかり", performance: "" }
+                  ? {
+                    id: n.noteId || null, body: n.name || n.body || "",
+                    repertoire_name: n.name || n.body || "",
+                    composer: n.composer || "", position_in: n.positionIn || "",
+                    language: n.language || "イタリア語", high_note: n.highNote || "",
+                    low_note: n.lowNote || "", status: n.status || "はじめたばかり",
+                    performance: n.performance || ""
+                  }
                 : { id: n.id, body: n.body || "" });
               setError("");
             }}>
