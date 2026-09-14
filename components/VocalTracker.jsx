@@ -12619,11 +12619,35 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         if (error) throw error;
         updatedEntries[date] = updatedEntry;
       }
-      const { error: delError } = await supabase.from("repertoire_tessitura")
-        .delete().eq("user_id", userId).eq("repertoire_name", from);
+      // ★★消えた 行数を 確かめます（★2026-09-14・修正の記録 No.014）。
+      //
+      //   ★★消した 曲が、★読み直すと 戻って いました。
+      //     ★★台帳に「消す 決まり」が 無く、★RLS が 黙って 0行に して いました。
+      //       ★誤りは 返りません。★HTTP は 204 の ままです。
+      //     ★★だから ここは「通った」と 読み、★画面から 消し、
+      //       ★読み直すと 戻って いました。
+      //
+      //   ★★決まりは 足しました。★それでも ここを 直します。
+      //     ★★片側だけ 直すと、★同じ 形が また どこかで 起きます（★No.002）。
+      //     ★★`.select("id")` を 付けると、★消えた 行が 返ります。
+      //       ★0行なら、★消えて いません。★黙って 通しません。
+      //
+      //   ★★役と 企画は、★無い ことが 普通です（★曲に 役が 無い ことは あります）。
+      //     ★だから 0行でも しくじりに しません。★誤りの ときだけ 止めます。
+      const { data: delRows, error: delError } = await supabase
+        .from("repertoire_tessitura")
+        .delete().eq("user_id", userId).eq("repertoire_name", from)
+        .select("id");
       if (delError) throw delError;
-      await supabase.from("role_master").delete().eq("user_id", userId).eq("role_name", from);
-      await supabase.from("project_master").delete().eq("user_id", userId).eq("project_name", from);
+      if (!delRows || delRows.length === 0) {
+        throw new Error("REPERTOIRE_DELETE_NO_ROWS");
+      }
+      const { error: roleError } = await supabase.from("role_master")
+        .delete().eq("user_id", userId).eq("role_name", from).select("id");
+      if (roleError) throw roleError;
+      const { error: projError } = await supabase.from("project_master")
+        .delete().eq("user_id", userId).eq("project_name", from).select("id");
+      if (projError) throw projError;
       if (noteId) {
         await handleDeleteNote(noteId);
       } else {
