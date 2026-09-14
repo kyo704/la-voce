@@ -6212,7 +6212,22 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       if (mounted && data) {
         const map = {};
         data.forEach((row) => {
-          map[row.role_name] = { workTitle: row.work_title || "", pitchLowNote: row.pitch_low_note || null, pitchHighNote: row.pitch_high_note || null, voiceQuality: row.voice_quality || null };
+          // ★★役に 求める 声の 性格（★2026-09-14・裁定 その49）。
+          //   ★★`voice_quality` という 名前は、★entries にも あります。
+          //     ★あちらは 声の 出来（★5段の 数）。★ここは 自由な 字です。
+          //     ★★同じ 名前で 別の ものでした。★名前を 移して います。
+          //   ★★新しい 列が 空の 間は、★古い 列を 読みます。
+          //     ★台帳の 紙（migration_role_master_required_voice_character.sql）を
+          //     ★流す 前でも、★画面は 動きます。
+          map[row.role_name] = {
+            workTitle: row.work_title || "",
+            pitchLowNote: row.pitch_low_note || null,
+            pitchHighNote: row.pitch_high_note || null,
+            //   ★★2026-09-14、★坂本さんが 台帳で **付け替え**ました。
+            //     ★本番・試し用 とも、★古い 列は もう ありません。
+            //     ★★だから 古い 列は 読みません。★読むと 42703 に なります。
+            voiceQuality: row.required_voice_character || null
+          };
         });
         setRoleMasterMap(map);
       }
@@ -12436,7 +12451,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const supabase = createClient();
     const { error } = await supabase.from("role_master").upsert({
       user_id: userId, role_name: roleName, work_title: workTitle || "",
-      pitch_low_note: pitchLowNote || null, pitch_high_note: pitchHighNote || null, voice_quality: voiceQuality || null
+      pitch_low_note: pitchLowNote || null, pitch_high_note: pitchHighNote || null,
+      // ★★2026-09-14、★台帳で 付け替えが 済みました。
+      //   ★★古い 列（voice_quality）は もう ありません。
+      //     ★書くと「そんな 列は ない」（42703）で 落ちます。
+      required_voice_character: voiceQuality || null
     }, { onConflict: "user_id,role_name" });
     if (error) {
       console.error("役マスタの登録に失敗しました:", error);
@@ -12592,7 +12611,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         await supabase.from("role_master").upsert({
           user_id: userId, role_name: to, work_title: role.workTitle || "",
           pitch_low_note: role.pitchLowNote || null, pitch_high_note: role.pitchHighNote || null,
-          voice_quality: role.voiceQuality || null
+          // ★★古い 列は もう ありません（★上と 同じ わけ）。
+          required_voice_character: role.voiceQuality || null
         }, { onConflict: "user_id,role_name" });
         await supabase.from("role_master").delete().eq("user_id", userId).eq("role_name", from);
       }
