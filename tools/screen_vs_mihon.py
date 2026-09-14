@@ -35,16 +35,24 @@ RAW = io.open(MI, encoding="utf-8").read()
 #   ★words … 見本の 字（★1文字も 変えない もの）
 #   ★extra … 見本に 無い ものの 手がかり
 SCREENS = {
+  # ★★2026-09-14、★読む ファイルを 直しました。
+  #   ★`components/LineUpV2.jsx` は **ありません**。★私の 書き間違いです。
+  #     ★★無い ファイルを 読み飛ばして いたので、★A04 の 数が 甘く 出ます。
+  #   ★★A04 と A05 は、★**同じ 1つの 部品**の 中の 2つの 札 です
+  #     （`components/LookBackV2.jsx:234` の seg ── narabe / sakanobo）。
+  #   ★★さかのぼるの「前の3日」は `LookBackPanel.jsx` が 描きます
+  #     （★`VocalTracker.jsx:18603` から）。★A05 の 一部 です。
   "A04": {
     "fn": "narabe",
-    "files": ["components/LineUpV2.jsx", "components/LookBackV2.jsx",
-              "lib/lineUp.js", "components/LineUpChart.jsx"],
+    "files": ["components/LookBackV2.jsx", "components/LineUpChart.jsx",
+              "lib/lineUp.js"],
     "words": [],
     "extra": [],
   },
   "A05": {
     "fn": "sakanobo",
-    "files": ["components/LookBackV2.jsx", "lib/lookBack.js"],
+    "files": ["components/LookBackV2.jsx", "components/LookBackPanel.jsx",
+              "lib/lookBack.js"],
     "words": [],
     "extra": [],
   },
