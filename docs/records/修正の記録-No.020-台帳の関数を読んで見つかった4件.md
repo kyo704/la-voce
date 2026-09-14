@@ -1,5 +1,5 @@
 # 修正の記録 No.020 ── 台帳の 関数を 読んで 見つかった 4件
-全285行 / 末尾は「★★そうすれば、★私の 側でも 同じ ことを 確かめられます。」
+全339行 / 末尾は「★★そうすれば、★私の 側でも 同じ ことを 確かめられます。」
 
 ★見つけた日 2026-09-14（★Opus が 台帳を 直に 読んで）
 ★調べた日 2026-09-14（★私が 倉庫の 紙で 裏を 取りました）
@@ -225,24 +225,78 @@ POST /rest/v1/rpc/accept_teacher_invitation  {"p_code":"ZZZZNOPE"}
 
 ## ③ 中身が 同じ 関数が、★別の 名前で 2組
 
-| 組 | 紙に あるか |
-|---|---|
-| `assignments_get_old_row` ／ `assignments_old_identity` | ★★どちらも ありません（台帳だけ） |
-| `guard_enrollment_grade_label` ／ `guard_grade_label` | ★どちらも あります |
-
-★★2組目は、★紙の 上では **中身が ちがい** ます ──
-
-| 関数 | 紙 | 中身 |
+| 組 | 紙に あるか | いまの お裁き |
 |---|---|---|
-| `guard_grade_label` | `2026-09-11-No004-学年の札は学校が決める.sql:61` | ★`auth.uid()` を 見る |
-| `guard_enrollment_grade_label` | `2026-09-13-名簿②-enrollmentsに学年の列を足す.sql:37` | ★★`tg_op = 'INSERT'` と null の 扱いが 足して あります |
+| `assignments_get_old_row` ／ `assignments_old_identity` | ★★どちらも ありません（台帳だけ） | ★呼び手 待ち |
+| `guard_enrollment_grade_label` ／ `guard_grade_label` | ★どちらも あります | ★★**両方 残す**（★重複では ない） |
 
-★★Opus は「台帳では 中身が **同じ**」と 仰って います。
-　★★つまり、★あとから どちらかが もう一方に 上書きされた 形 です。
-　★★紙と 台帳が ずれて います。★台帳が 事実 です。
+### ★★2組目は、★重複では ありません（★2026-09-14・裁定 取り消し）
 
-★★片づける ときは、★**どちらを 引き金が 指して いるか**を 先に 見ます。
-　★名前だけ 消すと、★引き金が 宙に 浮きます。
+★★引き金を 見たら、★**別々の 表**に 付いて いました。
+
+| 関数 | 付いて いる 表 | いつ |
+|---|---|---|
+| `guard_grade_label` | ★`public.memberships` | before insert or update of grade_label |
+| `guard_enrollment_grade_label` | ★`public.enrollments` | 同じ |
+
+★★倉庫の 紙でも 裏が 取れました ──
+　`2026-09-11-No004-学年の札は学校が決める.sql:105-108`（★memberships）
+　`2026-09-13-名簿②-enrollmentsに学年の列を足す.sql:67-70`（★enrollments）
+
+★★中身が 同じ なのは、★**同じ 決まりを 2つの 表に 当てて いる** から です。
+　★1つの 関数を 2度 写した もの では ありません。
+
+★★★どちらを 落としても、★その 表の 見張りが 外れます。★**両方 残します。**
+
+### ★★この ひっくり返りから 学ぶ こと
+
+★★Opus の お言葉 ──
+> ★中身を くらべて、★**何に 付いて いるかを 見なかった**。
+> ★「引き金が どちらを 指して いるか 先に 見る」── ★その 順番が 正しく、
+> ★見張りを 1つ 救った。
+
+★★同じ 中身＝同じ もの、では ありません。
+　★★**何に 付いて いるか**まで 見て、★はじめて 同じ もの と 言えます。
+
+### ★1組目は まだ 開いて います
+
+`assignments_get_old_row` ／ `assignments_old_identity`
+
+★★どちらも 引き金に **付いて いません**。
+　★★つまり、★決まり（policy）か、★別の 関数から 呼ばれて います。
+
+★★落とす 前に、★呼び手を 探します ──
+
+```sql
+-- ★① ほかの 関数の 中から 呼ばれて いないか
+select p.proname as "呼ぶ 関数", p.prosecdef as "definer"
+  from pg_proc p
+  join pg_namespace n on n.oid = p.pronamespace
+ where n.nspname = 'public'
+   and p.proname not in ('assignments_get_old_row','assignments_old_identity')
+   and (p.prosrc like '%assignments_get_old_row%'
+     or p.prosrc like '%assignments_old_identity%');
+
+-- ★② 決まりの 中から 呼ばれて いないか
+select tablename as "表", policyname as "決まり", cmd as "何に"
+  from pg_policies
+ where schemaname = 'public'
+   and (coalesce(qual,'') || ' ' || coalesce(with_check,''))
+       like any (array['%assignments_get_old_row%','%assignments_old_identity%']);
+
+-- ★③ 引き金に 付いて いないか（★念のため）
+select t.tgname as "引き金", c.relname as "表", p.proname as "呼ぶ 関数"
+  from pg_trigger t
+  join pg_class c on c.oid = t.tgrelid
+  join pg_proc  p on p.oid = t.tgfoid
+  join pg_namespace n on n.oid = c.relnamespace
+ where n.nspname = 'public' and not t.tgisinternal
+   and p.proname in ('assignments_get_old_row','assignments_old_identity');
+```
+
+★★①②③の どれにも 出て こない ほうが、★死んで います。
+　★★両方 出て こなければ、★**両方** 死んで います。
+　★★どちらも 倉庫の 紙に ありません。★SQLエディタ製 です。
 
 ---
 
