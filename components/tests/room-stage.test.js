@@ -26,6 +26,7 @@ function ok(cond, label) {
 }
 
 const home = readCode("components", "CharacterHome.jsx");
+const lib2 = readRaw("lib", "sheepInteriorV2.js");
 const layer = readCode("components", "InteriorLayer.jsx");
 
 console.log("① 場面は画面いっぱい");
@@ -33,9 +34,18 @@ ok(/\<div style=\{\{ position: "absolute", inset: 0 \}\}/.test(home),
   "★画面いっぱいの箱を使っている");
 
 console.log("② 縦横比の 決め打ちが、どこに あるか");
-ok(/ROOM_FLOOR_BOTTOM_PCT = 42/.test(layer), "★床は 高さの 42%");
-// ★★CharacterHome の 床も 同じ 42% で あること。★2か所に ある 数です。
-ok(/height: "42%", background: floorColor/.test(home), "★部屋の 床も 42%");
+// ★★2026-09-13、★床の 割合を 1か所に まとめました。
+//   ★★それまで 3か所に 書いて ありました ──
+//     ★InteriorLayer の 42／CharacterHome の "42%"／同 "58%"。
+//   ★★この 見張りは「2か所が そろって いるか」を 見て いました。
+//     ★★そろえる のでは なく、★1つに します。
+//   ★★値は lib/sheepInteriorV2.js の FLOOR_BOTTOM_PCT（★2026-09-13 に 48）。
+ok(/export const FLOOR_BOTTOM_PCT = \d+/.test(lib2), "★床の 割合は lib が 持つ");
+ok(/const ROOM_FLOOR_BOTTOM_PCT = FLOOR_BOTTOM_PCT/.test(layer),
+  "★InteriorLayer は lib から 取る");
+ok(/height: `\$\{FLOOR_BOTTOM_PCT\}%`, background: floorColor/.test(home),
+  "★CharacterHome の 床も lib から 取る");
+ok(!/height: "42%"|height: "58%"|= 42;/.test(home + layer), "★数を 直書きして いない");
 
 console.log("③ 画面いっぱいの 箱は そのまま");
 // ★★裁定 9/10夜 §3「画面ぜんぶが おうちに」。★箱は 狭めません。

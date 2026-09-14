@@ -14,7 +14,7 @@ import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
 } from "@/lib/oldHouseVisibility";
 // ★動かせる内装が在るか／羊の重ね順。★決めは、あちらが持ちます。
-import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs, nextSitMs, zSwitchDelayMs } from "@/lib/sheepInteriorV2";
+import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs, nextSitMs, zSwitchDelayMs, FLOOR_BOTTOM_PCT, WALL_HEIGHT_PCT } from "@/lib/sheepInteriorV2";
 import SpeechBubble from "@/components/SpeechBubble";
 import { SOLO, TIMING, FACE_FOR, pickLine, nextSoloMs, pushRecent } from "@/lib/sheepSpeech";
 import { pickGesture, nextGestureMs, mayGesture, pushRecent as pushGesture } from "@/lib/sheepGestures";
@@ -2299,7 +2299,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
           ★★家具の位置は％で保持するので、既存の配置データもそのまま使えます。 */}
       <div style={{ position: "absolute", inset: 0 }}>
       <WallTexture material={wallKey} wardrobeOn={wardrobeOn} />
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "42%", background: floorColor, zIndex: 0, overflow: "hidden" }}>
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: `${FLOOR_BOTTOM_PCT}%`, background: floorColor, zIndex: 0, overflow: "hidden" }}>
         <FloorTexture material={floorKey} wardrobeOn={wardrobeOn} />
       </div>
 
@@ -2683,7 +2683,10 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
 const SPECIAL_BACKDROP_KEYS = ["backdrop_western_castle", "backdrop_japanese_castle", "backdrop_bamboo_grove", "backdrop_forest", "backdrop_sheep_pasture", "backdrop_big_man"];
 
 function SpecialBackdropScene({ sceneKey }) {
-  const wrapStyle = { position: "absolute", left: 0, right: 0, bottom: "22%", height: "58%", zIndex: 0 };
+  // ★★2026-09-13、★ここも 42／58 を 直書きして いました。★lib から 取ります。
+  //   ★★庭の 包みは、★壁の ぶん（★上から 境目まで）に 重ねます。
+  const wrapStyle = { position: "absolute", left: 0, right: 0,
+    bottom: `${FLOOR_BOTTOM_PCT - 26}%`, height: `${WALL_HEIGHT_PCT}%`, zIndex: 0 };
   if (sceneKey === "backdrop_western_castle") {
     return (
       <div style={wrapStyle}>

@@ -6,7 +6,7 @@ import { slotOfItem, slotByKey } from "@/lib/roomSlots";
 import {
   interiorOf, interiorItemByKey, interiorSrc, windowLayers,
   floorLineOf, widthPctOf, flushRightLeftPct, isSingleSlot, windowHoleMask, hitInsetOf,
-  FLOOR_BAND, WALL_BAND, LEFT_BAND, clampToBand,
+  FLOOR_BAND, WALL_BAND, LEFT_BAND, clampToBand, FLOOR_BOTTOM_PCT,
   placementOf, anchorOf, zOf, zIndexOf,
   CEILING_TOP_PCT, WALL_CENTER_PCT, TABLETOP_FEET_PCT
 } from "@/lib/sheepInteriorV2";
@@ -41,7 +41,8 @@ import {
 //   ★CharacterHome の床の高さと、★同じ数です。
 //   ★★2か所に書いています。★あちらを import できないため、
 //     ★ここに書き、★検査で「同じ数であること」を見張ります。
-const ROOM_FLOOR_BOTTOM_PCT = 42;
+// ★★2026-09-13、★lib に 移しました。★ここでは 決めません。
+const ROOM_FLOOR_BOTTOM_PCT = FLOOR_BOTTOM_PCT;
 
 // ★部屋は、幅：高さ ＝ およそ 4：3。★横の％を、縦の％に直すときに使います。
 /**
