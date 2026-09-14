@@ -284,22 +284,44 @@ export default function OpsRoster({
                       }}>やめる</button>
                   </div>
                 ) : (
+                  // ★★2026-09-13、★実機の ご報告 ──「できたが 分かりづらい」。
+                  //   ★★押せる ほうと 押せない ほうが、★同じ 見た目 でした。
+                  //     ★どちらも 薄い 色（inkSoft）・小さい 字（0.6875rem）で、
+                  //     ★ちがいは 右の `›` だけ。★気づけません。
+                  //   ★★この家の 形に そろえます（★RecordSheets の SheetRow）──
+                  //     ★枠を 付ける。★中の 色を 紙と 分ける。
+                  //     ★入って いるか どうかを **形**で 出す（★✓／＋）。
+                  //     ★★色だけに 意味を 持たせません。
                   <button type="button"
                     onClick={() => {
                       setGradeDraft(m.grade_label || "");
                       setGradeEdit(m.user_id);
                     }}
                     style={{
-                      marginTop: 4, minHeight: 44, padding: 0,
-                      background: "transparent", border: "none",
-                      color: C.inkSoft, fontSize: "0.6875rem", textAlign: "left"
+                      display: "flex", alignItems: "center",
+                      justifyContent: "space-between", gap: 8,
+                      width: "100%", textAlign: "left",
+                      marginTop: 6, minHeight: 44, padding: "0 12px",
+                      background: C.card, border: `1px solid ${C.line}`,
+                      borderRadius: 12, color: C.ink, fontSize: "0.8125rem"
                     }}>
-                    学年・コース　{m.grade_label || "—"}　›
+                    <span>
+                      <b style={{
+                        color: m.grade_label ? C.sage : C.curtain, marginRight: 8
+                      }}>{m.grade_label ? "✓" : "＋"}</b>
+                      {tx("学年・コース")}
+                    </span>
+                    <span style={{ color: C.inkSoft, fontSize: "0.6875rem" }}>
+                      {m.grade_label || tx("入れる")}　›
+                    </span>
                   </button>
                 )
               ) : (
+                // ★★直せない 方には、★ただの 1行に します。
+                //   ★★枠も 印も 付けません。★押せる ように 見せない ため。
+                //   ★★入って いなければ 何も 出しません（★空の 見出しを 置かない）。
                 m.grade_label ? (
-                  <p style={small}>学年・コース　{m.grade_label}</p>
+                  <p style={small}>{tx("学年・コース")}　{m.grade_label}</p>
                 ) : null
               )}
 

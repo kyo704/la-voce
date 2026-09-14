@@ -69,13 +69,23 @@ export default function OpsPosts({
   const [openId, setOpenId] = useState(null);
   const [newName, setNewName] = useState("");
   const [message, setMessage] = useState("");
+  // ★★いま 送って いる できことの 鍵（★2026-09-13・実機の ご報告）。
+  //   ★★「ラグが 長すぎて 反応して いないのかと 思う」。
+  //   ★★往復が 2回 あります ── ★① サーバへ 書く ★② 台帳へ 読みに 行く。
+  //     ★★②が 終わる まで、★つまみは 1ミリも 動きません。
+  //   ★★先に 動かす（★楽観）ことは しません ──
+  //     ★書けて いないのに 書けたように 見せるのは、★この家の 決めに 反します。
+  //   ★★代わりに、★押した **その行** に「送って います」を 出します。
+  const [sending, setSending] = useState(null);
 
   const open = posts.find((p) => p.id === openId) || null;
   const run = async (payload) => {
     // ★★押した ことが、★すぐ 目に 見えるように します。
     //   ★★通信が 遅いと、★押しても 何も 起きないように 見えます。
+    if (payload.action === "perm") setSending(payload.key);
     setMessage(tx("送っています…"));
     const err = await onAction(payload);
+    setSending(null);
     if (err) { setMessage(err); return; }
     // ★★済んだ ことを、★字でも 言います（★2026-09-13）。
     //   ★★つまみは 絵です。★絵だけだと、★変わったかが 分かりにくい。
@@ -123,13 +133,21 @@ export default function OpsPosts({
                 }}>
                 <span>
                   {p.label}
-                  {!isSchoolWide(p.key) ? (
+                  {sending === p.key ? (
+                    <><br /><span style={{ ...TYPE.usual, color: C.curtain }}>
+                      {tx("送って います…")}
+                    </span></>
+                  ) : !isSchoolWide(p.key) ? (
                     <><br /><span style={{ ...TYPE.usual, color: C.inkSoft }}>
                       {tx("その方 自身にだけ かかります")}
                     </span></>
                   ) : null}
                 </span>
-                <Switch on={on} disabled={!allowed} />
+                {/* ★★送って いる あいだは、★その行の つまみだけ 薄く します。
+                    ★★押した ことが 見えます。★ほかの 行は そのままです。 */}
+                <span style={{ opacity: sending === p.key ? 0.4 : 1, flex: "none" }}>
+                  <Switch on={on} disabled={!allowed} />
+                </span>
               </button>
             );
           })}
