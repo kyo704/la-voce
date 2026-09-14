@@ -52,7 +52,14 @@ const 取込 = (p) =>
 
   console.log("\n④ 外へ出る道の台帳");
   const 道 = O.OUTBOUND_ROUTES;
-  ok("1件以上ある", 道.length >= 6);
+  // ★★2026-09-14、★ここは「6件以上」と 数を 直に 書いて いました。
+  //   ★No.019 で 1本 消したとき、★この 見張りが 落ちました。
+  //   ★★数を 直に 書くと、★正しい 引き算まで 誤りに 見えます。
+  //   ★★見るべきは「★減って いない こと」です ──
+  //     ★消した 道は REMOVED_ROUTES に 残るので、★足すと 減りません。
+  const 合計 = 道.length + (O.REMOVED_ROUTES || []).length;
+  ok("★いまの道が1件以上ある", 道.length >= 1);
+  ok("★いまの道と消した道を足すと、これまで数えた分より減っていない", 合計 >= 6);
   ok("すべてに id・host・where・what がある",
     道.every((r) => r.id && r.host && r.where && r.what));
   // ★2026-09-03：Supabase の場所だけ確かめました（東京・ap-northeast-1）。
@@ -84,7 +91,10 @@ const 取込 = (p) =>
 
   // ★台帳とコードの突き合わせ。コードに fetch があるのに台帳に無い、を防ぎます。
   const 実際 = new Set();
-  for (const f of ["lib/anthropic.js", "app/api/feedback/route.js",
+  // ★★`lib/anthropic.js` は、★2026-09-14（No.019）に 消しました。
+  //   ★道ごと 消したので、★突き合わせる コードが ありません。
+  //   ★★残った ことは `components/tests/advice-route-gated.test.js` が 見ます。
+  for (const f of ["app/api/feedback/route.js",
                    "app/api/line-webhook/route.js", "app/api/cron/line-reminder/route.js"]) {
     // ★コメントを外してから探します。手順の覚え書きに書かれた URL は、
     //   通信ではありません（line-webhook/route.js:13 の設定手順がそれです）。
@@ -99,23 +109,30 @@ const 取込 = (p) =>
   ok("Supabase 本体が台帳にある", 道.some((r) => r.id === "supabase"));
   ok("調べて外向きでなかったものも残している", O.CHECKED_NOT_OUTBOUND.length >= 3);
 
-  console.log("\n④-2 ★「一度も送っていない」の根拠が、まだ成り立っているか");
-  // 台帳は「鍵が無いので fetch に到達しない」と書いています。
-  // ★その主張は、route.js の★順番に乗っています。順番が変われば嘘になります。
-  const 助言 = readCode("app/api/advice/route.js");
-  const 鍵の位置 = 助言.indexOf("ANTHROPIC_API_KEY");
-  const 送信の位置 = 助言.indexOf("getAdvice(");
-  const 読出の位置 = 助言.indexOf('.from("entries")');
-  ok("鍵の確認がある", 鍵の位置 !== -1);
-  ok("★鍵の確認は、外へ送るより前にある（順番が逆になれば台帳が嘘になる）",
-    鍵の位置 !== -1 && 送信の位置 !== -1 && 鍵の位置 < 送信の位置);
-  ok("★記録の読み出しは、鍵の確認より前にある（台帳の『読んではいる』の根拠）",
-    読出の位置 !== -1 && 読出の位置 < 鍵の位置);
+  console.log("\n④-2 ★消した道の記録が、まだ残っているか（★No.019・2026-09-14）");
+  // ★★前は、route.js の★順番を見ていました ──
+  //   「鍵の確認が fetch より前にあるか」「記録の読み出しが鍵より前にあるか」。
+  //   ★台帳の「一度も送っていない」という主張が、その順番に乗っていたからです。
+  // ★★2026-09-14、★道ごと消しました。★順番を見る相手がいません。
+  //   ★★けれど「一度も送っていない」という事実は、★残す値打ちがあります。
+  //     ★消えた行は、誰にも確かめられません。
+  //   ★★だから、★見るものを「順番」から「記録が残っていること」へ替えます。
+  ok("★REMOVED_ROUTES がある", Array.isArray(O.REMOVED_ROUTES));
+  const 消 = (O.REMOVED_ROUTES || []).find((r) => r.id === "anthropic");
+  ok("★消した道として anthropic が残っている", !!消);
+  ok("★一度も送っていない、が残っている",
+    消 && 消.history && 消.history.everTransmitted === false);
+  ok("★根拠が2つ以上ある（送り手側と受け手側）",
+    消 && 消.history && (消.history.confirmedBy || []).length >= 2);
+  ok("★消した日が入っている", !!(消 && 消.removedOn));
+  ok("★なぜ消したかが入っている", !!(消 && 消.removedWhy));
+  // ★★いまの一覧には入っていないこと。★大学向けの一覧はそちらから作ります。
+  ok("★いまの一覧には入っていない",
+    !O.OUTBOUND_ROUTES.some((r) => r.id === "anthropic"));
   console.log("\n④-3 ★サーバから出る道と、画面から出る道を混ぜていないか");
   ok("すべての道に origin がある", 道.every((r) => r.origin === "server" || r.origin === "client"));
   ok("★Google カレンダーは client（利用者が押したときだけ）",
     O.clientOriginRoutes().some((r) => r.id === "google-calendar"));
-  ok("★Anthropic は server", O.serverOriginRoutes().some((r) => r.id === "anthropic"));
   ok("server と client を足すと全件（どちらでもない道を作らない）",
     O.serverOriginRoutes().length + O.clientOriginRoutes().length === 道.length);
   // ★「サーバから出る唯一の経路」と言えるかは、server の中だけの話です。
@@ -123,9 +140,6 @@ const 取込 = (p) =>
   ok("★画面から出る道が1件以上ある（『唯一』と書けない根拠）",
     O.clientOriginRoutes().length >= 1);
 
-  const 麻 = O.OUTBOUND_ROUTES.find((r) => r.id === "anthropic");
-  ok("台帳に、これまで通ったかどうかが記録されている",
-    麻.history && 麻.history.everTransmitted === false && !!麻.history.confirmedOn);
 
   console.log("\n⑤ is_internal が、4つの台帳でどう扱われるか");
   ok("★書き出しには含める（本人の状態だから）",

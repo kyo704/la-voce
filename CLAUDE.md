@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-La Voce — a health/condition tracking app for voice professionals (classical singers, announcers, voice actors, pop/musical performers). Next.js 14 App Router, plain JavaScript (no TypeScript), Supabase for auth + database, Stripe wired but dormant, an Anthropic-backed advice endpoint, a LINE reminder bot, a PWA manifest/service worker, and a Capacitor shell for the iOS build. UI text is Japanese-first and translated into 9 languages.
+La Voce — a health/condition tracking app for voice professionals (classical singers, announcers, voice actors, pop/musical performers). Next.js 14 App Router, plain JavaScript (no TypeScript), Supabase for auth + database, Stripe wired but dormant, a LINE reminder bot, a PWA manifest/service worker, and a Capacitor shell for the iOS build. UI text is Japanese-first and translated into 9 languages.
 
 ## Commands
 
@@ -35,7 +35,7 @@ Specs are quoted in comments and rules are written as "never write X" — so an 
 
 `npm run lint` is worth running: `no-undef` was added after a runtime-only crash (`optionalFields is not defined`) that both `next build` and the tests passed, because JSX referenced a state variable whose `useState` line had never been written.
 
-No `.env.local.example` is checked in despite the README referencing it. Env vars actually read by the code: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SITE_URL`, `REQUIRE_SUBSCRIPTION`, `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`, `ANTHROPIC_API_KEY`, `LINE_CHANNEL_ACCESS_TOKEN`, `LINE_CHANNEL_SECRET`, `CRON_SECRET`, `RESEND_API_KEY`, `FEEDBACK_FROM_EMAIL`.
+No `.env.local.example` is checked in despite the README referencing it. Env vars actually read by the code: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SITE_URL`, `REQUIRE_SUBSCRIPTION`, `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`, `LINE_CHANNEL_ACCESS_TOKEN`, `LINE_CHANNEL_SECRET`, `CRON_SECRET`, `RESEND_API_KEY`, `FEEDBACK_FROM_EMAIL`.
 
 ## Stale duplicate files — check before editing
 
@@ -135,7 +135,7 @@ Colors come from `lib/tokens.js` (`C` palette, `LEVEL_COLORS`, `LEVEL_DYNAMICS`)
 
 ### Integrations
 
-- `app/api/advice/route.js` — summarizes the last two weeks of entries into a text digest, sends it through `lib/anthropic.js` (raw `fetch` to the Messages API, model `claude-sonnet-5`) under a system prompt that forbids diagnosis and medication advice. The UI is gated off by the `AI_ADVICE_ENABLED = false` constant near the top of `VocalTracker.jsx`.
+- **Deleted 2026-09-14 (No.019): `app/api/advice/route.js` and `lib/anthropic.js`.** They read the last two weeks of `entries` and sent 13 health columns to `api.anthropic.com`. Two gates kept it closed and it never transmitted (verified from both the sender and receiver side), but a closed path still has to be explained to a university. The ledger entry survives in `lib/outboundRoutes.js` as `REMOVED_ROUTES`, and the full record is `docs/records/修正の記録-No.019-助言の道を消す.md`. `components/tests/advice-route-gated.test.js` now asserts the route is **absent**, so it cannot be reintroduced silently.
 - `app/api/line-webhook/route.js` — HMAC-SHA256 signature verification against `LINE_CHANNEL_SECRET`, links a LINE user ID to a profile via a code the user generates in-app.
 - `app/api/cron/line-reminder/route.js` — invoked by the Vercel cron in `vercel.json` (22:00 UTC daily), authenticated by `Bearer ${CRON_SECRET}`; skips users who already recorded today (dates computed in JST).
 - `app/api/stripe/webhook/route.js` — reads the raw body via `request.text()` for signature verification and maps `subscription.metadata.supabase_user_id` back to the `subscriptions` row.

@@ -592,7 +592,10 @@ const REST_METHODS = ["睡眠・休息", "入浴", "マッサージ", "読書", 
 const REST_METHOD_KEYS = { "睡眠・休息": "restSleep", "入浴": "restBath", "マッサージ": "restMassage", "読書": "restReading", "散歩": "restWalk", "瞑想": "restMeditate", "趣味の時間": "restHobby", "その他": "optionOther" };
 // ★★AI_ADVICE_ENABLED を、★外しました（★2026-09-09・削除17点の3番）。
 //   ★画面ごと 消したので、★この止めの札を 読む所が ありません。
-//   ★app/api/advice/route.js は 残っています。★画面を 消しただけです。
+//   ★★2026-09-14（No.019）、★app/api/advice/route.js も lib/anthropic.js も
+//     ★経路ごと 消しました。★門を 2つ 閉じて 残すより、
+//     ★「存在しません」の ほうが 短く、★本当です（★裁定 その59）。
+//   ★いきさつ docs/records/修正の記録-No.019-助言の道を消す.md
 const CARING_MESSAGE_KEYS = [
   "caringMsg1", "caringMsg2", "caringMsg3", "caringMsg4", "caringMsg5",
   "caringMsg6", "caringMsg7", "caringMsg8", "caringMsg9", "caringMsg10"
@@ -21376,7 +21379,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 ★★入口が 無いのに 画面だけ 残っていました。
                   ★たどり着けない画面に「準備中」と 書いてあるのは、
                   ★これから 出る、という 約束に 読めます。★約束していません。
-                ★api/advice のルートは 残します。★画面を 消しただけです。 */}
+                ★★2026-09-14（No.019）、★api/advice の ルートも 消しました。 */}
 
             {activeTab === "learn" && (() => {
               const currentProfession = learnProfession || profile.vocal_profession || "singer";
@@ -22108,7 +22111,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ★★2026-09-09、★画面ごと 外しました（★削除17点の3番）。
                           ★止めの札（AI_ADVICE_ENABLED）も、★覚えも、★呼び出しも、
                           ★1つ残らず 消しました。★入口も 画面も ありません。
-                        ★app/api/advice/route.js は 残っています。★呼ぶ所が ありません。 */}
+                        ★★2026-09-14（No.019）、★app/api/advice/route.js ごと 消しました。 */}
                   </div>
                 </div>
 

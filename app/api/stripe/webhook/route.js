@@ -10,7 +10,9 @@ export async function POST(request) {
   //   ★確かめたこと：new Stripe(undefined) は投げません。呼んだときに
   //     初めて失敗します。つまり見張りが無いと、メールアドレスと利用者IDが
   //     ★api.stripe.com へ出てから拒否されます。
-  //   ★/api/advice と同じ形です。閉じるほうへ倒します。
+  //   ★閉じるほうへ倒します（フェイルクローズ）。
+  //     ★かつて /api/advice が 同じ 形を していました。
+  //     ★その道は 2026-09-14（No.019）に 経路ごと 消えています。
   if (!stripeConfigured()) {
     return NextResponse.json(
       { error: "この機能は、いまお使いいただけません。" },

@@ -1,5 +1,5 @@
 # 外へ 出る 道 ── Opus の 3つの 問いへの 答え（2026-09-14）
-全316行 / 末尾は「　★使わない のであれば、route ごと 消すのが いちばん 正直な 形です。」
+全302行 / 末尾は「　★使わない のであれば、route ごと 消すのが いちばん 正直な 形です。」
 
 ★この 文は tools/outbound_routes_report.py が 書き出しました。
 ★中の 数と 一覧は、すべて リポジトリを 走査した 結果です。手で 書いていません。
@@ -20,22 +20,8 @@ Opus の ご指摘は 正しいです。`app/api/advice/route.js` の `buildSumm
 
 | # | 欄 | entries の 列か |
 |---|---|---|
-| 1 | `date` | いいえ（date） |
-| 2 | `throat_condition` | ★はい |
-| 3 | `voice_quality` | ★はい |
-| 4 | `sleep_hours` | ★はい |
-| 5 | `sleep_quality` | ★はい |
-| 6 | `water_intake` | ★はい |
-| 7 | `temperature` | ★はい |
-| 8 | `humidity` | ★はい |
-| 9 | `activity_type` | ★はい |
-| 10 | `performance_quality` | ★はい |
-| 11 | `ease` | ★はい |
-| 12 | `throat_symptoms` | ★はい |
-| 13 | `meal_notes` | ★はい |
-| 14 | `notes` | ★はい |
 
-★14 欄の うち 13 欄が entries の 列です。★残る 1つは `date` です。
+★0 欄の うち 0 欄が entries の 列です。★残る 1つは `date` です。
 ★`meal_notes` と `notes` は 自由記述です。本人が 名前や 病名を 書けば、それも 渡ります。
 
 ### ★それでも「出ている」とは 言えません ── 門が 2つ あります
@@ -234,8 +220,8 @@ REGION: アイルランド（EU・EEA）／サーバの 所在は 未確認
 SOURCE: Commercial Terms of Service（2025-06-17）の 定義条項。★居住地に 連動。
 DPA_NO_ACCESS_CLAUSE: unknown
 DPA_ACCESS_CONTROL: unknown
-FIELDS_SENT: date、★throat_condition、★voice_quality、★sleep_hours、★sleep_quality、★water_intake、★temperature、★humidity、★activity_type、★performance_quality、★ease、★throat_symptoms、★meal_notes、★notes
-  ★印は entries の 列（13 / 14）
+FIELDS_SENT: 
+  ★印は entries の 列（0 / 0）
 PERSONAL_DATA: yes
 NOTE: ★記録の 中身が 出る 唯一の サーバ側の 道。★2つの 門で 閉じています。
 ```

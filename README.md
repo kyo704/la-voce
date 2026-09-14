@@ -114,16 +114,12 @@ SupabaseのTable Editorから直接行う設計にしています。
 
 ## 7. AIアドバイス機能
 
-「AIアドバイス」タブでは、直近2週間の記録（食事メモ・自由メモの文章を含む）をAnthropic API（Claude）に渡し、
-傾向を踏まえたアドバイスを生成します。
+★「AIアドバイス」は、2026-09-14（修正の記録 No.019）に**経路ごと削除しました**。
 
-1. https://console.anthropic.com でAPIキーを発行
-2. `.env.local`（およびVercelの環境変数）に `ANTHROPIC_API_KEY` を設定
-3. 利用のたびにAnthropic APIの従量課金が発生します（ユーザーが「アドバイスを生成する」ボタンを押した時のみ実行されるので、コストはコントロールしやすい設計です）
-4. `app/api/advice/route.js` の `SYSTEM_PROMPT` を編集すると、アドバイスのトーンや注意事項を調整できます
-5. 医学的判断は行わない・服薬指導はしない、という制約をプロンプトに入れていますが、AIの出力を完全に制御できるわけではない点はご留意ください
+`app/api/advice/route.js` と `lib/anthropic.js` は存在しません。`ANTHROPIC_API_KEY` は不要です。
 
----
+削除の理由と、送っていた項目・一度も送信していないことの根拠は
+`docs/records/修正の記録-No.019-助言の道を消す.md` に残してあります。
 
 ## 8. iOSアプリ化してApp Storeに掲載する（Capacitor）
 
@@ -205,7 +201,6 @@ app/
   api/stripe/checkout     Stripe Checkoutセッション作成
   api/stripe/portal       Stripeカスタマーポータル作成
   api/stripe/webhook      Stripe Webhook受信（サブスク状態をDBに反映）
-  api/advice              AIアドバイス生成（Anthropic APIを呼び出す）
   admin/page.js           管理者専用：全ユーザー一覧
   legal/*                 特商法表記・プライバシーポリシー・利用規約
 components/
