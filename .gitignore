@@ -26,4 +26,3 @@ supabase/.temp/
 
 # ★作業用の 貼り付け（★台帳の 決まりの 生データ）
 docs/reports/_policies.tsv
-docs/reports/_sales.txt
