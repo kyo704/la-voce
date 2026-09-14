@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getUserWithTimeout } from "@/lib/withTimeout";
-import { unlockedFromSummary, unlockSummaryFromRows } from "@/lib/character";
+import { unlockedFromSummary, unlockSummaryFromRows, goalPartOf } from "@/lib/character";
 import { UNLOCKS } from "@/lib/sheepWardrobe";
 import { ACQUIRED_BY, COUNT_KIND, LEDGER_TABLE, buildAcquisition } from "@/lib/itemLedger";
 import { writeAcquisitions } from "@/lib/itemLedgerServer";
@@ -49,13 +49,38 @@ export async function POST() {
 
   const admin = createAdminClient();
 
-  // ★見どころを、★こちらで 数えます。
-  //   ★★列を 絞りません。★「何種類 触れたか」は、★列の 数そのものです。
-  const { data: rows, error: rowsError } = await admin
-    .from("entries")
-    .select("*")
-    .eq("user_id", user.id);
-  if (rowsError) return NextResponse.json({ error: "いま、つながりません。" }, { status: 503 });
+  // ★見どころを 数えます。
+  //
+  // ★★2026-09-14（★No.019.5・裁定 その61）、★数えるのを 台帳へ 移しました。
+  //
+  //   ★★これまでは `select("*")` でした。★理由は 書いて ありました ──
+  //     「★列を 絞りません。★『何種類 触れたか』は、★列の 数そのものです」。
+  //     ★★それ自体は 正しい 理屈です。★けれど、★要るのは ★列の 数であって、
+  //       ★★中身では ありません。
+  //
+  //   ★★2026-09-14、★本番の x-vercel-id を 測りました。
+  //     ★静的 hnd1（東京）／★関数 iad1（米国バージニア）。
+  //     ★★つまり、★ご本人の 記録の 全列が、★押す たびに 米国へ 渡って、
+  //       ★`v == null` かどうかだけ 見られて、★捨てられて いました。
+  //
+  //   ★★`character_unlock_summary` は、★3つの 数だけを 返します。
+  //     ★記録の 中身は ★1つも 出ません。
+  //
+  // ★★紙（supabase/migration_no019_5_entry_stats.sql）が まだ なら、
+  //   ★古い 道へ 落ちます。★ごほうびが 止まらない ため です。
+  //   ★★ずれる 向きは「まだ 開かない」であって、★「消える」では ありません
+  //     （★下の 台帳に 既に ある ものは、★組み立て直しません）。
+  const { data: sumRow } = await admin.rpc("character_unlock_summary", { p_user_id: user.id });
+  let rows = null;
+  if (!sumRow) {
+    // ★★ここに 来るのは、★紙が まだ 流れて いない ときだけ です。
+    const legacy = await admin
+      .from("entries")
+      .select("*")
+      .eq("user_id", user.id);
+    if (legacy.error) return NextResponse.json({ error: "いま、つながりません。" }, { status: 503 });
+    rows = legacy.data;
+  }
 
   const { data: prof, error: profError } = await admin
     .from("profiles")
@@ -64,7 +89,18 @@ export async function POST() {
     .single();
   if (profError) return NextResponse.json({ error: "いま、つながりません。" }, { status: 503 });
 
-  const summary = unlockSummaryFromRows(rows || [], prof);
+  // ★台帳が 数えた ときは、★目標の ぶんだけ こちらで 足します。
+  //   ★`goalPartOf` は profiles を 見る ものなので、★entries とは 別の 話です。
+  //   ★★書き写しません。★lib/character.js の ものを そのまま 呼びます。
+  //     ★★同じ 決めを 2か所に 置くと、★片方だけ 直った 形に なります。
+  const summary = sumRow
+    ? {
+        performances: Number(sumRow.performances) || 0,
+        hasPianissimo: !!sumRow.hasPianissimo,
+        fieldKinds: Number(sumRow.fieldKinds) || 0,
+        ...goalPartOf(prof)
+      }
+    : unlockSummaryFromRows(rows || [], prof);
   const unlocked = unlockedFromSummary(summary);
   if (unlocked.size === 0) return NextResponse.json({ written: 0 });
 

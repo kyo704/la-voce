@@ -98,9 +98,40 @@ export default async function AdminPage() {
     return !!(u.email_confirmed_at || u.confirmed_at);
   };
   // 実行順マスター Stage 0-3・Stage 2-1: 入力率の集計に必要な列を追加で取得する。
-  const { data: entryRows } = await admin
-    .from("entries")
-    .select("user_id, weight_kg, body_fat_pct, meals, exercises, temperature, humidity, medication_tags, mental_tags, mental_reason, cpps_value, voice_memo");
+  //
+  // ★★2026-09-14（★No.019.5・裁定 その61）、★数えるのを 台帳へ 移しました。
+  //
+  //   ★★これまでは、★全38人の entries から ★12列を そのまま 取って いました。
+  //     ★その 中には `mental_reason`（自由記述の 日記）、`voice_memo`（声の メモ）、
+  //       `medication_tags`（お薬）が 入って います。
+  //     ★★そして、★値は ★1つも 使われて いません。
+  //       :180-188 が 見るのは `typeof` と `.length` と `.trim()` だけ ──
+  //       ★「埋まって いるか」の 判定だけ です。
+  //
+  //   ★★2026-09-14、★本番の x-vercel-id を 測りました。
+  //     ★静的 hnd1（東京）／★関数 iad1（米国バージニア）。
+  //     ★★保管は 東京でも、★この 関数は 米国で 動いて います。
+  //     ★つまり 12列は、★管理画面を 開く たびに 米国へ 運ばれて、
+  //       ★数えられて、★捨てられて いました。
+  //
+  //   ★★数えるだけ なら、★台帳の 中で 数えられます。★出るのは 数だけです。
+  //
+  // ★★画面に 出る 数字は、★1つも 変えて いません。
+  //   ★下の 2つの 道は、★同じ 数を 出します。★条件を 書き写して あります。
+  //
+  // ★★紙（supabase/migration_no019_5_entry_stats.sql）が まだ 流れて いない間も、
+  //   ★画面が 白く ならない ように、★古い 道を 残して あります。
+  //   ★★紙が 流れれば、★値は 1つも 国境を 越えなく なります。
+  //   ★★紙が 流れたら、★下の 古い 道は 消せます（★そのときは 12列の 取得も 消えます）。
+  const { data: entryStats } = await admin.rpc("admin_entry_stats");
+  let entryRows = null;
+  if (!entryStats) {
+    // ★★ここに 来るのは、★紙が まだ 流れて いない ときだけ です。
+    const legacy = await admin
+      .from("entries")
+      .select("user_id, weight_kg, body_fat_pct, meals, exercises, temperature, humidity, medication_tags, mental_tags, mental_reason, cpps_value, voice_memo");
+    entryRows = legacy.data;
+  }
   const { data: feedbackRows } = await admin
     .from("feedback")
     .select("id, email, category, message, created_at")
@@ -111,9 +142,16 @@ export default async function AdminPage() {
   (subs || []).forEach((s) => { subByUser[s.user_id] = s; });
 
   const entryCountByUser = {};
-  (entryRows || []).forEach((r) => {
-    entryCountByUser[r.user_id] = (entryCountByUser[r.user_id] || 0) + 1;
-  });
+  if (entryStats) {
+    // ★台帳が group by で 数えた もの。★user_id と 数だけ です。
+    (entryStats.per_user || []).forEach((r) => {
+      entryCountByUser[r.user_id] = r.n;
+    });
+  } else {
+    (entryRows || []).forEach((r) => {
+      entryCountByUser[r.user_id] = (entryCountByUser[r.user_id] || 0) + 1;
+    });
+  }
 
   const users = (profiles || []).map((p) => {
     const s = subByUser[p.id];
@@ -174,18 +212,27 @@ export default async function AdminPage() {
   const deletionMonths = Object.entries(deletionByMonth).sort((a, b) => (a[0] < b[0] ? 1 : -1)).slice(0, 12);
 
   // ---- ここから追加分：実行順マスター Stage 2-1（入力率・7日目調査・PWA導線） ----
-  const n = (entryRows || []).length || 1;
+  const n = (entryStats ? entryStats.total : (entryRows || []).length) || 1;
   const pct = (count) => `${Math.round((count / n) * 1000) / 10}%`;
+  // ★★2つの 道が、★同じ 数を 出すこと。
+  //   ★左（台帳）… count(*) filter (...)
+  //   ★右（画面）… これまでの 判定。★1文字も 変えて いません。
+  //   ★★紙の 条件は、★右の 判定を SQL に 書き写した ものです ──
+  //     `typeof x === "number"`            → jsonb_typeof(to_jsonb(x)) = 'number'
+  //     `Array.isArray(x) && x.length > 0` → 'array' かつ jsonb_array_length > 0
+  //     `(x || "").trim()`                 → coalesce(trim(x),'') <> ''
+  const fill = entryStats ? (entryStats.fill || {}) : null;
+  const countOf = (key, fn) => (fill ? (fill[key] || 0) : (entryRows || []).filter(fn).length);
   const inputRateRows = [
-    { label: "体重", count: (entryRows || []).filter((e) => typeof e.weight_kg === "number").length },
-    { label: "体脂肪率", count: (entryRows || []).filter((e) => typeof e.body_fat_pct === "number").length },
-    { label: "食事の詳細記録", count: (entryRows || []).filter((e) => Array.isArray(e.meals) && e.meals.length > 0).length },
-    { label: "運動の詳細記録", count: (entryRows || []).filter((e) => Array.isArray(e.exercises) && e.exercises.length > 0).length },
-    { label: "環境（気温・湿度）", count: (entryRows || []).filter((e) => typeof e.temperature === "number" || typeof e.humidity === "number").length },
-    { label: "服薬タグ", count: (entryRows || []).filter((e) => Array.isArray(e.medication_tags) && e.medication_tags.length > 0).length },
-    { label: "気持ちタグ・日記", count: (entryRows || []).filter((e) => (Array.isArray(e.mental_tags) && e.mental_tags.length > 0) || (e.mental_reason || "").trim()).length },
-    { label: "CPPS客観測定", count: (entryRows || []).filter((e) => typeof e.cpps_value === "number").length },
-    { label: "声のメモ", count: (entryRows || []).filter((e) => (e.voice_memo || "").trim()).length }
+    { label: "体重", count: countOf("weight_kg", (e) => typeof e.weight_kg === "number") },
+    { label: "体脂肪率", count: countOf("body_fat_pct", (e) => typeof e.body_fat_pct === "number") },
+    { label: "食事の詳細記録", count: countOf("meals", (e) => Array.isArray(e.meals) && e.meals.length > 0) },
+    { label: "運動の詳細記録", count: countOf("exercises", (e) => Array.isArray(e.exercises) && e.exercises.length > 0) },
+    { label: "環境（気温・湿度）", count: countOf("environment", (e) => typeof e.temperature === "number" || typeof e.humidity === "number") },
+    { label: "服薬タグ", count: countOf("medication_tags", (e) => Array.isArray(e.medication_tags) && e.medication_tags.length > 0) },
+    { label: "気持ちタグ・日記", count: countOf("mental", (e) => (Array.isArray(e.mental_tags) && e.mental_tags.length > 0) || (e.mental_reason || "").trim()) },
+    { label: "CPPS客観測定", count: countOf("cpps_value", (e) => typeof e.cpps_value === "number") },
+    { label: "声のメモ", count: countOf("voice_memo", (e) => (e.voice_memo || "").trim()) }
   ];
 
   const surveyCounts = {};
