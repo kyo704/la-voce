@@ -1,0 +1,45 @@
+{
+ "test1": {
+  "code": 200,
+  "rows": [
+   {
+    "id": "5c014c47-f583-4e5f-bac9-241a2d20e1a0",
+    "org_id": "11111111-1111-4111-8111-111111111111",
+    "student_id": "dc8f0554-3aa1-496c-be26-d7c07ece8380",
+    "status": "active",
+    "enrolled_at": "2026-09-14T11:23:35.361944+00:00",
+    "left_at": null,
+    "grade_label": "4年"
+   }
+  ]
+ },
+ "test2": {
+  "code": 403,
+  "rows": {
+   "code": "42501",
+   "details": null,
+   "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.memberships TO authenticated;",
+   "message": "permission denied for table memberships"
+  }
+ },
+ "test3": {
+  "code": 200,
+  "rows": [
+   {
+    "user_id": "4b027d0a-11de-4acc-ae63-f240300c78aa",
+    "role": "staff",
+    "post_id": "22222222-2222-4222-8222-222222222222"
+   }
+  ]
+ },
+ "test4": {
+  "code": 403,
+  "rows": {
+   "code": "42501",
+   "details": null,
+   "hint": null,
+   "message": "new row violates row-level security policy for table \"enrollments\""
+  }
+ },
+ "target": "dc8f0554-3aa1-496c-be26-d7c07ece8380"
+}
