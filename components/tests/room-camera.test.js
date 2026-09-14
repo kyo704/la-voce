@@ -101,7 +101,15 @@ function near(a, b, label) { ok(Math.abs(a - b) < 1e-6, label + "  （得た値:
   console.log("⑦ 門の外（38人）の 部屋を 変えない");
   ok(/cameraOn = false/.test(readRaw("components", "CharacterHome.jsx")),
     "★既定は 切（★渡さなければ 恒等）");
-  ok((readRaw("components", "VocalTracker.jsx").match(/cameraOn=\{layoutV2\}/g) || []).length === 2,
+  // ★★2026-09-13、★したく の ぶんに 条件が 足されました ──
+  //   ★`cameraOn={layoutV2 && homeState !== DRESS}`
+  //   ★★「したく に すると 壁も 床も 上に ずれる」の 直しです。
+  //   ★★見る のは「★門（layoutV2）が かかって いるか」です。
+  //     ★★字の 並びを そのまま 固定すると、★条件を 足す たびに 落ちます。
+  const camCalls = (readRaw("components", "VocalTracker.jsx")
+    .match(/cameraOn=\{[^}]*\}/g) || []);
+  ok(camCalls.length === 2, "★カメラを 渡す ところは 2か所（★" + camCalls.length + "）");
+  ok(camCalls.every((x) => /layoutV2/.test(x)),
     "★名簿に 載っている方にだけ 渡している（★2か所 とも）");
   // ★★「うごかす」の 押しどころは、★カメラの 外に 置くこと。
   //   ★中に 入れると、★寄ったとき 一緒に 大きくなり、★端で 画面の外へ 出ます。
