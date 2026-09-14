@@ -188,3 +188,87 @@ quality: typeof row.resonance_score === "number"
 - 「名前が 言って いる もの」は、★私が 列名から 読み取った ものです。
   ★★正しい 呼び名は、★画面の 言葉と いっしょに 決める ことに なります。
 
+---
+
+# ★2026-09-14 追記② ── 私の 数えの 訂正
+
+★出どころ C1 の Q1〜Q3（★Opus）
+
+## ★訂正 ── 6つの うち **3つは ずれで ありません でした**
+
+★★`wake_note` `routine_note` `pianissimo_high_note` を、
+　★「名前は メモ、★中身は 音の 高さ」と 申しました。★**誤りです。**
+
+★★画面の 言葉を 見ると、★**もう 正しく 書いて あります** ──
+
+| 列 | 画面の 言葉（`lib/translations.js`） |
+|---|---|
+| `wake_note` | **起き抜けの地声の音名** |
+| `routine_note` | **ルーティーン後の地声の音名** |
+| `pianissimo_high_note` | **弱声の最高音**（`lib/ownRecordFields.js:108`） |
+
+★★音楽で「note」は **音名**です。★メモでは ありません。
+　★★私が 英語の note を「メモ」と 読んだ ために 出た 誤りです。
+　★★列名は 正しい です。★使う 人に 出る 言葉も 正しい です。
+
+## ★本当に ずれて いるのは **3つ**（★元の とおり）
+
+| 列 | 名前 | 中身 |
+|---|---|---|
+| `throat_condition` | のどの 調子 | **からだの 感じ**（`bodyFeel`） |
+| `voice_quality` | 声の 出来 | **`quality` を 5段に 丸めた もの** |
+| `resonance_score` | 響きの 点数 | **声の 出来**（0〜10） |
+
+## Q1　`wake_note` と `routine_note` は 同じ ものか
+
+★★**同じ 中身の 型で、★取る ときが ちがいます。**
+
+| | いつの 記録から | 出どころ |
+|---|---|---|
+| `wake_note` | `context === "wake"`（★起き抜け） | `wakeEntry.pitchChest` |
+| `routine_note` | `context === "after_routine"`（★発声の あと） | `routineEntry.pitchChest` |
+
+★★どちらも **地声の 音名** です。★型は 同じ、★時が ちがいます。
+
+★★この 2つは、★**引き算の ため**に 分けて あります ──
+```js
+// components/VocalTracker.jsx:7533
+const deltaST = routineMidi - wakeMidi;   // ★ウォームアップで 何半音 上がったか
+```
+★★受け皿を 1つに すると、★同じ 1件が 両方に なり、★差が 必ず 0 に なります。
+　★★`components/VocalTracker.jsx:1752` に、★その 注意が 書いて あります。
+
+★★**分析の 拡張(2)の 一覧に 2つ 並べても、★取り違えは 起きません。**
+　★言葉が すでに「起き抜けの」「ルーティーン後の」と 分かれて います。
+
+## Q2　`pitchChest` は、★正しい 名前で どこかに あるか
+
+★★**あります。** ★`entries.voice_entries[].pitchChest`。
+
+★★1件ずつの 記録の 中に、★`pitchChest` という 名前の まま 入って います。
+　★`wake_note` `routine_note` は、★そこから **取り出した 写し**です。
+
+★★同じく `pitchSoftMax` も `voice_entries[].pitchSoftMax` に あります。
+
+## Q3　6つは、★どう 呼ぶ べきか（★ご提案）
+
+| 列 | いまの 名前 | ご提案 | わけ |
+|---|---|---|---|
+| `throat_condition` | のどの 調子 | **`body_feel`** | 中身の とおり。画面の 言葉も「からだの 感じ」に |
+| `voice_quality` | 声の 出来 | **`voice_quality_5`** | 5段に 丸めた 写し、と 名前で 言う |
+| `resonance_score` | 響きの 点数 | **`voice_quality_10`** | 声の 出来の 生の 値。★`score` を 外す |
+| `wake_note` | — | **そのまま** | 音名の note。★正しい |
+| `routine_note` | — | **そのまま** | 同上 |
+| `pianissimo_high_note` | — | **そのまま** | 同上 |
+
+★★`resonance_score` の `score` を 外す わけ ──
+　★★「点数」は、★この 製品が **出さないと 決めた** ものです。
+　★★列名に 残って いると、★いつか 画面に 出ます。
+
+★★★決めるのは Opus と 坂本さんです。★これは 案です。
+
+## ★直して いません
+
+★★名前は **画面の 言葉と、★分析の 項目一覧と いっしょに**、
+　★1つの 記録番号で 直します（★9月15日の あと）。
+
