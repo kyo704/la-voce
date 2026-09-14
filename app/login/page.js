@@ -23,6 +23,16 @@ const LT = {
   placeholderEmail: { ja: "メールアドレス", en: "Email address", zh: "电子邮箱", it: "Indirizzo e-mail", de: "E-Mail-Adresse", fr: "Adresse e-mail", es: "Correo electrónico", ko: "이메일 주소", ru: "Электронная почта" },
   placeholderPassword: { ja: "パスワード", en: "Password", zh: "密码", it: "Password", de: "Passwort", fr: "Mot de passe", es: "Contraseña", ko: "비밀번호", ru: "Пароль" },
   errorLogin: { ja: "メールアドレスまたはパスワードが正しくありません。", en: "The email address or password is incorrect.", zh: "邮箱地址或密码不正确。", it: "L'indirizzo e-mail o la password non sono corretti.", de: "E-Mail-Adresse oder Passwort ist falsch.", fr: "L'adresse e-mail ou le mot de passe est incorrect.", es: "El correo electrónico o la contraseña son incorrectos.", ko: "이메일 주소 또는 비밀번호가 올바르지 않습니다.", ru: "Неверный адрес электронной почты или пароль." },
+  // ★★2026-09-14、★修正の記録 No.015。
+  //   ★★どんな わけで 入れなくても、★同じ 一文を 出していました。
+  //     ★★確認メールを まだ 押していない方にも
+  //       「パスワードが 正しくありません」と 出ます。
+  //     ★★その方は パスワードを 変えます。★それでも 入れません。
+  //       ★直しようの ない ことを、★直せと 言っていた ことに なります。
+  //   ★★わけの 分かる ものだけ、★別の 一文に します。
+  //     ★★分からない ものは、★これまでどおり 上の 一文です。
+  errorNotConfirmed: { ja: "メールの確認がまだです。お送りした確認メールのリンクを押してから、もう一度お試しください。", en: "Your email is not confirmed yet. Please open the link in the confirmation email, then try again.", zh: "邮箱尚未验证。请点击验证邮件中的链接后重试。", it: "L'e-mail non e ancora confermata. Apri il link nell'e-mail di conferma e riprova.", de: "Die E-Mail ist noch nicht bestaetigt. Oeffne den Link in der Bestaetigungsmail und versuche es erneut.", fr: "Votre e-mail n'est pas encore confirme. Ouvrez le lien dans l'e-mail de confirmation, puis reessayez.", es: "Tu correo aun no esta confirmado. Abre el enlace del correo de confirmacion y vuelve a intentarlo.", ko: "이메일 확인이 아직입니다. 확인 메일의 링크를 누른 뒤 다시 시도해 주세요.", ru: "Электронная почта ещё не подтверждена. Откройте ссылку из письма подтверждения и попробуйте снова." },
+  errorTooMany: { ja: "試された回数が多いため、少しのあいだお待ちください。しばらくしてから、もう一度お試しください。", en: "Too many attempts. Please wait a little while, then try again.", zh: "尝试次数过多。请稍候片刻后重试。", it: "Troppi tentativi. Attendi un momento e riprova.", de: "Zu viele Versuche. Warte einen Moment und versuche es erneut.", fr: "Trop de tentatives. Patientez un instant, puis reessayez.", es: "Demasiados intentos. Espera un momento y vuelve a intentarlo.", ko: "시도 횟수가 많습니다. 잠시 기다린 뒤 다시 시도해 주세요.", ru: "Слишком много попыток. Подождите немного и попробуйте снова." },
   btnLoading: { ja: "開演準備中…", en: "Preparing to begin…", zh: "开演准备中…", it: "Preparazione in corso…", de: "Vorbereitung läuft…", fr: "Préparation en cours…", es: "Preparando…", ko: "공연 준비 중…", ru: "Готовимся начать…" },
   // パスワードの再設定（Supabase Auth の resetPasswordForEmail を使う）。
   linkForgot: { ja: "パスワードをお忘れの方は", en: "Forgot your password?", zh: "忘记密码？", it: "Password dimenticata?", de: "Passwort vergessen?", fr: "Mot de passe oublie ?", es: "\u00bfOlvidaste tu contrase\u00f1a?", ko: "비밀번호를 잊으셨나요?", ru: "Забыли пароль?" },
@@ -43,6 +53,31 @@ const LT = {
 };
 
 function ltr(key, lang) { const e = LT[key]; if (!e) return ""; return e[lang] || e.en || e.ja || ""; }
+
+/**
+ * ★入れなかった わけから、★出す 一文を 決めます（★No.015）。
+ *
+ *   ★★2026-09-14 まで、★どの わけでも 同じ 一文でした。
+ *     ★★確認メールを 押していない方に
+ *       「パスワードが 正しくありません」と 出ていました。
+ *     ★★その方は パスワードを 変えます。★それでも 入れません。
+ *
+ *   ★★分かる ものだけ 分けます。★分からない ものは これまでどおり。
+ *     ★★「そのメールは 登録されていません」とは 書きません。
+ *       ★誰が 使っているかを 教える ことに なるからです。
+ */
+function loginErrorKey(error) {
+  const code = String((error && error.code) || "").toLowerCase();
+  const msg = String((error && error.message) || "").toLowerCase();
+  if (code === "email_not_confirmed" || msg.includes("email not confirmed")) {
+    return "errorNotConfirmed";
+  }
+  if (code === "over_request_rate_limit" || code === "over_email_send_rate_limit"
+    || (error && error.status === 429)) {
+    return "errorTooMany";
+  }
+  return "errorLogin";
+}
 
 const inputStyle = {
   padding: "13px 15px",
@@ -179,7 +214,12 @@ function LoginPageInner() {
       password: form.password
     });
     if (error) {
-      setError(ltr("errorLogin", lang));
+      // ★★わけを 見ます（★No.015）。
+      //   ★★中身は 見せません。★言い方だけを 変えます。
+      //     ★どの メールが 登録されているかを 教えないためです。
+      //   ★★分からない わけは、★これまでどおりの 一文です。
+      console.error("ログインできませんでした:", error.code || error.status, error.message);
+      setError(ltr(loginErrorKey(error), lang));
       setStatus("idle");
       return;
     }
