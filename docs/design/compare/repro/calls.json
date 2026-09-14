@@ -1,0 +1,1418 @@
+{
+ "url1": "http://localhost:3000/dashboard",
+ "okNote": true,
+ "okRep": true,
+ "deleted": true,
+ "before": 1,
+ "afterDelete": 0,
+ "afterReload": 1,
+ "log": [
+  {
+   "type": "info",
+   "text": "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold"
+  },
+  {
+   "type": "info",
+   "text": "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold"
+  },
+  {
+   "type": "info",
+   "text": "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold"
+  }
+ ],
+ "calls": [
+  {
+   "method": "POST",
+   "status": 200,
+   "url": "/auth/v1/token?grant_type=password",
+   "body": "{\"email\":\"kyo0703opera+localtest@gmail.com\",\"password\":\"LocalTest-2026-0914!\",\"gotrue_meta_security\":{}}",
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/role_master?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/repertoire_tessitura?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/chapter_state?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/entries?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/profiles?select=height_cm%2Cvoice_type%2Cnutrition_phase%2Cprotein_coefficient%2Cage%2Csex%2Cgarden_theme%2Ccharacter_points_spent%2Ccharacter_equipped%2Cvocal_range_low%2Cvocal_range_high%2Ccomfort_range_low%2Ccomfort_range_high%2Ctechnical_goal%2Chealth_notes%2Cvocal_profession%2Ctrack_cy",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/cycle_periods?select=id%2Cstart_date%2Cend_date&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=start_date.desc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/project_master?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/enrollments?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "POST",
+   "status": 200,
+   "url": "/rest/v1/rpc/get_my_teacher_names",
+   "body": "{}",
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28teacher_id%2Cstudent_id%29&link.teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/questionnaire_responses?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=response_date.asc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "POST",
+   "status": 200,
+   "url": "/rest/v1/rpc/get_my_teacher_names",
+   "body": "{}",
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/memberships?select=*%2Corg%3Aorganizations%28*%29&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28student_id%2Cteacher_id%29&link.student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_event_participants?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_events?select=*&event_date=gte.2026-09-13&order=event_date.asc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/role_master?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/repertoire_tessitura?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/chapter_state?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/entries?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/cycle_periods?select=id%2Cstart_date%2Cend_date&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=start_date.desc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/project_master?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/enrollments?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/profiles?select=height_cm%2Cvoice_type%2Cnutrition_phase%2Cprotein_coefficient%2Cage%2Csex%2Cgarden_theme%2Ccharacter_points_spent%2Ccharacter_equipped%2Cvocal_range_low%2Cvocal_range_high%2Ccomfort_range_low%2Ccomfort_range_high%2Ctechnical_goal%2Chealth_notes%2Cvocal_profession%2Ctrack_cy",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_event_participants?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/questionnaire_responses?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=response_date.asc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/memberships?select=*%2Corg%3Aorganizations%28*%29&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28student_id%2Cteacher_id%29&link.student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28teacher_id%2Cstudent_id%29&link.teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_events?select=*&event_date=gte.2026-09-13&order=event_date.asc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/enrollments?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/article_progress?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/profiles?select=record_mode%2Cdeleted_at%2Ccycle_show_on_home%2Cis_under_18%2Cage_question_shown_at%2Ccohort%2Cis_internal%2Cis_tester%2Callergies%2Cregular_medications&id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_event_participants?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/memberships?select=*%2Corg%3Aorganizations%28*%29&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28student_id%2Cteacher_id%29&link.student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28teacher_id%2Cstudent_id%29&link.teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_events?select=*&event_date=gte.2026-09-13&order=event_date.asc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/enrollments?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_event_participants?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/memberships?select=*%2Corg%3Aorganizations%28*%29&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28student_id%2Cteacher_id%29&link.student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_events?select=*&event_date=gte.2026-09-13&order=event_date.asc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28teacher_id%2Cstudent_id%29&link.teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/article_progress?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/profiles?select=record_mode%2Cdeleted_at%2Ccycle_show_on_home%2Cis_under_18%2Cage_question_shown_at%2Ccohort%2Cis_internal%2Cis_tester%2Callergies%2Cregular_medications&id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/organizations?select=*&created_by=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/organizations?select=*&created_by=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/organizations?select=*&created_by=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/subscriptions?select=status%2Ctier&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/organizations?select=*&created_by=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/subscriptions?select=status%2Ctier&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/performances?select=id%2Cperformed_on%2Ckind%2Clabel%2Crepertoire_name%2Cmorning_words&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=performed_on.desc&limit=60",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/user_notices?select=notice_key%2Cshown_at&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/period_markers?select=marked_on&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/performance_results?select=performance_id%2Cresult&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/character_inventory?select=item_key&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/performances?select=id%2Cperformed_on%2Ckind%2Clabel%2Crepertoire_name%2Cmorning_words&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=performed_on.desc&limit=60",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/performance_results?select=performance_id%2Cresult&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/user_notices?select=notice_key%2Cshown_at&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/period_markers?select=marked_on&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/character_inventory?select=item_key&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28student_id%2Cteacher_id%29&link.student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/enrollments?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/memberships?select=*%2Corg%3Aorganizations%28*%29&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28teacher_id%2Cstudent_id%29&link.teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_events?select=*&event_date=gte.2026-09-13&order=event_date.asc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_event_participants?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/assignments?select=org_id%2Cteacher_id%2Cstudent_id&ended_at=is.null",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/organizations?select=*&created_by=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/notes?select=id%2Ckind%2Cbody%2Csource_label%2Ccreated_at%2Cupdated_at%2Clesson_on%2Cteacher_label%2Crepertoire_name%2Csaid_text%2Cnext_action%2Cgained_text&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&deleted_at=is.null&order=updated_at.desc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/assignments?select=org_id%2Cteacher_id%2Cstudent_id&ended_at=is.null",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_messages?select=id%2Corg_id%2Cteacher_id%2Cauthor_id%2Cbody%2Ccreated_at%2Cwithdrawn_at&teacher_id=is.null&order=created_at.desc&limit=5",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/notes?select=id%2Ckind%2Cbody%2Csource_label%2Ccreated_at%2Cupdated_at%2Clesson_on%2Cteacher_label%2Crepertoire_name%2Csaid_text%2Cnext_action%2Cgained_text&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&deleted_at=is.null&order=updated_at.desc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_messages?select=id%2Corg_id%2Cteacher_id%2Cauthor_id%2Cbody%2Ccreated_at%2Cwithdrawn_at&teacher_id=is.null&order=created_at.desc&limit=5",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "POST",
+   "status": 200,
+   "url": "/rest/v1/entries?on_conflict=user_id%2Cdate",
+   "body": "{\"user_id\":\"4b027d0a-11de-4acc-ae63-f240300c78aa\",\"date\":\"2026-09-12\",\"type_fields\":null,\"throat_condition\":null,\"voice_quality\":null,\"throat_symptoms\":[],\"sleep_hours\":null,\"sleep_quality\":null,\"meal_notes\":\"\",\"meal_marks\":null,\"sleep_side\":null,\"head_raised\":null,\"belly_tight\":null,\"location\":\"\",\"temperature\":null,\"humidity\":null,\"activity_duration\":0,\"repertoire\":null,\"activity_detail\":{},\"performance_quality\":null,\"ease\":null,\"notes\":\"\",\"weight_kg\":null,\"body_fat_pct\":null,\"protein_level\":null,\"calorie_level\":null,\"water_intake\":0,\"carbs_g\":null,\"protein_g\":null,\"fat_g\":null,\"fiber_g\":null,\"exercise_minutes\":0,\"meals\":[],\"exercises\":[],\"voice_checkins\":{},\"water_by_slot\":{},\"weather\":null,\"mental_reason\":\"\",\"mental_tags\":[],\"throat_symptoms_other\":\"\",\"voice_memo\":\"\",\"morning_edema\":null,\"weather_source\":null,\"smoked_today\":null,\"drank_today\":null,\"wake_note\":\"\",\"routine_note\":\"\",\"resonance_score\":null,\"bedtime\":\"\",\"dinner_time\":\"\",\"dinner_tags\":[],\"load_detail\":{},\"cycle_start\":false,\"medication_tags\":[],\"ambient_noise_db\":null,\"flight_hours\":null,\"jetlag_hours\":null,\"pianissimo_high_note\":\"\",\"pianissimo_onset_delay\":false,\"speaking_level\":null,\"non_performance_speech_minutes\":null,\"longest_speech_block_minutes\":null,\"environment_tags\":[],\"noisy_environment\":false,\"cpps_value\":null,\"exercise_level\":null,\"activities\":[{\"items\":[]}],\"recovery\":null,\"voice_entries\":[]}",
+   "res": null
+  },
+  {
+   "method": "POST",
+   "status": 200,
+   "url": "/rest/v1/entries?on_conflict=user_id%2Cdate",
+   "body": "{\"user_id\":\"4b027d0a-11de-4acc-ae63-f240300c78aa\",\"date\":\"2026-09-13\",\"type_fields\":null,\"throat_condition\":null,\"voice_quality\":null,\"throat_symptoms\":[],\"sleep_hours\":null,\"sleep_quality\":null,\"meal_notes\":\"\",\"meal_marks\":null,\"sleep_side\":null,\"head_raised\":null,\"belly_tight\":null,\"location\":\"\",\"temperature\":null,\"humidity\":null,\"activity_duration\":0,\"repertoire\":null,\"activity_detail\":{},\"performance_quality\":null,\"ease\":null,\"notes\":\"\",\"weight_kg\":null,\"body_fat_pct\":null,\"protein_level\":null,\"calorie_level\":null,\"water_intake\":0,\"carbs_g\":null,\"protein_g\":null,\"fat_g\":null,\"fiber_g\":null,\"exercise_minutes\":0,\"meals\":[],\"exercises\":[],\"voice_checkins\":{},\"water_by_slot\":{},\"weather\":null,\"mental_reason\":\"\",\"mental_tags\":[],\"throat_symptoms_other\":\"\",\"voice_memo\":\"\",\"morning_edema\":null,\"weather_source\":null,\"smoked_today\":null,\"drank_today\":null,\"wake_note\":\"\",\"routine_note\":\"\",\"resonance_score\":null,\"bedtime\":\"\",\"dinner_time\":\"\",\"dinner_tags\":[],\"load_detail\":{},\"cycle_start\":false,\"medication_tags\":[],\"ambient_noise_db\":null,\"flight_hours\":null,\"jetlag_hours\":null,\"pianissimo_high_note\":\"\",\"pianissimo_onset_delay\":false,\"speaking_level\":null,\"non_performance_speech_minutes\":null,\"longest_speech_block_minutes\":null,\"environment_tags\":[],\"noisy_environment\":false,\"cpps_value\":null,\"exercise_level\":null,\"activities\":[{\"items\":[]}],\"recovery\":null,\"voice_entries\":[]}",
+   "res": null
+  },
+  {
+   "method": "POST",
+   "status": 200,
+   "url": "/rest/v1/entries?on_conflict=user_id%2Cdate",
+   "body": "{\"user_id\":\"4b027d0a-11de-4acc-ae63-f240300c78aa\",\"date\":\"2026-09-14\",\"type_fields\":null,\"throat_condition\":null,\"voice_quality\":null,\"throat_symptoms\":[],\"sleep_hours\":null,\"sleep_quality\":null,\"meal_notes\":\"\",\"meal_marks\":null,\"sleep_side\":null,\"head_raised\":null,\"belly_tight\":null,\"location\":\"\",\"temperature\":null,\"humidity\":null,\"activity_duration\":0,\"repertoire\":null,\"activity_detail\":{},\"performance_quality\":null,\"ease\":null,\"notes\":\"\",\"weight_kg\":null,\"body_fat_pct\":null,\"protein_level\":null,\"calorie_level\":null,\"water_intake\":0,\"carbs_g\":null,\"protein_g\":null,\"fat_g\":null,\"fiber_g\":null,\"exercise_minutes\":0,\"meals\":[],\"exercises\":[],\"voice_checkins\":{},\"water_by_slot\":{},\"weather\":null,\"mental_reason\":\"\",\"mental_tags\":[],\"throat_symptoms_other\":\"\",\"voice_memo\":\"\",\"morning_edema\":null,\"weather_source\":null,\"smoked_today\":null,\"drank_today\":null,\"wake_note\":\"\",\"routine_note\":\"\",\"resonance_score\":null,\"bedtime\":\"\",\"dinner_time\":\"\",\"dinner_tags\":[],\"load_detail\":{},\"cycle_start\":false,\"medication_tags\":[],\"ambient_noise_db\":null,\"flight_hours\":null,\"jetlag_hours\":null,\"pianissimo_high_note\":\"\",\"pianissimo_onset_delay\":false,\"speaking_level\":null,\"non_performance_speech_minutes\":null,\"longest_speech_block_minutes\":null,\"environment_tags\":[],\"noisy_environment\":false,\"cpps_value\":null,\"exercise_level\":null,\"activities\":[{\"items\":[]}],\"recovery\":null,\"voice_entries\":[]}",
+   "res": null
+  },
+  {
+   "method": "DELETE",
+   "status": 204,
+   "url": "/rest/v1/repertoire_tessitura?user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&repertoire_name=eq.%E3%83%86%E3%82%B9%E3%83%88%E6%9B%B2A",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "DELETE",
+   "status": 204,
+   "url": "/rest/v1/role_master?user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&role_name=eq.%E3%83%86%E3%82%B9%E3%83%88%E6%9B%B2A",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "DELETE",
+   "status": 204,
+   "url": "/rest/v1/project_master?user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&project_name=eq.%E3%83%86%E3%82%B9%E3%83%88%E6%9B%B2A",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "PATCH",
+   "status": 200,
+   "url": "/rest/v1/notes?id=eq.9527f2ba-36c4-41fc-94d5-7e1598fd4a08&select=id",
+   "body": "{\"deleted_at\":\"2026-09-14T04:19:50.601Z\"}",
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/notes?select=id%2Ckind%2Cbody%2Csource_label%2Ccreated_at%2Cupdated_at%2Clesson_on%2Cteacher_label%2Crepertoire_name%2Csaid_text%2Cnext_action%2Cgained_text&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&deleted_at=is.null&order=updated_at.desc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/entries?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/project_master?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/role_master?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/questionnaire_responses?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=response_date.asc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/cycle_periods?select=id%2Cstart_date%2Cend_date&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=start_date.desc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "POST",
+   "status": 200,
+   "url": "/rest/v1/rpc/get_my_teacher_names",
+   "body": "{}",
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/memberships?select=*%2Corg%3Aorganizations%28*%29&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/repertoire_tessitura?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_events?select=*&event_date=gte.2026-09-13&order=event_date.asc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/enrollments?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/chapter_state?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_event_participants?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28student_id%2Cteacher_id%29&link.student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28teacher_id%2Cstudent_id%29&link.teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/entries?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/project_master?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/questionnaire_responses?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=response_date.asc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/role_master?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/memberships?select=*%2Corg%3Aorganizations%28*%29&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "POST",
+   "status": 200,
+   "url": "/rest/v1/rpc/get_my_teacher_names",
+   "body": "{}",
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/repertoire_tessitura?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_events?select=*&event_date=gte.2026-09-13&order=event_date.asc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/chapter_state?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28teacher_id%2Cstudent_id%29&link.teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/cycle_periods?select=id%2Cstart_date%2Cend_date&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=start_date.desc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/enrollments?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/memberships?select=*%2Corg%3Aorganizations%28*%29&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28student_id%2Cteacher_id%29&link.student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_event_participants?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/profiles?select=height_cm%2Cvoice_type%2Cnutrition_phase%2Cprotein_coefficient%2Cage%2Csex%2Cgarden_theme%2Ccharacter_points_spent%2Ccharacter_equipped%2Cvocal_range_low%2Cvocal_range_high%2Ccomfort_range_low%2Ccomfort_range_high%2Ctechnical_goal%2Chealth_notes%2Cvocal_profession%2Ctrack_cy",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_events?select=*&event_date=gte.2026-09-13&order=event_date.asc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/enrollments?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28teacher_id%2Cstudent_id%29&link.teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/memberships?select=*%2Corg%3Aorganizations%28*%29&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28student_id%2Cteacher_id%29&link.student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_event_participants?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_events?select=*&event_date=gte.2026-09-13&order=event_date.asc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/profiles?select=height_cm%2Cvoice_type%2Cnutrition_phase%2Cprotein_coefficient%2Cage%2Csex%2Cgarden_theme%2Ccharacter_points_spent%2Ccharacter_equipped%2Cvocal_range_low%2Cvocal_range_high%2Ccomfort_range_low%2Ccomfort_range_high%2Ctechnical_goal%2Chealth_notes%2Cvocal_profession%2Ctrack_cy",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28teacher_id%2Cstudent_id%29&link.teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/enrollments?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28student_id%2Cteacher_id%29&link.student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_event_participants?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/organizations?select=*&created_by=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/article_progress?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/organizations?select=*&created_by=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/article_progress?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/organizations?select=*&created_by=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/profiles?select=record_mode%2Cdeleted_at%2Ccycle_show_on_home%2Cis_under_18%2Cage_question_shown_at%2Ccohort%2Cis_internal%2Cis_tester%2Callergies%2Cregular_medications&id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/organizations?select=*&created_by=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/profiles?select=record_mode%2Cdeleted_at%2Ccycle_show_on_home%2Cis_under_18%2Cage_question_shown_at%2Ccohort%2Cis_internal%2Cis_tester%2Callergies%2Cregular_medications&id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/subscriptions?select=status%2Ctier&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/subscriptions?select=status%2Ctier&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/user_notices?select=notice_key%2Cshown_at&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/character_inventory?select=item_key&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/performance_results?select=performance_id%2Cresult&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/period_markers?select=marked_on&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/performances?select=id%2Cperformed_on%2Ckind%2Clabel%2Crepertoire_name%2Cmorning_words&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=performed_on.desc&limit=60",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/character_inventory?select=item_key&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/performance_results?select=performance_id%2Cresult&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/user_notices?select=notice_key%2Cshown_at&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/period_markers?select=marked_on&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/performances?select=id%2Cperformed_on%2Ckind%2Clabel%2Crepertoire_name%2Cmorning_words&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=performed_on.desc&limit=60",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/enrollments?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28student_id%2Cteacher_id%29&link.student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_messages?select=id%2Corg_id%2Cteacher_id%2Cauthor_id%2Cbody%2Ccreated_at%2Cwithdrawn_at&teacher_id=is.null&order=created_at.desc&limit=5",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/assignments?select=org_id%2Cteacher_id%2Cstudent_id&ended_at=is.null",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_events?select=*&event_date=gte.2026-09-13&order=event_date.asc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*%2Clink%3Ateacher_student_links%21inner%28teacher_id%2Cstudent_id%29&link.teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=100",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/notes?select=id%2Ckind%2Cbody%2Csource_label%2Ccreated_at%2Cupdated_at%2Clesson_on%2Cteacher_label%2Crepertoire_name%2Csaid_text%2Cnext_action%2Cgained_text&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&deleted_at=is.null&order=updated_at.desc",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_event_participants?select=*&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/memberships?select=*%2Corg%3Aorganizations%28*%29&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/lessons?select=*&teacher_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&order=scheduled_at.asc&limit=200",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/teacher_student_links?select=*&student_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&status=eq.active",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/organizations?select=*&created_by=eq.4b027d0a-11de-4acc-ae63-f240300c78aa",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/assignments?select=org_id%2Cteacher_id%2Cstudent_id&ended_at=is.null",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/org_messages?select=id%2Corg_id%2Cteacher_id%2Cauthor_id%2Cbody%2Ccreated_at%2Cwithdrawn_at&teacher_id=is.null&order=created_at.desc&limit=5",
+   "body": null,
+   "res": null
+  },
+  {
+   "method": "GET",
+   "status": 200,
+   "url": "/rest/v1/notes?select=id%2Ckind%2Cbody%2Csource_label%2Ccreated_at%2Cupdated_at%2Clesson_on%2Cteacher_label%2Crepertoire_name%2Csaid_text%2Cnext_action%2Cgained_text&user_id=eq.4b027d0a-11de-4acc-ae63-f240300c78aa&deleted_at=is.null&order=updated_at.desc",
+   "body": null,
+   "res": null
+  }
+ ]
+}
