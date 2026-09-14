@@ -17205,8 +17205,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         （★裁定 9/10夜 §3「画面ぜんぶが おうちに」）。
                         ★★したく の ときは、★上に 部屋が 残る 形の ままです。
                           ★裁定「★したく（いまの実装は 崩しません）」。 */}
+                    {/* ★★カメラは「ながめる」だけ です（★2026-09-13）。
+                        ★★実機の ご報告 ──「したく に すると、壁も 床も 上に ずれる」。
+                        ★★カメラは 羊を 追って 寄ります（★倍率 1.6）。
+                          ★どこを 向くかは aimTop ＝ topPct − sheepPct × AIM_ABOVE。
+                          ★sheepPct は **箱の 高さ**に 対する 羊の 大きさ です。
+                            ★ながめる 390×634 → 29.4％
+                            ★したく　 390×293 → **63.5％**
+                          ★★同じ 羊でも、★低い 箱では 大きく 見えます。
+                            ★だから カメラが 余計に 上を 向きました。
+                        ★★壁も 床も 同じ 変形の 中に 在ります。
+                          ★だから 別々の 経路なのに、★同じ 向きに ずれました。
+                        ★★したくは 置く 画面です。★部屋ぜんぶが 見えるのが 正しい。
+                          ★「うごかす」の あいだ 恒等に 戻すのと、★同じ 考えです。 */}
                     <CharacterHome
-                      cameraOn={layoutV2}
+                      cameraOn={layoutV2 && homeState !== DRESS}
                       fullBleed={layoutV2 && homeState !== DRESS}
                       wardrobeOn={wardrobeOn}
                       professions={effectiveProfessions}
