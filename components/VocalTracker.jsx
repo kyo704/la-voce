@@ -11908,7 +11908,27 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       // ★★何が 起きたかを、★必ず 残します（★2026-09-11・実機の ご報告）。
       //   ★★黙って 失敗するのが、★いちばん 困ります。
       if (!res.ok) console.error("役職の道が断りました:", res.status, json);
-      await fetchOrgPosts(orgId);
+      // ★★できことを 1つ 切り替えた ときは、★読み直しません（★2026-09-13）。
+      //   ★★実機の ご報告 ──「ラグが 長すぎて 反応して いないのかと 思う」。
+      //     ★★往復が 2回 ありました ── ★① サーバへ 書く ★② 台帳へ 読みに 行く。
+      //   ★★①の 返事に、★**サーバが 確かめた あとの perms が 入って います**
+      //     （★app/api/org/posts/route.js の `return NextResponse.json({ perms: next })`）。
+      //   ★★だから 読み直す 必要が ありません。★往復が 半分に なります。
+      //   ★★先に 動かす（★楽観）のとは ちがいます ──
+      //     ★★推し量って いません。★サーバが 返した 値を そのまま 入れて います。
+      //     ★★書けて いないのに 書けたように 見せる ことは ありません。
+      //   ★★思って いない 形が 返って きたら、★これまでどおり 読み直します。
+      const oneKey = res.ok && payload.action === "perm" && payload.postId
+        && json && json.perms && typeof json.perms === "object";
+      if (oneKey) {
+        setOrgPosts((prev) => ({
+          ...prev,
+          [orgId]: (prev[orgId] || []).map((q) =>
+            q.id === payload.postId ? { ...q, perms: json.perms } : q)
+        }));
+      } else {
+        await fetchOrgPosts(orgId);
+      }
       // ★★名簿も 引き直します。★役職を 消すと、★その方の 役職が 外れます。
       // ★★名簿の 側も 変わる ものは、★引き直します。
       if (["delete", "assign", "unassign"].includes(payload.action)) {

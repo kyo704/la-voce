@@ -62,12 +62,10 @@ export default function OpsHome({
         <Stat label="先生" value={teacherCount || 0} unit="人" />
         <Stat label="重なり" value={overlaps.length} unit="件" />
       </div>
-      {by.paused > 0 || by.invited > 0 ? (
-        <p style={small}>
-          {by.paused > 0 ? `休会中 ${by.paused}人` : ""}
-          {by.paused > 0 && by.invited > 0 ? "　／　" : ""}
-          {by.invited > 0 ? `返事まち ${by.invited}人` : ""}
-        </p>
+      {/* ★★2026-09-13、★ようすは active／left の 2つ だけ。
+          ★★休会・返事まちは 台帳に ありません。★出しません。 */}
+      {by.left > 0 ? (
+        <p style={small}>{`退会 ${by.left}人`}</p>
       ) : null}
 
       {/* ★★きょうの ながれ。★該当が なければ 出しません。

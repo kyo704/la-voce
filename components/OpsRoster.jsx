@@ -148,7 +148,12 @@ export default function OpsRoster({
       <div>
         <h2 className="ff-display italic" style={{ fontSize: "1.25rem", color: C.ink }}>名簿</h2>
         <p style={small}>
-          在籍 {by.counted + by.paused}人
+          {/* ★★2026-09-13、★ここが「在籍 NaN人」に なって いました。
+              ★★countsByStatus の 形を active／left に 変えた とき、
+                ★★by.paused が 無く なりました。★数 ＋ undefined ＝ NaN。
+              ★★描いて みて 気づきました。★見張りは 通って いました。
+              ★★数えるのは 在籍中 だけ です。★退会した 方は 数えません。 */}
+          在籍 {by.counted}人
           {/* ★★何が 数えられているかを、★はじめに 書きます。
               ★★あとから「先生も 数えた」と 思われないためです。 */}
           <br />ご請求はこの人数です。先生と事務の方は数えません。
@@ -242,7 +247,7 @@ export default function OpsRoster({
                   fontSize: "0.625rem", color: on ? C.ink : C.inkSoft,
                   background: C.paper, border: `1px solid ${C.line}`,
                   borderRadius: 999, padding: "3px 9px", whiteSpace: "nowrap"
-                }}>{statusLabel(st)}{st === "invited" ? "・返事まち" : ""}</span>
+                }}>{statusLabel(st)}</span>
               </div>
               <p style={{ ...small, marginTop: 4 }}>
                 担当　{(m.teacher_ids || []).map((id) => (teacherNameOf ? teacherNameOf(id) : "")).filter(Boolean).join("・") || "—"}
@@ -432,9 +437,9 @@ export default function OpsRoster({
         {(() => {
           const safe = safeBreakdown(by);
           const parts = [];
-          if (safe.paused != null && safe.paused > 0) parts.push(`休会中 ${safe.paused}人`);
-          if (safe.invited != null && safe.invited > 0) parts.push(`返事まち ${safe.invited}人`);
-          const hidden = (safe.paused == null) || (safe.invited == null);
+          if (safe.left != null && safe.left > 0) parts.push(`退会 ${safe.left}人`);
+          // ★★休会・返事まちは 台帳に ありません（★2026-09-13）。出しません。
+          const hidden = (safe.left == null);
           if (parts.length === 0 && !hidden) return null;
           return (
             <p style={small}>

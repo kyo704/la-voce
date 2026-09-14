@@ -64,10 +64,13 @@ function eq(a, b, label) {
   t(!/少なすぎ|不足|出せません$/.test(m.TOO_SMALL_NOTE), "★責める言葉に なっていない");
 
   console.log("\n=== ④ ようすの 内訳 ===");
-  eq(m.safeBreakdown({ paused: 2, invited: 0 }), { paused: null, invited: 0 },
-    "★2人は 隠す。★0人は 出す");
-  eq(m.safeBreakdown({ paused: 7, invited: 5 }), { paused: 7, invited: 5 }, "5人以上は 出す");
-  eq(m.safeBreakdown({}), { paused: 0, invited: 0 }, "空は 0");
+  // ★★2026-09-13、★ようすは active／left の 2つ だけ に なりました。
+  //   ★★paused／invited は 台帳に ありません（★enrollments_status_check）。
+  //   ★★作り物の 値で 見張って いた ぶん を、★台帳の 形に 直します。
+  eq(m.safeBreakdown({ left: 2 }), { left: null }, "★2人は 隠す");
+  eq(m.safeBreakdown({ left: 0 }), { left: 0 }, "★0人は 出す");
+  eq(m.safeBreakdown({ left: 7 }), { left: 7 }, "5人以上は 出す");
+  eq(m.safeBreakdown({}), { left: 0 }, "空は 0");
   t(/0 は「誰も いない」であって、★誰かを 指しません/.test(readRaw("lib", "smallGroups.js")),
     "★0 を 出すわけが 書いてある");
 
