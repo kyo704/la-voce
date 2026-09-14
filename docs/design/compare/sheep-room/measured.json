@@ -1,0 +1,41 @@
+{
+  "errors": [],
+  "url": "http://localhost:3111/dashboard",
+  "reachedRoom": true,
+  "buttons": {
+    "shitaku": {
+      "x": 195,
+      "y": 82.296875,
+      "width": 88,
+      "height": 44
+    },
+    "arrange": null
+  },
+  "overlap": {
+    "overlaps": null,
+    "why": "★どちらかの ボタンが 出て いません"
+  },
+  "room": {
+    "box": {
+      "w": 390,
+      "h": 634
+    },
+    "viewport": {
+      "w": 390,
+      "h": 844
+    },
+    "bottomGap": 71,
+    "topGap": 139,
+    "floorStyleHeight": "48%"
+  },
+  "camera": {
+    "found": true,
+    "transitionProperty": "transform",
+    "transitionDuration": "3.2s",
+    "transitionTimingFunction": "linear",
+    "settledMs": 62,
+    "wallClockMs": 623
+  },
+  "placedOne": true,
+  "itemsError": "locator.click: Element is outside of the viewport\nCall log:\n\u001b[2m  - waiting for locator('button:has-text(\"おわり\")').first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\">おわり</button>\u001b[22m\n\u001b[2"
+}

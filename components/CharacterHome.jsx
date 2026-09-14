@@ -8,14 +8,14 @@ import { tileStyle, isNewMaterial } from "@/lib/sheepInterior";
 // ★★着せかえた羊。★出す・出さないは、呼ぶ側（VocalTracker）が決めます。
 import SheepDressed from "@/components/SheepDressed";
 import InteriorLayer from "@/components/InteriorLayer";
-import { cameraOf, cameraStyle, ZOOM } from "@/lib/roomCamera";
-import { STAGE_ASPECT, stageSize, stageFit, stageBleed, stageStyle } from "@/lib/roomStage";
+import { cameraOf, cameraStyle, ZOOM, ROOM_SWITCH_MS } from "@/lib/roomCamera";
+import { STAGE_ASPECT, stageSize, stageFit, stageBleed, stageStyle, stageOffsetY } from "@/lib/roomStage";
 // ★古い79点を、門の中の方から隠す決め。★ここ1か所が持ちます。
 import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
 } from "@/lib/oldHouseVisibility";
 // ★動かせる内装が在るか／羊の重ね順。★決めは、あちらが持ちます。
-import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs, nextSitMs, zSwitchDelayMs, FLOOR_BOTTOM_PCT, WALL_HEIGHT_PCT , WALL_BAND} from "@/lib/sheepInteriorV2";
+import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs, nextSitMs, zSwitchDelayMs, FLOOR_BOTTOM_PCT, WALL_HEIGHT_PCT , WALL_BAND, GRAB_PAD_PX, EDIT_OUTLINE_INSET_PX } from "@/lib/sheepInteriorV2";
 import SpeechBubble from "@/components/SpeechBubble";
 import { SOLO, TIMING, FACE_FOR, pickLine, nextSoloMs, pushRecent } from "@/lib/sheepSpeech";
 import { pickGesture, nextGestureMs, mayGesture, pushRecent as pushGesture } from "@/lib/sheepGestures";
@@ -1646,7 +1646,19 @@ function DraggableItem({ left, top, width, layer = "mid", editMode, minLeft = 3,
         }} />
       )}
       {editMode && (
-        <div style={{ position: "absolute", inset: -4, border: `2px dashed ${C.gold}`, borderRadius: 8, pointerEvents: "none" }} />
+        <div style={{ position: "absolute", inset: -EDIT_OUTLINE_INSET_PX, border: `2px dashed ${C.gold}`, borderRadius: 8, pointerEvents: "none" }} />
+      )}
+      {/* ★★掴める ところを、★点線の 外まで 広げます（★2026-09-14・実機の ご指摘 ④）。
+          ★★これまでは、★掴める ところ ＝ この 箱 そのもの でした。
+            ★★点線は `inset: -4` で、★箱より 外に 出て いました。
+            ★★だから「見えて いる 枠の 内側を 押した のに 掴めない」帯が
+              ★まわり 4px ありました。★指の 腹には 狭すぎます。
+          ★★この 板は 透明です。★絵も 置き場所も、★1つも 動きません。
+            ★押しどころだけを 広げます。
+          ★★押した ものは 親へ 昇ります。★掴む 仕掛けは 親の ままです
+            （★`setPointerCapture` は 親に かかります）。 */}
+      {editMode && (
+        <div aria-hidden="true" style={{ position: "absolute", inset: -GRAB_PAD_PX, borderRadius: 12 }} />
       )}
       {children}
     </div>
@@ -2217,6 +2229,36 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
   //   ★★覆うと、★縦長の 箱では 横の 半分以上が 切れます。
   //     ★2026-09-14、★一度 そう なりました（★窓だけが 画面いっぱい）。
   //   ★★したくの 箱は 舞台と 同じ 比なので、★どちらでも 同じ 大きさです。
+  // ★★場面が 切り替わった 直後の、★みじかい あいだ だけ true。
+  //   ★★そのあいだ カメラを 速く 動かします（★ROOM_SWITCH_MS）。
+  //   ★★「切り替わった」の 見分けは、★カメラの 入／切 と 全画面の 入／切 です。
+  //     ★羊の 位置では ありません。★羊が 動いた ときは 速めません。
+  //   ★★2026-09-14、★はじめ これを useEffect で 書きました。★効きません でした。
+  //     ★★effect は 描いた **あと**に 走ります。
+  //       ★切り替わった 最初の 1枚は、★まだ 3.2秒の ままです。
+  //       ★動きは その 1枚で 始まるので、★あとから 秒数を 変えても 遅いまま です。
+  //     ★★測って 分かりました ── 直す 前 2843ms、★effect 版でも 2843ms。
+  //   ★★だから、★描いて いる 最中に 決めます。
+  //   ★★Date.now() を 描いて いる 最中に 読んでは いけません（★2026-09-14）。
+  //     ★サーバで 描いた ものと 合わなく なり、★hydration が 壊れます。
+  //     ★★一度 そう なりました。★画面が 出ませんでした。
+  //   ★★React が 認めて いる 形を 使います ──
+  //     「描いて いる 最中の setState」。★DOM に 出る 前に、★描き直します。
+  //     ★★だから、★切り替わった 最初の 1枚から 短い 秒数に なります。
+  const [camSwitching, setCamSwitching] = useState(false);
+  const camModeRef = useRef(null);
+  const camMode = (cameraOn ? "1" : "0") + (fullBleed ? "1" : "0");
+  if (camModeRef.current !== null && camModeRef.current !== camMode && !camSwitching) {
+    setCamSwitching(true);
+  }
+  if (camModeRef.current !== camMode) camModeRef.current = camMode;
+  useEffect(() => {
+    // ★★動きが 終わってから 戻します。★早く 戻すと、★途中で 秒数が 変わります。
+    if (!camSwitching) return undefined;
+    const t = setTimeout(() => setCamSwitching(false), ROOM_SWITCH_MS + 120);
+    return () => clearTimeout(t);
+  }, [camSwitching]);
+
   const stage = fullBleed
     ? stageFit(roomBoxW, roomBoxH, STAGE_ASPECT)
     : stageSize(roomBoxW, roomBoxH, STAGE_ASPECT);
@@ -2378,10 +2420,28 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
       <div style={{
         ...stageStyle(roomBoxW, roomBoxH, STAGE_ASPECT, leftPct),
         ...(bleed.topH > 0
-          ? { width: stage.w, height: stage.h, transform: "translate(-50%, -50%)" }
+          ? { width: stage.w, height: stage.h,
+              // ★★2026-09-14、★天井が 低く 感じる との ご指摘（★実機）。
+              //   ★★舞台を まんなかに 置くと、★窓の 上の 余白と
+              //     ★床の 余白が 同じに なります。★床は もともと 余って います。
+              //   ★★少し 下へ ずらして、★窓の 上を 広げます。
+              //   ★★ずらす 量は `stageOffsetY` が 持ちます。★上の 色の 帯
+              //     （`bleed`）も 同じ 比から 出て います。★別々に 計算しません。
+              transform: `translate(-50%, -50%) translateY(${
+                Math.round(stageOffsetY(roomBoxW, roomBoxH, STAGE_ASPECT))}px)` }
           : {})
       }}>
-      <div style={cameraStyle(cam, { editMode, walking: isWalking, walkMs: WALK_MS })}>
+      {/* ★★2026-09-14、★したくへ 移る カメラが 遅い との ご指摘（★実機）。
+          ★★測りました ── `transition-duration: 3.2s`、★落ち着くまで 約3.0秒。
+            ★★3.2秒は 羊の 歩く 秒数（WALK_MS）です。
+            ★★カメラが 羊を 追う あいだは、★その 数で 合って います。
+              ★ずれると、★着く前に 止まったり、★着いてから 動いたり します。
+            ★★けれど 場面の 切り替えは、★羊が 動いて いません。
+              ★追う 相手が いないのに、★3.2秒 かけて いました。
+          ★★だから、★切り替えの あいだ だけ 短い 数を 渡します。
+            ★羊を 追う ときは、★これまでどおり WALK_MS の ままです。 */}
+      <div style={cameraStyle(cam, { editMode, walking: isWalking && !camSwitching,
+        walkMs: camSwitching ? ROOM_SWITCH_MS : WALK_MS })}>
       {/* ★★場面は、★全画面の箱いっぱいに広げます。
           ★★床は下42％、壁は上58％を使うため、縦長の端末でも
             壁の高さと床の長さが画面全体に追従します。
@@ -2760,7 +2820,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
       {(placedFurniture.length > 0 || placedWallhang.length > 0
         || (wardrobeOn && hasMovableInterior(equipped))) && (
         <button type="button" onClick={() => setEditMode((v) => !v)}
-          className="absolute bottom-2 right-2 text-xs px-3 py-1.5 rounded-full font-medium"
+          className="absolute bottom-2 left-2 text-xs px-3 py-1.5 rounded-full font-medium"
           style={{ background: editMode ? C.curtain : "rgba(255,253,248,0.9)", color: editMode ? "#FFFDF8" : C.ink, border: `1px solid ${C.line}`, zIndex: UI_CHROME_Z }}>
           {editMode ? t("btnDoneArranging") : t("btnArrangeItems")}
         </button>
@@ -3062,7 +3122,7 @@ function GardenScene({ equipped, owned, onUpdatePosition, totalDaysRecorded = 0,
 
       {placedOrnaments.length > 0 && (
         <button type="button" onClick={() => setEditMode((v) => !v)}
-          className="absolute bottom-2 right-2 text-xs px-3 py-1.5 rounded-full font-medium"
+          className="absolute bottom-2 left-2 text-xs px-3 py-1.5 rounded-full font-medium"
           style={{ background: editMode ? C.curtain : "rgba(255,253,248,0.9)", color: editMode ? "#FFFDF8" : C.ink, border: `1px solid ${C.line}`, zIndex: UI_CHROME_Z }}>
           {editMode ? t("btnDoneArranging") : t("btnArrangeItems")}
         </button>

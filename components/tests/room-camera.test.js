@@ -85,8 +85,32 @@ function near(a, b, label) { ok(Math.abs(a - b) < 1e-6, label + "  （得た値:
   // ★★数を 書き写していないこと。★羊の 側を 変えたら、★カメラも 一緒に 変わること。
   ok(!/900|EASE_MS/.test(readCode("lib", "roomCamera.js")),
     "★カメラの 側に 別の 速さを 書いていない");
-  ok(/walkMs: WALK_MS/.test(readRaw("components", "CharacterHome.jsx")),
-    "★画面が、★羊と 同じ WALK_MS を 渡している");
+  // ★★2026-09-14、★ここを 書き替えました。
+  //   ★★坂本さん（実機）──「★したく画面に 切り替わる ときの カメラが 遅すぎる」。
+  //     ★測りました ── 落ち着くまで ★2843ms。★3.2秒 かけて いました。
+  //   ★★3.2秒は 羊の 歩く 秒数です。★追う あいだは、★それで 合って います。
+  //     ★★けれど 場面の 切り替えでは、★羊は 動いて いません。
+  //       ★追う 相手が いないのに、★羊の 速さで 動いて いました。
+  //   ★★だから 見張りも、★2つに 分けます ──
+  //     ★羊を 追う とき　　 … WALK_MS の まま
+  //     ★場面が 変わる とき … ROOM_SWITCH_MS
+  //   ★★どちらの 数も、★画面には 書き写しません。★lib から 取ります。
+  const uiRaw = readRaw("components", "CharacterHome.jsx");
+  ok(/walkMs: camSwitching \? ROOM_SWITCH_MS : WALK_MS/.test(uiRaw),
+    "★画面が、★追う ときは WALK_MS、★切り替えは ROOM_SWITCH_MS を 渡している");
+  ok(/ROOM_SWITCH_MS/.test(readCode("lib", "roomCamera.js")),
+    "★切り替えの 秒数は lib が 持つ");
+  ok(!/walkMs:\s*\d/.test(uiRaw), "★秒数を 画面に 書き写して いない");
+  // ★★切り替えの 秒数は、★引き出しが 上がる 秒数と そろって いること。
+  //   ★★ばらばらだと、★部屋と 引き出しが 別々に 動いて 見えます。
+  {
+    const cam = readCode("lib", "roomCamera.js");
+    const drw = readCode("lib", "homeDrawer.js");
+    const a = (cam.match(/ROOM_SWITCH_MS = (\d+)/) || [])[1];
+    const b = (drw.match(/slideMs: (\d+)/) || [])[1];
+    ok(a && b && Math.abs(Number(a) - Number(b)) <= 60,
+      "★切り替えと 引き出しの 秒数が そろって いる（★カメラ " + a + " / 引き出し " + b + "）");
+  }
   ok(/walking: isWalking/.test(readRaw("components", "CharacterHome.jsx")),
     "★歩いているかどうかも 渡している");
 
