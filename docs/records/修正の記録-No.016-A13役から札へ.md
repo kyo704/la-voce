@@ -244,3 +244,50 @@ end if;
 ★★直した 紙が できてから、と 伺って います。
 ★★`tools/perm-matrix.js` も、★それまで 止めます。
 
+---
+
+## ★2026-09-14 訂正 ── ★**12本 ぜんぶ 済んで います**
+
+★★私は「残るのは 8番と 11番」と 申しました。★**誤りです。**
+
+★★流されたのは、★私の 紙では ありません。
+　★別に 受け取った SQL で、★12本 ぜんぶが 移されて いました。
+　★★だから 私の 紙（8本ぶん）と、★台帳の 姿（12本）が ずれて いました。
+
+★★私は 自分の 紙を 見て 答えました。★台帳を 見て いません でした。
+　★★「紙と 台帳が 食いちがったら、★台帳の ほうが 事実」です。
+
+### いまの 本番の 姿（★2026-09-14）
+
+| # | 決まり | 札 | 状態 |
+|---|---|---|---|
+| 1 | assignments_all_owner_admin | meibo | 済 |
+| 2 | assignments_select | meibo | 済（自分の枝 2つ 残る） |
+| 3 | enrollments_all_owner_admin | meibo | 済 |
+| 4 | memberships_delete_admin | post | 済 |
+| 5 | memberships_insert_bootstrap_owner | post | 済 |
+| 6 | memberships_select | post | 済（自分の枝 残る） |
+| 7 | memberships_update_role_management | — | ★触りません |
+| 8 | org_events_write_admin | gyoji | 済 |
+| 9 | org_invitations_insert | meibo | 済 |
+| 10 | org_invitations_select | meibo | 済 |
+| 11 | org_messages_insert | renraku_all | 済（自分の枝 残る） |
+| 12 | org_messages_select | renraku_all | 済（★手で 直した 形） |
+
+★★11・12 では、★`has_can` が **いちばん 外の OR の 1つ**です。
+　★★中の `auth.uid()` の 枝は 1つも 減って いません。★これが 正しい 形です。
+
+### 紙を 台帳に 合わせました
+
+- ★**第0部**を 足しました。★12本 ぜんぶの、★いまの 条件文を 字で 残します
+- ★`v_map` を 8本 → **11本**に 広げました（★7番は 除く）
+- ★★**すでに `has_can` なら 飛ばします。**★二度 触りません
+  ★★手で 直した 12番を 壊しません
+- ★`auth.uid()` が 減ったら 止める 見張りは、★11本 ぜんぶに かかります
+- ★第1部・第3部の 対象も 12本に 広げました
+
+### ★本番で もう一度 流しても 安全です
+
+★★流すと、★11本 ぜんぶ「★すでに 移って います（★触りません）」と 出ます。
+★★何も 変わりません。
+

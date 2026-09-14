@@ -37,6 +37,61 @@
 
 
 -- ════════════════════════════════════════════════════════════════════════
+-- 第0部　★いまの 本番の 姿（★2026-09-14 時点・★控え）
+-- ════════════════════════════════════════════════════════════════════════
+--
+--   ★★2026-09-14、★**12本 ぜんぶが すでに 移って います**。
+--     ★★移したのは、★この 紙では ありません。★別の SQL です。
+--     ★★この 節は、★その 結果を 字で 残す ための ものです。
+--       ★★流す ものでは ありません。★読む ための 控えです。
+--
+--   ★★なぜ 残すか。★台帳が 正で、★紙が 遅れて いると、
+--     ★次に 読む 人が「まだ 8本」と 読み違えます。
+--
+--   ────────────────────────────────────────────────────────────────
+--   1  assignments / assignments_all_owner_admin        ALL     meibo
+--   2  assignments / assignments_select                 SELECT  meibo
+--        ((auth.uid() = teacher_id) OR (auth.uid() = student_id)
+--          OR has_can(org_id, 'meibo'))
+--   3  enrollments / enrollments_all_owner_admin        ALL     meibo
+--   4  memberships / memberships_delete_admin           DELETE  post
+--   5  memberships / memberships_insert_bootstrap_owner INSERT  post
+--   6  memberships / memberships_select                 SELECT  post
+--        ((auth.uid() = user_id) OR has_can(org_id, 'post'))
+--   7  memberships / memberships_update_role_management UPDATE  ★触りません
+--        （role_rank が 守って います・裁定 その19）
+--   8  org_events  / org_events_write_admin             ALL     gyoji
+--        has_can(org_id, 'gyoji'::text)
+--        ★読める条件・書ける条件 とも 同じ です
+--   9  org_invitations / org_invitations_insert         INSERT  meibo
+--   10 org_invitations / org_invitations_select         SELECT  meibo
+--   11 org_messages / org_messages_insert               INSERT  renraku_all
+--        ((auth.uid() = author_id) AND
+--          (((teacher_id IS NOT NULL) AND
+--             ((auth.uid() = teacher_id) OR (EXISTS ( SELECT 1 FROM assignments a
+--               WHERE ((a.org_id = org_messages.org_id)
+--                 AND (a.student_id = auth.uid())
+--                 AND (a.teacher_id = org_messages.teacher_id)
+--                 AND (a.ended_at IS NULL))))))
+--           OR ((teacher_id IS NULL) AND has_can(org_id, 'renraku_all'::text))))
+--   12 org_messages / org_messages_select               SELECT  renraku_all
+--        ((auth.uid() = teacher_id) OR (EXISTS ( SELECT 1 FROM assignments a
+--           WHERE ((a.org_id = org_messages.org_id)
+--             AND (a.student_id = auth.uid())
+--             AND (a.ended_at IS NULL)
+--             AND ((org_messages.teacher_id IS NULL)
+--                  OR (a.teacher_id = org_messages.teacher_id)))))
+--         OR has_can(org_id, 'renraku_all'::text))
+--        ★★この 1本は、★一度 丸ごと 置き換わり、★自分の 枝が 消えました。
+--          ★控えから 戻し、★手で 直した 形が これです。
+--   ────────────────────────────────────────────────────────────────
+--
+--   ★★11・12 を ごらんください。★`has_can` は **いちばん 外の OR の 1つ**です。
+--     ★★中の `auth.uid()` の 枝は、★1つも 減って いません。
+--     ★★これが 正しい 形です。
+
+
+-- ════════════════════════════════════════════════════════════════════════
 -- 第1部　いまの 姿を 出す（★変えません）
 -- ════════════════════════════════════════════════════════════════════════
 
@@ -57,6 +112,7 @@ where p.schemaname = 'public'
     'memberships_delete_admin',
     'memberships_insert_bootstrap_owner',
     'memberships_select',
+    'memberships_update_role_management',
     'org_events_write_admin',
     'org_invitations_insert',
     'org_invitations_select',
@@ -208,7 +264,13 @@ declare
     'memberships_insert_bootstrap_owner', 'post',
     'memberships_select',                 'post',
     'org_invitations_insert',             'meibo',
-    'org_invitations_select',             'meibo'
+    'org_invitations_select',             'meibo',
+    -- ★★2026-09-14 追記。★この 3本は、★別の SQL で すでに 移って います。
+    --   ★★ここに 並べるのは、★この 紙を **本番の 姿の 控え**に する ため です。
+    --   ★★すでに `has_can` なら、★下の 輪で 飛ばします。★二度 触りません。
+    'org_events_write_admin',             'gyoji',
+    'org_messages_insert',                'renraku_all',
+    'org_messages_select',                'renraku_all'
   );
 begin
   -- ★★has_can が 無ければ、★ここで 止めます。
@@ -227,6 +289,17 @@ begin
       and v_map ? p.policyname
   loop
     v_key := v_map ->> r.policyname;
+
+    -- ★★もう `has_can` に なって いれば、★何も しません。
+    --   ★★2026-09-14、★11本は 別の SQL で 先に 移りました。
+    --     ★★この 紙を もう一度 流しても、★上書きしません。
+    --   ★★二度 触ると、★手で 直した 形を 壊します。
+    if position('has_can' in
+                coalesce(r.qual, '') || ' ' || coalesce(r.with_check, '')) > 0
+    then
+      raise notice '★すでに 移って います（★触りません）: %', r.policyname;
+      continue;
+    end if;
 
     -- ★★字だけ を 置き換えます。★ほかの 枝は 触りません。
     v_new_q := replace(coalesce(r.qual, ''),
@@ -303,6 +376,7 @@ end $$;
 -- ════════════════════════════════════════════════════════════════════════
 
 -- ★★① 8本 とも has_can に なったか。★自分の 枝が 残って いるか。
+-- ★★12本 ぜんぶを 見ます（★7番は「札で判じる」が false で 正しい）。
 select
   p.tablename  as 表,
   p.policyname as 決まり,
@@ -317,7 +391,8 @@ where p.schemaname = 'public'
   and p.policyname in (
     'assignments_all_owner_admin','assignments_select','enrollments_all_owner_admin',
     'memberships_delete_admin','memberships_insert_bootstrap_owner','memberships_select',
-    'org_invitations_insert','org_invitations_select')
+    'org_events_write_admin','org_invitations_insert','org_invitations_select',
+    'org_messages_insert','org_messages_select')
 order by p.tablename, p.policyname;
 
 -- ★★② 7番は 触って いない こと。
@@ -326,7 +401,11 @@ from pg_policies
 where schemaname = 'public'
   and policyname = 'memberships_update_role_management';
 
--- ★★③ まだ「役で 判じる」決まりが 残って いないか（★8・11・12 が 出る はずです）。
+-- ★★③ まだ「役で 判じる」決まりが 残って いないか。
+--   ★★2026-09-14 時点では、★**1本も 出ない** のが 正しい 姿です。
+--     ★★12本 ぜんぶが 移り終えて います。
+--   ★★7番だけは `role` の 字を 持ちますが、★`role_rank` の ぶんです。
+--     ★これは 移しません。★出て きても 正しい です。
 select tablename, policyname, cmd
 from pg_policies
 where schemaname = 'public'
