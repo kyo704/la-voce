@@ -123,3 +123,27 @@ where schemaname='public' and policyname='org_invitations_select';
 - 試し用の 企画に 招待が 1件も 無く、★**穴を 実際に 見せられて いません**。
   ★構造から 言って います。★1件 置いて いただければ 実地で 示せます。
 - `org_invitations` の INSERT／UPDATE の 決まりは 見て いません。
+
+---
+
+## ★★1つだけ、★わざと 通して います（★2026-09-14・No.020 ④）
+
+★`can_view_organization` は、★いまも 生きて いる 招待を 読みます ──
+
+```sql
+OR EXISTS (select 1 from org_invitations
+           where org_id = p_org_id and used_at is null
+             and expires_at > now())
+```
+
+★★`SECURITY DEFINER` なので、★ここで 締めた 決まりは **効きません**。
+
+★★★これは 見落としでは ありません。★関数の 中に そう 書いて あります ──
+　「★招待コードを 確認中の 人にも、★教室名 だけは 見せる」
+
+★★お裁き（★Opus・2026-09-14）── **このまま 残します。**
+　★漏れるのは 教室の **名前 だけ**。★しかも 生きて いる 招待の ある 教室 だけ。
+
+> ★No.017 で 決まりは 閉じたが、★`can_view_organization` **だけは 意図的に 通す**。
+
+★★あとから 読んだ 方が「★見落とし だ」と 思わない ため、★ここに 置きます。
