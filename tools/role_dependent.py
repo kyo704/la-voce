@@ -142,10 +142,10 @@ def main():
   say("★★`role` という 字が 別の 意味で 使われて いる ところも 拾います。")
   say("　★★1件ずつ、★触る 前に お確かめください。")
 
-  p = os.path.join(OUT, "2026-09-13-role-dependent-policies.md")
+  p = os.path.join(OUT, "2026-09-13-役割に寄る-帳面の字.md")
   with open(p, "w", encoding="utf-8") as f:
     f.write("\n".join(lines) + "\n")
-  print("docs/reports/2026-09-13-role-dependent-policies.md  全%d行" % len(lines))
+  print("docs/reports/2026-09-13-役割に寄る-帳面の字.md  全%d行" % len(lines))
   print("計 %d 件（SQL %d / JS %d）" % (len(hits), len(sql), len(app)))
   for k, v in sorted(by_kind.items(), key=lambda x: -len(x[1])):
     print("  %-30s %d" % (k, len(v)))
