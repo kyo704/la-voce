@@ -30,7 +30,7 @@ async function main() {
   const sqlRaw = fs.readFileSync(path.join(ROOT, "supabase", "migration_cycle_periods.sql"), "utf-8");
   // SQLも、コメント（「〜を作らない」という説明）を除いてから検査する。
   const sql = stripComments(sqlRaw);
-  const rpc = fs.readFileSync(path.join(ROOT, "supabase", "migration_teacher_student_entries_rpc.sql"), "utf-8");
+  const rpc = fs.readFileSync(path.join(ROOT, "supabase", "retired/DO_NOT_RUN_2026-09-01_teacher_student_entries_rpc.sql"), "utf-8");
   const exportSrc = fs.readFileSync(path.join(ROOT, "lib", "exportData.js"), "utf-8");
   const delSrc = fs.readFileSync(path.join(ROOT, "lib", "accountDeletion.js"), "utf-8");
 

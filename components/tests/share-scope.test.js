@@ -27,7 +27,7 @@ const vt = readCode("components", "VocalTracker.jsx");
 
 console.log("=== ★サーバ側の関数が、もう無い ===");
 {
-  const rpcFile = path.join(root, "supabase/migration_teacher_student_entries_rpc.sql");
+  const rpcFile = path.join(root, "supabase/retired/DO_NOT_RUN_2026-09-01_teacher_student_entries_rpc.sql");
   const dropFile = path.join(root, "supabase/migration_drop_student_entries_rpc.sql");
   assertTrue(fs.existsSync(dropFile), "削除の移行ファイルがある");
   const drop = readRaw("supabase", "migration_drop_student_entries_rpc.sql");

@@ -22,8 +22,8 @@ function assertEqual(a, b, label) {
   else { console.log(`  ✗ ${label}  期待:${JSON.stringify(b)} 実際:${JSON.stringify(a)}`); failCount++; }
 }
 
-const rpc = readCode("supabase", "migration_teacher_student_entries_rpc.sql");
-const rpcRaw = readRaw("supabase", "migration_teacher_student_entries_rpc.sql");
+const rpc = readCode("supabase", "retired/DO_NOT_RUN_2026-09-01_teacher_student_entries_rpc.sql");
+const rpcRaw = readRaw("supabase", "retired/DO_NOT_RUN_2026-09-01_teacher_student_entries_rpc.sql");
 const shareScope = readCode("lib", "shareScope.js");
 const ui = readCode("components", "VocalTracker.jsx");
 

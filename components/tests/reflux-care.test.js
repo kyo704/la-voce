@@ -70,7 +70,7 @@ function ok(name, cond, extra) {
   }
   ok("「meal_marks」も、渡さない", /"meal_marks"/.test(share));
   // ★★先生に渡す RPC が、★列を並べていないこと。
-  const rpc = fs.readFileSync(path.join(ROOT, "supabase", "migration_teacher_student_entries_rpc.sql"), "utf-8");
+  const rpc = fs.readFileSync(path.join(ROOT, "supabase", "retired/DO_NOT_RUN_2026-09-01_teacher_student_entries_rpc.sql"), "utf-8");
   for (const col of [...m.REFLUX_CARE_COLUMNS, "meal_marks"]) {
     ok(`RPC が「${col}」を渡していない`, !rpc.includes(col));
   }
