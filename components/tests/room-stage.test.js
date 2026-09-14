@@ -47,11 +47,25 @@ ok(/height: `\$\{FLOOR_BOTTOM_PCT\}%`, background: floorColor/.test(home),
   "★CharacterHome の 床も lib から 取る");
 ok(!/height: "42%"|height: "58%"|= 42;/.test(home + layer), "★数を 直書きして いない");
 
-console.log("③ 画面いっぱいの 箱は そのまま");
-// ★★裁定 9/10夜 §3「画面ぜんぶが おうちに」。★箱は 狭めません。
+console.log("③ 画面いっぱいの 箱");
+// ★★裁定 9/10夜 §3 は「画面ぜんぶが おうちに」でした。
+//
+//   ★★2026-09-14、★坂本さんの お決めで **縦は 比で 決める** ことに しました。
+//     ★★わけ。★ながめると したくで、★箱の 比が ちがい、
+//       ★家具の ％が 同じでも、★見える 場所が ずれて いました。
+//     ★★比の 決まった 舞台に 載せると、★形で そろいます。
+//       ★そのためには、★箱の 比も そろえる ほか ありません。
+//     ★★実際に 測りました ──
+//       ★箱を 端末しだいの ままに すると、★舞台が 箱を 覆い、
+//       ★部屋の 横 44％ しか 見えません でした（★窓だけが 画面いっぱい）。
+//
+//   ★★だから 縦は 7:5 で 決めます。★横は これまでどおり 画面の 端まで。
+//     ★★「画面ぜんぶ」では なくなりました。★これは お決めです。
+//       ★坂本さん ──「画面が 狭く なる 代償は 許容する」。
 ok(/width: "100vw", marginLeft: "calc\(50% - 50vw\)"/.test(home), "★箱は 画面の 端まで");
-ok(/height: "calc\(100dvh - 210px - env\(safe-area-inset-bottom\)\)"/.test(home),
-  "★高さも 画面から 取る");
+ok(/aspectRatio: "7 \/ 5"/.test(home), "★縦は 舞台と 同じ 比で 決める");
+ok(/maxHeight: "calc\(100dvh - 210px - env\(safe-area-inset-bottom\)\)"/.test(home),
+  "★画面より 高く ならない");
 
 console.log("④ 画面を広げる理由が書いてある");
 const raw = readRaw("components", "CharacterHome.jsx");

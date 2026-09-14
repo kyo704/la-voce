@@ -10,6 +10,7 @@ import {
   placementOf, anchorOf, zOf, zIndexOf,
   CEILING_TOP_PCT, WALL_CENTER_PCT, TABLETOP_FEET_PCT
 } from "@/lib/sheepInteriorV2";
+import { STAGE_ASPECT } from "@/lib/roomStage";
 
 // ============================================================================
 // おうちの内装 120点を、部屋に置きます（2026-09-08）
@@ -58,7 +59,9 @@ const ROOM_FLOOR_BOTTOM_PCT = FLOOR_BOTTOM_PCT;
  *   ★★いまは 呼ぶ 側（RoomScene）が **測った 値**を 渡します。
  *     ★ここは、★渡されなかった ときの 見当 だけ です。
  */
-const ROOM_ASPECT_FALLBACK = 4 / 3;
+// ★★2026-09-14、★舞台の 比に そろえました（★lib/roomStage.js）。
+//   ★★4:3 は したくの 箱の 比でした。★いまは 舞台が 1つの 比を 持ちます。
+const ROOM_ASPECT_FALLBACK = STAGE_ASPECT;
 
 /**
  * ★置き場所（★左右の位置と、壁のものの高さ）。

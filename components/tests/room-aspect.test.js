@@ -49,15 +49,36 @@ console.log("\n③ 呼ぶ 側が 測って いる こと");
 t(/setRoomBoxH/.test(ch), "★高さを 測って いる");
 t(/offsetHeight/.test(ch), "★組みつけの 高さ（変形の 影響を 受けない）");
 t(/blockSize/.test(ch), "★ResizeObserver の border-box でも 高さを 取る");
-t(/roomAspect = roomBoxHNow > 0 \? roomBoxW \/ roomBoxHNow/.test(ch),
-  "★比は 幅 ÷ 高さ で 出す");
+// ★★2026-09-14、★比の 出どころが 変わりました（★lib/roomStage.js）。
+//   ★★これまでは「箱の 幅 ÷ 箱の 高さ」。★画面ごとに ちがいました。
+//     ★それが、★ながめると したくで 家具が ずれた 原因です。
+//   ★★いまは **舞台**の 比。★1つ だけ です。
+t(/const roomAspect = STAGE_ASPECT;/.test(ch), "★比は 舞台から 1つ だけ 取る");
+t(/from "@\/lib\/roomStage"/.test(ch), "★舞台の 決まりを 取り寄せて いる");
+t(/stageStyle\(roomBoxW, roomBoxH, STAGE_ASPECT, leftPct\)/.test(ch),
+  "★舞台を 箱に 合わせ、★羊の ほうへ ずらして いる");
+t(!/roomBoxHFallback/.test(ch), "★見当の 高さを もう 持って いない");
+// ★★寄りが 二重に ならない こと。
+//   ★★舞台が 箱を 覆う ぶんだけ、★カメラの 倍率を 減らします。
+t(/ZOOM \/ \(stage\.w \/ roomBoxW\)/.test(ch), "★舞台の 寄りの ぶん、倍率を 減らす");
 t(/<InteriorLayer roomAspect=\{roomAspect\}/.test(readRaw("components", "CharacterHome.jsx")),
   "★InteriorLayer に 渡して いる");
 
 console.log("\n④ 3つの 比が まだ 帳面に ある こと（★見落とし 防止）");
 const raw = readRaw("components", "CharacterHome.jsx");
-t(/aspectRatio: isRoomExpanded \? "7 \/ 5" : "4 \/ 3"/.test(raw), "★ふつう と 広い 背景");
-t(/height: "calc\(100dvh/.test(raw), "★全画面（★端末しだい）");
+// ★★2026-09-14、★箱の 比を 1つに しました。
+//   ★★ふつう 4:3 ／ 広い 7:5 ／ 全画面 端末しだい の 3つ ありました。
+//   ★★いまは どれも 7:5 です。★舞台と 同じ 比です。
+//     ★★そう しないと、★舞台が 箱を 覆い、★部屋の 半分しか 見えません。
+//       ★2026-09-14、★一度 そう なりました（★窓だけが 画面いっぱい）。
+{
+  const roomPart = raw.slice(raw.indexOf('id="room-anchor"'),
+    raw.indexOf("isGardenExpanded"));
+  t(!/"4 \/ 3"/.test(roomPart), "★部屋に 4:3 は もう 無い");
+  t((roomPart.match(/aspectRatio: "7 \/ 5"/g) || []).length === 2,
+    "★2つの 箱（全画面・したく）とも 7:5");
+  t(/maxHeight: "calc\(100dvh/.test(roomPart), "★全画面は 高さの 上限だけ");
+}
 
 console.log("\n★★この 見張りが 見て いない こと");
 console.log("　★字の 並びだけ を 見ます。★描かれた 位置は 見て いません。");

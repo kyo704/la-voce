@@ -8,7 +8,8 @@ import { tileStyle, isNewMaterial } from "@/lib/sheepInterior";
 // ★★着せかえた羊。★出す・出さないは、呼ぶ側（VocalTracker）が決めます。
 import SheepDressed from "@/components/SheepDressed";
 import InteriorLayer from "@/components/InteriorLayer";
-import { cameraOf, cameraStyle } from "@/lib/roomCamera";
+import { cameraOf, cameraStyle, ZOOM } from "@/lib/roomCamera";
+import { STAGE_ASPECT, stageSize, stageStyle } from "@/lib/roomStage";
 // ★古い79点を、門の中の方から隠す決め。★ここ1か所が持ちます。
 import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
@@ -2206,10 +2207,16 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
   //   ★★数は lib/roomCamera.js が 持ちます。★ここで 決めません。
   //   ★羊の 高さを、★部屋の 高さに 対する ％に 直して 渡します。
   // ★★測れて いれば 測った 値。★測れる 前は これまでの 見当で 代えます。
-  const roomBoxHFallback = roomBoxW * (isRoomExpanded ? 5 / 7 : 3 / 4);
-  const roomBoxHNow = roomBoxH > 0 ? roomBoxH : roomBoxHFallback;
-  // ★部屋の 実際の 比（★幅 ÷ 高さ）。★家具の 足もとの 換算に 使います。
-  const roomAspect = roomBoxHNow > 0 ? roomBoxW / roomBoxHNow : 4 / 3;
+  // ★★2026-09-14、★舞台に しました（★lib/roomStage.js・坂本さんの お決め ㋐→㋒）。
+  //
+  //   ★★これまでは、★家具も 羊も「**箱**の 高さに 対する ％」でした。
+  //     ★★箱の 比が 2つの 画面で ちがうので、★見え方が ずれました。
+  //   ★★いまは「**舞台**の 高さに 対する ％」です。★舞台の 比は 1つ です。
+  //     ★★だから、★どの 画面でも 同じ 場所に なります（★形で そろう）。
+  const stage = stageSize(roomBoxW, roomBoxH, STAGE_ASPECT);
+  const roomBoxHNow = stage.h;
+  // ★部屋の 比。★いまは いつも 舞台の 比です。★画面で 変わりません。
+  const roomAspect = STAGE_ASPECT;
   const cam = cameraOf({
     on: cameraOn,
     editMode,
@@ -2226,7 +2233,25 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
     //     ★★1.6倍では **両方 入りません**。★倍率を 下げる ほか ありません。
     //   ★★ながめるは 羊を 見る 画面です。★当座は 羊を 優先します。
     //     ★窓の 上が 少し 切れます。★お決めを 待って います。
-    keepTopPct: 20
+    keepTopPct: 20,
+    // ★★倍率（★2026-09-14・坂本さんの お決め ㋒）。
+    //
+    //   ★★舞台に した ことで、★**寄りが 二重に** なりました。
+    //     ★① 舞台が 箱を 覆う ── ★ながめるでは 横の 44％ しか 見えません
+    //     ★② カメラが 1.6倍 ── ★さらに その 62.5％
+    //     ★★合わせて、★窓だけが 画面いっぱいに なりました。
+    //   ★★①が すでに「寄り」です。★②を 下げます。
+    //
+    //   ★★舞台が 箱より 大きい ほど、★①の 寄りが 強い。
+    //     ★だから 倍率は、★① の ぶんだけ 減らします。
+    //     ★★`stage.w / roomBoxW` が ①の 寄り です。
+    //       ★ながめる 966/430 ＝ 2.25 ／ したく 430/430 ＝ 1.00
+    //     ★★1.6 ÷ 2.25 ＝ 0.71 … ★1 を 割ります。★カメラは 止まります。
+    //       ★したくは 1.6 ÷ 1.00 ＝ 1.6 … ★これまでと 同じ です。
+    //   ★★1 を 下回ったら 1 に します（★`cameraOf` は z≤1 で 恒等）。
+    zoom: stage.w > 0 && roomBoxW > 0
+      ? Math.max(1, ZOOM / (stage.w / roomBoxW))
+      : ZOOM
   });
 
   // ★★何もしないで 60秒 たったら、★眠ります（★2026-09-09）。
@@ -2292,10 +2317,22 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
       //     ★dvh を 使います。★iOS の 帯が 出入りしても ずれません。
       position: "relative", isolation: "isolate", zIndex: 0,
       width: "100vw", marginLeft: "calc(50% - 50vw)", marginRight: "calc(50% - 50vw)",
-      height: "calc(100dvh - 210px - env(safe-area-inset-bottom))",
-      minHeight: 320,
+      // ★★試し（★2026-09-14）── ★箱も 舞台と 同じ 比に します。
+      //   ★★そうすると、★部屋が 丸ごと 見えます。★切れません。
+      //   ★★引き換えに、★部屋は 画面の 帯に なります。
+      aspectRatio: "7 / 5",
+      maxHeight: "calc(100dvh - 210px - env(safe-area-inset-bottom))",
       borderRadius: 0, overflow: "hidden", background: wallColor
-    } : { position: "relative", isolation: "isolate", zIndex: 0, width: "100%", maxWidth: isRoomExpanded ? 700 : 480, margin: "0 auto", aspectRatio: isRoomExpanded ? "7 / 5" : "4 / 3", borderRadius: 18, overflow: "hidden", background: wallColor, transition: "max-width 0.4s ease, aspect-ratio 0.4s ease" }}>
+    } : {
+      // ★★2026-09-14、★箱の 比を 舞台に そろえました。
+      //   ★★4/3（★広い 部屋だけ 7/5）の 2つ ありました。
+      //   ★★舞台と 同じ 比に すると、★切れも 余白も 出ません。
+      //     ★広さの ちがいは、★`maxWidth` だけで 出します。
+      position: "relative", isolation: "isolate", zIndex: 0, width: "100%",
+      maxWidth: isRoomExpanded ? 700 : 480, margin: "0 auto",
+      aspectRatio: "7 / 5",
+      borderRadius: 18, overflow: "hidden", background: wallColor,
+      transition: "max-width 0.4s ease" }}>
       {/* ★★カメラの 入れ物。★場面ぜんぶに、★1つの 変形を かけます。
           ★★層ごとに 別の 速さで 動かしません（★それが「奥ゆき」です）。
             ★奥ゆきを 付けると、★層の 数だけ 座標の 計算が 増えます。
@@ -2303,6 +2340,16 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
             ★掴む 位置が ずれる 余地が、★構造として ありません。
           ★★「うごかす」の 押しどころは、★この 外に あります。
             ★中に 入れると、★寄ったとき 一緒に 大きくなり、★端で 消えます。 */}
+      {/* ★★舞台（★2026-09-14・lib/roomStage.js）。
+          ★★比の 決まった 1枚です。★箱を 覆う 大きさに して、★まんなかに 置きます。
+          ★★家具の ％は、★この 舞台に 対する ％です。★箱では ありません。
+          ★★カメラは この **中**で かかります。★外では ありません。
+            ★外で かけると、★掴む 位置が ずれます（★2026-09-08 の 直し）。 */}
+      {/* ★★舞台を、★羊の いる ほうへ ずらします。
+          ★★舞台が 箱より 広い とき（★ながめる）、★見えるのは 一部です。
+            ★羊は 舞台の 16〜84％ を 歩きます。★まんなかだけでは 消えます。
+          ★★端では 止めます。★舞台の 外を 見せません。 */}
+      <div style={stageStyle(roomBoxW, roomBoxH, STAGE_ASPECT, leftPct)}>
       <div style={cameraStyle(cam, { editMode, walking: isWalking, walkMs: WALK_MS })}>
       {/* ★★場面は、★全画面の箱いっぱいに広げます。
           ★★床は下42％、壁は上58％を使うため、縦長の端末でも
@@ -2676,8 +2723,9 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
             ★門の中では旧い家具が0点なので、★押しどころが出ず、
             ★新しい家具を1つも動かせませんでした。
           ★★新しい内装も、★数に入れます。★判定は lib が持ちます。 */}
-      </div>{/* ★場面の 入れ物（★4：3・下端ぞろえ）を 閉じます */}
+      </div>{/* ★場面の 入れ物（★舞台いっぱい・下端ぞろえ）を 閉じます */}
       </div>{/* ★カメラを 閉じます */}
+      </div>{/* ★舞台（★比の 決まった 1枚）を 閉じます */}
       {(placedFurniture.length > 0 || placedWallhang.length > 0
         || (wardrobeOn && hasMovableInterior(equipped))) && (
         <button type="button" onClick={() => setEditMode((v) => !v)}
