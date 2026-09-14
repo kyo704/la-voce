@@ -84,14 +84,32 @@ where p.schemaname = 'public'
 order by p.policyname;
 
 -- ★★③ has_can が ある ことを 確かめます。★無ければ 第2部は 流せません。
-select p.proname, p.prosecdef as 定義者の権限で動く
+--
+--   ★★★`SECURITY DEFINER` だけでは、★RLS を 越えません（★裁定・Opus）。
+--     ★★越えるのは、★**関数の 持ち主が 表の 持ち主**だから です。
+--     ★★だから 持ち主も 見ます。
+select p.proname,
+       p.prosecdef                  as 定義者の権限で動く,
+       pg_get_userbyid(p.proowner)  as 持ち主
 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
 where n.nspname = 'public' and p.proname = 'has_can';
 
+-- ★★④ ★★FORCE RLS を 確かめます。
+--
+--   ★★`relforcerowsecurity` が true なら、★**持ち主にも RLS が かかります**。
+--   ★★その ときは `memberships_select` の 中で `has_can` を 呼ぶと、
+--     ★`memberships` を 読む → 決まりが 走る → また `has_can` …と 回ります。
+--   ★★★1つでも true が 出たら、★**第2部を 流さないで ください**。
+--     ★そのまま お知らせください。
+select relname                as 表,
+       relrowsecurity         as RLSが入っている,
+       relforcerowsecurity    as ★持ち主にもかかる
+from pg_class
+where relname in ('memberships', 'enrollments', 'assignments',
+                  'org_invitations');
 
--- ════════════════════════════════════════════════════════════════════════
--- 第2部　置き換え（★第1部を 見てから 流して ください）
--- ════════════════════════════════════════════════════════════════════════
+
+-- ★★下の 表が、★置き換える 決まりと 札です。
 --
 --   ★★下の かたまりは、★`is_org_owner_or_admin(auth.uid(), org_id)` という
 --     ★**字だけ** を `has_can(org_id, '札')` に 置き換えます。
@@ -116,6 +134,58 @@ where n.nspname = 'public' and p.proname = 'has_can';
 --
 --   ★★2・6 は「自分の 枝」を 持ちます。
 --     ★★この やり方なら、★左の 枝は 1文字も 変わりません。
+
+-- ════════════════════════════════════════════════════════════════════════
+-- 第2部の 前に　── ★もとの 姿を 控えます
+-- ════════════════════════════════════════════════════════════════════════
+--
+--   ★★第1部は **出すだけ** です。★出した 紙は 戻す 道では ありません。
+--   ★★だから、★台帳の 中に 控えを 作ります。
+--   ★★何度 流しても 増えません（★同じ 表に 足すだけ です）。
+
+create table if not exists public._a13_policy_backup (
+  saved_at    timestamptz,
+  schemaname  text,
+  tablename   text,
+  policyname  text,
+  cmd         text,
+  permissive  text,
+  roles       name[],
+  qual        text,
+  with_check  text
+);
+
+insert into public._a13_policy_backup
+select now(), p.schemaname, p.tablename, p.policyname, p.cmd,
+       p.permissive, p.roles, p.qual, p.with_check
+from pg_policies p
+where p.schemaname = 'public'
+  and p.policyname in (
+    'assignments_all_owner_admin','assignments_select','enrollments_all_owner_admin',
+    'memberships_delete_admin','memberships_insert_bootstrap_owner','memberships_select',
+    'memberships_update_role_management',
+    'org_events_write_admin','org_invitations_insert','org_invitations_select',
+    'org_messages_insert','org_messages_select');
+
+-- ★★控えが 取れたかを 見ます。★12行 ある はずです。
+select count(*) as 控えた本数, max(saved_at) as いつ
+from public._a13_policy_backup;
+
+
+-- ════════════════════════════════════════════════════════════════════════
+-- 第2部　置き換え（★★1つの かたまりとして 流して ください）
+-- ════════════════════════════════════════════════════════════════════════
+--
+--   ★★★流す 前に、★第1部の ①の 出力を 読んで ください。
+--     ★★台帳は 条件文を 書き直して 返す ことが あります。
+--       ★例 `is_org_owner_or_admin(auth.uid(), assignments.org_id)`
+--         ★（★表の 名前が 付く）
+--     ★★その ときは、★下の 置き換えは **何も 起きず 飛ばします**。
+--       ★「飛ばしました」と 出ます。★それは 誤りでは なく 合図です。
+--     ★★★字を 当てずっぽうで 直さないで ください。
+--       ★出た 字を そのまま お知らせください。★こちらで 直します。
+--
+--   ★★このまま 1回で 流して ください。★途中で 切ると 戻りません。
 
 do $$
 declare
@@ -180,7 +250,9 @@ begin
                       when 'UPDATE' then 'update'
                       when 'DELETE' then 'delete'
                     end
-      || ' to ' || array_to_string(r.roles, ', ')
+      -- ★★役の 名前は、★1つずつ 引用符で 包みます。
+      --   ★★包まないと、★引用が 要る 名前が あった ときに 壊れます。
+      || ' to ' || (select string_agg(quote_ident(x), ', ') from unnest(r.roles) x)
       || case when coalesce(v_new_q, '') <> '' then ' using (' || v_new_q || ')' else '' end
       || case when coalesce(v_new_w, '') <> '' then ' with check (' || v_new_w || ')' else '' end;
 
