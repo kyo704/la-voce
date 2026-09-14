@@ -125,13 +125,24 @@ def main():
   need = 0
   for r in sorted(rows, key=lambda x: (x["table"], x["cmd"], x["name"])):
     both = (r["using"] + " " + r["check"])
+    # ★★条件の 本文を 読んで 分けます（★2026-09-13）。
+    #   ★★はじめ「has_can が 無ければ ぜんぶ 候補」と して いました。
+    #     ★★それだと、★**自分の 行だけ**を 見て いる 枝まで 候補に なります。
+    #     ★★`auth.uid() = user_id` は 役割の 話では ありません。
+    #   ★★見るのは 2つ だけ です ──
+    #     ★`is_org_owner_or_admin(...)` を 呼んで いるか
+    #     ★`role = 'owner'` の ように 役割の 名前を 直に 書いて いるか
+    role_fn = "is_org_owner_or_admin" in both
+    role_lit = ("'owner'" in both) or ("'admin'" in both)
     if r["name"] in KEEP:
       view = "★そのまま"
     elif "has_can" in both:
       view = "★もう できことを 見て いる"
-    else:
+    elif role_fn or role_lit:
       view = "★★できことへ 移す 候補"
       need += 1
+    else:
+      view = "★自分の 行だけ（★役割を 見て いない）"
     key = MAP.get((r["table"], r["cmd"]))
     if not key and r["cmd"] == "ALL":
       key = MAP.get((r["table"], "UPDATE"))
@@ -140,6 +151,22 @@ def main():
   say()
   say("★★できことへ 移す 候補　**%d 本**" % need)
   say()
+  say("★★★「候補」の 中にも、★自分の 行を 見る 枝が **一緒に 入って います**。")
+  say("　★★例 `memberships_select` ── `auth.uid() = user_id OR is_org_owner_or_admin(...)`")
+  say("　★★直すのは **右の 枝だけ** です。★左の 枝（★自分の 行）は 触りません。")
+  say("　★★まるごと 置き換えると、★ご自分の 行が 読めなく なります。")
+  say()
+
+  say("## ★条件の 本文（★1本ずつ）")
+  say()
+  for r in sorted(rows, key=lambda x: (x["table"], x["cmd"], x["name"])):
+    say("### `%s`　（%s ／ %s）" % (r["name"], r["table"], r["cmd"]))
+    say()
+    say("```")
+    say("読める 条件　" + (r["using"] or "（無し）"))
+    say("書ける 条件　" + (r["check"] or "（無し）"))
+    say("```")
+    say()
 
   say("## ★そのまま に する もの と、★その わけ")
   say()
