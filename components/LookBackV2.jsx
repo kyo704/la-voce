@@ -7,7 +7,7 @@ import {
   ScreenHead, HeadRound, Card, Seg, Pill, Warn, Note, BarRow, Li, Btn, Two, EmptyBox
 } from "@/components/UiV2";
 import LookBackPanel from "@/components/LookBackPanel";
-import { LOOK_BACK_FIELDS, hardDays, lookBackableDays } from "@/lib/lookBack";
+import { LOOK_BACK_FIELDS, hardDays, lookBackDays } from "@/lib/lookBack";
 import { PERIODS, LINE_UP_NOTE, LINE_UP_STACK_NOTE, datesBack } from "@/lib/lineUp";
 import LineUpChart from "@/components/LineUpChart";
 import { tx } from "@/lib/t";
@@ -276,7 +276,11 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
         //   ★足したのは、★どの日から さかのぼれるか、だけです。
         //   ★★本番で「出なかった」日と、★その日を「出づらい」と 書いた日。
         //     ★見本⑤は 後者です。★どちらも 要ります。★1つに しません。
-        const days = lookBackableDays(notOutDays, hardDays(entries, todayISO, period.days));
+        // ★★2026-09-14、★日付だけ では なく、★出どころ も 受け取ります。
+        //   ★★見本は 行ごとに「本番で 出なかった日」「△出づらい と書いた日」を
+        //     ★言い分けて います。★合わせる ところは lib に 1つ だけ です。
+        const withSource = lookBackDays(notOutDays, hardDays(entries, todayISO, period.days));
+        const days = withSource.map((x) => x.date);
         if (days.length === 0) {
           // ★★共通の 部品です（★見本 stateBlock・797行）。★写しを 置きません。
           //   ★★字も 見本の ものに そろえました。★私が 書いた 字では ありません。
@@ -294,7 +298,7 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
         //   ★★fields を 渡しません。★渡すと 古い 24項目の 形に なります。
         //   ★前から ある 画面（★VocalTracker の notOutDays）は、
         //     ★これまでどおり fields を 渡して 動きます。
-        return <LookBackPanel dates={days} entries={entries} />;
+        return <LookBackPanel dates={days} entries={entries} sources={withSource} />;
       })()}
 
       {tab === "kuraberu" && (() => {

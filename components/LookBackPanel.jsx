@@ -51,8 +51,23 @@ function dayLabel(iso) {
  *   ★★fields を 渡された ときは、★これまでどおり その 一覧で 出します。
  *     ★前から ある 画面（★notOutDays）を 壊さない ためです。
  */
-export default function LookBackPanel({ dates, entries, fields }) {
+export default function LookBackPanel({ dates, entries, fields, sources }) {
   const list = Array.isArray(dates) ? dates : [];
+  /**
+   * ★その日の 出どころの 札（★見本の 行の 小見出し）。
+   *
+   *   ★★`sources` を もらった ときだけ 出します。
+   *     ★★古い 呼び方（★VocalTracker の notOutDays）は 渡して きません。
+   *       ★そちらは これまでどおり「前の3日を 見る」の ままです。
+   *     ★★見当で 札を 貼りません。★知らない ものは 出しません。
+   */
+  const sourceOf = (d) => {
+    if (!sources) return null;
+    const hit = Array.isArray(sources)
+      ? sources.find((x) => x && x.date === d)
+      : null;
+    return hit ? hit.label : null;
+  };
   const [open, setOpen] = useState(Array.isArray(fields) && fields.length > 0 && list.length ? list[0] : null);
   if (list.length === 0) return null;
 
@@ -63,9 +78,12 @@ export default function LookBackPanel({ dates, entries, fields }) {
 
   return (
     <div>
-      {/* ★★見本 A05 の 1文（.note）。★1文字も 変えないこと。 */}
+      {/* ★★見本 A05 の 1文（.note）。★1文字も 変えないこと。
+          ★★2026-09-14、★分かち書きの 空白が 3つ 抜けて いました。
+            ★字は 1つも ちがいません でした。★空白だけ です。
+            ★★見本「出なかった日を 選ぶと、その前の 3日に 書いたことが そのまま 出ます。」 */}
       <Note style={{ marginBottom: 10 }}>
-        出なかった日を選ぶと、その前の3日に書いたことが そのまま出ます。
+        出なかった日を 選ぶと、その前の 3日に 書いたことが そのまま 出ます。
       </Note>
 
       {/* ★★日を えらびます。★見本の白い一覧です。 */}
@@ -76,7 +94,16 @@ export default function LookBackPanel({ dates, entries, fields }) {
               <span>
                 <b style={{ ...TYPE.usual, color: C.ink }}>{dayLabel(d)}</b>
                 <br />
-                <span style={{ ...TYPE.mini }}>前の3日を 見る</span>
+                {/* ★★2026-09-14、★見本の 行の 小見出しに しました。
+                    ★★前は どの行も「前の3日を 見る」でした。
+                      ★★それでは「なぜ この日が 並んで いるか」が 分かりません。
+                    ★★見本は、★2つの 出どころを 行ごとに 言い分けて います ──
+                      ★本番で 出なかった日 ／ △出づらい と書いた日。
+                    ★★札は lib が 持ちます（★LOOK_BACK_SOURCE）。
+                      ★ここで 書き写すと、★下の 3行と 食い違います。
+                    ★★出どころが 分からない ときは、★何も 出しません。
+                      ★見当で 札を 貼りません。 */}
+                <span style={{ ...TYPE.mini }}>{sourceOf(d) || "前の3日を 見る"}</span>
               </span>
               <span style={{ ...TYPE.usual, color: C.inkSoft }}>前の3日 ›</span>
             </div>
