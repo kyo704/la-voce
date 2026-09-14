@@ -24,12 +24,56 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "docs", "reports")
 FUNCS = os.path.join(ROOT, "docs", "design", "pack-final", "functions.md")
 
+# ★★2026-09-13、★はじめ「〜できます」の 形だけを 探して いました。
+#   ★★この 文書は、★節の 下に 1行ずつ 並べる 書き方です ──
+#     「いま、できること」／「これから 作ること」／「やらないと 決めて いること」
+#   ★★だから 2件しか 取れません でした。★節ごと 読みます。
+# ★★2026-09-13、★「できること」も 節と して 数えて いました。
+#   ★★4ページ目（★個人の 料金）にも 同じ 見出しが あり、
+#     ★★値段や 返品の 文まで「いま ある」に 入って いました。
+#   ★★見出しは、★この 3つ だけ に します。
+#   ★★節は 12行で 打ち切ります。★次の 見出しが 来なくても 止めます。
+SECTIONS = {
+  "いま、できること": "★いま ある と 言って いる",
+  "これから作ること": "★まだ 無い と 言って いる",
+  "やらないと決めていること": "★作らない と 言って いる",
+}
+SECTION_MAX = 12
+SECTION_END = re.compile(r"^(\d+ページ目|Woolsong ／|時期|どれを|★|【)")
+
 CLAIM = [
   r"「([^」]{4,40})」が\s*でき",
   r"「([^」]{4,40})」が\s*可能",
   r"([^\s、。・|]{4,30})が\s*できます",
-  r"([^\s、。・|]{4,30})を\s*(?:見られ|残せ|出せ|作れ|送れ|数えられ)ます",
+  r"([^\s、。・|]{4,30})を\s*(?:見られ|残せ|出せ|作れ|送れ|数えられ|持て)ます",
 ]
+
+
+def read_sections(text):
+  """★節の 下に 並んで いる 1行ずつを 拾います。"""
+  out = []
+  cur = None
+  n = 0
+  for raw in text.split("\n"):
+    line = re.sub(r"^\d+:\s*", "", raw).strip()
+    if not line:
+      continue
+    key = line.replace(" ", "").replace("　", "")
+    if key in SECTIONS:
+      cur, n = SECTIONS[key], 0
+      continue
+    if cur is None:
+      continue
+    if SECTION_END.match(line) or key in SECTIONS:
+      cur = None
+      continue
+    if len(line) < 6 or len(line) > 60:
+      continue
+    out.append((cur, line))
+    n += 1
+    if n >= SECTION_MAX:
+      cur = None
+  return out
 
 STOP = set("のにをはがでとやもへ、。・（）「」★ ")
 
@@ -60,11 +104,17 @@ def main():
   fg = grams(funcs)
 
   claims = []
+  kind = {}
+  for k, line in read_sections(sales):
+    if line not in claims:
+      claims.append(line)
+      kind[line] = k
   for p in CLAIM:
     for m in re.finditer(p, sales):
       c = m.group(1).strip()
       if c and c not in claims:
         claims.append(c)
+        kind[c] = "★「できます」の 形"
 
   lines = []
 
@@ -96,7 +146,8 @@ def main():
       r = len(cg & hg) / len(cg) if cg else 0
       if r > bs:
         bs, best = r, h
-    rows.append({"claim": c, "ratio": ratio, "best": best, "bs": bs})
+    rows.append({"claim": c, "ratio": ratio, "best": best, "bs": bs,
+                 "kind": kind.get(c, "—")})
 
   need = [r for r in rows if r["ratio"] < 0.5]
   say("## ★数")
@@ -104,12 +155,12 @@ def main():
   say("- 売り文句 **%d**" % len(rows))
   say("- 重なりが 半分 未満 **%d**（★とくに 見て ください）" % len(need))
   say()
-  say("| 売り文句 | 重なり | 近い 見出し |")
-  say("|---|---|---|")
-  for r in sorted(rows, key=lambda x: x["ratio"]):
+  say("| 言って いる こと | どの 節 | 重なり | 近い 見出し |")
+  say("|---|---|---|---|")
+  for r in sorted(rows, key=lambda x: (x["kind"], x["ratio"])):
     mark = "★" if r["ratio"] < 0.5 else ""
-    say("| %s%s | %.0f%% | %s |" % (mark, r["claim"][:40].replace("|", "\\|"),
-                                    r["ratio"] * 100, r["best"][:36]))
+    say("| %s%s | %s | %.0f%% | %s |" % (mark, r["claim"][:44].replace("|", "\\|"),
+                                         r["kind"], r["ratio"] * 100, r["best"][:28]))
   say()
   say("## ★この 紙が して いない こと")
   say()
