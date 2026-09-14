@@ -89,3 +89,102 @@ quality: typeof row.resonance_score === "number"
 
 - 本番の 台帳で、★何行が 逆算の 値かは 数えて いません。
 - `voice_entries` が 2件以上 ある 日が 何日 あるかも 数えて いません。
+
+---
+
+# ★2026-09-14 追記 ── `entries` の 列 ぜんぶを 見ました
+
+★出どころ C1（★Opus）──「3つだけでは なく、★entries の 列 ぜんぶで 見よ」。
+
+★★わけ ── ★分析の 拡張(2)では、★使う 人が **名前で** 項目を 選びます。
+　★★「のどの 様子」を 選んだ 人に「からだの 感じ」が 返ったら、★気づけません。
+
+## 数え（`tools/column_name_scan.py`）
+
+```
+★entryToRow が 書く 列: 64
+  名前と もとが 同じ　: 49
+  ★ちがう　　　　　　 : 6
+  ★★名前は 合うが、★中で 別の ものから 作って いる: 6
+  読めない（式が 複雑）: 3
+
+★★★名前と 中身が ずれて いる 列（★これが 探して いた もの）
+  ✗✗ throat_condition　もとは 「bodyFeel」
+       intOrNull(rep.bodyFeel)
+  ✗✗ voice_quality　もとは 「quality」
+       intOrNull(quality10ToFiveScale(rep.quality))
+  ✗✗ wake_note　もとは 「pitchChest」
+       wakeEntry ? wakeEntry.pitchChest || null : null
+  ✗✗ routine_note　もとは 「pitchChest」
+       routineEntry ? routineEntry.pitchChest || null : null
+  ✗✗ resonance_score　もとは 「quality」
+       rep.quality, // resonance_scoreは元々0-10なので、qualityとそのまま対応する
+  ✗✗ pianissimo_high_note　もとは 「pitchSoftMax」
+       wakeEntry ? wakeEntry.pitchSoftMax || null : null
+
+★★名前と もとの 形が ちがう 列（★多くは 足し算です。★ずれでは ありません）
+  ✗ water_intake　（名前なら waterIntake／もとは waterBySlot）
+      Object.values(e.waterBySlot || {}).reduce((total, v) => total + (Numbe
+  ✗ carbs_g　（名前なら carbsG／もとは meals, carbs）
+      hasDetailedMeals ? sumMacro(e.meals, "carbs") : (simpleMacros ? simple
+  ✗ protein_g　（名前なら proteinG／もとは meals, protein）
+      hasDetailedMeals ? sumMacro(e.meals, "protein") : (simpleMacros ? simp
+  ✗ fat_g　（名前なら fatG／もとは meals, fat）
+      hasDetailedMeals ? sumMacro(e.meals, "fat") : (simpleMacros ? simpleMa
+  ✗ fiber_g　（名前なら fiberG／もとは meals, fiber）
+      hasDetailedMeals ? sumMacro(e.meals, "fiber") : (simpleMacros ? simple
+  ✗ exercise_minutes　（名前なら exerciseMinutes／もとは exercises）
+      (e.exercises || []).reduce((total, x) => total + (Number(x.minutes) ||
+
+★★読めなかった 列（★式が 複雑。★手で 見る 要あり）
+  ? repertoire　legacyRepertoire || null
+  ? activity_detail　primary
+  ? performance_quality　numOrNull(derivedPerformanceQuality)
+```
+
+## ★ずれて いる 列　**6つ**（★3つ → 6つに 増えました）
+
+| 列 | 名前が 言って いる もの | 中に 入って いる もの |
+|---|---|---|
+| `throat_condition` | のどの 調子 | **からだの 感じ**（`bodyFeel`） |
+| `voice_quality` | 声の 出来 | **`quality` を 5段に 丸めた もの** |
+| `resonance_score` | 響きの 点数 | **声の 出来**（0〜10） |
+| `wake_note` | 起き抜けの **メモ** | **胸声の 高さ**（`pitchChest`） |
+| `routine_note` | 発声の **メモ** | **胸声の 高さ**（`pitchChest`） |
+| `pianissimo_high_note` | pp の **高い音** | **いちばん 弱く 出せる 高さ**（`pitchSoftMax`） |
+
+★★`wake_note` と `routine_note` は、★名前に 「note（メモ）」と 付いて います。
+　★★中に 入って いるのは **音の 高さ**です。★文では ありません。
+　★★もし 拡張(2)の 一覧に 「起き抜けの メモ」と 出したら、
+　　★選んだ 人は **文**を 期待します。★返るのは 音名です。
+
+## ★ずれで **ない** もの（★見分けの ため）
+
+★★次の 6つは、★名前と 中身は 合って います。★**形**だけ ちがいます。
+
+`water_intake`／`carbs_g`／`protein_g`／`fat_g`／`fiber_g`／`exercise_minutes`
+
+★★どれも「足し算した もの」です。
+　★例 `water_intake` … `waterBySlot` の 中身を ぜんぶ 足した 数。
+　★★水の 量、という 名前は 正しい です。
+
+## ★読めなかった 列　3つ（★手で 見ました）
+
+| 列 | 式 | 見立て |
+|---|---|---|
+| `repertoire` | `legacyRepertoire \|\| null` | ★曲名を「、」で つないだ もの。★合って います |
+| `activity_detail` | `primary` | ★1つ目の 活動の 細目。★合って います |
+| `performance_quality` | `numOrNull(derivedPerformanceQuality)` | ★1つ目の 本番の 出来。★合って います |
+
+## 直して いません
+
+★★名前は **画面の 言葉と いっしょに、★1つの 記録番号で** 直します。
+　★★38人の 記録が 入って います。
+　★★書く 側と 読む 側が 別の 日に 変わると、★その あいだの 記録が 壊れます。
+
+## この 数えが 見て いない こと
+
+- `entryToRow` が 書く 列だけ です。★読む 側（`rowToEntry`）は 見て いません。
+- 「名前が 言って いる もの」は、★私が 列名から 読み取った ものです。
+  ★★正しい 呼び名は、★画面の 言葉と いっしょに 決める ことに なります。
+
