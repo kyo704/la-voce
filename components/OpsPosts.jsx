@@ -44,6 +44,13 @@ import { tx } from "@/lib/t";
 function Switch({ on, disabled }) {
   return (
     <span aria-hidden="true" style={{
+      // ★★2026-09-13、★つまみが 消えました（★実機の ご報告）。
+      //   ★★`<span>` は 既定で inline です。★幅と 高さが 効きません。
+      //   ★★それまでは flex の 子だったので、★自動で 塊に なって いました。
+      //     ★★「送って います」の ために もう 1枚 包んだ とき、
+      //       ★★flex の 子では なく なり、★inline に 戻って 潰れました。
+      //   ★★親に 頼らない ように、★自分で 塊に します。
+      display: "inline-block",
       width: 44, height: 26, borderRadius: 999, position: "relative", flex: "none",
       background: on ? C.curtain : C.line,
       opacity: disabled ? 0.55 : 1
@@ -145,7 +152,10 @@ export default function OpsPosts({
                 </span>
                 {/* ★★送って いる あいだは、★その行の つまみだけ 薄く します。
                     ★★押した ことが 見えます。★ほかの 行は そのままです。 */}
-                <span style={{ opacity: sending === p.key ? 0.4 : 1, flex: "none" }}>
+                <span style={{
+                  display: "inline-flex", alignItems: "center",
+                  opacity: sending === p.key ? 0.4 : 1, flex: "none"
+                }}>
                   <Switch on={on} disabled={!allowed} />
                 </span>
               </button>
