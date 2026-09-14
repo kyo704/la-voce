@@ -63,9 +63,11 @@ console.log("③ 画面いっぱいの 箱");
 //     ★★「画面ぜんぶ」では なくなりました。★これは お決めです。
 //       ★坂本さん ──「画面が 狭く なる 代償は 許容する」。
 ok(/width: "100vw", marginLeft: "calc\(50% - 50vw\)"/.test(home), "★箱は 画面の 端まで");
-ok(/aspectRatio: "7 \/ 5"/.test(home), "★縦は 舞台と 同じ 比で 決める");
-ok(/maxHeight: "calc\(100dvh - 210px - env\(safe-area-inset-bottom\)\)"/.test(home),
-  "★画面より 高く ならない");
+// ★★2026-09-14 夕、★§3 の とおりに 戻しました。
+//   ★★箱は 画面ぜんぶ。★舞台は その 中に 収め、★余りを 色で 伸ばします。
+//   ★★家具の ％は 舞台に 対する ％なので、★箱の 比は 関わりません。
+ok(/height: "calc\(100dvh - 210px - env\(safe-area-inset-bottom\)\)"/.test(home),
+  "★高さも 画面から 取る（★§3 の とおり）");
 
 console.log("④ 画面を広げる理由が書いてある");
 const raw = readRaw("components", "CharacterHome.jsx");

@@ -9,7 +9,7 @@ import { tileStyle, isNewMaterial } from "@/lib/sheepInterior";
 import SheepDressed from "@/components/SheepDressed";
 import InteriorLayer from "@/components/InteriorLayer";
 import { cameraOf, cameraStyle, ZOOM } from "@/lib/roomCamera";
-import { STAGE_ASPECT, stageSize, stageStyle } from "@/lib/roomStage";
+import { STAGE_ASPECT, stageSize, stageFit, stageBleed, stageStyle } from "@/lib/roomStage";
 // ★古い79点を、門の中の方から隠す決め。★ここ1か所が持ちます。
 import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
@@ -2213,7 +2213,17 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
   //     ★★箱の 比が 2つの 画面で ちがうので、★見え方が ずれました。
   //   ★★いまは「**舞台**の 高さに 対する ％」です。★舞台の 比は 1つ です。
   //     ★★だから、★どの 画面でも 同じ 場所に なります（★形で そろう）。
-  const stage = stageSize(roomBoxW, roomBoxH, STAGE_ASPECT);
+  // ★★全画面（ながめる）は **収めます**。★切りません。
+  //   ★★覆うと、★縦長の 箱では 横の 半分以上が 切れます。
+  //     ★2026-09-14、★一度 そう なりました（★窓だけが 画面いっぱい）。
+  //   ★★したくの 箱は 舞台と 同じ 比なので、★どちらでも 同じ 大きさです。
+  const stage = fullBleed
+    ? stageFit(roomBoxW, roomBoxH, STAGE_ASPECT)
+    : stageSize(roomBoxW, roomBoxH, STAGE_ASPECT);
+  // ★舞台の 外を、★壁と 床の 色で 伸ばす ぶん。
+  const bleed = fullBleed
+    ? stageBleed(roomBoxW, roomBoxH, STAGE_ASPECT, FLOOR_BOTTOM_PCT)
+    : { topH: 0, bottomH: 0 };
   const roomBoxHNow = stage.h;
   // ★部屋の 比。★いまは いつも 舞台の 比です。★画面で 変わりません。
   const roomAspect = STAGE_ASPECT;
@@ -2317,11 +2327,12 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
       //     ★dvh を 使います。★iOS の 帯が 出入りしても ずれません。
       position: "relative", isolation: "isolate", zIndex: 0,
       width: "100vw", marginLeft: "calc(50% - 50vw)", marginRight: "calc(50% - 50vw)",
-      // ★★試し（★2026-09-14）── ★箱も 舞台と 同じ 比に します。
-      //   ★★そうすると、★部屋が 丸ごと 見えます。★切れません。
-      //   ★★引き換えに、★部屋は 画面の 帯に なります。
-      aspectRatio: "7 / 5",
-      maxHeight: "calc(100dvh - 210px - env(safe-area-inset-bottom))",
+      // ★★箱は 端末しだいの ままです（★裁定 9/10夜 §3「画面ぜんぶが おうちに」）。
+      //   ★★舞台は この 中に **収めます**（★切りません）。
+      //     ★余った ところは、★壁の 色と 床の 色で 伸ばします。
+      //     ★★だから 画面は 埋まり、★部屋も 丸ごと 見えます。
+      height: "calc(100dvh - 210px - env(safe-area-inset-bottom))",
+      minHeight: 320,
       borderRadius: 0, overflow: "hidden", background: wallColor
     } : {
       // ★★2026-09-14、★箱の 比を 舞台に そろえました。
@@ -2349,7 +2360,27 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
           ★★舞台が 箱より 広い とき（★ながめる）、★見えるのは 一部です。
             ★羊は 舞台の 16〜84％ を 歩きます。★まんなかだけでは 消えます。
           ★★端では 止めます。★舞台の 外を 見せません。 */}
-      <div style={stageStyle(roomBoxW, roomBoxH, STAGE_ASPECT, leftPct)}>
+      {/* ★★舞台の 外を、★色で 伸ばします。★継ぎ目を 出さない ため です。
+          ★★上は 壁、★下は 床。★舞台の 上端は 壁、★下端は 床だからです。
+          ★★家具は 舞台の ％の ままです。★ここは 色だけ です。 */}
+      {bleed.topH > 0 ? (
+        <>
+          <div aria-hidden="true" style={{
+            position: "absolute", left: 0, right: 0, top: 0,
+            height: Math.ceil(bleed.topH) + 1, background: wallColor, zIndex: 0
+          }} />
+          <div aria-hidden="true" style={{
+            position: "absolute", left: 0, right: 0, bottom: 0,
+            height: Math.ceil(bleed.bottomH) + 1, background: floorColor, zIndex: 0
+          }} />
+        </>
+      ) : null}
+      <div style={{
+        ...stageStyle(roomBoxW, roomBoxH, STAGE_ASPECT, leftPct),
+        ...(bleed.topH > 0
+          ? { width: stage.w, height: stage.h, transform: "translate(-50%, -50%)" }
+          : {})
+      }}>
       <div style={cameraStyle(cam, { editMode, walking: isWalking, walkMs: WALK_MS })}>
       {/* ★★場面は、★全画面の箱いっぱいに広げます。
           ★★床は下42％、壁は上58％を使うため、縦長の端末でも

@@ -75,9 +75,18 @@ const raw = readRaw("components", "CharacterHome.jsx");
   const roomPart = raw.slice(raw.indexOf('id="room-anchor"'),
     raw.indexOf("isGardenExpanded"));
   t(!/"4 \/ 3"/.test(roomPart), "★部屋に 4:3 は もう 無い");
-  t((roomPart.match(/aspectRatio: "7 \/ 5"/g) || []).length === 2,
-    "★2つの 箱（全画面・したく）とも 7:5");
-  t(/maxHeight: "calc\(100dvh/.test(roomPart), "★全画面は 高さの 上限だけ");
+  // ★★2026-09-14 夕、★もう一度 変えました（★坂本さんの ご要望）。
+  //   ★★全画面は「画面ぜんぶ」に 戻します（★裁定 9/10夜 §3 の とおり）。
+  //   ★★舞台は その 中に **収めます**。★切りません。
+  //     ★余った ところは、★壁の 色と 床の 色で 伸ばします。
+  //   ★★だから 箱の 比は 1つでは ありません。★舞台の 比が 1つ です。
+  //     ★★家具の ％は 舞台に 対する ％なので、★それで そろいます。
+  t((roomPart.match(/aspectRatio: "7 \/ 5"/g) || []).length === 1,
+    "★したくの 箱だけが 7:5（★全画面は 端末しだい）");
+  t(/stageFit\(roomBoxW, roomBoxH, STAGE_ASPECT\)/.test(ch),
+    "★全画面では 舞台を 収める（★切らない）");
+  t(/stageBleed\(roomBoxW, roomBoxH, STAGE_ASPECT, FLOOR_BOTTOM_PCT\)/.test(ch),
+    "★余りを 壁と 床の 色で 伸ばす");
 }
 
 console.log("\n★★この 見張りが 見て いない こと");
