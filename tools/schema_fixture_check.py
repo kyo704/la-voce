@@ -24,7 +24,23 @@ SCHEMA = {
   "enrollments": {
     "status": ["active", "left"],
   },
+  # ★★Stripe の ぶん。★supabase/schema.sql:35 の 注記から。
+  #   ★★2026-09-13、★これが 無い ために
+  #     ★subscription-lifecycle／tiers の trialing・canceled を
+  #     ★enrollments の 値と 取りちがえて いました。★誤りでした。
+  "subscriptions": {
+    "status": ["none", "trialing", "active", "past_due", "canceled"],
+  },
 }
+
+# ★★どの 表の 話かを、★ファイル名から 見分けます。
+#   ★★同じ `status` でも、★enrollments と subscriptions では 値が ちがいます。
+FILE_TABLE = [
+  ("subscription", "subscriptions"),
+  ("tiers", "subscriptions"),
+  ("billing", "subscriptions"),
+  ("plan", "subscriptions"),
+]
 
 
 def main():
@@ -43,7 +59,19 @@ def main():
         #   ★★2026-09-13、★これを 拾って いました。
         if 'role="dialog"' in line or "role='dialog'" in line or "aria" in line.lower():
           continue
+        # ★★その ファイルが どの 表の 話かを 決めます。
+        #   ★★決まらない ときは、★subscriptions を 外して 見ます
+        #     （★enrollments の 話と して 見る）。
+        only = None
+        for mark, tb in FILE_TABLE:
+          if mark in fn:
+            only = tb
+            break
         for table, cols in SCHEMA.items():
+          if only is not None and table != only and table != "memberships":
+            continue
+          if only is None and table == "subscriptions":
+            continue
           for col, allowed in cols.items():
             for m in re.finditer(r'\b%s\s*[:=]\s*["\']([A-Za-z_]+)["\']' % col, line):
               v = m.group(1)
