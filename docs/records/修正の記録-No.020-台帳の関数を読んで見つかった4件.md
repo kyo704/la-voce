@@ -1,5 +1,5 @@
 # 修正の記録 No.020 ── 台帳の 関数を 読んで 見つかった 4件
-全148行 / 末尾は「★★そうすれば、★私の 側でも 同じ ことを 確かめられます。」
+全248行 / 末尾は「★★そうすれば、★私の 側でも 同じ ことを 確かめられます。」
 
 ★見つけた日 2026-09-14（★Opus が 台帳を 直に 読んで）
 ★調べた日 2026-09-14（★私が 倉庫の 紙で 裏を 取りました）
@@ -43,6 +43,29 @@
 ★★死んで いるのは `accept_invitation` の ほうです。
 　★画面からの 呼び出しは **1か所**、★`accept_teacher_invitation` だけ でした。
 
+### ★片づける 前に ── ★なぜ あったのか（★分かる ぶん だけ）
+
+★★私は これを **書いて いません**。★紙に 1行も ありません。
+　★★SQLエディタで 直に 作られた もの です。★いきさつを 見た 者が いません。
+
+★★中身から 読める こと ──
+
+| | `accept_invitation`（★死） | `accept_teacher_invitation`（★生） |
+|---|---|---|
+| 行の 錠 | ★`for update` あり | ★★ありません |
+| 未成年の 判定 | ★関数の 中に 書いて ある | ★引き金（`assert_student_is_adult`）に 任せる |
+
+★★2つは「★同じ 仕事の 2つの 設計」です。★どちらが 先かは 分かりません。
+
+★★★丸ごと 上書きしては いけません（★Opus の ご注意）。
+　★★未成年の 判定が **2か所に なります**。
+　★★いまの 決めは「★引き金 1つ」です（`migration_block_minor_teacher_link.sql`）──
+　　「★RLS では なく 引き金に して いるのは、★service_role も 必ず 通す ため」。
+　★★取るのは **錠の 考え方 だけ** です。★それも ②の 形で 済みます。
+
+★★片づける 紙（`drop function public.accept_invitation(text);`）は、
+　★上の 直しが 実機で 通って から に します。★先に 消しません。
+
 ### ★★けれど、★生きて いる ほうに 錠が ありません
 
 ★Opus の ご指摘の とおりです。★調べました。
@@ -65,24 +88,101 @@
 ★★1回だけ 使える はずの コードで、★2人が つながり得ます。
 　★★`used_at` は 2度 立ちますが、★つながりは 2つ 残ります。
 
-★★これまでに 起きたか は、★分かりません。★台帳を 数えないと 言えません ──
+### ★数えました ── ★起きて いません（★2026-09-14）
+
+★★私の 最初の 数え方が **誤って** いました。★2つ 直しました。
+
+| 誤り | 直し |
+|---|---|
+| `teacher_id` だけで つないで いた | ★`used_by_student_id` でも つなぐ |
+| `created_at` を 使って いた | ★★列は `accepted_at` です（`2026-09-04-rpc-functions.sql:70`） |
 
 ```sql
 -- ★同じ コードから 2つ 以上の つながりが 出て いないか（★見るだけ）
 select i.code, count(l.id) as "つながりの数"
   from public.teacher_invitations i
   join public.teacher_student_links l
-    on l.teacher_id = i.teacher_id
-   and l.created_at >= i.used_at
+    on l.teacher_id  = i.teacher_id
+   and l.student_id  = i.used_by_student_id
  where i.used_at is not null
  group by i.code having count(l.id) > 1;
 ```
 
-★★直し方は 2つ あります。★どちらも 私は 流せません。
-　★㋐ ①に `for update` を 足す（★`accept_invitation` が そう して います）
-　★㋑ ③を `where code = p_code and used_at is null` に して、
-　　★0行 なら 例外を 上げる（★取れた 人だけ 通す）
-★★私の 見立ては **㋑** です。★錠を 取る 時間が 短く、★結果も はっきりします。
+★★結果 ── **0件**（★Opus・2026-09-14）。★つながりは 全部で 8本、
+　★すべて `used_by_student_id` と 合って います。
+
+★★はじめ 1件 出たのは、★`teacher_id` だけで つないだ ため でした ──
+```
+9BMU5JTE  先生 5f9cf956  07:28:25  使ったのは ef626dc0
+3429Y67Z  先生 5f9cf956  07:35:13  使ったのは fe774377
+```
+★★別々の コード、★7分 違い。★競って いません。
+
+### ★★それでも 穴は 本物 です
+
+★★「★起きて いない」は「★起きない」では ありません。
+
+★`for update` は いまも ありません。★**別々の 生徒が 同時に 押せば、★2人とも 通ります。**
+★★起きて いないのは、★**人が 少ない から** です。
+
+### ★直し方 ── ㋑ で お決まり（★2026-09-14）。★順番を ご報告します
+
+★★お指図 ──「★insert が ③より **前** に ある。★先に 取りに 行くか、
+　★③が 0行 の とき つながりを 戻すか。★選んだ 順番を 報告してから 当てる こと」。
+
+★★**先に 取りに 行く** 形を 選びます。★理由は 下に 書きます。
+
+#### ★いまの 順番
+
+```
+① auth.uid() の 確かめ
+② select teacher_id … where code and used_at is null and expires_at > now()   ★錠 なし
+③ 自分自身なら CANNOT_LINK_TO_SELF
+④ insert teacher_student_links        ★未成年の 引き金が ここで 走る
+⑤ insert link_consents                ★落ちても 警告だけ
+⑥ update teacher_invitations set used_at = now() where code = p_code
+```
+
+#### ★変えた あとの 順番
+
+```
+① auth.uid() の 確かめ
+② ★update teacher_invitations
+     set used_at = now(), used_by_student_id = auth.uid()
+   where code = p_code and used_at is null and expires_at > now()
+   returning teacher_id into v_teacher        ★取りに 行くのと 読むのを 1文で
+③ v_teacher が null なら INVITATION_NOT_USABLE
+④ 自分自身なら CANNOT_LINK_TO_SELF
+⑤ insert teacher_student_links
+⑥ insert link_consents
+（★⑥の あとに update は ありません。★②で 済んで います）
+```
+
+#### ★★なぜ「戻す」ほうを 選ばないか
+
+★★この 関数は、★**まるごと 1つの 取引（transaction）** です。
+　★★②の あとで `raise` すれば、★②の 書き込みも **一緒に 戻ります**。
+　★★だから、★手で 戻す 仕掛けは 要りません。
+
+| 心配 | どう なるか |
+|---|---|
+| 未成年が 弾かれた とき、★コードが 使われた ままに ならないか | ★なりません。⑤の `raise` で ②も 戻ります |
+| 自分自身だった とき | ★同じく ④の `raise` で 戻ります |
+| 負けた ほうに つながりが 残らないか | ★★残りません。★②で 0行 → ③で 例外 → 何も しません |
+
+#### ★ついでに 直る こと
+
+★★いまの ⑥は `where code = p_code` **だけ** です。★期限を 見て いません。
+　★★変えた あとは `expires_at > now()` も 条件に 入ります。★厳しく なります。
+
+#### ★外から 見た ふるまいは 変わりません
+
+★★返す 例外の 名前・順番は、★1つも 変えて いません。
+　`NOT_AUTHENTICATED` ／ `INVITATION_NOT_USABLE` ／ `CANNOT_LINK_TO_SELF`
+　／ `MINOR_NOT_ALLOWED` ／ `ALREADY_LINKED`
+★★「無い」「使用済み」「期限切れ」を 分けない 決めも、★そのまま です。
+
+★★★まだ 当てて いません。★お返事を いただいて から 紙を 書きます。
 
 ---
 
