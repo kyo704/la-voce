@@ -14,7 +14,7 @@ import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
 } from "@/lib/oldHouseVisibility";
 // ★動かせる内装が在るか／羊の重ね順。★決めは、あちらが持ちます。
-import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs, nextSitMs, zSwitchDelayMs, FLOOR_BOTTOM_PCT, WALL_HEIGHT_PCT } from "@/lib/sheepInteriorV2";
+import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs, nextSitMs, zSwitchDelayMs, FLOOR_BOTTOM_PCT, WALL_HEIGHT_PCT , WALL_BAND} from "@/lib/sheepInteriorV2";
 import SpeechBubble from "@/components/SpeechBubble";
 import { SOLO, TIMING, FACE_FOR, pickLine, nextSoloMs, pushRecent } from "@/lib/sheepSpeech";
 import { pickGesture, nextGestureMs, mayGesture, pushRecent as pushGesture } from "@/lib/sheepGestures";
@@ -2215,7 +2215,11 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
     editMode,
     leftPct,
     topPct,
-    sheepPct: roomBoxHNow > 0 ? (sheepPx / roomBoxHNow) * 100 : 0
+    sheepPct: roomBoxHNow > 0 ? (sheepPx / roomBoxHNow) * 100 : 0,
+    // ★★壁の ものの いちばん 上（★WALL_BAND[0]）より 上は 切りません。
+    //   ★★2026-09-13、★床を 広げた とき 窓が 画面の 外に 出ました。
+    //   ★★数は lib が 持ちます。★ここで 決めません。
+    keepTopPct: WALL_BAND[0]
   });
 
   // ★★何もしないで 60秒 たったら、★眠ります（★2026-09-09）。
