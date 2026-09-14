@@ -274,6 +274,57 @@ console.log("\n⑬ 見本の ボタンが、実際に 出ること");
     "★新しい 列を 作っていない（★activities の 中に しまう）");
 }
 
+// ============================================================================
+// ★3択の 札（★2026-09-14・坂本さんの お決め ㋒㋓㋔㋕）
+//
+//   ★出どころ 見本 `.tri`（★00-動く見本（さわれる・全画面）.html）
+//     `.tri div{background:#FDFAF3;border-radius:12px;padding:9px 0 8px;min-height:60px}`
+//     `.tri div .g{font-size:21px;color:var(--enji)}`
+//     `.tri div.on{border:2px solid var(--enji-bg)}`
+//
+//   ★★4つ 直しました。
+//     ★㋒ 印 26px → **21px**
+//     ★㋓ 地 白 → **#FDFAF3**（★見本の 生成り）
+//     ★㋔ 高さ 79 → **70**（★見本は 60。★字を 1段 大きく した ぶん 足す）
+//     ★㋕ 切の 印を 墨 → **えんじ**（★濃さ 1／.72／.5 で 3段）
+//
+//   ★★㋕が いちばん 分かりにくい ところです。
+//     ★★濃さの 仕掛けは 前から ありました。★色だけが ちがって いました。
+//     ★★見本は 色を 変えません。★**濃さ だけ**で 3つを 分けます。
+//       ★色を 変えると、★「良い／悪い」に 見えます。
+// ============================================================================
+{
+  const { readCode } = require("./_source");
+  const head = readCode("components", "RecordV2Head.jsx");
+
+  console.log("\n★3択の 札（★お決め ㋒㋓㋔㋕）");
+
+  // ★㋒ 印の 大きさ
+  ok(/fontSize: rem\(21\)/.test(head), "★印は 21px（★見本の とおり）");
+  ok(!/fontSize: rem\(26\)/.test(head), "★26px は もう 無い");
+
+  // ★㋓ 地
+  ok(/const TRI_BG = "#FDFAF3";/.test(head), "★地の 色を 1か所で 決めて いる");
+  ok(/background: TRI_BG/.test(head), "★札に その 色を 当てて いる");
+
+  // ★㋔ 高さ
+  ok(/minHeight: 70/.test(head), "★高さは 70");
+  ok(!/minHeight: SPACE\.tapMin,[\s\S]{0,80}padding: "13px 6px"/.test(head),
+    "★前の 高さ・余白の 組は 無い");
+
+  // ★㋕ 印の 色 ── ★切でも えんじ
+  ok(/color: C\.curtain,\n\s*\/\/ ★★見本は 濃さで 3段/.test(head)
+    || /color: C\.curtain,[\s\S]{0,200}opacity: on \? 1 : \[1, 0\.72, 0\.5\]/.test(head),
+    "★印は いつも えんじ（★切でも）");
+  ok(!/color: on \? C\.curtain : C\.ink,[\s\S]{0,120}markOf/.test(head),
+    "★切のときに 墨に して いない");
+  ok(/opacity: on \? 1 : \[1, 0\.72, 0\.5\]\[i\]/.test(head),
+    "★3段は 濃さで 分けて いる");
+
+  console.log("　★★この 見張りは 字の 並びだけ を 見ます。");
+  console.log("　★実際の 見え方は docs/design/compare/tanaoroshi/ の 絵で 見ます。");
+}
+
 console.log(ng === 0
   ? "\n★すべて 通りました。"
   : `\n★${ng} 件 落ちました。`);

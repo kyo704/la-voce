@@ -53,6 +53,14 @@ import { Card, Warn, Note, Two, Btn, H3 } from "@/components/UiV2";
  *   ★★選ばれた 印は、★2px の 枠です。★色は その 上の 念押しです。
  *     ★色だけに 意味を 持たせていません。
  */
+/**
+ * ★3択の 札の 地（★見本 `.tri div{background:#FDFAF3}`）。
+ *
+ *   ★★白（`C.card`）では ありません。★ほんの 少し 生成りです。
+ *   ★★新しい 色では ありません。★見本が もともと 持って いた 値です。
+ */
+const TRI_BG = "#FDFAF3";
+
 function Tri({ title, choices, current, onPick }) {
   return (
     <Card>
@@ -66,15 +74,32 @@ function Tri({ title, choices, current, onPick }) {
               style={{
                 ...cardStyle,
                 flex: 1, minWidth: 0,
-                minHeight: SPACE.tapMin,
-                padding: "13px 6px",
+                // ★★高さ（★2026-09-14・坂本さんの お決め ㋔）。
+                //   ★★見本は 60 です。★字を 1段 大きく したので、
+                //     ★60 では 窮屈に なります。★70 に します。
+                minHeight: 70,
+                // ★★`minHeight` を 70 に しただけでは、★74 に なりました。
+                //   ★★中身（21 ＋ 5 ＋ 12 ＝ 38）に 上下の 余白 26 を 足すと 64、
+                //     ★行の 高さで 74 まで 伸びます。
+                //   ★★余白を 2px 削って、★70 に します。
+                padding: "11px 6px",
                 textAlign: "center",
+                // ★★地の 色（★お決め ㋓）。★見本 `.tri div{background:#FDFAF3}`。
+                //   ★★白い カードの 上に 白い 札を 置くと、
+                //     ★境が 枠線だけ に なります。★ほんの 少し 生成りに します。
+                background: TRI_BG,
                 border: on ? `2px solid ${C.curtain}` : cardStyle.border,
                 fontFamily: FONT_STACK
               }}>
               <span aria-hidden="true" style={{
-                display: "block", fontSize: rem(26), lineHeight: 1,
-                color: on ? C.curtain : C.ink,
+                // ★★印の 大きさ（★お決め ㋒）。★見本 `.tri div .g{font-size:21px}`。
+                display: "block", fontSize: rem(21), lineHeight: 1,
+                // ★★印の 色（★お決め ㋕）。★見本 `.tri div .g{color:var(--enji)}`。
+                //   ★★見本は **切でも えんじ** です。★墨では ありません。
+                //     ★3つの ちがいは、★色では なく **濃さ**で 出します。
+                //   ★★2026-09-14 まで、★切のときを 墨に して いました。
+                //     ★濃さの 仕掛けは あったので、★色だけが ちがって いました。
+                color: C.curtain,
                 // ★★見本は 濃さで 3段に します（★opacity 1／.72／.5）。
                 //   ★★選ばれていない ときだけ 薄くします。
                 opacity: on ? 1 : [1, 0.72, 0.5][i]
@@ -82,8 +107,10 @@ function Tri({ title, choices, current, onPick }) {
                 {markOf(choices, w)}
               </span>
               <span style={{
+                // ★★語（★見本 `.tri div .w{font-size:11.5px;color:var(--ink2)}`）。
+                //   ★★字の 大きさは TYPE の 引き上げに 合わせて 12px の ままです。
                 display: "block", fontSize: rem(12), marginTop: rem(5),
-                color: on ? C.curtain : C.ink,
+                color: on ? C.curtain : C.inkSoft,
                 fontWeight: on ? 700 : 400
               }}>{w}</span>
             </button>
