@@ -3,7 +3,7 @@
 <title>Woolsong 動く見本 ── PC・iPad</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--enji:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
+:root{--enji:#840C24;--enji-bg:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
  --line:#E4DAC4;--line2:#F0E9DA;--ink:#261913;--ink2:#6D5D50;--ink3:#7C6C5E;--bg:#EFE7D6;
  --red:#B23A48;--sh:0 1px 0 rgba(0,0,0,.03),0 8px 24px rgba(90,72,48,.10)}
 body{background:var(--bg);font-family:"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;color:var(--ink);
@@ -273,7 +273,7 @@ th.stick{z-index:4}
 /* ══════════ 暗い 画面（ダークモード） ══════════ */
 html[data-th="dark"]{
  --paper:#1C1712;--bg:#121009;--ink:#EFE6D8;--ink2:#BCAF9D;--ink3:#918476;
- --line:#3D342B;--line2:#2C251E;--enji:#E790A2;--yama:#D9AC55;--midori:#82BCA0;--red:#EA8894;
+ --line:#3D342B;--line2:#2C251E;--enji:#E790A2;--enji-bg:#8E1230;--yama:#D9AC55;--midori:#82BCA0;--red:#EA8894;
  --sh:0 1px 0 rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.45);
  color-scheme:dark}
 html[data-th="dark"] body{background:var(--bg);color:var(--ink)}
@@ -286,10 +286,10 @@ html[data-th="dark"] .wall{background:#221B15;color:var(--ink2)}
 html[data-th="dark"] .side{background:#1E1812;border-color:var(--line)}
 html[data-th="dark"] .nv.on{background:#241D17;color:var(--enji)}
 html[data-th="dark"] .body,html[data-th="dark"] .bd{background:var(--paper)}
-html[data-th="dark"] .btn{background:#8E1230;color:#fff;border-color:#8E1230}
+html[data-th="dark"] .btn{background:var(--enji-bg);color:#fff;border-color:var(--enji-bg)}
 html[data-th="dark"] .btn.g,html[data-th="dark"] .btn.mid{background:#2C241D;color:var(--ink);border-color:var(--line)}
 html[data-th="dark"] .pill{background:#2C241D;color:var(--ink2);border-color:var(--line)}
-html[data-th="dark"] .pill.on{background:#8E1230;color:#fff;border-color:#8E1230}
+html[data-th="dark"] .pill.on{background:var(--enji-bg);color:#fff;border-color:var(--enji-bg)}
 html[data-th="dark"] .inp,html[data-th="dark"] .ta,html[data-th="dark"] input,html[data-th="dark"] textarea,html[data-th="dark"] select{background:#1A1510;color:var(--ink);border-color:var(--line)}
 html[data-th="dark"] table th,html[data-th="dark"] .tbl th,html[data-th="dark"] .spt th{background:#2C241D;color:var(--ink2);border-color:var(--line)}
 html[data-th="dark"] table td,html[data-th="dark"] .tbl td,html[data-th="dark"] .spt td{background:#241D17;color:var(--ink);border-color:var(--line)}
@@ -309,7 +309,7 @@ html[data-th="dark"] .grid th.tdyh{background:#3A1E22;color:var(--enji)}
 html[data-th="dark"] .grid td.tdyc{background:#221A18}
 html[data-th="dark"] .mini .mg b:hover{background:#2C241D}
 html[data-th="dark"] .mini .mg b.w{background:#3A1E22}
-html[data-th="dark"] .mini .mg b.t{background:#8E1230;color:#fff}
+html[data-th="dark"] .mini .mg b.t{background:var(--enji-bg);color:#fff}
 html[data-th="dark"] .mini .mg b.o{color:#5E5449}
 html[data-th="dark"] .tabs{background:#1E1812;border-color:var(--line)}
 html[data-th="dark"] .tb{color:var(--ink3)}
@@ -330,7 +330,7 @@ html[data-th="dark"] .kpi{background:#241D17;border-color:var(--line)}
 html[data-th="dark"] .kpi.al{background:#2E2018;border-color:#5A3A3E}
 html[data-th="dark"] .lft,html[data-th="dark"] .pl{background:#1E1812}
 html[data-th="dark"] .seg{background:#2C241D;border-color:var(--line)}
-html[data-th="dark"] .seg .on,html[data-th="dark"] .seg b.on,html[data-th="dark"] .seg span.on,html[data-th="dark"] .on{background:#8E1230;color:#fff}
+html[data-th="dark"] .seg .on,html[data-th="dark"] .seg b.on,html[data-th="dark"] .seg span.on,html[data-th="dark"] .on{background:var(--enji-bg);color:#fff}
 html[data-th="dark"] .gear,html[data-th="dark"] .role{background:#2C241D;color:var(--ink2);border-color:var(--line)}
 html[data-th="dark"] .k{background:#2A231C;color:var(--ink)}
 html[data-th="dark"] div[style*="background:#fff"],html[data-th="dark"] div[style*="background:#FFF"]{background:#241D17!important}
@@ -340,10 +340,10 @@ html[data-th="dark"] [style*="background:#F4F8F5"]{background:#1F2C25!important}
 html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"] [style*="background:#FBF3E2"],html[data-th="dark"] [style*="background:#F6F1E4"],html[data-th="dark"] [style*="background:#FDFAF3"],html[data-th="dark"] [style*="background:#F3ECDD"],html[data-th="dark"] [style*="background:#FBF6EA"],html[data-th="dark"] [style*="background:#EDE5D5"],html[data-th="dark"] [style*="background:#F4EFE4"],html[data-th="dark"] [style*="background:#EFE9DC"],html[data-th="dark"] [style*="background:#FFFDF8"],html[data-th="dark"] [style*="background:#FFFDF7"]{background:#2A2219!important}
 html[data-th="dark"] tr[style*="background:#FBF3E2"]{background:#2A2219!important}
 html[data-th="dark"] .sw{background:#3A322A}
-html[data-th="dark"] .sw.on{background:#8E1230}
+html[data-th="dark"] .sw.on{background:var(--enji-bg)}
 html[data-th="dark"] .sw i{background:#EFE6D8}
 html[data-th="dark"] .tri div{background:#2A2219;border-color:var(--line)}
-html[data-th="dark"] .tri div.on{background:#8E1230;border-color:#8E1230}
+html[data-th="dark"] .tri div.on{background:var(--enji-bg);border-color:var(--enji-bg)}
 html[data-th="dark"] .tri div.on .w,html[data-th="dark"] .tri div.on .g{color:#fff}
 html[data-th="dark"] .drt,html[data-th="dark"] .drr,html[data-th="dark"] .drhint,html[data-th="dark"] .drc{background:#241D17}
 </style></head><body>

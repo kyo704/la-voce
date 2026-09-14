@@ -56,7 +56,7 @@ ok(/if \(on\) next\[key\] = true; else delete next\[key\];/.test(api),
   "★外したら 消す（★false を 置かない）");
 
 console.log("⑦ 灰色に する。★隠さない（★裁定 §7-4）");
-ok(/#A0917F/.test(ui), "★灰色に している");
+ok(/C\.inkFaint/.test(ui), "★灰色に している（★C.inkFaint）");
 ok(/CANNOT_GRANT_REASON/.test(ui), "★押すと わけを 出す");
 ok(!/display: "none"/.test(ui), "★隠していない");
 
@@ -82,7 +82,7 @@ const roster = readCode("components", "OpsRoster.jsx");
 ok(/mayGrantPost\(myPerms, p\)/.test(roster), "★画面も lib に 尋ねている");
 ok(/mayChangePerson\(myPerms, mine\)/.test(roster), "★触れるかも lib に 尋ねている");
 ok(/CANNOT_CHANGE_REASON/.test(roster), "★渡せない わけを 出す");
-ok(/#A0917F/.test(roster), "★灰色に する。★隠さない");
+ok(/C\.inkFaint/.test(roster), "★灰色に する。★隠さない（★C.inkFaint）");
 ok(/posts && posts\.length > 0/.test(roster), "★役職が 無ければ、行を 出さない");
 
 console.log("⑧-3 ★黙って 失敗しない（★2026-09-11・実機の ご報告）");

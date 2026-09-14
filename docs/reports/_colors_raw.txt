@@ -1,0 +1,1274 @@
+00-動く見本（さわれる・全画面）.html:16	#DFD4BE	.ph{width:360px;height:812px;background:var(--paper);border-radius:30p
+00-動く見本（さわれる・全画面）.html:20	#6D5D50	.off{flex:0 0 20px;background:#6D5D50;color:#fff;font-size:10px;displa
+00-動く見本（さわれる・全画面）.html:22	#FFFDF7	.tabs{flex:0 0 56px;border-top:1px solid var(--line);display:flex;back
+00-動く見本（さわれる・全画面）.html:38	#F3ECDD	.spt th{background:#F3ECDD;color:var(--ink3);font-weight:400;text-alig
+00-動く見本（さわれる・全画面）.html:40	#FDFAF3	.spt td.k{width:34%;font-weight:600;background:#FDFAF3}
+00-動く見本（さわれる・全画面）.html:43	#CFC0A4	.fbtn:hover{border-color:#CFC0A4;color:var(--ink2)}
+00-動く見本（さわれる・全画面）.html:44	#CFC0A4	.fbtn.on{color:var(--enji);border-color:#CFC0A4}
+00-動く見本（さわれる・全画面）.html:46	#F6F1E4	.warn{background:#F6F1E4;border:1px solid #E8DFC8;border-radius:12px;p
+00-動く見本（さわれる・全画面）.html:46	#E8DFC8	.warn{background:#F6F1E4;border:1px solid #E8DFC8;border-radius:12px;p
+00-動く見本（さわれる・全画面）.html:47	#F3ECDD	.seg{display:flex;background:#F3ECDD;border-radius:11px;padding:3px;ma
+00-動く見本（さわれる・全画面）.html:71	#FDFAF3	background:#FDFAF3;cursor:pointer;min-height:60px;display:flex;flex-di
+00-動く見本（さわれる・全画面）.html:77	#F6EEDC	.stage{position:relative;background:linear-gradient(#F6EEDC,#EFE4CC);b
+00-動く見本（さわれる・全画面）.html:77	#EFE4CC	.stage{position:relative;background:linear-gradient(#F6EEDC,#EFE4CC);b
+00-動く見本（さわれる・全画面）.html:87	#FBF6EA	.room{position:relative;border:1px solid var(--line);border-radius:14p
+00-動く見本（さわれる・全画面）.html:103	#F0E9DA	.mkrow .cells i{flex:1;height:15px;border-radius:3px;background:#F0E9D
+00-動く見本（さわれる・全画面）.html:119	#F0E4D2	.post .av{width:24px;height:24px;border-radius:50%;background:#F0E4D2;
+00-動く見本（さわれる・全画面）.html:122	#E0C9CE	.post.t{border-color:#E0C9CE;background:#FFFCFC}.post.t .nm3{color:var
+00-動く見本（さわれる・全画面）.html:122	#FFFCFC	.post.t{border-color:#E0C9CE;background:#FFFCFC}.post.t .nm3{color:var
+00-動く見本（さわれる・全画面）.html:123	#2E6FD9	.dot{display:inline-block;width:7px;height:7px;border-radius:50%;backg
+00-動く見本（さわれる・全画面）.html:125	#F3ECDD	.tag{display:inline-block;background:#F3ECDD;color:var(--ink2);border-
+00-動く見本（さわれる・全画面）.html:126	#F6EFDF	.wl{background:#F6EFDF;border:1px solid #E8DFC8;border-radius:12px;pad
+00-動く見本（さわれる・全画面）.html:126	#E8DFC8	.wl{background:#F6EFDF;border:1px solid #E8DFC8;border-radius:12px;pad
+00-動く見本（さわれる・全画面）.html:134	#B9AA97	.gr .c.no{color:#B9AA97;background:#FAF6EC}
+00-動く見本（さわれる・全画面）.html:134	#FAF6EC	.gr .c.no{color:#B9AA97;background:#FAF6EC}
+00-動く見本（さわれる・全画面）.html:144	#A0917F	.lock{display:flex;justify-content:space-between;align-items:center;ga
+00-動く見本（さわれる・全画面）.html:148	#DFD4BE	.sw{width:44px;height:26px;border-radius:99px;background:#DFD4BE;posit
+00-動く見本（さわれる・全画面）.html:155	#EFE7D6	.ord .no.g2{background:#EFE7D6;color:var(--ink3)}
+00-動く見本（さわれる・全画面）.html:158	#F0E9DA	.sk{background:#F0E9DA;border-radius:8px;height:13px;margin-bottom:8px
+00-動く見本（さわれる・全画面）.html:164	#F1E9D9	.opbar{background:#F1E9D9;border-bottom:1px solid var(--line);padding:
+00-動く見本（さわれる・全画面）.html:171	#F3ECDD	.tbl th{background:#F3ECDD;color:var(--ink2);font-weight:400;padding:6
+00-動く見本（さわれる・全画面）.html:173	#FBF6EA	.tbl td.k{background:#FBF6EA;text-align:left;position:sticky;left:0;z-
+00-動く見本（さわれる・全画面）.html:183	#FBF3E2	.dup{border-left-color:var(--yama);background:#FBF3E2}
+00-動く見本（さわれる・全画面）.html:190	#DFD4BE	.grab{width:40px;height:4px;border-radius:2px;background:#DFD4BE;margi
+00-動く見本（さわれる・全画面）.html:192	#261913	.toast{position:absolute;left:15px;right:15px;bottom:70px;background:#
+00-動く見本（さわれる・全画面）.html:195	#F3C9CF	.toast b{margin-left:auto;color:#F3C9CF;cursor:pointer;font-weight:400
+00-動く見本（さわれる・全画面）.html:205	#F1E4CC	.hroom{position:relative;width:100%;height:100%;min-height:660px;overf
+00-動く見本（さわれる・全画面）.html:225	#DFD4BE	.drx .bar{width:38px;height:4px;border-radius:2px;background:#DFD4BE;m
+00-動く見本（さわれる・全画面）.html:243	#C3B6A2	.g5 .c.no{color:#C3B6A2;background:#FAF6EC}
+00-動く見本（さわれる・全画面）.html:243	#FAF6EC	.g5 .c.no{color:#C3B6A2;background:#FAF6EC}
+00-動く見本（さわれる・全画面）.html:246	#FFFDF7	.haichi{position:absolute;right:12px;bottom:12px;background:#FFFDF7;bo
+00-動く見本（さわれる・全画面）.html:248	#FDFAF3	.drt{display:flex;align-items:center;gap:8px;padding:9px 13px;border-t
+00-動く見本（さわれる・全画面）.html:251	#FDFAF3	.drr{display:flex;align-items:center;gap:5px;padding:6px 13px;backgrou
+00-動く見本（さわれる・全画面）.html:256	#FDFAF3	.drhint{padding:9px 13px;text-align:center;font-size:11.5px;color:var(
+00-動く見本（さわれる・全画面）.html:257	#FDFAF3	.drc{display:flex;gap:5px;overflow-x:auto;padding:7px 13px;border-top:
+00-動く見本（さわれる・全画面）.html:260	#FFFDF7	.drb{display:flex;border-top:1px solid var(--line);background:#FFFDF7}
+00-動く見本（さわれる・全画面）.html:286	#F6E4E8	.cal i.mid{background:#F6E4E8;border-color:#EBD2D8;color:var(--enji)}
+00-動く見本（さわれる・全画面）.html:286	#EBD2D8	.cal i.mid{background:#F6E4E8;border-color:#EBD2D8;color:var(--enji)}
+00-動く見本（さわれる・全画面）.html:287	#CFC3B0	.cal i.no{color:#CFC3B0}
+00-動く見本（さわれる・全画面）.html:323	#241D17	html[data-th="dark"] .card,html[data-th="dark"] .box,html[data-th="dar
+00-動く見本（さわれる・全画面）.html:325	#241D17	html[data-th="dark"] .box,html[data-th="dark"] .card.p0{background:#24
+00-動く見本（さわれる・全画面）.html:326	#6B0A1D	html[data-th="dark"] .top{background:#6B0A1D;color:#fff}
+00-動く見本（さわれる・全画面）.html:328	#221B15	html[data-th="dark"] .wall{background:#221B15;color:var(--ink2)}
+00-動く見本（さわれる・全画面）.html:329	#1E1812	html[data-th="dark"] .side{background:#1E1812;border-color:var(--line)
+00-動く見本（さわれる・全画面）.html:330	#241D17	html[data-th="dark"] .nv.on{background:#241D17;color:var(--enji)}
+00-動く見本（さわれる・全画面）.html:332	#8E1230	html[data-th="dark"] .btn{background:#8E1230;color:#fff;border-color:#
+00-動く見本（さわれる・全画面）.html:332	#8E1230	html[data-th="dark"] .btn{background:#8E1230;color:#fff;border-color:#
+00-動く見本（さわれる・全画面）.html:333	#2C241D	html[data-th="dark"] .btn.g,html[data-th="dark"] .btn.mid{background:#
+00-動く見本（さわれる・全画面）.html:334	#2C241D	html[data-th="dark"] .pill{background:#2C241D;color:var(--ink2);border
+00-動く見本（さわれる・全画面）.html:335	#8E1230	html[data-th="dark"] .pill.on{background:#8E1230;color:#fff;border-col
+00-動く見本（さわれる・全画面）.html:335	#8E1230	html[data-th="dark"] .pill.on{background:#8E1230;color:#fff;border-col
+00-動く見本（さわれる・全画面）.html:336	#1A1510	html[data-th="dark"] .inp,html[data-th="dark"] .ta,html[data-th="dark"
+00-動く見本（さわれる・全画面）.html:337	#2C241D	html[data-th="dark"] table th,html[data-th="dark"] .tbl th,html[data-t
+00-動く見本（さわれる・全画面）.html:338	#241D17	html[data-th="dark"] table td,html[data-th="dark"] .tbl td,html[data-t
+00-動く見本（さわれる・全画面）.html:339	#2A231C	html[data-th="dark"] .tbl td.k,html[data-th="dark"] .spt td.k,html[dat
+00-動く見本（さわれる・全画面）.html:340	#1E1812	html[data-th="dark"] .note{background:#1E1812;border-color:var(--line)
+00-動く見本（さわれる・全画面）.html:341	#2A2218	html[data-th="dark"] .warn,html[data-th="dark"] .wl{background:#2A2218
+00-動く見本（さわれる・全画面）.html:341	#4A3E2C	html[data-th="dark"] .warn,html[data-th="dark"] .wl{background:#2A2218
+00-動く見本（さわれる・全画面）.html:342	#2C241D	html[data-th="dark"] .fbtn{background:#2C241D;border-color:var(--line)
+00-動く見本（さわれる・全画面）.html:343	#2A231C	html[data-th="dark"] .koma{background:#2A231C;border-left-color:var(--
+00-動く見本（さわれる・全画面）.html:344	#1F2C25	html[data-th="dark"] .koma.mine{background:#1F2C25;border-left-color:v
+00-動く見本（さわれる・全画面）.html:345	#2E2820	html[data-th="dark"] .koma.busy{background:#2E2820;border-left-color:#
+00-動く見本（さわれる・全画面）.html:345	#6B5F4E	html[data-th="dark"] .koma.busy{background:#2E2820;border-left-color:#
+00-動く見本（さわれる・全画面）.html:346	#282219	html[data-th="dark"] .koma.busy.priv{background:#282219}
+00-動く見本（さわれる・全画面）.html:347	#3A1E22	html[data-th="dark"] .koma.now{background:#3A1E22;border-left-color:va
+00-動く見本（さわれる・全画面）.html:348	#1E1812	html[data-th="dark"] .slot{background:#1E1812;color:var(--ink3)}
+00-動く見本（さわれる・全画面）.html:349	#241D17	html[data-th="dark"] .slot.n{background:#241D17;color:var(--ink2)}
+00-動く見本（さわれる・全画面）.html:350	#2C241D	html[data-th="dark"] .slot:hover,html[data-th="dark"] .slot .yt,html[d
+00-動く見本（さわれる・全画面）.html:351	#3A1E22	html[data-th="dark"] .grid th.tdyh{background:#3A1E22;color:var(--enji
+00-動く見本（さわれる・全画面）.html:352	#221A18	html[data-th="dark"] .grid td.tdyc{background:#221A18}
+00-動く見本（さわれる・全画面）.html:353	#2C241D	html[data-th="dark"] .mini .mg b:hover{background:#2C241D}
+00-動く見本（さわれる・全画面）.html:354	#3A1E22	html[data-th="dark"] .mini .mg b.w{background:#3A1E22}
+00-動く見本（さわれる・全画面）.html:355	#8E1230	html[data-th="dark"] .mini .mg b.t{background:#8E1230;color:#fff}
+00-動く見本（さわれる・全画面）.html:356	#5E5449	html[data-th="dark"] .mini .mg b.o{color:#5E5449}
+00-動く見本（さわれる・全画面）.html:357	#1E1812	html[data-th="dark"] .tabs{background:#1E1812;border-color:var(--line)
+00-動く見本（さわれる・全画面）.html:360	#1E1812	html[data-th="dark"] .st{background:#1E1812;color:var(--ink2)}
+00-動く見本（さわれる・全画面）.html:361	#3A322A	html[data-th="dark"] .toast{background:#3A322A;color:#fff}
+00-動く見本（さわれる・全画面）.html:362	#2C241D	html[data-th="dark"] .sk{background:#2C241D}
+00-動く見本（さわれる・全画面）.html:363	#332A22	html[data-th="dark"] .tag{background:#332A22;color:var(--ink2)}
+00-動く見本（さわれる・全画面）.html:364	#2C241D	html[data-th="dark"] .pl.on{background:#2C241D}
+00-動く見本（さわれる・全画面）.html:366	#241D17	html[data-th="dark"] .stage,html[data-th="dark"] .hroom{background:#24
+00-動く見本（さわれる・全画面）.html:367	#221B15	html[data-th="dark"] .opbar{background:#221B15;color:var(--ink2)}
+00-動く見本（さわれる・全画面）.html:368	#3A2E1C	html[data-th="dark"] .off{background:#3A2E1C;color:#E7C46A}
+00-動く見本（さわれる・全画面）.html:368	#E7C46A	html[data-th="dark"] .off{background:#3A2E1C;color:#E7C46A}
+00-動く見本（さわれる・全画面）.html:369	#5C8FE0	html[data-th="dark"] .dot{background:#5C8FE0}
+00-動く見本（さわれる・全画面）.html:372	#241D17	html[data-th="dark"] .kpi{background:#241D17;border-color:var(--line)}
+00-動く見本（さわれる・全画面）.html:373	#2E2018	html[data-th="dark"] .kpi.al{background:#2E2018;border-color:#5A3A3E}
+00-動く見本（さわれる・全画面）.html:373	#5A3A3E	html[data-th="dark"] .kpi.al{background:#2E2018;border-color:#5A3A3E}
+00-動く見本（さわれる・全画面）.html:374	#1E1812	html[data-th="dark"] .lft,html[data-th="dark"] .pl{background:#1E1812}
+00-動く見本（さわれる・全画面）.html:375	#2C241D	html[data-th="dark"] .seg{background:#2C241D;border-color:var(--line)}
+00-動く見本（さわれる・全画面）.html:376	#8E1230	html[data-th="dark"] .seg .on,html[data-th="dark"] .seg b.on,html[data
+00-動く見本（さわれる・全画面）.html:377	#2C241D	html[data-th="dark"] .gear,html[data-th="dark"] .role{background:#2C24
+00-動く見本（さわれる・全画面）.html:378	#2A231C	html[data-th="dark"] .k{background:#2A231C;color:var(--ink)}
+00-動く見本（さわれる・全画面）.html:379	#241D17	html[data-th="dark"] div[style*="background:#fff"],html[data-th="dark"
+00-動く見本（さわれる・全画面）.html:380	#241D17	html[data-th="dark"] td[style*="background:#fff"],html[data-th="dark"]
+00-動く見本（さわれる・全画面）.html:381	#F6E4E8	html[data-th="dark"] td[style*="background:#F6E4E8"],html[data-th="dar
+00-動く見本（さわれる・全画面）.html:381	#F6E4E8	html[data-th="dark"] td[style*="background:#F6E4E8"],html[data-th="dar
+00-動く見本（さわれる・全画面）.html:381	#3A1E22	html[data-th="dark"] td[style*="background:#F6E4E8"],html[data-th="dar
+00-動く見本（さわれる・全画面）.html:382	#F4F8F5	html[data-th="dark"] [style*="background:#F4F8F5"]{background:#1F2C25!
+00-動く見本（さわれる・全画面）.html:382	#1F2C25	html[data-th="dark"] [style*="background:#F4F8F5"]{background:#1F2C25!
+00-動く見本（さわれる・全画面）.html:383	#F5EFE1	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本（さわれる・全画面）.html:383	#FBF3E2	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本（さわれる・全画面）.html:383	#F6F1E4	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本（さわれる・全画面）.html:383	#FDFAF3	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本（さわれる・全画面）.html:383	#F3ECDD	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本（さわれる・全画面）.html:383	#FBF6EA	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本（さわれる・全画面）.html:383	#EDE5D5	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本（さわれる・全画面）.html:383	#F4EFE4	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本（さわれる・全画面）.html:383	#EFE9DC	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本（さわれる・全画面）.html:383	#FFFDF8	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本（さわれる・全画面）.html:383	#FFFDF7	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本（さわれる・全画面）.html:383	#2A2219	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本（さわれる・全画面）.html:384	#FBF3E2	html[data-th="dark"] tr[style*="background:#FBF3E2"]{background:#2A221
+00-動く見本（さわれる・全画面）.html:384	#2A2219	html[data-th="dark"] tr[style*="background:#FBF3E2"]{background:#2A221
+00-動く見本（さわれる・全画面）.html:385	#3A322A	html[data-th="dark"] .sw{background:#3A322A}
+00-動く見本（さわれる・全画面）.html:386	#8E1230	html[data-th="dark"] .sw.on{background:#8E1230}
+00-動く見本（さわれる・全画面）.html:387	#EFE6D8	html[data-th="dark"] .sw i{background:#EFE6D8}
+00-動く見本（さわれる・全画面）.html:388	#2A2219	html[data-th="dark"] .tri div{background:#2A2219;border-color:var(--li
+00-動く見本（さわれる・全画面）.html:389	#8E1230	html[data-th="dark"] .tri div.on{background:#8E1230;border-color:#8E12
+00-動く見本（さわれる・全画面）.html:389	#8E1230	html[data-th="dark"] .tri div.on{background:#8E1230;border-color:#8E12
+00-動く見本（さわれる・全画面）.html:391	#241D17	html[data-th="dark"] .drt,html[data-th="dark"] .drr,html[data-th="dark
+00-動く見本（さわれる・全画面）.html:429	#840C24	{id:'u',n:'○○音楽大学',k:'大学',c:'#840C24',t:'斎藤 めぐみ',in:'2026年4月1日'},
+00-動く見本（さわれる・全画面）.html:430	#447862	{id:'m',n:'△△声楽教室',k:'音楽教室',c:'#447862',t:'鈴木 かおる',in:'2026年6月10日'}];
+00-動く見本（さわれる・全画面）.html:452	#FBF6EA	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本（さわれる・全画面）.html:452	#F2E6CE	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本（さわれる・全画面）.html:452	#E5D3AE	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本（さわれる・全画面）.html:452	#D9BE8C	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本（さわれる・全画面）.html:452	#C9A87C	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本（さわれる・全画面）.html:452	#B98F5E	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本（さわれる・全画面）.html:452	#8C6115	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本（さわれる・全画面）.html:452	#6B4A18	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本（さわれる・全画面）.html:453	#EFD9D9	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本（さわれる・全画面）.html:453	#E0B7BB	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本（さわれる・全画面）.html:453	#C98C96	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本（さわれる・全画面）.html:453	#A85566	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本（さわれる・全画面）.html:453	#840C24	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本（さわれる・全画面）.html:453	#5E2230	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本（さわれる・全画面）.html:453	#DCE4DA	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本（さわれる・全画面）.html:453	#B7CBBA	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本（さわれる・全画面）.html:454	#8FB09B	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本（さわれる・全画面）.html:454	#5E8F74	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本（さわれる・全画面）.html:454	#447862	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本（さわれる・全画面）.html:454	#2F5949	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本（さわれる・全画面）.html:454	#D7DEE4	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本（さわれる・全画面）.html:454	#B0C0CC	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本（さわれる・全画面）.html:454	#7F97A8	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本（さわれる・全画面）.html:454	#4E6879	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本（さわれる・全画面）.html:552	#F6F1E4	if(st==='失敗')return '<div class="card" style="background:#F6F1E4;borde
+00-動く見本（さわれる・全画面）.html:552	#E8DFC8	if(st==='失敗')return '<div class="card" style="background:#F6F1E4;borde
+00-動く見本（さわれる・全画面）.html:579	#CFC0A4	b+='<div class="card" style="border-color:#CFC0A4;background:#FDFAF3">
+00-動く見本（さわれる・全画面）.html:579	#FDFAF3	b+='<div class="card" style="border-color:#CFC0A4;background:#FDFAF3">
+00-動く見本（さわれる・全画面）.html:604	#D6B96A	+'<div class="btn g sm" style="border-color:#D6B96A;color:#8C6115" onc
+00-動く見本（さわれる・全画面）.html:604	#8C6115	+'<div class="btn g sm" style="border-color:#D6B96A;color:#8C6115" onc
+00-動く見本（さわれる・全画面）.html:708	#F6F1E4	function restBlock(){return '<div class="card" style="background:#F6F1
+00-動く見本（さわれる・全画面）.html:708	#E8DFC8	function restBlock(){return '<div class="card" style="background:#F6F1
+00-動く見本（さわれる・全画面）.html:752	#840C24	+W.map(function(c){return '<i style="background:'+(c?'#840C24':'#F0E9D
+00-動く見本（さわれる・全画面）.html:752	#F0E9DA	+W.map(function(c){return '<i style="background:'+(c?'#840C24':'#F0E9D
+00-動く見本（さわれる・全画面）.html:775	#F0E9DA	var p='';[0,3,7,10].forEach(function(i){p+='<line x1="'+x(i)+'" y1="6"
+00-動く見本（さわれる・全画面）.html:776	#840C24	p+='<line x1="'+x(7)+'" y1="0" x2="'+x(7)+'" y2="'+H+'" stroke="#840C2
+00-動く見本（さわれる・全画面）.html:778	#840C24	p+='<path d="'+d+'" fill="none" stroke="#840C24" stroke-width="1.7" op
+00-動く見本（さわれる・全画面）.html:779	#840C24	r[key].forEach(function(v,i){p+='<circle cx="'+x(i)+'" cy="'+y(v,mx,mn
+00-動く見本（さわれる・全画面）.html:780	#7C6C5E	p+='<text x="30" y="14" font-size="8.5" fill="#7C6C5E" text-anchor="en
+00-動く見本（さわれる・全画面）.html:781	#7C6C5E	p+='<text x="30" y="'+H+'" font-size="8.5" fill="#7C6C5E" text-anchor=
+00-動く見本（さわれる・全画面）.html:782	#5E5045	[[-14,0],[-7,3],[0,7],[3,10]].forEach(function(t){p+='<text x="'+x(t[1
+00-動く見本（さわれる・全画面）.html:783	#840C24	p+='<text x="'+x(7)+'" y="'+(H+23)+'" font-size="8.5" fill="#840C24" t
+00-動く見本（さわれる・全画面）.html:813	#C9A0AB	h+='<div class="card" style="border-color:#C9A0AB;background:#FFFCFC">
+00-動く見本（さわれる・全画面）.html:813	#FFFCFC	h+='<div class="card" style="border-color:#C9A0AB;background:#FFFCFC">
+00-動く見本（さわれる・全画面）.html:822	#F6F1E4	if(!S.dm.bun)h+='<div class="card" style="background:#F6F1E4;border-co
+00-動く見本（さわれる・全画面）.html:822	#E8DFC8	if(!S.dm.bun)h+='<div class="card" style="background:#F6F1E4;border-co
+00-動く見本（さわれる・全画面）.html:843	#F0E9DA	var p='';[0,2,4,6].forEach(function(v){p+='<line x1="34" y1="'+sy(v)+'
+00-動く見本（さわれる・全画面）.html:844	#7C6C5E	+'<text x="30" y="'+(sy(v)+3)+'" font-size="8" fill="#7C6C5E" text-anc
+00-動く見本（さわれる・全画面）.html:845	#840C24	G.forEach(function(v,i){p+='<circle cx="'+sx(110,i)+'" cy="'+sy(v)+'" 
+00-動く見本（さわれる・全画面）.html:845	#840C24	G.forEach(function(v,i){p+='<circle cx="'+sx(110,i)+'" cy="'+sy(v)+'" 
+00-動く見本（さわれる・全画面）.html:846	#840C24	B.forEach(function(v,i){p+='<circle cx="'+sx(230,i)+'" cy="'+sy(v)+'" 
+00-動く見本（さわれる・全画面）.html:846	#840C24	B.forEach(function(v,i){p+='<circle cx="'+sx(230,i)+'" cy="'+sy(v)+'" 
+00-動く見本（さわれる・全画面）.html:847	#840C24	[[110,med[0]],[230,med[1]]].forEach(function(m){p+='<line x1="'+(m[0]-
+00-動く見本（さわれる・全画面）.html:848	#5E5045	p+='<text x="110" y="'+(H+13)+'" font-size="9.5" fill="#5E5045" text-a
+00-動く見本（さわれる・全画面）.html:849	#5E5045	p+='<text x="230" y="'+(H+13)+'" font-size="9.5" fill="#5E5045" text-a
+00-動く見本（さわれる・全画面）.html:925	#2E6FD9	return '<div class="usu" style="margin:-2px 0 8px">'+(unN(uk)?'<b styl
+00-動く見本（さわれる・全画面）.html:934	#F6E4E8	+(S.oc==='u'?' <span class="tag" style="background:#F6E4E8;color:var(-
+00-動く見本（さわれる・全画面）.html:963	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本（さわれる・全画面）.html:963	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本（さわれる・全画面）.html:1003	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;mar
+00-動く見本（さわれる・全画面）.html:1003	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;mar
+00-動く見本（さわれる・全画面）.html:1025	#EFE7D6	+'@page{size:A4;margin:20mm}body{font-family:"Hiragino Mincho ProN","Y
+00-動く見本（さわれる・全画面）.html:1025	#261913	+'@page{size:A4;margin:20mm}body{font-family:"Hiragino Mincho ProN","Y
+00-動く見本（さわれる・全画面）.html:1027	#6D5D50	+'h1{font-size:19px;letter-spacing:.2em;margin:0 0 4px}.sub{font-size:
+00-動く見本（さわれる・全画面）.html:1028	#C9BCA6	+'table{width:100%;border-collapse:collapse;font-size:13px}th,td{borde
+00-動く見本（さわれる・全画面）.html:1029	#F3ECDD	+'th{background:#F3ECDD;font-weight:400;color:#6D5D50;width:44%}'
+00-動く見本（さわれる・全画面）.html:1029	#6D5D50	+'th{background:#F3ECDD;font-weight:400;color:#6D5D50;width:44%}'
+00-動く見本（さわれる・全画面）.html:1030	#C9BCA6	+'.kot{margin-top:16px;border:1px solid #C9BCA6;padding:12px;font-size
+00-動く見本（さわれる・全画面）.html:1031	#6D5D50	+'.nt{margin-top:18px;font-size:10.5px;color:#6D5D50;line-height:1.9;b
+00-動く見本（さわれる・全画面）.html:1031	#E4DAC4	+'.nt{margin-top:18px;font-size:10.5px;color:#6D5D50;line-height:1.9;b
+00-動く見本（さわれる・全画面）.html:1033	#6D5D50	+'.bar b{flex:1;font-weight:400;color:#6D5D50}.bar button{font:inherit
+00-動く見本（さわれる・全画面）.html:1033	#C9BCA6	+'.bar b{flex:1;font-weight:400;color:#6D5D50}.bar button{font:inherit
+00-動く見本（さわれる・全画面）.html:1034	#840C24	+'.bar button.p{background:#840C24;color:#fff;border-color:#840C24}'
+00-動く見本（さわれる・全画面）.html:1034	#840C24	+'.bar button.p{background:#840C24;color:#fff;border-color:#840C24}'
+00-動く見本（さわれる・全画面）.html:1154	#F0E4DA	var W=300,cw=(W-46)/D.length,shade={3:'#F0E4DA',2:'#C98C96',1:'#840C24
+00-動く見本（さわれる・全画面）.html:1154	#C98C96	var W=300,cw=(W-46)/D.length,shade={3:'#F0E4DA',2:'#C98C96',1:'#840C24
+00-動く見本（さわれる・全画面）.html:1154	#840C24	var W=300,cw=(W-46)/D.length,shade={3:'#F0E4DA',2:'#C98C96',1:'#840C24
+00-動く見本（さわれる・全画面）.html:1155	#5E5045	var strip=function(key,label){return '<text x="0" y="9" font-size="8.5
+00-動く見本（さわれる・全画面）.html:1162	#5E5045	+'<text x="0" y="50" font-size="8.5" fill="#5E5045">出づらい</text><text x
+00-動く見本（さわれる・全画面）.html:1162	#5E5045	+'<text x="0" y="50" font-size="8.5" fill="#5E5045">出づらい</text><text x
+00-動く見本（さわれる・全画面）.html:1164	#840C24	return '<rect x="'+(47+i*bw).toFixed(1)+'" y="'+(74-h).toFixed(1)+'" w
+00-動く見本（さわれる・全画面）.html:1165	#5E5045	+'<text x="'+(47+i*bw+(bw-2)/2).toFixed(1)+'" y="'+(70-h).toFixed(1)+'
+00-動く見本（さわれる・全画面）.html:1166	#DFD4BE	+'<line x1="46" y1="74" x2="'+W+'" y2="74" stroke="#DFD4BE"/>'
+00-動く見本（さわれる・全画面）.html:1167	#7C6C5E	+'<text x="46" y="86" font-size="8" fill="#7C6C5E">'+md(D[0].d)+'</tex
+00-動く見本（さわれる・全画面）.html:1168	#7C6C5E	+'<text x="'+W+'" y="86" font-size="8" fill="#7C6C5E" text-anchor="end
+00-動く見本（さわれる・全画面）.html:1169	#840C24	+'<g transform="translate(46,94)"><rect width="11" height="9" fill="#8
+00-動く見本（さわれる・全画面）.html:1169	#5E5045	+'<g transform="translate(46,94)"><rect width="11" height="9" fill="#8
+00-動く見本（さわれる・全画面）.html:1170	#C98C96	+'<rect x="72" width="11" height="9" fill="#C98C96"/><text x="86" y="8
+00-動く見本（さわれる・全画面）.html:1170	#5E5045	+'<rect x="72" width="11" height="9" fill="#C98C96"/><text x="86" y="8
+00-動く見本（さわれる・全画面）.html:1171	#F0E4DA	+'<rect x="132" width="11" height="9" fill="#F0E4DA"/><text x="146" y=
+00-動く見本（さわれる・全画面）.html:1171	#5E5045	+'<rect x="132" width="11" height="9" fill="#F0E4DA"/><text x="146" y=
+00-動く見本（さわれる・全画面）.html:1220	#FBF6EA	h+='<div class="paper" style="background:#FBF6EA"><h4>この紙について</h4>'
+00-動く見本（さわれる・全画面）.html:1303	#FBF6EA	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本（さわれる・全画面）.html:1303	#2B2622	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本（さわれる・全画面）.html:1303	#6D5D50	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本（さわれる・全画面）.html:1303	#840C24	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本（さわれる・全画面）.html:1303	#C0533A	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本（さわれる・全画面）.html:1303	#D08A5E	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本（さわれる・全画面）.html:1303	#E7C8C8	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本（さわれる・全画面）.html:1303	#B0687C	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本（さわれる・全画面）.html:1303	#C89A2A	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本（さわれる・全画面）.html:1303	#8C6115	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本（さわれる・全画面）.html:1303	#5E8F74	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本（さわれる・全画面）.html:1303	#4E6879	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本（さわれる・全画面）.html:1319	#E3CDA8	var wall=S.wall||'#E3CDA8',floor=S.floor||'#CFD79E',keshiki=S.keshiki|
+00-動く見本（さわれる・全画面）.html:1319	#CFD79E	var wall=S.wall||'#E3CDA8',floor=S.floor||'#CFD79E',keshiki=S.keshiki|
+00-動く見本（さわれる・全画面）.html:1319	#DDE7EE	var wall=S.wall||'#E3CDA8',floor=S.floor||'#CFD79E',keshiki=S.keshiki|
+00-動く見本（さわれる・全画面）.html:1325	#B9A47F	+'<rect y="'+(fy-6)+'" width="360" height="7" fill="#B9A47F"/>';
+00-動く見本（さわれる・全画面）.html:1327	#BFC98C	for(var i=0;i<6;i++)h+='<line x1="'+(i*72)+'" y1="'+fy+'" x2="'+(i*72)
+00-動く見本（さわれる・全画面）.html:1328	#BFC98C	h+='<line x1="0" y1="'+(fy+(ht-fy)*0.45)+'" x2="360" y2="'+(fy+(ht-fy)
+00-動く見本（さわれる・全画面）.html:1332	#B9884F	+'<rect x="112" y="'+wy+'" width="140" height="112" rx="3" fill="'+kes
+00-動く見本（さわれる・全画面）.html:1333	#EDF2F5	+'<path d="M118 '+(wy+96)+' L148 '+(wy+70)+' L170 '+(wy+90)+' L206 '+(
+00-動く見本（さわれる・全画面）.html:1334	#B9884F	+'<line x1="182" y1="'+wy+'" x2="182" y2="'+(wy+112)+'" stroke="#B9884
+00-動く見本（さわれる・全画面）.html:1335	#B9884F	+'<line x1="112" y1="'+(wy+56)+'" x2="252" y2="'+(wy+56)+'" stroke="#B
+00-動く見本（さわれる・全画面）.html:1337	#8C6115	+'<rect x="44" y="'+(wy-16)+'" width="36" height="56" rx="4" fill="#8C
+00-動く見本（さわれる・全画面）.html:1337	#E9DCC4	+'<rect x="44" y="'+(wy-16)+'" width="36" height="56" rx="4" fill="#8C
+00-動く見本（さわれる・全画面）.html:1338	#FFFDF8	+'<rect x="280" y="'+(wy-8)+'" width="54" height="68" rx="3" fill="#FF
+00-動く見本（さわれる・全画面）.html:1338	#B9884F	+'<rect x="280" y="'+(wy-8)+'" width="54" height="68" rx="3" fill="#FF
+00-動く見本（さわれる・全画面）.html:1339	#C0533A	+'<rect x="299" y="'+(wy+12)+'" width="17" height="13" rx="2" fill="#C
+00-動く見本（さわれる・全画面）.html:1342	#A9784A	h+='<rect x="234" y="'+(fy-96)+'" width="112" height="92" rx="4" fill=
+00-動く見本（さわれる・全画面）.html:1343	#B98F5E	+'<rect x="242" y="'+(fy-88)+'" width="46" height="32" rx="3" fill="#B
+00-動く見本（さわれる・全画面）.html:1344	#B98F5E	+'<rect x="294" y="'+(fy-88)+'" width="46" height="32" rx="3" fill="#B
+00-動く見本（さわれる・全画面）.html:1345	#B98F5E	+'<rect x="242" y="'+(fy-48)+'" width="98" height="30" rx="3" fill="#B
+00-動く見本（さわれる・全画面）.html:1346	#8C6115	+'<rect x="286" y="'+(fy-36)+'" width="10" height="5" rx="2" fill="#8C
+00-動く見本（さわれる・全画面）.html:1348	#A9784A	+(small?'<rect x="24" y="'+(fy-70)+'" width="70" height="8" rx="2" fil
+00-動く見本（さわれる・全画面）.html:1349	#A9784A	+'<rect x="30" y="'+(fy-62)+'" width="6" height="46" fill="#A9784A"/><
+00-動く見本（さわれる・全画面）.html:1349	#A9784A	+'<rect x="30" y="'+(fy-62)+'" width="6" height="46" fill="#A9784A"/><
+00-動く見本（さわれる・全画面）.html:1350	#3A302A	+'<rect x="40" y="'+(fy-98)+'" width="40" height="28" rx="6" fill="#3A
+00-動く見本（さわれる・全画面）.html:1350	#5E5045	+'<rect x="40" y="'+(fy-98)+'" width="40" height="28" rx="6" fill="#3A
+00-動く見本（さわれる・全画面）.html:1353	#B98F5E	h+='<ellipse cx="262" cy="556" rx="88" ry="29" fill="#B98F5E"/><ellips
+00-動く見本（さわれる・全画面）.html:1353	#C9A87C	h+='<ellipse cx="262" cy="556" rx="88" ry="29" fill="#B98F5E"/><ellips
+00-動く見本（さわれる・全画面）.html:1354	#A9784A	+'<rect x="208" y="562" width="9" height="46" fill="#A9784A"/><rect x=
+00-動く見本（さわれる・全画面）.html:1354	#A9784A	+'<rect x="208" y="562" width="9" height="46" fill="#A9784A"/><rect x=
+00-動く見本（さわれる・全画面）.html:1355	#8C6E52	+'<ellipse cx="72" cy="686" rx="80" ry="29" fill="#8C6E52"/><ellipse c
+00-動く見本（さわれる・全画面）.html:1355	#5E5045	+'<ellipse cx="72" cy="686" rx="80" ry="29" fill="#8C6E52"/><ellipse c
+00-動く見本（さわれる・全画面）.html:1356	#C0533A	+'<ellipse cx="72" cy="676" rx="20" ry="8" fill="#C0533A"/><ellipse cx
+00-動く見本（さわれる・全画面）.html:1356	#E8B44A	+'<ellipse cx="72" cy="676" rx="20" ry="8" fill="#C0533A"/><ellipse cx
+00-動く見本（さわれる・全画面）.html:1357	#B0687C	+'<rect x="268" y="668" width="66" height="46" rx="10" fill="#B0687C" 
+00-動く見本（さわれる・全画面）.html:1358	#C98C96	+'<rect x="276" y="676" width="50" height="30" rx="7" fill="#C98C96" o
+00-動く見本（さわれる・全画面）.html:1359	#A9784A	+'<rect x="26" y="'+(fy-4)+'" width="92" height="10" rx="3" fill="#A97
+00-動く見本（さわれる・全画面）.html:1360	#A9784A	+'<rect x="34" y="'+(fy+6)+'" width="8" height="56" fill="#A9784A"/><r
+00-動く見本（さわれる・全画面）.html:1360	#A9784A	+'<rect x="34" y="'+(fy+6)+'" width="8" height="56" fill="#A9784A"/><r
+00-動く見本（さわれる・全画面）.html:1361	#3A302A	+'<rect x="48" y="'+(fy-48)+'" width="50" height="44" rx="7" fill="#3A
+00-動く見本（さわれる・全画面）.html:1361	#5E5045	+'<rect x="48" y="'+(fy-48)+'" width="50" height="44" rx="7" fill="#3A
+00-動く見本（さわれる・全画面）.html:1362	#3A302A	+'<rect x="60" y="'+(fy-58)+'" width="26" height="11" rx="5" fill="#3A
+00-動く見本（さわれる・全画面）.html:1393	#FDFAF3	+(S.k1==='おくもの'?'<div class="dr2" style="background:#FDFAF3">'
+00-動く見本（さわれる・全画面）.html:1510	#C9A0AB	+'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC"><d
+00-動く見本（さわれる・全画面）.html:1510	#FFFCFC	+'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC"><d
+00-動く見本（さわれる・全画面）.html:1544	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本（さわれる・全画面）.html:1544	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本（さわれる・全画面）.html:1644	#6D5D50	+'<div class="btn" style="margin-top:9px;background:#6D5D50" onclick="
+00-動く見本（さわれる・全画面）.html:1716	#840C24	return '<div onclick="S.nv=\'日\';draw()" style="aspect-ratio:1;border-
+00-動く見本（さわれる・全画面）.html:1716	#F0E9DA	return '<div onclick="S.nv=\'日\';draw()" style="aspect-ratio:1;border-
+00-動く見本（さわれる・全画面）.html:1716	#6D5D50	return '<div onclick="S.nv=\'日\';draw()" style="aspect-ratio:1;border-
+00-動く見本（さわれる・全画面）.html:1738	#C9BCA6	+(c?'<div class="koma '+c[2]+'">'+c[0]+(c[1]?'<br>'+c[1]:'')+'</div>':
+00-動く見本（さわれる・全画面）.html:1755	#FFFDF7	+'<div class="card" style="position:sticky;bottom:0;background:#FFFDF7
+00-動く見本（さわれる・全画面）.html:1783	#B23A48	return '<div class="card" style="border-left:3px solid '+(ng?'#B23A48'
+00-動く見本（さわれる・全画面）.html:1783	#8C6115	return '<div class="card" style="border-left:3px solid '+(ng?'#B23A48'
+00-動く見本（さわれる・全画面）.html:1784	#B23A48	+'<div class="tag" style="margin:0 0 6px;background:'+(ng?'#B23A4818':
+00-動く見本（さわれる・全画面）.html:1784	#8C6115	+'<div class="tag" style="margin:0 0 6px;background:'+(ng?'#B23A4818':
+00-動く見本（さわれる・全画面）.html:1815	#8C6115	+'<s><span class="tag" style="margin:0;background:#F0C24B33;color:#8C6
+00-動く見本（さわれる・全画面）.html:1817	#2E6FD9	+'<div class="usu" style="margin:-2px 0 8px">'+(unN(['op-o','op-m1','o
+00-動く見本（さわれる・全画面）.html:1851	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本（さわれる・全画面）.html:1851	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本（さわれる・全画面）.html:1880	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;pad
+00-動く見本（さわれる・全画面）.html:1880	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;pad
+00-動く見本（さわれる・全画面）.html:1888	#A0917F	return '<div class="li" style="cursor:default;color:#A0917F"><span>'+v
+00-動く見本（さわれる・全画面）.html:1927	#A0917F	return '<div class="li" style="'+(edit&&ok?'':'color:#A0917F')+'" oncl
+00-動く見本（さわれる・全画面）.html:1930	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本（さわれる・全画面）.html:1930	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本（さわれる・全画面）.html:1980	#A0917F	return '<div class="li" style="'+(canChange(pr[5])?'':'color:#A0917F')
+00-動く見本（さわれる・全画面）.html:1981	#FBF0D8	+'<span>'+pr[0]+(pr[6]?'':' <span class="tag" style="background:#FBF0D
+00-動く見本（さわれる・全画面）.html:2026	#A0917F	return '<div class="li" style="'+(ok?'':'color:#A0917F')+'" onclick="'
+00-動く見本（さわれる・全画面）.html:2106	#FDFAF3	+'<div class="card" style="background:#FDFAF3"><div style="font-size:1
+00-動く見本（さわれる・全画面）.html:2190	#FDFAF3	+'<div class="card" style="background:#FDFAF3">'
+00-動く見本（さわれる・全画面）.html:2213	#261913	+'body{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;color:#261
+00-動く見本（さわれる・全画面）.html:2213	#EFE7D6	+'body{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;color:#261
+00-動く見本（さわれる・全画面）.html:2217	#6D5D50	+'.no{position:absolute;right:18mm;top:14mm;font-size:11px;color:#6D5D
+00-動く見本（さわれる・全画面）.html:2218	#261913	+'.ate{font-size:19px;border-bottom:1px solid #261913;padding:0 60px 5
+00-動く見本（さわれる・全画面）.html:2219	#261913	+'.amt{font-size:34px;font-weight:700;border-bottom:2px solid #261913;
+00-動く見本（さわれる・全画面）.html:2221	#6D5D50	+'.rw .l{width:88px;color:#6D5D50}'
+00-動く見本（さわれる・全画面）.html:2223	#C9BCA6	+'th,td{border:1px solid #C9BCA6;padding:7px 9px;text-align:left}'
+00-動く見本（さわれる・全画面）.html:2224	#F3ECDD	+'th{background:#F3ECDD;font-weight:400;color:#6D5D50}'
+00-動く見本（さわれる・全画面）.html:2224	#6D5D50	+'th{background:#F3ECDD;font-weight:400;color:#6D5D50}'
+00-動く見本（さわれる・全画面）.html:2227	#B23A48	+'.stamp{position:absolute;right:26mm;bottom:56mm;width:78px;height:78
+00-動く見本（さわれる・全画面）.html:2228	#B23A48	+'border-radius:50%;color:#B23A48;display:flex;align-items:center;just
+00-動く見本（さわれる・全画面）.html:2230	#B23A48	+'.re{position:absolute;left:18mm;top:14mm;border:1.5px solid #B23A48;
+00-動く見本（さわれる・全画面）.html:2230	#B23A48	+'.re{position:absolute;left:18mm;top:14mm;border:1.5px solid #B23A48;
+00-動く見本（さわれる・全画面）.html:2232	#6D5D50	+'.nt{margin-top:20px;font-size:10.5px;color:#6D5D50;line-height:1.9;b
+00-動く見本（さわれる・全画面）.html:2232	#E4DAC4	+'.nt{margin-top:20px;font-size:10.5px;color:#6D5D50;line-height:1.9;b
+00-動く見本（さわれる・全画面）.html:2235	#6D5D50	+'.bar b{flex:1;font-weight:400;color:#6D5D50}'
+00-動く見本（さわれる・全画面）.html:2236	#C9BCA6	+'.bar button{font:inherit;padding:9px 16px;border-radius:99px;border:
+00-動く見本（さわれる・全画面）.html:2237	#261913	+'background:#fff;color:#261913;cursor:pointer}'
+00-動く見本（さわれる・全画面）.html:2238	#840C24	+'.bar button.p{background:#840C24;color:#fff;border-color:#840C24}'
+00-動く見本（さわれる・全画面）.html:2238	#840C24	+'.bar button.p{background:#840C24;color:#fff;border-color:#840C24}'
+00-動く見本（さわれる・全画面）.html:2370	#F6F1E4	return '<div class="li'+(nm===one?' plain':'')+'" '+(nm===one?'style="
+00-動く見本（さわれる・全画面）.html:2379	#F6F1E4	return '<div class="li'+(now?' plain':'')+'" '+(now?'style="background
+00-動く見本（さわれる・全画面）.html:2387	#CFC0A4	+'<div class="card" style="border-color:#CFC0A4">'
+00-動く見本（さわれる・全画面）.html:2416	#FBF3E2	return '<div class="card" style="padding:11px 12px;'+(v?'':'background
+00-動く見本（さわれる・全画面）.html:2416	#E8DFC8	return '<div class="card" style="padding:11px 12px;'+(v?'':'background
+00-動く見本（さわれる・全画面）.html:2418	#8C6115	+(v?'':' <span class="tag" style="background:#F0C24B33;color:#8C6115">
+00-動く見本（さわれる・全画面）.html:2459	#A0917F	return '<div class="li" style="cursor:default;color:#A0917F"><span>'+v
+00-動く見本（さわれる・全画面）.html:2479	#C9A0AB	+'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC">'
+00-動く見本（さわれる・全画面）.html:2479	#FFFCFC	+'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC">'
+00-動く見本（さわれる・全画面）.html:2607	#8C6115	var col={'場所':'#8C6115','先生':'#840C24'};
+00-動く見本（さわれる・全画面）.html:2607	#840C24	var col={'場所':'#8C6115','先生':'#840C24'};
+00-動く見本（さわれる・全画面）.html:2609	#B23A48	var stc={'まだ':['#B23A48','まだ 知らせていません'],'知らせた':['#8C6115','先生に 知らせました'
+00-動く見本（さわれる・全画面）.html:2609	#8C6115	var stc={'まだ':['#B23A48','まだ 知らせていません'],'知らせた':['#8C6115','先生に 知らせました'
+00-動く見本（さわれる・全画面）.html:2609	#447862	var stc={'まだ':['#B23A48','まだ 知らせていません'],'知らせた':['#8C6115','先生に 知らせました'
+00-動く見本（さわれる・全画面）.html:2620	#F3ECDD	+'<span class="tag" style="background:#F3ECDD;color:'+col[x.k]+';margi
+00-動く見本（さわれる・全画面）.html:2644	#A0917F	return '<div class="li" style="cursor:default'+(x[2]?'':';color:#A0917
+00-動く見本（さわれる・全画面）.html:2655	#8C6115	return '<div class="card" style="border-left:3px solid #8C6115">'
+00-動く見本（さわれる・全画面）.html:2689	#C3B6A2	DAYS.forEach(function(d,di){var K=di+'-'+ki,bg='#fff',fg='#C3B6A2',tx=
+00-動く見本（さわれる・全画面）.html:2690	#F7E9EA	if(K===x.key){bg='#F7E9EA';fg='var(--red)';tx='いま'}
+00-動く見本（さわれる・全画面）.html:2691	#EDE5D5	else if(TBUSY[K]){bg='#EDE5D5';fg='#6D5D50';tx=TBUSY[K].slice(0,3)}
+00-動く見本（さわれる・全画面）.html:2691	#6D5D50	else if(TBUSY[K]){bg='#EDE5D5';fg='#6D5D50';tx=TBUSY[K].slice(0,3)}
+00-動く見本（さわれる・全画面）.html:2692	#F4F8F5	else if(PLACED[K]){bg='#F4F8F5';fg='var(--midori)';tx=MONKA[PLACED[K].
+00-動く見本（さわれる・全画面）.html:2693	#840C24	else if(sidx<0||isFree(sidx,K)){bg=(sel===K?'#840C24':'#FBF6EA');fg=(s
+00-動く見本（さわれる・全画面）.html:2693	#FBF6EA	else if(sidx<0||isFree(sidx,K)){bg=(sel===K?'#840C24':'#FBF6EA');fg=(s
+00-動く見本（さわれる・全画面）.html:2702	#CFC0A4	if(sel)h+='<div class="card" style="border-color:#CFC0A4">'
+00-動く見本（さわれる・全画面）.html:2794	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;mar
+00-動く見本（さわれる・全画面）.html:2794	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;mar
+00-動く見本（さわれる・全画面）.html:2921	#C9A0AB	+'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC"><d
+00-動く見本（さわれる・全画面）.html:2921	#FFFCFC	+'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC"><d
+00-動く見本（さわれる・全画面）.html:2965	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本（さわれる・全画面）.html:2965	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本（さわれる・全画面）.html:3029	#9BBBA9	+'<div class="card" style="border-color:#9BBBA9;background:#F4F8F5">'
+00-動く見本（さわれる・全画面）.html:3029	#F4F8F5	+'<div class="card" style="border-color:#9BBBA9;background:#F4F8F5">'
+00-動く見本（さわれる・全画面）.html:3056	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;pad
+00-動く見本（さわれる・全画面）.html:3056	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;pad
+00-動く見本（さわれる・全画面）.html:3066	#F6E4E8	+'<div><div class="t" style="font-size:13.5px">'+m[0]+(m[4]?' <span cl
+00-動く見本（さわれる・全画面）.html:3086	#447862	return '<td style="padding:3px;background:'+(f?'#447862':'#F5EFE1')+'"
+00-動く見本（さわれる・全画面）.html:3086	#F5EFE1	return '<td style="padding:3px;background:'+(f?'#447862':'#F5EFE1')+'"
+00-動く見本（さわれる・全画面）.html:3086	#B5A78F	return '<td style="padding:3px;background:'+(f?'#447862':'#F5EFE1')+'"
+00-動く見本（さわれる・全画面）.html:3090	#A0917F	return '<div class="li" style="cursor:default;color:#A0917F"><span>'+v
+00-動く見本（さわれる・全画面）.html:3101	#A0917F	return '<div class="li" style="cursor:default"><span>'+x[0]+'</span><s
+00-動く見本（さわれる・全画面）.html:3123	#F0E9DA	var col=one?['#F0E9DA','#E3B9C2','#840C24'][v]:(v?'#840C24':'#F0E9DA')
+00-動く見本（さわれる・全画面）.html:3123	#E3B9C2	var col=one?['#F0E9DA','#E3B9C2','#840C24'][v]:(v?'#840C24':'#F0E9DA')
+00-動く見本（さわれる・全画面）.html:3123	#840C24	var col=one?['#F0E9DA','#E3B9C2','#840C24'][v]:(v?'#840C24':'#F0E9DA')
+00-動く見本（さわれる・全画面）.html:3123	#840C24	var col=one?['#F0E9DA','#E3B9C2','#840C24'][v]:(v?'#840C24':'#F0E9DA')
+00-動く見本（さわれる・全画面）.html:3123	#F0E9DA	var col=one?['#F0E9DA','#E3B9C2','#840C24'][v]:(v?'#840C24':'#F0E9DA')
+00-動く見本（さわれる・全画面）.html:3257	#F6E4E8	+(tdy?'background:var(--enji);color:#fff;font-weight:700':(inw?'backgr
+00-動く見本（さわれる・全画面）.html:3258	#C9BCA6	+(off?';color:#C9BCA6':'');
+00-動く見本（さわれる・全画面）.html:3311	#F5EFE1	h+='<td style="padding:2px;cursor:pointer;background:'+(ot?orgOf(ot.o)
+00-動く見本（さわれる・全画面）.html:3311	#F4F8F5	h+='<td style="padding:2px;cursor:pointer;background:'+(ot?orgOf(ot.o)
+00-動く見本（さわれる・全画面）.html:3314	#A0917F	:(ng?'<span style="font-size:10px;color:#A0917F">来られない</span>':'<span 
+00-動く見本（さわれる・全画面）.html:3318	#F4F8F5	+'<div class="usu" style="margin-top:4px"><span style="display:inline-
+00-動く見本（さわれる・全画面）.html:3319	#F5EFE1	+'<span style="display:inline-block;width:9px;height:9px;background:#F
+00-動く見本（さわれる・全画面）.html:3321	#447862	+'<span style="display:inline-block;width:9px;height:9px;background:#4
+00-動く見本（さわれる・全画面）.html:3398	#447862	var bg=pl?'#447862':(busy?(tPriv(key)?'#F4EFE4':'#EDE5D5'):'#fff'),fg=
+00-動く見本（さわれる・全画面）.html:3398	#F4EFE4	var bg=pl?'#447862':(busy?(tPriv(key)?'#F4EFE4':'#EDE5D5'):'#fff'),fg=
+00-動く見本（さわれる・全画面）.html:3398	#EDE5D5	var bg=pl?'#447862':(busy?(tPriv(key)?'#F4EFE4':'#EDE5D5'):'#fff'),fg=
+00-動く見本（さわれる・全画面）.html:3398	#9C8E7B	var bg=pl?'#447862':(busy?(tPriv(key)?'#F4EFE4':'#EDE5D5'):'#fff'),fg=
+00-動く見本（さわれる・全画面）.html:3399	#261913	h+='<td style="padding:2px;cursor:pointer;background:'+bg+';outline:'+
+00-動く見本（さわれる・全画面）.html:3400	#C9BCA6	+(busy&&tPriv(key)?';box-shadow:inset 3px 0 0 #C9BCA6':'')+'" onclick=
+00-動く見本（さわれる・全画面）.html:3418	#F6F1E4	if(busy&&!pl)h+='<div class="card" style="background:#F6F1E4;border-co
+00-動く見本（さわれる・全画面）.html:3418	#E8DFC8	if(busy&&!pl)h+='<div class="card" style="background:#F6F1E4;border-co
+00-動く見本（さわれる・全画面）.html:3429	#9BBBA9	if(pl){h+='<div class="card" style="border-color:#9BBBA9;background:#F
+00-動く見本（さわれる・全画面）.html:3429	#F4F8F5	if(pl){h+='<div class="card" style="border-color:#9BBBA9;background:#F
+00-動く見本（さわれる・全画面）.html:3520	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;mar
+00-動く見本（さわれる・全画面）.html:3520	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;mar
+00-動く見本（さわれる・全画面）.html:3583	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;pad
+00-動く見本（さわれる・全画面）.html:3583	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;pad
+00-動く見本（さわれる・全画面）.html:3641	#F4EFE4	h+='<td style="padding:2px;cursor:pointer;background:'+(b?(pv?'#F4EFE4
+00-動く見本（さわれる・全画面）.html:3641	#EDE5D5	h+='<td style="padding:2px;cursor:pointer;background:'+(b?(pv?'#F4EFE4
+00-動く見本（さわれる・全画面）.html:3642	#C9BCA6	+(pv?';box-shadow:inset 3px 0 0 #C9BCA6':'')+'" onclick="'
+00-動く見本（さわれる・全画面）.html:3644	#6D5D50	+'<span style="font-size:9px;color:'+(b?'#6D5D50':'#C3B6A2')+'">'+(b?b
+00-動く見本（さわれる・全画面）.html:3644	#C3B6A2	+'<span style="font-size:9px;color:'+(b?'#6D5D50':'#C3B6A2')+'">'+(b?b
+00-動く見本（さわれる・全画面）.html:3645	#8C6115	+(b?'<span style="display:block;font-size:8px;color:'+(pv?'#8C6115':'v
+00-動く見本（さわれる・全画面）.html:3716	#CFC0A4	return '<div class="card" style="border-color:#CFC0A4">'
+00-動く見本（さわれる・全画面）.html:3845	#A0917F	+SEE_NO.map(function(v){return '<div class="li" style="cursor:default;
+00-動く見本（さわれる・全画面）.html:3865	#C9A0AB	+'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC">'
+00-動く見本（さわれる・全画面）.html:3865	#FFFCFC	+'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC">'
+00-動く見本（さわれる・全画面）.html:3871	#A0917F	+SEE_NO.map(function(v){return '<div class="li" style="cursor:default;
+00-動く見本（さわれる・全画面）.html:3884	#C9A0AB	+(S.code.length>=6?'<div class="card" style="margin-top:11px;border-co
+00-動く見本（さわれる・全画面）.html:3884	#FFFCFC	+(S.code.length>=6?'<div class="card" style="margin-top:11px;border-co
+00-動く見本（さわれる・全画面）.html:3893	#8C6115	ORGS.push({id:'x'+ORGS.length,n:n,k:k,c:'#8C6115',t:t,in:'2026年9月10日'}
+00-動く見本（さわれる・全画面）.html:3900	#D6B96A	+'<div class="card" style="border-left:3px solid #D6B96A">'
+00-動く見本-iPhoneで開く用.html:6	#FBF6EA	<meta name="theme-color" content="#FBF6EA">
+00-動く見本-iPhoneで開く用.html:20	#DFD4BE	.ph{width:360px;height:812px;background:var(--paper);border-radius:30p
+00-動く見本-iPhoneで開く用.html:24	#6D5D50	.off{flex:0 0 20px;background:#6D5D50;color:#fff;font-size:10px;displa
+00-動く見本-iPhoneで開く用.html:26	#FFFDF7	.tabs{flex:0 0 56px;border-top:1px solid var(--line);display:flex;back
+00-動く見本-iPhoneで開く用.html:42	#F3ECDD	.spt th{background:#F3ECDD;color:var(--ink3);font-weight:400;text-alig
+00-動く見本-iPhoneで開く用.html:44	#FDFAF3	.spt td.k{width:34%;font-weight:600;background:#FDFAF3}
+00-動く見本-iPhoneで開く用.html:47	#CFC0A4	.fbtn:hover{border-color:#CFC0A4;color:var(--ink2)}
+00-動く見本-iPhoneで開く用.html:48	#CFC0A4	.fbtn.on{color:var(--enji);border-color:#CFC0A4}
+00-動く見本-iPhoneで開く用.html:50	#F6F1E4	.warn{background:#F6F1E4;border:1px solid #E8DFC8;border-radius:12px;p
+00-動く見本-iPhoneで開く用.html:50	#E8DFC8	.warn{background:#F6F1E4;border:1px solid #E8DFC8;border-radius:12px;p
+00-動く見本-iPhoneで開く用.html:51	#F3ECDD	.seg{display:flex;background:#F3ECDD;border-radius:11px;padding:3px;ma
+00-動く見本-iPhoneで開く用.html:75	#FDFAF3	background:#FDFAF3;cursor:pointer;min-height:60px;display:flex;flex-di
+00-動く見本-iPhoneで開く用.html:81	#F6EEDC	.stage{position:relative;background:linear-gradient(#F6EEDC,#EFE4CC);b
+00-動く見本-iPhoneで開く用.html:81	#EFE4CC	.stage{position:relative;background:linear-gradient(#F6EEDC,#EFE4CC);b
+00-動く見本-iPhoneで開く用.html:91	#FBF6EA	.room{position:relative;border:1px solid var(--line);border-radius:14p
+00-動く見本-iPhoneで開く用.html:107	#F0E9DA	.mkrow .cells i{flex:1;height:15px;border-radius:3px;background:#F0E9D
+00-動く見本-iPhoneで開く用.html:123	#F0E4D2	.post .av{width:24px;height:24px;border-radius:50%;background:#F0E4D2;
+00-動く見本-iPhoneで開く用.html:126	#E0C9CE	.post.t{border-color:#E0C9CE;background:#FFFCFC}.post.t .nm3{color:var
+00-動く見本-iPhoneで開く用.html:126	#FFFCFC	.post.t{border-color:#E0C9CE;background:#FFFCFC}.post.t .nm3{color:var
+00-動く見本-iPhoneで開く用.html:127	#2E6FD9	.dot{display:inline-block;width:7px;height:7px;border-radius:50%;backg
+00-動く見本-iPhoneで開く用.html:129	#F3ECDD	.tag{display:inline-block;background:#F3ECDD;color:var(--ink2);border-
+00-動く見本-iPhoneで開く用.html:130	#F6EFDF	.wl{background:#F6EFDF;border:1px solid #E8DFC8;border-radius:12px;pad
+00-動く見本-iPhoneで開く用.html:130	#E8DFC8	.wl{background:#F6EFDF;border:1px solid #E8DFC8;border-radius:12px;pad
+00-動く見本-iPhoneで開く用.html:138	#B9AA97	.gr .c.no{color:#B9AA97;background:#FAF6EC}
+00-動く見本-iPhoneで開く用.html:138	#FAF6EC	.gr .c.no{color:#B9AA97;background:#FAF6EC}
+00-動く見本-iPhoneで開く用.html:148	#A0917F	.lock{display:flex;justify-content:space-between;align-items:center;ga
+00-動く見本-iPhoneで開く用.html:152	#DFD4BE	.sw{width:44px;height:26px;border-radius:99px;background:#DFD4BE;posit
+00-動く見本-iPhoneで開く用.html:159	#EFE7D6	.ord .no.g2{background:#EFE7D6;color:var(--ink3)}
+00-動く見本-iPhoneで開く用.html:162	#F0E9DA	.sk{background:#F0E9DA;border-radius:8px;height:13px;margin-bottom:8px
+00-動く見本-iPhoneで開く用.html:168	#F1E9D9	.opbar{background:#F1E9D9;border-bottom:1px solid var(--line);padding:
+00-動く見本-iPhoneで開く用.html:175	#F3ECDD	.tbl th{background:#F3ECDD;color:var(--ink2);font-weight:400;padding:6
+00-動く見本-iPhoneで開く用.html:177	#FBF6EA	.tbl td.k{background:#FBF6EA;text-align:left;position:sticky;left:0;z-
+00-動く見本-iPhoneで開く用.html:187	#FBF3E2	.dup{border-left-color:var(--yama);background:#FBF3E2}
+00-動く見本-iPhoneで開く用.html:194	#DFD4BE	.grab{width:40px;height:4px;border-radius:2px;background:#DFD4BE;margi
+00-動く見本-iPhoneで開く用.html:196	#261913	.toast{position:absolute;left:15px;right:15px;bottom:70px;background:#
+00-動く見本-iPhoneで開く用.html:199	#F3C9CF	.toast b{margin-left:auto;color:#F3C9CF;cursor:pointer;font-weight:400
+00-動く見本-iPhoneで開く用.html:209	#F1E4CC	.hroom{position:relative;width:100%;height:100%;min-height:660px;overf
+00-動く見本-iPhoneで開く用.html:229	#DFD4BE	.drx .bar{width:38px;height:4px;border-radius:2px;background:#DFD4BE;m
+00-動く見本-iPhoneで開く用.html:247	#C3B6A2	.g5 .c.no{color:#C3B6A2;background:#FAF6EC}
+00-動く見本-iPhoneで開く用.html:247	#FAF6EC	.g5 .c.no{color:#C3B6A2;background:#FAF6EC}
+00-動く見本-iPhoneで開く用.html:250	#FFFDF7	.haichi{position:absolute;right:12px;bottom:12px;background:#FFFDF7;bo
+00-動く見本-iPhoneで開く用.html:252	#FDFAF3	.drt{display:flex;align-items:center;gap:8px;padding:9px 13px;border-t
+00-動く見本-iPhoneで開く用.html:255	#FDFAF3	.drr{display:flex;align-items:center;gap:5px;padding:6px 13px;backgrou
+00-動く見本-iPhoneで開く用.html:260	#FDFAF3	.drhint{padding:9px 13px;text-align:center;font-size:11.5px;color:var(
+00-動く見本-iPhoneで開く用.html:261	#FDFAF3	.drc{display:flex;gap:5px;overflow-x:auto;padding:7px 13px;border-top:
+00-動く見本-iPhoneで開く用.html:264	#FFFDF7	.drb{display:flex;border-top:1px solid var(--line);background:#FFFDF7}
+00-動く見本-iPhoneで開く用.html:290	#F6E4E8	.cal i.mid{background:#F6E4E8;border-color:#EBD2D8;color:var(--enji)}
+00-動く見本-iPhoneで開く用.html:290	#EBD2D8	.cal i.mid{background:#F6E4E8;border-color:#EBD2D8;color:var(--enji)}
+00-動く見本-iPhoneで開く用.html:291	#CFC3B0	.cal i.no{color:#CFC3B0}
+00-動く見本-iPhoneで開く用.html:327	#241D17	html[data-th="dark"] .card,html[data-th="dark"] .box,html[data-th="dar
+00-動く見本-iPhoneで開く用.html:329	#241D17	html[data-th="dark"] .box,html[data-th="dark"] .card.p0{background:#24
+00-動く見本-iPhoneで開く用.html:330	#6B0A1D	html[data-th="dark"] .top{background:#6B0A1D;color:#fff}
+00-動く見本-iPhoneで開く用.html:332	#221B15	html[data-th="dark"] .wall{background:#221B15;color:var(--ink2)}
+00-動く見本-iPhoneで開く用.html:333	#1E1812	html[data-th="dark"] .side{background:#1E1812;border-color:var(--line)
+00-動く見本-iPhoneで開く用.html:334	#241D17	html[data-th="dark"] .nv.on{background:#241D17;color:var(--enji)}
+00-動く見本-iPhoneで開く用.html:336	#8E1230	html[data-th="dark"] .btn{background:#8E1230;color:#fff;border-color:#
+00-動く見本-iPhoneで開く用.html:336	#8E1230	html[data-th="dark"] .btn{background:#8E1230;color:#fff;border-color:#
+00-動く見本-iPhoneで開く用.html:337	#2C241D	html[data-th="dark"] .btn.g,html[data-th="dark"] .btn.mid{background:#
+00-動く見本-iPhoneで開く用.html:338	#2C241D	html[data-th="dark"] .pill{background:#2C241D;color:var(--ink2);border
+00-動く見本-iPhoneで開く用.html:339	#8E1230	html[data-th="dark"] .pill.on{background:#8E1230;color:#fff;border-col
+00-動く見本-iPhoneで開く用.html:339	#8E1230	html[data-th="dark"] .pill.on{background:#8E1230;color:#fff;border-col
+00-動く見本-iPhoneで開く用.html:340	#1A1510	html[data-th="dark"] .inp,html[data-th="dark"] .ta,html[data-th="dark"
+00-動く見本-iPhoneで開く用.html:341	#2C241D	html[data-th="dark"] table th,html[data-th="dark"] .tbl th,html[data-t
+00-動く見本-iPhoneで開く用.html:342	#241D17	html[data-th="dark"] table td,html[data-th="dark"] .tbl td,html[data-t
+00-動く見本-iPhoneで開く用.html:343	#2A231C	html[data-th="dark"] .tbl td.k,html[data-th="dark"] .spt td.k,html[dat
+00-動く見本-iPhoneで開く用.html:344	#1E1812	html[data-th="dark"] .note{background:#1E1812;border-color:var(--line)
+00-動く見本-iPhoneで開く用.html:345	#2A2218	html[data-th="dark"] .warn,html[data-th="dark"] .wl{background:#2A2218
+00-動く見本-iPhoneで開く用.html:345	#4A3E2C	html[data-th="dark"] .warn,html[data-th="dark"] .wl{background:#2A2218
+00-動く見本-iPhoneで開く用.html:346	#2C241D	html[data-th="dark"] .fbtn{background:#2C241D;border-color:var(--line)
+00-動く見本-iPhoneで開く用.html:347	#2A231C	html[data-th="dark"] .koma{background:#2A231C;border-left-color:var(--
+00-動く見本-iPhoneで開く用.html:348	#1F2C25	html[data-th="dark"] .koma.mine{background:#1F2C25;border-left-color:v
+00-動く見本-iPhoneで開く用.html:349	#2E2820	html[data-th="dark"] .koma.busy{background:#2E2820;border-left-color:#
+00-動く見本-iPhoneで開く用.html:349	#6B5F4E	html[data-th="dark"] .koma.busy{background:#2E2820;border-left-color:#
+00-動く見本-iPhoneで開く用.html:350	#282219	html[data-th="dark"] .koma.busy.priv{background:#282219}
+00-動く見本-iPhoneで開く用.html:351	#3A1E22	html[data-th="dark"] .koma.now{background:#3A1E22;border-left-color:va
+00-動く見本-iPhoneで開く用.html:352	#1E1812	html[data-th="dark"] .slot{background:#1E1812;color:var(--ink3)}
+00-動く見本-iPhoneで開く用.html:353	#241D17	html[data-th="dark"] .slot.n{background:#241D17;color:var(--ink2)}
+00-動く見本-iPhoneで開く用.html:354	#2C241D	html[data-th="dark"] .slot:hover,html[data-th="dark"] .slot .yt,html[d
+00-動く見本-iPhoneで開く用.html:355	#3A1E22	html[data-th="dark"] .grid th.tdyh{background:#3A1E22;color:var(--enji
+00-動く見本-iPhoneで開く用.html:356	#221A18	html[data-th="dark"] .grid td.tdyc{background:#221A18}
+00-動く見本-iPhoneで開く用.html:357	#2C241D	html[data-th="dark"] .mini .mg b:hover{background:#2C241D}
+00-動く見本-iPhoneで開く用.html:358	#3A1E22	html[data-th="dark"] .mini .mg b.w{background:#3A1E22}
+00-動く見本-iPhoneで開く用.html:359	#8E1230	html[data-th="dark"] .mini .mg b.t{background:#8E1230;color:#fff}
+00-動く見本-iPhoneで開く用.html:360	#5E5449	html[data-th="dark"] .mini .mg b.o{color:#5E5449}
+00-動く見本-iPhoneで開く用.html:361	#1E1812	html[data-th="dark"] .tabs{background:#1E1812;border-color:var(--line)
+00-動く見本-iPhoneで開く用.html:364	#1E1812	html[data-th="dark"] .st{background:#1E1812;color:var(--ink2)}
+00-動く見本-iPhoneで開く用.html:365	#3A322A	html[data-th="dark"] .toast{background:#3A322A;color:#fff}
+00-動く見本-iPhoneで開く用.html:366	#2C241D	html[data-th="dark"] .sk{background:#2C241D}
+00-動く見本-iPhoneで開く用.html:367	#332A22	html[data-th="dark"] .tag{background:#332A22;color:var(--ink2)}
+00-動く見本-iPhoneで開く用.html:368	#2C241D	html[data-th="dark"] .pl.on{background:#2C241D}
+00-動く見本-iPhoneで開く用.html:370	#241D17	html[data-th="dark"] .stage,html[data-th="dark"] .hroom{background:#24
+00-動く見本-iPhoneで開く用.html:371	#221B15	html[data-th="dark"] .opbar{background:#221B15;color:var(--ink2)}
+00-動く見本-iPhoneで開く用.html:372	#3A2E1C	html[data-th="dark"] .off{background:#3A2E1C;color:#E7C46A}
+00-動く見本-iPhoneで開く用.html:372	#E7C46A	html[data-th="dark"] .off{background:#3A2E1C;color:#E7C46A}
+00-動く見本-iPhoneで開く用.html:373	#5C8FE0	html[data-th="dark"] .dot{background:#5C8FE0}
+00-動く見本-iPhoneで開く用.html:376	#241D17	html[data-th="dark"] .kpi{background:#241D17;border-color:var(--line)}
+00-動く見本-iPhoneで開く用.html:377	#2E2018	html[data-th="dark"] .kpi.al{background:#2E2018;border-color:#5A3A3E}
+00-動く見本-iPhoneで開く用.html:377	#5A3A3E	html[data-th="dark"] .kpi.al{background:#2E2018;border-color:#5A3A3E}
+00-動く見本-iPhoneで開く用.html:378	#1E1812	html[data-th="dark"] .lft,html[data-th="dark"] .pl{background:#1E1812}
+00-動く見本-iPhoneで開く用.html:379	#2C241D	html[data-th="dark"] .seg{background:#2C241D;border-color:var(--line)}
+00-動く見本-iPhoneで開く用.html:380	#8E1230	html[data-th="dark"] .seg .on,html[data-th="dark"] .seg b.on,html[data
+00-動く見本-iPhoneで開く用.html:381	#2C241D	html[data-th="dark"] .gear,html[data-th="dark"] .role{background:#2C24
+00-動く見本-iPhoneで開く用.html:382	#2A231C	html[data-th="dark"] .k{background:#2A231C;color:var(--ink)}
+00-動く見本-iPhoneで開く用.html:383	#241D17	html[data-th="dark"] div[style*="background:#fff"],html[data-th="dark"
+00-動く見本-iPhoneで開く用.html:384	#241D17	html[data-th="dark"] td[style*="background:#fff"],html[data-th="dark"]
+00-動く見本-iPhoneで開く用.html:385	#F6E4E8	html[data-th="dark"] td[style*="background:#F6E4E8"],html[data-th="dar
+00-動く見本-iPhoneで開く用.html:385	#F6E4E8	html[data-th="dark"] td[style*="background:#F6E4E8"],html[data-th="dar
+00-動く見本-iPhoneで開く用.html:385	#3A1E22	html[data-th="dark"] td[style*="background:#F6E4E8"],html[data-th="dar
+00-動く見本-iPhoneで開く用.html:386	#F4F8F5	html[data-th="dark"] [style*="background:#F4F8F5"]{background:#1F2C25!
+00-動く見本-iPhoneで開く用.html:386	#1F2C25	html[data-th="dark"] [style*="background:#F4F8F5"]{background:#1F2C25!
+00-動く見本-iPhoneで開く用.html:387	#F5EFE1	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-iPhoneで開く用.html:387	#FBF3E2	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-iPhoneで開く用.html:387	#F6F1E4	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-iPhoneで開く用.html:387	#FDFAF3	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-iPhoneで開く用.html:387	#F3ECDD	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-iPhoneで開く用.html:387	#FBF6EA	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-iPhoneで開く用.html:387	#EDE5D5	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-iPhoneで開く用.html:387	#F4EFE4	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-iPhoneで開く用.html:387	#EFE9DC	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-iPhoneで開く用.html:387	#FFFDF8	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-iPhoneで開く用.html:387	#FFFDF7	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-iPhoneで開く用.html:387	#2A2219	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-iPhoneで開く用.html:388	#FBF3E2	html[data-th="dark"] tr[style*="background:#FBF3E2"]{background:#2A221
+00-動く見本-iPhoneで開く用.html:388	#2A2219	html[data-th="dark"] tr[style*="background:#FBF3E2"]{background:#2A221
+00-動く見本-iPhoneで開く用.html:389	#3A322A	html[data-th="dark"] .sw{background:#3A322A}
+00-動く見本-iPhoneで開く用.html:390	#8E1230	html[data-th="dark"] .sw.on{background:#8E1230}
+00-動く見本-iPhoneで開く用.html:391	#EFE6D8	html[data-th="dark"] .sw i{background:#EFE6D8}
+00-動く見本-iPhoneで開く用.html:392	#2A2219	html[data-th="dark"] .tri div{background:#2A2219;border-color:var(--li
+00-動く見本-iPhoneで開く用.html:393	#8E1230	html[data-th="dark"] .tri div.on{background:#8E1230;border-color:#8E12
+00-動く見本-iPhoneで開く用.html:393	#8E1230	html[data-th="dark"] .tri div.on{background:#8E1230;border-color:#8E12
+00-動く見本-iPhoneで開く用.html:395	#241D17	html[data-th="dark"] .drt,html[data-th="dark"] .drr,html[data-th="dark
+00-動く見本-iPhoneで開く用.html:443	#DFD4BE	.ph{width:360px;height:812px;border-radius:30px;border:1px solid #DFD4
+00-動く見本-iPhoneで開く用.html:491	#840C24	{id:'u',n:'○○音楽大学',k:'大学',c:'#840C24',t:'斎藤 めぐみ',in:'2026年4月1日'},
+00-動く見本-iPhoneで開く用.html:492	#447862	{id:'m',n:'△△声楽教室',k:'音楽教室',c:'#447862',t:'鈴木 かおる',in:'2026年6月10日'}];
+00-動く見本-iPhoneで開く用.html:514	#FBF6EA	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本-iPhoneで開く用.html:514	#F2E6CE	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本-iPhoneで開く用.html:514	#E5D3AE	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本-iPhoneで開く用.html:514	#D9BE8C	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本-iPhoneで開く用.html:514	#C9A87C	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本-iPhoneで開く用.html:514	#B98F5E	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本-iPhoneで開く用.html:514	#8C6115	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本-iPhoneで開く用.html:514	#6B4A18	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本-iPhoneで開く用.html:515	#EFD9D9	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本-iPhoneで開く用.html:515	#E0B7BB	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本-iPhoneで開く用.html:515	#C98C96	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本-iPhoneで開く用.html:515	#A85566	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本-iPhoneで開く用.html:515	#840C24	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本-iPhoneで開く用.html:515	#5E2230	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本-iPhoneで開く用.html:515	#DCE4DA	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本-iPhoneで開く用.html:515	#B7CBBA	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本-iPhoneで開く用.html:516	#8FB09B	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本-iPhoneで開く用.html:516	#5E8F74	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本-iPhoneで開く用.html:516	#447862	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本-iPhoneで開く用.html:516	#2F5949	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本-iPhoneで開く用.html:516	#D7DEE4	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本-iPhoneで開く用.html:516	#B0C0CC	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本-iPhoneで開く用.html:516	#7F97A8	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本-iPhoneで開く用.html:516	#4E6879	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本-iPhoneで開く用.html:614	#F6F1E4	if(st==='失敗')return '<div class="card" style="background:#F6F1E4;borde
+00-動く見本-iPhoneで開く用.html:614	#E8DFC8	if(st==='失敗')return '<div class="card" style="background:#F6F1E4;borde
+00-動く見本-iPhoneで開く用.html:641	#CFC0A4	b+='<div class="card" style="border-color:#CFC0A4;background:#FDFAF3">
+00-動く見本-iPhoneで開く用.html:641	#FDFAF3	b+='<div class="card" style="border-color:#CFC0A4;background:#FDFAF3">
+00-動く見本-iPhoneで開く用.html:666	#D6B96A	+'<div class="btn g sm" style="border-color:#D6B96A;color:#8C6115" onc
+00-動く見本-iPhoneで開く用.html:666	#8C6115	+'<div class="btn g sm" style="border-color:#D6B96A;color:#8C6115" onc
+00-動く見本-iPhoneで開く用.html:770	#F6F1E4	function restBlock(){return '<div class="card" style="background:#F6F1
+00-動く見本-iPhoneで開く用.html:770	#E8DFC8	function restBlock(){return '<div class="card" style="background:#F6F1
+00-動く見本-iPhoneで開く用.html:814	#840C24	+W.map(function(c){return '<i style="background:'+(c?'#840C24':'#F0E9D
+00-動く見本-iPhoneで開く用.html:814	#F0E9DA	+W.map(function(c){return '<i style="background:'+(c?'#840C24':'#F0E9D
+00-動く見本-iPhoneで開く用.html:837	#F0E9DA	var p='';[0,3,7,10].forEach(function(i){p+='<line x1="'+x(i)+'" y1="6"
+00-動く見本-iPhoneで開く用.html:838	#840C24	p+='<line x1="'+x(7)+'" y1="0" x2="'+x(7)+'" y2="'+H+'" stroke="#840C2
+00-動く見本-iPhoneで開く用.html:840	#840C24	p+='<path d="'+d+'" fill="none" stroke="#840C24" stroke-width="1.7" op
+00-動く見本-iPhoneで開く用.html:841	#840C24	r[key].forEach(function(v,i){p+='<circle cx="'+x(i)+'" cy="'+y(v,mx,mn
+00-動く見本-iPhoneで開く用.html:842	#7C6C5E	p+='<text x="30" y="14" font-size="8.5" fill="#7C6C5E" text-anchor="en
+00-動く見本-iPhoneで開く用.html:843	#7C6C5E	p+='<text x="30" y="'+H+'" font-size="8.5" fill="#7C6C5E" text-anchor=
+00-動く見本-iPhoneで開く用.html:844	#5E5045	[[-14,0],[-7,3],[0,7],[3,10]].forEach(function(t){p+='<text x="'+x(t[1
+00-動く見本-iPhoneで開く用.html:845	#840C24	p+='<text x="'+x(7)+'" y="'+(H+23)+'" font-size="8.5" fill="#840C24" t
+00-動く見本-iPhoneで開く用.html:875	#C9A0AB	h+='<div class="card" style="border-color:#C9A0AB;background:#FFFCFC">
+00-動く見本-iPhoneで開く用.html:875	#FFFCFC	h+='<div class="card" style="border-color:#C9A0AB;background:#FFFCFC">
+00-動く見本-iPhoneで開く用.html:884	#F6F1E4	if(!S.dm.bun)h+='<div class="card" style="background:#F6F1E4;border-co
+00-動く見本-iPhoneで開く用.html:884	#E8DFC8	if(!S.dm.bun)h+='<div class="card" style="background:#F6F1E4;border-co
+00-動く見本-iPhoneで開く用.html:905	#F0E9DA	var p='';[0,2,4,6].forEach(function(v){p+='<line x1="34" y1="'+sy(v)+'
+00-動く見本-iPhoneで開く用.html:906	#7C6C5E	+'<text x="30" y="'+(sy(v)+3)+'" font-size="8" fill="#7C6C5E" text-anc
+00-動く見本-iPhoneで開く用.html:907	#840C24	G.forEach(function(v,i){p+='<circle cx="'+sx(110,i)+'" cy="'+sy(v)+'" 
+00-動く見本-iPhoneで開く用.html:907	#840C24	G.forEach(function(v,i){p+='<circle cx="'+sx(110,i)+'" cy="'+sy(v)+'" 
+00-動く見本-iPhoneで開く用.html:908	#840C24	B.forEach(function(v,i){p+='<circle cx="'+sx(230,i)+'" cy="'+sy(v)+'" 
+00-動く見本-iPhoneで開く用.html:908	#840C24	B.forEach(function(v,i){p+='<circle cx="'+sx(230,i)+'" cy="'+sy(v)+'" 
+00-動く見本-iPhoneで開く用.html:909	#840C24	[[110,med[0]],[230,med[1]]].forEach(function(m){p+='<line x1="'+(m[0]-
+00-動く見本-iPhoneで開く用.html:910	#5E5045	p+='<text x="110" y="'+(H+13)+'" font-size="9.5" fill="#5E5045" text-a
+00-動く見本-iPhoneで開く用.html:911	#5E5045	p+='<text x="230" y="'+(H+13)+'" font-size="9.5" fill="#5E5045" text-a
+00-動く見本-iPhoneで開く用.html:987	#2E6FD9	return '<div class="usu" style="margin:-2px 0 8px">'+(unN(uk)?'<b styl
+00-動く見本-iPhoneで開く用.html:996	#F6E4E8	+(S.oc==='u'?' <span class="tag" style="background:#F6E4E8;color:var(-
+00-動く見本-iPhoneで開く用.html:1025	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本-iPhoneで開く用.html:1025	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本-iPhoneで開く用.html:1065	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;mar
+00-動く見本-iPhoneで開く用.html:1065	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;mar
+00-動く見本-iPhoneで開く用.html:1087	#EFE7D6	+'@page{size:A4;margin:20mm}body{font-family:"Hiragino Mincho ProN","Y
+00-動く見本-iPhoneで開く用.html:1087	#261913	+'@page{size:A4;margin:20mm}body{font-family:"Hiragino Mincho ProN","Y
+00-動く見本-iPhoneで開く用.html:1089	#6D5D50	+'h1{font-size:19px;letter-spacing:.2em;margin:0 0 4px}.sub{font-size:
+00-動く見本-iPhoneで開く用.html:1090	#C9BCA6	+'table{width:100%;border-collapse:collapse;font-size:13px}th,td{borde
+00-動く見本-iPhoneで開く用.html:1091	#F3ECDD	+'th{background:#F3ECDD;font-weight:400;color:#6D5D50;width:44%}'
+00-動く見本-iPhoneで開く用.html:1091	#6D5D50	+'th{background:#F3ECDD;font-weight:400;color:#6D5D50;width:44%}'
+00-動く見本-iPhoneで開く用.html:1092	#C9BCA6	+'.kot{margin-top:16px;border:1px solid #C9BCA6;padding:12px;font-size
+00-動く見本-iPhoneで開く用.html:1093	#6D5D50	+'.nt{margin-top:18px;font-size:10.5px;color:#6D5D50;line-height:1.9;b
+00-動く見本-iPhoneで開く用.html:1093	#E4DAC4	+'.nt{margin-top:18px;font-size:10.5px;color:#6D5D50;line-height:1.9;b
+00-動く見本-iPhoneで開く用.html:1095	#6D5D50	+'.bar b{flex:1;font-weight:400;color:#6D5D50}.bar button{font:inherit
+00-動く見本-iPhoneで開く用.html:1095	#C9BCA6	+'.bar b{flex:1;font-weight:400;color:#6D5D50}.bar button{font:inherit
+00-動く見本-iPhoneで開く用.html:1096	#840C24	+'.bar button.p{background:#840C24;color:#fff;border-color:#840C24}'
+00-動く見本-iPhoneで開く用.html:1096	#840C24	+'.bar button.p{background:#840C24;color:#fff;border-color:#840C24}'
+00-動く見本-iPhoneで開く用.html:1216	#F0E4DA	var W=300,cw=(W-46)/D.length,shade={3:'#F0E4DA',2:'#C98C96',1:'#840C24
+00-動く見本-iPhoneで開く用.html:1216	#C98C96	var W=300,cw=(W-46)/D.length,shade={3:'#F0E4DA',2:'#C98C96',1:'#840C24
+00-動く見本-iPhoneで開く用.html:1216	#840C24	var W=300,cw=(W-46)/D.length,shade={3:'#F0E4DA',2:'#C98C96',1:'#840C24
+00-動く見本-iPhoneで開く用.html:1217	#5E5045	var strip=function(key,label){return '<text x="0" y="9" font-size="8.5
+00-動く見本-iPhoneで開く用.html:1224	#5E5045	+'<text x="0" y="50" font-size="8.5" fill="#5E5045">出づらい</text><text x
+00-動く見本-iPhoneで開く用.html:1224	#5E5045	+'<text x="0" y="50" font-size="8.5" fill="#5E5045">出づらい</text><text x
+00-動く見本-iPhoneで開く用.html:1226	#840C24	return '<rect x="'+(47+i*bw).toFixed(1)+'" y="'+(74-h).toFixed(1)+'" w
+00-動く見本-iPhoneで開く用.html:1227	#5E5045	+'<text x="'+(47+i*bw+(bw-2)/2).toFixed(1)+'" y="'+(70-h).toFixed(1)+'
+00-動く見本-iPhoneで開く用.html:1228	#DFD4BE	+'<line x1="46" y1="74" x2="'+W+'" y2="74" stroke="#DFD4BE"/>'
+00-動く見本-iPhoneで開く用.html:1229	#7C6C5E	+'<text x="46" y="86" font-size="8" fill="#7C6C5E">'+md(D[0].d)+'</tex
+00-動く見本-iPhoneで開く用.html:1230	#7C6C5E	+'<text x="'+W+'" y="86" font-size="8" fill="#7C6C5E" text-anchor="end
+00-動く見本-iPhoneで開く用.html:1231	#840C24	+'<g transform="translate(46,94)"><rect width="11" height="9" fill="#8
+00-動く見本-iPhoneで開く用.html:1231	#5E5045	+'<g transform="translate(46,94)"><rect width="11" height="9" fill="#8
+00-動く見本-iPhoneで開く用.html:1232	#C98C96	+'<rect x="72" width="11" height="9" fill="#C98C96"/><text x="86" y="8
+00-動く見本-iPhoneで開く用.html:1232	#5E5045	+'<rect x="72" width="11" height="9" fill="#C98C96"/><text x="86" y="8
+00-動く見本-iPhoneで開く用.html:1233	#F0E4DA	+'<rect x="132" width="11" height="9" fill="#F0E4DA"/><text x="146" y=
+00-動く見本-iPhoneで開く用.html:1233	#5E5045	+'<rect x="132" width="11" height="9" fill="#F0E4DA"/><text x="146" y=
+00-動く見本-iPhoneで開く用.html:1282	#FBF6EA	h+='<div class="paper" style="background:#FBF6EA"><h4>この紙について</h4>'
+00-動く見本-iPhoneで開く用.html:1365	#FBF6EA	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本-iPhoneで開く用.html:1365	#2B2622	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本-iPhoneで開く用.html:1365	#6D5D50	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本-iPhoneで開く用.html:1365	#840C24	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本-iPhoneで開く用.html:1365	#C0533A	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本-iPhoneで開く用.html:1365	#D08A5E	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本-iPhoneで開く用.html:1365	#E7C8C8	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本-iPhoneで開く用.html:1365	#B0687C	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本-iPhoneで開く用.html:1365	#C89A2A	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本-iPhoneで開く用.html:1365	#8C6115	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本-iPhoneで開く用.html:1365	#5E8F74	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本-iPhoneで開く用.html:1365	#4E6879	var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E',
+00-動く見本-iPhoneで開く用.html:1381	#E3CDA8	var wall=S.wall||'#E3CDA8',floor=S.floor||'#CFD79E',keshiki=S.keshiki|
+00-動く見本-iPhoneで開く用.html:1381	#CFD79E	var wall=S.wall||'#E3CDA8',floor=S.floor||'#CFD79E',keshiki=S.keshiki|
+00-動く見本-iPhoneで開く用.html:1381	#DDE7EE	var wall=S.wall||'#E3CDA8',floor=S.floor||'#CFD79E',keshiki=S.keshiki|
+00-動く見本-iPhoneで開く用.html:1387	#B9A47F	+'<rect y="'+(fy-6)+'" width="360" height="7" fill="#B9A47F"/>';
+00-動く見本-iPhoneで開く用.html:1389	#BFC98C	for(var i=0;i<6;i++)h+='<line x1="'+(i*72)+'" y1="'+fy+'" x2="'+(i*72)
+00-動く見本-iPhoneで開く用.html:1390	#BFC98C	h+='<line x1="0" y1="'+(fy+(ht-fy)*0.45)+'" x2="360" y2="'+(fy+(ht-fy)
+00-動く見本-iPhoneで開く用.html:1394	#B9884F	+'<rect x="112" y="'+wy+'" width="140" height="112" rx="3" fill="'+kes
+00-動く見本-iPhoneで開く用.html:1395	#EDF2F5	+'<path d="M118 '+(wy+96)+' L148 '+(wy+70)+' L170 '+(wy+90)+' L206 '+(
+00-動く見本-iPhoneで開く用.html:1396	#B9884F	+'<line x1="182" y1="'+wy+'" x2="182" y2="'+(wy+112)+'" stroke="#B9884
+00-動く見本-iPhoneで開く用.html:1397	#B9884F	+'<line x1="112" y1="'+(wy+56)+'" x2="252" y2="'+(wy+56)+'" stroke="#B
+00-動く見本-iPhoneで開く用.html:1399	#8C6115	+'<rect x="44" y="'+(wy-16)+'" width="36" height="56" rx="4" fill="#8C
+00-動く見本-iPhoneで開く用.html:1399	#E9DCC4	+'<rect x="44" y="'+(wy-16)+'" width="36" height="56" rx="4" fill="#8C
+00-動く見本-iPhoneで開く用.html:1400	#FFFDF8	+'<rect x="280" y="'+(wy-8)+'" width="54" height="68" rx="3" fill="#FF
+00-動く見本-iPhoneで開く用.html:1400	#B9884F	+'<rect x="280" y="'+(wy-8)+'" width="54" height="68" rx="3" fill="#FF
+00-動く見本-iPhoneで開く用.html:1401	#C0533A	+'<rect x="299" y="'+(wy+12)+'" width="17" height="13" rx="2" fill="#C
+00-動く見本-iPhoneで開く用.html:1404	#A9784A	h+='<rect x="234" y="'+(fy-96)+'" width="112" height="92" rx="4" fill=
+00-動く見本-iPhoneで開く用.html:1405	#B98F5E	+'<rect x="242" y="'+(fy-88)+'" width="46" height="32" rx="3" fill="#B
+00-動く見本-iPhoneで開く用.html:1406	#B98F5E	+'<rect x="294" y="'+(fy-88)+'" width="46" height="32" rx="3" fill="#B
+00-動く見本-iPhoneで開く用.html:1407	#B98F5E	+'<rect x="242" y="'+(fy-48)+'" width="98" height="30" rx="3" fill="#B
+00-動く見本-iPhoneで開く用.html:1408	#8C6115	+'<rect x="286" y="'+(fy-36)+'" width="10" height="5" rx="2" fill="#8C
+00-動く見本-iPhoneで開く用.html:1410	#A9784A	+(small?'<rect x="24" y="'+(fy-70)+'" width="70" height="8" rx="2" fil
+00-動く見本-iPhoneで開く用.html:1411	#A9784A	+'<rect x="30" y="'+(fy-62)+'" width="6" height="46" fill="#A9784A"/><
+00-動く見本-iPhoneで開く用.html:1411	#A9784A	+'<rect x="30" y="'+(fy-62)+'" width="6" height="46" fill="#A9784A"/><
+00-動く見本-iPhoneで開く用.html:1412	#3A302A	+'<rect x="40" y="'+(fy-98)+'" width="40" height="28" rx="6" fill="#3A
+00-動く見本-iPhoneで開く用.html:1412	#5E5045	+'<rect x="40" y="'+(fy-98)+'" width="40" height="28" rx="6" fill="#3A
+00-動く見本-iPhoneで開く用.html:1415	#B98F5E	h+='<ellipse cx="262" cy="556" rx="88" ry="29" fill="#B98F5E"/><ellips
+00-動く見本-iPhoneで開く用.html:1415	#C9A87C	h+='<ellipse cx="262" cy="556" rx="88" ry="29" fill="#B98F5E"/><ellips
+00-動く見本-iPhoneで開く用.html:1416	#A9784A	+'<rect x="208" y="562" width="9" height="46" fill="#A9784A"/><rect x=
+00-動く見本-iPhoneで開く用.html:1416	#A9784A	+'<rect x="208" y="562" width="9" height="46" fill="#A9784A"/><rect x=
+00-動く見本-iPhoneで開く用.html:1417	#8C6E52	+'<ellipse cx="72" cy="686" rx="80" ry="29" fill="#8C6E52"/><ellipse c
+00-動く見本-iPhoneで開く用.html:1417	#5E5045	+'<ellipse cx="72" cy="686" rx="80" ry="29" fill="#8C6E52"/><ellipse c
+00-動く見本-iPhoneで開く用.html:1418	#C0533A	+'<ellipse cx="72" cy="676" rx="20" ry="8" fill="#C0533A"/><ellipse cx
+00-動く見本-iPhoneで開く用.html:1418	#E8B44A	+'<ellipse cx="72" cy="676" rx="20" ry="8" fill="#C0533A"/><ellipse cx
+00-動く見本-iPhoneで開く用.html:1419	#B0687C	+'<rect x="268" y="668" width="66" height="46" rx="10" fill="#B0687C" 
+00-動く見本-iPhoneで開く用.html:1420	#C98C96	+'<rect x="276" y="676" width="50" height="30" rx="7" fill="#C98C96" o
+00-動く見本-iPhoneで開く用.html:1421	#A9784A	+'<rect x="26" y="'+(fy-4)+'" width="92" height="10" rx="3" fill="#A97
+00-動く見本-iPhoneで開く用.html:1422	#A9784A	+'<rect x="34" y="'+(fy+6)+'" width="8" height="56" fill="#A9784A"/><r
+00-動く見本-iPhoneで開く用.html:1422	#A9784A	+'<rect x="34" y="'+(fy+6)+'" width="8" height="56" fill="#A9784A"/><r
+00-動く見本-iPhoneで開く用.html:1423	#3A302A	+'<rect x="48" y="'+(fy-48)+'" width="50" height="44" rx="7" fill="#3A
+00-動く見本-iPhoneで開く用.html:1423	#5E5045	+'<rect x="48" y="'+(fy-48)+'" width="50" height="44" rx="7" fill="#3A
+00-動く見本-iPhoneで開く用.html:1424	#3A302A	+'<rect x="60" y="'+(fy-58)+'" width="26" height="11" rx="5" fill="#3A
+00-動く見本-iPhoneで開く用.html:1455	#FDFAF3	+(S.k1==='おくもの'?'<div class="dr2" style="background:#FDFAF3">'
+00-動く見本-iPhoneで開く用.html:1572	#C9A0AB	+'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC"><d
+00-動く見本-iPhoneで開く用.html:1572	#FFFCFC	+'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC"><d
+00-動く見本-iPhoneで開く用.html:1606	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本-iPhoneで開く用.html:1606	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本-iPhoneで開く用.html:1706	#6D5D50	+'<div class="btn" style="margin-top:9px;background:#6D5D50" onclick="
+00-動く見本-iPhoneで開く用.html:1778	#840C24	return '<div onclick="S.nv=\'日\';draw()" style="aspect-ratio:1;border-
+00-動く見本-iPhoneで開く用.html:1778	#F0E9DA	return '<div onclick="S.nv=\'日\';draw()" style="aspect-ratio:1;border-
+00-動く見本-iPhoneで開く用.html:1778	#6D5D50	return '<div onclick="S.nv=\'日\';draw()" style="aspect-ratio:1;border-
+00-動く見本-iPhoneで開く用.html:1800	#C9BCA6	+(c?'<div class="koma '+c[2]+'">'+c[0]+(c[1]?'<br>'+c[1]:'')+'</div>':
+00-動く見本-iPhoneで開く用.html:1817	#FFFDF7	+'<div class="card" style="position:sticky;bottom:0;background:#FFFDF7
+00-動く見本-iPhoneで開く用.html:1845	#B23A48	return '<div class="card" style="border-left:3px solid '+(ng?'#B23A48'
+00-動く見本-iPhoneで開く用.html:1845	#8C6115	return '<div class="card" style="border-left:3px solid '+(ng?'#B23A48'
+00-動く見本-iPhoneで開く用.html:1846	#B23A48	+'<div class="tag" style="margin:0 0 6px;background:'+(ng?'#B23A4818':
+00-動く見本-iPhoneで開く用.html:1846	#8C6115	+'<div class="tag" style="margin:0 0 6px;background:'+(ng?'#B23A4818':
+00-動く見本-iPhoneで開く用.html:1877	#8C6115	+'<s><span class="tag" style="margin:0;background:#F0C24B33;color:#8C6
+00-動く見本-iPhoneで開く用.html:1879	#2E6FD9	+'<div class="usu" style="margin:-2px 0 8px">'+(unN(['op-o','op-m1','o
+00-動く見本-iPhoneで開く用.html:1913	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本-iPhoneで開く用.html:1913	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本-iPhoneで開く用.html:1942	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;pad
+00-動く見本-iPhoneで開く用.html:1942	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;pad
+00-動く見本-iPhoneで開く用.html:1950	#A0917F	return '<div class="li" style="cursor:default;color:#A0917F"><span>'+v
+00-動く見本-iPhoneで開く用.html:1989	#A0917F	return '<div class="li" style="'+(edit&&ok?'':'color:#A0917F')+'" oncl
+00-動く見本-iPhoneで開く用.html:1992	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本-iPhoneで開く用.html:1992	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本-iPhoneで開く用.html:2042	#A0917F	return '<div class="li" style="'+(canChange(pr[5])?'':'color:#A0917F')
+00-動く見本-iPhoneで開く用.html:2043	#FBF0D8	+'<span>'+pr[0]+(pr[6]?'':' <span class="tag" style="background:#FBF0D
+00-動く見本-iPhoneで開く用.html:2088	#A0917F	return '<div class="li" style="'+(ok?'':'color:#A0917F')+'" onclick="'
+00-動く見本-iPhoneで開く用.html:2168	#FDFAF3	+'<div class="card" style="background:#FDFAF3"><div style="font-size:1
+00-動く見本-iPhoneで開く用.html:2252	#FDFAF3	+'<div class="card" style="background:#FDFAF3">'
+00-動く見本-iPhoneで開く用.html:2275	#261913	+'body{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;color:#261
+00-動く見本-iPhoneで開く用.html:2275	#EFE7D6	+'body{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;color:#261
+00-動く見本-iPhoneで開く用.html:2279	#6D5D50	+'.no{position:absolute;right:18mm;top:14mm;font-size:11px;color:#6D5D
+00-動く見本-iPhoneで開く用.html:2280	#261913	+'.ate{font-size:19px;border-bottom:1px solid #261913;padding:0 60px 5
+00-動く見本-iPhoneで開く用.html:2281	#261913	+'.amt{font-size:34px;font-weight:700;border-bottom:2px solid #261913;
+00-動く見本-iPhoneで開く用.html:2283	#6D5D50	+'.rw .l{width:88px;color:#6D5D50}'
+00-動く見本-iPhoneで開く用.html:2285	#C9BCA6	+'th,td{border:1px solid #C9BCA6;padding:7px 9px;text-align:left}'
+00-動く見本-iPhoneで開く用.html:2286	#F3ECDD	+'th{background:#F3ECDD;font-weight:400;color:#6D5D50}'
+00-動く見本-iPhoneで開く用.html:2286	#6D5D50	+'th{background:#F3ECDD;font-weight:400;color:#6D5D50}'
+00-動く見本-iPhoneで開く用.html:2289	#B23A48	+'.stamp{position:absolute;right:26mm;bottom:56mm;width:78px;height:78
+00-動く見本-iPhoneで開く用.html:2290	#B23A48	+'border-radius:50%;color:#B23A48;display:flex;align-items:center;just
+00-動く見本-iPhoneで開く用.html:2292	#B23A48	+'.re{position:absolute;left:18mm;top:14mm;border:1.5px solid #B23A48;
+00-動く見本-iPhoneで開く用.html:2292	#B23A48	+'.re{position:absolute;left:18mm;top:14mm;border:1.5px solid #B23A48;
+00-動く見本-iPhoneで開く用.html:2294	#6D5D50	+'.nt{margin-top:20px;font-size:10.5px;color:#6D5D50;line-height:1.9;b
+00-動く見本-iPhoneで開く用.html:2294	#E4DAC4	+'.nt{margin-top:20px;font-size:10.5px;color:#6D5D50;line-height:1.9;b
+00-動く見本-iPhoneで開く用.html:2297	#6D5D50	+'.bar b{flex:1;font-weight:400;color:#6D5D50}'
+00-動く見本-iPhoneで開く用.html:2298	#C9BCA6	+'.bar button{font:inherit;padding:9px 16px;border-radius:99px;border:
+00-動く見本-iPhoneで開く用.html:2299	#261913	+'background:#fff;color:#261913;cursor:pointer}'
+00-動く見本-iPhoneで開く用.html:2300	#840C24	+'.bar button.p{background:#840C24;color:#fff;border-color:#840C24}'
+00-動く見本-iPhoneで開く用.html:2300	#840C24	+'.bar button.p{background:#840C24;color:#fff;border-color:#840C24}'
+00-動く見本-iPhoneで開く用.html:2432	#F6F1E4	return '<div class="li'+(nm===one?' plain':'')+'" '+(nm===one?'style="
+00-動く見本-iPhoneで開く用.html:2441	#F6F1E4	return '<div class="li'+(now?' plain':'')+'" '+(now?'style="background
+00-動く見本-iPhoneで開く用.html:2449	#CFC0A4	+'<div class="card" style="border-color:#CFC0A4">'
+00-動く見本-iPhoneで開く用.html:2478	#FBF3E2	return '<div class="card" style="padding:11px 12px;'+(v?'':'background
+00-動く見本-iPhoneで開く用.html:2478	#E8DFC8	return '<div class="card" style="padding:11px 12px;'+(v?'':'background
+00-動く見本-iPhoneで開く用.html:2480	#8C6115	+(v?'':' <span class="tag" style="background:#F0C24B33;color:#8C6115">
+00-動く見本-iPhoneで開く用.html:2521	#A0917F	return '<div class="li" style="cursor:default;color:#A0917F"><span>'+v
+00-動く見本-iPhoneで開く用.html:2541	#C9A0AB	+'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC">'
+00-動く見本-iPhoneで開く用.html:2541	#FFFCFC	+'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC">'
+00-動く見本-iPhoneで開く用.html:2669	#8C6115	var col={'場所':'#8C6115','先生':'#840C24'};
+00-動く見本-iPhoneで開く用.html:2669	#840C24	var col={'場所':'#8C6115','先生':'#840C24'};
+00-動く見本-iPhoneで開く用.html:2671	#B23A48	var stc={'まだ':['#B23A48','まだ 知らせていません'],'知らせた':['#8C6115','先生に 知らせました'
+00-動く見本-iPhoneで開く用.html:2671	#8C6115	var stc={'まだ':['#B23A48','まだ 知らせていません'],'知らせた':['#8C6115','先生に 知らせました'
+00-動く見本-iPhoneで開く用.html:2671	#447862	var stc={'まだ':['#B23A48','まだ 知らせていません'],'知らせた':['#8C6115','先生に 知らせました'
+00-動く見本-iPhoneで開く用.html:2682	#F3ECDD	+'<span class="tag" style="background:#F3ECDD;color:'+col[x.k]+';margi
+00-動く見本-iPhoneで開く用.html:2706	#A0917F	return '<div class="li" style="cursor:default'+(x[2]?'':';color:#A0917
+00-動く見本-iPhoneで開く用.html:2717	#8C6115	return '<div class="card" style="border-left:3px solid #8C6115">'
+00-動く見本-iPhoneで開く用.html:2751	#C3B6A2	DAYS.forEach(function(d,di){var K=di+'-'+ki,bg='#fff',fg='#C3B6A2',tx=
+00-動く見本-iPhoneで開く用.html:2752	#F7E9EA	if(K===x.key){bg='#F7E9EA';fg='var(--red)';tx='いま'}
+00-動く見本-iPhoneで開く用.html:2753	#EDE5D5	else if(TBUSY[K]){bg='#EDE5D5';fg='#6D5D50';tx=TBUSY[K].slice(0,3)}
+00-動く見本-iPhoneで開く用.html:2753	#6D5D50	else if(TBUSY[K]){bg='#EDE5D5';fg='#6D5D50';tx=TBUSY[K].slice(0,3)}
+00-動く見本-iPhoneで開く用.html:2754	#F4F8F5	else if(PLACED[K]){bg='#F4F8F5';fg='var(--midori)';tx=MONKA[PLACED[K].
+00-動く見本-iPhoneで開く用.html:2755	#840C24	else if(sidx<0||isFree(sidx,K)){bg=(sel===K?'#840C24':'#FBF6EA');fg=(s
+00-動く見本-iPhoneで開く用.html:2755	#FBF6EA	else if(sidx<0||isFree(sidx,K)){bg=(sel===K?'#840C24':'#FBF6EA');fg=(s
+00-動く見本-iPhoneで開く用.html:2764	#CFC0A4	if(sel)h+='<div class="card" style="border-color:#CFC0A4">'
+00-動く見本-iPhoneで開く用.html:2856	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;mar
+00-動く見本-iPhoneで開く用.html:2856	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;mar
+00-動く見本-iPhoneで開く用.html:2983	#C9A0AB	+'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC"><d
+00-動く見本-iPhoneで開く用.html:2983	#FFFCFC	+'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC"><d
+00-動く見本-iPhoneで開く用.html:3027	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本-iPhoneで開く用.html:3027	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本-iPhoneで開く用.html:3091	#9BBBA9	+'<div class="card" style="border-color:#9BBBA9;background:#F4F8F5">'
+00-動く見本-iPhoneで開く用.html:3091	#F4F8F5	+'<div class="card" style="border-color:#9BBBA9;background:#F4F8F5">'
+00-動く見本-iPhoneで開く用.html:3118	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;pad
+00-動く見本-iPhoneで開く用.html:3118	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;pad
+00-動く見本-iPhoneで開く用.html:3128	#F6E4E8	+'<div><div class="t" style="font-size:13.5px">'+m[0]+(m[4]?' <span cl
+00-動く見本-iPhoneで開く用.html:3148	#447862	return '<td style="padding:3px;background:'+(f?'#447862':'#F5EFE1')+'"
+00-動く見本-iPhoneで開く用.html:3148	#F5EFE1	return '<td style="padding:3px;background:'+(f?'#447862':'#F5EFE1')+'"
+00-動く見本-iPhoneで開く用.html:3148	#B5A78F	return '<td style="padding:3px;background:'+(f?'#447862':'#F5EFE1')+'"
+00-動く見本-iPhoneで開く用.html:3152	#A0917F	return '<div class="li" style="cursor:default;color:#A0917F"><span>'+v
+00-動く見本-iPhoneで開く用.html:3163	#A0917F	return '<div class="li" style="cursor:default"><span>'+x[0]+'</span><s
+00-動く見本-iPhoneで開く用.html:3185	#F0E9DA	var col=one?['#F0E9DA','#E3B9C2','#840C24'][v]:(v?'#840C24':'#F0E9DA')
+00-動く見本-iPhoneで開く用.html:3185	#E3B9C2	var col=one?['#F0E9DA','#E3B9C2','#840C24'][v]:(v?'#840C24':'#F0E9DA')
+00-動く見本-iPhoneで開く用.html:3185	#840C24	var col=one?['#F0E9DA','#E3B9C2','#840C24'][v]:(v?'#840C24':'#F0E9DA')
+00-動く見本-iPhoneで開く用.html:3185	#840C24	var col=one?['#F0E9DA','#E3B9C2','#840C24'][v]:(v?'#840C24':'#F0E9DA')
+00-動く見本-iPhoneで開く用.html:3185	#F0E9DA	var col=one?['#F0E9DA','#E3B9C2','#840C24'][v]:(v?'#840C24':'#F0E9DA')
+00-動く見本-iPhoneで開く用.html:3319	#F6E4E8	+(tdy?'background:var(--enji);color:#fff;font-weight:700':(inw?'backgr
+00-動く見本-iPhoneで開く用.html:3320	#C9BCA6	+(off?';color:#C9BCA6':'');
+00-動く見本-iPhoneで開く用.html:3373	#F5EFE1	h+='<td style="padding:2px;cursor:pointer;background:'+(ot?orgOf(ot.o)
+00-動く見本-iPhoneで開く用.html:3373	#F4F8F5	h+='<td style="padding:2px;cursor:pointer;background:'+(ot?orgOf(ot.o)
+00-動く見本-iPhoneで開く用.html:3376	#A0917F	:(ng?'<span style="font-size:10px;color:#A0917F">来られない</span>':'<span 
+00-動く見本-iPhoneで開く用.html:3380	#F4F8F5	+'<div class="usu" style="margin-top:4px"><span style="display:inline-
+00-動く見本-iPhoneで開く用.html:3381	#F5EFE1	+'<span style="display:inline-block;width:9px;height:9px;background:#F
+00-動く見本-iPhoneで開く用.html:3383	#447862	+'<span style="display:inline-block;width:9px;height:9px;background:#4
+00-動く見本-iPhoneで開く用.html:3460	#447862	var bg=pl?'#447862':(busy?(tPriv(key)?'#F4EFE4':'#EDE5D5'):'#fff'),fg=
+00-動く見本-iPhoneで開く用.html:3460	#F4EFE4	var bg=pl?'#447862':(busy?(tPriv(key)?'#F4EFE4':'#EDE5D5'):'#fff'),fg=
+00-動く見本-iPhoneで開く用.html:3460	#EDE5D5	var bg=pl?'#447862':(busy?(tPriv(key)?'#F4EFE4':'#EDE5D5'):'#fff'),fg=
+00-動く見本-iPhoneで開く用.html:3460	#9C8E7B	var bg=pl?'#447862':(busy?(tPriv(key)?'#F4EFE4':'#EDE5D5'):'#fff'),fg=
+00-動く見本-iPhoneで開く用.html:3461	#261913	h+='<td style="padding:2px;cursor:pointer;background:'+bg+';outline:'+
+00-動く見本-iPhoneで開く用.html:3462	#C9BCA6	+(busy&&tPriv(key)?';box-shadow:inset 3px 0 0 #C9BCA6':'')+'" onclick=
+00-動く見本-iPhoneで開く用.html:3480	#F6F1E4	if(busy&&!pl)h+='<div class="card" style="background:#F6F1E4;border-co
+00-動く見本-iPhoneで開く用.html:3480	#E8DFC8	if(busy&&!pl)h+='<div class="card" style="background:#F6F1E4;border-co
+00-動く見本-iPhoneで開く用.html:3491	#9BBBA9	if(pl){h+='<div class="card" style="border-color:#9BBBA9;background:#F
+00-動く見本-iPhoneで開く用.html:3491	#F4F8F5	if(pl){h+='<div class="card" style="border-color:#9BBBA9;background:#F
+00-動く見本-iPhoneで開く用.html:3582	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;mar
+00-動く見本-iPhoneで開く用.html:3582	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;mar
+00-動く見本-iPhoneで開く用.html:3645	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;pad
+00-動く見本-iPhoneで開く用.html:3645	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;pad
+00-動く見本-iPhoneで開く用.html:3703	#F4EFE4	h+='<td style="padding:2px;cursor:pointer;background:'+(b?(pv?'#F4EFE4
+00-動く見本-iPhoneで開く用.html:3703	#EDE5D5	h+='<td style="padding:2px;cursor:pointer;background:'+(b?(pv?'#F4EFE4
+00-動く見本-iPhoneで開く用.html:3704	#C9BCA6	+(pv?';box-shadow:inset 3px 0 0 #C9BCA6':'')+'" onclick="'
+00-動く見本-iPhoneで開く用.html:3706	#6D5D50	+'<span style="font-size:9px;color:'+(b?'#6D5D50':'#C3B6A2')+'">'+(b?b
+00-動く見本-iPhoneで開く用.html:3706	#C3B6A2	+'<span style="font-size:9px;color:'+(b?'#6D5D50':'#C3B6A2')+'">'+(b?b
+00-動く見本-iPhoneで開く用.html:3707	#8C6115	+(b?'<span style="display:block;font-size:8px;color:'+(pv?'#8C6115':'v
+00-動く見本-iPhoneで開く用.html:3778	#CFC0A4	return '<div class="card" style="border-color:#CFC0A4">'
+00-動く見本-iPhoneで開く用.html:3907	#A0917F	+SEE_NO.map(function(v){return '<div class="li" style="cursor:default;
+00-動く見本-iPhoneで開く用.html:3927	#C9A0AB	+'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC">'
+00-動く見本-iPhoneで開く用.html:3927	#FFFCFC	+'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC">'
+00-動く見本-iPhoneで開く用.html:3933	#A0917F	+SEE_NO.map(function(v){return '<div class="li" style="cursor:default;
+00-動く見本-iPhoneで開く用.html:3946	#C9A0AB	+(S.code.length>=6?'<div class="card" style="margin-top:11px;border-co
+00-動く見本-iPhoneで開く用.html:3946	#FFFCFC	+(S.code.length>=6?'<div class="card" style="margin-top:11px;border-co
+00-動く見本-iPhoneで開く用.html:3955	#8C6115	ORGS.push({id:'x'+ORGS.length,n:n,k:k,c:'#8C6115',t:t,in:'2026年9月10日'}
+00-動く見本-iPhoneで開く用.html:3962	#D6B96A	+'<div class="card" style="border-left:3px solid #D6B96A">'
+00-動く見本-PC・iPad（個人）.html:15	#D9CDB4	.dev{background:#fff;border:1px solid #D9CDB4;border-radius:14px;box-s
+00-動く見本-PC・iPad（個人）.html:36	#F0C24B	.badge.w{background:#F0C24B;color:#4A3510;font-weight:700}
+00-動く見本-PC・iPad（個人）.html:36	#4A3510	.badge.w{background:#F0C24B;color:#4A3510;font-weight:700}
+00-動く見本-PC・iPad（個人）.html:41	#F6EFDF	.wall{flex:0 0 30px;background:#F6EFDF;border-bottom:1px solid var(--l
+00-動く見本-PC・iPad（個人）.html:46	#FDF9F0	.side{flex:0 0 190px;background:#FDF9F0;border-right:1px solid var(--l
+00-動く見本-PC・iPad（個人）.html:48	#FBF6EA	.side .nv:hover{background:#FBF6EA}
+00-動く見本-PC・iPad（個人）.html:60	#CFC0A4	.kpi:hover{border-color:#CFC0A4}
+00-動く見本-PC・iPad（個人）.html:64	#E7C2C6	.kpi.al{border-color:#E7C2C6;background:#FDF6F6}.kpi.al .v{color:var(-
+00-動く見本-PC・iPad（個人）.html:64	#FDF6F6	.kpi.al{border-color:#E7C2C6;background:#FDF6F6}.kpi.al .v{color:var(-
+00-動く見本-PC・iPad（個人）.html:79	#F3ECDD	.spt th{background:#F3ECDD;color:var(--ink3);font-weight:400;text-alig
+00-動く見本-PC・iPad（個人）.html:81	#FDFAF3	.spt td.k{width:34%;font-weight:600;background:#FDFAF3}
+00-動く見本-PC・iPad（個人）.html:84	#CFC0A4	.fbtn:hover{border-color:#CFC0A4;color:var(--ink2)}
+00-動く見本-PC・iPad（個人）.html:85	#CFC0A4	.fbtn.on{color:var(--enji);border-color:#CFC0A4}
+00-動く見本-PC・iPad（個人）.html:87	#FDFAF3	background:#FDFAF3;border:1px dashed var(--line);border-radius:10px;pa
+00-動く見本-PC・iPad（個人）.html:88	#F6F1E4	.warn{background:#F6F1E4;border:1px solid #E8DFC8;border-radius:10px;p
+00-動く見本-PC・iPad（個人）.html:88	#E8DFC8	.warn{background:#F6F1E4;border:1px solid #E8DFC8;border-radius:10px;p
+00-動く見本-PC・iPad（個人）.html:102	#F3ECDD	.tag{display:inline-block;background:#F3ECDD;color:var(--ink2);border-
+00-動く見本-PC・iPad（個人）.html:109	#DFD4BE	.sw{width:44px;height:26px;border-radius:99px;background:#DFD4BE;posit
+00-動く見本-PC・iPad（個人）.html:117	#F3ECDD	th{position:sticky;top:0;z-index:3;background:#F3ECDD;color:var(--ink2
+00-動く見本-PC・iPad（個人）.html:121	#FDFAF3	tr.click{cursor:pointer}tr.click:hover td{background:#FDFAF3}
+00-動く見本-PC・iPad（個人）.html:123	#FBF6EA	.stick{position:sticky;left:0;background:#FBF6EA;z-index:2}
+00-動く見本-PC・iPad（個人）.html:133	#FFFDF8	.koma{border-left:3px solid var(--enji);background:#FFFDF8;border-radi
+00-動く見本-PC・iPad（個人）.html:135	#FBF3F4	.koma:hover{background:#FBF3F4}
+00-動く見本-PC・iPad（個人）.html:137	#FBF3E2	.koma.dup{border-left-color:var(--yama);background:#FBF3E2}
+00-動く見本-PC・iPad（個人）.html:138	#F4F8F5	.koma.mine{border-left-color:var(--midori);background:#F4F8F5}
+00-動く見本-PC・iPad（個人）.html:139	#B5A78F	.koma.busy{border-left-color:#B5A78F;background:#EFE9DC;color:#7C6C5E;
+00-動く見本-PC・iPad（個人）.html:139	#EFE9DC	.koma.busy{border-left-color:#B5A78F;background:#EFE9DC;color:#7C6C5E;
+00-動く見本-PC・iPad（個人）.html:139	#7C6C5E	.koma.busy{border-left-color:#B5A78F;background:#EFE9DC;color:#7C6C5E;
+00-動く見本-PC・iPad（個人）.html:140	#F7E9EA	.koma.now{border-left-color:var(--red);background:#F7E9EA;color:var(--
+00-動く見本-PC・iPad（個人）.html:141	#F4EFE4	.koma.busy.priv{border-left-style:dotted;border-left-width:4px;backgro
+00-動く見本-PC・iPad（個人）.html:143	#C9BCA6	.koma .pv{display:inline-block;font-size:9px;border:1px solid #C9BCA6;
+00-動く見本-PC・iPad（個人）.html:143	#7C6C5E	.koma .pv{display:inline-block;font-size:9px;border:1px solid #C9BCA6;
+00-動く見本-PC・iPad（個人）.html:151	#FBF8F1	.calh{display:flex;border-bottom:1px solid var(--line);background:#FBF
+00-動く見本-PC・iPad（個人）.html:161	#FBF8F1	.calb .gut{flex:0 0 58px;position:relative;border-right:1px solid var(
+00-動く見本-PC・iPad（個人）.html:165	#FDFAF3	.col.tdy{background:#FDFAF3}
+00-動く見本-PC・iPad（個人）.html:169	#FBF6EA	.hit:hover{background:#FBF6EA;outline:1px solid var(--line)}
+00-動く見本-PC・iPad（個人）.html:175	#FBF6EA	.hit.on{outline:2px solid var(--ink);outline-offset:-2px;background:#F
+00-動く見本-PC・iPad（個人）.html:177	#FFF7F8	line-height:1.35;overflow:hidden;cursor:pointer;border-left:3px solid 
+00-動く見本-PC・iPad（個人）.html:179	#EEF5F0	.ev.les{border-left-color:var(--midori);background:#EEF5F0}
+00-動く見本-PC・iPad（個人）.html:180	#B5A78F	.ev.sch{border-left-color:#B5A78F;background:#EFE9DC;color:#6D5D50}
+00-動く見本-PC・iPad（個人）.html:180	#EFE9DC	.ev.sch{border-left-color:#B5A78F;background:#EFE9DC;color:#6D5D50}
+00-動く見本-PC・iPad（個人）.html:180	#6D5D50	.ev.sch{border-left-color:#B5A78F;background:#EFE9DC;color:#6D5D50}
+00-動く見本-PC・iPad（個人）.html:181	#B5A78F	.ev.own{border-left-color:#B5A78F;border-left-style:dotted;border-left
+00-動く見本-PC・iPad（個人）.html:181	#F4EFE4	.ev.own{border-left-color:#B5A78F;border-left-style:dotted;border-left
+00-動く見本-PC・iPad（個人）.html:181	#6D5D50	.ev.own{border-left-color:#B5A78F;border-left-style:dotted;border-left
+00-動く見本-PC・iPad（個人）.html:191	#F3ECDD	.mini .mg b:hover{background:#F3ECDD}
+00-動く見本-PC・iPad（個人）.html:192	#F6E4E8	.mini .mg b.w{background:#F6E4E8}
+00-動く見本-PC・iPad（個人）.html:194	#C9BCA6	.mini .mg b.o{color:#C9BCA6}
+00-動く見本-PC・iPad（個人）.html:203	#CFC0A4	.wkc:hover{border-color:#CFC0A4}
+00-動く見本-PC・iPad（個人）.html:206	#F0C24B	.wkc.on i{color:#F0C24B}
+00-動く見本-PC・iPad（個人）.html:207	#F6E4E8	.grid th.tdyh{background:#F6E4E8;color:var(--enji);font-weight:700}
+00-動く見本-PC・iPad（個人）.html:208	#FDF7F8	.grid td.tdyc{background:#FDF7F8}
+00-動く見本-PC・iPad（個人）.html:210	#CFC0A4	.yc{margin-top:14px;border-color:#CFC0A4}
+00-動く見本-PC・iPad（個人）.html:222	#F4F8F5	.lgd i.sw2{background:#F4F8F5;border-left:3px solid var(--midori)}
+00-動く見本-PC・iPad（個人）.html:223	#F4EFE4	.lgd i.sw3{background:#F4EFE4;border-left:3px dotted #B5A78F}
+00-動く見本-PC・iPad（個人）.html:223	#B5A78F	.lgd i.sw3{background:#F4EFE4;border-left:3px dotted #B5A78F}
+00-動く見本-PC・iPad（個人）.html:224	#EFE9DC	.lgd i.sw4{background:#EFE9DC;border-left:3px solid #B5A78F}
+00-動く見本-PC・iPad（個人）.html:224	#B5A78F	.lgd i.sw4{background:#EFE9DC;border-left:3px solid #B5A78F}
+00-動く見本-PC・iPad（個人）.html:225	#FBF3E2	.lgd i.sw5{background:#FBF3E2;border-left:3px solid var(--yama)}
+00-動く見本-PC・iPad（個人）.html:233	#C3B6A2	font-size:12px;color:#C3B6A2;cursor:pointer}
+00-動く見本-PC・iPad（個人）.html:234	#FBF6EA	.slot:hover{background:#FBF6EA;color:var(--enji)}
+00-動く見本-PC・iPad（個人）.html:239	#FDFAF3	.pane .lft{flex:0 0 292px;border-right:1px solid var(--line);overflow-
+00-動く見本-PC・iPad（個人）.html:247	#2E6FD9	.dot{width:7px;height:7px;border-radius:50%;background:#2E6FD9;flex:no
+00-動く見本-PC・iPad（個人）.html:252	#F0E4D2	.post .av{width:28px;height:28px;border-radius:50%;background:#F0E4D2;
+00-動く見本-PC・iPad（個人）.html:256	#F6EFDF	.wl{background:#F6EFDF;border:1px solid #E8DFC8;border-radius:10px;pad
+00-動く見本-PC・iPad（個人）.html:256	#E8DFC8	.wl{background:#F6EFDF;border:1px solid #E8DFC8;border-radius:10px;pad
+00-動く見本-PC・iPad（個人）.html:269	#261913	.toast{position:fixed;left:50%;transform:translateX(-50%) translateY(1
+00-動く見本-PC・iPad（個人）.html:281	#241D17	html[data-th="dark"] .card,html[data-th="dark"] .box,html[data-th="dar
+00-動く見本-PC・iPad（個人）.html:283	#241D17	html[data-th="dark"] .box,html[data-th="dark"] .card.p0{background:#24
+00-動く見本-PC・iPad（個人）.html:284	#6B0A1D	html[data-th="dark"] .top{background:#6B0A1D;color:#fff}
+00-動く見本-PC・iPad（個人）.html:286	#221B15	html[data-th="dark"] .wall{background:#221B15;color:var(--ink2)}
+00-動く見本-PC・iPad（個人）.html:287	#1E1812	html[data-th="dark"] .side{background:#1E1812;border-color:var(--line)
+00-動く見本-PC・iPad（個人）.html:288	#241D17	html[data-th="dark"] .nv.on{background:#241D17;color:var(--enji)}
+00-動く見本-PC・iPad（個人）.html:290	#8E1230	html[data-th="dark"] .btn{background:#8E1230;color:#fff;border-color:#
+00-動く見本-PC・iPad（個人）.html:290	#8E1230	html[data-th="dark"] .btn{background:#8E1230;color:#fff;border-color:#
+00-動く見本-PC・iPad（個人）.html:291	#2C241D	html[data-th="dark"] .btn.g,html[data-th="dark"] .btn.mid{background:#
+00-動く見本-PC・iPad（個人）.html:292	#2C241D	html[data-th="dark"] .pill{background:#2C241D;color:var(--ink2);border
+00-動く見本-PC・iPad（個人）.html:293	#8E1230	html[data-th="dark"] .pill.on{background:#8E1230;color:#fff;border-col
+00-動く見本-PC・iPad（個人）.html:293	#8E1230	html[data-th="dark"] .pill.on{background:#8E1230;color:#fff;border-col
+00-動く見本-PC・iPad（個人）.html:294	#1A1510	html[data-th="dark"] .inp,html[data-th="dark"] .ta,html[data-th="dark"
+00-動く見本-PC・iPad（個人）.html:295	#2C241D	html[data-th="dark"] table th,html[data-th="dark"] .tbl th,html[data-t
+00-動く見本-PC・iPad（個人）.html:296	#241D17	html[data-th="dark"] table td,html[data-th="dark"] .tbl td,html[data-t
+00-動く見本-PC・iPad（個人）.html:297	#2A231C	html[data-th="dark"] .tbl td.k,html[data-th="dark"] .spt td.k,html[dat
+00-動く見本-PC・iPad（個人）.html:298	#1E1812	html[data-th="dark"] .note{background:#1E1812;border-color:var(--line)
+00-動く見本-PC・iPad（個人）.html:299	#2A2218	html[data-th="dark"] .warn,html[data-th="dark"] .wl{background:#2A2218
+00-動く見本-PC・iPad（個人）.html:299	#4A3E2C	html[data-th="dark"] .warn,html[data-th="dark"] .wl{background:#2A2218
+00-動く見本-PC・iPad（個人）.html:300	#2C241D	html[data-th="dark"] .fbtn{background:#2C241D;border-color:var(--line)
+00-動く見本-PC・iPad（個人）.html:301	#2A231C	html[data-th="dark"] .koma{background:#2A231C;border-left-color:var(--
+00-動く見本-PC・iPad（個人）.html:302	#1F2C25	html[data-th="dark"] .koma.mine{background:#1F2C25;border-left-color:v
+00-動く見本-PC・iPad（個人）.html:303	#2E2820	html[data-th="dark"] .koma.busy{background:#2E2820;border-left-color:#
+00-動く見本-PC・iPad（個人）.html:303	#6B5F4E	html[data-th="dark"] .koma.busy{background:#2E2820;border-left-color:#
+00-動く見本-PC・iPad（個人）.html:304	#282219	html[data-th="dark"] .koma.busy.priv{background:#282219}
+00-動く見本-PC・iPad（個人）.html:305	#3A1E22	html[data-th="dark"] .koma.now{background:#3A1E22;border-left-color:va
+00-動く見本-PC・iPad（個人）.html:306	#1E1812	html[data-th="dark"] .slot{background:#1E1812;color:var(--ink3)}
+00-動く見本-PC・iPad（個人）.html:307	#241D17	html[data-th="dark"] .slot.n{background:#241D17;color:var(--ink2)}
+00-動く見本-PC・iPad（個人）.html:308	#2C241D	html[data-th="dark"] .slot:hover,html[data-th="dark"] .slot .yt,html[d
+00-動く見本-PC・iPad（個人）.html:309	#3A1E22	html[data-th="dark"] .grid th.tdyh{background:#3A1E22;color:var(--enji
+00-動く見本-PC・iPad（個人）.html:310	#221A18	html[data-th="dark"] .grid td.tdyc{background:#221A18}
+00-動く見本-PC・iPad（個人）.html:311	#2C241D	html[data-th="dark"] .mini .mg b:hover{background:#2C241D}
+00-動く見本-PC・iPad（個人）.html:312	#3A1E22	html[data-th="dark"] .mini .mg b.w{background:#3A1E22}
+00-動く見本-PC・iPad（個人）.html:313	#8E1230	html[data-th="dark"] .mini .mg b.t{background:#8E1230;color:#fff}
+00-動く見本-PC・iPad（個人）.html:314	#5E5449	html[data-th="dark"] .mini .mg b.o{color:#5E5449}
+00-動く見本-PC・iPad（個人）.html:315	#1E1812	html[data-th="dark"] .tabs{background:#1E1812;border-color:var(--line)
+00-動く見本-PC・iPad（個人）.html:318	#1E1812	html[data-th="dark"] .st{background:#1E1812;color:var(--ink2)}
+00-動く見本-PC・iPad（個人）.html:319	#3A322A	html[data-th="dark"] .toast{background:#3A322A;color:#fff}
+00-動く見本-PC・iPad（個人）.html:320	#2C241D	html[data-th="dark"] .sk{background:#2C241D}
+00-動く見本-PC・iPad（個人）.html:321	#332A22	html[data-th="dark"] .tag{background:#332A22;color:var(--ink2)}
+00-動く見本-PC・iPad（個人）.html:322	#2C241D	html[data-th="dark"] .pl.on{background:#2C241D}
+00-動く見本-PC・iPad（個人）.html:324	#241D17	html[data-th="dark"] .stage,html[data-th="dark"] .hroom{background:#24
+00-動く見本-PC・iPad（個人）.html:325	#221B15	html[data-th="dark"] .opbar{background:#221B15;color:var(--ink2)}
+00-動く見本-PC・iPad（個人）.html:326	#3A2E1C	html[data-th="dark"] .off{background:#3A2E1C;color:#E7C46A}
+00-動く見本-PC・iPad（個人）.html:326	#E7C46A	html[data-th="dark"] .off{background:#3A2E1C;color:#E7C46A}
+00-動く見本-PC・iPad（個人）.html:327	#5C8FE0	html[data-th="dark"] .dot{background:#5C8FE0}
+00-動く見本-PC・iPad（個人）.html:330	#241D17	html[data-th="dark"] .kpi{background:#241D17;border-color:var(--line)}
+00-動く見本-PC・iPad（個人）.html:331	#2E2018	html[data-th="dark"] .kpi.al{background:#2E2018;border-color:#5A3A3E}
+00-動く見本-PC・iPad（個人）.html:331	#5A3A3E	html[data-th="dark"] .kpi.al{background:#2E2018;border-color:#5A3A3E}
+00-動く見本-PC・iPad（個人）.html:332	#1E1812	html[data-th="dark"] .lft,html[data-th="dark"] .pl{background:#1E1812}
+00-動く見本-PC・iPad（個人）.html:333	#2C241D	html[data-th="dark"] .seg{background:#2C241D;border-color:var(--line)}
+00-動く見本-PC・iPad（個人）.html:334	#8E1230	html[data-th="dark"] .seg .on,html[data-th="dark"] .seg b.on,html[data
+00-動く見本-PC・iPad（個人）.html:335	#2C241D	html[data-th="dark"] .gear,html[data-th="dark"] .role{background:#2C24
+00-動く見本-PC・iPad（個人）.html:336	#2A231C	html[data-th="dark"] .k{background:#2A231C;color:var(--ink)}
+00-動く見本-PC・iPad（個人）.html:337	#241D17	html[data-th="dark"] div[style*="background:#fff"],html[data-th="dark"
+00-動く見本-PC・iPad（個人）.html:338	#241D17	html[data-th="dark"] td[style*="background:#fff"],html[data-th="dark"]
+00-動く見本-PC・iPad（個人）.html:339	#F6E4E8	html[data-th="dark"] td[style*="background:#F6E4E8"],html[data-th="dar
+00-動く見本-PC・iPad（個人）.html:339	#F6E4E8	html[data-th="dark"] td[style*="background:#F6E4E8"],html[data-th="dar
+00-動く見本-PC・iPad（個人）.html:339	#3A1E22	html[data-th="dark"] td[style*="background:#F6E4E8"],html[data-th="dar
+00-動く見本-PC・iPad（個人）.html:340	#F4F8F5	html[data-th="dark"] [style*="background:#F4F8F5"]{background:#1F2C25!
+00-動く見本-PC・iPad（個人）.html:340	#1F2C25	html[data-th="dark"] [style*="background:#F4F8F5"]{background:#1F2C25!
+00-動く見本-PC・iPad（個人）.html:341	#F5EFE1	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（個人）.html:341	#FBF3E2	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（個人）.html:341	#F6F1E4	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（個人）.html:341	#FDFAF3	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（個人）.html:341	#F3ECDD	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（個人）.html:341	#FBF6EA	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（個人）.html:341	#EDE5D5	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（個人）.html:341	#F4EFE4	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（個人）.html:341	#EFE9DC	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（個人）.html:341	#FFFDF8	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（個人）.html:341	#FFFDF7	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（個人）.html:341	#2A2219	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（個人）.html:342	#FBF3E2	html[data-th="dark"] tr[style*="background:#FBF3E2"]{background:#2A221
+00-動く見本-PC・iPad（個人）.html:342	#2A2219	html[data-th="dark"] tr[style*="background:#FBF3E2"]{background:#2A221
+00-動く見本-PC・iPad（個人）.html:343	#3A322A	html[data-th="dark"] .sw{background:#3A322A}
+00-動く見本-PC・iPad（個人）.html:344	#8E1230	html[data-th="dark"] .sw.on{background:#8E1230}
+00-動く見本-PC・iPad（個人）.html:345	#EFE6D8	html[data-th="dark"] .sw i{background:#EFE6D8}
+00-動く見本-PC・iPad（個人）.html:346	#2A2219	html[data-th="dark"] .tri div{background:#2A2219;border-color:var(--li
+00-動く見本-PC・iPad（個人）.html:347	#8E1230	html[data-th="dark"] .tri div.on{background:#8E1230;border-color:#8E12
+00-動く見本-PC・iPad（個人）.html:347	#8E1230	html[data-th="dark"] .tri div.on{background:#8E1230;border-color:#8E12
+00-動く見本-PC・iPad（個人）.html:349	#241D17	html[data-th="dark"] .drt,html[data-th="dark"] .drr,html[data-th="dark
+00-動く見本-PC・iPad（個人）.html:353	#F3EADA	.house{flex:0 0 430px;background:#F3EADA;border:1px solid var(--line);
+00-動く見本-PC・iPad（個人）.html:356	#E6D9C0	.house .fl2{position:absolute;left:0;right:0;bottom:0;height:60px;back
+00-動く見本-PC・iPad（個人）.html:356	#D6C6A8	.house .fl2{position:absolute;left:0;right:0;bottom:0;height:60px;back
+00-動く見本-PC・iPad（個人）.html:364	#FDFAF3	cursor:pointer;background:#FDFAF3;transition:.12s}
+00-動く見本-PC・iPad（個人）.html:365	#CFC0A4	.tri3 span:hover{border-color:#CFC0A4}
+00-動く見本-PC・iPad（個人）.html:378	#FBF6EA	.np .ni:hover{background:#FBF6EA}
+00-動く見本-PC・iPad（個人）.html:379	#F6E4E8	.np .ni.on{background:#F6E4E8}
+00-動く見本-PC・iPad（個人）.html:386	#2A231C	html[data-th="dark"] .house{background:#2A231C;border-color:var(--line
+00-動く見本-PC・iPad（個人）.html:387	#221B15	html[data-th="dark"] .house .fl2{background:#221B15;border-color:#3A31
+00-動く見本-PC・iPad（個人）.html:387	#3A3129	html[data-th="dark"] .house .fl2{background:#221B15;border-color:#3A31
+00-動く見本-PC・iPad（個人）.html:388	#241D17	html[data-th="dark"] .rec5 .rc{background:#241D17;border-color:var(--l
+00-動く見本-PC・iPad（個人）.html:389	#2A2219	html[data-th="dark"] .tri3 span{background:#2A2219;border-color:var(--
+00-動く見本-PC・iPad（個人）.html:390	#8E1230	html[data-th="dark"] .tri3 span.on{background:#8E1230;border-color:#8E
+00-動く見本-PC・iPad（個人）.html:390	#8E1230	html[data-th="dark"] .tri3 span.on{background:#8E1230;border-color:#8E
+00-動く見本-PC・iPad（個人）.html:391	#241D17	html[data-th="dark"] .chart{background:#241D17;border-color:var(--line
+00-動く見本-PC・iPad（個人）.html:392	#241D17	html[data-th="dark"] .np .lft2{background:#241D17;border-color:var(--l
+00-動く見本-PC・iPad（個人）.html:393	#2C241D	html[data-th="dark"] .np .ni:hover{background:#2C241D}
+00-動く見本-PC・iPad（個人）.html:394	#3A1E22	html[data-th="dark"] .np .ni.on{background:#3A1E22}
+00-動く見本-PC・iPad（個人）.html:395	#241D17	html[data-th="dark"] .shelf2 div{background:#241D17;border-color:var(-
+00-動く見本-PC・iPad（個人）.html:425	#840C24	{id:'u',n:'○○音楽大学',k:'大学',c:'#840C24',t:'斎藤 めぐみ',in:'2026年4月1日'},
+00-動く見本-PC・iPad（個人）.html:426	#447862	{id:'m',n:'△△声楽教室',k:'音楽教室',c:'#447862',t:'鈴木 かおる',in:'2026年6月10日'}];
+00-動く見本-PC・iPad（個人）.html:449	#FBF6EA	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本-PC・iPad（個人）.html:449	#F2E6CE	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本-PC・iPad（個人）.html:449	#E5D3AE	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本-PC・iPad（個人）.html:449	#D9BE8C	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本-PC・iPad（個人）.html:449	#C9A87C	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本-PC・iPad（個人）.html:449	#B98F5E	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本-PC・iPad（個人）.html:449	#8C6115	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本-PC・iPad（個人）.html:449	#6B4A18	var COL24=['#FBF6EA','#F2E6CE','#E5D3AE','#D9BE8C','#C9A87C','#B98F5E'
+00-動く見本-PC・iPad（個人）.html:450	#EFD9D9	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本-PC・iPad（個人）.html:450	#E0B7BB	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本-PC・iPad（個人）.html:450	#C98C96	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本-PC・iPad（個人）.html:450	#A85566	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本-PC・iPad（個人）.html:450	#840C24	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本-PC・iPad（個人）.html:450	#5E2230	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本-PC・iPad（個人）.html:450	#DCE4DA	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本-PC・iPad（個人）.html:450	#B7CBBA	'#EFD9D9','#E0B7BB','#C98C96','#A85566','#840C24','#5E2230','#DCE4DA',
+00-動く見本-PC・iPad（個人）.html:451	#8FB09B	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本-PC・iPad（個人）.html:451	#5E8F74	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本-PC・iPad（個人）.html:451	#447862	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本-PC・iPad（個人）.html:451	#2F5949	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本-PC・iPad（個人）.html:451	#D7DEE4	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本-PC・iPad（個人）.html:451	#B0C0CC	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本-PC・iPad（個人）.html:451	#7F97A8	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本-PC・iPad（個人）.html:451	#4E6879	'#8FB09B','#5E8F74','#447862','#2F5949','#D7DEE4','#B0C0CC','#7F97A8',
+00-動く見本-PC・iPad（個人）.html:529	#F6F1E4	if(S.st==='失敗')return '<div class="card" style="background:#F6F1E4;bor
+00-動く見本-PC・iPad（個人）.html:529	#E8DFC8	if(S.st==='失敗')return '<div class="card" style="background:#F6F1E4;bor
+00-動く見本-PC・iPad（個人）.html:548	#CFC0A4	?'<div class="card" style="border-color:#CFC0A4;background:#FDFAF3">'
+00-動く見本-PC・iPad（個人）.html:548	#FDFAF3	?'<div class="card" style="border-color:#CFC0A4;background:#FDFAF3">'
+00-動く見本-PC・iPad（個人）.html:985	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本-PC・iPad（個人）.html:985	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本-PC・iPad（個人）.html:1013	#F6F1E4	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本-PC・iPad（個人）.html:1013	#E8DFC8	+'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><d
+00-動く見本-PC・iPad（個人）.html:1039	#EFE7D6	+'@page{size:A4;margin:20mm}body{font-family:"Hiragino Mincho ProN","Y
+00-動く見本-PC・iPad（個人）.html:1039	#261913	+'@page{size:A4;margin:20mm}body{font-family:"Hiragino Mincho ProN","Y
+00-動く見本-PC・iPad（個人）.html:1041	#6D5D50	+'h1{font-size:19px;letter-spacing:.2em;margin:0 0 4px}.sub{font-size:
+00-動く見本-PC・iPad（個人）.html:1042	#C9BCA6	+'table{width:100%;border-collapse:collapse;font-size:13px}th,td{borde
+00-動く見本-PC・iPad（個人）.html:1043	#F3ECDD	+'th{background:#F3ECDD;font-weight:400;color:#6D5D50;width:46%}'
+00-動く見本-PC・iPad（個人）.html:1043	#6D5D50	+'th{background:#F3ECDD;font-weight:400;color:#6D5D50;width:46%}'
+00-動く見本-PC・iPad（個人）.html:1044	#6D5D50	+'.nt{margin-top:18px;font-size:10.5px;color:#6D5D50;line-height:1.9;b
+00-動く見本-PC・iPad（個人）.html:1044	#E4DAC4	+'.nt{margin-top:18px;font-size:10.5px;color:#6D5D50;line-height:1.9;b
+00-動く見本-PC・iPad（個人）.html:1046	#6D5D50	+'.bar b{flex:1;font-weight:400;color:#6D5D50}.bar button{font:inherit
+00-動く見本-PC・iPad（個人）.html:1046	#C9BCA6	+'.bar b{flex:1;font-weight:400;color:#6D5D50}.bar button{font:inherit
+00-動く見本-PC・iPad（個人）.html:1047	#840C24	+'.bar button.p{background:#840C24;color:#fff;border-color:#840C24}'
+00-動く見本-PC・iPad（個人）.html:1047	#840C24	+'.bar button.p{background:#840C24;color:#fff;border-color:#840C24}'
+00-動く見本-PC・iPad（個人）.html:1213	#447862	if(ot)return '<td><div class="koma" style="border-left-color:#447862;b
+00-動く見本-PC・iPad（個人）.html:1213	#F1F6F2	if(ot)return '<td><div class="koma" style="border-left-color:#447862;b
+00-動く見本-PC・iPad（個人）.html:1353	#F6F1E4	+(S.st==='オフライン'?'<div class="wall" style="background:#F6F1E4;color:#8
+00-動く見本-PC・iPad（個人）.html:1353	#8C6115	+(S.st==='オフライン'?'<div class="wall" style="background:#F6F1E4;color:#8
+00-動く見本-PC・iPad（個人）.html:1353	#8C6115	+(S.st==='オフライン'?'<div class="wall" style="background:#F6F1E4;color:#8
+00-動く見本-PC・iPad（運営）.html:14	#D9CDB4	.dev{background:#fff;border:1px solid #D9CDB4;border-radius:14px;box-s
+00-動く見本-PC・iPad（運営）.html:35	#F0C24B	.badge.w{background:#F0C24B;color:#4A3510;font-weight:700}
+00-動く見本-PC・iPad（運営）.html:35	#4A3510	.badge.w{background:#F0C24B;color:#4A3510;font-weight:700}
+00-動く見本-PC・iPad（運営）.html:40	#F6EFDF	.wall{flex:0 0 30px;background:#F6EFDF;border-bottom:1px solid var(--l
+00-動く見本-PC・iPad（運営）.html:45	#FDF9F0	.side{flex:0 0 190px;background:#FDF9F0;border-right:1px solid var(--l
+00-動く見本-PC・iPad（運営）.html:47	#FBF6EA	.side .nv:hover{background:#FBF6EA}
+00-動く見本-PC・iPad（運営）.html:59	#CFC0A4	.kpi:hover{border-color:#CFC0A4}
+00-動く見本-PC・iPad（運営）.html:63	#E7C2C6	.kpi.al{border-color:#E7C2C6;background:#FDF6F6}.kpi.al .v{color:var(-
+00-動く見本-PC・iPad（運営）.html:63	#FDF6F6	.kpi.al{border-color:#E7C2C6;background:#FDF6F6}.kpi.al .v{color:var(-
+00-動く見本-PC・iPad（運営）.html:78	#F3ECDD	.spt th{background:#F3ECDD;color:var(--ink3);font-weight:400;text-alig
+00-動く見本-PC・iPad（運営）.html:80	#FDFAF3	.spt td.k{width:34%;font-weight:600;background:#FDFAF3}
+00-動く見本-PC・iPad（運営）.html:83	#CFC0A4	.fbtn:hover{border-color:#CFC0A4;color:var(--ink2)}
+00-動く見本-PC・iPad（運営）.html:84	#CFC0A4	.fbtn.on{color:var(--enji);border-color:#CFC0A4}
+00-動く見本-PC・iPad（運営）.html:86	#FDFAF3	background:#FDFAF3;border:1px dashed var(--line);border-radius:10px;pa
+00-動く見本-PC・iPad（運営）.html:87	#F6F1E4	.warn{background:#F6F1E4;border:1px solid #E8DFC8;border-radius:10px;p
+00-動く見本-PC・iPad（運営）.html:87	#E8DFC8	.warn{background:#F6F1E4;border:1px solid #E8DFC8;border-radius:10px;p
+00-動く見本-PC・iPad（運営）.html:101	#F3ECDD	.tag{display:inline-block;background:#F3ECDD;color:var(--ink2);border-
+00-動く見本-PC・iPad（運営）.html:108	#DFD4BE	.sw{width:44px;height:26px;border-radius:99px;background:#DFD4BE;posit
+00-動く見本-PC・iPad（運営）.html:116	#F3ECDD	th{position:sticky;top:0;z-index:3;background:#F3ECDD;color:var(--ink2
+00-動く見本-PC・iPad（運営）.html:120	#FDFAF3	tr.click{cursor:pointer}tr.click:hover td{background:#FDFAF3}
+00-動く見本-PC・iPad（運営）.html:122	#FBF6EA	.stick{position:sticky;left:0;background:#FBF6EA;z-index:2}
+00-動く見本-PC・iPad（運営）.html:132	#FFFDF8	.koma{border-left:3px solid var(--enji);background:#FFFDF8;border-radi
+00-動く見本-PC・iPad（運営）.html:134	#FBF3F4	.koma:hover{background:#FBF3F4}
+00-動く見本-PC・iPad（運営）.html:136	#FBF3E2	.koma.dup{border-left-color:var(--yama);background:#FBF3E2}
+00-動く見本-PC・iPad（運営）.html:137	#F4F8F5	.koma.mine{border-left-color:var(--midori);background:#F4F8F5}
+00-動く見本-PC・iPad（運営）.html:138	#B5A78F	.koma.busy{border-left-color:#B5A78F;background:#EFE9DC;color:#7C6C5E;
+00-動く見本-PC・iPad（運営）.html:138	#EFE9DC	.koma.busy{border-left-color:#B5A78F;background:#EFE9DC;color:#7C6C5E;
+00-動く見本-PC・iPad（運営）.html:138	#7C6C5E	.koma.busy{border-left-color:#B5A78F;background:#EFE9DC;color:#7C6C5E;
+00-動く見本-PC・iPad（運営）.html:139	#F7E9EA	.koma.now{border-left-color:var(--red);background:#F7E9EA;color:var(--
+00-動く見本-PC・iPad（運営）.html:140	#F4EFE4	.koma.busy.priv{border-left-style:dotted;border-left-width:4px;backgro
+00-動く見本-PC・iPad（運営）.html:142	#C9BCA6	.koma .pv{display:inline-block;font-size:9px;border:1px solid #C9BCA6;
+00-動く見本-PC・iPad（運営）.html:142	#7C6C5E	.koma .pv{display:inline-block;font-size:9px;border:1px solid #C9BCA6;
+00-動く見本-PC・iPad（運営）.html:150	#FBF8F1	.calh{display:flex;border-bottom:1px solid var(--line);background:#FBF
+00-動く見本-PC・iPad（運営）.html:160	#FBF8F1	.calb .gut{flex:0 0 58px;position:relative;border-right:1px solid var(
+00-動く見本-PC・iPad（運営）.html:164	#FDFAF3	.col.tdy{background:#FDFAF3}
+00-動く見本-PC・iPad（運営）.html:168	#FBF6EA	.hit:hover{background:#FBF6EA;outline:1px solid var(--line)}
+00-動く見本-PC・iPad（運営）.html:174	#FBF6EA	.hit.on{outline:2px solid var(--ink);outline-offset:-2px;background:#F
+00-動く見本-PC・iPad（運営）.html:176	#FFF7F8	line-height:1.35;overflow:hidden;cursor:pointer;border-left:3px solid 
+00-動く見本-PC・iPad（運営）.html:178	#EEF5F0	.ev.les{border-left-color:var(--midori);background:#EEF5F0}
+00-動く見本-PC・iPad（運営）.html:179	#B5A78F	.ev.sch{border-left-color:#B5A78F;background:#EFE9DC;color:#6D5D50}
+00-動く見本-PC・iPad（運営）.html:179	#EFE9DC	.ev.sch{border-left-color:#B5A78F;background:#EFE9DC;color:#6D5D50}
+00-動く見本-PC・iPad（運営）.html:179	#6D5D50	.ev.sch{border-left-color:#B5A78F;background:#EFE9DC;color:#6D5D50}
+00-動く見本-PC・iPad（運営）.html:180	#B5A78F	.ev.own{border-left-color:#B5A78F;border-left-style:dotted;border-left
+00-動く見本-PC・iPad（運営）.html:180	#F4EFE4	.ev.own{border-left-color:#B5A78F;border-left-style:dotted;border-left
+00-動く見本-PC・iPad（運営）.html:180	#6D5D50	.ev.own{border-left-color:#B5A78F;border-left-style:dotted;border-left
+00-動く見本-PC・iPad（運営）.html:190	#F3ECDD	.mini .mg b:hover{background:#F3ECDD}
+00-動く見本-PC・iPad（運営）.html:191	#F6E4E8	.mini .mg b.w{background:#F6E4E8}
+00-動く見本-PC・iPad（運営）.html:193	#C9BCA6	.mini .mg b.o{color:#C9BCA6}
+00-動く見本-PC・iPad（運営）.html:202	#CFC0A4	.wkc:hover{border-color:#CFC0A4}
+00-動く見本-PC・iPad（運営）.html:205	#F0C24B	.wkc.on i{color:#F0C24B}
+00-動く見本-PC・iPad（運営）.html:206	#F6E4E8	.grid th.tdyh{background:#F6E4E8;color:var(--enji);font-weight:700}
+00-動く見本-PC・iPad（運営）.html:207	#FDF7F8	.grid td.tdyc{background:#FDF7F8}
+00-動く見本-PC・iPad（運営）.html:209	#CFC0A4	.yc{margin-top:14px;border-color:#CFC0A4}
+00-動く見本-PC・iPad（運営）.html:221	#F4F8F5	.lgd i.sw2{background:#F4F8F5;border-left:3px solid var(--midori)}
+00-動く見本-PC・iPad（運営）.html:222	#F4EFE4	.lgd i.sw3{background:#F4EFE4;border-left:3px dotted #B5A78F}
+00-動く見本-PC・iPad（運営）.html:222	#B5A78F	.lgd i.sw3{background:#F4EFE4;border-left:3px dotted #B5A78F}
+00-動く見本-PC・iPad（運営）.html:223	#EFE9DC	.lgd i.sw4{background:#EFE9DC;border-left:3px solid #B5A78F}
+00-動く見本-PC・iPad（運営）.html:223	#B5A78F	.lgd i.sw4{background:#EFE9DC;border-left:3px solid #B5A78F}
+00-動く見本-PC・iPad（運営）.html:224	#FBF3E2	.lgd i.sw5{background:#FBF3E2;border-left:3px solid var(--yama)}
+00-動く見本-PC・iPad（運営）.html:232	#C3B6A2	font-size:12px;color:#C3B6A2;cursor:pointer}
+00-動く見本-PC・iPad（運営）.html:233	#FBF6EA	.slot:hover{background:#FBF6EA;color:var(--enji)}
+00-動く見本-PC・iPad（運営）.html:238	#FDFAF3	.pane .lft{flex:0 0 292px;border-right:1px solid var(--line);overflow-
+00-動く見本-PC・iPad（運営）.html:246	#2E6FD9	.dot{width:7px;height:7px;border-radius:50%;background:#2E6FD9;flex:no
+00-動く見本-PC・iPad（運営）.html:251	#F0E4D2	.post .av{width:28px;height:28px;border-radius:50%;background:#F0E4D2;
+00-動く見本-PC・iPad（運営）.html:255	#F6EFDF	.wl{background:#F6EFDF;border:1px solid #E8DFC8;border-radius:10px;pad
+00-動く見本-PC・iPad（運営）.html:255	#E8DFC8	.wl{background:#F6EFDF;border:1px solid #E8DFC8;border-radius:10px;pad
+00-動く見本-PC・iPad（運営）.html:268	#261913	.toast{position:fixed;left:50%;transform:translateX(-50%) translateY(1
+00-動く見本-PC・iPad（運営）.html:280	#241D17	html[data-th="dark"] .card,html[data-th="dark"] .box,html[data-th="dar
+00-動く見本-PC・iPad（運営）.html:282	#241D17	html[data-th="dark"] .box,html[data-th="dark"] .card.p0{background:#24
+00-動く見本-PC・iPad（運営）.html:283	#6B0A1D	html[data-th="dark"] .top{background:#6B0A1D;color:#fff}
+00-動く見本-PC・iPad（運営）.html:285	#221B15	html[data-th="dark"] .wall{background:#221B15;color:var(--ink2)}
+00-動く見本-PC・iPad（運営）.html:286	#1E1812	html[data-th="dark"] .side{background:#1E1812;border-color:var(--line)
+00-動く見本-PC・iPad（運営）.html:287	#241D17	html[data-th="dark"] .nv.on{background:#241D17;color:var(--enji)}
+00-動く見本-PC・iPad（運営）.html:289	#8E1230	html[data-th="dark"] .btn{background:#8E1230;color:#fff;border-color:#
+00-動く見本-PC・iPad（運営）.html:289	#8E1230	html[data-th="dark"] .btn{background:#8E1230;color:#fff;border-color:#
+00-動く見本-PC・iPad（運営）.html:290	#2C241D	html[data-th="dark"] .btn.g,html[data-th="dark"] .btn.mid{background:#
+00-動く見本-PC・iPad（運営）.html:291	#2C241D	html[data-th="dark"] .pill{background:#2C241D;color:var(--ink2);border
+00-動く見本-PC・iPad（運営）.html:292	#8E1230	html[data-th="dark"] .pill.on{background:#8E1230;color:#fff;border-col
+00-動く見本-PC・iPad（運営）.html:292	#8E1230	html[data-th="dark"] .pill.on{background:#8E1230;color:#fff;border-col
+00-動く見本-PC・iPad（運営）.html:293	#1A1510	html[data-th="dark"] .inp,html[data-th="dark"] .ta,html[data-th="dark"
+00-動く見本-PC・iPad（運営）.html:294	#2C241D	html[data-th="dark"] table th,html[data-th="dark"] .tbl th,html[data-t
+00-動く見本-PC・iPad（運営）.html:295	#241D17	html[data-th="dark"] table td,html[data-th="dark"] .tbl td,html[data-t
+00-動く見本-PC・iPad（運営）.html:296	#2A231C	html[data-th="dark"] .tbl td.k,html[data-th="dark"] .spt td.k,html[dat
+00-動く見本-PC・iPad（運営）.html:297	#1E1812	html[data-th="dark"] .note{background:#1E1812;border-color:var(--line)
+00-動く見本-PC・iPad（運営）.html:298	#2A2218	html[data-th="dark"] .warn,html[data-th="dark"] .wl{background:#2A2218
+00-動く見本-PC・iPad（運営）.html:298	#4A3E2C	html[data-th="dark"] .warn,html[data-th="dark"] .wl{background:#2A2218
+00-動く見本-PC・iPad（運営）.html:299	#2C241D	html[data-th="dark"] .fbtn{background:#2C241D;border-color:var(--line)
+00-動く見本-PC・iPad（運営）.html:300	#2A231C	html[data-th="dark"] .koma{background:#2A231C;border-left-color:var(--
+00-動く見本-PC・iPad（運営）.html:301	#1F2C25	html[data-th="dark"] .koma.mine{background:#1F2C25;border-left-color:v
+00-動く見本-PC・iPad（運営）.html:302	#2E2820	html[data-th="dark"] .koma.busy{background:#2E2820;border-left-color:#
+00-動く見本-PC・iPad（運営）.html:302	#6B5F4E	html[data-th="dark"] .koma.busy{background:#2E2820;border-left-color:#
+00-動く見本-PC・iPad（運営）.html:303	#282219	html[data-th="dark"] .koma.busy.priv{background:#282219}
+00-動く見本-PC・iPad（運営）.html:304	#3A1E22	html[data-th="dark"] .koma.now{background:#3A1E22;border-left-color:va
+00-動く見本-PC・iPad（運営）.html:305	#1E1812	html[data-th="dark"] .slot{background:#1E1812;color:var(--ink3)}
+00-動く見本-PC・iPad（運営）.html:306	#241D17	html[data-th="dark"] .slot.n{background:#241D17;color:var(--ink2)}
+00-動く見本-PC・iPad（運営）.html:307	#2C241D	html[data-th="dark"] .slot:hover,html[data-th="dark"] .slot .yt,html[d
+00-動く見本-PC・iPad（運営）.html:308	#3A1E22	html[data-th="dark"] .grid th.tdyh{background:#3A1E22;color:var(--enji
+00-動く見本-PC・iPad（運営）.html:309	#221A18	html[data-th="dark"] .grid td.tdyc{background:#221A18}
+00-動く見本-PC・iPad（運営）.html:310	#2C241D	html[data-th="dark"] .mini .mg b:hover{background:#2C241D}
+00-動く見本-PC・iPad（運営）.html:311	#3A1E22	html[data-th="dark"] .mini .mg b.w{background:#3A1E22}
+00-動く見本-PC・iPad（運営）.html:312	#8E1230	html[data-th="dark"] .mini .mg b.t{background:#8E1230;color:#fff}
+00-動く見本-PC・iPad（運営）.html:313	#5E5449	html[data-th="dark"] .mini .mg b.o{color:#5E5449}
+00-動く見本-PC・iPad（運営）.html:314	#1E1812	html[data-th="dark"] .tabs{background:#1E1812;border-color:var(--line)
+00-動く見本-PC・iPad（運営）.html:317	#1E1812	html[data-th="dark"] .st{background:#1E1812;color:var(--ink2)}
+00-動く見本-PC・iPad（運営）.html:318	#3A322A	html[data-th="dark"] .toast{background:#3A322A;color:#fff}
+00-動く見本-PC・iPad（運営）.html:319	#2C241D	html[data-th="dark"] .sk{background:#2C241D}
+00-動く見本-PC・iPad（運営）.html:320	#332A22	html[data-th="dark"] .tag{background:#332A22;color:var(--ink2)}
+00-動く見本-PC・iPad（運営）.html:321	#2C241D	html[data-th="dark"] .pl.on{background:#2C241D}
+00-動く見本-PC・iPad（運営）.html:323	#241D17	html[data-th="dark"] .stage,html[data-th="dark"] .hroom{background:#24
+00-動く見本-PC・iPad（運営）.html:324	#221B15	html[data-th="dark"] .opbar{background:#221B15;color:var(--ink2)}
+00-動く見本-PC・iPad（運営）.html:325	#3A2E1C	html[data-th="dark"] .off{background:#3A2E1C;color:#E7C46A}
+00-動く見本-PC・iPad（運営）.html:325	#E7C46A	html[data-th="dark"] .off{background:#3A2E1C;color:#E7C46A}
+00-動く見本-PC・iPad（運営）.html:326	#5C8FE0	html[data-th="dark"] .dot{background:#5C8FE0}
+00-動く見本-PC・iPad（運営）.html:329	#241D17	html[data-th="dark"] .kpi{background:#241D17;border-color:var(--line)}
+00-動く見本-PC・iPad（運営）.html:330	#2E2018	html[data-th="dark"] .kpi.al{background:#2E2018;border-color:#5A3A3E}
+00-動く見本-PC・iPad（運営）.html:330	#5A3A3E	html[data-th="dark"] .kpi.al{background:#2E2018;border-color:#5A3A3E}
+00-動く見本-PC・iPad（運営）.html:331	#1E1812	html[data-th="dark"] .lft,html[data-th="dark"] .pl{background:#1E1812}
+00-動く見本-PC・iPad（運営）.html:332	#2C241D	html[data-th="dark"] .seg{background:#2C241D;border-color:var(--line)}
+00-動く見本-PC・iPad（運営）.html:333	#8E1230	html[data-th="dark"] .seg .on,html[data-th="dark"] .seg b.on,html[data
+00-動く見本-PC・iPad（運営）.html:334	#2C241D	html[data-th="dark"] .gear,html[data-th="dark"] .role{background:#2C24
+00-動く見本-PC・iPad（運営）.html:335	#2A231C	html[data-th="dark"] .k{background:#2A231C;color:var(--ink)}
+00-動く見本-PC・iPad（運営）.html:336	#241D17	html[data-th="dark"] div[style*="background:#fff"],html[data-th="dark"
+00-動く見本-PC・iPad（運営）.html:337	#241D17	html[data-th="dark"] td[style*="background:#fff"],html[data-th="dark"]
+00-動く見本-PC・iPad（運営）.html:338	#F6E4E8	html[data-th="dark"] td[style*="background:#F6E4E8"],html[data-th="dar
+00-動く見本-PC・iPad（運営）.html:338	#F6E4E8	html[data-th="dark"] td[style*="background:#F6E4E8"],html[data-th="dar
+00-動く見本-PC・iPad（運営）.html:338	#3A1E22	html[data-th="dark"] td[style*="background:#F6E4E8"],html[data-th="dar
+00-動く見本-PC・iPad（運営）.html:339	#F4F8F5	html[data-th="dark"] [style*="background:#F4F8F5"]{background:#1F2C25!
+00-動く見本-PC・iPad（運営）.html:339	#1F2C25	html[data-th="dark"] [style*="background:#F4F8F5"]{background:#1F2C25!
+00-動く見本-PC・iPad（運営）.html:340	#F5EFE1	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（運営）.html:340	#FBF3E2	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（運営）.html:340	#F6F1E4	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（運営）.html:340	#FDFAF3	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（運営）.html:340	#F3ECDD	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（運営）.html:340	#FBF6EA	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（運営）.html:340	#EDE5D5	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（運営）.html:340	#F4EFE4	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（運営）.html:340	#EFE9DC	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（運営）.html:340	#FFFDF8	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（運営）.html:340	#FFFDF7	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（運営）.html:340	#2A2219	html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"
+00-動く見本-PC・iPad（運営）.html:341	#FBF3E2	html[data-th="dark"] tr[style*="background:#FBF3E2"]{background:#2A221
+00-動く見本-PC・iPad（運営）.html:341	#2A2219	html[data-th="dark"] tr[style*="background:#FBF3E2"]{background:#2A221
+00-動く見本-PC・iPad（運営）.html:342	#3A322A	html[data-th="dark"] .sw{background:#3A322A}
+00-動く見本-PC・iPad（運営）.html:343	#8E1230	html[data-th="dark"] .sw.on{background:#8E1230}
+00-動く見本-PC・iPad（運営）.html:344	#EFE6D8	html[data-th="dark"] .sw i{background:#EFE6D8}
+00-動く見本-PC・iPad（運営）.html:345	#2A2219	html[data-th="dark"] .tri div{background:#2A2219;border-color:var(--li
+00-動く見本-PC・iPad（運営）.html:346	#8E1230	html[data-th="dark"] .tri div.on{background:#8E1230;border-color:#8E12
+00-動く見本-PC・iPad（運営）.html:346	#8E1230	html[data-th="dark"] .tri div.on{background:#8E1230;border-color:#8E12
+00-動く見本-PC・iPad（運営）.html:348	#241D17	html[data-th="dark"] .drt,html[data-th="dark"] .drr,html[data-th="dark
+00-動く見本-PC・iPad（運営）.html:579	#9BBBA9	+'<div class="card" style="border-color:#9BBBA9;background:#F4F8F5">'
+00-動く見本-PC・iPad（運営）.html:579	#F4F8F5	+'<div class="card" style="border-color:#9BBBA9;background:#F4F8F5">'
+00-動く見本-PC・iPad（運営）.html:634	#840C24	return '<div onclick="S.nv=\'日\';draw()" style="aspect-ratio:1;border-
+00-動く見本-PC・iPad（運営）.html:634	#F0E9DA	return '<div onclick="S.nv=\'日\';draw()" style="aspect-ratio:1;border-
+00-動く見本-PC・iPad（運営）.html:636	#6D5D50	+(v>5?'#fff':'#6D5D50')+';cursor:pointer">'+(i+1)+'</div>'}).join('')+
+00-動く見本-PC・iPad（運営）.html:676	#A0917F	+(m[4]==='在籍'?'<span style="color:var(--midori)">在籍</span>':(m[4]==='休
+00-動く見本-PC・iPad（運営）.html:709	#F6E4E8	+(m[4]?'<span class="tag" style="background:#F6E4E8;color:var(--enji)"
+00-動く見本-PC・iPad（運営）.html:766	#2E6FD9	+(un?'<b style="color:#2E6FD9">未読 '+un+'件</b>':'未読は ありません')+'</div>'
+00-動く見本-PC・iPad（運営）.html:769	#E0C08A	+(canAll&&MISOU.length?'<span class="pill" style="border-color:#E0C08A
+00-動く見本-PC・iPad（運営）.html:769	#FBF3E2	+(canAll&&MISOU.length?'<span class="pill" style="border-color:#E0C08A
+00-動く見本-PC・iPad（運営）.html:801	#F6EFDF	+'<span class="tag">'+m[1]+'人</span>'+(ro?'<span class="tag" style="ba
+00-動く見本-PC・iPad（運営）.html:822	#A0917F	+'<td style="color:#A0917F">残していません</td></tr>'}).join('')
+00-動く見本-PC・iPad（運営）.html:874	#C9A0AB	+'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC">'
+00-動く見本-PC・iPad（運営）.html:874	#FFFCFC	+'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC">'
+00-動く見本-PC・iPad（運営）.html:931	#B23A48	return '<div class="card" style="border-left:3px solid '+(ng?'#B23A48'
+00-動く見本-PC・iPad（運営）.html:931	#8C6115	return '<div class="card" style="border-left:3px solid '+(ng?'#B23A48'
+00-動く見本-PC・iPad（運営）.html:933	#B23A48	+'<span class="tag" style="margin:0;background:'+(ng?'#B23A4818':'#8C6
+00-動く見本-PC・iPad（運営）.html:933	#8C6115	+'<span class="tag" style="margin:0;background:'+(ng?'#B23A4818':'#8C6
+00-動く見本-PC・iPad（運営）.html:1025	#A0917F	return '<div class="li plain" style="color:#A0917F"><span>'+v+'</span>
+00-動く見本-PC・iPad（運営）.html:1117	#FDFAF3	+'<div class="card" style="background:#FDFAF3"><div style="font-size:1
+00-動く見本-PC・iPad（運営）.html:1226	#FDFAF3	+'<div class="card" style="background:#FDFAF3">'
+00-動く見本-PC・iPad（運営）.html:1248	#261913	+'body{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;color:#261
+00-動く見本-PC・iPad（運営）.html:1248	#EFE7D6	+'body{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;color:#261
+00-動く見本-PC・iPad（運営）.html:1252	#6D5D50	+'.no{position:absolute;right:18mm;top:14mm;font-size:11px;color:#6D5D
+00-動く見本-PC・iPad（運営）.html:1253	#261913	+'.ate{font-size:19px;border-bottom:1px solid #261913;padding:0 60px 5
+00-動く見本-PC・iPad（運営）.html:1254	#261913	+'.amt{font-size:34px;font-weight:700;border-bottom:2px solid #261913;
+00-動く見本-PC・iPad（運営）.html:1256	#6D5D50	+'.rw .l{width:88px;color:#6D5D50}'
+00-動く見本-PC・iPad（運営）.html:1258	#C9BCA6	+'th,td{border:1px solid #C9BCA6;padding:7px 9px;text-align:left}'
+00-動く見本-PC・iPad（運営）.html:1259	#F3ECDD	+'th{background:#F3ECDD;font-weight:400;color:#6D5D50}'
+00-動く見本-PC・iPad（運営）.html:1259	#6D5D50	+'th{background:#F3ECDD;font-weight:400;color:#6D5D50}'
+00-動く見本-PC・iPad（運営）.html:1262	#B23A48	+'.stamp{position:absolute;right:26mm;bottom:56mm;width:78px;height:78
+00-動く見本-PC・iPad（運営）.html:1263	#B23A48	+'border-radius:50%;color:#B23A48;display:flex;align-items:center;just
+00-動く見本-PC・iPad（運営）.html:1265	#B23A48	+'.re{position:absolute;left:18mm;top:14mm;border:1.5px solid #B23A48;
+00-動く見本-PC・iPad（運営）.html:1265	#B23A48	+'.re{position:absolute;left:18mm;top:14mm;border:1.5px solid #B23A48;
+00-動く見本-PC・iPad（運営）.html:1267	#6D5D50	+'.nt{margin-top:20px;font-size:10.5px;color:#6D5D50;line-height:1.9;b
+00-動く見本-PC・iPad（運営）.html:1267	#E4DAC4	+'.nt{margin-top:20px;font-size:10.5px;color:#6D5D50;line-height:1.9;b
+00-動く見本-PC・iPad（運営）.html:1270	#6D5D50	+'.bar b{flex:1;font-weight:400;color:#6D5D50}'
+00-動く見本-PC・iPad（運営）.html:1271	#C9BCA6	+'.bar button{font:inherit;padding:9px 16px;border-radius:99px;border:
+00-動く見本-PC・iPad（運営）.html:1272	#261913	+'background:#fff;color:#261913;cursor:pointer}'
+00-動く見本-PC・iPad（運営）.html:1273	#840C24	+'.bar button.p{background:#840C24;color:#fff;border-color:#840C24}'
+00-動く見本-PC・iPad（運営）.html:1273	#840C24	+'.bar button.p{background:#840C24;color:#fff;border-color:#840C24}'
+00-動く見本-PC・iPad（運営）.html:1456	#CFC0A4	+(S.bnew?'<div class="card" style="border-color:#CFC0A4"><div style="d
+00-動く見本-PC・iPad（運営）.html:1474	#CFC0A4	+(S.bedit&&TBUSY[S.bedit]?'<div class="card" style="border-color:#CFC0
+00-動く見本-PC・iPad（運営）.html:1564	#FBF6EA	return '<tr'+(k[2]?'':' style="background:#FBF6EA"')+'>'
+00-動く見本-PC・iPad（運営）.html:1568	#F6E4E8	return '<td style="text-align:center;cursor:'+(can('post')&&ok?'pointe
+00-動く見本-PC・iPad（運営）.html:1570	#D8CCB6	+(on?'<span style="color:var(--enji);font-weight:700;font-size:15px">●
+00-動く見本-PC・iPad（運営）.html:1572	#F3ECDD	+'<tr style="background:#F3ECDD"><td class="stick" style="font-size:11
+00-動く見本-PC・iPad（運営）.html:1600	#A0917F	return '<div class="li" style="'+(can('post')&&ok?'':'color:#A0917F')+
+00-動く見本-PC・iPad（運営）.html:1643	#FBF0D8	+'<td>'+(p[6]?'<span style="color:var(--midori)">✓</span>':'<span clas
+00-動く見本-PC・iPad（運営）.html:1656	#A0917F	return '<div class="li" style="'+(ok?'':'color:#A0917F')+'" onclick="'
+00-動く見本-PC・iPad（運営）.html:1796	#B0A491	return '<th>'+(v==='（取り込みません）'?'<span style="color:#B0A491">'+hd+'<br>
+00-動く見本-PC・iPad（運営）.html:1798	#C0B5A2	return '<td'+(v==='（取り込みません）'?' class="usu" style="color:#C0B5A2;text-
+00-動く見本-PC・iPad（運営）.html:1805	#A0917F	return '<div class="li'+(off?' plain':'')+'" '+(off?'':'onclick="IMP.k
+00-動く見本-PC・iPad（運営）.html:1917	#FDFAF3	+(EXP.what.length?'<div class="card" style="background:#FDFAF3;padding
+00-動く見本-PC・iPad（運営）.html:1952	#A0917F	return '<div class="li plain" style="color:#A0917F"><span>'+v+'</span>
+00-動く見本-PC・iPad（運営）.html:2228	#CFC0A4	var h='<div class="card" style="border-color:#CFC0A4"><div style="font
+00-動く見本-PC・iPad（運営）.html:2405	#8C6115	var col={'場所':'#8C6115','先生':'#840C24'};
+00-動く見本-PC・iPad（運営）.html:2405	#840C24	var col={'場所':'#8C6115','先生':'#840C24'};
+00-動く見本-PC・iPad（運営）.html:2407	#B23A48	var stc={'まだ':['#B23A48','まだ 知らせていません'],'知らせた':['#8C6115','先生に 知らせました'
+00-動く見本-PC・iPad（運営）.html:2407	#8C6115	var stc={'まだ':['#B23A48','まだ 知らせていません'],'知らせた':['#8C6115','先生に 知らせました'
+00-動く見本-PC・iPad（運営）.html:2407	#447862	var stc={'まだ':['#B23A48','まだ 知らせていません'],'知らせた':['#8C6115','先生に 知らせました'
+00-動く見本-PC・iPad（運営）.html:2416	#F3ECDD	+'<span class="tag" style="background:#F3ECDD;color:'+col[x.k]+';margi
+00-動く見本-PC・iPad（運営）.html:2449	#A0917F	return '<div class="li plain" style="'+(x[2]?'':'color:#A0917F')+'"><s
+00-動く見本-PC・iPad（運営）.html:2467	#8C6115	return '<div class="card" style="border-left:3px solid #8C6115;max-wid
+00-動く見本-PC・iPad（運営）.html:2517	#C9BCA6	+'">'+(ok?'<span class="hn">空き</span>':'<span style="color:#C9BCA6">×<
+00-動く見本-PC・iPad（運営）.html:2530	#CFC0A4	?'<div class="card" style="border-color:#CFC0A4">'
+00-動く見本-PC・iPad（運営）.html:2616	#F6F1E4	return '<div class="li'+(nm===one?' plain':'')+'" '+(nm===one?'style="
+00-動く見本-PC・iPad（運営）.html:2625	#F6F1E4	return '<div class="li'+(now?' plain':'')+'" '+(now?'style="background
+00-動く見本-PC・iPad（運営）.html:2634	#CFC0A4	+'<div class="card" style="border-color:#CFC0A4">'
+00-動く見本-PC・iPad（運営）.html:2669	#FBF3E2	return '<tr'+(v?'':' style="background:#FBF3E2"')+'>'
+00-動く見本-PC・iPad（運営）.html:2671	#8C6115	+(v?'':' <span class="tag" style="margin:0;background:#F0C24B33;color:
+00-動く見本-PC・iPad（運営）.html:2680	#F6F1E4	return '<div class="li'+(now?' plain':'')+'" '+(now?'style="background
+00-動く見本-PC・iPad（運営）.html:2740	#A0917F	return '<div class="li plain" style="color:#A0917F"><span>'+v+'</span>
+00-動く見本-PC・iPad（運営）.html:2752	#447862	return '<td style="height:40px"><div style="height:100%;border-radius:
+00-動く見本-PC・iPad（運営）.html:2752	#F5EFE1	return '<td style="height:40px"><div style="height:100%;border-radius:
+00-動く見本-PC・iPad（運営）.html:2753	#B5A78F	+';display:flex;align-items:center;justify-content:center;font-size:11
+00-動く見本-PC・iPad（運営）.html:2765	#A0917F	return '<div class="li plain" style="color:#A0917F"><span>'+v+'</span>
+00-動く見本-PC・iPad（運営）.html:2780	#A0917F	return '<div class="li plain" style="'+(x[1]?'':'color:#A0917F')+'"><s
+00-動く見本-PC・iPad（運営）.html:2825	#FDF6F6	+'<input class="inp" type="time" step="300" style="max-width:140px;'+(
+00-動く見本-PC・iPad（運営）.html:2929	#F6F1E4	+(S.st==='オフライン'?'<div class="wall" style="background:#F6F1E4;color:#8
+00-動く見本-PC・iPad（運営）.html:2929	#8C6115	+(S.st==='オフライン'?'<div class="wall" style="background:#F6F1E4;color:#8
+00-動く見本-PC・iPad（運営）.html:2929	#8C6115	+(S.st==='オフライン'?'<div class="wall" style="background:#F6F1E4;color:#8
+00-動く見本-PC・iPad（運営）.html:3057	#F6F1E4	if(S.st==='失敗')return '<div class="card" style="background:#F6F1E4;bor
+00-動く見本-PC・iPad（運営）.html:3057	#E8DFC8	if(S.st==='失敗')return '<div class="card" style="background:#F6F1E4;bor

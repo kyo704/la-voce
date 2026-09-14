@@ -136,7 +136,7 @@ export default function OpsPosts({
                   borderBottom: i === PERMS.length - 1 ? "none" : `1px solid ${C.line2}`,
                   ...TYPE.li, fontFamily: FONT_STACK,
                   // ★★灰色に します。★隠しません（★裁定 §7-4）。
-                  color: allowed ? C.ink : "#A0917F"
+                  color: allowed ? C.ink : C.inkFaint
                 }}>
                 <span>
                   {p.label}

@@ -17539,6 +17539,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 onTell={handleTellTeacher}
                 onClose={() => setTellLesson(null)} />
             ) : null}
+            {/* ★★2026-09-14、★消した 曲が 読み直すと 戻って いました。
+                ★★ノートは 行を 消しません。★deleted_at を 入れるだけ です
+                  （★NotesV2.jsx:40）。
+                ★★下の 一覧を 作る ところで、★それを 見て いませんでした。
+                  ★★すぐ 下の note を 引く ところでは 見て います。
+                  ★★同じ 画面の 中で、★片方は 見て、★片方は 見て いない。
+                ★★消す こと 自体は 効いて いました ── ★手もとの 並びから
+                  ★抜くので 消えて 見え、★読み直すと 消えた 行を 拾って 戻って いました。 */}
             {/* ★★「みた曲」は、★レパートリーから 選びます（★裁定 §1）。
                 ★自由に 打たせません。★同じ曲が 2つの 名前で 増えるからです。
                 ★★増えると「その曲の 稽古の メモ」が 引けなく なります。 */}
@@ -17549,12 +17557,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 todayISO={realTodayDate}
                 repertoireNames={[...new Set([
                   ...repertoire.map((r) => r.name),
-                  ...myNotes.filter((n) => n.kind === "repertoire" && n.body).map((n) => n.body)
+                  ...myNotes.filter((n) => n.kind === "repertoire" && n.body && !n.deleted_at)
+                    .map((n) => n.body)
                 ])]}
                 repertoireItems={[...new Set([
                   ...repertoire.map((r) => r.name),
                   ...Object.keys(repertoireTessituraMap),
-                  ...myNotes.filter((n) => n.kind === "repertoire" && n.body).map((n) => n.body)
+                  ...myNotes.filter((n) => n.kind === "repertoire" && n.body && !n.deleted_at)
+                    .map((n) => n.body)
                 ])].filter(Boolean).map((name) => {
                   const note = myNotes.find((n) => n.kind === "repertoire" && n.body === name && !n.deleted_at);
                   const extra = repertoireTessituraMap[name] || {};

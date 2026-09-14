@@ -66,7 +66,13 @@ const tok = readRaw("lib", "tokens.js");
 const tokCode = readCode("lib", "tokens.js");
 assertTrue(/export const SERIES = \{/.test(tokCode), "系列色の役割が SERIES として定義されている");
 // ★仕様書の値をそのまま持ち込んでいないこと。持ち込むと色が2組になる。
-const specOnly = ["#840C24", "#BF8722", "#447862", "#F7F2E6", "#E5DDC7", "#261913", "#6D5D50", "#76665A", "#739E67"];
+// ★★#840C24 を この 並びから 外しました（★2026-09-14・坂本さんの お決め）。
+//   ★★2026-09-10 は「写真から 拾った 値だから 持ち込まない」と 決めて いました。
+//     ★★その あと、★見本 4本の `--enji` を 機械で 抜き出したら、
+//       ★4本 とも #840C24 でした。★写真からの 値では ありません でした。
+//     ★★正は 見本です。★えんじは #840C24 に 直しました。
+//   ★★ほかの 8つは、★いまも 写真からの 値の ままです。★禁じた ままに します。
+const specOnly = ["#BF8722", "#447862", "#F7F2E6", "#E5DDC7", "#261913", "#6D5D50", "#76665A", "#739E67"];
 specOnly.forEach((hex) => {
   assertTrue(!tokCode.includes(hex), `★仕様書だけの値 ${hex} を持ち込んでいない`);
 });
@@ -100,9 +106,29 @@ function isTintOf(hex, fg, bg) {
 }
 const CURTAIN = (tokCode.match(/curtain: "(#[0-9A-Fa-f]{6})"/) || [])[1];
 const CARD = (tokCode.match(/card: "(#[0-9A-Fa-f]{6})"/) || [])[1];
-const tints = outsideC.filter((h) => CURTAIN && CARD && isTintOf(h, CURTAIN, CARD));
+// ★★えんじを #7A1F2B から #840C24 に 直しました（★2026-09-14）。
+//   ★★5段の 目盛りの、★薄い ほうの 4つは、
+//     ★古い えんじを 札で 薄めた ものです。★新しい ほうでは ありません。
+//   ★★坂本さんの ご指示は「1色だけ 直す」でした。
+//     ★★だから 4つは 触って いません。★別の お決めを お待ちします。
+//   ★★この 見張りが 守って いるのは §1-2 ──「★新しい 色みを 作らない」です。
+//     ★★どちらの えんじから 薄めても、★色みは えんじ 1つの ままです。
+//     ★★なので、★新しい ほう か 古い ほうの どちらかの 濃淡なら 通します。
+//     ★★通しますが、★黙りません。★下に 並べて 出します。
+const ENJI_WAS = "#7A1F2B";
+const tintsNew = outsideC.filter((h) => CURTAIN && CARD && isTintOf(h, CURTAIN, CARD));
+const tintsOld = outsideC.filter((h) => CARD && isTintOf(h, ENJI_WAS, CARD));
+const tints = [...new Set([...tintsNew, ...tintsOld])];
 const newHues = outsideC.filter((h) => !tints.includes(h));
 assertTrue(tints.length > 0, `★えんじの濃淡が ある（${tints.join(", ")}）`);
+if (tintsOld.length) {
+  console.log("     ★★まだ 古い えんじ（" + ENJI_WAS + "）の 濃淡です: "
+    + tintsOld.join(", "));
+  console.log("     ★★新しい えんじ（" + CURTAIN + "）から 引き直すなら:");
+  console.log("       #E4D1CF → #E6CCCD ／ #CCA9AA → #D0A1A7");
+  console.log("       #B58185 → #BB7782 ／ #9A545C → #A24657");
+  console.log("     ★★引き直すかは、★坂本さんの お決めです。★勝手に 変えません。");
+}
 assertTrue(newHues.length <= 2,
   `★新しい色みは${newHues.length}件だけ（${newHues.join(", ")}）= 帯の色と s2-pale`);
 assertTrue(tokCode.includes("#DFC28D"), "s2-pale（山吹の淡いほう）だけを新しく足した");
