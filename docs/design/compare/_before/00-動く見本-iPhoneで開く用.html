@@ -1,6 +1,10 @@
 <!doctype html><html lang="ja"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Woolsong 動く見本 v2</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Woolsong">
+<meta name="theme-color" content="#FBF6EA">
+<title>Woolsong 動く見本（iPhone）</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{--enji:#840C24;--enji-bg:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
@@ -22,7 +26,7 @@ h1{font-size:19px;letter-spacing:.04em}
 .tabs{flex:0 0 56px;border-top:1px solid var(--line);display:flex;background:#FFFDF7}
 .tb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:10px;color:var(--ink3);cursor:pointer}
 .tb i{width:16px;height:2px;background:transparent;border-radius:2px;display:block}
-.tb.on{color:var(--enji);font-weight:700}.tb.on i{background:var(--enji-bg)}
+.tb.on{color:var(--enji);font-weight:700}.tb.on i{background:var(--enji)}
 /* ─── 部品 ─── */
 .hd{display:flex;align-items:center;justify-content:space-between;padding:10px 1px 6px}
 .hd h2{font-size:17px;letter-spacing:.06em}
@@ -49,14 +53,14 @@ h1{font-size:19px;letter-spacing:.04em}
 .seg div.on{background:#fff;color:var(--enji);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .seg div.rest{opacity:.42}
 .pill{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:7px 12px;font-size:11.5px;color:var(--ink2);background:#fff;cursor:pointer}
-.pill.on{background:var(--enji-bg);color:#fff;border-color:var(--enji-bg);font-weight:700}
+.pill.on{background:var(--enji);color:#fff;border-color:var(--enji);font-weight:700}
 .pill.sm{padding:5px 9px;font-size:10.5px}
 .pills{display:flex;gap:6px;margin-bottom:11px;flex-wrap:wrap}
 .li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 0;border-bottom:1px solid var(--line2);font-size:13px;cursor:pointer;min-height:44px}
 .li:last-child{border:none}
 .li s{color:var(--ink3);font-size:11.5px;text-decoration:none;text-align:right;flex:none}
 .box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:0 12px;margin-bottom:9px}
-.btn{display:block;width:100%;border:0;background:var(--enji-bg);color:#fff;border-radius:13px;padding:14px 0;
+.btn{display:block;width:100%;border:0;background:var(--enji);color:#fff;border-radius:13px;padding:14px 0;
  font:inherit;font-size:15px;font-weight:700;text-align:center;cursor:pointer}
 .btn.g{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:400;font-size:13.5px;padding:12px 0}
 .btn.sm{font-size:12.5px;padding:10px 0}
@@ -64,14 +68,14 @@ h1{font-size:19px;letter-spacing:.04em}
 .back{font-size:12.5px;color:var(--enji);cursor:pointer;padding:9px 0 3px;display:inline-block}
 .rowb{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .rowb s{width:30px;font-size:9.5px;color:var(--ink3);text-decoration:none;flex:none}
-.bar{height:8px;border-radius:4px;background:var(--enji-bg)}
+.bar{height:8px;border-radius:4px;background:var(--enji)}
 /* ─── ◎○△ ─── */
 .tri{display:flex;gap:7px}
 .tri div{flex:1;border:1px solid var(--line);border-radius:12px;padding:9px 0 8px;text-align:center;
  background:#FDFAF3;cursor:pointer;min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
 .tri div .g{font-size:21px;line-height:1;color:var(--enji)}
 .tri div .w{font-size:11.5px;color:var(--ink2)}
-.tri div.on{border:2px solid var(--enji-bg);background:#fff;padding:8px 0 7px}
+.tri div.on{border:2px solid var(--enji);background:#fff;padding:8px 0 7px}
 .tri div.on .w{color:var(--enji);font-weight:700}
 /* ─── 羊 ─── */
 .stage{position:relative;background:linear-gradient(#F6EEDC,#EFE4CC);border:1px solid var(--line);
@@ -101,7 +105,7 @@ h1{font-size:19px;letter-spacing:.04em}
 .mkrow .nm{flex:0 0 96px;font-size:10.5px;color:var(--ink2);line-height:1.3}
 .mkrow .cells{flex:1;display:flex;gap:2px}
 .mkrow .cells i{flex:1;height:15px;border-radius:3px;background:#F0E9DA;display:block}
-.mkrow .cells i.on{background:var(--enji-bg);opacity:.85}
+.mkrow .cells i.on{background:var(--enji);opacity:.85}
 .mkrow .n{flex:0 0 30px;text-align:right;font-size:10px;color:var(--ink3)}
 .mkx{display:flex;gap:2px;margin:2px 0 0 102px;font-size:8.5px;color:var(--ink3)}
 .mkx span{flex:1;text-align:center}
@@ -130,7 +134,7 @@ h1{font-size:19px;letter-spacing:.04em}
 .gr{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
 .gr .c{background:#fff;border:1px solid var(--line);border-radius:11px;height:62px;display:flex;align-items:center;
  justify-content:center;font-size:9.5px;color:var(--ink2);text-align:center;line-height:1.35;cursor:pointer;padding:2px}
-.gr .c.sel{border:2px solid var(--enji-bg);color:var(--enji);font-weight:700}
+.gr .c.sel{border:2px solid var(--enji);color:var(--enji);font-weight:700}
 .gr .c.no{color:#B9AA97;background:#FAF6EC}
 .cols{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
 .cols i{display:block;padding-top:100%;border-radius:50%;border:1px solid rgba(38,25,19,.10);cursor:pointer}
@@ -138,7 +142,7 @@ h1{font-size:19px;letter-spacing:.04em}
 .shelf{background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px 12px;margin-bottom:8px;cursor:pointer}
 .slots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:9px}
 .slots .s{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 0;text-align:center;font-size:10px;color:var(--ink2);cursor:pointer;min-height:44px;display:flex;flex-direction:column;justify-content:center;gap:2px}
-.slots .s.on{border:2px solid var(--enji-bg);color:var(--enji);font-weight:700}
+.slots .s.on{border:2px solid var(--enji);color:var(--enji);font-weight:700}
 .slots .s b{font-size:9px;color:var(--ink3);font-weight:400}
 /* ─── 調べる（有料） ─── */
 .lock{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 0;border-bottom:1px solid var(--line2);font-size:13px;cursor:pointer;min-height:44px;color:#A0917F}
@@ -147,11 +151,11 @@ h1{font-size:19px;letter-spacing:.04em}
 /* ─── トグル ─── */
 .sw{width:44px;height:26px;border-radius:99px;background:#DFD4BE;position:relative;flex:none;cursor:pointer;transition:.16s}
 .sw i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.16s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
-.sw.on{background:var(--enji-bg)}.sw.on i{left:21px}
+.sw.on{background:var(--enji)}.sw.on i{left:21px}
 /* ─── 順番（調べていること） ─── */
 .ord{display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid var(--line2);font-size:12.5px}
 .ord:last-child{border:none}
-.ord .no{width:20px;height:20px;border-radius:50%;background:var(--enji-bg);color:#fff;font-size:10.5px;display:flex;align-items:center;justify-content:center;flex:none}
+.ord .no{width:20px;height:20px;border-radius:50%;background:var(--enji);color:#fff;font-size:10.5px;display:flex;align-items:center;justify-content:center;flex:none}
 .ord .no.g2{background:#EFE7D6;color:var(--ink3)}
 .ord .up{margin-left:auto;font-size:15px;color:var(--ink3);cursor:pointer;padding:0 5px;flex:none}
 /* ─── 4つの状態 ─── */
@@ -179,7 +183,7 @@ h1{font-size:19px;letter-spacing:.04em}
 .tbl.wktbl th:first-child,.tbl.wktbl td:first-child{width:56px}
 .tbl.wktbl td{overflow:hidden}
 .scr{overflow-x:auto;border-radius:12px;border:1px solid var(--line)}
-.koma{background:#FFF;border-left:3px solid var(--enji-bg);border-radius:5px;padding:3px 5px;font-size:9.5px;line-height:1.4;text-align:left}
+.koma{background:#FFF;border-left:3px solid var(--enji);border-radius:5px;padding:3px 5px;font-size:9.5px;line-height:1.4;text-align:left}
 .dup{border-left-color:var(--yama);background:#FBF3E2}
 /* ─── シート ─── */
 .mask{position:absolute;inset:0;background:rgba(38,25,19,.28);opacity:0;pointer-events:none;transition:.2s;z-index:5}
@@ -208,7 +212,7 @@ h1{font-size:19px;letter-spacing:.04em}
  padding:9px 14px;background:linear-gradient(rgba(251,246,234,.92),rgba(251,246,234,0));z-index:3}
 .hband h2{font-size:16px;letter-spacing:.06em}
 .hband .m{font-size:11px;color:var(--ink2);margin-left:2px}
-.hfab{position:absolute;right:14px;bottom:16px;z-index:9;background:var(--enji-bg);color:#fff;
+.hfab{position:absolute;right:14px;bottom:16px;z-index:9;background:var(--enji);color:#fff;
  border-radius:99px;padding:13px 24px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(90,72,48,.28)}
 .hhit{position:absolute;z-index:2;cursor:pointer;border-radius:8px}
 .hhit:active{background:rgba(255,255,255,.25)}
@@ -230,7 +234,7 @@ h1{font-size:19px;letter-spacing:.04em}
 .dr1 div.on{color:var(--enji);font-weight:700;box-shadow:inset 0 -2px 0 var(--enji)}
 .dr2{display:flex;gap:6px;overflow-x:auto;padding:8px 13px;border-bottom:1px solid var(--line2)}
 .dr2 span{flex:none;border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-size:10.5px;color:var(--ink2);background:#fff;cursor:pointer;white-space:nowrap}
-.dr2 span.on{background:var(--enji-bg);color:#fff;border-color:var(--enji-bg)}
+.dr2 span.on{background:var(--enji);color:#fff;border-color:var(--enji)}
 .dr3{display:flex;align-items:center;gap:8px;padding:8px 13px;font-size:11px;color:var(--ink2);border-bottom:1px solid var(--line2)}
 .dr3 .sr{font-size:14px;cursor:pointer}
 .dr3 .od{margin-left:auto;border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-size:10.5px;background:#fff;cursor:pointer;white-space:nowrap;flex:none}
@@ -239,7 +243,7 @@ h1{font-size:19px;letter-spacing:.04em}
 .g5 .c{background:#fff;border:1px solid var(--line);border-radius:10px;aspect-ratio:1;display:flex;align-items:center;
  justify-content:center;font-size:8.5px;color:var(--ink2);text-align:center;line-height:1.3;cursor:pointer;padding:2px;position:relative}
 .g5 .c.sel{border:1.6px solid var(--ink)}
-.g5 .c.sel:after{content:'';position:absolute;right:4px;bottom:4px;width:6px;height:6px;border-radius:50%;background:var(--enji-bg)}
+.g5 .c.sel:after{content:'';position:absolute;right:4px;bottom:4px;width:6px;height:6px;border-radius:50%;background:var(--enji)}
 .g5 .c.no{color:#C3B6A2;background:#FAF6EC}
 .hcard{position:relative;border-radius:14px;overflow:hidden;height:290px;margin:0 -15px;border-bottom:1px solid var(--line)}
 .hcard svg{position:absolute;inset:0;width:100%;height:100%}
@@ -247,7 +251,7 @@ h1{font-size:19px;letter-spacing:.04em}
  font-size:12px;cursor:pointer;box-shadow:0 2px 8px rgba(90,72,48,.2);z-index:3}
 .drt{display:flex;align-items:center;gap:8px;padding:9px 13px;border-top:1px solid var(--line2);background:#FDFAF3;font-size:13px}
 .drt .x{margin-left:auto;border:1px solid var(--line);border-radius:9px;padding:7px 14px;font-size:12px;background:#fff;cursor:pointer}
-.drt .k{border:0;border-radius:9px;padding:8px 18px;font-size:12.5px;font-weight:700;background:var(--enji-bg);color:#fff;cursor:pointer}
+.drt .k{border:0;border-radius:9px;padding:8px 18px;font-size:12.5px;font-weight:700;background:var(--enji);color:#fff;cursor:pointer}
 .drr{display:flex;align-items:center;gap:5px;padding:6px 13px;background:#FDFAF3;overflow-x:auto}
 .drr b{font-weight:400;font-size:10px;color:var(--ink3);flex:none;margin-right:2px;white-space:nowrap}
 .drr .od{border:1px solid var(--line);border-radius:99px;padding:4px 10px;font-size:10.5px;background:#fff;cursor:pointer;white-space:nowrap;flex:none}
@@ -282,7 +286,7 @@ h1{font-size:19px;letter-spacing:.04em}
 .cal b{font-weight:400;font-size:9.5px;color:var(--ink3);text-align:center}
 .cal i{display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-radius:8px;background:#fff;
  border:1px solid var(--line2);font-size:11px;font-style:normal;cursor:pointer;color:var(--ink2)}
-.cal i.on{background:var(--enji-bg);color:#fff;border-color:var(--enji-bg);font-weight:700}
+.cal i.on{background:var(--enji);color:#fff;border-color:var(--enji);font-weight:700}
 .cal i.mid{background:#F6E4E8;border-color:#EBD2D8;color:var(--enji)}
 .cal i.no{color:#CFC3B0}
 .paper{background:#fff;border:1px solid var(--line);border-radius:10px;padding:15px 14px;margin-bottom:9px}
@@ -292,7 +296,7 @@ h1{font-size:19px;letter-spacing:.04em}
 .ptbl td{border-bottom:1px solid var(--line2);padding:6px 3px;vertical-align:middle}
 .ptbl td.r{text-align:right;white-space:nowrap}
 .ptbl td.n{text-align:right;white-space:nowrap;font-weight:700}
-.minibar{height:7px;background:var(--enji-bg);border-radius:4px;display:block;opacity:.75}
+.minibar{height:7px;background:var(--enji);border-radius:4px;display:block;opacity:.75}
 .phead{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--ink);padding-bottom:7px;margin-bottom:11px}
 .phead .t{font-size:15px;font-weight:700}
 .phead .s{font-size:10px;color:var(--ink3);text-align:right;line-height:1.6}
@@ -340,7 +344,7 @@ html[data-th="dark"] .tbl td.k,html[data-th="dark"] .spt td.k,html[data-th="dark
 html[data-th="dark"] .note{background:#1E1812;border-color:var(--line);color:var(--ink2)}
 html[data-th="dark"] .warn,html[data-th="dark"] .wl{background:#2A2218;border-color:#4A3E2C;color:var(--ink)}
 html[data-th="dark"] .fbtn{background:#2C241D;border-color:var(--line);color:var(--ink3)}
-html[data-th="dark"] .koma{background:#2A231C}
+html[data-th="dark"] .koma{background:#2A231C;border-left-color:var(--enji)}
 html[data-th="dark"] .koma.mine{background:#1F2C25;border-left-color:var(--midori)}
 html[data-th="dark"] .koma.busy{background:#2E2820;border-left-color:#6B5F4E;color:var(--ink2)}
 html[data-th="dark"] .koma.busy.priv{background:#282219}
@@ -383,13 +387,71 @@ html[data-th="dark"] [style*="background:#F4F8F5"]{background:#1F2C25!important}
 html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"] [style*="background:#FBF3E2"],html[data-th="dark"] [style*="background:#F6F1E4"],html[data-th="dark"] [style*="background:#FDFAF3"],html[data-th="dark"] [style*="background:#F3ECDD"],html[data-th="dark"] [style*="background:#FBF6EA"],html[data-th="dark"] [style*="background:#EDE5D5"],html[data-th="dark"] [style*="background:#F4EFE4"],html[data-th="dark"] [style*="background:#EFE9DC"],html[data-th="dark"] [style*="background:#FFFDF8"],html[data-th="dark"] [style*="background:#FFFDF7"]{background:#2A2219!important}
 html[data-th="dark"] tr[style*="background:#FBF3E2"]{background:#2A2219!important}
 html[data-th="dark"] .sw{background:#3A322A}
-
+html[data-th="dark"] .sw.on{background:var(--enji-bg)}
 html[data-th="dark"] .sw i{background:#EFE6D8}
 html[data-th="dark"] .tri div{background:#2A2219;border-color:var(--line)}
 html[data-th="dark"] .tri div.on{background:var(--enji-bg);border-color:var(--enji-bg)}
 html[data-th="dark"] .tri div.on .w,html[data-th="dark"] .tri div.on .g{color:#fff}
 html[data-th="dark"] .drt,html[data-th="dark"] .drr,html[data-th="dark"] .drhint,html[data-th="dark"] .drc{background:#241D17}
-</style></head><body>
+</style>
+<style>
+/* ══════════ iPhone で そのまま 開くための 上書き ══════════ */
+html,body{height:100%;overscroll-behavior:none}
+body{padding:0;gap:0;display:block;background:var(--paper);
+ -webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased}
+h1.mk-hide,p.mk-hide{display:none}
+.ph{width:100%;max-width:none;height:100vh;height:100dvh;border-radius:0;border:0;box-shadow:none}
+.st{flex:0 0 auto;padding-top:calc(env(safe-area-inset-top) + 6px);padding-bottom:4px;font-size:11px}
+.tabs{flex:0 0 auto;padding-bottom:env(safe-area-inset-bottom)}
+.tb{padding:9px 0 7px}
+.bd{-webkit-overflow-scrolling:touch;padding-left:max(15px,env(safe-area-inset-left));padding-right:max(15px,env(safe-area-inset-right))}
+.bd.full{padding:0}
+.sheet{padding-bottom:calc(16px + env(safe-area-inset-bottom));border-radius:20px 20px 0 0}
+#sheet.dr{max-height:62%;height:62%;padding-bottom:env(safe-area-inset-bottom)}
+.toast{bottom:calc(74px + env(safe-area-inset-bottom))}
+.hfab{bottom:calc(16px + env(safe-area-inset-bottom))}
+.hshadow,.hwalk{bottom:calc(114px + env(safe-area-inset-bottom))}
+.hwalk{bottom:calc(118px + env(safe-area-inset-bottom))}
+.hroom{min-height:0;height:100%}
+input,textarea,select{font-size:16px}   /* ★iOS の 自動ズームを 止めます */
+.inp,.ta{font-size:16px}
+/* デモの 引き出し */
+.rl{position:fixed !important;right:calc(46px + env(safe-area-inset-right)) !important;
+ top:calc(env(safe-area-inset-top) + 4px) !important;z-index:60 !important;width:30px !important;height:30px !important;
+ background:rgba(38,25,19,.72) !important;font-size:15px !important}
+.za{position:fixed !important;right:calc(82px + env(safe-area-inset-right)) !important;
+ top:calc(env(safe-area-inset-top) + 4px) !important;z-index:60 !important;height:30px !important;
+ background:rgba(38,25,19,.72) !important;font-size:13px !important;padding:0 12px !important}
+#mkbtn{position:fixed;right:calc(10px + env(safe-area-inset-right));
+ top:calc(env(safe-area-inset-top) + 4px);z-index:60;width:30px;height:30px;border-radius:50%;
+ background:rgba(38,25,19,.72);color:#fff;font-size:13px;display:flex;align-items:center;
+ justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#mkpanel{position:fixed;inset:0;z-index:59;background:rgba(38,25,19,.42);opacity:0;
+ pointer-events:none;transition:.2s}
+#mkpanel.on{opacity:1;pointer-events:auto}
+#mkinner{position:absolute;left:0;right:0;bottom:0;max-height:86%;overflow-y:auto;
+ background:var(--bg);border-radius:20px 20px 0 0;padding:12px 14px calc(20px + env(safe-area-inset-bottom));
+ transform:translateY(102%);transition:.24s cubic-bezier(.3,.9,.3,1)}
+#mkpanel.on #mkinner{transform:translateY(0)}
+#mkinner .demo,#mkinner .legend{width:auto;max-width:none;margin-bottom:10px}
+#mkclose{display:block;width:100%;border:0;background:var(--enji);color:#fff;border-radius:13px;
+ padding:13px 0;font:inherit;font-size:14px;font-weight:700;text-align:center;cursor:pointer}
+#mktitle{font-size:12px;color:var(--ink2);text-align:center;margin-bottom:10px;line-height:1.8}
+@media (min-width:520px){   /* PC で 開いたときは 端末の 形に 戻す */
+ body{display:flex;flex-direction:column;align-items:center;padding:20px 14px 40px;gap:12px;background:var(--bg)}
+ h1.mk-hide,p.mk-hide{display:block}
+ .ph{width:360px;height:812px;border-radius:30px;border:1px solid #DFD4BE;
+  box-shadow:0 1px 0 rgba(0,0,0,.03),0 10px 30px rgba(90,72,48,.14)}
+ .st{padding-top:0}
+ #mkbtn{display:none}
+ .rl{position:absolute !important;right:10px !important;top:4px !important;width:26px !important;height:26px !important}
+ .za{position:absolute !important;right:42px !important;top:4px !important;height:26px !important;padding:0 10px !important}
+ #mkpanel{position:static;opacity:1;pointer-events:auto;background:none;inset:auto}
+ #mkinner{position:static;transform:none;max-height:none;background:none;padding:0;border-radius:0}
+ #mkclose,#mktitle{display:none}
+}
+</style>
+</head><body>
 <h1>Woolsong ── 動く見本 v2</h1>
 <p class="lead">下のタブ・画面の中の切替・行・⚙ を 押してください。下の「デモの切替」で、普段は 見えない状態（空・読み込み中・失敗・オフライン・静かにする期間・調べる加入・運営モード）を 出せます。</p>
 <div class="ph">
@@ -728,14 +790,14 @@ function narabe(){
  if(n<=28){h+=D.map(function(x,i){var w=[40,65,88][x.voice-1];
    return '<div class="rowb"><s>'+(n<=14?md(x.d):(i%7===0?md(x.d):''))+'</s><div class="bar" style="width:'+w+'%;opacity:'+(0.5+x.voice*0.15)+'"></div></div>'}).join('');}
  else{h+='<div style="display:flex;align-items:flex-end;gap:2px;height:64px">'+D.map(function(x){
-   return '<i style="flex:1;display:block;background:var(--enji-bg);opacity:'+(0.35+x.voice*0.2)+';height:'+[35,62,92][x.voice-1]+'%"></i>'}).join('')+'</div>'
+   return '<i style="flex:1;display:block;background:var(--enji);opacity:'+(0.35+x.voice*0.2)+';height:'+[35,62,92][x.voice-1]+'%"></i>'}).join('')+'</div>'
    +'<div class="usu" style="text-align:right">1本＝1日</div>';}
  h+='</div>';
  h+='<div class="card"><div class="mini" style="margin-bottom:8px">のどの 調子</div>';
  if(n<=28){h+=D.map(function(x,i){var w=[38,62,86][x.nodo-1];
    return '<div class="rowb"><s>'+(n<=14?md(x.d):(i%7===0?md(x.d):''))+'</s><div class="bar" style="width:'+w+'%;opacity:'+(0.45+x.nodo*0.15)+'"></div></div>'}).join('');}
  else{h+='<div style="display:flex;align-items:flex-end;gap:2px;height:52px">'+D.map(function(x){
-   return '<i style="flex:1;display:block;background:var(--enji-bg);opacity:'+(0.3+x.nodo*0.2)+';height:'+[35,62,92][x.nodo-1]+'%"></i>'}).join('')+'</div>';}
+   return '<i style="flex:1;display:block;background:var(--enji);opacity:'+(0.3+x.nodo*0.2)+';height:'+[35,62,92][x.nodo-1]+'%"></i>'}).join('')+'</div>';}
  h+='</div>';
  h+='<div class="card"><div class="mini" style="margin-bottom:8px">昨夜の 睡眠</div>'
   +'<div style="display:flex;align-items:flex-end;gap:'+(n<=14?4:2)+'px;height:56px">'+D.map(function(x){
@@ -861,7 +923,7 @@ function kazoeru(){
  +'<div class="note" style="margin:-2px 0 11px">まんなかの値です。くらべる先は、あなた自身です。よその目安は 出しません。</div>'
  +'<div class="card"><div class="mini">食べ終えてから 寝るまで（54日）</div>'
  +'<div style="display:flex;align-items:flex-end;gap:5px;height:84px;margin:9px 0 3px">'
- +H.map(function(v){return '<div style="flex:1;background:var(--enji-bg);border-radius:3px 3px 0 0;height:'+(v/mx*100)+'%"></div>'}).join('')+'</div>'
+ +H.map(function(v){return '<div style="flex:1;background:var(--enji);border-radius:3px 3px 0 0;height:'+(v/mx*100)+'%"></div>'}).join('')+'</div>'
  +'<div style="display:flex;gap:5px;font-size:8.5px;color:var(--ink3)">'+['0','1','2','3','4','5','6','7+'].map(function(s){return '<span style="flex:1;text-align:center">'+s+'</span>'}).join('')+'</div>'
  +'<div class="usu" style="text-align:right">時間</div></div>'
  +'<div class="h3">詳しく 数える</div><div class="box">'
@@ -1394,7 +1456,7 @@ SH['したく']=function(){
    +Object.keys(S.put||{}).map(function(k){
      return '<span class="'+((S.slot||'たな')===k?'on':'')+'" onclick="S.slot=\''+k+'\';drawSheet()">'+k+'　'+S.put[k]+'</span>'}).join('')+'</div>':'')
  +'<div class="dr3"><span class="od" style="margin:0" onclick="closeSheet();push(\'さがす\')">さがす</span>'
- +'<span class="od" style="margin:0;'+(S.onlyHave?'background:var(--enji-bg);color:#fff;border-color:var(--enji-bg)':'')+'" onclick="S.onlyHave=S.onlyHave?0:1;drawSheet()">もっているもの</span>'
+ +'<span class="od" style="margin:0;'+(S.onlyHave?'background:var(--enji);color:#fff;border-color:var(--enji)':'')+'" onclick="S.onlyHave=S.onlyHave?0:1;drawSheet()">もっているもの</span>'
  +'<span class="od" onclick="S.ord=(S.ord+1)%4;drawSheet()">'+ORD[S.ord]+'</span></div>'
  +'<div class="drg"><div class="g5">'+items.map(function(v){
    return '<div class="c '+(S.wear===v?'sel':'')+' '+(HAVE[v]?'':'no')+'" onclick="'+(HAVE[v]?'pickItem(\''+esc(v)+'\')':'toast(\'まだ 持っていません\')')+'">'+(HAVE[v]?v:'まだ')+'</div>'}).join('')+'</div></div>';
@@ -2417,7 +2479,7 @@ SC['出欠つけ']=function(a){
    +'<div style="font-size:13.5px;margin-bottom:8px;color:var(--enji)" onclick="shuPick(\''+esc(nm)+'\')">'+nm+' ›'
    +(v?'':' <span class="tag" style="background:#F0C24B33;color:#8C6115">まだ</span>')+'</div>'
    +'<div class="two">'+['出席','休み','休講'].map(function(x){
-     return '<div class="btn g sm" style="'+(v===x?'border:2px solid var(--enji-bg);color:var(--enji);font-weight:700':'')+'" onclick="S.shu[\''+esc(K)+'\']=\''+x+'\';draw()">'+x+'</div>'}).join('')+'</div></div>'}).join('')
+     return '<div class="btn g sm" style="'+(v===x?'border:2px solid var(--enji);color:var(--enji);font-weight:700':'')+'" onclick="S.shu[\''+esc(K)+'\']=\''+x+'\';draw()">'+x+'</div>'}).join('')+'</div></div>'}).join('')
  +'<div class="btn" style="margin-top:11px" onclick="'+(yet?'toast(\'まだ '+'\'+'+yet+'+\'人 残っています\')':'toast(\'出席を つけました\');pop()')+'">つけ終わる</div>'
  +(grp?others(null):'')
  +'<div class="note"><b>お名前を 押すと、その方 ひとりの 画面に なります。</b>（1人ずつ つけたい とき）<br>'
@@ -2949,7 +3011,7 @@ SC['行事を出す']=function(edit){
  +t2(S.gy.h1)+':'+t2(S.gy.m1)+' 〜 '+(S.gy.end?t2(S.gy.h2)+':'+t2(S.gy.m2):'未定')+'</div></div>'
  +'<div class="usu" style="margin:-4px 0 5px">はじまり</div>'+timeWheel('gy1',t2(S.gy.h1)+':'+t2(S.gy.m1),'gy1')
  +'<div class="usu" style="margin:6px 0 5px">終わり　'
- +'<span class="pill sm" style="float:right;padding:2px 9px;'+(S.gy.end?'':'background:var(--enji-bg);color:#fff;border-color:var(--enji-bg)')+'" onclick="S.gy.end=S.gy.end?0:1;draw()">未定に する</span></div>'
+ +'<span class="pill sm" style="float:right;padding:2px 9px;'+(S.gy.end?'':'background:var(--enji);color:#fff;border-color:var(--enji)')+'" onclick="S.gy.end=S.gy.end?0:1;draw()">未定に する</span></div>'
  +(S.gy.end?timeWheel('gy2',t2(S.gy.h2)+':'+t2(S.gy.m2),'gy2'):'<div class="usu">終わりを 決めていません</div>')
  +'<div class="fl">場所　<span class="back" style="float:right;padding:0" onclick="push(\'場所を決める\')">足す・消す ›</span></div>'
  +'<div class="pills">'+MST.place.map(function(v){
@@ -3254,7 +3316,7 @@ function miniCal(){
    var inw=(d>=wa&&d<=wb),tdy=(d.getFullYear()===2026&&d.getMonth()===8&&d.getDate()===9);
    var off=(d.getMonth()!==mo),diff=Math.round((d-wkStart(0))/86400000);
    var st='text-align:center;font-size:11.5px;padding:5px 0;border-radius:6px;'
-    +(tdy?'background:var(--enji-bg);color:#fff;font-weight:700':(inw?'background:#F6E4E8':''))
+    +(tdy?'background:var(--enji);color:#fff;font-weight:700':(inw?'background:#F6E4E8':''))
     +(off?';color:#C9BCA6':'');
    return '<div style="'+st+'" onclick="setWK('+Math.floor(diff/7)+')">'+d.getDate()+'</div>'}).join('')
  +'</div><div class="usu" style="margin-top:6px">日を押すと その週へ</div></div>'}
@@ -4179,4 +4241,35 @@ $('#rl').onclick=function(){location.reload()};
 $('#za').onclick=function(){zCycle()};
 $('#th').onclick=function(){thCycle();$('#th').textContent=thIcon()};
 draw();
-</script></body></html>
+</script>
+<script>
+/* ── iPhone 版：見出しを 畳み、デモの 切替を 引き出しに 入れます ── */
+(function(){
+ document.querySelector('h1').classList.add('mk-hide');
+ document.querySelector('p.lead').classList.add('mk-hide');
+ var btn=document.createElement('div');btn.id='mkbtn';btn.textContent='⚙';
+ var pan=document.createElement('div');pan.id='mkpanel';
+ var inn=document.createElement('div');inn.id='mkinner';
+ var ttl=document.createElement('div');ttl.id='mktitle';
+ ttl.innerHTML='デモの 切替と、この画面の 説明<br>★ふだんは 見えない状態を、ここから 出せます';
+ var cls=document.createElement('div');cls.id='mkclose';cls.textContent='とじる';
+ var demo=document.getElementById('demo'),lg=document.getElementById('lg');
+ inn.appendChild(ttl);inn.appendChild(demo);inn.appendChild(lg);inn.appendChild(cls);
+ pan.appendChild(inn);document.body.appendChild(btn);document.body.appendChild(pan);
+ btn.onclick=function(){pan.classList.add('on')};
+ cls.onclick=function(){pan.classList.remove('on')};
+ pan.onclick=function(e){if(e.target===pan)pan.classList.remove('on')};
+ /* 時計を 本物に */
+ function clock(){var d=new Date();
+  var s=document.querySelector('.st span');
+  if(s)s.textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0')}
+ clock();setInterval(clock,20000);
+ /* 端末の 高さが 変わったとき（アドレスバーの 出入り）に 描き直す */
+ var t;window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(function(){
+  if(typeof draw==='function')draw()},200)});
+ /* 2本指ピンチ以外の ダブルタップ拡大を 抑える */
+ var last=0;document.addEventListener('touchend',function(e){
+  var n=Date.now();if(n-last<300)e.preventDefault();last=n},{passive:false});
+})();
+</script>
+</body></html>
