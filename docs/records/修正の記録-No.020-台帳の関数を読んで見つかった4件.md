@@ -1,5 +1,5 @@
 # 修正の記録 No.020 ── 台帳の 関数を 読んで 見つかった 4件
-全339行 / 末尾は「★★そうすれば、★私の 側でも 同じ ことを 確かめられます。」
+全402行 / 末尾は「★★そうすれば、★私の 側でも 同じ ことを 確かめられます。」
 
 ★見つけた日 2026-09-14（★Opus が 台帳を 直に 読んで）
 ★調べた日 2026-09-14（★私が 倉庫の 紙で 裏を 取りました）
@@ -227,7 +227,7 @@ POST /rest/v1/rpc/accept_teacher_invitation  {"p_code":"ZZZZNOPE"}
 
 | 組 | 紙に あるか | いまの お裁き |
 |---|---|---|
-| `assignments_get_old_row` ／ `assignments_old_identity` | ★★どちらも ありません（台帳だけ） | ★呼び手 待ち |
+| `assignments_get_old_row` ／ `assignments_old_identity` | ★★どちらも ありません（台帳だけ） | ★前者は 死。★後者は 生 |
 | `guard_enrollment_grade_label` ／ `guard_grade_label` | ★どちらも あります | ★★**両方 残す**（★重複では ない） |
 
 ### ★★2組目は、★重複では ありません（★2026-09-14・裁定 取り消し）
@@ -258,14 +258,78 @@ POST /rest/v1/rpc/accept_teacher_invitation  {"p_code":"ZZZZNOPE"}
 ★★同じ 中身＝同じ もの、では ありません。
 　★★**何に 付いて いるか**まで 見て、★はじめて 同じ もの と 言えます。
 
-### ★1組目は まだ 開いて います
+### ★★1組目も 片づきました（★2026-09-14・Opus が 台帳で）
 
-`assignments_get_old_row` ／ `assignments_old_identity`
+| 関数 | 呼び手 | お裁き |
+|---|---|---|
+| `assignments_old_identity` | ★決まり `assignments_all_owner_admin` の `WITH CHECK` から **3回**（org_id／teacher_id／student_id） | ★**生きて います** |
+| `assignments_get_old_row` | ★関数・決まり・引き金 の どれからも **呼ばれて いません** | ★★**死んで います** |
 
-★★どちらも 引き金に **付いて いません**。
-　★★つまり、★決まり（policy）か、★別の 関数から 呼ばれて います。
+★★`assignments_get_old_row` は 落とせます。★ただし **記録を 先に** 書きます
+　（★`accept_invitation` と 同じ 順 です）。
 
-★★落とす 前に、★呼び手を 探します ──
+---
+
+## ★★⑤ 同じ 決まりが、★2つの 層に あります（★2026-09-14・新しく 見つかりました）
+
+★★「担当の 教室・先生・生徒は、★あとから 変えられない」── ★この 決まりが
+　★`assignments` **だけ** 2か所に あります。
+
+| 層 | どこ | 何を 見るか |
+|---|---|---|
+| ★決まり | `assignments_all_owner_admin` の `WITH CHECK` | `assignments_old_identity` を 3回 |
+| ★引き金 | `trg_assignment_identity_immutable` | `org_id` / `teacher_id` / `student_id` |
+
+★★**同じ 3列** です。★`migration_identity_columns_immutable.sql:97-99` で 確かめました。
+
+### ★★ほかの 表は どうか ── ★引き金 **だけ** です
+
+★`supabase/migration_identity_columns_immutable.sql`（★2026-09-04・本番 適用済み）は、
+★4つの 表に 同じ 形の 引き金を 置いて います ──
+
+| 表 | 引き金 | 決まり側にも あるか |
+|---|---|---|
+| `teacher_student_links` | `trg_link_identity_immutable`（:89） | ★ありません |
+| `assignments` | `trg_assignment_identity_immutable`（:110） | ★★**あります** |
+| `org_events` | `trg_org_event_identity_immutable`（:129） | ★ありません |
+| `lessons` | `trg_lesson_identity_immutable`（:151） | ★ありません |
+
+★★`lessons_old_identity` ／ `links_old_identity` に あたる ものは、
+　★倉庫の 紙にも 台帳にも **ありません**。★探しました。
+
+★★つまり、★**`assignments` だけが 例外** です。
+
+### ★★どちらが「決まり」か ── ★紙に 答えが 書いて あります
+
+★`migration_identity_columns_immutable.sql:15-18`（★2026-09-04）──
+
+> ★★なぜ `WITH CHECK` では なく 引き金か
+> 　★RLS の 決まりに `OLD` は ありません。★更新前の 値を 参照できません。
+
+★★★引き金が「決まり」です。★2026-09-04 に、★そう 決めて 書き残して あります。
+　★★決まり側の 3回の 呼び出しは、★`OLD` が 無い ことを
+　　★別の 関数で 迂回した もの です。
+
+★★引き金の ほうが **強い** です ──
+　★`before update` は、★`service_role` でも 走ります。
+　★決まりは `service_role` には かかりません。
+
+### ★★それでも、★いま 外しません
+
+★★決まりを 直すのは「片づけ」では ありません。★**決まりの 変更** です。
+　★お指図の とおり、★報告だけ に します。
+
+★★外す なら、★先に 確かめる こと ──
+　★① 引き金が 本当に 付いて いるか（★台帳で。★紙では 付いて います）
+　★② 3列が 同じ か（★紙では 同じ でした）
+　★③ 外した あと、★`service_role` 以外でも 弾かれる か（★実地で）
+
+---
+
+### ★使った 探し方（★次に 同じ ことが あった とき の ため）
+
+★★どちらも 引き金に 付いて いません でした。
+　★★だから、★決まり（policy）か、★別の 関数を 探します ──
 
 ```sql
 -- ★① ほかの 関数の 中から 呼ばれて いないか
@@ -294,9 +358,8 @@ select t.tgname as "引き金", c.relname as "表", p.proname as "呼ぶ 関数"
    and p.proname in ('assignments_get_old_row','assignments_old_identity');
 ```
 
-★★①②③の どれにも 出て こない ほうが、★死んで います。
-　★★両方 出て こなければ、★**両方** 死んで います。
-　★★どちらも 倉庫の 紙に ありません。★SQLエディタ製 です。
+★★結果 ── ★②で `assignments_old_identity` が 出ました（★3回）。
+　★★`assignments_get_old_row` は、★①②③の どれにも 出ません でした。
 
 ---
 
