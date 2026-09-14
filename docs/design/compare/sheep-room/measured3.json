@@ -1,0 +1,309 @@
+{
+ "delivery": {
+  "head": "609dc6b",
+  "live": "d335941",
+  "unpushed": [
+   "609dc6b 羊のおうち ── 実機のご指摘4件（測って直しました）",
+   "6e965e8 No.018 第3段の紙に「流さないこと」の頭書き",
+   "662c812 No.019 ── 助言の道を、経路ごと消す（裁定 その59）",
+   "7a30517 No.018 第3段の紙（SELECTの決まりを落とす）と、見張りの但し書き",
+   "732f25d No.019.5 ── 数えるだけのために、値を国外へ運ばない（裁定 その61）",
+   "ff70f79 Vercelの地域をヘッダから確かめる道具 ── 関数は iad1（米国）",
+   "90b7e43 外へ出る道の棚おろし ── Opusの3つの問いに答える道具と報告",
+   "8f03198 B2 ── 2つの 層を 混ぜない ための 見張り（裁定 その55／その57）"
+  ]
+ },
+ "ceiling": [
+  {
+   "commit": "8b34cc2",
+   "why": "家具の 位置の ずれを 直す（部屋の 比の 決め打ち）",
+   "wall": null
+  },
+  {
+   "commit": "c12441a",
+   "why": "床を 48％に 広げ、割合を 1か所に",
+   "mode": "箱そのもの",
+   "stageW": 390,
+   "stageH": 634,
+   "floorPct": 48,
+   "wallPx": 329.7,
+   "floorPx": 304.3
+  },
+  {
+   "commit": "c09660d",
+   "why": "カメラが 下を 向きすぎない ように",
+   "mode": "箱そのもの",
+   "stageW": 390,
+   "stageH": 634,
+   "floorPct": 48,
+   "wallPx": 329.7,
+   "floorPx": 304.3
+  },
+  {
+   "commit": "3968a59",
+   "why": "ながめるは 羊を 優先（keepTopPct 5→20）",
+   "mode": "箱そのもの",
+   "stageW": 390,
+   "stageH": 634,
+   "floorPct": 48,
+   "wallPx": 329.7,
+   "floorPx": 304.3
+  },
+  {
+   "commit": "f63a608",
+   "why": "札と 字を 大きく（★lib/roomStage.js が 生まれた）",
+   "mode": "箱そのもの",
+   "stageW": 390,
+   "stageH": 634,
+   "floorPct": 48,
+   "wallPx": 329.7,
+   "floorPx": 304.3
+  },
+  {
+   "commit": "1961a29",
+   "why": "比の 決まった 舞台に 載せる",
+   "mode": "覆う(cover)",
+   "stageW": 887.6,
+   "stageH": 634,
+   "floorPct": 48,
+   "wallPx": 329.7,
+   "floorPx": 304.3
+  },
+  {
+   "commit": "9ff134a",
+   "why": "★画面ぜんぶの まま、舞台で そろえる（★stageFit）",
+   "mode": "収める(fit)",
+   "stageW": 390,
+   "stageH": 278.6,
+   "floorPct": 48,
+   "wallPx": 144.9,
+   "floorPx": 133.7
+  },
+  {
+   "commit": "609dc6b",
+   "why": "★実機の ご指摘 4件（★上に 6割）",
+   "mode": "収める(fit)",
+   "stageW": 390,
+   "stageH": 278.6,
+   "floorPct": 48,
+   "wallPx": 144.9,
+   "floorPx": 133.7
+  }
+ ],
+ "hits": [
+  {
+   "key": "furniture_bed",
+   "layer": "mid",
+   "w": 101.4,
+   "h": 77.7,
+   "padW": 125.4,
+   "padH": 101.7,
+   "tooSmall": false
+  },
+  {
+   "key": "furniture_piano",
+   "layer": "mid",
+   "w": 101.4,
+   "h": 67.6,
+   "padW": 125.4,
+   "padH": 91.6,
+   "tooSmall": false
+  },
+  {
+   "key": "furniture_shelf",
+   "layer": "mid",
+   "w": 58.5,
+   "h": 65.8,
+   "padW": 82.5,
+   "padH": 89.8,
+   "tooSmall": false
+  },
+  {
+   "key": "furniture_chair",
+   "layer": "mid",
+   "w": 58.5,
+   "h": 65.0,
+   "padW": 82.5,
+   "padH": 89.0,
+   "tooSmall": false
+  },
+  {
+   "key": "furniture_plant",
+   "layer": "mid",
+   "w": 42.9,
+   "h": 53.6,
+   "padW": 66.9,
+   "padH": 77.6,
+   "tooSmall": false
+  },
+  {
+   "key": "furniture_rug",
+   "layer": "front",
+   "w": 116.6,
+   "h": 46.6,
+   "padW": 140.6,
+   "padH": 70.6,
+   "tooSmall": false
+  },
+  {
+   "key": "wallhang_clock",
+   "layer": "back",
+   "w": 26.5,
+   "h": 26.5,
+   "padW": 50.5,
+   "padH": 50.5,
+   "tooSmall": false
+  },
+  {
+   "key": "wallhang_lamp",
+   "layer": "back",
+   "w": 23.2,
+   "h": 30.9,
+   "padW": 47.2,
+   "padH": 54.9,
+   "tooSmall": false
+  },
+  {
+   "key": "wallhang_candle",
+   "layer": "back",
+   "w": 16.6,
+   "h": 23.5,
+   "padW": 40.6,
+   "padH": 47.5,
+   "tooSmall": true
+  },
+  {
+   "key": "wallhang_painting",
+   "layer": "back",
+   "w": 29.8,
+   "h": 35.8,
+   "padW": 53.8,
+   "padH": 59.8,
+   "tooSmall": false
+  },
+  {
+   "key": "wallhang_hanger",
+   "layer": "back",
+   "w": 36.5,
+   "h": 12.2,
+   "padW": 60.5,
+   "padH": 36.2,
+   "tooSmall": true
+  },
+  {
+   "key": "garden_gazebo",
+   "layer": "mid",
+   "w": 101.4,
+   "h": 86.9,
+   "padW": 125.4,
+   "padH": 110.9,
+   "tooSmall": false
+  },
+  {
+   "key": "garden_lantern",
+   "layer": "mid",
+   "w": 39.0,
+   "h": 58.5,
+   "padW": 63.0,
+   "padH": 82.5,
+   "tooSmall": false
+  },
+  {
+   "key": "garden_hay_bale",
+   "layer": "mid",
+   "w": 54.6,
+   "h": 54.6,
+   "padW": 78.6,
+   "padH": 78.6,
+   "tooSmall": false
+  },
+  {
+   "key": "garden_pond",
+   "layer": "front",
+   "w": 107.6,
+   "h": 61.5,
+   "padW": 131.6,
+   "padH": 85.5,
+   "tooSmall": false
+  },
+  {
+   "key": "garden_bench",
+   "layer": "front",
+   "w": 89.7,
+   "h": 59.8,
+   "padW": 113.7,
+   "padH": 83.8,
+   "tooSmall": false
+  },
+  {
+   "key": "garden_fountain",
+   "layer": "mid",
+   "w": 62.4,
+   "h": 62.4,
+   "padW": 86.4,
+   "padH": 86.4,
+   "tooSmall": false
+  },
+  {
+   "key": "garden_field",
+   "layer": "mid",
+   "w": 101.4,
+   "h": 57.9,
+   "padW": 125.4,
+   "padH": 81.9,
+   "tooSmall": false
+  },
+  {
+   "key": "garden_flowerbed",
+   "layer": "mid",
+   "w": 78.0,
+   "h": 39.0,
+   "padW": 102.0,
+   "padH": 63.0,
+   "tooSmall": false
+  }
+ ],
+ "pad": 12,
+ "buttons": {
+  "shitaku": {
+   "x": 280,
+   "y": 708,
+   "w": 94,
+   "h": 48,
+   "right": 374,
+   "bottom": 756
+  },
+  "old": {
+   "x": 286,
+   "y": 721,
+   "w": 96,
+   "h": 44,
+   "right": 382,
+   "bottom": 765
+  },
+  "now": {
+   "x": 8,
+   "y": 721,
+   "w": 96,
+   "h": 44,
+   "right": 104,
+   "bottom": 765
+  },
+  "overlapOld": {
+   "x": 88,
+   "y": 35,
+   "overlaps": true
+  },
+  "overlapNow": {
+   "x": -176,
+   "y": 35,
+   "overlaps": false
+  },
+  "box": {
+   "top": 139,
+   "bottom": 773,
+   "h": 634,
+   "w": 390
+  }
+ }
+}

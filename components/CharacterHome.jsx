@@ -1558,7 +1558,7 @@ function resolvePos(saved, layout) {
 // ★押しのけ（同じマスに2つ置けない）まで含めた「最終的に落ちる場所」を返すこと。
 //   ここが単なるスナップだけだと、指を離した瞬間に別の場所へ飛び、
 //   目印が嘘になる。目印と着地点は必ず同じ関数から出す。
-function DraggableItem({ left, top, width, layer = "mid", editMode, minLeft = 3, maxLeft = 97, minTop, maxTop, aspect, onDragEnd, resolveSnap, transform, anchor = "floor", children }) {
+function DraggableItem({ itemId, left, top, width, layer = "mid", editMode, minLeft = 3, maxLeft = 97, minTop, maxTop, aspect, onDragEnd, resolveSnap, transform, anchor = "floor", children }) {
   const wrapRef = useRef(null);
   const [dragLeft, setDragLeft] = useState(null);
   const [dragTop, setDragTop] = useState(null);
@@ -1624,6 +1624,12 @@ function DraggableItem({ left, top, width, layer = "mid", editMode, minLeft = 3,
       )}
     <div
       ref={wrapRef}
+      // ★★名札（★2026-09-14）。★調べる ための ものです。★見た目は 変わりません。
+      //   ★★重なった ところで、★どれが 押しどころを 取って いるかを
+      //     `document.elementsFromPoint` で 見分ける ため に 要ります。
+      //   ★tools/diagnose_furniture_overlap.js が これを 読みます。
+      data-item-id={itemId}
+      data-layer={layer}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -1959,9 +1965,17 @@ function InteriorDraggable({ itemKey, startLeft, startTop, band, onDragEnd, hit,
     //   ★中身の範囲は 名簿が 持ちます（contentX / contentY・★1点ずつ 実測）。
     <div ref={ref} onPointerDown={down} onPointerMove={move}
       onPointerUp={up} onPointerCancel={up}
+      // ★★名札（★2026-09-14）。★調べる ための ものです。★見た目は 変わりません。
+      //   ★★重なった ところで、★どれが 押しどころを 取って いるかを
+      //     `document.elementsFromPoint` で 見分ける ため に 要ります。
+      //   ★tools/diagnose_furniture_overlap.js が これを 読みます。
+      data-item-id={itemKey}
+      data-layer="interior"
+      data-hit={hit ? `${hit.left},${hit.right},${hit.top},${hit.bottom}` : "0,0,0,0"}
       style={{ ...style, touchAction: "none", cursor: "grab", pointerEvents: "none" }}>
       {children}
       <div aria-hidden="true"
+        data-hitpad={itemKey}
         style={{
           position: "absolute",
           left: `${hit ? hit.left : 0}%`,
@@ -2739,6 +2753,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
 
       {placedFurniture.includes("furniture_rug") && (
         <DraggableItem
+          itemId="furniture_rug"
           left={resolvePos((equipped.furniturePositions || {}).furniture_rug, FURNITURE_LAYOUT.furniture_rug).left}
           top={resolvePos((equipped.furniturePositions || {}).furniture_rug, FURNITURE_LAYOUT.furniture_rug).top}
           width={FURNITURE_LAYOUT.furniture_rug.width} layer={FURNITURE_LAYOUT.furniture_rug.layer}
@@ -2767,7 +2782,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
         const layout = FURNITURE_LAYOUT[k];
         const resolved = resolvePos((equipped.furniturePositions || {})[k], layout);
         return (
-          <DraggableItem key={k}
+          <DraggableItem key={k} itemId={k}
             left={resolved.left} top={resolved.top} width={layout.width} layer={layout.layer}
             aspect={layout.aspect}
             editMode={editMode}
@@ -2791,7 +2806,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
         const layout = WALLHANG_LAYOUT[k];
         const resolved = resolvePos((equipped.wallhangPositions || {})[k], layout);
         return (
-          <DraggableItem key={k}
+          <DraggableItem key={k} itemId={k}
             left={resolved.left} top={resolved.top} width={layout.width} layer={layout.layer}
             aspect={layout.aspect}
             editMode={editMode} anchor="wall"
@@ -3100,7 +3115,7 @@ function GardenScene({ equipped, owned, onUpdatePosition, totalDaysRecorded = 0,
         const layout = GARDEN_LAYOUT[k];
         const resolved = resolvePos((equipped.gardenPositions || {})[k], layout);
         return (
-          <DraggableItem key={k}
+          <DraggableItem key={k} itemId={k}
             left={resolved.left} top={resolved.top} width={layout.width} layer={layout.layer}
             aspect={layout.aspect}
             editMode={editMode}
