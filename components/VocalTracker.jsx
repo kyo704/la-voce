@@ -18484,8 +18484,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 ★★統計を 1つも 出しません。★書いたものを 並べ直すだけです。
                   ★だから 表示ゲートを 通しません。★何も 言っていないからです。
                 ★数と 言葉は lib/lookBack.js が 持ちます。 */}
+            {/* ★★LookBackV2 も 自分の 中に 状態を 持ちます
+                （★並べる／さかのぼる／くらべる／かぞえる の 札、★期間、★順番の 画面）。
+                ★★NotesV2 と 同じく、★作り直して 戻します（★key）。
+                ★★2026-09-14、★はじめ ここを 忘れて いました。
+                  ★「ふりかえる」を 押しても、★かぞえるの ままでした。 */}
             {activeTab === "analysis" && layoutV2 && mayUseForAnalysis(profile) && (
-              <LookBackV2 entries={entries} todayISO={realTodayDate} notOutDays={notOutDays}
+              <LookBackV2
+                key={"lookback-" + tabResetKey} entries={entries} todayISO={realTodayDate} notOutDays={notOutDays}
                 performanceDays={performances.map((pf) => pf.performed_on).filter(Boolean)}
                 onOpenMore={() => setActiveTab("more")}
                 profile={profile}

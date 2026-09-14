@@ -740,20 +740,31 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
             // ★★見本 nRep() ── ★左に 曲名（太字）＋ 作曲家・役。★右に 様子＋記録日数。
             //   ★タップで 曲の 台帳（詳しい 画面）に 遷移します（★見本 SC['曲']）。
             //   ★「…」は ここでは 出しません。★台帳の 中に 移しました。
-            <Card key={`${n.noteId || "repertoire"}-${n.name || ""}`} className="rep" style={{ minHeight: 44, cursor: "pointer" }}
+            // ★★2026-09-14、★1段 大きく しました（★坂本さんの お決め ㋐）。
+            //   ★★見本の `.rep .t` は 14px です。★いまは 16px に します。
+            //     ★★つまり **見本より 大きい** 形です。★お決めが 上です。
+            //   ★★内側の 余白も 12/13 → 14/14 に します。
+            //     ★★ここだけ です。★`SPACE.cardPadY/X` は 触りません。
+            //       ★触ると、★すべての 札が 一緒に 動きます。
+            //   ★★作曲家の 行は、★前から 出して います（★下の `n.composer`）。
+            //     ★★出て いなかったのは、★試しの 記録に 作曲家が 無かった ため です。
+            <Card key={`${n.noteId || "repertoire"}-${n.name || ""}`} className="rep"
+              style={{ minHeight: 44, cursor: "pointer", padding: "14px 14px" }}
               role="button" tabIndex={0}
               onClick={() => setRepDetailName(n.name)}
               onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setRepDetailName(n.name); }}>
-              <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-                <div style={{ ...TYPE.body, lineHeight: 1.6, flex: 1, minWidth: 0 }}>
-                  <b>{n.name || "（曲名 まだ）"}</b>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+                <div style={{ ...TYPE.body, lineHeight: 1.55, flex: 1, minWidth: 0 }}>
+                  <b style={{ fontSize: rem(16) }}>{n.name || "（曲名 まだ）"}</b>
                   {(n.composer || n.positionIn) ? (
-                    <><br /><span style={small}>{n.composer}{n.composer && n.positionIn ? "　" : ""}{n.positionIn}</span></>
+                    <><br /><span style={{ ...small, fontSize: rem(12) }}>
+                      {n.composer}{n.composer && n.positionIn ? "　" : ""}{n.positionIn}
+                    </span></>
                   ) : null}
                 </div>
-                <div style={{ ...TYPE.usual, textAlign: "right", flexShrink: 0 }}>
+                <div style={{ ...TYPE.usual, fontSize: rem(12), textAlign: "right", flexShrink: 0 }}>
                   {n.status || "はじめたばかり"}<br />
-                  <span style={small}>記録 {n.recordDays || 0}日</span>
+                  <span style={{ ...small, fontSize: rem(12) }}>記録 {n.recordDays || 0}日</span>
                 </div>
               </div>
             </Card>

@@ -188,13 +188,23 @@ export default function CountV2({ entries, dates, todayISO, profile, userEmail, 
       {/* ★★あなたの ふだん。★1つも 出せなければ、★枠ごと 出しません。 */}
       {rows.length > 0 || written > 0 ? (
         <>
-          <H3>あなたの ふだん</H3>
+          {/* ★★2026-09-14、★見本に 戻しました（★坂本さんの お決め）。
+              ★★見本 `kazoeru()` は `.li` を 使って います ──
+                `.li{padding:11px 0;font-size:13px;min-height:44px}`
+              ★★ここは `.kv`（11.5px・padding 5px）でした。★小さすぎました。
+              ★★見出しも「あなたの **普段**」が 見本です。
+              ★★下の 注（まんなかの値です…）も 見本に あります。★足しました。 */}
+          <H3>あなたの 普段</H3>
           <Card>
-            {rows.map((r) => (
-              <Kv key={r.key} right={word(r.unit, r.got.value)}>{r.label}</Kv>
+            {rows.map((r, i) => (
+              <Li key={r.key} right={word(r.unit, r.got.value)}
+                last={i === rows.length - 1 && !(written > 0)}>{r.label}</Li>
             ))}
-            <Kv right={`${written}日`} last>書いた日</Kv>
+            <Li right={`${written}日`} last>書いた日</Li>
           </Card>
+          <Note style={{ margin: "-2px 0 11px" }}>
+            まんなかの値です。くらべる先は、あなた自身です。よその目安は 出しません。
+          </Note>
         </>
       ) : null}
 
