@@ -169,6 +169,7 @@ import {
 import { readProfileExtras } from "@/lib/profileExtras";
 import { sheepThanks } from "@/lib/todayCard";
 import { VIEW, DRESS, SHELF, SEG_TABS, COPY as DRAWER_COPY, SIZES as DRAWER_SIZES, HOME_COLORS } from "@/lib/homeDrawer";
+import { resetTabState, nextResetKey } from "@/lib/tabReset";
 import SheepShelf from "@/components/SheepShelf";
 import { shelfRows } from "@/lib/repertoireLog";
 import { itemsFor, sortItems } from "@/lib/drawerItems";
@@ -10838,6 +10839,39 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★★時間割（★個人の もの・★裁定 2026-09-11・その15 ⑦）。
   //   ★★教室の ものでは ありません。★学校の コマも 出て きません。
   const [showTimetable, setShowTimetable] = useState(false);
+  // ★★自分の 中に 状態を 持つ 画面を、★作り直す ための 数（★lib/tabReset.js）。
+  //   ★★下の 帯を 押すたびに 1つ 増えます。★NotesV2 の `key` に 使います。
+  const [tabResetKey, setTabResetKey] = useState(0);
+
+  /**
+   * ★下の 帯を 押した とき（★2026-09-14・坂本さんの ご報告）。
+   *
+   *   ★★これまでは 名札を 変えるだけ でした。
+   *     ★★同じ 帯を もう一度 押しても、★名札は すでに その 値です。
+   *       ★何も 起きません。★時間割を 開いた ままに なって いました。
+   *
+   *   ★★いまは、★どの 帯を 押しても、★下の 状態を ぜんぶ 戻します。
+   *     ★★同じ 帯でも 例外に しません（★ご指示）。
+   *
+   *   ★★どれを 戻すかは `lib/tabReset.js` が 1つで 決めます。
+   *     ★★ここに 書き並べると、★状態を 足した 日に 1つ 抜けます。
+   */
+  const goTab = useCallback((key) => {
+    resetTabState({
+      showTimetable: setShowTimetable,
+      recordSheet: setRecordSheet,
+      recordView: setRecordView,
+      saveCardData: setSaveCardData,
+      tellLesson: setTellLesson,
+      notesSubTab: setNotesSubTab,
+      lessonRoleChoice: setLessonRoleChoice,
+      opsOrgId: setOpsOrgId,
+      homeState: setHomeState
+    }, VIEW);
+    // ★★自分の 中に 状態を 持つ 画面は、★作り直して 戻します。
+    setTabResetKey((n) => nextResetKey(n));
+    setActiveTab(key);
+  }, []);
   const [moreSection, setMoreSection] = useState(null);
   // ★★毎日 聞く 5つ（★見本 A10）。★端末ごとに 覚えます。★サーバに 送りません。
   //   ★決めは lib/dailyAsk.js が 持ちます。★ここで 決めません。
@@ -13711,7 +13745,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   label: tb.labelKey ? t(tb.labelKey) : tb.label
                 }))}
                 activeKey={activeTab}
-                onSelect={setActiveTab} />
+                onSelect={goTab} />
             );
           }
           return (
@@ -17591,8 +17625,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             {/* ★★「みた曲」は、★レパートリーから 選びます（★裁定 §1）。
                 ★自由に 打たせません。★同じ曲が 2つの 名前で 増えるからです。
                 ★★増えると「その曲の 稽古の メモ」が 引けなく なります。 */}
+            {/* ★★NotesV2 は 自分の 中に 状態を 持ちます
+                （★どの 札・書きかけ・曲の 中・1枚の 出来上がり）。
+                ★★外から 戻せないので、★作り直して 戻します（★key）。
+                ★★台帳を 読みません（★親から もらいます）。★重く ありません。 */}
             {activeTab === "notes" && layoutV2 && !tellLesson && (
               <NotesV2
+                key={"notes-" + tabResetKey}
                 notes={myNotes}
                 saving={noteSaving}
                 todayISO={realTodayDate}

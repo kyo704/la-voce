@@ -51,7 +51,11 @@ export default function MyTimetable({ userId, onBack }) {
   // ★★どの 画面を 出して いるか。★見本の push と 同じ 積み方です。
   const [view, setView] = useState("grid");
   const [cell, setCell] = useState(null);
-  const [help, setHelp] = useState(true);
+  // ★★説明は、★はじめは 閉じて おきます（★2026-09-14・坂本さんの お決め）。
+  //   ★★見本は 開いた ままが 既定です（`if(S.jkH===undefined)S.jkH=1`）。
+  //     ★★ここは 見本と ちがえます。★坂本さんの ご指示が 上です。
+  //   ★★「？ 説明」の 札は 残ります。★押せば 出ます。★消して いません。
+  const [help, setHelp] = useState(false);
 
   const load = useCallback(async () => {
     if (!supabase || !userId) return;
@@ -128,16 +132,22 @@ export default function MyTimetable({ userId, onBack }) {
           }}>？ 説明</button>
       )}
 
-      {/* ★★月〜土を、横に動かさず一画面へ収めます。列幅とマスの高さは固定です。 */}
-      <Card style={{ padding: 7 }}>
+      {/* ★★月〜土を、横に動かさず一画面へ収めます。列幅とマスの高さは固定です。
+          ★★2026-09-14、★表を 広げました（★坂本さんの お決め ㋐＋㋑）。
+            ★★横に 送る ことは しません。
+              ★見本は `overflow-x:auto` ですが、★横は 見落としを 生みます。
+              ★2026-09-09、★右端の 帯が 切れて いた ご報告が ありました。
+            ★★代わりに、★カードの 左右の 余白を 外して 画面の 端まで 伸ばし、
+              ★「コマ」の 列を 細く しました（★15% → 12%）。 */}
+      <Card style={{ padding: "7px 3px", marginLeft: -6, marginRight: -6 }}>
         <div style={{ width: "100%", overflow: "hidden" }}>
           <table style={{
             borderCollapse: "collapse", width: "100%", tableLayout: "fixed",
             ...TYPE.usual
           }}>
             <colgroup>
-              <col style={{ width: "15%" }} />
-              {DAYS.map((d) => <col key={d} style={{ width: `${85 / DAYS.length}%` }} />)}
+              <col style={{ width: "12%" }} />
+              {DAYS.map((d) => <col key={d} style={{ width: `${88 / DAYS.length}%` }} />)}
             </colgroup>
             <tbody>
               <tr>
@@ -168,7 +178,7 @@ export default function MyTimetable({ userId, onBack }) {
                         }}
                         aria-label={cellLabel(c.weekday, r.period)}
                         style={{
-                          width: "100%", height: 58, minHeight: 58,
+                          width: "100%", height: 64, minHeight: 64,
                           overflow: "hidden",
                           background: CELL_BG[c.state], border: `1px solid ${C.line2}`,
                           borderRadius: 6, padding: "4px 2px",
@@ -199,6 +209,15 @@ export default function MyTimetable({ userId, onBack }) {
         </Usu>
       </Card>
 
+      {/* ★★「自分の コマ」は、★見本に ありません。
+          ★★それでも 残します（★2026-09-14・坂本さんの お決め ㋒）。
+            ★★ここが **唯一の 入口** だからです。
+              ★消すと、★自分で 決めた コマを 直せなく なります。
+              ★台帳（my_timetable_periods）の 行は 残った ままに なります。
+            ★★見本は 別の ところに 入口を 置いて います ──
+              ★「時間の 割り方（コマ）は 学校が 決めます。設定 →「時間の 割り方」。」
+              ★★その「設定」が、★この アプリには まだ ありません。
+            ★★設定が できてから、★ここを 消します。 */}
       <Two>
         <Btn ghost small onClick={() => setView("periods")} style={{ flex: 1 }}>
           {TT_COPY.periodsTitle}

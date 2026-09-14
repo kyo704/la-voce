@@ -78,9 +78,24 @@ async function loadLib() {
 
   console.log("\n⑥ 画面は曜日列とマスの大きさを固定");
   ok(/tableLayout: "fixed"/.test(ui), "表のレイアウトが固定");
-  ok(/<colgroup>/.test(ui) && /85 \/ DAYS\.length/.test(ui), "曜日列の幅をcolで固定");
-  ok(/width: "15%"/.test(ui), "コマ列の幅を固定");
-  ok(/height: 58, minHeight: 58/.test(ui), "予定マスの高さを固定");
+  // ★★2026-09-14、★数を 決め打ちして いたので 落ちました。
+  //   ★★坂本さんの お決めで、★表を 広げました（★コマ列 15%→12%、★高さ 58→64）。
+  //   ★★見張りが 見る べきは「**固定して いるか**」です。★数では ありません。
+  //     ★★数を 書くと、★広げる たびに 見張りを 直す ことに なります。
+  //       ★それは 同じ 決めが 2か所に ある、という いつもの 形です。
+  ok(/<colgroup>/.test(ui) && /\/ DAYS\.length/.test(ui), "曜日列の幅をcolで固定");
+  {
+    const koma = (ui.match(/<col style=\{\{ width: "(\d+)%" \}\} \/>/) || [])[1];
+    ok(!!koma, "コマ列の幅を固定（" + koma + "%）");
+    // ★★曜日の ぶんと 合わせて 100% に なること。
+    const days = (ui.match(/\$\{(\d+) \/ DAYS\.length\}%/) || [])[1];
+    ok(!!days && Number(koma) + Number(days) === 100,
+      "コマ列と 曜日列で 100%（" + koma + " + " + days + "）");
+  }
+  {
+    const m = ui.match(/height: (\d+), minHeight: (\d+)/);
+    ok(!!m && m[1] === m[2], "予定マスの高さを固定（" + (m ? m[1] : "?") + "px）");
+  }
   ok(/overflow: "hidden"/.test(ui), "長い文字でマスを伸ばさない");
   ok(!/overflowX: "auto"/.test(ui), "横スクロールに依存しない");
   ok(/DAYS\.map/.test(ui), "曜日はlibのDAYSから描く");
