@@ -161,3 +161,86 @@ has_can(org_id, 'meibo')
 ★★**白くなったら、★戻さずに 報告して ください。**
 　★★Opus が 判じ直します。
 
+---
+
+## ★2026-09-14 ── `org_messages_select` の 事故
+
+### 起きた こと（★坂本さんの ご報告）
+
+★★`org_messages_select` の 読める条件が、★丸ごと
+　`has_can(org_id, 'renraku_all')` に 置き換わりました。
+
+★★消えた 枝が 2つ ──
+- 自分の 分　　　`auth.uid() = teacher_id`
+- 担当の 生徒の 分　`EXISTS (... assignments ...)`
+
+★★すぐ 気づいて、★控えから 戻され、★手で 直されました。
+★★いまの 本番は 正しい 形です。
+
+### ★この 紙が 原因では ありません
+
+★★確かめました。★**この 紙の 第2部は `org_messages` を 1度も 触りません。**
+
+```
+第2部に org_messages の 字: 0
+第2部の 置き換えは replace() だけか: True
+第2部に regexp_replace: 0
+```
+
+★★第2部が 触るのは、★`v_map` に 名前の ある **8本だけ** です ──
+`assignments_all_owner_admin` ／ `assignments_select` ／
+`enrollments_all_owner_admin` ／ `memberships_delete_admin` ／
+`memberships_insert_bootstrap_owner` ／ `memberships_select` ／
+`org_invitations_insert` ／ `org_invitations_select`
+
+★★`org_messages` の 2本（11・12）は、★**わざと 外して あります**。
+　★★あの 2本は 関数では なく `EXISTS (... role IN ...)` の 字で 判じます。
+　★★置き換える 相手が ちがう ので、★別の 紙で、と 書いて ありました。
+
+★★また、★この 紙は `replace()`（★字の 部分置き換え）しか 使いません。
+　★条件文を 丸ごと 入れ替える 書き方は、★1か所も ありません。
+
+★★★つまり、★流されたのは **別の SQL** です。
+
+### それでも、★見張りを 中に 入れました
+
+★★原因が ちがっても、★同じ ことが 二度と 起きない ように します。
+
+★★作り直す 前に、★`auth.uid()` の **回数**を 数えます。
+　★★1つでも 減って いたら、★**その場で 止めます**。
+
+```sql
+if (新しい条件文の auth.uid() の数) < (もとの条件文の auth.uid() の数) then
+  raise exception '★止めました：% の 読める条件から auth.uid() が 減ります。';
+end if;
+```
+
+★★読める条件・書ける条件の 両方で 見ます。
+
+★★これで、★どんな 置き換え方を しても、
+　★**自分の 枝が 減る 作り直しは 通りません**。
+
+### いまの 進み具合
+
+| # | 決まり | 状態 |
+|---|---|---|
+| 1〜6, 9, 10 | 8本 | ★第2部で 移し済み |
+| 7 | memberships_update_role_management | ★触りません（`role_rank` が 守る） |
+| 8 | org_events_write_admin | ★まだ（`EXISTS` の 形） |
+| 11 | org_messages_insert | ★まだ（`EXISTS` の 形） |
+| 12 | org_messages_select | ★**手で 移し済み**（★事故の あと） |
+
+★★12番は、★坂本さんが 手で 直された 形が 正です ──
+
+```
+((auth.uid() = teacher_id) OR (EXISTS ( ... assignments ... ))
+  OR has_can(org_id, 'renraku_all'::text))
+```
+
+★★残るのは **8番と 11番** です。★別の 紙で 直します。
+
+### 試し用の 企画への 適用
+
+★★直した 紙が できてから、と 伺って います。
+★★`tools/perm-matrix.js` も、★それまで 止めます。
+

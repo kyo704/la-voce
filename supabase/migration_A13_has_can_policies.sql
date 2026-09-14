@@ -186,6 +186,13 @@ from public._a13_policy_backup;
 --       ★出た 字を そのまま お知らせください。★こちらで 直します。
 --
 --   ★★このまま 1回で 流して ください。★途中で 切ると 戻りません。
+--
+--   ★★★2026-09-14、★`org_messages_select` の 条件文が 丸ごと
+--     ★`has_can(...)` に 置き換わる 事故が ありました。
+--     ★★**この 紙では ありません。** ★この 紙の 第2部は
+--       ★`org_messages` を 1度も 触りません（★`v_map` に ありません）。
+--     ★★それでも、★同じ ことが 二度と 起きない ように
+--       ★「自分の 枝が 減ったら 止める」見張りを 中に 入れました。
 
 do $$
 declare
@@ -234,6 +241,36 @@ begin
     if v_new_q = coalesce(r.qual, '') and v_new_w = coalesce(r.with_check, '') then
       raise notice '★飛ばしました（字が 見つかりません）: %', r.policyname;
       continue;
+    end if;
+
+    -- ★★★自分の 枝が 減って いないかを 見ます（★2026-09-14）。
+    --
+    --   ★★この 日、★別の SQL で `org_messages_select` の 条件文が
+    --     ★丸ごと `has_can(...)` に 置き換わり、
+    --     ★「自分の 分（auth.uid() = teacher_id）」と
+    --     ★「担当の 生徒の 分（assignments 経由）」が 消えました。
+    --   ★★すぐ 気づいて 控えから 戻されました。
+    --
+    --   ★★この 紙の やり方（字だけ 置き換える）なら 起きません。
+    --     ★★それでも、★**起きない ことを 確かめてから** 作り直します。
+    --     ★★数えるのは `auth.uid()` の 回数です。
+    --       ★1つでも 減って いたら、★その 決まりは 作り直しません。
+    if (length(v_new_q) - length(replace(v_new_q, 'auth.uid()', '')))
+       < (length(coalesce(r.qual, ''))
+          - length(replace(coalesce(r.qual, ''), 'auth.uid()', '')))
+    then
+      raise exception
+        '★止めました：% の 読める条件から auth.uid() が 減ります。'
+        '★もとの 条件文を そのまま お知らせください。', r.policyname;
+    end if;
+
+    if (length(v_new_w) - length(replace(v_new_w, 'auth.uid()', '')))
+       < (length(coalesce(r.with_check, ''))
+          - length(replace(coalesce(r.with_check, ''), 'auth.uid()', '')))
+    then
+      raise exception
+        '★止めました：% の 書ける条件から auth.uid() が 減ります。'
+        '★もとの 条件文を そのまま お知らせください。', r.policyname;
     end if;
 
     execute format('drop policy %I on public.%I', r.policyname, r.tablename);
