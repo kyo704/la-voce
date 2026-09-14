@@ -12632,21 +12632,38 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //     ★★`.select("id")` を 付けると、★消えた 行が 返ります。
       //       ★0行なら、★消えて いません。★黙って 通しません。
       //
-      //   ★★役と 企画は、★無い ことが 普通です（★曲に 役が 無い ことは あります）。
-      //     ★だから 0行でも しくじりに しません。★誤りの ときだけ 止めます。
+      //   ★★★2026-09-14 夕、★これで 止まりました（★坂本さんの ご報告）。
+      //     ★★念押しの「消す」を 押しても 何も 起きない。
+      //     ★★わけ ── ★音域の 表に 行が あるのは、★音域を 書いた 曲 だけ です。
+      //       ★ふつうの 曲には 行が ありません。★0行が 当たり前 でした。
+      //       ★★そこで 止めて いたので、★false が 返り、
+      //         ★呼んだ 側（NotesV2）は 札を 閉じません でした。
+      //     ★★役・企画には 同じ 気遣いを して いながら、
+      //       ★ここだけ 抜けて いました。★同じ 形です。
+      //
+      //   ★★だから「0行」では なく、「**あった はずの 行が 残った**」で 見ます。
+      //     ★手もとの 台帳（repertoireTessituraMap）に 名前が あれば、
+      //     ★台帳にも 行が ある はずです。★そこで 0行なら、★消えて いません。
+      const hadTessitura = Object.keys(repertoireTessituraMap || {})
+        .some((k) => isSameRepertoire(k, from));
       const { data: delRows, error: delError } = await supabase
         .from("repertoire_tessitura")
         .delete().eq("user_id", userId).eq("repertoire_name", from)
         .select("id");
       if (delError) throw delError;
-      if (!delRows || delRows.length === 0) {
+      if (hadTessitura && (!delRows || delRows.length === 0)) {
         throw new Error("REPERTOIRE_DELETE_NO_ROWS");
       }
+      // ★★★役と 企画の 表には、★`id` の 列が ありません。
+      //   ★★2026-09-14、★ここに `.select("id")` を 付けて しまい、
+      //     ★42703（そんな 列は ない）で 止まって いました。
+      //   ★★行数は 要りません。★0行が 当たり前 だからです。
+      //     ★だから 返り値を 求めず、★誤りの ときだけ 止めます。
       const { error: roleError } = await supabase.from("role_master")
-        .delete().eq("user_id", userId).eq("role_name", from).select("id");
+        .delete().eq("user_id", userId).eq("role_name", from);
       if (roleError) throw roleError;
       const { error: projError } = await supabase.from("project_master")
-        .delete().eq("user_id", userId).eq("project_name", from).select("id");
+        .delete().eq("user_id", userId).eq("project_name", from);
       if (projError) throw projError;
       if (noteId) {
         await handleDeleteNote(noteId);

@@ -39,16 +39,31 @@ const seg = vt.slice(i, vt.indexOf("\n  }", vt.indexOf("finally", i)));
 console.log("① 行数が 返る 形に なって いる");
 t(/from\("repertoire_tessitura"\)[\s\S]{0,200}?\.select\("id"\)/.test(seg),
   "★repertoire_tessitura の 消しに .select(\"id\")");
-t(/from\("role_master"\)[\s\S]{0,160}?\.select\("id"\)/.test(seg),
-  "★role_master も 同じ");
-t(/from\("project_master"\)[\s\S]{0,160}?\.select\("id"\)/.test(seg),
+// ★★役と 企画の 表には `id` の 列が ありません。
+//   ★★2026-09-14、★そこに .select("id") を 付けて 42703 で 止まりました。
+//   ★★行数は 要りません（★0行が 当たり前）。★付けては いけません。
+t(!/from\("role_master"\)[\s\S]{0,160}?\.select\(/.test(seg),
+  "★role_master に .select を 付けて いない（★id の 列が 無い）");
+t(!/from\("project_master"\)[\s\S]{0,160}?\.select\(/.test(seg),
   "★project_master も 同じ");
+t(/roleError\) throw roleError/.test(seg), "★役の 誤りは 見る");
+t(/projError\) throw projError/.test(seg), "★企画の 誤りも 見る");
 
-console.log("\n② 0行を しくじりに して いる");
-t(/delRows\.length === 0/.test(seg) || /!delRows \|\| delRows\.length === 0/.test(seg),
-  "★0行を 見て いる");
+console.log("\n② 『あった はずの 行が 残った』ときだけ 止める");
+// ★★2026-09-14 夕、★ここで つまずきました。
+//   ★★「0行なら 止める」に して いました。
+//   ★★音域の 表に 行が あるのは、★音域を 書いた 曲 だけ です。
+//     ★ふつうの 曲には ありません。★0行が 当たり前 でした。
+//   ★★そこで 止めたので、★念押しの「消す」が 何も しなく なりました。
+t(/hadTessitura/.test(seg), "★あった はずかを 先に 見る");
+t(/repertoireTessituraMap[\s\S]{0,120}isSameRepertoire/.test(seg),
+  "★手もとの 台帳で 見る（★綴りの ゆれも 合わせる）");
+t(/if \(hadTessitura && \(!delRows \|\| delRows\.length === 0\)\)/.test(seg),
+  "★あった はず＋0行 の ときだけ 止める");
+t(!/^\s*if \(!delRows \|\| delRows\.length === 0\)/m.test(seg),
+  "★ただの 0行では 止めない");
 t(/throw new Error\("REPERTOIRE_DELETE_NO_ROWS"\)/.test(seg),
-  "★0行なら 止める");
+  "★止める ときの 合図");
 // ★★役と 企画は、★無い ことが 普通です。★0行で 止めては いけません。
 t(!/roleRows\.length === 0/.test(seg) && !/projRows\.length === 0/.test(seg),
   "★役・企画は 0行でも 止めない（★無いのが 普通）");
