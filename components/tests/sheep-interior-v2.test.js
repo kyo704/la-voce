@@ -170,7 +170,8 @@ function ok(name, cond, extra) {
 
     // ★★門の外の方には、1枚も出さないこと。
     ok("★門の外では、1枚も出さない", /if \(!wardrobeOn\) return null;/.test(layer));
-    ok("★部屋に置いている", /<InteriorLayer equipped=\{equipped\} wardrobeOn=\{wardrobeOn\}/.test(home));
+    // ★★2026-09-13、★roomAspect を 先に 渡す ように なりました。
+  ok("★部屋に置いている", /<InteriorLayer [^>]*equipped=\{equipped\}[^>]*wardrobeOn=\{wardrobeOn\}/.test(home));
     // ★★動かせること（★2026-09-08・坂本さんの決め）。
     //   ★いまの101点と、★同じ仕組み（onUpdatePosition）に乗せます。
     ok("★動かす仕組みに、乗せている", /onUpdatePosition=\{onUpdatePosition\}/.test(home));

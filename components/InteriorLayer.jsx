@@ -44,7 +44,20 @@ import {
 const ROOM_FLOOR_BOTTOM_PCT = 42;
 
 // ★部屋は、幅：高さ ＝ およそ 4：3。★横の％を、縦の％に直すときに使います。
-const ROOM_ASPECT = 4 / 3;
+/**
+ * ★部屋の 比（★幅 ÷ 高さ）の 見当。
+ *
+ *   ★★2026-09-13、★実機の ご報告 ──
+ *     ★「ながめる」と「したく」で、★同じ 家具の 位置が ずれて 見える。
+ *   ★★ここに 4 / 3 と 決め打ちして いました。★部屋の 比は 3通り あります ──
+ *     ★ふつう　　　 4 / 3
+ *     ★広い 背景　  7 / 5（★backdrop_room_expand）
+ *     ★全画面　　　 100vw × calc(100dvh - 210px) ── ★端末しだい
+ *   ★★合うのは 1つ だけ。★残り 2つで 足もとが ずれます。
+ *   ★★いまは 呼ぶ 側（RoomScene）が **測った 値**を 渡します。
+ *     ★ここは、★渡されなかった ときの 見当 だけ です。
+ */
+const ROOM_ASPECT_FALLBACK = 4 / 3;
 
 /**
  * ★置き場所（★左右の位置と、壁のものの高さ）。
@@ -90,15 +103,15 @@ const SPOT = {
  *   ★★落とした先に、★足もとが来るようにします。
  *   ★絵の下にある余白は、★ここで差し引きます。
  */
-function bottomForFeet(item, widthPct, feetPct) {
+function bottomForFeet(item, widthPct, feetPct, roomAspect) {
   const size = item && item.size ? item.size : [320, 320];
   const [w, h] = size;
   const padRatio = (h - floorLineOf(item)) / h;
   const heightPct = widthPct * (h / w);
-  return (100 - feetPct) - padRatio * heightPct * ROOM_ASPECT;
+  return (100 - feetPct) - padRatio * heightPct * roomAspect;
 }
 
-function floorBottomPct(item, widthPct) {
+function floorBottomPct(item, widthPct, roomAspect) {
   const size = item && item.size ? item.size : [320, 320];
   const [w, h] = size;
   // ★★床に着く線は、★1点ずつ実測した値を使います（★2026-09-08 の直し）。
@@ -108,10 +121,13 @@ function floorBottomPct(item, widthPct) {
   const padRatio = (h - floorLineOf(item)) / h;  // ★絵の高さのうち、床より下の余白
   const heightPct = widthPct * (h / w);          // ★部屋の幅に対する、絵の高さ
   // ★部屋は、幅：高さ ＝ およそ 4：3。★縦の％に直します。
-  return ROOM_FLOOR_BOTTOM_PCT - padRatio * heightPct * ROOM_ASPECT;
+  return ROOM_FLOOR_BOTTOM_PCT - padRatio * heightPct * roomAspect;
 }
 
-export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdatePosition, Draggable }) {
+export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdatePosition, Draggable, roomAspect }) {
+  // ★★渡されなければ 見当を 使います。★呼ぶ 側が 測れる まで の ぶん。
+  const aspect = typeof roomAspect === "number" && roomAspect > 0
+    ? roomAspect : ROOM_ASPECT_FALLBACK;
   const [localPositions, setLocalPositions] = useState({});
   const pos = (equipped && equipped.interiorPositions) || {};
   const effectivePos = { ...pos, ...localPositions };
@@ -329,7 +345,7 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
             //   ★★2026-09-08、★left=89％ で置いていて、★0.89％ 内側に浮いていました。
             //     ★扉の絵は 320 幅で、★中身は x14〜306。★右に余白があります。
             left: `${flushRightLeftPct(door)}%`,
-            bottom: `${floorBottomPct(door, widthPctOf(door))}%`,
+            bottom: `${floorBottomPct(door, widthPctOf(door), aspect)}%`,
             width: `${widthPctOf(door)}%`,
             transform: "translate(-50%, 0)",
             // ★扉は opening（★30）。★羊（★70の帯）より、うしろです。
@@ -390,7 +406,7 @@ export default function InteriorLayer({ equipped, wardrobeOn, editMode, onUpdate
             ? { top: `${ceilTop}%` }
             : onWall
               ? { top: `${wallTop}%` }
-              : { bottom: `${feet != null ? bottomForFeet(it, wpct, feet) : floorBottomPct(it, wpct)}%` }),
+              : { bottom: `${feet != null ? bottomForFeet(it, wpct, feet, aspect) : floorBottomPct(it, wpct, aspect)}%` }),
           width: `${wpct}%`,
           transform: "translate(-50%, 0)",
           // ★★重ね順も、★名簿が決めます（★小さい順に描く）。

@@ -78,7 +78,10 @@ async function load(rel) {
   ok(/clampToBand\(s\.feet, FLOOR_BAND\)/.test(layer), "★床のものは、床の帯に収める");
   ok(/clampToBand\(.*WALL_BAND\)/.test(layer), "★壁のものは、壁の帯に収める");
   ok(/clampToBand\(s\.left \+ shift, LEFT_BAND\)/.test(layer), "★左右も、部屋の外へ出さない");
-  ok(/bottomForFeet\(it, wpct, feet\)/.test(layer), "★足もとの高さから、置き場所を出している");
+  // ★★2026-09-13、★部屋の 比を 渡す ように なりました（★4つ目の 引数）。
+  //   ★★決め打ちの 4/3 を やめた ぶんです。★room-aspect.test.js が 見ます。
+  ok(/bottomForFeet\(it, wpct, feet, aspect\)/.test(layer),
+    "★足もとの高さと 部屋の 比から、置き場所を出している");
 
   console.log("⑤ ★縦の意味を、1つの欄に混ぜていないか");
   // ★★古い top は「浮いていた高さ」。★足もととして読み替えないこと。

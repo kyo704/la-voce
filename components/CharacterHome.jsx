@@ -1973,6 +1973,16 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
   //     ★中途半端な大きさで 一瞬出すより、★1呼吸 待つほうが 静かです。
   const roomBoxRef = useRef(null);
   const [roomBoxW, setRoomBoxW] = useState(0);
+  // ★★高さも 測ります（★2026-09-13・実機の ご報告）。
+  //   ★★「ながめる」と「したく」で、★同じ 家具の 位置が ずれて 見えました。
+  //   ★★InteriorLayer の 中に `ROOM_ASPECT = 4 / 3` が **決め打ち**で ありました。
+  //     ★★けれど 部屋の 比は 3通り あります ──
+  //       ★ふつう　　　　4 / 3
+  //       ★広い 背景　　 7 / 5（★backdrop_room_expand）
+  //       ★全画面　　　 100vw × calc(100dvh - 210px) ── ★端末しだい
+  //     ★★決め打ちが 合うのは 1つ だけ。★残り 2つで 足もとが ずれます。
+  //   ★★同じ 決めごとが 2か所に ある 形です。★測った 値を 渡します。
+  const [roomBoxH, setRoomBoxH] = useState(0);
   useEffect(() => {
     const el = roomBoxRef.current;
     if (!el) return;
@@ -1991,14 +2001,19 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
     //
     //   ★★offsetWidth と ResizeObserver の border-box は、
     //     ★★組みつけの大きさです。★変形の 影響を 受けません。
-    const read = () => setRoomBoxW(el.offsetWidth);
+    const read = () => {
+      setRoomBoxW(el.offsetWidth);
+      setRoomBoxH(el.offsetHeight);
+    };
     read();
     if (typeof ResizeObserver === "undefined") return;
     const ro = new ResizeObserver((entries) => {
       const e = entries && entries[0];
       const box = e && e.borderBoxSize && e.borderBoxSize[0];
       const w = box ? box.inlineSize : (e ? e.contentRect.width : 0);
+      const h = box ? box.blockSize : (e ? e.contentRect.height : 0);
       setRoomBoxW(w || el.offsetWidth);
+      setRoomBoxH(h || el.offsetHeight);
     });
     ro.observe(el);
     return () => ro.disconnect();
@@ -2190,13 +2205,17 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
   //       ★恒等に 戻せば、★ずれる 余地が ありません。
   //   ★★数は lib/roomCamera.js が 持ちます。★ここで 決めません。
   //   ★羊の 高さを、★部屋の 高さに 対する ％に 直して 渡します。
-  const roomBoxH = roomBoxW * (isRoomExpanded ? 5 / 7 : 3 / 4);
+  // ★★測れて いれば 測った 値。★測れる 前は これまでの 見当で 代えます。
+  const roomBoxHFallback = roomBoxW * (isRoomExpanded ? 5 / 7 : 3 / 4);
+  const roomBoxHNow = roomBoxH > 0 ? roomBoxH : roomBoxHFallback;
+  // ★部屋の 実際の 比（★幅 ÷ 高さ）。★家具の 足もとの 換算に 使います。
+  const roomAspect = roomBoxHNow > 0 ? roomBoxW / roomBoxHNow : 4 / 3;
   const cam = cameraOf({
     on: cameraOn,
     editMode,
     leftPct,
     topPct,
-    sheepPct: roomBoxH > 0 ? (sheepPx / roomBoxH) * 100 : 0
+    sheepPct: roomBoxHNow > 0 ? (sheepPx / roomBoxHNow) * 100 : 0
   });
 
   // ★★何もしないで 60秒 たったら、★眠ります（★2026-09-09）。
@@ -2293,7 +2312,7 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
               ★ご指摘をいただきました。★そのとおりでした。
           ★★だから、★旧い床と旧い窓の★あとに描きます。
           ★門の外の方には、★1枚も出ません（★InteriorLayer が止めます）。 */}
-      <InteriorLayer equipped={equipped} wardrobeOn={wardrobeOn}
+      <InteriorLayer roomAspect={roomAspect} equipped={equipped} wardrobeOn={wardrobeOn}
         editMode={editMode} onUpdatePosition={onUpdatePosition}
         Draggable={InteriorDraggable} />
 
