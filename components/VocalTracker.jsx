@@ -11146,21 +11146,56 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const code = (codeInput || "").trim().toUpperCase();
     if (!code) return;
     const supabase = createClient();
-    const { data, error } = await supabase.from("teacher_invitations").select("code, teacher_id, expires_at, used_at")
-      .eq("code", code).maybeSingle();
-    if (error || !data) { setInviteLookupError("コードが見つかりませんでした。先生に確認してください。"); return; }
-    if (data.used_at || new Date(data.expires_at) < new Date()) { setInviteLookupError("このコードは使用済み、または期限切れです。"); return; }
-    // ★誰に渡すのかが分からないまま同意させないこと。
-    //   profiles は本人の行しか読めないので、名前だけを返す関数を経由する。
-    //   （supabase/migration_invitation_teacher_name.sql）
+    // ★★2026-09-14（★No.018）、★この表を★直に読むのをやめました。
+    //
+    //   ★★これまでは `from("teacher_invitations").select(...)` でした。
+    //     ★★その読み方が成り立つのは、★決まりが
+    //       「使われていない・期限内なら★誰でも読める」だったからです。
+    //     ★★つまり、★ログインした人なら★どの先生の招待コードも
+    //       ★一覧できました。★コードそのものが入口です。
+    //
+    //   ★★決まりを締めるには、★先にこちらを移す必要がありました。
+    //     ★★締めてから移すと、★生徒には0行が返り、
+    //       ★「コードが見つかりません」と出ます。★コードは正しいのに。
+    //     ★★2026-09-01、★在籍でまったく同じことが起きています。
+    //
+    //   ★★新しい関数を作っていません。★もとからある
+    //     `get_invitation_teacher`（★SECURITY DEFINER）を広げました。
+    //     ★同じことをするものを2つ置かない、という決めのとおりです。
     let teacher = null;
-    const { data: t, error: tErr } = await supabase.rpc("get_invitation_teacher", { p_code: code });
-    if (tErr) {
-      console.warn("先生の名前を取得できませんでした。supabase/migration_invitation_teacher_name.sql を実行してください。", tErr);
-    } else {
-      teacher = t || null;
+    const { data: look, error: lookErr } = await supabase
+      .rpc("get_invitation_teacher", { p_code: code });
+    if (lookErr) {
+      console.error("招待を確認できませんでした:", lookErr);
+      setInviteLookupError("コードが見つかりませんでした。先生に確認してください。");
+      return;
     }
-    setPendingInvitation({ ...data, teacher });
+    // ★★古い形と新しい形の、★どちらでも動きます。
+    //   ★★台帳の紙を流す前に画面だけ先に出ても、★壊れないためです。
+    //   ★古い形 … 先生の中身そのもの（★使えないときは null）
+    //   ★新しい形 … { ok, reason, teacher }
+    if (look && typeof look === "object" && "ok" in look) {
+      if (!look.ok) {
+        // ★★「無い」と「使用済み」は、★同じ一文にします。
+        //   ★★分けると、★コードを総当たりして
+        //     ★「そのコードは在るが使用済み」と分かってしまいます。
+        setInviteLookupError(look.reason === "expired"
+          ? "このコードは使用済み、または期限切れです。"
+          : "コードが見つかりませんでした。先生に確認してください。");
+        return;
+      }
+      teacher = look.teacher || null;
+    } else {
+      // ★★古い形。★null は「無い・使用済み・期限切れ」のどれかです。
+      if (!look) {
+        setInviteLookupError("コードが見つかりませんでした。先生に確認してください。");
+        return;
+      }
+      teacher = look;
+    }
+    // ★★`code` は、★入れていただいたものをそのまま持ちます。
+    //   ★★台帳から返しません。★返すほど漏れるものが増えます。
+    setPendingInvitation({ code, teacher });
   }
   // ★共有範囲（shareScope）は 2026-09-01 に廃止しました。
   //   選ぶものが無くなったので、既定値も下書きもありません。
