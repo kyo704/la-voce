@@ -39,12 +39,18 @@ function eq(a, b, label) {
   console.log("=== ① 数える人・数えない人（★§10） ===");
   eq(m.NOT_COUNTED_ROLES.slice().sort(), ["admin", "owner", "staff", "teacher"],
     "★先生・事務・責任者・管理者は 数えない");
+  // ★★2026-09-13、★ここも 台帳に 無い 値で 書かれて いました。
+  //   ★★`role:"student"` … ★台帳が 許すのは owner／admin／teacher／staff。
+  //   ★★`status:"paused"／"invited"` … ★そんな 値は ありません。
+  //   ★★別の 節を 直した ときに、★ここを 見落として いました。
+  //     ★tools/schema_fixture_check.py が 拾いました。
+  // ★★生徒は enrollments の 行です。★role を 持ちません。
   eq(m.rosterCount([
-    { role: "student" }, { role: "teacher" }, { role: "staff" },
-    { role: "owner" }, { role: "admin" }, { role: "student" }
+    { status: "active" }, { role: "teacher" }, { role: "staff" },
+    { role: "owner" }, { role: "admin" }, { status: "active" }
   ]), 2, "★生徒だけ 数える");
-  eq(m.rosterCount([{ role: "student", status: "paused" }]), 0, "★休会中は 数えない");
-  eq(m.rosterCount([{ role: "student", status: "invited" }]), 0, "★返事まちも 数えない");
+  eq(m.rosterCount([{ status: "left" }]), 0, "★退会した 方は 数えない");
+  eq(m.rosterCount([{ status: null }]), 1, "★ようすが 空なら 在籍と 見る");
   eq(m.rosterCount([]), 0, "空は 0");
   eq(m.rosterCount(null), 0, "無くても 落ちない");
   // ★★2026-09-13、★ここは 台帳に 無い 値で 書かれて いました。

@@ -114,15 +114,16 @@ function ok(cond, label) {
   ok(/いまの しぼりでは、どなたも 出ません/.test(ui), "★「いません」と 言い分けている");
 
   console.log("⑤-2 学年は、名簿に あるものだけ");
+  // ★★2026-09-13、★status が enrolled でした。★台帳に 無い 値です（★active が 正）。
   const M2 = [
-    { user_id: "a", status: "enrolled", grade_label: "声楽3年", teacher_ids: [] },
-    { user_id: "b", status: "enrolled", grade_label: "声楽1年", teacher_ids: [] },
-    { user_id: "c", status: "enrolled", teacher_ids: [] }
+    { user_id: "a", status: "active", grade_label: "声楽3年", teacher_ids: [] },
+    { user_id: "b", status: "active", grade_label: "声楽1年", teacher_ids: [] },
+    { user_id: "c", status: "active", teacher_ids: [] }
   ];
   const g = R.gradeFilterOptions(M2);
   ok(g.length === 3 && g[0].id === R.GRADE_FILTER_ALL, "★すべて ＋ 実際に ある 2つ");
   ok(!g.some((o) => o.label === "1年"), "★1年〜4年 と 決め打ちに していない");
-  ok(R.gradeFilterOptions([{ user_id: "x", status: "enrolled" }]).length === 0,
+  ok(R.gradeFilterOptions([{ user_id: "x", status: "active" }]).length === 0,
     "★1つも 無ければ 空（★押せない 札を 出さない）");
   ok(M2.filter((m) => R.matchesGrade(m, "声楽3年")).length === 1, "★学年で 絞れる");
   ok(M2.filter((m) => R.matchesGrade(m, R.GRADE_FILTER_ALL)).length === 3, "★すべてなら 落とさない");

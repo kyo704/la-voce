@@ -13193,7 +13193,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const opsMembership = (orgMembers[opsOrgId] || [])
       .find((m) => m.user_id === userId) || null;
     const opsPostsById = Object.fromEntries((orgPosts[opsOrgId] || []).map((x) => [x.id, x]));
-    const gate = permsOfMember(opsMembership, opsPostsById) || role;
+    // ★★`|| role` は A13 で 外します（★2026-09-13）。
+  //   ★★役職を 誰もが 持つように なれば、★名前の ちからに 落ちる 道は 要りません。
+  //   ★★いまは 役職を 持たない 方の ぶんだけ 使われます。
+  const gate = permsOfMember(opsMembership, opsPostsById) || role;
     if (mayEnterOps(gate)) {
       return (
         <OpsShell

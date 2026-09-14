@@ -42,6 +42,19 @@ FILE_TABLE = [
   ("plan", "subscriptions"),
 ]
 
+# ★★同じ 名前の 列でも、★別の 表の 話の ことが あります。
+#   ★★2026-09-13、★下の 3つを 拾って いました。★どれも 誤りでした。
+#     ★came／absent／canceled … lessons.attendance（lib/todayBand.js:160）
+#     ★revoked … teacher_student_links
+#     ★expired … purchases
+#   ★★これらは この 道具の 見る 表では ありません。
+OTHER_TABLE_VALUES = {"came", "absent", "revoked", "expired"}
+
+# ★★わざと 知らない 値を 入れて 試して いる 行。
+#   ★★「知らない ものには 何も 当てない」を 確かめる ため の もので、
+#     ★★台帳に 入れる 値では ありません。
+ON_PURPOSE = re.compile(r"知らない|未知|不明|unknown")
+
 
 def main():
   bad = []
@@ -75,6 +88,10 @@ def main():
           for col, allowed in cols.items():
             for m in re.finditer(r'\b%s\s*[:=]\s*["\']([A-Za-z_]+)["\']' % col, line):
               v = m.group(1)
+              if v in OTHER_TABLE_VALUES:
+                continue
+              if ON_PURPOSE.search(line) or v == "unknown":
+                continue
               if v not in allowed:
                 bad.append((os.path.relpath(path, ROOT), i + 1, table, col, v,
                             "／".join(allowed)))
