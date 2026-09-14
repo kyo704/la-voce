@@ -5,7 +5,7 @@ import { C } from "@/lib/tokens";
 import { TYPE, SPACE, rem } from "@/lib/uiKit";
 import {
   ScreenHead, HeadRound, H3, Card, Seg, Pill, Btn, Two, Li, Note, Back, Input, TextArea, FieldLabel,
-  Box, Usu, Wl, BarRow, SheetTitle, EmptyBox
+  Box, Usu, Wl, BarRow, SheetTitle, EmptyBox, Warn
 } from "@/components/UiV2";
 import {
   PRACTICE_FIELDS, REPERTOIRE_STATUS, isPractice, emptyPractice, pickFields, practiceTitle, practiceSub,
@@ -18,7 +18,10 @@ import {
 import RangeCalendar from "@/components/RangeCalendar";
 import {
   CLINIC_ALWAYS, CLINIC_OPTIONAL, CLINIC_DEFAULT, CLINIC_HEADINGS,
-  CLINIC_NOTICE, isOn, togglePick, writePick
+  CLINIC_NOTICE, CLINIC_PERIODS, CLINIC_ROW_NOTES, CLINIC_FOOT, CLINIC_INTRO,
+  isOn, togglePick, writePick, periodRange, rowMark, pickCount,
+  LESSON_PERIODS, LESSON_ITEMS, LESSON_INTRO, LESSON_HEADINGS, LESSON_NOTICE,
+  LESSON_FOOT, LESSON_DEFAULT, toggleLessonPick, writeLessonPick, lessonCount
 } from "@/lib/clinicSheet";
 
 // ============================================================================
@@ -59,8 +62,19 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
   const [editing, setEditing] = useState(null);   // ★{ id, body } ★null なら 一覧
   const [error, setError] = useState("");
   const [clinicMode, setClinicMode] = useState("doctor");
-  const [clinicRange, setClinicRange] = useState({});
+  // ★★期間は 札で 選びます（★見本 nJushin の `.pills`）。
+  //   ★★暦を いきなり 出しません。★「選ぶ」を 押した ときだけ 開きます。
+  const [clinicPeriod, setClinicPeriod] = useState("3m");
+  // ★★はじめから「この3か月」が 選ばれて 見えます。
+  //   ★★なのに 期間が 空の ままだと、★1枚に する ときに 何も 入りません。
+  //     ★札が 選ばれて いるのに 中身が 無い、という 食い違いです。
+  //   ★★だから はじめの 値も、★同じ 決まりから 出します。
+  const [clinicRange, setClinicRange] = useState(
+    () => periodRange("3m", todayISO) || {});
   const [clinicPick, setClinicPick] = useState(CLINIC_DEFAULT);
+  // ★★レッスン用は、★受診用とは 別の 選びです（★見本 nLesson）。
+  const [lessonPick, setLessonPick] = useState(() => [...LESSON_DEFAULT]);
+  const [lessonPeriod, setLessonPeriod] = useState("2w");
   const [clinicOwnWords, setClinicOwnWords] = useState("");
   const [clinicGenerated, setClinicGenerated] = useState(false);
   const timer = useRef(null);
@@ -213,6 +227,65 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
   // ★★見本 SH['yousu']。★様子は タップで 4択から 選びます（出来ばえでは ありません）。
   const [yousuFor, setYousuFor] = useState(null);
 
+  /**
+   * ★レッスンに 持っていく 1枚（★見本 `nLesson`）。
+   *
+   *   ★★受診用との 違いは lib に 書いて あります。
+   *     ★外せない 行が ありません。★ぜんぶ 外せます。
+   *     ★★「選べるということは、載せないと 選べるということです」（★見本）。
+   */
+  function lessonScreen() {
+    return (
+      <>
+        <Warn>
+          {LESSON_INTRO.map((line, i) => (
+            <span key={line}>{i === 1 ? <b>{line}</b> : line}<br /></span>
+          ))}
+        </Warn>
+        <H3>{LESSON_HEADINGS.period}</H3>
+        <div className="pills">
+          {LESSON_PERIODS.map((p) => (
+            <Pill key={p.key} on={lessonPeriod === p.key}
+              onClick={() => setLessonPeriod(p.key)}>{p.label}</Pill>
+          ))}
+        </div>
+        <H3>{LESSON_HEADINGS.items}</H3>
+        <Box>
+          {LESSON_ITEMS.map((x, i) => {
+            const on = lessonPick.includes(x.key);
+            const mark = rowMark(on);
+            return (
+              <Li key={x.key} last={i === LESSON_ITEMS.length - 1}
+                onClick={() => setLessonPick(writeLessonPick(
+                  toggleLessonPick(lessonPick, x.key)))}
+                right={<span style={{ color: mark.tone === "on" ? C.sage : C.inkSoft }}>
+                  {mark.text}</span>}>
+                {x.label}
+              </Li>
+            );
+          })}
+        </Box>
+        {/* ★★見本は、★レッスン用では いつも 書ける ように して います。 */}
+        <FieldLabel>{LESSON_HEADINGS.ownWords}</FieldLabel>
+        <TextArea value={clinicOwnWords} onChange={(e) => setClinicOwnWords(e.target.value)}
+          placeholder="例：高い音の 入りが 不安です。息が 続かない日が ありました。"
+          style={{ minHeight: 90 }} />
+        <Btn onClick={() => setClinicGenerated(true)}>
+          {lessonCount(lessonPick)}項目で 1枚に する
+        </Btn>
+        <Card style={{ background: C.paper, borderColor: C.line }}>
+          <div style={{ ...TYPE.usual, lineHeight: 1.9, color: C.ink }}>
+            <b>この1枚について</b><br />
+            {LESSON_NOTICE.map((line) => (
+              <span key={line}>・{line}<br /></span>
+            ))}
+          </div>
+        </Card>
+        <Note>{LESSON_FOOT.map((line) => <span key={line}>{line}<br /></span>)}</Note>
+      </>
+    );
+  }
+
   function clinicScreen() {
     const days = (notes || []).filter((n) => n && !n.deleted_at && String(n.created_at || n.updated_at || "").slice(0, 10)
       >= String(clinicRange.start || "0000-00-00").slice(0, 10)
@@ -239,23 +312,101 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
           <Pill on={clinicMode === "doctor"} onClick={() => setClinicMode("doctor")}>お医者さんに 見せる 1枚</Pill>
           <Pill on={clinicMode === "lesson"} onClick={() => setClinicMode("lesson")}>レッスンに 持っていく 1枚</Pill>
         </div>
-        <div className="warn">この1枚を作ります。<br /><b>載せるものは、自分で1つずつ選びます。</b></div>
-        <FieldLabel>期間</FieldLabel>
-        <RangeCalendar value={clinicRange} todayISO={todayISO} max={todayISO} onChange={setClinicRange} />
-        <FieldLabel>{CLINIC_HEADINGS.always}</FieldLabel>
-        <Card>{CLINIC_ALWAYS.map((x) => <div key={x.key} className="li">{x.label}<span>載せる</span></div>)}</Card>
-        <FieldLabel>{CLINIC_HEADINGS.optional}</FieldLabel>
-        <Card>{CLINIC_OPTIONAL.map((x) => (
-          <button key={x.key} type="button" className="li w-full text-left"
-            onClick={() => setClinicPick(writePick(togglePick(clinicPick, x.key)))}>
-            <span>{x.label}</span><span>{isOn(clinicPick, x.key) ? "✓ 載せる" : "載せない"}</span>
-          </button>
-        ))}</Card>
-        <FieldLabel>本人の ことば</FieldLabel>
-        <TextArea value={clinicOwnWords} onChange={(e) => setClinicOwnWords(e.target.value)}
-          placeholder="例：高い音の 入りが 不安です。息が 続かない日が ありました。" style={{ minHeight: 90 }} />
-        <Btn onClick={() => setClinicGenerated(true)}>2項目で 1枚に する</Btn>
-        <Note>{CLINIC_NOTICE.map((line) => <span key={line}>・{line}<br /></span>)}</Note>
+        {/* ★★レッスン用は、★別の 画面です（★見本 nLesson）。
+            ★★2026-09-14 まで、★札を 押しても 中身が 変わらず、
+              ★「お医者さんに 見せる 1枚を 作ります」と 出た ままでした。 */}
+        {clinicMode === "lesson" ? lessonScreen() : (
+        <>
+        {/* ★★はじめの 3行（★見本 `.warn`）。★「はじめは 一番少ない ところだけ」。 */}
+        <Warn>
+          {CLINIC_INTRO.map((line, i) => (
+            <span key={line}>{i === 1 ? <b>{line}</b> : line}<br /></span>
+          ))}
+        </Warn>
+        {/* ★★期間は 札で 選びます。★暦は「選ぶ」を 押した ときだけ 開きます。 */}
+        <H3>期間</H3>
+        <div className="pills">
+          {CLINIC_PERIODS.map((p) => (
+            <Pill key={p.key} on={clinicPeriod === p.key}
+              onClick={() => {
+                setClinicPeriod(p.key);
+                const r = periodRange(p.key, todayISO);
+                if (r) setClinicRange(r);
+              }}>{p.label}</Pill>
+          ))}
+        </div>
+        {clinicPeriod === "pick" ? (
+          <RangeCalendar value={clinicRange} todayISO={todayISO} max={todayISO}
+            onChange={setClinicRange} />
+        ) : (
+          <Usu style={{ margin: "-4px 0 8px" }}>
+            {clinicRange.start && clinicRange.end
+              ? clinicRange.start + " 〜 " + clinicRange.end : ""}
+          </Usu>
+        )}
+        {/* ★★外せない 2つ。★押せません（★見本 `cursor:default`）。
+            ★★右は 緑の「✓」だけ です。★「載せる」とは 書きません ──
+              ★選べると 読めるからです。 */}
+        <H3>{CLINIC_HEADINGS.always}</H3>
+        <Box>
+          {CLINIC_ALWAYS.map((x, i) => (
+            <Li key={x.key} last={i === CLINIC_ALWAYS.length - 1}
+              style={{ cursor: "default" }}
+              right={<span style={{ color: C.sage }}>{rowMark("always").text}</span>}>
+              {x.label}
+            </Li>
+          ))}
+        </Box>
+        {/* ★★「足りない」と 読ませない 1行（★裁定 9/10夜 §4）。 */}
+        <Usu style={{ margin: "-2px 0 10px" }}>{CLINIC_HEADINGS.enough}</Usu>
+        {/* ★★足すなら。★ぜんぶ 既定は「載せない」です。 */}
+        <H3>{CLINIC_HEADINGS.optional}（ご自分で 選びます）</H3>
+        <Box>
+          {CLINIC_OPTIONAL.map((x, i) => {
+            const on = isOn(clinicPick, x.key);
+            const mark = rowMark(on);
+            return (
+              <Li key={x.key} last={i === CLINIC_OPTIONAL.length - 1}
+                onClick={() => setClinicPick(writePick(togglePick(clinicPick, x.key)))}
+                right={<span style={{ color: mark.tone === "on" ? C.sage : C.inkSoft }}>
+                  {mark.text}</span>}>
+                {x.label}
+                {CLINIC_ROW_NOTES[x.key]
+                  ? <Usu>{CLINIC_ROW_NOTES[x.key]}</Usu> : null}
+              </Li>
+            );
+          })}
+        </Box>
+        {/* ★★「本人の ことば」を 選んだ ときだけ、★書く ところを 出します。
+            ★★見本は 札だけですが、★どこかで 書けないと 載せられません。
+              ★選んで いない ときに 出すと、★書いた ものが 載らない、という
+              ★食い違いが 起きます。★選んだ ときだけ に します。 */}
+        {isOn(clinicPick, "ownWords") ? (
+          <>
+            <FieldLabel>本人の ことば</FieldLabel>
+            <TextArea value={clinicOwnWords} onChange={(e) => setClinicOwnWords(e.target.value)}
+              placeholder="例：高い音の 入りが 不安です。息が 続かない日が ありました。"
+              style={{ minHeight: 90 }} />
+          </>
+        ) : null}
+        {/* ★★この紙に ついて（★見本の クリーム色の 1枚）。 */}
+        <Card style={{ background: C.paper, borderColor: C.line }}>
+          <div style={{ ...TYPE.usual, lineHeight: 1.9, color: C.ink }}>
+            <b>この紙について（大事なこと）</b><br />
+            {CLINIC_NOTICE.map((line, i) => (
+              <span key={line}>
+                ・{i === CLINIC_NOTICE.length - 1 ? <b>{line}</b> : line}<br />
+              </span>
+            ))}
+          </div>
+        </Card>
+        {/* ★★数は「いま 載る 数」です。★あと何個、では ありません。 */}
+        <Btn onClick={() => setClinicGenerated(true)}>
+          {pickCount(clinicPick)}項目で 1枚に する
+        </Btn>
+        <Note>{CLINIC_FOOT.map((line) => <span key={line}>{line}<br /></span>)}</Note>
+        </>
+        )}
       </div>
     );
   }

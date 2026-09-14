@@ -109,6 +109,88 @@ function ok(cond, label) {
   ok(/useState\(\[\]\)/.test(v.slice(v.indexOf("const [clinicPick"), v.indexOf("const [clinicPick") + 80)),
     "★はじめは 空（★足すものは 1つも 載らない）");
 
+
+
+// ============================================================================
+// ★見本の 形に なって いること（★2026-09-14）
+//
+//   ★出どころ docs/design/pack-final/00-動く見本（さわれる・全画面）.html
+//     の `nJushin()`（★受診用の 1枚）
+//
+//   ★★坂本さんの お決め（★㋐）──
+//     ★「入・変更不可」＝ 緑の ✓・`cursor:default`・反応しない
+//     ★「入・変更可」　＝ 緑で「✓ 載せる」
+//     ★「切・変更可」　＝ 薄い字で「載せない」
+//     ★区切り　　　　 ＝ `.box` の 中に 行を 並べ、★行間に 罫線
+//
+//   ★★この 見張りが 見て いない こと
+//     ★字の 並びだけ を 見ます。★色の 見え方は 見て いません。
+//     ★実際の 色は 実機で 確かめます（★docs/design/compare/ichimai/）。
+// ============================================================================
+  {
+  const ui = readCode("components", "NotesV2.jsx");
+  const lib = readCode("lib", "clinicSheet.js");
+
+  console.log("\n★見本の 形");
+
+  // ★① 右に 出す 字は、★1か所で 決める
+  ok(/export function rowMark\(/.test(lib), "★右の 字は lib が 決める");
+  ok(/"✓ 載せる"/.test(lib) && /"載せない"/.test(lib), "★見本の 字の まま");
+  ok(!/"✓ 載せる"/.test(ui) && !/"載せない"/.test(ui),
+    "★画面に 書き写して いない");
+
+  // ★② 外せない 行は 押せない
+  ok(/rowMark\("always"\)/.test(ui), "★外せない 行の 印を lib から 取る");
+  ok(/cursor: "default"/.test(ui), "★押せない 形に して いる");
+
+  // ★③ 箱に 入れて、★行間に 罫線（★Li が 引きます）
+  ok(/<Box>[\s\S]{0,400}CLINIC_ALWAYS/.test(ui), "★外せない 行は Box の 中");
+  ok(/<Box>[\s\S]{0,400}CLINIC_OPTIONAL/.test(ui), "★足す 行も Box の 中");
+  ok(!/className="li w-full text-left"/.test(ui),
+    "★生の button を 並べて いない（★Li に そろえた）");
+
+  // ★④ 期間は 札。★暦は「選ぶ」の ときだけ
+  ok(/export const CLINIC_PERIODS/.test(lib), "★期間の 札が lib に ある");
+  ok(/clinicPeriod === "pick" \?/.test(ui), "★暦は「選ぶ」の ときだけ");
+  ok(/periodRange\("3m", todayISO\)/.test(ui),
+    "★はじめの 期間も 同じ 決まりから 出す");
+
+  // ★⑤ 数は「いま 載る 数」
+  ok(/export function pickCount\(/.test(lib), "★数え方が lib に ある");
+  ok(/pickCount\(clinicPick\)/.test(ui), "★画面は lib に 尋ねる");
+  ok(!/2項目で/.test(ui), "★数を 決め打ちして いない");
+
+  // ★⑥ 見本の 字を 画面に 書き写して いない
+  ok(/export const CLINIC_INTRO/.test(lib), "★はじめの 3行が lib に ある");
+  ok(/export const CLINIC_FOOT/.test(lib), "★下の 3行も lib に ある");
+  ok(/これは 無料です。/.test(lib), "★「無料です」まで 見本の とおり");
+  ok(!/一番少ない/.test(ui), "★はじめの 3行を 書き写して いない");
+
+  // ★⑦ 「足りない」と 読ませない
+  ok(/CLINIC_HEADINGS\.enough/.test(ui), "★「この 2つだけで、1枚に できます」を 出す");
+  ok(!/あと\s*\{|あと.項目/.test(ui), "★「あと◯項目」と 書いて いない");
+
+  console.log("\n★レッスンに 持っていく 1枚（★見本 nLesson）");
+  // ★★2026-09-14 まで、★札を 押しても 中身が 変わりませんでした。
+  //   ★「お医者さんに 見せる 1枚を 作ります」と 出た ままでした。
+  ok(/clinicMode === "lesson" \? lessonScreen\(\)/.test(ui),
+    "★札で 中身が 変わる");
+  ok(/export const LESSON_ITEMS/.test(lib), "★載せるものが lib に ある");
+  ok(/export const LESSON_PERIODS/.test(lib), "★期間の 札も lib に ある");
+  ok(/export const LESSON_NOTICE/.test(lib), "★断りも lib に ある");
+  // ★★外せない ものは ありません。★ぜんぶ 外せます（★見本の 断り）。
+  ok(!/LESSON_ALWAYS/.test(lib), "★外せない 行を 作って いない");
+  ok(/載せないと 選べる/.test(lib), "★見本の 断りを そのまま 持って いる");
+  // ★★覚え場所は 分けます。★受診用と 混ぜません。
+  ok(/export const LESSON_PICK_KEY/.test(lib), "★覚え場所を 分けて いる");
+  ok(/woolsong-lesson-pick/.test(lib) && /woolsong-clinic-pick/.test(lib),
+    "★2つの 名前が 別");
+  ok(/lessonCount\(lessonPick\)/.test(ui), "★数も lib に 尋ねる");
+  // ★★出来ばえ・点数・順位を 入れない、と 画面で 言う。
+  ok(/出来ばえ・点数・順位は、どの項目にも 入りません/.test(lib),
+    "★点数を 出さない、と 言って いる");
+  }
+
   console.log(failed === 0 ? "\n全て ok" : "\n" + failed + "件 NG");
   process.exit(failed === 0 ? 0 : 1);
 })();
