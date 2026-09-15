@@ -14184,6 +14184,168 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 }}
                 onRecord={() => setActiveTab("today")}
                 onOpenMore={() => setActiveTab("more")}>
+                {/* ★★★生徒の 教室の 殻 ── 3つの 節（★2026-09-15・No.026）。
+                    ★★★2026-09-15、★入れる タブを まちがえて いました。
+                      ★★仕様（第3版 §6-2）は「きょう」の 中 と 書いて います。
+                      ★★「きょう」は `home` です ──
+                        `tabHome:  { ja: "きょう" }`
+                        `tabToday: { ja: "記録" }`
+                      ★★私は `today`（＝「記録」）に 入れて いました。
+                        ★`today` という 鍵の 名前を 見て、★「きょう」だと 思い込みました。
+                        ★★中身（★画面に 出る 字）を 確かめて いません。
+                      ★★きょう 何度も 出た 形です ──「名前を 見て、★ものを 見ない」。
+                        ★書き出しの 見出し（`throat_condition` は のどでは ない）と 同じ。
+                    ★★並びは 仕様の とおり ── ★レッスン → 連絡 → 行事。
+                      ★★作った 順（レッスン → 行事 → 連絡）とは 違います。
+                      ★★仕様の 並びに 合わせました（★第3版 §6-2 の 図）。 */}
+                {/* ★★★ここは 記録の 器の **外** です（★2026-09-15）。
+                    ★★はじめ、★畳みの 器の 中に 書いて いました。
+                      ★★見張り `record-leak` が 止めました。★正しい 指摘 です。
+                      ★★あの 器の 中で 節（SectionCard）の 外に 出る ものは、
+                        ★門の **外**だけ の もの に 限られます（★2026-09-11 の 事故）。
+                    ★★この 節は 記録の 入力では ありません。
+                      ★畳む しくみも 要りません。★器に 入れる 筋が ありません。
+                    ★★見張りに 例外を 足しませんでした。★置き場所を 直しました。 */}
+                {/* ★★★生徒の 教室の 殻 ──「次の レッスン」（★§6-2・2026-09-15）。
+                    ★★新しい タブを 作りません。★`/house` も 作りません。
+                      ★「きょう」の 中の 1つの 節 です。
+                    ★★読むだけ です。★押せる ものを 置いて いません。
+                    ★★門の 中の 方だけ に 出します。★38名の 画面は 変わりません。
+                    ★★1件も 無い ときは、★節ごと 出しません ──
+                      ★教室に 通って いない 方に、★空の 札を 見せない ため です。
+                      ★★「教室が ありません」も 出しません（★§6-3 の 字は、
+                        ★教室の 入口を 作る ときの もの です。★ここでは ありません）。
+                    ★★次は「近い 行事」です。★裁定（2026-09-15・行事と時間割）を
+                      ★先に お読みください ── ★行事は 日づけを 持ちます。
+                      ★曜日×コマ の 時間割に 重ねると、★毎週 出て しまいます。 */}
+                {layoutV2 && classroom && classroom.lessonsOk && (() => {
+                  const next = nextLesson(classroom.lessons, new Date());
+                  if (!next) return null;
+                  const at = new Date(next.scheduled_at);
+                  return (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <p className="text-xs font-medium mb-1.5" style={{ color: C.inkSoft }}>
+                        {SECTION_TITLES.lesson}
+                      </p>
+                      <p className="text-sm font-medium">
+                        {formatDateLabel(at.toISOString().slice(0, 10), language)}
+                        {"　"}
+                        <span className="ff-mono">
+                          {at.toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                      </p>
+                      {next.note ? (
+                        <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{next.note}</p>
+                      ) : null}
+                      {/* ★★教室の ものか、★個人指導か を 書きます。
+                          ★★同じ 節に 2つの 道の ものが 並びます（★裁定 2026-09-15）。
+                            ★どちらか 分からないと、★どこへ 行けば よいか 分かりません。 */}
+                      <p className="text-xs mt-1" style={{ color: C.inkSoft }}>
+                        {next.org_id ? "教室の レッスン" : "個人の レッスン"}
+                      </p>
+                    </div>
+                  );
+                })()}
+                {/* ★★取れなかった ときは、★黙って いません。
+                    ★★「0件」と「取れなかった」は 別の こと です。
+                      ★★空の 札を 出すと、★「決まって いない」と 読めます。 */}
+                {layoutV2 && classroom && !classroom.lessonsOk && (
+                  <p className="text-xs" style={{ color: C.inkSoft }}>
+                    {SECTION_TITLES.lesson}は、いま 読めませんでした。
+                  </p>
+                )}
+
+
+                {/* ★★★生徒の 教室の 殻 ──「先生からの 連絡」（★§6-2・2026-09-15）。
+                    ★★★読むだけ です（★裁定「read-only in v1」）。
+                      ★★`org_message_reads` に **触れません**。
+                      ★★読んだ ことを 台帳に 残すのは、★次の 話 です。
+                        ★★「読んだ か」を 集め 始めると、
+                          ★「読んで いない 人」を 数えられる ように なります。
+                          ★この 家に、★そういう ものは 置きません。
+                    ★★取り消された ものは 出しません（★`withdrawn_at`）。
+                      ★★行は 残って います（★見本② ──「静かに 1行 残ります」）。
+                      ★★v1 では、★その 1行を まだ 出しません。★読むだけ の 節 だから です。
+                    ★★新しい 順に 3つまで。★「未読 2件」と 数えません。
+                    ★★1件も 無い ときは、★節ごと 出しません。 */}
+                {layoutV2 && classroom && classroom.messagesOk && (() => {
+                  const recent = recentMessages(classroom.messages, MESSAGE_SHOW_LIMIT);
+                  if (recent.length === 0) return null;
+                  return (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <p className="text-xs font-medium mb-1.5" style={{ color: C.inkSoft }}>
+                        {SECTION_TITLES.message}
+                      </p>
+                      {recent.map((msg, i) => (
+                        <p key={msg.id || i} className="text-sm"
+                          style={{ margin: i ? "8px 0 0" : 0, lineHeight: 1.85, whiteSpace: "pre-wrap" }}>
+                          {msg.body}
+                        </p>
+                      ))}
+                    </div>
+                  );
+                })()}
+                {layoutV2 && classroom && !classroom.messagesOk && (
+                  <p className="text-xs" style={{ color: C.inkSoft }}>
+                    {SECTION_TITLES.message}は、いま 読めませんでした。
+                  </p>
+                )}
+
+                {/* ★★★生徒の 教室の 殻 ──「近い 行事」（★§6-2・2026-09-15）。
+                    ★★読むだけ です。★「出ます」の 印を つける 道を 置いて いません。
+                      ★★`org_event_participants` という 表は あります。
+                        ★けれど この 節は **触りません**（★裁定「no RSVP」）。
+                      ★★添える 1行が、★そう 約束して います ──
+                        「行事の 出欠は 集めません。知らせるだけです。」
+                    ★★★日づけは、★日づけの まま 出します。
+                      ★★「あと3日」と 書きません（★裁定「no countdown」）。
+                      ★★この 家には、★残りを 数えて 見せる ものが 1つも ありません。
+                    ★★★曜日×コマ の 時間割に 重ねて いません（★裁定 2026-09-15）。
+                      ★★行事は 日づけを 1つ 持ちます。★繰り返しの 列は ありません
+                        （★本番の 列で 確かめました）。
+                      ★★週ごとに 繰り返す 型紙に 重ねると、★1度きりの 行事が
+                        ★毎週 出て しまいます。★ここは 日づけの 並び です。
+                    ★★1件も 無い ときは、★節ごと 出しません。
+                      ★★教室に 通って いない 方に、★空の 札を 見せない ため です。 */}
+                {layoutV2 && classroom && classroom.eventsOk && (() => {
+                  const soon = upcomingEvents(classroom.events, realTodayDate, EVENT_SHOW_LIMIT);
+                  if (soon.length === 0) return null;
+                  return (
+                    <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                      <p className="text-xs font-medium mb-1.5" style={{ color: C.inkSoft }}>
+                        {SECTION_TITLES.event}
+                      </p>
+                      {soon.map((ev, i) => {
+                        const moved = eventMoved(ev);
+                        return (
+                          <div key={ev.id || i} style={{ marginTop: i ? 8 : 0 }}>
+                            <p className="text-sm font-medium">
+                              {eventDateLabel(ev)}
+                              {"　"}
+                              {ev.title || ev.kind || "行事"}
+                            </p>
+                            {/* ★★日づけが 変わった ことは、★黙って いません。
+                                ★★前の 日で 覚えて いる 方が 困ります。
+                                ★★`previous_date` は「前は いつ」です。★繰り返しでは ありません。 */}
+                            {moved ? (
+                              <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>{moved}</p>
+                            ) : null}
+                          </div>
+                        );
+                      })}
+                      {/* ★★見本 §6-2 が 文言まで 決めて います。★1文字も 変えません。 */}
+                      <p className="text-xs mt-2.5" style={{ color: C.inkSoft, lineHeight: 1.8 }}>
+                        {EVENT_NOTE}
+                      </p>
+                    </div>
+                  );
+                })()}
+                {layoutV2 && classroom && !classroom.eventsOk && (
+                  <p className="text-xs" style={{ color: C.inkSoft }}>
+                    {SECTION_TITLES.event}は、いま 読めませんでした。
+                  </p>
+                )}
+
                 {/* ★★みつけたこと（★見本①）。★分析の 側が 持っています。
                     ★★3つの門を 通ったものだけです（★gateAllows）。
                       ★通っていなければ、★見出しだけが 残ります。
@@ -14750,152 +14912,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               //   ★★「次の レッスン」を その **外**に 置くので、★兄弟が 2つに なります。
               //     ★★JSX は 根を 1つしか 返せません。★だから 包みます。
               <>
-              {/* ★★★ここは 記録の 器の **外** です（★2026-09-15）。
-                  ★★はじめ、★畳みの 器の 中に 書いて いました。
-                    ★★見張り `record-leak` が 止めました。★正しい 指摘 です。
-                    ★★あの 器の 中で 節（SectionCard）の 外に 出る ものは、
-                      ★門の **外**だけ の もの に 限られます（★2026-09-11 の 事故）。
-                  ★★この 節は 記録の 入力では ありません。
-                    ★畳む しくみも 要りません。★器に 入れる 筋が ありません。
-                  ★★見張りに 例外を 足しませんでした。★置き場所を 直しました。 */}
-              {/* ★★★生徒の 教室の 殻 ──「次の レッスン」（★§6-2・2026-09-15）。
-                  ★★新しい タブを 作りません。★`/house` も 作りません。
-                    ★「きょう」の 中の 1つの 節 です。
-                  ★★読むだけ です。★押せる ものを 置いて いません。
-                  ★★門の 中の 方だけ に 出します。★38名の 画面は 変わりません。
-                  ★★1件も 無い ときは、★節ごと 出しません ──
-                    ★教室に 通って いない 方に、★空の 札を 見せない ため です。
-                    ★★「教室が ありません」も 出しません（★§6-3 の 字は、
-                      ★教室の 入口を 作る ときの もの です。★ここでは ありません）。
-                  ★★次は「近い 行事」です。★裁定（2026-09-15・行事と時間割）を
-                    ★先に お読みください ── ★行事は 日づけを 持ちます。
-                    ★曜日×コマ の 時間割に 重ねると、★毎週 出て しまいます。 */}
-              {layoutV2 && classroom && classroom.lessonsOk && (() => {
-                const next = nextLesson(classroom.lessons, new Date());
-                if (!next) return null;
-                const at = new Date(next.scheduled_at);
-                return (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <p className="text-xs font-medium mb-1.5" style={{ color: C.inkSoft }}>
-                      {SECTION_TITLES.lesson}
-                    </p>
-                    <p className="text-sm font-medium">
-                      {formatDateLabel(at.toISOString().slice(0, 10), language)}
-                      {"　"}
-                      <span className="ff-mono">
-                        {at.toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
-                      </span>
-                    </p>
-                    {next.note ? (
-                      <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{next.note}</p>
-                    ) : null}
-                    {/* ★★教室の ものか、★個人指導か を 書きます。
-                        ★★同じ 節に 2つの 道の ものが 並びます（★裁定 2026-09-15）。
-                          ★どちらか 分からないと、★どこへ 行けば よいか 分かりません。 */}
-                    <p className="text-xs mt-1" style={{ color: C.inkSoft }}>
-                      {next.org_id ? "教室の レッスン" : "個人の レッスン"}
-                    </p>
-                  </div>
-                );
-              })()}
-              {/* ★★取れなかった ときは、★黙って いません。
-                  ★★「0件」と「取れなかった」は 別の こと です。
-                    ★★空の 札を 出すと、★「決まって いない」と 読めます。 */}
-              {layoutV2 && classroom && !classroom.lessonsOk && (
-                <p className="text-xs" style={{ color: C.inkSoft }}>
-                  {SECTION_TITLES.lesson}は、いま 読めませんでした。
-                </p>
-              )}
-
-              {/* ★★★生徒の 教室の 殻 ──「近い 行事」（★§6-2・2026-09-15）。
-                  ★★読むだけ です。★「出ます」の 印を つける 道を 置いて いません。
-                    ★★`org_event_participants` という 表は あります。
-                      ★けれど この 節は **触りません**（★裁定「no RSVP」）。
-                    ★★添える 1行が、★そう 約束して います ──
-                      「行事の 出欠は 集めません。知らせるだけです。」
-                  ★★★日づけは、★日づけの まま 出します。
-                    ★★「あと3日」と 書きません（★裁定「no countdown」）。
-                    ★★この 家には、★残りを 数えて 見せる ものが 1つも ありません。
-                  ★★★曜日×コマ の 時間割に 重ねて いません（★裁定 2026-09-15）。
-                    ★★行事は 日づけを 1つ 持ちます。★繰り返しの 列は ありません
-                      （★本番の 列で 確かめました）。
-                    ★★週ごとに 繰り返す 型紙に 重ねると、★1度きりの 行事が
-                      ★毎週 出て しまいます。★ここは 日づけの 並び です。
-                  ★★1件も 無い ときは、★節ごと 出しません。
-                    ★★教室に 通って いない 方に、★空の 札を 見せない ため です。 */}
-              {layoutV2 && classroom && classroom.eventsOk && (() => {
-                const soon = upcomingEvents(classroom.events, realTodayDate, EVENT_SHOW_LIMIT);
-                if (soon.length === 0) return null;
-                return (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <p className="text-xs font-medium mb-1.5" style={{ color: C.inkSoft }}>
-                      {SECTION_TITLES.event}
-                    </p>
-                    {soon.map((ev, i) => {
-                      const moved = eventMoved(ev);
-                      return (
-                        <div key={ev.id || i} style={{ marginTop: i ? 8 : 0 }}>
-                          <p className="text-sm font-medium">
-                            {eventDateLabel(ev)}
-                            {"　"}
-                            {ev.title || ev.kind || "行事"}
-                          </p>
-                          {/* ★★日づけが 変わった ことは、★黙って いません。
-                              ★★前の 日で 覚えて いる 方が 困ります。
-                              ★★`previous_date` は「前は いつ」です。★繰り返しでは ありません。 */}
-                          {moved ? (
-                            <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>{moved}</p>
-                          ) : null}
-                        </div>
-                      );
-                    })}
-                    {/* ★★見本 §6-2 が 文言まで 決めて います。★1文字も 変えません。 */}
-                    <p className="text-xs mt-2.5" style={{ color: C.inkSoft, lineHeight: 1.8 }}>
-                      {EVENT_NOTE}
-                    </p>
-                  </div>
-                );
-              })()}
-              {layoutV2 && classroom && !classroom.eventsOk && (
-                <p className="text-xs" style={{ color: C.inkSoft }}>
-                  {SECTION_TITLES.event}は、いま 読めませんでした。
-                </p>
-              )}
-
-              {/* ★★★生徒の 教室の 殻 ──「先生からの 連絡」（★§6-2・2026-09-15）。
-                  ★★★読むだけ です（★裁定「read-only in v1」）。
-                    ★★`org_message_reads` に **触れません**。
-                    ★★読んだ ことを 台帳に 残すのは、★次の 話 です。
-                      ★★「読んだ か」を 集め 始めると、
-                        ★「読んで いない 人」を 数えられる ように なります。
-                        ★この 家に、★そういう ものは 置きません。
-                  ★★取り消された ものは 出しません（★`withdrawn_at`）。
-                    ★★行は 残って います（★見本② ──「静かに 1行 残ります」）。
-                    ★★v1 では、★その 1行を まだ 出しません。★読むだけ の 節 だから です。
-                  ★★新しい 順に 3つまで。★「未読 2件」と 数えません。
-                  ★★1件も 無い ときは、★節ごと 出しません。 */}
-              {layoutV2 && classroom && classroom.messagesOk && (() => {
-                const recent = recentMessages(classroom.messages, MESSAGE_SHOW_LIMIT);
-                if (recent.length === 0) return null;
-                return (
-                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
-                    <p className="text-xs font-medium mb-1.5" style={{ color: C.inkSoft }}>
-                      {SECTION_TITLES.message}
-                    </p>
-                    {recent.map((msg, i) => (
-                      <p key={msg.id || i} className="text-sm"
-                        style={{ margin: i ? "8px 0 0" : 0, lineHeight: 1.85, whiteSpace: "pre-wrap" }}>
-                        {msg.body}
-                      </p>
-                    ))}
-                  </div>
-                );
-              })()}
-              {layoutV2 && classroom && !classroom.messagesOk && (
-                <p className="text-xs" style={{ color: C.inkSoft }}>
-                  {SECTION_TITLES.message}は、いま 読めませんでした。
-                </p>
-              )}
 
 
               {/* ★★折りたたみの いまを、★節へ 渡します（★見本③）。

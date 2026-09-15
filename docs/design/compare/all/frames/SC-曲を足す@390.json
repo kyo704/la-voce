@@ -4,6 +4,102 @@
   "text": "‹ もどる"
  },
  {
+  "tag": "h2",
+  "text": "曲を 足す"
+ },
+ {
+  "tag": "div",
+  "text": "レパートリーは です。稽古の メモとは 別の 項目を 聞きます。 打ったものは、ほかを 押しても 。"
+ },
+ {
+  "tag": "div",
+  "text": "曲名"
+ },
+ {
+  "tag": "div",
+  "text": "作曲家"
+ },
+ {
+  "tag": "div",
+  "text": "役・曲集の中の 位置（あれば）"
+ },
+ {
+  "tag": "div",
+  "text": "ことば"
+ },
+ {
+  "tag": "button",
+  "text": "イタリア語"
+ },
+ {
+  "tag": "button",
+  "text": "ドイツ語"
+ },
+ {
+  "tag": "button",
+  "text": "フランス語"
+ },
+ {
+  "tag": "button",
+  "text": "日本語"
+ },
+ {
+  "tag": "button",
+  "text": "英語"
+ },
+ {
+  "tag": "button",
+  "text": "ラテン語"
+ },
+ {
+  "tag": "button",
+  "text": "ロシア語"
+ },
+ {
+  "tag": "div",
+  "text": "一番高い音・低い音（あれば）"
+ },
+ {
+  "tag": "div",
+  "text": "様子"
+ },
+ {
+  "tag": "button",
+  "text": "はじめたばかり"
+ },
+ {
+  "tag": "button",
+  "text": "さらい中"
+ },
+ {
+  "tag": "button",
+  "text": "本番済み"
+ },
+ {
+  "tag": "button",
+  "text": "しばらく置く"
+ },
+ {
+  "tag": "div",
+  "text": "本番の 予定（あれば）"
+ },
+ {
+  "tag": "div",
+  "text": "いま 入っているもの イタリア語 ／ — 〜 — ／ はじめたばかり"
+ },
+ {
+  "tag": "p",
+  "text": "まだ足せていません。開いたままにしています。"
+ },
+ {
+  "tag": "button",
+  "text": "やめる"
+ },
+ {
+  "tag": "button",
+  "text": "しまう"
+ },
+ {
   "tag": "button",
   "text": "きょう"
  },

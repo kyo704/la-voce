@@ -41,99 +41,75 @@
  },
  {
   "tag": "div",
-  "text": "並べるもの"
- },
- {
-  "tag": "span",
-  "text": "押すと 出し入れできます。こちらから 勝手に 足しません"
- },
- {
-  "tag": "button",
-  "text": "声の 出来"
- },
- {
-  "tag": "button",
-  "text": "のどの 調子"
- },
- {
-  "tag": "button",
-  "text": "起きたときの むくみ"
- },
- {
-  "tag": "button",
-  "text": "声を 使った 時間"
- },
- {
-  "tag": "button",
-  "text": "昨夜の 睡眠"
- },
- {
-  "tag": "button",
-  "text": "食べ終えてから 寝るまで"
- },
- {
-  "tag": "button",
-  "text": "湿度"
- },
- {
-  "tag": "p",
-  "text": "たての 帯 本番・レッスンの あった日 ◎＝出た／よい・ない ○＝ふつう・すこし △＝出づらい・わるい・ある"
+  "text": "こえの ちょうし"
  },
  {
   "tag": "div",
-  "text": "数えたもの"
+  "text": "のどの ちょうし"
  },
  {
-  "tag": "span",
-  "text": "声の 出来"
- },
- {
-  "tag": "span",
-  "text": "◎ ○ ◎"
- },
- {
-  "tag": "span",
-  "text": "のどの 調子"
- },
- {
-  "tag": "span",
-  "text": "◎ ○ ◎"
- },
- {
-  "tag": "span",
-  "text": "起きたときの むくみ"
- },
- {
-  "tag": "span",
-  "text": "○ △ △"
- },
- {
-  "tag": "span",
-  "text": "声を 使った 時間"
- },
- {
-  "tag": "span",
-  "text": "120分 15分 60分"
- },
- {
-  "tag": "span",
+  "tag": "div",
   "text": "昨夜の 睡眠"
  },
  {
-  "tag": "span",
-  "text": "8.0時間 6.0時間 7.5時間"
- },
- {
-  "tag": "p",
-  "text": "右から いちばん 多い日 ／ いちばん 少ない日 ／ まんなか"
+  "tag": "div",
+  "text": "4〜9時間"
  },
  {
   "tag": "div",
   "text": "気になったこと"
  },
  {
-  "tag": "p",
-  "text": "8/15 から 9/11 濃いほど、書いた 場所が 多い日です。"
+  "tag": "span",
+  "text": "のどが いがらっぽい"
+ },
+ {
+  "tag": "span",
+  "text": "0 日"
+ },
+ {
+  "tag": "span",
+  "text": "せきばらい"
+ },
+ {
+  "tag": "span",
+  "text": "6 日"
+ },
+ {
+  "tag": "span",
+  "text": "のどが 渇く"
+ },
+ {
+  "tag": "span",
+  "text": "7 日"
+ },
+ {
+  "tag": "span",
+  "text": "鼻が つまる"
+ },
+ {
+  "tag": "span",
+  "text": "0 日"
+ },
+ {
+  "tag": "span",
+  "text": "肩が こわばる"
+ },
+ {
+  "tag": "span",
+  "text": "6 日"
+ },
+ {
+  "tag": "span",
+  "text": "胃が もたれる"
+ },
+ {
+  "tag": "span",
+  "text": "0 日"
+ },
+ {
+  "tag": "div",
+  "text": "●＝その日 あった"
  },
  {
   "tag": "button",
