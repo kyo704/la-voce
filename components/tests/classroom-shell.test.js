@@ -1,0 +1,171 @@
+#!/usr/bin/env node
+
+// ============================================================================
+// ★生徒の 教室の 殻 ──「次の レッスン」
+//
+//   ★出どころ docs/opus/未決機能の設計書_第3版_2026-09-14.md §6
+//   ★裁定 2026-09-15・坂本さん
+//     「「次のレッスン」は 両方 拾う（★教室の レッスン・個人指導、
+//       両方の lessons 行を 対象に する）」
+//
+//   ★★★この見張りの 芯は「両方 拾う」です。
+//     ★★個人指導の レッスンは `student_id` を **持ちません**
+//       （★`handleCreateLesson` が 入れるのは link_id・scheduled_at・note・created_by）。
+//     ★★だから `.eq("student_id", …)` だけで 引くと、
+//       ★個人指導の 方には 1件も 出ません。★**空の 画面**に なります。
+//     ★★そして 誰も 気づきません ── ★エラーに ならないから です。
+//       ★★片方だけに 戻されたら、★この 見張りが 止めます。
+//
+//   ★★もう1つ ── ★v1 では **既読を 書きません**。
+//     ★出どころ [ACTION] Opus →「read-only. no read marks written in v1」
+//
+//   ★★見えたか どうかは、★これでは 分かりません。実機で お確かめください。
+// ============================================================================
+
+const fs = require("fs");
+const path = require("path");
+const { readCode } = require("./_source");
+
+let ok = 0, ng = 0;
+function t(cond, label) {
+  if (cond) { console.log("  ✓ " + label); ok++; }
+  else { console.log("  ✗ " + label); ng++; }
+}
+
+const NEED = [["lib", "classroomShell.js"], ["components", "VocalTracker.jsx"]];
+const missing = NEED.filter((p) => !fs.existsSync(path.join(__dirname, "..", "..", ...p)));
+if (missing.length) {
+  missing.forEach((p) => console.log("★★ありません: " + p.join("/")));
+  console.log("　★数えません。★止まります。");
+  process.exit(1);
+}
+
+const b64 = (...p) => "data:text/javascript;base64," + Buffer.from(
+  fs.readFileSync(path.join(__dirname, "..", "..", ...p), "utf8")).toString("base64");
+
+(async () => {
+  const S = await import(b64("lib", "classroomShell.js"));
+  const vt = readCode("components", "VocalTracker.jsx");
+
+  console.log("① ★★レッスンを、★2つの 道で 引いて いること");
+  // ★★ここが 落ちたら、★個人指導の 方の 画面が 空に なります。
+  // ★★殻の 塊を 切り出します。
+  //   ★★★1400字 という 目分量で 切って いました。★誤りです。
+  //     ★★`readCode` は コメントを 外すので、★同じ 字数が 先まで 届きます。
+  //     ★★2026-09-15、★それで 関わりの ない `.select(` を 1つ 数えました。
+  //   ★★終わりは 印で 決めます ── ★`setClassroom({ … });` まで。
+  const fetchAt = vt.indexOf("const [byStudent, byLink]");
+  const endAt = vt.indexOf("});", vt.indexOf("setClassroom({", fetchAt < 0 ? 0 : fetchAt));
+  const blk = (fetchAt > -1 && endAt > fetchAt) ? vt.slice(fetchAt, endAt + 3) : "";
+  t(fetchAt > -1, "2つの 道を まとめて 引いて いる");
+  t(/\.eq\("student_id", userId\)/.test(blk), "① 教室の レッスン（student_id で 当たる）");
+  t(/teacher_student_links!inner\(student_id\)/.test(blk), "② 個人指導（link_id 経由）");
+  t(/\.eq\("link\.student_id", userId\)/.test(blk), "② の 当て方が link.student_id");
+  t(/mergeLessons\(byStudent\.data, byLink\.data\)/.test(vt), "2つを 混ぜて いる");
+
+  console.log("\n②「個人指導は student_id を 持たない」── ★前提の 確かめ");
+  // ★★見張りが 前提を 自分で 確かめない と、★前提が 崩れた ときに 気づけません。
+  //   ★★もし 将来 student_id も 入れる ように なったら、★ここが 落ちます。
+  //     ★落ちて 正しい です。★そのとき ① の わけを 書き直して ください。
+  const ins = vt.indexOf('from("lessons").insert(');
+  const insLine = ins < 0 ? "" : vt.slice(ins, vt.indexOf(")", vt.indexOf("insert(", ins) + 200));
+  t(ins > -1, "レッスンを 作る ところが ある");
+  t(/link_id:/.test(insLine), "作る ときに link_id を 入れて いる");
+  t(!/student_id:/.test(insLine), "★作る ときに student_id を 入れて いない（★だから ② が 要る）");
+
+  console.log("\n③ `select(\"*\")` に して いないこと");
+  const shellBlk = blk;
+  // ★★RLS は 行を 隠します。★列は 隠しません。
+  //   ★`select("*")` は、★出さない 列も 通信に 載せます。
+  // ★★2026-09-15、★この 1本が 較正で 落ちませんでした。
+  //   ★★「LESSON_COLUMNS が どこかに 在る か」を 見て いました。
+  //     ★★片方を `select("*")` に 戻しても、★もう片方に 名前が 残るので 通ります。
+  //   ★★見るのは「殻の 中の すべての select が 名前で 並べて いるか」です。
+  //     ★★同じ 取り違えを 何度か して います ── ★在るか、では なく、
+  //       ★**どこに 付いて いるか**を 見る こと。
+  // ★★`[^)]*` では 切れます ── ★中に `(student_id)` が 入って いるからです。
+  //   ★★括弧の 釣り合いで 取ります。★2026-09-15、★これで 幻の 3つ目を 数えました。
+  const shellSelects = [];
+  for (let i = shellBlk.indexOf(".select("); i > -1; i = shellBlk.indexOf(".select(", i + 1)) {
+    let d = 0, j = i + ".select".length;
+    for (; j < shellBlk.length; j++) {
+      if (shellBlk[j] === "(") d++;
+      else if (shellBlk[j] === ")") { d--; if (d === 0) break; }
+    }
+    shellSelects.push(shellBlk.slice(i, j + 1));
+  }
+  console.log("    ★殻の 中の select: " + shellSelects.length + " 件");
+  t(shellSelects.length === 2, "殻の 中の select は ちょうど 2つ（★2つの 道）");
+  shellSelects.forEach((sel, i) => {
+    t(sel.includes("LESSON_COLUMNS"), (i + 1) + "つ目の select が 列を 名前で 並べて いる");
+    t(!/["'`]\s*\*\s*["'`]/.test(sel), (i + 1) + "つ目の select が * では ない");
+  });
+  t(!S.LESSON_COLUMNS.includes("*"), "LESSON_COLUMNS に * が ない");
+  t(!S.LESSON_COLUMNS.includes("teacher_note"),
+    "teacher_note を 引いて いない（★先生が 自分の ために 書いた もの）");
+  t(!S.LESSON_COLUMNS.includes("student_notice"),
+    "student_notice を 引いて いない（★この 節では 使いません）");
+
+  console.log("\n④ ★v1 では 既読を 書かないこと");
+  // ★★出どころ「read-only. no read marks written in v1」
+  //
+  // ★★★はじめ、★ファイル 全体を 見て いました。★それは 誤りです。
+  //   ★★`org_message_reads` も `org_events` も、★先生・事務の 画面が
+  //     ★前から 使って います（★:9942・:11863 ほか）。
+  //   ★★見るべきは **殻の 中** だけ です。
+  //     ★★語を 数えると、★関わりの ない 正しい コードが 落ちます。
+  //       ★落ちない ものは 直されません。★見張りが 嘘に なります。
+  //   ★★同じ 取り違えを、★同じ日に 管理画面の 見張りでも しました。
+  const shell = blk;
+  t(!/org_message_reads/.test(shell), "殻が org_message_reads に 触れて いない");
+  const shellSrc = readCode("lib", "classroomShell.js");
+  t(!/insert|update|upsert|delete/.test(shellSrc), "この 一枚は 書く 道を 1つも 持たない");
+
+  console.log("\n⑤ ★門の 中だけ に 出して いること");
+  // ★★38名の 画面を 1つも 変えません。
+  t(/if \(!layoutV2 \|\| !userId\) return;/.test(vt), "引くのも 門の 中だけ");
+  t(/\{layoutV2 && classroom && classroom\.lessonsOk && \(\(\) => \{/.test(vt),
+    "描くのも 門の 中だけ");
+
+  console.log("\n⑥ 出さない ものを 引いて いないこと（★N-1）");
+  // ★★「近い 行事」と「先生からの 連絡」は、★まだ 作って いません。
+  //   ★★だから 引きません。★読まれない 値を 運ばない ── No.019.5 と 同じ 決め。
+  //   ★★見るのは 殻の 中だけ です（★④ と 同じ わけ）。
+  t(!/from\("org_events"\)/.test(shell), "殻が org_events を まだ 引いて いない");
+  t(!/from\("org_messages"\)/.test(shell), "殻が org_messages を まだ 引いて いない");
+  t(!/EVENT_COLUMNS|MESSAGE_COLUMNS|upcomingEvents|recentMessages|EMPTY_TEXT/.test(vt),
+    "まだ 使わない 名前を 読み込んで いない");
+
+  console.log("\n⑦ ★実際に 動かして みる");
+  const now = new Date("2026-09-15T10:00:00Z");
+  // ★★混ぜる ── 同じ 行が 2度 来ても 1つに なること。
+  const merged = S.mergeLessons(
+    [{ id: "a", scheduled_at: "2026-09-20T02:00:00Z" }],
+    [{ id: "a", scheduled_at: "2026-09-20T02:00:00Z" }, { id: "b", scheduled_at: "2026-09-16T02:00:00Z" }]);
+  t(merged.length === 2, "同じ 行が 2度 来ても 1つ（★教室と 個人で 重なる ことが あります）");
+  t(S.mergeLessons(null, undefined).length === 0, "null が 来ても 落ちない");
+
+  // ★★次の 1件。
+  t(S.nextLesson(merged, now).id === "b", "いちばん 近い ものを 返す");
+  t(S.nextLesson([{ id: "p", scheduled_at: "2026-09-01T02:00:00Z" }], now) === null,
+    "過ぎた ものは 返さない");
+  t(S.nextLesson([{ id: "h", scheduled_at: "2026-09-20T02:00:00Z", held: "出席" }], now) === null,
+    "済んだ もの（held）は 返さない");
+  t(S.nextLesson([{ id: "n", scheduled_at: null }], now) === null, "時刻の 無い 行は 返さない");
+  // ★★無い ほうを 見ます。★「有る」だけ 試すと、★無い日が 落ちます。
+  t(S.nextLesson([], now) === null, "1件も 無ければ null");
+  t(S.nextLesson(null, now) === null, "null が 来ても 落ちない");
+  // ★★境（ちょうど いま）は、★これから 扱い。
+  t(S.nextLesson([{ id: "x", scheduled_at: now.toISOString() }], now).id === "x",
+    "ちょうど いまの ものは 出す");
+
+  console.log("\n⑧ 1件も 無い ときは、★節ごと 出さないこと");
+  // ★★教室に 通って いない 方に、★空の 札を 見せません。
+  t(/if \(!next\) return null;/.test(vt), "次が 無ければ 節を 出さない");
+  // ★★取れなかった ときは 黙りません。★「0件」と 別の こと です。
+  t(/!classroom\.lessonsOk/.test(vt), "取れなかった ときは そう 書く");
+  t(vt.includes("いま 読めませんでした"), "その 字が ある");
+
+  console.log(ng === 0 ? `\n★すべて 通りました（${ok}）` : `\n★${ng} 件 落ちました`);
+  process.exit(ng === 0 ? 0 : 1);
+})();

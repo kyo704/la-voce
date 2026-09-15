@@ -240,6 +240,15 @@ import { canSeeBetaFeatures, canSeeTeacherFeatures, canSeeLineLink, canSeeStuden
   canSeeShobaiArticles, isShobaiArticle } from "@/lib/featureFlags";
 // 削除の猶予期間（A-4）。日数の計算はサーバーと同じものを使う。
 import { graceDaysLeft, GRACE_PERIOD_DAYS, LOST_ON_DELETE, NO_RETENTION_NOTE, NO_RETENTION_BOLD } from "@/lib/accountDeletion";
+// ★★いまは「次の レッスン」だけ です。
+//   ★★`EVENT_*` / `MESSAGE_*` / `upcomingEvents` / `recentMessages` は、
+//     ★lib/classroomShell.js に 在りますが、★まだ 読み込みません。
+//     ★★読み込むだけ の 名前を 置かない ため です（★N-1）。
+//     ★★節を 作る ときに、★ここに 足して ください。
+import {
+  LESSON_COLUMNS, LESSON_FETCH_LIMIT,
+  mergeLessons, nextLesson, SECTION_TITLES
+} from "@/lib/classroomShell";
 import { representativeActivityKind, MULTI_ACTIVITY_LEGEND_NOTE } from "@/lib/activityPrecedence";
 import { recordedFieldsFor, seriesFor, dailyRows, ownRecordLabel, hasValue } from "@/lib/ownRecordFields";
 import { symptomsByLocation, dinnerToBedSummary, LOCATION_FOOTNOTE } from "@/lib/symptomLocations";
@@ -5813,6 +5822,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★どれが 開いているかを、★1つの 名前で 持ちます。
   //     ★1枚ごとに 真偽値を 置くと、★2枚 同時に 開く 形が 作れてしまいます。
   const [recordSheet, setRecordSheet] = useState(null);
+
   const [ownedOpen, setOwnedOpen] = useState(false);
   const [ledgerRows, setLedgerRows] = useState([]);
   useEffect(() => {
@@ -7427,6 +7437,61 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const layoutV2 = mayUseLayoutV2(userId, {
     NEXT_PUBLIC_LAYOUT_V2_USER_IDS: process.env.NEXT_PUBLIC_LAYOUT_V2_USER_IDS
   });
+
+  // ★★★ここに 置く わけ（★2026-09-15）。
+  //   ★★はじめ、★この 塊を ずっと 上（★:5872）に 書いて いました。
+  //     ★`layoutV2` を 読むのに、★`layoutV2` は :7485 で 生まれます。
+  //     ★★描く たびに ReferenceError に なる ところ でした（★TDZ）。
+  //   ★★見張り `no-tdz` が 止めました。★lint も build も 通って いました。
+  //   ★★だから `layoutV2` の **すぐ あと** に 置いて います。★動かさないで ください。
+  // ★★生徒の 教室の 殻（★§6・2026-09-15）。
+  //   ★★「きょう」の 中の 3つの 節 です。★新しい タブを 作りません。
+  //   ★★読むだけ。★v1 では 既読も 書きません。
+  //   ★★門の 中の 方だけ に 出します。★38名の 画面は 1つも 変わりません。
+  //
+  //   ★★★レッスンは **2つの 道** で 引きます（★裁定 2026-09-15・坂本さん）。
+  //     ★★個人指導の レッスンは `student_id` を 持ちません
+  //       （★`handleCreateLesson` は link_id しか 入れません）。
+  //     ★★だから `.eq("student_id", …)` だけだと、★個人指導の 方に 1件も 出ません。
+  //       ★★空の 画面に なり、★エラーも 出ません。★誰も 気づきません。
+  //     ★★わけは lib/classroomShell.js の 頭に 書いて あります。
+  const [classroom, setClassroom] = useState(null);
+  useEffect(() => {
+    if (!layoutV2 || !userId) return;
+    let alive = true;
+    (async () => {
+      const supabase = createClient();
+      // ★★`select("*")` に しません。★RLS は 行を 隠しますが、★列は 隠しません。
+      //   ★出す ものだけを 名前で 並べます（★lib/classroomShell.js）。
+      // ★★いま 引くのは レッスンだけ です。
+      //   ★★「近い 行事」と「先生からの 連絡」は まだ 作って いません。
+      //     ★★出さない ものを 引きません ── ★読まれない 値を 運ばない（★N-1）。
+      //     ★★No.019.5 で 消したのも、★同じ 形でした ──
+      //       ★取って、★数えて、★捨てて いました。
+      //   ★★節を 作る ときに、★ここに 足して ください。
+      //     ★★`EVENT_COLUMNS` / `MESSAGE_COLUMNS` は もう 決めて あります。
+      const [byStudent, byLink] = await Promise.all([
+        // ① 教室の レッスン（★org_id あり・student_id で 当たる）
+        supabase.from("lessons").select(LESSON_COLUMNS)
+          .eq("student_id", userId)
+          .order("scheduled_at", { ascending: true }).limit(LESSON_FETCH_LIMIT),
+        // ② 個人指導（★link_id 経由。★student_id は 入って いません）
+        supabase.from("lessons").select(LESSON_COLUMNS + ", link:teacher_student_links!inner(student_id)")
+          .eq("link.student_id", userId)
+          .order("scheduled_at", { ascending: true }).limit(LESSON_FETCH_LIMIT)
+      ]);
+      if (!alive) return;
+      // ★★「取れなかった」と「0件」を 分けて 持ちます。
+      //   ★★空の 札を 出すか、★黙って いるかが 変わります。
+      //   ★★2つの うち 片方でも 取れれば、★出せる ものは 出します ──
+      //     ★個人指導だけ の 方が、★教室側の 失敗で 白く なりません。
+      setClassroom({
+        lessons: mergeLessons(byStudent.data, byLink.data),
+        lessonsOk: !byStudent.error || !byLink.error
+      });
+    })();
+    return () => { alive = false; };
+  }, [layoutV2, userId]);
 
   // ★★2つの「日数」を、★はっきり 分けます（★2026-09-09・査読 §10）。
   //
@@ -14645,9 +14710,75 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 </div>
               );
               return (
-              // ★★折りたたみの いまを、★節へ 渡します（★見本③）。
-              //   ★★門の外は { layoutV2:false } なので、★節は 全部 出ます。
-              //     ★38人の 画面を、★1つも 変えません。
+              // ★★2026-09-15、★包みを 1つ 足しました。
+              //   ★★これまで 返して いたのは、★畳みの 器 1つ だけ でした。
+              //     ★★器の 名前を ここに 書きません ── ★見張り `record-leak` が
+              //       ★生の 字で 器の 頭を 探すので、★コメントが 頭に なって しまいます。
+              //       ★★2026-09-15、★私の コメントが 数えられた 3度目 です。
+              //   ★★「次の レッスン」を その **外**に 置くので、★兄弟が 2つに なります。
+              //     ★★JSX は 根を 1つしか 返せません。★だから 包みます。
+              <>
+              {/* ★★★ここは 記録の 器の **外** です（★2026-09-15）。
+                  ★★はじめ、★畳みの 器の 中に 書いて いました。
+                    ★★見張り `record-leak` が 止めました。★正しい 指摘 です。
+                    ★★あの 器の 中で 節（SectionCard）の 外に 出る ものは、
+                      ★門の **外**だけ の もの に 限られます（★2026-09-11 の 事故）。
+                  ★★この 節は 記録の 入力では ありません。
+                    ★畳む しくみも 要りません。★器に 入れる 筋が ありません。
+                  ★★見張りに 例外を 足しませんでした。★置き場所を 直しました。 */}
+              {/* ★★★生徒の 教室の 殻 ──「次の レッスン」（★§6-2・2026-09-15）。
+                  ★★新しい タブを 作りません。★`/house` も 作りません。
+                    ★「きょう」の 中の 1つの 節 です。
+                  ★★読むだけ です。★押せる ものを 置いて いません。
+                  ★★門の 中の 方だけ に 出します。★38名の 画面は 変わりません。
+                  ★★1件も 無い ときは、★節ごと 出しません ──
+                    ★教室に 通って いない 方に、★空の 札を 見せない ため です。
+                    ★★「教室が ありません」も 出しません（★§6-3 の 字は、
+                      ★教室の 入口を 作る ときの もの です。★ここでは ありません）。
+                  ★★次は「近い 行事」です。★裁定（2026-09-15・行事と時間割）を
+                    ★先に お読みください ── ★行事は 日づけを 持ちます。
+                    ★曜日×コマ の 時間割に 重ねると、★毎週 出て しまいます。 */}
+              {layoutV2 && classroom && classroom.lessonsOk && (() => {
+                const next = nextLesson(classroom.lessons, new Date());
+                if (!next) return null;
+                const at = new Date(next.scheduled_at);
+                return (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-xs font-medium mb-1.5" style={{ color: C.inkSoft }}>
+                      {SECTION_TITLES.lesson}
+                    </p>
+                    <p className="text-sm font-medium">
+                      {formatDateLabel(at.toISOString().slice(0, 10), language)}
+                      {"　"}
+                      <span className="ff-mono">
+                        {at.toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
+                      </span>
+                    </p>
+                    {next.note ? (
+                      <p className="text-xs mt-1" style={{ color: C.inkSoft }}>{next.note}</p>
+                    ) : null}
+                    {/* ★★教室の ものか、★個人指導か を 書きます。
+                        ★★同じ 節に 2つの 道の ものが 並びます（★裁定 2026-09-15）。
+                          ★どちらか 分からないと、★どこへ 行けば よいか 分かりません。 */}
+                    <p className="text-xs mt-1" style={{ color: C.inkSoft }}>
+                      {next.org_id ? "教室の レッスン" : "個人の レッスン"}
+                    </p>
+                  </div>
+                );
+              })()}
+              {/* ★★取れなかった ときは、★黙って いません。
+                  ★★「0件」と「取れなかった」は 別の こと です。
+                    ★★空の 札を 出すと、★「決まって いない」と 読めます。 */}
+              {layoutV2 && classroom && !classroom.lessonsOk && (
+                <p className="text-xs" style={{ color: C.inkSoft }}>
+                  {SECTION_TITLES.lesson}は、いま 読めませんでした。
+                </p>
+              )}
+
+
+              {/* ★★折りたたみの いまを、★節へ 渡します（★見本③）。
+                  ★★門の外は { layoutV2:false } なので、★節は 全部 出ます。
+                    ★38人の 画面を、★1つも 変えません。 */}
               <RecordFoldContext.Provider value={{ layoutV2, openSheet: recordSheet }}>
               {/* ★★門の中の 記録の 画面に 印を 付けます（★2026-09-11・お決め ㋐）。
                   ★★節の 中の 生の <input>・<select>・<textarea> を、
@@ -16356,6 +16487,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 )}
               </div>
               </RecordFoldContext.Provider>
+              </>
               );
             })()}
 
