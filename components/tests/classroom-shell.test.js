@@ -54,10 +54,10 @@ const b64 = (...p) => "data:text/javascript;base64," + Buffer.from(
   //     ★★`readCode` は コメントを 外すので、★同じ 字数が 先まで 届きます。
   //     ★★2026-09-15、★それで 関わりの ない `.select(` を 1つ 数えました。
   //   ★★終わりは 印で 決めます ── ★`setClassroom({ … });` まで。
-  const fetchAt = vt.indexOf("const [byStudent, byLink]");
+  const fetchAt = vt.indexOf("const [byStudent, byLink");
   const endAt = vt.indexOf("});", vt.indexOf("setClassroom({", fetchAt < 0 ? 0 : fetchAt));
   const blk = (fetchAt > -1 && endAt > fetchAt) ? vt.slice(fetchAt, endAt + 3) : "";
-  t(fetchAt > -1, "2つの 道を まとめて 引いて いる");
+  t(fetchAt > -1, "レッスンの 2つの 道を まとめて 引いて いる");
   t(/\.eq\("student_id", userId\)/.test(blk), "① 教室の レッスン（student_id で 当たる）");
   t(/teacher_student_links!inner\(student_id\)/.test(blk), "② 個人指導（link_id 経由）");
   t(/\.eq\("link\.student_id", userId\)/.test(blk), "② の 当て方が link.student_id");
@@ -95,9 +95,11 @@ const b64 = (...p) => "data:text/javascript;base64," + Buffer.from(
     shellSelects.push(shellBlk.slice(i, j + 1));
   }
   console.log("    ★殻の 中の select: " + shellSelects.length + " 件");
-  t(shellSelects.length === 2, "殻の 中の select は ちょうど 2つ（★2つの 道）");
+  // ★★2026-09-15、★「近い 行事」を 足したので 3つに なりました。
+  //   ★★レッスンの 2つ ＋ 行事の 1つ。★増えたら ここも 直して ください。
+  t(shellSelects.length === 3, "殻の 中の select は ちょうど 3つ（★レッスン2・行事1）");
   shellSelects.forEach((sel, i) => {
-    t(sel.includes("LESSON_COLUMNS"), (i + 1) + "つ目の select が 列を 名前で 並べて いる");
+    t(/LESSON_COLUMNS|EVENT_COLUMNS/.test(sel), (i + 1) + "つ目の select が 列を 名前で 並べて いる");
     t(!/["'`]\s*\*\s*["'`]/.test(sel), (i + 1) + "つ目の select が * では ない");
   });
   t(!S.LESSON_COLUMNS.includes("*"), "LESSON_COLUMNS に * が ない");
@@ -131,10 +133,27 @@ const b64 = (...p) => "data:text/javascript;base64," + Buffer.from(
   // ★★「近い 行事」と「先生からの 連絡」は、★まだ 作って いません。
   //   ★★だから 引きません。★読まれない 値を 運ばない ── No.019.5 と 同じ 決め。
   //   ★★見るのは 殻の 中だけ です（★④ と 同じ わけ）。
-  t(!/from\("org_events"\)/.test(shell), "殻が org_events を まだ 引いて いない");
+  // ★★「先生からの 連絡」は まだ 作って いません。★だから 引きません。
   t(!/from\("org_messages"\)/.test(shell), "殻が org_messages を まだ 引いて いない");
-  t(!/EVENT_COLUMNS|MESSAGE_COLUMNS|upcomingEvents|recentMessages|EMPTY_TEXT/.test(vt),
+  t(!/MESSAGE_COLUMNS|recentMessages|EMPTY_TEXT/.test(vt),
     "まだ 使わない 名前を 読み込んで いない");
+
+  console.log("\n⑥-2 ★近い 行事（★2026-09-15）");
+  // ★★読むだけ です。★「出ます」の 印を つける 道を 置いて いません。
+  t(/from\("org_events"\)/.test(shell), "行事を 引いて いる");
+  t(!/org_event_participants/.test(shell), "★出欠の 表に 触れて いない（★no RSVP）");
+  // ★★字は lib が 持ちます。★画面は 読むだけ です。
+  //   ★★だから 画面に 字は ありません。★あったら 2か所に なります。
+  t(/\{EVENT_NOTE\}/.test(vt), "★「出欠は 集めません」の 1行を 画面が 描いて いる");
+  t(!vt.includes(S.EVENT_NOTE), "★画面側に 直書きして いない");
+  t(S.EVENT_NOTE === "行事の 出欠は 集めません。知らせるだけです。", "その 字は 見本の まま");
+  // ★★日づけの まま。★残りを 数えません。
+  t(!/あと\s*\{?\w*\}?\s*日/.test(shellSrc), "★「あと◯日」と 書いて いない（★no countdown）");
+  t(/eventDateLabel/.test(vt), "日づけを そのまま 出して いる");
+  // ★★曜日×コマ の 型紙に 重ねて いない こと。
+  t(!/myTimetable|weekday|cellKey/.test(shellSrc), "★曜日×コマ の しくみに 触れて いない");
+  // ★★1件も 無ければ 節ごと 出さない こと。
+  t(/if \(soon\.length === 0\) return null;/.test(vt), "1件も 無ければ 節を 出さない");
 
   console.log("\n⑦ ★実際に 動かして みる");
   const now = new Date("2026-09-15T10:00:00Z");
@@ -158,6 +177,27 @@ const b64 = (...p) => "data:text/javascript;base64," + Buffer.from(
   // ★★境（ちょうど いま）は、★これから 扱い。
   t(S.nextLesson([{ id: "x", scheduled_at: now.toISOString() }], now).id === "x",
     "ちょうど いまの ものは 出す");
+
+  console.log("\n⑦-2 ★行事も 動かして みる");
+  const evs = [
+    { id: 1, event_date: "2026-09-15" },
+    { id: 2, event_date: "2026-09-20", previous_date: "2026-09-18" },
+    { id: 3, event_date: "2026-09-21", withdrawn_at: "x" },
+    { id: 4, event_date: "2026-12-01" },
+    { id: 5, event_date: "2026-09-01" }
+  ];
+  const soon = S.upcomingEvents(evs, "2026-09-15", 3);
+  t(soon.map((e) => e.id).join(",") === "1,2", "きょうを 含み、★過ぎた ものと 取り下げを 外す");
+  t(!soon.some((e) => e.id === 4), "30日より 先は 出さない");
+  t(S.upcomingEvents([], "2026-09-15").length === 0, "1件も 無ければ 空");
+  t(S.upcomingEvents(null, "2026-09-15").length === 0, "null が 来ても 落ちない");
+  t(S.eventDateLabel({ event_date: "2026-09-20", start_time: "14:30:00" }) === "9月20日　14:30",
+    "時刻が あれば 添える");
+  t(S.eventDateLabel({ event_date: "2026-09-20" }) === "9月20日", "時刻が 無くても 落ちない");
+  t(S.eventDateLabel({}) === "", "日づけが 無ければ 空");
+  t(S.eventMoved({ event_date: "2026-09-20", previous_date: "2026-09-18" }) === "9月18日 から 変わりました",
+    "日づけが 変わった ことを 言う");
+  t(S.eventMoved({ event_date: "2026-09-20" }) === "", "変わって いなければ 何も 言わない");
 
   console.log("\n⑧ 1件も 無い ときは、★節ごと 出さないこと");
   // ★★教室に 通って いない 方に、★空の 札を 見せません。

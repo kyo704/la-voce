@@ -245,9 +245,14 @@ import { graceDaysLeft, GRACE_PERIOD_DAYS, LOST_ON_DELETE, NO_RETENTION_NOTE, NO
 //     ★lib/classroomShell.js に 在りますが、★まだ 読み込みません。
 //     ★★読み込むだけ の 名前を 置かない ため です（★N-1）。
 //     ★★節を 作る ときに、★ここに 足して ください。
+// ★★いまは「次の レッスン」と「近い 行事」です。
+//   ★★`MESSAGE_*` / `recentMessages` は lib に 在りますが、★まだ 読み込みません。
+//     ★読み込むだけ の 名前を 置かない ため です（★N-1）。
+//     ★★「先生からの 連絡」を 作る ときに、★ここに 足して ください。
 import {
-  LESSON_COLUMNS, LESSON_FETCH_LIMIT,
-  mergeLessons, nextLesson, SECTION_TITLES
+  LESSON_COLUMNS, EVENT_COLUMNS, LESSON_FETCH_LIMIT, EVENT_SHOW_LIMIT,
+  mergeLessons, nextLesson, upcomingEvents, eventDateLabel, eventMoved,
+  SECTION_TITLES, EVENT_NOTE
 } from "@/lib/classroomShell";
 import { representativeActivityKind, MULTI_ACTIVITY_LEGEND_NOTE } from "@/lib/activityPrecedence";
 import { recordedFieldsFor, seriesFor, dailyRows, ownRecordLabel, hasValue } from "@/lib/ownRecordFields";
@@ -7463,14 +7468,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       const supabase = createClient();
       // ★★`select("*")` に しません。★RLS は 行を 隠しますが、★列は 隠しません。
       //   ★出す ものだけを 名前で 並べます（★lib/classroomShell.js）。
-      // ★★いま 引くのは レッスンだけ です。
-      //   ★★「近い 行事」と「先生からの 連絡」は まだ 作って いません。
-      //     ★★出さない ものを 引きません ── ★読まれない 値を 運ばない（★N-1）。
-      //     ★★No.019.5 で 消したのも、★同じ 形でした ──
-      //       ★取って、★数えて、★捨てて いました。
-      //   ★★節を 作る ときに、★ここに 足して ください。
-      //     ★★`EVENT_COLUMNS` / `MESSAGE_COLUMNS` は もう 決めて あります。
-      const [byStudent, byLink] = await Promise.all([
+      // ★★「先生からの 連絡」は まだ 作って いません。★だから 引きません。
+      //   ★★出さない ものを 引きません ── ★読まれない 値を 運ばない（★N-1）。
+      //   ★★No.019.5 で 消したのも、★同じ 形でした ──
+      //     ★取って、★数えて、★捨てて いました。
+      //   ★★節を 作る ときに、★ここに 足して ください（★`MESSAGE_COLUMNS`）。
+      const [byStudent, byLink, events] = await Promise.all([
         // ① 教室の レッスン（★org_id あり・student_id で 当たる）
         supabase.from("lessons").select(LESSON_COLUMNS)
           .eq("student_id", userId)
@@ -7478,7 +7481,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         // ② 個人指導（★link_id 経由。★student_id は 入って いません）
         supabase.from("lessons").select(LESSON_COLUMNS + ", link:teacher_student_links!inner(student_id)")
           .eq("link.student_id", userId)
-          .order("scheduled_at", { ascending: true }).limit(LESSON_FETCH_LIMIT)
+          .order("scheduled_at", { ascending: true }).limit(LESSON_FETCH_LIMIT),
+        // ③ 近い 行事（★2026-09-15）。
+        //   ★★絞りは RLS が します ── `org_events_select_member` が、
+        //     ★`enrollments`（status='active'）で 在籍を 見ます。
+        //     ★★だから `.eq("org_id", …)` を 書きません。
+        //       ★書くと、★いくつもの 教室に 通う方の 分が 落ちます。
+        //   ★★取り下げた 行も 返ります。★出さないのは `upcomingEvents` の 仕事 です。
+        //     ★行は 消えて いません（★`withdrawn_at`）。
+        supabase.from("org_events").select(EVENT_COLUMNS)
+          .gte("event_date", realTodayDate)
+          .order("event_date", { ascending: true }).limit(50)
       ]);
       if (!alive) return;
       // ★★「取れなかった」と「0件」を 分けて 持ちます。
@@ -7487,11 +7500,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //     ★個人指導だけ の 方が、★教室側の 失敗で 白く なりません。
       setClassroom({
         lessons: mergeLessons(byStudent.data, byLink.data),
-        lessonsOk: !byStudent.error || !byLink.error
+        lessonsOk: !byStudent.error || !byLink.error,
+        events: events.data || [],
+        eventsOk: !events.error
       });
     })();
     return () => { alive = false; };
-  }, [layoutV2, userId]);
+  // ★★`realTodayDate` も 見ます（★2026-09-15）。
+  //   ★★日が 変われば、★近い 行事の 範囲も 変わります。
+  //   ★★入れ忘れると、★日を またいだ ときに 昨日の 範囲の まま です。
+  }, [layoutV2, userId, realTodayDate]);
 
   // ★★2つの「日数」を、★はっきり 分けます（★2026-09-09・査読 §10）。
   //
@@ -14772,6 +14790,61 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               {layoutV2 && classroom && !classroom.lessonsOk && (
                 <p className="text-xs" style={{ color: C.inkSoft }}>
                   {SECTION_TITLES.lesson}は、いま 読めませんでした。
+                </p>
+              )}
+
+              {/* ★★★生徒の 教室の 殻 ──「近い 行事」（★§6-2・2026-09-15）。
+                  ★★読むだけ です。★「出ます」の 印を つける 道を 置いて いません。
+                    ★★`org_event_participants` という 表は あります。
+                      ★けれど この 節は **触りません**（★裁定「no RSVP」）。
+                    ★★添える 1行が、★そう 約束して います ──
+                      「行事の 出欠は 集めません。知らせるだけです。」
+                  ★★★日づけは、★日づけの まま 出します。
+                    ★★「あと3日」と 書きません（★裁定「no countdown」）。
+                    ★★この 家には、★残りを 数えて 見せる ものが 1つも ありません。
+                  ★★★曜日×コマ の 時間割に 重ねて いません（★裁定 2026-09-15）。
+                    ★★行事は 日づけを 1つ 持ちます。★繰り返しの 列は ありません
+                      （★本番の 列で 確かめました）。
+                    ★★週ごとに 繰り返す 型紙に 重ねると、★1度きりの 行事が
+                      ★毎週 出て しまいます。★ここは 日づけの 並び です。
+                  ★★1件も 無い ときは、★節ごと 出しません。
+                    ★★教室に 通って いない 方に、★空の 札を 見せない ため です。 */}
+              {layoutV2 && classroom && classroom.eventsOk && (() => {
+                const soon = upcomingEvents(classroom.events, realTodayDate, EVENT_SHOW_LIMIT);
+                if (soon.length === 0) return null;
+                return (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-xs font-medium mb-1.5" style={{ color: C.inkSoft }}>
+                      {SECTION_TITLES.event}
+                    </p>
+                    {soon.map((ev, i) => {
+                      const moved = eventMoved(ev);
+                      return (
+                        <div key={ev.id || i} style={{ marginTop: i ? 8 : 0 }}>
+                          <p className="text-sm font-medium">
+                            {eventDateLabel(ev)}
+                            {"　"}
+                            {ev.title || ev.kind || "行事"}
+                          </p>
+                          {/* ★★日づけが 変わった ことは、★黙って いません。
+                              ★★前の 日で 覚えて いる 方が 困ります。
+                              ★★`previous_date` は「前は いつ」です。★繰り返しでは ありません。 */}
+                          {moved ? (
+                            <p className="text-xs mt-0.5" style={{ color: C.inkSoft }}>{moved}</p>
+                          ) : null}
+                        </div>
+                      );
+                    })}
+                    {/* ★★見本 §6-2 が 文言まで 決めて います。★1文字も 変えません。 */}
+                    <p className="text-xs mt-2.5" style={{ color: C.inkSoft, lineHeight: 1.8 }}>
+                      {EVENT_NOTE}
+                    </p>
+                  </div>
+                );
+              })()}
+              {layoutV2 && classroom && !classroom.eventsOk && (
+                <p className="text-xs" style={{ color: C.inkSoft }}>
+                  {SECTION_TITLES.event}は、いま 読めませんでした。
                 </p>
               )}
 
