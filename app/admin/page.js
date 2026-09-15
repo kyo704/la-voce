@@ -130,19 +130,27 @@ export default async function AdminPage() {
   // ★★画面に 出る 数字は、★1つも 変えて いません。
   //   ★下の 2つの 道は、★同じ 数を 出します。★条件を 書き写して あります。
   //
-  // ★★紙（supabase/migration_no019_5_entry_stats.sql）が まだ 流れて いない間も、
-  //   ★画面が 白く ならない ように、★古い 道を 残して あります。
-  //   ★★紙が 流れれば、★値は 1つも 国境を 越えなく なります。
-  //   ★★紙が 流れたら、★下の 古い 道は 消せます（★そのときは 12列の 取得も 消えます）。
-  const { data: entryStats } = await admin.rpc("admin_entry_stats");
-  let entryRows = null;
-  if (!entryStats) {
-    // ★★ここに 来るのは、★紙が まだ 流れて いない ときだけ です。
-    const legacy = await admin
-      .from("entries")
-      .select("user_id, weight_kg, body_fat_pct, meals, exercises, temperature, humidity, medication_tags, mental_tags, mental_reason, cpps_value, voice_memo");
-    entryRows = legacy.data;
-  }
+  // ★★2026-09-15、★古い 道を **消しました**（★Opus の 裁定）。
+  //   ★★これまで、★`if (!entryStats)` の 下に 12列の 取得が 残って いました。
+  //     `weight_kg / body_fat_pct / meals / exercises / temperature / humidity /
+  //      medication_tags / mental_tags / mental_reason / cpps_value / voice_memo`
+  //     ★うち 3つは 自由記述と お薬の 記録 です。
+  //   ★★裁定の ことば ──
+  //     「a fallback to a path we removed for privacy reasons is not a safety net」
+  //     ★★逃げ道が あると、★消した はずの 道が 静かに 生き返ります。
+  //
+  //   ★★流れて いる ことは 確かめて あります（★2026-09-14・Opus が 台帳へ 直に）。
+  //     `admin_entry_stats()`            … EXISTS ／ service_role だけ
+  //     `character_unlock_summary(uuid)` … EXISTS ／ service_role だけ
+  //   ★★呼ぶ 鍵は `createAdminClient()` = `service_role` です（★:63）。
+  //     ★だから execute は 通ります。★利用者の 鍵では ありません。
+  //
+  //   ★★★まだ 残って いる こと（★Opus の 判断待ち）。
+  //     ★門は この 経路の 中（★:49 の 早い return）に しか ありません。
+  //     ★`auth.uid()` は service_role の 下では null なので、
+  //       ★関数の 中で 本人を 見る には、★呼ぶ側が id を 渡す 形に なります。
+  //     ★★`get_student_entries` と 同じ 形 です。★経路が 変われば 門も 外れます。
+  const { data: entryStats, error: entryStatsError } = await admin.rpc("admin_entry_stats");
   const { data: feedbackRows } = await admin
     .from("feedback")
     .select("id, email, category, message, created_at")
@@ -152,17 +160,13 @@ export default async function AdminPage() {
   const subByUser = {};
   (subs || []).forEach((s) => { subByUser[s.user_id] = s; });
 
+  // ★台帳が group by で 数えた もの。★user_id と 数だけ です。
+  //   ★★取れなかった ときは、★空の まま です。★0件として 出しません ──
+  //     ★「数えられなかった」と「0件」は、★別の こと です。
   const entryCountByUser = {};
-  if (entryStats) {
-    // ★台帳が group by で 数えた もの。★user_id と 数だけ です。
-    (entryStats.per_user || []).forEach((r) => {
-      entryCountByUser[r.user_id] = r.n;
-    });
-  } else {
-    (entryRows || []).forEach((r) => {
-      entryCountByUser[r.user_id] = (entryCountByUser[r.user_id] || 0) + 1;
-    });
-  }
+  (entryStats && entryStats.per_user ? entryStats.per_user : []).forEach((r) => {
+    entryCountByUser[r.user_id] = r.n;
+  });
 
   const users = (profiles || []).map((p) => {
     const s = subByUser[p.id];
@@ -223,27 +227,32 @@ export default async function AdminPage() {
   const deletionMonths = Object.entries(deletionByMonth).sort((a, b) => (a[0] < b[0] ? 1 : -1)).slice(0, 12);
 
   // ---- ここから追加分：実行順マスター Stage 2-1（入力率・7日目調査・PWA導線） ----
-  const n = (entryStats ? entryStats.total : (entryRows || []).length) || 1;
-  const pct = (count) => `${Math.round((count / n) * 1000) / 10}%`;
-  // ★★2つの 道が、★同じ 数を 出すこと。
-  //   ★左（台帳）… count(*) filter (...)
-  //   ★右（画面）… これまでの 判定。★1文字も 変えて いません。
-  //   ★★紙の 条件は、★右の 判定を SQL に 書き写した ものです ──
-  //     `typeof x === "number"`            → jsonb_typeof(to_jsonb(x)) = 'number'
-  //     `Array.isArray(x) && x.length > 0` → 'array' かつ jsonb_array_length > 0
-  //     `(x || "").trim()`                 → coalesce(trim(x),'') <> ''
-  const fill = entryStats ? (entryStats.fill || {}) : null;
-  const countOf = (key, fn) => (fill ? (fill[key] || 0) : (entryRows || []).filter(fn).length);
+  // ★★数えるのは 台帳だけ に なりました（★2026-09-15）。
+  //   ★★判定は `supabase/migration_no019_5_entry_stats.sql` に 書いて あります。
+  //     ★もとの JavaScript の 判定を、★1つずつ 書き写した ものです ──
+  //       `typeof x === "number"`            → jsonb_typeof(to_jsonb(x)) = 'number'
+  //       `Array.isArray(x) && x.length > 0` → 'array' かつ jsonb_array_length > 0
+  //       `(x || "").trim()`                 → coalesce(trim(x),'') <> ''
+  //   ★★画面には 判定を 置きません。★2か所に 置くと、★片方だけ 直されます。
+  //
+  //   ★★取れなかった ときは、★割合を 出しません。★`null` を 返します。
+  //     ★★0% と 出すと、★「誰も 書いて いない」と 読めます。
+  //       ★本当は「数えられなかった」です。★別の こと です。
+  const statsOk = !!(entryStats && entryStats.fill);
+  const n = (entryStats && entryStats.total) || 0;
+  const pct = (count) => (statsOk && n > 0 ? `${Math.round((count / n) * 1000) / 10}%` : "—");
+  const fill = statsOk ? entryStats.fill : {};
+  const countOf = (key) => (statsOk ? (fill[key] || 0) : 0);
   const inputRateRows = [
-    { label: "体重", count: countOf("weight_kg", (e) => typeof e.weight_kg === "number") },
-    { label: "体脂肪率", count: countOf("body_fat_pct", (e) => typeof e.body_fat_pct === "number") },
-    { label: "食事の詳細記録", count: countOf("meals", (e) => Array.isArray(e.meals) && e.meals.length > 0) },
-    { label: "運動の詳細記録", count: countOf("exercises", (e) => Array.isArray(e.exercises) && e.exercises.length > 0) },
-    { label: "環境（気温・湿度）", count: countOf("environment", (e) => typeof e.temperature === "number" || typeof e.humidity === "number") },
-    { label: "服薬タグ", count: countOf("medication_tags", (e) => Array.isArray(e.medication_tags) && e.medication_tags.length > 0) },
-    { label: "気持ちタグ・日記", count: countOf("mental", (e) => (Array.isArray(e.mental_tags) && e.mental_tags.length > 0) || (e.mental_reason || "").trim()) },
-    { label: "CPPS客観測定", count: countOf("cpps_value", (e) => typeof e.cpps_value === "number") },
-    { label: "声のメモ", count: countOf("voice_memo", (e) => (e.voice_memo || "").trim()) }
+    { label: "体重", count: countOf("weight_kg") },
+    { label: "体脂肪率", count: countOf("body_fat_pct") },
+    { label: "食事の詳細記録", count: countOf("meals") },
+    { label: "運動の詳細記録", count: countOf("exercises") },
+    { label: "環境（気温・湿度）", count: countOf("environment") },
+    { label: "服薬タグ", count: countOf("medication_tags") },
+    { label: "気持ちタグ・日記", count: countOf("mental") },
+    { label: "CPPS客観測定", count: countOf("cpps_value") },
+    { label: "声のメモ", count: countOf("voice_memo") }
   ];
 
   const surveyCounts = {};
@@ -343,10 +352,23 @@ export default async function AdminPage() {
       </p>
       <div className="rounded-2xl border p-4" style={{ borderColor: C.line, background: C.card }}>
         <div className="space-y-1.5">
+          {/* ★★2026-09-15、★逃げ道を 消しました。★取れなければ、★そう 言います。
+              ★★前は、★数えられなかった ときに 12列を 取り直して いました。
+                ★★消した はずの 道が、★静かに 生き返る 形 でした。
+              ★★いまは 出しません。★0% とも 出しません ──
+                ★「数えられなかった」と「0件」は、★別の こと です。 */}
+          {!statsOk && (
+            <p style={{ fontSize: "0.8125rem", color: C.curtain, marginBottom: 8 }}>
+              入力率を 数えられませんでした{entryStatsError ? `（${entryStatsError.message}）` : ""}。
+              古い 取り方には 戻しません。
+            </p>
+          )}
           {inputRateRows.map((r) => (
             <div key={r.label} style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8125rem" }}>
               <span style={{ color: C.inkSoft }}>{r.label}</span>
-              <span style={{ fontFamily: "monospace", fontWeight: 500 }}>{pct(r.count)}（{r.count}件）</span>
+              <span style={{ fontFamily: "monospace", fontWeight: 500 }}>
+                {statsOk ? `${pct(r.count)}（${r.count}件）` : "—"}
+              </span>
             </div>
           ))}
         </div>

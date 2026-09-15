@@ -38,17 +38,35 @@ const sql = readRaw("supabase", "migration_no019_5_entry_stats.sql");
 
 console.log("① ★台帳に 数えさせる 道が、★先に あること");
 
-// ★★rpc の 呼び出しが、★12列の 取得より 前に ある こと。
-//   ★★逆だと、★紙が 流れて いても 毎回 運んで しまいます。
+// ★★2026-09-15、★ここを 書き直しました（★Opus の 裁定）。
+//
+//   ★★前は こう 見て いました ──
+//     ・古い 道（12列の 取得）を **残して いる** こと
+//     ・rpc の ほうが 先で ある こと
+//     ・古い 道は `if (!entryStats)` の 中だけ で ある こと
+//   ★★紙が まだ 流れて いない 間の、★逃げ道の ため でした。
+//
+//   ★★紙は 流れて いました（★2026-09-14・Opus が 台帳へ 直に 確かめ）。
+//     `admin_entry_stats()` … EXISTS ／ service_role だけ
+//     ★呼ぶ 鍵も service_role です。★execute は 通ります。
+//
+//   ★★裁定の ことば ──
+//     「a fallback to a path we removed for privacy reasons is not a safety net」
+//   ★★だから 逃げ道を **消しました**。★見る ことも 変わります ──
+//     ★「残して いる」では なく、★「**無い**」を 見ます。
+//
+//   ★★これは 弱く なって いません。★強く なって います。
+//     ★前は「条件つきで 運ぶ」を 許して いました。★いまは 1つも 運びません。
 const rpcAt = admin.indexOf('admin.rpc("admin_entry_stats")');
-const bigSelectAt = admin.indexOf("weight_kg, body_fat_pct, meals");
 t(rpcAt > -1, "★admin_entry_stats を 呼んで いる");
-t(bigSelectAt > -1, "★古い 道を 残して いる（★紙が まだの とき用）");
-t(rpcAt > -1 && bigSelectAt > -1 && rpcAt < bigSelectAt,
-  "★rpc の ほうが 先");
-// ★★古い 道が「紙が 無い ときだけ」で ある こと。
-t(/if \(!entryStats\) \{/.test(admin),
-  "★古い 道は `if (!entryStats)` の 中だけ");
+t(admin.indexOf("weight_kg, body_fat_pct, meals") === -1,
+  "★古い 道（12列の 取得）が **消えて いる**");
+t(!/if \(!entryStats\) \{/.test(admin), "★逃げ道の 分かれ道が 無い");
+t(!/entryRows/.test(admin), "★古い 道の 覚え（entryRows）が 無い");
+// ★★取れなかった ときに、★0% と 出さないこと。
+//   ★★「数えられなかった」と「0件」は、★別の こと です。
+t(/statsOk/.test(admin), "★取れたか どうかを 分けて 持って いる");
+t(admin.includes("入力率を 数えられませんでした"), "★取れなかった と 画面に 書く");
 
 const uRpcAt = unlock.indexOf('admin.rpc("character_unlock_summary"');
 const uStarAt = unlock.indexOf('.select("*")');

@@ -67,9 +67,22 @@ const vt = readCode("components", "VocalTracker.jsx");
   assertTrue(!scope.NEVER_SHARED_COLUMNS.includes("cpps_value"),
     "★cpps_value は、決して渡さない一覧の対象ではない（そもそも何も渡らない）");
   // 管理画面は件数を数えるだけ＝0件でも落ちない
+  //
+  // ★★2026-09-15、★数える ところが 画面から 台帳へ 移りました（No.019.5）。
+  //   ★★前は 画面に `typeof e.cpps_value === "number"` と 書いて ありました。
+  //   ★★いまは `admin_entry_stats()` の 中です。★条件は 同じ です ──
+  //     `jsonb_typeof(to_jsonb(cpps_value)) = 'number'`
+  //   ★★見る ことは 変わって いません ──
+  //     ★「型で 数えるだけ」＝ ★値が null でも 落ちない、★という こと。
+  //   ★★画面には 判定を 置きません。★2か所に あると 片方だけ 直されます。
   const admin = readCode("app/admin", "page.js");
-  assertTrue(/typeof e\.cpps_value === "number"/.test(admin),
-    "管理画面は型で数えるだけ（null で落ちない）");
+  const statsSql = readCode("supabase", "migration_no019_5_entry_stats.sql");
+  assertTrue(/'cpps_value',\s*\n?\s*count\(\*\) filter \(where jsonb_typeof\(to_jsonb\(cpps_value\)\) = 'number'\)/.test(statsSql),
+    "台帳が 型で 数えるだけ（null で落ちない）");
+  assertTrue(/countOf\("cpps_value"\)/.test(admin),
+    "画面は その 数を 読むだけ（判定を 持たない）");
+  assertTrue(!/typeof e\.cpps_value/.test(admin),
+    "★画面に 判定が 戻って いない（2か所に しない）");
 
   console.log("\n=== ★計算そのものは残っている（消さない） ===");
   assertTrue(/function computeCPPS/.test(vt), "computeCPPS は残っている");

@@ -96,6 +96,29 @@ do $$
 begin
   if not exists (select 1 from pg_policies
                   where tablename = 'lessons' and policyname = 'lessons_student_notice') then
+    -- ★★★この 決まりだけを 読むと、★危なく 見えます。
+    --   ★「生徒が 自分の レッスンの 行を、★どの列でも 書き換えられる」と
+    --     ★読めます ── ★日時も、★先生も、★教室も。
+    --   ★★そうでは ありません。★列ごとの 権限が 止めて います。
+    --
+    --   ★★`authenticated` が UPDATE を 持って いるのは、★この 5列だけ です ──
+    --     attendance / attendance_at / attendance_by /
+    --     student_notice / student_notice_at
+    --   ★★`date`・`time`・`teacher_id`・`org_id` には、★権限が ありません。
+    --     ★★書こうと すると `42501 permission denied` で 止まります。
+    --     ★★RLS の 決まりに 届く 前 です。
+    --
+    --   ★★効く のは 順番の おかげ です ──
+    --     ★`revoke update` を 先に、★`grant update (…)` を あと。
+    --     ★★広い ほうが 黙って 勝ちます。
+    --     ★2026-09-08-レッスンの出欠.sql が その 順で 書いて います。
+    --
+    --   ★★`memberships.post_id` と 同じ 形 です。★「書ける道は 絞る」。
+    --
+    --   ★★★この 決まりを 直す ときは、★先に 列ごとの 権限を 見て ください。
+    --     ★docs/records/記録-2026-09-15-lessonsのUPDATEは列の権限で狭めてある.md
+    --     ★★決まりだけ 見て「穴が ある」と 報告 しない こと。
+    --       ★2026-09-15、★Opus が そう 見えると 指摘し、★調べて 安全と 分かりました。
     create policy "lessons_student_notice" on public.lessons
       for update using (auth.uid() = student_id)
               with check (auth.uid() = student_id);
