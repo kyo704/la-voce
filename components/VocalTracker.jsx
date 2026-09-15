@@ -22344,6 +22344,115 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <h2 style={{ ...TYPE.title, margin: "2px 0 0" }}>設定</h2>
                   </div>
                 ) : null}
+
+                {/* ★★★並びを 見本の 順に しました（★2026-09-16・裁定 ㋕）。
+                    ★★見本 `SC['設定']` の 順は こう です ──
+                      ★① 設定（題）
+                      ★② 文字の 大きさ
+                      ★③ そのほか
+                      ★④ くわしい 決まりを 見る
+                    ★★実装は「そのほか」が **いちばん 上**に ありました。
+                      ★★撮って、★はじめて 見えました。★字だけでは 並びが 分かりません。
+                    ★★この かたまり（見やすさ）を、★そのほか の **前**へ 動かしました。
+                      ★★器（`space-y-5`）には 触れて いません。
+                        ★★あれは もっとの **全子画面**が 使って います ──
+                          ★設定19／アカウント3／じぶんの記録1／プラン1／学ぶ1。
+                        ★★flex + order に すると、★5つ すべての 間隔が 変わり、
+                          ★さらに 門の 外の 38名にも 及びます。
+                      ★★だから、★JSX を 動かしました。★間隔は 1つも 変わりません。 */}
+                {/* ★名前は「見やすさ」。「シニアモード」と書かないこと（§0-②）。
+                    ★年齢からは何も決めない。本人に直接、見え方を選んでもらう。 */}
+                <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
+                  {/* ★★★見本 `SC['設定']` の 形に しました（★2026-09-15・裁定 ㋙）。
+                      ★★見本は `.pills` ＋ `.pill sm` ── ★横に 並ぶ 丸い 札 です。
+                        ★前は 四角い 3つの 箱（grid）でした。
+                      ★★選んで いる ものは `enji`（★C.curtain）の 塗り。★白い 字。
+                      ★★見本の 字は「★あいう」では ありません ──
+                        「のどの 調子　◎よい」「昨夜の 睡眠　7時間30分」。
+                        ★★自分の 記録の 形で 見た ほうが、★選べます。
+                      ★★上に 仕切りの 線（`border-top`）。★見本の とおりです。
+                      ★★段は 3つの まま です（★裁定 ㋘ は 見送り）。
+                        ★見本は 5つ ですが、★`SCALES` を 増やすのは 別の 作業 です。 */}
+                  <div className="flex flex-wrap" style={{ gap: 6, marginBottom: 11 }}>
+                    {SCALES.map((s) => {
+                      const active = normalizeScale(profile.display_scale) === s;
+                      return (
+                        <button key={s} type="button"
+                          onClick={() => handleSaveDisplayPref({ display_scale: s })}
+                          style={{
+                            border: `1px solid ${active ? C.curtain : C.line}`,
+                            borderRadius: 99, padding: "5px 9px",
+                            fontSize: rem(10.5), minHeight: 44,
+                            background: active ? C.curtain : C.card,
+                            color: active ? "#FFFDF8" : C.ink,
+                            fontWeight: active ? 700 : 400
+                          }}>
+                          {SCALE_LABELS[s]}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div style={{
+                    fontSize: rem(SCALE_SAMPLE_PX[normalizeScale(profile.display_scale)] || 13.5),
+                    lineHeight: 1.85, borderTop: `1px solid ${C.line}`, paddingTop: 10
+                  }}>
+                    {SCALE_SAMPLE_LINES.map((line, i) => (
+                      <div key={i}>{line}</div>
+                    ))}
+                  </div>
+                  <p className="text-xs mt-3 mb-4" style={{ color: C.inkSoft }}>
+                    お使いの端末の文字サイズ設定も、そのまま効きます。
+                  </p>
+
+                  {/* ★文字の大きさとは別の設定。片方だけ変えられること（§0-③）。 */}
+                  <div className="flex items-start justify-between gap-3 pt-3" style={{ borderTop: `1px solid ${C.line}` }}>
+                    <div style={{ minWidth: 0 }}>
+                      <p className="text-sm" style={{ color: C.ink }}>かんたん表示</p>
+                      <p className="text-xs mt-0.5" style={{ color: C.inkSoft, lineHeight: 1.7 }}>
+                        1つの画面に出すことを減らします。機能は減りません。押した先に、これまでどおりあります。
+                      </p>
+                    </div>
+                    <button type="button"
+                      onClick={() => handleSaveDisplayPref({ simple_display: !isSimpleDisplay(profile) })}
+                      className="px-4 py-2 rounded-full text-xs font-medium flex-shrink-0"
+                      style={{
+                        background: isSimpleDisplay(profile) ? C.ink : C.card,
+                        color: isSimpleDisplay(profile) ? C.card : C.inkSoft,
+                        border: `1px solid ${isSimpleDisplay(profile) ? C.ink : C.line}`
+                      }}>
+                      {isSimpleDisplay(profile) ? "オン" : "オフ"}
+                    </button>
+                  </div>
+                  {/* ★★文字の 大きさの 下の 2行（★見本 `SC['設定']` の `.wl`／2026-09-15）。
+                      ★★どちらも **約束** です ──
+                        ★大きくしても 押せる 大きさは 崩れない
+                        ★先生・事務の 方も 同じ 設定で 働く
+                      ★★字は lib/displayPrefs.js が 持ちます。★ここで 書きません。
+                      ★★44 という 数は lib/uiKit.js が 持ちます。★2か所を 見て ください。 */}
+                  {/* ★★★2026-09-15、★地の 字 から `.wl` の 箱に しました。
+                      ★★見本は ベージュの 札 です ──
+                        `background:#F6EFDF; border:1px solid #E8DFC8; border-radius:12px`
+                      ★★`components/UiV2.jsx` の `Wl` が、★その 形を 持って います。
+                        ★新しい 形を 作りません。★見本の 文法に 合わせます。
+                      ★★`Warn`（#F6F1E4）とは 別の 箱 です。★見本が 使い分けて います。 */}
+                  <Wl style={{ marginTop: 10, marginBottom: 0 }}>
+                    {SCALE_NOTE.map((line, i) => {
+                      const at = line.indexOf(SCALE_NOTE_BOLD);
+                      return (
+                        <span key={i}>
+                          {i > 0 ? <br /> : null}
+                          {at < 0 ? line : (
+                            <>
+                              {line.slice(0, at)}
+                              <b style={{ color: C.ink }}>{SCALE_NOTE_BOLD}</b>
+                              {line.slice(at + SCALE_NOTE_BOLD.length)}
+                            </>
+                          )}
+                        </span>
+                      );
+                    })}
+                  </Wl>
+                </div>
                 {layoutV2 ? (
                   <div style={{ display: inMore("設定") }}>
                     <H3>そのほか</H3>
@@ -22491,99 +22600,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </div>
                 </div>
 
-                {/* ★名前は「見やすさ」。「シニアモード」と書かないこと（§0-②）。
-                    ★年齢からは何も決めない。本人に直接、見え方を選んでもらう。 */}
-                <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
-                  {/* ★★★見本 `SC['設定']` の 形に しました（★2026-09-15・裁定 ㋙）。
-                      ★★見本は `.pills` ＋ `.pill sm` ── ★横に 並ぶ 丸い 札 です。
-                        ★前は 四角い 3つの 箱（grid）でした。
-                      ★★選んで いる ものは `enji`（★C.curtain）の 塗り。★白い 字。
-                      ★★見本の 字は「★あいう」では ありません ──
-                        「のどの 調子　◎よい」「昨夜の 睡眠　7時間30分」。
-                        ★★自分の 記録の 形で 見た ほうが、★選べます。
-                      ★★上に 仕切りの 線（`border-top`）。★見本の とおりです。
-                      ★★段は 3つの まま です（★裁定 ㋘ は 見送り）。
-                        ★見本は 5つ ですが、★`SCALES` を 増やすのは 別の 作業 です。 */}
-                  <div className="flex flex-wrap" style={{ gap: 6, marginBottom: 11 }}>
-                    {SCALES.map((s) => {
-                      const active = normalizeScale(profile.display_scale) === s;
-                      return (
-                        <button key={s} type="button"
-                          onClick={() => handleSaveDisplayPref({ display_scale: s })}
-                          style={{
-                            border: `1px solid ${active ? C.curtain : C.line}`,
-                            borderRadius: 99, padding: "5px 9px",
-                            fontSize: rem(10.5), minHeight: 44,
-                            background: active ? C.curtain : C.card,
-                            color: active ? "#FFFDF8" : C.ink,
-                            fontWeight: active ? 700 : 400
-                          }}>
-                          {SCALE_LABELS[s]}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <div style={{
-                    fontSize: rem(SCALE_SAMPLE_PX[normalizeScale(profile.display_scale)] || 13.5),
-                    lineHeight: 1.85, borderTop: `1px solid ${C.line}`, paddingTop: 10
-                  }}>
-                    {SCALE_SAMPLE_LINES.map((line, i) => (
-                      <div key={i}>{line}</div>
-                    ))}
-                  </div>
-                  <p className="text-xs mt-3 mb-4" style={{ color: C.inkSoft }}>
-                    お使いの端末の文字サイズ設定も、そのまま効きます。
-                  </p>
-
-                  {/* ★文字の大きさとは別の設定。片方だけ変えられること（§0-③）。 */}
-                  <div className="flex items-start justify-between gap-3 pt-3" style={{ borderTop: `1px solid ${C.line}` }}>
-                    <div style={{ minWidth: 0 }}>
-                      <p className="text-sm" style={{ color: C.ink }}>かんたん表示</p>
-                      <p className="text-xs mt-0.5" style={{ color: C.inkSoft, lineHeight: 1.7 }}>
-                        1つの画面に出すことを減らします。機能は減りません。押した先に、これまでどおりあります。
-                      </p>
-                    </div>
-                    <button type="button"
-                      onClick={() => handleSaveDisplayPref({ simple_display: !isSimpleDisplay(profile) })}
-                      className="px-4 py-2 rounded-full text-xs font-medium flex-shrink-0"
-                      style={{
-                        background: isSimpleDisplay(profile) ? C.ink : C.card,
-                        color: isSimpleDisplay(profile) ? C.card : C.inkSoft,
-                        border: `1px solid ${isSimpleDisplay(profile) ? C.ink : C.line}`
-                      }}>
-                      {isSimpleDisplay(profile) ? "オン" : "オフ"}
-                    </button>
-                  </div>
-                  {/* ★★文字の 大きさの 下の 2行（★見本 `SC['設定']` の `.wl`／2026-09-15）。
-                      ★★どちらも **約束** です ──
-                        ★大きくしても 押せる 大きさは 崩れない
-                        ★先生・事務の 方も 同じ 設定で 働く
-                      ★★字は lib/displayPrefs.js が 持ちます。★ここで 書きません。
-                      ★★44 という 数は lib/uiKit.js が 持ちます。★2か所を 見て ください。 */}
-                  {/* ★★★2026-09-15、★地の 字 から `.wl` の 箱に しました。
-                      ★★見本は ベージュの 札 です ──
-                        `background:#F6EFDF; border:1px solid #E8DFC8; border-radius:12px`
-                      ★★`components/UiV2.jsx` の `Wl` が、★その 形を 持って います。
-                        ★新しい 形を 作りません。★見本の 文法に 合わせます。
-                      ★★`Warn`（#F6F1E4）とは 別の 箱 です。★見本が 使い分けて います。 */}
-                  <Wl style={{ marginTop: 10, marginBottom: 0 }}>
-                    {SCALE_NOTE.map((line, i) => {
-                      const at = line.indexOf(SCALE_NOTE_BOLD);
-                      return (
-                        <span key={i}>
-                          {i > 0 ? <br /> : null}
-                          {at < 0 ? line : (
-                            <>
-                              {line.slice(0, at)}
-                              <b style={{ color: C.ink }}>{SCALE_NOTE_BOLD}</b>
-                              {line.slice(at + SCALE_NOTE_BOLD.length)}
-                            </>
-                          )}
-                        </span>
-                      );
-                    })}
-                  </Wl>
-                </div>
 
                 <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
                   <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>ツール</p>
