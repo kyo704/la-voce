@@ -7,7 +7,8 @@ import MinorConsentGate from "@/components/MinorConsentGate";
 //   ★この画面で並べ直さないこと。★2か所になります。
 import {
   PAID_GATE_ENABLED, GATE_STARTS_AT, PAID_FEATURES, NEVER_PAID,
-  featureLabel, GATE_CLOSING_LINES, gateAppliesTo, GATE_REQUIRES_TEST_LIST
+  featureLabel, GATE_CLOSING_LINES, SCHOOL_BUNDLE_LINES, gateAppliesTo,
+  GATE_REQUIRES_TEST_LIST
 } from "@/lib/freeTier";
 import { ageBandOf } from "@/lib/ageGate";
 import { PLANS } from "@/lib/plans";
@@ -118,6 +119,22 @@ export default async function BillingPage() {
           ))}
         </div>
 
+        {/* ★★学校の 名簿に 入って いる あいだの こと（★2026-09-15・お決め ㋑）。
+            ★★見本 `SC['プラン']` の 最後の 注記 です。★1文字も 変えて いません。
+            ★★言って いる ことは 2つ ──
+              ★① 二重に いただきません（★学校が 束で 払って いる あいだ）
+              ★② 名簿から 外れても、★**記録は 消えません**
+            ★★②が 大事 です。★お金の 話の 最後に、★消えない ことを 言います。
+              ★「払わなく なったら 記録も 消える」と 思わせない ため です。
+            ★★字は lib/freeTier.js が 持ちます。★ここで 書きません。 */}
+        <div style={{ marginTop: 12, padding: 14, borderRadius: 12, background: C.paper }}>
+          {SCHOOL_BUNDLE_LINES.map((line) => (
+            <p key={line} style={{ fontSize: "0.875rem", color: C.inkSoft, margin: "0 0 4px", lineHeight: 1.85 }}>
+              {line}
+            </p>
+          ))}
+        </div>
+
         {/* ★★すでにお支払いの方には、★申し込みではなく、★解約の入口を出します
             （2026-09-05 夜に足しました）。
             ★★これが抜けていました。★⑤の手順6「解約する」に、★入口がありませんでした。
@@ -130,6 +147,19 @@ export default async function BillingPage() {
             <p style={{ fontSize: "1rem", color: C.ink, margin: "0 0 6px", lineHeight: 1.8 }}>
               {paidSub.status === "trialing" ? "無料でお試しいただいています。" : "ご契約いただいています。"}
             </p>
+            {/* ★★次の お支払い日（★2026-09-15・坂本さんの お決め ㋒）。
+                ★★見本は「次の お支払い　2026年10月9日」と 出して います。
+                ★★いつ 引き落とされるかを、★探させません。
+                  ★★Stripe の 窓口を 開かないと 分からない、という 形に しません。
+                ★★`current_period_end` が 無い ときは、★何も 出しません。
+                  ★「不明」と 書くと、★何かが 壊れて いる ように 読めます。
+                  ★★無い ものを、★見当で 埋めません。 */}
+            {paidSub.current_period_end ? (
+              <p style={{ fontSize: "0.9375rem", color: C.inkSoft, margin: "0 0 6px", lineHeight: 1.8 }}>
+                {paidSub.status === "trialing" ? "お試しが 終わる日" : "次の お支払い"}
+                {"　"}{formatDate(paidSub.current_period_end)}
+              </p>
+            ) : null}
             <p style={{ fontSize: "0.9375rem", color: C.inkSoft, margin: "0 0 14px", lineHeight: 1.8 }}>
               お支払いの内容の確認と、解約は、こちらから行えます。
             </p>

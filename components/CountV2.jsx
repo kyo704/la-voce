@@ -7,6 +7,12 @@ import { H3, Card, Kv, Note, Li, Back, Btn } from "@/components/UiV2";
 import { USUAL_ROWS, usualOf, writtenDays, histogramOf, detailedCountsOf } from "@/lib/countView";
 import { isAlwaysFree } from "@/lib/freeTier";
 import { viewerOf } from "@/lib/entitlements";
+// ★★値段は lib/plans.js が 持ちます（★2026-09-15）。
+//   ★★ここに 直に 書いて いました。★年額が **5,800円** の ままでした。
+//     ★正しくは 4,800円。★`/billing` は 直り、★ここだけ 取り残されて いました。
+//   ★★`app/billing/page.js:95` に、★同じ 失敗の 記録が あります。★2度目です。
+//   ★★書き写す 先を 増やしません。★引く 道を 使います。
+import { priceLabelOf, priceWithTaxOf } from "@/lib/plans";
 
 // ============================================================================
 // かぞえる（見本⑭ ／ 2026-09-09）
@@ -125,8 +131,8 @@ export default function CountV2({ entries, dates, todayISO, profile, userEmail, 
           </div>
         </Card>
         <Card>
-          <Kv right="580円（税込）">ひと月ごと</Kv>
-          <Kv right="5,800円（税込）" last>1年ぶん まとめて</Kv>
+          <Kv right={priceWithTaxOf("monthly")}>ひと月ごと</Kv>
+          <Kv right={priceWithTaxOf("annual")} last>1年ぶん まとめて</Kv>
         </Card>
         <div style={{ ...TYPE.note, background: "#F6EFDF", borderRadius: 12, padding: 11, lineHeight: 1.8 }}>
           記録・並べる・さかのぼる・ノート・ひつじ・受診用の 1枚は、これからも 無料です。<br />
@@ -176,7 +182,7 @@ export default function CountV2({ entries, dates, todayISO, profile, userEmail, 
         <Card>
           <Kv right="無料">記録・並べる・さかのぼる・ノート</Kv>
           <Kv right="無料">ひつじの部屋・受診用の1枚</Kv>
-          <Kv right="580円／月（または年額）" last>詳しく数える（調べる）</Kv>
+          <Kv right={priceLabelOf("monthly") + "（または年額）"} last>詳しく数える（調べる）</Kv>
         </Card>
         <Btn ghost onClick={() => setDetail(null)} style={{ marginTop: 11 }}>閉じる</Btn>
       </div>
