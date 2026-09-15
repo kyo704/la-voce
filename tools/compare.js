@@ -312,8 +312,15 @@ async function capture(env) {
             const own = [...el.childNodes]
               .filter((n) => n.nodeType === 3)
               .map((n) => n.textContent.trim()).join(" ").trim();
+            // ★★★2026-09-16、★`b` `strong` `s` `em` を 足しました。
+            //   ★★これが 無いので、★`<b>役割の ある方にだけ</b>` が 落ち、
+            //     ★書き出しに「運営モードは、 出ます。」と 出て いました。
+            //   ★★私は 一度、★これを **画面の 壊れ**だと 思いかけました。
+            //     ★★画面は 壊れて いません。★道具が 見て いなかった だけ です。
+            //   ★★道具の 抜けを、★画面の 欠陥と 読みちがえる ところ でした。
             if (own && ["button", "h1", "h2", "h3", "p", "span", "label",
-              "summary", "div", "a", "li", "figcaption"].includes(tag)) {
+              "summary", "div", "a", "li", "figcaption",
+              "b", "strong", "s", "em", "small"].includes(tag)) {
               out.push({ tag, text: own.replace(/\s+/g, " ").slice(0, 60) });
             }
             [...el.children].forEach(walk);
