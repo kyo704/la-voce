@@ -239,7 +239,7 @@ import { isFieldGroupVisible, DEFAULT_RECORD_MODE } from "@/lib/fieldGroups";
 import { canSeeBetaFeatures, canSeeTeacherFeatures, canSeeLineLink, canSeeStudentTeacherLink,
   canSeeShobaiArticles, isShobaiArticle } from "@/lib/featureFlags";
 // 削除の猶予期間（A-4）。日数の計算はサーバーと同じものを使う。
-import { graceDaysLeft, GRACE_PERIOD_DAYS } from "@/lib/accountDeletion";
+import { graceDaysLeft, GRACE_PERIOD_DAYS, LOST_ON_DELETE, NO_RETENTION_NOTE, NO_RETENTION_BOLD } from "@/lib/accountDeletion";
 import { representativeActivityKind, MULTI_ACTIVITY_LEGEND_NOTE } from "@/lib/activityPrecedence";
 import { recordedFieldsFor, seriesFor, dailyRows, ownRecordLabel, hasValue } from "@/lib/ownRecordFields";
 import { symptomsByLocation, dinnerToBedSummary, LOCATION_FOOTNOTE } from "@/lib/symptomLocations";
@@ -20670,14 +20670,30 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               <div className="space-y-4">
                 <h2 className="ff-display italic text-xl">{t("deleteStep1Title")}</h2>
                 <p className="text-sm" style={{ color: C.ink }}>{t("deleteStep1Lead")}</p>
+                {/* ★★失われるものの 一覧（★2026-09-15・裁定 ㋕㋖）。
+                    ★★前は 4行で、★**レパートリーの 名前が ありません** でした。
+                      ★★消えるのに 書いて いない ── ★それが いちばん 悪い 形です。
+                      ★`repertoire_tessitura`／`role_master`／`project_master` の 3表。
+                    ★★「羊のおうちの 持ち物」も、★台帳（`item_acquisitions`）が
+                      ★消えると 読めません でした。★言い方を 変えました。
+                  ★★一覧は lib/accountDeletion.js が 持ちます。
+                    ★★消す 表の 一覧と **同じ 一枚** に 置いて います。
+                      ★表を 足した 人が、★画面の 一覧を 直し忘れない ためです。 */}
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
                   <ul className="text-sm space-y-1.5">
-                    <li>・日々の記録　<strong className="ff-mono">{recordedDaysTotal}</strong> 日分</li>
-                    <li>・質問票の回答　<strong className="ff-mono">{questionnaireResponses.length}</strong> 件</li>
-                    <li>・稽古ノート・目標・羊のおうちの持ち物</li>
-                    {/* ★周期は、記録している人にだけ挙げます（lib/cycleCopy.js）。
-                        記録していない人に、話題だけが目に入る理由がありません。 */}
-                    <li>・既往症・アレルギー・常用薬{mentionsCycleInDataLists(profile) ? "・月経周期" : ""}の記録</li>
+                    {LOST_ON_DELETE.map((row) => {
+                      // ★★周期は、記録している人にだけ挙げます（lib/cycleCopy.js）。
+                      //   ★記録していない人に、話題だけが目に入る理由がありません。
+                      const cycle = row.cycle && mentionsCycleInDataLists(profile) ? "・月経周期" : "";
+                      const n = row.count === "days" ? recordedDaysTotal
+                        : row.count === "responses" ? questionnaireResponses.length : null;
+                      return (
+                        <li key={row.key}>
+                          ・{row.label}{cycle}
+                          {n !== null ? <>　<strong className="ff-mono">{n}</strong> {row.count === "days" ? "日分" : "件"}</> : null}
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold }}>
@@ -20702,6 +20718,32 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     className="flex-1 py-3 rounded-full text-sm font-medium" style={{ background: C.card, border: `1px solid ${C.curtain}`, color: C.curtain }}>
                     {t("deleteNext")}
                   </button>
+                </div>
+
+                {/* ★★引き止めの 約束（★見本 `SC['退会']` の `.note`・2行／裁定 ㋘）。
+                    ★★守れて いる ことを 先に 数えました（★2026-09-15）──
+                      ★退会の 3枚に「もったいない」「本当に」「よろしい」「理由」
+                        「残念」「惜しい」「考え直」が **1件も** ありません。
+                      ★★見張り `withdraw-promise.test.js` が 毎回 数えます。
+                        ★書いた あとで 破れる ことを 防ぎます。
+                    ★★1枚目に だけ 置きます。★2枚目・3枚目では ありません。
+                      ★引き止めらしき ものは、★この 枚の［先にデータを書き出す］
+                        だけ だから です ──「この画面の 1回だけ」。
+                    ★★3枚の ままで よい、★という 裁定です（★㋗）。 */}
+                <div className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.85 }}>
+                  {NO_RETENTION_NOTE.map((line, i) => {
+                    let rest = line;
+                    const parts = [];
+                    NO_RETENTION_BOLD.forEach((b) => {
+                      const at = rest.indexOf(b);
+                      if (at < 0) return;
+                      parts.push(rest.slice(0, at));
+                      parts.push(<b key={b}>{b}</b>);
+                      rest = rest.slice(at + b.length);
+                    });
+                    parts.push(rest);
+                    return <p key={i} style={{ margin: i ? "3px 0 0" : 0 }}>{parts}</p>;
+                  })}
                 </div>
               </div>
             )}
@@ -22740,8 +22782,32 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 </div>
                 )}
 
+                {/* ★★同居問題の 第1段（★2026-09-15・裁定 ㋙）。
+                    ★★この 1枚に、★書き出し・控え・退会・ログアウトが 同居して いました。
+                      ★★見本では 同じ 器に 入って いません ──
+                        ★書き出す・同意・退会 … もっとの 一覧の 行（★別々の 画面へ）
+                        ★ログアウト　　　　　 … `SH['account']` の 中
+                      ★★見本の もっと の 注記 ──
+                        「法律の 行き先を、この 1か所に 集めています。」
+                    ★★だから 器を 分けます。★中身は 消しません。
+                      ★題 … 門の 中では「じぶんの記録」（★MORE_ROWS の group と 同じ 語）
+                      ★ログアウト … 門の 中では 出しません。★アカウントの シートに あります
+                        （★`ACCOUNT_ROWS` の 3行目・★もう 押せます）。
+                    ★★門の **外**は 1文字も 変えて いません。
+                      ★★`inMore()` は layoutV2 でなければ undefined を返し、
+                        ★この 枠は いつも 出ます。★38名の 方には、
+                        ★この 枠が **唯一の 入口** です。★消すと 退会の 道が 消えます。
+                    ★★第2段（★古い 枠ごと 消す）は 保留です（★裁定 ㋚）。
+                      ★★引き金は 2つ ──
+                        ★① 門（NEXT_PUBLIC_LAYOUT_V2_USER_IDS）を 広げる とき
+                        ★② ★この 枠を 誰かが 触る とき ── ★いま です
+                      ★★先に `docs/records/やること-9月15日のあと.md` の
+                        ★**㉛** を お読みください。★消す 前に する ことが 5つ あります。
+                      ★★「実害が ない から 残した」ので **ありません**。
+                        ★門の 外の 38名の 方に とって、★この 枠が
+                        ★**唯一の 入口**だから です。★消すと 退会の 道が 消えます。 */}
                 <div className="rounded-2xl p-4 border" style={{ display: inMore("じぶんの記録"), background: C.card, borderColor: C.line }}>
-                  <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>アカウント</p>
+                  <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>{layoutV2 ? "じぶんの記録" : "アカウント"}</p>
                   {/* 統合実行ルートv4 G3-16: データの書き出し。
                       ★アカウント削除（G3-17）の1ページ目から「先に書き出す」で
                         ここへ誘導するため、削除より先に用意している。 */}
@@ -22779,13 +22845,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <span className="flex items-center gap-2"><Trash2 size={16} />{t("labelDeleteAccount")}</span>
                     <span style={{ color: C.inkSoft }}>→</span>
                   </button>
-                  {signOutError && (
+                  {/* ★★ログアウトは アカウントの シートへ 引っ越しました（★㋙・門の 中だけ）。
+                      ★★消して いません。★`ACCOUNT_ROWS` の 3行目 として 押せます
+                        （★`components/VocalTracker.jsx` の `recordSheet === "アカウント"`）。
+                      ★★門の 外では、★ここが 唯一の ログアウトです。★残します。
+                        ★★`display` で 隠すだけ です。★木から 外しません ──
+                          ★外すと、★門の 外の 方の 出口が 消えます。 */}
+                  {signOutError && !layoutV2 && (
                     <p className="text-xs mb-2 rounded-lg p-2.5" style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>
                       {signOutError}
                     </p>
                   )}
                   <button type="button" onClick={handleSignOut}
-                    className="w-full flex items-center gap-2 py-2.5 px-1 text-sm" style={{ color: C.curtain }}>
+                    style={{ color: C.curtain, display: layoutV2 ? "none" : undefined }}
+                    className="w-full flex items-center gap-2 py-2.5 px-1 text-sm">
                     <LogOut size={16} />ログアウト
                   </button>
                 </div>
