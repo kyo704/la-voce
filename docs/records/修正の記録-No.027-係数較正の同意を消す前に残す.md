@@ -1,6 +1,6 @@
 # 修正の記録 No.027 ── 係数較正の同意を、消す前に残す
 
-全463行 / 末尾は「まだ消していません（★お知らせの文のご確認待ちです）。」
+全566行 / 末尾は「ご判断をお待ちします。」
 
 - 日付 … 2026-09-15
 - 裁定 … Opus「★DO NOT DELETE YET／★1 preserve the current wording, verbatim」
@@ -461,3 +461,106 @@ where consent_stats_use_at is not null;
 ---
 
 まだ消していません（★お知らせの文のご確認待ちです）。
+
+---
+
+# ★追記4（2026-09-15）── ★裁定の前提に、1つ 誤りがあります
+
+★Opus の裁定「DO NOT SEND」を受けて、
+★指示のとおり「書き出しが 壊れないか」を先に確かめました。
+
+★★**書き出しは壊れません。** ★けれど、★別のことが分かりました。
+
+## 18. ★書き出しは、同意の**文面を持っていません**
+
+裁定には、こう書かれていました ──
+
+> THE STRONGEST ARGUMENT FOR SENDING DOES NOT HOLD
+> 「知る手段がなくなる」— it does not
+>   the export already includes: 同意・お知らせ →「同意の 記録（いつ・どの 文面に）✓」
+>   ★what they agreed to, and when, stays in their own hands
+
+★**そうなっていません。** 2つの理由があります。
+
+### ㋐ `consent_records` は、文面を持ちません。★ハッシュだけです
+
+`supabase/migration_consent_records.sql:16-31` ──
+
+```sql
+purpose_key    text not null,
+policy_version text not null,
+text_hash      text not null,   -- ★★文面そのものでは ありません
+locale         text not null default 'ja',
+method         text not null default 'checkbox',
+granted_at     timestamptz not null default now(),
+withdrawn_at   timestamptz,
+```
+
+`lib/consent.js` の `buildConsentRow` も、そのとおりです ──
+
+```js
+text_hash: textHash(purpose.text),
+```
+
+★★**文面は入りません。** ★入るのは、文面から作った ハッシュです。
+
+★書き出しても、★出てくるのは
+`purpose_key` と `policy_version` と `text_hash` です。
+★「何に同意したか」は、★読めません。
+
+★★文面を持っているのは `lib/consent.js` ── ★**コードの側**です。
+　★★つまり、★消すと 文面は どこにも 残りません。
+
+### ㋑ そもそも、この同意の行が `consent_records` に ★ありません
+
+★Sonnet が確かめてくださいました ──
+
+```
+purpose_key = "research.anonymized" … ★0件
+```
+
+★29人の同意は、★`profiles.consent_stats_use_at` にあります。
+★★**時刻が1つだけ**です。★文面も、版も、方法も、ありません。
+
+★書き出しに入るのは、★その時刻だけです（`EXPORTED_PROFILE_COLUMNS`）。
+
+```
+consent_stats_use_at: "2026-09-02T04:11:23.000Z"
+```
+
+★これを見て、★何にご同意くださったのかは分かりません。
+
+## 19. ★だから、こう申し上げます
+
+★裁定の**結論**（送らない）は、★残りの3つの理由だけでも立つと思います。
+
+```
+1  法21条3項は「目的の変更」のとき。★これは取りやめで、広がりません
+2  何もしなくてよいお知らせは、★次の本当のお知らせを読まれなくします
+3  「使われていたのか」という心配を、★こちらから作ることになります
+```
+
+★★けれど、★**4つ目の理由（書き出しで分かる）は、事実と違います。**
+
+★「知る手段がなくなる」は、★なくなります。
+
+★★No.027 の §1 に文面を写してあります。★いまはそれだけが残る形です。
+　★★裁定の「step 1 must not be skipped」は、★まさにそのとおりでした。
+　　★★あれが唯一の写しです。★書き出しではありません。
+
+## 20. ★ご判断をお願いしたいこと
+
+| 印 | 何 | 私の見立て |
+|---|---|---|
+| ㋐ | 送らない（★裁定のまま） | ★3つの理由で立ちます。私は反対しません |
+| ㋑ | ★No.027 を、消す前に別の形でも残す | ★勧めます。この紙が唯一の写しです |
+| ㋒ | ★`consent_records` が文面を持たないこと自体 | ★別の話ですが、★`health.record` の22件も同じです。★いつか同じ問いが来ます |
+
+★★㋒ について一言 ──
+　★いま `consent_records` を書き出しても、★読めるのはハッシュだけです。
+　★「いつ・どの文面に」と札には書いてありますが、★**文面は出ていません**。
+　★★これは `lib/exportData.js:363` の札の字と、★中身が食い違っています。
+　★★きょう 見つけた「字はあるが、中身がない」形の、★もう1つです。
+
+★消していません（★d_override・`consent_stats_use_at`・画面の設定）。
+★ご判断をお待ちします。
