@@ -145,9 +145,21 @@ def main():
     return 1
   found, n_files, seen, picked, dynamic = got
 
-  print("★紙の うえの 決まり（RLS）")
+  # ★★頭に 出します。★末尾の 但し書きは 読み飛ばされます。
+  #   ★★2026-09-15、★末尾に 但し書きを 置いて いました。
+  #     ★★それでも 私は 結びを 書き、★誤った まま 旅を しました。
+  print("★" * 33)
+  print("★★これは **下書き** です。★答えでは ありません。")
+  print("　★紙だけを 見て います。★SQLエディタで 直に 打った 決まりは 写りません。")
+  print("　★★2026-09-15、★`lessons` で それを 踏みました ──")
+  print("　　★この 道具が 見つけた SELECT の 決まりは 1つ でした。")
+  print("　　★本番の pg_policy には、★紙に 無い ものが もう1つ ありました")
+  print("　　　（\"Teacher and student can view lessons\"・org_id の 条件 なし）。")
+  print("　★★下の 問いで 裏を 取るまで、★ここから 結びを 書かないで ください。")
+  print("★" * 33)
+  print()
+  print("★紙の うえの 決まり（RLS）── ★下書き")
   print("　★見た 紙: supabase/*.sql　%d 枚" % n_files)
-  print("　★★これは **紙** です。★台帳では ありません（★下の §末尾）。")
   print()
 
   for t in tables:
@@ -190,7 +202,10 @@ def main():
   print("★★この 道具が 見て いない こと")
   print("　★台帳（Supabase）の 中身は 見て いません。★紙だけ です。")
   print("　★SQLエディタで 直に 打った ものは、★どの 紙にも ありません。")
-  print("　★★下の 問いを 流して、★台帳に 直に 尋ねて ください。")
+  print("　★★2026-09-15 の 実例 ── `lessons` に、★紙に 無い SELECT の 決まりが")
+  print("　　★1つ ありました（\"Teacher and student can view lessons\"）。")
+  print("　　★生徒は はじめから 読めて いました。★紙からの 結びは 逆でした。")
+  print("　★★下の 問いを 流して、★台帳に 直に 尋ねて ください。★省けません。")
   print()
   print("-" * 66)
   print("""-- ★台帳に 直に 尋ねる（★読むだけ・書きません）
