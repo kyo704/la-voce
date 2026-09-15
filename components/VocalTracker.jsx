@@ -22517,6 +22517,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                       {/* ★★書きかけが ある ときは、★先に 言います（★お決め）。
                           ★★消える ものが あるなら、★押す 前に 伝える こと。 */}
+                      {/* ★★ツール（★2026-09-16）。★見本の `.li` は 名前と `›` だけ です。
+                          ★★絵（アイコン）は 見本に ありません。★付けて いません。 */}
+                      <Li right="›" onClick={() => setActiveTab("questionnaires")}>質問票</Li>
+                      <Li right="›" onClick={() => setActiveTab("clinicSummary")}>受診用サマリー</Li>
+                      {canSeeBetaFeatures(profile) ? (
+                        <Li right="›" onClick={() => setLessonMode(true)}>レッスンモード</Li>
+                      ) : null}
+                      <Li right="›" onClick={() => setActiveTab("profile")}>プロフィール・記録項目</Li>
+
                       <Li right="›" onClick={() => reloadNow()} last>
                         アプリを 読み込み直す
                         {hasDraft ? (
@@ -22640,37 +22649,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 </div>
 
 
-                <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
-                  <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>ツール</p>
-                  <div className="space-y-1">
-                    <button type="button" onClick={() => setActiveTab("questionnaires")}
-                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
-                      <span className="flex items-center gap-2"><ClipboardList size={16} style={{ color: C.gold }} />質問票</span>
-                      <span style={{ color: C.inkSoft }}>→</span>
-                    </button>
-                    <button type="button" onClick={() => setActiveTab("clinicSummary")}
-                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
-                      <span className="flex items-center gap-2"><FileText size={16} style={{ color: C.gold }} />受診用サマリー</span>
-                      <span style={{ color: C.inkSoft }}>→</span>
-                    </button>
-                    {canSeeBetaFeatures(profile) && (
-                      <button type="button" onClick={() => setLessonMode(true)}
-                        className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
-                        <span className="flex items-center gap-2"><GraduationCap size={16} style={{ color: C.gold }} />レッスンモード</span>
-                        <span style={{ color: C.inkSoft }}>→</span>
-                      </button>
-                    )}
-{/* ★★「AIアドバイス」の入口を、やめました（★2026-09-07・緊急）。
-                        ★★規約 第7条4項と、正面からぶつかっていました。
-                          「本サービスは、医療行為、診断、治療または医学的助言を
-                          　行うものではありません。」
-                        ★「アドバイス」は、助言です。★名前が、規約に反していました。
-                        ★★2026-09-09、★画面ごと 外しました（★削除17点の3番）。
-                          ★止めの札（AI_ADVICE_ENABLED）も、★覚えも、★呼び出しも、
-                          ★1つ残らず 消しました。★入口も 画面も ありません。
-                        ★★2026-09-14（No.019）、★app/api/advice/route.js ごと 消しました。 */}
-                  </div>
-                </div>
+                {/* ★★ツールの 3つを、★上の 箱の 行に 足しました（★2026-09-16）。
+                    ★★見本の `.li` は、★左に 名前・右に `›` だけ です。
+                      ★★絵（アイコン）は 見本に ありません。★外しました。
+                      ★★機能も 押す先も 同じ です。★形だけ 変えました。
+                    ★★「AIアドバイス」は 2026-09-09 に 画面ごと 消えて います。
+                      ★入口も 画面も ありません（★No.019 で 経路も 消しました）。 */}
+
 
                 {/* ★以前は「レッスン」タブの中にあったが、そのタブ自体が
                     「レッスンの予定があるか、先生とつながっているか」の人にしか
@@ -22844,16 +22829,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </details>
                 )}
 
-                <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
-                  <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>設定</p>
-                  <div className="space-y-1">
-                    <button type="button" onClick={() => setActiveTab("profile")}
-                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
-                      <span className="flex items-center gap-2"><Scale size={16} style={{ color: C.gold }} />プロフィール・記録項目</span>
-                      <span style={{ color: C.inkSoft }}>→</span>
-                    </button>
-                  </div>
-                </div>
+                {/* ★★「プロフィール・記録項目」は、★上の 箱の 行に 移りました（★2026-09-16）。
+                    ★★見出し「設定」の カードごと 外しました ──
+                      ★★「設定」の 画面の 中に「設定」という 見出しが あるのは、
+                        ★見本に ありません。★入れ子に なって いました。 */}
 
                 {/* ★★★畳みました（★2026-09-15・裁定 ㋗）。
                     ★★撮って 数えたら、★この かたまりだけで **34塊**でした。
