@@ -22360,6 +22360,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ★★flex + order に すると、★5つ すべての 間隔が 変わり、
                           ★さらに 門の 外の 38名にも 及びます。
                       ★★だから、★JSX を 動かしました。★間隔は 1つも 変わりません。 */}
+                {/* ★★★見本の h3「文字の 大きさ」（★2026-09-16）。
+                    ★★撮って 気づきました ── ★見出しが ありませんでした。
+                      ★★pill の 形に した とき、★もとの「見やすさ」「文字の大きさ」の
+                        ★2行を 一緒に 外して しまって いました。
+                      ★★見本は `.h3 文字の 大きさ` が カードの **上**に あります。
+                    ★★`H3` は `components/UiV2.jsx` の もの です。
+                      ★見本 `.h3`（10.5px・字間 .12em・薄い 字）と 同じ 形 です。
+                      ★新しい 形を 作りません。 */}
+                {layoutV2 ? (
+                  <div style={{ display: inMore("設定") }}>
+                    <H3>文字の 大きさ</H3>
+                  </div>
+                ) : null}
                 {/* ★名前は「見やすさ」。「シニアモード」と書かないこと（§0-②）。
                     ★年齢からは何も決めない。本人に直接、見え方を選んでもらう。 */}
                 <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
