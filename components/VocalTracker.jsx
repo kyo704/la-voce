@@ -17307,7 +17307,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             <p className="ff-mono text-center text-xl tracking-widest py-2 rounded-lg" style={{ background: C.paper, color: C.curtain }}>{generatedOrgInviteCode}</p>
                           ) : (
                             <button type="button" onClick={() => handleGenerateOrgInvite(orgId)}
-                              className="w-full py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>招待コードを発行する</button>
+                              className="w-full py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>講師を 招待する</button>
                           )}
                         </div>
                         <div>
