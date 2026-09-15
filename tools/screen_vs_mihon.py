@@ -54,6 +54,30 @@ SCREENS = {
   #   ★★作って いるのは `components/VocalTracker.jsx` の
   #     `{activeTab === "more" && (` の 中（★:21797〜）だけ です。
   #     ★ほかの ファイルは 入れません（★A01 で 3度 まちがえた ところ）。
+  # ★★アカウント（★2026-09-15・もっとの 先 3枚目）。
+  #   ★★見本は `SH['account']` ── ★下から 出る 引き出し です。
+  #   ★★作って いるのは 2つ ──
+  #     `lib/recordSheets.js`         … 行の 決め（ACCOUNT_ROWS）
+  #     `components/VocalTracker.jsx` … 描く ところ（:22934 `ListSheet`）
+  #   ★★`ListSheet` 自身は 入れません。★どの 引き出しにも 使う 共通の 部品 です。
+  "アカウント": {
+    "fn": "account",
+    "files": ["lib/recordSheets.js", "components/VocalTracker.jsx"],
+    "words": [],
+    "extra": [],
+  },
+  # ★★毎日、聞いてほしいこと（★2026-09-15・もっとの 先 2枚目）。
+  #   ★★作って いるのは 2つ ──
+  #     `components/DailyAskPicker.jsx` … 画面そのもの
+  #     `lib/dailyAsk.js`               … 中身の 決め（★取り込み先を 追いました）
+  #   ★★`VocalTracker.jsx` は 呼ぶだけ（:21911）。★入れません。
+  #     ★★入れると、★ほかの 画面の 字まで 数えます（★A01 で 3度 まちがえた ところ）。
+  "聞いてほしいこと": {
+    "fn": "聞いてほしいこと",
+    "files": ["components/DailyAskPicker.jsx", "lib/dailyAsk.js"],
+    "words": [],
+    "extra": [],
+  },
   # ★★設定（★2026-09-15・もっとの 先 1枚目）。
   #   ★★読む ファイルは 3つ ──
   #     `components/VocalTracker.jsx` … 12の 節が すべて ここに あります
@@ -111,7 +135,18 @@ def mihon_of(fn):
     m = RAW.find("\nfunction ", i + 10)
     ends = [x for x in (j, k, m) if x > 0]
     return RAW[i:min(ends)] if ends else RAW[i:]
-  raise KeyError("★見本に「" + fn + "」が ありません（function / SC[] の どちらでも）")
+  # ★★3つ目の 形 ── `SH['名']=function(){ … }`（★下から 出る 引き出し）。
+  #   ★★2026-09-15、★「アカウント」で 気づきました。
+  #     ★★見本には 引き出しが 22枚 あります。★どれも この 形 です。
+  key = "SH['" + fn + "']=function()"
+  if key in RAW:
+    i = RAW.index(key)
+    j = RAW.find("\nSH['", i + 10)
+    k = RAW.find("\nSC['", i + 10)
+    m = RAW.find("\nfunction ", i + 10)
+    ends = [x for x in (j, k, m) if x > 0]
+    return RAW[i:min(ends)] if ends else RAW[i:]
+  raise KeyError("★見本に「" + fn + "」が ありません（function ／ SC[] ／ SH[] の どれでも）")
 
 
 def read_all():
