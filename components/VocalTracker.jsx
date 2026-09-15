@@ -107,9 +107,9 @@ import { markerRow } from "@/lib/periodMarkers";
 import TodayBand from "@/components/TodayBand";
 import TabBarV2 from "@/components/TabBarV2";
 import { TAB_BAR_HEIGHT, TYPE, SPACE, FONT_STACK, cardStyle, rem, RADIUS } from "@/lib/uiKit";
-import { ScreenHead, HeadRound, H3, Card, Li, Seg } from "@/components/UiV2";
+import { ScreenHead, HeadRound, H3, Card, Li, Seg, Note } from "@/components/UiV2";
 import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
-import { moreSections } from "@/lib/moreMenu";
+import { moreSections, rightOf, MORE_NOTE, MORE_NOTE_BOLD } from "@/lib/moreMenu";
 import DailyAskPicker from "@/components/DailyAskPicker";
 import RangeCalendar from "@/components/RangeCalendar";
 import WheelPicker from "@/components/WheelPicker";
@@ -21845,7 +21845,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                   style={{ display: "block", width: "100%", textAlign: "left",
                                     background: "transparent", border: "none", padding: 0,
                                     minHeight: 44 }}>
-                                  <Li right={r.right || "›"} last={i === sec.rows.length - 1}>
+                                  {/* ★★右の 字は lib が 決めます（★2026-09-15・㋐）。
+                                      ★★前は `r.right || "›"` でした。★`right` が あると
+                                        ★矢印が **置きかわり**、★「5つまで」だけに なって いました。
+                                      ★★見本は `<s>5つまで ›</s>` ── ★両方 出します。 */}
+                                  <Li right={rightOf(r)} last={i === sec.rows.length - 1}>
                                     {/* ★★赤で 出すのは、★見本の .x です（★退会）。 */}
                                     <span style={r.danger ? { color: C.rust } : undefined}>{r.label}</span>
                                   </Li>
@@ -21855,6 +21859,31 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </Card>
                       </div>
                     ))}
+                    {/* ★★下の 注記 4行（★見本 `SC['もっと']` の 最後の `.note`）。
+                        ★★2026-09-15、★1行も ありません でした。
+                        ★★この 4行は 飾りでは ありません。★**約束** です ──
+                          ★法律の 行き先を 探させない ／ 退会の 邪魔を しない
+                          ★なぜ この 題なのか ／ 運営モードが 出ない わけ
+                        ★★書いて いない 約束は、★守って いても 伝わりません。
+                        ★★字は lib/moreMenu.js が 持ちます。★ここで 書きません。
+                        ★★どこを 太くするかも lib が 持ちます（★MORE_NOTE_BOLD）。 */}
+                    <Note>
+                      {MORE_NOTE.map((line, i) => {
+                        const at = line.indexOf(MORE_NOTE_BOLD);
+                        return (
+                          <span key={i}>
+                            {i > 0 ? <br /> : null}
+                            {at < 0 ? line : (
+                              <>
+                                {line.slice(0, at)}
+                                <b>{MORE_NOTE_BOLD}</b>
+                                {line.slice(at + MORE_NOTE_BOLD.length)}
+                              </>
+                            )}
+                          </span>
+                        );
+                      })}
+                    </Note>
                   </div>
                 ) : null}
                 {/* ★★まとまりを 開いている あいだ、★戻る 道を 置きます。
