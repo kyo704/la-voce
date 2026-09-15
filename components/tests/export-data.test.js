@@ -58,8 +58,15 @@ async function main() {
     { date: "2026-08-02", notes: "メモ,あり" }
   ]);
   const lines = csv.split("\n");
-  assertTrue(lines[0].startsWith("date,"), "1列目は date");
-  assertTrue(lines[0].includes("cycle_start"), "cycle_start が列として出る");
+  // ★★2026-09-15、★見出しを 日本語に しました（★裁定 ㋒・Opus）。
+  //   ★★見ている ことは 変わって いません ──
+  //     ★① 日づけが 1列目 ／ ★② 周期の 列が 出る。
+  //   ★★列の 名前では なく、★見出しの 字で 見ます。
+  //     ★★中身（2行目 以降）は 1つも 変わって いません。
+  //   ★★見出しの 中身そのものは components/tests/export-headings.test.js が 見ます。
+  assertTrue(lines[0].startsWith("日づけ,"), "1列目は 日づけ（date）");
+  assertTrue(lines[0].includes("周期の はじまりの 日"), "cycle_start が列として出る");
+  assertTrue(lines[1].startsWith("2026-08-01,"), "中身の 1行目は 変わって いない");
   assertTrue(lines[2].includes('"メモ,あり"'), "カンマを含むメモが壊れない");
   assertEqual(entriesToCsv([]), "", "記録が無ければ空文字（空のCSVを作らない）");
 

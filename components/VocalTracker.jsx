@@ -267,7 +267,7 @@ import {
 // 行動ログ。★健康の値を props に入れない歯止めは、このモジュールが持つ。
 import { trackEvent } from "@/lib/events";
 import { buildExportSummary } from "@/lib/exportSummary";
-import { EXPORTED_TABLES, EXPORTED_PROFILE_COLUMNS, entriesToCsv, buildExportPayload, sanitizeShareHistory } from "@/lib/exportData";
+import { EXPORTED_TABLES, EXPORTED_PROFILE_COLUMNS, entriesToCsv, buildExportPayload, sanitizeShareHistory, EXPORT_PROMISE, EXPORT_HEADING_NOTE, EXPORT_FORMAT_NOTE, EXPORT_CONTENT_GROUPS, EXPORT_EXCLUDED } from "@/lib/exportData";
 // 年齢の確認（A-7 の1行目）。★「未成年として扱うか」の判断は、このモジュールだけが持つ。
 //   ここで profile.is_under_18 を直に見ないこと。答えていない人を成人側へ倒してしまう。
 import {
@@ -22814,7 +22814,75 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   <div className="rounded-xl p-3 mb-3" style={{ background: C.paper }}>
                     <p className="text-sm font-medium mb-1">{t("labelExportData")}</p>
                     <p className="text-xs mb-1" style={{ color: C.inkSoft }}>{t("noteExportData")}{mentionsCycleInDataLists(profile) ? t("noteExportDataCycle") : ""}</p>
-                    <p className="text-xs mb-2.5" style={{ color: C.inkSoft }}>{t("noteExportFormats")}</p>
+
+                    {/* ★★形（★見本 `SC['書き出す']` の「形」／裁定 ㋐㋔・2026-09-15）。
+                        ★★見本は［CSV］［JSON］の 札を 出して います。
+                          ★★アプリは 選ばせません。★両方 落ちてきます。
+                          ★★「正解の 無い 選択は 選択では ない」── ★裁定の ことば。
+                            ★両方 無料 なので、★選ばせる 意味が 薄い。
+                          ★★CSV 単体を 求める 声が 出てから 再検討します。
+                        ★★門の 外の 38名の 方も 読みます。★`layoutV2` で 分けて いません。
+                          ★★書き出しは 法で 求められる 道で、★何が 入るかを
+                            ★知らせる 義務は、★門の 内外で 変わりません。 */}
+                    <p className="text-xs font-medium mt-2.5 mb-1" style={{ color: C.inkSoft }}>形</p>
+                    {EXPORT_FORMAT_NOTE.map((line, i) => (
+                      <p key={i} className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.8 }}>{line}</p>
+                    ))}
+
+                    {/* ★★入れるもの（★裁定 ㋑・2026-09-15）。
+                        ★★見本は 5行 ですが、★**19表 すべて** 出します。
+                          ★★一部だけの 一覧は「残りは 含まれない」と 読まれます。
+                          ★★医師に 渡る かも しれない ファイルです。
+                            ★読み手は 中身の 全体を 知る 必要が あります。
+                        ★★一覧は lib/exportData.js が 持ちます。
+                          ★★`EXPORTED_TABLES` と 同じ 一枚 です。
+                            ★表を 足した 人が、★一覧を 直し忘れない ため。
+                          ★★ずれて いないことを、★見張りが 両向きに 数えます。 */}
+                    <p className="text-xs font-medium mt-3 mb-1" style={{ color: C.inkSoft }}>入れるもの</p>
+                    <div className="rounded-xl border overflow-hidden" style={{ borderColor: C.line, background: C.card }}>
+                      {EXPORT_CONTENT_GROUPS.map((g) => (
+                        <div key={g.group}>
+                          <p className="text-xs px-2.5 pt-2 pb-0.5" style={{ color: C.inkSoft }}>{g.group}</p>
+                          {g.items.map((it) => (
+                            // ★★印は 緑に しません（★見本は var(--midori)）。
+                            //   ★★実測の 対比は 2.76 ── ★文字には 足りません（§0-⑦・§5）。
+                            //     ★★読みやすさが 見本の 色に 勝つ、★と 決まって います。
+                            //   ★★`display-prefs` の 見張りが 数えて います。
+                            <div key={it.label} className="flex items-center justify-between px-2.5 py-1.5 text-xs">
+                              <span>{it.label}</span>
+                              <span style={{ color: C.ink }} aria-hidden="true">✓</span>
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* ★★入って いない ものを、★はっきり 書きます（★裁定 ㋑
+                        「含まれないものが あれば 明記」）。
+                        ★★黙って 外すと、★「全部 入って いる」と 読まれます。 */}
+                    <p className="text-xs font-medium mt-3 mb-1" style={{ color: C.inkSoft }}>入って いないもの</p>
+                    <div className="rounded-xl p-2.5" style={{ background: C.paper }}>
+                      {EXPORT_EXCLUDED.map((x) => (
+                        <p key={x.label} className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.8 }}>
+                          ・{x.label}　── {x.why}
+                        </p>
+                      ))}
+                    </div>
+
+                    {/* ★★見出しに ついての 約束（★見本 `.wl`／裁定 ㋒）。
+                        ★★`components/tests/export-headings.test.js` が 緑に なって から
+                          ★出して います（★裁定の 順序）。
+                          ★★守れて いない 約束を 先に 書かない ため です。
+                        ★★中身 ── 67列 すべてに 日本語の 名前を 付け、
+                          ★禁止語（CPPS／score／index／偏差値／点数／スコア）が
+                          ★見出しに 入って いない ことを 毎回 数えます。 */}
+                    <div className="rounded-xl p-2.5 mt-3" style={{ background: C.paper }}>
+                      {EXPORT_HEADING_NOTE.map((line, i) => (
+                        <p key={i} className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.8 }}>{line}</p>
+                      ))}
+                    </div>
+
+                    <p className="text-xs mt-2 mb-2.5" style={{ color: C.inkSoft }}>{t("noteExportFormats")}</p>
                     {exportStatus === "done" && (
                       <p className="text-xs rounded-lg px-2.5 py-1.5 mb-2" style={{ background: "rgba(122,150,109,0.18)", color: C.ink }}>
                         {t("exportDone")}
@@ -22839,6 +22907,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>
                       記録の控えを開く（印刷・PDF）
                     </button>
+
+                    {/* ★★約束（★見本 `SC['書き出す']` の `.note`／裁定 ㋓・2026-09-15）。
+                        ★★「文言だけで なく **実際の 義務として**」── ★裁定の ことば。
+                          ★根拠 GDPR 20条（★持ち運べる 形で 受け取る 権利）
+                              ＋ 12条5項（★そのために 料金を 取らない）。★法務調査済み。
+                        ★★だから これは 飾りでは ありません。★2つの 縛りです ──
+                          ★①「いつでも 無料」… `REQUIRE_SUBSCRIPTION` が true に なっても、
+                             ★書き出しの 道に 門を 置きません。
+                          ★②「退会された あとも」… お手元の ファイルに 期限を 付けず、
+                             ★遠隔で 消しません。
+                        ★★字は lib/exportData.js が 持ちます。★ここに 書き写しません。 */}
+                    <p className="text-xs mt-3" style={{ color: C.inkSoft, lineHeight: 1.8 }}>
+                      {EXPORT_PROMISE}
+                    </p>
                   </div>
                   <button type="button" onClick={() => { setDeleteConfirmText(""); setDeleteStatus("idle"); setActiveTab("deleteAccount1"); }}
                     className="w-full flex items-center justify-between py-2.5 px-1 text-sm mb-1" style={{ color: C.curtain }}>
