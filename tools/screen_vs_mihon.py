@@ -60,6 +60,20 @@ SCREENS = {
   #   ★★作って いるのは 2つ ──
   #     `components/VocalTracker.jsx` … 画面（★`activeTab === "learn"`・:21401）
   #     `lib/learnContent.js`        … 記事・章・職業の 札
+  # ★★退会する（★2026-09-15・もっとの 先 8枚目）。
+  #   ★★見本は `SC['退会']` ── 1つ だけ です（★重複 なし）。
+  #     ★★`SC['やめるとどうなるか']` は **別の 画面** です。
+  #       ★あれは 教室を やめる 話で、★記録は 1つも 消えません。
+  #       ★退会（アカウントを 消す）と 混ぜない こと。
+  #   ★★作って いるのは 2つ ──
+  #     `components/VocalTracker.jsx` … 3枚（deleteAccount1／2／3・:20669〜）
+  #     `lib/accountDeletion.js`      … 消す 表の 一覧・30日・消す 順
+  "退会": {
+    "fn": "退会",
+    "files": ["components/VocalTracker.jsx", "lib/accountDeletion.js"],
+    "words": [],
+    "extra": [],
+  },
   # ★★書き出す（★2026-09-15・もっとの 先 7枚目）。
   #   ★★見本は `SC['書き出す']` ── 1つ だけ です（★重複 なし）。
   #   ★★tools/audit-source.js:67 が 先に 同じ 対応を 書いて います。
