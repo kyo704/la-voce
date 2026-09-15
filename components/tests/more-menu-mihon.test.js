@@ -91,6 +91,22 @@ console.log("\n④ ★門の 外（38人）の もっとを 変えて いない�
     "★注記は 門の 中（layoutV2）だけ");
 }
 
+console.log("\n④-2 ★同意の とりけしは、★もっとから 1段 で 行ける こと");
+
+// ★★2026-09-15、★足しました（★お決め）。
+//   ★★画面は 前から ありました。★入口が プロフィールの 中で、★3段 奥 でした。
+//   ★★きょう 足した 注記「★法律の 行き先を、この 1か所に 集めています。」と
+//     ★食い違って いました。★約束の ほうに 合わせます。
+t(/key: "同意", label: "同意を とりけす"/.test(readCode("lib", "moreMenu.js")),
+  "★「同意を とりけす」の 行が lib に ある");
+t(/if \(r\.key === "同意"\) \{ setActiveTab\("withdrawConsent"\); return; \}/.test(ui),
+  "★押すと withdrawConsent へ 直に 行く");
+// ★★プロフィールの 中の 入口も 残す こと。★2つ あって 困る ものでは ありません。
+t(/setActiveTab\("withdrawConsent"\)/.test(ui)
+  && (ui.match(/setActiveTab\("withdrawConsent"\)/g) || []).length >= 2,
+  "★プロフィールの 中の 入口も 残って いる（★2か所 以上）");
+t(/activeTab === "withdrawConsent"/.test(ui), "★行き先の 画面が ある");
+
 console.log("\n⑤ ★入れて いない もの（★わざと）");
 
 // ★★㋑ は 範囲の 外。★入って いない ことを、★はっきり 残します。

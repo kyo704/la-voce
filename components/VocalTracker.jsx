@@ -21850,6 +21850,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                     //   （★見本 J05・J06 ／ 2026-09-11）。
                                     //   ★もっとの 中に 節を 作りません。★見本が 別画面です。
                                     if (r.key === "もっているもの") { setOwnedOpen(true); return; }
+                                    // ★★同意の とりけしは、★前から ある 1枚へ 直に 行きます
+                                    //   （★2026-09-15・`activeTab === "withdrawConsent"`）。
+                                    //   ★★`moreSection` では ありません。★別の タブ です。
+                                    //   ★★プロフィールの 中の 入口も 残って います。★2つ とも 同じ 先 です。
+                                    if (r.key === "同意") { setActiveTab("withdrawConsent"); return; }
                                     // ★★1枚で 出す ものは、★節を 開きません（★見本の openSheet）。
                                     if (r.sheet) { setRecordSheet(r.key); return; }
                                     if (r.key === "書き出す" || r.key === "退会") setMoreSection("じぶんの記録");
