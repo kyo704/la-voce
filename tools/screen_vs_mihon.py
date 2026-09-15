@@ -60,6 +60,18 @@ SCREENS = {
   #   ★★作って いるのは 2つ ──
   #     `components/VocalTracker.jsx` … 画面（★`activeTab === "learn"`・:21401）
   #     `lib/learnContent.js`        … 記事・章・職業の 札
+  # ★★書き出す（★2026-09-15・もっとの 先 7枚目）。
+  #   ★★見本は `SC['書き出す']` ── 1つ だけ です（★重複 なし）。
+  #   ★★tools/audit-source.js:67 が 先に 同じ 対応を 書いて います。
+  #   ★★作って いるのは 2つ ──
+  #     `components/VocalTracker.jsx` … 画面と 書き出しの 手順（★:10436〜）
+  #     `lib/exportData.js`          … 何を 入れるか の 一覧（★1か所の 決め）
+  "書き出す": {
+    "fn": "書き出す",
+    "files": ["components/VocalTracker.jsx", "lib/exportData.js"],
+    "words": [],
+    "extra": [],
+  },
   # ★★もっているもの（★2026-09-15・もっとの 先 6枚目）。
   #   ★★見本の 名前は `SC['台帳']` です。★「もっているもの」では ありません。
   #     ★★見本 79枚に「もっているもの」という 名の 画面は ありません。
