@@ -49,6 +49,22 @@ SCREENS = {
     "words": [],
     "extra": [],
   },
+  # ★★もっと（★2026-09-15・A群の 棚おろしの 続き）。
+  #   ★★見本は `SC['もっと']` です。★`function` では ありません。
+  #   ★★作って いるのは `components/VocalTracker.jsx` の
+  #     `{activeTab === "more" && (` の 中（★:21797〜）だけ です。
+  #     ★ほかの ファイルは 入れません（★A01 で 3度 まちがえた ところ）。
+  "もっと": {
+    "fn": "もっと",
+    # ★★2026-09-15、★はじめ VocalTracker だけ にして、★8件を「足りない」と 数えました。
+    #   ★★`lib/moreMenu.js` が 行の 決めを 持って います（★:21810 の 注記）。
+    #   ★★A05 の `LookBackPanel.jsx` と、★まったく 同じ 見落とし です。
+    #     ★★「無い ファイルを 入れる」は 止められる ように しました。
+    #       ★「★在る ファイルを 落とす」は、★まだ 止められません。
+    "files": ["components/VocalTracker.jsx", "lib/moreMenu.js"],
+    "words": [],
+    "extra": [],
+  },
   "A05": {
     "fn": "sakanobo",
     "files": ["components/LookBackV2.jsx", "components/LookBackPanel.jsx",
@@ -60,8 +76,29 @@ SCREENS = {
 
 
 def mihon_of(fn):
-  i = RAW.index("function " + fn + "(")
-  return RAW[i:RAW.index("\nfunction ", i + 10)]
+  """★見本の 1画面を 切り出します。
+
+    ★★見本には **2つの 書き方**が あります（★2026-09-15 に 気づきました）。
+      ★① `function narabe(){ … }`      ── A01〜A05 は これ
+      ★② `SC['もっと']=function(){ … }` ── ★もっと・設定・プラン は これ
+    ★★①だけを 見て いたので、★②の 画面は 端から 比べられません でした。
+  """
+  key = "function " + fn + "("
+  if key in RAW:
+    i = RAW.index(key)
+    j = RAW.find("\nfunction ", i + 10)
+    k = RAW.find("\nSC['", i + 10)
+    ends = [x for x in (j, k) if x > 0]
+    return RAW[i:min(ends)] if ends else RAW[i:]
+  key = "SC['" + fn + "']=function()"
+  if key in RAW:
+    i = RAW.index(key)
+    j = RAW.find("\nSC['", i + 10)
+    k = RAW.find("\nSH['", i + 10)
+    m = RAW.find("\nfunction ", i + 10)
+    ends = [x for x in (j, k, m) if x > 0]
+    return RAW[i:min(ends)] if ends else RAW[i:]
+  raise KeyError("★見本に「" + fn + "」が ありません（function / SC[] の どちらでも）")
 
 
 def read_all():
@@ -113,6 +150,14 @@ def main():
   seg = mihon_of(spec["fn"])
   ALL = read_all()
   mine = "\n".join(ALL.get(f, "") for f in spec["files"])
+  # ★★コメントを 外した もの。★③の 検算は こちらで 見ます。
+  #   ★★「書いて ある」と「★画面に 出る」は 別 です。
+  def _strip(t):
+    t = re.sub(r"/\*[\s\S]*?\*/", "", t)
+    t = re.sub(r"(?m)^\s*//.*$", "", t)
+    t = re.sub(r"(?m)^\s*\*.*$", "", t)
+    return t
+  mine_code = "\n".join(_strip(ALL.get(f, "")) for f in spec["files"])
   missing_files = [f for f in spec["files"] if f not in ALL]
 
   words = spec["words"] or jp_strings(seg)
@@ -197,7 +242,13 @@ def main():
     print("　★見て、★差分か どうかを 決めて ください。")
     for t in lost[:20]:
       body = t.rstrip("。")
-      here = "★アプリに あります" if body in mine else "★★アプリに ありません"
+      # ★★2026-09-15、★ここで つまずきました。
+      #   ★「規約が この語で 書かれています。」が「★アプリに あります」と 出ました。
+      #   ★★在ったのは **コメントの 中** でした（VocalTracker.jsx:21803）。
+      #   ★★この 倉庫の 持病です ── 「禁じ語の 検査は、★コメントを 外してから」。
+      #     ★`components/tests/_source.js` が、★同じ 罠で 2度 作られました。
+      #   ★★だから、★コメントを 外した もので 見ます。
+      here = "★アプリに あります" if body in mine_code else "★★アプリに ありません"
       print("　　・%s　── %s" % (t, here))
   else:
     print("　✓ ★拾い残しは ありません")
