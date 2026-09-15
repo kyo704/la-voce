@@ -10164,7 +10164,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [newPasswordInput2, setNewPasswordInput2] = useState("");
   const [passwordBusy, setPasswordBusy] = useState(false);
   const [passwordMsg, setPasswordMsg] = useState("");
-  const [devicePanel, setDevicePanel] = useState(false);
+  // ★★`devicePanel` を 外しました（★2026-09-15・㋒）。
+  //   ★★立てて いましたが、★**読む ところが 1つも ありません** でした。
+  //     ★N-1 の 決まり ──「★書いて いる 値は、必ず どこかで 読まれて いるか」。
+  //   ★★「端末を 見る」の 台帳（API）が できた 日に、★一緒に 戻します（★台帳 ㉚）。
   const [showReissue, setShowReissue] = useState(false); // 控えの出し直し
   // ★★お知らせから、同意の画面へ進んでいる最中か（2026-09-05）。
   //   ★onboarding_completed を false に戻しません。
@@ -10416,9 +10419,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     } else if (action === "password") {
       setPasswordPanel(true);
       setPasswordMsg("");
-    } else if (action === "device") {
-      setDevicePanel(true);
     }
+    // ★★`action === "device"` の 枝を 外しました（★2026-09-15・㋒）。
+    //   ★★呼ぶ ところが 1つも ありません でした。
+    //   ★★戻す ときは、★`setDevicePanel` と 描く ところも 一緒に（★台帳 ㉚）。
   }
 
   // ★★書き出しの前に、★もう一度確かめます（判断-メールを失うこと §4）。
@@ -22935,11 +22939,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         <ListSheet
           title="アカウント"
           rows={ACCOUNT_ROWS.map((label) => {
+            // ★★2026-09-15、★3行 とも 押せる ように しました（★坂本さんの お決め）。
+            //   ★★前は「メールアドレス」が 押せません でした。
+            //     ★わけは「★もっと ＞ アカウント の 欄に すでに ある」。
+            //     ★★けれど、★その 欄に **たどり着けません** でした ──
+            //       ★欄が 出るのは `moreSection === "アカウント"` の ときだけ。
+            //       ★それを 立てるのは `openAccountAction()` 1か所 だけ。
+            //       ★★それを 呼ぶのは `openAccountAction("password")` 1つ だけ。
+            //     ★★つまり、★メールを 変えたい 方は
+            //       ★「パスワードを 変える」を 押さないと 届きません でした。
+            //   ★★`openAccountAction("email")` は、★前から ありました。
+            //     ★仕掛けは 在り、★入口が 無い ── けさ 直した「同意を とりけす」と 同じ 形。
             if (label === "ログアウト") return { label, onClick: handleSignOut };
-            // ★★「パスワードを 変える」だけ、いま 押せます。
-            //   ★★「メールアドレス」「端末を 見る」は、まだ ここから 開けません。
-            //     ★★「メールアドレス」は、もっと ＞ アカウント の 欄に すでに あります。
-            //     ★★「端末を 見る」は、台帳（API）が まだ 無いため、押せません。
+            if (label === "メールアドレス") {
+              return { label, onClick: () => openAccountAction("email") };
+            }
             if (label === "パスワードを 変える") {
               return { label, onClick: () => openAccountAction("password") };
             }
