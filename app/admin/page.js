@@ -145,12 +145,25 @@ export default async function AdminPage() {
   //   ★★呼ぶ 鍵は `createAdminClient()` = `service_role` です（★:63）。
   //     ★だから execute は 通ります。★利用者の 鍵では ありません。
   //
-  //   ★★★まだ 残って いる こと（★Opus の 判断待ち）。
-  //     ★門は この 経路の 中（★:49 の 早い return）に しか ありません。
-  //     ★`auth.uid()` は service_role の 下では null なので、
-  //       ★関数の 中で 本人を 見る には、★呼ぶ側が id を 渡す 形に なります。
-  //     ★★`get_student_entries` と 同じ 形 です。★経路が 変われば 門も 外れます。
-  const { data: entryStats, error: entryStatsError } = await admin.rpc("admin_entry_stats");
+  //   ★★★門を、★経路の 外へ 出しました（★2026-09-15・No.024・裁定 ㋐）。
+  //     ★★前は、★門が この 経路の 早い return（★:49）1か所 だけ でした。
+  //       ★★経路が 変われば、★門も 一緒に 外れます。
+  //       ★★`get_student_entries` と 同じ 形 です。★だから 直しました。
+  //     ★★いま 門は **2枚** あります ──
+  //       ★① この 経路の :49（★呼び手 本人の profiles.is_admin）
+  //       ★② 関数の 中（★渡された p_user_id の profiles.is_admin）
+  //     ★★渡すのは、★:49 で 既に 確かめた **その 人の id** です。
+  //       ★要求の 本文から 取った 値では ありません。★本文を 読んで いません。
+  //     ★★管理者でなければ 関数は **null** を返します（★raise しません）。
+  //       ★下の `statsOk` が それを 受けます。★画面は 白く なりません。
+  //
+  //   ★★㋑（authenticated に execute を 渡して 中で 弾く）は 採りませんでした。
+  //     ★「呼べる 人を 増やしてから 絞る」ことに なるから です。
+  //     ★いまは サーバだけが 呼べます。★それを 手放しません。
+  //
+  //   ★★紙 … supabase/migration_no024_gate_inside_the_function.sql
+  const { data: entryStats, error: entryStatsError } =
+    await admin.rpc("admin_entry_stats", { p_user_id: user.id });
   const { data: feedbackRows } = await admin
     .from("feedback")
     .select("id, email, category, message, created_at")

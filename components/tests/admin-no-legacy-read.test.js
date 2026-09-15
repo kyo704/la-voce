@@ -81,7 +81,12 @@ t(!/\.from\(\s*["']entries["']\s*\)/.test(src), "entries を from して いな�
 t(!/entryRows/.test(src), "古い 逃げ道の 覚え（entryRows）が 無い");
 
 console.log("\n③ 台帳の 関数を 呼んで いること");
-t(/admin\.rpc\(\s*["']admin_entry_stats["']\s*\)/.test(src), "admin_entry_stats を 呼んで いる");
+// ★★2026-09-15、★引数が 増えました（★No.024・裁定 ㋐）。
+//   ★★`admin_entry_stats()` → `admin_entry_stats(p_user_id)`。
+//   ★★門を 経路の 外へ 出す ため です。★関数の 中でも is_admin を 見ます。
+//   ★★渡す id は、★:49 で 既に 確かめた **その 人の id** です。
+t(/admin\.rpc\("admin_entry_stats", \{ p_user_id: user\.id \}\)/.test(src),
+  "admin_entry_stats を、★本人の id を 渡して 呼んで いる");
 // ★★呼ぶ 鍵は service_role です。★関数は service_role にしか 渡して いません。
 t(/createAdminClient\(\)/.test(src), "service_role の 鍵で 呼んで いる");
 

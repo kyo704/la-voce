@@ -57,7 +57,9 @@ console.log("① ★台帳に 数えさせる 道が、★先に あること");
 //
 //   ★★これは 弱く なって いません。★強く なって います。
 //     ★前は「条件つきで 運ぶ」を 許して いました。★いまは 1つも 運びません。
-const rpcAt = admin.indexOf('admin.rpc("admin_entry_stats")');
+// ★★2026-09-15、★引数が 増えました（★No.024・裁定 ㋐）。
+//   ★★門を 経路の 外へ 出しました。★関数の 中でも is_admin を 見ます。
+const rpcAt = admin.indexOf('admin.rpc("admin_entry_stats", { p_user_id: user.id })');
 t(rpcAt > -1, "★admin_entry_stats を 呼んで いる");
 t(admin.indexOf("weight_kg, body_fat_pct, meals") === -1,
   "★古い 道（12列の 取得）が **消えて いる**");
