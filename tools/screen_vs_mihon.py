@@ -54,6 +54,30 @@ SCREENS = {
   #   ★★作って いるのは `components/VocalTracker.jsx` の
   #     `{activeTab === "more" && (` の 中（★:21797〜）だけ です。
   #     ★ほかの ファイルは 入れません（★A01 で 3度 まちがえた ところ）。
+  # ★★学ぶ（★2026-09-15・もっとの 先 5枚目）。
+  #   ★★見本に `SC['学ぶ']` が **2つ** あります。★あとの ほうが 生きて います。
+  #     ★前の ほう（447字）は、★書いて ある だけ で 動きません。
+  #   ★★作って いるのは 2つ ──
+  #     `components/VocalTracker.jsx` … 画面（★`activeTab === "learn"`・:21401）
+  #     `lib/learnContent.js`        … 記事・章・職業の 札
+  "学ぶ": {
+    "fn": "学ぶ",
+    "files": ["components/VocalTracker.jsx", "lib/learnContent.js"],
+    "words": [],
+    "extra": [],
+  },
+  # ★★プラン（★2026-09-15・もっとの 先 4枚目）。
+  #   ★★作って いるのは 2つ ──
+  #     `components/VocalTracker.jsx` … 節そのもの（★`inMore("プラン")`・:22028）
+  #     `lib/freeTier.js`            … 無料と 有料の 線（★GATE_CLOSING_LINES ほか）
+  #   ★★節の 注記が はっきり 書いて います ──
+  #     「★一覧は lib/freeTier.js が 持ちます。★ここに 書き写しません。」
+  "プラン": {
+    "fn": "プラン",
+    "files": ["components/VocalTracker.jsx", "lib/freeTier.js"],
+    "words": [],
+    "extra": [],
+  },
   # ★★アカウント（★2026-09-15・もっとの 先 3枚目）。
   #   ★★見本は `SH['account']` ── ★下から 出る 引き出し です。
   #   ★★作って いるのは 2つ ──
@@ -122,14 +146,21 @@ def mihon_of(fn):
   """
   key = "function " + fn + "("
   if key in RAW:
-    i = RAW.index(key)
+    i = RAW.rindex(key)
     j = RAW.find("\nfunction ", i + 10)
     k = RAW.find("\nSC['", i + 10)
     ends = [x for x in (j, k) if x > 0]
     return RAW[i:min(ends)] if ends else RAW[i:]
+  # ★★同じ 名前が 2度 書いて ある ことが あります（★2026-09-15・「学ぶ」）。
+  #   ★★JavaScript では、★**あとの ほうが 勝ちます**。
+  #     ★前の ものは、★書いて ある だけ で 動きません。
+  #   ★★だから `rindex`（★最後の もの）を 取ります。
+  #     ★★`index` だと、★死んだ ほうと くらべます。
+  #   ★★見本ぜんたいを 数えました ── ★SC[] 77個 中、★重なりは「学ぶ」1つ だけ。
+  #     ★SH[] 22個 には ありません。★ほかの 画面は 影響を 受けません。
   key = "SC['" + fn + "']=function()"
   if key in RAW:
-    i = RAW.index(key)
+    i = RAW.rindex(key)
     j = RAW.find("\nSC['", i + 10)
     k = RAW.find("\nSH['", i + 10)
     m = RAW.find("\nfunction ", i + 10)
@@ -140,7 +171,7 @@ def mihon_of(fn):
   #     ★★見本には 引き出しが 22枚 あります。★どれも この 形 です。
   key = "SH['" + fn + "']=function()"
   if key in RAW:
-    i = RAW.index(key)
+    i = RAW.rindex(key)
     j = RAW.find("\nSH['", i + 10)
     k = RAW.find("\nSC['", i + 10)
     m = RAW.find("\nfunction ", i + 10)

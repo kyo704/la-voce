@@ -278,7 +278,7 @@ import {
   ageBandToProfilePatch, AGE_BANDS
 } from "@/lib/ageGate";
 import HealthInfo from "@/components/HealthInfo";
-import { ARTICLES, CHAPTER_LABELS, PROFESSION_LABELS, getArticlesForProfession, getArticleById } from "@/lib/learnContent";
+import { ARTICLES, CHAPTER_LABELS, PROFESSION_LABELS, getArticlesForProfession, getArticleById, LEARN_CHAPTER_NOTE, LEARN_COMMON_LINES, LEARN_COMMON_BOLD, LEARN_NOTE } from "@/lib/learnContent";
 // 学ぶ画面の勉強の仕組み（§2・§3）。★規則はこのモジュールが持つ。
 import {
   KEY_SENTENCE_HEADING, REFLECTION_PRIVACY_NOTE, PREQUESTION_NOTE,
@@ -21678,6 +21678,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }}>
                     {SELECTABLE_PROFESSIONS.map((p) => <option key={p} value={p}>{PROFESSION_LABELS[p] || t(PROFESSION_LABEL_KEYS[p])}</option>)}
                   </select>
+                  {/* ★★職業の 札の すぐ下（★見本 `SC['学ぶ']` の `.usu`／2026-09-15）。
+                      ★★「章立ては どこも 同じ。中身だけ 入れ替わる」と 先に 言います。
+                        ★職業を 変えると 記事が 入れ替わる ことが、★押す 前に 分かります。
+                      ★★字は lib/learnContent.js が 持ちます。 */}
+                  <p style={{ ...TYPE.usual, color: C.inkSoft, margin: "-6px 0 0", lineHeight: 1.8 }}>
+                    {LEARN_CHAPTER_NOTE}
+                  </p>
                   <input type="text" value={learnSearchQuery} onChange={(e) => setLearnSearchQuery(e.target.value)}
                     placeholder={t("searchArticlesPlaceholder")}
                     className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
@@ -21786,6 +21793,34 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                       <div className="pt-2 border-t" style={{ borderColor: C.line }}>
                         <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>{t("bodyChapterHeading")}</p>
+                        {/* ★★どの 仕事の方にも 出る 章の こと（★見本 `.warn`／2026-09-15）。
+                            ★★見本では、★「からだ（どの 仕事でも）」を 選んだ ときだけ 出ます。
+                              ★★アプリの 職業の 選びは 5つ ── singer／announcer／voice_actor／
+                                pop_musical／other。★「からだ」は **選べません**。
+                              ★★`professions: "all"` の 記事は、★どの 職業でも 出ます。
+                                ★だから、★いつも 出します。★選びに 紐づけません。
+                            ★★2行目が 大事 です（★9月9日の 裁定②）──
+                              ★「授業の前は」「シフトの前は」と **言い換えません**。
+                              ★★設計の 決め です。★飾りでは ありません。 */}
+                        <div className="rounded-xl p-3" style={{ background: C.paper }}>
+                          {LEARN_COMMON_LINES.map((line, i) => {
+                            let rest = line;
+                            const parts = [];
+                            LEARN_COMMON_BOLD.forEach((b) => {
+                              const at = rest.indexOf(b);
+                              if (at < 0) return;
+                              parts.push(rest.slice(0, at));
+                              parts.push(<b key={b}>{b}</b>);
+                              rest = rest.slice(at + b.length);
+                            });
+                            parts.push(rest);
+                            return (
+                              <p key={i} style={{ ...TYPE.note, color: C.ink, margin: i ? "4px 0 0" : 0, lineHeight: 1.85 }}>
+                                {parts}
+                              </p>
+                            );
+                          })}
+                        </div>
                         <div className="rounded-xl border overflow-hidden" style={{ borderColor: C.line }}>
                           {getArticlesForProfession("body").map((a) => (
                             <button key={a.id} type="button" onClick={() => { setViewingArticleId(a.id); fetchArticleNotes(a.id); }}
@@ -21803,6 +21838,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         {t("viewOtherProfessionArticles")}
                         <ChevronRight size={14} />
                       </button>
+
+                      {/* ★★いちばん 下の 注記（★見本 `SC['学ぶ']` の `.note`／2026-09-15）。
+                          ★★最後の 1行が 約束 です ──「読まなくても、アプリは 使えます。」
+                            ★もっと・設定の 注記と 同じ 形 です。
+                          ★★4行目は、★撤回した ACWR の 記事が **無い** ことを 言います。
+                            ★消した ものを 消したと 書いて 残す、★という ところ です。 */}
+                      <div className="pt-2 border-t" style={{ borderColor: C.line }}>
+                        {LEARN_NOTE.map((line, i) => (
+                          <p key={i} style={{ ...TYPE.note, color: C.inkSoft, margin: i ? "3px 0 0" : 0, lineHeight: 1.85 }}>
+                            {line}
+                          </p>
+                        ))}
+                      </div>
                     </>
                   )}
                 </div>
