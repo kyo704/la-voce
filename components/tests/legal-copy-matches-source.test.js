@@ -77,10 +77,36 @@ const PAIRS = [
   }
 ];
 
+// ★★値段を 解いてから くらべます（★2026-09-15）。
+//
+//   ★★`app/legal/tokushoho/page.js` が、★値段を `lib/plans.js` から
+//     ★引く 形に なりました（★坂本さんの お決め）。
+//     ★★画面の 字は `{priceWithTaxOf("monthly")}` です。
+//       ★正の 文の「580円（税込）」とは、★字の 上で 合いません。
+//   ★★だから、★くらべる 前に **解き** ます。
+//     ★★`priceWithTaxOf("monthly")` → 「580円（税込）」
+//   ★★これで、★画面と 正の 文が 合って いる ことを、★これまでどおり 見られます。
+//
+//   ★★★あわせて、★下で **正の 文の 値段**も `plans.js` と 合うかを 見ます。
+//     ★★解くだけ では、★紙だけが 古いまま 残ります。
+//     ★★値段を 変えた とき、★紙も 直す まで 落ちます。★それが 正しい 形 です。
+//       ★法律の 文を 黙って 書き換えては いけません。★人が 決めて 直します。
+const plansSrc = readRaw("lib", "plans.js");
+const PRICES = {};
+for (const blk of plansSrc.match(/\{[^{}]*priceYen[^{}]*\}/g) || []) {
+  const k = blk.match(/key: "(\w+)"/);
+  const y = blk.match(/priceYen: (\d+)/);
+  if (k && y) PRICES[k[1]] = Number(y[1]).toLocaleString("ja-JP") + "円（税込）";
+}
+function resolvePrices(t) {
+  return String(t).replace(/\{priceWithTaxOf\("(\w+)"\)\}/g,
+    (m, k) => PRICES[k] || m);
+}
+
 for (const p of PAIRS) {
   console.log("\n■ " + p.name);
   const md = readRaw(...p.md);
-  const page = squash(readRaw(...p.page));
+  const page = squash(resolvePrices(readRaw(...p.page)));
   const sec = section(md, p.heading);
   if (!sec) {
     ok(`★正の中に「${p.heading}」がある`, false);
@@ -92,6 +118,21 @@ for (const p of PAIRS) {
   // ★★1行でも欠けたら、★そこが「直し忘れ」です。
   ok(`★正の行が、すべて画面に在る${missing.length ? "（★欠け: " + missing.slice(0, 3).join(" ／ ") + "）" : ""}`,
     missing.length === 0);
+}
+
+console.log("\n■ ★★正の 文の 値段が、lib/plans.js と 合っていること（2026-09-15）");
+{
+  // ★★画面は plans.js から 引く ように なりました。
+  //   ★★けれど、★正の 文（md）は 手で 書いて あります。
+  //   ★★値段を 変えた とき、★紙だけが 古いまま 残る ことが あり得ます。
+  //     ★★`components/CountV2.jsx` が、★まさに それでした（★5,800円）。
+  //   ★★だから、★紙の ほうも 見ます。
+  const md = readRaw("docs", "legal", "tokushoho-ja-2026-09-v1.md");
+  ok("★plans.js から 値段を 読めた（" + Object.keys(PRICES).join(" / ") + "）",
+    Object.keys(PRICES).length >= 2);
+  for (const [k, label] of Object.entries(PRICES)) {
+    ok(`★正の 文に「${label}」が ある（${k}）`, squash(md).includes(squash(label)));
+  }
 }
 
 console.log("\n■ ★★第7条（免責）── 消費者契約法の急所（2026-09-05）");

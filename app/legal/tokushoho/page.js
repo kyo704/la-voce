@@ -1,4 +1,5 @@
 import { C } from "@/lib/tokens";
+import { priceWithTaxOf } from "@/lib/plans";
 
 // ============================================================================
 // 特定商取引法に基づく表記（tokushoho-ja-2026-09-v1）
@@ -63,8 +64,18 @@ export default function TokushohoPage() {
       <hr style={hr} />
       <h2 style={h2}>販売価格</h2>
       <div className="legal-list" style={list}>
-        <p style={li}>月額プラン　　580円（税込）</p>
-        <p style={li}>年額プラン　　4,800円（税込）　18歳以上の方のみ</p>
+        {/* ★★値段は lib/plans.js が 持ちます（★2026-09-15・坂本さんの お決め）。
+            ★★ここに 直に 書いて いました。★いまは 値が 合って いましたが、
+              ★★`components/CountV2.jsx` は 合って いません でした（★5,800円）。
+              ★★同じ 形が、★いちばん 誤っては いけない 紙にも ありました。
+            ★★法律の 文としての 正しさを、★手で 直す ことに 頼りません。
+            ★★正の 文（docs/legal/tokushoho-ja-2026-09-v1.md）との 突き合わせは、
+              ★`components/tests/legal-copy-matches-source.test.js` が 見て います。
+              ★★その 見張りも、★値段を lib/plans.js から 解いて くらべます。
+              ★★あわせて、★**正の 文の 値段**も plans.js と 合うかを 見ます。
+                ★★そう しないと、★紙だけが 古いまま 残ります。 */}
+        <p style={li}>月額プラン　　{priceWithTaxOf("monthly")}</p>
+        <p style={li}>年額プラン　　{priceWithTaxOf("annual")}　18歳以上の方のみ</p>
         {/* ★★2026-09-07、★「よそおい 月1点」→「よそおい・おうちのもの から、毎月1点」。
             ★お店には、★羊の装いと、★おうちの道具の両方があります。
             ★装いだけ、と読めると、★書いてあることと ちがいます（§4）。 */}
