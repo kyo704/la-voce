@@ -60,6 +60,23 @@ SCREENS = {
   #   ★★作って いるのは 2つ ──
   #     `components/VocalTracker.jsx` … 画面（★`activeTab === "learn"`・:21401）
   #     `lib/learnContent.js`        … 記事・章・職業の 札
+  # ★★もっているもの（★2026-09-15・もっとの 先 6枚目）。
+  #   ★★見本の 名前は `SC['台帳']` です。★「もっているもの」では ありません。
+  #     ★★見本 79枚に「もっているもの」という 名の 画面は ありません。
+  #       ★アプリの 中の 呼び名 です（★もっと の 行の 札）。
+  #     ★★tools/audit-source.js:61 が 先に 同じ 対応を 書いて います
+  #       （★"SC-台帳" → OwnedLedger.jsx ／ lib/itemLedger.js）。
+  #   ★★作って いるのは 3つ ──
+  #     `components/OwnedLedger.jsx` … 1枚 そのもの
+  #     `lib/itemLedger.js`          … 台帳の 決め（★どこから 来たか の 言い方）
+  #     `components/VocalTracker.jsx`… 開く 道（★`ownedOpen`・:23021）と 読み込み
+  "もっているもの": {
+    "fn": "台帳",
+    "files": ["components/OwnedLedger.jsx", "lib/itemLedger.js",
+              "components/VocalTracker.jsx"],
+    "words": [],
+    "extra": [],
+  },
   "学ぶ": {
     "fn": "学ぶ",
     "files": ["components/VocalTracker.jsx", "lib/learnContent.js"],
