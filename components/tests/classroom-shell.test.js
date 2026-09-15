@@ -97,9 +97,10 @@ const b64 = (...p) => "data:text/javascript;base64," + Buffer.from(
   console.log("    ★殻の 中の select: " + shellSelects.length + " 件");
   // ★★2026-09-15、★「近い 行事」を 足したので 3つに なりました。
   //   ★★レッスンの 2つ ＋ 行事の 1つ。★増えたら ここも 直して ください。
-  t(shellSelects.length === 3, "殻の 中の select は ちょうど 3つ（★レッスン2・行事1）");
+  // ★★2026-09-15、★3つ そろいました ── ★レッスン2・行事1・連絡1。
+  t(shellSelects.length === 4, "殻の 中の select は ちょうど 4つ（★レッスン2・行事1・連絡1）");
   shellSelects.forEach((sel, i) => {
-    t(/LESSON_COLUMNS|EVENT_COLUMNS/.test(sel), (i + 1) + "つ目の select が 列を 名前で 並べて いる");
+    t(/LESSON_COLUMNS|EVENT_COLUMNS|MESSAGE_COLUMNS/.test(sel), (i + 1) + "つ目の select が 列を 名前で 並べて いる");
     t(!/["'`]\s*\*\s*["'`]/.test(sel), (i + 1) + "つ目の select が * では ない");
   });
   t(!S.LESSON_COLUMNS.includes("*"), "LESSON_COLUMNS に * が ない");
@@ -133,10 +134,8 @@ const b64 = (...p) => "data:text/javascript;base64," + Buffer.from(
   // ★★「近い 行事」と「先生からの 連絡」は、★まだ 作って いません。
   //   ★★だから 引きません。★読まれない 値を 運ばない ── No.019.5 と 同じ 決め。
   //   ★★見るのは 殻の 中だけ です（★④ と 同じ わけ）。
-  // ★★「先生からの 連絡」は まだ 作って いません。★だから 引きません。
-  t(!/from\("org_messages"\)/.test(shell), "殻が org_messages を まだ 引いて いない");
-  t(!/MESSAGE_COLUMNS|recentMessages|EMPTY_TEXT/.test(vt),
-    "まだ 使わない 名前を 読み込んで いない");
+  t(/from\("org_messages"\)/.test(shell), "連絡を 引いて いる");
+  t(!/EMPTY_TEXT/.test(vt), "まだ 使わない 名前を 読み込んで いない");
 
   console.log("\n⑥-2 ★近い 行事（★2026-09-15）");
   // ★★読むだけ です。★「出ます」の 印を つける 道を 置いて いません。
@@ -154,6 +153,22 @@ const b64 = (...p) => "data:text/javascript;base64," + Buffer.from(
   t(!/myTimetable|weekday|cellKey/.test(shellSrc), "★曜日×コマ の しくみに 触れて いない");
   // ★★1件も 無ければ 節ごと 出さない こと。
   t(/if \(soon\.length === 0\) return null;/.test(vt), "1件も 無ければ 節を 出さない");
+
+  console.log("\n⑥-3 ★先生からの 連絡（★2026-09-15）");
+  // ★★★v1 では 既読を 書きません。★これが この 節の 芯 です。
+  //   ★★「読んだ か」を 集め 始めると、
+  //     ★「読んで いない 人」を 数えられる ように なります。
+  //   ★★この 家に、★そういう ものは 置きません。
+  // ★★★ここで 3度目 です ── ★`vt`（ファイル 全体）で 見て いました。
+  //   ★★`org_message_reads` は、★先生・事務の 画面が 前から 使って います
+  //     （★:9942・:9950）。★殻の 話では ありません。
+  //   ★★見るのは **殻の 中**だけ です。
+  //   ★★語を 数えると、★関わりの ない 正しい コードが 落ちます。
+  //     ★落ちない ものは 直されません。★見張りが 嘘に なります。
+  t(!/org_message_reads/.test(shell), "★殻が org_message_reads に 触れて いない");
+  t(/recentMessages\(/.test(vt), "連絡を 出して いる");
+  t(!/未読|既読/.test(shellSrc), "★「未読」「既読」と 書いて いない");
+  t(/if \(recent\.length === 0\) return null;/.test(vt), "1件も 無ければ 節を 出さない");
 
   console.log("\n⑦ ★実際に 動かして みる");
   const now = new Date("2026-09-15T10:00:00Z");
@@ -198,6 +213,22 @@ const b64 = (...p) => "data:text/javascript;base64," + Buffer.from(
   t(S.eventMoved({ event_date: "2026-09-20", previous_date: "2026-09-18" }) === "9月18日 から 変わりました",
     "日づけが 変わった ことを 言う");
   t(S.eventMoved({ event_date: "2026-09-20" }) === "", "変わって いなければ 何も 言わない");
+
+  console.log("\n⑦-3 ★連絡も 動かして みる");
+  const msgs = [
+    { id: 1, body: "あ", created_at: "2026-09-10T00:00:00Z" },
+    { id: 2, body: "い", created_at: "2026-09-14T00:00:00Z" },
+    { id: 3, body: "う", created_at: "2026-09-13T00:00:00Z", withdrawn_at: "x" },
+    { id: 4, body: "", created_at: "2026-09-15T00:00:00Z" },
+    { id: 5, body: "え", created_at: "2026-09-12T00:00:00Z" }
+  ];
+  const got = S.recentMessages(msgs, 3);
+  t(got.map((r) => r.id).join(",") === "2,5,1", "★新しい 順（★取り消しと 空を 外す）");
+  t(!got.some((r) => r.id === 3), "取り消された ものを 出さない");
+  t(!got.some((r) => r.id === 4), "中身の 無い ものを 出さない");
+  t(S.recentMessages([], 3).length === 0, "1件も 無ければ 空");
+  t(S.recentMessages(null, 3).length === 0, "null が 来ても 落ちない");
+  t(S.recentMessages(msgs, 1).length === 1, "数を 絞れる");
 
   console.log("\n⑧ 1件も 無い ときは、★節ごと 出さないこと");
   // ★★教室に 通って いない 方に、★空の 札を 見せません。

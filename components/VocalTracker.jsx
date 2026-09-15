@@ -245,13 +245,14 @@ import { graceDaysLeft, GRACE_PERIOD_DAYS, LOST_ON_DELETE, NO_RETENTION_NOTE, NO
 //     ★lib/classroomShell.js に 在りますが、★まだ 読み込みません。
 //     ★★読み込むだけ の 名前を 置かない ため です（★N-1）。
 //     ★★節を 作る ときに、★ここに 足して ください。
-// ★★いまは「次の レッスン」と「近い 行事」です。
-//   ★★`MESSAGE_*` / `recentMessages` は lib に 在りますが、★まだ 読み込みません。
-//     ★読み込むだけ の 名前を 置かない ため です（★N-1）。
-//     ★★「先生からの 連絡」を 作る ときに、★ここに 足して ください。
+// ★★3つ そろいました（★2026-09-15）──
+//   ★次の レッスン ／ 近い 行事 ／ 先生からの 連絡。
+//   ★★どれも 読むだけ です。★v1 では 既読も 書きません。
 import {
-  LESSON_COLUMNS, EVENT_COLUMNS, LESSON_FETCH_LIMIT, EVENT_SHOW_LIMIT,
-  mergeLessons, nextLesson, upcomingEvents, eventDateLabel, eventMoved,
+  LESSON_COLUMNS, EVENT_COLUMNS, MESSAGE_COLUMNS,
+  LESSON_FETCH_LIMIT, EVENT_SHOW_LIMIT, MESSAGE_SHOW_LIMIT,
+  mergeLessons, nextLesson, upcomingEvents, recentMessages,
+  eventDateLabel, eventMoved,
   SECTION_TITLES, EVENT_NOTE
 } from "@/lib/classroomShell";
 import { representativeActivityKind, MULTI_ACTIVITY_LEGEND_NOTE } from "@/lib/activityPrecedence";
@@ -7468,12 +7469,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       const supabase = createClient();
       // ★★`select("*")` に しません。★RLS は 行を 隠しますが、★列は 隠しません。
       //   ★出す ものだけを 名前で 並べます（★lib/classroomShell.js）。
-      // ★★「先生からの 連絡」は まだ 作って いません。★だから 引きません。
-      //   ★★出さない ものを 引きません ── ★読まれない 値を 運ばない（★N-1）。
-      //   ★★No.019.5 で 消したのも、★同じ 形でした ──
-      //     ★取って、★数えて、★捨てて いました。
-      //   ★★節を 作る ときに、★ここに 足して ください（★`MESSAGE_COLUMNS`）。
-      const [byStudent, byLink, events] = await Promise.all([
+      // ★★3つ 引きます。★どれも 読むだけ です。
+      //   ★★引くのは、★出す ものだけ です ── ★読まれない 値を 運ばない（★N-1）。
+      //     ★No.019.5 で 消したのも、★同じ 形でした ──
+      //       ★取って、★数えて、★捨てて いました。
+      const [byStudent, byLink, events, messages] = await Promise.all([
         // ① 教室の レッスン（★org_id あり・student_id で 当たる）
         supabase.from("lessons").select(LESSON_COLUMNS)
           .eq("student_id", userId)
@@ -7491,7 +7491,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         //     ★行は 消えて いません（★`withdrawn_at`）。
         supabase.from("org_events").select(EVENT_COLUMNS)
           .gte("event_date", realTodayDate)
-          .order("event_date", { ascending: true }).limit(50)
+          .order("event_date", { ascending: true }).limit(50),
+        // ④ 先生からの 連絡（★2026-09-15）。
+        //   ★★絞りは RLS が します ── `org_messages_select` が、
+        //     ★`assignments`（受け持ち・ended_at is null）か
+        //     ★`teacher_id` か、★owner/admin の どれかで 見ます。
+        //     ★★だから `.eq(...)` を 書きません。★書くと 取りこぼします。
+        //   ★★★既読を 書きません（★v1）。`org_message_reads` に 触れません。
+        //     ★★読んだ ことを 台帳に 残すのは、★次の 話 です。
+        //     ★★「読んだ か どうか」を 集め 始めると、
+        //       ★「読んで いない 人」を 数えられる ように なります。
+        //       ★この 家に、★そういう ものは 置きません。
+        supabase.from("org_messages").select(MESSAGE_COLUMNS)
+          .order("created_at", { ascending: false }).limit(20)
       ]);
       if (!alive) return;
       // ★★「取れなかった」と「0件」を 分けて 持ちます。
@@ -7502,7 +7514,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         lessons: mergeLessons(byStudent.data, byLink.data),
         lessonsOk: !byStudent.error || !byLink.error,
         events: events.data || [],
-        eventsOk: !events.error
+        eventsOk: !events.error,
+        messages: messages.data || [],
+        messagesOk: !messages.error
       });
     })();
     return () => { alive = false; };
@@ -14845,6 +14859,41 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               {layoutV2 && classroom && !classroom.eventsOk && (
                 <p className="text-xs" style={{ color: C.inkSoft }}>
                   {SECTION_TITLES.event}は、いま 読めませんでした。
+                </p>
+              )}
+
+              {/* ★★★生徒の 教室の 殻 ──「先生からの 連絡」（★§6-2・2026-09-15）。
+                  ★★★読むだけ です（★裁定「read-only in v1」）。
+                    ★★`org_message_reads` に **触れません**。
+                    ★★読んだ ことを 台帳に 残すのは、★次の 話 です。
+                      ★★「読んだ か」を 集め 始めると、
+                        ★「読んで いない 人」を 数えられる ように なります。
+                        ★この 家に、★そういう ものは 置きません。
+                  ★★取り消された ものは 出しません（★`withdrawn_at`）。
+                    ★★行は 残って います（★見本② ──「静かに 1行 残ります」）。
+                    ★★v1 では、★その 1行を まだ 出しません。★読むだけ の 節 だから です。
+                  ★★新しい 順に 3つまで。★「未読 2件」と 数えません。
+                  ★★1件も 無い ときは、★節ごと 出しません。 */}
+              {layoutV2 && classroom && classroom.messagesOk && (() => {
+                const recent = recentMessages(classroom.messages, MESSAGE_SHOW_LIMIT);
+                if (recent.length === 0) return null;
+                return (
+                  <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                    <p className="text-xs font-medium mb-1.5" style={{ color: C.inkSoft }}>
+                      {SECTION_TITLES.message}
+                    </p>
+                    {recent.map((msg, i) => (
+                      <p key={msg.id || i} className="text-sm"
+                        style={{ margin: i ? "8px 0 0" : 0, lineHeight: 1.85, whiteSpace: "pre-wrap" }}>
+                        {msg.body}
+                      </p>
+                    ))}
+                  </div>
+                );
+              })()}
+              {layoutV2 && classroom && !classroom.messagesOk && (
+                <p className="text-xs" style={{ color: C.inkSoft }}>
+                  {SECTION_TITLES.message}は、いま 読めませんでした。
                 </p>
               )}
 
