@@ -22051,7 +22051,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   <div>
                     <ScreenHead title="もっと" />
                     {moreSections({
-                      hasOrgRole: myOrgs.some((mm) => mayEnterOps(mm.role))
+                      hasOrgRole: myOrgs.some((mm) => mayEnterOps(mm.role)),
+                      // ★★生徒を 招待する（★2026-09-15・裁定 ㋒）。
+                      //   ★★見るのは これ 1つ だけ です。
+                      //     ★`activeTab` も `lessonRole` も 条件に しません。
+                      //     ★★あの 2つが、★入口を 閉じて いた 当の もの です。
+                      canInvite: canSeeBetaFeatures(profile)
                     }).map((sec) => (
                       <div key={sec.group || "top"}>
                         {sec.group ? <H3>{sec.group}</H3> : null}
@@ -22081,6 +22086,24 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                     //   ★★`moreSection` では ありません。★別の タブ です。
                                     //   ★★プロフィールの 中の 入口も 残って います。★2つ とも 同じ 先 です。
                                     if (r.key === "同意") { setActiveTab("withdrawConsent"); return; }
+                                    // ★★生徒を 招待する（★2026-09-15・裁定 ㋒／No.025）。
+                                    //   ★★しくみは 壊れて いませんでした。★道だけが 無く なって いました。
+                                    //     ★`handleGenerateTeacherInvite` も、
+                                    //       `teacher_invitations` への insert も、★前から あります。
+                                    //   ★★行き先は、★その 前から ある 札の ある ところ です ──
+                                    //     ★レッスンの 画面の「教える」側。
+                                    //   ★★`lessonRole` を ここで **立てます**。
+                                    //     ★★既定は「教える」ですが（★`resolveLessonRole`）、
+                                    //       ★一度 「習う」を 選んだ 方は そのまま です。
+                                    //       ★★招待を 押した のに 習う側が 出るのは おかしい。
+                                    //   ★★門の 中の 帯に レッスンは ありません。
+                                    //     ★★けれど `activeTab` を 立てれば 画面は 出ます
+                                    //       （★消えて いません。★帯から 外れて いるだけ です）。
+                                    if (r.key === "招待") {
+                                      setLessonRoleChoice("teach");
+                                      setActiveTab("lesson");
+                                      return;
+                                    }
                                     // ★★1枚で 出す ものは、★節を 開きません（★見本の openSheet）。
                                     if (r.sheet) { setRecordSheet(r.key); return; }
                                     if (r.key === "書き出す" || r.key === "退会") setMoreSection("じぶんの記録");

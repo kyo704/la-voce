@@ -86,9 +86,17 @@ console.log("\n④ ★門の 外（38人）の もっとを 変えて いない�
   //   ★★探すのは `MORE_NOTE.map` です。★1つ しか ありません。
   const at = ui.indexOf("MORE_NOTE.map");
   t(at > 0, "★注記を 描く ところが ある");
-  const head = ui.slice(Math.max(0, at - 3000), at);
-  t(/layoutV2 && moreSection === null/.test(head),
-    "★注記は 門の 中（layoutV2）だけ");
+  // ★★★2026-09-15、★ここも まちがえて いました。
+  //   ★★`at - 3000` と、★**目分量の 距離**で 見て いました。
+  //     ★★行が 1つ 増えただけで 落ちます（★招待の 行を 足したら 落ちました）。
+  //     ★★距離は 足場に なりません。★同じ 形を きょう 2度 踏みました。
+  //   ★★見るのは「いちばん 近い 枝が どれか」です。★距離では ありません。
+  const branchAt = ui.lastIndexOf("layoutV2 && moreSection === null", at);
+  t(branchAt > -1 && branchAt < at, "★注記は 門の 中（layoutV2）だけ");
+  // ★★その 枝と 注記の あいだに、★別の 枝が 始まって いないこと。
+  //   ★★入れ子が 増えた ときに、★上の 1本だけ だと 気づけません。
+  const between = ui.slice(branchAt, at);
+  t(!/\}\s*\) : \(/.test(between), "★その 枝の 中に ある（★途中で 別の 枝に 移って いない）");
 }
 
 console.log("\n④-2 ★同意の とりけしは、★もっとから 1段 で 行ける こと");
