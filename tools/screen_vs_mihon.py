@@ -191,12 +191,19 @@ def main():
   print("　★見る ファイル: " + ", ".join(spec["files"]))
   print()
   print("① 見本の 字（★機械で 抜きました・" + str(len(words)) + "語）")
+  # ★★2026-09-15、★ここで つまずきました。★**私の コメント**を 数えて いました。
+  #   ★★「設定」を 直した あと、★足して いない はずの
+  #     「ダークモード」「羊の 動き」が ★✓ に なりました。
+  #   ★★在ったのは、★私が 書いた **注記の 中** でした ──
+  #     「★ダークモード … 台帳 ⑯」のような 説明 です。
+  #   ★★③（検算）は 先に 直して いました。★①が 残って いました。
+  #   ★★同じ 罠に、★1日で 2度 かかりました。
   miss = []
   for w in words:
-    if w in mine:
+    if w in mine_code:
       print("  ✓ " + w[:46])
     else:
-      elsewhere = [k for k, v in ALL.items() if w in v]
+      elsewhere = [k for k, v in ALL.items() if w in _strip(v)]
       miss.append((w, elsewhere))
       print("  ✗ " + w[:46]
             + ("　（ほかの 画面には: " + elsewhere[0] + "）" if elsewhere else ""))

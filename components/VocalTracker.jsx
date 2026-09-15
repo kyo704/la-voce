@@ -64,7 +64,8 @@ import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q, NARRATIVE_MIN_N_PER
   effectStateOf, mayShowEffectNumbers, EFFECT_SHOWN, EFFECT_WAITING } from "@/lib/displayGates";
 import { SCALES, DEFAULT_SCALE, SCALE_LABELS, SCALE_SAMPLE, normalizeScale,
   scaleAttribute, isSimpleDisplay, UNDO_WINDOW_MS, ACTIONABLE_ERROR_KEY,
-  INSTALL_STEPS, INSTALL_LATER_NOTE, INSTALL_LATER_LABEL, shouldShowInstallGuide } from "@/lib/displayPrefs";
+  INSTALL_STEPS, INSTALL_LATER_NOTE, INSTALL_LATER_LABEL, shouldShowInstallGuide,
+  SCALE_NOTE, SCALE_NOTE_BOLD, SETTINGS_NOTE} from "@/lib/displayPrefs";
 // ★★どの機械かを決めるのは、lib/platform.js の1か所だけです（2026-09-05）。
 //   ★画面の側で「beforeinstallprompt が来たから Android」と決めていました。
 //   ★★それはパソコンにも来ます。★パソコンの方に手順が出ていました。
@@ -20256,6 +20257,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             {activeTab === "profile" && (
               <div className="space-y-5 pb-32">
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.line }}>
+                  {/* ★★もっとへ 戻る 道（★2026-09-15・足し忘れの 直し）。
+                      ★★この 画面へ 来る 道は、★設定の 中の ボタン **1つだけ** です
+                        （★`TABS_V2` に `profile` は ありません）。
+                      ★★なのに、★戻る 道が ありません でした（★節 330行に 0件）。
+                      ★★行き止まりでは ありません ── 下の 帯は 出ます。
+                        ★けれど「もっとへ 戻る」道が 無く、★質問票には あります。
+                        ★★形が そろって いません でした。
+                      ★★字も 形も、★質問票の ものに そろえて います。 */}
+                  <button type="button" onClick={() => setActiveTab("more")}
+                    className="flex items-center gap-1 text-sm font-medium mb-2" style={{ color: C.inkSoft }}>
+                    <ChevronLeft size={16} />戻る
+                  </button>
                   <h2 className="ff-display italic text-xl mb-1">{t("titleProfileSettings")}</h2>
                   <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteProfileSettings")}</p>
                 </div>
@@ -21920,6 +21933,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ★★言語を 選ぶ 口が、★そこにしか ありませんでした。
                       ★★先に ここへ 移します。★道を 消してから 作りません。
                     ★門の外の方は、★上の 帯からも 選べます。★両方 効きます。 */}
+                {/* ★★見本の h3「そのほか」（★2026-09-15）。
+                    ★★見本では、★ダークモード／羊の 動き／お知らせ／ことば の
+                      ★4つを まとめる 見出し です。
+                    ★★いま その うち **ことば だけ**が あります。
+                      ★ダークモード … 台帳 ⑯（★9/15 の あと）
+                      ★羊の 動き　　 … 新しい 機能・範囲の 外
+                      ★お知らせ　　 … 現状維持（★お決め）
+                    ★★だから、★いまは 薄い かたまり です。★足りたら 厚く なります。 */}
+                {layoutV2 ? (
+                  <div style={{ display: inMore("設定") }}>
+                    <H3>そのほか</H3>
+                  </div>
+                ) : null}
                 {layoutV2 ? (
                   <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
                     <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("languageLabel")}</p>
@@ -22110,6 +22136,29 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       {isSimpleDisplay(profile) ? "オン" : "オフ"}
                     </button>
                   </div>
+                  {/* ★★文字の 大きさの 下の 2行（★見本 `SC['設定']` の `.wl`／2026-09-15）。
+                      ★★どちらも **約束** です ──
+                        ★大きくしても 押せる 大きさは 崩れない
+                        ★先生・事務の 方も 同じ 設定で 働く
+                      ★★字は lib/displayPrefs.js が 持ちます。★ここで 書きません。
+                      ★★44 という 数は lib/uiKit.js が 持ちます。★2か所を 見て ください。 */}
+                  <p className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.8, marginTop: 10 }}>
+                    {SCALE_NOTE.map((line, i) => {
+                      const at = line.indexOf(SCALE_NOTE_BOLD);
+                      return (
+                        <span key={i}>
+                          {i > 0 ? <br /> : null}
+                          {at < 0 ? line : (
+                            <>
+                              {line.slice(0, at)}
+                              <b style={{ color: C.ink }}>{SCALE_NOTE_BOLD}</b>
+                              {line.slice(at + SCALE_NOTE_BOLD.length)}
+                            </>
+                          )}
+                        </span>
+                      );
+                    })}
+                  </p>
                 </div>
 
                 <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
@@ -22708,6 +22757,22 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </label>
                   </div>
                 )}
+
+                {/* ★★設定の いちばん 下の 注記（★見本 `SC['設定']` の 最後の `.note`）。
+                    ★★見本は 2行 です。★いま 出すのは **1行 だけ** です。
+                      ★★2行目「羊の 動きは、酔う方の ために 止められます。」は、
+                        ★その スイッチが **まだ ありません**（★⑦ は 範囲の 外）。
+                      ★★無い ものの わけを 書くと、★**嘘に なります**。
+                        ★読んだ 方が 探して、★見つかりません。
+                      ★★スイッチが 入った 日に、★lib の SETTINGS_NOTE へ 足します。 */}
+                {layoutV2 ? (
+                  <p className="text-xs" style={{ display: inMore("設定"), color: C.inkSoft,
+                    lineHeight: 1.9, margin: "2px 2px 10px" }}>
+                    {SETTINGS_NOTE.map((line, i) => (
+                      <span key={i}>{i > 0 ? <br /> : null}{line}</span>
+                    ))}
+                  </p>
+                ) : null}
 
                 {/* 配信と更新の確認.md §2: ★もっとのいちばん下に、小さく版を出す。
                     利用者への説明は要りません。★私たちが「古い画面を見ている」ことを
