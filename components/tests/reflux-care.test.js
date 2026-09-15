@@ -116,7 +116,11 @@ function ok(name, cond, extra) {
   ok("★言い換えたことが、書いてある",
     /食事と夜の習慣の分析に使います/.test(consentLib));
   ok("もとからある4つの目的が、残っている",
-    ["health.record", "health.cycle", "health.meal_sleep", "research.anonymized"]
+    // ★★2026-09-15、★`research.anonymized` を 外しました（★No.027）。
+    //   ★★どこからも 読まれて いない 定義 でした（★N-1違反）。
+    //   ★★本当の 同意は `profiles.consent_stats_use_at` に 入って いました。
+    //   ★★裁定 その27／その45 が 退けた もの です。
+    ["health.record", "health.cycle", "health.meal_sleep"]
       .every((k) => consentLib.includes(`key: "${k}"`)));
 
   console.log("■ 画面と、行のやり取り");

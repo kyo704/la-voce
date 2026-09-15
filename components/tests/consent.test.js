@@ -31,13 +31,32 @@ async function main() {
   assertTrue(C.CONSENT_PURPOSES.length >= 3, `目的が複数ある（${C.CONSENT_PURPOSES.length}個）`);
   const keys = C.CONSENT_PURPOSES.map((p) => p.key);
   assertEqual(new Set(keys).size, keys.length, "鍵が重複していない");
-  assertTrue(keys.includes("research.anonymized"), "研究利用が独立した目的になっている");
+  // ★★★2026-09-15、★ここを 書き直しました（★No.027・裁定 その27／その45）。
+  //   ★★前は「研究利用が 独立した 目的に なって いる」ことを 見て いました。
+  //     ★★その とおりでした ── ★**紙の 上では**。
+  //   ★★実際には、★`research.anonymized` は ★どこからも 読まれて いませんでした。
+  //     ★`consent_records` に 入るのは `health.record` と `health.reflux_care` だけ。
+  //     ★本当の 同意は `profiles.consent_stats_use_at` に 入って いました。
+  //   ★★この 見張りは、★**在ること**を 見て いました。
+  //     ★★「使われて いること」は 見て いません でした。★だから 通り続けました。
+  //   ★★いまは 逆を 見ます ── ★**戻って いないこと**。
+  assertTrue(!keys.includes("research.anonymized"),
+    "★研究利用の 目的が 戻って いない（★No.027 で 消しました）");
+  // ★★消した ものが 書かれて いない ことも 見ます。
+  //   ★★定義だけ 消して、★どこかが 書いて いたら 意味が ありません。
+  {
+    const vt = readCode("components", "VocalTracker.jsx");
+    assertTrue(!/purposeKey:\s*"research\.anonymized"/.test(vt),
+      "★consent_records に 書いて いない");
+  }
   assertTrue(keys.includes("health.cycle"), "周期が独立した目的になっている");
   // ★1つにまとめると、何に同意したのか答えられなくなる
   assertTrue(C.OPTIONAL_PURPOSE_KEYS.length >= 2, "任意の目的が複数ある（1つに束ねていない）");
 
   console.log("\n=== ★既定でオンにしない ===");
-  assertEqual(C.isGranted([], "research.anonymized"), false, "記録が無ければ、同意していない");
+  // ★★鍵は 何でも かまいません。★見て いるのは `isGranted` の 動き です。
+  //   ★★`research.anonymized` は 消したので、★生きて いる 鍵で 試します。
+  assertEqual(C.isGranted([], "health.cycle"), false, "記録が無ければ、同意していない");
   assertEqual(C.isGranted([], "health.record"), false, "必須の目的も、既定ではオンでない");
 
   console.log("\n=== ★撤回しても行を消さない（§3-2） ===");
@@ -46,11 +65,11 @@ async function main() {
   assertTrue(/for update using \(auth\.uid\(\) = user_id\)/.test(sqlCode), "撤回のための update は許す");
   // 同意 → 撤回 → 再同意 が正しく読めること
   const rows = [
-    { purpose_key: "research.anonymized", granted_at: "2026-01-01", withdrawn_at: "2026-02-01" },
-    { purpose_key: "research.anonymized", granted_at: "2026-03-01", withdrawn_at: null }
+    { purpose_key: "health.cycle", granted_at: "2026-01-01", withdrawn_at: "2026-02-01" },
+    { purpose_key: "health.cycle", granted_at: "2026-03-01", withdrawn_at: null }
   ];
-  assertEqual(C.isGranted(rows, "research.anonymized"), true, "撤回のあと、また同意していれば有効");
-  assertEqual(C.isGranted([rows[0]], "research.anonymized"), false, "撤回したままなら無効");
+  assertEqual(C.isGranted(rows, "health.cycle"), true, "撤回のあと、また同意していれば有効");
+  assertEqual(C.isGranted([rows[0]], "health.cycle"), false, "撤回したままなら無効");
 
   console.log("\n=== ★文言の版とハッシュ（§3-2） ===");
   const row = C.buildConsentRow({ userId: "u1", purposeKey: "health.cycle", locale: "ja", method: "checkbox", now: "2026-08-29T00:00:00Z" });

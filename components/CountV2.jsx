@@ -5,8 +5,10 @@ import { C } from "@/lib/tokens";
 import { TYPE, rem } from "@/lib/uiKit";
 import { H3, Card, Kv, Note, Li, Back, Btn } from "@/components/UiV2";
 import { USUAL_ROWS, usualOf, writtenDays, histogramOf, detailedCountsOf } from "@/lib/countView";
-import { isAlwaysFree } from "@/lib/freeTier";
-import { viewerOf } from "@/lib/entitlements";
+// ★★`isAlwaysFree` と `viewerOf` は 読み込みません（★2026-09-15）。
+//   ★★`mayViewSummary` が 中で 両方 見ます。★ここで 二重に 見ません。
+//   ★★読まれない 名前を 置かない ── ★N-1 の 決まり。
+import { mayViewSummary } from "@/lib/freeTier";
 // ★★値段は lib/plans.js が 持ちます（★2026-09-15）。
 //   ★★ここに 直に 書いて いました。★年額が **5,800円** の ままでした。
 //     ★正しくは 4,800円。★`/billing` は 直り、★ここだけ 取り残されて いました。
@@ -64,11 +66,35 @@ export default function CountV2({ entries, dates, todayISO, profile, userEmail, 
   const [showFoldedNote, setShowFoldedNote] = useState(false);
 
   // ★テスター / 無料全解放 / 支払済み判定
-  const email = String(userEmail || profile?.email || "").trim().toLowerCase();
-  const isPaidAccount = localPaid || isPaidOverride || isAlwaysFree(profile) ||
-    ["kyo0703opera@gmail.com", "kyo0703opera+forcode@gmail.com"].includes(email) ||
-    profile?.is_tester === true ||
-    viewerOf(profile) === "tester";
+  //
+  // ★★★2026-09-15、★メールアドレスの 直書きを 消しました（★裁定 ③）。
+  //   ★★前は こう 書いて ありました ──
+  //     `["kyo0703opera@gmail.com", "kyo0703opera+forcode@gmail.com"].includes(email)`
+  //   ★★この 2つの 方は、★**いつも 払って いる 扱い**でした。
+  //     ★★だから「詳しく 数える」を 押しても 何も 起きず、
+  //       ★「調べる」の 案内（★値段つき）に ★永久に たどり着けません でした。
+  //     ★★2026-09-15、★坂本さんが「有料の ところが 見えない」と
+  //       ★おっしゃった 理由の **半分**が これ でした
+  //       （★もう半分は ㊱ ── ★門の 試しの 一覧）。
+  //
+  //   ★★これは「決めが 2か所に ある」形 です。★この 蔵の 繰り返しの 傷 です。
+  //     ★門の 決めは `lib/freeTier.js` が 持って います。
+  //     ★★ここが 別の 決めを 持って いました。
+  //   ★★値段の ときと **同じ ファイル**でした
+  //     （★`lib/plans.js` を 読まず、★5,800 を 直に 書いて いました）。
+  //
+  //   ★★いまは `mayViewSummary` に 聞きます。★1か所です。
+  //     ★★`isAlwaysFree` も `viewerOf` も、★あちらが 中で 見ます。
+  //     ★★`localPaid`（★買った 直後）と `isPaidOverride`（★呼ぶ側の 指定）は
+  //       ★画面の 事情なので、★ここに 残します。
+  const isPaidAccount = localPaid || isPaidOverride ||
+    mayViewSummary({
+      scope: "summary",
+      profile: { ...(profile || {}), email: String(userEmail || (profile && profile.email) || "").trim().toLowerCase() },
+      subscribed: false,
+      userId: profile && profile.id,
+      env: { NEXT_PUBLIC_GATE_TEST_USER_IDS: process.env.NEXT_PUBLIC_GATE_TEST_USER_IDS }
+    });
 
   // ★「あなたのふだん」：minDays=1 を渡してデータがあれば1日分でも表示
   const rows = USUAL_ROWS

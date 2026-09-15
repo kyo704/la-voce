@@ -36,7 +36,9 @@ assertTrue(/admin\.auth\.admin\.listUsers\(/.test(admin), "auth.users を読ん�
 assertTrue(/email_confirmed_at/.test(admin), "確認の時刻を見ている");
 assertTrue(/perPage: 50/.test(admin) && /for \(let page = 1/.test(admin),
   "★ページ送りに対応している（1ページだけ読まない）");
-assertTrue(/うち確認済み/.test(raw) && /うち★未確認/.test(raw), "内訳を出している");
+// ★★2026-09-15、★「★」を 外しました（★SEV2・画面に 出る 字から）。
+//   ★「★」は 私たちの 紙の 印で、★利用者の 画面に 出る ものでは ありません。
+assertTrue(/うち確認済み/.test(raw) && /うち未確認/.test(raw), "内訳を出している");
 // ★分からないときを false にしないこと（居ないのと未確認は違う）
 assertTrue(/if \(!u\) return null;/.test(admin), "★auth を読めないときは null（未確認と断定しない）");
 assertTrue(/うち不明（auth を読めず）/.test(raw), "★不明も数えて見せる");

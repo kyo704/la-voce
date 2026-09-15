@@ -39,9 +39,9 @@ export default function AdminError({ error, reset }) {
         管理画面を 出せませんでした
       </h1>
       <p style={{ fontSize: "0.875rem", lineHeight: 1.9, marginBottom: 16 }}>
-        ★404 では ありません。★何かが 途中で 止まりました。
+        404 では ありません。何かが 途中で 止まりました。
         <br />
-        下の 文を、★そのまま お知らせください。
+        下の 文を、そのまま お知らせください。
       </p>
       <pre style={{
         fontSize: "0.8125rem", lineHeight: 1.7, padding: 12,

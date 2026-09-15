@@ -201,7 +201,7 @@ export default async function AdminPage() {
     { label: "総ユーザー数", value: totalUsers },
     // ★確認していない人を分けて数えます。これまでは混ざっていました。
     { label: "　うち確認済み", value: users.filter((u) => confirmedOf(u.id) === true).length },
-    { label: "　うち★未確認（登録メールを開いていない）", value: users.filter((u) => confirmedOf(u.id) === false).length },
+    { label: "　うち未確認（登録メールを開いていない）", value: users.filter((u) => confirmedOf(u.id) === false).length },
     { label: "　うち不明（auth を読めず）", value: users.filter((u) => confirmedOf(u.id) === null).length },
     // ★群ごとの人数。継続率を分けて見るための分母です。
     //   ★cohort が正です。is_tester は見ません（2026-08-30、移行が済みました）。
@@ -391,7 +391,7 @@ export default async function AdminPage() {
         消えたアカウント
       </h2>
       <p style={{ fontSize: "0.75rem", color: C.inkSoft, marginBottom: 12 }}>
-        ★数だけです。誰が消したかは分かりません（時刻しか残していません）。
+        数だけです。誰が消したかは分かりません（時刻しか残していません）。
         30日の猶予を申し出た時点では数えず、実際に消えたときだけ数えます。
       </p>
       <div className="rounded-2xl border p-4" style={{ borderColor: C.line, background: C.card }}>

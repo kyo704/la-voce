@@ -159,8 +159,8 @@ export default function ShindanPage() {
           {signingOut ? "出ています…" : "出て、もう一度確かめる"}
         </button>
         <p style={{ fontSize: "0.875rem", lineHeight: 1.8, margin: "10px 0 0" }}>
-          ★押したあと「★入っていません」に変われば、出られています。
-          ★変わらなければ、出られていません。
+          押したあと「入っていません」に変われば、出られています。
+          変わらなければ、出られていません。
         </p>
       </div>
 
@@ -236,7 +236,7 @@ export default function ShindanPage() {
           </ul>
         ) : null}
         <p style={{ fontSize: "0.875rem", lineHeight: 1.8, marginTop: 10, marginBottom: 0 }}>
-          ★どれかが 0 本なら、この端末に新しい CSS が届いていません。
+          どれかが 0 本なら、この端末に新しい CSS が届いていません。
           0 本でないのに値が変わらないなら、別の決まりが勝っています。
         </p>
       </div>

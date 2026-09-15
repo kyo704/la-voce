@@ -17130,7 +17130,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       止まっています。そのため、いまは開けません。
                     </p>
                     <p className="text-xs" style={{ color: C.inkSoft }}>
-                      ★消えてはいません。中身はそのまま残っています。
+                      消えてはいません。中身はそのまま残っています。
                       直し方をこちらで用意しますので、坂本さんにお伝えください。
                     </p>
                   </div>
@@ -18325,7 +18325,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                   <>
                                     <p className="text-xs mb-2" style={{ color: C.ink, lineHeight: 1.8 }}>
                                       「{it.name}」を 消します。<br />
-                                      ★毎日の 記録は 消えません。曲名を 外すだけで、練習の 分数は そのまま 残ります。
+                                      毎日の 記録は 消えません。曲名を 外すだけで、練習の 分数は そのまま 残ります。
                                     </p>
                                     <div className="flex gap-2">
                                       <button type="button" disabled={mergeInProgress}
@@ -20800,7 +20800,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <div className="rounded-xl p-3 mt-2" style={{ background: C.paper }}>
                       <p className="text-sm font-medium mb-1">曲目の名前を変える・消す</p>
                       <p className="text-xs mb-2" style={{ color: C.inkSoft }}>
-                        名前を変えると、過去の記録の曲名もすべて変わります。消すと、過去の記録から曲名だけが外れます。★練習した分数や活動の種別は、そのまま残ります。
+                        名前を変えると、過去の記録の曲名もすべて変わります。消すと、過去の記録から曲名だけが外れます。練習した分数や活動の種別は、そのまま残ります。
                       </p>
                       <select value={editRepertoireName}
                         onChange={(e) => { setEditRepertoireName(e.target.value); setRenameRepertoireTo(e.target.value); setDeleteRepertoireConfirming(false); setMergeResult(""); }}
@@ -20839,7 +20839,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             <div className="rounded-lg p-2" style={{ background: C.card }}>
                               <p className="text-xs mb-2" style={{ color: C.ink }}>
                                 「{editRepertoireName}」を消すと、<strong className="ff-mono">{findAffectedDatesForRepertoire(editRepertoireName).length}</strong>日ぶんの記録から、この曲名が外れます。
-                                最高音・テッシトゥーラ・歌唱言語も消えます。★練習した分数と活動の種別は残ります。取り消せません。
+                                最高音・テッシトゥーラ・歌唱言語も消えます。練習した分数と活動の種別は残ります。取り消せません。
                               </p>
                               <div className="flex gap-1.5">
                                 <button type="button" disabled={mergeInProgress}
@@ -22594,8 +22594,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       生徒自身の操作。隠していたせいで、レッスンタブから「もっと」へ
                       移した意味が無くなっていた（移した先ごと消えていた）。
                       ベータの先生が招待しても、生徒がコードを入れる欄に届かなかった。 */}
+                  {/* ★★★設定の 中だけに しました（★2026-09-15・裁定 SEV4）。
+                      ★★`display: inMore(...)` が 付いて いませんでした。
+                        ★もっとの どの 子画面にも、★いちばん 上に 出て いました。
+                      ★★生徒の 側から 先生と つながる 入口 です。
+                        ★`lib/featureFlags.js` の `canSeeStudentTeacherLink()` は
+                          ★いつも true で、★これは 正しい ことです。
+                        ★★けれど「いつも 出す」と「★どの 画面にも 出す」は 別 です。
+                      ★★畳んで あります（`<details>`）。★開くのは ご本人 です。 */}
                   {canSeeStudentTeacherLink() && (
-                  <details className="rounded-2xl border" style={{ background: C.card, borderColor: C.line }}>
+                  <details className="rounded-2xl border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
                     <summary className="p-4 text-sm font-medium cursor-pointer">{t("connectWithTeacherTitle")}</summary>
                     <div className="px-4 pb-4">
                       {myTeacherLinks.length > 0 && (
@@ -22783,14 +22791,24 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </div>
                 )}
 
+                {/* ★★★設定の 中だけに しました（★2026-09-15・裁定 SEV4／㋔）。
+                    ★★どちらも `display: inMore(...)` が 付いて いませんでした。
+                      ★★だから もっとの **どの 子画面にも** 出て いました ──
+                        ★設定・プラン・学ぶ・じぶんの記録、★ぜんぶ。
+                      ★★撮って 数えて 分かりました
+                        （★`docs/design/compare/all/frames/SC-プラン@390.json` は
+                          ★13塊の うち **6塊**が これ でした）。
+                    ★★「現在畳んでいる項目」は 記録の 画面の 話 です。
+                      ★プランに 出る わけが ありません。
+                    ★★足もとでは なく **頭**に 出て いました。★順も おかしい。 */}
                 {(profile.folded_groups || []).length > 0 && (
-                  <p className="text-xs px-1" style={{ color: C.inkSoft }}>
+                  <p className="text-xs px-1" style={{ display: inMore("設定"), color: C.inkSoft }}>
                     現在畳んでいる項目: {(profile.folded_groups || []).map((k) => FOLDABLE_GROUP_LABELS[k] || k).join("・")}
                   </p>
                 )}
                 <button type="button" onClick={() => setShowFieldGroupManager(true)}
                   className="w-full rounded-2xl border-2 border-dashed py-3 text-sm font-medium flex items-center justify-center gap-1.5"
-                  style={{ borderColor: C.line, color: C.inkSoft }}>
+                  style={{ display: inMore("設定"), borderColor: C.line, color: C.inkSoft }}>
                   <Plus size={14} />記録する項目を増やす
                 </button>
                 {showFieldGroupManager && (
@@ -23175,7 +23193,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ))}
                     </div>
 
-                    <p className="text-xs mt-2 mb-2.5" style={{ color: C.inkSoft }}>{t("noteExportFormats")}</p>
+                    {/* ★★★ここに あった 1行を 消しました（★2026-09-15・裁定 ㋐／㋓）。
+                        ★★`noteExportFormats` ──
+                          「JSON はすべての情報をそのままの形で残すためのもの、
+                            CSV は表計算ソフトで開くためのものです。」
+                        ★★きょう 上に 足した `EXPORT_FORMAT_NOTE` の 2行目が、
+                          ★**同じ ことを 言って いました**。
+                        ★★撮った 絵で 分かりました ──
+                          `SC-退会@390.json` の #13 と #66 が 同じ 中身 でした。
+                        ★★足した ときに、★もとの ものを 消し忘れました。
+                          ★★字を 足す ときは、★同じ ことを 言って いる 行が
+                            ★すでに 無いかを 見る こと。
+                        ★★訳の 鍵（`noteExportFormats`）は 消して いません。
+                          ★ほかから 読まれて いないかを 先に 確かめる ため です。 */}
                     {exportStatus === "done" && (
                       <p className="text-xs rounded-lg px-2.5 py-1.5 mb-2" style={{ background: "rgba(122,150,109,0.18)", color: C.ink }}>
                         {t("exportDone")}
@@ -23256,7 +23286,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       <span className="text-xs" style={{ color: C.inkSoft }}>
                         <strong style={{ color: C.ink }}>全職業を表示（管理者）</strong><br />
                         ほかの職業の画面を確かめるための切り替えです。
-                        ★入にすると、自分の職業に関係なく、全職業の入力欄が出ます。
+                        入にすると、自分の職業に関係なく、全職業の入力欄が出ます。
                         職業別の出し分けを自分のアカウントで確かめるときは、切にしてください。
                       </span>
                     </label>

@@ -92,7 +92,11 @@ function t(cond, label) {
   t(!/CONSENT_POLICY_VERSION\s*!==\s*profile/.test(vt), "★逆向きの くらべ方も していない");
 
   console.log("\n=== ⑤ 取る中身は 変えていない ===");
-  ["health.record", "health.cycle", "health.meal_sleep", "research.anonymized"]
+    // ★★2026-09-15、★`research.anonymized` を 外しました（★No.027）。
+    //   ★★どこからも 読まれて いない 定義 でした（★N-1違反）。
+    //   ★★本当の 同意は `profiles.consent_stats_use_at` に 入って いました。
+    //   ★★裁定 その27／その45 が 退けた もの です。
+  ["health.record", "health.cycle", "health.meal_sleep"]
     .forEach((k) => t(c.CONSENT_PURPOSES.some((p) => p.key === k), `目的「${k}」が 残っている`));
   const meal = c.CONSENT_PURPOSES.find((p) => p.key === "health.meal_sleep");
   t(/食事の内容と時刻、就寝時刻を保存し/.test(meal.text), "★保存するものは 前と 同じ");

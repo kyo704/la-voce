@@ -96,7 +96,7 @@ export default function LegacyOriginNotice() {
         新しいページを開く
       </a>
       <p style={{ fontSize: "0.8125rem", margin: "8px 0 0", lineHeight: 1.8, maxWidth: 420, opacity: 0.75 }}>
-        ★ホーム画面にアイコンを追加していた方は、
+        ホーム画面にアイコンを追加していた方は、
         一度削除してから、新しいページで追加し直してください。
       </p>
     </div>

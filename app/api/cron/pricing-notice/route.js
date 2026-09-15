@@ -142,7 +142,7 @@ export async function GET(req) {
       if (markErr) {
         // ★★ここで落ちると、★次に流したとき、もう一度送ってしまいます。
         //   ★だから、はっきり残します。
-        console.error("★送信済みを残せませんでした（★二重送信の恐れ）:", t.id, markErr.message);
+        console.error("送信済みを残せませんでした（二重送信の恐れ）:", t.id, markErr.message);
       }
       summary.sent += 1;
     } catch (e) {
