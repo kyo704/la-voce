@@ -52,6 +52,20 @@ def main():
     return 1
 
   ima, imb = Image.open(a).convert("RGB"), Image.open(b).convert("RGB")
+  # ★★★倍率が ちがいます（★2026-09-15 に 気づきました）。
+  #   ★見本 … `mihon_shot.js` は 2倍
+  #   ★実装 … `compare.js` は iPhone 12 の 3倍
+  #   ★★生の 画素で 比べると、★高さの 倍が **1.5倍 ずれます**。
+  #     ★★私は 一度「4.5倍」と 書きました。★本当は ちがいます。
+  #   ★★だから、★両方を CSS の px（★390 幅）に そろえます。
+  for im in ("a", "b"):
+    pass
+  sa = ima.width / 390.0
+  sb = imb.width / 390.0
+  if abs(sa - sb) > 0.01:
+    ima = ima.resize((390, int(round(ima.height / sa))), Image.LANCZOS)
+    imb = imb.resize((390, int(round(imb.height / sb))), Image.LANCZOS)
+    sa = sb = 1.0
   # ★★高さを そろえません。★伸ばすと、★余白の 比べが 壊れます。
   #   ★★上を そろえて、★下は そのまま。★長いほうが そのまま 長い と 分かります。
   h = max(ima.height, imb.height)
@@ -66,9 +80,10 @@ def main():
   x = PAD + ima.width + GAP // 2
   d.line([(x, PAD + 40), (x, h + PAD + 40)], fill=LINE, width=2)
   # ★★100px ごとの 目盛り。★どこが ずれて いるか 測れる ように。
-  for y in range(PAD + 40, h + PAD + 40, 100):
+  step = int(round(100 * sa))
+  for y in range(PAD + 40, h + PAD + 40, max(1, step)):
     d.line([(PAD, y), (w - PAD, y)], fill=(228, 220, 201), width=1)
-    d.text((2, y - 6), str((y - PAD - 40) // 2), fill=(160, 145, 127))
+    d.text((2, y - 6), str(int(round((y - PAD - 40) / sa))), fill=(160, 145, 127))
 
   os.makedirs(OUT, exist_ok=True)
   dst = os.path.join(OUT, name + ".png")
@@ -76,8 +91,8 @@ def main():
   print("★作りました: %s" % os.path.relpath(dst, ROOT))
   print("　★左が 見本、★右が 実装。★左の 目盛りは CSS の px です。")
   print("　★高さを そろえて いません ── ★長いほうが、★そのまま 長い です。")
-  print("　　見本 %dpx ／ 実装 %dpx（★%.1f 倍）"
-        % (ima.height // 2, imb.height // 2, imb.height / ima.height))
+  ha, hb = int(round(ima.height / sa)), int(round(imb.height / sb))
+  print("　　見本 %dpx ／ 実装 %dpx（★%.2f 倍）── ★CSS の px です" % (ha, hb, hb / ha))
   return 0
 
 

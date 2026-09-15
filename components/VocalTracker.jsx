@@ -22349,32 +22349,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <H3>そのほか</H3>
                   </div>
                 ) : null}
-                {/* ★★★くわしい 決まりを 見る（★2026-09-15・裁定 ㋚）。
-                    ★★見本 `SC['設定']` の いちばん 下の 札 です。
-                    ★★行き先は `/legal/terms`。
-                      ★★★お決めは「`/legal` で 進める」でした。
-                        ★けれど `/legal` は **404** です（★`app/legal/page.js` が ありません）。
-                        ★あるのは `privacy` `terms` `tokushoho` の 3つだけ です。
-                        ★★404 へ 送る 札は、★押せない 札 と 同じ です。
-                      ★★だから `/legal/terms`（★200）へ 送ります。
-                        ★★`/legal` の 表紙を 作る なら、★そのとき ここを 戻して ください。
-                      ★★新しい 窓で 開きます。★記録の 途中で 画面を 失わない ため です。
-                    ★★見本の 形 …`.fbtn`（★白い 丸い 札・11.5px）。
-                      ★`components/UiV2.jsx` に 同じ 形が 無いので、
-                        ★見本の 数字を そのまま 書いて います。★新しい 形を 作りません。 */}
-                {layoutV2 ? (
-                  <a href="/legal/terms" target="_blank" rel="noopener noreferrer"
-                    style={{
-                      display: inMore("設定") === "none" ? "none" : "inline-flex",
-                      alignItems: "center", justifyContent: "center",
-                      alignSelf: "flex-start",
-                      border: `1px solid ${C.line}`, borderRadius: 99,
-                      background: C.card, color: C.inkSoft,
-                      padding: "0 14px", minHeight: 44, ...TYPE.note
-                    }}>
-                    くわしい 決まりを 見る
-                  </a>
-                ) : null}
                 {layoutV2 ? (
                   <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
                     <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("languageLabel")}</p>
@@ -23377,6 +23351,37 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       <span key={i}>{i > 0 ? <br /> : null}{line}</span>
                     ))}
                   </p>
+
+                ) : null}
+
+                {/* ★★★くわしい 決まりを 見る（★2026-09-15・裁定 ㋚）。
+                    ★★見本 `SC['設定']` の いちばん 下の 札 です。
+                      ★★★2026-09-15、★一度 上に 置いて しまいました。
+                        ★撮って みたら、★題の すぐ下に 出て いました。
+                        ★★見本は **いちばん 下**です。★ここへ 移しました。
+                    ★★行き先は `/legal/terms`。
+                      ★★★お決めは「`/legal` で 進める」でした。
+                        ★けれど `/legal` は **404** です（★`app/legal/page.js` が ありません）。
+                        ★あるのは `privacy` `terms` `tokushoho` の 3つだけ です。
+                        ★★404 へ 送る 札は、★押せない 札 と 同じ です。
+                      ★★だから `/legal/terms`（★200）へ 送ります。
+                        ★★`/legal` の 表紙を 作る なら、★そのとき ここを 戻して ください。
+                      ★★新しい 窓で 開きます。★記録の 途中で 画面を 失わない ため です。
+                    ★★見本の 形 …`.fbtn`（★白い 丸い 札・11.5px）。
+                      ★`components/UiV2.jsx` に 同じ 形が 無いので、
+                        ★見本の 数字を そのまま 書いて います。★新しい 形を 作りません。 */}
+                {layoutV2 ? (
+                  <a href="/legal/terms" target="_blank" rel="noopener noreferrer"
+                    style={{
+                      display: inMore("設定") === "none" ? "none" : "inline-flex",
+                      alignItems: "center", justifyContent: "center",
+                      alignSelf: "flex-start",
+                      border: `1px solid ${C.line}`, borderRadius: 99,
+                      background: C.card, color: C.inkSoft,
+                      padding: "0 14px", minHeight: 44, ...TYPE.note
+                    }}>
+                    くわしい 決まりを 見る
+                  </a>
                 ) : null}
 
                 {/* 配信と更新の確認.md §2: ★もっとのいちばん下に、小さく版を出す。
