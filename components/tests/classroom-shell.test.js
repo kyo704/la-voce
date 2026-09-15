@@ -124,6 +124,25 @@ const b64 = (...p) => "data:text/javascript;base64," + Buffer.from(
   const shellSrc = readCode("lib", "classroomShell.js");
   t(!/insert|update|upsert|delete/.test(shellSrc), "この 一枚は 書く 道を 1つも 持たない");
 
+  console.log("\n④-2 ★★渡した 子が、★本当に 出て いること");
+  // ★★★2026-09-15、★ここで つまずきました。
+  //   ★★3節を `HomeV2` の 子として 渡しました。
+  //   ★★`HomeV2` は `children` を **受け取って** いました（★44行目）。
+  //     ★★けれど、★どこにも `{children}` が ありません でした。
+  //     ★★渡した ものは 黙って 捨てられ、★画面に 何も 出ません でした。
+  //     ★★エラーに なりません。★lint も build も 通ります。
+  //   ★★「受け取って いる」は、★「出して いる」では ありません。
+  //     ★★きょう 2度目の 形 です
+  //       （★`research.anonymized` ── ★定義は ある。★読む人が いない）。
+  const home = readCode("components", "HomeV2.jsx");
+  t(/\bchildren\b/.test(home), "HomeV2 が children を 受け取って いる");
+  t(/\{children\}/.test(home), "★HomeV2 が children を **出して** いる");
+  // ★★渡す 側も 見ます。★両方 そろって はじめて 画面に 出ます。
+  const passAt = vt.indexOf("<HomeV2");
+  const pass = passAt < 0 ? "" : vt.slice(passAt, vt.indexOf("</HomeV2>", passAt));
+  t(passAt > -1, "VocalTracker が HomeV2 を 呼んで いる");
+  t(/SECTION_TITLES\.lesson/.test(pass), "★3節を、★HomeV2 の 子として 渡して いる");
+
   console.log("\n⑤ ★門の 中だけ に 出して いること");
   // ★★38名の 画面を 1つも 変えません。
   t(/if \(!layoutV2 \|\| !userId\) return;/.test(vt), "引くのも 門の 中だけ");
