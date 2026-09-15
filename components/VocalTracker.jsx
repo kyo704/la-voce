@@ -23023,6 +23023,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           ledger={ledgerRows}
           ownedKeys={ownedItemKeys}
           nameOf={itemNameOf}
+          t={t}
           onClose={() => setOwnedOpen(false)} />
       )}
     </div>

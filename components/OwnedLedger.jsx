@@ -25,7 +25,7 @@ import { useMemo, useState } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
 import { ScreenHead, HeadRound, Seg, Card, H3, Li, Note } from "@/components/UiV2";
-import { ledgerLine, sortLedger, NO_DATE_TEXT, OWNED_EMPTY_TEXT, OWNED_ONLY_NOTE } from "@/lib/itemLedger";
+import { ledgerLine, sortLedger, acquisitionReason, LEDGER_NOTE, NO_DATE_TEXT, OWNED_EMPTY_TEXT, OWNED_ONLY_NOTE } from "@/lib/itemLedger";
 
 // ★★2026-09-11、★「まだ」の 札を 消しました。
 //   ★出どころ docs/opus/回答-とだなの数字はどこか（9月10日）.md §3-2
@@ -42,6 +42,10 @@ export default function OwnedLedger({
   ledger = [],          // ★item_acquisitions の 行
   ownedKeys = [],       // ★手もとに ある 鍵
   nameOf,               // ★鍵 → 品の 名前
+  // ★★鍵 → その言語の 言葉（★2026-09-15）。
+  //   ★★この一枚は 言葉を 持ちません。★呼ぶ側の t() を 借ります。
+  //     ★★渡されなければ、★理由の 行を 出しません。★鍵の 文字を 出しません。
+  t,
   onClose
 }) {
   const [tab, setTab] = useState("ledger");
@@ -84,17 +88,44 @@ export default function OwnedLedger({
             </Card>
           ) : (
             <Card style={{ padding: `${rem(4)} ${rem(12)}` }}>
-              {rows.map((r, i) => (
-                <Li key={r.item_key || i} last={i === rows.length - 1}
-                  right={ledgerLine(r)}>
-                  {label(r.item_key)}
-                </Li>
-              ))}
+              {/* ★★見本 `SC['台帳']` の 1行 ──
+                    名前の 下に、★何で 手に入ったかが 小さく 入ります。
+                      「はおり ／ 記録が 50日に なった日 …… 2026年9月2日」
+                    ★★入口の 札も こう 書いて います ──
+                      「台帳（★いつ・**何で** 手に入ったか）」。
+                    ★★2026-09-15 まで、★「何で」が 出て いませんでした。
+                  ★★言葉を 決めるのは lib/itemLedger.js です。★ここでは ありません。
+                    ★★引けない ときは 空文字 が 返ります。★その行は 出しません。 */}
+              {rows.map((r, i) => {
+                const why = t ? acquisitionReason(r, t) : "";
+                return (
+                  <Li key={r.item_key || i} last={i === rows.length - 1}
+                    right={ledgerLine(r)} style={{ alignItems: "flex-start" }}>
+                    <span>
+                      {label(r.item_key)}
+                      {why ? (
+                        <>
+                          <br />
+                          <span style={{ ...TYPE.usual }}>{why}</span>
+                        </>
+                      ) : null}
+                    </span>
+                  </Li>
+                );
+              })}
             </Card>
           )}
 
+          {/* ★★見本 `SC['台帳']` の `.note`・2行（★2026-09-15）。
+                ★★2行目の 後半「連続日数を 出しません。」が 抜けて いました。
+                  ★★禁止事項（★進捗バーの 一種）の 約束 です。
+                  ★★`lib/character.js:173` に コメントでは ありましたが、
+                    ★コメントは 画面では ありません。
+                ★★字は lib/itemLedger.js が 持ちます。★ここに 書き写しません。 */}
           <Note style={{ marginTop: rem(10) }}>
-            いつ 手に入ったかと、そのときの 数が 残ります。
+            {LEDGER_NOTE.map((line, i) => (
+              <span key={i}>{i > 0 ? <br /> : null}{line}</span>
+            ))}
           </Note>
 
           {missing > 0 && (
