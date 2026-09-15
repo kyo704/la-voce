@@ -139,7 +139,14 @@ function nowStamp() {
 async function capture(env) {
   const { chromium, devices } = require("playwright");
   fs.mkdirSync(FRAMES, { recursive: true });
-  const base = env.E2E_BASE_URL || "https://woolsong.app";
+  // ★★手元の 組み立てを 撮れる ように しました（★2026-09-15）。
+  //   ★★これまで `.env.e2e` しか 見て いませんでした。
+  //     ★★だから、★直した ばかりの 画面を 撮れず、
+  //       ★本番の 古い 姿を 撮って「直って いない」と 見えました。
+  //   ★★使い方 …
+  //     E2E_BASE_URL=http://localhost:3000 node tools/compare.js --frames
+  const base = process.env.E2E_BASE_URL || env.E2E_BASE_URL || "https://woolsong.app";
+  console.log("★撮る 先: " + base);
   const browser = await chromium.launch({ channel: "chrome" });
   const missed = [];
   let shot = 0;

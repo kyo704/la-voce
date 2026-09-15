@@ -62,7 +62,7 @@ import {
 // 統合実行ルートv4 §6: 表示ゲートは必ずこのレイヤーを経由する。画面ごとに条件を書かないこと。
 import { evaluateGate, gateAllows, getGate, NARRATIVE_FDR_Q, NARRATIVE_MIN_N_PER_GROUP,
   effectStateOf, mayShowEffectNumbers, EFFECT_SHOWN, EFFECT_WAITING } from "@/lib/displayGates";
-import { SCALES, DEFAULT_SCALE, SCALE_LABELS, SCALE_SAMPLE, normalizeScale,
+import { SCALES, DEFAULT_SCALE, SCALE_LABELS, SCALE_SAMPLE, SCALE_SAMPLE_LINES, SCALE_SAMPLE_PX, normalizeScale,
   scaleAttribute, isSimpleDisplay, UNDO_WINDOW_MS, ACTIONABLE_ERROR_KEY,
   INSTALL_STEPS, INSTALL_LATER_NOTE, INSTALL_LATER_LABEL, shouldShowInstallGuide,
   SCALE_NOTE, SCALE_NOTE_BOLD, SETTINGS_NOTE} from "@/lib/displayPrefs";
@@ -108,7 +108,7 @@ import { markerRow } from "@/lib/periodMarkers";
 import TodayBand from "@/components/TodayBand";
 import TabBarV2 from "@/components/TabBarV2";
 import { TAB_BAR_HEIGHT, TYPE, SPACE, FONT_STACK, cardStyle, rem, RADIUS } from "@/lib/uiKit";
-import { ScreenHead, HeadRound, H3, Card, Li, Seg, Note } from "@/components/UiV2";
+import { ScreenHead, HeadRound, H3, Card, Li, Seg, Note, Wl } from "@/components/UiV2";
 import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
 import { moreSections, rightOf, MORE_NOTE, MORE_NOTE_BOLD } from "@/lib/moreMenu";
 import DailyAskPicker from "@/components/DailyAskPicker";
@@ -22333,10 +22333,47 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ★羊の 動き　　 … 新しい 機能・範囲の 外
                       ★お知らせ　　 … 現状維持（★お決め）
                     ★★だから、★いまは 薄い かたまり です。★足りたら 厚く なります。 */}
+                {/* ★★㋖ 題「設定」（★2026-09-15・見本 `SC['設定']` の `<h2>`）。
+                    ★★見本 … `.hd h2 { font-size:17px; letter-spacing:.06em }`
+                    ★★前は パンくず（‹ もっと ／ 設定）だけ で、★題が ありません でした。
+                    ★★`TYPE.title` が 同じ 形を 持って います（★19px・.06em）。
+                      ★見本の 17px は、★`lib/uiKit.js` が 読みやすさの ために
+                        ★19px に 上げた もの です。★そちらに 合わせます。 */}
+                {layoutV2 ? (
+                  <div style={{ display: inMore("設定") }}>
+                    <h2 style={{ ...TYPE.title, margin: "2px 0 0" }}>設定</h2>
+                  </div>
+                ) : null}
                 {layoutV2 ? (
                   <div style={{ display: inMore("設定") }}>
                     <H3>そのほか</H3>
                   </div>
+                ) : null}
+                {/* ★★★くわしい 決まりを 見る（★2026-09-15・裁定 ㋚）。
+                    ★★見本 `SC['設定']` の いちばん 下の 札 です。
+                    ★★行き先は `/legal/terms`。
+                      ★★★お決めは「`/legal` で 進める」でした。
+                        ★けれど `/legal` は **404** です（★`app/legal/page.js` が ありません）。
+                        ★あるのは `privacy` `terms` `tokushoho` の 3つだけ です。
+                        ★★404 へ 送る 札は、★押せない 札 と 同じ です。
+                      ★★だから `/legal/terms`（★200）へ 送ります。
+                        ★★`/legal` の 表紙を 作る なら、★そのとき ここを 戻して ください。
+                      ★★新しい 窓で 開きます。★記録の 途中で 画面を 失わない ため です。
+                    ★★見本の 形 …`.fbtn`（★白い 丸い 札・11.5px）。
+                      ★`components/UiV2.jsx` に 同じ 形が 無いので、
+                        ★見本の 数字を そのまま 書いて います。★新しい 形を 作りません。 */}
+                {layoutV2 ? (
+                  <a href="/legal/terms" target="_blank" rel="noopener noreferrer"
+                    style={{
+                      display: inMore("設定") === "none" ? "none" : "inline-flex",
+                      alignItems: "center", justifyContent: "center",
+                      alignSelf: "flex-start",
+                      border: `1px solid ${C.line}`, borderRadius: 99,
+                      background: C.card, color: C.inkSoft,
+                      padding: "0 14px", minHeight: 44, ...TYPE.note
+                    }}>
+                    くわしい 決まりを 見る
+                  </a>
                 ) : null}
                 {layoutV2 ? (
                   <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
@@ -22483,29 +22520,44 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 {/* ★名前は「見やすさ」。「シニアモード」と書かないこと（§0-②）。
                     ★年齢からは何も決めない。本人に直接、見え方を選んでもらう。 */}
                 <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
-                  <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>見やすさ</p>
-                  <p className="text-sm mb-2" style={{ color: C.ink }}>文字の大きさ</p>
-                  {/* ★見本を実寸で出す。「大きい」という言葉では伝わらない（§1-1）。 */}
-                  <div className="grid grid-cols-3 gap-2 mb-1">
+                  {/* ★★★見本 `SC['設定']` の 形に しました（★2026-09-15・裁定 ㋙）。
+                      ★★見本は `.pills` ＋ `.pill sm` ── ★横に 並ぶ 丸い 札 です。
+                        ★前は 四角い 3つの 箱（grid）でした。
+                      ★★選んで いる ものは `enji`（★C.curtain）の 塗り。★白い 字。
+                      ★★見本の 字は「★あいう」では ありません ──
+                        「のどの 調子　◎よい」「昨夜の 睡眠　7時間30分」。
+                        ★★自分の 記録の 形で 見た ほうが、★選べます。
+                      ★★上に 仕切りの 線（`border-top`）。★見本の とおりです。
+                      ★★段は 3つの まま です（★裁定 ㋘ は 見送り）。
+                        ★見本は 5つ ですが、★`SCALES` を 増やすのは 別の 作業 です。 */}
+                  <div className="flex flex-wrap" style={{ gap: 6, marginBottom: 11 }}>
                     {SCALES.map((s) => {
                       const active = normalizeScale(profile.display_scale) === s;
-                      const sampleSize = s === "normal" ? "1rem" : s === "large" ? "1.25rem" : "1.5rem";
                       return (
                         <button key={s} type="button"
                           onClick={() => handleSaveDisplayPref({ display_scale: s })}
-                          className="rounded-xl border p-3 text-center"
                           style={{
-                            background: active ? C.paper : C.card,
-                            borderColor: active ? C.ink : C.line,
-                            color: C.ink
+                            border: `1px solid ${active ? C.curtain : C.line}`,
+                            borderRadius: 99, padding: "5px 9px",
+                            fontSize: rem(10.5), minHeight: 44,
+                            background: active ? C.curtain : C.card,
+                            color: active ? "#FFFDF8" : C.ink,
+                            fontWeight: active ? 700 : 400
                           }}>
-                          <span className="block text-xs" style={{ color: C.inkSoft }}>{SCALE_LABELS[s]}</span>
-                          <span className="block mt-1" style={{ fontSize: sampleSize, lineHeight: 1.4 }}>{SCALE_SAMPLE}</span>
+                          {SCALE_LABELS[s]}
                         </button>
                       );
                     })}
                   </div>
-                  <p className="text-xs mb-4" style={{ color: C.inkSoft }}>
+                  <div style={{
+                    fontSize: rem(SCALE_SAMPLE_PX[normalizeScale(profile.display_scale)] || 13.5),
+                    lineHeight: 1.85, borderTop: `1px solid ${C.line}`, paddingTop: 10
+                  }}>
+                    {SCALE_SAMPLE_LINES.map((line, i) => (
+                      <div key={i}>{line}</div>
+                    ))}
+                  </div>
+                  <p className="text-xs mt-3 mb-4" style={{ color: C.inkSoft }}>
                     お使いの端末の文字サイズ設定も、そのまま効きます。
                   </p>
 
@@ -22534,7 +22586,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ★先生・事務の 方も 同じ 設定で 働く
                       ★★字は lib/displayPrefs.js が 持ちます。★ここで 書きません。
                       ★★44 という 数は lib/uiKit.js が 持ちます。★2か所を 見て ください。 */}
-                  <p className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.8, marginTop: 10 }}>
+                  {/* ★★★2026-09-15、★地の 字 から `.wl` の 箱に しました。
+                      ★★見本は ベージュの 札 です ──
+                        `background:#F6EFDF; border:1px solid #E8DFC8; border-radius:12px`
+                      ★★`components/UiV2.jsx` の `Wl` が、★その 形を 持って います。
+                        ★新しい 形を 作りません。★見本の 文法に 合わせます。
+                      ★★`Warn`（#F6F1E4）とは 別の 箱 です。★見本が 使い分けて います。 */}
+                  <Wl style={{ marginTop: 10, marginBottom: 0 }}>
                     {SCALE_NOTE.map((line, i) => {
                       const at = line.indexOf(SCALE_NOTE_BOLD);
                       return (
@@ -22550,7 +22608,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </span>
                       );
                     })}
-                  </p>
+                  </Wl>
                 </div>
 
                 <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
@@ -22768,10 +22826,22 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </div>
                 </div>
 
+                {/* ★★★畳みました（★2026-09-15・裁定 ㋗）。
+                    ★★撮って 数えたら、★この かたまりだけで **34塊**でした。
+                      ★設定の 画面は ぜんぶで 70塊。★**半分**が これ でした。
+                    ★★見本 `SC['設定']` に、★この 考え方 そのものが ありません。
+                    ★★★消して いません。★畳んだだけ です。
+                      ★お決め「★古い 機能を 隠すな、★仕分けろ」──
+                        ★これは ③「見せ方を 変える」です。
+                      ★★お誘いの 中身も、★［畳む］［続ける］も、★1つも 減らして いません。
+                      ★★数を 見出しに 出します。★開く 前に、★何件 あるか 分かります。
+                    ★★既定は **閉じて** います。★毎朝 見る ものでは ありません。 */}
                 {unusedFieldGroupSuggestions.filter((s) => !dismissedFoldSuggestions.includes(s.key)).length > 0 && (
-                  <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
-                    <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>使っていない項目</p>
-                    <div className="space-y-3">
+                  <details className="rounded-2xl border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
+                    <summary className="p-4 text-xs font-medium cursor-pointer" style={{ color: C.inkSoft, minHeight: 44 }}>
+                      使っていない項目（{unusedFieldGroupSuggestions.filter((s) => !dismissedFoldSuggestions.includes(s.key)).length}件）
+                    </summary>
+                    <div className="space-y-3 px-4 pb-4">
                       {unusedFieldGroupSuggestions.filter((s) => !dismissedFoldSuggestions.includes(s.key)).map((s) => (
                         <div key={s.key} className="rounded-xl p-3" style={{ background: C.paper }}>
                           <p className="text-sm mb-2">「{s.label}」を30日間記録していません。畳みますか？</p>
@@ -22788,7 +22858,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </details>
                 )}
 
                 {/* ★★★設定の 中だけに しました（★2026-09-15・裁定 SEV4／㋔）。
