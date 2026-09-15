@@ -124,10 +124,18 @@ function ok(cond, label) {
     "★書きかけが あるとき、★先に 言う");
   ok(/onClick=\{\(\) => reloadNow\(\)\}/.test(raw), "★押すと 読み込み直す");
 {
-    const pAt = raw.indexOf(">アプリを 読み込み直す</p>");
-    ok(pAt > 0, "★枠の 中の 見出しが ある");
-    ok(/inMore\("設定"\)/.test(raw.slice(Math.max(0, pAt - 300), pAt)),
+    // ★★★2026-09-16、★重い カード から **行**（`.li`）に しました。
+    //   ★★見本の「そのほか」は、★1つの 箱に 行が 並ぶ 形 です。
+    //     ★実装は カードが 9枚 積まれ、★高さが 2.8倍に なって いました。
+    //   ★★見て いる ことは 変わりません ──
+    //     ★① 字が ある ② 「設定」の まとまりに ある ③ 押せる。
+    //   ★★探す 形だけ を 直しました（`<p>` → `<Li>`）。
+    const pAt = raw.indexOf("アプリを 読み込み直す");
+    ok(pAt > 0, "★行の 字が ある");
+    ok(/inMore\("設定"\)/.test(raw.slice(Math.max(0, pAt - 2600), pAt)),
       "★「設定」の まとまりに ある");
+    ok(/<Li right="›" onClick=\{\(\) => reloadNow\(\)\}/.test(raw),
+      "★その 行が 押せる");
   }
 
   console.log(failed === 0 ? "\n全て ok" : "\n" + failed + "件 NG");

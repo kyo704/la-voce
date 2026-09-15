@@ -108,7 +108,7 @@ import { markerRow } from "@/lib/periodMarkers";
 import TodayBand from "@/components/TodayBand";
 import TabBarV2 from "@/components/TabBarV2";
 import { TAB_BAR_HEIGHT, TYPE, SPACE, FONT_STACK, cardStyle, rem, RADIUS } from "@/lib/uiKit";
-import { ScreenHead, HeadRound, H3, Card, Li, Seg, Note, Wl } from "@/components/UiV2";
+import { ScreenHead, HeadRound, H3, Card, Li, Seg, Note, Wl, Box } from "@/components/UiV2";
 import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
 import { moreSections, rightOf, MORE_NOTE, MORE_NOTE_BOLD } from "@/lib/moreMenu";
 import DailyAskPicker from "@/components/DailyAskPicker";
@@ -22471,17 +22471,65 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <H3>そのほか</H3>
                   </div>
                 ) : null}
+                {/* ★★★見本の 行（`.li`）の 形に しました（★2026-09-16・坂本さんの お決め）。
+                    ★★★なぜ 重かったか。
+                      ★★見本の「そのほか」は、★1つの `.box` に **4行**が 入って います。
+                        ★行は 罫線で 分かれるだけ。★枠も 角丸も ありません。
+                      ★★実装は、★1つ1つが **独立した カード**でした ──
+                        ★枠・角丸・余白・見出し・説明の 数行。
+                      ★★9つ あったので、★カードが 9枚 積まれて いました。
+                        ★★これが 2.8倍の 高さの もと です。
+                    ★★★まず この 3つ だけ 直します（★お決め「1つの 節から」）。
+                      ★ことば ／ 記録の 切り替え時刻 ／ アプリを 読み込み直す
+                    ★★★中身も 機能も、★1つも 減らして いません。
+                      ★説明の 字は、★箱の 下の 小さな 注記に 残して います。
+                      ★押す 先も、★選べる 値も、★同じ です。
+                    ★★LINE は 入れて いません。
+                      ★「コードを 出す → 送る → 確かめる」の 3段で、★1行に 収まりません。
+                      ★★見本に LINE は ありません。★無理に 行に しません。
+                    ★★`Box` と `Li` は `components/UiV2.jsx` の もの です。
+                      ★見本の `.box`（padding 0 12px）と `.li`（罫線・44px）と 同じ 形 です。
+                      ★★新しい 形を 作って いません。 */}
                 {layoutV2 ? (
-                  <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
-                    <p className="text-xs mb-2" style={{ color: C.inkSoft }}>{t("languageLabel")}</p>
-                    <select
-                      value={language}
-                      onChange={(e) => setLanguage(e.target.value)}
-                      aria-label={t("languageLabel")}
-                      className="w-full rounded-lg border px-3 appearance-none"
-                      style={{ borderColor: C.line, color: C.ink, background: C.paper, minHeight: 44, fontSize: "1rem" }}>
-                      {LANGUAGES.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
-                    </select>
+                  <div style={{ display: inMore("設定") }}>
+                    <Box>
+                      <Li right={
+                        <select
+                          value={language}
+                          onChange={(e) => setLanguage(e.target.value)}
+                          aria-label={t("languageLabel")}
+                          style={{ border: "none", background: "transparent", color: C.inkSoft,
+                            fontSize: rem(11.5), textAlign: "right", minHeight: 44 }}>
+                          {LANGUAGES.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
+                        </select>
+                      }>{t("languageLabel")}</Li>
+
+                      <Li right={
+                        <select value={profile.day_record_boundary_hour ?? 21}
+                          onChange={(e) => handleChangeDayRecordBoundary(Number(e.target.value))}
+                          style={{ border: "none", background: "transparent", color: C.inkSoft,
+                            fontSize: rem(11.5), textAlign: "right", minHeight: 44 }}>
+                          {Array.from({ length: 24 }, (_, h) => (
+                            <option key={h} value={h}>{String(h).padStart(2, "0")}:00</option>
+                          ))}
+                        </select>
+                      }>記録画面の切り替え時刻</Li>
+
+                      {/* ★★書きかけが ある ときは、★先に 言います（★お決め）。
+                          ★★消える ものが あるなら、★押す 前に 伝える こと。 */}
+                      <Li right="›" onClick={() => reloadNow()} last>
+                        アプリを 読み込み直す
+                        {hasDraft ? (
+                          <span style={{ ...TYPE.usual, display: "block", color: C.curtain }}>
+                            いま 書きかけが あります。読み込み直すと、その ぶんは 消えます。
+                          </span>
+                        ) : null}
+                      </Li>
+                    </Box>
+                    <p style={{ ...TYPE.note, color: C.inkSoft, margin: "0 2px 10px", lineHeight: 1.85 }}>
+                      ふだんは 何もしなくても、新しい版に なります。画面が 古いままに 見えるときに お使いください。<br />
+                      この時刻より前は「声の記録」、以降は「一日の記録」を最初に開きます。いつでも上部のタブで行き来できます。
+                    </p>
                   </div>
                 ) : null}
                 {/* ★★アプリを 読み込み直す（★2026-09-11・坂本さんの お決め）。
@@ -22494,30 +22542,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ★★自動の ほうは「迷ったら しない」。
                       ★こちらは ご本人が 選ばれたので、★止めません。
                       ★★ただし、★消えるものが あるなら 先に 言います。 */}
-                <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
-                  <p className="text-sm font-medium mb-1">アプリを 読み込み直す</p>
-                  <p className="text-xs mb-2.5" style={{ color: C.inkSoft, lineHeight: 1.8 }}>
-                    ふだんは 何もしなくても、新しい版に なります。
-                    画面が 古いままに 見えるときに お使いください。
-                  </p>
-                  {hasDraft ? (
-                    <p className="text-xs mb-2 rounded-lg px-2.5 py-1.5"
-                      style={{ background: C.paper, color: C.ink, lineHeight: 1.8 }}>
-                      いま 書きかけが あります。読み込み直すと、その ぶんは 消えます。
-                    </p>
-                  ) : null}
-                  <button type="button" onClick={() => reloadNow()}
-                    style={{
-                      width: "100%", minHeight: 44, borderRadius: 999,
-                      border: `1px solid ${C.line}`, background: C.paper,
-                      color: C.ink, fontSize: 13
-                    }}>
-                    読み込み直す
-                  </button>
-                  <p className="text-xs mt-2" style={{ color: C.inkSoft }}>
-                    いまの版　{process.env.NEXT_PUBLIC_BUILD_SHA || "手元"}
-                  </p>
-                </div>
+                {/* ★★「アプリを 読み込み直す」の カードを、★上の 箱の 行へ 移しました
+                    （★2026-09-16）。★押す先も、★書きかけの 断りも 同じ です。 */}
 
                 {/* ★★見られるものを増やす（★2026-09-07・坂本さんの決め）。
                     ★★坂本さんは「アップグレード」とおっしゃいましたが、
@@ -23081,19 +23107,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   )}
                 </div>
 
-                <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
-                  <p className="text-sm font-medium mb-1">記録画面の切り替え時刻</p>
-                  <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
-                    この時刻より前は「声の記録」、以降は「一日の記録」を最初に開きます。いつでも上部のタブで行き来できます。
-                  </p>
-                  <select value={profile.day_record_boundary_hour ?? 21}
-                    onChange={(e) => handleChangeDayRecordBoundary(Number(e.target.value))}
-                    className="rounded-lg border px-3 py-2 text-sm" style={{ borderColor: C.line, background: C.paper }}>
-                    {Array.from({ length: 24 }, (_, h) => (
-                      <option key={h} value={h}>{String(h).padStart(2, "0")}:00</option>
-                    ))}
-                  </select>
-                </div>
+                {/* ★★「記録画面の切り替え時刻」の カードを、★上の 箱の 行へ 移しました
+                    （★2026-09-16）。★機能も 値も 同じ です。★形だけ 変えました。 */}
 
 
                 {/* 統合実行ルートv4 G2-14: LINE連携は、公式アカウントの運用（友だち追加の
