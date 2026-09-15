@@ -54,6 +54,19 @@ SCREENS = {
   #   ★★作って いるのは `components/VocalTracker.jsx` の
   #     `{activeTab === "more" && (` の 中（★:21797〜）だけ です。
   #     ★ほかの ファイルは 入れません（★A01 で 3度 まちがえた ところ）。
+  # ★★設定（★2026-09-15・もっとの 先 1枚目）。
+  #   ★★読む ファイルは 3つ ──
+  #     `components/VocalTracker.jsx` … 12の 節が すべて ここに あります
+  #     `lib/displayPrefs.js`        … 文字の 大きさの 札（SCALE_LABELS）
+  #     `lib/uiKit.js`               … 44px の 決め
+  #   ★★見本が 触れる もの（ダークモード・羊の 動き・お知らせ・ことば）を
+  #     ★1つずつ 手で 追って、★出どころの ある ものだけ 入れました。
+  "設定": {
+    "fn": "設定",
+    "files": ["components/VocalTracker.jsx", "lib/displayPrefs.js", "lib/uiKit.js"],
+    "words": [],
+    "extra": [],
+  },
   "もっと": {
     "fn": "もっと",
     # ★★2026-09-15、★はじめ VocalTracker だけ にして、★8件を「足りない」と 数えました。
