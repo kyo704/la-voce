@@ -22254,7 +22254,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                       ★★前は `r.right || "›"` でした。★`right` が あると
                                         ★矢印が **置きかわり**、★「5つまで」だけに なって いました。
                                       ★★見本は `<s>5つまで ›</s>` ── ★両方 出します。 */}
-                                  <Li right={rightOf(r)} last={i === sec.rows.length - 1}>
+                                  <Li right={rightOf(r, { paid: subscribed === true })} last={i === sec.rows.length - 1}>
                                     {/* ★★赤で 出すのは、★見本の .x です（★退会）。 */}
                                     <span style={r.danger ? { color: C.rust } : undefined}>{r.label}</span>
                                   </Li>
@@ -22289,6 +22289,23 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         );
                       })}
                     </Note>
+                    {/* ★★くわしい 決まりを 見る（★2026-09-16・見本 `SC['もっと']` の 末尾）。
+                        ★★両方向の 棚おろしが 見つけた 欠け です。
+                        ★★注記の すぐ下 ── ★見本と 同じ 場所 です。
+                        ★★行き先は `/legal/terms`。
+                          ★★`/legal` は **404** です（★`app/legal/page.js` が ありません）。
+                          ★★404 へ 送る 札は、★押せない 札と 同じ です。
+                          ★表紙を 作る なら、★設定の ほうと 一緒に 戻して ください。
+                        ★★形は 設定に 置いた ものと 同じ です。★新しい 形を 作りません。 */}
+                    <a href="/legal/terms" target="_blank" rel="noopener noreferrer"
+                      style={{
+                        display: "inline-flex", alignItems: "center", justifyContent: "center",
+                        border: `1px solid ${C.line}`, borderRadius: 99,
+                        background: C.card, color: C.inkSoft,
+                        padding: "0 14px", minHeight: 44, marginTop: 10, ...TYPE.note
+                      }}>
+                      くわしい 決まりを 見る
+                    </a>
                   </div>
                 ) : null}
                 {/* ★★まとまりを 開いている あいだ、★戻る 道を 置きます。
@@ -22526,6 +22543,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ) : null}
                       <Li right="›" onClick={() => setActiveTab("profile")}>プロフィール・記録項目</Li>
 
+                      {/* ★★お知らせ（★2026-09-16・見本 `SC['設定']` の 3行目）。
+                          ★★両方向の 棚おろしが 見つけた 欠け です。
+                            ★★板（`SH['tsuchi']`）は **前から ありました**。
+                            ★★`TSUCHI_ROWS` も `lib/recordSheets.js` に ありました。
+                            ★★★無かったのは **入口**だけ です。
+                              ★きょう 何度も 出た 形 です ──
+                                ★「仕掛けは 在り、★入口が 無い」。
+                                ★招待の 札も、★同意の とりけしも、★同じ でした。
+                          ★★右の「連絡だけ」は 見本の 字 です（`<s>連絡だけ ›</s>`）。
+                            ★★いまは 1つの 状態しか ありません。★選べる ように なったら、
+                              ★ここに その 値を 出して ください。 */}
+                      <Li right="連絡だけ ›" onClick={() => setRecordSheet("お知らせ")}>
+                        お知らせ
+                      </Li>
                       <Li right="›" onClick={() => reloadNow()} last>
                         アプリを 読み込み直す
                         {hasDraft ? (

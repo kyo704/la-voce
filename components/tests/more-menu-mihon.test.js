@@ -63,7 +63,12 @@ t(/MORE_NOTE = Object\.freeze\(\[/.test(lib), "★MORE_NOTE が ある");
 console.log("\n② ★右の 字 ── ★数と 矢印の 両方");
 
 t(/export function rightOf/.test(lib), "★rightOf が lib に ある");
-t(/rightOf\(r\)/.test(ui), "★画面は rightOf を 通す");
+// ★★2026-09-16、★`rightOf` が 2つ目の 引数を 取る ように なりました。
+//   ★★プランだけ、★右に いまの 状態を 出します（★見本 `paid()?'調べる':'無料'`）。
+//   ★★判定は 画面が 渡します。★lib は 決めません。
+//     ★★門の 決めを 2か所に しない ため です。
+t(/rightOf\(r,\s*\{ paid:/.test(ui), "★画面は rightOf を 通し、★いまの 状態を 渡す");
+t(/subscribed === true/.test(ui), "★渡して いるのは、★いま 払って いるか どうか");
 t(!/r\.right \|\| "›"/.test(ui), "★`r.right || \"›\"` が 残って いない");
 // ★★見本の 字 そのもの。
 t(flat.includes("5つまで ›") || seg.includes("5つまで ›"),
