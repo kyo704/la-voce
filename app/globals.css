@@ -305,6 +305,22 @@ input[type="number"] {
    ★★倍率が 1 のとき（ふつうの設定）は、★何も変わりません。
      ★下の計算は、★1 のとき 1 になります。
    ============================================================================ */
+/* ★★★2026-09-16、★5段に しました（★見本 `SC['設定']` の 5つの pill）。
+   ★★見本の 段 … 小さめ／ふつう／大きめ／とても 大きい／一番 大きい
+     ★見本の 字の 大きさ … [12, 13.5, 15.5, 18, 21]px
+   ★★`normal` は これまでどおり `data-scale` を 付けません（★既定・倍率 1）。
+   ★★`small` を 足しました。★1 より 小さい 倍率 です。
+     ★★押せる 大きさ（`--tap`）は **44px を 下回りません**。
+       ★これは 画面に 書いて ある 約束 です ──
+       ★「大きくしても、押せる大きさは 44px を 下回りません。」
+       ★★小さく した ときも 同じ です。★守りは 片側だけでは ありません。
+   ★★`xxlarge` も 足しました。★`xlarge` の 先 です。 */
+[data-scale="small"] {
+  --scale: 0.9;
+  --tap: 44px;
+  --gap: 11px;
+  --line: 1.65;
+}
 [data-scale="large"] {
   --scale: 1.25;
   --tap: 56px;
@@ -316,6 +332,12 @@ input[type="number"] {
   --tap: 64px;
   --gap: 20px;
   --line: 1.8;
+}
+[data-scale="xxlarge"] {
+  --scale: 1.75;
+  --tap: 72px;
+  --gap: 24px;
+  --line: 1.85;
 }
 
 /* 本文の基準。★rem で書くと、この値に追従する。 */
@@ -517,7 +539,8 @@ button {
 /* ★★大きい文字のときは、★左端と同じく 外します。
    ★文字が大きいとタブが広がり、★名前の上に乗るためです。 */
 :root[data-scale="large"] .nav-scroll-wrap::after,
-:root[data-scale="xlarge"] .nav-scroll-wrap::after {
+:root[data-scale="xlarge"] .nav-scroll-wrap::after,
+:root[data-scale="xxlarge"] .nav-scroll-wrap::after {
   display: none;
 }
 .nav-scroll-wrap::before {
@@ -540,7 +563,8 @@ button {
      ★★同じことが、★左端でも起きていました。
    ★「戻る先がある」は、★指で払えば分かります。★名前が読めないほうが重いです。 */
 :root[data-scale="large"] .nav-scroll-wrap::before,
-:root[data-scale="xlarge"] .nav-scroll-wrap::before {
+:root[data-scale="xlarge"] .nav-scroll-wrap::before,
+:root[data-scale="xxlarge"] .nav-scroll-wrap::before {
   display: none;
 }
 

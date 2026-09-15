@@ -40,7 +40,12 @@ async function main() {
     ["components", "VocalTracker.jsx"], assertTrue, "★画面に");
 
   console.log("\n=== 文字の大きさとかんたん表示は、別の設定（§0-③）===");
-  assertEqual(m.SCALES, ["normal", "large", "xlarge"], "3段階");
+  // ★★★2026-09-16、★3段 → 5段に しました（★見本 `SC['設定']` の 5つ）。
+  //   ★★両方向の 棚おろしが 見つけました ──
+  //     ★見本に あって 実装に 無い もの … 小さめ／大きめ／一番 大きい。
+  //   ★★見て いる ことは 変わりません ── ★段が いくつ あるか、★どの 順か。
+  //   ★★数だけ 直しました。
+  assertEqual(m.SCALES, ["small", "normal", "large", "xlarge", "xxlarge"], "5段階");
   assertEqual(m.scaleAttribute({ display_scale: "normal" }), null, "ふつうのときは印を付けない");
   assertEqual(m.scaleAttribute({ display_scale: "large" }), "large", "大きいときは印を付ける");
   assertEqual(m.scaleAttribute({ display_scale: "てきとう" }), null, "知らない値はふつう扱い");

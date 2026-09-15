@@ -70,8 +70,13 @@ const vt = readCode("components", "VocalTracker.jsx");
   assertTrue(/simple_display: !isSimpleDisplay\(profile\)/.test(vt),
     "★かんたん表示は設定でオフに戻せる");
   assertTrue(/handleSaveDisplayPref\(\{ display_scale: s \}\)/.test(vt),
-    "★文字の大きさは設定で3段階から選び直せる");
-  eq(d.SCALES, ["normal", "large", "xlarge"], "大きさは3段階");
+    "★文字の大きさは設定で5段階から選び直せる");
+  // ★★★2026-09-16、★3段 → 5段に しました（★見本 `SC['設定']` の 5つ）。
+  //   ★★両方向の 棚おろしが 見つけました ──
+  //     ★見本に あって 実装に 無い もの … 小さめ／大きめ／一番 大きい。
+  //   ★★見て いる ことは 変わりません ── ★段が いくつ あるか、★どの 順か。
+  //   ★★数だけ 直しました。
+  eq(d.SCALES, ["small", "normal", "large", "xlarge", "xxlarge"], "大きさは5段階");
 
   console.log("\n=== 表と鍵 ===");
   const mig = readRaw("supabase", "migration_user_notices.sql");
