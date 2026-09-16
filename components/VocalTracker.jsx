@@ -214,7 +214,7 @@ import { PLANS } from "@/lib/plans";
 import {
   ATTENDING_WARN, ATTENDING_WARN_BOLD, ATTENDING_ADD_HEAD,
   ATTENDING_NOTE, ATTENDING_NOTE_BOLD, PASSCODE_LENGTH,
-  placeSubtitle, joinedLabel
+  placeSubtitle, joinedLabel, kindLabel
 } from "@/lib/attendingPlaces";
 // ★合言葉が 合わない ときの 字（★1つ だけ・★2026-09-16・Opus の 裁定）。
 //   ★★「ありません」「期限が 切れて います」「もう 使われて います」と 分けません。
@@ -23076,7 +23076,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     {myEnrollments.map((en) => {
                       const name = (en.org && en.org.name) || null;
                       const sub = placeSubtitle({
-                        kind: en.org && en.org.kind,
+                        // ★★生の 合図（`solo`）を 出しません（★2026-09-16）。
+                        //   ★★画面に「solo」と 出て いました。★通じません。
+                        //   ★★日本語が 決まって いない 値は、★出しません。
+                        kind: kindLabel(en.org && en.org.kind),
                         // ★★担当の 先生は `assignments` から 引きます。
                         //   ★★ご助言は「memberships 経由で」でした。★こちらに しました ──
                         //     ★★`memberships` は「その 教室に 居る 先生 **みんな**」です。

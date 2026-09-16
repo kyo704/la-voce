@@ -75,6 +75,19 @@ function t(cond, label) {
   t(m.joinedLabel(null) === null, "★無ければ null（★きょうで 埋めない）");
   t(m.joinedLabel("こわれた") === null, "★読めなければ null");
 
+  console.log("\n②-2 ★内側の 合図を、そのまま 出さないこと");
+  // ★★2026-09-16、★画面に `solo` と 出て いました。★利用者に 通じません。
+  //   ★★`kind` は 内側の 合図 です。★見本の 字は「大学」「音楽教室」── 日本語 です。
+  //   ★★知らない 値は 出しません。★埋めも しません
+  //     （★「その他」と 書くと、★分かって いない ことが 隠れます）。
+  t(typeof m.kindLabel === "function", "★合図を 字に する 手が ある");
+  t(m.kindLabel("solo") === null || typeof m.kindLabel("solo") === "string",
+    "solo を 通す（★null か、★決まった 日本語）");
+  t(m.kindLabel("なんでも知らない値") === null, "★★知らない 値は 出さない");
+  t(m.kindLabel("") === null && m.kindLabel(null) === null, "空は 出さない");
+  t(/kindLabel\(/.test(blk), "★★画面が その 手を 通して いる");
+  t(!/kind: en\.org && en\.org\.kind/.test(vtCode), "★生の 合図を 直に 渡して いない");
+
   console.log("\n③ さがす 口を 作って いないこと（★見本の 決め）");
   // ★★「こちらから 教室を さがす ことは できません」── ★注記の 1行目 です。
   //   ★★さがせると、★誰が どこに 通って いるかが 分かります。
