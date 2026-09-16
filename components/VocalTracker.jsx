@@ -108,7 +108,7 @@ import { markerRow } from "@/lib/periodMarkers";
 import TodayBand from "@/components/TodayBand";
 import TabBarV2 from "@/components/TabBarV2";
 import { TAB_BAR_HEIGHT, TYPE, SPACE, FONT_STACK, cardStyle, rem, RADIUS } from "@/lib/uiKit";
-import { ScreenHead, HeadRound, H3, Card, Li, Seg, Note, Wl, Box, Btn, Pill, Input } from "@/components/UiV2";
+import { ScreenHead, HeadRound, H3, Card, Li, Seg, Note, Wl, Box, Btn, Pill, Input, Back } from "@/components/UiV2";
 // ★下から 上がる 1枚の 器（★見本の `#sh`）。★「ことばで さがす」が これです。
 import BottomSheet from "@/components/BottomSheet";
 import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
@@ -17067,6 +17067,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 );
               })() : (
               <div className="space-y-4">
+                {/* ★★門の 中では、★下の 帯に レッスンが ありません。
+                    ★★ここへ 来る 道は「もっと ▸ 生徒を 招待する」だけ です。
+                      ★★なのに 戻る 道が ありません でした（★2026-09-16）。
+                    ★★門の 外の 方には、★帯から 来られます。★だから 出しません。
+                      ★★来て いない ところへ 帰す 札を 置かない ため です。 */}
+                {layoutV2 ? (
+                  <Back onClick={() => { setActiveTab("more"); setMoreSection(null); }}>
+                    もっと
+                  </Back>
+                ) : null}
                 <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>{t("tabLesson")}</h2>
 
                 {myTeachingLessons.length > 0 && (
@@ -20647,10 +20657,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ★けれど「もっとへ 戻る」道が 無く、★質問票には あります。
                         ★★形が そろって いません でした。
                       ★★字も 形も、★質問票の ものに そろえて います。 */}
-                  <button type="button" onClick={() => setActiveTab("more")}
-                    className="flex items-center gap-1 text-sm font-medium mb-2" style={{ color: C.inkSoft }}>
-                    <ChevronLeft size={16} />戻る
-                  </button>
+                  {/* ★★2026-09-16、★`Back` に そろえました。
+                      ★★前は `<ChevronLeft/>戻る`（14px・灰色）でした。
+                      ★★形が 4つ ありました ── ★パンくず／丸い ‹／これ／下線の ←。
+                        ★★見本は 1つ です（`bk(t)`）。★1つに します。 */}
+                  <div style={{ marginBottom: 8 }}>
+                    <Back onClick={() => { setActiveTab("more"); setMoreSection(null); }}>
+                      もっと
+                    </Back>
+                  </div>
                   <h2 className="ff-display italic text-xl mb-1">{t("titleProfileSettings")}</h2>
                   <p className="text-xs" style={{ color: C.inkSoft }}>{t("noteProfileSettings")}</p>
                 </div>
@@ -20981,8 +20996,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   ★2本目の削除の道を作りません。30日の猶予も、あちらのものです。 */}
             {activeTab === "withdrawConsent" && (
               <div className="space-y-4">
-                <button type="button" onClick={() => setActiveTab("profile")}
-                  className="text-xs underline" style={{ color: C.inkSoft }}>← もどる</button>
+                {/* ★★★行き先が ちがって いました（★2026-09-16）。
+                    ★★`setActiveTab("profile")` ── ★プロフィールへ 帰って いました。
+                    ★★2026-09-15 に、★もっとから 直に 来られる ように なりました。
+                      ★★けれど 戻るは 昔の ままで、★**来て いない ところ**へ 帰ります。
+                    ★★在っても、★来た ところへ 帰らない なら 道では ありません。
+                    ★★プロフィールの 中の 入口も 残って います（★2つとも 同じ 先）。
+                      ★★どちらから 来ても「もっと」へ 帰るのが、★迷いません。 */}
+                <Back onClick={() => { setActiveTab("more"); setMoreSection(null); }}>
+                  もっと
+                </Back>
                 <div className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
                   <h2 className="ff-display italic text-xl mb-3">同意を撤回します</h2>
 
@@ -21518,10 +21541,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <div className="space-y-5">
                   <style>{`@media print { header, nav, .no-print { display: none !important; } }`}</style>
                   <div className="rounded-2xl p-4 border no-print" style={{ background: C.card, borderColor: C.line }}>
-                    <button type="button" onClick={() => setActiveTab("more")}
-                      className="flex items-center gap-1 text-sm font-medium mb-2" style={{ color: C.inkSoft }}>
-                      <ChevronLeft size={16} />戻る
-                    </button>
+                    {/* ★★2026-09-16、★`Back` に そろえました（★戻る 道の 棚おろし）。
+                        ★★ここも もっとの 先 です（★書き出すから 来ます）。 */}
+                    <div className="mb-2">
+                      <Back onClick={() => { setActiveTab("more"); setMoreSection("じぶんの記録"); }}>
+                        もっと　／　じぶんの記録
+                      </Back>
+                    </div>
                     <h2 className="ff-display italic text-xl mb-1">記録の控え</h2>
                     <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                       書き出したデータに、どれだけの記録が入っているかを確かめるための紙です。
@@ -22101,6 +22127,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   {/* ★★見本は 右上に 🔍 を 置きます（★`SC['学ぶ']` の `.gear`）。
                       ★★押すと「ことばで さがす」の 1枚が 上がります。
                       ★★これまでは 画面の 中の 入力欄 でした（★決め ④で 移しました）。 */}
+                  {/* ★★もっとへ 戻る 道（★2026-09-16・坂本さんの ご指摘）。
+                      ★★この 画面には、★戻る 道が **1つも ありません** でした。
+                        ★★パンくずは「もっと」の タブの 中に 書かれて います。
+                        ★★ここは 別の タブ（`activeTab === "learn"`）なので、
+                          ★タブを 移った 時点で、★一緒に 消えて いました。
+                      ★★下の 帯は 出るので 行き止まりでは ありません。
+                        ★けれど「もっとへ 戻る」道が ありません でした。 */}
+                  <Back onClick={() => { setActiveTab("more"); setMoreSection("学ぶ"); }}>
+                    もっと　／　学ぶ
+                  </Back>
                   <div className="flex items-center justify-between">
                     <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>{t("tabLearn")}</h2>
                     <button type="button" onClick={() => setLearnSearchOpen(true)}
@@ -22338,7 +22374,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               );
             })()}
 
-            {activeTab === "info" && <HealthInfo language={language} />}
+            {/* ★★健康情報にも 戻る 道が ありません でした（★2026-09-16）。
+                ★★`HealthInfo` の 中には 足しません。★あの 部品は 中身だけ を 持ちます。
+                  ★★どこから 開かれたかを 知って いるのは、★こちら です。 */}
+            {activeTab === "info" && (
+              <div className="space-y-4">
+                <Back onClick={() => { setActiveTab("more"); setMoreSection("学ぶ"); }}>
+                  もっと　／　学ぶ
+                </Back>
+                <HealthInfo language={language} />
+              </div>
+            )}
 
             {activeTab === "more" && (
               <div className="space-y-5">
@@ -22502,12 +22548,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       busy={markerBusy} onToggle={handleTogglePeriodMarker} />
                   </div>
                 ) : null}
+                {/* ★★★戻る 道を、★1つの 部品に そろえました（★2026-09-16）。
+                    ★★ここは 手で 書いた ボタン でした ── ★13px・灰色（ink2）。
+                      ★★見本の `.back` は **12.5px・えんじ**（`--enji` #840C24）です。
+                      ★★押せる ものが、★押せない ものの 色を して いました。
+                    ★★`components/UiV2.jsx` に `Back` が **前から 在り**ました。
+                      ★★色も 大きさも 見本どおり に 作られて いて、
+                      ★★**どこからも 呼ばれて いません** でした（★0か所）。
+                    ★★「作った 関数は、必ず どこかから 呼ばれて いるか」── ★その 形 です。
+                      ★★部品は 正しく、★使われて いなかった だけ です。 */}
                 {layoutV2 && moreSection !== null ? (
-                  <button type="button" onClick={() => setMoreSection(null)}
-                    style={{ display: "block", background: "transparent", border: "none",
-                      padding: "10px 1px", minHeight: 44, color: C.inkSoft, fontSize: 13 }}>
-                    ‹　もっと　／　{moreSection}
-                  </button>
+                  <Back onClick={() => setMoreSection(null)}>もっと　／　{moreSection}</Back>
                 ) : null}
                 {/* ★★ことばの 選び（★2026-09-10）。
                     ★★門の中では、★上の 帯を 出さなく なりました（★見本のとおり）。
