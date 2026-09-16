@@ -14444,7 +14444,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         {SECTION_TITLES.lesson}
                       </p>
                       <p className="text-sm font-medium">
-                        {formatDateLabel(at.toISOString().slice(0, 10), language)}
+                        {/* ★★★日づけと 時刻を、★同じ 時計で 出します（★2026-09-16）。
+                            ★★`toISOString()` は **世界時**の 日づけ を 返します。
+                            ★★下の `toLocaleTimeString` は **お手元の 時計**で 出します。
+                            ★★2つを 並べると、★夜の 予定で 日が ずれます ──
+                              ★9月18日 15:00（世界時）は、★日本では 9月19日 0:00。
+                              ★けれど 日づけは 世界時の まま 9月18日 と 出て いました。
+                              ★★実機で「2026年9月18日（金）00:00」と 出ました。★同じ 形 です。
+                            ★★`toISODate` は お手元の 時計で 日づけを 作ります。 */}
+                        {formatDateLabel(toISODate(at), language)}
                         {"　"}
                         <span className="ff-mono">
                           {at.toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}

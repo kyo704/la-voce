@@ -80,7 +80,14 @@ insert into public.lessons (org_id, teacher_id, student_id, scheduled_at, durati
 select t.org_id,
        t.teacher_id,
        'f7520dc1-9154-4524-a350-ba0bcddbf0b2',
-       (current_date + 2) + time '15:00',
+       -- ★★★日本時間で 入れます（★2026-09-16）。
+       --   ★★はじめ `(current_date + 2) + time '15:00'` と 書いて いました。
+       --     ★★これは **時計の 付かない** 時刻 です。
+       --     ★★`timestamptz` の 列に 入れる と、★その つなぎの 時計で 読まれます。
+       --       ★SQL エディタは 世界時 です。★だから 15:00(UTC) に なりました。
+       --     ★★日本では 翌日の 0:00 です。★実機で そう 出ました。
+       --   ★★`at time zone 'Asia/Tokyo'` を 付けて、★日本の 15時に します。
+       ((current_date + 2) + time '15:00') at time zone 'Asia/Tokyo',
        45,
        '★見本-2026-09-16 レッスン',
        t.teacher_id
