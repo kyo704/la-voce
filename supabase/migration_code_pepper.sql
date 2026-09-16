@@ -53,7 +53,16 @@ create or replace function public.get_invitation_teacher(p_code text)
 returns jsonb
 language plpgsql
 security definer
-set search_path = public
+-- ★★★`extensions` も 道に 入れます（★2026-09-16）。
+--   ★★`public` だけ に して いました。★`digest()` が 見つかりません。
+--     ★★Supabase では、★拡張は `public` では なく `extensions` に 入ります。
+--   ★★関数は `digest()` の ところで 例外に なり、★`code_attempts` に
+--     ★足す **前** に 落ちて いました。★試した 記録すら 残りません。
+--   ★★画面は それを「入れませんでした」と 同じ 字に 変えて 出します。
+--     ★★だから 正しい 合言葉でも、★いつも 入れません でした。
+--   ★★台帳は 直って います。★この ファイルも 直します ──
+--     ★★直さない まま もう一度 流すと、★また 壊れます。
+set search_path = public, extensions
 as $$
 declare
   v_teacher uuid;
