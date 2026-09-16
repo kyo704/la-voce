@@ -24,7 +24,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const { readCode } = require("./_source");
+const { readCode, loadLib } = require("./_source");
 
 let ok = 0, ng = 0;
 function t(cond, label) {
@@ -40,11 +40,12 @@ if (missing.length) {
   process.exit(1);
 }
 
-const b64 = (...p) => "data:text/javascript;base64," + Buffer.from(
-  fs.readFileSync(path.join(__dirname, "..", "..", ...p), "utf8")).toString("base64");
+// ★★`@/lib/…` の 別名は、★data: で 読み込む ときに 解けません。
+//   ★★解き方は `_source.js` の `loadLib` が 1か所で 持ちます。
+//     ★★見張りごとに 書き写しません（★2026-09-16 に 2本 で 同じ ものを 書きました）。
 
 (async () => {
-  const S = await import(b64("lib", "classroomShell.js"));
+  const S = await loadLib("lib", "classroomShell.js");
   const vt = readCode("components", "VocalTracker.jsx");
 
   console.log("① ★★レッスンを、★2つの 道で 引いて いること");
@@ -202,8 +203,25 @@ const b64 = (...p) => "data:text/javascript;base64," + Buffer.from(
   t(S.nextLesson(merged, now).id === "b", "いちばん 近い ものを 返す");
   t(S.nextLesson([{ id: "p", scheduled_at: "2026-09-01T02:00:00Z" }], now) === null,
     "過ぎた ものは 返さない");
-  t(S.nextLesson([{ id: "h", scheduled_at: "2026-09-20T02:00:00Z", held: "出席" }], now) === null,
-    "済んだ もの（held）は 返さない");
+  // ★★★2026-09-16。★`held` という 列は 台帳に ありません。
+  //   ★★この 見張りは 1日 半、★在りもしない 列で 通って いました。
+  //     ★★`select` に 混ざって いた ため、★2つの 読みが 400 で 落ち、
+  //       ★「次のレッスンは、いま 読めませんでした」が 出て いました。
+  //   ★★出欠は `attendance` が 正 です ── "came" / "absent" / "canceled" / null。
+  t(S.nextLesson([{ id: "h", scheduled_at: "2026-09-20T02:00:00Z", attendance: "came" }], now) === null,
+    "済んだ もの（attendance: came）は 返さない");
+  t(S.nextLesson([{ id: "h", scheduled_at: "2026-09-20T02:00:00Z", attendance: "absent" }], now) === null,
+    "休んだ もの（absent）も 返さない");
+  t(S.nextLesson([{ id: "h", scheduled_at: "2026-09-20T02:00:00Z", attendance: "canceled" }], now) === null,
+    "取りやめ（canceled）も 返さない");
+  t(S.nextLesson([{ id: "h", scheduled_at: "2026-09-20T02:00:00Z", attendance: null }], now) !== null,
+    "★まだ 答えの 無い もの（★較正）は 返す");
+  // ★★★引く 列に、★台帳に 無い 名を 混ぜない。
+  t(!/\bheld\b/.test(S.LESSON_COLUMNS), "★★引く 列に held が 入って いない");
+  ["id", "scheduled_at", "org_id", "attendance"].forEach((c) => {
+    t(S.LESSON_COLUMNS.split(",").map((x) => x.trim()).includes(c),
+      `★${c} を 引いて いる`);
+  });
   t(S.nextLesson([{ id: "n", scheduled_at: null }], now) === null, "時刻の 無い 行は 返さない");
   // ★★無い ほうを 見ます。★「有る」だけ 試すと、★無い日が 落ちます。
   t(S.nextLesson([], now) === null, "1件も 無ければ null");

@@ -18,7 +18,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { readCode } = require("./_source");
+const { readCode, loadLib } = require("./_source");
 
 let 落ち = 0;
 function t(名, 条件) {
@@ -27,10 +27,8 @@ function t(名, 条件) {
 }
 
 (async () => {
-  const src = fs.readFileSync(
-    path.join(__dirname, "..", "..", "lib", "classroomShell.js"), "utf8");
-  const mod = await import(
-    "data:text/javascript;base64," + Buffer.from(src, "utf8").toString("base64"));
+  // ★★`@/lib/…` の 別名を 解いて から 読み込みます（★`loadLib`・1か所）。
+  const mod = await loadLib("lib", "classroomShell.js");
   const f = mod.lessonsInAttendingOrgs;
 
   const 未来 = new Date(Date.now() + 7 * 864e5).toISOString();

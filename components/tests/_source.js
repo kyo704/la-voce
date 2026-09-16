@@ -95,5 +95,27 @@ function assertAbsent(words, parts, assertTrue, label) {
   });
 }
 
+// ---------------------------------------------------------------------------
+// ★`lib/` の 1本を、★そのまま 読み込む（★2026-09-16）
+//
+//   ★★見張りは `data:text/javascript` で 読み込みます。★元を そのまま 読む ため です。
+//   ★★けれど `@/lib/…` の 別名は、★その とき 解けません（★ERR_INVALID_URL）。
+//     ★★別名を 使う lib が 1本でも 増えると、★見張りが 落ちます。
+//     ★★2026-09-16、★`lib/classroomShell.js` が `lib/lessonCounts.js` を
+//       ★読む ように なった ところで、★2本 落ちました。
+//   ★★避ける ために import を 消すと、★同じ 決まりの 2つめの 写しが できます。
+//     ★★それが この 蔵の 病い です。★だから 別名の ほうを 解きます。
+//
+//   ★★★1か所で 持ちます。★見張りごとに 書き写しません。
+// ---------------------------------------------------------------------------
+async function loadLib(...parts) {
+  const path = require("path");
+  const full = path.join(ROOT, ...parts);
+  const body = readRaw(...parts).replace(
+    /from "@\/(.+?)"/g,
+    (_, rel) => `from "${new URL("file://" + path.join(ROOT, rel) + ".js").href}"`);
+  return import("data:text/javascript;base64," + Buffer.from(body, "utf8").toString("base64"));
+}
+
 module.exports = {
-  assertAbsent, ROOT, stripComments, readRaw, readCode };
+  assertAbsent, ROOT, stripComments, readRaw, readCode, loadLib };
