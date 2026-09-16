@@ -140,6 +140,16 @@ export async function POST(request) {
     .eq("org_id", orgId)
     .eq("teacher_id", invitation.teacher_id)
     .eq("student_id", user.id)
+    // ★★★閉じた 受け持ちを 数に 入れません（★2026-09-16）。
+    //   ★★`leave_enrollment` が、★やめる とき `ended_at` を 入れる ように
+    //     なりました。★その 行が ここで 見つかって しまうと、
+    //     ★入り直した 方に、★新しい 受け持ちが 作られません。
+    //   ★★受け持ちが 無ければ、★先生からの 連絡も 門下も 出ません
+    //     （★`org_messages_select` が `ended_at is null` を 見ます）。
+    //   ★★台帳に 一意の 束ねは ありません（★2026-09-16 に 確かめました ──
+    //     ★主キーと 外つなぎ 3つ だけ）。★だから もう1本 足せます。
+    //     ★★過去の 受け持ちは、★記録として 残ります。
+    .is("ended_at", null)
     .limit(1);
   if (findError) {
     // ★在籍は作れています。担当が作れなくても、そこは巻き戻しません。

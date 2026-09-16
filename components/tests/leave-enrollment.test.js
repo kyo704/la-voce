@@ -98,7 +98,26 @@ t("★upsert で left_at を null に 戻して いる",
 t("★org_id,student_id で 束ねて いる",
   /onConflict:\s*"org_id,student_id"/.test(accept));
 
-console.log("\n=== ⑦ 写しが 残って いない ===");
+console.log("\n=== ⑦ 受け持ちも 同じ 取引で 閉じる（★裁定 第2版）===");
+t("★assignments を 閉じて いる", /update public\.assignments[\s\S]{0,120}set ended_at = now\(\)/.test(sql));
+t("★自分の 行だけ", /update public\.assignments[\s\S]{0,200}student_id = auth\.uid\(\)/.test(sql));
+t("★その 教室だけ", /update public\.assignments[\s\S]{0,240}org_id = p_org_id/.test(sql));
+t("★開いて いる 分だけ", /update public\.assignments[\s\S]{0,280}ended_at is null/.test(sql));
+t("★★行を 消して いない", !/delete from public\.assignments/i.test(sqlCode));
+// ★★数えるのは 在籍の ほう。★`get diagnostics` は 直前の 文を 見ます。
+//   ★★受け持ちの update の あとに 置くと、★受け持ちの 数に なります。
+//     ★★先生が 付いて いない 方で 0 が 返り、★やめられたのに 失敗に 見えます。
+t("★★行数は 在籍の すぐ あとで 取って いる",
+  sqlCode.indexOf("get diagnostics") > sqlCode.indexOf("update public.enrollments")
+  && sqlCode.indexOf("get diagnostics") < sqlCode.indexOf("update public.assignments"));
+t("★★1つの 取引（★関数の 中で ひと続き）",
+  !/commit|begin;/i.test(sqlCode));
+
+console.log("\n=== ⑧ 入り直し ── 閉じた 受け持ちを 数に 入れない ===");
+t("★★ended_at is null で しらべて いる",
+  /\.eq\("student_id", user\.id\)[\s\S]{0,900}\.is\("ended_at", null\)[\s\S]{0,60}\.limit\(1\)/.test(accept));
+
+console.log("\n=== ⑨ 写しが 残って いない ===");
 t("★handleLeaveOrg は 消えて いる", !/function handleLeaveOrg/.test(vt));
 t("★消した ことを 書き残して いる", /handleLeaveOrg/.test(vtRaw));
 

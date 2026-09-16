@@ -278,7 +278,7 @@ import { RETENTION_LINES } from "@/lib/paymentRetention";
 import {
   LESSON_COLUMNS, EVENT_COLUMNS, MESSAGE_COLUMNS,
   LESSON_FETCH_LIMIT, EVENT_SHOW_LIMIT, MESSAGE_SHOW_LIMIT,
-  mergeLessons, nextLesson, upcomingEvents, recentMessages,
+  mergeLessons, lessonsInAttendingOrgs, nextLesson, upcomingEvents, recentMessages,
   eventDateLabel, eventMoved,
   SECTION_TITLES, EVENT_NOTE
 } from "@/lib/classroomShell";
@@ -7503,6 +7503,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //   ★★引くのは、★出す ものだけ です ── ★読まれない 値を 運ばない（★N-1）。
       //     ★No.019.5 で 消したのも、★同じ 形でした ──
       //       ★取って、★数えて、★捨てて いました。
+      // ★★先に、★いま 通って いる 教室を 読みます（★Opus の 裁定・2026-09-16）。
+      //   ★★やめた 教室の これからの 予定を 出さない ため です。
+      //   ★★台帳の 決まりは 変えません ── ★レッスンの 記録は その方の もの です。
+      //     ★★隠すのは これからの 分 だけ、★それも 画面の 絞りで。
+      //   ★★読めなかった ときは **絞りません**（null を 渡します）。
+      //     ★★「分からない」を「在籍が 無い」に しない ため です。
+      //     ★★分からない ときに 消すと、★通って いる方の 予定が 黙って 消えます。
+      const enrolled = await supabase.from("enrollments")
+        .select("org_id").eq("student_id", userId).eq("status", "active");
+      const attendingOrgIds = enrolled.error
+        ? null
+        : (enrolled.data || []).map((r) => r.org_id).filter(Boolean);
+      if (!alive) return;
       const [byStudent, byLink, events, messages] = await Promise.all([
         // ① 教室の レッスン（★org_id あり・student_id で 当たる）
         //
@@ -7553,7 +7566,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //   ★★2つの うち 片方でも 取れれば、★出せる ものは 出します ──
       //     ★個人指導だけ の 方が、★教室側の 失敗で 白く なりません。
       setClassroom({
-        lessons: mergeLessons(byStudent.data, byLink.data),
+        lessons: lessonsInAttendingOrgs(
+          mergeLessons(byStudent.data, byLink.data), attendingOrgIds),
         lessonsOk: !byStudent.error || !byLink.error,
         events: events.data || [],
         eventsOk: !events.error,

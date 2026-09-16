@@ -46,12 +46,42 @@ begin
      and org_id = p_org_id
      and status = 'active';
 
+  get diagnostics n = row_count;
+
+  -- ★★★受け持ちも、★同じ 取引で 閉じます（★Opus の 裁定・2026-09-16 第2版）。
+  --
+  --   ★★見本は「この教室から、あなたが 見えなくなります」と 書いて います。
+  --     ★★けれど 先生からの 連絡は 届き 続けて いました。
+  --     ★★`org_messages_select` は `assignments`（ended_at is null）で 見ます。
+  --       ★在籍では ありません。★だから 在籍だけ 閉じても 止まりません。
+  --   ★★台帳で 数えました ── ★受け持ちで 決めて いる 決まりは 4本、
+  --     ★うち 3本が `ended_at is null` を 見ます
+  --     （org_messages_select / org_messages_insert / org_message_reads_select）。
+  --
+  --   ★★★別々に 呼びません。★1つの 取引に します。
+  --     ★★片方だけ 成った 姿を 作らない ため です。
+  --     ★★関数の 中は ひと続き です。★誤りが 出れば、★どちらも 戻ります。
+  --
+  --   ★★行は 消しません。★`ended_at` を 入れます。
+  --     ★★過去の 受け持ちは、★記録として 残ります。
+  update public.assignments
+     set ended_at = now()
+   where student_id = auth.uid()
+     and org_id = p_org_id
+     and ended_at is null;
+
   -- ★★★何行 直したかを 返します。
   --   ★★`void` では、★呼ぶ 側が「できたか」を 知れません。
   --   ★★2026-09-16、★まさに それで しくじりました ──
   --     ★0行 直しても 成功に 見え、★一覧に 残って いました。
   --   ★★数を 返せば、★画面が 確かめられます。
-  get diagnostics n = row_count;
+  -- ★★★数えるのは **在籍**の 行数 です。★受け持ちでは ありません。
+  --   ★★`get diagnostics` は **直前の** 文の 行数 を 返します。
+  --     ★★上に 受け持ちの update を 足した ので、★このまま だと
+  --       ★受け持ちの 数に 変わって しまいます。
+  --     ★★受け持ちが 0本の 方（★先生が 付いて いない 方）で 0 が 返り、
+  --       ★画面が「やめられませんでした」と 出します。★やめられて いるのに。
+  --   ★★だから 在籍の すぐ あとで 数を 取り、★ここでは それを 返します。
   return n;
 end;
 $$;
@@ -60,7 +90,7 @@ revoke all on function public.leave_enrollment(uuid) from public, anon;
 grant execute on function public.leave_enrollment(uuid) to authenticated;
 
 comment on function public.leave_enrollment(uuid) is
-  '生徒が自分の在籍を left にする。列を絞るため policy ではなく関数で行う。直した行数を返す。';
+  '生徒が自分の在籍を left にし、同じ取引で受け持ち（assignments）も閉じる。列を絞るため policy ではなく関数で行う。返り値は在籍の更新行数。';
 
 -- ★★`enrollments` に UPDATE の 決まりを **足しません**（★裁定）。
 --   ★★足すと、★行ごと ぜんぶの 列が 書けて しまいます。
