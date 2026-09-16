@@ -11048,6 +11048,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [attendingOrgId, setAttendingOrgId] = useState(null);
   // ★その 教室を「やめる」の 1枚を 出して いるか。
   const [attendingLeaving, setAttendingLeaving] = useState(false);
+  // ★やめる が できなかった こと（★黙って 戻さない ため・2026-09-16）。
+  const [leaveFailed, setLeaveFailed] = useState(false);
   /**
    * ★「もっと」を 開きます。★来た ところを 覚えてから 移ります。
    *
@@ -11970,11 +11972,30 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
    */
   async function leaveOrgNow(enrollmentId) {
     const supabase = createClient();
-    const { error } = await supabase.from("enrollments")
+    // ★★★`.select()` を 付けます（★2026-09-16・実機の ご報告で 分かりました）。
+    //
+    //   ★★付けないと、★**0行に 当たっても 成功に 見えます**。
+    //     ★★決まり（RLS）が 書き換えを 許して いない とき、
+    //       ★PostgREST は 誤りを 返しません。★0行 直した、と 返します。
+    //     ★★私は `error` だけ を 見て いました。★だから 黙って 戻り、
+    //       ★一覧に その 教室が 残って いました。
+    //   ★★きょう 何度も 見た 形 です ── ★「無い」と「読めない／書けない」を
+    //     ★同じに して しまう。★webhook の `update` も 同じでした。
+    //   ★★だから **何行 直したか**を 見ます。★0なら 失敗 です。
+    const { data, error } = await supabase.from("enrollments")
       .update({ status: "left", left_at: new Date().toISOString() })
-      .eq("id", enrollmentId);
+      .eq("id", enrollmentId)
+      .select("id");
     if (error) {
       console.error("★教室をやめられませんでした:", error);
+      return false;
+    }
+    if (!data || data.length === 0) {
+      // ★★書けて いません。★たいていは 決まり（RLS）が 無い ためです。
+      //   ★★画面には「やめられませんでした」と 出します。
+      //     ★★黙って 一覧へ 戻すと、★やめた つもりに なります。
+      console.error("★やめる書き込みが 0行でした。enrollments の UPDATE の決まりを"
+        + " お確かめください（supabase/問い-enrollmentsを書き換えられるか.sql）。");
       return false;
     }
     await fetchMyEnrollments();
@@ -23238,7 +23259,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           <Btn onClick={async () => {
                             const ok = await leaveOrgNow(en.id);
                             if (ok) { setAttendingLeaving(false); setAttendingOrgId(null); }
+                            // ★★できなかった ことを、★画面に 出します（★2026-09-16）。
+                            //   ★★黙って 一覧へ 戻すと、★やめた つもりに なります。
+                            //     ★★実機で そう なりました。★一覧に 残って いました。
+                            else setLeaveFailed(true);
                           }}>{LEAVE_CONFIRM}</Btn>
+                        {leaveFailed ? (
+                          <p className="text-sm" style={{
+                            color: C.curtain, lineHeight: 1.9, margin: "10px 0 0"
+                          }}>
+                            やめられませんでした。時間を おいて、もう一度 お試しください。
+                          </p>
+                        ) : null}
                         </div>
                         <Note fold>
                           {LEAVE_NOTE.map((line) => (

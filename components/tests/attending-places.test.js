@@ -160,6 +160,20 @@ function t(cond, label) {
     "★★在籍の 行を 消して いない");
   // ★★画面が 確かめ です。★窓を 重ねません。
   t(/async function leaveOrgNow/.test(vtCode), "★窓を 出さない 手が ある");
+  // ★★★何行 直したかを 見る こと（★2026-09-16・実機の ご報告）。
+  //   ★★`.select()` を 付けないと、★**0行に 当たっても 成功に 見えます**。
+  //     ★★決まり（RLS）が 書き換えを 許して いない とき、
+  //       ★PostgREST は 誤りを 返さず、★「0行 直した」と 返します。
+  //   ★★実機で そう なりました ── ★やめた はずの 教室が 一覧に 残って いました。
+  //   ★★きょう 何度も 見た 形 です ── ★「無い」と「書けない」を 同じに して しまう。
+  const lo = vtCode.indexOf("async function leaveOrgNow");
+  const loEnd = vtCode.indexOf("async function", lo + 10);
+  const loBlk = vtCode.slice(lo, loEnd > 0 ? loEnd : lo + 900);
+  t(/\.select\(/.test(loBlk), "★★何行 直したかを 見て いる（`.select()`）");
+  t(/data\.length === 0/.test(loBlk), "★0行なら 失敗に して いる");
+  t(/return false/.test(loBlk), "★失敗を 返して いる");
+  // ★★黙って 一覧へ 戻しません。★やめた つもりに させない ため。
+  t(/setLeaveFailed\(true\)/.test(vtCode), "★★できなかった ことを 画面に 出す");
   // ★★★窓の 幅を 決め打ちに しません（★きょう 2度目 です）。
   //   ★★700字に すると、★すぐ 次の `handleLeaveOrg` まで 届きます。
   //     ★★あちらは 門の 外の 道 で、★`window.confirm` を 出します。
