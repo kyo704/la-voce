@@ -102,7 +102,13 @@ function ok(cond, label) {
   ok(/layoutV2 && moreSection === null \?/.test(v), "★一覧は 門の中だけ");
 
   console.log("⑥ 出口が ある");
-  ok(/layoutV2 && moreSection !== null \?/.test(v), "★開いている あいだ、★戻る 道が 出る");
+  // ★★2026-09-16、★条件が 1つ 増えました ── `&& !attendingOrgId`。
+  //   ★★通っている ところの **中身**を 開くと、★その 1枚が 自分の 戻る 道を 持ちます。
+  //     ★★パンくずも 出て いると、★戻る 道が **2つ** 並びます。
+  //     ★★撮って、★はじめて 見えました。★どちらを 押すか 迷います。
+  //   ★★だから「奥を 開いて いない ときは 出る」に なりました。
+  ok(/layoutV2 && moreSection !== null && !attendingOrgId \?/.test(v),
+    "★開いている あいだ、★戻る 道が 出る（★奥の 1枚を 除く）");
   ok(/setMoreSection\(null\)/.test(v), "★押すと 一覧へ 戻る");
 
   console.log("⑦ 教室の 行は、★入れる方だけ");

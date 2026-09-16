@@ -22585,7 +22585,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ★★私の 前の 棚おろしは「在るか」しか 見て いません でした。
                       ★★こんどは 撮った 絵の 座標を 測って います
                         （★`tools/back_position_audit.py`）。 */}
-                {layoutV2 && moreSection !== null ? (
+                {/* ★★★戻る 道は、★1つの 画面に 1つ です（★2026-09-16）。
+                    ★★通っている ところの **中身**を 開くと、★その 1枚が
+                      ★自分の 戻る 道（「‹ 通っている ところ」）を 持ちます。
+                    ★★そのとき この パンくずも 出て いると、★2つ 並びます。
+                      ★★撮って、★はじめて 見えました。★字だけでは 分かりません。
+                      ★★どちらを 押せば よいか、★読む 方が 迷います。
+                    ★★だから、★奥の 1枚を 開いて いる あいだは 出しません。 */}
+                {layoutV2 && moreSection !== null && !attendingOrgId ? (
                   <Back onClick={() => setMoreSection(null)}>もっと　／　{moreSection}</Back>
                 ) : null}
                 {/* ★★もっと 自身の 戻る 道（★2026-09-16・坂本さんの お決め）。
