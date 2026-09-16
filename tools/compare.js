@@ -128,7 +128,10 @@ const SCREENS = [
   // ★★2026-09-16、★中間の 画面を 廃しました（★裁定その69）。
   //   ★★もっと ▸ 学ぶ で、★章立てに 直に 入ります。★1回 押すだけ です。
   { key: "SC-学ぶ-中身", tab: "きょう", steps: ["もっとを開く", "学ぶ"] },
-  { key: "SC-台帳", tab: "きょう", steps: ["もっとを開く", "もっているもの"] },
+  // ★★もっているもの は、★上に かぶさる 1枚 です（★`position:fixed; inset:0`）。
+  //   ★★`role="dialog"` では ないので、★見つけ方を 足して います。
+  { key: "SC-台帳", tab: "きょう", steps: ["もっとを開く", "もっているもの"],
+    sheet: true, overlay: "div[style*=\"z-index: 60\"]" },
   { key: "SC-書き出す", tab: "きょう", steps: ["もっとを開く", "書き出す"] },
   { key: "SC-退会", tab: "きょう", steps: ["もっとを開く", "退会する"] },
   // ★★ノートの 帯（★見本は「1枚」、★実装は「受診用」）。★字が ちがいます。
@@ -334,7 +337,15 @@ async function capture(env) {
         //   ★★見本の 側は `#sh` だけ を 切り取って います。
         //     ★★片方だけ 全面で 撮れば、★数は 必ず 合いません。
         //     ★★道具の くせを、★画面の 欠点 として 読んで いた ところ でした。
-        const shEl = sc.sheet ? await page.$('[role="dialog"]') : null;
+        // ★★かぶさる 1枚は、★その 1枚だけ を 撮ります。
+        //   ★★`role="dialog"` の もの（★BottomSheet）と、
+        //     ★`position:fixed; inset:0` で 上に 出る もの（★OwnedLedger）が あります。
+        //   ★★2026-09-16、★後者を 全面で 撮って いました。
+        //     ★★後ろの「もっと」の 一覧まで 数に 入り、★足しが 43件 出ました。
+        //     ★★もっているもの の 不一致では ありません。
+        const shEl = sc.sheet
+          ? (await page.$('[role="dialog"]')) || (await page.$(sc.overlay || "___none___"))
+          : null;
         if (shEl) await shEl.screenshot({ path: file });
         else await page.screenshot({ path: file, fullPage: true });
         // ★★絵と いっしょに、★画面の 中身も 書き出します（★2026-09-11）。

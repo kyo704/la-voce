@@ -24,7 +24,7 @@
 import { useMemo, useState } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, SPACE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
-import { ScreenHead, HeadRound, Seg, Card, H3, Li, Note } from "@/components/UiV2";
+import { ScreenHead, Back, Seg, Card, H3, Li, Note } from "@/components/UiV2";
 import { ledgerLine, sortLedger, acquisitionReason, LEDGER_NOTE, NO_DATE_TEXT, OWNED_EMPTY_TEXT, OWNED_ONLY_NOTE } from "@/lib/itemLedger";
 
 // ★★2026-09-11、★「まだ」の 札を 消しました。
@@ -75,8 +75,15 @@ export default function OwnedLedger({
       background: C.paper, fontFamily: FONT_STACK,
       padding: `0 ${rem(SPACE.cardPadX)} calc(${rem(24)} + env(safe-area-inset-bottom))`
     }}>
-      <ScreenHead title="もっているもの"
-        right={<HeadRound mark="‹" label="もどる" onClick={onClose} />} />
+      {/* ★★★戻る 道が **右上**に ありました（★2026-09-16・坂本さんの ご指摘）。
+          ★★`ScreenHead` の `right` に 丸い ‹ を 置いて いました。
+            ★★在るには 在ります。★けれど 見本は **左上**です。
+          ★★測って 分かりました ── x=348。★画面の 右端 です。
+            ★★私の 前の 棚おろしは「在るか」しか 見て いません でした。
+            ★★字を 読むだけ では、★置き場所は 分かりません。
+          ★★ほかの 画面と 同じ `Back` に そろえます。 */}
+      <Back onClick={onClose}>もっと</Back>
+      <ScreenHead title="もっているもの" />
 
       <Seg items={TABS} activeKey={tab} onSelect={setTab} />
 

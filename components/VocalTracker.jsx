@@ -22410,6 +22410,21 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
             {activeTab === "more" && (
               <div className="space-y-5">
+                {/* ★★★戻る 道は、★いちばん 上に 置きます（★2026-09-16）。
+                    ★★ここは ずっと **下のほう**に 書かれて いました。
+                      ★★節は `display` で 出し入れして いるので、
+                        ★★書いた 順が、★そのまま 画面の 順に なります。
+                      ★★「毎日、聞いてほしいこと」の 節は この 上に あり、
+                        ★★戻る 道が **画面の いちばん 下**に 出て いました。
+                      ★★設定では 上に 見えて いた ので、★気づけません でした。
+                        ★★節に よって 位置が 変わる、★という 形 です。
+                    ★★坂本さんの 実機の ご指摘で 分かりました。
+                      ★★私の 前の 棚おろしは「在るか」しか 見て いません でした。
+                      ★★こんどは 撮った 絵の 座標を 測って います
+                        （★`tools/back_position_audit.py`）。 */}
+                {layoutV2 && moreSection !== null ? (
+                  <Back onClick={() => setMoreSection(null)}>もっと　／　{moreSection}</Back>
+                ) : null}
                 {/* ★★見本 A10 の 9行（★2026-09-11・坂本さんの お決め）。
                     ★★シートに しません。★1画面の ままです。
                       ★同意の 撤回と 退会は 法で 求められる 道なので、
@@ -22589,9 +22604,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ★★**どこからも 呼ばれて いません** でした（★0か所）。
                     ★★「作った 関数は、必ず どこかから 呼ばれて いるか」── ★その 形 です。
                       ★★部品は 正しく、★使われて いなかった だけ です。 */}
-                {layoutV2 && moreSection !== null ? (
-                  <Back onClick={() => setMoreSection(null)}>もっと　／　{moreSection}</Back>
-                ) : null}
                 {/* ★★ことばの 選び（★2026-09-10）。
                     ★★門の中では、★上の 帯を 出さなく なりました（★見本のとおり）。
                       ★★言語を 選ぶ 口が、★そこにしか ありませんでした。

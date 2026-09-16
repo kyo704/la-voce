@@ -121,5 +121,37 @@ console.log("\n⑤ 行き先が「来た ところ」で あること");
   t(/setActiveTab\("more"\)/.test(blk), "★もっとへ 帰る");
 }
 
+
+console.log("\n⑥ ★戻る 道が「左上」に あること");
+// ★★★「在るか」だけ を 見て いて、★2つ 見落としました（★2026-09-16）。
+//   ★★`もっているもの` …… `ScreenHead` の **右**に 丸い ‹（★x=348・右端）。
+//   ★★`毎日、聞いてほしいこと` …… パンくずが **画面の いちばん 下**。
+//     ★★節は `display` で 出し入れして いるので、★書いた 順が 画面の 順です。
+//     ★★設定では 上に 見えて いた ので、★字を 読むだけ では 気づけません でした。
+//   ★★坂本さんの 実機の ご指摘で 分かりました。
+//   ★★だから ここでは「★どう 書いて あるか」を 見ます ──
+//     ★① 戻る 道は、★その かたまりの **先頭**に 在ること
+//     ★② `ScreenHead` の `right` に 戻る 道を 置かないこと
+//   ★★位置そのものは `tools/back_position_audit.py` が 絵から 測ります。
+{
+  // ★★もっと の かたまりの 先頭に、★パンくずが 在ること。
+  const at = vt.indexOf('{activeTab === "more" && (');
+  const head = at < 0 ? "" : vt.slice(at, at + 1800);
+  t(at > 0 && /<Back onClick=\{\(\) => setMoreSection\(null\)\}/.test(head),
+    "★もっとの かたまりの 先頭に パンくずが ある");
+  // ★★節より 前に 在ること。★うしろだと、★節の 下に 出ます。
+  const iBack = vt.indexOf("<Back onClick={() => setMoreSection(null)}");
+  const iSec = vt.indexOf('moreSection === "聞く"');
+  t(iBack > 0 && iSec > 0 && iBack < iSec,
+    "★パンくずが「聞く」の 節より 前に ある");
+
+  // ★★`ScreenHead` の `right` に、★戻る 道を 置いて いないこと。
+  const ol = fs.existsSync(path.join(ROOT, "components/OwnedLedger.jsx"))
+    ? readRaw("components", "OwnedLedger.jsx") : "";
+  t(!/right=\{<HeadRound mark="‹"/.test(ol),
+    "★もっているもの の ‹ が 右上に ない");
+  t(/<Back onClick=\{onClose\}/.test(ol), "★もっているもの が Back を 使っている");
+}
+
 console.log(ng === 0 ? `\n★すべて 通りました（${ok}）` : `\n★${ng} 件 落ちました`);
 process.exit(ng === 0 ? 0 : 1);
