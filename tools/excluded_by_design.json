@@ -76,12 +76,14 @@
   "プラン": [
     {
       "text": "次の お支払い　2026年10月9日",
-      "why": "支払いの 期日を 持って いません。`subscriptions` から 読むのは status と tier だけ です。",
+      "why": "★訂正（2026-09-16）── ★期日は **在ります**。`subscriptions.current_period_end`。★`app/billing/page.js` が 実際に 読んで います。★無いのは 列では なく、★`components/VocalTracker.jsx` が それを 選んで いない ことです。",
       "why_not_placeholder": "見本に 在る 日付を、それらしく こしらえません。お金の 話で 推し量った ことを 出しません。",
-      "trigger": "`subscriptions` に 期日の 列が あると 台帳で 確かめられた とき",
+      "trigger": "坂本さんが「次の お支払い」を 出すと お決めに なったとき（★列は すでに 在ります）",
       "ledger": "㉚と同型",
       "decided": "2026-09-16",
-      "decided_by": "Code（★坂本さんのご判断待ち）"
+      "decided_by": "Code（★坂本さんのご判断待ち）",
+      "correction": "★はじめ「期日を 持って いません」と 書きました。★誤りです。★`subscriptions` から 読んで いるのが status と tier だけ、というのは VocalTracker の 話で、★列が 無い という 話では ありません。★列の 有る 無しを、★1つの 呼び出しの select だけ を 見て 決めて いました。",
+      "how": "`subscriptions` の select に `current_period_end` を 足し、`planState()` に 渡すだけ です。★台帳の 追加は 要りません。"
     }
   ],
   "学ぶ-中身": [
