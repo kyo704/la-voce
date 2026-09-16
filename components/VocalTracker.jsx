@@ -108,7 +108,7 @@ import { markerRow } from "@/lib/periodMarkers";
 import TodayBand from "@/components/TodayBand";
 import TabBarV2 from "@/components/TabBarV2";
 import { TAB_BAR_HEIGHT, TYPE, SPACE, FONT_STACK, cardStyle, rem, RADIUS } from "@/lib/uiKit";
-import { ScreenHead, HeadRound, H3, Card, Li, Seg, Note, Wl, Box, Btn, Pill, Input, Back } from "@/components/UiV2";
+import { ScreenHead, HeadRound, H3, Card, Li, Seg, Note, Wl, Box, Btn, Pill, Input, Back, Tag, Warn } from "@/components/UiV2";
 // ★下から 上がる 1枚の 器（★見本の `#sh`）。★「ことばで さがす」が これです。
 import BottomSheet from "@/components/BottomSheet";
 import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
@@ -210,6 +210,12 @@ import { scopeForPeriod, mayViewSummary, GATE_CLOSING_LINES, gatePriceLines,
   PAID_FEATURES, featureLabel } from "@/lib/freeTier";
 // ★値段は lib/plans.js が持ちます。★画面に書き写しません。
 import { PLANS } from "@/lib/plans";
+// ★通っている ところ の 字（★見本 `SC['通っているところ']`／★裁定その68）。
+import {
+  ATTENDING_WARN, ATTENDING_WARN_BOLD, ATTENDING_ADD_HEAD,
+  ATTENDING_NOTE, ATTENDING_NOTE_BOLD, PASSCODE_LENGTH,
+  placeSubtitle, joinedLabel
+} from "@/lib/attendingPlaces";
 // ★合言葉が 合わない ときの 字（★1つ だけ・★2026-09-16・Opus の 裁定）。
 //   ★★「ありません」「期限が 切れて います」「もう 使われて います」と 分けません。
 //     ★★分けると、★総当たりに「当たりが 近い」と 教える ことに なります。
@@ -22650,7 +22656,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                       ★★前は `r.right || "›"` でした。★`right` が あると
                                         ★矢印が **置きかわり**、★「5つまで」だけに なって いました。
                                       ★★見本は `<s>5つまで ›</s>` ── ★両方 出します。 */}
-                                  <Li right={rightOf(r, { paid: subscribed === true })} last={i === sec.rows.length - 1}>
+                                  <Li right={rightOf(r, { paid: subscribed === true, orgCount: myEnrollments.length })} last={i === sec.rows.length - 1}>
                                     {/* ★★赤で 出すのは、★見本の .x です（★退会）。 */}
                                     <span style={r.danger ? { color: C.rust } : undefined}>{r.label}</span>
                                   </Li>
@@ -23022,6 +23028,106 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ★つまり「出す」です。★これを 忘れると、
                         ★38人の 画面に 新しい 節が 生えます。
                     ★★字は lib/planScreen.js が 持ちます。★ここに 書きません。 */}
+                {/* ★★★通っている ところ（★見本 `SC['通っているところ']`／★裁定その68）。
+                    ★★門の 中だけ です。★38人の 画面は 変わりません。
+                    ★★字は lib/attendingPlaces.js が 持ちます。
+                    ★★「招かれて いる ところ」の 行は **置いて いません**。
+                      ★★坂本さんの お決め（★㋑）── ★いまは 作らず、
+                        ★合言葉 1本で 10月に 間に合わせる。
+                      ★★押せない 札を 置きません（★§8⑤）。★台帳に 登録して あります。 */}
+                {layoutV2 && moreSection === "通っているところ" && (
+                  <div data-v2-attending="1">
+                    {/* ★数は 右上の 小さな 札に 出します（★見本 `.role`）。
+                        ★★0の ときは 出しません。★「0つ」は 責める 字 です。 */}
+                    <div style={{
+                      display: "flex", alignItems: "center",
+                      justifyContent: "space-between", padding: "10px 1px 6px"
+                    }}>
+                      <h2 style={TYPE.title}>通っている ところ</h2>
+                      {myEnrollments.length > 0 ? (
+                        <Tag>{myEnrollments.length}つ</Tag>
+                      ) : null}
+                    </div>
+
+                    <Warn>
+                      {ATTENDING_WARN.map((line, i) => {
+                        const b = ATTENDING_WARN_BOLD.find((x) => line.includes(x));
+                        const at = b ? line.indexOf(b) : -1;
+                        return (
+                          <span key={i}>
+                            {at < 0 ? line : (
+                              <>
+                                {line.slice(0, at)}<b>{b}</b>{line.slice(at + b.length)}
+                              </>
+                            )}
+                            <br />
+                          </span>
+                        );
+                      })}
+                    </Warn>
+
+                    {/* ★★1つずつ、★押せる 札に します（★見本 `.rep`）。
+                        ★★押した 先（中身）は これから です。★いまは 押せません。
+                          ★★押せない ものを 押せるように 見せません ── ★`onClick` を
+                            付けません。★`›` も 出しません。 */}
+                    {myEnrollments.map((en) => {
+                      const name = (en.org && en.org.name) || null;
+                      const sub = placeSubtitle({
+                        kind: en.org && en.org.kind,
+                        // ★★名前は `myTeacherNames`（teacher_id → {display_name…}）から。
+                        //   ★★引けない ときは 飛ばします。★職業の 名札で 埋めません
+                        //     （★2026-09-01 の 決め ── ★埋めると 引けなかった ことが 隠れます）。
+                        teacher: (myAssignedTeachers[en.org_id] || [])
+                          .map((tid) => (myTeacherNames[tid] || {}).display_name)
+                          .filter(Boolean)[0],
+                        since: joinedLabel(en.joined_at || en.created_at)
+                      });
+                      return (
+                        <div key={en.id} style={{
+                          display: "flex", alignItems: "center", gap: 10,
+                          background: C.card, border: `1px solid ${C.line}`,
+                          borderRadius: 13, padding: "11px 12px", marginBottom: 8
+                        }}>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            {/* ★★名前を 読めなかった ときは、★埋めません。
+                                ★★「不明」と 書くと、★読めなかった ことが 隠れます。 */}
+                            <div style={{ fontSize: "0.875rem", fontWeight: 700, color: C.ink }}>
+                              {name || NAME_FETCH_FAILED_LABEL}
+                            </div>
+                            {sub ? (
+                              <div style={{ ...TYPE.mini, color: C.inkSoft, marginTop: 2 }}>{sub}</div>
+                            ) : null}
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    <H3>{ATTENDING_ADD_HEAD}</H3>
+                    <Box>
+                      <Li last right={`${PASSCODE_LENGTH}文字`}
+                        onClick={() => setMoreSection("合言葉で入る")}>
+                        合言葉で 入る
+                      </Li>
+                    </Box>
+
+                    <Note fold>
+                      {ATTENDING_NOTE.map((line, i) => {
+                        const b = ATTENDING_NOTE_BOLD.find((x) => line.includes(x));
+                        const at = b ? line.indexOf(b) : -1;
+                        return (
+                          <span key={i}>
+                            {at < 0 ? line : (
+                              <>
+                                {line.slice(0, at)}<b>{b}</b>{line.slice(at + b.length)}
+                              </>
+                            )}
+                            <br />
+                          </span>
+                        );
+                      })}
+                    </Note>
+                  </div>
+                )}
                 {layoutV2 && moreSection === "プラン" && (() => {
                   const st = planState(subscribed);
                   const yen = monthlyPriceLabel(PLANS);
