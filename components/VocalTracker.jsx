@@ -22254,10 +22254,23 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         const isOpen = st === undefined
                           ? (!anyOpen && chapter === learnChapters[0]) : st === true;
                         const readCount = articles.filter((a) => learnReadArticles[a.id]).length;
+                        // ★★★章は「箱」です（★見本 `.chap`／★2026-09-16）。
+                        //   ★★見本 … `.chap{background:#fff;border:1px solid var(--line);
+                        //             border-radius:13px;margin-bottom:8px;overflow:hidden}`
+                        //     ★`.chap .h{padding:12px 13px;font-size:13px}`
+                        //     ★`.chap .a{border-top:1px solid var(--line2);padding:2px 13px 6px}`
+                        //   ★★実装は 枠の 無い ただの 行 でした。
+                        //     ★★記事の 一覧だけ が 別の 箱に 入って、★字下げされて いました。
+                        //     ★★見本は、★見出しと 記事が **1つの 箱**の 中に 入ります。
+                        //   ★★絵で 並べて、★はじめて 見えました。★字だけでは 分かりません。
                         return (
-                          <div key={chapter}>
+                          <div key={chapter} style={{
+                            background: C.card, border: `1px solid ${C.line}`,
+                            borderRadius: 13, marginBottom: 8, overflow: "hidden"
+                          }}>
                             <button type="button" onClick={() => handleToggleChapter(currentProfession, chapter)}
-                              className="w-full flex items-center justify-between py-2 text-sm font-medium" style={{ color: C.ink }}>
+                              className="w-full flex items-center justify-between text-sm font-medium"
+                              style={{ color: C.ink, padding: "12px 13px", minHeight: 44 }}>
                               {/* ★★`{chapter}. ` と 書くと、★JSX は 数と 点の あいだに
                                   ★空白を 入れます（★「1 . この仕事の声」）。
                                   ★★見本は「1. この仕事の声」です。★1つに 繋げます。 */}
@@ -22267,14 +22280,23 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               </span>
                             </button>
                             {isOpen && (
-                              <div className="rounded-xl border overflow-hidden ml-2" style={{ borderColor: C.line }}>
+                              // ★★同じ 箱の 中に 続きます（★見本 `.chap .a`）。
+                              //   ★★上に 細い 線が 1本 入るだけ です。★字下げ しません。
+                              <div style={{ borderTop: `1px solid ${C.line2}`, padding: "2px 13px 6px" }}>
                                 {articles.length === 0 && (
-                                  <p className="text-xs p-3" style={{ color: C.inkSoft }}>{t("noArticlesYet")}</p>
+                                  <p className="text-xs py-2" style={{ color: C.inkSoft }}>{t("noArticlesYet")}</p>
                                 )}
-                                {articles.map((a) => (
+                                {articles.map((a, ai) => (
                                   <button key={a.id} type="button" onClick={() => { setViewingArticleId(a.id); fetchArticleNotes(a.id); }}
-                                    className="w-full text-left px-3 py-2 text-sm flex items-center justify-between" style={{ background: C.card, borderBottom: `1px solid ${C.line}` }}>
+                                    className="w-full text-left text-sm flex items-center justify-between"
+                                    style={{
+                                      background: "transparent", padding: "10px 0", minHeight: 44,
+                                      color: C.ink,
+                                      borderBottom: ai === articles.length - 1 ? "none" : `1px solid ${C.line2}`
+                                    }}>
                                     <span>{learnReadArticles[a.id] ? "✓ " : ""}{a.title}</span>
+                                    {/* ★★見本の `.li s`。★押せることを 右で 言います。 */}
+                                    <span style={{ color: C.inkSoft, fontSize: "0.78rem", flex: "none", marginLeft: 8 }}>›</span>
                                   </button>
                                 ))}
                               </div>
