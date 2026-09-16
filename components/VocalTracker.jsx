@@ -250,6 +250,9 @@ import { canSeeBetaFeatures, canSeeTeacherFeatures, canSeeLineLink, canSeeStuden
   canSeeShobaiArticles, isShobaiArticle } from "@/lib/featureFlags";
 // 削除の猶予期間（A-4）。日数の計算はサーバーと同じものを使う。
 import { graceDaysLeft, GRACE_PERIOD_DAYS, LOST_ON_DELETE, NO_RETENTION_NOTE, NO_RETENTION_BOLD } from "@/lib/accountDeletion";
+// ★お支払いの 記録だけは 法律で 残す、という 断り（★第3段・2026-09-16）。
+//   ★★退会の 画面・特商法・個人情報の 紙 ── ★3つとも ここを 読みます。
+import { RETENTION_LINES } from "@/lib/paymentRetention";
 // ★★いまは「次の レッスン」だけ です。
 //   ★★`EVENT_*` / `MESSAGE_*` / `upcomingEvents` / `recentMessages` は、
 //     ★lib/classroomShell.js に 在りますが、★まだ 読み込みません。
@@ -21124,6 +21127,23 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       );
                     })}
                   </ul>
+                  {/* ★★★お支払いの 記録だけは 残ります（★第3段・2026-09-16）。
+                      ★★上の 一覧は「全て 消えます」と 言います。★それだけ では 誤りです。
+                        ★★法人税法・所得税法 …… ★取引の 帳簿は **7年** 保存。
+                        ★★GDPR 17条3項(b)・個情法 …… ★法令に 基づく 保存は、
+                          ★消す 決まりの **外** です。
+                      ★★だから「消えます」と 書いた すぐ下に、★例外を 書きます。
+                        ★★離れた ところに 書くと、★読まない 方に 届きません。
+                      ★★字は lib/paymentRetention.js が 持ちます。
+                        ★★特商法・個人情報の 紙も、★同じ ところを 読みます。
+                        ★★きょう 同じ ことを 2か所で 別々に 書いて 食い違いました
+                          （★書き出しの 約束）。★1か所に 置きます。 */}
+                  <p className="text-sm" style={{
+                    color: C.ink, lineHeight: 1.9, margin: "12px 0 0",
+                    paddingTop: 10, borderTop: `1px solid ${C.line}`
+                  }}>
+                    {RETENTION_LINES[1]}<br />{RETENTION_LINES[2]}
+                  </p>
                 </div>
                 <div className="rounded-2xl p-4 border" style={{ background: C.card, borderColor: C.gold }}>
                   <p className="text-sm font-medium mb-1">{t("deleteStep1ExportFirst")}</p>

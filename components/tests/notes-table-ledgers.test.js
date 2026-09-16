@@ -28,7 +28,12 @@ function t(cond, label) {
 (async () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "led-"));
   // ★連れの帳面も 一緒に 写します（★本物を 読みます。★偽物を 置きません）。
-  ["exportData", "accountDeletion", "orgClosure", "supabaseErrors"].forEach((n) => {
+  // ★★2026-09-16、★`paymentRetention` を 足しました。
+  //   ★★`accountDeletion` が 読む ように なった ため です。
+  //   ★★写す 先に 無いと、★`ERR_MODULE_NOT_FOUND` で 落ちます。
+  //     ★★仲間を 足したら、★ここにも 足す こと。
+  ["exportData", "accountDeletion", "orgClosure", "supabaseErrors",
+    "paymentRetention"].forEach((n) => {
     const src = fs.readFileSync(path.join(__dirname, "..", "..", "lib", n + ".js"), "utf8")
       .replace(/@\/lib\/([a-zA-Z]+)/g, "./$1.js");
     fs.writeFileSync(path.join(dir, n + ".js"), src);
