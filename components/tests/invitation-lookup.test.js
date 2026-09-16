@@ -49,11 +49,26 @@ t(/古い形|古い 形/.test(readCode("components", "VocalTracker.jsx")) || tru
 console.log("\n④ 無い と 使用済みを 分けない こと");
 // ★★分けると、★コードを 総当たりして「在る が 使用済み」と 分かります。
 {
+  // ★★★2026-09-16、★この 節を 書き直しました。
+  //
+  //   ★★見出しは「★無い と 使用済みを 分けない こと」でした。
+  //   ★★けれど 下の 行は、★`reason === "expired"` が **在る こと**を 求めて いました。
+  //     ★★つまり「分けて いる こと」を 見張って いました。★見出しと 逆 です。
+  //   ★★画面の 覚え書きにも「同じ一文に します」と 書いて あり、
+  //     ★そのすぐ下で 分けて いました。★3つとも 食い違って いました。
+  //
+  //   ★★Opus の 裁定（★2026-09-16）で 1つに なりました ──
+  //     ★NG「その合言葉は ありません」「期限が 切れて います」「もう 使われて います」
+  //     ★OK「入れませんでした」
+  //   ★★だから、★こんどは **1つで ある こと**を 見ます。
   const i = vt.indexOf('rpc("get_invitation_teacher"');
-  const seg = vt.slice(i, i + 1400);
-  const notFound = (seg.match(/コードが 見つかりませんでした。先生に 確認して ください。|コードが見つかりませんでした。先生に確認してください。/g) || []).length;
-  t(notFound >= 2, "★「無い」の 一文を、★2つ以上の 道で 使って いる（" + notFound + "）");
-  t(/reason === "expired"/.test(seg), "★期限切れ だけ 別の 一文");
+  const seg = vt.slice(i, i + 2400);
+  const same = (seg.match(/setInviteLookupError\(SAME_ANSWER\)/g) || []).length;
+  t(same >= 2, "★同じ 一文を、★どの 道でも 使って いる（" + same + "）");
+  t(!/reason === "expired"[\s\S]{0,160}setInviteLookupError/.test(seg),
+    "★★期限切れ だけ 別の 一文に して いない");
+  t(!/このコードは使用済み、または期限切れです/.test(vt),
+    "★「使用済み、または 期限切れ」の 字が 残って いない");
   t(!/reason === "used"/.test(seg), "★使用済みを 名指しで 出して いない");
 }
 

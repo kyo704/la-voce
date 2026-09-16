@@ -210,6 +210,10 @@ import { scopeForPeriod, mayViewSummary, GATE_CLOSING_LINES, gatePriceLines,
   PAID_FEATURES, featureLabel } from "@/lib/freeTier";
 // ★値段は lib/plans.js が持ちます。★画面に書き写しません。
 import { PLANS } from "@/lib/plans";
+// ★合言葉が 合わない ときの 字（★1つ だけ・★2026-09-16・Opus の 裁定）。
+//   ★★「ありません」「期限が 切れて います」「もう 使われて います」と 分けません。
+//     ★★分けると、★総当たりに「当たりが 近い」と 教える ことに なります。
+import { SAME_ANSWER } from "@/lib/codeAttempts";
 // ★お支払いが 続いて いる 方の 退会を 止める 決め（★第1段・2026-09-16）。
 import { PAYMENT_BLOCK_LINES, PAYMENT_BLOCK_HREF } from "@/lib/activeSubscription";
 // ★プランの 画面が 言う ことは、★lib/planScreen.js が 持ちます。
@@ -11321,7 +11325,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       .rpc("get_invitation_teacher", { p_code: code });
     if (lookErr) {
       console.error("招待を確認できませんでした:", lookErr);
-      setInviteLookupError("コードが見つかりませんでした。先生に確認してください。");
+      setInviteLookupError(SAME_ANSWER);
       return;
     }
     // ★★古い形と新しい形の、★どちらでも動きます。
@@ -11333,16 +11337,26 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         // ★★「無い」と「使用済み」は、★同じ一文にします。
         //   ★★分けると、★コードを総当たりして
         //     ★「そのコードは在るが使用済み」と分かってしまいます。
-        setInviteLookupError(look.reason === "expired"
-          ? "このコードは使用済み、または期限切れです。"
-          : "コードが見つかりませんでした。先生に確認してください。");
+        //
+        // ★★★2026-09-16 まで、★この 覚え書きの とおりに なって いません でした。
+        //   ★★すぐ下で `look.reason === "expired"` を 見て、★字を 分けて いました。
+        //     ★「このコードは 使用済み、または 期限切れです。」
+        //     ★「コードが 見つかりませんでした。」
+        //   ★★この 2つが 分かれて いると、★総当たりに
+        //     ★「★その 合言葉は **在る**」と 教えます。★あとは 時間の 問題 です。
+        //   ★★書いて ある のに、★していません でした。
+        //     ★★覚え書きは 守りに なりません。★字が 守り です。
+        //   ★★`look.reason` は 残して います ── ★記録の ため です。
+        setInviteLookupError(SAME_ANSWER);
         return;
       }
       teacher = look.teacher || null;
     } else {
       // ★★古い形。★null は「無い・使用済み・期限切れ」のどれかです。
+      //   ★★止められた ときも null です（★2026-09-16・関数の 中で 数えて います）。
+      //   ★★だから 字は 1つ です。★どれか を 言いません。
       if (!look) {
-        setInviteLookupError("コードが見つかりませんでした。先生に確認してください。");
+        setInviteLookupError(SAME_ANSWER);
         return;
       }
       teacher = look;
