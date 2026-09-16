@@ -107,8 +107,12 @@ function ok(cond, label) {
   //     ★★パンくずも 出て いると、★戻る 道が **2つ** 並びます。
   //     ★★撮って、★はじめて 見えました。★どちらを 押すか 迷います。
   //   ★★だから「奥を 開いて いない ときは 出る」に なりました。
-  ok(/layoutV2 && moreSection !== null && !attendingOrgId \?/.test(v),
+  //   ★★2026-09-16、★もう 1つ 増えました ── `&& moreSection !== "合言葉で入る"`。
+  //     ★★合言葉の 1枚も、★自分の 戻る 道（「‹ 通っている ところ」）を 持ちます。
+  //     ★★「もっと ／ 合言葉で入る」と 2つ 並ぶと、★帰り先が 2つに なります。
+  ok(/layoutV2 && moreSection !== null && !attendingOrgId\s*\n?\s*&& moreSection !== "合言葉で入る" \?/.test(v),
     "★開いている あいだ、★戻る 道が 出る（★奥の 1枚を 除く）");
+  ok(/moreSection === "合言葉で入る"/.test(v), "★合言葉の 1枚が ある");
   ok(/setMoreSection\(null\)/.test(v), "★押すと 一覧へ 戻る");
 
   console.log("⑦ 教室の 行は、★入れる方だけ");

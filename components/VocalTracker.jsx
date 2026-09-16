@@ -108,7 +108,7 @@ import { markerRow } from "@/lib/periodMarkers";
 import TodayBand from "@/components/TodayBand";
 import TabBarV2 from "@/components/TabBarV2";
 import { TAB_BAR_HEIGHT, TYPE, SPACE, FONT_STACK, cardStyle, rem, RADIUS } from "@/lib/uiKit";
-import { ScreenHead, HeadRound, H3, Card, Li, Seg, Note, Wl, Box, Btn, Pill, Input, Back, Tag, Warn } from "@/components/UiV2";
+import { ScreenHead, HeadRound, H3, Card, Li, Seg, Note, Wl, Box, Btn, Pill, Input, Usu, Back, Tag, Warn } from "@/components/UiV2";
 // ★下から 上がる 1枚の 器（★見本の `#sh`）。★「ことばで さがす」が これです。
 import BottomSheet from "@/components/BottomSheet";
 import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
@@ -218,7 +218,12 @@ import {
   SEE_YES, SEE_NO, SEE_YES_HEAD, SEE_NO_HEAD, LEAVE_BUTTON,
   INSIDE_NOTE, INSIDE_NOTE_BOLD,
   LEAVE_LINES, LEAVE_LINES_BOLD, LEAVE_CANCEL, LEAVE_CONFIRM,
-  LEAVE_NOTE, leaveTitle
+  LEAVE_NOTE, leaveTitle,
+  PASSCODE_WARN, PASSCODE_WARN_BOLD, PASSCODE_HINT,
+  PASSCODE_NOTE, PASSCODE_NOTE_BOLD, PASSCODE_CONFIRM,
+  normalizePasscode, passcodeReady,
+  JOIN_WL, JOIN_WL_BOLD, JOIN_CANCEL, JOIN_CONFIRM,
+  JOIN_NOTE, JOIN_NOTE_BOLD, JOIN_YES_HEAD, JOIN_NO_HEAD
 } from "@/lib/attendingPlaces";
 // ★合言葉が 合わない ときの 字（★1つ だけ・★2026-09-16・Opus の 裁定）。
 //   ★★「ありません」「期限が 切れて います」「もう 使われて います」と 分けません。
@@ -7510,12 +7515,27 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //   ★★読めなかった ときは **絞りません**（null を 渡します）。
       //     ★★「分からない」を「在籍が 無い」に しない ため です。
       //     ★★分からない ときに 消すと、★通って いる方の 予定が 黙って 消えます。
-      const enrolled = await supabase.from("enrollments")
-        .select("org_id").eq("student_id", userId).eq("status", "active");
+      const enrolled = await runQueryWithAuthRetry(supabase, () =>
+        supabase.from("enrollments")
+          .select("org_id").eq("student_id", userId).eq("status", "active"),
+        "在籍（教室の殻）");
+      if (enrolled.error) {
+        // ★★黙って 捨てません（★2026-09-16）。
+        //   ★★読めなかった ことが 分からないと、★絞りが 効いて いないのか、
+        //     ★在籍が 無いのかを、★誰も 見分けられません。
+        console.error("★在籍を読めませんでした（教室の殻）:", enrolled.error);
+      }
       const attendingOrgIds = enrolled.error
         ? null
         : (enrolled.data || []).map((r) => r.org_id).filter(Boolean);
       if (!alive) return;
+      // ★★★4つ とも `runQueryWithAuthRetry` に 通します（★2026-09-16）。
+      //   ★★この 殻だけ、★素の まま 投げて いました。
+      //     ★★期限切れの JWT に 当たると、★4つ 同時に 落ちます。
+      //     ★★`lessonsOk` は 2つ とも 落ちた ときだけ false に なる ので、
+      //       ★「次のレッスンは、いま 読めませんでした」が 出ます。
+      //   ★★蔵の 決め（CLAUDE.md）── ★期限切れに 当たりうる 読みは、
+      //     ★この 包みに 通す。★渡すのは **組み立て直せる 関数** です。
       const [byStudent, byLink, events, messages] = await Promise.all([
         // ① 教室の レッスン（★org_id あり・student_id で 当たる）
         //
@@ -7530,13 +7550,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         //       ★網の 中身は そのまま 届きます（★開発者の 道具で 見えます）。
         //     ★★どこまで 閉じるか（★これからの 分だけ か、★過去も か）は
         //       ★坂本さんの 判断 です。★docs/reports/2026-09-16-受け持ちを閉じる前の棚卸し.md
-        supabase.from("lessons").select(LESSON_COLUMNS)
-          .eq("student_id", userId)
-          .order("scheduled_at", { ascending: true }).limit(LESSON_FETCH_LIMIT),
+        runQueryWithAuthRetry(supabase, () =>
+          supabase.from("lessons").select(LESSON_COLUMNS)
+            .eq("student_id", userId)
+            .order("scheduled_at", { ascending: true }).limit(LESSON_FETCH_LIMIT),
+          "教室のレッスン"),
         // ② 個人指導（★link_id 経由。★student_id は 入って いません）
-        supabase.from("lessons").select(LESSON_COLUMNS + ", link:teacher_student_links!inner(student_id)")
-          .eq("link.student_id", userId)
-          .order("scheduled_at", { ascending: true }).limit(LESSON_FETCH_LIMIT),
+        runQueryWithAuthRetry(supabase, () =>
+          supabase.from("lessons").select(LESSON_COLUMNS + ", link:teacher_student_links!inner(student_id)")
+            .eq("link.student_id", userId)
+            .order("scheduled_at", { ascending: true }).limit(LESSON_FETCH_LIMIT),
+          "個人指導のレッスン"),
         // ③ 近い 行事（★2026-09-15）。
         //   ★★絞りは RLS が します ── `org_events_select_member` が、
         //     ★`enrollments`（status='active'）で 在籍を 見ます。
@@ -7544,9 +7568,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         //       ★書くと、★いくつもの 教室に 通う方の 分が 落ちます。
         //   ★★取り下げた 行も 返ります。★出さないのは `upcomingEvents` の 仕事 です。
         //     ★行は 消えて いません（★`withdrawn_at`）。
-        supabase.from("org_events").select(EVENT_COLUMNS)
-          .gte("event_date", realTodayDate)
-          .order("event_date", { ascending: true }).limit(50),
+        runQueryWithAuthRetry(supabase, () =>
+          supabase.from("org_events").select(EVENT_COLUMNS)
+            .gte("event_date", realTodayDate)
+            .order("event_date", { ascending: true }).limit(50),
+          "近い行事"),
         // ④ 先生からの 連絡（★2026-09-15）。
         //   ★★絞りは RLS が します ── `org_messages_select` が、
         //     ★`assignments`（受け持ち・ended_at is null）か
@@ -7557,10 +7583,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         //     ★★「読んだ か どうか」を 集め 始めると、
         //       ★「読んで いない 人」を 数えられる ように なります。
         //       ★この 家に、★そういう ものは 置きません。
-        supabase.from("org_messages").select(MESSAGE_COLUMNS)
-          .order("created_at", { ascending: false }).limit(20)
+        runQueryWithAuthRetry(supabase, () =>
+          supabase.from("org_messages").select(MESSAGE_COLUMNS)
+            .order("created_at", { ascending: false }).limit(20),
+          "先生からの連絡")
       ]);
       if (!alive) return;
+      // ★★★落ちた ものを、★1つずつ 名前で 書き出します（★2026-09-16）。
+      //   ★★これまで、★どれが 落ちたのかが どこにも 出て いませんでした。
+      //     ★★画面には「読めませんでした」と 出るのに、
+      //       ★★何が 起きたかは、★誰にも 分かりませんでした。
+      [["教室のレッスン", byStudent], ["個人指導のレッスン", byLink],
+       ["近い行事", events], ["先生からの連絡", messages]].forEach(([名, r]) => {
+        if (r && r.error) console.error(`★${名}を読めませんでした:`, r.error);
+      });
       // ★★「取れなかった」と「0件」を 分けて 持ちます。
       //   ★★空の 札を 出すか、★黙って いるかが 変わります。
       //   ★★2つの うち 片方でも 取れれば、★出せる ものは 出します ──
@@ -22640,7 +22676,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ★★撮って、★はじめて 見えました。★字だけでは 分かりません。
                       ★★どちらを 押せば よいか、★読む 方が 迷います。
                     ★★だから、★奥の 1枚を 開いて いる あいだは 出しません。 */}
-                {layoutV2 && moreSection !== null && !attendingOrgId ? (
+                {layoutV2 && moreSection !== null && !attendingOrgId
+                  && moreSection !== "合言葉で入る" ? (
                   <Back onClick={() => setMoreSection(null)}>もっと　／　{moreSection}</Back>
                 ) : null}
                 {/* ★★もっと 自身の 戻る 道（★2026-09-16・坂本さんの お決め）。
@@ -23242,6 +23279,207 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 {/* ★★★通っている ところの 中身（★見本 `SC['通っているところの中身']`）と、
                     ★やめると どうなるか（★同 `SC['やめるとどうなるか']`）。
                     ★★どちらも 門の 中だけ です。 */}
+                {/* ★★★合言葉で 入る（★見本 `SC['合言葉で入る']`／★裁定その68 ②）。
+                    ★★門の 中だけ です。★38人の 画面は 変わりません。
+                    ★★字は lib/attendingPlaces.js が 持ちます。★ここに 書き写しません。
+                    ★★★引くのも 入るのも、★**すでに ある 手**を 使います ──
+                      ★`handleLookupInviteCode` … `get_invitation_teacher`（★塩付き・
+                        ★1つの 合言葉に 10回 まで・★理由を 返さない）
+                      ★`handleAcceptInvitation` … `accept_teacher_invitation` ＋
+                        ★`/api/enrollment/accept`（★在籍と 受け持ちを サーバが 作ります）
+                      ★★同じ ことを する ものを、★2つ 置きません。
+                        ★★片方だけ 直る、が この 蔵の 病い です。 */}
+                {layoutV2 && moreSection === "合言葉で入る" && (
+                  <div data-v2-passcode="1">
+                    {/* ★★戻る 先は「通っている ところ」です（★見本 `bk('通っている ところ')`）。
+                        ★★「もっと」では ありません。★来た ところへ 帰します。 */}
+                    <Back onClick={() => {
+                      setMoreSection("通っているところ");
+                      setPendingInvitation(null);
+                      setInviteCodeInput("");
+                      setInviteLookupError("");
+                    }}>通っている ところ</Back>
+                    <h2 style={{ ...TYPE.title, margin: "2px 0 8px" }}>合言葉で 入る</h2>
+
+                    {/* ★★承知の 1枚（★見本 `SC['招かれている']` の 下半分）。
+                        ★★合言葉だけでは 入りません。★見てから 押して いただきます。 */}
+                    {pendingInvitation ? (
+                      <>
+                        <Card style={{ borderColor: C.curtain }}>
+                          <div style={{ fontSize: "0.875rem", fontWeight: 700, color: C.ink }}>
+                            {/* ★★教室の 名は `profiles.school` に 入って います。
+                                ★★読めなかった ときは 埋めません（★「不明」と 書かない）。 */}
+                            {(pendingInvitation.teacher && pendingInvitation.teacher.school)
+                              || NAME_FETCH_FAILED_LABEL}
+                          </div>
+                          {pendingInvitation.teacher && pendingInvitation.teacher.display_name ? (
+                            <div style={{ ...TYPE.mini, color: C.inkSoft, marginTop: 4 }}>
+                              {pendingInvitation.teacher.display_name} 先生から
+                            </div>
+                          ) : null}
+                        </Card>
+
+                        <H3>{JOIN_YES_HEAD}</H3>
+                        <Box>
+                          {SEE_YES.map((v, i) => (
+                            <Li key={v} last={i === SEE_YES.length - 1} right="見えます">{v}</Li>
+                          ))}
+                        </Box>
+                        <H3>{JOIN_NO_HEAD}</H3>
+                        <Box>
+                          {SEE_NO.map((v, i) => (
+                            <Li key={v} last={i === SEE_NO.length - 1} right="見えません"
+                              style={{ color: C.inkSoft }}>{v}</Li>
+                          ))}
+                        </Box>
+
+                        <Wl>
+                          {JOIN_WL.map((line, i) => {
+                            const b = JOIN_WL_BOLD.find((x) => line.includes(x));
+                            const at = b ? line.indexOf(b) : -1;
+                            return (
+                              <span key={i}>
+                                {at < 0 ? line : (
+                                  <>{line.slice(0, at)}<b>{b}</b>{line.slice(at + b.length)}</>
+                                )}
+                                <br />
+                              </span>
+                            );
+                          })}
+                        </Wl>
+
+                        {/* ★★「ことわる」を 先に、★枠で（★見本の とおり）。
+                            ★★戻せない ほうを、★押しやすく しません。 */}
+                        <div style={{ marginTop: 11 }}>
+                          <Btn ghost onClick={() => {
+                            setPendingInvitation(null);
+                            setInviteCodeInput("");
+                            setInviteLookupError("");
+                          }}>{JOIN_CANCEL}</Btn>
+                        </div>
+                        <div style={{ marginTop: 9 }}>
+                          <Btn disabled={acceptingInvitation}
+                            onClick={async () => {
+                              await handleAcceptInvitation();
+                              // ★★`handleAcceptInvitation` は、★入れた ときだけ
+                              //   `pendingInvitation` を null に します。
+                              //   ★★だから ここで 見分けます ── ★入れた なら 一覧へ。
+                              //   ★★入れなかった ときは この 1枚に 留まります。
+                              //     ★★理由は `inviteLookupError` に 出ます。
+                              //     ★★黙って 戻すと、★入った つもりに なります
+                              //       （★2026-09-16、★やめる で 同じ ことを しました）。
+                            }}>
+                            {acceptingInvitation ? "入って います…" : JOIN_CONFIRM}
+                          </Btn>
+                        </div>
+
+                        {inviteLookupError ? (
+                          <p className="text-sm" style={{
+                            color: C.curtain, lineHeight: 1.9, margin: "10px 0 0"
+                          }}>{inviteLookupError}</p>
+                        ) : null}
+
+                        <Note fold>
+                          {JOIN_NOTE.map((line, i) => {
+                            const b = JOIN_NOTE_BOLD.find((x) => line.includes(x));
+                            const at = b ? line.indexOf(b) : -1;
+                            return (
+                              <span key={i}>
+                                {at < 0 ? line : (
+                                  <>{line.slice(0, at)}<b>{b}</b>{line.slice(at + b.length)}</>
+                                )}
+                                <br />
+                              </span>
+                            );
+                          })}
+                        </Note>
+                      </>
+                    ) : (
+                      <>
+                        <Warn>
+                          {PASSCODE_WARN.map((line, i) => {
+                            const b = PASSCODE_WARN_BOLD.find((x) => line.includes(x));
+                            const at = b ? line.indexOf(b) : -1;
+                            return (
+                              <span key={i}>
+                                {at < 0 ? line : (
+                                  <>{line.slice(0, at)}<b>{b}</b>{line.slice(at + b.length)}</>
+                                )}
+                                <br />
+                              </span>
+                            );
+                          })}
+                        </Warn>
+
+                        {/* ★★打つ ところ。★見本は 真ん中寄せ・大きめ・字間 広め。
+                            ★★`maxLength` は `PASSCODE_LENGTH` から 取ります。
+                              ★★見本の 6 は 書き写しません（★見本の 中で 食い違って います）。
+                            ★★大文字に 揃えるのも、★記号を 落とすのも
+                              `normalizePasscode` 1つ が 決めます。 */}
+                        <Input
+                          value={inviteCodeInput}
+                          inputMode="latin"
+                          autoCapitalize="characters"
+                          autoCorrect="off"
+                          spellCheck={false}
+                          maxLength={PASSCODE_LENGTH}
+                          placeholder={"".padEnd(PASSCODE_LENGTH, "・")}
+                          aria-label="合言葉"
+                          onChange={(e) => {
+                            setInviteCodeInput(normalizePasscode(e.target.value));
+                            // ★★打ち直したら、★前の 断りを 消します。
+                            //   ★★残すと、★直した あとも 赤い 字が 残ります。
+                            if (inviteLookupError) setInviteLookupError("");
+                          }}
+                          style={{
+                            textAlign: "center", fontSize: "1.375rem",
+                            letterSpacing: "0.3em", marginTop: 11
+                          }}
+                        />
+
+                        {/* ★★打ち終えて から 出します（★見本 ── `S.code.length>=8`）。
+                            ★★押せない 札を 先に 置きません（★§8⑤）。 */}
+                        {passcodeReady(inviteCodeInput) ? (
+                          <div style={{ marginTop: 11 }}>
+                            <Btn onClick={() => handleLookupInviteCode(inviteCodeInput)}>
+                              {PASSCODE_CONFIRM}
+                            </Btn>
+                          </div>
+                        ) : (
+                          <Usu style={{ marginTop: 9 }}>
+                            {PASSCODE_HINT.map((line) => (
+                              <span key={line}>{line}<br /></span>
+                            ))}
+                          </Usu>
+                        )}
+
+                        {/* ★★入れなかった ときの 一文。★理由は 言いません。
+                            ★★`SAME_ANSWER` 1つ です ── ★「無い」と「使われた」を
+                              ★分けると、★当たりを さがす 道具に なります。 */}
+                        {inviteLookupError ? (
+                          <p className="text-sm" style={{
+                            color: C.curtain, lineHeight: 1.9, margin: "10px 0 0"
+                          }}>{inviteLookupError}</p>
+                        ) : null}
+
+                        <Note fold>
+                          {PASSCODE_NOTE.map((line, i) => {
+                            const b = PASSCODE_NOTE_BOLD.find((x) => line.includes(x));
+                            const at = b ? line.indexOf(b) : -1;
+                            return (
+                              <span key={i}>
+                                {at < 0 ? line : (
+                                  <>{line.slice(0, at)}<b>{b}</b>{line.slice(at + b.length)}</>
+                                )}
+                                <br />
+                              </span>
+                            );
+                          })}
+                        </Note>
+                      </>
+                    )}
+                  </div>
+                )}
                 {layoutV2 && moreSection === "通っているところ" && attendingOrgId && (() => {
                   const en = myEnrollments.find((x) => x.id === attendingOrgId);
                   if (!en) return null;
