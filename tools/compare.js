@@ -120,6 +120,13 @@ const SCREENS = [
   { key: "SC-聞いてほしいこと", tab: "きょう", steps: ["もっとを開く", "毎日、聞いてほしいこと"] },
   { key: "SC-プラン", tab: "きょう", steps: ["もっとを開く", "プラン"] },
   { key: "SC-学ぶ", tab: "きょう", steps: ["もっとを開く", "学ぶ"] },
+  // ★★「もっと ▸ 学ぶ」は、★実装では **入口の 箱**です（★学ぶ／健康情報 の 2行）。
+  //   ★★見本の `SC['学ぶ']` は、★章立ての 画面 そのもの です。
+  //   ★★だから、★もう 1つ 奥を 撮ります。★くらべる 相手は こちら です。
+  //     ★★2026-09-16、★入口の 箱を 相手に して「漏れ 22件」と 出しました。
+  //       ★中身が 無いのでは なく、★**別の ところに 在り** ました。
+  { key: "SC-学ぶ-中身", tab: "きょう",
+    steps: ["もっとを開く", "学ぶ", { text: "学ぶ", nth: 1 }] },
   { key: "SC-台帳", tab: "きょう", steps: ["もっとを開く", "もっているもの"] },
   { key: "SC-書き出す", tab: "きょう", steps: ["もっとを開く", "書き出す"] },
   { key: "SC-退会", tab: "きょう", steps: ["もっとを開く", "退会する"] },
@@ -216,18 +223,29 @@ async function capture(env) {
             await page.locator(`text=${sc.tab}`).last().click({ timeout: 8000 });
           });
         await page.waitForTimeout(1000);
-        for (const step of (sc.steps || [])) {
+        for (const stepRaw of (sc.steps || [])) {
+          // ★★★同じ 字の 押しどころが 2つ 以上 ある ことが あります（★2026-09-16）。
+          //   ★★「もっと ▸ 学ぶ」を 開くと、★画面に「学ぶ」が 3つ 出ます ──
+          //     ★帰り道の「‹ もっと ／ 学ぶ」・★箱の 見出し・★中の 行。
+          //   ★★先頭を 押すと **帰り道**でした。★もっとの 一覧に 戻ります。
+          //     ★★だから「中身が 22件 足りない」と 出て いました。
+          //       ★足りないのでは なく、★そこは もっとの 画面 でした。
+          //   ★★絵を 見て 気づきました。★書き出しだけ 読んで いたら、
+          //     ★学ぶの 画面に 中身が 無い、と 報告する ところ でした。
+          //   ★★`{ text, nth }` で、★何番目を 押すかを 言えます。
+          const step = typeof stepRaw === "string" ? stepRaw : stepRaw.text;
+          const nth = typeof stepRaw === "string" ? 0 : (stepRaw.nth || 0);
           // ★★押しどころの 探し方は 2通りです。
           //   ★① 押しどころ（button）の 名前
           //   ★② 字そのもの。★その 字を 囲む 押せる ものを 押します。
           //   ★★もっと の 一覧の 行は、★字が <span> で、
           //     ★押しどころは その 外側です。★①では 見つかりません。
           //     ★★2026-09-11、★ここで 7画面が 撮れませんでした。
-          let target = page.getByRole("button", { name: new RegExp(step) }).first();
+          let target = page.getByRole("button", { name: new RegExp(step) }).nth(nth);
           if (!(await target.count())) {
             target = page.locator(
               `button:has-text("${step}"), [role="button"]:has-text("${step}"), a:has-text("${step}")`
-            ).first();
+            ).nth(nth);
           }
           if (!(await target.count())) {
             // ★★それでも 無ければ、★字を 押します。

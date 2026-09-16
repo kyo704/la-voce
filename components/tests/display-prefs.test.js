@@ -84,20 +84,73 @@ async function main() {
   assertEqual(m.USE_DISAPPEARING_TOAST, false,
     "★消える通知を使わない（読み終わる前に消える。§4-1）");
 
-  console.log("\n=== 金と緑を、文字に使わない（§0-⑦・§5）===");
-  console.log("     実測のコントラスト比: 金 2.80 / 緑 2.76。文字には足りない。");
-  console.log("     ★塗りと線には使ってよい。アイコンは線なので、そのまま。");
+  console.log("\n=== 薄い色を、文字に使わない（§0-⑦・§5）===");
+  // ★★★2026-09-16、★この 節を 書き直しました。
+  //
+  //   ★★これまでは 名前で 止めて いました ── `C.gold` と `C.sage`。
+  //     ★数も 書いて ありました ── 「金 2.80 ／ 緑 2.76」。
+  //   ★★**その 数は、もう 合って いません。**
+  //     ★★`C.gold` は #8C6115 に、★`C.sage` は #4F7562 に 濃く なって います。
+  //       ★いま 測ると ── ★金 5.39 ／ 緑 5.10（★どちらも 白地・4.5 を 超えます）。
+  //     ★★足りて いないのは `C.sageSoft`（#7C9A6B・**3.09**）だけ です。
+  //   ★★つまり、★**読める 色まで 止めて** いました。
+  //     ★★2026-09-16、★プランの 画面の「無料」を 緑に できず、
+  //       ★坂本さんが 実機で「色が ついて いない」と お気づきに なりました。
+  //       ★★見本は そこを 緑（`--midori` #447862・5.03）で 出します。
+  //
+  //   ★★だから、★名前で 止めるのを やめ、★**その場で 測り** ます。
+  //     ★★色が 濃く なれば 自然に 通り、★薄く なれば 自然に 落ちます。
+  //     ★★数を 見張りに 書き写しません。★書き写した 数は 古く なります。
+  //       ★★この 家で 何度も 起きた 形 です（★値段・同意の 字・門の 判定）。
+  //   ★★網は 広げて いません。★狭めても いません。★**測る ものに 変えました。**
   {
-    // 行ごとに見て、アイコン（<Icon size=…>）かどうかで分ける
+    const tok = readRaw("lib", "tokens.js");
+    const hexOf = (name) => {
+      const m = tok.match(new RegExp("\\b" + name + ':\\s*"(#[0-9A-Fa-f]{6})"'));
+      return m ? m[1] : null;
+    };
+    const lum = (hex) => {
+      const v = [1, 3, 5].map((i) => parseInt(hex.substr(i, 2), 16) / 255)
+        .map((x) => (x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4)));
+      return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+    };
+    const ratio = (a, b) => {
+      const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
+      return (x + 0.05) / (y + 0.05);
+    };
+    // ★★地の 色は 2つ です。★札の 上（card）と、★画面の 地（paper）。
+    //   ★★薄い ほうで 測ります。★いちばん 読みにくい ところに 合わせます。
+    const BG = ["card", "paper"].map(hexOf).filter(Boolean);
+    assertTrue(BG.length === 2, "地の 色を 2つとも 読めた");
+
+    // ★★文字色として 使われて いる トークンを、★行ごとに 拾います。
+    //   ★アイコン（<Icon size=…>）は 線 です。★数えません。
     const lines = uiCode.split("\n");
-    const textUses = lines
-      .map((l, i) => ({ l, i: i + 1 }))
-      .filter(({ l }) => /color: C\.(gold|sage)\b/.test(l))
-      .filter(({ l }) => !/<[A-Z][A-Za-z0-9]* +[^>]*size=/.test(l));
-    assertTrue(textUses.length === 0,
-      textUses.length === 0
-        ? "★文字色としての金・緑が、1つも残っていない"
-        : `★文字に使われている: ${textUses.map((x) => x.i).join(", ")} 行目`);
+    const used = new Map();
+    lines.forEach((l, i) => {
+      if (/<[A-Z][A-Za-z0-9]* +[^>]*size=/.test(l)) return;
+      for (const mm of l.matchAll(/color: C\.([A-Za-z0-9]+)\b/g)) {
+        if (!used.has(mm[1])) used.set(mm[1], []);
+        used.get(mm[1]).push(i + 1);
+      }
+    });
+    const thin = [];
+    for (const [name, at] of used) {
+      const hex = hexOf(name);
+      if (!hex) continue;                       // ★掛け合わせの 色。★測れません。
+      const r = Math.min(...BG.map((b) => ratio(hex, b)));
+      if (r < 4.5) thin.push({ name, hex, r, at });
+    }
+    thin.forEach((x) => console.log(
+      `     ★${x.name} ${x.hex} … ${x.r.toFixed(2)}　${x.at.slice(0, 6).join(", ")} 行目`));
+    assertTrue(thin.length === 0,
+      thin.length === 0
+        ? `★文字色は すべて 4.5 以上（★${used.size} 種を 測りました）`
+        : `★薄い 色が 文字に 使われている: ${thin.map((x) => x.name).join(", ")}`);
+    // ★★`sageSoft` は いまも 足りません。★測れて いる ことを 確かめます。
+    const soft = hexOf("sageSoft");
+    assertTrue(soft && Math.min(...BG.map((b) => ratio(soft, b))) < 4.5,
+      "★sageSoft は いまも 文字に 足りない（★測れて いる）");
 
     const iconUses = lines.filter((l) => /color: C\.(gold|sage)\b/.test(l)).length;
     assertTrue(iconUses > 0, `塗り・線としては、そのまま使っている（${iconUses} 箇所）`);
