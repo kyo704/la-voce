@@ -308,6 +308,19 @@ async function capture(env) {
           const walk = (el) => {
             const st = window.getComputedStyle(el);
             if (st.display === "none" || st.visibility === "hidden") return;
+            // ★★★閉じた `<details>` の 中は、★画面に 出て いません（★2026-09-16）。
+            //   ★★けれど DOM には 在ります。★`display:none` にも なりません。
+            //   ★★だから、★畳んだ ままの 中身まで 書き出して いました。
+            //     ★★「使っていない項目」を 記録の 画面へ 移した とき、
+            //       ★見張り `forbidden-render` が 落ちました。
+            //       ★★画面には 出て いません。★道具が 見て いただけ です。
+            //   ★★`<b>`・`<select>` に 続いて、★きょう 3度目の 見落とし です。
+            //     ★★どれも「撮った 絵は 正しいのに、★書き出しが ちがう」形 でした。
+            if (el.tagName.toLowerCase() === "details" && !el.open) {
+              const sm = el.querySelector("summary");
+              if (sm) walk(sm);
+              return;
+            }
             const tag = el.tagName.toLowerCase();
             // ★★★`<select>` は、★選ばれて いる 1つだけ を 見ます（★2026-09-16）。
             //   ★★これが 無いので、★「ことば … 日本語」の **値**が 落ち、

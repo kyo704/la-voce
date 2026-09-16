@@ -200,6 +200,26 @@
   "text": "わかりました"
  },
  {
+  "tag": "span",
+  "text": "質問票"
+ },
+ {
+  "tag": "span",
+  "text": "›"
+ },
+ {
+  "tag": "span",
+  "text": "記録する項目を 増やす"
+ },
+ {
+  "tag": "span",
+  "text": "›"
+ },
+ {
+  "tag": "summary",
+  "text": "使っていない項目（ 6 件）"
+ },
+ {
   "tag": "button",
   "text": "きょう"
  },

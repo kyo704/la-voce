@@ -22961,11 +22961,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     現在畳んでいる項目: {(profile.folded_groups || []).map((k) => FOLDABLE_GROUP_LABELS[k] || k).join("・")}
                   </p>
                 )}
-                <button type="button" onClick={() => setShowFieldGroupManager(true)}
-                  className="w-full rounded-2xl border-2 border-dashed py-3 text-sm font-medium flex items-center justify-center gap-1.5"
-                  style={{ display: inMore("設定"), borderColor: C.line, color: C.inkSoft }}>
-                  <Plus size={14} />記録する項目を増やす
-                </button>
+                {/* ★★「記録する項目を増やす」は 記録の 画面へ 移りました（★2026-09-16・裁定 C-1）。
+                    ★★★2度 出て いました。★撮って 気づきました ──
+                      ★設定に 破線の 札、★記録に 行。★同じ ものが 2つ。
+                    ★★移した とき、★もとの 札を 消し忘れて いました。
+                      ★★「移す」は「足す」では ありません。★元を 消すまでが 引っ越し です。 */}
                 {showFieldGroupManager && (
                   <div className="rounded-2xl p-4 border" style={{ display: inMore("設定"), background: C.card, borderColor: C.gold, borderWidth: 2 }}>
                     <div className="flex items-center justify-between mb-3">
