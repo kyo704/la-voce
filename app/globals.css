@@ -962,3 +962,43 @@ body {
 .woolsong-v2 [style*="background-color: rgb(255, 253, 248)"] {
   background-color: var(--wl-card) !important;
 }
+
+/* ============================================================================
+   ★動きを 減らす 設定の 方へ ── ★ここ 1か所で、★ぜんぶ
+   ★出どころ 裁定 その62 STEP1_MOTION（★2026-09-16）
+     「prefers-reduced-motion: reduce 時、
+       animation/transition duration .01ms・iteration 1・scroll-behavior auto」
+
+   ★★これまでも 3か所に ありました ──
+     ★したくの 板／羊の 吹き出し／羊の しぐさ。
+     ★★どれも「気づいた ものを、その都度」でした。
+     ★★足した 人が 知らなければ、★新しい 動きは 素通りします。
+
+   ★★だから、★網を 1枚 かけます。
+     ★★これから 足す 動きも、★黙って 止まります。
+     ★★上の 3つは 残します。★消しても 同じに なりますが、
+       ★それぞれに いきさつが 書いて あります。★記録です。
+
+   ★★0 に しません。★.01ms に します。
+     ★★0 に すると、★終わりの 合図（transitionend）が 出ない ことが あります。
+     ★★待って いる コードが、★永久に 待ちます。
+   ★★`iteration-count: 1` … ★繰り返す 動きを、★1回で 止めます。
+   ★★`scroll-behavior: auto` … ★すべる 移動を、★すぐ 着く 形に します。
+
+   ★★これは 見た目の 好みでは ありません。
+     ★★動きで 気分が 悪く なる 方が おられます。
+     ★★「羊の 動きは、酔う方の ために 止められます」と、★見本も 書いて います。
+   ============================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  html {
+    scroll-behavior: auto !important;
+  }
+}
