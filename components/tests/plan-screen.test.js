@@ -121,7 +121,16 @@ t(paidKeys.length > 0, "PAID_FEATURES を 読めた（" + paidKeys.join(", ") + 
 paidKeys.forEach((k) => t(keys.includes(k), "★言い方が 在る ── " + k));
 keys.forEach((k) => t(paidKeys.includes(k), "★余分な 言い方が ない ── " + k));
 
-console.log("\n⑦ 見本の 日付を、それらしく こしらえて いないこと");
+console.log("\n⑦ 但し書きが、見本と 同じ 形で 畳んで ある こと");
+// ★★見本は `.note` を すべて 畳みます（★foldNotes・★4094行）。
+//   ★★札の 字は「くわしい 決まりを 見る」／「閉じる」。★1文字も 変えません。
+//   ★★2026-09-16、★これが 無い ために「見本に 在って 実装に 無い」と
+//     ★3件目に 出て いました。★字が 無いのでは なく、★仕掛けが 無い のでした。
+t(/<Note fold>/.test(planBlock), "★但し書きを 畳んで ある（<Note fold>）");
+t(/NOTE_OPEN = "くわしい 決まりを 見る"/.test(readCode("components", "UiV2.jsx")),
+  "★札の 字が 見本の まま");
+
+console.log("\n⑧ 見本の 日付を、それらしく こしらえて いないこと");
 // ★★見本は 払って おられる 方に「次の お支払い　2026年10月9日」と 出します。
 //   ★★その 日付を、★いまの 実装は 持って いません。
 //     ★`subscriptions` から 読んで いるのは status と tier だけ です。

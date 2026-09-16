@@ -22760,7 +22760,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </Btn>
                       </div>
 
-                      <Note>
+                      {/* ★★見本は `.note` を **すべて** 畳みます（★`foldNotes`）。
+                          ★「くわしい 決まりを 見る」を 押すと 開きます。
+                          ★★`Note` の `fold` が、★同じ 仕掛けを 持って います。
+                            ★札の 字も 見本の まま です（★`NOTE_OPEN`／`NOTE_CLOSE`）。
+                          ★★畳んだ ままでも、★お支払いの 画面（`/billing`）では
+                            ★同じ 字が **開いた まま** 出ます。★隠して いません。 */}
+                      <Note fold>
                         {PLAN_NOTE_LINES.map((line) => (
                           <span key={line}>{line}<br /></span>
                         ))}
