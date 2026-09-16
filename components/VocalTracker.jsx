@@ -11917,7 +11917,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //   読めなくても、在籍そのものは消えません。
       const orgIds = [...new Set(enrollments.map((e) => e.org_id).filter(Boolean))];
       const { data: orgRows, error: orgError } = await supabase
-        .from("organizations").select("id, name").in("id", orgIds);
+        // ★★`kind` も 引きます（★見本の 添え字 1つめ ／ 2026-09-16）。
+        //   ★★列は 台帳で 確かめました ── id / name / kind / created_by / created_at。
+        //   ★★`*` に しません。★要る ものだけ を 引きます。
+        .from("organizations").select("id, name, kind").in("id", orgIds);
       if (orgError) {
         console.warn("教室の名前を読めませんでした（在籍は読めています）:", orgError.message || orgError);
       }
@@ -23074,13 +23077,24 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       const name = (en.org && en.org.name) || null;
                       const sub = placeSubtitle({
                         kind: en.org && en.org.kind,
+                        // ★★担当の 先生は `assignments` から 引きます。
+                        //   ★★ご助言は「memberships 経由で」でした。★こちらに しました ──
+                        //     ★★`memberships` は「その 教室に 居る 先生 **みんな**」です。
+                        //     ★★`assignments` は「★その 生徒の 担当」です。
+                        //     ★★見本の「斎藤 めぐみ 先生」は **担当** の ことです。
+                        //       ★みんなの 中から 1人を 選んで 出すと、★別の 人が 出ます。
+                        //   ★★担当が 決まって いない ときは **出しません**（★飛ばします）。
                         // ★★名前は `myTeacherNames`（teacher_id → {display_name…}）から。
                         //   ★★引けない ときは 飛ばします。★職業の 名札で 埋めません
                         //     （★2026-09-01 の 決め ── ★埋めると 引けなかった ことが 隠れます）。
                         teacher: (myAssignedTeachers[en.org_id] || [])
                           .map((tid) => (myTeacherNames[tid] || {}).display_name)
                           .filter(Boolean)[0],
-                        since: joinedLabel(en.joined_at || en.created_at)
+                        // ★★★列の 名は `enrolled_at` です（★2026-09-16・台帳で 確かめました）。
+                        //   ★★私は `joined_at` と 書いて いました。★そんな 列は ありません。
+                        //     ★★無い ものは 飛ばす 作りな ので、★画面は 空に なって いました。
+                        //     ★★壊れは しません。★けれど 出ません。★同じ 形を きょう 何度も。
+                        since: joinedLabel(en.enrolled_at)
                       });
                       return (
                         <div key={en.id} style={{
