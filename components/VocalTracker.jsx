@@ -108,7 +108,9 @@ import { markerRow } from "@/lib/periodMarkers";
 import TodayBand from "@/components/TodayBand";
 import TabBarV2 from "@/components/TabBarV2";
 import { TAB_BAR_HEIGHT, TYPE, SPACE, FONT_STACK, cardStyle, rem, RADIUS } from "@/lib/uiKit";
-import { ScreenHead, HeadRound, H3, Card, Li, Seg, Note, Wl, Box, Btn } from "@/components/UiV2";
+import { ScreenHead, HeadRound, H3, Card, Li, Seg, Note, Wl, Box, Btn, Pill, Input } from "@/components/UiV2";
+// ★下から 上がる 1枚の 器（★見本の `#sh`）。★「ことばで さがす」が これです。
+import BottomSheet from "@/components/BottomSheet";
 import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
 import { moreSections, rightOf, MORE_NOTE, MORE_NOTE_BOLD } from "@/lib/moreMenu";
 import DailyAskPicker from "@/components/DailyAskPicker";
@@ -299,7 +301,7 @@ import {
   ageBandToProfilePatch, AGE_BANDS
 } from "@/lib/ageGate";
 import HealthInfo from "@/components/HealthInfo";
-import { ARTICLES, CHAPTER_LABELS, PROFESSION_LABELS, getArticlesForProfession, getArticleById, LEARN_CHAPTER_NOTE, LEARN_COMMON_LINES, LEARN_COMMON_BOLD, LEARN_NOTE } from "@/lib/learnContent";
+import { ARTICLES, CHAPTER_LABELS, PROFESSION_LABELS, getArticlesForProfession, getArticleById, learnChapterNote, LEARN_COMMON_LINES, LEARN_COMMON_BOLD, LEARN_NOTE, LEARN_SEARCH } from "@/lib/learnContent";
 // 学ぶ画面の勉強の仕組み（§2・§3）。★規則はこのモジュールが持つ。
 import {
   KEY_SENTENCE_HEADING, REFLECTION_PRIVACY_NOTE, PREQUESTION_NOTE,
@@ -5608,6 +5610,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // 復習で答えた分（articleId -> 選んだ番号）。★正答率は数えない。
   const [reviewAnswers, setReviewAnswers] = useState({});
   const [learnSearchQuery, setLearnSearchQuery] = useState("");
+  // ★★「ことばで さがす」の 1枚（★見本 `SH['manabuSagasu']`／★決め ④）。
+  //   ★★入力欄を 画面から 1枚へ 移しました。★消して いません。
+  const [learnSearchOpen, setLearnSearchOpen] = useState(false);
   // 作業指示-教室プラン §B・C・E: 教室プラン用のstate
   const [myOrgs, setMyOrgs] = useState([]); // 自分がメンバーである組織一覧（role付き）
   // ★★運営モード（★第3便・§3-3）。★別のシェルです。
@@ -11737,15 +11742,43 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       box: next.box, next_due_at: next.nextDueAt, last_answered_at: next.lastAnsweredAt
     }, { onConflict: "user_id,article_id" });
   }
+  // ★★章は **1つだけ** 開きます（★見本 `S.open`／★坂本さんの お決め・決め ③）。
+  //
+  //   ★★これまでは 全部 開いた ままでした。★既定が「開く」でした。
+  //     ★★9章 ぶんの 記事が すべて 並び、★画面の 高さが 15,405px に なって いました。
+  //     ★★探して いる 章に たどり着くまで、★ずっと 送る ことに なります。
+  //   ★★見本は 押した 章だけ を 開き、★ほかを 閉じます。
+  //     ★★同じ 章を もう一度 押すと、★閉じます（★見本の `S.open===i?-1:i`）。
+  //
+  //   ★★開き閉じは `chapter_state` に 残して います。★消して いません。
+  //     ★★ほかの 章を 閉じた ことも、★そのまま 書きます。
+  //       ★書かないと、★次に 開いた ときに 前の 姿が 戻ります。
   async function handleToggleChapter(professionKey, chapter) {
     const key = `${professionKey}:${chapter}`;
     const nextOpen = !learnOpenChapters[key];
-    setLearnOpenChapters((prev) => ({ ...prev, [key]: nextOpen }));
+    setLearnOpenChapters((prev) => {
+      // ★★同じ 職業の 章を、★いったん すべて 閉じます。
+      //   ★★ほかの 職業の 分には 触れません。★別の 話 です。
+      const next = {};
+      Object.keys(prev).forEach((k) => {
+        next[k] = k.startsWith(professionKey + ":") ? false : prev[k];
+      });
+      next[key] = nextOpen;
+      return next;
+    });
     const supabase = createClient();
-    await supabase.from("chapter_state").upsert(
-      { user_id: userId, profession_key: professionKey, chapter, is_open: nextOpen },
-      { onConflict: "user_id,profession_key,chapter" }
-    );
+    // ★★開いた 章と、★閉じた 章を まとめて 書きます。
+    //   ★★片方だけ 書くと、★次に 開いた ときに 前の 姿が 戻ります。
+    const rows = [{ user_id: userId, profession_key: professionKey, chapter, is_open: nextOpen }];
+    Object.keys(learnOpenChapters).forEach((k) => {
+      if (!k.startsWith(professionKey + ":")) return;
+      const c = Number(k.slice(professionKey.length + 1));
+      if (!Number.isFinite(c) || c === chapter) return;
+      if (learnOpenChapters[k] === false) return;      // ★もう 閉じて います
+      rows.push({ user_id: userId, profession_key: professionKey, chapter: c, is_open: false });
+    });
+    await supabase.from("chapter_state").upsert(rows,
+      { onConflict: "user_id,profession_key,chapter" });
   }
   // §7.1: 既読は自動でつける（最後までスクロールしたら）。手動でも外せる。
   async function handleMarkArticleRead(articleId, read) {
@@ -22058,23 +22091,43 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               // §7.1: 一覧
               return (
                 <div className="space-y-4">
+                  {/* ★★見本は 右上に 🔍 を 置きます（★`SC['学ぶ']` の `.gear`）。
+                      ★★押すと「ことばで さがす」の 1枚が 上がります。
+                      ★★これまでは 画面の 中の 入力欄 でした（★決め ④で 移しました）。 */}
                   <div className="flex items-center justify-between">
                     <h2 className="ff-display italic text-xl" style={{ color: C.ink }}>{t("tabLearn")}</h2>
+                    <button type="button" onClick={() => setLearnSearchOpen(true)}
+                      aria-label={LEARN_SEARCH.title}
+                      style={{
+                        minHeight: 44, minWidth: 44, display: "inline-flex",
+                        alignItems: "center", justifyContent: "center",
+                        background: "transparent", border: "none", fontSize: "1.05rem"
+                      }}>🔍</button>
                   </div>
-                  <select value={currentProfession} onChange={(e) => setLearnProfession(e.target.value)}
-                    className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }}>
-                    {SELECTABLE_PROFESSIONS.map((p) => <option key={p} value={p}>{PROFESSION_LABELS[p] || t(PROFESSION_LABEL_KEYS[p])}</option>)}
-                  </select>
+                  {/* ★★職業は **札（pill）** です（★見本 `.pill sm`／★決め ②）。
+                      ★★これまでは 落ちる 一覧（select）でした。
+                        ★★一覧は、★開かないと 何が あるか 分かりません。
+                        ★★札なら、★5つ 在ることが 見えて います。
+                      ★★字は lib/learnContent.js が 持ちます。★ここで 書きません。 */}
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {SELECTABLE_PROFESSIONS.map((p) => (
+                      <Pill key={p} on={p === currentProfession}
+                        onClick={() => setLearnProfession(p)}>
+                        {PROFESSION_LABELS[p] || t(PROFESSION_LABEL_KEYS[p])}
+                      </Pill>
+                    ))}
+                  </div>
                   {/* ★★職業の 札の すぐ下（★見本 `SC['学ぶ']` の `.usu`／2026-09-15）。
                       ★★「章立ては どこも 同じ。中身だけ 入れ替わる」と 先に 言います。
                         ★職業を 変えると 記事が 入れ替わる ことが、★押す 前に 分かります。
                       ★★字は lib/learnContent.js が 持ちます。 */}
+                  {/* ★★章の 数を **数えて** 書きます（★決め ①・㋐）。
+                      ★★前は「7つの 章立ては…」と 決め打ちで した。
+                        ★★けれど 画面には 9つ 出て いました（★8・9 は 音楽家の商い）。
+                        ★★読む 方は、★数えれば すぐ 分かります。 */}
                   <p style={{ ...TYPE.usual, color: C.inkSoft, margin: "-6px 0 0", lineHeight: 1.8 }}>
-                    {LEARN_CHAPTER_NOTE}
+                    {learnChapterNote(learnChapters.length)}
                   </p>
-                  <input type="text" value={learnSearchQuery} onChange={(e) => setLearnSearchQuery(e.target.value)}
-                    placeholder={t("searchArticlesPlaceholder")}
-                    className="w-full rounded-lg border p-2 text-sm" style={{ borderColor: C.line, background: C.paper }} />
 
                   {(() => {
                     // §3 間隔をあけて出し直す。★「学ぶ」を開いたときに出るだけ。
@@ -22150,13 +22203,22 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <>
                       {learnChapters.map((chapter) => {
                         const articles = getArticlesForProfession(currentProfession).filter(visibleArticle).filter((a) => a.chapter === chapter);
-                        const isOpen = learnOpenChapters[`${currentProfession}:${chapter}`] !== false; // 既定は開く
+                        // ★★既定は **閉じる**。★はじめの 章だけ 開きます（★見本 `S.open=1`）。
+                        //   ★★前は「既定は 開く」でした。★9章 すべてが 開いて いました。
+                        const st = learnOpenChapters[`${currentProfession}:${chapter}`];
+                        const anyOpen = learnChapters.some(
+                          (c) => learnOpenChapters[`${currentProfession}:${c}`] === true);
+                        const isOpen = st === undefined
+                          ? (!anyOpen && chapter === learnChapters[0]) : st === true;
                         const readCount = articles.filter((a) => learnReadArticles[a.id]).length;
                         return (
                           <div key={chapter}>
                             <button type="button" onClick={() => handleToggleChapter(currentProfession, chapter)}
                               className="w-full flex items-center justify-between py-2 text-sm font-medium" style={{ color: C.ink }}>
-                              <span>{isOpen ? "▾" : "▸"} {chapter}. {CHAPTER_LABELS[chapter]}</span>
+                              {/* ★★`{chapter}. ` と 書くと、★JSX は 数と 点の あいだに
+                                  ★空白を 入れます（★「1 . この仕事の声」）。
+                                  ★★見本は「1. この仕事の声」です。★1つに 繋げます。 */}
+                              <span>{isOpen ? "▾" : "▸"} {`${chapter}. ${CHAPTER_LABELS[chapter]}`}</span>
                               <span className="ff-mono text-xs" style={{ color: C.inkSoft }}>
                                 {articles.length > 0 ? `${readCount}/${articles.length}` : "—"}
                               </span>
@@ -22231,14 +22293,39 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             ★もっと・設定の 注記と 同じ 形 です。
                           ★★4行目は、★撤回した ACWR の 記事が **無い** ことを 言います。
                             ★消した ものを 消したと 書いて 残す、★という ところ です。 */}
+                      {/* ★★見本は `.note` を すべて 畳みます（★`foldNotes`／★決め ⑧）。
+                          ★★プランの 画面と 同じ 形 です。★札の 字も 見本の まま。 */}
                       <div className="pt-2 border-t" style={{ borderColor: C.line }}>
-                        {LEARN_NOTE.map((line, i) => (
-                          <p key={i} style={{ ...TYPE.note, color: C.inkSoft, margin: i ? "3px 0 0" : 0, lineHeight: 1.85 }}>
-                            {line}
-                          </p>
-                        ))}
+                        <Note fold>
+                          {LEARN_NOTE.map((line, i) => (
+                            <span key={i}>{line}<br /></span>
+                          ))}
+                        </Note>
                       </div>
                     </>
+                  )}
+
+                  {/* ★★ことばで さがす（★見本 `SH['manabuSagasu']`／★決め ④）。
+                      ★★見本に 在って、★実装に 無かった ものが 2つ ありました ──
+                        ★言葉の 札 6つ　★但し書き 1つ。
+                      ★★但し書きは 決め そのもの です ──
+                        ★学術用語を 画面に 出さず、★記事の 中だけに 置きます。
+                      ★★探す 中身は これまでと 同じ です（`learnSearchQuery`）。
+                        ★★入れる ところを 移した だけ です。★機能は 消して いません。 */}
+                  {learnSearchOpen && (
+                    <BottomSheet title={LEARN_SEARCH.title}
+                      onClose={() => setLearnSearchOpen(false)}>
+                      <Input value={learnSearchQuery} autoFocus
+                        placeholder={LEARN_SEARCH.placeholder}
+                        onChange={(e) => setLearnSearchQuery(e.target.value)} />
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 9 }}>
+                        {LEARN_SEARCH.chips.map((w) => (
+                          <Pill key={w} on={learnSearchQuery.trim() === w}
+                            onClick={() => setLearnSearchQuery(w)}>{w}</Pill>
+                        ))}
+                      </div>
+                      <Wl>{LEARN_SEARCH.note}</Wl>
+                    </BottomSheet>
                   )}
                 </div>
               );

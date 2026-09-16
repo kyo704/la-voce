@@ -26,7 +26,22 @@ const live = (() => {
   // eslint-disable-next-line no-new-func
   return new Function(`return ${body.slice(0, body.lastIndexOf("];") + 1)}`)();
 })();
+// ★★★名前では なく、★**id で** 突き合わせます（★2026-09-16）。
+//
+//   ★★もとは `a.title` を 鍵に して いました。
+//     ★★だから、★記事の 名を 直すと **繋がらなく なります**。
+//       ★繋がらない ものは「新しい 記事」と して 足されます。
+//       ★★2026-09-16、★名を 書き直して この 道具を 走らせた ところ、
+//         ★85本が **142本**に なりました。★57本が 二重に なって いました。
+//         ★★消えたのでは なく、★増えて いました。★気づきにくい 壊れ方 です。
+//   ★★`id` は 変わりません。★名は 変わります。★鍵は 変わらない ほうで 持ちます。
+//
+//   ★★名前を 鍵に する のは、★この 家で 何度も 出た 形 です ──
+//     ★「同じ ことを 2か所が 言う」。★ここでは 2か所が 名前で 握手して いました。
+const liveById = new Map(live.map((a) => [a.id, a]));
+// ★★名前でも 引けるように して おきます（★id の 無い 古い 原稿の ため）。
 const liveByTitle = new Map(live.map((a) => [a.title, a]));
+const liveOf = (a) => liveById.get(a.id) || liveByTitle.get(a.title);
 
 // 職業キーの対応（docs 側 → アプリ側）
 const PROF = {
@@ -79,7 +94,7 @@ src.articles.forEach((a) => {
     return;
   }
   // 本文を持たない指示。既存の本文に結び付ける。
-  const existing = liveByTitle.get(a.title);
+  const existing = liveOf(a);
   if (existing) {
     out.push({
       ...existing, id: a.id, professions, chapter: a.chapter, order,
@@ -91,15 +106,37 @@ src.articles.forEach((a) => {
 });
 
 // 結び付かなかった既存記事は、消さずに残す（本文を失わないため）
+//
+// ★★★ここも 名前で 見て いました（★2026-09-16）。
+//   ★★`usedTitles` に 入って いない 既存を 足す、という 形 です。
+//     ★★記事の 名を 直すと、★同じ 記事が「まだ 使われて いない」と 見えます。
+//       ★★だから もう 1本 足されます。★85本が 144本に なりました。
+//       ★★消えたのでは なく **増えて** いました。★気づきにくい 壊れ方 です。
+//   ★★`id` で 見ます。★名は 変わりますが、★id は 変わりません。
+const usedIds = new Set(out.map((a) => a.id));
 const usedTitles = new Set(out.map((a) => a.title));
-const kept = live.filter((a) => !usedTitles.has(a.title));
+const kept = live.filter((a) => !usedIds.has(a.id) && !usedTitles.has(a.title));
 kept.forEach((a) => out.push(a));
+
+// ★★念のため、★出す 前に 数え直します。★同じ id が 2つ あれば 止めます。
+//   ★★2026-09-16、★これが 無い ために 57本の 二重を 出して しまいました。
+//     ★★出来上がりを 見ない 道具は、★自分の 壊れ方に 気づけません。
+{
+  const seen = new Set();
+  const dup = [];
+  out.forEach((a) => { if (seen.has(a.id)) dup.push(a.id); else seen.add(a.id); });
+  if (dup.length) {
+    console.error("★★同じ id が 2つ 以上 あります:", dup.join(", "));
+    console.error("　★書きません。★止まります。");
+    process.exit(1);
+  }
+}
 
 out.sort((x, y) => x.chapter - y.chapter || (x.order || 99) - (y.order || 99));
 
 console.log("取り込んだ記事      :", out.length, "本");
 console.log("  本文のある新規    :", src.articles.filter((a) => HAS_PROSE.has(a.status)).length);
-console.log("  既存に結び付けた  :", src.articles.filter((a) => !HAS_PROSE.has(a.status) && liveByTitle.has(a.title)).length);
+console.log("  既存に結び付けた  :", src.articles.filter((a) => !HAS_PROSE.has(a.status) && liveOf(a)).length);
 console.log("  そのまま残した既存:", kept.length);
 console.log("★結び付かなかった指示:", unresolved.length, "本");
 unresolved.forEach((a) => console.log("   ", a.id, a.title, "／", a.status));

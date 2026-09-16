@@ -49,7 +49,12 @@ const ui = readCode("components", "VocalTracker.jsx");
 
 // ★見本の 字。★1文字も 変えて いません。
 const MIHON = [
-  ["㋐", "7つの 章立ては、どの 仕事でも 同じです。中身だけ 入れ替わります。"],
+  // ★★★2026-09-16、★数を 決め打ちに するのを やめました（★決め ①・㋐）。
+  //   ★★前は「7つの 章立ては …」でした。★けれど 画面には **9つ** 出て いました
+  //     （★8・9 は「音楽家の商い」。★見られる 方にだけ 出ます）。
+  //   ★★いまは `learnChapterNote(n)` が、★数えて 書きます。
+  //     ★★だから この 見張りは、★数の ところを 見ません。★あとの 字を 見ます。
+  ["㋐", "つの 章立ては、どの 仕事でも 同じです。中身だけ 入れ替わります。"],
   ["㋑", "これは どの 仕事の方にも 出る 章です。"],
   ["㋑", "声楽・アナウンサー・声優・ポップスの ほか、保育士・学校の先生・受付・コールセンター・介護・営業の方も、ここを 読みます。"],
   ["㋒", "ただし 書き方は 稽古の ことばの ままです。「授業の前は」「シフトの前は」と 言い換えません（9月9日の 裁定②）。"],
@@ -67,13 +72,14 @@ MIHON.forEach(([mark, line]) => {
 
 console.log("\n② その 字を 画面が 読んでいること");
 // ★★書いて あるだけでは 出ません。★読み込みと 描画の 両方を 見ます。
-t(/import\s*{[^}]*LEARN_CHAPTER_NOTE[^}]*}\s*from\s*"@\/lib\/learnContent"/.test(ui),
-  "LEARN_CHAPTER_NOTE を 読み込んでいる");
+t(/import\s*{[^}]*learnChapterNote[^}]*}\s*from\s*"@\/lib\/learnContent"/.test(ui),
+  "learnChapterNote を 読み込んでいる");
 t(/import\s*{[^}]*LEARN_COMMON_LINES[^}]*}\s*from\s*"@\/lib\/learnContent"/.test(ui),
   "LEARN_COMMON_LINES を 読み込んでいる");
 t(/import\s*{[^}]*LEARN_NOTE[^}]*}\s*from\s*"@\/lib\/learnContent"/.test(ui),
   "LEARN_NOTE を 読み込んでいる");
-t(/\{LEARN_CHAPTER_NOTE\}/.test(ui), "㋐ を 描いている");
+t(/\{learnChapterNote\(learnChapters\.length\)\}/.test(ui),
+  "㋐ を 描いている（★章の 数を 数えて います）");
 t(/LEARN_COMMON_LINES\.map\(/.test(ui), "㋑㋒ を 描いている");
 t(/LEARN_NOTE\.map\(/.test(ui), "㋓㋔ を 描いている");
 

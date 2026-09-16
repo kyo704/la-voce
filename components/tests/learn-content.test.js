@@ -31,16 +31,30 @@ async function main() {
   assertEqual(missing.map((a) => a.id), [], "★本文のある記事が、1本残らず入っている");
 
   console.log("\n=== ★元からあった記事を失っていないこと ===");
+  // ★★★2026-09-16、★名前で 見るのを やめました。
+  //
+  //   ★★もとは 10本の **題**を 並べて、★それが 残って いるかを 見て いました。
+  //   ★★同じ 日、★坂本さんの お決め（★決め ⑥）で 記事の 題を 書き直しました
+  //     （★線を ── に、★分かち書きを 足す）。★中身は 1文字も 変えて いません。
+  //   ★★すると この 見張りが 落ちました ── ★9本が「失われた」と 出ました。
+  //     ★★失って いません。★**題が 変わった だけ** です。
+  //   ★★同じ 日に、★取り込みの 道具も 同じ 形で 壊れました ──
+  //     ★`build-learn-content.js` が 題で 突き合わせて いて、
+  //     ★題を 変えた とたん 85本が **144本**に なりました（★57本の 二重）。
+  //   ★★だから どちらも `id` で 見ます。★題は 変わる。★id は 変わらない。
   const originals = [
-    "声区とパッサッジョ ― 通過点で何が起きているか", "衣装と姿勢 ― コルセットが呼吸に与えるもの",
-    "話声位（SFF）とは ― あなたが普段しゃべっている高さ", "長時間しゃべるということ ― 歌より過酷な理由",
-    "叫びの生理と、そこからの戻り方", "ささやきと息漏れ ― 「楽な芝居」という誤解",
-    "ベルティングの仕組み", "打ち上げという最大の落とし穴",
-    "声帯という器官のこと", "逆流性食道炎と声"
+    "V-1", "V-4", "announcer-1-1", "announcer-2-1",
+    "voiceactor-1-1", "voiceactor-2-1", "poprock-1-1", "poprock-2-1",
+    "C1-1", "body-2"
   ];
-  const titles = new Set(m.ARTICLES.map((a) => a.title));
-  const lost = originals.filter((t) => !titles.has(t));
-  assertEqual(lost, [], "★元からあった10本が、すべて残っている");
+  const liveIds = new Set(m.ARTICLES.map((a) => a.id));
+  const lost = originals.filter((i) => !liveIds.has(i));
+  assertEqual(lost, [], "★元からあった10本が、すべて残っている（★id で 見ます）");
+
+  // ★★二重に なって いないこと。★上の 取り込みの 壊れ方を 見張ります。
+  const seen = new Set(), dup = [];
+  m.ARTICLES.forEach((a) => { if (seen.has(a.id)) dup.push(a.id); else seen.add(a.id); });
+  assertEqual(dup, [], "★同じ id の 記事が 2つ ない");
 
   console.log("\n=== ★覚え書きが、記事の本文になっていないこと ===");
   // 「※既存記事。移動のみ」のような指示文が本文に入っていたら、中身が消えている。
