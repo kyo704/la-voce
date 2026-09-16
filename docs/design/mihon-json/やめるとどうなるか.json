@@ -1,0 +1,28 @@
+{
+  "screen": "やめるとどうなるか",
+  "back": "‹ ○○音楽大学",
+  "title": "○○音楽大学 を やめる",
+  "pills": [],
+  "heads": [],
+  "rows": [],
+  "notes": [
+    {
+      "text": "あとから もう一度 招いてもらえば、また 入れます。そのとき、記録は そのまま 続きます。",
+      "bold": []
+    }
+  ],
+  "wl": [],
+  "warn": [],
+  "buttons": [
+    {
+      "label": "やめない",
+      "ghost": true,
+      "small": false
+    },
+    {
+      "label": "やめる",
+      "ghost": false,
+      "small": false
+    }
+  ]
+}

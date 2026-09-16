@@ -1,0 +1,127 @@
+{
+  "screen": "招かれている",
+  "back": "‹ 通っている ところ",
+  "title": "招かれている ところ",
+  "pills": [],
+  "heads": [
+    "入ると、この教室から 見えるように なるもの",
+    "入っても、見えないもの"
+  ],
+  "rows": [
+    {
+      "left": "お名前",
+      "sub": null,
+      "right": "見えます",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "学年・コース（その教室のもの）",
+      "sub": null,
+      "right": "見えます",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "その教室の レッスンの 出欠",
+      "sub": null,
+      "right": "見えます",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "その教室の 門下の 連絡に 書いたこと",
+      "sub": null,
+      "right": "見えます",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "その教室の 行事の 出欠",
+      "sub": null,
+      "right": "見えます",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "あなたが「あき」と 入れた 時間（あきか どうかだけ）",
+      "sub": null,
+      "right": "見えます",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "声と からだの 記録",
+      "sub": null,
+      "right": "見えません",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "ノート・レパートリー・受診用の 1枚",
+      "sub": null,
+      "right": "見えません",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "ひつじ・おうち",
+      "sub": null,
+      "right": "見えません",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "時間割の 中身（授業の 名前・教室・備考）",
+      "sub": null,
+      "right": "見えません",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "ほかの 教室の こと",
+      "sub": null,
+      "right": "見えません",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "ほかの 教室に 通っていること そのもの",
+      "sub": null,
+      "right": "見えません",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "来られない 理由",
+      "sub": null,
+      "right": "見えません",
+      "hasSwitch": false,
+      "switchOn": false
+    }
+  ],
+  "notes": [
+    {
+      "text": "あなたが 押すまで、この教室からは あなたが 見えません。契約では 代えられません。ご本人から いただきます。",
+      "bold": [
+        "あなたが 押すまで、この教室からは あなたが 見えません。"
+      ]
+    }
+  ],
+  "wl": [
+    "この承知は、この教室のぶんだけです。ほかの 教室には かかりません。いつでも やめられます。やめても、あなたの 記録は 消えません。18歳未満の方は、保護者の 承知も いただきます。"
+  ],
+  "warn": [],
+  "buttons": [
+    {
+      "label": "ことわる",
+      "ghost": true,
+      "small": false
+    },
+    {
+      "label": "承知して 入る",
+      "ghost": false,
+      "small": false
+    }
+  ]
+}

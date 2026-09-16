@@ -1,0 +1,143 @@
+{
+  "screen": "通っているところの中身",
+  "back": "‹ 通っている ところ",
+  "title": "○○音楽大学",
+  "pills": [],
+  "heads": [
+    "この教室から 見えるもの",
+    "この教室から 見えないもの"
+  ],
+  "rows": [
+    {
+      "left": "入った日",
+      "sub": null,
+      "right": "2026年4月1日",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "担当の 先生",
+      "sub": null,
+      "right": "斎藤 めぐみ",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "門下",
+      "sub": null,
+      "right": "斎藤 めぐみ の 門下",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "お名前",
+      "sub": null,
+      "right": "見えます",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "学年・コース（その教室のもの）",
+      "sub": null,
+      "right": "見えます",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "その教室の レッスンの 出欠",
+      "sub": null,
+      "right": "見えます",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "その教室の 門下の 連絡に 書いたこと",
+      "sub": null,
+      "right": "見えます",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "その教室の 行事の 出欠",
+      "sub": null,
+      "right": "見えます",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "あなたが「あき」と 入れた 時間（あきか どうかだけ）",
+      "sub": null,
+      "right": "見えます",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "声と からだの 記録",
+      "sub": null,
+      "right": "見えません",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "ノート・レパートリー・受診用の 1枚",
+      "sub": null,
+      "right": "見えません",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "ひつじ・おうち",
+      "sub": null,
+      "right": "見えません",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "時間割の 中身（授業の 名前・教室・備考）",
+      "sub": null,
+      "right": "見えません",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "ほかの 教室の こと",
+      "sub": null,
+      "right": "見えません",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "ほかの 教室に 通っていること そのもの",
+      "sub": null,
+      "right": "見えません",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "来られない 理由",
+      "sub": null,
+      "right": "見えません",
+      "hasSwitch": false,
+      "switchOn": false
+    }
+  ],
+  "notes": [
+    {
+      "text": "この教室に 見えるのは、この教室の ぶんだけです。あなたが ほかにも 通っていることは、この教室に 届きません。時間割は、あなたの 端末の 中の 1枚です。教室ごとに 分かれていません。 → ほかの 教室の レッスンが 入っている コマは、ここには 「あきでは ない」としか 伝わりません。",
+      "bold": [
+        "この教室の ぶんだけ",
+        "届きません",
+        "「あきでは ない」"
+      ]
+    }
+  ],
+  "wl": [],
+  "warn": [],
+  "buttons": [
+    {
+      "label": "この教室を やめる",
+      "ghost": true,
+      "small": false
+    }
+  ]
+}

@@ -49,7 +49,13 @@ const OUT = path.join(ROOT, "docs", "design", "mihon-json");
       if (typeof SC[n] !== "function") return { error: "SC['" + n + "'] が ありません" };
       S.stack = []; S.sheet = null;
       const host = document.createElement("div");
-      host.innerHTML = SC[n]();
+      // ★★★引数を とる 画面が あります（★2026-09-16）。
+      //   ★★`SC['やめるとどうなるか'](i)` や `SC['通っているところの中身'](i)` は、
+      //     ★どの 教室か を 番号で 受けます。
+      //   ★★何も 渡さないと `o.n` で 落ちます。★見本の 誤りでは ありません。
+      //   ★★見本 自身の 呼び方に 合わせます ── ★1つめ（0）を 渡します。
+      //     ★★勝手な 値を 作りません。★見本の `ORGS` の 1つめ です。
+      host.innerHTML = SC[n].length > 0 ? SC[n](0) : SC[n]();
       const txt = (el) => (el ? el.textContent.replace(/\s+/g, " ").trim() : null);
 
       // ★★★拾う ものを、★見本の 組み立ての 名前で 決めます。
@@ -102,7 +108,7 @@ const OUT = path.join(ROOT, "docs", "design", "mihon-json");
         for (let i = 1; i <= arg.n; i++) {
           S.fs = i;
           const host = document.createElement("div");
-          host.innerHTML = SC[arg.n2]();
+          host.innerHTML = SC[arg.n2].length > 0 ? SC[arg.n2](0) : SC[arg.n2]();
           document.body.appendChild(host);
           // ★★見本の「ためしの 字」は、★札の すぐ下の 欄 です。
           const sample = host.querySelector(".card > div:not(.pills)");
