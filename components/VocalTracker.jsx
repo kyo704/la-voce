@@ -10383,6 +10383,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //   ★了解を押したら、もう一度この処理に入り、そのまま進みます。
       // ★★お支払いが 続いて います（★2026-09-16・第1段）。
       //   ★★退会を 止めます。★隠して いません。★順番を 示します。
+      // ★★お支払いを 止められません でした（★第2段）。
+      //   ★★退会は していません。★1行も 消えて いません。
+      if (res.status === 409 && data.cancelFailed) {
+        setPaymentBlockLines(data.lines || []);
+        setDeleteStatus("cancelFailed");
+        return;
+      }
       if (res.status === 409 && data.paymentActive) {
         setPaymentBlockLines(data.lines || PAYMENT_BLOCK_LINES);
         setDeleteStatus("paymentActive");
@@ -21299,6 +21306,23 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ★★行き先を 押せる 札に します。★字だけ だと 行き止まりに なります
                       （★「押せない 札を 置かない」と 同じ 考え です）。
                     ★★字は lib/activeSubscription.js が 持ちます。 */}
+                {/* ★★お支払いを 止められません でした（★第2段・2026-09-16）。
+                    ★★退会は 中止して います。★**1行も 消えて いません**。
+                      ★★そこを 先に 言います。★消えたかも、と 思わせない ため です。
+                    ★★押しどころは 出しません ── ★もう一度 押すのは、
+                      ★下の「退会する」で できます。★同じ ことを 2つ 置きません。 */}
+                {deleteStatus === "cancelFailed" && (
+                  <div className="rounded-2xl p-4 border space-y-2"
+                    style={{ background: C.card, borderColor: C.rust }}>
+                    {(paymentBlockLines.length ? paymentBlockLines : []).map((line) => (
+                      <p key={line} className="text-sm"
+                        style={{ color: C.ink, margin: 0, lineHeight: 1.9 }}>{line}</p>
+                    ))}
+                    <p className="text-sm" style={{ color: C.ink, margin: 0, lineHeight: 1.9 }}>
+                      記録は、1つも 消えて いません。
+                    </p>
+                  </div>
+                )}
                 {deleteStatus === "paymentActive" && (
                   <div className="rounded-2xl p-4 border space-y-3"
                     style={{ background: C.card, borderColor: C.line }}>

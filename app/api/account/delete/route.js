@@ -8,6 +8,8 @@ import { OPERATOR_CONTACT_EMAIL } from "@/lib/brand";
 import { getUserWithTimeout } from "@/lib/withTimeout";
 import { reauthStillValid } from "@/lib/reauth";
 import { blocksDeletion, PAYMENT_BLOCK_LINES } from "@/lib/activeSubscription";
+// ★退会の 前に、★会社の ほうを 先に 止めます（★第2段・2026-09-16）。
+import { cancelLiveSubscriptions, CANCEL_FAILED_LINES } from "@/lib/stripeCancel";
 
 // ============================================================================
 // アカウントの削除（統合実行ルートv4 G3-17 / 作業指示-公開前の実装.md A-4）
@@ -152,6 +154,41 @@ export async function POST(request) {
     return NextResponse.json({
       paymentActive: true,
       lines: PAYMENT_BLOCK_LINES
+    }, { status: 409 });
+  }
+
+  // ★★★会社の ほうを、★先に 止めます（★第2段・2026-09-16）。
+  //
+  //   ★★順番が すべて です ──
+  //     ★1 会社の 解約を 先に 呼ぶ
+  //     ★2 止まった ことを 確かめる
+  //     ★3 止まった ときだけ 記録を 消す
+  //     ★4 止まらなければ 退会を 中止し、そう 伝える
+  //   ★★消してから 呼ぶ形は、★失敗した とき 何も 残りません。
+  //
+  //   ★★★写しを 見ません。★会社に 直に 聞きます（★台帳 ㊶）。
+  //     ★★`subscriptions` は 写し です。★手で 書いた 見せかけの 行が ありました。
+  //     ★写しから 引くのは `stripe_customer_id`（★どの お客さまか）だけ です。
+  //     ★★「いくつ 生きて いるか」は、★会社の 答えだけ を 使います。
+  //       ★★写しに 無い 契約も、★これで 見つかります。
+  //
+  //   ★★第1段（★上の `blocksDeletion`）は そのまま 残します（★坂本さんの お決め）。
+  //     ★★退会と 解約を 1つの ボタンに まとめると、★押し間違いが 起きます。
+  //     ★★ここは その あと の 守り です ── ★写しが 嘘を ついて いた ときの ため。
+  const { data: payRow } = await admin
+    .from("subscriptions")
+    .select("stripe_customer_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  const cancelResult = await cancelLiveSubscriptions(
+    payRow && payRow.stripe_customer_id ? payRow.stripe_customer_id : null
+  );
+  if (!cancelResult.ok) {
+    console.error("アカウント削除：お支払いを止められませんでした。",
+      cancelResult.failures.map((f) => f.id + ":" + f.message).join(" ／ "));
+    return NextResponse.json({
+      cancelFailed: true,
+      lines: CANCEL_FAILED_LINES
     }, { status: 409 });
   }
 
