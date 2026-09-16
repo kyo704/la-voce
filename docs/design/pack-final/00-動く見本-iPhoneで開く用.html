@@ -1698,12 +1698,6 @@ SC['プラン']=function(){
  +(paid()?'<div class="btn g" style="margin-top:11px" onclick="S.dm.pay=0;draw();toast(\'やめました\')">やめる</div>'
   :'<div class="btn" style="margin-top:11px" onclick="push(\'調べる\')">調べるを 見る</div>')
  +'<div class="note">調べるは、ご自分で お選びいただくものです。<br>学校が お支払いになるのは、レッスンの 運営（日程・出欠・名簿・連絡）です。<br>学校を 離れても、調べるは そのまま 続きます。<b>記録は、どちらの 場合も 消えません</b>。</div>'};
-SC['学ぶ']=function(){
- return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>学ぶ</h2></div>'
- +[['声と、眠りの こと','記録から 分かること／分からないこと'],['本番の 前後で、何が 起きているか','3日前から 翌々日まで'],
-   ['「あなたの場合」と 言えるまで','3つの門の 話'],['記録は 誰にも 見えません','データの 置き場所と 消し方']].map(function(x){
-   return '<div class="nt"><div class="t">'+x[0]+'</div><div class="m">'+x[1]+'</div></div>'}).join('')
- +'<div class="note">病気の 名前を 使いません。「疑い／リスク／早期発見／予防」の 語を 使いません。<br>読まなくても、アプリは 使えます。</div>'};
 SC['書き出す']=function(){
  return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>書き出す</h2></div>'
  +'<div class="h3">形</div><div class="pills"><span class="pill on">CSV</span><span class="pill">JSON</span></div>'
@@ -1780,6 +1774,7 @@ function opHome(){
  +'<div class="k" onclick="goo(\'名簿\')"><div class="v">216</div><div class="l">名簿の 人数</div></div>'
  +'<div class="k" onclick="goo(\'名簿\')"><div class="v">9</div><div class="l">先生</div></div>'
  +'<div class="k" onclick="push(\'重なり\')"><div class="v" style="color:var(--yama)">'+KASANARI.length+'</div><div class="l">重なり（場所 '+kasaN('場所')+'）</div></div></div>'
+ +opSaitenBand()
  +'<div class="h3">きょうの 流れ</div><div class="box">'
  +[['9:00','声楽A','斎藤 めぐみ','第1教室'],['10:30','声楽B','渡辺 たける','第2教室'],['13:00','声楽A','斎藤 めぐみ','第1教室'],
    ['16:00','声楽C','高橋 のぞみ','第3練習室'],['17:30','アンサンブル','渡辺 たける','大ホール']].map(function(x){
@@ -1841,8 +1836,166 @@ function opMeibo(){
  +'<div class="li" style="padding:6px 0"><span>1人あたり</span><s style="font-size:13px;color:var(--ink)">'+Math.round(billYen()/billN())+'円</s></div>'
  +'<div class="li" style="padding:6px 0"><span>'+(PAY.cycle==='毎月'?'今月の':'1年ぶんの')+' ご請求</span><s style="font-size:15px;font-weight:700;color:var(--ink)">'+yen(billNow())+'円</s></div></div>'
  +'<div class="btn g" style="margin-top:9px" onclick="openSheet(\'maneku\')">＋ 招く</div>'
+ +'<div class="btn g" onclick="push(\'招く\')">＋ メールで 招く</div>'
  +'<div class="note">表では なく カードに しました（iPhoneの 幅です）。合計は 下に 貼りつけます。<br>'
  +'休会・招待中は 数えません。先生・事務も 数えません。<br>生徒の 健康に関するものは、この画面に ありません。</div>'}
+
+/* ══════ 採点（スマホの 運営モード・2026-09-16）══════ */
+var GYO=[
+ {n:'実技試験',d:'9月14日（月）',t:'12:30〜17:00',p:'第1ホール',co:'声楽',gr:'3年',nin:12,sa:1,
+  ju:['高橋 のぞみ','斎藤 めぐみ','渡辺 たける']},
+ {n:'実技試験',d:'9月14日（月）',t:'12:30〜17:00',p:'第2ホール',co:'ピアノ',gr:'3年',nin:10,sa:1,
+  ju:['中村 ゆか','高橋 のぞみ']},
+ {n:'実技試験',d:'9月14日（月）',t:'12:30〜16:00',p:'第3練習室',co:'声楽',gr:'1年・2年',nin:24,sa:1,
+  ju:['斎藤 めぐみ']},
+ {n:'学園祭',d:'10月5日（月）',t:'10:00〜',p:'全学',co:'全て',gr:'全学年',nin:216,sa:0,ju:[]},
+ {n:'定期演奏会',d:'11月20日（金）',t:'18:00〜20:30',p:'大ホール',co:'声楽',gr:'3年・4年',nin:96,sa:0,ju:[]}];
+
+var KOU=[['音程',10],['表現',10],['ことば',10],['舞台',5]];
+var JUKEN=['山田','佐藤','鈴木','田中','伊藤','中村','小林','加藤','吉田','山本','松本','井上'];
+var JYO=['済','済','入力中','未入力','未入力','未入力','未入力','未入力','未入力','未入力','未入力','未入力'];
+
+function myGyo(){var me=S.dm&&S.dm.name?S.dm.name:'高橋 のぞみ';
+ return GYO.map(function(g,i){return {g:g,i:i}}).filter(function(x){
+  return x.g.sa&&x.g.ju.indexOf(me)>=0})}
+
+function opSaitenBand(){
+ var a=myGyo(); if(!a.length)return '';
+ return '<div class="h3">あなたが 審査員の 試験　<span class="usu">'+a.length+'件</span></div>'
+ +'<div class="box">'+a.map(function(x){
+  return '<div class="li" onclick="push(\'採点\','+x.i+')"><span>'+x.g.n
+  +'<div class="usu">'+x.g.d+'　'+x.g.p+'　／　'+x.g.co+' '+x.g.gr+'</div></span>'
+  +'<s>採点 ›</s></div>'}).join('')+'</div>'
+ +(a.length>1?'<div class="usu" style="margin:-4px 0 10px">同じ 時間に 2つ 以上 ある ときは、'
+  +'どちらも ここに 出ます。掛け持ちの ためです。</div>':'')}
+
+SC['採点']=function(a){
+ var k=(a===undefined||a===null||!GYO[a])?0:a, g=GYO[k];
+ var nara=GYO.map(function(x,n){return {x:x,n:n}}).filter(function(o){
+  return o.x.sa&&o.x.d===g.d&&o.x.t===g.t&&o.n!==k});
+ return bk('行事')+'<div class="hd" style="padding-top:2px"><h2>'+g.n+'　採点</h2></div>'
+ +'<div class="usu" style="margin-bottom:10px">'+g.d+'　'+g.t+'<br>'+g.p
+ +'　／　'+g.co+' '+g.gr+'（'+g.nin+'人）</div>'
+ +(nara.length?'<div class="warn"><b>同じ 日・同じ 時間に、ほかの 試験も あります。</b><br>'
+   +nara.map(function(o){return '<span class="pill sm" onclick="pop();push(\'採点\','+o.n+')">'
+    +o.x.p+'　'+o.x.co+' '+o.x.gr+'</span> '}).join('')
+   +'<br>採点は 行事ごとです。<b>混ざりません。</b></div>':'')
+ +'<div class="h3">受験者　<span class="usu">名簿の 対象から 出しています</span></div>'
+ +'<div class="box">'+JUKEN.slice(0,Math.min(g.nin,12)).map(function(nm,n){
+   return '<div class="li" onclick="push(\'点を入れる\','+k+')"><span>'
+   +(g.gr.split('・')[0])+' '+nm+'</span><s>'+(JYO[n]||'未入力')+' ›</s></div>'}).join('')+'</div>'
+ +'<div class="h3">集計</div>'
+ +'<div class="card"><div class="usu" style="margin-bottom:7px">まとめ方　合計（貴学の お決め）</div>'
+ +[['山田','27 / 35'],['佐藤','30 / 35'],['鈴木','25 / 35'],['田中','—']].map(function(x){
+   return '<div class="li"><span>'+(g.gr.split('・')[0])+' '+x[0]+'</span><s>'+x[1]+'</s></div>'}).join('')
+ +'<div class="btn g" style="margin-top:10px">点数の 一覧を 書き出す</div></div>'
+ +'<div class="note">進み具合は、色では 出しません。「未入力／入力中／済」の 言葉で 出します。<br>'
+ +'締切の 前は、ほかの 審査員の 点は 見えません。<br>'
+ +'点数の 一覧です。<b>順位は 付けていません。</b><br>'
+ +'書き出しから 90日で、こちらからは 消えます。貴学の 校務システムが 正本です。</div>'};
+
+SC['点を入れる']=function(a){
+ var k=(a===undefined||a===null||!GYO[a])?0:a, g=GYO[k];
+ var gr=g.gr.split('・')[0];
+ return bk('採点')+'<div class="hd" style="padding-top:2px"><h2>'+gr+' 山田</h2></div>'
+ +'<div class="usu" style="margin-bottom:12px">'+g.n+'　'+g.p+'<br>'
+ +'型：実技試験（'+KOU.length+'項目・合計）</div>'
+ +KOU.map(function(x,i){
+   return '<div class="h3" style="margin-top:14px">'+x[0]
+   +'　<span class="usu" style="display:inline">'+x[1]+'点満点</span></div>'
+   +'<div class="pills">'+Array.from({length:x[1]+1},function(_,n){
+     return '<span class="pill sm'+(n===[8,7,8,4][i]?' on':'')+'">'+n+'</span>'}).join('')+'</div>'}).join('')
+ +'<div class="h3">講評</div>'
+ +'<textarea class="ta" style="height:84px">渡りの ところで、息が 浅くなりました</textarea>'
+ +'<div class="btn" style="margin-top:12px">入れる</div>'
+ +'<div class="h3">ほかの 受験者</div><div class="box">'
+ +[['佐藤','済'],['鈴木','入力中'],['田中','未入力']].map(function(x){
+   return '<div class="li"><span>'+gr+' '+x[0]+'</span><s>'+x[1]+' ›</s></div>'}).join('')+'</div>'
+ +'<div class="note">点は <b>札で 選びます</b>。手で 打ちません。<br>'
+ +'　（ホールの 暗がりで、細かい 数字を 打つのは 難しいからです）<br>'
+ +'項目と 満点は、貴学が 決めた 型から 出ています。<br>'
+ +'締切の 前は、ほかの 審査員の 点は 見えません。</div>'};
+
+SC['評価の型']=function(){
+ return bk('設定')+'<div class="hd" style="padding-top:2px"><h2>評価の 型</h2></div>'
+ +'<div class="warn">この 学校の 評価の 仕方を 決めます。<br>'
+ +'<b>こちらからの 既定は ありません。</b>貴学が お決めください。</div>'
+ +'<div class="h3" style="margin-top:0">後期 実技試験</div><div class="box">'
+ +KOU.map(function(x,i){return '<div class="li" onclick="push(\'評価の項目\','+i+')"><span>'+x[0]
+   +'<div class="usu">'+x[1]+'点満点</div></span><s>なおす ›</s></div>'}).join('')
+ +'<div class="li" style="color:var(--ink3)" onclick="push(\'評価の項目\',4)"><span>ことばの 明瞭さ'
+ +'<div class="usu">使っていません</div></span><s>もどす ›</s></div></div>'
+ +'<div class="btn g" onclick="push(\'評価の項目\',\'new\')">＋ 項目を 足す</div>'
+ +'<div class="h3">まとめ方</div><div class="box">'
+ +[['合計する',1],['平均する',0],['重みを つけて 合計する',0],['審査員ごとの 平均を 出す',0]].map(function(x){
+   return '<div class="li"><span>'+x[0]+'</span><s>'+(x[1]?'<b style="color:var(--midori)">✓ いま これです</b>':'これに する ›')+'</s></div>'}).join('')
+ +'</div>'
+ +'<div class="h3">ほかの 型</div><div class="box">'
+ +'<div class="li"><span>前期 実技試験<div class="usu">3項目・合計</div></span><s>›</s></div>'
+ +'<div class="li"><span>学内演奏会<div class="usu">2項目・平均</div></span><s>›</s></div></div>'
+ +'<div class="btn g">＋ 型を 足す</div>'
+ +'<div class="note">型は いくつでも 作れます。行事ごとに 選びます。<br>'
+ +'項目を 押すと、なおす・使わない に する・消す が できます。<br>'
+ +'　<b>消す ときは、何人ぶんの 点が 消えるかを その場で お見せします</b><br>'
+ +'まとめ方を 変えても、入力済みの 点は 残ります。<br>'
+ +'<b>順位は、どの まとめ方でも 出しません。</b></div>'};
+
+SC['評価の項目']=function(a){
+ var IT=[['音程','10点満点',8],['表現','10点満点',8],['ことば','10点満点',6],
+   ['舞台','5点満点',0],['ことばの 明瞭さ','使っていません',3]];
+ var add=(a==='new');
+ var k=add?-1:((a===undefined||a===null||!IT[a])?0:a);
+ var it=add?['','',0]:IT[k];
+ var n=it[2], off=(!add&&it[1]==='使っていません');
+ return bk('評価の 型')+'<div class="hd" style="padding-top:2px"><h2>'+(add?'項目を 足す':it[0])+'</h2></div>'
+ +(add?'':'<div class="usu" style="margin-bottom:10px">'+it[1]+'　／　'
+   +(n?'<b>'+n+'人ぶんの 点が 入っています</b>':'まだ 誰も 入れていません')+'</div>')
+ +'<div class="h3" style="margin-top:0">名前</div><input class="inp" value="'+(add?'':it[0])+'" placeholder="れい：音程">'
+ +'<div class="h3">満点</div><input class="inp" value="'+(add?'10':(off?'10':it[1].replace('点満点','')))+'">'
+ +'<div class="h3">きざみ</div><div class="pills">'
+ +['1点','0.5点','整数のみ'].map(function(v,i){
+   return '<span class="pill sm'+(i===0?' on':'')+'">'+v+'</span>'}).join('')+'</div>'
+ +'<div class="h3">審査員への 説明　<span class="usu" style="display:inline">任意</span></div>'
+ +'<textarea class="ta" style="height:62px" placeholder="何を 見る 項目か。審査員の 画面に 出ます">'
+ +(add?'':'音の 高さの 正確さ。渡りの ところを 含む')+'</textarea>'
+ +'<div class="btn" style="margin-top:12px">'+(add?'足す':'なおす')+'</div>'
+ +(add?'':'<div class="h3">この項目を 減らす</div>'
+   +(off
+     ?'<div class="card"><div style="font-size:13.5px;line-height:1.9">この項目は いま <b>使っていません</b>。'
+      +(n?n+'人ぶんの 点は 残っています。':'')+'</div>'
+      +'<div class="btn g" style="margin-top:10px">もどす</div>'
+      +'<div class="btn g">消す</div></div>'
+     :'<div class="box">'
+      +'<div class="li"><span>使わない に する<div class="usu">'
+      +(n?n+'人ぶんの 点は <b>残ります</b>。':'')+'集計に 入りません。あとで もどせます</div></span><s>›</s></div>'
+      +'<div class="li"><span>消す<div class="usu"'+(n?' style="color:var(--red)"':'')+'>'
+      +(n?'<b>'+n+'人ぶんの 点も 消えます</b>。もどせません':'点は 入っていないので、そのまま 消せます')
+      +'</div></span><s>›</s></div></div>')
+   +'<div class="note">どちらを 選んでも、<b>ほかの 項目の 点は 変わりません</b>。<br>'
+   +(n?'「消す」を 選ぶと、もう一度 お尋ねします。<br>':'')
+   +'「使わない」に した 項目は、型の 一覧に 薄く 残ります。</div>')
+ +'<div class="note">きざみは、審査員が 入れられる 数の 単位です。<br>'
+ +'満点を 変えても、<b>入力済みの 点は 残ります</b>。集計だけが 変わります。</div>'};
+
+
+SC['招く']=function(){
+ return bk('名簿')+'<div class="hd" style="padding-top:2px"><h2>招く</h2></div>'
+ +'<div class="usu" style="margin-bottom:11px">メールで お送りします</div>'
+ +'<div class="h3" style="margin-top:0">メールアドレス</div>'
+ +'<textarea class="ta" style="height:104px" placeholder="mina@example.com&#10;kanade@example.com"></textarea>'
+ +'<div class="usu" style="margin-top:-2px">改行で 何人でも</div>'
+ +'<div class="h3">学年</div><div class="pills">'
+ +ORG.gakunen.slice(0,6).map(function(v){return '<span class="pill sm">'+v+'</span>'}).join('')+'</div>'
+ +'<div class="h3">学科・コース</div><div class="pills">'
+ +MST.course.map(function(v){return '<span class="pill sm">'+v+'</span>'}).join('')+'</div>'
+ +'<div class="usu" style="margin:-4px 0 11px">あとから ご本人が 直せます</div>'
+ +'<div class="warn">招待中は、ご請求に 入りません。<br>'
+ +'<b>同意は ご本人から</b> いただきます（契約では 代えられません）。<br>'
+ +'18歳未満の方は、保護者の 同意も いただきます。</div>'
+ +'<div class="btn" onclick="toast(\'招待を 送りました\');pop()">送る</div>'
+ +'<div class="note"><b>ご本人が 承知するまで、この学校からは その方が 見えません。</b><br>'
+ +'合言葉（6文字）でも 入れます。教室を こちらから 探すことは できません。</div>'};
+
 function opGyoji(){
  return '<div class="hd"><h2>行事</h2><div class="gear" onclick="push(\'行事を出す\')">＋</div></div>'
  +'<div class="usu" style="margin:-2px 0 10px">日と 時間と 場所と 対象を 知らせます　／　出欠は 集めません</div>'
@@ -1850,6 +2003,10 @@ function opGyoji(){
    ['11月20日（金）','定期演奏会','18:00〜20:30　大ホール','96']].map(function(x){
    return '<div class="rep" onclick="push(\'行事を出す\',1)"><div><div class="t" style="font-size:13.5px">'+x[1]+'</div>'
    +'<div class="s">'+x[0]+'　'+x[2]+'</div></div><div class="r">'+x[3]+'人に<br>届きます</div></div>'}).join('')
+ +'<div class="h3">採点の ある 行事</div><div class="box">'
+ +GYO.map(function(g,i){return g.sa?'<div class="li" onclick="push(\'採点\','+i+')"><span>'
+   +g.n+'<div class="usu">'+g.d+'　'+g.p+'　／　'+g.co+' '+g.gr+'</div></span><s>採点 ›</s></div>':''}).join('')
+ +'</div>'
  +'<div class="note"><b>出欠を 集めません。</b>出席の 提出も、その 一覧も ありません。<br>'
  +'　（出欠は レッスンの 場で 先生が つけます。行事で 二重に 集めません）<br>'
  +'出席率（％）を 出しません。体調も 理由も 集めません。<br>取り下げても、静かに 1行 残ります。</div>'}
@@ -1924,6 +2081,9 @@ function opSettei(){
   +'<div class="li" onclick="push(\'組織\',\'gakka\')"><span>学科・コース</span><s>'+ORG.gakka.length+'つ ›</s></div>'
   +'<div class="li" onclick="push(\'組織\',\'gakunen\')"><span>学年</span><s>'+ORG.gakunen.length+'つ ›　足す・消す</s></div>'
   +'<div class="li" onclick="push(\'組織\',\'bunya\')"><span>事務の 分野</span><s>'+ORG.bunya.length+'つ ›</s></div></div>':'';
+ var saiten=can('master')?'<div class="h3">採点</div><div class="box">'
+  +'<div class="li" onclick="push(\'評価の型\')"><span>評価の 型<div class="usu">項目と まとめ方</div></span><s>›</s></div></div>'
+  +'<div class="usu" style="margin:-4px 0 4px">項目も まとめ方も、<b>貴学が お決めください</b>。こちらからの 既定は ありません</div>':'';
  var yakuwari=(can('post')||can('master'))?'<div class="h3">役職</div><div class="box">'
   +'<div class="li" onclick="push(\'役職の一覧\')"><span>役職と、できること</span><s>'+POSTS.length+'つ ›</s></div>'
   +'<div class="li" onclick="push(\'ひとの一覧\')"><span>ひとと 役職（'+PEOPLE.length+'人）</span><s>絞って さがす ›</s></div></div>'
@@ -1966,7 +2126,7 @@ function opSettei(){
  +'<span style="color:var(--ink2)">'+permLine(myPost())+'</span></div></div>'
  +'<div class="h3">見やすさ</div><div class="box">'
  +'<div class="li" onclick="push(\'見やすさ\')"><span>文字の 大きさ</span><s>'+zLab()+' ›</s></div></div>'
- +bill+jikan+soshiki+yakuwari
+ +bill+jikan+saiten+soshiki+yakuwari
  +'<div class="h3">見られないもの</div><div class="box">'
  +['生徒の 声の記録','生徒の からだの記録','生徒の ノート','生徒の 時間割の 中身'].map(function(v){
    return '<div class="li" style="cursor:default;color:#A0917F"><span>'+v+'</span><s>画面が ありません</s></div>'}).join('')+'</div>'
@@ -3115,6 +3275,7 @@ function opHomeT(){
  +'<div class="usu" style="margin-top:4px">出ている方の <b>空きコマ</b>から、日程を 組めます</div>'
  +'<div class="btn" style="margin-top:10px;background:var(--midori)" onclick="push(\'日程を組む\')">レッスンの 日程を 組む</div>'
  +'<div class="btn g" style="margin-top:7px" onclick="push(\'まだの人\')">まだ 出していない方を 見る</div></div>'
+ +opSaitenBand()
  +'<div class="h3">きょうの レッスン</div><div class="box">'
  +todayOf(ME).map(function(y){var x=y[0],i=y[1];
    var nm=x.gr?x.l:(x.one||x.l),sub=x.gr?'<b>'+x.gr.length+'人</b>（みんなの レッスン）　'+x.pl:(gradeOf(x.one)||'個人レッスン')+'　'+x.pl;

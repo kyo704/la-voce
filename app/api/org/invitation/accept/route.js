@@ -120,7 +120,21 @@ export async function POST(request) {
     return NextResponse.json({ error: "このコードは使用済みです。" }, { status: 409 });
   }
 
-  const role = invitation.role || "teacher";
+  // ★★★`invitation.role || "teacher"` と 書いて いました（★2026-09-16 に 直しました）。
+  //
+  //   ★★`org_invitations` に `role` の 列は **ありません**（★台帳で 確かめました）。
+  //     ★★だから `invitation.role` は いつも `undefined` で、
+  //       ★`||` の 右側 ── `"teacher"` ── が **毎回** 選ばれて いました。
+  //   ★★書いた 人の 気持ちは 分かります。★「あとで 役を 選べる ように」でしょう。
+  //     ★★けれど、★選べる ように 見えて、★選べません。
+  //     ★★私は これを 読んで「`role` という 列が ある」と 思い込み、
+  //       ★誤った 報告を しました（★2026-09-16）。★次に 読む 人も 同じ です。
+  //   ★★だから、★いま の 姿を そのまま 書きます（★坂本さんの お決め・㋐）。
+  //     ★★この 表は **講師を 招く** ため だけ の もの です。
+  //     ★★生徒の 道は 別 です ── `teacher_invitations` → `enrollments`。
+  //   ★★将来、★同じ 表で 生徒も 扱う ことに なったら、
+  //     ★その ときに `role` の 列を 足して ください。★いまは 足しません。
+  const role = "teacher";
   const { error: memError } = await admin
     .from("memberships")
     .insert({ org_id: orgId, user_id: user.id, role });
