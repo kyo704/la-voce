@@ -214,7 +214,11 @@ import { PLANS } from "@/lib/plans";
 import {
   ATTENDING_WARN, ATTENDING_WARN_BOLD, ATTENDING_ADD_HEAD,
   ATTENDING_NOTE, ATTENDING_NOTE_BOLD, PASSCODE_LENGTH,
-  placeSubtitle, joinedLabel, kindLabel
+  placeSubtitle, joinedLabel,
+  SEE_YES, SEE_NO, SEE_YES_HEAD, SEE_NO_HEAD, LEAVE_BUTTON,
+  INSIDE_NOTE, INSIDE_NOTE_BOLD,
+  LEAVE_LINES, LEAVE_LINES_BOLD, LEAVE_CANCEL, LEAVE_CONFIRM,
+  LEAVE_NOTE, leaveTitle
 } from "@/lib/attendingPlaces";
 // ★合言葉が 合わない ときの 字（★1つ だけ・★2026-09-16・Opus の 裁定）。
 //   ★★「ありません」「期限が 切れて います」「もう 使われて います」と 分けません。
@@ -11040,6 +11044,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★実装の もっと は 帯の タブ なので、★「来た ところ」を 自分で 覚えます。
   //   ★★既定は「きょう」です。★分からない ときは、★家に 帰します。
   const [moreCameFrom, setMoreCameFrom] = useState("home");
+  // ★通っている ところ ── ★いま 開いて いる 教室（★在籍の id）。
+  const [attendingOrgId, setAttendingOrgId] = useState(null);
+  // ★その 教室を「やめる」の 1枚を 出して いるか。
+  const [attendingLeaving, setAttendingLeaving] = useState(false);
   /**
    * ★「もっと」を 開きます。★来た ところを 覚えてから 移ります。
    *
@@ -11949,6 +11957,30 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }
   }
   // D-1: 「つながりを解除する」。教室から抜ける（enrollment.statusを'left'にする）。
+  /**
+   * ★教室を やめます（★門の 中・★見本 `SC['やめるとどうなるか']`）。
+   *
+   *   ★★`window.confirm` を 出しません。★**画面が 確かめ**だから です。
+   *     ★★見本は 1枚を 出し、★「やめない」「やめる」の 2つを 置きます。
+   *     ★★そこへ 窓を 重ねると、★2度 尋ねる ことに なります。
+   *   ★★行を 消しません。★`status: "left"` に します。
+   *     ★★見本の 注記 ──「あとから もう一度 招いて もらえば、また 入れます。
+   *       ★そのとき、記録は そのまま 続きます。」
+   *     ★★消すと、★その 約束が 守れません。
+   */
+  async function leaveOrgNow(enrollmentId) {
+    const supabase = createClient();
+    const { error } = await supabase.from("enrollments")
+      .update({ status: "left", left_at: new Date().toISOString() })
+      .eq("id", enrollmentId);
+    if (error) {
+      console.error("★教室をやめられませんでした:", error);
+      return false;
+    }
+    await fetchMyEnrollments();
+    return true;
+  }
+
   async function handleLeaveOrg(enrollmentId) {
     if (!window.confirm("この教室とのつながりを解除しますか？担当の先生からは、以後レッスン日程が見えなくなります。")) return;
     const supabase = createClient();
@@ -23038,7 +23070,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ★★坂本さんの お決め（★㋑）── ★いまは 作らず、
                         ★合言葉 1本で 10月に 間に合わせる。
                       ★★押せない 札を 置きません（★§8⑤）。★台帳に 登録して あります。 */}
-                {layoutV2 && moreSection === "通っているところ" && (
+                {layoutV2 && moreSection === "通っているところ" && !attendingOrgId && (
                   <div data-v2-attending="1">
                     {/* ★数は 右上の 小さな 札に 出します（★見本 `.role`）。
                         ★★0の ときは 出しません。★「0つ」は 責める 字 です。 */}
@@ -23076,10 +23108,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     {myEnrollments.map((en) => {
                       const name = (en.org && en.org.name) || null;
                       const sub = placeSubtitle({
-                        // ★★生の 合図（`solo`）を 出しません（★2026-09-16）。
-                        //   ★★画面に「solo」と 出て いました。★通じません。
-                        //   ★★日本語が 決まって いない 値は、★出しません。
-                        kind: kindLabel(en.org && en.org.kind),
                         // ★★担当の 先生は `assignments` から 引きます。
                         //   ★★ご助言は「memberships 経由で」でした。★こちらに しました ──
                         //     ★★`memberships` は「その 教室に 居る 先生 **みんな**」です。
@@ -23100,11 +23128,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         since: joinedLabel(en.enrolled_at)
                       });
                       return (
-                        <div key={en.id} style={{
-                          display: "flex", alignItems: "center", gap: 10,
-                          background: C.card, border: `1px solid ${C.line}`,
-                          borderRadius: 13, padding: "11px 12px", marginBottom: 8
-                        }}>
+                        <div key={en.id} role="button" tabIndex={0}
+                          onClick={() => { setAttendingOrgId(en.id); setAttendingLeaving(false); }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              setAttendingOrgId(en.id); setAttendingLeaving(false);
+                            }
+                          }}
+                          style={{
+                            display: "flex", alignItems: "center", gap: 10,
+                            background: C.card, border: `1px solid ${C.line}`,
+                            borderRadius: 13, padding: "11px 12px", marginBottom: 8,
+                            cursor: "pointer"
+                          }}>
                           <div style={{ flex: 1, minWidth: 0 }}>
                             {/* ★★名前を 読めなかった ときは、★埋めません。
                                 ★★「不明」と 書くと、★読めなかった ことが 隠れます。 */}
@@ -23115,6 +23152,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               <div style={{ ...TYPE.mini, color: C.inkSoft, marginTop: 2 }}>{sub}</div>
                             ) : null}
                           </div>
+                          {/* ★★押せる ことを、★右で 言います（★見本 `.rep .r`）。 */}
+                          <div style={{ ...TYPE.mini, color: C.inkSoft, flex: "none" }}>›</div>
                         </div>
                       );
                     })}
@@ -23145,6 +23184,114 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </Note>
                   </div>
                 )}
+                {/* ★★★通っている ところの 中身（★見本 `SC['通っているところの中身']`）と、
+                    ★やめると どうなるか（★同 `SC['やめるとどうなるか']`）。
+                    ★★どちらも 門の 中だけ です。 */}
+                {layoutV2 && moreSection === "通っているところ" && attendingOrgId && (() => {
+                  const en = myEnrollments.find((x) => x.id === attendingOrgId);
+                  if (!en) return null;
+                  const orgName = (en.org && en.org.name) || NAME_FETCH_FAILED_LABEL;
+                  const teacher = (myAssignedTeachers[en.org_id] || [])
+                    .map((tid) => (myTeacherNames[tid] || {}).display_name)
+                    .filter(Boolean)[0] || null;
+                  const bold = (line, list) => {
+                    const b = list.find((x) => line.includes(x));
+                    const at = b ? line.indexOf(b) : -1;
+                    return at < 0 ? line : (
+                      <>{line.slice(0, at)}<b>{b}</b>{line.slice(at + b.length)}</>
+                    );
+                  };
+
+                  // ★★やめる の 1枚。★見本は 別の 画面 です。
+                  if (attendingLeaving) {
+                    return (
+                      <div data-v2-leave="1">
+                        <Back onClick={() => setAttendingLeaving(false)}>{orgName}</Back>
+                        <h2 style={{ ...TYPE.title, margin: "2px 0 8px" }}>
+                          {leaveTitle(orgName)}
+                        </h2>
+                        <Card>
+                          {LEAVE_LINES.map((line, i) => (
+                            line === "" ? <div key={i} style={{ height: 10 }} /> : (
+                              <p key={i} style={{
+                                fontSize: "0.8125rem", lineHeight: 1.95,
+                                color: C.ink, margin: 0
+                              }}>{bold(line, LEAVE_LINES_BOLD)}</p>
+                            )
+                          ))}
+                        </Card>
+                        {/* ★★「やめない」を 先に、★枠で 置きます（★見本の とおり）。
+                            ★★戻せない ほうを、★押しやすく しません。 */}
+                        <div style={{ marginTop: 12 }}>
+                          <Btn ghost onClick={() => setAttendingLeaving(false)}>
+                            {LEAVE_CANCEL}
+                          </Btn>
+                        </div>
+                        <div style={{ marginTop: 9 }}>
+                          <Btn onClick={async () => {
+                            const ok = await leaveOrgNow(en.id);
+                            if (ok) { setAttendingLeaving(false); setAttendingOrgId(null); }
+                          }}>{LEAVE_CONFIRM}</Btn>
+                        </div>
+                        <Note fold>
+                          {LEAVE_NOTE.map((line) => (
+                            <span key={line}>{line}<br /></span>
+                          ))}
+                        </Note>
+                      </div>
+                    );
+                  }
+
+                  // ★★中身の 1枚。
+                  return (
+                    <div data-v2-inside="1">
+                      <Back onClick={() => setAttendingOrgId(null)}>通っている ところ</Back>
+                      {/* ★★題の 右に 種類を 出しません（★Opus の 裁定・2026-09-16）。
+                          ★★19件とも 同じ 値 です。★出しても 何も 伝えて いません。 */}
+                      <h2 style={{ ...TYPE.title, margin: "2px 0 8px" }}>{orgName}</h2>
+                      <Box>
+                        <Li right={joinedLabel(en.enrolled_at) || ""}>入った日</Li>
+                        {/* ★★担当が 決まって いない ときは、★行ごと 出しません。
+                            ★★空の 行を 置くと、★「決まって いない」ことが 隠れます。 */}
+                        {teacher ? <Li right={teacher}>担当の 先生</Li> : null}
+                        {teacher ? <Li last right={teacher + " の 門下"}>門下</Li> : null}
+                      </Box>
+
+                      <H3>{SEE_YES_HEAD}</H3>
+                      <Box>
+                        {SEE_YES.map((v, i) => (
+                          <Li key={v} last={i === SEE_YES.length - 1}
+                            right={<span style={{ color: C.sage }}>見えます</span>}>{v}</Li>
+                        ))}
+                      </Box>
+
+                      <H3>{SEE_NO_HEAD}</H3>
+                      <Box>
+                        {SEE_NO.map((v, i) => (
+                          // ★★見本は この 行を `#A0917F` で 薄くして います。
+                          //   ★★測ると **2.72**。★字には 足りません（★4.5 が 境）。
+                          //   ★★坂本さんの お決め ── ★見本の 色より **読めること**が 先。
+                          //     ★見張り `display-prefs` が、★その場で 測って 止めます。
+                          //   ★★`inkSoft`（6.24）に します。★薄さの 意味は 残ります。
+                          <Li key={v} last={i === SEE_NO.length - 1}
+                            style={{ color: C.inkSoft }} right="見えません">{v}</Li>
+                        ))}
+                      </Box>
+
+                      <div style={{ marginTop: 12 }}>
+                        <Btn ghost onClick={() => setAttendingLeaving(true)}>
+                          {LEAVE_BUTTON}
+                        </Btn>
+                      </div>
+
+                      <Note fold>
+                        {INSIDE_NOTE.map((line, i) => (
+                          <span key={i}>{bold(line, INSIDE_NOTE_BOLD)}<br /></span>
+                        ))}
+                      </Note>
+                    </div>
+                  );
+                })()}
                 {layoutV2 && moreSection === "プラン" && (() => {
                   const st = planState(subscribed);
                   const yen = monthlyPriceLabel(PLANS);

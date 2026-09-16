@@ -66,9 +66,13 @@ function t(cond, label) {
   t(/select\("id, name, kind"\)/.test(vtCode), "★★`kind` を 引いて いる");
 
   console.log("\n② 添え字（★読めない ところは 飛ばす）");
-  t(m.placeSubtitle({ kind: "大学", teacher: "斎藤 めぐみ", since: "2026年4月1日" })
-    === "大学　／　斎藤 めぐみ 先生　／　2026年4月1日から", "★見本と 同じ 形");
-  t(m.placeSubtitle({ kind: "大学" }) === "大学", "1つでも 出る");
+  // ★★★教室の 種類は 出さなく なりました（★Opus の 裁定・2026-09-16）。
+  //   ★★台帳は solo 19件／studio 0件。★19件とも 同じ 値 です。
+  //   ★★出しても、★全員に 同じ 字が 並ぶ だけ で、★何も 伝えて いません。
+  t(m.placeSubtitle({ teacher: "斎藤 めぐみ", since: "2026年4月1日" })
+    === "斎藤 めぐみ 先生　／　2026年4月1日から", "★見本と 同じ 形（★種類は 出さない）");
+  t(m.placeSubtitle({ since: "2026年4月1日" }) === "2026年4月1日から", "1つでも 出る");
+  t(m.placeSubtitle({ kind: "大学" }) === "", "★★種類だけ では 何も 出ない");
   t(m.placeSubtitle({}) === "", "★何も 無ければ 空（★「不明」と 書かない）");
   t(m.placeSubtitle({ teacher: "鈴木" }) === "鈴木 先生", "先生だけ でも 出る");
   t(m.joinedLabel("2026-04-01T00:00:00Z") === "2026年4月1日", "日付の 形");
@@ -80,13 +84,15 @@ function t(cond, label) {
   //   ★★`kind` は 内側の 合図 です。★見本の 字は「大学」「音楽教室」── 日本語 です。
   //   ★★知らない 値は 出しません。★埋めも しません
   //     （★「その他」と 書くと、★分かって いない ことが 隠れます）。
-  t(typeof m.kindLabel === "function", "★合図を 字に する 手が ある");
-  t(m.kindLabel("solo") === null || typeof m.kindLabel("solo") === "string",
-    "solo を 通す（★null か、★決まった 日本語）");
-  t(m.kindLabel("なんでも知らない値") === null, "★★知らない 値は 出さない");
-  t(m.kindLabel("") === null && m.kindLabel(null) === null, "空は 出さない");
-  t(/kindLabel\(/.test(blk), "★★画面が その 手を 通して いる");
-  t(!/kind: en\.org && en\.org\.kind/.test(vtCode), "★生の 合図を 直に 渡して いない");
+  // ★★★`kind` は、★画面に 1つも 出しません（★裁定・2026-09-16）。
+  //   ★★はじめ、★生の `solo` が 出て いました。★通じません でした。
+  //   ★★つぎに「知らない 値は 出さない」に しました。
+  //   ★★そして 裁定で ── ★**種類は 出さない**。★教室名 だけ。
+  //     ★★決め打ちで「個人レッスン」と 書くと、★こちらが 名乗り方を 決めます。
+  //       ★★声優養成所・合唱団が 入って きた とき、★誤りに なります。
+  t(!/kindLabel\(/.test(blk), "★★画面が 種類を 出して いない");
+  t(!/kind:/.test(blk), "★種類を 渡して いない");
+  t(!/en\.org\.kind/.test(blk), "★生の 合図を 読んで いない");
 
   console.log("\n③ さがす 口を 作って いないこと（★見本の 決め）");
   // ★★「こちらから 教室を さがす ことは できません」── ★注記の 1行目 です。
@@ -113,6 +119,56 @@ function t(cond, label) {
   t(rows.some((r) => String(r.text).includes("招かれている")),
     "★台帳（3つめの組）に 登録して ある");
   t(rows.every((r) => r.trigger), "★引き金が 書いて ある");
+
+  console.log("\n⑥ 中身の 1枚（★見本 `SC['通っているところの中身']`）");
+  t(m.SEE_YES.length === 6, "★見える もの 6つ");
+  t(m.SEE_NO.length === 7, "★見えない もの 7つ");
+  t(m.SEE_NO.includes("声と からだの 記録"), "★声と からだの 記録は **見えない** 側");
+  t(m.SEE_NO.includes("ほかの 教室に 通っていること そのもの"),
+    "★★ほかの 教室に 通って いる ことも 見えない");
+  t(m.SEE_YES.includes("あなたが「あき」と 入れた 時間（あきか どうかだけ）"),
+    "★あきか どうか **だけ** が 見える");
+  t(!m.SEE_YES.some((x) => x.includes("時間割の 中身")),
+    "★★時間割の 中身は 見える 側に **入って いない**");
+  const inside = vt.indexOf('data-v2-inside="1"');
+  t(inside > 0, "中身の 1枚が ある");
+  const ib = inside < 0 ? "" : vt.slice(inside, inside + 3000);
+  t(/SEE_YES\.map/.test(ib) && /SEE_NO\.map/.test(ib), "★両方を 出して いる");
+  t(/en\.enrolled_at/.test(ib), "★入った日を 出して いる");
+  t(/teacher \? <Li/.test(ib), "★★担当が 無い ときは 行ごと 出さない");
+
+  console.log("\n⑦ やめる の 1枚（★裁定その54 の 字）");
+  t(m.LEAVE_LINES.some((x) => x.includes("1つも 消えません")),
+    "★記録は 消えない、と 言って いる");
+  // ★★見本の 字 ──「調べるが この教室の 束で ついていた場合は、止まります」。
+  //   ★★裁定その54 で、★束は もう ありません。★そのままだと 事実と ちがいます。
+  t(!m.LEAVE_LINES.some((x) => x.includes("束")), "★★「束」と 言って いない");
+  t(m.LEAVE_LINES.some((x) => x.includes("ご自分で お選びいただく")),
+    "★裁定その54 の 字に なって いる");
+  t(m.leaveTitle("○○音楽大学") === "○○音楽大学 を やめる", "題の 形");
+  const lv = vt.indexOf('data-v2-leave="1"');
+  t(lv > 0, "やめる の 1枚が ある");
+  const lb = lv < 0 ? "" : vt.slice(lv, lv + 2000);
+  // ★★戻せない ほうを、★先に 置きません。★「やめない」が 先 です（★見本）。
+  t(lb.indexOf("LEAVE_CANCEL") > 0 && lb.indexOf("LEAVE_CANCEL") < lb.indexOf("LEAVE_CONFIRM"),
+    "★★「やめない」が 先");
+  t(/Btn ghost onClick=\{\(\) => setAttendingLeaving\(false\)\}/.test(lb),
+    "★「やめない」は 枠（★塗りに しない）");
+  // ★★行を 消しません。★`left` に します。★また 入れる ためです。
+  t(/status: "left"/.test(vtCode), "★行を 消さず left に して いる");
+  t(!/\.from\("enrollments"\)[\s\S]{0,60}\.delete\(/.test(vtCode),
+    "★★在籍の 行を 消して いない");
+  // ★★画面が 確かめ です。★窓を 重ねません。
+  t(/async function leaveOrgNow/.test(vtCode), "★窓を 出さない 手が ある");
+  // ★★★窓の 幅を 決め打ちに しません（★きょう 2度目 です）。
+  //   ★★700字に すると、★すぐ 次の `handleLeaveOrg` まで 届きます。
+  //     ★★あちらは 門の 外の 道 で、★`window.confirm` を 出します。
+  //     ★★別の 手の 中身を、★この 手の ものとして 読んで いました。
+  //   ★★次の 手が 始まる ところ まで を 見ます。
+  const ln = vtCode.indexOf("async function leaveOrgNow");
+  const lnEnd = vtCode.indexOf("async function", ln + 10);
+  t(!/window\.confirm/.test(vtCode.slice(ln, lnEnd > 0 ? lnEnd : ln + 700)),
+    "★★やめる の 手は 窓を 出さない（★画面が 確かめ）");
 
   console.log(ng === 0 ? `\n★すべて 通りました（${ok}）` : `\n★${ng} 件 落ちました`);
   process.exit(ng === 0 ? 0 : 1);
