@@ -309,6 +309,19 @@ async function capture(env) {
             const st = window.getComputedStyle(el);
             if (st.display === "none" || st.visibility === "hidden") return;
             const tag = el.tagName.toLowerCase();
+            // ★★★`<select>` は、★選ばれて いる 1つだけ を 見ます（★2026-09-16）。
+            //   ★★これが 無いので、★「ことば … 日本語」の **値**が 落ち、
+            //     ★棚おろしが「日本語 › が 無い」と 出して いました。
+            //   ★★画面には 出て います。★道具が 見て いなかった だけ です。
+            //   ★★`<b>` の ときと **同じ 形**の 見落とし です。★きょう 2度目 です。
+            //     ★★中身を そのまま 読むと、★選ばれて いない 選択肢まで 拾います。
+            //       ★だから `selectedOptions` だけ を 読みます。
+            if (tag === "select") {
+              const v = el.selectedOptions && el.selectedOptions[0]
+                ? el.selectedOptions[0].textContent.trim() : "";
+              if (v) out.push({ tag, text: v.replace(/\s+/g, " ").slice(0, 60) });
+              return;
+            }
             const own = [...el.childNodes]
               .filter((n) => n.nodeType === 3)
               .map((n) => n.textContent.trim()).join(" ").trim();
