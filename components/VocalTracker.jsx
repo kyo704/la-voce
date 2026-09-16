@@ -11970,44 +11970,45 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
    *       ★そのとき、記録は そのまま 続きます。」
    *     ★★消すと、★その 約束が 守れません。
    */
-  async function leaveOrgNow(enrollmentId) {
+  async function leaveOrgNow(orgId) {
     const supabase = createClient();
-    // ★★★`.select()` を 付けます（★2026-09-16・実機の ご報告で 分かりました）。
+    // ★★★画面から `enrollments` を 直に 書きません（★Opus の 裁定・2026-09-16）。
     //
-    //   ★★付けないと、★**0行に 当たっても 成功に 見えます**。
-    //     ★★決まり（RLS）が 書き換えを 許して いない とき、
-    //       ★PostgREST は 誤りを 返しません。★0行 直した、と 返します。
-    //     ★★私は `error` だけ を 見て いました。★だから 黙って 戻り、
-    //       ★一覧に その 教室が 残って いました。
-    //   ★★きょう 何度も 見た 形 です ── ★「無い」と「読めない／書けない」を
-    //     ★同じに して しまう。★webhook の `update` も 同じでした。
-    //   ★★だから **何行 直したか**を 見ます。★0なら 失敗 です。
-    const { data, error } = await supabase.from("enrollments")
-      .update({ status: "left", left_at: new Date().toISOString() })
-      .eq("id", enrollmentId)
-      .select("id");
+    //   ★★はじめ 私は「UPDATE の 決まりを 足す」と 書きました。★誤り でした。
+    //     ★★RLS は **行**に 効きます。★**列**には 効きません。
+    //       ★決まりを 足すと、★在籍行の ぜんぶの 列が 書けます
+    //       （grade_label・org_id・student_id も）。
+    //   ★★だから `leave_enrollment` に 閉じます。★中では
+    //     `student_id = auth.uid()` と `status = 'active'` で 絞って います。
+    //
+    //   ★★★返り値は **直した 行数** です。★`void` では ありません。
+    //     ★★2026-09-16、★まさに それで しくじりました ──
+    //       ★PostgREST の `update` は、★0行に 当たっても 誤りを 返しません。
+    //       ★私は `error` だけ を 見て、★黙って 戻り、
+    //       ★一覧に やめた はずの 教室が 残って いました。
+    //     ★★数を 見ます。★0なら 失敗 です。
+    const { data, error } = await supabase.rpc("leave_enrollment", { p_org_id: orgId });
     if (error) {
       console.error("★教室をやめられませんでした:", error);
       return false;
     }
-    if (!data || data.length === 0) {
-      // ★★書けて いません。★たいていは 決まり（RLS）が 無い ためです。
-      //   ★★画面には「やめられませんでした」と 出します。
-      //     ★★黙って 一覧へ 戻すと、★やめた つもりに なります。
-      console.error("★やめる書き込みが 0行でした。enrollments の UPDATE の決まりを"
-        + " お確かめください（supabase/問い-enrollmentsを書き換えられるか.sql）。");
+    if (!data) {
+      // ★★0行。★すでに やめて いるか、★その 教室に 居ません。
+      console.error("★やめる書き込みが 0行でした（leave_enrollment）。org_id:", orgId);
       return false;
     }
     await fetchMyEnrollments();
     return true;
   }
 
-  async function handleLeaveOrg(enrollmentId) {
-    if (!window.confirm("この教室とのつながりを解除しますか？担当の先生からは、以後レッスン日程が見えなくなります。")) return;
-    const supabase = createClient();
-    await supabase.from("enrollments").update({ status: "left", left_at: new Date().toISOString() }).eq("id", enrollmentId);
-    fetchMyEnrollments();
-  }
+  // ★★2026-09-16、`handleLeaveOrg` を 消しました。
+  //   ★★どこからも 呼ばれて いませんでした（★0か所）。
+  //   ★★中身は `leaveOrgNow` と 同じ 決まりの 2つめの 写し で、
+  //     ★`.select()` が 無く、★0行でも 成功に 見える ままでした。
+  //   ★★この 蔵の 病いの 形 です ── ★同じ 決まりが 2か所に あり、
+  //     ★片方だけ 直る。★だから 写しの ほうを 消します。
+  //   ★★お客さまの 書いた ものは 何も 消えて いません。
+
   const [orgProfileNames, setOrgProfileNames] = useState({}); // userId -> {displayName, vocalProfession}
   // ★講師の役の人が見る「自分の担当の生徒」だけの一覧（2026-09-04）。
   //   ★orgAssignments とは別に持ちます。あちらはオーナー・責任者が
@@ -23257,7 +23258,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </div>
                         <div style={{ marginTop: 9 }}>
                           <Btn onClick={async () => {
-                            const ok = await leaveOrgNow(en.id);
+                            const ok = await leaveOrgNow(en.org_id);
                             if (ok) { setAttendingLeaving(false); setAttendingOrgId(null); }
                             // ★★できなかった ことを、★画面に 出します（★2026-09-16）。
                             //   ★★黙って 一覧へ 戻すと、★やめた つもりに なります。

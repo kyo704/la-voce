@@ -112,7 +112,15 @@ export async function POST(request) {
 
   const { error: enrollError } = await admin
     .from("enrollments")
-    .upsert({ org_id: orgId, student_id: user.id, status: "active" }, { onConflict: "org_id,student_id" });
+    // ★★`left_at` を **戻します**（★2026-09-16）。
+    //   ★★やめた あと、★もう一度 招かれた とき の 話 です。
+    //     ★★`onConflict` で 同じ 行が 生き返ります。★`status` は active に 戻ります。
+    //     ★★けれど `left_at` は 前の 日付の まま 残ります。
+    //   ★★`lib/orgRoster.js` は それを `left_on` に 写します。
+    //     ★★在籍中の 方に、★やめた 日が 付いた まま に なります。
+    //   ★★「入り直せる」と お約束して います（★`LEAVE_NOTE`）。
+    //     ★その 約束を、★台帳の 側でも 揃えます。
+    .upsert({ org_id: orgId, student_id: user.id, status: "active", left_at: null }, { onConflict: "org_id,student_id" });
   if (enrollError) {
     console.error("在籍：登録できませんでした。", { orgId, message: enrollError.message });
     return NextResponse.json({ error: "在籍の登録に失敗しました。" }, { status: 500 });

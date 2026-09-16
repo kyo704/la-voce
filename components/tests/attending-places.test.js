@@ -155,7 +155,15 @@ function t(cond, label) {
   t(/Btn ghost onClick=\{\(\) => setAttendingLeaving\(false\)\}/.test(lb),
     "★「やめない」は 枠（★塗りに しない）");
   // ★★行を 消しません。★`left` に します。★また 入れる ためです。
-  t(/status: "left"/.test(vtCode), "★行を 消さず left に して いる");
+  // ★★2026-09-16、★この 決まりは **台帳の 関数**に 移りました。
+  //   ★★画面が `enrollments` を 直に 書くのを やめた ため です
+  //     （★RLS は 行に 効き、★列には 効かない ── ★Opus の 裁定）。
+  //   ★★字は `supabase/migration_leave_enrollment.sql` に あります。
+  t(/status = 'left'/.test(
+      require("fs").readFileSync(
+        require("path").join(__dirname, "..", "..",
+          "supabase", "migration_leave_enrollment.sql"), "utf8")),
+    "★行を 消さず left に して いる（★台帳の 関数の 中）");
   t(!/\.from\("enrollments"\)[\s\S]{0,60}\.delete\(/.test(vtCode),
     "★★在籍の 行を 消して いない");
   // ★★画面が 確かめ です。★窓を 重ねません。
@@ -169,8 +177,9 @@ function t(cond, label) {
   const lo = vtCode.indexOf("async function leaveOrgNow");
   const loEnd = vtCode.indexOf("async function", lo + 10);
   const loBlk = vtCode.slice(lo, loEnd > 0 ? loEnd : lo + 900);
-  t(/\.select\(/.test(loBlk), "★★何行 直したかを 見て いる（`.select()`）");
-  t(/data\.length === 0/.test(loBlk), "★0行なら 失敗に して いる");
+  t(/rpc\(\s*"leave_enrollment"/.test(loBlk),
+    "★★台帳の 関数を 呼んで いる（★画面から 直に 書かない）");
+  t(/if\s*\(\s*!data\s*\)/.test(loBlk), "★0行なら 失敗に して いる");
   t(/return false/.test(loBlk), "★失敗を 返して いる");
   // ★★黙って 一覧へ 戻しません。★やめた つもりに させない ため。
   t(/setLeaveFailed\(true\)/.test(vtCode), "★★できなかった ことを 画面に 出す");
