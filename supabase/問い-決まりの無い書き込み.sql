@@ -129,3 +129,57 @@ from public.assignments a
 join public.enrollments e
   on e.org_id = a.org_id and e.student_id = a.student_id
 where e.status = 'left' and a.ended_at is null;
+
+-- ---------------------------------------------------------------------------
+-- 【六】★★受け持ち（assignments）に 束ねが あるか
+--
+--   ★★入り直しの とき、★閉じた 受け持ちの 横に もう1本 足せる か。
+--     ★★足せれば、★過去の 受け持ちが 記録として 残ります（★㋐）。
+--     ★★束ねが あると 足せません。★閉じた 行を 開け直します（★㋑）。
+-- ---------------------------------------------------------------------------
+select con.conname as 束ねの名,
+       con.contype as 種類,
+       pg_get_constraintdef(con.oid) as 中身
+from pg_constraint con
+join pg_class c on c.oid = con.conrelid
+join pg_namespace n on n.oid = c.relnamespace
+where n.nspname = 'public' and c.relname = 'assignments'
+order by con.contype, con.conname;
+
+-- ★部分索引の 形でも 束ねに なります。★そちらも 見ます。
+select indexname as 索引の名, indexdef as 中身
+from pg_indexes
+where schemaname = 'public' and tablename = 'assignments';
+
+-- ---------------------------------------------------------------------------
+-- 【七】★★受け持ちで 決めて いる 決まりを、★台帳から 数える
+--
+--   ★★紙（supabase/*.sql）では 4本 でした ──
+--     org_messages_select / org_messages_insert /
+--     org_message_reads_select / assignments_all_owner_admin
+--   ★★本番に それ以外が あれば、★ここに 出ます。
+--   ★★閉じる 前に、★紙と 台帳を 重ねます。
+-- ---------------------------------------------------------------------------
+select c.relname as 表, p.polname as 決まりの名, p.polcmd as 動き,
+       (coalesce(pg_get_expr(p.polqual, p.polrelid), '')
+        like '%ended_at%') as 受け持ちの終わりを見るか
+from pg_policy p
+join pg_class c on c.oid = p.polrelid
+join pg_namespace n on n.oid = c.relnamespace
+where n.nspname = 'public'
+  and (coalesce(pg_get_expr(p.polqual, p.polrelid), '') like '%assignments%'
+    or coalesce(pg_get_expr(p.polwithcheck, p.polrelid), '') like '%assignments%')
+order by c.relname, p.polname;
+
+-- ---------------------------------------------------------------------------
+-- 【八】★★これからの レッスンは、★受け持ちで 決まって いるか
+--
+--   ★★閉じた あと、★予定が どう 見えるかを 決める もの です。
+-- ---------------------------------------------------------------------------
+select p.polname as 決まりの名, p.polcmd as 動き,
+       coalesce(pg_get_expr(p.polqual, p.polrelid), '') as 読む条件
+from pg_policy p
+join pg_class c on c.oid = p.polrelid
+join pg_namespace n on n.oid = c.relnamespace
+where n.nspname = 'public' and c.relname = 'lessons'
+order by p.polcmd, p.polname;
