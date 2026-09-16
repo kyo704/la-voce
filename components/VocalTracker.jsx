@@ -7505,6 +7505,18 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //       ★取って、★数えて、★捨てて いました。
       const [byStudent, byLink, events, messages] = await Promise.all([
         // ① 教室の レッスン（★org_id あり・student_id で 当たる）
+        //
+        //   ★★★2026-09-16・裁定待ち ── ★やめた あとも 見えて います。
+        //     ★★`Ops-visible lessons (org-based)` の 生徒の 枝は
+        //       `auth.uid() = student_id` だけ です。★在籍を 見て いません。
+        //     ★★③の 行事は `enrollments`（status='active'）で 見ます。★こちらは 見ません。
+        //     ★★見本は「この教室の 予定・行事・門下の 連絡が、あなたの 画面から 消えます」
+        //       と 書いて います。★予定だけ 消えて いません。
+        //   ★★★ここを 直す とき ── ★決まりの ほうを 直して ください。
+        //     ★★`.eq("org_id", …)` を ここに 足して 隠すのは、★見た目の 絞り です。
+        //       ★網の 中身は そのまま 届きます（★開発者の 道具で 見えます）。
+        //     ★★どこまで 閉じるか（★これからの 分だけ か、★過去も か）は
+        //       ★坂本さんの 判断 です。★docs/reports/2026-09-16-受け持ちを閉じる前の棚卸し.md
         supabase.from("lessons").select(LESSON_COLUMNS)
           .eq("student_id", userId)
           .order("scheduled_at", { ascending: true }).limit(LESSON_FETCH_LIMIT),
