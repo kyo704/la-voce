@@ -1,306 +1,200 @@
 [
  {
-  "tag": "h2",
-  "text": "記録"
+  "tag": "div",
+  "text": "からだのこと",
+  "x": 15,
+  "y": 26,
+  "w": 360,
+  "h": 27,
+  "size": "16px",
+  "weight": "700",
+  "color": "rgb(36, 25, 20)"
  },
  {
   "tag": "div",
-  "text": "2026年9月16日(水)"
+  "text": "気になったものに 印を（いくつでも）",
+  "x": 15,
+  "y": 57,
+  "w": 360,
+  "h": 20,
+  "size": "12px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "p",
-  "text": "あさ"
+  "tag": "button",
+  "text": "乾燥",
+  "x": 15,
+  "y": 89,
+  "w": 49,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "嗄れ",
+  "x": 70,
+  "y": 89,
+  "w": 49,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "痛み",
+  "x": 125,
+  "y": 89,
+  "w": 49,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "違和感",
+  "x": 180,
+  "y": 89,
+  "w": 61,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "鼻づまり",
+  "x": 247,
+  "y": 89,
+  "w": 72,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "咳",
+  "x": 325,
+  "y": 89,
+  "w": 38,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "裏返り",
+  "x": 15,
+  "y": 139,
+  "w": 61,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "喉の張り感",
+  "x": 82,
+  "y": 139,
+  "w": 84,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "のどが いがらっぽい",
+  "x": 171,
+  "y": 139,
+  "w": 133,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "せきばらい",
+  "x": 15,
+  "y": 189,
+  "w": 84,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "のどが 渇く",
+  "x": 105,
+  "y": 189,
+  "w": 87,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "胃が もたれる",
+  "x": 198,
+  "y": 189,
+  "w": 99,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "肩が こわばる",
+  "x": 15,
+  "y": 239,
+  "w": 99,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "息が 続かない",
+  "x": 120,
+  "y": 239,
+  "w": 99,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
   "tag": "div",
-  "text": "起きたときの むくみ"
- },
- {
-  "tag": "span",
-  "text": "◎"
- },
- {
-  "tag": "span",
-  "text": "ない"
- },
- {
-  "tag": "span",
-  "text": "○"
- },
- {
-  "tag": "span",
-  "text": "すこし"
- },
- {
-  "tag": "span",
-  "text": "△"
- },
- {
-  "tag": "span",
-  "text": "ある"
- },
- {
-  "tag": "span",
-  "text": "昨夜の 睡眠"
- },
- {
-  "tag": "b",
-  "text": "＋"
- },
- {
-  "tag": "span",
-  "text": "›"
- },
- {
-  "tag": "p",
-  "text": "よる"
- },
- {
-  "tag": "div",
-  "text": "のどの 調子"
- },
- {
-  "tag": "span",
-  "text": "◎"
- },
- {
-  "tag": "span",
-  "text": "よい"
- },
- {
-  "tag": "span",
-  "text": "○"
- },
- {
-  "tag": "span",
-  "text": "ふつう"
- },
- {
-  "tag": "span",
-  "text": "△"
- },
- {
-  "tag": "span",
-  "text": "わるい"
- },
- {
-  "tag": "div",
-  "text": "声の 出来"
- },
- {
-  "tag": "span",
-  "text": "◎"
- },
- {
-  "tag": "span",
-  "text": "出た"
- },
- {
-  "tag": "span",
-  "text": "○"
- },
- {
-  "tag": "span",
-  "text": "ふつう"
- },
- {
-  "tag": "span",
-  "text": "△"
- },
- {
-  "tag": "span",
-  "text": "出づらい"
- },
- {
-  "tag": "span",
-  "text": "本番以外で 声を使った時間"
- },
- {
-  "tag": "b",
-  "text": "＋"
- },
- {
-  "tag": "span",
-  "text": "›"
- },
- {
-  "tag": "div",
-  "text": "部屋の しめり は こちらで 取ります。本番・レッスンの 翌日かどうかも、予定から 分かります。この2つは 聞きません。"
- },
- {
-  "tag": "p",
-  "text": "足す（どれも 任意）"
- },
- {
-  "tag": "span",
-  "text": "本番・レッスン"
- },
- {
-  "tag": "b",
-  "text": "✓"
- },
- {
-  "tag": "span",
-  "text": "あり ›"
- },
- {
-  "tag": "span",
-  "text": "食べたもの"
- },
- {
-  "tag": "b",
-  "text": "＋"
- },
- {
-  "tag": "span",
-  "text": "›"
- },
- {
-  "tag": "span",
-  "text": "からだのこと"
- },
- {
-  "tag": "b",
-  "text": "＋"
- },
- {
-  "tag": "span",
-  "text": "›"
- },
- {
-  "tag": "span",
-  "text": "ひとこと"
- },
- {
-  "tag": "b",
-  "text": "＋"
- },
- {
-  "tag": "span",
-  "text": "›"
+  "text": "病気の名前を 使いません。ここで 選んだものが、ふりかえる → 並べる の「気になったこと」に 1行ずつ 出ます。",
+  "x": 15,
+  "y": 294,
+  "w": 360,
+  "h": 61,
+  "size": "12px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
   "tag": "button",
-  "text": "きょうは 書かない"
- },
- {
-  "tag": "button",
-  "text": "出す"
- },
- {
-  "tag": "button",
-  "text": "くわしい 決まりを 見る"
- },
- {
-  "tag": "span",
-  "text": "質問票"
- },
- {
-  "tag": "span",
-  "text": "›"
- },
- {
-  "tag": "span",
-  "text": "記録する項目を 増やす"
- },
- {
-  "tag": "span",
-  "text": "›"
- },
- {
-  "tag": "summary",
-  "text": "使っていない項目（ 6 件）"
- },
- {
-  "tag": "div",
-  "text": "からだのこと"
- },
- {
-  "tag": "div",
-  "text": "気になったものに 印を（いくつでも）"
- },
- {
-  "tag": "button",
-  "text": "乾燥"
- },
- {
-  "tag": "button",
-  "text": "嗄れ"
- },
- {
-  "tag": "button",
-  "text": "痛み"
- },
- {
-  "tag": "button",
-  "text": "違和感"
- },
- {
-  "tag": "button",
-  "text": "鼻づまり"
- },
- {
-  "tag": "button",
-  "text": "咳"
- },
- {
-  "tag": "button",
-  "text": "裏返り"
- },
- {
-  "tag": "button",
-  "text": "喉の張り感"
- },
- {
-  "tag": "button",
-  "text": "のどが いがらっぽい"
- },
- {
-  "tag": "button",
-  "text": "せきばらい"
- },
- {
-  "tag": "button",
-  "text": "のどが 渇く"
- },
- {
-  "tag": "button",
-  "text": "胃が もたれる"
- },
- {
-  "tag": "button",
-  "text": "肩が こわばる"
- },
- {
-  "tag": "button",
-  "text": "息が 続かない"
- },
- {
-  "tag": "div",
-  "text": "病気の名前を 使いません。ここで 選んだものが、ふりかえる → 並べる の「気になったこと」に 1行ずつ 出ます。"
- },
- {
-  "tag": "button",
-  "text": "これでいい"
- },
- {
-  "tag": "button",
-  "text": "きょう"
- },
- {
-  "tag": "button",
-  "text": "記録"
- },
- {
-  "tag": "button",
-  "text": "ふりかえる"
- },
- {
-  "tag": "button",
-  "text": "ノート"
- },
- {
-  "tag": "button",
-  "text": "ひつじ"
+  "text": "これでいい",
+  "x": 15,
+  "y": 365,
+  "w": 360,
+  "h": 48,
+  "size": "14.5px",
+  "weight": "400",
+  "color": "rgb(36, 25, 20)"
  }
 ]

@@ -109,6 +109,14 @@ const SCREENS = [
   //   ★★実装の 一覧の 行は、★字が <span> で 押しどころは その 外側です。
   //     ★上の 探し方 ② で 押します。
   { key: "SC-設定", tab: "きょう", steps: ["もっとを開く", "設定"] },
+  // ★★「アカウント」は 1枚（シート）です。★画面では ありません。
+  //   ★★見本でも `SH['account']` です。★`SC[]` に ありません。
+  //   ★★2026-09-16 まで、★この 行が 抜けて いました。
+  //     ★★もっとの 先の 9枚を 数えた とき、★8枚しか 撮れて いません でした。
+  //       ★★撮れなかった のでは なく、★**頼んで いません** でした。
+  //       ★★道具は 頼まれた ものだけ 撮ります。★無いことは 言いません。
+  //     ★★これが「★多いことは 目に見える、★無いことは 見えない」の 形です。
+  { key: "SH-account", tab: "きょう", steps: ["もっとを開く", "アカウント"], sheet: true },
   { key: "SC-聞いてほしいこと", tab: "きょう", steps: ["もっとを開く", "毎日、聞いてほしいこと"] },
   { key: "SC-プラン", tab: "きょう", steps: ["もっとを開く", "プラン"] },
   { key: "SC-学ぶ", tab: "きょう", steps: ["もっとを開く", "学ぶ"] },
@@ -297,12 +305,25 @@ async function capture(env) {
         }
         await page.waitForTimeout(200);
         const file = path.join(FRAMES, sc.key + "@" + vp.name + ".png");
-        await page.screenshot({ path: file, fullPage: true });
+        // ★★★1枚（シート）は、★1枚 だけ を 撮ります（★2026-09-16）。
+        //
+        //   ★★これまで fullPage で 撮って いました。★だから、★1枚の 後ろに
+        //     ★在る 画面（もっと）まで 絵と 書き出しに 入って いました。
+        //   ★★「アカウント」を 数えた とき、★足しが **36 件** 出ました。
+        //     ★その 36 は 1件を のぞき すべて、★後ろの「もっと」の 行 です。
+        //     ★★アカウントの 不一致では ありません。
+        //   ★★見本の 側は `#sh` だけ を 切り取って います。
+        //     ★★片方だけ 全面で 撮れば、★数は 必ず 合いません。
+        //     ★★道具の くせを、★画面の 欠点 として 読んで いた ところ でした。
+        const shEl = sc.sheet ? await page.$('[role="dialog"]') : null;
+        if (shEl) await shEl.screenshot({ path: file });
+        else await page.screenshot({ path: file, fullPage: true });
         // ★★絵と いっしょに、★画面の 中身も 書き出します（★2026-09-11）。
         //   ★★Fable の 決まり ⑤ の ための 土台です。
         //     ★(a) 並び順を くらべる　★(b) 出ては いけない 部品を 見張る
         //   ★★絵は 人が 見る もの。★この 書き出しは 機械が 見る ものです。
         //   ★★見える ものだけを 拾います（★display:none は 入れません）。
+        await page.evaluate((f) => { window.__sheetOnly = f; }, !!sc.sheet);
         const dump = await page.evaluate(() => {
           const out = [];
           const walk = (el) => {
@@ -347,11 +368,34 @@ async function capture(env) {
             if (own && ["button", "h1", "h2", "h3", "p", "span", "label",
               "summary", "div", "a", "li", "figcaption",
               "b", "strong", "s", "em", "small"].includes(tag)) {
-              out.push({ tag, text: own.replace(/\s+/g, " ").slice(0, 60) });
+              // ★★★大きさ・太さ・色・置き場所も 書き出します（★2026-09-16）。
+              //
+              //   ★★坂本さんの お決め ──
+              //     「★突き合わせでは、★**組み立ての ちがい**と
+              //       ★**色や 大きさの ちがい**を、★**別の 表**に すること。
+              //       ★色と 大きさは、★いま 数えない（★合わせる 前 だから）。」
+              //   ★★2つを 分けて 出すには、★2つとも 数えられねば なりません。
+              //     ★★これまで この 書き出しは 字と 札の 名だけ でした。
+              //       ★だから「組み立ては 合って いるが 見た目が ちがう」を
+              //       ★**言えません** でした。★見本の 側は 前から 持って います。
+              const st2 = st;
+              const r = el.getBoundingClientRect();
+              out.push({
+                tag, text: own.replace(/\s+/g, " ").slice(0, 60),
+                x: Math.round(r.left + window.scrollX),
+                y: Math.round(r.top + window.scrollY),
+                w: Math.round(r.width), h: Math.round(r.height),
+                size: st2.fontSize, weight: st2.fontWeight, color: st2.color
+              });
             }
             [...el.children].forEach(walk);
           };
-          walk(document.body);
+          // ★★1枚（シート）の ときは、★その 1枚の 中だけ を 読みます。
+          //   ★★絵を 切り取ったのと 同じ ところに そろえます。
+          //   ★★かぶさりの 黒い 幕（ダイアログの 外）は 字を 持ちません。
+          const shRoot = window.__sheetOnly
+            ? document.querySelector('[role="dialog"]') : null;
+          walk(shRoot || document.body);
           return out;
         });
         fs.writeFileSync(file.replace(/\.png$/, ".json"),

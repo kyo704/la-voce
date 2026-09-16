@@ -1,326 +1,255 @@
 [
  {
-  "tag": "h2",
-  "text": "記録"
+  "tag": "div",
+  "text": "昨夜の 睡眠",
+  "x": 15,
+  "y": 26,
+  "w": 360,
+  "h": 27,
+  "size": "16px",
+  "weight": "700",
+  "color": "rgb(36, 25, 20)"
  },
  {
   "tag": "div",
-  "text": "2026年9月16日(水)"
- },
- {
-  "tag": "p",
-  "text": "あさ"
- },
- {
-  "tag": "div",
-  "text": "起きたときの むくみ"
- },
- {
-  "tag": "span",
-  "text": "◎"
- },
- {
-  "tag": "span",
-  "text": "ない"
- },
- {
-  "tag": "span",
-  "text": "○"
- },
- {
-  "tag": "span",
-  "text": "すこし"
- },
- {
-  "tag": "span",
-  "text": "△"
- },
- {
-  "tag": "span",
-  "text": "ある"
- },
- {
-  "tag": "span",
-  "text": "昨夜の 睡眠"
- },
- {
-  "tag": "b",
-  "text": "＋"
- },
- {
-  "tag": "span",
-  "text": "›"
- },
- {
-  "tag": "p",
-  "text": "よる"
+  "text": "寝た時刻と 起きた時刻を 選ぶと、長さが 出ます",
+  "x": 15,
+  "y": 57,
+  "w": 360,
+  "h": 20,
+  "size": "12px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
   "tag": "div",
-  "text": "のどの 調子"
+  "text": "寝た 時刻",
+  "x": 15,
+  "y": 89,
+  "w": 360,
+  "h": 23,
+  "size": "12.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "span",
-  "text": "◎"
+  "tag": "button",
+  "text": "22:00",
+  "x": 15,
+  "y": 119,
+  "w": 51,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "span",
-  "text": "よい"
+  "tag": "button",
+  "text": "22:30",
+  "x": 72,
+  "y": 119,
+  "w": 51,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "span",
-  "text": "○"
+  "tag": "button",
+  "text": "23:00",
+  "x": 129,
+  "y": 119,
+  "w": 51,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "span",
-  "text": "ふつう"
+  "tag": "button",
+  "text": "23:30",
+  "x": 186,
+  "y": 119,
+  "w": 54,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "700",
+  "color": "rgb(255, 253, 248)"
  },
  {
-  "tag": "span",
-  "text": "△"
+  "tag": "button",
+  "text": "0:00",
+  "x": 246,
+  "y": 119,
+  "w": 44,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "span",
-  "text": "わるい"
+  "tag": "button",
+  "text": "0:30",
+  "x": 296,
+  "y": 119,
+  "w": 44,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "1:00",
+  "x": 15,
+  "y": 169,
+  "w": 44,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "1:30",
+  "x": 65,
+  "y": 169,
+  "w": 44,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
   "tag": "div",
-  "text": "声の 出来"
+  "text": "起きた 時刻",
+  "x": 15,
+  "y": 224,
+  "w": 360,
+  "h": 23,
+  "size": "12.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "span",
-  "text": "◎"
+  "tag": "button",
+  "text": "5:30",
+  "x": 15,
+  "y": 254,
+  "w": 44,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "span",
-  "text": "出た"
+  "tag": "button",
+  "text": "6:00",
+  "x": 65,
+  "y": 254,
+  "w": 44,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "span",
-  "text": "○"
+  "tag": "button",
+  "text": "6:30",
+  "x": 115,
+  "y": 254,
+  "w": 44,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "span",
-  "text": "ふつう"
+  "tag": "button",
+  "text": "7:00",
+  "x": 164,
+  "y": 254,
+  "w": 46,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "700",
+  "color": "rgb(255, 253, 248)"
  },
  {
-  "tag": "span",
-  "text": "△"
+  "tag": "button",
+  "text": "7:30",
+  "x": 217,
+  "y": 254,
+  "w": 44,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "span",
-  "text": "出づらい"
+  "tag": "button",
+  "text": "8:00",
+  "x": 267,
+  "y": 254,
+  "w": 44,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "span",
-  "text": "本番以外で 声を使った時間"
+  "tag": "button",
+  "text": "8:30",
+  "x": 317,
+  "y": 254,
+  "w": 44,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "b",
-  "text": "＋"
- },
- {
-  "tag": "span",
-  "text": "›"
+  "tag": "button",
+  "text": "9:00",
+  "x": 15,
+  "y": 304,
+  "w": 44,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
   "tag": "div",
-  "text": "部屋の しめり は こちらで 取ります。本番・レッスンの 翌日かどうかも、予定から 分かります。この2つは 聞きません。"
- },
- {
-  "tag": "p",
-  "text": "足す（どれも 任意）"
- },
- {
-  "tag": "span",
-  "text": "本番・レッスン"
- },
- {
-  "tag": "b",
-  "text": "✓"
- },
- {
-  "tag": "span",
-  "text": "あり ›"
- },
- {
-  "tag": "span",
-  "text": "食べたもの"
- },
- {
-  "tag": "b",
-  "text": "＋"
- },
- {
-  "tag": "span",
-  "text": "›"
- },
- {
-  "tag": "span",
-  "text": "からだのこと"
- },
- {
-  "tag": "b",
-  "text": "＋"
- },
- {
-  "tag": "span",
-  "text": "›"
- },
- {
-  "tag": "span",
-  "text": "ひとこと"
- },
- {
-  "tag": "b",
-  "text": "＋"
- },
- {
-  "tag": "span",
-  "text": "›"
- },
- {
-  "tag": "button",
-  "text": "きょうは 書かない"
- },
- {
-  "tag": "button",
-  "text": "出す"
- },
- {
-  "tag": "button",
-  "text": "くわしい 決まりを 見る"
- },
- {
-  "tag": "span",
-  "text": "質問票"
- },
- {
-  "tag": "span",
-  "text": "›"
- },
- {
-  "tag": "span",
-  "text": "記録する項目を 増やす"
- },
- {
-  "tag": "span",
-  "text": "›"
- },
- {
-  "tag": "summary",
-  "text": "使っていない項目（ 6 件）"
+  "text": "7時間30分",
+  "x": 31,
+  "y": 374,
+  "w": 328,
+  "h": 34,
+  "size": "20px",
+  "weight": "700",
+  "color": "rgb(36, 25, 20)"
  },
  {
   "tag": "div",
-  "text": "昨夜の 睡眠"
- },
- {
-  "tag": "div",
-  "text": "寝た時刻と 起きた時刻を 選ぶと、長さが 出ます"
- },
- {
-  "tag": "div",
-  "text": "寝た 時刻"
- },
- {
-  "tag": "button",
-  "text": "22:00"
+  "text": "23:30 → 7:00",
+  "x": 31,
+  "y": 408,
+  "w": 328,
+  "h": 20,
+  "size": "12px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
   "tag": "button",
-  "text": "22:30"
- },
- {
-  "tag": "button",
-  "text": "23:00"
- },
- {
-  "tag": "button",
-  "text": "23:30"
- },
- {
-  "tag": "button",
-  "text": "0:00"
- },
- {
-  "tag": "button",
-  "text": "0:30"
- },
- {
-  "tag": "button",
-  "text": "1:00"
- },
- {
-  "tag": "button",
-  "text": "1:30"
- },
- {
-  "tag": "div",
-  "text": "起きた 時刻"
- },
- {
-  "tag": "button",
-  "text": "5:30"
- },
- {
-  "tag": "button",
-  "text": "6:00"
- },
- {
-  "tag": "button",
-  "text": "6:30"
- },
- {
-  "tag": "button",
-  "text": "7:00"
- },
- {
-  "tag": "button",
-  "text": "7:30"
- },
- {
-  "tag": "button",
-  "text": "8:00"
- },
- {
-  "tag": "button",
-  "text": "8:30"
- },
- {
-  "tag": "button",
-  "text": "9:00"
- },
- {
-  "tag": "div",
-  "text": "7時間30分"
- },
- {
-  "tag": "div",
-  "text": "23:30 → 7:00"
- },
- {
-  "tag": "button",
-  "text": "これでいい"
- },
- {
-  "tag": "button",
-  "text": "きょう"
- },
- {
-  "tag": "button",
-  "text": "記録"
- },
- {
-  "tag": "button",
-  "text": "ふりかえる"
- },
- {
-  "tag": "button",
-  "text": "ノート"
- },
- {
-  "tag": "button",
-  "text": "ひつじ"
+  "text": "これでいい",
+  "x": 15,
+  "y": 454,
+  "w": 360,
+  "h": 52,
+  "size": "14.5px",
+  "weight": "700",
+  "color": "rgb(255, 253, 248)"
  }
 ]

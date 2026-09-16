@@ -1,314 +1,222 @@
 [
  {
-  "tag": "h2",
-  "text": "記録"
+  "tag": "div",
+  "text": "食べたもの",
+  "x": 15,
+  "y": 26,
+  "w": 360,
+  "h": 27,
+  "size": "16px",
+  "weight": "700",
+  "color": "rgb(36, 25, 20)"
  },
  {
   "tag": "div",
-  "text": "2026年9月16日(水)"
+  "text": "当てはまるものに 印を（いくつでも）",
+  "x": 15,
+  "y": 57,
+  "w": 360,
+  "h": 20,
+  "size": "12px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "p",
-  "text": "あさ"
+  "tag": "button",
+  "text": "揚げ物",
+  "x": 15,
+  "y": 89,
+  "w": 61,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "あっさり",
+  "x": 82,
+  "y": 89,
+  "w": 72,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "炭酸",
+  "x": 160,
+  "y": 89,
+  "w": 49,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "トマト系",
+  "x": 215,
+  "y": 89,
+  "w": 71,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "カフェイン",
+  "x": 292,
+  "y": 89,
+  "w": 83,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "アルコール",
+  "x": 15,
+  "y": 139,
+  "w": 82,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "からいもの",
+  "x": 103,
+  "y": 139,
+  "w": 84,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "乳製品",
+  "x": 193,
+  "y": 139,
+  "w": 61,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "チョコレート",
+  "x": 259,
+  "y": 139,
+  "w": 95,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
+ },
+ {
+  "tag": "button",
+  "text": "冷たいもの",
+  "x": 15,
+  "y": 189,
+  "w": 84,
+  "h": 44,
+  "size": "11.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
   "tag": "div",
-  "text": "起きたときの むくみ"
+  "text": "食べ終えた 時刻",
+  "x": 15,
+  "y": 245,
+  "w": 360,
+  "h": 23,
+  "size": "12.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "span",
-  "text": "◎"
+  "tag": "button",
+  "text": "19:00",
+  "x": 15,
+  "y": 275,
+  "w": 51,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "span",
-  "text": "ない"
+  "tag": "button",
+  "text": "20:00",
+  "x": 72,
+  "y": 275,
+  "w": 51,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "span",
-  "text": "○"
+  "tag": "button",
+  "text": "21:00",
+  "x": 129,
+  "y": 275,
+  "w": 51,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "span",
-  "text": "すこし"
+  "tag": "button",
+  "text": "22:00",
+  "x": 186,
+  "y": 275,
+  "w": 51,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
-  "tag": "span",
-  "text": "△"
- },
- {
-  "tag": "span",
-  "text": "ある"
- },
- {
-  "tag": "span",
-  "text": "昨夜の 睡眠"
- },
- {
-  "tag": "b",
-  "text": "＋"
- },
- {
-  "tag": "span",
-  "text": "›"
- },
- {
-  "tag": "p",
-  "text": "よる"
+  "tag": "button",
+  "text": "23:00",
+  "x": 243,
+  "y": 275,
+  "w": 51,
+  "h": 44,
+  "size": "10.5px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
   "tag": "div",
-  "text": "のどの 調子"
- },
- {
-  "tag": "span",
-  "text": "◎"
- },
- {
-  "tag": "span",
-  "text": "よい"
- },
- {
-  "tag": "span",
-  "text": "○"
- },
- {
-  "tag": "span",
-  "text": "ふつう"
- },
- {
-  "tag": "span",
-  "text": "△"
- },
- {
-  "tag": "span",
-  "text": "わるい"
- },
- {
-  "tag": "div",
-  "text": "声の 出来"
- },
- {
-  "tag": "span",
-  "text": "◎"
- },
- {
-  "tag": "span",
-  "text": "出た"
- },
- {
-  "tag": "span",
-  "text": "○"
- },
- {
-  "tag": "span",
-  "text": "ふつう"
- },
- {
-  "tag": "span",
-  "text": "△"
- },
- {
-  "tag": "span",
-  "text": "出づらい"
- },
- {
-  "tag": "span",
-  "text": "本番以外で 声を使った時間"
- },
- {
-  "tag": "b",
-  "text": "＋"
- },
- {
-  "tag": "span",
-  "text": "›"
- },
- {
-  "tag": "div",
-  "text": "部屋の しめり は こちらで 取ります。本番・レッスンの 翌日かどうかも、予定から 分かります。この2つは 聞きません。"
- },
- {
-  "tag": "p",
-  "text": "足す（どれも 任意）"
- },
- {
-  "tag": "span",
-  "text": "本番・レッスン"
- },
- {
-  "tag": "b",
-  "text": "✓"
- },
- {
-  "tag": "span",
-  "text": "あり ›"
- },
- {
-  "tag": "span",
-  "text": "食べたもの"
- },
- {
-  "tag": "b",
-  "text": "＋"
- },
- {
-  "tag": "span",
-  "text": "›"
- },
- {
-  "tag": "span",
-  "text": "からだのこと"
- },
- {
-  "tag": "b",
-  "text": "＋"
- },
- {
-  "tag": "span",
-  "text": "›"
- },
- {
-  "tag": "span",
-  "text": "ひとこと"
- },
- {
-  "tag": "b",
-  "text": "＋"
- },
- {
-  "tag": "span",
-  "text": "›"
+  "text": "良い・悪いを 決めません。食べたことを、そのまま 残すだけです。",
+  "x": 15,
+  "y": 330,
+  "w": 360,
+  "h": 61,
+  "size": "12px",
+  "weight": "400",
+  "color": "rgb(107, 93, 82)"
  },
  {
   "tag": "button",
-  "text": "きょうは 書かない"
- },
- {
-  "tag": "button",
-  "text": "出す"
- },
- {
-  "tag": "button",
-  "text": "くわしい 決まりを 見る"
- },
- {
-  "tag": "span",
-  "text": "質問票"
- },
- {
-  "tag": "span",
-  "text": "›"
- },
- {
-  "tag": "span",
-  "text": "記録する項目を 増やす"
- },
- {
-  "tag": "span",
-  "text": "›"
- },
- {
-  "tag": "summary",
-  "text": "使っていない項目（ 6 件）"
- },
- {
-  "tag": "div",
-  "text": "食べたもの"
- },
- {
-  "tag": "div",
-  "text": "当てはまるものに 印を（いくつでも）"
- },
- {
-  "tag": "button",
-  "text": "揚げ物"
- },
- {
-  "tag": "button",
-  "text": "あっさり"
- },
- {
-  "tag": "button",
-  "text": "炭酸"
- },
- {
-  "tag": "button",
-  "text": "トマト系"
- },
- {
-  "tag": "button",
-  "text": "カフェイン"
- },
- {
-  "tag": "button",
-  "text": "アルコール"
- },
- {
-  "tag": "button",
-  "text": "からいもの"
- },
- {
-  "tag": "button",
-  "text": "乳製品"
- },
- {
-  "tag": "button",
-  "text": "チョコレート"
- },
- {
-  "tag": "button",
-  "text": "冷たいもの"
- },
- {
-  "tag": "div",
-  "text": "食べ終えた 時刻"
- },
- {
-  "tag": "button",
-  "text": "19:00"
- },
- {
-  "tag": "button",
-  "text": "20:00"
- },
- {
-  "tag": "button",
-  "text": "21:00"
- },
- {
-  "tag": "button",
-  "text": "22:00"
- },
- {
-  "tag": "button",
-  "text": "23:00"
- },
- {
-  "tag": "div",
-  "text": "良い・悪いを 決めません。食べたことを、そのまま 残すだけです。"
- },
- {
-  "tag": "button",
-  "text": "これでいい"
- },
- {
-  "tag": "button",
-  "text": "きょう"
- },
- {
-  "tag": "button",
-  "text": "記録"
- },
- {
-  "tag": "button",
-  "text": "ふりかえる"
- },
- {
-  "tag": "button",
-  "text": "ノート"
- },
- {
-  "tag": "button",
-  "text": "ひつじ"
+  "text": "これでいい",
+  "x": 15,
+  "y": 401,
+  "w": 360,
+  "h": 48,
+  "size": "14.5px",
+  "weight": "400",
+  "color": "rgb(36, 25, 20)"
  }
 ]

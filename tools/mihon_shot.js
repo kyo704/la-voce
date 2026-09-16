@@ -57,18 +57,28 @@ const OUT = path.join(ROOT, "docs", "design", "compare", "mihon");
   let ng = 0;
   for (const name of names) {
     // ★★その 名前の 画面が 見本に あるか、★先に 確かめます。
-    const exists = await page.evaluate((n) => typeof SC[n] === "function", name);
-    if (!exists) {
-      console.log("  ✗ " + name + " … ★見本に ありません（SC['" + name + "']）");
+    // ★★見本には 2つの 形が あります（★2026-09-16）。
+    //   ★`SC[名]` … 1枚の 画面（★push で 重ねる）
+    //   ★`SH[名]` … 下から 上がる 板（★openSheet で 開く）
+    //   ★★「アカウント」は `SH['account']` です。★`SC` では ありません。
+    //     ★★はじめ `SC` だけを 見て いて、★「見本に ありません」と 出しました。
+    //       ★★見本には 在ります。★形が ちがった だけ です。
+    const kind = await page.evaluate((n) => {
+      if (typeof SC[n] === "function") return "SC";
+      if (typeof SH[n] === "function") return "SH";
+      return null;
+    }, name);
+    if (!kind) {
+      console.log("  ✗ " + name + " … ★見本に ありません（SC[] にも SH[] にも）");
       ng++;
       continue;
     }
-    // ★★一度 まっさらに してから 重ねます。★前の 画面が 残らない ように。
-    await page.evaluate((n) => {
+    // ★★一度 まっさらに してから 出します。★前の 画面が 残らない ように。
+    await page.evaluate(({ n, k }) => {
       S.stack = [];
       S.sheet = null;
-      push(n);
-    }, name);
+      if (k === "SH") openSheet(n); else push(n);
+    }, { n: name, k: kind });
     await page.waitForTimeout(250);
 
     // ★★★`fullPage: true` に しては いけません（★2026-09-15）。
@@ -77,7 +87,7 @@ const OUT = path.join(ROOT, "docs", "design", "compare", "mihon");
     //     ★★fullPage で 撮ると、★ほとんどが 設定の 画面では ありません。
     //   ★★だから `#bd` だけを 切り取ります。★これが「その 画面」です。
     const png = path.join(OUT, name + "@390.png");
-    const bd = await page.$("#bd");
+    const bd = await page.$(kind === "SH" ? "#sh" : "#bd");
     if (!bd) {
       console.log("  ✗ " + name + " … ★`#bd` が 見つかりません");
       ng++;
@@ -86,9 +96,10 @@ const OUT = path.join(ROOT, "docs", "design", "compare", "mihon");
     await bd.screenshot({ path: png });
 
     // ★★見える 字も 書き出します。★絵だけでは 数えられません。
+    await page.evaluate((k) => { window.__kind = k; }, kind);
     const dump = await page.evaluate(() => {
       const out = [];
-      document.querySelectorAll("#bd *").forEach((el) => {
+      document.querySelectorAll((window.__kind === "SH" ? "#sh" : "#bd") + " *").forEach((el) => {
         if (el.children.length > 0) return;
         const t = (el.textContent || "").trim();
         if (!t) return;

@@ -1,0 +1,55 @@
+<!doctype html><html lang="ja"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>触覚の ためし</title>
+<style>
+ body{font-family:-apple-system,system-ui,sans-serif;background:#F6F1E7;color:#241914;
+      margin:0;padding:20px 16px 60px;line-height:1.7;font-size:15px}
+ h1{font-size:17px;margin:0 0 4px}
+ .s{color:#6b5d52;font-size:12.5px;margin:0 0 18px}
+ .box{background:#FFFDF8;border:1px solid #E4DCC9;border-radius:14px;
+      padding:14px 15px;margin:0 0 13px}
+ .box h2{font-size:14px;margin:0 0 3px}
+ .box p{font-size:12.5px;color:#6b5d52;margin:0 0 11px}
+ .row{display:flex;align-items:center;justify-content:space-between;min-height:44px}
+ button{font:inherit;min-height:48px;width:100%;border-radius:12px;
+        border:1px solid #E4DCC9;background:#FFFDF8;color:#241914}
+ input{width:44px;height:26px}
+ code{background:#EFE7D6;padding:1px 5px;border-radius:5px;font-size:12px}
+ #d{white-space:pre-wrap;font-size:12px;background:#EFE7D6;border-radius:10px;padding:11px}
+</style>
+<h1>触覚の ためし</h1>
+<p class="s">この紙は アプリでは ありません。調べる ためだけの 1枚です。<br>
+ 音も 出ません。どこにも 送りません。何も 残しません。</p>
+
+<div class="box"><h2>① 見分け</h2><p>この端末が 何を 持っているか。</p>
+ <div id="d">…</div></div>
+
+<div class="box"><h2>② <code>switch</code> の 札</h2>
+ <p>Safari 17.4 から の 本物の 札です。切り替えて、指に 何か 来るか。</p>
+ <div class="row"><span>本物の 札（switch）</span>
+  <input type="checkbox" switch></div>
+ <div class="row"><span>ふつうの 札（比べ用）</span>
+  <input type="checkbox"></div></div>
+
+<div class="box"><h2>③ <code>navigator.vibrate</code></h2>
+ <p>押して、指に 何か 来るか。iPhone では 何も 起きない はずです。</p>
+ <button onclick="v(10)">10ms</button><div style="height:8px"></div>
+ <button onclick="v(30)">30ms</button></div>
+
+<div class="box"><h2>④ ラベルの 中の 札</h2>
+ <p>札そのものでは なく、字を 押して 切り替えた ときは どうか。</p>
+ <label class="row"><span>字を 押す</span>
+  <input type="checkbox" switch></label></div>
+
+<script>
+ var n=navigator,o=[];
+ o.push("vibrate が ある: "+("vibrate" in n));
+ o.push("switch 属性を 解する: "+
+   (function(){var e=document.createElement("input");
+    e.type="checkbox";return "switch" in e})());
+ o.push("画面に 貼った アプリ: "+(n.standalone===true));
+ o.push("さわれる点の 数: "+n.maxTouchPoints);
+ o.push("名乗り: "+n.userAgent);
+ document.getElementById("d").textContent=o.join("\n");
+ function v(ms){ if(n.vibrate) n.vibrate(ms); }
+</script></html>
