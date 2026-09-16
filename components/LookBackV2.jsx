@@ -4,8 +4,7 @@ import { useState } from "react";
 import { C, CONCERN_STEPS } from "@/lib/tokens";
 import { TYPE, SPACE, FONT_STACK, rem } from "@/lib/uiKit";
 import {
-  ScreenHead, HeadRound, Card, Seg, Pill, Warn, Note, BarRow, Li, Btn, Two, EmptyBox
-} from "@/components/UiV2";
+  ScreenHead, HeadRound, Card, Seg, Pill, Warn, Note, BarRow, Li, Btn, Two, EmptyBox, Box } from "@/components/UiV2";
 import LookBackPanel from "@/components/LookBackPanel";
 import { LOOK_BACK_FIELDS, hardDays, lookBackDays } from "@/lib/lookBack";
 import { PERIODS, LINE_UP_NOTE, LINE_UP_STACK_NOTE, datesBack } from "@/lib/lineUp";
@@ -171,7 +170,7 @@ function QuietScreen({ reason, onGo }) {
   );
 }
 
-export default function LookBackV2({ entries, todayISO, notOutDays, performanceDays, onOpenMore, profile, userEmail }) {
+export default function LookBackV2({ entries, todayISO, notOutDays, performanceDays, onOpenMore, onOpenClinicSummary, profile, userEmail }) {
   const [tab, setTab] = useState("narabe");
   // ★★くらべる の 中の「順番」は、★画面ごと 入れ替わります（★見本 push('順番')）。
   //   ★★見本は 1枚の 画面です。★頭（ふりかえる）も 4つの 札も 出ません。
@@ -335,6 +334,22 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
         //   ★→ ★窓を 外しました。★書いた 日 ぜんぶを 渡します。
         return <CountV2 entries={entries} dates={allDates} todayISO={todayISO} profile={profile} userEmail={userEmail} />;
       })()}
+
+      {/* ★★★受診用サマリー（★2026-09-16・裁定 B-2）。
+          ★★設定の 中に ありました。★3段 奥 でした。
+            ★★営業の 紙は これを「中核の 無料の 安全機能」と 呼んで います。
+            ★★そこに 置く ものでは ありません。
+          ★★ここは「ふりかえる」── ★**読む** ところ です。
+            ★質問票は **書く** もの なので、★記録の 画面へ 行きました。
+          ★★ノートの 中の 組み立て（NotesV2）は 残って います。
+            ★★あちらは「どの 期間を、どう 出すか」を 決める 口 です。
+            ★★こちらは、★決めずに そのまま 開く 口 です。★2つで 1つ です。
+          ★★渡されて いなければ 出しません。★押せない 札に しません。 */}
+      {onOpenClinicSummary ? (
+        <Box style={{ marginTop: 14 }}>
+          <Li right="›" onClick={() => onOpenClinicSummary()} last>受診用サマリー</Li>
+        </Box>
+      ) : null}
     </div>
   );
 }

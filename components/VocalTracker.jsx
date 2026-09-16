@@ -16623,6 +16623,24 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     )}
                   </>
                 )}
+
+                {/* ★★★記録の 画面に 戻した もの（★2026-09-16・裁定 B・C）。
+                    ★★どれも「記録の 関心事」です。★設定の ものでは ありません。
+                      ★質問票　　　　　… ★**書く** もの
+                      ★記録する項目　　… ★記録の 画面の 中身
+                      ★使っていない項目… ★同上
+                    ★★設定の 3段 奥に 置いて いました。
+                      ★★SEV4（★足もとが 全画面に 出る）と 同じ 根 です ──
+                        ★★置き場所が、★その ものの 持ち主と ずれて いました。
+                    ★★門の 中だけ に 出します。★38名の 画面は 変わりません。 */}
+                {layoutV2 ? (
+                  <Box style={{ marginTop: 14 }}>
+                    <Li right="›" onClick={() => setActiveTab("questionnaires")}>質問票</Li>
+                    <Li right="›" onClick={() => setShowFieldGroupManager(true)} last>
+                      記録する項目を 増やす
+                    </Li>
+                  </Box>
+                ) : null}
               </div>
               </RecordFoldContext.Provider>
               </>
@@ -18827,6 +18845,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 key={"lookback-" + tabResetKey} entries={entries} todayISO={realTodayDate} notOutDays={notOutDays}
                 performanceDays={performances.map((pf) => pf.performed_on).filter(Boolean)}
                 onOpenMore={() => setActiveTab("more")}
+                onOpenClinicSummary={() => setActiveTab("clinicSummary")}
                 profile={profile}
                 userEmail={userEmail} />
             )}
@@ -22224,6 +22243,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                     //   ★★`moreSection` では ありません。★別の タブ です。
                                     //   ★★プロフィールの 中の 入口も 残って います。★2つ とも 同じ 先 です。
                                     if (r.key === "同意") { setActiveTab("withdrawConsent"); return; }
+                                    // ★★プロフィール（★2026-09-16・裁定 B-3）。
+                                    //   ★★設定の 中から 出しました。★1行で 着きます。
+                                    if (r.key === "プロフィール") { setActiveTab("profile"); return; }
                                     // ★★生徒を 招待する（★2026-09-15・裁定 ㋒／No.025）。
                                     //   ★★しくみは 壊れて いませんでした。★道だけが 無く なって いました。
                                     //     ★`handleGenerateTeacherInvite` も、
@@ -22536,12 +22558,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           ★★消える ものが あるなら、★押す 前に 伝える こと。 */}
                       {/* ★★ツール（★2026-09-16）。★見本の `.li` は 名前と `›` だけ です。
                           ★★絵（アイコン）は 見本に ありません。★付けて いません。 */}
-                      <Li right="›" onClick={() => setActiveTab("questionnaires")}>質問票</Li>
-                      <Li right="›" onClick={() => setActiveTab("clinicSummary")}>受診用サマリー</Li>
+                      {/* ★★「質問票」と「受診用サマリー」は 設定から 出しました（★2026-09-16・裁定 B）。
+                          ★★質問票は **書く** もの ── ★記録の 画面へ。
+                          ★★受診用サマリーは **読む** もの ── ★ふりかえるへ。
+                            ★★営業の 紙は これを「中核の 無料の 安全機能」と 呼んで います。
+                            ★★設定の 3段 奥に 置く ものでは ありません。 */}
                       {canSeeBetaFeatures(profile) ? (
                         <Li right="›" onClick={() => setLessonMode(true)}>レッスンモード</Li>
                       ) : null}
-                      <Li right="›" onClick={() => setActiveTab("profile")}>プロフィール・記録項目</Li>
+                      {/* ★★「プロフィール・記録項目」は もっとへ 移りました（★B-3）。
+                          ★★設定は「アプリ全体の ふるまい」。★プロフィールは あなたの こと です。 */}
 
                       {/* ★★お知らせ（★2026-09-16・見本 `SC['設定']` の 3行目）。
                           ★★両方向の 棚おろしが 見つけた 欠け です。
