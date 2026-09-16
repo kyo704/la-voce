@@ -108,7 +108,7 @@ import { markerRow } from "@/lib/periodMarkers";
 import TodayBand from "@/components/TodayBand";
 import TabBarV2 from "@/components/TabBarV2";
 import { TAB_BAR_HEIGHT, TYPE, SPACE, FONT_STACK, cardStyle, rem, RADIUS } from "@/lib/uiKit";
-import { ScreenHead, HeadRound, H3, Card, Li, Seg, Note, Wl, Box } from "@/components/UiV2";
+import { ScreenHead, HeadRound, H3, Card, Li, Seg, Note, Wl, Box, Btn } from "@/components/UiV2";
 import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
 import { moreSections, rightOf, MORE_NOTE, MORE_NOTE_BOLD } from "@/lib/moreMenu";
 import DailyAskPicker from "@/components/DailyAskPicker";
@@ -208,6 +208,12 @@ import { scopeForPeriod, mayViewSummary, GATE_CLOSING_LINES, gatePriceLines,
   PAID_FEATURES, featureLabel } from "@/lib/freeTier";
 // ★値段は lib/plans.js が持ちます。★画面に書き写しません。
 import { PLANS } from "@/lib/plans";
+// ★プランの 画面が 言う ことは、★lib/planScreen.js が 持ちます。
+//   ★★ここに 書き写しません。★2か所に なると、★片方だけ 古く なります。
+import {
+  PLAN_FREE_ROWS, paidRows, planState, monthlyPriceLabel,
+  PLAN_NOTE_LINES, PLAN_NOTE_BOLD, PLAN_BUTTON, FREE_MARK
+} from "@/lib/planScreen";
 import GateNotice from "@/components/GateNotice";
 import { REAUTH_ACTIONS, reauthStillValid } from "@/lib/reauth";
 import { SIMPLE_STEPS, SIMPLE_STEP_COUNT, remainingSteps, applyStep, skipStep,
@@ -22681,6 +22687,88 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ★「まだ始まっていません」と出て、★食い違いました。
                     ★★判定は、壁の札（GateNotice）と同じものを使います。
                       ★2か所で別々に判定すると、★また食い違います。 */}
+                {/* ★★★プランの 画面（★門の 中だけ・★2026-09-16）。
+                    ★★きょう まで、★ここは **まっ白** でした。
+                      ★下の「見られるものを増やす」の 札に
+                        `subscribed !== true && paidGateApplies`
+                      ★が 付いて いて、★試しの 一覧に 居ない 方には
+                      ★1つも 出ません でした。★画面ごと 空 です。
+                    ★★坂本さんの お決め（★DECISION_1）──
+                      「★paidGateApplies は『勧誘するか』の 門であって
+                        『価格を 見せるか』の 門では ない」
+                      ★★だから、★この 節は どなたにも 出します。
+                    ★★門の 外（38人）には 出しません（`layoutV2 &&`）。
+                      ★★`inMore()` は 門の 外で `undefined` を 返します。
+                        ★つまり「出す」です。★これを 忘れると、
+                        ★38人の 画面に 新しい 節が 生えます。
+                    ★★字は lib/planScreen.js が 持ちます。★ここに 書きません。 */}
+                {layoutV2 && moreSection === "プラン" && (() => {
+                  const st = planState(subscribed);
+                  const yen = monthlyPriceLabel(PLANS);
+                  return (
+                    <div data-v2-plan="1">
+                      {/* ★いまの ご様子。★読めて いない あいだは 出しません。
+                          ★★「読めて いない」を「無料です」と 言い換えない こと。 */}
+                      {st.unknown ? null : (
+                        <Card>
+                          <div style={{ fontSize: "0.94rem", fontWeight: 700, color: C.ink }}>
+                            {st.title}
+                          </div>
+                          {st.sub ? (
+                            <div style={{ marginTop: 5, fontSize: "0.78rem", color: C.inkSoft }}>
+                              {st.sub}
+                            </div>
+                          ) : null}
+                        </Card>
+                      )}
+
+                      <H3>いまも これからも 無料</H3>
+                      <Box>
+                        {/* ★★見本は「無料」を 緑（`--midori`）で 出します。
+                            ★★いまは 出しません。★`Li` の 既定（ink2）の ままです。
+                              ★★見張り `display-prefs.test.js` が、
+                                ★`C.sage` を **文字色**に 使う ことを 止めます。
+                              ★★実測 ── ★`C.sage`(#4F7562) は 白地で **5.18**。
+                                ★読める 濃さ です。★見本の `--midori`(#447862) も 5.03。
+                                ★★止めて いる のは `C.sageSoft`(#7C9A6B・**3.14**) の
+                                  ★ぶん です。★見張りの 網が、★濃い ほうまで 掛かって います。
+                              ★★それでも 網を 広げません。★見張りを 自分の 都合で
+                                ★ゆるめない こと。★色は トークンの 仕事 です。
+                            ★★引き金 … 裁定その62 の トークンを 当てる とき。
+                              ★そこで `--midori` を 入れ、★見張りの 網を 引き直します。 */}
+                        {PLAN_FREE_ROWS.map((r, i) => (
+                          <Li key={r} last={i === PLAN_FREE_ROWS.length - 1} right={FREE_MARK}>
+                            {r}
+                          </Li>
+                        ))}
+                      </Box>
+
+                      <H3>調べる</H3>
+                      <Box>
+                        {paidRows().map((r, i, a) => (
+                          <Li key={r} last={i === a.length - 1} right={yen}>{r}</Li>
+                        ))}
+                      </Box>
+
+                      {/* ★★払って おられる 方には「やめる」、★そうでない 方には
+                          ★「調べるを 見る」。★見本の とおり です。
+                        ★★「やめる」の 行き先は /billing です。★ここで 止めません。
+                          ★お金を 止める のは、★1か所で だけ します。 */}
+                      <div style={{ marginTop: 11 }}>
+                        <Btn ghost={st.paid} onClick={() => { window.location.href = "/billing"; }}>
+                          {st.paid ? PLAN_BUTTON.paid : PLAN_BUTTON.free}
+                        </Btn>
+                      </div>
+
+                      <Note>
+                        {PLAN_NOTE_LINES.map((line) => (
+                          <span key={line}>{line}<br /></span>
+                        ))}
+                        <b>{PLAN_NOTE_BOLD}</b>
+                      </Note>
+                    </div>
+                  );
+                })()}
                 {subscribed !== true && paidGateApplies && (
                   <div className="rounded-2xl p-5 border" style={{
                     display: inMore("プラン"),

@@ -7,9 +7,10 @@ import MinorConsentGate from "@/components/MinorConsentGate";
 //   ★この画面で並べ直さないこと。★2か所になります。
 import {
   PAID_GATE_ENABLED, GATE_STARTS_AT, PAID_FEATURES, NEVER_PAID,
-  featureLabel, GATE_CLOSING_LINES, SCHOOL_BUNDLE_LINES, gateAppliesTo,
+  featureLabel, GATE_CLOSING_LINES, gateAppliesTo,
   GATE_REQUIRES_TEST_LIST
 } from "@/lib/freeTier";
+import { PLAN_NOTE_LINES, PLAN_NOTE_BOLD } from "@/lib/planScreen";
 import { ageBandOf } from "@/lib/ageGate";
 import { PLANS } from "@/lib/plans";
 import PortalButton from "@/components/PortalButton";
@@ -119,20 +120,26 @@ export default async function BillingPage() {
           ))}
         </div>
 
-        {/* ★★学校の 名簿に 入って いる あいだの こと（★2026-09-15・お決め ㋑）。
-            ★★見本 `SC['プラン']` の 最後の 注記 です。★1文字も 変えて いません。
-            ★★言って いる ことは 2つ ──
-              ★① 二重に いただきません（★学校が 束で 払って いる あいだ）
-              ★② 名簿から 外れても、★**記録は 消えません**
-            ★★②が 大事 です。★お金の 話の 最後に、★消えない ことを 言います。
-              ★「払わなく なったら 記録も 消える」と 思わせない ため です。
-            ★★字は lib/freeTier.js が 持ちます。★ここで 書きません。 */}
+        {/* ★★学校との 関わりに ついて（★2026-09-16 に 字を 入れ替えました）。
+            ★★前の 字は、★事実と ちがって いました ──
+              「学校の 名簿に 入っている間は、調べるが 束に なって います
+                （二重には いただきません）。…」
+              ★★裁定その54（★2026-09-13）で「学校の 400円は 運営のみ。
+                ★個人の 有料機能は 学生が 自分で 買う」と 変わって います。
+              ★★**この 画面は 本番で それを 出して いました。**
+                ★見本の 直りを 待たずに 入れ替えました（★坂本さんの お決め）。
+            ★★字は lib/planScreen.js が 持ちます。★ここで 書きません。
+              ★★プランの 画面（門の 中）と、★同じ 出どころ です。
+                ★★2つに すると、★片方だけ 古く なります。★何度も 起きました。 */}
         <div style={{ marginTop: 12, padding: 14, borderRadius: 12, background: C.paper }}>
-          {SCHOOL_BUNDLE_LINES.map((line) => (
+          {PLAN_NOTE_LINES.map((line) => (
             <p key={line} style={{ fontSize: "0.875rem", color: C.inkSoft, margin: "0 0 4px", lineHeight: 1.85 }}>
               {line}
             </p>
           ))}
+          <p style={{ fontSize: "0.875rem", color: C.inkSoft, margin: 0, lineHeight: 1.85 }}>
+            <b>{PLAN_NOTE_BOLD}</b>
+          </p>
         </div>
 
         {/* ★★すでにお支払いの方には、★申し込みではなく、★解約の入口を出します
