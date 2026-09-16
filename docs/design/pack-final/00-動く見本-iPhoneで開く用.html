@@ -1994,7 +1994,7 @@ SC['招く']=function(){
  +'18歳未満の方は、保護者の 同意も いただきます。</div>'
  +'<div class="btn" onclick="toast(\'招待を 送りました\');pop()">送る</div>'
  +'<div class="note"><b>ご本人が 承知するまで、この学校からは その方が 見えません。</b><br>'
- +'合言葉（6文字）でも 入れます。教室を こちらから 探すことは できません。</div>'};
+ +'合言葉（8文字）でも 入れます。教室を こちらから 探すことは できません。</div>'};
 
 function opGyoji(){
  return '<div class="hd"><h2>行事</h2><div class="gear" onclick="push(\'行事を出す\')">＋</div></div>'
@@ -4074,7 +4074,7 @@ SC['通っているところ']=function(){
    +'<div class="s">'+o.k+'　／　'+o.t+' 先生　／　'+o.in+'から</div></div><div class="r">›</div></div>'}).join('')
  +'<div class="h3">足す</div><div class="box">'
  +'<div class="li" onclick="push(\'招かれている\')"><span>招かれている ところ</span><s><span style="color:var(--enji)">1つ</span> ›</s></div>'
- +'<div class="li" onclick="push(\'合言葉で入る\')"><span>合言葉で 入る</span><s>6文字 ›</s></div></div>'
+ +'<div class="li" onclick="push(\'合言葉で入る\')"><span>合言葉で 入る</span><s>8文字 ›</s></div></div>'
  +'<div class="note"><b>こちらから 教室を さがすことは できません。</b><br>'
  +'　（さがせると、誰が どこに 通っているかが 分かってしまうからです）<br>'
  +'入り方は 2つだけ ── <b>招かれる</b> か、<b>教室から もらった 合言葉</b>を 打つか。<br>'
@@ -4124,13 +4124,13 @@ SC['招かれている']=function(){
 SC['合言葉で入る']=function(){
  S.code=S.code||'';
  return bk('通っている ところ')+'<div class="hd" style="padding-top:2px"><h2>合言葉で 入る</h2></div>'
- +'<div class="warn">教室から もらった <b>6文字</b>を 打ってください。<br>教室の 一覧を さがすことは できません。</div>'
+ +'<div class="warn">教室から もらった <b>8文字</b>を 打ってください。<br>教室の 一覧を さがすことは できません。<br>★何度か 間違えると、しばらく お試しいただけなく なります。</div>'
  +'<input class="inp" style="text-align:center;font-size:22px;letter-spacing:.3em" maxlength="6" placeholder="ABC123" value="'+S.code+'" oninput="S.code=this.value.toUpperCase();draw()">'
  +(S.code.length>=6?'<div class="card" style="margin-top:11px;border-color:#C9A0AB;background:#FFFCFC">'
    +'<div style="font-size:14px;font-weight:700">◇◇ボイストレーニング</div>'
    +'<div class="usu" style="margin-top:4px">音楽教室　／　中村 あきこ 先生</div>'
    +'<div class="btn" style="margin-top:10px" onclick="push(\'招かれている\')">見えるものを 確かめる</div></div>'
-  :'<div class="usu" style="margin-top:9px">6文字 打つと、どこの 教室かが 出ます。</div>')
+  :'<div class="usu" style="margin-top:9px">8文字 打つと、どこの 教室かが 出ます。<br>★合っていないときは、理由を お伝えしません。「入れませんでした」とだけ 出ます。</div>')
  +'<div class="note">合言葉だけでは 入りません。<b>見えるものを 見てから、あなたが 承知します。</b><br>'
  +'合言葉は 教室が いつでも 作り直せます（出回ったときの ため）。<br>'
  +'合言葉から、その教室の 名前 以外は 何も 分かりません。</div>'};
