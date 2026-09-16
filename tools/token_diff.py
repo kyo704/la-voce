@@ -79,18 +79,32 @@ def main():
     #   ★★けれど `getBoundingClientRect` は どちらも CSS の px を 返します。
     #     ★★だから 大きさの 数は、★そのまま くらべられます。
     #     ★★絵の 画素だけが 倍率の 影響を 受けます（★compare_pair.py 側）。
-    am = {}
+    # ★★★同じ 字が 2つ 以上 ある ことが あります（★2026-09-16）。
+    #   ★★プランの 画面には「無料」が **8つ** 出ます ──
+    #     ★いちばん 上の 札（15px・太字）と、★7行の 右の 字（12.5px・緑）。
+    #   ★★はじめの 型は「最初の 1つ」だけ を 相手に して いました。
+    #     ★★だから 行の「無料」を 札の「無料」と くらべ、
+    #       ★「太さ 400 → 700」「大きさ 12.5 → 15.04」と 出しました。
+    #     ★★画面は 合って います。★道具が 取りちがえた だけ です。
+    #   ★★だから、★出て きた **順**に 突き合わせます。
+    #     ★★1つめは 1つめと、★2つめは 2つめと。
+    import collections
+    ap_by = collections.defaultdict(list)
     for x in ap:
       k = norm(x.get("text"))
-      if k and k not in am:
-        am[k] = x
+      if k:
+        ap_by[k].append(x)
+    used = collections.Counter()
 
     rows, same, nofield = [], 0, 0
     for m in mi:
       k = norm(m.get("text"))
       if not k:
         continue
-      a = am.get(k)
+      cand = ap_by.get(k) or []
+      i = used[k]
+      a = cand[i] if i < len(cand) else (cand[-1] if cand else None)
+      used[k] += 1
       if a is None:
         continue                      # ★組み立ての 差。★あちらの 表で 見ます。
       if "size" not in a:
