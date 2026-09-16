@@ -16624,25 +16624,75 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </>
                 )}
 
-                {/* ★★★記録の 画面に 戻した もの（★2026-09-16・裁定 B・C）。
-                    ★★どれも「記録の 関心事」です。★設定の ものでは ありません。
-                      ★質問票　　　　　… ★**書く** もの
-                      ★記録する項目　　… ★記録の 画面の 中身
-                      ★使っていない項目… ★同上
-                    ★★設定の 3段 奥に 置いて いました。
-                      ★★SEV4（★足もとが 全画面に 出る）と 同じ 根 です ──
-                        ★★置き場所が、★その ものの 持ち主と ずれて いました。
-                    ★★門の 中だけ に 出します。★38名の 画面は 変わりません。 */}
-                {layoutV2 ? (
-                  <Box style={{ marginTop: 14 }}>
-                    <Li right="›" onClick={() => setActiveTab("questionnaires")}>質問票</Li>
-                    <Li right="›" onClick={() => setShowFieldGroupManager(true)} last>
-                      記録する項目を 増やす
-                    </Li>
-                  </Box>
-                ) : null}
+
               </div>
               </RecordFoldContext.Provider>
+              {/* ★★★畳みの 器の **外**に 置きました（★2026-09-16）。
+                  ★★はじめ 中に 入れて、★見張り `record-leak` が 止めました。
+                    ★★あの 器の 中で 節（SectionCard）の 外に 出る ものは、
+                      ★門の **外**だけ の もの に 限られます（★2026-09-11 の 事故）。
+                  ★★この 3つは 記録の **入力**では ありません。★画面の 行 です。
+                    ★教室の 殻の 3節と、★同じ 置き方 です。
+                  ★★見張りに 例外を 足しませんでした。★置き場所を 直しました。 */}
+              {/* ★★★記録の 画面に 戻した もの（★2026-09-16・裁定 B・C）。
+                  ★★どれも「記録の 関心事」です。★設定の ものでは ありません。
+                    ★質問票　　　　　… ★**書く** もの
+                    ★記録する項目　　… ★記録の 画面の 中身
+                    ★使っていない項目… ★同上
+                  ★★設定の 3段 奥に 置いて いました。
+                    ★★SEV4（★足もとが 全画面に 出る）と 同じ 根 です ──
+                      ★★置き場所が、★その ものの 持ち主と ずれて いました。
+                  ★★門の 中だけ に 出します。★38名の 画面は 変わりません。 */}
+              {layoutV2 ? (
+                <Box style={{ marginTop: 14 }}>
+                  <Li right="›" onClick={() => setActiveTab("questionnaires")}>質問票</Li>
+                  <Li right="›" onClick={() => setShowFieldGroupManager(true)}>
+                    記録する項目を 増やす
+                  </Li>
+                </Box>
+              ) : null}
+              {/* ★★「使っていない項目」を、★記録の 画面へ 移しました（★裁定 C-2）。
+                  ★★畳んだ ままです。★既定は 閉じて います。
+                  ★★中身も［畳む］［続ける］も、★1つも 減らして いません。
+                  ★★`inMore("設定")` は 外しました ── ★もう 設定の ものでは ありません。 */}
+              {layoutV2 ? (
+                <div style={{ marginTop: 10 }}>
+{/* ★★★畳みました（★2026-09-15・裁定 ㋗）。
+                      ★★撮って 数えたら、★この かたまりだけで **34塊**でした。
+                        ★設定の 画面は ぜんぶで 70塊。★**半分**が これ でした。
+                      ★★見本 `SC['設定']` に、★この 考え方 そのものが ありません。
+                      ★★★消して いません。★畳んだだけ です。
+                        ★お決め「★古い 機能を 隠すな、★仕分けろ」──
+                          ★これは ③「見せ方を 変える」です。
+                        ★★お誘いの 中身も、★［畳む］［続ける］も、★1つも 減らして いません。
+                        ★★数を 見出しに 出します。★開く 前に、★何件 あるか 分かります。
+                      ★★既定は **閉じて** います。★毎朝 見る ものでは ありません。 */}
+                  {unusedFieldGroupSuggestions.filter((s) => !dismissedFoldSuggestions.includes(s.key)).length > 0 && (
+                    <details className="rounded-2xl border" style={{ background: C.card, borderColor: C.line }}>
+                      <summary className="p-4 text-xs font-medium cursor-pointer" style={{ color: C.inkSoft, minHeight: 44 }}>
+                        使っていない項目（{unusedFieldGroupSuggestions.filter((s) => !dismissedFoldSuggestions.includes(s.key)).length}件）
+                      </summary>
+                      <div className="space-y-3 px-4 pb-4">
+                        {unusedFieldGroupSuggestions.filter((s) => !dismissedFoldSuggestions.includes(s.key)).map((s) => (
+                          <div key={s.key} className="rounded-xl p-3" style={{ background: C.paper }}>
+                            <p className="text-sm mb-2">「{s.label}」を30日間記録していません。畳みますか？</p>
+                            <div className="flex gap-2">
+                              <button type="button" onClick={() => handleFoldGroup(s.key)}
+                                className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                                畳む
+                              </button>
+                              <button type="button" onClick={() => setDismissedFoldSuggestions((prev) => [...prev, s.key])}
+                                className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
+                                続ける
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  )}
+                </div>
+              ) : null}
               </>
               );
             })()}
@@ -22891,40 +22941,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ★★「設定」の 画面の 中に「設定」という 見出しが あるのは、
                         ★見本に ありません。★入れ子に なって いました。 */}
 
-                {/* ★★★畳みました（★2026-09-15・裁定 ㋗）。
-                    ★★撮って 数えたら、★この かたまりだけで **34塊**でした。
-                      ★設定の 画面は ぜんぶで 70塊。★**半分**が これ でした。
-                    ★★見本 `SC['設定']` に、★この 考え方 そのものが ありません。
-                    ★★★消して いません。★畳んだだけ です。
-                      ★お決め「★古い 機能を 隠すな、★仕分けろ」──
-                        ★これは ③「見せ方を 変える」です。
-                      ★★お誘いの 中身も、★［畳む］［続ける］も、★1つも 減らして いません。
-                      ★★数を 見出しに 出します。★開く 前に、★何件 あるか 分かります。
-                    ★★既定は **閉じて** います。★毎朝 見る ものでは ありません。 */}
-                {unusedFieldGroupSuggestions.filter((s) => !dismissedFoldSuggestions.includes(s.key)).length > 0 && (
-                  <details className="rounded-2xl border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
-                    <summary className="p-4 text-xs font-medium cursor-pointer" style={{ color: C.inkSoft, minHeight: 44 }}>
-                      使っていない項目（{unusedFieldGroupSuggestions.filter((s) => !dismissedFoldSuggestions.includes(s.key)).length}件）
-                    </summary>
-                    <div className="space-y-3 px-4 pb-4">
-                      {unusedFieldGroupSuggestions.filter((s) => !dismissedFoldSuggestions.includes(s.key)).map((s) => (
-                        <div key={s.key} className="rounded-xl p-3" style={{ background: C.paper }}>
-                          <p className="text-sm mb-2">「{s.label}」を30日間記録していません。畳みますか？</p>
-                          <div className="flex gap-2">
-                            <button type="button" onClick={() => handleFoldGroup(s.key)}
-                              className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
-                              畳む
-                            </button>
-                            <button type="button" onClick={() => setDismissedFoldSuggestions((prev) => [...prev, s.key])}
-                              className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.card, border: `1px solid ${C.line}`, color: C.inkSoft }}>
-                              続ける
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </details>
-                )}
+                {/* ★★「使っていない項目」は 記録の 画面へ 移りました（★2026-09-16・裁定 C-2）。
+                    ★★お誘いの 中身は「★この 項目を 30日 書いて いません」です。
+                      ★★記録の 話 です。★設定の 話では ありません。
+                    ★★SEV4 と 同じ 根 ── ★置き場所が、★持ち主と ずれて いました。 */}
 
                 {/* ★★★設定の 中だけに しました（★2026-09-15・裁定 SEV4／㋔）。
                     ★★どちらも `display: inMore(...)` が 付いて いませんでした。
