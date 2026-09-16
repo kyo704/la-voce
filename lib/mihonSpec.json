@@ -1,0 +1,30 @@
+{
+  "_note": [
+    "★このファイルは 見本から 作られます。★手で 直さないで ください。",
+    "★作り直し … node tools/mihon_extract.js 設定 && python3 tools/mihon_to_spec.py",
+    "★出どころ … docs/design/pack-final/00-動く見本（さわれる・全画面）.html",
+    "★鍵（small/normal/…）は 実装の ものです。★見本に ありません。",
+    "　★保存に 使われるので、★字が 変わっても 鍵は 変えません。"
+  ],
+  "scaleKeys": [
+    "small",
+    "normal",
+    "large",
+    "xlarge",
+    "xxlarge"
+  ],
+  "scaleLabels": {
+    "small": "小さめ",
+    "normal": "ふつう",
+    "large": "大きめ",
+    "xlarge": "とても 大きい",
+    "xxlarge": "一番 大きい"
+  },
+  "scaleSamplePx": {
+    "small": 12.0,
+    "normal": 13.5,
+    "large": 15.5,
+    "xlarge": 18.0,
+    "xxlarge": 21.0
+  }
+}

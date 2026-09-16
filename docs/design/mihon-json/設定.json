@@ -1,0 +1,104 @@
+{
+  "screen": "設定",
+  "back": "‹ もっと",
+  "title": "設定",
+  "pills": [
+    {
+      "label": "小さめ",
+      "on": false,
+      "small": true
+    },
+    {
+      "label": "ふつう",
+      "on": true,
+      "small": true
+    },
+    {
+      "label": "大きめ",
+      "on": false,
+      "small": true
+    },
+    {
+      "label": "とても 大きい",
+      "on": false,
+      "small": true
+    },
+    {
+      "label": "一番 大きい",
+      "on": false,
+      "small": true
+    }
+  ],
+  "heads": [
+    "文字の 大きさ",
+    "そのほか"
+  ],
+  "rows": [
+    {
+      "left": "ダークモード",
+      "sub": null,
+      "right": null,
+      "hasSwitch": true,
+      "switchOn": false
+    },
+    {
+      "left": "羊の 動き",
+      "sub": null,
+      "right": null,
+      "hasSwitch": true,
+      "switchOn": true
+    },
+    {
+      "left": "お知らせ",
+      "sub": null,
+      "right": "連絡だけ ›",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "ことば",
+      "sub": null,
+      "right": "日本語 ›",
+      "hasSwitch": false,
+      "switchOn": false
+    }
+  ],
+  "notes": [
+    {
+      "text": "記録の 催促は、お知らせに 入れません（設けていません）。羊の 動きは、酔う方の ために 止められます。",
+      "bold": []
+    }
+  ],
+  "wl": [
+    "大きくしても、押せる大きさは 44px を 下回りません。運営モードにも 同じ設定が かかります（先生・事務の方も 使います）。"
+  ],
+  "warn": [],
+  "buttons": [],
+  "pillEffect": [
+    {
+      "step": 1,
+      "onIndex": 0,
+      "samplePx": "12px"
+    },
+    {
+      "step": 2,
+      "onIndex": 1,
+      "samplePx": "13.5px"
+    },
+    {
+      "step": 3,
+      "onIndex": 2,
+      "samplePx": "15.5px"
+    },
+    {
+      "step": 4,
+      "onIndex": 3,
+      "samplePx": "18px"
+    },
+    {
+      "step": 5,
+      "onIndex": 4,
+      "samplePx": "21px"
+    }
+  ]
+}
