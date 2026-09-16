@@ -8,9 +8,9 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{--enji:#840C24;--enji-bg:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
- --line:#E4DAC4;--line2:#F0E9DA;--ink:#261913;--ink2:#6D5D50;--ink3:#7C6C5E;--bg:#EFE7D6}
+ --line:#E4DAC4;--line2:#F0E9DA;--ink:#261913;--ink2:#5A4C40;--ink3:#6B5C4E;--bg:#EFE7D6}
 body{background:var(--bg);font-family:"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;color:var(--ink);
- display:flex;flex-direction:column;align-items:center;padding:22px 14px 60px;gap:13px;line-height:1.7}
+ display:flex;flex-direction:column;align-items:center;padding:22px 14px 60px;gap:13px;line-height:1.75;letter-spacing:.02em;font-feature-settings:"palt";font-variant-numeric:tabular-nums}
 h1{font-size:19px;letter-spacing:.04em}
 .lead{font-size:12.5px;color:var(--ink2);max-width:600px;text-align:center;line-height:1.9}
 /* ─── 端末 ─── */
@@ -393,6 +393,10 @@ html[data-th="dark"] .tri div{background:#2A2219;border-color:var(--line)}
 html[data-th="dark"] .tri div.on{background:var(--enji-bg);border-color:var(--enji-bg)}
 html[data-th="dark"] .tri div.on .w,html[data-th="dark"] .tri div.on .g{color:#fff}
 html[data-th="dark"] .drt,html[data-th="dark"] .drr,html[data-th="dark"] .drhint,html[data-th="dark"] .drc{background:#241D17}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+:root{--sp1:8px;--sp2:24px;--sp3:48px}
 </style>
 <style>
 /* ══════════ iPhone で そのまま 開くための 上書き ══════════ */
@@ -1592,7 +1596,7 @@ SC['調べる']=function(){
  +'<div class="card"><div style="font-size:14px;line-height:1.9">くらべる・かぞえるを、<br>もっと こまかく 見られます。</div>'
  +'<div class="usu" style="margin-top:9px;line-height:1.9">・本番の 前の3日だけを 数える<br>・出づらかった日の 普段<br>・曜日ごとの 普段<br>・調べることを 5つまで 選ぶ</div></div>'
  +'<div class="box"><div class="li"><span>ひと月ごと</span><s>580円（税込）</s></div>'
- +'<div class="li"><span>1年ぶん まとめて</span><s>5,800円（税込）</s></div></div>'
+ +'<div class="li"><span>1年ぶん まとめて</span><s>4,800円（税込）</s></div></div>'
  +'<div class="wl">記録・並べる・さかのぼる・ノート・ひつじ・受診用の 1枚は、これからも 無料です。<br>安全に かかわるものに、お金を いただきません。</div>'
  +'<div class="btn" style="margin-top:11px" onclick="S.dm.pay=1;pop();toast(\'この見本では 入った ことに します\')">はじめる</div>'
  +'<div class="btn g" style="margin-top:8px" onclick="pop()">いまは やめておく</div>'
@@ -1693,7 +1697,7 @@ SC['プラン']=function(){
    return '<div class="li"><span>'+v+'</span><s>580円／月</s></div>'}).join('')+'</div>'
  +(paid()?'<div class="btn g" style="margin-top:11px" onclick="S.dm.pay=0;draw();toast(\'やめました\')">やめる</div>'
   :'<div class="btn" style="margin-top:11px" onclick="push(\'調べる\')">調べるを 見る</div>')
- +'<div class="note">学校の 名簿に 入っている間は、調べるが 束に なっています（二重には いただきません）。<br>名簿から 外れると 止まりますが、<b>記録は 消えません</b>。</div>'};
+ +'<div class="note">調べるは、ご自分で お選びいただくものです。<br>学校が お支払いになるのは、レッスンの 運営（日程・出欠・名簿・連絡）です。<br>学校を 離れても、調べるは そのまま 続きます。<b>記録は、どちらの 場合も 消えません</b>。</div>'};
 SC['学ぶ']=function(){
  return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>学ぶ</h2></div>'
  +[['声と、眠りの こと','記録から 分かること／分からないこと'],['本番の 前後で、何が 起きているか','3日前から 翌々日まで'],
@@ -1708,14 +1712,14 @@ SC['書き出す']=function(){
    return '<div class="li"><span>'+v+'</span><s style="color:var(--midori)">✓</s></div>'}).join('')+'</div>'
  +'<div class="btn" style="margin-top:11px" onclick="toast(\'端末に 保存しました\')">書き出す</div>'
  +'<div class="wl">病気の 名前・尺度の 名前は、見出しにも 入れません。<br>見出しは、画面と 同じ ことばです（のどの調子／声の出来 …）。</div>'
- +'<div class="note">無料です。退会したあとでも、書き出した ファイルは あなたのものです。</div>'};
+ +'<div class="note">書き出しは いつでも 無料です。退会された あとも、お手元の ファイルは あなたの ものです。</div>'};
 SC['同意']=function(){
  return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>同意を とりけす</h2></div>'
  +'<div class="box">'
  +'<div class="li"><span>記録を 残すこと<br><span class="usu">2026年6月11日に 同意</span></span><div class="sw on"><i></i></div></div>'
  +'<div class="li"><span>学校の 名簿に 載ること<br><span class="usu">2026年6月14日に 同意</span></span><div class="sw on"><i></i></div></div>'
- +'<div class="li"><span>改善のための 統計<br><span class="usu">同意していません</span></span><div class="sw"><i></i></div></div></div>'
- +'<div class="wl">とりけしても、<b>これまでの 記録は 消えません</b>。消すのは 退会か、記録の 削除からです。<br>名簿から 外れると、調べるの 束は 止まります。</div>'
+ +'</div>'
+ +'<div class="wl">とりけしても、<b>これまでの 記録は 消えません</b>。消すのは 退会か、記録の 削除からです。</div>'
  +'<div class="note">同意は、契約では 代えられません。<b>ご本人から</b> いただきます。<br>18歳未満の方は、保護者の 同意も いただきます。</div>'};
 SC['退会']=function(){
  return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>退会する</h2></div>'

@@ -5,10 +5,10 @@
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{--enji:#840C24;--enji-bg:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
- --line:#E4DAC4;--line2:#F0E9DA;--ink:#261913;--ink2:#6D5D50;--ink3:#7C6C5E;--bg:#EFE7D6;
+ --line:#E4DAC4;--line2:#F0E9DA;--ink:#261913;--ink2:#5A4C40;--ink3:#6B5C4E;--bg:#EFE7D6;
  --red:#B23A48;--sh:0 1px 0 rgba(0,0,0,.03),0 8px 24px rgba(90,72,48,.10)}
 body{background:var(--bg);font-family:"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;color:var(--ink);
- display:flex;flex-direction:column;align-items:center;padding:20px 14px 50px;gap:12px;line-height:1.7}
+ display:flex;flex-direction:column;align-items:center;padding:20px 14px 50px;gap:12px;line-height:1.75;letter-spacing:.02em;font-feature-settings:"palt";font-variant-numeric:tabular-nums}
 h1{font-size:20px;letter-spacing:.04em}
 .lead{font-size:12.5px;color:var(--ink2);max-width:900px;text-align:center;line-height:1.9}
 /* ── 端末の 枠 ── */
@@ -393,6 +393,10 @@ html[data-th="dark"] .np .lft2{background:#241D17;border-color:var(--line)}
 html[data-th="dark"] .np .ni:hover{background:#2C241D}
 html[data-th="dark"] .np .ni.on{background:#3A1E22}
 html[data-th="dark"] .shelf2 div{background:#241D17;border-color:var(--line)}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+:root{--sp1:8px;--sp2:24px;--sp3:48px}
 </style></head><body>
 <h1>Woolsong 動く見本 ── PC・iPad（個人）</h1>
 <p class="lead">声を使う人 ご本人の 画面です。左のナビと、画面の中を 押してください。<br>
@@ -692,7 +696,7 @@ function SC_sira(){
  +'終わる 3日前に、日付で 1回だけ お知らせします。<br>それ以上は 言いません。</div>'
  +'</div>'
  +'<div class="warn" style="margin-top:12px">記録・並べる・さかのぼる・受診用の 1枚・羊は、<br>'
- +'<b>ずっと 無料</b>です。記録を 人質に しません。<br>書き出し（CSV・JSON）も 無料です。</div>'
+ +'<b>ずっと 無料</b>です。記録を 人質に しません。<br>書き出し（CSV・JSON）も <b>いつでも 無料</b>です。<br>退会された あとも、お手元の ファイルは あなたの ものです。</div>'
  +'</div></div>'
  +'<div class="note">この画面は、<b>押したときだけ</b> 出ます。こちらから 案内を 出しません。<br>'
  +'有料のものを 隠しません。見せて、押せなくします。<br>'
@@ -1142,7 +1146,7 @@ function SC_motto(){
   ['アカウント','名前・入っている 教室'],
   ['プラン','いま：無料　／　しらべる・よそおい'],
   ['学ぶ','声のしくみ・湿度・逆流・記録の 読み方'],
-  ['書き出す','CSV と JSON。ぜんぶ 出せます。無料です'],
+  ['書き出す','CSV と JSON。ぜんぶ 出せます。いつでも 無料です'],
   ['同意を とりけす','教室ごとに 外せます。記録は 消えません'],
   ['退会する','隠しません。引き止めは 1回だけです']];
  return bk('きょう')+'<h2>もっと</h2>'
@@ -1153,7 +1157,7 @@ function SC_motto(){
    +'<span>'+x[0]+'<br><span class="usu">'+x[1]+'</span></span><s>›</s></div>'}).join('')+'</div>'
  +'<div class="note">この画面の 題は <b>「もっと」</b>です。規約が この語で 書かれています。<br>'
  +'退会を 隠しません。引き止めを 2回以上 出しません。<br>'
- +'書き出しは <b>無料</b>です。有料の 壁に しません。</div>'
+ +'書き出しは <b>いつでも 無料</b>です。有料の 壁に しません。<br>退会された あとも、お手元の ファイルは あなたの ものです。</div>'
  +'</div>'
  +'<div style="flex:0 0 330px">'
  +'<div class="h3" style="margin-top:0">○○音楽大学の 運営</div>'
