@@ -11004,6 +11004,23 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setActiveTab(key);
   }, []);
   const [moreSection, setMoreSection] = useState(null);
+  // ★★どこから「もっと」へ 来たか（★2026-09-16・見本 `bk('戻る')`）。
+  //   ★★見本の もっと には 戻る 道が あります。★`pop()` ── ★来た ところへ 帰ります。
+  //   ★★実装の もっと は 帯の タブ なので、★「来た ところ」を 自分で 覚えます。
+  //   ★★既定は「きょう」です。★分からない ときは、★家に 帰します。
+  const [moreCameFrom, setMoreCameFrom] = useState("home");
+  /**
+   * ★「もっと」を 開きます。★来た ところを 覚えてから 移ります。
+   *
+   *   ★★4か所が 同じ ことを して いました（`setActiveTab("more")`）。
+   *     ★★覚える のを 1か所でも 忘れると、★戻る 先が ずれます。
+   *   ★★だから 1つに します。★覚える のは この 中だけ です。
+   */
+  function openMore() {
+    setMoreCameFrom(activeTab === "more" ? moreCameFrom : activeTab);
+    setMoreSection(null);
+    setActiveTab("more");
+  }
   // ★★毎日 聞く 5つ（★見本 A10）。★端末ごとに 覚えます。★サーバに 送りません。
   //   ★決めは lib/dailyAsk.js が 持ちます。★ここで 決めません。
   const [dailyAsk, setDailyAsk] = useState(null);
@@ -14222,7 +14239,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   onAttend: handleAttendance
                 }}
                 onRecord={() => setActiveTab("today")}
-                onOpenMore={() => setActiveTab("more")}>
+                onOpenMore={openMore}>
                 {/* ★★★生徒の 教室の 殻 ── 3つの 節（★2026-09-15・No.026）。
                     ★★★2026-09-15、★入れる タブを まちがえて いました。
                       ★★仕様（第3版 §6-2）は「きょう」の 中 と 書いて います。
@@ -14452,7 +14469,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ★歯車は、★ここ1つだけです。
                         ★おうちの側は、★別の絵と別の言葉にしてあります。 */}
                   <div className="flex justify-end">
-                    <button type="button" onClick={() => setActiveTab("more")}
+                    <button type="button" onClick={openMore}
                       aria-label={`${t("tabMore")}を開く`}
                       className="flex items-center gap-1.5"
                       style={{
@@ -16772,7 +16789,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <p className="text-xs mb-3" style={{ color: C.inkSoft, lineHeight: 1.8 }}>
                       つながらなくても、記録も分析も、これまでどおりお使いいただけます。
                     </p>
-                    <button type="button" onClick={() => setActiveTab("more")}
+                    <button type="button" onClick={openMore}
                       style={{
                         width: "100%", minHeight: 48, padding: "12px", borderRadius: 999,
                         border: `1px solid ${C.line}`, background: C.paper, color: C.ink,
@@ -17691,7 +17708,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {SHEEP_LINE}
                     </span>
-                    <HeadRound mark="⚙" label="もっとを開く" onClick={() => setActiveTab("more")} />
+                    <HeadRound mark="⚙" label="もっとを開く" onClick={openMore} />
                   </div>
                   {/* ★★4つの 札（★見本 J01〜J04 の .seg ／ 2026-09-11）。
                       ★★札は lib/homeDrawer.js が 持ちます。★ここで 並べません。
@@ -18943,7 +18960,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               <LookBackV2
                 key={"lookback-" + tabResetKey} entries={entries} todayISO={realTodayDate} notOutDays={notOutDays}
                 performanceDays={performances.map((pf) => pf.performed_on).filter(Boolean)}
-                onOpenMore={() => setActiveTab("more")}
+                onOpenMore={openMore}
                 onOpenClinicSummary={() => setActiveTab("clinicSummary")}
                 profile={profile}
                 userEmail={userEmail} />
@@ -18975,7 +18992,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       これまでの記録は、そのままあります。「今日」や「ノート」から見られます。
                       書き出しも削除も、これまでどおりできます。
                     </p>
-                    <button type="button" onClick={() => setActiveTab("more")}
+                    <button type="button" onClick={openMore}
                       className="px-4 py-2 rounded-full text-xs font-medium"
                       style={{ background: C.curtain, color: "#FFFDF8" }}>
                       設定を開く
@@ -22424,6 +22441,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         （★`tools/back_position_audit.py`）。 */}
                 {layoutV2 && moreSection !== null ? (
                   <Back onClick={() => setMoreSection(null)}>もっと　／　{moreSection}</Back>
+                ) : null}
+                {/* ★★もっと 自身の 戻る 道（★2026-09-16・坂本さんの お決め）。
+                    ★★見本は `bk('戻る')` ── ★`pop()` で 来た ところへ 帰ります。
+                    ★★実装の もっと は 帯の タブ なので、★来た ところを 覚えて おき、
+                      ★そこへ 帰します（★`openMore()` が 覚えます）。
+                    ★★節を 開いて いる あいだは、★上の パンくずが 出ます。
+                      ★★2つ 並べません。★1つの 画面に 戻る 道は 1つ です。 */}
+                {layoutV2 && moreSection === null ? (
+                  <Back onClick={() => setActiveTab(moreCameFrom || "home")}>戻る</Back>
                 ) : null}
                 {/* ★★見本 A10 の 9行（★2026-09-11・坂本さんの お決め）。
                     ★★シートに しません。★1画面の ままです。

@@ -23,15 +23,15 @@ import sys
 import difflib
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "docs", "reports", "2026-09-16-見本の新しい版との差分.md")
+OUT = os.path.join(ROOT, "docs", "reports", "2026-09-16-統合版見本との差分.md")
 
 PAIRS = [
   ("さわれる・全画面",
    "docs/design/pack-final/00-動く見本（さわれる・全画面）.html",
-   "docs/opus/00-動く見本（さわれる・全画面）_2026-09-16_正.html"),
+   "docs/opus/00-動く見本（さわれる・全画面）_2026-09-16_統合版.html"),
   ("PC・iPad（運営）",
    "docs/design/pack-final/00-動く見本-PC・iPad（運営）.html",
-   "docs/opus/00-動く見本-PC・iPad（運営）_2026-09-16_正.html"),
+   "docs/opus/00-動く見本-PC・iPad（運営）_2026-09-16_統合版.html"),
 ]
 
 # ★★きょう 測った 画面。★ここが 動いて いたら 取り直しです。

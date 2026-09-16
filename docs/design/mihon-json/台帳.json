@@ -1,0 +1,53 @@
+{
+  "screen": "台帳",
+  "back": "‹ もっているもの",
+  "title": "台帳",
+  "pills": [],
+  "heads": [],
+  "rows": [
+    {
+      "left": "はおり記録が 50日に なった日",
+      "sub": "記録が 50日に なった日",
+      "right": "2026年9月2日",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "マフラーはじめての 本番の 翌日",
+      "sub": "はじめての 本番の 翌日",
+      "right": "2026年8月14日",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "めがねノートが 20枚に なった日",
+      "sub": "ノートが 20枚に なった日",
+      "right": "2026年7月30日",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "傘雨の日に 記録した",
+      "sub": "雨の日に 記録した",
+      "right": "2026年7月2日",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "ニット帽はじめの 贈りもの",
+      "sub": "はじめの 贈りもの",
+      "right": "2026年6月20日",
+      "hasSwitch": false,
+      "switchOn": false
+    }
+  ],
+  "notes": [
+    {
+      "text": "いつ・何で 手に入ったかを 残します。記録を 消しても 減りません。連続日数を 出しません。",
+      "bold": []
+    }
+  ],
+  "wl": [],
+  "warn": [],
+  "buttons": []
+}

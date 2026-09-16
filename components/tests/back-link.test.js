@@ -153,5 +153,23 @@ console.log("\n⑥ ★戻る 道が「左上」に あること");
   t(/<Back onClick=\{onClose\}/.test(ol), "★もっているもの が Back を 使っている");
 }
 
+
+console.log("\n⑦ もっと 自身の 戻る 道（★見本 `bk('戻る')`）");
+// ★★見本の もっと には 戻る 道が あります ── ★`bk('戻る')`。
+//   ★★実装の もっと は 帯の タブ なので、★来た ところを 覚えて 帰します。
+//   ★★2026-09-16 まで ありません でした。★坂本さんの お決めで 足しました。
+{
+  const at = vt.indexOf('{activeTab === "more" && (');
+  const head = at < 0 ? "" : vt.slice(at, at + 3000);
+  t(/<Back onClick=\{\(\) => setActiveTab\(moreCameFrom/.test(head),
+    "★もっと 自身に 戻る 道が ある");
+  // ★★覚える のは 1か所だけ。★呼び手が 増えても ずれません。
+  t(/function openMore\(\)/.test(vt), "★開く 手が 1つに なっている（openMore）");
+  t(/setMoreCameFrom\(/.test(vt), "★来た ところを 覚えている");
+  // ★★節を 開いて いる ときは、★パンくずの ほう だけ。★2つ 並べません。
+  t(/moreSection === null \? \(\s*\n\s*<Back onClick=\{\(\) => setActiveTab\(moreCameFrom/.test(vt),
+    "★節を 開いて いる ときは 出さない（戻る 道は 1つ）");
+}
+
 console.log(ng === 0 ? `\n★すべて 通りました（${ok}）` : `\n★${ng} 件 落ちました`);
 process.exit(ng === 0 ? 0 : 1);

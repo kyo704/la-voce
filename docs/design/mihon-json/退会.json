@@ -1,0 +1,30 @@
+{
+  "screen": "退会",
+  "back": "‹ もっと",
+  "title": "退会する",
+  "pills": [],
+  "heads": [],
+  "rows": [],
+  "notes": [
+    {
+      "text": "退会を 隠しません。引き止めを 2回以上 出しません（この画面の 1回だけ）。「もったいない」と 書きません。理由を 聞きません。",
+      "bold": [
+        "2回以上"
+      ]
+    }
+  ],
+  "wl": [],
+  "warn": [],
+  "buttons": [
+    {
+      "label": "先に 書き出す",
+      "ghost": true,
+      "small": false
+    },
+    {
+      "label": "退会する",
+      "ghost": false,
+      "small": false
+    }
+  ]
+}

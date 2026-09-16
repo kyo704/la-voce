@@ -1,0 +1,87 @@
+{
+  "screen": "書き出す",
+  "back": "‹ もっと",
+  "title": "書き出す",
+  "pills": [
+    {
+      "label": "CSV",
+      "on": true,
+      "small": false
+    },
+    {
+      "label": "JSON",
+      "on": false,
+      "small": false
+    }
+  ],
+  "heads": [
+    "形",
+    "入れるもの"
+  ],
+  "rows": [
+    {
+      "left": "記録（全ての 項目）",
+      "sub": null,
+      "right": "✓",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "ノート",
+      "sub": null,
+      "right": "✓",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "レパートリー",
+      "sub": null,
+      "right": "✓",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "行事の 出欠",
+      "sub": null,
+      "right": "✓",
+      "hasSwitch": false,
+      "switchOn": false
+    },
+    {
+      "left": "手に入れたものの 台帳",
+      "sub": null,
+      "right": "✓",
+      "hasSwitch": false,
+      "switchOn": false
+    }
+  ],
+  "notes": [
+    {
+      "text": "無料です。退会したあとでも、書き出した ファイルは あなたのものです。",
+      "bold": []
+    }
+  ],
+  "wl": [
+    "病気の 名前・尺度の 名前は、見出しにも 入れません。見出しは、画面と 同じ ことばです（のどの調子／声の出来 …）。"
+  ],
+  "warn": [],
+  "buttons": [
+    {
+      "label": "書き出す",
+      "ghost": false,
+      "small": false
+    }
+  ],
+  "pillEffect": [
+    {
+      "step": 1,
+      "onIndex": 0,
+      "samplePx": null
+    },
+    {
+      "step": 2,
+      "onIndex": 0,
+      "samplePx": null
+    }
+  ]
+}
