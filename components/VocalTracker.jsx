@@ -229,6 +229,8 @@ import {
 //   ★★「ありません」「期限が 切れて います」「もう 使われて います」と 分けません。
 //     ★★分けると、★総当たりに「当たりが 近い」と 教える ことに なります。
 import { SAME_ANSWER } from "@/lib/codeAttempts";
+// ★合言葉を 渡す 前の 断り（★2026-09-16・坂本さんの お決め・最優先）。
+import { INVITE_NOTICE, INVITE_NOTICE_BOLD } from "@/lib/teacherInvite";
 // ★お支払いが 続いて いる 方の 退会を 止める 決め（★第1段・2026-09-16）。
 import { PAYMENT_BLOCK_LINES, PAYMENT_BLOCK_HREF } from "@/lib/activeSubscription";
 // ★プランの 画面が 言う ことは、★lib/planScreen.js が 持ちます。
@@ -17338,6 +17340,31 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       <p className="text-xs mb-3" style={{ color: C.inkSoft }}>
                         発行したコードは7日間有効・1回だけ使えます。
                       </p>
+                      {/* ★★★渡す 前に、★4つ お伝えします（★坂本さんの お決め・2026-09-16）。
+                          ★★きょう まで、★この 画面に 断りが **1行も** ありません でした。
+                            ★★見本 `SC['招く']` は 持って います。★あちらは メールで 招く 画面 です。
+                            ★★形は 違っても、★この 4つは **渡し方に よらず 同じ** こと です ──
+                              ★お代の こと／★同意は ご本人から／★18歳未満の 方／
+                              ★押される まで 相手からは 見えない こと。
+                          ★★合言葉を 渡す 先生が、★これを 知らない まま 渡して いました。
+                          ★★字は lib/teacherInvite.js が 持ちます。★ここに 書き写しません。 */}
+                      <div className="rounded-xl p-3 mb-3" style={{
+                        background: C.paper, border: `1px solid ${C.line}`
+                      }}>
+                        {INVITE_NOTICE.map((line, i) => {
+                          const b = INVITE_NOTICE_BOLD.find((x) => line.includes(x));
+                          const at = b ? line.indexOf(b) : -1;
+                          return (
+                            <p key={i} className="text-xs" style={{
+                              color: C.ink, lineHeight: 1.9, margin: 0
+                            }}>
+                              {at < 0 ? line : (
+                                <>{line.slice(0, at)}<b>{b}</b>{line.slice(at + b.length)}</>
+                              )}
+                            </p>
+                          );
+                        })}
+                      </div>
                       {myStudentLinks.length > 0 && (
                         <div className="space-y-2 mb-3">
                           <p className="text-xs font-medium" style={{ color: C.ink }}>連携中の生徒（{myStudentLinks.length}人）</p>
