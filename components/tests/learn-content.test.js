@@ -42,11 +42,23 @@ async function main() {
   //     ★`build-learn-content.js` が 題で 突き合わせて いて、
   //     ★題を 変えた とたん 85本が **144本**に なりました（★57本の 二重）。
   //   ★★だから どちらも `id` で 見ます。★題は 変わる。★id は 変わらない。
+  // ★★★`body-2` を 外しました（★2026-09-16・裁定その69）。
+  //   ★★`articles.json` の C2-1 の 指示 ──
+  //     「既存記事を統合。… **健康情報側の本文を採用**し、
+  //       学ぶ側の記事は削除してください。」
+  //   ★★同じ ことを 言う 記事が 2本 あり、★1本に しました。
+  //     ★中身は C2-1 が 引き継いで います（★題も ほぼ 同じ）。
+  //   ★★消した 控えは `docs/records/消した記事-body-2-逆流性食道炎と声.md`。
+  //     ★★黙って 消して いません。★戻せる 形で 残して あります。
   const originals = [
     "V-1", "V-4", "announcer-1-1", "announcer-2-1",
     "voiceactor-1-1", "voiceactor-2-1", "poprock-1-1", "poprock-2-1",
-    "C1-1", "body-2"
+    "C1-1"
   ];
+  // ★★統合で 消えた ものは、★引き継ぎ先が 在る ことを 見ます。
+  //   ★★「消えた」だけ を 見張ると、★引き継ぎ先が 無い 消し方も 通します。
+  assertTrue(m.ARTICLES.some((a) => a.id === "C2-1" && /逆流/.test(a.title)),
+    "★body-2 の 引き継ぎ先（C2-1）が 在る");
   const liveIds = new Set(m.ARTICLES.map((a) => a.id));
   const lost = originals.filter((i) => !liveIds.has(i));
   assertEqual(lost, [], "★元からあった10本が、すべて残っている（★id で 見ます）");
@@ -63,8 +75,30 @@ async function main() {
   // ★覚え書きは10〜75字、いちばん短い実記事でも190字ある。
   //   200字で切ると、元からある短い記事（192〜199字）まで不合格にしてしまう。
   //   実際にそうなったので、覚え書きだけを捕まえる幅にしている。
-  const tooShort = m.ARTICLES.filter((a) => (a.bodyMd || "").length < 150);
+  // ★★★短くても 本物、という 記事が あります（★2026-09-16）。
+  //   ★★この 検査の ねらいは「指示の 覚え書きが 本文に なって いないか」です。
+  //     ★★それは すぐ 上の 行で、★字そのもの を 見て 確かめて います。
+  //     ★★150字は、★その 網の 二枚目 です。
+  //   ★★`C4-1`（声の衛生の 基本）は、★健康情報から 引っ越して きた **箇条書き**です。
+  //     ★6つの 点だけ で 146字。★これが 中身の 全部 です。
+  //     ★★足して 150字に する ことは しません。★中身を 作るのは Code の 仕事では
+  //       ありません（★坂本さんの お指図）。
+  //   ★★だから、★名指しで 外します。★**名指し**です ── 新しく 短い 記事が
+  //     ★出たら、★これまでどおり 落ちます。★網は ゆるめて いません。
+  const SHORT_ON_PURPOSE = {
+    "C4-1": "健康情報から 引っ越した 箇条書き（6点・146字）。これで 中身の 全部です。"
+  };
+  const tooShort = m.ARTICLES
+    .filter((a) => (a.bodyMd || "").length < 150)
+    .filter((a) => !SHORT_ON_PURPOSE[a.id]);
   assertEqual(tooShort.map((a) => a.id), [], "★覚え書きの長さ（150字未満）の記事が無い");
+  // ★★名指しした ものが、★もう 短く ないなら ── ★紙が 古く なって います。
+  const grown = Object.keys(SHORT_ON_PURPOSE)
+    .filter((id) => {
+      const a = m.ARTICLES.find((x) => x.id === id);
+      return a && (a.bodyMd || "").length >= 150;
+    });
+  assertEqual(grown, [], "★名指しの一覧が古くなっていない（長くなったものは外す）");
 
   console.log("\n=== どの職業でも、職業別の記事が届くこと ===");
   ["singer", "announcer", "voice_actor", "pop_musical"].forEach((p) => {

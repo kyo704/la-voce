@@ -22134,7 +22134,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           ★タブを 移った 時点で、★一緒に 消えて いました。
                       ★★下の 帯は 出るので 行き止まりでは ありません。
                         ★けれど「もっとへ 戻る」道が ありません でした。 */}
-                  <Back onClick={() => { setActiveTab("more"); setMoreSection("学ぶ"); }}>
+                  <Back onClick={() => { setActiveTab("more"); setMoreSection(null); }}>
                     もっと　／　学ぶ
                   </Back>
                   <div className="flex items-center justify-between">
@@ -22379,7 +22379,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   ★★どこから 開かれたかを 知って いるのは、★こちら です。 */}
             {activeTab === "info" && (
               <div className="space-y-4">
-                <Back onClick={() => { setActiveTab("more"); setMoreSection("学ぶ"); }}>
+                <Back onClick={() => { setActiveTab("more"); setMoreSection(null); }}>
                   もっと　／　学ぶ
                 </Back>
                 <HealthInfo language={language} />
@@ -22458,6 +22458,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                     if (r.key === "招待") {
                                       setLessonRoleChoice("teach");
                                       setActiveTab("lesson");
+                                      return;
+                                    }
+                                    // ★★学ぶは、★章立ての 画面へ **直に** 行きます
+                                    //   （★裁定その69・2026-09-16）。
+                                    //   ★★前は 節を 開き、★その 中の 行を もう一度
+                                    //     ★押す 形 でした（★2段階）。
+                                    //   ★★見本は 1段階 です ── `push('学ぶ')` で 章立て。
+                                    if (r.key === "学ぶ" && layoutV2) {
+                                      setLearnProfession(learnProfession || profile.vocal_profession);
+                                      setActiveTab("learn");
                                       return;
                                     }
                                     // ★★1枚で 出す ものは、★節を 開きません（★見本の openSheet）。
@@ -22981,21 +22991,34 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </a>
                   </div>
                 )}
-                <div className="rounded-2xl p-4 border" style={{ display: inMore("学ぶ"), background: C.card, borderColor: C.line }}>
-                  <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>学ぶ</p>
-                  <div className="space-y-1">
-                    <button type="button" onClick={() => { setActiveTab("learn"); setLearnProfession(learnProfession || profile.vocal_profession); }}
-                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
-                      <span className="flex items-center gap-2"><Music2 size={16} style={{ color: C.gold }} />{t("tabLearn")}</span>
-                      <span style={{ color: C.inkSoft }}>→</span>
-                    </button>
-                    <button type="button" onClick={() => setActiveTab("info")}
-                      className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
-                      <span className="flex items-center gap-2"><BookOpen size={16} style={{ color: C.gold }} />健康情報</span>
-                      <span style={{ color: C.inkSoft }}>→</span>
-                    </button>
+                {/* ★★★中間の 画面を 廃しました（★裁定その69・2026-09-16）。
+                    ★★ここには「学ぶ／健康情報」の 2行の 箱が ありました。
+                      ★★見本には ありません（★両見本とも 0件）。
+                      ★★見本は「学ぶ」を 押すと、★章立てに **直に** 入ります。
+                    ★★健康情報は **消えて いません**。★章の 中へ 引っ越しました ──
+                      ★s1 → C2-1（★章2）　★s2 → C2-2（★章2）
+                      ★s3 → C4-1（★章4）　★s4 → C4-6　★s5 → C4-7
+                      ★★どれも `professions: "all"` です ＝「からだ（どの 仕事でも）」。
+                      ★★引っ越し先は、★`articles.json` に **前もって 用意されて**
+                        いました（★本文の 無い 指示 5本）。★新しい 章は 作って いません。
+                    ★★門の 外（38人）は これまでどおり です。★下に 残して あります。 */}
+                {!layoutV2 ? (
+                  <div className="rounded-2xl p-4 border" style={{ display: inMore("学ぶ"), background: C.card, borderColor: C.line }}>
+                    <p className="text-xs font-medium mb-2" style={{ color: C.inkSoft }}>学ぶ</p>
+                    <div className="space-y-1">
+                      <button type="button" onClick={() => { setActiveTab("learn"); setLearnProfession(learnProfession || profile.vocal_profession); }}
+                        className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
+                        <span className="flex items-center gap-2"><Music2 size={16} style={{ color: C.gold }} />{t("tabLearn")}</span>
+                        <span style={{ color: C.inkSoft }}>→</span>
+                      </button>
+                      <button type="button" onClick={() => setActiveTab("info")}
+                        className="w-full flex items-center justify-between py-2.5 px-1 text-sm" style={{ color: C.ink }}>
+                        <span className="flex items-center gap-2"><BookOpen size={16} style={{ color: C.gold }} />健康情報</span>
+                        <span style={{ color: C.inkSoft }}>→</span>
+                      </button>
+                    </div>
                   </div>
-                </div>
+                ) : null}
 
 
                 {/* ★★ツールの 3つを、★上の 箱の 行に 足しました（★2026-09-16）。
