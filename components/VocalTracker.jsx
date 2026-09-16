@@ -210,6 +210,8 @@ import { scopeForPeriod, mayViewSummary, GATE_CLOSING_LINES, gatePriceLines,
   PAID_FEATURES, featureLabel } from "@/lib/freeTier";
 // ★値段は lib/plans.js が持ちます。★画面に書き写しません。
 import { PLANS } from "@/lib/plans";
+// ★お支払いが 続いて いる 方の 退会を 止める 決め（★第1段・2026-09-16）。
+import { PAYMENT_BLOCK_LINES, PAYMENT_BLOCK_HREF } from "@/lib/activeSubscription";
 // ★プランの 画面が 言う ことは、★lib/planScreen.js が 持ちます。
 //   ★★ここに 書き写しません。★2か所に なると、★片方だけ 古く なります。
 import {
@@ -10325,6 +10327,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★オーナーの退会を止めたときの、その教室の一覧（判断 2026-09-01）。
   //   ここに1つでも入っていたら、退会の処理は何も始まっていません。
   const [blockedOrgs, setBlockedOrgs] = useState([]);
+  // ★★お支払いが 続いて いて 退会を 止めた とき、★出す 文（★第1段）。
+  const [paymentBlockLines, setPaymentBlockLines] = useState([]);
   // ★止めないが、契約者が居なくなる教室（2026-09-02）。
   //   ★消したあとに知らせても意味がないので、先に一度だけ出します。
   const [payerOrgs, setPayerOrgs] = useState([]);
@@ -10374,6 +10378,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       }
       // ★止めてはいません。契約者が居なくなることを、先に1度だけ知らせます。
       //   ★了解を押したら、もう一度この処理に入り、そのまま進みます。
+      // ★★お支払いが 続いて います（★2026-09-16・第1段）。
+      //   ★★退会を 止めます。★隠して いません。★順番を 示します。
+      if (res.status === 409 && data.paymentActive) {
+        setPaymentBlockLines(data.lines || PAYMENT_BLOCK_LINES);
+        setDeleteStatus("paymentActive");
+        return;
+      }
       if (res.status === 409 && data.payerNotice) {
         setPayerOrgs(data.orgs || []);
         setDeleteStatus("payerNotice");
@@ -21249,6 +21260,42 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     placeholder={t("deletePasswordPlaceholder")} autoComplete="current-password"
                     className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                 </div>
+                {/* ★★★お支払いが 続いて いるので、★退会を 止めて います
+                    （★2026-09-16・第1段・坂本さんの お決め）。
+
+                    ★★わけ ── ★この 道は、★お支払いの 会社を **一度も 呼びません**。
+                      ★消すのは こちらの 控えの 行だけ で、★契約は 生きた まま です。
+                      ★★去った あとも、★お金が 引かれ 続けます。
+                      ★★そのうえ 行を 消すと、★ご自分で 止める 道まで 塞がります
+                        ── ★お支払いの 画面が、★お客さまの 番号を 引けなく なります。
+                      ★★くわしくは `lib/activeSubscription.js` の 覚え書きに 書いて います。
+                        ★★ここに 会社の 名を 書きません ── ★見張り
+                          `guard-export-free` が、★この 画面に お支払いの 言葉が
+                          ★入る ことを 止めて います（★凍結の 決め）。
+
+                    ★★退会を 隠して いません。★引き止めても いません。
+                      ★★「もったいない」と 書きません。★理由も 聞きません。
+                      ★★順番を 示すだけ です ── ★先に お支払いを おやめください。
+                    ★★行き先を 押せる 札に します。★字だけ だと 行き止まりに なります
+                      （★「押せない 札を 置かない」と 同じ 考え です）。
+                    ★★字は lib/activeSubscription.js が 持ちます。 */}
+                {deleteStatus === "paymentActive" && (
+                  <div className="rounded-2xl p-4 border space-y-3"
+                    style={{ background: C.card, borderColor: C.line }}>
+                    {(paymentBlockLines.length ? paymentBlockLines : PAYMENT_BLOCK_LINES)
+                      .map((line) => (
+                        <p key={line} className="text-sm"
+                          style={{ color: C.ink, margin: 0, lineHeight: 1.9 }}>{line}</p>
+                      ))}
+                    <a href={PAYMENT_BLOCK_HREF}
+                      className="w-full flex items-center justify-center"
+                      style={{
+                        minHeight: 48, borderRadius: 999, border: "none",
+                        background: C.curtain, color: "#FFFDF8",
+                        fontSize: "0.9375rem", fontWeight: 600, textDecoration: "none"
+                      }}>プランを 見る</a>
+                  </div>
+                )}
                 {/* ★教室にほかの方がいるので、退会を止めています（判断 2026-09-01）。
                     ★閉じ込めではありません。順番の話です。
                       「教室を閉じる」は、この場で自分でできます。

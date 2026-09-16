@@ -7,6 +7,7 @@ import { classifyOwnedOrgs, departingOwnerNotice, departingPayerNotice } from "@
 import { OPERATOR_CONTACT_EMAIL } from "@/lib/brand";
 import { getUserWithTimeout } from "@/lib/withTimeout";
 import { reauthStillValid } from "@/lib/reauth";
+import { blocksDeletion, PAYMENT_BLOCK_LINES } from "@/lib/activeSubscription";
 
 // ============================================================================
 // アカウントの削除（統合実行ルートv4 G3-17 / 作業指示-公開前の実装.md A-4）
@@ -118,6 +119,42 @@ export async function POST(request) {
   //   ★閉じ込めるためではありません。順番の話です。
   //     「教室を閉じる」は、この画面から自分でできます。
   // ==========================================================================
+  // ★★★お支払いが 続いて いる 方は、★退会させません（★2026-09-16・第1段）。
+  //
+  //   ★★この 道は Stripe を **一度も 呼びません**。
+  //     ★消すのは `subscriptions` の **行**だけ で、★契約は 生きた まま です。
+  //     ★★去った あとも、★お金が 引かれ 続けます。
+  //   ★★さらに、★行を 消すと `/api/stripe/portal` が
+  //     `stripe_customer_id` を 引けなく なります（★`no customer`）。
+  //     ★★ご自分で 止める 道まで 塞がります。
+  //   ★★webhook も 静かに 失敗します ── ★行の 無い `update` は 0行に 当たり、
+  //     ★それでも 200 を 返します。★誰も 気づきません。
+  //
+  //   ★★だから、★順番を 示します。★先に お支払いを おやめいただく。
+  //     ★★退会を 隠して いません。★道は そのまま です。★順番だけ です。
+  //
+  //   ★★教室の 409 より **先**に 見ます。★お金の ほうが 先に 止まる べき です。
+  //   ★★読めなかった ときは 止めます（★安全側）。
+  //     ★★「読めない」を「無い」と 同じに しません。
+  const { data: sub, error: subErr } = await admin
+    .from("subscriptions")
+    .select("status")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (subErr) {
+    console.error("アカウント削除：お支払いを確認できませんでした。", subErr);
+    return NextResponse.json(
+      { error: "お支払いの状態を確認できませんでした。時間をおいて、もう一度お試しください。" },
+      { status: 500 }
+    );
+  }
+  if (blocksDeletion(sub)) {
+    return NextResponse.json({
+      paymentActive: true,
+      lines: PAYMENT_BLOCK_LINES
+    }, { status: 409 });
+  }
+
   const orgs = await classifyOwnedOrgs(admin, user.id);
   if (orgs.error) {
     console.error("アカウント削除：教室を確認できませんでした。", orgs.error);
