@@ -52,13 +52,26 @@ const flat = css.replace(/\s+/g, "");
  *     ★はじめに 見つけた ものを 使います。★見本の 並びの とおりです。
  */
 const NAME_CHAR = /[A-Za-z0-9_.#-]/;
+// ★★★同じ 名に、★決まりが **2つ以上** ある ことが あります（★2026-09-16）。
+//   ★★トークンの 層が 入って、★`.box{margin-bottom:var(--sp2)}` が
+//     ★もとの `.box{...}` より **前**に 置かれました。
+//   ★★この 関数は 先頭の 1つだけ を 返して いたので、
+//     ★「見本に `.box padding:0 14px` が 無い」と 出しました。
+//     ★★在ります。★2つめに 在りました。★道具が 見て いなかった だけ です。
+//   ★★きょう 4度目の「絵は 正しい、数えが 誤り」です。
+//   ★★だから、★全部を 繋いで 返します。
 function ruleOf(sel, from = 0) {
-  const i = flat.indexOf(sel + "{", from);
-  if (i < 0) return null;
-  const before = i === 0 ? "" : flat[i - 1];
-  if (before && NAME_CHAR.test(before)) return ruleOf(sel, i + 1);
-  const j = flat.indexOf("}", i);
-  return j < 0 ? null : flat.slice(i + sel.length + 1, j);
+  const out = [];
+  let i = flat.indexOf(sel + "{", from);
+  while (i >= 0) {
+    const before = i === 0 ? "" : flat[i - 1];
+    if (!(before && NAME_CHAR.test(before))) {
+      const j = flat.indexOf("}", i);
+      if (j >= 0) out.push(flat.slice(i + sel.length + 1, j));
+    }
+    i = flat.indexOf(sel + "{", i + 1);
+  }
+  return out.length ? out.join(";") : null;
 }
 /** ★見本の CSS に、★その 値が 書いて あるか。 */
 function has(sel, frag) {
@@ -100,10 +113,45 @@ const CHECKS = [
   [".tag", "background:#F3ECDD", /"#F3ECDD"/, "tag の 地"],
   [".tag", "font-size:10px", /fontSize: rem\(10\)/, "tag は 10px"]
 ];
+// ★★★見本が 動いた ものの 一覧（★2026-09-16・裁定その62 の トークン層）。
+//
+//   ★★坂本さんの お決め ──
+//     「★色・サイズの 不一致は、★いまは 不具合として 数えない
+//       （★トークンが まだ 当たって いない ため。★想定どおり）」
+//   ★★けれど **黙って 通しません**。★動いた ことを 毎回 言います。
+//     ★★そして、★ここに 無い 動きが 出たら **落ちます**。
+//       ★★一覧を 広げずに 黙らせる ことが できない ように します。
+//
+//   ★★引き金 ── ★裁定その62 の トークンを 実装に 当てる とき。
+//     ★★その ときに、★下の 4つを 実装の 数に 合わせ、★この 一覧を 空に します。
+const MOVED_BY_TOKENS = {
+  ".box padding:012px": "0 12px → 0 14px",
+  ".usu font-size:11px": "11px → 12px"
+};
+let moved = [];
 CHECKS.forEach(([sel, frag, re, label]) => {
+  const key = sel + " " + frag;
   const inMihon = has(sel, frag);
-  t(inMihon, "★見本に " + sel + " " + frag);
+  if (!inMihon && Object.prototype.hasOwnProperty.call(MOVED_BY_TOKENS, key)) {
+    // ★★見本が 動きました。★分かって いる 動き です。★落としません。
+    moved.push(key + "　（" + MOVED_BY_TOKENS[key] + "）");
+  } else {
+    t(inMihon, "★見本に " + key);
+  }
   t(re.test(ui), "★実装が そろって いる ── " + label);
+});
+// ★★一覧に 書いた のに、★見本が もう 動いて いない ── ★紙が 古い しるし。
+const stale = Object.keys(MOVED_BY_TOKENS).filter((k) => {
+  const sp = k.indexOf(" ");
+  return has(k.slice(0, sp), k.slice(sp + 1));
+});
+if (moved.length) {
+  console.log("\n  ★見本が 動いた もの（★トークン層・落としません）");
+  moved.forEach((x) => console.log("    ・" + x));
+  console.log("    ★引き金 … 裁定その62 の トークンを 実装に 当てる とき");
+}
+stale.forEach((k) => {
+  t(false, "★★一覧に 在るのに 見本は 動いて いません: " + k + "（★一覧から 外して ください）");
 });
 
 console.log("\n③ わざと ちがえて いる 2つ");

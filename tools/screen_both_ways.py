@@ -33,6 +33,24 @@ APP = os.path.join(ROOT, "docs", "design", "compare", "all", "frames")
 EXCL = os.path.join(ROOT, "tools", "excluded_by_design.json")
 
 
+def added_on_purpose(name):
+  """★実装に 在って、★見本に 無い ものの **わけ**（★2つめの 棚）。
+
+    ★★坂本さんの お決め ── 「2 実装にあって見本に無い …… ★足したもの（理由を書く）」。
+    ★★わけが 無いと、★次に 見た 人には「余計な もの」に 見えます。
+      ★★2026-09-16、★新しい 見本から「生徒を 招待する」が 消えました。
+        ★見本に 無い から と いって 外せば、★先生の 入口が また 消えます。
+  """
+  if not os.path.exists(EXCL):
+    return {}
+  try:
+    d = json.load(open(EXCL, encoding="utf-8"))
+  except Exception:
+    return {}
+  return {norm(x.get("text")): x
+          for x in (d.get("__added__", {}) or {}).get(name, [])}
+
+
 def excluded(name):
   """★見本に 在るが、★意図して 実装して いない もの（★3つめの 組）。
 
@@ -150,9 +168,21 @@ def main():
     for x in gap:
       print("   ★ %s" % x[:60])
 
+    addk = added_on_purpose(n)
     extra = [aset[k] for k in aset if k not in mset]
+    known = [x for x in extra if norm(x) in addk]
     print()
     print("② 実装に 在って、★見本に 無い ── ★足したもの（%d 件）" % len(extra))
+    if known:
+      print("　★うち %d 件は、★わけが 書いて あります ──" % len(known))
+      for x in known:
+        e = addk[norm(x)]
+        print("   ◎ %s" % x[:50])
+        print("       わけ　　%s" % e.get("why", ""))
+        print("       お決め　%s（%s）" % (e.get("decided", ""), e.get("ruling", "")))
+        if e.get("do_not"):
+          print("       ★★%s" % e["do_not"])
+      print()
     if not extra:
       print("   ✓ ありません")
     for x in extra:
@@ -168,6 +198,17 @@ def main():
       print("       わけ　　%s" % e.get("why", ""))
       print("       引き金　%s" % e.get("trigger", ""))
       print("       台帳　　%s" % e.get("ledger", ""))
+      # ★★引き金が 引けた ものは、★毎回 目立たせます。
+      #   ★★書いた だけで 忘れられる のが、★台帳の いちばんの 弱み です。
+      if e.get("trigger_fired"):
+        print("       ★★★引き金 引けました（%s）── ★もう 除外の わけは ありません"
+              % e["trigger_fired"])
+        if e.get("trigger_evidence"):
+          print("           裏　　%s" % e["trigger_evidence"])
+        if e.get("status"):
+          print("           いま　%s" % e["status"])
+        if e.get("caveat"):
+          print("           ★留意 %s" % e["caveat"])
     if stale:
       print()
       print("★★④ 除外の 紙が 古く なって います（%d 件）" % len(stale))

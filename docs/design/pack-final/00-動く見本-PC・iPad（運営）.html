@@ -3,11 +3,12 @@
 <title>Woolsong 動く見本 ── PC・iPad</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--enji:#840C24;--enji-bg:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
- --line:#E4DAC4;--line2:#F0E9DA;--ink:#261913;--ink2:#6D5D50;--ink3:#7C6C5E;--bg:#EFE7D6;
+:root{--enji:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
+ --line:#E4DAC4;--line2:#F0E9DA;--ink:#261913;--ink2:#5A4C40;--ink3:#6B5C4E;--bg:#EFE7D6;
  --red:#B23A48;--sh:0 1px 0 rgba(0,0,0,.03),0 8px 24px rgba(90,72,48,.10)}
 body{background:var(--bg);font-family:"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;color:var(--ink);
- display:flex;flex-direction:column;align-items:center;padding:20px 14px 50px;gap:12px;line-height:1.7}
+ display:flex;flex-direction:column;align-items:center;padding:20px 14px 50px;gap:12px;line-height:1.75;
+ letter-spacing:.02em;font-feature-settings:"palt";font-variant-numeric:tabular-nums}
 h1{font-size:20px;letter-spacing:.04em}
 .lead{font-size:12.5px;color:var(--ink2);max-width:900px;text-align:center;line-height:1.9}
 /* ── 端末の 枠 ── */
@@ -27,7 +28,7 @@ h1{font-size:20px;letter-spacing:.04em}
 .dev.ipadL{width:calc(1180px / var(--z));height:calc(830px / var(--z))}
 .dev.ipadP{width:calc(830px / var(--z));height:calc(1120px / var(--z))}
 /* ── 上のバー ── */
-.top{flex:0 0 52px;background:var(--enji-bg);color:#fff;display:flex;align-items:center;
+.top{flex:0 0 52px;background:var(--enji);color:#fff;display:flex;align-items:center;
  justify-content:space-between;padding:0 20px;font-size:14.5px;letter-spacing:.04em}
 .top .l,.top .r{display:flex;align-items:center;gap:14px}
 .top .back{border:1px solid rgba(255,255,255,.45);border-radius:8px;padding:5px 11px;font-size:12.5px;cursor:pointer}
@@ -46,12 +47,12 @@ h1{font-size:20px;letter-spacing:.04em}
 .side .nv{padding:11px 20px;font-size:14.5px;color:var(--ink2);display:flex;align-items:center;gap:10px;cursor:pointer}
 .side .nv:hover{background:#FBF6EA}
 .side .nv.on{background:#fff;color:var(--enji);font-weight:700;box-shadow:inset 3px 0 0 var(--enji)}
-.side .gp{font-size:10.5px;color:var(--ink3);letter-spacing:.14em;padding:16px 20px 6px}
+.side .gp{font-size:11px;color:var(--ink3);letter-spacing:.14em;padding:16px 20px 6px}
 .side .who{padding:12px 20px 14px;border-top:1px solid var(--line);margin-top:10px;font-size:11.5px;color:var(--ink2);line-height:1.8}
 .body{flex:1;padding:18px 24px 24px;overflow-y:auto;background:var(--paper)}
 h2{font-size:22px;margin-bottom:2px;letter-spacing:.03em}
 .sub{font-size:12.5px;color:var(--ink2);margin-bottom:15px}
-.h3{font-size:11px;color:var(--ink3);letter-spacing:.13em;margin:18px 0 8px}
+.h3{font-size:11.5px;color:var(--ink3);letter-spacing:.14em;margin:18px 0 8px}
 .h3:first-child{margin-top:0}
 /* ── 部品 ── */
 .cards{display:flex;gap:12px;margin-bottom:16px}
@@ -73,8 +74,8 @@ h2{font-size:22px;margin-bottom:2px;letter-spacing:.03em}
 .li.plain{cursor:default}.li.plain:hover{color:inherit}
 .usu{font-size:11.5px;color:var(--ink3)}
 .spt0{font-size:13px;font-weight:700;margin-bottom:3px}
-.sh3{font-size:11px;color:var(--ink3);letter-spacing:.12em;margin:14px 0 5px}
-.spt{width:100%;border-collapse:collapse;font-size:11px;line-height:1.65}
+.sh3{font-size:11.5px;color:var(--ink3);letter-spacing:.12em;margin:14px 0 5px}
+.spt{width:100%;border-collapse:collapse;font-size:11.5px;line-height:1.7;font-variant-numeric:tabular-nums}
 .spt th{background:#F3ECDD;color:var(--ink3);font-weight:400;text-align:left;padding:5px 7px;border:1px solid var(--line)}
 .spt td{padding:5px 7px;border:1px solid var(--line);background:#fff;vertical-align:top}
 .spt td.k{width:34%;font-weight:600;background:#FDFAF3}
@@ -86,7 +87,7 @@ h2{font-size:22px;margin-bottom:2px;letter-spacing:.03em}
  background:#FDFAF3;border:1px dashed var(--line);border-radius:10px;padding:11px 13px}
 .warn{background:#F6F1E4;border:1px solid #E8DFC8;border-radius:10px;padding:10px 13px;
  font-size:12px;color:var(--ink2);line-height:1.8;margin-bottom:12px}
-.btn{display:inline-block;border:0;background:var(--enji-bg);color:#fff;border-radius:10px;padding:11px 20px;
+.btn{display:inline-block;border:0;background:var(--enji);color:#fff;border-radius:10px;padding:11px 20px;
  font:inherit;font-size:13.5px;font-weight:700;text-align:center;cursor:pointer}
 .btn.g{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:400}
 .btn.sm{padding:8px 14px;font-size:12.5px}
@@ -94,20 +95,38 @@ h2{font-size:22px;margin-bottom:2px;letter-spacing:.03em}
 .btn.mid{background:var(--midori)}
 .pill{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:6px 13px;font-size:12.5px;
  color:var(--ink2);background:#fff;cursor:pointer;white-space:nowrap}
-.pill.on{background:var(--enji-bg);color:#fff;border-color:var(--enji-bg);font-weight:700}
+.pill.on{background:var(--enji);color:#fff;border-color:var(--enji);font-weight:700}
 .pill.sm{padding:4px 10px;font-size:11.5px}
 .pills{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap;max-width:100%;min-width:0}
 .pill{max-width:100%}
 .tag{display:inline-block;background:#F3ECDD;color:var(--ink2);border-radius:6px;padding:2px 8px;
- font-size:11px;margin-left:7px;white-space:nowrap}
+ font-size:11.5px;margin-left:7px;white-space:nowrap}
 .inp{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:11px 12px;
  font:inherit;font-size:13.5px;color:var(--ink)}
 .ta{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:12px;
  font:inherit;font-size:13.5px;min-height:90px;resize:vertical;color:var(--ink);line-height:1.8}
-.fl{font-size:11px;color:var(--ink3);letter-spacing:.1em;margin:14px 0 6px}
+.fl{font-size:11.5px;color:var(--ink3);letter-spacing:.1em;margin:14px 0 6px}
+/* ══ 間（ま）の 段階 ── 3つだけ ══
+   sp1 同じ まとまりの 中 ／ sp2 まとまりどうし ／ sp3 話が 変わる
+   ★運営は 密度が 機能です。個人側のような 画面ごとの 疎密は 付けません。
+   ★付けるのは 間の 段階だけ。詰まったまま、切れ目が 分かるように します。 */
+:root{--sp1:6px;--sp2:16px;--sp3:30px}
+.h3{margin:var(--sp3) 0 var(--sp1)}
+.sh3{margin:var(--sp3) 0 var(--sp1)}
+.fl{margin:var(--sp2) 0 var(--sp1)}
+.card{margin-bottom:var(--sp2)}
+.note{margin-top:var(--sp2)}
+/* ── 動きを 減らす（端末の 設定に 従います） ── */
+@media (prefers-reduced-motion: reduce){
+ *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
+  transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+/* ── 表の 数字は 桁を そろえる ── */
+table td.num,table th.num,.kpi .v{font-variant-numeric:tabular-nums}
+
 .sw{width:44px;height:26px;border-radius:99px;background:#DFD4BE;position:relative;flex:none;cursor:pointer;transition:.16s}
 .sw i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.16s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
-.sw.on{background:var(--enji-bg)}.sw.on i{left:21px}
+.sw.on{background:var(--enji)}.sw.on i{left:21px}
 .empty{text-align:center;padding:32px 16px;background:#fff;border:1px dashed var(--line);border-radius:12px}
 .empty .t{font-size:14px;line-height:1.8}.empty .s{font-size:12px;color:var(--ink2);margin-top:8px;line-height:1.8}
 /* ── 表 ── */
@@ -129,7 +148,7 @@ th.stick{z-index:4}
 .grid table.wk th:first-child,.grid table.wk td:first-child{width:104px}
 .grid td{padding:3px;border-right:1px solid var(--line2);height:56px;white-space:normal;vertical-align:top}
 .grid th{text-align:center}
-.koma{border-left:3px solid var(--enji-bg);background:#FFFDF8;border-radius:5px;padding:4px 6px;
+.koma{border-left:3px solid var(--enji);background:#FFFDF8;border-radius:5px;padding:4px 6px;
  font-size:10.5px;line-height:1.45;height:100%;cursor:pointer;position:relative}
 .koma:hover{background:#FBF3F4}
 .koma b{font-weight:700;display:block}
@@ -154,7 +173,7 @@ th.stick{z-index:4}
 .calh .dw{font-size:11px;color:var(--ink3);letter-spacing:.08em}
 .calh .dd{font-size:19px;font-weight:600;line-height:1.25;margin-top:1px}
 .calh .dh.tdy .dw{color:var(--enji)}
-.calh .dh.tdy .dd{background:var(--enji-bg);color:#fff;border-radius:50%;
+.calh .dh.tdy .dd{background:var(--enji);color:#fff;border-radius:50%;
  width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;font-size:16px}
 .calb{display:flex;position:relative;max-height:560px;overflow-y:auto}
 .calb .gut{flex:0 0 58px;position:relative;border-right:1px solid var(--line2);background:#FBF8F1}
@@ -173,7 +192,7 @@ th.stick{z-index:4}
 .hit .yt2:hover{background:var(--yama);color:#fff;border-color:var(--yama)}
 .hit.on{outline:2px solid var(--ink);outline-offset:-2px;background:#FBF6EA}
 .ev{position:absolute;left:2px;right:2px;border-radius:6px;padding:3px 6px;font-size:10.5px;
- line-height:1.35;overflow:hidden;cursor:pointer;border-left:3px solid var(--enji-bg);background:#FFF7F8}
+ line-height:1.35;overflow:hidden;cursor:pointer;border-left:3px solid var(--enji);background:#FFF7F8}
 .ev b{display:block;font-weight:700;font-size:11px}
 .ev.les{border-left-color:var(--midori);background:#EEF5F0}
 .ev.sch{border-left-color:#B5A78F;background:#EFE9DC;color:#6D5D50}
@@ -189,7 +208,7 @@ th.stick{z-index:4}
 .mini .mg b{text-align:center;font-size:11.5px;font-weight:400;padding:4px 0;border-radius:6px;cursor:pointer}
 .mini .mg b:hover{background:#F3ECDD}
 .mini .mg b.w{background:#F6E4E8}
-.mini .mg b.t{background:var(--enji-bg);color:#fff;font-weight:700}
+.mini .mg b.t{background:var(--enji);color:#fff;font-weight:700}
 .mini .mg b.o{color:#C9BCA6}
 
 /* ── 週の 移動 ── */
@@ -200,7 +219,7 @@ th.stick{z-index:4}
 .wkc{flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:9px;
  padding:6px 11px;font-size:11.5px;color:var(--ink2);cursor:pointer;white-space:nowrap;position:relative}
 .wkc:hover{border-color:#CFC0A4}
-.wkc.on{background:var(--enji-bg);color:#fff;border-color:var(--enji-bg)}
+.wkc.on{background:var(--enji);color:#fff;border-color:var(--enji)}
 .wkc i{font-style:normal;font-size:9px;margin-left:5px;color:var(--yama)}
 .wkc.on i{color:#F0C24B}
 .grid th.tdyh{background:#F6E4E8;color:var(--enji);font-weight:700}
@@ -273,7 +292,7 @@ th.stick{z-index:4}
 /* ══════════ 暗い 画面（ダークモード） ══════════ */
 html[data-th="dark"]{
  --paper:#1C1712;--bg:#121009;--ink:#EFE6D8;--ink2:#BCAF9D;--ink3:#918476;
- --line:#3D342B;--line2:#2C251E;--enji:#E790A2;--enji-bg:#8E1230;--yama:#D9AC55;--midori:#82BCA0;--red:#EA8894;
+ --line:#3D342B;--line2:#2C251E;--enji:#E790A2;--yama:#D9AC55;--midori:#82BCA0;--red:#EA8894;
  --sh:0 1px 0 rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.45);
  color-scheme:dark}
 html[data-th="dark"] body{background:var(--bg);color:var(--ink)}
@@ -286,10 +305,10 @@ html[data-th="dark"] .wall{background:#221B15;color:var(--ink2)}
 html[data-th="dark"] .side{background:#1E1812;border-color:var(--line)}
 html[data-th="dark"] .nv.on{background:#241D17;color:var(--enji)}
 html[data-th="dark"] .body,html[data-th="dark"] .bd{background:var(--paper)}
-html[data-th="dark"] .btn{background:var(--enji-bg);color:#fff;border-color:var(--enji-bg)}
+html[data-th="dark"] .btn{background:#8E1230;color:#fff;border-color:#8E1230}
 html[data-th="dark"] .btn.g,html[data-th="dark"] .btn.mid{background:#2C241D;color:var(--ink);border-color:var(--line)}
 html[data-th="dark"] .pill{background:#2C241D;color:var(--ink2);border-color:var(--line)}
-html[data-th="dark"] .pill.on{background:var(--enji-bg);color:#fff;border-color:var(--enji-bg)}
+html[data-th="dark"] .pill.on{background:#8E1230;color:#fff;border-color:#8E1230}
 html[data-th="dark"] .inp,html[data-th="dark"] .ta,html[data-th="dark"] input,html[data-th="dark"] textarea,html[data-th="dark"] select{background:#1A1510;color:var(--ink);border-color:var(--line)}
 html[data-th="dark"] table th,html[data-th="dark"] .tbl th,html[data-th="dark"] .spt th{background:#2C241D;color:var(--ink2);border-color:var(--line)}
 html[data-th="dark"] table td,html[data-th="dark"] .tbl td,html[data-th="dark"] .spt td{background:#241D17;color:var(--ink);border-color:var(--line)}
@@ -297,7 +316,7 @@ html[data-th="dark"] .tbl td.k,html[data-th="dark"] .spt td.k,html[data-th="dark
 html[data-th="dark"] .note{background:#1E1812;border-color:var(--line);color:var(--ink2)}
 html[data-th="dark"] .warn,html[data-th="dark"] .wl{background:#2A2218;border-color:#4A3E2C;color:var(--ink)}
 html[data-th="dark"] .fbtn{background:#2C241D;border-color:var(--line);color:var(--ink3)}
-html[data-th="dark"] .koma{background:#2A231C}
+html[data-th="dark"] .koma{background:#2A231C;border-left-color:var(--enji)}
 html[data-th="dark"] .koma.mine{background:#1F2C25;border-left-color:var(--midori)}
 html[data-th="dark"] .koma.busy{background:#2E2820;border-left-color:#6B5F4E;color:var(--ink2)}
 html[data-th="dark"] .koma.busy.priv{background:#282219}
@@ -309,7 +328,7 @@ html[data-th="dark"] .grid th.tdyh{background:#3A1E22;color:var(--enji)}
 html[data-th="dark"] .grid td.tdyc{background:#221A18}
 html[data-th="dark"] .mini .mg b:hover{background:#2C241D}
 html[data-th="dark"] .mini .mg b.w{background:#3A1E22}
-
+html[data-th="dark"] .mini .mg b.t{background:#8E1230;color:#fff}
 html[data-th="dark"] .mini .mg b.o{color:#5E5449}
 html[data-th="dark"] .tabs{background:#1E1812;border-color:var(--line)}
 html[data-th="dark"] .tb{color:var(--ink3)}
@@ -330,7 +349,7 @@ html[data-th="dark"] .kpi{background:#241D17;border-color:var(--line)}
 html[data-th="dark"] .kpi.al{background:#2E2018;border-color:#5A3A3E}
 html[data-th="dark"] .lft,html[data-th="dark"] .pl{background:#1E1812}
 html[data-th="dark"] .seg{background:#2C241D;border-color:var(--line)}
-
+html[data-th="dark"] .seg .on,html[data-th="dark"] .seg b.on,html[data-th="dark"] .seg span.on,html[data-th="dark"] .on{background:#8E1230;color:#fff}
 html[data-th="dark"] .gear,html[data-th="dark"] .role{background:#2C241D;color:var(--ink2);border-color:var(--line)}
 html[data-th="dark"] .k{background:#2A231C;color:var(--ink)}
 html[data-th="dark"] div[style*="background:#fff"],html[data-th="dark"] div[style*="background:#FFF"]{background:#241D17!important}
@@ -340,10 +359,10 @@ html[data-th="dark"] [style*="background:#F4F8F5"]{background:#1F2C25!important}
 html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"] [style*="background:#FBF3E2"],html[data-th="dark"] [style*="background:#F6F1E4"],html[data-th="dark"] [style*="background:#FDFAF3"],html[data-th="dark"] [style*="background:#F3ECDD"],html[data-th="dark"] [style*="background:#FBF6EA"],html[data-th="dark"] [style*="background:#EDE5D5"],html[data-th="dark"] [style*="background:#F4EFE4"],html[data-th="dark"] [style*="background:#EFE9DC"],html[data-th="dark"] [style*="background:#FFFDF8"],html[data-th="dark"] [style*="background:#FFFDF7"]{background:#2A2219!important}
 html[data-th="dark"] tr[style*="background:#FBF3E2"]{background:#2A2219!important}
 html[data-th="dark"] .sw{background:#3A322A}
-
+html[data-th="dark"] .sw.on{background:#8E1230}
 html[data-th="dark"] .sw i{background:#EFE6D8}
 html[data-th="dark"] .tri div{background:#2A2219;border-color:var(--line)}
-html[data-th="dark"] .tri div.on{background:var(--enji-bg);border-color:var(--enji-bg)}
+html[data-th="dark"] .tri div.on{background:#8E1230;border-color:#8E1230}
 html[data-th="dark"] .tri div.on .w,html[data-th="dark"] .tri div.on .g{color:#fff}
 html[data-th="dark"] .drt,html[data-th="dark"] .drr,html[data-th="dark"] .drhint,html[data-th="dark"] .drc{background:#241D17}
 </style></head><body>
@@ -2701,12 +2720,12 @@ function setZai(i,v){
  ZAI_LOG.unshift([m[0],old+' → '+v,'9月9日 14:30　'+S.post]);
  draw();toast(m[0]+' を '+v+' にしました。数える人数は '+zaisekiN()+'人 になりました')}
 function billN(){return zaisekiN()}
-/* 料金＝いちばん安いもの。下限 9,800円（★2026-09-13 改定。前は 12,800円） */
+/* 料金＝いちばん安いもの。下限 12,800円 */
 function billPlans(){var n=billN();return [[n+'人 × 400円',n*400],[n+'人 × 350円',n*350],['300人 × 250円',75000]]}
-function billYen(){var v=Math.min.apply(null,billPlans().map(function(x){return x[1]}));return Math.max(9800,v)}
+function billYen(){var v=Math.min.apply(null,billPlans().map(function(x){return x[1]}));return Math.max(12800,v)}
 function billWl(){var y=billYen();
  return billPlans().map(function(x){return (x[1]===y?'<b>':'')+x[0]+'　＝ '+yen(x[1])+'円'+(x[1]===y?'　←　いちばん 安いもの</b>':'')}).join('<br>')
- +'<br>下限 9,800円（下回りません）'}
+ +'<br>下限 12,800円（下回りません）'}
 function zaisekiN(){return MEI.filter(function(m){return m[4]==='在籍'}).length}
 var ZAI_LOG=[];
 function P_sonohito(i){var m=MEI[i];
@@ -3002,7 +3021,8 @@ var SPEC_KEEP=[
  ['在籍を 変えた記録','消せない。何から 何へ'],
  ['支払い方法・あて先を 変えた記録','消せない'],
  ['書いたもの（記録・ノート）','通信の失敗で 消さない。★これが 一番重い決まり'],
- ['手に入れたもの（羊の台帳）','1つも 取り上げない。移行は 増える方向にしか 動かさない']];
+ ['手に入れたもの（羊の台帳）','1つも 取り上げない。移行は 増える方向にしか 動かさない'],
+ ['修正の記録','消せない。日付・原因・直した内容・確かめた方法。★直した本人も 消せない']];
 var SPEC_SRV=[
  ['画面で 隠すだけでは 足りない','同じ見張りを サーバにも 置く'],
  ['ご請求　見る(bill) と 払う(bill_pay)','別の権限として サーバでも 分ける'],
