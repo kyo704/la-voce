@@ -193,7 +193,17 @@ async function main() {
       "見せる相手の判定が lib/featureFlags.js にある");
     const uiCode = require("./_source").stripComments(
       require("./_source").readRaw("components", "VocalTracker.jsx"));
-    assertTrue(/canSeeShobaiArticles\(profile\)/.test(uiCode), "画面がその判定を使っている");
+    // ★★2026-09-16、★お支払いも 見る ように なりました（第2引数）。
+    assertTrue(/canSeeShobaiArticles\(profile,\s*\{\s*subscribed:/.test(uiCode),
+      "画面がその判定を使っている（★お支払いも 渡している）");
+    // ★★★閉じる つもりで 開いて しまう 形を、★名指しで 止めます。
+    //   ★★`paidGateApplies` は「試しの 一覧に 居ない 方」に false を 返します。
+    //     ★★= 壁を 出さない、の 意味 です。★「見せてよい」では ありません。
+    //   ★★これで 囲うと、★一般の 方 **全員に 開きます**。★逆を します。
+    const at = uiCode.indexOf("const canSeeShobai =");
+    const line = at < 0 ? "" : uiCode.slice(at, uiCode.indexOf("\n", at));
+    assertTrue(at > 0 && !/paidGateApplies|mayViewSummary/.test(line),
+      "★商いの 判定に paidGateApplies / mayViewSummary を 使っていない");
     assertTrue(/ARTICLES\.filter\(visibleArticle\)/.test(uiCode), "★検索からも外している");
     assertTrue(/if \(!visibleArticle\(article\)\) return null;/.test(uiCode),
       "★本文の側でも止めている（入口が1つだと思い込まない）");

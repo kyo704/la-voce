@@ -21826,7 +21826,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               //   一覧・検索・本文のすべてを1つの判定で絞る（lib/featureFlags.js）。
               //   一覧には出して本文で止める形にしないこと。読めない記事が
               //   並んでいるのは、鍵をかけられているのと同じ体験になる。
-              const canSeeShobai = canSeeShobaiArticles(profile);
+              // ★★お支払いが 続いて いる 方と、★管理者・指導者ベータ だけ。
+              //   ★★`subscribed` は null の ことが あります（★まだ 読めて いない）。
+              //     ★★その あいだは 閉じます。★=== true だけ を 通します。
+              //   ★★`paidGateApplies` を ここで 使わない こと。
+              //     ★★あれは 試しの 一覧に 居ない 方に false を 返します。
+              //       ★★= 壁を 出さない、の 意味 です。★「見せてよい」では ありません。
+              //       ★★取りちがえると、★閉じる つもりで **全員に 開きます**。
+              const canSeeShobai = canSeeShobaiArticles(profile, { subscribed: subscribed === true });
               const visibleArticle = (a) => canSeeShobai || !isShobaiArticle(a);
               const learnChapters = canSeeShobai ? [1, 2, 3, 4, 5, 6, 7, 8, 9] : [1, 2, 3, 4, 5, 6, 7];
               const searchResults = learnSearchQuery.trim()
