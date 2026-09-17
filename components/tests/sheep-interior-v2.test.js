@@ -150,10 +150,36 @@ function ok(name, cond, extra) {
   //   ★見るのは、★実際の形です。★equipped.interior に入れていること。
   ok("★equipped の中の interior に持っている", /equipped\.interior/.test(libCode));
   ok("★SQL を、作っていない", !/alter table/i.test(libCode));
-  // ★★そのための SQL ファイルも、作っていないこと。
-  const sqls = fs.readdirSync(path.join(ROOT, "supabase"))
-    .filter((f) => /interior|内装|窓/.test(f));
-  ok("★内装のための SQL が、無い", sqls.length === 0, sqls.join(", "));
+  // ★★そのための **表や 列**を、作っていないこと。
+  //
+  //   ★★★2026-09-17、★この 見張りを 直しました。
+  //     ★★それまでは **ファイルの 名**だけ を 見て いました
+  //       （`/interior|内装|窓/` に 当たれば 落とす）。
+  //     ★★だから、★中身を 1文字も 読まずに 落として いました。
+  //     ★★試しの 口に 内装を **置く**だけ の SQL
+  //       （`2026-09-17-試しの口に内装を置く.sql`）で 落ちました。
+  //       ★★あれは `update … set character_equipped = …` です。
+  //       ★★表も 列も 作って いません。★守りたい ことに 触れて いません。
+  //   ★★★守りたいのは「★内装の ために **新しい 表や 列**を 作らない」こと です。
+  //     ★★だから **中身**を 見ます。★名では ありません。
+  //     ★★測る ものを、★測る（★覚えて おかない）。
+  const sqlDir = path.join(ROOT, "supabase");
+  const sqlNames = fs.readdirSync(sqlDir).filter((f) => f.endsWith(".sql"));
+  ok("★SQL を 読めて いる（★立ち会い）", sqlNames.length > 0, String(sqlNames.length));
+  const 形を変える = sqlNames.filter((f) => {
+    const body = fs.readFileSync(path.join(sqlDir, f), "utf8").replace(/--[^\n]*/g, "");
+    // ★`interior` を 名に 含む 表・列を 作って いないか。
+    return /create table[\s\S]{0,200}interior/i.test(body)
+      || /alter table[\s\S]{0,200}add column[\s\S]{0,120}interior/i.test(body);
+  });
+  ok("★内装のための 表や 列を、作っていない", 形を変える.length === 0, 形を変える.join(", "));
+  // ★★較正 ── ★わざと 当たる 中身を 通して、★見分けられる か。
+  const 較正 = (body) => /create table[\s\S]{0,200}interior/i.test(body)
+    || /alter table[\s\S]{0,200}add column[\s\S]{0,120}interior/i.test(body);
+  ok("★★較正：列を 足す SQL は 見つかる",
+    較正("alter table public.profiles add column interior_positions jsonb;"));
+  ok("★★較正：置くだけの SQL は 見つからない",
+    !較正("update public.profiles set character_equipped = character_equipped || '{}';"));
 
   console.log("■ ★いまの101点と、混ぜていないこと");
   const character = fs.readFileSync(path.join(ROOT, "lib", "character.js"), "utf-8");
