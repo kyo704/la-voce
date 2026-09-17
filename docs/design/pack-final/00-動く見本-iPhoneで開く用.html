@@ -206,7 +206,12 @@ h1{font-size:19px;letter-spacing:.04em}
 .demo .pill{flex:none;white-space:nowrap}
 /* ─── 全画面の おうち ─── */
 .bd.full{padding:0}
-.hroom{position:relative;width:100%;height:100%;min-height:660px;overflow:hidden;background:#F1E4CC}
+/* ★★★`meet`（収める）に した ので、★縦横比の 合わない ぶんが 帯に なります。
+   ★★床の 位置（352 ÷ 730 ＝ 48.219%）で 壁と 床に 分けて 塗ります。
+   ★★帯が 部屋の 色に なるので、★継ぎ目は 見えません。
+   ★★`.hcard`（したく）にも 同じ ものを 置きます。★片方だけだと、
+     ★小さい ときに 白い 帯が 出ます。 */
+.hroom{position:relative;width:100%;height:100%;min-height:660px;overflow:hidden;background:linear-gradient(var(--wall) 0 48.219%,var(--floor) 48.219% 100%)}
 .hroom svg{position:absolute;inset:0;width:100%;height:100%}
 .hband{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:8px;
  padding:9px 14px;background:linear-gradient(rgba(251,246,234,.92),rgba(251,246,234,0));z-index:3}
@@ -214,8 +219,8 @@ h1{font-size:19px;letter-spacing:.04em}
 .hband .m{font-size:11px;color:var(--ink2);margin-left:2px}
 .hfab{position:absolute;right:14px;bottom:16px;z-index:9;background:var(--enji-bg);color:#fff;
  border-radius:99px;padding:13px 24px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(90,72,48,.28)}
-.hhit{position:absolute;z-index:2;cursor:pointer;border-radius:8px}
-.hhit:active{background:rgba(255,255,255,.25)}
+/* ★★2026-09-17、`.hhit` を 消しました。★押せる ところは SVG の 中に 入れました。
+   ★★hhit の 札を 使う ところは、★この ファイルに 1つも ありません（★確かめ済み）。 */
 .hwalk{position:absolute;bottom:118px;left:0;width:126px;z-index:2;animation:walk 19s linear infinite}
 .hwalk .bob{animation:bob .62s ease-in-out infinite;transform-origin:50% 100%}
 .hwalk img{width:100%;display:block}
@@ -245,7 +250,7 @@ h1{font-size:19px;letter-spacing:.04em}
 .g5 .c.sel{border:1.6px solid var(--ink)}
 .g5 .c.sel:after{content:'';position:absolute;right:4px;bottom:4px;width:6px;height:6px;border-radius:50%;background:var(--enji-bg)}
 .g5 .c.no{color:#C3B6A2;background:#FAF6EC}
-.hcard{position:relative;border-radius:14px;overflow:hidden;height:290px;margin:0 -15px;border-bottom:1px solid var(--line)}
+.hcard{position:relative;border-radius:14px;overflow:hidden;height:290px;margin:0 -15px;border-bottom:1px solid var(--line);background:linear-gradient(var(--wall) 0 48.219%,var(--floor) 48.219% 100%)}
 .hcard svg{position:absolute;inset:0;width:100%;height:100%}
 .haichi{position:absolute;right:12px;bottom:12px;background:#FFFDF7;border-radius:99px;padding:9px 16px;
  font-size:12px;cursor:pointer;box-shadow:0 2px 8px rgba(90,72,48,.2);z-index:3}
@@ -1371,21 +1376,33 @@ var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E','#E7C8C8',
 /* ── 普段の画面 ＝ 部屋が 画面全部 ── */
 function S_hitsuji(){
  if(S.sheet&&S.sheet.n==='したく')
-  return '<div class="hcard">'+bigRoom(1)
+  return '<div class="hcard">'+bigRoom()
    +'<div class="hshadow" style="bottom:22px"></div><div class="hwalk" style="bottom:26px;width:82px"><div class="bob"><img src="'+SHEEP.dress+'" alt="羊"></div></div>'
    +'<div class="haichi" onclick="haichi()">'
    +((S.sheet&&S.sheet.n==='したく'&&S.k1==='おくもの')?'<b style="color:var(--enji)">配置を 終わる</b>':'配置を 変える')+'</div></div>';
- return '<div class="hroom">'+bigRoom(0)
+ return '<div class="hroom">'+bigRoom()
  +'<div class="hband"><h2>ひつじ</h2><span class="m">きょうも 来てくれて ありがとう</span>'
  +'<div class="gear" style="margin-left:auto" onclick="openSheet(\'motteru\')">⚙</div></div>'
  +'<div class="hshadow"></div><div class="hwalk"><div class="bob"><img src="'+SHEEP.dress+'" alt="羊"></div></div>'
  +'<div class="hfab" onclick="openDr()">したく</div>'
  +'</div>'}
-function bigRoom(small){
+/* ★★★2026-09-17、★部屋を 1つに しました（★Opus の 裁定）。
+   ★★それまで、★したくの ときだけ 別の 部屋を 描いて いました ──
+     ★全画面 … viewBox "0 0 360 730" ／ 床 352
+     ★したく … viewBox "0 0 360 290" ／ 床 168
+   ★★y=546 に 置いた ものは、★290 の 部屋には 在りません。
+     ★★「ずれる」のでは ありません。★行き先が 無いのです。
+   ★★`slice`（切り取る）も やめました。★`meet`（収める）に します。
+     ★★縦横比の 合わない ぶんは 帯に なります。★`.hroom` と `.hcard` の
+       ★背景を 壁と 床の 色で 塗って、★見えなく して います。
+   ★★小さい ときは、★部屋ぜんぶが 小さく 見える だけ です。
+     ★★羊も 小さく なります。★それで かまいません ──
+       ★置いた ものが 動かない ことの ほうが、★ずっと 大事 です。 */
+function bigRoom(){
  var wall=S.wall||'#E3CDA8',floor=S.floor||'#CFD79E',keshiki=S.keshiki||'#DDE7EE';
  S.put=S.put||{'まど':'カーテン','かべ1':'絵','かべ2':'時計','たな':'本','つくえ':'メトロノーム','いす':'—','ゆか':'ラグ'};
- var vb=small?'0 0 360 290':'0 0 360 730', fy=small?168:352, ht=small?290:730;
- var h='<svg viewBox="'+vb+'" preserveAspectRatio="xMidYMax slice">'
+ var fy=352, ht=730;
+ var h='<svg viewBox="0 0 360 730" preserveAspectRatio="xMidYMid meet">'
  +'<rect width="360" height="'+ht+'" fill="'+wall+'"/>'
  +'<rect y="'+fy+'" width="360" height="'+(ht-fy)+'" fill="'+floor+'"/>'
  +'<rect y="'+(fy-6)+'" width="360" height="7" fill="#B9A47F"/>';
@@ -1393,7 +1410,7 @@ function bigRoom(small){
  for(var i=0;i<6;i++)h+='<line x1="'+(i*72)+'" y1="'+fy+'" x2="'+(i*72)+'" y2="'+ht+'" stroke="#BFC98C" stroke-width="2" opacity=".6"/>';
  h+='<line x1="0" y1="'+(fy+(ht-fy)*0.45)+'" x2="360" y2="'+(fy+(ht-fy)*0.45)+'" stroke="#BFC98C" stroke-width="2" opacity=".6"/>';
  /* まど */
- var wy=small?32:96;
+ var wy=96;
  h+='<g>'
  +'<rect x="112" y="'+wy+'" width="140" height="112" rx="3" fill="'+keshiki+'" stroke="#B9884F" stroke-width="8"/>'
  +'<path d="M118 '+(wy+96)+' L148 '+(wy+70)+' L170 '+(wy+90)+' L206 '+(wy+58)+' L240 '+(wy+90)+' L240 '+(wy+106)+' L118 '+(wy+106)+' Z" fill="#EDF2F5"/>'
@@ -1410,13 +1427,13 @@ function bigRoom(small){
  +'<rect x="294" y="'+(fy-88)+'" width="46" height="32" rx="3" fill="#B98F5E"/>'
  +'<rect x="242" y="'+(fy-48)+'" width="98" height="30" rx="3" fill="#B98F5E"/>'
  +'<rect x="286" y="'+(fy-36)+'" width="10" height="5" rx="2" fill="#8C6115"/>'
- /* でんわ台 */
- +(small?'<rect x="24" y="'+(fy-70)+'" width="70" height="8" rx="2" fill="#A9784A"/>'
-   +'<rect x="30" y="'+(fy-62)+'" width="6" height="46" fill="#A9784A"/><rect x="82" y="'+(fy-62)+'" width="6" height="46" fill="#A9784A"/>'
-   +'<rect x="40" y="'+(fy-98)+'" width="40" height="28" rx="6" fill="#3A302A"/><circle cx="60" cy="'+(fy-84)+'" r="8" fill="#5E5045"/>':'');
- if(!small){
-  /* ちゃぶ台・いろり・座布団（手前） */
-  h+='<ellipse cx="262" cy="556" rx="88" ry="29" fill="#B98F5E"/><ellipse cx="262" cy="546" rx="88" ry="29" fill="#C9A87C"/>'
+ ;
+ /* ★★★家具の 出し分けを 外しました（★2026-09-17）。
+    ★★小さい ときだけ 別の でんわ台を 描き、★大きい ときの 家具を
+      ★1つも 描いて いませんでした。★置き場そのものが 消えます。
+    ★★いまは いつも 同じ ものを 描きます。★小さく 見えるだけ です。 */
+ /* ちゃぶ台・いろり・座布団（手前） */
+ h+='<ellipse cx="262" cy="556" rx="88" ry="29" fill="#B98F5E"/><ellipse cx="262" cy="546" rx="88" ry="29" fill="#C9A87C"/>'
   +'<rect x="208" y="562" width="9" height="46" fill="#A9784A"/><rect x="310" y="562" width="9" height="46" fill="#A9784A"/>'
   +'<ellipse cx="72" cy="686" rx="80" ry="29" fill="#8C6E52"/><ellipse cx="72" cy="676" rx="64" ry="22" fill="#5E5045"/>'
   +'<ellipse cx="72" cy="676" rx="20" ry="8" fill="#C0533A"/><ellipse cx="72" cy="675" rx="9" ry="4.5" fill="#E8B44A"/>'
@@ -1426,9 +1443,14 @@ function bigRoom(small){
   +'<rect x="34" y="'+(fy+6)+'" width="8" height="56" fill="#A9784A"/><rect x="102" y="'+(fy+6)+'" width="8" height="56" fill="#A9784A"/>'
   +'<rect x="48" y="'+(fy-48)+'" width="50" height="44" rx="7" fill="#3A302A"/><circle cx="73" cy="'+(fy-26)+'" r="11" fill="#5E5045"/>'
   +'<rect x="60" y="'+(fy-58)+'" width="26" height="11" rx="5" fill="#3A302A"/>';
- }
+ /* ★★★押せる ところを、★SVG の 中に 入れました（★2026-09-17）。
+    ★★これまでは 入れ物の ％（hhit の 札 ── left:64% top:38%）でした。
+      ★★`meet` に すると、★入れ物と 部屋の 大きさが 一致しません。
+      ★★％は 入れ物に 付くので、★部屋と ずれます。
+    ★★部屋の 座標で 置けば、★入れ物が どう 変わっても ずれません。
+      ★★たな … x=234 ／ y=fy-96=256 ／ 幅112 ／ 高さ92（★上の rect と 同じ）。 */
+ h+='<rect x="234" y="256" width="112" height="92" fill="transparent" style="cursor:pointer" onclick="push(\'たな\')"/>';
  h+='</svg>';
- if(!small)h+='<div class="hhit" style="left:64%;top:38%;width:32%;height:12%" onclick="push(\'たな\')"></div>';
  return h}
 
 /* ── したく（引き出し）いまの実装のまま ── */
