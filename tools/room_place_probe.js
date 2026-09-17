@@ -36,6 +36,15 @@ function readEnv(file) {
 
 // ★★舞台の 中の ％。★舞台の 大きさで 割ります。
 //   ★★px の まま くらべない こと ── ★縮尺の ちがいを ずれと 読みます。
+// ★★部屋（床の 板）を ものさしに した ％。★カメラの 寄りは ここで 消えます。
+function toFloorPct(item, floor) {
+  if (!floor) return null;
+  return {
+    left: +(((item.x + item.w / 2) - floor.x) / floor.w * 100).toFixed(3),
+    bottom: +(((item.y + item.h) - floor.y) / floor.h * 100).toFixed(3)
+  };
+}
+
 function toStagePct(item, stage) {
   return {
     left: +(((item.x + item.w / 2) - stage.x) / stage.w * 100).toFixed(3),
@@ -80,6 +89,21 @@ async function measure(page, label) {
         && Math.abs(el.offsetWidth / el.offsetHeight - 7 / 5) < 0.02;
     }) || kids[kids.length - 1];
     const sr = stageEl.getBoundingClientRect();
+    // ★★★部屋そのもの（★床の 板）も 測ります（★2026-09-17）。
+    //   ★★これまで、★舞台を ものさしに して いました。
+    //     ★★舞台は カメラの **外**、★部屋の 中身は カメラの **中** です。
+    //     ★★だから 舞台で 測ると、★カメラの 寄りが そのまま「ずれ」に 見えます。
+    //   ★★けれど お客さまが 見るのは **部屋に 対する 場所** です。
+    //     ★★「ちゃぶ台が 床の どのあたりか」── ★舞台の 何％か、では ありません。
+    //   ★★床も カメラの 中に あります。★一緒に 寄ります。
+    //     ★★だから 床を ものさしに すれば、★寄りの ぶんは 消えます。
+    //     ★★それでも ずれが 残れば、★**本当に ずれて います**。
+    const floorEl = anchor.querySelector('div[style*="bottom: 0"][style*="%"]')
+      || [...anchor.querySelectorAll("div")].find((el) => {
+        const st = el.getAttribute("style") || "";
+        return st.includes("bottom: 0") && st.includes("height:");
+      });
+    const fr = floorEl ? floorEl.getBoundingClientRect() : null;
     const ar = anchor.getBoundingClientRect();
     // ★★測る もの ── ★家具（`data-item`）。★無ければ、★画像 ぜんぶ。
     // ★★名札は `data-item-id` です（★CharacterHome.jsx:1631／1972）。
@@ -119,6 +143,8 @@ async function measure(page, label) {
     return {
       label: lab,
       anchor: { w: +ar.width.toFixed(2), h: +ar.height.toFixed(2) },
+      floor: fr ? { x: +fr.x.toFixed(2), y: +fr.y.toFixed(2),
+                    w: +fr.width.toFixed(2), h: +fr.height.toFixed(2) } : null,
       stage: { x: +sr.x.toFixed(2), y: +sr.y.toFixed(2),
                w: +sr.width.toFixed(2), h: +sr.height.toFixed(2),
                aspect: +(sr.width / sr.height).toFixed(4) },
@@ -210,7 +236,13 @@ async function measure(page, label) {
     //   ★★ばらつけば、★ものごとに 別の 計算が 効いて います。
     const 中心 = (出, 置) => 倍 === 1 ? null
       : +((出 - 置 * 倍) / (1 - 倍)).toFixed(2);
+    const fa = toFloorPct(ia, a.floor), fb = toFloorPct(ib, b.floor);
+    const fdl = fa && fb ? +(fb.left - fa.left).toFixed(3) : null;
+    const fdb = fa && fb ? +(fb.bottom - fa.bottom).toFixed(3) : null;
     rows.push({ i, kind: ia.kind, key: ia.key, inStage: ia.inStage,
+      床基準ながめる: fa ? fa.left + " / " + fa.bottom : "—",
+      床基準したく: fb ? fb.left + " / " + fb.bottom : "—",
+      床基準の差左: fdl, 床基準の差下: fdb,
       寄りの中心左: 中心(pa.left, pb.left),
       寄りの中心下: 中心(pa.bottom, pb.bottom),
       // ★★★㋖ を 選んだ ら どう なるか、★先に 出します（★2026-09-17）。
@@ -224,8 +256,9 @@ async function measure(page, label) {
       floorCenterDiff: +((52 + (pb.bottom - 52) * 倍) - pb.bottom).toFixed(3),
       ながめる: pa.left + " / " + pa.bottom, したく: pb.left + " / " + pb.bottom,
       差左: dl, 差下: db, 大きさの倍: 倍 });
-    console.log("  %d %s … 差 左%s 下%s ／ %s倍 ／ 寄りの中心 %s / %s",
-      i, ia.key, dl, db, 倍, rows[i].寄りの中心左, rows[i].寄りの中心下);
+    console.log("  " + String(i).padStart(2) + " " + ia.key.padEnd(30)
+      + " 舞台基準 左" + String(dl).padStart(8) + " 下" + String(db).padStart(8)
+      + " ／ ★床基準 左" + String(fdl).padStart(7) + " 下" + String(fdb).padStart(7));
   }
   if (rows.filter((r) => r.kind === "家具").length === 0) {
     console.log("\n★★名札の 読めた もの（`data-item-id`）は 0 でした。");
@@ -270,6 +303,38 @@ async function measure(page, label) {
   L.push("");
   L.push("★★いちばん 右は、★**1.6倍の 寄りが かかって いる 中心**です。");
   L.push("★★どの ものでも 同じ 中心が 出れば、★1つの カメラの しわざ です。");
+  L.push("");
+  L.push("## 二の一 ★★★ものさしを 変えて、★もう一度 測る");
+  L.push("");
+  L.push("★★上の 表は **舞台**を ものさしに して います。");
+  L.push("★★舞台は カメラの **外**、★部屋の 中身は カメラの **中** です。");
+  L.push("　★★だから 舞台で 測ると、★カメラの 寄りが そのまま「ずれ」に 見えます。");
+  L.push("★★けれど お客さまが ご覧に なるのは **部屋に 対する 場所** です ──");
+  L.push("　★「ちゃぶ台は 床の どのあたりか」。★舞台の 何％か、では ありません。");
+  L.push("★★床も カメラの 中に あります。★一緒に 寄ります。");
+  L.push("　★★だから **床**を ものさしに すれば、★寄りの ぶんは 消えます。");
+  L.push("　★★それでも ずれが 残れば、★**本当に ずれて います**。");
+  L.push("");
+  L.push("| 何 | 床基準 ながめる | 床基準 したく | 差 左 | 差 下 |");
+  L.push("|---|---|---|---|---|");
+  rows.forEach((r) => L.push("| " + r.key + " | " + r.床基準ながめる + " | "
+    + r.床基準したく + " | " + r.床基準の差左 + " | " + r.床基準の差下 + " |"));
+  L.push("");
+  // ★★羊は 歩き、★上下に 弾みます（`bob`）。★2つの 撮りの あいだで 動きます。
+  //   ★★だから 羊は「ずれ」の 数から 外します。★動く ものを 動かないか 測れません。
+  //   ★★家具は 動きません。★そちらだけ を 見ます。
+  const 家具だけ = rows.filter((r) => !/sheep/i.test(r.key));
+  const 床ずれ = 家具だけ.filter((r) => Math.abs(r.床基準の差左 || 0) > 0.5
+    || Math.abs(r.床基準の差下 || 0) > 0.5);
+  L.push("★★羊は 歩いて 弾みます。★2つの 撮りの あいだで 動きます。");
+  L.push("　★★だから 羊を 数から 外します。★動く ものを、動かないか 測れません。");
+  L.push("");
+  L.push(床ずれ.length === 0
+    ? "★★★床を ものさしに すると、★家具は **1つも ずれて いません**（★0.5％ 未満）。"
+      + "★置いた ものは 部屋の 同じ ところに あります。"
+      + "★見えないのは、★寄って 切れて いる ため です。"
+    : "★★床を ものさしに しても、★" + 床ずれ.length + " 件 ずれて います ── "
+      + 床ずれ.map((r) => r.key).join(" / ") + "。★これは 本当の ずれ です。");
   L.push("");
   L.push("## 二の二 ★★㋖（★中心を 床の 線に する）を したら、★どう なるか");
   L.push("");
