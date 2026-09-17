@@ -213,6 +213,15 @@ async function measure(page, label) {
     rows.push({ i, kind: ia.kind, key: ia.key, inStage: ia.inStage,
       寄りの中心左: 中心(pa.left, pb.left),
       寄りの中心下: 中心(pa.bottom, pb.bottom),
+      // ★★★㋖ を 選んだ ら どう なるか、★先に 出します（★2026-09-17）。
+      //   ★★床の 線 … `FLOOR_BOTTOM_PCT = 48`（`lib/sheepInteriorV2.js:492`）。
+      //     ★上から 数えると 100 - 48 = **52％**。
+      //   ★★いまの 中心は 53.33％ です。★1.33 しか 離れて いません。
+      //   ★★だから、★中心を 床の 線に 寄せても、★差は ほとんど 変わりません。
+      //     ★★寄り（1.6倍）が ある 限り、★中心から 離れた ものは 動きます。
+      //   ★★数で お見せします。★作って から「変わりません でした」と 言わない ため です。
+      floorCenter: +(52 + (pb.bottom - 52) * 倍).toFixed(3),
+      floorCenterDiff: +((52 + (pb.bottom - 52) * 倍) - pb.bottom).toFixed(3),
       ながめる: pa.left + " / " + pa.bottom, したく: pb.left + " / " + pb.bottom,
       差左: dl, 差下: db, 大きさの倍: 倍 });
     console.log("  %d %s … 差 左%s 下%s ／ %s倍 ／ 寄りの中心 %s / %s",
@@ -261,6 +270,32 @@ async function measure(page, label) {
   L.push("");
   L.push("★★いちばん 右は、★**1.6倍の 寄りが かかって いる 中心**です。");
   L.push("★★どの ものでも 同じ 中心が 出れば、★1つの カメラの しわざ です。");
+  L.push("");
+  L.push("## 二の二 ★★㋖（★中心を 床の 線に する）を したら、★どう なるか");
+  L.push("");
+  L.push("★★床の 線 … `FLOOR_BOTTOM_PCT = 48`（`lib/sheepInteriorV2.js:492`）。");
+  L.push("★★上から 数えて **52％**。★いまの 中心は 53.33％ です。");
+  L.push("★★離れて いるのは **1.33** だけ です。");
+  L.push("");
+  L.push("| 何 | したく | いまの ながめる | 差 | ㋖なら | ㋖の差 | よく なる ぶん |");
+  L.push("|---|---|---|---|---|---|---|");
+  rows.forEach((r) => {
+    const 今 = Math.abs(r.差下);
+    const 後 = Math.abs(r.floorCenterDiff);
+    L.push("| " + r.key + " | " + r.したく.split(" / ")[1] + " | "
+      + r.ながめる.split(" / ")[1] + " | " + r.差下 + " | "
+      + r.floorCenter + " | " + r.floorCenterDiff + " | " + (今 - 後).toFixed(2) + " |");
+  });
+  L.push("");
+  L.push("★★★よく なる ぶんは、★どれも **1％前後**です。");
+  L.push("★★手前の もの（showa_01 / showa_14）の ずれは 23.5 でした。");
+  L.push("　★★㋖ に しても、★22 以上 残ります。");
+  L.push("★★**症状は ほとんど 変わりません。**");
+  L.push("");
+  L.push("★★わけ ── ★ずれを 作って いるのは **寄り（1.6倍）そのもの** です。");
+  L.push("　★中心の 置き場では ありません。");
+  L.push("　★★中心から 40％ 離れた ものは、★1.6倍 なら 24％ 動きます。");
+  L.push("　★★中心を 1.33 動かしても、★その 24 は 24 の ままです。");
   L.push("");
   const 倍 = rows.length ? rows[0].大きさの倍 : 0;
   L.push("★★**大きさが どれも " + 倍 + "倍 ちがいます。**");
