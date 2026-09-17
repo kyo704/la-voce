@@ -76,6 +76,11 @@ function t(名, 条件) {
   t("★★「置けません」と 言って いない",
     !si.VIEW_BAND_NOTE.some((l) => /置けません|置かないで|禁/.test(l)));
   t("★画面が 出して いる", /VIEW_BAND_NOTE\.map\(/.test(vt));
+  // ★★★したくの ときだけ です（★2026-09-17・実機で 測って 分かりました）。
+  //   ★★この 枝は 2つの 画面で 共通で、★`cameraOn` の 引数が 変わる だけ です。
+  //     ★★枝を そのまま 使うと、★ながめるにも 出ます（★y=781 に 出て いました）。
+  t("★★したくの ときだけ 出す",
+    /\{homeState === DRESS \? \([\s\S]{0,400}VIEW_BAND_NOTE\.map\(/.test(vt));
   si.VIEW_BAND_NOTE.forEach((line) => {
     t(`★画面に 書き写して いない …「${line.slice(0, 10)}…」`, !vt.includes(line));
   });

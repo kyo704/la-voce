@@ -104,6 +104,19 @@ async function measure(page, label) {
         return st.includes("bottom: 0") && st.includes("height:");
       });
     const fr = floorEl ? floorEl.getBoundingClientRect() : null;
+    // ★★★㋕ の 枠（★2026-09-17）。★したくに 出る はず の もの です。
+    //   ★★破線 1本・塗り なし・押しどころ なし で 見分けます。
+    const bandEl = [...anchor.querySelectorAll("div")].find((el) => {
+      const st = el.getAttribute("style") || "";
+      return st.includes("dashed") && st.includes("transparent")
+        && st.includes("pointer-events: none");
+    });
+    const br = bandEl ? bandEl.getBoundingClientRect() : null;
+    // ★★添える 1行が 出て いるか（★配備の 確かめも 兼ねます）。
+    const noteSeen = document.body.innerText.includes("外にも 置けます");
+    // ★★破線の 札が 何枚 あるか（★選び方が 外れて いないかの 目安）。
+    const dashed = [...anchor.querySelectorAll("div")]
+      .filter((el) => (el.getAttribute("style") || "").includes("dashed")).length;
     const ar = anchor.getBoundingClientRect();
     // ★★測る もの ── ★家具（`data-item`）。★無ければ、★画像 ぜんぶ。
     // ★★名札は `data-item-id` です（★CharacterHome.jsx:1631／1972）。
@@ -147,6 +160,13 @@ async function measure(page, label) {
       //   ★★直す 前の 式では、★iPad で 舞台が 86.7px 下に ずれて いました。
       anchor: { x: +ar.x.toFixed(2), y: +ar.y.toFixed(2),
                 w: +ar.width.toFixed(2), h: +ar.height.toFixed(2) },
+      noteSeen, dashed,
+      band: br && sr.width > 0 ? {
+        left: +((br.x - sr.x) / sr.width * 100).toFixed(2),
+        top: +((br.y - sr.y) / sr.height * 100).toFixed(2),
+        width: +(br.width / sr.width * 100).toFixed(2),
+        height: +(br.height / sr.height * 100).toFixed(2)
+      } : null,
       floor: fr ? { x: +fr.x.toFixed(2), y: +fr.y.toFixed(2),
                     w: +fr.width.toFixed(2), h: +fr.height.toFixed(2) } : null,
       stage: { x: +sr.x.toFixed(2), y: +sr.y.toFixed(2),
@@ -246,7 +266,12 @@ async function measure(page, label) {
     // ★★舞台が 箱の まんなかから どれだけ ずれて いるか（★px）。
     const dy = +(((f.stage.y - f.anchor.y) - (f.anchor.h - f.stage.h) / 2)).toFixed(2);
     const dx = +(((f.stage.x - f.anchor.x) - (f.anchor.w - f.stage.w) / 2)).toFixed(2);
-    console.log("  %s … 箱の まんなかからの ずれ 横%spx 縦%spx", f.label, dx, dy);
+    console.log("  %s … 箱の まんなかからの ずれ 横%spx 縦%spx ／ ㋕の枠 %s",
+      f.label, dx, dy,
+      f.band ? ("左" + f.band.left + " 上" + f.band.top
+                + " 幅" + f.band.width + " 高" + f.band.height)
+             : ("なし（破線の札 " + f.dashed + "枚 ／ 添える1行 "
+                + (f.noteSeen ? "出ている" : "出ていない") + "）"));
   });
   out.frames.forEach((f) => {
     console.log("  %s … 箱 %sx%s ／ 舞台 %sx%s（比 %s）／ 家具 %d",

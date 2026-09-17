@@ -17983,14 +17983,23 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ★★字は `lib/sheepInteriorV2.js` が 持ちます。★ここに 書き写しません。
                         ★★枠は、★ながめるを 一度 通って いれば 必ず 出ます
                           （★したくへは ながめるからしか 来られません）。 */}
-                    <p style={{
-                      ...TYPE.mini, color: C.inkSoft, lineHeight: 1.8,
-                      margin: "8px 2px 0", textAlign: "center"
-                    }}>
-                      {VIEW_BAND_NOTE.map((line) => (
-                        <span key={line}>{line}<br /></span>
-                      ))}
-                    </p>
+                    {/* ★★★したくの ときだけ 出します（★2026-09-17）。
+                        ★★はじめ、★この 枝が 2つの 画面で 共通だ ことを 見落として
+                          ★いました。★`cameraOn` の 引数が 変わる だけ で、
+                          ★枝 そのものは 同じ です。
+                        ★★だから ながめるにも 1行 出て いました（★y=781・画面の 下）。
+                          ★★実機で 測って 分かりました。★字を 読んだ だけ では
+                            ★分かりません でした。 */}
+                    {homeState === DRESS ? (
+                      <p style={{
+                        ...TYPE.mini, color: C.inkSoft, lineHeight: 1.8,
+                        margin: "8px 2px 0", textAlign: "center"
+                      }}>
+                        {VIEW_BAND_NOTE.map((line) => (
+                          <span key={line}>{line}<br /></span>
+                        ))}
+                      </p>
+                    ) : null}
                   </div>
                 </div>
               ) : (
