@@ -16,7 +16,7 @@
 select o.name as 教室,
        count(*) as 人数,
        count(m.post_id) as 役職あり,
-       count(*) - count(m.post_id) as ★役職なし,
+       count(*) - count(m.post_id) as "★役職なし",
        count(*) filter (where m.role = 'owner') as owner,
        count(*) filter (where m.role = 'admin') as admin,
        count(*) filter (where m.role = 'teacher') as teacher,
