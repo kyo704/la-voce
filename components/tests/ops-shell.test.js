@@ -39,28 +39,46 @@ function eq(a, b, label) {
   const m = await import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
   const label = (r) => m.tabsFor(r).map((x) => x.label);
 
-  console.log("=== ① 役割ごとの 下タブ（★§3-3 の 表） ===");
-  eq(label("owner"), ["ホーム", "日程", "名簿", "行事", "連絡", "設定"], "owner は 6つ");
-  eq(label("admin"), ["ホーム", "日程", "名簿", "行事", "連絡"], "admin は 5つ（★設定なし）");
-  eq(label("staff"), ["日程"], "★staff は 日程 だけ");
-  eq(label("teacher"), [], "★teacher は 入りません");
-  eq(label("しらない役割"), [], "★知らない役割は 空（★勝手に 開けない）");
+  console.log("=== ① ★できことごとの 下タブ（★A2・2026-09-18） ===");
+  // ★★★きょうまで、★ここは **役割の 名**で 数えて いました
+  //   （`tabsFor("owner")` が 6つ、など）。
+  //   ★★A2 で、★役割の 名では 何も 開かなく なりました。
+  //     ★★**決めが 変わった** のです。★見張りが まちがって いた のでは ありません。
+  //   ★★いまの 決め ──「★できことを 持たない 方には、★1枚も 出さない」。
+  // ★★できことの 名は `lib/opsPerms.js` の `TAB_RULES` の とおり です。
+  //   ★★見当で 書きません ── ★`home` や `schedule` は **タブの 鍵**で あって、
+  //     ★できことの 名では ありません。★2026-09-18、★そこで つまずきました。
+  eq(label(["meibo", "sched_all", "gyoji", "renraku_all", "koma"]),
+    ["ホーム", "日程", "名簿", "行事", "連絡", "設定"], "★できこと 5つ → 6枚");
+  eq(label(["sched_mine"]), ["ホーム", "日程"], "★自分の 日程だけ → 2枚");
+  eq(label([]), [], "★できことが 無ければ 0枚");
   eq(m.OPS_TABS.length, 6, "帯は 6つ");
 
-  console.log("\n=== ② 入れるか ===");
-  eq(m.mayEnterOps("owner"), true, "owner は 入れる");
-  eq(m.mayEnterOps("admin"), true, "admin は 入れる");
-  eq(m.mayEnterOps("staff"), true, "staff も 入れる（★日程だけ）");
-  eq(m.mayEnterOps("teacher"), false, "★teacher は 入れない");
-  eq(m.mayEnterOps(null), false, "役割が 無ければ 入れない");
-  // ★★入れないのに 入口を 出さないこと
-  t(/入れないのに 入口を 出すと/.test(readRaw("lib", "opsShell.js")),
-    "★入口も 同じ判定で 決める、と 書いてある");
+  console.log("\n=== ①' ★★役割の 名では、★何も 開かない（★較正） ===");
+  // ★★これが この 直しの 肝 です。★わざと 役割の 名を 渡します。
+  //   ★★1枚でも 出れば、★落ち道が 残って います。
+  ["owner", "admin", "staff", "teacher", "しらない役割"].forEach((r) => {
+    eq(label(r), [], "★" + r + " の 名では 0枚");
+  });
 
-  console.log("\n=== ③ お金は owner だけ（★§1-1） ===");
-  eq(m.maySeeMoney("owner"), true, "owner は 見られる");
-  eq(m.maySeeMoney("admin"), false, "★admin は 見られない（★お金以外は 同じ）");
-  eq(m.maySeeMoney("staff"), false, "staff も 見られない");
+  console.log("\n=== ② 入れるか ===");
+  eq(m.mayEnterOps(["meibo"]), true, "★できことが あれば 入れる");
+  eq(m.mayEnterOps([]), false, "★できことが 無ければ 入れない");
+  eq(m.mayEnterOps(null), false, "★役職が 無ければ 入れない（★null）");
+  eq(m.mayEnterOps("owner"), false, "★★owner の 名では 入れない（★較正）");
+  eq(m.maySeeMoney(["bill"]), true, "★bill が あれば お金を 見られる");
+  eq(m.maySeeMoney("owner"), false, "★★owner の 名では 見られない（★較正）");
+  eq(m.mayEditRoster(["meibo"]), true, "★meibo が あれば 名簿を 直せる");
+  eq(m.mayEditRoster("admin"), false, "★★admin の 名では 直せない（★較正）");
+
+  console.log("\n=== ③ お金は『ご請求を 見る』だけ（★A2 の あと） ===");
+  // ★★きょうまで「owner だけ」でした。★A2 で、★名前では 開かなく なりました。
+  //   ★★守りたい ことは 同じ です ── ★お金は いちばん 重い ところ。
+  //     ★★変わったのは「★誰が それを 持つか」の 決め方 だけ です。
+  eq(m.maySeeMoney(["bill"]), true, "★bill を 持つ 方は 見られる");
+  eq(m.maySeeMoney(["meibo"]), false, "★名簿だけ の 方は 見られない");
+  eq(m.maySeeMoney([]), false, "★できことが 無ければ 見られない");
+  eq(m.maySeeMoney("owner"), false, "★★owner の 名では 見られない（★較正）");
   eq(m.maySeeMoney("teacher"), false, "teacher も 見られない");
 
   console.log("\n=== ④ ★健康側の 画面を 持たない（★§3-3・§7-7） ===");
@@ -128,11 +146,14 @@ function eq(a, b, label) {
       t(!/<HomeV2|<RecordV2Head|<LookBackV2/.test(vt.slice(at, shellAt)),
         "★返すまでに 個人の 画面を 描いていない");
     }
-    // ★★2026-09-11、★役割（role）では なく できこと（gate）で 確かめます。
-    //   ★受け皿つきです ── ★役職が 無ければ role に 戻ります。
+    // ★★★2026-09-18（★A2）、★受け皿（`|| role`）を 外しました。
+    //   ★★きょうまで、★役職が 無ければ 役割の 名に 戻して いました。
+    //   ★★台帳に 尋ねた 結果、★落ちて いたのは 3人、★どれも 試しの 口 でした。
     t(/mayEnterOps\((role|gate)\)/.test(vt), "★入れるかを 確かめてから 描く");
-    t(/const gate = permsOfMember\([^)]*\) \|\| role;/.test(vt),
-      "★できことで 分け、★無ければ 役割に 戻る");
+    t(/const gate = permsOfMember\([^)]*\);/.test(vt),
+      "★できこと だけ を 渡して いる");
+    t(!/permsOfMember\([^)]*\) \|\| role/.test(vt),
+      "★★受け皿（`|| role`）が 残って いない");
     // ★★もどれること
     t(/onBack=\{\(\) => setOpsOrgId\(null\)\}/.test(vt), "★もどると、個人のアプリへ 帰る");
     // ★★役割を 画面で 決めていないこと

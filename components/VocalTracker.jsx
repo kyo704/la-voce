@@ -13671,7 +13671,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     // ★★`|| role` は A13 で 外します（★2026-09-13）。
   //   ★★役職を 誰もが 持つように なれば、★名前の ちからに 落ちる 道は 要りません。
   //   ★★いまは 役職を 持たない 方の ぶんだけ 使われます。
-  const gate = permsOfMember(opsMembership, opsPostsById) || role;
+  // ★★★2026-09-18（★A2）、`|| role` を 外しました。
+  //   ★★役職（できこと）を 持たない 方が、★役割の 名に 落ちる 道 でした。
+  //     ★★`lib/opsShell.js` の `BY_ROLE` と 対に なって いました。
+  //     ★★あちらを 外した ので、★ここも 外します。★片方だけ 残しません。
+  //   ★★台帳に 尋ねました ── ★落ちて いたのは 3人、★どれも 試しの 口 です。
+  //   ★★`permsOfMember` は、★役職が 無い とき `null` を 返します。
+  //     ★★`mayEnterOps(null)` は false。★入口も 出ません。
+  //     ★★「空の 運営画面」を 出しません ── ★押せない 札を 置かない（★§8⑤）。
+  const gate = permsOfMember(opsMembership, opsPostsById);
     if (mayEnterOps(gate)) {
       return (
         <OpsShell

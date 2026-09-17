@@ -90,14 +90,25 @@ for (const post of POSTS) {
     // ★★2つの 道で 数えます（★2026-09-11）。
     //   ★いま　… ★古い 4つの 役割（★3段目の 前）
     //   ★あと　… ★できこと（★3段目の あと）
-    const tabs = shell.tabsFor(post.base).map((t) => t.key);
-    const ptabs = shell.tabsFor([...post.perms]).map((t) => t.key);
+    // ★★★2026-09-18（★A2）、★測る 先を 変えました。
+    //
+    //   ★★もとは `post.base`（★役割の 名）で 測って いました。
+    //     ★★わざと です ── ★「落ち道が どれだけ 見本と ちがうか」を
+    //       ★見せる ための 道具 でした。★33通り 出て いました。
+    //   ★★A2 で 落ち道を 外しました。★役割の 名では 何も 開きません。
+    //     ★★いま `post.base` で 測ると、★ぜんぶ「出さない」に なります。
+    //     ★★それは 実装の 姿では ありません ── ★**道が 1本に なった** ので、
+    //       ★★その 1本を 測ります。
+    //   ★★★数が 33 → 0 に なるのは、★道具を 甘く した から では ありません。
+    //     ★★下の 較正が、★それを 確かめます。
+    const tabs = shell.tabsFor([...post.perms]).map((t) => t.key);
+    const ptabs = tabs;
     let have;
-    if (sc.key === "bill" || sc.key === "pay") have = shell.maySeeMoney(post.base);
+    if (sc.key === "bill" || sc.key === "pay") have = shell.maySeeMoney([...post.perms]);
     else if (sc.key === "roster") have = tabs.includes("roster");
     else if (sc.key === "attend") have = tabs.includes("schedule");
     else if (sc.key === "monka") have = post.base === "teacher";
-    else if (sc.key === "post" || sc.key === "koma") have = shell.mayEditRoster(post.base);
+    else if (sc.key === "post" || sc.key === "koma") have = shell.mayEditRoster([...post.perms]);
     else have = tabs.includes(sc.key);
     // ★できことで 決めた ときの 答え
     let after;
@@ -128,6 +139,31 @@ for (const post of POSTS) {
 }
 console.log("\n○＝見本も実装も 出す ／ ・＝どちらも 出さない ／ ✕＝食い違い ／ ★漏＝実装が よけいに 出す");
 console.log(`食い違い ${mismatch} 通り（うち ★漏れ ${cannot} 通り）／ 全 ${rows.length} 通り`);
+
+// ★★★較正（★2026-09-18・A2）。
+//   ★★「落ち道が 本当に 無い」ことを、★この 道具 自身が 確かめます。
+//   ★★役割の 名を 渡して 何かが 開けば、★A2 は 効いて いません。
+//   ★★数が 0 に なった のは 道具を 甘く した から では ない、という 印 です。
+const 役割の名 = ["owner", "admin", "staff", "teacher"];
+let 開いた = [];
+for (const r of 役割の名) {
+  if (shell.tabsFor(r).length > 0) 開いた.push(r + "（tabsFor）");
+  if (shell.maySeeMoney(r)) 開いた.push(r + "（maySeeMoney）");
+  if (shell.mayEditRoster(r)) 開いた.push(r + "（mayEditRoster）");
+}
+console.log("\n★★較正 ── ★役割の 名では 何も 開かない こと");
+if (開いた.length) {
+  console.log("  ★★NG ── ★まだ 開きます: " + 開いた.join(" / "));
+  process.exitCode = 1;
+} else {
+  console.log("  ok  ★owner / admin / staff / teacher の どれでも 0 でした");
+}
+// ★★逆の 向きも。★できことを 渡せば 開く こと（★甘く なって いない 印）。
+const 試し = shell.tabsFor(["home", "meibo"]).length;
+console.log(試し > 0
+  ? "  ok  ★できことを 渡せば 開きます（" + 試し + "枚）"
+  : "  ★★NG ── ★できことでも 開きません。★締めすぎ です");
+if (試し === 0) process.exitCode = 1;
 
 console.log("\n★★学校ぜんぶに かかる できること（" + wide.length + "）");
 console.log("  " + PERM.filter((p) => p.schoolWide).map((p) => p.label).join("／"));
