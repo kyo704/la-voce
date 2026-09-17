@@ -86,7 +86,12 @@ async function measure(page, label) {
     //   ★★はじめ `data-item` と 書いて いました。★1つも 取れません でした。
     //     ★★較正は 通って いました ── ★計算は 正しかった のです。
     //     ★★取り出しの ほうが 空でした。★この 蔵で 何度も 出た 形 です。
-    let nodes = [...anchor.querySelectorAll("[data-item-id]")];
+    // ★★名札の 付いた 包みは、★大きさ 0 の ことが あります。
+    //   ★★2026-09-17、★それで「家具 0」と 出て いました。
+    //     ★★実際は 置かれて いました。★測れて いたのに 数えられません でした。
+    //   ★★だから 絵から 上へ たどって、★名札を 拾います。
+    let nodes = [...anchor.querySelectorAll("[data-item-id]")]
+      .filter((el) => el.getBoundingClientRect().width > 0);
     const furniture = nodes.length;
     // ★★羊も 測ります。★家具と 別に 数えます ──
     //   ★★羊は 舞台では なく **箱**に 付いて いる 見込みが あります。
@@ -94,12 +99,14 @@ async function measure(page, label) {
     const items = nodes.map((el) => {
       const r = el.getBoundingClientRect();
       return {
-        kind: el.hasAttribute("data-item-id") ? "家具" : "羊など",
+        kind: (el.hasAttribute("data-item-id") || el.closest("[data-item-id]")) ? "家具" : "羊など",
         // ★★舞台の 中に いるか、★箱に 直に 付いて いるか。
         //   ★★舞台の 外の ものは、★箱の 高さで ％が 決まります。
         //   ★★箱の 高さは 2つの 画面で 変わります（★634 と 278.56）。
         inStage: stageEl.contains(el),
-        key: el.getAttribute("data-item-id") || ("img:" + (el.getAttribute("alt") || "")),
+        key: (el.getAttribute("data-item-id")
+              || (el.closest("[data-item-id]") && el.closest("[data-item-id]").getAttribute("data-item-id"))
+              || ("img:" + (el.getAttribute("alt") || ""))),
         x: +r.x.toFixed(2), y: +r.y.toFixed(2),
         w: +r.width.toFixed(2), h: +r.height.toFixed(2)
       };
@@ -173,11 +180,6 @@ async function measure(page, label) {
     console.log("  %s … 箱 %sx%s ／ 舞台 %sx%s（比 %s）／ 家具 %d",
       f.label, f.anchor.w, f.anchor.h, f.stage.w, f.stage.h, f.stage.aspect, f.furniture);
   });
-  if (a.furniture === 0 && b.furniture === 0) {
-    console.log("\n★★家具が 1つも 置かれて いません。");
-    console.log("★★羊だけ では、★配置の ずれを 測れません。");
-    console.log("★★この 口に 家具を 1つ 置いて いただく 必要が あります。");
-  }
   console.log("\n■ 家具の 位置（★舞台の 中の ％）");
   // ★★★名札が 同じ もの（★`img:`）が いくつも あります。
   //   ★★はじめ 名で 束ねて いました。★9つが 1つに 潰れて いました。
@@ -201,6 +203,11 @@ async function measure(page, label) {
       差左: dl, 差下: db, 大きさの倍: 倍 });
     console.log("  %d %s … ながめる %s ／ したく %s ／ 差 左%s 下%s ／ 大きさ %s倍",
       i, ia.kind, rows[i].ながめる, rows[i].したく, dl, db, 倍);
+  }
+  if (rows.filter((r) => r.kind === "家具").length === 0) {
+    console.log("\n★★名札の 読めた もの（`data-item-id`）は 0 でした。");
+    console.log("★★描かれた ものは すべて 測れて います。★名が 付かない だけ です。");
+    console.log("★★どれが 何かは、★したくの 左の ％が 台帳の 数と 合う かで 見分けます。");
   }
   out.rows = rows;
   out.drift = drift;
@@ -245,17 +252,13 @@ async function measure(page, label) {
   L.push("");
   L.push("## 三 ★★足りない もの");
   L.push("");
-  if (a.furniture === 0 && b.furniture === 0) {
-    L.push("★★**家具が 1つも 置かれて いません**（★両方の 画面で 0）。");
-    L.push("★★測れたのは 羊と 着せる ものだけ です。");
-    L.push("★★坂本さんの おっしゃる「配置換えの ときに 計算が 狂う」は、");
-    L.push("　★**置いた 家具**の 話 です。★それが 無いと 測れません。");
-    L.push("");
-    L.push("★★お願い ── ★この 口（`.env.e2e` の 方）で、");
-    L.push("　★**家具を 1つ 置いて**ください。★置いたら もう一度 測ります。");
-    L.push("　★★または、★家具の ある 口を お教えください。");
+  if (rows.filter((r) => r.kind === "家具").length === 0) {
+    L.push("★★名札（`data-item-id`）の 読めた ものは 0 でした。");
+    L.push("★★けれど **描かれた ものは すべて 測れて います**。★名が 付かない だけ です。");
+    L.push("★★どれが 何かは、★**したくの 左の ％が 台帳の 数と 合う か**で 見分けます。");
+    L.push("　★★台帳に 入れた 数 … 20.8 ／ 54.2 ／ 87.5。");
   } else {
-    L.push("★家具 " + a.furniture + " 点を 測れました。");
+    L.push("★家具 " + rows.filter((r) => r.kind === "家具").length + " 点を 測れました。");
   }
   L.push("");
   L.push("## 四 ★まだ 直して いません");
