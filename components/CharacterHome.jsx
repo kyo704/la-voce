@@ -9,7 +9,7 @@ import { tileStyle, isNewMaterial } from "@/lib/sheepInterior";
 import SheepDressed from "@/components/SheepDressed";
 import InteriorLayer from "@/components/InteriorLayer";
 import { cameraOf, cameraStyle, ZOOM, ROOM_SWITCH_MS } from "@/lib/roomCamera";
-import { STAGE_ASPECT, stageSize, stageFit, stageBleed, stageStyle, stageOffsetY } from "@/lib/roomStage";
+import { STAGE_ASPECT, stageFit, stageBleed, stageStyle, stageOffsetY } from "@/lib/roomStage";
 // ★古い79点を、門の中の方から隠す決め。★ここ1か所が持ちます。
 import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
@@ -2273,9 +2273,12 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
     return () => clearTimeout(t);
   }, [camSwitching]);
 
-  const stage = fullBleed
-    ? stageFit(roomBoxW, roomBoxH, STAGE_ASPECT)
-    : stageSize(roomBoxW, roomBoxH, STAGE_ASPECT);
+  // ★★★2026-09-17、★式を 1本に しました（★裁定 その71）。
+  //   ★★`fullBleed` で 2本に 分けて いました ── ★収める／覆う。
+  //     ★★`stageStyle` の 中は いつも 覆う 側 でした。★食い違って いました。
+  //   ★★いつも `stageFit`（収める）です。★どの 画面でも、★どの 端末でも、
+  //     ★部屋ぜんぶが 入ります（★坂本さんの お決め）。
+  const stage = stageFit(roomBoxW, roomBoxH, STAGE_ASPECT);
   // ★舞台の 外を、★壁と 床の 色で 伸ばす ぶん。
   const bleed = fullBleed
     ? stageBleed(roomBoxW, roomBoxH, STAGE_ASPECT, FLOOR_BOTTOM_PCT)
