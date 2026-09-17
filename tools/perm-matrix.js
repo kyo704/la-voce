@@ -67,6 +67,21 @@ const shellSrc = fs.readFileSync(path.join(ROOT, "lib/opsShell.js"), "utf8")
 const permsSrc = fs.readFileSync(path.join(ROOT, "lib/opsPerms.js"), "utf8")
   .replace(/^export /gm, "");
 // eslint-disable-next-line no-new-func
+// ★★★まだ 作って いない 画面（★2026-09-18・坂本さんの お決め ㋐）。
+//
+//   ★★`pay`（支払い方法を 変える）…… ★運営の 画面に 控えが ありません。
+//     ★★`OpsSettings` は 金額を **出すだけ** です。★Stripe の 窓口へ 行けません。
+//     ★★`OpsShell:85` に「お支払いの ことは、教室の 責任者の 方が ご覧に なれます」
+//       ★という 断りが ある だけ です。
+//   ★★`koma`（学校の 時間の 割り方・場所）… ★運営の 画面に ありません。
+//     ★★`MyTimetable` の「自分の コマ」は **その方 自身**の もの です。
+//       ★学校の コマでは ありません。
+//
+//   ★★★無い ものを「出す」と 数えません。★見本との 差は 残します。
+//     ★★差が 残る ことが、★**まだ 作って いない**という 印 です。
+//     ★★作った 日に、★ここを `can(perms, "…")` に 変えます。★それが 引き金 です。
+const NO_SCREEN = Object.freeze({ pay: false, koma: false });
+
 const P = new Function(permsSrc
   + "; return { tabsForPerms, can, mayGrant, maySeeBill, mayPay, TEMPLATE_POSTS };")();
 const shell = new Function(
@@ -104,11 +119,19 @@ for (const post of POSTS) {
     const tabs = shell.tabsFor([...post.perms]).map((t) => t.key);
     const ptabs = tabs;
     let have;
-    if (sc.key === "bill" || sc.key === "pay") have = shell.maySeeMoney([...post.perms]);
+    // ★★★2026-09-18、★1つずつ 測り先を 合わせました。
+    //   ★★きょうまで、★`pay` を `bill` で、★`post` と `koma` を `meibo` で
+    //     ★測って いました。★**ちがう できこと**を 見て いました。
+    //   ★★そのうち 2つは、★画面 そのものが **まだ ありません**。
+    //     ★★無い 画面を「実装が 出す」と 数えません。★`false` に します。
+    //     ★★見本との 差は 残ります。★それが 正しい 姿 です ── ★まだ 無い の です。
+    if (sc.key === "bill") have = shell.maySeeMoney([...post.perms]);
+    else if (sc.key === "pay") have = NO_SCREEN.pay;
     else if (sc.key === "roster") have = tabs.includes("roster");
     else if (sc.key === "attend") have = tabs.includes("schedule");
     else if (sc.key === "monka") have = post.base === "teacher";
-    else if (sc.key === "post" || sc.key === "koma") have = shell.mayEditRoster([...post.perms]);
+    else if (sc.key === "post") have = P.can([...post.perms], "post");
+    else if (sc.key === "koma") have = NO_SCREEN.koma;
     else have = tabs.includes(sc.key);
     // ★できことで 決めた ときの 答え
     let after;

@@ -154,6 +154,10 @@ import OpsEvents from "@/components/OpsEvents";
 import OpsSettings from "@/components/OpsSettings";
 import { maySeeMoney } from "@/lib/opsShell";
 import { mayEnterOps, mayEditRoster, permsOfMember } from "@/lib/opsShell";
+// ★できことを 1つ 尋ねる 手（★役職の 画面の 門・2026-09-18）。
+//   ★★`can` は もう あります（★51行・`lib/entitlements`）。★名が ぶつかります。
+//   ★★別の 名で 取り込みます。★どちらの `can` かを、★読んで 分かる ように。
+import { can as canOps } from "@/lib/opsPerms";
 import { rosterCount, toRosterRows } from "@/lib/orgRoster";
 import RecordV2Head from "@/components/RecordV2Head";
 import {
@@ -13828,6 +13832,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   {maySeeMoney(gate) ? (
                     <OpsSettings members={opsMembers} staffLines={[]} />
                   ) : null}
+                  {/* ★★★役職の 画面は「ひとの 役職を 変える」（post）を 持つ 方だけ
+                      （★2026-09-18）。
+                      ★★これまでは、★設定の 帯を 開けた 方 みんなに 出て いました。
+                      ★★★守りは サーバに あります（`app/api/org/posts/route.js:56`
+                        … `perms.has("post")`）。★漏れては いません。
+                        ★★押しても、★サーバが 断ります。
+                      ★★けれど それは **押せない 札** です（★§8⑤）。
+                        ★★押せる ように 見えて、★押すと 断られる。
+                        ★★出さない ほうが 正しい です。 */}
+                  {canOps(gate, "post") ? (
                   <div style={{ marginTop: 16 }}>
                     <OpsPosts
                       posts={orgPosts[opsOrgId] || []}
@@ -13838,6 +13852,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       busy={postsBusy}
                       onAction={(payload) => handleOrgPosts(opsOrgId, payload)} />
                   </div>
+                  ) : null}
                 </>
               );
             }
