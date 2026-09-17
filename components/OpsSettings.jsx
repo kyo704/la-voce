@@ -3,7 +3,8 @@
 import { C } from "@/lib/tokens";
 import {
   rosterCount, monthlyFee, perHead, yen,
-  TIERS, MONTHLY_FLOOR, SETUP_FEE, SETUP_FEE_FROM, YEARLY_FREE_MONTHS
+  TIERS, MONTHLY_FLOOR, SETUP_FEE, SETUP_FEE_FROM, YEARLY_FREE_MONTHS,
+  PRICE_TAX_LABEL, PRICE_TAX_ROW_LABEL
 } from "@/lib/orgRoster";
 
 // ============================================================================
@@ -79,6 +80,14 @@ export default function OpsSettings({ members, staffLines }) {
         <div style={row}>
           <span style={{ color: C.inkSoft }}>初期費用（名簿{SETUP_FEE_FROM}人以上）</span>
           <span style={{ color: C.ink }}>{yen(SETUP_FEE)}円</span>
+        </div>
+        {/* ★★★2026-09-18、★「表示　税別」を 足しました。
+            ★★見本の 料金の 決まりの 5行目 です。★実装に 1文字も ありません でした。
+            ★★お金の 表示 です。★9,800円が 税込に 見えると、★ご請求と 食い違います。
+            ★★字は `lib/orgRoster.js` が 持ちます。★ここに 書き写しません。 */}
+        <div style={row}>
+          <span style={{ color: C.inkSoft }}>{PRICE_TAX_ROW_LABEL}</span>
+          <span style={{ color: C.ink }}>{PRICE_TAX_LABEL}</span>
         </div>
         <div style={row}>
           <span style={{ color: C.inkSoft }}>年の一括前払い</span>
