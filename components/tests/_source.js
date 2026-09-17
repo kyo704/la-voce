@@ -111,9 +111,23 @@ function assertAbsent(words, parts, assertTrue, label) {
 async function loadLib(...parts) {
   const path = require("path");
   const full = path.join(ROOT, ...parts);
+  // ★★★もとから 拡張子の ある もの（★`.json` など）に、★`.js` を 足しません。
+  //   ★★2026-09-17、`lib/sheepInteriorV2.js` が
+  //     `@/docs/assets/sheep-interior-index.json` を 読み込んで いて、
+  //     ★`…json.js` を 探しに 行き、★見つからず 落ちました。
+  //   ★★拡張子が 無い ときだけ `.js` を 補います。
   const body = readRaw(...parts).replace(
     /from "@\/(.+?)"/g,
-    (_, rel) => `from "${new URL("file://" + path.join(ROOT, rel) + ".js").href}"`);
+    (_, rel) => {
+      const full = path.join(ROOT, rel);
+      if (/\.json$/i.test(rel)) {
+        // ★★JSON は、★取り込みの 但し書きが 要ります（★Node の 決まり）。
+        //   ★★`with { type: "json" }` を 付けないと 落ちます。
+        return `from "${new URL("file://" + full).href}" with { type: "json" }`;
+      }
+      const withExt = /\.[a-z0-9]+$/i.test(rel) ? full : full + ".js";
+      return `from "${new URL("file://" + withExt).href}"`;
+    });
   return import("data:text/javascript;base64," + Buffer.from(body, "utf8").toString("base64"));
 }
 

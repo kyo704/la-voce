@@ -203,6 +203,8 @@ import { mealMacroTotals, usualTotals, macroRows } from "@/lib/nutritionTotals";
 import { correlationsToCsv, toCorrelationRow, correlationsFileName, bhQValues } from "@/lib/statNumbers";
 // ★解放の判定は、lib/character.js が持っています。★作り直しません。
 import { computeUnlocked } from "@/lib/character";
+// ★㋕ に 添える 1行（★裁定 その71・追補）。★字は lib が 持ちます。
+import { VIEW_BAND_NOTE } from "@/lib/sheepInteriorV2";
 import { countRecordedDays, isRecordedDay } from "@/lib/recordedDay";
 // ★★無料と有料の線（⑫・案B）。★判定は lib/freeTier.js が1か所で持ちます。
 //   ★画面で、条件を並べ直さないこと。
@@ -17975,6 +17977,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       say={sheepSay}
                       t={t}
                     />
+                    {/* ★★★㋕ に 添える 1行（★裁定 その71・追補・2026-09-17）。
+                        ★★枠だけ 出すと、★「置くな」と 読まれます。
+                          ★★外にも 置ける ことを、★字で 言います。
+                        ★★字は `lib/sheepInteriorV2.js` が 持ちます。★ここに 書き写しません。
+                        ★★枠は、★ながめるを 一度 通って いれば 必ず 出ます
+                          （★したくへは ながめるからしか 来られません）。 */}
+                    <p style={{
+                      ...TYPE.mini, color: C.inkSoft, lineHeight: 1.8,
+                      margin: "8px 2px 0", textAlign: "center"
+                    }}>
+                      {VIEW_BAND_NOTE.map((line) => (
+                        <span key={line}>{line}<br /></span>
+                      ))}
+                    </p>
                   </div>
                 </div>
               ) : (

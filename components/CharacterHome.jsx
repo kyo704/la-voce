@@ -8,14 +8,14 @@ import { tileStyle, isNewMaterial } from "@/lib/sheepInterior";
 // ★★着せかえた羊。★出す・出さないは、呼ぶ側（VocalTracker）が決めます。
 import SheepDressed from "@/components/SheepDressed";
 import InteriorLayer from "@/components/InteriorLayer";
-import { cameraOf, cameraStyle, ZOOM, ROOM_SWITCH_MS } from "@/lib/roomCamera";
+import { cameraOf, cameraStyle, visibleBandPct, ZOOM, ROOM_SWITCH_MS } from "@/lib/roomCamera";
 import { STAGE_ASPECT, stageFit, stageBleed, stageStyle, stageOffsetY } from "@/lib/roomStage";
 // ★古い79点を、門の中の方から隠す決め。★ここ1か所が持ちます。
 import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
 } from "@/lib/oldHouseVisibility";
 // ★動かせる内装が在るか／羊の重ね順。★決めは、あちらが持ちます。
-import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs, nextSitMs, zSwitchDelayMs, FLOOR_BOTTOM_PCT, WALL_HEIGHT_PCT , WALL_BAND, GRAB_PAD_PX, EDIT_OUTLINE_INSET_PX } from "@/lib/sheepInteriorV2";
+import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs, nextSitMs, zSwitchDelayMs, FLOOR_BOTTOM_PCT, WALL_HEIGHT_PCT , WALL_BAND, GRAB_PAD_PX, EDIT_OUTLINE_INSET_PX, VIEW_BAND_NOTE } from "@/lib/sheepInteriorV2";
 import SpeechBubble from "@/components/SpeechBubble";
 import { SOLO, TIMING, FACE_FOR, pickLine, nextSoloMs, pushRecent } from "@/lib/sheepSpeech";
 import { pickGesture, nextGestureMs, mayGesture, pushRecent as pushGesture } from "@/lib/sheepGestures";
@@ -2323,6 +2323,28 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
       : ZOOM
   });
 
+  // ★★★㋕ ── ★「ながめる で 見える ところ」の 枠（★裁定 その71・追補）。
+  //
+  //   ★★したくでは 部屋ぜんぶが 見えます。★ながめるは 寄って 切り取ります。
+  //     ★★窓の 上に 時計を 掛けても、★ながめるで 窓が 見えない ことが あります。
+  //     ★★「窓の 上」という 構図を 確かめられません。★飾る 作業が 成り立ちません。
+  //   ★★だから、★置く ときに「ここまでが 見えます」を 示します。
+  //
+  //   ★★★推し量りません。★**ながめるで 実際に 使った `cam` を 覚えて おきます**。
+  //     ★★したくで 計算し直すと、★ちがう 数に なります ──
+  //       ★倍率は `stage.w / roomBoxW` から 出ます。★箱が ちがえば ちがいます。
+  //       ★★iPad よこ … ながめる 781/1024 ＝ 0.76 → 倍率 2.1
+  //         ★したく 409/409 ＝ 1.00 → 倍率 1.6
+  //       ★★したくの 数で 描くと、★枠が **本当より 大きく** なります。
+  //         ★★「見えます」と 言って、★見えない ── ★いちばん まずい 誤りです。
+  //     ★★覚えが 無い うちは、★**出しません**。★見当で 描きません。
+  const lastViewCamRef = useRef(null);
+  useEffect(() => {
+    if (cameraOn && !editMode && cam && cam.z > 1) lastViewCamRef.current = cam;
+  }, [cameraOn, editMode, cam]);
+  // ★★寄って いる あいだは 出しません。★いま 見えて いる ところ だからです。
+  const viewBand = !cameraOn ? visibleBandPct(lastViewCamRef.current) : null;
+
   // ★★何もしないで 60秒 たったら、★眠ります（★2026-09-09）。
   //   ★★触るたびに 数え直します。
   useEffect(() => {
@@ -2457,6 +2479,27 @@ function RoomScene({ equipped, owned, onTogglePlacement, onUpdatePosition, wardr
               ★追う 相手が いないのに、★3.2秒 かけて いました。
           ★★だから、★切り替えの あいだ だけ 短い 数を 渡します。
             ★羊を 追う ときは、★これまでどおり WALK_MS の ままです。 */}
+      {/* ★★★㋕ ── ★「ながめる で 見える ところ」の 枠（★裁定 その71・追補）。
+          ★★カメラの **外**に 置きます。★中に 入れると 枠ごと 寄って しまい、
+            ★いつも 画面いっぱいに なります。★何も 伝えません。
+          ★★舞台の ％で 置きます。★家具と 同じ ものさし です。
+          ★★裁定の とおり ──
+            ・細い 破線 1本。★塗りません
+            ・色を 使いません（★線は `C.inkFaint`）
+            ・枠の **外を 暗くしません**（★「置くな」に 見えます）
+          ★★枠の 外にも 置けます。★禁じません。★見えない ことが 分かる だけ です。 */}
+      {viewBand ? (
+        <div aria-hidden="true" style={{
+          position: "absolute",
+          left: `${viewBand.left}%`, top: `${viewBand.top}%`,
+          width: `${viewBand.width}%`, height: `${viewBand.height}%`,
+          border: `1px dashed ${C.inkFaint}`,
+          borderRadius: 6,
+          background: "transparent",
+          pointerEvents: "none",
+          zIndex: UI_CHROME_Z - 1
+        }} />
+      ) : null}
       <div style={cameraStyle(cam, { editMode, walking: isWalking && !camSwitching,
         walkMs: camSwitching ? ROOM_SWITCH_MS : WALK_MS })}>
       {/* ★★場面は、★全画面の箱いっぱいに広げます。
