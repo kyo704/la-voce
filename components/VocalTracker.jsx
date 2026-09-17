@@ -13815,7 +13815,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               });
               return (
                 <>
-                  <OpsSettings members={opsMembers} staffLines={[]} />
+                  {/* ★★★ご請求の 数は「ご請求を 見る」（bill）を 持つ 方だけ（★2026-09-18）。
+                      ★★きょうまで、★設定の 帯を 開けた 方 **みんな**に 出て いました。
+                        ★★設定の 帯は `koma` / `master` / `post` / `bill` の
+                          ★どれか 1つ で 開きます（★`TAB_RULES`）。
+                        ★★つまり `koma`（時間の 割り方）だけ の 方にも、
+                          ★★**学校の お金が 見えて いました**。
+                      ★★裁定 §7-3 は「ご請求を 見る」を **別の できこと**に して います。
+                        ★★分けて ある ものを、★画面で 1つに して いました。
+                      ★★総当たりの 道具は、ここを `maySeeMoney` で 測って いました ──
+                        ★道具は 正しく、★画面が 追いついて いません でした。 */}
+                  {maySeeMoney(gate) ? (
+                    <OpsSettings members={opsMembers} staffLines={[]} />
+                  ) : null}
                   <div style={{ marginTop: 16 }}>
                     <OpsPosts
                       posts={orgPosts[opsOrgId] || []}
