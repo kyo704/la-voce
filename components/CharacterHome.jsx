@@ -15,7 +15,7 @@ import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
 } from "@/lib/oldHouseVisibility";
 // ★動かせる内装が在るか／羊の重ね順。★決めは、あちらが持ちます。
-import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs, nextSitMs, zSwitchDelayMs, FLOOR_BOTTOM_PCT, WALL_HEIGHT_PCT , WALL_BAND, GRAB_PAD_PX, EDIT_OUTLINE_INSET_PX, VIEW_BAND_NOTE } from "@/lib/sheepInteriorV2";
+import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs, nextSitMs, zSwitchDelayMs, FLOOR_BOTTOM_PCT, WALL_HEIGHT_PCT , WALL_BAND, GRAB_PAD_PX, EDIT_OUTLINE_INSET_PX, VIEW_BAND_NOTE, FURNITURE_FLOOR_TOP_PCT, GARDEN_BACKDROP_BOTTOM_PCT } from "@/lib/sheepInteriorV2";
 import SpeechBubble from "@/components/SpeechBubble";
 import { SOLO, TIMING, FACE_FOR, pickLine, nextSoloMs, pushRecent } from "@/lib/sheepSpeech";
 import { pickGesture, nextGestureMs, mayGesture, pushRecent as pushGesture } from "@/lib/sheepGestures";
@@ -1502,7 +1502,9 @@ function resolveGridCollision(targetLeftPct, siblingLefts) {
 // ラグだけは床に敷く別レイヤー（家具の手前・足元の空きスペースに独立して配置）。
 // aspect は各アイコンの viewBox（幅/高さ）と一致させ、部屋の形が変わっても絵が歪まないようにする。
 // width は「その層のscaleを掛ける前の基準サイズ」。実際の表示幅は width × LAYER_CONFIG[layer].scale。
-const FURNITURE_FLOOR_TOP = 98;
+// ★★2026-09-17、★数を lib へ 移しました。★床の 数と 並べて 置く ため です。
+//   ★★離して 置くと、★床を 動かした とき 片方だけ 残ります。
+const FURNITURE_FLOOR_TOP = FURNITURE_FLOOR_TOP_PCT;
 const FURNITURE_LAYOUT = {
   furniture_bed: { left: 13, top: FURNITURE_FLOOR_TOP, width: 26, layer: "mid", aspect: 60 / 46 },
   furniture_piano: { left: 41, top: FURNITURE_FLOOR_TOP, width: 26, layer: "mid", aspect: 90 / 60 },
@@ -2897,7 +2899,11 @@ function SpecialBackdropScene({ sceneKey }) {
   // ★★2026-09-13、★ここも 42／58 を 直書きして いました。★lib から 取ります。
   //   ★★庭の 包みは、★壁の ぶん（★上から 境目まで）に 重ねます。
   const wrapStyle = { position: "absolute", left: 0, right: 0,
-    bottom: `${FLOOR_BOTTOM_PCT - 26}%`, height: `${WALL_HEIGHT_PCT}%`, zIndex: 0 };
+    // ★★★2026-09-17、`FLOOR_BOTTOM_PCT - 26` を やめました。
+    //   ★★`26` に 意味は ありません でした。★もとの 直書き `22%` に 戻る ように
+    //     ★逆算して 置かれた 数 です（★`c12441af`）。★床とは 関わりが ありません。
+    //   ★★そのため、★床を 動かすと 庭の 背景も 一緒に 動いて いました。
+    bottom: `${GARDEN_BACKDROP_BOTTOM_PCT}%`, height: `${WALL_HEIGHT_PCT}%`, zIndex: 0 };
   if (sceneKey === "backdrop_western_castle") {
     return (
       <div style={wrapStyle}>

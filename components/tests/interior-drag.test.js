@@ -67,7 +67,14 @@ async function load(rel) {
   ok(/onPointerCancel=\{up\}/.test(home), "★途中でやめても、掴んだままにしない");
 
   console.log("④ ★床から、浮かないか");
-  ok(Array.isArray(M.FLOOR_BAND) && M.FLOOR_BAND[0] >= 60, "床の帯がある（" + M.FLOOR_BAND.join("〜") + "）");
+  // ★★★2026-09-17、★`>= 60` を やめました。
+  //   ★★60 は **覚えた 数** でした。★床を 48 → 56 に した とき、
+  //     ★帯の 上端を 52 に 広げ、★この 見張りが 落ちました。
+  //   ★★守りたいのは「★足もとが 床の 上に ある」こと です。
+  //     ★★床の 線は `FLOOR_TOP_PCT` が 持ちます。★数を 書き写しません。
+  ok(Array.isArray(M.FLOOR_BAND) && M.FLOOR_BAND[0] >= M.FLOOR_TOP_PCT,
+    "床の帯が 床の 上に ある（帯 " + M.FLOOR_BAND.join("〜")
+    + " ／ 床の 線 " + M.FLOOR_TOP_PCT + "）");
   ok(Array.isArray(M.WALL_BAND) && M.WALL_BAND[1] <= 66, "壁の帯がある（" + M.WALL_BAND.join("〜") + "）");
   ok(M.FLOOR_BAND[0] > M.WALL_BAND[1], "★床の帯と壁の帯が、重なっていない");
   ok(M.clampToBand(10, M.FLOOR_BAND) === M.FLOOR_BAND[0], "★天井へ落としても、床に戻す");

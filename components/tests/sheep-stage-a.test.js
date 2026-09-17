@@ -228,7 +228,16 @@ console.log("\n=== 既定の配置では、これまでと同じ座標になる�
 const off = Number((ui.match(/PILLOW_LEFT_OFFSET = (\d+)/) || [])[1]);
 const above = Number((ui.match(/PILLOW_ABOVE_FLOOR = (\d+)/) || [])[1]);
 const seat = Number((ui.match(/SEAT_ABOVE_FLOOR = (\d+)/) || [])[1]);
-const floor = Number((ui.match(/const FURNITURE_FLOOR_TOP = (\d+)/) || [])[1]);
+// ★★★2026-09-17、★数が lib に 移りました（`FURNITURE_FLOOR_TOP_PCT`）。
+//   ★★画面の 側は `const FURNITURE_FLOOR_TOP = FURNITURE_FLOOR_TOP_PCT;` です。
+//   ★★数字を 直に 探す 書き方だと、★移った 瞬間に 読めなく なります。
+//     ★★実際、★null に なって 落ちました。★値は 変わって いません。
+//   ★★どちらの 書き方でも 読める ように します。
+const floorLib = Number((
+  require("fs").readFileSync(
+    require("path").join(__dirname, "..", "..", "lib", "sheepInteriorV2.js"), "utf8")
+    .match(/FURNITURE_FLOOR_TOP_PCT = (\d+)/) || [])[1]);
+const floor = Number((ui.match(/const FURNITURE_FLOOR_TOP = (\d+)/) || [])[1]) || floorLib;
 const bedLeft = Number((ui.match(/furniture_bed: \{ left: (\d+)/) || [])[1]);
 assertEqual(bedLeft - off, 7, "既定のベッドなら、枕は left 7（従来どおり）");
 assertEqual(floor - above, 82, "既定のベッドなら、枕は top 82（従来どおり）");
