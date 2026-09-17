@@ -106,7 +106,12 @@ async function measure(page, label) {
         inStage: stageEl.contains(el),
         key: (el.getAttribute("data-item-id")
               || (el.closest("[data-item-id]") && el.closest("[data-item-id]").getAttribute("data-item-id"))
-              || ("img:" + (el.getAttribute("alt") || ""))),
+              // ★★名札が 無い ときは、★絵の 名で 見分けます（★2026-09-17）。
+              //   ★★`alt` は 空 でした。★どれが 何か 分からず、
+              //     ★「羊など」と しか 言えません でした。
+              //   ★★絵の 道の 末尾（`furniture_01.png` など）が、★いちばん 確かです。
+              || ("絵:" + String(el.getAttribute("src") || "")
+                    .split("?")[0].split("/").pop())),
         x: +r.x.toFixed(2), y: +r.y.toFixed(2),
         w: +r.width.toFixed(2), h: +r.height.toFixed(2)
       };
@@ -198,11 +203,20 @@ async function measure(page, label) {
     const db = +(pb.bottom - pa.bottom).toFixed(3);
     const 倍 = +(ia.w / ib.w).toFixed(3);
     if (Math.abs(dl) > 0.5 || Math.abs(db) > 0.5) drift += 1;
+    // ★★★1.6倍の 寄りが、★どの 点を 中心に かかって いるか を 出します。
+    //   ★★出る位置 = 中心 + (置いた位置 - 中心) × 倍
+    //     ★→ 中心 = (出る位置 - 置いた位置 × 倍) ÷ (1 - 倍)
+    //   ★★どの もの でも 同じ 中心が 出れば、★1つの カメラの しわざ です。
+    //   ★★ばらつけば、★ものごとに 別の 計算が 効いて います。
+    const 中心 = (出, 置) => 倍 === 1 ? null
+      : +((出 - 置 * 倍) / (1 - 倍)).toFixed(2);
     rows.push({ i, kind: ia.kind, key: ia.key, inStage: ia.inStage,
+      寄りの中心左: 中心(pa.left, pb.left),
+      寄りの中心下: 中心(pa.bottom, pb.bottom),
       ながめる: pa.left + " / " + pa.bottom, したく: pb.left + " / " + pb.bottom,
       差左: dl, 差下: db, 大きさの倍: 倍 });
-    console.log("  %d %s … ながめる %s ／ したく %s ／ 差 左%s 下%s ／ 大きさ %s倍",
-      i, ia.kind, rows[i].ながめる, rows[i].したく, dl, db, 倍);
+    console.log("  %d %s … 差 左%s 下%s ／ %s倍 ／ 寄りの中心 %s / %s",
+      i, ia.key, dl, db, 倍, rows[i].寄りの中心左, rows[i].寄りの中心下);
   }
   if (rows.filter((r) => r.kind === "家具").length === 0) {
     console.log("\n★★名札の 読めた もの（`data-item-id`）は 0 でした。");
@@ -239,10 +253,14 @@ async function measure(page, label) {
   L.push("");
   L.push("## 二 ★描かれた もの（★舞台の 中の ％・★左 / 下）");
   L.push("");
-  L.push("| # | 何 | ながめる | したく | 差 左 | 差 下 | 大きさの 倍 |");
-  L.push("|---|---|---|---|---|---|---|");
-  rows.forEach((r) => L.push("| " + r.i + " | " + r.kind + " | " + r.ながめる + " | "
-    + r.したく + " | " + r.差左 + " | " + r.差下 + " | " + r.大きさの倍 + " |"));
+  L.push("| # | 何 | ながめる | したく | 差 左 | 差 下 | 倍 | 寄りの 中心（左/下）|");
+  L.push("|---|---|---|---|---|---|---|---|");
+  rows.forEach((r) => L.push("| " + r.i + " | " + r.key + " | " + r.ながめる + " | "
+    + r.したく + " | " + r.差左 + " | " + r.差下 + " | " + r.大きさの倍
+    + " | " + r.寄りの中心左 + " / " + r.寄りの中心下 + " |"));
+  L.push("");
+  L.push("★★いちばん 右は、★**1.6倍の 寄りが かかって いる 中心**です。");
+  L.push("★★どの ものでも 同じ 中心が 出れば、★1つの カメラの しわざ です。");
   L.push("");
   const 倍 = rows.length ? rows[0].大きさの倍 : 0;
   L.push("★★**大きさが どれも " + 倍 + "倍 ちがいます。**");
