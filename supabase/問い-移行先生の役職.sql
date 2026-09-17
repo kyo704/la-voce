@@ -46,8 +46,8 @@ select m.user_id, o.name as 教室, m.role as もとの役割, p.name as 役職,
 from public.memberships m
 left join public.organizations o on o.id = m.org_id
 left join public.org_posts p on p.id = m.post_id
-where m.user_id in ('53ef27ed-0000-0000-0000-000000000000')  -- ★頭だけ 伺って います
-   or m.user_id::text like '53ef27ed%'
+-- ★★頭の 8文字 しか 伺って いません。★前方一致で 引きます。
+where m.user_id::text like '53ef27ed%'
    or m.user_id::text like '40fb914f%'
    or m.user_id::text like '5f9cf956%'
 order by m.user_id;
