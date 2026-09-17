@@ -15,7 +15,7 @@ import {
   HIDDEN_WHEN_NEW_INTERIOR, oldHouseKey, oldHouseList
 } from "@/lib/oldHouseVisibility";
 // ★動かせる内装が在るか／羊の重ね順。★決めは、あちらが持ちます。
-import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs, nextSitMs, zSwitchDelayMs, FLOOR_BOTTOM_PCT, WALL_HEIGHT_PCT , WALL_BAND, GRAB_PAD_PX, EDIT_OUTLINE_INSET_PX, VIEW_BAND_NOTE, FURNITURE_FLOOR_TOP_PCT, GARDEN_BACKDROP_BOTTOM_PCT } from "@/lib/sheepInteriorV2";
+import { hasMovableInterior, sheepZIndex, SHEEP_WANDER, SHEEP_SIZE, SHEEP_WIDTH_PCT, sheepSizePx, UI_CHROME_Z, seatPos, bedPos, interiorOf, WALK_MS, nextWalkRestMs, nextSitMs, zSwitchDelayMs, FLOOR_BOTTOM_PCT, WALL_HEIGHT_PCT , WALL_BAND, GRAB_PAD_PX, EDIT_OUTLINE_INSET_PX, VIEW_BAND_NOTE, FURNITURE_FLOOR_TOP_PCT, GARDEN_BACKDROP_BOTTOM_PCT, FLOOR_TOP_PCT } from "@/lib/sheepInteriorV2";
 import SpeechBubble from "@/components/SpeechBubble";
 import { SOLO, TIMING, FACE_FOR, pickLine, nextSoloMs, pushRecent } from "@/lib/sheepSpeech";
 import { pickGesture, nextGestureMs, mayGesture, pushRecent as pushGesture } from "@/lib/sheepGestures";
@@ -1515,8 +1515,17 @@ const FURNITURE_LAYOUT = {
 };
 // 壁掛けアイテムは床ではなく壁の帯（窓のない右手のスペース）にのみ、横一列に重ならないよう配置。
 // 羊のおうち仕様 §2.2: 壁掛けは back 層（壁・窓と同じ奥行き）。
-const WALL_BAND_MIN_TOP = 14;
-const WALL_BAND_MAX_TOP = 58;
+// ★★★2026-09-18、★14／58 を やめ、★`WALL_BAND` に そろえました（★お決め）。
+//
+//   ★★こちらは **いまの 101点**の 壁かけ（`wallhang` 5点）の ぶん です。
+//     ★★内装 249点の ほうは `WALL_BAND` を 使って いました。
+//     ★★同じ「壁に 掛ける」ことなのに、★**数が 2組** ありました。
+//   ★★★`58` は、★床の 線（52）より **下** です。
+//     ★★もとから、★壁の 外へ 出られました。★誰も 気づいて いません でした。
+//   ★★この 蔵の 持病の 形 です ── ★同じ 決めが 2か所に あり、★片方だけ 動く。
+//     ★★だから、★1つに します。★数は `lib` が 持ちます。
+const WALL_BAND_MIN_TOP = WALL_BAND[0];
+const WALL_BAND_MAX_TOP = WALL_BAND[1];
 const WALLHANG_LAYOUT = {
   wallhang_clock: { left: 54, top: 22, width: 8, layer: "back", aspect: 40 / 40 },
   wallhang_lamp: { left: 64, top: 26, width: 7, layer: "back", aspect: 30 / 40 },

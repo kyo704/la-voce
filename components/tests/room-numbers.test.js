@@ -53,6 +53,17 @@ function t(名, 条件, そえ) {
   ];
   壊れ.forEach((x) => t(`★★「${x.名}」は 落ちる（★較正）`, x.ok() === false));
 
+  console.log("\n=== ★壁の 帯は 1組だけ ===");
+  // ★★★2026-09-18、★`WALL_BAND_MIN_TOP = 14` / `MAX_TOP = 58` を やめました。
+  //   ★★同じ「壁に 掛ける」ことなのに、★数が 2組 ありました。
+  //   ★★`58` は 床の 線（52）より 下 で、★もとから 壁の 外に 出られました。
+  const ch0 = require("./_source").readCode("components/CharacterHome.jsx");
+  t("★★14／58 の 直書きが 消えて いる",
+    !/WALL_BAND_MIN_TOP = 14/.test(ch0) && !/WALL_BAND_MAX_TOP = 58/.test(ch0));
+  t("★`WALL_BAND` から 引いて いる",
+    /WALL_BAND_MIN_TOP = WALL_BAND\[0\]/.test(ch0)
+    && /WALL_BAND_MAX_TOP = WALL_BAND\[1\]/.test(ch0));
+
   console.log("\n=== ★庭の 背景は、★床と 切り離されて いる ===");
   const ch = require("./_source").readCode("components/CharacterHome.jsx");
   t("★★`FLOOR_BOTTOM_PCT - 26` が 消えて いる", !/FLOOR_BOTTOM_PCT - 26/.test(ch));
