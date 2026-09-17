@@ -142,7 +142,11 @@ async function measure(page, label) {
     }).filter((i) => i.w > 0 && i.h > 0);
     return {
       label: lab,
-      anchor: { w: +ar.width.toFixed(2), h: +ar.height.toFixed(2) },
+      // ★★箱の 位置も 取ります（★2026-09-17）。
+      //   ★★舞台が 箱の まんなかに 置かれて いるか を 見る ため です。
+      //   ★★直す 前の 式では、★iPad で 舞台が 86.7px 下に ずれて いました。
+      anchor: { x: +ar.x.toFixed(2), y: +ar.y.toFixed(2),
+                w: +ar.width.toFixed(2), h: +ar.height.toFixed(2) },
       floor: fr ? { x: +fr.x.toFixed(2), y: +fr.y.toFixed(2),
                     w: +fr.width.toFixed(2), h: +fr.height.toFixed(2) } : null,
       stage: { x: +sr.x.toFixed(2), y: +sr.y.toFixed(2),
@@ -166,10 +170,18 @@ async function measure(page, label) {
 
   const { chromium, devices } = require("playwright");
   const browser = await chromium.launch({ channel: "chrome" });
-  const dev = devices["iPhone 12"];
+  // ★★★端末を 選べる ように しました（★2026-09-17）。
+  //   ★★舞台の 式を 1本に した 直しは、★**比の ちがう 箱**で 効きます。
+  //     ★★iPhone（390×844）では、★収める と 覆うが 同じ 値を 返します。
+  //     ★★iPad よこ（1024×768）で、★はじめて 分かれます。
+  //   ★★使い方 … `ROOM_PROBE_DEVICE=ipad node tools/room_place_probe.js`
+  const 機種 = String(process.env.ROOM_PROBE_DEVICE || "iphone").toLowerCase();
+  const 設定 = 機種 === "ipad"
+    ? { ...devices["iPad (gen 7) landscape"], viewport: { width: 1024, height: 768 } }
+    : { ...devices["iPhone 12"], viewport: { width: 390, height: 844 } };
+  console.log("★機種: " + (機種 === "ipad" ? "iPad よこ 1024×768" : "iPhone 12 390×844"));
   const ctx = await browser.newContext({
-    ...dev, viewport: { width: 390, height: 844 },
-    locale: "ja-JP", timezoneId: "Asia/Tokyo"
+    ...設定, locale: "ja-JP", timezoneId: "Asia/Tokyo"
   });
   const page = await ctx.newPage();
   const out = { base, at: new Date().toISOString(), frames: [] };
@@ -181,9 +193,32 @@ async function measure(page, label) {
     await page.waitForURL(/\/dashboard/, { timeout: 45000 });
 
     // ★① ながめる ── ★ひつじの 画面を 出します。
-    const tab = page.locator('button:has-text("ひつじ"), [role="tab"]:has-text("ひつじ")').first();
-    if (await tab.count()) { await tab.click().catch(() => {}); }
-    await page.waitForTimeout(1500);
+    // ★★★広い 画面では、★札の 出かたが ちがいます（★決まりB）。
+    //   ★★2026-09-17、★iPad で「ひつじ」に 行けません でした。
+    //   ★★だから、★いくつかの 呼び方を 順に 試します。
+    //     ★★見つからなければ、★そのまま 止まります（★勝手に 進みません）。
+    const 呼び方 = [
+      'button:has-text("ひつじ")',
+      '[role="tab"]:has-text("ひつじ")',
+      'a:has-text("ひつじ")',
+      '[aria-label*="ひつじ"]',
+      'button:has-text("おうち")'
+    ];
+    for (const 呼 of 呼び方) {
+      const el = page.locator(呼).first();
+      if (await el.count()) {
+        await el.click().catch(() => {});
+        await page.waitForTimeout(1200);
+        if (await page.locator("#room-anchor").count()) break;
+      }
+    }
+    await page.waitForTimeout(800);
+    if (!(await page.locator("#room-anchor").count())) {
+      // ★★どこに 居るのかを、★そのまま 書き出します。★見当で 進みません。
+      const 札 = await page.evaluate(() => [...document.querySelectorAll("button, [role=tab], a")]
+        .map((e) => (e.textContent || "").trim()).filter((x) => x && x.length < 12).slice(0, 25));
+      console.error("★見えて いる 札: " + 札.join(" / "));
+    }
     if (!(await page.locator("#room-anchor").count())) {
       console.error("★止まりました ── ひつじの 画面に 行けません でした。"
         + "★画面の 名が 変わって いないか お確かめください。");
@@ -207,6 +242,12 @@ async function measure(page, label) {
   // ★③ くらべる
   const [a, b] = out.frames;
   console.log("\n■ 箱と 舞台");
+  out.frames.forEach((f) => {
+    // ★★舞台が 箱の まんなかから どれだけ ずれて いるか（★px）。
+    const dy = +(((f.stage.y - f.anchor.y) - (f.anchor.h - f.stage.h) / 2)).toFixed(2);
+    const dx = +(((f.stage.x - f.anchor.x) - (f.anchor.w - f.stage.w) / 2)).toFixed(2);
+    console.log("  %s … 箱の まんなかからの ずれ 横%spx 縦%spx", f.label, dx, dy);
+  });
   out.frames.forEach((f) => {
     console.log("  %s … 箱 %sx%s ／ 舞台 %sx%s（比 %s）／ 家具 %d",
       f.label, f.anchor.w, f.anchor.h, f.stage.w, f.stage.h, f.stage.aspect, f.furniture);
@@ -268,7 +309,8 @@ async function measure(page, label) {
   out.rows = rows;
   out.drift = drift;
 
-  const dst = path.join(ROOT, "docs/reports/_room_place_probe.json");
+  const 後ろ = 機種 === "ipad" ? "-ipad" : "";
+  const dst = path.join(ROOT, "docs/reports/_room_place_probe" + 後ろ + ".json");
   fs.writeFileSync(dst, JSON.stringify(out, null, 1));
 
   // ★★報告も、★測った この 道具が 書きます。★手で 書き写しません。
@@ -386,7 +428,8 @@ async function measure(page, label) {
   const lines = md.split("\n");
   const last = lines.filter((x) => x.trim()).pop();
   lines[2] = "全" + (lines.length - 1) + "行 / 末尾は「" + last + "」";
-  const mdPath = path.join(ROOT, "docs/reports/2026-09-17-羊の部屋-実機で測った数.md");
+  const mdPath = path.join(ROOT,
+    "docs/reports/2026-09-17-羊の部屋-実機で測った数" + 後ろ + ".md");
   fs.writeFileSync(mdPath, lines.join("\n"));
   console.log("\n★書き出し: " + dst);
   console.log("★書き出し: " + mdPath);
