@@ -56,6 +56,16 @@ def main():
   if len(rows) != 79:
     sys.exit("★止まりました ── おうちの ものが %d でした（★79 の はず）。" % len(rows))
 
+  # ★★古い 名（日本語）も 出します（★Opus の お求め・2026-09-18）。
+  #   ★★「和風の 鍵が、★和風の 絵に 当たって いるか」を 見るには、
+  #     ★★両方の 名と **様式**が 要ります。★鍵だけでは 判じられません。
+  import re as _re
+  tr = io.open(os.path.join(ROOT, "lib/translations.js"), encoding="utf-8").read()
+
+  def ja(nk):
+    m = _re.search(r"\b" + _re.escape(str(nk)) + r':\s*\{\s*ja:\s*"([^"]*)"', tr)
+    return m.group(1) if m else ""
+
   idx = json.load(io.open(os.path.join(ROOT, "docs/assets/sheep-interior-index.json"),
                           encoding="utf-8"))["items"]
   pool = {}
@@ -67,6 +77,7 @@ def main():
     pool.setdefault(c, []).append(x)
 
   used = {}
+  取れた = set()   # ★★名で 先に 当てた 絵。★二度 使いません。
   out = []
   足りない = []
   for r in rows:
@@ -77,14 +88,40 @@ def main():
                   if r["key"] in NOT_ART else "★★描き足しが 要ります"})
       continue
     lst = pool.get(to, [])
+    # ★★★名で 近い ものを 先に 当てます（★2026-09-18・Opus の ご指摘）。
+    #   ★★順に 当てる だけ では、★`floor_tatami`（畳）に
+    #     ★「ウォルナット」が 当たりました。★和風の 鍵に 洋風の 絵 です。
+    #   ★★古い 名の 中の 言葉が、★新しい 名にも あれば、★そちらを 先に。
+    #   ★★これでも **決めでは ありません**。★手がかりを 増やす だけ です。
+    候補 = None
+    古名 = ja(r.get("nameKey")) or ""
+    for 語 in ["畳", "テラコッタ", "カーペット", "絨毯", "大理石", "タイル",
+               "障子", "格子", "円窓", "丸窓", "アーチ", "ステンドグラス",
+               "竹", "和紙", "煉瓦", "しっくい", "漆喰", "板", "石"]:
+      if 語 and 語 in 古名:
+        空き = [x for x in lst if x["key"] not in 取れた
+                and 語 in (x.get("name") or "")]
+        if 空き:
+          候補 = 空き[0]
+          break
+    if 候補 is not None:
+      取れた.add(候補["key"])
+      out.append({**r, "new": 候補["key"], "newName": 候補.get("name", ""),
+                  "newStyle": 候補.get("style", ""), "newCat": to,
+                  "note": "★名で 合わせました"})
+      continue
     i = used.get(to, 0)
+    while i < len(lst) and lst[i]["key"] in 取れた:
+      i += 1
+    used[to] = i
     if i >= len(lst):
       足りない.append(r["key"])
       out.append({**r, "new": None, "note": "★★当てる 先が 足りません"})
       continue
     used[to] = i + 1
+    取れた.add(lst[i]["key"])
     out.append({**r, "new": lst[i]["key"], "newName": lst[i].get("name", ""),
-                "newCat": to, "note": ""})
+                "newStyle": lst[i].get("style", ""), "newCat": to, "note": ""})
 
   if len(out) != 79:
     sys.exit("★止まりました ── 表が %d 行に なりました。" % len(out))
@@ -130,20 +167,22 @@ def main():
   w("")
   w("## ★表（79行）")
   w("")
-  w("| 古い 鍵 | 古い 分類 | → | 新しい 鍵 | 新しい 名 | 覚え書き |")
+  w("| 古い 鍵 | 古い 名前 | 新しい 絵 | 新しい 名前 | 様式 | 覚え書き |")
   w("|---|---|---|---|---|---|")
   for x in out:
-    w("| `%s` | %s | → | %s | %s | %s |" % (
-      x["key"], x["category"],
+    w("| `%s` | %s | %s | %s | %s | %s |" % (
+      x["key"], ja(x.get("nameKey")) or "—",
       ("`%s`" % x["new"]) if x.get("new") else "★★—",
-      x.get("newName", ""), x.get("note", "")))
+      x.get("newName", "") or "—", x.get("newStyle", "") or "—",
+      x.get("note", "")))
   w("")
   w("## ★★見て いただきたい ところ")
   w("")
   w("★★機械は「順に 当てた」だけ です。★中身を 見て いません。")
-  w("　★れい … `floor_tatami`（畳）に、★`floor_03` が 当たって います。")
-  w("　★★その `floor_03` が 畳かどうかは、★分かりません。")
-  w("★★★**名で 見て、★おかしい ものを 教えて ください。**")
+  w("　★★**様式**の 列を ご覧ください。★和風の 鍵に 洋風の 絵が 当たって いれば 誤り です。")
+  w("　★れい … `floor_tatami`（畳）に、★洋風の 絵が 当たって いないか。")
+  w("　　　　  `window_shoji`（障子）に、★格子でない 絵が 当たって いないか。")
+  w("★★★**名と 様式で 見て、★おかしい ものを 教えて ください。**")
   w("　★★入れ替えるのは、★この 表の 1列を 書き直す だけ です。")
 
   body = "\n".join(L) + "\n"
