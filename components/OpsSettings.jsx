@@ -3,7 +3,7 @@
 import { C } from "@/lib/tokens";
 import { permHeadLine } from "@/lib/opsPerms";
 import {
-  rosterCount, monthlyFee, perHead, yen,
+  rosterCount, monthlyFee, perHead, yen, billPlans,
   TIERS, MONTHLY_FLOOR, SETUP_FEE, SETUP_FEE_FROM, YEARLY_FREE_MONTHS,
   PRICE_TAX_LABEL, PRICE_TAX_ROW_LABEL
 } from "@/lib/orgRoster";
@@ -75,6 +75,38 @@ export default function OpsSettings({ members, staffLines, postName, perms }) {
           <span style={{ color: C.inkSoft }}>今月のご請求</span>
           <span style={{ color: C.ink }}>{yen(fee)}円</span>
         </div>
+
+        {/* ★★計算の 内訳（★2026-09-18・裁定 ⑥）。
+            ★★★「稟議の 数字です。★無いと 通りません」（★Opus・2026-09-18）。
+              ★★9月10日の 見立て ──「月75,000円の 稟議を 通す 数字が まだ 無い」。
+            ★★どの段で いくらに なるか を、★3行 とも 出します。
+              ★★安いほうを 当てた、と 書くだけでは 追えません。
+              ★★★当てなかった ほうも 出して はじめて、★確かめられます。
+            ★★数は lib/orgRoster.js の `billPlans` が 出します。
+              ★★`monthlyFee` も 同じ 関数を 使います。★内訳と 答えは ずれません。
+            ★★5人までは 0円 です（★裁定）。★その ときは 内訳を 出しません。
+              ★★出すと「77,600円」だけが 目に 入り、★0円が 伝わりません。 */}
+        {fee > 0 ? (
+          <div style={{
+            background: C.paper, border: `1px solid ${C.line}`, borderRadius: 10,
+            padding: "10px 12px", marginTop: 10,
+            fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 2
+          }}>
+            {billPlans(n).map((p) => {
+              const えらばれた = p.yen === fee;
+              return (
+                <div key={p.rate} style={{
+                  color: えらばれた ? C.ink : C.inkSoft,
+                  fontWeight: えらばれた ? 700 : 400
+                }}>
+                  {`${p.heads}人 × ${p.rate}円　＝ ${yen(p.yen)}円`}
+                  {えらばれた ? "　←　いちばん 安いもの" : ""}
+                </div>
+              );
+            })}
+            <div>{`下限 ${yen(MONTHLY_FLOOR)}円（下回りません）`}</div>
+          </div>
+        ) : null}
       </div>
 
       {/* ★★料金の 決まり。★lib から 組み立てます。★書き写しません。 */}
