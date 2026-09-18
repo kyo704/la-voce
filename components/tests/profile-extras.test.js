@@ -80,7 +80,13 @@ function ok(name, cond, extra) {
 
   console.log("■ ★案A ── 同時に 走らせる");
   const vt = readCode("components", "VocalTracker.jsx");
-  ok("★同時に 走らせている", /const \[noticeRes, perfRes, resultRes, markerRes, inventoryRes\] = await Promise\.all\(\[/.test(vt));
+  // ★★★見るのは「同時に 走らせて いるか」です。★並びの 字では ありません。
+//   ★★2026-09-18、★`monkaReadRes` が 1つ 増えて 落ちました。
+//     ★★増やすのは 正しい こと です。★見張りが 古い 並びを 覚えて いました。
+//   ★★★数える ものを 変えます ── ★`Promise.all` で 走らせて いるか、
+//     ★★そして `noticeRes` が その 中に いるか。★字を 丸ごと 覚えません。
+ok("★同時に 走らせている",
+  /const \[noticeRes[^\]]*\] = await Promise\.all\(\[/.test(vt));
   // ★★見るのは「はじめの読み込み」の ところだけです。
   //   ★★ほかの場所（★あとから 押したときの 読み書き）は、★順で かまいません。
   //   ★全体を 見ると、★関わりのない所で 落ちます。

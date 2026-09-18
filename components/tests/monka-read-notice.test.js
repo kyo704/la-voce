@@ -13,8 +13,9 @@
 // ============================================================================
 
 const assert = require("assert");
+const fs = require("fs");
 const path = require("path");
-const { readCode, loadLib } = require("./_source");
+const { readCode, loadLib, stripComments } = require("./_source");
 
 let 数 = 0;
 function ok(cond, 名) {
@@ -76,6 +77,48 @@ function ok(cond, 名) {
       "★落ちました ── 太い 字が 本文に ありません: " + b);
   });
   console.log("  ok  太い 字が、★ぜんぶ 本文の 中に ある（" + A.JOIN_WL_BOLD.length + "）");
+
+  // ------------------------------------------------------------------------
+  // ★五 ★見られた ことを、★ご本人に お伝えする（★裁定 その76 ③）
+  // ------------------------------------------------------------------------
+  const N = await loadLib("lib", "monkaReadNotice.js");
+
+  ok(N.noticeLine("2026-09-18T04:00:00Z", "てすと")
+    === "9月18日、あなたと てすと 先生の やりとりが 確かめられました。",
+    "1行の 形が 裁定の とおり");
+  ok(N.noticeLine("2026-09-18T04:00:00Z", null)
+    === "9月18日、あなたと 先生の やりとりが 確かめられました。",
+    "お名前が 読めない ときは「先生」と だけ");
+  // ★★★「名前を表示できませんでした」を ここに 混ぜない。
+  //   ★★2026-09-18、★招かれて いる 1枚で 同じ ことが 起きて いました。
+  ok(!/表示できません/.test(N.noticeLine("2026-09-18T04:00:00Z", null)),
+    "読めなかった 断りを 混ぜて いない");
+
+  // ★★誰が 見たかを 出さない ── ★台帳の 関数が そもそも 返しません。
+  // ★★★注を 落として から 見ます（★また 同じ 罠に 当たりました）。
+  //   ★★紙の 注に「`ended_at` で 絞りません」と 書いて あります。
+  //   ★★落とさずに 探すと、★自分の 注に 当たって 落ちます。
+  const 紙 = stripComments(fs.readFileSync(
+    path.join(__dirname, "..", "..", "supabase/migration_monka_read_notices.sql"), "utf8"), ".sql");
+  const 返す = /returns table \(([^)]*)\)/i.exec(紙);
+  assert.ok(返す, "★止まりました ── 関数の 返す ものを 読めません。");
+  ok(!/viewer/i.test(返す[1]), "台帳の 関数が、★誰が 見たかを 返さない");
+  ok(/viewed_at/.test(返す[1]) && /teacher_name/.test(返す[1]),
+    "返すのは 日づけと 先生の お名前 だけ");
+
+  // ★★やめた あとも 知らせる（★裁定 その76 追補）。
+  ok(!/ended_at/.test(紙), "やめた あとも 出す（ended_at で 絞って いない）");
+
+  // ★★日数を 書き写して いない。★連絡と 同じ ところから 取る。
+  const 束 = readCode("lib", "monkaReadNotice.js");
+  ok(/HIDE_AFTER_DAYS/.test(束), "日数は lib/renraku.js から 取る");
+  ok(!/\b90\b/.test(束), "90 を 書き写して いない");
+
+  // ★★画面が 字を 書き写して いない。
+  ok(!/確かめられました/.test(本体), "画面が 1行を 書き写して いない");
+  // ★★片づける もの では ない ── ★既読の 仕掛けを つけて いない。
+  const 描く = 本体.slice(本体.indexOf("monkaReadNotices("), 本体.indexOf("monkaReadNotices(") + 900);
+  ok(!/markNoticeShown/.test(描く), "「わかりました」を 置いて いない（片づける ものでは ありません）");
 
   console.log("\n★" + 数 + "件 通りました ── 先に お伝えする 1行");
 })().catch((e) => { console.error(e.message || e); process.exit(1); });

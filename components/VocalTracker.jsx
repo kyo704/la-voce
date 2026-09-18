@@ -76,6 +76,10 @@ import ReauthGate from "@/components/ReauthGate";
 import RecoveryCodeCard from "@/components/RecoveryCodeCard";
 // ★★お知らせの画面（v3・2026-09-03 確定）。★文面は lib/notices.js が持ちます。
 import NoticeScreen from "@/components/NoticeScreen";
+// ★★確かめられた ことの お知らせ（★裁定 その76 ③・2026-09-18）。
+//   ★★字も、いつまで 出すかも lib が 持ちます。★ここでは 決めません。
+import { NOTICE_HEAD as MONKA_READ_HEAD, RECENT_DAYS as MONKA_READ_DAYS,
+  visibleNotices as monkaReadNotices } from "@/lib/monkaReadNotice";
 // ★★羊の着せかえ（Stage 1・2026-09-05 夜）。★まだ坂本さんにしか出しません。
 import WardrobePanel from "@/components/WardrobePanel";
 import Box2Gift from "@/components/Box2Gift";
@@ -6590,8 +6594,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //   ★★1つ 失敗しても、★ほかは 進みます。★allSettled では なく、
       //     ★どれも 自分で 誤りを 抱えて 返る 形なので、★all で 足ります。
       //   ★順に 使いたいものは、★ここに 入れません（★プロフィール本体など）。
-      const [noticeRes, perfRes, resultRes, markerRes, inventoryRes] = await Promise.all([
+      const [noticeRes, monkaReadRes, perfRes, resultRes, markerRes, inventoryRes] = await Promise.all([
         supabase.from("user_notices").select("notice_key, shown_at").eq("user_id", userId),
+        // ★★確かめられた ことの お知らせ（★裁定 その76 ③・2026-09-18）。
+        //   ★★読めなくても、★ほかは 進みます（★この 束の 決め）。
+        supabase.rpc("get_monka_read_notices"),
         // ★★morning_words は、★本番の 朝に そのまま 返す ことばです
         //   （★裁定 2026-09-11・その15 ②／★supabase/2026-09-11-本番の朝に返すことば.sql）。
         //   ★★アプリは この 字を 読みません。★そのまま 出すだけです。
@@ -6609,6 +6616,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         supabase.from("character_inventory").select("item_key").eq("user_id", userId)
       ]);
       const noticeRows = noticeRes.data, noticeError = noticeRes.error;
+      // ★★確かめられた ことの お知らせ（★裁定 その76 ③）。
+      //   ★★読めなかった ときは、★黙って 空に しません。★誤りを 書き出します。
+      //     ★★「知らせが 無い」と「読めて いない」は ちがいます。
+      //     ★★画面には 出しません ── ★出すと、★知らせと 見分けが つきません。
+      if (monkaReadRes && monkaReadRes.error) {
+        console.error("★確かめられた ことの お知らせを 読めませんでした:", monkaReadRes.error);
+      }
+      setMonkaReadRows((monkaReadRes && monkaReadRes.data) || []);
       if (mounted && !noticeError) setNoticeState(noticeStateFromRows(noticeRows));
 
       const cohortRow = extras.rows.cohort;
@@ -10722,6 +10737,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const { error } = await supabase.from("profiles").update(patch).eq("id", userId);
     if (error) console.error("見やすさの設定を保存できませんでした:", error);
   }
+
+  // ★★確かめられた ことの お知らせ（★裁定 その76 ③）。
+  //   ★★出どころは `monka_read_log` **1つ** です。
+  //     ★★知らせの 表を 別に 作りません。★同じ 事実が 2か所に 残ります。
+  //   ★★台帳の 関数は、★誰が 見たかを 返しません（★報復を 避ける）。
+  const [monkaReadRows, setMonkaReadRows] = useState([]);
 
   // 知らせを既読にする。★列ではなく user_notices に1行入れます。
   //   同じ鍵は主キーで弾かれるので、二重に入りません。
@@ -14894,6 +14915,26 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       </div>
                     </div>
                   )}
+                  {/* ★★★確かめられた ことの お知らせ（★裁定 その76 ③・2026-09-18）。
+                      ★★「○月○日、あなたと ○○先生の やりとりが 確かめられました」
+                      ★★★誰が 見たかは 出しません（★報復を 避ける）。
+                        ★★台帳の 関数が、★そもそも 返しません。
+                      ★★★「わかりました」を 置きません。★既読に しません。
+                        ★★これは お報せ です。★片づける もの では ありません。
+                        ★★90日で ひとりでに 出なく なります（★連絡と 同じ 長さ）。
+                      ★★字も 日数も lib/monkaReadNotice.js が 持ちます。 */}
+                  {monkaReadNotices(monkaReadRows, todayISO(), MONKA_READ_DAYS).length > 0 ? (
+                    <div className="rounded-2xl p-4 border"
+                      style={{ background: C.card, borderColor: C.line }}>
+                      <p className="text-sm" style={{ color: C.ink, fontWeight: 700, margin: "0 0 8px" }}>
+                        {MONKA_READ_HEAD}
+                      </p>
+                      {monkaReadNotices(monkaReadRows, todayISO(), MONKA_READ_DAYS).map((t) => (
+                        <p key={t} className="text-sm"
+                          style={{ color: C.ink, lineHeight: 1.9, margin: "0 0 4px" }}>{t}</p>
+                      ))}
+                    </div>
+                  ) : null}
                   {/* 1回だけの知らせ（lib/notices.js）。
                       ★出すのは、まだ既読でなく、かつ文字が既定の大きさのときだけ。
                         すでに大きくしている人に「大きくできます」と言わないため。
