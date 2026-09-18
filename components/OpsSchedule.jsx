@@ -3,10 +3,14 @@
 import { useState } from "react";
 import useWindowWidth from "@/components/useWindowWidth";
 import { C } from "@/lib/tokens";
+// ★★小見出しの 字は uiKit が 持ちます。
+import { TYPE } from "@/lib/uiKit";
 import {
   VIEWS, WIDE_AT, layoutOf, hours, hourOf, timeOf, dateOf,
   // ★★誰に どの 姿を 出すか（★裁定 その85 Q1・2026-09-18）。
   scheduleViewFor, MINE_ONLY_HEAD, MINE_ONLY_LINE, overlapChipLabel,
+  // ★★字（★裁定 その85 R1〜R4・2026-09-18）。★lib が 持ちます。
+  SUB_LINE, DAY_NOTES, WEEK_NOTES, WEEK_HEAD_TAIL, SLOT_MARK, SLOT_NOT_YET,
   dayGrid, overlapsOf, weekHeat
 } from "@/lib/opsSchedule";
 import { mayDragBlocks, DRAG_NOTE } from "@/lib/opsShell";
@@ -38,6 +42,29 @@ const TIME_COL = 46;
 // ★★幅を 見る 仕掛けは `components/useWindowWidth.js` に 移しました（★2026-09-18）。
 //   ★★同じ ものが 4か所に あり、★2つだけ 向きの 変化を 聞いて いました。
 
+/**
+ * ★注の 1行（★太い ところは 行の 頭 とは 限りません）。
+ *
+ *   ★★2026-09-18、★役職の 表で そこを 読み違えました。★同じ 形を 使います。
+ */
+function Note({ items }) {
+  return (
+    <p style={{ ...small, lineHeight: 1.9 }}>
+      {items.map((n) => (
+        <span key={n.text} style={{ display: "block" }}>
+          {n.bold ? (
+            <>
+              {n.text.slice(0, n.text.indexOf(n.bold))}
+              <b style={{ color: C.ink }}>{n.bold}</b>
+              {n.text.slice(n.text.indexOf(n.bold) + n.bold.length)}
+            </>
+          ) : n.text}
+        </span>
+      ))}
+    </p>
+  );
+}
+
 function mmdd(iso) {
   return `${Number(iso.slice(5, 7))}月${Number(iso.slice(8, 10))}日`;
 }
@@ -58,6 +85,9 @@ export default function OpsSchedule({
   //   ★★★決めは lib/opsSchedule.js が 持ちます。★ここでは 判じません。
   const 姿 = scheduleViewFor(perms);
   const [view, setView] = useState("day");
+  // ★★空いた ところを 押した ときの 1行（★裁定 その85 R3）。
+  //   ★★出しっぱなしに しません。★別の ところを 押すと 消えます。
+  const [slotNote, setSlotNote] = useState("");
   const width = useWindowWidth();
   const layout = layoutOf(width);
   const ids = (teachers || []).map((x) => x.id);
@@ -106,7 +136,11 @@ export default function OpsSchedule({
 
       {/* ★★自分の ぶん だけ だ、と はっきり 書きます。
           ★★書かないと、★学校に レッスンが これ だけ しか 無い と 読めます。 */}
-      {自分だけ ? <p style={small}>{MINE_ONLY_LINE}</p> : null}
+      {自分だけ ? <p style={small}>{MINE_ONLY_LINE}</p> : (
+        /* ★★題の 下の 1行（★見本の `.sub`・★裁定 その85 R1）。
+           ★★日づけは 題の 横に 出て います。★ここでは 繰り返しません。 */
+        <p style={small}>{SUB_LINE}</p>
+      )}
 
       {/* ★★見せ方の 切り替え。★1つの日程に 対する ものです。
           ★★よこ持ち（⑩）は ここに 出しません。★選ばせないからです。 */}
@@ -164,12 +198,35 @@ export default function OpsSchedule({
                     textOverflow: "ellipsis", whiteSpace: "nowrap", padding: "0 4px"
                   }}>{nameOf ? nameOf(col.teacherId) : ""}</div>
                   <div style={{ position: "relative", height: hours().length * 44 }}>
-                    {hours().map((h) => (
-                      <div key={h} style={{
-                        position: "absolute", top: (h - hours()[0]) * 44, left: 0, right: 0,
-                        height: 44, borderTop: `1px solid ${C.line}`
-                      }} />
-                    ))}
+                    {/* ★★★空いて いる ところ（★見本の `.slot`・★裁定 その85 R3）。
+                         ★★★押せない 札を 置きません。★けれど 押すと 何かが 起きるのは よい ──
+                           ★★裁定 その84 ──「押すと『まだ できません』と 出る」は よい。
+                           ★★「押せるのに 何も 起きない」が だめ です。
+                         ★★コマの ある ところには 出しません。★重ねません。
+                         ★★字は lib/opsSchedule.js が 持ちます。 */}
+                    {hours().map((h) => {
+                      const 埋まって = col.lessons.some((l) => {
+                        const v = hourOf(timeOf(l));
+                        return v != null && Math.floor(v) === h;
+                      });
+                      return (
+                        <div key={h} style={{
+                          position: "absolute", top: (h - hours()[0]) * 44, left: 0, right: 0,
+                          height: 44, borderTop: `1px solid ${C.line}`
+                        }}>
+                          {埋まって ? null : (
+                            <button type="button"
+                              onClick={() => setSlotNote(SLOT_NOT_YET)}
+                              aria-label={SLOT_NOT_YET}
+                              style={{
+                                width: "100%", height: "100%", minHeight: 44,
+                                border: "none", background: "transparent",
+                                color: C.ink4, fontSize: "0.75rem", cursor: "pointer"
+                              }}>{SLOT_MARK}</button>
+                          )}
+                        </div>
+                      );
+                    })}
                     {col.lessons.map((l) => {
                       const hv = hourOf(timeOf(l));
                       if (hv == null) return null;
@@ -198,7 +255,22 @@ export default function OpsSchedule({
             </div>
           </div>
           {/* ★★うごかせるのは パソコンだけ（★見本⑧）。★見ることは どこでも できます。 */}
+          {/* ★★押した わけを、★その場に 出します。★黙って 終わりません。 */}
+          {slotNote ? (
+            <p style={{ ...small, color: C.ink }}>{slotNote}</p>
+          ) : null}
           {!mayDragBlocks(width) ? <p style={small}>{DRAG_NOTE}</p> : null}
+          {/* ★★★1日 × 先生よこ の 注（★裁定 その85 R4・2026-09-18）。
+               ★★見本は 6行 です。★ここは 5行 です。
+               ★★★4行目（「先生の『自分の 予定』は『予定あり』とだけ 出ます」）を
+                 ★★置いて いません。★その 札が この 蔵に ありません。
+                 ★★無い ものの 説明を すると、★探して しまいます。
+                 ★★台帳 docs/ledgers/08-保留している決め.md 08-8
+               ★★★5行目（「学校の 予定か、自分の 予定かも 出しません」）は 置きました。
+                 ★★あれは 約束 です。★いま 守られて います ──
+                   ★★運営の 表に 流れ込むのは `lessons` だけ です。
+                   ★★先生 ご自身の 予定は、★1行も 取って いません。 */}
+          <Note items={DAY_NOTES} />
         </>
       ) : (
         <>
@@ -207,6 +279,13 @@ export default function OpsSchedule({
                 ★濃さは 見つけるため、★数は 確かめるためです。
               ★★押すと、★その日の ⑧が 開きます。 */}
           <div style={card}>
+            {/* ★★箱の 題（★見本の `h3`・2026-09-18）。
+                ★★いつ から いつ まで かを 書きます。★「今週」だけ では 分かりません。 */}
+            <div style={{ ...TYPE.h3, margin: "0 0 7px" }}>
+              {(weekDays && weekDays.length)
+                ? `${mmdd(weekDays[0])}〜${mmdd(weekDays[weekDays.length - 1])}　${WEEK_HEAD_TAIL}`
+                : WEEK_HEAD_TAIL}
+            </div>
             <div style={{ display: "flex", gap: 3, marginBottom: 4 }}>
               <div style={{ flex: `0 0 ${TIME_COL}px` }} />
               {(weekDays || []).map((d) => (
@@ -236,10 +315,15 @@ export default function OpsSchedule({
                 ))}
               </div>
             ))}
+            {/* ★★中身を 出さない こと を、★はっきり 書きます（★見本の `usu`）。 */}
             <p style={{ ...small, marginTop: 8 }}>
-              濃いほど、コマの数が多い日です。押すと、その日の並びが開きます。
+              中身は 出しません。コマの 数だけ です。押すと その日へ。
             </p>
           </div>
+          {/* ★★1週間 × 濃さ の 注（★裁定 その85 R2・2026-09-18）。
+              ★★見本が 直りました（★2026-09-18・先生 × 日 の 濃さ）。
+                ★★実装が 正 で、★見本の ほうが 古かった もの です（★裁定 その85 Q2）。 */}
+          <Note items={WEEK_NOTES} />
         </>
       )}
     </div>

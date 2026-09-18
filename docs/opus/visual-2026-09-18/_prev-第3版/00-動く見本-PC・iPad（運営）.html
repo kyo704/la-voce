@@ -3,7 +3,7 @@
 <title>Woolsong 動く見本 ── PC・iPad（運営）統合版</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{ --card2:#FDFAF3;--line3:#E8DFC8;--ink4:#706456;--band:#F6F1E4;--band2:#F3ECDD;--band3:#FBF3E2;--enji-d:#8E1230;--ok:#3C6A56;--warn:#825A14;--err:#AD3846;--pick:#F6E4E8;--enji:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
+:root{ --card2:#FDFAF3;--line3:#E8DFC8;--ink4:#8C7D6C;--band:#F6F1E4;--band2:#F3ECDD;--band3:#FBF3E2;--enji-d:#8E1230;--ok:#447862;--warn:#8C6115;--err:#B23A48;--pick:#F6E4E8;--enji:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
  --line:#E4DAC4;--line2:#F0E9DA;--ink:#261913;--ink2:#5A4C40;--ink3:#6B5C4E;--bg:#EFE7D6;
  --red:#B23A48;--sh:0 1px 0 rgba(0,0,0,.03),0 8px 24px rgba(90,72,48,.10)}
 body{background:var(--bg);font-family:"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;color:var(--ink);
@@ -370,8 +370,8 @@ th.stick{z-index:4}
 .zoomwrap{overflow:auto;max-width:100%;padding-bottom:6px}
 
 /* ══════════ 暗い 画面（ダークモード） ══════════ */
-html[data-th="dark"]{--card2:#2A2219;--line3:#3A322A;--ink4:#A18C7A;--band:#2C241D;--band2:#2A231C;--band3:#3A1E22;--enji-d:#C9607A;--ok:#69A082;--warn:#D9AC55;--err:#EA8894;--pick:#3A1E22;
- --paper:#1C1712;--bg:#121009;--ink:#EFE6D8;--ink2:#BCAF9D;--ink3:#A19383;
+html[data-th="dark"]{--card2:#2A2219;--line3:#3A322A;--ink4:#7C6C5E;--band:#2C241D;--band2:#2A231C;--band3:#3A1E22;--enji-d:#C9607A;--ok:#5E8F74;--warn:#D9AC55;--err:#EA8894;--pick:#3A1E22;
+ --paper:#1C1712;--bg:#121009;--ink:#EFE6D8;--ink2:#BCAF9D;--ink3:#918476;
  --line:#3D342B;--line2:#2C251E;--enji:#E790A2;--yama:#D9AC55;--midori:#82BCA0;--red:#EA8894;
  --sh:0 1px 0 rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.45);
  color-scheme:dark}
@@ -741,44 +741,15 @@ function P_nittei(){
  +'<span class="pill" onclick="push(\'重なり\')">重なり '+KASANARI.length+'件</span>'
  +(can('koma')?'<span class="pill" onclick="push(\'コマを決める\')">時間の 割り方</span><span class="pill" onclick="push(\'場所を決める\')">場所</span>':'')+'</div>';
  if(S.nv==='週'){
-  /* ══ ★1週間 × 濃さの 地図 ── 裁定⑨（2026-09-09）══
-     ★1か月の こよみでは ありません。
-     ★★先生を 縦に、★日を 横に。★濃いほど コマが 多い
-     ★中身は 出しません。★数だけ                              */
-  var WD=['9/7（月）','9/8（火）','9/9（水）','9/10（木）',
-          '9/11（金）','9/12（土）','9/13（日）'];
-  var LOAD={'斎藤 めぐみ':[4,6,3,5,2,0,0],'渡辺 たける':[2,3,5,4,6,3,0],
-   '高橋 のぞみ':[5,4,6,3,4,2,0],'大川 あや':[0,2,1,3,2,0,0],
-   '森 ひろし':[3,0,4,0,3,5,0],'外部 講師':[0,0,2,0,0,4,0]};
-  var MX=6;
-  var col=function(n){return n?'background:var(--enji);opacity:'
-    +(0.22+n/MX*0.74).toFixed(2):'background:var(--band2)'};
-  h+='<div class="card"><div class="h3" style="margin-top:0">'
-   +'9月7日〜13日　濃いところ＝コマが 多い</div>'
-   +'<div class="tblwrap" style="max-height:none"><table>'
-   +'<thead><tr><th class="anc" style="min-width:132px">先生</th>'
-   +WD.map(function(w){return '<th style="text-align:center;min-width:74px">'+w+'</th>'}).join('')
-   +'<th style="text-align:right;min-width:60px">ひと週</th></tr></thead><tbody>'
-   +Object.keys(LOAD).map(function(p){
-     var a=LOAD[p],sum=a.reduce(function(x,y){return x+y},0);
-     return '<tr><td class="anc">'+p+'</td>'
-      +a.map(function(n,di){
-        return '<td style="text-align:center;padding:4px 6px">'
-         +'<div onclick="S.nv=\'日\';draw()" '
-         +'title="'+p+' '+WD[di]+' '+n+'コマ" '
-         +'style="height:30px;border-radius:7px;cursor:pointer;display:flex;'
-         +'align-items:center;justify-content:center;font-size:12.5px;'
-         +'color:'+(n>3?'#fff':'var(--ink3)')+';'+col(n)+'">'+(n||'')+'</div></td>'}).join('')
-      +'<td class="num" style="font-weight:700">'+sum+'</td></tr>'}).join('')
-   +'</tbody></table></div>'
-   +'<div class="usu" style="margin-top:9px">'
-   +'中身は 出しません。<b>コマの 数だけ</b>です。押すと その日へ。</div></div>';
-  return h+'<div class="note">'
-   +'<b>先生を 縦に、日を 横に 並べます。</b>'
-   +'誰に 偏っているかが、色の 濃さで 分かります。<br>'
-   +'<b>授業の 名前・教室・生徒の 名前は 出しません。</b>数だけです。<br>'
-   +'先生の「自分の 予定」は <b>数に 入りません</b>。<br>'
-   +'重なりを <b>自動で 動かしません</b>。印を つけるだけです。</div>'}
+  h+='<div class="card"><div class="h3" style="margin-top:0">9月　濃いところ＝コマが 多い日</div>'
+   +'<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;max-width:520px">'
+   +'日月火水木金土'.split('').map(function(w){return '<div style="text-align:center;font-size:12.5px;color:var(--ink3)">'+w+'</div>'}).join('')
+   +Array.from({length:30},function(_,i){var v=[0,3,8,5,9,6,2][i%7];
+     return '<div onclick="S.nv=\'日\';draw()" style="aspect-ratio:1;border-radius:7px;background:'+(v?'#840C24':'#F0E9DA')
+     +';opacity:'+(v?0.25+v/9*0.7:1)+';display:flex;align-items:center;justify-content:center;font-size:13px;color:'
+     +(v>5?'#fff':'var(--ink3)')+';cursor:pointer">'+(i+1)+'</div>'}).join('')+'</div>'
+   +'<div class="usu" style="margin-top:9px">中身を 出しません。形だけ 見せます。押すと その日へ。</div></div>';
+  return h+'<div class="note">重なりを <b>自動で 動かしません</b>。印を つけるだけです。</div>'}
  h+='<div class="grid"><table><tr><th class="stick" style="width:76px">時間</th>'
   +P.map(function(p){return '<th>'+p+'</th>'}).join('')+'</tr>'
   +T.map(function(t,ti){return '<tr><td class="stick" style="font-size:13px">'+t+'</td>'
