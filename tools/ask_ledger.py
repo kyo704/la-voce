@@ -49,7 +49,20 @@ def 合言葉():
   return None
 
 
+def 括りを外す(sql):
+  """★引用符の 中を 落とします。
+
+    ★★★2026-09-18、★読むだけの 問いが 止められました ──
+      ★`where privilege_type='UPDATE'` の **値** の `UPDATE` に 当たりました。
+    ★★書く 言葉では ありません。★探して いる 字 です。
+    ★★★見張りが 厳しい のは 良い ことです。★けれど 読めなく なるのは 別 です。
+      ★★括りの 中は 落として から 見ます。★外だけ 見ます。
+  """
+  return re.sub(r"'[^']*'", "''", sql)
+
+
 def 見張り(sql, write, ok):
+  sql = 括りを外す(sql)
   if KAKU.search(sql) and not write:
     return "★書く 言葉が 混じって います。★読むだけの 道具 です。★要る なら --write を 付けて ください。"
   if ABUNAI.search(sql) and not ok:
