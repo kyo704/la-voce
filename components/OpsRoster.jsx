@@ -5,6 +5,10 @@ import { C } from "@/lib/tokens";
 // ★★名簿の 表（★裁定 その80・2026-09-18）。★広い ときだけ 出します。
 import OpsRosterTable from "@/components/OpsRosterTable";
 import { showRosterTable } from "@/lib/opsRosterTable";
+// ★★生徒を 招く（★裁定 その82・2026-09-18）。★字は lib が 持ちます。
+import {
+  INVITE_HEAD, INVITE_NOTES, INVITE_NOTES_BOLD, NOT_YET, CODE_LEAD, CODE_HOW, CODE_DAYS
+} from "@/lib/studentInvite";
 import {
   rosterCount, countsByStatus, statusLabel, isCounted,
   monthlyFee, perHead, yen, MONTHLY_FLOOR,
@@ -93,8 +97,7 @@ export default function OpsRoster({
   // ★★役職（★2026-09-11・裁定 §7 ／ 3段目）。
   //   ★★posts が 渡されなければ、★役職の 行を 出しません。
   //     ★1段目の SQL を 流す 前でも、★画面が 壊れません。
-  posts, postsById, myPerms, onSetPost
-}) {
+  posts, postsById, myPerms, onSetPost, inviteCode = null, inviteError = "", onCloseInvite}) {
   // ★★幅を 見ます（★`components/Renraku.jsx` と 同じ 形）。
   //   ★★はじめは null です。★分からない うちは 表を 出しません
   //     （★出して から 縮めない）。
@@ -438,7 +441,75 @@ export default function OpsRoster({
             minHeight: 52, borderRadius: 12, border: `1px solid ${C.curtain}`,
             borderBottomWidth: 3, background: C.curtain, color: "#FFFDF8",
             fontSize: "0.9375rem"
-          }}>名簿に招く</button>
+          }}>＋ 招く</button>
+      ) : null}
+
+      {/* ★★★招く 1枚（★裁定 その82・見本 `SC['招く']`）。
+          ★★★いま できるのは「合言葉を お作りする」ところ までです。
+            ★★メールで お送りする 道は、★まだ ありません。
+            ★★外へ 送る ことは、★坂本さんの お許しを いただいて から に します。
+            ★★★だから メールの 口を **置きません**。★押せない 札に なります（★§8⑤）。
+          ★★注記は 見本の ままです。★1行も 減らして いません（★裁定 その82）。
+          ★★字は lib/studentInvite.js が 持ちます。 */}
+      {inviteCode || inviteError ? (
+        <div style={{ ...card, borderColor: C.curtain }}>
+          <p style={{ fontSize: "0.875rem", fontWeight: 700, color: C.ink, margin: "0 0 6px" }}>
+            {INVITE_HEAD}
+          </p>
+          {inviteError ? (
+            <p style={{ ...small, color: C.curtain, margin: 0 }}>{inviteError}</p>
+          ) : (
+            <>
+              <p style={{ ...small, margin: "0 0 6px" }}>{CODE_LEAD}</p>
+              <p className="ff-mono" style={{
+                textAlign: "center", fontSize: "1.375rem", letterSpacing: "0.22em",
+                color: C.curtain, background: C.paper, borderRadius: 10,
+                padding: "10px 0", margin: "0 0 6px"
+              }}>{inviteCode}</p>
+              <p style={{ ...small, margin: 0 }}>{CODE_HOW}</p>
+              <p style={{ ...small, margin: 0 }}>
+                {`${CODE_DAYS}日で 切れます。`}
+              </p>
+            </>
+          )}
+
+          <div style={{ marginTop: 10 }}>
+            {INVITE_NOTES.map((line) => {
+              const b = INVITE_NOTES_BOLD.find((x) => line.includes(x));
+              return (
+                <p key={line} style={{ ...small, margin: 0 }}>
+                  {b ? (
+                    <>
+                      {line.slice(0, line.indexOf(b))}
+                      <b style={{ color: C.ink }}>{b}</b>
+                      {line.slice(line.indexOf(b) + b.length)}
+                    </>
+                  ) : line}
+                </p>
+              );
+            })}
+          </div>
+
+          {/* ★★★まだ 作って いない ものを、★隠しません。
+              ★★口を 置かない かわりに、★何が まだかを 書きます。
+              ★★「作って いない」と「壊れて いる」は ちがいます。 */}
+          <div style={{ marginTop: 10 }}>
+            {NOT_YET.map((x) => (
+              <p key={x.key} style={{ ...small, margin: 0, color: C.inkSoft }}>
+                {`${x.label} …… ${x.why}`}
+              </p>
+            ))}
+          </div>
+
+          {onCloseInvite ? (
+            <button type="button" onClick={onCloseInvite}
+              style={{
+                marginTop: 10, minHeight: 44, padding: "0 14px", borderRadius: 10,
+                border: `1px solid ${C.line}`, background: C.paper, color: C.ink,
+                fontSize: "0.8125rem"
+              }}>閉じる</button>
+          ) : null}
+        </div>
       ) : null}
 
       {/* ★★合計は、★下に 固定して いつも 見えるように（★裁定）。

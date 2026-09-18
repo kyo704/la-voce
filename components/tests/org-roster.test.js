@@ -126,7 +126,11 @@ function eq(a, b, label) {
   }
   // ★★操作は 下半分に
   {
-    const inviteAt = raw.indexOf("名簿に招く");
+    // ★★★字で 探して いました（「名簿に招く」）。
+    //   ★★2026-09-18、★見本の 字（「＋ 招く」）に 合わせて 変えたら 落ちました。
+    //   ★★★見張りが 古い 字を 抱えて いました。★字は 変わります。
+    //     ★★変わらない のは「★`onInvite` の 札」で ある こと です。
+    const inviteAt = raw.indexOf("{onInvite ? (");
     const halfway = raw.indexOf("list.map(");
     t(inviteAt > halfway, "★招く は、一覧の あとに ある（★下半分）");
   }

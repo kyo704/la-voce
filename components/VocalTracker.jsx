@@ -11377,6 +11377,38 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   （RLSのINSERTポリシー・列の欠落など、サーバー側の理由で失敗しうる）
   const [inviteError, setInviteError] = useState("");
 
+  /**
+   * ★生徒を、★この 学校に 招く（★裁定 その82・2026-09-18）。
+   *
+   *   ★★★講師の 招待（`handleGenerateOrgInvite`／`org_invitations`）を
+   *     ★★流用しません。★入った あとの できことも、★見える ものも ちがいます。
+   *     ★★流用すると、★講師の 招待で 生徒が 入る 道が できます。
+   *   ★★生徒の 道は `teacher_invitations` → `enrollments` です。
+   *   ★★★`handleGenerateTeacherInvite` と ちがう ところ ──
+   *     ★★あちらは `ensureOwnOrg()`（★ご自分の 教室）を 使います。
+   *     ★★こちらは **いま 開いて いる 学校**（運営の 画面）に 招きます。
+   */
+  const [opsInviteCode, setOpsInviteCode] = useState(null);
+  const [opsInviteError, setOpsInviteError] = useState("");
+  async function handleInviteStudentToOrg(orgId) {
+    setOpsInviteError("");
+    setOpsInviteCode(null);
+    if (!orgId) { setOpsInviteError("学校が 分かりません。"); return; }
+    const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+    const code = Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+    const supabase = createClient();
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    const { error } = await supabase.from("teacher_invitations")
+      .insert({ code, teacher_id: userId, org_id: orgId, expires_at: expiresAt });
+    if (error) {
+      // ★★黙って 閉じません。★誤りを そのまま お見せします。
+      console.error("生徒の 招待を 作れません でした:", error);
+      setOpsInviteError("いま、合言葉を 作れませんでした。");
+      return;
+    }
+    setOpsInviteCode(code);
+  }
+
   async function handleGenerateTeacherInvite() {
     setInviteError("");
     const orgId = await ensureOwnOrg();
@@ -14040,7 +14072,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   // ★★名簿を 直せるのは「学校ぜんぶの 名簿」（meibo）を 持つ 方。
                   canEdit={mayEditRoster(gate)}
                   onSetGrade={(studentId, label) =>
-                    handleSetEnrollmentGrade(opsOrgId, studentId, label)} />
+                    handleSetEnrollmentGrade(opsOrgId, studentId, label)}
+                  // ★★★生徒を 招く（★裁定 その82・最優先）。
+                  //   ★★きょうまで 渡して いません でした。
+                  //     ★★札は 書いて あるのに、★1度も 出て いません。
+                  //     ★★10月の 学校の 導入で、★生徒が 入る **唯一の 道** です。
+                  onInvite={() => handleInviteStudentToOrg(opsOrgId)}
+                  inviteCode={opsInviteCode}
+                  inviteError={opsInviteError}
+                  onCloseInvite={() => { setOpsInviteCode(null); setOpsInviteError(""); }} />
                   // ★★役職は 渡しません（★2026-09-13）。
                   //   ★★生徒は 役職を 持ちません。★学校で 働く 方の ものです。
                   //   ★★posts を 渡さなければ、★役職の 行は 出ません。
