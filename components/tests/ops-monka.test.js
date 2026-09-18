@@ -161,7 +161,14 @@ function t(cond, label) {
   const sql = readRaw("supabase", "migration_preset_need_and_free_slots.sql");
   t(/returns table \(student_id uuid, free_count int\)/.test(sql), "★数 だけ を 返す");
   t(/returns table \(weekday smallint, period_ord smallint, is_free boolean\)/.test(sql),
-    "★空きか どうか だけ を 返す");
+    "★空きか どうか だけ を 返す（★2値）");
+  // ★★★見本と そろって いる こと（★2026-09-19・3値 → 2値）。
+  {
+    const 見本 = readRaw("docs", "opus", "visual-2026-09-18", "pack",
+      "00-動く見本-PC・iPad（運営）.html");
+    t(見本.includes("「空いているか どうか」の 2値のみ"), "★見本も 2値");
+    t(!見本.includes("3値"), "★見本に 3値 が 残って いない");
+  }
   ["t.title", "t.room", "t.memo", "t.teacher"].forEach((w) => {
     t(!sql.includes(w), "★SQL が「" + w + "」を 返して いない");
   });
