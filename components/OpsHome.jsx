@@ -2,6 +2,8 @@
 
 import { C } from "@/lib/tokens";
 import { homeSections, EMPTY_LINE } from "@/lib/opsHomeSections";
+// ★★つけ終わって いるかを、★行の 右に 出します（★2026-09-18）。
+import { attendanceLabel } from "@/lib/todayBand";
 import { overlapsOf, dateOf } from "@/lib/opsSchedule";
 import { rosterCount, countsByStatus } from "@/lib/orgRoster";
 import { buildEvents, EVENT_STATES } from "@/lib/orgEventsView";
@@ -39,7 +41,7 @@ function Stat({ label, value, unit }) {
 
 export default function OpsHome({
   todayISO, lessons, members, events, participants, targetOf,
-  teacherCount, nameOf, studentNameOf, onSeeSchedule, perms
+  teacherCount, nameOf, studentNameOf, onSeeSchedule, onOpenAttendance, perms
 }) {
   // ★★★節ごとに、★できことで 出す／出さない（★裁定 その79・2026-09-18）。
   //   ★★見本は 役職で 3つの 画面に 分けて います（P_home / P_homeS / P_homeT）。
@@ -94,17 +96,41 @@ export default function OpsHome({
           <p style={{ ...small, marginBottom: 6 }}>きょうの ながれ</p>
           {today.map((l) => {
             const dup = overlaps.some((o) => o.lessons.some((x) => x.id === l.id));
-            return (
-              <div key={l.id} className="flex items-center justify-between gap-2"
-                style={{ padding: "7px 0", borderTop: `1px solid ${C.line}`, fontSize: "0.8125rem" }}>
+            // ★★★出欠の 入口 ①（★裁定 その79・2026-09-18）。
+            //   ★★「ホーム → きょうの ながれ → その 行」。
+            //   ★★★きょうまで、★この 行は 押せません でした。
+            //     ★★裁定 その79 は 帯を 作らない と 決めて います。
+            //     ★★入口は 2つ しか ありません。★どちらも 塞がって いました。
+            //   ★★★開く 先が 無い ときは、★押せる ように しません（★§8⑤）。
+            //     ★★`onOpenAttendance` が 渡されて はじめて 押せます。
+            const 中身 = (
+              <>
                 <span style={{ color: C.ink }}>
                   {String(l.scheduled_at || "").slice(11, 16)}　
                   {nameOf ? nameOf(l.teacher_id) : ""}
                 </span>
                 <span style={{ color: C.inkSoft, fontSize: "0.6875rem" }}>
-                  {dup ? "★重なり" : (studentNameOf ? studentNameOf(l.student_id) : "")}
+                  {/* ★★つけ終わって いるかを、★ここで お見せします。
+                      ★★★開く 前に 分かります。★開いて から 知る、では ありません。 */}
+                  {dup ? "★重なり" : (l.attendance
+                    ? `済 ${attendanceLabel(l.attendance) || ""}`
+                    : (studentNameOf ? studentNameOf(l.student_id) : ""))}
+                  {onOpenAttendance ? "　›" : ""}
                 </span>
-              </div>
+              </>
+            );
+            const 並び = {
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              gap: 8, width: "100%", textAlign: "left",
+              padding: "7px 0", borderTop: `1px solid ${C.line}`, fontSize: "0.8125rem"
+            };
+            return onOpenAttendance ? (
+              <button key={l.id} type="button" onClick={() => onOpenAttendance(l)}
+                style={{ ...並び, minHeight: 44, background: "transparent", border: "none" }}>
+                {中身}
+              </button>
+            ) : (
+              <div key={l.id} style={並び}>{中身}</div>
             );
           })}
         </div>

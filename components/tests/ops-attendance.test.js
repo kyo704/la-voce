@@ -93,5 +93,30 @@ function ok(cond, 名) {
   ok(A.nextUnmarked([{ id: 1, attendance: "came" }], 1) === null,
     "みんな つけ終わって いれば、次は 無い");
 
+  // ------------------------------------------------------------------------
+  // ★六 ★入口 ①（★ホーム → きょうの ながれ → その 行）
+  // ------------------------------------------------------------------------
+  const ホーム = readCode("components", "OpsHome.jsx");
+  const 本体 = readCode("components", "VocalTracker.jsx");
+
+  ok(/onOpenAttendance/.test(ホーム), "ホームが 開く 口を 受け取る");
+  // ★★★渡されて いない ときは、★押せる ように しません（★§8⑤）。
+  ok(/onOpenAttendance \? \(/.test(ホーム),
+    "渡されて はじめて 押せる（★開く 先が 無ければ 札に しない）");
+  ok(/canOps\(gate, "shukketsu"\)/.test(本体),
+    "★できことが 無い 方には 渡さない");
+  ok(/onOpenAttendance=\{canOps\(gate, "shukketsu"\)[\s\S]{0,120}: undefined\}/.test(本体),
+    "★持たない 方には undefined（★押せない 札に しない）");
+
+  // ★★つけ終わって いるかが、★開く 前に 分かる。
+  ok(/attendanceLabel\(l\.attendance\)/.test(ホーム),
+    "行の 右に「済 ○○」が 出る（★開く 前に 分かる）");
+
+  // ★★書く ときに 0行を 見て いる。
+  const 書く = 本体.slice(本体.indexOf("★出欠を つける 1枚"), 本体.indexOf("★出欠を つける 1枚") + 3000);
+  ok(/\.select\("id"\)/.test(本体.slice(本体.indexOf("onMark="), 本体.indexOf("onMark=") + 2000)),
+    "つける ときに .select() を 付けて いる（★静かな 0行を 作らない）");
+  ok(/data\.length === 0/.test(本体), "0行なら 誤りに する");
+
   console.log("\n★" + 数 + "件 通りました ── 出欠を つける");
 })().catch((e) => { console.error(e.message || e); process.exit(1); });

@@ -156,6 +156,8 @@ import OpsPosts from "@/components/OpsPosts";
 import OpsPeople from "@/components/OpsPeople";
 import AndroidInstallPrompt from "@/components/AndroidInstallPrompt";
 import OpsHome from "@/components/OpsHome";
+// ★★出欠を つける 1枚（★裁定 その79・2026-09-18）。
+import OpsAttendance from "@/components/OpsAttendance";
 import OpsEvents from "@/components/OpsEvents";
 import OpsSettings from "@/components/OpsSettings";
 import { maySeeMoney } from "@/lib/opsShell";
@@ -12063,6 +12065,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [myOrgPosts, setMyOrgPosts] = useState({});
   // ★★お支払い（orgId -> org_billing の いちばん 新しい 1行）。★裁定 その74。
   const [orgBilling, setOrgBilling] = useState({});
+  // ★★出欠を つける 1枚（★裁定 その79・2026-09-18）。
+  //   ★★帯は 作りません。★ホーム／日程 から 開きます。
+  const [opsAttendanceLesson, setOpsAttendanceLesson] = useState(null);
+  const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
    *
@@ -13889,6 +13895,54 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             //     ★無いものを、★在るように 見せません。
             const opsTargetOf = () => rosterCount(opsRoster);
             if (tabKey === "home") {
+              // ★★★出欠の 1枚が 開いて いる あいだは、★そちらを 出します。
+              //   ★★重ねません。★戻る 道を 1本に します。
+              if (opsAttendanceLesson) {
+                const 同じコマ = (orgLessons[opsOrgId] || []).filter((x) =>
+                  String(x.scheduled_at || "").slice(0, 16)
+                    === String(opsAttendanceLesson.scheduled_at || "").slice(0, 16)
+                  && x.teacher_id === opsAttendanceLesson.teacher_id);
+                const いま = 同じコマ.find((x) => x.id === opsAttendanceLesson.id)
+                  || opsAttendanceLesson;
+                return (
+                  <OpsAttendance
+                    lessons={同じコマ}
+                    current={いま}
+                    perms={gate}
+                    userId={userId}
+                    nameOf={(id) => orgDisplayName(id) || ""}
+                    teacherNameOf={(id) => orgDisplayName(id) || ""}
+                    busy={false}
+                    error={opsAttendanceError}
+                    onClose={() => { setOpsAttendanceLesson(null); setOpsAttendanceError(""); }}
+                    onMark={async (lesson, status) => {
+                      // ★★`undefined` は「次の 方へ」です。★つけ替えません。
+                      if (status === undefined) { setOpsAttendanceLesson(lesson); return; }
+                      setOpsAttendanceError("");
+                      const at = new Date().toISOString();
+                      const patch = status
+                        ? { attendance: status, attendance_at: at, attendance_by: userId }
+                        : { attendance: null, attendance_at: null, attendance_by: null };
+                      const supabase = createClient();
+                      // ★★★`.select()` を 付けます。★0行に 当たっても 成功に 見えます。
+                      //   ★★2026-09-08、★まさに これで 静かに 壊れました。
+                      const { data, error } = await supabase.from("lessons")
+                        .update(patch).eq("id", lesson.id).select("id");
+                      if (error || !data || data.length === 0) {
+                        console.error("★出欠を つけられません でした:", { id: lesson.id, error });
+                        setOpsAttendanceError("いま、つけられませんでした。");
+                        return;
+                      }
+                      setOrgLessons((prev) => ({
+                        ...prev,
+                        [opsOrgId]: (prev[opsOrgId] || []).map((x) =>
+                          (x.id === lesson.id ? { ...x, ...patch } : x))
+                      }));
+                      setOpsAttendanceLesson((cur) =>
+                        (cur && cur.id === lesson.id ? { ...cur, ...patch } : cur));
+                    }} />
+                );
+              }
               return (
                 <OpsHome
                   todayISO={opsDate}
@@ -13906,6 +13960,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   // ★★ホームから 日程へ（★2026-09-18）。
                   //   ★★札は ずっと ありました。★渡す 先が ありません でした。
                   onSeeSchedule={() => goTab("schedule")}
+                  // ★★★出欠の 入口 ①（★裁定 その79）。
+                  //   ★★「きょうの ながれ」の 行を 押すと、★出欠の 1枚が 開きます。
+                  //   ★★★できことが 無い 方には 渡しません。★押せる ように しません。
+                  onOpenAttendance={canOps(gate, "shukketsu")
+                    ? (l) => { setOpsAttendanceError(""); setOpsAttendanceLesson(l); }
+                    : undefined}
                   teacherCount={opsMembers.filter((mm) => SCHEDULE_ROLES.includes(mm.role)).length}
                   nameOf={(id) => orgDisplayName(id) || ""}
                   studentNameOf={(id) => orgDisplayName(id) || ""} />
