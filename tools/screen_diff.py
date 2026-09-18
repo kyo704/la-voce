@@ -60,15 +60,20 @@ def 節を数える(塊):
   """
   印 = {
     "h2": len(re.findall(r"<h2", 塊)),
-    "h3": len(re.findall(r'class="h3"', 塊)),
-    "card": len(re.findall(r'class="card"', 塊)),
-    "tblwrap": len(re.findall(r'class="tblwrap"', 塊)),
-    "pills": len(re.findall(r'class="pills"', 塊)),
+    "h3": len(re.findall(r'class="h3[ "]', 塊)),
+    # ★★★`class="card p0"` の ような 足しを 拾えて いませんでした（★2026-09-18）。
+    #   ★★`btn` は 前だけ で 見て いたのに、★`card` は 閉じ引用まで 見て いました。
+    #   ★★★数え方が 印ごとに ちがう と、★申告と 合わない ときに
+    #     ★★「書き落とし」か「数え方」か が 分かりません。
+    #   ★★前だけ で そろえます。
+    "card": len(re.findall(r'class="card[ "]', 塊)),
+    "tblwrap": len(re.findall(r'class="tblwrap[ "]', 塊)),
+    "pills": len(re.findall(r'class="pills[ "]', 塊)),
     "btn": len(re.findall(r'class="btn', 塊)),
-    "note": len(re.findall(r'class="note"', 塊)),
-    "sub": len(re.findall(r'class="sub"', 塊)),
-    "warn": len(re.findall(r'class="warn"', 塊)),
-    "fl": len(re.findall(r'class="fl"', 塊)),
+    "note": len(re.findall(r'class="note[ "]', 塊)),
+    "sub": len(re.findall(r'class="sub[ "]', 塊)),
+    "warn": len(re.findall(r'class="warn[ "]', 塊)),
+    "fl": len(re.findall(r'class="fl[ "]', 塊)),
     "tw": len(re.findall(r'class="tw', 塊)),
     "inp": len(re.findall(r'class="inp"', 塊))
   }
