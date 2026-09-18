@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { C } from "@/lib/tokens";
-import { tabsFor, maySeeMoney } from "@/lib/opsShell";
+import { tabsFor, maySeeMoney, HEALTH_WALL_LINE } from "@/lib/opsShell";
 
 // ============================================================================
 // 運営モード ── 別のシェル（見本⑪ ／ 2026-09-09・第3便）
@@ -69,6 +69,23 @@ export default function OpsShell({ orgName, role, onBack, renderTab, children })
         <span style={{ fontSize: "0.6875rem", opacity: 0.8, flex: "none" }}>
           {typeof role === "string" ? role : "役職"}
         </span>
+      </div>
+
+      {/* ★★健康の 線 ── ★上から 2番目（★§3-3 ／ ★裁定 2026-09-18・⑨）。
+          ★★きょうまで、★この 断りは 設定の **いちばん 下** に ありました。
+            ★★稟議で 見る 学長・事務長は、★そこまで 下りません。
+            ★★学校に する 約束は、★いちばん 先に 目に 入る ところ に 置きます。
+          ★★字は lib/opsShell.js が 持ちます。★ここでは 決めません。
+          ★★どの 帯でも 出ます。★設定 だけでは ありません。 */}
+      <div style={{
+        flex: "none", display: "flex", alignItems: "center", gap: 8,
+        background: "#F6EFDF", borderBottom: `1px solid ${C.line}`,
+        padding: "7px 14px", fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.6
+      }}>
+        <span aria-hidden="true" style={{
+          width: 7, height: 7, borderRadius: "50%", background: C.sage, flex: "none"
+        }} />
+        <span>{HEALTH_WALL_LINE}</span>
       </div>
 
       <div style={{ flex: 1, overflowY: "auto", padding: "12px 14px 16px" }}>

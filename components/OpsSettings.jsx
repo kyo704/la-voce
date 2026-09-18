@@ -32,12 +32,9 @@ const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
 const row = { display: "flex", justifyContent: "space-between", alignItems: "center",
   padding: "9px 0", borderTop: `1px solid ${C.line}`, fontSize: "0.8125rem" };
 
-/** ★この画面から 見られないもの。★§3-3 の 一文を、★1つずつ。 */
-const NOT_HERE = [
-  "生徒の 声の記録",
-  "生徒の からだの記録",
-  "生徒の ノート"
-];
+// ★★`NOT_HERE` は ここから 外しました（★2026-09-18・裁定 ⑨）。
+//   ★★`lib/opsShell.js` の `HEALTH_WALL_ITEMS` が 持ちます。
+//   ★★2か所に 置くと、★片方だけ 変わります。★それが この 蔵の 持病 です。
 
 export default function OpsSettings({ members, staffLines, postName, perms }) {
   const n = rosterCount(members);
@@ -136,17 +133,14 @@ export default function OpsSettings({ members, staffLines, postName, perms }) {
         </div>
       ) : null}
 
-      {/* ★★この画面から 見られないもの（★見本⑤）。
-          ★★「見せない」では なく「画面が ありません」。★そう 書けます。 */}
-      <div style={card}>
-        <p style={{ ...small, marginBottom: 2 }}>この画面から 見られないもの</p>
-        {NOT_HERE.map((x) => (
-          <div key={x} style={row}>
-            <span style={{ color: C.ink }}>{x}</span>
-            <span style={small}>★画面が ありません</span>
-          </div>
-        ))}
-      </div>
+      {/* ★★★この画面から 見られないもの ── ★上の 線に 移しました
+          （★2026-09-18・裁定 ⑨）。
+          ★★ここ（いちばん 下）に カードで 3行 並べて いました。
+            ★★稟議で 見る 学長・事務長が、★そこまで 下りません。
+          ★★いまは `components/OpsShell.jsx` の 上から 2番目の 線 に 出ます。
+            ★★設定 だけでなく、★運営の どの 帯でも 出ます。
+          ★★3つの 中身は `lib/opsShell.js` の `HEALTH_WALL_ITEMS` に あります。
+            ★★消して いません。★見せ方を 変えた だけ です。 */}
     </div>
   );
 }
