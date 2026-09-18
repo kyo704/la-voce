@@ -1,0 +1,134 @@
+{
+  "説明": "★見本の 運営 画面（P_…）と、★実装の 部品の 対応（★裁定 その84 NEW_ORDER 2）。",
+  "決まり": [
+    "★『作らない』には、★わけ と 引き金 の 両方が 要ります。",
+    "★『まだ 作って いない』は ここに 書きません。★あれは 直す もの です。",
+    "★行き先の 部品が 無ければ、★道具が 止まります。",
+    "★覚え は、★見本と 実装が どう ちがうか の 一行 です。★推し量りを 書きません。"
+  ],
+  "対応": {
+    "P_home": {
+      "部品": [
+        "components/OpsHome.jsx"
+      ],
+      "覚え": "学長・事務の 姿"
+    },
+    "P_homeT": {
+      "部品": [
+        "components/OpsHome.jsx"
+      ],
+      "覚え": "先生の 姿（★同じ 部品が できことで 出し分け）"
+    },
+    "P_homeS": {
+      "部品": [
+        "components/OpsHome.jsx"
+      ],
+      "覚え": "事務の 姿（★同上）"
+    },
+    "P_nittei": {
+      "部品": [
+        "components/OpsSchedule.jsx"
+      ],
+      "覚え": "3つの 見せ方（1日／1週間／よこ持ち）"
+    },
+    "P_kumu": {
+      "部品": [
+        "components/OpsSchedule.jsx"
+      ],
+      "覚え": "組む 姿。★未確認"
+    },
+    "P_kasa": {
+      "部品": [
+        "components/OpsSchedule.jsx"
+      ],
+      "覚え": "重なり。★印だけ・自動で 動かさない"
+    },
+    "P_kasaT": {
+      "部品": [
+        "components/OpsSchedule.jsx"
+      ],
+      "覚え": "重なり（先生の 姿）"
+    },
+    "P_meibo": {
+      "部品": [
+        "components/OpsRoster.jsx",
+        "components/OpsRosterTable.jsx"
+      ],
+      "覚え": "幅で 表／札（★裁定 その80・885px）"
+    },
+    "P_maneku": {
+      "部品": [
+        "components/OpsRoster.jsx"
+      ],
+      "覚え": "＋招く の 引き出し（★裁定 その82）"
+    },
+    "P_sonohito": {
+      "部品": [
+        "components/OpsPeople.jsx"
+      ],
+      "覚え": "その方 1枚"
+    },
+    "P_renraku": {
+      "部品": [
+        "components/Renraku.jsx"
+      ],
+      "覚え": "連絡の 一覧"
+    },
+    "P_kaita": {
+      "部品": [
+        "components/Renraku.jsx"
+      ],
+      "覚え": "開いた 記録"
+    },
+    "P_write": {
+      "部品": [
+        "components/Renraku.jsx"
+      ],
+      "覚え": "書く／直す"
+    },
+    "P_misou": {
+      "部品": [
+        "components/Renraku.jsx"
+      ],
+      "覚え": "未送信"
+    },
+    "P_settei": {
+      "部品": [
+        "components/OpsSettings.jsx"
+      ],
+      "覚え": "設定・ご請求（★裁定 その74）"
+    },
+    "P_postDetail": {
+      "部品": [
+        "components/OpsPosts.jsx"
+      ],
+      "覚え": "役職 1つ"
+    },
+    "P_setPost": {
+      "部品": [
+        "components/OpsPosts.jsx",
+        "components/OpsPostMatrix.jsx"
+      ],
+      "覚え": "役職 × できこと（★裁定 その75・933px）"
+    },
+    "P_gyoji": {
+      "部品": [
+        "components/OpsEvents.jsx",
+        "components/OrgEventList.jsx"
+      ],
+      "覚え": "行事の 一覧"
+    },
+    "P_gyojiEdit": {
+      "部品": [
+        "components/OpsEvents.jsx"
+      ],
+      "覚え": "出す／直す"
+    },
+    "P_shukketsu": {
+      "部品": [
+        "components/OpsAttendance.jsx"
+      ],
+      "覚え": "1人ずつ（★裁定 その79）"
+    }
+  }
+}
