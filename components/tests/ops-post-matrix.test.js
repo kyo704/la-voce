@@ -33,12 +33,27 @@ function ok(cond, 名) {
   //     ★★役職が 増えた 日に、★この 見張りが 自分で 気づきます。
   const 列 = P.TEMPLATE_POSTS.length;
   const 要る幅 = 245 + (66 * 列);
-  ok(M.TABLE_AT >= 要る幅,
-    "境目が、★表の 幅より 大きい（要る " + 要る幅 + " ／ 境目 " + M.TABLE_AT + "）");
+  ok(M.TABLE_WIDTH >= 要る幅,
+    "表の 幅が、★列の ぶん ある（要る " + 要る幅 + " ／ いま " + M.TABLE_WIDTH + "）");
+
+  // ★★★殻の 余白を、★殻の 字から 読み直します（★2026-09-18）。
+  //   ★★930 で 3px すべりました。★差の 28px は 殻の 左右の 余白 でした。
+  //   ★★★数を 覚えません。★`components/OpsShell.jsx` から 読みます。
+  //     ★★余白を 変えた 日に、★この 見張りが 自分で 気づきます。
+  const 殻 = readCode("components", "OpsShell.jsx");
+  const 余白 = /padding: "(\d+)px (\d+)px/.exec(殻);
+  assert.ok(余白, "★止まりました ── 殻の 余白を 読めません。");
+  const 左右 = Number(余白[2]) * 2;
+  ok(M.SHELL_PADDING_X === 左右,
+    "殻の 余白と 合って いる（殻 " + 左右 + " ／ 束 " + M.SHELL_PADDING_X + "）");
+  ok(M.TABLE_AT === M.TABLE_WIDTH + M.SHELL_PADDING_X,
+    "境目 ＝ 表の 幅 ＋ 殻の 余白（" + M.TABLE_AT + "）");
+  ok(M.showTable(930) === false, "930 では 出さない（★3px すべりました）");
   ok(M.showTable(M.TABLE_AT) === true, "境目 ちょうどで 表");
   ok(M.showTable(M.TABLE_AT - 1) === false, "1px 足りなければ 札");
   ok(M.showTable(null) === false, "幅が 分からない うちは 表を 出さない");
   ok(M.showTable(834) === false, "iPad たて（834）は 札");
+  ok(M.showTable(933) === true, "933 で 表（★すべり 0 を 実機で 測りました）");
   ok(M.showTable(1194) === true, "iPad よこ（1194）は 表");
 
   // ------------------------------------------------------------------------
