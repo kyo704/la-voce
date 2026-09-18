@@ -60,7 +60,20 @@ export default function TodayBand({
     if (r.key === "lessonToday") {
       return (
         <BandRowV2 key={r.key}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {/* ★★★上の 行（★2026-09-18・実機の ご報告で 直しました）。
+              ★★★札が 箱の 外に はみ出して いました。
+                ★★題は 10.5px、★札は 44px（★押しどころの 下限）。
+                ★★その 差を、★`marginTop: -10 / marginBottom: -10` で
+                  ★★**打ち消して** いました。
+                ★★★負の 余白は「場所を 詰める」もの では ありません。
+                  ★★描く 大きさは 44px の まま です。★上下に はみ出します。
+                  ★★箱の 内側の 余白が 小さい ので、★枠を 越えました。
+              ★★★直し ── ★行そのものを 44px に します。★打ち消しません。
+                ★★1行 ぶん 高く なります。★はみ出すより よい こと です。 */}
+          <div style={{
+            display: "flex", alignItems: "center", gap: 8,
+            minHeight: SPACE.tapMin
+          }}>
             <ObiTitle>
               {/* ★★人数です。★点数でも、順位でも、達成度でも ありません。 */}
               {r.teaching ? `${COPY.teachingToday} ${r.count}人` : "きょう"}
@@ -68,7 +81,7 @@ export default function TodayBand({
             {onSeeAll && (
               <button type="button" onClick={onSeeAll}
                 style={{
-                  marginLeft: "auto", marginTop: -10, marginBottom: -10,
+                  marginLeft: "auto",
                   minHeight: SPACE.tapMin, padding: "0 10px",
                   borderRadius: 6, border: `1px solid ${C.line}`,
                   background: C.paper, color: C.inkSoft, fontSize: rem(11.5)
