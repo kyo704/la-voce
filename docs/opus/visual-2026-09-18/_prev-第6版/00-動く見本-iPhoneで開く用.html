@@ -2254,7 +2254,7 @@ function opSaitenBand(){
 SC['もっと']=function(){
  var role=S.dm.post;
  return bk('戻る')+'<div class="hd" style="padding-top:2px"><h2>もっと</h2></div>'
- +'<div class="warn" style="background:#F3EEE0"><b>見本だけの スイッチ</b>　教室を 持たない人の 姿を 見られます<br><span class="pill sm '+(!S.noClass?'on':'')+'" onclick="S.noClass=false;draw()">教室 あり</span> <span class="pill sm '+(S.noClass?'on':'')+'" onclick="S.noClass=true;draw()">教室 なし</span></div>'
+ +'<div class="warn" style="background:#F3EEE0"><b>★見本だけの スイッチ</b>　教室を 持たない人の 姿を 見られます<br><span class="pill sm '+(!S.noClass?'on':'')+'" onclick="S.noClass=false;draw()">教室 あり</span> <span class="pill sm '+(S.noClass?'on':'')+'" onclick="S.noClass=true;draw()">教室 なし</span></div>'
  +'<div class="box">'
  +'<div class="li" onclick="push(\'設定\')"><span>設定</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'聞いてほしいこと\')"><span>毎日、聞いてほしいこと</span><s>5つまで ›</s></div>'
@@ -4524,19 +4524,10 @@ SC['通っているところの中身']=function(i){var o=ORGS[i];
  +'<div class="box"><div class="li"><span>入った日</span><s>'+o.in+'</s></div>'
  +'<div class="li"><span>担当の 先生</span><s>'+o.t+'</s></div>'
  +'<div class="li"><span>門下</span><s>'+o.t+' の 門下</s></div></div>'
- +'<div class="h3">出席</div>'
- +'<div class="card" style="padding:15px 16px">'
- +'<div class="usu">声楽実技（前期）</div>'
- +'<div style="display:flex;gap:24px;align-items:baseline;margin-top:7px">'
- +'<div><span style="font-size:26px;font-weight:700;'
- +'font-variant-numeric:tabular-nums">9</span>'
- +'<span class="usu">　回 出席</span></div>'
- +'<div class="usu">いま <b>12回目</b> / 30回</div></div></div>'
- +'<div class="usu" style="margin:-4px 0 12px">'
- +'率（％）は 出しません。回数だけです。<br>'
- +'ほかの 方の 出席は 見えません。</div>'
-  +'<div class="h3">この教室から 見えるもの</div><div class="box">'
+ +'<div class="h3">この教室から 見えるもの</div><div class="box">'
  +SEE_YES.map(function(v){return '<div class="li" style="cursor:default"><span>'+v+'</span><s style="color:var(--midori)">見えます</s></div>'}).join('')+'</div>'
+ +'<div class="h3">この教室から 見えないもの</div><div class="box">'
+ +SEE_NO.map(function(v){return '<div class="li" style="cursor:default;color:var(--ink4)"><span>'+v+'</span><s>見えません</s></div>'}).join('')+'</div>'
  +'<div class="btn g" style="margin-top:12px" onclick="push(\'やめるとどうなるか\','+i+')">この教室を やめる</div>'
  +'<div class="note">この教室に 見えるのは、<b>この教室の ぶんだけ</b>です。<br>'
  +'あなたが ほかにも 通っていることは、この教室に <b>届きません</b>。<br>'
@@ -4561,6 +4552,8 @@ SC['招かれている']=function(){
  +'<div class="usu" style="margin-top:4px">養成所　／　森 ひろし 先生から　／　9月8日に 届きました</div></div>'
  +'<div class="h3">入ると、この教室から 見えるように なるもの</div><div class="box">'
  +SEE_YES.map(function(v){return '<div class="li" style="cursor:default"><span>'+v+'</span><s style="color:var(--midori)">見えます</s></div>'}).join('')+'</div>'
+ +'<div class="h3">入っても、見えないもの</div><div class="box">'
+ +SEE_NO.map(function(v){return '<div class="li" style="cursor:default;color:var(--ink4)"><span>'+v+'</span><s>見えません</s></div>'}).join('')+'</div>'
  +'<div class="wl">これらは、<b>この教室のみ</b>に 適用されます。<br>'
  +'いつでも やめることが できます。やめても、あなたの 記録は 消えません。<br>'
  +'18歳未満の方は、保護者の 了承を いただきます。<br>'
@@ -4673,11 +4666,11 @@ var SPEC_NG=[
  ['悲しい・困った顔の 羊','作らない'],
  ['羊の 自由配置','v1 では 作らない（座標の仕組みは 消さない）']];
 var SPEC_WHERE=[
- ['生徒の 時間割の 中身（授業名・担当・教室・備考）','端末だけ','サーバへ 送るのは あき／来られない／授業あり の 3値のみ'],
- ['先生の 自分の予定の 名前・種類','端末だけ','サーバへ 送るのは「塞がっているか」の 1値のみ'],
+ ['生徒の 時間割の 中身（授業名・担当・教室・備考）','★端末だけ','サーバへ 送るのは あき／来られない／授業あり の 3値のみ'],
+ ['先生の 自分の予定の 名前・種類','★端末だけ','サーバへ 送るのは「塞がっているか」の 1値のみ'],
  ['声・からだの 記録','サーバ（本人のみ）','先生・学校・運営に 出す画面を 作らない'],
  ['ノート・レパートリー','サーバ（本人のみ）','同上'],
- ['カード番号・口座番号','持たない','決済会社に 預ける。列を 作らない。下4桁と 期限だけ'],
+ ['カード番号・口座番号','★持たない','決済会社に 預ける。列を 作らない。下4桁と 期限だけ'],
  ['名簿・役職・所属','サーバ（学校）','書き出しは meibo を 持つ人だけ'],
  ['レッスンの 出席','サーバ（学校）','つけられるのは 担当の先生と 事務のみ'],
  ['門下の 書き込み','サーバ（学校）','読めるのは monka_read が ON の間だけ。既定 OFF'],
@@ -4689,7 +4682,7 @@ var SPEC_KEEP=[
  ['役職を 変えた記録','消せない。誰が・いつ・誰を'],
  ['在籍を 変えた記録','消せない。何から 何へ'],
  ['支払い方法・あて先を 変えた記録','消せない'],
- ['書いたもの（記録・ノート）','通信の失敗で 消さない。これが 一番重い決まり'],
+ ['書いたもの（記録・ノート）','通信の失敗で 消さない。★これが 一番重い決まり'],
  ['手に入れたもの（羊の台帳）','1つも 取り上げない。移行は 増える方向にしか 動かさない']];
 var SPEC_SRV=[
  ['画面で 隠すだけでは 足りない','同じ見張りを サーバにも 置く'],
@@ -4703,7 +4696,7 @@ var SPEC_SRV=[
 var SPEC_UI=[
  ['押しても 上に 戻らない','描き直す前に 縦横の位置を 覚え、戻す。画面が変わった時だけ 上へ'],
  ['横に広い表','左端に 戻さない。scrollLeft も 覚える'],
- ['フォームの値','状態に 持たせる。描き直しで 消さない（一番やってはいけない事故）'],
+ ['フォームの値','状態に 持たせる。描き直しで 消さない（★一番やってはいけない事故）'],
  ['文字を大きく','rem 基準。px を 直に 書かない。端末の文字サイズにも 従う'],
  ['押せるところ','44px 以上（ふつうの大きさでも）'],
  ['読み込み中','ぐるぐるを 使わない。灰色の形。0.3秒未満なら 何も出さない'],
@@ -4910,7 +4903,7 @@ draw();
  var pan=document.createElement('div');pan.id='mkpanel';
  var inn=document.createElement('div');inn.id='mkinner';
  var ttl=document.createElement('div');ttl.id='mktitle';
- ttl.innerHTML='デモの 切替と、この画面の 説明<br>ふだんは 見えない状態を、ここから 出せます';
+ ttl.innerHTML='デモの 切替と、この画面の 説明<br>★ふだんは 見えない状態を、ここから 出せます';
  var cls=document.createElement('div');cls.id='mkclose';cls.textContent='とじる';
  var demo=document.getElementById('demo'),lg=document.getElementById('lg');
  inn.appendChild(ttl);inn.appendChild(demo);inn.appendChild(lg);inn.appendChild(cls);

@@ -844,32 +844,19 @@ function P_monka(){
  +'<div class="pills"><span class="pill" onclick="push(\'日程を組む\')">レッスンの 日程を 組む</span>'
  +'<span class="pill" onclick="push(\'代表を決める\')">代表を 決める</span>'
  +'<span class="pill" onclick="push(\'まだの人\')">時間割が まだの方</span></div>'
- +'<div class="tblwrap">'
- +'<div class="usu" style="margin:-4px 0 8px">'
- +'声楽実技（前期）　<b>'+DONE_N+'回目 / 30回</b>　'
- +'<span style="color:var(--ink4)">（この門下 みんな 同じです）</span></div>'
- +'<table>'
- +'<tr><th class="stick">お名前</th><th>学年・コース</th>'
- +'<th class="num">出席</th>'
- +'<th>時間割</th><th>空いている コマ</th><th>レッスンの 枠</th></tr>'
+ +'<div class="tblwrap"><table>'
+ +'<tr><th class="stick">お名前</th><th>学年・コース</th><th>時間割</th><th>空いている コマ</th><th>レッスンの 枠</th></tr>'
  +monkaSorted().map(function(x){var m=x[0],i=x[1],k=placeOf(i);
    var fr=0;DAYS.forEach(function(d,di){myKoma().forEach(function(kk,ki){if(isFree(i,di+'-'+ki))fr++})});
    return '<tr class="click" onclick="push(\'門下の人\','+i+')"><td class="stick">'+m[0]
    +(m[4]?'<span class="tag" style="background:var(--pick);color:var(--enji)">代表</span>':'')+'</td>'
    +'<td>'+m[1]+'</td>'
-   +'<td class="num">'+(ATT[m[0]]!==undefined?ATT[m[0]]:'—')
-     +(ATT[m[0]]!==undefined?shortMark(ATT[m[0]],30,DONE_N):'')+'</td>'
    +'<td>'+(m[3]?'<span style="color:var(--midori)">✓ 出ています</span>':'<span style="color:var(--yama)">まだ</span>')+'</td>'
    +'<td>'+fr+'コマ</td>'
    +'<td>'+(k?'<span style="color:var(--midori)">'+keyLab(k).replace('　','')+'</span>':'まだ')+'</td></tr>'}).join('')
  +'</table></div>'
  +'<div style="margin:12px 0"><span class="btn g sm" onclick="push(\'門下に招く\')">＋ 門下に 招く</span></div>'
-+'<div class="note"><b>出席の 数は、担当の 門下だけ</b> 見えます。'
- +'率（％）は 出しません。<br>'
- +'並びは <b>名前順</b>です。出席の 多い順には しません。<br>'
- +'「足りない 見込み」は、<b>残り 全部 出ても 届かない</b>ときに 出ます。<br>'
- +'責める ものでは ありません。声を かける ための 目安です。<br>'
- +'見えるのは <b>担当の生徒だけ</b>。学校全部の 名簿は 見えません。<br>'
+ +'<div class="note">見えるのは <b>担当の生徒だけ</b>。学校全部の 名簿は 見えません。<br>'
  +'見えるのは 学年と、<b>空いているか どうかだけ</b>。授業の 名前・教室・備考・体調は 見えません。<br>'
  +'<b>「本番が 近い」の 印は 出しません。</b><br>担当を 外れると、その時点から 見えなくなります。</div>'}
 
@@ -915,7 +902,7 @@ function P_monkaInvite(){
  +'顔合わせを 休んだ方、合言葉を 失くした方に</div>'
  +'<div class="card p0">'
  +[['中村 みな','2年','声楽','まだ'],
-   ['高橋 かなで','2年','声楽','招待中'],
+   ['高橋 かなで','2年','声楽','★招待中'],
    ['小林 そら','1年','声楽','まだ'],
    ['伊藤 ゆい','1年','声楽','入っています']].map(function(x){
    var done = x[3]==='入っています';
@@ -936,83 +923,6 @@ function P_monkaInvite(){
  +'　（さがせると、誰が どの先生に ついているかが 分かってしまうからです）<br>'
  +'入る 道は この 2つだけ ── <b>合言葉</b> か、<b>招かれる</b> か。<br>'
  +'どちらも、最後に <b>ご本人が 承知して はじめて</b> 入ります。</div>'}
-
-
-/* ══ ★出席の 回数と 授業の 型 ── 裁定その90（2026-09-18）══
-   ★率（％）を 出しません。★回数だけ
-   ★「9 / 12」の 形に しません（★画面が 割ることに なる）
-   ★出席順に 並べ替えません（★既定は 名前順）
-   ★色で 警告しません（★印だけ）                              */
-var PRESETS = [
- {id:1, name:'声楽実技（前期）', total:30,
-  teachers:['高橋 のぞみ','斎藤 めぐみ','渡辺 たける','大川 あや','森 ひろし','外部 講師']},
- {id:2, name:'ソルフェージュ',   total:24, teachers:['斎藤 めぐみ','大川 あや','森 ひろし']},
- {id:3, name:'合唱',             total:15, teachers:['高橋 のぞみ','渡辺 たける']}
-];
-var DONE_N = 12;                       /* ★いま 何回目（行われた 回数）*/
-var ATT = {'高橋 かなで':11,'中村 みな':9,'小林 そら':5,'伊藤 ゆい':12,
-           '大野 ひかる':10,'高木 みなみ':12};
-
-function presetOf(teacher){
- for(var i=0;i<PRESETS.length;i++)
-   if(PRESETS[i].teachers.indexOf(teacher)>=0) return PRESETS[i];
- return null}
-
-/* ★★規定に 足りない 見込み ── ★印だけ。★色を 使わない */
-function shortMark(att,total,done){
- var need = Math.ceil(total*2/3);            /* ★学校が 決める 想定 */
- var left = total - done;
-/* ★★印では なく 言葉。★2026-09-15：★は 紙の 中の 印。画面に 出さない
-    ★※ も 使いません（★注記と 紛れ、★何のことか 思い出す 必要が 出ます）*/
- return (att + left < need)
-   ? '　<span class="usu">足りない 見込み</span>' : ''}
-
-function P_presets(){
- return bk('設定')+'<h2>授業の 型</h2>'
- +'<div class="sub">年間の 回数を 決めます　／　1つの 型を 複数の 門下に 当てられます</div>'
- +'<div class="tblwrap" style="max-height:none;max-width:760px"><table>'
- +'<thead><tr><th class="anc" style="min-width:190px">名前</th>'
- +'<th class="num">回数</th><th>当てている 門下</th><th></th></tr></thead><tbody>'
- +PRESETS.map(function(p){
-   return '<tr class="click" onclick="push(\'型の中身\','+p.id+')">'
-    +'<td class="anc">'+p.name+'</td>'
-    +'<td class="num">年 '+p.total+'回</td>'
-    +'<td><span class="usu">'+p.teachers.length+'つ</span>　'+p.teachers.slice(0,3).join('・')
-    +(p.teachers.length>3?' ほか':'')+'</td>'
-    +'<td><span class="btn g sm">なおす ›</span></td></tr>'}).join('')
- +'</tbody></table></div>'
- +'<div style="margin-top:12px"><span class="btn g sm" onclick="push(\'型の中身\',0)">'
- +'＋ 型を 作る</span></div>'
- +'<div class="note"><b>作れるのは 事務の 方だけ</b>です。先生は 見るだけ。<br>'
- +'年間の 回数は <b>学校が 決めるもの</b>です。<br>'
- +'型を 消しても、<b>出席の 記録は 消えません</b>。型は 目安です。</div>'}
-
-function P_presetEdit(id){
- var p = PRESETS.filter(function(x){return x.id===id})[0]
-   || {name:'', total:30, teachers:[]};
- var ALLT = ['高橋 のぞみ','斎藤 めぐみ','渡辺 たける','大川 あや','森 ひろし','外部 講師'];
- return bk('授業の 型')+'<h2>'+(id?p.name:'型を 作る')+'</h2>'
- +'<div style="max-width:520px">'
- +'<div class="fl">名前</div><input class="inp" value="'+p.name+'" placeholder="れい：声楽実技（前期）">'
- +'<div class="fl">年間の 回数</div><input class="inp" value="'+p.total+'">'
- +'<div class="fl">覚え書き　<span class="usu" style="display:inline">任意</span></div>'
- +'<textarea class="inp" style="height:62px"></textarea>'
- +'<div class="fl">当てる 門下　<span class="usu" style="display:inline">複数 選べます</span></div>'
- +'<div class="card p0">'
- +ALLT.map(function(t){
-   var on = p.teachers.indexOf(t)>=0;
-   return '<div class="li"><span>'+t+'</span><s>'
-    +'<span style="display:inline-block;width:17px;height:17px;border-radius:4px;'
-    +'border:1.6px solid '+(on?'var(--enji)':'var(--line)')+';'
-    +(on?'background:var(--enji);box-shadow:inset 0 0 0 3px var(--card);':'')
-    +'vertical-align:-3px"></span></s></div>'}).join('')
- +'</div>'
- +'<div style="margin-top:14px"><span class="btn mid">保存</span></div>'
- +(id?'<div style="margin-top:9px"><span class="btn g sm">この型を 消す</span></div>':'')
- +'</div>'
- +'<div class="note">1つの 型を、<b>いくつの 門下に 当てても かまいません</b>。<br>'
- +'同じ 授業名で 先生が 何人 いても、<b>1回 作れば 足ります</b>。<br>'
- +'消しても、<b>出席の 記録は 消えません</b>。</div>'}
 
 /* ══════════ ⑤ 行事 ══════════ */
 var GYOJI=[
@@ -1262,19 +1172,18 @@ function P_settei(){
  if(can('koma')||can('koma_mine'))items.push('時間');
  if(can('koma'))items.push('場所');
  if(can('sched_mine'))items.push('自分の予定');
- if(can('meibo'))items.push('授業');
  if(can('master'))items.push('採点');
  if(can('master'))items.push('学校の形');
  if(can('post')||can('master'))items.push('役職');
  if(can('post')||can('master'))items.push('ひと');
  if(items.indexOf(S.st2)<0)S.st2=items[0]||'ご請求';
  var body={'見やすさ':stMiyasu,'ご請求':stBill,'時間':stKoma,'場所':stPlace,'自分の予定':stMine,
-  '学校の形':stOrg,'採点':stSaiten,'授業':stJugyo,'読み込み':stImport,'役職':stPost,'ひと':stPeople,'書き出し':stExport}[S.st2];
+  '学校の形':stOrg,'採点':stSaiten,'読み込み':stImport,'役職':stPost,'ひと':stPeople,'書き出し':stExport}[S.st2];
  return '<h2>設定'+(can('bill')||can('bill_pay')?'・ご請求':'')+'</h2><div class="sub">'+S.post+'　／　'+permLine(myPost())+'</div>'
  +'<div class="col2" style="align-items:flex-start">'
  +'<div style="flex:0 0 210px"><div class="card p0">'
  +items.map(function(v){var lab={'ご請求':'ご請求','時間':'時間の 割り方（コマ）','場所':'場所',
-   '自分の予定':'自分の 予定（レッスン いがい）','授業':'授業の 型','採点':'評価の 型','学校の形':'学校の 形','役職':'役職と、できること','ひと':'ひとと 役職',
+   '自分の予定':'自分の 予定（レッスン いがい）','採点':'評価の 型','学校の形':'学校の 形','役職':'役職と、できること','ひと':'ひとと 役職',
    '書き出し':'書き出す（校務システムへ）','読み込み':'読み込む（校務システムから）','見やすさ':'見やすさ（文字の 大きさ）'}[v];
    if(v==='時間')lab=can('koma')?'時間の 割り方（学校）':'自分の コマ';
    return '<div class="li" style="'+(S.st2===v?'color:var(--enji);font-weight:700':'')+'" onclick="S.st2=\''+v+'\';draw()"><span>'+lab+'</span><s>›</s></div>'}).join('')
@@ -3041,20 +2950,7 @@ function P_monkaHito(i){var m=MONKA[i],k=placeOf(i);
  var fr=[];DAYS.forEach(function(d,di){myKoma().forEach(function(kk,ki){if(isFree(i,di+'-'+ki))fr.push(di+'-'+ki)})});
  return bk('門下')+'<h2>'+m[0]+'</h2><div class="sub">'+m[1]+(m[4]?'　／　代表':'')+'</div>'
  +'<div class="col2" style="align-items:flex-start"><div style="flex:2;min-width:0">'
-+'<div class="h3" style="margin-top:0">出席</div>'
- +'<div class="card" style="padding:15px 16px">'
- +'<div class="usu">声楽実技（前期）</div>'
- +'<div style="display:flex;gap:26px;align-items:baseline;margin-top:7px">'
- +'<div><span style="font-size:26px;font-weight:700;font-variant-numeric:tabular-nums">'
- +(ATT[m[0]]!==undefined?ATT[m[0]]:'—')+'</span>'
- +'<span class="usu">　回 出席</span></div>'
- +'<div class="usu">いま <b>'+DONE_N+'回目</b> / 30回</div></div>'
- +(ATT[m[0]]!==undefined&&shortMark(ATT[m[0]],30,DONE_N)
-   ?'<div class="usu" style="margin-top:9px">規定に 足りない 見込みです</div>':'')
- +'</div>'
- +'<div class="usu" style="margin:-4px 0 12px">'
- +'率（％）は 出しません。回数だけです。</div>'
-  +'<div class="h3" style="margin-top:0">来られる 時間</div>'
+ +'<div class="h3" style="margin-top:0">来られる 時間</div>'
  +'<div class="grid" style="max-height:none"><table class="wk"><tr><th class="stick">コマ</th>'
  +DAYS.map(function(d){return '<th>'+d+'</th>'}).join('')+'</tr>'
  +myKoma().map(function(kk,ki){return '<tr><td class="stick" style="font-size:13px">'+kk[1]+'</td>'
@@ -3183,31 +3079,6 @@ function gyoNum(G){var per={'1年':52,'2年':48,'3年':44,'4年':38},n=0;
 /* ══════════ 描く ══════════ */
 
 /* ══════ 採点（2026-09-16 裁定 その70）══════ */
-/* ══ ★授業の 型 ── 裁定その90（2026-09-18）══ */
-function stJugyo(){
- return '<div class="h3" style="margin-top:0">授業の 型</div>'
- +'<div class="note" style="margin:0 0 11px">年間の 回数を 決めます。'
- +'<b>1つの 型を 複数の 門下に 当てられます。</b><br>'
- +'音大では、同じ 授業名を 何人もの 先生が 持ちます。'
- +'<b>1回 作れば 足ります。</b></div>'
- +'<div class="tblwrap" style="max-height:none"><table>'
- +'<thead><tr><th class="anc" style="min-width:180px">名前</th>'
- +'<th class="num" style="min-width:74px">回数</th>'
- +'<th style="min-width:230px">当てている 門下</th><th></th></tr></thead><tbody>'
- +PRESETS.map(function(p){
-   return '<tr class="click" onclick="push(\'型の中身\','+p.id+')">'
-    +'<td class="anc">'+p.name+'</td>'
-    +'<td class="num">年 '+p.total+'回</td>'
-    +'<td><span class="usu">'+p.teachers.length+'つ</span>　'
-    +p.teachers.slice(0,3).join('・')+(p.teachers.length>3?' ほか':'')+'</td>'
-    +'<td><span class="btn g sm">なおす ›</span></td></tr>'}).join('')
- +'</tbody></table></div>'
- +'<div style="margin-top:12px"><span class="btn g sm" onclick="push(\'型の中身\',0)">'
- +'＋ 型を 作る</span></div>'
- +'<div class="note"><b>作れるのは 事務の 方だけ</b>です。先生は 見るだけ。<br>'
- +'年間の 回数は <b>学校が 決めるもの</b>です。<br>'
- +'型を 消しても、<b>出席の 記録は 消えません</b>。型は 目安です。</div>'}
-
 function stSaiten(){
  return '<div class="h3" style="margin-top:0">評価の 型</div>'
  +'<div class="note" style="margin:0 0 11px">この 学校の 評価の 仕方を 決めます。'
@@ -3373,7 +3244,7 @@ var SC={'重なり':P_kasa,'重なりを直す':P_kasaFix,'出欠つけ':P_shukk
  'お知らせを書く':P_write,'開いた記録':P_kaita,'未送信':P_misou,
  'コマを決める':function(){S.st2='時間';go('設定');return ''},
  '場所を決める':function(){S.st2='場所';go('設定');return ''},
- '採点':P_saiten,'点を入れる':P_tenIreru,'門下に招く':P_monkaInvite,'授業の型':P_presets,'型の中身':P_presetEdit,
+ '採点':P_saiten,'点を入れる':P_tenIreru,'門下に招く':P_monkaInvite,
  '評価の項目':P_hyokaItem};
 var TAB={'ホーム':P_home,'日程':P_nittei,'名簿':P_meibo,'門下':P_monka,'行事':P_gyoji,
  '連絡':P_renraku,'設定':P_settei};
@@ -3601,11 +3472,11 @@ var SPEC_NG=[
  ['悲しい・困った顔の 羊','作らない'],
  ['羊の 自由配置','v1 では 作らない（座標の仕組みは 消さない）']];
 var SPEC_WHERE=[
- ['生徒の 時間割の 中身（授業名・担当・教室・備考）','端末だけ','サーバへ 送るのは あき／来られない／授業あり の 3値のみ'],
- ['先生の 自分の予定の 名前・種類','端末だけ','サーバへ 送るのは「塞がっているか」の 1値のみ'],
+ ['生徒の 時間割の 中身（授業名・担当・教室・備考）','★端末だけ','サーバへ 送るのは あき／来られない／授業あり の 3値のみ'],
+ ['先生の 自分の予定の 名前・種類','★端末だけ','サーバへ 送るのは「塞がっているか」の 1値のみ'],
  ['声・からだの 記録','サーバ（本人のみ）','先生・学校・運営に 出す画面を 作らない'],
  ['ノート・レパートリー','サーバ（本人のみ）','同上'],
- ['カード番号・口座番号','持たない','決済会社に 預ける。列を 作らない。下4桁と 期限だけ'],
+ ['カード番号・口座番号','★持たない','決済会社に 預ける。列を 作らない。下4桁と 期限だけ'],
  ['名簿・役職・所属','サーバ（学校）','書き出しは meibo を 持つ人だけ'],
  ['レッスンの 出席','サーバ（学校）','つけられるのは 担当の先生と 事務のみ'],
  ['門下の 書き込み','サーバ（学校）','読めるのは monka_read が ON の間だけ。既定 OFF'],
@@ -3617,9 +3488,9 @@ var SPEC_KEEP=[
  ['役職を 変えた記録','消せない。誰が・いつ・誰を'],
  ['在籍を 変えた記録','消せない。何から 何へ'],
  ['支払い方法・あて先を 変えた記録','消せない'],
- ['書いたもの（記録・ノート）','通信の失敗で 消さない。これが 一番重い決まり'],
+ ['書いたもの（記録・ノート）','通信の失敗で 消さない。★これが 一番重い決まり'],
  ['手に入れたもの（羊の台帳）','1つも 取り上げない。移行は 増える方向にしか 動かさない'],
- ['修正の記録','消せない。日付・原因・直した内容・確かめた方法。直した本人も 消せない']];
+ ['修正の記録','消せない。日付・原因・直した内容・確かめた方法。★直した本人も 消せない']];
 var SPEC_SRV=[
  ['画面で 隠すだけでは 足りない','同じ見張りを サーバにも 置く'],
  ['ご請求　見る(bill) と 払う(bill_pay)','別の権限として サーバでも 分ける'],
@@ -3632,7 +3503,7 @@ var SPEC_SRV=[
 var SPEC_UI=[
  ['押しても 上に 戻らない','描き直す前に 縦横の位置を 覚え、戻す。画面が変わった時だけ 上へ'],
  ['横に広い表','左端に 戻さない。scrollLeft も 覚える'],
- ['フォームの値','状態に 持たせる。描き直しで 消さない（一番やってはいけない事故）'],
+ ['フォームの値','状態に 持たせる。描き直しで 消さない（★一番やってはいけない事故）'],
  ['文字を大きく','rem 基準。px を 直に 書かない。端末の文字サイズにも 従う'],
  ['押せるところ','44px 以上（ふつうの大きさでも）'],
  ['読み込み中','ぐるぐるを 使わない。灰色の形。0.3秒未満なら 何も出さない'],
