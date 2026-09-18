@@ -162,6 +162,9 @@ import OpsAttendance from "@/components/OpsAttendance";
 import OpsAttendanceBulk from "@/components/OpsAttendanceBulk";
 import OpsEvents from "@/components/OpsEvents";
 import OpsSettings from "@/components/OpsSettings";
+// ★★授業の 型（★裁定 その90・2026-09-18）。★作れるのは 事務 だけ。
+import OpsPresets from "@/components/OpsPresets";
+import { maySee as maySeePresets } from "@/lib/lessonPresets";
 import { maySeeMoney } from "@/lib/opsShell";
 import { mayEnterOps, mayEditRoster, permsOfMember } from "@/lib/opsShell";
 // ★できことを 1つ 尋ねる 手（★役職の 画面の 門・2026-09-18）。
@@ -12079,6 +12082,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★★まとめての 一覧から、★1人を 開いて いる とき（★裁定 その91 R4）。
   //   ★★null なら 一覧の まま です。
   const [opsAttendanceOne, setOpsAttendanceOne] = useState(null);
+  // ★★授業の 型（★裁定 その90・2026-09-18）。★orgId ごとに しまいます。
+  const [orgPresets, setOrgPresets] = useState({});
+  const [presetsBusy, setPresetsBusy] = useState(false);
+  const [presetsError, setPresetsError] = useState("");
   const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
@@ -12431,6 +12438,111 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }
 
   /**
+   * ★授業の 型を 読みます（★裁定 その90・2026-09-18）。
+   *
+   *   ★★当てて いる 門下も 一緒に 引き、★型ごとに まとめます。
+   *   ★★★決まりは「事務 または 先生」です（★台帳）。
+   *     ★★持たない 方には **0行** 返ります。★誤りでは ありません。
+   *   ★★2つの 表を 別々に 引きます。★埋め込みに しません（★2026-09-01 の 一件）。
+   */
+  async function fetchOrgPresets(orgId) {
+    if (!orgId) return;
+    const supabase = createClient();
+    const [{ data: ps, error: e1 }, { data: ts, error: e2 }] = await Promise.all([
+      supabase.from("lesson_presets")
+        .select("id, name, total_count, note, created_at")
+        .eq("org_id", orgId).order("name", { ascending: true }),
+      supabase.from("lesson_preset_targets")
+        .select("preset_id, teacher_id").eq("org_id", orgId)
+    ]);
+    if (e1) { console.error("授業の型を読めませんでした:", e1); return; }
+    if (e2) console.error("当てている門下を読めませんでした:", e2);
+    const 先 = {};
+    (ts || []).forEach((r) => {
+      (先[r.preset_id] = 先[r.preset_id] || []).push(r.teacher_id);
+    });
+    setOrgPresets((prev) => ({
+      ...prev,
+      [orgId]: (ps || []).map((p) => ({ ...p, teachers: 先[p.id] || [] }))
+    }));
+  }
+
+  /**
+   * ★授業の 型を 足す・直す（★裁定 その90）。
+   *
+   *   ★★★守りは 台帳に あります（★`has_can(meibo)`）。
+   *     ★★画面でも 出しませんが、★通っても 台帳が 断ります。
+   *   ★★当てて いる 門下は、★いったん 消して 入れ直します。
+   *     ★★★「どれを 外したか」を 数える より、★確かです。
+   *       ★★数える 道を 作ると、★数え違いが 静かに 残ります。
+   */
+  async function handleSavePreset(orgId, form) {
+    if (!orgId || !form) return;
+    setPresetsBusy(true);
+    setPresetsError("");
+    const supabase = createClient();
+    try {
+      const 本体 = {
+        org_id: orgId,
+        name: String(form.name || "").trim(),
+        total_count: Number(form.total_count),
+        note: form.note || null
+      };
+      let id = form.id || null;
+      if (id) {
+        // ★★★`.select()` を 付けます。★0行に 当たっても 成功に 見えます。
+        const { data, error } = await supabase.from("lesson_presets")
+          .update({ ...本体, updated_at: new Date().toISOString() })
+          .eq("id", id).select("id");
+        if (error || !data || data.length === 0) throw error || new Error("0行");
+      } else {
+        const { data, error } = await supabase.from("lesson_presets")
+          .insert({ ...本体, created_by: userId }).select("id");
+        if (error || !data || data.length === 0) throw error || new Error("0行");
+        id = data[0].id;
+      }
+      const { error: e3 } = await supabase.from("lesson_preset_targets")
+        .delete().eq("preset_id", id);
+      if (e3) throw e3;
+      const 先 = (form.teachers || []).map((t) => ({
+        preset_id: id, teacher_id: t, org_id: orgId
+      }));
+      if (先.length > 0) {
+        const { error: e4 } = await supabase.from("lesson_preset_targets").insert(先);
+        if (e4) throw e4;
+      }
+      await fetchOrgPresets(orgId);
+    } catch (err) {
+      console.error("授業の型を保存できませんでした:", err);
+      setPresetsError("いま、保存できませんでした。");
+    } finally {
+      setPresetsBusy(false);
+    }
+  }
+
+  /**
+   * ★授業の 型を 消します（★裁定 その90 Q5）。
+   *
+   *   ★★★出席の 記録は 消えません。★型は 目安 です。
+   *     ★★台帳の 作りが そう なって います（★`lessons` を 指して いません）。
+   */
+  async function handleDeletePreset(orgId, form) {
+    if (!orgId || !form || !form.id) return;
+    setPresetsBusy(true);
+    setPresetsError("");
+    const supabase = createClient();
+    const { data, error } = await supabase.from("lesson_presets")
+      .delete().eq("id", form.id).select("id");
+    if (error || !data || data.length === 0) {
+      console.error("授業の型を消せませんでした:", error);
+      setPresetsError("いま、消せませんでした。");
+    } else {
+      await fetchOrgPresets(orgId);
+    }
+    setPresetsBusy(false);
+  }
+
+  /**
    * ★役職を 足す・直す・消す。
    *
    *   ★★守りは サーバに あります。★ここでは 送るだけです。
@@ -12500,6 +12612,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setOrgEnrollments((prev) => ({ ...prev, [orgId]: enrollments || [] }));
     setOrgAssignments((prev) => ({ ...prev, [orgId]: assignments || [] }));
     setOrgLessons((prev) => ({ ...prev, [orgId]: lessons || [] }));
+    // ★★★授業の 型（★裁定 その90・2026-09-18）。
+    //   ★★別に 引きます。★埋め込みに しません（★2026-09-01 の 一件）。
+    //     ★★読めないと、★要求ごと 落ちます。
+    //   ★★決まりは「事務 または 先生」です。★持たない 方には 0行 返ります。
+    //     ★★誤りでは ありません。★画面は そのまま です。
+    void fetchOrgPresets(orgId);
     // ★★お支払い（★裁定 その74・2026-09-18）。
     //   ★★★別に 引きます。★埋め込みに しません。
     //     ★★読めないと 要求ごと 落ちます（★2026-09-01 の 一件）。
@@ -14297,6 +14415,29 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         //   ★★黙って 閉じません。★画面に 出します。
                         return r === null ? false : true;
                       }} />
+                  </div>
+                  ) : null}
+
+                  {/* ★★★授業の 型（★裁定 その90 §6-1・2026-09-18）。
+                      ★★見るのは 事務（`meibo`）と 先生（`monka_write`）。
+                      ★★作る・消すのは 事務 だけ です（★画面の 中で 分けます）。
+                      ★★★台帳も 同じ 門 です。★画面だけ では 守りに なりません。
+                      ★★年間の 回数は **学校が 決める もの** です。 */}
+                  {maySeePresets(gate) ? (
+                  <div style={{ marginTop: 16 }}>
+                    <OpsPresets
+                      presets={orgPresets[opsOrgId] || []}
+                      // ★★当てる 先は、★門下を 持つ 方（★先生）です。
+                      //   ★★`SCHEDULE_ROLES` と 同じ 並び を 使います。
+                      teachers={(orgMembers[opsOrgId] || [])
+                        .filter((mm) => SCHEDULE_ROLES.includes(mm.role))
+                        .map((mm) => ({ id: mm.user_id }))}
+                      perms={gate}
+                      teacherNameOf={(id) => orgDisplayName(id) || ""}
+                      busy={presetsBusy}
+                      error={presetsError}
+                      onSave={(form) => handleSavePreset(opsOrgId, form)}
+                      onDelete={(form) => handleDeletePreset(opsOrgId, form)} />
                   </div>
                   ) : null}
                 </>

@@ -97,6 +97,31 @@ function t(cond, label) {
   t(本文.includes("showEventTable(width)"), "★行事の 表と 同じ 境目を 使って いる");
   t(!/width\s*>=?\s*\d{3}/.test(本文), "★幅の 数を 直に 書いて いない");
 
+  // -------------------------------------------------------------------------
+  // 【六】★呼ぶ 側（★2026-09-18・X1）
+  //
+  //   ★★★「書いた」と「効いて いる」は 別 です。★つなぎ目を 見ます。
+  // -------------------------------------------------------------------------
+  console.log("【六】呼ぶ 側");
+  const 親 = readRaw("components", "VocalTracker.jsx");
+  t(親.includes("<OpsPresets"), "設定に 出して いる");
+  t(親.includes("maySeePresets(gate)"), "★見る 門を lib に 尋ねて いる");
+  t(親.includes("fetchOrgPresets"), "読む 道が ある");
+  t(親.includes("const 先 = {}"), "★当てて いる 門下を、★型ごとに まとめて いる");
+  // ★★★2つの 表を 別々に 引く こと（★埋め込みに しない）。
+  t(!/lesson_presets[^\n]*lesson_preset_targets\(/.test(親), "★埋め込みに して いない");
+  t(親.includes('supabase.from("lesson_preset_targets")'), "当てて いる 先も 引いて いる");
+  // ★★★`.select()` を 付ける こと（★0行を 静かに 通さない）。
+  t(/\.eq\("id", id\)\.select\("id"\)/.test(親), "★直す ときに `.select()`");
+  t(/\.insert\(\{ \.\.\.本体, created_by: userId \}\)\.select\("id"\)/.test(親),
+    "★作る ときも `.select()`");
+  t(/\.delete\(\)\.eq\("id", form\.id\)\.select\("id"\)/.test(親), "★消す ときも");
+  // ★★当てて いる 先は、★消して 入れ直す こと。
+  t(/\.delete\(\)\.eq\("preset_id", id\)/.test(親), "★当て先は 入れ直す");
+  // ★★誤りを 黙って 飲まない こと。
+  t(親.includes('setPresetsError("いま、保存できませんでした。")'), "★保存の 誤りを 出す");
+  t(親.includes('setPresetsError("いま、消せませんでした。")'), "★消す ときの 誤りも");
+
   console.log(`\n○ ${ok}　✗ ${ng}`);
   process.exit(ng === 0 ? 0 : 1);
 })();
