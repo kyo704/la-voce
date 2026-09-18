@@ -26,6 +26,11 @@ const MIHON = "file://" + path.join(ROOT, "docs/design/pack-final/00-動く見�
 const tab = process.argv[2] || "設定";
 const st2 = process.argv[3] || "ご請求";
 const post = process.argv[4] || "学長";
+// ★★★実装は、★見本の 11の 節を **1枚に 積んで** います（★②品書きが まだ）。
+//   ★★だから 見本の 1節と 並べる と、★実装が いつも「余分」に 見えます。
+//   ★★★節の 名を 渡すと、★実装の その 節 だけ を 数えます。
+//     ★★例 node tools/ops_recount.js 設定 役職 学長 "役職と、できること"
+const 節名 = process.argv[5] || null;
 const W = 1280;
 
 const env = {};
@@ -51,7 +56,7 @@ fs.readFileSync(path.join(ROOT, ".env.e2e"), "utf8").split("\n").forEach((l) => 
  *   ★★数え方を 片方に 合わせると、★もう 片方が いつも 0 か 満点に なります。
  *     ★★どちらにも 当てはまる 数え方に します。
  */
-const 数える = () => {
+const 数える = (節名) => {
   // ★★★数えるのは「中身の ところ」だけ です。
   //   ★★見本 …… `#bodyEl`（★左の 帯も 上の 帯も 入りません）
   //   ★★実装 …… ★題（h2）を 抱えて いる ところ
@@ -61,18 +66,33 @@ const 数える = () => {
   //     ★★同じ ものを 数えて いない のに、★並べて 出して いました。
   const 見本の中身 = document.querySelector("#bodyEl");
   let 根 = 見本の中身;
+  let 節の中 = null;
   if (!根) {
-    const h = document.querySelector("h2");
+    const 題たち = [...document.querySelectorAll("h2")];
+    const h = 節名 ? 題たち.find((x) => (x.textContent || "").includes(節名)) : 題たち[0];
+    if (節名 && h) {
+      // ★★この 題から、★次の 題の 手前 まで を 1節と します。
+      節の中 = [];
+      let e = h;
+      while ((e = e.nextElementSibling)) {
+        if (e.tagName === "H2" || e.querySelector("h2")) break;
+        節の中.push(e);
+      }
+    }
     根 = h ? (h.parentElement && h.parentElement.parentElement
       ? h.parentElement.parentElement : h.parentElement) : document.body;
   }
   if (!根) 根 = document.body;
-  const 字 = (sel) => [...根.querySelectorAll(sel)]
+  // ★★節を 切り出した ときは、★その 中 だけ を 見ます。
+  const 見る = (sel) => 節の中
+    ? 節の中.flatMap((e) => [...(e.matches(sel) ? [e] : []), ...e.querySelectorAll(sel)])
+    : [...根.querySelectorAll(sel)];
+  const 字 = (sel) => 見る(sel)
     .map((e) => (e.textContent || "").trim().replace(/\s+/g, " "))
     .filter(Boolean);
 
   // ★★箱 ── ★形で 見ます。★枠が あって、★角が 丸くて、★中身が ある もの。
-  const 箱 = [...根.querySelectorAll("div")].filter((e) => {
+  const 箱 = 見る("div").filter((e) => {
     const cs = getComputedStyle(e);
     const 角 = parseFloat(cs.borderTopLeftRadius) || 0;
     const 枠 = parseFloat(cs.borderTopWidth) || 0;
@@ -87,6 +107,8 @@ const 数える = () => {
   }).length, 0);
 
   return {
+    節: 節名 || null,
+    切り出せた: 節名 ? (節の中 ? 節の中.length : 0) : null,
     小見出し: 字(".h3, p.h3"),
     箱: 箱.length,
     行,
@@ -139,7 +161,7 @@ const 数える = () => {
       process.exitCode = 1; return;
     }
 
-    const 見本の数 = await p1.evaluate(数える);
+    const 見本の数 = await p1.evaluate(数える, null);
     const dev = await p1.$("#dev");
     const box = await dev.boundingBox();
     結果.見本 = { 高さ: Math.round(box.height), 見える: m.見える, ぜんぶ: m.ぜんぶ, ...見本の数 };
@@ -200,7 +222,11 @@ const 数える = () => {
       console.error("★止まりました ── 見出しが ありません。");
       process.exitCode = 1; return;
     }
-    const 実装の数 = await p2.evaluate(数える);
+    const 実装の数 = await p2.evaluate(数える, 節名);
+    if (節名 && !実装の数.切り出せた) {
+      console.error("★止まりました ── 実装に 節「" + 節名 + "」が 見つかりません。");
+      process.exitCode = 1; return;
+    }
     const 高さ = await p2.evaluate(() => document.body.scrollHeight);
     結果.実装 = { 高さ, 見える: 高さ, ぜんぶ: 高さ, ...実装の数 };
     await 三枚(p2, null, "jikki-" + tab + "-" + st2);
