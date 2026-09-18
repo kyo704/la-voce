@@ -166,7 +166,11 @@ import { mayEnterOps, mayEditRoster, permsOfMember } from "@/lib/opsShell";
 //   ★★`can` は もう あります（★51行・`lib/entitlements`）。★名が ぶつかります。
 //   ★★別の 名で 取り込みます。★どちらの `can` かを、★読んで 分かる ように。
 import { can as canOps, permSet } from "@/lib/opsPerms";
-import { rosterCount, toRosterRows } from "@/lib/orgRoster";
+import {
+  rosterCount, toRosterRows,
+  // ★★行事の 対象の 札（★裁定 その89 Q3・2026-09-18）。★名簿から 拾います。
+  gradeFilterOptions, GRADE_FILTER_ALL
+} from "@/lib/orgRoster";
 import RecordV2Head from "@/components/RecordV2Head";
 import {
   KoeSheet, NemuriSheet, MarksSheet, SheetRow, ListSheet, HonbanSheet, HitokotoSheet
@@ -12255,9 +12259,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     //   ★理由：org_id を任意にして、どの教室にも予定を作れていました。
     //   ★created_by は渡しません。関数が auth.uid() を入れます。
     //     ★呼ぶ側が「誰が作ったか」を名乗れる形を、残さないためです。
+    // ★★★時間・場所・対象も 渡します（★2026-09-18・裁定 その89）。
+    //   ★★台帳の 関数は 1つ だけ です（★引数 9つ）。★古い 4つの ものは 外しました。
+    //   ★★空の 並びは「みなさん」です。★`null` を 渡しません。
     const { data: eventId, error } = await supabase.rpc("create_org_event", {
       p_org_id: orgId, p_event_date: newEvent.date,
-      p_kind: newEvent.kind, p_title: newEvent.title || ""
+      p_kind: newEvent.kind, p_title: newEvent.title || "",
+      p_start_time: newEvent.startTime || null,
+      p_end_time: newEvent.endTime || null,
+      p_place: newEvent.place || null,
+      p_target_grades: newEvent.grades || [],
+      p_target_courses: newEvent.courses || []
     });
     if (error) { console.error("予定を作れませんでした:", error); setEventError(`予定を作れませんでした：${error.message || "原因不明"}`); return; }
     // ★権限が無いときは、エラーではなく null が返ります。
@@ -13984,6 +13996,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   events={opsEventList}
                   participants={[]}
                   targetOf={opsTargetOf}
+                  // ★★★対象の 札（★裁定 その89 Q3・2026-09-18）。
+                  //   ★★名簿に 入って いる ものだけ を 渡します。
+                  //   ★★1つも 無ければ、★その 列ごと 出ません（★押せない 札を 置きません）。
+                  //   ★★学年は `lib/orgRoster.js` が 名簿から 拾います。★ここで 数えません。
+                  grades={gradeFilterOptions(opsRoster)
+                    .filter((o) => o.id !== GRADE_FILTER_ALL).map((o) => o.label)}
+                  // ★★★学科・コースは、★名簿に まだ 列が ありません。
+                  //   ★★空で 渡します。★その 列は 出ません。
+                  //   ★★引き金 ── ★名簿に 学科・コースが 入る 日（★台帳 08-10）。
+                  courses={[]}
                   // ★★★行事を 出す（★2026-09-18）。
                   //   ★★きょうまで 渡して いません でした。★札が 1度も 出て いません。
                   //   ★★直の insert を しません。★`create_org_event` を 呼びます
@@ -13991,9 +14013,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   onAdd={async (form) => {
                     setEventError("");
                     const supabase = createClient();
+                    // ★★★時間・場所・対象も 渡します（★裁定 その89・2026-09-18）。
+                    //   ★★空の 並びは「みなさん」です。★`null` を 渡しません。
                     const { data: id, error } = await supabase.rpc("create_org_event", {
                       p_org_id: opsOrgId, p_event_date: form.date,
-                      p_kind: form.kind, p_title: form.title || ""
+                      p_kind: form.kind, p_title: form.title || "",
+                      p_start_time: form.startTime || null,
+                      p_end_time: form.endTime || null,
+                      p_place: form.place || null,
+                      p_target_grades: form.grades || [],
+                      p_target_courses: form.courses || []
                     });
                     if (error) {
                       console.error("行事を 出せません でした:", error);

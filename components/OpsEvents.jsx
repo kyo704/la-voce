@@ -1,12 +1,21 @@
 "use client";
 
 import { useState } from "react";
+import useWindowWidth from "@/components/useWindowWidth";
 import { C } from "@/lib/tokens";
+// ★★広い ときは 表（★2026-09-18・坂本さんの お決め Q4）。★名簿・役職と 同じ 形。
+import OpsEventTable from "@/components/OpsEventTable";
+import { showEventTable, timeSpan } from "@/lib/opsEventTable";
 // ★★行事を 出す 入れ口の 決め（★2026-09-18）。★字も 決めも lib が 持ちます。
 import {
-  EVENT_KINDS, NOT_YET, FORM_NOTES, canSubmit, emptyForm
+  EVENT_KINDS, NOT_YET, FORM_NOTES, canSubmit, emptyForm,
+  // ★★裁定 その89（時間・場所・対象）／★お決め Q5（下見・近道・字）。
+  DATE_SHORTCUTS, DATE_HINT, TIME_HINT, TIME_STEPS, TIME_STEP_MIN,
+  timeReversed, endWithoutStart, TIME_REVERSED_LINE, END_WITHOUT_START_LINE,
+  previewLines, targetLine, SUB_LINE
 } from "@/lib/orgEventForm";
 import { buildEvents, actionsFor, EVENT_STATES } from "@/lib/orgEventsView";
+import { tx } from "@/lib/t";
 
 // ============================================================================
 // 行事 ── 見本④（2026-09-09・第3便）
@@ -27,6 +36,48 @@ import { buildEvents, actionsFor, EVENT_STATES } from "@/lib/orgEventsView";
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
 const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
 
+/**
+ * ★きょうから n日 先の 日（★見本の `dShift`）。
+ *
+ *   ★★★端末の 時計で 作ります（★2026-09-18 の 一件）。
+ *     ★★`toISOString()` は UTC です。★夜に 押すと 前の 日に なります。
+ */
+function 先の日(days) {
+  const d = new Date();
+  d.setDate(d.getDate() + Number(days || 0));
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${dd}`;
+}
+
+/** ★はじまりに n分 足した 時刻（★見本の `tAdd`）。 */
+function 足した時刻(start, min) {
+  const m = /^(\d{2}):(\d{2})/.exec(String(start || ""));
+  if (!m) return "";
+  const t = Number(m[1]) * 60 + Number(m[2]) + Number(min || 0);
+  if (t >= 24 * 60) return "23:55";
+  return `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`;
+}
+
+/** ★時計の 枠（★逆の ときは わくを 変えます）。 */
+function 時計の枠(warui) {
+  return {
+    minHeight: 48, borderRadius: 12, padding: "0 12px", maxWidth: 140,
+    border: `1px solid ${warui ? C.curtain : C.line}`,
+    background: warui ? C.paper : C.paper, color: C.ink, fontSize: "1rem"
+  };
+}
+
+/** ★並びに 入れる／外す（★押した その場で 効きます）。 */
+function 入れ替え(list, v) {
+  const a = Array.isArray(list) ? list.slice() : [];
+  const i = a.indexOf(v);
+  if (i >= 0) a.splice(i, 1);
+  else a.push(v);
+  return a;
+}
+
 function dayWord(iso) {
   const s = String(iso || "");
   if (s.length < 10) return "";
@@ -34,23 +85,72 @@ function dayWord(iso) {
 }
 
 export default function OpsEvents({
-  events, participants, targetOf, onAdd, onAction, adding = false, addError = ""
+  events, participants, targetOf, onAdd, onAction, adding = false, addError = "",
+  // ★★対象の 札（★裁定 その89 Q3）。★名簿に ある ものだけ を 渡して ください。
+  //   ★★1つも 無ければ、★その 列ごと 出しません（★押せない 札を 置きません）。
+  grades = [], courses = []
 }) {
+  /**
+   * ★対象の 1列（★学年 ／ 学科・コース）。
+   *
+   *   ★★★1つも 無ければ、★列ごと 出しません。
+   *     ★★空の 見出しだけ が 残ると、★何かが 壊れて いるように 見えます。
+   *   ★★何も 選ばなければ「みなさん」です。★そう 書いて おきます。
+   */
+  function 対象の列(見出し, 札, 選んだ, 押した) {
+    if (!札 || 札.length === 0) return null;
+    return (
+      <div style={{ marginBottom: 10 }}>
+        <p style={{ ...small, margin: "0 0 4px" }}>{見出し}</p>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {札.map((v) => {
+            const on = (選んだ || []).indexOf(v) >= 0;
+            return (
+              <button key={v} type="button" onClick={() => 押した(v)}
+                aria-pressed={on}
+                style={{
+                  minHeight: 44, padding: "0 12px", borderRadius: 999,
+                  border: `1px solid ${on ? C.curtain : C.line}`,
+                  background: on ? C.curtain : C.card,
+                  color: on ? "#FFFDF8" : C.inkSoft, fontSize: "0.75rem"
+                }}>{v}</button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
   const [openId, setOpenId] = useState(null);
   // ★★行事を 出す 入れ口（★2026-09-18）。
   //   ★★はじめは 閉じて います。★札を 押して 開きます。
   //   ★★開きっぱなしに しません。★一覧が 下に 押し下げられます。
   const [form, setForm] = useState(null);
+  const width = useWindowWidth();
   const rows = buildEvents(events, participants, targetOf);
+  // ★★表に 渡す ため、★取り下げ かどうかも 添えます。
+  const 表の行 = rows.map((x) => ({
+    ...x, withdrawn: x.state === EVENT_STATES.WITHDRAWN
+  }));
 
   return (
     <div className="space-y-3" style={{ paddingBottom: 16 }}>
       <div>
-        <h2 className="ff-display italic" style={{ fontSize: "1.25rem", color: C.ink }}>行事</h2>
-        <p style={small}>出したり消したり。対象の方の「きょう」に出ます。</p>
+        {/* ★★`.ff-display` を 外しました（★2026-09-18・お決め G7）。
+            ★★`lib/uiKit.js`「門の中の 画面では .ff-display を 使いません」。
+            ★★名簿・日程・連絡と 揃えました。 */}
+        <h2 style={{ fontSize: "1.25rem", color: C.ink }}>行事</h2>
+        {/* ★★題の 下の 1行（★見本の `.sub`・★お決め G5）。★字は lib が 持ちます。 */}
+        <p style={small}>{SUB_LINE}</p>
       </div>
 
-      {rows.length === 0 ? (
+      {/* ★★★広い ときは 表（★見本 `P_gyoji` の 7列・★お決め Q4）。
+           ★★狭い ときは これまで どおり 札 です。★どちらも 残します。
+           ★★境目は lib/opsEventTable.js の `TABLE_AT`（★測った 数 ＋ 殻の 余白）。 */}
+      {rows.length > 0 && showEventTable(width) ? (
+        <OpsEventTable rows={表の行} dayWord={dayWord}
+          onOpen={(ev) => setOpenId(openId === ev.id ? null : ev.id)} />
+      ) : rows.length === 0 ? (
         <div style={card}><p style={small}>まだ行事はありません。</p></div>
       ) : (
         rows.map((x) => {
@@ -127,14 +227,16 @@ export default function OpsEvents({
           }}>行事を 出す</button>
       ) : null}
 
-      {/* ★★★行事を 出す 入れ口（★2026-09-18）。
-          ★★★見本の 入れ口は 7つ です。★いま 通せるのは 3つ です。
-            ★★時間・対象・場所は、★`create_org_event` が 受け取りません。
-            ★★台帳に 列は ある ものも あります（start_time / end_time / target_group）。
-            ★★★直の insert を しません。★塞いで あります（★2026-09-04・#007）。
-              ★★`org_id` を 自由に できて、★どの 学校にも 予定を 作れて いました。
-            ★★★抜け道を 作りません。★関数を 広げる 日まで、★3つ で 出します。
-          ★★まだの ものは、★下に 何が まだかを 書きます。★口は 置きません（★§8⑤）。
+      {/* ★★★行事を 出す 入れ口（★2026-09-18・裁定 その89）。
+          ★★きょうまで、★通せるのは 3つ でした（★日・種類・名前）。
+            ★★時間・対象・場所は、★`create_org_event` が 受け取りません でした。
+          ★★★裁定 その89 で、★台帳も 道も 広がりました ──
+            ★★時間 … `p_start_time` / `p_end_time`（★列は もとから ありました）
+            ★★場所 … `place` の 1列（★自由に 打ちます。★表は 作りません）
+            ★★対象 … `target_grades` / `target_courses` の **2列**
+              ★★★空の 並び ＝ みなさん。★`null` に しません。
+          ★★★直の insert を しません。★塞いで あります（★2026-09-04・#007）。
+            ★★`org_id` を 自由に できて、★どの 学校にも 予定を 作れて いました。
           ★★字も 決めも lib/orgEventForm.js が 持ちます。 */}
       {onAdd && form !== null ? (
         <div style={{
@@ -151,8 +253,22 @@ export default function OpsEvents({
             style={{
               width: "100%", minHeight: 48, borderRadius: 12, padding: "0 13px",
               border: `1px solid ${C.line}`, background: C.paper, color: C.ink,
-              fontSize: "1rem", marginBottom: 10
+              fontSize: "1rem"
             }} />
+          {/* ★★日の 近道（★見本の きょう／あした／来週／来月・★お決め G4）。
+              ★★日づけは 端末の 時計で 作ります（★台帳は UTC・2026-09-18 の 一件）。 */}
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", margin: "6px 0 4px" }}>
+            {DATE_SHORTCUTS.map((d) => (
+              <button key={d.key} type="button"
+                onClick={() => setForm((f) => ({ ...f, date: 先の日(d.days) }))}
+                style={{
+                  minHeight: 44, padding: "0 12px", borderRadius: 999,
+                  border: `1px solid ${C.line}`, background: C.card,
+                  color: C.inkSoft, fontSize: "0.75rem"
+                }}>{d.label}</button>
+            ))}
+          </div>
+          <p style={{ ...small, margin: "0 0 10px" }}>{DATE_HINT}</p>
 
           <p style={{ ...small, margin: "0 0 4px" }}>種類</p>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
@@ -169,6 +285,53 @@ export default function OpsEvents({
             ))}
           </div>
 
+          {/* ★★時間（★裁定 その89 Q1）。★終わりは 入れなくて よい です。 */}
+          <p style={{ ...small, margin: "0 0 4px" }}>時間</p>
+          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+            <input type="time" step={TIME_STEP_MIN * 60} value={form.startTime}
+              onChange={(e) => setForm((f) => ({ ...f, startTime: e.target.value }))}
+              style={時計の枠(false)} />
+            <span style={{ color: C.inkSoft }}>〜</span>
+            <input type="time" step={TIME_STEP_MIN * 60} value={form.endTime}
+              onChange={(e) => setForm((f) => ({ ...f, endTime: e.target.value }))}
+              style={時計の枠(timeReversed(form))} />
+            {TIME_STEPS.map((m) => (
+              <button key={m} type="button"
+                onClick={() => setForm((f) => ({ ...f, endTime: 足した時刻(f.startTime, m) }))}
+                disabled={!form.startTime}
+                style={{
+                  minHeight: 44, padding: "0 10px", borderRadius: 999,
+                  border: `1px solid ${C.line}`, background: C.card,
+                  color: form.startTime ? C.inkSoft : C.ink4, fontSize: "0.75rem"
+                }}>+{m < 60 ? `${m}分` : `${m / 60}時間`}</button>
+            ))}
+          </div>
+          {/* ★★前後が 逆なら、★その場で 言います。★出す ときまで 待ちません。 */}
+          {timeReversed(form) ? (
+            <p style={{ ...small, color: C.curtain, margin: "6px 0 10px" }}>{TIME_REVERSED_LINE}</p>
+          ) : endWithoutStart(form) ? (
+            <p style={{ ...small, color: C.curtain, margin: "6px 0 10px" }}>{END_WITHOUT_START_LINE}</p>
+          ) : (
+            <p style={{ ...small, margin: "6px 0 10px" }}>{TIME_HINT}</p>
+          )}
+
+          {/* ★★場所（★裁定 その89 Q2）。★自由に 打ちます。★一覧は 作りません。 */}
+          <p style={{ ...small, margin: "0 0 4px" }}>場所</p>
+          <input type="text" value={form.place}
+            onChange={(e) => setForm((f) => ({ ...f, place: e.target.value.slice(0, 40) }))}
+            placeholder="れい：第1ホール"
+            style={{
+              width: "100%", minHeight: 48, borderRadius: 12, padding: "0 13px",
+              border: `1px solid ${C.line}`, background: C.paper, color: C.ink,
+              fontSize: "1rem", marginBottom: 10
+            }} />
+
+          {/* ★★対象（★裁定 その89 Q3）。★2軸 です。★選ばなければ みなさん です。 */}
+          {対象の列("対象 ── 学年", grades, form.grades,
+            (v) => setForm((f) => ({ ...f, grades: 入れ替え(f.grades, v) })))}
+          {対象の列("対象 ── 学科・コース", courses, form.courses,
+            (v) => setForm((f) => ({ ...f, courses: 入れ替え(f.courses, v) })))}
+
           <p style={{ ...small, margin: "0 0 4px" }}>行事の 名前</p>
           <input type="text" value={form.title}
             onChange={(e) => setForm((f) => ({ ...f, title: e.target.value.slice(0, 60) }))}
@@ -178,6 +341,24 @@ export default function OpsEvents({
               border: `1px solid ${C.line}`, background: C.paper, color: C.ink,
               fontSize: "1rem", marginBottom: 10
             }} />
+
+          {/* ★★★出す 前の 下見（★見本の `warn`・★お決め G3）。
+               ★★押して から「ちがった」と 気づく のを 減らします。
+               ★★人数は ここで 数えません。★渡された ものを 出します。 */}
+          {(() => {
+            const 下見 = previewLines(form);
+            return (
+              <div style={{
+                ...card, background: C.paper, borderColor: C.line, margin: "0 0 10px"
+              }}>
+                <p style={{ fontSize: "0.8125rem", color: C.ink, fontWeight: 700, margin: 0 }}>
+                  {下見.head}
+                </p>
+                <p style={{ ...small, margin: "2px 0 0" }}>{下見.when}　{下見.where}</p>
+                <p style={{ ...small, margin: 0 }}>{tx("だれに")}　{下見.who}</p>
+              </div>
+            );
+          })()}
 
           {addError ? (
             <p style={{ ...small, color: C.curtain, margin: "0 0 8px" }}>{addError}</p>
