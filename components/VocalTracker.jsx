@@ -7581,7 +7581,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //       ★「次のレッスンは、いま 読めませんでした」が 出ます。
       //   ★★蔵の 決め（CLAUDE.md）── ★期限切れに 当たりうる 読みは、
       //     ★この 包みに 通す。★渡すのは **組み立て直せる 関数** です。
-      const [byStudent, byLink, events, messages, presets] = await Promise.all([
+      const [byStudent, byLink, events, messages] = await Promise.all([
         // ① 教室の レッスン（★org_id あり・student_id で 当たる）
         //
         //   ★★★2026-09-16・裁定待ち ── ★やめた あとも 見えて います。
@@ -7631,29 +7631,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         runQueryWithAuthRetry(supabase, () =>
           supabase.from("org_messages").select(MESSAGE_COLUMNS)
             .order("created_at", { ascending: false }).limit(20),
-          "先生からの連絡"),
-        // ⑤ 授業の 型（★裁定 その92・2026-09-19）。
-        //   ★★分母（★年間の 回数）を お見せする ため です。
-        //   ★★絞りは RLS が します ── `lesson_presets_select` が、
-        //     ★`enrollments`（status='active'）で 在籍を 見ます。
-        //   ★★★取る 列を **2つ＋1つ** に 絞って います。
-        //     ★★決まり（RLS）は **行** を 選びます。★**列** は 隠せません。
-        //     ★★`note`（学校の 覚え書き）と `need_count`（足りると される 回数）は、
-        //       ★★お見せする 話に なって いません。★だから 頼みません。
-        //       ★★これは 見た目の 絞り では なく、★**頼まない** という こと です。
-        runQueryWithAuthRetry(supabase, () =>
-          supabase.from("lesson_presets").select("id, org_id, name, total_count")
-            .limit(50),
-          "授業の型")
-      ]);
+          "先生からの連絡")
+]);
       if (!alive) return;
       // ★★★落ちた ものを、★1つずつ 名前で 書き出します（★2026-09-16）。
       //   ★★これまで、★どれが 落ちたのかが どこにも 出て いませんでした。
       //     ★★画面には「読めませんでした」と 出るのに、
       //       ★★何が 起きたかは、★誰にも 分かりませんでした。
       [["教室のレッスン", byStudent], ["個人指導のレッスン", byLink],
-       ["近い行事", events], ["先生からの連絡", messages],
-       ["授業の型", presets]].forEach(([名, r]) => {
+       ["近い行事", events], ["先生からの連絡", messages]].forEach(([名, r]) => {
         if (r && r.error) console.error(`★${名}を読めませんでした:`, r.error);
       });
       // ★★「取れなかった」と「0件」を 分けて 持ちます。
@@ -7672,8 +7658,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         //   ★★★「読めなかった」を「型が 無い」に しません ── ★どちらも
         //     ★分母を 出さない、★という 同じ 振る舞いに なります。
         //     ★★出さない ほうへ 倒れます。★当てずっぽうの 分母を 出しません。
-        presets: presets.data || [],
-        presetsOk: !presets.error
+        // ★★★型（授業の 型）は ここで 読みません（★裁定 その93）。
+        //   ★★読み道は 学校 1つ ぶん です。★`p_org_id` が 要ります。
+        //   ★★開いて いる 教室が 決まって から、★別の 殻で 読みます。
+        presets: [],
+        presetsOk: true
       });
     })();
     return () => { alive = false; };
@@ -11179,6 +11168,38 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [moreCameFrom, setMoreCameFrom] = useState("home");
   // ★通っている ところ ── ★いま 開いて いる 教室（★在籍の id）。
   const [attendingOrgId, setAttendingOrgId] = useState(null);
+  /**
+   * ★授業の 型（★分母）を 読みます（★裁定 その93・2026-09-19）。
+   *
+   *   ★★★表を 直に 読みません。★読み道（`security definer` の 関数）を 通します。
+   *     ★★決まり（RLS）は **行** を 選びます。★**列** は 選びません。
+   *     ★★学生が 行を 1つ 読めると、★`note` も `need_count` も 渡ります。
+   *       ★★列を 頼まない だけ では 足りません。★頼めば 渡ります。
+   *   ★★★`get_lesson_preset_for_student` は、
+   *     ★★`name` と `total_count` の 2つ **しか** 返しません。
+   *
+   *   ★★学校 1つ ぶん です。★開いて いる 教室が 決まって から 読みます。
+   *     ★★★だから、★みんなの 殻（`classroom`）では 読めません。
+   *       ★★あちらは 教室が 決まる 前に 走ります。
+   */
+  const [attendingPresets, setAttendingPresets] = useState([]);
+  useEffect(() => {
+    let alive = true;
+    if (!layoutV2 || !attendingOrgId) { setAttendingPresets([]); return; }
+    (async () => {
+      const supabase = createClient();
+      const r = await runQueryWithAuthRetry(supabase, () =>
+        supabase.rpc("get_lesson_preset_for_student", { p_org_id: attendingOrgId }),
+        "授業の型");
+      if (!alive) return;
+      // ★★黙って 捨てません。★読めなかった ことが 分からないと、
+      //   ★★「型が 無い」のか「読めて いない」のかを 見分けられません。
+      //   ★★どちらでも 分母は 出しません。★出さない ほうへ 倒れます。
+      if (r.error) console.error("★授業の型を読めませんでした:", r.error);
+      setAttendingPresets(r.error ? [] : (r.data || []));
+    })();
+    return () => { alive = false; };
+  }, [layoutV2, attendingOrgId]);
   // ★その 教室を「やめる」の 1枚を 出して いるか。
   const [attendingLeaving, setAttendingLeaving] = useState(false);
   // ★やめる が できなかった こと（★黙って 戻さない ため・2026-09-16）。
@@ -24416,10 +24437,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       {(() => {
                         const 私の = myLessonsInOrg(
                           (classroom.lessons || []), attendingOrgId, userId);
-                        const 分母 = totalForStudent(
-                          (classroom.presets || []), attendingOrgId);
-                        const 多い = ((classroom.presets || [])
-                          .filter((x) => x && x.org_id === attendingOrgId).length) > 1;
+                        // ★★★読み道は、★その 学校の 型 だけ を 返します。
+                        //   ★★`org_id` は 返って きません（★返す 列は 2つ だけ）。
+                        //   ★★だから、★ここで 学校を 絞り直しません。★絞り済み です。
+                        const 分母 = totalForStudent(attendingPresets, attendingOrgId);
+                        const 多い = attendingPresets.length > 1;
                         return (
                           <>
                             <H3>{ATTEND_HEAD}</H3>

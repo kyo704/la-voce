@@ -234,19 +234,22 @@ function t(cond, label) {
   t(m.totalForStudent([{ org_id: "A", total_count: null }], "A") === null,
     "★回数が 空 ── ★出さない（★`Number(null)` は 0 です）");
 
-  // ★★★列を **頼んで いない** こと。★決まりは 行を 選び、★列は 隠せません。
-  //   ★★`note`（学校の 覚え書き）と `need_count`（足りると される 回数）は、
-  //     ★★お見せする 話に なって いません。★だから 取りません。
-  const 型読み = vtCode.slice(vtCode.indexOf('from("lesson_presets")'),
-                           vtCode.indexOf('from("lesson_presets")') + 220);
-  t(/from\("lesson_presets"\)/.test(vtCode), "★型を 読んで いる");
-  t(/select\("id, org_id, name, total_count"\)/.test(型読み),
-    "★★取る 列は 4つ だけ（★`note` と `need_count` を 頼まない）");
-  t(!/note/.test(型読み), "★`note` を 取って いない");
-  t(!/need_count/.test(型読み), "★`need_count` を 取って いない");
+  // ★★★2026-09-19（★裁定 その93）── ★表を 直に 読むのを やめました。
+  //   ★★列を 頼まない だけ では 足りません。★頼めば 渡ります。
+  //     ★★決まり（RLS）は **行** を 選びます。★**列** は 選びません。
+  //   ★★★読み道（`get_lesson_preset_for_student`）は、
+  //     ★★`name` と `total_count` の 2つ **しか** 返しません。
+  const 殻頭 = vtCode.indexOf("const [attendingPresets");
+  t(殻頭 > 0, "★学生の 殻が ある");
+  const 型読み = vtCode.slice(殻頭, vtCode.indexOf("[layoutV2, attendingOrgId]", 殻頭) + 30);
+  t(/rpc\("get_lesson_preset_for_student"/.test(型読み), "★読み道を 通して いる");
+  t(/p_org_id/.test(型読み), "★学校を 1つ 渡して いる");
+  t(!/from\("lesson_presets"\)/.test(型読み), "★★表を 直に 読んで いない");
+  t(!/note/.test(型読み), "★`note` を 触って いない");
+  t(!/need_count/.test(型読み), "★`need_count` を 触って いない");
 
   // ★★★較正 ── ★わざと 外した 字で、★この 見張りが 動く ことを 確かめます。
-  t(/select\("id, org_id, name, total_count, note"\)/.test('select("id, org_id, name, total_count, note")'),
+  t(/note/.test('rpc("x", { p_org_id: id, note: 1 })'),
     "★道具の 較正（★`note` 入りを 見つけられる）");
 
   // ★★画面に 出て いる こと。★言葉は `lib/` が 持ちます。

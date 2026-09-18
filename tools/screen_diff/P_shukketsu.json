@@ -3,7 +3,8 @@
   "実装": [
     "components/OpsAttendance.jsx",
     "lib/opsAttendance.js",
-    "components/OpsAttendanceBulk.jsx"
+    "components/OpsAttendanceBulk.jsx",
+    "components/OpsHome.jsx"
   ],
   "見本の節の数": {
     "h2": 1,
@@ -102,5 +103,12 @@
       "実装の印": "tapGoesTo",
       "どう ちがうか": "★通しました（★2026-09-18）。★重なりの コマは 重なりへ 行きます"
     }
-  ]
+  ],
+  "助け": [
+    "bk"
+  ],
+  "助けは別画面": [
+    "draw"
+  ],
+  "覚え2": "★入口①（ホーム → きょうの ながれ）は `components/OpsHome.jsx` に あります。★読む 先に 足しました。"
 }

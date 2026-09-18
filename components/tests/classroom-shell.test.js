@@ -108,7 +108,10 @@ if (missing.length) {
   for (let i = shellBlk.indexOf('from("'); i > -1; i = shellBlk.indexOf('from("', i + 1)) {
     読む表.push(shellBlk.slice(i + 6, shellBlk.indexOf('"', i + 6)));
   }
-  const 決めた表 = ["lessons", "lessons", "org_events", "org_messages", "lesson_presets"];
+  // ★★★2026-09-19（★裁定 その93）── ★型は ここで 読みません。
+  //   ★★読み道は 学校 1つ ぶん です。★この 殻は 教室が 決まる 前に 走ります。
+  //   ★★★学生の 型は `attendingPresets` の 殻が 読みます（★`rpc`）。
+  const 決めた表 = ["lessons", "lessons", "org_events", "org_messages"];
   t(JSON.stringify(読む表.sort()) === JSON.stringify(決めた表.slice().sort()),
     "殻が 読む 表 ── " + 決めた表.join(" / ") + "（★いま: " + 読む表.join(" / ") + "）");
   t(shellSelects.length === 読む表.length,
@@ -121,11 +124,9 @@ if (missing.length) {
       (i + 1) + "つ目の select が 列を 名前で 並べて いる");
     t(!/["'`]\s*\*\s*["'`]/.test(sel), (i + 1) + "つ目の select が * では ない");
   });
-  // ★★★型から `note` と `need_count` を 頼んで いない こと（★裁定 その92）。
-  const 型sel = shellSelects.find((x) => /total_count/.test(x)) || "";
-  t(型sel.length > 0, "★型の select が ある");
-  t(!/note/.test(型sel), "★型 ── ★`note` を 頼んで いない");
-  t(!/need_count/.test(型sel), "★型 ── ★`need_count` を 頼んで いない");
+  // ★★★型は 表では なく 読み道 から 読みます（★裁定 その93・2026-09-19）。
+  //   ★★この 殻が 型を 読んで いない こと を 見ます。
+  t(!/lesson_presets/.test(shellBlk), "★★殻が 型の 表を 読んで いない");
   t(!S.LESSON_COLUMNS.includes("*"), "LESSON_COLUMNS に * が ない");
   t(!S.LESSON_COLUMNS.includes("teacher_note"),
     "teacher_note を 引いて いない（★先生が 自分の ために 書いた もの）");
