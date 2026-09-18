@@ -30,16 +30,25 @@ def 止まる(わけ):
 
 
 def 見本の塊(名):
+  """★見本の 中の 1つの 関数 だけ を 切り出します。
+
+    ★★★画面（`P_…`）だけ では ありません（★2026-09-18）。
+      ★★設定の 中の 節（`st…`）も 1画面 分の 中身を 持って います。
+        ★★例 ── `stPost`（役職と、できること）。
+      ★★★はじめ、★次の `P_…` まで を 切って いました。
+        ★★`stPost` を 切ろうと して、★`P_postDetail` まで 混ざりました。
+        ★★印の 数が 倍に なり、★「差が 無い」と 読めて しまう ところ でした。
+      ★★だから、★**次の `function`** で 切ります。
+  """
   if not os.path.exists(MIHON):
     止まる("見本が ありません: " + MIHON)
   s = io.open(MIHON, encoding="utf-8").read()
-  名前 = re.findall(r"^function (P_[A-Za-z0-9_]+)\(", s, re.M)
-  if 名 not in 名前:
-    止まる("見本に その 画面が ありません: " + 名)
-  場所 = {n: s.index("function %s(" % n) for n in 名前}
-  i = 場所[名]
-  つぎ = [p for p in 場所.values() if p > i]
-  return s[i:min(つぎ)] if つぎ else s[i:]
+  頭 = "function %s(" % 名
+  if 頭 not in s:
+    止まる("見本に その 名の 関数が ありません: " + 名)
+  i = s.index(頭)
+  つぎ = s.find("\nfunction ", i + 1)
+  return s[i:つぎ] if つぎ > 0 else s[i:]
 
 
 def 節を数える(塊):
@@ -57,7 +66,11 @@ def 節を数える(塊):
     "pills": len(re.findall(r'class="pills"', 塊)),
     "btn": len(re.findall(r'class="btn', 塊)),
     "note": len(re.findall(r'class="note"', 塊)),
-    "sub": len(re.findall(r'class="sub"', 塊))
+    "sub": len(re.findall(r'class="sub"', 塊)),
+    "warn": len(re.findall(r'class="warn"', 塊)),
+    "fl": len(re.findall(r'class="fl"', 塊)),
+    "tw": len(re.findall(r'class="tw', 塊)),
+    "inp": len(re.findall(r'class="inp"', 塊))
   }
   return {k: v for k, v in 印.items() if v > 0}
 
