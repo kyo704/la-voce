@@ -256,6 +256,25 @@ export default function OpsPosts({
               <span style={{ ...TYPE.usual, color: C.inkSoft, lineHeight: 1.6 }}>
                 {permLine(p.perms)}
               </span>
+              {/* ★★★この 役職で 出る ナビ（★裁定 その75・STEP_1）。
+                  ★出どころ 見本 `stPost()` の いちばん 下の 行「この役職で 出るナビ」。
+                    ★★見本では 表の 最下段に あります。★ここでは 札の 中に 置きます。
+                    ★★表は PC・iPad だけ です。★この 札は どの 幅でも 出ます。
+                  ★★★見本の `navOf()` を **書き写しません**。
+                    ★★`tabsForPerms`（lib/opsPerms.js）を 呼びます。
+                    ★★2つは 3つの 役職で 食い違います ──
+                      ★教授・准教授・講師 … ★見本は「設定」を 出します。
+                      ★★実装は 出しません。★`koma_mine` を 条件から 外して います。
+                      ★★注（2026-09-11）「入れると、教授に 学校の 設定が 開きます。漏れです」
+                    ★★★実装の ほうが 正しい です。★見本に 合わせません
+                      （★2026-09-18・坂本さん ご承認）。
+                  ★★ここで 組み立てると、★同じ 決めが 2か所に なります。 */}
+              <br />
+              <span style={{ ...TYPE.mini, color: C.inkSoft, lineHeight: 1.6 }}>
+                {tx("出る ナビ")}　{tabsForPerms(p.perms).length > 0
+                  ? tabsForPerms(p.perms).map((t) => t.label).join("・")
+                  : tx("（入れません）")}
+              </span>
             </span>
             <span style={{ ...TYPE.mini, color: C.inkSoft, flex: "none" }}>
               {tx("{n}人").replace("{n}", countByPost[p.id] || 0)}
@@ -285,7 +304,14 @@ export default function OpsPosts({
                 background: C.curtain, color: "#FFFDF8", fontFamily: FONT_STACK
               }}>{tx("足す")}</button>
           </div>
-          <Note>
+          {/* ★★★注を 畳みます（★裁定 その75・STEP_1）。
+              ★出どころ 見本の `foldNotes()` ── ★`.note` を ぜんぶ 畳んで、
+                ★「くわしい 決まりを 見る」の 札を 前に 置いて います。
+              ★★★私は「行き先の ある 札」だと 思って いました。★ちがいます。
+                ★★押すと **その場で 開きます**。★画面は 変わりません。
+              ★★札の 字は `components/UiV2.jsx` の `NOTE_OPEN` / `NOTE_CLOSE`。
+                ★★見本の `textContent` を 1文字も 変えて いません。 */}
+          <Note fold>
             {tx("足した 役職は、はじめは できることが 1つも ありません。押して 決めてください。")}<br />
             {tx("自分が 持っていない できることは、役職にも 付けられません。")}<br />
             {tx("その 役職の方が いる間は、消せません。")}
