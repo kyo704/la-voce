@@ -14892,6 +14892,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     sheepLine={null}
                     nameOf={(l) => orgDisplayName(l.student_id) || ""}
                     unsent={unsentQueue.unsentCount(unsentAttendance)}
+                    // ★★★未送信を 押した ときの 行き先（★2026-09-18）。
+                    //   ★★きょうまで 渡して いません でした。
+                    //     ★★札は 出て いました。★押しても 何も 起きません でした。
+                    //     ★★★「押せない 札を 置かない」に 反して いました。
+                    //   ★★見本は 未送信の 1枚（`P_misou`）へ 行きます。
+                    //     ★★その 画面は まだ ありません。
+                    //   ★★★かわりに、★**直せる ところ**へ お連れします。
+                    //     ★★未送信は 出欠 です。★レッスンの 帯で 付け直せます。
+                    //     ★★「見る だけ」より、★手を 打てる ところ の ほうが 要ります。
+                    onUnsent={() => setActiveTab("lesson")}
                     onSeeAll={() => setActiveTab("lesson")}
                     onAttend={handleAttendance} />
 

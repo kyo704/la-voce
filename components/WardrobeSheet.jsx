@@ -19,15 +19,19 @@ import { SHEET_SNAPS, SHEET_DEFAULT, snapByKey, nearestSnap } from "@/lib/wardro
 //   ★★動きを減らす設定の方には、★動かしません。
 // ============================================================================
 
-export default function WardrobeSheet({ children, header, onClose, onSnapChange }) {
-  const [snap, setSnapRaw] = useState(SHEET_DEFAULT);
-  // ★★どの段にいるかを、★外へも伝えます（★2026-09-08・仕様 §7）。
-  //   ★「少しだけ」の段では、★よく着るもの4点だけを出すためです。
-  //   ★★状態を2つ持たないこと。★ここが正で、★外へは知らせるだけです。
-  const setSnap = (v) => {
-    setSnapRaw(v);
-    if (onSnapChange) onSnapChange(v);
-  };
+export default function WardrobeSheet({ children, header, onClose }) {
+  // ★★★`onSnapChange` を 外しました（★2026-09-18）。
+  //
+  //   ★★もとは「どの段に いるか」を 外へ 伝えて いました（★2026-09-08・仕様 §7）。
+  //     ★「少しだけ」の段では、★よく着るもの 4点だけを 出す ため です。
+  //   ★★★その 出し分けは、★同じ 日に **やめました**（★坂本さんの お決め）。
+  //     ★★引き上げ具合で 中身が 変わるので、★予告なく 減ったように 見えます。
+  //     ★★実機で「分かりにくい」と ご指摘を いただきました。
+  //   ★★★`WardrobePanel` の 注に、こう 書いて あります ──
+  //     ★★「誰も読まない状態を、★残さないこと」。
+  //     ★★★その 注の とおりに、★誰も 読まない 渡し口を 外しました。
+  //   ★★段そのものは 残ります。★引き出しの 高さ に 要ります。
+  const [snap, setSnap] = useState(SHEET_DEFAULT);
   // ★指で持っているあいだの、いまの高さ。★離すと段に吸い付きます。
   const [dragTop, setDragTop] = useState(null);
   const startRef = useRef(null);
