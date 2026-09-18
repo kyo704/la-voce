@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 import { C } from "@/lib/tokens";
+// ★★行事を 出す 入れ口の 決め（★2026-09-18）。★字も 決めも lib が 持ちます。
+import {
+  EVENT_KINDS, NOT_YET, FORM_NOTES, canSubmit, emptyForm
+} from "@/lib/orgEventForm";
 import { buildEvents, actionsFor, EVENT_STATES } from "@/lib/orgEventsView";
 
 // ============================================================================
@@ -29,8 +33,14 @@ function dayWord(iso) {
   return `${Number(s.slice(5, 7))}月${Number(s.slice(8, 10))}日`;
 }
 
-export default function OpsEvents({ events, participants, targetOf, onAdd, onAction }) {
+export default function OpsEvents({
+  events, participants, targetOf, onAdd, onAction, adding = false, addError = ""
+}) {
   const [openId, setOpenId] = useState(null);
+  // ★★行事を 出す 入れ口（★2026-09-18）。
+  //   ★★はじめは 閉じて います。★札を 押して 開きます。
+  //   ★★開きっぱなしに しません。★一覧が 下に 押し下げられます。
+  const [form, setForm] = useState(null);
   const rows = buildEvents(events, participants, targetOf);
 
   return (
@@ -107,14 +117,103 @@ export default function OpsEvents({ events, participants, targetOf, onAdd, onAct
       )}
 
       {/* ★★足すのは、★いちばん下（★操作は 下半分に）。 */}
-      {onAdd ? (
-        <button type="button" onClick={onAdd}
+      {onAdd && form === null ? (
+        <button type="button" onClick={() => setForm(emptyForm())}
           className="w-full"
           style={{
             minHeight: 52, borderRadius: 12, border: `1px solid ${C.curtain}`,
             borderBottomWidth: 3, background: C.curtain, color: "#FFFDF8",
             fontSize: "0.9375rem"
           }}>行事を 出す</button>
+      ) : null}
+
+      {/* ★★★行事を 出す 入れ口（★2026-09-18）。
+          ★★★見本の 入れ口は 7つ です。★いま 通せるのは 3つ です。
+            ★★時間・対象・場所は、★`create_org_event` が 受け取りません。
+            ★★台帳に 列は ある ものも あります（start_time / end_time / target_group）。
+            ★★★直の insert を しません。★塞いで あります（★2026-09-04・#007）。
+              ★★`org_id` を 自由に できて、★どの 学校にも 予定を 作れて いました。
+            ★★★抜け道を 作りません。★関数を 広げる 日まで、★3つ で 出します。
+          ★★まだの ものは、★下に 何が まだかを 書きます。★口は 置きません（★§8⑤）。
+          ★★字も 決めも lib/orgEventForm.js が 持ちます。 */}
+      {onAdd && form !== null ? (
+        <div style={{
+          background: C.card, border: `1px solid ${C.curtain}`,
+          borderRadius: 14, padding: 14
+        }}>
+          <p style={{ fontSize: "0.875rem", fontWeight: 700, color: C.ink, margin: "0 0 8px" }}>
+            行事を 出す
+          </p>
+
+          <p style={{ ...small, margin: "0 0 4px" }}>日</p>
+          <input type="date" value={form.date}
+            onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))}
+            style={{
+              width: "100%", minHeight: 48, borderRadius: 12, padding: "0 13px",
+              border: `1px solid ${C.line}`, background: C.paper, color: C.ink,
+              fontSize: "1rem", marginBottom: 10
+            }} />
+
+          <p style={{ ...small, margin: "0 0 4px" }}>種類</p>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
+            {EVENT_KINDS.map((k) => (
+              <button key={k} type="button" onClick={() => setForm((f) => ({ ...f, kind: k }))}
+                aria-pressed={form.kind === k}
+                style={{
+                  minHeight: 44, padding: "0 12px", borderRadius: 999,
+                  border: `1px solid ${form.kind === k ? C.curtain : C.line}`,
+                  background: form.kind === k ? C.curtain : C.card,
+                  color: form.kind === k ? "#FFFDF8" : C.inkSoft,
+                  fontSize: "0.75rem"
+                }}>{k}</button>
+            ))}
+          </div>
+
+          <p style={{ ...small, margin: "0 0 4px" }}>行事の 名前</p>
+          <input type="text" value={form.title}
+            onChange={(e) => setForm((f) => ({ ...f, title: e.target.value.slice(0, 60) }))}
+            placeholder="れい：実技試験"
+            style={{
+              width: "100%", minHeight: 48, borderRadius: 12, padding: "0 13px",
+              border: `1px solid ${C.line}`, background: C.paper, color: C.ink,
+              fontSize: "1rem", marginBottom: 10
+            }} />
+
+          {addError ? (
+            <p style={{ ...small, color: C.curtain, margin: "0 0 8px" }}>{addError}</p>
+          ) : null}
+
+          <div style={{ display: "flex", gap: 8 }}>
+            <button type="button" disabled={adding || !canSubmit(form)}
+              onClick={async () => {
+                const ok = await onAdd(form);
+                if (ok !== false) setForm(null);
+              }}
+              style={{
+                flex: 1, minHeight: 48, borderRadius: 12,
+                border: `1px solid ${C.curtain}`,
+                background: canSubmit(form) ? C.curtain : C.line,
+                color: "#FFFDF8", fontSize: "0.875rem"
+              }}>出す</button>
+            <button type="button" onClick={() => setForm(null)}
+              style={{
+                minHeight: 48, padding: "0 16px", borderRadius: 12,
+                border: `1px solid ${C.line}`, background: C.paper, color: C.ink,
+                fontSize: "0.875rem"
+              }}>やめる</button>
+          </div>
+
+          <div style={{ marginTop: 10 }}>
+            {FORM_NOTES.map((t) => (
+              <p key={t} style={{ ...small, margin: 0 }}>{t}</p>
+            ))}
+            {NOT_YET.map((x) => (
+              <p key={x.key} style={{ ...small, margin: 0, color: C.inkSoft }}>
+                {`${x.label} …… ${x.why}`}
+              </p>
+            ))}
+          </div>
+        </div>
       ) : null}
     </div>
   );

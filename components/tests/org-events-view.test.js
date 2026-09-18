@@ -126,7 +126,10 @@ function eq(a, b, label) {
   });
   {
     // ★★行事を 出す は、★一覧の あと（★下半分）
-    const raw = readRaw("components", "OpsEvents.jsx");
+    // ★★★注を 落として から 見ます（★何度目かの 同じ 罠）。
+    //   ★★2026-09-18、★取り込みの 注に「行事を 出す 入れ口の 決め」と 書きました。
+    //   ★★紙の いちばん 上に ある ので、★いつも「一覧より 前」に なります。
+    const raw = readCode("components", "OpsEvents.jsx");
     t(raw.indexOf("行事を 出す") > raw.indexOf("rows.map("), "★足すのは 一覧の あと");
   }
 

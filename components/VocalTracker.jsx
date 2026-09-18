@@ -13907,7 +13907,31 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <OpsEvents
                   events={opsEventList}
                   participants={[]}
-                  targetOf={opsTargetOf} />
+                  targetOf={opsTargetOf}
+                  // ★★★行事を 出す（★2026-09-18）。
+                  //   ★★きょうまで 渡して いません でした。★札が 1度も 出て いません。
+                  //   ★★直の insert を しません。★`create_org_event` を 呼びます
+                  //     （★2026-09-04・#007 ── ★どの 学校にも 作れて いました）。
+                  onAdd={async (form) => {
+                    setEventError("");
+                    const supabase = createClient();
+                    const { data: id, error } = await supabase.rpc("create_org_event", {
+                      p_org_id: opsOrgId, p_event_date: form.date,
+                      p_kind: form.kind, p_title: form.title || ""
+                    });
+                    if (error) {
+                      console.error("行事を 出せません でした:", error);
+                      setEventError("いま、出せませんでした。");
+                      return false;
+                    }
+                    // ★★権限が 無い ときは、★誤りでは なく null が 返ります。
+                    //   ★★誤りに すると、★学校の 番号の 当たりはずれを 調べる 道具に なります。
+                    if (!id) { setEventError("この学校に 行事を 出す できことが ありません。"); return false; }
+                    fetchOrgEvents(opsOrgId);
+                    fetchMyOrgEvents();
+                    return true;
+                  }}
+                  addError={eventError} />
               );
             }
             if (tabKey === "threads") {
