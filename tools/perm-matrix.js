@@ -86,7 +86,7 @@ const P = new Function(permsSrc
   + "; return { tabsForPerms, can, mayGrant, maySeeBill, mayPay, TEMPLATE_POSTS };")();
 const shell = new Function(
   permsSrc + "\n" + shellSrc
-  + "; return { tabsFor, mayEnterOps, maySeeMoney, mayEditRoster, OPS_TABS };")();
+  + "; return { tabsFor, mayEnterOps, maySeeMoney, mayEditRoster };")();
 
 console.log("見本の できること:", PERM.length, "／ 役職:", POSTS.length, "／ 画面:", SCREENS.length);
 console.log("総当たり:", POSTS.length * SCREENS.length, "通り\n");

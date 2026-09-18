@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import useWindowWidth from "@/components/useWindowWidth";
 import { C } from "@/lib/tokens";
 import {
   VIEWS, WIDE_AT, layoutOf, hours, hourOf, timeOf, dateOf,
@@ -32,21 +33,8 @@ const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 
 const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
 const TIME_COL = 46;
 
-function useWidth() {
-  const [w, setW] = useState(null);
-  useEffect(() => {
-    if (typeof window === "undefined") return undefined;
-    const on = () => setW(window.innerWidth);
-    on();
-    window.addEventListener("resize", on);
-    window.addEventListener("orientationchange", on);
-    return () => {
-      window.removeEventListener("resize", on);
-      window.removeEventListener("orientationchange", on);
-    };
-  }, []);
-  return w;
-}
+// ★★幅を 見る 仕掛けは `components/useWindowWidth.js` に 移しました（★2026-09-18）。
+//   ★★同じ ものが 4か所に あり、★2つだけ 向きの 変化を 聞いて いました。
 
 function mmdd(iso) {
   return `${Number(iso.slice(5, 7))}月${Number(iso.slice(8, 10))}日`;
@@ -56,7 +44,7 @@ export default function OpsSchedule({
   lessons, teachers, dateISO, weekDays, nameOf, studentNameOf, onPickDate
 }) {
   const [view, setView] = useState("day");
-  const width = useWidth();
+  const width = useWindowWidth();
   const layout = layoutOf(width);
   const ids = (teachers || []).map((x) => x.id);
 

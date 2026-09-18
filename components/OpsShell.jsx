@@ -1,11 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { C } from "@/lib/tokens";
 import { tabsFor, maySeeMoney, HEALTH_WALL_LINE } from "@/lib/opsShell";
 // ★★見た目の 土台（★裁定 その78・その81 §8 の ①②③）。
 //   ★★この 中 だけ に かかります。★門の 外の 画面は 1つも 変わりません。
 import VisualTokens, { SCOPE_CLASS } from "@/components/VisualTokens";
+// ★★左の ナビ・さがす（★裁定 その78 §2 §4 §6）。
+import useWindowWidth from "@/components/useWindowWidth";
+import OpsNav from "@/components/OpsNav";
+import OpsSearch from "@/components/OpsSearch";
+import { showSideNav, isRail, FOLD_KEY } from "@/lib/opsNav";
+import { OPEN_KEY } from "@/lib/opsSearch";
 
 // ============================================================================
 // 運営モード ── 別のシェル（見本⑪ ／ 2026-09-09・第3便）
@@ -44,10 +50,36 @@ export default function OpsShell({ orgName, role, postName, myName,
   const tabs = tabsFor(role);
   const [tab, setTab] = useState(tabs.length > 0 ? tabs[0].key : null);
 
+  // ★★★左の ナビ（★裁定 その78 §2）。
+  //   ★★iPhone では 出しません。★下の 帯の まま です（★2026-09-09 の お決め）。
+  //   ★★たたむのは 手（★Ctrl / ⌘ + B）と、★表の 画面 ＋ iPad の とき だけ。
+  //   ★★決めは lib/opsNav.js が 持ちます。★ここでは 判じません。
+  const width = useWindowWidth();
+  const [folded, setFolded] = useState(false);
+  const [searching, setSearching] = useState(false);
+
+  // ★★押しどころ。★⌘K で さがす、★⌘B で たたむ（★裁定 §6-2 ／ §4-3）。
+  //   ★★字の 中に いる ときは 効かせません。★打って いる 手を 奪いません。
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const on = (e) => {
+      if (!(e.metaKey || e.ctrlKey)) return;
+      const k = String(e.key || "").toLowerCase();
+      if (k === OPEN_KEY) { e.preventDefault(); setSearching(true); }
+      else if (k === FOLD_KEY) { e.preventDefault(); setFolded((x) => !x); }
+    };
+    window.addEventListener("keydown", on);
+    return () => window.removeEventListener("keydown", on);
+  }, []);
+
   // ★★入れない役割に、★空のシェルを 出しません。
   //   ★呼ぶ側が 門を かけますが、★ここでも 止めます。★二重に します。
   if (tabs.length === 0) return null;
   const cur = tabs.some((t) => t.key === tab) ? tab : tabs[0].key;
+  const 横に出す = showSideNav(width);
+  const 現在の名 = (tabs.find((t) => t.key === cur) || {}).label;
+  const たたむ = isRail({ manual: folded, screen: 現在の名, width });
+  const 移る = (key) => { if (tabs.some((t) => t.key === key)) setTab(key); };
 
   return (
     /* ★★★`wsv` ── ★見た目の 土台が かかる 入れ物 です（★裁定 その81 §8）。
@@ -152,7 +184,15 @@ export default function OpsShell({ orgName, role, postName, myName,
         <span>{HEALTH_WALL_LINE}</span>
       </div>
 
-      <div style={{ flex: 1, overflowY: "auto", padding: "12px 14px 16px" }}>
+      {/* ★★★左の ナビ ＋ 中身。★横に 並べます（★裁定 その78 §1）。
+           ★★iPhone では ナビを 出しません。★下の 帯の まま です。 */}
+      <div style={{ flex: 1, minHeight: 0, display: "flex" }}>
+        {横に出す ? (
+          <OpsNav perms={role} current={cur} onGo={移る}
+            rail={たたむ} onToggleRail={() => setFolded((x) => !x)} />
+        ) : null}
+
+      <div style={{ flex: 1, minWidth: 0, overflowY: "auto", padding: "12px 14px 16px" }}>
         {/* ★★§4-7 の「パソコンだけ」は 撤回されました（★2026-09-09）。
             ★★幅で 中身を 止めません。★見せ方を 変えるだけです。
               ★どの 見せ方に するかは lib/opsSchedule.js が 決めます。
@@ -178,10 +218,20 @@ export default function OpsShell({ orgName, role, postName, myName,
           </div>
         ) : null}
       </div>
+      </div>
+
+      {/* ★★さがす（★⌘K）。★ナビの 代わりでは ありません。★足すだけ です。 */}
+      {searching ? (
+        <OpsSearch perms={role} onGo={移る} onClose={() => setSearching(false)} />
+      ) : null}
 
       {/* ★★下タブ。★役割で 数が 変わります（★§3-3）。
           ★★iPhone の 幅に 収めます。★6つでも 折り返しません。
-            ★字を 小さくし、★はみ出す ぶんは 横に 送ります。 */}
+            ★字を 小さくし、★はみ出す ぶんは 横に 送ります。
+          ★★★左に ナビが 出て いる ときは、★こちらを 出しません（★裁定 その78 §1）。
+            ★★同じ ところへ 行く 入口が 2つ あると、★どちらが 本当か 分かりません。
+            ★★iPhone では これが 唯一の 入口 です。★消しません。 */}
+      {横に出す ? null : (
       <div style={{
         display: "flex", borderTop: `1px solid ${C.line}`, background: "#FFF9F1",
         paddingBottom: "env(safe-area-inset-bottom)"
@@ -209,6 +259,7 @@ export default function OpsShell({ orgName, role, postName, myName,
           );
         })}
       </div>
+      )}
     </div>
   );
 }

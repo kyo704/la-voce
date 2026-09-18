@@ -16,7 +16,8 @@
 //   ★見張り components/tests/ops-posts.test.js
 // ============================================================================
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useWindowWidth from "@/components/useWindowWidth";
 import { C } from "@/lib/tokens";
 import { TYPE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
 import { ScreenHead, HeadRound, Card, Li, Note, Warn } from "@/components/UiV2";
@@ -91,14 +92,8 @@ export default function OpsPosts({
   // ★★幅を 見ます（★`components/Renraku.jsx` と 同じ 形）。
   //   ★★はじめは null です。★分からない うちは 表を 出しません
   //     （★出して から 縮めない）。
-  const [winW, setWinW] = useState(null);
-  useEffect(() => {
-    if (typeof window === "undefined") return undefined;
-    const on = () => setWinW(window.innerWidth);
-    on();
-    window.addEventListener("resize", on);
-    return () => window.removeEventListener("resize", on);
-  }, []);
+  // ★★幅を 見る 仕掛けは `components/useWindowWidth.js` の 1本 です（★2026-09-18）。
+  const winW = useWindowWidth();
   const [newName, setNewName] = useState("");
   // ★★名前を 直す ときの 下書き。★null は「まだ 触って いない」。
   //   ★★空の 字（""）と 分けます。★空に して 保存させない ため です。

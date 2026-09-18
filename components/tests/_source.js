@@ -110,26 +110,51 @@ function assertAbsent(words, parts, assertTrue, label) {
 // ---------------------------------------------------------------------------
 async function loadLib(...parts) {
   const path = require("path");
-  const full = path.join(ROOT, ...parts);
-  // ★★★もとから 拡張子の ある もの（★`.json` など）に、★`.js` を 足しません。
-  //   ★★2026-09-17、`lib/sheepInteriorV2.js` が
-  //     `@/docs/assets/sheep-interior-index.json` を 読み込んで いて、
-  //     ★`…json.js` を 探しに 行き、★見つからず 落ちました。
-  //   ★★拡張子が 無い ときだけ `.js` を 補います。
-  const body = readRaw(...parts).replace(
-    /from "@\/(.+?)"/g,
-    (_, rel) => {
-      const full = path.join(ROOT, rel);
+  const fs = require("fs");
+  const os = require("os");
+
+  // ★★★2026-09-18、★2段 めで 落ちる ように なりました。
+  //   ★★これまでは、★読み込む 1本 の 中の `@/` だけ を 解いて いました。
+  //   ★★その 1本が `file://` の もう 1本を 読み、★その 中に `@/` が あると、
+  //     ★★そちらは 解かれず、★`Cannot find package '@/lib'` で 落ちます。
+  //   ★★★`lib/opsSearch.js` → `lib/opsNav.js` → `lib/opsPerms.js` で 起きました。
+  //   ★★逃げ道は 2つ ありました ──
+  //     ★★㋐ 取り込みを 増やさない …… ★同じ 決めの 2つ目の 写しが できます
+  //     ★★㋑ 道具を 直す ……………… ★こちら です
+  //   ★★★だから、★**たどれる ぶん ぜんぶ** を 写して から 読みます。
+  //     ★★写しは 使い捨ての 置き場に 作ります。★元は 触りません。
+  const 置き場 = fs.mkdtempSync(path.join(os.tmpdir(), "wsv-"));
+  const 済み = new Set();
+
+  function 写す(相対) {
+    if (済み.has(相対)) return;
+    済み.add(相対);
+    const 元 = path.join(ROOT, 相対);
+    if (!fs.existsSync(元)) {
+      // ★★★無い ものを 黙って 飛ばしません。★止めます。
+      //   ★★飛ばすと、★「読めた」と 見えて、★中身が 空に なります。
+      throw new Error("★止まりました ── 読もうと した ものが ありません: " + 相対);
+    }
+    let 本文 = fs.readFileSync(元, "utf8");
+    本文 = 本文.replace(/from "@\/(.+?)"/g, (_, rel) => {
       if (/\.json$/i.test(rel)) {
-        // ★★JSON は、★取り込みの 但し書きが 要ります（★Node の 決まり）。
-        //   ★★`with { type: "json" }` を 付けないと 落ちます。
-        return `from "${new URL("file://" + full).href}" with { type: "json" }`;
+        // ★★JSON は 但し書きが 要ります（★Node の 決まり）。★写さず 元を 読みます。
+        return `from "${new URL("file://" + path.join(ROOT, rel)).href}" with { type: "json" }`;
       }
-      const withExt = /\.[a-z0-9]+$/i.test(rel) ? full : full + ".js";
-      return `from "${new URL("file://" + withExt).href}"`;
+      const 先 = /\.[a-z0-9]+$/i.test(rel) ? rel : rel + ".js";
+      写す(先);
+      return `from "${new URL("file://" + path.join(置き場, 先)).href}"`;
     });
-  return import("data:text/javascript;base64," + Buffer.from(body, "utf8").toString("base64"));
+    const 出 = path.join(置き場, 相対);
+    fs.mkdirSync(path.dirname(出), { recursive: true });
+    fs.writeFileSync(出, 本文);
+  }
+
+  const 入口 = parts.join("/");
+  写す(入口);
+  return import("file://" + path.join(置き場, 入口));
 }
+
 
 module.exports = {
   assertAbsent, ROOT, stripComments, readRaw, readCode, loadLib };

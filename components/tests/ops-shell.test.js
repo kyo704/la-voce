@@ -18,7 +18,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const { readCode, readRaw } = require("./_source");
+const { readCode, readRaw, loadLib } = require("./_source");
 
 let ok = 0, ng = 0;
 function t(cond, label) {
@@ -31,12 +31,11 @@ function eq(a, b, label) {
 }
 
 (async () => {
-  // ★★別名（@/lib/…）は Next のビルドが 解きます。★ここでは 道を 書き換えます。
-  //   ★2026-09-11、★opsShell が opsPerms を 取り寄せるように なりました。
-  const src = fs.readFileSync(path.join(__dirname, "..", "..", "lib", "opsShell.js"), "utf8")
-    .replace(/from "@\/lib\/([a-zA-Z0-9]+)"/g, (mm, n) => `from "${
-      "file://" + path.join(__dirname, "..", "..", "lib", n + ".js")}"`);
-  const m = await import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
+  // ★★★別名を 解く 写しは、★`_source.js` の `loadLib` に 寄せました（★2026-09-18）。
+  //   ★★ここには 同じ 仕掛けの 3つ目の 写しが ありました。
+  //   ★★写しは、★`lib/` 以外を 読む ように なった 日に 落ちます。
+  const m = await loadLib("lib", "opsShell.js");
+  const P = await loadLib("lib", "opsPerms.js");
   const label = (r) => m.tabsFor(r).map((x) => x.label);
 
   console.log("=== ① ★できことごとの 下タブ（★A2・2026-09-18） ===");
@@ -52,7 +51,11 @@ function eq(a, b, label) {
     ["ホーム", "日程", "名簿", "行事", "連絡", "設定"], "★できこと 5つ → 6枚");
   eq(label(["sched_mine"]), ["ホーム", "日程"], "★自分の 日程だけ → 2枚");
   eq(label([]), [], "★できことが 無ければ 0枚");
-  eq(m.OPS_TABS.length, 6, "帯は 6つ");
+  // ★★★2026-09-18、★ここは `OPS_TABS.length === 6` を 見て いました。
+  //   ★★その 表は 画面から 読まれて おらず、★「門下」が 欠けて いました。
+  //   ★★見張りが 古い 表の 生存を 支えて いた、と いう こと です。
+  //   ★★いまは 生きて いる 表（`TAB_RULES`）を 数えます。
+  eq(P.TAB_RULES.length, 7, "帯の 決めは 7つ（★門下 を 含む）");
 
   console.log("\n=== ①' ★★役割の 名では、★何も 開かない（★較正） ===");
   // ★★これが この 直しの 肝 です。★わざと 役割の 名を 渡します。

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
+import useWindowWidth from "@/components/useWindowWidth";
 import { C } from "@/lib/tokens";
 import {
   NOTICE_LINE, NO_ATTACH_LINE, OPS_READ_ONLY_LINE, OPS_READ_WHY_LINE,
@@ -36,17 +37,8 @@ import {
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
 const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
 
-function useWidth() {
-  const [w, setW] = useState(null);
-  useEffect(() => {
-    if (typeof window === "undefined") return undefined;
-    const on = () => setW(window.innerWidth);
-    on();
-    window.addEventListener("resize", on);
-    return () => window.removeEventListener("resize", on);
-  }, []);
-  return w;
-}
+// ★★幅を 見る 仕掛けは `components/useWindowWidth.js` に 移しました（★2026-09-18）。
+//   ★★同じ ものが 4か所に あり、★2つだけ 向きの 変化を 聞いて いました。
 
 function whenWord(iso) {
   const s = String(iso || "");
@@ -97,7 +89,7 @@ export default function Renraku({
   onPost, reads, posting, onCompose
 }) {
   const [draft, setDraft] = useState("");
-  const width = useWidth();
+  const width = useWindowWidth();
   const twoPane = isTwoPane(width);
   const boxRef = useRef(null);
 

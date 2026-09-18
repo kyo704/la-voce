@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
+import useWindowWidth from "@/components/useWindowWidth";
 import { C } from "@/lib/tokens";
 // ★★名簿の 表（★裁定 その80・2026-09-18）。★広い ときだけ 出します。
 import OpsRosterTable from "@/components/OpsRosterTable";
@@ -101,14 +102,8 @@ export default function OpsRoster({
   // ★★幅を 見ます（★`components/Renraku.jsx` と 同じ 形）。
   //   ★★はじめは null です。★分からない うちは 表を 出しません
   //     （★出して から 縮めない）。
-  const [winW, setWinW] = useState(null);
-  useEffect(() => {
-    if (typeof window === "undefined") return undefined;
-    const on = () => setWinW(window.innerWidth);
-    on();
-    window.addEventListener("resize", on);
-    return () => window.removeEventListener("resize", on);
-  }, []);
+  // ★★幅を 見る 仕掛けは `components/useWindowWidth.js` の 1本 です（★2026-09-18）。
+  const winW = useWindowWidth();
 
   const [q, setQ] = useState("");
   // ★★しぼり込み（★見本 G07 ／ 2026-09-11）。

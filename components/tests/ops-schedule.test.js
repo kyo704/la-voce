@@ -52,7 +52,15 @@ function eq(a, b, label) {
   t(!/よこ持ち|横向き|landscape/.test(ui.replace(/VIEWS|layoutOf/g, "")),
     "★よこ持ちを 選ぶ 押しどころが 無い");
   eq(m.VIEWS.map((v) => v.label), ["1日", "1週間"], "★選べるのは 2つだけ（★よこ持ちは 自動）");
-  t(/orientationchange/.test(ui), "★横に したときに 気づく");
+  // ★★★2026-09-18、★幅を 見る 仕掛けを 1本に まとめました
+  //   （★`components/useWindowWidth.js`）。★同じ ものが 4か所に あり、
+  //   ★★2つだけ 向きの 変化を 聞いて いました ── ★揃って いません でした。
+  //   ★★だから ここは、★「自分で 聞いて いる か」では なく
+  //     ★★「1本に 任せて いる か」と「その 1本が 聞いて いる か」を 見ます。
+  t(/useWindowWidth/.test(ui), "★幅は 1本の 仕掛けに 任せて いる");
+  t(!/innerWidth/.test(ui), "★自分で 測って いない（写しを 作って いない）");
+  t(/orientationchange/.test(readRaw("components", "useWindowWidth.js")),
+    "★横に したときに 気づく（★1本の ほうが 聞いて いる）");
 
   console.log("\n=== ② 重なりは 印だけ ===");
   const L = [
