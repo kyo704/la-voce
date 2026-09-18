@@ -133,7 +133,20 @@ function t(cond, label) {
   const inside = vt.indexOf('data-v2-inside="1"');
   t(inside > 0, "中身の 1枚が ある");
   const ib = inside < 0 ? "" : vt.slice(inside, inside + 3000);
-  t(/SEE_YES\.map/.test(ib) && /SEE_NO\.map/.test(ib), "★両方を 出して いる");
+  // ★★★2026-09-19、★「見えないもの」の 一覧を 外しました（★裁定 その90 §6-6）。
+  //   ★★坂本さんの お言葉 ──
+  //     ★「見えなければ、★何が 見えないかを 知る 必要は ありません」
+  //   ★★★合言葉で 入る 画面の ほうは **残って います**（★`passcode-join` が 見ます）。
+  //     ★★あちらは 入る 前 です。★何に 同意するかを 決める 材料 です。
+  //     ★★こちらは 入った あと です。★役目が ちがいます。
+  t(/SEE_YES\.map/.test(ib), "★見える ものは 出して いる");
+  t(!/SEE_NO\.map/.test(ib), "★見えない ものの 一覧は 出して いない");
+  // ★★★字 そのものは 消して いない こと（★入る 前の 画面が 読みます）。
+  t(m.SEE_NO.length === 7, "★字は 残って いる（★入る 前の 画面の ため）");
+  // ★★代わりに 出席が 出て いる こと（★裁定 その90 §6-5）。
+  t(/ATTEND_HEAD/.test(ib), "★出席を 出して いる");
+  t(/ATTEND_OTHERS_LINE/.test(ib), "★ほかの 方は 見えない、と 書いて いる");
+  t(/NO_RATE_LINE/.test(ib), "★率を 出さない、と 書いて いる");
   t(/en\.enrolled_at/.test(ib), "★入った日を 出して いる");
   t(/teacher \? <Li/.test(ib), "★★担当が 無い ときは 行ごと 出さない");
 

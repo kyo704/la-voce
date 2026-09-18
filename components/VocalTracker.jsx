@@ -175,6 +175,8 @@ import { mayEnterOps, mayEditRoster, permsOfMember } from "@/lib/opsShell";
 import { can as canOps, permSet } from "@/lib/opsPerms";
 // ★★まとめて つける か どうか（★裁定 その91 R4）。
 import { isBulk } from "@/lib/opsAttendance";
+// ★★出席の 数（★裁定 その90）。★率は 出しません。★決めは lib が 1つ 持ちます。
+import { cameWord, NO_RATE_LINE } from "@/lib/attendanceCount";
 import {
   rosterCount, toRosterRows,
   // ★★行事の 対象の 札（★裁定 その89 Q3・2026-09-18）。★名簿から 拾います。
@@ -243,6 +245,8 @@ import {
   ATTENDING_NOTE, ATTENDING_NOTE_BOLD, PASSCODE_LENGTH,
   placeSubtitle, joinedLabel,
   SEE_YES, SEE_NO, SEE_YES_HEAD, SEE_NO_HEAD, LEAVE_BUTTON,
+  // ★★出席（★裁定 その90 §6-5・2026-09-19）。★ご自分の 分 だけ です。
+  ATTEND_HEAD, ATTEND_OTHERS_LINE, myLessonsInOrg,
   INSIDE_NOTE, INSIDE_NOTE_BOLD,
   LEAVE_LINES, LEAVE_LINES_BOLD, LEAVE_CANCEL, LEAVE_CONFIRM,
   LEAVE_NOTE, leaveTitle,
@@ -24377,18 +24381,35 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ))}
                       </Box>
 
-                      <H3>{SEE_NO_HEAD}</H3>
+                      {/* ★★★出席（★裁定 その90 §6-5・2026-09-19）。
+                           ★★ご自分の 分 だけ です。★台帳も 同じ 枝 です
+                             （`lessons` の `auth.uid() = student_id`）。
+                           ★★★率（％）は 出しません。★回数 だけ です。
+                           ★★「いま 何回目 / 年N回」は まだ 出せません ──
+                             ★★年間の 回数は `lesson_presets` に あります。
+                             ★★その 決まりは 事務と 先生 だけ です。
+                             ★★★学生は 読めません。★無い ものを 見せません。 */}
+                      <H3>{ATTEND_HEAD}</H3>
                       <Box>
-                        {SEE_NO.map((v, i) => (
-                          // ★★見本は この 行を `#A0917F` で 薄くして います。
-                          //   ★★測ると **2.72**。★字には 足りません（★4.5 が 境）。
-                          //   ★★坂本さんの お決め ── ★見本の 色より **読めること**が 先。
-                          //     ★見張り `display-prefs` が、★その場で 測って 止めます。
-                          //   ★★`inkSoft`（6.24）に します。★薄さの 意味は 残ります。
-                          <Li key={v} last={i === SEE_NO.length - 1}
-                            style={{ color: C.inkSoft }} right="見えません">{v}</Li>
-                        ))}
+                        <Li right={cameWord(myLessonsInOrg(
+                          (classroom.lessons || []), attendingOrgId, userId))}>
+                          {teacher ? teacher + " の 門下" : "この教室"}
+                        </Li>
+                        <Li last style={{ color: C.inkSoft }}>{NO_RATE_LINE}</Li>
                       </Box>
+                      <p className="text-xs" style={{ color: C.inkSoft, margin: "6px 0 0" }}>
+                        {ATTEND_OTHERS_LINE}
+                      </p>
+
+                      {/* ★★★「この教室から 見えないもの」の 一覧を 外しました
+                           （★裁定 その90 §6-6・2026-09-19）。
+                           ★★坂本さんの お言葉 ──
+                             ★「見えなければ、★何が 見えないかを 知る 必要は ありません」
+                           ★★★合言葉で 入る 画面の ほうは **残して います**。
+                             ★★あちらは 入る 前 です。★何に 同意するかを 決める 材料 です。
+                             ★★こちらは 入った あと です。★役目が ちがいます。
+                           ★★字（`SEE_NO`）は 消して いません。★あちらが 読んで います。
+                           ★★中身は `git show d850a44b:components/VocalTracker.jsx` で 引けます。 */}
 
                       <div style={{ marginTop: 12 }}>
                         <Btn ghost onClick={() => setAttendingLeaving(true)}>
