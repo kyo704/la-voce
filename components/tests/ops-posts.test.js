@@ -21,7 +21,13 @@ const ui = readCode("components", "OpsPosts.jsx");
 const api = readCode("app", "api", "org", "posts", "route.js");
 
 console.log("① 画面は 判じない");
-ok(/mayGrant\(myPerms, p\.key\)/.test(ui), "★渡せるかは lib の mayGrant が 決める");
+// ★★★2026-09-18（★裁定 その77）、★3つめの 渡し もの が 増えました ──
+//   ★`mayGrant(myPerms, p.key, { toMyOwnPost })`。
+//   ★★`monka_read` は `master` を 持つ 方が 渡せます（★自分は 持って いなくても）。
+//   ★★ただし **自分の 役職には 付けられません**。★その 1つを 伝える ため です。
+//   ★★判じるのは いままで どおり lib です。★画面は 渡すだけ です。
+ok(/mayGrant\(myPerms, p\.key/.test(ui), "★渡せるかは lib の mayGrant が 決める");
+ok(/toMyOwnPost/.test(ui), "★自分の 役職か どうかを、★lib に 伝えて いる");
 ok(!/schoolWide\s*&&/.test(ui), "★画面の 中で 決まりを 組み立てていない");
 ok(/tabsForPerms/.test(ui), "★出る タブも lib から");
 

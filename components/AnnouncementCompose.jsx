@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { C } from "@/lib/tokens";
-import { NOTICE_LINE, NO_ATTACH_LINE, KEEP_DAYS, BODY_WIDTH } from "@/lib/renraku";
+import { NOTICE_LINE, NO_ATTACH_LINE, HIDE_LINE, BODY_WIDTH } from "@/lib/renraku";
 
 // ============================================================================
 // おしらせを 書く ── 見本②（2026-09-10）
@@ -18,7 +18,8 @@ import { NOTICE_LINE, NO_ATTACH_LINE, KEEP_DAYS, BODY_WIDTH } from "@/lib/renrak
 //     ★門下を えらぶと、★その門下だけに なります。
 //
 //   ★★添付は できません。★選ぶ口を 置きません。
-//   ★★90日で 消えます。★取り消すと、★静かに 1行だけ 残ります。
+//   ★★90日で 画面から 消えます（★裁定 その77）。★台帳からは 消しません。
+//   ★★取り消すと、★静かに 1行だけ 残ります。
 //
 //   ★見張り components/tests/renraku.test.js
 // ============================================================================
@@ -93,7 +94,7 @@ export default function AnnouncementCompose({
 
       <p style={small}>
         {NO_ATTACH_LINE}<br />
-        {KEEP_DAYS}日で 消えます。<br />
+        {HIDE_LINE}<br />
         取り消すと、静かに 1行だけ 残ります。勝手に 消しません。
       </p>
     </div>

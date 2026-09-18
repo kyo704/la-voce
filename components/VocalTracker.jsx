@@ -13936,6 +13936,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       // ★★役職が まだ 無い 方は null です。
                       //   ★★そのときは、★学校を 作った方だけが 触れます（★サーバが 決めます）。
                       myPerms={myPerms}
+                      // ★★自分の 役職の 番号（★裁定 その77・monka_read）。
+                      //   ★★`monka_read` を 自分の 役職に 付けられない ように します。
+                      myPostId={opsMembership ? opsMembership.post_id : null}
                       busy={postsBusy}
                       onAction={(payload) => handleOrgPosts(opsOrgId, payload)} />
                   </div>

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { C } from "@/lib/tokens";
 import {
   NOTICE_LINE, NO_ATTACH_LINE, OPS_READ_ONLY_LINE, OPS_READ_WHY_LINE,
-  KEEP_DAYS, visibleMessages, mayPost, studioName, isTwoPane, BODY_WIDTH
+  HIDE_AFTER_DAYS, HIDE_LINE, SOON_LINE, visibleMessages, mayPost, studioName, isTwoPane, BODY_WIDTH
 } from "@/lib/renraku";
 
 // ============================================================================
@@ -82,7 +82,11 @@ function Message({ m, nameOf }) {
         {m.body}
       </p>
       {/* ★★もうすぐ 消えるものに、★1行 添えます（★見本③）。 */}
-      {m.soon ? <p style={small}>まもなく 消えます（{KEEP_DAYS}日）</p> : null}
+      {/* ★★「90日で 消えます」→「90日で 画面から 消えます」（★裁定 その77）。
+          ★★消して いません。★消す 仕掛けが どこにも ありません。 */}
+      {m.soon ? (
+        <p style={small}>{SOON_LINE.replace("{n}", HIDE_AFTER_DAYS)}</p>
+      ) : null}
     </div>
   );
 }
@@ -155,7 +159,7 @@ export default function Renraku({
         );
       })}
       <p style={small}>
-        ここの書き込みは、{KEEP_DAYS}日で 消えます。<br />
+        {HIDE_LINE}<br />
         書かれたものを、こちらで 読み取って 調べることは しません。
       </p>
     </div>
@@ -207,7 +211,7 @@ export default function Renraku({
             }}>出す</button>
           <p style={{ ...small, marginTop: 6 }}>
             {NO_ATTACH_LINE}<br />
-            {KEEP_DAYS}日で 消えます。
+            {HIDE_LINE}
           </p>
         </div>
       ) : null}

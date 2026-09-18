@@ -71,7 +71,7 @@ function permLine(perms) {
 }
 
 export default function OpsPosts({
-  posts = [], countByPost = {}, myPerms, onAction, onClose, busy
+  posts = [], countByPost = {}, myPerms, myPostId = null, onAction, onClose, busy
 }) {
   const [openId, setOpenId] = useState(null);
   const [newName, setNewName] = useState("");
@@ -123,7 +123,13 @@ export default function OpsPosts({
             const on = s.has(p.key);
             // ★★渡せるか。★決めは lib/opsPerms.js の mayGrant です。
             //   ★ここで 判じません。
-            const allowed = mayGrant(myPerms, p.key);
+            // ★★★自分の 役職か どうかを 渡します（★裁定 その77・monka_read）。
+            //   ★★`master` を 持つ 方は、★`monka_read` を 人に 渡せます。
+            //     ★★けれど **自分の 役職には 付けられません**。
+            //     ★★付けられると、★1人で 門下の やりとりを 読める ように なります。
+            //   ★★判じるのは lib/opsPerms.js です。★ここでは 決めません。
+            const allowed = mayGrant(myPerms, p.key,
+              { toMyOwnPost: !!myPostId && open.id === myPostId });
             return (
               <button key={p.key} type="button" disabled={busy}
                 onClick={() => (allowed

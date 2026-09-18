@@ -165,6 +165,40 @@ function ok(cond, label) {
   ok(/学校全部に かかる ことは、自分が 持っていないと 渡せません。/.test(readRaw("lib", "opsPerms.js")),
     "★わけが 書いてある");
 
+  // ------------------------------------------------------------------------
+  // ★★★monka_read の 特例（★裁定 その77・2026-09-18）── ★1つだけ か
+  //
+  //   ★★`master` を 持つ 方は、★`monka_read` を 渡せます（★自分は 持たなくても）。
+  //   ★★けれど **自分の 役職には 付けられません**。
+  //   ★★★この 特例が `monka_read` **だけ** で ある ことを 見ます。
+  //     ★★ほかへ 広がると、★決まりが 2本に なります。
+  //
+  //   ★★★はじめ、★この 塊を 紙の いちばん 下に 足しました。★走りません でした。
+  //     ★★上の 塊が `process.exit()` で 終わって います。
+  //     ★★★足した のに 通った ように 見えました ── ★いちばん 危ない 形 です。
+  // ------------------------------------------------------------------------
+  console.log("\n⑦ monka_read の 特例（裁定 その77）");
+  const 学長P = P.TEMPLATE_POSTS.find((x) => x.name === "学長").perms;
+  const 教授P = P.TEMPLATE_POSTS.find((x) => x.name === "教授").perms;
+  ok(P.mayGrant(学長P, "monka_read") === true,
+    "★master を 持つ 方は、★持って いなくても 渡せる");
+  ok(P.mayGrant(学長P, "monka_read", { toMyOwnPost: true }) === false,
+    "★自分の 役職には 付けられない");
+  ok(P.mayGrant(教授P, "monka_read") === false,
+    "★master を 持たない 方は 渡せない");
+
+  const ほか = P.PERM_KEYS.filter((k) => k !== "monka_read");
+  const 広がって = ほか.filter((k) =>
+    P.isSchoolWide(k) && !P.can(教授P, k) && P.mayGrant(教授P, k) === true);
+  ok(広がって.length === 0,
+    "★特例は monka_read だけ（広がった もの: " + (広がって.join("、") || "なし") + "）");
+
+  const 効いて = ほか.filter((k) =>
+    P.mayGrant(学長P, k) !== P.mayGrant(学長P, k, { toMyOwnPost: true }));
+  ok(効いて.length === 0,
+    "★自分の 役職か どうかが、★ほかの できことを 変えない（変わった もの: "
+    + (効いて.join("、") || "なし") + "）");
+
   console.log(failed === 0 ? "\n全て ok" : "\n" + failed + "件 NG");
   process.exit(failed === 0 ? 0 : 1);
 })();
