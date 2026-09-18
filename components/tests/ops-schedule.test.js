@@ -136,8 +136,18 @@ function eq(a, b, label) {
     // ★★style を 助けの関数（chip など）で 書いている ものも あります。
     //   ★その関数が 高さを 決めているなら、★それで よいことに します。
     //   ★「書いてあるか」では なく、「効いているか」を 見ること。
-    const helpers = (raw.match(/const (\w+) = \(on\) => \(\{[\s\S]{0,200}?minHeight: (\d+)/g) || [])
-      .map((x) => /const (\w+)/.exec(x)[1]);
+    // ★★高さを 決めて いる 名 を 集めます。★2つの 書き方が あります ──
+    //   ★① 助けの 関数 …… `const chip = (on) => ({ … minHeight: 44 …`
+    //   ★② ただの 入れもの … `const わく = { … minHeight: 44 …`
+    //   ★★★2026-09-18、★② を 見て いませんでした。
+    //     ★★コマを 押しどころに した とき、★「高さが 無い」と 出ました。
+    //     ★★高さは 入って います。★見張りが 書き方 しか 見て いません でした。
+    const helpers = []
+      .concat((raw.match(/const ([\wぁ-んァ-ヶ一-龠]+) = \(on\) => \(\{[\s\S]{0,200}?minHeight: (\d+)/g) || [])
+        .map((x) => /const ([\wぁ-んァ-ヶ一-龠]+)/.exec(x)[1]))
+      .concat((raw.match(/const ([\wぁ-んァ-ヶ一-龠]+) = \{[\s\S]{0,800}?minHeight: (\d+)/g) || [])
+        .map((x) => /const ([\wぁ-んァ-ヶ一-龠]+)/.exec(x)[1]));
+    t(helpers.length >= 2, `★高さを 決める 名を 集めた（${helpers.join(",")}）`);
     const noHeight = parts.filter((p) => {
       const head = p.slice(0, p.indexOf("</button>") >= 0 ? p.indexOf("</button>") : p.length);
       if (/minHeight/.test(head)) return false;
@@ -146,7 +156,9 @@ function eq(a, b, label) {
       //     ★★「高さが 無い」と 出ました。★高さは 入って います。
       //   ★★★見張りが 見て いたのは **書き方** でした。★高さ では ありません。
       //     ★★見たい のは「44 以上 が 決まって いる か」です。
-      return !helpers.some((h) => new RegExp(`(style=\\{|\\.\\.\\.)${h}\\(`).test(head));
+      // ★★助けの 関数（`chip(…)`）でも、★入れもの（`...わく`）でも 通します。
+      return !helpers.some((h) =>
+        new RegExp(`(style=\\{|\\.\\.\\.)${h}[\\(,\\s\\}]`).test(head));
     });
     t(helpers.length > 0, `★高さを 決める 助けの関数が ある（${helpers.join(",")}）`);
     t(parts.length > 0, `押しどころが ある（${parts.length}件）`);

@@ -13881,6 +13881,66 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             const opsRoster = toRosterRows(
               orgEnrollments[opsOrgId] || [],
               orgAssignments[opsOrgId] || []);
+
+            /**
+             * ★出欠を つける（★裁定 その79 ／ ★2026-09-18・入口 が 2つに なりました）。
+             *
+             *   ★★★1つ だけ 持ちます。★入口が 2つ でも、★書く 道は 1本 です。
+             *   ★★`undefined` は「次の 方へ」です。★つけ替えません。
+             */
+            const onOpsMark = async (lesson, status) => {
+              if (status === undefined) { setOpsAttendanceLesson(lesson); return; }
+              setOpsAttendanceError("");
+              const at = new Date().toISOString();
+              const patch = status
+                ? { attendance: status, attendance_at: at, attendance_by: userId }
+                : { attendance: null, attendance_at: null, attendance_by: null };
+              const supabase = createClient();
+              // ★★★`.select()` を 付けます。★0行に 当たっても 成功に 見えます。
+              //   ★★2026-09-08、★まさに これで 静かに 壊れました。
+              const { data, error } = await supabase.from("lessons")
+                .update(patch).eq("id", lesson.id).select("id");
+              if (error || !data || data.length === 0) {
+                console.error("★出欠を つけられません でした:", { id: lesson.id, error });
+                setOpsAttendanceError("いま、つけられませんでした。");
+                return;
+              }
+              setOrgLessons((prev) => ({
+                ...prev,
+                [opsOrgId]: (prev[opsOrgId] || []).map((x) =>
+                  (x.id === lesson.id ? { ...x, ...patch } : x))
+              }));
+              setOpsAttendanceLesson((cur) =>
+                (cur && cur.id === lesson.id ? { ...cur, ...patch } : cur));
+            };
+            // ★★★出欠の 1枚は、★どの 帯からでも 開きます（★2026-09-18・入口 ②）。
+            //   ★★きょうまで、★`tabKey === "home"` の 中 だけ に ありました。
+            //   ★★★日程から 押すと、★開いた つもりで 何も 起きません でした。
+            //     ★★中では 開いて いるのに、★日程の 画面が 描かれます。
+            //     ★★「押せるのに 何も 起きない」── ★いちばん 悪い 形 です。
+            //   ★★★帯の 外に 出します。★入口が 2つ でも、★出る ところは 1つ です。
+            if (opsAttendanceLesson) {
+              const 同じコマ = (orgLessons[opsOrgId] || []).filter((x) =>
+                String(x.scheduled_at || "").slice(0, 16)
+                  === String(opsAttendanceLesson.scheduled_at || "").slice(0, 16)
+                && x.teacher_id === opsAttendanceLesson.teacher_id);
+              const いま = 同じコマ.find((x) => x.id === opsAttendanceLesson.id)
+                || opsAttendanceLesson;
+              return (
+                <OpsAttendance
+                  lessons={同じコマ}
+                  current={いま}
+                  perms={gate}
+                  userId={userId}
+                  nameOf={(id) => orgDisplayName(id) || ""}
+                  teacherNameOf={(id) => orgDisplayName(id) || ""}
+                  busy={false}
+                  error={opsAttendanceError}
+                  onClose={() => { setOpsAttendanceLesson(null); setOpsAttendanceError(""); }}
+                  onMark={onOpsMark} />
+              );
+            }
+
             if (tabKey === "schedule") {
               // ★★日程（★見本②⑥⑧⑨⑩）。★1つの日程を、3つの 見せ方で。
               //   ★★渡すのは 1つの 並びだけです。★見せ方は あちらが 決めます。
@@ -13904,6 +13964,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   //   ★★`gate` は `permsOfMember` の 返り です。★帯の 門と 同じ もの です。
                   perms={gate}
                   myId={userId}
+                  // ★★★出欠の 入口 ②（★裁定 その79・2026-09-18）。
+                  //   ★★きょうまで、★入口は ホームの 1つ だけ でした。
+                  //   ★★★日程を 見て いる 方が、★一度 ホームへ 戻って いました。
+                  //   ★★門は 入口 ① と 同じ です（★`shukketsu`）。
+                  //     ★★持って いない 方には 渡しません。★コマは 押しどころに なりません。
+                  onOpenAttendance={canOps(gate, "shukketsu")
+                    ? (l) => { setOpsAttendanceError(""); setOpsAttendanceLesson(l); }
+                    : undefined}
                   onPickDate={(d) => setOpsDate(d)} />
               );
             }
@@ -13916,52 +13984,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             if (tabKey === "home") {
               // ★★★出欠の 1枚が 開いて いる あいだは、★そちらを 出します。
               //   ★★重ねません。★戻る 道を 1本に します。
-              if (opsAttendanceLesson) {
-                const 同じコマ = (orgLessons[opsOrgId] || []).filter((x) =>
-                  String(x.scheduled_at || "").slice(0, 16)
-                    === String(opsAttendanceLesson.scheduled_at || "").slice(0, 16)
-                  && x.teacher_id === opsAttendanceLesson.teacher_id);
-                const いま = 同じコマ.find((x) => x.id === opsAttendanceLesson.id)
-                  || opsAttendanceLesson;
-                return (
-                  <OpsAttendance
-                    lessons={同じコマ}
-                    current={いま}
-                    perms={gate}
-                    userId={userId}
-                    nameOf={(id) => orgDisplayName(id) || ""}
-                    teacherNameOf={(id) => orgDisplayName(id) || ""}
-                    busy={false}
-                    error={opsAttendanceError}
-                    onClose={() => { setOpsAttendanceLesson(null); setOpsAttendanceError(""); }}
-                    onMark={async (lesson, status) => {
-                      // ★★`undefined` は「次の 方へ」です。★つけ替えません。
-                      if (status === undefined) { setOpsAttendanceLesson(lesson); return; }
-                      setOpsAttendanceError("");
-                      const at = new Date().toISOString();
-                      const patch = status
-                        ? { attendance: status, attendance_at: at, attendance_by: userId }
-                        : { attendance: null, attendance_at: null, attendance_by: null };
-                      const supabase = createClient();
-                      // ★★★`.select()` を 付けます。★0行に 当たっても 成功に 見えます。
-                      //   ★★2026-09-08、★まさに これで 静かに 壊れました。
-                      const { data, error } = await supabase.from("lessons")
-                        .update(patch).eq("id", lesson.id).select("id");
-                      if (error || !data || data.length === 0) {
-                        console.error("★出欠を つけられません でした:", { id: lesson.id, error });
-                        setOpsAttendanceError("いま、つけられませんでした。");
-                        return;
-                      }
-                      setOrgLessons((prev) => ({
-                        ...prev,
-                        [opsOrgId]: (prev[opsOrgId] || []).map((x) =>
-                          (x.id === lesson.id ? { ...x, ...patch } : x))
-                      }));
-                      setOpsAttendanceLesson((cur) =>
-                        (cur && cur.id === lesson.id ? { ...cur, ...patch } : cur));
-                    }} />
-                );
-              }
               return (
                 <OpsHome
                   todayISO={opsDate}

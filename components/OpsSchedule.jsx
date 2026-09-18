@@ -4,7 +4,7 @@ import { useState } from "react";
 import useWindowWidth from "@/components/useWindowWidth";
 import { C } from "@/lib/tokens";
 // ★★小見出しの 字は uiKit が 持ちます。
-import { TYPE } from "@/lib/uiKit";
+import { TYPE, FONT_STACK } from "@/lib/uiKit";
 import {
   VIEWS, WIDE_AT, layoutOf, hours, hourOf, timeOf, dateOf,
   // ★★誰に どの 姿を 出すか（★裁定 その85 Q1・2026-09-18）。
@@ -14,6 +14,8 @@ import {
   dayGrid, overlapsOf, weekHeat
 } from "@/lib/opsSchedule";
 import { mayDragBlocks, DRAG_NOTE } from "@/lib/opsShell";
+// ★★コマを 押した ときの 行き先（★裁定 その79 の 入口 ②・2026-09-18）。
+import { tapGoesTo, tappable, TAP_GOES } from "@/lib/opsAttendance";
 
 // ============================================================================
 // 日程 ── 1つの日程を、3つの 見せ方で（見本②⑥⑧ ／ 2026-09-09・第3便）
@@ -76,7 +78,10 @@ export default function OpsSchedule({
   // ★★見て いる 方（★自分の 日程だけ の ときに 要ります）。
   myId,
   // ★★重なりの 札を 押した とき（★裁定 その85 Q3）。
-  onOpenOverlap
+  onOpenOverlap,
+  // ★★★コマを 押した とき（★裁定 その79 の 入口 ②・2026-09-18）。
+  //   ★★渡されなければ、★コマは 押しどころに なりません。
+  onOpenAttendance
 }) {
   // ★★★門（★裁定 その85 Q1・2026-09-18）。
   //   ★★`sched_all` …… ★学校 全部の 表
@@ -231,22 +236,52 @@ export default function OpsSchedule({
                       const hv = hourOf(timeOf(l));
                       if (hv == null) return null;
                       const dup = overlaps.some((o) => o.lessons.some((x) => x.id === l.id));
-                      return (
-                        <div key={l.id} style={{
-                          position: "absolute", left: 3, right: 3,
-                          top: (hv - hours()[0]) * 44 + 2, minHeight: 40,
-                          borderRadius: 8, padding: "4px 6px",
-                          // ★★色は 1つ。★重なりだけ、★わくを 太くします。
-                          //   ★赤・黄・青を 使いません。★通信簿に しないためです。
-                          background: C.paper,
-                          border: `${dup ? 2 : 1}px solid ${dup ? C.curtain : C.line}`,
-                          fontSize: "0.625rem", color: C.ink, overflow: "hidden"
-                        }}>
+                      /* ★★★コマを 押す（★裁定 その79 の 入口 ②・2026-09-18）。
+                           ★★見本 `P_nittei` ──
+                             ★重なりの コマ … 重なりの 画面へ
+                             ★それ 以外 …… 出欠の 1枚へ
+                           ★★★行き先が 無い ときは、★押しどころに しません。
+                             ★★`<div>` の まま 置きます。★押して 何も 起きない、を 作りません。
+                           ★★決めは lib/opsAttendance.js が 持ちます。★ここでは 判じません。
+                           ★★★`mayMark` は 出欠の 1枚が 見ます。★ここでは 見ません ──
+                             ★★よその 先生の コマも「開く」ことは できます。
+                             ★★開いた 先で「つけられません／お名前も 出しません」と 出ます。
+                             ★★★閉じた 扉を 押した ことが 分かる ほうが、★探さずに 済みます。 */
+                      const 行き先 = tapGoesTo({ dup, perms });
+                      const 押せる = tappable({ dup, perms }) && (
+                        行き先 === TAP_GOES.OVERLAP ? !!onOpenOverlap : !!onOpenAttendance
+                      );
+                      const わく = {
+                        position: "absolute", left: 3, right: 3,
+                        // ★★★押しどころに なりました。★44 以上に します（★2026-09-18）。
+                        //   ★★もとは `top +2 / minHeight 40` でした。★見る だけ の 箱 でした。
+                        //   ★★1時間の 行が 44px です。★上の 2px を 詰めて、★44 を 取ります。
+                        //   ★★★44 を 切ると、★指が 外れます（★tokens.md §5 ／ HIG）。
+                        top: (hv - hours()[0]) * 44, minHeight: 44,
+                        borderRadius: 8, padding: "4px 6px",
+                        // ★★色は 1つ。★重なりだけ、★わくを 太くします。
+                        //   ★赤・黄・青を 使いません。★通信簿に しないためです。
+                        background: C.paper,
+                        border: `${dup ? 2 : 1}px solid ${dup ? C.curtain : C.line}`,
+                        fontSize: "0.625rem", color: C.ink, overflow: "hidden",
+                        textAlign: "left", fontFamily: FONT_STACK
+                      };
+                      const 中身 = (
+                        <>
                           <div>{timeOf(l)}</div>
                           <div style={{ color: C.inkSoft, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                             {studentNameOf ? studentNameOf(l.student_id) : ""}
                           </div>
-                        </div>
+                        </>
+                      );
+                      if (!押せる) return <div key={l.id} style={わく}>{中身}</div>;
+                      return (
+                        <button key={l.id} type="button"
+                          onClick={() => {
+                            if (行き先 === TAP_GOES.OVERLAP) onOpenOverlap(overlaps);
+                            else onOpenAttendance(l);
+                          }}
+                          style={{ ...わく, cursor: "pointer" }}>{中身}</button>
                       );
                     })}
                   </div>

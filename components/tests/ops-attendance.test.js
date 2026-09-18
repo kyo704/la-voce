@@ -113,9 +113,17 @@ function ok(cond, 名) {
     "行の 右に「済 ○○」が 出る（★開く 前に 分かる）");
 
   // ★★書く ときに 0行を 見て いる。
-  const 書く = 本体.slice(本体.indexOf("★出欠を つける 1枚"), 本体.indexOf("★出欠を つける 1枚") + 3000);
-  ok(/\.select\("id"\)/.test(本体.slice(本体.indexOf("onMark="), 本体.indexOf("onMark=") + 2000)),
+  //   ★★★2026-09-18、★つける 道を 1つの 手（`onOpsMark`）に 出しました。
+  //     ★★入口が 2つに なり、★同じ ものを 2か所に 書かない ため です。
+  //   ★★★`onMark=` の すぐ 後ろ を 見て いました。★いまは 名前を 渡すだけ です。
+  //     ★★見る 場所を 手の ほうへ 移します。★見たい ことは 変わりません。
+  const 手 = 本体.slice(本体.indexOf("const onOpsMark = async"),
+    本体.indexOf("const onOpsMark = async") + 2000);
+  ok(手.length > 100, "★つける 手を 切り出せた");
+  ok(/\.select\("id"\)/.test(手),
     "つける ときに .select() を 付けて いる（★静かな 0行を 作らない）");
+  ok(/if \(error \|\| !data \|\| data\.length === 0\)/.test(手),
+    "★0行を 誤りとして 扱って いる");
   ok(/data\.length === 0/.test(本体), "0行なら 誤りに する");
 
   console.log("\n★" + 数 + "件 通りました ── 出欠を つける");
