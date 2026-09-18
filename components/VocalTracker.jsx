@@ -13851,6 +13851,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               return (
                 <OpsHome
                   todayISO={opsDate}
+                  // ★★節ごとの 出し分けに 使います（★裁定 その79・2026-09-18）。
+                  //   ★★役職の 名では ありません。★できこと です。
+                  //   ★★★`myPerms` と 書いて、★見張り（no-undef）に 止められました。
+                  //     ★★あれは 設定の 枝の 中の 名 です。★ここからは 見えません。
+                  //     ★★同じ ものを、★上で `gate` として 作って います。
+                  perms={gate}
                   lessons={opsLessons}
                   members={opsRoster}
                   events={opsEventList}

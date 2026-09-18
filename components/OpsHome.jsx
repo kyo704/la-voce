@@ -1,6 +1,7 @@
 "use client";
 
 import { C } from "@/lib/tokens";
+import { homeSections, EMPTY_LINE } from "@/lib/opsHomeSections";
 import { overlapsOf, dateOf } from "@/lib/opsSchedule";
 import { rosterCount, countsByStatus } from "@/lib/orgRoster";
 import { buildEvents, EVENT_STATES } from "@/lib/orgEventsView";
@@ -38,8 +39,17 @@ function Stat({ label, value, unit }) {
 
 export default function OpsHome({
   todayISO, lessons, members, events, participants, targetOf,
-  teacherCount, nameOf, studentNameOf, onSeeSchedule
+  teacherCount, nameOf, studentNameOf, onSeeSchedule, perms
 }) {
+  // ★★★節ごとに、★できことで 出す／出さない（★裁定 その79・2026-09-18）。
+  //   ★★見本は 役職で 3つの 画面に 分けて います（P_home / P_homeS / P_homeT）。
+  //   ★★★1つの 画面の まま に します。
+  //     ★★「学長・副学長」「事務」「先生」は **役職の 名** で 束ねた もの です。
+  //     ★★役職は 学校が 自由に 作れます（★裁定 その75）。
+  //       ★★「特任教授」を 作った 日に、★どの 画面を 出すか 決められません。
+  //   ★★決めは lib/opsHomeSections.js が 持ちます。★ここでは 決めません。
+  const 出す = (key) => homeSections(perms).some((x) => x.key === key);
+  const 節の数 = homeSections(perms).length;
   const today = (lessons || []).filter((l) => dateOf(l) === todayISO)
     .sort((a, b) => (String(a.scheduled_at) < String(b.scheduled_at) ? -1 : 1));
   const overlaps = overlapsOf(lessons, todayISO);
@@ -52,6 +62,15 @@ export default function OpsHome({
     <div className="space-y-3">
       <h2 className="ff-display italic" style={{ fontSize: "1.25rem", color: C.ink }}>ホーム</h2>
       <p style={small}>{todayISO}</p>
+
+      {/* ★★★1つも 出ない 役職が あり得ます（★裁定 その79 の note）。
+          ★★いま ひな型 10役職 の どれも 1つ以上 出ます（★数えました）。
+            ★★いちばん 少ないのは 職員の 1つ（きょうの ながれ）です。
+          ★★★けれど 学校は 役職を 自由に 作れます。
+            ★★できことを 1つも 付けない 役職も 作れます。
+          ★★空の 画面を 出しません。★白い 紙は「壊れた」と 読まれます。
+            ★★何が できる かを 1行 書きます。★何が できないかでは ありません。 */}
+      {節の数 === 0 ? <p style={small}>{EMPTY_LINE}</p> : null}
 
       {/* ★★数えるだけ。★4つ 並べます（★見本①）。 */}
       <div style={{ display: "flex", gap: 8 }}>
@@ -70,7 +89,7 @@ export default function OpsHome({
 
       {/* ★★きょうの ながれ。★該当が なければ 出しません。
           ★「今日の予定はありません」と 書かないこと。 */}
-      {today.length > 0 ? (
+      {出す("nagare") && today.length > 0 ? (
         <div style={card}>
           <p style={{ ...small, marginBottom: 6 }}>きょうの ながれ</p>
           {today.map((l) => {
@@ -108,8 +127,8 @@ export default function OpsHome({
         </div>
       ) : null}
 
-      {/* ★★近い 行事。★無ければ 出しません。 */}
-      {upcoming.length > 0 ? (
+      {/* ★★近い 行事。★無ければ 出しません。★できことが 無ければ 出しません。 */}
+      {出す("gyoji") && upcoming.length > 0 ? (
         <div style={card}>
           <p style={{ ...small, marginBottom: 6 }}>近い 行事</p>
           {upcoming.map((x) => (
