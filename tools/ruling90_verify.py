@@ -11,27 +11,17 @@
     ★★下の 【零】で、★通る はず／通らない はず を 両方 試します。
 """
 
-import io, os, subprocess, sys, datetime
+import io, os, sys, datetime
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# ★★★台帳の 読み方は `tools/ledger_read.py` が 1つだけ 持ちます。
+#   ★★2026-09-19 ── ★ここに 写しを 置いて いた ころ、
+#     ★★終わりの「★N件」を 落とす つもりで、★★で 始まる 行を 全部 落として
+#     ★★いました。★`★50通り-…` の 学校が まるごと 消えて いました。
+#   ★★★写しを やめます。★直す ところを 1つに します。
+from ledger_read import 問う, 真
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-KIKU = os.path.join(ROOT, "tools", "ask_ledger.py")
-
-
-def 問う(sql):
-  r = subprocess.run([sys.executable, KIKU, sql], capture_output=True, text=True)
-  out = r.stdout.strip()
-  if r.returncode != 0 or "★止まりました" in out:
-    raise SystemExit("★止まりました ── 台帳に 聞けません。\n" + out + r.stderr)
-  行 = [l for l in out.splitlines() if l.strip()]
-  if not 行 or 行[0] == "（0件）":
-    return []
-  頭 = [c.strip() for c in 行[0].split("|")]
-  中 = [l for l in 行[2:] if not l.startswith("★")]
-  return [dict(zip(頭, [c.strip() for c in l.split("|")])) for l in 中]
-
-
-def 真(r, k):
-  return str(r.get(k, "")).strip().lower() == "true"
 
 
 # ---------------------------------------------------------------------------

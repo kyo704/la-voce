@@ -176,7 +176,7 @@ import { can as canOps, permSet } from "@/lib/opsPerms";
 // ★★まとめて つける か どうか（★裁定 その91 R4）。
 import { isBulk } from "@/lib/opsAttendance";
 // ★★出席の 数（★裁定 その90）。★率は 出しません。★決めは lib が 1つ 持ちます。
-import { cameWord, NO_RATE_LINE } from "@/lib/attendanceCount";
+import { cameWord, heldCount, progressWord, NO_RATE_LINE } from "@/lib/attendanceCount";
 import {
   rosterCount, toRosterRows,
   // ★★行事の 対象の 札（★裁定 その89 Q3・2026-09-18）。★名簿から 拾います。
@@ -246,7 +246,8 @@ import {
   placeSubtitle, joinedLabel,
   SEE_YES, SEE_NO, SEE_YES_HEAD, SEE_NO_HEAD, LEAVE_BUTTON,
   // ★★出席（★裁定 その90 §6-5・2026-09-19）。★ご自分の 分 だけ です。
-  ATTEND_HEAD, ATTEND_OTHERS_LINE, myLessonsInOrg,
+  ATTEND_HEAD, ATTEND_OTHERS_LINE, myLessonsInOrg, totalForStudent,
+  MANY_TYPES_LINE, SO_FAR_LABEL,
   INSIDE_NOTE, INSIDE_NOTE_BOLD,
   LEAVE_LINES, LEAVE_LINES_BOLD, LEAVE_CANCEL, LEAVE_CONFIRM,
   LEAVE_NOTE, leaveTitle,
@@ -7580,7 +7581,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //       ★「次のレッスンは、いま 読めませんでした」が 出ます。
       //   ★★蔵の 決め（CLAUDE.md）── ★期限切れに 当たりうる 読みは、
       //     ★この 包みに 通す。★渡すのは **組み立て直せる 関数** です。
-      const [byStudent, byLink, events, messages] = await Promise.all([
+      const [byStudent, byLink, events, messages, presets] = await Promise.all([
         // ① 教室の レッスン（★org_id あり・student_id で 当たる）
         //
         //   ★★★2026-09-16・裁定待ち ── ★やめた あとも 見えて います。
@@ -7630,7 +7631,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         runQueryWithAuthRetry(supabase, () =>
           supabase.from("org_messages").select(MESSAGE_COLUMNS)
             .order("created_at", { ascending: false }).limit(20),
-          "先生からの連絡")
+          "先生からの連絡"),
+        // ⑤ 授業の 型（★裁定 その92・2026-09-19）。
+        //   ★★分母（★年間の 回数）を お見せする ため です。
+        //   ★★絞りは RLS が します ── `lesson_presets_select` が、
+        //     ★`enrollments`（status='active'）で 在籍を 見ます。
+        //   ★★★取る 列を **2つ＋1つ** に 絞って います。
+        //     ★★決まり（RLS）は **行** を 選びます。★**列** は 隠せません。
+        //     ★★`note`（学校の 覚え書き）と `need_count`（足りると される 回数）は、
+        //       ★★お見せする 話に なって いません。★だから 頼みません。
+        //       ★★これは 見た目の 絞り では なく、★**頼まない** という こと です。
+        runQueryWithAuthRetry(supabase, () =>
+          supabase.from("lesson_presets").select("id, org_id, name, total_count")
+            .limit(50),
+          "授業の型")
       ]);
       if (!alive) return;
       // ★★★落ちた ものを、★1つずつ 名前で 書き出します（★2026-09-16）。
@@ -7638,7 +7652,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //     ★★画面には「読めませんでした」と 出るのに、
       //       ★★何が 起きたかは、★誰にも 分かりませんでした。
       [["教室のレッスン", byStudent], ["個人指導のレッスン", byLink],
-       ["近い行事", events], ["先生からの連絡", messages]].forEach(([名, r]) => {
+       ["近い行事", events], ["先生からの連絡", messages],
+       ["授業の型", presets]].forEach(([名, r]) => {
         if (r && r.error) console.error(`★${名}を読めませんでした:`, r.error);
       });
       // ★★「取れなかった」と「0件」を 分けて 持ちます。
@@ -7652,7 +7667,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         events: events.data || [],
         eventsOk: !events.error,
         messages: messages.data || [],
-        messagesOk: !messages.error
+        messagesOk: !messages.error,
+        // ★★取れなかった ときは 空 です。★分母は 出ません。
+        //   ★★★「読めなかった」を「型が 無い」に しません ── ★どちらも
+        //     ★分母を 出さない、★という 同じ 振る舞いに なります。
+        //     ★★出さない ほうへ 倒れます。★当てずっぽうの 分母を 出しません。
+        presets: presets.data || [],
+        presetsOk: !presets.error
       });
     })();
     return () => { alive = false; };
@@ -24381,22 +24402,45 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ))}
                       </Box>
 
-                      {/* ★★★出席（★裁定 その90 §6-5・2026-09-19）。
+                      {/* ★★★出席（★裁定 その90 §6-5 ／ ★その92・2026-09-19）。
                            ★★ご自分の 分 だけ です。★台帳も 同じ 枝 です
                              （`lessons` の `auth.uid() = student_id`）。
                            ★★★率（％）は 出しません。★回数 だけ です。
-                           ★★「いま 何回目 / 年N回」は まだ 出せません ──
-                             ★★年間の 回数は `lesson_presets` に あります。
-                             ★★その 決まりは 事務と 先生 だけ です。
-                             ★★★学生は 読めません。★無い ものを 見せません。 */}
-                      <H3>{ATTEND_HEAD}</H3>
-                      <Box>
-                        <Li right={cameWord(myLessonsInOrg(
-                          (classroom.lessons || []), attendingOrgId, userId))}>
-                          {teacher ? teacher + " の 門下" : "この教室"}
-                        </Li>
-                        <Li last style={{ color: C.inkSoft }}>{NO_RATE_LINE}</Li>
-                      </Box>
+                           ★★★分母（★年間の 回数）を 足しました（★裁定 その92）。
+                             ★★「12回目」だけ では、★足りるか ご本人が 判じられません。
+                             ★★分母は 率では ありません。★事実 です。
+                           ★★どの 型が ご自分の ものかは 分かりません ──
+                             ★★型と 先生の 結びつきは、★学生に お見せしません。
+                             ★★★だから 型が 1つの ときだけ 出します。
+                               ★★決めは `lib/attendingPlaces.js` が 持ちます。 */}
+                      {(() => {
+                        const 私の = myLessonsInOrg(
+                          (classroom.lessons || []), attendingOrgId, userId);
+                        const 分母 = totalForStudent(
+                          (classroom.presets || []), attendingOrgId);
+                        const 多い = ((classroom.presets || [])
+                          .filter((x) => x && x.org_id === attendingOrgId).length) > 1;
+                        return (
+                          <>
+                            <H3>{ATTEND_HEAD}</H3>
+                            <Box>
+                              <Li right={cameWord(私の)}>
+                                {teacher ? teacher + " の 門下" : "この教室"}
+                              </Li>
+                              {/* ★★行われた 回数 ── ★出席と 休み です。★休講は 数えません。 */}
+                              {progressWord(heldCount(私の), 分母) ? (
+                                <Li right={progressWord(heldCount(私の), 分母)}>
+                                  {SO_FAR_LABEL}
+                                </Li>
+                              ) : null}
+                              {!分母 && 多い ? (
+                                <Li style={{ color: C.inkSoft }}>{MANY_TYPES_LINE}</Li>
+                              ) : null}
+                              <Li last style={{ color: C.inkSoft }}>{NO_RATE_LINE}</Li>
+                            </Box>
+                          </>
+                        );
+                      })()}
                       <p className="text-xs" style={{ color: C.inkSoft, margin: "6px 0 0" }}>
                         {ATTEND_OTHERS_LINE}
                       </p>

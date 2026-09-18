@@ -99,11 +99,33 @@ if (missing.length) {
   // ★★2026-09-15、★「近い 行事」を 足したので 3つに なりました。
   //   ★★レッスンの 2つ ＋ 行事の 1つ。★増えたら ここも 直して ください。
   // ★★2026-09-15、★3つ そろいました ── ★レッスン2・行事1・連絡1。
-  t(shellSelects.length === 4, "殻の 中の select は ちょうど 4つ（★レッスン2・行事1・連絡1）");
+  // ★★★2026-09-19、★5つ目（★授業の 型）が 増えました。
+  //   ★★数を 写して いたので、★増やした その日に 落ちました。
+  //   ★★★数では なく、★**どの 表を 読むか** を 見ます。
+  //     ★★読む 表が 増える ことは、★決めの 変わり です。★黙って 通しません。
+  //     ★★けれど「4」という 数 そのものには、★意味が ありません。
+  const 読む表 = [];
+  for (let i = shellBlk.indexOf('from("'); i > -1; i = shellBlk.indexOf('from("', i + 1)) {
+    読む表.push(shellBlk.slice(i + 6, shellBlk.indexOf('"', i + 6)));
+  }
+  const 決めた表 = ["lessons", "lessons", "org_events", "org_messages", "lesson_presets"];
+  t(JSON.stringify(読む表.sort()) === JSON.stringify(決めた表.slice().sort()),
+    "殻が 読む 表 ── " + 決めた表.join(" / ") + "（★いま: " + 読む表.join(" / ") + "）");
+  t(shellSelects.length === 読む表.length,
+    "★表の 数と select の 数が 合って いる（" + shellSelects.length + "）");
   shellSelects.forEach((sel, i) => {
-    t(/LESSON_COLUMNS|EVENT_COLUMNS|MESSAGE_COLUMNS/.test(sel), (i + 1) + "つ目の select が 列を 名前で 並べて いる");
+    // ★★★列は 名前で 並べます ── ★`*` では ありません。
+    //   ★★決まり（RLS）は **行** を 選びます。★**列** は 隠せません。
+    //   ★★だから「頼まない」ことで しか、★列を 止められません。
+    t(/LESSON_COLUMNS|EVENT_COLUMNS|MESSAGE_COLUMNS|"[a-z_]+(, [a-z_]+)+"/.test(sel),
+      (i + 1) + "つ目の select が 列を 名前で 並べて いる");
     t(!/["'`]\s*\*\s*["'`]/.test(sel), (i + 1) + "つ目の select が * では ない");
   });
+  // ★★★型から `note` と `need_count` を 頼んで いない こと（★裁定 その92）。
+  const 型sel = shellSelects.find((x) => /total_count/.test(x)) || "";
+  t(型sel.length > 0, "★型の select が ある");
+  t(!/note/.test(型sel), "★型 ── ★`note` を 頼んで いない");
+  t(!/need_count/.test(型sel), "★型 ── ★`need_count` を 頼んで いない");
   t(!S.LESSON_COLUMNS.includes("*"), "LESSON_COLUMNS に * が ない");
   t(!S.LESSON_COLUMNS.includes("teacher_note"),
     "teacher_note を 引いて いない（★先生が 自分の ために 書いた もの）");

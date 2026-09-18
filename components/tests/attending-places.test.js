@@ -132,7 +132,13 @@ function t(cond, label) {
     "★★時間割の 中身は 見える 側に **入って いない**");
   const inside = vt.indexOf('data-v2-inside="1"');
   t(inside > 0, "中身の 1枚が ある");
-  const ib = inside < 0 ? "" : vt.slice(inside, inside + 3000);
+  // ★★★窓を 3000字 と 決め打ちに して いました（★2026-09-19 に 落ちました）。
+  //   ★★中身の 1枚に 出席の 分母を 足したら、★下の 3行が 窓の 外に 出ました。
+  //   ★★★見張りが 数えるのは、★**その 1枚の 終わり まで** です。
+  //     ★★次の 1枚（`data-v2-plan`）が 始まる ところ で 切ります。
+  //     ★★字数では ありません。★形で 切ります。
+  const 次 = vt.indexOf('data-v2-', inside + 10);
+  const ib = inside < 0 ? "" : vt.slice(inside, 次 > 0 ? 次 : vt.length);
   // ★★★2026-09-19、★「見えないもの」の 一覧を 外しました（★裁定 その90 §6-6）。
   //   ★★坂本さんの お言葉 ──
   //     ★「見えなければ、★何が 見えないかを 知る 必要は ありません」
@@ -205,6 +211,57 @@ function t(cond, label) {
   const lnEnd = vtCode.indexOf("async function", ln + 10);
   t(!/window\.confirm/.test(vtCode.slice(ln, lnEnd > 0 ? lnEnd : ln + 700)),
     "★★やめる の 手は 窓を 出さない（★画面が 確かめ）");
+
+  // ==========================================================================
+  // ★分母（★裁定 その92・2026-09-19）
+  //
+  //   ★★★学生も 型（`lesson_presets`）を 読める ように しました。
+  //     ★★けれど、★どの 型が ご自分の ものかは 分かりません ──
+  //       ★★型と 先生の 結びつき（`lesson_preset_targets`）は お見せしません。
+  //     ★★★だから 型が **1つ の とき だけ** 分母を 出します。
+  //   ★★ここは 数え直します。★測った 数を 写しません。
+  // ==========================================================================
+  const 型 = (n, org) => Array.from({ length: n }, (_, i) =>
+    ({ id: "p" + i, org_id: org, name: "型" + i, total_count: 30 + i }));
+
+  t(m.totalForStudent(型(1, "A"), "A") === 30, "★型が 1つ ── ★分母を 出す");
+  t(m.totalForStudent(型(2, "A"), "A") === null, "★型が 2つ ── ★分母を 出さない");
+  t(m.totalForStudent([], "A") === null, "★型が 無い ── ★分母を 出さない");
+  t(m.totalForStudent(型(1, "B"), "A") === null, "★よその 学校の 型は 使わない");
+  t(m.totalForStudent(型(1, "A"), null) === null, "★学校が 決まって いない ── ★出さない");
+  t(m.totalForStudent([{ org_id: "A", total_count: 0 }], "A") === null,
+    "★回数が 0 ── ★出さない（★分母に なりません）");
+  t(m.totalForStudent([{ org_id: "A", total_count: null }], "A") === null,
+    "★回数が 空 ── ★出さない（★`Number(null)` は 0 です）");
+
+  // ★★★列を **頼んで いない** こと。★決まりは 行を 選び、★列は 隠せません。
+  //   ★★`note`（学校の 覚え書き）と `need_count`（足りると される 回数）は、
+  //     ★★お見せする 話に なって いません。★だから 取りません。
+  const 型読み = vtCode.slice(vtCode.indexOf('from("lesson_presets")'),
+                           vtCode.indexOf('from("lesson_presets")') + 220);
+  t(/from\("lesson_presets"\)/.test(vtCode), "★型を 読んで いる");
+  t(/select\("id, org_id, name, total_count"\)/.test(型読み),
+    "★★取る 列は 4つ だけ（★`note` と `need_count` を 頼まない）");
+  t(!/note/.test(型読み), "★`note` を 取って いない");
+  t(!/need_count/.test(型読み), "★`need_count` を 取って いない");
+
+  // ★★★較正 ── ★わざと 外した 字で、★この 見張りが 動く ことを 確かめます。
+  t(/select\("id, org_id, name, total_count, note"\)/.test('select("id, org_id, name, total_count, note")'),
+    "★道具の 較正（★`note` 入りを 見つけられる）");
+
+  // ★★画面に 出て いる こと。★言葉は `lib/` が 持ちます。
+  t(/totalForStudent/.test(vtCode), "★画面が 分母の 決めを 呼んで いる");
+  t(/progressWord\(heldCount\(/.test(vtCode), "★行われた 回数で 出して いる");
+  t(/SO_FAR_LABEL/.test(vtCode), "★札の 字を `lib/` から 取って いる");
+  t(!/12回目/.test(vtCode), "★★数を 画面に 書き込んで いない");
+
+  // ★★率を 作れる 形に しない。
+  t(/NO_RATE_LINE/.test(vtCode), "★率を 出さない と 書いて ある");
+  // ★★★禁じた 字は、★註を 外した もとで 探します（★蔵の 決め）。
+  //   ★★註に「率では ありません」と 書いて あるので、
+  //     ★★外さずに 探すと、★自分の 説明に 当たって 落ちます。
+  const 素 = readCode("lib", "attendingPlaces.js");
+  t(!/％/.test(素) && !/パーセント/.test(素), "★もとに 率の 字が ない");
 
   console.log(ng === 0 ? `\n★すべて 通りました（${ok}）` : `\n★${ng} 件 落ちました`);
   process.exit(ng === 0 ? 0 : 1);
