@@ -141,7 +141,12 @@ function eq(a, b, label) {
     const noHeight = parts.filter((p) => {
       const head = p.slice(0, p.indexOf("</button>") >= 0 ? p.indexOf("</button>") : p.length);
       if (/minHeight/.test(head)) return false;
-      return !helpers.some((h) => new RegExp(`style=\\{${h}\\(`).test(head));
+      // ★★★広げ書き（`style={{ ...chip(false), … }}`）も 通します（★2026-09-18）。
+      //   ★★2026-09-18、★重なりの 札を 広げ書きで 足したら、
+      //     ★★「高さが 無い」と 出ました。★高さは 入って います。
+      //   ★★★見張りが 見て いたのは **書き方** でした。★高さ では ありません。
+      //     ★★見たい のは「44 以上 が 決まって いる か」です。
+      return !helpers.some((h) => new RegExp(`(style=\\{|\\.\\.\\.)${h}\\(`).test(head));
     });
     t(helpers.length > 0, `★高さを 決める 助けの関数が ある（${helpers.join(",")}）`);
     t(parts.length > 0, `押しどころが ある（${parts.length}件）`);

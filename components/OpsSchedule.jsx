@@ -5,6 +5,8 @@ import useWindowWidth from "@/components/useWindowWidth";
 import { C } from "@/lib/tokens";
 import {
   VIEWS, WIDE_AT, layoutOf, hours, hourOf, timeOf, dateOf,
+  // ★★誰に どの 姿を 出すか（★裁定 その85 Q1・2026-09-18）。
+  scheduleViewFor, MINE_ONLY_HEAD, MINE_ONLY_LINE, overlapChipLabel,
   dayGrid, overlapsOf, weekHeat
 } from "@/lib/opsSchedule";
 import { mayDragBlocks, DRAG_NOTE } from "@/lib/opsShell";
@@ -41,8 +43,20 @@ function mmdd(iso) {
 }
 
 export default function OpsSchedule({
-  lessons, teachers, dateISO, weekDays, nameOf, studentNameOf, onPickDate
+  lessons, teachers, dateISO, weekDays, nameOf, studentNameOf, onPickDate,
+  // ★★できこと（★裁定 その85 Q1）。★渡されなければ 何も 出しません。
+  perms,
+  // ★★見て いる 方（★自分の 日程だけ の ときに 要ります）。
+  myId,
+  // ★★重なりの 札を 押した とき（★裁定 その85 Q3）。
+  onOpenOverlap
 }) {
+  // ★★★門（★裁定 その85 Q1・2026-09-18）。
+  //   ★★`sched_all` …… ★学校 全部の 表
+  //   ★★`sched_mine` … ★自分の 日程だけ
+  //   ★★どちらも 無い … ★何も 出しません（★帯も 出ません）
+  //   ★★★決めは lib/opsSchedule.js が 持ちます。★ここでは 判じません。
+  const 姿 = scheduleViewFor(perms);
   const [view, setView] = useState("day");
   const width = useWindowWidth();
   const layout = layoutOf(width);
@@ -53,9 +67,23 @@ export default function OpsSchedule({
   const perScreen = layout === "wide" ? Math.max(ids.length, 1) : 2;
   const colW = layout === "wide" ? `${Math.floor(100 / perScreen)}%` : "44%";
 
-  const grid = dayGrid(lessons, dateISO, ids);
+  // ★★★自分の 日程だけ の とき（★見本 `P_kumu`・★裁定 その85 Q1）。
+  //   ★★学校 全部の 表を 出しません。★見て いる 方の レッスン だけ です。
+  //   ★★★台帳も 同じ ことを して います（★`can_view_ops`）。
+  //     ★★だから 数は もとから 漏れて いません。★姿だけ が ちがって いました。
+  //     ★★「学校 全部の 表」に 1人ぶん だけ 並ぶと、
+  //       ★★学校に 先生が 1人 しか 居ない ように 見えます。
+  const 自分だけ = 姿 === "mine";
+  const 出す先生 = 自分だけ ? ids.filter((x) => x === myId) : ids;
+
+  // ★★★どちらも 持って いない とき ── ★何も 出しません。
+  //   ★★呼ぶ 側（帯）が 止めますが、★ここでも 止めます。★二重に します。
+  //   ★★フックの あと に 置きます（★早く 返すと 数が 合わなく なります）。
+  const 何も出さない = 姿 === "none";
+
+  const grid = dayGrid(lessons, dateISO, 出す先生);
   const overlaps = overlapsOf(lessons, dateISO);
-  const heat = weekHeat(lessons, weekDays || [], ids);
+  const heat = weekHeat(lessons, weekDays || [], 出す先生);
 
   const chip = (on) => ({
     minHeight: 44, padding: "0 16px", borderRadius: 999,
@@ -64,13 +92,21 @@ export default function OpsSchedule({
     color: on ? "#FFFDF8" : C.inkSoft, fontSize: "0.8125rem"
   });
 
+  if (何も出さない) return null;
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h2 className="ff-display italic" style={{ fontSize: "1.25rem", color: C.ink }}>
-          日程　{mmdd(dateISO)}
+        {/* ★★`.ff-display` を 外しました（★2026-09-18・坂本さんの お決め 3）。
+            ★★`lib/uiKit.js`「門の中の 画面では .ff-display を 使いません」。 */}
+        <h2 style={{ fontSize: "1.25rem", color: C.ink }}>
+          {自分だけ ? MINE_ONLY_HEAD : "日程"}　{mmdd(dateISO)}
         </h2>
       </div>
+
+      {/* ★★自分の ぶん だけ だ、と はっきり 書きます。
+          ★★書かないと、★学校に レッスンが これ だけ しか 無い と 読めます。 */}
+      {自分だけ ? <p style={small}>{MINE_ONLY_LINE}</p> : null}
 
       {/* ★★見せ方の 切り替え。★1つの日程に 対する ものです。
           ★★よこ持ち（⑩）は ここに 出しません。★選ばせないからです。 */}
@@ -82,20 +118,23 @@ export default function OpsSchedule({
         ))}
       </div>
 
-      {/* ★★重なりの 印（★§4-2）。★教えるだけ。★自動で 動かしません。
-          ★★どちらを 動かすかは、★人が 決めます。 */}
-      {overlaps.length > 0 ? (
-        <div style={{ ...card, background: C.paper }}>
-          <p style={{ fontSize: "0.8125rem", color: C.ink, marginBottom: 4 }}>
-            ★重なり {overlaps.length}件
-          </p>
-          {overlaps.map((o) => (
-            <p key={o.key} style={small}>{o.at}　{o.lessons.length}件</p>
-          ))}
-          <p style={{ ...small, marginTop: 6 }}>
-            重なりは線を引くだけです。自動では動かしません。
-          </p>
-        </div>
+      {/* ★★★重なり ── ★押せる 札に しました（★裁定 その85 Q3・2026-09-18）。
+          ★★きょうまで、★いつも 開いた 箱 でした。
+            ★★0件の ときは 空の 節に なります（★§8⑤ が 嫌う 形）。
+          ★★★0件 なら 節ごと 出しません。★1件 以上 なら 札 1つ です。
+          ★★印だけ です。★自動で 動かしません（★§4-2）。
+            ★★どちらを 動かすかは、★人が 決めます。
+          ★★字は lib/opsSchedule.js が 持ちます。 */}
+      {overlapChipLabel(overlaps.length) ? (
+        <button type="button"
+          onClick={() => { if (onOpenOverlap) onOpenOverlap(overlaps); }}
+          style={{
+            ...chip(false), width: "100%", textAlign: "left",
+            display: "flex", alignItems: "center", justifyContent: "space-between"
+          }}>
+          <span>{overlapChipLabel(overlaps.length)}</span>
+          <span style={{ color: C.inkSoft }}>›</span>
+        </button>
       ) : null}
 
       {view === "day" ? (

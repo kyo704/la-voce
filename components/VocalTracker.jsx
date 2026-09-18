@@ -13885,6 +13885,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   weekDays={week.filter(Boolean)}
                   nameOf={(id) => orgDisplayName(id) || ""}
                   studentNameOf={(id) => orgDisplayName(id) || ""}
+                  // ★★★できこと を 渡します（★2026-09-18・裁定 その85 Q1）。
+                  //   ★★これが 無いと、★自分の 日程だけ の 先生にも
+                  //     ★★「学校 全部の 表」が 出ます。
+                  //   ★★どの 姿に するかは lib/opsSchedule.js が 決めます。
+                  //   ★★`gate` は `permsOfMember` の 返り です。★帯の 門と 同じ もの です。
+                  perms={gate}
+                  myId={userId}
                   onPickDate={(d) => setOpsDate(d)} />
               );
             }
