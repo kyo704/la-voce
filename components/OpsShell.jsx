@@ -75,6 +75,18 @@ export default function OpsShell({ orgName, role, postName, myName,
               ★★お金の 欄が 出る／出ないの わけも 分かります。 */}
         <span style={{ display: "flex", alignItems: "center", gap: 8, flex: "none" }}>
           {postName ? (
+            /* ★★【後まわし・引き金は この 帯】── ★見本の 右がわ 6つの うち、
+                 ★2つを 置いて いません（★2026-09-18・坂本さんの お決め）。
+                 ★★① 未送信 N件 …… ★運営の 未送信を どこから 数えるか、
+                   ★★まだ 決まって いません。★数えられない ものを 札に すると、
+                     ★★押せない 札に なります（★§8⑤）。
+                   ★★台帳に 記録のみ。★数の 出どころが 決まった 日に ここへ。
+                 ★★② ◐ 端末に合わせる（明るさ）…… ★この 蔵に 明るさの 決めが
+                   ★★**1つも ありません**（★`lib/displayPrefs.js` にも
+                     ★`profiles` にも）。★だから「呼ぶ だけ」に できません。
+                   ★★列を 足す／既定を 決める／端末の 設定を どう 読むか ──
+                     ★★新しい 決めが 3つ 要ります。★当面 やりません。
+                 ★★★この 帯を 直す 日に、★この 2つを 思い出して ください。 */
             <span style={{
               fontSize: "0.625rem", background: "rgba(255,253,248,0.18)",
               borderRadius: 99, padding: "3px 9px", whiteSpace: "nowrap"
