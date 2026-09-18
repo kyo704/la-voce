@@ -12020,6 +12020,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }
   // ★自分の 役職（post_id → { id, perms }）。★入口の 門に 使います（★2026-09-18）。
   const [myOrgPosts, setMyOrgPosts] = useState({});
+  // ★★お支払い（orgId -> org_billing の いちばん 新しい 1行）。★裁定 その74。
+  const [orgBilling, setOrgBilling] = useState({});
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
    *
@@ -12432,6 +12434,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     setOrgEnrollments((prev) => ({ ...prev, [orgId]: enrollments || [] }));
     setOrgAssignments((prev) => ({ ...prev, [orgId]: assignments || [] }));
     setOrgLessons((prev) => ({ ...prev, [orgId]: lessons || [] }));
+    // ★★お支払い（★裁定 その74・2026-09-18）。
+    //   ★★★別に 引きます。★埋め込みに しません。
+    //     ★★読めないと 要求ごと 落ちます（★2026-09-01 の 一件）。
+    //   ★★決まりは `bill` を 持つ 方だけ です（★RLS）。
+    //     ★★持たない 方には 0行 返ります。★誤りでは ありません。
+    //   ★★いちばん 新しい 1行を 使います（★履歴の 表 です）。
+    void (async () => {
+      const { data: bill, error: billErr } = await supabase
+        .from("org_billing").select("*").eq("org_id", orgId)
+        .order("created_at", { ascending: false }).limit(1);
+      if (billErr) console.error("お支払いを 読めませんでした:", billErr);
+      setOrgBilling((prev) => ({ ...prev, [orgId]: (bill && bill[0]) || null }));
+    })();
     // 表示名の引き当て：外部キーの埋め込みは使わず、関わる全ユーザーIDをまとめて別クエリで引く
     // （teacher_student_linksで経験したPostgRESTの直接外部キー制約の問題を避けるため）。
     const ids = new Set();
@@ -13938,7 +13953,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ★道具は 正しく、★画面が 追いついて いません でした。 */}
                   {maySeeMoney(gate) ? (
                     <OpsSettings members={opsRoster} staffLines={[]}
-                      postName={myPost ? myPost.name : null} perms={myPerms} />
+                      postName={myPost ? myPost.name : null} perms={myPerms}
+                      billing={orgBilling[opsOrgId] || null} />
                   ) : null}
                   {/* ★★★役職の 画面は「ひとの 役職を 変える」（post）を 持つ 方だけ
                       （★2026-09-18）。

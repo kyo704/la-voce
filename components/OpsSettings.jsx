@@ -7,6 +7,11 @@ import { C } from "@/lib/tokens";
 import { H3 } from "@/components/UiV2";
 import { HEALTH_WALL_ITEMS, HEALTH_WALL_CARD_HEAD, HEALTH_WALL_CARD_VALUE }
   from "@/lib/opsShell";
+// ★★お支払い（★裁定 その74・2026-09-18）。★字も 並びも lib が 持ちます。
+import {
+  CARD_HEAD as PAY_HEAD, NOT_SET_YET, NOT_QUALIFIED_INVOICE,
+  billingRows, hasInvoiceNo
+} from "@/lib/orgBilling";
 import { permHeadLine } from "@/lib/opsPerms";
 import {
   rosterCount, monthlyFee, perHead, yen, billPlans,
@@ -42,7 +47,7 @@ const row = { display: "flex", justifyContent: "space-between", alignItems: "cen
 //   ★★`lib/opsShell.js` の `HEALTH_WALL_ITEMS` が 持ちます。
 //   ★★2か所に 置くと、★片方だけ 変わります。★それが この 蔵の 持病 です。
 
-export default function OpsSettings({ members, staffLines, postName, perms }) {
+export default function OpsSettings({ members, staffLines, postName, perms, billing = null }) {
   const n = rosterCount(members);
   const fee = monthlyFee(n);
   // ★★どの 段も 下限に 届かなかった か。★印の 付け先が 変わります。
@@ -207,6 +212,35 @@ export default function OpsSettings({ members, staffLines, postName, perms }) {
           ))}
         </div>
       ) : null}
+
+      {/* ★★★お支払い（★裁定 その74・2026-09-18）。
+          ★出どころ 見本 `stBill()` の「お支払い」の 箱。
+          ★★★見本は 5行 です。★いま 出せるのは 3行 です。
+            ★★出せない 2行（まとまり・引き落とし日）は、★台帳に 列が ありません。
+            ★★★空の 行を 並べません。★学校に お出しする 画面 です。
+              ★★空が 並ぶと 作りかけに 見えます。★信用を 落とします。
+            ★★わけと 引き金は lib/orgBilling.js の `MISSING_ROWS` に あります。
+          ★★★直す 札（支払い方法を 変える／宛先を 変える／領収書を 出す）は
+            ★★まだ 置きません。★押した 先の 画面が ありません（★§8⑤）。 */}
+      <H3>{PAY_HEAD}</H3>
+      <div style={card}>
+        {billing && billingRows(billing, fee).length > 0 ? (
+          billingRows(billing, fee).map((r, i) => (
+            <div key={r.key} style={{ ...row, ...(i === 0 ? { borderTop: "none" } : null) }}>
+              <span style={{ color: C.inkSoft }}>{r.label}</span>
+              <span style={{ color: C.ink }}>{r.value}</span>
+            </div>
+          ))
+        ) : (
+          <p style={{ ...small, margin: 0 }}>{NOT_SET_YET}</p>
+        )}
+        {/* ★★★登録番号が 無い ことを、★黙って いられません（★裁定 その74 追補）。
+            ★★大学が 仕入税額控除を 受けられません。
+            ★★★先に お伝えします。★あとから では 遅い こと です。 */}
+        {!hasInvoiceNo(billing) ? (
+          <p style={{ ...small, marginTop: 8, marginBottom: 0 }}>{NOT_QUALIFIED_INVOICE}</p>
+        ) : null}
+      </div>
 
       {/* ★★★戻しました（★2026-09-18・夕）。
           ★★★私の 報告が 誤って いました。
