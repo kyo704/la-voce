@@ -23520,11 +23520,30 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <Card style={{ borderColor: C.curtain }}>
                           <div style={{ fontSize: "0.875rem", fontWeight: 700, color: C.ink }}>
                             {/* ★★教室の 名は `profiles.school` に 入って います。
-                                ★★読めなかった ときは 埋めません（★「不明」と 書かない）。 */}
+                                ★★読めなかった ときは 埋めません（★「不明」と 書かない）。
+
+                                ★★★2026-09-18、★実機で こう 出て いました ──
+                                  ★「名前を表示できませんでした」／「てすと 先生から」。
+                                ★★お名前は 読めて います。★教室の 名 だけ が 空 です。
+                                  ★★台帳を 数えました ── ★まだ 使われて いない 招待 17 のうち、
+                                    ★★**8つ** が 教室の 名が 空 です。★お名前は 0つ 空 です。
+                                ★★★つまり「読めませんでした」は **嘘** です。
+                                  ★★読めて います。★その 先生が、★まだ 付けて いない だけ です。
+                                  ★★この 束は、★その 2つを 言い分ける 字を すでに 持って います
+                                    （★`NAME_UNSET_LABEL`）。★使って いません でした。
+                                ★★★お名前が 読めて いる なら、★お名前で お呼びします。
+                                  ★★「名前を表示できませんでした」と 見せる 必要は ありません。
+                                  ★★招かれた 方に 要るのは、★**誰から か** です。 */}
                             {(pendingInvitation.teacher && pendingInvitation.teacher.school)
-                              || NAME_FETCH_FAILED_LABEL}
+                              || (pendingInvitation.teacher && pendingInvitation.teacher.display_name
+                                ? `${pendingInvitation.teacher.display_name} 先生`
+                                : NAME_FETCH_FAILED_LABEL)}
                           </div>
-                          {pendingInvitation.teacher && pendingInvitation.teacher.display_name ? (
+                          {/* ★★教室の 名が ある ときだけ、★下に 先生の お名前を 出します。
+                              ★★無い ときは 上が「○○ 先生」に なって います。
+                                ★★同じ お名前を 2度 出しません。 */}
+                          {pendingInvitation.teacher && pendingInvitation.teacher.display_name
+                            && pendingInvitation.teacher.school ? (
                             <div style={{ ...TYPE.mini, color: C.inkSoft, marginTop: 4 }}>
                               {pendingInvitation.teacher.display_name} 先生から
                             </div>
