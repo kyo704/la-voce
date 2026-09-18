@@ -148,6 +148,8 @@ import OpsShell from "@/components/OpsShell";
 import OpsSchedule from "@/components/OpsSchedule";
 import OpsRoster from "@/components/OpsRoster";
 import OpsPosts from "@/components/OpsPosts";
+// ★ひとと 役職（★見本 `stPeople`・2026-09-18）。
+import OpsPeople from "@/components/OpsPeople";
 import AndroidInstallPrompt from "@/components/AndroidInstallPrompt";
 import OpsHome from "@/components/OpsHome";
 import OpsEvents from "@/components/OpsEvents";
@@ -13851,6 +13853,33 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       myPerms={myPerms}
                       busy={postsBusy}
                       onAction={(payload) => handleOrgPosts(opsOrgId, payload)} />
+                  </div>
+                  ) : null}
+                  {/* ★★★ひとと 役職（★見本 `stPeople`／★2026-09-18・坂本さん お決め ㋑）。
+                      ★★役職を **作れる**のに、★**人に 付けられません** でした。
+                      ★★見本は 6列 ですが、★台帳に 4列が ありません。
+                        ★★出すのは 2列 だけ です。★空の 列を 並べません。
+                      ★★見本は `post` か `master` で 出します。★同じに します ──
+                        ★`master` の 方は 読むだけ に なります（★`mayChangePerson` が 断ります）。 */}
+                  {(canOps(gate, "post") || canOps(gate, "master")) ? (
+                  <div style={{ marginTop: 16 }}>
+                    <OpsPeople
+                      members={opsMembers}
+                      posts={orgPosts[opsOrgId] || []}
+                      nameOf={(id) => orgDisplayName(id) || ""}
+                      nameFetchFailedLabel={NAME_FETCH_FAILED_LABEL}
+                      myPerms={myPerms}
+                      busy={postsBusy}
+                      onAssign={async (userId, postId) => {
+                        // ★★外す ときは `unassign`、★付ける ときは `assign`。
+                        //   ★★サーバが 2つの 門を 見ます（★付ける 役職 と、★いま 付いて いる 役職）。
+                        const r = await handleOrgPosts(opsOrgId, postId
+                          ? { action: "assign", postId, userId }
+                          : { action: "unassign", userId });
+                        // ★★`handleOrgPosts` は 断られた とき null を 返します。
+                        //   ★★黙って 閉じません。★画面に 出します。
+                        return r === null ? false : true;
+                      }} />
                   </div>
                   ) : null}
                 </>

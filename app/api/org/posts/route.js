@@ -168,9 +168,15 @@ export async function POST(request) {
         return NextResponse.json({ error: CANNOT_CHANGE_REASON }, { status: 403 });
       }
     }
-    const { error } = await admin.from("memberships")
-      .update({ post_id: null }).eq("org_id", orgId).eq("user_id", targetUser);
+    // ★★`assign` と 同じ 形に します（★2026-09-18）。★片方だけ 直しません。
+    const { data: done, error } = await admin.from("memberships")
+      .update({ post_id: null }).eq("org_id", orgId).eq("user_id", targetUser)
+      .select("user_id");
     if (error) return NextResponse.json({ error: tx("いま、つながりません。") }, { status: 503 });
+    if (!done || done.length === 0) {
+      console.error("★役職を 外せません でした（0行）:", { orgId, targetUser });
+      return NextResponse.json({ error: tx("いま、つながりません。") }, { status: 503 });
+    }
     return NextResponse.json({ ok: true });
   }
 
@@ -242,9 +248,20 @@ export async function POST(request) {
         return NextResponse.json({ error: CANNOT_CHANGE_REASON }, { status: 403 });
       }
     }
-    const { error } = await admin.from("memberships")
-      .update({ post_id: postId }).eq("org_id", orgId).eq("user_id", targetUser);
+    // ★★★`.select()` を 付けます（★2026-09-18・坂本さん お決め）。
+    //   ★★付けないと、★**0行に 当たっても 成功に 見えます**。
+    //     ★★PostgREST は 誤りを 返しません。★0行 直した、と 返します。
+    //   ★★いまは 直前に その 行を 引いて いる ので、★実害は 出て いません。
+    //     ★★けれど「引いた あと、★書く 前に 消えた」ことは ありえます。
+    //     ★★2026-09-16、★教室を やめる が まさに これで 黙って 失敗しました。
+    const { data: done, error } = await admin.from("memberships")
+      .update({ post_id: postId }).eq("org_id", orgId).eq("user_id", targetUser)
+      .select("user_id");
     if (error) return NextResponse.json({ error: tx("いま、つながりません。") }, { status: 503 });
+    if (!done || done.length === 0) {
+      console.error("★役職を 付けられません でした（0行）:", { orgId, targetUser, postId });
+      return NextResponse.json({ error: tx("いま、つながりません。") }, { status: 503 });
+    }
     return NextResponse.json({ ok: true });
   }
 
