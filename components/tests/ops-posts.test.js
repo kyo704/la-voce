@@ -62,7 +62,12 @@ ok(/if \(on\) next\[key\] = true; else delete next\[key\];/.test(api),
   "★外したら 消す（★false を 置かない）");
 
 console.log("⑦ 灰色に する。★隠さない（★裁定 §7-4）");
-ok(/C\.inkFaint/.test(ui), "★灰色に している（★C.inkFaint）");
+// ★★★2026-09-18、★`C.inkFaint` から `C.ink4` へ 移しました（★裁定 その84）。
+//   ★★`inkFaint`（2.72）は **押せない 字 だけ** の 色 です。
+//   ★★ここは 読ませる 字 です。★4段目（`ink4`・5.12）に します。
+//   ★★★見張りが 古い 色を 守ると、★正しい 直しが 落ちます。
+ok(/C\.ink4/.test(ui), "★灰色に している（★C.ink4）");
+ok(!/C\.inkFaint/.test(ui), "★押せない 字 用の 色を 使って いない");
 ok(/CANNOT_GRANT_REASON/.test(ui), "★押すと わけを 出す");
 ok(!/display: "none"/.test(ui), "★隠していない");
 
@@ -88,7 +93,8 @@ const roster = readCode("components", "OpsRoster.jsx");
 ok(/mayGrantPost\(myPerms, p\)/.test(roster), "★画面も lib に 尋ねている");
 ok(/mayChangePerson\(myPerms, mine\)/.test(roster), "★触れるかも lib に 尋ねている");
 ok(/CANNOT_CHANGE_REASON/.test(roster), "★渡せない わけを 出す");
-ok(/C\.inkFaint/.test(roster), "★灰色に する。★隠さない（★C.inkFaint）");
+ok(/C\.ink4/.test(roster), "★灰色に する。★隠さない（★C.ink4）");
+ok(!/C\.inkFaint/.test(roster), "★押せない 字 用の 色を 使って いない");
 ok(/posts && posts\.length > 0/.test(roster), "★役職が 無ければ、行を 出さない");
 
 console.log("⑧-3 ★黙って 失敗しない（★2026-09-11・実機の ご報告）");

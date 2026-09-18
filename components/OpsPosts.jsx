@@ -207,7 +207,10 @@ export default function OpsPosts({
                   borderBottom: i === PERMS.length - 1 ? "none" : `1px solid ${C.line2}`,
                   ...TYPE.li, fontFamily: FONT_STACK,
                   // ★★灰色に します。★隠しません（★裁定 §7-4）。
-                  color: allowed ? C.ink : C.inkFaint
+                  //   ★★`inkFaint` から `ink4` へ（★2026-09-18・裁定 その84）。
+                  //     ★★`inkFaint` 2.72 は 押せない 字 だけ の 色 です。
+                  //     ★★ここは 読ませる 字 です。★4.71 に します。
+                  color: allowed ? C.ink : C.ink4
                 }}>
                 <span>
                   {p.label}

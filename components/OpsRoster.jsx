@@ -478,7 +478,9 @@ export default function OpsRoster({
                       style={{
                         marginTop: 4, minHeight: 44, padding: 0, textAlign: "left",
                         background: "transparent", border: "none",
-                        color: mayTouch ? C.inkSoft : C.inkFaint, fontSize: "0.6875rem"
+                        // ★★`inkFaint` は 押せない 字 だけ です（★裁定 その84）。
+                        //   ★★ここは ふつうの 字 です。★4段目（`ink4`）に します。
+                        color: mayTouch ? C.inkSoft : C.ink4, fontSize: "0.6875rem"
                       }}>
                       {tx("役職　")}{label}　›
                     </button>
@@ -502,7 +504,8 @@ export default function OpsRoster({
                               fontSize: "0.71875rem", whiteSpace: "nowrap",
                               border: `1px solid ${on ? C.curtain : C.line}`,
                               background: on ? C.curtain : C.card,
-                              color: on ? "#FFFDF8" : (allowed ? C.inkSoft : C.inkFaint)
+                              // ★★同じ 直し（★裁定 その84）。
+                              color: on ? "#FFFDF8" : (allowed ? C.inkSoft : C.ink4)
                             }}>
                             {p.name}{on ? tx("　✓ いま") : ""}
                           </button>

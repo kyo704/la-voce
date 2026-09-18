@@ -312,7 +312,9 @@ export default function WardrobePanel({
           style={{
             marginTop: 8, padding: "10px 18px", borderRadius: 999, minHeight: 44,
             border: `1px solid ${C.line}`, background: C.card,
-            color: isEmptyWorn(wearing) ? C.line : C.ink,
+            // ★★★何も 着て いない ときの 字（★2026-09-18・裁定 その84）。
+            //   ★★`C.line` は 線の 色 です。★カードの上で 1.21。★読めません。
+            color: isEmptyWorn(wearing) ? C.ink4 : C.ink,
             fontSize: "0.9375rem"
           }}>
           いまの着せ方を保存する

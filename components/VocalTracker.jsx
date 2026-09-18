@@ -15637,7 +15637,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           onClick={() => setSimpleStepIndex((i) => prevIndex(i))}
                           className="px-4 py-2 rounded-full text-sm"
                           style={{
-                            color: simpleStepIndex === 0 ? C.line : C.inkSoft,
+                            // ★★★押せない ときの 字（★2026-09-18・裁定 その84）。
+                            //   ★★`C.line` は **線の 色** です。★紙の上で 1.21。
+                            //   ★★実機で 読めません。★直しです。★変更では ありません。
+                            color: simpleStepIndex === 0 ? C.ink4 : C.inkSoft,
                             border: `1px solid ${simpleStepIndex === 0 ? C.line : C.line}`
                           }}>
                           {SIMPLE_BACK_LABEL}
