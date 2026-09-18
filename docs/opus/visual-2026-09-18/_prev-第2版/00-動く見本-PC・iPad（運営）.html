@@ -3,7 +3,7 @@
 <title>Woolsong 動く見本 ── PC・iPad（運営）統合版</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{ --card2:#FDFAF3;--line3:#E8DFC8;--ink4:#706456;--band:#F6F1E4;--band2:#F3ECDD;--band3:#FBF3E2;--enji-d:#8E1230;--ok:#3C6A56;--warn:#825A14;--err:#AD3846;--pick:#F6E4E8;--enji:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
+:root{ --card2:#FDFAF3;--line3:#E8DFC8;--ink4:#8C7D6C;--band:#F6F1E4;--band2:#F3ECDD;--band3:#FBF3E2;--enji-d:#8E1230;--ok:#447862;--warn:#8C6115;--err:#B23A48;--pick:#F6E4E8;--enji:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
  --line:#E4DAC4;--line2:#F0E9DA;--ink:#261913;--ink2:#5A4C40;--ink3:#6B5C4E;--bg:#EFE7D6;
  --red:#B23A48;--sh:0 1px 0 rgba(0,0,0,.03),0 8px 24px rgba(90,72,48,.10)}
 body{background:var(--bg);font-family:"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;color:var(--ink);
@@ -370,8 +370,8 @@ th.stick{z-index:4}
 .zoomwrap{overflow:auto;max-width:100%;padding-bottom:6px}
 
 /* ══════════ 暗い 画面（ダークモード） ══════════ */
-html[data-th="dark"]{--card2:#2A2219;--line3:#3A322A;--ink4:#A18C7A;--band:#2C241D;--band2:#2A231C;--band3:#3A1E22;--enji-d:#C9607A;--ok:#69A082;--warn:#D9AC55;--err:#EA8894;--pick:#3A1E22;
- --paper:#1C1712;--bg:#121009;--ink:#EFE6D8;--ink2:#BCAF9D;--ink3:#A19383;
+html[data-th="dark"]{--card2:#2A2219;--line3:#3A322A;--ink4:#7C6C5E;--band:#2C241D;--band2:#2A231C;--band3:#3A1E22;--enji-d:#C9607A;--ok:#5E8F74;--warn:#D9AC55;--err:#EA8894;--pick:#3A1E22;
+ --paper:#1C1712;--bg:#121009;--ink:#EFE6D8;--ink2:#BCAF9D;--ink3:#918476;
  --line:#3D342B;--line2:#2C251E;--enji:#E790A2;--yama:#D9AC55;--midori:#82BCA0;--red:#EA8894;
  --sh:0 1px 0 rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.45);
  color-scheme:dark}
@@ -826,74 +826,9 @@ function P_monka(){
    +'<td>'+fr+'コマ</td>'
    +'<td>'+(k?'<span style="color:var(--midori)">'+keyLab(k).replace('　','')+'</span>':'まだ')+'</td></tr>'}).join('')
  +'</table></div>'
- +'<div style="margin:12px 0"><span class="btn g sm" onclick="push(\'門下に招く\')">＋ 門下に 招く</span></div>'
  +'<div class="note">見えるのは <b>担当の生徒だけ</b>。学校全部の 名簿は 見えません。<br>'
  +'見えるのは 学年と、<b>空いているか どうかだけ</b>。授業の 名前・教室・備考・体調は 見えません。<br>'
  +'<b>「本番が 近い」の 印は 出しません。</b><br>担当を 外れると、その時点から 見えなくなります。</div>'}
-
-
-/* ══ ★門下に 招く ── 裁定その83（2026-09-18）══
-   ★道は 2つ。★どちらも「探す」では ありません
-     ① ★合言葉を 見せる  ── 顔合わせ。★スマホで 見せる
-     ② ★名簿から 招く    ── ★取りこぼし。★学校の 名簿の 中だけ
-   ★★学生が 門下を 検索する 形は 作りません
-     （★誰が どの先生に ついているかを 調べる 足がかりに なります）   */
-var AIKO = {code:'K7M2XQ4P', max:20, used:2, until:'10月31日'};
-
-function P_monkaInvite(){
- return bk('門下')+'<h2>門下に 招く</h2>'
- +'<div class="sub">○○門下　／　高橋 のぞみ</div>'
- +'<div class="col2" style="align-items:flex-start">'
-
- /* ── ① 合言葉を 見せる ── */
- +'<div style="flex:1;min-width:280px">'
- +'<div class="h3" style="margin-top:0">① 合言葉を 見せる</div>'
- +'<div class="card" style="text-align:center;padding:22px 16px">'
- +'<div class="usu">この 8文字を 打つと、<b>この門下に</b> 入ります</div>'
- +'<div style="font-size:38px;letter-spacing:.22em;font-weight:700;'
- +'margin:14px 0 6px;font-variant-numeric:tabular-nums">'+AIKO.code+'</div>'
- +'<div style="width:150px;height:150px;margin:12px auto;background:#fff;'
- +'border:1px solid var(--line);border-radius:8px;display:flex;'
- +'align-items:center;justify-content:center;font-size:12.5px;color:var(--ink4)">QR</div>'
- +'<div class="usu">QR を 読むと、そのまま 登録に 進みます</div>'
- +'<div style="margin-top:14px;font-size:13px">'
- +'あと <b>'+(AIKO.max-AIKO.used)+'人</b>　／　'+AIKO.until+'まで</div>'
- +'<div style="margin-top:12px"><span class="btn g sm">作り直す</span></div></div>'
- +'<div class="note">顔合わせの ときに、<b>手元の 画面で 見せます</b>。<br>'
- +'QR が 読めない 端末が あるので、<b>文字も 出します</b>。<br>'
- +'人数に 達すると、<b>ひとりでに 閉じます</b>。<br>'
- +'打ち間違いは <b>ひとり 10回</b>まで。'
- +'<b>その人ごとに 数えます</b>（同じ WiFi でも 巻き込みません）。</div>'
- +'</div>'
-
- /* ── ② 名簿から 招く ── */
- +'<div style="flex:1;min-width:280px">'
- +'<div class="h3" style="margin-top:0">② 名簿から 招く</div>'
- +'<div class="usu" style="margin-bottom:9px">'
- +'顔合わせを 休んだ方、合言葉を 失くした方に</div>'
- +'<div class="card p0">'
- +[['中村 みな','2年','声楽','まだ'],
-   ['高橋 かなで','2年','声楽','★招待中'],
-   ['小林 そら','1年','声楽','まだ'],
-   ['伊藤 ゆい','1年','声楽','入っています']].map(function(x){
-   var done = x[3]==='入っています';
-   var sent = x[3].indexOf('招待中')>=0;
-   return '<div class="li"><span>'+x[0]
-    +'<br><span class="usu">'+x[1]+'　'+x[2]+'</span></span>'
-    +'<s>'+(done?'<span style="color:var(--ok)">入っています</span>'
-      :sent?'<span class="usu">招待中</span>'
-      :'<span class="btn g sm">招く</span>')+'</s></div>'}).join('')
- +'</div>'
- +'<div class="note"><b>学校の 名簿に いる方だけ</b>が 出ます。<br>'
- +'名簿の 外を 探すことは できません。<br>'
- +'押すと、その方の 画面に <b>「招かれています」</b>と 出ます。<br>'
- +'<b>入るかどうかは、ご本人が 決めます。</b>'
- +'こちらから 入れることは できません。</div>'
- +'</div></div>'
- +'<div class="note"><b>学生が 門下を さがす 仕組みは ありません。</b><br>'
- +'　（さがせると、誰が どの先生に ついているかが 分かってしまうからです）<br>'
- +'入る 道は この 2つだけ ── <b>合言葉</b> か、<b>招かれる</b> か。<br>'
- +'どちらも、最後に <b>ご本人が 承知して はじめて</b> 入ります。</div>'}
 
 /* ══════════ ⑤ 行事 ══════════ */
 var GYOJI=[
@@ -3217,7 +3152,7 @@ var SC={'重なり':P_kasa,'重なりを直す':P_kasaFix,'出欠つけ':P_shukk
  'お知らせを書く':P_write,'開いた記録':P_kaita,'未送信':P_misou,
  'コマを決める':function(){S.st2='時間';go('設定');return ''},
  '場所を決める':function(){S.st2='場所';go('設定');return ''},
- '採点':P_saiten,'点を入れる':P_tenIreru,'門下に招く':P_monkaInvite,
+ '採点':P_saiten,'点を入れる':P_tenIreru,
  '評価の項目':P_hyokaItem};
 var TAB={'ホーム':P_home,'日程':P_nittei,'名簿':P_meibo,'門下':P_monka,'行事':P_gyoji,
  '連絡':P_renraku,'設定':P_settei};
