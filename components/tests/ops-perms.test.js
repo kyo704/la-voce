@@ -11,7 +11,7 @@
 
 const path = require("path");
 const fs = require("fs");
-const { readCode, readRaw, ROOT } = require("./_source");
+const { readCode, readRaw, ROOT, loadLib } = require("./_source");
 
 let failed = 0;
 function ok(cond, label) {
@@ -20,8 +20,7 @@ function ok(cond, label) {
 }
 
 (async () => {
-  const src = readRaw("lib", "opsPerms.js");
-  const P = await import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
+  const P = await loadLib("lib", "opsPerms.js");
   const mihon = fs.readFileSync(
     path.join(ROOT, "docs/design/pack-final/00-動く見本（さわれる・全画面）.html"), "utf8");
 

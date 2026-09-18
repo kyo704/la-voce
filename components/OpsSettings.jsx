@@ -1,6 +1,7 @@
 "use client";
 
 import { C } from "@/lib/tokens";
+import { permHeadLine } from "@/lib/opsPerms";
 import {
   rosterCount, monthlyFee, perHead, yen,
   TIERS, MONTHLY_FLOOR, SETUP_FEE, SETUP_FEE_FROM, YEARLY_FREE_MONTHS,
@@ -38,13 +39,30 @@ const NOT_HERE = [
   "生徒の ノート"
 ];
 
-export default function OpsSettings({ members, staffLines }) {
+export default function OpsSettings({ members, staffLines, postName, perms }) {
   const n = rosterCount(members);
   const fee = monthlyFee(n);
 
   return (
     <div className="space-y-3">
       <h2 className="ff-display italic" style={{ fontSize: "1.25rem", color: C.ink }}>設定・ご請求</h2>
+
+      {/* ★★題の 下の 1行 ── ★「あなたは 何を 持って いるか」（★2026-09-18）。
+          ★出どころ 見本 00-動く見本-PC・iPad（運営）.html の `permLine`。
+          ★★★A2 で、★役割の 名では 何も 開かなく なりました。
+            ★★開くのは できこと だけ です。
+            ★★ところが その できことが、★画面の どこにも 出て いません でした。
+            ★★押しても 何も 起きない ときの わけが、★見た方に 分かりません。
+          ★★文の 組み立ては lib/opsPerms.js が 持ちます。★ここでは 決めません。
+            ★★並びも 区切りも 見本と 同じ です。
+          ★★★見本は これを **どの 運営の 画面にも** 置いて います。
+            ★★いまは 設定 だけ です。★節を 作る 日に、★帯の ほうへ 上げます
+              （★台帳㊽・引き金は この 行）。 */}
+      {perms !== undefined ? (
+        <p style={{ fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8, margin: 0 }}>
+          {permHeadLine(postName, perms)}
+        </p>
+      ) : null}
 
       {/* ★★いまの ご請求。★数えるだけです。 */}
       <div style={card}>

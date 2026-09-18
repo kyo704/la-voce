@@ -18,6 +18,8 @@
 
 const fs = require("fs");
 const path = require("path");
+// ★★`@/` を 解く 決めは _source.js が 1つ 持ちます（★見張りごとに 写しません）。
+const { loadLib } = require("./_source");
 
 let ok = 0, ng = 0;
 const t = (c, l) => { if (c) { console.log("  ✓ " + l); ok++; } else { console.log("  ✗ " + l); ng++; } };
@@ -61,8 +63,7 @@ const RULE = {};
 const READ_RULE = (h) => evalRule(RULE_SRC["読み込み"], h);
 
 (async () => {
-  const src = fs.readFileSync(path.join(__dirname, "..", "..", "lib", "opsPerms.js"), "utf8");
-  const m = await import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
+  const m = await loadLib("lib", "opsPerms.js");
   const POSTS = m.TEMPLATE_POSTS;
 
   console.log("① 役職の 数と 名前");

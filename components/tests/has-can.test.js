@@ -21,6 +21,8 @@
 
 const fs = require("fs");
 const path = require("path");
+// ★★`@/` を 解く 決めは _source.js が 1つ 持ちます（★見張りごとに 写しません）。
+const { loadLib } = require("./_source");
 
 let ok = 0;
 let ng = 0;
@@ -77,8 +79,7 @@ const sql = raw.split("\n").filter((l) => !/^\s*--/.test(l)).join("\n");
   t(!/alter table/.test(sql), "★表を 触って いない");
 
   console.log("\n⑦ できことの 名前が そろって いること");
-  const src = fs.readFileSync(path.join(__dirname, "..", "..", "lib", "opsPerms.js"), "utf-8");
-  const m = await import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
+  const m = await loadLib("lib", "opsPerms.js");
   // ★★⑤の 突き合わせに 並べた 名前が、★lib の 一覧に ある こと。
   const listed = [...sql.matchAll(/when '([a-z_]+)'\s+then/g)].map((x) => x[1]);
   t(listed.length > 0, "★突き合わせに 名前が 並んで いる（" + listed.length + "）");

@@ -13852,6 +13852,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               //   ★★書くのは サーバの 道です。★画面には 書く 権限が ありません。
               // ★★上で 出した gate を そのまま 使います。★2度 数えません。
               const myPerms = permsOfMember(opsMembership, opsPostsById);
+              // ★★役職の 名。★題の 下の 1行 に 使います（★2026-09-18）。
+              //   ★★`permsOfMember` と **同じ 2つ** から 取ります。
+              //     ★★別の ところから 取ると、★名と できことが ずれます。
+              const myPost = opsMembership && opsMembership.post_id
+                ? opsPostsById[opsMembership.post_id] : null;
               const countByPost = {};
               (orgMembers[opsOrgId] || []).forEach((m) => {
                 if (m.post_id) countByPost[m.post_id] = (countByPost[m.post_id] || 0) + 1;
@@ -13869,7 +13874,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ★★総当たりの 道具は、ここを `maySeeMoney` で 測って いました ──
                         ★道具は 正しく、★画面が 追いついて いません でした。 */}
                   {maySeeMoney(gate) ? (
-                    <OpsSettings members={opsMembers} staffLines={[]} />
+                    <OpsSettings members={opsMembers} staffLines={[]}
+                      postName={myPost ? myPost.name : null} perms={myPerms} />
                   ) : null}
                   {/* ★★★役職の 画面は「ひとの 役職を 変える」（post）を 持つ 方だけ
                       （★2026-09-18）。
