@@ -1,0 +1,80 @@
+★★裁定 その86 を 当てる **前** の 決まり（★2026-09-18・台帳から そのまま）。
+★★戻す ときは、★この 字を そのまま `create policy` に 書き直して ください。
+
+── 1 ──
+tbl: enrollments
+polname: enrollments_all_owner_admin
+cmd: *
+using_expr: has_can(org_id, 'meibo'::text)
+check_expr: has_can(org_id, 'meibo'::text)
+── 2 ──
+tbl: enrollments
+polname: enrollments_select
+cmd: r
+using_expr: ((auth.uid() = student_id) OR can_view_ops(auth.uid(), org_id, student_id))
+check_expr: 
+── 3 ──
+tbl: lessons
+polname: Ops-visible lessons (org-based)
+cmd: r
+using_expr: ((org_id IS NOT NULL) AND ((auth.uid() = student_id) OR can_view_ops(auth.uid(), org_id, student_id)))
+check_expr: 
+── 4 ──
+tbl: lessons
+polname: Teacher and student can view lessons
+cmd: r
+using_expr: (EXISTS ( SELECT 1
+   FROM teacher_student_links l
+  WHERE ((l.id = lessons.link_id) AND ((l.teacher_id = auth.uid()) OR (l.student_id = auth.uid())))))
+check_expr: 
+── 5 ──
+tbl: lessons
+polname: Teacher can create lessons
+cmd: a
+using_expr: 
+check_expr: (EXISTS ( SELECT 1
+   FROM teacher_student_links l
+  WHERE ((l.id = lessons.link_id) AND (l.teacher_id = auth.uid()))))
+── 6 ──
+tbl: lessons
+polname: Teacher can delete lessons
+cmd: d
+using_expr: (EXISTS ( SELECT 1
+   FROM teacher_student_links l
+  WHERE ((l.id = lessons.link_id) AND (l.teacher_id = auth.uid()))))
+check_expr: 
+── 7 ──
+tbl: lessons
+polname: Teacher can update or delete lessons
+cmd: w
+using_expr: (EXISTS ( SELECT 1
+   FROM teacher_student_links l
+  WHERE ((l.id = lessons.link_id) AND (l.teacher_id = auth.uid()))))
+check_expr: (EXISTS ( SELECT 1
+   FROM teacher_student_links l
+  WHERE ((l.id = lessons.link_id) AND (l.teacher_id = auth.uid()))))
+── 8 ──
+tbl: lessons
+polname: Teachers can create org lessons
+cmd: a
+using_expr: 
+check_expr: ((org_id IS NOT NULL) AND can_view_ops(auth.uid(), org_id, student_id))
+── 9 ──
+tbl: lessons
+polname: Teachers can delete org lessons
+cmd: d
+using_expr: ((org_id IS NOT NULL) AND can_view_ops(auth.uid(), org_id, student_id))
+check_expr: 
+── 10 ──
+tbl: lessons
+polname: Teachers can update or delete org lessons
+cmd: w
+using_expr: ((org_id IS NOT NULL) AND can_view_ops(auth.uid(), org_id, student_id))
+check_expr: ((org_id IS NOT NULL) AND can_view_ops(auth.uid(), org_id, student_id))
+── 11 ──
+tbl: lessons
+polname: lessons_student_notice
+cmd: w
+using_expr: (auth.uid() = student_id)
+check_expr: (auth.uid() = student_id)
+★11件
