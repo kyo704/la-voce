@@ -5,7 +5,11 @@ import useWindowWidth from "@/components/useWindowWidth";
 import { C } from "@/lib/tokens";
 import {
   NOTICE_LINE, NO_ATTACH_LINE, OPS_READ_ONLY_LINE, OPS_READ_WHY_LINE,
-  HIDE_AFTER_DAYS, HIDE_LINE, SOON_LINE, visibleMessages, mayPost, studioName, isTwoPane, BODY_WIDTH
+  HIDE_AFTER_DAYS, HIDE_LINE, SOON_LINE, visibleMessages, mayPost, studioName, isTwoPane, BODY_WIDTH,
+  // ★★裁定 その87（2026-09-18）。★字も 幅も lib が 持ちます。
+  LIST_WIDTH, NO_READ_TRACKING_LINE, MONKA_READ_SELF_LINE, showMonkaReadSelfBanner,
+  SECTION_ANNOUNCE, SECTION_MONKA,
+  SCREEN_HEAD, EMPTY_HEAD, EMPTY_HOW, isEmptyBoard
 } from "@/lib/renraku";
 
 // ============================================================================
@@ -86,7 +90,9 @@ function Message({ m, nameOf }) {
 export default function Renraku({
   studios, announcements, messages, openStudio, onOpenStudio,
   role, isTeacherOf, isMemberOf, nameOf, teacherNameOf,
-  onPost, reads, posting, onCompose
+  onPost, reads, posting, onCompose,
+  // ★★できこと（★裁定 その87 Q2）。★門下を 読める 方 ご本人に 断りを 出します。
+  perms
 }) {
   const [draft, setDraft] = useState("");
   const width = useWindowWidth();
@@ -106,7 +112,7 @@ export default function Renraku({
     <div className="space-y-2">
       {(announcements || []).length > 0 ? (
         <>
-          <p style={small}>学校からの おしらせ</p>
+          <p style={small}>{SECTION_ANNOUNCE}</p>
           {announcements.map((a) => (
             <div key={a.id} style={card}>
               <p style={{ fontSize: "0.8125rem", color: C.ink }}>{a.org_name || "学校"}</p>
@@ -128,7 +134,7 @@ export default function Renraku({
           }}>＋ おしらせを 書く</button>
       ) : null}
 
-      <p style={small}>門下の 連絡</p>
+      <p style={small}>{SECTION_MONKA}</p>
       {(studios || []).map((s) => {
         const on = openStudio === s.teacherId;
         return (
@@ -231,24 +237,103 @@ export default function Renraku({
     </div>
   );
 
+  /**
+   * ★いちばん 上の 帯（★裁定 その87 Q2・2026-09-18）。
+   *
+   *   ★★★門下を 読める 役職の 方 ご本人 に だけ 出します。
+   *     ★★裁定 その76 で、★生徒側には 知らせる と 決めました。
+   *     ★★★読む 側が 気づいて いなければ、★知らせだけ が 届きます。
+   *   ★★★閉じられません。★閉じられると 自覚が 消えます（★裁定 その87）。
+   *     ★★だから 閉じる 押しどころを 置いて いません。
+   *   ★★字は lib/renraku.js が 持ちます。★「監査員」とは 書きません。
+   */
+  const 上の帯 = showMonkaReadSelfBanner(perms) ? (
+    <div style={{
+      ...card, background: C.paper, borderColor: C.curtain, marginBottom: 12
+    }}>
+      <p style={{ fontSize: "0.8125rem", color: C.ink, lineHeight: 1.85, margin: 0 }}>
+        {MONKA_READ_SELF_LINE}
+      </p>
+    </div>
+  ) : null;
+
+  /**
+   * ★いちばん 下の 断り（★裁定 その87 Q1・2026-09-18）。
+   *
+   *   ★★★「未読」を 作りません。★端末の 中 だけ でも 作りません。
+   *     ★★青い点が ある → ★消す ために 開く → ★消化の 道具に なります。
+   *   ★★★作らない こと を、★書いて おきます。
+   *     ★★書かないと、★「壊れて いる」と 読まれます。
+   */
+  /**
+   * ★題（★見本の `h2`・★2026-09-18）。
+   *
+   *   ★★きょうまで、★この 部品に 題が ありません でした。
+   *     ★★殻の 帯が「連絡」と 出して いる から です。
+   *   ★★★けれど 名簿も 役職も 日程も、★自分の 題を 持って います。
+   *     ★★ここだけ 無いのは、★揃って いない だけ です。
+   */
+  const 題 = (
+    <h2 style={{ fontSize: "1.25rem", color: C.ink, margin: "0 0 8px" }}>{SCREEN_HEAD}</h2>
+  );
+
+  /**
+   * ★何も 無い とき（★見本の `stBlock('空')`）。
+   *
+   *   ★★★白紙に しません。★何を すると 埋まるかを 1行 書きます。
+   *   ★★2行目は、★書ける 方に だけ 出します。
+   *     ★★書けない 方に「＋ から 書けます」と 言うと、★探して しまいます。
+   */
+  const 空っぽ = isEmptyBoard(announcements, studios) ? (
+    <div style={{ ...card, textAlign: "center", padding: "26px 15px" }}>
+      <p style={{ fontSize: "0.9375rem", color: C.ink, margin: 0 }}>{EMPTY_HEAD}</p>
+      {onCompose && mayPost({ role, isAnnouncement: true }) ? (
+        <p style={{ ...small, marginTop: 6 }}>{EMPTY_HOW}</p>
+      ) : null}
+    </div>
+  ) : null;
+
+  const 読んだ断り = (
+    <p style={{ ...small, marginTop: 10 }}>{NO_READ_TRACKING_LINE}</p>
+  );
+
   if (twoPane) {
     // ★★決まりB：★2ペイン。★左に 一覧、★右に 本文。
     return (
+      <div>
+      {題}
+      {上の帯}
+      {空っぽ}
+      {空っぽ ? null : (
       <div style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
-        <div style={{ flex: "0 0 260px", minWidth: 0 }}>{list}</div>
+        <div style={{ flex: `0 0 ${LIST_WIDTH}px`, minWidth: 0 }}>{list}</div>
         <div style={{ flex: 1, minWidth: 0, display: "flex", justifyContent: "flex-start" }}>{body}</div>
+      </div>
+      )}
+      {読んだ断り}
       </div>
     );
   }
   // ★狭い画面：★門下を 開いていなければ 一覧、★開いていれば 本文。
+  //   ★★帯は どちらの 姿でも 出します。★狭い ときに 消えると、
+  //     ★★iPhone で 見て いる 方 だけ が 自覚を 失います。
   return openStudio ? (
     <div className="space-y-3">
+      {上の帯}
       <button type="button" onClick={() => onOpenStudio(null)}
         style={{
           minHeight: 44, border: "none", background: "transparent",
           color: C.curtain, fontSize: "0.875rem", padding: 0
         }}>‹ もどる</button>
       {body}
+      {読んだ断り}
     </div>
-  ) : list;
+  ) : (
+    <div>
+      {題}
+      {上の帯}
+      {空っぽ || list}
+      {読んだ断り}
+    </div>
+  );
 }

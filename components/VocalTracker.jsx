@@ -14062,6 +14062,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   teacherNameOf={(id) => orgDisplayName(id) || ""}
                   posting={renrakuPosting}
                   onPost={(body) => handlePostRenraku(opsOrgId, openStudio, body)}
+                  // ★★★できこと を 渡します（★2026-09-18・裁定 その87 Q2）。
+                  //   ★★門下を 読める 役職の 方 ご本人に、★いちばん 上で 断ります。
+                  //   ★★`gate` は 帯の 門と 同じ もの です。★2度 数えません。
+                  perms={gate}
                   reads={renrakuReads} />
               );
             }
