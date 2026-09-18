@@ -1,16 +1,13 @@
 <!doctype html><html lang="ja"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Woolsong">
-<meta name="theme-color" content="#FBF6EA">
-<title>Woolsong 動く見本（iPhone）</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Woolsong 動く見本 ── 統合版 2026-09-16</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{ --card2:#FDFAF3;--line3:#E8DFC8;--ink4:#8C7D6C;--band:#F6F1E4;--band2:#F3ECDD;--band3:#FBF3E2;--enji-d:#8E1230;--ok:#447862;--warn:#8C6115;--err:#B23A48;--pick:#F6E4E8;--enji:#840C24;--enji-bg:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
+:root{ --card2:#FDFAF3;--line3:#E8DFC8;--ink4:#8C7D6C;--band:#F6F1E4;--band2:#F3ECDD;--band3:#FBF3E2;--enji-d:#8E1230;--ok:#447862;--warn:#8C6115;--err:#B23A48;--pick:#F6E4E8;--enji:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
  --line:#E4DAC4;--line2:#F0E9DA;--ink:#261913;--ink2:#5A4C40;--ink3:#6B5C4E;--bg:#EFE7D6}
 body{background:var(--bg);font-family:"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;color:var(--ink);
- display:flex;flex-direction:column;align-items:center;padding:22px 14px 60px;gap:13px;line-height:1.75;letter-spacing:.02em;font-feature-settings:"palt";font-variant-numeric:tabular-nums}
+ display:flex;flex-direction:column;align-items:center;padding:24px 16px 64px;gap:16px;line-height:1.75;
+ letter-spacing:.02em;font-feature-settings:"palt";font-variant-numeric:tabular-nums}
 h1{font-size:19px;letter-spacing:.04em}
 .lead{font-size:13.5px;color:var(--ink2);max-width:600px;text-align:center;line-height:1.9}
 /* ─── 端末 ─── */
@@ -22,49 +19,80 @@ h1{font-size:19px;letter-spacing:.04em}
  display:flex;flex-direction:column;position:relative}
 .st{flex:0 0 26px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:12px;color:var(--ink3);letter-spacing:.08em}
 .off{flex:0 0 20px;background:var(--ink3);color:#fff;font-size:12.5px;display:flex;align-items:center;justify-content:center;letter-spacing:.04em}
-.bd{flex:1;overflow-y:auto;padding:0 15px 18px}
+.bd{flex:1;overflow-y:auto;padding:0 16px 24px}
 .tabs{flex:0 0 56px;border-top:1px solid var(--line);display:flex;background:var(--card2)}
 .tb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:12.5px;color:var(--ink3);cursor:pointer}
 .tb i{width:21px;height:21px;display:flex;align-items:center;justify-content:center;opacity:.72}
 .tb.on i{opacity:1}
 .tb i svg{display:block}
-/* ★選んだ とき ── ★しるしを 塗りつぶさない */
+/* ★選んだ とき ── ★しるしを 塗りつぶさない。
+   ★元は 2px の 棒だったので background で よかったが、
+   ★いまは 絵。★塗ると 四角に 見えます                 */
 .tb.on{color:var(--enji);font-weight:700}
 .tb.on i{background:transparent;color:var(--enji);opacity:1}
 /* ─── 部品 ─── */
 .hd{display:flex;align-items:center;justify-content:space-between;padding:10px 1px 6px}
-.hd h2{font-size:17px;letter-spacing:.06em}
+.hd h2{font-size:18px;letter-spacing:.06em}
 .gear{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;
  justify-content:center;color:var(--ink2);font-size:13px;cursor:pointer;background:#fff;flex:none}
-.h3{font-size:12.5px;color:var(--ink3);letter-spacing:.12em;margin:14px 0 7px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 13px;margin-bottom:9px}
-.mini{font-size:13px;color:var(--ink2)}
-.usu{font-size:12.5px;color:var(--ink3);margin-top:2px}
+.h3{font-size:12.5px;color:var(--ink3);letter-spacing:.14em;margin:20px 0 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+.mini{font-size:13.5px;color:var(--ink2)}
+.usu{font-size:13px;color:var(--ink3);margin-top:3px;line-height:1.7}
 .spt0{font-size:13.5px;font-weight:700;margin-bottom:3px}
 .sh3{font-size:12.5px;color:var(--ink3);letter-spacing:.12em;margin:14px 0 5px}
-.spt{width:100%;border-collapse:collapse;font-size:12.5px;line-height:1.65}
+.spt{width:100%;border-collapse:collapse;font-size:13px;line-height:1.7}
 .spt th{background:var(--band2);color:var(--ink3);font-weight:400;text-align:left;padding:5px 7px;border:1px solid var(--line)}
 .spt td{padding:5px 7px;border:1px solid var(--line);background:#fff;vertical-align:top}
 .spt td.k{width:34%;font-weight:600;background:var(--card2)}
-.fbtn{display:inline-block;margin-top:14px;font-size:13px;color:var(--ink3);
+.fbtn{display:inline-block;margin-top:16px;font-size:13.5px;color:var(--ink3);
  border:1px solid var(--line);border-radius:99px;padding:5px 12px;cursor:pointer;background:#fff}
 .fbtn:hover{border-color:var(--ink4);color:var(--ink2)}
 .fbtn.on{color:var(--enji);border-color:var(--ink4)}
-.note{font-size:12.5px;color:var(--ink2);line-height:1.85;margin-top:9px}
-.warn{background:var(--band);border:1px solid var(--line3);border-radius:12px;padding:9px 11px;font-size:12.5px;color:var(--ink2);line-height:1.75;margin-bottom:10px}
+.note{font-size:13px;color:var(--ink2);line-height:1.85;margin-top:12px}
+/* ══ 間（ま）の 段階 ── 3つだけ ══
+   sp1 同じ まとまりの 中 ／ sp2 まとまりどうし ／ sp3 話が 変わる */
+:root{--sp1:8px;--sp2:24px;--sp3:48px;--d:1}
+.bd{--sp1:calc(8px*var(--d));--sp2:calc(24px*var(--d));--sp3:calc(48px*var(--d))}
+/* ── 画面ごとの 密度（リズム）── */
+.bd[data-sc="きょう"]{--d:1.45}
+.bd[data-sc="記録"]{--d:1}
+.bd[data-sc="ふりかえる"]{--d:1.15}
+.bd[data-sc="ノート"]{--d:1.3}
+.bd[data-sc="sub"]{--d:1.15}
+/* ── 間を、実際に 当てる ── */
+.card,.box{margin-bottom:var(--sp2)}
+.h3{margin:var(--sp3) 0 var(--sp1)}
+.sh3{margin:var(--sp3) 0 var(--sp1)}
+.note{margin-top:var(--sp2)}
+.warn{margin-bottom:var(--sp2)}
+.pills{margin-bottom:var(--sp2)}
+.seg{margin:0 0 var(--sp2)}
+.hd{padding:var(--sp2) 1px var(--sp1)}
+.bd>.h3:first-child,.bd>.sh3:first-child{margin-top:var(--sp1)}
+/* ── 動きを 減らす（端末の 設定に 従います） ── */
+@media (prefers-reduced-motion: reduce){
+ *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
+  transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+/* ── 押せる大きさ 44px を 下回らない ── */
+.pill,.fbtn,.seg div{min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+.seg div{display:flex}
+
+.warn{background:var(--band);border:1px solid var(--line3);border-radius:12px;padding:11px 13px;font-size:13px;color:var(--ink2);line-height:1.8;margin-bottom:12px}
 .seg{display:flex;background:var(--band2);border-radius:11px;padding:3px;margin:2px 0 10px}
-.seg div{flex:1;text-align:center;font-size:13px;padding:8px 0;border-radius:9px;color:var(--ink2);cursor:pointer}
+.seg div{flex:1;text-align:center;font-size:13.5px;padding:12px 0;border-radius:9px;color:var(--ink2);cursor:pointer}
 .seg div.on{background:#fff;color:var(--enji);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .seg div.rest{opacity:.42}
-.pill{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:7px 12px;font-size:13px;color:var(--ink2);background:#fff;cursor:pointer}
-.pill.on{background:var(--enji-bg);color:#fff;border-color:var(--enji-bg);font-weight:700}
-.pill.sm{padding:5px 9px;font-size:12.5px}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:9px 14px;font-size:13.5px;color:var(--ink2);background:#fff;cursor:pointer}
+.pill.on{background:var(--enji);color:#fff;border-color:var(--enji);font-weight:700}
+.pill.sm{padding:7px 11px;font-size:13px}
 .pills{display:flex;gap:6px;margin-bottom:11px;flex-wrap:wrap}
-.li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 0;border-bottom:1px solid var(--line2);font-size:13.5px;cursor:pointer;min-height:44px}
+.li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 0;border-bottom:1px solid var(--line2);font-size:15.5px;cursor:pointer;min-height:48px}
 .li:last-child{border:none}
-.li s{color:var(--ink3);font-size:13px;text-decoration:none;text-align:right;flex:none}
-.box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:0 12px;margin-bottom:9px}
-.btn{display:block;width:100%;border:0;background:var(--enji-bg);color:#fff;border-radius:13px;padding:14px 0;
+.li s{color:var(--ink3);font-size:13.5px;text-decoration:none;text-align:right;flex:none}
+.box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:0 14px;margin-bottom:12px}
+.btn{display:block;width:100%;border:0;background:var(--enji);color:#fff;border-radius:13px;padding:14px 0;
  font:inherit;font-size:15.5px;font-weight:700;text-align:center;cursor:pointer}
 .btn.g{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:400;font-size:14.5px;padding:12px 0}
 .btn.sm{font-size:13.5px;padding:10px 0}
@@ -72,14 +100,14 @@ h1{font-size:19px;letter-spacing:.04em}
 .back{font-size:13.5px;color:var(--enji);cursor:pointer;padding:9px 0 3px;display:inline-block}
 .rowb{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .rowb s{width:30px;font-size:12px;color:var(--ink3);text-decoration:none;flex:none}
-.bar{height:8px;border-radius:4px;background:var(--enji-bg)}
+.bar{height:8px;border-radius:4px;background:var(--enji)}
 /* ─── ◎○△ ─── */
 .tri{display:flex;gap:7px}
 .tri div{flex:1;border:1px solid var(--line);border-radius:12px;padding:9px 0 8px;text-align:center;
  background:var(--card2);cursor:pointer;min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
 .tri div .g{font-size:21px;line-height:1;color:var(--enji)}
 .tri div .w{font-size:13px;color:var(--ink2)}
-.tri div.on{border:2px solid var(--enji-bg);background:#fff;padding:8px 0 7px}
+.tri div.on{border:2px solid var(--enji);background:#fff;padding:8px 0 7px}
 .tri div.on .w{color:var(--enji);font-weight:700}
 /* ─── 羊 ─── */
 .stage{position:relative;background:linear-gradient(#F6EEDC,#EFE4CC);border:1px solid var(--line);
@@ -109,7 +137,7 @@ h1{font-size:19px;letter-spacing:.04em}
 .mkrow .nm{flex:0 0 96px;font-size:12.5px;color:var(--ink2);line-height:1.3}
 .mkrow .cells{flex:1;display:flex;gap:2px}
 .mkrow .cells i{flex:1;height:15px;border-radius:3px;background:#F0E9DA;display:block}
-.mkrow .cells i.on{background:var(--enji-bg);opacity:.85}
+.mkrow .cells i.on{background:var(--enji);opacity:.85}
 .mkrow .n{flex:0 0 30px;text-align:right;font-size:12.5px;color:var(--ink3)}
 .mkx{display:flex;gap:2px;margin:2px 0 0 102px;font-size:12px;color:var(--ink3)}
 .mkx span{flex:1;text-align:center}
@@ -138,7 +166,7 @@ h1{font-size:19px;letter-spacing:.04em}
 .gr{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
 .gr .c{background:#fff;border:1px solid var(--line);border-radius:11px;height:62px;display:flex;align-items:center;
  justify-content:center;font-size:12px;color:var(--ink2);text-align:center;line-height:1.35;cursor:pointer;padding:2px}
-.gr .c.sel{border:2px solid var(--enji-bg);color:var(--enji);font-weight:700}
+.gr .c.sel{border:2px solid var(--enji);color:var(--enji);font-weight:700}
 .gr .c.no{color:#B9AA97;background:#FAF6EC}
 .cols{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
 .cols i{display:block;padding-top:100%;border-radius:50%;border:1px solid rgba(38,25,19,.10);cursor:pointer}
@@ -146,7 +174,7 @@ h1{font-size:19px;letter-spacing:.04em}
 .shelf{background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px 12px;margin-bottom:8px;cursor:pointer}
 .slots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:9px}
 .slots .s{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 0;text-align:center;font-size:12.5px;color:var(--ink2);cursor:pointer;min-height:44px;display:flex;flex-direction:column;justify-content:center;gap:2px}
-.slots .s.on{border:2px solid var(--enji-bg);color:var(--enji);font-weight:700}
+.slots .s.on{border:2px solid var(--enji);color:var(--enji);font-weight:700}
 .slots .s b{font-size:12px;color:var(--ink3);font-weight:400}
 /* ─── 調べる（有料） ─── */
 .lock{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 0;border-bottom:1px solid var(--line2);font-size:13.5px;cursor:pointer;min-height:44px;color:var(--ink4)}
@@ -155,11 +183,11 @@ h1{font-size:19px;letter-spacing:.04em}
 /* ─── トグル ─── */
 .sw{width:44px;height:26px;border-radius:99px;background:var(--line);position:relative;flex:none;cursor:pointer;transition:.16s}
 .sw i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.16s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
-.sw.on{background:var(--enji-bg)}.sw.on i{left:21px}
+.sw.on{background:var(--enji)}.sw.on i{left:21px}
 /* ─── 順番（調べていること） ─── */
 .ord{display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid var(--line2);font-size:13.5px}
 .ord:last-child{border:none}
-.ord .no{width:20px;height:20px;border-radius:50%;background:var(--enji-bg);color:#fff;font-size:12.5px;display:flex;align-items:center;justify-content:center;flex:none}
+.ord .no{width:20px;height:20px;border-radius:50%;background:var(--enji);color:#fff;font-size:12.5px;display:flex;align-items:center;justify-content:center;flex:none}
 .ord .no.g2{background:#EFE7D6;color:var(--ink3)}
 .ord .up{margin-left:auto;font-size:15.5px;color:var(--ink3);cursor:pointer;padding:0 5px;flex:none}
 /* ─── 4つの状態 ─── */
@@ -187,7 +215,7 @@ h1{font-size:19px;letter-spacing:.04em}
 .tbl.wktbl th:first-child,.tbl.wktbl td:first-child{width:56px}
 .tbl.wktbl td{overflow:hidden}
 .scr{overflow-x:auto;border-radius:12px;border:1px solid var(--line)}
-.koma{background:#FFF;border-left:3px solid var(--enji-bg);border-radius:5px;padding:3px 5px;font-size:12px;line-height:1.4;text-align:left}
+.koma{background:#FFF;border-left:3px solid var(--enji);border-radius:5px;padding:3px 5px;font-size:12px;line-height:1.4;text-align:left}
 .dup{border-left-color:var(--yama);background:var(--band3)}
 /* ─── シート ─── */
 .mask{position:absolute;inset:0;background:rgba(38,25,19,.28);opacity:0;pointer-events:none;transition:.2s;z-index:5}
@@ -216,7 +244,7 @@ h1{font-size:19px;letter-spacing:.04em}
  padding:9px 14px;background:linear-gradient(rgba(251,246,234,.92),rgba(251,246,234,0));z-index:3}
 .hband h2{font-size:16px;letter-spacing:.06em}
 .hband .m{font-size:12.5px;color:var(--ink2);margin-left:2px}
-.hfab{position:absolute;right:14px;bottom:16px;z-index:9;background:var(--enji-bg);color:#fff;
+.hfab{position:absolute;right:14px;bottom:16px;z-index:9;background:var(--enji);color:#fff;
  border-radius:99px;padding:13px 24px;font-size:14.5px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(90,72,48,.28)}
 .hhit{position:absolute;z-index:2;cursor:pointer;border-radius:8px}
 .hhit:active{background:rgba(255,255,255,.25)}
@@ -238,7 +266,7 @@ h1{font-size:19px;letter-spacing:.04em}
 .dr1 div.on{color:var(--enji);font-weight:700;box-shadow:inset 0 -2px 0 var(--enji)}
 .dr2{display:flex;gap:6px;overflow-x:auto;padding:8px 13px;border-bottom:1px solid var(--line2)}
 .dr2 span{flex:none;border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-size:12.5px;color:var(--ink2);background:#fff;cursor:pointer;white-space:nowrap}
-.dr2 span.on{background:var(--enji-bg);color:#fff;border-color:var(--enji-bg)}
+.dr2 span.on{background:var(--enji);color:#fff;border-color:var(--enji)}
 .dr3{display:flex;align-items:center;gap:8px;padding:8px 13px;font-size:12.5px;color:var(--ink2);border-bottom:1px solid var(--line2)}
 .dr3 .sr{font-size:14.5px;cursor:pointer}
 .dr3 .od{margin-left:auto;border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-size:12.5px;background:#fff;cursor:pointer;white-space:nowrap;flex:none}
@@ -247,7 +275,7 @@ h1{font-size:19px;letter-spacing:.04em}
 .g5 .c{background:#fff;border:1px solid var(--line);border-radius:10px;aspect-ratio:1;display:flex;align-items:center;
  justify-content:center;font-size:12px;color:var(--ink2);text-align:center;line-height:1.3;cursor:pointer;padding:2px;position:relative}
 .g5 .c.sel{border:1.6px solid var(--ink)}
-.g5 .c.sel:after{content:'';position:absolute;right:4px;bottom:4px;width:6px;height:6px;border-radius:50%;background:var(--enji-bg)}
+.g5 .c.sel:after{content:'';position:absolute;right:4px;bottom:4px;width:6px;height:6px;border-radius:50%;background:var(--enji)}
 .g5 .c.no{color:var(--ink4);background:#FAF6EC}
 .hcard{position:relative;border-radius:14px;overflow:hidden;height:290px;margin:0 -15px;border-bottom:1px solid var(--line)}
 .hcard svg{position:absolute;inset:0;width:100%;height:100%}
@@ -255,7 +283,7 @@ h1{font-size:19px;letter-spacing:.04em}
  font-size:13px;cursor:pointer;box-shadow:0 2px 8px rgba(90,72,48,.2);z-index:3}
 .drt{display:flex;align-items:center;gap:8px;padding:9px 13px;border-top:1px solid var(--line2);background:var(--card2);font-size:13.5px}
 .drt .x{margin-left:auto;border:1px solid var(--line);border-radius:9px;padding:7px 14px;font-size:13px;background:#fff;cursor:pointer}
-.drt .k{border:0;border-radius:9px;padding:8px 18px;font-size:13.5px;font-weight:700;background:var(--enji-bg);color:#fff;cursor:pointer}
+.drt .k{border:0;border-radius:9px;padding:8px 18px;font-size:13.5px;font-weight:700;background:var(--enji);color:#fff;cursor:pointer}
 .drr{display:flex;align-items:center;gap:5px;padding:6px 13px;background:var(--card2);overflow-x:auto}
 .drr b{font-weight:400;font-size:12.5px;color:var(--ink3);flex:none;margin-right:2px;white-space:nowrap}
 .drr .od{border:1px solid var(--line);border-radius:99px;padding:4px 10px;font-size:12.5px;background:#fff;cursor:pointer;white-space:nowrap;flex:none}
@@ -290,7 +318,7 @@ h1{font-size:19px;letter-spacing:.04em}
 .cal b{font-weight:400;font-size:12px;color:var(--ink3);text-align:center}
 .cal i{display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-radius:8px;background:#fff;
  border:1px solid var(--line2);font-size:12.5px;font-style:normal;cursor:pointer;color:var(--ink2)}
-.cal i.on{background:var(--enji-bg);color:#fff;border-color:var(--enji-bg);font-weight:700}
+.cal i.on{background:var(--enji);color:#fff;border-color:var(--enji);font-weight:700}
 .cal i.mid{background:var(--pick);border-color:#EBD2D8;color:var(--enji)}
 .cal i.no{color:#CFC3B0}
 .paper{background:#fff;border:1px solid var(--line);border-radius:10px;padding:15px 14px;margin-bottom:9px}
@@ -300,7 +328,7 @@ h1{font-size:19px;letter-spacing:.04em}
 .ptbl td{border-bottom:1px solid var(--line2);padding:6px 3px;vertical-align:middle}
 .ptbl td.r{text-align:right;white-space:nowrap}
 .ptbl td.n{text-align:right;white-space:nowrap;font-weight:700}
-.minibar{height:7px;background:var(--enji-bg);border-radius:4px;display:block;opacity:.75}
+.minibar{height:7px;background:var(--enji);border-radius:4px;display:block;opacity:.75}
 .phead{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--ink);padding-bottom:7px;margin-bottom:11px}
 .phead .t{font-size:15.5px;font-weight:700}
 .phead .s{font-size:12.5px;color:var(--ink3);text-align:right;line-height:1.6}
@@ -324,7 +352,7 @@ h1{font-size:19px;letter-spacing:.04em}
 /* ══════════ 暗い 画面（ダークモード） ══════════ */
 html[data-th="dark"]{--card2:#2A2219;--line3:#3A322A;--ink4:#7C6C5E;--band:#2C241D;--band2:#2A231C;--band3:#3A1E22;--enji-d:#C9607A;--ok:#5E8F74;--warn:#D9AC55;--err:#EA8894;--pick:#3A1E22;
  --paper:#1C1712;--bg:#121009;--ink:#EFE6D8;--ink2:#BCAF9D;--ink3:#918476;
- --line:#3D342B;--line2:#2C251E;--enji:#E790A2;--enji-bg:#8E1230;--yama:#D9AC55;--midori:#82BCA0;--red:#EA8894;
+ --line:#3D342B;--line2:#2C251E;--enji:#E790A2;--yama:#D9AC55;--midori:#82BCA0;--red:#EA8894;
  --sh:0 1px 0 rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.45);
  color-scheme:dark}
 html[data-th="dark"] body{background:var(--bg);color:var(--ink)}
@@ -337,10 +365,10 @@ html[data-th="dark"] .wall{background:#221B15;color:var(--ink2)}
 html[data-th="dark"] .side{background:#1E1812;border-color:var(--line)}
 html[data-th="dark"] .nv.on{background:#241D17;color:var(--enji)}
 html[data-th="dark"] .body,html[data-th="dark"] .bd{background:var(--paper)}
-html[data-th="dark"] .btn{background:var(--enji-bg);color:#fff;border-color:var(--enji-bg)}
+html[data-th="dark"] .btn{background:var(--enji-d);color:#fff;border-color:var(--enji-d)}
 html[data-th="dark"] .btn.g,html[data-th="dark"] .btn.mid{background:#2C241D;color:var(--ink);border-color:var(--line)}
 html[data-th="dark"] .pill{background:#2C241D;color:var(--ink2);border-color:var(--line)}
-html[data-th="dark"] .pill.on{background:var(--enji-bg);color:#fff;border-color:var(--enji-bg)}
+html[data-th="dark"] .pill.on{background:var(--enji-d);color:#fff;border-color:var(--enji-d)}
 html[data-th="dark"] .inp,html[data-th="dark"] .ta,html[data-th="dark"] input,html[data-th="dark"] textarea,html[data-th="dark"] select{background:#1A1510;color:var(--ink);border-color:var(--line)}
 html[data-th="dark"] table th,html[data-th="dark"] .tbl th,html[data-th="dark"] .spt th{background:#2C241D;color:var(--ink2);border-color:var(--line)}
 html[data-th="dark"] table td,html[data-th="dark"] .tbl td,html[data-th="dark"] .spt td{background:#241D17;color:var(--ink);border-color:var(--line)}
@@ -348,7 +376,7 @@ html[data-th="dark"] .tbl td.k,html[data-th="dark"] .spt td.k,html[data-th="dark
 html[data-th="dark"] .note{background:#1E1812;border-color:var(--line);color:var(--ink2)}
 html[data-th="dark"] .warn,html[data-th="dark"] .wl{background:#2A2218;border-color:#4A3E2C;color:var(--ink)}
 html[data-th="dark"] .fbtn{background:#2C241D;border-color:var(--line);color:var(--ink3)}
-html[data-th="dark"] .koma{background:#2A231C}
+html[data-th="dark"] .koma{background:#2A231C;border-left-color:var(--enji)}
 html[data-th="dark"] .koma.mine{background:#1F2C25;border-left-color:var(--midori)}
 html[data-th="dark"] .koma.busy{background:#2E2820;border-left-color:var(--ink3);color:var(--ink2)}
 html[data-th="dark"] .koma.busy.priv{background:#282219}
@@ -360,7 +388,7 @@ html[data-th="dark"] .grid th.tdyh{background:#3A1E22;color:var(--enji)}
 html[data-th="dark"] .grid td.tdyc{background:#221A18}
 html[data-th="dark"] .mini .mg b:hover{background:#2C241D}
 html[data-th="dark"] .mini .mg b.w{background:#3A1E22}
-html[data-th="dark"] .mini .mg b.t{background:var(--enji-bg);color:#fff}
+html[data-th="dark"] .mini .mg b.t{background:var(--enji-d);color:#fff}
 html[data-th="dark"] .mini .mg b.o{color:var(--ink3)}
 html[data-th="dark"] .tabs{background:#1E1812;border-color:var(--line)}
 html[data-th="dark"] .tb{color:var(--ink3)}
@@ -381,7 +409,7 @@ html[data-th="dark"] .kpi{background:#241D17;border-color:var(--line)}
 html[data-th="dark"] .kpi.al{background:#2E2018;border-color:#5A3A3E}
 html[data-th="dark"] .lft,html[data-th="dark"] .pl{background:#1E1812}
 html[data-th="dark"] .seg{background:#2C241D;border-color:var(--line)}
-html[data-th="dark"] .seg .on,html[data-th="dark"] .seg b.on,html[data-th="dark"] .seg span.on,html[data-th="dark"] .on{background:var(--enji-bg);color:#fff}
+html[data-th="dark"] .seg .on,html[data-th="dark"] .seg b.on,html[data-th="dark"] .seg span.on,html[data-th="dark"] .on{background:var(--enji-d);color:#fff}
 html[data-th="dark"] .gear,html[data-th="dark"] .role{background:#2C241D;color:var(--ink2);border-color:var(--line)}
 html[data-th="dark"] .k{background:#2A231C;color:var(--ink)}
 html[data-th="dark"] div[style*="background:#fff"],html[data-th="dark"] div[style*="background:#FFF"]{background:#241D17!important}
@@ -391,75 +419,13 @@ html[data-th="dark"] [style*="background:var(--band)"]{background:#1F2C25!import
 html[data-th="dark"] [style*="background:var(--band)"],html[data-th="dark"] [style*="background:var(--band3)"],html[data-th="dark"] [style*="background:var(--band)"],html[data-th="dark"] [style*="background:var(--card2)"],html[data-th="dark"] [style*="background:var(--band2)"],html[data-th="dark"] [style*="background:#FBF6EA"],html[data-th="dark"] [style*="background:var(--band)"],html[data-th="dark"] [style*="background:var(--band)"],html[data-th="dark"] [style*="background:var(--band)"],html[data-th="dark"] [style*="background:var(--card2)"],html[data-th="dark"] [style*="background:var(--card2)"]{background:#2A2219!important}
 html[data-th="dark"] tr[style*="background:var(--band3)"]{background:#2A2219!important}
 html[data-th="dark"] .sw{background:#3A322A}
-
+html[data-th="dark"] .sw.on{background:var(--enji-d)}
 html[data-th="dark"] .sw i{background:#EFE6D8}
 html[data-th="dark"] .tri div{background:#2A2219;border-color:var(--line)}
-html[data-th="dark"] .tri div.on{background:var(--enji-bg);border-color:var(--enji-bg)}
+html[data-th="dark"] .tri div.on{background:var(--enji-d);border-color:var(--enji-d)}
 html[data-th="dark"] .tri div.on .w,html[data-th="dark"] .tri div.on .g{color:#fff}
 html[data-th="dark"] .drt,html[data-th="dark"] .drr,html[data-th="dark"] .drhint,html[data-th="dark"] .drc{background:#241D17}
-
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
-
-:root{--sp1:8px;--sp2:24px;--sp3:48px}
-</style>
-<style>
-/* ══════════ iPhone で そのまま 開くための 上書き ══════════ */
-html,body{height:100%;overscroll-behavior:none}
-body{padding:0;gap:0;display:block;background:var(--paper);
- -webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased}
-h1.mk-hide,p.mk-hide{display:none}
-.ph{width:100%;max-width:none;height:100vh;height:100dvh;border-radius:0;border:0;box-shadow:none}
-.st{flex:0 0 auto;padding-top:calc(env(safe-area-inset-top) + 6px);padding-bottom:4px;font-size:12.5px}
-.tabs{flex:0 0 auto;padding-bottom:env(safe-area-inset-bottom)}
-.tb{padding:9px 0 7px}
-.bd{-webkit-overflow-scrolling:touch;padding-left:max(15px,env(safe-area-inset-left));padding-right:max(15px,env(safe-area-inset-right))}
-.bd.full{padding:0}
-.sheet{padding-bottom:calc(16px + env(safe-area-inset-bottom));border-radius:20px 20px 0 0}
-#sheet.dr{max-height:62%;height:62%;padding-bottom:env(safe-area-inset-bottom)}
-.toast{bottom:calc(74px + env(safe-area-inset-bottom))}
-.hfab{bottom:calc(16px + env(safe-area-inset-bottom))}
-.hshadow,.hwalk{bottom:calc(114px + env(safe-area-inset-bottom))}
-.hwalk{bottom:calc(118px + env(safe-area-inset-bottom))}
-.hroom{min-height:0;height:100%}
-input,textarea,select{font-size:16px}   /* ★iOS の 自動ズームを 止めます */
-.inp,.ta{font-size:16px}
-/* デモの 引き出し */
-.rl{position:fixed !important;right:calc(46px + env(safe-area-inset-right)) !important;
- top:calc(env(safe-area-inset-top) + 4px) !important;z-index:60 !important;width:30px !important;height:30px !important;
- background:rgba(38,25,19,.72) !important;font-size:15.5px !important}
-.za{position:fixed !important;right:calc(82px + env(safe-area-inset-right)) !important;
- top:calc(env(safe-area-inset-top) + 4px) !important;z-index:60 !important;height:30px !important;
- background:rgba(38,25,19,.72) !important;font-size:13.5px !important;padding:0 12px !important}
-#mkbtn{position:fixed;right:calc(10px + env(safe-area-inset-right));
- top:calc(env(safe-area-inset-top) + 4px);z-index:60;width:30px;height:30px;border-radius:50%;
- background:rgba(38,25,19,.72);color:#fff;font-size:13.5px;display:flex;align-items:center;
- justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
-#mkpanel{position:fixed;inset:0;z-index:59;background:rgba(38,25,19,.42);opacity:0;
- pointer-events:none;transition:.2s}
-#mkpanel.on{opacity:1;pointer-events:auto}
-#mkinner{position:absolute;left:0;right:0;bottom:0;max-height:86%;overflow-y:auto;
- background:var(--bg);border-radius:20px 20px 0 0;padding:12px 14px calc(20px + env(safe-area-inset-bottom));
- transform:translateY(102%);transition:.24s cubic-bezier(.3,.9,.3,1)}
-#mkpanel.on #mkinner{transform:translateY(0)}
-#mkinner .demo,#mkinner .legend{width:auto;max-width:none;margin-bottom:10px}
-#mkclose{display:block;width:100%;border:0;background:var(--enji-bg);color:#fff;border-radius:13px;
- padding:13px 0;font:inherit;font-size:14.5px;font-weight:700;text-align:center;cursor:pointer}
-#mktitle{font-size:13px;color:var(--ink2);text-align:center;margin-bottom:10px;line-height:1.8}
-@media (min-width:520px){   /* PC で 開いたときは 端末の 形に 戻す */
- body{display:flex;flex-direction:column;align-items:center;padding:20px 14px 40px;gap:12px;background:var(--bg)}
- h1.mk-hide,p.mk-hide{display:block}
- .ph{width:360px;height:812px;border-radius:30px;border:1px solid var(--line);
-  box-shadow:0 1px 0 rgba(0,0,0,.03),0 10px 30px rgba(90,72,48,.14)}
- .st{padding-top:0}
- #mkbtn{display:none}
- .rl{position:absolute !important;right:10px !important;top:4px !important;width:26px !important;height:26px !important}
- .za{position:absolute !important;right:42px !important;top:4px !important;height:26px !important;padding:0 10px !important}
- #mkpanel{position:static;opacity:1;pointer-events:auto;background:none;inset:auto}
- #mkinner{position:static;transform:none;max-height:none;background:none;padding:0;border-radius:0}
- #mkclose,#mktitle{display:none}
-}
-</style>
-</head><body>
+</style></head><body>
 <h1>Woolsong ── 動く見本 v2</h1>
 <p class="lead">下のタブ・画面の中の切替・行・⚙ を 押してください。下の「デモの切替」で、普段は 見えない状態（空・読み込み中・失敗・オフライン・静かにする期間・調べる加入・運営モード）を 出せます。</p>
 <div class="ph">
@@ -775,8 +741,9 @@ function tg(arr,v){var i=arr.indexOf(v);if(i>=0)arr.splice(i,1);else arr.push(v)
 /* ══════════ ③ ふりかえる ══════════ */
 function S_furi(){
  var b='<div class="hd"><h2>ふりかえる</h2><div class="gear" onclick="push(\'もっと\')">⚙</div></div>'
-  +'<div class="box" style="margin-bottom:11px"><div class="li" onclick="push(\'本番のふりかえり\')"><span>本番の ふりかえり<div class="usu">終わった 本番の 前後を 並べます</div></span><s>›</s></div></div>'
-  +seg(['並べる','さかのぼる','くらべる','かぞえる'],S.fk,'setFk',quiet()?['くらべる','かぞえる']:[]);
+  +seg(['並べる','さかのぼる','くらべる','かぞえる'],S.fk,'setFk',quiet()?['くらべる','かぞえる']:[])
+  +'<div class="box" style="margin-bottom:11px"><div class="li" onclick="push(\'本番のふりかえり\')">'
+  +'<span>本番の ふりかえり<div class="usu">終わった 本番の 前後を 並べます</div></span><s>›</s></div></div>';
  if(quiet()&&(S.fk==='くらべる'||S.fk==='かぞえる'))return b+restBlock();
  if(S.fk==='並べる')b+=narabe();
  if(S.fk==='さかのぼる')b+=sakanobo();
@@ -808,14 +775,14 @@ function narabe(){
  if(n<=28){h+=D.map(function(x,i){var w=[40,65,88][x.voice-1];
    return '<div class="rowb"><s>'+(n<=14?md(x.d):(i%7===0?md(x.d):''))+'</s><div class="bar" style="width:'+w+'%;opacity:'+(0.5+x.voice*0.15)+'"></div></div>'}).join('');}
  else{h+='<div style="display:flex;align-items:flex-end;gap:2px;height:64px">'+D.map(function(x){
-   return '<i style="flex:1;display:block;background:var(--enji-bg);opacity:'+(0.35+x.voice*0.2)+';height:'+[35,62,92][x.voice-1]+'%"></i>'}).join('')+'</div>'
+   return '<i style="flex:1;display:block;background:var(--enji);opacity:'+(0.35+x.voice*0.2)+';height:'+[35,62,92][x.voice-1]+'%"></i>'}).join('')+'</div>'
    +'<div class="usu" style="text-align:right">1本＝1日</div>';}
  h+='</div>';
  h+='<div class="card"><div class="mini" style="margin-bottom:8px">のどの 調子</div>';
  if(n<=28){h+=D.map(function(x,i){var w=[38,62,86][x.nodo-1];
    return '<div class="rowb"><s>'+(n<=14?md(x.d):(i%7===0?md(x.d):''))+'</s><div class="bar" style="width:'+w+'%;opacity:'+(0.45+x.nodo*0.15)+'"></div></div>'}).join('');}
  else{h+='<div style="display:flex;align-items:flex-end;gap:2px;height:52px">'+D.map(function(x){
-   return '<i style="flex:1;display:block;background:var(--enji-bg);opacity:'+(0.3+x.nodo*0.2)+';height:'+[35,62,92][x.nodo-1]+'%"></i>'}).join('')+'</div>';}
+   return '<i style="flex:1;display:block;background:var(--enji);opacity:'+(0.3+x.nodo*0.2)+';height:'+[35,62,92][x.nodo-1]+'%"></i>'}).join('')+'</div>';}
  h+='</div>';
  h+='<div class="card"><div class="mini" style="margin-bottom:8px">昨夜の 睡眠</div>'
   +'<div style="display:flex;align-items:flex-end;gap:'+(n<=14?4:2)+'px;height:56px">'+D.map(function(x){
@@ -884,9 +851,20 @@ function sakanobo(){
  +'本番だけに すると、0件に なります。<br>文章を 添えません。確率も 割合も 出しません。</div>'}
 
 /* ── くらべる ── */
+function madaWakaranai(){
+ return '<div class="sh3" style="margin-top:0">しらべている こと</div>'
+ +[['眠った時間 × 声の調子','10日のうち 7日 たまりました',70],
+   ['夕食から寝るまで × 声の調子','10日のうち 4日 たまりました',40]].map(function(x){
+  return '<div style="padding:13px 2px;border-bottom:1px solid var(--line2)">'
+  +'<div style="font-size:14.5px">'+x[0]+'</div>'
+  +'<div style="height:4px;background:var(--line2);border-radius:2px;margin:7px 0 3px">'
+  +'<div style="height:4px;width:'+x[2]+'%;background:var(--ink3);border-radius:2px"></div></div>'
+  +'<div class="usu">'+x[1]+'</div></div>'}).join('')
+ +'<div class="usu" style="margin:9px 0 15px">たまった日数が 10日に なると、はっきり 言えるように なります。進んだ側から 数えています。</div>'}
 function kuraberu(){
  var st=stateBlock('まだ、くらべる ものが ありません。','記録を 10日ぶん 書くと、点が 2つの 山に 分かれて 出ます。');
  if(st)return st;
+ var _mw=madaWakaranai();
  var lags=['前の夜','前の日','2日まえ','その日の朝'];
  var h='<div class="warn">ここに出るのは、あなたが 書いたことの 並びです。原因かどうかは 分かりません。</div>';
  if(S.dm.bun){
@@ -908,7 +886,7 @@ function kuraberu(){
   +'あとから 書いた日は ○の 白抜き。<b>判定からは 外します</b>。<br>'
   +'1文は、3つの門（10日以上／差の大きさ／q）を 通ったときだけ 出ます。<br>'
   +'2番目から先の 結果は 出しません。<b>止まった理由だけ</b> 出します。</div>';
- return h}
+ return _mw+h}
 function dotplot(lag){
  var G=[[3.2,4.1,3.8,4.6,2.9,5.1,3.5,4.3,3.0,4.8,3.9,2.7,4.4,3.6],
         [3.6,3.9,4.2,3.1,4.7,3.3,4.0,3.8,4.5,2.8,4.1,3.4,3.7,4.3],
@@ -941,7 +919,7 @@ function kazoeru(){
  +'<div class="note" style="margin:-2px 0 11px">まんなかの値です。くらべる先は、あなた自身です。よその目安は 出しません。</div>'
  +'<div class="card"><div class="mini">食べ終えてから 寝るまで（54日）</div>'
  +'<div style="display:flex;align-items:flex-end;gap:5px;height:84px;margin:9px 0 3px">'
- +H.map(function(v){return '<div style="flex:1;background:var(--enji-bg);border-radius:3px 3px 0 0;height:'+(v/mx*100)+'%"></div>'}).join('')+'</div>'
+ +H.map(function(v){return '<div style="flex:1;background:var(--enji);border-radius:3px 3px 0 0;height:'+(v/mx*100)+'%"></div>'}).join('')+'</div>'
  +'<div style="display:flex;gap:5px;font-size:12px;color:var(--ink3)">'+['0','1','2','3','4','5','6','7+'].map(function(s){return '<span style="flex:1;text-align:center">'+s+'</span>'}).join('')+'</div>'
  +'<div class="usu" style="text-align:right">時間</div></div>'
  +'<div class="h3">詳しく 数える</div><div class="box">'
@@ -1485,7 +1463,7 @@ SH['したく']=function(){
    +Object.keys(S.put||{}).map(function(k){
      return '<span class="'+((S.slot||'たな')===k?'on':'')+'" onclick="S.slot=\''+k+'\';drawSheet()">'+k+'　'+S.put[k]+'</span>'}).join('')+'</div>':'')
  +'<div class="dr3"><span class="od" style="margin:0" onclick="closeSheet();push(\'さがす\')">さがす</span>'
- +'<span class="od" style="margin:0;'+(S.onlyHave?'background:var(--enji-bg);color:#fff;border-color:var(--enji-bg)':'')+'" onclick="S.onlyHave=S.onlyHave?0:1;drawSheet()">もっているもの</span>'
+ +'<span class="od" style="margin:0;'+(S.onlyHave?'background:var(--enji);color:#fff;border-color:var(--enji)':'')+'" onclick="S.onlyHave=S.onlyHave?0:1;drawSheet()">もっているもの</span>'
  +'<span class="od" onclick="S.ord=(S.ord+1)%4;drawSheet()">'+ORD[S.ord]+'</span></div>'
  +'<div class="drg"><div class="g5">'+items.map(function(v){
    return '<div class="c '+(S.wear===v?'sel':'')+' '+(HAVE[v]?'':'no')+'" onclick="'+(HAVE[v]?'pickItem(\''+esc(v)+'\')':'toast(\'まだ 持っていません\')')+'">'+(HAVE[v]?v:'まだ')+'</div>'}).join('')+'</div></div>';
@@ -1648,610 +1626,6 @@ SC['記録のきまり']=function(){
  +'<div class="wl">記録の 中身は、先生にも 学校にも 運営にも 見えません。<br>運営に 分かるのは、何人が 使っていて 何回 開かれたか ── その数だけです。</div>'};
 
 /* ══════════ もっと ══════════ */
-function pgrp(t,a){return '<div style="margin-bottom:18px">'
-+'<div style="font-size:12.5px;letter-spacing:.14em;color:var(--ink3);'
-+'border-bottom:1px solid var(--line2);padding-bottom:5px;margin-bottom:4px">'+t+'</div>'
-+a.map(function(x){return '<div style="display:flex;justify-content:space-between;'
-+'align-items:baseline;padding:7px 0;font-size:14.5px">'
-+'<span>'+x[0]+'</span><span class="usu">'+x[1]+'</span></div>'}).join('')+'</div>'}
-
-
-function pick(t,on){return '<div class="li"><span>'
-+'<span style="display:inline-block;width:15px;height:15px;border-radius:50%;'
-+'border:1.5px solid '+(on?'var(--enji)':'var(--line)')+';'
-+(on?'background:var(--enji);box-shadow:inset 0 0 0 3px var(--card);':'')
-+'vertical-align:-2px;margin-right:9px"></span>'+t+'</span></div>'}
-
-/* ── さがす（伴奏など）── */
-
-function dgrp(t,a){return '<div class="sh3">'+t+'</div><div class="box">'
-+a.map(function(x){return '<div class="li" onclick="push(\'深い記事\')"><span>'
-+x+'</span><s>›</s></div>'}).join('')+'</div>'}
-
-
-function pprint(t,a){return '<div style="padding:13px 0;border-bottom:.5px solid #F0E9DA">'
-+'<div style="display:flex;gap:16px">'
-+'<div style="width:46px;flex:none;font-size:12px;letter-spacing:.2em;color:var(--ink4);'
-+'padding-top:2px">'+t+'</div>'
-+'<div style="flex:1">'
-+a.map(function(x){return '<div style="display:flex;gap:12px;font-size:12px;'
-+'line-height:2;color:#3B322A">'
-+(x[0]?'<span style="width:58px;flex:none;color:var(--ink4);font-variant-numeric:tabular-nums">'
-+x[0]+'</span>':'<span style="width:58px;flex:none"></span>')
-+'<span>'+x[1]+'</span></div>'}).join('')
-+'</div></div></div>'}
-
-
-/* ── 運営：行事を 出す ── */
-
-SC['しらべていること']=function(){return bk('もっと')
-+'<div class="hd" style="padding-top:2px"><h2>しらべている こと</h2></div>'
-+'<div class="warn">くらす ことと、声の ことを 組にします。<br>'
-+'組を 作るのは あなたです。こちらから おすすめは しません。</div>'
-+'<div class="sh3" style="margin-top:0">組 1</div>'
-+'<div class="box"><div class="li"><span>眠った 時間</span><s>かえる ›</s></div>'
-+'<div class="li"><span>声の 調子</span><s>かえる ›</s></div></div>'
-+'<div class="sh3">いつの 声と くらべますか</div>'
-+'<div class="box">'
-+pick('同じ日',1)+pick('翌日',0)+pick('2日後',0)+pick('3日後',0)+'</div>'
-+'<div class="btn g">＋ 組を 足す</div>'
-+'<div class="usu">無料では 1組までです</div>'
-+'<div class="note">たくさん 選ぶほど、はっきり 言えるまでの 日数が 延びます。<br>'
-+'書いていない 日は、組に しません。うめません。<br>'
-+'機械が 組を 選ぶことは ありません。</div>'};
-
-
-SC['もっと深く']=function(){return bk('学ぶ')
-+'<div class="hd" style="padding-top:2px"><h2>もっと 深く</h2></div>'
-+'<div class="warn">ここから先は、声楽・ミュージカルの ことばで 書いています。<br>'
-+'ほかの お仕事の方にも 役立つところが ありますが、用語は 声楽の ものです。</div>'
-+dgrp('技術',['ベルカント発声法の 全体像','声区と パッサッジョ ── 正解表は 存在しない',
-  'appoggio ── 支えの 作り方と 検算','母音修正（aggiustamento）',
-  "singer's formant と squillo",'SOVT ── ウォームアップ'])
-+dgrp('からだ',['歌手のための 体幹','姿勢ワーク','呼吸筋トレーニング','栄養・加湿・睡眠'])
-+dgrp('健康',['vocal dose','喉頭外筋の 緊張と MCT','逆流（LPR / GERD）の 長期管理'])
-+dgrp('ことば',['アジリタ・装飾・カデンツァ','用語集'])
-+'<div class="note">読んだ印は、ご自分の 端末にだけ 残ります。<br>'
-+'<b>誰が 読んだかは 記録しません。どこまで 読んだかも 数えません。</b><br>'
-+'読まなくても、アプリは 使えます。</div>'};
-
-
-SC['伴奏をさがす']=function(){return bk('レパートリー')
-+'<div class="hd" style="padding-top:2px"><h2>さがす</h2></div>'
-+'<div class="pills"><span class="pill on">ぜんぶ</span>'
-+'<span class="pill">伴奏者</span><span class="pill">歌い手</span>'
-+'<span class="pill">楽器奏者</span></div>'
-+'<div class="sh3">出ている 募集</div>'
-+'<div class="box">'
-+[['ピアノ　レッスン','10月中に 3回ほど　／　曲目は これから'],
-  ['ピアノ　本番・演奏会','11月　1回　／　冬の旅（全曲）'],
-  ['チェンバロ　録音','時期は 相談　／　曲目は これから'],
-  ['歌い手　コンクール','12月　／　二重唱']].map(function(x){
- return '<div class="li" onclick="push(\'応募する\')"><span>'+x[0]
- +'<div class="usu">'+x[1]+'</div></span><s>›</s></div>'}).join('')+'</div>'
-+'<div class="sh3">自分が 出した 募集</div><div class="box">'
-+'<div class="li" onclick="push(\'応募を選ぶ\')"><span>ピアノ　レッスン'
-+'<div class="usu">10月中に 3回ほど　／　あと 24日</div></span><s>応募 3件 ›</s></div></div>'
-+'<div class="btn g" onclick="push(\'募集を出す\')">＋ 自分も 募集を 出す</div>'
-+'<div class="btn g" onclick="push(\'応募した募集\')">応募した 募集を 見る</div>'
-+'<div class="note">同じ 学校・教室の 中だけです。<br>'
-+'出している 方の お名前は、決まるまで 出ません。<br>'
-+'こちらから 人を さがすことは できません。<br>'
-+'新しい順に 並べています。おすすめ順には しません。</div>'};
-
-
-SC['公開の範囲']=function(){return bk('経歴')
-+'<div class="hd" style="padding-top:2px"><h2>だれが 見られますか</h2></div>'
-+'<div class="box">'
-+pick('自分だけ',1)+pick('同じ学校の 在籍者だけ',0)+pick('URLを 知っている人だけ',0)+'</div>'
-+'<div class="h3">URLを 知っている人だけ の とき</div>'
-+'<div class="card"><div style="font-size:13px;color:var(--ink2);word-break:break-all">https://woolsong.app/p/7fk2m</div>'
-+'<div class="btn g" style="margin-top:11px">コピーする</div>'
-+'<div style="width:112px;height:112px;background:#fff;border:1px solid var(--line);'
-+'border-radius:6px;display:flex;align-items:center;justify-content:center;'
-+'font-size:12.5px;color:var(--ink3);margin:11px 0">QR</div>'
-+'<div class="usu">紙に 刷るとき用です。白い 背景で 出します。</div></div>'
-+'<div class="h3">紙に する</div><div class="box">'
-+'<div class="li" onclick="push(\'紙のポートフォリオ\')"><span>紙で どう 見えるか'
-+'<div class="usu">A4・1枚</div></span><s>›</s></div>'
-+'<div class="li"><span>PDFで 書き出す<div class="usu">お手元に 残ります</div></span><s>›</s></div></div>'
-+'<div class="note">はじめは「自分だけ」です。<br>'
-+'18歳未満の方には、「URLを 知っている人だけ」は 出ません。<br>'
-+'見た目を 選ぶ 機能は、いまは ありません。ひとつの 決まった 見た目で 出します。</div>'};
-
-
-SC['公開ページ']=function(){return bk('公開の範囲')
-+'<div class="hd" style="padding-top:2px"><h2 style="font-size:14.5px;color:var(--ink3)">'
-+'アプリの 外で、こう 見えます</h2></div>'
-+'<div class="card" style="padding:20px 16px">'
-+'<div style="display:flex;gap:13px;margin-bottom:16px">'
-+'<div style="width:78px;height:104px;background:var(--band2);border-radius:6px;flex:none;'
-+'display:flex;align-items:center;justify-content:center;font-size:12.5px;color:var(--ink3)">写真</div>'
-+'<div><div style="font-size:19px;letter-spacing:.03em">坂本 響</div>'
-+'<div class="usu">テノール</div></div></div>'
-+'<div style="font-size:13.5px;line-height:2;color:var(--ink2);margin-bottom:18px">'
-+'イタリア歌曲と ドイツ・リートを 中心に 勉強しています。<br><br>'
-+'いまは 冬の旅の 全曲に 取り組んでいます。ひとつの 曲を 長く 持つことで 見えてくるものを 大事に したいと 思っています。</div>'
-+pgrp('学んだところ',[['○○音楽大学 声楽科','2020–2024'],['△△音楽院','2024–']])
-+pgrp('賞・コンクール',[['○○声楽コンクール 第2位','2025']])
-+pgrp('師事',[['高橋 のぞみ','']])
-+pgrp('演奏',[['Schubert ── 冬の旅 第1曲','2026.10.11'],
-  ['Schubert ── 冬の旅 第5曲','2026.07.20'],['Strauss ── Zueignung','2026.08.30']])
-+'<div style="border-top:1px solid var(--line2);padding-top:11px;margin-top:6px">'
-+'<span class="usu">このページを 通報する</span></div></div>'
-+'<div class="note">アプリの 外の ページです。ログインは 要りません。<br>'
-+'書いた ことばの まま 出ます。日本語でも、ローマ字でも。<br>'
-+'通報の 口を 1つ 置いています。窓口では ありません。</div>'};
-
-
-SC['募集を出す']=function(){return bk('伴奏をさがす')
-+'<div class="hd" style="padding-top:2px"><h2>募集を 出す</h2></div>'
-+'<div class="sh3" style="margin-top:0">だれを さがしますか</div>'
-+'<div class="pills"><span class="pill on">伴奏者</span><span class="pill">歌い手</span>'
-+'<span class="pill">楽器奏者</span><span class="pill">その他</span></div>'
-+'<div class="usu" style="margin:-6px 0 11px">「その他」を 選ぶと、ご自分で 書けます</div>'
-+'<div class="sh3">楽器・パート</div><input class="inp" value="ピアノ">'
-+'<div class="pills" style="margin-top:7px">'
-+['ピアノ','チェンバロ','オルガン','ギター','ヴァイオリン','フルート',
-  'ソプラノ','アルト','テノール','バス'].map(function(v){
- return '<span class="pill sm">'+v+'</span>'}).join('')+'</div>'
-+'<div class="usu" style="margin:-6px 0 11px">札は 打つ 手間を 省くためです。ご自分で 書いて かまいません</div>'
-+'<div class="sh3">何のために</div>'
-+'<div class="box">'
-+pick('レッスン',1)+pick('本番・演奏会',0)+pick('試験',0)
-+pick('コンクール',0)+pick('録音',0)+pick('決めていない',0)+'</div>'
-+'<div class="sh3">希望の 時期</div><input class="inp" value="10月中">'
-+'<div class="sh3">回数</div><input class="inp" value="3回ほど">'
-+'<div class="sh3">曲目　<span class="usu" style="display:inline">任意</span></div>'
-+'<input class="inp" placeholder="決まっていなければ、空のままで">'
-+'<div class="sh3">版　<span class="usu" style="display:inline">任意</span></div>'
-+'<input class="inp" placeholder="IMSLP などの URL、または 版の 名前">'
-+'<div style="height:12px"></div><div class="btn">出す</div>'
-+'<div class="note">曲が 決まっていなくても 出せます。<br>'
-+'楽器・パートは ご自分で 書けます。札に ないものでも。<br>'
-+'楽譜そのものは お預かりしません。<br>'
-+'出してから 30日で、自動的に 終わります。</div>'};
-
-
-SC['応募した募集']=function(){return bk('伴奏をさがす')
-+'<div class="hd" style="padding-top:2px"><h2>応募した 募集</h2></div>'
-+'<div class="sh3" style="margin-top:0">いま</div>'
-+'<div class="box"><div class="li"><span>チェンバロ　録音'
-+'<div class="usu">応募しています</div></span><s>›</s></div></div>'
-+'<div class="sh3">終わったもの</div>'
-+'<div class="box">'
-+'<div class="li" style="color:var(--ink3)"><span>ピアノ　レッスン'
-+'<div class="usu">この募集は 終わりました</div></span></div>'
-+'<div class="li" style="color:var(--ink3)"><span>ピアノ　本番・演奏会'
-+'<div class="usu">期限が 過ぎました</div></span></div></div>'
-+'<div class="note">終わった 理由は 書きません。ほかの方に 決まったのか、'
-+'取り下げられたのかは 分かりません。<br>'
-+'お知らせは 送りません。開いたときに 見えます。<br>'
-+'90日で、この一覧からも 消えます。</div>'};
-
-/* ── 分析の拡張 ── */
-
-SC['応募する']=function(){return bk('伴奏をさがす')
-+'<div class="hd" style="padding-top:2px"><h2>この募集に 応募します</h2></div>'
-+'<div class="card"><div style="font-size:15.5px">ピアノ　レッスン</div>'
-+'<div class="usu" style="margin-top:6px">10月中に 3回ほど<br>曲目は これから</div></div>'
-+'<div class="btn">応募する</div><div class="btn g">やめる</div>'
-+'<div class="note">日にちの 相談は、決まってからです。<br>'
-+'ここで 書き添えることは ありません。<br>'
-+'応募したことは、ほかの 応募者には 見えません。</div>'};
-
-
-SC['応募を選ぶ']=function(){return bk('伴奏をさがす')
-+'<div class="hd" style="padding-top:2px"><h2>応募が 3件 あります</h2></div>'
-+'<div class="box">'
-+[['応募者 A','9月16日'],['応募者 B','9月16日'],['応募者 C','9月15日']].map(function(x){
- return '<div class="li" onclick="push(\'応募者の詳細\')"><span>'+x[0]
- +'<div class="usu">'+x[1]+'</div></span><s>見る ›</s></div>'}).join('')+'</div>'
-+'<div class="btn g">この募集を 終わりにする</div>'
-+'<div class="note">押すと、その方の ことが 見られます。決めるのは、見たあとです。<br>'
-+'応募の 順に 並べています。</div>'};
-
-
-SC['応募者の詳細']=function(){return bk('応募を選ぶ')
-+'<div class="hd" style="padding-top:2px"><h2>応募者 B</h2></div>'
-+'<div class="box"><div class="li"><span>楽器・パート</span><s>ピアノ</s></div></div>'
-+'<div class="sh3">合う 空きコマ</div>'
-+'<div class="box">'
-+[['10月15日（水）3限','9:00-10:30'],['10月17日（金）2限','13:00-14:30'],
-  ['10月20日（月）1限','9:00-10:30']].map(function(x){
- return '<div class="li"><span>'+x[0]+'<div class="usu">'+x[1]+'</div></span></div>'}).join('')+'</div>'
-+'<div class="btn" onclick="push(\'成立後\')">この方に 決める</div>'
-+'<div class="note">お名前は、決めたあとに 見えます。<br>'
-+'門下・学年は 出しません。決めるのに 要らないからです。<br>'
-+'空いている コマだけを 出しています。授業は 出ません。<br>'
-+'決めると、ほかの 応募は 閉じます。</div>'};
-
-
-SC['成立後']=function(){return bk('伴奏をさがす')
-+'<div class="hd" style="padding-top:2px"><h2>山田 花子 さん</h2></div>'
-+'<div class="box"><div class="li"><span>楽器・パート</span><s>ピアノ</s></div>'
-+'<div class="li"><span>連絡先</span><s>Instagram @hanako_p</s></div></div>'
-+'<div class="sh3">合う 空きコマ</div>'
-+'<div class="box">'
-+[['10月15日（水）3限','9:00-10:30'],['10月17日（金）2限','13:00-14:30']].map(function(x){
- return '<div class="li"><span>'+x[0]+'<div class="usu">'+x[1]+'</div></span><s>この枠で 誘う ›</s></div>'}).join('')+'</div>'
-+'<div class="btn g">やめる</div><div class="btn g">通報</div>'
-+'<div class="note">誘えるのは 3回までです。同時に 1件だけ。<br>'
-+'場所は 決めません。会う ところは おふたりで。<br>'
-+'90日で 自動的に 閉じます。</div>'};
-
-
-SC['本番のふりかえり']=function(){return bk('ふりかえる')
-+'<div class="hd" style="padding-top:2px"><h2>本番の ふりかえり</h2></div>'
-+'<div class="usu" style="margin-bottom:11px">10月11日の 本番</div>'
-+'<div class="sh3" style="margin-top:0">前の 7日</div>'
-+'<div class="box">'
-+['7日前　眠り 7時間20分','6日前　眠り 6時間50分','5日前　眠り 7時間40分',
-  '4日前　書いていません','3日前　眠り 6時間10分','2日前　眠り 7時間00分',
-  '1日前　眠り 7時間30分'].map(function(t){
- return '<div class="li"><span style="font-size:14.5px">'+t+'</span></div>'}).join('')+'</div>'
-+'<div class="note">よい わるいは 言いません。並べるだけです。<br>'
-+'2回目の 本番から、前回と 重ねて 見られます。<br>'
-+'<b>本番の 前の日と 当日は、何も 出しません。</b><br>'
-+'ご自分で 登録された 本番だけを 使います。学校の 行事からは 引きません。</div>'};
-
-/* ── 学ぶ：もっと深く ── */
-
-SC['深い記事']=function(){return bk('もっと 深く')
-+'<div class="hd" style="padding-top:2px"><h2 style="font-size:15.5px;line-height:1.6">'
-+'声区と パッサッジョ<br>── 正解表は 存在しない</h2></div>'
-+'<div class="usu" style="margin-bottom:11px">更新　2026年9月16日　／　読むのに 約9分</div>'
-+'<div class="card" style="border-color:var(--enji)"><div style="font-size:14.5px;line-height:1.95">'
-+'意外に 思われるかもしれませんが、これは 本記事が 慎重を 期しているのでは ありません。'
-+'<b>表を 作った 当人たちが、そう 書いています。</b></div></div>'
-+'<div class="sh3">3つの 限界</div>'
-+'<div class="box">'
-+[['1　渡り目は、測る 母音に よって 変わる','査読'],
-  ['2　渡り目は 鍵盤の 上に 乗らない','教本'],
-  ['3　同じ 数値が、違う 声種を 指すことが ある','教本']].map(function(x){
- return '<div class="li"><span style="font-size:14.5px">'+x[0]
- +'<span style="display:inline-block;font-size:12.5px;color:var(--ink3);'
- +'border:1px solid var(--line);border-radius:3px;padding:0 5px;margin-left:6px">'
- +x[1]+'</span></span></div>'}).join('')+'</div>'
-+'<div class="warn">これは、教本が 示す 目安であって、<b>あなたの 声の 測定値では ありません</b>。</div>'
-+'<div class="h3">メモ</div><textarea class="ta" placeholder="読みながら、思ったことを"></textarea>'
-+'<div class="note">［査読］査読論文・メタ分析に 基づく<br>'
-+'［教本］標準的な 声楽教本・音声科学書に 基づく<br>'
-+'［伝統］特定の 教師・流派の 主張（検証は 限定的）<br>'
-+'<b>しるしに 色は 使いません。</b><br>'
-+'出典は 記事の 末に まとめて 置きます。</div>'};
-
-
-
-SC['紙のポートフォリオ']=function(){return bk('公開の範囲')
-+'<div class="hd" style="padding-top:2px"><h2 style="font-size:14.5px;color:var(--ink3)">紙で どう 見えるか</h2></div>'
-+'<div class="usu" style="margin-bottom:11px">A4・1枚。オーディションの 書類に そのまま 使えます</div>'
-+'<div style="background:#fff;border:1px solid var(--line);border-radius:3px;'
-+'box-shadow:0 2px 10px rgba(90,72,48,.12);margin-bottom:11px;padding:26px 24px 20px">'
-
-/* 表題 ── 右上に細い罫、名前は大きく、肩書きは小さく離す */
-+'<div style="display:flex;justify-content:space-between;align-items:flex-start;'
-+'border-bottom:1.5px solid #261913;padding-bottom:13px;margin-bottom:0">'
-+'<div><div style="font-size:21px;letter-spacing:.14em;color:#261913;line-height:1.3">坂本 響</div>'
-+'<div style="font-size:12px;letter-spacing:.3em;color:var(--ink4);margin-top:5px">SAKAMOTO KYO</div></div>'
-+'<div style="text-align:right;padding-top:3px">'
-+'<div style="font-size:12.5px;letter-spacing:.18em;color:#5A4C40">TENORE</div>'
-+'<div style="font-size:12px;color:var(--ink4);margin-top:4px">テノール</div></div></div>'
-
-/* 写真と 前書き ── 2段組 */
-+'<div style="display:flex;gap:18px;padding:16px 0 18px;border-bottom:.5px solid #E4DAC4">'
-+'<div style="width:66px;height:88px;background:var(--band2);flex:none;display:flex;'
-+'align-items:center;justify-content:center;font-size:12px;color:var(--ink4)">写真</div>'
-+'<div style="font-size:12px;line-height:2.1;color:#4A3F35;padding-top:1px">'
-+'イタリア歌曲と ドイツ・リートを 中心に 勉強しています。'
-+'いまは 冬の旅の 全曲に 取り組んでいます。'
-+'ひとつの 曲を 長く 持つことで 見えてくるものを 大事に したいと 思っています。</div></div>'
-
-/* 本体 ── 左に見出し、右に中身の 2段組 */
-+pprint('学　歴',[['2020–2024','○○音楽大学 声楽科'],['2024–','△△音楽院']])
-+pprint('師　事',[['','高橋 のぞみ']])
-+pprint('受　賞',[['2025','○○声楽コンクール　第2位']])
-+pprint('演　奏',[['2026.10.11','Schubert　冬の旅 第1曲'],
-  ['2026.07.20','Schubert　冬の旅 第5曲'],['2026.08.30','Strauss　Zueignung']])
-
-/* 脚 */
-+'<div style="border-top:.5px solid #E4DAC4;margin-top:16px;padding-top:8px;'
-+'display:flex;justify-content:space-between;font-size:12px;color:var(--ink4);'
-+'letter-spacing:.08em"><span>woolsong.app/p/7fk2m</span>'
-+'<span>2026年9月16日 現在</span></div>'
-+'</div>'
-+'<div class="btn">PDFで 書き出す</div>'
-+'<div class="btn g">印刷する</div>'
-+'<div class="note">紙のときは、QRの 代わりに URL を 小さく 入れます。<br>'
-+'公開の 範囲が「自分だけ」でも、<b>紙には 出せます</b>。お手元の ものだからです。<br>'
-+'<b>書き出した 日</b>を 右下に 入れます。古い 紙が 出回らないように。<br>'
-+'項目が 空の ときは、その 節ごと 出しません。空欄を 見せません。</div>'};
-
-
-SC['経歴']=function(){return bk('レパートリー')
-+'<div class="hd" style="padding-top:2px"><h2>経歴</h2></div>'
-+'<div class="warn">ポートフォリオに 載せる ものです。書かなくても、録画だけで 成り立ちます。</div>'
-+'<div class="h3" style="margin-top:0">宣材写真</div>'
-+'<div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:11px">'
-+'<div style="width:96px;height:128px;background:var(--band2);border:1px solid var(--line);'
-+'border-radius:8px;display:flex;align-items:center;justify-content:center;'
-+'font-size:12.5px;color:var(--ink3);flex:none">写真</div>'
-+'<div style="flex:1"><span class="btn g" style="margin:0">えらぶ</span>'
-+'<div class="usu" style="margin-top:7px">1枚だけです。<br>撮った場所の 情報は、こちらで 消します。</div></div></div>'
-+'<div class="h3">お名前</div><input class="inp" value="坂本 響">'
-+'<div class="usu" style="margin-top:-4px">日本語でも、ローマ字でも。書いた ままに 出ます</div>'
-+'<div class="h3">声種・楽器</div><input class="inp" value="テノール">'
-+'<div class="h3">じぶんのことば</div>'
-+'<textarea class="ta" style="height:132px">イタリア歌曲と ドイツ・リートを 中心に 勉強しています。\n\nいまは 冬の旅の 全曲に 取り組んでいます。ひとつの 曲を 長く 持つことで 見えてくるものを 大事に したいと 思っています。</textarea>'
-+'<div class="usu">400字まで。改行できます</div>'
-+'<div class="h3">学んだところ</div>'
-+'<div class="box">'
-+'<div class="li"><span>○○音楽大学 声楽科<div class="usu">2020 – 2024</div></span><s>›</s></div>'
-+'<div class="li"><span>△△音楽院<div class="usu">2024 – </div></span><s>›</s></div></div>'
-+'<div class="btn g">＋ 足す</div>'
-+'<div class="h3">賞・コンクール</div>'
-+'<div class="box"><div class="li"><span>○○声楽コンクール 第2位<div class="usu">2025</div></span><s>›</s></div></div>'
-+'<div class="btn g">＋ 足す</div>'
-+'<div class="h3">師事</div>'
-+'<div class="box"><div class="li"><span>高橋 のぞみ</span><s>›</s></div></div>'
-+'<div class="btn g">＋ 足す</div>'
-+'<div class="note">ここに 書いたことは、公開の 範囲に 従います。「自分だけ」に していれば、誰にも 見えません。<br>'
-+'「じぶんのことば」は、何を 書いても かまいません。こちらで 直したり、言い換えたり しません。<br>'
-+'賞の 有無で 並べ替えたり、数えたり しません。<br>'
-+'ここに 書いたことは、<b>伴奏さがしには 出ません</b>。別のものです。</div>'};
-
-
-SC['録画を足す']=function(){return bk('曲')
-+'<div class="hd" style="padding-top:2px"><h2>録画を 足す</h2></div>'
-+'<div class="h3" style="margin-top:0">URL</div><input class="inp" value="https://youtu.be/xxxxxxxx">'
-+'<div class="usu" style="margin-top:-4px">YouTube ／ Vimeo の 限定公開の URL</div>'
-+'<div class="h3">日付</div><input class="inp" value="2026年10月11日">'
-+'<div class="h3">場所</div><input class="inp" value="千葉文化会館">'
-+'<div style="height:12px"></div><div class="btn">足す</div>'
-+'<div class="note">動画そのものは お預かりしません。URL だけです。<br>'
-+'限定公開に しておけば、URL を 知っている人だけが 見られます。</div>'};
-
-
-SC['採点']=function(a){
- var k=(a===undefined||a===null||!GYO[a])?0:a, g=GYO[k];
- var nara=GYO.map(function(x,n){return {x:x,n:n}}).filter(function(o){
-  return o.x.sa&&o.x.d===g.d&&o.x.t===g.t&&o.n!==k});
- return bk('行事')+'<div class="hd" style="padding-top:2px"><h2>'+g.n+'　採点</h2></div>'
- +'<div class="usu" style="margin-bottom:10px">'+g.d+'　'+g.t+'<br>'+g.p
- +'　／　'+g.co+' '+g.gr+'（'+g.nin+'人）</div>'
- +(nara.length?'<div class="warn"><b>同じ 日・同じ 時間に、ほかの 試験も あります。</b><br>'
-   +nara.map(function(o){return '<span class="pill sm" onclick="pop();push(\'採点\','+o.n+')">'
-    +o.x.p+'　'+o.x.co+' '+o.x.gr+'</span> '}).join('')
-   +'<br>採点は 行事ごとです。<b>混ざりません。</b></div>':'')
- +'<div class="h3">受験者　<span class="usu">名簿の 対象から 出しています</span></div>'
- +'<div class="box">'+JUKEN.slice(0,Math.min(g.nin,12)).map(function(nm,n){
-   return '<div class="li" onclick="push(\'点を入れる\','+k+')"><span>'
-   +(g.gr.split('・')[0])+' '+nm+'</span><s>'+(JYO[n]||'未入力')+' ›</s></div>'}).join('')+'</div>'
- +'<div class="h3">集計</div>'
- +'<div class="card"><div class="usu" style="margin-bottom:7px">まとめ方　合計（貴学の お決め）</div>'
- +[['山田','27 / 35'],['佐藤','30 / 35'],['鈴木','25 / 35'],['田中','—']].map(function(x){
-   return '<div class="li"><span>'+(g.gr.split('・')[0])+' '+x[0]+'</span><s>'+x[1]+'</s></div>'}).join('')
- +'<div class="btn g" style="margin-top:10px">点数の 一覧を 書き出す</div></div>'
- +'<div class="note">進み具合は、色では 出しません。「未入力／入力中／済」の 言葉で 出します。<br>'
- +'締切の 前は、ほかの 審査員の 点は 見えません。<br>'
- +'点数の 一覧です。<b>順位は 付けていません。</b><br>'
- +'書き出しから 90日で、こちらからは 消えます。貴学の 校務システムが 正本です。</div>'};
-
-
-SC['点を入れる']=function(a){
- var k=(a===undefined||a===null||!GYO[a])?0:a, g=GYO[k];
- var gr=g.gr.split('・')[0];
- return bk('採点')+'<div class="hd" style="padding-top:2px"><h2>'+gr+' 山田</h2></div>'
- +'<div class="usu" style="margin-bottom:12px">'+g.n+'　'+g.p+'<br>'
- +'型：実技試験（'+KOU.length+'項目・合計）</div>'
- +KOU.map(function(x,i){
-   return '<div class="h3" style="margin-top:14px">'+x[0]
-   +'　<span class="usu" style="display:inline">'+x[1]+'点満点</span></div>'
-   +'<div class="pills">'+Array.from({length:x[1]+1},function(_,n){
-     return '<span class="pill sm'+(n===[8,7,8,4][i]?' on':'')+'">'+n+'</span>'}).join('')+'</div>'}).join('')
- +'<div class="h3">講評</div>'
- +'<textarea class="ta" style="height:84px">渡りの ところで、息が 浅くなりました</textarea>'
- +'<div class="btn" style="margin-top:12px">入れる</div>'
- +'<div class="h3">ほかの 受験者</div><div class="box">'
- +[['佐藤','済'],['鈴木','入力中'],['田中','未入力']].map(function(x){
-   return '<div class="li"><span>'+gr+' '+x[0]+'</span><s>'+x[1]+' ›</s></div>'}).join('')+'</div>'
- +'<div class="note">点は <b>札で 選びます</b>。手で 打ちません。<br>'
- +'　（ホールの 暗がりで、細かい 数字を 打つのは 難しいからです）<br>'
- +'項目と 満点は、貴学が 決めた 型から 出ています。<br>'
- +'締切の 前は、ほかの 審査員の 点は 見えません。</div>'};
-
-
-SC['評価の型']=function(){
- return bk('設定')+'<div class="hd" style="padding-top:2px"><h2>評価の 型</h2></div>'
- +'<div class="warn">この 学校の 評価の 仕方を 決めます。<br>'
- +'<b>こちらからの 既定は ありません。</b>貴学が お決めください。</div>'
- +'<div class="h3" style="margin-top:0">後期 実技試験</div><div class="box">'
- +KOU.map(function(x,i){return '<div class="li" onclick="push(\'評価の項目\','+i+')"><span>'+x[0]
-   +'<div class="usu">'+x[1]+'点満点</div></span><s>なおす ›</s></div>'}).join('')
- +'<div class="li" style="color:var(--ink3)" onclick="push(\'評価の項目\',4)"><span>ことばの 明瞭さ'
- +'<div class="usu">使っていません</div></span><s>もどす ›</s></div></div>'
- +'<div class="btn g" onclick="push(\'評価の項目\',\'new\')">＋ 項目を 足す</div>'
- +'<div class="h3">まとめ方</div><div class="box">'
- +[['合計する',1],['平均する',0],['重みを つけて 合計する',0],['審査員ごとの 平均を 出す',0]].map(function(x){
-   return '<div class="li"><span>'+x[0]+'</span><s>'+(x[1]?'<b style="color:var(--midori)">✓ いま これです</b>':'これに する ›')+'</s></div>'}).join('')
- +'</div>'
- +'<div class="h3">ほかの 型</div><div class="box">'
- +'<div class="li"><span>前期 実技試験<div class="usu">3項目・合計</div></span><s>›</s></div>'
- +'<div class="li"><span>学内演奏会<div class="usu">2項目・平均</div></span><s>›</s></div></div>'
- +'<div class="btn g">＋ 型を 足す</div>'
- +'<div class="note">型は いくつでも 作れます。行事ごとに 選びます。<br>'
- +'項目を 押すと、なおす・使わない に する・消す が できます。<br>'
- +'　<b>消す ときは、何人ぶんの 点が 消えるかを その場で お見せします</b><br>'
- +'まとめ方を 変えても、入力済みの 点は 残ります。<br>'
- +'<b>順位は、どの まとめ方でも 出しません。</b></div>'};
-
-
-SC['評価の項目']=function(a){
- var IT=[['音程','10点満点',8],['表現','10点満点',8],['ことば','10点満点',6],
-   ['舞台','5点満点',0],['ことばの 明瞭さ','使っていません',3]];
- var add=(a==='new');
- var k=add?-1:((a===undefined||a===null||!IT[a])?0:a);
- var it=add?['','',0]:IT[k];
- var n=it[2], off=(!add&&it[1]==='使っていません');
- return bk('評価の 型')+'<div class="hd" style="padding-top:2px"><h2>'+(add?'項目を 足す':it[0])+'</h2></div>'
- +(add?'':'<div class="usu" style="margin-bottom:10px">'+it[1]+'　／　'
-   +(n?'<b>'+n+'人ぶんの 点が 入っています</b>':'まだ 誰も 入れていません')+'</div>')
- +'<div class="h3" style="margin-top:0">名前</div><input class="inp" value="'+(add?'':it[0])+'" placeholder="れい：音程">'
- +'<div class="h3">満点</div><input class="inp" value="'+(add?'10':(off?'10':it[1].replace('点満点','')))+'">'
- +'<div class="h3">きざみ</div><div class="pills">'
- +['1点','0.5点','整数のみ'].map(function(v,i){
-   return '<span class="pill sm'+(i===0?' on':'')+'">'+v+'</span>'}).join('')+'</div>'
- +'<div class="h3">審査員への 説明　<span class="usu" style="display:inline">任意</span></div>'
- +'<textarea class="ta" style="height:62px" placeholder="何を 見る 項目か。審査員の 画面に 出ます">'
- +(add?'':'音の 高さの 正確さ。渡りの ところを 含む')+'</textarea>'
- +'<div class="btn" style="margin-top:12px">'+(add?'足す':'なおす')+'</div>'
- +(add?'':'<div class="h3">この項目を 減らす</div>'
-   +(off
-     ?'<div class="card"><div style="font-size:14.5px;line-height:1.9">この項目は いま <b>使っていません</b>。'
-      +(n?n+'人ぶんの 点は 残っています。':'')+'</div>'
-      +'<div class="btn g" style="margin-top:10px">もどす</div>'
-      +'<div class="btn g">消す</div></div>'
-     :'<div class="box">'
-      +'<div class="li"><span>使わない に する<div class="usu">'
-      +(n?n+'人ぶんの 点は <b>残ります</b>。':'')+'集計に 入りません。あとで もどせます</div></span><s>›</s></div>'
-      +'<div class="li"><span>消す<div class="usu"'+(n?' style="color:var(--red)"':'')+'>'
-      +(n?'<b>'+n+'人ぶんの 点も 消えます</b>。もどせません':'点は 入っていないので、そのまま 消せます')
-      +'</div></span><s>›</s></div></div>')
-   +'<div class="note">どちらを 選んでも、<b>ほかの 項目の 点は 変わりません</b>。<br>'
-   +(n?'「消す」を 選ぶと、もう一度 お尋ねします。<br>':'')
-   +'「使わない」に した 項目は、型の 一覧に 薄く 残ります。</div>')
- +'<div class="note">きざみは、審査員が 入れられる 数の 単位です。<br>'
- +'満点を 変えても、<b>入力済みの 点は 残ります</b>。集計だけが 変わります。</div>'};
-
-
-
-/* ══ ★門下に 招く ── 裁定その83（2026-09-18）══
-   ★スマホ用。★顔合わせで ★手元の 画面を 見せます           */
-var AIKO = {code:'K7M2XQ4P', max:20, used:2, until:'10月31日'};
-
-SC['門下に招く']=function(){
- return bk('門下')+'<div class="hd" style="padding-top:2px"><h2>門下に 招く</h2></div>'
- +'<div class="usu" style="margin-bottom:12px">○○門下　／　高橋 のぞみ</div>'
-
- +'<div class="sh3" style="margin-top:0">① 合言葉を 見せる</div>'
- +'<div class="card" style="text-align:center;padding:20px 14px">'
- +'<div class="usu">この 8文字を 打つと、<b>この門下に</b> 入ります</div>'
- +'<div style="font-size:32px;letter-spacing:.2em;font-weight:700;'
- +'margin:12px 0 4px;font-variant-numeric:tabular-nums">'+AIKO.code+'</div>'
- +'<div style="width:140px;height:140px;margin:12px auto;background:#fff;'
- +'border:1px solid var(--line);border-radius:8px;display:flex;'
- +'align-items:center;justify-content:center;font-size:12.5px;color:var(--ink4)">QR</div>'
- +'<div class="usu">QR を 読むと、そのまま 登録に 進みます</div>'
- +'<div style="margin-top:12px;font-size:13.5px">'
- +'あと <b>'+(AIKO.max-AIKO.used)+'人</b>　／　'+AIKO.until+'まで</div>'
- +'<div class="btn g" style="margin-top:12px">作り直す</div></div>'
- +'<div class="note">顔合わせの ときに、<b>手元の 画面で 見せます</b>。<br>'
- +'QR が 読めない 端末が あるので、<b>文字も 出します</b>。<br>'
- +'人数に 達すると、<b>ひとりでに 閉じます</b>。<br>'
- +'打ち間違いは <b>ひとり 10回</b>まで。<b>その人ごとに 数えます</b>'
- +'（同じ WiFi でも 巻き込みません）。</div>'
-
- +'<div class="sh3">② 名簿から 招く</div>'
- +'<div class="usu" style="margin:-4px 0 8px">'
- +'顔合わせを 休んだ方、合言葉を 失くした方に</div>'
- +'<div class="box">'
- +[['中村 みな','2年 声楽','まだ'],
-   ['高橋 かなで','2年 声楽','招待中'],
-   ['小林 そら','1年 声楽','まだ'],
-   ['伊藤 ゆい','1年 声楽','入っています']].map(function(x){
-   var done=x[2]==='入っています', sent=x[2]==='招待中';
-   return '<div class="li"><span>'+x[0]+'<div class="usu">'+x[1]+'</div></span>'
-    +'<s>'+(done?'<span style="color:var(--ok)">入っています</span>'
-      :sent?'招待中':'<span style="color:var(--enji)">招く ›</span>')+'</s></div>'}).join('')
- +'</div>'
- +'<div class="note"><b>学校の 名簿に いる方だけ</b>が 出ます。<br>'
- +'名簿の 外を 探すことは できません。<br>'
- +'押すと、その方の 画面に <b>「招かれています」</b>と 出ます。<br>'
- +'<b>入るかどうかは、ご本人が 決めます。</b>'
- +'こちらから 入れることは できません。</div>'
-
- +'<div class="note"><b>学生が 門下を さがす 仕組みは ありません。</b><br>'
- +'　（さがせると、誰が どの先生に ついているかが 分かってしまうからです）<br>'
- +'入る 道は この 2つだけ ── <b>合言葉</b> か、<b>招かれる</b> か。<br>'
- +'どちらも、最後に <b>ご本人が 承知して はじめて</b> 入ります。</div>'};
-
-SC['招く']=function(){
- return bk('名簿')+'<div class="hd" style="padding-top:2px"><h2>招く</h2></div>'
- +'<div class="usu" style="margin-bottom:11px">メールで お送りします</div>'
- +'<div class="h3" style="margin-top:0">メールアドレス</div>'
- +'<textarea class="ta" style="height:104px" placeholder="mina@example.com&#10;kanade@example.com"></textarea>'
- +'<div class="usu" style="margin-top:-2px">改行で 何人でも</div>'
- +'<div class="h3">学年</div><div class="pills">'
- +ORG.gakunen.slice(0,6).map(function(v){return '<span class="pill sm">'+v+'</span>'}).join('')+'</div>'
- +'<div class="h3">学科・コース</div><div class="pills">'
- +MST.course.map(function(v){return '<span class="pill sm">'+v+'</span>'}).join('')+'</div>'
- +'<div class="usu" style="margin:-4px 0 11px">あとから ご本人が 直せます</div>'
- +'<div class="warn">招待中は、ご請求に 入りません。<br>'
- +'<b>同意は ご本人から</b> いただきます（契約では 代えられません）。<br>'
- +'18歳未満の方は、保護者の 同意も いただきます。</div>'
- +'<div class="btn" onclick="toast(\'招待を 送りました\');pop()">送る</div>'
- +'<div class="note"><b>ご本人が 承知するまで、この学校からは その方が 見えません。</b><br>'
- +'合言葉（8文字）でも 入れます。教室を こちらから 探すことは できません。</div>'};
-
-/* ══════ 採点（スマホの 運営モード・2026-09-16）══════ */
-var GYO=[
- {n:'実技試験',d:'9月14日（月）',t:'12:30〜17:00',p:'第1ホール',co:'声楽',gr:'3年',nin:12,sa:1,
-  ju:['高橋 のぞみ','斎藤 めぐみ','渡辺 たける']},
- {n:'実技試験',d:'9月14日（月）',t:'12:30〜17:00',p:'第2ホール',co:'ピアノ',gr:'3年',nin:10,sa:1,
-  ju:['中村 ゆか','高橋 のぞみ']},
- {n:'実技試験',d:'9月14日（月）',t:'12:30〜16:00',p:'第3練習室',co:'声楽',gr:'1年・2年',nin:24,sa:1,
-  ju:['斎藤 めぐみ']},
- {n:'学園祭',d:'10月5日（月）',t:'10:00〜',p:'全学',co:'全て',gr:'全学年',nin:216,sa:0,ju:[]},
- {n:'定期演奏会',d:'11月20日（金）',t:'18:00〜20:30',p:'大ホール',co:'声楽',gr:'3年・4年',nin:96,sa:0,ju:[]}];
-
-var KOU=[['音程',10],['表現',10],['ことば',10],['舞台',5]];
-var JUKEN=['山田','佐藤','鈴木','田中','伊藤','中村','小林','加藤','吉田','山本','松本','井上'];
-var JYO=['済','済','入力中','未入力','未入力','未入力','未入力','未入力','未入力','未入力','未入力','未入力'];
-
-
-var GYO=[
- {n:'実技試験',d:'9月14日（月）',t:'12:30〜17:00',p:'第1ホール',co:'声楽',gr:'3年',nin:12,sa:1,
-  ju:['高橋 のぞみ','斎藤 めぐみ','渡辺 たける']},
- {n:'実技試験',d:'9月14日（月）',t:'12:30〜17:00',p:'第2ホール',co:'ピアノ',gr:'3年',nin:10,sa:1,
-  ju:['中村 ゆか','高橋 のぞみ']},
- {n:'実技試験',d:'9月14日（月）',t:'12:30〜16:00',p:'第3練習室',co:'声楽',gr:'1年・2年',nin:24,sa:1,
-  ju:['斎藤 めぐみ']},
- {n:'学園祭',d:'10月5日（月）',t:'10:00〜',p:'全学',co:'全て',gr:'全学年',nin:216,sa:0,ju:[]},
- {n:'定期演奏会',d:'11月20日（金）',t:'18:00〜20:30',p:'大ホール',co:'声楽',gr:'3年・4年',nin:96,sa:0,ju:[]}];
-
-var KOU=[['音程',10],['表現',10],['ことば',10],['舞台',5]];
-var JUKEN=['山田','佐藤','鈴木','田中','伊藤','中村','小林','加藤','吉田','山本','松本','井上'];
-var JYO=['済','済','入力中','未入力','未入力','未入力','未入力','未入力','未入力','未入力','未入力','未入力'];
-
-
-var KOU=[['音程',10],['表現',10],['ことば',10],['舞台',5]];
-var JUKEN=['山田','佐藤','鈴木','田中','伊藤','中村','小林','加藤','吉田','山本','松本','井上'];
-var JYO=['済','済','入力中','未入力','未入力','未入力','未入力','未入力','未入力','未入力','未入力','未入力'];
-
-
-var JUKEN=['山田','佐藤','鈴木','田中','伊藤','中村','小林','加藤','吉田','山本','松本','井上'];
-var JYO=['済','済','入力中','未入力','未入力','未入力','未入力','未入力','未入力','未入力','未入力','未入力'];
-
-
-var JYO=['済','済','入力中','未入力','未入力','未入力','未入力','未入力','未入力','未入力','未入力','未入力'];
-
-
-function myGyo(){var me=S.dm&&S.dm.name?S.dm.name:'高橋 のぞみ';
- return GYO.map(function(g,i){return {g:g,i:i}}).filter(function(x){
-  return x.g.sa&&x.g.ju.indexOf(me)>=0})}
-
-
-function opSaitenBand(){
- var a=myGyo(); if(!a.length)return '';
- return '<div class="h3">あなたが 審査員の 試験　<span class="usu">'+a.length+'件</span></div>'
- +'<div class="box">'+a.map(function(x){
-  return '<div class="li" onclick="push(\'採点\','+x.i+')"><span>'+x.g.n
-  +'<div class="usu">'+x.g.d+'　'+x.g.p+'　／　'+x.g.co+' '+x.g.gr+'</div></span>'
-  +'<s>採点 ›</s></div>'}).join('')+'</div>'
- +(a.length>1?'<div class="usu" style="margin:-4px 0 10px">同じ 時間に 2つ 以上 ある ときは、'
-  +'どちらも ここに 出ます。掛け持ちの ためです。</div>':'')}
-
-
 SC['もっと']=function(){
  var role=S.dm.post;
  return bk('戻る')+'<div class="hd" style="padding-top:2px"><h2>もっと</h2></div>'
@@ -2267,24 +1641,6 @@ SC['もっと']=function(){
  +'<div class="li" onclick="push(\'書き出す\')"><span>書き出す（CSV・JSON）</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'同意\')"><span>同意を とりけす</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'退会\')"><span>退会する</span><s>›</s></div></div>'
- /* ★2026-09-15、「教室」の かたまりを 足しました（★裁定 ㋒・Opus）。
-    ★この行が 無いために、★先生の 側の 入口が 1つも 無く なって いました。
-      ★札は「レッスン」の 画面の 中に しか なく、
-        ★門の 中の 帯（TABS_V2_ORDER）に lesson が ありません。
-      ★「入口は ホームに 2つ 残る」と 書いて ありましたが、その 2つは
-        ★レッスンが 1件でも ある ときだけ 出ます（★無いことを 毎朝 知らせない）。
-      ★生徒0人 → レッスン0件 → 行が出ない → タブへ行けない → 招待できない。
-    ★同じ形を 生徒の 側で 1度 解いて います ──
-      「場所を 移しただけで、鶏と 卵は 解けて いなかった」。
-      ★前回も 答えは「もっとへ 移す」でした。
-    ★この 見本は 門の 外の 画面を 写した もので、あちらの 帯には lesson が あります。
-      ★だから ここに 無いのは 誤りでは ありません。
-      ★描かれて いない 状態を 埋めた だけ です（★変更では なく 補い）。
-    ★★アプリでは、is_admin か teacher_beta_access を 持つ 方にだけ 出します。
-      ★持って いない 方には 出しません。★押せない 札に しません。
-      ★この 見本には その 印が ないので、★いつも 出る 形で 描いて います。 */
- +'<div class="h3">教室</div><div class="box">'
- +'<div class="li" onclick="toast(\'この見本では 招待しません\')"><span>生徒を 招待する</span><s>›</s></div></div>'
  +(role&&role!=='なし'?'<div class="h3">学校</div><div class="box"><div class="li" onclick="S.mode=\'o\';S.otab=tabsFor()[0];S.stack=[];draw()">'
    +'<span>○○音楽大学 の 運営</span><s>'+role+' ›</s></div></div>':'')
  +'<div class="note">法律の 行き先を、この 1か所に 集めています。<br>退会を 隠しません。引き止めを 2回以上 出しません。<br>'
@@ -2337,13 +1693,12 @@ SC['書き出す']=function(){
    return '<div class="li"><span>'+v+'</span><s style="color:var(--midori)">✓</s></div>'}).join('')+'</div>'
  +'<div class="btn" style="margin-top:11px" onclick="toast(\'端末に 保存しました\')">書き出す</div>'
  +'<div class="wl">病気の 名前・尺度の 名前は、見出しにも 入れません。<br>見出しは、画面と 同じ ことばです（のどの調子／声の出来 …）。</div>'
- +'<div class="note">書き出しは いつでも 無料です。退会された あとも、お手元の ファイルは あなたの ものです。</div>'};
+ +'<div class="note">無料です。退会したあとでも、書き出した ファイルは あなたのものです。</div>'};
 SC['同意']=function(){
  return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>同意を とりけす</h2></div>'
  +'<div class="box">'
  +'<div class="li"><span>記録を 残すこと<br><span class="usu">2026年6月11日に 同意</span></span><div class="sw on"><i></i></div></div>'
- +'<div class="li"><span>学校の 名簿に 載ること<br><span class="usu">2026年6月14日に 同意</span></span><div class="sw on"><i></i></div></div>'
- +'</div>'
+ +'<div class="li"><span>学校の 名簿に 載ること<br><span class="usu">2026年6月14日に 同意</span></span><div class="sw on"><i></i></div></div></div>'
  +'<div class="wl">とりけしても、<b>これまでの 記録は 消えません</b>。消すのは 退会か、記録の 削除からです。</div>'
  +'<div class="note">同意は、契約では 代えられません。<b>ご本人から</b> いただきます。<br>18歳未満の方は、保護者の 同意も いただきます。</div>'};
 SC['退会']=function(){
@@ -2405,6 +1760,7 @@ function opHome(){
  +'<div class="k" onclick="goo(\'名簿\')"><div class="v">216</div><div class="l">名簿の 人数</div></div>'
  +'<div class="k" onclick="goo(\'名簿\')"><div class="v">9</div><div class="l">先生</div></div>'
  +'<div class="k" onclick="push(\'重なり\')"><div class="v" style="color:var(--yama)">'+KASANARI.length+'</div><div class="l">重なり（場所 '+kasaN('場所')+'）</div></div></div>'
+ +opSaitenBand()
  +'<div class="h3">きょうの 流れ</div><div class="box">'
  +[['9:00','声楽A','斎藤 めぐみ','第1教室'],['10:30','声楽B','渡辺 たける','第2教室'],['13:00','声楽A','斎藤 めぐみ','第1教室'],
    ['16:00','声楽C','高橋 のぞみ','第3練習室'],['17:30','アンサンブル','渡辺 たける','大ホール']].map(function(x){
@@ -2466,9 +1822,165 @@ function opMeibo(){
  +'<div class="li" style="padding:6px 0"><span>1人あたり</span><s style="font-size:13.5px;color:var(--ink)">'+Math.round(billYen()/billN())+'円</s></div>'
  +'<div class="li" style="padding:6px 0"><span>'+(PAY.cycle==='毎月'?'今月の':'1年ぶんの')+' ご請求</span><s style="font-size:15.5px;font-weight:700;color:var(--ink)">'+yen(billNow())+'円</s></div></div>'
  +'<div class="btn g" style="margin-top:9px" onclick="openSheet(\'maneku\')">＋ 招く</div>'
-  +'<div class="btn g" onclick="push(\'招く\')">＋ メールで 招く</div>'
+ +'<div class="btn g" onclick="push(\'招く\')">＋ メールで 招く</div>'
  +'<div class="note">表では なく カードに しました（iPhoneの 幅です）。合計は 下に 貼りつけます。<br>'
  +'休会・招待中は 数えません。先生・事務も 数えません。<br>生徒の 健康に関するものは、この画面に ありません。</div>'}
+
+SC['招く']=function(){
+ return bk('名簿')+'<div class="hd" style="padding-top:2px"><h2>招く</h2></div>'
+ +'<div class="usu" style="margin-bottom:11px">メールで お送りします</div>'
+ +'<div class="h3" style="margin-top:0">メールアドレス</div>'
+ +'<textarea class="ta" style="height:104px" placeholder="mina@example.com&#10;kanade@example.com"></textarea>'
+ +'<div class="usu" style="margin-top:-2px">改行で 何人でも</div>'
+ +'<div class="h3">学年</div><div class="pills">'
+ +ORG.gakunen.slice(0,6).map(function(v){return '<span class="pill sm">'+v+'</span>'}).join('')+'</div>'
+ +'<div class="h3">学科・コース</div><div class="pills">'
+ +MST.course.map(function(v){return '<span class="pill sm">'+v+'</span>'}).join('')+'</div>'
+ +'<div class="usu" style="margin:-4px 0 11px">あとから ご本人が 直せます</div>'
+ +'<div class="warn">招待中は、ご請求に 入りません。<br>'
+ +'<b>同意は ご本人から</b> いただきます（契約では 代えられません）。<br>'
+ +'18歳未満の方は、保護者の 同意も いただきます。</div>'
+ +'<div class="btn" onclick="toast(\'招待を 送りました\');pop()">送る</div>'
+ +'<div class="note"><b>ご本人が 承知するまで、この学校からは その方が 見えません。</b><br>'
+ +'合言葉（8文字）でも 入れます。教室を こちらから 探すことは できません。</div>'};
+
+/* ══════ 採点（スマホの 運営モード・2026-09-16）══════ */
+var GYO=[
+ {n:'実技試験',d:'9月14日（月）',t:'12:30〜17:00',p:'第1ホール',co:'声楽',gr:'3年',nin:12,sa:1,
+  ju:['高橋 のぞみ','斎藤 めぐみ','渡辺 たける']},
+ {n:'実技試験',d:'9月14日（月）',t:'12:30〜17:00',p:'第2ホール',co:'ピアノ',gr:'3年',nin:10,sa:1,
+  ju:['中村 ゆか','高橋 のぞみ']},
+ {n:'実技試験',d:'9月14日（月）',t:'12:30〜16:00',p:'第3練習室',co:'声楽',gr:'1年・2年',nin:24,sa:1,
+  ju:['斎藤 めぐみ']},
+ {n:'学園祭',d:'10月5日（月）',t:'10:00〜',p:'全学',co:'全て',gr:'全学年',nin:216,sa:0,ju:[]},
+ {n:'定期演奏会',d:'11月20日（金）',t:'18:00〜20:30',p:'大ホール',co:'声楽',gr:'3年・4年',nin:96,sa:0,ju:[]}];
+
+var KOU=[['音程',10],['表現',10],['ことば',10],['舞台',5]];
+var JUKEN=['山田','佐藤','鈴木','田中','伊藤','中村','小林','加藤','吉田','山本','松本','井上'];
+var JYO=['済','済','入力中','未入力','未入力','未入力','未入力','未入力','未入力','未入力','未入力','未入力'];
+
+function myGyo(){var me=S.dm&&S.dm.name?S.dm.name:'高橋 のぞみ';
+ return GYO.map(function(g,i){return {g:g,i:i}}).filter(function(x){
+  return x.g.sa&&x.g.ju.indexOf(me)>=0})}
+
+function opSaitenBand(){
+ var a=myGyo(); if(!a.length)return '';
+ return '<div class="h3">あなたが 審査員の 試験　<span class="usu">'+a.length+'件</span></div>'
+ +'<div class="box">'+a.map(function(x){
+  return '<div class="li" onclick="push(\'採点\','+x.i+')"><span>'+x.g.n
+  +'<div class="usu">'+x.g.d+'　'+x.g.p+'　／　'+x.g.co+' '+x.g.gr+'</div></span>'
+  +'<s>採点 ›</s></div>'}).join('')+'</div>'
+ +(a.length>1?'<div class="usu" style="margin:-4px 0 10px">同じ 時間に 2つ 以上 ある ときは、'
+  +'どちらも ここに 出ます。掛け持ちの ためです。</div>':'')}
+
+SC['採点']=function(a){
+ var k=(a===undefined||a===null||!GYO[a])?0:a, g=GYO[k];
+ var nara=GYO.map(function(x,n){return {x:x,n:n}}).filter(function(o){
+  return o.x.sa&&o.x.d===g.d&&o.x.t===g.t&&o.n!==k});
+ return bk('行事')+'<div class="hd" style="padding-top:2px"><h2>'+g.n+'　採点</h2></div>'
+ +'<div class="usu" style="margin-bottom:10px">'+g.d+'　'+g.t+'<br>'+g.p
+ +'　／　'+g.co+' '+g.gr+'（'+g.nin+'人）</div>'
+ +(nara.length?'<div class="warn"><b>同じ 日・同じ 時間に、ほかの 試験も あります。</b><br>'
+   +nara.map(function(o){return '<span class="pill sm" onclick="pop();push(\'採点\','+o.n+')">'
+    +o.x.p+'　'+o.x.co+' '+o.x.gr+'</span> '}).join('')
+   +'<br>採点は 行事ごとです。<b>混ざりません。</b></div>':'')
+ +'<div class="h3">受験者　<span class="usu">名簿の 対象から 出しています</span></div>'
+ +'<div class="box">'+JUKEN.slice(0,Math.min(g.nin,12)).map(function(nm,n){
+   return '<div class="li" onclick="push(\'点を入れる\','+k+')"><span>'
+   +(g.gr.split('・')[0])+' '+nm+'</span><s>'+(JYO[n]||'未入力')+' ›</s></div>'}).join('')+'</div>'
+ +'<div class="h3">集計</div>'
+ +'<div class="card"><div class="usu" style="margin-bottom:7px">まとめ方　合計（貴学の お決め）</div>'
+ +[['山田','27 / 35'],['佐藤','30 / 35'],['鈴木','25 / 35'],['田中','—']].map(function(x){
+   return '<div class="li"><span>'+(g.gr.split('・')[0])+' '+x[0]+'</span><s>'+x[1]+'</s></div>'}).join('')
+ +'<div class="btn g" style="margin-top:10px">点数の 一覧を 書き出す</div></div>'
+ +'<div class="note">進み具合は、色では 出しません。「未入力／入力中／済」の 言葉で 出します。<br>'
+ +'締切の 前は、ほかの 審査員の 点は 見えません。<br>'
+ +'点数の 一覧です。<b>順位は 付けていません。</b><br>'
+ +'書き出しから 90日で、こちらからは 消えます。貴学の 校務システムが 正本です。</div>'};
+
+SC['点を入れる']=function(a){
+ var k=(a===undefined||a===null||!GYO[a])?0:a, g=GYO[k];
+ var gr=g.gr.split('・')[0];
+ return bk('採点')+'<div class="hd" style="padding-top:2px"><h2>'+gr+' 山田</h2></div>'
+ +'<div class="usu" style="margin-bottom:12px">'+g.n+'　'+g.p+'<br>'
+ +'型：実技試験（'+KOU.length+'項目・合計）</div>'
+ +KOU.map(function(x,i){
+   return '<div class="h3" style="margin-top:14px">'+x[0]
+   +'　<span class="usu" style="display:inline">'+x[1]+'点満点</span></div>'
+   +'<div class="pills">'+Array.from({length:x[1]+1},function(_,n){
+     return '<span class="pill sm'+(n===[8,7,8,4][i]?' on':'')+'">'+n+'</span>'}).join('')+'</div>'}).join('')
+ +'<div class="h3">講評</div>'
+ +'<textarea class="ta" style="height:84px">渡りの ところで、息が 浅くなりました</textarea>'
+ +'<div class="btn" style="margin-top:12px">入れる</div>'
+ +'<div class="h3">ほかの 受験者</div><div class="box">'
+ +[['佐藤','済'],['鈴木','入力中'],['田中','未入力']].map(function(x){
+   return '<div class="li"><span>'+gr+' '+x[0]+'</span><s>'+x[1]+' ›</s></div>'}).join('')+'</div>'
+ +'<div class="note">点は <b>札で 選びます</b>。手で 打ちません。<br>'
+ +'　（ホールの 暗がりで、細かい 数字を 打つのは 難しいからです）<br>'
+ +'項目と 満点は、貴学が 決めた 型から 出ています。<br>'
+ +'締切の 前は、ほかの 審査員の 点は 見えません。</div>'};
+
+SC['評価の型']=function(){
+ return bk('設定')+'<div class="hd" style="padding-top:2px"><h2>評価の 型</h2></div>'
+ +'<div class="warn">この 学校の 評価の 仕方を 決めます。<br>'
+ +'<b>こちらからの 既定は ありません。</b>貴学が お決めください。</div>'
+ +'<div class="h3" style="margin-top:0">後期 実技試験</div><div class="box">'
+ +KOU.map(function(x,i){return '<div class="li" onclick="push(\'評価の項目\','+i+')"><span>'+x[0]
+   +'<div class="usu">'+x[1]+'点満点</div></span><s>なおす ›</s></div>'}).join('')
+ +'<div class="li" style="color:var(--ink3)" onclick="push(\'評価の項目\',4)"><span>ことばの 明瞭さ'
+ +'<div class="usu">使っていません</div></span><s>もどす ›</s></div></div>'
+ +'<div class="btn g" onclick="push(\'評価の項目\',\'new\')">＋ 項目を 足す</div>'
+ +'<div class="h3">まとめ方</div><div class="box">'
+ +[['合計する',1],['平均する',0],['重みを つけて 合計する',0],['審査員ごとの 平均を 出す',0]].map(function(x){
+   return '<div class="li"><span>'+x[0]+'</span><s>'+(x[1]?'<b style="color:var(--midori)">✓ いま これです</b>':'これに する ›')+'</s></div>'}).join('')
+ +'</div>'
+ +'<div class="h3">ほかの 型</div><div class="box">'
+ +'<div class="li"><span>前期 実技試験<div class="usu">3項目・合計</div></span><s>›</s></div>'
+ +'<div class="li"><span>学内演奏会<div class="usu">2項目・平均</div></span><s>›</s></div></div>'
+ +'<div class="btn g">＋ 型を 足す</div>'
+ +'<div class="note">型は いくつでも 作れます。行事ごとに 選びます。<br>'
+ +'項目を 押すと、なおす・使わない に する・消す が できます。<br>'
+ +'　<b>消す ときは、何人ぶんの 点が 消えるかを その場で お見せします</b><br>'
+ +'まとめ方を 変えても、入力済みの 点は 残ります。<br>'
+ +'<b>順位は、どの まとめ方でも 出しません。</b></div>'};
+
+SC['評価の項目']=function(a){
+ var IT=[['音程','10点満点',8],['表現','10点満点',8],['ことば','10点満点',6],
+   ['舞台','5点満点',0],['ことばの 明瞭さ','使っていません',3]];
+ var add=(a==='new');
+ var k=add?-1:((a===undefined||a===null||!IT[a])?0:a);
+ var it=add?['','',0]:IT[k];
+ var n=it[2], off=(!add&&it[1]==='使っていません');
+ return bk('評価の 型')+'<div class="hd" style="padding-top:2px"><h2>'+(add?'項目を 足す':it[0])+'</h2></div>'
+ +(add?'':'<div class="usu" style="margin-bottom:10px">'+it[1]+'　／　'
+   +(n?'<b>'+n+'人ぶんの 点が 入っています</b>':'まだ 誰も 入れていません')+'</div>')
+ +'<div class="h3" style="margin-top:0">名前</div><input class="inp" value="'+(add?'':it[0])+'" placeholder="れい：音程">'
+ +'<div class="h3">満点</div><input class="inp" value="'+(add?'10':(off?'10':it[1].replace('点満点','')))+'">'
+ +'<div class="h3">きざみ</div><div class="pills">'
+ +['1点','0.5点','整数のみ'].map(function(v,i){
+   return '<span class="pill sm'+(i===0?' on':'')+'">'+v+'</span>'}).join('')+'</div>'
+ +'<div class="h3">審査員への 説明　<span class="usu" style="display:inline">任意</span></div>'
+ +'<textarea class="ta" style="height:62px" placeholder="何を 見る 項目か。審査員の 画面に 出ます">'
+ +(add?'':'音の 高さの 正確さ。渡りの ところを 含む')+'</textarea>'
+ +'<div class="btn" style="margin-top:12px">'+(add?'足す':'なおす')+'</div>'
+ +(add?'':'<div class="h3">この項目を 減らす</div>'
+   +(off
+     ?'<div class="card"><div style="font-size:14.5px;line-height:1.9">この項目は いま <b>使っていません</b>。'
+      +(n?n+'人ぶんの 点は 残っています。':'')+'</div>'
+      +'<div class="btn g" style="margin-top:10px">もどす</div>'
+      +'<div class="btn g">消す</div></div>'
+     :'<div class="box">'
+      +'<div class="li"><span>使わない に する<div class="usu">'
+      +(n?n+'人ぶんの 点は <b>残ります</b>。':'')+'集計に 入りません。あとで もどせます</div></span><s>›</s></div>'
+      +'<div class="li"><span>消す<div class="usu"'+(n?' style="color:var(--red)"':'')+'>'
+      +(n?'<b>'+n+'人ぶんの 点も 消えます</b>。もどせません':'点は 入っていないので、そのまま 消せます')
+      +'</div></span><s>›</s></div></div>')
+   +'<div class="note">どちらを 選んでも、<b>ほかの 項目の 点は 変わりません</b>。<br>'
+   +(n?'「消す」を 選ぶと、もう一度 お尋ねします。<br>':'')
+   +'「使わない」に した 項目は、型の 一覧に 薄く 残ります。</div>')
+ +'<div class="note">きざみは、審査員が 入れられる 数の 単位です。<br>'
+ +'満点を 変えても、<b>入力済みの 点は 残ります</b>。集計だけが 変わります。</div>'};
+
 function opGyoji(){
  return '<div class="hd"><h2>行事</h2><div class="gear" onclick="push(\'行事を出す\')">＋</div></div>'
  +'<div class="usu" style="margin:-2px 0 10px">日と 時間と 場所と 対象を 知らせます　／　出欠は 集めません</div>'
@@ -2476,6 +1988,10 @@ function opGyoji(){
    ['11月20日（金）','定期演奏会','18:00〜20:30　大ホール','96']].map(function(x){
    return '<div class="rep" onclick="push(\'行事を出す\',1)"><div><div class="t" style="font-size:14.5px">'+x[1]+'</div>'
    +'<div class="s">'+x[0]+'　'+x[2]+'</div></div><div class="r">'+x[3]+'人に<br>届きます</div></div>'}).join('')
+ +'<div class="h3">採点の ある 行事</div><div class="box">'
+ +GYO.map(function(g,i){return g.sa?'<div class="li" onclick="push(\'採点\','+i+')"><span>'
+   +g.n+'<div class="usu">'+g.d+'　'+g.p+'　／　'+g.co+' '+g.gr+'</div></span><s>採点 ›</s></div>':''}).join('')
+ +'</div>'
  +'<div class="note"><b>出欠を 集めません。</b>出席の 提出も、その 一覧も ありません。<br>'
  +'　（出欠は レッスンの 場で 先生が つけます。行事で 二重に 集めません）<br>'
  +'出席率（％）を 出しません。体調も 理由も 集めません。<br>取り下げても、静かに 1行 残ります。</div>'}
@@ -2551,7 +2067,8 @@ function opSettei(){
   +'<div class="li" onclick="push(\'組織\',\'gakunen\')"><span>学年</span><s>'+ORG.gakunen.length+'つ ›　足す・消す</s></div>'
   +'<div class="li" onclick="push(\'組織\',\'bunya\')"><span>事務の 分野</span><s>'+ORG.bunya.length+'つ ›</s></div></div>':'';
  var saiten=can('master')?'<div class="h3">採点</div><div class="box">'
-  +'<div class="li" onclick="push(\'評価の型\')"><span>評価の 型<div class="usu">項目と まとめ方</div></span><s>›</s></div></div>':'';
+  +'<div class="li" onclick="push(\'評価の型\')"><span>評価の 型<div class="usu">項目と まとめ方</div></span><s>›</s></div></div>'
+  +'<div class="usu" style="margin:-4px 0 4px">項目も まとめ方も、<b>貴学が お決めください</b>。こちらからの 既定は ありません</div>':'';
  var yakuwari=(can('post')||can('master'))?'<div class="h3">役職</div><div class="box">'
   +'<div class="li" onclick="push(\'役職の一覧\')"><span>役職と、できること</span><s>'+POSTS.length+'つ ›</s></div>'
   +'<div class="li" onclick="push(\'ひとの一覧\')"><span>ひとと 役職（'+PEOPLE.length+'人）</span><s>絞って さがす ›</s></div></div>'
@@ -3086,7 +2603,7 @@ SC['出欠つけ']=function(a){
    +'<div style="font-size:14.5px;margin-bottom:8px;color:var(--enji)" onclick="shuPick(\''+esc(nm)+'\')">'+nm+' ›'
    +(v?'':' <span class="tag" style="background:var(--warn)33;color:#8C6115">まだ</span>')+'</div>'
    +'<div class="two">'+['出席','休み','休講'].map(function(x){
-     return '<div class="btn g sm" style="'+(v===x?'border:2px solid var(--enji-bg);color:var(--enji);font-weight:700':'')+'" onclick="S.shu[\''+esc(K)+'\']=\''+x+'\';draw()">'+x+'</div>'}).join('')+'</div></div>'}).join('')
+     return '<div class="btn g sm" style="'+(v===x?'border:2px solid var(--enji);color:var(--enji);font-weight:700':'')+'" onclick="S.shu[\''+esc(K)+'\']=\''+x+'\';draw()">'+x+'</div>'}).join('')+'</div></div>'}).join('')
  +'<div class="btn" style="margin-top:11px" onclick="'+(yet?'toast(\'まだ '+'\'+'+yet+'+\'人 残っています\')':'toast(\'出席を つけました\');pop()')+'">つけ終わる</div>'
  +(grp?others(null):'')
  +'<div class="note"><b>お名前を 押すと、その方 ひとりの 画面に なります。</b>（1人ずつ つけたい とき）<br>'
@@ -3107,12 +2624,12 @@ function setZai(i,v){
  var m=MEI[i],old=m[3];if(old===v)return;m[3]=v;
  draw();toast(m[0]+' を '+v+' にしました。数える人数は '+zaisekiN()+'人 になりました')}
 function billN(){return zaisekiN()}
-/* 料金＝いちばん安いもの。下限 9,800円（★2026-09-13 改定。前は 12,800円） */
+/* 料金＝いちばん安いもの。下限 12,800円 */
 function billPlans(){var n=billN();return [[n+'人 × 400円',n*400],[n+'人 × 350円',n*350],['300人 × 250円',75000]]}
-function billYen(){var v=Math.min.apply(null,billPlans().map(function(x){return x[1]}));return Math.max(9800,v)}
+function billYen(){var v=Math.min.apply(null,billPlans().map(function(x){return x[1]}));return Math.max(12800,v)}
 function billWl(){var y=billYen();
  return billPlans().map(function(x){return (x[1]===y?'<b>':'')+x[0]+'　＝ '+yen(x[1])+'円'+(x[1]===y?'　←　いちばん 安いもの</b>':'')}).join('<br>')
- +'<br>下限 9,800円（下回りません）'}
+ +'<br>下限 12,800円（下回りません）'}
 function zaisekiN(){return MEI.filter(function(m){return m[3]==='在籍'}).length}
 SC['その人']=function(i){var m=MEI[i];
  return bk('名簿')+'<div class="hd" style="padding-top:2px"><h2>'+m[0]+'</h2><span class="role">'+m[3]+'</span></div>'
@@ -3581,8 +3098,8 @@ SC['学ぶ']=function(){
    +(S.open===i?'<div class="a">'+c[1].map(function(t){
      return '<div class="li" style="padding:10px 0" onclick="push(\'記事\',\''+esc(t)+'\')"><span>'+(READ[t]?'<span style="color:var(--midori)">✓</span> ':'')+t+'</span><s>›</s></div>'}).join('')+'</div>':'')
    +'</div>'}).join('')
-  +'<div class="sh3">もっと 深く</div><div class="box">'
- +'<div class="li" onclick="push(\'もっと深く\')"><span>発声・からだ・健康の 15本<div class="usu">声楽の ことばで 書いています</div></span><s>›</s></div></div>'
+ +'<div class="sh3">もっと 深く</div><div class="box">'
+ +'<div class="li" onclick="push(\'もっと深く\')"><span>発声・からだ・健康の 15本<span class="usu">声楽の ことばで 書いています</span></span><s>›</s></div></div>'
  +'<div class="note">1記事 800〜1,500字。冒頭の 3行で 結論。図は 1枚まで。<br>'
  +'その 仕事の ことばで 書きます（声楽の方に「発話」、アナウンサーの方に「パッサッジョ」と 言いません）。<br>'
  +'「疑い／リスク／早期発見／予防」の 語を 使いません。出典は 記事の 末に 置きます。<br>'
@@ -3604,6 +3121,353 @@ SH['manabuSagasu']=function(){return '<div class="sht">ことばで さがす</d
  +'<div class="pills" style="margin-top:9px">'+['逆流','睡眠','湿度','パッサッジョ','支え','受診'].map(function(v){return '<span class="pill sm">'+v+'</span>'}).join('')+'</div>'
  +'<div class="wl">学術用語の 正式名は、この「学ぶ」の 記事の中だけに 置きます（画面には 出しません）。</div>'+shBtm()};
 
+
+/* ══════ 未決機能（2026-09-16 裁定 その70）══════ */
+
+/* ── ポートフォリオ ── */
+SC['経歴']=function(){return bk('レパートリー')
++'<div class="hd" style="padding-top:2px"><h2>経歴</h2></div>'
++'<div class="warn">ポートフォリオに 載せる ものです。書かなくても、録画だけで 成り立ちます。</div>'
++'<div class="h3" style="margin-top:0">宣材写真</div>'
++'<div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:11px">'
++'<div style="width:96px;height:128px;background:var(--band2);border:1px solid var(--line);'
++'border-radius:8px;display:flex;align-items:center;justify-content:center;'
++'font-size:12.5px;color:var(--ink3);flex:none">写真</div>'
++'<div style="flex:1"><span class="btn g" style="margin:0">えらぶ</span>'
++'<div class="usu" style="margin-top:7px">1枚だけです。<br>撮った場所の 情報は、こちらで 消します。</div></div></div>'
++'<div class="h3">お名前</div><input class="inp" value="坂本 響">'
++'<div class="usu" style="margin-top:-4px">日本語でも、ローマ字でも。書いた ままに 出ます</div>'
++'<div class="h3">声種・楽器</div><input class="inp" value="テノール">'
++'<div class="h3">じぶんのことば</div>'
++'<textarea class="ta" style="height:132px">イタリア歌曲と ドイツ・リートを 中心に 勉強しています。\n\nいまは 冬の旅の 全曲に 取り組んでいます。ひとつの 曲を 長く 持つことで 見えてくるものを 大事に したいと 思っています。</textarea>'
++'<div class="usu">400字まで。改行できます</div>'
++'<div class="h3">学んだところ</div>'
++'<div class="box">'
++'<div class="li"><span>○○音楽大学 声楽科<div class="usu">2020 – 2024</div></span><s>›</s></div>'
++'<div class="li"><span>△△音楽院<div class="usu">2024 – </div></span><s>›</s></div></div>'
++'<div class="btn g">＋ 足す</div>'
++'<div class="h3">賞・コンクール</div>'
++'<div class="box"><div class="li"><span>○○声楽コンクール 第2位<div class="usu">2025</div></span><s>›</s></div></div>'
++'<div class="btn g">＋ 足す</div>'
++'<div class="h3">師事</div>'
++'<div class="box"><div class="li"><span>高橋 のぞみ</span><s>›</s></div></div>'
++'<div class="btn g">＋ 足す</div>'
++'<div class="note">ここに 書いたことは、公開の 範囲に 従います。「自分だけ」に していれば、誰にも 見えません。<br>'
++'「じぶんのことば」は、何を 書いても かまいません。こちらで 直したり、言い換えたり しません。<br>'
++'賞の 有無で 並べ替えたり、数えたり しません。<br>'
++'ここに 書いたことは、<b>伴奏さがしには 出ません</b>。別のものです。</div>'};
+
+SC['録画を足す']=function(){return bk('曲')
++'<div class="hd" style="padding-top:2px"><h2>録画を 足す</h2></div>'
++'<div class="h3" style="margin-top:0">URL</div><input class="inp" value="https://youtu.be/xxxxxxxx">'
++'<div class="usu" style="margin-top:-4px">YouTube ／ Vimeo の 限定公開の URL</div>'
++'<div class="h3">日付</div><input class="inp" value="2026年10月11日">'
++'<div class="h3">場所</div><input class="inp" value="千葉文化会館">'
++'<div style="height:12px"></div><div class="btn">足す</div>'
++'<div class="note">動画そのものは お預かりしません。URL だけです。<br>'
++'限定公開に しておけば、URL を 知っている人だけが 見られます。</div>'};
+
+SC['公開の範囲']=function(){return bk('経歴')
++'<div class="hd" style="padding-top:2px"><h2>だれが 見られますか</h2></div>'
++'<div class="box">'
++pick('自分だけ',1)+pick('同じ学校の 在籍者だけ',0)+pick('URLを 知っている人だけ',0)+'</div>'
++'<div class="h3">URLを 知っている人だけ の とき</div>'
++'<div class="card"><div style="font-size:13px;color:var(--ink2);word-break:break-all">https://woolsong.app/p/7fk2m</div>'
++'<div class="btn g" style="margin-top:11px">コピーする</div>'
++'<div style="width:112px;height:112px;background:#fff;border:1px solid var(--line);'
++'border-radius:6px;display:flex;align-items:center;justify-content:center;'
++'font-size:12.5px;color:var(--ink3);margin:11px 0">QR</div>'
++'<div class="usu">紙に 刷るとき用です。白い 背景で 出します。</div></div>'
++'<div class="h3">紙に する</div><div class="box">'
++'<div class="li" onclick="push(\'紙のポートフォリオ\')"><span>紙で どう 見えるか'
++'<div class="usu">A4・1枚</div></span><s>›</s></div>'
++'<div class="li"><span>PDFで 書き出す<div class="usu">お手元に 残ります</div></span><s>›</s></div></div>'
++'<div class="note">はじめは「自分だけ」です。<br>'
++'18歳未満の方には、「URLを 知っている人だけ」は 出ません。<br>'
++'見た目を 選ぶ 機能は、いまは ありません。ひとつの 決まった 見た目で 出します。</div>'};
+
+SC['公開ページ']=function(){return bk('公開の範囲')
++'<div class="hd" style="padding-top:2px"><h2 style="font-size:14.5px;color:var(--ink3)">'
++'アプリの 外で、こう 見えます</h2></div>'
++'<div class="card" style="padding:20px 16px">'
++'<div style="display:flex;gap:13px;margin-bottom:16px">'
++'<div style="width:78px;height:104px;background:var(--band2);border-radius:6px;flex:none;'
++'display:flex;align-items:center;justify-content:center;font-size:12.5px;color:var(--ink3)">写真</div>'
++'<div><div style="font-size:19px;letter-spacing:.03em">坂本 響</div>'
++'<div class="usu">テノール</div></div></div>'
++'<div style="font-size:13.5px;line-height:2;color:var(--ink2);margin-bottom:18px">'
++'イタリア歌曲と ドイツ・リートを 中心に 勉強しています。<br><br>'
++'いまは 冬の旅の 全曲に 取り組んでいます。ひとつの 曲を 長く 持つことで 見えてくるものを 大事に したいと 思っています。</div>'
++pgrp('学んだところ',[['○○音楽大学 声楽科','2020–2024'],['△△音楽院','2024–']])
++pgrp('賞・コンクール',[['○○声楽コンクール 第2位','2025']])
++pgrp('師事',[['高橋 のぞみ','']])
++pgrp('演奏',[['Schubert ── 冬の旅 第1曲','2026.10.11'],
+  ['Schubert ── 冬の旅 第5曲','2026.07.20'],['Strauss ── Zueignung','2026.08.30']])
++'<div style="border-top:1px solid var(--line2);padding-top:11px;margin-top:6px">'
++'<span class="usu">このページを 通報する</span></div></div>'
++'<div class="note">アプリの 外の ページです。ログインは 要りません。<br>'
++'書いた ことばの まま 出ます。日本語でも、ローマ字でも。<br>'
++'通報の 口を 1つ 置いています。窓口では ありません。</div>'};
+
+function pgrp(t,a){return '<div style="margin-bottom:18px">'
++'<div style="font-size:12.5px;letter-spacing:.14em;color:var(--ink3);'
++'border-bottom:1px solid var(--line2);padding-bottom:5px;margin-bottom:4px">'+t+'</div>'
++a.map(function(x){return '<div style="display:flex;justify-content:space-between;'
++'align-items:baseline;padding:7px 0;font-size:14.5px">'
++'<span>'+x[0]+'</span><span class="usu">'+x[1]+'</span></div>'}).join('')+'</div>'}
+
+function pick(t,on){return '<div class="li"><span>'
++'<span style="display:inline-block;width:15px;height:15px;border-radius:50%;'
++'border:1.5px solid '+(on?'var(--enji)':'var(--line)')+';'
++(on?'background:var(--enji);box-shadow:inset 0 0 0 3px var(--card);':'')
++'vertical-align:-2px;margin-right:9px"></span>'+t+'</span></div>'}
+
+/* ── さがす（伴奏など）── */
+SC['伴奏をさがす']=function(){return bk('レパートリー')
++'<div class="hd" style="padding-top:2px"><h2>さがす</h2></div>'
++'<div class="pills"><span class="pill on">ぜんぶ</span>'
++'<span class="pill">伴奏者</span><span class="pill">歌い手</span>'
++'<span class="pill">楽器奏者</span></div>'
++'<div class="sh3">出ている 募集</div>'
++'<div class="box">'
++[['ピアノ　レッスン','10月中に 3回ほど　／　曲目は これから'],
+  ['ピアノ　本番・演奏会','11月　1回　／　冬の旅（全曲）'],
+  ['チェンバロ　録音','時期は 相談　／　曲目は これから'],
+  ['歌い手　コンクール','12月　／　二重唱']].map(function(x){
+ return '<div class="li" onclick="push(\'応募する\')"><span>'+x[0]
+ +'<div class="usu">'+x[1]+'</div></span><s>›</s></div>'}).join('')+'</div>'
++'<div class="sh3">自分が 出した 募集</div><div class="box">'
++'<div class="li" onclick="push(\'応募を選ぶ\')"><span>ピアノ　レッスン'
++'<div class="usu">10月中に 3回ほど　／　あと 24日</div></span><s>応募 3件 ›</s></div></div>'
++'<div class="btn g" onclick="push(\'募集を出す\')">＋ 自分も 募集を 出す</div>'
++'<div class="btn g" onclick="push(\'応募した募集\')">応募した 募集を 見る</div>'
++'<div class="note">同じ 学校・教室の 中だけです。<br>'
++'出している 方の お名前は、決まるまで 出ません。<br>'
++'こちらから 人を さがすことは できません。<br>'
++'新しい順に 並べています。おすすめ順には しません。</div>'};
+
+SC['募集を出す']=function(){return bk('伴奏をさがす')
++'<div class="hd" style="padding-top:2px"><h2>募集を 出す</h2></div>'
++'<div class="sh3" style="margin-top:0">だれを さがしますか</div>'
++'<div class="pills"><span class="pill on">伴奏者</span><span class="pill">歌い手</span>'
++'<span class="pill">楽器奏者</span><span class="pill">その他</span></div>'
++'<div class="usu" style="margin:-6px 0 11px">「その他」を 選ぶと、ご自分で 書けます</div>'
++'<div class="sh3">楽器・パート</div><input class="inp" value="ピアノ">'
++'<div class="pills" style="margin-top:7px">'
++['ピアノ','チェンバロ','オルガン','ギター','ヴァイオリン','フルート',
+  'ソプラノ','アルト','テノール','バス'].map(function(v){
+ return '<span class="pill sm">'+v+'</span>'}).join('')+'</div>'
++'<div class="usu" style="margin:-6px 0 11px">札は 打つ 手間を 省くためです。ご自分で 書いて かまいません</div>'
++'<div class="sh3">何のために</div>'
++'<div class="box">'
++pick('レッスン',1)+pick('本番・演奏会',0)+pick('試験',0)
++pick('コンクール',0)+pick('録音',0)+pick('決めていない',0)+'</div>'
++'<div class="sh3">希望の 時期</div><input class="inp" value="10月中">'
++'<div class="sh3">回数</div><input class="inp" value="3回ほど">'
++'<div class="sh3">曲目　<span class="usu" style="display:inline">任意</span></div>'
++'<input class="inp" placeholder="決まっていなければ、空のままで">'
++'<div class="sh3">版　<span class="usu" style="display:inline">任意</span></div>'
++'<input class="inp" placeholder="IMSLP などの URL、または 版の 名前">'
++'<div style="height:12px"></div><div class="btn">出す</div>'
++'<div class="note">曲が 決まっていなくても 出せます。<br>'
++'楽器・パートは ご自分で 書けます。札に ないものでも。<br>'
++'楽譜そのものは お預かりしません。<br>'
++'出してから 30日で、自動的に 終わります。</div>'};
+
+SC['応募する']=function(){return bk('伴奏をさがす')
++'<div class="hd" style="padding-top:2px"><h2>この募集に 応募します</h2></div>'
++'<div class="card"><div style="font-size:15.5px">ピアノ　レッスン</div>'
++'<div class="usu" style="margin-top:6px">10月中に 3回ほど<br>曲目は これから</div></div>'
++'<div class="btn">応募する</div><div class="btn g">やめる</div>'
++'<div class="note">日にちの 相談は、決まってからです。<br>'
++'ここで 書き添えることは ありません。<br>'
++'応募したことは、ほかの 応募者には 見えません。</div>'};
+
+SC['応募を選ぶ']=function(){return bk('伴奏をさがす')
++'<div class="hd" style="padding-top:2px"><h2>応募が 3件 あります</h2></div>'
++'<div class="box">'
++[['応募者 A','9月16日'],['応募者 B','9月16日'],['応募者 C','9月15日']].map(function(x){
+ return '<div class="li" onclick="push(\'応募者の詳細\')"><span>'+x[0]
+ +'<div class="usu">'+x[1]+'</div></span><s>見る ›</s></div>'}).join('')+'</div>'
++'<div class="btn g">この募集を 終わりにする</div>'
++'<div class="note">押すと、その方の ことが 見られます。決めるのは、見たあとです。<br>'
++'応募の 順に 並べています。</div>'};
+
+SC['応募者の詳細']=function(){return bk('応募を選ぶ')
++'<div class="hd" style="padding-top:2px"><h2>応募者 B</h2></div>'
++'<div class="box"><div class="li"><span>楽器・パート</span><s>ピアノ</s></div></div>'
++'<div class="sh3">合う 空きコマ</div>'
++'<div class="box">'
++[['10月15日（水）3限','9:00-10:30'],['10月17日（金）2限','13:00-14:30'],
+  ['10月20日（月）1限','9:00-10:30']].map(function(x){
+ return '<div class="li"><span>'+x[0]+'<div class="usu">'+x[1]+'</div></span></div>'}).join('')+'</div>'
++'<div class="btn" onclick="push(\'成立後\')">この方に 決める</div>'
++'<div class="note">お名前は、決めたあとに 見えます。<br>'
++'門下・学年は 出しません。決めるのに 要らないからです。<br>'
++'空いている コマだけを 出しています。授業は 出ません。<br>'
++'決めると、ほかの 応募は 閉じます。</div>'};
+
+SC['成立後']=function(){return bk('伴奏をさがす')
++'<div class="hd" style="padding-top:2px"><h2>山田 花子 さん</h2></div>'
++'<div class="box"><div class="li"><span>楽器・パート</span><s>ピアノ</s></div>'
++'<div class="li"><span>連絡先</span><s>Instagram @hanako_p</s></div></div>'
++'<div class="sh3">合う 空きコマ</div>'
++'<div class="box">'
++[['10月15日（水）3限','9:00-10:30'],['10月17日（金）2限','13:00-14:30']].map(function(x){
+ return '<div class="li"><span>'+x[0]+'<div class="usu">'+x[1]+'</div></span><s>この枠で 誘う ›</s></div>'}).join('')+'</div>'
++'<div class="btn g">やめる</div><div class="btn g">通報</div>'
++'<div class="note">誘えるのは 3回までです。同時に 1件だけ。<br>'
++'場所は 決めません。会う ところは おふたりで。<br>'
++'90日で 自動的に 閉じます。</div>'};
+
+SC['応募した募集']=function(){return bk('伴奏をさがす')
++'<div class="hd" style="padding-top:2px"><h2>応募した 募集</h2></div>'
++'<div class="sh3" style="margin-top:0">いま</div>'
++'<div class="box"><div class="li"><span>チェンバロ　録音'
++'<div class="usu">応募しています</div></span><s>›</s></div></div>'
++'<div class="sh3">終わったもの</div>'
++'<div class="box">'
++'<div class="li" style="color:var(--ink3)"><span>ピアノ　レッスン'
++'<div class="usu">この募集は 終わりました</div></span></div>'
++'<div class="li" style="color:var(--ink3)"><span>ピアノ　本番・演奏会'
++'<div class="usu">期限が 過ぎました</div></span></div></div>'
++'<div class="note">終わった 理由は 書きません。ほかの方に 決まったのか、'
++'取り下げられたのかは 分かりません。<br>'
++'お知らせは 送りません。開いたときに 見えます。<br>'
++'90日で、この一覧からも 消えます。</div>'};
+
+/* ── 分析の拡張 ── */
+SC['しらべていること']=function(){return bk('もっと')
++'<div class="hd" style="padding-top:2px"><h2>しらべている こと</h2></div>'
++'<div class="warn">くらす ことと、声の ことを 組にします。<br>'
++'組を 作るのは あなたです。こちらから おすすめは しません。</div>'
++'<div class="sh3" style="margin-top:0">組 1</div>'
++'<div class="box"><div class="li"><span>眠った 時間</span><s>かえる ›</s></div>'
++'<div class="li"><span>声の 調子</span><s>かえる ›</s></div></div>'
++'<div class="sh3">いつの 声と くらべますか</div>'
++'<div class="box">'
++pick('同じ日',1)+pick('翌日',0)+pick('2日後',0)+pick('3日後',0)+'</div>'
++'<div class="btn g">＋ 組を 足す</div>'
++'<div class="usu">無料では 1組までです</div>'
++'<div class="note">たくさん 選ぶほど、はっきり 言えるまでの 日数が 延びます。<br>'
++'書いていない 日は、組に しません。うめません。<br>'
++'機械が 組を 選ぶことは ありません。</div>'};
+
+SC['本番のふりかえり']=function(){return bk('ふりかえる')
++'<div class="hd" style="padding-top:2px"><h2>本番の ふりかえり</h2></div>'
++'<div class="usu" style="margin-bottom:11px">10月11日の 本番</div>'
++'<div class="sh3" style="margin-top:0">前の 7日</div>'
++'<div class="box">'
++['7日前　眠り 7時間20分','6日前　眠り 6時間50分','5日前　眠り 7時間40分',
+  '4日前　書いていません','3日前　眠り 6時間10分','2日前　眠り 7時間00分',
+  '1日前　眠り 7時間30分'].map(function(t){
+ return '<div class="li"><span style="font-size:14.5px">'+t+'</span></div>'}).join('')+'</div>'
++'<div class="note">よい わるいは 言いません。並べるだけです。<br>'
++'2回目の 本番から、前回と 重ねて 見られます。<br>'
++'<b>本番の 前の日と 当日は、何も 出しません。</b><br>'
++'ご自分で 登録された 本番だけを 使います。学校の 行事からは 引きません。</div>'};
+
+/* ── 学ぶ：もっと深く ── */
+SC['もっと深く']=function(){return bk('学ぶ')
++'<div class="hd" style="padding-top:2px"><h2>もっと 深く</h2></div>'
++'<div class="warn">ここから先は、声楽・ミュージカルの ことばで 書いています。<br>'
++'ほかの お仕事の方にも 役立つところが ありますが、用語は 声楽の ものです。</div>'
++dgrp('技術',['ベルカント発声法の 全体像','声区と パッサッジョ ── 正解表は 存在しない',
+  'appoggio ── 支えの 作り方と 検算','母音修正（aggiustamento）',
+  "singer's formant と squillo",'SOVT ── ウォームアップ'])
++dgrp('からだ',['歌手のための 体幹','姿勢ワーク','呼吸筋トレーニング','栄養・加湿・睡眠'])
++dgrp('健康',['vocal dose','喉頭外筋の 緊張と MCT','逆流（LPR / GERD）の 長期管理'])
++dgrp('ことば',['アジリタ・装飾・カデンツァ','用語集'])
++'<div class="note">読んだ印は、ご自分の 端末にだけ 残ります。<br>'
++'<b>誰が 読んだかは 記録しません。どこまで 読んだかも 数えません。</b><br>'
++'読まなくても、アプリは 使えます。</div>'};
+
+function dgrp(t,a){return '<div class="sh3">'+t+'</div><div class="box">'
++a.map(function(x){return '<div class="li" onclick="push(\'深い記事\')"><span>'
++x+'</span><s>›</s></div>'}).join('')+'</div>'}
+
+SC['深い記事']=function(){return bk('もっと 深く')
++'<div class="hd" style="padding-top:2px"><h2 style="font-size:15.5px;line-height:1.6">'
++'声区と パッサッジョ<br>── 正解表は 存在しない</h2></div>'
++'<div class="usu" style="margin-bottom:11px">更新　2026年9月16日　／　読むのに 約9分</div>'
++'<div class="card" style="border-color:var(--enji)"><div style="font-size:14.5px;line-height:1.95">'
++'意外に 思われるかもしれませんが、これは 本記事が 慎重を 期しているのでは ありません。'
++'<b>表を 作った 当人たちが、そう 書いています。</b></div></div>'
++'<div class="sh3">3つの 限界</div>'
++'<div class="box">'
++[['1　渡り目は、測る 母音に よって 変わる','査読'],
+  ['2　渡り目は 鍵盤の 上に 乗らない','教本'],
+  ['3　同じ 数値が、違う 声種を 指すことが ある','教本']].map(function(x){
+ return '<div class="li"><span style="font-size:14.5px">'+x[0]
+ +'<span style="display:inline-block;font-size:12.5px;color:var(--ink3);'
+ +'border:1px solid var(--line);border-radius:3px;padding:0 5px;margin-left:6px">'
+ +x[1]+'</span></span></div>'}).join('')+'</div>'
++'<div class="warn">これは、教本が 示す 目安であって、<b>あなたの 声の 測定値では ありません</b>。</div>'
++'<div class="h3">メモ</div><textarea class="ta" placeholder="読みながら、思ったことを"></textarea>'
++'<div class="note">［査読］査読論文・メタ分析に 基づく<br>'
++'［教本］標準的な 声楽教本・音声科学書に 基づく<br>'
++'［伝統］特定の 教師・流派の 主張（検証は 限定的）<br>'
++'<b>しるしに 色は 使いません。</b><br>'
++'出典は 記事の 末に まとめて 置きます。</div>'};
+
+
+SC['紙のポートフォリオ']=function(){return bk('公開の範囲')
++'<div class="hd" style="padding-top:2px"><h2 style="font-size:14.5px;color:var(--ink3)">紙で どう 見えるか</h2></div>'
++'<div class="usu" style="margin-bottom:11px">A4・1枚。オーディションの 書類に そのまま 使えます</div>'
++'<div style="background:#fff;border:1px solid var(--line);border-radius:3px;'
++'box-shadow:0 2px 10px rgba(90,72,48,.12);margin-bottom:11px;padding:26px 24px 20px">'
+
+/* 表題 ── 右上に細い罫、名前は大きく、肩書きは小さく離す */
++'<div style="display:flex;justify-content:space-between;align-items:flex-start;'
++'border-bottom:1.5px solid #261913;padding-bottom:13px;margin-bottom:0">'
++'<div><div style="font-size:21px;letter-spacing:.14em;color:#261913;line-height:1.3">坂本 響</div>'
++'<div style="font-size:12px;letter-spacing:.3em;color:var(--ink4);margin-top:5px">SAKAMOTO KYO</div></div>'
++'<div style="text-align:right;padding-top:3px">'
++'<div style="font-size:12.5px;letter-spacing:.18em;color:#5A4C40">TENORE</div>'
++'<div style="font-size:12px;color:var(--ink4);margin-top:4px">テノール</div></div></div>'
+
+/* 写真と 前書き ── 2段組 */
++'<div style="display:flex;gap:18px;padding:16px 0 18px;border-bottom:.5px solid #E4DAC4">'
++'<div style="width:66px;height:88px;background:var(--band2);flex:none;display:flex;'
++'align-items:center;justify-content:center;font-size:12px;color:var(--ink4)">写真</div>'
++'<div style="font-size:12px;line-height:2.1;color:#4A3F35;padding-top:1px">'
++'イタリア歌曲と ドイツ・リートを 中心に 勉強しています。'
++'いまは 冬の旅の 全曲に 取り組んでいます。'
++'ひとつの 曲を 長く 持つことで 見えてくるものを 大事に したいと 思っています。</div></div>'
+
+/* 本体 ── 左に見出し、右に中身の 2段組 */
++pprint('学　歴',[['2020–2024','○○音楽大学 声楽科'],['2024–','△△音楽院']])
++pprint('師　事',[['','高橋 のぞみ']])
++pprint('受　賞',[['2025','○○声楽コンクール　第2位']])
++pprint('演　奏',[['2026.10.11','Schubert　冬の旅 第1曲'],
+  ['2026.07.20','Schubert　冬の旅 第5曲'],['2026.08.30','Strauss　Zueignung']])
+
+/* 脚 */
++'<div style="border-top:.5px solid #E4DAC4;margin-top:16px;padding-top:8px;'
++'display:flex;justify-content:space-between;font-size:12px;color:var(--ink4);'
++'letter-spacing:.08em"><span>woolsong.app/p/7fk2m</span>'
++'<span>2026年9月16日 現在</span></div>'
++'</div>'
++'<div class="btn">PDFで 書き出す</div>'
++'<div class="btn g">印刷する</div>'
++'<div class="note">紙のときは、QRの 代わりに URL を 小さく 入れます。<br>'
++'公開の 範囲が「自分だけ」でも、<b>紙には 出せます</b>。お手元の ものだからです。<br>'
++'<b>書き出した 日</b>を 右下に 入れます。古い 紙が 出回らないように。<br>'
++'項目が 空の ときは、その 節ごと 出しません。空欄を 見せません。</div>'};
+
+function pprint(t,a){return '<div style="padding:13px 0;border-bottom:.5px solid #F0E9DA">'
++'<div style="display:flex;gap:16px">'
++'<div style="width:46px;flex:none;font-size:12px;letter-spacing:.2em;color:var(--ink4);'
++'padding-top:2px">'+t+'</div>'
++'<div style="flex:1">'
++a.map(function(x){return '<div style="display:flex;gap:12px;font-size:12px;'
++'line-height:2;color:#3B322A">'
++(x[0]?'<span style="width:58px;flex:none;color:var(--ink4);font-variant-numeric:tabular-nums">'
++x[0]+'</span>':'<span style="width:58px;flex:none"></span>')
++'<span>'+x[1]+'</span></div>'}).join('')
++'</div></div></div>'}
+
+
 /* ── 運営：行事を 出す ── */
 SC['行事を出す']=function(edit){
  S.gy=S.gy||{name:'',d:'9月14日（月）',h1:12,m1:30,h2:17,m2:0,end:1,pl:'第1ホール',
@@ -3620,7 +3484,7 @@ SC['行事を出す']=function(edit){
  +t2(S.gy.h1)+':'+t2(S.gy.m1)+' 〜 '+(S.gy.end?t2(S.gy.h2)+':'+t2(S.gy.m2):'未定')+'</div></div>'
  +'<div class="usu" style="margin:-4px 0 5px">はじまり</div>'+timeWheel('gy1',t2(S.gy.h1)+':'+t2(S.gy.m1),'gy1')
  +'<div class="usu" style="margin:6px 0 5px">終わり　'
- +'<span class="pill sm" style="float:right;padding:2px 9px;'+(S.gy.end?'':'background:var(--enji-bg);color:#fff;border-color:var(--enji-bg)')+'" onclick="S.gy.end=S.gy.end?0:1;draw()">未定に する</span></div>'
+ +'<span class="pill sm" style="float:right;padding:2px 9px;'+(S.gy.end?'':'background:var(--enji);color:#fff;border-color:var(--enji)')+'" onclick="S.gy.end=S.gy.end?0:1;draw()">未定に する</span></div>'
  +(S.gy.end?timeWheel('gy2',t2(S.gy.h2)+':'+t2(S.gy.m2),'gy2'):'<div class="usu">終わりを 決めていません</div>')
  +'<div class="fl">場所　<span class="back" style="float:right;padding:0" onclick="push(\'場所を決める\')">足す・消す ›</span></div>'
  +'<div class="pills">'+MST.place.map(function(v){
@@ -3702,6 +3566,7 @@ function opHomeT(){
  +'<div class="usu" style="margin-top:4px">出ている方の <b>空きコマ</b>から、日程を 組めます</div>'
  +'<div class="btn" style="margin-top:10px;background:var(--midori)" onclick="push(\'日程を組む\')">レッスンの 日程を 組む</div>'
  +'<div class="btn g" style="margin-top:7px" onclick="push(\'まだの人\')">まだ 出していない方を 見る</div></div>'
+ +opSaitenBand()
  +'<div class="h3">きょうの レッスン</div><div class="box">'
  +todayOf(ME).map(function(y){var x=y[0],i=y[1];
    var nm=x.gr?x.l:(x.one||x.l),sub=x.gr?'<b>'+x.gr.length+'人</b>（みんなの レッスン）　'+x.pl:(gradeOf(x.one)||'個人レッスン')+'　'+x.pl;
@@ -3738,7 +3603,6 @@ function opMonka(){
    +'<div class="s">'+m[1]+(k?'　／　'+keyLab(k).replace('　',''):'')+'</div></div>'
    +'<div class="r">'+(m[3]?'<span style="color:var(--midori)">✓ 時間割</span>':'<span style="color:var(--yama)">まだ</span>')+'</div></div>'}).join('')
  +'<div class="btn g" onclick="push(\'代表を決める\')">代表を 決める</div>'
- +'<div class="btn g" onclick="push(\'門下に招く\')">＋ 門下に 招く</div>'
  +'<div class="note">見えるのは <b>担当の生徒だけ</b>。学校全部の 名簿は 見えません。<br>'
  +'見えるのは 学年と、<b>空いている 時間だけ</b>。授業の 名前・教室・備考・体調は 見えません。<br>'
  +'<b>「本番が 近い」の 印は 出しません。</b><br>担当を 外れると、その時点から 見えなくなります。</div>'}
@@ -3926,7 +3790,7 @@ function miniCal(){
    var inw=(d>=wa&&d<=wb),tdy=(d.getFullYear()===2026&&d.getMonth()===8&&d.getDate()===9);
    var off=(d.getMonth()!==mo),diff=Math.round((d-wkStart(0))/86400000);
    var st='text-align:center;font-size:13px;padding:5px 0;border-radius:6px;'
-    +(tdy?'background:var(--enji-bg);color:#fff;font-weight:700':(inw?'background:var(--pick)':''))
+    +(tdy?'background:var(--enji);color:#fff;font-weight:700':(inw?'background:var(--pick)':''))
     +(off?';color:var(--ink4)':'');
    return '<div style="'+st+'" onclick="setWK('+Math.floor(diff/7)+')">'+d.getDate()+'</div>'}).join('')
  +'</div><div class="usu" style="margin-top:6px">日を押すと その週へ</div></div>'}
@@ -4568,13 +4432,13 @@ SC['招かれている']=function(){
 SC['合言葉で入る']=function(){
  S.code=S.code||'';
  return bk('通っている ところ')+'<div class="hd" style="padding-top:2px"><h2>合言葉で 入る</h2></div>'
- +'<div class="warn">教室から もらった <b>8文字</b>を 打ってください。<br>教室の 一覧を さがすことは できません。</div>'
+ +'<div class="warn">教室から もらった <b>8文字</b>を 打ってください。<br>教室の 一覧を さがすことは できません。<br>★何度か 間違えると、しばらく お試しいただけなく なります。</div>'
  +'<input class="inp" style="text-align:center;font-size:22px;letter-spacing:.3em" maxlength="6" placeholder="ABC123" value="'+S.code+'" oninput="S.code=this.value.toUpperCase();draw()">'
  +(S.code.length>=6?'<div class="card" style="margin-top:11px;border-color:var(--enji);background:var(--card2)">'
    +'<div style="font-size:14.5px;font-weight:700">◇◇ボイストレーニング</div>'
    +'<div class="usu" style="margin-top:4px">音楽教室　／　中村 あきこ 先生</div>'
    +'<div class="btn" style="margin-top:10px" onclick="push(\'招かれている\')">見えるものを 確かめる</div></div>'
-  :'<div class="usu" style="margin-top:9px">8文字 打つと、どこの 教室かが 出ます。</div>')
+  :'<div class="usu" style="margin-top:9px">8文字 打つと、どこの 教室かが 出ます。<br>★合っていないときは、理由を お伝えしません。「入れませんでした」とだけ 出ます。</div>')
  +'<div class="note">合言葉だけでは 入りません。<b>見えるものを 見てから、あなたが 承知します。</b><br>'
  +'合言葉は 教室が いつでも 作り直せます（出回ったときの ため）。<br>'
  +'合言葉から、その教室の 名前 以外は 何も 分かりません。</div>'};
@@ -4685,7 +4549,8 @@ var SPEC_KEEP=[
  ['在籍を 変えた記録','消せない。何から 何へ'],
  ['支払い方法・あて先を 変えた記録','消せない'],
  ['書いたもの（記録・ノート）','通信の失敗で 消さない。★これが 一番重い決まり'],
- ['手に入れたもの（羊の台帳）','1つも 取り上げない。移行は 増える方向にしか 動かさない']];
+ ['手に入れたもの（羊の台帳）','1つも 取り上げない。移行は 増える方向にしか 動かさない'],
+ ['修正の記録','消せない。日付・原因・直した内容・確かめた方法。★直した本人も 消せない']];
 var SPEC_SRV=[
  ['画面で 隠すだけでは 足りない','同じ見張りを サーバにも 置く'],
  ['ご請求　見る(bill) と 払う(bill_pay)','別の権限として サーバでも 分ける'],
@@ -4820,6 +4685,7 @@ function draw(){
   var t2=S.stack.length?topOf():null;
   $('#bd').innerHTML=t2?(SC[t2.s]?SC[t2.s](t2.a):'—'):m[S.tab]();
   $('#bd').classList.toggle('full',S.tab==='ひつじ'&&!S.stack.length&&!(S.sheet&&S.sheet.n==='したく'));
+  $('#bd').dataset.sc=S.stack.length?'sub':S.tab;
   $('#tabs').innerHTML=TABS_P.map(function(x){
    return '<div class="tb '+(x===S.tab&&!S.stack.length?'on':'')+'" onclick="go(\''+x+'\')"><i>'+icoP(x)+'</i>'+x+'</div>'}).join('');
  }
@@ -4895,35 +4761,4 @@ $('#rl').onclick=function(){location.reload()};
 $('#za').onclick=function(){zCycle()};
 $('#th').onclick=function(){thCycle();$('#th').textContent=thIcon()};
 draw();
-</script>
-<script>
-/* ── iPhone 版：見出しを 畳み、デモの 切替を 引き出しに 入れます ── */
-(function(){
- document.querySelector('h1').classList.add('mk-hide');
- document.querySelector('p.lead').classList.add('mk-hide');
- var btn=document.createElement('div');btn.id='mkbtn';btn.textContent='⚙';
- var pan=document.createElement('div');pan.id='mkpanel';
- var inn=document.createElement('div');inn.id='mkinner';
- var ttl=document.createElement('div');ttl.id='mktitle';
- ttl.innerHTML='デモの 切替と、この画面の 説明<br>★ふだんは 見えない状態を、ここから 出せます';
- var cls=document.createElement('div');cls.id='mkclose';cls.textContent='とじる';
- var demo=document.getElementById('demo'),lg=document.getElementById('lg');
- inn.appendChild(ttl);inn.appendChild(demo);inn.appendChild(lg);inn.appendChild(cls);
- pan.appendChild(inn);document.body.appendChild(btn);document.body.appendChild(pan);
- btn.onclick=function(){pan.classList.add('on')};
- cls.onclick=function(){pan.classList.remove('on')};
- pan.onclick=function(e){if(e.target===pan)pan.classList.remove('on')};
- /* 時計を 本物に */
- function clock(){var d=new Date();
-  var s=document.querySelector('.st span');
-  if(s)s.textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0')}
- clock();setInterval(clock,20000);
- /* 端末の 高さが 変わったとき（アドレスバーの 出入り）に 描き直す */
- var t;window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(function(){
-  if(typeof draw==='function')draw()},200)});
- /* 2本指ピンチ以外の ダブルタップ拡大を 抑える */
- var last=0;document.addEventListener('touchend',function(e){
-  var n=Date.now();if(n-last<300)e.preventDefault();last=n},{passive:false});
-})();
-</script>
-</body></html>
+</script></body></html>

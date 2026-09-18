@@ -1826,6 +1826,57 @@ function opMeibo(){
  +'<div class="note">表では なく カードに しました（iPhoneの 幅です）。合計は 下に 貼りつけます。<br>'
  +'休会・招待中は 数えません。先生・事務も 数えません。<br>生徒の 健康に関するものは、この画面に ありません。</div>'}
 
+
+/* ══ ★門下に 招く ── 裁定その83（2026-09-18）══
+   ★スマホ用。★顔合わせで ★手元の 画面を 見せます           */
+var AIKO = {code:'K7M2XQ4P', max:20, used:2, until:'10月31日'};
+
+SC['門下に招く']=function(){
+ return bk('門下')+'<div class="hd" style="padding-top:2px"><h2>門下に 招く</h2></div>'
+ +'<div class="usu" style="margin-bottom:12px">○○門下　／　高橋 のぞみ</div>'
+
+ +'<div class="sh3" style="margin-top:0">① 合言葉を 見せる</div>'
+ +'<div class="card" style="text-align:center;padding:20px 14px">'
+ +'<div class="usu">この 8文字を 打つと、<b>この門下に</b> 入ります</div>'
+ +'<div style="font-size:32px;letter-spacing:.2em;font-weight:700;'
+ +'margin:12px 0 4px;font-variant-numeric:tabular-nums">'+AIKO.code+'</div>'
+ +'<div style="width:140px;height:140px;margin:12px auto;background:#fff;'
+ +'border:1px solid var(--line);border-radius:8px;display:flex;'
+ +'align-items:center;justify-content:center;font-size:12.5px;color:var(--ink4)">QR</div>'
+ +'<div class="usu">QR を 読むと、そのまま 登録に 進みます</div>'
+ +'<div style="margin-top:12px;font-size:13.5px">'
+ +'あと <b>'+(AIKO.max-AIKO.used)+'人</b>　／　'+AIKO.until+'まで</div>'
+ +'<div class="btn g" style="margin-top:12px">作り直す</div></div>'
+ +'<div class="note">顔合わせの ときに、<b>手元の 画面で 見せます</b>。<br>'
+ +'QR が 読めない 端末が あるので、<b>文字も 出します</b>。<br>'
+ +'人数に 達すると、<b>ひとりでに 閉じます</b>。<br>'
+ +'打ち間違いは <b>ひとり 10回</b>まで。<b>その人ごとに 数えます</b>'
+ +'（同じ WiFi でも 巻き込みません）。</div>'
+
+ +'<div class="sh3">② 名簿から 招く</div>'
+ +'<div class="usu" style="margin:-4px 0 8px">'
+ +'顔合わせを 休んだ方、合言葉を 失くした方に</div>'
+ +'<div class="box">'
+ +[['中村 みな','2年 声楽','まだ'],
+   ['高橋 かなで','2年 声楽','招待中'],
+   ['小林 そら','1年 声楽','まだ'],
+   ['伊藤 ゆい','1年 声楽','入っています']].map(function(x){
+   var done=x[2]==='入っています', sent=x[2]==='招待中';
+   return '<div class="li"><span>'+x[0]+'<div class="usu">'+x[1]+'</div></span>'
+    +'<s>'+(done?'<span style="color:var(--ok)">入っています</span>'
+      :sent?'招待中':'<span style="color:var(--enji)">招く ›</span>')+'</s></div>'}).join('')
+ +'</div>'
+ +'<div class="note"><b>学校の 名簿に いる方だけ</b>が 出ます。<br>'
+ +'名簿の 外を 探すことは できません。<br>'
+ +'押すと、その方の 画面に <b>「招かれています」</b>と 出ます。<br>'
+ +'<b>入るかどうかは、ご本人が 決めます。</b>'
+ +'こちらから 入れることは できません。</div>'
+
+ +'<div class="note"><b>学生が 門下を さがす 仕組みは ありません。</b><br>'
+ +'　（さがせると、誰が どの先生に ついているかが 分かってしまうからです）<br>'
+ +'入る 道は この 2つだけ ── <b>合言葉</b> か、<b>招かれる</b> か。<br>'
+ +'どちらも、最後に <b>ご本人が 承知して はじめて</b> 入ります。</div>'};
+
 SC['招く']=function(){
  return bk('名簿')+'<div class="hd" style="padding-top:2px"><h2>招く</h2></div>'
  +'<div class="usu" style="margin-bottom:11px">メールで お送りします</div>'
@@ -3603,6 +3654,7 @@ function opMonka(){
    +'<div class="s">'+m[1]+(k?'　／　'+keyLab(k).replace('　',''):'')+'</div></div>'
    +'<div class="r">'+(m[3]?'<span style="color:var(--midori)">✓ 時間割</span>':'<span style="color:var(--yama)">まだ</span>')+'</div></div>'}).join('')
  +'<div class="btn g" onclick="push(\'代表を決める\')">代表を 決める</div>'
+ +'<div class="btn g" onclick="push(\'門下に招く\')">＋ 門下に 招く</div>'
  +'<div class="note">見えるのは <b>担当の生徒だけ</b>。学校全部の 名簿は 見えません。<br>'
  +'見えるのは 学年と、<b>空いている 時間だけ</b>。授業の 名前・教室・備考・体調は 見えません。<br>'
  +'<b>「本番が 近い」の 印は 出しません。</b><br>担当を 外れると、その時点から 見えなくなります。</div>'}
