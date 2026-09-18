@@ -5,6 +5,8 @@ import { C } from "@/lib/tokens";
 //   ★★字の 大きさも 字間も 余白も、★あちらの 決め です。
 //   ★★ここで `<p style={small}>` を 書くと、★2つめの 決めに なります。
 import { H3 } from "@/components/UiV2";
+import { HEALTH_WALL_ITEMS, HEALTH_WALL_CARD_HEAD, HEALTH_WALL_CARD_VALUE }
+  from "@/lib/opsShell";
 import { permHeadLine } from "@/lib/opsPerms";
 import {
   rosterCount, monthlyFee, perHead, yen, billPlans,
@@ -206,7 +208,33 @@ export default function OpsSettings({ members, staffLines, postName, perms }) {
         </div>
       ) : null}
 
-      {/* ★★★この画面から 見られないもの ── ★上の 線に 移しました
+      {/* ★★★戻しました（★2026-09-18・夕）。
+          ★★★私の 報告が 誤って いました。
+            ★★「見本＝上の 1行 ／ 実装＝下の カード」と、★二者択一の ように
+              ★申し上げました。★実際は **見本は 両方 持って います**。
+            ★★その 報告を もとに「最上部へ（移す）」と 裁定され、
+              ★★私は 下の カードを 消しました。★見本に ある ものを 消しました。
+            ★★見本を 下半分まで 撮り直して、★分かりました。
+          ★★2つは 役目が ちがいます ──
+            ★★上の 帯 …… ★約束の 宣言。★どの 帯でも 出ます。
+            ★★この 箱 …… ★何が 無いかの 内訳。★4つ、★1つずつ。
+          ★★中身は lib/opsShell.js が 持ちます。★ここでは 決めません。 */}
+      <H3>{HEALTH_WALL_CARD_HEAD}</H3>
+      <div style={card}>
+        {HEALTH_WALL_ITEMS.map((x, i) => (
+          <div key={x} style={{ ...row, ...(i === 0 ? { borderTop: "none" } : null) }}>
+            {/* ★★薄い 字に します（★見本 `style="color:#A0917F"`）。
+                ★★★見本の 色を そのまま 使いません。
+                  ★★#A0917F は 紙の 上で 4.5 に 届きません。
+                  ★★読みやすさが 勝ちます（★2026-09-13・坂本さんの お決め）。
+                ★★token の `inkSoft` に します。★薄さの 役目は 果たします。 */}
+            <span style={{ color: C.inkSoft }}>{x}</span>
+            <span style={{ color: C.inkSoft }}>{HEALTH_WALL_CARD_VALUE}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* ★★（もとの 注）★この画面から 見られないもの ── ★上の 線にも 出ます
           （★2026-09-18・裁定 ⑨）。
           ★★ここ（いちばん 下）に カードで 3行 並べて いました。
             ★★稟議で 見る 学長・事務長が、★そこまで 下りません。
