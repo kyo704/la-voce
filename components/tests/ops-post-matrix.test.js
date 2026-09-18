@@ -99,5 +99,32 @@ function ok(cond, 名) {
   ok(/<OpsPostMatrix/.test(画面), "表が ある");
   ok(/posts\.map\(\(p\) =>/.test(画面), "札も 残って いる");
 
+  // ------------------------------------------------------------------------
+  // ★六 ★役職の 中身（★P_postDetail・2026-09-18）
+  // ------------------------------------------------------------------------
+  const 生 = readRaw("components", "OpsPosts.jsx");
+  const コード = readCode("components", "OpsPosts.jsx");
+
+  // ★★★名前を 直す ── ★サーバには ずっと ありました。★画面から 呼べません でした。
+  //   ★★書いた のに、★どこからも 呼ばれて いない（★N-1 の 決まり）。
+  ok(/action: "rename"/.test(コード), "画面から 名前を 直せる");
+  const api = readCode("app", "api", "org", "posts", "route.js");
+  ok(/action === "rename"/.test(api), "サーバに 受け口が ある");
+  // ★★持たない 方には 入れる口を 出さない（★§8⑤）。
+  ok(/mayGrant\(myPerms, "post"\) \? \(/.test(コード),
+    "「ひとの 役職を 変える」を 持つ 方だけに 出す");
+
+  // ★★題の 下の 1行に、★できことの 列挙が ある（★見本の `sub`）。
+  ok(/permLine\(open\.perms\)/.test(コード), "題の 下に できことを 出して いる");
+
+  // ★★★短い 形と 長い 形は 別の もの です。★名を 分けて あります。
+  ok(/permLineShort/.test(コード), "短い 形は 別の 名（写しでは ありません）");
+  ok(/わけ|別の もの/.test(生.slice(生.indexOf("permLineShort") - 700, 生.indexOf("permLineShort"))),
+    "ちがいが、★その 場に 書いて ある");
+
+  // ★★ナビの 言い方が 1つ に なって いる。
+  ok(!/出るタブ/.test(コード), "「出るタブ」と「出るナビ」が 混ざって いない");
+  ok(/NAV_ROW_HEAD/.test(コード), "ナビの 字は 1か所から");
+
   console.log("\n★" + 数 + "件 通りました ── 役職 × できこと の 表");
 })().catch((e) => { console.error(e.message || e); process.exit(1); });

@@ -21,13 +21,13 @@ import { C } from "@/lib/tokens";
 import { TYPE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
 import { ScreenHead, HeadRound, Card, Li, Note, Warn } from "@/components/UiV2";
 import {
-  PERMS, isSchoolWide, permSet, tabsForPerms, mayGrant, CANNOT_GRANT_REASON
+  PERMS, isSchoolWide, permSet, tabsForPerms, mayGrant, permLine, CANNOT_GRANT_REASON
 } from "@/lib/opsPerms";
 import { tx } from "@/lib/t";
 // ★★役職 × できこと の 表（★裁定 その75 修正・2026-09-18）。
 //   ★★930px 以上でだけ 出します。★測った 幅（905px）より 小さいと 横に すべります。
 import OpsPostMatrix from "@/components/OpsPostMatrix";
-import { showTable } from "@/lib/opsPostMatrix";
+import { showTable, NAV_ROW_HEAD } from "@/lib/opsPostMatrix";
 
 /**
  * ★つまみ（★見本の .sw）。★色だけに 意味を 持たせません。★形でも 分かります。
@@ -67,8 +67,18 @@ function Switch({ on, disabled }) {
   );
 }
 
-/** ★できることを、★短い 1行に します（★見本の permLine）。 */
-function permLine(perms) {
+/**
+ * ★できることを、★**短い** 1行に します。
+ *
+ *   ★★★`lib/opsPerms.js` にも `permLine` が あります。★別の もの です。
+ *     ★★あちら … ★名を そのまま、★「 ／ 」で つなぐ（★見本の `permLine`）。
+ *       ★★題の 下の 1行 に 使います。★1つずつ 読める 形 です。
+ *     ★★こちら … ★「を」より 前だけ、★「・」で つなぐ。
+ *       ★★札の 中の 1行 に 使います。★10枚 並ぶ ので、★短く します。
+ *   ★★★同じ 名だと、★次に 読む 方が「写しだ」と 思って 片方を 消します。
+ *     ★★名を 変えました。★消すと 別の ものが 消えます。
+ */
+function permLineShort(perms) {
   const s = permSet(perms);
   if (s.size === 0) return tx("できることは、まだ ありません");
   return PERMS.filter((p) => s.has(p.key)).map((p) => p.label.split("を")[0]).join("・");
@@ -90,6 +100,9 @@ export default function OpsPosts({
     return () => window.removeEventListener("resize", on);
   }, []);
   const [newName, setNewName] = useState("");
+  // ★★名前を 直す ときの 下書き。★null は「まだ 触って いない」。
+  //   ★★空の 字（""）と 分けます。★空に して 保存させない ため です。
+  const [renaming, setRenaming] = useState(null);
   const [message, setMessage] = useState("");
   // ★★いま 送って いる できことの 鍵（★2026-09-13・実機の ご報告）。
   //   ★★「ラグが 長すぎて 反応して いないのかと 思う」。
@@ -128,9 +141,45 @@ export default function OpsPosts({
       <div style={{ fontFamily: FONT_STACK }}>
         <ScreenHead title={open.name}
           right={<HeadRound mark="‹" label={tx("もどる")} onClick={() => setOpenId(null)} />} />
+        {/* ★★題の 下の 1行（★見本 `P_postDetail` の `sub`）。
+            ★★見本は「n人　／　できことの 列挙」です。
+              ★★人数だけ 出して いました。★できことが 抜けて いました。
+            ★★名は そのまま 出します（★`lib/opsPerms.js` の `permLine`）。
+              ★★短く すると、★どれが 入って いるか 読み取れません。 */}
         <div style={{ ...TYPE.usual, color: C.inkSoft, marginTop: -4, marginBottom: rem(10) }}>
-          {tx("{n}人").replace("{n}", held)}
+          {tx("{n}人").replace("{n}", held)}　／　{permLine(open.perms)}
         </div>
+
+        {/* ★★★名前を 直す（★見本 `P_postDetail` の `postRename`）。
+            ★★★サーバには ずっと ありました（`action: "rename"`）。
+              ★★画面から 呼ぶ ところが ありません でした。
+              ★★★書いた のに、★どこからも 呼ばれて いない ── ★N-1 の 決まり。
+            ★★「ひとの 役職を 変える」を 持つ 方だけ 直せます。
+              ★★持たない 方には、★入れる口を 出しません（★§8⑤）。 */}
+        {mayGrant(myPerms, "post") ? (
+          <>
+            <div style={{ ...TYPE.mini, color: C.inkSoft, marginBottom: rem(6) }}>
+              {tx("名前")}
+            </div>
+            <div style={{ display: "flex", gap: 8, marginBottom: rem(12) }}>
+              <input type="text" value={renaming === null ? open.name : renaming}
+                onChange={(e) => setRenaming(e.target.value.slice(0, 40))}
+                style={{
+                  flex: 1, minWidth: 0, minHeight: 48, borderRadius: 12, padding: `0 ${rem(13)}`,
+                  border: `1px solid ${C.line}`, background: C.card, color: C.ink, fontSize: "1rem"
+                }} />
+              <button type="button"
+                disabled={busy || renaming === null || renaming.trim() === "" || renaming === open.name}
+                onClick={() => run({ action: "rename", postId: open.id, name: renaming.trim() })
+                  .then(() => setRenaming(null))}
+                style={{
+                  width: 84, minHeight: 48, borderRadius: 12, flex: "none",
+                  border: `1px solid ${C.curtain}`, ...TYPE.li,
+                  background: C.curtain, color: "#FFFDF8", fontFamily: FONT_STACK
+                }}>{tx("直す")}</button>
+            </div>
+          </>
+        ) : null}
 
         <div style={{ ...TYPE.mini, color: C.inkSoft, marginBottom: rem(6) }}>{tx("できること")}</div>
         <Card style={{ padding: `${rem(4)} ${rem(12)}` }}>
@@ -189,7 +238,7 @@ export default function OpsPosts({
           ...cardStyle, background: C.paper, borderColor: C.line, marginTop: rem(9)
         }}>
           <div style={{ ...TYPE.mini, lineHeight: 1.85 }}>
-            <b>{tx("この役職で 出るタブ")}</b><br />
+            <b>{NAV_ROW_HEAD}</b><br />
             <span style={{ color: C.inkSoft }}>
               {tabs.length ? tabs.map((t) => t.label).join("　／　") : tx("1つも 出ません")}
             </span>
@@ -287,7 +336,7 @@ export default function OpsPosts({
             <span style={{ flex: 1, minWidth: 0 }}>
               <span style={{ fontSize: rem(13.5), fontWeight: 700, color: C.ink }}>{p.name}</span><br />
               <span style={{ ...TYPE.usual, color: C.inkSoft, lineHeight: 1.6 }}>
-                {permLine(p.perms)}
+                {permLineShort(p.perms)}
               </span>
               {/* ★★★この 役職で 出る ナビ（★裁定 その75・STEP_1）。
                   ★出どころ 見本 `stPost()` の いちばん 下の 行「この役職で 出るナビ」。
