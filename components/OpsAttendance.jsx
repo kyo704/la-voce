@@ -7,6 +7,8 @@ import {
   LOCKED_LINES, LOCKED_EMPTY, LOCKED_EMPTY_SUB, NOTES, nextUnmarked, countLine
 } from "@/lib/opsAttendance";
 import { tx } from "@/lib/t";
+// ★★時刻は 端末の 時計で 読みます（★台帳は UTC です）。
+import { timeOf } from "@/lib/todayBand";
 
 // ============================================================================
 // ★出欠を つける（★1人ずつ の 姿・★見本 `P_shukketsu` の ②）
@@ -41,7 +43,7 @@ export default function OpsAttendance({
       {/* ★★題 ── ★時刻と レッスン。★その 下に 先生。 */}
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
         <h2 style={{ ...TYPE.title, color: C.ink, margin: 0 }}>
-          {String(l.scheduled_at || "").slice(11, 16)}　{tx("レッスン")}
+          {timeOf(l.scheduled_at) || ""}　{tx("レッスン")}
         </h2>
         {onClose ? (
           <button type="button" onClick={onClose}

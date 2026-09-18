@@ -3,7 +3,7 @@
 import { C } from "@/lib/tokens";
 import { homeSections, EMPTY_LINE } from "@/lib/opsHomeSections";
 // ★★つけ終わって いるかを、★行の 右に 出します（★2026-09-18）。
-import { attendanceLabel } from "@/lib/todayBand";
+import { attendanceLabel, timeOf } from "@/lib/todayBand";
 import { overlapsOf, dateOf } from "@/lib/opsSchedule";
 import { rosterCount, countsByStatus } from "@/lib/orgRoster";
 import { buildEvents, EVENT_STATES } from "@/lib/orgEventsView";
@@ -106,7 +106,12 @@ export default function OpsHome({
             const 中身 = (
               <>
                 <span style={{ color: C.ink }}>
-                  {String(l.scheduled_at || "").slice(11, 16)}　
+                  {/* ★★★端末の 時計で 読みます（★2026-09-18・実機で 見つけました）。
+                      ★★`slice(11,16)` は、★台帳の 字を そのまま 切って いました。
+                      ★★台帳は UTC です。★15:00 の レッスンが「06:00」と 出ます。
+                      ★★★9時間 ずれて いました。★イタリアに いらっしゃる ときも、
+                        ★★その場の 時刻で 読みます（★`lib/todayBand.js` の `timeOf`）。 */}
+                  {timeOf(l.scheduled_at) || ""}　
                   {nameOf ? nameOf(l.teacher_id) : ""}
                 </span>
                 <span style={{ color: C.inkSoft, fontSize: "0.6875rem" }}>

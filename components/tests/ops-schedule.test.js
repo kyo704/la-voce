@@ -18,10 +18,13 @@
 //     ⑧ 押しどころは 44pt 以上。
 // ============================================================================
 
-const fs = require("fs");
-const path = require("path");
-const os = require("os");
-const { readCode, readRaw } = require("./_source");
+// ★★★読み込みは `_source.js` の `loadLib` に 任せます（★2026-09-18）。
+//   ★★ここには「別名（`@/lib/…`）を 解く」写しが ありました。
+//     ★★写しの ほうは、★`lib/` の 中だけ を 見て いました。
+//     ★★`lib/opsSchedule.js` が `lib/todayBand.js` を 読む ように なった 日に、
+//       ★★見つからず 落ちました。★本文は 正しく、★道具が 古かった のです。
+//   ★★★同じ 決めが 2か所に ある ── ★この 蔵の 病い です。★1か所に します。
+const { readCode, readRaw, loadLib } = require("./_source");
 
 let ok = 0, ng = 0;
 function t(cond, label) {
@@ -34,13 +37,7 @@ function eq(a, b, label) {
 }
 
 (async () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ops-"));
-  ["opsSchedule", "opsShell"].forEach((n) => {
-    fs.writeFileSync(path.join(dir, n + ".js"),
-      fs.readFileSync(path.join(__dirname, "..", "..", "lib", n + ".js"), "utf8")
-        .replace(/@\/lib\/([a-zA-Z]+)/g, "./$1.js"));
-  });
-  const m = await import("file://" + path.join(dir, "opsSchedule.js"));
+  const m = await loadLib("lib", "opsSchedule.js");
   const ui = readCode("components", "OpsSchedule.jsx");
   const raw = readRaw("components", "OpsSchedule.jsx");
 

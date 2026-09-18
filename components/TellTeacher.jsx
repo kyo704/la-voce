@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { C } from "@/lib/tokens";
+import { timeOf } from "@/lib/todayBand";
 import { NOTICES, noticeLabel, ONLY_TEACHER_LINE, NO_REASON_LINES } from "@/lib/tellTeacher";
 
 // ============================================================================
@@ -33,9 +34,14 @@ export default function TellTeacher({ lesson, teacherName, onTell, onClose }) {
   const [busy, setBusy] = useState(false);
   if (!lesson) return null;
 
+  // ★★★時刻は 端末の 時計で 読みます（★2026-09-18）。
+  //   ★★`slice(11,16)` は 台帳の 字を そのまま 切ります。★台帳は UTC です。
+  //   ★★15:00 の レッスンが「06:00」と 出ます。★9時間 ずれます。
+  //   ★★★日づけも 同じ です。★夜の レッスンは、★前の 日に 見えます。
   const when = String(lesson.scheduled_at || "");
-  const whenWord = when.length >= 16
-    ? `${Number(when.slice(5, 7))}月${Number(when.slice(8, 10))}日 ${when.slice(11, 16)}`
+  const d = when ? new Date(when) : null;
+  const whenWord = d && !Number.isNaN(d.getTime())
+    ? `${d.getMonth() + 1}月${d.getDate()}日 ${timeOf(when) || ""}`
     : "";
 
   return (
