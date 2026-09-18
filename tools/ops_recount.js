@@ -72,8 +72,19 @@ const 数える = (節名) => {
     const h = 節名 ? 題たち.find((x) => (x.textContent || "").includes(節名)) : 題たち[0];
     if (節名 && h) {
       // ★★この 題から、★次の 題の 手前 まで を 1節と します。
+      //
+      //   ★★★題の となりから 歩き 始めて、★0個 でした。
+      //     ★★実装の 題は `<div class="hd"><h2>…</h2></div>` の 中に います
+      //       （★`components/UiV2.jsx` の `ScreenHead`）。
+      //     ★★題の となりは 何も ありません。★中身は **包みの となり** です。
+      //   ★★★だから ── ★となりが 1つも 無い あいだ、★上へ のぼります。
+      let 起点 = h;
+      while (起点.parentElement && !起点.nextElementSibling
+        && 起点.parentElement.tagName !== "BODY") {
+        起点 = 起点.parentElement;
+      }
       節の中 = [];
-      let e = h;
+      let e = 起点;
       while ((e = e.nextElementSibling)) {
         if (e.tagName === "H2" || e.querySelector("h2")) break;
         節の中.push(e);
@@ -92,19 +103,30 @@ const 数える = (節名) => {
     .filter(Boolean);
 
   // ★★箱 ── ★形で 見ます。★枠が あって、★角が 丸くて、★中身が ある もの。
-  const 箱 = 見る("div").filter((e) => {
+  //   ★★★`div` だけ を 見て いました。★実装の 役職の 札は `button` です。
+  //     ★★10枚 ある のに、★箱 1・行 0 と 出ました。
+  //     ★★形で 数える と 言い ながら、★名前で 絞って いました。
+  const 箱 = 見る("div, button, li, section, article").filter((e) => {
     const cs = getComputedStyle(e);
     const 角 = parseFloat(cs.borderTopLeftRadius) || 0;
     const 枠 = parseFloat(cs.borderTopWidth) || 0;
     return 角 >= 8 && 枠 > 0 && e.clientHeight > 24 && e.children.length > 0;
   });
 
-  // ★★行 ── ★箱の 中の、★左右に 分かれた 1行。
-  const 行 = 箱.reduce((n, b) => n + [...b.children].filter((c) => {
-    const cs = getComputedStyle(c);
-    return (cs.display === "flex" && cs.justifyContent.includes("between"))
-      || c.classList.contains("li");
-  }).length, 0);
+  // ★★行 ── ★左右に 分かれた 1行。
+  //   ★★★箱の **直の 子** だけ を 見て いました。
+  //     ★★実装は もう 1つ 内がわに 包んで います。★0 と 出ました。
+  //   ★★深さを 問わず 数えます。★ただし 二重に 数えない ように、
+  //     ★★同じ ものは 1度 だけ。
+  const 行の集め = new Set();
+  箱.forEach((b) => {
+    [...b.querySelectorAll("*")].forEach((c) => {
+      const cs = getComputedStyle(c);
+      const 左右 = cs.display === "flex" && cs.justifyContent.includes("between");
+      if ((左右 && c.children.length >= 2) || c.classList.contains("li")) 行の集め.add(c);
+    });
+  });
+  const 行 = 行の集め.size;
 
   return {
     節: 節名 || null,
@@ -141,23 +163,53 @@ const 数える = (節名) => {
       const wrap = document.querySelector(".zoomwrap");
       if (wrap) { wrap.style.height = "auto"; wrap.style.maxHeight = "none"; wrap.style.overflow = "visible"; }
       if (dev) { dev.style.transform = "none"; dev.style.zoom = "1"; }
-      [中身, document.querySelector(".main"), dev].filter(Boolean).forEach((e) => {
-        e.style.overflow = "visible"; e.style.maxHeight = "none";
+      // ★★★中の 表も 巻いて いました（★2026-09-18・2度目）。
+      //   ★★役職の 一覧は 14行 ある のに、★11行で 切れて いました。
+      //   ★★`#bodyEl` だけ 見て いたので、★較正も 通って しまいました。
+      //   ★★★巻いて いる ものを **ぜんぶ** 伸ばしてから、★枠を 高く します。
+      [...document.querySelectorAll("*")].forEach((e) => {
+        const cs = getComputedStyle(e);
+        if (/auto|scroll|hidden/.test(cs.overflowY) || /auto|scroll|hidden/.test(cs.overflow)
+          || cs.maxHeight !== "none") {
+          e.style.overflow = "visible"; e.style.maxHeight = "none";
+          if (e !== dev && e.tagName !== "HTML" && e.tagName !== "BODY"
+            && e.scrollHeight > e.clientHeight + 2) {
+            e.style.height = "auto";
+          }
+        }
       });
       if (中身) 中身.style.height = "auto";
-      if (dev) dev.style.height = (dev.clientHeight + 足りない) + "px";
+      // ★★伸ばした あとの 中身で、★もう一度 測ってから 枠を 決めます。
+      const 足りない2 = 中身 ? Math.max(足りない, 中身.scrollHeight - 796) : 足りない;
+      if (dev) dev.style.height = (878 + 足りない2) + "px";
       document.body.style.height = "auto";
       return { 見える, ぜんぶ, 足りない };
     });
     await p1.waitForTimeout(300);
 
     // ★★較正 ── ★まだ 巻いて いたら 止まります。★半分の 絵を 残しません。
+    // ★★★較正 ── ★`#bodyEl` **だけ** を 見て いました。
+    //   ★★中の 表が 巻いて いても 通って しまい、★11行で 切れた 絵を 残しました。
+    //   ★★どこか 1つでも 巻いて いたら 止まります。
     const 残り = await p1.evaluate(() => {
-      const e = document.querySelector("#bodyEl") || document.querySelector(".body");
-      return e ? e.scrollHeight - e.clientHeight : 0;
+      let 最大 = 0, 名 = "";
+      // ★★`HTML` と `BODY` は 数えません。★見本の 紙は 縦に 長く、
+      //   ★★いつも「巻いて いる」と 出ます（★下に 仕様の 紙が 続きます）。
+      //   ★★見るのは **端末の 枠の 中** だけ です。
+      const 枠 = document.querySelector("#dev");
+      const 見る所 = 枠 ? [...枠.querySelectorAll("*")] : [];
+      見る所.forEach((e) => {
+        const d = e.scrollHeight - e.clientHeight;
+        if (d > 最大 && e.clientHeight > 40) {
+          最大 = d;
+          名 = e.tagName + (e.className ? "." + String(e.className).split(" ")[0] : "");
+        }
+      });
+      return { 最大, 名 };
     });
-    if (残り > 4) {
-      console.error("★止まりました ── 見本が まだ " + 残り + "px 巻いて います。");
+    if (残り.最大 > 4) {
+      console.error("★止まりました ── まだ " + 残り.最大 + "px 巻いて います（"
+        + 残り.名 + "）。★下が 写りません。");
       process.exitCode = 1; return;
     }
 
@@ -229,6 +281,40 @@ const 数える = (節名) => {
     }
     const 高さ = await p2.evaluate(() => document.body.scrollHeight);
     結果.実装 = { 高さ, 見える: 高さ, ぜんぶ: 高さ, ...実装の数 };
+
+    // ★★★節を 指した ときは、★その 節 だけ を 撮ります。
+    //   ★★★上・中・下 の 3枚は、★2つの 側の **形が 同じ** ときに 効きます。
+    //     ★★実装は 11の 節を 1枚に 積んで います。
+    //     ★★だから 実装の「中」は、★見本の「中」と 別の ところ です。
+    //     ★★きょう それで、★料金の ところと 役職の 表を 並べて しまいました。
+    const 節の箱 = 節名 ? await p2.evaluate((名) => {
+      const h = [...document.querySelectorAll("h2")]
+        .find((x) => (x.textContent || "").includes(名));
+      if (!h) return null;
+      let 起点 = h;
+      while (起点.parentElement && !起点.nextElementSibling
+        && 起点.parentElement.tagName !== "BODY") 起点 = 起点.parentElement;
+      let 上 = 起点.getBoundingClientRect().top + window.scrollY;
+      let 下 = 起点.getBoundingClientRect().bottom + window.scrollY;
+      let e = 起点;
+      while ((e = e.nextElementSibling)) {
+        if (e.tagName === "H2" || e.querySelector("h2")) break;
+        const r = e.getBoundingClientRect();
+        下 = Math.max(下, r.bottom + window.scrollY);
+      }
+      return { y: Math.max(0, Math.round(上) - 8), h: Math.round(下 - 上) + 16 };
+    }, 節名) : null;
+
+    if (節の箱) {
+      const dst2 = path.join(OUT, "jikki-" + tab + "-" + st2 + "-節.png");
+      await p2.screenshot({
+        path: dst2, scale: "css", fullPage: true,
+        clip: { x: 0, y: 節の箱.y, width: 1280, height: 節の箱.h }
+      });
+      console.log("★節 だけ 撮りました: jikki-" + tab + "-" + st2 + "-節.png（高さ "
+        + 節の箱.h + "）");
+      結果.実装.節の高さ = 節の箱.h;
+    }
     await 三枚(p2, null, "jikki-" + tab + "-" + st2);
     await ctx.close();
   } finally { await b.close(); }

@@ -44,8 +44,28 @@ create table if not exists public.org_billing (
   method             text,
   next_billing_date  date,
 
+  -- ★領収書に 出す もの（★裁定 その74 追補・2026-09-18）
+  --
+  --   ★★★坂本さんは、★いま インボイスの 登録事業者では ありません。
+  --     ★★だから `invoice_no` は **null の まま** です。
+  --     ★★列だけ 先に 置きます。★登録した 日に、★入れる だけに します。
+  --   ★★★null を 空の 字（''）に しません。
+  --     ★★「まだ 決めて いない」と「番号が 無い」は ちがいます。
+  --     ★★（★2026-09-13 の 決まり ── ★入れ直さず、★読む ときに 決める）
+  --   ★★★登録番号が 無い とき、★領収書には
+  --     ★★「適格請求書では ありません」と 書きます。
+  --     ★★大学が 仕入税額控除を 受けられません。★黙って いられません。
+  --     ★★（★年90万円 なら、★大学の ご負担は およそ 8万円）
+  --   ★★いま 作らない もの ── ★領収書の 自動 発行／税額の 自動 計算。
+  invoice_no         text,
+  invoice_issuer     text,
+
   created_at         timestamptz not null default now()
 );
+
+-- ★★もう 立って いる 表にも 足します（★何度 走らせても 同じ）。
+alter table public.org_billing add column if not exists invoice_no     text;
+alter table public.org_billing add column if not exists invoice_issuer text;
 
 -- ★★どの 学校の ぶんかを、★すぐ 引けるように します。
 create index if not exists org_billing_org_id_created_at_idx
