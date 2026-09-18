@@ -99,7 +99,10 @@ export default function OpsPostMatrix({
                   const 丸 = (
                     <span style={{
                       fontSize: rem(15), fontWeight: 持ってる ? 700 : 400,
-                      color: 持ってる ? C.curtain : C.line
+                      /* ★★★持って いない ことを 示す ○（★裁定 その84 PRIORITY_2）。
+                           ★★`C.line` は 線の 色 です。★1.21。★しるしの 目安 3.0 に 届きません。
+                           ★★`--ink4`（5.12）に します。★殻の 中 なので 名前で 呼べます。 */
+                      color: 持ってる ? C.curtain : v("ink4")
                     }}>{持ってる ? "●" : "○"}</span>
                   );
                   return (

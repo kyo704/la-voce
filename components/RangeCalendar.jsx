@@ -85,9 +85,15 @@ export default function RangeCalendar({ value, onChange, todayISO, max }) {
                   border: "none", padding: 0,
                   // ★★途中の日は うすい色で つながります。★端は 濃く。
                   background: edge ? C.curtain : (on ? C.paper : "transparent"),
-                  color: edge ? "#FFFDF8" : (over ? C.line : C.ink),
+                  // ★★★えらべる 日を 越えた 日（★2026-09-18・裁定 その84 PRIORITY_2）。
+                  //   ★★`C.line` は 線の 色 です。★紙の上で 1.21。★見えません。
+                  //   ★★★`opacity: 0.5` が 重なって いました ── ★1.10 です。
+                  //     ★★色を 直しても、★薄さが 重なると 2.04 に しか なりません。
+                  //     ★★だから、★色で 示して、★薄さは 外します。
+                  //     ★★2つで 薄く すると、★どちらを 直せば よいか 分からなく なります。
+                  color: edge ? "#FFFDF8" : (over ? C.ink4 : C.ink),
                   borderRadius: edge ? 8 : 0,
-                  fontSize: rem(12), opacity: over ? 0.5 : 1,
+                  fontSize: rem(12),
                   fontFamily: FONT_STACK
                 }}>
                 {Number(iso.slice(8, 10))}

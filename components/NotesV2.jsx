@@ -163,7 +163,11 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
           <Box>
             {REPERTOIRE_STATUS.map((st, i) => (
               <Li key={st} last={i === REPERTOIRE_STATUS.length - 1}
-                right={item.status === st ? <span style={{ color: C.sageSoft }}>✓</span> : null}
+                /* ★★★いまの ようすの ✓（★2026-09-18・裁定 その84 PRIORITY_2）。
+                     ★★`C.sageSoft`（#7C9A6B）は 紙の上で 2.79 でした。
+                     ★★しるしの 目安は 3.0（★WCAG 1.4.11）。★足りません。
+                     ★★`C.ok`（裁定の `--ok`・5.07）に します。 */
+                right={item.status === st ? <span style={{ color: C.ok }}>✓</span> : null}
                 onClick={async () => {
                   setYousuFor(null);
                   if (onAddRepertoire) {
