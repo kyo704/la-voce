@@ -11,9 +11,11 @@ import {
 } from "@/lib/opsMonka";
 import {
   cameCount, cameWord, heldCount, progressWord, looksShort,
-  SHORT_MARK, SHORT_NOTE, NO_RATE_LINE
+  SHORT_WORD, SHORT_WORD_SIZE_PX, SHORT_WORD_TOKEN, NO_RATE_LINE
 } from "@/lib/attendanceCount";
 import { showEventTable } from "@/lib/opsEventTable";
+// ★★色は 名前で 呼びます（★裁定 その81 §1-3）。
+import { v, rem as remv } from "@/lib/visualTokens";
 import { tx } from "@/lib/t";
 
 // ============================================================================
@@ -144,8 +146,10 @@ export default function OpsMonka({
           )}
 
           {/* ★★率を 出さない ことを、★書いて おきます（★裁定 その90 §6-4）。 */}
+          {/* ★★★率を 出さない ことを、★書いて おきます（★裁定 その90 §6-4）。
+               ★★★「足りない見込み」の 説明は 置きません（★2026-09-19・Opus）。
+                 ★★言葉 そのものが 意味を 持ちます。★説明が 要りません。 */}
           <p style={{ ...小, marginTop: rem(8) }}>{NO_RATE_LINE}</p>
-          <p style={小}>{SHORT_NOTE}</p>
         </>
       )}
 
@@ -205,7 +209,15 @@ function 出席({ r, lessons, teacherId, 型, 行われた, need }) {
   });
   return (
     <span style={{ ...TYPE.usual, color: C.ink }}>
-      {cameWord(本)}{短い ? `　${SHORT_MARK}` : ""}
+      {cameWord(本)}
+      {/* ★★★印では なく **言葉** です（★2026-09-19・Opus）。
+           ★★小さく、★`--ink3`。★色は 使いません。
+           ★★★「足りません」と 言い切りません。★残りの 回が あります。 */}
+      {短い ? (
+        <span style={{
+          marginLeft: 8, fontSize: remv(SHORT_WORD_SIZE_PX), color: v(SHORT_WORD_TOKEN)
+        }}>{SHORT_WORD}</span>
+      ) : null}
     </span>
   );
 }
