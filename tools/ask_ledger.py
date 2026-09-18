@@ -96,7 +96,20 @@ def 尋ねる(sql, write=False, ok=False):
 
 
 def 書き出す(rows, raw=False):
-  if not isinstance(rows, list) or not rows:
+  # ★★★「（0件）」は、★2つの ちがう こと を 同じ 顔で 出して いました
+  #   （★2026-09-18・実機で 気づきました）。
+  #     ★★㋐ 台帳に 本当に 無い
+  #     ★★㋑ 台帳が 答えて いない（★形が ちがう ／ 返事が 表で ない）
+  #   ★★★`select 1` が「（0件）」と 出ました。★そんな ことは 起きません。
+  #     ★★道具が 壊れて いる のに、★「無い」と 言って いました。
+  #   ★★★見つからない 道具は、★見つからない と 言っては いけません。★止まります。
+  if not isinstance(rows, list):
+    print("★止まりました ── 台帳の 返事が 表の 形で は ありません。")
+    print("★返事の 形: %s" % type(rows).__name__)
+    print("★返事（はじめの 700字）:")
+    print(str(rows)[:700])
+    sys.exit(1)
+  if not rows:
     print("（0件）")
     return
   if raw:
@@ -122,6 +135,16 @@ if __name__ == "__main__":
   ok = "--ok" in a
   raw = "--raw" in a
   a = [x for x in a if x not in ("--write", "--ok", "--raw")]
+  # ★★★知らない 札を、★問いの 字 と して 台帳へ 送って いました
+  #   （★2026-09-18・`--sql "…"` と 書いて しまい、★`--sql` を 送って いました）。
+  #   ★★台帳は 何も 返さず、★道具は「（0件）」と 出しました。
+  #   ★★★「無い」と「聞けて いない」を、★同じ 顔で 出して いました。★止めます。
+  知らない札 = [x for x in a if x.startswith("--")]
+  if 知らない札:
+    print("★止まりました ── 知らない 札 です: " + " ".join(知らない札))
+    print("★問いの 字は、★札では なく そのまま 書いて ください。")
+    print('★例: python3 tools/ask_ledger.py "select 1 as t"')
+    sys.exit(2)
   sql = open(a[1], encoding="utf-8").read() if (len(a) > 1 and a[0] == "-f") else (a[0] if a else "")
   if not sql.strip():
     print(__doc__)
