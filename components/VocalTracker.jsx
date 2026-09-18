@@ -164,6 +164,8 @@ import OpsEvents from "@/components/OpsEvents";
 import OpsSettings from "@/components/OpsSettings";
 // ★★授業の 型（★裁定 その90・2026-09-18）。★作れるのは 事務 だけ。
 import OpsPresets from "@/components/OpsPresets";
+// ★★門下（★見本 `P_monka` ／ ★裁定 その90・2026-09-18）。
+import OpsMonka from "@/components/OpsMonka";
 import { maySee as maySeePresets } from "@/lib/lessonPresets";
 import { maySeeMoney } from "@/lib/opsShell";
 import { mayEnterOps, mayEditRoster, permsOfMember } from "@/lib/opsShell";
@@ -14441,6 +14443,34 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </div>
                   ) : null}
                 </>
+              );
+            }
+            /* ★★★門下（★見本 `P_monka` ／ ★裁定 その90 §6-3・2026-09-18）。
+                 ★★きょうまで、★この 帯は「これから 作ります」と 出て いました。
+                 ★★★見えるのは **担当の 生徒だけ** です。
+                   ★★台帳も 同じ です（`assignments_select` ── 自分の `teacher_id`）。
+                 ★★出席の 数を 出します。★率（％）は 出しません（★裁定 その90）。 */
+            if (tabKey === "monka") {
+              return (
+                <OpsMonka
+                  assignments={orgAssignments[opsOrgId] || []}
+                  lessons={orgLessons[opsOrgId] || []}
+                  presets={orgPresets[opsOrgId] || []}
+                  teacherId={userId}
+                  nameOf={(id) => orgDisplayName(id) || ""}
+                  teacherNameOf={(id) => orgDisplayName(id) || ""}
+                  gradeOf={(id) => {
+                    const r = (orgEnrollments[opsOrgId] || [])
+                      .find((x) => x.student_id === id);
+                    return (r && r.grade_label) || "";
+                  }}
+                  /* ★★★「足りる」と される 回数は、★学校が 決める もの です。
+                       ★★この 蔵に、★それを しまう ところが ありません。
+                       ★★★渡さなければ、★★印は 1つも 出ません（★`looksShort`）。
+                         ★★勝手な 線を 引きません。
+                       ★★引き金 ── ★規定の 回数を 決める 日（★台帳 08-11）。 */
+                  need={null}
+                  onOpenOne={undefined} />
               );
             }
             if (tabKey === "roster") {
