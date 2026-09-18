@@ -3,16 +3,16 @@
 <title>Woolsong 動く見本 ── PC・iPad（運営）統合版</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{ --card2:#FDFAF3;--line3:#E8DFC8;--ink4:#8C7D6C;--band:#F6F1E4;--band2:#F3ECDD;--band3:#FBF3E2;--enji-d:#8E1230;--ok:#447862;--warn:#8C6115;--err:#B23A48;--pick:#F6E4E8;--enji:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
+:root{--enji:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
  --line:#E4DAC4;--line2:#F0E9DA;--ink:#261913;--ink2:#5A4C40;--ink3:#6B5C4E;--bg:#EFE7D6;
  --red:#B23A48;--sh:0 1px 0 rgba(0,0,0,.03),0 8px 24px rgba(90,72,48,.10)}
 body{background:var(--bg);font-family:"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;color:var(--ink);
  display:flex;flex-direction:column;align-items:center;padding:20px 14px 50px;gap:12px;line-height:1.75;
  letter-spacing:.02em;font-feature-settings:"palt";font-variant-numeric:tabular-nums}
 h1{font-size:20px;letter-spacing:.04em}
-.lead{font-size:13.5px;color:var(--ink2);max-width:900px;text-align:center;line-height:1.9}
+.lead{font-size:12.5px;color:var(--ink2);max-width:900px;text-align:center;line-height:1.9}
 /* ── 端末の 枠 ── */
-.dev{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh);overflow:hidden;
+.dev{background:#fff;border:1px solid #D9CDB4;border-radius:14px;box-shadow:var(--sh);overflow:hidden;
  display:flex;flex-direction:column;transform-origin:top center}
 :root{--z:1}
 /* 文字を 大きく（老眼対策）── 見える 大きさは 変えず、中の ものを 大きく します。
@@ -29,148 +29,83 @@ h1{font-size:20px;letter-spacing:.04em}
 .dev.ipadP{width:calc(830px / var(--z));height:calc(1120px / var(--z))}
 /* ── 上のバー ── */
 .top{flex:0 0 52px;background:var(--enji);color:#fff;display:flex;align-items:center;
- justify-content:space-between;padding:0 20px;font-size:15.5px;letter-spacing:.04em}
+ justify-content:space-between;padding:0 20px;font-size:14.5px;letter-spacing:.04em}
 .top .l,.top .r{display:flex;align-items:center;gap:14px}
-.top .back{border:1px solid rgba(255,255,255,.45);border-radius:8px;padding:5px 11px;font-size:13.5px;cursor:pointer}
-.badge{background:rgba(255,255,255,.18);border-radius:7px;padding:4px 10px;font-size:13px}
-.badge.w{background:var(--warn);color:#4A3510;font-weight:700}
+.top .back{border:1px solid rgba(255,255,255,.45);border-radius:8px;padding:5px 11px;font-size:12.5px;cursor:pointer}
+.badge{background:rgba(255,255,255,.18);border-radius:7px;padding:4px 10px;font-size:12px}
+.badge.w{background:#F0C24B;color:#4A3510;font-weight:700}
 .rl{width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.45);
  display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;line-height:1}
 .rl:hover{background:rgba(255,255,255,.18)}
 /* ── 健康の線 ── */
-.wall{flex:0 0 30px;background:var(--band2);border-bottom:1px solid var(--line);
- display:flex;align-items:center;padding:0 20px;font-size:13px;color:var(--ink2);gap:8px}
+.wall{flex:0 0 30px;background:#F6EFDF;border-bottom:1px solid var(--line);
+ display:flex;align-items:center;padding:0 20px;font-size:12px;color:var(--ink2);gap:8px}
 .wall i{width:7px;height:7px;border-radius:50%;background:var(--midori);display:block;flex:none}
 .main{flex:1;display:flex;overflow:hidden}
 /* ── 左のナビ ── */
-.side{flex:0 0 232px;background:var(--card2);border-right:1px solid var(--line);padding:10px 0;overflow-y:auto;transition:flex-basis .16s ease}
-/* ★アイコンレール ── 折りたたんだ姿。ラベルは 読み上げに 残す */
-.side.rail{flex:0 0 68px}
-.side.rail .nv{justify-content:center;padding:9px 0;gap:0}
-.side.rail .nv span.lb{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-.side.rail .gh,.side.rail .who,.side.rail .pin{display:none}
-.side .gh{font-size:12.5px;letter-spacing:.14em;color:var(--ink3);padding:13px 14px 5px}
-.side .nv{display:flex;align-items:center;gap:9px;position:relative}
-.side .nv i{width:22px;height:22px;flex:none;display:flex;align-items:center;justify-content:center;opacity:.78}
-.side .nv.on i{opacity:1}
-/* ★レールのときは 大きく ── 字が 無いぶん、しるしを 強く */
-.side.rail .nv i{width:26px;height:26px}
-.side.rail .nv i svg{width:26px;height:26px}
-/* ★レールのとき ── ★四角い 塗りに しない。
-   ★幅68px では、白い 帯が ★ただの 正方形に 見えます      */
-.side.rail .nv{padding:10px 0;margin:2px 0;border-radius:0;background:transparent}
-.side.rail .nv:hover{background:transparent}
-.side.rail .nv:hover i{opacity:1}
-/* ★いま 開いている ところ ── ★しるしの 色と、★左の 細い 線だけ */
-.side.rail .nv.on{background:transparent;box-shadow:inset 3px 0 0 var(--enji)}
-.side.rail .nv.on i{color:var(--enji);opacity:1}
-.sidetop .fold svg,.sidetop .sk2 svg{flex:none}
-.sidetop{display:flex;align-items:center;gap:6px;padding:2px 10px 8px}
-.sidetop .fold{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13.5px}
-.sidetop .sk2{flex:1;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;gap:6px;padding:0 9px;font-size:13px;color:var(--ink3);cursor:pointer}
-.side.rail .sidetop{flex-direction:column;padding:2px 0 8px}
-.side.rail .sidetop .sk2{display:none}
-/* ★コマンドパレット */
-/* ══ ★表 ── 2026-09-18 の 調べに もとづく ══
-   ・見出しの 行を 貼り付ける（NN/g：画面より 大きい 表では 行・列を 固定）
-   ・いちばん 左の 列（名前）を 貼り付ける ── ★これが「錨」。
-     横に すべると、どの 行を 見ているか 分からなくなります
-   ・詰めぐあいを 変えられる（IBM Carbon：32 / 40 / 48px）        */
-.tw{overflow:auto;border:1px solid var(--line);border-radius:12px;background:var(--card);
- max-height:min(62vh,560px);position:relative}
-.tw table{border-collapse:separate;border-spacing:0;width:100%;font-size:13.5px}
-.tw th,.tw td{padding:0 12px;border-bottom:1px solid var(--line2);white-space:nowrap;
- height:calc(40px * var(--z,1));text-align:left}
-.tw thead th{position:sticky;top:0;z-index:3;background:var(--paper);
- font-weight:400;color:var(--ink3);font-size:13px;letter-spacing:.08em;
- box-shadow:inset 0 -1px 0 var(--line)}
-/* ★錨の 列 */
-.tw .anc{position:sticky;left:0;z-index:2;background:var(--card);
- box-shadow:1px 0 0 var(--line2)}
-.tw thead .anc{z-index:4;background:var(--paper)}
-.tw tbody tr:hover td{background:var(--paper)}
-.tw tbody tr:hover .anc{background:var(--paper)}
-.tw .num{text-align:right;font-variant-numeric:tabular-nums}
-.den{display:flex;gap:5px;align-items:center;margin-bottom:9px;flex-wrap:wrap}
-.den .lb{font-size:13px;color:var(--ink3);letter-spacing:.1em;margin-right:3px}
-/* ★権限の 表 ── 行の 見出しも 錨に */
-.mx td.c,.mx th.c{text-align:center;padding:0 6px}
-.mx .dot{display:inline-block;width:17px;height:17px;border-radius:50%;
- border:1.6px solid var(--line);cursor:pointer}
-.mx .dot.on{background:var(--enji);border-color:var(--enji);box-shadow:inset 0 0 0 3px var(--card)}
-.mx .dot.lock{background:var(--line2);border-color:var(--line2);cursor:not-allowed;opacity:.55}
-.mx tbody tr.gh td{background:var(--paper);font-size:12.5px;letter-spacing:.1em;
- color:var(--ink3);height:30px}
-.pal{position:absolute;inset:0;background:rgba(38,25,19,.32);display:flex;align-items:flex-start;justify-content:center;padding-top:64px;z-index:40}
-.palbox{width:min(560px,86%);background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 44px rgba(60,44,28,.26);overflow:hidden}
-.palbox input{width:100%;border:0;border-bottom:1px solid var(--line2);padding:15px 16px;font:inherit;font-size:15.5px;background:transparent;color:var(--ink);outline:none}
-.palbox .pr{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:14.5px;cursor:pointer}
-.palbox .pr:hover{background:var(--paper)}
-.palbox .pr s{margin-left:auto;color:var(--ink3);font-size:13px;text-decoration:none}
-.palbox .pg{font-size:12.5px;letter-spacing:.12em;color:var(--ink3);padding:9px 16px 3px}
-
-.side .nv{padding:11px 20px;font-size:15.5px;color:var(--ink2);display:flex;align-items:center;gap:10px;cursor:pointer}
+.side{flex:0 0 190px;background:#FDF9F0;border-right:1px solid var(--line);padding:12px 0;overflow-y:auto}
+.side .nv{padding:11px 20px;font-size:14.5px;color:var(--ink2);display:flex;align-items:center;gap:10px;cursor:pointer}
 .side .nv:hover{background:#FBF6EA}
 .side .nv.on{background:#fff;color:var(--enji);font-weight:700;box-shadow:inset 3px 0 0 var(--enji)}
-.side .gp{font-size:12.5px;color:var(--ink3);letter-spacing:.14em;padding:16px 20px 6px}
-.side .who{padding:12px 20px 14px;border-top:1px solid var(--line);margin-top:10px;font-size:13px;color:var(--ink2);line-height:1.8}
+.side .gp{font-size:11px;color:var(--ink3);letter-spacing:.14em;padding:16px 20px 6px}
+.side .who{padding:12px 20px 14px;border-top:1px solid var(--line);margin-top:10px;font-size:11.5px;color:var(--ink2);line-height:1.8}
 .body{flex:1;padding:18px 24px 24px;overflow-y:auto;background:var(--paper)}
 h2{font-size:22px;margin-bottom:2px;letter-spacing:.03em}
-.sub{font-size:13.5px;color:var(--ink2);margin-bottom:15px}
-.h3{font-size:13px;color:var(--ink3);letter-spacing:.14em;margin:18px 0 8px}
+.sub{font-size:12.5px;color:var(--ink2);margin-bottom:15px}
+.h3{font-size:11.5px;color:var(--ink3);letter-spacing:.14em;margin:18px 0 8px}
 .h3:first-child{margin-top:0}
 /* ── 部品 ── */
 .cards{display:flex;gap:12px;margin-bottom:16px}
 .kpi{flex:1;background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 15px;cursor:pointer}
-.kpi:hover{border-color:var(--ink4)}
-.kpi .t{font-size:13px;color:var(--ink2);margin-bottom:2px}
+.kpi:hover{border-color:#CFC0A4}
+.kpi .t{font-size:12px;color:var(--ink2);margin-bottom:2px}
 .kpi .v{font-size:30px;font-weight:700;letter-spacing:-.01em}
-.kpi .v s{font-size:14.5px;font-weight:400;color:var(--ink2);text-decoration:none;margin-left:3px}
-.kpi.al{border-color:var(--line);background:var(--card2)}.kpi.al .v{color:var(--red)}
+.kpi .v s{font-size:14px;font-weight:400;color:var(--ink2);text-decoration:none;margin-left:3px}
+.kpi.al{border-color:#E7C2C6;background:#FDF6F6}.kpi.al .v{color:var(--red)}
 .col2{display:flex;gap:16px;align-items:flex-start}
 .col2>*{flex:1;min-width:0}
 .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px}
 .card.p0{padding:0 16px}
 .li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;
- border-bottom:1px solid var(--line2);font-size:14.5px;cursor:pointer;min-height:44px}
+ border-bottom:1px solid var(--line2);font-size:13.5px;cursor:pointer;min-height:44px}
 .li:last-child{border:none}
-.li s{color:var(--ink3);font-size:13px;text-decoration:none;text-align:right;flex:none}
+.li s{color:var(--ink3);font-size:12px;text-decoration:none;text-align:right;flex:none}
 .li:hover{color:var(--enji)}
 .li.plain{cursor:default}.li.plain:hover{color:inherit}
-.usu{font-size:13px;color:var(--ink3)}
-.spt0{font-size:13.5px;font-weight:700;margin-bottom:3px}
-.sh3{font-size:13px;color:var(--ink3);letter-spacing:.12em;margin:14px 0 5px}
-.spt{width:100%;border-collapse:collapse;font-size:13px;line-height:1.7;font-variant-numeric:tabular-nums}
-.spt th{background:var(--band2);color:var(--ink3);font-weight:400;text-align:left;padding:5px 7px;border:1px solid var(--line)}
+.usu{font-size:11.5px;color:var(--ink3)}
+.spt0{font-size:13px;font-weight:700;margin-bottom:3px}
+.sh3{font-size:11.5px;color:var(--ink3);letter-spacing:.12em;margin:14px 0 5px}
+.spt{width:100%;border-collapse:collapse;font-size:11.5px;line-height:1.7;font-variant-numeric:tabular-nums}
+.spt th{background:#F3ECDD;color:var(--ink3);font-weight:400;text-align:left;padding:5px 7px;border:1px solid var(--line)}
 .spt td{padding:5px 7px;border:1px solid var(--line);background:#fff;vertical-align:top}
-.spt td.k{width:34%;font-weight:600;background:var(--card2)}
-.fbtn{display:inline-block;margin-top:14px;font-size:13px;color:var(--ink3);
+.spt td.k{width:34%;font-weight:600;background:#FDFAF3}
+.fbtn{display:inline-block;margin-top:14px;font-size:11.5px;color:var(--ink3);
  border:1px solid var(--line);border-radius:99px;padding:5px 12px;cursor:pointer;background:#fff}
-.fbtn:hover{border-color:var(--ink4);color:var(--ink2)}
-.fbtn.on{color:var(--enji);border-color:var(--ink4)}
-.note{font-size:13px;color:var(--ink2);line-height:1.9;margin-top:12px;
- background:var(--card2);border:1px dashed var(--line);border-radius:10px;padding:11px 13px}
-.warn{background:var(--band);border:1px solid var(--line3);border-radius:10px;padding:10px 13px;
- font-size:13px;color:var(--ink2);line-height:1.8;margin-bottom:12px}
+.fbtn:hover{border-color:#CFC0A4;color:var(--ink2)}
+.fbtn.on{color:var(--enji);border-color:#CFC0A4}
+.note{font-size:11.5px;color:var(--ink2);line-height:1.9;margin-top:12px;
+ background:#FDFAF3;border:1px dashed var(--line);border-radius:10px;padding:11px 13px}
+.warn{background:#F6F1E4;border:1px solid #E8DFC8;border-radius:10px;padding:10px 13px;
+ font-size:12px;color:var(--ink2);line-height:1.8;margin-bottom:12px}
 .btn{display:inline-block;border:0;background:var(--enji);color:#fff;border-radius:10px;padding:11px 20px;
- font:inherit;font-size:14.5px;font-weight:700;text-align:center;cursor:pointer}
+ font:inherit;font-size:13.5px;font-weight:700;text-align:center;cursor:pointer}
 .btn.g{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:400}
-.btn.sm{padding:8px 14px;font-size:13.5px}
+.btn.sm{padding:8px 14px;font-size:12.5px}
 .btn.w{display:block;width:100%}
 .btn.mid{background:var(--midori)}
-.pill{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:6px 13px;font-size:13.5px;
+.pill{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:6px 13px;font-size:12.5px;
  color:var(--ink2);background:#fff;cursor:pointer;white-space:nowrap}
 .pill.on{background:var(--enji);color:#fff;border-color:var(--enji);font-weight:700}
-.pill.sm{padding:4px 10px;font-size:13px}
+.pill.sm{padding:4px 10px;font-size:11.5px}
 .pills{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap;max-width:100%;min-width:0}
 .pill{max-width:100%}
-.tag{display:inline-block;background:var(--band2);color:var(--ink2);border-radius:6px;padding:2px 8px;
- font-size:13px;margin-left:7px;white-space:nowrap}
+.tag{display:inline-block;background:#F3ECDD;color:var(--ink2);border-radius:6px;padding:2px 8px;
+ font-size:11.5px;margin-left:7px;white-space:nowrap}
 .inp{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:11px 12px;
- font:inherit;font-size:14.5px;color:var(--ink)}
+ font:inherit;font-size:13.5px;color:var(--ink)}
 .ta{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:12px;
- font:inherit;font-size:14.5px;min-height:90px;resize:vertical;color:var(--ink);line-height:1.8}
-.fl{font-size:13px;color:var(--ink3);letter-spacing:.1em;margin:14px 0 6px}
+ font:inherit;font-size:13.5px;min-height:90px;resize:vertical;color:var(--ink);line-height:1.8}
+.fl{font-size:11.5px;color:var(--ink3);letter-spacing:.1em;margin:14px 0 6px}
 /* ══ 間（ま）の 段階 ── 3つだけ ══
    sp1 同じ まとまりの 中 ／ sp2 まとまりどうし ／ sp3 話が 変わる
    ★運営は 密度が 機能です。個人側のような 画面ごとの 疎密は 付けません。
@@ -189,188 +124,173 @@ h2{font-size:22px;margin-bottom:2px;letter-spacing:.03em}
 /* ── 表の 数字は 桁を そろえる ── */
 table td.num,table th.num,.kpi .v{font-variant-numeric:tabular-nums}
 
-.sw{width:44px;height:26px;border-radius:99px;background:var(--line);position:relative;flex:none;cursor:pointer;transition:.16s}
+.sw{width:44px;height:26px;border-radius:99px;background:#DFD4BE;position:relative;flex:none;cursor:pointer;transition:.16s}
 .sw i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.16s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
 .sw.on{background:var(--enji)}.sw.on i{left:21px}
 .empty{text-align:center;padding:32px 16px;background:#fff;border:1px dashed var(--line);border-radius:12px}
-.empty .t{font-size:14.5px;line-height:1.8}.empty .s{font-size:13px;color:var(--ink2);margin-top:8px;line-height:1.8}
+.empty .t{font-size:14px;line-height:1.8}.empty .s{font-size:12px;color:var(--ink2);margin-top:8px;line-height:1.8}
 /* ── 表 ── */
-.tblwrap{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:auto;max-height:560px;position:relative}
-/* ★見出しの 行を 貼り付ける ── 全部の 表に 効きます
-   （NN/g：画面より 大きい 表では 行・列を 固定せよ）        */
-.tblwrap thead th,.tblwrap tr:first-child th{position:sticky;top:0;z-index:3;
- background:var(--paper);box-shadow:inset 0 -1px 0 var(--line)}
-/* ★左の 列（錨）── 横に すべっても 残る */
-.tblwrap .stick,.tblwrap .anc{position:sticky;left:0;z-index:2;background:#fff;
- box-shadow:1px 0 0 var(--line2)}
-.tblwrap thead .stick,.tblwrap thead .anc,
-.tblwrap tr:first-child .stick{z-index:4;background:var(--paper)}
-/* ★詰めぐあい ── IBM Carbon の 32 / 40 / 48px */
-/* ★行の 高さ ── ★文字の 大きさに 連動します。
-   ★つまみを 2つに しません（文字4段 ＋ 行の 高さ ＝ 2軸に なる）。
-   ★50〜60代の 方には、1つの つまみで 両方 動くほうが 分かります */
-.tblwrap td,.tblwrap th{height:calc(40px * var(--z,1))}
-html[data-th="dark"] .tblwrap .stick,html[data-th="dark"] .tblwrap .anc{background:#241D17}
-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px}
-th{position:sticky;top:0;z-index:3;background:var(--band2);color:var(--ink2);font-weight:400;
- padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;font-size:13px}
+.tblwrap{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:auto;max-height:560px}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:12.5px}
+th{position:sticky;top:0;z-index:3;background:#F3ECDD;color:var(--ink2);font-weight:400;
+ padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;font-size:11.5px}
 td{padding:9px 10px;border-bottom:1px solid var(--line2);white-space:nowrap;vertical-align:middle}
 tr:last-child td{border-bottom:0}
-tr.click{cursor:pointer}tr.click:hover td{background:var(--card2)}
+tr.click{cursor:pointer}tr.click:hover td{background:#FDFAF3}
 td.num,th.num{text-align:right}
 .stick{position:sticky;left:0;background:#FBF6EA;z-index:2}
 th.stick{z-index:4}
 /* ── 日程の 表 ── */
 .grid{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:auto;max-height:600px}
-.grid table{font-size:13px}
+.grid table{font-size:11.5px}
 /* 週の 表は、曜日の 幅を そろえます */
 .grid table.wk{table-layout:fixed;width:100%;min-width:560px}
 .grid table.wk th:first-child,.grid table.wk td:first-child{width:104px}
 .grid td{padding:3px;border-right:1px solid var(--line2);height:56px;white-space:normal;vertical-align:top}
 .grid th{text-align:center}
-.koma{border-left:3px solid var(--enji);background:var(--card2);border-radius:5px;padding:4px 6px;
- font-size:12.5px;line-height:1.45;height:100%;cursor:pointer;position:relative}
-.koma:hover{background:var(--pick)}
+.koma{border-left:3px solid var(--enji);background:#FFFDF8;border-radius:5px;padding:4px 6px;
+ font-size:10.5px;line-height:1.45;height:100%;cursor:pointer;position:relative}
+.koma:hover{background:#FBF3F4}
 .koma b{font-weight:700;display:block}
-.koma.dup{border-left-color:var(--yama);background:var(--band3)}
-.koma.mine{border-left-color:var(--midori);background:var(--band)}
-.koma.busy{border-left-color:var(--ink4);background:var(--band);color:var(--ink4);cursor:default}
-.koma.now{border-left-color:var(--red);background:var(--pick);color:var(--red);cursor:default}
-.koma.busy.priv{border-left-style:dotted;border-left-width:4px;background:var(--band)}
+.koma.dup{border-left-color:var(--yama);background:#FBF3E2}
+.koma.mine{border-left-color:var(--midori);background:#F4F8F5}
+.koma.busy{border-left-color:#B5A78F;background:#EFE9DC;color:#7C6C5E;cursor:default}
+.koma.now{border-left-color:var(--red);background:#F7E9EA;color:var(--red);cursor:default}
+.koma.busy.priv{border-left-style:dotted;border-left-width:4px;background:#F4EFE4}
 .koma.sel2{outline:2px solid var(--ink);outline-offset:-2px}
-.koma .pv{display:inline-block;font-size:12px;border:1px solid var(--ink4);border-radius:4px;padding:0 3px;color:var(--ink4)}
+.koma .pv{display:inline-block;font-size:9px;border:1px solid #C9BCA6;border-radius:4px;padding:0 3px;color:#7C6C5E}
 .slot{position:relative}
-.slot .yt{position:absolute;right:2px;bottom:2px;font-size:12px;color:var(--ink3);border:1px solid var(--line);
+.slot .yt{position:absolute;right:2px;bottom:2px;font-size:9px;color:var(--ink3);border:1px solid var(--line);
  border-radius:4px;padding:0 3px;background:#fff;opacity:0;transition:.12s;white-space:nowrap}
 .slot:hover .yt{opacity:1}
 .slot .yt:hover{background:var(--yama);color:#fff;border-color:var(--yama)}
 /* ══ 日程のカレンダー（ほかの カレンダーアプリと 同じ 組み方） ══ */
 .cal{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.calh{display:flex;border-bottom:1px solid var(--line);background:var(--card2)}
+.calh{display:flex;border-bottom:1px solid var(--line);background:#FBF8F1}
 .calh .gut{flex:0 0 58px;border-right:1px solid var(--line2)}
 .calh .dh{flex:1;min-width:0;text-align:center;padding:8px 2px 7px;border-right:1px solid var(--line2)}
 .calh .dh:last-child{border-right:0}
-.calh .dw{font-size:12.5px;color:var(--ink3);letter-spacing:.08em}
+.calh .dw{font-size:11px;color:var(--ink3);letter-spacing:.08em}
 .calh .dd{font-size:19px;font-weight:600;line-height:1.25;margin-top:1px}
 .calh .dh.tdy .dw{color:var(--enji)}
 .calh .dh.tdy .dd{background:var(--enji);color:#fff;border-radius:50%;
  width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;font-size:16px}
 .calb{display:flex;position:relative;max-height:560px;overflow-y:auto}
-.calb .gut{flex:0 0 58px;position:relative;border-right:1px solid var(--line2);background:var(--card2)}
-.calb .hr{position:absolute;right:6px;font-size:12.5px;color:var(--ink3);transform:translateY(-6px)}
+.calb .gut{flex:0 0 58px;position:relative;border-right:1px solid var(--line2);background:#FBF8F1}
+.calb .hr{position:absolute;right:6px;font-size:10.5px;color:var(--ink3);transform:translateY(-6px)}
 .col{flex:1;min-width:0;position:relative;border-right:1px solid var(--line2)}
 .col:last-child{border-right:0}
-.col.tdy{background:var(--card2)}
+.col.tdy{background:#FDFAF3}
 .ln{position:absolute;left:0;right:0;border-top:1px solid var(--line2)}
 .ln.half{border-top-style:dotted;opacity:.55}
 .hit{position:absolute;left:1px;right:1px;cursor:pointer;border-radius:5px}
 .hit:hover{background:#FBF6EA;outline:1px solid var(--line)}
-.hit .hn2{position:absolute;left:5px;top:3px;font-size:12.5px;color:var(--ink3)}
-.hit .yt2{position:absolute;right:4px;bottom:3px;font-size:12px;color:var(--ink3);border:1px solid var(--line);
+.hit .hn2{position:absolute;left:5px;top:3px;font-size:10.5px;color:var(--ink3)}
+.hit .yt2{position:absolute;right:4px;bottom:3px;font-size:9px;color:var(--ink3);border:1px solid var(--line);
  border-radius:4px;padding:0 4px;background:#fff;opacity:0;transition:.12s}
 .hit:hover .yt2{opacity:1}
 .hit .yt2:hover{background:var(--yama);color:#fff;border-color:var(--yama)}
 .hit.on{outline:2px solid var(--ink);outline-offset:-2px;background:#FBF6EA}
-.ev{position:absolute;left:2px;right:2px;border-radius:6px;padding:3px 6px;font-size:12.5px;
- line-height:1.35;overflow:hidden;cursor:pointer;border-left:3px solid var(--enji);background:var(--pick)}
-.ev b{display:block;font-weight:700;font-size:12.5px}
-.ev.les{border-left-color:var(--midori);background:var(--band)}
-.ev.sch{border-left-color:var(--ink4);background:var(--band);color:var(--ink3)}
-.ev.own{border-left-color:var(--ink4);border-left-style:dotted;border-left-width:4px;background:var(--band);color:var(--ink3)}
+.ev{position:absolute;left:2px;right:2px;border-radius:6px;padding:3px 6px;font-size:10.5px;
+ line-height:1.35;overflow:hidden;cursor:pointer;border-left:3px solid var(--enji);background:#FFF7F8}
+.ev b{display:block;font-weight:700;font-size:11px}
+.ev.les{border-left-color:var(--midori);background:#EEF5F0}
+.ev.sch{border-left-color:#B5A78F;background:#EFE9DC;color:#6D5D50}
+.ev.own{border-left-color:#B5A78F;border-left-style:dotted;border-left-width:4px;background:#F4EFE4;color:#6D5D50}
 .ev.on{outline:2px solid var(--ink);outline-offset:-2px}
-.ev .tg{font-size:12px;border:1px solid currentColor;border-radius:4px;padding:0 3px;opacity:.75;margin-left:3px}
+.ev .tg{font-size:9px;border:1px solid currentColor;border-radius:4px;padding:0 3px;opacity:.75;margin-left:3px}
 .now{position:absolute;left:0;right:0;height:0;border-top:2px solid var(--red);z-index:3}
 .now::before{content:'';position:absolute;left:-4px;top:-4px;width:7px;height:7px;border-radius:50%;background:var(--red)}
 .mini{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 12px}
-.mini .mh{display:flex;align-items:center;justify-content:space-between;font-size:13.5px;margin-bottom:7px}
+.mini .mh{display:flex;align-items:center;justify-content:space-between;font-size:12.5px;margin-bottom:7px}
 .mini .mg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
-.mini .mg span{text-align:center;font-size:12.5px;color:var(--ink3);padding:2px 0}
-.mini .mg b{text-align:center;font-size:13px;font-weight:400;padding:4px 0;border-radius:6px;cursor:pointer}
-.mini .mg b:hover{background:var(--band2)}
-.mini .mg b.w{background:var(--pick)}
+.mini .mg span{text-align:center;font-size:10px;color:var(--ink3);padding:2px 0}
+.mini .mg b{text-align:center;font-size:11.5px;font-weight:400;padding:4px 0;border-radius:6px;cursor:pointer}
+.mini .mg b:hover{background:#F3ECDD}
+.mini .mg b.w{background:#F6E4E8}
 .mini .mg b.t{background:var(--enji);color:#fff;font-weight:700}
-.mini .mg b.o{color:var(--ink4)}
+.mini .mg b.o{color:#C9BCA6}
 
 /* ── 週の 移動 ── */
 .wknav{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:2px 0 8px;
  background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 13px}
-.wknav b{font-size:15.5px}
+.wknav b{font-size:15px}
 .wkstrip{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px}
 .wkc{flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:9px;
- padding:6px 11px;font-size:13px;color:var(--ink2);cursor:pointer;white-space:nowrap;position:relative}
-.wkc:hover{border-color:var(--ink4)}
+ padding:6px 11px;font-size:11.5px;color:var(--ink2);cursor:pointer;white-space:nowrap;position:relative}
+.wkc:hover{border-color:#CFC0A4}
 .wkc.on{background:var(--enji);color:#fff;border-color:var(--enji)}
-.wkc i{font-style:normal;font-size:12px;margin-left:5px;color:var(--yama)}
-.wkc.on i{color:var(--warn)}
-.grid th.tdyh{background:var(--pick);color:var(--enji);font-weight:700}
-.grid td.tdyc{background:var(--pick)}
+.wkc i{font-style:normal;font-size:9px;margin-left:5px;color:var(--yama)}
+.wkc.on i{color:#F0C24B}
+.grid th.tdyh{background:#F6E4E8;color:var(--enji);font-weight:700}
+.grid td.tdyc{background:#FDF7F8}
 /* ── 予定の カード ── */
-.yc{margin-top:14px;border-color:var(--ink4)}
+.yc{margin-top:14px;border-color:#CFC0A4}
 .ych{display:flex;align-items:baseline;gap:10px;margin-bottom:4px;flex-wrap:wrap}
-.ych b{font-size:14.5px}
+.ych b{font-size:14px}
 .yrow{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line2)}
-.ylab{flex:0 0 92px;font-size:13px;color:var(--ink3);padding-top:5px}
+.ylab{flex:0 0 92px;font-size:11.5px;color:var(--ink3);padding-top:5px}
 .ybox{flex:1;min-width:0}
 .ybox .pills{margin-bottom:5px}
 /* ── 凡例（短く・記号で） ── */
-.lgd{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:13px;color:var(--ink2);align-items:center}
+.lgd{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:11.5px;color:var(--ink2);align-items:center}
 .lgd span{display:flex;align-items:center;gap:5px}
 .lgd i{width:14px;height:14px;border-radius:4px;border:1px solid var(--line);display:inline-block}
 .lgd i.sw1{background:#fff}
-.lgd i.sw2{background:var(--band);border-left:3px solid var(--midori)}
-.lgd i.sw3{background:var(--band);border-left:3px dotted var(--ink4)}
-.lgd i.sw4{background:var(--band);border-left:3px solid var(--ink4)}
-.lgd i.sw5{background:var(--band3);border-left:3px solid var(--yama)}
-.koma .pen{position:absolute;right:3px;top:2px;font-size:12.5px;color:var(--ink3);
+.lgd i.sw2{background:#F4F8F5;border-left:3px solid var(--midori)}
+.lgd i.sw3{background:#F4EFE4;border-left:3px dotted #B5A78F}
+.lgd i.sw4{background:#EFE9DC;border-left:3px solid #B5A78F}
+.lgd i.sw5{background:#FBF3E2;border-left:3px solid var(--yama)}
+.koma .pen{position:absolute;right:3px;top:2px;font-size:11px;color:var(--ink3);
  padding:1px 4px;border-radius:4px;cursor:pointer;background:#0000000d}
 .koma .pen:hover{background:var(--ink);color:#fff}
-.hdb{font-size:12.5px;color:var(--ink3);cursor:pointer;padding:1px 5px;border-radius:4px;
+.hdb{font-size:10px;color:var(--ink3);cursor:pointer;padding:1px 5px;border-radius:4px;
  border:1px solid var(--line);margin-left:4px;font-weight:400}
 .hdb:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
 .slot{height:100%;border-radius:5px;display:flex;align-items:center;justify-content:center;
- font-size:13px;color:var(--ink4);cursor:pointer}
+ font-size:12px;color:#C3B6A2;cursor:pointer}
 .slot:hover{background:#FBF6EA;color:var(--enji)}
 .slot.n{background:#fff;color:var(--ink2)}
 .slot.sel{outline:2px solid var(--ink);outline-offset:-2px}
 /* ── 2ペイン（連絡） ── */
 .pane{display:flex;gap:0;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;height:620px}
-.pane .lft{flex:0 0 292px;border-right:1px solid var(--line);overflow-y:auto;background:var(--card2)}
+.pane .lft{flex:0 0 292px;border-right:1px solid var(--line);overflow-y:auto;background:#FDFAF3}
 .pane .rgt{flex:1;overflow-y:auto;padding:18px 22px}
 .pane .rgt .inner{max-width:640px}
 .pl{padding:13px 15px;border-bottom:1px solid var(--line2);cursor:pointer}
 .pl:hover{background:#fff}
 .pl.on{background:#fff;box-shadow:inset 3px 0 0 var(--enji)}
-.pl .t{font-size:14.5px;display:flex;align-items:flex-start;gap:7px}
-.pl .m{font-size:12.5px;color:var(--ink3);margin-top:3px;padding-left:14px}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--ok);flex:none;margin-top:6px}
+.pl .t{font-size:13.5px;display:flex;align-items:flex-start;gap:7px}
+.pl .m{font-size:11px;color:var(--ink3);margin-top:3px;padding-left:14px}
+.dot{width:7px;height:7px;border-radius:50%;background:#2E6FD9;flex:none;margin-top:6px}
 .dot.off{background:none}
 .post{border-bottom:1px solid var(--line2);padding:14px 0}
 .post:last-child{border:0}
 .post .ph2{display:flex;align-items:center;gap:9px;margin-bottom:6px}
-.post .av{width:28px;height:28px;border-radius:50%;background:var(--band2);flex:none;display:flex;
- align-items:center;justify-content:center;font-size:13px;color:var(--ink2)}
-.post .nm3{font-size:13.5px;font-weight:700}.post .dt{font-size:12.5px;color:var(--ink3);margin-left:auto}
-.post .bd2{font-size:14.5px;line-height:1.85}
-.wl{background:var(--band2);border:1px solid var(--line3);border-radius:10px;padding:10px 13px;
- font-size:13px;color:var(--ink2);line-height:1.8;margin-top:8px}
+.post .av{width:28px;height:28px;border-radius:50%;background:#F0E4D2;flex:none;display:flex;
+ align-items:center;justify-content:center;font-size:11.5px;color:var(--ink2)}
+.post .nm3{font-size:13px;font-weight:700}.post .dt{font-size:11px;color:var(--ink3);margin-left:auto}
+.post .bd2{font-size:14px;line-height:1.85}
+.wl{background:#F6EFDF;border:1px solid #E8DFC8;border-radius:10px;padding:10px 13px;
+ font-size:11.5px;color:var(--ink2);line-height:1.8;margin-top:8px}
 /* ── ヒートの 数 ── */
-.hn{display:inline-block;min-width:22px;text-align:center;font-size:13px}
+.hn{display:inline-block;min-width:22px;text-align:center;font-size:12px}
 /* ── 下の 操作 ── */
 .demo{width:100%;max-width:900px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 15px}
-.demo .t{font-size:12.5px;color:var(--ink3);letter-spacing:.1em;margin-bottom:8px}
+.demo .t{font-size:11px;color:var(--ink3);letter-spacing:.1em;margin-bottom:8px}
 .demo .r{display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap}
-.demo .r>span.l{font-size:13px;color:var(--ink2);flex:0 0 74px}
+.demo .r>span.l{font-size:11.5px;color:var(--ink2);flex:0 0 74px}
 .demo .pill{flex:none}
-.legend{max-width:900px;font-size:13.5px;color:var(--ink2);background:#fff;border:1px solid var(--line);
+.legend{max-width:900px;font-size:13px;color:var(--ink2);background:#fff;border:1px solid var(--line);
  border-radius:12px;padding:15px 18px;line-height:1.95}
 .legend b{color:var(--enji)}.legend ul{margin:6px 0 0 1.3em}.legend li{margin-bottom:3px}
 .toast{position:fixed;left:50%;transform:translateX(-50%) translateY(10px);bottom:26px;background:#261913;color:#fff;
- border-radius:11px;padding:12px 18px;font-size:13.5px;z-index:80;opacity:0;transition:.2s;pointer-events:none}
+ border-radius:11px;padding:12px 18px;font-size:13px;z-index:80;opacity:0;transition:.2s;pointer-events:none}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 .zoomwrap{overflow:auto;max-width:100%;padding-bottom:6px}
 
 /* ══════════ 暗い 画面（ダークモード） ══════════ */
-html[data-th="dark"]{--card2:#2A2219;--line3:#3A322A;--ink4:#7C6C5E;--band:#2C241D;--band2:#2A231C;--band3:#3A1E22;--enji-d:#C9607A;--ok:#5E8F74;--warn:#D9AC55;--err:#EA8894;--pick:#3A1E22;
+html[data-th="dark"]{
  --paper:#1C1712;--bg:#121009;--ink:#EFE6D8;--ink2:#BCAF9D;--ink3:#918476;
  --line:#3D342B;--line2:#2C251E;--enji:#E790A2;--yama:#D9AC55;--midori:#82BCA0;--red:#EA8894;
  --sh:0 1px 0 rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.45);
@@ -379,16 +299,16 @@ html[data-th="dark"] body{background:var(--bg);color:var(--ink)}
 html[data-th="dark"] .card,html[data-th="dark"] .box,html[data-th="dark"] .li,html[data-th="dark"] .nt,html[data-th="dark"] .rep,html[data-th="dark"] .post,html[data-th="dark"] .empty,html[data-th="dark"] .mini,html[data-th="dark"] .dev,html[data-th="dark"] .ph,html[data-th="dark"] .grid,html[data-th="dark"] .tblwrap,html[data-th="dark"] .cal,html[data-th="dark"] .scr,html[data-th="dark"] .wknav,html[data-th="dark"] .pane,html[data-th="dark"] .sheet,html[data-th="dark"] .demo,html[data-th="dark"] .legend{background:#241D17;border-color:var(--line);color:var(--ink)}
 html[data-th="dark"] .li,html[data-th="dark"] .nt,html[data-th="dark"] .rep,html[data-th="dark"] .post{background:transparent}
 html[data-th="dark"] .box,html[data-th="dark"] .card.p0{background:#241D17}
-html[data-th="dark"] .top{background:var(--enji);color:#fff}
+html[data-th="dark"] .top{background:#6B0A1D;color:#fff}
 html[data-th="dark"] .top .badge,html[data-th="dark"] .top .rl{border-color:rgba(255,255,255,.4);color:#fff}
 html[data-th="dark"] .wall{background:#221B15;color:var(--ink2)}
 html[data-th="dark"] .side{background:#1E1812;border-color:var(--line)}
 html[data-th="dark"] .nv.on{background:#241D17;color:var(--enji)}
 html[data-th="dark"] .body,html[data-th="dark"] .bd{background:var(--paper)}
-html[data-th="dark"] .btn{background:var(--enji-d);color:#fff;border-color:var(--enji-d)}
+html[data-th="dark"] .btn{background:#8E1230;color:#fff;border-color:#8E1230}
 html[data-th="dark"] .btn.g,html[data-th="dark"] .btn.mid{background:#2C241D;color:var(--ink);border-color:var(--line)}
 html[data-th="dark"] .pill{background:#2C241D;color:var(--ink2);border-color:var(--line)}
-html[data-th="dark"] .pill.on{background:var(--enji-d);color:#fff;border-color:var(--enji-d)}
+html[data-th="dark"] .pill.on{background:#8E1230;color:#fff;border-color:#8E1230}
 html[data-th="dark"] .inp,html[data-th="dark"] .ta,html[data-th="dark"] input,html[data-th="dark"] textarea,html[data-th="dark"] select{background:#1A1510;color:var(--ink);border-color:var(--line)}
 html[data-th="dark"] table th,html[data-th="dark"] .tbl th,html[data-th="dark"] .spt th{background:#2C241D;color:var(--ink2);border-color:var(--line)}
 html[data-th="dark"] table td,html[data-th="dark"] .tbl td,html[data-th="dark"] .spt td{background:#241D17;color:var(--ink);border-color:var(--line)}
@@ -398,7 +318,7 @@ html[data-th="dark"] .warn,html[data-th="dark"] .wl{background:#2A2218;border-co
 html[data-th="dark"] .fbtn{background:#2C241D;border-color:var(--line);color:var(--ink3)}
 html[data-th="dark"] .koma{background:#2A231C;border-left-color:var(--enji)}
 html[data-th="dark"] .koma.mine{background:#1F2C25;border-left-color:var(--midori)}
-html[data-th="dark"] .koma.busy{background:#2E2820;border-left-color:var(--ink3);color:var(--ink2)}
+html[data-th="dark"] .koma.busy{background:#2E2820;border-left-color:#6B5F4E;color:var(--ink2)}
 html[data-th="dark"] .koma.busy.priv{background:#282219}
 html[data-th="dark"] .koma.now{background:#3A1E22;border-left-color:var(--red);color:var(--red)}
 html[data-th="dark"] .slot{background:#1E1812;color:var(--ink3)}
@@ -408,8 +328,8 @@ html[data-th="dark"] .grid th.tdyh{background:#3A1E22;color:var(--enji)}
 html[data-th="dark"] .grid td.tdyc{background:#221A18}
 html[data-th="dark"] .mini .mg b:hover{background:#2C241D}
 html[data-th="dark"] .mini .mg b.w{background:#3A1E22}
-html[data-th="dark"] .mini .mg b.t{background:var(--enji-d);color:#fff}
-html[data-th="dark"] .mini .mg b.o{color:var(--ink3)}
+html[data-th="dark"] .mini .mg b.t{background:#8E1230;color:#fff}
+html[data-th="dark"] .mini .mg b.o{color:#5E5449}
 html[data-th="dark"] .tabs{background:#1E1812;border-color:var(--line)}
 html[data-th="dark"] .tb{color:var(--ink3)}
 html[data-th="dark"] .tb.on{color:var(--enji)}
@@ -421,28 +341,28 @@ html[data-th="dark"] .pl.on{background:#2C241D}
 html[data-th="dark"] .hd h2,html[data-th="dark"] h2,html[data-th="dark"] h1{color:var(--ink)}
 html[data-th="dark"] .stage,html[data-th="dark"] .hroom{background:#241D17}
 html[data-th="dark"] .opbar{background:#221B15;color:var(--ink2)}
-html[data-th="dark"] .off{background:#3A2E1C;color:var(--warn)}
-html[data-th="dark"] .dot{background:var(--ok)}
+html[data-th="dark"] .off{background:#3A2E1C;color:#E7C46A}
+html[data-th="dark"] .dot{background:#5C8FE0}
 @media (prefers-color-scheme:dark){html:not([data-th="light"]):not([data-th="dark"]){color-scheme:dark}}
 /* 暗い画面：残っていた 明るい面 */
 html[data-th="dark"] .kpi{background:#241D17;border-color:var(--line)}
 html[data-th="dark"] .kpi.al{background:#2E2018;border-color:#5A3A3E}
 html[data-th="dark"] .lft,html[data-th="dark"] .pl{background:#1E1812}
 html[data-th="dark"] .seg{background:#2C241D;border-color:var(--line)}
-html[data-th="dark"] .seg .on,html[data-th="dark"] .seg b.on,html[data-th="dark"] .seg span.on,html[data-th="dark"] .on{background:var(--enji-d);color:#fff}
+html[data-th="dark"] .seg .on,html[data-th="dark"] .seg b.on,html[data-th="dark"] .seg span.on,html[data-th="dark"] .on{background:#8E1230;color:#fff}
 html[data-th="dark"] .gear,html[data-th="dark"] .role{background:#2C241D;color:var(--ink2);border-color:var(--line)}
 html[data-th="dark"] .k{background:#2A231C;color:var(--ink)}
 html[data-th="dark"] div[style*="background:#fff"],html[data-th="dark"] div[style*="background:#FFF"]{background:#241D17!important}
 html[data-th="dark"] td[style*="background:#fff"],html[data-th="dark"] td[style*="background:#FFF"]{background:#241D17!important}
-html[data-th="dark"] td[style*="background:var(--pick)"],html[data-th="dark"] [style*="background:var(--pick)"]{background:#3A1E22!important;color:var(--enji)}
-html[data-th="dark"] [style*="background:var(--band)"]{background:#1F2C25!important}
-html[data-th="dark"] [style*="background:var(--band)"],html[data-th="dark"] [style*="background:var(--band3)"],html[data-th="dark"] [style*="background:var(--band)"],html[data-th="dark"] [style*="background:var(--card2)"],html[data-th="dark"] [style*="background:var(--band2)"],html[data-th="dark"] [style*="background:#FBF6EA"],html[data-th="dark"] [style*="background:var(--band)"],html[data-th="dark"] [style*="background:var(--band)"],html[data-th="dark"] [style*="background:var(--band)"],html[data-th="dark"] [style*="background:var(--card2)"],html[data-th="dark"] [style*="background:var(--card2)"]{background:#2A2219!important}
-html[data-th="dark"] tr[style*="background:var(--band3)"]{background:#2A2219!important}
+html[data-th="dark"] td[style*="background:#F6E4E8"],html[data-th="dark"] [style*="background:#F6E4E8"]{background:#3A1E22!important;color:var(--enji)}
+html[data-th="dark"] [style*="background:#F4F8F5"]{background:#1F2C25!important}
+html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"] [style*="background:#FBF3E2"],html[data-th="dark"] [style*="background:#F6F1E4"],html[data-th="dark"] [style*="background:#FDFAF3"],html[data-th="dark"] [style*="background:#F3ECDD"],html[data-th="dark"] [style*="background:#FBF6EA"],html[data-th="dark"] [style*="background:#EDE5D5"],html[data-th="dark"] [style*="background:#F4EFE4"],html[data-th="dark"] [style*="background:#EFE9DC"],html[data-th="dark"] [style*="background:#FFFDF8"],html[data-th="dark"] [style*="background:#FFFDF7"]{background:#2A2219!important}
+html[data-th="dark"] tr[style*="background:#FBF3E2"]{background:#2A2219!important}
 html[data-th="dark"] .sw{background:#3A322A}
-html[data-th="dark"] .sw.on{background:var(--enji-d)}
+html[data-th="dark"] .sw.on{background:#8E1230}
 html[data-th="dark"] .sw i{background:#EFE6D8}
 html[data-th="dark"] .tri div{background:#2A2219;border-color:var(--line)}
-html[data-th="dark"] .tri div.on{background:var(--enji-d);border-color:var(--enji-d)}
+html[data-th="dark"] .tri div.on{background:#8E1230;border-color:#8E1230}
 html[data-th="dark"] .tri div.on .w,html[data-th="dark"] .tri div.on .g{color:#fff}
 html[data-th="dark"] .drt,html[data-th="dark"] .drr,html[data-th="dark"] .drhint,html[data-th="dark"] .drc{background:#241D17}
 </style></head><body>
@@ -589,7 +509,7 @@ var HIRAITA=[['田村 まこと（事務長）','9月9日 10:22','斎藤 めぐ�
  ['田村 まこと（事務長）','9月2日 14:05','斎藤 めぐみ の 門下']];
 
 /* ══════════ 状態 ══════════ */
-var S={rail:false,pal:false,palq:'',dev:'pc',post:'学長',tab:'ホーム',stack:[],
+var S={dev:'pc',post:'学長',tab:'ホーム',stack:[],
  cell:null,nv:'日',mf:'全て',pf:{k:'全て',v:''},oc:0,gy:null,mnew:{},sel:null,scale:1};
 function $(x){return document.querySelector(x)}
 function postOf(n){for(var i=0;i<POSTS.length;i++)if(POSTS[i].n===n)return POSTS[i];return null}
@@ -689,8 +609,8 @@ function P_homeT(){
  +'<div class="cards">'+kpi('きょうの レッスン',todayOf(ME).length,'件','日程')+kpi('門下の 人数',MONKA.length,'人','門下')
  +(myKasa().length?kpi('あなたの 重なり',myKasa().length,'件','重なり',1):'')+'</div>'
  +'<div class="col2"><div>'
- +'<div class="card" style="border-color:var(--ok);background:var(--band)">'
- +'<div style="font-size:15.5px;line-height:1.8">時間割　<b>'+deta+' / '+MONKA.length+'人</b> 出ています</div>'
+ +'<div class="card" style="border-color:#9BBBA9;background:#F4F8F5">'
+ +'<div style="font-size:15px;line-height:1.8">時間割　<b>'+deta+' / '+MONKA.length+'人</b> 出ています</div>'
  +'<div class="usu" style="margin:4px 0 12px">出ている方の <b>空きコマ</b>から、日程を 組めます</div>'
  +'<span class="btn mid" onclick="push(\'日程を組む\')">レッスンの 日程を 組む</span>　'
  +'<span class="btn g sm" onclick="push(\'まだの人\')">まだの方を 見る</span></div>'
@@ -743,16 +663,16 @@ function P_nittei(){
  if(S.nv==='週'){
   h+='<div class="card"><div class="h3" style="margin-top:0">9月　濃いところ＝コマが 多い日</div>'
    +'<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;max-width:520px">'
-   +'日月火水木金土'.split('').map(function(w){return '<div style="text-align:center;font-size:12.5px;color:var(--ink3)">'+w+'</div>'}).join('')
+   +'日月火水木金土'.split('').map(function(w){return '<div style="text-align:center;font-size:11px;color:var(--ink3)">'+w+'</div>'}).join('')
    +Array.from({length:30},function(_,i){var v=[0,3,8,5,9,6,2][i%7];
      return '<div onclick="S.nv=\'日\';draw()" style="aspect-ratio:1;border-radius:7px;background:'+(v?'#840C24':'#F0E9DA')
-     +';opacity:'+(v?0.25+v/9*0.7:1)+';display:flex;align-items:center;justify-content:center;font-size:13px;color:'
-     +(v>5?'#fff':'var(--ink3)')+';cursor:pointer">'+(i+1)+'</div>'}).join('')+'</div>'
+     +';opacity:'+(v?0.25+v/9*0.7:1)+';display:flex;align-items:center;justify-content:center;font-size:12px;color:'
+     +(v>5?'#fff':'#6D5D50')+';cursor:pointer">'+(i+1)+'</div>'}).join('')+'</div>'
    +'<div class="usu" style="margin-top:9px">中身を 出しません。形だけ 見せます。押すと その日へ。</div></div>';
   return h+'<div class="note">重なりを <b>自動で 動かしません</b>。印を つけるだけです。</div>'}
  h+='<div class="grid"><table><tr><th class="stick" style="width:76px">時間</th>'
   +P.map(function(p){return '<th>'+p+'</th>'}).join('')+'</tr>'
-  +T.map(function(t,ti){return '<tr><td class="stick" style="font-size:13px">'+t+'</td>'
+  +T.map(function(t,ti){return '<tr><td class="stick" style="font-size:12px">'+t+'</td>'
    +P.map(function(p,pi){var c=cell(ti,pi);
      return '<td>'+(c?'<div class="koma '+c[3]+'" onclick="'+(c[3]==='dup'?'push(\'重なり\')':'push(\'出欠つけ\','+shuArg(t,c[0],p,c[2])+')')+'">'
        +'<b>'+c[0]+'</b>'+c[1]+'<br>'+c[2]+'</div>'
@@ -787,7 +707,7 @@ function P_meibo(){
    return '<tr class="click" onclick="push(\'その人\','+x[1]+')"><td class="stick">'+m[0]+'</td>'
    +'<td>'+m[1]+'</td><td>'+m[2]+'</td><td>'+m[3]+'</td>'
    +'<td>'
-   +(m[4]==='在籍'?'<span style="color:var(--midori)">在籍</span>':(m[4]==='休会'?'休会':(m[4]==='退会'?'<span style="color:var(--ink4)">退会</span>':'<span style="color:var(--yama)">招待中</span>')))+'</td>'
+   +(m[4]==='在籍'?'<span style="color:var(--midori)">在籍</span>':(m[4]==='休会'?'休会':(m[4]==='退会'?'<span style="color:#A0917F">退会</span>':'<span style="color:var(--yama)">招待中</span>')))+'</td>'
    +'<td class="num">'+(m[4]==='在籍'?'○':'—')+'</td></tr>'}).join('')
   :'<tr><td colspan="6" style="padding:26px;text-align:center;color:var(--ink2)">この 絞りに あう方は いません</td></tr>')
  +'</table></div>'
@@ -796,8 +716,8 @@ function P_meibo(){
  +'</div>'
  +'<div style="flex:1;min-width:230px">'
  +'<div class="card"><div class="h3" style="margin-top:0">いまの ご請求</div>'
- +'<div class="li plain"><span>数える 人数</span><s style="font-size:14.5px;color:var(--ink)">'+billN()+'人</s></div>'
- +'<div class="li plain"><span>1人あたり</span><s style="font-size:14.5px;color:var(--ink)">'+Math.round(billYen()/billN())+'円</s></div>'
+ +'<div class="li plain"><span>数える 人数</span><s style="font-size:14px;color:var(--ink)">'+billN()+'人</s></div>'
+ +'<div class="li plain"><span>1人あたり</span><s style="font-size:14px;color:var(--ink)">'+Math.round(billYen()/billN())+'円</s></div>'
  +'<div class="li plain"><span>今月の ご請求</span><s style="font-size:19px;font-weight:700;color:var(--ink)">'+yen(billYen())+'円</s></div>'
  +'<div class="wl">'+billWl()+'</div></div>'
  +'<div class="card"><div class="h3" style="margin-top:0">数えないもの</div>'
@@ -820,7 +740,7 @@ function P_monka(){
  +monkaSorted().map(function(x){var m=x[0],i=x[1],k=placeOf(i);
    var fr=0;DAYS.forEach(function(d,di){myKoma().forEach(function(kk,ki){if(isFree(i,di+'-'+ki))fr++})});
    return '<tr class="click" onclick="push(\'門下の人\','+i+')"><td class="stick">'+m[0]
-   +(m[4]?'<span class="tag" style="background:var(--pick);color:var(--enji)">代表</span>':'')+'</td>'
+   +(m[4]?'<span class="tag" style="background:#F6E4E8;color:var(--enji)">代表</span>':'')+'</td>'
    +'<td>'+m[1]+'</td>'
    +'<td>'+(m[3]?'<span style="color:var(--midori)">✓ 出ています</span>':'<span style="color:var(--yama)">まだ</span>')+'</td>'
    +'<td>'+fr+'コマ</td>'
@@ -883,17 +803,17 @@ function P_renraku(){
   +'<div class="t"><span class="dot '+(x[4]?'':'off')+'"></span><span>'+x[2]+'</span></div>'
   +'<div class="m">'+x[3]+(x[0]==='門'&&MONKAS[x[1]]?'　'+MONKAS[x[1]][1]+'人':'')+'</div></div>'};
  return '<h2>連絡</h2><div class="sub">左に 一覧、右に 本文　／　'+S.post+'　／　'
- +(un?'<b style="color:var(--ok)">未読 '+un+'件</b>':'未読は ありません')+'</div>'
+ +(un?'<b style="color:#2E6FD9">未読 '+un+'件</b>':'未読は ありません')+'</div>'
  +'<div class="pills">'
  +(canAll?'<span class="pill" onclick="push(\'お知らせを書く\',-1)"><b>＋</b>　お知らせを 書く</span>':'')
- +(canAll&&MISOU.length?'<span class="pill" style="border-color:var(--warn);background:var(--band3)" onclick="push(\'未送信\')">未送信　'+MISOU.length+'件</span>':'')
+ +(canAll&&MISOU.length?'<span class="pill" style="border-color:#E0C08A;background:#FBF3E2" onclick="push(\'未送信\')">未送信　'+MISOU.length+'件</span>':'')
  +(canRead?'<span class="pill" onclick="push(\'開いた記録\')">開いた 記録　'+HIRAITA.length+'件</span>':'')
  +'<span class="pill" onclick="markAll()">全部 読んだことに する</span></div>'
  +'<div class="usu" style="margin:-4px 0 8px"><b>右に 中身が 出た ものは、その場で 読んだことに なります</b>（青い点が 消えます）。</div>'
  +'<div class="pane"><div class="lft">'
- +'<div style="padding:11px 15px 7px;font-size:12.5px;color:var(--ink3);letter-spacing:.12em">学校からの お知らせ</div>'
+ +'<div style="padding:11px 15px 7px;font-size:10.5px;color:var(--ink3);letter-spacing:.12em">学校からの お知らせ</div>'
  +list.filter(function(x){return x[0]==='お'}).map(row).join('')
- +((canRead||canWrite)?'<div style="padding:14px 15px 7px;font-size:12.5px;color:var(--ink3);letter-spacing:.12em">門下</div>'
+ +((canRead||canWrite)?'<div style="padding:14px 15px 7px;font-size:10.5px;color:var(--ink3);letter-spacing:.12em">門下</div>'
    +list.filter(function(x){return x[0]==='門'}).map(row).join(''):'')
  +'</div><div class="rgt"><div class="inner">'+(cur?(cur[0]==='お'?paneOshirase(cur[1]):paneMonka(cur[1])):'')+'</div></div></div>'
  +(can('monka_read')?'<div class="warn" style="margin-top:12px"><b>いま、門下を 読める 状態に なっています。</b><br>'
@@ -911,14 +831,14 @@ function markAll(){OSHIRASE.forEach(function(o){o.un=0});Object.keys(MONKAUN).fo
 function paneOshirase(i){var o=OSHIRASE[i];
  return '<div style="font-size:19px;font-weight:700;margin-bottom:3px">'+o.t+'</div>'
  +'<div class="usu" style="margin-bottom:14px">'+o.d+'　／　宛先　'+o.to+'　／　○○音楽大学</div>'
- +'<div style="font-size:15.5px;line-height:2;white-space:pre-wrap">'+o.b+'</div>'
+ +'<div style="font-size:14.5px;line-height:2;white-space:pre-wrap">'+o.b+'</div>'
  +'<div class="wl" style="margin-top:16px">これは 学校からの お知らせです。宛先の 全員が 読みます。<br>90日で 消えます。</div>'
  +(can('renraku_all')?'<div style="margin-top:14px"><span class="btn g sm" onclick="S.ow=null;push(\'お知らせを書く\','+i+')">直す</span>　'
    +'<span class="btn g sm" onclick="toast(\'取り下げました（1行 残ります）\')">取り下げる</span></div>':'')}
 function paneMonka(i){var m=MONKAS[i],ro=can('monka_read')&&!can('monka_write');
  return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:3px">'
  +'<div style="font-size:19px;font-weight:700">'+m[0]+'</div>'
- +'<span class="tag">'+m[1]+'人</span>'+(ro?'<span class="tag" style="background:var(--band2);color:var(--yama)">読むだけ</span>':'')+'</div>'
+ +'<span class="tag">'+m[1]+'人</span>'+(ro?'<span class="tag" style="background:#F6EFDF;color:var(--yama)">読むだけ</span>':'')+'</div>'
  +'<div class="usu" style="margin-bottom:14px">○○音楽大学</div>'
  +(ro?'<div class="warn">この 門下を 開いたことが <b>開いた記録</b>に 残りました。<br>'
    +'記録は <b>運営の 中だけ</b>で 見ます（生徒・先生の 画面には 出しません）。<br>'
@@ -939,7 +859,7 @@ function P_kaita(){
  +'<div class="tblwrap" style="max-height:none"><table>'
  +'<tr><th class="stick">開いた人</th><th>いつ</th><th>どの 門下</th><th>何を 読んだか</th></tr>'
  +HIRAITA.map(function(x){return '<tr><td class="stick">'+x[0]+'</td><td>'+x[1]+'</td><td>'+x[2]+'</td>'
-   +'<td style="color:var(--ink4)">残していません</td></tr>'}).join('')
+   +'<td style="color:#A0917F">残していません</td></tr>'}).join('')
  +'</table></div>'
  +'<div class="warn" style="margin-top:14px"><b>誰が 見られるか（9月10日 変更）</b><br>'
  +'この 記録は <b>運営の 中だけ</b>で 見ます。生徒・先生の 画面には 出しません。<br>'
@@ -991,10 +911,10 @@ function P_write(a){
  +'<span class="pill sm" onclick="saveAte()">＋ いまの 宛先を 保存</span></div>'
  +'</div>'
  +'<div style="flex:1;min-width:320px">'
- +'<div class="card" style="border-color:var(--enji);background:var(--card2)">'
+ +'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC">'
  +'<div class="usu">いまの 宛先</div>'
- +'<div style="font-size:14.5px;line-height:1.9;margin-top:5px">'+ateText(W)+'</div>'
- +'<div style="font-size:26px;font-weight:700;margin-top:8px">'+hit.length+'<span style="font-size:14.5px;font-weight:400">人に 届きます</span></div>'
+ +'<div style="font-size:14px;line-height:1.9;margin-top:5px">'+ateText(W)+'</div>'
+ +'<div style="font-size:26px;font-weight:700;margin-top:8px">'+hit.length+'<span style="font-size:14px;font-weight:400">人に 届きます</span></div>'
  +'<div class="usu">この見本の 名簿（'+MEI.length+'人）から 数えています</div>'
  +(hit.length&&hit.length<=12?'<div class="usu" style="margin-top:7px;line-height:1.8">'+hit.map(function(x){return x[0][0]}).join('・')+'</div>':'')
  +(hit.length===0?'<div class="usu" style="margin-top:7px;color:var(--red)">このままでは 誰にも 届きません</div>':'')
@@ -1052,9 +972,9 @@ function P_misou(){
    +'<div style="display:flex;align-items:center;gap:9px;margin-bottom:5px">'
    +'<span class="tag" style="margin:0;background:'+(ng?'#B23A4818':'#8C611518')+';color:'+(ng?'#B23A48':'#8C6115')+'">'+m.why+'</span>'
    +'<span class="usu">'+m.d+'</span></div>'
-   +'<div style="font-size:15.5px;font-weight:700;margin-bottom:3px">'+(m.t||'（題 まだ）')+'</div>'
+   +'<div style="font-size:15px;font-weight:700;margin-bottom:3px">'+(m.t||'（題 まだ）')+'</div>'
    +'<div class="usu" style="margin-bottom:7px">宛先　'+m.to+'</div>'
-   +'<div style="font-size:13.5px;line-height:1.85;color:var(--ink2);white-space:pre-wrap;max-height:76px;overflow:hidden">'+m.b+'</div>'
+   +'<div style="font-size:13px;line-height:1.85;color:var(--ink2);white-space:pre-wrap;max-height:76px;overflow:hidden">'+m.b+'</div>'
    +'<div style="margin-top:11px">'
    +'<span class="btn sm" onclick="misouOpen('+i+')">'+(ng?'もう一度 出す':'つづきを 書く')+'</span>　'
    +'<span class="btn g sm" onclick="misouDel('+i+')">消す</span></div></div>'}).join('')
@@ -1133,8 +1053,8 @@ function stMiyasu(){
  +'端末の 設定（iOS の 文字サイズ）とも 重なります。どちらでも かまいません。</div>'}
 function stBill(){
  return '<div class="h3" style="margin-top:0">今月の ご請求</div>'
- +'<div class="card"><div class="li plain"><span>数える 人数</span><s style="font-size:15.5px;color:var(--ink)">'+billN()+'人</s></div>'
- +'<div class="li plain"><span>1人あたり</span><s style="font-size:15.5px;color:var(--ink)">'+Math.round(billYen()/billN())+'円</s></div>'
+ +'<div class="card"><div class="li plain"><span>数える 人数</span><s style="font-size:15px;color:var(--ink)">'+billN()+'人</s></div>'
+ +'<div class="li plain"><span>1人あたり</span><s style="font-size:15px;color:var(--ink)">'+Math.round(billYen()/billN())+'円</s></div>'
  +'<div class="li plain"><span>'+(PAY.cycle==='毎月'?'今月の':'1年ぶんの')+' ご請求</span><s style="font-size:22px;font-weight:700;color:var(--ink)">'+yen(billNow())+'円</s></div>'
  +'<div class="wl">'+billWl()+'</div></div>'
  +'<div class="h3">料金の 決まり</div><div class="card p0">'
@@ -1143,7 +1063,7 @@ function stBill(){
    return '<div class="li plain"><span>'+x[0]+'</span><s>'+x[1]+'</s></div>'}).join('')+'</div>'
  +'<div class="h3">見られないもの</div><div class="card p0">'
  +['生徒の 声の記録','生徒の からだの記録','生徒の ノート','生徒の 時間割の 中身'].map(function(v){
-   return '<div class="li plain" style="color:var(--ink4)"><span>'+v+'</span><s>画面が ありません</s></div>'}).join('')+'</div>'
+   return '<div class="li plain" style="color:#A0917F"><span>'+v+'</span><s>画面が ありません</s></div>'}).join('')+'</div>'
  +'<div class="h3">お支払い</div><div class="card p0">'
  +[['ご請求の 宛先（名義）',PAY.ate+'（'+PAY.atePost+'）'],['支払い方法',PAY.way],
    ['お支払いの まとまり',cycleLab()],
@@ -1154,6 +1074,8 @@ function stBill(){
   ?'<div style="margin-top:11px"><span class="btn g sm" onclick="push(\'支払い方法\')">支払い方法を 変える ›</span>　'
    +'<span class="btn g sm" onclick="push(\'宛先\')">宛先を 変える ›</span>　'
    +'<span class="btn g sm" onclick="push(\'領収書\')">領収書を 出す ›</span></div>'
+  +(PAY.hikitsugi?'<div class="warn" style="border-color:var(--yama);margin-top:10px"><b>'+PAY.hikitsugi.to+' さんの 承諾を 待っています。</b>'
+    +'<span style="cursor:pointer;color:var(--enji)" onclick="push(\'宛先\')">　見る ›</span></div>':'')
   :'<div class="warn" style="margin-top:11px"><b>あなたは 見るだけ</b>です。<br>'
    +'払う・支払い方法を 変えるのは　<b>'+whoCan('bill_pay')+'</b><br>'
    +'<b>領収書は 出せます。</b></div>'
@@ -1165,7 +1087,7 @@ function stBill(){
  +'　いま <b>見られる</b>のは　'+whoCan('bill')+'<br>'
  +'　いま <b>払える</b>のは　'+whoCan('bill_pay')+'<br>'
  +'　どちらも「役職と、できること」で 学校が 変えられます。<br>'
- +'<b>ご請求の 宛先（名義）は 1人だけ</b>です（いまの 宛先の 方が 決めます）。<br>'
+ +'<b>ご請求の 宛先（名義）は 1人だけ</b>です（引き継ぎには 両方の 承諾が 要ります）。<br>'
  +'ご請求の どこにも、<b>生徒の 健康の 記録は 出てきません</b>。数える 人数だけです。</div>'}
 /* ══════════ お支払い（3つの 画面） ══════════ */
 var PAY={
@@ -1215,10 +1137,10 @@ function P_pay(){
    return '<div class="li" onclick="payWay(\''+esc(x[0])+'\')"><span>'+x[0]+'<br><span class="usu">'+x[1]+'</span></span>'
    +'<s>'+(on?'<b style="color:var(--midori)">✓ いま これです</b>':'これに する ›')+'</s></div>'}).join('')+'</div>'
  +(PAY.way==='クレジットカード'?'<div class="h3">いまの カード</div>'
-   +'<div class="card"><div style="font-family:ui-monospace,monospace;font-size:15.5px">'+PAY.card+'</div>'
+   +'<div class="card"><div style="font-family:ui-monospace,monospace;font-size:15px">'+PAY.card+'</div>'
    +'<div style="margin-top:11px"><span class="btn" onclick="toast(\'見本です。本番では カード会社の 画面が 開きます（Woolsong に 番号は 入りません）\')">カードを 変える（カード会社の 画面へ）</span></div></div>':'')
  +(PAY.way==='口座振替'?'<div class="h3">いまの 口座</div>'
-   +'<div class="card"><div style="font-size:14.5px">'+PAY.bank+'</div>'
+   +'<div class="card"><div style="font-size:14px">'+PAY.bank+'</div>'
    +'<div style="margin-top:11px"><span class="btn" onclick="toast(\'見本です。本番では 金融機関の 画面が 開きます\')">口座を 変える（金融機関の 画面へ）</span>　'
    +'<span class="btn g sm" onclick="toast(\'見本です。用紙（PDF）が 出ます\')">用紙で 手続きする</span></div></div>':'')
  +(PAY.way==='銀行振込（請求書）'?'<div class="h3">請求書の 送り先</div>'
@@ -1233,7 +1155,7 @@ function P_pay(){
  +'<div class="pills">'+['毎月','1年 まとめて'].map(function(v){
    return '<span class="pill '+(PAY.cycle===v?'on':'')+'" onclick="setCycle(\''+v+'\')">'+v
    +'<span class="usu">　'+(v==='毎月'?yen(billYen())+'円／月':yen(billYear())+'円／年')+'</span></span>'}).join('')+'</div>'
- +'<div class="card" style="background:var(--card2)"><div style="font-size:13.5px;line-height:1.95;color:var(--ink2)">'
+ +'<div class="card" style="background:#FDFAF3"><div style="font-size:12.5px;line-height:1.95;color:var(--ink2)">'
  +'<b>1年 まとめて</b>　'+billN()+'人 × '+yen(billYen())+'円 × <b>10か月ぶん</b> ＝ <b>'+yen(billYear())+'円</b>（2か月ぶん 引きます）<br>'
  +'人が <b>増えたら</b>　増えた月から、<b>増えたぶんだけ</b> 毎月 ご請求します<br>'
  +'人が <b>減ったら</b>　返金しません。<b>次の 1年ぶんから 引きます</b>（繰り越し）<br>'
@@ -1270,7 +1192,7 @@ function P_seikyuNa(){
  +'<div style="margin-top:14px"><span class="btn" onclick="payLog(\'請求書の 宛名を 直しました\');pop();toast(\'直しました。次の 請求書から かかります\')">これで いい</span></div>'
  +'<div class="note"><b>インボイス登録番号</b>は、Woolsong（うち）の 番号です。学校の 番号では ありません。<br>'
  +'宛名を 直しても、<b>すでに 出した 領収書は 変わりません</b>（出し直しは「領収書を 出す」から）。</div>'}
-/* ── ② 宛先（名義）を 変える（bill_pay だけ・★1方向。裁定その74B） ── */
+/* ── ② 宛先（名義）を 変える（bill_pay だけ・両方の 承諾） ── */
 function P_atesaki(){
  if(!can('bill_pay'))return bk('ご請求')+'<h2>ご請求の 宛先</h2>'
   +'<div class="warn"><b>あなたは 見るだけです。</b>宛先を 変えられるのは　<b>'+whoCan('bill_pay')+'</b></div>'
@@ -1278,31 +1200,38 @@ function P_atesaki(){
  var cand=PEOPLE.map(function(p,i){return [p,i]}).filter(function(y){
    var x=postOf(y[0][5]);return x&&(x.p.bill||x.p.bill_pay)&&y[0][0]!==PAY.ate});
  if(PAY.hikitsugi)return bk('ご請求')+'<h2>ご請求の 宛先</h2>'
+  +'<div class="warn" style="border-color:var(--yama)"><b>'+PAY.hikitsugi.to+' さんの 承諾を 待っています。</b><br>'
+  +'出したのは　'+PAY.hikitsugi.by+'　'+PAY.hikitsugi.at+'<br>'
+  +'<b>承諾されるまで、宛先は 変わりません。</b>いまの 宛先は '+PAY.ate+'（'+PAY.atePost+'）です。</div>'
+  +'<div style="margin-top:12px"><span class="btn g sm" onclick="PAY.hikitsugi=null;payLog(\'宛先を 変える 申し出を 取り消しました\');draw();toast(\'取り消しました\')">申し出を 取り消す</span>　'
+  +'<span class="btn g sm" onclick="ateOK()">（見本）相手が 承諾した ことに する</span></div>'
   +'<div class="h3">記録</div>'+payLogCard();
  return bk('ご請求')+'<h2>ご請求の 宛先を 変える</h2>'
  +'<div class="sub">いまの 宛先　<b>'+PAY.ate+'（'+PAY.atePost+'）</b></div>'
  +'<div class="warn"><b>宛先（名義）は 1人だけ</b>です。お金の 責任を 持つ 人です。<br>'
- +'<b>いまの 宛先の 方が 決めます。</b>押すと、その場で 変わります。<br>'
+ +'<b>両方の 承諾が 要ります。</b>押しただけでは 変わりません。<br>'
+ +'　あなたが 申し出る → 相手が 承諾する → 変わります。<br>'
+ +'<b>相手が 承諾するまで、いまの 宛先の ままです。</b>止まりません。<br>'
  +'見るだけの 人は、宛先に できません（ご請求が 見えない 人に 責任を 持たせません）。</div>'
  +'<div class="h3">誰に しますか　<span class="usu">ご請求を 見られる 方だけ 出ます</span></div>'
  +(cand.length?'<div class="card p0" style="max-width:560px">'+cand.map(function(y){var p=y[0];
    return '<div class="li" onclick="ateAsk(\''+esc(p[0])+'\',\''+esc(p[5])+'\')"><span>'+p[0]+'<br><span class="usu">'+p[5]+'</span></span>'
-   +'<s>この方に する ›</s></div>'}).join('')+'</div>'
+   +'<s>この方に 申し出る ›</s></div>'}).join('')+'</div>'
   :'<div class="empty"><div class="t">ほかに ご請求を 見られる 方が いません。</div>'
    +'<div class="s">先に「役職と、できること」で、ご請求を 見られる 役職を 増やしてください。</div></div>')
  +'<div class="h3">記録</div>'+payLogCard()
  +'<div class="note"><b>宛先を 変えても、支払い方法は そのまま</b>です。カードも 口座も 引き継がれます。<br>'
  +'<b>宛先の 方が 学校を 離れる ときは、先に ここで 引き継いでください。</b><br>'
  +'　引き継がずに 役職を 外すと、<b>誰も 払えなく なります</b>。<br>'
- +'変わったことは、<b>新しい 宛先の 方に 1行 出ます</b>。</div>'}
+ +'申し出は <b>1回だけ</b> 届きます。催促を 重ねません。取り消せます。</div>'}
 function ateAsk(n,po){if(!can('bill_pay')){toast('あなたの 役職では 変えられません');return}
- /* ★裁定その74B ── 1人。いまの宛先が 指名。★その瞬間に 移る（1方向）
-    ★承諾を 作らない。★『指名したが 未承諾』の間、請求書の 宛先が 決まらないため */
- var from=PAY.ate;
- PAY.ate=n; PAY.atePost=po; PAY.hikitsugi=null;
- payLog('ご請求の 宛先が '+n+' さんに 変わりました（'+from+' さんが 決めました）');
- draw(); pop();
- toast(n+' さんが 宛先に なりました')}
+ PAY.hikitsugi={to:n,post:po,by:'坂本 響（'+S.post+'）',at:'9月9日 14:22'};
+ payLog('宛先を '+n+' さんに 変える 申し出を 出しました');draw();
+ toast(n+' さんに 1回だけ 届きました。承諾されるまで 変わりません')}
+function ateOK(){var h=PAY.hikitsugi;if(!h)return;
+ PAY.ate=h.to;PAY.atePost=h.post;PAY.hikitsugi=null;
+ payLog('ご請求の 宛先が '+h.to+' さんに 変わりました（両方の 承諾）');draw();
+ toast(h.to+' さんが 承諾しました。宛先が 変わりました')}
 /* ── ③ 領収書を 出す（bill でも 出せます） ── */
 function P_ryoshu(){
  RYO.nm=RYO.nm||PAY.nm;
@@ -1335,8 +1264,8 @@ function P_ryoshu(){
  +'「明細（.csv）」は <b>Excel で そのまま</b> 開けます（Excel でも 文字化けしません）。</div>'
  +'</div><div style="flex:1;min-width:280px">'
  +'<div class="h3" style="margin-top:0">出る 紙</div>'
- +'<div class="card" style="background:var(--card2)">'
- +'<div style="font-size:12.5px;color:var(--ink3);letter-spacing:.12em">領　収　書</div>'
+ +'<div class="card" style="background:#FDFAF3">'
+ +'<div style="font-size:11px;color:var(--ink3);letter-spacing:.12em">領　収　書</div>'
  +'<div style="font-size:17px;font-weight:700;margin:7px 0 3px">'+RYO.nm+'　御中</div>'
  +'<div style="font-size:24px;font-weight:700;margin:8px 0">'+(RYO.span==='月ごと'?amt:'886,000円')+'</div>'
  +'<div class="usu">但し　'+RYO.tada+'<br>'
@@ -1361,26 +1290,26 @@ var FORM_CSS=''
 +'.pg{width:210mm;min-height:297mm;background:#fff;margin:0 auto 20px;padding:20mm 18mm;'
 +'box-shadow:0 2px 18px rgba(38,25,19,.12);position:relative}'
 +'.ttl{text-align:center;font-size:26px;letter-spacing:.5em;margin:6px 0 22px;padding-left:.5em}'
-+'.no{position:absolute;right:18mm;top:14mm;font-size:12.5px;color:var(--ink3);text-align:right;line-height:1.7}'
++'.no{position:absolute;right:18mm;top:14mm;font-size:11px;color:#6D5D50;text-align:right;line-height:1.7}'
 +'.ate{font-size:19px;border-bottom:1px solid #261913;padding:0 60px 5px 2px;display:inline-block;margin-bottom:20px}'
 +'.amt{font-size:34px;font-weight:700;border-bottom:2px solid #261913;padding:2px 30px 5px;display:inline-block;letter-spacing:.04em}'
-+'.rw{display:flex;gap:14px;font-size:13.5px;line-height:2}'
-+'.rw .l{width:88px;color:var(--ink3)}'
-+'table{width:100%;border-collapse:collapse;font-size:13.5px;margin:16px 0}'
-+'th,td{border:1px solid var(--ink4);padding:7px 9px;text-align:left}'
-+'th{background:var(--band2);font-weight:400;color:var(--ink3)}'
++'.rw{display:flex;gap:14px;font-size:13px;line-height:2}'
++'.rw .l{width:88px;color:#6D5D50}'
++'table{width:100%;border-collapse:collapse;font-size:12.5px;margin:16px 0}'
++'th,td{border:1px solid #C9BCA6;padding:7px 9px;text-align:left}'
++'th{background:#F3ECDD;font-weight:400;color:#6D5D50}'
 +'td.n{text-align:right;font-variant-numeric:tabular-nums}'
-+'.fr{margin-top:26px;font-size:13.5px;line-height:1.95}'
++'.fr{margin-top:26px;font-size:12.5px;line-height:1.95}'
 +'.stamp{position:absolute;right:26mm;bottom:56mm;width:78px;height:78px;border:2px solid #B23A48;'
 +'border-radius:50%;color:#B23A48;display:flex;align-items:center;justify-content:center;'
-+'font-size:12.5px;text-align:center;line-height:1.3;transform:rotate(-8deg);opacity:.85}'
++'font-size:11px;text-align:center;line-height:1.3;transform:rotate(-8deg);opacity:.85}'
 +'.re{position:absolute;left:18mm;top:14mm;border:1.5px solid #B23A48;color:#B23A48;'
-+'padding:2px 9px;font-size:13px;letter-spacing:.2em}'
-+'.nt{margin-top:20px;font-size:12.5px;color:var(--ink3);line-height:1.9;border-top:1px solid #E4DAC4;padding-top:10px}'
++'padding:2px 9px;font-size:12px;letter-spacing:.2em}'
++'.nt{margin-top:20px;font-size:10.5px;color:#6D5D50;line-height:1.9;border-top:1px solid #E4DAC4;padding-top:10px}'
 +'.bar{max-width:210mm;margin:0 auto 14px;display:flex;gap:9px;align-items:center;'
-+'font-family:system-ui,sans-serif;font-size:13.5px}'
-+'.bar b{flex:1;font-weight:400;color:var(--ink3)}'
-+'.bar button{font:inherit;padding:9px 16px;border-radius:99px;border:1px solid var(--ink4);'
++'font-family:system-ui,sans-serif;font-size:13px}'
++'.bar b{flex:1;font-weight:400;color:#6D5D50}'
++'.bar button{font:inherit;padding:9px 16px;border-radius:99px;border:1px solid #C9BCA6;'
 +'background:#fff;color:#261913;cursor:pointer}'
 +'.bar button.p{background:#840C24;color:#fff;border-color:#840C24}'
 +'@media print{body{background:#fff;padding:0}.pg{box-shadow:none;margin:0;width:auto;min-height:0;padding:0}.bar{display:none}}';
@@ -1565,14 +1494,14 @@ function mineEdit(){
  +'<div class="fl">押したときの 名前　<span class="usu">（選ばなくても かまいません）</span></div>'
  +'<div class="pills">'+LIST.map(chip).join('')
  +'<span class="pill sm" onclick="S.bnew=1;draw()">＋ 自分で 書く</span></div>'
- +(S.bnew?'<div class="card" style="border-color:var(--ink4)"><div style="display:flex;gap:8px">'
+ +(S.bnew?'<div class="card" style="border-color:#CFC0A4"><div style="display:flex;gap:8px">'
    +'<input class="inp" id="bnn" value="" placeholder="れい：ソルフェージュ" style="flex:1" '
    +'onkeydown="if(event.key===\'Enter\')bnAdd()">'
    +'<span class="btn sm" style="flex:none" onclick="bnAdd()">これに する</span>'
    +'<span class="btn g sm" style="flex:none" onclick="S.bnew=0;draw()">やめる</span></div></div>':'')
  +'<div class="grid" style="max-height:none;margin-top:10px"><table class="wk"><tr><th class="stick">コマ</th>'
  +DAYS.map(function(d,di){return '<th>'+d+'<span class="hdb" onclick="bCol('+di+')" title="この曜日を まとめて">⇣</span></th>'}).join('')+'</tr>'
- +myKoma().map(function(k,ki){return '<tr><td class="stick" style="font-size:13px">'+k[0]
+ +myKoma().map(function(k,ki){return '<tr><td class="stick" style="font-size:11.5px">'+k[0]
    +'<span class="hdb" onclick="bRow('+ki+')" title="この コマを まとめて">⇢</span>'
    +'<br><span class="usu">'+k[1]+'〜'+k[2]+'</span></td>'
    +DAYS.map(function(d,di){var K=di+'-'+ki,b=TBUSY[K],pv=tPriv(K);
@@ -1583,7 +1512,7 @@ function mineEdit(){
  +'<div class="usu" style="margin-top:7px">空きを 押す＝<b>「'+S.bn+'」（'+S.bk+'）が 入ります</b>　／　'
  +'入っているのを 押す＝<b>下に 出て、直したり 消したり できます</b>（押しただけでは 消えません）　／　'
  +'⇣ ⇢＝<b>その曜日・その コマを まとめて</b>　／　全部 '+n+'コマ（うち 自分 '+np+'）</div>'
- +(S.bedit&&TBUSY[S.bedit]?'<div class="card" style="border-color:var(--ink4);margin-top:10px">'
+ +(S.bedit&&TBUSY[S.bedit]?'<div class="card" style="border-color:#CFC0A4;margin-top:10px">'
    +'<div style="font-size:16px;font-weight:700;margin-bottom:2px">'+keyLab(S.bedit)+'</div>'
    +'<div class="usu" style="margin-bottom:8px">いま　<b>'+TBUSY[S.bedit]+'</b>（'+tkind(S.bedit)+'の 予定）　直すか、消すか、選んでください</div>'
    +'<div class="fl">どちらの 予定ですか</div>'
@@ -1647,7 +1576,7 @@ function stOrg(){
     :ORG[k[0]].map(function(v,i){
      return '<div class="li plain"><span>'+v+'</span><s><span class="pill sm" onclick="orgDel(\''+k[0]+'\','+i+')">消す</span></s></div>'}).join(''))
    +'</div><div style="display:flex;gap:7px;margin-top:8px">'
-   +'<input class="inp" style="padding:8px 10px;font-size:13.5px" placeholder="'+k[2]+'" value="'+(S.mnew[k[0]]||'')+'" oninput="S.mnew[\''+k[0]+'\']=this.value">'
+   +'<input class="inp" style="padding:8px 10px;font-size:12.5px" placeholder="'+k[2]+'" value="'+(S.mnew[k[0]]||'')+'" oninput="S.mnew[\''+k[0]+'\']=this.value">'
    +'<span class="btn sm" style="flex:none" onclick="orgAdd(\''+k[0]+'\')">足す</span></div></div>'}).join('')
  +'</div>'
  +'<div class="note">使われている ものは 消せません（その方が 1人でも いると 止めます）。</div>'}
@@ -1667,30 +1596,28 @@ function stPost(){
  +'その方 自身にだけ かかる もの（自分の 日程・自分の 門下・出欠・時間）は、持っていなくても 渡せます。</div>'
  +(can('post')?'':'<div class="warn" style="border-color:var(--yama)"><b>あなたは 見るだけです。</b>'
    +'ひとの 役職を 変えられるのは　<b>'+whoCan('post')+'</b></div>')
- +'<div class="tw mx"><table><thead>'
- +'<tr><th class="anc" style="min-width:230px">できること</th>'
+ +'<div class="tblwrap" style="max-height:520px"><table>'
+ +'<tr><th class="stick" style="min-width:250px">できること</th>'
  +POSTS.map(function(x,i){var n=PEOPLE.filter(function(q){return q[5]===x.n}).length;
    return '<th style="text-align:center;min-width:68px"><span style="cursor:pointer;color:var(--enji)" onclick="push(\'役職の中身\','+i+')">'+x.n+'</span>'
-   +'<br><span style="font-weight:400;color:var(--ink3)">'+n+'人</span></th>'}).join('')+'</tr></thead><tbody>'
+   +'<br><span style="font-weight:400;color:var(--ink3)">'+n+'人</span></th>'}).join('')+'</tr>'
  +PERM.map(function(k){
    return '<tr'+(k[2]?'':' style="background:#FBF6EA"')+'>'
-   +'<td class="anc" style="white-space:normal;line-height:1.5">'+k[1]
+   +'<td class="stick" style="white-space:normal;line-height:1.5">'+k[1]
    +(k[2]?'':'<br><span class="usu">その方 自身にだけ かかります</span>')+'</td>'
    +POSTS.map(function(x,i){var on=!!x.p[k[0]],ok=!k[2]||!!myPost().p[k[0]];
-     return '<td style="text-align:center;cursor:'+(can('post')&&ok?'pointer':'default')+';'+(on?'background:var(--pick)':'')+'" '
+     return '<td style="text-align:center;cursor:'+(can('post')&&ok?'pointer':'default')+';'+(on?'background:#F6E4E8':'')+'" '
      +'onclick="'+(can('post')&&ok?'togPerm('+i+',\''+k[0]+'\')':'toast(\'学校全部に かかる ことは、自分が 持っていないと 渡せません\')')+'">'
-     +(on?'<span style="color:var(--enji);font-weight:700;font-size:15.5px">●</span>':'<span style="color:var(--line);font-size:15.5px">○</span>')+'</td>'}).join('')
+     +(on?'<span style="color:var(--enji);font-weight:700;font-size:15px">●</span>':'<span style="color:#D8CCB6;font-size:15px">○</span>')+'</td>'}).join('')
    +'</tr>'}).join('')
- +'<tr style="background:var(--band2)"><td class="anc" style="font-size:13px;color:var(--ink2);background:var(--band2)">この役職で 出るナビ</td>'
- +POSTS.map(function(x){return '<td style="text-align:center;font-size:12.5px;line-height:1.5;white-space:normal;color:var(--ink2)">'
-   +navOf(x).join('<br>')+'</td>'}).join('')+'</tr></tbody>'
+ +'<tr style="background:#F3ECDD"><td class="stick" style="font-size:11.5px;color:var(--ink2)">この役職で 出るナビ</td>'
+ +POSTS.map(function(x){return '<td style="text-align:center;font-size:10px;line-height:1.5;white-space:normal;color:var(--ink2)">'
+   +navOf(x).join('<br>')+'</td>'}).join('')+'</tr>'
  +'</table></div>'
  +'<div class="fl">役職を 足す</div><div style="display:flex;gap:8px;max-width:420px">'
  +'<input class="inp" placeholder="れい：特任教授／主任／園長" value="'+(S.mnew.post||'')+'" oninput="S.mnew.post=this.value">'
  +'<span class="btn" style="flex:none" onclick="postAdd()">足す</span></div>'
  +'<div class="note"><b>できること</b>を 左の 列に 置きました。文字が 途中で 切れません。<br>'
- +'<b>見出しの 行と、左の 列は 貼り付いています。</b>横に すべっても、'
- +'どの できことの、どの 役職かが 分かります。<br>'
  +'上の 役職名を 押すと、その役職 1つの 画面へ。丸を 押すと その場で 変わります。<br>'
  +'薄い 帯の 4行は「その方 自身にだけ かかる」もの ── 持っていなくても 渡せます。<br>'
  +'足した 役職は、はじめは できることが 1つも ありません。その役職の方が いる間は 消せません。</div>'}
@@ -1711,7 +1638,7 @@ function P_postDetail(i){var x=POSTS[i],n=PEOPLE.filter(function(q){return q[5]=
  +'<div class="fl">名前</div><input class="inp" value="'+x.n.replace(/"/g,'&quot;')+'" '+(can('post')?'oninput="postRename('+i+',this.value)"':'disabled')+'>'
  +'<div class="fl">できること</div><div class="card p0">'
  +PERM.map(function(k){var on=!!x.p[k[0]],ok=!k[2]||!!myPost().p[k[0]];
-   return '<div class="li" style="'+(can('post')&&ok?'':'color:var(--ink4)')+'" onclick="'+(can('post')&&ok?'togPerm('+i+',\''+k[0]+'\')':'toast(\'学校全部に かかる ことは、自分が 持っていないと 渡せません\')')+'">'
+   return '<div class="li" style="'+(can('post')&&ok?'':'color:#A0917F')+'" onclick="'+(can('post')&&ok?'togPerm('+i+',\''+k[0]+'\')':'toast(\'学校全部に かかる ことは、自分が 持っていないと 渡せません\')')+'">'
    +'<span>'+k[1]+(k[2]?'':'<br><span class="usu">その方 自身にだけ かかります</span>')+'</span>'
    +'<div class="sw '+(on?'on':'')+'"><i></i></div></div>'}).join('')+'</div>'
  +'<div class="warn" style="margin-top:12px"><b>この役職で 出るナビ</b><br>'+navOf(x).join('　／　')+'</div>'
@@ -1754,7 +1681,7 @@ function stPeople(){
    return '<tr class="'+(canChange(p[5])?'click':'')+'" onclick="'+(canChange(p[5])?'push(\'役職を変える\','+x[1]+')':'toast(\'あなたの 役職では 変えられません\')')+'">'
    +'<td class="stick">'+p[0]+'</td><td>'+p[2]+'</td><td>'+p[3]+'</td><td>'+p[4]+'</td>'
    +'<td>'+p[5]+(canChange(p[5])?' ›':'')+'</td>'
-   +'<td>'+(p[6]?'<span style="color:var(--midori)">✓</span>':'<span class="tag" style="background:var(--band3);color:var(--yama);margin:0">未確認</span>')+'</td></tr>'}).join('')
+   +'<td>'+(p[6]?'<span style="color:var(--midori)">✓</span>':'<span class="tag" style="background:#FBF0D8;color:var(--yama);margin:0">未確認</span>')+'</td></tr>'}).join('')
   :'<tr><td colspan="6" style="padding:26px;text-align:center;color:var(--ink2)">この 絞りに あう方は いません</td></tr>')
  +'</table></div>'
  +'<div class="note">大きい学校では、全員を 出しても 探せません。学部・学科・分野・役職で 絞れます。<br>'
@@ -1767,7 +1694,7 @@ function P_setPost(i){var p=PEOPLE[i];
    +'<div style="margin-top:8px"><span class="btn g sm" onclick="PEOPLE['+i+'][6]=1;draw();toast(\'確かめました\')">確かめる</span></div></div>')
  +'<div class="fl">役職</div><div class="card p0">'
  +POSTS.map(function(x){var ok=canChange(p[5])&&canBecome(x.n);
-   return '<div class="li" style="'+(ok?'':'color:var(--ink4)')+'" onclick="'+(ok?'setPost('+i+',\''+esc(x.n)+'\')':'toast(\'あなたが 持っていない できることは 渡せません\')')+'">'
+   return '<div class="li" style="'+(ok?'':'color:#A0917F')+'" onclick="'+(ok?'setPost('+i+',\''+esc(x.n)+'\')':'toast(\'あなたが 持っていない できることは 渡せません\')')+'">'
    +'<span>'+x.n+'<br><span class="usu">'+permLine(x)+'</span></span>'
    +'<s>'+(p[5]===x.n?'<span style="color:var(--midori)">✓ いま</span>':(ok?'これに する':'渡せません'))+'</s></div>'}).join('')+'</div>'
  +'<div class="fl">学部・研究科</div><div class="pills">'+['—'].concat(ORG.gakubu).map(function(v){
@@ -1907,16 +1834,16 @@ function stImport(){
   +'<div class="h3">こう 入ります</div>'
   +'<div class="tblwrap" style="max-height:none"><table><tr>'
   +IMP_HEAD.map(function(hd){var v=M[hd];
-    return '<th>'+(v==='（取り込みません）'?'<span style="color:var(--ink4)">'+hd+'<br>入れない</span>':hd+'<br><span class="usu">→ '+v+'</span>')+'</th>'}).join('')
+    return '<th>'+(v==='（取り込みません）'?'<span style="color:#B0A491">'+hd+'<br>入れない</span>':hd+'<br><span class="usu">→ '+v+'</span>')+'</th>'}).join('')
   +'</tr>'+IMP_ROWS.map(function(r){return '<tr>'+r.map(function(c,i){var v=M[IMP_HEAD[i]];
-    return '<td'+(v==='（取り込みません）'?' class="usu" style="color:var(--ink4);text-decoration:line-through"':'')+'>'+c+'</td>'}).join('')+'</tr>'}).join('')
+    return '<td'+(v==='（取り込みません）'?' class="usu" style="color:#C0B5A2;text-decoration:line-through"':'')+'>'+c+'</td>'}).join('')+'</tr>'}).join('')
   +'</table></div>'
   +'<div class="h3">どうやって 同じ人と 見分けるか</div>'
   +'<div class="card p0">'+[['学籍番号','一番 確かです（おすすめ）'],
     ['お名前 と 学年','学籍番号が 無い ファイルのとき'],
     ['メールアドレス','入れていないので 使えません']].map(function(x){
     var off=x[0]==='メールアドレス';
-    return '<div class="li'+(off?' plain':'')+'" '+(off?'':'onclick="IMP.key=\''+x[0]+'\';draw()"')+' style="'+(off?'color:var(--ink4)':'')+'">'
+    return '<div class="li'+(off?' plain':'')+'" '+(off?'':'onclick="IMP.key=\''+x[0]+'\';draw()"')+' style="'+(off?'color:#A0917F':'')+'">'
     +'<span>'+x[0]+'<br><span class="usu">'+x[1]+'</span></span><s>'+(off?'使えません':(IMP.key===x[0]?'<b style="color:var(--midori)">✓ これで 見分けます</b>':'これに する ›'))+'</s></div>'}).join('')+'</div>'
   +'<div style="margin-top:12px"><span class="btn" onclick="impGo(4)">何が 起きるか 見る ›</span>　'
   +'<span class="btn g sm" onclick="impGo(2)">‹ 列を つなぎ直す</span></div>'
@@ -2028,9 +1955,9 @@ function stExport(){
    ?'<div class="usu" style="margin-top:-4px">あなたの 役職では 出せないもの　'
     +Object.keys(EXP_COLS).filter(function(v){return !expCan(v)}).join('・')
     +'　<span style="color:var(--ink3)">（見られないものは 出せません）</span></div>':'')
- +(EXP.what.length?'<div class="card" style="background:var(--card2);padding:11px 13px">'
+ +(EXP.what.length?'<div class="card" style="background:#FDFAF3;padding:11px 13px">'
    +'<div class="usu">出る ファイル　'+EXP.what.length+'つ　／　合わせて '+total+'行</div>'
-   +'<div style="font-family:ui-monospace,monospace;font-size:13px;line-height:1.9;margin-top:5px;color:var(--ink2)">'
+   +'<div style="font-family:ui-monospace,monospace;font-size:11.5px;line-height:1.9;margin-top:5px;color:var(--ink2)">'
    +EXP.what.map(function(w){return expFile(w)}).join('<br>')+'</div>'
    +(EXP.what.length>1?'<div class="usu" style="margin-top:6px">2つ以上のときは、まとめて 1つの zip で 出します</div>':'')+'</div>'
   :'<div class="usu" style="margin-bottom:10px;color:var(--red)">何を 出すか 選んでください</div>')
@@ -2063,7 +1990,7 @@ function stExport(){
  +'<div class="h3">書き出せないもの</div><div class="card p0">'
  +['生徒の 声の記録','生徒の からだの記録','生徒の ノート・レパートリー','生徒の 時間割の 中身',
    '受診用の 1枚','連絡の 本文','くらべる・かぞえるの 結果'].map(function(v){
-   return '<div class="li plain" style="color:var(--ink4)"><span>'+v+'</span><s>選べません</s></div>'}).join('')+'</div>'
+   return '<div class="li plain" style="color:#A0917F"><span>'+v+'</span><s>選べません</s></div>'}).join('')+'</div>'
  +'<div class="note"><b>健康に関するものは、そもそも 選択肢に ありません。</b>切り忘れが 起きません。<br>'
  +'<b>誰が・いつ・何を 書き出したかが 残ります。</b>（個人情報を 外へ 出す 行為だからです）<br>'
  +'2つ以上 選ぶと、<b>1つの zip</b>に まとめて 出します（1回の 操作で 済みます）。<br>'
@@ -2237,7 +2164,7 @@ function P_kumu(){
  +'<div class="grid" style="max-height:none"><table class="wk"><tr><th class="stick">コマ</th>'
  +DAYS.map(function(d,di){return '<th'+(isToday(di)?' class="tdyh"':'')+'>'+d+' <span class="usu">'+dayNum(di)+'</span>'
    +'<span class="hdb" onclick="bCol('+di+')" title="この曜日をまとめて予定に">⇣</span></th>'}).join('')+'</tr>'
- +myKoma().map(function(k,ki){return '<tr><td class="stick" style="font-size:13px">'+k[0]
+ +myKoma().map(function(k,ki){return '<tr><td class="stick" style="font-size:11.5px">'+k[0]
    +'<span class="hdb" onclick="bRow('+ki+')" title="このコマをまとめて予定に">⇢</span>'
    +'<br><span class="usu">'+k[1]+'〜'+k[2]+'</span></td>'
    +DAYS.map(function(d,di){var K=di+'-'+ki,pl=getP(K),busy=getT(K),n=whoFree(K).length;
@@ -2339,7 +2266,7 @@ function ybSave(){var v=(S.bn||'').trim();if(!v){toast('名前を入れてくだ
  S.bn=v;draw();toast('「'+v+'」を覚えました')}
 function paneCell(sel){
  var pl=PLACED[sel],busy=TBUSY[sel],who=whoFree(sel);
- var h='<div class="card" style="border-color:var(--ink4)"><div style="font-size:15.5px;font-weight:700;margin-bottom:3px">'+keyLab(sel)+'</div>';
+ var h='<div class="card" style="border-color:#CFC0A4"><div style="font-size:15px;font-weight:700;margin-bottom:3px">'+keyLab(sel)+'</div>';
  if(busy&&!pl)return h+'<div class="usu" style="margin-bottom:9px">あなたの 予定です</div>'
   +'<div style="font-size:16px;font-weight:700">'+busy+'</div>'
   +'<div class="fl">どちらの 予定ですか</div><div class="pills">'+['学校','自分'].map(function(v){
@@ -2393,9 +2320,9 @@ function P_autoSet(){
  var A=AUTO;
  var sw=function(lab,k,v){return '<span class="pill sm '+(A[k]===v?'on':'')+'" onclick="AUTO.'+k+'=\''+v+'\';draw()">'+lab+'</span>'};
  var num=function(lab,k,mn,mx){return '<div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">'
-  +'<span style="flex:0 0 210px;font-size:13.5px">'+lab+'</span>'
+  +'<span style="flex:0 0 210px;font-size:13px">'+lab+'</span>'
   +'<span class="pill sm" onclick="AUTO.'+k+'=Math.max('+mn+',AUTO.'+k+'-1);draw()">−</span>'
-  +'<span style="min-width:56px;text-align:center;font-size:15.5px;font-weight:700">'+A[k]+'</span>'
+  +'<span style="min-width:56px;text-align:center;font-size:15px;font-weight:700">'+A[k]+'</span>'
   +'<span class="pill sm" onclick="AUTO.'+k+'=Math.min('+mx+',AUTO.'+k+'+1);draw()">＋</span></div>'};
  return bk('レッスンの 日程を 組む')+'<h2>自動で 振り分ける ときの 条件</h2>'
  +'<div class="sub">ここで 決めたことを 守って、自動が 置きます　／　守れないときは 置かずに 残します</div>'
@@ -2527,11 +2454,11 @@ function P_kasa(){
  +(L.length?L.map(function(y){var x=y[0],i=y[1];
    return '<div class="card" style="border-left:3px solid '+col[x.k]+';'+(x.st==='解決'?'opacity:.6':'')+'">'
    +'<div style="display:flex;align-items:center;gap:9px;margin-bottom:6px">'
-   +'<span class="tag" style="background:var(--band2);color:'+col[x.k]+';margin:0">'+({'場所':'同じ 場所','先生':'同じ 先生'})[x.k]+'</span>'
+   +'<span class="tag" style="background:#F3ECDD;color:'+col[x.k]+';margin:0">'+({'場所':'同じ 場所','先生':'同じ 先生'})[x.k]+'</span>'
    +'<span class="usu">'+x.d+'　'+x.t+'</span>'
    +'<span class="tag" style="margin-left:auto;background:'+stc[x.st][0]+'18;color:'+stc[x.st][0]+'">'+stc[x.st][1]+'</span></div>'
-   +'<div style="font-size:15.5px;font-weight:700;margin-bottom:6px">'+x.w+'</div>'
-   +'<div style="font-size:13.5px;line-height:1.9;color:var(--ink2)">① '+x.a.join('<br>')+'<br>② '+x.b.join('<br>')+'</div>'
+   +'<div style="font-size:15px;font-weight:700;margin-bottom:6px">'+x.w+'</div>'
+   +'<div style="font-size:13px;line-height:1.9;color:var(--ink2)">① '+x.a.join('<br>')+'<br>② '+x.b.join('<br>')+'</div>'
    +(x.told?'<div class="usu" style="margin-top:7px">知らせました　'+x.told+'</div>':'')
    +(Object.keys(x.res).length?'<div class="wl" style="margin-top:9px">'
      +Object.keys(x.res).map(function(t){return '<b>'+t+' 先生</b>　'+x.res[t]}).join('<br>')+'</div>':'')
@@ -2547,7 +2474,7 @@ function P_kasa(){
   :'<div class="empty"><div class="t">この 絞りに、重なりは ありません。</div><div class="s">「全部」で 全部 出ます。</div></div>')
  +'</div><div style="flex:1;min-width:250px">'
  +'<div class="card"><div class="h3" style="margin-top:0">知らせると どうなるか</div>'
- +'<div style="font-size:13.5px;line-height:1.95;color:var(--ink2)">'
+ +'<div style="font-size:12.5px;line-height:1.95;color:var(--ink2)">'
  +'両方の 先生に <b>1回だけ</b> 届きます<br>'
  +'先生の 画面に「重なり」が 出ます<br>'
  +'先生は 3つから 選びます<br>'
@@ -2560,7 +2487,7 @@ function P_kasa(){
  +[['同じ 時間に、同じ 場所を 違う先生が 使っている','一番 起きます',1],
    ['同じ 先生の 時間が 重なっている','別の 部屋に 同時に 入っています',1],
    ['同じ 生徒の 時間が 重なっている','<b>この画面には 出しません</b>。生徒ご本人にだけ',0]].map(function(x){
-   return '<div class="li plain" style="'+(x[2]?'':'color:var(--ink4)')+'"><span>'+x[0]+'<br><span class="usu">'+x[1]+'</span></span>'
+   return '<div class="li plain" style="'+(x[2]?'':'color:#A0917F')+'"><span>'+x[0]+'<br><span class="usu">'+x[1]+'</span></span>'
    +'<s>'+(x[2]?'見ます':'出しません')+'</s></div>'}).join('')+'</div></div></div>'
  +'<div class="note"><b>部屋の 予約は しません。</b>重なりを 知らせて、動かすのを 助けるところまでです。<br>'
  +'<b>事務が 勝手に 動かしません。</b>動かすのは 先生です（教える 中身に つながるからです）。<br>'
@@ -2581,7 +2508,7 @@ function P_kasaT(){
    return '<div class="card" style="border-left:3px solid #8C6115;max-width:760px">'
    +'<div class="usu">'+x.d+'　'+x.t+'　／　'+({'場所':'同じ 場所','先生':'同じ 先生'})[x.k]+'</div>'
    +'<div style="font-size:16px;font-weight:700;margin:5px 0 7px">'+x.w+'</div>'
-   +'<div style="font-size:14.5px;line-height:1.9;color:var(--ink2)">① '+x.a.join('<br>')+'<br>② '+x.b.join('<br>')+'</div>'
+   +'<div style="font-size:13.5px;line-height:1.9;color:var(--ink2)">① '+x.a.join('<br>')+'<br>② '+x.b.join('<br>')+'</div>'
    +(x.told?'<div class="usu" style="margin-top:7px">事務から 知らせが 来ました　'+x.told+'</div>':'')
    +(Object.keys(x.res).length?'<div class="wl" style="margin-top:9px">'
      +Object.keys(x.res).map(function(t){return '<b>'+(t===ME?'あなた':t+' 先生')+'</b>　'+x.res[t]}).join('<br>')+'</div>':'')
@@ -2619,7 +2546,7 @@ function P_kasaFix(i){var x=KASANARI[i];
  +'<div style="flex:3;min-width:0">'
  +'<div class="grid" style="max-height:none"><table class="wk"><tr><th class="stick">コマ</th>'
  +DAYS.map(function(d){return '<th>'+d+'</th>'}).join('')+'</tr>'
- +myKoma().map(function(k,ki){return '<tr><td class="stick" style="font-size:13px">'+k[0]
+ +myKoma().map(function(k,ki){return '<tr><td class="stick" style="font-size:11.5px">'+k[0]
    +'<br><span class="usu">'+k[1]+'〜'+k[2]+'</span></td>'
    +DAYS.map(function(d,di){var K=di+'-'+ki;
      if(K===x.key)return '<td><div class="koma now"><b>いま ここ</b>重なっています</div></td>';
@@ -2628,7 +2555,7 @@ function P_kasaFix(i){var x=KASANARI[i];
      var ok=(sidx<0)||isFree(sidx,K);
      return '<td><div class="slot'+(ok?' n':'')+(sel===K?' sel':'')+'" onclick="'
        +(ok?'S.kcell=\''+K+'\';draw()':'toast(\''+esc(x.stu||'相手')+' さんは この時間 来られません\')')
-       +'">'+(ok?'<span class="hn">空き</span>':'<span style="color:var(--ink4)">×</span>')+'</div></td>'}).join('')
+       +'">'+(ok?'<span class="hn">空き</span>':'<span style="color:#C9BCA6">×</span>')+'</div></td>'}).join('')
    +'</tr>'}).join('')
  +'</table></div>'
  +'<div class="usu" style="margin-top:8px"><b>空き</b>＝'+(x.stu?'<b>'+x.stu+' さんが 来られて</b>、':'')
@@ -2641,7 +2568,7 @@ function P_kasaFix(i){var x=KASANARI[i];
  /* ── 右：選んだ 枠 と 部屋 ── */
  +'<div style="flex:2;min-width:290px">'
  +(sel
-  ?'<div class="card" style="border-color:var(--ink4)">'
+  ?'<div class="card" style="border-color:#CFC0A4">'
    +'<div class="usu">ここへ 動かします</div>'
    +'<div style="font-size:17px;font-weight:700;margin:3px 0 2px">'+keyLab(sel)+'</div>'
    +'<div class="usu">'+(x.stu?x.stu+' さんは この時間 来られます':'あいています')+'</div>'
@@ -2727,7 +2654,7 @@ function P_shukketsu(a){
   if(grp)return '<div class="h3" style="margin-top:0">この レッスンの 方　<span class="usu">'+NM.length+'人'
    +(yet?'　／　まだ '+yet:'')+'</span></div>'
    +'<div class="card p0">'+NM.map(function(nm){var v=S.shu[kk(nm)];
-     return '<div class="li'+(nm===one?' plain':'')+'" '+(nm===one?'style="background:var(--band)"':'onclick="shuPick(\''+esc(nm)+'\')"')+'>'
+     return '<div class="li'+(nm===one?' plain':'')+'" '+(nm===one?'style="background:#F6F1E4"':'onclick="shuPick(\''+esc(nm)+'\')"')+'>'
      +'<span>'+nm+(nm===one?'　<span class="tag" style="margin:0">いま</span>':'')+'</span>'
      +'<s>'+(v?'<span style="color:var(--midori)">'+v+'</span>':'<span style="color:var(--yama)">まだ</span>')+(nm===one?'':' ›')+'</s></div>'}).join('')+'</div>'
    +'<div style="margin-top:11px"><span class="btn g sm" onclick="'+all('出席')+';shuPick(\'\')">残りも 全部 出席</span></div>';
@@ -2736,7 +2663,7 @@ function P_shukketsu(a){
      var nm2=x.gr?x.l:(x.one||x.l),sub=x.gr?x.gr.length+'人（みんな）　'+x.pl:'個人レッスン　'+x.pl;
      var done=x.gr?x.gr.filter(function(n){return S.shu[t+'／'+x.tm+'／'+n]}).length+' / '+x.gr.length
        :(S.shu[t+'／'+x.tm+'／'+x.one]||'まだ');
-     return '<div class="li'+(now?' plain':'')+'" '+(now?'style="background:var(--band)"':'onclick="shuJump('+i+')"')+'>'
+     return '<div class="li'+(now?' plain':'')+'" '+(now?'style="background:#F6F1E4"':'onclick="shuJump('+i+')"')+'>'
      +'<span>'+x.tm+'　'+nm2+(now?'　<span class="tag" style="margin:0">いま</span>':'')
      +'<br><span class="usu">'+sub+'</span></span><s>'+done+(now?'':' ›')+'</s></div>'}).join('')+'</div>';};
  /* ══ ひとりだけ の 画面 ══ */
@@ -2745,7 +2672,7 @@ function P_shukketsu(a){
   var nx=grp?NM.filter(function(n){return n!==one&&!S.shu[kk(n)]})[0]:null;
   return head+daiban
   +'<div class="col2" style="align-items:flex-start"><div style="flex:2;min-width:300px">'
-  +'<div class="card" style="border-color:var(--ink4)">'
+  +'<div class="card" style="border-color:#CFC0A4">'
   +'<div style="font-size:24px;font-weight:700;letter-spacing:.02em">'+one+'</div>'
   +'<div class="usu" style="margin:3px 0 14px">'+(gradeOf(one)||'')+'　／　'+(a.l||'')+'　'+(a.pl||'')+'</div>'
   +'<div style="display:flex;gap:10px">'+['出席','休み','休講'].map(function(x){
@@ -2780,9 +2707,9 @@ function P_shukketsu(a){
  +'<tr><th class="stick">お名前</th><th style="text-align:center">出席</th><th style="text-align:center">休み</th>'
  +'<th style="text-align:center">休講</th><th>つけた人</th></tr>'
  +NM.map(function(nm){var K=kk(nm),v=S.shu[K];
-   return '<tr'+(v?'':' style="background:var(--band3)"')+'>'
+   return '<tr'+(v?'':' style="background:#FBF3E2"')+'>'
    +'<td class="stick" style="cursor:pointer;color:var(--enji)" onclick="shuPick(\''+esc(nm)+'\')">'+nm+' ›'
-   +(v?'':' <span class="tag" style="margin:0;background:var(--warn)33;color:#8C6115">まだ</span>')+'</td>'
+   +(v?'':' <span class="tag" style="margin:0;background:#F0C24B33;color:#8C6115">まだ</span>')+'</td>'
    +['出席','休み','休講'].map(function(x){
      return '<td style="text-align:center"><span class="pill sm '+(v===x?'on':'')+'" onclick="S.shu[\''+esc(K)+'\']=\''+x+'\';draw()">'+x+'</span></td>'}).join('')
    +'<td class="usu">'+(v?stamp():'')+'</td></tr>'}).join('')
@@ -2791,7 +2718,7 @@ function P_shukketsu(a){
  +'</div><div style="flex:1;min-width:270px">'+(grp?'<div class="h3" style="margin-top:0">きょうの ほかの レッスン</div>'
    +'<div class="card p0">'+todayOf(t).map(function(y){var x=y[0],i=y[1],now=(i===a.ti);
      var nm2=x.gr?x.l:(x.one||x.l),sub=x.gr?x.gr.length+'人（みんな）　'+x.pl:'個人レッスン　'+x.pl;
-     return '<div class="li'+(now?' plain':'')+'" '+(now?'style="background:var(--band)"':'onclick="shuJump('+i+')"')+'>'
+     return '<div class="li'+(now?' plain':'')+'" '+(now?'style="background:#F6F1E4"':'onclick="shuJump('+i+')"')+'>'
      +'<span>'+x.tm+'　'+nm2+(now?'　<span class="tag" style="margin:0">いま</span>':'')
      +'<br><span class="usu">'+sub+'</span></span><s>'+(now?'':'›')+'</s></div>'}).join('')+'</div>':'')+'</div></div>'
  +'<div class="note"><b>お名前を 押すと、その方 ひとりの 画面に なります。</b>（1人ずつ つけたい とき）<br>'
@@ -2851,7 +2778,7 @@ function P_sonohito(i){var m=MEI[i];
  +'<div class="h3" style="margin-top:0">見られないもの</div><div class="card p0">'
  +['声の記録','からだの記録','ノート・レパートリー','受診用の 1枚','時間割の 中身','ほかの 教室の こと',
    'ほかの 教室に 通っていること そのもの','来られない 理由'].map(function(v){
-   return '<div class="li plain" style="color:var(--ink4)"><span>'+v+'</span><s>画面が ありません</s></div>'}).join('')+'</div>'
+   return '<div class="li plain" style="color:#A0917F"><span>'+v+'</span><s>画面が ありません</s></div>'}).join('')+'</div>'
  +'</div></div>'
  +'<div class="note">％を 出しません。実数だけ。健康に関するものは 1つも ありません。</div>'}
 function P_monkaHito(i){var m=MONKA[i],k=placeOf(i);
@@ -2861,10 +2788,10 @@ function P_monkaHito(i){var m=MONKA[i],k=placeOf(i);
  +'<div class="h3" style="margin-top:0">来られる 時間</div>'
  +'<div class="grid" style="max-height:none"><table class="wk"><tr><th class="stick">コマ</th>'
  +DAYS.map(function(d){return '<th>'+d+'</th>'}).join('')+'</tr>'
- +myKoma().map(function(kk,ki){return '<tr><td class="stick" style="font-size:13px">'+kk[1]+'</td>'
+ +myKoma().map(function(kk,ki){return '<tr><td class="stick" style="font-size:11.5px">'+kk[1]+'</td>'
    +DAYS.map(function(d,di){var f=isFree(i,di+'-'+ki);
-     return '<td style="height:40px"><div style="height:100%;border-radius:5px;background:'+(f?'#447862':'var(--band)')
-     +';display:flex;align-items:center;justify-content:center;font-size:12.5px;color:'+(f?'#fff':'var(--ink4)')+'">'
+     return '<td style="height:40px"><div style="height:100%;border-radius:5px;background:'+(f?'#447862':'#F5EFE1')
+     +';display:flex;align-items:center;justify-content:center;font-size:11px;color:'+(f?'#fff':'#B5A78F')+'">'
      +(f?'来られる':'—')+'</div></td>'}).join('')+'</tr>'}).join('')
  +'</table></div>'
  +'<div class="usu" style="margin-top:7px">何の授業かは 分かりません。空いているか どうかだけです。</div>'
@@ -2876,7 +2803,7 @@ function P_monkaHito(i){var m=MONKA[i],k=placeOf(i);
  +'<span>レッスンの 枠</span><s>'+(k?keyLab(k).replace('　','')+' ›':'まだ　枠を 見る ›')+'</s></div></div>'
  +'<div class="h3">見られないもの</div><div class="card p0">'
  +['声の記録','からだの記録','ノート','授業の 名前・教室・備考','本番の 予定','来られない 理由'].map(function(v){
-   return '<div class="li plain" style="color:var(--ink4)"><span>'+v+'</span><s>画面が ありません</s></div>'}).join('')+'</div>'
+   return '<div class="li plain" style="color:#A0917F"><span>'+v+'</span><s>画面が ありません</s></div>'}).join('')+'</div>'
  +'</div></div>'
  +'<div class="note"><b>「本番が 近い」は 出しません。</b>先生が 知らない 本番を、生徒が 書けなくなるからです。<br>'
  +'来られない 理由は 聞きません。空いているか どうかだけを 見ます。</div>'}
@@ -2891,7 +2818,7 @@ function P_daihyo(){
  +[['門下の 連絡に「重要」を 付ける',1],['門下の 投稿を 消す',1],['時間割の 集まりを 見る',1],
    ['出していない人に 1回だけ 知らせる',1],['ほかの人の 時間割の 中身を 見る',0],
    ['ほかの人の 空きコマを 見る',0],['予定を 決める',0],['生徒の 記録を 見る',0]].map(function(x){
-   return '<div class="li plain" style="'+(x[1]?'':'color:var(--ink4)')+'"><span>'+x[0]+'</span><s>'+(x[1]?'できます':'できません')+'</s></div>'}).join('')+'</div>'
+   return '<div class="li plain" style="'+(x[1]?'':'color:#A0917F')+'"><span>'+x[0]+'</span><s>'+(x[1]?'できます':'できません')+'</s></div>'}).join('')+'</div>'
  +'</div></div>'
  +'<div class="note"><b>決めるのは 先生です。</b>代表は 集めるところまで。<br>'
  +'代表にも、ほかの人の 時間割の <b>中身は 見えません</b>（出したか どうかだけ）。<br>'
@@ -2929,14 +2856,14 @@ function P_gyojiEdit(a){
  +'<div class="fl">日</div>'
  +'<div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">'
  +'<input class="inp" type="date" style="max-width:190px" value="'+G.d+'" onchange="S.gyE.d=this.value;draw()">'
- +'<span class="usu" style="font-size:13.5px">'+jdate(G.d)+'</span>'
+ +'<span class="usu" style="font-size:13px">'+jdate(G.d)+'</span>'
  +['きょう','あした','来週','来月'].map(function(v){return '<span class="pill sm" onclick="dShift(\''+v+'\')">'+v+'</span>'}).join('')+'</div>'
  +'<div class="usu" style="margin-top:5px">カレンダーから 選べます。キーボードでも 打てます。曜日は 自動で 出ます。</div>'
  +'<div class="fl">時間</div>'
  +'<div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">'
  +'<input class="inp" type="time" step="300" style="max-width:140px" value="'+G.t1+'" onchange="S.gyE.t1=this.value;fixEnd();draw()">'
  +'<span>〜</span>'
- +'<input class="inp" type="time" step="300" style="max-width:140px;'+(bad?'border-color:var(--red);background:var(--card2)':'')+'" value="'+(G.t2||'')+'" onchange="S.gyE.t2=this.value;draw()">'
+ +'<input class="inp" type="time" step="300" style="max-width:140px;'+(bad?'border-color:var(--red);background:#FDF6F6':'')+'" value="'+(G.t2||'')+'" onchange="S.gyE.t2=this.value;draw()">'
  +'<span class="pill sm '+(G.t2?'':'on')+'" onclick="S.gyE.t2=S.gyE.t2?\'\':\'\';S.gyE.t2=\'\';draw()">終わりは 未定</span>'
  +['+30分','+1時間','+2時間','+3時間'].map(function(v){return '<span class="pill sm" onclick="tAdd(\''+v+'\')">'+v+'</span>'}).join('')+'</div>'
  +(bad?'<div class="usu" style="color:var(--red);margin-top:5px">終わりが はじまりより 前です。直してください。</div>'
@@ -3023,7 +2950,7 @@ function P_saiten(a){
  +'<div class="sub">'+jdate(g.d)+'　'+jspan(g)+'　／　'+g.p
  +'　／　対象：'+g.co.join('・')+' '+g.gr.join('・')+'（'+nin+'人）</div>'
  +(GYOJI.filter(function(x){return x.sa&&x.d===g.d&&x.t1===g.t1}).length>1
-   ?'<div class="note" style="margin:0 0 11px;background:var(--band);border:1px solid var(--line3);'
+   ?'<div class="note" style="margin:0 0 11px;background:#F6F1E4;border:1px solid #E8DFC8;'
     +'border-radius:10px;padding:9px 11px"><b>同じ 日・同じ 時間に、ほかの 試験も あります。</b><br>'
     +GYOJI.map(function(x,n){return (x.sa&&x.d===g.d&&x.t1===g.t1&&n!==k)
       ?'　<span class="btn g sm" onclick="pop();push(\'採点\','+n+')">'+x.p+'　'+x.co.join('・')+' '+x.gr.join('・')+'</span> ':''}).join('')
@@ -3106,7 +3033,7 @@ function P_hyokaItem(a){
  +(add?'':'<div style="flex:1;min-width:250px">'
    +'<div class="h3" style="margin-top:0">この項目を 減らす</div>'
    +(off
-     ?'<div class="card"><div style="font-size:14.5px;line-height:1.9">'
+     ?'<div class="card"><div style="font-size:14px;line-height:1.9">'
       +'この項目は いま <b>使っていません</b>。'+(n?n+'人ぶんの 点は 残っています。':'')
       +'</div><div style="margin-top:11px"><span class="btn g sm">もどす</span>　'
       +'<span class="btn g sm">消す</span></div></div>'
@@ -3138,7 +3065,7 @@ function stTaisho(){
  +'<div class="pills">'+['1年','2年','3年','4年','院1','院2'].map(function(v,i){
    return '<span class="pill sm'+(i===2?' on':'')+'">'+v+'</span>'}).join('')+'</div>'
  +'<div class="card" style="max-width:420px">'
- +'<div style="font-size:15.5px">この 条件に あう方　<b>12人</b></div>'
+ +'<div style="font-size:15px">この 条件に あう方　<b>12人</b></div>'
  +'<div class="usu" style="margin-top:4px">声楽・3年　／　在籍の方だけ 数えています</div>'
  +'<div style="margin-top:9px"><span class="btn g sm">一覧を 見る</span>　'
  +'<span class="btn g sm">ひとりずつ 外す</span></div></div>'
@@ -3161,122 +3088,6 @@ var NAV=0;
    画面を 変えた ときだけ（go／push／pop）上に 戻します。 */
 function keepTop(){var e=$('#bodyEl');return e?e.scrollTop:0}
 function putTop(v){var e=$('#bodyEl');if(e)e.scrollTop=v}
-
-/* ══ ★ナビの まとまり（2026-09-18・調べに基づく）══
-   NN/g：34項目を 水平に 並べると 小さい字・密集・短い札に なる
-   Carbon：2次ナビが 5項目 超えるなら 左パネル。★3階層は 作らない
-   → ★6つの まとまりに 分ける                              */
-var NAVG = [
- ['',        [['ホーム','home']]],
- ['ひと',    [['名簿','users'],['門下','cap']]],
- ['とき',    [['日程','grid'],['行事','star']]],
- ['やりとり',[['連絡','mail']]],
- ['しらべ',  [['設定','gear']]]
-];
-
-/* ══ ★しるし（アイコン）══
-   ★Lucide（ISC・商用可・表示の 帰属は 不要）に ならった 形。
-   ★24×24 の ます目、★2px の 線、★角と 先は 丸。
-   ★文字の 記号（⌂ ☰ ⁂）は ★何の 図か 分からないので やめました       */
-var ICO = {
- /* ★直線・円・四角だけで 作りました。
-    ★曲線を 使うと、絵として 正しいか 確かめられません             */
- home:'<path d="M3.4 10.8 12 3.6l8.6 7.2"/>'
-     +'<path d="M5.4 9.6V20h4.2v-5.6h4.8V20h4.2V9.6"/>',
- users:'<circle cx="9" cy="7.4" r="3.2"/>'
-      +'<path d="M3.4 20v-2.1 M3.4 17.9 L5.4 15.4 M5.4 15.4 L12.6 15.4 M12.6 15.4 L14.6 17.9 M14.6 17.9 V20"/>'
-      +'<circle cx="18" cy="9" r="2.2"/>'
-      +'<path d="M16.6 13.6 L19.6 13.6 M19.6 13.6 L21 15.8 M21 15.8 V20"/>',
- cap:'<path d="M12 4.2 L2.6 8.6 L12 13 L21.4 8.6 Z"/>'
-    +'<path d="M6.6 10.4 V16.4 M6.6 16.4 L12 18.8 M12 18.8 L17.4 16.4 M17.4 16.4 V10.4"/>'
-    +'<path d="M21.4 8.8 V14.4"/>',
- grid:'<rect x="3" y="4.8" width="18" height="15.6" rx="2"/>'
-     +'<path d="M3 9.8h18"/><path d="M8.4 4.8V2.6M15.6 4.8V2.6"/>'
-     +'<path d="M7.4 13.2h1.2M11.4 13.2h1.2M15.4 13.2h1.2"/>'
-     +'<path d="M7.4 16.8h1.2M11.4 16.8h1.2M15.4 16.8h1.2"/>',
- star:'<path d="M12 3.4 L14.5 9 L20.6 9.6 L16 13.7 L17.3 19.7 L12 16.6 '
-     +'L6.7 19.7 L8 13.7 L3.4 9.6 L9.5 9 Z"/>',
- mail:'<rect x="2.8" y="5.2" width="18.4" height="13.6" rx="2"/>'
-     +'<path d="M3.6 7 12 13l8.4-6"/>',
- gear:'<circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="7.6"/>'
-     +'<path d="M12 2.6v2.3M12 19.1v2.3M21.4 12h-2.3M4.9 12H2.6"/>'
-     +'<path d="M18.6 5.4 17 7M7 17l-1.6 1.6M18.6 18.6 17 17M7 7 5.4 5.4"/>',
- search:'<circle cx="10.8" cy="10.8" r="6.4"/><path d="M15.6 15.6 21 21"/>',
- fold:'<path d="M14.6 6 L8.6 12 L14.6 18"/>',
- unfold:'<path d="M9.4 6 L15.4 12 L9.4 18"/>'
-};
-function svg(k,sz){
- return '<svg viewBox="0 0 24 24" width="'+(sz||22)+'" height="'+(sz||22)+'" fill="none" '
-  +'stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" '
-  +'aria-hidden="true">'+(ICO[k]||'')+'</svg>'}
-function navIcon(t){
- for(var i=0;i<NAVG.length;i++)for(var j=0;j<NAVG[i][1].length;j++)
-   if(NAVG[i][1][j][0]===t)return svg(NAVG[i][1][j][1],18);
- return ''}
-function navHTML(nav){
- var h='<div class="sidetop">'
-  +'<span class="fold" title="たたむ／ひらく（Ctrl+B）" onclick="toggleRail()">'
-  +svg(S.rail?'unfold':'fold',17)+'</span>'
-  +'<span class="sk2" onclick="S.pal=true;draw()">'+svg('search',15)+' さがす<s style="margin-left:auto;'
-  +'color:var(--ink3);font-size:12.5px">⌘K</s></span></div>';
- NAVG.forEach(function(g){
-   var items=g[1].filter(function(x){return nav.indexOf(x[0])>=0});
-   if(!items.length)return;
-   if(g[0])h+='<div class="gh">'+g[0]+'</div>';
-   h+=items.map(function(x){
-     return '<div class="nv '+(x[0]===S.tab&&!S.stack.length?'on':'')+'" title="'+x[0]+'" '
-      +'onclick="go(\''+x[0]+'\')"><i>'+svg(x[1])+'</i><span class="lb">'+x[0]+'</span></div>'}).join('');
- });
- return h}
-
-/* ══ ★たたむ ── 表の 画面では 自動で レールに ══
-   Fluent NavigationView の Auto と 同じ考え。
-   ★幅が 足りない 画面だけ たたみます                        */
-var WIDE = ['役職の一覧','名簿','日程を組む','置ける枠','採点'];
-function autoRail(){
- var t=S.stack.length?topOf().s:S.tab;
- return WIDE.indexOf(t)>=0 && S.dev!=='pc'}
-function isRail(){return S.rail||autoRail()}
-function toggleRail(){S.rail=!S.rail;draw();
- toast(S.rail?'ナビを たたみました':'ナビを ひらきました')}
-
-/* ══ ★さがす（コマンドパレット）══
-   ★ナビの 代わりでは ありません。★足すだけ。
-   （ナビから 消して ⌘K に 隠すと、初めての人が 迷います）  */
-var PALL = [
- ['画面',['ホーム','名簿','門下','日程','行事','連絡','設定']],
- ['よく する こと',['出欠つけ','日程を組む','行事を出す','お知らせを書く','招く','採点']],
- ['決まり',['役職の一覧','評価の型','コマを決める','場所を決める']]
-];
-function palHTML(){
- if(!S.pal)return '';
- var q=(S.palq||'').trim();
- var nav=tabsFor();
- var h='<div class="pal" onclick="if(event.target===this){S.pal=false;S.palq=\'\';draw()}">'
-  +'<div class="palbox"><input id="palin" placeholder="画面や することを 打つ" '
-  +'value="'+q+'" oninput="S.palq=this.value;draw()">';
- var any=false;
- PALL.forEach(function(g){
-   var it=g[1].filter(function(k){
-     if(g[0]==='画面'&&nav.indexOf(k)<0)return false;
-     return !q||k.indexOf(q)>=0});
-   if(!it.length)return; any=true;
-   h+='<div class="pg">'+g[0]+'</div>'
-    +it.map(function(k){
-      var isTab=nav.indexOf(k)>=0;
-      return '<div class="pr" onclick="S.pal=false;S.palq=\'\';'
-       +(isTab?'go':'push')+'(\''+k+'\')"><span>'+(isTab?navIcon(k):'›')+'</span>'
-       +'<span>'+k+'</span>'+(isTab?'<s>画面</s>':'')+'</div>'}).join('');
- });
- if(!any)h+='<div class="pr" style="color:var(--ink3);cursor:default">見つかりません</div>';
- h+='<div class="pg" style="border-top:1px solid var(--line2);margin-top:4px">'
-  +'持っていない ものは 出しません</div></div></div>';
- return h}
-document.addEventListener('keydown',function(e){
- if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();S.pal=!S.pal;S.palq='';draw()}
- if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='b'){e.preventDefault();toggleRail()}
- if(e.key==='Escape'&&S.pal){S.pal=false;S.palq='';draw()}});
-
 function nav1(){NAV=1}
 /* 中の 表・横に すべる ところの 位置も 覚えます
    （役職の 表のように 横に 広い ものが、押すたび 左端に 戻らないように） */
@@ -3318,18 +3129,18 @@ function draw(){
  +'<span>○○音楽大学　の運営</span></div>'
  +'<div class="r">'+(can('renraku_all')&&MISOU.length?'<span class="badge w" style="cursor:pointer" onclick="go(\'連絡\');push(\'未送信\')">未送信 '+MISOU.length+'件</span>':'')
  +'<span class="badge">'+S.post+'</span><span>坂本 響</span>'
- +'<span class="rl" title="文字を 大きく（'+zLab()+'）" style="width:auto;padding:0 11px;border-radius:99px;font-size:13.5px" onclick="zCycle()">あ '+zLab()+'</span>'
- +'<span class="rl" title="明るさ（'+thLab()+'）" style="width:auto;padding:0 11px;border-radius:99px;font-size:13.5px" onclick="thCycle()">'+thIcon()+' '+thLab()+'</span>'
+ +'<span class="rl" title="文字を 大きく（'+zLab()+'）" style="width:auto;padding:0 11px;border-radius:99px;font-size:13px" onclick="zCycle()">あ '+zLab()+'</span>'
+ +'<span class="rl" title="明るさ（'+thLab()+'）" style="width:auto;padding:0 11px;border-radius:99px;font-size:13px" onclick="thCycle()">'+thIcon()+' '+thLab()+'</span>'
  +'<span class="rl" title="最初から やり直す" onclick="location.reload()">↻</span></div></div>'
- +(S.st==='オフライン'?'<div class="wall" style="background:var(--band);color:#8C6115"><i style="background:#8C6115"></i>いま つながっていません。書けます。あとで 送ります</div>':'')
+ +(S.st==='オフライン'?'<div class="wall" style="background:#F6F1E4;color:#8C6115"><i style="background:#8C6115"></i>いま つながっていません。書けます。あとで 送ります</div>':'')
  +'<div class="wall"><i></i>この画面から、生徒の健康の記録には たどりつけません（画面そのものが ありません）</div>'
- +'<div class="main"><div class="side'+(isRail()?' rail':'')+'">'
- +navHTML(nav)
+ +'<div class="main"><div class="side">'
+ +nav.map(function(x){return '<div class="nv '+(x===S.tab&&!S.stack.length?'on':'')+'" onclick="go(\''+x+'\')">'+x+'</div>'}).join('')
  +'<div class="who"><b>'+S.post+'</b> の できること<br>'
  +'<span style="color:var(--ink3)">'+PERM.filter(function(k){return myPost().p[k[0]]}).length+'つ</span>'
  +'<div style="margin-top:5px;cursor:pointer;color:var(--enji)" onclick="S.showPerm=!S.showPerm;draw()">'+(S.showPerm?'畳む ▲':'見る ▼')+'</div>'
- +(S.showPerm?'<div style="margin-top:6px;font-size:12.5px;line-height:1.75">'+permLine(myPost()).split(' ／ ').join('<br>')+'</div>':'')+'</div>'
- +'</div><div class="body" id="bodyEl">'+body+'</div>'+palHTML()+'</div>';
+ +(S.showPerm?'<div style="margin-top:6px;font-size:11px;line-height:1.75">'+permLine(myPost()).split(' ／ ').join('<br>')+'</div>':'')+'</div>'
+ +'</div><div class="body" id="bodyEl">'+body+'</div></div>';
  fitDev();drawDemo();
  $('#lg').innerHTML=legend();
  if($('#spec'))$('#spec').innerHTML=specHTML();
@@ -3406,7 +3217,7 @@ var SPEC_SRV=[
  ['読み込み','meibo かつ master。消さない・招待を自動で送らない'],
  ['出席','その レッスンの 担当者か、shukketsu を 持つ事務のみ'],
  ['役職を 変える','post を 持ち、かつ 自分が 持っている 全校権限しか 渡せない'],
- ['あて先の 引き継ぎ','1人。いまの 宛先が 決める。その場で 移る（裁定その74B）'],
+ ['あて先の 引き継ぎ','2段階（申し出→承諾）。承諾まで 旧あて先で 引き落とす'],
  ['あて先の人の 役職を 外す','先に 引き継ぎを 求める。外すと 誰も 払えなくなる']];
 var SPEC_UI=[
  ['押しても 上に 戻らない','描き直す前に 縦横の位置を 覚え、戻す。画面が変わった時だけ 上へ'],
@@ -3450,8 +3261,8 @@ function stBlock(what,how){
   +'<div class="note">ぐるぐるを 使いません。灰色の 形を 置きます。0.3秒 未満なら 何も 出しません。</div>';
  if(S.st==='空')return '<div class="empty"><div class="t">'+what+'</div><div class="s">'+how+'</div></div>'
   +'<div class="note">白紙に しません。何を すると 埋まるかを 1行 書きます。</div>';
- if(S.st==='失敗')return '<div class="card" style="background:var(--band);border-color:var(--line3)">'
-  +'<div style="font-size:14.5px;line-height:1.8">いま つながりません。<br>書いたものは、この端末に 残っています。</div>'
+ if(S.st==='失敗')return '<div class="card" style="background:#F6F1E4;border-color:#E8DFC8">'
+  +'<div style="font-size:14px;line-height:1.8">いま つながりません。<br>書いたものは、この端末に 残っています。</div>'
   +'<div style="margin-top:10px"><span class="btn g sm" onclick="setSt(\'ふつう\')">もう一度</span></div></div>'
   +'<div class="note">書いたものを、失敗で 消しません。これが 一番重い決まりです。</div>';
  return null}

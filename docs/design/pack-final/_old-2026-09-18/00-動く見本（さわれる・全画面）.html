@@ -3,53 +3,47 @@
 <title>Woolsong 動く見本 ── 統合版 2026-09-16</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{ --card2:#FDFAF3;--line3:#E8DFC8;--ink4:#8C7D6C;--band:#F6F1E4;--band2:#F3ECDD;--band3:#FBF3E2;--enji-d:#8E1230;--ok:#447862;--warn:#8C6115;--err:#B23A48;--pick:#F6E4E8;--enji:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
+:root{--enji:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
  --line:#E4DAC4;--line2:#F0E9DA;--ink:#261913;--ink2:#5A4C40;--ink3:#6B5C4E;--bg:#EFE7D6}
 body{background:var(--bg);font-family:"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;color:var(--ink);
  display:flex;flex-direction:column;align-items:center;padding:24px 16px 64px;gap:16px;line-height:1.75;
  letter-spacing:.02em;font-feature-settings:"palt";font-variant-numeric:tabular-nums}
 h1{font-size:19px;letter-spacing:.04em}
-.lead{font-size:13.5px;color:var(--ink2);max-width:600px;text-align:center;line-height:1.9}
+.lead{font-size:12.5px;color:var(--ink2);max-width:600px;text-align:center;line-height:1.9}
 /* ─── 端末 ─── */
 :root{--z:1}
 /* 文字を 大きく（老眼対策）── まわりの 大きさは 変えず、中の ものを 大きく します */
 #bd,#tabs,#opbar,#sheet,#offbar{zoom:var(--z)}
-.ph{width:360px;height:812px;background:var(--paper);border-radius:30px;border:1px solid var(--line);
+.ph{width:360px;height:812px;background:var(--paper);border-radius:30px;border:1px solid #DFD4BE;
  box-shadow:0 1px 0 rgba(0,0,0,.03),0 10px 30px rgba(90,72,48,.14);overflow:hidden;
  display:flex;flex-direction:column;position:relative}
-.st{flex:0 0 26px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:12px;color:var(--ink3);letter-spacing:.08em}
-.off{flex:0 0 20px;background:var(--ink3);color:#fff;font-size:12.5px;display:flex;align-items:center;justify-content:center;letter-spacing:.04em}
+.st{flex:0 0 26px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:9.5px;color:var(--ink3);letter-spacing:.08em}
+.off{flex:0 0 20px;background:#6D5D50;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;letter-spacing:.04em}
 .bd{flex:1;overflow-y:auto;padding:0 16px 24px}
-.tabs{flex:0 0 56px;border-top:1px solid var(--line);display:flex;background:var(--card2)}
-.tb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:12.5px;color:var(--ink3);cursor:pointer}
-.tb i{width:21px;height:21px;display:flex;align-items:center;justify-content:center;opacity:.72}
-.tb.on i{opacity:1}
-.tb i svg{display:block}
-/* ★選んだ とき ── ★しるしを 塗りつぶさない。
-   ★元は 2px の 棒だったので background で よかったが、
-   ★いまは 絵。★塗ると 四角に 見えます                 */
-.tb.on{color:var(--enji);font-weight:700}
-.tb.on i{background:transparent;color:var(--enji);opacity:1}
+.tabs{flex:0 0 56px;border-top:1px solid var(--line);display:flex;background:#FFFDF7}
+.tb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:10px;color:var(--ink3);cursor:pointer}
+.tb i{width:16px;height:2px;background:transparent;border-radius:2px;display:block}
+.tb.on{color:var(--enji);font-weight:700}.tb.on i{background:var(--enji)}
 /* ─── 部品 ─── */
 .hd{display:flex;align-items:center;justify-content:space-between;padding:10px 1px 6px}
 .hd h2{font-size:18px;letter-spacing:.06em}
 .gear{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;
- justify-content:center;color:var(--ink2);font-size:13px;cursor:pointer;background:#fff;flex:none}
-.h3{font-size:12.5px;color:var(--ink3);letter-spacing:.14em;margin:20px 0 8px}
+ justify-content:center;color:var(--ink2);font-size:12px;cursor:pointer;background:#fff;flex:none}
+.h3{font-size:11px;color:var(--ink3);letter-spacing:.14em;margin:20px 0 8px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
-.mini{font-size:13.5px;color:var(--ink2)}
-.usu{font-size:13px;color:var(--ink3);margin-top:3px;line-height:1.7}
-.spt0{font-size:13.5px;font-weight:700;margin-bottom:3px}
-.sh3{font-size:12.5px;color:var(--ink3);letter-spacing:.12em;margin:14px 0 5px}
-.spt{width:100%;border-collapse:collapse;font-size:13px;line-height:1.7}
-.spt th{background:var(--band2);color:var(--ink3);font-weight:400;text-align:left;padding:5px 7px;border:1px solid var(--line)}
+.mini{font-size:12.5px;color:var(--ink2)}
+.usu{font-size:12px;color:var(--ink3);margin-top:3px;line-height:1.7}
+.spt0{font-size:13px;font-weight:700;margin-bottom:3px}
+.sh3{font-size:11px;color:var(--ink3);letter-spacing:.12em;margin:14px 0 5px}
+.spt{width:100%;border-collapse:collapse;font-size:12px;line-height:1.7}
+.spt th{background:#F3ECDD;color:var(--ink3);font-weight:400;text-align:left;padding:5px 7px;border:1px solid var(--line)}
 .spt td{padding:5px 7px;border:1px solid var(--line);background:#fff;vertical-align:top}
-.spt td.k{width:34%;font-weight:600;background:var(--card2)}
-.fbtn{display:inline-block;margin-top:16px;font-size:13.5px;color:var(--ink3);
+.spt td.k{width:34%;font-weight:600;background:#FDFAF3}
+.fbtn{display:inline-block;margin-top:16px;font-size:12.5px;color:var(--ink3);
  border:1px solid var(--line);border-radius:99px;padding:5px 12px;cursor:pointer;background:#fff}
-.fbtn:hover{border-color:var(--ink4);color:var(--ink2)}
-.fbtn.on{color:var(--enji);border-color:var(--ink4)}
-.note{font-size:13px;color:var(--ink2);line-height:1.85;margin-top:12px}
+.fbtn:hover{border-color:#CFC0A4;color:var(--ink2)}
+.fbtn.on{color:var(--enji);border-color:#CFC0A4}
+.note{font-size:12px;color:var(--ink2);line-height:1.85;margin-top:12px}
 /* ══ 間（ま）の 段階 ── 3つだけ ══
    sp1 同じ まとまりの 中 ／ sp2 まとまりどうし ／ sp3 話が 変わる */
 :root{--sp1:8px;--sp2:24px;--sp3:48px;--d:1}
@@ -79,34 +73,34 @@ h1{font-size:19px;letter-spacing:.04em}
 .pill,.fbtn,.seg div{min-height:44px;display:inline-flex;align-items:center;justify-content:center}
 .seg div{display:flex}
 
-.warn{background:var(--band);border:1px solid var(--line3);border-radius:12px;padding:11px 13px;font-size:13px;color:var(--ink2);line-height:1.8;margin-bottom:12px}
-.seg{display:flex;background:var(--band2);border-radius:11px;padding:3px;margin:2px 0 10px}
-.seg div{flex:1;text-align:center;font-size:13.5px;padding:12px 0;border-radius:9px;color:var(--ink2);cursor:pointer}
+.warn{background:#F6F1E4;border:1px solid #E8DFC8;border-radius:12px;padding:11px 13px;font-size:12px;color:var(--ink2);line-height:1.8;margin-bottom:12px}
+.seg{display:flex;background:#F3ECDD;border-radius:11px;padding:3px;margin:2px 0 10px}
+.seg div{flex:1;text-align:center;font-size:12.5px;padding:12px 0;border-radius:9px;color:var(--ink2);cursor:pointer}
 .seg div.on{background:#fff;color:var(--enji);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .seg div.rest{opacity:.42}
-.pill{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:9px 14px;font-size:13.5px;color:var(--ink2);background:#fff;cursor:pointer}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:9px 14px;font-size:12.5px;color:var(--ink2);background:#fff;cursor:pointer}
 .pill.on{background:var(--enji);color:#fff;border-color:var(--enji);font-weight:700}
-.pill.sm{padding:7px 11px;font-size:13px}
+.pill.sm{padding:7px 11px;font-size:11.5px}
 .pills{display:flex;gap:6px;margin-bottom:11px;flex-wrap:wrap}
-.li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 0;border-bottom:1px solid var(--line2);font-size:15.5px;cursor:pointer;min-height:48px}
+.li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 0;border-bottom:1px solid var(--line2);font-size:14.5px;cursor:pointer;min-height:48px}
 .li:last-child{border:none}
-.li s{color:var(--ink3);font-size:13.5px;text-decoration:none;text-align:right;flex:none}
+.li s{color:var(--ink3);font-size:12.5px;text-decoration:none;text-align:right;flex:none}
 .box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:0 14px;margin-bottom:12px}
 .btn{display:block;width:100%;border:0;background:var(--enji);color:#fff;border-radius:13px;padding:14px 0;
- font:inherit;font-size:15.5px;font-weight:700;text-align:center;cursor:pointer}
-.btn.g{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:400;font-size:14.5px;padding:12px 0}
-.btn.sm{font-size:13.5px;padding:10px 0}
+ font:inherit;font-size:15px;font-weight:700;text-align:center;cursor:pointer}
+.btn.g{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:400;font-size:13.5px;padding:12px 0}
+.btn.sm{font-size:12.5px;padding:10px 0}
 .two{display:flex;gap:9px}.two>*{flex:1}
-.back{font-size:13.5px;color:var(--enji);cursor:pointer;padding:9px 0 3px;display:inline-block}
+.back{font-size:12.5px;color:var(--enji);cursor:pointer;padding:9px 0 3px;display:inline-block}
 .rowb{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.rowb s{width:30px;font-size:12px;color:var(--ink3);text-decoration:none;flex:none}
+.rowb s{width:30px;font-size:9.5px;color:var(--ink3);text-decoration:none;flex:none}
 .bar{height:8px;border-radius:4px;background:var(--enji)}
 /* ─── ◎○△ ─── */
 .tri{display:flex;gap:7px}
 .tri div{flex:1;border:1px solid var(--line);border-radius:12px;padding:9px 0 8px;text-align:center;
- background:var(--card2);cursor:pointer;min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+ background:#FDFAF3;cursor:pointer;min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
 .tri div .g{font-size:21px;line-height:1;color:var(--enji)}
-.tri div .w{font-size:13px;color:var(--ink2)}
+.tri div .w{font-size:11.5px;color:var(--ink2)}
 .tri div.on{border:2px solid var(--enji);background:#fff;padding:8px 0 7px}
 .tri div.on .w{color:var(--enji);font-weight:700}
 /* ─── 羊 ─── */
@@ -134,38 +128,38 @@ h1{font-size:19px;letter-spacing:.04em}
 /* ─── 気になったこと ─── */
 .mk{margin-top:2px}
 .mkrow{display:flex;align-items:center;gap:6px;margin-bottom:5px}
-.mkrow .nm{flex:0 0 96px;font-size:12.5px;color:var(--ink2);line-height:1.3}
+.mkrow .nm{flex:0 0 96px;font-size:10.5px;color:var(--ink2);line-height:1.3}
 .mkrow .cells{flex:1;display:flex;gap:2px}
 .mkrow .cells i{flex:1;height:15px;border-radius:3px;background:#F0E9DA;display:block}
 .mkrow .cells i.on{background:var(--enji);opacity:.85}
-.mkrow .n{flex:0 0 30px;text-align:right;font-size:12.5px;color:var(--ink3)}
-.mkx{display:flex;gap:2px;margin:2px 0 0 102px;font-size:12px;color:var(--ink3)}
+.mkrow .n{flex:0 0 30px;text-align:right;font-size:10px;color:var(--ink3)}
+.mkx{display:flex;gap:2px;margin:2px 0 0 102px;font-size:8.5px;color:var(--ink3)}
 .mkx span{flex:1;text-align:center}
 .wk{display:flex;align-items:flex-end;gap:2px;height:30px}
 .wk i{flex:1;border-radius:2px 2px 0 0;display:block}
 /* ─── ノート・連絡 ─── */
 .nt{background:#fff;border:1px solid var(--line);border-radius:13px;padding:12px 13px;margin-bottom:8px;cursor:pointer}
-.nt .t{font-size:14.5px;line-height:1.7}
-.nt .m{font-size:12.5px;color:var(--ink3);margin-top:6px}
+.nt .t{font-size:13.5px;line-height:1.7}
+.nt .m{font-size:10.5px;color:var(--ink3);margin-top:6px}
 .rep{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px 12px;margin-bottom:8px;cursor:pointer}
-.rep .t{font-size:14.5px;font-weight:700}.rep .s{font-size:12.5px;color:var(--ink3);margin-top:2px}
-.rep .r{margin-left:auto;font-size:12.5px;color:var(--ink3);text-align:right;flex:none}
+.rep .t{font-size:14px;font-weight:700}.rep .s{font-size:10.5px;color:var(--ink3);margin-top:2px}
+.rep .r{margin-left:auto;font-size:10.5px;color:var(--ink3);text-align:right;flex:none}
 .post{background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px 12px;margin-bottom:8px}
 .post .ph2{display:flex;align-items:center;gap:7px;margin-bottom:6px}
-.post .av{width:24px;height:24px;border-radius:50%;background:var(--band2);flex:none;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:var(--ink2)}
-.post .nm3{font-size:13.5px;font-weight:700}.post .dt{font-size:12.5px;color:var(--ink3);margin-left:auto}
-.post .bd2{font-size:14.5px;line-height:1.75}
-.post.t{border-color:#E0C9CE;background:var(--card2)}.post.t .nm3{color:var(--enji)}
-.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ok);margin-right:7px;vertical-align:1px}
+.post .av{width:24px;height:24px;border-radius:50%;background:#F0E4D2;flex:none;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink2)}
+.post .nm3{font-size:12.5px;font-weight:700}.post .dt{font-size:10px;color:var(--ink3);margin-left:auto}
+.post .bd2{font-size:13.5px;line-height:1.75}
+.post.t{border-color:#E0C9CE;background:#FFFCFC}.post.t .nm3{color:var(--enji)}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#2E6FD9;margin-right:7px;vertical-align:1px}
 .dot.off{background:none;width:7px}
-.tag{display:inline-block;background:var(--band2);color:var(--ink2);border-radius:6px;padding:2px 7px;font-size:12.5px;margin-left:6px;white-space:nowrap;line-height:1.5}
-.wl{background:var(--band2);border:1px solid var(--line3);border-radius:12px;padding:9px 11px;font-size:12.5px;color:var(--ink2);line-height:1.7;margin-top:8px}
+.tag{display:inline-block;background:#F3ECDD;color:var(--ink2);border-radius:6px;padding:2px 7px;font-size:10px;margin-left:6px;white-space:nowrap;line-height:1.5}
+.wl{background:#F6EFDF;border:1px solid #E8DFC8;border-radius:12px;padding:9px 11px;font-size:11px;color:var(--ink2);line-height:1.7;margin-top:8px}
 .ta{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px;font:inherit;
- font-size:13.5px;min-height:74px;resize:none;color:var(--ink);line-height:1.7}
+ font-size:13px;min-height:74px;resize:none;color:var(--ink);line-height:1.7}
 /* ─── ひつじ したく ─── */
 .gr{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
 .gr .c{background:#fff;border:1px solid var(--line);border-radius:11px;height:62px;display:flex;align-items:center;
- justify-content:center;font-size:12px;color:var(--ink2);text-align:center;line-height:1.35;cursor:pointer;padding:2px}
+ justify-content:center;font-size:9.5px;color:var(--ink2);text-align:center;line-height:1.35;cursor:pointer;padding:2px}
 .gr .c.sel{border:2px solid var(--enji);color:var(--enji);font-weight:700}
 .gr .c.no{color:#B9AA97;background:#FAF6EC}
 .cols{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
@@ -173,81 +167,86 @@ h1{font-size:19px;letter-spacing:.04em}
 .cols i.on{outline:2px solid var(--enji);outline-offset:2px}
 .shelf{background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px 12px;margin-bottom:8px;cursor:pointer}
 .slots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:9px}
-.slots .s{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 0;text-align:center;font-size:12.5px;color:var(--ink2);cursor:pointer;min-height:44px;display:flex;flex-direction:column;justify-content:center;gap:2px}
+.slots .s{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 0;text-align:center;font-size:10px;color:var(--ink2);cursor:pointer;min-height:44px;display:flex;flex-direction:column;justify-content:center;gap:2px}
 .slots .s.on{border:2px solid var(--enji);color:var(--enji);font-weight:700}
-.slots .s b{font-size:12px;color:var(--ink3);font-weight:400}
+.slots .s b{font-size:9px;color:var(--ink3);font-weight:400}
 /* ─── 調べる（有料） ─── */
-.lock{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 0;border-bottom:1px solid var(--line2);font-size:13.5px;cursor:pointer;min-height:44px;color:var(--ink4)}
+.lock{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 0;border-bottom:1px solid var(--line2);font-size:13px;cursor:pointer;min-height:44px;color:#A0917F}
 .lock:last-child{border:none}
-.lk{font-size:12.5px;border:1px solid var(--line);border-radius:6px;padding:2px 6px;color:var(--ink3);flex:none}
+.lk{font-size:10px;border:1px solid var(--line);border-radius:6px;padding:2px 6px;color:var(--ink3);flex:none}
 /* ─── トグル ─── */
-.sw{width:44px;height:26px;border-radius:99px;background:var(--line);position:relative;flex:none;cursor:pointer;transition:.16s}
+.sw{width:44px;height:26px;border-radius:99px;background:#DFD4BE;position:relative;flex:none;cursor:pointer;transition:.16s}
 .sw i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.16s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
 .sw.on{background:var(--enji)}.sw.on i{left:21px}
 /* ─── 順番（調べていること） ─── */
-.ord{display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid var(--line2);font-size:13.5px}
+.ord{display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid var(--line2);font-size:12.5px}
 .ord:last-child{border:none}
-.ord .no{width:20px;height:20px;border-radius:50%;background:var(--enji);color:#fff;font-size:12.5px;display:flex;align-items:center;justify-content:center;flex:none}
+.ord .no{width:20px;height:20px;border-radius:50%;background:var(--enji);color:#fff;font-size:10.5px;display:flex;align-items:center;justify-content:center;flex:none}
 .ord .no.g2{background:#EFE7D6;color:var(--ink3)}
-.ord .up{margin-left:auto;font-size:15.5px;color:var(--ink3);cursor:pointer;padding:0 5px;flex:none}
+.ord .up{margin-left:auto;font-size:15px;color:var(--ink3);cursor:pointer;padding:0 5px;flex:none}
 /* ─── 4つの状態 ─── */
 .sk{background:#F0E9DA;border-radius:8px;height:13px;margin-bottom:8px;animation:sk 1.4s ease-in-out infinite}
 .sk.b{height:64px;border-radius:12px}
 @keyframes sk{0%,100%{opacity:1}50%{opacity:.55}}
 .empty{text-align:center;padding:26px 14px;background:#fff;border:1px dashed var(--line);border-radius:14px}
-.empty .t{font-size:14.5px;line-height:1.8}.empty .s{font-size:13px;color:var(--ink2);margin-top:8px;line-height:1.8}
+.empty .t{font-size:13.5px;line-height:1.8}.empty .s{font-size:11.5px;color:var(--ink2);margin-top:8px;line-height:1.8}
 /* ─── 運営 ─── */
-.opbar{background:#F1E9D9;border-bottom:1px solid var(--line);padding:8px 15px;font-size:12.5px;color:var(--ink2);line-height:1.6}
-.role{font-size:12.5px;border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink2);background:#fff;flex:none}
+.opbar{background:#F1E9D9;border-bottom:1px solid var(--line);padding:8px 15px;font-size:11px;color:var(--ink2);line-height:1.6}
+.role{font-size:10px;border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink2);background:#fff;flex:none}
 .kpi{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px}
 .kpi .k{background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px 12px;cursor:pointer}
 .kpi .k .v{font-size:22px;font-weight:700;letter-spacing:.02em}
-.kpi .k .l{font-size:12.5px;color:var(--ink3);margin-top:2px}
-.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
-.tbl th{background:var(--band2);color:var(--ink2);font-weight:400;padding:6px 5px;border:1px solid var(--line);font-size:12.5px;white-space:nowrap}
+.kpi .k .l{font-size:10.5px;color:var(--ink3);margin-top:2px}
+.tbl{width:100%;border-collapse:collapse;font-size:11px}
+.tbl th{background:#F3ECDD;color:var(--ink2);font-weight:400;padding:6px 5px;border:1px solid var(--line);font-size:10px;white-space:nowrap}
 .tbl td{border:1px solid var(--line);padding:6px 5px;background:#fff;text-align:center;white-space:nowrap}
 .tbl td.k{background:#FBF6EA;text-align:left;position:sticky;left:0;z-index:1}
 /* 週の 表は、曜日の 幅を そろえます */
 .tbl.jk td{height:54px;vertical-align:middle;white-space:normal;word-break:break-word}
-.tbl.jk th{padding:7px 5px;font-size:12.5px}
+.tbl.jk th{padding:7px 5px;font-size:11px}
 .tbl.jk td.k{padding:5px 6px}
 .tbl.wktbl{table-layout:fixed}
 .tbl.wktbl th:first-child,.tbl.wktbl td:first-child{width:56px}
 .tbl.wktbl td{overflow:hidden}
 .scr{overflow-x:auto;border-radius:12px;border:1px solid var(--line)}
-.koma{background:#FFF;border-left:3px solid var(--enji);border-radius:5px;padding:3px 5px;font-size:12px;line-height:1.4;text-align:left}
-.dup{border-left-color:var(--yama);background:var(--band3)}
+.koma{background:#FFF;border-left:3px solid var(--enji);border-radius:5px;padding:3px 5px;font-size:9.5px;line-height:1.4;text-align:left}
+.dup{border-left-color:var(--yama);background:#FBF3E2}
 /* ─── シート ─── */
 .mask{position:absolute;inset:0;background:rgba(38,25,19,.28);opacity:0;pointer-events:none;transition:.2s;z-index:5}
 .mask.on{opacity:1;pointer-events:auto}
 .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--paper);border-radius:22px 22px 0 0;z-index:6;
  box-shadow:0 -10px 30px rgba(90,72,48,.2);padding:10px 15px 16px;transform:translateY(105%);transition:.23s cubic-bezier(.3,.9,.3,1);max-height:82%;overflow-y:auto}
 .sheet.on{transform:translateY(0)}
-.grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 12px}
+.grab{width:40px;height:4px;border-radius:2px;background:#DFD4BE;margin:0 auto 12px}
 .sht{font-size:16px;font-weight:700;margin-bottom:4px}
 .toast{position:absolute;left:15px;right:15px;bottom:70px;background:#261913;color:#fff;border-radius:12px;
- padding:11px 13px;font-size:13px;z-index:8;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none;display:flex;gap:10px;align-items:center}
+ padding:11px 13px;font-size:12px;z-index:8;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none;display:flex;gap:10px;align-items:center}
 .toast.on{opacity:1;transform:translateY(0)}   /* pointer-events は none のまま。ボタンを 塞がない */
 .toast b{margin-left:auto;color:#F3C9CF;cursor:pointer;font-weight:400;pointer-events:auto}
 .toast.on b{pointer-events:auto}
 /* ─── デモ操作 ─── */
 .demo{width:360px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:11px 13px}
-.demo .t{font-size:12.5px;color:var(--ink3);letter-spacing:.1em;margin-bottom:8px}
+.demo .t{font-size:11px;color:var(--ink3);letter-spacing:.1em;margin-bottom:8px}
 .demo .r{display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap}
-.demo .r>span.l{font-size:12.5px;color:var(--ink2);flex:0 0 62px}
+.demo .r>span.l{font-size:11px;color:var(--ink2);flex:0 0 62px}
 .demo .pill{flex:none;white-space:nowrap}
 /* ─── 全画面の おうち ─── */
 .bd.full{padding:0}
-.hroom{position:relative;width:100%;height:100%;min-height:660px;overflow:hidden;background:#F1E4CC}
+/* ★★★`meet`（収める）に した ので、★縦横比の 合わない ぶんが 帯に なります。
+   ★★床の 位置（352 ÷ 730 ＝ 48.219%）で 壁と 床に 分けて 塗ります。
+   ★★帯が 部屋の 色に なるので、★継ぎ目は 見えません。
+   ★★`.hcard`（したく）にも 同じ ものを 置きます。★片方だけだと、
+     ★小さい ときに 白い 帯が 出ます。 */
+.hroom{position:relative;width:100%;height:100%;min-height:660px;overflow:hidden;background:linear-gradient(var(--wall) 0 48.219%,var(--floor) 48.219% 100%)}
 .hroom svg{position:absolute;inset:0;width:100%;height:100%}
 .hband{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:8px;
  padding:9px 14px;background:linear-gradient(rgba(251,246,234,.92),rgba(251,246,234,0));z-index:3}
 .hband h2{font-size:16px;letter-spacing:.06em}
-.hband .m{font-size:12.5px;color:var(--ink2);margin-left:2px}
+.hband .m{font-size:11px;color:var(--ink2);margin-left:2px}
 .hfab{position:absolute;right:14px;bottom:16px;z-index:9;background:var(--enji);color:#fff;
- border-radius:99px;padding:13px 24px;font-size:14.5px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(90,72,48,.28)}
-.hhit{position:absolute;z-index:2;cursor:pointer;border-radius:8px}
-.hhit:active{background:rgba(255,255,255,.25)}
+ border-radius:99px;padding:13px 24px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(90,72,48,.28)}
+/* ★★2026-09-17、`.hhit` を 消しました。★押せる ところは SVG の 中に 入れました。
+   ★★hhit の 札を 使う ところは、★この ファイルに 1つも ありません（★確かめ済み）。 */
 .hwalk{position:absolute;bottom:118px;left:0;width:126px;z-index:2;animation:walk 19s linear infinite}
 .hwalk .bob{animation:bob .62s ease-in-out infinite;transform-origin:50% 100%}
 .hwalk img{width:100%;display:block}
@@ -258,48 +257,48 @@ h1{font-size:19px;letter-spacing:.04em}
 #sheet.dr #sh{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;overflow:hidden}
 .drg{min-height:0}
 .drx{position:relative;display:flex;align-items:center;padding:9px 13px 7px;border-bottom:1px solid var(--line2);flex:none}
-.drx .bar{width:38px;height:4px;border-radius:2px;background:var(--line);margin:0 auto}
+.drx .bar{width:38px;height:4px;border-radius:2px;background:#DFD4BE;margin:0 auto}
 .drx .cl{position:absolute;right:11px;top:4px;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);
- background:#fff;display:flex;align-items:center;justify-content:center;font-size:13.5px;color:var(--ink2);cursor:pointer}
+ background:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink2);cursor:pointer}
 .dr1{display:flex;border-bottom:1px solid var(--line);padding:0 8px}
-.dr1 div{flex:1;text-align:center;font-size:12.5px;color:var(--ink2);padding:8px 2px 9px;cursor:pointer;line-height:1.4}
+.dr1 div{flex:1;text-align:center;font-size:10.5px;color:var(--ink2);padding:8px 2px 9px;cursor:pointer;line-height:1.4}
 .dr1 div.on{color:var(--enji);font-weight:700;box-shadow:inset 0 -2px 0 var(--enji)}
 .dr2{display:flex;gap:6px;overflow-x:auto;padding:8px 13px;border-bottom:1px solid var(--line2)}
-.dr2 span{flex:none;border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-size:12.5px;color:var(--ink2);background:#fff;cursor:pointer;white-space:nowrap}
+.dr2 span{flex:none;border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-size:10.5px;color:var(--ink2);background:#fff;cursor:pointer;white-space:nowrap}
 .dr2 span.on{background:var(--enji);color:#fff;border-color:var(--enji)}
-.dr3{display:flex;align-items:center;gap:8px;padding:8px 13px;font-size:12.5px;color:var(--ink2);border-bottom:1px solid var(--line2)}
-.dr3 .sr{font-size:14.5px;cursor:pointer}
-.dr3 .od{margin-left:auto;border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-size:12.5px;background:#fff;cursor:pointer;white-space:nowrap;flex:none}
+.dr3{display:flex;align-items:center;gap:8px;padding:8px 13px;font-size:11px;color:var(--ink2);border-bottom:1px solid var(--line2)}
+.dr3 .sr{font-size:14px;cursor:pointer}
+.dr3 .od{margin-left:auto;border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-size:10.5px;background:#fff;cursor:pointer;white-space:nowrap;flex:none}
 .drg{padding:10px 13px;overflow-y:auto;flex:1 1 0;min-height:0}
 .g5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .g5 .c{background:#fff;border:1px solid var(--line);border-radius:10px;aspect-ratio:1;display:flex;align-items:center;
- justify-content:center;font-size:12px;color:var(--ink2);text-align:center;line-height:1.3;cursor:pointer;padding:2px;position:relative}
+ justify-content:center;font-size:8.5px;color:var(--ink2);text-align:center;line-height:1.3;cursor:pointer;padding:2px;position:relative}
 .g5 .c.sel{border:1.6px solid var(--ink)}
 .g5 .c.sel:after{content:'';position:absolute;right:4px;bottom:4px;width:6px;height:6px;border-radius:50%;background:var(--enji)}
-.g5 .c.no{color:var(--ink4);background:#FAF6EC}
-.hcard{position:relative;border-radius:14px;overflow:hidden;height:290px;margin:0 -15px;border-bottom:1px solid var(--line)}
+.g5 .c.no{color:#C3B6A2;background:#FAF6EC}
+.hcard{position:relative;border-radius:14px;overflow:hidden;height:290px;margin:0 -15px;border-bottom:1px solid var(--line);background:linear-gradient(var(--wall) 0 48.219%,var(--floor) 48.219% 100%)}
 .hcard svg{position:absolute;inset:0;width:100%;height:100%}
-.haichi{position:absolute;right:12px;bottom:12px;background:var(--card2);border-radius:99px;padding:9px 16px;
- font-size:13px;cursor:pointer;box-shadow:0 2px 8px rgba(90,72,48,.2);z-index:3}
-.drt{display:flex;align-items:center;gap:8px;padding:9px 13px;border-top:1px solid var(--line2);background:var(--card2);font-size:13.5px}
-.drt .x{margin-left:auto;border:1px solid var(--line);border-radius:9px;padding:7px 14px;font-size:13px;background:#fff;cursor:pointer}
-.drt .k{border:0;border-radius:9px;padding:8px 18px;font-size:13.5px;font-weight:700;background:var(--enji);color:#fff;cursor:pointer}
-.drr{display:flex;align-items:center;gap:5px;padding:6px 13px;background:var(--card2);overflow-x:auto}
-.drr b{font-weight:400;font-size:12.5px;color:var(--ink3);flex:none;margin-right:2px;white-space:nowrap}
-.drr .od{border:1px solid var(--line);border-radius:99px;padding:4px 10px;font-size:12.5px;background:#fff;cursor:pointer;white-space:nowrap;flex:none}
+.haichi{position:absolute;right:12px;bottom:12px;background:#FFFDF7;border-radius:99px;padding:9px 16px;
+ font-size:12px;cursor:pointer;box-shadow:0 2px 8px rgba(90,72,48,.2);z-index:3}
+.drt{display:flex;align-items:center;gap:8px;padding:9px 13px;border-top:1px solid var(--line2);background:#FDFAF3;font-size:13px}
+.drt .x{margin-left:auto;border:1px solid var(--line);border-radius:9px;padding:7px 14px;font-size:12px;background:#fff;cursor:pointer}
+.drt .k{border:0;border-radius:9px;padding:8px 18px;font-size:12.5px;font-weight:700;background:var(--enji);color:#fff;cursor:pointer}
+.drr{display:flex;align-items:center;gap:5px;padding:6px 13px;background:#FDFAF3;overflow-x:auto}
+.drr b{font-weight:400;font-size:10px;color:var(--ink3);flex:none;margin-right:2px;white-space:nowrap}
+.drr .od{border:1px solid var(--line);border-radius:99px;padding:4px 10px;font-size:10.5px;background:#fff;cursor:pointer;white-space:nowrap;flex:none}
 .drr i{flex:none;width:26px;height:26px;border-radius:5px;border:1px solid rgba(38,25,19,.10);cursor:pointer}
 .drr i.on{outline:2px solid var(--ink);outline-offset:1px}
-.drhint{padding:9px 13px;text-align:center;font-size:13px;color:var(--ink3);background:var(--card2);border-top:1px solid var(--line2)}
-.drc{display:flex;gap:5px;overflow-x:auto;padding:7px 13px;border-top:1px solid var(--line2);background:var(--card2)}
+.drhint{padding:9px 13px;text-align:center;font-size:11.5px;color:var(--ink3);background:#FDFAF3;border-top:1px solid var(--line2)}
+.drc{display:flex;gap:5px;overflow-x:auto;padding:7px 13px;border-top:1px solid var(--line2);background:#FDFAF3}
 .drc i{flex:none;width:24px;height:24px;border-radius:50%;border:1px solid rgba(38,25,19,.10);cursor:pointer}
 .drc i.on{outline:2px solid var(--enji);outline-offset:2px}
-.drb{display:flex;border-top:1px solid var(--line);background:var(--card2)}
-.drb div{flex:1;text-align:center;font-size:13.5px;padding:13px 0;cursor:pointer;color:var(--ink2)}
+.drb{display:flex;border-top:1px solid var(--line);background:#FFFDF7}
+.drb div{flex:1;text-align:center;font-size:12.5px;padding:13px 0;cursor:pointer;color:var(--ink2)}
 .drb div.p{color:var(--enji);font-weight:700}
 /* ─── 表・フォーム ─── */
-.fl{font-size:12.5px;color:var(--ink3);letter-spacing:.08em;margin:12px 0 5px}
-.inp{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px;font:inherit;font-size:14.5px;color:var(--ink)}
-.hm{display:grid;grid-template-columns:26px repeat(7,1fr);gap:3px;font-size:12px}
+.fl{font-size:10.5px;color:var(--ink3);letter-spacing:.08em;margin:12px 0 5px}
+.inp{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px;font:inherit;font-size:13.5px;color:var(--ink)}
+.hm{display:grid;grid-template-columns:26px repeat(7,1fr);gap:3px;font-size:9.5px}
 .hm b{font-weight:400;color:var(--ink3);text-align:center;align-self:center}
 .hm i{display:block;padding-top:100%;border-radius:5px;cursor:pointer}
 /* ─── 時間ピッカー（スワイプ） ─── */
@@ -312,45 +311,45 @@ h1{font-size:19px;letter-spacing:.04em}
 .wcol i{display:block;height:32px;line-height:32px;font-size:19px;font-style:normal;scroll-snap-align:center;color:var(--ink3)}
 .wcol i.on{color:var(--ink);font-weight:700}
 .wpad{height:50px}
-.wlab{display:flex;justify-content:center;gap:4px;font-size:12.5px;color:var(--ink3)}
+.wlab{display:flex;justify-content:center;gap:4px;font-size:10px;color:var(--ink3)}
 .wlab span{width:66px;text-align:center}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
-.cal b{font-weight:400;font-size:12px;color:var(--ink3);text-align:center}
+.cal b{font-weight:400;font-size:9.5px;color:var(--ink3);text-align:center}
 .cal i{display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-radius:8px;background:#fff;
- border:1px solid var(--line2);font-size:12.5px;font-style:normal;cursor:pointer;color:var(--ink2)}
+ border:1px solid var(--line2);font-size:11px;font-style:normal;cursor:pointer;color:var(--ink2)}
 .cal i.on{background:var(--enji);color:#fff;border-color:var(--enji);font-weight:700}
-.cal i.mid{background:var(--pick);border-color:#EBD2D8;color:var(--enji)}
+.cal i.mid{background:#F6E4E8;border-color:#EBD2D8;color:var(--enji)}
 .cal i.no{color:#CFC3B0}
 .paper{background:#fff;border:1px solid var(--line);border-radius:10px;padding:15px 14px;margin-bottom:9px}
-.paper h4{font-size:13px;letter-spacing:.06em;border-bottom:1.5px solid var(--ink);padding-bottom:5px;margin-bottom:9px;font-weight:700}
-.ptbl{width:100%;border-collapse:collapse;font-size:12.5px}
-.ptbl th{text-align:left;font-weight:400;color:var(--ink3);border-bottom:1px solid var(--line);padding:4px 3px;font-size:12.5px;white-space:nowrap}
+.paper h4{font-size:12px;letter-spacing:.06em;border-bottom:1.5px solid var(--ink);padding-bottom:5px;margin-bottom:9px;font-weight:700}
+.ptbl{width:100%;border-collapse:collapse;font-size:11px}
+.ptbl th{text-align:left;font-weight:400;color:var(--ink3);border-bottom:1px solid var(--line);padding:4px 3px;font-size:10px;white-space:nowrap}
 .ptbl td{border-bottom:1px solid var(--line2);padding:6px 3px;vertical-align:middle}
 .ptbl td.r{text-align:right;white-space:nowrap}
 .ptbl td.n{text-align:right;white-space:nowrap;font-weight:700}
 .minibar{height:7px;background:var(--enji);border-radius:4px;display:block;opacity:.75}
 .phead{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--ink);padding-bottom:7px;margin-bottom:11px}
-.phead .t{font-size:15.5px;font-weight:700}
-.phead .s{font-size:12.5px;color:var(--ink3);text-align:right;line-height:1.6}
+.phead .t{font-size:15px;font-weight:700}
+.phead .s{font-size:10px;color:var(--ink3);text-align:right;line-height:1.6}
 .chap{background:#fff;border:1px solid var(--line);border-radius:13px;margin-bottom:8px;overflow:hidden}
-.chap .h{display:flex;align-items:center;gap:8px;padding:12px 13px;font-size:13.5px;cursor:pointer}
-.chap .h s{margin-left:auto;font-size:12.5px;color:var(--ink3);text-decoration:none}
+.chap .h{display:flex;align-items:center;gap:8px;padding:12px 13px;font-size:13px;cursor:pointer}
+.chap .h s{margin-left:auto;font-size:10.5px;color:var(--ink3);text-decoration:none}
 .chap .a{border-top:1px solid var(--line2);padding:2px 13px 6px}
 .rl{position:absolute;right:10px;top:4px;z-index:70;width:26px;height:26px;border-radius:50%;
- background:rgba(38,25,19,.55);color:#fff;font-size:14.5px;display:flex;align-items:center;
+ background:rgba(38,25,19,.55);color:#fff;font-size:14px;display:flex;align-items:center;
  justify-content:center;cursor:pointer;line-height:1}
 .rl:active{background:rgba(38,25,19,.8)}
 .za{position:absolute;right:42px;top:4px;z-index:70;height:26px;padding:0 10px;border-radius:99px;
- background:rgba(38,25,19,.55);color:#fff;font-size:13px;display:flex;align-items:center;
+ background:rgba(38,25,19,.55);color:#fff;font-size:12px;display:flex;align-items:center;
  justify-content:center;cursor:pointer;border:0}
 .za:active{background:rgba(38,25,19,.8)}
-.legend{max-width:600px;font-size:13.5px;color:var(--ink2);background:#fff;border:1px solid var(--line);
+.legend{max-width:600px;font-size:12.5px;color:var(--ink2);background:#fff;border:1px solid var(--line);
  border-radius:14px;padding:14px 16px;line-height:1.95}
 .legend b{color:var(--enji)}.legend ul{margin:6px 0 0 1.2em}
 .legend li{margin-bottom:3px}
 
 /* ══════════ 暗い 画面（ダークモード） ══════════ */
-html[data-th="dark"]{--card2:#2A2219;--line3:#3A322A;--ink4:#7C6C5E;--band:#2C241D;--band2:#2A231C;--band3:#3A1E22;--enji-d:#C9607A;--ok:#5E8F74;--warn:#D9AC55;--err:#EA8894;--pick:#3A1E22;
+html[data-th="dark"]{
  --paper:#1C1712;--bg:#121009;--ink:#EFE6D8;--ink2:#BCAF9D;--ink3:#918476;
  --line:#3D342B;--line2:#2C251E;--enji:#E790A2;--yama:#D9AC55;--midori:#82BCA0;--red:#EA8894;
  --sh:0 1px 0 rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.45);
@@ -359,16 +358,16 @@ html[data-th="dark"] body{background:var(--bg);color:var(--ink)}
 html[data-th="dark"] .card,html[data-th="dark"] .box,html[data-th="dark"] .li,html[data-th="dark"] .nt,html[data-th="dark"] .rep,html[data-th="dark"] .post,html[data-th="dark"] .empty,html[data-th="dark"] .mini,html[data-th="dark"] .dev,html[data-th="dark"] .ph,html[data-th="dark"] .grid,html[data-th="dark"] .tblwrap,html[data-th="dark"] .cal,html[data-th="dark"] .scr,html[data-th="dark"] .wknav,html[data-th="dark"] .pane,html[data-th="dark"] .sheet,html[data-th="dark"] .demo,html[data-th="dark"] .legend{background:#241D17;border-color:var(--line);color:var(--ink)}
 html[data-th="dark"] .li,html[data-th="dark"] .nt,html[data-th="dark"] .rep,html[data-th="dark"] .post{background:transparent}
 html[data-th="dark"] .box,html[data-th="dark"] .card.p0{background:#241D17}
-html[data-th="dark"] .top{background:var(--enji);color:#fff}
+html[data-th="dark"] .top{background:#6B0A1D;color:#fff}
 html[data-th="dark"] .top .badge,html[data-th="dark"] .top .rl{border-color:rgba(255,255,255,.4);color:#fff}
 html[data-th="dark"] .wall{background:#221B15;color:var(--ink2)}
 html[data-th="dark"] .side{background:#1E1812;border-color:var(--line)}
 html[data-th="dark"] .nv.on{background:#241D17;color:var(--enji)}
 html[data-th="dark"] .body,html[data-th="dark"] .bd{background:var(--paper)}
-html[data-th="dark"] .btn{background:var(--enji-d);color:#fff;border-color:var(--enji-d)}
+html[data-th="dark"] .btn{background:#8E1230;color:#fff;border-color:#8E1230}
 html[data-th="dark"] .btn.g,html[data-th="dark"] .btn.mid{background:#2C241D;color:var(--ink);border-color:var(--line)}
 html[data-th="dark"] .pill{background:#2C241D;color:var(--ink2);border-color:var(--line)}
-html[data-th="dark"] .pill.on{background:var(--enji-d);color:#fff;border-color:var(--enji-d)}
+html[data-th="dark"] .pill.on{background:#8E1230;color:#fff;border-color:#8E1230}
 html[data-th="dark"] .inp,html[data-th="dark"] .ta,html[data-th="dark"] input,html[data-th="dark"] textarea,html[data-th="dark"] select{background:#1A1510;color:var(--ink);border-color:var(--line)}
 html[data-th="dark"] table th,html[data-th="dark"] .tbl th,html[data-th="dark"] .spt th{background:#2C241D;color:var(--ink2);border-color:var(--line)}
 html[data-th="dark"] table td,html[data-th="dark"] .tbl td,html[data-th="dark"] .spt td{background:#241D17;color:var(--ink);border-color:var(--line)}
@@ -378,7 +377,7 @@ html[data-th="dark"] .warn,html[data-th="dark"] .wl{background:#2A2218;border-co
 html[data-th="dark"] .fbtn{background:#2C241D;border-color:var(--line);color:var(--ink3)}
 html[data-th="dark"] .koma{background:#2A231C;border-left-color:var(--enji)}
 html[data-th="dark"] .koma.mine{background:#1F2C25;border-left-color:var(--midori)}
-html[data-th="dark"] .koma.busy{background:#2E2820;border-left-color:var(--ink3);color:var(--ink2)}
+html[data-th="dark"] .koma.busy{background:#2E2820;border-left-color:#6B5F4E;color:var(--ink2)}
 html[data-th="dark"] .koma.busy.priv{background:#282219}
 html[data-th="dark"] .koma.now{background:#3A1E22;border-left-color:var(--red);color:var(--red)}
 html[data-th="dark"] .slot{background:#1E1812;color:var(--ink3)}
@@ -388,8 +387,8 @@ html[data-th="dark"] .grid th.tdyh{background:#3A1E22;color:var(--enji)}
 html[data-th="dark"] .grid td.tdyc{background:#221A18}
 html[data-th="dark"] .mini .mg b:hover{background:#2C241D}
 html[data-th="dark"] .mini .mg b.w{background:#3A1E22}
-html[data-th="dark"] .mini .mg b.t{background:var(--enji-d);color:#fff}
-html[data-th="dark"] .mini .mg b.o{color:var(--ink3)}
+html[data-th="dark"] .mini .mg b.t{background:#8E1230;color:#fff}
+html[data-th="dark"] .mini .mg b.o{color:#5E5449}
 html[data-th="dark"] .tabs{background:#1E1812;border-color:var(--line)}
 html[data-th="dark"] .tb{color:var(--ink3)}
 html[data-th="dark"] .tb.on{color:var(--enji)}
@@ -401,28 +400,28 @@ html[data-th="dark"] .pl.on{background:#2C241D}
 html[data-th="dark"] .hd h2,html[data-th="dark"] h2,html[data-th="dark"] h1{color:var(--ink)}
 html[data-th="dark"] .stage,html[data-th="dark"] .hroom{background:#241D17}
 html[data-th="dark"] .opbar{background:#221B15;color:var(--ink2)}
-html[data-th="dark"] .off{background:#3A2E1C;color:var(--warn)}
-html[data-th="dark"] .dot{background:var(--ok)}
+html[data-th="dark"] .off{background:#3A2E1C;color:#E7C46A}
+html[data-th="dark"] .dot{background:#5C8FE0}
 @media (prefers-color-scheme:dark){html:not([data-th="light"]):not([data-th="dark"]){color-scheme:dark}}
 /* 暗い画面：残っていた 明るい面 */
 html[data-th="dark"] .kpi{background:#241D17;border-color:var(--line)}
 html[data-th="dark"] .kpi.al{background:#2E2018;border-color:#5A3A3E}
 html[data-th="dark"] .lft,html[data-th="dark"] .pl{background:#1E1812}
 html[data-th="dark"] .seg{background:#2C241D;border-color:var(--line)}
-html[data-th="dark"] .seg .on,html[data-th="dark"] .seg b.on,html[data-th="dark"] .seg span.on,html[data-th="dark"] .on{background:var(--enji-d);color:#fff}
+html[data-th="dark"] .seg .on,html[data-th="dark"] .seg b.on,html[data-th="dark"] .seg span.on,html[data-th="dark"] .on{background:#8E1230;color:#fff}
 html[data-th="dark"] .gear,html[data-th="dark"] .role{background:#2C241D;color:var(--ink2);border-color:var(--line)}
 html[data-th="dark"] .k{background:#2A231C;color:var(--ink)}
 html[data-th="dark"] div[style*="background:#fff"],html[data-th="dark"] div[style*="background:#FFF"]{background:#241D17!important}
 html[data-th="dark"] td[style*="background:#fff"],html[data-th="dark"] td[style*="background:#FFF"]{background:#241D17!important}
-html[data-th="dark"] td[style*="background:var(--pick)"],html[data-th="dark"] [style*="background:var(--pick)"]{background:#3A1E22!important;color:var(--enji)}
-html[data-th="dark"] [style*="background:var(--band)"]{background:#1F2C25!important}
-html[data-th="dark"] [style*="background:var(--band)"],html[data-th="dark"] [style*="background:var(--band3)"],html[data-th="dark"] [style*="background:var(--band)"],html[data-th="dark"] [style*="background:var(--card2)"],html[data-th="dark"] [style*="background:var(--band2)"],html[data-th="dark"] [style*="background:#FBF6EA"],html[data-th="dark"] [style*="background:var(--band)"],html[data-th="dark"] [style*="background:var(--band)"],html[data-th="dark"] [style*="background:var(--band)"],html[data-th="dark"] [style*="background:var(--card2)"],html[data-th="dark"] [style*="background:var(--card2)"]{background:#2A2219!important}
-html[data-th="dark"] tr[style*="background:var(--band3)"]{background:#2A2219!important}
+html[data-th="dark"] td[style*="background:#F6E4E8"],html[data-th="dark"] [style*="background:#F6E4E8"]{background:#3A1E22!important;color:var(--enji)}
+html[data-th="dark"] [style*="background:#F4F8F5"]{background:#1F2C25!important}
+html[data-th="dark"] [style*="background:#F5EFE1"],html[data-th="dark"] [style*="background:#FBF3E2"],html[data-th="dark"] [style*="background:#F6F1E4"],html[data-th="dark"] [style*="background:#FDFAF3"],html[data-th="dark"] [style*="background:#F3ECDD"],html[data-th="dark"] [style*="background:#FBF6EA"],html[data-th="dark"] [style*="background:#EDE5D5"],html[data-th="dark"] [style*="background:#F4EFE4"],html[data-th="dark"] [style*="background:#EFE9DC"],html[data-th="dark"] [style*="background:#FFFDF8"],html[data-th="dark"] [style*="background:#FFFDF7"]{background:#2A2219!important}
+html[data-th="dark"] tr[style*="background:#FBF3E2"]{background:#2A2219!important}
 html[data-th="dark"] .sw{background:#3A322A}
-html[data-th="dark"] .sw.on{background:var(--enji-d)}
+html[data-th="dark"] .sw.on{background:#8E1230}
 html[data-th="dark"] .sw i{background:#EFE6D8}
 html[data-th="dark"] .tri div{background:#2A2219;border-color:var(--line)}
-html[data-th="dark"] .tri div.on{background:var(--enji-d);border-color:var(--enji-d)}
+html[data-th="dark"] .tri div.on{background:#8E1230;border-color:#8E1230}
 html[data-th="dark"] .tri div.on .w,html[data-th="dark"] .tri div.on .g{color:#fff}
 html[data-th="dark"] .drt,html[data-th="dark"] .drr,html[data-th="dark"] .drhint,html[data-th="dark"] .drc{background:#241D17}
 </style></head><body>
@@ -585,8 +584,8 @@ function stateBlock(what,how){
   +'<div class="note">ぐるぐるを 使いません。灰色の 形を 置きます。0.3秒 未満なら 何も 出しません。</div>';
  if(st==='空')return '<div class="empty"><div class="t">'+what+'</div><div class="s">'+how+'</div></div>'
   +'<div class="note">白紙に しません。「まだ ありません」だけで 終わりません。何を すると 埋まるかを 1行 書きます。</div>';
- if(st==='失敗')return '<div class="card" style="background:var(--band);border-color:var(--line3)">'
-  +'<div style="font-size:13.5px;line-height:1.8">いま つながりません。<br>書いたものは、この端末に 残っています。</div>'
+ if(st==='失敗')return '<div class="card" style="background:#F6F1E4;border-color:#E8DFC8">'
+  +'<div style="font-size:13px;line-height:1.8">いま つながりません。<br>書いたものは、この端末に 残っています。</div>'
   +'<div class="btn g" style="margin-top:10px" onclick="S.dm.st=\'ふつう\';draw()">もう一度</div></div>'
   +'<div class="note">書いたものを、失敗で 消しません。これが 一番重い決まりです。</div>';
  return null}
@@ -608,23 +607,18 @@ function list(arr,note){return '<div class="box">'+arr.map(function(x){
 
 /* ══════════ ① きょう ══════════ */
 var HONBAN={d:'2026年9月9日',n:'秋の 演奏会',pl:'第1ホール',kot:'ゆっくり 息を 吸えば だいじょうぶ。3日前の 自分より 声は 出る。'};
-/* ══ ★教室の 有無 ── 裁定その73（2026-09-18）══
-   ★S.noClass = true で「教室を 持たない人」の 姿に なります
-   ★切り替えは もっと →「通っている ところ」の 上の 札      */
-function hasClass(){ return !S.noClass }
-
 function S_kyou(){
  var b='<div class="hd"><h2>きょう</h2><div class="gear" onclick="push(\'もっと\')">⚙</div></div>';
  /* 本番の 朝だけ、本人が 前に 書いた ことばを そのまま 返します（アプリは 1文字も 足しません） */
  if(HONBAN.d==='2026年9月9日'&&HONBAN.kot)
-  b+='<div class="card" style="border-color:var(--ink4);background:var(--card2)">'
+  b+='<div class="card" style="border-color:#CFC0A4;background:#FDFAF3">'
    +'<div class="usu">'+HONBAN.n+'　'+HONBAN.pl+'</div>'
    +'<div style="font-size:16px;line-height:1.95;margin:7px 0 6px">'+HONBAN.kot+'</div>'
    +'<div class="usu">前に あなたが 書いた ことばです</div></div>';
  b+='<div class="stage" style="height:214px">'
   +'<div class="shadow"></div><div class="sh"><img src="'+SHEEP.dress+'" alt="羊"></div></div>'
   +'<div class="card" style="text-align:center;padding:11px 13px;margin-top:-2px">'
-  +'<div style="font-size:14.5px;line-height:1.8">'+(S.R.nodo||S.R.deki?'きょうの ぶんを 書いてくれて ありがとう':'きょうも 来てくれて ありがとう')+'</div>'
+  +'<div style="font-size:13.5px;line-height:1.8">'+(S.R.nodo||S.R.deki?'きょうの ぶんを 書いてくれて ありがとう':'きょうも 来てくれて ありがとう')+'</div>'
   +'<div class="usu">羊は「記録した行為」に 反応します。中身には 反応しません</div></div>';
  /* 毎日 するのは これ。一番 上に 置きます */
  b+='<div class="btn" style="margin-top:4px" onclick="go(\'記録\')">きょうを 記録する</div>';
@@ -632,7 +626,6 @@ function S_kyou(){
  S.of=S.of||'全部';
  var YV=LESSONS.map(function(L,i){return [L,i]}).filter(function(x){
    return x[0].d===TODAY&&(S.of==='全部'||x[0].o===S.of)});
- if(hasClass()){
  b+='<div class="h3">きょうの よてい</div>'
   +(ORGS.length>1?'<div class="pills">'+[['全部','全部']].concat(ORGS.map(function(o){return [o.n,o.id]})).map(function(o){
     return '<span class="pill sm '+(S.of===o[1]?'on':'')+'" onclick="S.of=\''+o[1]+'\';draw()">'+o[0]+'</span>'}).join('')+'</div>':'')
@@ -646,14 +639,11 @@ function S_kyou(){
   +'<div class="btn g sm" style="border-color:#D6B96A;color:#8C6115" onclick="push(\'あなたの重なり\')">重なり 1件</div></div>'
   +'<div class="usu" style="margin-top:5px">時間割の あいている ところが、先生に 伝わります（中身は 伝わりません）。'
   +(ORGS.length>1?'<br>通っている ところが 全部、1つの 予定表に 出ます。教室どうしは 見えません。':'')+'</div>';
- }
  /* 近い 行事 */
- if(hasClass()){
  b+='<div class="h3">近い 行事</div><div class="box">'
   +'<div class="li plain" style="cursor:default"><span>9月14日（月）　実技試験<br><span class="usu">12:30〜17:00／第1ホール　'+orgOf('u').n+'</span></span></div>'
   +'<div class="li plain" style="cursor:default"><span>10月5日（月）　学園祭<br><span class="usu">10:00〜／全学　'+orgOf('u').n+'</span></span></div></div>'
   +'<div class="usu" style="margin-bottom:6px">行事の 出欠は 集めません。知らせるだけです。</div>';
- }
  if(quiet())b+='<div class="warn" style="margin-top:11px">9月14日の 本番が 近いので、いまは <b>くらべる・かぞえる・本番でそろえる</b> を お休みにしています。<br>記録・並べる・さかのぼる・ノート・ひつじは いつもどおりです。</div>';
  b+='<div class="note">点数も、きょうの調子の 判定も 出しません。<br>羊を 押しても 何も 起きません（飾りでは なく 状態です）。<br>「連続◯日」を 出しません。</div>';
  return b}
@@ -752,8 +742,8 @@ function S_furi(){
  return b}
 function setFk(v){S.fk=v;draw()}
 function setSpan(v){S.span=v;draw()}
-function restBlock(){return '<div class="card" style="background:var(--band);border-color:var(--line3)">'
- +'<div style="font-size:14.5px;line-height:1.85">いまは お休みです。<br>本番の 翌々日から、また 出ます。</div>'
+function restBlock(){return '<div class="card" style="background:#F6F1E4;border-color:#E8DFC8">'
+ +'<div style="font-size:13.5px;line-height:1.85">いまは お休みです。<br>本番の 翌々日から、また 出ます。</div>'
  +'<div class="usu" style="margin-top:7px">9月14日（月）実技試験　／　9月16日から</div></div>'
  +'<div class="two"><div class="btn g" onclick="setFk(\'並べる\')">並べるを 見る</div>'
  +'<div class="btn g" onclick="setFk(\'さかのぼる\')">さかのぼるを 見る</div></div>'
@@ -809,7 +799,7 @@ function narabe(){
 /* ── 本番でそろえる ── */
 function soroeru(){
  if(S.dm.st==='空'||S.honban2)return '<div class="card"><div class="mini">本番 2回ぶん では 重ねられません</div>'
-  +'<div style="font-size:13.5px;line-height:1.85;margin-top:8px">3回から、重ねて 見られます。</div></div>'
+  +'<div style="font-size:13px;line-height:1.85;margin-top:8px">3回から、重ねて 見られます。</div></div>'
   +'<div class="box">'+['5月18日　定期演奏会','7月2日　学内演奏'].map(function(x){
     return '<div class="li" onclick="push(\'本番の前後\',\''+x+'\')"><span>'+x+'</span><s>前後を 見る ›</s></div>'}).join('')+'</div>'
   +'<div class="note">「あと1回」と 書きません。2回のまま 重ねて 見せません。</div>';
@@ -824,8 +814,8 @@ function soroeru(){
   runs.forEach(function(r,k){var d=r[key].map(function(v,i){return (i?'L':'M')+x(i)+' '+y(v,mx,mn)}).join(' ');
    p+='<path d="'+d+'" fill="none" stroke="#840C24" stroke-width="1.7" opacity="'+[.35,.55,.85][k]+'"/>';
    r[key].forEach(function(v,i){p+='<circle cx="'+x(i)+'" cy="'+y(v,mx,mn)+'" r="2.6" fill="#840C24" opacity="'+[.35,.55,.85][k]+'"/>'})});
-  p+='<text x="30" y="14" font-size="8.5" fill="var(--ink4)" text-anchor="end">'+lmx+'</text>';
-  p+='<text x="30" y="'+H+'" font-size="8.5" fill="var(--ink4)" text-anchor="end">'+lmn+'</text>';
+  p+='<text x="30" y="14" font-size="8.5" fill="#7C6C5E" text-anchor="end">'+lmx+'</text>';
+  p+='<text x="30" y="'+H+'" font-size="8.5" fill="#7C6C5E" text-anchor="end">'+lmn+'</text>';
   [[-14,0],[-7,3],[0,7],[3,10]].forEach(function(t){p+='<text x="'+x(t[1])+'" y="'+(H+12)+'" font-size="8.5" fill="#5E5045" text-anchor="middle">'+(t[0]>0?'+':'')+t[0]+'</text>'});
   p+='<text x="'+x(7)+'" y="'+(H+23)+'" font-size="8.5" fill="#840C24" text-anchor="middle">本番の日</text>';
   return '<svg viewBox="0 0 '+W+' '+(H+28)+'" width="100%" style="display:block">'+p+'</svg>'};
@@ -856,7 +846,7 @@ function madaWakaranai(){
  +[['眠った時間 × 声の調子','10日のうち 7日 たまりました',70],
    ['夕食から寝るまで × 声の調子','10日のうち 4日 たまりました',40]].map(function(x){
   return '<div style="padding:13px 2px;border-bottom:1px solid var(--line2)">'
-  +'<div style="font-size:14.5px">'+x[0]+'</div>'
+  +'<div style="font-size:14px">'+x[0]+'</div>'
   +'<div style="height:4px;background:var(--line2);border-radius:2px;margin:7px 0 3px">'
   +'<div style="height:4px;width:'+x[2]+'%;background:var(--ink3);border-radius:2px"></div></div>'
   +'<div class="usu">'+x[1]+'</div></div>'}).join('')
@@ -868,8 +858,8 @@ function kuraberu(){
  var lags=['前の夜','前の日','2日まえ','その日の朝'];
  var h='<div class="warn">ここに出るのは、あなたが 書いたことの 並びです。原因かどうかは 分かりません。</div>';
  if(S.dm.bun){
-  h+='<div class="card" style="border-color:var(--enji);background:var(--card2)">'
-   +'<div style="font-size:15.5px;line-height:1.85;font-weight:700">食べ終えてから 寝るまでが みじかい日の あと、<br>声が 出づらいことが 多いようです。</div>'
+  h+='<div class="card" style="border-color:#C9A0AB;background:#FFFCFC">'
+   +'<div style="font-size:15px;line-height:1.85;font-weight:700">食べ終えてから 寝るまでが みじかい日の あと、<br>声が 出づらいことが 多いようです。</div>'
    +'<div class="usu" style="margin-top:9px;line-height:1.8">書いた日 62日／差の 大きさ 0.52／q = 0.04<br>くらべた先は、あなた自身の 普段です</div></div>';}
  h+='<div class="card"><div class="mini">'+SIRA[0]+'　<span style="color:var(--ink3)">（いま 1番目）</span></div>'
  +'<div class="pills" style="margin:8px 0 6px">'+lags.map(function(v,i){
@@ -877,8 +867,8 @@ function kuraberu(){
  +dotplot(S.lag)
  +'<div class="usu">● 書いた日　○ あとから 書いた日　- - - まんなか</div>'
  +'<div class="usu" style="margin-top:5px">時間差を 変えても、<b>判定は「前の夜」に 固定</b>です。ここは 見るだけ。</div></div>';
- if(!S.dm.bun)h+='<div class="card" style="background:var(--band);border-color:var(--line3)"><div style="font-size:13.5px;line-height:1.75">まだ、はっきりした差は 見えていません。<br>'
-  +'<span style="font-size:12.5px;color:var(--ink2)">出なかった日が 11日 たまりました。この形のまま 続けてください。</span></div></div>';
+ if(!S.dm.bun)h+='<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><div style="font-size:12.5px;line-height:1.75">まだ、はっきりした差は 見えていません。<br>'
+  +'<span style="font-size:11px;color:var(--ink2)">出なかった日が 11日 たまりました。この形のまま 続けてください。</span></div></div>';
  h+='<div class="box"><div class="li" onclick="push(\'順番\')"><span>調べていることの 順番</span><s>5つ ›</s></div>'
   +'<div class="li"><span>初日だけで くらべる<br><span class="usu">本番が 続いた日を 1日目に そろえます</span></span>'
   +'<div class="sw '+(S.e3?'on':'')+'" onclick="event.stopPropagation();S.e3=S.e3?0:1;draw()"><i></i></div></div></div>';
@@ -899,7 +889,7 @@ function dotplot(lag){
  var med=[[3.85,1.8],[3.85,2.8],[3.8,3.6],[3.85,3.4]][lag];
  var H=150,sx=function(c,i){return c+((i*37)%29)-14},sy=function(v){return H-v/6*H};
  var p='';[0,2,4,6].forEach(function(v){p+='<line x1="34" y1="'+sy(v)+'" x2="300" y2="'+sy(v)+'" stroke="#F0E9DA"/>'
-  +'<text x="30" y="'+(sy(v)+3)+'" font-size="8" fill="var(--ink4)" text-anchor="end">'+v+'時間</text>'});
+  +'<text x="30" y="'+(sy(v)+3)+'" font-size="8" fill="#7C6C5E" text-anchor="end">'+v+'時間</text>'});
  G.forEach(function(v,i){p+='<circle cx="'+sx(110,i)+'" cy="'+sy(v)+'" r="4" '+(i===5||i===11?'fill="none" stroke="#840C24" stroke-width="1.4" opacity=".55"':'fill="#840C24" opacity=".8"')+'/>'});
  B.forEach(function(v,i){p+='<circle cx="'+sx(230,i)+'" cy="'+sy(v)+'" r="4" '+(i===2||i===7?'fill="none" stroke="#840C24" stroke-width="1.4" opacity=".55"':'fill="#840C24" opacity=".8"')+'/>'});
  [[110,med[0]],[230,med[1]]].forEach(function(m){p+='<line x1="'+(m[0]-24)+'" y1="'+sy(m[1])+'" x2="'+(m[0]+24)+'" y2="'+sy(m[1])+'" stroke="#840C24" stroke-width="1.6" stroke-dasharray="4 3"/>'});
@@ -920,7 +910,7 @@ function kazoeru(){
  +'<div class="card"><div class="mini">食べ終えてから 寝るまで（54日）</div>'
  +'<div style="display:flex;align-items:flex-end;gap:5px;height:84px;margin:9px 0 3px">'
  +H.map(function(v){return '<div style="flex:1;background:var(--enji);border-radius:3px 3px 0 0;height:'+(v/mx*100)+'%"></div>'}).join('')+'</div>'
- +'<div style="display:flex;gap:5px;font-size:12px;color:var(--ink3)">'+['0','1','2','3','4','5','6','7+'].map(function(s){return '<span style="flex:1;text-align:center">'+s+'</span>'}).join('')+'</div>'
+ +'<div style="display:flex;gap:5px;font-size:8.5px;color:var(--ink3)">'+['0','1','2','3','4','5','6','7+'].map(function(s){return '<span style="flex:1;text-align:center">'+s+'</span>'}).join('')+'</div>'
  +'<div class="usu" style="text-align:right">時間</div></div>'
  +'<div class="h3">詳しく 数える</div><div class="box">'
  +lock.map(function(x){return paid()
@@ -937,9 +927,7 @@ var KEIKO=[
  {t:'ミミの3幕、pp の 支え。息を 止めない。',m:'8月25日（月）　斎藤先生',b:'ミミの3幕、pp の 支え。\n息を 止めない。'}];
 function S_note(){
  var b='<div class="hd"><h2>ノート</h2><div class="gear" onclick="newNote()">＋</div></div>'
-  +seg(hasClass()?['稽古','レパートリー','連絡','1枚']:['稽古','レパートリー','1枚'],
-       S.note==='受診用'?'1枚':S.note,'setNote');
- if(!hasClass()&&S.note==='連絡')S.note='稽古';   /* ★タブが 消えたら 稽古へ */
+  +seg(['稽古','レパートリー','連絡','1枚'],S.note==='受診用'?'1枚':S.note,'setNote');
  if(S.note==='稽古')b+=nKeiko();
  if(S.note==='レパートリー')b+=nRep();
  if(S.note==='連絡')b+=nRen();
@@ -977,8 +965,8 @@ function nRep(){return REP.map(function(r,i){
  +'<div class="li" onclick="push(\'経歴\')"><span>経歴</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'公開の範囲\')"><span>だれが 見られますか</span><s>自分だけ ›</s></div>'
  +'<div class="li" onclick="push(\'公開ページ\')"><span>外から どう 見えるか</span><s>›</s></div></div>'
- +(hasClass()?'<div class="sh3">さがす</div><div class="box">'
- +'<div class="li" onclick="push(\'伴奏をさがす\')"><span>伴奏者・歌い手を さがす</span><s>4件 ›</s></div></div>':'')
+ +'<div class="sh3">さがす</div><div class="box">'
+ +'<div class="li" onclick="push(\'伴奏をさがす\')"><span>伴奏者・歌い手を さがす</span><s>4件 ›</s></div></div>'
  +'<div class="usu" style="margin-top:6px">曲を 開くと、右上の … から <b>直す・消す</b> ことが できます。</div>'
  +'<div class="note">曲ごとの 台帳です。<b>ひつじの「たな」と 同じ中身</b>を 見ています。<br>出来や 点数は ありません。数えるのは 日数と 回数だけ。</div>'}
 function nRen(){
@@ -988,7 +976,7 @@ function nRen(){
  UNREAD[S.oc]=0;   /* 中身が 画面に 出たので、その場で 既読 */
  var o=orgOf(S.oc);
  var uk=ORGS.map(function(x){return x.id}).concat(ORGS.map(function(x){return 'monka-'+x.id}));
- return '<div class="usu" style="margin:-2px 0 8px">'+(unN(uk)?'<b style="color:var(--ok)">未読 '+unN(uk)+'件</b>　青い点＝まだ 読んでいないもの':'未読は ありません')
+ return '<div class="usu" style="margin:-2px 0 8px">'+(unN(uk)?'<b style="color:#2E6FD9">未読 '+unN(uk)+'件</b>　青い点＝まだ 読んでいないもの':'未読は ありません')
  +'　／　中身が 出た ものは、その場で 読んだことに なります</div>'
  +(ORGS.length>1?'<div class="pills">'+ORGS.map(function(x){
    return '<span class="pill sm '+(S.oc===x.id?'on':'')+'" onclick="S.oc=\''+x.id+'\';draw()">'+dot(x.id)+x.n+'</span>'}).join('')+'</div>':'')
@@ -997,7 +985,7 @@ function nRen(){
  +'<div class="bd2">'+(S.oc==='u'?'10月5日（月）は 学園祭のため、レッスンは 休講です。':'9月の 発表会の 申し込みは 9月20日までです。')+'</div></div>'
  +'<div class="h3">門下</div>'
  +'<div class="rep" onclick="UNREAD[\'monka-'+S.oc+'\']=0;push(\'門下\',\''+esc(o.t)+' の 門下\')"><div><div class="t">'+dot('monka-'+S.oc)+o.t+' の 門下'
- +(S.oc==='u'?' <span class="tag" style="background:var(--pick);color:var(--enji)">代表</span>':'')+'</div>'
+ +(S.oc==='u'?' <span class="tag" style="background:#F6E4E8;color:var(--enji)">代表</span>':'')+'</div>'
  +'<div class="s">'+(S.oc==='u'?'12人':'7人')+'　／　'+o.n+'</div></div><div class="r">きのう</div></div>'
  +(S.oc==='u'?'<div class="box"><div class="li" onclick="push(\'集まり具合\')"><span>時間割の 集まり具合</span><s>'+deta()+'/'+MONKA.length+'人 ›</s></div></div>':'')
  +'<div class="h3">レッスンを 休むとき</div>'
@@ -1026,7 +1014,7 @@ function nJushin(){
    +(k==='名前を 入れる'?'<br><span class="usu">入れなくても 使えます。窓口で ご自分で 書き足せます</span>':'')
    +(k==='本人の ことば'?'<br><span class="usu">書いた文が そのまま 載ります</span>':'')
    +'</span><s style="color:'+(S.ju[k]?'var(--midori)':'var(--ink3)')+'">'+(S.ju[k]?'✓ 載せる':'載せない')+'</s></div>'}).join('')+'</div>'
- +'<div class="card" style="background:var(--band);border-color:var(--line3)"><div style="font-size:13px;line-height:1.9">'
+ +'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><div style="font-size:11.5px;line-height:1.9">'
  +'<b>この紙について（大事なこと）</b><br>'
  +'・この紙は <b>要配慮個人情報</b>です。落とすと 取り返せません<br>'
  +'・アプリの中から、医療機関へ <b>送る道は ありません</b>。端末に 出すだけです<br>'
@@ -1066,8 +1054,8 @@ function nLesson(){
  +'<div class="fl">本人の ことば</div>'
  +'<textarea class="ta" style="min-height:90px" placeholder="例：高い音の 入りが 不安です。息が 続かない日が ありました。" oninput="S.lew=this.value">'+esc(S.lew)+'</textarea>'
  +'<div class="btn" style="margin-top:10px" onclick="leOut()">'+n+'項目で 1枚に する（印刷 ／ 画像）</div>'
- +'<div class="card" style="background:var(--band);border-color:var(--line3);margin-top:10px">'
- +'<div style="font-size:13px;line-height:1.9"><b>この1枚について</b><br>'
+ +'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;margin-top:10px">'
+ +'<div style="font-size:11.5px;line-height:1.9"><b>この1枚について</b><br>'
  +'・アプリの中から、<b>先生に 届く道は ありません</b>。端末に 出すだけです<br>'
  +'・「先生に 送る」「共有」の ボタンは 作りません<br>'
  +'・<b>載せるものは 自分で 選びます。</b>選べるということは、<b>載せないと 選べる</b>ということです<br>'
@@ -1090,13 +1078,13 @@ function leOut(){
   +'<title>レッスンに 持っていく 1枚<'+'/title><sty'+'le>'
   +'@page{size:A4;margin:20mm}body{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;background:#EFE7D6;margin:0;padding:24px;color:#261913}'
   +'.pg{width:210mm;min-height:148mm;background:#fff;margin:0 auto;padding:20mm;box-shadow:0 2px 18px rgba(38,25,19,.12)}'
-  +'h1{font-size:19px;letter-spacing:.2em;margin:0 0 4px}.sub{font-size:13px;color:var(--ink3);margin-bottom:18px}'
-  +'table{width:100%;border-collapse:collapse;font-size:13.5px}th,td{border:1px solid var(--ink4);padding:8px 10px;text-align:left}'
-  +'th{background:var(--band2);font-weight:400;color:var(--ink3);width:44%}'
-  +'.kot{margin-top:16px;border:1px solid var(--ink4);padding:12px;font-size:13.5px;line-height:1.9;min-height:60px}'
-  +'.nt{margin-top:18px;font-size:12.5px;color:var(--ink3);line-height:1.9;border-top:1px solid #E4DAC4;padding-top:9px}'
-  +'.bar{max-width:210mm;margin:0 auto 14px;display:flex;gap:9px;font-family:system-ui,sans-serif;font-size:13.5px}'
-  +'.bar b{flex:1;font-weight:400;color:var(--ink3)}.bar button{font:inherit;padding:9px 16px;border-radius:99px;border:1px solid var(--ink4);background:#fff;cursor:pointer}'
+  +'h1{font-size:19px;letter-spacing:.2em;margin:0 0 4px}.sub{font-size:12px;color:#6D5D50;margin-bottom:18px}'
+  +'table{width:100%;border-collapse:collapse;font-size:13px}th,td{border:1px solid #C9BCA6;padding:8px 10px;text-align:left}'
+  +'th{background:#F3ECDD;font-weight:400;color:#6D5D50;width:44%}'
+  +'.kot{margin-top:16px;border:1px solid #C9BCA6;padding:12px;font-size:13px;line-height:1.9;min-height:60px}'
+  +'.nt{margin-top:18px;font-size:10.5px;color:#6D5D50;line-height:1.9;border-top:1px solid #E4DAC4;padding-top:9px}'
+  +'.bar{max-width:210mm;margin:0 auto 14px;display:flex;gap:9px;font-family:system-ui,sans-serif;font-size:13px}'
+  +'.bar b{flex:1;font-weight:400;color:#6D5D50}.bar button{font:inherit;padding:9px 16px;border-radius:99px;border:1px solid #C9BCA6;background:#fff;cursor:pointer}'
   +'.bar button.p{background:#840C24;color:#fff;border-color:#840C24}'
   +'@media print{body{background:#fff;padding:0}.pg{box-shadow:none;padding:0;width:auto}.bar{display:none}}'
   +'</sty'+'le></he'+'ad><bo'+'dy>'
@@ -1127,7 +1115,7 @@ SC['本番の予定']=function(){
  +'知らせは 出しません。書いていない人には 何も 出ません。<br>'
  +'書くように 誘いません。書く場所が あるだけです。</div>'};
 SC['たぶん本文']=function(i){var isNew=(i<0);var x=isNew?{d:'9月9日',b:''}:TABUN[i];
- return bk('たぶん これかも')+'<div class="hd" style="padding-top:2px"><h2 style="font-size:14.5px">'+(isNew?'たぶん これかも':x.d)+'</h2></div>'
+ return bk('たぶん これかも')+'<div class="hd" style="padding-top:2px"><h2 style="font-size:14px">'+(isNew?'たぶん これかも':x.d)+'</h2></div>'
  +'<textarea class="ta" style="min-height:240px" placeholder="例：寝る時間が 遅い日は、朝の 入りが つらい かもしれない" '
  +'oninput="tabunIn('+i+',this.value)">'+esc(x.b)+'</textarea>'
  +(isNew?'<div class="btn" style="margin-top:10px" onclick="tabunAdd()">これで いい</div>'
@@ -1139,7 +1127,7 @@ function tabunIn(i,v){if(i<0)TABUN_NEW=v;else TABUN[i].b=v}
 function tabunAdd(){if(!TABUN_NEW.trim()){toast('何か 書いてください');return}
  TABUN.unshift({d:'9月9日',b:TABUN_NEW});TABUN_NEW='';pop();toast('書きました')}
 SC['ノート本文']=function(i){var x=KEIKO[i];
- return bk('稽古')+'<div class="hd" style="padding-top:2px"><h2 style="font-size:14.5px">'+x.m+'</h2></div>'
+ return bk('稽古')+'<div class="hd" style="padding-top:2px"><h2 style="font-size:14px">'+x.m+'</h2></div>'
  +'<textarea class="ta" style="min-height:300px">'+x.b+'</textarea>'
  +'<div class="two" style="margin-top:10px"><div class="btn g" onclick="toast(\'消しました\');pop()">消す</div>'
  +'<div class="btn g" onclick="openSheet(\'notemeta\')">日付と 先生</div></div>'
@@ -1232,9 +1220,9 @@ SC['受診プレビュー']=function(){
   +wk.map(function(c,i){var h=c/7*36;
     return '<rect x="'+(47+i*bw).toFixed(1)+'" y="'+(74-h).toFixed(1)+'" width="'+(bw-2).toFixed(1)+'" height="'+h.toFixed(1)+'" fill="#840C24" opacity=".8"/>'
     +'<text x="'+(47+i*bw+(bw-2)/2).toFixed(1)+'" y="'+(70-h).toFixed(1)+'" font-size="7.5" fill="#5E5045" text-anchor="middle">'+c+'</text>'}).join('')
-  +'<line x1="46" y1="74" x2="'+W+'" y2="74" stroke="var(--line)"/>'
-  +'<text x="46" y="86" font-size="8" fill="var(--ink4)">'+md(D[0].d)+'</text>'
-  +'<text x="'+W+'" y="86" font-size="8" fill="var(--ink4)" text-anchor="end">'+md(D[D.length-1].d)+'</text>'
+  +'<line x1="46" y1="74" x2="'+W+'" y2="74" stroke="#DFD4BE"/>'
+  +'<text x="46" y="86" font-size="8" fill="#7C6C5E">'+md(D[0].d)+'</text>'
+  +'<text x="'+W+'" y="86" font-size="8" fill="#7C6C5E" text-anchor="end">'+md(D[D.length-1].d)+'</text>'
   +'<g transform="translate(46,94)"><rect width="11" height="9" fill="#840C24"/><text x="14" y="8" font-size="8" fill="#5E5045">出づらい</text>'
   +'<rect x="72" width="11" height="9" fill="#C98C96"/><text x="86" y="8" font-size="8" fill="#5E5045">ふつう</text>'
   +'<rect x="132" width="11" height="9" fill="#F0E4DA"/><text x="146" y="8" font-size="8" fill="#5E5045">出た</text></g></svg>';
@@ -1246,7 +1234,7 @@ SC['受診プレビュー']=function(){
   +(J['名前を 入れる']?'<div class="usu">氏名　＿＿＿＿＿＿＿＿</div>':'<div class="usu">氏名は 入れていません</div>')
   +(J['仕事（声を使う仕事）']?'<div class="usu">声を 使う 仕事（歌）</div>':'')+'</div>'
   +'<div class="s">'+(S.range||'2026年7月10日 〜 9月9日')+'<br>62日間　／　記録した日 '+rec+'日<br>作成 2026年9月9日</div></div>'
-  +'<div style="font-size:12.5px;line-height:1.85;color:var(--ink2)">'
+  +'<div style="font-size:11px;line-height:1.85;color:var(--ink2)">'
   +'本人が 毎日 つけた 記録から 作りました。<b>診断では ありません。</b><br>'
   +'点数・尺度・他人との くらべは 使っていません。<b>実数だけ</b>です。</div></div>';
  h+='<div class="paper"><h4>1　声が 出づらかった日（62日）</h4>'+chart
@@ -1282,12 +1270,12 @@ SC['受診プレビュー']=function(){
   +TABE.map(function(t){return '<tr><td>'+t+'</td><td class="n">'+tabe[t]+'日</td></tr>'}).join('')+'</table></div>';
  if(J['本人の ことば'])
   h+='<div class="paper"><h4>'+(n++)+'　本人の ことば（選んだ 3日ぶん）</h4>'
-  +'<div style="font-size:13px;line-height:1.9;color:var(--ink2)">'
+  +'<div style="font-size:11.5px;line-height:1.9;color:var(--ink2)">'
   +'8/28　朝から のどの 奥が つまる感じ。夜の 稽古で 高いところが 鳴らなかった。<br>'
   +'9/2　起きたとき 声が 出ない。昼に 戻った。<br>'
   +'9/6　前の日 遅く 食べた。翌朝 声が 重い。</div></div>';
  h+='<div class="paper" style="background:#FBF6EA"><h4>この紙について</h4>'
-  +'<div style="font-size:12.5px;line-height:1.95;color:var(--ink2)">'
+  +'<div style="font-size:11px;line-height:1.95;color:var(--ink2)">'
   +'・本人が つけた 記録を、そのまま 数えたものです<br>'
   +'・<b>診断・重症度の 判定では ありません</b><br>'
   +'・質問票（尺度）の 点数は 使っていません<br>'
@@ -1369,26 +1357,38 @@ var HAVE={};(function(){var yes='シャツ ニット ブラウス カーディ�
  Object.keys(KIND).forEach(function(k){var g=KIND[k];Object.keys(g).forEach(function(k2){
   g[k2].forEach(function(v){HAVE[v]=yes.indexOf(v)>=0?1:0})})})})();
 var ORD=['新しい順','よく使う順','色の順','名前順'];
-var GARA=['#FBF6EA','#2B2622','var(--ink3)','#840C24','#C0533A','#D08A5E','#E7C8C8','#B0687C','#C89A2A','#8C6115','#5E8F74','#4E6879'];
+var GARA=['#FBF6EA','#2B2622','#6D5D50','#840C24','#C0533A','#D08A5E','#E7C8C8','#B0687C','#C89A2A','#8C6115','#5E8F74','#4E6879'];
 
 /* ── 普段の画面 ＝ 部屋が 画面全部 ── */
 function S_hitsuji(){
  if(S.sheet&&S.sheet.n==='したく')
-  return '<div class="hcard">'+bigRoom(1)
+  return '<div class="hcard">'+bigRoom()
    +'<div class="hshadow" style="bottom:22px"></div><div class="hwalk" style="bottom:26px;width:82px"><div class="bob"><img src="'+SHEEP.dress+'" alt="羊"></div></div>'
    +'<div class="haichi" onclick="haichi()">'
    +((S.sheet&&S.sheet.n==='したく'&&S.k1==='おくもの')?'<b style="color:var(--enji)">配置を 終わる</b>':'配置を 変える')+'</div></div>';
- return '<div class="hroom">'+bigRoom(0)
+ return '<div class="hroom">'+bigRoom()
  +'<div class="hband"><h2>ひつじ</h2><span class="m">きょうも 来てくれて ありがとう</span>'
  +'<div class="gear" style="margin-left:auto" onclick="openSheet(\'motteru\')">⚙</div></div>'
  +'<div class="hshadow"></div><div class="hwalk"><div class="bob"><img src="'+SHEEP.dress+'" alt="羊"></div></div>'
  +'<div class="hfab" onclick="openDr()">したく</div>'
  +'</div>'}
-function bigRoom(small){
+/* ★★★2026-09-17、★部屋を 1つに しました（★Opus の 裁定）。
+   ★★それまで、★したくの ときだけ 別の 部屋を 描いて いました ──
+     ★全画面 … viewBox "0 0 360 730" ／ 床 352
+     ★したく … viewBox "0 0 360 290" ／ 床 168
+   ★★y=546 に 置いた ものは、★290 の 部屋には 在りません。
+     ★★「ずれる」のでは ありません。★行き先が 無いのです。
+   ★★`slice`（切り取る）も やめました。★`meet`（収める）に します。
+     ★★縦横比の 合わない ぶんは 帯に なります。★`.hroom` と `.hcard` の
+       ★背景を 壁と 床の 色で 塗って、★見えなく して います。
+   ★★小さい ときは、★部屋ぜんぶが 小さく 見える だけ です。
+     ★★羊も 小さく なります。★それで かまいません ──
+       ★置いた ものが 動かない ことの ほうが、★ずっと 大事 です。 */
+function bigRoom(){
  var wall=S.wall||'#E3CDA8',floor=S.floor||'#CFD79E',keshiki=S.keshiki||'#DDE7EE';
  S.put=S.put||{'まど':'カーテン','かべ1':'絵','かべ2':'時計','たな':'本','つくえ':'メトロノーム','いす':'—','ゆか':'ラグ'};
- var vb=small?'0 0 360 290':'0 0 360 730', fy=small?168:352, ht=small?290:730;
- var h='<svg viewBox="'+vb+'" preserveAspectRatio="xMidYMax slice">'
+ var fy=352, ht=730;
+ var h='<svg viewBox="0 0 360 730" preserveAspectRatio="xMidYMid meet">'
  +'<rect width="360" height="'+ht+'" fill="'+wall+'"/>'
  +'<rect y="'+fy+'" width="360" height="'+(ht-fy)+'" fill="'+floor+'"/>'
  +'<rect y="'+(fy-6)+'" width="360" height="7" fill="#B9A47F"/>';
@@ -1396,7 +1396,7 @@ function bigRoom(small){
  for(var i=0;i<6;i++)h+='<line x1="'+(i*72)+'" y1="'+fy+'" x2="'+(i*72)+'" y2="'+ht+'" stroke="#BFC98C" stroke-width="2" opacity=".6"/>';
  h+='<line x1="0" y1="'+(fy+(ht-fy)*0.45)+'" x2="360" y2="'+(fy+(ht-fy)*0.45)+'" stroke="#BFC98C" stroke-width="2" opacity=".6"/>';
  /* まど */
- var wy=small?32:96;
+ var wy=96;
  h+='<g>'
  +'<rect x="112" y="'+wy+'" width="140" height="112" rx="3" fill="'+keshiki+'" stroke="#B9884F" stroke-width="8"/>'
  +'<path d="M118 '+(wy+96)+' L148 '+(wy+70)+' L170 '+(wy+90)+' L206 '+(wy+58)+' L240 '+(wy+90)+' L240 '+(wy+106)+' L118 '+(wy+106)+' Z" fill="#EDF2F5"/>'
@@ -1404,7 +1404,7 @@ function bigRoom(small){
  +'<line x1="112" y1="'+(wy+56)+'" x2="252" y2="'+(wy+56)+'" stroke="#B9884F" stroke-width="6"/>'
  +'<circle cx="138" cy="'+(wy+28)+'" r="3.5" fill="#fff"/><circle cx="214" cy="'+(wy+20)+'" r="3.5" fill="#fff"/><circle cx="160" cy="'+(wy+80)+'" r="3.5" fill="#fff"/>'
  +'<rect x="44" y="'+(wy-16)+'" width="36" height="56" rx="4" fill="#8C6115"/><circle cx="62" cy="'+(wy+10)+'" r="11" fill="#E9DCC4"/>'
- +'<rect x="280" y="'+(wy-8)+'" width="54" height="68" rx="3" fill="var(--card2)" stroke="#B9884F" stroke-width="6"/>'
+ +'<rect x="280" y="'+(wy-8)+'" width="54" height="68" rx="3" fill="#FFFDF8" stroke="#B9884F" stroke-width="6"/>'
  +'<rect x="299" y="'+(wy+12)+'" width="17" height="13" rx="2" fill="#C0533A"/>'
  +'</g>';
  /* たな・たんす（押せる） */
@@ -1413,13 +1413,13 @@ function bigRoom(small){
  +'<rect x="294" y="'+(fy-88)+'" width="46" height="32" rx="3" fill="#B98F5E"/>'
  +'<rect x="242" y="'+(fy-48)+'" width="98" height="30" rx="3" fill="#B98F5E"/>'
  +'<rect x="286" y="'+(fy-36)+'" width="10" height="5" rx="2" fill="#8C6115"/>'
- /* でんわ台 */
- +(small?'<rect x="24" y="'+(fy-70)+'" width="70" height="8" rx="2" fill="#A9784A"/>'
-   +'<rect x="30" y="'+(fy-62)+'" width="6" height="46" fill="#A9784A"/><rect x="82" y="'+(fy-62)+'" width="6" height="46" fill="#A9784A"/>'
-   +'<rect x="40" y="'+(fy-98)+'" width="40" height="28" rx="6" fill="#3A302A"/><circle cx="60" cy="'+(fy-84)+'" r="8" fill="#5E5045"/>':'');
- if(!small){
-  /* ちゃぶ台・いろり・座布団（手前） */
-  h+='<ellipse cx="262" cy="556" rx="88" ry="29" fill="#B98F5E"/><ellipse cx="262" cy="546" rx="88" ry="29" fill="#C9A87C"/>'
+ ;
+ /* ★★★家具の 出し分けを 外しました（★2026-09-17）。
+    ★★小さい ときだけ 別の でんわ台を 描き、★大きい ときの 家具を
+      ★1つも 描いて いませんでした。★置き場そのものが 消えます。
+    ★★いまは いつも 同じ ものを 描きます。★小さく 見えるだけ です。 */
+ /* ちゃぶ台・いろり・座布団（手前） */
+ h+='<ellipse cx="262" cy="556" rx="88" ry="29" fill="#B98F5E"/><ellipse cx="262" cy="546" rx="88" ry="29" fill="#C9A87C"/>'
   +'<rect x="208" y="562" width="9" height="46" fill="#A9784A"/><rect x="310" y="562" width="9" height="46" fill="#A9784A"/>'
   +'<ellipse cx="72" cy="686" rx="80" ry="29" fill="#8C6E52"/><ellipse cx="72" cy="676" rx="64" ry="22" fill="#5E5045"/>'
   +'<ellipse cx="72" cy="676" rx="20" ry="8" fill="#C0533A"/><ellipse cx="72" cy="675" rx="9" ry="4.5" fill="#E8B44A"/>'
@@ -1429,9 +1429,14 @@ function bigRoom(small){
   +'<rect x="34" y="'+(fy+6)+'" width="8" height="56" fill="#A9784A"/><rect x="102" y="'+(fy+6)+'" width="8" height="56" fill="#A9784A"/>'
   +'<rect x="48" y="'+(fy-48)+'" width="50" height="44" rx="7" fill="#3A302A"/><circle cx="73" cy="'+(fy-26)+'" r="11" fill="#5E5045"/>'
   +'<rect x="60" y="'+(fy-58)+'" width="26" height="11" rx="5" fill="#3A302A"/>';
- }
+ /* ★★★押せる ところを、★SVG の 中に 入れました（★2026-09-17）。
+    ★★これまでは 入れ物の ％（hhit の 札 ── left:64% top:38%）でした。
+      ★★`meet` に すると、★入れ物と 部屋の 大きさが 一致しません。
+      ★★％は 入れ物に 付くので、★部屋と ずれます。
+    ★★部屋の 座標で 置けば、★入れ物が どう 変わっても ずれません。
+      ★★たな … x=234 ／ y=fy-96=256 ／ 幅112 ／ 高さ92（★上の rect と 同じ）。 */
+ h+='<rect x="234" y="256" width="112" height="92" fill="transparent" style="cursor:pointer" onclick="push(\'たな\')"/>';
  h+='</svg>';
- if(!small)h+='<div class="hhit" style="left:64%;top:38%;width:32%;height:12%" onclick="push(\'たな\')"></div>';
  return h}
 
 /* ── したく（引き出し）いまの実装のまま ── */
@@ -1459,7 +1464,7 @@ SH['したく']=function(){
    return '<div class="'+(S.k1===k?'on':'')+'" onclick="drK1(\''+k+'\')">'+k+'</div>'}).join('')+'</div>'
  +'<div class="dr2">'+m2.map(function(k){
    return '<span class="'+(cur===k?'on':'')+'" onclick="S.k2=\''+k+'\';S.picked=0;drawSheet()">'+k+'</span>'}).join('')+'</div>'
- +(S.k1==='おくもの'?'<div class="dr2" style="background:var(--card2)">'
+ +(S.k1==='おくもの'?'<div class="dr2" style="background:#FDFAF3">'
    +Object.keys(S.put||{}).map(function(k){
      return '<span class="'+((S.slot||'たな')===k?'on':'')+'" onclick="S.slot=\''+k+'\';drawSheet()">'+k+'　'+S.put[k]+'</span>'}).join('')+'</div>':'')
  +'<div class="dr3"><span class="od" style="margin:0" onclick="closeSheet();push(\'さがす\')">さがす</span>'
@@ -1530,8 +1535,8 @@ SC['たな']=function(){
  return bk('おうち')+'<div class="hd" style="padding-top:2px"><h2>たな</h2></div>'
  +'<div class="note" style="margin:0 0 11px">歌ってきたものが、ここに 並びます。</div>'
  +REP.map(function(r,i){return '<div class="shelf" onclick="S.tab=\'ノート\';S.note=\'レパートリー\';S.stack=[{s:\'曲\',a:'+i+'}];draw()">'
-   +'<div style="font-size:14.5px;font-weight:700">'+r.t+'</div><div class="usu">'+r.c+'</div>'
-   +'<div style="font-size:12.5px;color:var(--ink2);margin-top:6px">はじめて 記録した日　'+r.d+'<br>記録した日　'+r.n+'日　／　本番　'+(r.s?r.s+'回':'なし')+'</div></div>'}).join('')
+   +'<div style="font-size:14px;font-weight:700">'+r.t+'</div><div class="usu">'+r.c+'</div>'
+   +'<div style="font-size:10.5px;color:var(--ink2);margin-top:6px">はじめて 記録した日　'+r.d+'<br>記録した日　'+r.n+'日　／　本番　'+(r.s?r.s+'回':'なし')+'</div></div>'}).join('')
  +'<div class="note">飾りでは ありません。<b>ノートの レパートリーと 同じ中身</b>です。<br>'
  +'部屋の <b>たなを 押しても</b> ここに 来られます。<br>出来・点数・順位を 出しません。</div>'};
 SH['motteru']=function(){return '<div class="sht">もっているもの</div>'
@@ -1576,8 +1581,8 @@ SC['レッスン']=function(i){var L=LESSONS[i],o=L.o?orgOf(L.o):null;
  +(o?'この予定は <b>'+o.n+'</b> のものです。ほかの 教室からは 見えません。':'これは あなただけの 予定です。どの 教室にも 見えません。')+'</div>'};
 SC['前3日']=function(i){var x=DAY[i],P=[DAY[i-1],DAY[i-2],DAY[i-3]],lab=['前の日','2日まえ','3日まえ'];
  return bk('さかのぼる')+'<div class="hd" style="padding-top:2px"><h2 style="font-size:16px">'+mdw(x.d)+'</h2></div>'
- +'<div class="card" style="border-color:var(--enji);background:var(--card2)"><div class="mini">この日</div>'
- +'<div style="font-size:14.5px;margin-top:5px">声の 出来　△出づらい</div>'
+ +'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC"><div class="mini">この日</div>'
+ +'<div style="font-size:14px;margin-top:5px">声の 出来　△出づらい</div>'
  +'<div class="usu">のど '+['よい','ふつう','わるい'][3-x.nodo]+'／睡眠 '+x.sleep.toFixed(1)+'時間／声を使った '+Math.round(x.sing)+'分</div></div>'
  +P.map(function(p,k){return '<div class="card"><div class="mini">'+lab[k]+'　'+md(p.d)+'</div>'
    +'<div class="box" style="margin:7px 0 0;border:0;padding:0">'
@@ -1596,7 +1601,7 @@ SC['本番の前後']=function(name){
  +'<div class="note">1回ずつでも 見られます。重ねるのは 3回から。</div>'};
 SC['調べる']=function(){
  return bk('戻る')+'<div class="hd" style="padding-top:2px"><h2>調べる</h2></div>'
- +'<div class="card"><div style="font-size:14.5px;line-height:1.9">くらべる・かぞえるを、<br>もっと こまかく 見られます。</div>'
+ +'<div class="card"><div style="font-size:14px;line-height:1.9">くらべる・かぞえるを、<br>もっと こまかく 見られます。</div>'
  +'<div class="usu" style="margin-top:9px;line-height:1.9">・本番の 前の3日だけを 数える<br>・出づらかった日の 普段<br>・曜日ごとの 普段<br>・調べることを 5つまで 選ぶ</div></div>'
  +'<div class="box"><div class="li"><span>ひと月ごと</span><s>580円（税込）</s></div>'
  +'<div class="li"><span>1年ぶん まとめて</span><s>4,800円（税込）</s></div></div>'
@@ -1610,16 +1615,16 @@ SC['順番']=function(){
  +'<div class="box">'+S.sira.map(function(v,i){
    return '<div class="ord"><span class="no '+(i?'g2':'')+'">'+(i+1)+'</span><span>'+v+'</span>'
    +(i?'<span class="up" onclick="upSira('+i+')">↑</span>':'<span class="up" style="opacity:.25">↑</span>')+'</div>'}).join('')+'</div>'
- +'<div class="card" style="background:var(--band);border-color:var(--line3)"><div style="font-size:13.5px;line-height:1.8">'
- +'1番目　'+S.sira[0]+'<br><span style="color:var(--ink2);font-size:13px">いま 見ています</span><br><br>'
- +'2番目から先<br><span style="color:var(--ink2);font-size:13px">1番目で 差が 見えなかったので、ここで 止まっています</span></div></div>'
+ +'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><div style="font-size:12.5px;line-height:1.8">'
+ +'1番目　'+S.sira[0]+'<br><span style="color:var(--ink2);font-size:11.5px">いま 見ています</span><br><br>'
+ +'2番目から先<br><span style="color:var(--ink2);font-size:11.5px">1番目で 差が 見えなかったので、ここで 止まっています</span></div></div>'
  +'<div class="note">順番を 入れ替えると、<b>そこから 数え直します</b>。<br>'
  +'2番目から先の 結果は 出しません。<b>止まった 理由だけ</b> 出します。<br>'
  +'原因・助言・「べき」を 書きません。</div>'};
 function upSira(i){var a=S.sira;var t=a[i];a[i]=a[i-1];a[i-1]=t;draw();toast('順番を 変えたので、ここから 数え直します')}
 SC['記録のきまり']=function(){
  return bk('記録')+'<div class="hd" style="padding-top:2px"><h2>この画面の きまり</h2></div>'
- +'<div class="card"><div style="font-size:13.5px;line-height:1.95">'
+ +'<div class="card"><div style="font-size:12.5px;line-height:1.95">'
  +'・毎日 することは、30秒です<br>・つけるのは 5つだけ<br>　のどの調子／声の出来／昨夜の睡眠／<br>　起きたときの むくみ／本番以外で 声を使った時間<br><br>'
  +'・部屋の しめり は 自動で 取ります<br>・本番の 翌日かどうかは 予定から 分かります<br><br>'
  +'・どれも 任意です。飛ばせます<br>・書かなかった日を、責めません</div></div>'
@@ -1629,7 +1634,6 @@ SC['記録のきまり']=function(){
 SC['もっと']=function(){
  var role=S.dm.post;
  return bk('戻る')+'<div class="hd" style="padding-top:2px"><h2>もっと</h2></div>'
- +'<div class="warn" style="background:#F3EEE0"><b>★見本だけの スイッチ</b>　教室を 持たない人の 姿を 見られます<br><span class="pill sm '+(!S.noClass?'on':'')+'" onclick="S.noClass=false;draw()">教室 あり</span> <span class="pill sm '+(S.noClass?'on':'')+'" onclick="S.noClass=true;draw()">教室 なし</span></div>'
  +'<div class="box">'
  +'<div class="li" onclick="push(\'設定\')"><span>設定</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'聞いてほしいこと\')"><span>毎日、聞いてほしいこと</span><s>5つまで ›</s></div>'
@@ -1674,7 +1678,7 @@ SC['聞いてほしいこと']=function(){
  +'<div class="note">中核の 5つを 外しても かまいません（分析に 使うのは 5つですが、強制しません）。<br>足りない項目を 責めません。「あと◯項目」を 出しません。</div>'};
 SC['プラン']=function(){
  return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>プラン</h2></div>'
- +'<div class="card"><div style="font-size:15.5px;font-weight:700">'+(paid()?'調べる（ひと月ごと）':'無料')+'</div>'
+ +'<div class="card"><div style="font-size:15px;font-weight:700">'+(paid()?'調べる（ひと月ごと）':'無料')+'</div>'
  +'<div class="usu" style="margin-top:5px">'+(paid()?'次の お支払い　2026年10月9日':'お支払いは ありません')+'</div></div>'
  +'<div class="h3">いまも これからも 無料</div><div class="box">'
  +['記録','並べる','さかのぼる','ノート','ひつじ・おうち','受診用の 1枚','書き出す（CSV・JSON）'].map(function(v){
@@ -1703,9 +1707,9 @@ SC['同意']=function(){
  +'<div class="note">同意は、契約では 代えられません。<b>ご本人から</b> いただきます。<br>18歳未満の方は、保護者の 同意も いただきます。</div>'};
 SC['退会']=function(){
  return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>退会する</h2></div>'
- +'<div class="card"><div style="font-size:13.5px;line-height:1.9">退会すると、記録・ノート・レパートリー・手に入れたものは、<b>全て 消えます</b>。<br>元には 戻せません。</div></div>'
+ +'<div class="card"><div style="font-size:13px;line-height:1.9">退会すると、記録・ノート・レパートリー・手に入れたものは、<b>全て 消えます</b>。<br>元には 戻せません。</div></div>'
  +'<div class="btn g" onclick="push(\'書き出す\')">先に 書き出す</div>'
- +'<div class="btn" style="margin-top:9px;background:var(--ink3)" onclick="toast(\'この見本では 退会しません\')">退会する</div>'
+ +'<div class="btn" style="margin-top:9px;background:#6D5D50" onclick="toast(\'この見本では 退会しません\')">退会する</div>'
  +'<div class="note">退会を 隠しません。引き止めを <b>2回以上</b> 出しません（この画面の 1回だけ）。<br>「もったいない」と 書きません。理由を 聞きません。</div>'};
 SH['account']=function(){return '<div class="sht">アカウント</div>'
  +list(['メールアドレス','パスワードを 変える','端末を 見る（2台）','ログアウト'])+shBtm()};
@@ -1776,9 +1780,9 @@ function opNittei(){
   +seg(['日','週'],S.nv,'setNv')
   +'<div class="card"><div class="mini" style="margin-bottom:9px">9月　濃いところ＝コマが 多い日</div>'
   +'<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">'
-  +'日月火水木金土'.split('').map(function(w){return '<div style="text-align:center;font-size:12px;color:var(--ink3)">'+w+'</div>'}).join('')
+  +'日月火水木金土'.split('').map(function(w){return '<div style="text-align:center;font-size:9px;color:var(--ink3)">'+w+'</div>'}).join('')
   +Array.from({length:30},function(_,i){var v=[0,3,8,5,9,6,2][i%7];
-    return '<div onclick="S.nv=\'日\';draw()" style="aspect-ratio:1;border-radius:6px;background:'+(v?'#840C24':'#F0E9DA')+';opacity:'+(v?0.25+v/9*0.7:1)+';display:flex;align-items:center;justify-content:center;font-size:12px;color:'+(v>5?'#fff':'var(--ink3)')+';cursor:pointer">'+(i+1)+'</div>'}).join('')
+    return '<div onclick="S.nv=\'日\';draw()" style="aspect-ratio:1;border-radius:6px;background:'+(v?'#840C24':'#F0E9DA')+';opacity:'+(v?0.25+v/9*0.7:1)+';display:flex;align-items:center;justify-content:center;font-size:9px;color:'+(v>5?'#fff':'#6D5D50')+';cursor:pointer">'+(i+1)+'</div>'}).join('')
   +'</div></div>'
   +'<div class="note">中身を 出しません。形だけ 見せます。押すと その日へ。</div>';
  var T=['9:00','10:30','12:00','13:30','15:00','16:30','18:00'],
@@ -1800,7 +1804,7 @@ function opNittei(){
    +P.map(function(p,pi){var c=cell(ti,pi);
      return '<td style="padding:3px" onclick="'
        +(c?(c[2]==='dup'?'push(\'重なり\')':'push(\'出欠つけ\','+shuArg(t,c[0],PF[pi],c[3])+')'):'toast(\'空きです。ここに 足せます\')')+'">'
-       +(c?'<div class="koma '+c[2]+'">'+c[0]+(c[1]?'<br>'+c[1]:'')+'</div>':'<span style="color:var(--ink4)">＋</span>')+'</td>'}).join('')+'</tr>'}).join('')
+       +(c?'<div class="koma '+c[2]+'">'+c[0]+(c[1]?'<br>'+c[1]:'')+'</div>':'<span style="color:#C9BCA6">＋</span>')+'</td>'}).join('')+'</tr>'}).join('')
  +'</table></div>'
  +'<div class="note">横に ずらして 見ます。つまむと 縮みます。よこ持ちに すると 広く 出ます。<br>'
  +'重なりは <b>印を つけるだけ</b>。自動で 動かしません。<br>空きを 押すと、新しい コマを 足せます。<br>'
@@ -1815,12 +1819,12 @@ function opMeibo(){
  return hd
  +'<div class="pills">'+['全て','在籍','休会','招待中'].map(function(v){
    return '<span class="pill sm '+(f===v?'on':'')+'" onclick="S.mf=\''+v+'\';draw()">'+v+'</span>'}).join('')+'</div>'
- +L.map(function(m,i){return '<div class="rep" onclick="push(\'その人\','+i+')"><div><div class="t" style="font-size:14.5px">'+m[0]+'</div>'
+ +L.map(function(m,i){return '<div class="rep" onclick="push(\'その人\','+i+')"><div><div class="t" style="font-size:13.5px">'+m[0]+'</div>'
    +'<div class="s">'+m[1]+'　／　'+m[2]+'先生</div></div><div class="r">'+m[3]+'</div></div>'}).join('')
- +'<div class="card" style="position:sticky;bottom:0;background:var(--card2)">'
- +'<div class="li" style="padding:6px 0"><span>数える 人数</span><s style="font-size:13.5px;color:var(--ink)">'+billN()+'人</s></div>'
- +'<div class="li" style="padding:6px 0"><span>1人あたり</span><s style="font-size:13.5px;color:var(--ink)">'+Math.round(billYen()/billN())+'円</s></div>'
- +'<div class="li" style="padding:6px 0"><span>'+(PAY.cycle==='毎月'?'今月の':'1年ぶんの')+' ご請求</span><s style="font-size:15.5px;font-weight:700;color:var(--ink)">'+yen(billNow())+'円</s></div></div>'
+ +'<div class="card" style="position:sticky;bottom:0;background:#FFFDF7">'
+ +'<div class="li" style="padding:6px 0"><span>数える 人数</span><s style="font-size:13px;color:var(--ink)">'+billN()+'人</s></div>'
+ +'<div class="li" style="padding:6px 0"><span>1人あたり</span><s style="font-size:13px;color:var(--ink)">'+Math.round(billYen()/billN())+'円</s></div>'
+ +'<div class="li" style="padding:6px 0"><span>'+(PAY.cycle==='毎月'?'今月の':'1年ぶんの')+' ご請求</span><s style="font-size:15px;font-weight:700;color:var(--ink)">'+yen(billNow())+'円</s></div></div>'
  +'<div class="btn g" style="margin-top:9px" onclick="openSheet(\'maneku\')">＋ 招く</div>'
  +'<div class="btn g" onclick="push(\'招く\')">＋ メールで 招く</div>'
  +'<div class="note">表では なく カードに しました（iPhoneの 幅です）。合計は 下に 貼りつけます。<br>'
@@ -1965,7 +1969,7 @@ SC['評価の項目']=function(a){
  +'<div class="btn" style="margin-top:12px">'+(add?'足す':'なおす')+'</div>'
  +(add?'':'<div class="h3">この項目を 減らす</div>'
    +(off
-     ?'<div class="card"><div style="font-size:14.5px;line-height:1.9">この項目は いま <b>使っていません</b>。'
+     ?'<div class="card"><div style="font-size:13.5px;line-height:1.9">この項目は いま <b>使っていません</b>。'
       +(n?n+'人ぶんの 点は 残っています。':'')+'</div>'
       +'<div class="btn g" style="margin-top:10px">もどす</div>'
       +'<div class="btn g">消す</div></div>'
@@ -1986,7 +1990,7 @@ function opGyoji(){
  +'<div class="usu" style="margin:-2px 0 10px">日と 時間と 場所と 対象を 知らせます　／　出欠は 集めません</div>'
  +[['9月14日（月）','実技試験','12:30〜17:00　第1ホール','182'],['10月5日（月）','学園祭','10:00〜　全学','216'],
    ['11月20日（金）','定期演奏会','18:00〜20:30　大ホール','96']].map(function(x){
-   return '<div class="rep" onclick="push(\'行事を出す\',1)"><div><div class="t" style="font-size:14.5px">'+x[1]+'</div>'
+   return '<div class="rep" onclick="push(\'行事を出す\',1)"><div><div class="t" style="font-size:13.5px">'+x[1]+'</div>'
    +'<div class="s">'+x[0]+'　'+x[2]+'</div></div><div class="r">'+x[3]+'人に<br>届きます</div></div>'}).join('')
  +'<div class="h3">採点の ある 行事</div><div class="box">'
  +GYO.map(function(g,i){return g.sa?'<div class="li" onclick="push(\'採点\','+i+')"><span>'
@@ -2009,9 +2013,9 @@ SC['未送信']=function(){
    return '<div class="card" style="border-left:3px solid '+(ng?'#B23A48':'#8C6115')+'">'
    +'<div class="tag" style="margin:0 0 6px;background:'+(ng?'#B23A4818':'#8C611518')+';color:'+(ng?'#B23A48':'#8C6115')+'">'+m.why+'</div>'
    +'<div class="usu" style="margin-bottom:4px">'+m.d+'</div>'
-   +'<div style="font-size:14.5px;font-weight:700">'+(m.t||'（題 まだ）')+'</div>'
+   +'<div style="font-size:14px;font-weight:700">'+(m.t||'（題 まだ）')+'</div>'
    +'<div class="usu" style="margin:3px 0 7px">宛先　'+m.to+'</div>'
-   +'<div style="font-size:13.5px;line-height:1.85;color:var(--ink2);white-space:pre-wrap;max-height:66px;overflow:hidden">'+m.b+'</div>'
+   +'<div style="font-size:12.5px;line-height:1.85;color:var(--ink2);white-space:pre-wrap;max-height:66px;overflow:hidden">'+m.b+'</div>'
    +'<div class="two" style="margin-top:10px">'
    +'<div class="btn sm" onclick="misouOpen('+i+')">'+(ng?'もう一度 出す':'つづきを 書く')+'</div>'
    +'<div class="btn g sm" onclick="misouDel('+i+')">消す</div></div></div>'}).join('')
@@ -2038,9 +2042,9 @@ function opRenraku(){
  +'<div class="btn" onclick="S.ow=null;push(\'お知らせを書く\')">＋　お知らせを 書く</div>'
  +(MISOU.length?'<div class="box" style="margin-top:9px"><div class="li" onclick="push(\'未送信\')">'
    +'<span>未送信<br><span class="usu">下書きと、送れなかったもの</span></span>'
-   +'<s><span class="tag" style="margin:0;background:var(--warn)33;color:#8C6115">'+MISOU.length+'件</span> ›</s></div></div>':'')
+   +'<s><span class="tag" style="margin:0;background:#F0C24B33;color:#8C6115">'+MISOU.length+'件</span> ›</s></div></div>':'')
  +'<div class="h3">学校からの お知らせ</div>'
- +'<div class="usu" style="margin:-2px 0 8px">'+(unN(['op-o','op-m1','op-m2','op-m3'])?'<b style="color:var(--ok)">未読 '+unN(['op-o','op-m1','op-m2','op-m3'])+'件</b>　青い点＝まだ 読んでいないもの':'未読は ありません')
+ +'<div class="usu" style="margin:-2px 0 8px">'+(unN(['op-o','op-m1','op-m2','op-m3'])?'<b style="color:#2E6FD9">未読 '+unN(['op-o','op-m1','op-m2','op-m3'])+'件</b>　青い点＝まだ 読んでいないもの':'未読は ありません')
  +'　／　中身が 出た ものは、その場で 読んだことに なります</div>'
  +'<div class="post t" onclick="UNREAD[\'op-o\']=0;draw()"><div class="ph2"><span class="av">校</span><span class="nm3">'+dot('op-o')+'○○音楽大学</span><span class="dt">9月8日</span></div>'
  +'<div class="bd2">10月5日（月）は 学園祭のため、レッスンは 休講です。</div></div>'
@@ -2074,10 +2078,10 @@ function opSettei(){
   +'<div class="li" onclick="push(\'ひとの一覧\')"><span>ひとと 役職（'+PEOPLE.length+'人）</span><s>絞って さがす ›</s></div></div>'
   +(can('post')?'<div class="usu" style="margin:-4px 0 4px">あなたは、<b>自分が 持っていない できること</b>を 人に 渡せません。</div>'
     :'<div class="usu" style="margin:-4px 0 4px">ひとの 役職を 変えられるのは　'+whoCan('post')+'</div>'):'';
- var bill=(can('bill')||can('bill_pay'))?'<div class="card"><div class="li" style="padding:7px 0"><span>数える 人数</span><s style="font-size:13.5px;color:var(--ink)">'+billN()+'人</s></div>'
-  +'<div class="li" style="padding:7px 0"><span>1人あたり</span><s style="font-size:13.5px;color:var(--ink)">'+Math.round(billYen()/billN())+'円</s></div>'
+ var bill=(can('bill')||can('bill_pay'))?'<div class="card"><div class="li" style="padding:7px 0"><span>数える 人数</span><s style="font-size:13px;color:var(--ink)">'+billN()+'人</s></div>'
+  +'<div class="li" style="padding:7px 0"><span>1人あたり</span><s style="font-size:13px;color:var(--ink)">'+Math.round(billYen()/billN())+'円</s></div>'
   +'<div class="li" style="padding:7px 0"><span>'+(PAY.cycle==='毎月'?'今月の':'1年ぶんの')+' ご請求</span><s style="font-size:17px;font-weight:700;color:var(--ink)">'+yen(billNow())+'円</s></div></div>'
-  +'<div class="card" style="background:var(--band);border-color:var(--line3)"><div style="font-size:13px;line-height:1.9">'
+  +'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><div style="font-size:11.5px;line-height:1.9">'
   +billWl()+'</div></div>'
   +'<div class="h3">料金の 決まり</div><div class="box">'
   +'<div class="li"><span>5人まで</span><s>0円</s></div>'
@@ -2095,6 +2099,7 @@ function opSettei(){
   +(can('bill_pay')
    ?'<div class="btn g" onclick="push(\'支払い方法\')">支払い方法を 変える ›</div>'
     +'<div class="btn g" style="margin-top:7px" onclick="push(\'宛先\')">宛先を 変える ›</div>'
+    +(PAY.hikitsugi?'<div class="warn" style="margin-top:9px"><b>'+PAY.hikitsugi.to+' さんの 承諾を 待っています。</b></div>':'')
    :'<div class="warn"><b>あなたは 見るだけ</b>です。<br>'
     +'払う・支払い方法を 変えるのは　<b>'+whoCan('bill_pay')+'</b><br><b>領収書は 出せます。</b></div>'
     +'<div class="btn g" style="margin-top:7px" onclick="push(\'支払い方法\')">支払い方法を 見る ›</div>'
@@ -2105,15 +2110,15 @@ function opSettei(){
   +'どちらも「役職と、できること」で 学校が 変えられます。<br>'
   +'ご請求の どこにも、<b>生徒の 健康の 記録は 出てきません</b>。</div>':'';
  return '<div class="hd"><h2>設定'+(can('bill')||can('bill_pay')?'・ご請求':'')+'</h2><span class="role">'+S.dm.post+'</span></div>'
- +'<div class="card" style="background:var(--band);border-color:var(--line3);padding:10px 12px">'
- +'<div style="font-size:13px;line-height:1.85"><b>'+S.dm.post+' の できること</b><br>'
+ +'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;padding:10px 12px">'
+ +'<div style="font-size:11.5px;line-height:1.85"><b>'+S.dm.post+' の できること</b><br>'
  +'<span style="color:var(--ink2)">'+permLine(myPost())+'</span></div></div>'
  +'<div class="h3">見やすさ</div><div class="box">'
  +'<div class="li" onclick="push(\'見やすさ\')"><span>文字の 大きさ</span><s>'+zLab()+' ›</s></div></div>'
  +bill+jikan+saiten+soshiki+yakuwari
  +'<div class="h3">見られないもの</div><div class="box">'
  +['生徒の 声の記録','生徒の からだの記録','生徒の ノート','生徒の 時間割の 中身'].map(function(v){
-   return '<div class="li" style="cursor:default;color:var(--ink4)"><span>'+v+'</span><s>画面が ありません</s></div>'}).join('')+'</div>'
+   return '<div class="li" style="cursor:default;color:#A0917F"><span>'+v+'</span><s>画面が ありません</s></div>'}).join('')+'</div>'
  +'<div class="note"><b>役職が そのまま「できること」です。</b>役割という 別の 名前は ありません。<br>'
  +'門下の <b>代表</b>だけは 別です ── その門下の 先生（自分の 門下に 書ける 役職）だけが 決めます。<br>'
  +'「画面が ありません」は、押せない 行として 出します（リンクに しません）。</div>'}
@@ -2131,12 +2136,12 @@ SC['役職の一覧']=function(){
  +'足す・消す・できることを 変える ── 全部 この学校の 中だけです。</div>'
  +POSTS.map(function(x,i){var n=PEOPLE.filter(function(q){return q[5]===x.n}).length;
    return '<div class="rep" onclick="push(\'役職の中身\','+i+')"><div style="flex:1">'
-   +'<div class="t" style="font-size:14.5px">'+x.n+'</div>'
+   +'<div class="t" style="font-size:13.5px">'+x.n+'</div>'
    +'<div class="s" style="line-height:1.6">'+permLine(x)+'</div></div>'
    +'<div class="r">'+n+'人</div></div>'}).join('')
  +'<div class="fl">役職を 足す</div>'
  +'<div style="display:flex;gap:8px"><input class="inp" placeholder="れい：特任教授／主任／園長" value="'+(S.mnew.post||'')+'" oninput="S.mnew.post=this.value">'
- +'<div class="btn" style="width:84px;padding:12px 0;font-size:13.5px" onclick="postAdd()">足す</div></div>'
+ +'<div class="btn" style="width:84px;padding:12px 0;font-size:13px" onclick="postAdd()">足す</div></div>'
  +'<div class="note">足した 役職は、はじめは <b>できることが 1つも ありません</b>。押して 決めてください。<br>'
  +'自分が 持っていない できることは、役職にも 付けられません。<br>'
  +'その 役職の方が いる間は、消せません。</div>'};
@@ -2152,10 +2157,10 @@ SC['役職の中身']=function(i){var x=POSTS[i],n=PEOPLE.filter(function(q){ret
  +'<input class="inp" value="'+x.n.replace(/"/g,'&quot;')+'" '+(edit?'oninput="postRename('+i+',this.value)"':'disabled')+'>'
  +'<div class="fl">できること</div><div class="box">'
  +PERM.map(function(k){var on=!!x.p[k[0]],ok=!k[2]||!!myPost().p[k[0]];
-   return '<div class="li" style="'+(edit&&ok?'':'color:var(--ink4)')+'" onclick="'+(edit&&ok?'togPerm('+i+',\''+k[0]+'\')':'toast(\'学校全部に かかる ことは、自分が 持っていないと 渡せません\')')+'">'
+   return '<div class="li" style="'+(edit&&ok?'':'color:#A0917F')+'" onclick="'+(edit&&ok?'togPerm('+i+',\''+k[0]+'\')':'toast(\'学校全部に かかる ことは、自分が 持っていないと 渡せません\')')+'">'
    +'<span>'+k[1]+(k[2]?'':'<br><span class="usu">その方 自身にだけ かかります</span>')+'</span>'
    +'<div class="sw '+(on?'on':'')+'"><i></i></div></div>'}).join('')+'</div>'
- +'<div class="card" style="background:var(--band);border-color:var(--line3)"><div style="font-size:13px;line-height:1.85">'
+ +'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><div style="font-size:11.5px;line-height:1.85">'
  +'<b>この役職で 出るタブ</b><br><span style="color:var(--ink2)">'+tabsOf(x).join('　／　')+'</span></div></div>'
  +(n?'<div class="usu">この役職の方が '+n+'人 いるので 消せません</div>'
    :'<div class="btn g" onclick="postDel('+i+')">この役職を 消す</div>')
@@ -2205,8 +2210,8 @@ SC['ひとの一覧']=function(){
  +'<div class="usu">役職</div><div class="pills">'+POSTS.map(function(v){return chip('役職',v.n)}).join('')+'</div>'
  +'<div class="h3">'+L.length+'人</div>'
  +(L.length?'<div class="box">'+L.map(function(x){var pr=x[0],i=x[1];
-   return '<div class="li" style="'+(canChange(pr[5])?'':'color:var(--ink4)')+'" onclick="push(\'役職を変える\','+i+')">'
-   +'<span>'+pr[0]+(pr[6]?'':' <span class="tag" style="background:var(--band3);color:var(--yama)">未確認</span>')
+   return '<div class="li" style="'+(canChange(pr[5])?'':'color:#A0917F')+'" onclick="push(\'役職を変える\','+i+')">'
+   +'<span>'+pr[0]+(pr[6]?'':' <span class="tag" style="background:#FBF0D8;color:var(--yama)">未確認</span>')
    +'<br><span class="usu">'+pTag(pr)+'</span></span><s>'+(canChange(pr[5])?'変える ›':'')+'</s></div>'}).join('')+'</div>'
   :'<div class="empty"><div class="t">この 絞りに あう方は いません。</div><div class="s">別の 絞りを 押してみてください。</div></div>')
  +'<div class="note">大きい学校では、全員を 出しても 探せません。<br><b>学部・学科・事務の分野・役職</b>で 絞れます。「全て」で 全員に 戻ります。<br>'
@@ -2227,7 +2232,7 @@ SC['組織']=function(key){
    +ORG.gakubu.map(function(b){return '<span class="pill sm '+((S.newB||ORG.gakubu[0])===b?'on':'')+'" onclick="S.newB=\''+esc(b)+'\';draw()">'+b+'</span>'}).join('')+'</div>':'')
  +'<div class="fl">足す</div>'
  +'<div style="display:flex;gap:8px"><input class="inp" placeholder="'+T[1]+'" value="'+(S.mnew[key]||'')+'" oninput="S.mnew[\''+key+'\']=this.value">'
- +'<div class="btn" style="width:84px;padding:12px 0;font-size:13.5px" onclick="orgAdd(\''+key+'\')">足す</div></div>'
+ +'<div class="btn" style="width:84px;padding:12px 0;font-size:13px" onclick="orgAdd(\''+key+'\')">足す</div></div>'
  +(key==='gakunen'?'<div class="pills" style="margin-top:9px">'+['修士1年','修士2年','博士1年','研究生','専攻科','別科','初等科','中等科','本科','専科'].map(function(v){
     return '<span class="pill sm" onclick="S.mnew.gakunen=\''+v+'\';draw()">＋ '+v+'</span>'}).join('')+'</div>':'')
  +'<div class="note">大学だけでは ありません。修士・博士・研究生・専攻科・別科も、ここで 足せます。<br>'
@@ -2251,7 +2256,7 @@ SC['役職を変える']=function(i){var pr=PEOPLE[i];
    +'<div class="btn g sm" style="margin-top:8px" onclick="PEOPLE['+i+'][6]=1;draw();toast(\'確かめました\')">確かめる</div></div>')
  +'<div class="fl">役職</div><div class="box">'
  +POSTS.map(function(x){var ok=canChange(pr[5])&&canBecome(x.n);
-   return '<div class="li" style="'+(ok?'':'color:var(--ink4)')+'" onclick="'+(ok?'setPost('+i+',\''+esc(x.n)+'\')':'toast(\'あなたが 持っていない できことは 渡せません\')')+'">'
+   return '<div class="li" style="'+(ok?'':'color:#A0917F')+'" onclick="'+(ok?'setPost('+i+',\''+esc(x.n)+'\')':'toast(\'あなたが 持っていない できことは 渡せません\')')+'">'
    +'<span>'+x.n+'<br><span class="usu">'+permLine(x)+'</span></span>'
    +'<s>'+(pr[5]===x.n?'<span style="color:var(--midori)">✓ いま</span>':(ok?'これに する':'渡せません'))+'</s></div>'}).join('')+'</div>'
  +'<div class="fl">学部・研究科</div><div class="pills">'+['—'].concat(ORG.gakubu).map(function(v){
@@ -2316,10 +2321,10 @@ SC['支払い方法']=function(){
    return '<div class="li" onclick="payWay(\''+esc(x[0])+'\')"><span>'+x[0]+'<br><span class="usu">'+x[1]+'</span></span>'
    +'<s>'+(on?'<b style="color:var(--midori)">✓ いま</b>':'これに する ›')+'</s></div>'}).join('')+'</div>'
  +(PAY.way==='クレジットカード'?'<div class="h3">いまの カード</div>'
-   +'<div class="card"><div style="font-family:ui-monospace,monospace;font-size:14.5px">'+PAY.card+'</div>'
+   +'<div class="card"><div style="font-family:ui-monospace,monospace;font-size:14px">'+PAY.card+'</div>'
    +'<div class="btn" style="margin-top:10px" onclick="toast(\'見本です。本番では カード会社の 画面が 開きます\')">カードを 変える（カード会社の 画面へ）</div></div>':'')
  +(PAY.way==='口座振替'?'<div class="h3">いまの 口座</div>'
-   +'<div class="card"><div style="font-size:13.5px">'+PAY.bank+'</div>'
+   +'<div class="card"><div style="font-size:13px">'+PAY.bank+'</div>'
    +'<div class="btn" style="margin-top:10px" onclick="toast(\'見本です。金融機関の 画面が 開きます\')">口座を 変える</div></div>':'')
  +(PAY.way==='銀行振込（請求書）'?'<div class="h3">請求書の 送り先</div>'
    +'<div class="box"><div class="li" style="cursor:default"><span>宛名</span><s>'+PAY.nm+'</s></div>'
@@ -2331,7 +2336,7 @@ SC['支払い方法']=function(){
  +'<div class="pills">'+['毎月','1年 まとめて'].map(function(v){
    return '<span class="pill'+(PAY.cycle===v?' on':'')+'" onclick="setCycle(\''+v+'\')">'+v
    +'<span class="usu">　'+(v==='毎月'?yen(billYen())+'円／月':yen(billYear())+'円／年')+'</span></span>'}).join('')+'</div>'
- +'<div class="card" style="background:var(--card2)"><div style="font-size:13px;line-height:1.95;color:var(--ink2)">'
+ +'<div class="card" style="background:#FDFAF3"><div style="font-size:11.5px;line-height:1.95;color:var(--ink2)">'
  +'<b>1年 まとめて</b>　'+billN()+'人 × '+yen(billYen())+'円 × <b>10か月ぶん</b> ＝ <b>'+yen(billYear())+'円</b><br>'
  +'人が <b>増えたら</b>　増えた月から、増えたぶんだけ 毎月<br>'
  +'人が <b>減ったら</b>　返金しません。次の 1年ぶんから 引きます<br>'
@@ -2364,15 +2369,19 @@ SC['宛先']=function(){
   +'<div class="warn"><b>あなたは 見るだけです。</b>変えられるのは　<b>'+whoCan('bill_pay')+'</b></div>'
   +'<div class="box"><div class="li" style="cursor:default"><span>いまの 宛先</span><s>'+PAY.ate+'（'+PAY.atePost+'）</s></div></div>';
  if(PAY.hikitsugi)return bk('設定')+'<div class="hd" style="padding-top:2px"><h2>ご請求の 宛先</h2></div>'
+  +'<div class="warn"><b>'+PAY.hikitsugi.to+' さんの 承諾を 待っています。</b><br>'
   +'出したのは　'+PAY.hikitsugi.by+'　'+PAY.hikitsugi.at+'<br>'
   +'<b>承諾されるまで 変わりません。</b>いまは '+PAY.ate+'（'+PAY.atePost+'）です。</div>'
+  +'<div class="btn g" style="margin-top:10px" onclick="PAY.hikitsugi=null;payLog(\'宛先の 申し出を 取り消しました\');draw();toast(\'取り消しました\')">申し出を 取り消す</div>'
+  +'<div class="btn g" style="margin-top:7px" onclick="ateOK()">（見本）相手が 承諾した ことに する</div>'
   +'<div class="h3">記録</div>'+payLogBox();
  var cand=PEOPLE.map(function(p,i){return [p,i]}).filter(function(y){
    var x=postOf(y[0][5]);return x&&(x.p.bill||x.p.bill_pay)&&y[0][0]!==PAY.ate});
  return bk('設定')+'<div class="hd" style="padding-top:2px"><h2>宛先を 変える</h2></div>'
  +'<div class="usu" style="margin:-2px 0 9px">いま　<b>'+PAY.ate+'（'+PAY.atePost+'）</b></div>'
  +'<div class="warn"><b>宛先（名義）は 1人だけ</b>です。お金の 責任を 持つ 人。<br>'
- +'<b>いまの 宛先の 方が 決めます。</b>押すと、その場で 変わります。<br>'
+ +'<b>両方の 承諾が 要ります。</b>押しただけでは 変わりません。<br>'
+ +'　申し出る → 相手が 承諾する → 変わります。<br>'
  +'見るだけの 人は 宛先に できません。</div>'
  +'<div class="h3">誰に しますか　<span class="usu">ご請求を 見られる 方だけ</span></div>'
  +(cand.length?'<div class="box">'+cand.map(function(y){var p=y[0];
@@ -2385,13 +2394,51 @@ SC['宛先']=function(){
  +'　引き継がずに 役職を 外すと、<b>誰も 払えなく なります</b>。<br>'
  +'申し出は <b>1回だけ</b>。催促しません。取り消せます。</div>'};
 function ateAsk(n,po){if(!can('bill_pay')){toast('あなたの 役職では 変えられません');return}
- /* ★裁定その74B ── 1人。いまの宛先が 指名。★その瞬間に 移る（1方向）
-    ★承諾を 作らない。★『指名したが 未承諾』の間、請求書の 宛先が 決まらないため */
- var from=PAY.ate;
- PAY.ate=n; PAY.atePost=po; PAY.hikitsugi=null;
- payLog('ご請求の 宛先が '+n+' さんに 変わりました（'+from+' さんが 決めました）');
- draw(); pop();
- toast(n+' さんが 宛先に なりました')}
+ PAY.hikitsugi={to:n,post:po,by:'坂本 響（'+S.dm.post+'）',at:'9月9日 14:22'};
+ payLog('宛先を '+n+' さんに 変える 申し出を 出しました');draw();
+ toast(n+' さんに 1回だけ 届きました')}
+function ateOK(){var h=PAY.hikitsugi;if(!h)return;
+ PAY.ate=h.to;PAY.atePost=h.post;PAY.hikitsugi=null;
+ payLog('宛先が '+h.to+' さんに 変わりました（両方の 承諾）');draw();
+ toast(h.to+' さんが 承諾しました')}
+SC['領収書']=function(){
+ RYO.nm=RYO.nm||PAY.nm;
+ var amt=(RYO_LIST.filter(function(x){return x[0]===RYO.month})[0]||['','—'])[1];
+ return bk('設定')+'<div class="hd" style="padding-top:2px"><h2>領収書を 出す</h2></div>'
+ +'<div class="usu" style="margin:-2px 0 9px">宛名　'+RYO.nm+'</div>'
+ +'<div class="fl">いつの ぶん</div><div class="pills">'+['月ごと','年度で まとめて'].map(function(v){
+   return '<span class="pill sm'+(RYO.span===v?' on':'')+'" onclick="RYO.span=\''+v+'\';draw()">'+v+'</span>'}).join('')+'</div>'
+ +(RYO.span==='月ごと'
+  ?'<div class="box">'+RYO_LIST.map(function(x){var on=RYO.month===x[0];
+    return '<div class="li" onclick="RYO.month=\''+x[0]+'\';draw()"><span>'+x[0]+'<br><span class="usu">'+x[2]+'</span></span>'
+    +'<s>'+x[1]+(on?'　<b style="color:var(--midori)">✓</b>':'')+(x[3]==='出しました'?'　<span class="tag">出しました</span>':'')+'</s></div>'}).join('')+'</div>'
+  :'<div class="pills">'+['2026年度','2025年度'].map(function(v){
+    return '<span class="pill sm'+(RYO.fy===v?' on':'')+'" onclick="RYO.fy=\''+v+'\';draw()">'+v+'</span>'}).join('')+'</div>'
+   +'<div class="card"><div class="usu">'+RYO.fy+'（4月〜3月）　5か月ぶん　合わせて 886,000円<br>1枚に まとめます。明細も つきます。</div></div>')
+ +'<div class="fl">宛名</div><input class="inp" value="'+String(RYO.nm).replace(/"/g,'&quot;')+'" oninput="RYO.nm=this.value">'
+ +'<div class="usu" style="margin-top:4px">普段は 学校名。「上様」には しません。</div>'
+ +'<div class="fl">但し書き</div><div class="pills">'+['Woolsong 利用料として','システム利用料として'].map(function(v){
+   return '<span class="pill sm'+(RYO.tada===v?' on':'')+'" onclick="RYO.tada=\''+esc(v)+'\';draw()">'+v+'</span>'}).join('')+'</div>'
+ +'<div class="h3">出る 紙</div>'
+ +'<div class="card" style="background:#FDFAF3">'
+ +'<div style="font-size:10px;color:var(--ink3);letter-spacing:.12em">領　収　書</div>'
+ +'<div style="font-size:15px;font-weight:700;margin:6px 0 2px">'+RYO.nm+'　御中</div>'
+ +'<div style="font-size:21px;font-weight:700;margin:6px 0">'+(RYO.span==='月ごと'?amt:'886,000円')+'</div>'
+ +'<div class="usu">但し　'+RYO.tada+'<br>上記 正に 領収いたしました<br><br>'
+ +(RYO.span==='月ごと'?RYO.month+'ぶん':RYO.fy)+'<br>消費税（10%）を 含みます<br><br>'
+ +'Woolsong　運営<br>登録番号　'+PAY.tno+'</div></div>'
+ +'<div class="btn" style="margin-top:12px" onclick="formOpen(\'領収書\')">領収書を 出す（印刷 ／ PDFで 保存）</div>'
+ +'<div class="btn g" style="margin-top:7px" onclick="formDL(\'領収書\')">ファイルで 落とす（.html）</div>'
+ +'<div class="btn g" style="margin-top:7px" onclick="formCSV()">明細を 落とす（.csv）</div>'
+ +'<div class="btn g" style="margin-top:7px" onclick="formOpen(\'請求書\')">請求書の 形で 見る</div>'
+ +'<div class="usu" style="margin-top:7px">「印刷 ／ PDFで 保存」で <b>PDF に できます</b>。<br>'
+ +'「.csv」は <b>Excel で そのまま</b> 開けます。</div>'
+ +'<div class="h3">出した 記録</div>'+payLogBox()
+ +'<div class="note"><b>領収書は 消せません。</b>出したことが 記録に 残ります。<br>'
+ +'<b>2回目からは「再発行」と 印字します。</b><br>'
+ +'<b>見られる方 みんなが 出せます</b>（'+whoCan('bill')+'）。<br>'
+ +'　経理の 方が 出せないと、毎回 学長に 頼むことに なります。<br>'
+ +'領収書の どこにも、<b>生徒の 名前も 健康の 記録も 出ません</b>。</div>'};
 /* ══════════ 帳票（領収書・請求書・明細）本物の 形で 出します ══════════ */
 var FORM_CSS=''
 +'@page{size:A4;margin:18mm}'
@@ -2400,26 +2447,26 @@ var FORM_CSS=''
 +'.pg{width:210mm;min-height:297mm;background:#fff;margin:0 auto 20px;padding:20mm 18mm;'
 +'box-shadow:0 2px 18px rgba(38,25,19,.12);position:relative}'
 +'.ttl{text-align:center;font-size:26px;letter-spacing:.5em;margin:6px 0 22px;padding-left:.5em}'
-+'.no{position:absolute;right:18mm;top:14mm;font-size:12.5px;color:var(--ink3);text-align:right;line-height:1.7}'
++'.no{position:absolute;right:18mm;top:14mm;font-size:11px;color:#6D5D50;text-align:right;line-height:1.7}'
 +'.ate{font-size:19px;border-bottom:1px solid #261913;padding:0 60px 5px 2px;display:inline-block;margin-bottom:20px}'
 +'.amt{font-size:34px;font-weight:700;border-bottom:2px solid #261913;padding:2px 30px 5px;display:inline-block;letter-spacing:.04em}'
-+'.rw{display:flex;gap:14px;font-size:13.5px;line-height:2}'
-+'.rw .l{width:88px;color:var(--ink3)}'
-+'table{width:100%;border-collapse:collapse;font-size:13.5px;margin:16px 0}'
-+'th,td{border:1px solid var(--ink4);padding:7px 9px;text-align:left}'
-+'th{background:var(--band2);font-weight:400;color:var(--ink3)}'
++'.rw{display:flex;gap:14px;font-size:13px;line-height:2}'
++'.rw .l{width:88px;color:#6D5D50}'
++'table{width:100%;border-collapse:collapse;font-size:12.5px;margin:16px 0}'
++'th,td{border:1px solid #C9BCA6;padding:7px 9px;text-align:left}'
++'th{background:#F3ECDD;font-weight:400;color:#6D5D50}'
 +'td.n{text-align:right;font-variant-numeric:tabular-nums}'
-+'.fr{margin-top:26px;font-size:13.5px;line-height:1.95}'
++'.fr{margin-top:26px;font-size:12.5px;line-height:1.95}'
 +'.stamp{position:absolute;right:26mm;bottom:56mm;width:78px;height:78px;border:2px solid #B23A48;'
 +'border-radius:50%;color:#B23A48;display:flex;align-items:center;justify-content:center;'
-+'font-size:12.5px;text-align:center;line-height:1.3;transform:rotate(-8deg);opacity:.85}'
++'font-size:11px;text-align:center;line-height:1.3;transform:rotate(-8deg);opacity:.85}'
 +'.re{position:absolute;left:18mm;top:14mm;border:1.5px solid #B23A48;color:#B23A48;'
-+'padding:2px 9px;font-size:13px;letter-spacing:.2em}'
-+'.nt{margin-top:20px;font-size:12.5px;color:var(--ink3);line-height:1.9;border-top:1px solid #E4DAC4;padding-top:10px}'
++'padding:2px 9px;font-size:12px;letter-spacing:.2em}'
++'.nt{margin-top:20px;font-size:10.5px;color:#6D5D50;line-height:1.9;border-top:1px solid #E4DAC4;padding-top:10px}'
 +'.bar{max-width:210mm;margin:0 auto 14px;display:flex;gap:9px;align-items:center;'
-+'font-family:system-ui,sans-serif;font-size:13.5px}'
-+'.bar b{flex:1;font-weight:400;color:var(--ink3)}'
-+'.bar button{font:inherit;padding:9px 16px;border-radius:99px;border:1px solid var(--ink4);'
++'font-family:system-ui,sans-serif;font-size:13px}'
++'.bar b{flex:1;font-weight:400;color:#6D5D50}'
++'.bar button{font:inherit;padding:9px 16px;border-radius:99px;border:1px solid #C9BCA6;'
 +'background:#fff;color:#261913;cursor:pointer}'
 +'.bar button.p{background:#840C24;color:#fff;border-color:#840C24}'
 +'@media print{body{background:#fff;padding:0}.pg{box-shadow:none;margin:0;width:auto;min-height:0;padding:0}.bar{display:none}}';
@@ -2528,7 +2575,7 @@ SC['出欠つけ']=function(a){
  var grp=!!(a.gr&&a.gr.length);
  var NM=grp?a.gr:(a.one?[a.one]:monkaOf(t));
  var kk=function(n){return t+'／'+(a.tm||'')+'／'+n};
- var head=bk('戻る')+'<div class="hd" style="padding-top:2px"><h2 style="font-size:15.5px">'
+ var head=bk('戻る')+'<div class="hd" style="padding-top:2px"><h2 style="font-size:15px">'
   +(a.tm?a.tm+'　':'')+(a.l||'レッスン')+'</h2></div>'
  +'<div class="usu" style="margin:-2px 0 9px">'+t+' 先生'+(a.pl?'　／　'+a.pl:'')
  +(lock?'':(grp?'　／　'+NM.length+'人（みんなの レッスン）':(a.one?'　／　個人レッスン':'　／　'+NM.length+'人')))+'</div>';
@@ -2553,7 +2600,7 @@ SC['出欠つけ']=function(a){
  var others=function(one){
   if(grp)return '<div class="h3">この レッスンの 方　'+NM.length+'人'+(yet?'　／　まだ '+yet:'')+'</div>'
    +'<div class="box">'+NM.map(function(nm){var v=S.shu[kk(nm)];
-     return '<div class="li'+(nm===one?' plain':'')+'" '+(nm===one?'style="background:var(--band)"':'onclick="shuPick(\''+esc(nm)+'\')"')+'>'
+     return '<div class="li'+(nm===one?' plain':'')+'" '+(nm===one?'style="background:#F6F1E4"':'onclick="shuPick(\''+esc(nm)+'\')"')+'>'
      +'<span>'+nm+(nm===one?'　<span class="tag">いま</span>':'')+'</span>'
      +'<s>'+(v?'<span style="color:var(--midori)">'+v+'</span>':'<span style="color:var(--yama)">まだ</span>')+(nm===one?'':' ›')+'</s></div>'}).join('')+'</div>'
    +'<div class="btn g sm" style="margin-top:9px" onclick="'+all('出席')+';shuPick(\'\')">残りも 全部 出席</div>';
@@ -2562,7 +2609,7 @@ SC['出欠つけ']=function(a){
      var nm2=x.gr?x.l:(x.one||x.l),sub=x.gr?x.gr.length+'人（みんな）　'+x.pl:'個人レッスン　'+x.pl;
      var done=x.gr?x.gr.filter(function(n){return S.shu[t+'／'+x.tm+'／'+n]}).length+' / '+x.gr.length
        :(S.shu[t+'／'+x.tm+'／'+x.one]||'まだ');
-     return '<div class="li'+(now?' plain':'')+'" '+(now?'style="background:var(--band)"':'onclick="shuJump('+i+')"')+'>'
+     return '<div class="li'+(now?' plain':'')+'" '+(now?'style="background:#F6F1E4"':'onclick="shuJump('+i+')"')+'>'
      +'<span>'+x.tm+'　'+nm2+(now?'　<span class="tag">いま</span>':'')
      +'<br><span class="usu">'+sub+'</span></span><s>'+done+(now?'':' ›')+'</s></div>'}).join('')+'</div>'};
  /* ══ ひとりだけ ══ */
@@ -2570,11 +2617,11 @@ SC['出欠つけ']=function(a){
   var one=a.one,K1=kk(one),v1=S.shu[K1];
   var nx=grp?NM.filter(function(n){return n!==one&&!S.shu[kk(n)]})[0]:null;
   return head+daiban
-  +'<div class="card" style="border-color:var(--ink4)">'
+  +'<div class="card" style="border-color:#CFC0A4">'
   +'<div style="font-size:21px;font-weight:700;letter-spacing:.02em">'+one+'</div>'
   +'<div class="usu" style="margin:3px 0 13px">'+(gradeOf(one)||'')+'　／　'+(a.l||'')+'　'+(a.pl||'')+'</div>'
   +'<div class="two">'+['出席','休み','休講'].map(function(x){
-    return '<div class="btn '+(v1===x?'':'g')+'" style="padding:15px 0;font-size:15.5px" '
+    return '<div class="btn '+(v1===x?'':'g')+'" style="padding:15px 0;font-size:15px" '
     +'onclick="S.shu[\''+esc(K1)+'\']=\''+x+'\';draw();toast(\''+esc(one)+' を '+x+' に しました\')">'+x+'</div>'}).join('')+'</div>'
   +(v1?'<div class="usu" style="margin-top:10px"><b style="color:var(--midori)">✓ '+v1+'</b>　つけた人　'+stamp()
      +'　<span style="color:var(--enji)" onclick="delete S.shu[\''+esc(K1)+'\'];draw()">取り消す</span></div>'
@@ -2599,9 +2646,9 @@ SC['出欠つけ']=function(a){
  +'<span class="pill sm" onclick="'+all('休講')+'">全部 休講</span>'
  +'<span class="pill sm" onclick="'+all('')+'">全部 消す</span></div>'
  +NM.map(function(nm){var K=kk(nm),v=S.shu[K];
-   return '<div class="card" style="padding:11px 12px;'+(v?'':'background:var(--band3);border-color:var(--line3)')+'">'
-   +'<div style="font-size:14.5px;margin-bottom:8px;color:var(--enji)" onclick="shuPick(\''+esc(nm)+'\')">'+nm+' ›'
-   +(v?'':' <span class="tag" style="background:var(--warn)33;color:#8C6115">まだ</span>')+'</div>'
+   return '<div class="card" style="padding:11px 12px;'+(v?'':'background:#FBF3E2;border-color:#E8DFC8')+'">'
+   +'<div style="font-size:13.5px;margin-bottom:8px;color:var(--enji)" onclick="shuPick(\''+esc(nm)+'\')">'+nm+' ›'
+   +(v?'':' <span class="tag" style="background:#F0C24B33;color:#8C6115">まだ</span>')+'</div>'
    +'<div class="two">'+['出席','休み','休講'].map(function(x){
      return '<div class="btn g sm" style="'+(v===x?'border:2px solid var(--enji);color:var(--enji);font-weight:700':'')+'" onclick="S.shu[\''+esc(K)+'\']=\''+x+'\';draw()">'+x+'</div>'}).join('')+'</div></div>'}).join('')
  +'<div class="btn" style="margin-top:11px" onclick="'+(yet?'toast(\'まだ '+'\'+'+yet+'+\'人 残っています\')':'toast(\'出席を つけました\');pop()')+'">つけ終わる</div>'
@@ -2642,7 +2689,7 @@ SC['その人']=function(i){var m=MEI[i];
  +'<div class="li"><span>休講（この回を しなかった）</span><s>1回</s></div></div>'
  +'<div class="h3">見られないもの</div><div class="box">'
  +['声の記録','からだの記録','ノート','調べるの 結果'].map(function(v){
-   return '<div class="li" style="cursor:default;color:var(--ink4)"><span>'+v+'</span><s>画面が ありません</s></div>'}).join('')+'</div>'
+   return '<div class="li" style="cursor:default;color:#A0917F"><span>'+v+'</span><s>画面が ありません</s></div>'}).join('')+'</div>'
  +'<div class="h3">在籍の様子</div>'
  +(can('meibo')
   ?'<div class="box">'+['在籍','休会','退会'].map(function(v){
@@ -2662,10 +2709,10 @@ SC['お知らせを書く']=function(){
  var chip=function(key,v){return '<span class="pill sm '+(W[key].indexOf(v)>=0?'on':'')+'" onclick="tgArr(S.ow.'+key+',\''+esc(v)+'\')">'+v+'</span>'};
  var q=W.q,cand=q?MEI.map(function(m,i){return [m,i]}).filter(function(x){return x[0][0].indexOf(q)>=0}):[];
  return bk('連絡')+'<div class="hd" style="padding-top:2px"><h2>お知らせを 書く</h2></div>'
- +'<div class="card" style="border-color:var(--enji);background:var(--card2)">'
+ +'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC">'
  +'<div class="usu">いまの 宛先</div>'
- +'<div style="font-size:13.5px;line-height:1.8;margin-top:4px">'+ateText(W)+'</div>'
- +'<div style="font-size:22px;font-weight:700;margin-top:6px">'+hit.length+'<span style="font-size:13.5px;font-weight:400">人に 届きます</span></div>'
+ +'<div style="font-size:13px;line-height:1.8;margin-top:4px">'+ateText(W)+'</div>'
+ +'<div style="font-size:22px;font-weight:700;margin-top:6px">'+hit.length+'<span style="font-size:12.5px;font-weight:400">人に 届きます</span></div>'
  +'<div class="usu">この見本の 名簿（'+MEI.length+'人）から 数えています</div></div>'
  +'<div class="fl">① 学部・研究科</div><div class="pills">'
  +'<span class="pill sm '+(W.gakubu.length?'':'on')+'" onclick="S.ow.gakubu=[];S.ow.gakka=[];draw()">全部</span>'
@@ -2732,7 +2779,7 @@ function loadAte(i){var v=ATESAKI[i].v;
 SC['自分の門下']=function(){
  var nm=ME+' の 門下';
  UNREAD['monka-u']=0;
- return bk('連絡')+'<div class="hd" style="padding-top:2px"><h2 style="font-size:15.5px">'+nm+'</h2>'
+ return bk('連絡')+'<div class="hd" style="padding-top:2px"><h2 style="font-size:15px">'+nm+'</h2>'
  +'<span class="role">'+monkaOf(ME).length+'人</span></div>'
  +'<div class="warn">ここは <b>運営モード</b>です。個人の アプリには 移りません。<br>'
  +'自分の 門下にだけ 書けます。ほかの 門下は 見えません。</div>'
@@ -2751,7 +2798,7 @@ SC['自分の門下']=function(){
 SC['門下を開く']=function(name){
  ['op-m1','op-m2','op-m3'].forEach(function(k,i){
    if(['斎藤先生の 門下','渡辺先生の 門下','高橋先生の 門下'][i]===name)UNREAD[k]=0});
- return bk('連絡')+'<div class="hd" style="padding-top:2px"><h2 style="font-size:15.5px">'+name+'</h2><span class="role">読むだけ</span></div>'
+ return bk('連絡')+'<div class="hd" style="padding-top:2px"><h2 style="font-size:15px">'+name+'</h2><span class="role">読むだけ</span></div>'
  +'<div class="warn">この 門下を 開いたことが、<b>開いた記録</b>に 残りました。<br>先生と 学生からも 見られます。</div>'
  +'<div class="post"><div class="ph2"><span class="av">斎</span><span class="nm3">斎藤先生</span><span class="dt">9月8日</span></div>'
  +'<div class="bd2">実技試験の 集合は 12時30分、第1ホールです。</div></div>'
@@ -2803,11 +2850,11 @@ SC['重なり']=function(){
  +(L.length?L.map(function(y){var x=y[0],i=y[1];
    return '<div class="card" style="border-left:3px solid '+col[x.k]+';'+(x.st==='解決'?'opacity:.6':'')+'">'
    +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;flex-wrap:wrap">'
-   +'<span class="tag" style="background:var(--band2);color:'+col[x.k]+';margin:0">'+({'場所':'同じ 場所','先生':'同じ 先生'})[x.k]+'</span>'
+   +'<span class="tag" style="background:#F3ECDD;color:'+col[x.k]+';margin:0">'+({'場所':'同じ 場所','先生':'同じ 先生'})[x.k]+'</span>'
    +'<span class="usu" style="margin:0">'+x.d+'　'+x.t+'</span></div>'
    +'<div class="tag" style="margin:0 0 6px;background:'+stc[x.st][0]+'18;color:'+stc[x.st][0]+'">'+stc[x.st][1]+'</div>'
-   +'<div style="font-size:14.5px;font-weight:700;margin-bottom:5px">'+x.w+'</div>'
-   +'<div style="font-size:13.5px;line-height:1.8;color:var(--ink2)">① '+x.a.join('<br>')+'<br>② '+x.b.join('<br>')+'</div>'
+   +'<div style="font-size:13.5px;font-weight:700;margin-bottom:5px">'+x.w+'</div>'
+   +'<div style="font-size:12.5px;line-height:1.8;color:var(--ink2)">① '+x.a.join('<br>')+'<br>② '+x.b.join('<br>')+'</div>'
    +(x.told?'<div class="usu" style="margin-top:6px">知らせました　'+x.told+'</div>':'')
    +(Object.keys(x.res).length?'<div class="wl" style="margin-top:8px">'
      +Object.keys(x.res).map(function(t){return '<b>'+t+' 先生</b>　'+x.res[t]}).join('<br>')+'</div>':'')
@@ -2827,7 +2874,7 @@ SC['重なり']=function(){
  +[['同じ 時間に、同じ 場所を 違う先生が 使っている','一番 起きます',1],
    ['同じ 先生の 時間が 重なっている','別の 部屋に 同時に 入っています',1],
    ['同じ 生徒の 時間が 重なっている','この画面には 出しません。生徒ご本人にだけ',0]].map(function(x){
-   return '<div class="li" style="cursor:default'+(x[2]?'':';color:var(--ink4)')+'"><span>'+x[0]+'<br><span class="usu">'+x[1]+'</span></span><s>'+(x[2]?'見ます':'出しません')+'</s></div>'}).join('')+'</div>'
+   return '<div class="li" style="cursor:default'+(x[2]?'':';color:#A0917F')+'"><span>'+x[0]+'<br><span class="usu">'+x[1]+'</span></span><s>'+(x[2]?'見ます':'出しません')+'</s></div>'}).join('')+'</div>'
  +'<div class="note"><b>部屋の 予約は しません。</b>知らせて、動かすのを 助けるところまでです。<br>'
  +'<b>事務が 勝手に 動かしません。</b>動かすのは 先生です。<br>'
  +'知らせは <b>1回だけ</b>。催促を 重ねません。<br>'
@@ -2840,8 +2887,8 @@ function kasaT(){
  +(L.length?L.map(function(y){var x=y[0],i=y[1],mine=x.res[ME];
    return '<div class="card" style="border-left:3px solid #8C6115">'
    +'<div class="usu">'+x.d+'　'+x.t+'　／　'+({'場所':'同じ 場所','先生':'同じ 先生'})[x.k]+'</div>'
-   +'<div style="font-size:15.5px;font-weight:700;margin:5px 0 6px">'+x.w+'</div>'
-   +'<div style="font-size:13.5px;line-height:1.8;color:var(--ink2)">① '+x.a.join('<br>')+'<br>② '+x.b.join('<br>')+'</div>'
+   +'<div style="font-size:14.5px;font-weight:700;margin:5px 0 6px">'+x.w+'</div>'
+   +'<div style="font-size:12.5px;line-height:1.8;color:var(--ink2)">① '+x.a.join('<br>')+'<br>② '+x.b.join('<br>')+'</div>'
    +(x.told?'<div class="usu" style="margin-top:6px">事務から 知らせが 来ました　'+x.told+'</div>':'')
    +(Object.keys(x.res).length?'<div class="wl" style="margin-top:8px">'
      +Object.keys(x.res).map(function(t){return '<b>'+(t===ME?'あなた':t+' 先生')+'</b>　'+x.res[t]}).join('<br>')+'</div>':'')
@@ -2871,22 +2918,22 @@ SC['重なりを直す']=function(i){var x=KASANARI[i];
  +'<div class="card" style="padding:8px"><div style="overflow-x:auto"><table class="tbl wktbl" style="min-width:330px">'
  +'<tr><th style="position:sticky;left:0;z-index:2">コマ</th>'+DAYS.map(function(d){return '<th>'+d+'</th>'}).join('')+'</tr>';
  myKoma().forEach(function(k,ki){
-  h+='<tr><td class="k" style="text-align:left">'+k[0]+'<br><span style="font-size:12px;color:var(--ink3)">'+k[1]+'</span></td>';
-  DAYS.forEach(function(d,di){var K=di+'-'+ki,bg='#fff',fg='var(--ink4)',tx='×',cl='';
-   if(K===x.key){bg='var(--pick)';fg='var(--red)';tx='いま'}
-   else if(TBUSY[K]){bg='var(--band)';fg='var(--ink3)';tx=TBUSY[K].slice(0,3)}
-   else if(PLACED[K]){bg='var(--band)';fg='var(--midori)';tx=MONKA[PLACED[K].i][0].split(' ')[0]}
+  h+='<tr><td class="k" style="text-align:left">'+k[0]+'<br><span style="font-size:8.5px;color:var(--ink3)">'+k[1]+'</span></td>';
+  DAYS.forEach(function(d,di){var K=di+'-'+ki,bg='#fff',fg='#C3B6A2',tx='×',cl='';
+   if(K===x.key){bg='#F7E9EA';fg='var(--red)';tx='いま'}
+   else if(TBUSY[K]){bg='#EDE5D5';fg='#6D5D50';tx=TBUSY[K].slice(0,3)}
+   else if(PLACED[K]){bg='#F4F8F5';fg='var(--midori)';tx=MONKA[PLACED[K].i][0].split(' ')[0]}
    else if(sidx<0||isFree(sidx,K)){bg=(sel===K?'#840C24':'#FBF6EA');fg=(sel===K?'#fff':'var(--ink2)');tx='空き';
     cl='onclick="S.kcell=\''+K+'\';draw()"'}
    else cl='onclick="toast(\''+esc(x.stu||'相手')+' さんは この時間 来られません\')"';
    h+='<td style="padding:2px;cursor:pointer;background:'+bg+'" '+cl+'>'
-    +'<span style="font-size:12px;color:'+fg+'">'+tx+'</span></td>'});
+    +'<span style="font-size:9px;color:'+fg+'">'+tx+'</span></td>'});
   h+='</tr>'});
  h+='</table></div>'
  +'<div class="usu" style="margin-top:7px"><b>空き</b>＝'+(x.stu?x.stu+' さんが 来られて、':'')+'あなたも あいている（'+nfree+'つ）'
  +'　／　<span style="color:var(--red)">いま</span>＝重なっている ところ　／　灰＝自分の 予定　／　×＝来られません</div></div>';
- if(sel)h+='<div class="card" style="border-color:var(--ink4)">'
-   +'<div style="font-size:14.5px;font-weight:700">'+keyLab(sel)+'</div>'
+ if(sel)h+='<div class="card" style="border-color:#CFC0A4">'
+   +'<div style="font-size:14px;font-weight:700">'+keyLab(sel)+'</div>'
    +'<div class="usu" style="margin:3px 0 8px">'+(x.stu?x.stu+' さんは この時間 来られます':'あいています')+'</div>'
    +'<div class="fl">場所</div><div class="pills">'+MST.place.map(function(p){
      return '<span class="pill sm'+(S.kpl===p?' on':'')+'" onclick="S.kpl=\''+esc(p)+'\';draw()">'+p+'</span>'}).join('')+'</div>'
@@ -2977,7 +3024,7 @@ SC['曲を足す']=function(){
  +'<div class="fl">様子</div><div class="pills" style="margin-top:5px">'+['はじめたばかり','さらい中','本番済み','しばらく 置く'].map(function(v){
    return '<span class="pill sm '+(S.nr.st===v?'on':'')+'" onclick="S.nr.st=\''+v+'\';draw()">'+v+'</span>'}).join('')+'</div>'
  +'<div class="fl">本番の 予定（あれば）</div>'+f('hb','れい：11月20日 定期演奏会')
- +'<div class="card" style="background:var(--band);border-color:var(--line3);margin-top:12px"><div style="font-size:13px;line-height:1.85">'
+ +'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;margin-top:12px"><div style="font-size:12px;line-height:1.85">'
  +'いま 入っているもの<br><b>'+(S.nr.t||'（曲名 まだ）')+'</b>　'+(S.nr.c||'')+'　'+(S.nr.yaku||'')+'<br>'
  +S.nr.lang+'　／　'+(S.nr.hi||'—')+' 〜 '+(S.nr.lo||'—')+'　／　'+S.nr.st+'</div></div>'
  +'<div class="two" style="margin-top:6px"><div class="btn g" onclick="S.nr=null;pop()">やめる</div>'
@@ -3009,7 +3056,7 @@ SC['日を選ぶ']=function(o){
  else lab=S.sel.a&&S.sel.b?(MN+Math.min(S.sel.a,S.sel.b)+'日 〜 '+MN+Math.max(S.sel.a,S.sel.b)+'日')
    :S.sel.a?(MN+S.sel.a+'日 〜　（終わりの日を 選んでください）'):'はじめの日を 選んでください';
  return bk(o.from)+'<div class="hd" style="padding-top:2px"><h2>日を 選ぶ</h2></div>'
- +'<div class="card" style="text-align:center;padding:13px"><div style="font-size:14.5px">'+lab+'</div></div>'
+ +'<div class="card" style="text-align:center;padding:13px"><div style="font-size:14px">'+lab+'</div></div>'
  +'<div class="card"><div style="display:flex;align-items:center;margin-bottom:9px">'
  +'<span class="back" style="padding:0" onclick="S.cm=(S.cm+11)%12;draw()">‹ 前の月</span>'
  +'<span class="mini" style="margin:0 auto">2026年 '+MN+'</span>'
@@ -3105,11 +3152,11 @@ SC['学ぶ']=function(){
  +'「疑い／リスク／早期発見／予防」の 語を 使いません。出典は 記事の 末に 置きます。<br>'
  +'撤回した ACWR の 記事は、ここに ありません。<br>読まなくても、アプリは 使えます。</div>'};
 SC['記事']=function(t){
- return bk('学ぶ')+'<div class="hd" style="padding-top:2px"><h2 style="font-size:15.5px;line-height:1.6">'+t+'</h2></div>'
- +'<div class="card" style="border-color:var(--enji);background:var(--card2)"><div style="font-size:13.5px;line-height:1.9">'
+ return bk('学ぶ')+'<div class="hd" style="padding-top:2px"><h2 style="font-size:15px;line-height:1.6">'+t+'</h2></div>'
+ +'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC"><div style="font-size:13px;line-height:1.9">'
  +'・のどは、閉じたり 開いたりする 器官です<br>・使った量と、休めた量で 状態が 変わります<br>・数字は、あなた自身の 普段と くらべるためのものです</div>'
  +'<div class="usu" style="margin-top:7px">冒頭の 3行で 結論。読まない人にも 要点が 残るように</div></div>'
- +'<div class="card"><div style="font-size:14.5px;line-height:2">'
+ +'<div class="card"><div style="font-size:13.5px;line-height:2">'
  +'（本文 800〜1,500字。この見本では 省いています）<br><br>'
  +'ここに 書かないこと ──<br>点数・順位・偏差値／文献の 目安値を 画面の数字と 並べること／'
  +'「疑い」「リスク」「早期発見」「予防」の 語／特定の 病名で 断定すること。</div></div>'
@@ -3130,9 +3177,9 @@ SC['経歴']=function(){return bk('レパートリー')
 +'<div class="warn">ポートフォリオに 載せる ものです。書かなくても、録画だけで 成り立ちます。</div>'
 +'<div class="h3" style="margin-top:0">宣材写真</div>'
 +'<div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:11px">'
-+'<div style="width:96px;height:128px;background:var(--band2);border:1px solid var(--line);'
++'<div style="width:96px;height:128px;background:#F3ECDD;border:1px solid var(--line);'
 +'border-radius:8px;display:flex;align-items:center;justify-content:center;'
-+'font-size:12.5px;color:var(--ink3);flex:none">写真</div>'
++'font-size:11px;color:var(--ink3);flex:none">写真</div>'
 +'<div style="flex:1"><span class="btn g" style="margin:0">えらぶ</span>'
 +'<div class="usu" style="margin-top:7px">1枚だけです。<br>撮った場所の 情報は、こちらで 消します。</div></div></div>'
 +'<div class="h3">お名前</div><input class="inp" value="坂本 響">'
@@ -3172,11 +3219,11 @@ SC['公開の範囲']=function(){return bk('経歴')
 +'<div class="box">'
 +pick('自分だけ',1)+pick('同じ学校の 在籍者だけ',0)+pick('URLを 知っている人だけ',0)+'</div>'
 +'<div class="h3">URLを 知っている人だけ の とき</div>'
-+'<div class="card"><div style="font-size:13px;color:var(--ink2);word-break:break-all">https://woolsong.app/p/7fk2m</div>'
++'<div class="card"><div style="font-size:12px;color:var(--ink2);word-break:break-all">https://woolsong.app/p/7fk2m</div>'
 +'<div class="btn g" style="margin-top:11px">コピーする</div>'
 +'<div style="width:112px;height:112px;background:#fff;border:1px solid var(--line);'
 +'border-radius:6px;display:flex;align-items:center;justify-content:center;'
-+'font-size:12.5px;color:var(--ink3);margin:11px 0">QR</div>'
++'font-size:10px;color:var(--ink3);margin:11px 0">QR</div>'
 +'<div class="usu">紙に 刷るとき用です。白い 背景で 出します。</div></div>'
 +'<div class="h3">紙に する</div><div class="box">'
 +'<div class="li" onclick="push(\'紙のポートフォリオ\')"><span>紙で どう 見えるか'
@@ -3187,15 +3234,15 @@ SC['公開の範囲']=function(){return bk('経歴')
 +'見た目を 選ぶ 機能は、いまは ありません。ひとつの 決まった 見た目で 出します。</div>'};
 
 SC['公開ページ']=function(){return bk('公開の範囲')
-+'<div class="hd" style="padding-top:2px"><h2 style="font-size:14.5px;color:var(--ink3)">'
++'<div class="hd" style="padding-top:2px"><h2 style="font-size:14px;color:var(--ink3)">'
 +'アプリの 外で、こう 見えます</h2></div>'
 +'<div class="card" style="padding:20px 16px">'
 +'<div style="display:flex;gap:13px;margin-bottom:16px">'
-+'<div style="width:78px;height:104px;background:var(--band2);border-radius:6px;flex:none;'
-+'display:flex;align-items:center;justify-content:center;font-size:12.5px;color:var(--ink3)">写真</div>'
++'<div style="width:78px;height:104px;background:#F3ECDD;border-radius:6px;flex:none;'
++'display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ink3)">写真</div>'
 +'<div><div style="font-size:19px;letter-spacing:.03em">坂本 響</div>'
 +'<div class="usu">テノール</div></div></div>'
-+'<div style="font-size:13.5px;line-height:2;color:var(--ink2);margin-bottom:18px">'
++'<div style="font-size:13px;line-height:2;color:var(--ink2);margin-bottom:18px">'
 +'イタリア歌曲と ドイツ・リートを 中心に 勉強しています。<br><br>'
 +'いまは 冬の旅の 全曲に 取り組んでいます。ひとつの 曲を 長く 持つことで 見えてくるものを 大事に したいと 思っています。</div>'
 +pgrp('学んだところ',[['○○音楽大学 声楽科','2020–2024'],['△△音楽院','2024–']])
@@ -3210,10 +3257,10 @@ SC['公開ページ']=function(){return bk('公開の範囲')
 +'通報の 口を 1つ 置いています。窓口では ありません。</div>'};
 
 function pgrp(t,a){return '<div style="margin-bottom:18px">'
-+'<div style="font-size:12.5px;letter-spacing:.14em;color:var(--ink3);'
++'<div style="font-size:10.5px;letter-spacing:.14em;color:var(--ink3);'
 +'border-bottom:1px solid var(--line2);padding-bottom:5px;margin-bottom:4px">'+t+'</div>'
 +a.map(function(x){return '<div style="display:flex;justify-content:space-between;'
-+'align-items:baseline;padding:7px 0;font-size:14.5px">'
++'align-items:baseline;padding:7px 0;font-size:13.5px">'
 +'<span>'+x[0]+'</span><span class="usu">'+x[1]+'</span></div>'}).join('')+'</div>'}
 
 function pick(t,on){return '<div class="li"><span>'
@@ -3276,7 +3323,7 @@ SC['募集を出す']=function(){return bk('伴奏をさがす')
 
 SC['応募する']=function(){return bk('伴奏をさがす')
 +'<div class="hd" style="padding-top:2px"><h2>この募集に 応募します</h2></div>'
-+'<div class="card"><div style="font-size:15.5px">ピアノ　レッスン</div>'
++'<div class="card"><div style="font-size:15px">ピアノ　レッスン</div>'
 +'<div class="usu" style="margin-top:6px">10月中に 3回ほど<br>曲目は これから</div></div>'
 +'<div class="btn">応募する</div><div class="btn g">やめる</div>'
 +'<div class="note">日にちの 相談は、決まってからです。<br>'
@@ -3361,7 +3408,7 @@ SC['本番のふりかえり']=function(){return bk('ふりかえる')
 +['7日前　眠り 7時間20分','6日前　眠り 6時間50分','5日前　眠り 7時間40分',
   '4日前　書いていません','3日前　眠り 6時間10分','2日前　眠り 7時間00分',
   '1日前　眠り 7時間30分'].map(function(t){
- return '<div class="li"><span style="font-size:14.5px">'+t+'</span></div>'}).join('')+'</div>'
+ return '<div class="li"><span style="font-size:13.5px">'+t+'</span></div>'}).join('')+'</div>'
 +'<div class="note">よい わるいは 言いません。並べるだけです。<br>'
 +'2回目の 本番から、前回と 重ねて 見られます。<br>'
 +'<b>本番の 前の日と 当日は、何も 出しません。</b><br>'
@@ -3387,10 +3434,10 @@ function dgrp(t,a){return '<div class="sh3">'+t+'</div><div class="box">'
 +x+'</span><s>›</s></div>'}).join('')+'</div>'}
 
 SC['深い記事']=function(){return bk('もっと 深く')
-+'<div class="hd" style="padding-top:2px"><h2 style="font-size:15.5px;line-height:1.6">'
++'<div class="hd" style="padding-top:2px"><h2 style="font-size:15px;line-height:1.6">'
 +'声区と パッサッジョ<br>── 正解表は 存在しない</h2></div>'
 +'<div class="usu" style="margin-bottom:11px">更新　2026年9月16日　／　読むのに 約9分</div>'
-+'<div class="card" style="border-color:var(--enji)"><div style="font-size:14.5px;line-height:1.95">'
++'<div class="card" style="border-color:#C9A0AB"><div style="font-size:13.5px;line-height:1.95">'
 +'意外に 思われるかもしれませんが、これは 本記事が 慎重を 期しているのでは ありません。'
 +'<b>表を 作った 当人たちが、そう 書いています。</b></div></div>'
 +'<div class="sh3">3つの 限界</div>'
@@ -3398,8 +3445,8 @@ SC['深い記事']=function(){return bk('もっと 深く')
 +[['1　渡り目は、測る 母音に よって 変わる','査読'],
   ['2　渡り目は 鍵盤の 上に 乗らない','教本'],
   ['3　同じ 数値が、違う 声種を 指すことが ある','教本']].map(function(x){
- return '<div class="li"><span style="font-size:14.5px">'+x[0]
- +'<span style="display:inline-block;font-size:12.5px;color:var(--ink3);'
+ return '<div class="li"><span style="font-size:13.5px">'+x[0]
+ +'<span style="display:inline-block;font-size:10px;color:var(--ink3);'
  +'border:1px solid var(--line);border-radius:3px;padding:0 5px;margin-left:6px">'
  +x[1]+'</span></span></div>'}).join('')+'</div>'
 +'<div class="warn">これは、教本が 示す 目安であって、<b>あなたの 声の 測定値では ありません</b>。</div>'
@@ -3412,7 +3459,7 @@ SC['深い記事']=function(){return bk('もっと 深く')
 
 
 SC['紙のポートフォリオ']=function(){return bk('公開の範囲')
-+'<div class="hd" style="padding-top:2px"><h2 style="font-size:14.5px;color:var(--ink3)">紙で どう 見えるか</h2></div>'
++'<div class="hd" style="padding-top:2px"><h2 style="font-size:14px;color:var(--ink3)">紙で どう 見えるか</h2></div>'
 +'<div class="usu" style="margin-bottom:11px">A4・1枚。オーディションの 書類に そのまま 使えます</div>'
 +'<div style="background:#fff;border:1px solid var(--line);border-radius:3px;'
 +'box-shadow:0 2px 10px rgba(90,72,48,.12);margin-bottom:11px;padding:26px 24px 20px">'
@@ -3421,16 +3468,16 @@ SC['紙のポートフォリオ']=function(){return bk('公開の範囲')
 +'<div style="display:flex;justify-content:space-between;align-items:flex-start;'
 +'border-bottom:1.5px solid #261913;padding-bottom:13px;margin-bottom:0">'
 +'<div><div style="font-size:21px;letter-spacing:.14em;color:#261913;line-height:1.3">坂本 響</div>'
-+'<div style="font-size:12px;letter-spacing:.3em;color:var(--ink4);margin-top:5px">SAKAMOTO KYO</div></div>'
++'<div style="font-size:8.5px;letter-spacing:.3em;color:#918476;margin-top:5px">SAKAMOTO KYO</div></div>'
 +'<div style="text-align:right;padding-top:3px">'
-+'<div style="font-size:12.5px;letter-spacing:.18em;color:#5A4C40">TENORE</div>'
-+'<div style="font-size:12px;color:var(--ink4);margin-top:4px">テノール</div></div></div>'
++'<div style="font-size:10px;letter-spacing:.18em;color:#5A4C40">TENORE</div>'
++'<div style="font-size:8px;color:#918476;margin-top:4px">テノール</div></div></div>'
 
 /* 写真と 前書き ── 2段組 */
 +'<div style="display:flex;gap:18px;padding:16px 0 18px;border-bottom:.5px solid #E4DAC4">'
-+'<div style="width:66px;height:88px;background:var(--band2);flex:none;display:flex;'
-+'align-items:center;justify-content:center;font-size:12px;color:var(--ink4)">写真</div>'
-+'<div style="font-size:12px;line-height:2.1;color:#4A3F35;padding-top:1px">'
++'<div style="width:66px;height:88px;background:#F3ECDD;flex:none;display:flex;'
++'align-items:center;justify-content:center;font-size:8px;color:#918476">写真</div>'
++'<div style="font-size:9.5px;line-height:2.1;color:#4A3F35;padding-top:1px">'
 +'イタリア歌曲と ドイツ・リートを 中心に 勉強しています。'
 +'いまは 冬の旅の 全曲に 取り組んでいます。'
 +'ひとつの 曲を 長く 持つことで 見えてくるものを 大事に したいと 思っています。</div></div>'
@@ -3444,7 +3491,7 @@ SC['紙のポートフォリオ']=function(){return bk('公開の範囲')
 
 /* 脚 */
 +'<div style="border-top:.5px solid #E4DAC4;margin-top:16px;padding-top:8px;'
-+'display:flex;justify-content:space-between;font-size:12px;color:var(--ink4);'
++'display:flex;justify-content:space-between;font-size:7.5px;color:#A79885;'
 +'letter-spacing:.08em"><span>woolsong.app/p/7fk2m</span>'
 +'<span>2026年9月16日 現在</span></div>'
 +'</div>'
@@ -3457,12 +3504,12 @@ SC['紙のポートフォリオ']=function(){return bk('公開の範囲')
 
 function pprint(t,a){return '<div style="padding:13px 0;border-bottom:.5px solid #F0E9DA">'
 +'<div style="display:flex;gap:16px">'
-+'<div style="width:46px;flex:none;font-size:12px;letter-spacing:.2em;color:var(--ink4);'
++'<div style="width:46px;flex:none;font-size:8.5px;letter-spacing:.2em;color:#918476;'
 +'padding-top:2px">'+t+'</div>'
 +'<div style="flex:1">'
-+a.map(function(x){return '<div style="display:flex;gap:12px;font-size:12px;'
++a.map(function(x){return '<div style="display:flex;gap:12px;font-size:9.5px;'
 +'line-height:2;color:#3B322A">'
-+(x[0]?'<span style="width:58px;flex:none;color:var(--ink4);font-variant-numeric:tabular-nums">'
++(x[0]?'<span style="width:58px;flex:none;color:#A79885;font-variant-numeric:tabular-nums">'
 +x[0]+'</span>':'<span style="width:58px;flex:none"></span>')
 +'<span>'+x[1]+'</span></div>'}).join('')
 +'</div></div></div>'}
@@ -3497,7 +3544,7 @@ SC['行事を出す']=function(edit){
  +'<div class="fl">対象　── 門下（選ばなければ 全部）</div><div class="pills">'+['斎藤 めぐみ','渡辺 たける','高橋 のぞみ'].map(function(k){
    return '<span class="pill sm '+(S.gy.mon[k]?'on':'')+'" onclick="S.gy.mon[\''+esc(k)+'\']=S.gy.mon[\''+esc(k)+'\']?0:1;draw()">'+k+'の 門下</span>'}).join('')+'</div>'
  
- +'<div class="card" style="background:var(--band);border-color:var(--line3)"><div style="font-size:13px;line-height:1.85">'
+ +'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8"><div style="font-size:12px;line-height:1.85">'
  +'<b>'+(S.gy.name||'（名前 まだ）')+'</b>　'+S.gy.d+'　'+t2(S.gy.h1)+':'+t2(S.gy.m1)+(S.gy.end?'〜'+t2(S.gy.h2)+':'+t2(S.gy.m2):'〜')+'　'+S.gy.pl+'<br>'
  +'いま 届く人　<b>'+gyoNum()+'人</b>　<span style="color:var(--ink2)">'+Object.keys(S.gy.gr).filter(function(k){return S.gy.gr[k]}).join('・')
  +'　／　'+(Object.keys(S.gy.co).filter(function(k){return S.gy.co[k]}).join('・')||'学科 選んでいません')+'</span></div></div>'
@@ -3512,7 +3559,7 @@ function tstep(k,step,unit){var v=S.gy[k];
  return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">'
  +'<span class="pill sm" onclick="gyT(\''+k+'\',-'+step+')">−'+step+'</span>'
  +'<span class="pill sm" onclick="gyT(\''+k+'\',-1)">−1</span>'
- +'<span style="flex:1;text-align:center;font-size:13.5px">'+String(v).padStart(2,'0')+unit+'</span>'
+ +'<span style="flex:1;text-align:center;font-size:13px">'+String(v).padStart(2,'0')+unit+'</span>'
  +'<span class="pill sm" onclick="gyT(\''+k+'\',1)">＋1</span>'
  +'<span class="pill sm" onclick="gyT(\''+k+'\','+step+')">＋'+step+'</span></div>'}
 function gyT(k,d){var max=k[0]==='h'?24:60;S.gy[k]=((S.gy[k]+d)%max+max)%max;draw()}
@@ -3526,7 +3573,7 @@ function mstEdit(key,title,ph){
    return '<div class="li"><span>'+v+'</span><s class="pill sm" onclick="mstDel(\''+key+'\','+i+')">消す</s></div>'}).join('')+'</div>'
  +'<div class="fl">足す</div>'
  +'<div style="display:flex;gap:8px"><input class="inp" placeholder="'+ph+'" value="'+(S.mnew[key]||'')+'" oninput="S.mnew[\''+key+'\']=this.value">'
- +'<div class="btn" style="width:84px;padding:12px 0;font-size:13.5px" onclick="mstAdd(\''+key+'\')">足す</div></div>'
+ +'<div class="btn" style="width:84px;padding:12px 0;font-size:13px" onclick="mstAdd(\''+key+'\')">足す</div></div>'
  +'<div class="note">使われている '+title+'は、消す前に 確かめます（行事や レッスンが 残っていると 消せません）。<br>'
  +'並べ替えも できます（この見本では 省いています）。</div>'}
 function mstAdd(k){var v=(S.mnew[k]||'').trim();if(!v){toast('名前を 入れてください');return}
@@ -3561,8 +3608,8 @@ function opHomeT(){
  +'<div class="k" onclick="goo(\'日程\')"><div class="v">4</div><div class="l">きょうの レッスン</div></div>'
  +'<div class="k" onclick="goo(\'門下\')"><div class="v">'+MONKA.length+'</div><div class="l">門下の 人数</div></div>'
  +(myKasa().length?'<div class="k" onclick="push(\'重なり\')"><div class="v" style="color:var(--yama)">'+myKasa().length+'</div><div class="l">あなたの 重なり</div></div>':'')+'</div>'
- +'<div class="card" style="border-color:var(--ok);background:var(--band)">'
- +'<div style="font-size:14.5px;line-height:1.8">時間割　<b>'+deta()+' / '+MONKA.length+'人</b> 出ています</div>'
+ +'<div class="card" style="border-color:#9BBBA9;background:#F4F8F5">'
+ +'<div style="font-size:13.5px;line-height:1.8">時間割　<b>'+deta()+' / '+MONKA.length+'人</b> 出ています</div>'
  +'<div class="usu" style="margin-top:4px">出ている方の <b>空きコマ</b>から、日程を 組めます</div>'
  +'<div class="btn" style="margin-top:10px;background:var(--midori)" onclick="push(\'日程を組む\')">レッスンの 日程を 組む</div>'
  +'<div class="btn g" style="margin-top:7px" onclick="push(\'まだの人\')">まだ 出していない方を 見る</div></div>'
@@ -3589,8 +3636,8 @@ function opHomeS(){
    ['16:00','声楽C','高橋 のぞみ','第3練習室'],['17:30','アンサンブル','渡辺 たける','大ホール']].map(function(x){
    return '<div class="li" onclick="'+(can('shukketsu')?'push(\'出欠つけ\','+shuArg(x[0],x[1],x[2],x[3])+')':'toast(\'出欠は つけられません\')')+'"><span>'+x[0]+'　'+x[1]
    +'<br><span class="usu">'+x[2]+' 先生　／　'+x[3]+'</span></span><s>'+(can('shukketsu')?'出欠 ›':'')+'</s></div>'}).join('')+'</div>'
- +'<div class="card" style="background:var(--band);border-color:var(--line3);padding:10px 12px">'
- +'<div style="font-size:13px;line-height:1.85"><b>'+S.dm.post+' の できること</b><br>'
+ +'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;padding:10px 12px">'
+ +'<div style="font-size:11.5px;line-height:1.85"><b>'+S.dm.post+' の できること</b><br>'
  +'<span style="color:var(--ink2)">'+permLine(myPost())+'</span></div></div>'
  +'<div class="note">生徒の 健康に関するものは 1つも ありません。<br>'
  +'名簿・連絡・行事は、この 役職に できることが 無いので 出ていません。</div>'}
@@ -3599,7 +3646,7 @@ function opMonka(){
  +'<div class="usu" style="margin:-2px 0 10px">斎藤 めぐみ の 門下　'+MONKA.length+'人　／　学年の 順に 並べています</div>'
  +monkaSorted().map(function(x){var m=x[0],i=x[1],k=placeOf(i);
    return '<div class="rep" onclick="push(\'門下の人\','+i+')">'
-   +'<div><div class="t" style="font-size:14.5px">'+m[0]+(m[4]?' <span class="tag" style="background:var(--pick);color:var(--enji)">代表</span>':'')+'</div>'
+   +'<div><div class="t" style="font-size:13.5px">'+m[0]+(m[4]?' <span class="tag" style="background:#F6E4E8;color:var(--enji)">代表</span>':'')+'</div>'
    +'<div class="s">'+m[1]+(k?'　／　'+keyLab(k).replace('　',''):'')+'</div></div>'
    +'<div class="r">'+(m[3]?'<span style="color:var(--midori)">✓ 時間割</span>':'<span style="color:var(--yama)">まだ</span>')+'</div></div>'}).join('')
  +'<div class="btn g" onclick="push(\'代表を決める\')">代表を 決める</div>'
@@ -3619,11 +3666,11 @@ SC['門下の人']=function(i){var m=MONKA[i],k=placeOf(i);
    +'<tr><th style="position:sticky;left:0;z-index:2">コマ</th>'+DAYS.map(function(d){return '<th>'+d+'</th>'}).join('')+'</tr>'
    +myKoma().map(function(kk,ki){return '<tr><td class="k" style="text-align:left">'+kk[1]+'</td>'
      +DAYS.map(function(d,di){var f=isFree(i,di+'-'+ki);
-       return '<td style="padding:3px;background:'+(f?'#447862':'var(--band)')+'"><span style="font-size:12px;color:'+(f?'#fff':'var(--ink4)')+'">'+(f?'来られる':'—')+'</span></td>'}).join('')+'</tr>'}).join('')
+       return '<td style="padding:3px;background:'+(f?'#447862':'#F5EFE1')+'"><span style="font-size:9px;color:'+(f?'#fff':'#B5A78F')+'">'+(f?'来られる':'—')+'</span></td>'}).join('')+'</tr>'}).join('')
    +'</table></div><div class="usu" style="margin-top:6px">何の授業かは 分かりません。空いているか どうかだけです。</div></div>':'')
  +'<div class="h3">見られないもの</div><div class="box">'
  +['声の記録','からだの記録','ノート','授業の 名前・教室・備考','本番の 予定','来られない 理由'].map(function(v){
-   return '<div class="li" style="cursor:default;color:var(--ink4)"><span>'+v+'</span><s>画面が ありません</s></div>'}).join('')+'</div>'
+   return '<div class="li" style="cursor:default;color:#A0917F"><span>'+v+'</span><s>画面が ありません</s></div>'}).join('')+'</div>'
  +'<div class="note"><b>「本番が 近い」は 出しません。</b>先生が 知らない 本番を、生徒が 書けなくなるからです。<br>'
  +'来られない 理由は 聞きません。空いているか どうかだけを 見ます。</div>'};
 SC['代表を決める']=function(){
@@ -3634,7 +3681,7 @@ SC['代表を決める']=function(){
  +'<div class="fl">代表が できること</div><div class="box">'
  +[['門下の 連絡に「重要」を 付ける',1],['門下の 投稿を 消す',1],['時間割の 集まりを 見る',1],['出していない人に 1回だけ 知らせる',1],
    ['ほかの人の 時間割の 中身を 見る',0],['ほかの人の 空きコマを 見る',0],['予定を 決める',0],['生徒の 記録を 見る',0]].map(function(x){
-   return '<div class="li" style="cursor:default"><span>'+x[0]+'</span><s style="color:'+(x[1]?'var(--midori)':'var(--ink4)')+'">'+(x[1]?'できます':'できません')+'</s></div>'}).join('')+'</div>'
+   return '<div class="li" style="cursor:default"><span>'+x[0]+'</span><s style="color:'+(x[1]?'var(--midori)':'#A0917F')+'">'+(x[1]?'できます':'できません')+'</s></div>'}).join('')+'</div>'
  +'<div class="note"><b>決めるのは 先生です。</b>代表は 集めるところまで。<br>'
  +'代表にも、ほかの人の 希望の <b>中身は 見えません</b>（出したか どうかだけ）。<br>'
  +'知らせは <b>1回だけ</b>。それ以上は 送れません。</div>'};
@@ -3779,19 +3826,19 @@ function miniCal(){
  var cells=[];for(var x=0;x<42;x++){var d=new Date(start);d.setDate(start.getDate()+x);cells.push(d)}
  var wa=wkStart(WK),wb=new Date(wa);wb.setDate(wa.getDate()+5);
  return '<div style="margin-top:8px;border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:#fff">'
- +'<div style="display:flex;justify-content:space-between;align-items:center;font-size:13.5px;margin-bottom:6px">'
+ +'<div style="display:flex;justify-content:space-between;align-items:center;font-size:12.5px;margin-bottom:6px">'
  +'<span style="color:var(--enji)" onclick="setWK('+(WK-4)+')">‹</span>'
  +'<b>'+y+'年'+(mo+1)+'月</b>'
  +'<span style="color:var(--enji)" onclick="setWK('+(WK+4)+')">›</span></div>'
  +'<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px">'
  +'日月火水木金土'.split('').map(function(w){
-   return '<span style="text-align:center;font-size:12px;color:var(--ink3);padding:2px 0">'+w+'</span>'}).join('')
+   return '<span style="text-align:center;font-size:9.5px;color:var(--ink3);padding:2px 0">'+w+'</span>'}).join('')
  +cells.map(function(d){
    var inw=(d>=wa&&d<=wb),tdy=(d.getFullYear()===2026&&d.getMonth()===8&&d.getDate()===9);
    var off=(d.getMonth()!==mo),diff=Math.round((d-wkStart(0))/86400000);
-   var st='text-align:center;font-size:13px;padding:5px 0;border-radius:6px;'
-    +(tdy?'background:var(--enji);color:#fff;font-weight:700':(inw?'background:var(--pick)':''))
-    +(off?';color:var(--ink4)':'');
+   var st='text-align:center;font-size:11.5px;padding:5px 0;border-radius:6px;'
+    +(tdy?'background:var(--enji);color:#fff;font-weight:700':(inw?'background:#F6E4E8':''))
+    +(off?';color:#C9BCA6':'');
    return '<div style="'+st+'" onclick="setWK('+Math.floor(diff/7)+')">'+d.getDate()+'</div>'}).join('')
  +'</div><div class="usu" style="margin-top:6px">日を押すと その週へ</div></div>'}
 function setWK(w){WK=w;S.cell=null;draw()}
@@ -3836,23 +3883,23 @@ SC['時間割']=function(){
  +(S.jkH?'<div class="warn" style="position:relative;padding-right:34px">授業を 入れてください。<b>入れなかった ところが「空きコマ」</b>に なります。<br>'
    +'先生に 見えるのは <b>空いている 時間だけ</b>です。授業の 名前・先生・教室・備考は <b>送られません</b>。'
    +'<span style="position:absolute;right:8px;top:7px;width:24px;height:24px;border-radius:50%;border:1px solid var(--line);'
-   +'display:flex;align-items:center;justify-content:center;font-size:13.5px;color:var(--ink3);cursor:pointer" '
+   +'display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink3);cursor:pointer" '
    +'onclick="S.jkH=0;draw();toast(\'説明を 閉じました。？ で また 出せます\')">✕</span></div>':'')
  +'<div class="card" style="padding:7px"><div style="overflow-x:auto"><table class="tbl wktbl jk" style="min-width:334px">'
  +'<tr><th style="position:sticky;left:0;z-index:2">コマ</th>'+DAYS.map(function(d){return '<th>'+d+'</th>'}).join('')+'</tr>';
  myKoma().forEach(function(k,ki){
-  h+='<tr><td class="k" style="text-align:left"><b style="font-size:13px">'+k[0]+'</b><br><span style="font-size:12px;color:var(--ink3)">'+k[1]+'</span></td>';
+  h+='<tr><td class="k" style="text-align:left"><b style="font-size:11.5px">'+k[0]+'</b><br><span style="font-size:9px;color:var(--ink3)">'+k[1]+'</span></td>';
   DAYS.forEach(function(d,di){var key=di+'-'+ki,j=MYJ[key];
    var ng=NG[key],ot=OTHER[key];
-   h+='<td style="padding:2px;cursor:pointer;background:'+(ot?orgOf(ot.o).c+'12':(j?'#FFF':(ng?'var(--band)':'var(--band)')))+'" onclick="push(\'授業を入れる\',\''+key+'\')">'
-    +(ot?'<span style="font-size:12px;line-height:1.35;display:block;color:'+orgOf(ot.o).c+'"><b>'+orgOf(ot.o).n.slice(0,4)+'</b><br>レッスン</span>'
-      :(j?'<span style="font-size:12.5px;line-height:1.35;display:block"><b>'+j.n.slice(0,8)+'</b>'+(j.r?'<br><span style="color:var(--ink3);font-size:12px">'+j.r+'</span>':'')+'</span>'
-       :(ng?'<span style="font-size:12.5px;color:var(--ink4)">来られない</span>':'<span style="font-size:13px;color:var(--midori);font-weight:600">あき</span>')))+'</td>'});
+   h+='<td style="padding:2px;cursor:pointer;background:'+(ot?orgOf(ot.o).c+'12':(j?'#FFF':(ng?'#F5EFE1':'#F4F8F5')))+'" onclick="push(\'授業を入れる\',\''+key+'\')">'
+    +(ot?'<span style="font-size:9.5px;line-height:1.35;display:block;color:'+orgOf(ot.o).c+'"><b>'+orgOf(ot.o).n.slice(0,4)+'</b><br>レッスン</span>'
+      :(j?'<span style="font-size:10.5px;line-height:1.35;display:block"><b>'+j.n.slice(0,8)+'</b>'+(j.r?'<br><span style="color:var(--ink3);font-size:9px">'+j.r+'</span>':'')+'</span>'
+       :(ng?'<span style="font-size:10px;color:#A0917F">来られない</span>':'<span style="font-size:11.5px;color:var(--midori);font-weight:600">あき</span>')))+'</td>'});
   h+='</tr>'});
  h+='</table></div>'
  +'<div class="usu" style="margin-top:7px">先生に 見える あき　<b>'+free+'コマ</b>　／　押すと 直せます</div>'
- +'<div class="usu" style="margin-top:4px"><span style="display:inline-block;width:9px;height:9px;background:var(--band);border:1px solid var(--line)"></span> あき　'
- +'<span style="display:inline-block;width:9px;height:9px;background:var(--band);border:1px solid var(--line)"></span> あきだが 来られない　'
+ +'<div class="usu" style="margin-top:4px"><span style="display:inline-block;width:9px;height:9px;background:#F4F8F5;border:1px solid var(--line)"></span> あき　'
+ +'<span style="display:inline-block;width:9px;height:9px;background:#F5EFE1;border:1px solid var(--line)"></span> あきだが 来られない　'
  +'<span style="display:inline-block;width:9px;height:9px;background:#fff;border:1px solid var(--line)"></span> 授業　'
  +'<span style="display:inline-block;width:9px;height:9px;background:#447862;opacity:.25;border:1px solid var(--line)"></span> ほかの 教室</div></div>'
  +'<div class="pills"><span class="pill sm" onclick="toast(\'去年と 同じに しました\')">去年と 同じ</span>'
@@ -3868,7 +3915,7 @@ SC['授業を入れる']=function(key){
  if(ot){var o=orgOf(ot.o);
   return bk('時間割')+'<div class="hd" style="padding-top:2px"><h2>'+keyLab(key)+'</h2></div>'
   +'<div class="card" style="border-color:'+o.c+'55;background:'+o.c+'0C">'
-  +'<div style="font-size:14.5px;font-weight:700">'+o.n+'</div>'
+  +'<div style="font-size:13.5px;font-weight:700">'+o.n+'</div>'
   +'<div class="usu" style="margin-top:4px">'+ot.n+'<br>'+ot.r+'</div></div>'
   +'<div class="wl">これは <b>'+o.n+'</b> で 決まった レッスンです。ここからは 直せません。<br>'
   +'この コマは、ほかの 教室には <b>「あきでは ない」</b>としか 届きません。<br>'
@@ -3904,7 +3951,7 @@ SC['日程を組む']=function(){
  h+='<div class="card" style="padding:10px 12px">'
  +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'
  +'<span class="pill sm" onclick="setWK('+(WK-1)+')">‹ 前の週</span>'
- +'<b style="font-size:14.5px">'+wkLab(WK)+'</b>'
+ +'<b style="font-size:13.5px">'+wkLab(WK)+'</b>'
  +'<span class="usu">'+(WK===0?'今週':(WK>0?WK+'週あと':(-WK)+'週まえ'))+'</span>'
  +'<span class="pill sm" onclick="setWK('+(WK+1)+')">次の週 ›</span>'
  +(WK!==0?'<span class="pill sm" onclick="setWK(0)">今週へ</span>':'')+'</div>'
@@ -3926,17 +3973,17 @@ SC['日程を組む']=function(){
  h+='<div class="card" style="padding:8px"><div style="overflow-x:auto"><table class="tbl wktbl" style="min-width:320px">'
  +'<tr><th style="position:sticky;left:0;z-index:2">コマ</th>'
  +DAYS.map(function(d,di){return '<th onclick="bCol('+di+')" style="cursor:pointer">'+d
-   +'<br><span style="font-size:12px;color:var(--ink3)">'+dayNum(di)+'</span></th>'}).join('')+'</tr>';
+   +'<br><span style="font-size:8px;color:var(--ink3)">'+dayNum(di)+'</span></th>'}).join('')+'</tr>';
  myKoma().forEach(function(k,ki){
   h+='<tr><td class="k" style="text-align:left;cursor:pointer" onclick="bRow('+ki+')">'+k[0]
-   +'<br><span style="font-size:12px;color:var(--ink3)">まとめて</span></td>';
+   +'<br><span style="font-size:8px;color:var(--ink3)">まとめて</span></td>';
   DAYS.forEach(function(d,di){var key=di+'-'+ki,pl=getP(key),busy=getT(key),n=whoFree(key).length;
-   var bg=pl?'#447862':(busy?(tPriv(key)?'var(--band)':'var(--band)'):'#fff'),fg=pl?'#fff':(busy?'#9C8E7B':'var(--ink2)');
+   var bg=pl?'#447862':(busy?(tPriv(key)?'#F4EFE4':'#EDE5D5'):'#fff'),fg=pl?'#fff':(busy?'#9C8E7B':'var(--ink2)');
    h+='<td style="padding:2px;cursor:pointer;background:'+bg+';outline:'+(sel===key?'2px solid #261913':'none')
-    +(busy&&tPriv(key)?';box-shadow:inset 3px 0 0 var(--ink4)':'')+'" onclick="S.cell=\''+key+'\';draw()">'
-    +'<span style="font-size:12px;color:'+fg+';line-height:1.3;display:block">'
+    +(busy&&tPriv(key)?';box-shadow:inset 3px 0 0 #C9BCA6':'')+'" onclick="S.cell=\''+key+'\';draw()">'
+    +'<span style="font-size:9.5px;color:'+fg+';line-height:1.3;display:block">'
     +(pl?MONKA[pl.i][0].split(' ')[0]:(busy?busy.slice(0,3)+(lockedW(key)?'･校':''):(n?n+'人':'—')))+'</span>'
-    +(!pl&&!busy?'<span style="display:block;font-size:12px;color:var(--yama)" onclick="event.stopPropagation();setBusy(\''+key+'\')">＋予定</span>':'')
+    +(!pl&&!busy?'<span style="display:block;font-size:8px;color:var(--yama)" onclick="event.stopPropagation();setBusy(\''+key+'\')">＋予定</span>':'')
     +'</td>'});
   h+='</tr>'});
  h+='</table></div>'
@@ -3951,8 +3998,8 @@ SC['日程を組む']=function(){
  /* 選んだ枠 */
  if(sel){var pl=getP(sel),busy=getT(sel),who=whoFree(sel);
   h+='<div class="h3">'+keyLab(sel)+'</div>';
-  if(busy&&!pl)h+='<div class="card" style="background:var(--band);border-color:var(--line3)">'
-    +'<div style="font-size:13.5px">あなたの 予定　<b>'+busy+'</b>（'+tkind(sel)+'の 予定）</div>'
+  if(busy&&!pl)h+='<div class="card" style="background:#F6F1E4;border-color:#E8DFC8">'
+    +'<div style="font-size:13px">あなたの 予定　<b>'+busy+'</b>（'+tkind(sel)+'の 予定）</div>'
     +'<div class="pills" style="margin-top:7px">'+['学校','自分'].map(function(v){
       return '<span class="pill sm'+(tkind(sel)===v?' on':'')+'" onclick="TKIND[\''+sel+'\']=\''+v+'\';draw()">'+v+'の 予定</span>'}).join('')+'</div>'
     +'<div class="pills" style="margin-top:5px">'+(tkind(sel)==='学校'?BNAMES:BNAMES_P).map(function(v){
@@ -3962,8 +4009,8 @@ SC['日程を組む']=function(){
     +'中身が 見えるのは <b>あなただけ</b>です。</div>'
     +(lockedW(sel)?'<div class="usu" style="margin-top:7px">学校が入れた予定です。ここでは消せません。</div>'
       :'<div class="btn g sm" style="margin-top:9px" onclick="yDel()">この予定を外す（空きに戻す）</div>')+'</div>';
-  if(pl){h+='<div class="card" style="border-color:var(--ok);background:var(--band)">'
-    +'<div style="font-size:14.5px;font-weight:700">'+MONKA[pl.i][0]+'</div>'
+  if(pl){h+='<div class="card" style="border-color:#9BBBA9;background:#F4F8F5">'
+    +'<div style="font-size:14px;font-weight:700">'+MONKA[pl.i][0]+'</div>'
     +'<div class="usu">'+MONKA[pl.i][1]+'　／　'+pl.pl+'　'+Math.floor(pl.len/60)+'時間'+String(pl.len%60).padStart(2,'0')+'分　'+pl.rp+(pl.to?'（'+pl.to+'まで）':'')+'</div>'
     +'<div class="two" style="margin-top:9px"><div class="btn g sm" onclick="delete PLACED[\''+sel+'\'];draw();toast(\'外しました\')">外す</div>'
     +'<div class="btn g sm" onclick="push(\'コマの中身\',\''+sel+'\')">オプション（長さ・場所・繰り返し）</div></div></div>'}
@@ -4053,8 +4100,8 @@ SC['自動の条件']=function(){
  +'<div class="li plain" style="border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px">'
  +'<span>自分の 予定は <b>必ず 避けます</b><br><span class="usu">'+Object.keys(TBUSY).length+'コマ　／　切れません</span></span></div>'
  +'<div class="btn g sm" style="margin-top:7px" onclick="push(\'自分の予定\')">自分の 予定を 直す ›</div>'
- +'<div class="card" style="background:var(--band);border-color:var(--line3);margin-top:11px">'
- +'<div style="font-size:13px;line-height:1.9"><b>いまの 条件で</b><br>'+autoText()+'</div></div>'
+ +'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;margin-top:11px">'
+ +'<div style="font-size:11.5px;line-height:1.9"><b>いまの 条件で</b><br>'+autoText()+'</div></div>'
  +'<div class="btn" onclick="autoAll();pop()">この 条件で 自動で 置く</div>'
  +'<div class="btn g" style="margin-top:8px" onclick="AUTO.offDay={};AUTO.offKoma={};AUTO.maxDay=4;AUTO.runMax=3;AUTO.restAfter=1;AUTO.dir=\'早い順\';AUTO.spread=\'まとめる\';AUTO.order=\'空きが 少ない方から\';draw()">はじめに 戻す</div>'
  +'<div class="note"><b>自動は 下書きです。</b>押したあと、いくらでも 直せます。<br>'
@@ -4116,8 +4163,8 @@ SC['コマの中身']=function(key){
  return bk('レッスンの 日程を 組む')+'<div class="hd" style="padding-top:2px"><h2>'+MONKA[pl.i][0]+'</h2>'
  +'<span class="role">'+keyLab(key).split('　')[0]+'</span></div>'
  +'<div class="usu" style="margin:-2px 0 10px">'+keyLab(key)+'　（コマ '+MST.koma[+key.split('-')[1]][1]+'〜'+MST.koma[+key.split('-')[1]][2]+'）</div>'
- +'<div class="card" style="background:var(--band);border-color:var(--line3);padding:10px 12px">'
- +'<div style="font-size:13px;line-height:1.8">ここから 下は <b>オプション</b>です。<br>決めなくても、レッスンは 置かれています。</div></div>'
+ +'<div class="card" style="background:#F6F1E4;border-color:#E8DFC8;padding:10px 12px">'
+ +'<div style="font-size:11.5px;line-height:1.8">ここから 下は <b>オプション</b>です。<br>決めなくても、レッスンは 置かれています。</div></div>'
  +'<div class="fl">オプション　── 長さ</div>'
  +'<div class="card" style="text-align:center;padding:11px"><div id="lenlab" style="font-size:22px;font-weight:700">'
  +Math.floor(pl.len/60)+'時間'+String(pl.len%60).padStart(2,'0')+'分</div></div>'
@@ -4132,7 +4179,7 @@ SC['コマの中身']=function(key){
    +'<div class="li" style="border:1px solid var(--line);background:#fff;border-radius:12px;padding:13px" onclick="push(\'日を選ぶ\',{from:\'コマの中身\',set:\'PLACED|'+key+'|to\',mode:\'one\'})">'
    +'<span>'+(pl.to||'決めていません')+'</span><s>カレンダーで 選ぶ ›</s></div>'
    +'<div class="usu">日は カレンダーからだけ 選べます（押し間違いを 防ぐため）</div>':'')
- +'<div class="card" style="margin-top:12px"><div style="font-size:13px;line-height:1.85">'
+ +'<div class="card" style="margin-top:12px"><div style="font-size:12px;line-height:1.85">'
  +'<b>'+MONKA[pl.i][0]+'</b>　'+keyLab(key)+'<br>'
  +Math.floor(pl.len/60)+'時間'+String(pl.len%60).padStart(2,'0')+'分　'+pl.pl+'　'+pl.rp
  +(pl.rp!=='この日だけ'&&pl.to?'　'+pl.to+' まで':'')+'</div></div>'
@@ -4169,16 +4216,16 @@ function mineEdit(){
  +'<span class="pill sm" onclick="push(\'予定の名前\')">＋ 自分で 書く</span></div>'
  +'<div class="card" style="padding:8px;margin-top:9px"><div style="overflow-x:auto"><table class="tbl wktbl" style="min-width:330px">'
  +'<tr><th style="position:sticky;left:0;z-index:2">コマ</th>'
- +DAYS.map(function(d,di){return '<th onclick="bCol('+di+')" style="cursor:pointer">'+d+'<br><span style="font-size:12px;color:var(--ink3)">まとめて</span></th>'}).join('')+'</tr>';
+ +DAYS.map(function(d,di){return '<th onclick="bCol('+di+')" style="cursor:pointer">'+d+'<br><span style="font-size:8px;color:var(--ink3)">まとめて</span></th>'}).join('')+'</tr>';
  myKoma().forEach(function(kk,ki){
   h+='<tr><td class="k" style="text-align:left;cursor:pointer" onclick="bRow('+ki+')">'+kk[0]
-   +'<br><span style="font-size:12px;color:var(--ink3)">まとめて</span></td>';
+   +'<br><span style="font-size:8.5px;color:var(--ink3)">まとめて</span></td>';
   DAYS.forEach(function(d,di){var key=di+'-'+ki,b=TBUSY[key],pv=tPriv(key);
-   h+='<td style="padding:2px;cursor:pointer;background:'+(b?(pv?'var(--band)':'var(--band)'):'#fff')
-    +(pv?';box-shadow:inset 3px 0 0 var(--ink4)':'')+'" onclick="'
+   h+='<td style="padding:2px;cursor:pointer;background:'+(b?(pv?'#F4EFE4':'#EDE5D5'):'#fff')
+    +(pv?';box-shadow:inset 3px 0 0 #C9BCA6':'')+'" onclick="'
     +(b?'push(\'予定の中身\',\''+key+'\')':'setBusy(\''+key+'\')')+'">'
-    +'<span style="font-size:12px;color:'+(b?'var(--ink3)':'var(--ink4)')+'">'+(b?b.slice(0,3):'＋')+'</span>'
-    +(b?'<span style="display:block;font-size:12px;color:'+(pv?'#8C6115':'var(--enji)')+'">'
+    +'<span style="font-size:9px;color:'+(b?'#6D5D50':'#C3B6A2')+'">'+(b?b.slice(0,3):'＋')+'</span>'
+    +(b?'<span style="display:block;font-size:8px;color:'+(pv?'#8C6115':'var(--enji)')+'">'
        +(pv?'自分 ›':'直す ›')+'</span>':'')
     +'</td>'});
   h+='</tr>'});
@@ -4249,8 +4296,8 @@ function yoteiBar(){
    if(getT(K)){if(lockedW(K))nSch++;else nMine++}})});
  var cur=sel&&getT(sel)?sel:null;
  var di=sel?+sel.split('-')[0]:-1,ki=sel?+sel.split('-')[1]:-1;
- return '<div class="card" style="border-color:var(--ink4)">'
- +'<div style="font-size:14.5px;font-weight:700">レッスン以外の予定</div>'
+ return '<div class="card" style="border-color:#CFC0A4">'
+ +'<div style="font-size:13.5px;font-weight:700">レッスン以外の予定</div>'
  +'<div class="usu" style="margin-bottom:8px">自分 '+nMine+'コマ　／　学校 '+nSch+'コマ</div>'
  +'<div class="fl" style="margin-top:0">① どこに</div>'
  +'<div class="pills">'+DAYS.map(function(d,x){
@@ -4356,27 +4403,12 @@ var SEE_NO=['声と からだの 記録','ノート・レパートリー・受�
  '時間割の 中身（授業の 名前・教室・備考）','ほかの 教室の こと',
  'ほかの 教室に 通っていること そのもの','来られない 理由'];
 SC['通っているところ']=function(){
- if(S.noClass) return bk('もっと')
-  +'<div class="hd" style="padding-top:2px"><h2>通っている ところ</h2></div>'
-  +'<div class="warn">いくつでも 入れます。予定は 1つの 表に まとまります。<br>'
-  +'教室どうしは、おたがいのことが 1つも 見えません。<br>'
-  +'まとめて 見られるのは、あなただけです。</div>'
-  +'<div class="empty"><div class="t">まだ、どこにも 通っていません。</div>'
-  +'<div class="s">招かれるか、合言葉で 入れます。</div></div>'
-  +'<div class="sh3">足す</div><div class="box">'
-  +'<div class="li" onclick="push(\'招かれている\')"><span>招かれている ところ</span><s>0つ ›</s></div>'
-  +'<div class="li" onclick="push(\'合言葉で入る\')"><span>合言葉で 入る</span><s>8文字 ›</s></div></div>'
-  +'<div class="note"><b>こちらから 教室を さがすことは できません。</b><br>'
-  +'　（さがせると、誰が どこに 通っているかが 分かってしまうからです）<br>'
-  +'入り方は 2つだけ ── 招かれる か、教室から もらった 合言葉を 打つか。<br>'
-  +'どちらも、最後に あなたが 承知して はじめて 入ります。</div>';
-
  return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>通っている ところ</h2><span class="role">'+ORGS.length+'つ</span></div>'
  +'<div class="warn">いくつでも 入れます。<b>予定は 1つの 表に まとまります。</b><br>'
  +'教室どうしは、おたがいのことが <b>1つも 見えません</b>。<br>'
  +'まとめて 見られるのは、<b>あなただけ</b>です。</div>'
  +ORGS.map(function(o,i){return '<div class="rep" onclick="push(\'通っているところの中身\','+i+')">'
-   +'<div style="flex:1"><div class="t" style="font-size:14.5px">'+o.n+'</div>'
+   +'<div style="flex:1"><div class="t" style="font-size:14px">'+o.n+'</div>'
    +'<div class="s">'+o.k+'　／　'+o.t+' 先生　／　'+o.in+'から</div></div><div class="r">›</div></div>'}).join('')
  +'<div class="h3">足す</div><div class="box">'
  +'<div class="li" onclick="push(\'招かれている\')"><span>招かれている ところ</span><s><span style="color:var(--enji)">1つ</span> ›</s></div>'
@@ -4393,7 +4425,7 @@ SC['通っているところの中身']=function(i){var o=ORGS[i];
  +'<div class="h3">この教室から 見えるもの</div><div class="box">'
  +SEE_YES.map(function(v){return '<div class="li" style="cursor:default"><span>'+v+'</span><s style="color:var(--midori)">見えます</s></div>'}).join('')+'</div>'
  +'<div class="h3">この教室から 見えないもの</div><div class="box">'
- +SEE_NO.map(function(v){return '<div class="li" style="cursor:default;color:var(--ink4)"><span>'+v+'</span><s>見えません</s></div>'}).join('')+'</div>'
+ +SEE_NO.map(function(v){return '<div class="li" style="cursor:default;color:#A0917F"><span>'+v+'</span><s>見えません</s></div>'}).join('')+'</div>'
  +'<div class="btn g" style="margin-top:12px" onclick="push(\'やめるとどうなるか\','+i+')">この教室を やめる</div>'
  +'<div class="note">この教室に 見えるのは、<b>この教室の ぶんだけ</b>です。<br>'
  +'あなたが ほかにも 通っていることは、この教室に <b>届きません</b>。<br>'
@@ -4401,7 +4433,7 @@ SC['通っているところの中身']=function(i){var o=ORGS[i];
  +'　→ ほかの 教室の レッスンが 入っている コマは、ここには <b>「あきでは ない」</b>としか 伝わりません。</div>'};
 SC['やめるとどうなるか']=function(i){var o=ORGS[i];
  return bk(o.n)+'<div class="hd" style="padding-top:2px"><h2>'+o.n+' を やめる</h2></div>'
- +'<div class="card"><div style="font-size:13.5px;line-height:1.95">'
+ +'<div class="card"><div style="font-size:13px;line-height:1.95">'
  +'・この教室の 名簿から 外れます<br>'
  +'・この教室の 予定・行事・門下の 連絡が、あなたの 画面から 消えます<br>'
  +'・この教室から、あなたが 見えなくなります<br><br>'
@@ -4413,18 +4445,16 @@ SC['やめるとどうなるか']=function(i){var o=ORGS[i];
  +'<div class="note">あとから もう一度 招いてもらえば、また 入れます。<br>そのとき、記録は そのまま 続きます。</div>'};
 SC['招かれている']=function(){
  return bk('通っている ところ')+'<div class="hd" style="padding-top:2px"><h2>招かれている ところ</h2></div>'
- +'<div class="card" style="border-color:var(--enji);background:var(--card2)">'
- +'<div style="font-size:14.5px;font-weight:700">□□ミュージカル・アカデミー</div>'
+ +'<div class="card" style="border-color:#C9A0AB;background:#FFFCFC">'
+ +'<div style="font-size:14px;font-weight:700">□□ミュージカル・アカデミー</div>'
  +'<div class="usu" style="margin-top:4px">養成所　／　森 ひろし 先生から　／　9月8日に 届きました</div></div>'
  +'<div class="h3">入ると、この教室から 見えるように なるもの</div><div class="box">'
  +SEE_YES.map(function(v){return '<div class="li" style="cursor:default"><span>'+v+'</span><s style="color:var(--midori)">見えます</s></div>'}).join('')+'</div>'
  +'<div class="h3">入っても、見えないもの</div><div class="box">'
- +SEE_NO.map(function(v){return '<div class="li" style="cursor:default;color:var(--ink4)"><span>'+v+'</span><s>見えません</s></div>'}).join('')+'</div>'
- +'<div class="wl">これらは、<b>この教室のみ</b>に 適用されます。<br>'
- +'いつでも やめることが できます。やめても、あなたの 記録は 消えません。<br>'
- +'18歳未満の方は、保護者の 了承を いただきます。<br>'
- +'先生との やりとりは、学校が 定めた 監査員が 必要な ときに 確かめることが できます。<br>'
- +'<b>あなたの 健康の 記録は、誰も 見られません。</b></div>'
+ +SEE_NO.map(function(v){return '<div class="li" style="cursor:default;color:#A0917F"><span>'+v+'</span><s>見えません</s></div>'}).join('')+'</div>'
+ +'<div class="wl">この承知は、<b>この教室のぶんだけ</b>です。ほかの 教室には かかりません。<br>'
+ +'いつでも やめられます。やめても、あなたの 記録は 消えません。<br>'
+ +'18歳未満の方は、保護者の 承知も いただきます。</div>'
  +'<div class="two" style="margin-top:11px"><div class="btn g" onclick="toast(\'ことわりました\');pop()">ことわる</div>'
  +'<div class="btn" onclick="joinOrg(\'□□ミュージカル・アカデミー\',\'養成所\',\'森 ひろし\')">承知して 入る</div></div>'
  +'<div class="note"><b>あなたが 押すまで、この教室からは あなたが 見えません。</b><br>'
@@ -4434,8 +4464,8 @@ SC['合言葉で入る']=function(){
  return bk('通っている ところ')+'<div class="hd" style="padding-top:2px"><h2>合言葉で 入る</h2></div>'
  +'<div class="warn">教室から もらった <b>8文字</b>を 打ってください。<br>教室の 一覧を さがすことは できません。<br>★何度か 間違えると、しばらく お試しいただけなく なります。</div>'
  +'<input class="inp" style="text-align:center;font-size:22px;letter-spacing:.3em" maxlength="6" placeholder="ABC123" value="'+S.code+'" oninput="S.code=this.value.toUpperCase();draw()">'
- +(S.code.length>=6?'<div class="card" style="margin-top:11px;border-color:var(--enji);background:var(--card2)">'
-   +'<div style="font-size:14.5px;font-weight:700">◇◇ボイストレーニング</div>'
+ +(S.code.length>=6?'<div class="card" style="margin-top:11px;border-color:#C9A0AB;background:#FFFCFC">'
+   +'<div style="font-size:14px;font-weight:700">◇◇ボイストレーニング</div>'
    +'<div class="usu" style="margin-top:4px">音楽教室　／　中村 あきこ 先生</div>'
    +'<div class="btn" style="margin-top:10px" onclick="push(\'招かれている\')">見えるものを 確かめる</div></div>'
   :'<div class="usu" style="margin-top:9px">8文字 打つと、どこの 教室かが 出ます。<br>★合っていないときは、理由を お伝えしません。「入れませんでした」とだけ 出ます。</div>')
@@ -4452,7 +4482,7 @@ SC['あなたの重なり']=function(){
  +'どちらの 教室にも、<b>もう一方の ことは 届いていません</b>。</div>'
  +'<div class="card" style="border-left:3px solid #D6B96A">'
  +'<div class="usu">9月12日（金）　14:40 〜 15:25</div>'
- +'<div style="font-size:13.5px;line-height:1.9;margin-top:7px">'
+ +'<div style="font-size:12.5px;line-height:1.9;margin-top:7px">'
  +'① '+ORGS[0].n+'　'+LESSONS[4].tea+' 先生　'+LESSONS[4].r+'<br>'
  +'② '+ORGS[1].n+'　'+LESSONS[5].tea+' 先生　'+LESSONS[5].r+'</div>'
  +'<div class="two" style="margin-top:10px">'
@@ -4637,33 +4667,6 @@ function keepScroll(root){var a=[];if(!root)return a;
 function putScroll(root,a){if(!root||!a||!a.length)return;
  var e=root.querySelectorAll('*');
  for(var i=0;i<a.length;i++){var el=e[a[i][0]];if(el){el.scrollLeft=a[i][1];el.scrollTop=a[i][2]}}}
-
-/* ══ ★しるし（個人の 帯）── 2026-09-18 ══
-   ★Lucide に ならった 形。★24×24 の ます目、★2px の 線、★角と 先は 丸
-   ★曲線を 使いません。★直線・円・楕円だけ。
-     （★曲線だと、★絵として 正しいか 確かめられません）        */
-var ICO_P = {
- 'きょう':'<circle cx="12" cy="12" r="4.2"/>'
-   +'<path d="M12 2.4V5 M12 19V21.6 M21.6 12H19 M5 12H2.4"/>'
-   +'<path d="M18.8 5.2 17 7 M7 17 5.2 18.8 M18.8 18.8 17 17 M7 7 5.2 5.2"/>',
- '記録':'<path d="M4 20.4 L4 16.6 L16.4 4.2 L20.2 8 L7.8 20.4 Z"/>'
-   +'<path d="M14.4 6.2 L18.2 10"/><path d="M4 16.6 L7.8 20.4"/>',
- 'ふりかえる':'<path d="M3.4 20.2 V3.6"/><path d="M3.4 20.2 H20.6"/>'
-   +'<path d="M6.6 16.4 L10.4 11.4 L14 14 L19 6.8"/>',
- 'ノート':'<path d="M5 3.6 H19 V20.4 H5 Z"/><path d="M8.2 3.6 V20.4"/>'
-   +'<path d="M11.4 8 H16.2 M11.4 11.4 H16.2 M11.4 14.8 H14.2"/>',
- 'ひつじ':'<ellipse cx="12" cy="13" rx="6.2" ry="5.6"/>'
-   +'<ellipse cx="5" cy="10" rx="2.8" ry="1.8"/>'
-   +'<ellipse cx="19" cy="10" rx="2.8" ry="1.8"/>'
-   +'<ellipse cx="12" cy="8.4" rx="4" ry="2.2"/>'
-   +'<path d="M10 13.4 h.01 M14 13.4 h.01"/>'
-};
-function icoP(t,sz){
- if(!ICO_P[t])return '';
- return '<svg viewBox="0 0 24 24" width="'+(sz||21)+'" height="'+(sz||21)+'" fill="none" '
-  +'stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" '
-  +'aria-hidden="true">'+ICO_P[t]+'</svg>'}
-
 function draw(){
  var _sc=keepTop(),_w=window.scrollY||window.pageYOffset||0;
  var _in=keepScroll($('#bd'));
@@ -4672,7 +4675,7 @@ function draw(){
  if(S.mode==='o'){
   $('#opbar').innerHTML='<div class="opbar"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">'
    +'<span class="back" style="padding:0" onclick="S.mode=\'p\';S.stack=[];draw()">‹ 戻る</span>'
-   +'<span style="font-size:13px">○○音楽大学</span><span class="role" style="margin-left:auto">'+S.dm.post+'</span></div>'
+   +'<span style="font-size:11.5px">○○音楽大学</span><span class="role" style="margin-left:auto">'+S.dm.post+'</span></div>'
    +'<div>この画面から、生徒の健康の記録には たどりつけません</div></div>';
   var t=S.stack.length?topOf():null;
   $('#bd').innerHTML=t?(SC[t.s]?SC[t.s](t.a):'—'):S_op();
@@ -4687,7 +4690,7 @@ function draw(){
   $('#bd').classList.toggle('full',S.tab==='ひつじ'&&!S.stack.length&&!(S.sheet&&S.sheet.n==='したく'));
   $('#bd').dataset.sc=S.stack.length?'sub':S.tab;
   $('#tabs').innerHTML=TABS_P.map(function(x){
-   return '<div class="tb '+(x===S.tab&&!S.stack.length?'on':'')+'" onclick="go(\''+x+'\')"><i>'+icoP(x)+'</i>'+x+'</div>'}).join('');
+   return '<div class="tb '+(x===S.tab&&!S.stack.length?'on':'')+'" onclick="go(\''+x+'\')"><i></i>'+x+'</div>'}).join('');
  }
  bindAllWheels();
  drawDemo();drawSheet();
