@@ -91,5 +91,28 @@ function ok(cond, 名) {
   const 作る = 本体.slice(本体.indexOf("handleInviteStudentToOrg"), 本体.indexOf("handleInviteStudentToOrg") + 900);
   ok(/length: 8/.test(作る), "作る ほうも 8文字");
 
+  // ------------------------------------------------------------------------
+  // ★六 ★画面に 台帳の 言葉を 出して いない（★2026-09-18・実機で 見つけました）
+  // ------------------------------------------------------------------------
+  //   ★★行事の 画面に、こう 出て いました ──
+  //     ★「create_org_event が 受け取りません」「start_time / end_time」
+  //   ★★★大学の 方が ご覧に なる 画面 です。
+  //     ★★表の 名も、★関数の 名も、★その方の お役に 立ちません。
+  const 禁じ手 = [
+    "teacher_invitations", "org_events", "create_org_event",
+    "start_time", "end_time", "target_group", "RESEND", "API_KEY", "坂本"
+  ];
+  S.NOT_YET.forEach((x) => {
+    数 += 1;
+    assert.ok(typeof x.say === "string" && x.say.length > 0,
+      "★落ちました ── 画面に 出す 字（say）が ありません: " + x.label);
+    const 当たり = 禁じ手.filter((w) => x.say.includes(w));
+    assert.ok(当たり.length === 0,
+      "★落ちました ── 画面の 字に 台帳の 言葉が あります: " + 当たり.join("、"));
+  });
+  console.log("  ok  画面の 字に、★台帳の 言葉が 1つも ない");
+  ok(/x\.say/.test(readRaw("components", "OpsRoster.jsx")),
+    "画面が say を 出して いる（why では ない）");
+
   console.log("\n★" + 数 + "件 通りました ── 生徒を 招く");
 })().catch((e) => { console.error(e.message || e); process.exit(1); });

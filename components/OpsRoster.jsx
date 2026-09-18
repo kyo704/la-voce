@@ -496,7 +496,7 @@ export default function OpsRoster({
           <div style={{ marginTop: 10 }}>
             {NOT_YET.map((x) => (
               <p key={x.key} style={{ ...small, margin: 0, color: C.inkSoft }}>
-                {`${x.label} …… ${x.why}`}
+                {`${x.label} …… ${x.say}`}
               </p>
             ))}
           </div>
