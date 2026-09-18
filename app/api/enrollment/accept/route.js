@@ -48,7 +48,7 @@ export async function POST(request) {
   // ---- 招待から、先生と教室を引く ----
   const { data: invitation, error: invError } = await admin
     .from("teacher_invitations")
-    .select("code, teacher_id, org_id")
+    .select("code, teacher_id, org_id, monka_teacher_id")
     .eq("code", code)
     .maybeSingle();
   if (invError) {
@@ -134,11 +134,53 @@ export async function POST(request) {
   //   ★二重に作らないよう、先に有無を見ます。
   //     一意制約の形が分からないので、upsert の onConflict に頼りません。
   // ==========================================================================
+  // ==========================================================================
+  // ★★★受け持ちの 先生は、★`monka_teacher_id` です（★裁定 その83 訂正）。
+  //
+  //   ★★これまでは `teacher_id`（★合言葉を 出した 方）を 使って いました。
+  //   ★★★2026-09-18、★名簿の「＋ 招く」を 作りました。
+  //     ★★あれは 事務や 学長が 押します。★`teacher_id` は その 方 です。
+  //     ★★★そのまま だと ── ★**学長が 生徒の 先生に なります**。
+  //   ★★「誰が 出したか」と「どの 門下か」は 別の こと です。★分けました。
+  //
+  //   ★★`null` なら 受け持ちを 作りません。★学校に 入る だけ です。
+  //     ★★門下は あとから、★名簿か 日程で 決めます。
+  //
+  //   ★★★Q1（★裁定 その83 の 確かめ）── ★その 先生が、★その 学校に いるか。
+  //     ★★別の 学校の 先生の 番号を 入れられない ように します。
+  //     ★★合言葉を 作る 側でも 見ますが、★ここでも 見ます。★二重に します。
+  const monkaTeacher = invitation.monka_teacher_id || null;
+  let assignTo = null;
+  if (monkaTeacher) {
+    const { data: teacherHere, error: thErr } = await admin
+      .from("memberships")
+      .select("user_id")
+      .eq("org_id", orgId)
+      .eq("user_id", monkaTeacher)
+      .limit(1);
+    if (thErr) {
+      console.error("在籍：門下の先生を確認できませんでした。", thErr);
+      return NextResponse.json({ ok: true, enrolled: true, assigned: false, orgId });
+    }
+    if (teacherHere && teacherHere.length > 0) {
+      assignTo = monkaTeacher;
+    } else {
+      // ★★その 学校に いない 先生でした。★受け持ちを 作りません。
+      //   ★★在籍は できて います。★そこは 巻き戻しません。
+      console.error("在籍：門下の先生が、この学校にいません。", { orgId, monkaTeacher });
+      return NextResponse.json({ ok: true, enrolled: true, assigned: false, orgId, reason: "monka_not_in_org" });
+    }
+  }
+  if (!assignTo) {
+    // ★★学校だけ の 合言葉 です。★門下は 未定 の まま。
+    return NextResponse.json({ ok: true, enrolled: true, assigned: false, orgId, reason: "no_monka" });
+  }
+
   const { data: existingAssignment, error: findError } = await admin
     .from("assignments")
     .select("id")
     .eq("org_id", orgId)
-    .eq("teacher_id", invitation.teacher_id)
+    .eq("teacher_id", assignTo)
     .eq("student_id", user.id)
     // ★★★閉じた 受け持ちを 数に 入れません（★2026-09-16）。
     //   ★★`leave_enrollment` が、★やめる とき `ended_at` を 入れる ように
@@ -159,7 +201,7 @@ export async function POST(request) {
   if (!existingAssignment || existingAssignment.length === 0) {
     const { error: assignError } = await admin
       .from("assignments")
-      .insert({ org_id: orgId, teacher_id: invitation.teacher_id, student_id: user.id });
+      .insert({ org_id: orgId, teacher_id: assignTo, student_id: user.id });
     if (assignError) {
       console.error("在籍：担当を作れませんでした。", { orgId, message: assignError.message });
       return NextResponse.json({ ok: true, enrolled: true, assigned: false, orgId });

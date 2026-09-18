@@ -11399,7 +11399,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const supabase = createClient();
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
     const { error } = await supabase.from("teacher_invitations")
-      .insert({ code, teacher_id: userId, org_id: orgId, expires_at: expiresAt });
+      // ★★★門下は 決めません（★裁定 その83 訂正・2026-09-18）。
+      //   ★★これは 名簿から の 招き です。★押すのは 事務や 学長 です。
+      //   ★★`monka_teacher_id` を 入れると、★その方が 生徒の 先生に なります。
+      //   ★★★学校に 入る ところ まで。★門下は あとから 決めます。
+      .insert({ code, teacher_id: userId, org_id: orgId, expires_at: expiresAt,
+        monka_teacher_id: null });
     if (error) {
       // ★★黙って 閉じません。★誤りを そのまま お見せします。
       console.error("生徒の 招待を 作れません でした:", error);
@@ -11429,7 +11434,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     //   読んで教室を推測するしかなく、★RLS に阻まれて在籍が作れませんでした。
     //   発行するのは先生なので、自分の教室のIDは当然に分かります。
     const { error } = await supabase.from("teacher_invitations")
-      .insert({ code, teacher_id: userId, org_id: orgId, expires_at: expiresAt });
+      // ★★門下は ご自分 です（★裁定 その83 訂正）。
+      //   ★★この 道は「先生が、★ご自分の 生徒を 招く」もの です。
+      //   ★★出した 方＝門下の 先生。★だから 同じ 番号を 入れます。
+      .insert({ code, teacher_id: userId, org_id: orgId, expires_at: expiresAt,
+        monka_teacher_id: userId });
     if (error) {
       console.error("招待コードの発行に失敗しました:", error);
       setInviteError(`招待コードを発行できませんでした：${error.message || "原因不明"}`);
