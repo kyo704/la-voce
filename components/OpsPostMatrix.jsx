@@ -2,6 +2,8 @@
 
 import { C } from "@/lib/tokens";
 import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
+// ★★すべり・貼り付け・色の 決めは 1本 です（★裁定 その81）。
+import { TABLE_CLASS, ANCHOR_CLASSES, v } from "@/lib/visualTokens";
 import { PERMS, permLabel } from "@/lib/opsPerms";
 import {
   rowLocked, rowLockedReason, rowIsPersonal, NAV_ROW_HEAD, navOf, hasPerm
@@ -36,11 +38,14 @@ export default function OpsPostMatrix({
   if (posts.length === 0) return null;
 
   return (
-    <div style={{ overflowX: "auto", fontFamily: FONT_STACK }}>
+    /* ★★★すべりと 貼り付けは `.tblwrap` が 持ちます（★裁定 その81 §5-1）。
+         ★★名簿の 表と 同じ 1本の 決め です。★ここでは 決めません。 */
+    <div className={TABLE_CLASS} style={{ fontFamily: FONT_STACK }}>
       <table style={{ borderCollapse: "collapse", minWidth: 905, width: "100%" }}>
         <thead>
           <tr>
-            <th style={{
+            {/* ★★左の 列が「錨」です。★横に すべっても、★どの できことの 行かが 残ります。 */}
+            <th className={ANCHOR_CLASSES[1]} style={{
               minWidth: 245, textAlign: "left", padding: `${rem(9)} ${rem(10)}`,
               borderBottom: 罫, ...TYPE.mini, color: C.inkSoft, fontWeight: 400
             }}>{tx("できること")}</th>
@@ -70,7 +75,7 @@ export default function OpsPostMatrix({
             const 自分だけ = rowIsPersonal(k.key);
             return (
               <tr key={k.key} style={{ background: 自分だけ ? C.paper : "transparent" }}>
-                <td style={{
+                <td className={ANCHOR_CLASSES[1]} style={{
                   padding: `${rem(9)} ${rem(10)}`, borderBottom: 罫,
                   ...TYPE.usual, color: C.ink, lineHeight: 1.5
                 }}>
@@ -100,7 +105,10 @@ export default function OpsPostMatrix({
                   return (
                     <td key={p.id} style={{
                       textAlign: "center", borderBottom: 罫,
-                      background: 持ってる ? "#F6E4E8" : "transparent",
+                      /* ★★★色を 直に 書きません（★裁定 その81 §1-3・§6）。
+                          ★★`#F6E4E8` は `--pick`（選んで いる）そのもの でした。
+                          ★★名前で 呼ぶと、★暗い 画面でも 付いて 来ます。 */
+                      background: 持ってる ? v("pick") : "transparent",
                       padding: 0
                     }}>
                       {/* ★★★押せない ときは、★押せる ように 見せません。

@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { C } from "@/lib/tokens";
 import { tabsFor, maySeeMoney, HEALTH_WALL_LINE } from "@/lib/opsShell";
+// ★★見た目の 土台（★裁定 その78・その81 §8 の ①②③）。
+//   ★★この 中 だけ に かかります。★門の 外の 画面は 1つも 変わりません。
+import VisualTokens, { SCOPE_CLASS } from "@/components/VisualTokens";
 
 // ============================================================================
 // 運営モード ── 別のシェル（見本⑪ ／ 2026-09-09・第3便）
@@ -47,7 +50,14 @@ export default function OpsShell({ orgName, role, postName, myName,
   const cur = tabs.some((t) => t.key === tab) ? tab : tabs[0].key;
 
   return (
-    <div style={{ minHeight: "100dvh", background: C.paper, display: "flex", flexDirection: "column" }}>
+    /* ★★★`wsv` ── ★見た目の 土台が かかる 入れ物 です（★裁定 その81 §8）。
+         ★★この 名の 中 だけ で、★色（`--ink` など）と 表の 貼り付けが 効きます。
+         ★★★`:root` に 置いて いません。★38人の 画面は 1つも 変わりません
+           （★2026-09-09 の お指図）。
+         ★★運営の 表は みな この 中に あります。★`.tblwrap` が 一度に 効きます。 */
+    <div className={SCOPE_CLASS}
+      style={{ minHeight: "100dvh", background: C.paper, display: "flex", flexDirection: "column" }}>
+      <VisualTokens />
       {/* ★★上の帯。★左上に「もどる」（★§3-3）。★個人のアプリへ 帰れます。 */}
       <div style={{
         background: C.curtain, color: "#FFFDF8", padding: "10px 14px",

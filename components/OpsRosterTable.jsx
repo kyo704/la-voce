@@ -2,6 +2,8 @@
 
 import { C } from "@/lib/tokens";
 import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
+// ★★すべり・貼り付けの 決めは 1本 です（★裁定 その81 §5-1）。
+import { TABLE_CLASS, ANCHOR_CLASSES } from "@/lib/visualTokens";
 import { statusLabel, isCounted } from "@/lib/orgRoster";
 import { ROSTER_COLUMNS, TABLE_WIDTH } from "@/lib/opsRosterTable";
 
@@ -33,26 +35,28 @@ export default function OpsRosterTable({
   if (rows.length === 0) return null;
 
   return (
-    <div style={{
-      overflowX: "auto", overflowY: "auto", maxHeight: "62vh",
-      border: 罫, borderRadius: 12, background: C.card, fontFamily: FONT_STACK
-    }}>
+    /* ★★★すべりと 貼り付けは、★`.tblwrap` が 持ちます（★裁定 その81 §5-1）。
+         ★★きょうまで、★この 1枚が 自分で 持って いました。
+           ★★`maxHeight: "62vh"` も、★`position: sticky` も、★ここに ありました。
+         ★★★運営の 表は これ 1つ では ありません。★役職の 表も あります。
+           ★★2つに 別々の 数が 入ると、★片方だけ 直る 日が 来ます。
+         ★★決めは lib/visualTokens.js が 1つ 持ちます。★ここでは 決めません。
+         ★★`.tblwrap` は `.wsv` の 中 だけ で 効きます（★門の 外に かかりません）。 */
+    <div className={TABLE_CLASS} style={{ fontFamily: FONT_STACK }}>
       <table style={{ borderCollapse: "separate", borderSpacing: 0, minWidth: TABLE_WIDTH, width: "100%" }}>
         <thead>
           <tr>
             {ROSTER_COLUMNS.map((c) => (
-              <th key={c.key} style={{
-                minWidth: c.min,
-                textAlign: c.num ? "right" : "left",
-                padding: `${rem(9)} ${rem(10)}`,
-                borderBottom: 罫,
-                ...TYPE.mini, color: C.inkSoft, fontWeight: 400,
-                // ★★見出しの 行を 貼り付けます。★下まで 見ても 列の 名が 残ります。
-                position: "sticky", top: 0, zIndex: c.anchor ? 3 : 2,
-                background: C.card,
-                // ★★お名前の 列は、★左にも 貼り付けます（★錨）。
-                ...(c.anchor ? { left: 0 } : null)
-              }}>{c.label}</th>
+              /* ★★貼り付けは `.tblwrap` が します。★ここでは 大きさと 字だけ です。
+                   ★★お名前の 列には `anc`（★錨）を 付けます。 */
+              <th key={c.key} className={c.anchor ? ANCHOR_CLASSES[1] : undefined}
+                style={{
+                  minWidth: c.min,
+                  textAlign: c.num ? "right" : "left",
+                  padding: `${rem(9)} ${rem(10)}`,
+                  borderBottom: 罫,
+                  ...TYPE.mini, color: C.inkSoft, fontWeight: 400
+                }}>{c.label}</th>
             ))}
           </tr>
         </thead>
@@ -78,6 +82,7 @@ export default function OpsRosterTable({
 
                   return (
                     <td key={c.key}
+                      className={c.anchor ? ANCHOR_CLASSES[1] : undefined}
                       onClick={c.anchor && onOpen ? () => onOpen(m.user_id) : undefined}
                       style={{
                         minWidth: c.min,
@@ -87,11 +92,7 @@ export default function OpsRosterTable({
                         ...TYPE.usual,
                         color: c.key === "status" && !数える ? C.inkSoft : C.ink,
                         whiteSpace: "nowrap",
-                        ...(c.anchor ? {
-                          position: "sticky", left: 0, zIndex: 1,
-                          background: C.card,
-                          cursor: onOpen ? "pointer" : "default"
-                        } : null)
+                        ...(c.anchor && onOpen ? { cursor: "pointer" } : null)
                       }}>{中身}</td>
                   );
                 })}
