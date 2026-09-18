@@ -93,8 +93,15 @@ function eq(a, b, label) {
   eq(m.mayPost({ role: null, isMember: true }), true, "門下の 学生は 書ける");
   eq(m.mayPost({ role: "owner", isAnnouncement: true }), true, "★おしらせは owner が 書ける");
   eq(m.mayPost({ role: null, isMember: true, isAnnouncement: true }), false, "★学生は おしらせを 書けない");
-  t(m.OPS_READ_ONLY_LINE.includes("読むだけです"), "★読むだけ、と 書く");
-  t(m.OPS_READ_WHY_LINE.includes("苦情や 事故"), "★わけも 書く");
+  // ★★★2026-09-18、★この 2つの 字を 外しました（★裁定 その88 Q1）。
+  //   ★★出して いた 門が **役割の 名**（owner／admin）の まま でした。
+  //   ★★裁定 その76・その77 で、★門下を 読むのは `monka_read` に なりました。
+  //   ★★★同じ ことは `MONKA_READ_SELF_LINE`（★裁定 その87）が 言います。
+  //   ★★だから ここも 移します ── ★「書けない」は `mayPost` が 見ます（上の 6行）。
+  //     ★★「読める わけ」は 帯の ほうで 見ます。
+  t(m.OPS_READ_ONLY_LINE === undefined, "★古い 断りの 字を 外した");
+  t(m.OPS_READ_WHY_LINE === undefined, "★古い わけの 字も 外した");
+  t(m.MONKA_READ_SELF_LINE.includes("確かめられる 役職"), "★新しい 帯に 移した");
   // ★★門（RLS）が 本体であること
   t(/org_messages_insert/.test(sql), "★書ける人の 門が ある");
   {

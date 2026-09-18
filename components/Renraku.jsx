@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import useWindowWidth from "@/components/useWindowWidth";
 import { C } from "@/lib/tokens";
 import {
-  NOTICE_LINE, NO_ATTACH_LINE, OPS_READ_ONLY_LINE, OPS_READ_WHY_LINE,
+  NOTICE_LINE, NO_ATTACH_LINE,
   HIDE_AFTER_DAYS, HIDE_LINE, SOON_LINE, visibleMessages, mayPost, studioName, isTwoPane, BODY_WIDTH,
   // ★★裁定 その87（2026-09-18）。★字も 幅も lib が 持ちます。
   LIST_WIDTH, NO_READ_TRACKING_LINE, MONKA_READ_SELF_LINE, showMonkaReadSelfBanner,
@@ -166,14 +166,19 @@ export default function Renraku({
   // ★★本文（★決まりB：★640px で 止めます）。
   const body = (
     <div style={{ maxWidth: BODY_WIDTH, width: "100%" }} className="space-y-3">
-      {/* ★★運営の方への 断り（★見本③）。★書けない ことと、その わけ。 */}
-      {!canWrite && (role === "owner" || role === "admin") ? (
-        <div style={{ ...card, background: C.paper }}>
-          <p style={{ fontSize: "0.8125rem", color: C.ink, lineHeight: 1.85 }}>{OPS_READ_ONLY_LINE}</p>
-          <p style={small}>{OPS_READ_WHY_LINE}</p>
-          <p style={small}>開いたことは 記録に残り、先生と学生の画面から 見られます。</p>
-        </div>
-      ) : null}
+      {/* ★★★2026-09-18、★この 断りを 外しました（★裁定 その88 Q1）。
+           ★★2026-09-10 の 見本③ から ある もの でした ──
+             ★★「運営の方は、読むだけです。書き込めません。」
+             ★★「読める理由は、苦情や 事故が あったときに 確かめるためです。」
+             ★★「開いたことは 記録に残り、先生と学生の画面から 見られます。」
+           ★★★門が **役割の 名**（owner／admin）の まま でした。
+             ★★裁定 その76・その77 で、★門下を 読むのは `monka_read` に なりました。
+             ★★だから、★`monka_read` を 持たない 学長・事務長にも 出て いました。
+             ★★★「読める」と 書いて ある のに、★実は 読めない 方が いました。
+           ★★★同じ ことを、★画面の いちばん 上の 帯 が 言って います
+             （★`MONKA_READ_SELF_LINE`・★裁定 その87）。★1つに します。
+           ★★台帳 08-1（役割の 名の 門）の 解消が、★1件 進みました。
+           ★★中身は `git show fd3688fd:components/Renraku.jsx` で 引けます。 */}
 
       {shown.length === 0 ? (
         <div style={card}><p style={small}>まだ 書き込みは ありません。</p></div>
