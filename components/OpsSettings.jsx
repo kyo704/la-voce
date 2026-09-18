@@ -1,6 +1,10 @@
 "use client";
 
 import { C } from "@/lib/tokens";
+// ★★小見出しは UiV2 の H3 が 持ちます（★2026-09-18・裁定 ⑤）。
+//   ★★字の 大きさも 字間も 余白も、★あちらの 決め です。
+//   ★★ここで `<p style={small}>` を 書くと、★2つめの 決めに なります。
+import { H3 } from "@/components/UiV2";
 import { permHeadLine } from "@/lib/opsPerms";
 import {
   rosterCount, monthlyFee, perHead, yen, billPlans,
@@ -63,7 +67,13 @@ export default function OpsSettings({ members, staffLines, postName, perms }) {
         </p>
       ) : null}
 
-      {/* ★★いまの ご請求。★数えるだけです。 */}
+      {/* ★★★小見出しは 箱の **外**・上 に 置きます（★2026-09-18・裁定 ⑤）。
+          ★出どころ 見本 `stBill()` ──
+            `<div class="h3" style="margin-top:0">今月の ご請求</div><div class="card">…`
+          ★★きょうまで ── ★「今月の ご請求」には 小見出しが **ありません** でした。
+            ★★「料金の 決まり」は 箱の **中**の 1行目 に ありました。
+          ★★箱の 中に 置くと、★中身の 1行と 見分けが つきません。 */}
+      <H3>今月の ご請求</H3>
       <div style={card}>
         <div style={{ ...row, borderTop: "none" }}>
           <span style={{ color: C.inkSoft }}>数える人数</span>
@@ -74,15 +84,19 @@ export default function OpsSettings({ members, staffLines, postName, perms }) {
           <span style={{ color: C.ink }}>{n > 0 ? `${yen(perHead(n))}円` : "—"}</span>
         </div>
         {/* ★★今月の ご請求 だけ、★大きく 太く します（★2026-09-18・裁定 ⑦）。
-            ★出どころ 見本 00-動く見本-PC・iPad（運営）.html
-              `<s style="font-size:19px;font-weight:700;color:var(--ink)">`
-            ★★見本は 19px です。★ここも 19px に します（★1.1875rem）。
-              ★★見本の 字を そのまま 使います。★見た目で 合わせません。
+            ★出どころ 見本 00-動く見本-PC・iPad（運営）.html の `stBill()`
+              `<s style="font-size:22px;font-weight:700;color:var(--ink)">`
+            ★★★はじめ 19px に して いました。★別の 画面の 数 でした。
+              ★★19px は 名簿の 中の「いまの ご請求」（★見本 719行）です。
+              ★★設定・ご請求 は `P_settei` → `stBill`（★見本 1058行）── ★22px。
+              ★★同じ 字が 2か所に あり、★近い ほうを 拾って いました。
+              ★★★どの 画面の 数か を 先に 決めて から 引きます。
+            ★★見本の 字を そのまま 使います。★見た目で 合わせません。
             ★★ここは 稟議の 紙に 写される 1つの 数 です。
               ★★ほかの 行と 同じ 大きさ だと、★どれが その 数か 分かりません。 */}
         <div style={row}>
           <span style={{ color: C.inkSoft }}>今月のご請求</span>
-          <span style={{ color: C.ink, fontSize: "1.1875rem", fontWeight: 700 }}>
+          <span style={{ color: C.ink, fontSize: "1.375rem", fontWeight: 700 }}>
             {yen(fee)}円
           </span>
         </div>
@@ -137,8 +151,8 @@ export default function OpsSettings({ members, staffLines, postName, perms }) {
       </div>
 
       {/* ★★料金の 決まり。★lib から 組み立てます。★書き写しません。 */}
+      <H3>料金の 決まり</H3>
       <div style={card}>
-        <p style={{ ...small, marginBottom: 2 }}>料金の 決まり</p>
         {TIERS.map((tr, i) => (
           <div key={tr.rate} style={row}>
             <span style={{ color: C.inkSoft }}>

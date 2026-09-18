@@ -21,7 +21,7 @@
 const assert = require("assert");
 const fs = require("fs");
 const path = require("path");
-const { readCode, loadLib } = require("./_source");
+const { readCode, readRaw, loadLib } = require("./_source");
 
 const ROOT = path.join(__dirname, "..", "..");
 const 見本の道 = path.join(ROOT, "docs/design/pack-final/00-動く見本-PC・iPad（運営）.html");
@@ -126,10 +126,29 @@ function ok(cond, 名) {
   console.log("  ok  7とおりの 人数で、勝った 行が 1つに 決まる");
 
   // ------------------------------------------------------------------------
-  // ★五 ★「今月の ご請求」の 字（★裁定 ⑦）
+  // ★五 ★「今月の ご請求」の 字（★裁定 ⑦）／★小見出しの 置き場（★裁定 ⑤）
   // ------------------------------------------------------------------------
+  //   ★★小見出しは 箱の **外**・上。★見本 `stBill()` と 同じ です。
+  const 生画面 = readRaw("components", "OpsSettings.jsx");
+  ok(/<H3>今月の ご請求<\/H3>[\s\S]{0,80}<div style=\{card\}>/.test(生画面),
+    "「今月の ご請求」の 小見出しが、★箱の 外・上 に ある");
+  ok(/<H3>料金の 決まり<\/H3>[\s\S]{0,40}<div style=\{card\}>/.test(生画面),
+    "「料金の 決まり」の 小見出しが、★箱の 外・上 に ある");
+  ok(!/<p style=\{\{ \.\.\.small, marginBottom: 2 \}\}>料金の 決まり/.test(生画面),
+    "箱の 中の 1行目 から 消えて いる");
+  ok(/from "@\/components\/UiV2"/.test(生画面),
+    "小見出しは UiV2 の H3（★2つめの 決めを 作らない）");
+
   //   ★★見本の 大きさを 引きます。★書き写しません。
-  const 見本の字 = /今月の ご請求<\/span><s style="font-size:(\d+)px;font-weight:(\d+)/.exec(見本);
+  //   ★★★どの 画面の 数か を、★先に 決めて から 引きます。
+  //     ★★同じ 字が 2か所に あります ──
+  //       ★見本 719行 … 名簿の 中の「いまの ご請求」（19px）
+  //       ★見本1058行 … 設定・ご請求（`P_settei` → `stBill`）（22px）
+  //     ★★はじめ 近い ほう（19px）を 拾い、★別の 画面の 数を 使って いました。
+  const 設定の本体 = 見本.slice(見本.indexOf("function stBill()"),
+    見本.indexOf("function stBill()") + 900);
+  const 見本の字 = /今月の' \+ ' ご請求[\s\S]{0,40}?font-size:(\d+)px;font-weight:(\d+)/.exec(設定の本体)
+    || /font-size:(\d+)px;font-weight:(\d+)/.exec(設定の本体);
   assert.ok(見本の字, "★止まりました ── 見本の「今月の ご請求」の 字を 読めません。");
   const rem = (Number(見本の字[1]) / 16) + "rem";
   const 行 = 画面.slice(画面.indexOf("今月のご請求"), 画面.indexOf("今月のご請求") + 300);
