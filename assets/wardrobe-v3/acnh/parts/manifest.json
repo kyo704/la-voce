@@ -1,0 +1,1662 @@
+[
+ {
+  "key": "top_01",
+  "category": "top",
+  "name": "シャツ",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_01@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_02",
+  "category": "top",
+  "name": "ボタンダウン",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_02@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_03",
+  "category": "top",
+  "name": "チェックシャツ",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_03@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_04",
+  "category": "top",
+  "name": "ワークシャツ",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_04@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_05",
+  "category": "top",
+  "name": "デニムシャツ",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_05@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_06",
+  "category": "top",
+  "name": "ボーダー",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_06@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_07",
+  "category": "top",
+  "name": "Ｔシャツ",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_07@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_08",
+  "category": "top",
+  "name": "ポロ",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_08@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_09",
+  "category": "top",
+  "name": "スウェット",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_09@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_10",
+  "category": "top",
+  "name": "フーディ",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_10@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_11",
+  "category": "top",
+  "name": "セーター（丸首）",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_11@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_12",
+  "category": "top",
+  "name": "タートルネック",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_12@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_13",
+  "category": "top",
+  "name": "ケーブルニット",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_13@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_14",
+  "category": "top",
+  "name": "ベスト",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_14@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_15",
+  "category": "top",
+  "name": "つなぎの上",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_15@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_16",
+  "category": "top",
+  "name": "ジャージ",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_16@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_17",
+  "category": "top",
+  "name": "タンクトップ",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_17@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_18",
+  "category": "top",
+  "name": "ラガーシャツ",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_18@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_19",
+  "category": "top",
+  "name": "ヘンリーネック",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_19@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_20",
+  "category": "top",
+  "name": "モックネック",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_20@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_21",
+  "category": "top",
+  "name": "ラグランＴ",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_21@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_22",
+  "category": "top",
+  "name": "アロハシャツ",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_22@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_23",
+  "category": "top",
+  "name": "甚平の上",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_23@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_24",
+  "category": "top",
+  "name": "パジャマ",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_24@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_25",
+  "category": "top",
+  "name": "ミリタリーシャツ",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_25@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_26",
+  "category": "top",
+  "name": "ビッグシルエットＴ",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_26@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_27",
+  "category": "top",
+  "name": "スポーツＴ",
+  "gender": "m",
+  "layer": 5,
+  "src": "/assets/home/top/top_27@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_28",
+  "category": "top",
+  "name": "ブラウス",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_28@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_29",
+  "category": "top",
+  "name": "ボウタイブラウス",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_29@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_30",
+  "category": "top",
+  "name": "パフスリーブ",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_30@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_31",
+  "category": "top",
+  "name": "フリルブラウス",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_31@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_32",
+  "category": "top",
+  "name": "リボンニット",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_32@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_33",
+  "category": "top",
+  "name": "レーストップス",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_33@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_34",
+  "category": "top",
+  "name": "カーディガン",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_34@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_35",
+  "category": "top",
+  "name": "ロングカーディガン",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_35@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_36",
+  "category": "top",
+  "name": "モヘアニット",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_36@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_37",
+  "category": "top",
+  "name": "タートル（リブ）",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_37@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_38",
+  "category": "top",
+  "name": "ペプラムトップス",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_38@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_39",
+  "category": "top",
+  "name": "キャミソール",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_39@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_40",
+  "category": "top",
+  "name": "チュニック",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_40@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_41",
+  "category": "top",
+  "name": "ギンガムブラウス",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_41@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_42",
+  "category": "top",
+  "name": "花柄ブラウス",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_42@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_43",
+  "category": "top",
+  "name": "ドットブラウス",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_43@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_44",
+  "category": "top",
+  "name": "レオパードニット",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_44@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_45",
+  "category": "top",
+  "name": "ツイードのトップス",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_45@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_46",
+  "category": "top",
+  "name": "オフショル",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_46@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_47",
+  "category": "top",
+  "name": "ニットベスト",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_47@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_48",
+  "category": "top",
+  "name": "セーラー風",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_48@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_49",
+  "category": "top",
+  "name": "黒レースブラウス",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_49@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_50",
+  "category": "top",
+  "name": "Ｙ２Ｋトップス",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_50@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_51",
+  "category": "top",
+  "name": "韓国系ゆるニット",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_51@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_52",
+  "category": "top",
+  "name": "もこもこパジャマ",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_52@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_53",
+  "category": "top",
+  "name": "ボヘミアンブラウス",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_53@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "top_54",
+  "category": "top",
+  "name": "レザートップス",
+  "gender": "f",
+  "layer": 5,
+  "src": "/assets/home/top/top_54@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_01",
+  "category": "bottom",
+  "name": "デニム",
+  "gender": "m",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_01@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_02",
+  "category": "bottom",
+  "name": "ダメージデニム",
+  "gender": "m",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_02@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_03",
+  "category": "bottom",
+  "name": "ブラックデニム",
+  "gender": "m",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_03@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_04",
+  "category": "bottom",
+  "name": "ワイドスラックス",
+  "gender": "m",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_04@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_05",
+  "category": "bottom",
+  "name": "スラックス（紺）",
+  "gender": "m",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_05@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_06",
+  "category": "bottom",
+  "name": "テーパードパンツ",
+  "gender": "m",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_06@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_07",
+  "category": "bottom",
+  "name": "カーゴ",
+  "gender": "m",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_07@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_08",
+  "category": "bottom",
+  "name": "チノ",
+  "gender": "m",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_08@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_09",
+  "category": "bottom",
+  "name": "コーデュロイ",
+  "gender": "m",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_09@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_10",
+  "category": "bottom",
+  "name": "ジャージパンツ",
+  "gender": "m",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_10@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_11",
+  "category": "bottom",
+  "name": "ショーツ",
+  "gender": "m",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_11@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_12",
+  "category": "bottom",
+  "name": "ハーフパンツ",
+  "gender": "m",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_12@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_13",
+  "category": "bottom",
+  "name": "チェックのパンツ",
+  "gender": "m",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_13@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_14",
+  "category": "bottom",
+  "name": "スウェットパンツ",
+  "gender": "m",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_14@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_15",
+  "category": "bottom",
+  "name": "パジャマパンツ",
+  "gender": "m",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_15@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_16",
+  "category": "bottom",
+  "name": "ミリタリーパンツ",
+  "gender": "m",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_16@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_17",
+  "category": "bottom",
+  "name": "甚平の下",
+  "gender": "m",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_17@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_18",
+  "category": "bottom",
+  "name": "スキニー",
+  "gender": "m",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_18@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_19",
+  "category": "bottom",
+  "name": "ミディ丈スカート",
+  "gender": "f",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_19@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_20",
+  "category": "bottom",
+  "name": "プリーツスカート",
+  "gender": "f",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_20@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_21",
+  "category": "bottom",
+  "name": "ロングスカート",
+  "gender": "f",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_21@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_22",
+  "category": "bottom",
+  "name": "ミニスカート",
+  "gender": "f",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_22@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_23",
+  "category": "bottom",
+  "name": "チェックスカート",
+  "gender": "f",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_23@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_24",
+  "category": "bottom",
+  "name": "デニムスカート",
+  "gender": "f",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_24@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_25",
+  "category": "bottom",
+  "name": "フレアスカート",
+  "gender": "f",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_25@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_26",
+  "category": "bottom",
+  "name": "チュールスカート",
+  "gender": "f",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_26@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_27",
+  "category": "bottom",
+  "name": "花柄スカート",
+  "gender": "f",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_27@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_28",
+  "category": "bottom",
+  "name": "コーデュロイスカート",
+  "gender": "f",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_28@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_29",
+  "category": "bottom",
+  "name": "ワイドパンツ",
+  "gender": "f",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_29@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_30",
+  "category": "bottom",
+  "name": "レギンス",
+  "gender": "f",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_30@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_31",
+  "category": "bottom",
+  "name": "サロペット",
+  "gender": "f",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_31@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_32",
+  "category": "bottom",
+  "name": "ガウチョ",
+  "gender": "f",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_32@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_33",
+  "category": "bottom",
+  "name": "ペチコート",
+  "gender": "f",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_33@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_34",
+  "category": "bottom",
+  "name": "レザースカート",
+  "gender": "f",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_34@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "bottom_35",
+  "category": "bottom",
+  "name": "もこもこパンツ",
+  "gender": "f",
+  "layer": 3,
+  "src": "/assets/home/bottom/bottom_35@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_01",
+  "category": "outer",
+  "name": "テーラードジャケット",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_01@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_02",
+  "category": "outer",
+  "name": "スーツの上着",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_02@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_03",
+  "category": "outer",
+  "name": "ツイードジャケット",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_03@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_04",
+  "category": "outer",
+  "name": "デニムジャケット",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_04@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_05",
+  "category": "outer",
+  "name": "レザージャケット",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_05@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_06",
+  "category": "outer",
+  "name": "ブルゾン",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_06@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_07",
+  "category": "outer",
+  "name": "トラックジャケット",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_07@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_08",
+  "category": "outer",
+  "name": "マウンテンパーカ",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_08@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_09",
+  "category": "outer",
+  "name": "フリース",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_09@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_10",
+  "category": "outer",
+  "name": "ダウン（パファー）",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_10@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_11",
+  "category": "outer",
+  "name": "Ｍ-65（ミリタリー）",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_11@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_12",
+  "category": "outer",
+  "name": "トレンチコート",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_12@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_13",
+  "category": "outer",
+  "name": "ロングコート",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_13@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_14",
+  "category": "outer",
+  "name": "ステンカラーコート",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_14@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_15",
+  "category": "outer",
+  "name": "ＭＡ-1",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_15@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_16",
+  "category": "outer",
+  "name": "スタジャン",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_16@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_17",
+  "category": "outer",
+  "name": "半纏",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_17@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_18",
+  "category": "outer",
+  "name": "ベンチコート",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_18@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_19",
+  "category": "outer",
+  "name": "ジレ",
+  "gender": "m",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_19@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_20",
+  "category": "outer",
+  "name": "ノーカラーコート",
+  "gender": "f",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_20@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_21",
+  "category": "outer",
+  "name": "チェスターコート",
+  "gender": "f",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_21@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_22",
+  "category": "outer",
+  "name": "ダッフルコート",
+  "gender": "f",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_22@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_23",
+  "category": "outer",
+  "name": "ファーコート",
+  "gender": "f",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_23@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_24",
+  "category": "outer",
+  "name": "ケープ",
+  "gender": "f",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_24@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_25",
+  "category": "outer",
+  "name": "ショートジャケット",
+  "gender": "f",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_25@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_26",
+  "category": "outer",
+  "name": "ツイードジャケット（女）",
+  "gender": "f",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_26@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_27",
+  "category": "outer",
+  "name": "ガウン",
+  "gender": "f",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_27@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_28",
+  "category": "outer",
+  "name": "カーディガン（羽織）",
+  "gender": "f",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_28@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_29",
+  "category": "outer",
+  "name": "レースの羽織り",
+  "gender": "f",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_29@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_30",
+  "category": "outer",
+  "name": "キルティング",
+  "gender": "f",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_30@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_31",
+  "category": "outer",
+  "name": "ポンチョ",
+  "gender": "f",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_31@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_32",
+  "category": "outer",
+  "name": "ムートン",
+  "gender": "f",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_32@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_33",
+  "category": "outer",
+  "name": "ライダース（女）",
+  "gender": "f",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_33@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_34",
+  "category": "outer",
+  "name": "ロングガウン",
+  "gender": "f",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_34@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "outer_35",
+  "category": "outer",
+  "name": "ゴシックコート",
+  "gender": "f",
+  "layer": 6,
+  "src": "/assets/home/outer/outer_35@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "neck_01",
+  "category": "neck",
+  "name": "マフラー",
+  "gender": "u",
+  "layer": 7,
+  "src": "/assets/home/neck/neck_01@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "neck_02",
+  "category": "neck",
+  "name": "チェックのマフラー",
+  "gender": "u",
+  "layer": 7,
+  "src": "/assets/home/neck/neck_02@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "neck_03",
+  "category": "neck",
+  "name": "ストール",
+  "gender": "f",
+  "layer": 7,
+  "src": "/assets/home/neck/neck_03@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "neck_04",
+  "category": "neck",
+  "name": "ネクタイ",
+  "gender": "m",
+  "layer": 7,
+  "src": "/assets/home/neck/neck_04@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "neck_05",
+  "category": "neck",
+  "name": "蝶ネクタイ",
+  "gender": "m",
+  "layer": 7,
+  "src": "/assets/home/neck/neck_05@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "neck_06",
+  "category": "neck",
+  "name": "リボン",
+  "gender": "f",
+  "layer": 7,
+  "src": "/assets/home/neck/neck_06@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "neck_07",
+  "category": "neck",
+  "name": "ネックレス",
+  "gender": "f",
+  "layer": 7,
+  "src": "/assets/home/neck/neck_07@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "neck_08",
+  "category": "neck",
+  "name": "パールのくび飾り",
+  "gender": "f",
+  "layer": 7,
+  "src": "/assets/home/neck/neck_08@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "neck_09",
+  "category": "neck",
+  "name": "スカーフ",
+  "gender": "f",
+  "layer": 7,
+  "src": "/assets/home/neck/neck_09@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "neck_10",
+  "category": "neck",
+  "name": "チョーカー",
+  "gender": "f",
+  "layer": 7,
+  "src": "/assets/home/neck/neck_10@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "neck_11",
+  "category": "neck",
+  "name": "フード（下ろした）",
+  "gender": "u",
+  "layer": 7,
+  "src": "/assets/home/neck/neck_11@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "eyes_01",
+  "category": "eyes",
+  "name": "メガネ（丸）",
+  "gender": "u",
+  "layer": 9,
+  "src": "/assets/home/eyes/eyes_01@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "eyes_02",
+  "category": "eyes",
+  "name": "メガネ（四角）",
+  "gender": "u",
+  "layer": 9,
+  "src": "/assets/home/eyes/eyes_02@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "eyes_03",
+  "category": "eyes",
+  "name": "金ぶちメガネ",
+  "gender": "u",
+  "layer": 9,
+  "src": "/assets/home/eyes/eyes_03@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "eyes_04",
+  "category": "eyes",
+  "name": "サングラス",
+  "gender": "u",
+  "layer": 9,
+  "src": "/assets/home/eyes/eyes_04@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "eyes_05",
+  "category": "eyes",
+  "name": "伊達メガネ",
+  "gender": "f",
+  "layer": 9,
+  "src": "/assets/home/eyes/eyes_05@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "eyes_06",
+  "category": "eyes",
+  "name": "ゴーグル",
+  "gender": "u",
+  "layer": 9,
+  "src": "/assets/home/eyes/eyes_06@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "shoes_01",
+  "category": "shoes",
+  "name": "スニーカー",
+  "gender": "u",
+  "layer": 4,
+  "src": "/assets/home/shoes/shoes_01@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "shoes_02",
+  "category": "shoes",
+  "name": "ハイカット",
+  "gender": "u",
+  "layer": 6,
+  "src": "/assets/home/shoes/shoes_02@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "shoes_03",
+  "category": "shoes",
+  "name": "ローファー",
+  "gender": "u",
+  "layer": 4,
+  "src": "/assets/home/shoes/shoes_03@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "shoes_04",
+  "category": "shoes",
+  "name": "革靴",
+  "gender": "m",
+  "layer": 4,
+  "src": "/assets/home/shoes/shoes_04@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "shoes_05",
+  "category": "shoes",
+  "name": "ブーツ",
+  "gender": "u",
+  "layer": 6,
+  "src": "/assets/home/shoes/shoes_05@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "shoes_06",
+  "category": "shoes",
+  "name": "ロングブーツ",
+  "gender": "f",
+  "layer": 6,
+  "src": "/assets/home/shoes/shoes_06@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "shoes_07",
+  "category": "shoes",
+  "name": "サンダル",
+  "gender": "u",
+  "layer": 4,
+  "src": "/assets/home/shoes/shoes_07@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "shoes_08",
+  "category": "shoes",
+  "name": "上履き",
+  "gender": "u",
+  "layer": 4,
+  "src": "/assets/home/shoes/shoes_08@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "shoes_09",
+  "category": "shoes",
+  "name": "スリッパ",
+  "gender": "u",
+  "layer": 4,
+  "src": "/assets/home/shoes/shoes_09@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "shoes_10",
+  "category": "shoes",
+  "name": "長ぐつ",
+  "gender": "u",
+  "layer": 6,
+  "src": "/assets/home/shoes/shoes_10@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "shoes_11",
+  "category": "shoes",
+  "name": "パンプス",
+  "gender": "f",
+  "layer": 4,
+  "src": "/assets/home/shoes/shoes_11@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "shoes_12",
+  "category": "shoes",
+  "name": "ミュール",
+  "gender": "f",
+  "layer": 4,
+  "src": "/assets/home/shoes/shoes_12@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "hats_01",
+  "category": "hats",
+  "name": "キャップ",
+  "gender": "u",
+  "layer": 10,
+  "src": "/assets/home/hats/hats_01@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "hats_02",
+  "category": "hats",
+  "name": "ニット帽",
+  "gender": "u",
+  "layer": 10,
+  "src": "/assets/home/hats/hats_02@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "hats_03",
+  "category": "hats",
+  "name": "ベレー",
+  "gender": "u",
+  "layer": 10,
+  "src": "/assets/home/hats/hats_03@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "hats_04",
+  "category": "hats",
+  "name": "中折れハット",
+  "gender": "m",
+  "layer": 10,
+  "src": "/assets/home/hats/hats_04@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "hats_05",
+  "category": "hats",
+  "name": "バケット",
+  "gender": "u",
+  "layer": 10,
+  "src": "/assets/home/hats/hats_05@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "hats_06",
+  "category": "hats",
+  "name": "麦わら帽子",
+  "gender": "u",
+  "layer": 10,
+  "src": "/assets/home/hats/hats_06@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "hats_07",
+  "category": "hats",
+  "name": "イヤーマフ",
+  "gender": "u",
+  "layer": 10,
+  "src": "/assets/home/hats/hats_07@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "hats_08",
+  "category": "hats",
+  "name": "カチューシャ",
+  "gender": "f",
+  "layer": 10,
+  "src": "/assets/home/hats/hats_08@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "hats_09",
+  "category": "hats",
+  "name": "フード",
+  "gender": "u",
+  "layer": 10,
+  "src": "/assets/home/hats/hats_09@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "hats_10",
+  "category": "hats",
+  "name": "王冠",
+  "gender": "u",
+  "layer": 10,
+  "src": "/assets/home/hats/hats_10@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "hats_11",
+  "category": "hats",
+  "name": "ヘアバンド",
+  "gender": "f",
+  "layer": 10,
+  "src": "/assets/home/hats/hats_11@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "hats_12",
+  "category": "hats",
+  "name": "サンタ帽",
+  "gender": "u",
+  "layer": 10,
+  "src": "/assets/home/hats/hats_12@2x.png",
+  "width": 1024,
+  "height": 1024
+ },
+ {
+  "key": "hats_13",
+  "category": "hats",
+  "name": "コック帽",
+  "gender": "u",
+  "layer": 10,
+  "src": "/assets/home/hats/hats_13@2x.png",
+  "width": 1024,
+  "height": 1024
+ }
+]

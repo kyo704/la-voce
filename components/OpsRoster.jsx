@@ -3,6 +3,8 @@
 import { useState, useMemo } from "react";
 import useWindowWidth from "@/components/useWindowWidth";
 import { C } from "@/lib/tokens";
+// ★★小見出しの 字は uiKit が 持ちます（★2つ目の 決めを 作りません）。
+import { TYPE } from "@/lib/uiKit";
 // ★★名簿の 表（★裁定 その80・2026-09-18）。★広い ときだけ 出します。
 import OpsRosterTable from "@/components/OpsRosterTable";
 import { showRosterTable } from "@/lib/opsRosterTable";
@@ -15,7 +17,9 @@ import {
   monthlyFee, perHead, yen, MONTHLY_FLOOR,
   ROSTER_CHIPS, chipCounts, matchesChip,
   teacherFilterOptions, matchesTeacher, TEACHER_FILTER_ALL,
-  gradeFilterOptions, matchesGrade, GRADE_FILTER_ALL
+  gradeFilterOptions, matchesGrade, GRADE_FILTER_ALL,
+  // ★★名簿の 画面の 字（★2026-09-18・裁定 その84 NEW_ORDER 2）。★lib が 持ちます。
+  rosterSubLine, NOT_COUNTED_HEAD, notCountedRows, rosterNotes, ROSTER_NOTE_BOLD
 } from "@/lib/orgRoster";
 import {
   mayGrantPost, mayChangePerson, CANNOT_CHANGE_REASON
@@ -46,38 +50,13 @@ import { safeBreakdown, TOO_SMALL_NOTE, MIN_GROUP } from "@/lib/smallGroups";
 
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
 
-/**
- * ★絞りの 1段（★状態／学年／先生）。
- *
- *   ★★3つとも 同じ 形です。★1か所で 作ります。
- *   ★★押した その場で 効きます。★決める ボタンは ありません。
- */
-function FilterRow({ title, options, value, onChange }) {
-  return (
-    <>
-      <h3 style={{ fontSize: "0.65625rem", color: C.inkSoft, letterSpacing: "0.08em",
-        margin: "12px 0 7px" }}>{title}</h3>
-      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-        {options.map((o) => {
-          const on = value === o.id;
-          return (
-            <button key={o.id} type="button" onClick={() => onChange(o.id)}
-              aria-pressed={on}
-              style={{
-                minHeight: 44, padding: "0 11px", borderRadius: 999,
-                fontSize: "0.71875rem", whiteSpace: "nowrap",
-                border: `1px solid ${on ? C.curtain : C.line}`,
-                background: on ? C.curtain : C.card,
-                color: on ? "#FFFDF8" : C.inkSoft
-              }}>
-              {o.label}{o.count != null ? ` ${o.count}` : ""}
-            </button>
-          );
-        })}
-      </div>
-    </>
-  );
-}
+// ★★★`FilterRow` を 外しました（★2026-09-18）。
+//   ★★「絞る」1枚の 中でだけ 使って いた 部品 です。
+//   ★★1枚を 外した ので、★読む 人が 居なく なりました。
+//   ★★★使われない 部品を 残しません。★残すと、★半年後に
+//     ★「どちらが 正か」を また 調べる ことに なります。
+//   ★★中身は `git show 015f49c2:components/OpsRoster.jsx` で 引けます。
+
 const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
 
 /** ★入った日。★「2024年4月」。★日にちまでは 出しません。 */
@@ -114,7 +93,6 @@ export default function OpsRoster({
   // ★★1枚が 開いている あいだの、★まだ 決めていない えらび。
   //   ★★押すたびに 一覧が 変わると、★何人に なるかが 分かりません。
   //     ★「この しぼりで 見る」を 押したときに、★はじめて 効きます。
-  const [sheetOpen, setSheetOpen] = useState(false);
   // ★★2026-09-11、★新しい 動く見本（SH['shiboru']）に そろえました。
   //   ★★えらんだ その場で 効きます。★「この しぼりで 見る」は やめました。
   //     ★見本に その ボタンが ありません。★1枚は 開いた ままで 一覧が 動きます。
@@ -155,23 +133,124 @@ export default function OpsRoster({
   const by = countsByStatus(members);
   const fee = monthlyFee(counted);
 
+  // ★★★二段組に する か（★2026-09-18・坂本さんの お決め 1）。
+  //   ★★見本 ── `col2`。★左が 表（flex:3）、★右が ご請求の 欄（flex:1・min 230）。
+  //   ★★★境目を **新しく 作りません**。★表を 出す 境目 と 同じ もの を 使います
+  //     （★`lib/opsRosterTable.js` の `ROSTER_TABLE_AT` ＝ 885）。
+  //     ★★2つ 目の 境目を 作ると、★表は 出て いるのに 右の 欄が 無い 幅 が できます。
+  //   ★★狭い ときは これまで どおり ── ★1段組 ＋ 下に 貼りつく 合計 です。
+  const 二段 = showRosterTable(winW);
+
+  // ★★★ご請求の 中身 ── ★1つの 関数 です。
+  //   ★★広い ときは 右の 箱の 中、★狭い ときは 下の 帯の 中 に 出ます。
+  //   ★★★写して 2つに しません。★片方だけ 直る 日が 来ます。
+  function 請求の中身() {
+    return (
+      <>
+        <div className="flex items-center justify-between"
+          style={{ fontSize: "0.8125rem", color: C.ink }}>
+          <span>数える人数</span>
+          <span>{counted}人</span>
+        </div>
+        {/* ★★内訳は、★5人に 満たなければ 出しません（★2026-09-10）。
+            ★★54人の 中の「休会中 2人」は、★近い人には 見当が つきます。
+            ★★合計（数える人数）は 出します。★あれは かたまりでは ありません。
+            ★決めるのは lib/smallGroups.js だけです。 */}
+        {(() => {
+          const safe = safeBreakdown(by);
+          const parts = [];
+          if (safe.left != null && safe.left > 0) parts.push(`退会 ${safe.left}人`);
+          // ★★休会・返事まちは 台帳に ありません（★2026-09-13）。出しません。
+          const hidden = (safe.left == null);
+          if (parts.length === 0 && !hidden) return null;
+          return (
+            <p style={small}>
+              {parts.join("　／　")}
+              {hidden ? (parts.length > 0 ? <br /> : null) : null}
+              {hidden ? TOO_SMALL_NOTE : null}
+            </p>
+          );
+        })()}
+        {canSeeMoney ? (
+          <>
+            <div className="flex items-center justify-between"
+              style={{ fontSize: "0.8125rem", color: C.ink }}>
+              <span>今月のご請求</span>
+              <span>{yen(fee)}円</span>
+            </div>
+            <p style={small}>
+              {counted > 0 ? `1人あたり ${yen(perHead(counted))}円` : "—"}
+              {fee === MONTHLY_FLOOR && counted > 0 ? `　／　月額の下限 ${yen(MONTHLY_FLOOR)}円` : ""}
+            </p>
+          </>
+        ) : null}
+      </>
+    );
+  }
+
+  // ★★右の 欄の 1枚目（★見本の「いまの ご請求」）。
+  function 請求の箱() {
+    return (
+      <div style={card}>
+        <h3 style={{ ...TYPE.h3, margin: "0 0 7px" }}>いまの ご請求</h3>
+        {請求の中身()}
+      </div>
+    );
+  }
+
+  // ★★右の 欄の 2枚目（★見本の「数えないもの」）。★字は lib が 持ちます。
+  function 数えないものの箱() {
+    return (
+      <div style={card}>
+        <h3 style={{ ...TYPE.h3, margin: "0 0 7px" }}>{NOT_COUNTED_HEAD}</h3>
+        {notCountedRows().map((r) => (
+          <div key={r.name} className="flex items-center justify-between"
+            style={{ ...small, padding: "3px 0" }}>
+            <span>{r.name}</span>
+            <span>{r.value}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     // ★★下の 帯に かぶらないよう、★下に 余白を 取ります。
-    <div className="space-y-3" style={{ paddingBottom: 132 }}>
+    /* ★★下の 帯に かぶらないよう、★下に 余白を 取ります。
+         ★★★二段組の ときは、★合計が 右に 移るので 余白は 要りません。 */
+    <div className="space-y-3" style={{ paddingBottom: 二段 ? 24 : 132 }}>
       <div>
-        <h2 className="ff-display italic" style={{ fontSize: "1.25rem", color: C.ink }}>名簿</h2>
+        {/* ★★★`.ff-display italic` を 外しました（★2026-09-18・坂本さんの お決め 3）。
+             ★★見本の 題は その 書体 ですが、★この 蔵には 先に 決めが あります ──
+               ★★`lib/uiKit.js`「門の中の 画面では .ff-display を 使いません」。
+               ★★Cormorant の 0 は 背の低い 旧式数字で、★小文字の o に 見えます。
+               ★★2026-09-09 の 実機で、★ねむりが「6時間o分」と 出て いました。
+             ★★★1画面の 見本合わせ より、★全体の 揃いを 採ります。 */}
+        <h2 style={{ fontSize: "1.25rem", color: C.ink }}>名簿</h2>
         <p style={small}>
           {/* ★★2026-09-13、★ここが「在籍 NaN人」に なって いました。
               ★★countsByStatus の 形を active／left に 変えた とき、
                 ★★by.paused が 無く なりました。★数 ＋ undefined ＝ NaN。
               ★★描いて みて 気づきました。★見張りは 通って いました。
               ★★数えるのは 在籍中 だけ です。★退会した 方は 数えません。 */}
-          在籍 {by.counted}人
-          {/* ★★何が 数えられているかを、★はじめに 書きます。
-              ★★あとから「先生も 数えた」と 思われないためです。 */}
-          <br />ご請求はこの人数です。先生と事務の方は数えません。
+          {/* ★★★字は lib が 持ちます（★2026-09-18）。★ここで 組み立てません。
+               ★★見本 ──「N人　／　在籍 M人（＝ご請求の 人数）　／　
+                 ★休会・退会・招待中は 数えません」
+               ★★「＝ご請求の 人数」が、★これが お金の 話だ と 分かる 唯一の 印 です。 */}
+          {rosterSubLine(members.length, by.counted)}
         </p>
       </div>
+
+      {/* ★★★二段組（★見本の `col2`）。★左が 表、★右が ご請求の 欄。
+           ★★狭い ときは 1段に なります。★`flexWrap` では なく、
+             ★★右の 欄 そのものを 出しません（★下に 貼りつく 合計が 出ます）。
+           ★★`alignItems: flex-start` ── ★見本の ままです。
+             ★★これが 無いと、★右の 箱が 表の 高さまで 伸びます。 */}
+      <div style={{
+        display: "flex", gap: 14,
+        alignItems: "flex-start", flexDirection: 二段 ? "row" : "column"
+      }}>
+      <div className="space-y-3" style={{ flex: 3, minWidth: 0, width: "100%" }}>
 
       {/* ★★さがすを、★一覧の 前に 置きます（★裁定）。
           ★★54人を 上から 送るのは、★探すことに なりません。 */}
@@ -204,20 +283,44 @@ export default function OpsRoster({
         })}
       </div>
 
-      {/* ★★担当の先生で しぼる（★見本 G07）。
-          ★★開く 口は ここです。★いま 何で しぼっているかも、ここに 出します。
-            ★★絞ったまま 忘れると、★「1人 減った」に 見えます。 */}
-      <button type="button" onClick={() => setSheetOpen(true)}
-        style={{
-          width: "100%", minHeight: 44, borderRadius: 12, padding: "0 13px",
-          border: `1px solid ${C.line}`, background: C.card, color: C.ink,
-          fontSize: "0.8125rem", textAlign: "left"
-        }}>
-        絞る
-        <span style={{ float: "right", color: C.inkSoft }}>
-          {narrowed ? "しぼっています" : "すべて"}　›
-        </span>
-      </button>
+      {/* ★★★学年・先生の 札を、★表の 上に 並べます（★2026-09-18・坂本さんの お決め 2）。
+           ★★きょうまで、★この 2つは「絞る」1枚（下から 上がる）の 中に ありました。
+             ★★2026-09-11 に こちらで 足した ものです。★見本に ありません。
+             ★★★見本に 根拠の ない 独自の 形は、★この 機会に 見本へ 寄せます。
+           ★★見本 ── `pills` が 2列。★状態の 列と、★学科・コース ＋ 学年の 列。
+           ★★★この 蔵に「学科・コース」の 表が まだ ありません。
+             ★★`gradeFilterOptions` は 名簿に 入って いる 学年 だけ を 出します。
+             ★★1つも 無ければ、★列 ごと 出しません（★押せない 札を 置きません）。
+           ★★押した その場で 効きます。★決める ボタンは ありません。 */}
+      {gradeOptions.length > 0 ? (
+        <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 2 }}>
+          {gradeOptions.map((o) => (
+            <button key={o.id} type="button" onClick={() => setGrade(o.id)}
+              aria-pressed={grade === o.id}
+              style={{
+                whiteSpace: "nowrap", minHeight: 44, padding: "0 11px",
+                borderRadius: 999, fontSize: "0.71875rem",
+                border: `1px solid ${grade === o.id ? C.curtain : C.line}`,
+                background: grade === o.id ? C.curtain : C.card,
+                color: grade === o.id ? "#FFFDF8" : C.inkSoft
+              }}>{o.label}</button>
+          ))}
+        </div>
+      ) : null}
+
+      <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 2 }}>
+        {teacherOptions.map((o) => (
+          <button key={o.id} type="button" onClick={() => setTeacher(o.id)}
+            aria-pressed={teacher === o.id}
+            style={{
+              whiteSpace: "nowrap", minHeight: 44, padding: "0 11px",
+              borderRadius: 999, fontSize: "0.71875rem",
+              border: `1px solid ${teacher === o.id ? C.curtain : C.line}`,
+              background: teacher === o.id ? C.curtain : C.card,
+              color: teacher === o.id ? "#FFFDF8" : C.inkSoft
+            }}>{o.label}</button>
+        ))}
+      </div>
 
       {/* ★★★広い ときは 表、★狭い ときは 札（★裁定 その80・2026-09-18）。
           ★★★どちらも 残します。★用が ちがいます ──
@@ -507,110 +610,63 @@ export default function OpsRoster({
         </div>
       ) : null}
 
-      {/* ★★合計は、★下に 固定して いつも 見えるように（★裁定）。
-          ★★人数を 変えながら、★いくらに なるかを 見られます。
-          ★★お金は 責任者だけ（★§1-1）。★admin には 出しません。 */}
-      <div style={{
-        position: "fixed", left: 0, right: 0, bottom: 56,
-        background: C.card, borderTop: `1px solid ${C.line}`,
-        padding: "10px 14px calc(10px + env(safe-area-inset-bottom))",
-        zIndex: 3
-      }}>
-        <div className="flex items-center justify-between" style={{ fontSize: "0.8125rem", color: C.ink }}>
-          <span>数える人数</span>
-          <span>{counted}人</span>
-        </div>
-        {/* ★★内訳は、★5人に 満たなければ 出しません（★2026-09-10）。
-            ★★54人の 中の「休会中 2人」は、★近い人には 見当が つきます。
-            ★★合計（数える人数）は 出します。★あれは かたまりでは ありません。
-            ★決めるのは lib/smallGroups.js だけです。 */}
-        {(() => {
-          const safe = safeBreakdown(by);
-          const parts = [];
-          if (safe.left != null && safe.left > 0) parts.push(`退会 ${safe.left}人`);
-          // ★★休会・返事まちは 台帳に ありません（★2026-09-13）。出しません。
-          const hidden = (safe.left == null);
-          if (parts.length === 0 && !hidden) return null;
-          return (
-            <p style={small}>
-              {parts.join("　／　")}
-              {hidden ? (parts.length > 0 ? <br /> : null) : null}
-              {hidden ? TOO_SMALL_NOTE : null}
-            </p>
-          );
-        })()}
-        {canSeeMoney ? (
-          <>
-            <div className="flex items-center justify-between" style={{ fontSize: "0.8125rem", color: C.ink }}>
-              <span>今月のご請求</span>
-              <span>{yen(fee)}円</span>
-            </div>
-            <p style={small}>
-              {counted > 0 ? `1人あたり ${yen(perHead(counted))}円` : "—"}
-              {fee === MONTHLY_FLOOR && counted > 0 ? `　／　月額の下限 ${yen(MONTHLY_FLOOR)}円` : ""}
-            </p>
-          </>
-        ) : null}
-      </div>
+      </div>{/* ★左の 列 ここまで */}
 
-      {/* ★★絞る ── 下から 上がる 1枚（★新しい 動く見本 SH['shiboru'] ／ 2026-09-11）。
-          ★★えらんだ その場で 効きます。★決める ボタンは ありません。
-            ★★はじめ「この しぼりで 見る」を 置いていました（★静止画 G07）。
-              ★新しい 見本に その ボタンが ないため、外しました。
-              ★1枚は 開いた まま、★後ろの 一覧が 動きます。
-          ★★状態は、★上の 札と ここの 両方に あります（★見本も そうです）。
-            ★★同じ 1つの 値を 見ています。★決めが 2つに なっていません。
-          ★★閉じる 道を 2つ 置きます（★暗い ところと「閉じる」）。
-            ★出口の ない 1枚を 作らないこと。 */}
-      {sheetOpen ? (
-        <>
-          <div onClick={() => setSheetOpen(false)}
-            style={{
-              position: "fixed", inset: 0, zIndex: 70,
-              background: "rgba(36,25,20,0.35)"
-            }} />
-          <div role="dialog" aria-label="絞る"
-            style={{
-              position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 71,
-              maxHeight: "70vh", overflowY: "auto",
-              background: C.paper, borderRadius: "18px 18px 0 0",
-              border: `1px solid ${C.line}`, borderBottom: "none",
-              padding: "12px 13px calc(14px + env(safe-area-inset-bottom))"
-            }}>
-            <div aria-hidden="true" style={{
-              width: 40, height: 4, borderRadius: 2, background: "#DFD4BE",
-              margin: "0 auto 12px"
-            }} />
-            <div style={{ fontSize: "0.9375rem", fontWeight: 700, marginBottom: 10 }}>絞る</div>
-
-            <FilterRow title="状態"
-              options={ROSTER_CHIPS.map((c) => ({ id: c.key, label: c.label, count: chips[c.key] }))}
-              value={chip} onChange={setChip} />
-
-            {/* ★★学年は、★名簿に 入っているときだけ 出します。
-                ★1つも 無いのに 札を 並べると、★押しても 何も 起きません。 */}
-            {gradeOptions.length > 0 ? (
-              <FilterRow title="学年" options={gradeOptions} value={grade} onChange={setGrade} />
-            ) : null}
-
-            <FilterRow title="先生" options={teacherOptions} value={teacher} onChange={setTeacher} />
-
-            {/* ★★見本の 但し書き（★1文字も 変えないこと）。
-                ★仕組みは lib/smallGroups.js に 前から あります。
-                ★言葉が 画面に 出ていませんでした。 */}
-            <p style={{ ...small, marginTop: 12 }}>
-              下から 出します（iPhoneでは 上に 置きません）。{MIN_GROUP}人未満の かたまりは、数を 出しません。
-            </p>
-
-            <button type="button" onClick={() => setSheetOpen(false)}
-              style={{
-                width: "100%", minHeight: 48, marginTop: 10, borderRadius: 12,
-                border: `1px solid ${C.line}`, background: C.card, color: C.ink,
-                fontSize: "0.875rem"
-              }}>閉じる</button>
-          </div>
-        </>
+      {/* ★★★右の 欄（★見本の `flex:1;min-width:230px`）。
+           ★★2枚 ── ★「いまの ご請求」と「数えないもの」。
+           ★★★貼りつけます。★表を 下まで 送っても、★合計が 見えて います
+             （★見本の 但し書き ──「合計は 右に 貼りつけます」）。
+           ★★狭い ときは 出しません。★下に 貼りつく 合計が その 役 です。 */}
+      {二段 ? (
+        <aside className="space-y-3" style={{
+          flex: 1, minWidth: 230, position: "sticky", top: 0
+        }}>
+          {請求の箱()}
+          {数えないものの箱()}
+        </aside>
       ) : null}
+      </div>{/* ★二段組 ここまで */}
+
+      {/* ★★★「数えないもの」── ★狭い ときは ここに 出します（★見本の 2枚目）。
+           ★★2026-09-18 まで、★この 箱が ありません でした。
+           ★★休会・招待中・先生と事務・5人まで 0円 ── ★どれも お金の 話 です。
+             ★★出さないと、★数が 合わない ように 見えます。 */}
+      {二段 ? null : 数えないものの箱()}
+
+      {/* ★★★下の 但し書き（★見本の `.note`）。★字は lib が 持ちます。
+           ★★1行目は 太字 です。★健康の 断り です。★減らしません。 */}
+      <p style={{ ...small, lineHeight: 1.9 }}>
+        {rosterNotes().map((t, i) => (
+          <span key={t} style={{ display: "block" }}>
+            {t === ROSTER_NOTE_BOLD ? <b style={{ color: C.ink }}>{t}</b> : t}
+          </span>
+        ))}
+      </p>
+
+      {/* ★★★狭い ときの 合計 ── ★下に 貼りつけます（★裁定・2026-09-09）。
+           ★★人数を 変えながら、★いくらに なるかを 見られます。
+           ★★★二段組の ときは 出しません。★右の 欄に 同じ ものが あります。
+             ★★2つ 出すと、★同じ 数が 2か所に 見えます。★どちらが 本当か 迷います。
+           ★★中身は `請求の箱`（上）と 同じ 1つの 関数 です。★写して いません。 */}
+      {二段 ? null : (
+        <div style={{
+          position: "fixed", left: 0, right: 0, bottom: 56,
+          background: C.card, borderTop: `1px solid ${C.line}`,
+          padding: "10px 14px calc(10px + env(safe-area-inset-bottom))",
+          zIndex: 3
+        }}>
+          {請求の中身()}
+        </div>
+      )}
+
+      {/* ★★★「絞る」1枚（下から 上がる）を 外しました（★2026-09-18・お決め 2）。
+           ★★2026-09-11 に こちらで 足した ものです。★見本に ありません。
+           ★★中に あったのは 3つ ── ★状態／学年／先生 の 札 です。
+             ★★どれも 消えて いません。★表の 上の 列に 移しました。
+             ★★値を 書き込む ところは 1つも ありませんでした。★失う 記録は ありません。
+           ★★★但し書き「{n}人未満の かたまりは、数を 出しません」は、
+             ★★いまも ご請求の 箱の 中に 出て います（★`TOO_SMALL_NOTE`）。
+           ★★中身は `git show 015f49c2:components/OpsRoster.jsx` で 引けます。 */}
     </div>
   );
 }
