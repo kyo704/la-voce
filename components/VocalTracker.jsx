@@ -13735,6 +13735,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             && opsPostsById[opsMembership.post_id]
             ? opsPostsById[opsMembership.post_id].name : null}
           myName={profile && profile.display_name ? profile.display_name : null}
+          // ★★文字の 大きさ（★裁定 ⑧-4）。★近道 です。★新しい 決めでは ありません。
+          //   ★★`lib/displayPrefs.js` の 5段を、★そのまま 回します。
+          //   ★★書き込みも、★個人の 画面と **同じ 道**（handleSaveDisplayPref）です。
+          scaleLabel={SCALE_LABELS[normalizeScale(profile.display_scale)]}
+          onCycleScale={() => {
+            const now = normalizeScale(profile.display_scale);
+            const next = SCALES[(SCALES.indexOf(now) + 1) % SCALES.length];
+            void handleSaveDisplayPref({ display_scale: next });
+          }}
           onBack={() => setOpsOrgId(null)}
           renderTab={(tabKey) => {
             // ★★役割を、★等号を 並べる 書き方に しません。★一覧で 書きます。

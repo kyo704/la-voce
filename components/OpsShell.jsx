@@ -36,7 +36,8 @@ const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
 //   ★★日程の 見せ方を 変えるための はばは、★日程の 画面が 自分で 見ます。
 //     ★使わないものを、★ここに 残しません。
 
-export default function OpsShell({ orgName, role, postName, myName, onBack, renderTab, children }) {
+export default function OpsShell({ orgName, role, postName, myName,
+  scaleLabel, onCycleScale, onBack, renderTab, children }) {
   const tabs = tabsFor(role);
   const [tab, setTab] = useState(tabs.length > 0 ? tabs[0].key : null);
 
@@ -88,6 +89,26 @@ export default function OpsShell({ orgName, role, postName, myName, onBack, rend
               fontSize: "0.6875rem", opacity: 0.9, whiteSpace: "nowrap",
               maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis"
             }}>{myName}</span>
+          ) : null}
+
+          {/* ★★文字の 大きさ（★2026-09-18・裁定 ⑧-4）。
+              ★出どころ 見本 `<span class="rl" …>あ '+zLab()+'</span>`
+
+              ★★★これは **近道** です。★新しい 決めでは ありません。
+                ★★大きさは `lib/displayPrefs.js` が 持ちます。
+                ★★`display_prefs` の 設定は、★もとから 運営にも かかって います
+                  （★`SCALE_NOTE_BOLD`「運営モードにも 同じ設定が かかります」）。
+                ★★★だから ここは、★同じ ものを 押せる ように した だけ です。
+                  ★★2つめの 決めを 作って いません。
+              ★★押すと 次の 大きさへ 回ります。★見本と 同じ 動き です。 */}
+          {onCycleScale ? (
+            <button type="button" onClick={onCycleScale}
+              title={"文字の 大きさ（" + (scaleLabel || "") + "）"}
+              style={{
+                background: "rgba(255,253,248,0.18)", border: "none", color: "#FFFDF8",
+                borderRadius: 99, padding: "3px 10px", fontSize: "0.625rem",
+                minHeight: 28, whiteSpace: "nowrap", flex: "none"
+              }}>あ {scaleLabel}</button>
           ) : null}
         </span>
       </div>
