@@ -85,11 +85,26 @@ console.log("\n=== ★役職を 決める 1枚（見本 P_setPost）===");
   const m = /const PEOPLE_NOTE = Object\.freeze\(\[([\s\S]*?)\]\)/.exec(画面);
   t("★注が 1か所に ある", !!m);
   const 行 = m ? (m[1].match(/"/g) || []).length / 2 : 0;
-  t("★注は 2行（いま " + 行 + "）", 行 === 2);
-  t("★「変えた記録は 残ります」を 書いて いない（台帳に 記録が ありません）",
-    !m || !/変えた記録は 残ります/.test(m[1]));
-  t("★わけが、その 場に 書いて ある", /列は なく、.*引き金も/.test(生));
-  t("★引き金が 書いて ある", /後まわし・引き金/.test(生));
+  t("★注は 3行（いま " + 行 + "）", 行 === 3);
+  // ★★★「変えた記録は 残ります」は、★台帳に 記録が できた ので 書けます。
+  //   ★★書いた なら、★記録が 本当に 残る ことも 見ます。
+  //   ★★★言葉だけ 先に 足す ことを、★ここで 止めます。
+  t("★「変えた記録は 残ります」と 書いて ある",
+    !!m && /変えた記録は 残ります/.test(m[1]));
+  const 紙 = readRaw("supabase/migration_post_change_log.sql");
+  t("★記録の 表が ある（post_change_log）", /create table if not exists public\.post_change_log/.test(紙));
+  t("★誰が・いつ・誰を が そろって いる",
+    /changed_by/.test(紙) && /changed_at/.test(紙) && /target_user_id/.test(紙));
+  t("★役職の 名も 残す（番号だけ だと 消えた とき 読めません）",
+    /from_post_name/.test(紙) && /to_post_name/.test(紙));
+  const 道 = readCode("app/api/org/posts/route.js");
+  // ★★★`記録する(admin` は **作った ところ** にも 当たります。
+  //   ★★3 と 出て 落ちました。★呼ぶ ところ だけ を 数えます。
+  t("★付けた とき・外した とき の 2か所で 記録を 書いて いる",
+    (道.match(/await 記録する\(admin/g) || []).length === 2);
+  t("★記録は 直せない（update も delete も 渡して いない）",
+    !/grant[^;]*update[^;]*post_change_log|grant[^;]*delete[^;]*post_change_log/i.test(紙));
+  t("★ご本人も 読める（黙って 変えられない）", /target_user_id = auth\.uid\(\)/.test(紙));
 }
 
 console.log(落ち === 0 ? "\n★すべて 通りました。" : `\n★${落ち}件 落ちました。`);

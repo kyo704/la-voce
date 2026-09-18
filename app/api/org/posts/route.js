@@ -57,6 +57,37 @@ function mayTouchPosts(member, perms) {
   return member.role === "owner";
 }
 
+/**
+ * ★役職を 変えた 記録を 1行 残します（★坂本さんの お決め・2026-09-18）。
+ *
+ *   ★★お金の 宛先（`atesaki_changed_at` / `atesaki_changed_by`）と 同じ 考え です。
+ *   ★★★役職の **名** も 残します。★番号だけ だと、★その 役職が 消えた とき
+ *     ★★何から 何に 変わったのかが 読めなく なります。
+ *   ★★★書けなくても、★役職の 変更は 止めません。
+ *     ★★止めると、★記録の 都合で 人の 仕事が 止まります。
+ *     ★★けれど **黙りません**。★誤りは 必ず 書き出します。
+ *     ★★（★`monka_read` の ときは 逆 です ── ★あちらは 記録が 先 です。
+ *       ★★読むのは 調べる ため で、★記録の 無い 閲覧は 作らない、と 決めました）
+ */
+async function 記録する(admin, { orgId, targetUser, fromId, toId, by }) {
+  const 名 = {};
+  const ids = [fromId, toId].filter(Boolean);
+  if (ids.length > 0) {
+    const { data } = await admin.from("org_posts").select("id, name").in("id", ids);
+    (data || []).forEach((x) => { 名[x.id] = x.name; });
+  }
+  const { error } = await admin.from("post_change_log").insert({
+    org_id: orgId,
+    target_user_id: targetUser,
+    from_post_id: fromId || null,
+    from_post_name: fromId ? (名[fromId] || null) : null,
+    to_post_id: toId || null,
+    to_post_name: toId ? (名[toId] || null) : null,
+    changed_by: by
+  });
+  if (error) console.error("★役職を 変えた 記録を 残せません でした:", error);
+}
+
 export async function POST(request) {
   const supabase = createClient();
   // ★★2026-09-11、★受け取り方を まちがえていました。
@@ -177,6 +208,9 @@ export async function POST(request) {
       console.error("★役職を 外せません でした（0行）:", { orgId, targetUser });
       return NextResponse.json({ error: tx("いま、つながりません。") }, { status: 503 });
     }
+    await 記録する(admin, {
+      orgId, targetUser, fromId: them.post_id, toId: null, by: user.id
+    });
     return NextResponse.json({ ok: true });
   }
 
@@ -262,6 +296,9 @@ export async function POST(request) {
       console.error("★役職を 付けられません でした（0行）:", { orgId, targetUser, postId });
       return NextResponse.json({ error: tx("いま、つながりません。") }, { status: 503 });
     }
+    await 記録する(admin, {
+      orgId, targetUser, fromId: them.post_id, toId: postId, by: user.id
+    });
     return NextResponse.json({ ok: true });
   }
 

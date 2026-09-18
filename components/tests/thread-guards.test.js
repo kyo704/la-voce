@@ -37,7 +37,14 @@ const allSql = sqlFiles.map((f) => fs.readFileSync(path.join(root, "supabase", f
 //     ★★「post」は「投稿」では なく「役職」です。
 //     ★この 見張りが、★役職の 表を 連絡の 表と 読み違えて 落ちました。
 //   ★★名前で 当てる 検査の 限界です。★除く ものを 名指しで 書きます。
-const NOT_THREADS = ["org_posts"];
+// ★★名に「post」が 入って いても、★やりとり では ない もの。
+//   ★★★`org_posts` …… ★役職 です。★「役職（post）」の post です。
+//   ★★★`post_change_log` … ★役職を 変えた 記録 です（★2026-09-18）。
+//     ★★本文の 列も、★参加する 人の 列も ありません。
+//     ★★誰が・いつ・誰の 役職を 変えたか、だけ です。
+//   ★★★ここに 足す ときは、★**本文が 無い こと**を 確かめて ください。
+//     ★★本文が ある もの を 足すと、★この 見張りは 効かなく なります。
+const NOT_THREADS = ["org_posts", "post_change_log"];
 
 function threadTables() {
   const hits = [];
