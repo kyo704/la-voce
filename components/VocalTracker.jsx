@@ -13728,6 +13728,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         <OpsShell
           orgName={membership && membership.org ? membership.org.name : "教室"}
           role={gate}
+          // ★★役職の 名と お名前（★2026-09-18・裁定 ⑧）。
+          //   ★★名は `opsPostsById` に あります。★できことと 同じ ところ から 取ります。
+          //   ★★お名前は いま 画面に 居る ご本人 です。★ほかの 方の 名では ありません。
+          postName={opsMembership && opsMembership.post_id
+            && opsPostsById[opsMembership.post_id]
+            ? opsPostsById[opsMembership.post_id].name : null}
+          myName={profile && profile.display_name ? profile.display_name : null}
           onBack={() => setOpsOrgId(null)}
           renderTab={(tabKey) => {
             // ★★役割を、★等号を 並べる 書き方に しません。★一覧で 書きます。

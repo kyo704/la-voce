@@ -36,7 +36,7 @@ const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
 //   ★★日程の 見せ方を 変えるための はばは、★日程の 画面が 自分で 見ます。
 //     ★使わないものを、★ここに 残しません。
 
-export default function OpsShell({ orgName, role, onBack, renderTab, children }) {
+export default function OpsShell({ orgName, role, postName, myName, onBack, renderTab, children }) {
   const tabs = tabsFor(role);
   const [tab, setTab] = useState(tabs.length > 0 ? tabs[0].key : null);
 
@@ -62,12 +62,33 @@ export default function OpsShell({ orgName, role, onBack, renderTab, children })
           fontSize: "0.8125rem", overflow: "hidden", textOverflow: "ellipsis",
           whiteSpace: "nowrap", flex: 1, textAlign: "center"
         }}>{orgName} の運営</span>
-        {/* ★役割を 出します。★お金の欄が 出る／出ないの わけが 分かるように。
-            ★★2026-09-11、★ここに「できこと（Set）」が 渡るように なりました。
-              ★★Set を そのまま 描くと、★何も 出ません。
-              ★★役職で 分けている ときは「役職」と だけ 出します。 */}
-        <span style={{ fontSize: "0.6875rem", opacity: 0.8, flex: "none" }}>
-          {typeof role === "string" ? role : "役職"}
+        {/* ★★★役職の 名と お名前（★2026-09-18・裁定 ⑧）。
+            ★出どころ 見本 `<span class="badge">'+S.post+'</span><span>坂本 響</span>`
+
+            ★★きょうまで、★ここは「役職」の 3文字 でした。
+              ★★2026-09-11 に できこと（Set）が 渡る ように なり、
+                ★★Set を そのまま 描くと 何も 出ない ので、
+                ★★「役職」と だけ 書いて ありました。
+              ★★★名は **あった** のに、★渡して いません でした。
+            ★★どの 役職で 見て いるかが 分かると、
+              ★★お金の 欄が 出る／出ないの わけも 分かります。 */}
+        <span style={{ display: "flex", alignItems: "center", gap: 8, flex: "none" }}>
+          {postName ? (
+            <span style={{
+              fontSize: "0.625rem", background: "rgba(255,253,248,0.18)",
+              borderRadius: 99, padding: "3px 9px", whiteSpace: "nowrap"
+            }}>{postName}</span>
+          ) : (
+            <span style={{ fontSize: "0.6875rem", opacity: 0.8 }}>
+              {typeof role === "string" ? role : "役職"}
+            </span>
+          )}
+          {myName ? (
+            <span style={{
+              fontSize: "0.6875rem", opacity: 0.9, whiteSpace: "nowrap",
+              maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis"
+            }}>{myName}</span>
+          ) : null}
         </span>
       </div>
 
