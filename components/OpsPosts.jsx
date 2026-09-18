@@ -22,13 +22,19 @@ import { C } from "@/lib/tokens";
 import { TYPE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
 import { ScreenHead, HeadRound, Card, Li, Note, Warn } from "@/components/UiV2";
 import {
-  PERMS, isSchoolWide, permSet, tabsForPerms, mayGrant, permLine, CANNOT_GRANT_REASON
+  PERMS, isSchoolWide, permSet, tabsForPerms, mayGrant, permLine, CANNOT_GRANT_REASON,
+  // ★★役職の 画面の 断り（★2026-09-18・見本 `stPost` の warn ①②）。
+  can, ruleLine, VIEW_ONLY_HEAD, viewOnlyLine
 } from "@/lib/opsPerms";
 import { tx } from "@/lib/t";
 // ★★役職 × できこと の 表（★裁定 その75 修正・2026-09-18）。
 //   ★★930px 以上でだけ 出します。★測った 幅（905px）より 小さいと 横に すべります。
 import OpsPostMatrix from "@/components/OpsPostMatrix";
-import { showTable, NAV_ROW_HEAD } from "@/lib/opsPostMatrix";
+import {
+  showTable, NAV_ROW_HEAD,
+  // ★★表の 下の 注（★2026-09-18・坂本さんの ご承認）。★字は lib が 持ちます。
+  TABLE_NOTES
+} from "@/lib/opsPostMatrix";
 
 /**
  * ★つまみ（★見本の .sw）。★色だけに 意味を 持たせません。★形でも 分かります。
@@ -274,8 +280,28 @@ export default function OpsPosts({
           : null} />
       <Warn>
         {tx("この学校の 役職です。")}<b>{tx("役職が そのまま「できること」")}</b>{tx("に なります。")}<br />
+        {/* ★★★決まりの 1行（★見本 `stPost` の warn ①・2026-09-18）。
+             ★★きょうまで、★この 決まりは **触った ときに しか** 出て いません でした。
+               ★★丸を 押して、★断られて はじめて 分かる、★という こと です。
+             ★★★先に 書いて おけば、★押さずに 済みます。
+             ★★字は `lib/opsPerms.js` が 持ちます。★中の 1文は
+               ★`CANNOT_GRANT_REASON` そのもの です。★1文字も ずれません。 */}
+        <b>{ruleLine()}</b><br />
+        {tx("その方 自身にだけ かかる もの（自分の 日程・自分の 門下・出欠・時間）は、持っていなくても 渡せます。")}<br />
         {tx("足す・消す・できることを 変える ── 全部 この学校の 中だけです。")}
       </Warn>
+
+      {/* ★★★見るだけの 方への 断り（★見本 `stPost` の warn ②・2026-09-18）。
+           ★★★きょうまで、★`post` を 持たない 方に 何も 出て いません でした。
+             ★★丸は 押せます。★けれど 変わりません。★わけも 出ません。
+             ★★「押せるのに 何も 起きない」── ★いちばん 悪い 形 です（★裁定 その84）。
+           ★★誰に お願いすれば よいかまで 書きます。★行き止まりに しません。
+           ★★役職の 一覧から 引きます。★役割の 名では ありません。 */}
+      {!can(myPerms, "post") ? (
+        <Warn>
+          <b>{VIEW_ONLY_HEAD}</b>{viewOnlyLine(posts)}
+        </Warn>
+      ) : null}
 
       {/* ★★2026-09-11、★ここに わけが 出ていませんでした。
           ★★0件の ときの 枝の 中に、message を 書いていなかったためです。
@@ -389,6 +415,19 @@ export default function OpsPosts({
               ★★札の 字は `components/UiV2.jsx` の `NOTE_OPEN` / `NOTE_CLOSE`。
                 ★★見本の `textContent` を 1文字も 変えて いません。 */}
           <Note fold>
+            {/* ★★★表の 置き方の 説明（★見本 `stPost` の `.note` 3行・2026-09-18）。
+                 ★★★表が 出て いる ときだけ 出します。
+                   ★★狭い 画面では 札に なります。★「左の 列」も「見出しの 行」も ありません。
+                   ★★無い ものの 説明を すると、★探して しまいます。
+                 ★★字は `lib/opsPostMatrix.js` が 持ちます。★ここでは 書きません。 */}
+            {showTable(winW) ? TABLE_NOTES.map((n) => (
+              <span key={n.text} style={{ display: "block" }}>
+                {/* ★★★太い ところは 行の 頭 とは 限りません。★見本の とおりに 切ります。
+                     ★★① は「できること」の 4文字 だけ。★② は 1文目 ぜんぶ。 */}
+                {n.bold ? <b>{n.bold}</b> : null}
+                {n.bold ? n.text.slice(n.bold.length) : n.text}
+              </span>
+            )) : null}
             {tx("足した 役職は、はじめは できることが 1つも ありません。押して 決めてください。")}<br />
             {tx("自分が 持っていない できることは、役職にも 付けられません。")}<br />
             {tx("その 役職の方が いる間は、消せません。")}
