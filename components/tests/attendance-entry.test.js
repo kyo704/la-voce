@@ -80,10 +80,19 @@ function t(cond, label) {
   t(出欠の場所 > 0 && 日程の場所 > 0, "どちらも ある");
   t(出欠の場所 < 日程の場所, "★出欠が 帯より 先（★どの 帯からでも 出ます）");
   t(出欠の場所 < ホームの場所, "★ホームより も 先");
-  t((親.match(/<OpsAttendance/g) || []).length === 1, "★出す ところは 1つ だけ");
+  // ★★★2026-09-18、★裁定 その91 で 姿が 2つに なりました ──
+  //   ★★`<OpsAttendanceBulk>`（まとめて）と `<OpsAttendance>`（1人ずつ）。
+  //   ★★★どちらも **同じ 1か所**（帯の 外）から 出ます。★そこが 肝 です。
+  t((親.match(/<OpsAttendanceBulk/g) || []).length === 1, "★まとめては 1か所");
+  t((親.match(/<OpsAttendance\s/g) || []).length === 1, "★1人ずつも 1か所");
+  t(親.indexOf("<OpsAttendanceBulk") > 0
+    && 親.indexOf("<OpsAttendanceBulk") < 日程の場所, "★まとめても 帯より 先");
   // ★★★つける 道も 1つ だけ である こと。
   t((親.match(/const onOpsMark = async/g) || []).length === 1, "★つける 道は 1本");
-  t((親.match(/onMark=\{onOpsMark\}/g) || []).length === 1, "★その 1本を 呼んで いる");
+  // ★★1人ずつは `onOpsMark` を 通します。★まとめては `onOpsSaveBulk` です。
+  //   ★★★どちらも `.select()` を 付けて います（★下で 見ます）。
+  t(親.includes("return onOpsMark(lesson, status);"), "★1人ずつは その 1本を 呼ぶ");
+  t((親.match(/const onOpsSaveBulk = async/g) || []).length === 1, "★まとめては 1本");
   // ★★0行に 当たっても 成功に 見えない こと（★2026-09-08 の 一件）。
   t(/\.update\(patch\)\.eq\("id", lesson\.id\)\.select\("id"\)/.test(親),
     "★`.select()` が 付いて いる");

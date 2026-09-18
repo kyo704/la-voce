@@ -4,7 +4,9 @@ import { C } from "@/lib/tokens";
 import { TYPE, rem, FONT_STACK, cardStyle } from "@/lib/uiKit";
 import {
   MARKS, mayMark, isMine, isActingFor, ACTING_NOTE,
-  LOCKED_LINES, LOCKED_EMPTY, LOCKED_EMPTY_SUB, NOTES, nextUnmarked, countLine
+  LOCKED_LINES, LOCKED_EMPTY, LOCKED_EMPTY_SUB, NOTES, nextUnmarked, countLine,
+  // ★★裁定 その91（★戻り道 2つ ／ 一覧の 中を 移る ／ 学年）。
+  BACK_LABEL, BACK_MINE_LABEL, nextOf, prevOf, positionWord
 } from "@/lib/opsAttendance";
 import { tx } from "@/lib/t";
 // ★★時刻は 端末の 時計で 読みます（★台帳は UTC です）。
@@ -29,7 +31,12 @@ const 小 = { ...TYPE.mini, color: C.inkSoft, lineHeight: 1.8 };
 
 export default function OpsAttendance({
   lessons = [], current, perms, userId, nameOf, teacherNameOf,
-  onMark, onClose, busy, error = ""
+  onMark, onClose, busy, error = "",
+  // ★★裁定 その91（2026-09-18）。
+  //   ★`onGoMine` … ★2つ目の 戻り道（★つけられない ときも 使えます）
+  //   ★`gradeOf` … ★学年（★場所は 出しません。★台帳に 列が ありません）
+  //   ★`lessonName` … ★レッスンの 名
+  onGoMine, gradeOf, lessonName
 }) {
   const l = current || null;
   if (!l) return null;
@@ -45,13 +52,17 @@ export default function OpsAttendance({
         <h2 style={{ ...TYPE.title, color: C.ink, margin: 0 }}>
           {timeOf(l.scheduled_at) || ""}　{tx("レッスン")}
         </h2>
-        {onClose ? (
-          <button type="button" onClick={onClose}
-            style={{
-              background: "transparent", border: "none", color: C.inkSoft,
-              ...TYPE.mini, minHeight: 44, padding: "0 4px", fontFamily: FONT_STACK
-            }}>{tx("もどる")}</button>
-        ) : null}
+        {/* ★★★戻り道は 2つ（★裁定 その91 R1・2026-09-18）。
+             ★★つけられない 役職でも、★来た 道に 戻れます。
+             ★★見本 ──「戻る」と「自分の レッスンを 見る」。 */}
+        <span style={{ display: "flex", gap: 4, flex: "none" }}>
+          {onClose ? (
+            <button type="button" onClick={onClose} style={戻りの形}>{BACK_LABEL}</button>
+          ) : null}
+          {onGoMine ? (
+            <button type="button" onClick={onGoMine} style={戻りの形}>{BACK_MINE_LABEL}</button>
+          ) : null}
+        </span>
       </div>
       <p style={{ ...小, margin: "2px 0 10px" }}>
         {(teacherNameOf && teacherNameOf(l.teacher_id)) || tx("先生")}
@@ -85,6 +96,16 @@ export default function OpsAttendance({
             <div style={{ fontSize: rem(24), fontWeight: 700, color: C.ink, letterSpacing: "0.02em" }}>
               {(nameOf && nameOf(l.student_id)) || tx("お名前が ありません")}
             </div>
+            {/* ★★★学年と レッスンの 名（★裁定 その91 R2・2026-09-18）。
+                 ★★★場所は 出しません。★台帳に 列が ありません。
+                   ★★裁定 その89 で 行事には 足しましたが、★レッスンは まだ です。
+                   ★★無い ものを、★在る ように 見せません。 */}
+            {(gradeOf && gradeOf(l.student_id)) || lessonName ? (
+              <div style={{ ...小, margin: "3px 0 0" }}>
+                {[(gradeOf && gradeOf(l.student_id)) || "", lessonName || ""]
+                  .filter(Boolean).join("　／　")}
+              </div>
+            ) : null}
 
             {/* ★★3つの 札。★大きく、★横に 並べます（★見本の とおり）。 */}
             <div style={{ display: "flex", gap: 10, marginTop: rem(12) }}>
@@ -144,6 +165,27 @@ export default function OpsAttendance({
             </button>
           ) : null}
 
+          {/* ★★★一覧の 中を 移る（★裁定 その91 R3・2026-09-18）。
+               ★★20人を 開く なら、★次へ・前へ が 要ります。
+               ★★端では 出しません。★押せない 札を 置きません（★§8⑤）。 */}
+          {(prevOf(lessons, l.id) || nextOf(lessons, l.id)) ? (
+            <div style={{ display: "flex", gap: 8, marginTop: rem(10), alignItems: "center" }}>
+              {prevOf(lessons, l.id) ? (
+                <button type="button" disabled={busy}
+                  onClick={() => onMark && onMark(prevOf(lessons, l.id), undefined)}
+                  style={移りの形}>‹ {tx("前の 方")}</button>
+              ) : null}
+              <span style={{ ...小, flex: 1, textAlign: "center" }}>
+                {positionWord(lessons, l.id)}
+              </span>
+              {nextOf(lessons, l.id) ? (
+                <button type="button" disabled={busy}
+                  onClick={() => onMark && onMark(nextOf(lessons, l.id), undefined)}
+                  style={移りの形}>{tx("次の 方")} ›</button>
+              ) : null}
+            </div>
+          ) : null}
+
           {/* ★★数 ── ★いま どこまで 来たか。 */}
           <p style={{ ...小, margin: `${rem(10)} 0 0` }}>{countLine(lessons)}</p>
         </>
@@ -155,3 +197,13 @@ export default function OpsAttendance({
     </div>
   );
 }
+
+const 戻りの形 = {
+  background: "transparent", border: "none", color: C.inkSoft,
+  ...TYPE.mini, minHeight: 44, padding: "0 4px", fontFamily: FONT_STACK
+};
+const 移りの形 = {
+  minHeight: 44, padding: `0 ${rem(12)}`, borderRadius: 999,
+  border: `1px solid ${C.line}`, background: C.card, color: C.inkSoft,
+  ...TYPE.mini, fontFamily: FONT_STACK
+};

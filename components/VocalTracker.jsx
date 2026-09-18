@@ -158,6 +158,8 @@ import AndroidInstallPrompt from "@/components/AndroidInstallPrompt";
 import OpsHome from "@/components/OpsHome";
 // ★★出欠を つける 1枚（★裁定 その79・2026-09-18）。
 import OpsAttendance from "@/components/OpsAttendance";
+// ★★まとめて つける（★裁定 その91 R4・2026-09-18）。
+import OpsAttendanceBulk from "@/components/OpsAttendanceBulk";
 import OpsEvents from "@/components/OpsEvents";
 import OpsSettings from "@/components/OpsSettings";
 import { maySeeMoney } from "@/lib/opsShell";
@@ -166,6 +168,8 @@ import { mayEnterOps, mayEditRoster, permsOfMember } from "@/lib/opsShell";
 //   ★★`can` は もう あります（★51行・`lib/entitlements`）。★名が ぶつかります。
 //   ★★別の 名で 取り込みます。★どちらの `can` かを、★読んで 分かる ように。
 import { can as canOps, permSet } from "@/lib/opsPerms";
+// ★★まとめて つける か どうか（★裁定 その91 R4）。
+import { isBulk } from "@/lib/opsAttendance";
 import {
   rosterCount, toRosterRows,
   // ★★行事の 対象の 札（★裁定 その89 Q3・2026-09-18）。★名簿から 拾います。
@@ -12072,6 +12076,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★★出欠を つける 1枚（★裁定 その79・2026-09-18）。
   //   ★★帯は 作りません。★ホーム／日程 から 開きます。
   const [opsAttendanceLesson, setOpsAttendanceLesson] = useState(null);
+  // ★★まとめての 一覧から、★1人を 開いて いる とき（★裁定 その91 R4）。
+  //   ★★null なら 一覧の まま です。
+  const [opsAttendanceOne, setOpsAttendanceOne] = useState(null);
   const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
@@ -13888,6 +13895,42 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
              *   ★★★1つ だけ 持ちます。★入口が 2つ でも、★書く 道は 1本 です。
              *   ★★`undefined` は「次の 方へ」です。★つけ替えません。
              */
+            /**
+             * ★まとめて つける（★裁定 その91 R4・2026-09-18）。
+             *
+             *   ★★★変わった ぶん だけ 書きます。
+             *     ★★触って いない ものを 書くと、★つけた人と 時刻が 塗り替わります。
+             *     ★★「触って いないのに 私の 名が 残った」に なります。
+             *   ★★★1つでも 落ちたら、★そこで 止めて お伝えします。
+             *     ★★半分 書いた まま 黙りません。
+             */
+            const onOpsSaveBulk = async (rows) => {
+              setOpsAttendanceError("");
+              if (!rows || rows.length === 0) { setOpsAttendanceLesson(null); return; }
+              const supabase = createClient();
+              const at = new Date().toISOString();
+              for (const r of rows) {
+                const patch = r.mark
+                  ? { attendance: r.mark, attendance_at: at, attendance_by: userId }
+                  : { attendance: null, attendance_at: null, attendance_by: null };
+                // ★★★`.select()` を 付けます。★0行に 当たっても 成功に 見えます。
+                const { data, error } = await supabase.from("lessons")
+                  .update(patch).eq("id", r.lesson.id).select("id");
+                if (error || !data || data.length === 0) {
+                  console.error("★出欠を つけられません でした:", { id: r.lesson.id, error });
+                  setOpsAttendanceError("いま、つけられませんでした。");
+                  return;
+                }
+                setOrgLessons((prev) => ({
+                  ...prev,
+                  [opsOrgId]: (prev[opsOrgId] || []).map((x) =>
+                    (x.id === r.lesson.id ? { ...x, ...patch } : x))
+                }));
+              }
+              setOpsAttendanceLesson(null);
+              setOpsAttendanceOne(null);
+            };
+
             const onOpsMark = async (lesson, status) => {
               if (status === undefined) { setOpsAttendanceLesson(lesson); return; }
               setOpsAttendanceError("");
@@ -13926,18 +13969,59 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 && x.teacher_id === opsAttendanceLesson.teacher_id);
               const いま = 同じコマ.find((x) => x.id === opsAttendanceLesson.id)
                 || opsAttendanceLesson;
+              /* ★★★まとめて つける か、★1人ずつ か（★裁定 その91 R4・2026-09-18）。
+                   ★★同じ 時刻・同じ 先生の コマが 2つ 以上 なら、★まとめて。
+                   ★★★「1人ずつ」を 消して いません。★お名前を 押すと そちらへ 行きます。
+                     ★★裁定 その79 は「ホーム 1画面」の 話 でした。
+                     ★★出欠の 形は 決めて いませんでした（★裁定 その91）。
+                   ★★決めは lib/opsAttendance.js が 持ちます。 */
+              const 学年 = (id) => {
+                const r = (opsRoster || []).find((x) => x.user_id === id);
+                return (r && r.grade_label) || "";
+              };
+              if (isBulk(同じコマ) && !opsAttendanceOne) {
+                return (
+                  <OpsAttendanceBulk
+                    lessons={同じコマ}
+                    perms={gate}
+                    userId={userId}
+                    nameOf={(id) => orgDisplayName(id) || ""}
+                    teacherNameOf={(id) => orgDisplayName(id) || ""}
+                    gradeOf={学年}
+                    busy={false}
+                    error={opsAttendanceError}
+                    onClose={() => { setOpsAttendanceLesson(null); setOpsAttendanceError(""); }}
+                    onGoMine={() => { setOpsAttendanceLesson(null); goTab("home"); }}
+                    onOpenOne={(l) => setOpsAttendanceOne(l.id)}
+                    onSave={onOpsSaveBulk} />
+                );
+              }
               return (
                 <OpsAttendance
                   lessons={同じコマ}
-                  current={いま}
+                  current={opsAttendanceOne
+                    ? (同じコマ.find((x) => x.id === opsAttendanceOne) || いま)
+                    : いま}
                   perms={gate}
                   userId={userId}
                   nameOf={(id) => orgDisplayName(id) || ""}
                   teacherNameOf={(id) => orgDisplayName(id) || ""}
+                  gradeOf={学年}
                   busy={false}
                   error={opsAttendanceError}
-                  onClose={() => { setOpsAttendanceLesson(null); setOpsAttendanceError(""); }}
-                  onMark={onOpsMark} />
+                  onClose={() => {
+                    // ★★まとめての 一覧から 来た ときは、★そこへ 戻ります。
+                    if (opsAttendanceOne && isBulk(同じコマ)) { setOpsAttendanceOne(null); return; }
+                    setOpsAttendanceLesson(null); setOpsAttendanceError("");
+                  }}
+                  onGoMine={() => {
+                    setOpsAttendanceLesson(null); setOpsAttendanceOne(null); goTab("home");
+                  }}
+                  onMark={(lesson, status) => {
+                    // ★★「次の 方へ」は、★1人ずつの 中で 移ります。
+                    if (status === undefined) { setOpsAttendanceOne(lesson.id); return; }
+                    return onOpsMark(lesson, status);
+                  }} />
               );
             }
 
@@ -13970,7 +14054,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   //   ★★門は 入口 ① と 同じ です（★`shukketsu`）。
                   //     ★★持って いない 方には 渡しません。★コマは 押しどころに なりません。
                   onOpenAttendance={canOps(gate, "shukketsu")
-                    ? (l) => { setOpsAttendanceError(""); setOpsAttendanceLesson(l); }
+                    ? (l) => {
+                      setOpsAttendanceError("");
+                      // ★★★前に 開いた ときの「1人」を 持ち越しません。
+                      //   ★★別の コマを 開いたのに、★前の 方が 出ます。
+                      setOpsAttendanceOne(null);
+                      setOpsAttendanceLesson(l);
+                    }
                     : undefined}
                   onPickDate={(d) => setOpsDate(d)} />
               );
@@ -14005,7 +14095,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   //   ★★「きょうの ながれ」の 行を 押すと、★出欠の 1枚が 開きます。
                   //   ★★★できことが 無い 方には 渡しません。★押せる ように しません。
                   onOpenAttendance={canOps(gate, "shukketsu")
-                    ? (l) => { setOpsAttendanceError(""); setOpsAttendanceLesson(l); }
+                    ? (l) => {
+                      setOpsAttendanceError("");
+                      // ★★★前に 開いた ときの「1人」を 持ち越しません。
+                      //   ★★別の コマを 開いたのに、★前の 方が 出ます。
+                      setOpsAttendanceOne(null);
+                      setOpsAttendanceLesson(l);
+                    }
                     : undefined}
                   teacherCount={opsMembers.filter((mm) => SCHEDULE_ROLES.includes(mm.role)).length}
                   nameOf={(id) => orgDisplayName(id) || ""}

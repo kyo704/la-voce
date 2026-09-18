@@ -105,7 +105,10 @@ function ok(cond, 名) {
     "渡されて はじめて 押せる（★開く 先が 無ければ 札に しない）");
   ok(/canOps\(gate, "shukketsu"\)/.test(本体),
     "★できことが 無い 方には 渡さない");
-  ok(/onOpenAttendance=\{canOps\(gate, "shukketsu"\)[\s\S]{0,120}: undefined\}/.test(本体),
+  // ★★★間に 註と「1人の 印を 消す」1行が 入りました（★2026-09-18・裁定 その91）。
+  //   ★★120字 では 届きません。★窓を 広げます。
+  //   ★★見たい のは「持たない 方には undefined」です。★字の 間では ありません。
+  ok(/onOpenAttendance=\{canOps\(gate, "shukketsu"\)[\s\S]{0,400}?: undefined\}/.test(本体),
     "★持たない 方には undefined（★押せない 札に しない）");
 
   // ★★つけ終わって いるかが、★開く 前に 分かる。
