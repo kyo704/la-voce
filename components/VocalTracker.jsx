@@ -13747,6 +13747,29 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             //   ★★`no-undef` は これを 見つけられません。★名前は 在るからです。
             //     ★見張り ops-render-order.test.js を 足しました。
             const opsMembers = orgMembers[opsOrgId] || [];
+            // ★★★数える 人数は **在籍**から 数えます（★2026-09-18・裁定 ㋐）。
+            //
+            //   ★★きょうまで、★ご請求も 名簿の 人数も `opsMembers`
+            //     （★`memberships`）を 数えて いました。
+            //   ★★★`memberships.role` に 入れられるのは、★台帳の 決まり
+            //     （`memberships_role_check`）で owner／admin／teacher／staff の
+            //     ★4つ だけ です。
+            //   ★★そして `lib/orgRoster.js` の `NOT_COUNTED_ROLES` は、
+            //     ★**その 4つ** です。
+            //   ★★★だから `rosterCount(opsMembers)` は、★どんな 場合でも 0 でした。
+            //     ★★数える 人数 0人 ／ 今月の ご請求 0円 ── ★どの 学校でも、いつも。
+            //     ★★本番を 数えました ── owner 7／admin 7／teacher 7／staff 3。
+            //       ★★4つ とも 数えない ほう です。★例外は 1行も ありません。
+            //
+            //   ★★名簿の 画面は、★2026-09-13 に enrollments 側へ 直って います。
+            //     ★★同じ 直しが、★ご請求・ホーム・お知らせ・出席の 分母 に
+            //       ★届いて いません でした。
+            //     ★★`lib/orgRoster.js:188` に、★同じ かたちの 記録が 残って います。
+            //   ★★★1つ 作って、★4か所に 同じ ものを 渡します。
+            //     ★★5か所目を 作らない ため に、★ここに 置きます。
+            const opsRoster = toRosterRows(
+              orgEnrollments[opsOrgId] || [],
+              orgAssignments[opsOrgId] || []);
             if (tabKey === "schedule") {
               // ★★日程（★見本②⑥⑧⑨⑩）。★1つの日程を、3つの 見せ方で。
               //   ★★渡すのは 1つの 並びだけです。★見せ方は あちらが 決めます。
@@ -13771,13 +13794,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             // ★★行事の 対象の 人数。★いまは 名簿ぜんぶを 対象と します。
             //   ★★対象を 絞る 仕組み（学年など）は、★まだ ありません。
             //     ★無いものを、★在るように 見せません。
-            const opsTargetOf = () => rosterCount(opsMembers);
+            const opsTargetOf = () => rosterCount(opsRoster);
             if (tabKey === "home") {
               return (
                 <OpsHome
                   todayISO={opsDate}
                   lessons={opsLessons}
-                  members={opsMembers}
+                  members={opsRoster}
                   events={opsEventList}
                   participants={[]}
                   targetOf={opsTargetOf}
@@ -13802,7 +13825,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               //     ★決めるのは lib/renraku.js です。★ここで 決めません。
               // ★★おしらせを 書く（★見本②）。★開いているあいだ、★これだけ 出します。
               if (composing) {
-                const mem = orgMembers[opsOrgId] || [];
+                // ★★お知らせの 宛先の 数も、★在籍から 数えます（★2026-09-18）。
+                //   ★★`memberships` を 数えると、★いつも 0人 に なります。
+                //   ★★上の `opsRoster` を そのまま 使います。★2つめを 作りません。
+                const mem = opsRoster;
                 return (
                   <AnnouncementCompose
                     orgName={(myOrgs.find((mm) => mm.org_id === opsOrgId) || {}).org
@@ -13874,7 +13900,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ★★総当たりの 道具は、ここを `maySeeMoney` で 測って いました ──
                         ★道具は 正しく、★画面が 追いついて いません でした。 */}
                   {maySeeMoney(gate) ? (
-                    <OpsSettings members={opsMembers} staffLines={[]}
+                    <OpsSettings members={opsRoster} staffLines={[]}
                       postName={myPost ? myPost.name : null} perms={myPerms} />
                   ) : null}
                   {/* ★★★役職の 画面は「ひとの 役職を 変える」（post）を 持つ 方だけ
