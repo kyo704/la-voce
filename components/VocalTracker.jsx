@@ -12088,6 +12088,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [orgPresets, setOrgPresets] = useState({});
   const [presetsBusy, setPresetsBusy] = useState(false);
   const [presetsError, setPresetsError] = useState("");
+  // ★★門下の 空き コマの 数（★2026-09-19・お決め Q2）。★数 だけ です。
+  const [monkaFree, setMonkaFree] = useState({});
   const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
@@ -12440,6 +12442,23 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }
 
   /**
+   * ★門下の「空いて いる コマの 数」を 読みます（★2026-09-19・お決め Q2）。
+   *
+   *   ★★★返るのは **数 だけ** です。★どの 時間が 空いて いるかも 来ません。
+   *     ★★授業の 名前・先生・教室・備考は、★1つも 来ません。
+   *     ★★もとから ある 約束と 同じ です（★`lib/myTimetable.js` の `help2`）。
+   *   ★★門は 受け持ち だけ です。★役職では ありません（★台帳の 関数の 中）。
+   */
+  async function fetchMonkaFree() {
+    const supabase = createClient();
+    const { data, error } = await supabase.rpc("get_monka_free_counts");
+    if (error) { console.error("空きコマを読めませんでした:", error); return; }
+    const 表 = {};
+    (data || []).forEach((r) => { 表[r.student_id] = r.free_count; });
+    setMonkaFree(表);
+  }
+
+  /**
    * ★授業の 型を 読みます（★裁定 その90・2026-09-18）。
    *
    *   ★★当てて いる 門下も 一緒に 引き、★型ごとに まとめます。
@@ -12452,7 +12471,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const supabase = createClient();
     const [{ data: ps, error: e1 }, { data: ts, error: e2 }] = await Promise.all([
       supabase.from("lesson_presets")
-        .select("id, name, total_count, note, created_at")
+        .select("id, name, total_count, need_count, note, created_at")
         .eq("org_id", orgId).order("name", { ascending: true }),
       supabase.from("lesson_preset_targets")
         .select("preset_id, teacher_id").eq("org_id", orgId)
@@ -12488,6 +12507,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         org_id: orgId,
         name: String(form.name || "").trim(),
         total_count: Number(form.total_count),
+        // ★★空の ままで かまいません（★2026-09-19・お決め Q1）。
+        //   ★★★空なら ★印は 出ません。★勝手な 線を 引きません。
+        need_count: (form.need_count === "" || form.need_count === null
+          || form.need_count === undefined) ? null : Number(form.need_count),
         note: form.note || null
       };
       let id = form.id || null;
@@ -12620,6 +12643,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     //   ★★決まりは「事務 または 先生」です。★持たない 方には 0行 返ります。
     //     ★★誤りでは ありません。★画面は そのまま です。
     void fetchOrgPresets(orgId);
+    // ★★★門下の 空き コマの 数（★2026-09-19・お決め Q2）。
+    //   ★★返るのは 番号と 数 だけ です。★中身も、★どの 時間かも 来ません。
+    //   ★★受け持って いない 方には 0行 返ります。★誤りでは ありません。
+    void fetchMonkaFree();
     // ★★お支払い（★裁定 その74・2026-09-18）。
     //   ★★★別に 引きます。★埋め込みに しません。
     //     ★★読めないと 要求ごと 落ちます（★2026-09-01 の 一件）。
@@ -14469,7 +14496,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                        ★★★渡さなければ、★★印は 1つも 出ません（★`looksShort`）。
                          ★★勝手な 線を 引きません。
                        ★★引き金 ── ★規定の 回数を 決める 日（★台帳 08-11）。 */
-                  need={null}
+                  /* ★★★足りると される 回数（★2026-09-19・お決め Q1）。
+                       ★★型に 入って いれば、★★印が 出ます。
+                       ★★入って いなければ null。★★印は 1つも 出ません。
+                       ★★★こちらで 決めません。★学校の お決め です。 */
+                  need={(() => {
+                    const 型 = (orgPresets[opsOrgId] || [])
+                      .find((p) => (p.teachers || []).includes(userId));
+                    return 型 && 型.need_count ? 型.need_count : null;
+                  })()}
+                  freeCounts={monkaFree}
                   onOpenOne={undefined} />
               );
             }

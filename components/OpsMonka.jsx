@@ -7,7 +7,7 @@ import { TABLE_CLASS, ANCHOR_CLASSES } from "@/lib/visualTokens";
 import {
   HEAD, subLine, monkaRows, REPRESENTATIVE_MARK, lessonsOfStudent,
   presetOf, presetCount, MANY_PRESETS_LINE, NO_PRESET_LINE,
-  NOTES, NOTES_BOLD, EMPTY_HEAD, EMPTY_HOW, NOT_YET
+  NOTES, NOTES_BOLD, EMPTY_HEAD, EMPTY_HOW, NOT_YET, freeWord
 } from "@/lib/opsMonka";
 import {
   cameCount, cameWord, heldCount, progressWord, looksShort,
@@ -55,7 +55,11 @@ function Note({ items, bold }) {
 
 export default function OpsMonka({
   assignments = [], lessons = [], presets = [], teacherId,
-  nameOf, gradeOf, teacherNameOf, need, onOpenOne, onInvite
+  nameOf, gradeOf, teacherNameOf, need, onOpenOne, onInvite,
+  // ★★★空いて いる コマの 数（★2026-09-19・お決め Q2）。
+  //   ★★`{ 生徒の 番号: 数 }`。★渡されなければ「—」に します。
+  //   ★★★中身は 来ません。★数 だけ です。
+  freeCounts = {}
 }) {
   const width = useWindowWidth();
   const rows = monkaRows(assignments, teacherId, { gradeOf, nameOf });
@@ -100,6 +104,10 @@ export default function OpsMonka({
                     </th>
                     <th style={{ ...見出しの形, minWidth: 130 }}>{tx("学年・コース")}</th>
                     <th style={{ ...見出しの形, minWidth: 110, textAlign: "right" }}>{tx("出席")}</th>
+                    {/* ★★空いて いる コマ ── ★数 だけ です（★中身は 来ません）。 */}
+                    <th style={{ ...見出しの形, minWidth: 110, textAlign: "right" }}>
+                      {tx("空いている コマ")}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -112,6 +120,9 @@ export default function OpsMonka({
                       <td style={{ ...ますの形, textAlign: "right" }}>
                         <出席 r={r} lessons={lessons} teacherId={teacherId}
                           型={型} 行われた={行われた} need={need} />
+                      </td>
+                      <td style={{ ...ますの形, textAlign: "right" }}>
+                        {freeWord(freeCounts[r.studentId])}
                       </td>
                     </tr>
                   ))}
@@ -126,6 +137,7 @@ export default function OpsMonka({
                   {r.grade || "—"}　
                   <出席 r={r} lessons={lessons} teacherId={teacherId}
                     型={型} 行われた={行われた} need={need} />
+                  　{tx("空いている コマ")} {freeWord(freeCounts[r.studentId])}
                 </p>
               </div>
             ))

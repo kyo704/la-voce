@@ -8,7 +8,7 @@ import { TABLE_CLASS, ANCHOR_CLASSES } from "@/lib/visualTokens";
 import {
   HEAD, SUB_LINE, NOTES, NOTES_BOLD, EDIT_NOTES, EMPTY_HEAD, EMPTY_HOW,
   emptyPreset, mayEdit, canSave, whyCannotSave, targetsWord, totalWord,
-  TOTAL_MIN, TOTAL_MAX
+  TOTAL_MIN, TOTAL_MAX, NEED_LABEL, NEED_HINT
 } from "@/lib/lessonPresets";
 import { showEventTable } from "@/lib/opsEventTable";
 import { tx } from "@/lib/t";
@@ -86,6 +86,18 @@ export default function OpsPresets({
         <input type="number" min={TOTAL_MIN} max={TOTAL_MAX} value={form.total_count}
           onChange={(e) => setForm((f) => ({ ...f, total_count: Number(e.target.value) }))}
           style={{ ...入力の形, maxWidth: 160 }} />
+
+        {/* ★★★足りると される 回数（★2026-09-19・お決め Q1）。
+             ★★空の ままで かまいません。★空なら ★印は 出ません。
+             ★★★こちらで 2/3 などと 決めません。★学校の お決め です。 */}
+        <p style={{ ...小, margin: `${rem(10)} 0 4px` }}>{NEED_LABEL}</p>
+        <input type="number" min={1} max={form.total_count || TOTAL_MAX}
+          value={form.need_count === null || form.need_count === undefined ? "" : form.need_count}
+          onChange={(e) => setForm((f) => ({
+            ...f, need_count: e.target.value === "" ? "" : Number(e.target.value)
+          }))}
+          style={{ ...入力の形, maxWidth: 160 }} />
+        <p style={{ ...小, margin: "4px 0 0" }}>{NEED_HINT}</p>
 
         <p style={{ ...小, margin: `${rem(10)} 0 4px` }}>
           {tx("覚え書き")}　<span style={{ color: C.ink4 }}>{tx("任意")}</span>
@@ -248,6 +260,7 @@ function 押す({ p, 直せる, setForm }) {
     <button type="button"
       onClick={() => setForm({
         id: p.id, name: p.name, total_count: p.total_count,
+        need_count: p.need_count === null || p.need_count === undefined ? "" : p.need_count,
         note: p.note || "", teachers: (p.teachers || []).slice()
       })}
       style={{
