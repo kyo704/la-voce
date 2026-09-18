@@ -741,44 +741,15 @@ function P_nittei(){
  +'<span class="pill" onclick="push(\'重なり\')">重なり '+KASANARI.length+'件</span>'
  +(can('koma')?'<span class="pill" onclick="push(\'コマを決める\')">時間の 割り方</span><span class="pill" onclick="push(\'場所を決める\')">場所</span>':'')+'</div>';
  if(S.nv==='週'){
-  /* ══ ★1週間 × 濃さの 地図 ── 裁定⑨（2026-09-09）══
-     ★1か月の こよみでは ありません。
-     ★★先生を 縦に、★日を 横に。★濃いほど コマが 多い
-     ★中身は 出しません。★数だけ                              */
-  var WD=['9/7（月）','9/8（火）','9/9（水）','9/10（木）',
-          '9/11（金）','9/12（土）','9/13（日）'];
-  var LOAD={'斎藤 めぐみ':[4,6,3,5,2,0,0],'渡辺 たける':[2,3,5,4,6,3,0],
-   '高橋 のぞみ':[5,4,6,3,4,2,0],'大川 あや':[0,2,1,3,2,0,0],
-   '森 ひろし':[3,0,4,0,3,5,0],'外部 講師':[0,0,2,0,0,4,0]};
-  var MX=6;
-  var col=function(n){return n?'background:var(--enji);opacity:'
-    +(0.22+n/MX*0.74).toFixed(2):'background:var(--band2)'};
-  h+='<div class="card"><div class="h3" style="margin-top:0">'
-   +'9月7日〜13日　濃いところ＝コマが 多い</div>'
-   +'<div class="tblwrap" style="max-height:none"><table>'
-   +'<thead><tr><th class="anc" style="min-width:132px">先生</th>'
-   +WD.map(function(w){return '<th style="text-align:center;min-width:74px">'+w+'</th>'}).join('')
-   +'<th style="text-align:right;min-width:60px">ひと週</th></tr></thead><tbody>'
-   +Object.keys(LOAD).map(function(p){
-     var a=LOAD[p],sum=a.reduce(function(x,y){return x+y},0);
-     return '<tr><td class="anc">'+p+'</td>'
-      +a.map(function(n,di){
-        return '<td style="text-align:center;padding:4px 6px">'
-         +'<div onclick="S.nv=\'日\';draw()" '
-         +'title="'+p+' '+WD[di]+' '+n+'コマ" '
-         +'style="height:30px;border-radius:7px;cursor:pointer;display:flex;'
-         +'align-items:center;justify-content:center;font-size:12.5px;'
-         +'color:'+(n>3?'#fff':'var(--ink3)')+';'+col(n)+'">'+(n||'')+'</div></td>'}).join('')
-      +'<td class="num" style="font-weight:700">'+sum+'</td></tr>'}).join('')
-   +'</tbody></table></div>'
-   +'<div class="usu" style="margin-top:9px">'
-   +'中身は 出しません。<b>コマの 数だけ</b>です。押すと その日へ。</div></div>';
-  return h+'<div class="note">'
-   +'<b>先生を 縦に、日を 横に 並べます。</b>'
-   +'誰に 偏っているかが、色の 濃さで 分かります。<br>'
-   +'<b>授業の 名前・教室・生徒の 名前は 出しません。</b>数だけです。<br>'
-   +'先生の「自分の 予定」は <b>数に 入りません</b>。<br>'
-   +'重なりを <b>自動で 動かしません</b>。印を つけるだけです。</div>'}
+  h+='<div class="card"><div class="h3" style="margin-top:0">9月　濃いところ＝コマが 多い日</div>'
+   +'<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;max-width:520px">'
+   +'日月火水木金土'.split('').map(function(w){return '<div style="text-align:center;font-size:12.5px;color:var(--ink3)">'+w+'</div>'}).join('')
+   +Array.from({length:30},function(_,i){var v=[0,3,8,5,9,6,2][i%7];
+     return '<div onclick="S.nv=\'日\';draw()" style="aspect-ratio:1;border-radius:7px;background:'+(v?'#840C24':'#F0E9DA')
+     +';opacity:'+(v?0.25+v/9*0.7:1)+';display:flex;align-items:center;justify-content:center;font-size:13px;color:'
+     +(v>5?'#fff':'var(--ink3)')+';cursor:pointer">'+(i+1)+'</div>'}).join('')+'</div>'
+   +'<div class="usu" style="margin-top:9px">中身を 出しません。形だけ 見せます。押すと その日へ。</div></div>';
+  return h+'<div class="note">重なりを <b>自動で 動かしません</b>。印を つけるだけです。</div>'}
  h+='<div class="grid"><table><tr><th class="stick" style="width:76px">時間</th>'
   +P.map(function(p){return '<th>'+p+'</th>'}).join('')+'</tr>'
   +T.map(function(t,ti){return '<tr><td class="stick" style="font-size:13px">'+t+'</td>'

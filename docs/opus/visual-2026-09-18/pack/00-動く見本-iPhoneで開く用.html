@@ -512,7 +512,7 @@ var LESSONS=[
 function lesTitle(L){return L.t+'　'+L.n+(L.tea?'　'+L.tea+' 先生':'')}
 var UNREAD={'u':1,'m':1,'monka-u':1,'monka-m':0,'op-o':1,'op-m1':1,'op-m2':0,'op-m3':1};
 function unN(keys){return keys.filter(function(k){return UNREAD[k]}).length}
-function dot(k){return '<span class="dot '+(UNREAD[k]?'':'off')+'"></span>'}
+function dot(k){return ''}
 function orgOf(id){for(var i=0;i<ORGS.length;i++)if(ORGS[i].id===id)return ORGS[i];return ORGS[0]}
 function orgTag(id){var o=orgOf(id);
  return '<span class="tag" style="background:'+o.c+'18;color:'+o.c+';margin:0 0 0 6px">'+o.n+'</span>'}
@@ -1010,8 +1010,7 @@ function nRen(){
  UNREAD[S.oc]=0;   /* 中身が 画面に 出たので、その場で 既読 */
  var o=orgOf(S.oc);
  var uk=ORGS.map(function(x){return x.id}).concat(ORGS.map(function(x){return 'monka-'+x.id}));
- return '<div class="usu" style="margin:-2px 0 8px">'+(unN(uk)?'<b style="color:var(--ok)">未読 '+unN(uk)+'件</b>　青い点＝まだ 読んでいないもの':'未読は ありません')
- +'　／　中身が 出た ものは、その場で 読んだことに なります</div>'
+ return '<div class="usu" style="margin:-2px 0 8px">'+'読んだかどうかは 記録しません。未読も 数えません</div>'
  +(ORGS.length>1?'<div class="pills">'+ORGS.map(function(x){
    return '<span class="pill sm '+(S.oc===x.id?'on':'')+'" onclick="S.oc=\''+x.id+'\';draw()">'+dot(x.id)+x.n+'</span>'}).join('')+'</div>':'')
  +'<div class="post t" style="border-color:'+o.c+'44" onclick="UNREAD[\''+S.oc+'\']=0;draw()"><div class="ph2"><span class="av">'+o.n.charAt(0)+'</span>'
@@ -2511,7 +2510,7 @@ function misouDel(i){var t=MISOU[i].t;MISOU.splice(i,1);draw();toast('「'+t+'�
 function opRenraku(){
  if(!can('renraku_all'))return '<div class="hd"><h2>連絡</h2><span class="role">'+S.dm.post+'</span></div>'
   +'<div class="btn" onclick="push(\'自分の門下\')">自分の 門下の 連絡を 開く</div>'
-  +'<div class="h3">学校からの お知らせ</div>'
+  +'<div class="h3">お知らせ</div>'
   +'<div class="post t"><div class="ph2"><span class="av">校</span><span class="nm3">○○音楽大学</span><span class="dt">9月8日</span></div>'
   +'<div class="bd2">10月5日（月）は 学園祭のため、レッスンは 休講です。</div></div>'
   +'<div class="note">先生は 自分の 門下に <b>書けます</b>（読むだけでは ありません）。<br>'
@@ -2523,9 +2522,8 @@ function opRenraku(){
  +(MISOU.length?'<div class="box" style="margin-top:9px"><div class="li" onclick="push(\'未送信\')">'
    +'<span>未送信<br><span class="usu">下書きと、送れなかったもの</span></span>'
    +'<s><span class="tag" style="margin:0;background:var(--warn)33;color:#8C6115">'+MISOU.length+'件</span> ›</s></div></div>':'')
- +'<div class="h3">学校からの お知らせ</div>'
- +'<div class="usu" style="margin:-2px 0 8px">'+(unN(['op-o','op-m1','op-m2','op-m3'])?'<b style="color:var(--ok)">未読 '+unN(['op-o','op-m1','op-m2','op-m3'])+'件</b>　青い点＝まだ 読んでいないもの':'未読は ありません')
- +'　／　中身が 出た ものは、その場で 読んだことに なります</div>'
+ +'<div class="h3">お知らせ</div>'
+ +'<div class="usu" style="margin:-2px 0 8px">'+'読んだかどうかは 記録しません。未読も 数えません</div>'
  +'<div class="post t" onclick="UNREAD[\'op-o\']=0;draw()"><div class="ph2"><span class="av">校</span><span class="nm3">'+dot('op-o')+'○○音楽大学</span><span class="dt">9月8日</span></div>'
  +'<div class="bd2">10月5日（月）は 学園祭のため、レッスンは 休講です。</div></div>'
  +(can('monka_read')?'<div class="warn" style="margin-top:11px"><b>いま、門下を 読める 状態に なっています。</b><br>'

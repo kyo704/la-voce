@@ -974,18 +974,16 @@ function P_renraku(){
    +(canRead?Object.keys(MONKAUN).filter(function(k){return MONKAUN[k]}).length:0);
  var row=function(x){var idx=list.indexOf(x);
   return '<div class="pl '+(S.oc===idx?'on':'')+'" onclick="S.oc='+idx+';draw()">'
-  +'<div class="t"><span class="dot '+(x[4]?'':'off')+'"></span><span>'+x[2]+'</span></div>'
+  +'<div class="t"><span>'+x[2]+'</span></div>'
   +'<div class="m">'+x[3]+(x[0]==='門'&&MONKAS[x[1]]?'　'+MONKAS[x[1]][1]+'人':'')+'</div></div>'};
  return '<h2>連絡</h2><div class="sub">左に 一覧、右に 本文　／　'+S.post+'　／　'
- +(un?'<b style="color:var(--ok)">未読 '+un+'件</b>':'未読は ありません')+'</div>'
+ +'新しい順に 並べています'+'</div>'
  +'<div class="pills">'
  +(canAll?'<span class="pill" onclick="push(\'お知らせを書く\',-1)"><b>＋</b>　お知らせを 書く</span>':'')
- +(canAll&&MISOU.length?'<span class="pill" style="border-color:var(--warn);background:var(--band3)" onclick="push(\'未送信\')">未送信　'+MISOU.length+'件</span>':'')
  +(canRead?'<span class="pill" onclick="push(\'開いた記録\')">開いた 記録　'+HIRAITA.length+'件</span>':'')
- +'<span class="pill" onclick="markAll()">全部 読んだことに する</span></div>'
- +'<div class="usu" style="margin:-4px 0 8px"><b>右に 中身が 出た ものは、その場で 読んだことに なります</b>（青い点が 消えます）。</div>'
+ +'</div>'
  +'<div class="pane"><div class="lft">'
- +'<div style="padding:11px 15px 7px;font-size:12.5px;color:var(--ink3);letter-spacing:.12em">学校からの お知らせ</div>'
+ +'<div style="padding:11px 15px 7px;font-size:12.5px;color:var(--ink3);letter-spacing:.12em">お知らせ</div>'
  +list.filter(function(x){return x[0]==='お'}).map(row).join('')
  +((canRead||canWrite)?'<div style="padding:14px 15px 7px;font-size:12.5px;color:var(--ink3);letter-spacing:.12em">門下</div>'
    +list.filter(function(x){return x[0]==='門'}).map(row).join(''):'')
@@ -993,7 +991,7 @@ function P_renraku(){
  +(can('monka_read')?'<div class="warn" style="margin-top:12px"><b>いま、門下を 読める 状態に なっています。</b><br>'
   +'普段は 切っておく ものです。事故・苦情の 調べが 終わったら、'
   +'<span style="color:var(--enji);cursor:pointer;text-decoration:underline" onclick="offMonkaRead()">ここで 切ってください</span>。</div>':'')
- +'<div class="note"><b>青い点＝まだ 読んでいないもの</b>です。開くと 消えます。数は 上に 出します。<br>'
+ +'<div class="note"><b>読んだかどうかは 記録しません。</b>未読も 数えません。<br>'
  +'<b>門下の 連絡は、普段 運営から 見えません</b>（9月10日 変更）。<br>'
  +'　事務が 日頃 中身を 確かめる 必要は ありません。<br>'
  +'　事故・苦情の ときだけ、'+rn2('post')+'が「事故のときに 門下を 読む」を 入れます。<br>'
