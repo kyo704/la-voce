@@ -12,10 +12,34 @@
 
   ★使い方  python3 tools/prop_not_passed.py
 """
-import io, os, re, sys
+import io, json, os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 COMP = os.path.join(ROOT, "components")
+除きの道 = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prop_not_passed_excluded.json")
+
+
+def 除くもの():
+  """★渡して いない のが 正しい もの を 読みます。
+
+    ★★★3つめの 分け（★2026-09-16 の 覚え）です ──
+      ★①足りない（直す）★②余分（わけを 書く）★③**わざと 渡して いない**（除く）
+    ★★③を 紙に 残さないと、★毎回 同じ ものが 上がって きます。
+      ★★本物の 抜けが、★その 中に 埋もれます。
+    ★★★わけ と 引き金 の 両方が 無い 行は 受け取りません。
+      ★★引き金の 無い 除きは、★二度と 見直されません。
+  """
+  if not os.path.exists(除きの道):
+    return set()
+  d = json.load(io.open(除きの道, encoding="utf-8"))
+  out = set()
+  for x in d.get("除く", []):
+    if not x.get("why") or not x.get("trigger"):
+      print("★止まりました ── わけか 引き金の 無い 除きが あります: %s.%s"
+            % (x.get("部品"), x.get("prop")))
+      sys.exit(1)
+    out.add((x["部品"], x["prop"]))
+  return out
 
 
 def 受け取るもの(src):
@@ -91,7 +115,9 @@ if __name__ == "__main__":
     print("★★較正に 失敗しました ── 渡して いるのに『渡して いない』と 出ます。")
     sys.exit(1)
 
+  除く = 除くもの()
   見つかった = []
+  除いた = []
   for 名, src in 全部.items():
     部品 = 名[:-4]
     if not 呼ばれているか(全部, 部品):
@@ -102,10 +128,28 @@ if __name__ == "__main__":
       if not 使っているか(src, prop):
         continue
       if not 渡す側(全部, 部品, prop):
-        見つかった.append((部品, prop))
+        if (部品, prop) in 除く:
+          除いた.append((部品, prop))
+        else:
+          見つかった.append((部品, prop))
 
   print("★渡して いない もの ── %d件" % len(見つかった))
   for 部品, prop in 見つかった:
     print("  %s … %s" % (部品, prop))
+  print("")
+  # ★★★除いた ものも 数えて 出します。★黙って 引かない ため です。
+  #   ★★「0件でした」と だけ 出すと、★何を 見て いないかが 消えます。
+  print("★わざと 渡して いない もの ── %d件" % len(除いた))
+  for 部品, prop in 除いた:
+    print("  %s … %s" % (部品, prop))
+  # ★★★除きが、★もう 直って いないか。
+  #   ★★直った のに 除きに 残ると、★次に 見る 方が 迷います。
+  戻った = [(部品, prop) for (部品, prop) in 除く if 渡す側(全部, 部品, prop)]
+  if 戻った:
+    print("")
+    print("★★除きに ある のに、★いまは 渡されて います ── 紙から 外して ください:")
+    for 部品, prop in 戻った:
+      print("  %s … %s" % (部品, prop))
+
   print("")
   print("★較正 ── ok（にせの 1件で、★出る ／ 出ない の 両方を 確かめました）")

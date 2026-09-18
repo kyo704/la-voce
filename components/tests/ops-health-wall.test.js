@@ -67,7 +67,9 @@ function ok(cond, 名) {
   const 殻 = readRaw("components", "OpsShell.jsx");
   const 上の帯 = 殻.indexOf("‹ もどる");
   const 線 = 殻.indexOf("HEALTH_WALL_LINE}");
-  const 中身 = 殻.indexOf("renderTab ? renderTab(cur)");
+  // ★★★同じく、★字を 丸ごと 覚えて いました。
+  //   ★★`renderTab(cur, (key) => …)` に なり 落ちました。
+  const 中身 = 殻.search(/renderTab\s*\?\s*renderTab\(cur/);
   ok(上の帯 > 0 && 線 > 上の帯, "線は 上の帯 より 後");
   ok(中身 > 0 && 線 < 中身, "線は 中身 より 先");
 

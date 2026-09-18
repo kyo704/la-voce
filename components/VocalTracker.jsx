@@ -13813,7 +13813,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             void handleSaveDisplayPref({ display_scale: next });
           }}
           onBack={() => setOpsOrgId(null)}
-          renderTab={(tabKey) => {
+          renderTab={(tabKey, goTab) => {
             // ★★役割を、★等号を 並べる 書き方に しません。★一覧で 書きます。
             //   ★★teacher-org-card.test.js が、★役割を くらべる 字を 目印に
             //     ★講師のカードを 切り出しています。
@@ -13894,6 +13894,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   events={opsEventList}
                   participants={[]}
                   targetOf={opsTargetOf}
+                  // ★★ホームから 日程へ（★2026-09-18）。
+                  //   ★★札は ずっと ありました。★渡す 先が ありません でした。
+                  onSeeSchedule={() => goTab("schedule")}
                   teacherCount={opsMembers.filter((mm) => SCHEDULE_ROLES.includes(mm.role)).length}
                   nameOf={(id) => orgDisplayName(id) || ""}
                   studentNameOf={(id) => orgDisplayName(id) || ""} />

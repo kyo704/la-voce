@@ -30,7 +30,11 @@ function t(cond, label) {
 const raw = readRaw("components", "VocalTracker.jsx");
 
 // ★renderTab の かたまりを 切り出します。
-const start = raw.indexOf("renderTab={(tabKey) => {");
+// ★★★字を 丸ごと 覚えて いました。
+//   ★★2026-09-18、★`renderTab={(tabKey, goTab) => {` に なり 落ちました。
+//   ★★渡す ものが 増えるのは 正しい こと です。★見張りが 古い 形を 抱えて いました。
+//   ★★見るのは「renderTab の 始まり」です。★引数の 数では ありません。
+const start = raw.search(/renderTab=\{\(tabKey[^)]*\) => \{/);
 t(start > 0, "★renderTab が 見つかる");
 
 // ★★終わりは、★次の 同じ 深さの 閉じ ── ★中かっこを 数えます。

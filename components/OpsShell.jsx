@@ -148,7 +148,18 @@ export default function OpsShell({ orgName, role, postName, myName,
               ★どの 見せ方に するかは lib/opsSchedule.js が 決めます。
             ★★どの帯に 何を 出すかは、★呼ぶ側が 決めます（renderTab）。
               ★シェルは 入れものです。★中身を 知りません。 */}
-        <div className="space-y-3">{renderTab ? renderTab(cur) : children}</div>
+        {/* ★★★帯を 移る 道を、★中身に 渡します（★2026-09-18）。
+            ★★きょうまで、★中身から 帯を 移れません でした。
+              ★★`OpsHome` の「日程を 見る」の 札が 出ない のは、
+                ★★渡す 先が 無かった から です。
+            ★★★勝手に 移りません。★中身が 押された ときだけ です。
+            ★★出て いない 帯には 移りません（★下の `tabs.some`）。
+              ★★できことの 無い 帯に 移ると、★空の 画面が 出ます。 */}
+        <div className="space-y-3">
+          {renderTab
+            ? renderTab(cur, (key) => { if (tabs.some((t) => t.key === key)) setTab(key); })
+            : children}
+        </div>
 
         {/* ★★お金は owner だけ（★§1-1）。★admin には 出しません。 */}
         {cur === "settings" && !maySeeMoney(role) ? (
