@@ -95,7 +95,12 @@ console.log("⑧-3 ★黙って 失敗しない（★2026-09-11・実機の ご�
 // ★★0件の ときに、★わけを 出す 場所が ありませんでした。
 //   ★★押しても 何も 起きない、に なっていました。
 const opsUi = readRaw("components", "OpsPosts.jsx");
-const zeroBranch = opsUi.indexOf("{posts.length === 0 ? (");
+// ★★★2026-09-18、★表を 足した ときに 落ちました。
+//   ★★枝の 頭が `{posts.length === 0 ? (` から
+//     ★`: posts.length === 0 ? (` に 変わりました（★前に 表の 枝が 入った ため）。
+//   ★★見張りが 字を 丸ごと 覚えて いました。
+//   ★★★見るのは「わけが 枝より 先に あるか」です。★頭の 記号では ありません。
+const zeroBranch = opsUi.indexOf("posts.length === 0 ?");
 const msgAt = opsUi.indexOf("{message ? (");
 ok(msgAt > 0 && msgAt < zeroBranch, "★わけは、枝の 外に ある（★どの姿でも 見える）");
 ok(/送っています…/.test(opsUi), "★押した ことが すぐ 目に 見える");

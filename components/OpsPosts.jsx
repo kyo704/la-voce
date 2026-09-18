@@ -16,7 +16,7 @@
 //   ★見張り components/tests/ops-posts.test.js
 // ============================================================================
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
 import { ScreenHead, HeadRound, Card, Li, Note, Warn } from "@/components/UiV2";
@@ -24,6 +24,10 @@ import {
   PERMS, isSchoolWide, permSet, tabsForPerms, mayGrant, CANNOT_GRANT_REASON
 } from "@/lib/opsPerms";
 import { tx } from "@/lib/t";
+// ★★役職 × できこと の 表（★裁定 その75 修正・2026-09-18）。
+//   ★★930px 以上でだけ 出します。★測った 幅（905px）より 小さいと 横に すべります。
+import OpsPostMatrix from "@/components/OpsPostMatrix";
+import { showTable } from "@/lib/opsPostMatrix";
 
 /**
  * ★つまみ（★見本の .sw）。★色だけに 意味を 持たせません。★形でも 分かります。
@@ -74,6 +78,17 @@ export default function OpsPosts({
   posts = [], countByPost = {}, myPerms, myPostId = null, onAction, onClose, busy
 }) {
   const [openId, setOpenId] = useState(null);
+  // ★★幅を 見ます（★`components/Renraku.jsx` と 同じ 形）。
+  //   ★★はじめは null です。★分からない うちは 表を 出しません
+  //     （★出して から 縮めない）。
+  const [winW, setWinW] = useState(null);
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const on = () => setWinW(window.innerWidth);
+    on();
+    window.addEventListener("resize", on);
+    return () => window.removeEventListener("resize", on);
+  }, []);
   const [newName, setNewName] = useState("");
   const [message, setMessage] = useState("");
   // ★★いま 送って いる できことの 鍵（★2026-09-13・実機の ご報告）。
@@ -229,7 +244,19 @@ export default function OpsPosts({
         </div>
       ) : null}
 
-      {posts.length === 0 ? (
+      {/* ★★★広い ときは 表、★狭い ときは 札（★裁定 その75 修正）。
+          ★★どちらも 見本に ある 形 です。★片方を 捨てて いません。
+            ★表 … `00-動く見本-PC・iPad（運営）.html`
+            ★札 … `00-動く見本（さわれる・全画面）.html`
+          ★★境目は lib/opsPostMatrix.js の `TABLE_AT`（930）。
+            ★★測った 数 です（★表の 実の 幅 905px ＋ 余白）。 */}
+      {posts.length > 0 && showTable(winW) ? (
+        <OpsPostMatrix
+          posts={posts} countByPost={countByPost}
+          myPerms={myPerms} myPostId={myPostId} busy={busy}
+          onOpen={(id) => setOpenId(id)}
+          onToggle={(postId, key, on) => run({ action: "perm", postId, key, on })} />
+      ) : posts.length === 0 ? (
         <>
           {/* ★★1つも 無いとき。★こちらで 勝手に 作りません（★器の SQL §4）。
               ★押した その方の 手で 作ります。★誰が いつ 作ったかが 残ります。 */}
