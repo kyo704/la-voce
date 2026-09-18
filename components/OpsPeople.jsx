@@ -21,7 +21,7 @@
 
 import { useState } from "react";
 import { C } from "@/lib/tokens";
-import { mayChangePerson, mayGrantPost, permSet, can } from "@/lib/opsPerms";
+import { mayChangePerson, mayGrantPost, permSet, can, permLine } from "@/lib/opsPerms";
 
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14 };
 const row = {
@@ -50,6 +50,24 @@ function Chip({ on, children, onClick }) {
  * @param busy       送って いる あいだ true
  * @param onAssign   (userId, postId | null) => Promise
  */
+/**
+ * ★役職を 決める 1枚の 注（★見本 `P_setPost` の `.note`）。
+ *
+ *   ★★見本は 3行 です。★出せるのは **2行** です。
+ *   ★★★出せない 1行 ──「変えた記録は 残ります（誰が・いつ・誰を）」
+ *     ★★台帳に、★役職を 変えた 記録が **ありません**（★2026-09-18 に 尋ねました）。
+ *       ★★`memberships` に 列は なく、★引き金も、★記録の 表も ありません。
+ *       ★★（★ある のは `email_change_log` と `monka_read_log` の 2つ だけ です）
+ *     ★★★書けば 嘘に なります。★書きません。
+ *     ★★お金の 宛先には `atesaki_changed_at` / `atesaki_changed_by` が あります。
+ *       ★★同じ 考えを、★役職には まだ 入れて いません。
+ *     ★★【後まわし・引き金は この 束】── ★記録の 表を 作る 日に、★1行 足します。
+ */
+const PEOPLE_NOTE = Object.freeze([
+  "役職が そのまま「できること」です。別に「役割」は ありません。",
+  "どの 役職でも、生徒の 声・からだの 記録・ノート・時間割の 中身には 画面が ありません。"
+]);
+
 export default function OpsPeople({
   members, posts, nameOf, myPerms, busy, onAssign, nameFetchFailedLabel
 }) {
@@ -137,8 +155,16 @@ export default function OpsPeople({
             const grantable = mayGrantPost(myPerms, p);
             return (
               <div key={p.id} style={row}>
-                <span style={{ fontSize: "0.8125rem", color: grantable ? C.ink : C.inkSoft }}>
+                {/* ★★★役職の 名の 下に、★できことを 出します（★見本 `P_setPost`）。
+                    ★★名だけ 出して いました。
+                    ★★★「学科長に する」と 押す とき、★何を 渡すのかが
+                      ★★名からは 分かりません。★渡す ものを 見せます。
+                    ★★字は lib/opsPerms.js の `permLine` が 作ります。 */}
+                <span style={{ fontSize: "0.8125rem", color: grantable ? C.ink : C.inkSoft,
+                  minWidth: 0, flex: 1 }}>
                   {p.name}
+                  <br />
+                  <span style={small}>{permLine(p.perms)}</span>
                 </span>
                 {grantable ? (
                   <button type="button" disabled={busy}
@@ -173,6 +199,20 @@ export default function OpsPeople({
                 border: "none", cursor: busy ? "default" : "pointer", padding: 0
               }}>外す</button>
           </div>
+          {/* ★★★見本の 注（★`P_setPost` の `.note`・3行）。
+              ★★3行 のうち、★出せるのは **2行** です。
+              ★★★出せない 1行 ──「変えた記録は 残ります（誰が・いつ・誰を）」
+                ★★台帳に、★役職を 変えた 記録が **ありません**（★2026-09-18 に 尋ねました）。
+                ★★`memberships` に 列は なく、★引き金も、★記録の 表も ありません。
+                ★★★書けば 嘘に なります。★書きません。
+                ★★（★お金の 宛先には `atesaki_changed_at` / `atesaki_changed_by` が
+                  ★★あります ── ★同じ 考えを、★役職には まだ 入れて いません）
+                ★★【後まわし・引き金は この 注】── ★記録の 表を 作る 日に、
+                  ★★この 1行を 足して ください。 */}
+          <p style={{ ...small, margin: "8px 2px 0" }}>
+            {PEOPLE_NOTE.map((line) => (<span key={line}>{line}<br /></span>))}
+          </p>
+
           {/* ★★できなかった ことを、★画面に 出します。★黙って 閉じません。 */}
           {failed ? (
             <p style={{ ...small, color: C.curtain, margin: "8px 2px 0" }}>
