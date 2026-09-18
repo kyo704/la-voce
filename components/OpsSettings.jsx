@@ -39,6 +39,8 @@ const row = { display: "flex", justifyContent: "space-between", alignItems: "cen
 export default function OpsSettings({ members, staffLines, postName, perms }) {
   const n = rosterCount(members);
   const fee = monthlyFee(n);
+  // ★★どの 段も 下限に 届かなかった か。★印の 付け先が 変わります。
+  const 下限が勝った = fee > 0 && !billPlans(n).some((p) => p.yen === fee);
 
   return (
     <div className="space-y-3">
@@ -102,7 +104,10 @@ export default function OpsSettings({ members, staffLines, postName, perms }) {
             fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 2
           }}>
             {billPlans(n).map((p) => {
-              const えらばれた = p.yen === fee;
+              // ★★★段が 勝った とき だけ 印を つけます。
+              //   ★★下限が 勝った ときは、★どの 段にも つきません。
+              //     ★★その ときの 印は、★下の 下限の 行 に つきます。
+              const えらばれた = !下限が勝った && p.yen === fee;
               return (
                 <div key={p.rate} style={{
                   color: えらばれた ? C.ink : C.inkSoft,
@@ -113,7 +118,20 @@ export default function OpsSettings({ members, staffLines, postName, perms }) {
                 </div>
               );
             })}
-            <div>{`下限 ${yen(MONTHLY_FLOOR)}円（下回りません）`}</div>
+            {/* ★★★下限が 勝った ときは、★下限の 行に 印を つけます
+                （★2026-09-18・撮って 分かりました）。
+                ★★見本は「どれかの 段が 勝つ」形 だけ を 考えて います。
+                  ★★6人の 教室で 撮って みると ── ★どの 段にも 印が つかず、
+                    ★★9,800円 が どこから 来たのか、★読んで 分かりません でした。
+                ★★★内訳は「追える ように する」ため の もの です。
+                  ★★勝った 行に 印が 無い 内訳は、★その 役目を 果たしません。 */}
+            <div style={{
+              color: 下限が勝った ? C.ink : C.inkSoft,
+              fontWeight: 下限が勝った ? 700 : 400
+            }}>
+              {`下限 ${yen(MONTHLY_FLOOR)}円（下回りません）`}
+              {下限が勝った ? "　←　いちばん 安いもの" : ""}
+            </div>
           </div>
         ) : null}
       </div>
