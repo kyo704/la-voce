@@ -1,7 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { C } from "@/lib/tokens";
+// ★★名簿の 表（★裁定 その80・2026-09-18）。★広い ときだけ 出します。
+import OpsRosterTable from "@/components/OpsRosterTable";
+import { showRosterTable } from "@/lib/opsRosterTable";
 import {
   rosterCount, countsByStatus, statusLabel, isCounted,
   monthlyFee, perHead, yen, MONTHLY_FLOOR,
@@ -92,6 +95,18 @@ export default function OpsRoster({
   //     ★1段目の SQL を 流す 前でも、★画面が 壊れません。
   posts, postsById, myPerms, onSetPost
 }) {
+  // ★★幅を 見ます（★`components/Renraku.jsx` と 同じ 形）。
+  //   ★★はじめは null です。★分からない うちは 表を 出しません
+  //     （★出して から 縮めない）。
+  const [winW, setWinW] = useState(null);
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const on = () => setWinW(window.innerWidth);
+    on();
+    window.addEventListener("resize", on);
+    return () => window.removeEventListener("resize", on);
+  }, []);
+
   const [q, setQ] = useState("");
   // ★★しぼり込み（★見本 G07 ／ 2026-09-11）。
   //   ★★決めは lib/orgRoster.js が 持ちます。★ここでは 数えません。
@@ -206,9 +221,18 @@ export default function OpsRoster({
         </span>
       </button>
 
-      {/* ★★1行を 1枚の カードに（★裁定）。★表に しません。
-          ★★狭い画面で 表を 出すと、★横に 切れるか、★字が 読めなくなります。 */}
-      {list.length === 0 ? (
+      {/* ★★★広い ときは 表、★狭い ときは 札（★裁定 その80・2026-09-18）。
+          ★★★どちらも 残します。★用が ちがいます ──
+            ★表 … ★200人を 横に 並べて くらべる。★担当・状態を 一目で。
+            ★札 … ★1人を 見る。★触って 直す。
+          ★★名簿は 最大 500人 です。★札だけ では 一覧できません。
+          ★★境目は lib/opsRosterTable.js の `ROSTER_TABLE_AT`。
+            ★★★役職の 表（933）とは **別の 数** です。★列の 数も 幅も ちがいます。
+          ★★狭い ときに 表を 出すと、★横に 切れるか、★字が 読めなく なります。 */}
+      {list.length > 0 && showRosterTable(winW) ? (
+        <OpsRosterTable rows={list} nameOf={nameOf} teacherNameOf={teacherNameOf}
+          onOpen={undefined} />
+      ) : list.length === 0 ? (
         <div style={card}>
           {/* ★★「いません」と「絞ったので 見えません」を、★言い分けます。
               ★★絞ったまま 忘れると、★人が 減ったように 見えます。
