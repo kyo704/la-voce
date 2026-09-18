@@ -71,9 +71,18 @@ export default function OpsSettings({ members, staffLines, postName, perms }) {
           <span style={{ color: C.inkSoft }}>1人あたり</span>
           <span style={{ color: C.ink }}>{n > 0 ? `${yen(perHead(n))}円` : "—"}</span>
         </div>
+        {/* ★★今月の ご請求 だけ、★大きく 太く します（★2026-09-18・裁定 ⑦）。
+            ★出どころ 見本 00-動く見本-PC・iPad（運営）.html
+              `<s style="font-size:19px;font-weight:700;color:var(--ink)">`
+            ★★見本は 19px です。★ここも 19px に します（★1.1875rem）。
+              ★★見本の 字を そのまま 使います。★見た目で 合わせません。
+            ★★ここは 稟議の 紙に 写される 1つの 数 です。
+              ★★ほかの 行と 同じ 大きさ だと、★どれが その 数か 分かりません。 */}
         <div style={row}>
           <span style={{ color: C.inkSoft }}>今月のご請求</span>
-          <span style={{ color: C.ink }}>{yen(fee)}円</span>
+          <span style={{ color: C.ink, fontSize: "1.1875rem", fontWeight: 700 }}>
+            {yen(fee)}円
+          </span>
         </div>
 
         {/* ★★計算の 内訳（★2026-09-18・裁定 ⑥）。
