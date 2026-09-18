@@ -159,7 +159,7 @@ import { mayEnterOps, mayEditRoster, permsOfMember } from "@/lib/opsShell";
 // ★できことを 1つ 尋ねる 手（★役職の 画面の 門・2026-09-18）。
 //   ★★`can` は もう あります（★51行・`lib/entitlements`）。★名が ぶつかります。
 //   ★★別の 名で 取り込みます。★どちらの `can` かを、★読んで 分かる ように。
-import { can as canOps } from "@/lib/opsPerms";
+import { can as canOps, permSet } from "@/lib/opsPerms";
 import { rosterCount, toRosterRows } from "@/lib/orgRoster";
 import RecordV2Head from "@/components/RecordV2Head";
 import {
@@ -11961,6 +11961,27 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const { data, error } = await supabase.from("memberships").select("*, org:organizations(*)").eq("user_id", userId);
     if (error) console.error("教室の一覧を読めませんでした:", error);
     const mine = data || [];
+    // ★★★2026-09-18（★A2 の あと始末）。★役職（できこと）も 一緒に 持ちます。
+    //
+    //   ★★A2 で `mayEnterOps("owner")` は **false** に なりました。
+    //     ★★ところが 入口の 2か所は、★まだ `mm.role` を 渡して いました。
+    //     ★★★結果、★運営への 入口が **消えました**（★坂本さんの ご報告）。
+    //     ★★私の 見落とし です。★`tabsFor` の 呼ぶ 側は 数えましたが、
+    //       ★`mayEnterOps(` の 呼ぶ 側を 数えて いません でした。
+    //
+    //   ★★埋め込み（`post:org_posts(perms)`）に しません。
+    //     ★★読めないと **要求ごと 落ちます**。★教室の 一覧が 丸ごと 消えます。
+    //     ★★2026-09-01、★在籍で 同じ ことが 起きて います。
+    //   ★★だから 別に 引きます。★読めなくても、★一覧は 残ります。
+    const postIds = [...new Set(mine.map((m) => m.post_id).filter(Boolean))];
+    let postsById = {};
+    if (postIds.length > 0) {
+      const { data: ps, error: pe } = await supabase
+        .from("org_posts").select("id, perms").in("id", postIds);
+      if (pe) console.error("★役職を読めませんでした（教室の一覧）:", pe);
+      (ps || []).forEach((x) => { postsById[x.id] = x; });
+    }
+    setMyOrgPosts(postsById);
     setMyOrgs(mine);
     // ★自分が作った教室のうち、自分の membership が無いものを拾います。
     //   organizations_select_own_created（created_by = auth.uid()）で読めます。
@@ -11975,6 +11996,22 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }
     const joined = new Set(mine.map((m) => m.org_id));
     setMyOrphanOrgs((created || []).filter((o) => !joined.has(o.id)));
+  }
+  // ★自分の 役職（post_id → { id, perms }）。★入口の 門に 使います（★2026-09-18）。
+  const [myOrgPosts, setMyOrgPosts] = useState({});
+  /**
+   * ★その 教室の 運営に 入れるか（★入口の 門）。
+   *
+   *   ★★★A2 の あと、★ここは **できこと**で 判じます。
+   *     ★★きょうまで `mayEnterOps(mm.role)` でした。★役割の 名 です。
+   *     ★★A2 で 名では 何も 開かなく なり、★入口が 消えました。
+   *   ★★中の 画面（`OpsShell`）と、★**同じ 判じ**を 使います。
+   *     ★★2つに すると、★片方だけ 変わります。★それが この 蔵の 持病 です。
+   */
+  function mayEnterOpsHere(mm) {
+    if (!mm) return false;
+    const post = mm.post_id ? myOrgPosts[mm.post_id] : null;
+    return mayEnterOps(post ? permSet(post.perms) : null);
   }
   const [myAssignedTeachers, setMyAssignedTeachers] = useState({}); // orgId -> 担当講師のuserId配列
   // 作業指示-教室プラン D-1: つながり画面用。自分が生徒として在籍している教室と、
@@ -17089,7 +17126,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     ★★入れる役割の方にだけ 出します（★lib/opsShell.js）。
                       ★teacher には 出しません。★§3-2 の 帯で 足ります。
                       ★★入れないのに 入口を 出すと、★押しても 何も 起きません。 */}
-                {myOrgs.filter((mm) => mayEnterOps(mm.role)).map((mm) => (
+                {myOrgs.filter((mm) => mayEnterOpsHere(mm)).map((mm) => (
                   <button key={mm.org_id} type="button"
                     onClick={() => setOpsOrgId(mm.org_id)}
                     className="w-full rounded-2xl p-4 border flex items-center justify-between"
@@ -22829,7 +22866,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   <div>
                     <ScreenHead title="もっと" />
                     {moreSections({
-                      hasOrgRole: myOrgs.some((mm) => mayEnterOps(mm.role)),
+                      hasOrgRole: myOrgs.some((mm) => mayEnterOpsHere(mm)),
                       // ★★生徒を 招待する（★2026-09-15・裁定 ㋒）。
                       //   ★★見るのは これ 1つ だけ です。
                       //     ★`activeTab` も `lessonRole` も 条件に しません。
@@ -22841,7 +22878,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <Card>
                           {sec.rows.map((r, i) => (
                             r.key === "運営"
-                              ? myOrgs.filter((mm) => mayEnterOps(mm.role)).map((mm, j, all) => (
+                              ? myOrgs.filter((mm) => mayEnterOpsHere(mm)).map((mm, j, all) => (
                                   <button key={mm.org_id} type="button"
                                     onClick={() => setOpsOrgId(mm.org_id)}
                                     style={{ display: "block", width: "100%", textAlign: "left",

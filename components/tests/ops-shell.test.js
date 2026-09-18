@@ -128,9 +128,19 @@ function eq(a, b, label) {
   console.log("\n=== 呼ぶ側（★入口と、別のシェル） ===");
   {
     const vt = readCode("components", "VocalTracker.jsx");
-    // ★★入口は、★入れる役割にだけ
-    t(/myOrgs\.filter\(\(mm\) => mayEnterOps\(mm\.role\)\)/.test(vt),
-      "★入口は、入れる役割にだけ 出る");
+    // ★★★2026-09-18（★A2 の あと始末）。
+    //   ★★きょうまで `mayEnterOps(mm.role)` ── ★役割の 名 でした。
+    //   ★★A2 で 名では 何も 開かなく なり、★**入口が 消えました**。
+    //     ★★坂本さんの ご報告で 分かりました。★見張りは 気づけません でした ──
+    //       ★この 見張りが、★**古い 形を 正**と して いた から です。
+    //     ★★`tabsFor` の 呼ぶ 側は 数えました。★`mayEnterOps(` を 数えて いません。
+    //   ★★いまは、★中の 画面と **同じ 判じ**（できこと）を 使います。
+    t(/myOrgs\.filter\(\(mm\) => mayEnterOpsHere\(mm\)\)/.test(vt),
+      "★入口は、できことで 判じる");
+    t(/function mayEnterOpsHere\(mm\)/.test(vt), "★判じは 1か所に ある");
+    t(/mayEnterOps\(post \? permSet\(post\.perms\) : null\)/.test(vt),
+      "★★中の 画面と 同じ 手（mayEnterOps）を 使って いる");
+    t(!/mayEnterOps\(mm\.role\)/.test(vt), "★★役割の 名を 渡して いない");
     // ★★別のシェルであること（★個人のアプリと 重ねない）
     // ★★2026-09-11、★文字数の 窓（400）で 数えていました。
     //   ★注記を 足したら 窓から あふれて 落ちました。★数え方が もろい。
