@@ -35,7 +35,11 @@ import { buildEvents, EVENT_STATES } from "@/lib/orgEventsView";
 // ============================================================================
 
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
-const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
+// ★★★12より 小さい 字を 使いません（★裁定 その103・2026-09-19）。
+//   ★★11 → 12.5。★役は どれも「添える 字」です。
+//   ★★行の 字（13）と 数（24）・題（20）は そのまま です。
+//   ★★★上下の 向きは 変わりません ── ★24 ＞ 20 ＞ 13 ＞ 12.5。
+const small = { fontSize: "0.78125rem", color: C.inkSoft, lineHeight: 1.8 };
 
 /**
  * ★数の 札。
@@ -50,7 +54,7 @@ function Stat({ label, value, unit, onGo }) {
       <p style={small}>{label}</p>
       <p style={{ color: C.ink, marginTop: 2 }}>
         <span className="ff-display" style={{ fontSize: "1.5rem" }}>{value}</span>
-        <span style={{ fontSize: "0.6875rem", marginLeft: 2 }}>{unit}</span>
+        <span style={{ fontSize: "0.78125rem", marginLeft: 2 }}>{unit}</span>
         {onGo ? <span style={{ ...small, marginLeft: 4 }}>›</span> : null}
       </p>
     </>
@@ -85,7 +89,7 @@ function Row({ left, right, onGo }) {
   const 中 = (
     <>
       <span style={{ color: C.ink }}>{left}</span>
-      <span style={{ color: C.inkSoft, fontSize: "0.6875rem" }}>
+      <span style={{ color: C.inkSoft, fontSize: "0.78125rem" }}>
         {right}{onGo ? "　›" : ""}
       </span>
     </>
@@ -211,7 +215,7 @@ export default function OpsHome({
                   {timeOf(l.scheduled_at) || ""}　
                   {nameOf ? nameOf(l.teacher_id) : ""}
                 </span>
-                <span style={{ color: C.inkSoft, fontSize: "0.6875rem" }}>
+                <span style={{ color: C.inkSoft, fontSize: "0.78125rem" }}>
                   {/* ★★つけ終わって いるかを、★ここで お見せします。
                       ★★★開く 前に 分かります。★開いて から 知る、では ありません。 */}
                   {dup ? "★重なり" : (l.attendance
@@ -335,7 +339,7 @@ export default function OpsHome({
                 {Number(String(x.ev.event_date).slice(5, 7))}/{Number(String(x.ev.event_date).slice(8, 10))}　
                 {x.ev.title || ""}
               </span>
-              <span style={{ color: C.inkSoft, fontSize: "0.6875rem" }}>
+              <span style={{ color: C.inkSoft, fontSize: "0.78125rem" }}>
                 {x.countWord ? `出ます ${x.countWord}` : x.label}
               </span>
             </div>

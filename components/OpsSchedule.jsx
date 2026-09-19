@@ -38,7 +38,12 @@ import { tapGoesTo, tappable, TAP_GOES } from "@/lib/opsAttendance";
 // ============================================================================
 
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
-const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
+// ★★★12より 小さい 字を 使いません（★裁定 その103・2026-09-19）。
+//   ★★11 → 12.5（★添える 字・コマの 名）
+//   ★★10／9 → 12（★曜日・時刻の 列・コマの 中の 字）
+//   ★★★表の 中が 12 に なります。★横に すべる 幅が 足りるか、★実機で 要 確認。
+//     ★★裁定 その81 §2-2 ──「1画面に 入る 量が 減る。★横に すべる 表が 増える」。
+const small = { fontSize: "0.78125rem", color: C.inkSoft, lineHeight: 1.8 };
 const TIME_COL = 46;
 
 // ★★幅を 見る 仕掛けは `components/useWindowWidth.js` に 移しました（★2026-09-18）。
@@ -222,7 +227,7 @@ export default function OpsSchedule({
                 <div style={{ height: 34 }} />
                 {hours().map((h) => (
                   <div key={h} style={{
-                    height: 44, fontSize: "0.625rem", color: C.inkSoft,
+                    height: 44, fontSize: "0.75rem", color: C.inkSoft,
                     padding: "2px 6px", borderTop: `1px solid ${C.line}`
                   }}>{h}:00</div>
                 ))}
@@ -230,7 +235,7 @@ export default function OpsSchedule({
               {grid.map((col) => (
                 <div key={col.teacherId} style={{ flex: `0 0 ${colW}`, minWidth: 0 }}>
                   <div style={{
-                    height: 34, fontSize: "0.6875rem", color: C.ink,
+                    height: 34, fontSize: "0.78125rem", color: C.ink,
                     display: "flex", alignItems: "center", justifyContent: "center",
                     borderBottom: `1px solid ${C.line}`, overflow: "hidden",
                     textOverflow: "ellipsis", whiteSpace: "nowrap", padding: "0 4px"
@@ -296,7 +301,7 @@ export default function OpsSchedule({
                         //   ★赤・黄・青を 使いません。★通信簿に しないためです。
                         background: C.paper,
                         border: `${dup ? 2 : 1}px solid ${dup ? C.curtain : C.line}`,
-                        fontSize: "0.625rem", color: C.ink, overflow: "hidden",
+                        fontSize: "0.75rem", color: C.ink, overflow: "hidden",
                         textAlign: "left", fontFamily: FONT_STACK
                       };
                       const 中身 = (
@@ -355,7 +360,7 @@ export default function OpsSchedule({
             <div style={{ display: "flex", gap: 3, marginBottom: 4 }}>
               <div style={{ flex: `0 0 ${TIME_COL}px` }} />
               {(weekDays || []).map((d) => (
-                <div key={d} style={{ flex: 1, textAlign: "center", fontSize: "0.5625rem", color: C.inkSoft }}>
+                <div key={d} style={{ flex: 1, textAlign: "center", fontSize: "0.75rem", color: C.inkSoft }}>
                   {Number(d.slice(8, 10))}
                 </div>
               ))}
@@ -363,7 +368,7 @@ export default function OpsSchedule({
             {heat.rows.map((r) => (
               <div key={r.teacherId} style={{ display: "flex", gap: 3, marginBottom: 3, alignItems: "center" }}>
                 <div style={{
-                  flex: `0 0 ${TIME_COL}px`, fontSize: "0.5625rem", color: C.inkSoft,
+                  flex: `0 0 ${TIME_COL}px`, fontSize: "0.75rem", color: C.inkSoft,
                   overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"
                 }}>{nameOf ? nameOf(r.teacherId) : ""}</div>
                 {r.cells.map((c) => (
@@ -376,7 +381,7 @@ export default function OpsSchedule({
                       background: c.count === 0 ? C.paper : C.curtain,
                       opacity: c.count === 0 ? 1 : 0.25 + 0.75 * c.density,
                       color: c.count === 0 ? C.inkSoft : C.onCurtain,
-                      fontSize: "0.625rem"
+                      fontSize: "0.75rem"
                     }}>{c.count === 0 ? "" : c.count}</button>
                 ))}
               </div>

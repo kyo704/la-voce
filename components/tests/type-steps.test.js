@@ -24,7 +24,12 @@ let 数 = 0;
 function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
 
 // ★★直し終えた 画面（★増えたら ここに 足します）。
-const 済んだ画面 = [["components", "OpsShell.jsx"]];
+const 済んだ画面 = [
+  ["components", "OpsShell.jsx"],
+  ["components", "OpsHome.jsx"],
+  ["components", "OpsRoster.jsx"],
+  ["components", "OpsSchedule.jsx"]
+];
 const 段 = [12, 12.5, 13, 13.5, 14.5, 15.5];
 
 function 大きさ(素) {
@@ -55,6 +60,7 @@ for (const [d, f] of 済んだ画面) {
     assert.deepStrictEqual(外, [], "★段の 外が あります: " + 外.join("／"));
   });
 
+  if (f !== "OpsShell.jsx") continue;
   見る(`★${f} ── ★上下の 関係が 残って いる`, () => {
     // ★★★帯の 中 …… ★役職の 名（12.5）＞ 札の 字（12）。
     //   ★★寄せる 前は 11 ＞ 10 でした。★向きが 変わって いない ことを 見ます。

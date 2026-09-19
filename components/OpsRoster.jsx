@@ -59,7 +59,11 @@ const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 
 //     ★「どちらが 正か」を また 調べる ことに なります。
 //   ★★中身は `git show 015f49c2:components/OpsRoster.jsx` で 引けます。
 
-const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
+// ★★★12より 小さい 字を 使いません（★裁定 その103・2026-09-19）。
+//   ★★11 → 12.5（★添える 字）／ 11.5 → 12.5（★札の 字）／ 10 → 12（★小さな しるし）。
+//   ★★役で 寄せて います。★近い 値で 寄せて いません。
+//   ★★★上下の 向きは 変わりません ── ★22 ＞ 20 ＞ 16 ＞ 15 ＞ 14 ＞ 13 ＞ 12.5 ＞ 12。
+const small = { fontSize: "0.78125rem", color: C.inkSoft, lineHeight: 1.8 };
 
 /** ★入った日。★「2024年4月」。★日にちまでは 出しません。 */
 function joinedWord(iso) {
@@ -292,7 +296,7 @@ export default function OpsRoster({
               aria-pressed={on}
               style={{
                 whiteSpace: "nowrap", minHeight: 44, padding: "0 11px",
-                borderRadius: 999, fontSize: "0.71875rem",
+                borderRadius: 999, fontSize: "0.78125rem",
                 border: `1px solid ${on ? C.curtain : C.line}`,
                 background: on ? C.curtain : C.card,
                 color: on ? C.onCurtain : C.inkSoft
@@ -317,7 +321,7 @@ export default function OpsRoster({
               aria-pressed={grade === o.id}
               style={{
                 whiteSpace: "nowrap", minHeight: 44, padding: "0 11px",
-                borderRadius: 999, fontSize: "0.71875rem",
+                borderRadius: 999, fontSize: "0.78125rem",
                 border: `1px solid ${grade === o.id ? C.curtain : C.line}`,
                 background: grade === o.id ? C.curtain : C.card,
                 color: grade === o.id ? C.onCurtain : C.inkSoft
@@ -332,7 +336,7 @@ export default function OpsRoster({
             aria-pressed={teacher === o.id}
             style={{
               whiteSpace: "nowrap", minHeight: 44, padding: "0 11px",
-              borderRadius: 999, fontSize: "0.71875rem",
+              borderRadius: 999, fontSize: "0.78125rem",
               border: `1px solid ${teacher === o.id ? C.curtain : C.line}`,
               background: teacher === o.id ? C.curtain : C.card,
               color: teacher === o.id ? C.onCurtain : C.inkSoft
@@ -381,13 +385,13 @@ export default function OpsRoster({
           return (
             <div key={m.user_id || m.id} style={card}>
               <div className="flex items-center justify-between gap-2">
-                <span style={{ fontSize: "0.9375rem", color: C.ink }}>
+                <span style={{ fontSize: "0.96875rem", color: C.ink }}>
                   {nameOf ? nameOf(m.user_id) : ""}
                 </span>
                 {/* ★★ようす。★色を 分けません。★休会中を 赤く しません。
                     ★★休むことは、★悪いことでは ありません。 */}
                 <span style={{
-                  fontSize: "0.625rem", color: on ? C.ink : C.inkSoft,
+                  fontSize: "0.75rem", color: on ? C.ink : C.inkSoft,
                   background: C.paper, border: `1px solid ${C.line}`,
                   borderRadius: 999, padding: "3px 9px", whiteSpace: "nowrap"
                 }}>{statusLabel(st)}</span>
@@ -536,7 +540,7 @@ export default function OpsRoster({
                       }}>{m.grade_label ? "✓" : "＋"}</b>
                       {tx("学年・コース")}
                     </span>
-                    <span style={{ color: C.inkSoft, fontSize: "0.6875rem" }}>
+                    <span style={{ color: C.inkSoft, fontSize: "0.78125rem" }}>
                       {m.grade_label || tx("入れる")}　›
                     </span>
                   </button>
@@ -575,7 +579,7 @@ export default function OpsRoster({
                         background: "transparent", border: "none",
                         // ★★`inkFaint` は 押せない 字 だけ です（★裁定 その84）。
                         //   ★★ここは ふつうの 字 です。★4段目（`ink4`）に します。
-                        color: mayTouch ? C.inkSoft : C.ink4, fontSize: "0.6875rem"
+                        color: mayTouch ? C.inkSoft : C.ink4, fontSize: "0.78125rem"
                       }}>
                       {tx("役職　")}{label}　›
                     </button>
@@ -596,7 +600,7 @@ export default function OpsRoster({
                             }}
                             style={{
                               minHeight: 44, padding: "0 11px", borderRadius: 999,
-                              fontSize: "0.71875rem", whiteSpace: "nowrap",
+                              fontSize: "0.78125rem", whiteSpace: "nowrap",
                               border: `1px solid ${on ? C.curtain : C.line}`,
                               background: on ? C.curtain : C.card,
                               // ★★同じ 直し（★裁定 その84）。
@@ -610,7 +614,7 @@ export default function OpsRoster({
                     <button type="button" onClick={() => setPostEdit(null)}
                       style={{
                         minHeight: 44, padding: 0, background: "transparent", border: "none",
-                        color: C.inkSoft, fontSize: "0.6875rem"
+                        color: C.inkSoft, fontSize: "0.78125rem"
                       }}>{tx("やめる")}</button>
                   </div>
                 );
@@ -647,11 +651,11 @@ export default function OpsRoster({
               style={{
                 minHeight: 52, borderRadius: 12, border: `1px solid ${C.curtain}`,
                 borderBottomWidth: 3, background: C.curtain, color: C.onCurtain,
-                fontSize: "0.9375rem"
+                fontSize: "0.96875rem"
               }}>＋ 招く</button>
           ) : (
             <div style={{ ...card, borderColor: C.curtain }}>
-              <p style={{ fontSize: "0.875rem", fontWeight: 700, color: C.ink, margin: "0 0 6px" }}>
+              <p style={{ fontSize: "0.90625rem", fontWeight: 700, color: C.ink, margin: "0 0 6px" }}>
                 招く
               </p>
               <p style={small}>
@@ -714,7 +718,7 @@ export default function OpsRoster({
                     border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
                     background: (inviteAim.gradeYear && inviteAim.divisionId)
                       ? C.curtain : C.line,
-                    color: C.onCurtain, fontSize: "0.9375rem"
+                    color: C.onCurtain, fontSize: "0.96875rem"
                   }}>合言葉を 作る</button>
                 <button type="button"
                   onClick={() => {
@@ -765,7 +769,7 @@ export default function OpsRoster({
           ★★字は lib/studentInvite.js が 持ちます。 */}
       {(inviteCode || inviteError) && inviteOpen ? (
         <div style={{ ...card, borderColor: C.curtain }}>
-          <p style={{ fontSize: "0.875rem", fontWeight: 700, color: C.ink, margin: "0 0 6px" }}>
+          <p style={{ fontSize: "0.90625rem", fontWeight: 700, color: C.ink, margin: "0 0 6px" }}>
             {INVITE_HEAD}
           </p>
           {inviteError ? (
