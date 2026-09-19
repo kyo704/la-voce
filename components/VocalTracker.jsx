@@ -10109,7 +10109,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       teacherId
         ? (() => {
           let query = supabase.from("org_messages")
-            .select("id, org_id, teacher_id, author_id, body, created_at, withdrawn_at")
+            .select("id, org_id, teacher_id, author_id, body, title, created_at, withdrawn_at")
             .eq("teacher_id", teacherId);
           if (orgId) query = query.eq("org_id", orgId);
           return query.order("created_at", { ascending: true });
@@ -10157,13 +10157,24 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
    *     ★画面でも 出しませんが、★門が 本体です。
    *   ★送れたかを 返します。★呼ぶ側が、★欄を 空にするかを 決めます。
    */
-  async function handlePostRenraku(orgId, teacherId, body) {
+  async function handlePostRenraku(orgId, teacherId, body, aim) {
     if (!String(body || "").trim()) return false;
     setRenrakuPosting(true);
     try {
       const supabase = createClient();
+      // ★★★宛先（★2026-09-19・見本 `P_write`）。
+      //   ★★空の 配列＝しぼらない。★`null` を 入れません（★裁定 その89）。
+      //   ★★門下への 書き込みには 使いません（★宛先は その 門下 です）。
+      const 宛 = aim || {};
       const { data, error } = await supabase.from("org_messages")
-        .insert({ org_id: orgId, teacher_id: teacherId, author_id: userId, body: body.trim() })
+        .insert({
+          org_id: orgId, teacher_id: teacherId, author_id: userId,
+          body: body.trim(),
+          title: 宛.title || null,
+          target_division_ids: 宛.divisionIds || [],
+          target_grade_years: 宛.gradeYears || [],
+          target_user_ids: 宛.userIds || []
+        })
         .select("id");
       if (error || !data || data.length === 0) throw error || new Error("0行でした");
       await fetchRenraku(orgId, teacherId);
@@ -15021,8 +15032,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     studios={renrakuStudios}
                     teacherNameOf={(id) => orgDisplayName(id) || ""}
                     posting={renrakuPosting}
-                    onPost={async (teacherId, body) => {
-                      const ok = await handlePostRenraku(opsOrgId, teacherId, body);
+                    // ★★★宛先を 段で 狭めます（★見本 `P_write`・2026-09-19）。
+                    //   ★★学科・分野は `org_divisions`、★学年は `enrollments.grade_year`。
+                    //   ★★数えるのは `lib/renraku.js` です。★ここで 数えません。
+                    divisions={orgDivisions}
+                    roster={(orgEnrollments[opsOrgId] || []).map((e) => ({
+                      user_id: e.student_id,
+                      division_id: e.division_id || null,
+                      grade_year: e.grade_year != null ? Number(e.grade_year) : null,
+                      // ★★休会・退会の 方には 届きません。
+                      counted: (e.status || "active") === "active"
+                    }))}
+                    nameOf={(id) => orgDisplayName(id) || ""}
+                    onPost={async (teacherId, body, aim) => {
+                      const ok = await handlePostRenraku(opsOrgId, teacherId, body, aim);
                       if (ok) await fetchRenraku(opsOrgId, openStudio);
                       return ok;
                     }}
