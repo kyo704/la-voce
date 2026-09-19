@@ -165,6 +165,15 @@ function eq(a, b, label) {
     t(noHeight.length === 0, `★高さを 書いていない 押しどころが 無い（${noHeight.length}件）`);
   }
 
+  console.log("\n=== 重なりの 札（★2026-09-19・見本くらべ P_kasa） ===");
+  // ★★★`onOpenOverlap` は、★どこからも 渡されて いません でした。
+  //   ★★押しても 何も 起きない 札 でした（★§8⑤ の いちばん いけない 形）。
+  //   ★★開く 先が 無い ときは「まだ できません」と 出します（★裁定 その84 の 直し）。
+  const 日程lib = readCode("lib", "opsSchedule.js");
+  t(/OVERLAP_NOT_YET/.test(日程lib), "★字は lib が 持つ");
+  t(/else setSlotNote\(OVERLAP_NOT_YET\)/.test(ui),
+    "★★開く 先が 無い ときは、★その 1行を 出す");
+
   console.log("\n=== 時間の 列は 固定（★裁定） ===");
   t(/position: "sticky"/.test(raw), "★position: sticky で 左に 貼りつけている");
   t(/overflowX: "auto"/.test(raw), "★横に ずらせる");

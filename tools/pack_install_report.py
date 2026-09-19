@@ -9,9 +9,12 @@
 import io, os, re, sys, datetime, hashlib
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-新 = os.path.join(ROOT, "docs", "opus", "visual-2026-09-18", "pack")
-旧 = os.path.join(ROOT, "docs", "opus", "visual-2026-09-18", sys.argv[1]
-                  if len(sys.argv) > 1 else "_prev-第8版")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from pack_path import 荷 as _荷
+新 = _荷()
+# ★★くらべる 相手は、★前の 荷（引数で 渡します）。
+旧 = os.path.join(ROOT, sys.argv[1]) if len(sys.argv) > 1 else os.path.join(
+  ROOT, "docs", "opus", "visual-2026-09-18", "pack")
 
 見本 = ["00-動く見本-PC・iPad（個人）.html", "00-動く見本-PC・iPad（運営）.html",
        "00-動く見本-iPhoneで開く用.html", "00-動く見本（さわれる・全画面）.html"]

@@ -20,8 +20,12 @@
 import io, json, os, re, sys, datetime
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MIHON = os.path.join(ROOT, "docs", "opus", "visual-2026-09-18", "pack",
-                     "00-動く見本-PC・iPad（運営）.html")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# ★★★荷の 場所を 名指しで 持って いました（★2026-09-19 に 荷が 移りました）。
+#   ★★`tools/pack_path.py` が、★いちばん 新しい 荷を 選びます。
+#   ★★★名指しを いくつも 置くと、★荷が 動いた 日に 片方だけ 古く なります。
+from pack_path import 運営 as _運営
+MIHON = _運営()
 
 
 def 止まる(わけ):

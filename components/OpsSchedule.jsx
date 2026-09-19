@@ -11,7 +11,7 @@ import {
   scheduleViewFor, MINE_ONLY_HEAD, MINE_ONLY_LINE, overlapChipLabel,
   // ★★字（★裁定 その85 R1〜R4・2026-09-18）。★lib が 持ちます。
   SUB_LINE, DAY_NOTES, WEEK_NOTES, WEEK_HEAD_TAIL, SLOT_MARK, SLOT_NOT_YET,
-  dayGrid, overlapsOf, weekHeat
+  dayGrid, overlapsOf, weekHeat, OVERLAP_NOT_YET
 } from "@/lib/opsSchedule";
 import { mayDragBlocks, DRAG_NOTE } from "@/lib/opsShell";
 // ★★コマを 押した ときの 行き先（★裁定 その79 の 入口 ②・2026-09-18）。
@@ -166,7 +166,14 @@ export default function OpsSchedule({
           ★★字は lib/opsSchedule.js が 持ちます。 */}
       {overlapChipLabel(overlaps.length) ? (
         <button type="button"
-          onClick={() => { if (onOpenOverlap) onOpenOverlap(overlaps); }}
+          onClick={() => {
+            // ★★★2026-09-19（★見本くらべ `P_kasa`）。
+            //   ★★`onOpenOverlap` は、★どこからも 渡されて いません でした。
+            //   ★★★押しても 何も 起きない 札 でした（★§8⑤ の いちばん いけない 形）。
+            //   ★★開く 先が 無い ときは、★「まだ できません」と お伝えします。
+            if (onOpenOverlap) onOpenOverlap(overlaps);
+            else setSlotNote(OVERLAP_NOT_YET);
+          }}
           style={{
             ...chip(false), width: "100%", textAlign: "left",
             display: "flex", alignItems: "center", justifyContent: "space-between"
@@ -174,6 +181,12 @@ export default function OpsSchedule({
           <span>{overlapChipLabel(overlaps.length)}</span>
           <span style={{ color: C.inkSoft }}>›</span>
         </button>
+      ) : null}
+      {/* ★★★押した わけを、★札の すぐ 下に 出します（★2026-09-19）。
+          ★★下の「1日」の 中に 出して いました。★週の 姿では 見えません でした。
+          ★★★押した ところの そばに 出します。★探させません。 */}
+      {slotNote ? (
+        <p style={{ ...small, color: C.ink, margin: 0 }}>{slotNote}</p>
       ) : null}
 
       {view === "day" ? (
@@ -290,10 +303,8 @@ export default function OpsSchedule({
             </div>
           </div>
           {/* ★★うごかせるのは パソコンだけ（★見本⑧）。★見ることは どこでも できます。 */}
-          {/* ★★押した わけを、★その場に 出します。★黙って 終わりません。 */}
-          {slotNote ? (
-            <p style={{ ...small, color: C.ink }}>{slotNote}</p>
-          ) : null}
+          {/* ★★押した わけは、★重なりの 札の すぐ 下に 出します（★2026-09-19・上）。
+              ★★ここに 置くと、★週の 姿の ときに 見えません でした。 */}
           {!mayDragBlocks(width) ? <p style={small}>{DRAG_NOTE}</p> : null}
           {/* ★★★1日 × 先生よこ の 注（★裁定 その85 R4・2026-09-18）。
                ★★見本は 6行 です。★ここは 5行 です。
