@@ -11227,7 +11227,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     if (!layoutV2 || !userId) return;
     (async () => {
       const supabase = createClient();
-      const [p, e] = await Promise.all([
+      const [p, e, r] = await Promise.all([
         runQueryWithAuthRetry(supabase, () =>
           supabase.from("portfolios")
             .select("user_id, display_name, instrument, bio, regions, visibility")
@@ -11236,14 +11236,22 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           supabase.from("portfolio_entries")
             .select("id, kind, title, detail, sort_order")
             .eq("user_id", userId)
-            .order("sort_order", { ascending: true }), "経歴の 箇条")
+            .order("sort_order", { ascending: true }), "経歴の 箇条"),
+        // ★★録画（★URL だけ）。★預かって いません。
+        runQueryWithAuthRetry(supabase, () =>
+          supabase.from("portfolio_recordings")
+            .select("id, title, url, detail, sort_order")
+            .eq("user_id", userId)
+            .order("sort_order", { ascending: true }), "録画")
       ]);
       if (!alive) return;
       if (p.error) console.error("★経歴を読めませんでした:", p.error);
       if (e.error) console.error("★経歴の箇条を読めませんでした:", e.error);
-      setPortfolioOk(!p.error && !e.error);
+      if (r.error) console.error("★録画を読めませんでした:", r.error);
+      setPortfolioOk(!p.error && !e.error && !r.error);
       setPortfolio(p.error ? null : (p.data || null));
       setPortfolioEntries(e.error ? [] : (e.data || []));
+      setPortfolioRecordings(r.error ? [] : (r.data || []));
     })();
     return () => { alive = false; };
   }, [layoutV2, userId]);
@@ -11289,6 +11297,58 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
    *   ★★消すのは ご本人の 行 だけ です（★決まりが そう しか 許しません）。
    *     ★★それでも `.eq("user_id", userId)` を 書きます ── ★二重の 守り です。
    */
+  /**
+   * ★録画（★URL だけ・裁定 その94 §4f）。
+   *
+   *   ★★動画を 預かりません。★道しるべ だけ です。
+   *   ★★`https` の 縛りは、★台帳の 側にも あります（`url ~ '^https://…'`）。
+   *     ★★画面の 側 だけ で 守りません。★台帳が 本体 です。
+   */
+  const [portfolioRecordings, setPortfolioRecordings] = useState([]);
+
+  async function handleAddPortfolioRecording(row) {
+    setPortfolioError("");
+    setPortfolioSaving(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("portfolio_recordings")
+        .insert({
+          user_id: userId, title: row.title, url: row.url,
+          detail: row.detail || null, sort_order: portfolioRecordings.length
+        })
+        .select("id, title, url, detail, sort_order");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setPortfolioRecordings((prev) => [...prev, data[0]]);
+      return true;
+    } catch (err) {
+      console.error("★録画を足せませんでした:", err);
+      setPortfolioError("いま 足せませんでした。リンクは https で 始まる ものだけ です。");
+      return false;
+    } finally {
+      setPortfolioSaving(false);
+    }
+  }
+
+  async function handleRemovePortfolioRecording(row) {
+    if (!row || !row.id) return false;
+    setPortfolioError("");
+    setPortfolioSaving(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("portfolio_recordings")
+        .delete().eq("id", row.id).eq("user_id", userId).select("id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setPortfolioRecordings((prev) => prev.filter((x) => x.id !== row.id));
+      return true;
+    } catch (err) {
+      console.error("★録画を消せませんでした:", err);
+      setPortfolioError("いま 消せませんでした。もう一度 お試しください。");
+      return false;
+    } finally {
+      setPortfolioSaving(false);
+    }
+  }
+
   async function handleAddPortfolioEntry(row) {
     setPortfolioError("");
     setPortfolioSaving(true);
@@ -23886,7 +23946,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         onCloseScope={() => setPortfolioScope(false)}
                         onChange={(patch) => { void handleSavePortfolio(patch); }}
                         onAddEntry={handleAddPortfolioEntry}
-                        onRemoveEntry={(row) => { void handleRemovePortfolioEntry(row); }} />
+                        onRemoveEntry={(row) => { void handleRemovePortfolioEntry(row); }}
+                        recordings={portfolioRecordings}
+                        onAddRecording={handleAddPortfolioRecording}
+                        onRemoveRecording={(row) => { void handleRemovePortfolioRecording(row); }} />
                     )}
                   </div>
                 ) : null}

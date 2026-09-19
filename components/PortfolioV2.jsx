@@ -11,7 +11,10 @@ import {
 import { AUTOSAVE_MS } from "@/lib/notes";
 import {
   HEAD, SCOPE_HEAD, LEAD, BIO_MAX, bioTooLong,
-  SCOPES, scopesFor, ENTRY_KINDS, inGivenOrder, NOTES, SCOPE_NOTES, NOT_YET
+  SCOPES, scopesFor, ENTRY_KINDS, inGivenOrder, NOTES, SCOPE_NOTES, NOT_YET,
+  // ★★録画（★裁定 その94 §4f・2026-09-19 の 追補）。★URL だけ です。
+  RECORDING_HEAD, RECORDING_HINT, RECORDING_URL_HINT, RECORDING_NOTES,
+  urlOk, hostOf
 } from "@/lib/portfolio";
 
 // ============================================================================
@@ -108,11 +111,99 @@ function Kind({ kind, entries, saving, onAddEntry, onRemoveEntry }) {
   );
 }
 
+/**
+ * ★録画の まとまり（★裁定 その94 §4f）。
+ *
+ *   ★★★URL だけ を 持ちます。★動画を 預かりません。
+ *   ★★`https` で 始まる ものだけ を 通します（★台帳にも 同じ 縛りが あります）。
+ *   ★★★押すと 外へ 移ります。★`rel="noopener noreferrer"` を 付けます
+ *     ★★（★移った 先から、★こちらの 窓を 触らせない ため です）。
+ */
+function Recordings({ items, saving, onAdd, onRemove }) {
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [url, setUrl] = useState("");
+  const [detail, setDetail] = useState("");
+  const 並 = inGivenOrder(items || []);
+  const 出せる = String(title).trim() && urlOk(url);
+
+  async function 足す() {
+    if (!出せる || !onAdd) return;
+    const ok = await onAdd({
+      title: title.trim(), url: String(url).trim(), detail: detail.trim() || null
+    });
+    if (ok !== false) { setTitle(""); setUrl(""); setDetail(""); setOpen(false); }
+  }
+
+  return (
+    <div>
+      <H3>{RECORDING_HEAD}</H3>
+      {並.length > 0 ? (
+        <Box>
+          {並.map((x, i) => (
+            <Li key={x.id || i} last={i === 並.length - 1}
+              right={onRemove ? "消す" : null}
+              onClick={onRemove ? () => onRemove(x) : null}>
+              <a href={x.url} target="_blank" rel="noopener noreferrer"
+                style={{ color: C.ink, textDecoration: "underline" }}
+                onClick={(e) => e.stopPropagation()}>{x.title}</a>
+              <div style={小}>{hostOf(x.url)}{x.detail ? "　" + x.detail : ""}</div>
+            </Li>
+          ))}
+        </Box>
+      ) : null}
+
+      {open ? (
+        <div style={{ marginTop: rem(6) }}>
+          <FieldLabel>{RECORDING_HINT}</FieldLabel>
+          <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+          <FieldLabel>{RECORDING_URL_HINT}</FieldLabel>
+          <Input value={url} placeholder="https://" onChange={(e) => setUrl(e.target.value)} />
+          {url && !urlOk(url) ? (
+            <Usu>https で 始まる リンクを お書きください。</Usu>
+          ) : null}
+          <FieldLabel>そえがき（いつ・どこで。なくても かまいません）</FieldLabel>
+          <Input value={detail} onChange={(e) => setDetail(e.target.value)} />
+          <div style={{ display: "flex", gap: 8, marginTop: rem(8) }}>
+            <button type="button" disabled={saving || !出せる}
+              onClick={() => { void 足す(); }}
+              style={{
+                minHeight: 44, padding: `0 ${rem(16)}`, borderRadius: 999,
+                border: `1px solid ${C.curtain}`,
+                background: 出せる ? C.curtain : C.line,
+                color: "#FFFDF8", ...TYPE.mini, fontFamily: FONT_STACK
+              }}>足す</button>
+            <button type="button"
+              onClick={() => { setOpen(false); setTitle(""); setUrl(""); setDetail(""); }}
+              style={{
+                minHeight: 44, padding: `0 ${rem(14)}`, borderRadius: 999,
+                border: `1px solid ${C.line}`, background: C.card, color: C.inkSoft,
+                ...TYPE.mini, fontFamily: FONT_STACK
+              }}>やめる</button>
+          </div>
+        </div>
+      ) : (
+        onAdd ? (
+          <button type="button" disabled={saving} onClick={() => setOpen(true)}
+            style={{
+              minHeight: 44, padding: `0 ${rem(14)}`, borderRadius: 999,
+              border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+              ...TYPE.mini, fontFamily: FONT_STACK, marginTop: rem(6)
+            }}>＋ 足す</button>
+        ) : null
+      )}
+      <Note>
+        {RECORDING_NOTES.map((t) => (<div key={t}>{t}</div>))}
+      </Note>
+    </div>
+  );
+}
+
 export default function PortfolioV2({
   // ★いまの 中身（★null なら まだ 1行も ありません）
-  value, entries = [],
+  value, entries = [], recordings = [],
   // ★書き換え（★押した その場で 上へ 返します。★ためこみません）
-  onChange, onAddEntry, onRemoveEntry,
+  onChange, onAddEntry, onRemoveEntry, onAddRecording, onRemoveRecording,
   // ★公開の 範囲を 選ぶ 1枚を 出して いるか
   scopeOpen, onOpenScope, onCloseScope,
   // ★18歳未満の 方に `link` を 出さない ため に 要ります
@@ -221,6 +312,12 @@ export default function PortfolioV2({
         <Kind key={k.key} kind={k} entries={entries} saving={saving}
           onAddEntry={onAddEntry} onRemoveEntry={onRemoveEntry} />
       ))}
+
+      {/* ★★★録画（★裁定 その94 §4f）。
+          ★★URL だけ です。★預かりません。★ここで 再生しません。
+          ★★押すと 外へ 移ります。★どこへ 行くかを、★押す 前に 出します。 */}
+      <Recordings items={recordings} saving={saving}
+        onAdd={onAddRecording} onRemove={onRemoveRecording} />
 
       {/* ★★だれが 見られますか（★見本では 別の 画面 です） */}
       <H3>{SCOPE_HEAD}</H3>

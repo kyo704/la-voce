@@ -49,7 +49,14 @@ for (const f of ["components/PortfolioV2.jsx", "lib/portfolio.js", "lib/moreMenu
   // ★★★較正 ── ★わざと 置いた 札を 見つけられる こと。
   t(/えらぶ/.test('<span class="btn g">えらぶ</span>'), "★道具の 較正");
   t(!/宣材|写真を えらぶ|<input[^>]*type="file"/.test(画面), "★写真の 札を 置いて いない");
-  t(!/録画を 足す|videoUpload|Storage/.test(画面), "★録画の 札を 置いて いない");
+  // ★★★2026-09-19（★裁定 その94 §4f）── ★録画は URL だけ に なりました。
+  //   ★★預かりません。★ここで 再生しません。★外へ 移る だけ です。
+  t(!/videoUpload|createObjectURL|<video/.test(画面), "★動画を 預かって いない・再生して いない");
+  t(/RECORDING_HEAD/.test(画面), "★録画の まとまりが ある");
+  t(/urlOk/.test(画面), "★https だけ を 通して いる（★lib の 判じ）");
+  t(/rel="noopener noreferrer"/.test(画面), "★★外へ 移る ときの 守りが ある");
+  t(/target="_blank"/.test(画面), "★別の 窓で 開く");
+  t(/hostOf/.test(画面), "★どこへ 行くかを 押す 前に 出して いる");
   // ★★「まだ できない こと」は、★名ざしで 出します（★押せる 札には しません）。
   t(/NOT_YET/.test(画面), "★まだ できない ものを 名ざしで 出して いる");
 
@@ -66,6 +73,7 @@ for (const f of ["components/PortfolioV2.jsx", "lib/portfolio.js", "lib/moreMenu
   t(/書いた ものは 消えて いません/.test(蔵), "★読めなかった ことを 画面に 出す");
 
   console.log("\n⑤ 取る 列");
+  t(/from\("portfolio_recordings"\)/.test(蔵), "★録画を 読んで いる");
   const 読み = 蔵.slice(蔵.indexOf('from("portfolios")'),
                      蔵.indexOf('from("portfolios")') + 260);
   t(読み.length > 0, "★経歴を 読んで いる");

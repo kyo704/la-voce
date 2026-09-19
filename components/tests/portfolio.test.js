@@ -96,10 +96,41 @@ const 素 = fs.readFileSync(SQL, "utf8")
 
   見る("★まだ 作って いない ものが、★名ざしで 書いて ある", () => {
     const k = P.NOT_YET.map((x) => x.key);
-    for (const x of ["recordings", "photo", "public_page", "paper"]) {
+    // ★★★2026-09-19（★裁定 その94 §4f）── ★録画は できる ように なりました。
+    //   ★★URL だけ に なった ので、★置き場（Storage）が 要りません。
+    //   ★★だから `recordings` は もう ここに ありません。
+    assert.ok(!k.includes("recordings"), "★録画が まだ「できない」側に あります");
+    for (const x of ["photo", "public_page", "paper"]) {
       assert.ok(k.includes(x), "★書かれて いません: " + x);
     }
     assert.ok(P.NOT_YET.every((x) => x.needs), "★何が 要るかが 書かれて いません");
+  });
+
+  見る("★録画 ── ★`https` だけ を 通す", () => {
+    assert.ok(P.urlOk("https://www.youtube.com/watch?v=abc"), "★https を 落として います");
+    assert.ok(!P.urlOk("http://www.youtube.com/watch?v=abc"), "★http（s なし）が 通ります");
+    assert.ok(!P.urlOk("javascript:alert(1)"), "★あぶない 字が 通ります");
+    assert.ok(!P.urlOk("data:text/html,x"), "★あぶない 字が 通ります");
+    assert.ok(!P.urlOk(""), "★空が 通ります");
+    assert.ok(!P.urlOk(" https://x.example/ y"), "★空白の 入った ものが 通ります");
+  });
+
+  見る("★録画 ── ★どこへ 行くかを 出せる", () => {
+    assert.strictEqual(P.hostOf("https://youtu.be/abc?t=3"), "youtu.be");
+    assert.strictEqual(P.hostOf("https://www.example.com/a/b"), "www.example.com");
+    assert.strictEqual(P.hostOf("ふつうの字"), "");
+  });
+
+  見る("★録画 ── ★台帳にも 同じ 縛りが ある", () => {
+    const 録 = fs.readFileSync(
+      path.join(ROOT, "supabase", "migration_portfolio_recordings.sql"), "utf8");
+    assert.ok(/check \(url ~ '\^https:\/\//.test(録.replace(/\n/g, " ")),
+      "★台帳に https の 縛りが ありません");
+    assert.ok(/user_id = auth\.uid\(\)/.test(録), "★ご本人の 枝が ありません");
+    assert.ok(!/truncate/i.test(録), "★`truncate` を 渡して います");
+    const r = 録.indexOf("revoke all on public.portfolio_recordings");
+    const g = 録.indexOf("grant select, insert, update, delete on public.portfolio_recordings");
+    assert.ok(r > 0 && g > r, "★渡しが 先に なって います");
   });
 
   console.log("\n★" + 数 + "つ 通りました。");
