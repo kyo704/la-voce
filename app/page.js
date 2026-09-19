@@ -53,7 +53,7 @@ function LangSwitcher({ lang }) {
             fontSize: "0.6875rem", padding: "3px 8px", borderRadius: 999,
             border: `1px solid ${lang === l.code ? C.curtain : C.line}`,
             background: lang === l.code ? C.curtain : "transparent",
-            color: lang === l.code ? "#FFFDF8" : C.inkSoft,
+            color: lang === l.code ? C.onCurtain : C.inkSoft,
             textDecoration: "none"
           }}
         >
@@ -157,7 +157,7 @@ export default async function LandingPage({ searchParams }) {
                 padding: "14px 32px",
                 borderRadius: 999,
                 background: C.curtain,
-                color: "#fff",
+                color: C.pureWhite,
                 fontWeight: 600,
                 textDecoration: "none",
                 boxShadow: "0 8px 20px rgba(122,31,43,0.25)"

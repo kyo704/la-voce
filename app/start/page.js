@@ -17,7 +17,8 @@ const SITE = getBaseUrl();
 
 export default function StartSheet() {
   return (
-    <main style={{ background: "#FFFFFF", color: "#241914", padding: "16mm", maxWidth: "210mm", margin: "0 auto" }}>
+    <main style={{ // ★★紙に 刷る 画面 です。★地は 純白（★2026-09-19・裁定 その81 §1）。
+      background: C.pureWhite, color: C.ink, padding: "16mm", maxWidth: "210mm", margin: "0 auto" }}>
       <style>{`
         @page { size: A4 portrait; margin: 0; }
         @media print { .no-print { display: none; } }
@@ -31,7 +32,7 @@ export default function StartSheet() {
 
       {/* ★住所は大きく。打ち間違えないように、区切って読める大きさで出す。 */}
       <div style={{ border: `2px solid ${C.line}`, borderRadius: 8, padding: "8mm", marginTop: "8mm", textAlign: "center" }}>
-        <p style={{ fontSize: "11pt", margin: 0, color: "#6b5d52" }}>この住所を開いてください</p>
+        <p style={{ fontSize: "11pt", margin: 0, color: C.inkSoft }}>この住所を開いてください</p>
         <p style={{ fontSize: "20pt", margin: "3mm 0 0", wordBreak: "break-all", fontWeight: 600 }}>{SITE}</p>
         {/* ★QRコードは、まだ入れていません。作り方は下の注記のとおりです。
             間違ったQRを印刷して配ると、いちばん困るのは受け取った人なので、
@@ -41,19 +42,19 @@ export default function StartSheet() {
           border: `1px dashed ${C.line}`, borderRadius: 8,
           display: "flex", alignItems: "center", justifyContent: "center"
         }}>
-          <span style={{ fontSize: "9pt", color: "#6b5d52" }}>QRコードを貼る場所</span>
+          <span style={{ fontSize: "9pt", color: C.inkSoft }}>QRコードを貼る場所</span>
         </div>
       </div>
 
       <Steps title="iPhone・iPad をお使いの方" steps={INSTALL_STEPS.ios} />
       <Steps title="Android をお使いの方" steps={INSTALL_STEPS.android} />
 
-      <p style={{ fontSize: "11pt", marginTop: "8mm", lineHeight: 1.8, color: "#6b5d52" }}>
+      <p style={{ fontSize: "11pt", marginTop: "8mm", lineHeight: 1.8, color: C.inkSoft }}>
         ※ ホーム画面に置かなくても、ブラウザのままで全部お使いいただけます。
         うまくいかないときは、次のレッスンで一緒にやりましょう。
       </p>
 
-      <p className="no-print" style={{ marginTop: "10mm", fontSize: "10pt", color: "#6b5d52" }}>
+      <p className="no-print" style={{ marginTop: "10mm", fontSize: "10pt", color: C.inkSoft }}>
         （この画面は印刷用です。ブラウザの印刷から、A4・縦で出してください。）
       </p>
     </main>
