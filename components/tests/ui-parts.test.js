@@ -23,7 +23,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const { readCode } = require("./_source");
+const { readCode, readRaw } = require("./_source");
 
 let ok = 0;
 let ng = 0;
@@ -95,7 +95,10 @@ const CHECKS = [
   [".box", "padding:012px", /padding: "0 12px"/, "box の 内側は 上下 0"],
   [".two", "gap:9px", /gap: SPACE\.cardGap/, "two の あいだ 9"],
   [".usu", "font-size:11px", /\.\.\.TYPE\.usual/, "usu は 11px"],
-  [".fl", "font-size:10.5px", /fontSize: rem\(10\.5\)/, "fl は 10.5px"],
+  // ★★★2026-09-19 ── ★大きさの 決めが `lib/visualTokens.js` に 移りました
+  //   （★お決め D63(b)・★門の 中だけ 6段）。★部品は 数を 書きません。
+  //   ★★見るのは「いまの 大きさが 見本と 同じか」── ★そこは 変えて いません。
+  [".fl", "font-size:10.5px", /FieldLabel: \{ いま: 10\.5/, "fl は 10.5px", "決め"],
   [".fl", "letter-spacing:.08em", /letterSpacing: "0\.08em"/, "fl の 字間"],
   [".wl", "background:#F6EFDF", /background: "#F6EFDF"/, "wl の 地"],
   [".warn", "background:#F6F1E4", /#F6F1E4/, "warn の 地（★wl とは 別）"],
@@ -111,7 +114,7 @@ const CHECKS = [
   [".btn.sm", "padding:10px0", /"10px 0"/, "btn.sm の 内側"],
   [".btn.sm", "font-size:12.5px", /small \? 12\.5/, "btn.sm は 12.5px"],
   [".tag", "background:#F3ECDD", /"#F3ECDD"/, "tag の 地"],
-  [".tag", "font-size:10px", /fontSize: rem\(10\)/, "tag は 10px"]
+  [".tag", "font-size:10px", /Tag: \{ いま: 10,/, "tag は 10px", "決め"]
 ];
 // ★★★見本が 動いた ものの 一覧（★2026-09-16・裁定その62 の トークン層）。
 //
@@ -129,7 +132,11 @@ const MOVED_BY_TOKENS = {
   ".usu font-size:11px": "11px → 12px"
 };
 let moved = [];
-CHECKS.forEach(([sel, frag, re, label]) => {
+// ★★★5つ目は「どこを 見るか」です（★2026-09-19）。
+//   ★★`"決め"` …… `lib/visualTokens.js`（★大きさの 決めが 移った ぶん）
+//   ★★書かなければ これまでどおり `components/UiV2.jsx` を 見ます。
+const 決め = readRaw("lib", "visualTokens.js");
+CHECKS.forEach(([sel, frag, re, label, どこ]) => {
   const key = sel + " " + frag;
   const inMihon = has(sel, frag);
   if (!inMihon && Object.prototype.hasOwnProperty.call(MOVED_BY_TOKENS, key)) {
@@ -138,7 +145,7 @@ CHECKS.forEach(([sel, frag, re, label]) => {
   } else {
     t(inMihon, "★見本に " + key);
   }
-  t(re.test(ui), "★実装が そろって いる ── " + label);
+  t(re.test(どこ === "決め" ? 決め : ui), "★実装が そろって いる ── " + label);
 });
 // ★★一覧に 書いた のに、★見本が もう 動いて いない ── ★紙が 古い しるし。
 const stale = Object.keys(MOVED_BY_TOKENS).filter((k) => {

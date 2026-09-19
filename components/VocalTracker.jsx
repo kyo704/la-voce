@@ -112,7 +112,7 @@ import { markerRow } from "@/lib/periodMarkers";
 import TodayBand from "@/components/TodayBand";
 import TabBarV2 from "@/components/TabBarV2";
 import { TAB_BAR_HEIGHT, TYPE, SPACE, FONT_STACK, cardStyle, rem, RADIUS } from "@/lib/uiKit";
-import { ScreenHead, HeadRound, H3, Card, Li, Seg, Note, Wl, Box, Btn, Pill, Input, Usu, Back, Tag, Warn } from "@/components/UiV2";
+import { ScreenHead, HeadRound, H3, Card, Li, Seg, Note, Wl, Box, Btn, Pill, Input, Usu, Back, Tag, Warn, TypeStepsOn } from "@/components/UiV2";
 // ★下から 上がる 1枚の 器（★見本の `#sh`）。★「ことばで さがす」が これです。
 import BottomSheet from "@/components/BottomSheet";
 import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
@@ -14727,6 +14727,10 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const gate = permsOfMember(opsMembership, opsPostsById);
     if (mayEnterOps(gate)) {
       return (
+        // ★★★運営の 画面は 6段 です（★2026-09-19・裁定 その103 で 12画面 済み）。
+        //   ★★UiV2 の 部品も 揃えます。★画面の 字だけ 大きいと、★段が ちぐはぐに なります。
+        //   ★★★38人の 古い 個人画面とは 別の 道 です。★あちらは 包みません。
+        <TypeStepsOn>
         <OpsShell
           orgName={membership && membership.org ? membership.org.name : "教室"}
           role={gate}
@@ -15497,6 +15501,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               </div>
             );
           }} />
+        </TypeStepsOn>
       );
     }
   }
@@ -15505,6 +15510,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     // ★★門の中では、★見本の 色に します（★2026-09-11・坂本さんの お指図）。
     //   ★★色の 数字は app/globals.css の .woolsong-v2 が 持ちます。
     //     ★lib/tokens.js は 触っていません。★38人の 画面は 1つも 変わりません。
+    // ★★★字も 門の 中だけ 6段に します（★2026-09-19・坂本さんの お決め D63(b)）。
+    //   ★★「今の 個人画面と 開発中の 個人画面は 別。★開発中の 画面だけ 変える」。
+    //   ★★★色（`woolsong-v2`）と 同じ 門 です。★2つ目の 門を 作って いません。
+    //     ★★古い 画面は `on={false}` ── ★38人の 字は 1つも 変わりません。
+    //   ★★運営の 画面は OpsShell が 中で もう一度 包みます（★あちらは 6段 済み）。
+    <TypeStepsOn on={layoutV2}>
     <div className={layoutV2 ? "woolsong-v2" : undefined}
       style={{ background: C.paper, color: C.ink, minHeight: "100vh" }}>
       {/* ★★大事な操作の前の、もう一度の確かめ（判断-メールを失うこと §4）。
@@ -26507,5 +26518,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           onClose={() => setOwnedOpen(false)} />
       )}
     </div>
+    </TypeStepsOn>
   );
 }

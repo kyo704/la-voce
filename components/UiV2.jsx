@@ -1,8 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, SPACE, RADIUS, FONT_STACK, cardStyle, rem } from "@/lib/uiKit";
+import { uiv2FontPx } from "@/lib/visualTokens";
+
+// ----------------------------------------------------------------------------
+// ★字を 6段に するか（★2026-09-19・坂本さんの お決め D63(b)）
+// ----------------------------------------------------------------------------
+//   ★★★「今の 個人画面と 開発中の 個人画面は 別。★開発中の 画面だけ 変える」。
+//     ★★同じ 部品が、★門の 中（`layoutV2`）にも、★古い 画面にも 出ます。
+//     ★★だから 部品の 中で 分けます。★呼ぶ 側に 書かせません。
+//
+//   ★★★既定は「いまの まま」です。★包み忘れた ところは 変わりません。
+//     ★★false の 側に 倒します ── ★迷ったら 変えない、が 安全です。
+//
+//   ★★大きさの 決めは lib/visualTokens.js（`UIV2_TYPE`）が 持ちます。
+//     ★ここでは 決めません。★渡すだけです。
+
+const 六段の門 = createContext(false);
+
+/** ★この 中の 部品だけ、★6段に します。 */
+export function TypeStepsOn({ on = true, children }) {
+  return <六段の門.Provider value={!!on}>{children}</六段の門.Provider>;
+}
+
+/** ★部品が 自分の 大きさを 聞きます。 */
+function 字(部品) {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return rem(uiv2FontPx(部品, useContext(六段の門)));
+}
 
 // ============================================================================
 // ★見本の 共通の 部品（★design.zip ／ 2026-09-10）
@@ -92,6 +119,7 @@ export function Card({ children, style, onClick, className, ...rest }) {
  *   ★★はみ出しません。★流れません。★4つまでの ものです。
  */
 export function Seg({ items, activeKey, onSelect }) {
+  const 大きさ = 字("Seg");
   return (
     <div className="seg" style={{
       display: "flex", background: C.paper, borderRadius: 11, padding: 3,
@@ -108,7 +136,7 @@ export function Seg({ items, activeKey, onSelect }) {
               //   ★中の 白い 札は 見本の 高さの まま、★指の 当たる 所だけ 広げます。
               minHeight: SPACE.tapMin,
               padding: "7px 2px", borderRadius: 9, border: "none",
-              fontSize: rem(11.5), fontWeight: on ? 700 : 400,
+              fontSize: 大きさ, fontWeight: on ? 700 : 400,
               background: on ? C.card : "transparent",
               color: on ? C.curtain : C.inkSoft,
               boxShadow: on ? C.shadowSm : "none",
@@ -124,12 +152,13 @@ export function Seg({ items, activeKey, onSelect }) {
 
 /** ★丸いボタン（.pill）。★選ばれたら えんじ。★押せないときは 薄く。 */
 export function Pill({ children, on, disabled, onClick }) {
+  const 大きさ = 字("Pill");
   const style = {
     display: "inline-flex", alignItems: "center", justifyContent: "center",
     borderRadius: RADIUS.pill, padding: "5px 11px",
     // ★押せるところは 44 以上（★見た目は 見本の まま、★上下に 透明な 余白）。
     minHeight: onClick ? SPACE.tapMin : undefined,
-    fontSize: rem(11.5), fontWeight: on ? 700 : 400,
+    fontSize: 大きさ, fontWeight: on ? 700 : 400,
     border: `1px solid ${on ? C.curtain : C.line}`,
     background: on ? C.curtain : C.card,
     color: on ? C.onCurtain : C.inkSoft,
@@ -206,6 +235,7 @@ export function Warn({ children, style }) {
  *     ★この 帳面の 決まり（★上の 見出し）で ink2 に します。
  */
 export function Note({ children, style, fold = false }) {
+  const 大きさ = 字("Note");
   const [open, setOpen] = useState(false);
   const body = (
     <p className="note" style={{
@@ -218,7 +248,7 @@ export function Note({ children, style, fold = false }) {
     <div>
       <button type="button" onClick={() => setOpen(!open)}
         style={{
-          display: "inline-block", marginTop: 14, fontSize: rem(11.5),
+          display: "inline-block", marginTop: 14, fontSize: 大きさ,
           color: open ? C.curtain : C.inkSoft,
           border: `1px solid ${open ? C.noteOpen : C.line}`,
           borderRadius: 99, padding: "5px 12px", background: C.paper,
@@ -235,6 +265,7 @@ export const NOTE_CLOSE = "閉じる";
 
 /** ★一覧の 1行（.li）。★左に 名前、★右に 値。★最後の行に 線を 引きません。 */
 export function Li({ children, right, last, style, onClick }) {
+  const 大きさ = 字("Li");
   return (
     <div className="li" onClick={onClick} role={onClick ? "button" : undefined} tabIndex={onClick ? 0 : undefined} onKeyDown={onClick ? (event) => {
       if (event.key === "Enter" || event.key === " ") onClick(event);
@@ -251,7 +282,7 @@ export function Li({ children, right, last, style, onClick }) {
              ★★11.5 → 12.5 に しかけて、★戻しました。
              ★★★`Li` は 38人の 画面にも 出ます（★`tools/uiv2_gate_split.py`）。
                ★★門の 外の 字は、★坂本さんの お決めを いただいて から 変えます。 */
-        <span style={{ color: C.inkSoft, fontSize: rem(11.5), flex: "none", marginLeft: 8 }}>{right}</span>
+        <span style={{ color: C.inkSoft, fontSize: 大きさ, flex: "none", marginLeft: 8 }}>{right}</span>
       ) : null}
     </div>
   );
@@ -286,8 +317,9 @@ export function Kv({ children, right, last }) {
  *   ★★数を 出しません。★あと何日、と 書きません。
  */
 export function Lock({ children = "しらべる", onClick }) {
+  const 大きさ = 字("Lock");
   const style = {
-    fontSize: rem(9.5), color: C.inkSoft,
+    fontSize: 大きさ, color: C.inkSoft,
     border: `1px solid ${C.line}`, borderRadius: 5, padding: "1px 5px",
     marginLeft: "auto", background: "transparent", flex: "none",
     fontFamily: FONT_STACK
@@ -392,9 +424,10 @@ export function Usu({ children, style }) {
  *   ★見本 .fl{font-size:10.5px;color:var(--ink3);letter-spacing:.08em;margin:12px 0 5px}
  */
 export function FieldLabel({ children, htmlFor, style }) {
+  const 大きさ = 字("FieldLabel");
   return (
     <label className="fl" htmlFor={htmlFor} style={{
-      display: "block", fontSize: rem(10.5), color: C.inkSoft,
+      display: "block", fontSize: 大きさ, color: C.inkSoft,
       letterSpacing: "0.08em", margin: "12px 0 5px", ...style
     }}>{children}</label>
   );
@@ -483,6 +516,7 @@ export function SheetTitle({ children, style }) {
  *   ★★責める 言葉を 書きません。★「まだ」「未入力」「不足」を 使わないこと。
  */
 export function EmptyBox({ title, sub, style }) {
+  const 大きさ = 字("EmptyBox");
   return (
     <div className="empty" style={{
       textAlign: "center", padding: "26px 14px", background: C.card,
@@ -494,7 +528,7 @@ export function EmptyBox({ title, sub, style }) {
       {/* ★見本 .empty .s{font-size:11.5px;color:var(--ink2);margin-top:8px;line-height:1.8} */}
       {sub ? (
         <div style={{
-          fontSize: rem(11.5), color: C.inkSoft, marginTop: 8, lineHeight: 1.8
+          fontSize: 大きさ, color: C.inkSoft, marginTop: 8, lineHeight: 1.8
         }}>{sub}</div>
       ) : null}
     </div>
@@ -676,10 +710,11 @@ export function Btn({ children, onClick, ghost, small, disabled, style, type = "
  *              padding:2px 7px;font-size:10px;margin-left:6px}
  */
 export function Tag({ children, style }) {
+  const 大きさ = 字("Tag");
   return (
     <span style={{
       display: "inline-block", background: C.band2, color: C.inkSoft,
-      borderRadius: 6, padding: "2px 7px", fontSize: rem(10),
+      borderRadius: 6, padding: "2px 7px", fontSize: 大きさ,
       marginLeft: 6, whiteSpace: "nowrap", lineHeight: 1.5, ...style
     }}>{children}</span>
   );
