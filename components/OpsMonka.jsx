@@ -11,7 +11,9 @@ import {
   // ★★日程を 組む へ（★2026-09-19・裁定 その98 ①）。
   GO_KUMU_LABEL, GO_KUMU_SUB,
   // ★★代表を 決める へ（★2026-09-19・見本 `P_daihyo`）。
-  GO_DAIHYO_LABEL, GO_DAIHYO_SUB
+  GO_DAIHYO_LABEL, GO_DAIHYO_SUB,
+  // ★★時間割が まだの方 へ（★2026-09-19・お決め D78）。
+  GO_MADA_LABEL, GO_MADA_SUB
 } from "@/lib/opsMonka";
 import {
   cameCount, cameWord, heldCount, progressWord, looksShort,
@@ -70,7 +72,9 @@ export default function OpsMonka({
   //   ★★渡されなければ、★札を 出しません（★押せない 札を 置きません）。
   onGoKumu,
   // ★★★代表を 決める へ（★2026-09-19）。★渡されなければ 札を 出しません。
-  onGoDaihyo
+  onGoDaihyo,
+  // ★★★時間割が まだの方 へ（★2026-09-19）。
+  onGoMada
 }) {
   const width = useWindowWidth();
   const rows = monkaRows(assignments, teacherId, { gradeOf, nameOf });
@@ -209,6 +213,23 @@ export default function OpsMonka({
           {GO_DAIHYO_LABEL}
           <span style={{ display: "block", fontSize: rem(12.5), color: C.inkSoft }}>
             {GO_DAIHYO_SUB}
+          </span>
+        </button>
+      ) : null}
+
+      {/* ★★★時間割が まだの方 へ（★見本 `P_mada`・2026-09-19）。
+           ★★見えるのは「出したか どうか」だけ です。★中身は 見えません。 */}
+      {onGoMada ? (
+        <button type="button" onClick={onGoMada}
+          style={{
+            width: "100%", minHeight: 52, marginTop: rem(10), borderRadius: 12,
+            border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+            fontSize: rem(15.5), fontFamily: FONT_STACK,
+            textAlign: "left", padding: `0 ${rem(14)}`
+          }}>
+          {GO_MADA_LABEL}
+          <span style={{ display: "block", fontSize: rem(12.5), color: C.inkSoft }}>
+            {GO_MADA_SUB}
           </span>
         </button>
       ) : null}

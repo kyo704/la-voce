@@ -180,6 +180,9 @@ import OpsMonkaHito from "@/components/OpsMonkaHito";
 import OpsDaihyo from "@/components/OpsDaihyo";
 import OpsMonkaChange from "@/components/OpsMonkaChange";
 import OpsRetireTeacher from "@/components/OpsRetireTeacher";
+import OpsMada from "@/components/OpsMada";
+import { FAILED_LINE as MADA_FAILED, doneWord as madaDoneWord, mayNudge }
+  from "@/lib/opsMada";
 import { FAILED_LINE as RETIRE_FAILED, doneWord as retireDoneWord, mayRetire }
   from "@/lib/opsRetireTeacher";
 import { FAILED_LINE as CHANGE_FAILED, doneWord as changeDoneWord, mayChange }
@@ -12893,6 +12896,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [retireBusy, setRetireBusy] = useState(false);
   const [retireError, setRetireError] = useState("");
   const [retireDone, setRetireDone] = useState("");
+  // ★★★時間割が まだの方（★見本 `P_mada`・お決め D78・2026-09-19）。
+  //   ★★`undefined` ＝ まだ 読んで いない。★`null` ＝ 読めなかった。
+  const [madaOpen, setMadaOpen] = useState(false);
+  const [madaRows, setMadaRows] = useState(undefined);
+  const [madaNudges, setMadaNudges] = useState([]);
+  const [madaBusy, setMadaBusy] = useState(false);
+  const [madaError, setMadaError] = useState("");
+  const [madaDone, setMadaDone] = useState("");
   const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
@@ -13259,6 +13270,55 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const 表 = {};
     (data || []).forEach((r) => { 表[r.student_id] = r.free_count; });
     setMonkaFree(表);
+  }
+
+  /**
+   * ★時間割を 出したか どうか（★お決め D78・2026-09-19）。
+   *
+   *   ★★★返るのは 真偽 1つ だけ です。★中身は 来ません。
+   *   ★★読めなければ `null`。★空の 並びに しません。
+   */
+  async function fetchMada(orgId) {
+    if (!orgId) return;
+    setMadaRows(undefined);
+    const supabase = createClient();
+    const [s, n] = await Promise.all([
+      supabase.rpc("get_timetable_submitted", { p_org_id: orgId }),
+      supabase.from("timetable_nudges").select("student_id").eq("org_id", orgId)
+    ]);
+    if (s.error) console.error("★出したか どうかを 読めませんでした:", s.error);
+    if (n.error) console.error("★知らせの 記録を 読めませんでした:", n.error);
+    setMadaRows(s.error ? null : (s.data || []));
+    setMadaNudges(n.error ? [] : (n.data || []));
+  }
+
+  /**
+   * ★知らせる（★1回だけ・お決め D78）。
+   *
+   *   ★★★2度目は 台帳が 弾きます。★画面だけで 守りません。
+   */
+  async function handleNudgeMada(orgId, studentIds) {
+    setMadaError("");
+    setMadaDone("");
+    setMadaBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.rpc("nudge_timetable", {
+        p_org_id: orgId, p_student_ids: studentIds
+      });
+      if (error || !Array.isArray(data) || data.length === 0) {
+        throw error || new Error("0行でした");
+      }
+      setMadaDone(madaDoneWord({ sent: data[0].sent, skipped: data[0].skipped }));
+      await fetchMada(orgId);
+      return true;
+    } catch (err) {
+      console.error("★知らせられませんでした:", err);
+      setMadaError(MADA_FAILED);
+      return false;
+    } finally {
+      setMadaBusy(false);
+    }
   }
 
   /**
@@ -15532,6 +15592,30 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                  ★★★見えるのは **担当の 生徒だけ** です。
                    ★★台帳も 同じ です（`assignments_select` ── 自分の `teacher_id`）。
                  ★★出席の 数を 出します。★率（％）は 出しません（★裁定 その90）。 */
+            if (tabKey === "monka" && madaOpen) {
+              // ★★★時間割が まだの方（★見本 `P_mada`・2026-09-19）。
+              return (
+                <OpsMada
+                  submitted={madaRows}
+                  nudges={madaNudges}
+                  nameOf={(id) => orgDisplayName(id) || ""}
+                  gradeOf={(id) => {
+                    const r = (orgEnrollments[opsOrgId] || [])
+                      .find((x) => x.student_id === id);
+                    return (r && r.grade_label) || "";
+                  }}
+                  canNudge={mayNudge(gate)}
+                  busy={madaBusy}
+                  error={madaError}
+                  done={madaDone}
+                  onNudge={(ids) => { void handleNudgeMada(opsOrgId, ids); }}
+                  onClose={() => {
+                    setMadaOpen(false);
+                    setMadaError("");
+                    setMadaDone("");
+                  }} />
+              );
+            }
             if (tabKey === "monka" && daihyoOpen) {
               // ★★★代表を 決める（★見本 `P_daihyo`・2026-09-19）。
               //   ★★ご自分の 門下 だけ です。★よその 先生の 門下は 出ません。
@@ -15635,6 +15719,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   /* ★★★代表を 決める へ（★見本 `P_daihyo`・2026-09-19）。
                        ★★ご自分の 門下が 1人でも いる ときだけ 出します。
                        ★★★決めるのは その 門下の 先生 だけ です（★役職では ありません）。 */
+                  /* ★★★時間割が まだの方 へ（★見本 `P_mada`・2026-09-19）。
+                       ★★読めるのは 事務、または 担当の 先生 です。
+                       ★★★開く ときに 引きます。★出しっぱなしに しません。 */
+                  onGoMada={() => {
+                    setMadaOpen(true);
+                    setMadaError("");
+                    setMadaDone("");
+                    void fetchMada(opsOrgId);
+                  }}
                   onGoDaihyo={(orgAssignments[opsOrgId] || [])
                     .some((a) => a && a.teacher_id === userId && !a.ended_at)
                     ? () => { setDaihyoOpen(true); setDaihyoError(""); }
