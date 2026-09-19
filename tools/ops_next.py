@@ -72,9 +72,32 @@ if "★ありえない表★" in ある表:
   "P_settei": [], "P_sonohito": [], "P_setPost": [], "P_write": []
 }
 
+# ★★★仕分けの 紙が 無い 画面を、★みな「まだ 無い」と 数えて いました
+#   （★2026-09-19・坂本さんの ご指示で A-3 に 入る ときに 気づきました）。
+#   ★★中には、★よその 画面の 中に **作った** ものが ありました（★`P_pay`）。
+#     ★★もう一度 作る ところ でした。
+#   ★★★3つに 分けます ── ★作った ／ わざと 作って いない ／ 詰まって いる。
+#     ★★宣言は `tools/screen_diff/_deliberate.json`。
+#     ★★★印（その 画面の 字）が 本当に 在るかを、★ここで 確かめます。
+#       ★★紙が 古く なったら 止まります。★黙って 通しません。
+宣言みち = os.path.join(仕分け先, "_deliberate.json")
+宣言 = json.loads(io.open(宣言みち, encoding="utf-8").read())
+作った = {}
+for x in 宣言.get("作った", []):
+  みち = os.path.join(ROOT, x["どこ"])
+  if not os.path.exists(みち):
+    raise SystemExit("★止まりました ── 宣言の ファイルが ありません: " + x["どこ"])
+  if x["印"] not in io.open(みち, encoding="utf-8").read():
+    raise SystemExit("★止まりました ── 印が ありません: %s の %s" % (x["画面"], x["印"]))
+  作った[x["画面"]] = x
+わざと = {x["画面"]: x for x in 宣言.get("わざと 作って いない", [])}
+詰まり宣言 = {x["画面"]: x for x in 宣言.get("詰まって いる", [])}
+
 行 = []
 まだ, 欠け = [], []
 for 名 in 画面:
+  if 名 in 作った or 名 in わざと or 名 in 詰まり宣言:
+    continue
   p = os.path.join(仕分け先, 名 + ".json")
   if not os.path.exists(p):
     まだ.append((名, 詰まり.get(名, [])))
@@ -118,6 +141,23 @@ def 要る表(ts):
 行.append("★帯 …… **%d** ／ 開く 画面 …… **%d** ／ 設定の 節 …… **%d**"
           % (len(帯), len(開く), len(節)))
 行.append("")
+# ★★★3つ目の 分け ── ★紙に 残します（★数だけでは 次の 人に 伝わりません）。
+行.append("## ★⓪ 作った ／ わざと 作らない ／ 詰まって いる")
+行.append("")
+行.append("★★★見本に 在る のに、★この 下に 出て こない 画面 です。")
+行.append("★★宣言は `tools/screen_diff/_deliberate.json`。★印を 毎回 確かめて います。")
+行.append("")
+行.append("| 画面 | どれ | わけ ／ 引き金 |")
+行.append("|---|---|---|")
+for 名, x in sorted(作った.items()):
+  行.append("| `%s` | ★作った（%s） | %s |" % (名, x["どこ"], x["わけ"]))
+for 名, x in sorted(わざと.items()):
+  行.append("| `%s` | ★わざと 作らない | %s ／ 引き金 …… %s |"
+            % (名, x["わけ"], x.get("引き金", "")))
+for 名, x in sorted(詰まり宣言.items()):
+  行.append("| `%s` | ★詰まって いる | 要る もの …… %s ／ %s |"
+            % (名, x["要る もの"], x["わけ"]))
+行.append("")
 行.append("## ★① 画面が まだ 無い もの（%d）" % len(まだ))
 行.append("")
 行.append("| 画面 | 要る 表 | 台帳に あるか |")
@@ -158,5 +198,7 @@ for 名, 題, 二, ts in sorted(欠け, key=lambda x: -len(x[2])):
 出 = os.path.join(ROOT, "docs", "reports", "%s-次にやる画面.md" % 今日)
 io.open(出, "w", encoding="utf-8").write(本文出)
 print(出)
+print("作った（よその 画面の 中）%d ／ わざと 作らない %d ／ 詰まって いる %d"
+      % (len(作った), len(わざと), len(詰まり宣言)))
 print("見本の画面 %d ／ 画面が まだ %d ／ 欠けが ある %d"
       % (len(画面), len(まだ), len(欠け)))
