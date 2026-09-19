@@ -247,6 +247,10 @@ export function Li({ children, right, last, style, onClick }) {
     }}>
       <span style={{ minWidth: 0 }}>{children}</span>
       {right != null ? (
+        /* ★★★ここは `Li` です。★`Kv` では ありません（★2026-09-19）。
+             ★★11.5 → 12.5 に しかけて、★戻しました。
+             ★★★`Li` は 38人の 画面にも 出ます（★`tools/uiv2_gate_split.py`）。
+               ★★門の 外の 字は、★坂本さんの お決めを いただいて から 変えます。 */
         <span style={{ color: C.inkSoft, fontSize: rem(11.5), flex: "none", marginLeft: 8 }}>{right}</span>
       ) : null}
     </div>
@@ -263,7 +267,10 @@ export function Kv({ children, right, last }) {
   return (
     <div className="kv" style={{
       display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8,
-      fontSize: rem(11.5), color: C.inkSoft, padding: "5px 0",
+      // ★★11.5 → 12.5（★裁定 その103・2026-09-19）。
+      //   ★★`Kv` を 置いて いるのは 門の 中の 画面 だけ です
+      //     （★`tools/uiv2_gate_split.py` で 数えました）。
+      fontSize: rem(12.5), color: C.inkSoft, padding: "5px 0",
       borderBottom: last ? "none" : `1px solid ${C.line2}`
     }}>
       <span style={{ minWidth: 0 }}>{children}</span>
@@ -299,7 +306,12 @@ export function Lock({ children = "しらべる", onClick }) {
 export function BarRow({ label, ratio, tint, hollow }) {
   return (
     <div className="rowb" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
-      <span style={{ width: 34, flex: "none", fontSize: rem(10), color: C.inkSoft }}>{label}</span>
+      {/* ★★★10 → 12（★裁定 その103・2026-09-19）。
+           ★★`BarRow` を 置いて いるのは、★門の 中の 画面 だけ です
+             （★`tools/uiv2_gate_split.py` で 数えました）。★38人の 画面は 変わりません。
+           ★★★幅 34px の ままです。★字が 2つ 大きく なりました。
+             ★★入り切るか、★実機で お確かめ ください。 */}
+      <span style={{ width: 34, flex: "none", fontSize: rem(12), color: C.inkSoft }}>{label}</span>
       <div style={{ flex: 1, height: 8 }}>
         {ratio == null ? null : hollow ? (
           // ★★あとから 書いた日は、★中を 抜きます。★消しません。

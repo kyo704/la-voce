@@ -1758,15 +1758,10 @@ var CUT = {};            /* ★切った 相手。本人だけが 見られま�
 var SENT = [];           /* ★送った 定型文 */
 
 /* ★歌い手から 送れる 文（★これ 以外は 送れません）*/
-/* ★★場所・時間を 出しません（2026-09-19 確定）
-   ★日にち ＋ 時間 ＋ 場所 が そろうと、
-   ★★「その人が いつ どこに いるか」が 分かります
-   ★裁定その94 §7 に「いつ どこに いるかが 分かるものを 出しません」と
-   ★★書きながら、★募集の 画面で 自分で 破っていました
-   ★★★場所と 時間は ★成立の 後。★本人同士で 決めます        */
 var TPL_A = [
  '10月18日の 本番、お願いできますか',
  '曲目は「冬の旅」全曲です',
+ '場所は 第1練習室、14時から 2時間です',
  'お礼は 8,000円を 考えています',
  '楽譜は こちらで 用意します'
 ];
@@ -1775,9 +1770,6 @@ var TPL_B = [
  'お受けできます',
  '曲目を もう少し 教えてください'
 ];
-/* ★「相談に 応じます」が 入っている 募集にだけ 出します
-   ★★無い 募集に 出すと、★値切りの 道具に なります        */
-var TPL_B_SODAN = 'お礼について 相談させてください';
 /* ★2つで 足ります。★「受ける」「まだ 分からない」
    ★★断るなら 応募しません。★回数・場所・お礼は ★成立後に 本人同士で
    ★★★定型文を 増やすと、★そこで 交渉が 始まり、★自由文が 欲しくなります */
@@ -1794,21 +1786,16 @@ function bump(days){
  if(!HIMA) return [];                 /* ★書いていない → ★照合しない */
  return days.filter(function(d){return HIMA[d]})}
 
-/* ★★日にちだけ。★時間を 出しません
-   ★時間が 合うかは、★成立の 後に 確かめます              */
 var BOSHU = [
- {t:'ピアノ　実技試験',   d:'10月　3回ほど　／　'+W('piece')+'は これから',
-  days:['10月8日（水）','10月15日（水）','10月22日（水）'],
-  all:true, yen:'8,000円', tani:'1回の 練習', sodan:true},
- {t:'ピアノ　演奏会',     d:'11月　1回　／　冬の旅（全曲）',
-  days:['11月12日（水）'], all:false,
-  yen:'25,000円', tani:'本番1回 ＋ 練習3回 まとめて', sodan:false},
- {t:'チェンバロ　録音',   d:'12月　／　'+W('piece')+'は これから',
-  days:['12月3日（水）','12月10日（水）'], all:false,
-  yen:'12,000円', tani:'時給', sodan:true},
- {t:'歌い手　コンクール', d:'12月　／　二重唱',
-  days:['12月20日（土）'], all:false,
-  yen:'相談', tani:'', sodan:true}
+ {t:'ピアノ　レッスン',   d:'10月中に 3回ほど　／　'+W('piece')+'は これから',
+  days:['10月8日（水）14:00〜','10月15日（水）14:00〜','10月22日（水）14:00〜'],
+  all:true},
+ {t:'ピアノ　本番・演奏会', d:'11月　1回　／　冬の旅（全曲）',
+  days:['11月12日（水）18:00〜'], all:false},
+ {t:'チェンバロ　録音',    d:'時期は 相談　／　'+W('piece')+'は これから',
+  days:['12月3日（水）10:00〜','12月10日（水）10:00〜'], all:false},
+ {t:'歌い手　コンクール',  d:'12月　／　二重唱',
+  days:['12月20日（土）13:00〜'], all:false}
 ];
 
 
@@ -1898,8 +1885,6 @@ SC['伴奏をさがす']=function(){return bk('もっと')
   var ng=bump(b.days);
   return '<div class="li" onclick="push(\'応募する\','+k+')"><span>'+b.t
    +'<div class="usu">'+b.d+(b.all?'　／　<b>すべての 日</b>':'')+'</div>'
-   +'<div class="usu">'+b.yen+(b.tani?'（'+b.tani+'）':'')
-   +(b.sodan?'　<span style="color:var(--ok)">相談に 応じます</span>':'')+'</div>'
    +(ng.length?'<div class="usu" style="color:var(--warn)">'
      +(b.all?'ほかの 予定と 重なります':ng.length+'日、ほかの 予定が あります')
      +'</div>':'')
@@ -2159,29 +2144,7 @@ SC['募集を出す']=function(){return bk('伴奏をさがす')
 +'<div class="li"><span>1日でも 来られる方</span>'
 +'<s><span style="display:inline-block;width:17px;height:17px;border-radius:50%;border:1.6px solid var(--line);vertical-align:-3px"></span></s></div></div>'
 +'<div class="usu" style="margin:-4px 0 10px">時間割を 書いていない方には、<b>どちらでも 出します</b>。</div>'
- +'<div class="sh3">お礼</div>'
-+'<div style="display:flex;gap:8px;align-items:center;margin-bottom:9px">'
-+'<input class="inp" style="flex:0 0 130px;text-align:right" value="8,000" '
-+'inputmode="numeric"><span style="font-size:14px">円</span></div>'
-+'<div class="box">'
-+[['1回の 本番',false],['1回の 練習',true],['時給',false],
-  ['まとめて',false]].map(function(x){
-  return '<div class="li"><span>'+x[0]+'</span><s>'
-   +'<span style="display:inline-block;width:17px;height:17px;border-radius:50%;'
-   +'border:1.6px solid '+(x[1]?'var(--enji)':'var(--line)')+';'
-   +(x[1]?'background:var(--enji);box-shadow:inset 0 0 0 3px var(--card);':'')
-   +'vertical-align:-3px"></span></s></div>'}).join('')+'</div>'
-+'<div class="usu" style="margin:-4px 0 9px">'
-+'「まとめて」を えらぶと、本番と 練習の 回数を 入れられます。</div>'
-+'<div class="box"><div class="li"><span>相談に 応じます'
-+'<div class="usu">応募の ときに、お礼の ことを たずねられます</div></span>'
-+'<s><span style="display:inline-block;width:17px;height:17px;border-radius:4px;'
-+'border:1.6px solid var(--enji);background:var(--enji);'
-+'box-shadow:inset 0 0 0 3px var(--card);vertical-align:-3px"></span></s></div></div>'
-+'<div class="note" style="margin-top:9px"><b>時間と 場所は 出しません。</b><br>'
-+'　（日にち・時間・場所が そろうと、いつ どこに いるかが 分かるからです）<br>'
-+'決まった 方にだけ、<b>ご自分たちで</b> お伝えください。</div>'
-+'<div class="note">曲が 決まっていなくても 出せます。<br>'
+ +'<div class="note">曲が 決まっていなくても 出せます。<br>'
 +'楽器・パートは ご自分で 書けます。札に ないものでも。<br>'
 +'楽譜そのものは お預かりしません。<br>'
 +'出してから 30日で、自動的に 終わります。</div>'};
@@ -2259,14 +2222,8 @@ SC['応募する']=function(i){
 +'<b>出さないものは、相手に 見えません。</b>'
 +'年齢・学年・'+W('monka')+'は、どちらにしても 出ません。<br>'
 +'録画は <b>YouTube の リンク</b>です。この中では 再生しません。</div>'
-+'<div class="sh3">お礼</div>'
-+'<div class="card" style="padding:13px 15px;margin-bottom:11px">'
-+'<div style="font-size:15.5px;font-weight:700">'+b.yen+'</div>'
-+(b.tani?'<div class="usu">'+b.tani+'</div>':'')
-+(b.sodan?'<div class="usu" style="color:var(--ok);margin-top:4px">'
-  +'相談に 応じる、とのことです</div>':'')+'</div>'
 +'<div class="sh3">送る ことば</div><div class="box">'
- +TPL_B.concat(b.sodan?[TPL_B_SODAN]:[]).map(function(t,k){
+ +TPL_B.map(function(t,k){
    return '<div class="li"><span>'+t+'</span>'
     +'<s><span style="display:inline-block;width:17px;height:17px;border-radius:4px;'
     +'border:1.6px solid '+(k===0?'var(--enji)':'var(--line)')+';'
@@ -2290,21 +2247,21 @@ SC['応募する']=function(i){
 
 var OUBO = [
  {n:'応募者 A', d:'9月16日', ins:'ピアノ', say:'お受けできます',
-  day:'10月8日（水）',
+  day:'10月8日（水）14:00〜',
   gakko:'○○音楽大学　ピアノ科', shiji:['大川 あや'],
   sho:['2024　○○ピアノコンクール　入選'],
   rec:['2026.06　Chopin　バラード第1番'],
   rep:['Schubert　冬の旅（全曲）','Schumann　詩人の恋'],
   photo:true, done:3},
  {n:'応募者 B', d:'9月16日', ins:'ピアノ', say:'曲目を もう少し 教えてください',
-  day:'10月8日（水）',
+  day:'10月8日（水）14:00〜',
   gakko:'○○音楽大学　ピアノ科', shiji:['森 ひろし'],
   sho:[],
   rec:['2026.08　Bach　平均律 第1巻 第1番'],
   rep:['Bach　平均律（抜粋）'],
   photo:false, done:0},
  {n:'応募者 C', d:'9月15日', ins:'ピアノ', say:'お受けできます',
-  day:'10月15日（水）',
+  day:'10月15日（水）14:00〜',
   gakko:'△△音楽院（イタリア）', shiji:['斎藤 めぐみ','外部 講師'],
   sho:['2025　△△国際コンクール　第3位'],
   rec:['2026.05　Liszt　愛の夢 第3番','2025.11　Debussy　月の光'],
