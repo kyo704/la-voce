@@ -27,7 +27,7 @@ import { NOTICES, noticeLabel, ONLY_TEACHER_LINE, NO_REASON_LINES } from "@/lib/
 // ============================================================================
 
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
-const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
+const small = { fontSize: "0.78125rem", color: C.inkSoft, lineHeight: 1.8 };
 
 export default function TellTeacher({ lesson, teacherName, onTell, onClose }) {
   const [picked, setPicked] = useState(lesson ? lesson.student_notice || null : null);
@@ -65,7 +65,7 @@ export default function TellTeacher({ lesson, teacherName, onTell, onClose }) {
 
       <div style={card}>
         <p style={small}>どの レッスン</p>
-        <p style={{ fontSize: "0.9375rem", color: C.ink, marginTop: 2 }}>{whenWord}</p>
+        <p style={{ fontSize: "0.96875rem", color: C.ink, marginTop: 2 }}>{whenWord}</p>
         {lesson.note ? <p style={small}>{lesson.note}</p> : null}
       </div>
 
@@ -83,7 +83,7 @@ export default function TellTeacher({ lesson, teacherName, onTell, onClose }) {
                 border: `1px solid ${on ? C.curtain : C.line}`,
                 borderBottomWidth: on ? 3 : 1,
                 background: on ? C.paper : C.card,
-                color: C.ink, fontSize: "0.9375rem"
+                color: C.ink, fontSize: "0.96875rem"
               }}>{n.label}</button>
           );
         })}
@@ -104,7 +104,7 @@ export default function TellTeacher({ lesson, teacherName, onTell, onClose }) {
           minHeight: 52, borderRadius: 12,
           border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
           background: picked ? C.curtain : C.line, color: "#FFFDF8",
-          fontSize: "0.9375rem"
+          fontSize: "0.96875rem"
         }}>{busy ? "伝えています" : "伝える"}</button>
     </div>
   );

@@ -22,7 +22,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VT = os.path.join(ROOT, "components", "VocalTracker.jsx")
 註 = re.compile(r"^\s*(//|\*|/\*)")
 門の外 = re.compile(r"!layoutV2")
-門の中 = re.compile(r"layoutV2\s*(&&|\?)")
+# ★★★`className={layoutV2 ? "a" : "b"}` は 門では ありません（★2026-09-19）。
+#   ★★着せる 名を 変える だけ です。★出す 出さないを 決めて いません。
+#   ★★★ここを 門と 読んで、★レッスンモードの 図を「門の中」と 取り違えました。
+門の中 = re.compile(r"(?<!className=\{)layoutV2\s*(&&|\?)")
 DAN = [12, 12.5, 13, 13.5, 14.5, 15.5]
 
 
@@ -69,6 +72,9 @@ def main():
   assert 門(["if (!layoutV2) {", "  <A />"], 1) == "門の外"
   閉じた = ["{layoutV2 && (", "  <A />", ")}", '{activeTab === "info" && (', "  <B />"]
   assert 門(閉じた, 4) == "門を通らない", "★閉じた 節を 拾って います"
+  # ★★★着せる 名の 三項は 門では ありません（★2026-09-19・取り違えました）。
+  着せる = ['<div className={layoutV2 ? "woolsong-v2" : undefined}>', "  <A />"]
+  assert 門(着せる, 1) == "門を通らない", "★className の 三項を 門と 読んで います"
   assert 大きさ('fontSize: rem(11.5)') == [11.5]
   assert 大きさ('padding: rem(4)') == []
 

@@ -15918,15 +15918,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               <p className="text-xs mb-3" style={{ color: C.inkSoft }}>記録{lessonModeData.recordedCount}/28日</p>
               <div style={{ width: "100%", height: chartHeight(130) }}>
                 <ResponsiveContainer>
-                  {/* ★★★図の 目もりを 9 → 12 に しました（★裁定 その103・2026-09-19）。
-                       ★★門の 中 だけ です。★古い 画面の 図は 触って いません。
-                       ★★★目もりが 重ならないか、★実機で お確かめ ください
-                         ── ★横の 日づけは 28日 ぶん 並びます。 */}
+                  {/* ★★★この 図は 9px の ままです（★2026-09-19・戻しました）。
+                       ★★★いちど 12px に しました。★誤り でした。
+                         ★★ここは `layoutV2` の 門の 中では ありません。
+                         ★★`canSeeBetaFeatures`（★admin または teacher_beta_access）の
+                           ★★門 です ── ★台帳で 10人 いらっしゃいます（★2026-09-19）。
+                       ★★★道具が 取り違えて いました ──
+                         ★★15519行の `className={layoutV2 ? …}` を 門と 読んで いました。
+                         ★★あれは 着せる 名を 変える だけ で、★出す 出さないの 門では ありません。
+                       ★★字を 大きく する なら、★別の お決めが 要ります。 */}
                   <LineChart data={lessonModeData.scoreTrend} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                     <CartesianGrid stroke={C.line} />
-                    <XAxis dataKey="date" tick={{ fontSize: "0.75rem", fill: C.inkSoft }} />
-                    <YAxis domain={[0, 100]} tick={{ fontSize: "0.75rem", fill: C.inkSoft }} />
-                    <Tooltip contentStyle={{ fontSize: "0.78125rem", borderRadius: 8, borderColor: C.line }} />
+                    <XAxis dataKey="date" tick={{ fontSize: "0.5625rem", fill: C.inkSoft }} />
+                    <YAxis domain={[0, 100]} tick={{ fontSize: "0.5625rem", fill: C.inkSoft }} />
+                    <Tooltip contentStyle={{ fontSize: "0.6875rem", borderRadius: 8, borderColor: C.line }} />
                     <Line type="monotone" dataKey="score" stroke={C.gold} strokeWidth={2} dot={{ r: 3 }} connectNulls />
                   </LineChart>
                 </ResponsiveContainer>
@@ -15956,9 +15961,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <ResponsiveContainer>
                   <LineChart data={lessonModeData.loadTrend} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                     <CartesianGrid stroke={C.line} />
-                    <XAxis dataKey="date" tick={{ fontSize: "0.75rem", fill: C.inkSoft }} />
-                    <YAxis domain={[0, "auto"]} tick={{ fontSize: "0.75rem", fill: C.inkSoft }} />
-                    <Tooltip contentStyle={{ fontSize: "0.78125rem", borderRadius: 8, borderColor: C.line }} />
+                    <XAxis dataKey="date" tick={{ fontSize: "0.5625rem", fill: C.inkSoft }} />
+                    <YAxis domain={[0, "auto"]} tick={{ fontSize: "0.5625rem", fill: C.inkSoft }} />
+                    <Tooltip contentStyle={{ fontSize: "0.6875rem", borderRadius: 8, borderColor: C.line }} />
                     <Line type="monotone" dataKey="acwr" stroke={C.ink} strokeWidth={2} dot={{ r: 3 }} connectNulls />
                   </LineChart>
                 </ResponsiveContainer>

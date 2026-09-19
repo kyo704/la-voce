@@ -57,7 +57,7 @@ export default function DailyAskPicker({ value, onChange }) {
               borderBottom: i === list.length - 1 ? "none" : `1px solid ${C.line2}`
             }}>
               <span style={{
-                width: 15, flex: "none", fontSize: rem(11), color: C.inkSoft
+                width: 15, flex: "none", fontSize: rem(12.5), color: C.inkSoft
               }}>{i + 1}</span>
               <span style={{ flex: 1, minWidth: 0 }}>{it ? it.label : k}</span>
               <button type="button" onClick={() => onChange(removeAsk(list, k))}
@@ -65,7 +65,7 @@ export default function DailyAskPicker({ value, onChange }) {
                 style={{
                   minWidth: SPACE.tapMin, minHeight: SPACE.tapMin,
                   margin: "-11px 0", background: "transparent", border: "none",
-                  color: C.inkSoft, fontSize: rem(15)
+                  color: C.inkSoft, fontSize: rem(15.5)
                 }}>×</button>
             </div>
           );

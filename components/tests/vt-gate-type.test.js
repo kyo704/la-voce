@@ -23,7 +23,11 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
 
 const 註 = /^\s*(\/\/|\*|\/\*)/;
 const 門の外 = /!layoutV2/;
-const 門の中 = /layoutV2\s*(&&|\?)/;
+// ★★★`className={layoutV2 ? "a" : "b"}` は 門では ありません（★2026-09-19）。
+//   ★★着せる 名を 変える だけ で、★出す 出さないを 決めて いません。
+//   ★★★ここを 門と 読み、★レッスンモードの 図（beta の 門）を
+//     ★★「門の中」と 取り違えました。★12px に して、★戻しました。
+const 門の中 = /(?<!className=\{)layoutV2\s*(&&|\?)/;
 const 段 = [12, 12.5, 13, 13.5, 14.5, 15.5];
 
 function 深さ(l) { return l.length - l.replace(/^\s*/, "").length; }
@@ -58,6 +62,9 @@ function 大きさ(l) {
   assert.strictEqual(門(["if (!layoutV2) {", "  <A />"], 1), "門の外");
   const 閉じた = ["{layoutV2 && (", "  <A />", ")}", '{activeTab === "info" && (', "  <B />"];
   assert.strictEqual(門(閉じた, 4), "門を通らない", "★閉じた 節を 拾って います");
+  const 着せる = ['<div className={layoutV2 ? "woolsong-v2" : undefined}>', "  <A />"];
+  assert.strictEqual(門(着せる, 1), "門を通らない",
+    "★className の 三項を 門と 読んで います");
   assert.deepStrictEqual(大きさ('fontSize: rem(11.5)'), [11.5]);
   assert.deepStrictEqual(大きさ('padding: rem(4)'), []);
 });
@@ -82,7 +89,11 @@ const 中 = [];
 });
 
 見る("★門の 中を 数えられて いる（★0件では ない）", () => {
-  assert.ok(中.length >= 10, "★数えられて いません: " + 中.length);
+  // ★★★数は 動きます。★「0件では ない」だけ を 見ます（★2026-09-19）。
+  //   ★★はじめ 10件 以上、と 書いて いました。★測った 数を 写した のです。
+  //   ★★`className` の 取り違えを 直したら 9件に なり、★ここが 落ちました。
+  //   ★★★見張りは 数を 覚えません。★数え方が 生きて いる ことを 見ます。
+  assert.ok(中.length > 0, "★1件も 数えられて いません");
 });
 
 console.log("\n★" + 数 + "つ 通りました。");

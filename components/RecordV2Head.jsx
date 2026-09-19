@@ -148,7 +148,7 @@ export default function RecordV2Head({
       }}>
         <h2 style={TYPE.title}>記録</h2>
         {saved ? (
-          <span style={{ fontSize: rem(11.5), color: C.sage }}>保存しました</span>
+          <span style={{ fontSize: rem(12.5), color: C.sage }}>保存しました</span>
         ) : null}
       </div>
 

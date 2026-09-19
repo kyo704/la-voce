@@ -215,7 +215,7 @@ function Scatter({ data, itemKey }) {
           position: "absolute", left: `${CENTER[ci]}%`,
           transform: "translateX(-50%)",
           top: above ? -13 : 4,
-          fontSize: rem(9), color: C.curtain, background: C.card,
+          fontSize: rem(12), color: C.curtain, background: C.card,
           padding: "1px 4px", borderRadius: 3, whiteSpace: "nowrap"
         }}>{valueWord(itemKey, v)}</span>
       </div>
@@ -229,7 +229,7 @@ function Scatter({ data, itemKey }) {
       transform: "translateX(-50%)",
       // ★★下の 名前は 2行です（★名前と 日数）。★重ならないよう 行の 高さを 決めます。
       lineHeight: 1.4,
-      fontSize: rem(10.5), color: C.inkSoft, textAlign: "center", whiteSpace: "nowrap"
+      fontSize: rem(12), color: C.inkSoft, textAlign: "center", whiteSpace: "nowrap"
     }}>
       {/* ★★見本は「よく出た日 14日」で 1行です（★dotplot の <text>）。
           ★★2026-09-11 まで 2行に 割って いました。★1行に 戻します。
@@ -251,7 +251,7 @@ function Scatter({ data, itemKey }) {
           <span style={{
             position: "absolute", left: 0, width: AXIS - 6, top: yOf(v),
             transform: "translateY(-50%)", textAlign: "right",
-            fontSize: rem(9), color: C.inkSoft,
+            fontSize: rem(12), color: C.inkSoft,
             // ★★折り返させません。★折れると 線と 重なります。
             whiteSpace: "nowrap", overflow: "hidden"
           }}>{valueWord(itemKey, v, true)}</span>
@@ -272,7 +272,7 @@ function Scatter({ data, itemKey }) {
       {outside > 0 ? (
         <span style={{
           position: "absolute", right: RIGHT, top: 0,
-          fontSize: rem(9), color: C.inkSoft
+          fontSize: rem(12), color: C.inkSoft
         }}>{valueWord(itemKey, hi, true)}より 外に {outside}日</span>
       ) : null}
     </div>
@@ -335,7 +335,7 @@ function OrderScreen({ order, onChange, onBack, message }) {
             <span style={{
               flex: "none", width: 22, height: 22, borderRadius: "50%",
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: rem(11),
+              fontSize: rem(12.5),
               background: i === 0 ? C.curtain : C.paper,
               color: i === 0 ? "#FFFDF8" : C.inkSoft
             }}>{i + 1}</span>
@@ -348,7 +348,7 @@ function OrderScreen({ order, onChange, onBack, message }) {
                 flex: "none", minHeight: SPACE.tapMin, padding: "0 10px",
                 background: "transparent", border: "none",
                 color: C.inkSoft, opacity: i === 0 ? 0.25 : 1,
-                fontSize: rem(15), fontFamily: FONT_STACK
+                fontSize: rem(15.5), fontFamily: FONT_STACK
               }}>↑</button>
           </div>
         ))}
@@ -451,7 +451,7 @@ export default function CompareV2({ entries, dates, stacked, onStack }) {
       {/* ★★見本 kuraberu の 1文の カード（★border-color:#C9A0AB・background:#FFFCFC）。 */}
       {sentence ? (
         <Card style={{ borderColor: "#C9A0AB", background: "#FFFCFC" }}>
-          <div style={{ fontSize: rem(15), lineHeight: 1.85, fontWeight: 700, color: C.ink }}>
+          <div style={{ fontSize: rem(15.5), lineHeight: 1.85, fontWeight: 700, color: C.ink }}>
             {sentence}
           </div>
           {/* ★★数は 3つだけです。★点数でも 順位でも ありません。

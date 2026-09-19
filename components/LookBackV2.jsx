@@ -140,7 +140,7 @@ function QuietScreen({ reason, onGo }) {
       {/* ★★見本 B04 は、★上を 120px 空けて、★真ん中に 1枚 置きます。 */}
       <div style={{ height: 120 }} />
       <Card style={{ textAlign: "center", padding: "22px 16px" }}>
-        <div style={{ fontSize: rem(15), color: C.ink, lineHeight: 1.9 }}>
+        <div style={{ fontSize: rem(15.5), color: C.ink, lineHeight: 1.9 }}>
           くらべる と かぞえる は、<br />いまは お休みです。
         </div>
         {q ? (
@@ -191,7 +191,7 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
     minHeight: SPACE.tapMin, padding: "0 14px", borderRadius: 999,
     border: `1px solid ${on ? C.curtain : C.line}`,
     background: on ? C.curtain : C.card,
-    color: on ? "#FFFDF8" : C.inkSoft, fontSize: rem(11.5)
+    color: on ? "#FFFDF8" : C.inkSoft, fontSize: rem(12.5)
   });
 
   // ★★順番の 画面は、★1枚の 画面です（★見本 SC['順番']）。

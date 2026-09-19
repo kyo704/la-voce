@@ -119,7 +119,7 @@ export default function MyTimetable({ userId, onBack }) {
               display: "block", marginTop: 6, marginLeft: "auto",
               minHeight: SPACE.tapMin, padding: "0 10px",
               background: "transparent", border: "none",
-              color: C.inkSoft, fontSize: rem(11), fontFamily: FONT_STACK
+              color: C.inkSoft, fontSize: rem(12.5), fontFamily: FONT_STACK
             }}>閉じる</button>
         </Warn>
       ) : (
@@ -128,7 +128,7 @@ export default function MyTimetable({ userId, onBack }) {
             display: "inline-block", marginBottom: 8, minHeight: SPACE.tapMin,
             padding: "0 10px", background: C.card,
             border: `1px solid ${C.line}`, borderRadius: 99,
-            color: C.inkSoft, fontSize: rem(11.5), fontFamily: FONT_STACK
+            color: C.inkSoft, fontSize: rem(12.5), fontFamily: FONT_STACK
           }}>？ 説明</button>
       )}
 
@@ -164,8 +164,8 @@ export default function MyTimetable({ userId, onBack }) {
                     background: C.card, padding: "4px 2px", textAlign: "left",
                     whiteSpace: "nowrap", overflow: "hidden"
                   }}>
-                    <b style={{ fontSize: rem(11.5), color: C.ink }}>{r.period.name}</b><br />
-                    <span style={{ fontSize: rem(9), color: C.inkSoft }}>
+                    <b style={{ fontSize: rem(12.5), color: C.ink }}>{r.period.name}</b><br />
+                    <span style={{ fontSize: rem(12), color: C.inkSoft }}>
                       {hhmm(r.period.start_min)}
                     </span>
                   </td>
@@ -182,14 +182,14 @@ export default function MyTimetable({ userId, onBack }) {
                           overflow: "hidden",
                           background: CELL_BG[c.state], border: `1px solid ${C.line2}`,
                           borderRadius: 6, padding: "4px 2px",
-                          fontFamily: FONT_STACK, fontSize: rem(9.5),
+                          fontFamily: FONT_STACK, fontSize: rem(12),
                           lineHeight: 1.35, color: C.ink, textAlign: "center"
                         }}>
                         {c.state === "class" ? (
                           <>
                             <b>{String(c.row.title || "").slice(0, 8)}</b>
                             {c.row.room ? (
-                              <span style={{ display: "block", color: C.inkSoft, fontSize: rem(9) }}>
+                              <span style={{ display: "block", color: C.inkSoft, fontSize: rem(12) }}>
                                 {String(c.row.room).slice(0, 8)}
                               </span>
                             ) : null}

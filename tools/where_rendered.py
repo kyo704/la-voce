@@ -22,7 +22,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VT = os.path.join(ROOT, "components", "VocalTracker.jsx")
 註 = re.compile(r"^\s*(//|\*|/\*)")
 外 = re.compile(r"!layoutV2")
-中 = re.compile(r"layoutV2\s*(&&|\?)")
+# ★★`className={layoutV2 ? …}` は 門では ありません（★2026-09-19）。
+中 = re.compile(r"(?<!className=\{)layoutV2\s*(&&|\?)")
 
 
 def 印(本, i, 幅=400):

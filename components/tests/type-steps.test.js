@@ -37,7 +37,20 @@ const 済んだ画面 = [
   ["components", "OpsPeople.jsx"],
   ["components", "OpsPostMatrix.jsx"],
   ["components", "OpsPresets.jsx"],
-  ["components", "OpsSettings.jsx"]
+  ["components", "OpsSettings.jsx"],
+  // ★★★門の 中だけ の 画面（★2026-09-19・お決め D65）。
+  //   ★★名では なく、★置き所で 確かめました（`tools/screen_gate_check.py`）。
+  //   ★★★`WardrobePanel` は 名に V2 が ありませんが、★古い 画面に 出ます。
+  //     ★★`MyTimetable` は 名に V2 が ありませんが、★門の 中 だけ です。
+  //     ★★だから 名で 決めません。★1つずつ 置き所を 見ました。
+  ["components", "CompareV2.jsx"],
+  ["components", "CountV2.jsx"],
+  ["components", "DailyAskPicker.jsx"],
+  ["components", "LookBackV2.jsx"],
+  ["components", "MyTimetable.jsx"],
+  ["components", "NotesV2.jsx"],
+  ["components", "RecordV2Head.jsx"],
+  ["components", "TellTeacher.jsx"]
 ];
 
 // ★★★VocalTracker は 全部では ありません（★2026-09-19・お決め D63(b)）。

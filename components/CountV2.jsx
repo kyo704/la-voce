@@ -262,7 +262,7 @@ export default function CountV2({ entries, dates, todayISO, profile, userEmail, 
           </div>
           <div style={{ display: "flex", gap: 5 }}>
             {hist.bars.map((b) => (
-              <span key={b.label} style={{ flex: 1, textAlign: "center", fontSize: rem(8.5), color: C.inkSoft }}>
+              <span key={b.label} style={{ flex: 1, textAlign: "center", fontSize: rem(12), color: C.inkSoft }}>
                 {b.label}
               </span>
             ))}

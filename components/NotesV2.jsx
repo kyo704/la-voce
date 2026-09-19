@@ -48,7 +48,7 @@ import {
 // ============================================================================
 
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
-const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
+const small = { fontSize: "0.78125rem", color: C.inkSoft, lineHeight: 1.8 };
 
 /** ★見本 md()。★「8/25」のような 短い 日付。 */
 function mmdd(iso) {
@@ -606,7 +606,7 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
             <Input value={editing.performance || ""} placeholder="れい：11月20日 定期演奏会"
               onChange={(e) => setEditing({ ...editing, performance: e.target.value })} />
             <div className="card repertoire-preview">
-              <div style={{ fontSize: 12, lineHeight: 1.85 }}>
+              <div style={{ fontSize: "0.75rem", lineHeight: 1.85 }}>
                 いま 入っているもの<br />
                 <b>{editing.repertoire_name || "（曲名 まだ）"}</b>{"　"}{editing.composer || ""}{"　"}{editing.position_in || ""}<br />
                 {editing.language || "ことば 未選択"}{"　／　"}{editing.high_note || "—"}{" 〜 "}{editing.low_note || "—"}{"　／　"}{editing.status || "ようす 未選択"}
