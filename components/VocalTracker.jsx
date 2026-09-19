@@ -177,6 +177,9 @@ import OpsPresets from "@/components/OpsPresets";
 // ★★門下（★見本 `P_monka` ／ ★裁定 その90・2026-09-18）。
 import OpsMonka from "@/components/OpsMonka";
 import OpsMonkaHito from "@/components/OpsMonkaHito";
+import OpsDaihyo from "@/components/OpsDaihyo";
+// ★★代表の 決めごとは lib が 持ちます（★字も こちら）。
+import { FAILED_LINE as DAIHYO_FAILED } from "@/lib/opsDaihyo";
 // ★★日程を 組む（★見本 `P_kumu`・裁定 その98 ①・2026-09-19）。
 import OpsKumu from "@/components/OpsKumu";
 // ★★誰の 分を 組むか（★裁定 その99 F1）。★決めは lib が 持ちます。
@@ -12868,6 +12871,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [monkaHitoSlots, setMonkaHitoSlots] = useState(undefined);
   const [monkaHitoPeriods, setMonkaHitoPeriods] = useState([]);
   const [monkaHitoNote, setMonkaHitoNote] = useState("");
+  // ★★★代表を 決める（★見本 `P_daihyo`・2026-09-19）。
+  //   ★★開いて いるか どうか だけ。★中身は `assignments` から 作ります。
+  const [daihyoOpen, setDaihyoOpen] = useState(false);
+  const [daihyoBusy, setDaihyoBusy] = useState(false);
+  const [daihyoError, setDaihyoError] = useState("");
   const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
@@ -13234,6 +13242,42 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const 表 = {};
     (data || []).forEach((r) => { 表[r.student_id] = r.free_count; });
     setMonkaFree(表);
+  }
+
+  /**
+   * ★代表の 印を 付ける・外す（★2026-09-19・見本 `P_daihyo`）。
+   *
+   *   ★★★台帳が 決めます ── ★2人まで も、★誰が 決められるかも。
+   *     ★★`assignments` を 直に 書きません。★`is_representative` に
+   *       ★更新の 権限が ありません（★わざと です）。
+   *   ★★★0行 返ったら 失敗 です。★手もとを 書き換えません。
+   */
+  async function handleSetDaihyo(assignmentId, on) {
+    setDaihyoError("");
+    setDaihyoBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.rpc("set_monka_representative",
+        { p_assignment_id: assignmentId, p_on: on });
+      if (error || !Array.isArray(data) || data.length === 0) {
+        throw error || new Error("0行でした");
+      }
+      // ★★台帳が 返した 並びで、★手もとを 揃えます。★もう一度 引きません。
+      setOrgAssignments((prev) => ({
+        ...prev,
+        [opsOrgId]: (prev[opsOrgId] || []).map((a) => {
+          const 来 = data.find((d) => String(d.assignment_id) === String(a.id));
+          return 来 ? { ...a, is_representative: !!来.is_representative } : a;
+        })
+      }));
+      return true;
+    } catch (err) {
+      console.error("★代表を 変えられませんでした:", err);
+      setDaihyoError(DAIHYO_FAILED);
+      return false;
+    } finally {
+      setDaihyoBusy(false);
+    }
   }
 
   /**
@@ -15402,6 +15446,33 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                  ★★★見えるのは **担当の 生徒だけ** です。
                    ★★台帳も 同じ です（`assignments_select` ── 自分の `teacher_id`）。
                  ★★出席の 数を 出します。★率（％）は 出しません（★裁定 その90）。 */
+            if (tabKey === "monka" && daihyoOpen) {
+              // ★★★代表を 決める（★見本 `P_daihyo`・2026-09-19）。
+              //   ★★ご自分の 門下 だけ です。★よその 先生の 門下は 出ません。
+              const 並び = (orgAssignments[opsOrgId] || [])
+                .filter((a) => a && a.teacher_id === userId && !a.ended_at)
+                .map((a) => ({
+                  assignmentId: a.id,
+                  studentId: a.student_id,
+                  name: orgDisplayName(a.student_id) || "",
+                  grade: (() => {
+                    const r = (orgEnrollments[opsOrgId] || [])
+                      .find((x) => x.student_id === a.student_id);
+                    return (r && r.grade_label) || "";
+                  })(),
+                  isRepresentative: !!a.is_representative
+                }));
+              return (
+                <OpsDaihyo
+                  rows={並び}
+                  busy={daihyoBusy}
+                  error={daihyoError}
+                  onToggle={(r) => {
+                    void handleSetDaihyo(r.assignmentId, !r.isRepresentative);
+                  }}
+                  onClose={() => { setDaihyoOpen(false); setDaihyoError(""); }} />
+              );
+            }
             if (tabKey === "monka" && monkaHito) {
               // ★★★門下の ひと 1人（★見本 `P_monkaHito`・2026-09-19）。
               //   ★★一覧より 先に 置きます。★開いて いる ときは こちら です。
@@ -15474,6 +15545,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           monkaOf(orgAssignments[opsOrgId] || [], userId), userId);
                       }
                     }
+                    : undefined}
+                  /* ★★★代表を 決める へ（★見本 `P_daihyo`・2026-09-19）。
+                       ★★ご自分の 門下が 1人でも いる ときだけ 出します。
+                       ★★★決めるのは その 門下の 先生 だけ です（★役職では ありません）。 */
+                  onGoDaihyo={(orgAssignments[opsOrgId] || [])
+                    .some((a) => a && a.teacher_id === userId && !a.ended_at)
+                    ? () => { setDaihyoOpen(true); setDaihyoError(""); }
                     : undefined}
                   /* ★★★お名前を 押すと、★その方の 1枚（★見本 `P_monkaHito`）。 */
                   onOpenOne={(id) => {

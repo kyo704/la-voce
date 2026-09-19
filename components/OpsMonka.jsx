@@ -9,7 +9,9 @@ import {
   presetOf, presetCount, MANY_PRESETS_LINE, NO_PRESET_LINE,
   NOTES, NOTES_BOLD, EMPTY_HEAD, EMPTY_HOW, NOT_YET, freeWord,
   // ★★日程を 組む へ（★2026-09-19・裁定 その98 ①）。
-  GO_KUMU_LABEL, GO_KUMU_SUB
+  GO_KUMU_LABEL, GO_KUMU_SUB,
+  // ★★代表を 決める へ（★2026-09-19・見本 `P_daihyo`）。
+  GO_DAIHYO_LABEL, GO_DAIHYO_SUB
 } from "@/lib/opsMonka";
 import {
   cameCount, cameWord, heldCount, progressWord, looksShort,
@@ -66,7 +68,9 @@ export default function OpsMonka({
   freeCounts = {},
   // ★★★日程を 組む へ（★2026-09-19・裁定 その98 ①）。
   //   ★★渡されなければ、★札を 出しません（★押せない 札を 置きません）。
-  onGoKumu
+  onGoKumu,
+  // ★★★代表を 決める へ（★2026-09-19）。★渡されなければ 札を 出しません。
+  onGoDaihyo
 }) {
   const width = useWindowWidth();
   const rows = monkaRows(assignments, teacherId, { gradeOf, nameOf });
@@ -187,6 +191,24 @@ export default function OpsMonka({
           {/* ★★11.5 → 12.5 …… ★札に 添える 字 です（★役で 寄せます）。 */}
           <span style={{ display: "block", fontSize: rem(12.5), opacity: 0.9 }}>
             {GO_KUMU_SUB}
+          </span>
+        </button>
+      ) : null}
+
+      {/* ★★★代表を 決める へ（★見本 `P_daihyo`・2026-09-19）。
+           ★★渡されなければ 札を 出しません（★押せない 札を 置きません）。
+           ★★★決めるのは その 門下の 先生 だけ です。★役職では ありません。 */}
+      {onGoDaihyo ? (
+        <button type="button" onClick={onGoDaihyo}
+          style={{
+            width: "100%", minHeight: 52, marginTop: rem(10), borderRadius: 12,
+            border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+            fontSize: rem(15.5), fontFamily: FONT_STACK,
+            textAlign: "left", padding: `0 ${rem(14)}`
+          }}>
+          {GO_DAIHYO_LABEL}
+          <span style={{ display: "block", fontSize: rem(12.5), color: C.inkSoft }}>
+            {GO_DAIHYO_SUB}
           </span>
         </button>
       ) : null}

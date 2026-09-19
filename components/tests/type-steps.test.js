@@ -63,7 +63,8 @@ const 済んだ画面 = [
   // ★★2026-09-19 ── ★連絡は 門の中と 運営だけ に 出ます（★古い個人画面には 出ません）。
   ["components", "Renraku.jsx"],
   // ★★2026-09-19 ── ★新しく 作った 画面は、★はじめから 6段で 書きます。
-  ["components", "OpsMonkaHito.jsx"]
+  ["components", "OpsMonkaHito.jsx"],
+  ["components", "OpsDaihyo.jsx"]
 ];
 
 // ★★★VocalTracker は 全部では ありません（★2026-09-19・お決め D63(b)）。
