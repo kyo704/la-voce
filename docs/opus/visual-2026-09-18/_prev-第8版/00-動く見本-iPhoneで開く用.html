@@ -647,11 +647,6 @@ var HONBAN={d:'2026年9月9日',n:'秋の 演奏会',pl:'第1ホール',kot:'ゆ
    ★切り替えは もっと →「通っている ところ」の 上の 札      */
 function hasClass(){ return !S.noClass }
 
-/* ══ ★さがす の 新着 ── 裁定その94 追補（2026-09-18）══
-   ★入口は「もっと → さがす」。★きょうには ★新着の ときだけ 1行
-   ★★0件なら 節ごと 出しません（★裁定その73と 同じ形）        */
-var SAGASU_NEW = 2;
-
 function S_kyou(){
  var b='<div class="hd"><h2>きょう</h2><div class="gear" onclick="push(\'もっと\')">⚙</div></div>';
  /* 本番の 朝だけ、本人が 前に 書いた ことばを そのまま 返します（アプリは 1文字も 足しません） */
@@ -687,11 +682,6 @@ function S_kyou(){
   +(ORGS.length>1?'<br>通っている ところが 全部、1つの 予定表に 出ます。教室どうしは 見えません。':'')+'</div>';
  }
  /* 近い 行事 */
- if(SAGASU_NEW>0){
-  b+='<div class="box" style="margin-bottom:11px">'
-   +'<div class="li" onclick="push(\'伴奏をさがす\')"><span>さがす'
-   +'<div class="usu">新しい 募集が '+SAGASU_NEW+'件</div></span><s>›</s></div></div>';
- }
  if(hasClass()){
  b+='<div class="h3">近い 行事</div><div class="box">'
   +'<div class="li plain" style="cursor:default"><span>9月14日（月）　実技試験<br><span class="usu">12:30〜17:00／第1ホール　'+orgOf('u').n+'</span></span></div>'
@@ -1009,6 +999,8 @@ function nRep(){return REP.map(function(r,i){
  +'<div class="li" onclick="push(\'経歴\')"><span>経歴</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'公開の範囲\')"><span>だれが 見られますか</span><s>自分だけ ›</s></div>'
  +'<div class="li" onclick="push(\'公開ページ\')"><span>外から どう 見えるか</span><s>›</s></div></div>'
+ +(hasClass()?'<div class="sh3">さがす</div><div class="box">'
+ +'<div class="li" onclick="push(\'伴奏をさがす\')"><span>伴奏者・歌い手を さがす</span><s>4件 ›</s></div></div>':'')
  +'<div class="usu" style="margin-top:6px">曲を 開くと、右上の … から <b>直す・消す</b> ことが できます。</div>'
  +'<div class="note">曲ごとの 台帳です。<b>ひつじの「たな」と 同じ中身</b>を 見ています。<br>出来や 点数は ありません。数えるのは 日数と 回数だけ。</div>'}
 function nRen(){
@@ -1723,135 +1715,23 @@ SC['もっと深く']=function(){return bk('学ぶ')
 +'読まなくても、アプリは 使えます。</div>'};
 
 
-
-/* ══ ★さがす の 守り ── 裁定その94（2026-09-18）══
-   ★調べに もとづく：
-     ・警察庁 2024：★ロマンス詐欺の 初回接触 ★マッチングアプリ 34.3%（1位）
-       ★被害時の 連絡 ★LINE 94.4% → ★アプリで 会い、外へ 誘導するのが 定型
-     ・★米 司法省：★性暴力 被害者の 警察通報は ★20%
-       → ★★通報に たよる 設計は 働きません
-     ・★ProPublica：★被害者が 先に ブロックすると ★通報できなく なる 欠陥
-   ★守りは 4層。★通報は いちばん 後ろ
-     L1 学校の 中だけ ／ L2 定型文だけ ／ L3 いつでも 切れる ／ L4 通報   */
-
-var CUT = {};            /* ★切った 相手。本人だけが 見られます */
-var SENT = [];           /* ★送った 定型文 */
-
-/* ★歌い手から 送れる 文（★これ 以外は 送れません）*/
-var TPL_A = [
- '10月18日の 本番、お願いできますか',
- '曲目は「冬の旅」全曲です',
- '場所は 第1練習室、14時から 2時間です',
- 'お礼は 8,000円を 考えています',
- '楽譜は こちらで 用意します'
-];
-/* ★伴奏者から 送れる 文 */
-var TPL_B = [
- 'お受けできます',
- '曲目を もう少し 教えてください'
-];
-/* ★2つで 足ります。★「受ける」「まだ 分からない」
-   ★★断るなら 応募しません。★回数・場所・お礼は ★成立後に 本人同士で
-   ★★★定型文を 増やすと、★そこで 交渉が 始まり、★自由文が 欲しくなります */
-
-/* ══ ★日どりの 条件 ── 裁定その94 追補（2026-09-18）══
-   ★募集する側が ★「すべて」か「1日でも」かを 決めます
-   ★★応募する側は、★開く前に 分かります                       */
-var HIMA = null;   /* ★時間割。★null ＝ ★★書いていない */
-
-/* ★★書いていない 人には、★何も しません
-   ★空は「予定が ない」では なく「まだ 書いていない」
-   ★★時間割が 要らない 人に、★書かせません（★催促しない）  */
-function bump(days){
- if(!HIMA) return [];                 /* ★書いていない → ★照合しない */
- return days.filter(function(d){return HIMA[d]})}
-
-var BOSHU = [
- {t:'ピアノ　レッスン',   d:'10月中に 3回ほど　／　曲目は これから',
-  days:['10月8日（水）14:00〜','10月15日（水）14:00〜','10月22日（水）14:00〜'],
-  all:true},
- {t:'ピアノ　本番・演奏会', d:'11月　1回　／　冬の旅（全曲）',
-  days:['11月12日（水）18:00〜'], all:false},
- {t:'チェンバロ　録音',    d:'時期は 相談　／　曲目は これから',
-  days:['12月3日（水）10:00〜','12月10日（水）10:00〜'], all:false},
- {t:'歌い手　コンクール',  d:'12月　／　二重唱',
-  days:['12月20日（土）13:00〜'], all:false}
-];
-
-
-SH['cut']=function(name){
- return '<div class="sh-t">この人との やりとり</div>'+
-  '<div class="box">'
-  +'<div class="li" onclick="doCut(\''+name+'\',\'withdraw\')">'
-  +'<span>応募を 取り下げる<div class="usu">この 募集だけ</div></span><s>›</s></div>'
-  +'<div class="li" onclick="doCut(\''+name+'\',\'mute\')">'
-  +'<span>この人からの 連絡を 止める</span><s>›</s></div>'
-  +'<div class="li" onclick="doCut(\''+name+'\',\'hide\')">'
-  +'<span>この人に 自分を 見せない<div class="usu">相手からは 見えなくなります</div>'
-  +'</span><s>›</s></div></div>'
-  +'<div class="note"><b>理由は うかがいません。</b>いつでも できます。<br>'
-  +'<b>相手には 知らせません。</b>ただ 見えなくなるだけです。<br>'
-  +'話が まとまった あとでも、切ることが できます。<br>'
-  +'切ったことは、<b>あなただけが 見られます</b>（こちらも 見ません）。</div>'
-  +'<div class="box" style="margin-top:12px">'
-  +'<div class="li" onclick="doReport(\''+name+'\')">'
-  +'<span style="color:var(--err)">こまったことが ありました</span><s>›</s></div></div>'
-  +'<div class="note">切ったあとでも、ここから お知らせいただけます。</div>'
-  +shBtm()}
-
-function doCut(name,kind){
- CUT[name]=kind; closeSheet();
- toast(kind==='withdraw'?'取り下げました':'見えなくなりました'); draw()}
-
-function doReport(name){
- closeSheet();
- S.stack.push({s:'こまったこと',a:name}); draw()}
-
-SC['こまったこと']=function(name){
- return bk('さがす')+'<div class="hd" style="padding-top:2px"><h2>こまったことが ありました</h2></div>'
- +'<div class="warn">お知らせいただくと、<b>その方の「さがす」は すぐに 止まります。</b><br>'
- +'そのあと、こちらで 拝見します。<br>'
- +'<b>お名前は、相手に お伝えしません。</b></div>'
- +'<div class="sh3">どんなことでしたか</div><div class="box">'
- +['しつこく 連絡が 来る','演奏と 関係のない 話を される',
-   'ほかの ところで 連絡してくる','お金の ことで こまっている',
-   'こわい 思いを した','そのほか'].map(function(v){
-   return '<div class="li"><span>'+v+'</span>'
-    +'<s><span style="display:inline-block;width:17px;height:17px;border-radius:4px;'
-    +'border:1.6px solid var(--line);vertical-align:-3px"></span></s></div>'}).join('')
- +'</div>'
- +'<div class="fl">よろしければ、もう少し</div>'
- +'<textarea class="inp" style="height:88px" placeholder="書かなくても かまいません"></textarea>'
- +'<div class="btn" style="margin-top:12px" onclick="toast(\'お知らせしました\');back()">お知らせする</div>'
- +'<div class="note">お知らせいただいた あと、<b>その方から あなたは 見えなくなります</b>。<br>'
- +'やりとりは、こちらで 拝見することが あります。<br>'
- +'あなたの 記録・ノート・ひつじは、<b>この件で 変わりません</b>。</div>'};
-
-SC['伴奏をさがす']=function(){return bk('もっと')
+SC['伴奏をさがす']=function(){return bk('レパートリー')
 +'<div class="hd" style="padding-top:2px"><h2>さがす</h2></div>'
-+'<div class="warn">この学校の 方だけが 見えます。<br>ことばは <b>決まった 言い方から 選びます</b>（自由には 書けません）。<br>合わないと 思ったら、<b>いつでも 切れます</b>。理由は 要りません。</div>'
 +'<div class="pills"><span class="pill on">ぜんぶ</span>'
 +'<span class="pill">伴奏者</span><span class="pill">歌い手</span>'
 +'<span class="pill">楽器奏者</span></div>'
 +'<div class="sh3">出ている 募集</div>'
 +'<div class="box">'
-+BOSHU.map(function(b,k){
-  var ng=bump(b.days);
-  return '<div class="li" onclick="push(\'応募する\','+k+')"><span>'+b.t
-   +'<div class="usu">'+b.d+(b.all?'　／　<b>すべての 日</b>':'')+'</div>'
-   +(ng.length?'<div class="usu" style="color:var(--warn)">'
-     +(b.all?'ほかの 予定と 重なります':ng.length+'日、ほかの 予定が あります')
-     +'</div>':'')
-   +'</span><s>›</s></div>'}).join('')+'</div>'
++[['ピアノ　レッスン','10月中に 3回ほど　／　曲目は これから'],
+  ['ピアノ　本番・演奏会','11月　1回　／　冬の旅（全曲）'],
+  ['チェンバロ　録音','時期は 相談　／　曲目は これから'],
+  ['歌い手　コンクール','12月　／　二重唱']].map(function(x){
+ return '<div class="li" onclick="push(\'応募する\')"><span>'+x[0]
+ +'<div class="usu">'+x[1]+'</div></span><s>›</s></div>'}).join('')+'</div>'
 +'<div class="sh3">自分が 出した 募集</div><div class="box">'
 +'<div class="li" onclick="push(\'応募を選ぶ\')"><span>ピアノ　レッスン'
 +'<div class="usu">10月中に 3回ほど　／　あと 24日</div></span><s>応募 3件 ›</s></div></div>'
 +'<div class="btn g" onclick="push(\'募集を出す\')">＋ 自分も 募集を 出す</div>'
-+'<div class="sh3">見えなくした 方</div><div class="box">'
-+(Object.keys(CUT).length?Object.keys(CUT).map(function(k){
-   return '<div class="li"><span>'+k+'</span><s><span style="color:var(--ink4)">もどす</span></s></div>'}).join('')
- :'<div class="li plain" style="color:var(--ink4)"><span>まだ ありません</span></div>')+'</div>'
-+'<div class="note">ここは <b>あなただけが 見られます</b>。相手には 知らせません。<br>こちらも 見ません。</div>'
 +'<div class="btn g" onclick="push(\'応募した募集\')">応募した 募集を 見る</div>'
 +'<div class="note">同じ 学校・教室の 中だけです。<br>'
 +'出している 方の お名前は、決まるまで 出ません。<br>'
@@ -1926,13 +1806,7 @@ SC['募集を出す']=function(){return bk('伴奏をさがす')
 +'<div class="sh3">版　<span class="usu" style="display:inline">任意</span></div>'
 +'<input class="inp" placeholder="IMSLP などの URL、または 版の 名前">'
 +'<div style="height:12px"></div><div class="btn">出す</div>'
-+'<div class="sh3">この日は</div><div class="box">'
-+'<div class="li"><span>すべて 来られる方<div class="usu">合わない日が ある方には、はじめから 出しません</div></span>'
-+'<s><span style="display:inline-block;width:17px;height:17px;border-radius:50%;border:1.6px solid var(--enji);background:var(--enji);box-shadow:inset 0 0 0 3px var(--card);vertical-align:-3px"></span></s></div>'
-+'<div class="li"><span>1日でも 来られる方</span>'
-+'<s><span style="display:inline-block;width:17px;height:17px;border-radius:50%;border:1.6px solid var(--line);vertical-align:-3px"></span></s></div></div>'
-+'<div class="usu" style="margin:-4px 0 10px">時間割を 書いていない方には、<b>どちらでも 出します</b>。</div>'
- +'<div class="note">曲が 決まっていなくても 出せます。<br>'
++'<div class="note">曲が 決まっていなくても 出せます。<br>'
 +'楽器・パートは ご自分で 書けます。札に ないものでも。<br>'
 +'楽譜そのものは お預かりしません。<br>'
 +'出してから 30日で、自動的に 終わります。</div>'};
@@ -1942,13 +1816,7 @@ SC['応募した募集']=function(){return bk('伴奏をさがす')
 +'<div class="hd" style="padding-top:2px"><h2>応募した 募集</h2></div>'
 +'<div class="sh3" style="margin-top:0">いま</div>'
 +'<div class="box"><div class="li"><span>チェンバロ　録音'
-+'<div class="usu">応募しています</div>'
-+'<div class="usu" style="color:var(--enji)">曲目が 届きました ──「冬の旅（全曲）」</div>'
-+'</span><s>›</s></div>'
-+'<div class="li"><span>ピアノ　伴奏'
-+'<div class="usu">応募しています</div>'
-+'<div class="usu">たずねた ことに、まだ お返事は ありません</div>'
-+'</span><s>›</s></div></div>'
++'<div class="usu">応募しています</div></span><s>›</s></div></div>'
 +'<div class="sh3">終わったもの</div>'
 +'<div class="box">'
 +'<div class="li" style="color:var(--ink3)"><span>ピアノ　レッスン'
@@ -1958,165 +1826,45 @@ SC['応募した募集']=function(){return bk('伴奏をさがす')
 +'<div class="note">終わった 理由は 書きません。ほかの方に 決まったのか、'
 +'取り下げられたのかは 分かりません。<br>'
 +'お知らせは 送りません。開いたときに 見えます。<br>'
-+'たずねた ことへの お返事も、ここに 出ます。<br>'
 +'90日で、この一覧からも 消えます。</div>'};
 
 /* ── 分析の拡張 ── */
 
-SC['応募する']=function(i){
- var b = BOSHU[i||0], ng = bump(b.days);
- return bk('さがす')+'<div class="hd" style="padding-top:2px"><h2>応募する</h2></div>'
- +'<div class="card" style="padding:14px 16px;margin-bottom:12px">'
- +'<div style="font-weight:700">'+b.t+'</div>'
- +'<div class="usu" style="margin-top:4px">'+b.d+'<br>○○音楽大学　2年　声楽</div></div>'
+SC['応募する']=function(){return bk('伴奏をさがす')
++'<div class="hd" style="padding-top:2px"><h2>この募集に 応募します</h2></div>'
++'<div class="card"><div style="font-size:15.5px">ピアノ　レッスン</div>'
++'<div class="usu" style="margin-top:6px">10月中に 3回ほど<br>曲目は これから</div></div>'
++'<div class="btn">応募する</div><div class="btn g">やめる</div>'
++'<div class="note">日にちの 相談は、決まってからです。<br>'
++'ここで 書き添えることは ありません。<br>'
++'応募したことは、ほかの 応募者には 見えません。</div>'};
 
- /* ── 日どり ── */
- +'<div class="sh3">'+(b.all?'この日、すべてに 来られる方':'来られる 日')+'</div>'
- +(b.all
-   ? '<div class="box">'+b.days.map(function(d){
-       var x = ng.indexOf(d)>=0;
-       return '<div class="li plain"><span>'+d
-        +(x?'<div class="usu" style="color:var(--warn)">ほかの 予定が あります</div>':'')
-        +'</span></div>'}).join('')+'</div>'
-     +'<div class="usu" style="margin:-4px 0 10px">'
-     +'この募集は、<b>すべての 日に 来られる方</b>を さがしています。</div>'
-   : '<div class="box">'+b.days.map(function(d,k){
-       var x = ng.indexOf(d)>=0;
-       return '<div class="li"><span>'+d
-        +(x?'<div class="usu" style="color:var(--warn)">ほかの 予定が あります</div>':'')
-        +'</span><s><span style="display:inline-block;width:17px;height:17px;'
-        +'border-radius:4px;border:1.6px solid '+(k===0?'var(--enji)':'var(--line)')+';'
-        +(k===0?'background:var(--enji);box-shadow:inset 0 0 0 3px var(--card);':'')
-        +'vertical-align:-3px"></span></s></div>'}).join('')+'</div>')
-
- /* ── ことば ── */
- +'<div class="sh3">送る ことば</div><div class="box">'
- +TPL_B.map(function(t,k){
-   return '<div class="li"><span>'+t+'</span>'
-    +'<s><span style="display:inline-block;width:17px;height:17px;border-radius:4px;'
-    +'border:1.6px solid '+(k===0?'var(--enji)':'var(--line)')+';'
-    +(k===0?'background:var(--enji);box-shadow:inset 0 0 0 3px var(--card);':'')
-    +'vertical-align:-3px"></span></s></div>'}).join('')
- +'</div>'
- +'<div class="note"><b>ことばは、この中から 選びます。</b>自由に 書くことは できません。<br>'
- +'　（このほうが、おたがいに 安全だからです）<br>'
- +'回数・場所・お礼は、<b>話が まとまってから</b> ご自分たちで お決めください。<br>'
- +'そのときに、ご自分で 決めて 連絡先を 交換していただけます。<br>'
- +'<b>合わないと 思ったら、いつでも 切れます。</b>理由は 要りません。</div>'
- +'<div class="btn" style="margin-top:12px" onclick="toast(\'応募しました\');back()">応募する</div>'
- +'<div class="btn g" style="margin-top:9px" onclick="openSheet(\'cut\',\'この募集\')">'
- +'この人との やりとりについて</div>'};
-
-
-/* ══ ★やりとりの 往復 ── 裁定その94 追補（2026-09-18）══
-   ★定型文を 作ったのに、★★返す 経路が ありませんでした
-   ★「曲目を もう少し 教えてください」に 答える ところを 足します
-   ★★曲名は ★データです。★書いた 文では ありません。★ここは 安全   */
-
-var OUBO = [
- {n:'応募者 A', d:'9月16日', ins:'ピアノ', say:'お受けできます',
-  day:'10月8日（水）14:00〜'},
- {n:'応募者 B', d:'9月16日', ins:'ピアノ', say:'曲目を もう少し 教えてください',
-  day:'10月8日（水）14:00〜'},
- {n:'応募者 C', d:'9月15日', ins:'ピアノ', say:'お受けできます',
-  day:'10月15日（水）14:00〜'}
-];
-
-/* ★自分の レパートリー。★ここから 選びます */
-var MYREP = [
- {t:'冬の旅（全曲）', c:'シューベルト', on:true},
- {t:'詩人の恋',       c:'シューマン',   on:false},
- {t:'魔王',           c:'シューベルト', on:false}
-];
-
-SC['曲目を答える']=function(i){
- return bk('応募者の詳細')+'<div class="hd" style="padding-top:2px"><h2>曲目を 答える</h2></div>'
- +'<div class="usu" style="margin-bottom:12px">'
- +(OUBO[i||1].n)+' さんから、曲目を たずねられています</div>'
-
- +'<div class="sh3" style="margin-top:0">レパートリーから</div>'
- +'<div class="box">'
- +MYREP.map(function(r,k){
-   return '<div class="li"><span>'+r.t+'<div class="usu">'+r.c+'</div></span>'
-    +'<s><span style="display:inline-block;width:17px;height:17px;border-radius:4px;'
-    +'border:1.6px solid '+(r.on?'var(--enji)':'var(--line)')+';'
-    +(r.on?'background:var(--enji);box-shadow:inset 0 0 0 3px var(--card);':'')
-    +'vertical-align:-3px"></span></s></div>'}).join('')
- +'<div class="li" onclick="openSheet(\'repAdd\')">'
- +'<span style="color:var(--enji)">＋ ここで 曲を 足す</span><s>›</s></div>'
- +'</div>'
- +'<div class="usu" style="margin:-4px 0 12px">'
- +'まだ 入れていない 曲は、<b>ここで 足せます</b>。'
- +'レパートリーにも 入ります。</div>'
-
- +'<div class="sh3">または</div><div class="box">'
- +['曲目は これから 決めます','当日までに お伝えします'].map(function(t){
-   return '<div class="li"><span>'+t+'</span>'
-    +'<s><span style="display:inline-block;width:17px;height:17px;border-radius:4px;'
-    +'border:1.6px solid var(--line);vertical-align:-3px"></span></s></div>'}).join('')
- +'</div>'
-
- +'<div class="btn" style="margin-top:12px" onclick="toast(\'お伝えしました\');back()">'
- +'送る</div>'
- +'<div class="note"><b>曲の 名前だけを お伝えします。</b>'
- +'自由に 書くことは できません。<br>'
- +'そのほかの ことは、話が まとまってから ご自分たちで お決めください。</div>'};
-
-/* ★★その場で 曲を 足す ── ★画面を 出て 戻る 必要が ありません */
-SH['repAdd']=function(){
- return '<div class="sh-t">曲を 足す</div>'
- +'<div class="fl">曲の 名前</div>'
- +'<input class="inp" placeholder="れい：冬の旅（全曲）">'
- +'<div class="fl">作った人　<span class="usu" style="display:inline">なくても かまいません</span></div>'
- +'<input class="inp" placeholder="れい：シューベルト">'
- +'<div class="btn" style="margin-top:12px" onclick="closeSheet();toast(\'足しました\')">'
- +'足す</div>'
- +'<div class="note">足した 曲は、<b>レパートリーにも 入ります</b>。<br>'
- +'あとから「ノート → レパートリー」で 直せます。</div>'
- +shBtm()};
 
 SC['応募を選ぶ']=function(){return bk('伴奏をさがす')
-+'<div class="hd" style="padding-top:2px"><h2>応募が '+OUBO.length+'件 あります</h2></div>'
++'<div class="hd" style="padding-top:2px"><h2>応募が 3件 あります</h2></div>'
 +'<div class="box">'
-+OUBO.map(function(o,k){
- var asking = o.say.indexOf('曲目')>=0;
- return '<div class="li" onclick="push(\'応募者の詳細\','+k+')"><span>'+o.n
- +'<div class="usu">'+o.d+'　／　'+o.ins+'</div>'
- +'<div class="usu" style="color:'+(asking?'var(--warn)':'var(--ink3)')+'">'
- +'「'+o.say+'」</div>'
- +'</span><s>見る ›</s></div>'}).join('')+'</div>'
++[['応募者 A','9月16日'],['応募者 B','9月16日'],['応募者 C','9月15日']].map(function(x){
+ return '<div class="li" onclick="push(\'応募者の詳細\')"><span>'+x[0]
+ +'<div class="usu">'+x[1]+'</div></span><s>見る ›</s></div>'}).join('')+'</div>'
 +'<div class="btn g">この募集を 終わりにする</div>'
 +'<div class="note">押すと、その方の ことが 見られます。決めるのは、見たあとです。<br>'
-+'応募の 順に 並べています。<br>'
-+'たずねられている ものは、<b>ことばの 色で 分かります</b>。</div>'};
++'応募の 順に 並べています。</div>'};
 
-SC['応募者の詳細']=function(i){
- var o = OUBO[i||1], asking = o.say.indexOf('曲目')>=0;
- return bk('応募を選ぶ')+'<div class="hd" style="padding-top:2px"><h2>'+o.n+'</h2></div>'
- +'<div class="box"><div class="li plain"><span>楽器・パート</span><s>'+o.ins+'</s></div>'
- +'<div class="li plain"><span>来られる 日</span><s>'+o.day+'</s></div></div>'
 
- +'<div class="sh3">送られた ことば</div>'
- +'<div class="card" style="padding:13px 15px">'
- +'<div style="font-size:14.5px">「'+o.say+'」</div></div>'
- +(asking
-   ? '<div class="btn g" style="margin-top:10px" onclick="push(\'曲目を答える\','+(i||1)+')">'
-     +'曲目を 答える</div>'
-   : '')
+SC['応募者の詳細']=function(){return bk('応募を選ぶ')
++'<div class="hd" style="padding-top:2px"><h2>応募者 B</h2></div>'
++'<div class="box"><div class="li"><span>楽器・パート</span><s>ピアノ</s></div></div>'
++'<div class="sh3">合う 空きコマ</div>'
++'<div class="box">'
++[['10月15日（水）3限','9:00-10:30'],['10月17日（金）2限','13:00-14:30'],
+  ['10月20日（月）1限','9:00-10:30']].map(function(x){
+ return '<div class="li"><span>'+x[0]+'<div class="usu">'+x[1]+'</div></span></div>'}).join('')+'</div>'
++'<div class="btn" onclick="push(\'成立後\')">この方に 決める</div>'
++'<div class="note">お名前は、決めたあとに 見えます。<br>'
++'門下・学年は 出しません。決めるのに 要らないからです。<br>'
++'空いている コマだけを 出しています。授業は 出ません。<br>'
++'決めると、ほかの 応募は 閉じます。</div>'};
 
- +'<div class="sh3">合う 空きコマ</div>'
- +'<div class="box">'
- +[['10月15日（水）3限','9:00-10:30'],['10月17日（金）2限','13:00-14:30'],
-   ['10月20日（月）1限','9:00-10:30']].map(function(x){
-   return '<div class="li plain"><span>'+x[0]+'<div class="usu">'+x[1]+'</div></span></div>'}).join('')
- +'</div>'
- +'<div class="btn" style="margin-top:12px" onclick="push(\'成立後\')">この方に 決める</div>'
- +'<div class="btn g" style="margin-top:9px" onclick="openSheet(\'cut\',o.n)">'
- +'この人との やりとりについて</div>'
- +'<div class="note">お名前は、決めたあとに 見えます。<br>'
- +'門下・学年は 出しません。決めるのに 要らないからです。<br>'
- +'空いている コマだけを 出しています。授業は 出ません。<br>'
- +'決めると、ほかの 応募は 閉じます。</div>'};
 
 SC['成立後']=function(){return bk('伴奏をさがす')
 +'<div class="hd" style="padding-top:2px"><h2>山田 花子 さん</h2></div>'
@@ -2513,7 +2261,6 @@ SC['もっと']=function(){
  +'<div class="li" onclick="push(\'通っているところ\')"><span>通っている ところ</span><s>'+ORGS.length+'つ ›</s></div>'
  +'<div class="li" onclick="openSheet(\'account\')"><span>アカウント</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'プラン\')"><span>プラン</span><s>'+(paid()?'調べる':'無料')+' ›</s></div>'
- +'<div class="li" onclick="push(\'伴奏をさがす\')"><span>さがす<div class="usu">いっしょに 演奏する人</div></span><s>›</s></div>'
  +'<div class="li" onclick="push(\'しらべていること\')"><span>しらべている こと</span><s>1組 ›</s></div>'
  +'<div class="li" onclick="push(\'学ぶ\')"><span>学ぶ</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'書き出す\')"><span>書き出す（CSV・JSON）</span><s>›</s></div>'
