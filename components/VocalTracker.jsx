@@ -382,7 +382,7 @@ import { EXPORTED_TABLES, EXPORTED_PROFILE_COLUMNS, entriesToCsv, buildExportPay
 //   ここで profile.is_under_18 を直に見ないこと。答えていない人を成人側へ倒してしまう。
 import {
   shouldAskAgeQuestion, mayAskForConsent, isTreatedAsMinor, hasAnsweredAgeQuestion,
-  answerToProfilePatch, skipToProfilePatch, adoptSignupAnswer,
+  answerToProfilePatch, skipToProfilePatch, adoptSignupAnswer, adoptSignupBand,
   // ★3つの帯（2026-09-04）。★2択とは別の答えです。
   shouldAskAgeBand, isTreatedAsMinorByBand, isUnder15Confirmed,
   ageBandToProfilePatch, AGE_BANDS
@@ -5508,7 +5508,11 @@ function ExerciseItemRow({ item, onChange, onRemove, t }) {
 }
 
 /* ---------- main component ---------- */
-export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null, signupVoiceOccupation = null }) {
+export default function VocalTracker({
+  userId, userEmail, signupAgeAnswer = null, signupVoiceOccupation = null,
+  // ★★★年齢の 帯（★2026-09-20・お決め 6㋐）。★登録の 画面で 選んだ もの。
+  signupAgeBand = null
+}) {
   const [loading, setLoading] = useState(true);
   // 記録データが読み込めなかったとき、画面の上に出す（黙って空にしない）
   const [entriesLoadError, setEntriesLoadError] = useState("");
@@ -6603,6 +6607,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             .from("profiles").update(adopted).eq("id", userId);
           if (!adoptError && mounted) setProfile((prev) => ({ ...prev, ...adopted }));
         }
+        // ★★★帯も 移します（★2026-09-20・お決め 6㋐）。
+        //   ★★すでに 帯が あれば `null` が 返り、★何も しません。
+        //   ★★★2択の 答えとは 別に 扱います。★推し当てで 埋めません。
+        const 帯 = adoptSignupBand(ageRow, signupAgeBand);
+        if (帯) {
+          const { error: bandError } = await supabase
+            .from("profiles").update(帯).eq("id", userId);
+          if (!bandError && mounted) setProfile((prev) => ({ ...prev, ...帯 }));
+        }
       }
 
       // テスターの印。migration_is_tester.sql が未実行の環境がありうるので、
@@ -6742,7 +6755,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     return () => { mounted = false; };
     // signupAgeAnswer はサーバから渡る値で、この画面の間は変わりません。
     // 依存に入れても読み直しは起きませんが、規則どおり並べておきます。
-  }, [userId, signupAgeAnswer, signupVoiceOccupation]);
+  }, [userId, signupAgeAnswer, signupAgeBand, signupVoiceOccupation]);
 
   // 指導者プラン実装仕様: 自分が関わる紐付け（先生として・生徒として）を取得する。
   // teacher_beta_accessを持たないユーザーでも、他人から生徒として招待される可能性はあるため、

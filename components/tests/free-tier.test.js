@@ -271,6 +271,16 @@ function ok(label, cond) {
   ok("★鍵の名前に、全部見せる名前がある",
     [...m.PAID_FEATURES, ...m.NEVER_PAID].every((k) => !!m.FEATURE_LABELS[k]));
 
+  // ★★★体調が よくない 日の もの（★お決め 14・2026-09-20）。
+  //   ★★坂本さんの お決め ──「無料に する」。
+  //   ★★★いちばん 要る ときに 書けなく なる ことを 防ぎます。
+  //     ★★お金の 壁で 止まると、★その 日の ことが 残りません。
+  //   ★★もとから `NEVER_PAID` に 在ります。★動かさない ように 見張ります。
+  ["symptom_gate", "referral", "record", "calendar", "export"].forEach((k) => {
+    ok("★" + k + " は いつでも 無料（★お決め 14）", m.NEVER_PAID.includes(k));
+    ok("★" + k + " は 売り物の 側に 無い", !m.PAID_FEATURES.includes(k));
+  });
+
   console.log("\n■ ★お支払いの状態を、手元に持たないこと（線引き §2-2）");
   ok("★localStorage を使っていない", !/localStorage/.test(src));
 

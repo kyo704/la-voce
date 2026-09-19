@@ -104,12 +104,19 @@ async function main() {
   const fsEnd = signup.indexOf("</fieldset>", fsStart);
   assertTrue(fsStart > 0 && fsEnd > fsStart, "質問の枠が1つある");
   const fieldset = signup.slice(fsStart, fsEnd);
-  assertTrue(/name="isUnder18"/.test(fieldset), "枠の中に、はい／いいえがある");
+  // ★★★2026-09-20（★お決め 6㋐）── ★2択 から 3つの 帯に なりました。
+  //   ★★もとは `name="isUnder18"` の はい／いいえ でした。
+  //   ★★★15歳未満か どうかが 分からない 形 でした。★弾けません でした。
+  assertTrue(/name="ageBand"/.test(fieldset), "★枠の中に、3つの 帯が ある");
+  assertTrue(/SIGNUP_BANDS\.map/.test(fieldset), "★帯は lib から 出して いる");
   assertTrue(!/required/.test(fieldset), "★登録画面で必須になっていない");
   assertTrue(!/defaultChecked/.test(signup),
     "★既定で選ばれている選択肢が無い（答えていない状態が残る）");
-  assertTrue(/isUnder18: null/.test(signup),
-    "★登録画面の初期値が null（既定で「18歳以上」にしていない）");
+  assertTrue(/ageBand: null/.test(signup),
+    "★登録画面の初期値が null（既定で 帯を 選んで いない）");
+  // ★★★弾くのは「15歳未満」を 選んだ ときだけ です。
+  assertTrue(/!maySignUp\(form\.ageBand\)/.test(signup),
+    "★押せない ように して いる（★押した あとで 断らない）");
   const vtRaw = readRaw("components", "VocalTracker.jsx");
   // ★「18歳未満ですか？」は、列が無いときの警告文にも出ます。そちらが先に
   //   見つかるので、字面ではなく、1枚の出し分けそのものを目印にします。

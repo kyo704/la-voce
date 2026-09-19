@@ -29,6 +29,13 @@ export default async function DashboardPage() {
     ? user.user_metadata.is_under_18
     : null;
 
+  // ★★★年齢の 帯（★2026-09-20・お決め 6㋐）。
+  //   ★★登録の 画面で 3つから 選んで いただいた もの です。
+  //   ★★★選んで いなければ null。★推し当てません。
+  const signupAgeBand = typeof user.user_metadata?.age_band === "string"
+    ? user.user_metadata.age_band
+    : null;
+
   // ★登録画面で選んだ職業。年齢の答えと同じ道すじで、初回ログインに
   //   profiles.voice_occupation へ移します（lib/occupation.js の
   //   adoptSignupOccupation）。★profiles.occupation には書きません。
@@ -42,6 +49,7 @@ export default async function DashboardPage() {
       userId={user.id}
       userEmail={user.email}
       signupAgeAnswer={signupAgeAnswer}
+      signupAgeBand={signupAgeBand}
       signupVoiceOccupation={signupVoiceOccupation}
     />
   );

@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { C } from "@/lib/tokens";
 import { OCCUPATIONS, occupationLabelIn } from "@/lib/occupation";
+// ★★年齢の 帯の 決めは lib/ageGate.js が 持ちます（★お決め 6㋐・2026-09-20）。
+import { SIGNUP_BANDS, maySignUp, SIGNUP_REFUSE_LINE } from "@/lib/ageGate";
 import OtpCodeStep from "@/components/OtpCodeStep";
 // ★★登録が済んだら、★控えを1度だけお見せします（判断-メールを失うこと §3）。
 //   ★ここを飛ばすと、★メールを失った方を、★誰も助けられません。
@@ -51,6 +53,13 @@ const ST = {
   termsLink: { ja: "利用規約", en: "Terms of Service", zh: "使用条款", it: "Termini di servizio", de: "Nutzungsbedingungen", fr: "conditions d'utilisation", es: "términos de servicio", ko: "이용약관", ru: "Условия использования" },
   // ★18歳未満かの確認（作業指示-公開前の実装.md A-7 の1行目）。
   //   答えなくても登録できます。答えないままの方は、未成年として扱います。
+  // ★★★2026-09-20（★お決め 6㋐）── ★3つの 帯に なりました。
+  //   ★★もとの `labelAgeQuestion` は、★古い 道が まだ 読んで います。★残します。
+  labelAgeBand: { ja: "年齢を お選び ください", en: "Please choose your age range",
+    zh: "请选择您的年龄段", it: "Scegli la tua fascia d'età",
+    de: "Bitte wähle deine Altersgruppe", fr: "Choisissez votre tranche d'âge",
+    es: "Elige tu rango de edad", ko: "연령대를 선택해 주세요",
+    ru: "Выберите возрастную группу" },
   labelAgeQuestion: { ja: "18歳未満ですか？", en: "Are you under 18?", zh: "您未满18岁吗？", it: "Hai meno di 18 anni?", de: "Bist du unter 18 Jahre alt?", fr: "Avez-vous moins de 18 ans ?", es: "¿Eres menor de 18 años?", ko: "만 18세 미만이신가요?", ru: "Вам меньше 18 лет?" },
   optionUnder18Yes: { ja: "はい（18歳未満です）", en: "Yes (under 18)", zh: "是（未满18岁）", it: "Sì (meno di 18 anni)", de: "Ja (unter 18)", fr: "Oui (moins de 18 ans)", es: "Sí (menor de 18)", ko: "예(18세 미만)", ru: "Да (меньше 18)" },
   optionUnder18No: { ja: "いいえ（18歳以上です）", en: "No (18 or older)", zh: "否（已满18岁）", it: "No (18 anni o più)", de: "Nein (18 oder älter)", fr: "Non (18 ans ou plus)", es: "No (18 o más)", ko: "아니요(18세 이상)", ru: "Нет (18 и старше)" },
@@ -133,7 +142,8 @@ function SignupFormInner() {
     school: "",
     // ★null は「答えていない」。既定を false（＝18歳以上）にしないこと。
     //   答えないまま登録した人は、未成年として扱われます（lib/ageGate.js）。
-    isUnder18: null
+    // ★★年齢の 帯（★2026-09-20）。★答えて いない ときは null。
+    ageBand: null
   });
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
@@ -162,7 +172,14 @@ function SignupFormInner() {
           //   初回ログインのときに VocalTracker が profiles へ移します
           //   （lib/ageGate.js の adoptSignupAnswer）。
           //   答えていなければ、この鍵ごと送りません。
-          ...(typeof form.isUnder18 === "boolean" ? { is_under_18: form.isUnder18 } : {})
+          // ★★★帯を そのまま 預けます（★2026-09-20・お決め 6㋐）。
+          //   ★★`is_under_18` も 一緒に 送ります ── ★古い 道が まだ 読んで います。
+          //     ★★15〜17歳 は「18歳未満」、★18歳以上 は そうでは ない。
+          //     ★★15歳未満は ここまで 来ません（★押せません）。
+          ...(form.ageBand ? {
+            age_band: form.ageBand,
+            is_under_18: form.ageBand !== "adult"
+          } : {})
         },
         emailRedirectTo: `${window.location.origin}/auth/callback`
       }
@@ -302,37 +319,41 @@ function SignupFormInner() {
           <p style={{ fontSize: "0.6875rem", color: C.inkSoft, marginTop: 4 }}>{str("occupationChangeNote", lang)}</p>
         </div>
 
-        {/* ★18歳未満かの確認（A-7 の1行目）。
-            required を付けないこと。答えずに登録できます（研究利用の同意 §4-4）。
-            既定で選ばれている選択肢を作らないこと。答えていないことが、
-            そのまま「未成年として扱う」に対応します。 */}
+        {/* ★★★年齢の 帯（★2026-09-20・お決め 6㋐）。
+            ★★もとは「18歳未満ですか」の 2択 でした。
+              ★★15歳未満か どうかが 分かりません でした。
+            ★★★3つに します ── 15歳未満 ／ 15〜17歳 ／ 18歳以上。
+              ★15歳未満を 選んだ 方は、★いま ご登録いただけません。
+              ★★答えない ままでも 登録できます（★もとの まま）。
+                ★★「分からない」は「15歳未満」では ありません。★弾きません。
+            ★★決めは lib/ageGate.js が 持ちます。★ここでは 決めません。 */}
         <fieldset style={{ border: `1px solid ${C.line}`, borderRadius: 10, padding: "12px 14px" }}>
           <legend style={{ fontSize: "0.75rem", color: C.inkSoft, padding: "0 6px" }}>
-            {str("labelAgeQuestion", lang)}
+            {str("labelAgeBand", lang)}
           </legend>
           <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-            <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.8125rem", color: C.ink }}>
-              <input
-                type="radio"
-                name="isUnder18"
-                checked={form.isUnder18 === true}
-                onChange={() => setForm((f) => ({ ...f, isUnder18: true }))}
-              />
-              {str("optionUnder18Yes", lang)}
-            </label>
-            <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.8125rem", color: C.ink }}>
-              <input
-                type="radio"
-                name="isUnder18"
-                checked={form.isUnder18 === false}
-                onChange={() => setForm((f) => ({ ...f, isUnder18: false }))}
-              />
-              {str("optionUnder18No", lang)}
-            </label>
+            {SIGNUP_BANDS.map((b) => (
+              <label key={b.key}
+                style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.8125rem", color: C.ink }}>
+                <input
+                  type="radio"
+                  name="ageBand"
+                  checked={form.ageBand === b.key}
+                  onChange={() => setForm((f) => ({ ...f, ageBand: b.key }))}
+                />
+                {b.label}
+              </label>
+            ))}
           </div>
           <p style={{ fontSize: "0.71875rem", color: C.inkSoft, marginTop: 8, lineHeight: 1.6 }}>
             {str("ageQuestionNote", lang)}
           </p>
+          {/* ★★★弾く ときは、★その場で わけを 出します。★押してから 断りません。 */}
+          {!maySignUp(form.ageBand) ? (
+            <p style={{ fontSize: "0.8125rem", color: C.ink, marginTop: 8, lineHeight: 1.7 }}>
+              {SIGNUP_REFUSE_LINE}
+            </p>
+          ) : null}
         </fieldset>
 
         {/* ★new-password です。★current-password ではありません。
@@ -349,7 +370,10 @@ function SignupFormInner() {
           style={inputStyle}
         />
         {error && <p style={{ color: C.curtain, fontSize: "0.8125rem" }}>{error}</p>}
-        <button type="submit" disabled={status === "loading"} style={buttonStyle}>
+        {/* ★★15歳未満を 選んだ 方は 押せません（★押した あとで 断りません）。 */}
+        <button type="submit"
+          disabled={status === "loading" || !maySignUp(form.ageBand)}
+          style={buttonStyle}>
           {status === "loading" ? str("btnLoading", lang) : str("btnSubmit", lang)}
         </button>
       </form>
