@@ -9,7 +9,7 @@
 //     ★【五】★塗りつぶして いない か
 // ============================================================================
 
-const { readCode, readRaw, loadLib } = require("./_source");
+const { readCode, readRaw, loadLib, readPack } = require("./_source");
 
 let ok = 0, ng = 0;
 function t(cond, label) {
@@ -19,7 +19,7 @@ function t(cond, label) {
 
 (async () => {
   const m = await loadLib("lib", "opsIcons.js");
-  const 裁定 = readRaw("docs", "opus", "visual-2026-09-18", "pack",
+  const 裁定 = readPack(
     "ruling-81-visual-design.md");
 
   // -------------------------------------------------------------------------

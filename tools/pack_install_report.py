@@ -14,7 +14,7 @@ from pack_path import 荷 as _荷
 新 = _荷()
 # ★★くらべる 相手は、★前の 荷（引数で 渡します）。
 旧 = os.path.join(ROOT, sys.argv[1]) if len(sys.argv) > 1 else os.path.join(
-  ROOT, "docs", "opus", "visual-2026-09-18", "pack")
+  ROOT, "docs", "opus", "visual-2026-09-19", "pack")
 
 見本 = ["00-動く見本-PC・iPad（個人）.html", "00-動く見本-PC・iPad（運営）.html",
        "00-動く見本-iPhoneで開く用.html", "00-動く見本（さわれる・全画面）.html"]
@@ -82,8 +82,9 @@ for x in 新書:
 
 行.append("## ★退いた 荷")
 行.append("")
-行.append("★`docs/opus/visual-2026-09-18/` の 下 …… %s"
-          % "／".join(sorted(x for x in os.listdir(os.path.dirname(新)) if x.startswith("_prev"))))
+行.append("★`%s` の 下 …… %s"
+          % (os.path.relpath(os.path.dirname(新), ROOT),
+             "／".join(sorted(x for x in os.listdir(os.path.dirname(新)) if x.startswith("_prev")))))
 行.append("")
 行.append("★★★消して いません。★前の 版は そのまま 置いて あります。")
 行.append("")

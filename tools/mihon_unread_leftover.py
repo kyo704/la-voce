@@ -2,7 +2,10 @@
 """★見本に 残って いる「未読」の 仕掛けを 数えます（★2026-09-18・裁定 その87 の あと）"""
 import io, os, re, sys
 ROOT = os.path.dirname(os.path.abspath("."))
-D = "docs/opus/visual-2026-09-18/pack"
+# ★★荷の 名指しを やめました（★2026-09-19）。★`pack_path` が 選びます。
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from pack_path import 荷
+D = 荷()
 本 = [f for f in sorted(os.listdir(D)) if f.endswith(".html")]
 if len(本) != 4:
   print("★止まりました ── 見本が 4本 ありません（%d本）" % len(本)); sys.exit(2)

@@ -15,7 +15,10 @@
 import io, json, os, re, sys, datetime
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MIHON = os.path.join(ROOT, "docs", "opus", "visual-2026-09-18", "pack",
+# ★★荷の 名指しを やめました（★2026-09-19）。★`pack_path` が 選びます。
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from pack_path import 荷
+MIHON = os.path.join(荷(),
                      "00-動く見本-PC・iPad（運営）.html")
 MAP = os.path.join(ROOT, "tools", "ops_screen_map.json")
 

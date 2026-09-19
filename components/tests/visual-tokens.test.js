@@ -11,7 +11,7 @@
 //     ★★測った 数を 見張りに 書き写すと、★色を 直した 日に 古い 数が 残ります。
 // ============================================================================
 
-const { readCode, readRaw, loadLib } = require("./_source");
+const { readCode, readRaw, loadLib, readPack } = require("./_source");
 
 let ok = 0, ng = 0;
 function t(cond, label) {
@@ -44,7 +44,7 @@ function 比(a, b) {
   //     ★★写すと、★裁定が 直った 日に 気づけません。
   // -------------------------------------------------------------------------
   console.log("【一】裁定 その81 §1 の 数と 合って いる");
-  const 裁定 = readRaw("docs", "opus", "visual-2026-09-18", "pack",
+  const 裁定 = readPack(
     "ruling-81-visual-design.md");
   t(裁定.length > 1000, "裁定の 紙が ある");
 

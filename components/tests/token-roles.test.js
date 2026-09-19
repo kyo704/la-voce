@@ -16,7 +16,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const { readRaw, loadLib, ROOT } = require("./_source");
+const { readRaw, loadLib, ROOT, readPack } = require("./_source");
 
 let ok = 0, ng = 0;
 function t(cond, label) {
@@ -171,7 +171,7 @@ function 役を見る(一行, k) {
   t(V.CONTRAST_FLOOR === 4.5 && V.CONTRAST_AIM === 5.0 && V.CONTRAST_AIM_FAINT === 4.7,
     "床 4.5 ／ 狙い 5.0 ／ 薄い字 4.7");
   // ★★裁定の 紙と 合って いる こと。
-  const 裁定 = readRaw("docs", "opus", "visual-2026-09-18", "pack",
+  const 裁定 = readPack(
     "ruling-81-visual-design.md");
   t(裁定.includes("CONTRAST_FLOOR") && 裁定.includes("4.7"), "裁定 §1-5 に 書いて ある");
   t(裁定.includes(V.TOKENS_LIGHT.ink4), "裁定の --ink4 と 同じ 値（" + V.TOKENS_LIGHT.ink4 + "）");

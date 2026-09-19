@@ -12,7 +12,7 @@
 //     ★【三】★表が 無い ときに、★表の 説明を 出して いない か
 // ============================================================================
 
-const { readCode, readRaw, loadLib } = require("./_source");
+const { readCode, readRaw, loadLib, readPack } = require("./_source");
 
 let ok = 0, ng = 0;
 function t(cond, label) {
@@ -91,7 +91,7 @@ function t(cond, label) {
   //   ★★見本の 紙から 直に 拾って くらべます。★こちらに 写しません。
   // -------------------------------------------------------------------------
   console.log("【四】見本の 字と 1文字も ずれて いない");
-  const 見本 = readRaw("docs", "opus", "visual-2026-09-18", "pack",
+  const 見本 = readPack(
     "00-動く見本-PC・iPad（運営）.html");
   const i = 見本.indexOf("function stPost(");
   const 塊 = 見本.slice(i, 見本.indexOf("\nfunction ", i + 1));

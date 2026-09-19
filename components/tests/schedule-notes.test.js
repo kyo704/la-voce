@@ -14,7 +14,7 @@
 //     ★【五】★太い ところが 行の 中に ある こと
 // ============================================================================
 
-const { readCode, readRaw, loadLib } = require("./_source");
+const { readCode, readRaw, loadLib, readPack } = require("./_source");
 
 let ok = 0, ng = 0;
 function t(cond, label) {
@@ -26,7 +26,7 @@ function t(cond, label) {
   const S = await loadLib("lib", "opsSchedule.js");
   const 本文 = readCode("components", "OpsSchedule.jsx");
   const 生 = readRaw("components", "OpsSchedule.jsx");
-  const 見本 = readRaw("docs", "opus", "visual-2026-09-18", "pack",
+  const 見本 = readPack(
     "00-動く見本-PC・iPad（運営）.html");
   const i = 見本.indexOf("function P_nittei(");
   const 塊 = 見本.slice(i, 見本.indexOf("\nfunction ", i + 1));

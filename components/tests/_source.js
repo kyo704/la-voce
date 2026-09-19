@@ -156,5 +156,34 @@ async function loadLib(...parts) {
 }
 
 
+// ---------------------------------------------------------------------------
+// ★★★いま 正の 見本の 荷は どこか ── ★1か所 だけ（★2026-09-19）
+//
+//   ★★見張りは `docs/opus/visual-2026-09-18/pack/…` を 名指しで 持って いました。
+//     ★★荷が `visual-2026-09-19/` に 移り、★9つの 見張りが 古い 荷を 見て いました。
+//     ★★★名指しが いくつも あると、★荷が 動いた 日に 片方だけ 古く なります。
+//   ★★`tools/pack_path.py` と 同じ 決め ── ★いちばん 新しい 日付の 荷 を 選びます。
+//   ★★★無ければ 止まります。★古い 荷へ こっそり 戻りません。
+// ---------------------------------------------------------------------------
+
+/** ★いま 正の 荷（`docs/opus/visual-YYYY-MM-DD/pack`）の 名前の 並び。 */
+function packParts() {
+  const 置き場 = path.join(ROOT, "docs", "opus");
+  const 候補 = fs.readdirSync(置き場)
+    .filter((d) => /^visual-\d{4}-\d{2}-\d{2}$/.test(d))
+    .filter((d) => fs.existsSync(path.join(置き場, d, "pack")))
+    .sort().reverse();
+  if (候補.length === 0) {
+    throw new Error("★止まりました ── visual-YYYY-MM-DD の 荷が ありません");
+  }
+  return ["docs", "opus", 候補[0], "pack"];
+}
+
+/** ★正の 荷の 中の 1本を、★そのまま 読みます。 */
+function readPack(...parts) {
+  return readRaw(...packParts(), ...parts);
+}
+
 module.exports = {
-  assertAbsent, ROOT, stripComments, readRaw, readCode, loadLib };
+  assertAbsent, ROOT, stripComments, readRaw, readCode, loadLib,
+  packParts, readPack };

@@ -6,7 +6,7 @@
 //     ★★その方の 成績では ありません（★見本の とおり）。
 // ============================================================================
 
-const { readCode, readRaw, loadLib } = require("./_source");
+const { readCode, readRaw, loadLib, readPack } = require("./_source");
 
 let ok = 0, ng = 0;
 function t(cond, label) {
@@ -70,7 +70,7 @@ function t(cond, label) {
   t(A.SHORT_WORD === "足りない 見込み", "言葉で 出す（★見本と 同じ 分かち書き）");
   // ★★★見本の 字と 1文字も ずれて いない こと。
   {
-    const 見本 = readRaw("docs", "opus", "visual-2026-09-18", "pack",
+    const 見本 = readPack(
       "00-動く見本-PC・iPad（運営）.html");
     t(見本.includes(A.SHORT_WORD), "★見本に その 字が ある");
     t(!/return \(att \+ left < need\)\s*\?\s*'　★'/.test(見本), "★見本からも ★印が 消えて いる");

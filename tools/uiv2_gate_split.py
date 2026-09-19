@@ -60,17 +60,45 @@ def 大きさ(本):
   return 出
 
 
-def 門(本行, i):
-  """★その 行から 上へ 200行 たどり、★いちばん 近い 印を 返します。"""
-  for j in range(i, max(-1, i - 200), -1):
-    上 = 本行[j]
-    if 註.match(上):
+def 深さ(l):
+  return len(l) - len(l.lstrip())
+
+
+def 囲い(本行, i):
+  """★その 行を 囲って いる 条件を、★字下げで たどります。
+
+    ★★★上へ 何行 たどるか、では 決めません（★2026-09-19）。
+      ★★`{activeTab === "analysis" && !layoutV2 && (` は 2700行 上に あり、
+        ★★けれど その 節は とっくに 閉じて いました。
+      ★★★「近い 行」では なく、★「自分より 浅い 行」を たどります。
+        ★★閉じた 節は、★字下げが 戻るので 通り過ぎません。
+  """
+  出 = []
+  d = 深さ(本行[i])
+  for j in range(i - 1, -1, -1):
+    l = 本行[j]
+    if 註.match(l) or not l.strip():
       continue
-    if 門の外.search(上):
+    if 深さ(l) < d:
+      d = 深さ(l)
+      出.append(l)
+      if d == 0:
+        break
+  return 出
+
+
+def 門(本行, i):
+  """★門の 中か、★外か、★印が 無いか。
+
+    ★★★印が 無い ＝ ★門を 通りません ＝ ★38人の 古い 画面にも 出ます。
+      ★★「分からない」では ありません。★通らない、と いう 答え です。
+  """
+  for l in 囲い(本行, i):
+    if 門の外.search(l):
       return "外"
-    if 門の中.search(上):
+    if 門の中.search(l):
       return "中"
-  return "どちらも"
+  return "印が無い"
 
 
 def どの門(f):
@@ -97,6 +125,10 @@ def main():
   assert 大きさ('padding: rem(4)') == [], "★余白を 字と 数えて います"
   assert 門(["if (!layoutV2) {", "  x"], 1) == "外", "★印の 見分けが 壊れて います"
   assert 門(["if (layoutV2 && y) {", "  x"], 1) == "中", "★印の 見分けが 壊れて います"
+  # ★★★閉じた 節を 通り過ぎない こと（★これが 直した ところ です）。
+  閉じた = ["{layoutV2 && (", "  <A />", ")}", "{activeTab === \"info\" && (", "  <B />"]
+  assert 門(閉じた, 4) == "印が無い", "★閉じた 節を 拾って います"
+  assert 門(閉じた, 1) == "中", "★開いて いる 節を 落として います"
 
   # ★① UiV2 の 中の 字の 大きさ
   数 = {}
@@ -124,7 +156,7 @@ def main():
 
   # ★③ VocalTracker の 中は 行ごとに 見ます。
   vt行 = 読む(VT).split("\n")
-  vt = {"中": 0, "外": 0, "どちらも": 0}
+  vt = {"中": 0, "外": 0, "印が無い": 0}
   どちらも = []
   使った名 = set(呼び手.get("VocalTracker.jsx", []))
   つかい所 = re.compile(r"<(%s)[\s/>]" % "|".join(re.escape(n) for n in 使った名)) \
@@ -135,7 +167,7 @@ def main():
         continue
       印 = 門(vt行, i)
       vt[印] += 1
-      if 印 == "どちらも":
+      if 印 != "中":
         どちらも.append((i + 1, l.strip()[:80]))
 
   # ★④ 12未満 の 字が、★どの 部品の 中に あるか。
@@ -172,9 +204,9 @@ def main():
     for k in sorted(呼び手):
       f.write("- %s …… %s（%d 種）\n" % (k, どの門(k), len(呼び手[k])))
     f.write("\n## ③ VocalTracker の 中の 置き所\n\n")
-    f.write("- 門の 中 …… %d\n- 門の 外 …… %d\n- どちらにも 出うる …… %d\n\n"
-            % (vt["中"], vt["外"], vt["どちらも"]))
-    f.write("### ★どちらにも 出うる ところ（★目で 見ます）\n\n")
+    f.write("- 門の 中 …… %d\n- 門の 外 …… %d\n- 門を 通らない（★38人にも 出ます）…… %d\n\n"
+            % (vt["中"], vt["外"], vt["印が無い"]))
+    f.write("### ★門の 外 ／ 門を 通らない ところ（★38人の 画面）\n\n")
     for 番, 字 in どちらも:
       f.write("- %d 行 …… `%s`\n" % (番, 字))
     f.write("\n## ④ 12未満 の 字は、★どの 部品の 中に あるか\n\n")
@@ -188,7 +220,8 @@ def main():
   print("UIV2_内訳: %s" % dict(sorted(数.items())))
   for k in sorted(呼び手):
     print("  %-26s %s (%d)" % (k, どの門(k), len(呼び手[k])))
-  print("VT: 中 %d ／ 外 %d ／ どちらも %d" % (vt["中"], vt["外"], vt["どちらも"]))
+  print("VT: 門の中 %d ／ 門の外 %d ／ 門を通らない %d"
+        % (vt["中"], vt["外"], vt["印が無い"]))
   print("--- 12未満 の 部品 ---")
   for 部品 in sorted(届き):
     値, どこ = 届き[部品]

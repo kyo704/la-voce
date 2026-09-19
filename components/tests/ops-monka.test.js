@@ -10,7 +10,7 @@
 //     ★【六】★出せない ものを、★引き金つきで 記して ある
 // ============================================================================
 
-const { readCode, readRaw, loadLib } = require("./_source");
+const { readCode, readRaw, loadLib, readPack } = require("./_source");
 
 let ok = 0, ng = 0;
 function t(cond, label) {
@@ -164,7 +164,7 @@ function t(cond, label) {
     "★空きか どうか だけ を 返す（★2値）");
   // ★★★見本と そろって いる こと（★2026-09-19・3値 → 2値）。
   {
-    const 見本 = readRaw("docs", "opus", "visual-2026-09-18", "pack",
+    const 見本 = readPack(
       "00-動く見本-PC・iPad（運営）.html");
     t(見本.includes("「空いているか どうか」の 2値のみ"), "★見本も 2値");
     t(!見本.includes("3値"), "★見本に 3値 が 残って いない");

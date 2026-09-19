@@ -17,7 +17,7 @@
 //     ★【四】★重なりが 0件 の ときに 節を 出さない こと
 // ============================================================================
 
-const { readCode, readRaw, loadLib } = require("./_source");
+const { readCode, readRaw, loadLib, readPack } = require("./_source");
 
 let ok = 0, ng = 0;
 function t(cond, label) {
@@ -107,7 +107,7 @@ function t(cond, label) {
   // 【五】★見本と 合って いる
   // -------------------------------------------------------------------------
   console.log("【五】見本の 1行目と 同じ 形");
-  const 見本 = readRaw("docs", "opus", "visual-2026-09-18", "pack",
+  const 見本 = readPack(
     "00-動く見本-PC・iPad（運営）.html");
   t(見本.includes("if(!can('sched_all'))return P_kumu()"),
     "★見本も 同じ 門を 持って いる");

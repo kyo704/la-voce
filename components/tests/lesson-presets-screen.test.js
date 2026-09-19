@@ -6,7 +6,7 @@
 //   ★★★型を 消しても 出席は 消えない、と 画面に 書いて ある こと。
 // ============================================================================
 
-const { readCode, readRaw, loadLib } = require("./_source");
+const { readCode, readRaw, loadLib, readPack } = require("./_source");
 
 let ok = 0, ng = 0;
 function t(cond, label) {
@@ -65,7 +65,7 @@ function t(cond, label) {
   t(!/作れるのは 事務の 方だけ|年間の 回数は 学校が/.test(本文), "★画面が 書き写して いない");
   t(本文.includes("NOTES") && 本文.includes("EDIT_NOTES"), "lib から もらって いる");
   // ★★見本の 字と 合って いる こと。
-  const 見本 = readRaw("docs", "opus", "visual-2026-09-18", "pack",
+  const 見本 = readPack(
     "00-動く見本-PC・iPad（運営）.html");
   const i = 見本.indexOf("function P_presets(");
   const 塊 = 見本.slice(i, 見本.indexOf("\nfunction ", i + 1)).replace(/<\/?b>/g, "");
