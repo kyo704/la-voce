@@ -11599,6 +11599,75 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
    *   ★★★何行 動いたかを 見ます。★0行を 成功に しません。
    *   ★★同じ ものを もう一度 押すと、★外します（`null`）。
    */
+  /**
+   * ★在籍の ようす（★在籍 ／ 休会 ／ 退会・見本 `P_sonohito`）。
+   *
+   *   ★★★休会は **数える 人数に 入りません**。★ご請求に かかります。
+   *     ★★台帳の 縛りも 3つに しました（★2026-09-19）。
+   *   ★★★行を 消しません。★ようすを 変える だけ です。
+   *   ★★何行 動いたかを 見ます。★0行を 成功に しません。
+   *
+   *   ★★★ここで できるのは「在籍 ⇄ 休会」だけ です（★2026-09-19）。
+   *     ★★退会は、★`leave_enrollment` という 台帳の 関数が します。
+   *       ★★あちらは `left_at` も 一緒に 書き、★ほかの 後始末も します。
+   *     ★★★画面から `status` と `left_at` を 直に 書くと、★同じ ことを
+   *       ★★2か所で する ことに なります。★片方だけ 直る 日が 来ます。
+   *       ★★見張り `components/tests/leave-enrollment.test.js` が 止めます。
+   *     ★★だから ここでは 退会を 出しません。★台帳 08-19 に 預けました。
+   */
+  async function handleSetEnrollmentStatus(orgId, studentId, status) {
+    // ★★★退会は ここでは できません（★上の 註）。
+    if (status === "left") return false;
+    setDivisionError("");
+    setDivisionSaving(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("enrollments")
+        .update({ status })
+        .eq("org_id", orgId).eq("student_id", studentId)
+        .select("id, status");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setOrgEnrollments((prev) => ({
+        ...prev,
+        [orgId]: (prev[orgId] || []).map((e) => (e.student_id === studentId
+          ? { ...e, status } : e))
+      }));
+      return true;
+    } catch (err) {
+      console.error("★在籍のようすを書けませんでした:", err);
+      setDivisionError("いま 変えられませんでした。名簿の できことが 要ります。");
+      return false;
+    } finally {
+      setDivisionSaving(false);
+    }
+  }
+
+  /** ★生徒の 学科・コース（★`enrollments.division_id`）。 */
+  async function handleSetEnrollmentDivision(orgId, studentId, divisionId) {
+    setDivisionError("");
+    setDivisionSaving(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("enrollments")
+        .update({ division_id: divisionId })
+        .eq("org_id", orgId).eq("student_id", studentId)
+        .select("id, division_id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setOrgEnrollments((prev) => ({
+        ...prev,
+        [orgId]: (prev[orgId] || []).map((e) => (e.student_id === studentId
+          ? { ...e, division_id: divisionId } : e))
+      }));
+      return true;
+    } catch (err) {
+      console.error("★生徒の形を書けませんでした:", err);
+      setDivisionError("いま 決められませんでした。名簿の できことが 要ります。");
+      return false;
+    } finally {
+      setDivisionSaving(false);
+    }
+  }
+
   async function handleSetDivision(orgId, targetUserId, divisionId) {
     setDivisionError("");
     setDivisionSaving(true);
@@ -15122,7 +15191,31 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   onInvite={() => handleInviteStudentToOrg(opsOrgId)}
                   inviteCode={opsInviteCode}
                   inviteError={opsInviteError}
-                  onCloseInvite={() => { setOpsInviteCode(null); setOpsInviteError(""); }} />
+                  onCloseInvite={() => { setOpsInviteCode(null); setOpsInviteError(""); }}
+                  // ★★★在籍の ようす（★見本 `P_sonohito`・2026-09-19）。
+                  //   ★★在籍 ／ 休会 ／ 退会。★休会は 数える 人数に 入りません。
+                  onSetStatus={mayEditRoster(gate)
+                    ? (sid, st) => handleSetEnrollmentStatus(opsOrgId, sid, st)
+                    : undefined}
+                  // ★★★学科・コース（★裁定 その98）。★学部は その 上から 出ます。
+                  divisions={orgDivisions}
+                  onSetDivision={mayEditRoster(gate)
+                    ? (sid, did) => handleSetEnrollmentDivision(opsOrgId, sid, did)
+                    : undefined}
+                  // ★★★レッスンの 出席（★この3か月）。★数 だけ です。★率は 出しません。
+                  //   ★★数えるのは `lib/attendanceCount.js` です。★ここで 数えません。
+                  attendanceOf={(sid) => {
+                    const から = new Date(Date.now() - 92 * 86400000)
+                      .toISOString().slice(0, 10);
+                    const 並 = (orgLessons[opsOrgId] || []).filter((l) =>
+                      l && l.student_id === sid
+                      && String(l.scheduled_at || "").slice(0, 10) >= から);
+                    return {
+                      came: 並.filter((l) => l.attendance === "came").length,
+                      absent: 並.filter((l) => l.attendance === "absent").length,
+                      canceled: 並.filter((l) => l.attendance === "canceled").length
+                    };
+                  }} />
                   // ★★役職は 渡しません（★2026-09-13）。
                   //   ★★生徒は 役職を 持ちません。★学校で 働く 方の ものです。
                   //   ★★posts を 渡さなければ、★役職の 行は 出ません。

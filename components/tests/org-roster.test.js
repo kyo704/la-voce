@@ -58,14 +58,26 @@ function eq(a, b, label) {
   //     （★owner／admin／teacher／staff の 4つ だけ・NOT NULL）。
   //   ★`status:"paused"／"invited"` … ★そんな 列も 値も ありません。
   //   ★★作り物の 行だったので 見張りは 通り、★実物は 1行も 出ませんでした。
-  // ★★いまは enrollments の 形で 書きます ── ★status は active／left だけ。
+  // ★★いまは enrollments の 形で 書きます。
+  //   ★★★2026-09-19 まで active／left の 2つ でした。★いまは paused も あります。
   eq(m.countsByStatus([
     { status: "active" }, { status: "active" },
     { status: "left" }, { status: null }
-  ]), { counted: 3, left: 1, notCounted: 0 }, "ようす ごとに 数えられる（active／left）");
+  ]), { counted: 3, left: 1, paused: 0, notCounted: 0 }, "ようす ごとに 数えられる（active／paused／left）");
+  // ★★★2026-09-19 ── ★休会（`paused`）が 台帳に 入りました。
+  //   ★★見本 `P_sonohito` の 3つ目 です。★きょうまで 置き場が ありません でした。
+  //   ★★★数える 人数に 入りません。★お金に かかります。
+  eq(m.countsByStatus([
+    { status: "active" }, { status: "paused" }, { status: "paused" }, { status: "left" }
+  ]), { counted: 1, left: 1, paused: 2, notCounted: 0 }, "★休会を 別に 数える");
+  eq(m.rosterCount([
+    { status: "active" }, { status: "paused" }, { status: "left" }
+  ]), 1, "★★休会は ご請求の 人数に 入らない");
+  eq(m.STATUSES.length, 3, "★ようすは 3つ（在籍・休会・退会）");
+  eq(m.STATUSES.every((x) => !!x.note), true, "★どれにも 説明が ある");
   // ★★役割の 付いた 行（★memberships）は、★これまでどおり 数えません。
   eq(m.countsByStatus([{ role: "teacher" }, { role: "owner" }]),
-    { counted: 0, left: 0, notCounted: 2 }, "役割の 付いた 行は 数えない");
+    { counted: 0, left: 0, paused: 0, notCounted: 2 }, "役割の 付いた 行は 数えない");
 
   console.log("\n=== ② 段の 境目で 逆転しない（★§10「安いほうを 当てます」） ===");
   let bad = [];
@@ -176,7 +188,15 @@ function eq(a, b, label) {
   }
 
   console.log("\n=== 「席」と 呼ばない（★§10-1） ===");
-  t(!/席/.test(raw), "★「席」を 使っていない（★名簿の人数）");
+  // ★★★2026-09-19 ── ★「出席」に 当たって 落ちました。
+  //   ★★見本 `P_sonohito` の 字 ──「日程・出席・連絡が 届きます」。
+  //   ★★★禁じて いるのは「席」＝ 人数の 言い方 です（★§10-1）。
+  //     ★★「出席」は 別の 言葉 です。★レッスンに 来た こと です。
+  //   ★★だから、★人数の 言い方に なる 形 だけ を 見ます。
+  t(!/席数|空席|[0-9０-９]\s*席|席の 数/.test(raw),
+    "★「席」と 呼んで いない（★名簿の人数）");
+  t(!/(^|[^出欠])席[はをがのに]/.test(raw.replace(/出席|欠席/g, "")),
+    "★「席」を 人数の 意味で 使って いない");
   t(!/席/.test(readRaw("lib", "orgRoster.js")) || /「席」とは 呼びません/.test(readRaw("lib", "orgRoster.js")),
     "★lib でも 使っていない（★注記で 断るのは 可）");
 

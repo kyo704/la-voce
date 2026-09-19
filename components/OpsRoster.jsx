@@ -3,6 +3,8 @@
 import { useState, useMemo } from "react";
 import useWindowWidth from "@/components/useWindowWidth";
 import { C } from "@/lib/tokens";
+// ★★学校の 形（★裁定 その98）。★学科・コースを 出します。★決めは lib です。
+import { choosableFor, shapeLineOf } from "@/lib/orgDivisions";
 // ★★小見出しの 字は uiKit が 持ちます（★2つ目の 決めを 作りません）。
 import { TYPE } from "@/lib/uiKit";
 // ★★名簿の 表（★裁定 その80・2026-09-18）。★広い ときだけ 出します。
@@ -13,7 +15,7 @@ import {
   INVITE_HEAD, INVITE_NOTES, INVITE_NOTES_BOLD, NOT_YET, CODE_LEAD, CODE_HOW, CODE_DAYS
 } from "@/lib/studentInvite";
 import {
-  rosterCount, countsByStatus, statusLabel, isCounted,
+  rosterCount, countsByStatus, statusLabel, isCounted, STATUSES,
   monthlyFee, perHead, yen, MONTHLY_FLOOR,
   ROSTER_CHIPS, chipCounts, matchesChip,
   teacherFilterOptions, matchesTeacher, TEACHER_FILTER_ALL,
@@ -74,6 +76,18 @@ export default function OpsRoster({
   //   ★★「その人」の 画面（★見本 SC['その人']）の、はじめの 1欄です。
   //     ★のこりは、その画面を 作る ときに 足します。
   canEdit, onSetGrade,
+  // ★★★在籍の ようす（★見本 `P_sonohito`・2026-09-19）。
+  //   ★★在籍 ／ 休会 ／ 退会 の 3つ。★台帳も 同じ 3つ に なりました。
+  //   ★★休会は **数える 人数に 入りません**。★お金に かかります。
+  //   ★★渡されなければ、★その 節ごと 出しません（★§8⑤）。
+  onSetStatus,
+  // ★★★学校の 形（★裁定 その98）。★学科・コースを 出します。
+  //   ★★学部は その 上から 出ます。★選ばせません。
+  divisions = [], onSetDivision,
+  // ★★★レッスンの 出席（★この3か月）。★数 だけ です。★率は 出しません。
+  attendanceOf,
+  // ★★★この 画面から 見えない もの（★見本の「見られないもの」）。
+  wallItems = [],
   // ★★役職（★2026-09-11・裁定 §7 ／ 3段目）。
   //   ★★posts が 渡されなければ、★役職の 行を 出しません。
   //     ★1段目の SQL を 流す 前でも、★画面が 壊れません。
@@ -383,6 +397,83 @@ export default function OpsRoster({
               <p style={{ ...small, color: on ? C.inkSoft : C.inkSoft }}>
                 {on ? "ご請求に数えます" : "ご請求には数えません"}
               </p>
+
+              {/* ★★★学科・コース（★見本 `P_sonohito`・2026-09-19）。
+                  ★★学部は その 上から 出ます。★選ばせません。
+                  ★★形が 1つも 無ければ、★出しません。 */}
+              {choosableFor(divisions).length > 0 ? (
+                <p style={small}>
+                  {(() => {
+                    const 形 = shapeLineOf(divisions, m);
+                    return `学科・コース　${形.department}　／　学部　${形.faculty}`;
+                  })()}
+                </p>
+              ) : null}
+              {canEdit && onSetDivision && choosableFor(divisions).length > 0 ? (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 4 }}>
+                  {choosableFor(divisions)
+                    .filter((d) => d.kind === "department")
+                    .map((d) => (
+                      <button key={d.id} type="button"
+                        onClick={() => onSetDivision(m.user_id,
+                          m.division_id === d.id ? null : d.id)}
+                        style={{
+                          minHeight: 44, padding: "0 12px", borderRadius: 999,
+                          border: `1px solid ${m.division_id === d.id ? C.curtain : C.line}`,
+                          background: m.division_id === d.id ? C.paper : C.card,
+                          color: C.ink, fontSize: "0.75rem"
+                        }}>{d.name}</button>
+                    ))}
+                </div>
+              ) : null}
+
+              {/* ★★★レッスンの 出席（★この3か月・見本 `P_sonohito`）。
+                  ★★出席 ／ 休み ／ 休講 の 3つ。★数 だけ です。
+                  ★★★率（％）は 出しません。★人を くらべません。 */}
+              {attendanceOf ? (() => {
+                const a = attendanceOf(m.user_id) || null;
+                if (!a) return null;
+                return (
+                  <p style={small}>
+                    {`この3か月　出席 ${a.came}　休み ${a.absent}　休講 ${a.canceled}`}
+                  </p>
+                );
+              })() : null}
+
+              {/* ★★★在籍の ようす（★見本 `P_sonohito`・2026-09-19）。
+                  ★★在籍 ／ 休会 ／ 退会。★台帳も 同じ 3つ です。
+                  ★★★休会は 数える 人数に 入りません。★その ことを 書きます。
+                  ★★変えられない 方には 出しません（★押せない 札を 置きません）。 */}
+              {canEdit && onSetStatus ? (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
+                  {/* ★★★退会は ここに 出しません（★2026-09-19）。
+                      ★★退会は 台帳の 関数（`leave_enrollment`）が します。
+                        ★★あちらは `left_at` も 書き、★後始末も します。
+                      ★★★画面から 直に 書くと、★同じ ことが 2か所に なります。
+                        ★★片方だけ 直る 日が 来ます。★この 蔵の 持病 です。
+                      ★★台帳 08-19 に 預けました。 */}
+                  {STATUSES.filter((x) => x.key !== "left").map((x) => (
+                    <button key={x.key} type="button"
+                      onClick={() => { if (st !== x.key) onSetStatus(m.user_id, x.key); }}
+                      style={{
+                        minHeight: 44, padding: "0 12px", borderRadius: 999,
+                        border: `1px solid ${st === x.key ? C.curtain : C.line}`,
+                        background: st === x.key ? C.paper : C.card,
+                        color: C.ink, fontSize: "0.75rem"
+                      }}>
+                      {st === x.key ? `✓ ${x.label}` : x.label}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+              {canEdit && onSetStatus ? (
+                <>
+                  <p style={small}>
+                    {(STATUSES.find((x) => x.key === st) || STATUSES[0]).note}
+                  </p>
+                  <p style={small}>退会は、ご本人の 画面から 承ります。</p>
+                </>
+              ) : null}
               {/* ★★学年・コース（★見本 SC['その人'] の はじめの 1欄）。
                   ★★学校が 決める 文字です。★1年〜4年と 決め打ちに しません。
                   ★★入っていない ときは「—」です。★勝手に 埋めません。 */}
