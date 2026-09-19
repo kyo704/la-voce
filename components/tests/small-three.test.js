@@ -67,6 +67,16 @@ const 受け = readCode("app/api/enrollment/accept", "route.js");
   const i = 名簿.indexOf("setInviteAim((v) =>");
   assert.ok(/onCloseInvite\(\)/.test(名簿.slice(i, i + 700)),
     "★選び直しても 合言葉が 残ります");
+  // ★★★両方 選んで から 作ります（★2026-09-19・2度目の ご報告）。
+  //   ★★片方 だけ でも 作れて いました。
+  assert.ok(/disabled=\{!\(inviteAim\.gradeYear && inviteAim\.divisionId\)\}/.test(名簿),
+    "★片方 だけ でも 作れます");
+  // ★★決めずに 作る 道は 残します（★決めなくて よい、は 変えません）。
+  assert.ok(/決めずに 作る/.test(名簿), "★決めずに 作る 道が ありません");
+  assert.ok(/onInvite\(\s*\{ gradeYear: null, divisionId: null \}\)/.test(名簿),
+    "★決めずに 作る が、★選んだ ものを 持って いきます");
+  // ★★いま 何が 決まって いるかを 出す。
+  assert.ok(/いま …… 学年/.test(名簿), "★いまの 決めを 出して いません");
   // ★★合言葉の 札は、★1枚を 開いて いる ときだけ 出す。
   assert.ok(/\(inviteCode \|\| inviteError\) && inviteOpen/.test(名簿),
     "★閉じて いても 合言葉が 出ます");

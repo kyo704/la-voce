@@ -698,13 +698,18 @@ export default function OpsRoster({
                     ★★けれど そちらは 控えめな 札に します。★はじめに 目に 入るのは、
                       ★★「決めて から」の ほう です。 */}
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {/* ★★★両方 選んで から 作ります（★2026-09-19・2度目の ご報告）。
+                    ★★片方 だけ でも 作れて いました。★決めかけで 出来て しまいます。
+                    ★★★決めなくて よい、という ことは 変えて いません。
+                      ★★決めずに 作る 道は、★下に 別の 札として 残します。
+                      ★★はじめに 目に 入る ほうは、★「両方 決めて から」です。 */}
                 <button type="button"
-                  disabled={!inviteAim.gradeYear && !inviteAim.divisionId}
+                  disabled={!(inviteAim.gradeYear && inviteAim.divisionId)}
                   onClick={() => onInvite(inviteAim)}
                   style={{
                     flex: 1, minHeight: 52, borderRadius: 12,
                     border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
-                    background: (inviteAim.gradeYear || inviteAim.divisionId)
+                    background: (inviteAim.gradeYear && inviteAim.divisionId)
                       ? C.curtain : C.line,
                     color: "#FFFDF8", fontSize: "0.9375rem"
                   }}>合言葉を 作る</button>
@@ -720,10 +725,22 @@ export default function OpsRoster({
                     color: C.inkSoft, fontSize: "0.8125rem"
                   }}>やめる</button>
               </div>
-              {!inviteAim.gradeYear && !inviteAim.divisionId ? (
+              {/* ★★★いま 何が 決まって いるかを、★押す 前に 出します。
+                  ★★「決めかけで 出来て しまった」を、★字で 防ぎます。 */}
+              {!(inviteAim.gradeYear && inviteAim.divisionId) ? (
                 <div style={{ marginTop: 8 }}>
-                  <p style={small}>学年か 学科を 選ぶと、合言葉を 作れます。</p>
-                  <button type="button" onClick={() => onInvite(inviteAim)}
+                  <p style={small}>
+                    {`いま …… 学年 ${inviteAim.gradeYear ? inviteAim.gradeYear + "年" : "まだ"}`
+                      + `　／　学科 ${inviteAim.divisionId
+                        ? ((divisions || []).find((d) => d.id === inviteAim.divisionId) || {}).name
+                          || "まだ" : "まだ"}`}
+                  </p>
+                  <p style={small}>
+                    両方 選ぶと「合言葉を 作る」を 押せます。
+                    決めずに お渡しする ことも できます。
+                  </p>
+                  <button type="button" onClick={() => onInvite(
+                    { gradeYear: null, divisionId: null })}
                     style={{
                       minHeight: 44, padding: "0 14px", borderRadius: 999,
                       border: `1px solid ${C.line}`, background: C.card,

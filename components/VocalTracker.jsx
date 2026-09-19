@@ -14942,6 +14942,48 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               );
             }
 
+            // ★★★日程を 組む は、★日程の 枝より **前** に 置きます
+            //   （★2026-09-19・実機の ご報告 ──「押しても 機能しない」）。
+            //   ★★きょうまで、★日程の 枝が 先に 返って いました。
+            //     ★★押すと 覚えは 変わるのに、★画面は 日程の まま でした。
+            //   ★★★見張りは「門下より 前か」だけ を 見て いました。
+            //     ★★日程の 側を 見て いません でした。★両方 見ます。
+            if ((tabKey === "monka" || tabKey === "schedule") && opsKumuOpen
+              && (tabKey === opsKumuFrom || opsKumuFrom === "monka")) {
+              // ★★★誰の 分を 組むか（★裁定 その99 F1・2026-09-19）。
+              //   ★★`sched_all` の 方は 先生を 選びます。★選ぶまで 表を 出しません。
+              //   ★★`sched_mine` だけ の 方は ご自分 です。★選ぶ 画面は 出ません。
+              //   ★★決めは lib/opsKumu.js が 持ちます。★ここでは 判じません。
+              const 見る先生 = canOps(gate, "sched_all") ? opsKumuTeacher : userId;
+              const 門下 = monkaOf(orgAssignments[opsOrgId] || [], 見る先生);
+              return (
+                <OpsKumu
+                  todayISO={opsDate}
+                  perms={gate}
+                  teachers={teachersWithMonka(orgAssignments[opsOrgId] || [])}
+                  teacherId={見る先生}
+                  onPickTeacher={(t) => {
+                    setOpsKumuTeacher(t);
+                    if (t) {
+                      void fetchKumu(opsOrgId,
+                        monkaOf(orgAssignments[opsOrgId] || [], t), t);
+                    }
+                  }}
+                  periods={kumuPeriods}
+                  slots={kumuSlots}
+                  students={門下}
+                  // ★★置いて ある ものは、★ご自分の コマ だけ を 見ます。
+                  lessons={(orgLessons[opsOrgId] || []).filter((l) =>
+                    l && l.teacher_id === 見る先生)}
+                  nameOf={(id) => orgDisplayName(id) || ""}
+                  saving={kumuSaving}
+                  error={kumuError}
+                  onPlace={(x) => handlePlaceLesson(opsOrgId,
+                    { ...x, teacherId: 見る先生 })}
+                  onRemove={(l) => handleRemoveLesson(opsOrgId, l)}
+                  onClose={() => { setOpsKumuOpen(false); setOpsKumuTeacher(null); }} />
+              );
+            }
             if (tabKey === "schedule") {
               // ★★日程（★見本②⑥⑧⑨⑩）。★1つの日程を、3つの 見せ方で。
               //   ★★渡すのは 1つの 並びだけです。★見せ方は あちらが 決めます。
@@ -15333,42 +15375,6 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                  ★★★見えるのは **担当の 生徒だけ** です。
                    ★★台帳も 同じ です（`assignments_select` ── 自分の `teacher_id`）。
                  ★★出席の 数を 出します。★率（％）は 出しません（★裁定 その90）。 */
-            if ((tabKey === "monka" || tabKey === "schedule") && opsKumuOpen
-              && (tabKey === opsKumuFrom || opsKumuFrom === "monka")) {
-              // ★★★誰の 分を 組むか（★裁定 その99 F1・2026-09-19）。
-              //   ★★`sched_all` の 方は 先生を 選びます。★選ぶまで 表を 出しません。
-              //   ★★`sched_mine` だけ の 方は ご自分 です。★選ぶ 画面は 出ません。
-              //   ★★決めは lib/opsKumu.js が 持ちます。★ここでは 判じません。
-              const 見る先生 = canOps(gate, "sched_all") ? opsKumuTeacher : userId;
-              const 門下 = monkaOf(orgAssignments[opsOrgId] || [], 見る先生);
-              return (
-                <OpsKumu
-                  todayISO={opsDate}
-                  perms={gate}
-                  teachers={teachersWithMonka(orgAssignments[opsOrgId] || [])}
-                  teacherId={見る先生}
-                  onPickTeacher={(t) => {
-                    setOpsKumuTeacher(t);
-                    if (t) {
-                      void fetchKumu(opsOrgId,
-                        monkaOf(orgAssignments[opsOrgId] || [], t), t);
-                    }
-                  }}
-                  periods={kumuPeriods}
-                  slots={kumuSlots}
-                  students={門下}
-                  // ★★置いて ある ものは、★ご自分の コマ だけ を 見ます。
-                  lessons={(orgLessons[opsOrgId] || []).filter((l) =>
-                    l && l.teacher_id === 見る先生)}
-                  nameOf={(id) => orgDisplayName(id) || ""}
-                  saving={kumuSaving}
-                  error={kumuError}
-                  onPlace={(x) => handlePlaceLesson(opsOrgId,
-                    { ...x, teacherId: 見る先生 })}
-                  onRemove={(l) => handleRemoveLesson(opsOrgId, l)}
-                  onClose={() => { setOpsKumuOpen(false); setOpsKumuTeacher(null); }} />
-              );
-            }
             if (tabKey === "monka") {
               return (
                 <OpsMonka
