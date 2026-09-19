@@ -168,6 +168,8 @@ import OpsSettings from "@/components/OpsSettings";
 import OpsSettingsHub from "@/components/OpsSettingsHub";
 // ★★請求書の 宛名・ご請求の 宛先（★見本 `P_seikyuNa` ／ `P_atesaki`・2026-09-19）。
 import OpsBillingName from "@/components/OpsBillingName";
+// ★★学校の 形（★見本 `stOrg`・裁定 その98・2026-09-19）。
+import OpsOrgShape from "@/components/OpsOrgShape";
 // ★★記録に 残す 字も lib が 持ちます。★画面で 作りません。
 import { logWordForName, logWordForAtesaki, logWordForMethod } from "@/lib/orgBilling";
 // ★★授業の 型（★裁定 その90・2026-09-18）。★作れるのは 事務 だけ。
@@ -10392,6 +10394,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     //   ★★門（RLS）が 本体 です。★`bill` を 持たない 方には 0行 返ります。
     // ★★ご請求の 記録（★誰が・いつ・何を）。★`bill` を 持つ 方だけ 読めます。
     void fetchBillingLog(opsOrgId);
+    // ★★学校の 形（★学部・学科・分野）。★在籍者と 名簿の できこと で 読めます。
+    void fetchOrgDivisions(opsOrgId);
     void (async () => {
       const supabase = createClient();
       const { data, error } = await supabase.from("org_billing")
@@ -11537,6 +11541,73 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       return false;
     } finally {
       setBillingSaving(false);
+    }
+  }
+
+  /**
+   * ★学校の 形（★見本 `stOrg`・裁定 その98 BLOCKER_1・2026-09-19）。
+   *
+   *   ★★読むのは 在籍者と 名簿の できこと を 持つ 方（★台帳の 決まり）。
+   *   ★★書くのは `meibo` だけ です。★画面でも 同じ 判じを します。
+   *   ★★★使われて いる ものは 消せません。★`memberships.division_id` を 数えます。
+   */
+  const [orgDivisions, setOrgDivisions] = useState([]);
+  const [divisionSaving, setDivisionSaving] = useState(false);
+  const [divisionError, setDivisionError] = useState("");
+
+  async function fetchOrgDivisions(orgId) {
+    if (!orgId) return;
+    const supabase = createClient();
+    const { data, error } = await supabase.from("org_divisions")
+      .select("id, org_id, kind, name, parent_id, sort_order")
+      .eq("org_id", orgId)
+      .order("kind", { ascending: true })
+      .order("sort_order", { ascending: true });
+    if (error) { console.error("★学校の形を読めませんでした:", error); return; }
+    setOrgDivisions(data || []);
+  }
+
+  async function handleAddDivision(orgId, row) {
+    setDivisionError("");
+    setDivisionSaving(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("org_divisions")
+        .insert({
+          org_id: orgId, kind: row.kind, name: row.name,
+          parent_id: row.parent_id || null,
+          sort_order: orgDivisions.filter((x) => x.kind === row.kind).length
+        })
+        .select("id, org_id, kind, name, parent_id, sort_order");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setOrgDivisions((prev) => [...prev, data[0]]);
+      return true;
+    } catch (err) {
+      console.error("★学校の形を足せませんでした:", err);
+      setDivisionError("いま 足せませんでした。名簿の できことが 要ります。");
+      return false;
+    } finally {
+      setDivisionSaving(false);
+    }
+  }
+
+  async function handleRemoveDivision(orgId, row) {
+    if (!row || !row.id) return false;
+    setDivisionError("");
+    setDivisionSaving(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("org_divisions")
+        .delete().eq("id", row.id).eq("org_id", orgId).select("id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setOrgDivisions((prev) => prev.filter((x) => x.id !== row.id));
+      return true;
+    } catch (err) {
+      console.error("★学校の形を消せませんでした:", err);
+      setDivisionError("いま 消せませんでした。使われて いるかも しれません。");
+      return false;
+    } finally {
+      setDivisionSaving(false);
     }
   }
 
@@ -14907,6 +14978,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         return r === null ? false : true;
                       }} />
                   </div>
+                      ) : null,
+                      org: canOps(gate, "master") ? (
+                        <OpsOrgShape
+                          rows={orgDivisions}
+                          // ★★使われて いる ものは 消せません（★見本の note）。
+                          //   ★★`memberships.division_id` を 数えます。
+                          usedCount={(r) => (orgMembers[opsOrgId] || [])
+                            .filter((mm) => mm.division_id === r.id).length}
+                          // ★★書けるのは 名簿の できこと だけ です。
+                          mayEdit={canOps(gate, "meibo")}
+                          saving={divisionSaving}
+                          error={divisionError}
+                          onAdd={(row) => handleAddDivision(opsOrgId, row)}
+                          onRemove={(row) => handleRemoveDivision(opsOrgId, row)} />
                       ) : null,
                       jugyo: maySeePresets(gate) ? (
                   <div style={{ marginTop: 16 }}>
