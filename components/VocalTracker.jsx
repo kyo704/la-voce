@@ -176,6 +176,7 @@ import { logWordForName, logWordForAtesaki, logWordForMethod } from "@/lib/orgBi
 import OpsPresets from "@/components/OpsPresets";
 // ★★門下（★見本 `P_monka` ／ ★裁定 その90・2026-09-18）。
 import OpsMonka from "@/components/OpsMonka";
+import OpsMonkaHito from "@/components/OpsMonkaHito";
 // ★★日程を 組む（★見本 `P_kumu`・裁定 その98 ①・2026-09-19）。
 import OpsKumu from "@/components/OpsKumu";
 // ★★誰の 分を 組むか（★裁定 その99 F1）。★決めは lib が 持ちます。
@@ -12860,6 +12861,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [presetsError, setPresetsError] = useState("");
   // ★★門下の 空き コマの 数（★2026-09-19・お決め Q2）。★数 だけ です。
   const [monkaFree, setMonkaFree] = useState({});
+  // ★★★門下の ひと 1人（★見本 `P_monkaHito`・2026-09-19）。
+  //   ★★開いて いる 方の 番号。★null なら 一覧の まま です。
+  //   ★★空きは その方の ぶん だけ 引きます（★`undefined` ＝ まだ 読めて いない）。
+  const [monkaHito, setMonkaHito] = useState(null);
+  const [monkaHitoSlots, setMonkaHitoSlots] = useState(undefined);
+  const [monkaHitoPeriods, setMonkaHitoPeriods] = useState([]);
+  const [monkaHitoNote, setMonkaHitoNote] = useState("");
   const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
@@ -13226,6 +13234,29 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const 表 = {};
     (data || []).forEach((r) => { 表[r.student_id] = r.free_count; });
     setMonkaFree(表);
+  }
+
+  /**
+   * ★門下の ひと 1人 ぶんの 空き（★2026-09-19・見本 `P_monkaHito`）。
+   *
+   *   ★★★中身は 来ません。★空いて いるか どうか だけ です。
+   *     ★★読み道は 日程を 組む と 同じ ものを 使います（★2本に しません）。
+   *   ★★★読めなければ `null` を 入れます。★空の 並びを 入れません ──
+   *     ★★「空いて いない」と「読めて いない」を、★同じ 顔に しません。
+   */
+  async function fetchMonkaHito(orgId, studentId) {
+    if (!orgId || !studentId) return;
+    setMonkaHitoSlots(undefined);
+    const supabase = createClient();
+    const [s, p] = await Promise.all([
+      supabase.rpc("get_student_free_slots",
+        { p_org_id: orgId, p_user_ids: [studentId] }),
+      supabase.rpc("get_teacher_periods", { p_org_id: orgId, p_teacher_id: userId })
+    ]);
+    if (s.error) console.error("★空きコマを読めませんでした:", s.error);
+    if (p.error) console.error("★コマの型を読めませんでした:", p.error);
+    setMonkaHitoSlots(s.error ? null : (s.data || []));
+    setMonkaHitoPeriods(p.error ? [] : (p.data || []));
   }
 
   /**
@@ -15371,6 +15402,31 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                  ★★★見えるのは **担当の 生徒だけ** です。
                    ★★台帳も 同じ です（`assignments_select` ── 自分の `teacher_id`）。
                  ★★出席の 数を 出します。★率（％）は 出しません（★裁定 その90）。 */
+            if (tabKey === "monka" && monkaHito) {
+              // ★★★門下の ひと 1人（★見本 `P_monkaHito`・2026-09-19）。
+              //   ★★一覧より 先に 置きます。★開いて いる ときは こちら です。
+              const 当て = (orgAssignments[opsOrgId] || [])
+                .find((a) => a && a.student_id === monkaHito
+                  && a.teacher_id === userId && !a.ended_at);
+              const 在籍 = (orgEnrollments[opsOrgId] || [])
+                .find((x) => x.student_id === monkaHito);
+              return (
+                <OpsMonkaHito
+                  studentId={monkaHito}
+                  name={orgDisplayName(monkaHito) || ""}
+                  grade={(在籍 && 在籍.grade_label) || ""}
+                  isRepresentative={!!(当て && 当て.is_representative)}
+                  lessons={orgLessons[opsOrgId] || []}
+                  teacherId={userId}
+                  preset={(orgPresets[opsOrgId] || [])
+                    .find((p) => (p.teachers || []).includes(userId)) || null}
+                  freeSlots={monkaHitoSlots}
+                  periods={monkaHitoPeriods}
+                  slotNote={monkaHitoNote}
+                  onSlotNotYet={(w) => setMonkaHitoNote(w)}
+                  onClose={() => { setMonkaHito(null); setMonkaHitoNote(""); }} />
+              );
+            }
             if (tabKey === "monka") {
               return (
                 <OpsMonka
@@ -15419,7 +15475,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       }
                     }
                     : undefined}
-                  onOpenOne={undefined} />
+                  /* ★★★お名前を 押すと、★その方の 1枚（★見本 `P_monkaHito`）。 */
+                  onOpenOne={(id) => {
+                    setMonkaHito(id);
+                    setMonkaHitoNote("");
+                    void fetchMonkaHito(opsOrgId, id);
+                  }} />
               );
             }
             // ★★★日程を 組む（★見本 `P_kumu`・裁定 その97 ／ その98 ①）。
