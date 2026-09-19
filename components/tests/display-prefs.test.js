@@ -134,11 +134,20 @@ async function main() {
         used.get(mm[1]).push(i + 1);
       }
     });
+    // ★★★暗い 地の 上に 載せる 字が あります（★2026-09-19・裁定 その81 §1）。
+    //   ★★`onCurtain` は、★えんじの 上の 白い 字 です。
+    //     ★★紙の 上で 測ると 1.0 に なります ── ★けれど 紙の 上には 載りません。
+    //   ★★★名前が「その 地」を 言って います。★その 地で 測ります。
+    //     ★★`onCurtain` → `curtain` の 上。
+    //   ★★これは 逃がして いるのでは ありません。★測る 相手を 直して います。
+    const 載る地 = { onCurtain: "curtain", onCurtainFaint: "curtain", knob: "curtain" };
     const thin = [];
     for (const [name, at] of used) {
       const hex = hexOf(name);
       if (!hex) continue;                       // ★掛け合わせの 色。★測れません。
-      const r = Math.min(...BG.map((b) => ratio(hex, b)));
+      const 地 = 載る地[name] ? [hexOf(載る地[name])].filter(Boolean) : BG;
+      if (!地.length) continue;
+      const r = Math.min(...地.map((b) => ratio(hex, b)));
       if (r < 4.5) thin.push({ name, hex, r, at });
     }
     thin.forEach((x) => console.log(

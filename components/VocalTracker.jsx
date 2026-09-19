@@ -2594,7 +2594,7 @@ function lookPill(on) {
   return {
     display: "inline-block", border: `1px solid ${on ? C.curtain : C.line}`,
     borderRadius: 99, padding: "7px 12px", fontSize: rem(11.5),
-    color: on ? "#FFFDF8" : C.inkSoft, background: on ? C.curtain : C.card,
+    color: on ? C.onCurtain : C.inkSoft, background: on ? C.curtain : C.card,
     fontWeight: on ? 700 : 400, fontFamily: FONT_STACK,
     minHeight: 36, cursor: "pointer"
   };
@@ -2624,7 +2624,7 @@ function DynamicsSelector({ label, icon: Icon, value, onChange, t }) {
                   fontSize: rem(on ? 16 : 13), fontFamily: FONT_STACK,
                   // ★★1色の 濃淡です。★良し悪しを 色で 言いません。
                   background: on ? C.curtain : C.card,
-                  color: on ? "#FFFDF8" : C.inkSoft,
+                  color: on ? C.onCurtain : C.inkSoft,
                   fontWeight: on ? 700 : 400,
                   borderRight: i < 4 ? `1px solid ${C.line}` : "none",
                   border: "none"
@@ -2878,7 +2878,7 @@ function Chip({ label, active, onClick, pending }) {
       className="px-3 py-1.5 rounded-full text-xs font-medium transition-all border"
       style={{
         background: active ? C.curtain : pending ? C.paper : C.card,
-        color: active ? "#FFFDF8" : C.inkSoft,
+        color: active ? C.onCurtain : C.inkSoft,
         borderColor: (active || pending) ? C.curtain : C.line,
         opacity: pending ? 0.7 : 1
       }}
@@ -3114,7 +3114,7 @@ function LessonCalendar({ lessons, onDayClick, selectable, getTeacherName, getSt
               onClick={() => { if (selectable) onDayClick && onDayClick(c.iso); else if (hasLesson) setSelectedDetailDate(c.iso === selectedDetailDate ? null : c.iso); }}
               className="rounded-lg py-1.5 text-xs relative"
               style={{
-                background: hasLesson ? C.curtain : "transparent", color: hasLesson ? "#FFFDF8" : C.ink,
+                background: hasLesson ? C.curtain : "transparent", color: hasLesson ? C.onCurtain : C.ink,
                 boxShadow: c.iso === selectedDetailDate ? `0 0 0 2px ${C.gold}` : "none"
               }}>
               {c.day}
@@ -3327,7 +3327,7 @@ function DeleteWithConfirm({ confirming, onAsk, onCancel, onDelete, t }) {
     <div className="flex items-center gap-2 mt-1 flex-wrap">
       <span className="text-xs" style={{ color: C.ink }}>{t("confirmDeleteNote")}</span>
       <button type="button" onClick={onDelete} className="px-3 py-1.5 rounded-full text-xs font-medium"
-        style={{ background: C.curtain, color: "#FFFDF8" }}>
+        style={{ background: C.curtain, color: C.onCurtain }}>
         {t("deleteButton")}
       </button>
       <button type="button" onClick={onCancel} className="px-3 py-1.5 rounded-full text-xs"
@@ -3367,7 +3367,7 @@ function TwoWaySwitch({ on, onChange, simple, onLabel = "あり", offLabel = "�
       }}>
       <span style={{
         position: "absolute", top: 3, left: on ? 21 : 3,
-        width: 20, height: 20, borderRadius: 999, background: "#FFFDF8",
+        width: 20, height: 20, borderRadius: 999, background: C.onCurtain,
         transition: "left 0.15s"
       }} />
     </button>
@@ -3912,9 +3912,9 @@ function MealItemRow({ item, onChange, onRemove, foodLibrary, t, language }) {
             {item.presetUnit ? (
               <div className="flex rounded-lg border overflow-hidden shrink-0" style={{ borderColor: C.line }}>
                 <button type="button" onClick={() => setQty("g", item.grams || 0)}
-                  className="px-2 py-1 text-xs" style={{ background: item.qtyMode !== "unit" ? C.curtain : C.card, color: item.qtyMode !== "unit" ? "#FFFDF8" : C.inkSoft }}>g</button>
+                  className="px-2 py-1 text-xs" style={{ background: item.qtyMode !== "unit" ? C.curtain : C.card, color: item.qtyMode !== "unit" ? C.onCurtain : C.inkSoft }}>g</button>
                 <button type="button" onClick={() => setQty("unit", roundTo1((item.grams || 0) / (item.presetUnitWeight || 1)))}
-                  className="px-2 py-1 text-xs" style={{ background: item.qtyMode === "unit" ? C.curtain : C.card, color: item.qtyMode === "unit" ? "#FFFDF8" : C.inkSoft }}>{item.presetUnit}</button>
+                  className="px-2 py-1 text-xs" style={{ background: item.qtyMode === "unit" ? C.curtain : C.card, color: item.qtyMode === "unit" ? C.onCurtain : C.inkSoft }}>{item.presetUnit}</button>
               </div>
             ) : (
               <span className="text-xs shrink-0" style={{ color: C.inkSoft }}>g</span>
@@ -4076,7 +4076,7 @@ function RepertoireItemRow({
               </p>
               <div className="flex gap-1.5">
                 <button type="button" onClick={() => { onChange({ repertoireName: duplicateWarning.existingName }); setDuplicateWarning(null); }}
-                  className="flex-1 py-1 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>同じ曲です</button>
+                  className="flex-1 py-1 rounded-full text-xs font-medium" style={{ background: C.curtain, color: C.onCurtain }}>同じ曲です</button>
                 <button type="button" onClick={() => setDuplicateWarning({ ...duplicateWarning, confirmed: true })}
                   className="flex-1 py-1 rounded-full text-xs font-medium" style={{ background: C.paper, border: `1px solid ${C.line}`, color: C.inkSoft }}>別の曲です</button>
               </div>
@@ -4116,7 +4116,7 @@ function RepertoireItemRow({
                 {[["低め", -0.5], ["真ん中", 0], ["高め", 0.5]].map(([label, val]) => (
                   <button key={label} type="button" onClick={() => setDOverrideChoice(val)}
                     className="flex-1 py-1 rounded-full text-xs font-medium"
-                    style={{ background: dOverrideChoice === val ? C.curtain : C.paper, color: dOverrideChoice === val ? "#FFFDF8" : C.inkSoft, border: `1px solid ${dOverrideChoice === val ? C.curtain : C.line}` }}>
+                    style={{ background: dOverrideChoice === val ? C.curtain : C.paper, color: dOverrideChoice === val ? C.onCurtain : C.inkSoft, border: `1px solid ${dOverrideChoice === val ? C.curtain : C.line}` }}>
                     {label}
                   </button>
                 ))}
@@ -4159,7 +4159,7 @@ function RepertoireItemRow({
                   setEditingPitch(false);
                 }}
                 className="flex-1 py-1 rounded-full text-xs font-medium"
-                style={{ background: C.curtain, color: "#FFFDF8", opacity: tessituraSaving || (!topNoteInput && !tessituraOptionalInput && dOverrideChoice == null) ? 0.5 : 1 }}>
+                style={{ background: C.curtain, color: C.onCurtain, opacity: tessituraSaving || (!topNoteInput && !tessituraOptionalInput && dOverrideChoice == null) ? 0.5 : 1 }}>
                 {editingPitch ? "この内容にする" : "登録する"}
               </button>
               {/* ★編集中は「やめる」。ここで「あとで」の印を付けると、
@@ -4460,7 +4460,7 @@ function ProfileFieldGroups({ value, onChange, t, showProfession = true, onConse
                               className="px-3 py-2 rounded-xl text-xs font-medium text-left"
                               style={{
                                 background: selected ? C.curtain : C.paper,
-                                color: selected ? "#FFFDF8" : C.inkSoft,
+                                color: selected ? C.onCurtain : C.inkSoft,
                                 border: `1px solid ${selected ? C.curtain : C.line}`
                               }}>
                               {OCCUPATION_LABELS[occ]}
@@ -4836,7 +4836,7 @@ function OnboardingFlow({ existingUser, onComplete, t }) {
             <button type="button"
               onClick={() => { if (existingUser) { handleFinish(); } else { setStep(1); } }}
               disabled={saving}
-              className="w-full py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: saving ? 0.6 : 1 }}>
+              className="w-full py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: C.onCurtain, opacity: saving ? 0.6 : 1 }}>
               {existingUser ? (saving ? "保存中…" : "同意して続ける") : "同意して次へ"}
             </button>
           </div>
@@ -4857,14 +4857,14 @@ function OnboardingFlow({ existingUser, onComplete, t }) {
                   <button key={p} type="button"
                     onClick={() => setProfessions((prev) => active ? prev.filter((x) => x !== p) : [...prev, p])}
                     className="py-3 rounded-xl text-sm font-medium border"
-                    style={{ background: active ? C.curtain : C.paper, color: active ? "#FFFDF8" : C.inkSoft, borderColor: active ? C.curtain : C.line }}>
+                    style={{ background: active ? C.curtain : C.paper, color: active ? C.onCurtain : C.inkSoft, borderColor: active ? C.curtain : C.line }}>
                     {label}
                   </button>
                 );
               })}
             </div>
             <button type="button" onClick={() => setStep(2)} disabled={professions.length === 0}
-              className="w-full py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: professions.length === 0 ? 0.5 : 1 }}>
+              className="w-full py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: C.onCurtain, opacity: professions.length === 0 ? 0.5 : 1 }}>
               次へ
             </button>
           </div>
@@ -4877,14 +4877,14 @@ function OnboardingFlow({ existingUser, onComplete, t }) {
               {ONBOARDING_GOAL_OPTIONS.map((opt) => (
                 <button key={opt.key} type="button" onClick={() => setGoalFocus(opt.key)}
                   className="w-full py-3 rounded-xl text-sm font-medium border text-left px-4"
-                  style={{ background: goalFocus === opt.key ? C.curtain : C.paper, color: goalFocus === opt.key ? "#FFFDF8" : C.inkSoft, borderColor: goalFocus === opt.key ? C.curtain : C.line }}>
+                  style={{ background: goalFocus === opt.key ? C.curtain : C.paper, color: goalFocus === opt.key ? C.onCurtain : C.inkSoft, borderColor: goalFocus === opt.key ? C.curtain : C.line }}>
                   {opt.label}
                 </button>
               ))}
             </div>
             {/* ★「いま知りたいこと」も任意。必須は職業だけ。 */}
             <button type="button" onClick={() => setStep(3)}
-              className="w-full py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+              className="w-full py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: C.onCurtain }}>
               次へ
             </button>
           </div>
@@ -4910,7 +4910,7 @@ function OnboardingFlow({ existingUser, onComplete, t }) {
                 {t("onboardingSkip")}
               </button>
               <button type="button" onClick={() => setStep(4)}
-                className="flex-1 py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                className="flex-1 py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: C.onCurtain }}>
                 次へ
               </button>
             </div>
@@ -4929,7 +4929,7 @@ function OnboardingFlow({ existingUser, onComplete, t }) {
                 ★★無くなった ものを、★入会の ときに 約束していました。 */}
             <p className="text-sm mb-4">が見られるようになります。</p>
             <button type="button" onClick={handleFinish} disabled={saving}
-              className="w-full py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: saving ? 0.6 : 1 }}>
+              className="w-full py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: C.onCurtain, opacity: saving ? 0.6 : 1 }}>
               {saving ? "はじめています…" : "はじめる"}
             </button>
           </div>
@@ -5088,7 +5088,7 @@ function VoiceEntryEditor({ entry, onChange, onRemove, onClose, professions, t, 
             <span className="ff-mono text-lg" style={{ color: C.ink }}>{mptRunning ? mptElapsed.toFixed(1) : (entry.mptSeconds != null ? entry.mptSeconds.toFixed(1) : "0.0")}秒</span>
             {!mptRunning ? (
               <button type="button" onClick={startMpt}
-                className="px-3.5 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                className="px-3.5 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: C.onCurtain }}>
                 開始
               </button>
             ) : (
@@ -5147,7 +5147,7 @@ function VoiceEntryEditor({ entry, onChange, onRemove, onClose, professions, t, 
       </details>
       <div className="flex gap-2 mt-3">
         <button type="button" onClick={onClose}
-          className="flex-1 py-2 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+          className="flex-1 py-2 rounded-full text-sm font-medium" style={{ background: C.curtain, color: C.onCurtain }}>
           記録する
         </button>
         <button type="button" onClick={onRemove}
@@ -5306,7 +5306,7 @@ function ActivityBlockEditor({
                   className="flex-1 py-1.5 rounded-lg text-xs font-medium border"
                   style={{
                     background: detail.monitorType === v ? C.curtain : C.paper,
-                    color: detail.monitorType === v ? "#FFFDF8" : C.inkSoft,
+                    color: detail.monitorType === v ? C.onCurtain : C.inkSoft,
                     borderColor: detail.monitorType === v ? C.curtain : C.line
                   }}>
                   {label}
@@ -5361,7 +5361,7 @@ function ActivityBlockEditor({
                   className="flex-1 h-9 rounded-lg border text-xs font-medium"
                   style={{
                     background: (detail.passaggioFeel || 0) >= n ? C.curtain : C.paper,
-                    color: (detail.passaggioFeel || 0) >= n ? "#FFFDF8" : C.inkSoft,
+                    color: (detail.passaggioFeel || 0) >= n ? C.onCurtain : C.inkSoft,
                     borderColor: (detail.passaggioFeel || 0) >= n ? C.curtain : C.line
                   }}>
                   {n}
@@ -5378,7 +5378,7 @@ function ActivityBlockEditor({
                   className="flex-1 py-1.5 rounded-lg text-xs font-medium border"
                   style={{
                     background: detail.costumeTightness === v ? C.curtain : C.paper,
-                    color: detail.costumeTightness === v ? "#FFFDF8" : C.inkSoft,
+                    color: detail.costumeTightness === v ? C.onCurtain : C.inkSoft,
                     borderColor: detail.costumeTightness === v ? C.curtain : C.line
                   }}>
                   {label}
@@ -5398,7 +5398,7 @@ function ActivityBlockEditor({
                   className="flex-1 py-1.5 rounded-lg text-xs font-medium border"
                   style={{
                     background: detail.hallAcoustics === v ? C.curtain : C.paper,
-                    color: detail.hallAcoustics === v ? "#FFFDF8" : C.inkSoft,
+                    color: detail.hallAcoustics === v ? C.onCurtain : C.inkSoft,
                     borderColor: detail.hallAcoustics === v ? C.curtain : C.line
                   }}>
                   {label}
@@ -5418,7 +5418,7 @@ function ActivityBlockEditor({
                   className="flex-1 py-1.5 rounded-lg text-xs font-medium border"
                   style={{
                     background: detail.accompaniment === v ? C.curtain : C.paper,
-                    color: detail.accompaniment === v ? "#FFFDF8" : C.inkSoft,
+                    color: detail.accompaniment === v ? C.onCurtain : C.inkSoft,
                     borderColor: detail.accompaniment === v ? C.curtain : C.line
                   }}>
                   {label}
@@ -14682,7 +14682,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           )}
           <button type="button" onClick={handleRestoreAccount} disabled={restoreStatus === "working"}
             className="w-full py-3 rounded-full text-sm font-medium mb-2"
-            style={{ background: C.curtain, color: "#FFFDF8", opacity: restoreStatus === "working" ? 0.7 : 1 }}>
+            style={{ background: C.curtain, color: C.onCurtain, opacity: restoreStatus === "working" ? 0.7 : 1 }}>
             {restoreStatus === "working" ? t("restoreWorking") : t("restoreButton")}
           </button>
           <button type="button" onClick={handleSignOut}
@@ -15558,7 +15558,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
           style={{ bottom: 24, transform: "translateX(-50%)", pointerEvents: "none" }}>
           <div
             className="rounded-full px-5 py-3 ff-display italic text-sm"
-            style={{ background: C.curtain, color: "#FFFDF8", boxShadow: "0 8px 24px rgba(36,25,20,0.25)" }}
+            style={{ background: C.curtain, color: C.onCurtain, boxShadow: "0 8px 24px rgba(36,25,20,0.25)" }}
           >
             {toastMessage}
           </div>
@@ -15621,13 +15621,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
                 }}
                 className="w-full py-3 rounded-full text-sm font-medium mt-5"
-                style={{ background: C.curtain, color: "#FFFDF8" }}>
+                style={{ background: C.curtain, color: C.onCurtain }}>
                 次の日（{formatDateLabel(addDays(saveCardData.date, 1), language)}）を書く
               </button>
             )}
             <div className="flex gap-2 mt-5">
               <button type="button" onClick={() => { setSaveCardData(null); setActiveTab("garden"); }}
-                className="flex-1 py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                className="flex-1 py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: C.onCurtain }}>
                 おうちで羊を見る
               </button>
               <button type="button" onClick={() => setSaveCardData(null)}
@@ -15805,7 +15805,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     key={tab.key}
                     onClick={() => setActiveTab(tab.key)}
                     className="flex items-center gap-1 px-[11px] text-xs sm:gap-1.5 sm:px-3.5 sm:text-sm py-2 rounded-full font-medium whitespace-nowrap shrink-0 transition-all"
-                    style={{ background: activeTab === tab.key ? C.curtain : "transparent", color: activeTab === tab.key ? "#FFFDF8" : C.inkSoft }}
+                    style={{ background: activeTab === tab.key ? C.curtain : "transparent", color: activeTab === tab.key ? C.onCurtain : C.inkSoft }}
                   >
                     <tab.icon size={15} />
                     {tab.labelKey ? t(tab.labelKey) : tab.label}
@@ -15852,7 +15852,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             <button
               onClick={() => window.location.reload()}
               className="mt-3 px-4 py-1.5 rounded-full text-xs font-medium"
-              style={{ background: C.curtain, color: "#FFFDF8" }}
+              style={{ background: C.curtain, color: C.onCurtain }}
             >
               読み込み直す
             </button>
@@ -16439,7 +16439,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             await markNoticeShown("displayScaleHint");
                           }}
                           className="px-4 py-2 rounded-full text-xs font-medium"
-                          style={{ background: C.curtain, color: "#FFFDF8" }}>
+                          style={{ background: C.curtain, color: C.onCurtain }}>
                           文字を大きくする
                         </button>
                         <button type="button"
@@ -16473,7 +16473,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         onClick={() => { setActiveTab("today"); setRecordView("day"); }}
                         className="w-full rounded-2xl"
                         style={{
-                          background: C.curtain, color: "#FFFDF8",
+                          background: C.curtain, color: C.onCurtain,
                           padding: "var(--gap) calc(var(--gap) * 1.5)",
                           minHeight: "calc(var(--tap) * 1.6)",
                           fontSize: "1.25rem", fontWeight: 600, lineHeight: 1.5
@@ -16532,7 +16532,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <button type="button" onClick={handleInstallPwa}
                           className="w-full rounded-xl mb-2"
                           style={{
-                            background: C.curtain, color: "#FFFDF8",
+                            background: C.curtain, color: C.onCurtain,
                             minHeight: "var(--tap)", padding: "var(--gap)", fontSize: "1rem", fontWeight: 600
                           }}>
                           いま追加する
@@ -16711,7 +16711,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <>
                           <button type="button"
                             onClick={() => { setSelectedDate(realToday); setShowQuickRecord(true); }}
-                            className="w-full py-4 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                            className="w-full py-4 rounded-full text-sm font-medium" style={{ background: C.curtain, color: C.onCurtain }}>
                             30秒で記録する
                           </button>
                           <button type="button" onClick={() => { setSelectedDate(realToday); setActiveTab("today"); }}
@@ -16765,7 +16765,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           </div>
                           <button type="button"
                             onClick={async () => { await handleSave(); setShowQuickRecord(false); }}
-                            className="w-full mt-4 py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                            className="w-full mt-4 py-3 rounded-full text-sm font-medium" style={{ background: C.curtain, color: C.onCurtain }}>
                             記録する
                           </button>
                           <button type="button" onClick={() => { setActiveTab("today"); }}
@@ -17012,7 +17012,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         className="flex-1 py-1.5 rounded-full text-xs font-medium transition-all"
                         style={{
                           background: profile.record_mode === mode ? C.curtain : "transparent",
-                          color: profile.record_mode === mode ? "#FFFDF8" : C.inkSoft
+                          color: profile.record_mode === mode ? C.onCurtain : C.inkSoft
                         }}>
                         {t(labelKey)}
                       </button>
@@ -17054,12 +17054,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <div className="flex rounded-full border p-1 overflow-x-auto nav-scroll" style={{ borderColor: C.line }}>
                       <button type="button" onClick={() => setRecordView("voice")}
                         className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
-                        style={{ background: recordView === "voice" ? C.curtain : "transparent", color: recordView === "voice" ? "#FFFDF8" : C.inkSoft }}>
+                        style={{ background: recordView === "voice" ? C.curtain : "transparent", color: recordView === "voice" ? C.onCurtain : C.inkSoft }}>
                         声の記録
                       </button>
                       <button type="button" onClick={() => setRecordView("day")}
                         className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
-                        style={{ background: recordView === "day" ? C.curtain : "transparent", color: recordView === "day" ? "#FFFDF8" : C.inkSoft }}>
+                        style={{ background: recordView === "day" ? C.curtain : "transparent", color: recordView === "day" ? C.onCurtain : C.inkSoft }}>
                         一日の記録
                       </button>
                     </div>
@@ -17211,7 +17211,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </p>
                         <button type="button" onClick={dismissOccupationNotice}
                           className="text-xs px-3 py-1.5 rounded-full font-medium"
-                          style={{ background: C.curtain, color: "#FFFDF8" }}>
+                          style={{ background: C.curtain, color: C.onCurtain }}>
                           わかりました
                         </button>
                       </div>
@@ -17236,7 +17236,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                       className="flex-1 py-2 rounded-xl text-xs font-medium"
                                       style={{
                                         background: on ? C.curtain : C.paper,
-                                        color: on ? "#FFFDF8" : C.inkSoft,
+                                        color: on ? C.onCurtain : C.inkSoft,
                                         border: `1px solid ${on ? C.curtain : C.line}`
                                       }}>{n}</button>
                                   );
@@ -17253,7 +17253,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                       className="flex-1 py-2 rounded-xl text-xs font-medium"
                                       style={{
                                         background: on ? C.curtain : C.paper,
-                                        color: on ? "#FFFDF8" : C.inkSoft,
+                                        color: on ? C.onCurtain : C.inkSoft,
                                         border: `1px solid ${on ? C.curtain : C.line}`
                                       }}>{opt}</button>
                                   );
@@ -17287,7 +17287,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           <>
                         <button type="button" onClick={() => handleSave()} disabled={saveStatus === "saving"}
                           className="w-full rounded-2xl py-3.5 font-medium flex items-center justify-center gap-2 transition-all"
-                          style={{ background: C.curtain, color: "#FFFDF8" }}>
+                          style={{ background: C.curtain, color: C.onCurtain }}>
                           {saveStatus === "saving" && <Loader2 size={16} className="animate-spin" />}
                           {saveStatus === "saved" && <Check size={16} />}
                           {saveStatus === "saving" ? t("saveButtonSaving") : saveStatus === "saved" ? t("saveButtonSaved") : saveStatus === "error" ? t("saveButtonError") : t("saveButton")}
@@ -17724,7 +17724,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                         minHeight: 36,
                                         borderColor: on ? C.curtain : C.line,
                                         background: on ? C.curtain : C.card,
-                                        color: on ? "#FFFDF8" : C.inkSoft
+                                        color: on ? C.onCurtain : C.inkSoft
                                       }}>
                                       {o.label}
                                     </button>
@@ -17839,7 +17839,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             className="flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-medium transition-all"
                             style={{
                               background: (formData.activities || []).length === 0 && formData.recovery ? C.curtain : C.paper,
-                              color: (formData.activities || []).length === 0 && formData.recovery ? "#FFFDF8" : C.inkSoft,
+                              color: (formData.activities || []).length === 0 && formData.recovery ? C.onCurtain : C.inkSoft,
                               borderColor: (formData.activities || []).length === 0 && formData.recovery ? C.curtain : C.line
                             }}>
                             <Moon size={16} />
@@ -17957,7 +17957,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                   </div>
                                   <button type="button" onClick={handleStopSession}
                                     className="px-4 py-2 rounded-full text-xs font-medium shrink-0"
-                                    style={{ background: C.curtain, color: "#FFFDF8" }}>
+                                    style={{ background: C.curtain, color: C.onCurtain }}>
                                     終了
                                   </button>
                                 </div>
@@ -18182,7 +18182,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                   className="flex-1 py-2 rounded-xl text-xs font-medium border transition-all"
                                   style={{
                                     background: formData.proteinLevel === opt.v ? C.curtain : C.paper,
-                                    color: formData.proteinLevel === opt.v ? "#FFFDF8" : C.inkSoft,
+                                    color: formData.proteinLevel === opt.v ? C.onCurtain : C.inkSoft,
                                     borderColor: formData.proteinLevel === opt.v ? C.curtain : C.line
                                   }}>
                                   {opt.label}
@@ -18202,7 +18202,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                   className="flex-1 py-2 rounded-xl text-xs font-medium border transition-all"
                                   style={{
                                     background: formData.calorieLevel === opt.v ? C.curtain : C.paper,
-                                    color: formData.calorieLevel === opt.v ? "#FFFDF8" : C.inkSoft,
+                                    color: formData.calorieLevel === opt.v ? C.onCurtain : C.inkSoft,
                                     borderColor: formData.calorieLevel === opt.v ? C.curtain : C.line
                                   }}>
                                   {opt.label}
@@ -18298,7 +18298,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                     minHeight: 36,
                                     borderColor: on ? C.curtain : C.line,
                                     background: on ? C.curtain : C.card,
-                                    color: on ? "#FFFDF8" : C.inkSoft
+                                    color: on ? C.onCurtain : C.inkSoft
                                   }}>
                                   {label}
                                 </button>
@@ -18402,7 +18402,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                 className="flex-1 py-2 rounded-xl text-xs font-medium border transition-all"
                                 style={{
                                   background: formData.exerciseLevel === opt.v ? C.curtain : C.paper,
-                                  color: formData.exerciseLevel === opt.v ? "#FFFDF8" : C.inkSoft,
+                                  color: formData.exerciseLevel === opt.v ? C.onCurtain : C.inkSoft,
                                   borderColor: formData.exerciseLevel === opt.v ? C.curtain : C.line
                                 }}>
                                 {opt.label}
@@ -18511,7 +18511,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <>
                     <button onClick={() => handleSave()} disabled={saveStatus === "saving"}
                       className="w-full rounded-2xl py-3.5 font-medium flex items-center justify-center gap-2 transition-all"
-                      style={{ background: C.curtain, color: "#FFFDF8" }}>
+                      style={{ background: C.curtain, color: C.onCurtain }}>
                       {saveStatus === "saving" && <Loader2 size={16} className="animate-spin" />}
                       {saveStatus === "saved" && <Check size={16} />}
                       {saveStatus === "saving" ? t("saveButtonSaving") : saveStatus === "saved" ? t("saveButtonSaved") : saveStatus === "error" ? t("saveButtonError") : t("saveButton")}
@@ -18580,7 +18580,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             <p className="text-sm mb-2">「{s.label}」を30日間記録していません。畳みますか？</p>
                             <div className="flex gap-2">
                               <button type="button" onClick={() => handleFoldGroup(s.key)}
-                                className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                                className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: C.onCurtain }}>
                                 畳む
                               </button>
                               <button type="button" onClick={() => setDismissedFoldSuggestions((prev) => [...prev, s.key])}
@@ -18605,12 +18605,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               <div className="flex rounded-full border p-1 mb-4 overflow-x-auto nav-scroll" style={{ borderColor: C.line }}>
                 <button onClick={() => setLessonRoleChoice("learn")}
                   className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
-                  style={{ background: lessonRole === "learn" ? C.curtain : "transparent", color: lessonRole === "learn" ? "#FFFDF8" : C.inkSoft }}>
+                  style={{ background: lessonRole === "learn" ? C.curtain : "transparent", color: lessonRole === "learn" ? C.onCurtain : C.inkSoft }}>
                   {t("lessonRoleLearn")}
                 </button>
                 <button onClick={() => setLessonRoleChoice("teach")}
                   className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
-                  style={{ background: lessonRole === "teach" ? C.curtain : "transparent", color: lessonRole === "teach" ? "#FFFDF8" : C.inkSoft }}>
+                  style={{ background: lessonRole === "teach" ? C.curtain : "transparent", color: lessonRole === "teach" ? C.onCurtain : C.inkSoft }}>
                   {t("lessonRoleTeach")}
                 </button>
               </div>
@@ -18753,7 +18753,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <p className="text-sm mb-2">「{pendingOrgInvitation.org.name}」に参加しますか？</p>
                         <div className="flex gap-2">
                           <button type="button" onClick={handleAcceptOrgInvitation}
-                            className="flex-1 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>{t("joinButton")}</button>
+                            className="flex-1 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: C.onCurtain }}>{t("joinButton")}</button>
                           <button type="button" onClick={() => setPendingOrgInvitation(null)}
                             className="flex-1 py-2 rounded-full text-xs font-medium border" style={{ borderColor: C.line, color: C.inkSoft }}>{t("notNowButton")}</button>
                         </div>
@@ -18766,7 +18766,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             placeholder={t("enterInvitationCodePlaceholder")} maxLength={8}
                             className="flex-1 rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
                           <button type="button" onClick={() => handleLookupOrgInviteCode(orgInviteCodeInput)}
-                            className="px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap shrink-0" style={{ background: C.curtain, color: "#FFFDF8" }}>{t("confirmButton")}</button>
+                            className="px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap shrink-0" style={{ background: C.curtain, color: C.onCurtain }}>{t("confirmButton")}</button>
                         </div>
                         {orgInviteLookupError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{orgInviteLookupError}</p>}
                       </>
@@ -18866,7 +18866,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                         className="px-2.5 py-1 rounded-full flex-shrink-0"
                                         style={{
                                           background: on ? C.sage : C.card,
-                                          color: on ? "#FFFDF8" : C.inkSoft,
+                                          color: on ? C.onCurtain : C.inkSoft,
                                           border: `1px solid ${C.line}`
                                         }}>
                                         {label}
@@ -18905,7 +18905,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         placeholder="メモ（任意）" maxLength={100}
                         className="w-full rounded-lg border p-1.5 text-xs mt-1.5" style={{ borderColor: C.line, background: C.paper }} />
                       <button type="button" onClick={() => handleCreateLesson(link.id)}
-                        className="w-full py-2 rounded-full text-xs font-medium mt-2" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                        className="w-full py-2 rounded-full text-xs font-medium mt-2" style={{ background: C.curtain, color: C.onCurtain }}>
                         レッスンを追加
                       </button>
                     </div>
@@ -19059,7 +19059,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </p>
                       ) : (
                         <button type="button" onClick={handleGenerateTeacherInvite}
-                          className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                          className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: C.onCurtain }}>
                           {t("inviteTeacherButton")}
                         </button>
                       )}
@@ -19080,7 +19080,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <p className="text-sm mb-2">「{pendingOrgInvitation.org.name}」に参加しますか？</p>
                         <div className="flex gap-2">
                           <button type="button" onClick={handleAcceptOrgInvitation}
-                            className="flex-1 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>{t("joinButton")}</button>
+                            className="flex-1 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: C.onCurtain }}>{t("joinButton")}</button>
                           <button type="button" onClick={() => setPendingOrgInvitation(null)}
                             className="flex-1 py-2 rounded-full text-xs font-medium border" style={{ borderColor: C.line, color: C.inkSoft }}>{t("notNowButton")}</button>
                         </div>
@@ -19093,7 +19093,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             placeholder={t("enterInvitationCodePlaceholder")} maxLength={8}
                             className="flex-1 rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
                           <button type="button" onClick={() => handleLookupOrgInviteCode(orgInviteCodeInput)}
-                            className="px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap shrink-0" style={{ background: C.curtain, color: "#FFFDF8" }}>{t("confirmButton")}</button>
+                            className="px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap shrink-0" style={{ background: C.curtain, color: C.onCurtain }}>{t("confirmButton")}</button>
                         </div>
                         {orgInviteLookupError && <p className="text-xs mt-1.5" style={{ color: C.curtain }}>{orgInviteLookupError}</p>}
                       </>
@@ -19109,7 +19109,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         {t("createClassroomDesc")}
                       </p>
                       <button type="button" onClick={async () => { await ensureOwnOrg(); fetchMyOrgs(); }}
-                        className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                        className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: C.onCurtain }}>
                         {t("createClassroomTitle")}
                       </button>
                     </div>
@@ -19313,7 +19313,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               onChange={(e) => setNewEvent((n) => ({ ...n, title: e.target.value }))}
                               className="flex-1 min-w-[8rem] rounded-lg border px-2 py-1 text-xs" style={{ borderColor: C.line, background: C.paper }} />
                             <button type="button" onClick={() => handleCreateOrgEvent(orgId)}
-                              className="px-3 py-1 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                              className="px-3 py-1 rounded-full text-xs font-medium" style={{ background: C.curtain, color: C.onCurtain }}>
                               足す
                             </button>
                           </div>
@@ -19328,7 +19328,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             <p className="ff-mono text-center text-xl tracking-widest py-2 rounded-lg" style={{ background: C.paper, color: C.curtain }}>{generatedOrgInviteCode}</p>
                           ) : (
                             <button type="button" onClick={() => handleGenerateOrgInvite(orgId)}
-                              className="w-full py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>講師を 招待する</button>
+                              className="w-full py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: C.onCurtain }}>講師を 招待する</button>
                           )}
                         </div>
                         <div>
@@ -19721,7 +19721,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     // ★★見本①の色は こげちゃ です（★§7-2）。★えんじ ではありません。
                     //   ★服の24色から 取った色です。★数は lib が持ちます。
                     border: `1px solid ${HOME_COLORS.kogecha}`, borderBottomWidth: 3,
-                    background: HOME_COLORS.kogecha, color: "#FFFDF8",
+                    background: HOME_COLORS.kogecha, color: C.onCurtain,
                     fontSize: "1rem", fontWeight: 600,
                     boxShadow: "0 2px 10px rgba(89,66,51,0.18)"
                   }}>
@@ -20125,17 +20125,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               <div className="flex rounded-full border p-1 mb-4 overflow-x-auto nav-scroll" style={{ borderColor: C.line }}>
                 <button onClick={() => setNotesSubTab("calendar")}
                   className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
-                  style={{ background: notesSubTab === "calendar" ? C.curtain : "transparent", color: notesSubTab === "calendar" ? "#FFFDF8" : C.inkSoft }}>
+                  style={{ background: notesSubTab === "calendar" ? C.curtain : "transparent", color: notesSubTab === "calendar" ? C.onCurtain : C.inkSoft }}>
                   カレンダー
                 </button>
                 <button onClick={() => setNotesSubTab("practice")}
                   className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
-                  style={{ background: notesSubTab === "practice" ? C.curtain : "transparent", color: notesSubTab === "practice" ? "#FFFDF8" : C.inkSoft }}>
+                  style={{ background: notesSubTab === "practice" ? C.curtain : "transparent", color: notesSubTab === "practice" ? C.onCurtain : C.inkSoft }}>
                   稽古ノート
                 </button>
                 <button onClick={() => setNotesSubTab("memo")}
                   className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
-                  style={{ background: notesSubTab === "memo" ? C.curtain : "transparent", color: notesSubTab === "memo" ? "#FFFDF8" : C.inkSoft }}>
+                  style={{ background: notesSubTab === "memo" ? C.curtain : "transparent", color: notesSubTab === "memo" ? C.onCurtain : C.inkSoft }}>
                   メモ
                 </button>
                 {/* ★「自分の記録」。記録した側に置きます（分析タブには置きません）。
@@ -20143,7 +20143,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     分析は「判断が住む場所」、こちらは「記録がそのまま返る場所」です。 */}
                 <button onClick={() => { setNotesSubTab("own"); setOpenRecordField(null); }}
                   className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
-                  style={{ background: notesSubTab === "own" ? C.curtain : "transparent", color: notesSubTab === "own" ? "#FFFDF8" : C.inkSoft }}>
+                  style={{ background: notesSubTab === "own" ? C.curtain : "transparent", color: notesSubTab === "own" ? C.onCurtain : C.inkSoft }}>
                   自分の記録
                 </button>
                 {/* ★★レパートリー（★Opus §3・第1段・2026-09-07）。
@@ -20154,7 +20154,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ★分析は「判断が住む場所」。★ここは「控え」です。 */}
                 <button onClick={() => setNotesSubTab("repertoire")}
                   className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap"
-                  style={{ background: notesSubTab === "repertoire" ? C.curtain : "transparent", color: notesSubTab === "repertoire" ? "#FFFDF8" : C.inkSoft }}>
+                  style={{ background: notesSubTab === "repertoire" ? C.curtain : "transparent", color: notesSubTab === "repertoire" ? C.onCurtain : C.inkSoft }}>
                   レパートリー
                 </button>
               </div>
@@ -20338,7 +20338,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                     }}
                                     style={{
                                       flex: 1, minHeight: 44, borderRadius: 999, border: "none",
-                                      background: C.curtain, color: "#FFFDF8", fontSize: 13,
+                                      background: C.curtain, color: C.onCurtain, fontSize: 13,
                                       opacity: (mergeInProgress || !repRenameTo.trim() || repRenameTo.trim() === it.name) ? 0.45 : 1
                                     }}>名前を 直す</button>
                                   <button type="button" onClick={() => setRepMenu(null)}
@@ -20364,7 +20364,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                         }}
                                         style={{
                                           flex: 1, minHeight: 44, borderRadius: 999, border: "none",
-                                          background: C.rust, color: "#FFFDF8", fontSize: 13,
+                                          background: C.rust, color: C.onCurtain, fontSize: 13,
                                           opacity: mergeInProgress ? 0.45 : 1
                                         }}>消す</button>
                                       <button type="button" onClick={() => setRepConfirmDelete(null)}
@@ -20557,7 +20557,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       <div className="flex gap-2">
                         <button type="button" disabled={!practiceGoalDraft.trim()}
                           onClick={async () => { await handleSetPracticeGoal(practiceGoalDraft.trim(), practiceGoalTagsDraft); setEditingPracticeGoal(false); }}
-                          className="flex-1 py-2 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: practiceGoalDraft.trim() ? 1 : 0.5 }}>
+                          className="flex-1 py-2 rounded-full text-sm font-medium" style={{ background: C.curtain, color: C.onCurtain, opacity: practiceGoalDraft.trim() ? 1 : 0.5 }}>
                           保存
                         </button>
                         <button type="button" onClick={() => setEditingPracticeGoal(false)}
@@ -20616,7 +20616,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       className="w-full rounded-lg border p-2.5 text-sm" style={{ borderColor: C.line, background: C.paper }} />
                     <button type="button" disabled={!practiceReviewDraft.trim()}
                       onClick={async () => { await handleAddPracticeReview(practiceReviewDraft); setPracticeReviewDraft(""); }}
-                      className="w-full mt-2 py-2 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: practiceReviewDraft.trim() ? 1 : 0.5 }}>
+                      className="w-full mt-2 py-2 rounded-full text-sm font-medium" style={{ background: C.curtain, color: C.onCurtain, opacity: practiceReviewDraft.trim() ? 1 : 0.5 }}>
                       書く
                     </button>
                   </div>
@@ -20770,7 +20770,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           <div className="flex items-center justify-between gap-2">
                             <span className="text-sm">{t("confirmDeleteRecord")}</span>
                             <div className="flex gap-2 shrink-0">
-                              <button onClick={() => handleDelete(date)} className="px-3 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>{t("btnDeleteConfirm")}</button>
+                              <button onClick={() => handleDelete(date)} className="px-3 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: C.onCurtain }}>{t("btnDeleteConfirm")}</button>
                               <button onClick={() => setConfirmDeleteDate(null)} className="px-3 py-1.5 rounded-full text-xs font-medium border" style={{ borderColor: C.line }}>{t("btnCancel")}</button>
                             </div>
                           </div>
@@ -20888,7 +20888,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     </p>
                     <button type="button" onClick={openMore}
                       className="px-4 py-2 rounded-full text-xs font-medium"
-                      style={{ background: C.curtain, color: "#FFFDF8" }}>
+                      style={{ background: C.curtain, color: C.onCurtain }}>
                       設定を開く
                     </button>
                   </div>
@@ -20937,7 +20937,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         className="px-3.5 py-1.5 rounded-full text-xs font-medium"
                         style={{
                           background: analysisPeriod === p ? C.curtain : C.paper,
-                          color: analysisPeriod === p ? "#FFFDF8" : C.inkSoft,
+                          color: analysisPeriod === p ? C.onCurtain : C.inkSoft,
                           border: `1px solid ${analysisPeriod === p ? C.curtain : C.line}`
                         }}>
                         {t(p === "last7" ? "periodLast7" : p === "week" ? "periodWeek" : p === "month" ? "periodMonth" : p === "year" ? "periodYear" : p === "all" ? "periodAll" : "periodCustom")}
@@ -20948,7 +20948,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         className="px-3.5 py-1.5 rounded-full text-xs font-medium"
                         style={{
                           background: analysisPeriod === "aroundPerformance" ? C.curtain : C.paper,
-                          color: analysisPeriod === "aroundPerformance" ? "#FFFDF8" : C.inkSoft,
+                          color: analysisPeriod === "aroundPerformance" ? C.onCurtain : C.inkSoft,
                           border: `1px solid ${analysisPeriod === "aroundPerformance" ? C.curtain : C.line}`
                         }}>
                         直近の本番前後
@@ -22274,17 +22274,17 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <div className="flex rounded-full border p-1 overflow-x-auto nav-scroll" style={{ borderColor: C.line }}>
                   <button onClick={() => setAnalysisTarget("performance")}
                     className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
-                    style={{ background: analysisTarget === "performance" ? C.curtain : "transparent", color: analysisTarget === "performance" ? "#FFFDF8" : C.inkSoft }}>
+                    style={{ background: analysisTarget === "performance" ? C.curtain : "transparent", color: analysisTarget === "performance" ? C.onCurtain : C.inkSoft }}>
                     {t("targetPerformance")}
                   </button>
                   <button onClick={() => setAnalysisTarget("throat")}
                     className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
-                    style={{ background: analysisTarget === "throat" ? C.curtain : "transparent", color: analysisTarget === "throat" ? "#FFFDF8" : C.inkSoft }}>
+                    style={{ background: analysisTarget === "throat" ? C.curtain : "transparent", color: analysisTarget === "throat" ? C.onCurtain : C.inkSoft }}>
                     {t("targetThroat")}
                   </button>
                   <button onClick={() => setAnalysisTarget("ease")}
                     className="flex-1 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap px-3"
-                    style={{ background: analysisTarget === "ease" ? C.curtain : "transparent", color: analysisTarget === "ease" ? "#FFFDF8" : C.inkSoft }}>
+                    style={{ background: analysisTarget === "ease" ? C.curtain : "transparent", color: analysisTarget === "ease" ? C.onCurtain : C.inkSoft }}>
                     {t("targetEase")}
                   </button>
                 </div>
@@ -22635,7 +22635,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       )}
                       <button onClick={handleSaveProfile} disabled={profileSaveStatus === "saving"}
                         className="w-full rounded-2xl py-3.5 font-medium flex items-center justify-center gap-2 transition-all"
-                        style={{ background: C.curtain, color: "#FFFDF8", opacity: profileSaveStatus === "saving" ? 0.7 : 1,
+                        style={{ background: C.curtain, color: C.onCurtain, opacity: profileSaveStatus === "saving" ? 0.7 : 1,
                           boxShadow: "0 6px 20px rgba(36,25,20,0.18)" }}>
                         {profileSaveStatus === "saving" && <Loader2 size={16} className="animate-spin" />}
                         {profileSaveStatus === "saved" && <Check size={16} />}
@@ -22667,14 +22667,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       <button type="button" onClick={() => handleChangeAgeAnswer(true)}
                         className="flex-1 py-1.5 rounded-full text-xs font-medium"
                         style={{ background: (hasAnsweredAgeQuestion(profile) && isTreatedAsMinor(profile)) ? C.curtain : C.card,
-                          color: (hasAnsweredAgeQuestion(profile) && isTreatedAsMinor(profile)) ? "#FFFDF8" : C.inkSoft,
+                          color: (hasAnsweredAgeQuestion(profile) && isTreatedAsMinor(profile)) ? C.onCurtain : C.inkSoft,
                           border: `1px solid ${C.line}` }}>
                         18歳未満です
                       </button>
                       <button type="button" onClick={() => handleChangeAgeAnswer(false)}
                         className="flex-1 py-1.5 rounded-full text-xs font-medium"
                         style={{ background: (hasAnsweredAgeQuestion(profile) && !isTreatedAsMinor(profile)) ? C.curtain : C.card,
-                          color: (hasAnsweredAgeQuestion(profile) && !isTreatedAsMinor(profile)) ? "#FFFDF8" : C.inkSoft,
+                          color: (hasAnsweredAgeQuestion(profile) && !isTreatedAsMinor(profile)) ? C.onCurtain : C.inkSoft,
                           border: `1px solid ${C.line}` }}>
                         18歳以上です
                       </button>
@@ -22717,7 +22717,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </p>
                         <button type="button" onClick={handleRegrantHealthConsent} disabled={regrantBusy}
                           className="px-3 py-1.5 rounded-full text-xs font-medium"
-                          style={{ background: C.curtain, color: "#FFFDF8", opacity: regrantBusy ? 0.6 : 1 }}>
+                          style={{ background: C.curtain, color: C.onCurtain, opacity: regrantBusy ? 0.6 : 1 }}>
                           {regrantBusy ? "処理しています…" : "もう一度同意する"}
                         </button>
                       </div>
@@ -22809,7 +22809,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             <div className="flex gap-2 mt-2">
                               <button type="button" disabled={mergeInProgress}
                                 onClick={() => handleMergeRepertoire(mergeSourceRepertoire, mergeTargetRepertoire)}
-                                className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: mergeInProgress ? 0.6 : 1 }}>
+                                className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: C.onCurtain, opacity: mergeInProgress ? 0.6 : 1 }}>
                                 {mergeInProgress ? "統合中…" : "本当に統合する（取り消せません）"}
                               </button>
                               <button type="button" onClick={() => setMergeConfirming(false)}
@@ -22857,7 +22857,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               setEditRepertoireName(""); setRenameRepertoireTo("");
                             }}
                             className="w-full py-1.5 rounded-full text-xs font-medium mb-3"
-                            style={{ background: C.curtain, color: "#FFFDF8",
+                            style={{ background: C.curtain, color: C.onCurtain,
                               opacity: (mergeInProgress || !renameRepertoireTo.trim() || renameRepertoireTo.trim() === editRepertoireName) ? 0.5 : 1 }}>
                             {mergeInProgress ? "変更中…" : "名前を変える"}
                           </button>
@@ -22881,7 +22881,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                     await handleDeleteRepertoire(editRepertoireName);
                                     setEditRepertoireName(""); setRenameRepertoireTo(""); setDeleteRepertoireConfirming(false);
                                   }}
-                                  className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8", opacity: mergeInProgress ? 0.6 : 1 }}>
+                                  className="flex-1 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: C.onCurtain, opacity: mergeInProgress ? 0.6 : 1 }}>
                                   {mergeInProgress ? "削除中…" : "本当に消す（取り消せません）"}
                                 </button>
                                 <button type="button" onClick={() => setDeleteRepertoireConfirming(false)}
@@ -22964,7 +22964,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                   <button type="button" onClick={handleWithdrawHealthConsent} disabled={withdrawBusy}
                     className="w-full py-2.5 rounded-full text-sm font-medium mb-2"
-                    style={{ background: C.curtain, color: "#FFFDF8", opacity: withdrawBusy ? 0.6 : 1 }}>
+                    style={{ background: C.curtain, color: C.onCurtain, opacity: withdrawBusy ? 0.6 : 1 }}>
                     {withdrawBusy ? "処理しています…" : withdrawAlsoDelete ? "撤回して、削除の画面へ進む" : "同意を撤回する"}
                   </button>
                   <button type="button" onClick={() => setActiveTab("profile")}
@@ -23030,7 +23030,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   <p className="text-xs mb-3" style={{ color: C.inkSoft }}>{t("deleteStep1ExportNote")}</p>
                   <button type="button" onClick={startExport} disabled={exportStatus === "working"}
                     className="w-full py-2.5 rounded-full text-sm font-medium flex items-center justify-center gap-2"
-                    style={{ background: C.gold, color: "#FFFDF8", opacity: exportStatus === "working" ? 0.7 : 1 }}>
+                    style={{ background: C.gold, color: C.onCurtain, opacity: exportStatus === "working" ? 0.7 : 1 }}>
                     {exportStatus === "working" && <Loader2 size={15} className="animate-spin" />}
                     {exportStatus === "working" ? t("exportWorking") : t("labelExportData")}
                   </button>
@@ -23208,7 +23208,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       className="w-full flex items-center justify-center"
                       style={{
                         minHeight: 48, borderRadius: 999, border: "none",
-                        background: C.curtain, color: "#FFFDF8",
+                        background: C.curtain, color: C.onCurtain,
                         fontSize: "0.9375rem", fontWeight: 600, textDecoration: "none"
                       }}>プランを 見る</a>
                   </div>
@@ -23281,7 +23281,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             <button type="button" onClick={() => handleCloseOrg(org.orgId)}
                               disabled={closeOrgStatus === "working" || closeOrgConfirm.trim() !== "閉じます"}
                               className="flex-1 py-3 rounded-full text-sm font-medium flex items-center justify-center gap-2"
-                              style={{ background: C.curtain, color: "#FFFDF8",
+                              style={{ background: C.curtain, color: C.onCurtain,
                                 opacity: (closeOrgStatus === "working" || closeOrgConfirm.trim() !== "閉じます") ? 0.4 : 1 }}>
                               {closeOrgStatus === "working" && <Loader2 size={15} className="animate-spin" />}
                               {closeOrgStatus === "working" ? "閉じています…" : "教室を閉じる"}
@@ -23344,7 +23344,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   <button type="button" onClick={() => handleDeleteAccount("grace")}
                     disabled={deleteStatus === "working" || !deleteConfirmOk || !deletePassword}
                     className="flex-1 py-3 rounded-full text-sm font-medium flex items-center justify-center gap-2"
-                    style={{ background: C.curtain, color: "#FFFDF8", opacity: (deleteStatus === "working" || !deleteConfirmOk || !deletePassword) ? 0.4 : 1 }}>
+                    style={{ background: C.curtain, color: C.onCurtain, opacity: (deleteStatus === "working" || !deleteConfirmOk || !deletePassword) ? 0.4 : 1 }}>
                     {deleteStatus === "working" && <Loader2 size={15} className="animate-spin" />}
                     {deleteStatus === "working" ? t("deleteExecuting") : t("deleteWithGrace")}
                   </button>
@@ -23395,7 +23395,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               type="button"
                               onClick={() => { setActiveQuestionnaire(def.key); setQuestionnaireAnswers({}); setQuestionnaireError(""); }}
                               className="px-3.5 py-1.5 rounded-full text-xs font-medium flex-shrink-0"
-                              style={{ background: C.curtain, color: "#FFFDF8" }}
+                              style={{ background: C.curtain, color: C.onCurtain }}
                             >
                               回答する
                             </button>
@@ -23467,7 +23467,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                   className="flex-1 py-1.5 rounded-lg text-xs font-medium border"
                                   style={{
                                     background: questionnaireAnswers[i] === v ? C.curtain : C.paper,
-                                    color: questionnaireAnswers[i] === v ? "#FFFDF8" : C.inkSoft,
+                                    color: questionnaireAnswers[i] === v ? C.onCurtain : C.inkSoft,
                                     borderColor: questionnaireAnswers[i] === v ? C.curtain : C.line
                                   }}
                                 >
@@ -23488,7 +23488,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         disabled={questionnaireSaving}
                         onClick={() => handleSubmitQuestionnaire(def.key)}
                         className="w-full mt-4 py-2.5 rounded-full text-sm font-medium flex items-center justify-center gap-1.5"
-                        style={{ background: C.curtain, color: "#FFFDF8" }}
+                        style={{ background: C.curtain, color: C.onCurtain }}
                       >
                         {questionnaireSaving && <Loader2 size={14} className="animate-spin" />}
                         記録する
@@ -23613,7 +23613,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ].map(([key, label]) => (
                         <button key={key} type="button" onClick={() => setClinicPeriodMode(key)}
                           className="px-3 py-1.5 rounded-full text-xs font-medium"
-                          style={{ background: clinicPeriodMode === key ? C.curtain : C.paper, color: clinicPeriodMode === key ? "#FFFDF8" : C.inkSoft, border: `1px solid ${clinicPeriodMode === key ? C.curtain : C.line}` }}>
+                          style={{ background: clinicPeriodMode === key ? C.curtain : C.paper, color: clinicPeriodMode === key ? C.onCurtain : C.inkSoft, border: `1px solid ${clinicPeriodMode === key ? C.curtain : C.line}` }}>
                           {label}
                         </button>
                       ))}
@@ -23668,7 +23668,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                                 minHeight: 44, padding: "0 11px", borderRadius: 999, fontSize: 11.5,
                                 border: `1px solid ${on ? C.curtain : C.line}`,
                                 background: on ? C.curtain : C.card,
-                                color: on ? "#FFFDF8" : C.inkSoft
+                                color: on ? C.onCurtain : C.inkSoft
                               }}>
                               {on ? "✓ " : "＋ "}{x.label}
                             </button>
@@ -24094,7 +24094,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           足し忘れが起きます。どちらもこのセッションで実際に踏みました。
                           ★既存のメモ（kind: "article"）は、そのまま読めます。 */}
                       <button type="button" onClick={() => handleCreateArticleNote(article.id, "self_explanation", newArticleNoteDraft, null)}
-                        className="mt-2 px-4 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                        className="mt-2 px-4 py-1.5 rounded-full text-xs font-medium" style={{ background: C.curtain, color: C.onCurtain }}>
                         {t("addNoteButton")}
                       </button>
                     </div>
@@ -24710,7 +24710,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             borderRadius: 99, padding: "5px 9px",
                             fontSize: rem(10.5), minHeight: 44,
                             background: active ? C.curtain : C.card,
-                            color: active ? "#FFFDF8" : C.ink,
+                            color: active ? C.onCurtain : C.ink,
                             fontWeight: active ? 700 : 400
                           }}>
                           {SCALE_LABELS[s]}
@@ -25548,7 +25548,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       style={{
                         marginTop: 14, minHeight: 52, borderRadius: 999,
                         border: "none", background: C.curtain,
-                        color: "#FFFDF8", fontSize: "1rem", fontWeight: 600,
+                        color: C.onCurtain, fontSize: "1rem", fontWeight: 600,
                         textDecoration: "none"
                       }}>
                       くわしく見る
@@ -25687,7 +25687,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             <button type="button" onClick={handleAcceptInvitation}
                               disabled={acceptingInvitation}
                               className="flex-1 py-2 rounded-full text-xs font-medium"
-                              style={{ background: C.curtain, color: "#FFFDF8", opacity: acceptingInvitation ? 0.4 : 1 }}>
+                              style={{ background: C.curtain, color: C.onCurtain, opacity: acceptingInvitation ? 0.4 : 1 }}>
                               {acceptingInvitation ? "つないでいます…" : t("connectButton")}
                             </button>
                             <button type="button" onClick={handleDeclineInvitation}
@@ -25704,7 +25704,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               placeholder="招待コード" maxLength={8}
                               className="flex-1 rounded-lg border p-2 text-sm ff-mono" style={{ borderColor: C.line, background: C.paper }} />
                             <button type="button" onClick={() => handleLookupInviteCode(inviteCodeInput)}
-                              className="px-4 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                              className="px-4 py-2 rounded-full text-xs font-medium" style={{ background: C.curtain, color: C.onCurtain }}>
                               {t("confirmButton")}
                             </button>
                           </div>
@@ -25758,7 +25758,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         {t("createClassroomDesc")}
                       </p>
                       <button type="button" onClick={async () => { await ensureOwnOrg(); fetchMyOrgs(); }}
-                        className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                        className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: C.onCurtain }}>
                         {t("createClassroomTitle")}
                       </button>
                     </div>
@@ -25846,7 +25846,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ホーム画面に追加すると、ブラウザを開かずワンタップで記録できます。
                     </p>
                     <button type="button" onClick={handleInstallPwa}
-                      className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                      className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: C.onCurtain }}>
                       インストールする
                     </button>
                   </div>
@@ -25900,7 +25900,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           || newEmailInput.trim().toLowerCase() !== newEmailInput2.trim().toLowerCase()}
                           onClick={() => submitEmailChange()}
                           className="flex-1 py-2.5 rounded-full text-sm font-medium"
-                          style={{ background: C.curtain, color: "#FFFDF8" }}>
+                          style={{ background: C.curtain, color: C.onCurtain }}>
                           {emailBusy ? "変えています…" : "変える"}
                         </button>
                         <button type="button" onClick={() => { setEmailPanel(false); setEmailMsg(""); }}
@@ -25953,7 +25953,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           || newPasswordInput !== newPasswordInput2}
                           onClick={() => submitPasswordChange()}
                           className="flex-1 py-2.5 rounded-full text-sm font-medium"
-                          style={{ background: C.curtain, color: "#FFFDF8" }}>
+                          style={{ background: C.curtain, color: C.onCurtain }}>
                           {passwordBusy ? "変えています…" : "変える"}
                         </button>
                         <button type="button" onClick={() => {
@@ -26057,7 +26057,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </div>
                       ) : (
                         <button type="button" onClick={handleGenerateLineLinkCode}
-                          className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: "#FFFDF8" }}>
+                          className="w-full py-2.5 rounded-full text-sm font-medium" style={{ background: C.curtain, color: C.onCurtain }}>
                           連携コードを発行する
                         </button>
                       )}
@@ -26191,7 +26191,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     )}
                     <button type="button" onClick={startExport} disabled={exportStatus === "working"}
                       className="w-full py-2.5 rounded-full text-sm font-medium flex items-center justify-center gap-2"
-                      style={{ background: C.curtain, color: "#FFFDF8", opacity: exportStatus === "working" ? 0.7 : 1 }}>
+                      style={{ background: C.curtain, color: C.onCurtain, opacity: exportStatus === "working" ? 0.7 : 1 }}>
                       {exportStatus === "working" && <Loader2 size={15} className="animate-spin" />}
                       {exportStatus === "working" ? t("exportWorking") : t("labelExportData")}
                     </button>
