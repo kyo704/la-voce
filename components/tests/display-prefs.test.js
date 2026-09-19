@@ -147,22 +147,17 @@ async function main() {
       onCurtain: "curtain", onCurtainFaint: "curtain", knob: "curtain",
       pureWhite: "curtain", lineGreenText: "lineGreen"
     };
-    // ★★★よその 決まりで 決まって いる 色（★2026-09-19）。
-    //   ★★`lineGreenText` …… ★LINE の 緑（#06C755）の 上の 白い 字。
-    //     ★★測ると **2.26** です。★4.5 に 届きません。
-    //     ★★★色も 字の 色も、★LINE の 決まり です。★こちらで 変えられません。
-    //       ★★変えると、★LINE の 札として 認められません。
-    //     ★★★逃がして いる ことを、★ここに 書いて 残します。★黙って 外しません。
-    //       ★★坂本さんの ご判断を お待ちして います
-    //         （★濃い 緑に する ／ 枠を 付ける ／ この まま）。
-    const よその決まり = { lineGreenText: { 比: 2.26, わけ: "LINE の 決まり" } };
+    // ★★★よその 会社の 色（★裁定 その101・2026-09-19 で 決まりました）。
+    //   ★★決まり ──「よその 会社の ブランド色は、★コントラストの 決まりの 外」。
+    //     ★★わけ ──「何の 札か 分かる」ことが 先に 立つ 場面が あります。
+    //   ★★★一覧は `lib/visualTokens.js` の `EXTERNAL_BRAND_COLORS` が 持ちます。
+    //     ★★ここに 書き写しません。★片方だけ 増える ことが 起きます。
+    //   ★★★代わりに、★札の 外に 字が ある ことを 下で 見ます。
+    const 外す = new Set(["lineGreen", "lineGreenText"]);
+    const よその決まり = Object.fromEntries([...外す].map((k) => [k, true]));
     const thin = [];
     for (const [name, at] of used) {
-      if (よその決まり[name]) {
-        console.log(`     ★${name} … ${よその決まり[name].比}（${よその決まり[name].わけ}）`
-          + " ★4.5 に 届きません。坂本さんの ご判断 待ち です。");
-        continue;
-      }
+      if (よその決まり[name]) continue;   // ★よその 会社の 色（★裁定 その101）
       const hex = hexOf(name);
       if (!hex) continue;                       // ★掛け合わせの 色。★測れません。
       const 地 = 載る地[name] ? [hexOf(載る地[name])].filter(Boolean) : BG;

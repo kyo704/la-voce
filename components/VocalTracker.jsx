@@ -26025,7 +26025,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           {/* ★以前は「友だち追加」が説明文だけで、どこの公式アカウントに
                               送ればよいのか分からなかった。友だち追加の導線を実際に置く。
                               URL は環境変数で渡す（アカウントごとに違うため）。 */}
+                          {/* ★★★札の 外に、★何の 札かを 字で 書きます
+                               （★2026-09-19・裁定 その101 REQUIRED）。
+                               ★★中の 字（緑の 上の 白）は 比 2.26 です。★読みにくい です。
+                               ★★★色は LINE の もの なので 変えません。
+                                 ★★けれど「何の 札か」は、★外で 分かる ように します。 */}
                           <p className="text-xs mb-1.5" style={{ color: C.inkSoft }}>①LINEで「La Voce」を友だち追加</p>
+                          <p className="text-xs mb-1" style={{ color: C.ink }}>LINEで つながる</p>
                           {process.env.NEXT_PUBLIC_LINE_ADD_FRIEND_URL ? (
                             <a href={process.env.NEXT_PUBLIC_LINE_ADD_FRIEND_URL} target="_blank" rel="noopener noreferrer"
                               className="block w-full text-center py-2 rounded-full text-xs font-medium mb-2"
