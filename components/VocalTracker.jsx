@@ -181,6 +181,8 @@ import OpsDaihyo from "@/components/OpsDaihyo";
 import OpsMonkaChange from "@/components/OpsMonkaChange";
 import OpsRetireTeacher from "@/components/OpsRetireTeacher";
 import OpsMada from "@/components/OpsMada";
+import OpsMisou from "@/components/OpsMisou";
+import { FAILED_LINE as MISOU_FAILED } from "@/lib/opsMisou";
 import { FAILED_LINE as MADA_FAILED, doneWord as madaDoneWord, mayNudge }
   from "@/lib/opsMada";
 import { FAILED_LINE as RETIRE_FAILED, doneWord as retireDoneWord, mayRetire }
@@ -12904,6 +12906,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [madaBusy, setMadaBusy] = useState(false);
   const [madaError, setMadaError] = useState("");
   const [madaDone, setMadaDone] = useState("");
+  // ★★★未送信（★見本 `P_misou`・お決め D82・2026-09-19）。
+  //   ★★`undefined` ＝ まだ 読んで いない。★`null` ＝ 読めなかった。
+  const [misouOpen, setMisouOpen] = useState(false);
+  const [misouRows, setMisouRows] = useState(undefined);
+  const [misouBusy, setMisouBusy] = useState(false);
+  const [misouError, setMisouError] = useState("");
   const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
@@ -13270,6 +13278,77 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const 表 = {};
     (data || []).forEach((r) => { 表[r.student_id] = r.free_count; });
     setMonkaFree(表);
+  }
+
+  /**
+   * ★未送信を 読みます（★お決め D82・2026-09-19）。
+   *
+   *   ★★★ご自分の 書いた ものだけ です（★決まりが そうして います）。
+   *   ★★読めなければ `null`。★空と 分けます。
+   */
+  async function fetchMisou(orgId) {
+    if (!orgId) return;
+    setMisouRows(undefined);
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("org_message_drafts")
+      .select("id, title, body, kind, teacher_id, updated_at")
+      .eq("org_id", orgId)
+      .order("updated_at", { ascending: false });
+    if (error) {
+      console.error("★未送信を 読めませんでした:", error);
+      setMisouRows(null);
+      return;
+    }
+    setMisouRows(data || []);
+  }
+
+  /**
+   * ★下書きを 出します（★お決め D82）。
+   *
+   *   ★★★移すのと 消すのを、★1つの 取引で します（`send_message_draft`）。
+   *     ★★2つに 分けると、★「連絡に 出たのに 下書きも 残る」日が 来ます。
+   */
+  async function handleSendDraft(orgId, draftId) {
+    setMisouError("");
+    setMisouBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.rpc("send_message_draft",
+        { p_draft_id: draftId });
+      if (error || !Array.isArray(data) || data.length === 0) {
+        throw error || new Error("0行でした");
+      }
+      await fetchMisou(orgId);
+      void fetchRenraku(orgId, openStudio);
+      return true;
+    } catch (err) {
+      console.error("★下書きを 出せませんでした:", err);
+      setMisouError(MISOU_FAILED);
+      return false;
+    } finally {
+      setMisouBusy(false);
+    }
+  }
+
+  /** ★下書きを 消します（★戻せません。★画面で 一度 お尋ねして います）。 */
+  async function handleDeleteDraft(orgId, draftId) {
+    setMisouError("");
+    setMisouBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("org_message_drafts").delete().eq("id", draftId).select("id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      await fetchMisou(orgId);
+      return true;
+    } catch (err) {
+      console.error("★下書きを 消せませんでした:", err);
+      setMisouError(MISOU_FAILED);
+      return false;
+    } finally {
+      setMisouBusy(false);
+    }
   }
 
   /**
@@ -15352,6 +15431,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   addError={eventError} />
               );
             }
+            if (tabKey === "threads" && misouOpen) {
+              // ★★★未送信（★見本 `P_misou`・お決め D82・2026-09-19）。
+              //   ★★連絡の 帯の 中に 置きます ── ★見本の 戻り先が 連絡 です。
+              return (
+                <OpsMisou
+                  rows={misouRows}
+                  busy={misouBusy}
+                  error={misouError}
+                  onSend={(r) => { void handleSendDraft(opsOrgId, r.id); }}
+                  onDelete={(r) => { void handleDeleteDraft(opsOrgId, r.id); }}
+                  onClose={() => { setMisouOpen(false); setMisouError(""); }} />
+              );
+            }
             if (tabKey === "threads") {
               // ★★連絡（★見本①③）。★運営の方は 読むだけです。
               //   ★★書けないのは、★門（RLS）が 止めるからです。
@@ -15398,6 +15490,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   announcements={renrakuAnnouncements}
                   messages={renrakuMessages}
                   onCompose={() => setComposing(true)}
+                  /* ★★★未送信へ（★見本 `P_misou`・お決め D82・2026-09-19）。
+                       ★★開く ときに 引きます。★出しっぱなしに しません。 */
+                  onGoMisou={() => {
+                    setMisouOpen(true);
+                    setMisouError("");
+                    void fetchMisou(opsOrgId);
+                  }}
                   openStudio={openStudio}
                   onOpenStudio={(tid) => {
                     setOpenStudio(tid);

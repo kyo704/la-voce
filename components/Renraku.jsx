@@ -5,7 +5,7 @@ import useWindowWidth from "@/components/useWindowWidth";
 import { C } from "@/lib/tokens";
 import {
   NOTICE_LINE, NO_ATTACH_LINE,
-  HIDE_AFTER_DAYS, HIDE_LINE, SOON_LINE, visibleMessages, mayPost, studioName, isTwoPane, BODY_WIDTH,
+  HIDE_AFTER_DAYS, HIDE_LINE, GO_MISOU_LABEL, GO_MISOU_SUB, SOON_LINE, visibleMessages, mayPost, studioName, isTwoPane, BODY_WIDTH,
   // ★★裁定 その87（2026-09-18）。★字も 幅も lib が 持ちます。
   LIST_WIDTH, NO_READ_TRACKING_LINE, MONKA_READ_SELF_LINE, showMonkaReadSelfBanner,
   SECTION_ANNOUNCE, SECTION_MONKA,
@@ -99,6 +99,8 @@ export default function Renraku({
   studios, announcements, messages, openStudio, onOpenStudio,
   role, isTeacherOf, isMemberOf, nameOf, teacherNameOf,
   onPost, reads, posting, onCompose,
+  // ★★★未送信へ（★お決め D82・2026-09-19）。★渡されなければ 出しません。
+  onGoMisou,
   // ★★できこと（★裁定 その87 Q2）。★門下を 読める 方 ご本人に 断りを 出します。
   perms,
   // ★★★開いた 記録 ── ★学校ぜんぶ（★見本 `P_kaita`・2026-09-19）。
@@ -167,6 +169,24 @@ export default function Renraku({
             minHeight: 48, borderRadius: 12, border: `1px solid ${C.line}`,
             background: C.card, color: C.ink, fontSize: "0.90625rem"
           }}>＋ おしらせを 書く</button>
+      ) : null}
+
+      {/* ★★★未送信（★見本 `P_misou`・お決め D82・2026-09-19）。
+           ★★書ける 方 だけ に 出します（★書けない 方に 下書きは ありません）。
+           ★★★渡されなければ 出しません（★押せない 札を 置きません）。 */}
+      {onGoMisou && mayPost({ role, isAnnouncement: true }) ? (
+        <button type="button" onClick={onGoMisou}
+          className="w-full"
+          style={{
+            minHeight: 48, marginTop: 6, borderRadius: 12,
+            border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+            fontSize: "0.90625rem", textAlign: "left", padding: "0 14px"
+          }}>
+          {GO_MISOU_LABEL}
+          <span style={{ display: "block", fontSize: "0.78125rem", color: C.inkSoft }}>
+            {GO_MISOU_SUB}
+          </span>
+        </button>
       ) : null}
 
       <p style={small}>{SECTION_MONKA}</p>

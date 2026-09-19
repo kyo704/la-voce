@@ -44,7 +44,13 @@ const allSql = sqlFiles.map((f) => fs.readFileSync(path.join(root, "supabase", f
 //     ★★誰が・いつ・誰の 役職を 変えたか、だけ です。
 //   ★★★ここに 足す ときは、★**本文が 無い こと**を 確かめて ください。
 //     ★★本文が ある もの を 足すと、★この 見張りは 効かなく なります。
-const NOT_THREADS = ["org_posts", "post_change_log"];
+// ★★★名に `message` が 入って いても、★やりとり では ない もの（★2026-09-19）。
+//   ★★`org_message_drafts` …… ★書いた ご本人 だけ の 下書き です。
+//     ★★相手が いません。★参加者の 列も ありません。★誰にも 届きません。
+//     ★★添付の 列も ありません（★字だけ です）。
+//     ★★★決まりは 1つ（`auth.uid() = author_id`）── ★よその 方には 道が ありません。
+//   ★★★外す ときは、★上の 3つを 確かめて から にして ください。
+const NOT_THREADS = ["org_posts", "post_change_log", "org_message_drafts"];
 
 function threadTables() {
   const hits = [];
@@ -54,6 +60,16 @@ function threadTables() {
     if (!NOT_THREADS.includes(m[1])) hits.push(m[1]);
   }
   return [...new Set(hits)];
+}
+
+// ★★★外した 表が、★本当に「やりとりで ない」か を 確かめます。
+//   ★★外しただけ では、★次の 人が 中身を 変えた 日に 気づけません。
+{
+  const 下書き = allSql.slice(allSql.indexOf("create table if not exists public.org_message_drafts"));
+  const なか = 下書き.slice(0, 下書き.indexOf(");"));
+  assertTrue(/author_id uuid not null/.test(なか), "★下書きは ご本人の ものである");
+  assertTrue(!/attachment|file_url|image/.test(なか), "★下書きに 添付の 列が ない");
+  assertTrue(!/participant|member_ids/.test(なか), "★下書きに 参加者の 列が ない");
 }
 
 console.log("=== ★スレッドは、まだ作っていない ===");

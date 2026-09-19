@@ -66,6 +66,11 @@ function ok(cond, 名) {
   ok(B.hasInvoiceNo({ invoice_no: "" }) === false, "空の 字は 番号では ない");
   ok(B.hasInvoiceNo({ invoice_no: "T1234567890123" }) === true, "番号が あれば true");
   ok(/適格請求書では ありません/.test(B.NOT_QUALIFIED_INVOICE), "断りの 字");
+  // ★★★2026-09-19 ── ★登録の ご予定が ある ことも 書きます。
+  //   ★★「いま 無い」は 消しません。★足すだけ です。
+  ok(/登録を 予定/.test(B.NOT_QUALIFIED_INVOICE), "★予定も 書いて いる");
+  // ★★★日づけを 書きません（★決まって いない ことを 約束に しません）。
+  ok(!/月曜|\d+月\d+日/.test(B.NOT_QUALIFIED_INVOICE), "★日づけを 書いて いない");
 
   const 画面 = readRaw("components", "OpsSettings.jsx");
   ok(/!hasInvoiceNo\(billing\)/.test(画面), "番号が 無い ときに 断りを 出して いる");
