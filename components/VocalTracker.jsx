@@ -144,6 +144,8 @@ import { mayUseLayoutV2 } from "@/lib/layoutV2";
 import { mayLoadOpsDetail } from "@/lib/opsFixGate";
 import HomeV2 from "@/components/HomeV2";
 import NotesV2 from "@/components/NotesV2";
+// ★★経歴（ポートフォリオ）── ★裁定 その94 §10 ①（2026-09-19）。
+import PortfolioV2 from "@/components/PortfolioV2";
 import Renraku from "@/components/Renraku";
 import TellTeacher from "@/components/TellTeacher";
 import AnnouncementCompose from "@/components/AnnouncementCompose";
@@ -11205,6 +11207,132 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★既定は「きょう」です。★分からない ときは、★家に 帰します。
   const [moreCameFrom, setMoreCameFrom] = useState("home");
   // ★通っている ところ ── ★いま 開いて いる 教室（★在籍の id）。
+  /**
+   * ★経歴（ポートフォリオ）── ★裁定 その94 §10 ①（2026-09-19）。
+   *
+   *   ★★★字の もの だけ です。★録画と 宣材写真は 後 です（★お決め D6）。
+   *   ★★許しは ご本人 だけ です（`portfolios_own`）。
+   *     ★★だから 絞りを 書きません。★台帳が ご自分の 行 しか 返しません。
+   *   ★★★「取れなかった」と「まだ 1行も 無い」を 分けて 持ちます。
+   *     ★★読めなかった ときに 空の 紙を 出すと、★書いた ものが 消えたと 見えます。
+   */
+  const [portfolio, setPortfolio] = useState(null);
+  const [portfolioEntries, setPortfolioEntries] = useState([]);
+  const [portfolioOk, setPortfolioOk] = useState(true);
+  const [portfolioSaving, setPortfolioSaving] = useState(false);
+  const [portfolioError, setPortfolioError] = useState("");
+  const [portfolioScope, setPortfolioScope] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    if (!layoutV2 || !userId) return;
+    (async () => {
+      const supabase = createClient();
+      const [p, e] = await Promise.all([
+        runQueryWithAuthRetry(supabase, () =>
+          supabase.from("portfolios")
+            .select("user_id, display_name, instrument, bio, regions, visibility")
+            .eq("user_id", userId).maybeSingle(), "経歴"),
+        runQueryWithAuthRetry(supabase, () =>
+          supabase.from("portfolio_entries")
+            .select("id, kind, title, detail, sort_order")
+            .eq("user_id", userId)
+            .order("sort_order", { ascending: true }), "経歴の 箇条")
+      ]);
+      if (!alive) return;
+      if (p.error) console.error("★経歴を読めませんでした:", p.error);
+      if (e.error) console.error("★経歴の箇条を読めませんでした:", e.error);
+      setPortfolioOk(!p.error && !e.error);
+      setPortfolio(p.error ? null : (p.data || null));
+      setPortfolioEntries(e.error ? [] : (e.data || []));
+    })();
+    return () => { alive = false; };
+  }, [layoutV2, userId]);
+
+  /**
+   * ★経歴を 書きます。
+   *
+   *   ★★★`upsert` を 使います。★はじめは 1行も ありません。
+   *     ★★`profiles` は `update` だけ ですが（★決まりが INSERT を 渡して いません）、
+   *       ★★`portfolios` は ご本人が 作る 表 です。★INSERT を 渡して います。
+   *   ★★★何行 直したかを 見ます。★0行を 成功に しません。
+   */
+  async function handleSavePortfolio(patch) {
+    setPortfolioError("");
+    const 次 = { ...(portfolio || {}), ...patch, user_id: userId };
+    setPortfolio(次);
+    setPortfolioSaving(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("portfolios")
+        .upsert({
+          user_id: userId,
+          display_name: 次.display_name ?? null,
+          instrument: 次.instrument ?? null,
+          bio: 次.bio ?? null,
+          visibility: 次.visibility || "self",
+          updated_at: new Date().toISOString()
+        }, { onConflict: "user_id" })
+        .select("user_id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+    } catch (err) {
+      console.error("★経歴を書けませんでした:", err);
+      setPortfolioError("いま 書けませんでした。もう一度 お試しください。");
+    } finally {
+      setPortfolioSaving(false);
+    }
+  }
+
+  /**
+   * ★経歴の 箇条を 足す・消す（★学んだところ ／ 賞 ／ 師事）。
+   *
+   *   ★★★何行 動いたかを 見ます。★0行を 成功に しません。
+   *   ★★消すのは ご本人の 行 だけ です（★決まりが そう しか 許しません）。
+   *     ★★それでも `.eq("user_id", userId)` を 書きます ── ★二重の 守り です。
+   */
+  async function handleAddPortfolioEntry(row) {
+    setPortfolioError("");
+    setPortfolioSaving(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("portfolio_entries")
+        .insert({
+          user_id: userId, kind: row.kind, title: row.title,
+          detail: row.detail || null,
+          sort_order: portfolioEntries.filter((x) => x.kind === row.kind).length
+        })
+        .select("id, kind, title, detail, sort_order");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setPortfolioEntries((prev) => [...prev, data[0]]);
+      return true;
+    } catch (err) {
+      console.error("★経歴の箇条を足せませんでした:", err);
+      setPortfolioError("いま 足せませんでした。もう一度 お試しください。");
+      return false;
+    } finally {
+      setPortfolioSaving(false);
+    }
+  }
+
+  async function handleRemovePortfolioEntry(row) {
+    if (!row || !row.id) return false;
+    setPortfolioError("");
+    setPortfolioSaving(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("portfolio_entries")
+        .delete().eq("id", row.id).eq("user_id", userId).select("id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setPortfolioEntries((prev) => prev.filter((x) => x.id !== row.id));
+      return true;
+    } catch (err) {
+      console.error("★経歴の箇条を消せませんでした:", err);
+      setPortfolioError("いま 消せませんでした。もう一度 お試しください。");
+      return false;
+    } finally {
+      setPortfolioSaving(false);
+    }
+  }
+
   const [attendingOrgId, setAttendingOrgId] = useState(null);
   /**
    * ★授業の 型（★分母）を 読みます（★裁定 その93・2026-09-19）。
@@ -23735,6 +23863,34 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       ★日を 選ぶ 口を、★ここに もう1つ 作りません。
                       ★2つ あると、★どちらの 日に ついたか 分からなく なります。
                     ★決めは lib/periodMarkers.js が 持ちます。★ここでは 持ちません。 */}
+                {/* ★★★経歴（ポートフォリオ）── ★裁定 その94 §10 ①（2026-09-19）。
+                    ★★字の もの だけ です。★録画・宣材写真は 後 です（★お決め D6）。
+                    ★★決めは lib/portfolio.js が 持ちます。★ここでは 決めません。
+                    ★★★読めなかった ときは、★空の 紙を 出しません。
+                      ★★書いた ものが 消えた ように 見えます。 */}
+                {layoutV2 && moreSection === "経歴" ? (
+                  <div data-v2-portfolio="1">
+                    {!portfolioOk ? (
+                      <p style={{ ...TYPE.mini, color: C.inkSoft, lineHeight: 1.8 }}>
+                        いま 読めませんでした。書いた ものは 消えて いません。
+                      </p>
+                    ) : (
+                      <PortfolioV2
+                        value={portfolio}
+                        entries={portfolioEntries}
+                        profile={profile}
+                        saving={portfolioSaving}
+                        error={portfolioError}
+                        scopeOpen={portfolioScope}
+                        onOpenScope={() => setPortfolioScope(true)}
+                        onCloseScope={() => setPortfolioScope(false)}
+                        onChange={(patch) => { void handleSavePortfolio(patch); }}
+                        onAddEntry={handleAddPortfolioEntry}
+                        onRemoveEntry={(row) => { void handleRemovePortfolioEntry(row); }} />
+                    )}
+                  </div>
+                ) : null}
+
                 {layoutV2 && moreSection === "区切り" ? (
                   <div>
                     <p style={{ ...TYPE.usual, marginBottom: 9 }}>
