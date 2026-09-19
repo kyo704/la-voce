@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
 import {
   ScreenHead, H3, Box, Li, Warn, Note, Usu, FieldLabel, Input
 } from "@/components/UiV2";
+// ★★手が 止まってから 送る までの 間。★ノートと 同じ ものを 使います。
+//   ★★2つ 目の 数を 作りません。★片方だけ 変わる 日が 来ます。
+import { AUTOSAVE_MS } from "@/lib/notes";
 import {
   HEAD, SCOPE_HEAD, LEAD, BIO_MAX, bioTooLong,
   SCOPES, scopesFor, ENTRY_KINDS, inGivenOrder, NOTES, SCOPE_NOTES, NOT_YET
@@ -116,8 +119,28 @@ export default function PortfolioV2({
   profile,
   saving, error = ""
 }) {
-  const p = value || {};
+  // ★★★打つ たびに 台帳へ 送って いました（★2026-09-19 に 気づきました）。
+  //   ★★1文字で 1回 です。★「じぶんのことば」は 400字 まで 書けます。
+  //   ★★★手が 止まってから 送ります。★ノートと 同じ 間（`AUTOSAVE_MS`）です。
+  //     ★★画面の 字は すぐ 変わります。★送るのだけ 待ちます。
+  //   ★★公開の 範囲は 待ちません ── ★押した その場で 変えます（★1回 きり です）。
+  const [下書き, set下書き] = useState(null);
+  const 待ち = useRef(null);
+  const p = { ...(value || {}), ...(下書き || {}) };
   const 範囲 = scopesFor(profile);
+
+  useEffect(() => {
+    if (!下書き) return undefined;
+    if (待ち.current) clearTimeout(待ち.current);
+    待ち.current = setTimeout(() => {
+      if (onChange) onChange(下書き);
+      set下書き(null);
+    }, AUTOSAVE_MS);
+    return () => { if (待ち.current) clearTimeout(待ち.current); };
+  }, [下書き && 下書き.display_name, 下書き && 下書き.instrument, 下書き && 下書き.bio]);
+
+  // ★★打って いる あいだ の 書き換え（★送るのは 上の 間の あと です）。
+  const 打つ = (patch) => set下書き((prev) => ({ ...(prev || {}), ...patch }));
   const いま = SCOPES.find((s) => s.key === (p.visibility || "self")) || SCOPES[0];
 
   // ==========================================================================
@@ -172,16 +195,16 @@ export default function PortfolioV2({
 
       <H3>お名前</H3>
       <Input value={p.display_name || ""} placeholder="日本語でも、ローマ字でも"
-        onChange={(e) => onChange && onChange({ display_name: e.target.value })} />
+        onChange={(e) => 打つ({ display_name: e.target.value })} />
       <Usu>書いた ままに 出ます。芸名でも かまいません。</Usu>
 
       <H3>声種・楽器</H3>
       <Input value={p.instrument || ""} placeholder="れい：テノール"
-        onChange={(e) => onChange && onChange({ instrument: e.target.value })} />
+        onChange={(e) => 打つ({ instrument: e.target.value })} />
 
       <H3>じぶんのことば</H3>
       <textarea value={p.bio || ""}
-        onChange={(e) => onChange && onChange({ bio: e.target.value })}
+        onChange={(e) => 打つ({ bio: e.target.value })}
         placeholder="何を 書いても かまいません"
         style={{
           width: "100%", minHeight: 132, borderRadius: 12, padding: 10,
