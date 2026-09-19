@@ -183,11 +183,16 @@ import OpsRetireTeacher from "@/components/OpsRetireTeacher";
 import OpsMada from "@/components/OpsMada";
 import OpsMisou from "@/components/OpsMisou";
 import GuardianAsk from "@/components/GuardianAsk";
+import GuardianWithdraw from "@/components/GuardianWithdraw";
 // ★★保護者の 同意の 字は lib が 持ちます（★裁定 その107）。
 import {
   SENT_LINE as GUARDIAN_SENT_LINE,
   NOT_SENT_LINE as GUARDIAN_NOT_SENT_LINE,
-  FAILED_LINE as GUARDIAN_FAILED
+  FAILED_LINE as GUARDIAN_FAILED,
+  WITHDRAW_DONE as GUARDIAN_WITHDRAW_DONE,
+  WITHDRAW_FAILED as GUARDIAN_WITHDRAW_FAILED,
+  WITHDRAW_LABEL as GUARDIAN_WITHDRAW_LABEL,
+  needsGuardianConsent
 } from "@/lib/guardianConsent";
 import { FAILED_LINE as MISOU_FAILED } from "@/lib/opsMisou";
 import { FAILED_LINE as MADA_FAILED, doneWord as madaDoneWord, mayNudge }
@@ -12944,6 +12949,8 @@ export default function VocalTracker({
   const [guardianBusy, setGuardianBusy] = useState(false);
   const [guardianDone, setGuardianDone] = useState("");
   const [guardianError, setGuardianError] = useState("");
+  // ★★★保護者の 同意を 取り消す（★どの 学校か。★null なら 出しません）。
+  const [guardianWithdraw, setGuardianWithdraw] = useState(null);
   const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
@@ -13310,6 +13317,37 @@ export default function VocalTracker({
     const 表 = {};
     (data || []).forEach((r) => { 表[r.student_id] = r.free_count; });
     setMonkaFree(表);
+  }
+
+  /**
+   * ★保護者の 同意を 取り消します（★裁定 その107 §4・2026-09-20）。
+   *
+   *   ★★★3つを 1つの 道で します ── ★印・学校から 出る・お知らせ。
+   *   ★★★記録は 1行も 消しません。★出欠と 連絡は 学校に 残ります。
+   */
+  async function handleWithdrawGuardian(orgId) {
+    setGuardianError("");
+    setGuardianDone("");
+    setGuardianBusy(true);
+    try {
+      const r = await fetch("/api/guardian/withdraw", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ orgId })
+      });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || !j.ok) throw new Error((j && j.error) || "取り消せませんでした");
+      setGuardianDone(GUARDIAN_WITHDRAW_DONE);
+      // ★★通って いる ところが 変わります。★引き直します。
+      fetchMyOrgs();
+      return true;
+    } catch (e) {
+      console.error("★保護者の同意：取り消せませんでした:", e);
+      setGuardianError(GUARDIAN_WITHDRAW_FAILED);
+      return false;
+    } finally {
+      setGuardianBusy(false);
+    }
   }
 
   /**
@@ -25856,6 +25894,28 @@ export default function VocalTracker({
                     );
                   };
 
+                  // ★★★保護者の 同意を 取り消す 1枚（★裁定 その107 §4・2026-09-20）。
+                  //   ★★「やめる」とは 別 です ── ★あちらは ご自分の お決め、
+                  //     ★こちらは 保護者の ひとことを 取り消す こと です。
+                  //   ★★どちらも 記録は 1つも 消しません。
+                  if (guardianWithdraw === attendingOrgId) {
+                    return (
+                      <div data-v2-guardian-withdraw="1">
+                        <GuardianWithdraw
+                          orgName={orgName}
+                          busy={guardianBusy}
+                          error={guardianError}
+                          done={guardianDone}
+                          onWithdraw={() => { void handleWithdrawGuardian(en.org_id); }}
+                          onClose={() => {
+                            setGuardianWithdraw(null);
+                            setGuardianDone("");
+                            setGuardianError("");
+                          }} />
+                      </div>
+                    );
+                  }
+
                   // ★★やめる の 1枚。★見本は 別の 画面 です。
                   if (attendingLeaving) {
                     return (
@@ -25989,6 +26049,20 @@ export default function VocalTracker({
                           {LEAVE_BUTTON}
                         </Btn>
                       </div>
+
+                      {/* ★★★保護者の 同意を 取り消す（★裁定 その107 §4・2026-09-20）。
+                          ★★15〜17歳の 方 だけ に 出します。
+                          ★★★18歳以上の 方には 出しません ── ★同意が そもそも ありません。
+                            ★★「やめる」は 別に 在ります。★そちらは どなたにも 出ます。 */}
+                      {needsGuardianConsent(profile) ? (
+                        <div style={{ marginTop: 8 }}>
+                          <Btn ghost onClick={() => {
+                            setGuardianWithdraw(attendingOrgId);
+                            setGuardianDone("");
+                            setGuardianError("");
+                          }}>{GUARDIAN_WITHDRAW_LABEL}</Btn>
+                        </div>
+                      ) : null}
 
                       <Note fold>
                         {INSIDE_NOTE.map((line, i) => (

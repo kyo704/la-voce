@@ -80,12 +80,22 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.ok(!/delete from/.test(なか), "★消して います");
     assert.ok(!/entries|notes|repertoire/.test(なか), "★記録に 触って います");
     assert.ok(/withdrawn_at = now\(\)/.test(なか), "★印を 付けて いません");
+    // ★★★見本に 合わせて 並びが 増えました（★2026-09-20・第7版）。
+    //   ★★「消えない もの」は 別の 一覧に なりました（`WITHDRAW_KEPT`）。
+    assert.strictEqual(m.WITHDRAW_KEPT.length, 5, "★消えない ものが 5つ ありません");
+    ["声の 記録", "ノート", "ひつじ"].forEach((w) =>
+      assert.ok(m.WITHDRAW_KEPT.includes(w), "★" + w + " が ありません"));
+    assert.ok(m.WITHDRAW_KEPT_LINE.includes("消えません"),
+      "★消えない ことを 書いて いません");
+    assert.strictEqual(m.WITHDRAW_GONE.length, 3, "★消える ものが 3つ ありません");
     const 字 = m.WITHDRAW_NOTES.join("");
-    assert.ok(字.includes("消えません"), "★消えない ことを 書いて いません");
+    assert.ok(字.includes("記録として 残ります"), "★残る ことを 書いて いません");
+    assert.ok(字.includes("聞き直しません"), "★聞き直さない ことを 書いて いません");
   });
 
   見る("★保護者に 記録を 見せない", () => {
-    ["声の 記録", "からだの 記録", "ノート", "レパートリー"].forEach((w) =>
+    // ★★見本の 字に 合わせました（★2026-09-20）──「からだの こと」。
+    ["声の 記録", "からだの こと", "ノート", "レパートリー", "ひつじ"].forEach((w) =>
       assert.ok(m.GUARDIAN_NEVER_SEES.includes(w), "★" + w + " が ありません"));
     // ★★見える ものに 記録が 混ざって いない こと。
     assert.ok(!m.GUARDIAN_SEES.join("").includes("記録"), "★記録を 見せて います");
@@ -147,6 +157,42 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     // ★★こちらから 2度 出さない こと（★出すのは 在籍が 断られた ときだけ）。
     assert.strictEqual((vt.match(/setGuardianAsk\(\{/g) || []).length, 1,
       "★いくつもの ところから 出して います");
+  });
+
+  const wd = readRaw("app", "api", "guardian", "withdraw", "route.js");
+  const wui = readRaw("components", "GuardianWithdraw.jsx");
+
+  見る("★取り消し ── ★3つを 1つの 道で", () => {
+    assert.ok(/withdraw_guardian_consent/.test(wd), "★印を 付けて いません");
+    assert.ok(/leave_enrollment/.test(wd), "★学校から 出て いません");
+    assert.ok(/WITHDRAW_MAIL_SUBJECT/.test(wd), "★お知らせを 送って いません");
+    // ★★順 ── ★印 → 出る → お知らせ。
+    assert.ok(wd.indexOf("withdraw_guardian_consent") < wd.indexOf("leave_enrollment"),
+      "★順が ちがいます");
+  });
+
+  見る("★取り消しても 記録に 触らない（★道）", () => {
+    ["entries", "notes", "repertoire", "my_timetable"].forEach((w) =>
+      assert.ok(!new RegExp('from\\("' + w + '"').test(wd), "★" + w + " に 触って います"));
+    assert.ok(!/\.delete\(/.test(wd), "★消して います");
+  });
+
+  見る("★取り消しの 画面に 両方 並べる", () => {
+    assert.ok(/WITHDRAW_GONE/.test(wui), "★消える ものが ありません");
+    assert.ok(/WITHDRAW_KEPT/.test(wui), "★消えない ものが ありません");
+    assert.ok(/WITHDRAW_CANCEL/.test(wui), "★やめる ところが ありません");
+  });
+
+  見る("★取り消しは 15〜17歳 だけ に 出す", () => {
+    assert.ok(/needsGuardianConsent\(profile\)/.test(vt),
+      "★誰にでも 出して います／判じて いません");
+  });
+
+  見る("★保護者の 画面に「いまは やめて おく」が ある", () => {
+    assert.ok(/GUARDIAN_LATER/.test(保), "★その 札が ありません");
+    assert.strictEqual(m.GUARDIAN_NOTES.length, 3, "★断りが 3つ ありません");
+    assert.ok(m.GUARDIAN_NOTES.join("").includes("7日で 切れます"),
+      "★期限を 書いて いません");
   });
 
   console.log("\n★" + 数 + "つ 通りました。");

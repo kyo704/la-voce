@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import {
   DONE_HEAD, DONE_LINES, FAILED_LINE, SCHOOL_SEES, SCHOOL_NEVER_SEES,
-  GUARDIAN_NEVER_SEES
+  GUARDIAN_NOTES, GUARDIAN_LATER
 } from "@/lib/guardianConsent";
 
 // ============================================================================
@@ -102,11 +102,22 @@ export default function GuardianPage() {
             <p style={{ marginTop: 10, fontSize: "0.90625rem" }}>{断り}</p>
           ) : null}
 
-          <p style={{ marginTop: 18, fontSize: "0.78125rem", color: "#6B6259" }}>
-            ※この メールは 1度きり です。<br />
-            ※お子さまの 記録（{GUARDIAN_NEVER_SEES.join("／")}）は、
-            保護者の 方にも 見えません。
-          </p>
+          {/* ★★★「いまは やめて おく」も 置きます（★見本・第7版）。
+               ★★押さずに 閉じる ことが、★はっきり できる ように します。
+               ★★★押しても 何も 起きません ── ★それで 正しい です。
+                 ★★同意を しない、が この 札の 中身 です。 */}
+          <button type="button" onClick={() => window.close()}
+            style={{
+              width: "100%", minHeight: 48, marginTop: 8, borderRadius: 12,
+              border: "1px solid #E6DCC8", background: "#FFFFFF",
+              color: "#6B6259", fontSize: "0.90625rem", cursor: "pointer"
+            }}>{GUARDIAN_LATER}</button>
+
+          <div style={{ marginTop: 18, fontSize: "0.78125rem", color: "#6B6259" }}>
+            {GUARDIAN_NOTES.map((t2) => (
+              <p key={t2} style={{ margin: "0 0 4px" }}>※{t2}</p>
+            ))}
+          </div>
         </>
       )}
     </main>

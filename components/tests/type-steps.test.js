@@ -69,7 +69,8 @@ const 済んだ画面 = [
   ["components", "OpsRetireTeacher.jsx"],
   ["components", "OpsMada.jsx"],
   ["components", "OpsMisou.jsx"],
-  ["components", "GuardianAsk.jsx"]
+  ["components", "GuardianAsk.jsx"],
+  ["components", "GuardianWithdraw.jsx"]
 ];
 
 // ★★★VocalTracker は 全部では ありません（★2026-09-19・お決め D63(b)）。

@@ -1666,6 +1666,7 @@ SC['もっと']=function(){
  +(hasSearch()?'<div class="li" onclick="push(\'伴奏をさがす\')"><span>さがす<div class="usu">いっしょに 演奏する人</div></span><s>›</s></div>':'')
  +'<div class="li" onclick="push(\'Woolsong\')"><span>Woolsong<div class="usu">公開ページ・紙・英語</div></span><s>'+(PAID?'入っています':'3,600円／年')+' ›</s></div>'
  +'<div class="li" onclick="push(\'お仕事を選ぶ\')"><span>お仕事<div class="usu">画面の ことばが 変わります</div></span><s>'+VOCAB[FIELD].field+' ›</s></div>'
+ +'<div class="li" onclick="push(\'保護者の画面\')"><span>保護者の 方の 画面<div class="usu">見本だけ。実際は メールから</div></span><s>›</s></div>'
  +'<div class="li" onclick="push(\'しらべていること\')"><span>しらべている こと</span><s>1組 ›</s></div>'
  +'<div class="li" onclick="push(\'学ぶ\')"><span>学ぶ</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'書き出す\')"><span>書き出す（CSV・JSON）</span><s>›</s></div>'
@@ -5016,6 +5017,10 @@ SC['通っているところ']=function(){
   +'<div class="sh3">足す</div><div class="box">'
   +'<div class="li" onclick="push(\'招かれている\')"><span>招かれている ところ</span><s>0つ ›</s></div>'
   +'<div class="li" onclick="push(\'合言葉で入る\')"><span>合言葉で 入る</span><s>8文字 ›</s></div></div>'
+ +(GD.asked?'':'<div class="warn" style="margin-top:11px">'
+ +'はじめに ひとつ おたずねします。<br>'
+ +'<span class="pill sm" onclick="push(\'年をたずねる\')">18歳以上ですか</span>'
+ +'</div>')
   +'<div class="note"><b>こちらから 教室を さがすことは できません。</b><br>'
   +'　（さがせると、誰が どこに 通っているかが 分かってしまうからです）<br>'
   +'入り方は 2つだけ ── 招かれる か、教室から もらった 合言葉を 打つか。<br>'
@@ -5053,6 +5058,9 @@ SC['通っているところの中身']=function(i){var o=ORGS[i];
  +'ほかの 方の 出席は 見えません。</div>'
   +'<div class="h3">この教室から 見えるもの</div><div class="box">'
  +SEE_YES.map(function(v){return '<div class="li" style="cursor:default"><span>'+v+'</span><s style="color:var(--midori)">見えます</s></div>'}).join('')+'</div>'
+ +(GD.under18&&GD.ok
+   ? '<div class="btn g" style="margin-top:12px" onclick="push(\'同意を取り消す\')">'
+     +'保護者の 同意を 取り消す</div>' : '')
  +'<div class="btn g" style="margin-top:12px" onclick="push(\'やめるとどうなるか\','+i+')">この教室を やめる</div>'
  +'<div class="note">この教室に 見えるのは、<b>この教室の ぶんだけ</b>です。<br>'
  +'あなたが ほかにも 通っていることは、この教室に <b>届きません</b>。<br>'
@@ -5086,6 +5094,152 @@ SC['招かれている']=function(){
  +'<div class="btn" onclick="joinOrg(\'□□ミュージカル・アカデミー\',\'養成所\',\'森 ひろし\')">承知して 入る</div></div>'
  +'<div class="note"><b>あなたが 押すまで、この教室からは あなたが 見えません。</b><br>'
  +'契約では 代えられません。ご本人から いただきます。</div>'};
+
+/* ══ ★保護者の 同意 ── 裁定その107（2026-09-19）══
+   ★15〜17歳が 教室に 入るとき。★18歳以上は 出ません
+   ★★保護者に アカウントを 作らせません。★メール 1通だけ
+   ★★★保護者に ★学生の 記録を 見せません
+   　  （★見られると、★学生が 書かなく なります）             */
+var GD = {
+ asked:false,      /* ★年齢を 聞いたか */
+ under18:false,    /* ★18歳未満か */
+ mail:'',          /* ★保護者の メール */
+ sent:false,       /* ★送ったか */
+ ok:false          /* ★同意が 済んだか */
+};
+
+/* ── ① 年齢を たずねる ── */
+SC['年をたずねる']=function(){
+ return bk('通っている ところ')
+ +'<div class="hd" style="padding-top:2px"><h2>その前に、ひとつだけ</h2></div>'
+ +'<div class="warn">教室に 入ると、学校に 見えるものが できます。<br>'
+ +'<b>18歳未満の方は、保護者の 方に ひとこと いただきます。</b></div>'
+ +'<div class="sh3" style="margin-top:0">18歳以上ですか</div>'
+ +'<div class="box">'
+ +'<div class="li" onclick="GD.asked=true;GD.under18=false;back();'
+ +'toast(\'ありがとうございます\')"><span>はい</span><s>›</s></div>'
+ +'<div class="li" onclick="GD.asked=true;GD.under18=true;'
+ +'S.stack.pop();push(\'保護者にお知らせ\')"><span>いいえ</span><s>›</s></div>'
+ +'</div>'
+ +'<div class="note">生まれた日は うかがいません。<b>この ひとつだけ</b>です。<br>'
+ +'お答えは、いつでも 変えられます。<br>'
+ +'<b>教室に 入らないのであれば、答えなくて かまいません。</b>'
+ +'記録も ノートも ひつじも、そのまま お使いいただけます。</div>'};
+
+/* ── ② 保護者の メールを 入れる ── */
+SC['保護者にお知らせ']=function(){
+ return bk('通っている ところ')
+ +'<div class="hd" style="padding-top:2px"><h2>保護者の 方に</h2></div>'
+ +'<div class="usu" style="margin-bottom:12px">'
+ +'○○音楽大学　／　高橋 のぞみ 先生の 門下</div>'
+
+ +(GD.sent
+   ? '<div class="card" style="padding:18px 16px;text-align:center">'
+     +'<div style="font-size:15px">お送りしました</div>'
+     +'<div class="usu" style="margin-top:7px">'+GD.mail+'</div>'
+     +'<div class="usu" style="margin-top:9px">'
+     +'保護者の 方が 押されると、教室に 入れます。<br>'
+     +'7日で 切れます。</div>'
+     +'<div style="margin-top:14px">'
+     +'<span class="pill sm" onclick="GD.ok=true;back();'
+     +'toast(\'この見本では 済んだことに します\')">見本：済んだことに する</span>'
+     +'</div></div>'
+     +'<div class="btn g" style="margin-top:11px" onclick="GD.sent=false;draw()">'
+     +'メールを 入れ直す</div>'
+   : '<div class="fl">保護者の 方の メール</div>'
+     +'<input class="inp" placeholder="れい：guardian@example.com" '
+     +'value="'+GD.mail+'" oninput="GD.mail=this.value">'
+     +'<div class="btn" style="margin-top:12px" onclick="if(!GD.mail){'
+     +'toast(\'メールを 入れてください\');return}GD.sent=true;draw()">'
+     +'お送りする</div>')
+
+ +'<div class="sh3">お送りする 中身</div>'
+ +'<div class="card" style="padding:15px 16px;line-height:1.9;font-size:13.5px">'
+ +'○○さんが ○○音楽大学の<br>高橋 のぞみ 先生の 門下に 入ろうと しています。<br><br>'
+ +'<b>学校に 見えるもの</b><br>'
+ +'　出欠　空いている 時間　先生との やりとり<br><br>'
+ +'<b>学校に 見えないもの</b><br>'
+ +'　声の 記録　からだの こと　ノート　'+W('rep')+'<br><br>'
+ +'よろしければ、下を 押してください。<br>'
+ +'［ 承知しました ］<br><br>'
+ +'<span class="usu">※ このメールは 1度きりです。</span><br>'
+ +'<span class="usu">※ お子さまの 記録は、保護者の 方にも 見えません。</span>'
+ +'</div>'
+
+ +'<div class="note"><b>保護者の 方に、アカウントは 要りません。</b>'
+ +'メールを 1通 お送りするだけです。<br>'
+ +'<b>お子さまの 記録は、保護者の 方にも 見えません。</b><br>'
+ +'　（見られると、書けなく なってしまうからです）<br>'
+ +'いただくのは、<b>学校に 何が 渡るか</b>についての ひとことです。<br>'
+ +'メールの 宛先は、<b>学校には お伝えしません</b>。</div>'};
+
+/* ── ③ 保護者が ご覧に なる 画面（★見本だけ） ── */
+SC['保護者の画面']=function(){
+ return bk('もっと')
+ +'<div class="hd" style="padding-top:2px"><h2>保護者の 方の 画面</h2></div>'
+ +'<div class="warn"><b>見本だけの 画面です。</b>'
+ +'実際は、メールの リンクから ひらきます。<br>'
+ +'保護者の 方は、Woolsong に 登録する 必要が ありません。</div>'
+
+ +'<div class="card" style="padding:20px 18px">'
+ +'<div style="font-size:15.5px;line-height:1.9">'
+ +'高橋 かなで さんが<br><b>○○音楽大学</b> の<br>'
+ +'<b>高橋 のぞみ 先生</b> の 門下に<br>入ろうと しています。</div>'
+
+ +'<div class="sh3" style="margin-top:16px">学校に 見えるもの</div>'
+ +'<div class="box">'
+ +['出欠','空いている 時間','先生との やりとり'].map(function(v){
+   return '<div class="li plain"><span>'+v+'</span>'
+    +'<s style="color:var(--ok)">見えます</s></div>'}).join('')+'</div>'
+
+ +'<div class="sh3">学校に 見えないもの</div>'
+ +'<div class="box">'
+ +['声の 記録','からだの こと','ノート',W('rep'),'ひつじ'].map(function(v){
+   return '<div class="li plain" style="color:var(--ink4)"><span>'+v+'</span>'
+    +'<s>見えません</s></div>'}).join('')+'</div>'
+
+ +'<div class="btn" style="margin-top:14px" onclick="GD.ok=true;back();'
+ +'toast(\'承知しました\')">承知しました</div>'
+ +'<div class="btn g" style="margin-top:8px" onclick="back()">'
+ +'いまは やめておく</div>'
+ +'</div>'
+
+ +'<div class="note"><b>お子さまの 記録は、保護者の 方にも 見えません。</b><br>'
+ +'声の 記録・からだの こと・ノートは、ご本人だけの ものです。<br>'
+ +'このページは <b>7日で 切れます</b>。1度 押すと、二度目は ひらきません。<br>'
+ +'あとで お気持ちが 変わられたら、お子さまの 画面から 取り消せます。</div>'};
+
+/* ── ④ 取り消す ── */
+SC['同意を取り消す']=function(){
+ return bk('通っているところの中身')
+ +'<div class="hd" style="padding-top:2px"><h2>保護者の 同意を 取り消す</h2></div>'
+ +'<div class="warn">取り消すと、<b>この教室から 出ます</b>。<br>'
+ +'保護者の 方にも、お知らせが 届きます。</div>'
+
+ +'<div class="sh3" style="margin-top:0">消えるもの</div>'
+ +'<div class="box">'
+ +['この教室の 予定・行事','門下の 連絡','この教室から、あなたが 見えなくなること'
+  ].map(function(v){
+   return '<div class="li plain"><span>'+v+'</span></div>'}).join('')+'</div>'
+
+ +'<div class="sh3">消えないもの</div>'
+ +'<div class="box">'
+ +['声の 記録','からだの こと','ノート',W('rep'),'ひつじ'].map(function(v){
+   return '<div class="li plain"><span>'+v+'</span>'
+    +'<s style="color:var(--ok)">そのまま</s></div>'}).join('')+'</div>'
+ +'<div class="usu" style="margin:-4px 0 12px">'
+ +'ひとつも 消えません。</div>'
+
+ +'<div class="btn" style="background:var(--err)" onclick="GD.ok=false;'
+ +'back();toast(\'取り消しました\')">取り消す</div>'
+ +'<div class="btn g" style="margin-top:8px" onclick="back()">やめる</div>'
+
+ +'<div class="note">これまでの 出欠と、連絡に 書いたことは、'
+ +'<b>教室の 記録として 残ります</b>（運営の 義務です）。<br>'
+ +'また 入るときは、もう一度 保護者の 方に ひとこと いただきます。<br>'
+ +'<b>18歳に なられても、聞き直しません。</b>'
+ +'一度 いただいた ひとことは、そのままです。</div>'};
+
 SC['合言葉で入る']=function(){
  S.code=S.code||'';
  return bk('通っている ところ')+'<div class="hd" style="padding-top:2px"><h2>合言葉で 入る</h2></div>'
