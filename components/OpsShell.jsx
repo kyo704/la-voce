@@ -38,7 +38,10 @@ import { OPEN_KEY } from "@/lib/opsSearch";
 // ============================================================================
 
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
-const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
+// ★★★12より 小さい 字を 使いません（★裁定 その103・2026-09-19）。
+//   ★★11 → 12.5（★注記の 段）。★9〜10.5 は 12 へ。
+//   ★★役で 寄せて います。★近い 値で 寄せて いません。
+const small = { fontSize: "0.78125rem", color: C.inkSoft, lineHeight: 1.8 };
 
 // ★★はばを 見る仕掛けは、★ここから 外しました（★2026-09-09）。
 //   ★§4-7 の「パソコンだけ」が 撤回され、★シェルは 幅を 見なくなりました。
@@ -130,17 +133,17 @@ export default function OpsShell({ orgName, role, postName, myName,
                      ★★新しい 決めが 3つ 要ります。★当面 やりません。
                  ★★★この 帯を 直す 日に、★この 2つを 思い出して ください。 */
             <span style={{
-              fontSize: "0.625rem", background: C.onCurtainFaint,
+              fontSize: "0.75rem", background: C.onCurtainFaint,
               borderRadius: 99, padding: "3px 9px", whiteSpace: "nowrap"
             }}>{postName}</span>
           ) : (
-            <span style={{ fontSize: "0.6875rem", opacity: 0.8 }}>
+            <span style={{ fontSize: "0.78125rem", opacity: 0.8 }}>
               {typeof role === "string" ? role : "役職"}
             </span>
           )}
           {myName ? (
             <span style={{
-              fontSize: "0.6875rem", opacity: 0.9, whiteSpace: "nowrap",
+              fontSize: "0.78125rem", opacity: 0.9, whiteSpace: "nowrap",
               maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis"
             }}>{myName}</span>
           ) : null}
@@ -160,7 +163,7 @@ export default function OpsShell({ orgName, role, postName, myName,
               title={"文字の 大きさ（" + (scaleLabel || "") + "）"}
               style={{
                 background: C.onCurtainFaint, border: "none", color: C.onCurtain,
-                borderRadius: 99, padding: "3px 10px", fontSize: "0.625rem",
+                borderRadius: 99, padding: "3px 10px", fontSize: "0.75rem",
                 minHeight: 28, whiteSpace: "nowrap", flex: "none"
               }}>あ {scaleLabel}</button>
           ) : null}
@@ -176,7 +179,7 @@ export default function OpsShell({ orgName, role, postName, myName,
       <div style={{
         flex: "none", display: "flex", alignItems: "center", gap: 8,
         background: C.opsBand, borderBottom: `1px solid ${C.line}`,
-        padding: "7px 14px", fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.6
+        padding: "7px 14px", fontSize: "0.78125rem", color: C.inkSoft, lineHeight: 1.6
       }}>
         <span aria-hidden="true" style={{
           width: 7, height: 7, borderRadius: "50%", background: C.sage, flex: "none"
@@ -248,7 +251,11 @@ export default function OpsShell({ orgName, role, postName, myName,
                 // ★★色だけで 示しません。★上の 線でも 示します。
                 color: on ? C.curtain : C.inkSoft,
                 fontWeight: on ? 700 : 400,
-                fontSize: tabs.length >= 6 ? "0.5625rem" : "0.625rem"
+                // ★★★9px／10px でした（★裁定 その103 で 12 へ）。
+                //   ★★6つ 以上の ときに 小さく する 分けは、★要らなく なりました。
+                //     ★★どちらも 12 に なります。★分けが 意味を 持ちません。
+                //   ★★★幅が 足りるかは 実機で お確かめ ください（★7つの とき）。
+                fontSize: "0.75rem"
               }}>
               <span aria-hidden="true" style={{
                 width: 16, height: 2, borderRadius: 2,
