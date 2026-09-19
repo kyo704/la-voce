@@ -9,6 +9,8 @@ import { choosableFor, shapeLineOf } from "@/lib/orgDivisions";
 import { TYPE } from "@/lib/uiKit";
 // ★★名簿の 表（★裁定 その80・2026-09-18）。★広い ときだけ 出します。
 import OpsRosterTable from "@/components/OpsRosterTable";
+// ★★門下を 変える の 字は lib が 持ちます（★裁定 その104 Q1）。
+import { CHANGE_MONKA_LABEL } from "@/lib/opsMonkaChange";
 import { showRosterTable } from "@/lib/opsRosterTable";
 // ★★生徒を 招く（★裁定 その82・2026-09-18）。★字は lib が 持ちます。
 import {
@@ -95,7 +97,10 @@ export default function OpsRoster({
   // ★★役職（★2026-09-11・裁定 §7 ／ 3段目）。
   //   ★★posts が 渡されなければ、★役職の 行を 出しません。
   //     ★1段目の SQL を 流す 前でも、★画面が 壊れません。
-  posts, postsById, myPerms, onSetPost, inviteCode = null, inviteError = "", onCloseInvite}) {
+  posts, postsById, myPerms, onSetPost, inviteCode = null, inviteError = "", onCloseInvite,
+  // ★★★門下を 変える へ（★裁定 その104 Q1・2026-09-19）。
+  //   ★★事務（`meibo`）の 仕事 です。★渡されなければ 札を 出しません。
+  onGoChangeMonka}) {
   // ★★幅を 見ます（★`components/Renraku.jsx` と 同じ 形）。
   //   ★★はじめは null です。★分からない うちは 表を 出しません
   //     （★出して から 縮めない）。
@@ -481,6 +486,19 @@ export default function OpsRoster({
                   </p>
                   <p style={small}>退会は、ご本人の 画面から 承ります。</p>
                 </>
+              ) : null}
+
+              {/* ★★★門下を 変える へ（★裁定 その104 Q1・2026-09-19）。
+                   ★★事務（`meibo`）の 仕事 です。★渡されなければ 出しません。
+                   ★★★ここに 置くのは、★お指図が「名簿 → その人 → 門下を 変える」
+                     ★★だから です。★門下の 帯からは 入れません。 */}
+              {onGoChangeMonka ? (
+                <button type="button" onClick={() => onGoChangeMonka(m.user_id)}
+                  style={{
+                    minHeight: 44, marginTop: 6, padding: "0 12px", borderRadius: 999,
+                    border: `1px solid ${C.line}`, background: C.card,
+                    color: C.ink, fontSize: "0.78125rem"
+                  }}>{CHANGE_MONKA_LABEL}</button>
               ) : null}
               {/* ★★学年・コース（★見本 SC['その人'] の はじめの 1欄）。
                   ★★学校が 決める 文字です。★1年〜4年と 決め打ちに しません。

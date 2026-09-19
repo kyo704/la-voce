@@ -178,6 +178,9 @@ import OpsPresets from "@/components/OpsPresets";
 import OpsMonka from "@/components/OpsMonka";
 import OpsMonkaHito from "@/components/OpsMonkaHito";
 import OpsDaihyo from "@/components/OpsDaihyo";
+import OpsMonkaChange from "@/components/OpsMonkaChange";
+import { FAILED_LINE as CHANGE_FAILED, doneWord as changeDoneWord, mayChange }
+  from "@/lib/opsMonkaChange";
 // ★★代表の 決めごとは lib が 持ちます（★字も こちら）。
 import { FAILED_LINE as DAIHYO_FAILED } from "@/lib/opsDaihyo";
 // ★★日程を 組む（★見本 `P_kumu`・裁定 その98 ①・2026-09-19）。
@@ -12876,6 +12879,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [daihyoOpen, setDaihyoOpen] = useState(false);
   const [daihyoBusy, setDaihyoBusy] = useState(false);
   const [daihyoError, setDaihyoError] = useState("");
+  // ★★★門下を 変える（★裁定 その104 Q1・2026-09-19）。
+  //   ★★事務の 仕事 です。★名簿の「その人」から 入ります。
+  const [changeMonka, setChangeMonka] = useState(null);
+  const [changeBusy, setChangeBusy] = useState(false);
+  const [changeError, setChangeError] = useState("");
+  const [changeDone, setChangeDone] = useState("");
   const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
@@ -13242,6 +13251,39 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const 表 = {};
     (data || []).forEach((r) => { 表[r.student_id] = r.free_count; });
     setMonkaFree(表);
+  }
+
+  /**
+   * ★門下を 変える（★裁定 その104 Q1・2026-09-19）。
+   *
+   *   ★★★3つの 書きを 1つの 取引に します ── ★閉じる／作る／お知らせ。
+   *     ★★台帳の 読み道が します。★画面からは 1回 呼ぶ だけ です。
+   *   ★★★古い 行は 消しません。★`ended_at` を 入れて 閉じます（★裁定 その72）。
+   */
+  async function handleChangeMonka(orgId, studentId, newTeacherId) {
+    setChangeError("");
+    setChangeDone("");
+    setChangeBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.rpc("change_monka_teacher", {
+        p_org_id: orgId, p_student_id: studentId, p_new_teacher_id: newTeacherId
+      });
+      if (error || !Array.isArray(data) || data.length === 0) {
+        throw error || new Error("0行でした");
+      }
+      setChangeDone(changeDoneWord(orgDisplayName(newTeacherId) || ""));
+      // ★★担当も 連絡も 変わります。★引き直します。
+      await fetchOrgDetail(orgId);
+      void fetchRenraku(orgId, openStudio);
+      return true;
+    } catch (err) {
+      console.error("★門下を 変えられませんでした:", err);
+      setChangeError(CHANGE_FAILED);
+      return false;
+    } finally {
+      setChangeBusy(false);
+    }
   }
 
   /**
@@ -15565,6 +15607,33 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             //   ★★門下の 帯の 中に 置きます ── ★見本の 入口が 門下 だから です。
             //   ★★ご自分が 担当する 方 だけ を 見ます。
 
+            if (tabKey === "roster" && changeMonka) {
+              // ★★★門下を 変える（★裁定 その104 Q1・2026-09-19）。
+              //   ★★名簿より 先に 置きます。★開いて いる ときは こちら です。
+              const いま = (orgAssignments[opsOrgId] || [])
+                .find((a) => a && a.student_id === changeMonka && !a.ended_at);
+              return (
+                <OpsMonkaChange
+                  studentName={orgDisplayName(changeMonka) || ""}
+                  nowTeacherId={(いま && いま.teacher_id) || null}
+                  nowTeacherName={いま ? (orgDisplayName(いま.teacher_id) || "") : ""}
+                  /* ★★先生に なれる のは、★その 学校の 方 だけ です。 */
+                  members={(opsMembers || []).filter((m) =>
+                    m && m.user_id !== changeMonka)}
+                  nameOf={(id) => orgDisplayName(id) || ""}
+                  busy={changeBusy}
+                  error={changeError}
+                  done={changeDone}
+                  onChange={(newId) => {
+                    void handleChangeMonka(opsOrgId, changeMonka, newId);
+                  }}
+                  onClose={() => {
+                    setChangeMonka(null);
+                    setChangeError("");
+                    setChangeDone("");
+                  }} />
+              );
+            }
             if (tabKey === "roster") {
               // ★★名簿（★見本③⑦）。★1行を 1枚の カードに。
               //
@@ -15598,6 +15667,14 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   inviteCode={opsInviteCode}
                   inviteError={opsInviteError}
                   onCloseInvite={() => { setOpsInviteCode(null); setOpsInviteError(""); }}
+                  /* ★★★門下を 変える へ（★裁定 その104 Q1・2026-09-19）。
+                       ★★事務（`meibo`）を 持つ 方 だけ に 出します。
+                       ★★★判じ方は lib が 持ちます。★ここで 見ません。 */
+                  onGoChangeMonka={mayChange(gate) ? (id) => {
+                    setChangeMonka(id);
+                    setChangeError("");
+                    setChangeDone("");
+                  } : undefined}
                   // ★★★在籍の ようす（★見本 `P_sonohito`・2026-09-19）。
                   //   ★★在籍 ／ 休会 ／ 退会。★休会は 数える 人数に 入りません。
                   onSetStatus={mayEditRoster(gate)
