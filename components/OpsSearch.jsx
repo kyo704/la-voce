@@ -7,6 +7,11 @@ import {
 } from "@/lib/opsSearch";
 import { rem, FONT_STACK, TYPE } from "@/lib/uiKit";
 import { v } from "@/lib/visualTokens";
+// ★★後ろを 暗くする 幕（★2026-09-19・裁定 その81 §1）。
+//   ★★この 画面は `v()` を 使うので、★`C` を 取り込みません。
+//   ★★名前は lib/tokens.js が 持ちます。★字を ここに 書きません。
+import { C as _C } from "@/lib/tokens";
+const SCRIM = _C.scrim;
 import OpsIcon from "@/components/OpsIcon";
 import { tx } from "@/lib/t";
 
@@ -39,7 +44,7 @@ export default function OpsSearch({ perms, onGo, onClose }) {
       onKeyDown={(e) => { if (e.key === CLOSE_KEY && onClose) onClose(); }}
       style={{
         position: "fixed", inset: 0, zIndex: 50,
-        background: C.scrim,
+        background: SCRIM,
         display: "flex", alignItems: "flex-start", justifyContent: "center",
         padding: `${rem(60)} ${rem(14)} ${rem(14)}`, fontFamily: FONT_STACK
       }}
