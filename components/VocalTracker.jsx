@@ -179,6 +179,9 @@ import OpsMonka from "@/components/OpsMonka";
 import OpsMonkaHito from "@/components/OpsMonkaHito";
 import OpsDaihyo from "@/components/OpsDaihyo";
 import OpsMonkaChange from "@/components/OpsMonkaChange";
+import OpsRetireTeacher from "@/components/OpsRetireTeacher";
+import { FAILED_LINE as RETIRE_FAILED, doneWord as retireDoneWord, mayRetire }
+  from "@/lib/opsRetireTeacher";
 import { FAILED_LINE as CHANGE_FAILED, doneWord as changeDoneWord, mayChange }
   from "@/lib/opsMonkaChange";
 // ★★代表の 決めごとは lib が 持ちます（★字も こちら）。
@@ -12885,6 +12888,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [changeBusy, setChangeBusy] = useState(false);
   const [changeError, setChangeError] = useState("");
   const [changeDone, setChangeDone] = useState("");
+  // ★★★先生が 退く とき（★裁定 その104 Q2・2026-09-19）。
+  const [retireWho, setRetireWho] = useState(null);
+  const [retireBusy, setRetireBusy] = useState(false);
+  const [retireError, setRetireError] = useState("");
+  const [retireDone, setRetireDone] = useState("");
   const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
@@ -13251,6 +13259,42 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     const 表 = {};
     (data || []).forEach((r) => { 表[r.student_id] = r.free_count; });
     setMonkaFree(表);
+  }
+
+  /**
+   * ★先生が 退く とき（★裁定 その104 Q2・2026-09-19）。
+   *
+   *   ★★★引き金（trigger）に しません。★ここから はっきり 呼びます。
+   *     ★★お決め ──「引き金は 見えない。★何が 起きたか 追えなく なる」。
+   *   ★★`enrollments` は 閉じません。★学校には 在籍の ままです。
+   */
+  async function handleRetireTeacher(orgId, teacherId) {
+    setRetireError("");
+    setRetireDone("");
+    setRetireBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.rpc("retire_teacher", {
+        p_org_id: orgId, p_teacher_id: teacherId
+      });
+      if (error || !Array.isArray(data) || data.length === 0) {
+        throw error || new Error("0行でした");
+      }
+      const r = data[0];
+      setRetireDone(retireDoneWord({
+        closedInvitations: r.closed_invitations,
+        closedAssignments: r.closed_assignments,
+        studentsWithoutTeacher: r.students_without_teacher
+      }));
+      await fetchOrgDetail(orgId);
+      return true;
+    } catch (err) {
+      console.error("★担当を 外せませんでした:", err);
+      setRetireError(RETIRE_FAILED);
+      return false;
+    } finally {
+      setRetireBusy(false);
+    }
   }
 
   /**
@@ -15607,6 +15651,24 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             //   ★★門下の 帯の 中に 置きます ── ★見本の 入口が 門下 だから です。
             //   ★★ご自分が 担当する 方 だけ を 見ます。
 
+            if (tabKey === "roster" && retireWho) {
+              // ★★★先生が 退く とき（★裁定 その104 Q2・2026-09-19）。
+              return (
+                <OpsRetireTeacher
+                  teacherId={retireWho}
+                  teacherName={orgDisplayName(retireWho) || ""}
+                  myId={userId}
+                  busy={retireBusy}
+                  error={retireError}
+                  done={retireDone}
+                  onRetire={(id) => { void handleRetireTeacher(opsOrgId, id); }}
+                  onClose={() => {
+                    setRetireWho(null);
+                    setRetireError("");
+                    setRetireDone("");
+                  }} />
+              );
+            }
             if (tabKey === "roster" && changeMonka) {
               // ★★★門下を 変える（★裁定 その104 Q1・2026-09-19）。
               //   ★★名簿より 先に 置きます。★開いて いる ときは こちら です。
@@ -15674,6 +15736,16 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     setChangeMonka(id);
                     setChangeError("");
                     setChangeDone("");
+                  } : undefined}
+                  /* ★★★先生が 退く とき へ（★裁定 その104 Q2・2026-09-19）。
+                       ★★事務（`meibo`）だけ。★先生の 行にだけ 出します。 */
+                  /* ★★門下が ある 方だけ に 札を 出します。 */
+                  hasMonka={(id) => (orgAssignments[opsOrgId] || [])
+                    .some((a) => a && a.teacher_id === id && !a.ended_at)}
+                  onGoRetire={mayRetire(gate) ? (id) => {
+                    setRetireWho(id);
+                    setRetireError("");
+                    setRetireDone("");
                   } : undefined}
                   // ★★★在籍の ようす（★見本 `P_sonohito`・2026-09-19）。
                   //   ★★在籍 ／ 休会 ／ 退会。★休会は 数える 人数に 入りません。

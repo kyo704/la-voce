@@ -11,6 +11,8 @@ import { TYPE } from "@/lib/uiKit";
 import OpsRosterTable from "@/components/OpsRosterTable";
 // ★★門下を 変える の 字は lib が 持ちます（★裁定 その104 Q1）。
 import { CHANGE_MONKA_LABEL } from "@/lib/opsMonkaChange";
+// ★★先生が 退く ときの 字も lib が 持ちます（★裁定 その104 Q2）。
+import { LABEL as RETIRE_LABEL } from "@/lib/opsRetireTeacher";
 import { showRosterTable } from "@/lib/opsRosterTable";
 // ★★生徒を 招く（★裁定 その82・2026-09-18）。★字は lib が 持ちます。
 import {
@@ -100,7 +102,10 @@ export default function OpsRoster({
   posts, postsById, myPerms, onSetPost, inviteCode = null, inviteError = "", onCloseInvite,
   // ★★★門下を 変える へ（★裁定 その104 Q1・2026-09-19）。
   //   ★★事務（`meibo`）の 仕事 です。★渡されなければ 札を 出しません。
-  onGoChangeMonka}) {
+  onGoChangeMonka,
+  // ★★★先生が 退く とき へ（★裁定 その104 Q2・2026-09-19）。
+  //   ★★`hasMonka(id)` …… ★その方に 門下が あるか。★無ければ 札を 出しません。
+  onGoRetire, hasMonka}) {
   // ★★幅を 見ます（★`components/Renraku.jsx` と 同じ 形）。
   //   ★★はじめは null です。★分からない うちは 表を 出しません
   //     （★出して から 縮めない）。
@@ -499,6 +504,18 @@ export default function OpsRoster({
                     border: `1px solid ${C.line}`, background: C.card,
                     color: C.ink, fontSize: "0.78125rem"
                   }}>{CHANGE_MONKA_LABEL}</button>
+              ) : null}
+
+              {/* ★★★先生が 退く とき へ（★裁定 その104 Q2・2026-09-19）。
+                   ★★★先生の 行にだけ 出します ── ★門下の ある 方 です。
+                     ★★学生の 行に 出すと、★何が 起きるか 分かりません。 */}
+              {onGoRetire && hasMonka && hasMonka(m.user_id) ? (
+                <button type="button" onClick={() => onGoRetire(m.user_id)}
+                  style={{
+                    minHeight: 44, marginTop: 6, marginLeft: 6, padding: "0 12px",
+                    borderRadius: 999, border: `1px solid ${C.line}`,
+                    background: C.card, color: C.ink, fontSize: "0.78125rem"
+                  }}>{RETIRE_LABEL}</button>
               ) : null}
               {/* ★★学年・コース（★見本 SC['その人'] の はじめの 1欄）。
                   ★★学校が 決める 文字です。★1年〜4年と 決め打ちに しません。

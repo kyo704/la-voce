@@ -65,7 +65,8 @@ const 済んだ画面 = [
   // ★★2026-09-19 ── ★新しく 作った 画面は、★はじめから 6段で 書きます。
   ["components", "OpsMonkaHito.jsx"],
   ["components", "OpsDaihyo.jsx"],
-  ["components", "OpsMonkaChange.jsx"]
+  ["components", "OpsMonkaChange.jsx"],
+  ["components", "OpsRetireTeacher.jsx"]
 ];
 
 // ★★★VocalTracker は 全部では ありません（★2026-09-19・お決め D63(b)）。
