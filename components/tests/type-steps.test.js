@@ -50,7 +50,9 @@ const 済んだ画面 = [
   ["components", "MyTimetable.jsx"],
   ["components", "NotesV2.jsx"],
   ["components", "RecordV2Head.jsx"],
-  ["components", "TellTeacher.jsx"]
+  ["components", "TellTeacher.jsx"],
+  // ★★2026-09-19 ── ★連絡は 門の中と 運営だけ に 出ます（★古い個人画面には 出ません）。
+  ["components", "Renraku.jsx"]
 ];
 
 // ★★★VocalTracker は 全部では ありません（★2026-09-19・お決め D63(b)）。

@@ -24632,8 +24632,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <p style={{ ...TYPE.usual, marginBottom: 9 }}>
                       {formatDateLabel(selectedDate, language)}
                     </p>
+                    {/* ★★★6段に します ── ★ここは 門の 中の 置き所 です（★お決め D66(a)）。
+                         ★★同じ 札が、★古い 画面（18395行）にも 出ます。
+                         ★★あちらには 渡しません。 */}
                     <PeriodMarkerButton dateISO={selectedDate} markers={periodMarkers}
-                      busy={markerBusy} onToggle={handleTogglePeriodMarker} />
+                      busy={markerBusy} onToggle={handleTogglePeriodMarker} 六段 />
                   </div>
                 ) : null}
                 {/* ★★★戻る 道を、★1つの 部品に そろえました（★2026-09-16）。

@@ -30,6 +30,10 @@ KOMP = os.path.join(ROOT, "components")
 #   ★★着せる 名を 変える だけ です。★出す 出さないを 決めて いません。
 #   ★★★ここを 門と 読んで、★レッスンモードの 図を「門の中」と 取り違えました。
 門の中 = re.compile(r"(?<!className=\{)layoutV2\s*(&&|\?)")
+# ★★★運営の 道（★2026-09-19）。★`layoutV2` の 門では ありませんが、
+#   ★★届く 先は 学校に 入って いる 方 だけ で、★12画面は もう 6段 です。
+#   ★★★`Renraku` を「古い画面」と 読んで いました ── ★本当は 運営の 画面 でした。
+運営 = re.compile(r"mayEnterOps\(")
 DAN = [12, 12.5, 13, 13.5, 14.5, 15.5]
 
 
@@ -53,6 +57,8 @@ def 門(行, i):
         return "門の外"
       if 門の中.search(l):
         return "門の中"
+      if 運営.search(l):
+        return "運営の道"
       if d == 0:
         break
   return "門を通らない"
@@ -60,17 +66,19 @@ def 門(行, i):
 
 def 大きさ(本):
   出 = []
-  for a, b in re.findall(r'fontSize:\s*(?:"([^"]+)"|rem\(([\d.]+)\))', 本):
-    if b:
-      出.append(float(b))
-    else:
-      m = re.match(r"^([\d.]+)rem$", a)
-      if m:
-        出.append(float(m.group(1)) * 16)
-      else:
-        m = re.match(r"^([\d.]+)px$", a)
-        if m:
-          出.append(float(m.group(1)))
+  # ★★★三項も 拾います（★2026-09-19）。
+  #   ★★`fontSize: rem(六段 ? 12.5 : 11.5)` を 見落として いました。
+  #   ★★★見えなく なった 字は、★直った ことに なりません。
+  for 式 in re.findall(r"fontSize:\s*([^,}\n]+)", 本):
+    # ①字で 書いた もの …… "0.75rem" ／ "12px"
+    for a, t2 in re.findall(r'"([\d.]+)(rem|px)"', 式):
+      出.append(float(a) * (16 if t2 == "rem" else 1))
+    # ②`rem(…)` の 中の 数 …… ★三項も 拾います（`rem(六段 ? 12.5 : 11.5)`）
+    for なか in re.findall(r"rem\(([^)]*)\)", 式):
+      出 += [float(x) for x in re.findall(r"\d+(?:\.\d+)?", なか)]
+    # ③そのままの 数 …… `fontSize: 12`
+    if not re.search(r'"|rem\(', 式):
+      出 += [float(x) for x in re.findall(r"^\s*(\d+(?:\.\d+)?)\s*$", 式)]
   return 出
 
 
@@ -102,8 +110,8 @@ def 判じ(名, 一覧, 深, 見た):
     return "置いて いません"
   判 = set()
   for f, _, ど in 所:
-    if ど == "門の中":
-      判.add("門の中")
+    if ど in ("門の中", "運営の道"):
+      判.add("門の中" if ど == "門の中" else "運営")
     elif ど == "門の外":
       判.add("古い画面")
     else:
@@ -113,6 +121,10 @@ def 判じ(名, 一覧, 深, 見た):
       判.add("門の中" if 上 == "門の中だけ" else "古い画面")
   if 判 == {"門の中"}:
     return "門の中だけ"
+  if 判 == {"運営"}:
+    return "運営の画面だけ"
+  if 判 == {"門の中", "運営"}:
+    return "門の中と 運営だけ"
   if 判 == {"古い画面"}:
     return "古い画面"
   return "混ざって います"
@@ -126,10 +138,17 @@ def main():
   assert 門(["if (!layoutV2) {", "  <A />"], 1) == "門の外"
   閉じた = ["{layoutV2 && (", "  <A />", ")}", '{activeTab === "info" && (', "  <B />"]
   assert 門(閉じた, 4) == "門を通らない", "★閉じた 節を 拾って います"
+  運 = ["if (mayEnterOps(gate)) {", "  <A />"]
+  assert 門(運, 1) == "運営の道", "★運営の 道を 見分けて いません"
   # ★★★着せる 名の 三項は 門では ありません（★2026-09-19・取り違えました）。
   着せる = ['<div className={layoutV2 ? "woolsong-v2" : undefined}>', "  <A />"]
   assert 門(着せる, 1) == "門を通らない", "★className の 三項を 門と 読んで います"
   assert 置き所("アリマセン", 一覧) == [], "★無い 名を 拾って います"
+  # ★★大きさの 較正 ── ★三項・字・そのままの 数・余白。
+  assert 大きさ("fontSize: rem(六段 ? 12.5 : 11.5)") == [12.5, 11.5], "★三項を 落として います"
+  assert 大きさ('fontSize: "0.75rem"') == [12.0]
+  assert 大きさ("fontSize: 12") == [12.0]
+  assert 大きさ("padding: rem(4)") == [], "★余白を 字と 数えて います"
   assert 置き所("OpsShell", 一覧), "★在る 名を 拾えて いません"
 
   行 = []

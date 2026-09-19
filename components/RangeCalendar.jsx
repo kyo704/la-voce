@@ -30,7 +30,17 @@ import {
 //   ★見張り components/tests/range-calendar.test.js
 // ============================================================================
 
-export default function RangeCalendar({ value, onChange, todayISO, max }) {
+/**
+ * ★字の 大きさは 2通り です（★2026-09-19・お決め D66(a)）。
+ *
+ *   ★★この 部品は、★古い 画面にも、★門の 中にも 出ます。
+ *     ★★だから 呼ぶ 側（置き所）が 決めます。★部品の 中では 決めません。
+ *   ★★★`六段` を 渡された ときだけ、★裁定 その103 の 6段に 寄せます。
+ *     ★★渡されなければ いまの まま ── ★38人の 画面は 変わりません。
+ *   ★★★部品に 門（`layoutV2`）を 足して いません。
+ *     ★★坂本さんの お決め ── ★UiV2 の ような 門を もう1つ 増やさない。
+ */
+export default function RangeCalendar({ 六段 = false, value, onChange, todayISO, max }) {
   const range = value || {};
   const anchor = partsOf(range.start) || partsOf(todayISO) || { y: 2026, m: 1 };
   const [view, setView] = useState({ y: anchor.y, m: anchor.m });
@@ -58,16 +68,16 @@ export default function RangeCalendar({ value, onChange, todayISO, max }) {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
           <button type="button" onClick={() => step(-1)} aria-label="前の月"
             style={{ minWidth: SPACE.tapMin, minHeight: SPACE.tapMin, margin: -10,
-              background: "transparent", border: "none", color: C.inkSoft, fontSize: rem(15) }}>‹</button>
+              background: "transparent", border: "none", color: C.inkSoft, fontSize: rem(六段 ? 15.5 : 15) }}>‹</button>
           <span style={{ ...TYPE.li, fontWeight: 700 }}>{view.y}年 {view.m}月</span>
           <button type="button" onClick={() => step(1)} aria-label="次の月"
             style={{ minWidth: SPACE.tapMin, minHeight: SPACE.tapMin, margin: -10,
-              background: "transparent", border: "none", color: C.inkSoft, fontSize: rem(15) }}>›</button>
+              background: "transparent", border: "none", color: C.inkSoft, fontSize: rem(六段 ? 15.5 : 15) }}>›</button>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 2 }}>
           {WEEK_LABELS.map((w) => (
-            <span key={w} style={{ textAlign: "center", fontSize: rem(9), color: C.inkSoft, paddingBottom: 2 }}>{w}</span>
+            <span key={w} style={{ textAlign: "center", fontSize: rem(六段 ? 12 : 9), color: C.inkSoft, paddingBottom: 2 }}>{w}</span>
           ))}
           {cells.map((iso, i) => {
             if (!iso) return <span key={"e" + i} />;

@@ -340,7 +340,9 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
           ))}
         </div>
         {clinicPeriod === "pick" ? (
-          <RangeCalendar value={clinicRange} todayISO={todayISO} max={todayISO}
+          /* ★★★6段に します ── ★ここは 門の 中の 置き所 です（★お決め D66(a)）。
+               ★★同じ こよみが、★古い 画面の「受診の まとめ」にも 出ます。 */
+          <RangeCalendar value={clinicRange} todayISO={todayISO} max={todayISO} 六段
             onChange={setClinicRange} />
         ) : (
           <Usu style={{ margin: "-4px 0 8px" }}>

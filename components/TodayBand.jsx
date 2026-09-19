@@ -29,7 +29,17 @@ import { SHEEP_SUB } from "@/lib/todayCard";
 //   ★見張り components/tests/today-band.test.js
 // ============================================================================
 
-export default function TodayBand({
+/**
+ * ★字の 大きさは 2通り です（★2026-09-19・お決め D66(a)）。
+ *
+ *   ★★この 部品は、★古い 画面にも、★門の 中にも 出ます。
+ *     ★★だから 呼ぶ 側（置き所）が 決めます。★部品の 中では 決めません。
+ *   ★★★`六段` を 渡された ときだけ、★裁定 その103 の 6段に 寄せます。
+ *     ★★渡されなければ いまの まま ── ★38人の 画面は 変わりません。
+ *   ★★★部品に 門（`layoutV2`）を 足して いません。
+ *     ★★坂本さんの お決め ── ★UiV2 の ような 門を もう1つ 増やさない。
+ */
+export default function TodayBand({ 六段 = false,
   todayISO, tz, lessons, performances, orgEvents, sheepLine,
   teaching = false, nameOf, onAttend, onSeeAll, onCalendar, unsent = 0, onUnsent,
   sheepFirst = false, v2 = false, sheepSlot = null
@@ -84,7 +94,7 @@ export default function TodayBand({
                   marginLeft: "auto",
                   minHeight: SPACE.tapMin, padding: "0 10px",
                   borderRadius: 6, border: `1px solid ${C.line}`,
-                  background: C.paper, color: C.inkSoft, fontSize: rem(11.5)
+                  background: C.paper, color: C.inkSoft, fontSize: rem(六段 ? 12.5 : 11.5)
                 }}>
                 {r.teaching ? COPY.seeAll : COPY.calendar}
               </button>
@@ -112,7 +122,7 @@ export default function TodayBand({
                     {COPY.undo}
                   </button>
                 ) : done ? (
-                  <span style={{ fontSize: rem(11.5), color: C.inkSoft }}>
+                  <span style={{ fontSize: rem(六段 ? 12.5 : 11.5), color: C.inkSoft }}>
                     {COPY.done} {attendanceLabel(done)}
                   </span>
                 ) : (

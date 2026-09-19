@@ -140,7 +140,10 @@ export default function HomeV2({
           ★★A01（HTML・正）では、★ひとことが 予定より 上です。
             ★§3-2 は 下と 書いていますが、★README「HTMLが 正です」に 従います。 */}
       {band ? (
-        <TodayBand {...band} todayISO={todayISO} v2
+        /* ★★★6段に します ── ★ここは 門の 中の 置き所 です（★お決め D66(a)）。
+             ★★同じ 帯が、★古い 画面（`!layoutV2`）にも 出ます。
+             ★★あちらには 渡しません。★38人の 字は 変わりません。 */
+        <TodayBand {...band} todayISO={todayISO} v2 六段
           sheepFirst={!teaching}
           sheepSlot={
             /* ★★羊。★見本では、★部屋を 出しません。★羊だけです。

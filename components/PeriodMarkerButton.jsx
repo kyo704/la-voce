@@ -22,7 +22,17 @@ import { COPY, hasMarker } from "@/lib/periodMarkers";
 //   ★見張り components/tests/period-markers.test.js
 // ============================================================================
 
-export default function PeriodMarkerButton({ dateISO, markers, onToggle, busy }) {
+/**
+ * ★字の 大きさは 2通り です（★2026-09-19・お決め D66(a)）。
+ *
+ *   ★★この 部品は、★古い 画面にも、★門の 中にも 出ます。
+ *     ★★だから 呼ぶ 側（置き所）が 決めます。★部品の 中では 決めません。
+ *   ★★★`六段` を 渡された ときだけ、★裁定 その103 の 6段に 寄せます。
+ *     ★★渡されなければ いまの まま ── ★38人の 画面は 変わりません。
+ *   ★★★部品に 門（`layoutV2`）を 足して いません。
+ *     ★★坂本さんの お決め ── ★UiV2 の ような 門を もう1つ 増やさない。
+ */
+export default function PeriodMarkerButton({ 六段 = false, dateISO, markers, onToggle, busy }) {
   if (!dateISO) return null;
   const on = hasMarker(markers, dateISO);
 
@@ -38,7 +48,7 @@ export default function PeriodMarkerButton({ dateISO, markers, onToggle, busy })
           border: `${on ? 2 : 1}px solid ${on ? C.curtain : C.line}`,
           background: on ? C.curtain : C.card,
           color: on ? "#FFFDF8" : C.ink,
-          fontSize: "0.9375rem", opacity: busy ? 0.6 : 1
+          fontSize: 六段 ? "0.96875rem" : "0.9375rem", opacity: busy ? 0.6 : 1
         }}>
         {on ? COPY.remove : COPY.add}
       </button>

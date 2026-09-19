@@ -43,7 +43,12 @@ import {
 // ============================================================================
 
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
-const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
+// ★★★6段に 寄せました（★裁定 その103・2026-09-19）。
+//   ★★この 画面が 出るのは 2つ だけ です（`tools/screen_gate_check.py`）──
+//     ★①門の 中（記録の「つたえる」）②運営の 画面（★12画面は 6段 済み）。
+//   ★★★古い 個人画面には 出ません。★だから 丸ごと 寄せます。
+//   ★★11→12.5／9→12／14→14.5／15→15.5（★役で 寄せます）。
+const small = { fontSize: "0.78125rem", color: C.inkSoft, lineHeight: 1.8 };
 
 // ★★幅を 見る 仕掛けは `components/useWindowWidth.js` に 移しました（★2026-09-18）。
 //   ★★同じ ものが 4か所に あり、★2つだけ 向きの 変化を 聞いて いました。
@@ -69,7 +74,7 @@ function Message({ m, nameOf }) {
           {nameOf ? nameOf(m.author_id) : ""}
           {m.role_badge ? (
             <span style={{
-              fontSize: "0.5625rem", color: C.inkSoft, background: C.paper,
+              fontSize: "0.75rem", color: C.inkSoft, background: C.paper,
               border: `1px solid ${C.line}`, borderRadius: 999,
               padding: "2px 7px", marginLeft: 6
             }}>{m.role_badge}</span>
@@ -77,7 +82,7 @@ function Message({ m, nameOf }) {
         </span>
         <span style={small}>{whenWord(m.created_at)}</span>
       </div>
-      <p style={{ fontSize: "0.875rem", color: C.ink, lineHeight: 1.85, marginTop: 4, whiteSpace: "pre-wrap" }}>
+      <p style={{ fontSize: "0.90625rem", color: C.ink, lineHeight: 1.85, marginTop: 4, whiteSpace: "pre-wrap" }}>
         {m.body}
       </p>
       {/* ★★もうすぐ 消えるものに、★1行 添えます（★見本③）。 */}
@@ -138,7 +143,7 @@ export default function Renraku({
                     display: "flex", width: "100%", alignItems: "center",
                     justifyContent: "space-between", gap: 8, minHeight: 44,
                     background: "transparent", border: "none", padding: 0,
-                    textAlign: "left", color: C.ink, fontSize: "0.875rem"
+                    textAlign: "left", color: C.ink, fontSize: "0.90625rem"
                   }}>
                   <span>{行.title}</span>
                   <span style={small}>{行.when}　{開 ? "▲" : "›"}</span>
@@ -160,7 +165,7 @@ export default function Renraku({
           className="w-full"
           style={{
             minHeight: 48, borderRadius: 12, border: `1px solid ${C.line}`,
-            background: C.card, color: C.ink, fontSize: "0.875rem"
+            background: C.card, color: C.ink, fontSize: "0.90625rem"
           }}>＋ おしらせを 書く</button>
       ) : null}
 
@@ -240,7 +245,7 @@ export default function Renraku({
               minHeight: 52, marginTop: 8, borderRadius: 12,
               border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
               background: draft.trim() ? C.curtain : C.line, color: "#FFFDF8",
-              fontSize: "0.9375rem"
+              fontSize: "0.96875rem"
             }}>出す</button>
           <p style={{ ...small, marginTop: 6 }}>
             {NO_ATTACH_LINE}<br />
@@ -346,7 +351,7 @@ export default function Renraku({
    */
   const 空っぽ = isEmptyBoard(announcements, studios) ? (
     <div style={{ ...card, textAlign: "center", padding: "26px 15px" }}>
-      <p style={{ fontSize: "0.9375rem", color: C.ink, margin: 0 }}>{EMPTY_HEAD}</p>
+      <p style={{ fontSize: "0.96875rem", color: C.ink, margin: 0 }}>{EMPTY_HEAD}</p>
       {onCompose && mayPost({ role, isAnnouncement: true }) ? (
         <p style={{ ...small, marginTop: 6 }}>{EMPTY_HOW}</p>
       ) : null}
@@ -369,7 +374,7 @@ export default function Renraku({
           {行.title}
         </p>
         <p style={small}>{行.when}</p>
-        <p style={{ fontSize: "0.9375rem", color: C.ink, lineHeight: 1.95,
+        <p style={{ fontSize: "0.96875rem", color: C.ink, lineHeight: 1.95,
           marginTop: 10, whiteSpace: "pre-wrap" }}>{a.body}</p>
         <p style={{ ...small, marginTop: 12 }}>{ANNOUNCE_READ_LINE}</p>
       </div>
@@ -407,7 +412,7 @@ export default function Renraku({
         <button type="button" onClick={() => setOpenAnnounce(null)}
           style={{
             minHeight: 44, border: "none", background: "transparent",
-            color: C.curtain, fontSize: "0.875rem", padding: 0
+            color: C.curtain, fontSize: "0.90625rem", padding: 0
           }}>‹ もどる</button>
         {お知らせ本文}
         {読んだ断り}
@@ -421,7 +426,7 @@ export default function Renraku({
       <button type="button" onClick={() => onOpenStudio(null)}
         style={{
           minHeight: 44, border: "none", background: "transparent",
-          color: C.curtain, fontSize: "0.875rem", padding: 0
+          color: C.curtain, fontSize: "0.90625rem", padding: 0
         }}>‹ もどる</button>
       {body}
       {読んだ断り}
