@@ -164,6 +164,8 @@ import OpsAttendance from "@/components/OpsAttendance";
 import OpsAttendanceBulk from "@/components/OpsAttendanceBulk";
 import OpsEvents from "@/components/OpsEvents";
 import OpsSettings from "@/components/OpsSettings";
+// ★★設定の 骨（★裁定 その97・2026-09-19）。★左に 一覧、★右に 中身。
+import OpsSettingsHub from "@/components/OpsSettingsHub";
 // ★★授業の 型（★裁定 その90・2026-09-18）。★作れるのは 事務 だけ。
 import OpsPresets from "@/components/OpsPresets";
 // ★★門下（★見本 `P_monka` ／ ★裁定 その90・2026-09-18）。
@@ -14674,21 +14676,30 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ★★分けて ある ものを、★画面で 1つに して いました。
                       ★★総当たりの 道具は、ここを `maySeeMoney` で 測って いました ──
                         ★道具は 正しく、★画面が 追いついて いません でした。 */}
-                  {maySeeMoney(gate) ? (
+                  {/* ★★★設定の 骨（★裁定 その97・2026-09-19）。
+                      ★★きょうまで、★節が 縦に 積んで ありました。
+                        ★★見本は 左に 一覧、★右に 中身 です（★見本 `P_settei`）。
+                      ★★★12の 節の うち、★出て いたのは 4つ でした。
+                        ★★残りは「まだ」とすら 出て いません でした。
+                        ★★★何が 足りなくて できないのかを、★名ざしで 出します。
+                      ★★どの 節を 出すかは lib/opsSettingsNav.js が 決めます。
+                        ★★ここでは できことを 判じません。★中身を 渡すだけ です。
+                      ★★★門は これまでと 同じ もの を そのまま 使います。
+                        ★★`maySeeMoney` / `canOps` / `maySeePresets`。
+                        ★★新しい 門を 作りません。 */}
+                  <OpsSettingsHub
+                    perms={gate}
+                    postName={myPost ? myPost.name : null}
+                    scale={profile.display_scale}
+                    scaleBusy={false}
+                    onPickScale={(v) => { void handleSaveDisplayPref({ display_scale: v }); }}
+                    panes={{
+                      bill: maySeeMoney(gate) ? (
                     <OpsSettings members={opsRoster} staffLines={[]}
                       postName={myPost ? myPost.name : null} perms={myPerms}
                       billing={orgBilling[opsOrgId] || null} />
-                  ) : null}
-                  {/* ★★★役職の 画面は「ひとの 役職を 変える」（post）を 持つ 方だけ
-                      （★2026-09-18）。
-                      ★★これまでは、★設定の 帯を 開けた 方 みんなに 出て いました。
-                      ★★★守りは サーバに あります（`app/api/org/posts/route.js:56`
-                        … `perms.has("post")`）。★漏れては いません。
-                        ★★押しても、★サーバが 断ります。
-                      ★★けれど それは **押せない 札** です（★§8⑤）。
-                        ★★押せる ように 見えて、★押すと 断られる。
-                        ★★出さない ほうが 正しい です。 */}
-                  {canOps(gate, "post") ? (
+                      ) : null,
+                      post: canOps(gate, "post") ? (
                   <div style={{ marginTop: 16 }}>
                     <OpsPosts
                       posts={orgPosts[opsOrgId] || []}
@@ -14702,14 +14713,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       busy={postsBusy}
                       onAction={(payload) => handleOrgPosts(opsOrgId, payload)} />
                   </div>
-                  ) : null}
-                  {/* ★★★ひとと 役職（★見本 `stPeople`／★2026-09-18・坂本さん お決め ㋑）。
-                      ★★役職を **作れる**のに、★**人に 付けられません** でした。
-                      ★★見本は 6列 ですが、★台帳に 4列が ありません。
-                        ★★出すのは 2列 だけ です。★空の 列を 並べません。
-                      ★★見本は `post` か `master` で 出します。★同じに します ──
-                        ★`master` の 方は 読むだけ に なります（★`mayChangePerson` が 断ります）。 */}
-                  {(canOps(gate, "post") || canOps(gate, "master")) ? (
+                      ) : null,
+                      people: (canOps(gate, "post") || canOps(gate, "master")) ? (
                   <div style={{ marginTop: 16 }}>
                     <OpsPeople
                       members={opsMembers}
@@ -14729,14 +14734,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         return r === null ? false : true;
                       }} />
                   </div>
-                  ) : null}
-
-                  {/* ★★★授業の 型（★裁定 その90 §6-1・2026-09-18）。
-                      ★★見るのは 事務（`meibo`）と 先生（`monka_write`）。
-                      ★★作る・消すのは 事務 だけ です（★画面の 中で 分けます）。
-                      ★★★台帳も 同じ 門 です。★画面だけ では 守りに なりません。
-                      ★★年間の 回数は **学校が 決める もの** です。 */}
-                  {maySeePresets(gate) ? (
+                      ) : null,
+                      jugyo: maySeePresets(gate) ? (
                   <div style={{ marginTop: 16 }}>
                     <OpsPresets
                       presets={orgPresets[opsOrgId] || []}
@@ -14752,8 +14751,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       onSave={(form) => handleSavePreset(opsOrgId, form)}
                       onDelete={(form) => handleDeletePreset(opsOrgId, form)} />
                   </div>
-                  ) : null}
-                </>
+                      ) : null
+                    }} /></>
               );
             }
             /* ★★★門下（★見本 `P_monka` ／ ★裁定 その90 §6-3・2026-09-18）。
