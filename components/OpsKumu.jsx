@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
+// ★★表の すべり・貼り付けは 1か所が 持ちます（★裁定 その81 §5-1）。
+import { TABLE_CLASS, ANCHOR_CLASSES } from "@/lib/visualTokens";
 import { ScreenHead, H3, Box, Li, Note, Usu, Warn } from "@/components/UiV2";
 import {
   HEAD, DAYS, slotKey, weekDates, weekWord, periodWord,
@@ -132,11 +134,17 @@ export default function OpsKumu({
           ご自分の コマが まだ ありません。時間割を 書くと、ここに 行が 出ます。
         </Warn>
       ) : (
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 560 }}>
+        /* ★★★同じ 決めが 2つに なって いました（★2026-09-19・裁定 その81 §5-1）。
+             ★★すべりも、★左の 列の 貼り付けも、★ここに 手で 書いて ありました。
+             ★★★`.tblwrap` が 一度に します。★`lib/visualTokens.js` が 持ちます。
+               ★★見出しの 行も 貼り付きます（★ここには 無かった もの です）。
+               ★★高さは 文字の つまみに 連動します（★`--scale`）。 */
+        <div className={TABLE_CLASS}>
+          <table style={{ borderCollapse: "separate", borderSpacing: 0, width: "100%", minWidth: 560 }}>
             <tbody>
               <tr>
-                <th style={{ ...見出し, position: "sticky", left: 0, background: C.card }}>コマ</th>
+                {/* ★★左の 列は 錨 です。★貼り付けは `.tblwrap` が します。 */}
+                <th className={ANCHOR_CLASSES[1]} style={見出し}>コマ</th>
                 {DAYS.map((d, di) => (
                   <th key={d} style={見出し}>
                     {d}
@@ -146,7 +154,7 @@ export default function OpsKumu({
               </tr>
               {periods.map((p) => (
                 <tr key={p.id || p.ord}>
-                  <td style={{ ...マス, position: "sticky", left: 0, background: C.card }}>
+                  <td className={ANCHOR_CLASSES[1]} style={マス}>
                     <div style={{ ...TYPE.mini, color: C.ink }}>{periodWord(p)}</div>
                   </td>
                   {DAYS.map((d, di) => {
