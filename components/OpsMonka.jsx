@@ -7,7 +7,9 @@ import { TABLE_CLASS, ANCHOR_CLASSES } from "@/lib/visualTokens";
 import {
   HEAD, subLine, monkaRows, REPRESENTATIVE_MARK, lessonsOfStudent,
   presetOf, presetCount, MANY_PRESETS_LINE, NO_PRESET_LINE,
-  NOTES, NOTES_BOLD, EMPTY_HEAD, EMPTY_HOW, NOT_YET, freeWord
+  NOTES, NOTES_BOLD, EMPTY_HEAD, EMPTY_HOW, NOT_YET, freeWord,
+  // ★★日程を 組む へ（★2026-09-19・裁定 その98 ①）。
+  GO_KUMU_LABEL, GO_KUMU_SUB
 } from "@/lib/opsMonka";
 import {
   cameCount, cameWord, heldCount, progressWord, looksShort,
@@ -61,7 +63,10 @@ export default function OpsMonka({
   // ★★★空いて いる コマの 数（★2026-09-19・お決め Q2）。
   //   ★★`{ 生徒の 番号: 数 }`。★渡されなければ「—」に します。
   //   ★★★中身は 来ません。★数 だけ です。
-  freeCounts = {}
+  freeCounts = {},
+  // ★★★日程を 組む へ（★2026-09-19・裁定 その98 ①）。
+  //   ★★渡されなければ、★札を 出しません（★押せない 札を 置きません）。
+  onGoKumu
 }) {
   const width = useWindowWidth();
   const rows = monkaRows(assignments, teacherId, { gradeOf, nameOf });
@@ -163,6 +168,24 @@ export default function OpsMonka({
       ) : null}
 
       <Note items={NOTES} bold={NOTES_BOLD} />
+
+      {/* ★★★日程を 組む（★見本 `P_monka` の 1つ目の 札・2026-09-19）。
+          ★★空いて いる コマから 組みます。★中身は 見えません。
+          ★★読み道（`get_student_free_slots`）が 2値 しか 返しません。 */}
+      {onGoKumu ? (
+        <button type="button" onClick={onGoKumu}
+          style={{
+            width: "100%", minHeight: 52, marginTop: rem(10), borderRadius: 12,
+            border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
+            background: C.curtain, color: "#FFFDF8", fontSize: rem(15),
+            fontFamily: FONT_STACK, textAlign: "left", padding: `0 ${rem(14)}`
+          }}>
+          {GO_KUMU_LABEL}
+          <span style={{ display: "block", fontSize: rem(11.5), opacity: 0.9 }}>
+            {GO_KUMU_SUB}
+          </span>
+        </button>
+      ) : null}
 
       {/* ★★★見本に ある のに、★置いて いない もの。
            ★★空の 列を 並べません。★何が まだかを 書きます（★§8⑤）。 */}

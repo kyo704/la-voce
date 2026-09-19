@@ -176,6 +176,8 @@ import { logWordForName, logWordForAtesaki, logWordForMethod } from "@/lib/orgBi
 import OpsPresets from "@/components/OpsPresets";
 // ★★門下（★見本 `P_monka` ／ ★裁定 その90・2026-09-18）。
 import OpsMonka from "@/components/OpsMonka";
+// ★★日程を 組む（★見本 `P_kumu`・裁定 その98 ①・2026-09-19）。
+import OpsKumu from "@/components/OpsKumu";
 import { maySee as maySeePresets } from "@/lib/lessonPresets";
 import { maySeeMoney } from "@/lib/opsShell";
 import { mayEnterOps, mayEditRoster, permsOfMember } from "@/lib/opsShell";
@@ -11615,6 +11617,97 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
    *       ★★見張り `components/tests/leave-enrollment.test.js` が 止めます。
    *     ★★だから ここでは 退会を 出しません。★台帳 08-19 に 預けました。
    */
+  /**
+   * ★日程を 組む（★見本 `P_kumu`・裁定 その98 ①・2026-09-19）。
+   *
+   *   ★★★空いて いるか どうか だけ を 読みます。
+   *     ★★`get_student_free_slots(org, user_ids[])` が 2値 しか 返しません。
+   *     ★★授業の 名・教室・備考は、★そもそも 手元に 来ません。
+   *   ★★読める のは、★学校 全部の 日程か、★ご自分が 担当する 方 だけ です。
+   */
+  const [kumuSlots, setKumuSlots] = useState([]);
+  const [kumuPeriods, setKumuPeriods] = useState([]);
+  const [opsKumuOpen, setOpsKumuOpen] = useState(false);
+  const [kumuSaving, setKumuSaving] = useState(false);
+  const [kumuError, setKumuError] = useState("");
+
+  async function fetchKumu(orgId, studentIds) {
+    if (!orgId) return;
+    const supabase = createClient();
+    const [s, p] = await Promise.all([
+      (studentIds || []).length
+        ? supabase.rpc("get_student_free_slots",
+          { p_org_id: orgId, p_user_ids: studentIds })
+        : Promise.resolve({ data: [] }),
+      // ★★行は ご自分の コマ です（★学校の コマは まだ ありません）。
+      supabase.from("my_periods").select("id, ord, name, start_min, end_min")
+        .eq("user_id", userId).order("ord", { ascending: true })
+    ]);
+    if (s.error) console.error("★空きコマを読めませんでした:", s.error);
+    if (p.error) console.error("★自分のコマを読めませんでした:", p.error);
+    setKumuSlots(s.error ? [] : (s.data || []));
+    setKumuPeriods(p.error ? [] : (p.data || []));
+  }
+
+  /**
+   * ★レッスンを 1つ 置く。
+   *
+   *   ★★★日づけと コマから、★時刻を 組み立てます。
+   *     ★★端末の 時計で 作ります（★台帳は UTC で しまいます）。
+   *   ★★何行 動いたかを 見ます。★0行を 成功に しません。
+   */
+  async function handlePlaceLesson(orgId, { studentId, dateISO, period }) {
+    setKumuError("");
+    setKumuSaving(true);
+    try {
+      const supabase = createClient();
+      const 時 = Math.floor(Number(period.start_min) / 60);
+      const 分 = Number(period.start_min) % 60;
+      const いつ = new Date(`${dateISO}T${String(時).padStart(2, "0")}:`
+        + `${String(分).padStart(2, "0")}:00`);
+      const { data, error } = await supabase.from("lessons")
+        .insert({
+          org_id: orgId, teacher_id: userId, student_id: studentId,
+          scheduled_at: いつ.toISOString(),
+          duration_minutes: Number(period.end_min) - Number(period.start_min),
+          created_by: userId
+        })
+        .select(LESSON_COLUMNS);
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setOrgLessons((prev) => ({
+        ...prev, [orgId]: [...(prev[orgId] || []), data[0]] }));
+      return true;
+    } catch (err) {
+      console.error("★レッスンを置けませんでした:", err);
+      setKumuError("いま 置けませんでした。日程の できことが 要ります。");
+      return false;
+    } finally {
+      setKumuSaving(false);
+    }
+  }
+
+  /** ★置いた ものを 外す（★まだ 生徒に 知らせて いません）。 */
+  async function handleRemoveLesson(orgId, lesson) {
+    if (!lesson || !lesson.id) return false;
+    setKumuError("");
+    setKumuSaving(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("lessons")
+        .delete().eq("id", lesson.id).eq("org_id", orgId).select("id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setOrgLessons((prev) => ({
+        ...prev, [orgId]: (prev[orgId] || []).filter((l) => l.id !== lesson.id) }));
+      return true;
+    } catch (err) {
+      console.error("★レッスンを外せませんでした:", err);
+      setKumuError("いま 外せませんでした。");
+      return false;
+    } finally {
+      setKumuSaving(false);
+    }
+  }
+
   async function handleSetEnrollmentStatus(orgId, studentId, status) {
     // ★★★退会は ここでは できません（★上の 註）。
     if (status === "left") return false;
@@ -15127,6 +15220,27 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                  ★★★見えるのは **担当の 生徒だけ** です。
                    ★★台帳も 同じ です（`assignments_select` ── 自分の `teacher_id`）。
                  ★★出席の 数を 出します。★率（％）は 出しません（★裁定 その90）。 */
+            if (tabKey === "monka" && opsKumuOpen) {
+              const 門下 = (orgAssignments[opsOrgId] || [])
+                .filter((a) => a && a.teacher_id === userId && !a.ended_at)
+                .map((a) => a.student_id);
+              return (
+                <OpsKumu
+                  todayISO={opsDate}
+                  periods={kumuPeriods}
+                  slots={kumuSlots}
+                  students={門下}
+                  // ★★置いて ある ものは、★ご自分の コマ だけ を 見ます。
+                  lessons={(orgLessons[opsOrgId] || []).filter((l) =>
+                    l && l.teacher_id === userId)}
+                  nameOf={(id) => orgDisplayName(id) || ""}
+                  saving={kumuSaving}
+                  error={kumuError}
+                  onPlace={(x) => handlePlaceLesson(opsOrgId, x)}
+                  onRemove={(l) => handleRemoveLesson(opsOrgId, l)}
+                  onClose={() => setOpsKumuOpen(false)} />
+              );
+            }
             if (tabKey === "monka") {
               return (
                 <OpsMonka
@@ -15156,9 +15270,25 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     return 型 && 型.need_count ? 型.need_count : null;
                   })()}
                   freeCounts={monkaFree}
+                  // ★★★日程を 組む へ（★2026-09-19・裁定 その98 ①）。
+                  //   ★★ご自分の 門下が 1人でも いる ときだけ 出します。
+                  onGoKumu={(orgAssignments[opsOrgId] || [])
+                    .some((a) => a && a.teacher_id === userId && !a.ended_at)
+                    ? () => {
+                      const 門下 = (orgAssignments[opsOrgId] || [])
+                        .filter((a) => a && a.teacher_id === userId && !a.ended_at)
+                        .map((a) => a.student_id);
+                      void fetchKumu(opsOrgId, 門下);
+                      setOpsKumuOpen(true);
+                    }
+                    : undefined}
                   onOpenOne={undefined} />
               );
             }
+            // ★★★日程を 組む（★見本 `P_kumu`・裁定 その97 ／ その98 ①）。
+            //   ★★門下の 帯の 中に 置きます ── ★見本の 入口が 門下 だから です。
+            //   ★★ご自分が 担当する 方 だけ を 見ます。
+
             if (tabKey === "roster") {
               // ★★名簿（★見本③⑦）。★1行を 1枚の カードに。
               //
