@@ -166,6 +166,10 @@ import OpsEvents from "@/components/OpsEvents";
 import OpsSettings from "@/components/OpsSettings";
 // ★★設定の 骨（★裁定 その97・2026-09-19）。★左に 一覧、★右に 中身。
 import OpsSettingsHub from "@/components/OpsSettingsHub";
+// ★★請求書の 宛名・ご請求の 宛先（★見本 `P_seikyuNa` ／ `P_atesaki`・2026-09-19）。
+import OpsBillingName from "@/components/OpsBillingName";
+// ★★記録に 残す 字も lib が 持ちます。★画面で 作りません。
+import { logWordForName, logWordForAtesaki } from "@/lib/orgBilling";
 // ★★授業の 型（★裁定 その90・2026-09-18）。★作れるのは 事務 だけ。
 import OpsPresets from "@/components/OpsPresets";
 // ★★門下（★見本 `P_monka` ／ ★裁定 その90・2026-09-18）。
@@ -10386,10 +10390,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     //     ★★あれは 直しの 門（`opsFixOn`）の 中でしか 走りません。
     //     ★★★だから ホームの「ご請求の 要約」は、★いつも 空 でした。
     //   ★★門（RLS）が 本体 です。★`bill` を 持たない 方には 0行 返ります。
+    // ★★ご請求の 記録（★誰が・いつ・何を）。★`bill` を 持つ 方だけ 読めます。
+    void fetchBillingLog(opsOrgId);
     void (async () => {
       const supabase = createClient();
       const { data, error } = await supabase.from("org_billing")
-        .select("method, atesaki_name, next_billing_date")
+        .select("id, method, atesaki_name, atesaki_user_id, atesaki_email, "
+          + "bill_dept, bill_contact, invoice_no, next_billing_date")
         .eq("org_id", opsOrgId)
         .order("created_at", { ascending: false }).limit(1);
       if (error) { console.error("★ご請求を読めませんでした:", error); return; }
@@ -11392,6 +11399,104 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       return false;
     } finally {
       setPortfolioSaving(false);
+    }
+  }
+
+  /**
+   * ★ご請求の 宛名・宛先（★見本 `P_seikyuNa` ／ `P_atesaki`・2026-09-19）。
+   *
+   *   ★★★変えられるのは「お支払い」（`bill_pay`）を 持つ 方 だけ です。
+   *     ★★台帳の 門も そう 直しました。★画面だけ では 守りに なりません。
+   *   ★★変えた ことは `org_billing_log` に 残ります。★消せません。
+   *     ★★`update` も `delete` も 渡して いません。
+   */
+  const [billingLog, setBillingLog] = useState([]);
+  const [billingSaving, setBillingSaving] = useState(false);
+  const [billingError, setBillingError] = useState("");
+
+  async function fetchBillingLog(orgId) {
+    if (!orgId) return;
+    const supabase = createClient();
+    const { data, error } = await supabase.from("org_billing_log")
+      .select("id, actor_id, what, created_at")
+      .eq("org_id", orgId)
+      .order("created_at", { ascending: false }).limit(20);
+    if (error) { console.error("★ご請求の記録を読めませんでした:", error); return; }
+    setBillingLog(data || []);
+  }
+
+  /**
+   * ★宛名を 直す ／ ★宛先を 引き継ぐ。
+   *
+   *   ★★★何行 動いたかを 見ます。★0行を 成功に しません。
+   *     ★★`bill`（見る）だけ の 方が 押すと、★台帳が 0行を 返します。
+   *     ★★これまでは、★それを 成功と 見なす 形が この 蔵の 持病 でした。
+   *   ★★記録は、★書けた ときだけ 残します。
+   */
+  async function handleSaveBilling(orgId, patch, changedLabels) {
+    setBillingError("");
+    setBillingSaving(true);
+    try {
+      const supabase = createClient();
+      const いま = orgBilling[orgId] || null;
+      const 行 = { org_id: orgId, ...patch };
+      let data, error;
+      if (いま && いま.id) {
+        ({ data, error } = await supabase.from("org_billing")
+          .update(patch).eq("id", いま.id).select("id"));
+      } else {
+        ({ data, error } = await supabase.from("org_billing")
+          .insert(行).select("id"));
+      }
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setOrgBilling((prev) => ({ ...prev, [orgId]: { ...(prev[orgId] || {}), ...行, id: data[0].id } }));
+      await supabase.from("org_billing_log")
+        .insert({ org_id: orgId, actor_id: userId, what: logWordForName(changedLabels) });
+      await fetchBillingLog(orgId);
+      return true;
+    } catch (err) {
+      console.error("★ご請求の宛名を書けませんでした:", err);
+      setBillingError("いま 書けませんでした。お支払いの できことが 要ります。");
+      return false;
+    } finally {
+      setBillingSaving(false);
+    }
+  }
+
+  async function handleHandOverBilling(orgId, member) {
+    setBillingError("");
+    setBillingSaving(true);
+    try {
+      const supabase = createClient();
+      const いま = orgBilling[orgId] || null;
+      const 名 = orgDisplayName(member.user_id) || "";
+      const patch = {
+        atesaki_user_id: member.user_id,
+        atesaki_name: 名 || (いま ? いま.atesaki_name : null),
+        atesaki_changed_at: new Date().toISOString(),
+        atesaki_changed_by: userId
+      };
+      let data, error;
+      if (いま && いま.id) {
+        ({ data, error } = await supabase.from("org_billing")
+          .update(patch).eq("id", いま.id).select("id"));
+      } else {
+        ({ data, error } = await supabase.from("org_billing")
+          .insert({ org_id: orgId, ...patch }).select("id"));
+      }
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setOrgBilling((prev) => ({
+        ...prev, [orgId]: { ...(prev[orgId] || {}), ...patch, id: data[0].id } }));
+      await supabase.from("org_billing_log")
+        .insert({ org_id: orgId, actor_id: userId, what: logWordForAtesaki(名) });
+      await fetchBillingLog(orgId);
+      return true;
+    } catch (err) {
+      console.error("★ご請求の宛先を引き継げませんでした:", err);
+      setBillingError("いま 引き継げませんでした。お支払いの できことが 要ります。");
+      return false;
+    } finally {
+      setBillingSaving(false);
     }
   }
 
@@ -14695,9 +14800,36 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     onPickScale={(v) => { void handleSaveDisplayPref({ display_scale: v }); }}
                     panes={{
                       bill: maySeeMoney(gate) ? (
+                        <>
                     <OpsSettings members={opsRoster} staffLines={[]}
                       postName={myPost ? myPost.name : null} perms={myPerms}
                       billing={orgBilling[opsOrgId] || null} />
+                          {/* ★★★請求書の 宛名・ご請求の 宛先（★2026-09-19）。
+                              ★★変えられるのは `bill_pay` を 持つ 方 だけ です。
+                              ★★見るだけ の 方には、★いまの 値だけ を お見せします。
+                              ★★記録（誰が・いつ・何を）は 消せません。 */}
+                          <div style={{ marginTop: 16 }}>
+                            <OpsBillingName
+                              row={orgBilling[opsOrgId] || null}
+                              perms={gate}
+                              members={(orgMembers[opsOrgId] || []).map((mm) => ({
+                                user_id: mm.user_id,
+                                postName: mm.post_id && opsPostsById[mm.post_id]
+                                  ? opsPostsById[mm.post_id].name : "",
+                                // ★★ご請求を 見られる 方 だけ が 宛先に なれます。
+                                //   ★★決めは lib/opsShell.js の `maySeeMoney` です。
+                                canBill: maySeeMoney(
+                                  permsOfMember(mm, opsPostsById))
+                              }))}
+                              nameOf={(id) => orgDisplayName(id) || ""}
+                              log={billingLog}
+                              saving={billingSaving}
+                              error={billingError}
+                              onSave={(patch, labels) =>
+                                handleSaveBilling(opsOrgId, patch, labels)}
+                              onHandOver={(m) => handleHandOverBilling(opsOrgId, m)} />
+                          </div>
+                        </>
                       ) : null,
                       post: canOps(gate, "post") ? (
                   <div style={{ marginTop: 16 }}>

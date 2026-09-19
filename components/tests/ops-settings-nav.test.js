@@ -80,7 +80,15 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
   見る("⑤ 門は これまでと 同じ もの", () => {
     const i = 蔵.indexOf("<OpsSettingsHub");
     assert.ok(i > 0, "★骨を 呼んで いません");
-    const 枝 = 蔵.slice(i, i + 2600);
+    // ★★★窓を 字数で 決めて いました（★2026-09-19 に 落ちました）。
+    //   ★★ご請求の 節に 宛名の 画面を 足したら、★型の 門が 窓の 外に 出ました。
+    //   ★★★字数では なく、★**その 呼び出しの 終わり** まで を 見ます。
+    //   ★★はじめ `"}} />"` で 切りました。★中の 別の 閉じに 当たりました。
+    //     ★★中身の JSX にも 同じ 字が 出ます。
+    //   ★★★字下げ ごと 見ます ── ★`panes` を 閉じる 行 です。
+    const 終 = 蔵.indexOf("\n                    }} />", i);
+    assert.ok(終 > i, "★呼び出しの 終わりが 見つかりません");
+    const 枝 = 蔵.slice(i, 終);
     for (const 門 of ["maySeeMoney(gate)", 'canOps(gate, "post")', "maySeePresets(gate)"]) {
       assert.ok(枝.includes(門), "★門が 変わって います: " + 門);
     }
