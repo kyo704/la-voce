@@ -15918,11 +15918,15 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               <p className="text-xs mb-3" style={{ color: C.inkSoft }}>記録{lessonModeData.recordedCount}/28日</p>
               <div style={{ width: "100%", height: chartHeight(130) }}>
                 <ResponsiveContainer>
+                  {/* ★★★図の 目もりを 9 → 12 に しました（★裁定 その103・2026-09-19）。
+                       ★★門の 中 だけ です。★古い 画面の 図は 触って いません。
+                       ★★★目もりが 重ならないか、★実機で お確かめ ください
+                         ── ★横の 日づけは 28日 ぶん 並びます。 */}
                   <LineChart data={lessonModeData.scoreTrend} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                     <CartesianGrid stroke={C.line} />
-                    <XAxis dataKey="date" tick={{ fontSize: "0.5625rem", fill: C.inkSoft }} />
-                    <YAxis domain={[0, 100]} tick={{ fontSize: "0.5625rem", fill: C.inkSoft }} />
-                    <Tooltip contentStyle={{ fontSize: "0.6875rem", borderRadius: 8, borderColor: C.line }} />
+                    <XAxis dataKey="date" tick={{ fontSize: "0.75rem", fill: C.inkSoft }} />
+                    <YAxis domain={[0, 100]} tick={{ fontSize: "0.75rem", fill: C.inkSoft }} />
+                    <Tooltip contentStyle={{ fontSize: "0.78125rem", borderRadius: 8, borderColor: C.line }} />
                     <Line type="monotone" dataKey="score" stroke={C.gold} strokeWidth={2} dot={{ r: 3 }} connectNulls />
                   </LineChart>
                 </ResponsiveContainer>
@@ -15952,9 +15956,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                 <ResponsiveContainer>
                   <LineChart data={lessonModeData.loadTrend} margin={{ left: 4, right: 12, top: 4, bottom: 4 }}>
                     <CartesianGrid stroke={C.line} />
-                    <XAxis dataKey="date" tick={{ fontSize: "0.5625rem", fill: C.inkSoft }} />
-                    <YAxis domain={[0, "auto"]} tick={{ fontSize: "0.5625rem", fill: C.inkSoft }} />
-                    <Tooltip contentStyle={{ fontSize: "0.6875rem", borderRadius: 8, borderColor: C.line }} />
+                    <XAxis dataKey="date" tick={{ fontSize: "0.75rem", fill: C.inkSoft }} />
+                    <YAxis domain={[0, "auto"]} tick={{ fontSize: "0.75rem", fill: C.inkSoft }} />
+                    <Tooltip contentStyle={{ fontSize: "0.78125rem", borderRadius: 8, borderColor: C.line }} />
                     <Line type="monotone" dataKey="acwr" stroke={C.ink} strokeWidth={2} dot={{ r: 3 }} connectNulls />
                   </LineChart>
                 </ResponsiveContainer>
@@ -20114,7 +20118,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <button type="button" onClick={() => setTellLesson(myAllLessons[0])}
                           className="w-full" style={{
                             minHeight: 48, borderRadius: 10, border: `1px solid ${C.line}`,
-                            background: C.paper, color: C.ink, fontSize: "0.875rem"
+                            background: C.paper, color: C.ink, fontSize: "0.90625rem"
                           }}>先生に 伝える</button>
                         <p className="text-xs mt-2" style={{ color: C.inkSoft, lineHeight: 1.8 }}>
                           連絡には 書きません。<br />担当の先生 おひとりにだけ 届きます。
@@ -24815,7 +24819,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           onChange={(e) => setLanguage(e.target.value)}
                           aria-label={t("languageLabel")}
                           style={{ border: "none", background: "transparent", color: C.inkSoft,
-                            fontSize: rem(11.5), textAlign: "right", minHeight: 44 }}>
+                            fontSize: rem(12.5), textAlign: "right", minHeight: 44 }}>
                           {LANGUAGES.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
                         </select>
                       }>{t("languageLabel")}</Li>
@@ -24824,7 +24828,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         <select value={profile.day_record_boundary_hour ?? 21}
                           onChange={(e) => handleChangeDayRecordBoundary(Number(e.target.value))}
                           style={{ border: "none", background: "transparent", color: C.inkSoft,
-                            fontSize: rem(11.5), textAlign: "right", minHeight: 44 }}>
+                            fontSize: rem(12.5), textAlign: "right", minHeight: 44 }}>
                           {Array.from({ length: 24 }, (_, h) => (
                             <option key={h} value={h}>{String(h).padStart(2, "0")}:00</option>
                           ))}
@@ -25005,7 +25009,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           <div style={{ flex: 1, minWidth: 0 }}>
                             {/* ★★名前を 読めなかった ときは、★埋めません。
                                 ★★「不明」と 書くと、★読めなかった ことが 隠れます。 */}
-                            <div style={{ fontSize: "0.875rem", fontWeight: 700, color: C.ink }}>
+                            <div style={{ fontSize: "0.90625rem", fontWeight: 700, color: C.ink }}>
                               {name || NAME_FETCH_FAILED_LABEL}
                             </div>
                             {sub ? (
@@ -25074,7 +25078,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     {pendingInvitation ? (
                       <>
                         <Card style={{ borderColor: C.curtain }}>
-                          <div style={{ fontSize: "0.875rem", fontWeight: 700, color: C.ink }}>
+                          <div style={{ fontSize: "0.90625rem", fontWeight: 700, color: C.ink }}>
                             {/* ★★教室の 名は `profiles.school` に 入って います。
                                 ★★読めなかった ときは 埋めません（★「不明」と 書かない）。
 
@@ -25433,11 +25437,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           ★★「読めて いない」を「無料です」と 言い換えない こと。 */}
                       {st.unknown ? null : (
                         <Card>
-                          <div style={{ fontSize: "0.94rem", fontWeight: 700, color: C.ink }}>
+                          <div style={{ fontSize: "0.96875rem", fontWeight: 700, color: C.ink }}>
                             {st.title}
                           </div>
                           {st.sub ? (
-                            <div style={{ marginTop: 5, fontSize: "0.78rem", color: C.inkSoft }}>
+                            <div style={{ marginTop: 5, fontSize: "0.78125rem", color: C.inkSoft }}>
                               {st.sub}
                             </div>
                           ) : null}

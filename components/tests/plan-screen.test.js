@@ -72,7 +72,13 @@ console.log("\n③ 値段を 直に 書いて いない こと");
 //   ★値段を 直に 書いて いた 2か所だけ が 古いまま 残りました。
 t(/monthlyPriceLabel/.test(psCode), "値段は lib/plans.js から 引く");
 t(!/580\s*円/.test(psCode), "★lib/planScreen.js に「580円」を 書いて いない");
-const planBlock = at > 0 ? vtRaw.slice(at, at + 3200) : "";
+// ★★★丈を 数で 決めて いました（★3200文字）。
+//   ★★2026-09-19、★同じ ファイルの 上の ほうに 覚え書きを 4行 足した だけ で、
+//     ★★窓から `<Note fold>` が はみ出し、★この 見張りが 落ちました。
+//   ★★★測って 決めます ── ★次の 節（`moreSection === `）の 手前 まで。
+//     ★★見つからなければ 終わりまで。★数を 覚えません。
+const 次の節 = vtRaw.indexOf('moreSection === "', at + 1);
+const planBlock = at > 0 ? vtRaw.slice(at, 次の節 > at ? 次の節 : vtRaw.length) : "";
 t(!/580/.test(planBlock), "★画面の 中に 580 を 書いて いない");
 
 console.log("\n④ 裁定その54 で 消した 字が 戻って いないこと");

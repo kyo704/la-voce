@@ -39,6 +39,11 @@ const 済んだ画面 = [
   ["components", "OpsPresets.jsx"],
   ["components", "OpsSettings.jsx"]
 ];
+
+// ★★★VocalTracker は 全部では ありません（★2026-09-19・お決め D63(b)）。
+//   ★★門の 中（`layoutV2`）だけ 6段に しました。
+//   ★★古い 画面（38人）は いまの まま です ── ★数えるのは `tools/vt_type_split.py`。
+//   ★★★だから ここには 足しません。★足すと、★古い 画面まで 直す 見張りに なります。
 const 段 = [12, 12.5, 13, 13.5, 14.5, 15.5];
 
 function 大きさ(素) {
