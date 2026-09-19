@@ -182,6 +182,13 @@ import OpsMonkaChange from "@/components/OpsMonkaChange";
 import OpsRetireTeacher from "@/components/OpsRetireTeacher";
 import OpsMada from "@/components/OpsMada";
 import OpsMisou from "@/components/OpsMisou";
+import GuardianAsk from "@/components/GuardianAsk";
+// ★★保護者の 同意の 字は lib が 持ちます（★裁定 その107）。
+import {
+  SENT_LINE as GUARDIAN_SENT_LINE,
+  NOT_SENT_LINE as GUARDIAN_NOT_SENT_LINE,
+  FAILED_LINE as GUARDIAN_FAILED
+} from "@/lib/guardianConsent";
 import { FAILED_LINE as MISOU_FAILED } from "@/lib/opsMisou";
 import { FAILED_LINE as MADA_FAILED, doneWord as madaDoneWord, mayNudge }
   from "@/lib/opsMada";
@@ -12467,6 +12474,12 @@ export default function VocalTracker({
         // ★つながり自体は成立しています。ここで止めないこと。
         //   ただし黙って捨てないこと（それが今回の不具合の正体でした）。
         console.error("★在籍を登録できませんでした:", enrollData.error || res.status);
+      } else if (enrollData.reason === "guardian_consent_required") {
+        // ★★★15〜17歳の 方（★裁定 その107・2026-09-20）。
+        //   ★★つながりは 出来て います。★学校に 入る ところ だけ が 残ります。
+        //   ★★★1度 だけ 出します。★閉じたら 出しません（★催促しません）。
+        //     ★★もっと → 通って いる ところ から、★ご自分で 開けます。
+        setGuardianAsk({ orgId: enrollData.orgId || null, teacherId: pendingInvitation.teacherId || null });
       } else if (enrollData.enrolled === false) {
         console.warn("先生が教室を持っていないため、在籍は作られませんでした。");
       }
@@ -12925,6 +12938,12 @@ export default function VocalTracker({
   const [misouRows, setMisouRows] = useState(undefined);
   const [misouBusy, setMisouBusy] = useState(false);
   const [misouError, setMisouError] = useState("");
+  // ★★★保護者の 同意を お尋ねする（★裁定 その107・2026-09-20）。
+  //   ★★`null` なら 出しません。★1度 閉じたら、★こちらからは 出しません。
+  const [guardianAsk, setGuardianAsk] = useState(null);
+  const [guardianBusy, setGuardianBusy] = useState(false);
+  const [guardianDone, setGuardianDone] = useState("");
+  const [guardianError, setGuardianError] = useState("");
   const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
@@ -13291,6 +13310,38 @@ export default function VocalTracker({
     const 表 = {};
     (data || []).forEach((r) => { 表[r.student_id] = r.free_count; });
     setMonkaFree(表);
+  }
+
+  /**
+   * ★保護者に 1通 お送りします（★裁定 その107・2026-09-20）。
+   *
+   *   ★★★合言葉は 台帳が 作ります。★画面に 返しません。
+   *     ★★返すと、★ご自分で 押せて しまいます。
+   *   ★★送れなくても 行は 残ります。★もう一度 お送りできます。
+   */
+  async function handleAskGuardian(orgId, teacherId, guardianEmail) {
+    setGuardianError("");
+    setGuardianDone("");
+    setGuardianBusy(true);
+    try {
+      const r = await fetch("/api/guardian/request", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ orgId, teacherId, guardianEmail })
+      });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || !j.ok) throw new Error((j && j.error) || "送れませんでした");
+      // ★★★送れたか どうかは `sent` に 入って います。
+      //   ★★送れて いなくても、★行は 出来て います。★そこは 分けて お伝えします。
+      setGuardianDone(j.sent ? GUARDIAN_SENT_LINE : GUARDIAN_NOT_SENT_LINE);
+      return true;
+    } catch (e) {
+      console.error("★保護者の同意：送れませんでした:", e);
+      setGuardianError(GUARDIAN_FAILED);
+      return false;
+    } finally {
+      setGuardianBusy(false);
+    }
   }
 
   /**
@@ -25573,6 +25624,24 @@ export default function VocalTracker({
                       setInviteLookupError("");
                     }}>通っている ところ</Back>
                     <h2 style={{ ...TYPE.title, margin: "2px 0 8px" }}>合言葉で 入る</h2>
+
+                    {/* ★★★保護者の 同意（★裁定 その107・2026-09-20）。
+                        ★★15〜17歳の 方が、★学校に 入ろうと した ときだけ 出ます。
+                        ★★★閉じたら、★こちらからは 出しません（★催促しません）。 */}
+                    {guardianAsk ? (
+                      <GuardianAsk
+                        busy={guardianBusy}
+                        done={guardianDone}
+                        error={guardianError}
+                        onSend={(mail) => {
+                          void handleAskGuardian(guardianAsk.orgId, guardianAsk.teacherId, mail);
+                        }}
+                        onClose={() => {
+                          setGuardianAsk(null);
+                          setGuardianDone("");
+                          setGuardianError("");
+                        }} />
+                    ) : null}
 
                     {/* ★★承知の 1枚（★見本 `SC['招かれている']` の 下半分）。
                         ★★合言葉だけでは 入りません。★見てから 押して いただきます。 */}

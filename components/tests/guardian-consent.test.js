@@ -100,5 +100,54 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.ok(字.includes("u"), "★押す ところが ありません");
   });
 
+  const vt = readRaw("components", "VocalTracker.jsx");
+  const req = readRaw("app", "api", "guardian", "request", "route.js");
+  const acc = readRaw("app", "api", "guardian", "accept", "route.js");
+  const 保 = readRaw("app", "guardian", "[token]", "page.js");
+  const ask = readRaw("components", "GuardianAsk.jsx");
+  const enr = readRaw("app", "api", "enrollment", "accept", "route.js");
+
+  見る("Q1 ★学校に 入る 道が 止まる", () => {
+    assert.ok(/has_guardian_consent/.test(enr), "★在籍の 道が 見て いません");
+    assert.ok(/guardian_consent_required/.test(enr), "★わけを 返して いません");
+    // ★★止めるのは 在籍の 手前 で ある こと。
+    const i = enr.indexOf("has_guardian_consent");
+    const j = enr.indexOf('.from("enrollments")');
+    assert.ok(i > 0 && j > i, "★在籍を 作った あとで 見て います");
+  });
+
+  見る("★合言葉を 画面に 返さない", () => {
+    // ★★★`lib/tokens`（色の 名）は 別 です（★2026-09-20・道具が 鳴りました）。
+    //   ★★合言葉の `token` だけ を 見ます。
+    assert.ok(!/\btoken\b(?!s)/.test(ask.replace(/@\/lib\/tokens/g, "")),
+      "★画面が 合言葉を 触って います");
+    assert.ok(/return NextResponse\.json\(\{ ok: true, sent \}\)/.test(req),
+      "★合言葉を 返して います");
+  });
+
+  見る("★通らない ときの 答えを 分けない", () => {
+    assert.ok(/FAILED_LINE/.test(acc), "★1つの 字に して いません");
+    // ★★番（status）も 同じ に する こと。
+    assert.ok(!/status: 40[13]/.test(acc), "★番で 分けて います");
+  });
+
+  見る("★保護者の 画面に 記録を 出さない", () => {
+    ["声の 記録", "体調", "ノート"].forEach((w) => {
+      // ★★出て よいのは「見えない もの」の 一覧 だけ です。
+      const 回 = (保.match(new RegExp(w, "g")) || []).length;
+      assert.ok(回 <= 1, "★" + w + " を いくつも 出して います");
+    });
+    assert.ok(/SCHOOL_NEVER_SEES/.test(保), "★見えない ものの 一覧が ありません");
+    assert.ok(!/entries|my_timetable/.test(保), "★記録の 表に 触って います");
+  });
+
+  見る("★催促しない（★閉じる ところが ある）", () => {
+    assert.ok(/onClose/.test(ask), "★閉じられません");
+    assert.ok(/setGuardianAsk\(null\)/.test(vt), "★閉じても 残ります");
+    // ★★こちらから 2度 出さない こと（★出すのは 在籍が 断られた ときだけ）。
+    assert.strictEqual((vt.match(/setGuardianAsk\(\{/g) || []).length, 1,
+      "★いくつもの ところから 出して います");
+  });
+
   console.log("\n★" + 数 + "つ 通りました。");
 })();

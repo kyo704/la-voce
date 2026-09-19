@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getUserWithTimeout } from "@/lib/withTimeout";
+// ★★年齢の 帯の 決めは lib が 持ちます（★裁定 その107）。
+import { ageBandOf } from "@/lib/ageGate";
 
 // ============================================================================
 // 招待を受けた生徒を、教室に在籍させる（2026-09-01）
@@ -110,6 +112,35 @@ export async function POST(request) {
   //   つながり自体は成立しています。在籍だけが作られません。
   if (!orgId) {
     return NextResponse.json({ ok: true, enrolled: false, reason: "no_org" });
+  }
+
+  // ==========================================================================
+  // ★★★保護者の 同意（★裁定 その107・2026-09-20）
+  //
+  //   ★★15〜17歳の 方は、★同意が 済むまで 学校に 入れません。
+  //     ★★止めるのは ここ だけ です。★個人で 使う ぶんは 何も 変わりません。
+  //   ★★★帯が 分からない 方も 止めます（★安全な 側へ 倒します）。
+  //     ★★15歳未満は 登録の ときに 弾いて います（★お決め 6㋐）。
+  //   ★★★合言葉は もう 使われた ことに なって います。
+  //     ★★だから「入れません」で 終わりに しません。★やり直せます
+  //       （★画面が 保護者の メールを 尋ね、★済んだら もう一度 押せます）。
+  // ==========================================================================
+  {
+    const { data: 帯行 } = await admin
+      .from("profiles").select("age_band, is_under_18").eq("id", user.id).maybeSingle();
+    const 帯 = ageBandOf(帯行 || {});
+    if (帯 !== "adult") {
+      const { data: 同意 } = await admin
+        .rpc("has_guardian_consent", { p_user_id: user.id, p_org_id: orgId });
+      if (同意 !== true) {
+        return NextResponse.json({
+          ok: false,
+          reason: "guardian_consent_required",
+          orgId,
+          band: 帯
+        }, { status: 200 });
+      }
+    }
   }
 
   const { error: enrollError } = await admin
