@@ -38,9 +38,28 @@ async function main() {
   assertTrue(!/cycle_periods/.test(rpc), "教師向けRPCが cycle_periods を一切参照していない");
   assertTrue(/enable row level security/.test(sql), "RLSが有効になっている");
   assertTrue(/auth\.uid\(\) = user_id/.test(sql), "本人だけが読み書きできる");
-  const policies = (sql.match(/create policy/g) || []).length;
-  assertEqual(policies, 1, "ポリシーは1つだけ（教師・管理者向けを作っていない）");
-  assertTrue(!/security definer/i.test(sql), "SECURITY DEFINER 関数を作っていない");
+  // ★★★2026-09-19（★お決め D87）── ★決まりを 4本に 分けました。
+  //   ★★もとは 1本（`for all`）でした。★撤回した あとも 書けて いました。
+  //   ★★★数では なく **中身** を 見ます ──
+  //     ★どの 決まりも「ご本人 だけ」で ある こと
+  //     ★書く 2本 だけ が「撤回して いない こと」を 見る こと
+  //   ★★守りたい のは「よそへの 道が 無い」こと です。★数では ありません。
+  const 撤回紙 = stripComments(fs.readFileSync(
+    path.join(ROOT, "supabase", "migration_cycle_periods_withdrawn.sql"), "utf-8"));
+  const みな = sql + "\n" + 撤回紙;
+  const 決まり = みな.match(/create policy[\s\S]*?;/g) || [];
+  assertTrue(決まり.length >= 1, "決まりが ある（" + 決まり.length + "本）");
+  決まり.forEach((k) => {
+    assertTrue(/auth\.uid\(\) = user_id/.test(k),
+      "★どの 決まりも ご本人だけ（" + (k.match(/create policy "?([\w ]+)/) || [])[1] + "）");
+    assertTrue(!/teacher|org_id|has_can|is_org/.test(k),
+      "★よそへの 道を 作って いない");
+  });
+  const 書く = 決まり.filter((k) => /for (insert|update)/.test(k));
+  assertTrue(書く.length === 2, "★書く 決まりは 2本（" + 書く.length + "）");
+  書く.forEach((k) => assertTrue(/consent_withdrawn/.test(k),
+    "★書く 決まりは 撤回を 見る"));
+  assertTrue(!/security definer/i.test(みな), "SECURITY DEFINER 関数を作っていない");
 
   console.log("\n=== テスト2: 本人の持ち出しと削除には必ず含める ===");
   assertTrue(/cycle_periods/.test(exportSrc), "書き出しの対象に入っている");
