@@ -687,7 +687,7 @@ function S_kyou(){
   +(ORGS.length>1?'<br>通っている ところが 全部、1つの 予定表に 出ます。教室どうしは 見えません。':'')+'</div>';
  }
  /* 近い 行事 */
- if(SAGASU_NEW>0){
+ if(SAGASU_NEW>0&&hasSearch()){
   b+='<div class="box" style="margin-bottom:11px">'
    +'<div class="li" onclick="push(\'伴奏をさがす\')"><span>さがす'
    +'<div class="usu">新しい 募集が '+SAGASU_NEW+'件</div></span><s>›</s></div></div>';
@@ -1791,12 +1791,12 @@ function bump(days){
  return days.filter(function(d){return HIMA[d]})}
 
 var BOSHU = [
- {t:'ピアノ　レッスン',   d:'10月中に 3回ほど　／　曲目は これから',
+ {t:'ピアノ　レッスン',   d:'10月中に 3回ほど　／　'+W('piece')+'は これから',
   days:['10月8日（水）14:00〜','10月15日（水）14:00〜','10月22日（水）14:00〜'],
   all:true},
  {t:'ピアノ　本番・演奏会', d:'11月　1回　／　冬の旅（全曲）',
   days:['11月12日（水）18:00〜'], all:false},
- {t:'チェンバロ　録音',    d:'時期は 相談　／　曲目は これから',
+ {t:'チェンバロ　録音',    d:'時期は 相談　／　'+W('piece')+'は これから',
   days:['12月3日（水）10:00〜','12月10日（水）10:00〜'], all:false},
  {t:'歌い手　コンクール',  d:'12月　／　二重唱',
   days:['12月20日（土）13:00〜'], all:false}
@@ -1938,6 +1938,63 @@ SC['見た目を選ぶ']=function(){
  +'<div class="btn g" onclick="push(\'公開ページ\')">できあがりを 見る</div>'
  +'<div class="note">紙に すると A4・1枚です。<br>'
  +'録画は、選んだ 順に 並びます。</div>'};
+
+
+/* ══ ★ことばの 組 ── 裁定その96（2026-09-19）══
+   ★声を 使う 方（声優・ナレーター・アナウンサー）に 売るには、
+   ★★「曲目」「レパートリー」「演奏会」が 通じません
+   ★書き換えず、★★出し分けます（★音楽の 方には いまの ことばが 正しい）
+
+   ★★★これは「画面の 文字を 1か所に 集める」工事と ★同じ ものです
+   　  ★欧州へ 出る 下ごしらえと、★国内で 的を 広げる 下ごしらえが
+   　  ★★同じ 作業に なります                                    */
+var VOCAB = {
+ music: {
+  field:'音楽', piece:'曲目', rep:'レパートリー', concert:'演奏会',
+  accomp:'伴奏者', monka:'門下', lesson:'レッスン', practice:'稽古',
+  piece_ex:'冬の旅（全曲）', maker:'作った人', maker_ex:'シューベルト',
+  search:true
+ },
+ voice: {
+  field:'声の お仕事', piece:'作品', rep:'持ち役', concert:'収録・本番',
+  accomp:null, monka:'クラス', lesson:'レッスン', practice:'稽古',
+  piece_ex:'○○（アニメ）／主人公', maker:'役', maker_ex:'主人公',
+  search:false
+ },
+ stage: {
+  field:'舞台', piece:'演目', rep:'持ち役', concert:'公演',
+  accomp:null, monka:'クラス', lesson:'稽古', practice:'稽古',
+  piece_ex:'ハムレット／オフィーリア', maker:'役', maker_ex:'オフィーリア',
+  search:false
+ }
+};
+var FIELD = 'music';              /* ★既定。★登録の ときに 1問 */
+function W(k){ return VOCAB[FIELD][k] || k }
+function hasSearch(){ return VOCAB[FIELD].search }
+
+SC['お仕事を選ぶ']=function(){
+ return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>どんな お仕事ですか</h2></div>'
+ +'<div class="usu" style="margin-bottom:12px">'
+ +'えらぶと、画面の ことばが 変わります。<br>'
+ +'あとから いつでも 変えられます。書いたものは 消えません。</div>'
+ +'<div class="box">'
+ +[['music','音楽（歌・楽器）','曲目・レパートリー・演奏会'],
+   ['voice','声の お仕事','声優・ナレーター・アナウンサー'],
+   ['stage','舞台','演目・公演']].map(function(x){
+   var on = FIELD===x[0];
+   return '<div class="li" onclick="FIELD='+Q+'\''+x[0]+'\''+Q+';draw();'
+    +'toast(\'ことばを 変えました\')"><span>'+x[1]
+    +'<div class="usu">'+x[2]+'</div></span><s>'
+    +'<span style="display:inline-block;width:17px;height:17px;border-radius:50%;'
+    +'border:1.6px solid '+(on?'var(--enji)':'var(--line)')+';'
+    +(on?'background:var(--enji);box-shadow:inset 0 0 0 3px var(--card);':'')
+    +'vertical-align:-3px"></span></s></div>'}).join('')
+ +'</div>'
+ +'<div class="note"><b>書いた 記録は、ひとつも 変わりません。</b>'
+ +'ことばの 見え方だけが 変わります。<br>'
+ +'声の お仕事・舞台を えらぶと、<b>「さがす」は 出ません</b>。'
+ +'伴奏の 相手を さがす ことが ないからです。<br>'
+ +'あとで 音楽に 戻せば、また 出ます。</div>'};
 
 SC['公開の範囲']=function(){return bk('経歴')
 +'<div class="hd" style="padding-top:2px"><h2>だれが 見られますか</h2></div>'
@@ -2146,7 +2203,7 @@ SC['曲目を答える']=function(i){
  +'レパートリーにも 入ります。</div>'
 
  +'<div class="sh3">または</div><div class="box">'
- +['曲目は これから 決めます','当日までに お伝えします'].map(function(t){
+ +[''+W('piece')+'は これから 決めます','当日までに お伝えします'].map(function(t){
    return '<div class="li"><span>'+t+'</span>'
     +'<s><span style="display:inline-block;width:17px;height:17px;border-radius:4px;'
     +'border:1.6px solid var(--line);vertical-align:-3px"></span></s></div>'}).join('')
@@ -2615,8 +2672,9 @@ SC['もっと']=function(){
  +'<div class="li" onclick="push(\'通っているところ\')"><span>通っている ところ</span><s>'+ORGS.length+'つ ›</s></div>'
  +'<div class="li" onclick="openSheet(\'account\')"><span>アカウント</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'プラン\')"><span>プラン</span><s>'+(paid()?'調べる':'無料')+' ›</s></div>'
- +'<div class="li" onclick="push(\'伴奏をさがす\')"><span>さがす<div class="usu">いっしょに 演奏する人</div></span><s>›</s></div>'
+ +(hasSearch()?'<div class="li" onclick="push(\'伴奏をさがす\')"><span>さがす<div class="usu">いっしょに 演奏する人</div></span><s>›</s></div>':'')
  +'<div class="li" onclick="push(\'Woolsong\')"><span>Woolsong<div class="usu">公開ページ・紙・英語</div></span><s>'+(PAID?'入っています':'3,600円／年')+' ›</s></div>'
+ +'<div class="li" onclick="push(\'お仕事を選ぶ\')"><span>お仕事<div class="usu">画面の ことばが 変わります</div></span><s>'+VOCAB[FIELD].field+' ›</s></div>'
  +'<div class="li" onclick="push(\'しらべていること\')"><span>しらべている こと</span><s>1組 ›</s></div>'
  +'<div class="li" onclick="push(\'学ぶ\')"><span>学ぶ</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'書き出す\')"><span>書き出す（CSV・JSON）</span><s>›</s></div>'
@@ -5235,7 +5293,7 @@ function legend(){
   +'<li>デモの「1文が 出た」「静かにする期間」で、隠れた状態を 出せます</li></ul>',
  'ノート':'<b>ノート ── 4つは 書くことが 違います（9月10日 直し）</b><ul>'
   +'<li><b>稽古</b>　＋ →「稽古の メモ」　いつ／だれに／みた曲／<b>言われたこと</b>／<b>次に 自分が すること</b>／できるように なったこと</li>'
-  +'<li><b>レパートリー</b>　＋ →「曲を 足す」　曲名／作曲家／役／<b>ことば</b>／<b>高い音・低い音</b>／様子／本番の予定　別の 項目です</li>'
+  +'<li><b'+W('rep')+'/b>　＋ →「曲を 足す」　曲名／作曲家／役／<b>ことば</b>／<b>高い音・低い音</b>／様子／本番の予定　別の 項目です</li>'
   +'<li><b>連絡</b>　門下 → 連絡板（1行は 入力欄の 直下）／「先生に 伝える」／<b>代表なら「集まり具合」</b></li>'
   +'<li><b>受診用</b>　期間の「<b>選ぶ</b>」→ <b>カレンダー</b>（はじめの日 → 終わりの日）。載せるものを 選ぶ → 1枚の 見本</li></ul>',
  'ひつじ':'<b>ひつじ ── 画面全部が おうちに なりました（9月10日 直し）</b><ul>'
