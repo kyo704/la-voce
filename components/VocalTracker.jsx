@@ -10142,6 +10142,26 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   }, [userId]);
 
   /** ★連絡：★開いた記録を 読みます。★読んだ側にも、読まれた側にも 見せます。 */
+  /**
+   * ★開いた 記録 ── ★学校ぜんぶ（★見本 `P_kaita`・2026-09-19）。
+   *
+   *   ★★きょうまで、★門下を 1つ 開いた ときの 分 しか 出て いません でした。
+   *     ★★見本は 表 です ── ★誰が・いつ・どの 門下 を 並べます。
+   *   ★★絞りは 決まりが します（`org_message_reads_select`）。
+   *     ★★読める 方 だけ に 返ります。★ここで 絞りません。
+   */
+  const [renrakuReadsAll, setRenrakuReadsAll] = useState([]);
+  const fetchRenrakuReadsAll = useCallback(async (orgId) => {
+    if (!orgId) return;
+    const supabase = createClient();
+    const { data, error } = await supabase.from("org_message_reads")
+      .select("id, teacher_id, reader_id, reader_role, read_at")
+      .eq("org_id", orgId)
+      .order("read_at", { ascending: false }).limit(50);
+    if (error) { console.error("★開いた記録を読めませんでした:", error); return; }
+    setRenrakuReadsAll(data || []);
+  }, []);
+
   const fetchRenrakuReads = useCallback(async (teacherId) => {
     const supabase = createClient();
     const { data, error } = await supabase.from("org_message_reads")
@@ -10409,6 +10429,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     void fetchBillingLog(opsOrgId);
     // ★★学校の 形（★学部・学科・分野）。★在籍者と 名簿の できこと で 読めます。
     void fetchOrgDivisions(opsOrgId);
+    // ★★開いた 記録（★学校ぜんぶ）。★読める 方 だけ に 返ります。
+    void fetchRenrakuReadsAll(opsOrgId);
     void (async () => {
       const supabase = createClient();
       const { data, error } = await supabase.from("org_billing")
@@ -11772,6 +11794,40 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }
   }
 
+  /**
+   * ★役職を 確かめる（★見本 `P_setPost` の warn・2026-09-19）。
+   *
+   *   ★★★ご自分で 選んだ ままの 役職 か どうか を、★学校が 確かめます。
+   *     ★★`verified_at` が 空なら「ご自分で 選んだまま」です。
+   *   ★★誰が 確かめたかも 残します。★あとで たどれます。
+   *   ★★何行 動いたかを 見ます。★0行を 成功に しません。
+   */
+  async function handleVerifyMembership(orgId, targetUserId) {
+    setDivisionError("");
+    setDivisionSaving(true);
+    try {
+      const supabase = createClient();
+      const いま = new Date().toISOString();
+      const { data, error } = await supabase.from("memberships")
+        .update({ verified_at: いま, verified_by: userId })
+        .eq("org_id", orgId).eq("user_id", targetUserId)
+        .select("id, verified_at");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setOrgMembers((prev) => ({
+        ...prev,
+        [orgId]: (prev[orgId] || []).map((mm) => (mm.user_id === targetUserId
+          ? { ...mm, verified_at: いま, verified_by: userId } : mm))
+      }));
+      return true;
+    } catch (err) {
+      console.error("★役職を確かめられませんでした:", err);
+      setDivisionError("いま 確かめられませんでした。役職の できことが 要ります。");
+      return false;
+    } finally {
+      setDivisionSaving(false);
+    }
+  }
+
   async function handleSetDivision(orgId, targetUserId, divisionId) {
     setDivisionError("");
     setDivisionSaving(true);
@@ -12101,7 +12157,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
    */
   const [opsInviteCode, setOpsInviteCode] = useState(null);
   const [opsInviteError, setOpsInviteError] = useState("");
-  async function handleInviteStudentToOrg(orgId) {
+  async function handleInviteStudentToOrg(orgId, 決め) {
     setOpsInviteError("");
     setOpsInviteCode(null);
     if (!orgId) { setOpsInviteError("学校が 分かりません。"); return; }
@@ -12114,8 +12170,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
       //   ★★これは 名簿から の 招き です。★押すのは 事務や 学長 です。
       //   ★★`monka_teacher_id` を 入れると、★その方が 生徒の 先生に なります。
       //   ★★★学校に 入る ところ まで。★門下は あとから 決めます。
+      // ★★★学年・学科を 決めて おけます（★2026-09-19・見本 `P_maneku`）。
+      //   ★★決めなくて かまいません。★あとから ご本人が 直せます。
+      //   ★★入った ときに `enrollments` へ 写します（★accept の 道）。
       .insert({ code, teacher_id: userId, org_id: orgId, expires_at: expiresAt,
-        monka_teacher_id: null });
+        monka_teacher_id: null,
+        grade_year: (決め && 決め.gradeYear) || null,
+        division_id: (決め && 決め.divisionId) || null });
     if (error) {
       // ★★黙って 閉じません。★誤りを そのまま お見せします。
       console.error("生徒の 招待を 作れません でした:", error);
@@ -15080,7 +15141,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   //   ★★門下を 読める 役職の 方 ご本人に、★いちばん 上で 断ります。
                   //   ★★`gate` は 帯の 門と 同じ もの です。★2度 数えません。
                   perms={gate}
-                  reads={renrakuReads} />
+                  reads={renrakuReads}
+                  // ★★★開いた 記録（★学校ぜんぶ・見本 `P_kaita`・2026-09-19）。
+                  //   ★★門下を 1つ 開いて いない ときに 出します。
+                  //   ★★絞りは 決まりが します。★ここで 絞りません。
+                  readsAll={renrakuReadsAll} />
               );
             }
             if (tabKey === "settings") {
@@ -15189,6 +15254,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       //   ★★選ぶのは 学科 か 分野 です。★学部は 学科から 出ます。
                       //   ★★書けるのは 名簿の できこと だけ です。
                       divisions={orgDivisions}
+                      // ★★★確かめ（★見本 `P_setPost`・2026-09-19）。
+                      //   ★★`verified_at` が 空なら「ご自分で 選んだまま」です。
+                      onVerify={canOps(gate, "post")
+                        ? (uid) => handleVerifyMembership(opsOrgId, uid)
+                        : undefined}
                       onSetDivision={canOps(gate, "meibo")
                         ? (uid, did) => handleSetDivision(opsOrgId, uid, did)
                         : undefined}
@@ -15341,7 +15411,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   //   ★★きょうまで 渡して いません でした。
                   //     ★★札は 書いて あるのに、★1度も 出て いません。
                   //     ★★10月の 学校の 導入で、★生徒が 入る **唯一の 道** です。
-                  onInvite={() => handleInviteStudentToOrg(opsOrgId)}
+                  onInvite={(決め) => handleInviteStudentToOrg(opsOrgId, 決め)}
                   inviteCode={opsInviteCode}
                   inviteError={opsInviteError}
                   onCloseInvite={() => { setOpsInviteCode(null); setOpsInviteError(""); }}

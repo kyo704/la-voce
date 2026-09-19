@@ -81,7 +81,11 @@ export default function OpsPeople({
   //   ★`divisions` … ★`org_divisions` の 行
   //   ★`onSetDivision` … ★その方の 形を 決める（★`memberships.division_id`）
   //   ★★渡されなければ、★その 節ごと 出しません（★押せない 札を 置きません）。
-  divisions = [], onSetDivision
+  divisions = [], onSetDivision,
+  // ★★★確かめ（★見本 `P_setPost` の warn・2026-09-19）。
+  //   ★★`verified_at` が 空なら「ご自分で 選んだまま」です。
+  //   ★★渡されなければ、★その 節ごと 出しません（★押せない 札を 置きません）。
+  onVerify
 }) {
   const [filter, setFilter] = useState({ k: "全て", v: "" });
   const [open, setOpen] = useState(null);   // ★いま 開いて いる 方の user_id
@@ -173,6 +177,33 @@ export default function OpsPeople({
           <p style={{ fontSize: "0.8125rem", fontWeight: 700, color: C.ink, margin: "0 0 8px" }}>
             {nameOf(target.user_id) || nameFetchFailedLabel || ""} の 役職
           </p>
+          {/* ★★★ご自分で 選んだ まま かどうか（★見本 `P_setPost` の warn）。
+              ★★確かめると、★誰が いつ 確かめたかが 残ります。
+              ★★★責めません。★「合って いれば 押して ください」だけ です。 */}
+          {onVerify && !target.verified_at ? (
+            <div style={{ ...card, background: C.paper, borderColor: C.line, padding: 10,
+              marginBottom: 8 }}>
+              <p style={{ ...small, margin: 0, color: C.ink }}>
+                この方は ご自分で 選んだ ままです。合って いれば、確かめて ください。
+              </p>
+              <button type="button" disabled={busy}
+                onClick={async () => {
+                  const r = await onVerify(target.user_id);
+                  if (r === false) setFailed(true);
+                }}
+                style={{
+                  minHeight: 44, marginTop: 8, padding: "0 14px", borderRadius: 999,
+                  border: `1px solid ${C.curtain}`, background: C.card, color: C.ink,
+                  fontSize: "0.75rem"
+                }}>確かめる</button>
+            </div>
+          ) : null}
+          {onVerify && target.verified_at ? (
+            <p style={{ ...small, margin: "0 0 8px" }}>
+              {`確かめました　${String(target.verified_at).slice(0, 10)}`}
+            </p>
+          ) : null}
+
           {/* ★★★いまの 形（★見本 `P_setPost` の `sub`・2026-09-19）。
               ★★学部・学科・分野の 3つ。★無い ものは「—」です。
               ★★★学部は 選ばせません。★学科の 上に ついて いる ものです。 */}
@@ -300,13 +331,10 @@ export default function OpsPeople({
         </div>
       ) : null}
 
-      {/* ★★★出して いない ものに ついて、★黙って いません（★2026-09-19 に 減りました）。
-          ★★学部・学科・事務の 分野は、★裁定 その98 で 台帳が できました。
-            ★★一覧の 絞りと、★開いた 1枚の 中に 出て います。
-          ★★残るのは「確かめ」だけ です ── ★しまう 列が ありません。 */}
-      <p style={small}>
-        確かめ（ご自分で 選んだまま かどうか）は、まだ お作りして いません。
-      </p>
+      {/* ★★★2026-09-19 ── ★出して いない ものが 無く なりました。
+          ★★学部・学科・分野 …… ★裁定 その98 で 台帳が できました。
+          ★★確かめ …… ★`memberships.verified_at` を 足しました。
+          ★★★だから、★ここに 断りを 置きません。★無い ものが ありません。 */}
     </div>
   );
 }

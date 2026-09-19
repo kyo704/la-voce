@@ -48,7 +48,9 @@ export async function POST(request) {
   // ---- 招待から、先生と教室を引く ----
   const { data: invitation, error: invError } = await admin
     .from("teacher_invitations")
-    .select("code, teacher_id, org_id, monka_teacher_id")
+    // ★★★招く ときに 決めて おいた 学年・学科も 読みます（★2026-09-19）。
+    //   ★★読まないと、★下で 写せません。★列を 足しただけ では 動きません。
+    .select("code, teacher_id, org_id, monka_teacher_id, grade_year, division_id")
     .eq("code", code)
     .maybeSingle();
   if (invError) {
@@ -120,7 +122,15 @@ export async function POST(request) {
     //     ★★在籍中の 方に、★やめた 日が 付いた まま に なります。
     //   ★★「入り直せる」と お約束して います（★`LEAVE_NOTE`）。
     //     ★その 約束を、★台帳の 側でも 揃えます。
-    .upsert({ org_id: orgId, student_id: user.id, status: "active", left_at: null }, { onConflict: "org_id,student_id" });
+    // ★★★招く ときに 決めて おいた 学年・学科を 写します（★2026-09-19）。
+    //   ★★見本 `P_maneku` の 字 ──「あとから ご本人が 直せます」。
+    //   ★★決めて いなければ 触りません（`undefined` は 送りません）。
+    //     ★★★入り直しの とき、★前の 学年を 空で 上書き しない ため です。
+    .upsert({
+      org_id: orgId, student_id: user.id, status: "active", left_at: null,
+      ...(invitation.grade_year != null ? { grade_year: invitation.grade_year } : {}),
+      ...(invitation.division_id ? { division_id: invitation.division_id } : {})
+    }, { onConflict: "org_id,student_id" });
   if (enrollError) {
     console.error("在籍：登録できませんでした。", { orgId, message: enrollError.message });
     return NextResponse.json({ error: "在籍の登録に失敗しました。" }, { status: 500 });

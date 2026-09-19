@@ -114,6 +114,8 @@ export default function OpsRoster({
   const [grade, setGrade] = useState(GRADE_FILTER_ALL);
   // ★いま 学年を 入れている 方（★user_id）と、打っている 途中の 文字。
   const [gradeEdit, setGradeEdit] = useState(null);
+  // ★★招く ときの 決め（★学年・学科）。★決めなくて かまいません。
+  const [inviteAim, setInviteAim] = useState({ gradeYear: null, divisionId: null });
   const [gradeDraft, setGradeDraft] = useState("");
   // ★いま 役職を えらんでいる 方と、★だめだった わけ。
   const [postEdit, setPostEdit] = useState(null);
@@ -626,14 +628,52 @@ export default function OpsRoster({
 
       {/* ★★操作は、★画面の 下半分に（★裁定）。
           ★★上に 置くと、★片手で 持ったとき 親指が 届きません。 */}
+      {/* ★★★招く ときに、★学年と 学科を 決めて おけます（★2026-09-19・見本 `P_maneku`）。
+          ★★決めなくて かまいません。★あとから ご本人が 直せます。
+          ★★★入った ときに 在籍の 行へ 写します（`app/api/enrollment/accept`）。
+            ★★画面だけ の 飾りに しません。★台帳に 列を 足しました。 */}
       {onInvite ? (
-        <button type="button" onClick={onInvite}
-          className="w-full"
-          style={{
-            minHeight: 52, borderRadius: 12, border: `1px solid ${C.curtain}`,
-            borderBottomWidth: 3, background: C.curtain, color: "#FFFDF8",
-            fontSize: "0.9375rem"
-          }}>＋ 招く</button>
+        <div>
+          {choosableFor(divisions).filter((d) => d.kind === "department").length > 0 ? (
+            <>
+              <p style={small}>学科・コース（あとから ご本人が 直せます）</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
+                {choosableFor(divisions).filter((d) => d.kind === "department").map((d) => (
+                  <button key={d.id} type="button"
+                    onClick={() => setInviteAim((v) =>
+                      ({ ...v, divisionId: v.divisionId === d.id ? null : d.id }))}
+                    style={{
+                      minHeight: 44, padding: "0 12px", borderRadius: 999,
+                      border: `1px solid ${inviteAim.divisionId === d.id ? C.curtain : C.line}`,
+                      background: inviteAim.divisionId === d.id ? C.paper : C.card,
+                      color: C.ink, fontSize: "0.75rem"
+                    }}>{d.name}</button>
+                ))}
+              </div>
+            </>
+          ) : null}
+          <p style={small}>学年（あとから ご本人が 直せます）</p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
+            {[1, 2, 3, 4, 5, 6].map((g) => (
+              <button key={g} type="button"
+                onClick={() => setInviteAim((v) =>
+                  ({ ...v, gradeYear: v.gradeYear === g ? null : g }))}
+                style={{
+                  minHeight: 44, padding: "0 12px", borderRadius: 999,
+                  border: `1px solid ${inviteAim.gradeYear === g ? C.curtain : C.line}`,
+                  background: inviteAim.gradeYear === g ? C.paper : C.card,
+                  color: C.ink, fontSize: "0.75rem"
+                }}>{`${g}年`}</button>
+            ))}
+          </div>
+          <button type="button" onClick={() => onInvite(inviteAim)}
+            className="w-full"
+            style={{
+              minHeight: 52, borderRadius: 12, border: `1px solid ${C.curtain}`,
+              borderBottomWidth: 3, background: C.curtain, color: "#FFFDF8",
+              fontSize: "0.9375rem"
+            }}>＋ 招く</button>
+        </div>
       ) : null}
 
       {/* ★★★招く 1枚（★裁定 その82・見本 `SC['招く']`）。

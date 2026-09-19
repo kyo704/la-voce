@@ -33,8 +33,15 @@ const 紙 = readCode("supabase", "migration_invitation_monka.sql");
 // ★一 ★受け持ちの 先生
 // ------------------------------------------------------------------------
 ok(/monka_teacher_id/.test(道), "受け取りの 道が monka_teacher_id を 読む");
-ok(/\.select\("code, teacher_id, org_id, monka_teacher_id"\)/.test(道),
+// ★★★2026-09-19 ── ★招く ときの 学年・学科も 読む ように なりました。
+//   ★★取る 列を 字 そのままで 見て いたので、★増えた 日に 落ちました。
+//   ★★★「どの 列を 取って いるか」を 1つずつ 見ます。
+ok(/\.select\("code, teacher_id, org_id, monka_teacher_id/.test(道),
   "招待を 引く ときに、★門下の 先生も 取る");
+["grade_year", "division_id"].forEach((c) => {
+  ok(new RegExp('\\.select\\("[^"]*' + c).test(道),
+    "★招く ときの " + c + " も 取る（★2026-09-19）");
+});
 ok(/teacher_id: assignTo/.test(道), "受け持ちは assignTo で 作る");
 ok(!/teacher_id: invitation\.teacher_id/.test(道),
   "★出した 方を、★受け持ちの 先生に して いない");

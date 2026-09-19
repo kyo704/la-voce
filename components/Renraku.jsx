@@ -93,8 +93,11 @@ export default function Renraku({
   role, isTeacherOf, isMemberOf, nameOf, teacherNameOf,
   onPost, reads, posting, onCompose,
   // ★★できこと（★裁定 その87 Q2）。★門下を 読める 方 ご本人に 断りを 出します。
-  perms
-}) {
+  perms,
+  // ★★★開いた 記録 ── ★学校ぜんぶ（★見本 `P_kaita`・2026-09-19）。
+  //   ★★門下を 1つ 開いて いない ときに 出します。
+  //   ★★誰が・いつ・どの 門下 だけ です。★何を 読んだかは 残して いません。
+  readsAll = []}) {
   const [draft, setDraft] = useState("");
   const width = useWindowWidth();
   const twoPane = isTwoPane(width);
@@ -216,6 +219,31 @@ export default function Renraku({
           <p style={{ ...small, marginTop: 6 }}>
             {NO_ATTACH_LINE}<br />
             {HIDE_LINE}
+          </p>
+        </div>
+      ) : null}
+
+      {/* ★★★開いた 記録 ── ★学校ぜんぶ（★見本 `P_kaita`・2026-09-19）。
+          ★★門下を 開いて いない ときに 出します。★表の 形 です。
+          ★★★絞りは 決まりが します。★読める 方 だけ に 返って います。
+          ★★何を 読んだかは 残して いません。★列ごと ありません。 */}
+      {!openStudio && (readsAll || []).length > 0 ? (
+        <div style={card}>
+          <p style={{ ...small, marginBottom: 4 }}>開いた 記録（学校ぜんぶ）</p>
+          {readsAll.map((r) => (
+            <div key={r.id} className="flex items-center justify-between gap-2"
+              style={{ padding: "6px 0", borderTop: `1px solid ${C.line}`, fontSize: "0.75rem" }}>
+              <span style={{ color: C.ink }}>
+                {nameOf ? nameOf(r.reader_id) : ""}（{r.reader_role}）
+              </span>
+              <span style={small}>
+                {teacherNameOf ? studioName(teacherNameOf(r.teacher_id)) : ""}
+                {"　"}{whenWord(r.read_at)}
+              </span>
+            </div>
+          ))}
+          <p style={{ ...small, marginTop: 6 }}>
+            誰が・いつ・どの門下を、だけです。何を読んだかは 残しません。
           </p>
         </div>
       ) : null}
