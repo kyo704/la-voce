@@ -201,7 +201,7 @@ export default function ShindanPage() {
             className="flex-1 rounded-lg border p-2 text-sm ff-mono"
             style={{ border: "1px solid #ddd", fontSize: "max(16px, 0.875rem)" }} />
           <button type="button" className="px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap shrink-0"
-            style={{ background: "#7A1F2B", color: "#FFFDF8" }}>確認する</button>
+            style={{ background: "#840C24", color: "#FFFDF8" }}>確認する</button>
         </div>
 
         <div id="shindan-row" className="flex items-center justify-between" style={{ marginTop: 10, gap: 8 }}>

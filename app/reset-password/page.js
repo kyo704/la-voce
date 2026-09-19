@@ -83,7 +83,7 @@ export default function ResetPasswordPage() {
   };
   const button = {
     padding: "14px", borderRadius: 10, border: "none",
-    background: "linear-gradient(180deg, #8A2A36, #7A1F2B)", color: "#FBF6EA",
+    background: "linear-gradient(180deg, #8E1230, #840C24)", color: "#FBF6EA",
     fontWeight: 600, fontSize: "0.9375rem", cursor: "pointer"
   };
 

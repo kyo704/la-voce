@@ -87,6 +87,12 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
       assert.ok(/color: "#840C24"/.test(本), "★字が 揃って いません: " + f);
       // ★★縞は 残って いる こと（★揃えて しまって いない）。
       assert.ok(/#6B1620/.test(本) || f.includes("reset"), "★縞が 消えました: " + f);
+      // ★★★札（ボタン）も 揃って いる こと（★裁定 その102 追補・2026-09-19）。
+      //   ★★触る ところ です。★中と 同じ 色で ある べき です。
+      assert.ok(!/linear-gradient\(180deg, #8A2A36, #7A1F2B\)/.test(本),
+        "★札が 古い ままです: " + f);
+      assert.ok(/linear-gradient\(180deg, #8E1230, #840C24\)/.test(本),
+        "★札が 揃って いません: " + f);
     }
   });
 
