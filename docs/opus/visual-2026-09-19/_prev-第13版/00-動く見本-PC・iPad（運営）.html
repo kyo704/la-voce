@@ -1930,23 +1930,15 @@ function stOrg(){
  +'<span class="btn sm" style="flex:none" onclick="orgAdd(\'bunya\')">足す</span></div>'
 
  +'<div class="note">使われている ものは 消せません（その方が 1人でも いると 止めます）。<br>'
- +'<b>消すときは、一度 おたずねします。</b>押しまちがいで 消えません。<br>'
- +'<b>学部は、中の 学科を 消してからでないと 消せません。</b><br>'
- +'　（まとめて 消すと、通っている方の 学科が 黙って 消えるからです）</div>'}
+ +'<b>消すときは、一度 おたずねします。</b>押しまちがいで 消えません。</div>'}
 
 /* ★消す 前に おたずねする ── 裁定その99（2026-09-19）
    ★押しまちがいで 学部が 消えると、★中の 学科も 行き場を 失います */
 function orgDelAsk(k, i, name){
- /* ★連鎖させません（2026-09-19 確定）
-    ★前は「学部を 消すと 学科も 消える」と していました。
-    ★★在籍者の 学科が 静かに 消えます。★危険でした          */
- var inn = (k==='gakubu')
-   ? ORG.gakka.filter(function(x){return x[1]===name}).length : 0;
  var note = 'この ことばを 使っている 方が 1人でも いると、消せません。<br>'
-  + (inn ? '<b>この学部の 中に、まだ '+inn+'つの 学科が あります。</b><br>'
-         + 'さきに 学科を 消してから、学部を 消してください。<br>' : '')
+  + (k==='gakubu'
+     ? '<b>学部を 消すと、その中の 学科も いっしょに 消えます。</b><br>' : '')
   + '消したあと、もとには 戻せません。';
- if(inn){ toast('さきに 学科を 消してください'); return }
  askShow('消しますか', name, note, true, function(){ orgDel(k, i) })}
 
 
@@ -1959,12 +1951,13 @@ function orgAdd(k){var v=(S.mnew[k]||'').trim();if(!v){toast('名前を 入れ�
  else{if(ORG[k].indexOf(v)>=0){toast('もう あります');return}ORG[k].push(v)}
  S.mnew[k]='';draw();toast('足しました')}
 function orgDel(k,i){var v=k==='gakka'?ORG.gakka[i][0]:ORG[k][i];
- /* ★★連鎖させません。★中に 学科が 1つでも あれば 止めます
-    ★理由：★連鎖させると、★在籍者の 学科が 静かに 消えます
-    ★★下から 順に 消していただきます                        */
+ /* ★学部を 消すと、★中の 学科も いっしょに 消します（★行き場を 失うため）*/
  if(k==='gakubu'){
   var inn=ORG.gakka.filter(function(x){return x[1]===v});
-  if(inn.length){toast('この学部の 中に、まだ 学科が あります');return}
+  var usedIn=inn.some(function(x){
+   return PEOPLE.some(function(p){return p[3]===x[0]})||MEI.some(function(m){return m[2]===x[0]})});
+  if(usedIn){toast('この学部の 学科に、通っている方が います');return}
+  ORG.gakka=ORG.gakka.filter(function(x){return x[1]!==v});
   if(S.orgSel>=ORG.gakubu.length-1)S.orgSel=0}
  var used=PEOPLE.some(function(p){return p[2]===v||p[3]===v||p[4]===v})||MEI.some(function(m){return m[1]===v||m[2]===v});
  if(used){toast('「'+v+'」の方が いるので 消せません');return}
