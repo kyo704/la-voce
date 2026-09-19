@@ -68,5 +68,27 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.ok(!/06C755/.test(見張り), "★見張りに 色の 字を 書き写して います");
   });
 
+  見る("★入口の 縞は 別の 系統（★裁定 その102）", () => {
+    assert.ok(V.isEntranceStripe("#6B1620"), "★縞の 色を 見つけられません");
+    assert.ok(!V.isEntranceStripe("#840C24"), "★いまの えんじが 縞に 入って います");
+    assert.strictEqual(V.ENTRANCE_STRIPE_COLORS.length, 1, "★増えて います");
+    const x = V.ENTRANCE_STRIPE_COLORS[0];
+    assert.strictEqual(x.colors.length, 4, "★縞は 4色 です");
+    assert.ok(x.why && x.ruling === "その102", "★わけと 裁定が 書かれて いません");
+  });
+
+  見る("★入口の 字の えんじは、★いまの 色（★裁定 その102）", () => {
+    const fs2 = require("fs");
+    const path2 = require("path");
+    for (const f of ["app/login/page.js", "app/reset-password/page.js"]) {
+      const 本 = fs2.readFileSync(path2.join(__dirname, "..", "..", f), "utf8");
+      // ★★字の えんじが 古い ままに なって いない こと。
+      assert.ok(!/color: "#7A1F2B"/.test(本), "★字が 古い ままです: " + f);
+      assert.ok(/color: "#840C24"/.test(本), "★字が 揃って いません: " + f);
+      // ★★縞は 残って いる こと（★揃えて しまって いない）。
+      assert.ok(/#6B1620/.test(本) || f.includes("reset"), "★縞が 消えました: " + f);
+    }
+  });
+
   console.log("\n★" + 数 + "つ 通りました。");
 })().catch((e) => { console.error("★止まりました ──", e.message); process.exit(1); });

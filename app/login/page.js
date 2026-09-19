@@ -128,6 +128,10 @@ function CurtainPanel({ side }) {
         width: "34%",
         minWidth: 160,
         background: isLeft
+          // ★★★背の 縞は 別の 色の 系統 です（★裁定 その102・2026-09-19）。
+          //   ★★4色で 濃淡を 作って います。★1本だけ 揃えると 不揃いに なります。
+          //   ★★★題と 字は #840C24 に 揃えました。★役が ちがいます。
+          //   ★★一覧 …… `lib/visualTokens.js` の `ENTRANCE_STRIPE_COLORS`
           ? "repeating-linear-gradient(100deg, #6B1620 0px, #8A2A36 26px, #57121B 52px, #7A1F2B 78px)"
           : "repeating-linear-gradient(80deg, #6B1620 0px, #8A2A36 26px, #57121B 52px, #7A1F2B 78px)",
         boxShadow: isLeft ? "inset -40px 0 60px rgba(0,0,0,0.45)" : "inset 40px 0 60px rgba(0,0,0,0.45)",
@@ -336,7 +340,7 @@ function LoginPageInner() {
             gap: 14
           }}
         >
-          <h2 className="ff-display italic" style={{ fontSize: "1.4rem", color: "#7A1F2B", margin: "0 0 4px" }}>
+          <h2 className="ff-display italic" style={{ fontSize: "1.4rem", color: "#840C24", margin: "0 0 4px" }}>
             {mode === "reset" ? ltr("resetTitle", lang) : ltr("formTitle", lang)}
           </h2>
           {mode === "reset" && (
@@ -370,7 +374,7 @@ function LoginPageInner() {
               style={inputStyle}
             />
           )}
-          {error && <p style={{ color: "#7A1F2B", fontSize: "0.8125rem", margin: 0 }}>{error}</p>}
+          {error && <p style={{ color: "#840C24", fontSize: "0.8125rem", margin: 0 }}>{error}</p>}
           <button
             type="submit"
             disabled={status === "loading"}
@@ -394,12 +398,12 @@ function LoginPageInner() {
           {/* ★「送りました」だけの表示は、★もうありません。
               ★上で、番号を入れる段に差し替えました。 */}
           {mode === "reset" && resetStatus === "error" && (
-            <p style={{ fontSize: "0.8125rem", color: "#7A1F2B", margin: 0 }}>{ltr("resetError", lang)}</p>
+            <p style={{ fontSize: "0.8125rem", color: "#840C24", margin: 0 }}>{ltr("resetError", lang)}</p>
           )}
 
           <button type="button"
             onClick={() => { setMode(mode === "reset" ? "login" : "reset"); setResetStatus("idle"); setError(""); }}
-            style={{ background: "none", border: "none", padding: 0, fontSize: "0.8125rem", color: "#7A1F2B", textDecoration: "underline", cursor: "pointer" }}>
+            style={{ background: "none", border: "none", padding: 0, fontSize: "0.8125rem", color: "#840C24", textDecoration: "underline", cursor: "pointer" }}>
             {mode === "reset" ? ltr("resetBack", lang) : ltr("linkForgot", lang)}
           </button>
 
@@ -410,7 +414,7 @@ function LoginPageInner() {
               ★どこからも行けない画面は、★無いのと同じです。 */}
           {mode === "reset" && (
             <a href="/recovery"
-              style={{ fontSize: "0.8125rem", color: "#7A1F2B", textDecoration: "underline", marginTop: 2 }}>
+              style={{ fontSize: "0.8125rem", color: "#840C24", textDecoration: "underline", marginTop: 2 }}>
               メールそのものが使えない方は、こちら
             </a>
           )}

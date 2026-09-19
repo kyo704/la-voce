@@ -93,7 +93,7 @@ export default function ResetPasswordPage() {
       background: "radial-gradient(ellipse 70% 55% at 50% 32%, #3A1016 0%, #1A0A0D 62%, #12070A 100%)"
     }}>
       <div style={card}>
-        <h1 className="ff-display italic" style={{ fontSize: "1.4rem", color: "#7A1F2B", margin: 0 }}>{tr("title")}</h1>
+        <h1 className="ff-display italic" style={{ fontSize: "1.4rem", color: "#840C24", margin: 0 }}>{tr("title")}</h1>
 
         {ready === "checking" && <p style={{ fontSize: "0.875rem", color: "#6b5d52", margin: 0 }}>{tr("checking")}</p>}
 
@@ -101,7 +101,7 @@ export default function ResetPasswordPage() {
             リンクは有効かもしれないので、もう一度試せるようにする。 */}
         {ready === "unreachable" && (
           <>
-            <p style={{ fontSize: "0.875rem", color: "#7A1F2B", margin: 0 }}>
+            <p style={{ fontSize: "0.875rem", color: "#840C24", margin: 0 }}>
               いま、つながりません。リンクはまだ有効かもしれません。少し待ってから、もう一度開いてください。
             </p>
             <button type="button" onClick={() => window.location.reload()} style={button}>もう一度試す</button>
@@ -110,7 +110,7 @@ export default function ResetPasswordPage() {
 
         {ready === "nosession" && (
           <>
-            <p style={{ fontSize: "0.875rem", color: "#7A1F2B", margin: 0 }}>{tr("noSession")}</p>
+            <p style={{ fontSize: "0.875rem", color: "#840C24", margin: 0 }}>{tr("noSession")}</p>
             <a href="/login" style={{ ...button, textAlign: "center", textDecoration: "none", display: "block" }}>{tr("toLogin")}</a>
           </>
         )}
@@ -130,7 +130,7 @@ export default function ResetPasswordPage() {
               value={pw1} onChange={(e) => setPw1(e.target.value)} style={input} />
             <input required type="password" name="new-password" autoComplete="new-password" placeholder={tr("ph2")}
               value={pw2} onChange={(e) => setPw2(e.target.value)} style={input} />
-            {error && <p style={{ fontSize: "0.8125rem", color: "#7A1F2B", margin: 0 }}>{error}</p>}
+            {error && <p style={{ fontSize: "0.8125rem", color: "#840C24", margin: 0 }}>{error}</p>}
             <button type="submit" disabled={status === "saving"} style={{ ...button, opacity: status === "saving" ? 0.7 : 1 }}>
               {status === "saving" ? tr("saving") : tr("save")}
             </button>
