@@ -48,17 +48,25 @@ export async function POST(request) {
     return NextResponse.json({ error: WITHDRAW_FAILED }, { status: 500 });
   }
   const mail = data[0].guardian_email || "";
+  // ★★★済んだ 同意が 在ったか（★2026-09-20・坂本さんの ご指摘）。
+  //   ★★まだ 押されて いない お願いを 取り下げた だけ の ときは、
+  //     ★★学校から 出しません。★同意が 作った ものでは ない ため です。
+  //   ★★★その 学校には、★同意の 仕組みが できる 前から 在籍して いた かも しれません。
+  const あった = data[0].had_consent === true;
 
   // ★② 学校から 出ます（★もとから ある 道を 使います。★2本に しません）。
-  const { error: leaveError } = await supabase.rpc("leave_enrollment", { p_org_id: orgId });
-  if (leaveError) {
-    console.error("★保護者の同意：学校から 出られませんでした:", leaveError);
-    return NextResponse.json({ error: WITHDRAW_FAILED }, { status: 500 });
+  if (あった) {
+    const { error: leaveError } = await supabase.rpc("leave_enrollment", { p_org_id: orgId });
+    if (leaveError) {
+      console.error("★保護者の同意：学校から 出られませんでした:", leaveError);
+      return NextResponse.json({ error: WITHDRAW_FAILED }, { status: 500 });
+    }
   }
 
   // ★③ 保護者に 1通。★送れなくても、★ここで 止めません。
   let sent = false;
-  if (mail && process.env.RESEND_API_KEY && process.env.FEEDBACK_FROM_EMAIL) {
+  // ★★お知らせも、★ひとことを いただいて いた ときだけ です。
+  if (あった && mail && process.env.RESEND_API_KEY && process.env.FEEDBACK_FROM_EMAIL) {
     const admin = createAdminClient();
     const [{ data: 学校 }, { data: 生徒 }] = await Promise.all([
       admin.from("organizations").select("name").eq("id", orgId).maybeSingle(),
@@ -88,5 +96,5 @@ export async function POST(request) {
     }
   }
 
-  return NextResponse.json({ ok: true, sent });
+  return NextResponse.json({ ok: true, sent, hadConsent: あった });
 }

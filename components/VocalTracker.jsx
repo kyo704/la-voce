@@ -192,7 +192,10 @@ import {
   WITHDRAW_DONE as GUARDIAN_WITHDRAW_DONE,
   WITHDRAW_FAILED as GUARDIAN_WITHDRAW_FAILED,
   WITHDRAW_LABEL as GUARDIAN_WITHDRAW_LABEL,
-  needsGuardianConsent
+  needsGuardianConsent,
+  guardianState, mayWithdraw,
+  PENDING_LINE as GUARDIAN_PENDING_LINE,
+  PENDING_SUB as GUARDIAN_PENDING_SUB
 } from "@/lib/guardianConsent";
 import { FAILED_LINE as MISOU_FAILED } from "@/lib/opsMisou";
 import { FAILED_LINE as MADA_FAILED, doneWord as madaDoneWord, mayNudge }
@@ -6781,7 +6784,9 @@ export default function VocalTracker({
       fetchMyTeachingLessons(), // 教えているレッスン
       fetchMyOrgs(),            // 所属する教室（招かれる）
       fetchMyEnrollments(),     // 在籍（先生が登録する）
-      fetchMyOrgEvents()        // 教室の予定（先生が作る・動かす・取り下げる）
+      fetchMyOrgEvents(),       // 教室の予定（先生が作る・動かす・取り下げる）
+      // ★★保護者の 同意の ようす（★2026-09-20）。★ご自分の 行 だけ です。
+      fetchGuardianRows()
     ]);
   }
   useEffect(() => {
@@ -6790,6 +6795,7 @@ export default function VocalTracker({
     fetchLearnState();
     fetchMyOrgs();
     fetchMyEnrollments();
+    void fetchGuardianRows();
     fetchMyTeachingLessons();
     fetchMyOrgEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -12951,6 +12957,9 @@ export default function VocalTracker({
   const [guardianError, setGuardianError] = useState("");
   // ★★★保護者の 同意を 取り消す（★どの 学校か。★null なら 出しません）。
   const [guardianWithdraw, setGuardianWithdraw] = useState(null);
+  // ★★★ご自分の 同意の 行（★2026-09-20・坂本さんの ご指摘）。
+  //   ★★「まだ 押されて いない」ものを「取り消す」と 出さない ため です。
+  const [guardianRows, setGuardianRows] = useState([]);
   const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
@@ -13320,6 +13329,26 @@ export default function VocalTracker({
   }
 
   /**
+   * ★ご自分の 同意の 行を 読みます（★2026-09-20）。
+   *
+   *   ★★決まりは ご本人 だけ です。★よその 方の 行は 引けません。
+   *   ★★読めなければ 空の ままに します ── ★その ときは 札を 出しません。
+   *     ★★「分からない」ときに「取り消す」を 出すと、★また 同じ ことに なります。
+   */
+  async function fetchGuardianRows() {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("guardian_consents")
+      .select("org_id, consented_at, withdrawn_at, expires_at");
+    if (error) {
+      console.error("★保護者の同意を 読めませんでした:", error);
+      setGuardianRows([]);
+      return;
+    }
+    setGuardianRows(data || []);
+  }
+
+  /**
    * ★保護者の 同意を 取り消します（★裁定 その107 §4・2026-09-20）。
    *
    *   ★★★3つを 1つの 道で します ── ★印・学校から 出る・お知らせ。
@@ -13338,8 +13367,9 @@ export default function VocalTracker({
       const j = await r.json().catch(() => ({}));
       if (!r.ok || !j.ok) throw new Error((j && j.error) || "取り消せませんでした");
       setGuardianDone(GUARDIAN_WITHDRAW_DONE);
-      // ★★通って いる ところが 変わります。★引き直します。
+      // ★★通って いる ところと、★同意の ようすが 変わります。★引き直します。
       fetchMyOrgs();
+      void fetchGuardianRows();
       return true;
     } catch (e) {
       console.error("★保護者の同意：取り消せませんでした:", e);
@@ -13372,6 +13402,8 @@ export default function VocalTracker({
       // ★★★送れたか どうかは `sent` に 入って います。
       //   ★★送れて いなくても、★行は 出来て います。★そこは 分けて お伝えします。
       setGuardianDone(j.sent ? GUARDIAN_SENT_LINE : GUARDIAN_NOT_SENT_LINE);
+      // ★★お願いを 出した ことを、★ようすに 写します（★「お待ち しています」に なります）。
+      void fetchGuardianRows();
       return true;
     } catch (e) {
       console.error("★保護者の同意：送れませんでした:", e);
@@ -26054,15 +26086,39 @@ export default function VocalTracker({
                           ★★15〜17歳の 方 だけ に 出します。
                           ★★★18歳以上の 方には 出しません ── ★同意が そもそも ありません。
                             ★★「やめる」は 別に 在ります。★そちらは どなたにも 出ます。 */}
-                      {needsGuardianConsent(profile) ? (
-                        <div style={{ marginTop: 8 }}>
-                          <Btn ghost onClick={() => {
-                            setGuardianWithdraw(attendingOrgId);
-                            setGuardianDone("");
-                            setGuardianError("");
-                          }}>{GUARDIAN_WITHDRAW_LABEL}</Btn>
-                        </div>
-                      ) : null}
+                      {/* ★★★いまの ようすで 出し分けます（★2026-09-20・ご指摘）。
+                           ★★`consented` …… 取り消せます
+                           ★★`pending` …… お待ちして います（★札を 出しません）
+                           ★★`none` ／ `withdrawn` …… 何も 出しません
+                           ★★★「まだ ひとことを いただいて いない」ものを
+                             ★★「取り消す」とは 言えません。 */}
+                      {needsGuardianConsent(profile) ? (() => {
+                        const よう = guardianState(guardianRows, en.org_id);
+                        if (mayWithdraw(よう)) {
+                          return (
+                            <div style={{ marginTop: 8 }}>
+                              <Btn ghost onClick={() => {
+                                setGuardianWithdraw(attendingOrgId);
+                                setGuardianDone("");
+                                setGuardianError("");
+                              }}>{GUARDIAN_WITHDRAW_LABEL}</Btn>
+                            </div>
+                          );
+                        }
+                        if (よう === "pending") {
+                          return (
+                            <div style={{ marginTop: 8 }}>
+                              <p style={{ fontSize: "0.8125rem", color: C.ink, margin: 0 }}>
+                                {GUARDIAN_PENDING_LINE}
+                              </p>
+                              <p style={{ fontSize: "0.78125rem", color: C.inkSoft, margin: "2px 0 0" }}>
+                                {GUARDIAN_PENDING_SUB}
+                              </p>
+                            </div>
+                          );
+                        }
+                        return null;
+                      })() : null}
 
                       <Note fold>
                         {INSIDE_NOTE.map((line, i) => (

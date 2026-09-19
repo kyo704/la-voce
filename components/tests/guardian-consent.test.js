@@ -14,7 +14,7 @@
 // ============================================================================
 
 const assert = require("assert");
-const { readRaw, loadLib } = require("./_source");
+const { readRaw, readCode, loadLib } = require("./_source");
 
 let 数 = 0;
 function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
@@ -193,6 +193,39 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.strictEqual(m.GUARDIAN_NOTES.length, 3, "★断りが 3つ ありません");
     assert.ok(m.GUARDIAN_NOTES.join("").includes("7日で 切れます"),
       "★期限を 書いて いません");
+  });
+
+  見る("★まだの ものを「取り消す」と 言わない（★2026-09-20・実機の ご指摘）", () => {
+    // ★★★4つの ようす。
+    assert.strictEqual(m.guardianState([], "o"), "none");
+    assert.strictEqual(m.guardianState(
+      [{ org_id: "o", consented_at: null, withdrawn_at: null }], "o"), "pending");
+    assert.strictEqual(m.guardianState(
+      [{ org_id: "o", consented_at: "t", withdrawn_at: null }], "o"), "consented");
+    assert.strictEqual(m.guardianState(
+      [{ org_id: "o", consented_at: "t", withdrawn_at: "u" }], "o"), "withdrawn");
+    // ★★よその 学校の 行を 混ぜない こと。
+    assert.strictEqual(m.guardianState(
+      [{ org_id: "x", consented_at: "t", withdrawn_at: null }], "o"), "none");
+    // ★★取り消せるのは 1つ だけ。
+    assert.strictEqual(m.mayWithdraw("consented"), true);
+    ["none", "pending", "withdrawn"].forEach((s) =>
+      assert.strictEqual(m.mayWithdraw(s), false, "★" + s + " で 取り消せます"));
+    assert.ok(/mayWithdraw\(よう\)/.test(vt), "★画面が 判じて いません");
+    assert.ok(/PENDING_LINE/.test(vt), "★お待ちして いる ことを 出して いません");
+  });
+
+  見る("★まだの ときは 学校から 出さない（★道）", () => {
+    assert.ok(/had_consent/.test(wd), "★済んだ 同意が 在ったかを 見て いません");
+    // ★★★覚え書きを 外して から 順を 見ます（★2026-09-20）。
+    //   ★★紙の 頭の 説明に `leave_enrollment` と 書いて あり、
+    //     ★★「見る 前に 出して います」と 鳴りました。★この 蔵の 持病 です。
+    const 本 = readCode("app", "api", "guardian", "withdraw", "route.js");
+    const i = 本.indexOf("const あった");
+    const j = 本.indexOf("leave_enrollment");
+    assert.ok(i > 0 && j > i, "★見る 前に 出して います");
+    assert.ok(/if \(あった\) \{[\s\S]{0,200}leave_enrollment/.test(本),
+      "★在った ときだけ、に なって いません");
   });
 
   console.log("\n★" + 数 + "つ 通りました。");
