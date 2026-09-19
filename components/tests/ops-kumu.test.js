@@ -107,5 +107,49 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.ok(K.NOT_YET.every((x) => x.needs), "★何が 要るかが ありません");
   });
 
+  見る("★誰の 分を 組むか（★裁定 その99 F1・2026-09-19）", () => {
+    // ★★★学長（`sched_all`）は 先生を 選んで から。
+    assert.ok(K.needsTeacherPick(["sched_all"]), "★学長に 選ぶ 画面が 出ません");
+    assert.ok(!K.needsTeacherPick(["sched_mine"]), "★先生に 選ぶ 画面が 出ます");
+    assert.ok(!K.needsTeacherPick([]), "★何も 持たない 方に 出ます");
+    // ★★受け持ちの ある 先生（★並べ替えません）。
+    const 受 = [
+      { teacher_id: "t2", student_id: "a", ended_at: null },
+      { teacher_id: "t1", student_id: "b", ended_at: null },
+      { teacher_id: "t1", student_id: "c", ended_at: null },
+      { teacher_id: "t3", student_id: "d", ended_at: "2026-01-01" }
+    ];
+    assert.deepStrictEqual(K.teachersWithMonka(受), ["t2", "t1"], "★先生の 並びが ちがいます");
+    assert.deepStrictEqual(K.monkaOf(受, "t1"), ["b", "c"], "★門下が ちがいます");
+    assert.deepStrictEqual(K.monkaOf(受, "t3"), [], "★終わった 受け持ちが 出ました");
+    assert.ok(/先生の 分/.test(K.whoseWord("斎藤")), "★誰の 分かが 出ません");
+    assert.ok(/ご自分の 分/.test(K.whoseWord(null)), "★ご自分の ときの 字が ちがいます");
+  });
+
+  見る("★学長の 入口が ある（★門下が 無くても）", () => {
+    assert.ok(/canOps\(gate, "sched_all"\)\s*\n?\s*\|\|/.test(蔵)
+      || /canOps\(gate, "sched_all"\)/.test(
+        蔵.slice(蔵.indexOf("onGoKumu"), 蔵.indexOf("onGoKumu") + 700)),
+      "★入口が 門下の 有無 だけ です");
+    assert.ok(/needsTeacherPick/.test(画面), "★画面が 判じて いません");
+    assert.ok(/onPickTeacher/.test(蔵), "★選ぶ 道を 渡して いません");
+  });
+
+  見る("★先生の コマは 読み道から（★決まりを 緩めない）", () => {
+    const i = 蔵.indexOf("async function fetchKumu");
+    const 手 = 蔵.slice(i, i + 1400);
+    assert.ok(/rpc\("get_teacher_periods"/.test(手), "★読み道を 通して いません");
+    assert.ok(!/from\("my_periods"\)/.test(手), "★表を 直に 読んで います");
+    const 紙 = require("fs").readFileSync(
+      require("path").join(__dirname, "..", "..", "supabase",
+        "migration_teacher_periods.sql"), "utf8");
+    assert.ok(/security definer/.test(紙), "★読み道に なって いません");
+    assert.ok(/has_can\(p_org_id, 'sched_all'\)/.test(紙), "★門が ちがいます");
+    for (const 語 of ["title", "room", "memo"]) {
+      assert.ok(!new RegExp("\\b" + 語 + "\\b").test(紙.split("$$")[1] || ""),
+        "★中身を 返して います: " + 語);
+    }
+  });
+
   console.log("\n★" + 数 + "つ 通りました。");
 })().catch((e) => { console.error("★止まりました ──", e.message); process.exit(1); });

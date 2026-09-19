@@ -10,6 +10,8 @@ import {
   LIST_WIDTH, NO_READ_TRACKING_LINE, MONKA_READ_SELF_LINE, showMonkaReadSelfBanner,
   SECTION_ANNOUNCE, SECTION_MONKA,
   SCREEN_HEAD, EMPTY_HEAD, EMPTY_HOW, isEmptyBoard,
+  // ★★2026-09-19（★実機の ご報告）── ★一覧に 本文を 出しません。
+  announceRow, ANNOUNCE_OPEN_HINT, ANNOUNCE_READ_LINE,
   // ★★2026-09-19 ── ★いつ の 字。★ホームと 同じ ものを 使います。
   whenWord
 } from "@/lib/renraku";
@@ -99,6 +101,9 @@ export default function Renraku({
   //   ★★誰が・いつ・どの 門下 だけ です。★何を 読んだかは 残して いません。
   readsAll = []}) {
   const [draft, setDraft] = useState("");
+  // ★★どの お知らせを 開いて いるか（★2026-09-19・実機の ご報告）。
+  //   ★★一覧には 名と いつ だけ。★本文は 開いた ときだけ 出ます。
+  const [openAnnounce, setOpenAnnounce] = useState(null);
   const width = useWindowWidth();
   const twoPane = isTwoPane(width);
   const boxRef = useRef(null);
@@ -117,13 +122,38 @@ export default function Renraku({
       {(announcements || []).length > 0 ? (
         <>
           <p style={small}>{SECTION_ANNOUNCE}</p>
-          {announcements.map((a) => (
-            <div key={a.id} style={card}>
-              <p style={{ fontSize: "0.8125rem", color: C.ink }}>{a.org_name || "学校"}</p>
-              <p style={{ fontSize: "0.875rem", color: C.ink, lineHeight: 1.85, marginTop: 2 }}>{a.body}</p>
-              <p style={small}>{whenWord(a.created_at)}</p>
-            </div>
-          ))}
+          {/* ★★★一覧に 本文を 出しません（★2026-09-19・実機の ご報告）。
+              ★★左の 列に 書いた 字が ずっと 出た ままに なって いました。
+              ★★★見本 `P_renraku` は、★左は 名と いつ だけ です。
+                ★★本文は 押して 開けた ときに 出ます。
+              ★★決めは lib/renraku.js の `announceRow` が 持ちます。 */}
+          {announcements.map((a) => {
+            const 行 = announceRow(a);
+            const 開 = openAnnounce === a.id;
+            return (
+              <div key={a.id} style={card}>
+                <button type="button"
+                  onClick={() => setOpenAnnounce(開 ? null : a.id)}
+                  style={{
+                    display: "flex", width: "100%", alignItems: "center",
+                    justifyContent: "space-between", gap: 8, minHeight: 44,
+                    background: "transparent", border: "none", padding: 0,
+                    textAlign: "left", color: C.ink, fontSize: "0.875rem"
+                  }}>
+                  <span>{行.title}</span>
+                  <span style={small}>{行.when}　{開 ? "▲" : "›"}</span>
+                </button>
+                {開 ? (
+                  <>
+                    <p style={{ fontSize: "0.9375rem", color: C.ink, lineHeight: 1.95,
+                      marginTop: 8, whiteSpace: "pre-wrap" }}>{a.body}</p>
+                    <p style={small}>{ANNOUNCE_READ_LINE}</p>
+                  </>
+                ) : null}
+              </div>
+            );
+          })}
+          <p style={small}>{ANNOUNCE_OPEN_HINT}</p>
         </>
       ) : null}
       {/* ★★おしらせを 書く（★見本①）。

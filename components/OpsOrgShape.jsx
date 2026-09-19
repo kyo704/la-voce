@@ -35,15 +35,25 @@ export default function OpsOrgShape({
       <H3>{HEAD}</H3>
       <Warn>{LEAD}</Warn>
 
-      {KINDS.map((k) => {
+      <Usu>上から 順に 足して ください。学科は、学部の 下に つきます。</Usu>
+      {KINDS.map((k, ki) => {
         const 並 = ofKind(rows, k.key);
         const 親候補 = k.parent ? ofKind(rows, k.parent) : [];
         const 名 = draft[k.key] || "";
-        const 親 = parent[k.key] || null;
+        // ★★★上が 1つ しか 無ければ、★はじめから それを 選んで おきます
+        //   （★2026-09-19・実機の ご報告 ──「手順が 分かりにくい」）。
+        //   ★★1つ しか 無い ものを 選ばせるのは、★手間 だけ です。
+        const 親 = parent[k.key] || (親候補.length === 1 ? 親候補[0].id : null);
         const 足せる = mayEdit && mayAdd(rows, k.key, 名, 親);
         return (
           <div key={k.key}>
-            <H3>{k.label}　<span style={小}>{並.length}つ</span></H3>
+            {/* ★★★順を 数で 書きます（★2026-09-19・実機の ご報告）。
+                ★★「学部 → 学科」の 順に 足して いただく ことが、
+                  ★★題からは 分かりません でした。 */}
+            <H3>{`${ki + 1}　${k.label}`}　<span style={小}>{並.length}つ</span></H3>
+            {k.parent && 親候補.length === 0 ? (
+              <Usu>{`先に 上の「${(KINDS.find((x) => x.key === k.parent) || {}).label}」を 足して ください。`}</Usu>
+            ) : null}
             {並.length > 0 ? (
               <Box>
                 {並.map((r, i) => {
@@ -68,9 +78,9 @@ export default function OpsOrgShape({
 
             {mayEdit ? (
               <div style={{ marginTop: rem(6) }}>
-                {k.parent && 親候補.length > 0 ? (
+                {k.parent && 親候補.length > 1 ? (
                   <>
-                    <FieldLabel>上に つく もの</FieldLabel>
+                    <FieldLabel>どの {(KINDS.find((x) => x.key === k.parent) || {}).label} の 下に 置きますか</FieldLabel>
                     <Box>
                       {親候補.map((p, i) => (
                         <Li key={p.id} last={i === 親候補.length - 1}
@@ -81,6 +91,9 @@ export default function OpsOrgShape({
                       ))}
                     </Box>
                   </>
+                ) : null}
+                {k.parent && 親候補.length === 1 ? (
+                  <Usu>{`「${親候補[0].name}」の 下に 足します。`}</Usu>
                 ) : null}
                 <FieldLabel>{k.hint}</FieldLabel>
                 <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>

@@ -130,9 +130,22 @@ function eq(a, b, label) {
   t(/position: "fixed"[\s\S]{0,120}bottom/.test(raw), "★合計が 下に 固定されている");
   t(/今月のご請求/.test(raw), "★合計に ご請求が ある");
   {
+    // ★★★2026-09-19 ── ★形を 関数に まとめたら 落ちました。
+    //   ★★`style={札の形(on)}` は、★字の 上に `minHeight` が 出て きません。
+    //   ★★★見たいのは「44 以上か」で あって、★書き方では ありません。
+    //     ★★関数に して ある ときは、★その 関数の 中を 見ます。
     const parts = raw.split("<button").slice(1);
-    const noH = parts.filter((p) => !/minHeight/.test(p.slice(0, p.indexOf("</button>") + 1 || 400)));
-    t(parts.length > 0 && noH.length === 0, `★押しどころは 44pt 以上（${parts.length}件）`);
+    const 中 = (p) => p.slice(0, p.indexOf("</button>") + 1 || 400);
+    const 形の名 = [...raw.matchAll(/function\s+([^\s(]+)\s*\([^)]*\)\s*\{[\s\S]{0,400}?minHeight/g)]
+      .map((m) => m[1]);
+    const noH = parts.filter((p) => {
+      const t2 = 中(p);
+      if (/minHeight/.test(t2)) return false;
+      // ★★形を 作る 関数を 使って いる なら、★その 中に 44 が あります。
+      return !形の名.some((n) => t2.includes(n + "("));
+    });
+    t(parts.length > 0 && noH.length === 0,
+      `★押しどころは 44pt 以上（${parts.length}件・形の関数 ${形の名.length}）`);
     const mins = (raw.match(/minHeight: (\d+)/g) || []).map((x) => Number(x.replace(/\D/g, "")));
     t(mins.every((v) => v >= 44), `★最小 ${Math.min(...mins)}pt`);
   }

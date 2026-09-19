@@ -116,6 +116,8 @@ export default function OpsRoster({
   const [gradeEdit, setGradeEdit] = useState(null);
   // ★★招く ときの 決め（★学年・学科）。★決めなくて かまいません。
   const [inviteAim, setInviteAim] = useState({ gradeYear: null, divisionId: null });
+  // ★★招く 1枚を 開いて いるか（★2026-09-19）。★開く → 決める → 作る。
+  const [inviteOpen, setInviteOpen] = useState(false);
   const [gradeDraft, setGradeDraft] = useState("");
   // ★いま 役職を えらんでいる 方と、★だめだった わけ。
   const [postEdit, setPostEdit] = useState(null);
@@ -628,51 +630,89 @@ export default function OpsRoster({
 
       {/* ★★操作は、★画面の 下半分に（★裁定）。
           ★★上に 置くと、★片手で 持ったとき 親指が 届きません。 */}
-      {/* ★★★招く ときに、★学年と 学科を 決めて おけます（★2026-09-19・見本 `P_maneku`）。
-          ★★決めなくて かまいません。★あとから ご本人が 直せます。
-          ★★★入った ときに 在籍の 行へ 写します（`app/api/enrollment/accept`）。
-            ★★画面だけ の 飾りに しません。★台帳に 列を 足しました。 */}
+      {/* ★★★招く ── ★開く → 決める → 作る の 順に しました
+          （★2026-09-19・実機の ご報告）。
+          ★★きょうまで、★決める 前から 合言葉が 出て いました。
+            ★★前に 作った ものが、★画面に 残った まま だった からです。
+          ★★★合言葉は、★作った ときの 学年・学科を **持って います**。
+            ★★あとから 選び直すと、★その 合言葉は 古い ものに なります。
+            ★★だから、★選び直したら 合言葉を 消します。
+          ★★決めなくて かまいません。★あとから ご本人が 直せます。 */}
       {onInvite ? (
         <div>
-          {choosableFor(divisions).filter((d) => d.kind === "department").length > 0 ? (
-            <>
-              <p style={small}>学科・コース（あとから ご本人が 直せます）</p>
+          {!inviteOpen ? (
+            <button type="button"
+              onClick={() => { setInviteOpen(true); if (onCloseInvite) onCloseInvite(); }}
+              className="w-full"
+              style={{
+                minHeight: 52, borderRadius: 12, border: `1px solid ${C.curtain}`,
+                borderBottomWidth: 3, background: C.curtain, color: "#FFFDF8",
+                fontSize: "0.9375rem"
+              }}>＋ 招く</button>
+          ) : (
+            <div style={{ ...card, borderColor: C.curtain }}>
+              <p style={{ fontSize: "0.875rem", fontWeight: 700, color: C.ink, margin: "0 0 6px" }}>
+                招く
+              </p>
+              <p style={small}>
+                学年と 学科を 決めて おけます。決めなくて かまいません。
+                あとから ご本人が 直せます。
+              </p>
+
+              {choosableFor(divisions).filter((d) => d.kind === "department").length > 0 ? (
+                <>
+                  <p style={small}>学科・コース</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
+                    {choosableFor(divisions).filter((d) => d.kind === "department").map((d) => (
+                      <button key={d.id} type="button"
+                        onClick={() => {
+                          setInviteAim((v) =>
+                            ({ ...v, divisionId: v.divisionId === d.id ? null : d.id }));
+                          if (onCloseInvite) onCloseInvite();
+                        }}
+                        style={札の形(inviteAim.divisionId === d.id)}>{d.name}</button>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <p style={small}>
+                  学科・コースは、設定の「学校の 形」で 足すと ここに 出ます。
+                </p>
+              )}
+
+              <p style={small}>学年</p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
-                {choosableFor(divisions).filter((d) => d.kind === "department").map((d) => (
-                  <button key={d.id} type="button"
-                    onClick={() => setInviteAim((v) =>
-                      ({ ...v, divisionId: v.divisionId === d.id ? null : d.id }))}
-                    style={{
-                      minHeight: 44, padding: "0 12px", borderRadius: 999,
-                      border: `1px solid ${inviteAim.divisionId === d.id ? C.curtain : C.line}`,
-                      background: inviteAim.divisionId === d.id ? C.paper : C.card,
-                      color: C.ink, fontSize: "0.75rem"
-                    }}>{d.name}</button>
+                {[1, 2, 3, 4, 5, 6].map((g) => (
+                  <button key={g} type="button"
+                    onClick={() => {
+                      setInviteAim((v) => ({ ...v, gradeYear: v.gradeYear === g ? null : g }));
+                      if (onCloseInvite) onCloseInvite();
+                    }}
+                    style={札の形(inviteAim.gradeYear === g)}>{`${g}年`}</button>
                 ))}
               </div>
-            </>
-          ) : null}
-          <p style={small}>学年（あとから ご本人が 直せます）</p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
-            {[1, 2, 3, 4, 5, 6].map((g) => (
-              <button key={g} type="button"
-                onClick={() => setInviteAim((v) =>
-                  ({ ...v, gradeYear: v.gradeYear === g ? null : g }))}
-                style={{
-                  minHeight: 44, padding: "0 12px", borderRadius: 999,
-                  border: `1px solid ${inviteAim.gradeYear === g ? C.curtain : C.line}`,
-                  background: inviteAim.gradeYear === g ? C.paper : C.card,
-                  color: C.ink, fontSize: "0.75rem"
-                }}>{`${g}年`}</button>
-            ))}
-          </div>
-          <button type="button" onClick={() => onInvite(inviteAim)}
-            className="w-full"
-            style={{
-              minHeight: 52, borderRadius: 12, border: `1px solid ${C.curtain}`,
-              borderBottomWidth: 3, background: C.curtain, color: "#FFFDF8",
-              fontSize: "0.9375rem"
-            }}>＋ 招く</button>
+
+              <div style={{ display: "flex", gap: 8 }}>
+                <button type="button" onClick={() => onInvite(inviteAim)}
+                  style={{
+                    flex: 1, minHeight: 52, borderRadius: 12,
+                    border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
+                    background: C.curtain, color: "#FFFDF8", fontSize: "0.9375rem"
+                  }}>合言葉を 作る</button>
+                <button type="button"
+                  onClick={() => {
+                    setInviteOpen(false);
+                    setInviteAim({ gradeYear: null, divisionId: null });
+                    if (onCloseInvite) onCloseInvite();
+                  }}
+                  style={{
+                    minHeight: 52, padding: "0 14px", borderRadius: 12,
+                    border: `1px solid ${C.line}`, background: C.card,
+                    color: C.inkSoft, fontSize: "0.8125rem"
+                  }}>やめる</button>
+              </div>
+            </div>
+          )}
         </div>
       ) : null}
 
@@ -683,7 +723,7 @@ export default function OpsRoster({
             ★★★だから メールの 口を **置きません**。★押せない 札に なります（★§8⑤）。
           ★★注記は 見本の ままです。★1行も 減らして いません（★裁定 その82）。
           ★★字は lib/studentInvite.js が 持ちます。 */}
-      {inviteCode || inviteError ? (
+      {(inviteCode || inviteError) && inviteOpen ? (
         <div style={{ ...card, borderColor: C.curtain }}>
           <p style={{ fontSize: "0.875rem", fontWeight: 700, color: C.ink, margin: "0 0 6px" }}>
             {INVITE_HEAD}
@@ -698,6 +738,15 @@ export default function OpsRoster({
                 color: C.curtain, background: C.paper, borderRadius: 10,
                 padding: "10px 0", margin: "0 0 6px"
               }}>{inviteCode}</p>
+              {/* ★★★その 合言葉が 持って いる 決めを、★そばに 書きます。
+                  ★★あとで「どれを 選んだか」を 思い出せる ように します。 */}
+              <p style={{ ...small, margin: 0 }}>
+                {`この 合言葉 …… 学年 ${inviteAim.gradeYear ? inviteAim.gradeYear + "年" : "決めて いません"}`
+                  + `　／　学科 ${inviteAim.divisionId
+                    ? ((divisions || []).find((d) => d.id === inviteAim.divisionId) || {}).name
+                      || "決めて いません"
+                    : "決めて いません"}`}
+              </p>
               <p style={{ ...small, margin: 0 }}>{CODE_HOW}</p>
               <p style={{ ...small, margin: 0 }}>
                 {`${CODE_DAYS}日で 切れます。`}
@@ -803,4 +852,14 @@ export default function OpsRoster({
            ★★中身は `git show 015f49c2:components/OpsRoster.jsx` で 引けます。 */}
     </div>
   );
+}
+
+// ★★選ぶ 札の 形（★1か所に します）。
+function 札の形(on) {
+  return {
+    minHeight: 44, padding: "0 12px", borderRadius: 999,
+    border: `1px solid ${on ? C.curtain : C.line}`,
+    background: on ? C.paper : C.card,
+    color: C.ink, fontSize: "0.75rem"
+  };
 }

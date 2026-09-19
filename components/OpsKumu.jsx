@@ -6,7 +6,10 @@ import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
 import { ScreenHead, H3, Box, Li, Note, Usu, Warn } from "@/components/UiV2";
 import {
   HEAD, DAYS, slotKey, weekDates, weekWord, periodWord,
-  freeAt, whoWrote, countWord, NOTES, NOT_WRITTEN_LINE, NOT_YET
+  freeAt, whoWrote, countWord, NOTES, NOT_WRITTEN_LINE, NOT_YET,
+  // ★★誰の 分を 組むか（★裁定 その99 F1・2026-09-19）。
+  PICK_TEACHER_HEAD, PICK_TEACHER_SUB, PICK_TEACHER_EMPTY, PICK_TEACHER_EMPTY_HOW,
+  needsTeacherPick, whoseWord
 } from "@/lib/opsKumu";
 
 // ============================================================================
@@ -28,10 +31,20 @@ const 小 = { ...TYPE.mini, color: C.inkSoft, lineHeight: 1.8 };
 
 export default function OpsKumu({
   todayISO, periods = [], slots = [], students = [], lessons = [],
-  nameOf, onPlace, onRemove, onClose, saving, error = ""
+  nameOf, onPlace, onRemove, onClose, saving, error = "",
+  // ★★★誰の 分を 組むか（★裁定 その99 F1・2026-09-19）。
+  //   ★★学長・事務長に、★ご自分の 門下は ありません。★それで 正しい です。
+  //   ★★けれど「組む」のは 運営の 仕事 です。★門下の 有無と 関わりません。
+  //   ★`perms` … ★`sched_all` を 持つ 方には、★先に 先生を 選んで いただきます
+  //   ★`teachers` … ★受け持ちの ある 先生
+  //   ★`teacherId` … ★いま 選んで いる 先生（★null なら まだ）
+  perms, teachers = [], teacherId, onPickTeacher
 }) {
   const [week, setWeek] = useState(0);
   const [cell, setCell] = useState(null);
+  // ★★★`sched_all` の 方は、★先生を 選んで から です。
+  //   ★★選ぶまで 表を 出しません。★誰の 分か 分からない 表は、★出せません。
+  const 選ぶ = needsTeacherPick(perms) && !teacherId;
   const 日々 = weekDates(todayISO, week);
   const 書いた = whoWrote(slots);
 
@@ -49,6 +62,40 @@ export default function OpsKumu({
     return { 来られる, 日, ここ };
   };
 
+  // ★★★先生を 選ぶ 画面（★裁定 その99 F1）。★別の 返り に します。
+  //   ★★1つの 返りの 中で 混ぜると、★どの 節が どちらの ものか 分からなく なります。
+  if (選ぶ) {
+    return (
+      <div style={{ fontFamily: FONT_STACK }}>
+        <ScreenHead title={HEAD} right={onClose ? (
+          <button type="button" onClick={onClose}
+            style={{
+              background: "transparent", border: "none", color: C.inkSoft,
+              ...TYPE.mini, minHeight: 44, fontFamily: FONT_STACK
+            }}>門下へ 戻る</button>
+        ) : null} />
+        <H3>{PICK_TEACHER_HEAD}</H3>
+        <Usu>{PICK_TEACHER_SUB}</Usu>
+        {teachers.length > 0 ? (
+          <Box>
+            {teachers.map((t, i) => (
+              <Li key={t} last={i === teachers.length - 1} right="この 先生の 分"
+                onClick={() => onPickTeacher && onPickTeacher(t)}>
+                {nameOf ? nameOf(t) : ""}
+              </Li>
+            ))}
+          </Box>
+        ) : (
+          <>
+            <p style={{ ...TYPE.li, color: C.ink, margin: 0 }}>{PICK_TEACHER_EMPTY}</p>
+            <Usu>{PICK_TEACHER_EMPTY_HOW}</Usu>
+          </>
+        )}
+        <Note>{NOTES.map((t) => (<div key={t}>{t}</div>))}</Note>
+      </div>
+    );
+  }
+
   return (
     <div style={{ fontFamily: FONT_STACK }}>
       {/* ★★戻り道を 置きます（★門下から 来ます）。 */}
@@ -59,9 +106,16 @@ export default function OpsKumu({
             ...TYPE.mini, minHeight: 44, fontFamily: FONT_STACK
           }}>門下へ 戻る</button>
       ) : null} />
+      {/* ★★★いま 誰の 分を 見て いるか（★裁定 その99 F1）。 */}
       <p style={小}>
-        {`${置いた方.size} / ${students.length}人 置きました　／　${weekWord(week)}`}
+        {`${whoseWord(teacherId && nameOf ? nameOf(teacherId) : null)}　／　`
+          + `${置いた方.size} / ${students.length}人 置きました　／　${weekWord(week)}`}
       </p>
+      {teacherId && onPickTeacher ? (
+        <button type="button" onClick={() => onPickTeacher(null)} style={札}>
+          ほかの 先生に する
+        </button>
+      ) : null}
 
       {/* ★★週を 移る。★数だけ です。★暦は まだ 出しません。 */}
       <div style={{ display: "flex", gap: 8, alignItems: "center", margin: `${rem(8)} 0` }}>

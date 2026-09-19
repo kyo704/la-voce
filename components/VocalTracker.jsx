@@ -178,6 +178,8 @@ import OpsPresets from "@/components/OpsPresets";
 import OpsMonka from "@/components/OpsMonka";
 // ★★日程を 組む（★見本 `P_kumu`・裁定 その98 ①・2026-09-19）。
 import OpsKumu from "@/components/OpsKumu";
+// ★★誰の 分を 組むか（★裁定 その99 F1）。★決めは lib が 持ちます。
+import { teachersWithMonka, monkaOf } from "@/lib/opsKumu";
 import { maySee as maySeePresets } from "@/lib/lessonPresets";
 import { maySeeMoney } from "@/lib/opsShell";
 import { mayEnterOps, mayEditRoster, permsOfMember } from "@/lib/opsShell";
@@ -11661,20 +11663,27 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   const [kumuSlots, setKumuSlots] = useState([]);
   const [kumuPeriods, setKumuPeriods] = useState([]);
   const [opsKumuOpen, setOpsKumuOpen] = useState(false);
+  // ★★どの 先生の 分を 組んで いるか（★裁定 その99 F1・2026-09-19）。
+  //   ★★`sched_all` の 方は 選びます。★`sched_mine` だけ の 方は ご自分 です。
+  const [opsKumuTeacher, setOpsKumuTeacher] = useState(null);
   const [kumuSaving, setKumuSaving] = useState(false);
   const [kumuError, setKumuError] = useState("");
 
-  async function fetchKumu(orgId, studentIds) {
+  async function fetchKumu(orgId, studentIds, teacherId) {
     if (!orgId) return;
     const supabase = createClient();
+    const 先生 = teacherId || userId;
     const [s, p] = await Promise.all([
       (studentIds || []).length
         ? supabase.rpc("get_student_free_slots",
           { p_org_id: orgId, p_user_ids: studentIds })
         : Promise.resolve({ data: [] }),
-      // ★★行は ご自分の コマ です（★学校の コマは まだ ありません）。
-      supabase.from("my_periods").select("id, ord, name, start_min, end_min")
-        .eq("user_id", userId).order("ord", { ascending: true })
+      // ★★★行は その 先生の コマ です（★学校の コマは まだ ありません）。
+      //   ★★`my_periods` は ご本人 だけ の 表 です。★学長は 読めません。
+      //   ★★★だから 読み道を 通します（★`get_teacher_periods`・裁定 その99 F1）。
+      //     ★★決まりは 緩めて いません。★返すのは 時間の 割り方 だけ です。
+      supabase.rpc("get_teacher_periods",
+        { p_org_id: orgId, p_teacher_id: 先生 })
     ]);
     if (s.error) console.error("★空きコマを読めませんでした:", s.error);
     if (p.error) console.error("★自分のコマを読めませんでした:", p.error);
@@ -11689,7 +11698,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
    *     ★★端末の 時計で 作ります（★台帳は UTC で しまいます）。
    *   ★★何行 動いたかを 見ます。★0行を 成功に しません。
    */
-  async function handlePlaceLesson(orgId, { studentId, dateISO, period }) {
+  async function handlePlaceLesson(orgId, { studentId, dateISO, period, teacherId }) {
     setKumuError("");
     setKumuSaving(true);
     try {
@@ -11700,7 +11709,9 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         + `${String(分).padStart(2, "0")}:00`);
       const { data, error } = await supabase.from("lessons")
         .insert({
-          org_id: orgId, teacher_id: userId, student_id: studentId,
+          // ★★★選んだ 先生の 分 です（★裁定 その99 F1）。
+          //   ★★選んで いなければ ご自分 です。
+          org_id: orgId, teacher_id: teacherId || userId, student_id: studentId,
           scheduled_at: いつ.toISOString(),
           duration_minutes: Number(period.end_min) - Number(period.start_min),
           created_by: userId
@@ -15314,22 +15325,36 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                    ★★台帳も 同じ です（`assignments_select` ── 自分の `teacher_id`）。
                  ★★出席の 数を 出します。★率（％）は 出しません（★裁定 その90）。 */
             if (tabKey === "monka" && opsKumuOpen) {
-              const 門下 = (orgAssignments[opsOrgId] || [])
-                .filter((a) => a && a.teacher_id === userId && !a.ended_at)
-                .map((a) => a.student_id);
+              // ★★★誰の 分を 組むか（★裁定 その99 F1・2026-09-19）。
+              //   ★★`sched_all` の 方は 先生を 選びます。★選ぶまで 表を 出しません。
+              //   ★★`sched_mine` だけ の 方は ご自分 です。★選ぶ 画面は 出ません。
+              //   ★★決めは lib/opsKumu.js が 持ちます。★ここでは 判じません。
+              const 見る先生 = canOps(gate, "sched_all") ? opsKumuTeacher : userId;
+              const 門下 = monkaOf(orgAssignments[opsOrgId] || [], 見る先生);
               return (
                 <OpsKumu
                   todayISO={opsDate}
+                  perms={gate}
+                  teachers={teachersWithMonka(orgAssignments[opsOrgId] || [])}
+                  teacherId={見る先生}
+                  onPickTeacher={(t) => {
+                    setOpsKumuTeacher(t);
+                    if (t) {
+                      void fetchKumu(opsOrgId,
+                        monkaOf(orgAssignments[opsOrgId] || [], t), t);
+                    }
+                  }}
                   periods={kumuPeriods}
                   slots={kumuSlots}
                   students={門下}
                   // ★★置いて ある ものは、★ご自分の コマ だけ を 見ます。
                   lessons={(orgLessons[opsOrgId] || []).filter((l) =>
-                    l && l.teacher_id === userId)}
+                    l && l.teacher_id === 見る先生)}
                   nameOf={(id) => orgDisplayName(id) || ""}
                   saving={kumuSaving}
                   error={kumuError}
-                  onPlace={(x) => handlePlaceLesson(opsOrgId, x)}
+                  onPlace={(x) => handlePlaceLesson(opsOrgId,
+                    { ...x, teacherId: 見る先生 })}
                   onRemove={(l) => handleRemoveLesson(opsOrgId, l)}
                   onClose={() => setOpsKumuOpen(false)} />
               );
@@ -15365,14 +15390,20 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   freeCounts={monkaFree}
                   // ★★★日程を 組む へ（★2026-09-19・裁定 その98 ①）。
                   //   ★★ご自分の 門下が 1人でも いる ときだけ 出します。
-                  onGoKumu={(orgAssignments[opsOrgId] || [])
-                    .some((a) => a && a.teacher_id === userId && !a.ended_at)
+                  // ★★★入口（★裁定 その99 F1・2026-09-19）。
+                  //   ★★きょうまで「ご自分の 門下が いる 方」だけ でした。
+                  //   ★★★学長・事務長に、★ご自分の 門下は ありません。
+                  //     ★★入口が 出ず、★組めません でした。
+                  //   ★★`sched_all` を 持つ 方にも 出します。★先生を 選んで 組みます。
+                  onGoKumu={(canOps(gate, "sched_all")
+                    || (orgAssignments[opsOrgId] || [])
+                      .some((a) => a && a.teacher_id === userId && !a.ended_at))
                     ? () => {
-                      const 門下 = (orgAssignments[opsOrgId] || [])
-                        .filter((a) => a && a.teacher_id === userId && !a.ended_at)
-                        .map((a) => a.student_id);
-                      void fetchKumu(opsOrgId, 門下);
                       setOpsKumuOpen(true);
+                      if (!canOps(gate, "sched_all")) {
+                        void fetchKumu(opsOrgId,
+                          monkaOf(orgAssignments[opsOrgId] || [], userId), userId);
+                      }
                     }
                     : undefined}
                   onOpenOne={undefined} />

@@ -112,6 +112,21 @@ export default function OpsPeople({
         </p>
         <span style={small}>{shown.length}／{list.length}</span>
       </div>
+      {/* ★★★何を する 画面か を 書きます（★2026-09-19・実機の ご報告）。
+          ★★「そもそも 何を する 画面か 分かりにくい」と 伺いました。
+          ★★★役職を 作るのは 別の 節 です（★役職と、できること）。
+            ★★ここは、★その 役職を **人に 付ける** ところ です。 */}
+      <p style={small}>この学校の 方に、役職を 渡します。</p>
+      <p style={small}>
+        役職そのものを 作るのは「役職と、できること」です。お名前を 押すと、
+        渡す 役職を 選べます。
+      </p>
+      {/* ★★★ご自分の 役職は、★ご自分で 変えられません（★裁定 その99 F4）。
+          ★★「確かめる」が 出ない わけも、★同じ ところに 書きます。 */}
+      <p style={small}>
+        ご自分の 役職は、ご自分で 変えられません。
+        「確かめる」も、ご自分には 出ません。
+      </p>
 
       {/* ★★★絞り（★2026-09-19・裁定 その98 で 形の 表が できました）。
           ★★きょうまで 2つ でした（★全て ／ 役職）。
@@ -136,7 +151,16 @@ export default function OpsPeople({
       </div>
 
       <div style={card}>
-        {shown.length === 0 ? (
+        {list.length <= 1 ? (
+          /* ★★★ほかに 誰も いない とき（★裁定 その99 F4）。
+              ★★1人＝ご自分 だけ です。★渡す 相手が いません。 */
+          <div style={{ padding: 22, textAlign: "center" }}>
+            <p style={{ fontSize: "0.875rem", color: C.ink, margin: 0 }}>
+              まだ、ほかの 方が いません。
+            </p>
+            <p style={{ ...small, margin: "4px 0 0" }}>名簿から 招いて ください。</p>
+          </div>
+        ) : shown.length === 0 ? (
           <p style={{ ...small, padding: 22, textAlign: "center", margin: 0 }}>
             この 絞りに あう方は いません
           </p>

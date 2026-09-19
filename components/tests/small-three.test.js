@@ -56,6 +56,22 @@ const 受け = readCode("app/api/enrollment/accept", "route.js");
     "★決めて いない ときに 空で 上書き します");
 });
 
+見る("① 合言葉は、★決めた あとに 作る（★2026-09-19・実機の ご報告）", () => {
+  // ★★★きょうまで、★決める 前から 合言葉が 出て いました。
+  //   ★★前に 作った ものが、★画面に 残った まま だった からです。
+  //   ★★★開く → 決める → 作る の 順に しました。
+  assert.ok(/inviteOpen/.test(名簿), "★開いて いるかを 持って いません");
+  assert.ok(/setInviteOpen\(true\); if \(onCloseInvite\) onCloseInvite\(\)/.test(名簿),
+    "★開く ときに 前の 合言葉を 消して いません");
+  // ★★選び直したら 消す こと（★その 合言葉は 古い 決めを 持って います）。
+  const i = 名簿.indexOf("setInviteAim((v) =>");
+  assert.ok(/onCloseInvite\(\)/.test(名簿.slice(i, i + 700)),
+    "★選び直しても 合言葉が 残ります");
+  // ★★合言葉の 札は、★1枚を 開いて いる ときだけ 出す。
+  assert.ok(/\(inviteCode \|\| inviteError\) && inviteOpen/.test(名簿),
+    "★閉じて いても 合言葉が 出ます");
+});
+
 見る("① 画面から 決めを 渡して いる", () => {
   assert.ok(/onInvite\(inviteAim\)/.test(名簿), "★画面が 決めを 渡して いません");
   assert.ok(/grade_year: \(決め && 決め\.gradeYear\) \|\| null/.test(蔵),
