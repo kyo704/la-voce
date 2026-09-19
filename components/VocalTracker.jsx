@@ -11666,6 +11666,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   // ★★どの 先生の 分を 組んで いるか（★裁定 その99 F1・2026-09-19）。
   //   ★★`sched_all` の 方は 選びます。★`sched_mine` だけ の 方は ご自分 です。
   const [opsKumuTeacher, setOpsKumuTeacher] = useState(null);
+  // ★★どこから 入ったか（★戻り先を 変えます・2026-09-19）。
+  const [opsKumuFrom, setOpsKumuFrom] = useState("monka");
   const [kumuSaving, setKumuSaving] = useState(false);
   const [kumuError, setKumuError] = useState("");
 
@@ -14950,6 +14952,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
               for (let i = 0; i < 7; i++) week.push(addDaysISO(opsDate, i - 3));
               return (
                 <OpsSchedule
+                  // ★★★日程を 組む へ（★2026-09-19・実機の ご報告）。
+                  //   ★★学長に「門下」の 帯は 出ません。★入口が ありません でした。
+                  //   ★★日程の 帯は `sched_all` で 開きます。★ここに 置きます。
+                  onGoKumu={canOps(gate, "sched_all") ? () => {
+                    setOpsKumuOpen(true);
+                    setOpsKumuFrom("schedule");
+                  } : undefined}
                   lessons={(orgLessons[opsOrgId] || [])}
                   teachers={teacherList}
                   dateISO={opsDate}
@@ -15324,7 +15333,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                  ★★★見えるのは **担当の 生徒だけ** です。
                    ★★台帳も 同じ です（`assignments_select` ── 自分の `teacher_id`）。
                  ★★出席の 数を 出します。★率（％）は 出しません（★裁定 その90）。 */
-            if (tabKey === "monka" && opsKumuOpen) {
+            if ((tabKey === "monka" || tabKey === "schedule") && opsKumuOpen
+              && (tabKey === opsKumuFrom || opsKumuFrom === "monka")) {
               // ★★★誰の 分を 組むか（★裁定 その99 F1・2026-09-19）。
               //   ★★`sched_all` の 方は 先生を 選びます。★選ぶまで 表を 出しません。
               //   ★★`sched_mine` だけ の 方は ご自分 です。★選ぶ 画面は 出ません。
@@ -15356,7 +15366,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   onPlace={(x) => handlePlaceLesson(opsOrgId,
                     { ...x, teacherId: 見る先生 })}
                   onRemove={(l) => handleRemoveLesson(opsOrgId, l)}
-                  onClose={() => setOpsKumuOpen(false)} />
+                  onClose={() => { setOpsKumuOpen(false); setOpsKumuTeacher(null); }} />
               );
             }
             if (tabKey === "monka") {
@@ -15400,6 +15410,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       .some((a) => a && a.teacher_id === userId && !a.ended_at))
                     ? () => {
                       setOpsKumuOpen(true);
+                      setOpsKumuFrom("monka");
                       if (!canOps(gate, "sched_all")) {
                         void fetchKumu(opsOrgId,
                           monkaOf(orgAssignments[opsOrgId] || [], userId), userId);

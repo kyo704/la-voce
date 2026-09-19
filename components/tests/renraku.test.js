@@ -176,7 +176,15 @@ function eq(a, b, label) {
     const list = raw.slice(raw.indexOf("const list = ("), raw.indexOf("const body = ("));
     const studioRows = list.slice(list.indexOf("studios || []"), list.length);
     t(!/\.body/.test(studioRows), "★門下の 行に 本文を 出していない");
-    t(/\{a\.body\}/.test(list), "★学校からの おしらせは 本文を 出す（★見本①）");
+    // ★★★2026-09-19（★実機の ご報告・裁定 その99 F2）── ★決めが 変わりました。
+    //   ★★一覧に 本文を 出して いました。★左の 列は 292px です。
+    //     ★★書いた 字が ずっと 出た ままに なり、★読みにくい と 伺いました。
+    //   ★★★いまは ── ★一覧は 題と いつ だけ。★押すと 右の 広い 面に 出ます。
+    //     ★★狭い 画面では 1枚に なります（★門下と 同じ 形）。
+    t(!/\{a\.body\}/.test(list), "★★一覧に 本文を 出して いない（学校からの お知らせも）");
+    t(/announceRow/.test(list), "★題と いつ を lib から 取って いる");
+    t(/\{a\.body\}/.test(raw.slice(raw.indexOf("const お知らせ本文"))),
+      "★★押すと 本文が 出る（★右の 面）");
     t(/lastAt/.test(list), "★最終更新は 出す");
     t(/studioName/.test(list), "★名前も 出す");
   }

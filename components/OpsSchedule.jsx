@@ -79,6 +79,12 @@ export default function OpsSchedule({
   myId,
   // ★★重なりの 札を 押した とき（★裁定 その85 Q3）。
   onOpenOverlap,
+  // ★★★日程を 組む へ（★2026-09-19・実機の ご報告）。
+  //   ★★学長・事務長に「門下」の 帯は 出ません（★`monka_write` が 要ります）。
+  //   ★★★それで 正しい です ── ★ご自分の 門下は ありません。
+  //     ★★けれど「組む」のは 運営の 仕事 です。★入口が どこにも ありません でした。
+  //   ★★日程の 帯は `sched_all` で 開きます。★ここに 置きます。
+  onGoKumu,
   // ★★★コマを 押した とき（★裁定 その79 の 入口 ②・2026-09-18）。
   //   ★★渡されなければ、★コマは 押しどころに なりません。
   onOpenAttendance
@@ -156,6 +162,20 @@ export default function OpsSchedule({
           </button>
         ))}
       </div>
+
+      {/* ★★★日程を 組む（★2026-09-19・裁定 その99 F1 の 入口）。
+          ★★渡されなければ 出しません（★押せない 札を 置きません）。 */}
+      {onGoKumu ? (
+        <button type="button" onClick={onGoKumu}
+          style={{
+            ...chip(false), width: "100%", textAlign: "left",
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            minHeight: 48
+          }}>
+          <span>レッスンの 日程を 組む</span>
+          <span style={{ color: C.inkSoft }}>›</span>
+        </button>
+      ) : null}
 
       {/* ★★★重なり ── ★押せる 札に しました（★裁定 その85 Q3・2026-09-18）。
           ★★きょうまで、★いつも 開いた 箱 でした。

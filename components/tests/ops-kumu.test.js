@@ -52,9 +52,17 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.ok(/opsKumuOpen/.test(蔵), "★開いて いるかを 持って いません");
     assert.ok(/onClose/.test(画面), "★戻り道が ありません");
     // ★★開いて いる ときの 枝が、★門下の 一覧より **先** に ある こと。
-    const a = 蔵.indexOf('tabKey === "monka" && opsKumuOpen');
+    // ★★★2026-09-19 ── ★日程の 帯からも 入れる ように しました。
+    //   ★★学長に「門下」の 帯は 出ません（★`monka_write` が 要ります）。
+    //   ★★だから 枝の 形が 変わりました ── ★`monka` か `schedule` の どちらか です。
+    // ★★★はじめ `opsKumuOpen` の 1つ目を 探して いました。
+    //   ★★1つ目は 覚えの 宣言（useState）です。★枝では ありません。
+    //   ★★★枝の 字を そのまま 探します。
+    const a = 蔵.indexOf('&& opsKumuOpen');
     const b = 蔵.indexOf('tabKey === "monka") {');
     assert.ok(a > 0 && a < b, "★順が 逆です（★開いても 一覧が 出ます）");
+    assert.ok(/tabKey === "schedule"/.test(蔵.slice(a - 120, a + 40)),
+      "★日程の 帯から 入れません");
   });
 
   見る("③ 書いて いない 方を「来られない」に しない", () => {
@@ -126,7 +134,14 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.ok(/ご自分の 分/.test(K.whoseWord(null)), "★ご自分の ときの 字が ちがいます");
   });
 
-  見る("★学長の 入口が ある（★門下が 無くても）", () => {
+  見る("★学長の 入口が ある（★門下の 帯が 無くても）", () => {
+    // ★★★学長に「門下」の 帯は 出ません（★`monka_write` を 持ちません）。
+    //   ★★門下の 中に 札を 置いても、★たどり着けません でした。
+    //   ★★★日程の 帯（`sched_all` で 開きます）にも 置きました。
+    const 日程 = readCode("components", "OpsSchedule.jsx");
+    assert.ok(/onGoKumu/.test(日程), "★日程の 帯に 入口が ありません");
+    assert.ok(/onGoKumu=\{canOps\(gate, "sched_all"\)/.test(蔵),
+      "★日程の 帯の 入口の 門が ちがいます");
     assert.ok(/canOps\(gate, "sched_all"\)\s*\n?\s*\|\|/.test(蔵)
       || /canOps\(gate, "sched_all"\)/.test(
         蔵.slice(蔵.indexOf("onGoKumu"), 蔵.indexOf("onGoKumu") + 700)),

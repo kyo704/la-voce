@@ -143,13 +143,9 @@ export default function Renraku({
                   <span>{行.title}</span>
                   <span style={small}>{行.when}　{開 ? "▲" : "›"}</span>
                 </button>
-                {開 ? (
-                  <>
-                    <p style={{ fontSize: "0.9375rem", color: C.ink, lineHeight: 1.95,
-                      marginTop: 8, whiteSpace: "pre-wrap" }}>{a.body}</p>
-                    <p style={small}>{ANNOUNCE_READ_LINE}</p>
-                  </>
-                ) : null}
+                {/* ★★★本文は ここに 出しません（★2026-09-19・実機の ご報告）。
+                    ★★左の 一覧は 狭い 列 です（292px）。★本文は 読みにくく なります。
+                    ★★★右の 広い 面に 出します。★狭い 画面では 1枚に なります。 */}
               </div>
             );
           })}
@@ -361,6 +357,25 @@ export default function Renraku({
     <p style={{ ...small, marginTop: 10 }}>{NO_READ_TRACKING_LINE}</p>
   );
 
+  // ★★★開いて いる お知らせの 本文（★右の 面・2026-09-19）。
+  //   ★★門下の やりとりと 同じ ところに 出します。★狭い 列に 押し込みません。
+  const お知らせ本文 = (() => {
+    const a = (announcements || []).find((x) => x && x.id === openAnnounce);
+    if (!a) return null;
+    const 行 = announceRow(a);
+    return (
+      <div style={{ ...card, maxWidth: BODY_WIDTH }}>
+        <p style={{ fontSize: "1.125rem", fontWeight: 700, color: C.ink, margin: 0 }}>
+          {行.title}
+        </p>
+        <p style={small}>{行.when}</p>
+        <p style={{ fontSize: "0.9375rem", color: C.ink, lineHeight: 1.95,
+          marginTop: 10, whiteSpace: "pre-wrap" }}>{a.body}</p>
+        <p style={{ ...small, marginTop: 12 }}>{ANNOUNCE_READ_LINE}</p>
+      </div>
+    );
+  })();
+
   if (twoPane) {
     // ★★決まりB：★2ペイン。★左に 一覧、★右に 本文。
     return (
@@ -371,7 +386,10 @@ export default function Renraku({
       {空っぽ ? null : (
       <div style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
         <div style={{ flex: `0 0 ${LIST_WIDTH}px`, minWidth: 0 }}>{list}</div>
-        <div style={{ flex: 1, minWidth: 0, display: "flex", justifyContent: "flex-start" }}>{body}</div>
+        {/* ★★★右の 面 ── ★お知らせを 開いて いれば そちら、★なければ 門下。 */}
+        <div style={{ flex: 1, minWidth: 0, display: "flex", justifyContent: "flex-start" }}>
+          {お知らせ本文 || body}
+        </div>
       </div>
       )}
       {読んだ断り}
@@ -381,6 +399,22 @@ export default function Renraku({
   // ★狭い画面：★門下を 開いていなければ 一覧、★開いていれば 本文。
   //   ★★帯は どちらの 姿でも 出します。★狭い ときに 消えると、
   //     ★★iPhone で 見て いる 方 だけ が 自覚を 失います。
+  // ★★狭い 画面で お知らせを 開いた とき（★2026-09-19）。
+  if (!openStudio && openAnnounce && お知らせ本文) {
+    return (
+      <div className="space-y-3">
+        {上の帯}
+        <button type="button" onClick={() => setOpenAnnounce(null)}
+          style={{
+            minHeight: 44, border: "none", background: "transparent",
+            color: C.curtain, fontSize: "0.875rem", padding: 0
+          }}>‹ もどる</button>
+        {お知らせ本文}
+        {読んだ断り}
+      </div>
+    );
+  }
+
   return openStudio ? (
     <div className="space-y-3">
       {上の帯}

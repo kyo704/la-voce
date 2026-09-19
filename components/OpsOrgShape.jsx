@@ -29,6 +29,12 @@ export default function OpsOrgShape({
 }) {
   const [draft, setDraft] = useState({});
   const [parent, setParent] = useState({});
+  // ★★★消す 前に 1度 確かめます（★2026-09-19・実機の ご報告）。
+  //   ★★1度 押すと 消えて いました。★戻せません。
+  //   ★★★窓（confirm）を 出しません。★その場で 字が 変わります。
+  //     ★★窓は 押し間違いを 防ぎますが、★読まずに 押される ことも あります。
+  //     ★★同じ ところが「もう一度 押すと 消えます」に 変わる ほうが、★目に 入ります。
+  const [消す, set消す] = useState(null);
 
   return (
     <div style={{ fontFamily: FONT_STACK }}>
@@ -59,16 +65,30 @@ export default function OpsOrgShape({
                 {並.map((r, i) => {
                   const n = usedCount ? usedCount(r) : 0;
                   const 消せる = mayEdit && mayDelete(rows, r, n);
+                  const 確かめ中 = 消す === r.id;
                   return (
                     <Li key={r.id} last={i === 並.length - 1}
-                      right={消せる ? "消す" : (n > 0 ? `${n}人` : "")}
-                      onClick={消せる ? () => onRemove && onRemove(r) : null}>
+                      right={消せる
+                        ? (確かめ中 ? "もう一度 押すと 消えます" : "消す")
+                        : (n > 0 ? `${n}人` : "")}
+                      onClick={消せる
+                        ? async () => {
+                          if (!確かめ中) { set消す(r.id); return; }
+                          set消す(null);
+                          if (onRemove) await onRemove(r);
+                        }
+                        : null}>
                       {r.name}
                       {k.parent ? (
                         <div style={小}>{parentNameOf(rows, r) || "（上が ありません）"}</div>
                       ) : null}
                       {!消せる && mayEdit ? (
                         <div style={小}>{whyCannotDelete(rows, r, n)}</div>
+                      ) : null}
+                      {確かめ中 ? (
+                        <div style={{ ...小, color: C.curtain }}>
+                          消すと、戻せません。やめる ときは、ほかの ところを 押して ください。
+                        </div>
                       ) : null}
                     </Li>
                   );

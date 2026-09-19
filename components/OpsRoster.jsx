@@ -692,12 +692,21 @@ export default function OpsRoster({
                 ))}
               </div>
 
-              <div style={{ display: "flex", gap: 8 }}>
-                <button type="button" onClick={() => onInvite(inviteAim)}
+              {/* ★★★決めて から 作ります（★2026-09-19・実機の ご報告）。
+                  ★★決める 前から 押せて いました。★順が 崩れます。
+                  ★★★「決めずに 作る」道も 残します ── ★決めなくて よい から です。
+                    ★★けれど そちらは 控えめな 札に します。★はじめに 目に 入るのは、
+                      ★★「決めて から」の ほう です。 */}
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <button type="button"
+                  disabled={!inviteAim.gradeYear && !inviteAim.divisionId}
+                  onClick={() => onInvite(inviteAim)}
                   style={{
                     flex: 1, minHeight: 52, borderRadius: 12,
                     border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
-                    background: C.curtain, color: "#FFFDF8", fontSize: "0.9375rem"
+                    background: (inviteAim.gradeYear || inviteAim.divisionId)
+                      ? C.curtain : C.line,
+                    color: "#FFFDF8", fontSize: "0.9375rem"
                   }}>合言葉を 作る</button>
                 <button type="button"
                   onClick={() => {
@@ -711,6 +720,17 @@ export default function OpsRoster({
                     color: C.inkSoft, fontSize: "0.8125rem"
                   }}>やめる</button>
               </div>
+              {!inviteAim.gradeYear && !inviteAim.divisionId ? (
+                <div style={{ marginTop: 8 }}>
+                  <p style={small}>学年か 学科を 選ぶと、合言葉を 作れます。</p>
+                  <button type="button" onClick={() => onInvite(inviteAim)}
+                    style={{
+                      minHeight: 44, padding: "0 14px", borderRadius: 999,
+                      border: `1px solid ${C.line}`, background: C.card,
+                      color: C.inkSoft, fontSize: "0.75rem"
+                    }}>決めずに 作る</button>
+                </div>
+              ) : null}
             </div>
           )}
         </div>
