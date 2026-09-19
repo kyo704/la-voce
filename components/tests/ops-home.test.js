@@ -20,11 +20,26 @@ ok(/buildEvents\(events, participants, targetOf\)/.test(ui), "行事を共通関
 ok(/teacherCount \|\| 0/.test(ui), "先生数を親から受け取る");
 
 console.log("\n② 表示するもの");
-["きょうのレッスン", "名簿の人数", "先生", "重なり"].forEach((label) => {
-  ok(ui.includes(label), `${label}を表示`);
+// ★★★2026-09-19（★見本くらべ D1・D2）── ★札の 字は `lib` が 持ちます。
+//   ★★画面に 書いて あるか を 見て いました。★移した 日に 落ちました。
+//   ★★★決めの ある ところ で 数え、★画面は「それを 使って いるか」を 見ます。
+const 決め = readCode("lib", "opsHomeSections.js");
+const 並び = (名) => 決め.slice(決め.indexOf("export const " + 名),
+  決め.indexOf("]);", 決め.indexOf("export const " + 名)));
+["きょうの レッスン", "名簿の 人数", "先生", "重なり", "門下の 人数"].forEach((label) => {
+  ok(並び("HOME_STATS").includes(label), `${label}の 札が 決めに ある`);
 });
-ok(/きょうの ながれ/.test(ui), "今日の流れを表示");
-ok(/近い 行事/.test(ui), "近い行事を表示");
+ok(/homeStats\(perms\)/.test(ui), "札を できことで 選んで いる");
+ok(/tappable/.test(ui), "押せるか どうかを 見て いる（★行き先の 帯）");
+// ★★節は 6つ とも 描きます（★2026-09-19・お決め D1）。
+["nagare", "lesson", "monka", "gyoji", "oshirase", "bill"].forEach((k) => {
+  ok(new RegExp('出す\\("' + k + '"\\)').test(ui), `節 ${k} を 描いて いる`);
+});
+ok(/SECTION_HEADS/.test(ui), "節の 題を lib から 取って いる");
+ok(/HOME_NOTES/.test(ui), "但し書きを 画面に 出して いる");
+ok(/attendanceOrphan\(perms\)/.test(ui), "★裁定 その79 の 逃げ道を 通して いる");
+ok(/きょうの ながれ/.test(決め), "今日の流れの 題が 決めに ある");
+ok(/近い 行事/.test(決め), "近い行事の 題が 決めに ある");
 ok(/重なりは印をつけるだけです/.test(ui), "重なりを自動移動しない説明");
 ok(/onSeeSchedule/.test(ui), "日程画面への導線を持つ");
 

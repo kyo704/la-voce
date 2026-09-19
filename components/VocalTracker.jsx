@@ -10348,11 +10348,49 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
   //   ★★まだ お二人だけ です。★38人の 画面を、★お決めの 前に 変えません。
   //     ★★直すと、★役職を お持ちの 方の タブの 出方が 変わります。
   //       ★★9月11日に 11人へ 役職を 付けました。★その方々に 効きます。
+  // ★★★ホームの 要約に 要る もの（★2026-09-19・★見本くらべ D1）。
+  //   ★★節 6つの うち 2つ しか 描いて いません でした。
+  //   ★★★残り 4つ の うち、★「お知らせ」と「ご請求」は
+  //     ★★読む ものが ここに 来て いません でした。
+  //   ★★門（RLS）が 本体 です。★持たない 方には 0行 返ります。
+  //     ★★それでも 頼まないで おきます ── ★要らない 問いを 投げません。
+  const [opsOpenedLogCount, setOpsOpenedLogCount] = useState(0);
+  useEffect(() => {
+    let alive = true;
+    if (!opsOrgId) { setOpsOpenedLogCount(0); return; }
+    (async () => {
+      const supabase = createClient();
+      // ★★★数 だけ を 頼みます（`head: true`）。★中身を 運びません。
+      //   ★★誰が 見たかは、★ホームに 出しません（★裁定 その76）。
+      //     ★★数を 出すのは、★見られて いる ことを 双方が 知る ため です。
+      //   ★★絞りは 門（RLS）が します。★`org_message_reads_select` です。
+      const { count, error } = await supabase.from("org_message_reads")
+        .select("id", { count: "exact", head: true });
+      if (!alive) return;
+      if (error) { console.error("★開いた記録を数えられませんでした:", error); return; }
+      setOpsOpenedLogCount(Number(count) || 0);
+    })();
+    return () => { alive = false; };
+  }, [opsOrgId]);
   useEffect(() => {
     if (!opsOrgId) return;
     if (opsFixOn) void fetchOrgDetail(opsOrgId);
     void fetchRenrakuStudios(opsOrgId);
     void fetchRenraku(opsOrgId, null);
+    // ★★★ご請求（★2026-09-19）。
+    //   ★★きょうまで `fetchOrgDetail` の 中 だけ に ありました。
+    //     ★★あれは 直しの 門（`opsFixOn`）の 中でしか 走りません。
+    //     ★★★だから ホームの「ご請求の 要約」は、★いつも 空 でした。
+    //   ★★門（RLS）が 本体 です。★`bill` を 持たない 方には 0行 返ります。
+    void (async () => {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("org_billing")
+        .select("method, atesaki_name, next_billing_date")
+        .eq("org_id", opsOrgId)
+        .order("created_at", { ascending: false }).limit(1);
+      if (error) { console.error("★ご請求を読めませんでした:", error); return; }
+      setOrgBilling((prev) => ({ ...prev, [opsOrgId]: (data && data[0]) || null }));
+    })();
   }, [opsOrgId, opsFixOn, fetchRenrakuStudios, fetchRenraku]);
 
   // ★★電波が戻ったら、★自動で送ります。★押し直させません。
@@ -14298,7 +14336,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     : undefined}
                   teacherCount={opsMembers.filter((mm) => SCHEDULE_ROLES.includes(mm.role)).length}
                   nameOf={(id) => orgDisplayName(id) || ""}
-                  studentNameOf={(id) => orgDisplayName(id) || ""} />
+                  studentNameOf={(id) => orgDisplayName(id) || ""}
+                  // ★★★節 4つ と 数の 札（★2026-09-19・★見本くらべ D1・D2）。
+                  //   ★★`homeSections` は 6つ 返して いました。
+                  //     ★★画面が 使って いたのは 2つ だけ です。
+                  //   ★★★渡す ものが 無い ので 描けない、では ありません。
+                  //     ★★渡して いません でした。
+                  userId={userId}
+                  monkaStudios={renrakuStudios.filter((x) => x.teacherId === userId)}
+                  announcements={renrakuAnnouncements}
+                  openedLogCount={opsOpenedLogCount}
+                  billing={orgBilling[opsOrgId] || null}
+                  // ★★数の 札と 節から、★その 帯へ。★行き先は 前から あります。
+                  onGoTab={(k) => goTab(k)} />
               );
             }
             if (tabKey === "events") {

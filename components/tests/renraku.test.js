@@ -20,7 +20,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const { readCode, readRaw } = require("./_source");
+const { readCode, readRaw, loadLib } = require("./_source");
 
 let ok = 0, ng = 0;
 function t(cond, label) {
@@ -33,10 +33,12 @@ function eq(a, b, label) {
 }
 
 (async () => {
-  const load = async (n) => {
-    const src = fs.readFileSync(path.join(__dirname, "..", "..", "lib", n + ".js"), "utf8");
-    return import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
-  };
+  // ★★★2026-09-19、★`lib/renraku.js` が `@/lib/todayBand` を 取り込みました。
+  //   ★★`whenWord` を ここへ 移した ため です（★ホームでも 同じ 字を 出します）。
+  //   ★★★字を そのまま 読み込む 道では、★`@/` を 解けません。★落ちました。
+  //     ★★`loadLib` は、★届く ところ まで 写して から 読みます。
+  //     ★★★同じ 形の 落ち方は、★2026-09-18 にも ありました（★`_source.js` の 註）。
+  const load = async (n) => loadLib("lib", n + ".js");
   const m = await load("renraku");
   const tt = await load("tellTeacher");
   const ui = readCode("components", "Renraku.jsx");

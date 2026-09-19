@@ -1,7 +1,17 @@
 "use client";
 
 import { C } from "@/lib/tokens";
-import { homeSections, EMPTY_LINE } from "@/lib/opsHomeSections";
+import {
+  homeSections, EMPTY_LINE,
+  // ★★★2026-09-19（★見本くらべ D1・D2）。
+  //   ★★節 6つの うち 2つ しか 描いて いません でした。
+  //   ★★数の 札は いつも 4枚で、★押せません でした。
+  homeStats, SECTION_HEADS, NOTHING_YET, OPENED_LOG_LABEL, HOME_NOTES,
+  // ★★裁定 その79 Q2 の 逃げ道。★書いて ありましたが、★呼ばれて いません でした。
+  attendanceOrphan
+} from "@/lib/opsHomeSections";
+import { whenWord } from "@/lib/renraku";
+import { METHOD_LABELS, NOT_SET_YET } from "@/lib/orgBilling";
 // ★★つけ終わって いるかを、★行の 右に 出します（★2026-09-18）。
 import { attendanceLabel, timeOf } from "@/lib/todayBand";
 import { overlapsOf, dateOf } from "@/lib/opsSchedule";
@@ -27,21 +37,77 @@ import { buildEvents, EVENT_STATES } from "@/lib/orgEventsView";
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
 const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
 
-function Stat({ label, value, unit }) {
-  return (
-    <div style={{ ...card, flex: 1, minWidth: 0 }}>
+/**
+ * ★数の 札。
+ *
+ *   ★★★押すと その 一覧へ 行きます（★見本の note そのまま・2026-09-19）。
+ *     ★★行き先が 無い とき（★その 帯が 開いて いない とき）は 押せません。
+ *     ★★★押しても 何も 起きない 札を 置きません（★§8⑤）。
+ */
+function Stat({ label, value, unit, onGo }) {
+  const 中 = (
+    <>
       <p style={small}>{label}</p>
       <p style={{ color: C.ink, marginTop: 2 }}>
         <span className="ff-display" style={{ fontSize: "1.5rem" }}>{value}</span>
         <span style={{ fontSize: "0.6875rem", marginLeft: 2 }}>{unit}</span>
+        {onGo ? <span style={{ ...small, marginLeft: 4 }}>›</span> : null}
       </p>
+    </>
+  );
+  if (!onGo) return <div style={{ ...card, flex: 1, minWidth: 0 }}>{中}</div>;
+  return (
+    <button type="button" onClick={onGo}
+      style={{
+        ...card, flex: 1, minWidth: 0, minHeight: 44,
+        textAlign: "left", cursor: "pointer", font: "inherit"
+      }}>{中}</button>
+  );
+}
+
+/** ★節の 器。★題と 中身。★中身が 無ければ、★呼ぶ 側が 出しません。 */
+function Section({ head, children }) {
+  return (
+    <div style={card}>
+      <p style={{ ...small, marginBottom: 6 }}>{head}</p>
+      {children}
     </div>
+  );
+}
+
+/** ★節の 中の 1行。★押せる ときは 押せます。 */
+function Row({ left, right, onGo }) {
+  const 形 = {
+    display: "flex", alignItems: "center", justifyContent: "space-between",
+    gap: 8, width: "100%", textAlign: "left",
+    padding: "7px 0", borderTop: `1px solid ${C.line}`, fontSize: "0.8125rem"
+  };
+  const 中 = (
+    <>
+      <span style={{ color: C.ink }}>{left}</span>
+      <span style={{ color: C.inkSoft, fontSize: "0.6875rem" }}>
+        {right}{onGo ? "　›" : ""}
+      </span>
+    </>
+  );
+  if (!onGo) return <div style={形}>{中}</div>;
+  return (
+    <button type="button" onClick={onGo}
+      style={{ ...形, minHeight: 44, background: "transparent", border: "none" }}>{中}</button>
   );
 }
 
 export default function OpsHome({
   todayISO, lessons, members, events, participants, targetOf,
-  teacherCount, nameOf, studentNameOf, onSeeSchedule, onOpenAttendance, perms
+  teacherCount, nameOf, studentNameOf, onSeeSchedule, onOpenAttendance, perms,
+  // ★★★2026-09-19（★見本くらべ D1・D2 の お決め）。
+  //   ★`userId` …… ★「きょうの レッスン」は **ご自分の コマ** だけ です
+  //   ★`monkaStudios` …… ★[{teacherId, memberCount, lastAt}]（★ご自分の 門下）
+  //   ★`announcements` …… ★学校からの お知らせ（★中身は 出しません）
+  //   ★`openedLogCount` …… ★門下を 開いた 記録の 数（★誰が 見たかは 出しません）
+  //   ★`billing` …… ★`org_billing` の いちばん 新しい 1行
+  //   ★`onGoTab` …… ★数の 札と 節から、★その 帯へ
+  userId, monkaStudios, announcements, openedLogCount, billing, onGoTab
 }) {
   // ★★★節ごとに、★できことで 出す／出さない（★裁定 その79・2026-09-18）。
   //   ★★見本は 役職で 3つの 画面に 分けて います（P_home / P_homeS / P_homeT）。
@@ -56,6 +122,12 @@ export default function OpsHome({
     .sort((a, b) => (String(a.scheduled_at) < String(b.scheduled_at) ? -1 : 1));
   const overlaps = overlapsOf(lessons, todayISO);
   const by = countsByStatus(members);
+  // ★★★ご自分の コマ（★見本 `P_homeT` の「きょうの レッスン」）。
+  //   ★★「きょうの ながれ」は 学校ぜんぶ です。★こちらは ご自分の 分 だけ。
+  const myToday = today.filter((l) => userId && l.teacher_id === userId);
+  // ★★ご自分の 門下の 方の 数。★`monkaStudios` は ご自分の 分 だけ 来ます。
+  const 門下の人数 = (monkaStudios || [])
+    .reduce((n, x) => n + (Number(x.memberCount) || 0), 0);
   const upcoming = buildEvents(events, participants, targetOf)
     .filter((x) => String(x.ev.event_date) >= todayISO && x.state !== EVENT_STATES.WITHDRAWN)
     .slice(0, 3);
@@ -74,15 +146,34 @@ export default function OpsHome({
             ★★何が できる かを 1行 書きます。★何が できないかでは ありません。 */}
       {節の数 === 0 ? <p style={small}>{EMPTY_LINE}</p> : null}
 
-      {/* ★★数えるだけ。★4つ 並べます（★見本①）。 */}
-      <div style={{ display: "flex", gap: 8 }}>
-        <Stat label="きょうのレッスン" value={today.length} unit="件" />
-        <Stat label="名簿の人数" value={rosterCount(members)} unit="人" />
-      </div>
-      <div style={{ display: "flex", gap: 8 }}>
-        <Stat label="先生" value={teacherCount || 0} unit="人" />
-        <Stat label="重なり" value={overlaps.length} unit="件" />
-      </div>
+      {/* ★★★数の 札（★2026-09-19・★見本くらべ D1・D2）。
+          ★★枚数が 役職で 変わります ── ★見本は 学長 4／先生 3／職員 2。
+            ★★きょうまで いつも 4枚 でした。
+            ★★★「名簿の 人数」を、★名簿の できことを 見ずに 出して いました。
+          ★★押すと その 一覧へ 行きます。★行き先が 無ければ 押せません。
+          ★★決めは lib/opsHomeSections.js が 持ちます。★ここでは 決めません。 */}
+      {(() => {
+        const 数 = {
+          lessonToday: today.length,
+          roster: rosterCount(members),
+          // ★★門下の 人数 ── ★ご自分の 門下の 方の 数（★`monkaStudios` の 中）。
+          //   ★★読めなかった ときは 0 では ありません。★札ごと 出しません。
+          monka: 門下の人数,
+          teachers: teacherCount || 0,
+          overlap: overlaps.length
+        };
+        const 札 = homeStats(perms);
+        const 対 = [];
+        for (let i = 0; i < 札.length; i += 2) 対.push(札.slice(i, i + 2));
+        return 対.map((組, i) => (
+          <div key={i} style={{ display: "flex", gap: 8 }}>
+            {組.map((x) => (
+              <Stat key={x.key} label={x.label} unit={x.unit} value={数[x.key]}
+                onGo={x.tappable && onGoTab ? () => onGoTab(x.tab) : null} />
+            ))}
+          </div>
+        ));
+      })()}
       {/* ★★2026-09-13、★ようすは active／left の 2つ だけ。
           ★★休会・返事まちは 台帳に ありません。★出しません。 */}
       {by.left > 0 ? (
@@ -91,7 +182,13 @@ export default function OpsHome({
 
       {/* ★★きょうの ながれ。★該当が なければ 出しません。
           ★「今日の予定はありません」と 書かないこと。 */}
-      {出す("nagare") && today.length > 0 ? (
+      {/* ★★★逃げ道（★裁定 その79 Q2・★2026-09-19 に 繋ぎました）。
+          ★★出欠を 持つ のに、★日程の できことを 1つも 持たない 方 ──
+            ★★入口は 2つ とも 日程の できことで 開きます。
+            ★★★どちらにも 行けません。★出欠を 持って いる のに、です。
+          ★★その ときは「きょうの ながれ」を 出します。★入口①に なります。
+          ★★判じは lib が 持ちます。★ここで もう一度 決めません。 */}
+      {(出す("nagare") || attendanceOrphan(perms)) && today.length > 0 ? (
         <div style={card}>
           <p style={{ ...small, marginBottom: 6 }}>きょうの ながれ</p>
           {today.map((l) => {
@@ -158,6 +255,75 @@ export default function OpsHome({
         </div>
       ) : null}
 
+      {/* ★★★きょうの レッスン（★見本 `P_homeT`・2026-09-19）。
+          ★★上の「きょうの ながれ」は 学校ぜんぶ です。★こちらは ご自分の 分 だけ。
+          ★★★`sched_mine` を 持ち、★`sched_all` を 持たない 方には、
+            ★★そもそも ながれに ご自分の コマ しか 来ません。
+            ★★けれど 両方 持つ 方には、★2つは ちがう ものに なります。
+          ★★無ければ 出しません。★「ありません」と 書きません。 */}
+      {出す("lesson") && myToday.length > 0 ? (
+        <Section head={SECTION_HEADS.lesson}>
+          {myToday.map((l) => (
+            <Row key={l.id}
+              left={`${timeOf(l.scheduled_at) || ""}　${
+                studentNameOf ? studentNameOf(l.student_id) : ""}`}
+              right={l.attendance ? `済 ${attendanceLabel(l.attendance) || ""}` : "まだ"}
+              onGo={onOpenAttendance ? () => onOpenAttendance(l) : null} />
+          ))}
+        </Section>
+      ) : null}
+
+      {/* ★★★門下の 連絡（★見本 `P_homeT`・2026-09-19）。
+          ★★★中身（本文）を 出しません。★いつ 動いたか だけ です。
+            ★★連絡の 決め ──「本文の 抜粋を 一覧に 出しません」（★裁定 その87）。
+            ★★ホームでも 同じに します。★場所が 変わると 約束が 変わる、では 困ります。 */}
+      {出す("monka") && (monkaStudios || []).length > 0 ? (
+        <Section head={SECTION_HEADS.monka}>
+          {(monkaStudios || []).map((x) => (
+            <Row key={x.teacherId}
+              left={`${nameOf ? nameOf(x.teacherId) : ""} の 門下`}
+              right={x.lastAt ? whenWord(x.lastAt) : NOTHING_YET.monka}
+              onGo={onGoTab ? () => onGoTab("threads") : null} />
+          ))}
+        </Section>
+      ) : null}
+
+      {/* ★★★お知らせ（★見本 `P_home`・2026-09-19）。
+          ★★ここでも 本文を 出しません。★いつ・何件 だけ です。
+          ★★★開いた 記録は 数 だけ です（★裁定 その76）。
+            ★★誰が 見たかを ホームに 出しません。★報復を 避ける ため です。 */}
+      {出す("oshirase")
+        && ((announcements || []).length > 0 || Number(openedLogCount) > 0) ? (
+        <Section head={SECTION_HEADS.oshirase}>
+          {(announcements || []).slice(0, 2).map((a) => (
+            <Row key={a.id} left="学校からの お知らせ"
+              right={whenWord(a.created_at)}
+              onGo={onGoTab ? () => onGoTab("threads") : null} />
+          ))}
+          {Number(openedLogCount) > 0 ? (
+            <Row left={OPENED_LOG_LABEL} right={`${Number(openedLogCount)}件`}
+              onGo={onGoTab ? () => onGoTab("threads") : null} />
+          ) : null}
+        </Section>
+      ) : null}
+
+      {/* ★★★ご請求の 要約（★裁定 その74 の 表の うち 1行 だけ・2026-09-19）。
+          ★★金額を 出しません。★売上の 予測も 出しません（★下の 但し書き）。
+          ★★決めは lib/orgBilling.js が 持ちます。★ここで 言い換えません。 */}
+      {出す("bill") ? (
+        <Section head={SECTION_HEADS.bill}>
+          <Row left="お支払いの 方法"
+            right={billing && billing.method
+              ? (METHOD_LABELS[billing.method] || billing.method)
+              : NOT_SET_YET}
+            onGo={onGoTab ? () => onGoTab("settings") : null} />
+          {billing && billing.atesaki_name ? (
+            <Row left="宛先" right={billing.atesaki_name}
+              onGo={onGoTab ? () => onGoTab("settings") : null} />
+          ) : null}
+        </Section>
+      ) : null}
+
       {/* ★★近い 行事。★無ければ 出しません。★できことが 無ければ 出しません。 */}
       {出す("gyoji") && upcoming.length > 0 ? (
         <div style={card}>
@@ -176,6 +342,16 @@ export default function OpsHome({
           ))}
         </div>
       ) : null}
+
+      {/* ★★★但し書き（★見本 `P_home` の note・2026-09-19）。
+          ★★きょうまで、★註（コメント）には 書いて ありました。
+            ★★画面の 字に なって いません でした。
+          ★★★見て いる 方に 伝わらない 約束は、★約束では ありません。 */}
+      <div>
+        {HOME_NOTES.map((t) => (
+          <p key={t} style={{ ...small, margin: 0 }}>{t}</p>
+        ))}
+      </div>
     </div>
   );
 }

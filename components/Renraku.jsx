@@ -9,7 +9,9 @@ import {
   // ★★裁定 その87（2026-09-18）。★字も 幅も lib が 持ちます。
   LIST_WIDTH, NO_READ_TRACKING_LINE, MONKA_READ_SELF_LINE, showMonkaReadSelfBanner,
   SECTION_ANNOUNCE, SECTION_MONKA,
-  SCREEN_HEAD, EMPTY_HEAD, EMPTY_HOW, isEmptyBoard
+  SCREEN_HEAD, EMPTY_HEAD, EMPTY_HOW, isEmptyBoard,
+  // ★★2026-09-19 ── ★いつ の 字。★ホームと 同じ ものを 使います。
+  whenWord
 } from "@/lib/renraku";
 
 // ============================================================================
@@ -44,11 +46,10 @@ const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
 // ★★幅を 見る 仕掛けは `components/useWindowWidth.js` に 移しました（★2026-09-18）。
 //   ★★同じ ものが 4か所に あり、★2つだけ 向きの 変化を 聞いて いました。
 
-function whenWord(iso) {
-  const s = String(iso || "");
-  if (s.length < 10) return "";
-  return `${Number(s.slice(5, 7))}月${Number(s.slice(8, 10))}日`;
-}
+// ★★★`whenWord` は `lib/renraku.js` へ 移しました（★2026-09-19）。
+//   ★★ホームの「門下の 連絡」でも 同じ 字を 出します。
+//   ★★★ここに 写しを 置くと、★片方だけ 直る 日が 来ます。
+//   ★★あわせて、★字の 切り出しを やめました。★端末の 時計で 読みます。
 
 /** ★書き込みの 1つ。★取り消したものは、★1行だけ 残します。 */
 function Message({ m, nameOf }) {

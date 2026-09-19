@@ -80,6 +80,25 @@ from information_schema.columns
 where table_schema = 'public'
 order by table_name, ordinal_position
 """)
+# ★★★列の 権（★2026-09-19 に 足しました）。
+#   ★★決まりを 通った 方に、★その 列が 渡るか どうか は、
+#     ★★**列の 権**（`grant select (…)`）でも 決まります。
+#   ★★★これを 見て いません でした。★取り上げた あとも「露わ」と 出ます。
+#     ★★直した ことが 道具に 映りません。★それでは 使えません。
+権 = 問う("""
+select table_name as hyo, column_name as hashira
+from information_schema.column_privileges
+where table_schema = 'public' and grantee = 'authenticated'
+  and privilege_type = 'SELECT'
+order by table_name, column_name
+""")
+渡る = {(r["hyo"], r["hashira"]) for r in 権}
+if not 渡る:
+  raise SystemExit("★止まりました ── 列の 権を 1つも 読めません")
+# ★★較正 ── ★必ず 渡る 列（`lessons.scheduled_at`）で 確かめます。
+if ("lessons", "scheduled_at") not in 渡る:
+  raise SystemExit("★止まりました ── 較正が 合いません。道具が 壊れて います。")
+
 表ごと = {}
 for r in 列:
   表ごと.setdefault(r["hyo"], []).append(r["hashira"])
@@ -114,6 +133,11 @@ for 名 in sorted(開いて):
   if ひ:
     誰 = [r for r in 表 if r["hyo"] == 名][0]
     頼み = {c: c in 頼む列 for c in ひ}
+    渡り = {c: (名, c) in 渡る for c in ひ}
+    # ★★★渡らない 列は、★もう 露わでは ありません。★数えません。
+    ひ = [c for c in ひ if 渡り[c]]
+    if not ひ:
+      continue
     当たり.append((名, ひ, 誰, 頼み))
 
 # ---------------------------------------------------------------------------
