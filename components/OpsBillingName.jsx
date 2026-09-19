@@ -110,7 +110,7 @@ export default function OpsBillingName({
               style={{
                 minHeight: 48, padding: `0 ${rem(18)}`, borderRadius: 999,
                 border: `1px solid ${C.curtain}`,
-                background: 下書き ? C.curtain : C.line, color: "#FFFDF8",
+                background: 下書き ? C.curtain : C.line, color: C.onCurtain,
                 ...TYPE.mini, fontFamily: FONT_STACK
               }}>これで いい</button>
           </div>

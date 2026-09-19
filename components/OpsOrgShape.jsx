@@ -120,7 +120,7 @@ export default function OpsOrgShape({
                     style={{
                       flex: "none", minHeight: 44, padding: `0 ${rem(16)}`,
                       borderRadius: 999, border: `1px solid ${C.curtain}`,
-                      background: 足せる ? C.curtain : C.line, color: "#FFFDF8",
+                      background: 足せる ? C.curtain : C.line, color: C.onCurtain,
                       ...TYPE.mini, fontFamily: FONT_STACK
                     }}>足す</button>
                 </div>

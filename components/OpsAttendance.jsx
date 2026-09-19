@@ -119,7 +119,7 @@ export default function OpsAttendance({
                       flex: 1, minHeight: 56, borderRadius: 12,
                       border: `1px solid ${on ? C.curtain : C.line}`,
                       background: on ? C.curtain : C.card,
-                      color: on ? "#FFFDF8" : C.ink,
+                      color: on ? C.onCurtain : C.ink,
                       fontSize: rem(16), fontFamily: FONT_STACK
                     }}>{m.label}</button>
                 );
@@ -158,7 +158,7 @@ export default function OpsAttendance({
               style={{
                 width: "100%", minHeight: 52, marginTop: rem(10), borderRadius: 12,
                 border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
-                background: C.curtain, color: "#FFFDF8", fontSize: rem(15),
+                background: C.curtain, color: C.onCurtain, fontSize: rem(15),
                 fontFamily: FONT_STACK
               }}>
               {tx("次の 方へ")}　{(nameOf && nameOf(次.student_id)) || ""}

@@ -92,13 +92,13 @@ export default function OpsShell({ orgName, role, postName, myName,
       <VisualTokens />
       {/* ★★上の帯。★左上に「もどる」（★§3-3）。★個人のアプリへ 帰れます。 */}
       <div style={{
-        background: C.curtain, color: "#FFFDF8", padding: "10px 14px",
+        background: C.curtain, color: C.onCurtain, padding: "10px 14px",
         display: "flex", alignItems: "center", justifyContent: "space-between",
         gap: 10, letterSpacing: "0.04em"
       }}>
         <button type="button" onClick={onBack}
           style={{
-            background: "transparent", border: "none", color: "#FFFDF8",
+            background: "transparent", border: "none", color: C.onCurtain,
             fontSize: "0.8125rem", minHeight: 40, padding: 0, flex: "none"
           }}>‹ もどる</button>
         <span style={{
@@ -130,7 +130,7 @@ export default function OpsShell({ orgName, role, postName, myName,
                      ★★新しい 決めが 3つ 要ります。★当面 やりません。
                  ★★★この 帯を 直す 日に、★この 2つを 思い出して ください。 */
             <span style={{
-              fontSize: "0.625rem", background: "rgba(255,253,248,0.18)",
+              fontSize: "0.625rem", background: C.onCurtainFaint,
               borderRadius: 99, padding: "3px 9px", whiteSpace: "nowrap"
             }}>{postName}</span>
           ) : (
@@ -159,7 +159,7 @@ export default function OpsShell({ orgName, role, postName, myName,
             <button type="button" onClick={onCycleScale}
               title={"文字の 大きさ（" + (scaleLabel || "") + "）"}
               style={{
-                background: "rgba(255,253,248,0.18)", border: "none", color: "#FFFDF8",
+                background: C.onCurtainFaint, border: "none", color: C.onCurtain,
                 borderRadius: 99, padding: "3px 10px", fontSize: "0.625rem",
                 minHeight: 28, whiteSpace: "nowrap", flex: "none"
               }}>あ {scaleLabel}</button>
@@ -175,7 +175,7 @@ export default function OpsShell({ orgName, role, postName, myName,
           ★★どの 帯でも 出ます。★設定 だけでは ありません。 */}
       <div style={{
         flex: "none", display: "flex", alignItems: "center", gap: 8,
-        background: "#F6EFDF", borderBottom: `1px solid ${C.line}`,
+        background: C.opsBand, borderBottom: `1px solid ${C.line}`,
         padding: "7px 14px", fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.6
       }}>
         <span aria-hidden="true" style={{
@@ -233,7 +233,7 @@ export default function OpsShell({ orgName, role, postName, myName,
             ★★iPhone では これが 唯一の 入口 です。★消しません。 */}
       {横に出す ? null : (
       <div style={{
-        display: "flex", borderTop: `1px solid ${C.line}`, background: "#FFF9F1",
+        display: "flex", borderTop: `1px solid ${C.line}`, background: C.opsFoot,
         paddingBottom: "env(safe-area-inset-bottom)"
       }}>
         {tabs.map((t) => {

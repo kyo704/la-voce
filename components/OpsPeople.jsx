@@ -42,7 +42,7 @@ function Chip({ on, children, onClick }) {
       fontSize: "0.6875rem", padding: "4px 10px", borderRadius: 999,
       border: `1px solid ${on ? C.curtain : C.line}`,
       background: on ? C.curtain : "transparent",
-      color: on ? "#FFFDF8" : C.inkSoft, cursor: "pointer"
+      color: on ? C.onCurtain : C.inkSoft, cursor: "pointer"
     }}>{children}</button>
   );
 }

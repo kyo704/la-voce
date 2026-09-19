@@ -177,7 +177,7 @@ export default function OpsMonka({
           style={{
             width: "100%", minHeight: 52, marginTop: rem(10), borderRadius: 12,
             border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
-            background: C.curtain, color: "#FFFDF8", fontSize: rem(15),
+            background: C.curtain, color: C.onCurtain, fontSize: rem(15),
             fontFamily: FONT_STACK, textAlign: "left", padding: `0 ${rem(14)}`
           }}>
           {GO_KUMU_LABEL}

@@ -112,7 +112,7 @@ export default function OpsEvents({
                   minHeight: 44, padding: "0 12px", borderRadius: 999,
                   border: `1px solid ${on ? C.curtain : C.line}`,
                   background: on ? C.curtain : C.card,
-                  color: on ? "#FFFDF8" : C.inkSoft, fontSize: "0.75rem"
+                  color: on ? C.onCurtain : C.inkSoft, fontSize: "0.75rem"
                 }}>{v}</button>
             );
           })}
@@ -222,7 +222,7 @@ export default function OpsEvents({
           className="w-full"
           style={{
             minHeight: 52, borderRadius: 12, border: `1px solid ${C.curtain}`,
-            borderBottomWidth: 3, background: C.curtain, color: "#FFFDF8",
+            borderBottomWidth: 3, background: C.curtain, color: C.onCurtain,
             fontSize: "0.9375rem"
           }}>行事を 出す</button>
       ) : null}
@@ -279,7 +279,7 @@ export default function OpsEvents({
                   minHeight: 44, padding: "0 12px", borderRadius: 999,
                   border: `1px solid ${form.kind === k ? C.curtain : C.line}`,
                   background: form.kind === k ? C.curtain : C.card,
-                  color: form.kind === k ? "#FFFDF8" : C.inkSoft,
+                  color: form.kind === k ? C.onCurtain : C.inkSoft,
                   fontSize: "0.75rem"
                 }}>{k}</button>
             ))}
@@ -374,7 +374,7 @@ export default function OpsEvents({
                 flex: 1, minHeight: 48, borderRadius: 12,
                 border: `1px solid ${C.curtain}`,
                 background: canSubmit(form) ? C.curtain : C.line,
-                color: "#FFFDF8", fontSize: "0.875rem"
+                color: C.onCurtain, fontSize: "0.875rem"
               }}>出す</button>
             <button type="button" onClick={() => setForm(null)}
               style={{

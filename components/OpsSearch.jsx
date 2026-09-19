@@ -39,7 +39,7 @@ export default function OpsSearch({ perms, onGo, onClose }) {
       onKeyDown={(e) => { if (e.key === CLOSE_KEY && onClose) onClose(); }}
       style={{
         position: "fixed", inset: 0, zIndex: 50,
-        background: "rgba(38,25,19,0.34)",
+        background: C.scrim,
         display: "flex", alignItems: "flex-start", justifyContent: "center",
         padding: `${rem(60)} ${rem(14)} ${rem(14)}`, fontFamily: FONT_STACK
       }}

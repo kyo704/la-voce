@@ -295,7 +295,7 @@ export default function OpsRoster({
                 borderRadius: 999, fontSize: "0.71875rem",
                 border: `1px solid ${on ? C.curtain : C.line}`,
                 background: on ? C.curtain : C.card,
-                color: on ? "#FFFDF8" : C.inkSoft
+                color: on ? C.onCurtain : C.inkSoft
               }}>{c.label} {chips[c.key]}</button>
           );
         })}
@@ -320,7 +320,7 @@ export default function OpsRoster({
                 borderRadius: 999, fontSize: "0.71875rem",
                 border: `1px solid ${grade === o.id ? C.curtain : C.line}`,
                 background: grade === o.id ? C.curtain : C.card,
-                color: grade === o.id ? "#FFFDF8" : C.inkSoft
+                color: grade === o.id ? C.onCurtain : C.inkSoft
               }}>{o.label}</button>
           ))}
         </div>
@@ -335,7 +335,7 @@ export default function OpsRoster({
               borderRadius: 999, fontSize: "0.71875rem",
               border: `1px solid ${teacher === o.id ? C.curtain : C.line}`,
               background: teacher === o.id ? C.curtain : C.card,
-              color: teacher === o.id ? "#FFFDF8" : C.inkSoft
+              color: teacher === o.id ? C.onCurtain : C.inkSoft
             }}>{o.label}</button>
         ))}
       </div>
@@ -498,7 +498,7 @@ export default function OpsRoster({
                       style={{
                         minHeight: 44, padding: "0 14px", borderRadius: 10,
                         border: `1px solid ${C.curtain}`, background: C.curtain,
-                        color: "#FFFDF8", fontSize: "0.8125rem", flex: "none"
+                        color: C.onCurtain, fontSize: "0.8125rem", flex: "none"
                       }}>入れる</button>
                     {/* ★★やめる 道を 置きます。★打ちかけを 捨てられる ように。 */}
                     <button type="button" onClick={() => setGradeEdit(null)}
@@ -600,7 +600,7 @@ export default function OpsRoster({
                               border: `1px solid ${on ? C.curtain : C.line}`,
                               background: on ? C.curtain : C.card,
                               // ★★同じ 直し（★裁定 その84）。
-                              color: on ? "#FFFDF8" : (allowed ? C.inkSoft : C.ink4)
+                              color: on ? C.onCurtain : (allowed ? C.inkSoft : C.ink4)
                             }}>
                             {p.name}{on ? tx("　✓ いま") : ""}
                           </button>
@@ -646,7 +646,7 @@ export default function OpsRoster({
               className="w-full"
               style={{
                 minHeight: 52, borderRadius: 12, border: `1px solid ${C.curtain}`,
-                borderBottomWidth: 3, background: C.curtain, color: "#FFFDF8",
+                borderBottomWidth: 3, background: C.curtain, color: C.onCurtain,
                 fontSize: "0.9375rem"
               }}>＋ 招く</button>
           ) : (
@@ -714,7 +714,7 @@ export default function OpsRoster({
                     border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
                     background: (inviteAim.gradeYear && inviteAim.divisionId)
                       ? C.curtain : C.line,
-                    color: "#FFFDF8", fontSize: "0.9375rem"
+                    color: C.onCurtain, fontSize: "0.9375rem"
                   }}>合言葉を 作る</button>
                 <button type="button"
                   onClick={() => {

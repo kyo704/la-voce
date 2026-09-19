@@ -130,7 +130,7 @@ export default function OpsSchedule({
     minHeight: 44, padding: "0 16px", borderRadius: 999,
     border: `1px solid ${on ? C.curtain : C.line}`,
     background: on ? C.curtain : C.card,
-    color: on ? "#FFFDF8" : C.inkSoft, fontSize: "0.8125rem"
+    color: on ? C.onCurtain : C.inkSoft, fontSize: "0.8125rem"
   });
 
   if (何も出さない) return null;
@@ -375,7 +375,7 @@ export default function OpsSchedule({
                       // ★★1色の 濃淡だけ。★赤黄青を 使いません。
                       background: c.count === 0 ? C.paper : C.curtain,
                       opacity: c.count === 0 ? 1 : 0.25 + 0.75 * c.density,
-                      color: c.count === 0 ? C.inkSoft : "#FFFDF8",
+                      color: c.count === 0 ? C.inkSoft : C.onCurtain,
                       fontSize: "0.625rem"
                     }}>{c.count === 0 ? "" : c.count}</button>
                 ))}

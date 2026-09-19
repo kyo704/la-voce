@@ -68,7 +68,7 @@ function Switch({ on, disabled }) {
     }}>
       <span style={{
         position: "absolute", top: 3, left: on ? 21 : 3,
-        width: 20, height: 20, borderRadius: 999, background: "#FFFDF8"
+        width: 20, height: 20, borderRadius: 999, background: C.onCurtain
       }} />
     </span>
   );
@@ -176,7 +176,7 @@ export default function OpsPosts({
                 style={{
                   width: 84, minHeight: 48, borderRadius: 12, flex: "none",
                   border: `1px solid ${C.curtain}`, ...TYPE.li,
-                  background: C.curtain, color: "#FFFDF8", fontFamily: FONT_STACK
+                  background: C.curtain, color: C.onCurtain, fontFamily: FONT_STACK
                 }}>{tx("直す")}</button>
             </div>
           </>
@@ -341,7 +341,7 @@ export default function OpsPosts({
             style={{
               width: "100%", minHeight: 52, marginTop: rem(10), borderRadius: 12,
               border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
-              ...TYPE.li, background: C.curtain, color: "#FFFDF8",
+              ...TYPE.li, background: C.curtain, color: C.onCurtain,
               fontWeight: 700, fontFamily: FONT_STACK
             }}>{tx("はじめの ひな型を 作る")}</button>
           <Note>
@@ -407,7 +407,7 @@ export default function OpsPosts({
               style={{
                 width: 84, minHeight: 48, borderRadius: 12, flex: "none",
                 border: `1px solid ${C.curtain}`, ...TYPE.li,
-                background: C.curtain, color: "#FFFDF8", fontFamily: FONT_STACK
+                background: C.curtain, color: C.onCurtain, fontFamily: FONT_STACK
               }}>{tx("足す")}</button>
           </div>
           {/* ★★★注を 畳みます（★裁定 その75・STEP_1）。

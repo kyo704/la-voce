@@ -158,7 +158,7 @@ export default function OpsAttendanceBulk({
                                 minHeight: 44, minWidth: 44, borderRadius: 999,
                                 border: `1px solid ${on ? C.curtain : C.line}`,
                                 background: on ? C.curtain : C.card,
-                                color: on ? "#FFFDF8" : C.inkSoft,
+                                color: on ? C.onCurtain : C.inkSoft,
                                 ...TYPE.mini, fontFamily: FONT_STACK
                               }}>{m.label}</button>
                           </td>
@@ -186,7 +186,7 @@ export default function OpsAttendanceBulk({
             style={{
               width: "100%", minHeight: 52, borderRadius: 12,
               border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
-              background: C.curtain, color: "#FFFDF8", fontSize: rem(15),
+              background: C.curtain, color: C.onCurtain, fontSize: rem(15),
               fontFamily: FONT_STACK
             }}>{tx("つけ終わる")}</button>
         </>
