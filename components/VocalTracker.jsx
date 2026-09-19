@@ -169,7 +169,7 @@ import OpsSettingsHub from "@/components/OpsSettingsHub";
 // ★★請求書の 宛名・ご請求の 宛先（★見本 `P_seikyuNa` ／ `P_atesaki`・2026-09-19）。
 import OpsBillingName from "@/components/OpsBillingName";
 // ★★記録に 残す 字も lib が 持ちます。★画面で 作りません。
-import { logWordForName, logWordForAtesaki } from "@/lib/orgBilling";
+import { logWordForName, logWordForAtesaki, logWordForMethod } from "@/lib/orgBilling";
 // ★★授業の 型（★裁定 その90・2026-09-18）。★作れるのは 事務 だけ。
 import OpsPresets from "@/components/OpsPresets";
 // ★★門下（★見本 `P_monka` ／ ★裁定 その90・2026-09-18）。
@@ -11463,6 +11463,46 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }
   }
 
+  /**
+   * ★支払い方法を 決める（★お決め D13・2026-09-19）。
+   *
+   *   ★★★いま 選べるのは「銀行振込（請求書）」だけ です。
+   *     ★★カード会社・金融機関へ つなぐ 道が、★この 蔵に ありません。
+   *     ★★画面でも `ready` の ものしか 押せません。★決めは lib が 持ちます。
+   *   ★★★ここから お金は 1円も 動きません。★どこに お送りするかを 決める だけ です。
+   */
+  async function handlePickBillingMethod(orgId, choice) {
+    if (!choice || !choice.ready || !choice.value) return false;
+    setBillingError("");
+    setBillingSaving(true);
+    try {
+      const supabase = createClient();
+      const いま = orgBilling[orgId] || null;
+      const patch = { method: choice.value };
+      let data, error;
+      if (いま && いま.id) {
+        ({ data, error } = await supabase.from("org_billing")
+          .update(patch).eq("id", いま.id).select("id"));
+      } else {
+        ({ data, error } = await supabase.from("org_billing")
+          .insert({ org_id: orgId, ...patch }).select("id"));
+      }
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setOrgBilling((prev) => ({
+        ...prev, [orgId]: { ...(prev[orgId] || {}), ...patch, id: data[0].id } }));
+      await supabase.from("org_billing_log")
+        .insert({ org_id: orgId, actor_id: userId, what: logWordForMethod(choice.label) });
+      await fetchBillingLog(orgId);
+      return true;
+    } catch (err) {
+      console.error("★支払い方法を書けませんでした:", err);
+      setBillingError("いま 書けませんでした。お支払いの できことが 要ります。");
+      return false;
+    } finally {
+      setBillingSaving(false);
+    }
+  }
+
   async function handleHandOverBilling(orgId, member) {
     setBillingError("");
     setBillingSaving(true);
@@ -14827,7 +14867,8 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               error={billingError}
                               onSave={(patch, labels) =>
                                 handleSaveBilling(opsOrgId, patch, labels)}
-                              onHandOver={(m) => handleHandOverBilling(opsOrgId, m)} />
+                              onHandOver={(m) => handleHandOverBilling(opsOrgId, m)}
+                              onPickMethod={(m) => handlePickBillingMethod(opsOrgId, m)} />
                           </div>
                         </>
                       ) : null,

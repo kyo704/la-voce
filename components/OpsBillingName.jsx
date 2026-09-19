@@ -6,7 +6,10 @@ import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
 import { H3, Box, Li, Note, Usu, Warn, FieldLabel, Input } from "@/components/UiV2";
 import {
   NAME_HEAD, NAME_SUB, NAME_FIELDS, NAME_NOTES, mayChangeBilling, VIEW_ONLY_LINE,
-  ATESAKI_HEAD, ATESAKI_NOTES, ATESAKI_EMPTY, ATESAKI_EMPTY_HOW, atesakiCandidates
+  ATESAKI_HEAD, ATESAKI_NOTES, ATESAKI_EMPTY, ATESAKI_EMPTY_HOW, atesakiCandidates,
+  // ★★支払い方法（★お決め D13・2026-09-19）。★いま 選べるのは 請求書 だけ です。
+  METHOD_HEAD, METHOD_CHOICES, readyMethods, notYetMethods,
+  INVOICE_YEARLY_ONLY, METHOD_NOTES, METHOD_LABELS
 } from "@/lib/orgBilling";
 
 // ============================================================================
@@ -28,7 +31,7 @@ const 小 = { ...TYPE.mini, color: C.inkSoft, lineHeight: 1.8 };
 
 export default function OpsBillingName({
   row, perms, members = [], nameOf, log = [],
-  onSave, onHandOver, saving, error = ""
+  onSave, onHandOver, onPickMethod, saving, error = ""
 }) {
   const 変えられる = mayChangeBilling(perms);
   const [下書き, set下書き] = useState(null);
@@ -43,6 +46,38 @@ export default function OpsBillingName({
 
   return (
     <div style={{ fontFamily: FONT_STACK }}>
+      {/* ★★★支払い方法（★見本 `P_pay`・お決め D13）。
+          ★★いま 選べるのは「銀行振込（請求書）」だけ です。
+            ★★カードと 口座振替は、★外の 画面が 前提 です。★その 道が ありません。
+            ★★★押せる 札に しません。★「まだ」と 名ざしで お伝えします（★§8⑤）。
+          ★★カード番号・口座番号の 欄は ありません。★台帳にも 列が ありません。 */}
+      <H3>{METHOD_HEAD}</H3>
+      <Box>
+        {readyMethods().map((m, i, a) => {
+          const いま = (row || {}).method === m.value;
+          return (
+            <Li key={m.key} last={i === a.length - 1}
+              right={いま
+                ? <span style={{ color: C.sage }}>いま これです</span>
+                : (変えられる ? "これに する" : "")}
+              onClick={変えられる && !いま ? () => onPickMethod && onPickMethod(m) : null}>
+              {m.label}
+              <div style={小}>{m.note}</div>
+            </Li>
+          );
+        })}
+      </Box>
+      {(row || {}).method === "invoice" ? <Usu>{INVOICE_YEARLY_ONLY}</Usu> : null}
+      <Box>
+        {notYetMethods().map((m, i, a) => (
+          <Li key={m.key} last={i === a.length - 1} right="まだ">
+            {m.label}
+            <div style={小}>{m.needs}</div>
+          </Li>
+        ))}
+      </Box>
+      <Note>{METHOD_NOTES.map((t) => (<div key={t}>{t}</div>))}</Note>
+
       <H3>{NAME_HEAD}</H3>
       <Usu>{NAME_SUB}</Usu>
 
