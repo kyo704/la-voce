@@ -11591,6 +11591,39 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }
   }
 
+  /**
+   * ★その方の 形を 決める（★`memberships.division_id`・裁定 その98）。
+   *
+   *   ★★★書けるのは 名簿の できこと（`meibo`）だけ です。
+   *     ★★`memberships` の 決まりが 断ります。★画面でも 出しません。
+   *   ★★★何行 動いたかを 見ます。★0行を 成功に しません。
+   *   ★★同じ ものを もう一度 押すと、★外します（`null`）。
+   */
+  async function handleSetDivision(orgId, targetUserId, divisionId) {
+    setDivisionError("");
+    setDivisionSaving(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("memberships")
+        .update({ division_id: divisionId })
+        .eq("org_id", orgId).eq("user_id", targetUserId)
+        .select("id, division_id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setOrgMembers((prev) => ({
+        ...prev,
+        [orgId]: (prev[orgId] || []).map((mm) => (mm.user_id === targetUserId
+          ? { ...mm, division_id: divisionId } : mm))
+      }));
+      return true;
+    } catch (err) {
+      console.error("★その方の形を書けませんでした:", err);
+      setDivisionError("いま 決められませんでした。名簿の できことが 要ります。");
+      return false;
+    } finally {
+      setDivisionSaving(false);
+    }
+  }
+
   async function handleRemoveDivision(orgId, row) {
     if (!row || !row.id) return false;
     setDivisionError("");
@@ -14967,6 +15000,13 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       nameFetchFailedLabel={NAME_FETCH_FAILED_LABEL}
                       myPerms={myPerms}
                       busy={postsBusy}
+                      // ★★★学校の 形（★裁定 その98・2026-09-19）。
+                      //   ★★選ぶのは 学科 か 分野 です。★学部は 学科から 出ます。
+                      //   ★★書けるのは 名簿の できこと だけ です。
+                      divisions={orgDivisions}
+                      onSetDivision={canOps(gate, "meibo")
+                        ? (uid, did) => handleSetDivision(opsOrgId, uid, did)
+                        : undefined}
                       onAssign={async (userId, postId) => {
                         // ★★外す ときは `unassign`、★付ける ときは `assign`。
                         //   ★★サーバが 2つの 門を 見ます（★付ける 役職 と、★いま 付いて いる 役職）。

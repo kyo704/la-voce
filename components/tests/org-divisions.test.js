@@ -92,6 +92,40 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.ok(/GRADE_NOT_HERE/.test(画面), "★画面に 断りが ありません");
   });
 
+  見る("★ひとりの 方の 形 ── ★学部は 学科から 出す", () => {
+    const 人 = { user_id: "u1", division_id: "d1" };
+    const 行 = D.shapeLineOf(形, 人);
+    assert.strictEqual(行.faculty, "音楽学部", "★学部が 出ません");
+    assert.strictEqual(行.department, "声楽");
+    assert.strictEqual(行.field, "—", "★分野に 字が 入って います");
+    // ★★事務の 方 ── ★分野 だけ。
+    const 事務 = D.shapeLineOf(形, { user_id: "u2", division_id: "b1" });
+    assert.strictEqual(事務.field, "広報");
+    assert.strictEqual(事務.faculty, "—");
+    // ★★決めて いない 方 ── ★3つ とも「—」。
+    const 無 = D.shapeLineOf(形, { user_id: "u3" });
+    assert.deepStrictEqual(無, { faculty: "—", department: "—", field: "—" });
+  });
+
+  見る("★選ばせるのは 学科と 分野 だけ（★学部は 選ばせない）", () => {
+    const 選 = D.choosableFor(形).map((x) => x.kind);
+    assert.ok(!選.includes("faculty"), "★学部を 選ばせて います");
+    assert.deepStrictEqual(選.sort(), ["department", "department", "field"].sort());
+    const 画 = readCode("components", "OpsPeople.jsx");
+    assert.ok(/choosableFor/.test(画), "★画面が lib を 呼んで いません");
+    assert.ok(/shapeLineOf/.test(画), "★3つの 行を 出して いません");
+    assert.ok(!/"faculty"|'faculty'/.test(画), "★画面が 種を 名ざしで 見て います");
+  });
+
+  見る("★形は 1つ だけ 持つ（★2つに しない）", () => {
+    const 蔵2 = readCode("components", "VocalTracker.jsx");
+    const i = 蔵2.indexOf("async function handleSetDivision");
+    const 手 = 蔵2.slice(i, i + 1200);
+    assert.ok(/division_id: divisionId/.test(手), "★形を 書いて いません");
+    assert.ok(!/faculty_id|department_id|field_id/.test(手), "★列を 分けて います");
+    assert.ok(/data\.length === 0/.test(手), "★0行を 成功に して います");
+  });
+
   見る("★0行を 成功に しない", () => {
     const i = 蔵.indexOf("async function handleAddDivision");
     const 手 = 蔵.slice(i, i + 1200);

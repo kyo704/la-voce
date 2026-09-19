@@ -21,6 +21,11 @@
 
 import { useState } from "react";
 import { C } from "@/lib/tokens";
+// ★★学校の 形（★裁定 その98・2026-09-19）。★決めは lib が 持ちます。
+import {
+  choosableFor, divisionOf, shapeLineOf, parentNameOf,
+  SHAPE_HEAD, SHAPE_HINT, SHAPE_NONE, SHAPE_EMPTY
+} from "@/lib/orgDivisions";
 import { mayChangePerson, mayGrantPost, permSet, can, permLine } from "@/lib/opsPerms";
 
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14 };
@@ -71,7 +76,12 @@ const PEOPLE_NOTE = Object.freeze([
 ]);
 
 export default function OpsPeople({
-  members, posts, nameOf, myPerms, busy, onAssign, nameFetchFailedLabel
+  members, posts, nameOf, myPerms, busy, onAssign, nameFetchFailedLabel,
+  // ★★★学校の 形（★裁定 その98・2026-09-19）。
+  //   ★`divisions` … ★`org_divisions` の 行
+  //   ★`onSetDivision` … ★その方の 形を 決める（★`memberships.division_id`）
+  //   ★★渡されなければ、★その 節ごと 出しません（★押せない 札を 置きません）。
+  divisions = [], onSetDivision
 }) {
   const [filter, setFilter] = useState({ k: "全て", v: "" });
   const [open, setOpen] = useState(null);   // ★いま 開いて いる 方の user_id
@@ -81,7 +91,9 @@ export default function OpsPeople({
   const byId = Object.fromEntries((posts || []).map((p) => [p.id, p]));
   const shown = filter.k === "役職"
     ? list.filter((m) => (byId[m.post_id] || {}).name === filter.v)
-    : list;
+    : (filter.k === "形"
+      ? list.filter((m) => m.division_id === filter.v)
+      : list);
 
   // ★★「変えられるか」は lib が 決めます。★ここで 役職の 名を くらべません。
   const canChange = (m) => mayChangePerson(myPerms, byId[m.post_id] || null);
@@ -97,9 +109,14 @@ export default function OpsPeople({
         <span style={small}>{shown.length}／{list.length}</span>
       </div>
 
-      {/* ★★絞り。★見本は 6つ ありますが、★いま 出せるのは 2つ です。
-          ★★学部・学科・分野・未確認は、★台帳に 置き場が ありません。
-            ★★出すと「まだ 入れて いない だけ」に 見えます。 */}
+      {/* ★★★絞り（★2026-09-19・裁定 その98 で 形の 表が できました）。
+          ★★きょうまで 2つ でした（★全て ／ 役職）。
+            ★★学部・学科・分野は、★台帳に 置き場が ありません でした。
+          ★★★いまは `org_divisions` が あります。★学科と 分野で 絞れます。
+            ★★学部で 絞るのは、★その 学部の 学科を まとめて 見る こと です
+              ★★（★`parent_id` で たどります）。
+          ★★未確認（★ご自分で 選んだまま）は、★まだ 置き場が ありません。
+            ★★出しません。★「まだ 入れて いない だけ」に 見えます。 */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
         <Chip on={filter.k === "全て"} onClick={() => setFilter({ k: "全て", v: "" })}>
           全て
@@ -107,6 +124,10 @@ export default function OpsPeople({
         {(posts || []).map((p) => (
           <Chip key={p.id} on={filter.k === "役職" && filter.v === p.name}
             onClick={() => setFilter({ k: "役職", v: p.name })}>{p.name}</Chip>
+        ))}
+        {choosableFor(divisions).map((d) => (
+          <Chip key={d.id} on={filter.k === "形" && filter.v === d.id}
+            onClick={() => setFilter({ k: "形", v: d.id })}>{d.name}</Chip>
         ))}
       </div>
 
@@ -152,6 +173,18 @@ export default function OpsPeople({
           <p style={{ fontSize: "0.8125rem", fontWeight: 700, color: C.ink, margin: "0 0 8px" }}>
             {nameOf(target.user_id) || nameFetchFailedLabel || ""} の 役職
           </p>
+          {/* ★★★いまの 形（★見本 `P_setPost` の `sub`・2026-09-19）。
+              ★★学部・学科・分野の 3つ。★無い ものは「—」です。
+              ★★★学部は 選ばせません。★学科の 上に ついて いる ものです。 */}
+          {(() => {
+            const 形 = shapeLineOf(divisions, target);
+            return (
+              <p style={{ ...small, margin: "0 0 8px" }}>
+                {`学部・研究科　${形.faculty}　／　学科・コース　${形.department}`
+                  + `　／　事務の 分野　${形.field}`}
+              </p>
+            );
+          })()}
           {(posts || []).map((p) => {
             // ★★付けられるかは lib が 決めます（★自分より 強い 人を 作れない）。
             const grantable = mayGrantPost(myPerms, p);
@@ -188,6 +221,42 @@ export default function OpsPeople({
               </div>
             );
           })}
+
+          {/* ★★★学校の 形（★見本 `P_setPost` の 3つの 札・2026-09-19）。
+              ★★選ぶのは 学科 か 分野 です。★学部は 学科から 出ます。
+              ★★★`memberships.division_id` は 1つ です。★2つ 持ちません。
+                ★★学部と 学科を 別々に 持つと、★食い違う 行が できます。
+              ★★形が 1つも 無ければ、★その 節ごと 出しません（★§8⑤）。 */}
+          {onSetDivision ? (
+            <div style={{ marginTop: 12 }}>
+              <p style={{ fontSize: "0.8125rem", fontWeight: 700, color: C.ink, margin: "0 0 4px" }}>
+                {SHAPE_HEAD}
+              </p>
+              {choosableFor(divisions).length === 0 ? (
+                <p style={small}>{SHAPE_EMPTY}</p>
+              ) : (
+                <>
+                  <p style={small}>{SHAPE_HINT}</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
+                    {choosableFor(divisions).map((d) => (
+                      <Chip key={d.id} on={target.division_id === d.id}
+                        onClick={async () => {
+                          const r = await onSetDivision(target.user_id,
+                            target.division_id === d.id ? null : d.id);
+                          if (r === false) setFailed(true);
+                        }}>
+                        {d.kind === "department" && parentNameOf(divisions, d)
+                          ? `${parentNameOf(divisions, d)}／${d.name}` : d.name}
+                      </Chip>
+                    ))}
+                  </div>
+                  {!divisionOf(divisions, target) ? (
+                    <p style={small}>{SHAPE_NONE}</p>
+                  ) : null}
+                </>
+              )}
+            </div>
+          ) : null}
           <div style={row}>
             <span style={{ fontSize: "0.8125rem", color: C.ink }}>役職を 外す</span>
             <button type="button" disabled={busy}
@@ -231,10 +300,12 @@ export default function OpsPeople({
         </div>
       ) : null}
 
-      {/* ★★出して いない 4列に ついて、★黙って いません。
-          ★★「無い」ことを 言わないと、★お客さまは「壊れて いる」と 読みます。 */}
+      {/* ★★★出して いない ものに ついて、★黙って いません（★2026-09-19 に 減りました）。
+          ★★学部・学科・事務の 分野は、★裁定 その98 で 台帳が できました。
+            ★★一覧の 絞りと、★開いた 1枚の 中に 出て います。
+          ★★残るのは「確かめ」だけ です ── ★しまう 列が ありません。 */}
       <p style={small}>
-        学部・学科・事務の 分野・確かめは、まだ お作りして いません。
+        確かめ（ご自分で 選んだまま かどうか）は、まだ お作りして いません。
       </p>
     </div>
   );
