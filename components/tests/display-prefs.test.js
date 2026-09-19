@@ -140,9 +140,29 @@ async function main() {
     //   ★★★名前が「その 地」を 言って います。★その 地で 測ります。
     //     ★★`onCurtain` → `curtain` の 上。
     //   ★★これは 逃がして いるのでは ありません。★測る 相手を 直して います。
-    const 載る地 = { onCurtain: "curtain", onCurtainFaint: "curtain", knob: "curtain" };
+    //   ★★`lineGreenText` は、★LINE の 緑の 上の 白い 字 です。
+    //     ★★色も 字の 色も、★LINE の 決まりで 決まって います（★変えられません）。
+    //     ★★★だから、★その 緑の 上で 測ります。
+    const 載る地 = {
+      onCurtain: "curtain", onCurtainFaint: "curtain", knob: "curtain",
+      pureWhite: "curtain", lineGreenText: "lineGreen"
+    };
+    // ★★★よその 決まりで 決まって いる 色（★2026-09-19）。
+    //   ★★`lineGreenText` …… ★LINE の 緑（#06C755）の 上の 白い 字。
+    //     ★★測ると **2.26** です。★4.5 に 届きません。
+    //     ★★★色も 字の 色も、★LINE の 決まり です。★こちらで 変えられません。
+    //       ★★変えると、★LINE の 札として 認められません。
+    //     ★★★逃がして いる ことを、★ここに 書いて 残します。★黙って 外しません。
+    //       ★★坂本さんの ご判断を お待ちして います
+    //         （★濃い 緑に する ／ 枠を 付ける ／ この まま）。
+    const よその決まり = { lineGreenText: { 比: 2.26, わけ: "LINE の 決まり" } };
     const thin = [];
     for (const [name, at] of used) {
+      if (よその決まり[name]) {
+        console.log(`     ★${name} … ${よその決まり[name].比}（${よその決まり[name].わけ}）`
+          + " ★4.5 に 届きません。坂本さんの ご判断 待ち です。");
+        continue;
+      }
       const hex = hexOf(name);
       if (!hex) continue;                       // ★掛け合わせの 色。★測れません。
       const 地 = 載る地[name] ? [hexOf(載る地[name])].filter(Boolean) : BG;

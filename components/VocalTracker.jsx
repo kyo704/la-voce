@@ -2720,7 +2720,7 @@ function YesNoField({ label, value, onChange }) {
               className="flex-1 py-2 rounded-full text-xs font-medium border"
               style={{
                 background: on ? C.curtain : C.card,
-                color: on ? "#fff" : C.ink,
+                color: on ? C.pureWhite : C.ink,
                 borderColor: on ? C.curtain : C.line
               }}>
               {l}
@@ -2766,7 +2766,7 @@ function EdemaSelector({ value, onChange }) {
               className="flex-1 py-2 rounded-full text-xs font-medium border"
               style={{
                 background: on ? C.curtain : C.card,
-                color: on ? "#fff" : C.ink,
+                color: on ? C.pureWhite : C.ink,
                 borderColor: on ? C.curtain : C.line
               }}>
               {c.label}
@@ -3435,7 +3435,7 @@ function LockedCard({ title, teaser, current, required, action }) {
           ))}
         </div>
       </div>
-      <div className="relative flex flex-col items-center justify-center gap-2 px-6 py-3 text-center" style={{ background: "rgba(255,253,248,0.55)", minHeight: "7em" }}>
+      <div className="relative flex flex-col items-center justify-center gap-2 px-6 py-3 text-center" style={{ background: C.veil, minHeight: "7em" }}>
         <Lock size={18} style={{ color: C.inkSoft }} />
         <p className="text-xs font-medium" style={{ color: C.ink }}>{title}</p>
         <p className="text-xs" style={{ color: C.inkSoft }}>{teaser}</p>
@@ -4214,7 +4214,7 @@ function RepertoireItemRow({
           console だけに書いていたため、「押しても反応しない」という
           報告のまま2日ぶん原因が分かりませんでした。 */}
       {name && repertoireSaveError && isSameRepertoire(repertoireSaveError.name, name) && (
-        <p className="text-xs mt-1.5 rounded-lg px-2 py-1.5" style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>
+        <p className="text-xs mt-1.5 rounded-lg px-2 py-1.5" style={{ background: C.alertBg12, color: C.curtain }}>
           {repertoireSaveError.message}
         </p>
       )}
@@ -14676,7 +14676,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             {t("restoreIfNothing").replace("{days}", GRACE_PERIOD_DAYS)}
           </p>
           {restoreStatus === "error" && (
-            <p className="text-xs mb-3 rounded-lg p-2.5" style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>
+            <p className="text-xs mb-3 rounded-lg p-2.5" style={{ background: C.alertBg12, color: C.curtain }}>
               {t("restoreError")}
             </p>
           )}
@@ -15522,7 +15522,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
             ★押した方は、★何が起きたか分かりません。★出口はボタンだけです。 */}
       {reauthFor && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
-          style={{ background: "rgba(36,25,20,0.35)" }}>
+          style={{ background: C.scrim2 }}>
           <div className="w-full sm:max-w-sm rounded-3xl p-6" style={{ background: C.paper }}>
             <ReauthGate
               action={reauthFor}
@@ -15565,7 +15565,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         </div>
       )}
       {saveCardData && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4" style={{ background: "rgba(36,25,20,0.35)" }}
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4" style={{ background: C.scrim2 }}
           onClick={() => setSaveCardData(null)}>
           <div className="w-full sm:max-w-sm rounded-3xl p-6 text-center" style={{ background: C.paper }} onClick={(e) => e.stopPropagation()}>
             <style>{`
@@ -15843,7 +15843,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
         {/* ★記録が読み込めなかったことを、必ず本人に伝える。
             黙って空の画面を出すと「記録が消えた」に見える。消えていない。 */}
         {entriesLoadError && (
-          <div className="rounded-2xl p-4 border mb-4" style={{ background: "#FFF4F0", borderColor: C.curtain }}>
+          <div className="rounded-2xl p-4 border mb-4" style={{ background: C.alertPale, borderColor: C.curtain }}>
             <p className="text-sm font-medium" style={{ color: C.ink }}>記録を読み込めませんでした</p>
             <p className="text-xs mt-1 leading-relaxed" style={{ color: C.inkSoft }}>
               記録は消えていません。サーバーからの返事が来なかっただけです。<br />
@@ -17037,7 +17037,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </button>
                 )}
                 {!layoutV2 && showCopiedNotice && (
-                  <p className="text-xs text-center rounded-lg p-2" style={{ background: "rgba(212,160,23,0.12)", color: C.ink }}>
+                  <p className="text-xs text-center rounded-lg p-2" style={{ background: C.careBg, color: C.ink }}>
                     前日の内容をコピーしました。内容を確認・編集してください。
                   </p>
                 )}
@@ -18139,7 +18139,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           {(() => {
                             const gap = computeTimeGapHours(formData.dinnerTime, formData.bedtime);
                             return gap != null ? (
-                              <p className="text-xs rounded-lg p-2" style={{ background: gap < 3 ? "rgba(184,49,49,0.08)" : C.paper, color: gap < 3 ? C.curtain : C.inkSoft }}>
+                              <p className="text-xs rounded-lg p-2" style={{ background: gap < 3 ? C.alertBg08 : C.paper, color: gap < 3 ? C.curtain : C.inkSoft }}>
                                 {t("labelDinnerToBedGap")}: {gap}{t("unitHours")}
                               </p>
                             ) : (
@@ -19064,7 +19064,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         </button>
                       )}
                       {inviteError && (
-                        <p className="text-xs mt-2 rounded-lg p-2.5" style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>
+                        <p className="text-xs mt-2 rounded-lg p-2.5" style={{ background: C.alertBg12, color: C.curtain }}>
                           {inviteError}
                         </p>
                       )}
@@ -19318,7 +19318,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             </button>
                           </div>
                           {eventError && (
-                            <p className="text-xs mb-2 rounded-lg p-2" style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>{eventError}</p>
+                            <p className="text-xs mb-2 rounded-lg p-2" style={{ background: C.alertBg12, color: C.curtain }}>{eventError}</p>
                           )}
                         </div>
 
@@ -21443,7 +21443,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                       </span>
                     </div>
                     {wakeLowNote30dTrend && wakeLowNote30dTrend.declining && (
-                      <p className="text-xs mt-3 rounded-xl p-2.5" style={{ background: "rgba(184,49,49,0.06)", color: C.curtain }}>
+                      <p className="text-xs mt-3 rounded-xl p-2.5" style={{ background: C.alertBg06, color: C.curtain }}>
                         起き抜けの音の高さが、直近でじわじわ下がってきています。疲労が蓄積しているサインかもしれません。
                       </p>
                     )}
@@ -21628,7 +21628,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     {Object.keys(symptomStreaks).length > 0 && (
                       <div className="mt-3 space-y-1.5">
                         {Object.entries(symptomStreaks).map(([symptom, streak]) => (
-                          <p key={symptom} className="text-xs rounded-xl p-2.5" style={{ background: streak >= 7 ? "rgba(184,49,49,0.08)" : streak >= 3 ? "rgba(212,160,23,0.1)" : C.paper, color: C.ink }}>
+                          <p key={symptom} className="text-xs rounded-xl p-2.5" style={{ background: streak >= 7 ? C.alertBg08 : streak >= 3 ? C.careBg10 : C.paper, color: C.ink }}>
                             <strong>{t(SYMPTOM_KEYS[symptom])}が{streak}日続いています。</strong>
                             {streak >= 7 && " ふだんより長い状態です。耳鼻咽喉科への相談も選択肢の一つです。"}
                           </p>
@@ -22617,19 +22617,19 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           のまま離れられるので、目印を置きます。 */}
                       {profileDirty && profileSaveStatus !== "saved" && (
                         <div className="rounded-xl px-3 py-2 mb-2 flex items-center gap-2"
-                          style={{ background: "rgba(198,160,74,0.18)", color: C.ink }}>
+                          style={{ background: C.careBg2, color: C.ink }}>
                           <span className="text-xs font-medium">保存されていません</span>
                         </div>
                       )}
                       {profileSaveStatus === "saved" && (
                         <div className="rounded-xl px-3 py-2 mb-2 flex items-center gap-2"
-                          style={{ background: "rgba(122,150,109,0.18)", color: C.ink }}>
+                          style={{ background: C.calmBg, color: C.ink }}>
                           <Check size={15} />
                           <span className="text-xs font-medium">{t("profileSavedBanner")}</span>
                         </div>
                       )}
                       {profileSaveStatus === "error" && (
-                        <div className="rounded-xl px-3 py-2 mb-2" style={{ background: "rgba(184,49,49,0.14)", color: C.curtain }}>
+                        <div className="rounded-xl px-3 py-2 mb-2" style={{ background: C.alertBg14, color: C.curtain }}>
                           <p className="text-xs font-medium">{t("profileSaveErrorBanner")}</p>
                         </div>
                       )}
@@ -22701,7 +22701,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     {/* ★同意の状態を読めなかったとき。★黙って「同意ずみ」に倒しません。 */}
                     {profile.consent_column_missing && (
                       <p className="text-xs mb-2 rounded-lg p-2"
-                        style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>
+                        style={{ background: C.alertBg12, color: C.curtain }}>
                         同意の状態を読み取れませんでした。
                         supabase/2026-09-03-consent-withdrawal.sql を実行してください。
                       </p>
@@ -22959,7 +22959,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
 
                   {withdrawError && (
                     <p className="text-xs mb-3 rounded-lg p-2.5"
-                      style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>{withdrawError}</p>
+                      style={{ background: C.alertBg12, color: C.curtain }}>{withdrawError}</p>
                   )}
 
                   <button type="button" onClick={handleWithdrawHealthConsent} disabled={withdrawBusy}
@@ -23121,7 +23121,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                     <p className="text-sm leading-relaxed">{t("deleteStep2Student").replace("{n}", myTeacherLinks.length)}</p>
                   )}
                 </div>
-                <p className="text-sm rounded-2xl p-3" style={{ background: "rgba(184,49,49,0.08)", color: C.curtain }}>
+                <p className="text-sm rounded-2xl p-3" style={{ background: C.alertBg08, color: C.curtain }}>
                   {t("deleteStep2Reregister")}
                 </p>
                 <div className="flex gap-2">
@@ -23269,7 +23269,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                             className="w-full rounded-lg border p-2.5 text-sm"
                             style={{ borderColor: C.line, background: C.paper }} />
                           {closeOrgStatus === "error" && (
-                            <p className="text-sm rounded-2xl p-3" style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>{closeOrgError}</p>
+                            <p className="text-sm rounded-2xl p-3" style={{ background: C.alertBg12, color: C.curtain }}>{closeOrgError}</p>
                           )}
                           <div className="flex gap-2">
                             <button type="button"
@@ -23334,7 +23334,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                   </p>
                 )}
                 {deleteStatus === "error" && (
-                  <p className="text-sm rounded-2xl p-3" style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>{deleteError}</p>
+                  <p className="text-sm rounded-2xl p-3" style={{ background: C.alertBg12, color: C.curtain }}>{deleteError}</p>
                 )}
                 <div className="flex gap-2">
                   <button type="button" onClick={() => setActiveTab("deleteAccount2")}
@@ -25679,7 +25679,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                               書かれていました。 */}
                           {inviteLookupError && (
                             <p className="text-xs mb-2 rounded-2xl p-2.5"
-                              style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>
+                              style={{ background: C.alertBg12, color: C.curtain }}>
                               {inviteLookupError}
                             </p>
                           )}
@@ -26029,11 +26029,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                           {process.env.NEXT_PUBLIC_LINE_ADD_FRIEND_URL ? (
                             <a href={process.env.NEXT_PUBLIC_LINE_ADD_FRIEND_URL} target="_blank" rel="noopener noreferrer"
                               className="block w-full text-center py-2 rounded-full text-xs font-medium mb-2"
-                              style={{ background: "#06C755", color: "#FFFFFF" }}>
+                              style={{ background: C.lineGreen, color: C.lineGreenText }}>
                               LINEで友だち追加する
                             </a>
                           ) : (
-                            <p className="text-xs mb-2 rounded-lg p-2" style={{ background: "rgba(184,49,49,0.10)", color: C.curtain }}>
+                            <p className="text-xs mb-2 rounded-lg p-2" style={{ background: C.alertBg10, color: C.curtain }}>
                               友だち追加のリンクが未設定です。管理者に連絡してください（NEXT_PUBLIC_LINE_ADD_FRIEND_URL）。
                             </p>
                           )}
@@ -26180,12 +26180,12 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ★★訳の 鍵（`noteExportFormats`）は 消して いません。
                           ★ほかから 読まれて いないかを 先に 確かめる ため です。 */}
                     {exportStatus === "done" && (
-                      <p className="text-xs rounded-lg px-2.5 py-1.5 mb-2" style={{ background: "rgba(122,150,109,0.18)", color: C.ink }}>
+                      <p className="text-xs rounded-lg px-2.5 py-1.5 mb-2" style={{ background: C.calmBg, color: C.ink }}>
                         {t("exportDone")}
                       </p>
                     )}
                     {exportStatus === "error" && (
-                      <p className="text-xs rounded-lg px-2.5 py-1.5 mb-2" style={{ background: "rgba(184,49,49,0.14)", color: C.curtain }}>
+                      <p className="text-xs rounded-lg px-2.5 py-1.5 mb-2" style={{ background: C.alertBg14, color: C.curtain }}>
                         {t("exportError")}
                       </p>
                     )}
@@ -26230,7 +26230,7 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
                         ★★`display` で 隠すだけ です。★木から 外しません ──
                           ★外すと、★門の 外の 方の 出口が 消えます。 */}
                   {signOutError && !layoutV2 && (
-                    <p className="text-xs mb-2 rounded-lg p-2.5" style={{ background: "rgba(184,49,49,0.12)", color: C.curtain }}>
+                    <p className="text-xs mb-2 rounded-lg p-2.5" style={{ background: C.alertBg12, color: C.curtain }}>
                       {signOutError}
                     </p>
                   )}
