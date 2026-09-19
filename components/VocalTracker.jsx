@@ -13645,28 +13645,11 @@ export default function VocalTracker({ userId, userEmail, signupAgeAnswer = null
     }
     fetchOrgDetail(orgId);
   }
-  // E-1: 教室のレッスンを作成する。
-  //
-  //   ★teacher_note を書くのをやめました（G-4・2026-09-03）。
-  //     ・書いているだけで、★どこからも読んでいませんでした。
-  //       先生のメモの本体は teacher_notes 表です（9674 / 9704 行）。
-  //     ・「先生専用（生徒に表示しない）」と書いていましたが、★届きます。
-  //       RLS は行単位で、列は隠せません。生徒自身の照会が
-  //       select("*") をしています（10260行）。
-  //       ★画面に出していないだけで、通信には乗ります。
-  //     ★引数からも外します。受け取れる口が残っていると、また書かれます。
-  //     列そのものは supabase/migration_drop_lessons_teacher_note.sql で落とします。
-  async function handleCreateOrgLesson(orgId, teacherId, studentId, dateStr, timeStr, note) {
-    if (!dateStr) return;
-    const supabase = createClient();
-    const scheduledAt = new Date(`${dateStr}T${timeStr}:00`).toISOString();
-    const { error } = await supabase.from("lessons").insert({
-      org_id: orgId, teacher_id: teacherId, student_id: studentId,
-      scheduled_at: scheduledAt, note: note || "", created_by: userId
-    });
-    if (error) { console.error("レッスンの登録に失敗しました:", error); return; }
-    fetchOrgDetail(orgId);
-  }
+  // ★★★E-1「教室のレッスンを作成する」（`handleCreateOrgLesson`）は
+  //   ★2026-09-19 に 消しました（★坂本さんの お決め D61）。
+  //     ★★呼び出しが 0件 でした。★残すと、★いつか 間違って 拾われます。
+  //     ★★コマを 置く 道は `handlePlaceLesson`（★11703行）だけ です。
+  //     ★★記録 docs/records/修正の記録-No.028-使われていないコマの書き口を消す.md
   // E-2: 生徒として、教室をまたいで統合した自分の全レッスンを取得する（既存の1:1レッスンと、
   // 新しい教室ベースのレッスンの両方を1つに合わせる）。
   async function fetchMyAllLessons() {
