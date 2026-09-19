@@ -66,8 +66,21 @@ ok(/EmptyBox[\s\S]*?title[\s\S]*?sub/.test(src), "空状態に題と説明を持
 console.log("\n⑥ 見た目の契約");
 ok(/ScreenHead[\s\S]*?TYPE\.title/.test(src), "画面見出しは共通文字設定");
 ok(/Card[\s\S]*?cardStyle/.test(src), "Cardは共通カード設定");
-ok(/Warn[\s\S]*?#F6F1E4[\s\S]*?#E8DFC8/.test(src), "Warnの地と枠を見本に合わせる");
-ok(/Wl[\s\S]*?#F6EFDF[\s\S]*?#E8DFC8/.test(src), "Wlの地と枠をWarnと分ける");
+// ★★★2026-09-19（★裁定 その81 §1）── ★色を 名前で 呼ぶ ように しました。
+//   ★★字（#F6F1E4）を 探して いたので、★名前に した 日に 落ちました。
+//   ★★★見たいのは「見本の 値か」と「Warn と Wl が 別か」です。
+//     ★★値は `lib/tokens.js` に あります。★そちらで 見ます。
+{
+  const t = require("fs").readFileSync(
+    require("path").join(__dirname, "..", "..", "lib", "tokens.js"), "utf8");
+  ok(/band: "#F6F1E4"/.test(t), "Warnの地が見本の値（tokens）");
+  ok(/line3: "#E8DFC8"/.test(t), "枠が見本の値（tokens）");
+  ok(/bandWl: "#F6EFDF"/.test(t), "Wlの地が見本の値（tokens）");
+  ok(/Warn[\s\S]*?C\.band[\s\S]*?C\.line3/.test(src), "Warnが名前で呼んでいる");
+  ok(/Wl[\s\S]*?C\.bandWl[\s\S]*?C\.line3/.test(src), "Wlが名前で呼んでいる");
+  ok(!/C\.band\b[\s\S]{0,40}Wl\b/.test(src.slice(src.indexOf("export function Wl"))),
+    "WlがWarnの地を使っていない（★1つにまとめない）");
+}
 ok(/Li[\s\S]*?borderBottom/.test(src) && /last/.test(src), "一覧の最後だけ線を消す");
 ok(/Seg[\s\S]*?aria-current/.test(src), "選択中の切替をariaで示す");
 ok(/Pill[\s\S]*?aria-pressed/.test(src), "選択中の札をariaで示す");

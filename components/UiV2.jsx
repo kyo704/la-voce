@@ -111,7 +111,7 @@ export function Seg({ items, activeKey, onSelect }) {
               fontSize: rem(11.5), fontWeight: on ? 700 : 400,
               background: on ? C.card : "transparent",
               color: on ? C.curtain : C.inkSoft,
-              boxShadow: on ? "0 1px 3px rgba(0,0,0,.06)" : "none",
+              boxShadow: on ? C.shadowSm : "none",
               fontFamily: FONT_STACK, whiteSpace: "nowrap"
             }}>
             {it.label}
@@ -132,7 +132,7 @@ export function Pill({ children, on, disabled, onClick }) {
     fontSize: rem(11.5), fontWeight: on ? 700 : 400,
     border: `1px solid ${on ? C.curtain : C.line}`,
     background: on ? C.curtain : C.card,
-    color: on ? "#FFFDF8" : C.inkSoft,
+    color: on ? C.onCurtain : C.inkSoft,
     fontFamily: FONT_STACK, whiteSpace: "nowrap",
     // ★★0件に なる 組み合わせは、★押せない 灰色に します（★A09 の 注記）。
     opacity: disabled ? 0.45 : 1
@@ -166,7 +166,7 @@ export function Pill({ children, on, disabled, onClick }) {
 export function Warn({ children, style }) {
   return (
     <div className="warn" style={{
-      background: "#F6F1E4", border: "1px solid #E8DFC8", borderRadius: 12,
+      background: C.band, border: `1px solid ${C.line3}`, borderRadius: 12,
       padding: "9px 11px", ...TYPE.note, lineHeight: 1.75, marginBottom: 10,
       ...style
     }}>
@@ -220,7 +220,7 @@ export function Note({ children, style, fold = false }) {
         style={{
           display: "inline-block", marginTop: 14, fontSize: rem(11.5),
           color: open ? C.curtain : C.inkSoft,
-          border: `1px solid ${open ? "#CFC0A4" : C.line}`,
+          border: `1px solid ${open ? C.noteOpen : C.line}`,
           borderRadius: 99, padding: "5px 12px", background: C.paper,
           minHeight: SPACE.tapMin, fontFamily: FONT_STACK
         }}>{open ? NOTE_CLOSE : NOTE_OPEN}</button>
@@ -399,7 +399,7 @@ export function FieldLabel({ children, htmlFor, style }) {
 export function Wl({ children, style }) {
   return (
     <div style={{
-      background: "#F6EFDF", border: "1px solid #E8DFC8", borderRadius: 12,
+      background: C.bandWl, border: `1px solid ${C.line3}`, borderRadius: 12,
       padding: "9px 11px", ...TYPE.note, lineHeight: 1.75, marginBottom: 10, ...style
     }}>{children}</div>
   );
@@ -500,7 +500,7 @@ export function EmptyBox({ title, sub, style }) {
 export function Skeleton({ w, big }) {
   return (
     <div style={{
-      background: "#F0E9DA", borderRadius: big ? 12 : 8,
+      background: C.line2, borderRadius: big ? 12 : 8,
       height: big ? 64 : 13, marginBottom: 8,
       width: w || "100%"
     }} />
@@ -555,7 +555,7 @@ export function StateBlock({ state, what, how, onRetry }) {
   if (state === "失敗") {
     return (
       <>
-        <Card style={{ background: "#F6F1E4", borderColor: "#E8DFC8" }}>
+        <Card style={{ background: C.band, borderColor: C.line3 }}>
           <div style={{ fontSize: rem(13), lineHeight: 1.8, color: C.ink }}>
             {STATE_FAIL_LINES[0]}<br />{STATE_FAIL_LINES[1]}
           </div>
@@ -597,13 +597,13 @@ export function Switch({ on, onChange, label }) {
       }}>
       <span style={{
         display: "block", width: 44, height: 26, borderRadius: 99,
-        position: "relative", background: on ? C.curtain : "#DFD4BE",
+        position: "relative", background: on ? C.curtain : C.switchOff,
         transition: ".16s"
       }}>
         <span style={{
           position: "absolute", top: 3, left: on ? 21 : 3,
-          width: 20, height: 20, borderRadius: "50%", background: "#fff",
-          boxShadow: "0 1px 2px rgba(0,0,0,.2)", transition: ".16s"
+          width: 20, height: 20, borderRadius: "50%", background: C.knob,
+          boxShadow: C.shadowKnob, transition: ".16s"
         }} />
       </span>
     </span>
@@ -649,7 +649,7 @@ export function Btn({ children, onClick, ghost, small, disabled, style, type = "
       padding: pad, minHeight: SPACE.tapMin,
       border: ghost ? `1px solid ${C.line}` : "none",
       background: ghost ? C.card : C.curtain,
-      color: ghost ? C.ink : "#FFFDF8",
+      color: ghost ? C.ink : C.onCurtain,
       fontFamily: FONT_STACK, fontSize: rem(size),
       fontWeight: ghost ? 400 : 700, textAlign: "center",
       opacity: disabled ? 0.45 : 1, ...style
@@ -666,7 +666,7 @@ export function Btn({ children, onClick, ghost, small, disabled, style, type = "
 export function Tag({ children, style }) {
   return (
     <span style={{
-      display: "inline-block", background: "#F3ECDD", color: C.inkSoft,
+      display: "inline-block", background: C.band2, color: C.inkSoft,
       borderRadius: 6, padding: "2px 7px", fontSize: rem(10),
       marginLeft: 6, whiteSpace: "nowrap", lineHeight: 1.5, ...style
     }}>{children}</span>
@@ -689,7 +689,7 @@ export function Ask({ title, name, note, danger, okLabel, onOk, onCancel }) {
   if (!title) return null;
   return (
     <div style={{
-      position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)",
+      position: "fixed", inset: 0, background: C.scrim,
       display: "flex", alignItems: "center", justifyContent: "center",
       padding: 16, zIndex: 50
     }}>
@@ -718,7 +718,7 @@ export function Ask({ title, name, note, danger, okLabel, onOk, onCancel }) {
               flex: 1, minHeight: 48, borderRadius: 12,
               border: `1px solid ${danger ? C.curtain : C.line}`,
               background: danger ? C.curtain : C.card,
-              color: danger ? "#FFFDF8" : C.ink,
+              color: danger ? C.onCurtain : C.ink,
               ...TYPE.mini, fontFamily: FONT_STACK
             }}>{okLabel || (danger ? "消す" : "はい")}</button>
         </div>

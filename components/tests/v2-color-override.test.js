@@ -67,7 +67,16 @@ console.log("\n③ 白字の 札が、★門の中で 消えないこと");
 // ★★選ばれた 札は「地＝えんじ／字＝#FFFDF8」です。
 const ui = readRaw("components", "UiV2.jsx");
 t(/background: on \? C\.curtain : C\.card/.test(ui), "★選ばれた 札の 地は えんじ");
-t(/color: on \? "#FFFDF8"/.test(ui), "★選ばれた 札の 字は #FFFDF8");
+// ★★★2026-09-19（★裁定 その81 §1）── ★字の 色を 名前で 呼ぶ ように しました。
+//   ★★`"#FFFDF8"` を 探して いたので、★名前に した 日に 落ちました。
+//   ★★★大事なのは「値が #FFFDF8 の まま か」です。
+//     ★★`app/globals.css` の 選び方が、★その 字に 頼って います。
+//     ★★値を 変えると、★門の 中の 札が また 白く なります。
+t(/color: on \? C\.onCurtain/.test(ui), "★選ばれた 札の 字は 名前で 呼ぶ");
+{
+  const t2 = readRaw("lib", "tokens.js");
+  t(/onCurtain: "#FFFDF8"/.test(t2), "★★その 名前の 値は #FFFDF8（★CSS が 頼って います）");
+}
 // ★★この 2つが 揃っている 限り、★①②が 崩れると 見えなく なります。
 
 console.log(ng === 0 ? `\n★すべて 通りました（${ok}）` : `\n★${ng} 件 落ちました`);
