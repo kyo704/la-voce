@@ -672,3 +672,57 @@ export function Tag({ children, style }) {
     }}>{children}</span>
   );
 }
+
+
+/**
+ * ★確かめの 1枚（★見本 `askShow`・2026-09-19）。
+ *
+ *   ★★★消す 前に 出します。★「やめる」が 左、★「消す」が 右 です。
+ *     ★★危ない ほうを 赤に します（★見本 `danger`）。
+ *   ★★★窓（`window.confirm`）を 使いません。★字を 大きく 出せません。
+ *     ★★見本と 同じ 形に します ── ★題・名・わけ・2つの 札。
+ *   ★★開いて いる あいだ、★後ろは 押せません。
+ *
+ *   ★見張り components/tests/ui-v2.test.js
+ */
+export function Ask({ title, name, note, danger, okLabel, onOk, onCancel }) {
+  if (!title) return null;
+  return (
+    <div style={{
+      position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      padding: 16, zIndex: 50
+    }}>
+      <div style={{
+        ...cardStyle, maxWidth: 420, width: "100%", background: C.card
+      }}>
+        <p style={{ ...TYPE.title, color: C.ink, margin: 0 }}>{title}</p>
+        {name ? (
+          <p style={{ ...TYPE.li, color: C.ink, margin: `${rem(6)} 0 0`, fontWeight: 700 }}>
+            {name}
+          </p>
+        ) : null}
+        {note ? (
+          <p style={{ ...TYPE.mini, color: C.inkSoft, lineHeight: 1.8,
+            margin: `${rem(8)} 0 0` }}>{note}</p>
+        ) : null}
+        <div style={{ display: "flex", gap: 8, marginTop: rem(14) }}>
+          <button type="button" onClick={onCancel}
+            style={{
+              flex: 1, minHeight: 48, borderRadius: 12,
+              border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+              ...TYPE.mini, fontFamily: FONT_STACK
+            }}>やめる</button>
+          <button type="button" onClick={onOk}
+            style={{
+              flex: 1, minHeight: 48, borderRadius: 12,
+              border: `1px solid ${danger ? C.curtain : C.line}`,
+              background: danger ? C.curtain : C.card,
+              color: danger ? "#FFFDF8" : C.ink,
+              ...TYPE.mini, fontFamily: FONT_STACK
+            }}>{okLabel || (danger ? "消す" : "はい")}</button>
+        </div>
+      </div>
+    </div>
+  );
+}

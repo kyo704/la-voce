@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
-import { H3, Box, Li, Note, Usu, Warn, FieldLabel, Input } from "@/components/UiV2";
+import { H3, Box, Li, Note, Usu, Warn, FieldLabel, Input, Ask } from "@/components/UiV2";
 import {
   HEAD, LEAD, KINDS, GRADE_NOT_HERE, NOTES,
-  ofKind, parentNameOf, mayAdd, whyCannotAdd, mayDelete, whyCannotDelete
+  ofKind, parentNameOf, mayAdd, whyCannotAdd, mayDelete, whyCannotDelete,
+  // ★★消す 前の 確かめ（★見本 `askShow`・2026-09-19）。
+  DEL_TITLE, delNote
 } from "@/lib/orgDivisions";
 
 // ============================================================================
@@ -31,9 +33,10 @@ export default function OpsOrgShape({
   const [parent, setParent] = useState({});
   // ★★★消す 前に 1度 確かめます（★2026-09-19・実機の ご報告）。
   //   ★★1度 押すと 消えて いました。★戻せません。
-  //   ★★★窓（confirm）を 出しません。★その場で 字が 変わります。
-  //     ★★窓は 押し間違いを 防ぎますが、★読まずに 押される ことも あります。
-  //     ★★同じ ところが「もう一度 押すと 消えます」に 変わる ほうが、★目に 入ります。
+  //   ★★★2026-09-19（★新しい 見本）── ★1枚を 出す 形に 揃えました。
+  //     ★★見本 `askShow` ／ `orgDelAsk` が、★題・名・わけ・2つの 札 を 出します。
+  //     ★★★`window.confirm` は 使いません。★字を 大きく 出せません。
+  //   ★★消す もの を 覚えて おきます（★null なら 1枚を 出しません）。
   const [消す, set消す] = useState(null);
 
   return (
@@ -65,19 +68,10 @@ export default function OpsOrgShape({
                 {並.map((r, i) => {
                   const n = usedCount ? usedCount(r) : 0;
                   const 消せる = mayEdit && mayDelete(rows, r, n);
-                  const 確かめ中 = 消す === r.id;
                   return (
                     <Li key={r.id} last={i === 並.length - 1}
-                      right={消せる
-                        ? (確かめ中 ? "もう一度 押すと 消えます" : "消す")
-                        : (n > 0 ? `${n}人` : "")}
-                      onClick={消せる
-                        ? async () => {
-                          if (!確かめ中) { set消す(r.id); return; }
-                          set消す(null);
-                          if (onRemove) await onRemove(r);
-                        }
-                        : null}>
+                      right={消せる ? "消す" : (n > 0 ? `${n}人` : "")}
+                      onClick={消せる ? () => set消す(r) : null}>
                       {r.name}
                       {k.parent ? (
                         <div style={小}>{parentNameOf(rows, r) || "（上が ありません）"}</div>
@@ -85,11 +79,7 @@ export default function OpsOrgShape({
                       {!消せる && mayEdit ? (
                         <div style={小}>{whyCannotDelete(rows, r, n)}</div>
                       ) : null}
-                      {確かめ中 ? (
-                        <div style={{ ...小, color: C.curtain }}>
-                          消すと、戻せません。やめる ときは、ほかの ところを 押して ください。
-                        </div>
-                      ) : null}
+
                     </Li>
                   );
                 })}
@@ -152,6 +142,20 @@ export default function OpsOrgShape({
       ) : null}
       {saving ? <p style={小}>書いて います…</p> : null}
       <Note>{NOTES.map((t) => (<div key={t}>{t}</div>))}</Note>
+
+      {/* ★★★消す 前の 1枚（★見本 `askShow`・2026-09-19）。
+          ★★「やめる」が 左、★「消す」が 右（赤）。★見本と 同じ 並び です。 */}
+      <Ask
+        title={消す ? DEL_TITLE : null}
+        name={消す ? 消す.name : ""}
+        note={消す ? delNote(rows, 消す) : ""}
+        danger
+        onCancel={() => set消す(null)}
+        onOk={async () => {
+          const r = 消す;
+          set消す(null);
+          if (onRemove && r) await onRemove(r);
+        }} />
     </div>
   );
 }

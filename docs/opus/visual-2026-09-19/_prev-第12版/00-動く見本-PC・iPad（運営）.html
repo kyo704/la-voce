@@ -364,20 +364,6 @@ th.stick{z-index:4}
 .legend{max-width:900px;font-size:13.5px;color:var(--ink2);background:#fff;border:1px solid var(--line);
  border-radius:12px;padding:15px 18px;line-height:1.95}
 .legend b{color:var(--enji)}.legend ul{margin:6px 0 0 1.3em}.legend li{margin-bottom:3px}
-/* ══ ★たしかめる 板 ── 2026-09-19
-   ★この 見本には 板の 仕組み（SH / openSheet）が ありません。
-   ★★個人の 見本の ものを 確かめずに 使い、★白い 画面に しました。
-   ★ここでは、★この 見本の 中だけで 完結する 形で 作ります      */
-.ask{position:fixed;inset:0;background:rgba(38,25,19,.34);display:none;
- align-items:center;justify-content:center;z-index:60;padding:20px}
-.ask.on{display:flex}
-.askbox{width:min(400px,92%);background:var(--card);border:1px solid var(--line);
- border-radius:14px;box-shadow:0 18px 44px rgba(60,44,28,.26);padding:22px 22px 18px}
-.askbox .t{font-size:16px;font-weight:700;margin-bottom:10px}
-.askbox .nm{background:var(--band2);border-radius:8px;padding:12px 14px;
- text-align:center;font-size:15.5px;font-weight:700;margin-bottom:12px}
-.askbox .bs{display:flex;gap:9px;margin-top:15px}
-.askbox .bs .btn{flex:1;margin:0}
 .toast{position:fixed;left:50%;transform:translateX(-50%) translateY(10px);bottom:26px;background:#261913;color:#fff;
  border-radius:11px;padding:12px 18px;font-size:13.5px;z-index:80;opacity:0;transition:.2s;pointer-events:none}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -468,7 +454,6 @@ html[data-th="dark"] .drt,html[data-th="dark"] .drr,html[data-th="dark"] .drhint
 <div class="legend" id="lg"></div>
 <div class="legend" id="spec"></div>
 <div class="toast" id="toast"></div>
-<div class="ask" id="ask" onclick="if(event.target===this)askNo()"><div class="askbox" id="askbox"></div></div>
 <script>
 /* ══════════ データ（スマホ版と 同じ） ══════════ */
 var PERM=[
@@ -604,7 +589,7 @@ var HIRAITA=[['田村 まこと（事務長）','9月9日 10:22','斎藤 めぐ�
  ['田村 まこと（事務長）','9月2日 14:05','斎藤 めぐみ の 門下']];
 
 /* ══════════ 状態 ══════════ */
-var S={orgSel:0,rail:false,pal:false,palq:'',dev:'pc',post:'学長',tab:'ホーム',stack:[],
+var S={rail:false,pal:false,palq:'',dev:'pc',post:'学長',tab:'ホーム',stack:[],
  cell:null,nv:'日',mf:'全て',pf:{k:'全て',v:''},oc:0,gy:null,mnew:{},sel:null,scale:1};
 function $(x){return document.querySelector(x)}
 function postOf(n){for(var i=0;i<POSTS.length;i++)if(POSTS[i].n===n)return POSTS[i];return null}
@@ -637,22 +622,6 @@ function push(n,a){S.stack.push({s:n,a:a});nav1();draw()}
 function pop(){S.stack.pop();nav1();draw()}
 function topOf(){return S.stack[S.stack.length-1]}
 function bk(t){return '<div class="usu" style="cursor:pointer;color:var(--enji);margin-bottom:6px" onclick="pop()">‹ '+t+'</div>'}
-/* ★たしかめる ── ★押しまちがいで 消えないように */
-var _askFn = null;
-function askShow(title, name, note, danger, fn){
- _askFn = fn;
- $('#askbox').innerHTML =
-   '<div class="t">'+title+'</div>'
-  +(name?'<div class="nm">'+name+'</div>':'')
-  +(note?'<div class="note" style="margin:0">'+note+'</div>':'')
-  +'<div class="bs">'
-  +'<span class="btn g" onclick="askNo()">やめる</span>'
-  +'<span class="btn"'+(danger?' style="background:var(--err)"':'')
-  +' onclick="askYes()">'+(danger?'消す':'はい')+'</span></div>';
- $('#ask').classList.add('on')}
-function askNo(){ $('#ask').classList.remove('on'); _askFn=null }
-function askYes(){ var f=_askFn; askNo(); if(f) f() }
-
 function toast(t){$('#toast').textContent=t;$('#toast').classList.add('on');
  clearTimeout(window._t);window._t=setTimeout(function(){$('#toast').classList.remove('on')},3200)}
 function keyLab(key){var d=+key.split('-')[0],k=+key.split('-')[1],K=myKoma()[k]||MST.koma[k];
@@ -1177,7 +1146,7 @@ function P_write(a){
  var q=W.q,cand=q?MEI.map(function(m,i){return [m,i]}).filter(function(x){return x[0][0].indexOf(q)>=0}):[];
  return bk('連絡')+'<h2>'+(a>=0?'お知らせを 直す':'お知らせを 書く')+'</h2>'
  +'<div class="sub">宛先を 段ごとに 狭めます　／　名前でも 探せます</div>'
- +'<div class="col2" style="align-items:flex-start;flex-direction:row-reverse">'
+ +'<div class="col2" style="align-items:flex-start">'
  +'<div style="flex:1;min-width:340px">'
  +'<div class="h3" style="margin-top:0">① 学部・研究科</div><div class="pills">'
  +'<span class="pill sm '+(W.gakubu.length?'':'on')+'" onclick="S.ow.gakubu=[];S.ow.gakka=[];draw()">全部</span>'
@@ -1252,11 +1221,7 @@ function sendOshirase(a){var W=S.ow;
  if(W.from!==undefined)MISOU.splice(W.from,1);
  if(a>=0){OSHIRASE[a].t=W.t;OSHIRASE[a].b=W.b;OSHIRASE[a].to=ateText(W)}
  else OSHIRASE.unshift({t:W.t,d:'9月9日',to:ateText(W),un:0,b:W.b});
- /* ★出したあと、★★その お知らせを 開いた 状態で 戻ります
-    ★前は ただ 戻るだけで、★どこに 入ったか 分かりませんでした */
- S.ow=null;
- S.oc = (a>=0) ? a : 0;
- toast('出しました');pop()}
+ S.ow=null;toast('出しました');pop()}
 /* ── 未送信（下書き・送れなかったもの） ── */
 function P_misou(){
  return bk('連絡')+'<h2>未送信</h2><div class="sub">'+MISOU.length+'件　／　まだ 出していない お知らせです</div>'
@@ -1851,114 +1816,30 @@ function bAllOn(){DAYS.forEach(function(d,di){myKoma().forEach(function(k,ki){if
  draw();toast('全部 「'+S.bn+'」に しました。レッスンは 1つも 入れられません')}
 
 function stOrg(){
- /* ══ ★学校の 形 ── 作り直し（2026-09-19）══
-    ★前：4つの 箱が 並ぶだけ。★学部と 学科の 関係が 見えない
-    ★★いま：★左に 学部、★右に その学部の 中身
-    ★裁定その98（org_divisions・parent_id で 階層）に 合わせます      */
- var sel = S.orgSel || 0;
- var gb = ORG.gakubu, gk = ORG.gakka;
- /* ★選んだ 学部に つく 学科だけ */
- var inSel = gk.filter(function(v){ return v[1] === gb[sel] });
-
+ var K=[['gakubu','学部・研究科','れい：音楽教育学部'],['gakka','学科・コース','れい：音楽教育'],
+        ['gakunen','学年','れい：博士4年／研究生／専攻科'],['bunya','事務の 分野','れい：広報']];
  return '<div class="h3" style="margin-top:0">学校の 形</div>'
  +'<div class="warn">大学だけでは ありません。修士・博士・研究生・専攻科・別科も、ここで 足せます。<br>'
  +'音楽教室なら「初等科・中等科・研究科」、養成所なら「本科・専科」など、<b>その学校の ことば</b>で。</div>'
-
- +'<div class="col2" style="align-items:flex-start;gap:16px">'
-
- /* ── 左：学部 ───────────────────────── */
- +'<div style="flex:0 0 268px;min-width:240px">'
- +'<div class="h3" style="margin-top:0">学部・研究科　<span class="usu">'+gb.length+'つ</span></div>'
- +'<div class="card p0">'
- +gb.map(function(v,k){
-   var on = k===sel, n = gk.filter(function(x){return x[1]===v}).length;
-   return '<div class="li'+(on?' on':'')+'" onclick="S.orgSel='+k+';draw()" '
-    +'style="'+(on?'background:var(--band2)':'')+'"><span>'+v
-    +'<div class="usu">'+(n?n+'つの 学科':'まだ 学科が ありません')+'</div></span>'
-    +'<s>'+(on?'見ています':'›')+'</s></div>'}).join('')
+ +'<div class="col2" style="flex-wrap:wrap">'
+ +K.map(function(k){return '<div style="flex:0 0 calc(50% - 8px);min-width:280px">'
+   +'<div class="h3">'+k[1]+'　<span class="usu">'+ORG[k[0]].length+'つ</span></div>'
+   +'<div class="card p0" style="max-height:210px;overflow-y:auto">'
+   +(k[0]==='gakka'?ORG.gakka.map(function(v,i){
+     return '<div class="li plain"><span>'+v[0]+'<br><span class="usu">'+v[1]+'</span></span><s><span class="pill sm" onclick="orgDel(\'gakka\','+i+')">消す</span></s></div>'}).join('')
+    :ORG[k[0]].map(function(v,i){
+     return '<div class="li plain"><span>'+v+'</span><s><span class="pill sm" onclick="orgDel(\''+k[0]+'\','+i+')">消す</span></s></div>'}).join(''))
+   +'</div><div style="display:flex;gap:7px;margin-top:8px">'
+   +'<input class="inp" style="padding:8px 10px;font-size:13.5px" placeholder="'+k[2]+'" value="'+(S.mnew[k[0]]||'')+'" oninput="S.mnew[\''+k[0]+'\']=this.value">'
+   +'<span class="btn sm" style="flex:none" onclick="orgAdd(\''+k[0]+'\')">足す</span></div></div>'}).join('')
  +'</div>'
- +'<div style="display:flex;gap:7px;margin-top:8px">'
- +'<input class="inp" style="padding:8px 10px;font-size:13.5px" placeholder="れい：音楽教育学部" '
- +'value="'+(S.mnew.gakubu||'')+'" oninput="S.mnew.gakubu=this.value">'
- +'<span class="btn sm" style="flex:none" onclick="orgAdd(\'gakubu\')">足す</span></div>'
- +'</div>'
-
- /* ── 右：その 学部の 中身 ───────────────── */
- +'<div style="flex:1;min-width:300px">'
- +'<div class="h3" style="margin-top:0">'+(gb[sel]||'—')+' の 中身</div>'
-
- +'<div class="sh3">学科・コース　<span class="usu">'+inSel.length+'つ</span></div>'
- +'<div class="card p0">'
- +(inSel.length
-   ? inSel.map(function(v){
-     var k = gk.indexOf(v);
-     return '<div class="li plain"><span>'+v[0]+'</span>'
-      +'<s><span class="pill sm" onclick="orgDelAsk(\'gakka\','+k+',\''+v[0]+'\')">'
-      +'消す</span></s></div>'}).join('')
-   : '<div class="li plain" style="color:var(--ink4)"><span>まだ ありません</span></div>')
- +'</div>'
- +'<div style="display:flex;gap:7px;margin-top:8px">'
- +'<input class="inp" style="padding:8px 10px;font-size:13.5px" placeholder="れい：音楽教育" '
- +'value="'+(S.mnew.gakka||'')+'" oninput="S.mnew.gakka=this.value">'
- +'<span class="btn sm" style="flex:none" onclick="orgAdd(\'gakka\')">'+(gb[sel]||'')+'に 足す</span></div>'
- +'<div class="usu" style="margin-top:6px">'
- +'左で えらんだ 学部の 中に 入ります。</div>'
- +'</div></div>'
-
- /* ── 下：学年と 事務の 分野（★学部に つかない） ── */
- +'<div class="h3">学年</div>'
- +'<div class="usu" style="margin:-4px 0 8px">学部には つきません。学校 全部で 同じです。</div>'
- +'<div class="card p0" style="max-width:520px">'
- +ORG.gakunen.map(function(v,k){
-   return '<div class="li plain"><span>'+v+'</span>'
-    +'<s><span class="pill sm" onclick="orgDelAsk(\'gakunen\','+k+',\''+v+'\')">消す</span></s></div>'}).join('')
- +'</div>'
- +'<div style="display:flex;gap:7px;margin-top:8px;max-width:520px">'
- +'<input class="inp" style="padding:8px 10px;font-size:13.5px" placeholder="れい：博士4年／研究生／専攻科" '
- +'value="'+(S.mnew.gakunen||'')+'" oninput="S.mnew.gakunen=this.value">'
- +'<span class="btn sm" style="flex:none" onclick="orgAdd(\'gakunen\')">足す</span></div>'
-
- +'<div class="h3">事務の 分野</div>'
- +'<div class="card p0" style="max-width:520px">'
- +ORG.bunya.map(function(v,k){
-   return '<div class="li plain"><span>'+v+'</span>'
-    +'<s><span class="pill sm" onclick="orgDelAsk(\'bunya\','+k+',\''+v+'\')">消す</span></s></div>'}).join('')
- +'</div>'
- +'<div style="display:flex;gap:7px;margin-top:8px;max-width:520px">'
- +'<input class="inp" style="padding:8px 10px;font-size:13.5px" placeholder="れい：広報" '
- +'value="'+(S.mnew.bunya||'')+'" oninput="S.mnew.bunya=this.value">'
- +'<span class="btn sm" style="flex:none" onclick="orgAdd(\'bunya\')">足す</span></div>'
-
- +'<div class="note">使われている ものは 消せません（その方が 1人でも いると 止めます）。<br>'
- +'<b>消すときは、一度 おたずねします。</b>押しまちがいで 消えません。</div>'}
-
-/* ★消す 前に おたずねする ── 裁定その99（2026-09-19）
-   ★押しまちがいで 学部が 消えると、★中の 学科も 行き場を 失います */
-function orgDelAsk(k, i, name){
- var note = 'この ことばを 使っている 方が 1人でも いると、消せません。<br>'
-  + (k==='gakubu'
-     ? '<b>学部を 消すと、その中の 学科も いっしょに 消えます。</b><br>' : '')
-  + '消したあと、もとには 戻せません。';
- askShow('消しますか', name, note, true, function(){ orgDel(k, i) })}
-
-
-
-
+ +'<div class="note">使われている ものは 消せません（その方が 1人でも いると 止めます）。</div>'}
 function orgAdd(k){var v=(S.mnew[k]||'').trim();if(!v){toast('名前を 入れてください');return}
  if(k==='gakka'){if(ORG.gakka.some(function(x){return x[0]===v})){toast('もう あります');return}
-  /* ★左で えらんだ 学部に 入れます（★前は 1つめに 固定でした）*/
-  ORG.gakka.push([v,ORG.gakubu[S.orgSel||0]])}
+  ORG.gakka.push([v,ORG.gakubu[0]])}
  else{if(ORG[k].indexOf(v)>=0){toast('もう あります');return}ORG[k].push(v)}
  S.mnew[k]='';draw();toast('足しました')}
 function orgDel(k,i){var v=k==='gakka'?ORG.gakka[i][0]:ORG[k][i];
- /* ★学部を 消すと、★中の 学科も いっしょに 消します（★行き場を 失うため）*/
- if(k==='gakubu'){
-  var inn=ORG.gakka.filter(function(x){return x[1]===v});
-  var usedIn=inn.some(function(x){
-   return PEOPLE.some(function(p){return p[3]===x[0]})||MEI.some(function(m){return m[2]===x[0]})});
-  if(usedIn){toast('この学部の 学科に、通っている方が います');return}
-  ORG.gakka=ORG.gakka.filter(function(x){return x[1]!==v});
-  if(S.orgSel>=ORG.gakubu.length-1)S.orgSel=0}
  var used=PEOPLE.some(function(p){return p[2]===v||p[3]===v||p[4]===v})||MEI.some(function(m){return m[1]===v||m[2]===v});
  if(used){toast('「'+v+'」の方が いるので 消せません');return}
  ORG[k].splice(i,1);draw();toast('消しました')}
