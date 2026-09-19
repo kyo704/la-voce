@@ -61,6 +61,11 @@ if "★ありえない表★" in ある表:
   raise SystemExit("★止まりました ── 較正が 合いません（無い はずの 表が 見えます）")
 
 # ★★画面ごとの「詰まり」── ★その 画面に 要る 表。
+# ★★★2026-09-19 ── ★書いて いない 画面を「（要らない）」と 出して いました。
+#   ★★B群（`P_saiten` `P_tenIreru` `P_hyokaItem` `P_misou`）は、
+#     ★★どれも しまう ところが 要ります。★見本を 読んで 分かりました。
+#   ★★★「書いて いない」と「要らない」を、★同じ 顔に しません。
+#     ★★下に 無い 名は「★調べて いません」と 出します。
 詰まり = {
   "P_kasa": ["overlap_notices"], "P_kasaT": ["overlap_notices"],
   "P_kumu": ["my_timetable"], "P_okeru": ["lesson_slots"],
@@ -69,8 +74,14 @@ if "★ありえない表★" in ある表:
   "P_pay": ["org_billing"], "P_seikyuNa": ["org_billing"],
   "P_atesaki": ["org_billing"], "P_ryoshu": ["org_billing"],
   "P_autoSet": ["org_events"], "P_kasaFix": ["overlap_notices"],
-  "P_settei": [], "P_sonohito": [], "P_setPost": [], "P_write": []
+  "P_settei": [], "P_sonohito": [], "P_setPost": [], "P_write": [],
+  # ★★★B群（★2026-09-19 に 見本を 読みました）。
+  #   ★★点を しまう ところ・型を しまう ところ・下書きの しまい方 が 要ります。
+  "P_saiten": ["evaluation_scores"], "P_tenIreru": ["evaluation_scores"],
+  "P_hyokaItem": ["evaluation_items"], "P_misou": ["org_message_drafts"]
 }
+# ★★書いて いない 画面の 出し方（★既定を「要らない」に しません）。
+未調査 = "★調べて いません"
 
 # ★★★仕分けの 紙が 無い 画面を、★みな「まだ 無い」と 数えて いました
 #   （★2026-09-19・坂本さんの ご指示で A-3 に 入る ときに 気づきました）。
@@ -126,6 +137,16 @@ for 名 in 画面:
 def 要る表(ts):
   return [t for t in ts if t not in ある表]
 
+
+def 表の欄(名):
+  """★その 画面に 要る 表 ── ★書いて いなければ、★そう 書きます。"""
+  if 名 not in 詰まり:
+    return 未調査
+  要 = 要る表(詰まり[名])
+  if not 詰まり[名]:
+    return "（要らない）"
+  return "★足りません: " + "／".join(要) if 要 else "○ そろって います"
+
 今日 = datetime.date.today().isoformat()
 行.append("# ★次に やる 画面 ── ★数えて 並べました")
 行.append("")
@@ -163,10 +184,10 @@ for 名, x in sorted(詰まり宣言.items()):
 行.append("| 画面 | 要る 表 | 台帳に あるか |")
 行.append("|---|---|---|")
 for 名, ts in まだ:
-  無 = 要る表(ts)
   行.append("| `%s` | %s | %s |" % (
-    名, "／".join("`%s`" % t for t in ts) or "（要らない）",
-    "★足りません: " + "／".join(無) if 無 else "○ そろって います"))
+    名,
+    ("／".join("`%s`" % x for x in ts) or ("（要らない）" if 名 in 詰まり else 未調査)),
+    表の欄(名)))
 行.append("")
 行.append("## ★② 画面は ある が、★欠けが ある もの（%d）" % len(欠け))
 行.append("")
