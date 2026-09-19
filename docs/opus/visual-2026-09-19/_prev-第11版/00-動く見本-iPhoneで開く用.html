@@ -687,7 +687,11 @@ function S_kyou(){
   +(ORGS.length>1?'<br>通っている ところが 全部、1つの 予定表に 出ます。教室どうしは 見えません。':'')+'</div>';
  }
  /* 近い 行事 */
- b += sagasuBand();
+ if(SAGASU_NEW>0&&hasSearch()){
+  b+='<div class="box" style="margin-bottom:11px">'
+   +'<div class="li" onclick="push(\'伴奏をさがす\')"><span>さがす'
+   +'<div class="usu">新しい 募集が '+SAGASU_NEW+'件</div></span><s>›</s></div></div>';
+ }
  if(hasClass()){
  b+='<div class="h3">近い 行事</div><div class="box">'
   +'<div class="li plain" style="cursor:default"><span>9月14日（月）　実技試験<br><span class="usu">12:30〜17:00／第1ホール　'+orgOf('u').n+'</span></span></div>'
@@ -1847,40 +1851,14 @@ SC['こまったこと']=function(name){
  +'やりとりは、こちらで 拝見することが あります。<br>'
  +'あなたの 記録・ノート・ひつじは、<b>この件で 変わりません</b>。</div>'};
 
-
-/* ══ ★自分の ポートフォリオの 状態 ── 裁定その94 §4f（2026-09-19）══
-   ★応募しようとして 経歴が 空だと 気づいても、★戻る道が ありません
-   ★さがす → 応募する → もっと → ノート → レパートリー → 経歴
-   ★★4階層 戻ることに なります。★2か所に 入口を 置きます      */
-var MYPF = { keireki:false, rec:true, rep:true, photo:false };
-
-function pfBand(){
- var ok = MYPF.keireki;
- return '<div class="box" style="margin-bottom:11px">'
-  +'<div class="li" onclick="push(\'経歴\')"><span>あなたの 経歴'
-  +'<div class="usu"'+(ok?'':' style="color:var(--warn)"')+'>'
-  +(ok?'整っています':'まだ 書いていません')+'</div></span>'
-  +'<s>'+(ok?'なおす ›':'書く ›')+'</s></div></div>'}
-
 SC['伴奏をさがす']=function(){return bk('もっと')
 +'<div class="hd" style="padding-top:2px"><h2>さがす</h2></div>'
-+'<div class="warn" style="background:#F3EEE0"><b>見本だけの スイッチ</b>　'
-+'<span class="pill sm '+(SG_EMPTY?'':'on')+'" onclick="SG_EMPTY=false;draw()">募集あり</span> '
-+'<span class="pill sm '+(SG_EMPTY?'on':'')+'" onclick="SG_EMPTY=true;draw()">0件</span></div>'
 +'<div class="warn">この学校の 方だけが 見えます。<br>ことばは <b>決まった 言い方から 選びます</b>（自由には 書けません）。<br>合わないと 思ったら、<b>いつでも 切れます</b>。理由は 要りません。</div>'
 +'<div class="pills"><span class="pill on">ぜんぶ</span>'
 +'<span class="pill">伴奏者</span><span class="pill">歌い手</span>'
 +'<span class="pill">楽器奏者</span></div>'
-+pfBand()
 +'<div class="sh3">出ている 募集</div>'
-+(SG_EMPTY
-  ? '<div class="empty"><div class="t">まだ 募集は ありません。</div>'
-    +'<div class="s">最初の 1つを 出してみませんか。</div></div>'
-    +'<div class="btn" onclick="push(\'募集を出す\')">募集を 出す</div>'
-    +'<div class="note">この学校の 方だけが ご覧に なれます。<br>'
-    +'出しても、すぐに 応募が 来るとは かぎりません。<br>'
-    +'期限を 決めておくと、そのまま 残りつづけません。</div>'
-  : '<div class="box">'
++'<div class="box">'
 +BOSHU.map(function(b,k){
   var ng=bump(b.days);
   return '<div class="li" onclick="push(\'応募する\','+k+')"><span>'+b.t
@@ -1888,7 +1866,7 @@ SC['伴奏をさがす']=function(){return bk('もっと')
    +(ng.length?'<div class="usu" style="color:var(--warn)">'
      +(b.all?'ほかの 予定と 重なります':ng.length+'日、ほかの 予定が あります')
      +'</div>':'')
-   +'</span><s>›</s></div>'}).join('')+'</div>')
+   +'</span><s>›</s></div>'}).join('')+'</div>'
 +'<div class="sh3">自分が 出した 募集</div><div class="box">'
 +'<div class="li" onclick="push(\'応募を選ぶ\')"><span>ピアノ　レッスン'
 +'<div class="usu">10月中に 3回ほど　／　あと 24日</div></span><s>応募 3件 ›</s></div></div>'
@@ -1993,43 +1971,6 @@ var VOCAB = {
 var FIELD = 'music';              /* ★既定。★登録の ときに 1問 */
 function W(k){ return VOCAB[FIELD][k] || k }
 function hasSearch(){ return VOCAB[FIELD].search }
-
-
-/* ══ ★さがす を 目立たせる ── 裁定その96 追補（2026-09-19）══
-   ★羊を 押しのけません（★タブは 触りません）
-   ★★きょうに 出す。★ただし ★順を つけます
-     1 ★自分宛て（返事・応募）── ★いちばん 強い
-     2 ★近くの 新着
-     3 ★全体の 新着
-   ★★1が あるときは、★2と3を 出しません（★どれも 目立たなく なるため）
-   ★★★0件の ときは 何も 出しません（★裁定その73と 同じ）        */
-var SG_EMPTY = false;   /* ★見本だけ。0件の 姿を 見るため */
-var SG = {
- mine: [                      /* ★自分宛て */
-  {t:'曲目が 届きました', s:'チェンバロ　録音'},
-  {t:'応募が 1件 あります', s:'ピアノ　レッスン'}
- ],
- near: 3,                     /* ★活動の 範囲が 合う 新着 */
- all: 2                       /* ★全体の 新着 */
-};
-
-function sagasuBand(){
- if(!hasSearch()) return '';
- var h='';
- if(SG.mine.length){                       /* ★1 自分宛て */
-  h = SG.mine.map(function(m){
-   return '<div class="li" onclick="push(\'伴奏をさがす\')">'
-    +'<span style="color:var(--enji)">'+m.t
-    +'<div class="usu" style="color:var(--ink3)">'+m.s+'</div></span><s>›</s></div>'}).join('');
- }else if(SG.near){                        /* ★2 近くの 新着 */
-  h = '<div class="li" onclick="push(\'伴奏をさがす\')"><span>さがす'
-   +'<div class="usu">近くで <b>'+SG.near+'件</b>'
-   +(SG.all?'　／　新しい 募集が '+SG.all+'件':'')+'</div></span><s>›</s></div>';
- }else if(SG.all){                         /* ★3 全体の 新着 */
-  h = '<div class="li" onclick="push(\'伴奏をさがす\')"><span>さがす'
-   +'<div class="usu">新しい 募集が '+SG.all+'件</div></span><s>›</s></div>';
- }
- return h ? '<div class="box" style="margin-bottom:11px">'+h+'</div>' : ''}
 
 SC['お仕事を選ぶ']=function(){
  return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>どんな お仕事ですか</h2></div>'
@@ -2202,27 +2143,7 @@ SC['応募する']=function(i){
         +'vertical-align:-3px"></span></s></div>'}).join('')+'</div>')
 
  /* ── ことば ── */
- +'<div class="sh3">お見せするもの</div><div class="box">'
-+[['経歴（学んだところ・師事・賞）','keireki'],['録画','rec'],
-  [W('rep'),'rep'],['写真','photo']].map(function(x){
-  var on = MYPF[x[1]];
-  /* ★空の ものだけ「ここで 書く」を 出します */
-  var empty = (x[1]==='keireki' && !MYPF.keireki);
-  return '<div class="li"'+(empty?' onclick="push(\'経歴\')"':'')+'><span>'+x[0]
-   +(empty?'<div class="usu" style="color:var(--warn)">'
-     +'まだ 書いていません　ここで 書けます</div>':'')
-   +'</span><s>'
-   +(empty?'書く ›'
-     :'<span style="display:inline-block;width:17px;height:17px;border-radius:4px;'
-      +'border:1.6px solid '+(on?'var(--enji)':'var(--line)')+';'
-      +(on?'background:var(--enji);box-shadow:inset 0 0 0 3px var(--card);':'')
-      +'vertical-align:-3px"></span>')
-   +'</s></div>'}).join('')+'</div>'
-+'<div class="usu" style="margin:-4px 0 11px">'
-+'<b>出さないものは、相手に 見えません。</b>'
-+'年齢・学年・'+W('monka')+'は、どちらにしても 出ません。<br>'
-+'録画は <b>YouTube の リンク</b>です。この中では 再生しません。</div>'
-+'<div class="sh3">送る ことば</div><div class="box">'
+ +'<div class="sh3">送る ことば</div><div class="box">'
  +TPL_B.map(function(t,k){
    return '<div class="li"><span>'+t+'</span>'
     +'<s><span style="display:inline-block;width:17px;height:17px;border-radius:4px;'
@@ -2247,26 +2168,11 @@ SC['応募する']=function(i){
 
 var OUBO = [
  {n:'応募者 A', d:'9月16日', ins:'ピアノ', say:'お受けできます',
-  day:'10月8日（水）14:00〜',
-  gakko:'○○音楽大学　ピアノ科', shiji:['大川 あや'],
-  sho:['2024　○○ピアノコンクール　入選'],
-  rec:['2026.06　Chopin　バラード第1番'],
-  rep:['Schubert　冬の旅（全曲）','Schumann　詩人の恋'],
-  photo:true, done:3},
+  day:'10月8日（水）14:00〜'},
  {n:'応募者 B', d:'9月16日', ins:'ピアノ', say:'曲目を もう少し 教えてください',
-  day:'10月8日（水）14:00〜',
-  gakko:'○○音楽大学　ピアノ科', shiji:['森 ひろし'],
-  sho:[],
-  rec:['2026.08　Bach　平均律 第1巻 第1番'],
-  rep:['Bach　平均律（抜粋）'],
-  photo:false, done:0},
+  day:'10月8日（水）14:00〜'},
  {n:'応募者 C', d:'9月15日', ins:'ピアノ', say:'お受けできます',
-  day:'10月15日（水）14:00〜',
-  gakko:'△△音楽院（イタリア）', shiji:['斎藤 めぐみ','外部 講師'],
-  sho:['2025　△△国際コンクール　第3位'],
-  rec:['2026.05　Liszt　愛の夢 第3番','2025.11　Debussy　月の光'],
-  rep:['Fauré　歌曲集','Duparc　旅への誘い'],
-  photo:true, done:1}
+  day:'10月15日（水）14:00〜'}
 ];
 
 /* ★自分の レパートリー。★ここから 選びます */
@@ -2326,88 +2232,42 @@ SC['応募を選ぶ']=function(){return bk('伴奏をさがす')
 +'<div class="hd" style="padding-top:2px"><h2>応募が '+OUBO.length+'件 あります</h2></div>'
 +'<div class="box">'
 +OUBO.map(function(o,k){
- var asking = o.say.indexOf('曲目')>=0 || o.say.indexOf(W('piece'))>=0;
+ var asking = o.say.indexOf('曲目')>=0;
  return '<div class="li" onclick="push(\'応募者の詳細\','+k+')"><span>'+o.n
- +'<div class="usu">'+o.gakko+'</div>'
+ +'<div class="usu">'+o.d+'　／　'+o.ins+'</div>'
  +'<div class="usu" style="color:'+(asking?'var(--warn)':'var(--ink3)')+'">'
  +'「'+o.say+'」</div>'
- +(o.done?'<div class="usu" style="color:var(--ok)">この学校で '+o.done+'回</div>':'')
  +'</span><s>見る ›</s></div>'}).join('')+'</div>'
 +'<div class="btn g">この募集を 終わりにする</div>'
 +'<div class="note">押すと、その方の ことが 見られます。決めるのは、見たあとです。<br>'
-+'応募の 順に 並べています。<b>実績の 順には しません。</b><br>'
-+'たずねられている ものは、ことばの 色で 分かります。</div>'};
++'応募の 順に 並べています。<br>'
++'たずねられている ものは、<b>ことばの 色で 分かります</b>。</div>'};
 
 SC['応募者の詳細']=function(i){
- var o = OUBO[i||1], asking = o.say.indexOf(W('piece'))>=0 || o.say.indexOf('曲目')>=0;
+ var o = OUBO[i||1], asking = o.say.indexOf('曲目')>=0;
  return bk('応募を選ぶ')+'<div class="hd" style="padding-top:2px"><h2>'+o.n+'</h2></div>'
+ +'<div class="box"><div class="li plain"><span>楽器・パート</span><s>'+o.ins+'</s></div>'
+ +'<div class="li plain"><span>来られる 日</span><s>'+o.day+'</s></div></div>'
 
- /* ── 写真と 学んだところ ── */
- +'<div class="card" style="padding:14px 16px;margin-bottom:11px">'
- +'<div style="display:flex;gap:13px;align-items:flex-start">'
- +(o.photo
-   ? '<div style="width:62px;height:82px;background:var(--band2);border-radius:5px;'
-     +'flex:none;display:flex;align-items:center;justify-content:center;'
-     +'font-size:12px;color:var(--ink4)">写真</div>'
-   : '')
- +'<div style="flex:1;min-width:0">'
- +'<div style="font-size:14px">'+o.gakko+'</div>'
- +'<div class="usu" style="margin-top:5px">師事　'+o.shiji.join('・')+'</div>'
- +(o.done ? '<div class="usu" style="margin-top:5px;color:var(--ok)">'
-   +'この学校で '+o.done+'回 演奏しています</div>' : '')
- +'</div></div></div>'
-
- /* ── 送られた ことば ── */
- +'<div class="sh3" style="margin-top:0">送られた ことば</div>'
+ +'<div class="sh3">送られた ことば</div>'
  +'<div class="card" style="padding:13px 15px">'
  +'<div style="font-size:14.5px">「'+o.say+'」</div></div>'
  +(asking
    ? '<div class="btn g" style="margin-top:10px" onclick="push(\'曲目を答える\','+(i||1)+')">'
-     +W('piece')+'を 答える</div>'
+     +'曲目を 答える</div>'
    : '')
 
- /* ── 来られる 日 ── */
- +'<div class="sh3">来られる 日</div>'
- +'<div class="box"><div class="li plain"><span>'+o.day+'</span></div></div>'
-
- /* ── 録画 ── */
- +(o.rec.length
-   ? '<div class="sh3">録画</div><div class="box">'
-     +o.rec.map(function(r){
-       return '<div class="li"><span>'+r+'</span><s>見る ›</s></div>'}).join('')+'</div>'
-   : '')
-
- /* ── 持っている 曲 ── */
- +(o.rep.length
-   ? '<div class="sh3">'+W('rep')+'</div><div class="box">'
-     +o.rep.map(function(r){
-       return '<div class="li plain"><span>'+r+'</span></div>'}).join('')+'</div>'
-     +'<div class="usu" style="margin:-4px 0 11px">'
-     +'ご本人が 公開している ぶんだけです。</div>'
-   : '')
-
- /* ── 賞 ── */
- +(o.sho.length
-   ? '<div class="sh3">受賞</div><div class="box">'
-     +o.sho.map(function(r){
-       return '<div class="li plain"><span>'+r+'</span></div>'}).join('')+'</div>'
-   : '')
-
- /* ── 空きコマ ── */
  +'<div class="sh3">合う 空きコマ</div>'
  +'<div class="box">'
  +[['10月15日（水）3限','9:00-10:30'],['10月17日（金）2限','13:00-14:30'],
    ['10月20日（月）1限','9:00-10:30']].map(function(x){
    return '<div class="li plain"><span>'+x[0]+'<div class="usu">'+x[1]+'</div></span></div>'}).join('')
  +'</div>'
-
  +'<div class="btn" style="margin-top:12px" onclick="push(\'成立後\')">この方に 決める</div>'
- +'<div class="btn g" style="margin-top:9px" onclick="openSheet(\'cut\',\''+o.n+'\')">'
+ +'<div class="btn g" style="margin-top:9px" onclick="openSheet(\'cut\',o.n)">'
  +'この人との やりとりについて</div>'
  +'<div class="note">お名前は、決めたあとに 見えます。<br>'
- +'<b>年齢・学年・'+W('monka')+'は 出しません。</b>決めるのに 要らないからです。<br>'
- +'写真・録画・'+W('rep')+'は、<b>ご本人が 出すかどうかを 選んでいます</b>。<br>'
- +'「この学校で N回」は、<b>まだ 一度も 無い方には 出しません</b>。<br>'
+ +'門下・学年は 出しません。決めるのに 要らないからです。<br>'
  +'空いている コマだけを 出しています。授業は 出ません。<br>'
  +'決めると、ほかの 応募は 閉じます。</div>'};
 
