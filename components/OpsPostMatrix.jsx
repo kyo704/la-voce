@@ -98,7 +98,9 @@ export default function OpsPostMatrix({
                     && !(k.key === "monka_read" && 自分の役職);
                   const 丸 = (
                     <span style={{
-                      fontSize: rem(15), fontWeight: 持ってる ? 700 : 400,
+                      // ★★15 → 15.5（★裁定 その103・2026-09-19）。
+                      //   ★★●○ の 印 です。★小さく すると 見分けが つきません。
+                      fontSize: rem(15.5), fontWeight: 持ってる ? 700 : 400,
                       /* ★★★持って いない ことを 示す ○（★裁定 その84 PRIORITY_2）。
                            ★★`C.line` は 線の 色 です。★1.21。★しるしの 目安 3.0 に 届きません。
                            ★★`--ink4`（5.12）に します。★殻の 中 なので 名前で 呼べます。 */

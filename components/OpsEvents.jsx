@@ -34,7 +34,13 @@ import { tx } from "@/lib/t";
 // ============================================================================
 
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
-const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
+// ★★★6段に 寄せました（★裁定 その103・2026-09-19）。
+//   ★★役で 寄せます。★近い 数に 丸めません（★D55）。
+//   ★★11 → 12.5 …… ★添える 字（★日づけ・断り）
+//   ★★10 → 12 …… ★いちばん 小さい 印（★「済み」などの 札）
+//   ★★15 → 15.5 …… ★一覧の 題／大きい 押し札
+//   ★★14 → 14.5 …… ★書き口の 小見出し／出す・やめる の 札
+const small = { fontSize: "0.78125rem", color: C.inkSoft, lineHeight: 1.8 };
 
 /**
  * ★きょうから n日 先の 日（★見本の `dShift`）。
@@ -165,11 +171,11 @@ export default function OpsEvents({
             }}>
               <div className="flex items-start justify-between gap-2">
                 <div style={{ minWidth: 0 }}>
-                  <p style={{ fontSize: "0.9375rem", color: C.ink }}>{x.ev.title || "（名前なし）"}</p>
+                  <p style={{ fontSize: "0.96875rem", color: C.ink }}>{x.ev.title || "（名前なし）"}</p>
                   <p style={small}>{dayWord(x.ev.event_date)}</p>
                 </div>
                 <span style={{
-                  fontSize: "0.625rem", color: C.inkSoft, background: C.paper,
+                  fontSize: "0.75rem", color: C.inkSoft, background: C.paper,
                   border: `1px solid ${C.line}`, borderRadius: 999,
                   padding: "3px 9px", whiteSpace: "nowrap"
                 }}>{x.label}</span>
@@ -223,7 +229,7 @@ export default function OpsEvents({
           style={{
             minHeight: 52, borderRadius: 12, border: `1px solid ${C.curtain}`,
             borderBottomWidth: 3, background: C.curtain, color: C.onCurtain,
-            fontSize: "0.9375rem"
+            fontSize: "0.96875rem"
           }}>行事を 出す</button>
       ) : null}
 
@@ -243,7 +249,7 @@ export default function OpsEvents({
           background: C.card, border: `1px solid ${C.curtain}`,
           borderRadius: 14, padding: 14
         }}>
-          <p style={{ fontSize: "0.875rem", fontWeight: 700, color: C.ink, margin: "0 0 8px" }}>
+          <p style={{ fontSize: "0.90625rem", fontWeight: 700, color: C.ink, margin: "0 0 8px" }}>
             行事を 出す
           </p>
 
@@ -374,13 +380,13 @@ export default function OpsEvents({
                 flex: 1, minHeight: 48, borderRadius: 12,
                 border: `1px solid ${C.curtain}`,
                 background: canSubmit(form) ? C.curtain : C.line,
-                color: C.onCurtain, fontSize: "0.875rem"
+                color: C.onCurtain, fontSize: "0.90625rem"
               }}>出す</button>
             <button type="button" onClick={() => setForm(null)}
               style={{
                 minHeight: 48, padding: "0 16px", borderRadius: 12,
                 border: `1px solid ${C.line}`, background: C.paper, color: C.ink,
-                fontSize: "0.875rem"
+                fontSize: "0.90625rem"
               }}>やめる</button>
           </div>
 

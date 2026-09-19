@@ -33,13 +33,17 @@ const row = {
   display: "flex", alignItems: "center", justifyContent: "space-between",
   gap: 10, padding: "11px 12px", borderTop: `1px solid ${C.line}`
 };
-const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
+// ★★★6段に 寄せました（★裁定 その103・2026-09-19）。
+//   ★★役で 寄せます。★近い 数に 丸めません（★D55）。
+//   ★★11 → 12.5 …… ★添える 字／絞りの 札
+//   ★★14 → 14.5 …… ★「まだ、ほかの 方が いません。」の 1行
+const small = { fontSize: "0.78125rem", color: C.inkSoft, lineHeight: 1.8 };
 
 /** ★絞りの 札。★見本の `chip` と 同じ 考えです。 */
 function Chip({ on, children, onClick }) {
   return (
     <button type="button" onClick={onClick} style={{
-      fontSize: "0.6875rem", padding: "4px 10px", borderRadius: 999,
+      fontSize: "0.78125rem", padding: "4px 10px", borderRadius: 999,
       border: `1px solid ${on ? C.curtain : C.line}`,
       background: on ? C.curtain : "transparent",
       color: on ? C.onCurtain : C.inkSoft, cursor: "pointer"
@@ -155,7 +159,7 @@ export default function OpsPeople({
           /* ★★★ほかに 誰も いない とき（★裁定 その99 F4）。
               ★★1人＝ご自分 だけ です。★渡す 相手が いません。 */
           <div style={{ padding: 22, textAlign: "center" }}>
-            <p style={{ fontSize: "0.875rem", color: C.ink, margin: 0 }}>
+            <p style={{ fontSize: "0.90625rem", color: C.ink, margin: 0 }}>
               まだ、ほかの 方が いません。
             </p>
             <p style={{ ...small, margin: "4px 0 0" }}>名簿から 招いて ください。</p>

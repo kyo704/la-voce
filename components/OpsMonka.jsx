@@ -177,11 +177,15 @@ export default function OpsMonka({
           style={{
             width: "100%", minHeight: 52, marginTop: rem(10), borderRadius: 12,
             border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
-            background: C.curtain, color: C.onCurtain, fontSize: rem(15),
+            // ★★★6段に 寄せました（★裁定 その103・2026-09-19）。
+            //   ★★15 → 15.5 …… ★大きい ほうの 押し札 です。
+            //     ★★14.5 に 下げると、★下の 添える字（12.5）との 差が 縮みます。
+            background: C.curtain, color: C.onCurtain, fontSize: rem(15.5),
             fontFamily: FONT_STACK, textAlign: "left", padding: `0 ${rem(14)}`
           }}>
           {GO_KUMU_LABEL}
-          <span style={{ display: "block", fontSize: rem(11.5), opacity: 0.9 }}>
+          {/* ★★11.5 → 12.5 …… ★札に 添える 字 です（★役で 寄せます）。 */}
+          <span style={{ display: "block", fontSize: rem(12.5), opacity: 0.9 }}>
             {GO_KUMU_SUB}
           </span>
         </button>

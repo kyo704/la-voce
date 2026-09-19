@@ -156,7 +156,8 @@ export default function OpsPresets({
             width: "100%", minHeight: 52, marginTop: rem(12), borderRadius: 12,
             border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
             background: canSave(form) ? C.curtain : C.line,
-            color: C.onCurtain, fontSize: rem(15), fontFamily: FONT_STACK
+            // ★★15 → 15.5（★裁定 その103・2026-09-19）。★大きい ほうの 押し札。
+            color: C.onCurtain, fontSize: rem(15.5), fontFamily: FONT_STACK
           }}>{tx("保存")}</button>
 
         {form.id && onDelete ? (

@@ -186,7 +186,8 @@ export default function OpsAttendanceBulk({
             style={{
               width: "100%", minHeight: 52, borderRadius: 12,
               border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
-              background: C.curtain, color: C.onCurtain, fontSize: rem(15),
+              // ★★15 → 15.5（★裁定 その103・2026-09-19）。★大きい ほうの 押し札。
+              background: C.curtain, color: C.onCurtain, fontSize: rem(15.5),
               fontFamily: FONT_STACK
             }}>{tx("つけ終わる")}</button>
         </>
@@ -199,13 +200,16 @@ export default function OpsAttendanceBulk({
   );
 }
 
+// ★★★11 → 12.5（★裁定 その103・2026-09-19）。
+//   ★★どちらも「添える 字」の 役 です ── ★戻り道と、★表の 見出し。
+//   ★★表の 中身（`ますの形`）より 小さく、★でも 読める 大きさに します。
 const 戻りの形 = {
   background: "transparent", border: "none", color: C.inkSoft,
-  fontSize: "0.6875rem", minHeight: 44, padding: "0 4px", fontFamily: FONT_STACK
+  fontSize: "0.78125rem", minHeight: 44, padding: "0 4px", fontFamily: FONT_STACK
 };
 const 見出しの形 = {
   padding: `${rem(9)} ${rem(8)}`, borderBottom: 罫,
-  fontSize: "0.6875rem", color: C.inkSoft, fontWeight: 400
+  fontSize: "0.78125rem", color: C.inkSoft, fontWeight: 400
 };
 const ますの形 = {
   padding: `${rem(7)} ${rem(8)}`, borderBottom: 罫, verticalAlign: "top"

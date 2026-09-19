@@ -28,7 +28,16 @@ const 済んだ画面 = [
   ["components", "OpsShell.jsx"],
   ["components", "OpsHome.jsx"],
   ["components", "OpsRoster.jsx"],
-  ["components", "OpsSchedule.jsx"]
+  ["components", "OpsSchedule.jsx"],
+  // ★★2026-09-19 ── ★運営の 残り 8画面（★裁定 その103 の D60）。
+  ["components", "OpsMonka.jsx"],
+  ["components", "OpsAttendance.jsx"],
+  ["components", "OpsAttendanceBulk.jsx"],
+  ["components", "OpsEvents.jsx"],
+  ["components", "OpsPeople.jsx"],
+  ["components", "OpsPostMatrix.jsx"],
+  ["components", "OpsPresets.jsx"],
+  ["components", "OpsSettings.jsx"]
 ];
 const 段 = [12, 12.5, 13, 13.5, 14.5, 15.5];
 

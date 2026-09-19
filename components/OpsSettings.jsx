@@ -39,7 +39,10 @@ import {
 // ============================================================================
 
 const card = { background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14 };
-const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
+// ★★★6段に 寄せました（★裁定 その103・2026-09-19）。
+//   ★★11 → 12.5 …… ★3か所 とも「添える 字」の 役 です
+//     ★①断りの 1行 ②役職と できこと の 1行 ③お支払いの 目安の 箱
+const small = { fontSize: "0.78125rem", color: C.inkSoft, lineHeight: 1.8 };
 const row = { display: "flex", justifyContent: "space-between", alignItems: "center",
   padding: "9px 0", borderTop: `1px solid ${C.line}`, fontSize: "0.8125rem" };
 
@@ -69,7 +72,7 @@ export default function OpsSettings({ members, staffLines, postName, perms, bill
             ★★いまは 設定 だけ です。★節を 作る 日に、★帯の ほうへ 上げます
               （★台帳㊽・引き金は この 行）。 */}
       {perms !== undefined ? (
-        <p style={{ fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8, margin: 0 }}>
+        <p style={{ fontSize: "0.78125rem", color: C.inkSoft, lineHeight: 1.8, margin: 0 }}>
           {permHeadLine(postName, perms)}
         </p>
       ) : null}
@@ -122,7 +125,7 @@ export default function OpsSettings({ members, staffLines, postName, perms, bill
           <div style={{
             background: C.paper, border: `1px solid ${C.line}`, borderRadius: 10,
             padding: "10px 12px", marginTop: 10,
-            fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 2
+            fontSize: "0.78125rem", color: C.inkSoft, lineHeight: 2
           }}>
             {billPlans(n).map((p) => {
               // ★★★段が 勝った とき だけ 印を つけます。

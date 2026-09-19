@@ -158,7 +158,8 @@ export default function OpsAttendance({
               style={{
                 width: "100%", minHeight: 52, marginTop: rem(10), borderRadius: 12,
                 border: `1px solid ${C.curtain}`, borderBottomWidth: 3,
-                background: C.curtain, color: C.onCurtain, fontSize: rem(15),
+                // ★★15 → 15.5（★裁定 その103・2026-09-19）。★大きい ほうの 押し札。
+                background: C.curtain, color: C.onCurtain, fontSize: rem(15.5),
                 fontFamily: FONT_STACK
               }}>
               {tx("次の 方へ")}　{(nameOf && nameOf(次.student_id)) || ""}
