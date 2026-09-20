@@ -415,7 +415,14 @@ export function Box({ children, style }) {
  *   ★★色は ink2 に します（★上の お決め ①）。
  */
 export function Usu({ children, style }) {
-  return <span style={{ ...TYPE.usual, display: "block", marginTop: 2, ...style }}>{children}</span>;
+  // ★★★`usu` の 印を 付けます（★段3a 段階2・2026-09-20）。
+  //   ★★`Note` と `Warn` は もとから `note` ／ `warn` を 持って います。
+  //   ★★見本も 同じ 名です。★注記だけ を 取り出して くらべられます。
+  //   ★★見た目は 変わりません（★この 名に 形は 付けて いません）。
+  return (
+    <span className="usu"
+      style={{ ...TYPE.usual, display: "block", marginTop: 2, ...style }}>{children}</span>
+  );
 }
 
 /**

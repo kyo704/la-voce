@@ -40,7 +40,7 @@ fs.readFileSync(path.join(ROOT, ".env.e2e"), "utf8").split("\n").forEach((l) => 
  */
 const HONE = `(root) => {
   const out = [];
-  const 字 = (el) => (el.textContent || "").replace(/\\s+/g, " ").trim().slice(0, 40);
+  const 字 = (el, n) => (el.textContent || "").replace(/\\s+/g, " ").trim().slice(0, n || 40);
   // ★★中身の 字は 落とします（★数・日づけ・お名前）。
   const 素 = (s) => s
     .replace(/[0-9０-９]+/g, "#")
@@ -59,14 +59,19 @@ const HONE = `(root) => {
     //     ★★同じ ものが、★別の 種に なって いました。★1つも 合いません。
     //   ★★くらべるのは「題か、そうでないか」だけ に します。
     let kind = null;
-    if (tag === "h1" || tag === "h2" || tag === "h3"
+    // ★★★注記は 別に 取ります（★段階2・2026-09-20）。
+    //   ★★注記は 約束 そのもの です。★いちばん 重い ところ です。
+    //   ★★見本も 実機も、★同じ 名（note ／ warn ／ usu）を 使って います。
+    if (/\\bnote\\b|\\bwarn\\b|\\busu\\b/.test(cls)) kind = "注";
+    else if (tag === "h1" || tag === "h2" || tag === "h3"
         || /\\bh3\\b|\\bsh3\\b|\\bfl\\b/.test(cls)) kind = "題";
     else if (tag === "button" || tag === "th" || tag === "li"
-             || /\\bbtn\\b|\\bpill\\b|\\bli\\b|\\bwarn\\b|\\bnote\\b/.test(cls)) kind = "文";
+             || /\\bbtn\\b|\\bpill\\b|\\bli\\b/.test(cls)) kind = "文";
     if (kind) {
-      const t = 素(字(el));
+      // ★★注記は 長い です。★40字で 切ると、★どれも 同じに 見えます。
+      const t = 素(kind === "注" ? 字(el, 160) : 字(el));
       if (t) out.push(kind + "｜" + t);
-      if (kind === "文") return;
+      if (kind === "文" || kind === "注") return;
     }
     for (const c of el.children) 見る(c);
   };
@@ -256,11 +261,16 @@ function calibrate() {
       .filter((s) => s.startsWith("題｜"))
       .filter((s) => !名たち.includes(s.replace("題｜", "").trim()));
     const rt = kuraberu(題(mihon), 題(impl));
-    出.push({ key: sc.key, ...r, title: rt,
+    // ★★★段階2 ── ★注記だけ（★裁定 その111）。
+    //   ★★注記は 約束 その もの です。★いちばん 重い ところ です。
+    const 注 = (a) => a.filter((s) => s.startsWith("注｜"));
+    const rn = kuraberu(注(mihon), 注(impl));
+    出.push({ key: sc.key, ...r, title: rt, note: rn,
       n: { mihon: mihon.length, impl: impl.length } });
-    console.log(`  ok  ${sc.key} … 題 同じ ${rt.same}／見本のみ ${rt.onlyMihon.length}`
-      + `／実機のみ ${rt.onlyImpl.length}　｜　ぜんぶ 同じ ${r.same}`
-      + `／見本のみ ${r.onlyMihon.length}／実機のみ ${r.onlyImpl.length}`);
+    console.log(`  ok  ${sc.key} … 題 ${rt.same}/${rt.onlyMihon.length}/${rt.onlyImpl.length}`
+      + `　注記 ${rn.same}/${rn.onlyMihon.length}/${rn.onlyImpl.length}`
+      + `　｜　ぜんぶ ${r.same}/${r.onlyMihon.length}/${r.onlyImpl.length}`
+      + "　（同じ/見本のみ/実機のみ）");
   }
   await b.close();
 
@@ -294,7 +304,26 @@ function calibrate() {
     L.push("");
   });
 
-  L.push("\n## ★二 ★ぜんぶ（★行も 含む）── ★参考\n");
+  L.push("\n## ★二 ★注記だけ の くらべ ── ★約束 その もの（★段階2）\n");
+  L.push("★★注記は、★私たちが 書いた 約束 です。★いちばん 重い ところ です。\n");
+  L.push("| 画面 | 同じ | ★見本に あって 実機に 無い | ★実機に あって 見本に 無い |");
+  L.push("|---|---|---|---|");
+  出.forEach((x) => {
+    if (x.err) { L.push(`| ${x.key} | — | — | — |`); return; }
+    L.push(`| ${x.key} | ${x.note.same} | ${x.note.onlyMihon.length} | ${x.note.onlyImpl.length} |`);
+  });
+  L.push("\n### ★注記の 中身（★差の ある 画面 だけ）\n");
+  出.forEach((x) => {
+    if (x.err) return;
+    const a = x.note;
+    if (!a.onlyMihon.length && !a.onlyImpl.length) return;
+    L.push(`**★${x.key}**\n`);
+    a.onlyMihon.forEach((s) => L.push(`- ★見本のみ … ${s.replace("注｜", "")}`));
+    a.onlyImpl.forEach((s) => L.push(`- ★実機のみ … ${s.replace("注｜", "")}`));
+    L.push("");
+  });
+
+  L.push("\n## ★三 ★ぜんぶ（★行も 含む）── ★参考\n");
   L.push("| 画面 | 同じ | 見本のみ | 実機のみ | 並び |");
   L.push("|---|---|---|---|---|");
   出.forEach((x) => {
