@@ -130,6 +130,88 @@ const HONE = `(root) => {
 //   ★★本当の 関数に してから 渡します。★中身は 1つ の まま です。
 const HONE_FN = new Function("return " + HONE)();
 
+// ============================================================================
+// ★差の 仕分け（★裁定 その118・2026-09-20）
+//
+//   ★★★意味が 変わるか どうかで 分けます。
+//     ★㋒ …… ★空白の 有る 無し・全角半角・改行の 位置。★意味は 1ミリも 変わりません。
+//     ★㋐ …… ★助詞の ちがい。★約束の **範囲** が 変わります。
+//       ★★「出欠を 集めません」── ★この 機能が 集めません。
+//       ★★「出欠は 集めません」── ★ほかは 集めるかも、と 読めます（★「は」は 対比）。
+//       ★★営業の 紙・契約の 紙と 突き合わせる とき、★この 差が 効きます。
+//
+//   ★★★寄せ先（★裁定 その118 DIRECTION）
+//     ★約束の 文（「〜しません」「〜できません」）→ ★**見本に** 合わせます。
+//     ★それ以外の 文 → ★**実機の まま**。★見本を 直します（★Opus の 側）。
+// ============================================================================
+
+/** ★空白と 全角半角を ならします（★意味を 変えない ところ）。 */
+function ならす(s) {
+  return s
+    .replace(/[\s\u3000]/g, "")
+    .replace(/[Ａ-Ｚａ-ｚ０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+    .replace(/[（）]/g, (c) => (c === "（" ? "(" : ")"))
+    .replace(/[、。]/g, "");
+}
+
+/** ★助詞を 落とします（★助詞 だけの ちがいを 見つける ため）。 */
+const ジョシ = /[はがをにへとでもやのかねよ]/g;
+function 助詞をおとす(s) { return ならす(s).replace(ジョシ, ""); }
+
+/** ★約束の 文か（★「〜しません」「〜できません」── ★ません で 終わる）。 */
+function 約束か(s) { return /ません$/.test(ならす(s).replace(/[。]/g, "")); }
+
+/**
+ * ★見本のみ と 実機のみ を 突き合わせて、★3つに 分けます。
+ *
+ *   ★★㋒空白 …… ★空白・全角半角 だけの ちがい
+ *   ★★㋐助詞 …… ★助詞 だけの ちがい
+ *   ★★未仕分け …… ★それ以外（★人が 見ます）
+ */
+function 仕分け(onlyMihon, onlyImpl) {
+  const 見 = onlyMihon.map((x) => x.replace(/^[^｜]*｜/, ""));
+  const 実 = onlyImpl.map((x) => x.replace(/^[^｜]*｜/, ""));
+  const 使った = new Set();
+  const 空白 = [], 助詞 = [], 未 = [];
+  見.forEach((m) => {
+    let あたり = -1, 種 = null;
+    実.forEach((i, k) => {
+      if (使った.has(k) || あたり >= 0) return;
+      if (ならす(m) === ならす(i)) { あたり = k; 種 = "空白"; }
+      else if (助詞をおとす(m) === 助詞をおとす(i)) { あたり = k; 種 = "助詞"; }
+    });
+    if (あたり < 0) { 未.push({ 見本: m, 実機: null }); return; }
+    使った.add(あたり);
+    (種 === "空白" ? 空白 : 助詞).push({ 見本: m, 実機: 実[あたり], 約束: 約束か(m) });
+  });
+  実.forEach((i, k) => { if (!使った.has(k)) 未.push({ 見本: null, 実機: i }); });
+  return { 空白, 助詞, 未 };
+}
+
+/**
+ * ★もう 1度 ── ★**実機の ぜんぶ** と 突き合わせます（★2026-09-20 に 足しました）。
+ *
+ *   ★★★行事の「出欠を／出欠は」が 未仕分けに 落ちて いました。
+ *     ★★見本に「を」と「は」の 2つが あり、★実機の「は」は **同じ** に 数えられます。
+ *     ★★残った「を」は、★実機のみ の 中に 相手が 居ません。
+ *   ★★★だから、★同じ に なった ぶん も 含めて もう 1度 見ます。
+ *     ★★「見本に 2つ、★実機に 1つ」── ★これも 助詞の ちがい です。
+ */
+function 仕分けもう一度(未, 実ぜんぶ) {
+  const 実 = 実ぜんぶ.map((x) => x.replace(/^[^｜]*｜/, ""));
+  const 空白 = [], 助詞 = [], のこり = [];
+  未.forEach((x) => {
+    if (!x.見本) { のこり.push(x); return; }
+    const m = x.見本;
+    const あ = 実.find((i) => ならす(m) === ならす(i));
+    const い = 実.find((i) => 助詞をおとす(m) === 助詞をおとす(i));
+    if (あ) 空白.push({ 見本: m, 実機: あ, 約束: 約束か(m), 二重: true });
+    else if (い) 助詞.push({ 見本: m, 実機: い, 約束: 約束か(m), 二重: true });
+    else のこり.push(x);
+  });
+  return { 空白, 助詞, 未: のこり };
+}
+
 /** ★並びを くらべます（★いちばん 長い 共通の 並びを 取ります）。 */
 function kuraberu(a, b) {
   const n = a.length, m = b.length;
@@ -205,8 +287,33 @@ function 較正の骨組み() {
   );
 }
 
+function 較正の仕分け() {
+  const r = 仕分け(
+    ["約｜出欠を 集めません。", "約｜決めるのは 先生です。", "約｜混ざりません。"],
+    ["約｜出欠は 集めません。", "約｜決めるのは先生です。", "約｜まだ行事はありません。"]
+  );
+  return (
+    // ★助詞 だけの ちがい 1件。★約束の 文 と 判じて いる こと。
+    r.助詞.length === 1 && r.助詞[0].約束 === true
+    && r.助詞[0].見本 === "出欠を 集めません。"
+    // ★空白 だけの ちがい 1件。★約束の 文 では ない こと。
+    && r.空白.length === 1 && r.空白[0].約束 === false
+    // ★残り 2件は 突き合わせません。
+    && r.未.length === 2
+  );
+}
+
+function 較正のもう一度() {
+  // ★見本に「を」と「は」の 2つ、★実機に「は」1つ。★「を」が 残ります。
+  const 未 = [{ 見本: "出欠を 集めません。", 実機: null }];
+  const r = 仕分けもう一度(未, ["約｜出欠は 集めません。"]);
+  return r.助詞.length === 1 && r.助詞[0].約束 === true && r.未.length === 0;
+}
+
 function calibrate() {
   if (!較正の骨組み()) return false;
+  if (!較正の仕分け()) return false;
+  if (!較正のもう一度()) return false;
   // ★★★題だけ の くらべも 試します（★2026-09-20）。
   //   ★★行を 落として、★題の 差 だけ が 残る こと。
   const 題 = (x) => x.filter((s) => s.startsWith("題｜"));
@@ -252,6 +359,10 @@ function calibrate() {
   //     ★★本番は「出た もの」、★手元は「いま 書いた もの」。★別の ものを 見ます。
   //   ★★どちらを 見たかを、★報告の 頭に 必ず 書きます。★取り違えない ため です。
   const ローカル = process.argv.includes("--local");
+  // ★★★押す ときの 待ち（★裁定 その118 推奨2・2026-09-20）。
+  //   ★★手元 90秒 ／ 本番 30秒。★無制限には しません（★DO_NOT）。
+  //   ★★無制限に すると、★本当に 固まった とき 気づけません。
+  const 待ちクリック = ローカル ? 90000 : 30000;
   const base = ローカル ? (process.env.E2E_LOCAL_URL || "http://localhost:3000")
     : (env.E2E_BASE_URL || "https://woolsong.app");
   // ★★★手元の サーバは、★はじめの 1回だけ 組み立てに 時間が かかります。
@@ -365,9 +476,31 @@ function calibrate() {
     }
     const g = ap.locator('button:has-text("⚙")').first();
     if (await g.count()) { await g.click(); await ap.waitForTimeout(1500); }
-    await ap.locator(運営札).first().click({ timeout: 10000 });
+    await ap.locator(運営札).first().click({ timeout: 待ちクリック });
     await ap.waitForTimeout(2500);
   };
+
+  // ★★★温め（★裁定 その118 TECHNICAL_ISSUE・2026-09-20）。
+  //   ★★手元の サーバは、★その 画面を **はじめて** 開く とき 組み立てます。
+  //     ★★きょう、★日程・未送信・お知らせを書く の 3画面が 時間切れに なりました。
+  //   ★★★測る 前に、★1度ずつ 開いて おきます。★2度目からは 速い です。
+  //   ★★温めで 落ちても 止めません。★測るのは この 後 です。
+  if (ローカル) {
+    console.log("  …… ★温めて います（★1画面ずつ 1度）");
+    for (const sc of 的) {
+      try {
+        await もどる();
+        await ap.locator(`nav button:has-text("${sc.impl.tab}"), button:has-text("${sc.impl.tab}")`)
+          .first().click({ timeout: 待ちクリック });
+        await ap.waitForTimeout(1200);
+        for (const st of (sc.impl.steps || [])) {
+          await ap.locator(`button:has-text("${st}"), [role="button"]:has-text("${st}")`)
+            .first().click({ timeout: 待ちクリック });
+          await ap.waitForTimeout(900);
+        }
+      } catch (e) { /* ★温めです。★落ちても 進みます。 */ }
+    }
+  }
 
   const 出 = [];
   for (const sc of 的) {
@@ -386,15 +519,17 @@ function calibrate() {
     } catch (e) {
       err += "見本:" + String(e.message).replace(/\s+/g, " ").slice(0, 70) + " ";
     }
-    try {
+    // ★★★1度 だけ 取り直します（★裁定 その118 推奨3）。
+    //   ★★待ちを 無しに しません。★本当に 固まった ときに 気づけなく なります。
+    const 取る = async () => {
       const t = sc.impl.tab;
       await もどる();
       await ap.locator(`nav button:has-text("${t}"), button:has-text("${t}")`)
-        .first().click({ timeout: 8000 });
+        .first().click({ timeout: 待ちクリック });
       await ap.waitForTimeout(1500);
       for (const s of (sc.impl.steps || [])) {
         await ap.locator(`button:has-text("${s}"), [role="button"]:has-text("${s}")`)
-          .first().click({ timeout: 8000 });
+          .first().click({ timeout: 待ちクリック });
         await ap.waitForTimeout(1200);
       }
       // ★★★`data-ops-body` は 2026-09-20 に 足した 目じるし です。
@@ -407,8 +542,24 @@ function calibrate() {
           "ホーム", "名簿", "日程", "門下", "行事", "連絡", "設定"];
         impl = impl.filter((s) => !外.includes(s.split("｜")[1]));
       }
-    } catch (e) {
+    };
+    try {
+      await 取る();
+    } catch (e1) {
+      // ★★その 画面 だけ、★もう 1度。★それでも 落ちたら 落ちた と 書きます。
+      console.log(`  ……  ${sc.key} ★取り直します`);
+      try { await 取る(); } catch (e) {
       err += "実機:" + String(e.message).replace(/\s+/g, " ").slice(0, 70);
+      // ★★★押せなかった とき、★画面に **何が 在ったか** を 書き残します。
+      //   ★★2026-09-20 の 覚え ──「無い」と「見つけられなかった」は ちがいます。
+      //   ★★札の 字を 見ないと、★どちらか 決められません。
+      try {
+        const 札 = await ap.$$eval("button, [role=\"button\"]", (xs) => xs
+          .map((x) => (x.textContent || "").replace(/\s+/g, " ").trim().slice(0, 18))
+          .filter(Boolean).slice(0, 24));
+        err += " ／ ★画面に 在った 札: " + 札.join(" · ");
+      } catch (e2) { /* ★見られない ことも あります。 */ }
+      }
     }
 
     if (!mihon || !impl) {
@@ -440,7 +591,11 @@ function calibrate() {
     //   ★★消すと、★字の 形に 当てはまらない 注記が 見えなく なります。
     const 注 = (a) => a.filter((s) => s.startsWith("注｜"));
     const rc = kuraberu(注(mihon), 注(impl));
-    出.push({ key: sc.key, ...r, title: rt, note: rn, cls: rc,
+    // ★★★差を 3つに 分けます（★裁定 その118）。★㋒空白 ／ ㋐助詞 ／ 未仕分け。
+    const wk0 = 仕分け(rn.onlyMihon, rn.onlyImpl);
+    const wk1 = 仕分けもう一度(wk0.未, 約(impl));
+    const wk = { 空白: wk0.空白.concat(wk1.空白), 助詞: wk0.助詞.concat(wk1.助詞), 未: wk1.未 };
+    出.push({ key: sc.key, ...r, title: rt, note: rn, cls: rc, wake: wk,
       n: { mihon: mihon.length, impl: impl.length } });
     console.log(`  ok  ${sc.key} … 題 ${rt.same}/${rt.onlyMihon.length}/${rt.onlyImpl.length}`
       + `　約束 ${rn.same}/${rn.onlyMihon.length}/${rn.onlyImpl.length}`
@@ -500,6 +655,42 @@ function calibrate() {
     L.push(`**★${x.key}**\n`);
     a.onlyMihon.forEach((s) => L.push(`- ★見本のみ … ${s.replace("約｜", "")}`));
     a.onlyImpl.forEach((s) => L.push(`- ★実機のみ … ${s.replace("約｜", "")}`));
+    L.push("");
+  });
+
+  L.push("\n## ★二の一 ★差の 仕分け（★裁定 その118）\n");
+  L.push("★★意味が 変わるか どうかで 分けます。");
+  L.push("★★㋒ … 空白・全角半角 だけ（★意味は 変わりません。★記録して 進みます）。");
+  L.push("★★㋐ … 助詞 だけ（★約束の **範囲** が 変わります）。");
+  L.push("★★★約束の 文（`ません` で 終わる）は **見本に** 合わせます。");
+  L.push("★★★それ以外は **実機の まま**。★見本を 直します（★Opus の 側）。\n");
+  L.push("| 画面 | ㋐助詞（約束） | ㋐助詞（約束でない） | ㋒空白 | 未仕分け |");
+  L.push("|---|---|---|---|---|");
+  出.forEach((x) => {
+    if (x.err || !x.wake) { L.push(`| ${x.key} | — | — | — | — |`); return; }
+    const y = x.wake.助詞.filter((z) => z.約束).length;
+    const n = x.wake.助詞.length - y;
+    L.push(`| ${x.key} | ${y} | ${n} | ${x.wake.空白.length} | ${x.wake.未.length} |`);
+  });
+  L.push("\n### ★㋐ 助詞の ちがい ── ★1件ずつ\n");
+  出.forEach((x) => {
+    if (x.err || !x.wake || !x.wake.助詞.length) return;
+    L.push(`**★${x.key}**\n`);
+    x.wake.助詞.forEach((z) => {
+      L.push(`- ${z.約束 ? "★約束の 文" : "★約束では ない"}`);
+      L.push(`    - 見本 … ${z.見本}`);
+      L.push(`    - 実機 … ${z.実機}`);
+    });
+    L.push("");
+  });
+  L.push("\n### ★㋒ 空白・全角半角 だけ ── ★記録して 進みます\n");
+  出.forEach((x) => {
+    if (x.err || !x.wake || !x.wake.空白.length) return;
+    L.push(`**★${x.key}**\n`);
+    x.wake.空白.forEach((z) => {
+      L.push(`- 見本 … ${z.見本}`);
+      L.push(`    - 実機 … ${z.実機}`);
+    });
     L.push("");
   });
 
