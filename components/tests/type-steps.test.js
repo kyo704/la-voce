@@ -76,7 +76,8 @@ const 済んだ画面 = [
   ["components", "OpsTenIreru.jsx"],
   ["components", "OpsMiyasu.jsx"],
   ["components", "OpsOrgMaster.jsx"],
-  ["components", "OpsOkeru.jsx"]
+  ["components", "OpsOkeru.jsx"],
+  ["components", "OpsMonkaInvite.jsx"]
 ];
 
 // ★★★VocalTracker は 全部では ありません（★2026-09-19・お決め D63(b)）。

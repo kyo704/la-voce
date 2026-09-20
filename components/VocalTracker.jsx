@@ -186,6 +186,11 @@ import OpsEvalItems from "@/components/OpsEvalItems";
 import OpsMiyasu from "@/components/OpsMiyasu";
 import OpsOrgMaster from "@/components/OpsOrgMaster";
 import OpsOkeru from "@/components/OpsOkeru";
+import OpsMonkaInvite from "@/components/OpsMonkaInvite";
+import {
+  makeCode, SENT_LINE as MONKA_INVITE_SENT,
+  FAILED_LINE as MONKA_INVITE_FAILED
+} from "@/lib/monkaInvite";
 // ★★入れられる 枠は その場で 数えます（★裁定 その108。★表を 作りません）。
 import { openSlots, weekDates } from "@/lib/opsKumu";
 import { FAILED_LINE as MASTER_FAILED, toMin } from "@/lib/orgMaster";
@@ -13001,6 +13006,12 @@ export default function VocalTracker({
   //   ★★表を 作って いません。★開いた ときに 数えます。
   const [okeruWho, setOkeruWho] = useState(null);
   const [okeruBusy, setOkeruBusy] = useState([]);
+  // ★★★門下に 招く（★見本 `P_monkaInvite` ②・裁定 その108・2026-09-20）。
+  const [monkaInviteOpen, setMonkaInviteOpen] = useState(false);
+  const [monkaInvites, setMonkaInvites] = useState([]);
+  const [monkaInviteBusy, setMonkaInviteBusy] = useState(false);
+  const [monkaInviteError, setMonkaInviteError] = useState("");
+  const [monkaInviteDone, setMonkaInviteDone] = useState("");
   const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
@@ -13523,6 +13534,65 @@ export default function VocalTracker({
       return false;
     } finally {
       setEvalBusy(false);
+    }
+  }
+
+  /**
+   * ★名指しの 招きを 読みます（★裁定 その108 ②・2026-09-20）。
+   *
+   *   ★★ご自分が 出した ものだけ 読めます（★決まりが そう して います）。
+   *   ★★「招待中」を 出す ために 使います。
+   */
+  async function fetchMonkaInvites(orgId) {
+    if (!orgId) return;
+    const supabase = createClient();
+    // ★★★表を 直に 引きません（★2026-09-20・見張りが 捕まえました）。
+    //   ★★合言葉が 画面に 乗る 形を 作らない ため です（★No.018）。
+    //   ★★★道が 返すのは 3つ だけ ── ★誰に・いつ・使われたか。
+    const { data, error } = await supabase.rpc("get_my_named_invites",
+      { p_org_id: orgId });
+    if (error) {
+      console.error("★招きを 読めませんでした:", error);
+      setMonkaInvites([]);
+      return;
+    }
+    setMonkaInvites(data || []);
+  }
+
+  /**
+   * ★名簿から 名指しで 招きます（★裁定 その108 ②）。
+   *
+   *   ★★★新しい 表を 作って いません。★`teacher_invitations` の 1行 です。
+   *     ★★`kind = "named"` と 宛て先を 入れます。
+   *   ★★★こちらから 入れる ことは できません。
+   *     ★★相手の 画面に「招かれて います」と 出る だけ です。
+   */
+  async function handleInviteToMonka(orgId, studentId) {
+    setMonkaInviteError("");
+    setMonkaInviteDone("");
+    setMonkaInviteBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("teacher_invitations").insert({
+        code: makeCode(),
+        teacher_id: userId,
+        org_id: orgId,
+        monka_teacher_id: userId,
+        target_user_id: studentId,
+        kind: "named",
+        invited_at: new Date().toISOString(),
+        expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+      }).select("code");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setMonkaInviteDone(MONKA_INVITE_SENT);
+      await fetchMonkaInvites(orgId);
+      return true;
+    } catch (e) {
+      console.error("★招けませんでした:", e);
+      setMonkaInviteError(MONKA_INVITE_FAILED);
+      return false;
+    } finally {
+      setMonkaInviteBusy(false);
     }
   }
 
@@ -16390,6 +16460,34 @@ export default function VocalTracker({
                   onClose={() => setOkeruWho(null)} />
               );
             }
+            if (tabKey === "monka" && monkaInviteOpen) {
+              // ★★★門下に 招く（★見本 `P_monkaInvite` ②・裁定 その108）。
+              //   ★★名簿に いる 方 だけ。★ご自分の 門下と、出した 招きで 顔が 変わります。
+              const 門下 = monkaOf(orgAssignments[opsOrgId] || [], userId);
+              const 名簿 = (orgEnrollments[opsOrgId] || [])
+                .filter((e) => e && e.status === "active")
+                .map((e) => ({
+                  id: e.student_id,
+                  name: orgDisplayName(e.student_id) || "",
+                  grade: e.grade_label || ""
+                }));
+              return (
+                <OpsMonkaInvite
+                  teacherName={orgDisplayName(userId) || ""}
+                  members={名簿}
+                  monka={門下}
+                  invites={monkaInvites}
+                  busy={monkaInviteBusy}
+                  error={monkaInviteError}
+                  done={monkaInviteDone}
+                  onInvite={(sid) => { void handleInviteToMonka(opsOrgId, sid); }}
+                  onClose={() => {
+                    setMonkaInviteOpen(false);
+                    setMonkaInviteError("");
+                    setMonkaInviteDone("");
+                  }} />
+              );
+            }
             if (tabKey === "monka" && madaOpen) {
               // ★★★時間割が まだの方（★見本 `P_mada`・2026-09-19）。
               return (
@@ -16520,6 +16618,17 @@ export default function VocalTracker({
                   /* ★★★時間割が まだの方 へ（★見本 `P_mada`・2026-09-19）。
                        ★★読めるのは 事務、または 担当の 先生 です。
                        ★★★開く ときに 引きます。★出しっぱなしに しません。 */
+                  /* ★★★門下に 招く へ（★見本 `P_monkaInvite` ②・裁定 その108）。
+                       ★★ご自分の 門下を 持つ 先生 だけ に 出します。 */
+                  onGoInviteMonka={(orgAssignments[opsOrgId] || [])
+                    .some((a) => a && a.teacher_id === userId && !a.ended_at)
+                    ? () => {
+                      setMonkaInviteOpen(true);
+                      setMonkaInviteError("");
+                      setMonkaInviteDone("");
+                      void fetchMonkaInvites(opsOrgId);
+                    }
+                    : undefined}
                   onGoMada={() => {
                     setMadaOpen(true);
                     setMadaError("");

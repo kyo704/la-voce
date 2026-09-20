@@ -13,7 +13,9 @@ import {
   // ★★代表を 決める へ（★2026-09-19・見本 `P_daihyo`）。
   GO_DAIHYO_LABEL, GO_DAIHYO_SUB,
   // ★★時間割が まだの方 へ（★2026-09-19・お決め D78）。
-  GO_MADA_LABEL, GO_MADA_SUB
+  GO_MADA_LABEL, GO_MADA_SUB,
+  // ★★門下に 招く へ（★裁定 その108 ②・2026-09-20）。
+  GO_INVITE_LABEL, GO_INVITE_SUB
 } from "@/lib/opsMonka";
 import {
   cameCount, cameWord, heldCount, progressWord, looksShort,
@@ -74,7 +76,9 @@ export default function OpsMonka({
   // ★★★代表を 決める へ（★2026-09-19）。★渡されなければ 札を 出しません。
   onGoDaihyo,
   // ★★★時間割が まだの方 へ（★2026-09-19）。
-  onGoMada
+  onGoMada,
+  // ★★★門下に 招く へ（★裁定 その108 ②・2026-09-20）。
+  onGoInviteMonka
 }) {
   const width = useWindowWidth();
   const rows = monkaRows(assignments, teacherId, { gradeOf, nameOf });
@@ -213,6 +217,23 @@ export default function OpsMonka({
           {GO_DAIHYO_LABEL}
           <span style={{ display: "block", fontSize: rem(12.5), color: C.inkSoft }}>
             {GO_DAIHYO_SUB}
+          </span>
+        </button>
+      ) : null}
+
+      {/* ★★★門下に 招く へ（★見本 `P_monkaInvite` ②・裁定 その108）。
+           ★★ご自分の 門下を 持つ 先生 だけ に 出します。 */}
+      {onGoInviteMonka ? (
+        <button type="button" onClick={onGoInviteMonka}
+          style={{
+            width: "100%", minHeight: 52, marginTop: rem(10), borderRadius: 12,
+            border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+            fontSize: rem(15.5), fontFamily: FONT_STACK,
+            textAlign: "left", padding: `0 ${rem(14)}`
+          }}>
+          {GO_INVITE_LABEL}
+          <span style={{ display: "block", fontSize: rem(12.5), color: C.inkSoft }}>
+            {GO_INVITE_SUB}
           </span>
         </button>
       ) : null}
