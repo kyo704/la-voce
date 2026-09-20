@@ -8,7 +8,7 @@ import OpsEventTable from "@/components/OpsEventTable";
 import { showEventTable, timeSpan } from "@/lib/opsEventTable";
 // ★★行事を 出す 入れ口の 決め（★2026-09-18）。★字も 決めも lib が 持ちます。
 import {
-  EVENT_KINDS, NOT_YET, FORM_NOTES, canSubmit, emptyForm,
+  EVENT_KINDS, NOT_YET, EVENT_NOTES, canSubmit, emptyForm,
   // ★★裁定 その89（時間・場所・対象）／★お決め Q5（下見・近道・字）。
   DATE_SHORTCUTS, DATE_HINT, TIME_HINT, TIME_STEPS, TIME_STEP_MIN,
   timeReversed, endWithoutStart, TIME_REVERSED_LINE, END_WITHOUT_START_LINE,
@@ -247,6 +247,21 @@ export default function OpsEvents({
           }}>行事を 出す</button>
       ) : null}
 
+      {/* ★★★一覧の 下の 断り（★裁定 その117・2026-09-20）。
+           ★★きょうまで、★この 字は「行事を 出す」の 中に だけ ありました。
+             ★★出す 人しか 読めません でした。
+           ★★★一覧を 見るのは 生徒・先生・事務 です。★みなさん です。
+             ★★「出欠は 集めません」は、★見る 人が 知る こと です。
+             ★★出す 人に だけ 見せると、★見る 人は「なぜ 出欠が 無いか」が 判りません。
+           ★★★字は 入力の 画面と **同じ もの** です（★`EVENT_NOTES` の 1つ から）。
+             ★★2か所で ちがう 字に しません（★裁定 その113 §1 EXCEPTION）。
+           ★★★出す 道が 無い 人にも 出します。★約束は みなさんの ものです。 */}
+      <div style={{ marginTop: 10 }}>
+        {EVENT_NOTES.map((t) => (
+          <p key={t} className="note" style={{ ...small, margin: 0 }}>{t}</p>
+        ))}
+      </div>
+
       {/* ★★★行事を 出す 入れ口（★2026-09-18・裁定 その89）。
           ★★きょうまで、★通せるのは 3つ でした（★日・種類・名前）。
             ★★時間・対象・場所は、★`create_org_event` が 受け取りません でした。
@@ -406,7 +421,7 @@ export default function OpsEvents({
 
           <div style={{ marginTop: 10 }}>
             {/* ★★注記の 印（★段3a 段階2・2026-09-20）。★見た目は 変わりません。 */}
-            {FORM_NOTES.map((t) => (
+            {EVENT_NOTES.map((t) => (
               <p key={t} className="note" style={{ ...small, margin: 0 }}>{t}</p>
             ))}
             {NOT_YET.map((x) => (

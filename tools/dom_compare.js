@@ -55,14 +55,16 @@ const HONE = `(root) => {
     //     ★★同じ ものが、★別の 種に なって いました。★1つも 合いません。
     //   ★★くらべるのは「題か、そうでないか」だけ に します。
     // ★★★種を 細かく 分けません（★2026-09-20 に 直しました）。
-    //   ★★見本は 行を \`div.li\`、★実機は \`button\` で 出して います。
+    //   ★★見本は 行を \'div.li\'、★実機は \'button\' で 出して います。
     //     ★★同じ ものが、★別の 種に なって いました。★1つも 合いません。
     //   ★★くらべるのは「題か、そうでないか」だけ に します。
     let kind = null;
     // ★★★注記は 別に 取ります（★段階2・2026-09-20）。
     //   ★★注記は 約束 そのもの です。★いちばん 重い ところ です。
     //   ★★見本も 実機も、★同じ 名（note ／ warn ／ usu）を 使って います。
-    if (/\\bnote\\b|\\bwarn\\b|\\busu\\b/.test(cls)) kind = "注";
+    // ★★★'wl' を 足しました（★2026-09-20）。★見本にも '.wl' が 在ります。
+    //   ★★'--band2' の 箱 です。★'warn'（#F6F1E4）とは 別 です。
+    if (/\\bnote\\b|\\bwarn\\b|\\busu\\b|\\bwl\\b/.test(cls)) kind = "注";
     else if (tag === "h1" || tag === "h2" || tag === "h3"
         || /\\bh3\\b|\\bsh3\\b|\\bfl\\b/.test(cls)) kind = "題";
     else if (tag === "button" || tag === "th" || tag === "li"
@@ -88,6 +90,39 @@ const HONE = `(root) => {
     for (const c of el.children) 見る(c);
   };
   for (const c of root.children) 見る(c);
+
+  // ★★★約束の 文（★裁定 その117・2026-09-20）。★**class では なく 字** で 拾います。
+  //   ★★★なぜ class を やめたか ── ★坂本さんの お決め。
+  //     ★★class で 拾うと、★見せ方を 変える たびに 差が 出ます。
+  //     ★★約束は 字 であって、★class では ありません。
+  //   ★★★きっかけ ── ★行事の「出欠は 集めません」。
+  //     ★★実機は 題の 下の 1行（'.sub'）、★見本は '.note'。
+  //     ★★同じ 字が 出て いるのに、★段階2 で 拾えません でした。
+  //   ★★★形 ──「〜しません」「〜できません」「〜は 見られません」。★'ません' で 終わる 文。
+  //   ★★★'／' でも 割ります。★1行に 2つ 入って いる ことが あります（'.sub'）。
+  const ブロック = new Set(["div", "p", "li", "h1", "h2", "h3", "h4", "section",
+    "article", "tr", "td", "th", "button", "ul", "ol", "header", "footer",
+    "nav", "label", "table", "span", "br"]);
+  const 箱 = [];
+  const あつめ = (el) => {
+    for (const n of el.childNodes) {
+      if (n.nodeType === 3) { 箱.push(n.textContent); continue; }
+      if (n.nodeType !== 1) continue;
+      const t = n.tagName.toLowerCase();
+      if (t === "script" || t === "style") continue;
+      if (ブロック.has(t)) { 箱.push("\\n"); あつめ(n); 箱.push("\\n"); }
+      else あつめ(n);
+    }
+  };
+  あつめ(root);
+  const 済 = new Set();
+  箱.join("").split(/[\\n。／]/).forEach((x) => {
+    const t = 素(x.replace(/\\s+/g, " ").trim());
+    if (t.length < 6 || !/ません$/.test(t)) return;
+    if (済.has(t)) return;
+    済.add(t);
+    out.push("約｜" + t + "。");
+  });
   return out;
 }`;
 
@@ -124,7 +159,54 @@ function kuraberu(a, b) {
   };
 }
 
+/**
+ * ★作りものの 骨組み（★較正の ため だけ）。
+ *
+ *   ★★★`HONE` を、★本物の 画面 なしで 試します（★裁定 その117・2026-09-20）。
+ *     ★★字で 拾う ように 変えました。★その 拾い方 じたいを 試します。
+ *     ★★道具が 何も 見つけない とき、★世の中では なく 道具が 壊れて います。
+ */
+function 作り(tag, cls, 中) {
+  const 子 = (中 || []).map((x) => (typeof x === "string"
+    ? { nodeType: 3, textContent: x } : x));
+  return {
+    nodeType: 1,
+    tagName: tag.toUpperCase(),
+    childNodes: 子,
+    children: 子.filter((x) => x.nodeType === 1),
+    getAttribute: (k) => (k === "class" ? (cls || "") : null),
+    get textContent() {
+      return 子.map((x) => (x.nodeType === 3 ? x.textContent : x.textContent)).join("");
+    }
+  };
+}
+
+function 較正の骨組み() {
+  const root = 作り("div", "", [
+    // ★小見出し（★印は ありません）。★／ の 後ろだけが 約束 です。
+    作り("p", "sub", ["日と 時間と 場所と 対象を 知らせます　／　出欠は 集めません"]),
+    // ★印の ある 注記。
+    作り("p", "note", ["生徒の 健康に関するものは、この画面に 1つも ありません。"]),
+    // ★約束では ない 文。★拾っては いけません。
+    作り("button", "btn", ["行事を 出す"])
+  ]);
+  const 出 = HONE_FN(root);
+  const 約 = 出.filter((x) => x.startsWith("約｜"));
+  const 注 = 出.filter((x) => x.startsWith("注｜"));
+  return (
+    // ★① 印の 無い 小見出しから、★約束を 拾えて いる こと。
+    約.includes("約｜出欠は 集めません。")
+    // ★② 印の ある 注記も 拾えて いる こと。
+    && 約.some((x) => x.indexOf("#つも ありません") >= 0)
+    // ★③ 約束で ない 文を 拾って いない こと。
+    && !約.some((x) => x.indexOf("行事を 出す") >= 0)
+    // ★④ 印（class）の くらべも、★これまで どおり 動いて いる こと。
+    && 注.length === 1
+  );
+}
+
 function calibrate() {
+  if (!較正の骨組み()) return false;
   // ★★★題だけ の くらべも 試します（★2026-09-20）。
   //   ★★行を 落として、★題の 差 だけ が 残る こと。
   const 題 = (x) => x.filter((s) => s.startsWith("題｜"));
@@ -350,14 +432,18 @@ function calibrate() {
       .filter((s) => s.startsWith("題｜"))
       .filter((s) => !名たち.includes(s.replace("題｜", "").trim()));
     const rt = kuraberu(題(mihon), 題(impl));
-    // ★★★段階2 ── ★注記だけ（★裁定 その111）。
-    //   ★★注記は 約束 その もの です。★いちばん 重い ところ です。
+    // ★★★段階2 ── ★約束の 文（★裁定 その117 で class から 字 に 変えました）。
+    //   ★★約束は 字 です。★見せ方（class）では ありません。
+    const 約 = (a) => a.filter((s) => s.startsWith("約｜"));
+    const rn = kuraberu(約(mihon), 約(impl));
+    // ★★★印（class）の くらべも 残します。★参考 です。
+    //   ★★消すと、★字の 形に 当てはまらない 注記が 見えなく なります。
     const 注 = (a) => a.filter((s) => s.startsWith("注｜"));
-    const rn = kuraberu(注(mihon), 注(impl));
-    出.push({ key: sc.key, ...r, title: rt, note: rn,
+    const rc = kuraberu(注(mihon), 注(impl));
+    出.push({ key: sc.key, ...r, title: rt, note: rn, cls: rc,
       n: { mihon: mihon.length, impl: impl.length } });
     console.log(`  ok  ${sc.key} … 題 ${rt.same}/${rt.onlyMihon.length}/${rt.onlyImpl.length}`
-      + `　注記 ${rn.same}/${rn.onlyMihon.length}/${rn.onlyImpl.length}`
+      + `　約束 ${rn.same}/${rn.onlyMihon.length}/${rn.onlyImpl.length}`
       + `　｜　ぜんぶ ${r.same}/${r.onlyMihon.length}/${r.onlyImpl.length}`
       + "　（同じ/見本のみ/実機のみ）");
   }
@@ -396,8 +482,10 @@ function calibrate() {
     L.push("");
   });
 
-  L.push("\n## ★二 ★注記だけ の くらべ ── ★約束 その もの（★段階2）\n");
-  L.push("★★注記は、★私たちが 書いた 約束 です。★いちばん 重い ところ です。\n");
+  L.push("\n## ★二 ★約束の 文 だけ の くらべ（★段階2・裁定 その117）\n");
+  L.push("★★拾い方は **字** です。★`class` では ありません（★裁定 その117）。");
+  L.push("★★「〜しません」「〜できません」「〜は 見られません」── ★`ません` で 終わる 文。");
+  L.push("★★見せ方（小見出しか 注記か）を 変えても、★この 数は 動きません。\n");
   L.push("| 画面 | 同じ | ★見本に あって 実機に 無い | ★実機に あって 見本に 無い |");
   L.push("|---|---|---|---|");
   出.forEach((x) => {
@@ -410,9 +498,27 @@ function calibrate() {
     const a = x.note;
     if (!a.onlyMihon.length && !a.onlyImpl.length) return;
     L.push(`**★${x.key}**\n`);
+    a.onlyMihon.forEach((s) => L.push(`- ★見本のみ … ${s.replace("約｜", "")}`));
+    a.onlyImpl.forEach((s) => L.push(`- ★実機のみ … ${s.replace("約｜", "")}`));
+    L.push("");
+  });
+
+  L.push("\n## ★二の二 ★印（class）で 拾った 注記 ── ★参考\n");
+  L.push("★★字の 形に 当てはまらない 注記も、★ここで 見えます。");
+  L.push("★★段階2 の 合否には 使いません（★裁定 その117）。\n");
+  L.push("| 画面 | 同じ | 見本のみ | 実機のみ |");
+  L.push("|---|---|---|---|");
+  出.forEach((x) => {
+    if (x.err) { L.push(`| ${x.key} | — | — | — |`); return; }
+    L.push(`| ${x.key} | ${x.cls.same} | ${x.cls.onlyMihon.length} | ${x.cls.onlyImpl.length} |`);
+  });
+  出.forEach((x) => {
+    if (x.err) return;
+    const a = x.cls;
+    if (!a.onlyMihon.length && !a.onlyImpl.length) return;
+    L.push(`\n**★${x.key}**\n`);
     a.onlyMihon.forEach((s) => L.push(`- ★見本のみ … ${s.replace("注｜", "")}`));
     a.onlyImpl.forEach((s) => L.push(`- ★実機のみ … ${s.replace("注｜", "")}`));
-    L.push("");
   });
 
   L.push("\n## ★三 ★ぜんぶ（★行も 含む）── ★参考\n");
