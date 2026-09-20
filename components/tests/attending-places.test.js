@@ -43,8 +43,14 @@ function t(cond, label) {
   const vtCode = readCode("components", "VocalTracker.jsx");
 
   // ★★画面の かたまり だけ を 見ます。★ほかの 画面の 字を 拾わない ため。
+  // ★★★丈を 数で 決めて いました（★4200文字・2026-09-20 に 落ちました）。
+  //   ★★画面に 1枚 足した だけ で、★窓から `enrolled_at` が はみ出しました。
+  //   ★★★測って 決めます ── ★次の 画面の 印（`data-v2-…`）の 手前 まで。
+  //     ★★見つからなければ 終わりまで。★数を 覚えません。
   const at = vt.indexOf('data-v2-attending="1"');
-  const blk = at < 0 ? "" : vt.slice(Math.max(0, at - 1200), at + 4200);
+  const 次の印 = vt.indexOf('data-v2-', at + 10);
+  const blk = at < 0 ? ""
+    : vt.slice(Math.max(0, at - 1200), 次の印 > at ? 次の印 : vt.length);
 
   console.log("① ★台帳に 在る 列だけ を 使って いること");
   const ENROLL = ["id", "org_id", "student_id", "status", "enrolled_at",

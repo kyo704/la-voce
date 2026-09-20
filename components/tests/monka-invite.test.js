@@ -111,5 +111,26 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.ok(/^[A-Z2-9]+$/.test(c), "★字が ちがいます: " + c);
   });
 
+  見る("★学生の 画面に「招かれて います」が 出る", () => {
+    assert.ok(/rpc\("get_my_monka_invites"\)/.test(vt), "★読んで いません");
+    assert.ok(/MONKA_INVITED_HEAD/.test(vt), "★出して いません");
+    assert.strictEqual(m.INVITED_HEAD, "招かれて います");
+    assert.ok(m.INVITED_NOTE.includes("あなたが 決めます"), "★決めるのは ご本人、が ありません");
+    // ★★押した 先は、★もとから ある 道（★2つ 作りません）。
+    assert.ok(/handleLookupInviteCode\(v\.code\)/.test(vt),
+      "★もとから ある 道を 使って いません");
+    // ★★入る ところまで 進めて いない こと（★承知は ご本人が します）。
+    const i = vt.indexOf("MONKA_INVITED_OPEN");
+    const なか = vt.slice(Math.max(0, i - 900), i + 200);
+    assert.ok(!/handleAcceptInvitation/.test(なか), "★こちらから 入れて います");
+  });
+
+  見る("★招かれた 字（★学校と 先生の 名 だけ）", () => {
+    const 字 = m.invitedLine({ teacherName: "高橋", orgName: "○○音大" });
+    assert.ok(字.includes("高橋") && 字.includes("○○音大"), "★名が 出て いません");
+    // ★★点や 記録の ことを 書いて いない こと。
+    assert.ok(!/記録|点|出欠/.test(字), "★余計な ことを 書いて います");
+  });
+
   console.log("\n★" + 数 + "つ 通りました。");
 })();

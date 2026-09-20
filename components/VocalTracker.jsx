@@ -189,7 +189,11 @@ import OpsOkeru from "@/components/OpsOkeru";
 import OpsMonkaInvite from "@/components/OpsMonkaInvite";
 import {
   makeCode, SENT_LINE as MONKA_INVITE_SENT,
-  FAILED_LINE as MONKA_INVITE_FAILED
+  FAILED_LINE as MONKA_INVITE_FAILED,
+  INVITED_HEAD as MONKA_INVITED_HEAD,
+  invitedLine as monkaInvitedLine,
+  INVITED_NOTE as MONKA_INVITED_NOTE,
+  INVITED_OPEN as MONKA_INVITED_OPEN
 } from "@/lib/monkaInvite";
 // ★★入れられる 枠は その場で 数えます（★裁定 その108。★表を 作りません）。
 import { openSlots, weekDates } from "@/lib/opsKumu";
@@ -6815,6 +6819,8 @@ export default function VocalTracker({
     fetchMyOrgs();
     fetchMyEnrollments();
     void fetchGuardianRows();
+    // ★★招かれて いる ものも 読みます（★裁定 その108 ②）。
+    void fetchMyMonkaInvites();
     fetchMyTeachingLessons();
     fetchMyOrgEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -13012,6 +13018,9 @@ export default function VocalTracker({
   const [monkaInviteBusy, setMonkaInviteBusy] = useState(false);
   const [monkaInviteError, setMonkaInviteError] = useState("");
   const [monkaInviteDone, setMonkaInviteDone] = useState("");
+  // ★★★ご自分が 招かれて いる もの（★学生の 画面・裁定 その108 ②）。
+  //   ★★道が 返すのは ご自分 宛て だけ です。
+  const [myMonkaInvites, setMyMonkaInvites] = useState([]);
   const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
@@ -13535,6 +13544,24 @@ export default function VocalTracker({
     } finally {
       setEvalBusy(false);
     }
+  }
+
+  /**
+   * ★ご自分が 招かれて いる ものを 読みます（★裁定 その108 ②・2026-09-20）。
+   *
+   *   ★★★道が 返すのは **ご自分 宛て だけ** です。
+   *     ★★よその 方の 招きは 返りません（★台帳が そう して います）。
+   *   ★★読めなければ 空の ままに します。★札を 出しません。
+   */
+  async function fetchMyMonkaInvites() {
+    const supabase = createClient();
+    const { data, error } = await supabase.rpc("get_my_monka_invites");
+    if (error) {
+      console.error("★招きを 読めませんでした:", error);
+      setMyMonkaInvites([]);
+      return;
+    }
+    setMyMonkaInvites(data || []);
   }
 
   /**
@@ -26243,6 +26270,33 @@ export default function VocalTracker({
                         <Tag>{myEnrollments.length}つ</Tag>
                       ) : null}
                     </div>
+
+                    {/* ★★★招かれて います（★見本 `SC['招かれている']`・裁定 その108 ②）。
+                         ★★名指しで 招かれた ときだけ 出ます。★ご自分 宛て だけ です。
+                         ★★★入るか どうかは、★ご本人が 決めます。
+                           ★★押すと「見えるもの」を 確かめる 画面へ 進みます。 */}
+                    {(myMonkaInvites || []).map((v) => (
+                      <Card key={v.code} style={{ borderColor: C.curtain, marginBottom: 8 }}>
+                        <p style={{ ...TYPE.li, color: C.ink, margin: 0 }}>
+                          {MONKA_INVITED_HEAD}
+                        </p>
+                        <p style={{ fontSize: "0.8125rem", color: C.ink, margin: "2px 0 0" }}>
+                          {monkaInvitedLine({
+                            teacherName: v.teacher_name, orgName: v.org_name
+                          })}
+                        </p>
+                        <p style={{ fontSize: "0.78125rem", color: C.inkSoft, margin: "2px 0 8px" }}>
+                          {MONKA_INVITED_NOTE}
+                        </p>
+                        <Btn onClick={() => {
+                          // ★★★もとから ある 道を 使います（★2つ 作りません）。
+                          //   ★★合言葉を 入れて 引く のと 同じ ところへ 進みます。
+                          setMoreSection("合言葉で入る");
+                          setInviteCodeInput(v.code);
+                          void handleLookupInviteCode(v.code);
+                        }}>{MONKA_INVITED_OPEN}</Btn>
+                      </Card>
+                    ))}
 
                     <Warn>
                       {ATTENDING_WARN.map((line, i) => {
