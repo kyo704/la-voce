@@ -3,7 +3,7 @@
 <title>Woolsong 動く見本 ── PC・iPad（運営）統合版</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{ --card2:#FDFAF3;--line3:#E8DFC8;--ink4:#706456;--band:#F6F1E4;--band2:#F3ECDD;--band3:#FBF3E2;--enji-d:#8E1230;--ok:#3C6A56;--warn:#825A14;--err:#AD3846;--pick:#F6E4E8;--enji:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
+:root{ --card2:#FDFAF3;--line3:#E8DFC8;--ink4:#8C7D6C;--band:#F6F1E4;--band2:#F3ECDD;--band3:#FBF3E2;--enji-d:#8E1230;--ok:#447862;--warn:#8C6115;--err:#B23A48;--pick:#F6E4E8;--enji:#840C24;--yama:#8C6115;--midori:#447862;--paper:#FBF6EA;--card:#fff;
  --line:#E4DAC4;--line2:#F0E9DA;--ink:#261913;--ink2:#5A4C40;--ink3:#6B5C4E;--bg:#EFE7D6;
  --red:#B23A48;--sh:0 1px 0 rgba(0,0,0,.03),0 8px 24px rgba(90,72,48,.10)}
 body{background:var(--bg);font-family:"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;color:var(--ink);
@@ -364,28 +364,14 @@ th.stick{z-index:4}
 .legend{max-width:900px;font-size:13.5px;color:var(--ink2);background:#fff;border:1px solid var(--line);
  border-radius:12px;padding:15px 18px;line-height:1.95}
 .legend b{color:var(--enji)}.legend ul{margin:6px 0 0 1.3em}.legend li{margin-bottom:3px}
-/* ══ ★たしかめる 板 ── 2026-09-19
-   ★この 見本には 板の 仕組み（SH / openSheet）が ありません。
-   ★★個人の 見本の ものを 確かめずに 使い、★白い 画面に しました。
-   ★ここでは、★この 見本の 中だけで 完結する 形で 作ります      */
-.ask{position:fixed;inset:0;background:rgba(38,25,19,.34);display:none;
- align-items:center;justify-content:center;z-index:60;padding:20px}
-.ask.on{display:flex}
-.askbox{width:min(400px,92%);background:var(--card);border:1px solid var(--line);
- border-radius:14px;box-shadow:0 18px 44px rgba(60,44,28,.26);padding:22px 22px 18px}
-.askbox .t{font-size:16px;font-weight:700;margin-bottom:10px}
-.askbox .nm{background:var(--band2);border-radius:8px;padding:12px 14px;
- text-align:center;font-size:15.5px;font-weight:700;margin-bottom:12px}
-.askbox .bs{display:flex;gap:9px;margin-top:15px}
-.askbox .bs .btn{flex:1;margin:0}
 .toast{position:fixed;left:50%;transform:translateX(-50%) translateY(10px);bottom:26px;background:#261913;color:#fff;
  border-radius:11px;padding:12px 18px;font-size:13.5px;z-index:80;opacity:0;transition:.2s;pointer-events:none}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 .zoomwrap{overflow:auto;max-width:100%;padding-bottom:6px}
 
 /* ══════════ 暗い 画面（ダークモード） ══════════ */
-html[data-th="dark"]{--card2:#2A2219;--line3:#3A322A;--ink4:#A18C7A;--band:#2C241D;--band2:#2A231C;--band3:#3A1E22;--enji-d:#C9607A;--ok:#69A082;--warn:#D9AC55;--err:#EA8894;--pick:#3A1E22;
- --paper:#1C1712;--bg:#121009;--ink:#EFE6D8;--ink2:#BCAF9D;--ink3:#A19383;
+html[data-th="dark"]{--card2:#2A2219;--line3:#3A322A;--ink4:#7C6C5E;--band:#2C241D;--band2:#2A231C;--band3:#3A1E22;--enji-d:#C9607A;--ok:#5E8F74;--warn:#D9AC55;--err:#EA8894;--pick:#3A1E22;
+ --paper:#1C1712;--bg:#121009;--ink:#EFE6D8;--ink2:#BCAF9D;--ink3:#918476;
  --line:#3D342B;--line2:#2C251E;--enji:#E790A2;--yama:#D9AC55;--midori:#82BCA0;--red:#EA8894;
  --sh:0 1px 0 rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.45);
  color-scheme:dark}
@@ -468,7 +454,6 @@ html[data-th="dark"] .drt,html[data-th="dark"] .drr,html[data-th="dark"] .drhint
 <div class="legend" id="lg"></div>
 <div class="legend" id="spec"></div>
 <div class="toast" id="toast"></div>
-<div class="ask" id="ask" onclick="if(event.target===this)askNo()"><div class="askbox" id="askbox"></div></div>
 <script>
 /* ══════════ データ（スマホ版と 同じ） ══════════ */
 var PERM=[
@@ -604,7 +589,7 @@ var HIRAITA=[['田村 まこと（事務長）','9月9日 10:22','斎藤 めぐ�
  ['田村 まこと（事務長）','9月2日 14:05','斎藤 めぐみ の 門下']];
 
 /* ══════════ 状態 ══════════ */
-var S={orgSel:0,rail:false,pal:false,palq:'',dev:'pc',post:'学長',tab:'ホーム',stack:[],
+var S={rail:false,pal:false,palq:'',dev:'pc',post:'学長',tab:'ホーム',stack:[],
  cell:null,nv:'日',mf:'全て',pf:{k:'全て',v:''},oc:0,gy:null,mnew:{},sel:null,scale:1};
 function $(x){return document.querySelector(x)}
 function postOf(n){for(var i=0;i<POSTS.length;i++)if(POSTS[i].n===n)return POSTS[i];return null}
@@ -637,22 +622,6 @@ function push(n,a){S.stack.push({s:n,a:a});nav1();draw()}
 function pop(){S.stack.pop();nav1();draw()}
 function topOf(){return S.stack[S.stack.length-1]}
 function bk(t){return '<div class="usu" style="cursor:pointer;color:var(--enji);margin-bottom:6px" onclick="pop()">‹ '+t+'</div>'}
-/* ★たしかめる ── ★押しまちがいで 消えないように */
-var _askFn = null;
-function askShow(title, name, note, danger, fn){
- _askFn = fn;
- $('#askbox').innerHTML =
-   '<div class="t">'+title+'</div>'
-  +(name?'<div class="nm">'+name+'</div>':'')
-  +(note?'<div class="note" style="margin:0">'+note+'</div>':'')
-  +'<div class="bs">'
-  +'<span class="btn g" onclick="askNo()">やめる</span>'
-  +'<span class="btn"'+(danger?' style="background:var(--err)"':'')
-  +' onclick="askYes()">'+(danger?'消す':'はい')+'</span></div>';
- $('#ask').classList.add('on')}
-function askNo(){ $('#ask').classList.remove('on'); _askFn=null }
-function askYes(){ var f=_askFn; askNo(); if(f) f() }
-
 function toast(t){$('#toast').textContent=t;$('#toast').classList.add('on');
  clearTimeout(window._t);window._t=setTimeout(function(){$('#toast').classList.remove('on')},3200)}
 function keyLab(key){var d=+key.split('-')[0],k=+key.split('-')[1],K=myKoma()[k]||MST.koma[k];
@@ -772,44 +741,15 @@ function P_nittei(){
  +'<span class="pill" onclick="push(\'重なり\')">重なり '+KASANARI.length+'件</span>'
  +(can('koma')?'<span class="pill" onclick="push(\'コマを決める\')">時間の 割り方</span><span class="pill" onclick="push(\'場所を決める\')">場所</span>':'')+'</div>';
  if(S.nv==='週'){
-  /* ══ ★1週間 × 濃さの 地図 ── 裁定⑨（2026-09-09）══
-     ★1か月の こよみでは ありません。
-     ★★先生を 縦に、★日を 横に。★濃いほど コマが 多い
-     ★中身は 出しません。★数だけ                              */
-  var WD=['9/7（月）','9/8（火）','9/9（水）','9/10（木）',
-          '9/11（金）','9/12（土）','9/13（日）'];
-  var LOAD={'斎藤 めぐみ':[4,6,3,5,2,0,0],'渡辺 たける':[2,3,5,4,6,3,0],
-   '高橋 のぞみ':[5,4,6,3,4,2,0],'大川 あや':[0,2,1,3,2,0,0],
-   '森 ひろし':[3,0,4,0,3,5,0],'外部 講師':[0,0,2,0,0,4,0]};
-  var MX=6;
-  var col=function(n){return n?'background:var(--enji);opacity:'
-    +(0.22+n/MX*0.74).toFixed(2):'background:var(--band2)'};
-  h+='<div class="card"><div class="h3" style="margin-top:0">'
-   +'9月7日〜13日　濃いところ＝コマが 多い</div>'
-   +'<div class="tblwrap" style="max-height:none"><table>'
-   +'<thead><tr><th class="anc" style="min-width:132px">先生</th>'
-   +WD.map(function(w){return '<th style="text-align:center;min-width:74px">'+w+'</th>'}).join('')
-   +'<th style="text-align:right;min-width:60px">ひと週</th></tr></thead><tbody>'
-   +Object.keys(LOAD).map(function(p){
-     var a=LOAD[p],sum=a.reduce(function(x,y){return x+y},0);
-     return '<tr><td class="anc">'+p+'</td>'
-      +a.map(function(n,di){
-        return '<td style="text-align:center;padding:4px 6px">'
-         +'<div onclick="S.nv=\'日\';draw()" '
-         +'title="'+p+' '+WD[di]+' '+n+'コマ" '
-         +'style="height:30px;border-radius:7px;cursor:pointer;display:flex;'
-         +'align-items:center;justify-content:center;font-size:12.5px;'
-         +'color:'+(n>3?'#fff':'var(--ink3)')+';'+col(n)+'">'+(n||'')+'</div></td>'}).join('')
-      +'<td class="num" style="font-weight:700">'+sum+'</td></tr>'}).join('')
-   +'</tbody></table></div>'
-   +'<div class="usu" style="margin-top:9px">'
-   +'中身は 出しません。<b>コマの 数だけ</b>です。押すと その日へ。</div></div>';
-  return h+'<div class="note">'
-   +'<b>先生を 縦に、日を 横に 並べます。</b>'
-   +'誰に 偏っているかが、色の 濃さで 分かります。<br>'
-   +'<b>授業の 名前・教室・生徒の 名前は 出しません。</b>数だけです。<br>'
-   +'先生の「自分の 予定」は <b>数に 入りません</b>。<br>'
-   +'重なりを <b>自動で 動かしません</b>。印を つけるだけです。</div>'}
+  h+='<div class="card"><div class="h3" style="margin-top:0">9月　濃いところ＝コマが 多い日</div>'
+   +'<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;max-width:520px">'
+   +'日月火水木金土'.split('').map(function(w){return '<div style="text-align:center;font-size:12.5px;color:var(--ink3)">'+w+'</div>'}).join('')
+   +Array.from({length:30},function(_,i){var v=[0,3,8,5,9,6,2][i%7];
+     return '<div onclick="S.nv=\'日\';draw()" style="aspect-ratio:1;border-radius:7px;background:'+(v?'#840C24':'#F0E9DA')
+     +';opacity:'+(v?0.25+v/9*0.7:1)+';display:flex;align-items:center;justify-content:center;font-size:13px;color:'
+     +(v>5?'#fff':'var(--ink3)')+';cursor:pointer">'+(i+1)+'</div>'}).join('')+'</div>'
+   +'<div class="usu" style="margin-top:9px">中身を 出しません。形だけ 見せます。押すと その日へ。</div></div>';
+  return h+'<div class="note">重なりを <b>自動で 動かしません</b>。印を つけるだけです。</div>'}
  h+='<div class="grid"><table><tr><th class="stick" style="width:76px">時間</th>'
   +P.map(function(p){return '<th>'+p+'</th>'}).join('')+'</tr>'
   +T.map(function(t,ti){return '<tr><td class="stick" style="font-size:13px">'+t+'</td>'
@@ -875,32 +815,19 @@ function P_monka(){
  +'<div class="pills"><span class="pill" onclick="push(\'日程を組む\')">レッスンの 日程を 組む</span>'
  +'<span class="pill" onclick="push(\'代表を決める\')">代表を 決める</span>'
  +'<span class="pill" onclick="push(\'まだの人\')">時間割が まだの方</span></div>'
- +'<div class="tblwrap">'
- +'<div class="usu" style="margin:-4px 0 8px">'
- +'声楽実技（前期）　<b>'+DONE_N+'回目 / 30回</b>　'
- +'<span style="color:var(--ink4)">（この門下 みんな 同じです）</span></div>'
- +'<table>'
- +'<tr><th class="stick">お名前</th><th>学年・コース</th>'
- +'<th class="num">出席</th>'
- +'<th>時間割</th><th>空いている コマ</th><th>レッスンの 枠</th></tr>'
+ +'<div class="tblwrap"><table>'
+ +'<tr><th class="stick">お名前</th><th>学年・コース</th><th>時間割</th><th>空いている コマ</th><th>レッスンの 枠</th></tr>'
  +monkaSorted().map(function(x){var m=x[0],i=x[1],k=placeOf(i);
    var fr=0;DAYS.forEach(function(d,di){myKoma().forEach(function(kk,ki){if(isFree(i,di+'-'+ki))fr++})});
    return '<tr class="click" onclick="push(\'門下の人\','+i+')"><td class="stick">'+m[0]
    +(m[4]?'<span class="tag" style="background:var(--pick);color:var(--enji)">代表</span>':'')+'</td>'
    +'<td>'+m[1]+'</td>'
-   +'<td class="num">'+(ATT[m[0]]!==undefined?ATT[m[0]]:'—')
-     +(ATT[m[0]]!==undefined?shortMark(ATT[m[0]],30,DONE_N):'')+'</td>'
    +'<td>'+(m[3]?'<span style="color:var(--midori)">✓ 出ています</span>':'<span style="color:var(--yama)">まだ</span>')+'</td>'
    +'<td>'+fr+'コマ</td>'
    +'<td>'+(k?'<span style="color:var(--midori)">'+keyLab(k).replace('　','')+'</span>':'まだ')+'</td></tr>'}).join('')
  +'</table></div>'
  +'<div style="margin:12px 0"><span class="btn g sm" onclick="push(\'門下に招く\')">＋ 門下に 招く</span></div>'
-+'<div class="note"><b>出席の 数は、担当の 門下だけ</b> 見えます。'
- +'率（％）は 出しません。<br>'
- +'並びは <b>名前順</b>です。出席の 多い順には しません。<br>'
- +'「足りない 見込み」は、<b>残り 全部 出ても 届かない</b>ときに 出ます。<br>'
- +'責める ものでは ありません。声を かける ための 目安です。<br>'
- +'見えるのは <b>担当の生徒だけ</b>。学校全部の 名簿は 見えません。<br>'
+ +'<div class="note">見えるのは <b>担当の生徒だけ</b>。学校全部の 名簿は 見えません。<br>'
  +'見えるのは 学年と、<b>空いているか どうかだけ</b>。授業の 名前・教室・備考・体調は 見えません。<br>'
  +'<b>「本番が 近い」の 印は 出しません。</b><br>担当を 外れると、その時点から 見えなくなります。</div>'}
 
@@ -946,7 +873,7 @@ function P_monkaInvite(){
  +'顔合わせを 休んだ方、合言葉を 失くした方に</div>'
  +'<div class="card p0">'
  +[['中村 みな','2年','声楽','まだ'],
-   ['高橋 かなで','2年','声楽','招待中'],
+   ['高橋 かなで','2年','声楽','★招待中'],
    ['小林 そら','1年','声楽','まだ'],
    ['伊藤 ゆい','1年','声楽','入っています']].map(function(x){
    var done = x[3]==='入っています';
@@ -967,83 +894,6 @@ function P_monkaInvite(){
  +'　（さがせると、誰が どの先生に ついているかが 分かってしまうからです）<br>'
  +'入る 道は この 2つだけ ── <b>合言葉</b> か、<b>招かれる</b> か。<br>'
  +'どちらも、最後に <b>ご本人が 承知して はじめて</b> 入ります。</div>'}
-
-
-/* ══ ★出席の 回数と 授業の 型 ── 裁定その90（2026-09-18）══
-   ★率（％）を 出しません。★回数だけ
-   ★「9 / 12」の 形に しません（★画面が 割ることに なる）
-   ★出席順に 並べ替えません（★既定は 名前順）
-   ★色で 警告しません（★印だけ）                              */
-var PRESETS = [
- {id:1, name:'声楽実技（前期）', total:30,
-  teachers:['高橋 のぞみ','斎藤 めぐみ','渡辺 たける','大川 あや','森 ひろし','外部 講師']},
- {id:2, name:'ソルフェージュ',   total:24, teachers:['斎藤 めぐみ','大川 あや','森 ひろし']},
- {id:3, name:'合唱',             total:15, teachers:['高橋 のぞみ','渡辺 たける']}
-];
-var DONE_N = 12;                       /* ★いま 何回目（行われた 回数）*/
-var ATT = {'高橋 かなで':11,'中村 みな':9,'小林 そら':5,'伊藤 ゆい':12,
-           '大野 ひかる':10,'高木 みなみ':12};
-
-function presetOf(teacher){
- for(var i=0;i<PRESETS.length;i++)
-   if(PRESETS[i].teachers.indexOf(teacher)>=0) return PRESETS[i];
- return null}
-
-/* ★★規定に 足りない 見込み ── ★印だけ。★色を 使わない */
-function shortMark(att,total,done){
- var need = Math.ceil(total*2/3);            /* ★学校が 決める 想定 */
- var left = total - done;
-/* ★★印では なく 言葉。★2026-09-15：★は 紙の 中の 印。画面に 出さない
-    ★※ も 使いません（★注記と 紛れ、★何のことか 思い出す 必要が 出ます）*/
- return (att + left < need)
-   ? '　<span class="usu">足りない 見込み</span>' : ''}
-
-function P_presets(){
- return bk('設定')+'<h2>授業の 型</h2>'
- +'<div class="sub">年間の 回数を 決めます　／　1つの 型を 複数の 門下に 当てられます</div>'
- +'<div class="tblwrap" style="max-height:none;max-width:760px"><table>'
- +'<thead><tr><th class="anc" style="min-width:190px">名前</th>'
- +'<th class="num">回数</th><th>当てている 門下</th><th></th></tr></thead><tbody>'
- +PRESETS.map(function(p){
-   return '<tr class="click" onclick="push(\'型の中身\','+p.id+')">'
-    +'<td class="anc">'+p.name+'</td>'
-    +'<td class="num">年 '+p.total+'回</td>'
-    +'<td><span class="usu">'+p.teachers.length+'つ</span>　'+p.teachers.slice(0,3).join('・')
-    +(p.teachers.length>3?' ほか':'')+'</td>'
-    +'<td><span class="btn g sm">なおす ›</span></td></tr>'}).join('')
- +'</tbody></table></div>'
- +'<div style="margin-top:12px"><span class="btn g sm" onclick="push(\'型の中身\',0)">'
- +'＋ 型を 作る</span></div>'
- +'<div class="note"><b>作れるのは 事務の 方だけ</b>です。先生は 見るだけ。<br>'
- +'年間の 回数は <b>学校が 決めるもの</b>です。<br>'
- +'型を 消しても、<b>出席の 記録は 消えません</b>。型は 目安です。</div>'}
-
-function P_presetEdit(id){
- var p = PRESETS.filter(function(x){return x.id===id})[0]
-   || {name:'', total:30, teachers:[]};
- var ALLT = ['高橋 のぞみ','斎藤 めぐみ','渡辺 たける','大川 あや','森 ひろし','外部 講師'];
- return bk('授業の 型')+'<h2>'+(id?p.name:'型を 作る')+'</h2>'
- +'<div style="max-width:520px">'
- +'<div class="fl">名前</div><input class="inp" value="'+p.name+'" placeholder="れい：声楽実技（前期）">'
- +'<div class="fl">年間の 回数</div><input class="inp" value="'+p.total+'">'
- +'<div class="fl">覚え書き　<span class="usu" style="display:inline">任意</span></div>'
- +'<textarea class="inp" style="height:62px"></textarea>'
- +'<div class="fl">当てる 門下　<span class="usu" style="display:inline">複数 選べます</span></div>'
- +'<div class="card p0">'
- +ALLT.map(function(t){
-   var on = p.teachers.indexOf(t)>=0;
-   return '<div class="li"><span>'+t+'</span><s>'
-    +'<span style="display:inline-block;width:17px;height:17px;border-radius:4px;'
-    +'border:1.6px solid '+(on?'var(--enji)':'var(--line)')+';'
-    +(on?'background:var(--enji);box-shadow:inset 0 0 0 3px var(--card);':'')
-    +'vertical-align:-3px"></span></s></div>'}).join('')
- +'</div>'
- +'<div style="margin-top:14px"><span class="btn mid">保存</span></div>'
- +(id?'<div style="margin-top:9px"><span class="btn g sm">この型を 消す</span></div>':'')
- +'</div>'
- +'<div class="note">1つの 型を、<b>いくつの 門下に 当てても かまいません</b>。<br>'
- +'同じ 授業名で 先生が 何人 いても、<b>1回 作れば 足ります</b>。<br>'
- +'消しても、<b>出席の 記録は 消えません</b>。</div>'}
 
 /* ══════════ ⑤ 行事 ══════════ */
 var GYOJI=[
@@ -1095,16 +945,18 @@ function P_renraku(){
    +(canRead?Object.keys(MONKAUN).filter(function(k){return MONKAUN[k]}).length:0);
  var row=function(x){var idx=list.indexOf(x);
   return '<div class="pl '+(S.oc===idx?'on':'')+'" onclick="S.oc='+idx+';draw()">'
-  +'<div class="t"><span>'+x[2]+'</span></div>'
+  +'<div class="t"><span class="dot '+(x[4]?'':'off')+'"></span><span>'+x[2]+'</span></div>'
   +'<div class="m">'+x[3]+(x[0]==='門'&&MONKAS[x[1]]?'　'+MONKAS[x[1]][1]+'人':'')+'</div></div>'};
  return '<h2>連絡</h2><div class="sub">左に 一覧、右に 本文　／　'+S.post+'　／　'
- +'新しい順に 並べています'+'</div>'
+ +(un?'<b style="color:var(--ok)">未読 '+un+'件</b>':'未読は ありません')+'</div>'
  +'<div class="pills">'
  +(canAll?'<span class="pill" onclick="push(\'お知らせを書く\',-1)"><b>＋</b>　お知らせを 書く</span>':'')
+ +(canAll&&MISOU.length?'<span class="pill" style="border-color:var(--warn);background:var(--band3)" onclick="push(\'未送信\')">未送信　'+MISOU.length+'件</span>':'')
  +(canRead?'<span class="pill" onclick="push(\'開いた記録\')">開いた 記録　'+HIRAITA.length+'件</span>':'')
- +'</div>'
+ +'<span class="pill" onclick="markAll()">全部 読んだことに する</span></div>'
+ +'<div class="usu" style="margin:-4px 0 8px"><b>右に 中身が 出た ものは、その場で 読んだことに なります</b>（青い点が 消えます）。</div>'
  +'<div class="pane"><div class="lft">'
- +'<div style="padding:11px 15px 7px;font-size:12.5px;color:var(--ink3);letter-spacing:.12em">お知らせ</div>'
+ +'<div style="padding:11px 15px 7px;font-size:12.5px;color:var(--ink3);letter-spacing:.12em">学校からの お知らせ</div>'
  +list.filter(function(x){return x[0]==='お'}).map(row).join('')
  +((canRead||canWrite)?'<div style="padding:14px 15px 7px;font-size:12.5px;color:var(--ink3);letter-spacing:.12em">門下</div>'
    +list.filter(function(x){return x[0]==='門'}).map(row).join(''):'')
@@ -1112,7 +964,7 @@ function P_renraku(){
  +(can('monka_read')?'<div class="warn" style="margin-top:12px"><b>いま、門下を 読める 状態に なっています。</b><br>'
   +'普段は 切っておく ものです。事故・苦情の 調べが 終わったら、'
   +'<span style="color:var(--enji);cursor:pointer;text-decoration:underline" onclick="offMonkaRead()">ここで 切ってください</span>。</div>':'')
- +'<div class="note"><b>読んだかどうかは 記録しません。</b>未読も 数えません。<br>'
+ +'<div class="note"><b>青い点＝まだ 読んでいないもの</b>です。開くと 消えます。数は 上に 出します。<br>'
  +'<b>門下の 連絡は、普段 運営から 見えません</b>（9月10日 変更）。<br>'
  +'　事務が 日頃 中身を 確かめる 必要は ありません。<br>'
  +'　事故・苦情の ときだけ、'+rn2('post')+'が「事故のときに 門下を 読む」を 入れます。<br>'
@@ -1177,7 +1029,7 @@ function P_write(a){
  var q=W.q,cand=q?MEI.map(function(m,i){return [m,i]}).filter(function(x){return x[0][0].indexOf(q)>=0}):[];
  return bk('連絡')+'<h2>'+(a>=0?'お知らせを 直す':'お知らせを 書く')+'</h2>'
  +'<div class="sub">宛先を 段ごとに 狭めます　／　名前でも 探せます</div>'
- +'<div class="col2" style="align-items:flex-start;flex-direction:row-reverse">'
+ +'<div class="col2" style="align-items:flex-start">'
  +'<div style="flex:1;min-width:340px">'
  +'<div class="h3" style="margin-top:0">① 学部・研究科</div><div class="pills">'
  +'<span class="pill sm '+(W.gakubu.length?'':'on')+'" onclick="S.ow.gakubu=[];S.ow.gakka=[];draw()">全部</span>'
@@ -1252,11 +1104,7 @@ function sendOshirase(a){var W=S.ow;
  if(W.from!==undefined)MISOU.splice(W.from,1);
  if(a>=0){OSHIRASE[a].t=W.t;OSHIRASE[a].b=W.b;OSHIRASE[a].to=ateText(W)}
  else OSHIRASE.unshift({t:W.t,d:'9月9日',to:ateText(W),un:0,b:W.b});
- /* ★出したあと、★★その お知らせを 開いた 状態で 戻ります
-    ★前は ただ 戻るだけで、★どこに 入ったか 分かりませんでした */
- S.ow=null;
- S.oc = (a>=0) ? a : 0;
- toast('出しました');pop()}
+ S.ow=null;toast('出しました');pop()}
 /* ── 未送信（下書き・送れなかったもの） ── */
 function P_misou(){
  return bk('連絡')+'<h2>未送信</h2><div class="sub">'+MISOU.length+'件　／　まだ 出していない お知らせです</div>'
@@ -1297,19 +1145,18 @@ function P_settei(){
  if(can('koma')||can('koma_mine'))items.push('時間');
  if(can('koma'))items.push('場所');
  if(can('sched_mine'))items.push('自分の予定');
- if(can('meibo'))items.push('授業');
  if(can('master'))items.push('採点');
  if(can('master'))items.push('学校の形');
  if(can('post')||can('master'))items.push('役職');
  if(can('post')||can('master'))items.push('ひと');
  if(items.indexOf(S.st2)<0)S.st2=items[0]||'ご請求';
  var body={'見やすさ':stMiyasu,'ご請求':stBill,'時間':stKoma,'場所':stPlace,'自分の予定':stMine,
-  '学校の形':stOrg,'採点':stSaiten,'授業':stJugyo,'読み込み':stImport,'役職':stPost,'ひと':stPeople,'書き出し':stExport}[S.st2];
+  '学校の形':stOrg,'採点':stSaiten,'読み込み':stImport,'役職':stPost,'ひと':stPeople,'書き出し':stExport}[S.st2];
  return '<h2>設定'+(can('bill')||can('bill_pay')?'・ご請求':'')+'</h2><div class="sub">'+S.post+'　／　'+permLine(myPost())+'</div>'
  +'<div class="col2" style="align-items:flex-start">'
  +'<div style="flex:0 0 210px"><div class="card p0">'
  +items.map(function(v){var lab={'ご請求':'ご請求','時間':'時間の 割り方（コマ）','場所':'場所',
-   '自分の予定':'自分の 予定（レッスン いがい）','授業':'授業の 型','採点':'評価の 型','学校の形':'学校の 形','役職':'役職と、できること','ひと':'ひとと 役職',
+   '自分の予定':'自分の 予定（レッスン いがい）','採点':'評価の 型','学校の形':'学校の 形','役職':'役職と、できること','ひと':'ひとと 役職',
    '書き出し':'書き出す（校務システムへ）','読み込み':'読み込む（校務システムから）','見やすさ':'見やすさ（文字の 大きさ）'}[v];
    if(v==='時間')lab=can('koma')?'時間の 割り方（学校）':'自分の コマ';
    return '<div class="li" style="'+(S.st2===v?'color:var(--enji);font-weight:700':'')+'" onclick="S.st2=\''+v+'\';draw()"><span>'+lab+'</span><s>›</s></div>'}).join('')
@@ -1851,121 +1698,30 @@ function bAllOn(){DAYS.forEach(function(d,di){myKoma().forEach(function(k,ki){if
  draw();toast('全部 「'+S.bn+'」に しました。レッスンは 1つも 入れられません')}
 
 function stOrg(){
- /* ══ ★学校の 形 ── 作り直し（2026-09-19）══
-    ★前：4つの 箱が 並ぶだけ。★学部と 学科の 関係が 見えない
-    ★★いま：★左に 学部、★右に その学部の 中身
-    ★裁定その98（org_divisions・parent_id で 階層）に 合わせます      */
- var sel = S.orgSel || 0;
- var gb = ORG.gakubu, gk = ORG.gakka;
- /* ★選んだ 学部に つく 学科だけ */
- var inSel = gk.filter(function(v){ return v[1] === gb[sel] });
-
+ var K=[['gakubu','学部・研究科','れい：音楽教育学部'],['gakka','学科・コース','れい：音楽教育'],
+        ['gakunen','学年','れい：博士4年／研究生／専攻科'],['bunya','事務の 分野','れい：広報']];
  return '<div class="h3" style="margin-top:0">学校の 形</div>'
  +'<div class="warn">大学だけでは ありません。修士・博士・研究生・専攻科・別科も、ここで 足せます。<br>'
  +'音楽教室なら「初等科・中等科・研究科」、養成所なら「本科・専科」など、<b>その学校の ことば</b>で。</div>'
-
- +'<div class="col2" style="align-items:flex-start;gap:16px">'
-
- /* ── 左：学部 ───────────────────────── */
- +'<div style="flex:0 0 268px;min-width:240px">'
- +'<div class="h3" style="margin-top:0">学部・研究科　<span class="usu">'+gb.length+'つ</span></div>'
- +'<div class="card p0">'
- +gb.map(function(v,k){
-   var on = k===sel, n = gk.filter(function(x){return x[1]===v}).length;
-   return '<div class="li'+(on?' on':'')+'" onclick="S.orgSel='+k+';draw()" '
-    +'style="'+(on?'background:var(--band2)':'')+'"><span>'+v
-    +'<div class="usu">'+(n?n+'つの 学科':'まだ 学科が ありません')+'</div></span>'
-    +'<s>'+(on?'見ています':'›')+'</s></div>'}).join('')
+ +'<div class="col2" style="flex-wrap:wrap">'
+ +K.map(function(k){return '<div style="flex:0 0 calc(50% - 8px);min-width:280px">'
+   +'<div class="h3">'+k[1]+'　<span class="usu">'+ORG[k[0]].length+'つ</span></div>'
+   +'<div class="card p0" style="max-height:210px;overflow-y:auto">'
+   +(k[0]==='gakka'?ORG.gakka.map(function(v,i){
+     return '<div class="li plain"><span>'+v[0]+'<br><span class="usu">'+v[1]+'</span></span><s><span class="pill sm" onclick="orgDel(\'gakka\','+i+')">消す</span></s></div>'}).join('')
+    :ORG[k[0]].map(function(v,i){
+     return '<div class="li plain"><span>'+v+'</span><s><span class="pill sm" onclick="orgDel(\''+k[0]+'\','+i+')">消す</span></s></div>'}).join(''))
+   +'</div><div style="display:flex;gap:7px;margin-top:8px">'
+   +'<input class="inp" style="padding:8px 10px;font-size:13.5px" placeholder="'+k[2]+'" value="'+(S.mnew[k[0]]||'')+'" oninput="S.mnew[\''+k[0]+'\']=this.value">'
+   +'<span class="btn sm" style="flex:none" onclick="orgAdd(\''+k[0]+'\')">足す</span></div></div>'}).join('')
  +'</div>'
- +'<div style="display:flex;gap:7px;margin-top:8px">'
- +'<input class="inp" style="padding:8px 10px;font-size:13.5px" placeholder="れい：音楽教育学部" '
- +'value="'+(S.mnew.gakubu||'')+'" oninput="S.mnew.gakubu=this.value">'
- +'<span class="btn sm" style="flex:none" onclick="orgAdd(\'gakubu\')">足す</span></div>'
- +'</div>'
-
- /* ── 右：その 学部の 中身 ───────────────── */
- +'<div style="flex:1;min-width:300px">'
- +'<div class="h3" style="margin-top:0">'+(gb[sel]||'—')+' の 中身</div>'
-
- +'<div class="sh3">学科・コース　<span class="usu">'+inSel.length+'つ</span></div>'
- +'<div class="card p0">'
- +(inSel.length
-   ? inSel.map(function(v){
-     var k = gk.indexOf(v);
-     return '<div class="li plain"><span>'+v[0]+'</span>'
-      +'<s><span class="pill sm" onclick="orgDelAsk(\'gakka\','+k+',\''+v[0]+'\')">'
-      +'消す</span></s></div>'}).join('')
-   : '<div class="li plain" style="color:var(--ink4)"><span>まだ ありません</span></div>')
- +'</div>'
- +'<div style="display:flex;gap:7px;margin-top:8px">'
- +'<input class="inp" style="padding:8px 10px;font-size:13.5px" placeholder="れい：音楽教育" '
- +'value="'+(S.mnew.gakka||'')+'" oninput="S.mnew.gakka=this.value">'
- +'<span class="btn sm" style="flex:none" onclick="orgAdd(\'gakka\')">'+(gb[sel]||'')+'に 足す</span></div>'
- +'<div class="usu" style="margin-top:6px">'
- +'左で えらんだ 学部の 中に 入ります。</div>'
- +'</div></div>'
-
- /* ── 下：学年と 事務の 分野（★学部に つかない） ── */
- +'<div class="h3">学年</div>'
- +'<div class="usu" style="margin:-4px 0 8px">学部には つきません。学校 全部で 同じです。</div>'
- +'<div class="card p0" style="max-width:520px">'
- +ORG.gakunen.map(function(v,k){
-   return '<div class="li plain"><span>'+v+'</span>'
-    +'<s><span class="pill sm" onclick="orgDelAsk(\'gakunen\','+k+',\''+v+'\')">消す</span></s></div>'}).join('')
- +'</div>'
- +'<div style="display:flex;gap:7px;margin-top:8px;max-width:520px">'
- +'<input class="inp" style="padding:8px 10px;font-size:13.5px" placeholder="れい：博士4年／研究生／専攻科" '
- +'value="'+(S.mnew.gakunen||'')+'" oninput="S.mnew.gakunen=this.value">'
- +'<span class="btn sm" style="flex:none" onclick="orgAdd(\'gakunen\')">足す</span></div>'
-
- +'<div class="h3">事務の 分野</div>'
- +'<div class="card p0" style="max-width:520px">'
- +ORG.bunya.map(function(v,k){
-   return '<div class="li plain"><span>'+v+'</span>'
-    +'<s><span class="pill sm" onclick="orgDelAsk(\'bunya\','+k+',\''+v+'\')">消す</span></s></div>'}).join('')
- +'</div>'
- +'<div style="display:flex;gap:7px;margin-top:8px;max-width:520px">'
- +'<input class="inp" style="padding:8px 10px;font-size:13.5px" placeholder="れい：広報" '
- +'value="'+(S.mnew.bunya||'')+'" oninput="S.mnew.bunya=this.value">'
- +'<span class="btn sm" style="flex:none" onclick="orgAdd(\'bunya\')">足す</span></div>'
-
- +'<div class="note">使われている ものは 消せません（その方が 1人でも いると 止めます）。<br>'
- +'<b>消すときは、一度 おたずねします。</b>押しまちがいで 消えません。<br>'
- +'<b>学部は、中の 学科を 消してからでないと 消せません。</b><br>'
- +'　（まとめて 消すと、通っている方の 学科が 黙って 消えるからです）</div>'}
-
-/* ★消す 前に おたずねする ── 裁定その99（2026-09-19）
-   ★押しまちがいで 学部が 消えると、★中の 学科も 行き場を 失います */
-function orgDelAsk(k, i, name){
- /* ★連鎖させません（2026-09-19 確定）
-    ★前は「学部を 消すと 学科も 消える」と していました。
-    ★★在籍者の 学科が 静かに 消えます。★危険でした          */
- var inn = (k==='gakubu')
-   ? ORG.gakka.filter(function(x){return x[1]===name}).length : 0;
- var note = 'この ことばを 使っている 方が 1人でも いると、消せません。<br>'
-  + (inn ? '<b>この学部の 中に、まだ '+inn+'つの 学科が あります。</b><br>'
-         + 'さきに 学科を 消してから、学部を 消してください。<br>' : '')
-  + '消したあと、もとには 戻せません。';
- if(inn){ toast('さきに 学科を 消してください'); return }
- askShow('消しますか', name, note, true, function(){ orgDel(k, i) })}
-
-
-
-
+ +'<div class="note">使われている ものは 消せません（その方が 1人でも いると 止めます）。</div>'}
 function orgAdd(k){var v=(S.mnew[k]||'').trim();if(!v){toast('名前を 入れてください');return}
  if(k==='gakka'){if(ORG.gakka.some(function(x){return x[0]===v})){toast('もう あります');return}
-  /* ★左で えらんだ 学部に 入れます（★前は 1つめに 固定でした）*/
-  ORG.gakka.push([v,ORG.gakubu[S.orgSel||0]])}
+  ORG.gakka.push([v,ORG.gakubu[0]])}
  else{if(ORG[k].indexOf(v)>=0){toast('もう あります');return}ORG[k].push(v)}
  S.mnew[k]='';draw();toast('足しました')}
 function orgDel(k,i){var v=k==='gakka'?ORG.gakka[i][0]:ORG[k][i];
- /* ★★連鎖させません。★中に 学科が 1つでも あれば 止めます
-    ★理由：★連鎖させると、★在籍者の 学科が 静かに 消えます
-    ★★下から 順に 消していただきます                        */
- if(k==='gakubu'){
-  var inn=ORG.gakka.filter(function(x){return x[1]===v});
-  if(inn.length){toast('この学部の 中に、まだ 学科が あります');return}
-  if(S.orgSel>=ORG.gakubu.length-1)S.orgSel=0}
  var used=PEOPLE.some(function(p){return p[2]===v||p[3]===v||p[4]===v})||MEI.some(function(m){return m[1]===v||m[2]===v});
  if(used){toast('「'+v+'」の方が いるので 消せません');return}
  ORG[k].splice(i,1);draw();toast('消しました')}
@@ -3167,20 +2923,7 @@ function P_monkaHito(i){var m=MONKA[i],k=placeOf(i);
  var fr=[];DAYS.forEach(function(d,di){myKoma().forEach(function(kk,ki){if(isFree(i,di+'-'+ki))fr.push(di+'-'+ki)})});
  return bk('門下')+'<h2>'+m[0]+'</h2><div class="sub">'+m[1]+(m[4]?'　／　代表':'')+'</div>'
  +'<div class="col2" style="align-items:flex-start"><div style="flex:2;min-width:0">'
-+'<div class="h3" style="margin-top:0">出席</div>'
- +'<div class="card" style="padding:15px 16px">'
- +'<div class="usu">声楽実技（前期）</div>'
- +'<div style="display:flex;gap:26px;align-items:baseline;margin-top:7px">'
- +'<div><span style="font-size:26px;font-weight:700;font-variant-numeric:tabular-nums">'
- +(ATT[m[0]]!==undefined?ATT[m[0]]:'—')+'</span>'
- +'<span class="usu">　回 出席</span></div>'
- +'<div class="usu">いま <b>'+DONE_N+'回目</b> / 30回</div></div>'
- +(ATT[m[0]]!==undefined&&shortMark(ATT[m[0]],30,DONE_N)
-   ?'<div class="usu" style="margin-top:9px">規定に 足りない 見込みです</div>':'')
- +'</div>'
- +'<div class="usu" style="margin:-4px 0 12px">'
- +'率（％）は 出しません。回数だけです。</div>'
-  +'<div class="h3" style="margin-top:0">来られる 時間</div>'
+ +'<div class="h3" style="margin-top:0">来られる 時間</div>'
  +'<div class="grid" style="max-height:none"><table class="wk"><tr><th class="stick">コマ</th>'
  +DAYS.map(function(d){return '<th>'+d+'</th>'}).join('')+'</tr>'
  +myKoma().map(function(kk,ki){return '<tr><td class="stick" style="font-size:13px">'+kk[1]+'</td>'
@@ -3309,31 +3052,6 @@ function gyoNum(G){var per={'1年':52,'2年':48,'3年':44,'4年':38},n=0;
 /* ══════════ 描く ══════════ */
 
 /* ══════ 採点（2026-09-16 裁定 その70）══════ */
-/* ══ ★授業の 型 ── 裁定その90（2026-09-18）══ */
-function stJugyo(){
- return '<div class="h3" style="margin-top:0">授業の 型</div>'
- +'<div class="note" style="margin:0 0 11px">年間の 回数を 決めます。'
- +'<b>1つの 型を 複数の 門下に 当てられます。</b><br>'
- +'音大では、同じ 授業名を 何人もの 先生が 持ちます。'
- +'<b>1回 作れば 足ります。</b></div>'
- +'<div class="tblwrap" style="max-height:none"><table>'
- +'<thead><tr><th class="anc" style="min-width:180px">名前</th>'
- +'<th class="num" style="min-width:74px">回数</th>'
- +'<th style="min-width:230px">当てている 門下</th><th></th></tr></thead><tbody>'
- +PRESETS.map(function(p){
-   return '<tr class="click" onclick="push(\'型の中身\','+p.id+')">'
-    +'<td class="anc">'+p.name+'</td>'
-    +'<td class="num">年 '+p.total+'回</td>'
-    +'<td><span class="usu">'+p.teachers.length+'つ</span>　'
-    +p.teachers.slice(0,3).join('・')+(p.teachers.length>3?' ほか':'')+'</td>'
-    +'<td><span class="btn g sm">なおす ›</span></td></tr>'}).join('')
- +'</tbody></table></div>'
- +'<div style="margin-top:12px"><span class="btn g sm" onclick="push(\'型の中身\',0)">'
- +'＋ 型を 作る</span></div>'
- +'<div class="note"><b>作れるのは 事務の 方だけ</b>です。先生は 見るだけ。<br>'
- +'年間の 回数は <b>学校が 決めるもの</b>です。<br>'
- +'型を 消しても、<b>出席の 記録は 消えません</b>。型は 目安です。</div>'}
-
 function stSaiten(){
  return '<div class="h3" style="margin-top:0">評価の 型</div>'
  +'<div class="note" style="margin:0 0 11px">この 学校の 評価の 仕方を 決めます。'
@@ -3499,7 +3217,7 @@ var SC={'重なり':P_kasa,'重なりを直す':P_kasaFix,'出欠つけ':P_shukk
  'お知らせを書く':P_write,'開いた記録':P_kaita,'未送信':P_misou,
  'コマを決める':function(){S.st2='時間';go('設定');return ''},
  '場所を決める':function(){S.st2='場所';go('設定');return ''},
- '採点':P_saiten,'点を入れる':P_tenIreru,'門下に招く':P_monkaInvite,'授業の型':P_presets,'型の中身':P_presetEdit,
+ '採点':P_saiten,'点を入れる':P_tenIreru,'門下に招く':P_monkaInvite,
  '評価の項目':P_hyokaItem};
 var TAB={'ホーム':P_home,'日程':P_nittei,'名簿':P_meibo,'門下':P_monka,'行事':P_gyoji,
  '連絡':P_renraku,'設定':P_settei};
@@ -3727,11 +3445,11 @@ var SPEC_NG=[
  ['悲しい・困った顔の 羊','作らない'],
  ['羊の 自由配置','v1 では 作らない（座標の仕組みは 消さない）']];
 var SPEC_WHERE=[
- ['生徒の 時間割の 中身（授業名・担当・教室・備考）','端末だけ','サーバへ 送るのは「空いているか どうか」の 2値のみ'],
- ['先生の 自分の予定の 名前・種類','端末だけ','サーバへ 送るのは「塞がっているか」の 1値のみ'],
+ ['生徒の 時間割の 中身（授業名・担当・教室・備考）','★端末だけ','サーバへ 送るのは あき／来られない／授業あり の 3値のみ'],
+ ['先生の 自分の予定の 名前・種類','★端末だけ','サーバへ 送るのは「塞がっているか」の 1値のみ'],
  ['声・からだの 記録','サーバ（本人のみ）','先生・学校・運営に 出す画面を 作らない'],
  ['ノート・レパートリー','サーバ（本人のみ）','同上'],
- ['カード番号・口座番号','持たない','決済会社に 預ける。列を 作らない。下4桁と 期限だけ'],
+ ['カード番号・口座番号','★持たない','決済会社に 預ける。列を 作らない。下4桁と 期限だけ'],
  ['名簿・役職・所属','サーバ（学校）','書き出しは meibo を 持つ人だけ'],
  ['レッスンの 出席','サーバ（学校）','つけられるのは 担当の先生と 事務のみ'],
  ['門下の 書き込み','サーバ（学校）','読めるのは monka_read が ON の間だけ。既定 OFF'],
@@ -3743,9 +3461,9 @@ var SPEC_KEEP=[
  ['役職を 変えた記録','消せない。誰が・いつ・誰を'],
  ['在籍を 変えた記録','消せない。何から 何へ'],
  ['支払い方法・あて先を 変えた記録','消せない'],
- ['書いたもの（記録・ノート）','通信の失敗で 消さない。これが 一番重い決まり'],
+ ['書いたもの（記録・ノート）','通信の失敗で 消さない。★これが 一番重い決まり'],
  ['手に入れたもの（羊の台帳）','1つも 取り上げない。移行は 増える方向にしか 動かさない'],
- ['修正の記録','消せない。日付・原因・直した内容・確かめた方法。直した本人も 消せない']];
+ ['修正の記録','消せない。日付・原因・直した内容・確かめた方法。★直した本人も 消せない']];
 var SPEC_SRV=[
  ['画面で 隠すだけでは 足りない','同じ見張りを サーバにも 置く'],
  ['ご請求　見る(bill) と 払う(bill_pay)','別の権限として サーバでも 分ける'],
@@ -3758,7 +3476,7 @@ var SPEC_SRV=[
 var SPEC_UI=[
  ['押しても 上に 戻らない','描き直す前に 縦横の位置を 覚え、戻す。画面が変わった時だけ 上へ'],
  ['横に広い表','左端に 戻さない。scrollLeft も 覚える'],
- ['フォームの値','状態に 持たせる。描き直しで 消さない（一番やってはいけない事故）'],
+ ['フォームの値','状態に 持たせる。描き直しで 消さない（★一番やってはいけない事故）'],
  ['文字を大きく','rem 基準。px を 直に 書かない。端末の文字サイズにも 従う'],
  ['押せるところ','44px 以上（ふつうの大きさでも）'],
  ['読み込み中','ぐるぐるを 使わない。灰色の形。0.3秒未満なら 何も出さない'],

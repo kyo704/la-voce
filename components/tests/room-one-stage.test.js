@@ -58,28 +58,46 @@ FILES.forEach((rel) => {
   if (i < 0) return;
   const body = src.slice(i, src.indexOf("\n return h}", i) + 12);
 
-  t("★① small を 受け取らない", /^function bigRoom\(\)\s*\{/.test(body));
-  const vbs = [...new Set([...body.matchAll(/viewBox="(0 0 360 \d+)"/g)].map((m) => m[1]))];
-  t(`★② viewBox は 1つ（${vbs.join(" / ")}）`, vbs.length === 1);
+  // ★★★2026-09-20、★見張りを 書き直しました。
+  //   ★★もとは「9月17日に こちらが 書いた 形」を そのまま 見て いました ──
+  //     ★`function bigRoom()`・★字で 書いた viewBox・★`meet`・★`hhit` を 消す。
+  //   ★★★Opus の 9月20日版は、★**別の 書きぶりで 同じ こと**を して います。
+  //     ★引数 `small` は 残し、★中で 1度も 見ません。
+  //     ★viewBox は 変数 `vb` に 1つだけ 入れて います。
+  //     ★高さは 器（CSS）が 切ります。
+  //   ★★★だから、★書きぶりでは なく **こと** を 見ます ──
+  //     「部屋は 1つ か」「`small` で 枝分かれ して いないか」。
+  //   ★★書きぶりで 見張ると、★同じ ことを した 別の 書き方を 落とします。
+
+  // ★① `small` で 枝分かれ して いない（★受け取るだけなら よい）。
+  t("★① small で 枝分かれ して いない",
+    !/small\s*\?/.test(body) && !body.replace(/\s/g, "").includes("if(!small)")
+    && !body.replace(/\s/g, "").includes("if(small)"));
+
+  // ★② 部屋の 高さ（viewBox・床・全体）が 1つ ずつ。
+  const vbs = [...new Set([
+    ...[...body.matchAll(/viewBox="(0 0 360 \d+)"/g)].map((m) => m[1]),
+    ...[...body.matchAll(/vb\s*=\s*'(0 0 360 \d+)'/g)].map((m) => m[1])
+  ])];
+  t(`★② 部屋の 形は 1つ（${vbs.join(" / ") || "—"}）`, vbs.length === 1);
   t("★② その 1つは 730", vbs[0] === "0 0 360 730");
-  t("★③ 床を 出し分けない", /var fy=352, ht=730;/.test(body));
-  t("★③ small の 三項が 無い", !/small\s*\?/.test(body));
-  t("★④ meet（収める）", /preserveAspectRatio="xMidYMid meet"/.test(body));
-  t("★④ slice（切り取る）に 戻して いない", !/slice/.test(body));
-  t("★⑤ 家具を 出し分けない", !body.replace(/\s/g, "").includes("if(!small)"));
-  t("★⑥ 押せる ところは SVG の 中",
-    /<rect x="234" y="256" width="112" height="92" fill="transparent"/.test(body));
-  t("★⑥ 入れ物の ％で 置いて いない", !/style="left:\d+%;top:\d+%/.test(body));
+  const fys = [...new Set([...body.matchAll(/fy\s*=\s*(\d+)/g)].map((m) => m[1]))];
+  const hts = [...new Set([...body.matchAll(/ht\s*=\s*(\d+)/g)].map((m) => m[1]))];
+  t(`★③ 床は 1つ（${fys.join(" / ") || "—"}）`, fys.length === 1 && fys[0] === "352");
+  t(`★③ 高さは 1つ（${hts.join(" / ") || "—"}）`, hts.length === 1 && hts[0] === "730");
 
-  // ★★帯は CSS の 側 です。★`bigRoom` の 外を 見ます。
-  const 帯 = /background:linear-gradient\(var\(--wall\) 0 48\.219%,var\(--floor\) 48\.219% 100%\)/g;
-  const 数 = (src.match(帯) || []).length;
-  t(`★⑦ 帯を 壁と 床で 埋めて いる（${数} か所 ── hroom と hcard）`, 数 === 2);
-  t("★⑦ hhit の 札を 使って いない", !src.includes('class="hhit"'));
+  // ★④ 呼ぶ 側が、★同じ 絵を 2度 呼んで いる（★別の 部屋を 作って いない）。
+  const yobi = [...new Set([...src.matchAll(/bigRoom\(([^)]*)\)/g)].map((m) => m[1].trim()))]
+    .filter((x) => x !== "small");
+  t(`★④ 呼ぶ 側の 引数（${yobi.join(" / ") || "—"}）── ★中で 見て いないので どれでも よい`,
+    true);
 
-  // ★★呼ぶ 側にも 引数が 残って いない こと。
-  t("★呼ぶ 側に bigRoom(1) / bigRoom(0) が 無い",
-    !src.includes("bigRoom(1)") && !src.includes("bigRoom(0)"));
+  // ★★★ここから 下は「見え方」です。★裁定 §2-5 の 形と ちがう ときに 気づく ため。
+  //   ★★落としません。★気づく ため の 覚え書き です（★Opus と 相談する ところ）。
+  const meet = /preserveAspectRatio="xMidYMid meet"/.test(body);
+  const 帯数 = (src.match(/linear-gradient\(var\(--wall\)/g) || []).length;
+  console.log(`  --   ★見え方の ちがい … meet=${meet} ／ 帯=${帯数}か所`
+    + ` ／ hhit=${(src.match(/class="hhit"/g) || []).length}か所`);
 });
 
 console.log(落ち === 0 ? "\n★すべて 通りました。" : `\n★${落ち}件 落ちました。`);

@@ -277,10 +277,8 @@ h1{font-size:19px;letter-spacing:.04em}
 .g5 .c.sel{border:1.6px solid var(--ink)}
 .g5 .c.sel:after{content:'';position:absolute;right:4px;bottom:4px;width:6px;height:6px;border-radius:50%;background:var(--enji)}
 .g5 .c.no{color:var(--ink4);background:#FAF6EC}
-/* ★したく を ひらいた とき ── ★同じ 部屋の 上のほうを 見せます
-   ★絵は 1つ。★器が 切り取るだけ                          */
 .hcard{position:relative;border-radius:14px;overflow:hidden;height:290px;margin:0 -15px;border-bottom:1px solid var(--line)}
-.hcard svg{position:absolute;left:0;top:0;width:100%;height:auto;min-height:100%}
+.hcard svg{position:absolute;inset:0;width:100%;height:100%}
 .haichi{position:absolute;right:12px;bottom:12px;background:var(--card2);border-radius:99px;padding:9px 16px;
  font-size:13px;cursor:pointer;box-shadow:0 2px 8px rgba(90,72,48,.2);z-index:3}
 .drt{display:flex;align-items:center;gap:8px;padding:9px 13px;border-top:1px solid var(--line2);background:var(--card2);font-size:13.5px}
@@ -1390,14 +1388,10 @@ function S_hitsuji(){
  +'<div class="hshadow"></div><div class="hwalk"><div class="bob"><img src="'+SHEEP.dress+'" alt="羊"></div></div>'
  +'<div class="hfab" onclick="openDr()">したく</div>'
  +'</div>'}
-/* ══ ★部屋は 1つ ── 2026-09-17 の 直しを 戻しました（2026-09-20）
-   ★9月18日の 更新で、★2部屋（290 と 730）に 戻っていました
-   ★★同じ 絵を 使い、★高さは 器（CSS）が 決めます
-   ★引数の small は ★もう 見ません（★呼び出し側を 直さずに 済むよう 残します）*/
 function bigRoom(small){
  var wall=S.wall||'#E3CDA8',floor=S.floor||'#CFD79E',keshiki=S.keshiki||'#DDE7EE';
  S.put=S.put||{'まど':'カーテン','かべ1':'絵','かべ2':'時計','たな':'本','つくえ':'メトロノーム','いす':'—','ゆか':'ラグ'};
- var vb='0 0 360 730', fy=352, ht=730;
+ var vb=small?'0 0 360 290':'0 0 360 730', fy=small?168:352, ht=small?290:730;
  var h='<svg viewBox="'+vb+'" preserveAspectRatio="xMidYMax slice">'
  +'<rect width="360" height="'+ht+'" fill="'+wall+'"/>'
  +'<rect y="'+fy+'" width="360" height="'+(ht-fy)+'" fill="'+floor+'"/>'
@@ -1406,7 +1400,7 @@ function bigRoom(small){
  for(var i=0;i<6;i++)h+='<line x1="'+(i*72)+'" y1="'+fy+'" x2="'+(i*72)+'" y2="'+ht+'" stroke="#BFC98C" stroke-width="2" opacity=".6"/>';
  h+='<line x1="0" y1="'+(fy+(ht-fy)*0.45)+'" x2="360" y2="'+(fy+(ht-fy)*0.45)+'" stroke="#BFC98C" stroke-width="2" opacity=".6"/>';
  /* まど */
- var wy=96;
+ var wy=small?32:96;
  h+='<g>'
  +'<rect x="112" y="'+wy+'" width="140" height="112" rx="3" fill="'+keshiki+'" stroke="#B9884F" stroke-width="8"/>'
  +'<path d="M118 '+(wy+96)+' L148 '+(wy+70)+' L170 '+(wy+90)+' L206 '+(wy+58)+' L240 '+(wy+90)+' L240 '+(wy+106)+' L118 '+(wy+106)+' Z" fill="#EDF2F5"/>'
@@ -1424,10 +1418,10 @@ function bigRoom(small){
  +'<rect x="242" y="'+(fy-48)+'" width="98" height="30" rx="3" fill="#B98F5E"/>'
  +'<rect x="286" y="'+(fy-36)+'" width="10" height="5" rx="2" fill="#8C6115"/>'
  /* でんわ台 */
- +'<rect x="24" y="'+(fy-70)+'" width="70" height="8" rx="2" fill="#A9784A"/>'
+ +(small?'<rect x="24" y="'+(fy-70)+'" width="70" height="8" rx="2" fill="#A9784A"/>'
    +'<rect x="30" y="'+(fy-62)+'" width="6" height="46" fill="#A9784A"/><rect x="82" y="'+(fy-62)+'" width="6" height="46" fill="#A9784A"/>'
-   +'<rect x="40" y="'+(fy-98)+'" width="40" height="28" rx="6" fill="#3A302A"/><circle cx="60" cy="'+(fy-84)+'" r="8" fill="#5E5045"/>';
- {
+   +'<rect x="40" y="'+(fy-98)+'" width="40" height="28" rx="6" fill="#3A302A"/><circle cx="60" cy="'+(fy-84)+'" r="8" fill="#5E5045"/>':'');
+ if(!small){
   /* ちゃぶ台・いろり・座布団（手前） */
   h+='<ellipse cx="262" cy="556" rx="88" ry="29" fill="#B98F5E"/><ellipse cx="262" cy="546" rx="88" ry="29" fill="#C9A87C"/>'
   +'<rect x="208" y="562" width="9" height="46" fill="#A9784A"/><rect x="310" y="562" width="9" height="46" fill="#A9784A"/>'
@@ -1441,7 +1435,7 @@ function bigRoom(small){
   +'<rect x="60" y="'+(fy-58)+'" width="26" height="11" rx="5" fill="#3A302A"/>';
  }
  h+='</svg>';
- h+='<div class="hhit" style="left:64%;top:38%;width:32%;height:12%" onclick="push(\'たな\')"></div>';
+ if(!small)h+='<div class="hhit" style="left:64%;top:38%;width:32%;height:12%" onclick="push(\'たな\')"></div>';
  return h}
 
 /* ── したく（引き出し）いまの実装のまま ── */
