@@ -22,6 +22,7 @@ const { readCode, readRaw, loadLib } = require("./_source");
 
 let 数 = 0;
 function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
+async function 見る非同期(名, f) { await f(); 数 += 1; console.log("  ○ " + 名); }
 
 (async () => {
   const m = await loadLib("lib", "opsExport.js");
@@ -161,6 +162,22 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.ok(/ready: true/.test(出), "★まだ の ままです");
     assert.ok(!/needs:/.test(出), "★足りない ものが 残って います");
     assert.ok(/<OpsExport/.test(vt), "★置かれて いません");
+  });
+
+  await 見る非同期("⑨自分の 予定は、★2枚目を 作って いない", async () => {
+    // ★★★`my_periods` ／ `my_timetable` の 画面は もとから あります。
+    //   ★★同じ 決めを 2か所に 置くと、★片方だけ 直る 日が 来ます。
+    assert.ok(/<MyTimetable userId=\{userId\}/.test(vt), "★もとの 1枚を 出して いません");
+    const 蔵 = require("fs").readdirSync(
+      require("path").join(__dirname, "..")).filter((f) => /Timetable/.test(f));
+    assert.deepStrictEqual(蔵, ["MyTimetable.jsx"], "★2枚目が あります: " + 蔵.join(","));
+    // ★★守れない ことを、★守れる ように 書いて いない こと。
+    const tt = await loadLib("lib", "myTimetable.js");
+    assert.ok(tt.MINE_HERE_LINE.includes("まだ 効きません"),
+      "★事務が 組む ときの ことを 書いて いません");
+    const nav = readCode("lib", "opsSettingsNav.js");
+    const 節 = /{ key: "mine"[\s\S]{0,200}?}/.exec(nav)[0];
+    assert.ok(/ready: true/.test(節), "★まだ の ままです");
   });
 
   console.log("\n★" + 数 + "つ 通りました。");

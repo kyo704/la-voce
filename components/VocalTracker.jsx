@@ -269,6 +269,7 @@ import {
 } from "@/lib/recordSheets";
 import LookBackV2 from "@/components/LookBackV2";
 import MyTimetable from "@/components/MyTimetable";
+import { MINE_HERE_LINE } from "@/lib/myTimetable";
 import {
   applyThroatWord, applyDekiWord, applyEdemaWord, sectionIsOpen, SECTION_SHEETS,
   mergeSceneSymptoms
@@ -16767,6 +16768,20 @@ export default function VocalTracker({
                             error={masterError}
                             onAddPlace={(n) => handleAddOrgPlace(opsOrgId, n)}
                             onDeletePlace={(id) => handleDeleteOrgPlace(opsOrgId, id)} />
+                        </div>
+                      ),
+                      /* ★★★自分の 予定（★見本 `stMine`・2026-09-20）。
+                           ★★★新しく 作りません。★もとから ある 1枚を 出します。
+                             ★★`my_periods` ／ `my_timetable` は ご本人 だけ の 表 です。
+                             ★★同じ 決めを 2か所に 置くと、★片方だけ 直る 日が 来ます。
+                           ★★ここに 入れた ところには、★ご自分で 組む ときレッスンが
+                             ★★入りません（★`openSlots` が 見ます）。
+                           ★★★事務が よその 先生の 分を 組む ときは 効きません。
+                             ★★よその 先生の ふさがりを 読む 道が ありません（★台帳 08-28）。 */
+                      mine: (
+                        <div style={{ marginTop: 16 }}>
+                          <Warn>{MINE_HERE_LINE}</Warn>
+                          <MyTimetable userId={userId} />
                         </div>
                       ),
                       /* ★★★書き出す（★見本 `stExport`・2026-09-20）。
