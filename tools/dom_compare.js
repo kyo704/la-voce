@@ -181,6 +181,12 @@ function calibrate() {
     await ap.waitForTimeout(2000);
   }
   await ap.goto(base + "/login", { waitUntil: "domcontentloaded", timeout: 待ち });
+  // ★★★仕掛けが 動く まで 待ちます（★2026-09-20）。
+  //   ★★手元の サーバは、★はじめに 組み立てます。★その 間は `onSubmit` が
+  //     ★★まだ 付いて いません。★押すと 画面が そのまま 送られ、★入れません。
+  //   ★★（★合言葉が 住所に 乗る 道は 塞ぎました。★`method="post"`）
+  await ap.waitForLoadState("networkidle", { timeout: 待ち }).catch(() => {});
+  await ap.waitForTimeout(ローカル ? 4000 : 800);
   await ap.locator('input[type="email"]').first().fill(env.E2E_EMAIL);
   await ap.locator('input[type="password"]').first().fill(env.E2E_PASSWORD);
   await ap.locator('button[type="submit"], button:has-text("ログイン")').first().click();

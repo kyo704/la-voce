@@ -21,7 +21,14 @@
 """
 import json, os, re, subprocess, sys, urllib.request, urllib.error
 
-REF = "xxjtplvpcneksrofkjmf"
+# ★★★台帳は 2つ あります（★2026-09-20 に 分かりました）。
+#   ★本番 …… `xxjtplvpcneksrofkjmf`（★38人の 記録）
+#   ★試し …… `smntpurraumeerselvsc`（`la-voce-test`・★手元の 画面が 見る 先）
+#   ★★★既定は **本番** の まま です。★`--test` を 付けた ときだけ 試しの ほうへ。
+#     ★★取り違えると、★試すつもりで 本番を 触ります。★既定を 変えません。
+REF_HONBAN = "xxjtplvpcneksrofkjmf"
+REF_TAMESHI = "smntpurraumeerselvsc"
+REF = REF_HONBAN
 
 # ★★書く 言葉。★`--write` が 無ければ 弾きます。
 KAKU = re.compile(r"\b(insert|update|delete|drop|alter|truncate|grant|revoke|create|comment\s+on)\b", re.I)
@@ -134,7 +141,14 @@ if __name__ == "__main__":
   write = "--write" in a
   ok = "--ok" in a
   raw = "--raw" in a
-  a = [x for x in a if x not in ("--write", "--ok", "--raw")]
+  # ★★★`--test` …… ★試しの 台帳（`la-voce-test`）へ。★既定は 本番 です。
+  #   ★★どちらへ 送ったかを、★必ず 1行 出します。★取り違えない ため です。
+  if "--test" in a:
+    globals()["REF"] = REF_TAMESHI
+    print("★送り先 …… 試しの 台帳（la-voce-test）")
+  else:
+    print("★送り先 …… 本番の 台帳")
+  a = [x for x in a if x not in ("--write", "--ok", "--raw", "--test")]
   # ★★★知らない 札を、★問いの 字 と して 台帳へ 送って いました
   #   （★2026-09-18・`--sql "…"` と 書いて しまい、★`--sql` を 送って いました）。
   #   ★★台帳は 何も 返さず、★道具は「（0件）」と 出しました。
