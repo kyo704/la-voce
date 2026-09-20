@@ -163,9 +163,15 @@ function calibrate() {
   //   ★★はじめ「きょう」の 画面で 探して いました。★見つかりません でした。
   const 歯車 = ap.locator('button:has-text("⚙")').first();
   if (await 歯車.count()) { await 歯車.click(); await ap.waitForTimeout(1800); }
-  const 運営札 = 'button:has-text("の運営"), button:has-text("の 運営")';
+  // ★★★どの 学校に 入るか（★2026-09-20）。
+  //   ★★★見本は いつも 中身が 入って います。★実機は 空の 節を 出しません。
+  //     ★★中身の 無い 学校で くらべると、★「見本のみ」が 中身の 数 だけ 出ます。
+  //     ★★★それは ちがい では ありません。★記録が 無い だけ です。
+  //   ★★だから、★記録の ある 学校を 名で 選びます。
+  const 学校 = process.env.E2E_ORG || MAP.org || "★実機テスト";
+  const 運営札 = `button:has-text("${学校}")`;
   if (!(await ap.locator(運営札).count())) {
-    console.error("★止まりました ── ★運営の 入口が ありません");
+    console.error(`★止まりました ── ★「${学校}」の 運営の 入口が ありません`);
     await b.close();
     process.exit(1);
   }
@@ -191,10 +197,13 @@ function calibrate() {
   for (const sc of 的) {
     let mihon = null, impl = null, err = "";
     try {
-      await mp.evaluate(([tab, push]) => {
+      // ★★★`push` に 引数の 要る 画面が あります（★れい 役職の 中身）。
+      //   ★★渡さないと、★見本の 側で 落ちます（★2026-09-20 に 落ちました）。
+      await mp.evaluate(([tab, push, arg]) => {
         if (tab) window.go(tab);
-        if (push) window.push(push);
-      }, [sc.tab || null, sc.push || null]);
+        if (push) window.push(push, arg);
+      }, [sc.tab || null, sc.push || null,
+        sc.pushArg === undefined ? null : sc.pushArg]);
       await mp.waitForTimeout(350);
       mihon = await mp.$eval("#bodyEl", HONE_FN).catch(async () =>
         mp.$eval("body", HONE_FN));
