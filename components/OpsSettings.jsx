@@ -206,7 +206,8 @@ export default function OpsSettings({ members, staffLines, postName, perms, bill
       {/* ★★人の 割り（★見本⑤）。★呼ぶ側が 渡します。 */}
       {(staffLines || []).length > 0 ? (
         <div style={card}>
-          <p style={{ ...small, marginBottom: 2 }}>人の 割り</p>
+          {/* ★★題は 見出しの 印で 書きます（★D109・2026-09-20）。★見た目は そのまま。 */}
+          <h3 style={{ ...small, marginBottom: 2, fontWeight: "inherit" }}>人の 割り</h3>
           {staffLines.map((s) => (
             <div key={s.key || s.name} style={row}>
               <span style={{ color: C.ink }}>{s.name}</span>

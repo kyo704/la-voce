@@ -83,12 +83,14 @@ export default function AnnouncementCompose({
       {/* ★★★宛先を 段で 狭めます（★見本 `P_write`・2026-09-19）。
           ★★学部は 選ばせません ── ★学科の 上に つないで あります。
           ★★空＝しぼらない。★どれも 選ばなければ みなさんへ 届きます。
-          ★★★いま 何人に 届くかを、★いつも 出します。★0人なら 出せません。 */}
+          ★★★いま 何人に 届くかを、★いつも 出します。★0人なら 出せません。
+          ★★★節の 題は 見出しの 印（h3）で 書きます（★D109・2026-09-20）。
+            ★★見た目は 変わりません。★読み上げと、★骨組みの くらべ に 効きます。 */}
       <p style={small}>{WRITE_SUB}</p>
 
       {target === null && choosableFor(divisions).length > 0 ? (
         <>
-          <p style={small}>学科・コース ／ 事務の 分野</p>
+          <h3 style={{ ...small, fontWeight: "inherit" }}>学科・コース ／ 事務の 分野</h3>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             {choosableFor(divisions).map((d) => (
               <button key={d.id} type="button"
@@ -110,7 +112,7 @@ export default function AnnouncementCompose({
 
       {target === null && 学年.length > 0 ? (
         <>
-          <p style={small}>学年</p>
+          <h3 style={{ ...small, fontWeight: "inherit" }}>学年</h3>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             {学年.map((g) => (
               <button key={g} type="button" onClick={() => つまむ("gradeYears", g)}
@@ -128,7 +130,7 @@ export default function AnnouncementCompose({
 
       {target === null ? (
         <>
-          <p style={small}>名前で 足す</p>
+          <h3 style={{ ...small, fontWeight: "inherit" }}>名前で 足す</h3>
           <input value={q} onChange={(e) => setQ(e.target.value)}
             placeholder="お名前の 一部を 打つと 候補が 出ます"
             style={{
@@ -178,7 +180,7 @@ export default function AnnouncementCompose({
       ) : null}
 
       {/* ★★★題（★見本 `P_write`）。★無くても かまいません。 */}
-      <p style={small}>{TITLE_LABEL}</p>
+      <h3 style={{ ...small, fontWeight: "inherit" }}>{TITLE_LABEL}</h3>
       <input value={title} onChange={(e) => setTitle(e.target.value)}
         placeholder={TITLE_HINT}
         style={{
@@ -188,7 +190,7 @@ export default function AnnouncementCompose({
         }} />
 
       {/* ★★だれに（★見本②）。★選んでから 書きます。 */}
-      <p style={small}>だれに</p>
+      <h3 style={{ ...small, fontWeight: "inherit" }}>だれに</h3>
       <button type="button" onClick={() => setTarget(null)} className="w-full text-left"
         style={chip(target === null)}>
         {orgName || "学校"}の みなさん　{memberCount != null ? `${memberCount}人` : ""}

@@ -69,11 +69,19 @@ function Stat({ label, value, unit, onGo }) {
   );
 }
 
-/** ★節の 器。★題と 中身。★中身が 無ければ、★呼ぶ 側が 出しません。 */
+/**
+ * ★節の 器。★題と 中身。★中身が 無ければ、★呼ぶ 側が 出しません。
+ *
+ *   ★★★題は `<h3>` に しました（★2026-09-20・坂本さんの お決め D109）。
+ *     ★★きょうまで `<p>` でした。★見た目は 題 ですが、★印が ありません。
+ *     ★★★読み上げの 道具が、★題として 拾えません でした。
+ *     ★★★機械で くらべる ときも、★題に 見えず「見本にだけ ある」に なりました。
+ *   ★★見た目は 変えません ── ★大きさも 太さも `small` の ままです。
+ */
 function Section({ head, children }) {
   return (
     <div style={card}>
-      <p style={{ ...small, marginBottom: 6 }}>{head}</p>
+      <h3 style={{ ...small, marginBottom: 6, fontWeight: "inherit" }}>{head}</h3>
       {children}
     </div>
   );
@@ -194,7 +202,7 @@ export default function OpsHome({
           ★★判じは lib が 持ちます。★ここで もう一度 決めません。 */}
       {(出す("nagare") || attendanceOrphan(perms)) && today.length > 0 ? (
         <div style={card}>
-          <p style={{ ...small, marginBottom: 6 }}>きょうの ながれ</p>
+          <h3 style={{ ...small, marginBottom: 6, fontWeight: "inherit" }}>きょうの ながれ</h3>
           {today.map((l) => {
             const dup = overlaps.some((o) => o.lessons.some((x) => x.id === l.id));
             // ★★★出欠の 入口 ①（★裁定 その79・2026-09-18）。
@@ -331,7 +339,7 @@ export default function OpsHome({
       {/* ★★近い 行事。★無ければ 出しません。★できことが 無ければ 出しません。 */}
       {出す("gyoji") && upcoming.length > 0 ? (
         <div style={card}>
-          <p style={{ ...small, marginBottom: 6 }}>近い 行事</p>
+          <h3 style={{ ...small, marginBottom: 6, fontWeight: "inherit" }}>近い 行事</h3>
           {upcoming.map((x) => (
             <div key={x.ev.id} className="flex items-center justify-between gap-2"
               style={{ padding: "7px 0", borderTop: `1px solid ${C.line}`, fontSize: "0.8125rem" }}>
