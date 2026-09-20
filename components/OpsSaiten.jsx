@@ -2,10 +2,12 @@
 
 import { C } from "@/lib/tokens";
 import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
-import { ScreenHead, H3, Card, Li, Note } from "@/components/UiV2";
+import { useState } from "react";
+import { ScreenHead, H3, Card, Li, Note, Ask } from "@/components/UiV2";
 import {
   LIST_HEAD, LIST_SUB, LIST_NOTES, progressOf, totalWord, defaultOrder,
-  DONE_LABEL, DONE_NOTE
+  DONE_LABEL, DONE_NOTE, mayConfirm, CONFIRM_LABEL, CONFIRM_NOTE,
+  CONFIRM_ASK, CONFIRM_ASK_NOTE, CONFIRMED_WORD, isConfirmed
 } from "@/lib/evaluation";
 
 // ============================================================================
@@ -22,11 +24,13 @@ import {
 const 小 = { ...TYPE.mini, color: C.inkSoft, lineHeight: 1.8 };
 
 export default function OpsSaiten({
-  eventName, eventSub, students = [], items = [], scoresOf,
-  myDone, onOpenOne, onDone, onClose, busy, error = ""
+  eventName, eventSub, students = [], items = [], scoresOf, allScores = [],
+  perms, myDone, onOpenOne, onDone, onConfirm, onClose, busy, error = "", done = ""
 }) {
   const 使う = items.filter((i) => i && i.in_use);
   const 並 = defaultOrder(students);
+  const [確かめ, set確かめ] = useState(false);
+  const 済み = isConfirmed(allScores);
 
   return (
     <div style={{ fontFamily: FONT_STACK }}>
@@ -94,11 +98,35 @@ export default function OpsSaiten({
           <p style={{ ...小, margin: "6px 0 0" }}>{DONE_NOTE}</p>
         </>
       ) : null}
+      {/* ★★★確定（★裁定 その105 §Q2）。★`saiten` を 持つ 方 だけ。
+           ★★押す 前に 一度 お尋ねします ── ★学生に 見える ように なる ため です。 */}
+      {onConfirm && mayConfirm(perms) ? (
+        <>
+          <button type="button" disabled={busy || 済み}
+            onClick={() => set確かめ(true)}
+            style={{
+              width: "100%", minHeight: 52, marginTop: rem(10), borderRadius: 12,
+              border: `1px solid ${済み ? C.line : C.curtain}`,
+              background: 済み ? C.line : C.card,
+              color: 済み ? C.inkSoft : C.ink,
+              fontSize: rem(14.5), fontFamily: FONT_STACK
+            }}>{済み ? CONFIRMED_WORD : CONFIRM_LABEL}</button>
+          <p style={{ ...小, margin: "6px 0 0" }}>{CONFIRM_NOTE}</p>
+        </>
+      ) : null}
       {error ? <p style={{ ...小, margin: "6px 0 0", color: C.ink }}>{error}</p> : null}
+      {done ? <p style={{ ...小, margin: "6px 0 0", color: C.sage }}>{done}</p> : null}
 
       <Note>
         {LIST_NOTES.map((t) => <span key={t} style={{ display: "block" }}>{t}</span>)}
       </Note>
+
+      {確かめ ? (
+        <Ask title={CONFIRM_ASK} note={CONFIRM_ASK_NOTE}
+          okLabel={CONFIRM_LABEL}
+          onOk={() => { if (onConfirm) onConfirm(); set確かめ(false); }}
+          onCancel={() => set確かめ(false)} />
+      ) : null}
     </div>
   );
 }

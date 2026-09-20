@@ -5,7 +5,9 @@ import { C } from "@/lib/tokens";
 import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
 import { ScreenHead, Card, Note } from "@/components/UiV2";
 import {
-  ENTRY_NOTES, ENTRY_LABEL, REVIEW_LABEL, pointOk, whyPointBad, SAVED_LINE
+  ENTRY_NOTES, ENTRY_LABEL, REVIEW_LABEL, pointOk, whyPointBad, SAVED_LINE,
+  EDIT_REASON_LABEL, EDIT_REASON_HINT, EDIT_LABEL, EDIT_NOTE,
+  mayEditConfirmed, EDIT_WHY_EMPTY, CONFIRMED_WORD
 } from "@/lib/evaluation";
 
 // ============================================================================
@@ -23,6 +25,9 @@ const 小 = { ...TYPE.mini, color: C.inkSoft, lineHeight: 1.8 };
 
 export default function OpsTenIreru({
   studentName, eventName, items = [], values = {}, review = "",
+  // ★★★確定済みか（★確定の あとは、わけを 添えて 直します・§Q4）。
+  //   ★★`scoreIdOf(itemId)` …… その 項目の 点の 番号（★直す 道に 要ります）
+  confirmed, scoreIdOf, onEditConfirmed,
   onSave, onClose, busy, error = "", done = ""
 }) {
   const 使う = items.filter((i) => i && i.in_use);
@@ -33,8 +38,11 @@ export default function OpsTenIreru({
   });
   const [講評, set講評] = useState(review || "");
 
+  const [わけ, setわけ] = useState("");
   const わるい = 使う.filter((i) => !pointOk(下書き[i.id], i));
-  const 出せる = !busy && わるい.length === 0;
+  // ★★★確定の あとは、★わけを 書くまで 押せません（★記録の 意味が なくなる ため）。
+  const 出せる = !busy && わるい.length === 0
+    && (!confirmed || mayEditConfirmed(わけ));
 
   return (
     <div style={{ fontFamily: FONT_STACK }}>
@@ -89,9 +97,48 @@ export default function OpsTenIreru({
             fontFamily: FONT_STACK, lineHeight: 1.8
           }} />
 
+        {/* ★★★確定の あと（★§Q4）。★わけの 欄を 出します。 */}
+        {confirmed ? (
+          <>
+            <p style={{ ...小, margin: `${rem(8)} 0 0`, color: C.ink }}>
+              {CONFIRMED_WORD}
+            </p>
+            <label style={{ ...小, display: "block", marginTop: rem(6) }}>
+              {EDIT_REASON_LABEL}
+            </label>
+            <p style={{ ...小, margin: 0 }}>{EDIT_REASON_HINT}</p>
+            <input type="text" value={わけ}
+              onChange={(e) => setわけ(e.target.value.slice(0, 200))}
+              placeholder="れい：見直して、表現を 1点 上げました"
+              style={{
+                width: "100%", minHeight: 48, borderRadius: 10, marginTop: 4,
+                padding: `0 ${rem(10)}`, border: `1px solid ${C.line}`,
+                background: C.paper, color: C.ink, fontSize: rem(16),
+                fontFamily: FONT_STACK
+              }} />
+            {!mayEditConfirmed(わけ) ? (
+              <p style={{ ...小, margin: "2px 0 0" }}>{EDIT_WHY_EMPTY}</p>
+            ) : null}
+          </>
+        ) : null}
+
         <button type="button" disabled={!出せる}
           onClick={() => {
-            if (!出せる || !onSave) return;
+            if (!出せる) return;
+            // ★★★確定の あとは、★1つずつ「わけつき」で 直します。
+            //   ★★まとめて 上書きしません。★どの 点を どう 直したかを 残す ため です。
+            if (confirmed && onEditConfirmed) {
+              使う.forEach((i) => {
+                const 前 = values[i.id] == null ? "" : String(values[i.id]);
+                const 後 = 下書き[i.id] == null ? "" : String(下書き[i.id]);
+                if (前 === 後) return;
+                const id = scoreIdOf ? scoreIdOf(i.id) : null;
+                if (!id) return;
+                onEditConfirmed(id, 後 === "" ? null : Number(後), わけ.trim());
+              });
+              return;
+            }
+            if (!onSave) return;
             const 出 = {};
             使う.forEach((i) => {
               const v = 下書き[i.id];
@@ -105,13 +152,14 @@ export default function OpsTenIreru({
             background: 出せる ? C.curtain : C.line,
             color: 出せる ? C.onCurtain : C.inkSoft,
             fontSize: rem(15.5), fontFamily: FONT_STACK
-          }}>{busy ? "入れて います" : ENTRY_LABEL}</button>
+          }}>{busy ? "入れて います" : (confirmed ? EDIT_LABEL : ENTRY_LABEL)}</button>
         {error ? <p style={{ ...小, margin: "6px 0 0", color: C.ink }}>{error}</p> : null}
         {done ? <p style={{ ...小, margin: "6px 0 0", color: C.sage }}>{done || SAVED_LINE}</p> : null}
       </Card>
 
       <Note>
         {ENTRY_NOTES.map((t) => <span key={t} style={{ display: "block" }}>{t}</span>)}
+        {confirmed ? <span style={{ display: "block" }}>{EDIT_NOTE}</span> : null}
       </Note>
     </div>
   );

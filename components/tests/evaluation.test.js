@@ -168,5 +168,55 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
       "★行事に 札が ありません");
   });
 
+  const 確 = readRaw("supabase", "migration_score_confirm.sql");
+  const 確本 = 確.split("\n").filter((l) => !/^\s*--/.test(l)).join("\n");
+
+  見る("§Q2 ★確定するまで 学生に 見えない", () => {
+    assert.ok(/has_can\(p_org_id, 'saiten'\)/.test(確本), "★押せる 門が ちがいます");
+    assert.ok(/confirmed_at = now\(\)/.test(確本), "★確定して いません");
+    assert.ok(/confirmed_at is null/.test(確本), "★2度 押すと 日づけが 動きます");
+    assert.strictEqual(m.mayConfirm(["saiten"]), true);
+    assert.strictEqual(m.mayConfirm(["meibo"]), false);
+    assert.ok(m.CONFIRM_ASK_NOTE.includes("見えます"), "★何が 変わるかを 書いて いません");
+    assert.ok(/<Ask/.test(一覧), "★押す 前に お尋ねして いません");
+  });
+
+  見る("§Q4 ★確定の あとの 直しは 記録に 残る", () => {
+    // ★★★`lastIndexOf` は 許しの 行に 当たりました（★2026-09-20）。
+    //   ★★紙の 終わりに `grant execute on function … edit_confirmed_score` が あります。
+    //   ★★★中身を 見たい ときは、★`create` の ところから 見ます。
+    const i = 確本.lastIndexOf("create or replace function public.edit_confirmed_score");
+    const j = 確本.indexOf("revoke all on function", i);
+    const なか = 確本.slice(i, j > i ? j : 確本.length);
+    assert.ok(/insert into public\.score_log/.test(なか), "★記録して いません");
+    assert.ok(/before_value/.test(なか) && /after_value/.test(なか),
+      "★前の 値・あとの 値を 残して いません");
+    assert.ok(/confirmed_at is null[\s\S]{0,120}raise exception/.test(なか),
+      "★確定の 前でも 通ります");
+    assert.ok(/insert into public\.org_messages/.test(なか), "★学生に お知らせして いません");
+  });
+
+  見る("★記録の 残らない 直しを 作らない（★引き金）", () => {
+    assert.ok(/create trigger evaluation_scores_guard_trg/.test(確本), "★引き金が ありません");
+    assert.ok(/old\.confirmed_at is not null and new\.points is distinct from old\.points/
+      .test(確本), "★確定後の 点の 直しを 止めて いません");
+    assert.ok(/app\.score_edit/.test(確本), "★読み道からの 直しを 通す 道が ありません");
+  });
+
+  見る("★わけを 書くまで 押せない", () => {
+    assert.strictEqual(m.mayEditConfirmed(""), false);
+    assert.strictEqual(m.mayEditConfirmed("  "), false);
+    assert.strictEqual(m.mayEditConfirmed("見直しました"), true);
+    assert.ok(/mayEditConfirmed\(わけ\)/.test(入れ), "★画面が 判じて いません");
+    assert.ok(/EDIT_WHY_EMPTY/.test(入れ), "★わけを 促して いません");
+  });
+
+  見る("★お知らせに 点の 数を 書かない", () => {
+    const i = 確本.lastIndexOf("org_messages");
+    const なか = 確本.slice(i, i + 400);
+    assert.ok(!/p_points|after_value|v_before/.test(なか), "★点を 書いて います");
+    assert.ok(/直されました/.test(なか), "★何が あったかを 書いて いません");
+  });
+
   console.log("\n★" + 数 + "つ 通りました。");
 })();

@@ -187,7 +187,8 @@ import OpsEvalItems from "@/components/OpsEvalItems";
 import OpsSaiten from "@/components/OpsSaiten";
 import OpsTenIreru from "@/components/OpsTenIreru";
 import {
-  FAILED_LINE as EVAL_FAILED, SAVED_LINE as SAITEN_SAVED
+  FAILED_LINE as EVAL_FAILED, SAVED_LINE as SAITEN_SAVED,
+  EDIT_FAILED as EVAL_EDIT_FAILED, confirmedWord, isConfirmed
 } from "@/lib/evaluation";
 import GuardianAsk from "@/components/GuardianAsk";
 import GuardianWithdraw from "@/components/GuardianWithdraw";
@@ -13423,6 +13424,69 @@ export default function VocalTracker({
     }
   }
 
+  /**
+   * ★確定する（★裁定 その105 §Q2・2026-09-20）。
+   *
+   *   ★★★押すと、★学生 ご本人に「ご自分の 点」と「講評」が 見えます。
+   *   ★★押せるのは `saiten` を 持つ 方 だけ です（★台帳も 同じ 門）。
+   */
+  async function handleConfirmScores(orgId, eventId) {
+    setEvalError("");
+    setSaitenSaved("");
+    setEvalBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.rpc("confirm_event_scores", {
+        p_org_id: orgId, p_event_id: eventId
+      });
+      if (error || !Array.isArray(data) || data.length === 0) {
+        throw error || new Error("0行でした");
+      }
+      setSaitenSaved(confirmedWord({
+        scores: data[0].scores, reviews: data[0].reviews
+      }));
+      await fetchSaiten(orgId, eventId);
+      return true;
+    } catch (e) {
+      console.error("★確定できませんでした:", e);
+      setEvalError(EVAL_FAILED);
+      return false;
+    } finally {
+      setEvalBusy(false);
+    }
+  }
+
+  /**
+   * ★確定の あとに 直す（★裁定 その105 §Q4・2026-09-20）。
+   *
+   *   ★★★読み道 だけ が 直せます。★記録を 残して から 直します。
+   *     ★★画面から 直に 書く 道は、★台帳の 引き金が 止めます。
+   *   ★★学生にも お知らせが いきます（★点の 数は 書きません）。
+   */
+  async function handleEditConfirmedScore(orgId, eventId, scoreId, points, reason) {
+    setEvalError("");
+    setSaitenSaved("");
+    setEvalBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.rpc("edit_confirmed_score", {
+        p_score_id: scoreId, p_points: points, p_reason: reason
+      });
+      if (error || !Array.isArray(data) || data.length === 0 || data[0].ok !== true) {
+        throw error || new Error("0行でした");
+      }
+      setSaitenSaved(SAITEN_SAVED);
+      await fetchSaiten(orgId, eventId);
+      return true;
+    } catch (e) {
+      console.error("★点を 直せませんでした:", e);
+      setEvalError(EVAL_EDIT_FAILED);
+      return false;
+    } finally {
+      setEvalBusy(false);
+    }
+  }
+
   /** ★つけ終わる（★押すと、ほかの 審査員の 点が 見えます）。 */
   async function handleJudgeDone(orgId, eventId) {
     setEvalError("");
@@ -15747,6 +15811,15 @@ export default function VocalTracker({
                   busy={evalBusy}
                   error={evalError}
                   done={saitenSaved}
+                  confirmed={isConfirmed(自分の点)}
+                  scoreIdOf={(itemId) => {
+                    const r = 自分の点.find((s) => s.item_id === itemId);
+                    return r ? r.id : null;
+                  }}
+                  onEditConfirmed={(scoreId, points, reason) => {
+                    void handleEditConfirmedScore(
+                      opsOrgId, saitenEvent, scoreId, points, reason);
+                  }}
                   onSave={(points, review) => {
                     void handleSaveScores(opsOrgId, saitenEvent, saitenOne.id, points, review);
                   }}
@@ -15768,8 +15841,12 @@ export default function VocalTracker({
                   scoresOf={(sid) => saitenScores.filter((s) =>
                     s.student_id === sid && s.judge_id === userId)}
                   myDone={saitenDone}
+                  allScores={saitenScores}
+                  perms={gate}
                   busy={evalBusy}
                   error={evalError}
+                  done={saitenSaved}
+                  onConfirm={() => { void handleConfirmScores(opsOrgId, saitenEvent); }}
                   onOpenOne={(s) => { setSaitenOne(s); setSaitenSaved(""); }}
                   onDone={() => { void handleJudgeDone(opsOrgId, saitenEvent); }}
                   onClose={() => { setSaitenEvent(null); setSaitenOne(null); }} />
