@@ -55,8 +55,14 @@ const allSql = sqlFiles.map((f) => fs.readFileSync(path.join(root, "supabase", f
 //   ★★`postings` は **募集** です。★やりとりでは ありません。
 //     ★★書き込みも、★読んだ 記録も、★参加者も ありません。
 //   ★★★外しただけ では 足りません。★下で 中身を 確かめます。
+// ★★★`application_messages` も 外します（★2026-09-21・裁定 その121 段4）。
+//   ★★これは **さがす（マッチング）** の ことばの 往復 です。
+//   ★★先生どうしの 連絡（★§6-2）では ありません。★別の 機能 です。
+//   ★★守りも 別 です ── ★自由文を 持たない こと が 要 です。
+//     ★★そちらは `matching-messages-gate.test.js` が 見ます。
+//   ★★★ここでも 外しっぱなしに しません。★下で 中身を 確かめます。
 const NOT_THREADS = ["org_posts", "post_change_log", "org_message_drafts",
-  "postings"];
+  "postings", "application_messages"];
 
 function threadTables() {
   const hits = [];
@@ -91,6 +97,27 @@ function threadTables() {
       "★募集に 参加者・既読の 列が ない");
     assertTrue(!/attachment|file_url|image_url|media|file_path/.test(なか),
       "★募集に 添付の 列が ない");
+  }
+}
+
+// ★★★`application_messages` が、★本当に「先生どうしの 連絡」で ない か
+//   （★2026-09-21・裁定 その121 段4）。
+//   ★★こちらは **ことばの 往復** ですが、★中身が ちがいます ──
+//     ★★自由に 書ける 列を 持ちません。★決まった 名（template_key）だけ です。
+//   ★★もし ここに 自由文の 列が 増えたら、★別の ものに なって います。
+{
+  const い = allSql.indexOf("create table if not exists public.application_messages");
+  if (い >= 0) {
+    const なか = allSql.slice(い, allSql.indexOf(");", い));
+    assertTrue(/application_id uuid not null/.test(なか),
+      "★応募に ぶら下がって いる（★学校の 連絡では ない）");
+    assertTrue(/template_key text not null/.test(なか),
+      "★ことばは 決まった 名 だけ");
+    assertTrue(!/^\s*(body|message|text|comment|memo)\s+text/m.test(なか),
+      "★自由に 書ける 列が ない");
+    assertTrue(!/attachment|file_url|image_url|media|file_path/.test(なか),
+      "★添付の 列が ない");
+    assertTrue(!/student_id/.test(なか), "★生徒の 列を 持って いない");
   }
 }
 
