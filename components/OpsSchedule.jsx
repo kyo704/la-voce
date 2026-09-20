@@ -8,7 +8,7 @@ import { TYPE, FONT_STACK } from "@/lib/uiKit";
 import {
   VIEWS, WIDE_AT, layoutOf, hours, hourOf, timeOf, dateOf,
   // ★★コマが 1つも 無い 日の 1行（★2026-09-19・実機の ご報告）。
-  NO_KOMA, NO_KOMA_SUB, isEmptyDay,
+  NO_KOMA, NO_KOMA_SUB, isEmptyDay, READ_FAILED_SUB,
   // ★★誰に どの 姿を 出すか（★裁定 その85 Q1・2026-09-18）。
   scheduleViewFor, MINE_ONLY_HEAD, MINE_ONLY_LINE, overlapChipLabel,
   // ★★字（★裁定 その85 R1〜R4・2026-09-18）。★lib が 持ちます。
@@ -90,6 +90,9 @@ export default function OpsSchedule({
   // ★★★重なりの しるし（★`overlap_notices`・裁定 その108 ③・2026-09-20）。
   //   ★★先生は、★ご自分で 数えられない 重なりを これで 知ります。
   notices = [],
+  // ★★★読めなかった とき の 1行（★2026-09-20）。
+  //   ★★「無い」と「読めなかった」を 分けます。★字は lib が 作ります。
+  readError = "",
   // ★★★日程を 組む へ（★2026-09-19・実機の ご報告）。
   //   ★★学長・事務長に「門下」の 帯は 出ません（★`monka_write` が 要ります）。
   //   ★★★それで 正しい です ── ★ご自分の 門下は ありません。
@@ -245,7 +248,12 @@ export default function OpsSchedule({
                    ★★言葉が 足りません でした。★1行 置きます。
                ★★表は 消しません。★時間の 目もりは 出した ままに します。
                ★★字は lib/opsSchedule.js が 持ちます。★ここでは 決めません。 */}
-          {isEmptyDay(lessons, dateISO) ? (
+          {readError ? (
+            <div style={{ ...card, padding: "12px 14px", borderColor: C.curtain }}>
+              <p style={{ ...TYPE.li, color: C.ink, margin: 0 }}>{readError}</p>
+              <p style={{ ...small, margin: "2px 0 0" }}>{READ_FAILED_SUB}</p>
+            </div>
+          ) : isEmptyDay(lessons, dateISO) ? (
             <div style={{ ...card, padding: "12px 14px" }}>
               <p style={{ ...TYPE.li, color: C.ink, margin: 0 }}>{NO_KOMA}</p>
               <p style={{ ...small, margin: "2px 0 0" }}>{NO_KOMA_SUB}</p>

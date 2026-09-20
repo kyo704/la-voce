@@ -192,7 +192,7 @@ import OpsKasaFix from "@/components/OpsKasaFix";
 import {
   AFTER_TELL, AFTER_CLOSE, AFTER_UNDO, lessonIdsOf as kasaLessonIds, moveTargets
 } from "@/lib/opsKasa";
-import { overlapsOf } from "@/lib/opsSchedule";
+import { overlapsOf, readFailedLine } from "@/lib/opsSchedule";
 import {
   makeCode, SENT_LINE as MONKA_INVITE_SENT,
   FAILED_LINE as MONKA_INVITE_FAILED,
@@ -14475,9 +14475,15 @@ export default function VocalTracker({
     }
   }
 
+  // ★★★読めなかった ことを、★画面に 出します（★2026-09-20）。
+  //   ★★きょうまで、★引けたか どうかを 1度も 見て いません でした。
+  //   ★★台帳が 断っても、★表は「この 日に コマは ありません」と 出て いました。
+  const [opsReadError, setOpsReadError] = useState("");
+
   async function fetchOrgDetail(orgId) {
     const supabase = createClient();
-    const [{ data: members }, { data: enrollments }, { data: assignments }, { data: lessons }] = await Promise.all([
+    const [{ data: members }, { data: enrollments }, { data: assignments },
+      { data: lessons, error: lessonsError }] = await Promise.all([
       supabase.from("memberships").select("*").eq("org_id", orgId),
       supabase.from("enrollments").select("*").eq("org_id", orgId).eq("status", "active"),
       supabase.from("assignments").select("*").eq("org_id", orgId).is("ended_at", null),
@@ -14492,6 +14498,13 @@ export default function VocalTracker({
     void fetchOrgPosts(orgId);
     setOrgEnrollments((prev) => ({ ...prev, [orgId]: enrollments || [] }));
     setOrgAssignments((prev) => ({ ...prev, [orgId]: assignments || [] }));
+    // ★★★引けたか どうかを 見ます。★「無い」と「読めなかった」は 別 です。
+    if (lessonsError) {
+      console.error("★レッスンを 読めませんでした:", lessonsError);
+      setOpsReadError(readFailedLine(lessonsError));
+    } else {
+      setOpsReadError("");
+    }
     setOrgLessons((prev) => ({ ...prev, [orgId]: lessons || [] }));
     // ★★★重なりの しるし（★裁定 その108 ③・2026-09-20）。
     //   ★★コマと 一緒に 読みます。★札の 数に 要ります。
@@ -14539,8 +14552,20 @@ export default function VocalTracker({
       //   ★関数は display_name しか返しません。
       //     vocal_profession は取るのをやめました。
       //     orgProfileNames に入れてはいましたが、★どこからも読んでいません。
-      const { data: names, error: namesError } = await supabase
-        .rpc("get_org_member_names", { p_org_id: orgId });
+      // ★★★2本 尋ねます（★2026-09-20）。
+      //   ★★`get_org_member_names` は `memberships` の 方 だけ です。
+      //     ★★生徒は `enrollments` に 居ます。★1人も 返りません でした。
+      //   ★★★だから 日程の 表に「名前を 読み込めませんでした」が 並びました。
+      //     ★★ご自分と つながって いる 方 だけ が 出て、★あとは 出ません。
+      //   ★★門は「その 方の コマが 見える か」と 同じ です（★台帳の 側）。
+      const [{ data: names, error: namesError },
+        { data: studentNames, error: studentNamesError }] = await Promise.all([
+        supabase.rpc("get_org_member_names", { p_org_id: orgId }),
+        supabase.rpc("get_org_student_names", { p_org_id: orgId })
+      ]);
+      if (studentNamesError) {
+        console.warn("★生徒の お名前を 読めませんでした:", studentNamesError);
+      }
       if (namesError) {
         // ★黙って捨てないこと。移行が未実行なら、ここに来ます。
         console.warn(
@@ -14557,6 +14582,12 @@ export default function VocalTracker({
         const map = {};
         ids.forEach((id) => { map[id] = { displayName: "" }; });
         names.forEach((n) => { map[n.user_id] = { displayName: n.display_name || "" }; });
+        // ★★生徒の ぶんを 重ねます。★空で 上書きしません。
+        (studentNames || []).forEach((n) => {
+          if (n && n.user_id && n.display_name) {
+            map[n.user_id] = { displayName: n.display_name };
+          }
+        });
         setOrgProfileNames((prev) => ({ ...prev, ...map }));
         if (names.length < ids.size) {
           // ★名前が無い人が居るということです。
@@ -16210,6 +16241,7 @@ export default function VocalTracker({
                        ★★きょうまで、★渡して いません でした。
                        ★★★押すと「まだ できません」と 出るだけ でした。 */
                   notices={kasaNotices}
+                  readError={opsReadError}
                   onOpenOverlap={() => { setKasaError(""); setKasaOpen(true); }}
                   onPickDate={(d) => setOpsDate(d)} />
               );

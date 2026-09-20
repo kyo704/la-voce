@@ -206,6 +206,39 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
       .test(渡し), "★渡しを 足して いません");
   });
 
+  見る("⑫生徒の お名前を 読む 道が ある（★門は コマと 同じ）", () => {
+    // ★★★`memberships` の 道 だけ では、★生徒は 1人も 返りません。
+    //   ★★生徒は `enrollments` に 居ます。★2026-09-20 の 実機で 並びました。
+    assert.ok(/rpc\("get_org_student_names"/.test(vt), "★生徒の 道を 通して いません");
+    const 紙 = readRaw("supabase", "migration_org_student_names.sql");
+    assert.ok(/security definer/.test(紙), "★道に なって いません");
+    // ★★門は レッスンと 同じ もの（★2つの 決めを 作らない）。
+    assert.ok(/can_view_ops_perm\(auth\.uid\(\), p_org_id, e\.student_id, 'sched_all'\)/
+      .test(紙), "★門が ちがいます");
+    assert.ok(/e\.status = 'active'/.test(紙), "★やめた 方も 返して います");
+    assert.ok(/revoke all on function public\.get_org_student_names[^\n]*from public, anon/
+      .test(紙), "★先に 取り上げて いません");
+    // ★★返すのは お名前 だけ（★同じ 行に お薬・周期が あります）。
+    const 体 = 紙.slice(紙.indexOf("returns table"), 紙.indexOf("$$", 紙.indexOf("as $$") + 6));
+    ["allergies", "regular_medications", "is_under_18", "cycle", "vocal_profession"]
+      .forEach((列) => assert.ok(!new RegExp(列).test(体), "★よその 列を 返して います: " + 列));
+    // ★★空の お名前で 上書きしない こと。
+    assert.ok(/n\.display_name\) \{[\s\S]{0,120}displayName: n\.display_name/.test(vt),
+      "★空で 塗りつぶして います");
+  });
+
+  見る("⑬読めなかった ことを 画面に 出す", () => {
+    // ★★★きょうまで、★読めなくても「この 日に コマは ありません」でした。
+    //   ★★丸1日、★「置いて いない」のか「読めない」のか 分かりません でした。
+    assert.ok(/error: lessonsError/.test(vt), "★引けたか どうかを 見て いません");
+    assert.ok(/setOpsReadError\(readFailedLine\(lessonsError\)\)/.test(vt),
+      "★わけを 出して いません");
+    const 画面 = readRaw("components", "OpsSchedule.jsx");
+    const i = 画面.indexOf("{readError ? (");
+    const j = 画面.indexOf("isEmptyDay(lessons, dateISO)");
+    assert.ok(i > 0 && j > i, "★読めなかった ときの ほうが 先で ありません");
+  });
+
   見る("⑨しるしを 作らない（★読めない ときに 空を 埋めない）", () => {
     const 中 = vt.slice(vt.indexOf("async function fetchKasaNotices"),
       vt.indexOf("async function handleKasaMark"));
