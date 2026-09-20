@@ -1136,6 +1136,12 @@ function todayISO() {
 // サーバー（UTC基準）とブラウザ（日本時間など）で「今日」の計算結果がずれることがあり、
 // これが React のハイドレーション不一致（サーバーとクライアントの初回描画結果の食い違い）の原因になっていた。
 // 初回描画は必ずUTC基準の値で揃え、マウント後に useEffect で現地時間の正しい「今日」へ補正する。
+// ★★★仮の 目印の 相手（★2026-09-21）。★坂本さんの id 1つ だけ。
+//   ★★★これは 一時の ものです。★原因が 決まったら、★この 行ごと 消します。
+//     ★★消し忘れても、★ほかの 方の 画面には 1文字も 出ません。
+//   ★★どこに 出るか …… ★「きょう」の 画面の、★教室の 殻の ところ。
+const DEBUG_NEAR_EVENTS_USER_ID = "99b695d8-ae90-43a5-9767-a8d073a4003d";
+
 function todayISOUTC() {
   const d = new Date();
   const year = d.getUTCFullYear();
@@ -18368,6 +18374,32 @@ export default function VocalTracker({
                         ★毎週 出て しまいます。★ここは 日づけの 並び です。
                     ★★1件も 無い ときは、★節ごと 出しません。
                       ★★教室に 通って いない 方に、★空の 札を 見せない ため です。 */}
+                {/* ★★★仮の 目印（★2026-09-21・近い行事が 出ない 件の 調べ）。
+                     ★★★これは **一時の もの** です。★原因が 判ったら 消します。
+                       ★★消す 引き金 …… ★この 件の 原因が 決まった とき。
+                     ★★★坂本さんの 1人 だけ に 出します。
+                       ★★ほかの 37人の 画面は 1つも 変わりません。
+                     ★★★`classroom` が null でも 通る ところに 置きます。
+                       ★★上の 2つ（箱・読めません の 1行）は どちらも
+                         ★★`classroom &&` の 先に あります。
+                       ★★`classroom` が null なら、★どちらも 出ません。
+                         ★★いま 起きて いるのが それか どうかを、★ここで 見ます。 */}
+                {userId === DEBUG_NEAR_EVENTS_USER_ID ? (() => {
+                  const 殻 = classroom ? "あり" : "なし";
+                  const 数 = classroom && Array.isArray(classroom.events)
+                    ? classroom.events.length : -1;
+                  const 読 = classroom ? String(classroom.eventsOk) : "-";
+                  const 近 = classroom && Array.isArray(classroom.events)
+                    ? upcomingEvents(classroom.events, realTodayDate, EVENT_SHOW_LIMIT).length : -1;
+                  const 字 = `殻:${殻} 行事:${数} 読めた:${読} 近い:${近} きょう:${realTodayDate} 版:${layoutV2 ? "v2" : "v1"}`;
+                  console.log("★近い行事の目印", 字);
+                  return (
+                    <p className="text-xs" style={{ color: C.curtain, lineHeight: 1.8 }}>
+                      {字}
+                    </p>
+                  );
+                })() : null}
+
                 {layoutV2 && classroom && classroom.eventsOk && (() => {
                   const soon = upcomingEvents(classroom.events, realTodayDate, EVENT_SHOW_LIMIT);
                   if (soon.length === 0) return null;
