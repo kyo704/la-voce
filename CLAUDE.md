@@ -2,6 +2,41 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 変えない原則
+
+★2026-09-20 に Opus から 届いた 33行（`docs/opus/CLAUDE-原則-2026-09-20.md`）。
+★各行に「消したら間違えるか」を問う。裁定の本文はここに書かない。
+★設計の理由は `docs/rulings/` に。道具は `.claude/skills/` に。
+
+### 作らない
+- 点数・順位・平均との差・偏差値・信号色を出さない
+- 催促しない
+- 先生は生徒の健康の記録を見られない。そのための列を持たない
+- 健康と学務は別。層をまたぐ結合をしない
+
+### 取り上げない
+- 取り消されても損害が生じない形にする
+- 消すときは消す。隠して済ませない
+- 記録・ノート・レパートリー・ひつじは、どの操作でも消えない
+
+### 環境
+- **IMPORTANT: 本番にテストデータ・SQLを入れない。test が既定**
+
+### 書き方
+- `select('*')` を書かない。列を名指しする
+- RLS は `USING` と `WITH CHECK` の両方。`USING(true)` を書かない
+- 記録の表（*_log）に update / delete のポリシーを作らない
+- `NOT_YET` には必ず `when`（外す条件）を添える
+
+### 報告
+- `EVIDENCE` / `DIFFS_I_SEE` / `NOT_DONE` の3つで書く
+- 「一致」「完了」「問題なし」と書かない
+- 道具を書いたら、故意に1件該当を作って検出を確かめる
+
+### 進め方
+- 共通の土台は一括。個別の画面は機能を含めて1枚ずつ
+- 1セッション1タスク。同じ点を2回直したら `/clear`
+
 ## Project
 
 La Voce — a health/condition tracking app for voice professionals (classical singers, announcers, voice actors, pop/musical performers). Next.js 14 App Router, plain JavaScript (no TypeScript), Supabase for auth + database, Stripe wired but dormant, a LINE reminder bot, a PWA manifest/service worker, and a Capacitor shell for the iOS build. UI text is Japanese-first and translated into 9 languages.
