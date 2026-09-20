@@ -40,7 +40,10 @@ export default function OpsKumu({
   //   ★`perms` … ★`sched_all` を 持つ 方には、★先に 先生を 選んで いただきます
   //   ★`teachers` … ★受け持ちの ある 先生
   //   ★`teacherId` … ★いま 選んで いる 先生（★null なら まだ）
-  perms, teachers = [], teacherId, onPickTeacher
+  perms, teachers = [], teacherId, onPickTeacher,
+  // ★★★入れられる 枠へ（★見本 `P_okeru`・裁定 その108・2026-09-20）。
+  //   ★★渡されなければ 押しどころに しません。
+  onOpenOkeru
 }) {
   const [week, setWeek] = useState(0);
   const [cell, setCell] = useState(null);
@@ -232,9 +235,15 @@ export default function OpsKumu({
       <Box>
         {students.map((s, i) => (
           <Li key={s} last={i === students.length - 1}
+            /* ★★★押すと、★入れられる 枠の 一覧へ（★見本 `P_okeru`・裁定 その108）。
+                 ★★時間割を 書いて いない 方は 押せません ── ★枠が 出せません。
+                 ★★★押せない 札を 置きません（★§8⑤）。 */
+            onClick={onOpenOkeru && 書いた.includes(s) ? () => onOpenOkeru(s) : undefined}
             right={置いた方.has(s)
               ? <span style={{ color: C.sage }}>置きました</span>
-              : (書いた.includes(s) ? "まだ" : "時間割が ありません")}>
+              : (書いた.includes(s)
+                ? (onOpenOkeru ? "枠を 見る ›" : "まだ")
+                : "時間割が ありません")}>
             {nameOf ? nameOf(s) : ""}
           </Li>
         ))}

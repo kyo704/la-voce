@@ -185,6 +185,9 @@ import OpsMisou from "@/components/OpsMisou";
 import OpsEvalItems from "@/components/OpsEvalItems";
 import OpsMiyasu from "@/components/OpsMiyasu";
 import OpsOrgMaster from "@/components/OpsOrgMaster";
+import OpsOkeru from "@/components/OpsOkeru";
+// ★★入れられる 枠は その場で 数えます（★裁定 その108。★表を 作りません）。
+import { openSlots, weekDates } from "@/lib/opsKumu";
 import { FAILED_LINE as MASTER_FAILED, toMin } from "@/lib/orgMaster";
 // ★★採点の 決めごとは lib が 持ちます（★裁定 その105）。
 import OpsSaiten from "@/components/OpsSaiten";
@@ -12994,6 +12997,10 @@ export default function VocalTracker({
   const [orgPlaces, setOrgPlaces] = useState([]);
   const [masterBusy, setMasterBusy] = useState(false);
   const [masterError, setMasterError] = useState("");
+  // ★★★入れられる 枠（★見本 `P_okeru`・裁定 その108・2026-09-20）。
+  //   ★★表を 作って いません。★開いた ときに 数えます。
+  const [okeruWho, setOkeruWho] = useState(null);
+  const [okeruBusy, setOkeruBusy] = useState([]);
   const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
@@ -13517,6 +13524,27 @@ export default function VocalTracker({
     } finally {
       setEvalBusy(false);
     }
+  }
+
+  /**
+   * ★先生 ご自分の 時間割を 読みます（★裁定 その108・2026-09-20）。
+   *
+   *   ★★★ご自分の 行 だけ です（★決まりが そう して います）。
+   *   ★★「あなたの 予定が 入って いる 枠は 出しません」の もと に なります。
+   */
+  async function fetchMyBusy() {
+    const supabase = createClient();
+    // ★★★表を 直に 引きません（★2026-09-20・見張りが 捕まえました）。
+    //   ★★運営の 画面から `my_timetable` に 触る 形を 作りません。
+    //     ★★いまは ご自分の 行 だけ 読めますが、★1行 足すと 変わります。
+    //   ★★★道が 返すのは 2つ だけ です ── ★曜日と コマ。
+    const { data, error } = await supabase.rpc("get_my_busy_slots");
+    if (error) {
+      console.error("★ご自分の 予定を 読めませんでした:", error);
+      setOkeruBusy([]);
+      return;
+    }
+    setOkeruBusy((data || []).map((r) => ({ ...r, unavailable: true })));
   }
 
   /**
@@ -15779,6 +15807,8 @@ export default function VocalTracker({
                   nameOf={(id) => orgDisplayName(id) || ""}
                   saving={kumuSaving}
                   error={kumuError}
+                  /* ★★★入れられる 枠へ（★見本 `P_okeru`・裁定 その108）。 */
+                  onOpenOkeru={(sid) => { setOkeruWho(sid); void fetchMyBusy(); }}
                   onPlace={(x) => handlePlaceLesson(opsOrgId,
                     { ...x, teacherId: 見る先生 })}
                   onRemove={(l) => handleRemoveLesson(opsOrgId, l)}
@@ -16323,6 +16353,43 @@ export default function VocalTracker({
                  ★★★見えるのは **担当の 生徒だけ** です。
                    ★★台帳も 同じ です（`assignments_select` ── 自分の `teacher_id`）。
                  ★★出席の 数を 出します。★率（％）は 出しません（★裁定 その90）。 */
+            if ((tabKey === "monka" || tabKey === "schedule") && opsKumuOpen && okeruWho) {
+              // ★★★入れられる 枠（★見本 `P_okeru`・裁定 その108・2026-09-20）。
+              //   ★★表を 使いません。★ここで 数えます。
+              //   ★★週も 先生も、★組む 画面と 同じ 出し方 です（★2つ 作りません）。
+              const 見る先生 = canOps(gate, "sched_all") ? opsKumuTeacher : userId;
+              const 日々 = weekDates(opsDate, 0);
+              const 枠 = openSlots({
+                days: 日々,
+                periods: kumuPeriods,
+                studentId: okeruWho,
+                freeSlots: kumuSlots,
+                lessons: (orgLessons[opsOrgId] || [])
+                  .filter((l) => l && l.teacher_id === 見る先生),
+                busy: okeruBusy,
+                timeOfMin: (iso) => {
+                  const d = new Date(iso);
+                  return Number.isNaN(d.getTime()) ? null : d.getHours() * 60 + d.getMinutes();
+                }
+              });
+              const 在 = (orgEnrollments[opsOrgId] || [])
+                .find((x) => x.student_id === okeruWho);
+              return (
+                <OpsOkeru
+                  studentName={orgDisplayName(okeruWho) || ""}
+                  grade={(在 && 在.grade_label) || ""}
+                  slots={枠}
+                  busy={kumuSaving}
+                  error={kumuError}
+                  onPut={(s) => {
+                    void handlePlaceLesson(opsOrgId, {
+                      studentId: okeruWho, dateISO: s.dateISO,
+                      period: s.period, teacherId: 見る先生
+                    }).then((ok) => { if (ok) setOkeruWho(null); });
+                  }}
+                  onClose={() => setOkeruWho(null)} />
+              );
+            }
             if (tabKey === "monka" && madaOpen) {
               // ★★★時間割が まだの方（★見本 `P_mada`・2026-09-19）。
               return (
