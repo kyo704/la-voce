@@ -10,7 +10,7 @@
   00-動く見本-PC・iPad（個人）.html      ★大きい画面での 個人の 姿
 
 ★実行ルート 1本
-  ★★実行ルート統合版_第7版_2026-09-20.md  ★★★これから 読む
+  ★★実行ルート統合版_第6版_2026-09-19.md  ★★★これから 読む
 
 ★設計書 7本
   ruling-81-visual-design.md          ★色・文字・しるし
@@ -18,8 +18,6 @@
   ruling-78-ops-layout.md             ★運営の ナビ・表（出典つき）
   ruling-73-classroom-gating.md       ★教室機能の 出し分け
   ruling-71-sheep-room-coordinates.md ★羊の部屋の 座標
-  ★ruling-110-refund-basis.md         ★返金の 根拠（法務）
-  ★第1段_4つの書類の中身_2026-09-13.md ★営業資料・契約書の 案
   ruling-90-attendance-count.md       ★出席の 回数・授業の 型
   ★★ruling-94-matching-safety.md     ★★さがす の 安全（★調査に 基づく）
   ★★ruling-95-pricing.md             ★★値段と 広がり
@@ -45,7 +43,7 @@
 
 ```
 構文        ★4本とも OK（★vm.Script で 確認）
-画面        ★106 / 106 / 29 / 5
+画面        ★102 / 102 / 29 / 5
 画面の 重複  ★0
 未定義の トークン ★0
 自己参照     ★0
