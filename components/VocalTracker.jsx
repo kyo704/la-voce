@@ -183,6 +183,9 @@ import OpsRetireTeacher from "@/components/OpsRetireTeacher";
 import OpsMada from "@/components/OpsMada";
 import OpsMisou from "@/components/OpsMisou";
 import OpsEvalItems from "@/components/OpsEvalItems";
+import OpsMiyasu from "@/components/OpsMiyasu";
+import OpsOrgMaster from "@/components/OpsOrgMaster";
+import { FAILED_LINE as MASTER_FAILED, toMin } from "@/lib/orgMaster";
 // ★★採点の 決めごとは lib が 持ちます（★裁定 その105）。
 import OpsSaiten from "@/components/OpsSaiten";
 import OpsTenIreru from "@/components/OpsTenIreru";
@@ -10478,6 +10481,8 @@ export default function VocalTracker({
     void fetchRenraku(opsOrgId, null);
     // ★★評価の 型（★裁定 その105・2026-09-20）。★門は 台帳が 見ます。
     void fetchEvalItems(opsOrgId);
+    // ★★学校の 基本（★コマ・場所・2026-09-20）。
+    void fetchOrgMaster(opsOrgId);
     // ★★★ご請求（★2026-09-19）。
     //   ★★きょうまで `fetchOrgDetail` の 中 だけ に ありました。
     //     ★★あれは 直しの 門（`opsFixOn`）の 中でしか 走りません。
@@ -12984,6 +12989,11 @@ export default function VocalTracker({
   const [saitenReviews, setSaitenReviews] = useState([]);
   const [saitenDone, setSaitenDone] = useState(false);
   const [saitenSaved, setSaitenSaved] = useState("");
+  // ★★★学校の 基本（★コマ・場所・2026-09-20）。
+  const [orgPeriods, setOrgPeriods] = useState([]);
+  const [orgPlaces, setOrgPlaces] = useState([]);
+  const [masterBusy, setMasterBusy] = useState(false);
+  const [masterError, setMasterError] = useState("");
   const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
@@ -13506,6 +13516,93 @@ export default function VocalTracker({
       return false;
     } finally {
       setEvalBusy(false);
+    }
+  }
+
+  /**
+   * ★学校の 基本（★コマと 場所・2026-09-20）。
+   *
+   *   ★★学校の 方は 読めます。★直せるのは `koma` を 持つ 方 だけ です。
+   *   ★★読めなければ 空の ままに します。
+   */
+  async function fetchOrgMaster(orgId) {
+    if (!orgId) return;
+    const supabase = createClient();
+    const [k, pl] = await Promise.all([
+      supabase.from("org_periods").select("id, ord, name, start_min, end_min")
+        .eq("org_id", orgId).order("ord", { ascending: true }),
+      supabase.from("org_places").select("id, name, ord")
+        .eq("org_id", orgId).order("ord", { ascending: true })
+    ]);
+    if (k.error) console.error("★学校の コマを 読めませんでした:", k.error);
+    if (pl.error) console.error("★場所を 読めませんでした:", pl.error);
+    setOrgPeriods(k.error ? [] : (k.data || []));
+    setOrgPlaces(pl.error ? [] : (pl.data || []));
+  }
+
+  /** ★学校の コマを 足します（★重なりは 止めません。★印だけ です）。 */
+  async function handleAddOrgPeriod(orgId, form) {
+    setMasterError("");
+    setMasterBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("org_periods").insert({
+        org_id: orgId,
+        ord: (orgPeriods || []).length + 1,
+        name: form.name.trim(),
+        start_min: toMin(form.start),
+        end_min: toMin(form.end)
+      }).select("id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      await fetchOrgMaster(orgId);
+      return true;
+    } catch (e) {
+      console.error("★学校の コマを 足せませんでした:", e);
+      setMasterError(MASTER_FAILED);
+      return false;
+    } finally {
+      setMasterBusy(false);
+    }
+  }
+
+  /** ★場所を 足します。 */
+  async function handleAddOrgPlace(orgId, name) {
+    setMasterError("");
+    setMasterBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("org_places").insert({
+        org_id: orgId, name, ord: (orgPlaces || []).length + 1
+      }).select("id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      await fetchOrgMaster(orgId);
+      return true;
+    } catch (e) {
+      console.error("★場所を 足せませんでした:", e);
+      setMasterError(MASTER_FAILED);
+      return false;
+    } finally {
+      setMasterBusy(false);
+    }
+  }
+
+  /** ★場所を 消します（★これからの ぶん だけ です）。 */
+  async function handleDeleteOrgPlace(orgId, id) {
+    setMasterError("");
+    setMasterBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("org_places")
+        .delete().eq("id", id).select("id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      await fetchOrgMaster(orgId);
+      return true;
+    } catch (e) {
+      console.error("★場所を 消せませんでした:", e);
+      setMasterError(MASTER_FAILED);
+      return false;
+    } finally {
+      setMasterBusy(false);
     }
   }
 
@@ -16148,6 +16245,43 @@ export default function VocalTracker({
                           onAdd={(row) => handleAddDivision(opsOrgId, row)}
                           onRemove={(row) => handleRemoveDivision(opsOrgId, row)} />
                       ) : null,
+                      /* ★★★時間の 割り方（★見本 `stKoma`・2026-09-20）。
+                           ★★学校の 方は 見えます。★直せるのは `koma` だけ です。 */
+                      koma: (
+                        <div style={{ marginTop: 16 }}>
+                          <OpsOrgMaster
+                            kind="koma"
+                            periods={orgPeriods}
+                            perms={gate}
+                            busy={masterBusy}
+                            error={masterError}
+                            onAddPeriod={(f) => handleAddOrgPeriod(opsOrgId, f)} />
+                        </div>
+                      ),
+                      /* ★★★場所（★見本 `stPlace`）。 */
+                      place: (
+                        <div style={{ marginTop: 16 }}>
+                          <OpsOrgMaster
+                            kind="place"
+                            places={orgPlaces}
+                            perms={gate}
+                            busy={masterBusy}
+                            error={masterError}
+                            onAddPlace={(n) => handleAddOrgPlace(opsOrgId, n)}
+                            onDeletePlace={(id) => handleDeleteOrgPlace(opsOrgId, id)} />
+                        </div>
+                      ),
+                      /* ★★★見やすさ（★見本 `stMiyasu`・2026-09-20）。
+                           ★★その 端末 だけ の 設定 です。★台帳には ご本人の 行に 入ります。
+                           ★★書く 道は 個人の 画面と 同じ もの です（★2つ 作りません）。
+                           ★★できことは 要りません ── ★どなたでも 変えられます。 */
+                      miyasu: (
+                        <div style={{ marginTop: 16 }}>
+                          <OpsMiyasu
+                            scale={profile.display_scale}
+                            onPick={(s) => { void handleSaveDisplayPref({ display_scale: s }); }} />
+                        </div>
+                      ),
                       /* ★★★評価の 型（★見本 `stSaiten`・裁定 その105 §Q3）。
                            ★★決めるのは 学校（`master` ／ `saiten`）です。
                            ★★先生は 見るだけ です。 */
