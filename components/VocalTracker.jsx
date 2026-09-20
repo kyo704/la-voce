@@ -401,7 +401,8 @@ import { RETENTION_LINES } from "@/lib/paymentRetention";
 //   ★次の レッスン ／ 近い 行事 ／ 先生からの 連絡。
 //   ★★どれも 読むだけ です。★v1 では 既読も 書きません。
 import {
-  LESSON_COLUMNS, OPS_LESSON_COLUMNS, EVENT_COLUMNS, MESSAGE_COLUMNS,
+  LESSON_COLUMNS, OPS_LESSON_COLUMNS, EVENT_COLUMNS, OPS_EVENT_COLUMNS,
+  EVENT_JOIN_COLUMNS, MESSAGE_COLUMNS,
   LESSON_FETCH_LIMIT, EVENT_SHOW_LIMIT, MESSAGE_SHOW_LIMIT,
   mergeLessons, lessonsInAttendingOrgs, nextLesson, upcomingEvents, recentMessages,
   eventDateLabel, eventMoved,
@@ -13653,8 +13654,8 @@ export default function VocalTracker({
     const today = todayISOUTC();
     const [{ data: evs }, { data: joins }] = await Promise.all([
       // ★RLS が「その組織に居る人だけ」に絞ります。ここで org を指定しません。
-      supabase.from("org_events").select("*").gte("event_date", addDays(today, -1)).order("event_date", { ascending: true }),
-      supabase.from("org_event_participants").select("*").eq("user_id", userId)
+      supabase.from("org_events").select(OPS_EVENT_COLUMNS).gte("event_date", addDays(today, -1)).order("event_date", { ascending: true }),
+      supabase.from("org_event_participants").select(EVENT_JOIN_COLUMNS).eq("user_id", userId)
     ]);
     setMyOrgEvents(evs || []);
     const byId = {};
@@ -13663,7 +13664,7 @@ export default function VocalTracker({
   }
   async function fetchOrgEvents(orgId) {
     const supabase = createClient();
-    const { data } = await supabase.from("org_events").select("*").eq("org_id", orgId)
+    const { data } = await supabase.from("org_events").select(OPS_EVENT_COLUMNS).eq("org_id", orgId)
       .order("event_date", { ascending: true });
     setOrgEvents((prev) => ({ ...prev, [orgId]: data || [] }));
   }
