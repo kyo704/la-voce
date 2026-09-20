@@ -198,7 +198,10 @@ import OpsKasaFix from "@/components/OpsKasaFix";
 import {
   AFTER_TELL, AFTER_CLOSE, AFTER_UNDO, lessonIdsOf as kasaLessonIds, moveTargets
 } from "@/lib/opsKasa";
-import { overlapsOf, readFailedLine } from "@/lib/opsSchedule";
+import { overlapsOf } from "@/lib/opsSchedule";
+// ★★★「読めなかった」の 字は lib/readFail.js が 1つ 持ちます（★2026-09-20）。
+//   ★★検査4 が、★断りを 空の 一覧に 変えて いる ところを 13か所 数えました。
+import { rowsOf, readFailedLine } from "@/lib/readFail";
 import {
   batchOf, mayUndo as mayUndoImport, undoBlockedLine
 } from "@/lib/rosterDrafts";
@@ -11394,8 +11397,12 @@ export default function VocalTracker({
       if (r.error) console.error("★録画を読めませんでした:", r.error);
       setPortfolioOk(!p.error && !e.error && !r.error);
       setPortfolio(p.error ? null : (p.data || null));
-      setPortfolioEntries(e.error ? [] : (e.data || []));
-      setPortfolioRecordings(r.error ? [] : (r.data || []));
+      // ★★`portfolioOk` が「読めた か」を 持って います（★すぐ 上）。
+      //   ★★画面は それを 見て「読めませんでした」と 出します。
+      const 箇 = rowsOf(e, "経歴の 箇条");
+      const 録 = rowsOf(r, "録画");
+      setPortfolioEntries(箇.rows);
+      setPortfolioRecordings(録.rows);
     })();
     return () => { alive = false; };
   }, [layoutV2, userId]);
@@ -11783,8 +11790,12 @@ export default function VocalTracker({
     ]);
     if (s.error) console.error("★空きコマを読めませんでした:", s.error);
     if (p.error) console.error("★自分のコマを読めませんでした:", p.error);
-    setKumuSlots(s.error ? [] : (s.data || []));
-    setKumuPeriods(p.error ? [] : (p.data || []));
+    // ★★★読めなかった ことを、★空の 一覧に 変えません（★検査4・2026-09-20）。
+    const 枠 = rowsOf(s, "空きコマ");
+    const コマ = rowsOf(p, "先生の コマ");
+    setKumuSlots(枠.rows);
+    setKumuPeriods(コマ.rows);
+    setKumuError(枠.failed ? 枠.line : コマ.failed ? コマ.line : "");
   }
 
   /**
@@ -12446,7 +12457,8 @@ export default function VocalTracker({
       //   ★★「型が 無い」のか「読めて いない」のかを 見分けられません。
       //   ★★どちらでも 分母は 出しません。★出さない ほうへ 倒れます。
       if (r.error) console.error("★授業の型を読めませんでした:", r.error);
-      setAttendingPresets(r.error ? [] : (r.data || []));
+      const 型 = rowsOf(r, "授業の 型");
+      setAttendingPresets(型.rows);
     })();
     return () => { alive = false; };
   }, [layoutV2, attendingOrgId]);
@@ -13867,8 +13879,12 @@ export default function VocalTracker({
     ]);
     if (s.error) console.error("★点を 読めませんでした:", s.error);
     if (r.error) console.error("★講評を 読めませんでした:", r.error);
-    setSaitenScores(s.error ? [] : (s.data || []));
-    setSaitenReviews(r.error ? [] : (r.data || []));
+    const 点 = rowsOf(s, "点");
+    const 評 = rowsOf(r, "講評");
+    setSaitenScores(点.rows);
+    setSaitenReviews(評.rows);
+    // ★★採点の 画面は `evalError` を 見て います。★入れ物を 増やしません。
+    setEvalError(点.failed ? 点.line : 評.failed ? 評.line : "");
     setSaitenDone(!d.error && Array.isArray(d.data) && d.data.length > 0);
   }
 
@@ -14117,8 +14133,11 @@ export default function VocalTracker({
     ]);
     if (k.error) console.error("★学校の コマを 読めませんでした:", k.error);
     if (pl.error) console.error("★場所を 読めませんでした:", pl.error);
-    setOrgPeriods(k.error ? [] : (k.data || []));
-    setOrgPlaces(pl.error ? [] : (pl.data || []));
+    const 時 = rowsOf(k, "学校の コマ");
+    const 所 = rowsOf(pl, "場所");
+    setOrgPeriods(時.rows);
+    setOrgPlaces(所.rows);
+    setMasterError(時.failed ? 時.line : 所.failed ? 所.line : "");
   }
 
   /** ★学校の コマを 足します（★重なりは 止めません。★印だけ です）。 */
@@ -14204,9 +14223,11 @@ export default function VocalTracker({
     ]);
     if (i.error) console.error("★評価の型を 読めませんでした:", i.error);
     if (s.error) console.error("★点の数を 読めませんでした:", s.error);
-    setEvalItems(i.error ? [] : (i.data || []));
+    const 型 = rowsOf(i, "評価の 型");
+    setEvalItems(型.rows);
+    if (型.failed) setEvalError(型.line);
     const 表 = {};
-    (s.error ? [] : (s.data || [])).forEach((r) => {
+    rowsOf(s, "点の 数").rows.forEach((r) => {
       表[r.item_id] = (表[r.item_id] || 0) + 1;
     });
     setEvalCounts(表);
@@ -14454,7 +14475,9 @@ export default function VocalTracker({
     if (s.error) console.error("★出したか どうかを 読めませんでした:", s.error);
     if (n.error) console.error("★知らせの 記録を 読めませんでした:", n.error);
     setMadaRows(s.error ? null : (s.data || []));
-    setMadaNudges(n.error ? [] : (n.data || []));
+    const 知 = rowsOf(n, "知らせの 記録");
+    setMadaNudges(知.rows);
+    if (知.failed) setMadaError(知.line);
   }
 
   /**
@@ -14611,7 +14634,8 @@ export default function VocalTracker({
     if (s.error) console.error("★空きコマを読めませんでした:", s.error);
     if (p.error) console.error("★コマの型を読めませんでした:", p.error);
     setMonkaHitoSlots(s.error ? null : (s.data || []));
-    setMonkaHitoPeriods(p.error ? [] : (p.data || []));
+    const 型 = rowsOf(p, "コマの 型");
+    setMonkaHitoPeriods(型.rows);
   }
 
   /**
