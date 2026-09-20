@@ -269,12 +269,13 @@ function calibrate() {
     process.exit(1);
   }
   await ap.locator(運営札).first().click();
-  await ap.waitForTimeout(3000);
+  await ap.waitForTimeout(ローカル ? 8000 : 3000);
 
   /** ★運営の 入口に 戻ります（★1画面ごとに、★まっさらから）。 */
   const もどる = async () => {
     await ap.goto(base + "/dashboard", { waitUntil: "domcontentloaded" });
-    await ap.waitForTimeout(2500);
+    // ★★手元の サーバは 組み立てに 時間が かかります。★長めに 待ちます。
+    await ap.waitForTimeout(ローカル ? 12000 : 2500);
     for (let i = 0; i < 3; i++) {
       if (!(await ap.locator('[role="dialog"]').count())) break;
       await ap.keyboard.press("Escape").catch(() => {});
