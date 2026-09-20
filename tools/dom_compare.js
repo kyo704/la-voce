@@ -108,6 +108,16 @@ function kuraberu(a, b) {
 }
 
 function calibrate() {
+  // ★★★題だけ の くらべも 試します（★2026-09-20）。
+  //   ★★行を 落として、★題の 差 だけ が 残る こと。
+  const 題 = (x) => x.filter((s) => s.startsWith("題｜"));
+  const m1 = ["題｜あ", "文｜作りもの#", "題｜い"];
+  const i1 = ["題｜あ", "文｜本物@", "題｜い"];
+  const t1 = kuraberu(題(m1), 題(i1));
+  if (t1.onlyMihon.length !== 0 || t1.onlyImpl.length !== 0 || t1.same !== 2) return false;
+  const t2 = kuraberu(題(m1), 題(["題｜あ"]));
+  if (t2.onlyMihon.length !== 1) return false;
+
   const a = ["題｜あ", "札｜い", "行｜う"];
   const 同 = kuraberu(a, a.slice());
   const 欠 = kuraberu(a, ["題｜あ", "行｜う"]);
@@ -224,9 +234,24 @@ function calibrate() {
       continue;
     }
     const r = kuraberu(mihon, impl);
-    出.push({ key: sc.key, ...r, n: { mihon: mihon.length, impl: impl.length } });
-    console.log(`  ok  ${sc.key} … 同じ ${r.same} ／ 見本のみ ${r.onlyMihon.length}`
-      + ` ／ 実機のみ ${r.onlyImpl.length} ／ 並び ${r.order.length}`);
+    // ★★★題（見出し）だけ でも くらべます（★2026-09-20・坂本さんの お決め）。
+    //   ★★見本の 中身は 作りもの です。★行を くらべると、★架空の お名前が
+    //     ★★そのまま「見本のみ」に 並びます。★本当の 差が 埋もれます。
+    //   ★★題は 作りもの では ありません。★書いた 字 その もの です。
+    //     ★★だから「節が ある か」「順に 並んで いるか」を、★ここで 見ます。
+    // ★★★画面 じたいの 名（★見本の `h2`）は 落とします。
+    //   ★★実機では、★名は 上の 帯に 出て います（★中身の 外）。
+    //   ★★残すと、★どの 画面でも「見本のみ … 名簿」が 並びます。★差では ありません。
+    const 名たち = [sc.key, sc.tab, sc.push, (sc.impl || {}).tab].filter(Boolean);
+    const 題 = (a) => a
+      .filter((s) => s.startsWith("題｜"))
+      .filter((s) => !名たち.includes(s.replace("題｜", "").trim()));
+    const rt = kuraberu(題(mihon), 題(impl));
+    出.push({ key: sc.key, ...r, title: rt,
+      n: { mihon: mihon.length, impl: impl.length } });
+    console.log(`  ok  ${sc.key} … 題 同じ ${rt.same}／見本のみ ${rt.onlyMihon.length}`
+      + `／実機のみ ${rt.onlyImpl.length}　｜　ぜんぶ 同じ ${r.same}`
+      + `／見本のみ ${r.onlyMihon.length}／実機のみ ${r.onlyImpl.length}`);
   }
   await b.close();
 
@@ -237,7 +262,30 @@ function calibrate() {
   L.push("★道具の 較正 …… ○（★同じ もので 0件、★1つ 抜くと 1件、★並べ替えで 1件）\n");
   L.push(`★くらべた 画面 ${出.filter((x) => !x.err).length} ／ `
     + `★道が 無くて くらべて いない 画面 ${MAP.skip.length}\n`);
-  L.push("\n## ★くらべた ところ\n");
+  L.push("\n## ★一 ★題（見出し）だけ の くらべ ── ★本当の 差\n");
+  L.push("★★見本の 中身は 作りもの です。★行を くらべると、★架空の お名前が"
+    + " そのまま 差に なります。★題は 書いた 字 その もの なので、★ここが 本当の 差 です。\n");
+  L.push("| 画面 | 同じ | ★見本に あって 実機に 無い | ★実機に あって 見本に 無い | 並び |");
+  L.push("|---|---|---|---|---|");
+  出.forEach((x) => {
+    if (x.err) { L.push(`| ${x.key} | — | — | — | ★${x.err} |`); return; }
+    const a = x.title;
+    L.push(`| ${x.key} | ${a.same} | ${a.onlyMihon.length} | ${a.onlyImpl.length} | ${a.order.length} |`);
+  });
+
+  L.push("\n### ★題の 中身（★差の ある 画面 だけ）\n");
+  出.forEach((x) => {
+    if (x.err) return;
+    const a = x.title;
+    if (!a.onlyMihon.length && !a.onlyImpl.length && !a.order.length) return;
+    L.push(`**★${x.key}**\n`);
+    a.onlyMihon.forEach((s) => L.push(`- ★見本のみ … ${s.replace("題｜", "")}`));
+    a.onlyImpl.forEach((s) => L.push(`- ★実機のみ … ${s.replace("題｜", "")}`));
+    a.order.forEach((s) => L.push(`- ★並びちがい … ${s.replace("題｜", "")}`));
+    L.push("");
+  });
+
+  L.push("\n## ★二 ★ぜんぶ（★行も 含む）── ★参考\n");
   L.push("| 画面 | 同じ | 見本のみ | 実機のみ | 並び |");
   L.push("|---|---|---|---|---|");
   出.forEach((x) => {
@@ -247,7 +295,7 @@ function calibrate() {
   出.forEach((x) => {
     if (x.err) return;
     if (!x.onlyMihon.length && !x.onlyImpl.length && !x.order.length) return;
-    L.push(`\n### ★${x.key}\n`);
+    L.push(`\n### ★${x.key}（★行も 含む）\n`);
     if (x.onlyMihon.length) {
       L.push("★見本に あって 実機に 無い");
       x.onlyMihon.slice(0, 25).forEach((s) => L.push(`- ${s}`));
