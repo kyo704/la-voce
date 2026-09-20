@@ -222,8 +222,12 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     const 体 = 紙.slice(紙.indexOf("returns table"), 紙.indexOf("$$", 紙.indexOf("as $$") + 6));
     ["allergies", "regular_medications", "is_under_18", "cycle", "vocal_profession"]
       .forEach((列) => assert.ok(!new RegExp(列).test(体), "★よその 列を 返して います: " + 列));
-    // ★★空の お名前で 上書きしない こと。
-    assert.ok(/n\.display_name\) \{[\s\S]{0,120}displayName: n\.display_name/.test(vt),
+    // ★★★空の お名前で 上書きしない こと。
+    //   ★★書き方で 見張って いました（★2026-09-20 に よみ を 足して 落ちました）。
+    //   ★★見るのは 働き です ── ★前に 在る 字を 残す 形に なって いるか。
+    const j = vt.indexOf("(studentNames || []).forEach");
+    const 中 = vt.slice(j, vt.indexOf("setOrgProfileNames", j));
+    assert.ok(/前\.displayName/.test(中) || /\|\| 前\./.test(中),
       "★空で 塗りつぶして います");
   });
 

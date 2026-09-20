@@ -46,8 +46,15 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
   });
 
   見る("② まだ の 節は、★何が 足りないかを 持つ", () => {
-    const まだ = N.notYetSections(["bill", "meibo", "post", "master", "koma", "sched_mine"]);
-    assert.ok(まだ.length >= 6, "★まだ の 節が 少なすぎます（" + まだ.length + "）");
+    const 門 = ["bill", "meibo", "post", "master", "koma", "sched_mine"];
+    const まだ = N.notYetSections(門);
+    // ★★★数を 覚えません（★2026-09-20 に 落ちました ── ★6つ と 書いて ありました）。
+    //   ★★作れば 減ります。★減った ことを 落ち としません。
+    //   ★★★見るのは「まだ と 中身ありの ほかに、第三の 姿が 無い こと」です。
+    const 全 = N.sectionsFor(門);
+    const 中身あり = N.readySections(門);
+    assert.strictEqual(まだ.length + 中身あり.length, 全.length,
+      "★どちらでも ない 節が あります");
     for (const x of まだ) {
       assert.ok(x.needs && x.needs.length > 4, "★足りない ものが 書かれて いません: " + x.key);
     }

@@ -188,6 +188,10 @@ import OpsOrgMaster from "@/components/OpsOrgMaster";
 import OpsOkeru from "@/components/OpsOkeru";
 import OpsMonkaInvite from "@/components/OpsMonkaInvite";
 import OpsKasa from "@/components/OpsKasa";
+import OpsExport from "@/components/OpsExport";
+import {
+  rowsFor as exportRowsFor, buildCsv, fileNameOf as exportFileName
+} from "@/lib/opsExport";
 import OpsKasaFix from "@/components/OpsKasaFix";
 import {
   AFTER_TELL, AFTER_CLOSE, AFTER_UNDO, lessonIdsOf as kasaLessonIds, moveTargets
@@ -11836,6 +11840,82 @@ export default function VocalTracker({
   }
 
   // ==========================================================================
+  // ★書き出す（★見本 `stExport`・裁定 その97 C群・2026-09-20）
+  //
+  //   ★★★出す たびに 記録を 残します（★誰が・いつ・何を）。
+  //     ★★残せなかった ときは、★**出しません**。★記録の 無い 持ち出しを 作りません。
+  //   ★★組み立ては lib/opsExport.js が します。★ここでは 作りません。
+  // ==========================================================================
+  const [exportBusy, setExportBusy] = useState(false);
+  const [exportError, setExportError] = useState("");
+
+  async function handleExport(orgId, sets, opts) {
+    if (!orgId || !sets || sets.length === 0) return false;
+    setExportError("");
+    setExportBusy(true);
+    try {
+      const supabase = createClient();
+      // ★★★先に 記録します。★残せなければ 出しません。
+      const 中身 = sets.map((s) => ({
+        set: s, rows: exportRowsFor(s.key, exportDataFor(orgId, opts.dateFmt))
+      }));
+      const { data, error } = await supabase.from("export_log")
+        .insert(中身.map((x) => ({
+          org_id: orgId, user_id: userId, what: x.set.label, rows: x.rows.length
+        })))
+        .select("id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+
+      中身.forEach((x) => {
+        const csv = buildCsv({
+          set: x.set, rows: x.rows, preset: opts.preset, newline: opts.newline
+        });
+        // ★★BOM は 文字コードの 決め です。★選ばれた ときだけ 付けます。
+        const 本文 = opts.encoding === "UTF-8（BOMつき）" ? "\uFEFF" + csv : csv;
+        const url = URL.createObjectURL(
+          new Blob([本文], { type: "text/csv;charset=utf-8" }));
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = exportFileName(x.set, todayISO());
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 400);
+      });
+      return true;
+    } catch (err) {
+      console.error("★書き出せませんでした:", err);
+      setExportError("いま 書き出せませんでした。記録が 残せないので、出して いません。");
+      return false;
+    } finally {
+      setExportBusy(false);
+    }
+  }
+
+  /** ★書き出しの 素。★画面では 集めません。 */
+  function exportDataFor(orgId, dateFmt) {
+    return {
+      enrollments: orgEnrollments[orgId] || [],
+      assignments: orgAssignments[orgId] || [],
+      lessons: orgLessons[orgId] || [],
+      events: orgEvents[orgId] || [],
+      members: orgMembers[orgId] || [],
+      divisions: orgDivisions || [],
+      nameOf: (id) => orgDisplayName(id) || "",
+      kanaOf: (id) => {
+        const p = orgProfileNames[id];
+        return (p && p.kana) || "";
+      },
+      placeNameOf: (id) => ((orgPlaces || [])
+        .find((x) => String(x.id) === String(id)) || {}).name || "",
+      postNameOf: (m) => {
+        const 役 = (orgPosts[orgId] || []).find((x) => String(x.id) === String(m && m.post_id));
+        return (役 && 役.name) || "";
+      },
+      dateFmt
+    };
+  }
+
+  // ==========================================================================
   // ★重なり（★見本 `P_kasa` ／ `P_kasaT` ／ `P_kasaFix`・裁定 その108 ③）
   //
   //   ★★★重なり そのものは しまいません。★`lessons` から 数えます。
@@ -14584,9 +14664,13 @@ export default function VocalTracker({
         names.forEach((n) => { map[n.user_id] = { displayName: n.display_name || "" }; });
         // ★★生徒の ぶんを 重ねます。★空で 上書きしません。
         (studentNames || []).forEach((n) => {
-          if (n && n.user_id && n.display_name) {
-            map[n.user_id] = { displayName: n.display_name };
-          }
+          if (!n || !n.user_id) return;
+          // ★★よみ は 書き出しの 列 です（★D94）。★空でも 入れ物は 作ります。
+          const 前 = map[n.user_id] || {};
+          map[n.user_id] = {
+            displayName: n.display_name || 前.displayName || "",
+            kana: n.kana || 前.kana || ""
+          };
         });
         setOrgProfileNames((prev) => ({ ...prev, ...map }));
         if (names.length < ids.size) {
@@ -16684,6 +16768,19 @@ export default function VocalTracker({
                             onAddPlace={(n) => handleAddOrgPlace(opsOrgId, n)}
                             onDeletePlace={(id) => handleDeleteOrgPlace(opsOrgId, id)} />
                         </div>
+                      ),
+                      /* ★★★書き出す（★見本 `stExport`・2026-09-20）。
+                           ★★体・声・ノートは 一覧に ありません（★lib/opsExport.js）。
+                           ★★出す たびに 記録が 残ります。★残せなければ 出しません。 */
+                      export: (
+                        <OpsExport
+                          perms={gate}
+                          todayISO={todayISO()}
+                          rowsOf={(key, o) => exportRowsFor(key,
+                            exportDataFor(opsOrgId, (o && o.dateFmt) || "2026/09/14"))}
+                          busy={exportBusy}
+                          error={exportError}
+                          onExport={(sets, opts) => handleExport(opsOrgId, sets, opts)} />
                       ),
                       /* ★★★見やすさ（★見本 `stMiyasu`・2026-09-20）。
                            ★★その 端末 だけ の 設定 です。★台帳には ご本人の 行に 入ります。
