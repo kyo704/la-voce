@@ -27,11 +27,18 @@ import {
 const 小 = { ...TYPE.mini, color: C.inkSoft, lineHeight: 1.8 };
 
 export default function OpsContractOwner({
+  // ★★★候補は **台帳の 道** から 来ます（★2026-09-20・手元で 見つけました）。
+  //   ★★`memberships` の 決まりは `post` を 持つ 方 にしか 他人を 見せません。
+  //   ★★契約者が `post` を 持たない とき、★候補が 0人に 見えて いました。
+  //   ★★★「居ない」と「読めない」は 別 です。★道を 1本 立てました
+  //     （`get_contract_candidates`）。
+  rows = null,
   members = [], permsOf, meId, nowName, nameOf, busy, error = "", done = "", onTransfer
 }) {
   const [選び, set選び] = useState(null);
   const [確かめ, set確かめ] = useState(null);
-  const 候補 = candidates(members, permsOf, meId);
+  // ★★道から 来た ものが あれば それ。★無ければ 手元の 面々 から 数えます。
+  const 候補 = Array.isArray(rows) ? rows : candidates(members, permsOf, meId);
 
   return (
     <div style={{ fontFamily: FONT_STACK, marginTop: 16 }} data-v2-contract="1">
@@ -58,7 +65,7 @@ export default function OpsContractOwner({
                 right={<span style={小}>
                   {選び && 選び.user_id === mm.user_id ? "● 選んで います" : "選ぶ"}
                 </span>}>
-                {nameOf ? nameOf(mm.user_id) : ""}
+                {mm.display_name || (nameOf ? nameOf(mm.user_id) : "")}
               </Li>
             ))}
           </Card>
@@ -86,7 +93,7 @@ export default function OpsContractOwner({
 
       {確かめ ? (
         <Ask
-          title={`${nameOf ? nameOf(確かめ.user_id) : ""} さんに 引き継ぎます。`}
+          title={`${確かめ.display_name || (nameOf ? nameOf(確かめ.user_id) : "")} さんに 引き継ぎます。`}
           name={nameOf ? nameOf(確かめ.user_id) : ""}
           note={CONTRACT_ASK_NOTE}
           danger

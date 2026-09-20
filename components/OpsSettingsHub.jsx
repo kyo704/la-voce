@@ -99,8 +99,9 @@ export default function OpsSettingsHub({
   const 二面 = isTwoPane(width);
   const [open, setOpen] = useState(() => firstSection(perms));
   const 一覧 = sectionsFor(perms, { isContractOwner });
-  const まだ = notYetSections(perms);
-  const いま = mayOpen(perms, open) ? open : firstSection(perms);
+  const まだ = notYetSections(perms, { isContractOwner });
+  const いま = mayOpen(perms, open, { isContractOwner })
+    ? open : firstSection(perms, { isContractOwner });
 
   const 中身 = (key) => {
     if (key === "miyasu") {
@@ -111,7 +112,7 @@ export default function OpsSettingsHub({
 
   const 一覧の札 = (
     <Box>
-      {readySections(perms).map((x, i, a) => (
+      {readySections(perms, { isContractOwner }).map((x, i, a) => (
         <Li key={x.key} last={i === a.length - 1}
           right={いま === x.key && 二面 ? "" : "›"}
           style={いま === x.key

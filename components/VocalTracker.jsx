@@ -10538,6 +10538,7 @@ export default function VocalTracker({
     void fetchOrgMaster(opsOrgId);
     // ★★契約者（★裁定 その116・2026-09-20）。
     void fetchContractOwner(opsOrgId);
+    void fetchContractCandidates(opsOrgId);
     // ★★名簿の 下書き（★裁定 その109・2026-09-20）。
     //   ★★門は 台帳が 見ます。★`meibo` を 持たない 方には 0行 返ります。
     void fetchDrafts(opsOrgId);
@@ -11930,6 +11931,25 @@ export default function VocalTracker({
   const [contractBusy, setContractBusy] = useState(false);
   const [contractError, setContractError] = useState("");
   const [contractDone, setContractDone] = useState("");
+
+  const [contractRows, setContractRows] = useState(null);
+
+  /** ★引き継げる 方（★道から 引きます・裁定 その116）。 */
+  async function fetchContractCandidates(orgId) {
+    if (!orgId) return;
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .rpc("get_contract_candidates", { p_org_id: orgId });
+      if (error) throw error;
+      setContractRows(data || []);
+    } catch (err) {
+      console.error("★引き継げる 方を 読めませんでした:", err);
+      // ★★★空に しません。★「読めなかった」と「居ない」を 分けます。
+      setContractRows(null);
+      setContractError(readFailedLine("引き継げる 方", err));
+    }
+  }
 
   async function fetchContractOwner(orgId) {
     if (!orgId) return;
@@ -17020,10 +17040,11 @@ export default function VocalTracker({
                     perms={gate}
                     /* ★★★契約者 ご本人か（★裁定 その116・2026-09-20）。
                          ★★できことでは ありません。★台帳の 1列 を 見ます。 */
+                    /* ★★★`myOrgs` の `org` には この 列が ありません（★2026-09-20）。
+                         ★★列を 名ざしで 引いて いる ため です。★在るのに 空 に 見えました。
+                         ★★★引いた ばかりの `opsContractOwner` を 使います。★1つの もと。 */
                     isContractOwner={isContractOwner(
-                      (myOrgs.find((mm) => mm.org_id === opsOrgId) || {}).org
-                        || { contract_owner_user_id: opsContractOwner },
-                      userId)}
+                      { contract_owner_user_id: opsContractOwner }, userId)}
                     postName={myPost ? myPost.name : null}
                     scale={profile.display_scale}
                     scaleBusy={false}
@@ -17155,6 +17176,7 @@ export default function VocalTracker({
                            ★★相手は `master` を 持つ 在籍者 だけ。★その場で 移ります。 */
                       contract: (
                         <OpsContractOwner
+                          rows={contractRows}
                           members={opsMembers}
                           permsOf={(mm) => permsOfMember(mm, opsPostsById)}
                           meId={userId}

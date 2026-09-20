@@ -130,5 +130,22 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.ok(/from\("contract_owner_log"\)/.test(vt), "★記録から 引いて いません");
   });
 
+  見る("★候補は 道から 引く（★「居ない」と「読めない」を 分ける）", () => {
+    // ★★★2026-09-20、★手元で 見つけました ── ★候補が 0人に 見えました。
+    //   ★★`memberships` の 決まりは `post` を 持つ 方 にしか 他人を 見せません。
+    //   ★★契約者が `post` を 持たなければ、★ご自分の 1行 しか 読めません。
+    const 紙 = readRaw("supabase", "migration_contract_candidates.sql");
+    assert.ok(/security definer/.test(紙), "★道に なって いません");
+    assert.ok(/contract_owner_user_id = auth\.uid\(\)/.test(紙), "★門が ちがいます");
+    assert.ok(/has_can_user\(m\.user_id, p_org_id, 'master'\)/.test(紙), "★相手の 条件が ちがいます");
+    const vt = readCode("components", "VocalTracker.jsx");
+    assert.ok(/rpc\("get_contract_candidates"/.test(vt), "★道を 通して いません");
+    // ★★読めなかった ときに 空を 入れない こと。
+    const i = vt.indexOf("async function fetchContractCandidates");
+    const 中 = vt.slice(i, vt.indexOf("async function", i + 20));
+    assert.ok(/setContractRows\(null\)/.test(中), "★空を 入れて います");
+    assert.ok(/readFailedLine/.test(中), "★読めなかった ことを 言って いません");
+  });
+
   console.log("\n★" + 数 + "つ 通りました。");
 })().catch((e) => { console.error("★止まりました ──", e.message); process.exit(1); });
