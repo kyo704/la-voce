@@ -4,6 +4,10 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { purgeAccount, severConnections } from "@/lib/accountDeletion";
 import { classifyOwnedOrgs, departingOwnerNotice, departingPayerNotice } from "@/lib/orgClosure";
+// ★★契約者の 決めは lib/orgContract.js が 1つ 持ちます（★裁定 その116）。
+import {
+  LEAVE_BLOCKED, LEAVE_BLOCKED_HOW, CONTRACT_NONE, CONTRACT_NONE_HOW
+} from "@/lib/orgContract";
 import { OPERATOR_CONTACT_EMAIL } from "@/lib/brand";
 import { getUserWithTimeout } from "@/lib/withTimeout";
 import { reauthStillValid } from "@/lib/reauth";
@@ -200,6 +204,54 @@ export async function POST(request) {
       { status: 500 }
     );
   }
+  // ==========================================================================
+  // ★★★契約者は、★引き継いで からでないと 退会できません（★裁定 その116）。
+  //
+  //   ★★契約者が 居なく なると、★学校を 閉じられなく なります。
+  //     ★★お金の 責めも、★契約を 終える 手も、★契約した ご本人の もの です。
+  //   ★★★役割の 名では 見ません。★`organizations.contract_owner_user_id` です
+  //     （★裁定 その115 Q2 ── ★できことに しない、★役職にも 出さない）。
+  //   ★★自動で 誰かに 移しません。★承諾も 待ちません。★人が 指名します。
+  // ==========================================================================
+  {
+    const { data: 契約, error: 契約err } = await admin
+      .from("organizations")
+      .select("id, name")
+      .eq("contract_owner_user_id", user.id);
+    if (契約err) {
+      console.error("アカウント削除：契約者を確認できませんでした。", 契約err);
+      return NextResponse.json(
+        { error: "教室の状態を確認できませんでした。時間をおいて、もう一度お試しください。" },
+        { status: 500 }
+      );
+    }
+    if ((契約 || []).length > 0) {
+      // ★★引き継げる 方が 居るか も、★一緒に お伝えします。
+      //   ★★居なければ「先に 札を 渡して ください」と 言い方が 変わります。
+      const 出 = [];
+      for (const o of 契約) {
+        const { data: 会員 } = await admin
+          .from("memberships").select("user_id, post_id").eq("org_id", o.id);
+        let 候補 = 0;
+        for (const mm of (会員 || [])) {
+          if (String(mm.user_id) === String(user.id) || !mm.post_id) continue;
+          const { data: 役 } = await admin
+            .from("org_posts").select("perms").eq("id", mm.post_id).maybeSingle();
+          if (役 && 役.perms && 役.perms.master === true) 候補 += 1;
+        }
+        出.push({ orgId: o.id, name: o.name || "教室", candidates: 候補 });
+      }
+      return NextResponse.json({
+        contractOwner: true,
+        orgs: 出,
+        notice: LEAVE_BLOCKED,
+        how: LEAVE_BLOCKED_HOW,
+        noneNotice: CONTRACT_NONE,
+        noneHow: CONTRACT_NONE_HOW
+      }, { status: 409 });
+    }
+  }
+
   if (orgs.blocked.length > 0) {
     return NextResponse.json({
       blocked: true,

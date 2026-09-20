@@ -189,6 +189,11 @@ import OpsOkeru from "@/components/OpsOkeru";
 import OpsMonkaInvite from "@/components/OpsMonkaInvite";
 import OpsKasa from "@/components/OpsKasa";
 import OpsExport from "@/components/OpsExport";
+import OpsContractOwner from "@/components/OpsContractOwner";
+// ★★契約者の 決めは lib/orgContract.js が 1つ 持ちます（★裁定 その116）。
+import {
+  isContractOwner, CONTRACT_FAILED, CONTRACT_FAILED_OTHER, CONTRACT_DONE, noticeLine
+} from "@/lib/orgContract";
 import OpsImport from "@/components/OpsImport";
 import OpsRosterDrafts from "@/components/OpsRosterDrafts";
 import {
@@ -6756,6 +6761,9 @@ export default function VocalTracker({
       }
       setMonkaReadRows((monkaReadRes && monkaReadRes.data) || []);
       if (mounted && !noticeError) setNoticeState(noticeStateFromRows(noticeRows));
+      // ★★引き継ぎの お知らせ（★裁定 その116・2026-09-20）。
+      //   ★★読めなくても、★ほかは 進みます（★この 束の 決め）。
+      if (mounted) void fetchContractNotices();
 
       const cohortRow = extras.rows.cohort;
       // ★★is_internal も、ここで一緒に取ります（2026-09-05 夜）。
@@ -10528,6 +10536,8 @@ export default function VocalTracker({
     void fetchEvalItems(opsOrgId);
     // ★★学校の 基本（★コマ・場所・2026-09-20）。
     void fetchOrgMaster(opsOrgId);
+    // ★★契約者（★裁定 その116・2026-09-20）。
+    void fetchContractOwner(opsOrgId);
     // ★★名簿の 下書き（★裁定 その109・2026-09-20）。
     //   ★★門は 台帳が 見ます。★`meibo` を 持たない 方には 0行 返ります。
     void fetchDrafts(opsOrgId);
@@ -11872,6 +11882,97 @@ export default function VocalTracker({
       return false;
     } finally {
       setKumuSaving(false);
+    }
+  }
+
+  // ==========================================================================
+  // ★契約者（★裁定 その116・2026-09-20）
+  //
+  //   ★★★できことでは ありません。★台帳の 1列 です
+  //     （`organizations.contract_owner_user_id`）。
+  //   ★★移すのは、★いまの 契約者 だけ です。★承諾を 待ちません。
+  //   ★★決めは lib/orgContract.js と 台帳の 道 が 持ちます。
+  // ==========================================================================
+  const [opsContractOwner, setOpsContractOwner] = useState(null);
+  /**
+   * ★引き継いだ お知らせ（★裁定 その116・2026-09-20）。
+   *
+   *   ★★`user_notices` の 鍵は `contract_owner:<学校の 番号>` です。
+   *   ★★まだ 見て いない ものだけ を 出します。★1度だけ です。
+   *   ★★★誰から 引き継いだ かは、★`contract_owner_log` から 引きます。
+   *     ★★お名前を 台帳に 二重に 持ちません。
+   */
+  const [contractNoticeFrom, setContractNoticeFrom] = useState({});
+  const contractNotices = Object.keys(contractNoticeFrom)
+    .filter((k) => shouldShowNotice(noticeState, k));
+  const contractFromOf = (k) => contractNoticeFrom[k] || null;
+
+  async function fetchContractNotices() {
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("contract_owner_log")
+        .select("org_id, from_user_id, to_user_id, changed_at")
+        .eq("to_user_id", userId)
+        .order("changed_at", { ascending: false });
+      if (error) throw error;
+      const 表 = {};
+      (data || []).forEach((r) => {
+        const k = `contract_owner:${r.org_id}`;
+        if (!(k in 表)) 表[k] = r.from_user_id || null;
+      });
+      setContractNoticeFrom(表);
+    } catch (err) {
+      console.error("★引き継ぎの お知らせを 読めませんでした:", err);
+      setContractNoticeFrom({});
+    }
+  }
+
+  const [contractBusy, setContractBusy] = useState(false);
+  const [contractError, setContractError] = useState("");
+  const [contractDone, setContractDone] = useState("");
+
+  async function fetchContractOwner(orgId) {
+    if (!orgId) return;
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("organizations")
+        .select("id, contract_owner_user_id").eq("id", orgId).maybeSingle();
+      if (error) throw error;
+      setOpsContractOwner((data && data.contract_owner_user_id) || null);
+    } catch (err) {
+      console.error("★契約者を 読めませんでした:", err);
+      setOpsContractOwner(null);
+      setContractError(readFailedLine("契約者", err));
+    }
+  }
+
+  /** ★引き継ぎます（★その場で 移ります・裁定 その116）。 */
+  async function handleTransferContract(orgId, toUserId) {
+    if (!orgId || !toUserId) return false;
+    setContractError("");
+    setContractDone("");
+    setContractBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.rpc("transfer_contract_owner", {
+        p_org_id: orgId, p_to_user_id: toUserId
+      });
+      if (error) throw error;
+      const 返 = Array.isArray(data) ? data[0] : data;
+      if (!返 || 返.ok !== true) {
+        // ★★★わけは 台帳が 返します。★画面で 作りません。
+        setContractError(CONTRACT_FAILED[(返 && 返.reason) || ""] || CONTRACT_FAILED_OTHER);
+        return false;
+      }
+      setContractDone(CONTRACT_DONE);
+      await fetchContractOwner(orgId);
+      return true;
+    } catch (err) {
+      console.error("★引き継げませんでした:", err);
+      setContractError(CONTRACT_FAILED_OTHER);
+      return false;
+    } finally {
+      setContractBusy(false);
     }
   }
 
@@ -16917,6 +17018,12 @@ export default function VocalTracker({
                         ★★新しい 門を 作りません。 */}
                   <OpsSettingsHub
                     perms={gate}
+                    /* ★★★契約者 ご本人か（★裁定 その116・2026-09-20）。
+                         ★★できことでは ありません。★台帳の 1列 を 見ます。 */
+                    isContractOwner={isContractOwner(
+                      (myOrgs.find((mm) => mm.org_id === opsOrgId) || {}).org
+                        || { contract_owner_user_id: opsContractOwner },
+                      userId)}
                     postName={myPost ? myPost.name : null}
                     scale={profile.display_scale}
                     scaleBusy={false}
@@ -17042,6 +17149,21 @@ export default function VocalTracker({
                             onAddPlace={(n) => handleAddOrgPlace(opsOrgId, n)}
                             onDeletePlace={(id) => handleDeleteOrgPlace(opsOrgId, id)} />
                         </div>
+                      ),
+                      /* ★★★契約者を 変える（★裁定 その116・2026-09-20）。
+                           ★★出すのは 契約者 ご本人 だけ です（★節の 紙が 見ます）。
+                           ★★相手は `master` を 持つ 在籍者 だけ。★その場で 移ります。 */
+                      contract: (
+                        <OpsContractOwner
+                          members={opsMembers}
+                          permsOf={(mm) => permsOfMember(mm, opsPostsById)}
+                          meId={userId}
+                          nowName={orgDisplayName(opsContractOwner) || ""}
+                          nameOf={(id) => orgDisplayName(id) || ""}
+                          busy={contractBusy}
+                          error={contractError}
+                          done={contractDone}
+                          onTransfer={(mm) => handleTransferContract(opsOrgId, mm.user_id)} />
                       ),
                       /* ★★★読み込む（★見本 `stImport`・裁定 その109・2026-09-20）。
                            ★★まだ 口の 無い 方は 下書きへ。★名簿には 入りません。
@@ -18409,6 +18531,26 @@ export default function VocalTracker({
                       onGoConsent={() => setRenewingConsent(true)}
                       onLater={() => setNoticeHiddenNow(true)} />
                   )}
+                  {/* ★★★契約を 引き継いだ お知らせ（★裁定 その116・2026-09-20）。
+                      ★★★知らないうちに 責めを 負って いる 状態を 作りません。
+                        ★★移された 方に、★1行 出します。★閉じられません。
+                      ★★1度だけ です（★`user_notices` に 学校ごとの 鍵で 残します）。
+                      ★★字は lib/orgContract.js が 持ちます。★ここで 書きません。 */}
+                  {contractNotices.map((k) => (
+                    <div key={k} className="rounded-2xl p-4 border"
+                      style={{ background: C.card, borderColor: C.sage }}>
+                      <p className="text-sm" style={{ color: C.ink, lineHeight: 1.9 }}>
+                        {noticeLine(orgDisplayName(contractFromOf(k)) || "")}
+                      </p>
+                      <button type="button"
+                        onClick={() => { void markNoticeShown(k); }}
+                        className="mt-3 text-sm"
+                        style={{
+                          minHeight: 44, padding: "0 14px", borderRadius: 10,
+                          border: `1px solid ${C.line}`, background: C.paper, color: C.ink
+                        }}>わかりました</button>
+                    </div>
+                  ))}
                   {/* ★★有料化の お知らせ（★30日前・2026-09-09 に つなぎました）。
                       ★★仕掛けは 2026-09-07 に できていましたが、
                         ★★画面に つないでいませんでした。★メールの道だけでした。

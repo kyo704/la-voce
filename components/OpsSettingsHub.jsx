@@ -86,6 +86,10 @@ function Miyasu({ scale, onPick, busy }) {
 
 export default function OpsSettingsHub({
   perms, postName,
+  // ★★★契約者 ご本人か（★裁定 その116・2026-09-20）。
+  //   ★★できことでは ありません。★役職の 一覧にも 出しません。
+  //   ★★だから `perms` とは 別に 受け取ります。
+  isContractOwner = false,
   // ★節の 中身。★上から 渡します（★ここで 組み立てません）。
   panes = {},
   // ★見やすさ（★個人の 画面と 同じ 道 を 渡して いただきます）。
@@ -94,7 +98,7 @@ export default function OpsSettingsHub({
   const width = useWindowWidth();
   const 二面 = isTwoPane(width);
   const [open, setOpen] = useState(() => firstSection(perms));
-  const 一覧 = sectionsFor(perms);
+  const 一覧 = sectionsFor(perms, { isContractOwner });
   const まだ = notYetSections(perms);
   const いま = mayOpen(perms, open) ? open : firstSection(perms);
 

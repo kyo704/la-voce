@@ -74,8 +74,18 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     //     ★★見やすさを 外す 日が 来ても、★白い 紙を 出しません。
     assert.strictEqual(N.firstSection([]), "miyasu", "★見やすさが 誰にでも 出ません");
     assert.strictEqual(N.firstSection(["gyoji"]), "miyasu", "★同上");
-    const 空 = N.SETTING_SECTIONS.filter((x) => x.ready && x.any === null);
+    // ★★★2026-09-20、★契約者の 節が 増えました（★裁定 その116）。
+    //   ★★`any` は 持ちません（★できことでは 出しません）。
+    //   ★★けれど 誰にでも 出る わけでは ありません ── ★契約者 だけ です。
+    //   ★★だから「`any` が 無い」だけ では 数えません。★印も 見ます。
+    const 空 = N.SETTING_SECTIONS.filter(
+      (x) => x.ready && x.any === null && !x.contractOwnerOnly);
     assert.strictEqual(空.length, 1, "★誰にでも 出る 節は 1つ の はず です");
+    // ★★契約者の 節は、★契約者で なければ 出ません。
+    assert.ok(!N.sectionsFor(["master"]).some((x) => x.key === "contract"),
+      "★契約者で なくても 出て います");
+    assert.ok(N.sectionsFor(["master"], { isContractOwner: true })
+      .some((x) => x.key === "contract"), "★契約者に 出て いません");
   });
 
   見る("④ 画面は 判じない", () => {

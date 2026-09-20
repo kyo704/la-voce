@@ -15,7 +15,7 @@
 // ============================================================================
 
 const assert = require("assert");
-const { readRaw, loadLib } = require("./_source");
+const { readRaw, readCode, loadLib } = require("./_source");
 
 let 数 = 0;
 function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
@@ -94,6 +94,40 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.ok(m.WHY_NOT_A_PERM.why.includes("渡せない"), "★わけを 書いて いません");
     const 台帳 = readRaw("docs/ledgers", "08-保留している決め.md");
     assert.ok(/08-30/.test(台帳), "★台帳に 書いて いません");
+  });
+
+  見る("★退会の 道で 止めて いる（★裁定 その116 Q1）", () => {
+    const 道 = readCode("app/api/account/delete", "route.js");
+    assert.ok(/eq\("contract_owner_user_id", user\.id\)/.test(道),
+      "★契約者かを 見て いません");
+    assert.ok(/contractOwner: true/.test(道), "★止めて いません");
+    assert.ok(/status: 409/.test(道), "★通して います");
+    // ★★役割の 名で 見て いない こと。
+    const i = 道.indexOf("contract_owner_user_id");
+    const 中 = 道.slice(Math.max(0, i - 600), i + 900);
+    assert.ok(!/role === "owner"/.test(中), "★役割の 名で 見て います");
+    // ★★引き継げる 方が 居るかも 数えて いる こと。
+    assert.ok(/candidates/.test(中), "★候補を 数えて いません");
+  });
+
+  見る("★契約者の 節は、★契約者 だけ に 出す", () => {
+    const nav = readCode("lib", "opsSettingsNav.js");
+    assert.ok(/contractOwnerOnly: true/.test(nav), "★印が ありません");
+    const ui = readCode("components", "OpsSettingsHub.jsx");
+    assert.ok(/sectionsFor\(perms, \{ isContractOwner \}\)/.test(ui), "★渡して いません");
+    const vt = readCode("components", "VocalTracker.jsx");
+    assert.ok(/<OpsContractOwner/.test(vt), "★画面を 置いて いません");
+    // ★★できことでは 開けない こと。
+    assert.ok(!/any: \["master"\][^\n]*contract/.test(nav), "★できことで 開けて います");
+  });
+
+  見る("★引き継いだ 方に 1行 出す（★裁定 その116 Q4）", () => {
+    const vt = readCode("components", "VocalTracker.jsx");
+    assert.ok(/contractNotices\.map/.test(vt), "★出して いません");
+    assert.ok(/noticeLine\(/.test(vt), "★字を 画面で 作って います");
+    assert.ok(/shouldShowNotice\(noticeState, k\)/.test(vt), "★1度だけ に なって いません");
+    // ★★誰から かは 記録から 引く（★お名前を 二重に 持たない）。
+    assert.ok(/from\("contract_owner_log"\)/.test(vt), "★記録から 引いて いません");
   });
 
   console.log("\n★" + 数 + "つ 通りました。");
