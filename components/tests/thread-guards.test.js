@@ -50,7 +50,13 @@ const allSql = sqlFiles.map((f) => fs.readFileSync(path.join(root, "supabase", f
 //     ★★添付の 列も ありません（★字だけ です）。
 //     ★★★決まりは 1つ（`auth.uid() = author_id`）── ★よその 方には 道が ありません。
 //   ★★★外す ときは、★上の 3つを 確かめて から にして ください。
-const NOT_THREADS = ["org_posts", "post_change_log", "org_message_drafts"];
+// ★★★`postings` を 外します（★2026-09-21・裁定 その122）。
+//   ★★この 検査は 名に `post` を 含む 表を「やりとり」と 見なします。
+//   ★★`postings` は **募集** です。★やりとりでは ありません。
+//     ★★書き込みも、★読んだ 記録も、★参加者も ありません。
+//   ★★★外しただけ では 足りません。★下で 中身を 確かめます。
+const NOT_THREADS = ["org_posts", "post_change_log", "org_message_drafts",
+  "postings"];
 
 function threadTables() {
   const hits = [];
@@ -70,6 +76,22 @@ function threadTables() {
   assertTrue(/author_id uuid not null/.test(なか), "★下書きは ご本人の ものである");
   assertTrue(!/attachment|file_url|image/.test(なか), "★下書きに 添付の 列が ない");
   assertTrue(!/participant|member_ids/.test(なか), "★下書きに 参加者の 列が ない");
+}
+
+// ★★★`postings` が、★本当に「やりとりで ない」か（★2026-09-21・裁定 その122）。
+//   ★★もし ここに 書き込みの 列が 増えたら、★やりとりに なって います。
+//   ★★そのときは 外しっぱなしに せず、★この 検査に 戻します。
+{
+  const い = allSql.indexOf("create table if not exists public.postings");
+  if (い >= 0) {
+    const なか = allSql.slice(い, allSql.indexOf(");", い));
+    assertTrue(!/\bbody\b|\bmessage\b|\breply\b/.test(なか),
+      "★募集に 書き込みの 列が ない（★やりとりでは ない）");
+    assertTrue(!/participant|member_ids|read_at/.test(なか),
+      "★募集に 参加者・既読の 列が ない");
+    assertTrue(!/attachment|file_url|image_url|media|file_path/.test(なか),
+      "★募集に 添付の 列が ない");
+  }
 }
 
 console.log("=== ★スレッドは、まだ作っていない ===");
