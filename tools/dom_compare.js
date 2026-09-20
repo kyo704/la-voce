@@ -187,9 +187,63 @@ function calibrate() {
   //   ★★（★合言葉が 住所に 乗る 道は 塞ぎました。★`method="post"`）
   await ap.waitForLoadState("networkidle", { timeout: 待ち }).catch(() => {});
   await ap.waitForTimeout(ローカル ? 4000 : 800);
-  await ap.locator('input[type="email"]').first().fill(env.E2E_EMAIL);
-  await ap.locator('input[type="password"]').first().fill(env.E2E_PASSWORD);
-  await ap.locator('button[type="submit"], button:has-text("ログイン")').first().click();
+  // ★★★手元の 台帳は 本番と 別 です（★2026-09-20・D115）。
+  //   ★★手元の 口は `.env.e2e` の `E2E_LOCAL_*` に あります。
+  //   ★★道具が 自分で 読みます。★人の 目には 触れません。
+  const 口 = ローカル
+    ? { m: env.E2E_LOCAL_EMAIL, p: env.E2E_LOCAL_PASSWORD }
+    : { m: env.E2E_EMAIL, p: env.E2E_PASSWORD };
+  if (!口.m || !口.p) {
+    console.error("★止まりました ── ★入る 口が ありません"
+      + (ローカル ? "（.env.e2e の E2E_LOCAL_EMAIL / E2E_LOCAL_PASSWORD）" : ""));
+    await b.close();
+    process.exit(1);
+  }
+  if (ローカル) {
+    // ★★★手元では、★画面の 札を 押しません（★2026-09-20）。
+    //   ★★手元の サーバは 組み立てに 時間が かかります。★仕掛けが 付く 前に
+    //     ★★押すと、★そのまま 送られ、★入れません。★何度も そう なりました。
+    //   ★★★台帳に 直に 尋ねて、★しるし（session）を 画面に 置きます。
+    //     ★★合言葉を 画面に 打ちません。★住所にも 残りません。
+    const 台帳 = {};
+    fs.readFileSync(path.join(ROOT, ".env.local"), "utf8").split("\n").forEach((l) => {
+      const m = /^\s*([A-Z0-9_]+)\s*=\s*(.*)$/.exec(l);
+      if (m) 台帳[m[1]] = m[2].trim().replace(/^["']|["']$/g, "");
+    });
+    const しるし = await ap.evaluate(async ([u, k, m, pw]) => {
+      const r = await fetch(u + "/auth/v1/token?grant_type=password", {
+        method: "POST",
+        headers: { apikey: k, "Content-Type": "application/json" },
+        body: JSON.stringify({ email: m, password: pw })
+      });
+      if (!r.ok) return null;
+      return await r.json();
+    }, [台帳.NEXT_PUBLIC_SUPABASE_URL, 台帳.NEXT_PUBLIC_SUPABASE_ANON_KEY, 口.m, 口.p]);
+    if (!しるし) {
+      console.error("★止まりました ── ★手元の 台帳に 入れません");
+      await b.close();
+      process.exit(1);
+    }
+    const ref = String(台帳.NEXT_PUBLIC_SUPABASE_URL).replace(/^https:\/\//, "").split(".")[0];
+    // ★★★しるしは **cookie** に 置きます（★2026-09-20）。
+    //   ★★はじめ localStorage に 置きました。★入れません でした。
+    //   ★★★この 蔵は `@supabase/ssr` です。★門（middleware）は cookie を 見ます。
+    //     ★★画面の 中の 覚え書きでは、★台帳の 側から 見えません。
+    const 生 = "base64-" + Buffer.from(JSON.stringify(しるし), "utf8").toString("base64");
+    const 名 = "sb-" + ref + "-auth-token";
+    // ★★長い ときは 分けて 置きます（★`…​.0` `.1`）。★あちらが つなぎます。
+    const 塊 = [];
+    for (let i = 0; i < 生.length; i += 3180) 塊.push(生.slice(i, i + 3180));
+    const url = new URL(base);
+    await ctx.addCookies(塊.length === 1
+      ? [{ name: 名, value: 生, domain: url.hostname, path: "/" }]
+      : 塊.map((v, i) => ({ name: `${名}.${i}`, value: v, domain: url.hostname, path: "/" })));
+    await ap.goto(base + "/dashboard", { waitUntil: "domcontentloaded", timeout: 待ち });
+  } else {
+    await ap.locator('input[type="email"]').first().fill(口.m);
+    await ap.locator('input[type="password"]').first().fill(口.p);
+    await ap.locator('button[type="submit"], button:has-text("ログイン")').first().click();
+  }
   await ap.waitForURL(/\/dashboard/, { timeout: 待ち });
   await ap.waitForTimeout(3000);
   for (let i = 0; i < 4; i++) {
@@ -206,7 +260,8 @@ function calibrate() {
   //     ★★中身の 無い 学校で くらべると、★「見本のみ」が 中身の 数 だけ 出ます。
   //     ★★★それは ちがい では ありません。★記録が 無い だけ です。
   //   ★★だから、★記録の ある 学校を 名で 選びます。
-  const 学校 = process.env.E2E_ORG || MAP.org || "★実機テスト";
+  const 学校 = process.env.E2E_ORG
+    || (ローカル ? (MAP.localOrg || "★くらべ用") : (MAP.org || "★実機テスト"));
   const 運営札 = `button:has-text("${学校}")`;
   if (!(await ap.locator(運営札).count())) {
     console.error(`★止まりました ── ★「${学校}」の 運営の 入口が ありません`);
