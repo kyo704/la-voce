@@ -241,7 +241,8 @@ export default function AnnouncementCompose({
           fontSize: "0.9375rem"
         }}>{posting ? "出しています" : "出す"}</button>
 
-      <p style={small}>
+      {/* ★★注記の 印（★段3a 段階2・2026-09-20）。★見た目は 変わりません。 */}
+      <p className="note" style={small}>
         {WRITE_NOTES.map((t) => (<span key={t}>{t}<br /></span>))}
         {NO_ATTACH_LINE}<br />
         {HIDE_LINE}<br />

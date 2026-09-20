@@ -67,11 +67,23 @@ const HONE = `(root) => {
         || /\\bh3\\b|\\bsh3\\b|\\bfl\\b/.test(cls)) kind = "題";
     else if (tag === "button" || tag === "th" || tag === "li"
              || /\\bbtn\\b|\\bpill\\b|\\bli\\b/.test(cls)) kind = "文";
+    if (kind === "注") {
+      // ★★★注記は **文**に 割ってから くらべます（★2026-09-20・坂本さんの お決め）。
+      //   ★★見本は 1つの かたまりに 何行も 入れて います。
+      //   ★★実機は 行ごとに 分けて 出して います。
+      //   ★★★かたまり どうしを くらべると、★同じ 約束でも 別物に なります。
+      //     ★★初回、★一致が **0件** でした。★それは 差では なく 割り方 でした。
+      //   ★★短すぎる かけらは 落とします（★「です。」などが 並ばない ように）。
+      const 全 = 字(el, 4000);
+      全.split("。").map((s) => 素(s.trim()))
+        .filter((s) => s.length >= 6)
+        .forEach((s) => out.push("注｜" + s + "。"));
+      return;
+    }
     if (kind) {
-      // ★★注記は 長い です。★40字で 切ると、★どれも 同じに 見えます。
-      const t = 素(kind === "注" ? 字(el, 160) : 字(el));
+      const t = 素(字(el));
       if (t) out.push(kind + "｜" + t);
-      if (kind === "文" || kind === "注") return;
+      if (kind === "文") return;
     }
     for (const c of el.children) 見る(c);
   };

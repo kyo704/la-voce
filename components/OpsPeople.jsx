@@ -339,7 +339,7 @@ export default function OpsPeople({
                   ★★あります ── ★同じ 考えを、★役職には まだ 入れて いません）
                 ★★【後まわし・引き金は この 注】── ★記録の 表を 作る 日に、
                   ★★この 1行を 足して ください。 */}
-          <p style={{ ...small, margin: "8px 2px 0" }}>
+          <p className="note" style={{ ...small, margin: "8px 2px 0" }}>
             {PEOPLE_NOTE.map((line) => (<span key={line}>{line}<br /></span>))}
           </p>
 

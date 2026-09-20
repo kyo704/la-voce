@@ -21686,7 +21686,7 @@ export default function VocalTracker({
                           ★★実機で 測って 分かりました。★字を 読んだ だけ では
                             ★分かりません でした。 */}
                     {homeState === DRESS ? (
-                      <p style={{
+                      <p className="note" style={{
                         ...TYPE.mini, color: C.inkSoft, lineHeight: 1.8,
                         margin: "8px 2px 0", textAlign: "center"
                       }}>
@@ -28245,7 +28245,7 @@ export default function VocalTracker({
                             ★知らせる 義務は、★門の 内外で 変わりません。 */}
                     <p className="text-xs font-medium mt-2.5 mb-1" style={{ color: C.inkSoft }}>形</p>
                     {EXPORT_FORMAT_NOTE.map((line, i) => (
-                      <p key={i} className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.8 }}>{line}</p>
+                      <p key={i} className="text-xs note" style={{ color: C.inkSoft, lineHeight: 1.8 }}>{line}</p>
                     ))}
 
                     {/* ★★入れるもの（★裁定 ㋑・2026-09-15）。
@@ -28297,7 +28297,7 @@ export default function VocalTracker({
                           ★見出しに 入って いない ことを 毎回 数えます。 */}
                     <div className="rounded-xl p-2.5 mt-3" style={{ background: C.paper }}>
                       {EXPORT_HEADING_NOTE.map((line, i) => (
-                        <p key={i} className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.8 }}>{line}</p>
+                        <p key={i} className="text-xs note" style={{ color: C.inkSoft, lineHeight: 1.8 }}>{line}</p>
                       ))}
                     </div>
 
@@ -28409,7 +28409,7 @@ export default function VocalTracker({
                         ★読んだ 方が 探して、★見つかりません。
                       ★★スイッチが 入った 日に、★lib の SETTINGS_NOTE へ 足します。 */}
                 {layoutV2 ? (
-                  <p className="text-xs" style={{ display: inMore("設定"), color: C.inkSoft,
+                  <p className="text-xs note" style={{ display: inMore("設定"), color: C.inkSoft,
                     lineHeight: 1.9, margin: "2px 2px 10px" }}>
                     {SETTINGS_NOTE.map((line, i) => (
                       <span key={i}>{i > 0 ? <br /> : null}{line}</span>

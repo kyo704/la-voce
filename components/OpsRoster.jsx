@@ -837,7 +837,7 @@ export default function OpsRoster({
             {INVITE_NOTES.map((line) => {
               const b = INVITE_NOTES_BOLD.find((x) => line.includes(x));
               return (
-                <p key={line} style={{ ...small, margin: 0 }}>
+                <p key={line} className="note" style={{ ...small, margin: 0 }}>
                   {b ? (
                     <>
                       {line.slice(0, line.indexOf(b))}

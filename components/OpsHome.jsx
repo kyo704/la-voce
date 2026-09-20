@@ -360,8 +360,11 @@ export default function OpsHome({
             ★★画面の 字に なって いません でした。
           ★★★見て いる 方に 伝わらない 約束は、★約束では ありません。 */}
       <div>
+        {/* ★★★注記に `note` の 印を 付けます（★段3a 段階2・2026-09-20）。
+             ★★注記は 約束 その もの です。★機械でも 拾える ように します。
+             ★★見た目は 変わりません（★この 名に 形は 付けて いません）。 */}
         {HOME_NOTES.map((t) => (
-          <p key={t} style={{ ...small, margin: 0 }}>{t}</p>
+          <p key={t} className="note" style={{ ...small, margin: 0 }}>{t}</p>
         ))}
       </div>
     </div>

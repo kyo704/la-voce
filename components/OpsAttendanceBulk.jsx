@@ -194,7 +194,8 @@ export default function OpsAttendanceBulk({
       )}
 
       <div style={{ marginTop: rem(10) }}>
-        {NOTES.map((t) => (<p key={t} style={{ ...小, margin: 0 }}>{t}</p>))}
+        {/* ★★注記の 印（★段3a 段階2・2026-09-20）。★見た目は 変わりません。 */}
+        {NOTES.map((t) => (<p key={t} className="note" style={{ ...小, margin: 0 }}>{t}</p>))}
       </div>
     </div>
   );

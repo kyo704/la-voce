@@ -405,8 +405,9 @@ export default function OpsEvents({
           </div>
 
           <div style={{ marginTop: 10 }}>
+            {/* ★★注記の 印（★段3a 段階2・2026-09-20）。★見た目は 変わりません。 */}
             {FORM_NOTES.map((t) => (
-              <p key={t} style={{ ...small, margin: 0 }}>{t}</p>
+              <p key={t} className="note" style={{ ...small, margin: 0 }}>{t}</p>
             ))}
             {NOT_YET.map((x) => (
               <p key={x.key} style={{ ...small, margin: 0, color: C.inkSoft }}>

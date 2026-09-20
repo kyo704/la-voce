@@ -378,8 +378,9 @@ export default function Renraku({
     </div>
   ) : null;
 
+  // ★★注記の 印（★段3a 段階2・2026-09-20）。★見た目は 変わりません。
   const 読んだ断り = (
-    <p style={{ ...small, marginTop: 10 }}>{NO_READ_TRACKING_LINE}</p>
+    <p className="note" style={{ ...small, marginTop: 10 }}>{NO_READ_TRACKING_LINE}</p>
   );
 
   // ★★★開いて いる お知らせの 本文（★右の 面・2026-09-19）。
