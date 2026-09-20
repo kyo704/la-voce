@@ -184,7 +184,11 @@ import OpsMada from "@/components/OpsMada";
 import OpsMisou from "@/components/OpsMisou";
 import OpsEvalItems from "@/components/OpsEvalItems";
 // ★★採点の 決めごとは lib が 持ちます（★裁定 その105）。
-import { FAILED_LINE as EVAL_FAILED } from "@/lib/evaluation";
+import OpsSaiten from "@/components/OpsSaiten";
+import OpsTenIreru from "@/components/OpsTenIreru";
+import {
+  FAILED_LINE as EVAL_FAILED, SAVED_LINE as SAITEN_SAVED
+} from "@/lib/evaluation";
 import GuardianAsk from "@/components/GuardianAsk";
 import GuardianWithdraw from "@/components/GuardianWithdraw";
 // ★★保護者の 同意の 字は lib が 持ちます（★裁定 その107）。
@@ -12970,6 +12974,15 @@ export default function VocalTracker({
   const [evalCounts, setEvalCounts] = useState({});
   const [evalBusy, setEvalBusy] = useState(false);
   const [evalError, setEvalError] = useState("");
+  // ★★★採点（★見本 `P_saiten` ／ `P_tenIreru`・2026-09-20）。
+  //   ★★`saitenEvent` …… どの 行事を 採点して いるか（★null なら 出しません）
+  //   ★★`saitenOne` …… どなたの 点を 入れて いるか
+  const [saitenEvent, setSaitenEvent] = useState(null);
+  const [saitenOne, setSaitenOne] = useState(null);
+  const [saitenScores, setSaitenScores] = useState([]);
+  const [saitenReviews, setSaitenReviews] = useState([]);
+  const [saitenDone, setSaitenDone] = useState(false);
+  const [saitenSaved, setSaitenSaved] = useState("");
   const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
@@ -13336,6 +13349,100 @@ export default function VocalTracker({
     const 表 = {};
     (data || []).forEach((r) => { 表[r.student_id] = r.free_count; });
     setMonkaFree(表);
+  }
+
+  /**
+   * ★その 行事の 点を 読みます（★裁定 その105・2026-09-20）。
+   *
+   *   ★★★見える 範囲は 台帳が 決めます。★ここでは 絞りません。
+   *     ★★`saiten` を 持たない 審査員には、★ご自分の 点 だけ 返ります。
+   *     ★★ほかの 審査員の 点は、★つけ終わった あと に 増えます。
+   */
+  async function fetchSaiten(orgId, eventId) {
+    if (!orgId || !eventId) return;
+    const supabase = createClient();
+    const [s, r, d] = await Promise.all([
+      supabase.from("evaluation_scores")
+        .select("id, student_id, item_id, judge_id, points, confirmed_at")
+        .eq("org_id", orgId).eq("event_id", eventId),
+      supabase.from("evaluation_reviews")
+        .select("id, student_id, judge_id, body, confirmed_at")
+        .eq("org_id", orgId).eq("event_id", eventId),
+      supabase.from("evaluation_judge_done")
+        .select("judge_id").eq("event_id", eventId).eq("judge_id", userId)
+    ]);
+    if (s.error) console.error("★点を 読めませんでした:", s.error);
+    if (r.error) console.error("★講評を 読めませんでした:", r.error);
+    setSaitenScores(s.error ? [] : (s.data || []));
+    setSaitenReviews(r.error ? [] : (r.data || []));
+    setSaitenDone(!d.error && Array.isArray(d.data) && d.data.length > 0);
+  }
+
+  /**
+   * ★点を 入れます（★ご自分の ぶん だけ）。
+   *
+   *   ★★★上書きに します（★同じ 項目に 2つ 作りません）。
+   *     ★★台帳に 一意の 束ね（`event_id, student_id, item_id, judge_id`）が あります。
+   *   ★★空の 欄は `null` で 入れます。★行は 残します
+   *     （★「まだ」と「0点」を 分ける ため です）。
+   */
+  async function handleSaveScores(orgId, eventId, studentId, points, review) {
+    setEvalError("");
+    setSaitenSaved("");
+    setEvalBusy(true);
+    try {
+      const supabase = createClient();
+      const 行 = Object.keys(points).map((itemId) => ({
+        org_id: orgId, event_id: eventId, student_id: studentId,
+        item_id: itemId, judge_id: userId, points: points[itemId],
+        updated_at: new Date().toISOString()
+      }));
+      if (行.length > 0) {
+        const { data, error } = await supabase.from("evaluation_scores")
+          .upsert(行, { onConflict: "event_id,student_id,item_id,judge_id" })
+          .select("id");
+        if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      }
+      const { data: rd, error: rerr } = await supabase.from("evaluation_reviews")
+        .upsert({
+          org_id: orgId, event_id: eventId, student_id: studentId,
+          judge_id: userId, body: review || "",
+          updated_at: new Date().toISOString()
+        }, { onConflict: "event_id,student_id,judge_id" })
+        .select("id");
+      if (rerr || !rd || rd.length === 0) throw rerr || new Error("0行でした");
+      setSaitenSaved(SAITEN_SAVED);
+      await fetchSaiten(orgId, eventId);
+      return true;
+    } catch (e) {
+      console.error("★点を 入れられませんでした:", e);
+      setEvalError(EVAL_FAILED);
+      return false;
+    } finally {
+      setEvalBusy(false);
+    }
+  }
+
+  /** ★つけ終わる（★押すと、ほかの 審査員の 点が 見えます）。 */
+  async function handleJudgeDone(orgId, eventId) {
+    setEvalError("");
+    setEvalBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("evaluation_judge_done")
+        .upsert({ org_id: orgId, event_id: eventId, judge_id: userId },
+          { onConflict: "event_id,judge_id" })
+        .select("judge_id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      await fetchSaiten(orgId, eventId);
+      return true;
+    } catch (e) {
+      console.error("★つけ終われませんでした:", e);
+      setEvalError(EVAL_FAILED);
+      return false;
+    } finally {
+      setEvalBusy(false);
+    }
   }
 
   /**
@@ -15619,9 +15726,70 @@ export default function VocalTracker({
                   onGoTab={(k) => goTab(k)} />
               );
             }
+            // ★★★採点（★見本 `P_saiten` ／ `P_tenIreru`・裁定 その105）。
+            //   ★★行事の 帯の 中に 置きます ── ★見本の 戻り先が 行事 です。
+            //   ★★点を 入れる 1枚は、★採点の 一覧より 先に 見ます。
+            if (tabKey === "events" && saitenEvent && saitenOne) {
+              const 行事 = (opsEventList || []).find((e) => e.id === saitenEvent) || {};
+              const 自分の点 = saitenScores.filter((s) =>
+                s.student_id === saitenOne.id && s.judge_id === userId);
+              const 自分の講評 = saitenReviews.find((r) =>
+                r.student_id === saitenOne.id && r.judge_id === userId);
+              const 値 = {};
+              自分の点.forEach((s) => { 値[s.item_id] = s.points; });
+              return (
+                <OpsTenIreru
+                  studentName={saitenOne.name}
+                  eventName={行事.title || ""}
+                  items={evalItems}
+                  values={値}
+                  review={(自分の講評 && 自分の講評.body) || ""}
+                  busy={evalBusy}
+                  error={evalError}
+                  done={saitenSaved}
+                  onSave={(points, review) => {
+                    void handleSaveScores(opsOrgId, saitenEvent, saitenOne.id, points, review);
+                  }}
+                  onClose={() => { setSaitenOne(null); setSaitenSaved(""); }} />
+              );
+            }
+            if (tabKey === "events" && saitenEvent) {
+              const 行事 = (opsEventList || []).find((e) => e.id === saitenEvent) || {};
+              // ★★受験者は 名簿の 在籍から 出します（★見本の 字の とおり）。
+              const 受験 = (orgEnrollments[opsOrgId] || [])
+                .filter((e) => e && e.status === "active")
+                .map((e) => ({ id: e.student_id, name: orgDisplayName(e.student_id) || "" }));
+              return (
+                <OpsSaiten
+                  eventName={行事.title || ""}
+                  eventSub={行事.event_date || ""}
+                  students={受験}
+                  items={evalItems}
+                  scoresOf={(sid) => saitenScores.filter((s) =>
+                    s.student_id === sid && s.judge_id === userId)}
+                  myDone={saitenDone}
+                  busy={evalBusy}
+                  error={evalError}
+                  onOpenOne={(s) => { setSaitenOne(s); setSaitenSaved(""); }}
+                  onDone={() => { void handleJudgeDone(opsOrgId, saitenEvent); }}
+                  onClose={() => { setSaitenEvent(null); setSaitenOne(null); }} />
+              );
+            }
             if (tabKey === "events") {
               return (
                 <OpsEvents
+                  /* ★★★採点へ（★裁定 その105・2026-09-20）。
+                       ★★`saiten` を 持つ 方と、★審査員（門下を 持つ 先生）に 出します。 */
+                  onGoSaiten={(canOps(gate, "saiten")
+                    || (orgAssignments[opsOrgId] || [])
+                      .some((a) => a && a.teacher_id === userId && !a.ended_at))
+                    ? (ev) => {
+                      setSaitenEvent(ev.id);
+                      setSaitenOne(null);
+                      setSaitenSaved("");
+                      void fetchSaiten(opsOrgId, ev.id);
+                    }
+                    : undefined}
                   events={opsEventList}
                   participants={[]}
                   targetOf={opsTargetOf}

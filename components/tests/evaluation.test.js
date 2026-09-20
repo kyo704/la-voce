@@ -115,5 +115,58 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.strictEqual(m.totalOf([], items), null, "★0件で 0 を 返して います");
   });
 
+  const 一覧 = readCode("components", "OpsSaiten.jsx");
+  const 入れ = readCode("components", "OpsTenIreru.jsx");
+
+  見る("★進み具合を 色で 出さない（★言葉で 出す）", () => {
+    assert.deepStrictEqual(Object.values(m.PROGRESS), ["未入力", "入力中", "済"]);
+    assert.strictEqual(m.progressOf([], [{ id: "a", in_use: true }]), "未入力");
+    assert.strictEqual(m.progressOf(
+      [{ item_id: "a", points: 8 }], [{ id: "a", in_use: true }, { id: "b", in_use: true }]),
+      "入力中");
+    assert.strictEqual(m.progressOf(
+      [{ item_id: "a", points: 8 }], [{ id: "a", in_use: true }]), "済");
+    // ★★色で 分けて いない こと（★赤・緑を 使わない）。
+    assert.ok(!/C\.(red|err|danger)/.test(一覧), "★色で 出して います");
+  });
+
+  見る("★まとめは「27 / 35」の 形（★順位を 付けない）", () => {
+    const items = [{ id: "a", in_use: true, max_points: 10 },
+                   { id: "b", in_use: true, max_points: 5 }];
+    assert.strictEqual(m.totalWord([{ item_id: "a", points: 8 }], items), "8 / 15");
+    assert.strictEqual(m.totalWord([], items), "—", "★0件で 0 を 出して います");
+    assert.ok(/順位は 付けて いません/.test(一覧), "★その 断りが ありません");
+  });
+
+  見る("★点を 入れる 画面（★押す 前に 止める）", () => {
+    assert.ok(/pointOk/.test(入れ), "★確かめて いません");
+    assert.ok(/whyPointBad/.test(入れ), "★わけを 出して いません");
+    assert.ok(/disabled=\{!出せる\}/.test(入れ), "★押せない ように して いません");
+    // ★★ほかの 審査員の 点を、★この 画面に 出して いない こと。
+    assert.ok(!/judge_id !== |ほかの 審査員の 点/.test(入れ.replace(/ENTRY_NOTES/g, "")),
+      "★ほかの 審査員の 点を 出して います");
+  });
+
+  見る("★書くのは ご自分の ぶん だけ（★台帳）", () => {
+    const i = 本文.indexOf("evaluation_scores_write");
+    const なか = 本文.slice(i, i + 260);
+    assert.ok(/judge_id = auth\.uid\(\)/.test(なか), "★ご自分だけ に なって いません");
+    // ★★画面も 同じ です。
+    assert.ok(/judge_id: userId/.test(vt), "★ご自分の 番号で 入れて いません");
+  });
+
+  見る("★つけ終わると ほかの 審査員が 見える", () => {
+    assert.ok(/evaluation_judge_done/.test(vt), "★しるしを 作って いません");
+    assert.ok(m.DONE_NOTE.includes("見える"), "★何が 変わるかを 書いて いません");
+    assert.ok(m.DONE_NOTE.includes("あとからも 直せます"), "★直せる ことを 書いて いません");
+  });
+
+  見る("★入口は 審査員と saiten だけ", () => {
+    assert.ok(/onGoSaiten=\{\(canOps\(gate, "saiten"\)/.test(vt),
+      "★門が ありません／ちがいます");
+    assert.ok(/onGoSaiten/.test(readCode("components", "OpsEvents.jsx")),
+      "★行事に 札が ありません");
+  });
+
   console.log("\n★" + 数 + "つ 通りました。");
 })();

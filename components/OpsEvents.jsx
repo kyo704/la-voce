@@ -94,8 +94,9 @@ export default function OpsEvents({
   events, participants, targetOf, onAdd, onAction, adding = false, addError = "",
   // ★★対象の 札（★裁定 その89 Q3）。★名簿に ある ものだけ を 渡して ください。
   //   ★★1つも 無ければ、★その 列ごと 出しません（★押せない 札を 置きません）。
-  grades = [], courses = []
-}) {
+  grades = [], courses = [],
+  // ★★★採点へ（★裁定 その105・2026-09-20）。★渡されなければ 出しません。
+  onGoSaiten}) {
   /**
    * ★対象の 1列（★学年 ／ 学科・コース）。
    *
@@ -185,6 +186,19 @@ export default function OpsEvents({
                     ★誰が まだかを 並べると、★催促の 一覧に なります。 */}
               {x.countWord ? (
                 <p style={{ ...small, marginTop: 4 }}>出ます　{x.countWord}</p>
+              ) : null}
+
+              {/* ★★★採点へ（★見本 `P_saiten`・裁定 その105・2026-09-20）。
+                   ★★渡されなければ 出しません（★押せない 札を 置きません）。
+                   ★★取り下げた 行事には 出しません。★採点する もの が ありません。 */}
+              {onGoSaiten && !withdrawn ? (
+                <button type="button" onClick={() => onGoSaiten(x.ev)}
+                  className="w-full"
+                  style={{
+                    minHeight: 44, marginTop: 8, borderRadius: 10,
+                    border: `1px solid ${C.line}`, background: C.card,
+                    color: C.ink, fontSize: "0.78125rem"
+                  }}>採点</button>
               ) : null}
 
               {/* ★★できること。★押しどころは 下半分・44pt 以上。
