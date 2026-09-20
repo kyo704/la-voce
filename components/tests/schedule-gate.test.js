@@ -93,12 +93,19 @@ function t(cond, label) {
   t(S.overlapChipLabel(0) === null, "0件 なら 出さない");
   t(S.overlapChipLabel(3) === "重なり 3件", "1件 以上 なら 札");
   t(S.overlapChipLabel(null) === null, "★数が 無ければ 出さない");
-  t(画面.includes("overlapChipLabel(overlaps.length)"), "画面が lib に 尋ねて いる");
+  // ★★★2026-09-20、★数の 決めも lib に 移しました（★裁定 その108 ③）。
+  //   ★★先生の ときは、★事務が 知らせた ぶん も 数に 入ります。
+  //   ★★★だから 見張るのは「`overlaps.length` と 書いて ある こと」では なく、
+  //     ★★「画面が 自分で 数えて いない こと」です。
+  t(/overlapChipLabel\(札の数\)/.test(画面) && /chipCount\(/.test(画面),
+    "画面が lib に 尋ねて いる");
+  t(!/overlapChipLabel\(\s*\(?[^)]*\.filter\(/.test(画面),
+    "★画面が 自分で 数えて います");
   // ★★★札の 「前」に 判じが あり、★すぐ 後ろが 押しどころ で ある こと。
   //   ★★2026-09-18、★はじめ 逆の 順（札 → 判じ）で 探して 落ちました。
   //   ★★見本と 同じ 形 ── ★`{判じ ? (<button …`。
   const 生 = readRaw("components", "OpsSchedule.jsx");
-  const 位置 = 生.indexOf("{overlapChipLabel(overlaps.length) ? (");
+  const 位置 = 生.indexOf("{overlapChipLabel(札の数) ? (");
   t(位置 > 0, "判じが 先に ある");
   t(/^\s*<button type="button"/m.test(生.slice(位置, 位置 + 200)),
     "★すぐ 後ろが 押しどころ に なって いる");

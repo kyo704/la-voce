@@ -15,6 +15,7 @@ import {
   SUB_LINE, DAY_NOTES, WEEK_NOTES, WEEK_HEAD_TAIL, SLOT_MARK, SLOT_NOT_YET,
   dayGrid, overlapsOf, weekHeat, OVERLAP_NOT_YET
 } from "@/lib/opsSchedule";
+import { chipCount } from "@/lib/opsKasa";
 import { mayDragBlocks, DRAG_NOTE } from "@/lib/opsShell";
 // ★★コマを 押した ときの 行き先（★裁定 その79 の 入口 ②・2026-09-18）。
 import { tapGoesTo, tappable, TAP_GOES } from "@/lib/opsAttendance";
@@ -86,6 +87,9 @@ export default function OpsSchedule({
   myId,
   // ★★重なりの 札を 押した とき（★裁定 その85 Q3）。
   onOpenOverlap,
+  // ★★★重なりの しるし（★`overlap_notices`・裁定 その108 ③・2026-09-20）。
+  //   ★★先生は、★ご自分で 数えられない 重なりを これで 知ります。
+  notices = [],
   // ★★★日程を 組む へ（★2026-09-19・実機の ご報告）。
   //   ★★学長・事務長に「門下」の 帯は 出ません（★`monka_write` が 要ります）。
   //   ★★★それで 正しい です ── ★ご自分の 門下は ありません。
@@ -130,7 +134,22 @@ export default function OpsSchedule({
   const 何も出さない = 姿 === "none";
 
   const grid = dayGrid(lessons, dateISO, 出す先生);
-  const overlaps = overlapsOf(lessons, dateISO);
+  // ★★★重なりも、★出して いる ぶん から 数えます（★2026-09-20）。
+  //   ★★きょうまで、★学校 全部の コマ から 数えて いました。
+  //   ★★★自分の 日程だけ の 先生の 札に、★よその 先生の 重なりの 数が
+  //     ★★出て いました。★表には 1人ぶん しか 並んで いないのに、です。
+  //   ★★台帳は もとから ご自分の ぶん しか 返しません。★数え方 だけ の 直し です。
+  const 数えるもと = 自分だけ
+    ? (lessons || []).filter((l) => l && String(l.teacher_id) === String(myId))
+    : lessons;
+  const overlaps = overlapsOf(数えるもと, dateISO);
+  // ★★★札の 数は lib/opsKasa.js が 決めます（★2026-09-20・裁定 その108 ③）。
+  //   ★★先生は、★事務が 知らせた ぶん も 数に 入ります。
+  //     ★★ご自分では 数えられない 重なり（★よその 先生と 同じ 場所）が あるからです。
+  //     ★★★数に 入れないと、★札が 出ず、★入口が ありません。
+  const 札の数 = chipCount({
+    overlaps, notices, lessons: 数えるもと, myId, mine: 自分だけ
+  });
   const heat = weekHeat(lessons, weekDays || [], 出す先生);
 
   const chip = (on) => ({
@@ -191,7 +210,7 @@ export default function OpsSchedule({
           ★★印だけ です。★自動で 動かしません（★§4-2）。
             ★★どちらを 動かすかは、★人が 決めます。
           ★★字は lib/opsSchedule.js が 持ちます。 */}
-      {overlapChipLabel(overlaps.length) ? (
+      {overlapChipLabel(札の数) ? (
         <button type="button"
           onClick={() => {
             // ★★★2026-09-19（★見本くらべ `P_kasa`）。
@@ -205,7 +224,7 @@ export default function OpsSchedule({
             ...chip(false), width: "100%", textAlign: "left",
             display: "flex", alignItems: "center", justifyContent: "space-between"
           }}>
-          <span>{overlapChipLabel(overlaps.length)}</span>
+          <span>{overlapChipLabel(札の数)}</span>
           <span style={{ color: C.inkSoft }}>›</span>
         </button>
       ) : null}

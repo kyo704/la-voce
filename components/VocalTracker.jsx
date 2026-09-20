@@ -187,6 +187,12 @@ import OpsMiyasu from "@/components/OpsMiyasu";
 import OpsOrgMaster from "@/components/OpsOrgMaster";
 import OpsOkeru from "@/components/OpsOkeru";
 import OpsMonkaInvite from "@/components/OpsMonkaInvite";
+import OpsKasa from "@/components/OpsKasa";
+import OpsKasaFix from "@/components/OpsKasaFix";
+import {
+  AFTER_TELL, AFTER_CLOSE, AFTER_UNDO, lessonIdsOf as kasaLessonIds, moveTargets
+} from "@/lib/opsKasa";
+import { overlapsOf } from "@/lib/opsSchedule";
 import {
   makeCode, SENT_LINE as MONKA_INVITE_SENT,
   FAILED_LINE as MONKA_INVITE_FAILED,
@@ -11829,6 +11835,148 @@ export default function VocalTracker({
     }
   }
 
+  // ==========================================================================
+  // ★重なり（★見本 `P_kasa` ／ `P_kasaT` ／ `P_kasaFix`・裁定 その108 ③）
+  //
+  //   ★★★重なり そのものは しまいません。★`lessons` から 数えます。
+  //     ★★しまうのは 3つの 姿 だけ です（★`overlap_notices`・3列）。
+  //   ★★★1つの 重なりは 2コマ です。★行も コマごと に 置きます。
+  //     ★★先生は ご自分の コマの 行 だけ を 読めます（★台帳の 決まり）。
+  //   ★★決めは lib/opsKasa.js が 持ちます。★ここでは 決めません。
+  // ==========================================================================
+  const [kasaOpen, setKasaOpen] = useState(false);
+  const [kasaFilter, setKasaFilter] = useState("全部");
+  const [kasaNotices, setKasaNotices] = useState([]);
+  // ★★どの 重なりの、★どの コマを 動かして いるか。
+  const [kasaFixOf, setKasaFixOf] = useState(null);
+  const [kasaBusy, setKasaBusy] = useState(false);
+  const [kasaError, setKasaError] = useState("");
+
+  /**
+   * ★しるしを 読みます。
+   *
+   *   ★★★読めなかった ときは 空に します。★作りません。
+   *     ★★「まだ」と「読めなかった」は 別 です。★字で お伝えします。
+   */
+  async function fetchKasaNotices(lessonIds) {
+    const ids = (lessonIds || []).map(String).filter(Boolean);
+    if (ids.length === 0) { setKasaNotices([]); return; }
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("overlap_notices")
+        .select("lesson_id, status, updated_at").in("lesson_id", ids);
+      if (error) throw error;
+      setKasaNotices(data || []);
+    } catch (err) {
+      console.error("★重なりのしるしを読めませんでした:", err);
+      setKasaNotices([]);
+      setKasaError("しるしを 読めませんでした。もう一度 お試し ください。");
+    }
+  }
+
+  /** ★姿を つけます（★2コマ ぶん まとめて）。 */
+  async function handleKasaMark(overlap, 姿) {
+    const ids = kasaLessonIds(overlap);
+    if (ids.length === 0) return false;
+    setKasaError("");
+    setKasaBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("overlap_notices")
+        .upsert(ids.map((id) => ({
+          lesson_id: id, status: 姿, updated_at: new Date().toISOString()
+        })), { onConflict: "lesson_id" })
+        .select("lesson_id, status, updated_at");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setKasaNotices((prev) => [
+        ...(prev || []).filter((n) => !ids.includes(String(n.lesson_id))),
+        ...data
+      ]);
+      return true;
+    } catch (err) {
+      console.error("★重なりのしるしをつけられませんでした:", err);
+      setKasaError("いま つけられませんでした。日程の できことが 要ります。");
+      return false;
+    } finally {
+      setKasaBusy(false);
+    }
+  }
+
+  /**
+   * ★コマを 動かします（★先生 ご自分の ぶん だけ）。
+   *
+   *   ★★★動かすと、★その コマの 重なりは 無く なります。
+   *     ★★だから しるしも 消します。★古い しるしを 残しません。
+   *     ★★★相手の しるしは 消せません（★よその コマ です）。
+   *       ★★だから `statusOf` は「全部の コマが そう」の ときだけ 上げます。
+   */
+  async function handleKasaMove(lesson, slot, placeName, places) {
+    if (!lesson || !lesson.id || !slot) return false;
+    setKasaError("");
+    setKasaBusy(true);
+    try {
+      const supabase = createClient();
+      const 時 = Math.floor(Number(slot.period.start_min) / 60);
+      const 分 = Number(slot.period.start_min) % 60;
+      const いつ = new Date(`${slot.dateISO}T${String(時).padStart(2, "0")}:`
+        + `${String(分).padStart(2, "0")}:00`);
+      const 所 = (places || []).find((x) => x && x.name === placeName);
+      const 直し = { scheduled_at: いつ.toISOString() };
+      // ★★場所を 選んで いない ときは、★いまの まま です。★消しません。
+      if (所 && 所.id) 直し.place_id = 所.id;
+      const { data, error } = await supabase.from("lessons")
+        .update(直し).eq("id", lesson.id)
+        .select("id, scheduled_at, place_id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      await supabase.from("overlap_notices").delete().eq("lesson_id", lesson.id);
+      setKasaNotices((prev) => (prev || [])
+        .filter((n) => String(n.lesson_id) !== String(lesson.id)));
+      setOrgLessons((prev) => ({
+        ...prev,
+        [opsOrgId]: (prev[opsOrgId] || []).map((l) => (l.id === lesson.id
+          ? { ...l, ...data[0] } : l))
+      }));
+      setKasaFixOf(null);
+      return true;
+    } catch (err) {
+      console.error("★コマを動かせませんでした:", err);
+      setKasaError("いま 動かせませんでした。もう一度 お試し ください。");
+      return false;
+    } finally {
+      setKasaBusy(false);
+    }
+  }
+
+  /** ★時間は そのまま、★場所だけ 変えます。 */
+  async function handleKasaMoveRoom(lesson, place) {
+    if (!lesson || !lesson.id || !place || !place.id) return false;
+    setKasaError("");
+    setKasaBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("lessons")
+        .update({ place_id: place.id }).eq("id", lesson.id)
+        .select("id, place_id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      await supabase.from("overlap_notices").delete().eq("lesson_id", lesson.id);
+      setKasaNotices((prev) => (prev || [])
+        .filter((n) => String(n.lesson_id) !== String(lesson.id)));
+      setOrgLessons((prev) => ({
+        ...prev,
+        [opsOrgId]: (prev[opsOrgId] || []).map((l) => (l.id === lesson.id
+          ? { ...l, ...data[0] } : l))
+      }));
+      setKasaFixOf(null);
+      return true;
+    } catch (err) {
+      console.error("★場所を変えられませんでした:", err);
+      setKasaError("いま 変えられませんでした。もう一度 お試し ください。");
+      return false;
+    } finally {
+      setKasaBusy(false);
+    }
+  }
+
   async function handleSetEnrollmentStatus(orgId, studentId, status) {
     // ★★★退会は ここでは できません（★上の 註）。
     if (status === "left") return false;
@@ -14337,6 +14485,12 @@ export default function VocalTracker({
     setOrgEnrollments((prev) => ({ ...prev, [orgId]: enrollments || [] }));
     setOrgAssignments((prev) => ({ ...prev, [orgId]: assignments || [] }));
     setOrgLessons((prev) => ({ ...prev, [orgId]: lessons || [] }));
+    // ★★★重なりの しるし（★裁定 その108 ③・2026-09-20）。
+    //   ★★コマと 一緒に 読みます。★札の 数に 要ります。
+    //   ★★★先生は、★ご自分で 数えられない 重なりを これで 知ります。
+    //     ★★よその コマは 読めません。★しるし だけ が 届きます。
+    //   ★★台帳の 決まりが 絞ります ── ★ご自分の コマ、または `sched_all`。
+    void fetchKasaNotices((lessons || []).map((l) => l && l.id));
     // ★★★授業の 型（★裁定 その90・2026-09-18）。
     //   ★★別に 引きます。★埋め込みに しません（★2026-09-01 の 一件）。
     //     ★★読めないと、★要求ごと 落ちます。
@@ -15912,6 +16066,94 @@ export default function VocalTracker({
                   onClose={() => { setOpsKumuOpen(false); setOpsKumuTeacher(null); }} />
               );
             }
+            /* ★★★重なり（★見本 `P_kasa` ／ `P_kasaT` ／ `P_kasaFix`・裁定 その108 ③）。
+                 ★★きょうまで、★札を 押すと「まだ できません」と 出て いました。
+                 ★★★数える ところは lib/opsSchedule.js の `overlapsOf` 1か所 です。
+                   ★★しまうのは 3つの 姿 だけ（★`overlap_notices`・3列）。
+                 ★★★事務と 先生で 姿が 変わります（★見本の 1行目 と 同じ 形）。 */
+            if (tabKey === "schedule" && kasaOpen) {
+              const 学校ぜんぶ = canOps(gate, "sched_all");
+              const 全部 = orgLessons[opsOrgId] || [];
+              // ★★先生の ときは ご自分の コマ だけ から 数えます（★よそを 出しません）。
+              const 数えるもと = 学校ぜんぶ ? 全部
+                : 全部.filter((l) => l && String(l.teacher_id) === String(userId));
+              const 重なり = overlapsOf(数えるもと, opsDate);
+              const 場所の名 = (id) => ((orgPlaces || [])
+                .find((x) => String(x.id) === String(id)) || {}).name || "";
+              const 何が = (o) => (o.kind === "場所"
+                ? 場所の名((o.lessons[0] || {}).place_id)
+                : orgDisplayName((o.lessons[0] || {}).teacher_id) || "");
+
+              // ★★★動かす 1枚（★見本 `P_kasaFix`）。
+              if (kasaFixOf && kasaFixOf.lesson) {
+                const コマ = kasaFixOf.lesson;
+                const 日々 = weekDates(opsDate, 0);
+                const 枠 = moveTargets(openSlots, {
+                  days: 日々,
+                  periods: kumuPeriods,
+                  studentId: コマ.student_id,
+                  freeSlots: kumuSlots,
+                  lessons: 全部.filter((l) => l
+                    && String(l.teacher_id) === String(コマ.teacher_id)),
+                  busy: okeruBusy,
+                  timeOfMin: (iso) => {
+                    const d = new Date(iso);
+                    return Number.isNaN(d.getTime()) ? null
+                      : d.getHours() * 60 + d.getMinutes();
+                  }
+                }, コマ, (iso) => {
+                  const d = new Date(iso);
+                  return Number.isNaN(d.getTime()) ? null
+                    : d.getHours() * 60 + d.getMinutes();
+                });
+                return (
+                  <OpsKasaFix
+                    overlap={kasaFixOf}
+                    lesson={コマ}
+                    slots={枠}
+                    places={orgPlaces}
+                    studentName={orgDisplayName(コマ.student_id) || ""}
+                    placeName={場所の名(コマ.place_id)}
+                    nameOf={(id) => orgDisplayName(id) || ""}
+                    busy={kasaBusy}
+                    error={kasaError}
+                    onMove={(slot, place) =>
+                      handleKasaMove(コマ, slot, place, orgPlaces)}
+                    onMoveRoom={(place) => handleKasaMoveRoom(コマ, place)}
+                    onBack={() => setKasaFixOf(null)} />
+                );
+              }
+
+              return (
+                <OpsKasa
+                  overlaps={重なり}
+                  notices={kasaNotices}
+                  lessons={全部}
+                  myId={userId}
+                  mine={!学校ぜんぶ}
+                  filter={kasaFilter}
+                  onFilter={(v) => setKasaFilter(v)}
+                  dateLabel={String(opsDate).slice(5).replace("-", "月") + "日"}
+                  nameOf={(id) => orgDisplayName(id) || ""}
+                  placeNameOf={場所の名}
+                  kindNameOf={何が}
+                  busy={kasaBusy}
+                  error={kasaError}
+                  onTell={(o) => handleKasaMark(o, AFTER_TELL)}
+                  onClose_={(o) => handleKasaMark(o, AFTER_CLOSE)}
+                  onUndo={(o) => handleKasaMark(o, AFTER_UNDO)}
+                  onGoSchedule={() => setKasaOpen(false)}
+                  /* ★★★動かす 前に、★その方の 空きと ご自分の 予定を 読みます。 */
+                  onMove={(r) => {
+                    setKasaFixOf(r);
+                    void fetchKumu(opsOrgId,
+                      r.lesson && r.lesson.student_id ? [r.lesson.student_id] : [],
+                      r.lesson && r.lesson.teacher_id);
+                    void fetchMyBusy();
+                  }}
+                  onBack={() => setKasaOpen(false)} />
+              );
+            }
             if (tabKey === "schedule") {
               // ★★日程（★見本②⑥⑧⑨⑩）。★1つの日程を、3つの 見せ方で。
               //   ★★渡すのは 1つの 並びだけです。★見せ方は あちらが 決めます。
@@ -15956,6 +16198,11 @@ export default function VocalTracker({
                       setOpsAttendanceLesson(l);
                     }
                     : undefined}
+                  /* ★★★重なりの 札の 行き先（★2026-09-20・裁定 その108 ③）。
+                       ★★きょうまで、★渡して いません でした。
+                       ★★★押すと「まだ できません」と 出るだけ でした。 */
+                  notices={kasaNotices}
+                  onOpenOverlap={() => { setKasaError(""); setKasaOpen(true); }}
                   onPickDate={(d) => setOpsDate(d)} />
               );
             }
