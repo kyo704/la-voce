@@ -73,8 +73,17 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
   });
 
   見る("Q6 閉じた あとは 退会できる", () => {
-    const 学校 = [{ id: "o1", contract_owner_user_id: "u1", closed_at: "2026-09-20" }];
-    assert.strictEqual(m.mayLeave({ orgs: 学校, userId: "u1" }).ok, true);
+    // ★★★閉じた 学校は、★行ごと 消えます（★2026-09-20・試しの 台帳で 実測）。
+    //   ★★`CLOSE_ORG_DELETE_ORDER` の 最後が `organizations` の 行 です。
+    //   ★★だから「並びに 無い」＝「閉じた」です。★印は 立てません。
+    assert.strictEqual(m.mayLeave({ orgs: [], userId: "u1" }).ok, true);
+    // ★★較正 ── ★残って いれば 止まる こと。
+    assert.strictEqual(
+      m.mayLeave({ orgs: [{ id: "o1", contract_owner_user_id: "u1" }], userId: "u1" }).ok,
+      false);
+    // ★★`closed_at` を 見て いない こと（★2つの 道を 作らない）。
+    const 生 = readRaw("lib", "orgContract.js");
+    assert.ok(!/o\.closed_at/.test(生), "★印を 見て います（★道が 2つ に なります）");
   });
 
   見る("★できことに して いない（★DO_NOT）", () => {
