@@ -189,6 +189,8 @@ import OpsOkeru from "@/components/OpsOkeru";
 import OpsMonkaInvite from "@/components/OpsMonkaInvite";
 import OpsKasa from "@/components/OpsKasa";
 import OpsExport from "@/components/OpsExport";
+import OpsImport from "@/components/OpsImport";
+import OpsRosterDrafts from "@/components/OpsRosterDrafts";
 import {
   rowsFor as exportRowsFor, buildCsv, fileNameOf as exportFileName
 } from "@/lib/opsExport";
@@ -197,6 +199,9 @@ import {
   AFTER_TELL, AFTER_CLOSE, AFTER_UNDO, lessonIdsOf as kasaLessonIds, moveTargets
 } from "@/lib/opsKasa";
 import { overlapsOf, readFailedLine } from "@/lib/opsSchedule";
+import {
+  batchOf, mayUndo as mayUndoImport, undoBlockedLine
+} from "@/lib/rosterDrafts";
 import {
   makeCode, SENT_LINE as MONKA_INVITE_SENT,
   FAILED_LINE as MONKA_INVITE_FAILED,
@@ -10508,6 +10513,9 @@ export default function VocalTracker({
     void fetchEvalItems(opsOrgId);
     // ★★学校の 基本（★コマ・場所・2026-09-20）。
     void fetchOrgMaster(opsOrgId);
+    // ★★名簿の 下書き（★裁定 その109・2026-09-20）。
+    //   ★★門は 台帳が 見ます。★`meibo` を 持たない 方には 0行 返ります。
+    void fetchDrafts(opsOrgId);
     // ★★★ご請求（★2026-09-19）。
     //   ★★きょうまで `fetchOrgDetail` の 中 だけ に ありました。
     //     ★★あれは 直しの 門（`opsFixOn`）の 中でしか 走りません。
@@ -11837,6 +11845,220 @@ export default function VocalTracker({
       return false;
     } finally {
       setKumuSaving(false);
+    }
+  }
+
+  // ==========================================================================
+  // ★名簿の 下書き（★裁定 その109・2026-09-20）
+  //
+  //   ★★★まだ 口の 無い 方 です。★名簿（`enrollments`）には 入れません。
+  //   ★★★招くのは、★人が 押した ときだけ です。★自動では 送りません。
+  //     ★★15〜17歳の 方の 同意は、★入る ときに 尋ねます（★裁定 その107）。
+  //     ★★下書きの 側では 判じません。★生年月日を 持って いません。
+  //   ★★決めは lib/rosterDrafts.js が 持ちます。
+  // ==========================================================================
+  const [drafts, setDrafts] = useState([]);
+  const [draftBusy, setDraftBusy] = useState(false);
+  const [draftError, setDraftError] = useState("");
+  // ★★いま 読み込んだ ぶん（★取り消しの ため）。
+  const [lastImport, setLastImport] = useState(null);
+
+  async function fetchDrafts(orgId) {
+    if (!orgId) return;
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("roster_drafts")
+        .select("id, student_number, name, grade_year, division_id, email, "
+          + "imported_at, imported_by, invited_at, linked_user_id, linked_at")
+        .eq("org_id", orgId).order("imported_at", { ascending: false });
+      if (error) throw error;
+      setDrafts(data || []);
+    } catch (err) {
+      console.error("★下書きを 読めませんでした:", err);
+      setDrafts([]);
+      setDraftError("下書きを 読めませんでした。");
+    }
+  }
+
+  /** ★読み込む（★下書きに 入れます。★名簿には 入れません）。 */
+  async function handleImportDrafts(orgId, rows) {
+    if (!orgId || !rows || rows.length === 0) return false;
+    setDraftError("");
+    setDraftBusy(true);
+    try {
+      const supabase = createClient();
+      const いま = new Date().toISOString();
+      const { data, error } = await supabase.from("roster_drafts")
+        .upsert(rows.map((r) => ({
+          org_id: orgId,
+          student_number: r.student_number,
+          name: r.name,
+          ...(r.grade_year != null ? { grade_year: r.grade_year } : {}),
+          ...(r.division_id ? { division_id: r.division_id } : {}),
+          ...(r.email ? { email: r.email } : {}),
+          imported_at: いま,
+          imported_by: userId
+        })), { onConflict: "org_id,student_number" })
+        .select("id, imported_at, imported_by, invited_at, linked_user_id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setLastImport({ at: いま, by: userId, n: data.length });
+      await fetchDrafts(orgId);
+      return true;
+    } catch (err) {
+      console.error("★読み込めませんでした:", err);
+      setDraftError("いま 読み込めませんでした。名簿の できことが 要ります。");
+      return false;
+    } finally {
+      setDraftBusy(false);
+    }
+  }
+
+  /**
+   * ★取り消す（★1回だけ・★裁定 その109）。
+   *
+   *   ★★★1人でも お送りして いたら、★取り消せません。
+   *     ★★決めは lib/rosterDrafts.js が 持ちます。★ここでは 判じません。
+   */
+  async function handleUndoImport(orgId) {
+    if (!orgId || !lastImport) return false;
+    const 束 = batchOf(drafts, lastImport.at, lastImport.by);
+    if (!mayUndoImport(束)) {
+      setDraftError(undoBlockedLine(束));
+      return false;
+    }
+    setDraftError("");
+    setDraftBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("roster_drafts")
+        .delete()
+        .eq("org_id", orgId)
+        .eq("imported_at", lastImport.at)
+        .eq("imported_by", lastImport.by)
+        .is("invited_at", null)
+        .is("linked_user_id", null)
+        .select("id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      setLastImport(null);
+      await fetchDrafts(orgId);
+      return true;
+    } catch (err) {
+      console.error("★取り消せませんでした:", err);
+      setDraftError("いま 取り消せませんでした。");
+      return false;
+    } finally {
+      setDraftBusy(false);
+    }
+  }
+
+  /**
+   * ★下書きの 方を 招きます（★裁定 その109）。
+   *
+   *   ★★★合言葉に `draft_id` を 持たせます。★これが 紐付けの 根拠 です。
+   *     ★★学籍番号では 紐付けません。★照らし合わせを しません。
+   *   ★★お送りした ことを `invited_at` に 残します。★取り消せなく なります。
+   */
+  async function handleInviteDraft(orgId, draft) {
+    if (!orgId || !draft || !draft.id) return false;
+    setDraftError("");
+    setDraftBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("teacher_invitations").insert({
+        code: makeCode(),
+        teacher_id: userId,
+        org_id: orgId,
+        draft_id: draft.id,
+        kind: "draft",
+        ...(draft.grade_year != null ? { grade_year: draft.grade_year } : {}),
+        ...(draft.division_id ? { division_id: draft.division_id } : {}),
+        invited_at: new Date().toISOString(),
+        expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+      }).select("code");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      const { data: d2, error: e2 } = await supabase.from("roster_drafts")
+        .update({ invited_at: new Date().toISOString() })
+        .eq("id", draft.id).eq("org_id", orgId).select("id");
+      if (e2 || !d2 || d2.length === 0) throw e2 || new Error("0行でした");
+      await fetchDrafts(orgId);
+      return true;
+    } catch (err) {
+      console.error("★招けませんでした:", err);
+      setDraftError("いま お送りできませんでした。");
+      return false;
+    } finally {
+      setDraftBusy(false);
+    }
+  }
+
+  /**
+   * ★取り込む（★裁定 その109・2026-09-20）。
+   *
+   *   ★★★2つに 分かれます。
+   *     ①いま 居る 方 …… ★`enrollments` の 学年・学籍番号・所属 を 直します
+   *     ②まだ 居ない 方 … ★`roster_drafts`（下書き）に 入ります
+   *   ★★★門下も 役職も 動かしません。★お名前も 書き換えません
+   *     （★お名前は ご本人の もの です）。
+   *   ★★1つでも 落ちたら、★そこで 止めて お伝えします。
+   */
+  async function handleRunImport(orgId, plan) {
+    if (!orgId || !plan) return false;
+    setDraftError("");
+    setDraftBusy(true);
+    try {
+      const supabase = createClient();
+      // ①いま 居る 方の 直し。
+      for (const c of plan.change || []) {
+        const 直し = {};
+        (c.diff || []).forEach((d) => {
+          if (d.col === "student_number") 直し.student_number = d.to;
+          if (d.col === "grade_label") 直し.grade_label = d.to;
+        });
+        if (Object.keys(直し).length === 0) continue;
+        const { data, error } = await supabase.from("enrollments")
+          .update(直し).eq("id", c.id).eq("org_id", orgId).select("id");
+        if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      }
+      // ②まだ 居ない 方は 下書きへ。
+      if ((plan.add || []).length) {
+        const 入 = await handleImportDrafts(orgId, (plan.add || []).map((a) => ({
+          student_number: a.rec.student_number || "",
+          name: a.rec.__name || "",
+          grade_year: null,
+          email: null
+        })).filter((x) => x.student_number && x.name));
+        if (!入) return false;
+      } else {
+        await fetchDrafts(orgId);
+      }
+      return true;
+    } catch (err) {
+      console.error("★取り込めませんでした:", err);
+      setDraftError("いま 取り込めませんでした。名簿の できことが 要ります。");
+      return false;
+    } finally {
+      setDraftBusy(false);
+    }
+  }
+
+  /** ★下書きを 消す（★事務が 押した ときだけ）。 */
+  async function handleDeleteDraft(orgId, draft) {
+    if (!orgId || !draft || !draft.id) return false;
+    setDraftError("");
+    setDraftBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("roster_drafts")
+        .delete().eq("id", draft.id).eq("org_id", orgId).select("id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      await fetchDrafts(orgId);
+      return true;
+    } catch (err) {
+      console.error("★消せませんでした:", err);
+      setDraftError("いま 消せませんでした。");
+      return false;
+    } finally {
+      setDraftBusy(false);
     }
   }
 
@@ -16770,6 +16992,29 @@ export default function VocalTracker({
                             onDeletePlace={(id) => handleDeleteOrgPlace(opsOrgId, id)} />
                         </div>
                       ),
+                      /* ★★★読み込む（★見本 `stImport`・裁定 その109・2026-09-20）。
+                           ★★まだ 口の 無い 方は 下書きへ。★名簿には 入りません。
+                           ★★1人でも お送りしたら、★取り消せません。 */
+                      import: (
+                        <OpsImport
+                          current={(orgEnrollments[opsOrgId] || []).map((e) => ({
+                            id: e.id,
+                            student_number: e.student_number || "",
+                            name: orgDisplayName(e.student_id) || "",
+                            grade_label: e.grade_label || "",
+                            division: ((orgDivisions || [])
+                              .find((x) => String(x.id) === String(e.division_id)) || {}).name || ""
+                          }))}
+                          busy={draftBusy}
+                          error={draftError}
+                          lastImport={lastImport}
+                          mayUndo={!!lastImport
+                            && mayUndoImport(batchOf(drafts, lastImport.at, lastImport.by))}
+                          undoLine={lastImport
+                            ? undoBlockedLine(batchOf(drafts, lastImport.at, lastImport.by)) : ""}
+                          onRun={(plan) => handleRunImport(opsOrgId, plan)}
+                          onUndo={() => handleUndoImport(opsOrgId)} />
+                      ),
                       /* ★★★自分の 予定（★見本 `stMine`・2026-09-20）。
                            ★★★新しく 作りません。★もとから ある 1枚を 出します。
                              ★★`my_periods` ／ `my_timetable` は ご本人 だけ の 表 です。
@@ -17137,7 +17382,31 @@ export default function VocalTracker({
               const members = toRosterRows(
                 orgEnrollments[opsOrgId] || [],
                 orgAssignments[opsOrgId] || []);
+              /* ★★★名簿の 下書き（★裁定 その109・2026-09-20）。
+                   ★★まだ 口の 無い 方 です。★名簿の 下に 置きます。
+                   ★★★招くのは 人が 押した ときだけ です。
+                   ★★`meibo` を 持たない 方には 出しません（★台帳も 断ります）。 */
+              const 下書き = canOps(gate, "meibo") && (drafts || []).length ? (
+                <div style={{ marginTop: 20 }}>
+                  <OpsRosterDrafts
+                    rows={drafts}
+                    nowISO={new Date().toISOString()}
+                    divisionNameOf={(id) => ((orgDivisions || [])
+                      .find((x) => String(x.id) === String(id)) || {}).name || ""}
+                    busy={draftBusy}
+                    error={draftError}
+                    onInvite={(d) => handleInviteDraft(opsOrgId, d)}
+                    onInviteAll={async (list) => {
+                      for (const d of list) {
+                        const ok = await handleInviteDraft(opsOrgId, d);
+                        if (!ok) return;
+                      }
+                    }}
+                    onDelete={(d) => handleDeleteDraft(opsOrgId, d)} />
+                </div>
+              ) : null;
               return (
+                <>
                 <OpsRoster
                   members={members}
                   nameOf={(id) => orgDisplayName(id) || ""}
@@ -17197,9 +17466,11 @@ export default function VocalTracker({
                       canceled: 並.filter((l) => l.attendance === "canceled").length
                     };
                   }} />
-                  // ★★役職は 渡しません（★2026-09-13）。
-                  //   ★★生徒は 役職を 持ちません。★学校で 働く 方の ものです。
-                  //   ★★posts を 渡さなければ、★役職の 行は 出ません。
+                {/* ★★役職は 渡しません（★2026-09-13）。
+                     ★★生徒は 役職を 持ちません。★学校で 働く 方の ものです。
+                     ★★posts を 渡さなければ、★役職の 行は 出ません。 */}
+                {下書き}
+                </>
               );
             }
             // ★★まだ 作っていない帯。★空の画面を 置きません。

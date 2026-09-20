@@ -115,7 +115,8 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
 
   見る("⑧まだ の ものを 字で お伝えする", () => {
     const 鍵 = m.IMPORT_NOT_YET.map((x) => x.key);
-    ["add", "xlsx", "undo", "remember"].forEach((k) =>
+    // ★★「新しい方」と「取り消し」は、★裁定 その109 で できました。
+    ["xlsx", "change_undo", "remember"].forEach((k) =>
       assert.ok(鍵.includes(k), "★書き残しが ありません: " + k));
     m.IMPORT_NOT_YET.forEach((x) =>
       assert.ok(x.why && x.needs, "★わけと 要る ものが ありません: " + x.key));

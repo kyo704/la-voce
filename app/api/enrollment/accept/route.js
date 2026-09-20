@@ -52,7 +52,9 @@ export async function POST(request) {
     .from("teacher_invitations")
     // ★★★招く ときに 決めて おいた 学年・学科も 読みます（★2026-09-19）。
     //   ★★読まないと、★下で 写せません。★列を 足しただけ では 動きません。
-    .select("code, teacher_id, org_id, monka_teacher_id, grade_year, division_id")
+    // ★★★`draft_id` …… ★名簿の 下書きの ぶん か（★裁定 その109・2026-09-20）。
+    //   ★★紐付けの 根拠は **これ** です。★学籍番号では ありません。
+    .select("code, teacher_id, org_id, monka_teacher_id, grade_year, division_id, draft_id")
     .eq("code", code)
     .maybeSingle();
   if (invError) {
@@ -165,6 +167,27 @@ export async function POST(request) {
   if (enrollError) {
     console.error("在籍：登録できませんでした。", { orgId, message: enrollError.message });
     return NextResponse.json({ error: "在籍の登録に失敗しました。" }, { status: 500 });
+  }
+
+  // ==========================================================================
+  // ★★★名簿の 下書きと 結びます（★裁定 その109・2026-09-20）
+  //
+  //   ★★結ぶのは、★**その 招待を 受け取った 方** です。
+  //     ★★学籍番号を 知って いる だけ では 結びません。
+  //     ★★お名前と 番号の 一致でも 結びません。★照らし合わせを しません。
+  //   ★★★結べなくても、★在籍は もう できて います。★止めません。
+  //     ★★下書きが 消えて いた／すでに 結ばれて いた ── ★どちらも あり得ます。
+  // ==========================================================================
+  if (invitation.draft_id) {
+    const { error: draftError } = await admin
+      .from("roster_drafts")
+      .update({ linked_user_id: user.id, linked_at: new Date().toISOString() })
+      .eq("id", invitation.draft_id)
+      .eq("org_id", orgId)
+      .is("linked_user_id", null);
+    if (draftError) {
+      console.warn("在籍：下書きと結べませんでした。", draftError.message);
+    }
   }
 
   // ==========================================================================
