@@ -31,99 +31,165 @@ const root = path.join(__dirname, "..", "..");
 const sqlFiles = fs.readdirSync(path.join(root, "supabase")).filter((f) => f.endsWith(".sql"));
 const allSql = sqlFiles.map((f) => fs.readFileSync(path.join(root, "supabase", f), "utf8")).join("\n");
 
-/** スレッドらしい表が作られたか。 */
-// ★★名前に post が 入っていても、★連絡の 表とは 限りません。
-//   ★2026-09-11、★org_posts（★役職と できること）を 作りました。
-//     ★★「post」は「投稿」では なく「役職」です。
-//     ★この 見張りが、★役職の 表を 連絡の 表と 読み違えて 落ちました。
-//   ★★名前で 当てる 検査の 限界です。★除く ものを 名指しで 書きます。
-// ★★名に「post」が 入って いても、★やりとり では ない もの。
-//   ★★★`org_posts` …… ★役職 です。★「役職（post）」の post です。
-//   ★★★`post_change_log` … ★役職を 変えた 記録 です（★2026-09-18）。
-//     ★★本文の 列も、★参加する 人の 列も ありません。
-//     ★★誰が・いつ・誰の 役職を 変えたか、だけ です。
-//   ★★★ここに 足す ときは、★**本文が 無い こと**を 確かめて ください。
-//     ★★本文が ある もの を 足すと、★この 見張りは 効かなく なります。
-// ★★★名に `message` が 入って いても、★やりとり では ない もの（★2026-09-19）。
-//   ★★`org_message_drafts` …… ★書いた ご本人 だけ の 下書き です。
-//     ★★相手が いません。★参加者の 列も ありません。★誰にも 届きません。
-//     ★★添付の 列も ありません（★字だけ です）。
-//     ★★★決まりは 1つ（`auth.uid() = author_id`）── ★よその 方には 道が ありません。
-//   ★★★外す ときは、★上の 3つを 確かめて から にして ください。
-// ★★★`postings` を 外します（★2026-09-21・裁定 その122）。
-//   ★★この 検査は 名に `post` を 含む 表を「やりとり」と 見なします。
-//   ★★`postings` は **募集** です。★やりとりでは ありません。
-//     ★★書き込みも、★読んだ 記録も、★参加者も ありません。
-//   ★★★外しただけ では 足りません。★下で 中身を 確かめます。
-// ★★★`application_messages` も 外します（★2026-09-21・裁定 その121 段4）。
-//   ★★これは **さがす（マッチング）** の ことばの 往復 です。
-//   ★★先生どうしの 連絡（★§6-2）では ありません。★別の 機能 です。
-//   ★★守りも 別 です ── ★自由文を 持たない こと が 要 です。
-//     ★★そちらは `matching-messages-gate.test.js` が 見ます。
-//   ★★★ここでも 外しっぱなしに しません。★下で 中身を 確かめます。
-const NOT_THREADS = ["org_posts", "post_change_log", "org_message_drafts",
-  "postings", "application_messages"];
+// ============================================================================
+// ★2段で 分けます（★裁定 その124・2026-09-21）
+//
+//   ★★★これまで、★名ざしの 一覧（`NOT_THREADS`）に 手で 足して いました。
+//     ★★`org_posts`（役職）／`post_change_log`／`org_message_drafts`
+//     ★★2026-09-21、★`postings` と `application_messages` で **2度 続けて** 落ちました。
+//     ★★★手で 足す 検査は、★いずれ 無視されます。★3度目が 必ず 来ます。
+//
+//   ★★★段1 ── ★広く 拾います。★網は 狭めません。★むしろ 広げます。
+//     ★名に thread / message / post / note / comment / chat を 含む
+//     ★**または** 自由に 書ける 列（body / text / content …）を 持つ
+//     ★★名だけで 拾って いた ものを、★列でも 拾う ように しました。
+//
+//   ★★★段2 ── ★実質で 分けます。★3つ すべてを 満たす ものだけ「先生どうしの 連絡」。
+//     ★① 自由に 書ける 列が ある
+//     ★② `org_id` を 持つ（★学校の もの）
+//     ★③ 既読 か 参加者の 列を 持つ、★または `org_messages` と 同じ 形
+//         （★`author_id` と `org_id` と 自由文）
+//
+//   ★★★外した ものを **黙って 落としません**。★わけを 1行で 並べます。
+//     ★★毎回 目で 見られます。★手で 足す ところは 1つも ありません。
+// ============================================================================
 
-function threadTables() {
-  const hits = [];
-  const re = /create table (?:if not exists )?public\.(\w*(?:thread|message|post)\w*)/gi;
+/** ★自由に 書ける 列（★名前で 見ます。★型だけでは 決まりません）。 */
+const JIYUU = /^\s*(body|text|content|message|comment|memo|free_\w+)\s+text\b/mi;
+/** ★既読。 */
+const YOMI = /^\s*(read_at|read_by|reader\w*)\b/mi;
+/** ★参加者（★§6-2 の 分かれ目。★誰が 入るかを 表が 持つ か）。 */
+const SANKA = /^\s*(participant\w*|member_ids|member_user_ids)\b/mi;
+/** ★添付（★どの 表でも 作りません）。 */
+const TENPU = /\b(attachment|file_url|image_url|media|file_path)\b/i;
+/** ★段1 で 拾う 名。 */
+const NA = /thread|message|post|note|comment|chat/i;
+
+/** ★`create table … public.X ( … );` を、★名と 中身の 組で 取り出します。 */
+function 表たち(sql) {
+  const 出 = [];
+  const re = /create table (?:if not exists )?public\.(\w+)\s*\(/gi;
   let m;
-  while ((m = re.exec(allSql)) !== null) {
-    if (!NOT_THREADS.includes(m[1])) hits.push(m[1]);
+  while ((m = re.exec(sql)) !== null) {
+    let d = 0, k = m.index + m[0].length - 1;
+    while (k < sql.length) {
+      if (sql[k] === "(") d++;
+      else if (sql[k] === ")") { d--; if (d === 0) break; }
+      k++;
+    }
+    出.push({ 名: m[1], なか: sql.slice(m.index, k + 1) });
   }
-  return [...new Set(hits)];
+  return 出;
 }
 
-// ★★★外した 表が、★本当に「やりとりで ない」か を 確かめます。
-//   ★★外しただけ では、★次の 人が 中身を 変えた 日に 気づけません。
-{
-  const 下書き = allSql.slice(allSql.indexOf("create table if not exists public.org_message_drafts"));
-  const なか = 下書き.slice(0, 下書き.indexOf(");"));
-  assertTrue(/author_id uuid not null/.test(なか), "★下書きは ご本人の ものである");
-  assertTrue(!/attachment|file_url|image/.test(なか), "★下書きに 添付の 列が ない");
-  assertTrue(!/participant|member_ids/.test(なか), "★下書きに 参加者の 列が ない");
+/**
+ * ★段1・段2（★裁定 その124）。
+ *
+ *   ★★返り `{ 検査, 対象外 }`。★`対象外` には わけを 添えます。
+ */
+function 分ける(sql) {
+  const 検査 = [], 先生どうし = [], 門下 = [], 対象外 = [];
+  表たち(sql).forEach((t) => {
+    const 自由 = JIYUU.test(t.なか);
+    const 名で = NA.test(t.名);
+    // ★★段1 ── ★名 か 列 の どちらかで 拾います。
+    if (!名で && !自由) return;
+    const 学校 = /^\s*org_id\s+uuid/mi.test(t.なか);
+    const 既読 = YOMI.test(t.なか);
+    const 参加 = SANKA.test(t.なか);
+    const 同じ形 = /^\s*author_id\s+uuid/mi.test(t.なか) && 学校 && 自由;
+    // ★★段2 ── ★3つ すべて。
+    if (自由 && 学校 && (既読 || 参加 || 同じ形)) {
+      // ★★★どちらの 連絡か も、★実質で 分けます（★裁定 その124 SAME_PATTERN）。
+      //   ★★これまで `STUDIO = ["org_messages", "org_message_reads"]` と
+      //     ★★名ざしで 書いて いました。★これも 手で 足す 一覧 でした。
+      //   ★★★分かれ目は **参加者の 列** です。
+      //     ★★§6-2 先生どうしの 連絡 …… ★誰が 入るかを 表が 持ちます。
+      //       ★★だから「生徒を 1人も 入れない」が 要に なります。
+      //     ★★§6-1 門下の 連絡 …… ★誰が 読むかは `assignments` が 持ちます。
+      //       ★★表は 参加者を 持ちません（★§6-1「新しい表を 作らない」）。
+      if (参加) 先生どうし.push(t);
+      else 門下.push(t);
+      検査.push(t);
+      return;
+    }
+    const わけ = [];
+    if (!自由) わけ.push("自由に 書ける 列が ない");
+    if (!学校) わけ.push("org_id を 持たない");
+    if (自由 && 学校 && !既読 && !参加 && !同じ形) わけ.push("既読・参加者の 列が ない");
+    対象外.push({ ...t, わけ: わけ.join(" ／ ") });
+  });
+  return { 検査, 先生どうし, 門下, 対象外 };
 }
 
-// ★★★`postings` が、★本当に「やりとりで ない」か（★2026-09-21・裁定 その122）。
-//   ★★もし ここに 書き込みの 列が 増えたら、★やりとりに なって います。
-//   ★★そのときは 外しっぱなしに せず、★この 検査に 戻します。
+// ----------------------------------------------------------------------------
+// ★較正（★裁定 その124 CALIBRATION）。★道具を 先に 試します。
+//   ★★故意に 1件、★条件を 満たす 表を 作って 拾える か。
+//   ★★故意に 1件、★名だけ message の 表を 作って「対象外」に 出る か。
+// ----------------------------------------------------------------------------
 {
-  const い = allSql.indexOf("create table if not exists public.postings");
-  if (い >= 0) {
-    const なか = allSql.slice(い, allSql.indexOf(");", い));
-    assertTrue(!/\bbody\b|\bmessage\b|\breply\b/.test(なか),
-      "★募集に 書き込みの 列が ない（★やりとりでは ない）");
-    assertTrue(!/participant|member_ids|read_at/.test(なか),
-      "★募集に 参加者・既読の 列が ない");
-    assertTrue(!/attachment|file_url|image_url|media|file_path/.test(なか),
-      "★募集に 添付の 列が ない");
-  }
-}
-
-// ★★★`application_messages` が、★本当に「先生どうしの 連絡」で ない か
-//   （★2026-09-21・裁定 その121 段4）。
-//   ★★こちらは **ことばの 往復** ですが、★中身が ちがいます ──
-//     ★★自由に 書ける 列を 持ちません。★決まった 名（template_key）だけ です。
-//   ★★もし ここに 自由文の 列が 増えたら、★別の ものに なって います。
-{
-  const い = allSql.indexOf("create table if not exists public.application_messages");
-  if (い >= 0) {
-    const なか = allSql.slice(い, allSql.indexOf(");", い));
-    assertTrue(/application_id uuid not null/.test(なか),
-      "★応募に ぶら下がって いる（★学校の 連絡では ない）");
-    assertTrue(/template_key text not null/.test(なか),
-      "★ことばは 決まった 名 だけ");
-    assertTrue(!/^\s*(body|message|text|comment|memo)\s+text/m.test(なか),
-      "★自由に 書ける 列が ない");
-    assertTrue(!/attachment|file_url|image_url|media|file_path/.test(なか),
-      "★添付の 列が ない");
-    assertTrue(!/student_id/.test(なか), "★生徒の 列を 持って いない");
-  }
+  const 当 = `create table if not exists public.karibo_threads (
+  id uuid primary key,
+  org_id uuid not null,
+  author_id uuid not null,
+  body text not null,
+  read_at timestamptz
+);`;
+  const 外 = `create table if not exists public.karibo_messages (
+  id uuid primary key,
+  application_id uuid not null,
+  template_key text not null
+);`;
+  const 列で = `create table if not exists public.karibo_nanimo (
+  id uuid primary key,
+  body text not null
+);`;
+  const r1 = 分ける(当);
+  assertTrue(r1.検査.length === 1 && r1.検査[0].名 === "karibo_threads",
+    "★較正 ── ★3つ 満たす 表を 拾う");
+  const r2 = 分ける(外);
+  assertTrue(r2.検査.length === 0 && r2.対象外.length === 1
+    && /自由に 書ける 列が ない/.test(r2.対象外[0].わけ),
+    "★較正 ── ★名だけ message の 表は「対象外」に 出る（わけつき）");
+  const r3 = 分ける(列で);
+  assertTrue(r3.対象外.length === 1 && r3.対象外[0].名 === "karibo_nanimo",
+    "★較正 ── ★名に 当たらなくても、★自由文の 列で 拾う（★網を 広げた）");
+  const r4 = 分ける(`create table if not exists public.karibo_sanka (
+  id uuid primary key,
+  org_id uuid not null,
+  participant_ids uuid[] not null,
+  body text not null
+);`);
+  assertTrue(r4.先生どうし.length === 1 && r4.門下.length === 0,
+    "★較正 ── ★参加者の 列が あれば §6-2（先生どうし）に 分かれる");
+  const r5 = 分ける(`create table if not exists public.karibo_monka (
+  id uuid primary key,
+  org_id uuid not null,
+  author_id uuid not null,
+  body text not null
+);`);
+  assertTrue(r5.門下.length === 1 && r5.先生どうし.length === 0,
+    "★較正 ── ★参加者の 列が 無ければ §6-1（門下）に 分かれる");
+  assertTrue(分ける("create table if not exists public.karibo_kara (id uuid);").検査.length === 0
+    && 分ける("create table if not exists public.karibo_kara (id uuid);").対象外.length === 0,
+    "★較正 ── ★関わりの ない 表は、★どちらにも 出さない");
 }
 
 console.log("=== ★スレッドは、まだ作っていない ===");
-const tables = threadTables();
+const わけ = 分ける(allSql);
+const tables = わけ.検査.map((t) => t.名);
+console.log(`★検査した 表: ${tables.length}件` + (tables.length ? ` … ${tables.join(", ")}` : ""));
+console.log(`★対象外と した 表: ${わけ.対象外.length}件（わけつき）`);
+わけ.対象外.forEach((t) => console.log(`    · ${t.名} …… ${t.わけ}`));
 assertTrue(true, tables.length === 0 ? "スレッドの表は無い" : `スレッドの表: ${tables.join(", ")}`);
+
+// ★★★添付は、★段1 で 拾った **すべて** に 当てます（★裁定 その124「網を 狭めない」）。
+//   ★★これまで、★名ざしで 外した 表には 当たって いませんでした。
+//   ★★対象外に なった ものにも、★添付の 列は 作らせません。
+console.log("\n=== ★添付を 作って いない（★段1 で 拾った ぜんぶ） ===");
+[...わけ.検査, ...わけ.対象外].forEach((t) => {
+  assertTrue(!TENPU.test(t.なか), `★${t.名} に 添付の 列が ない`);
+});
 
 if (tables.length === 0) {
   console.log("\n=== 作り始めたときに守ること（いまは対象なし） ===");
@@ -157,9 +223,12 @@ if (tables.length === 0) {
   //     ★★要る 断りも ちがいます。★見本⑤の 1行です。
   //       「ここに書いたことは、門下の全員と先生、学校の運営の方が読みます。」
   //   ★どちらの 守りも 弱めません。★当てる先を 分けるだけです。
-  const STUDIO = ["org_messages", "org_message_reads"];   // ★§6-1 門下の連絡
-  const teacherThreads = tables.filter((t) => !STUDIO.includes(t));
-  const studioTables = tables.filter((t) => STUDIO.includes(t));
+  // ★★★名ざしを やめました（★裁定 その124 SAME_PATTERN・2026-09-21）。
+  //   ★★分かれ目は 参加者の 列 です。★`分ける()` が 決めます。
+  const teacherThreads = わけ.先生どうし.map((t) => t.名);
+  const studioTables = わけ.門下.map((t) => t.名);
+  console.log(`  ★§6-2 先生どうし: ${teacherThreads.length}件`
+    + ` ／ ★§6-1 門下: ${studioTables.length}件`);
 
   if (teacherThreads.length > 0) {
     // ★★§6-2。★生徒を 1人も 入れないこと。★開示の 断りが 要ること。

@@ -20,8 +20,25 @@ const fs = require("fs");
 const path = require("path");
 
 const ROOT = path.join(__dirname, "..", "..");
-// ★★列ごとの 渡しの ある 表（★2026-09-20 に 台帳で 数えました）。
-const ABUNAI = ["lessons", "org_events"];
+// ★★★列ごとの 渡しの ある 表（★裁定 その124・2026-09-21）。
+//   ★★★手で 並べて いました ── `["lessons", "org_events"]`。
+//     ★★2026-09-21 の 時点で **5つ 増えて いました**（さがすの 5表）。
+//     ★★手で 足す 一覧は、★足し忘れた ぶん を 黙って 見逃します。
+//   ★★★いまは 台帳の 紙（`supabase/*.sql`）から 数えます。
+//     ★★`grant select (…) on public.X` ── ★列を 名指しして 渡して いる 表 です。
+//     ★★足し忘れる ところが ありません。
+function 危ない表() {
+  const dir = path.join(ROOT, "supabase");
+  const 出 = new Set();
+  fs.readdirSync(dir).filter((f) => f.endsWith(".sql")).forEach((f) => {
+    const s = fs.readFileSync(path.join(dir, f), "utf8");
+    const re = /grant\s+select\s*\([^)]*\)\s*\n?\s*on\s+public\.(\w+)/gi;
+    let m;
+    while ((m = re.exec(s)) !== null) 出.add(m[1]);
+  });
+  return [...出].sort();
+}
+const ABUNAI = 危ない表();
 const HOSHI = /\.from\("(\w+)"\)\s*\n?\s*\.select\("\*"/g;
 
 let 数 = 0;
@@ -67,9 +84,30 @@ function みな() {
   assert.ok(!HOSHI.test(よい));
 });
 
-見る("★危ない 表の 名が、★道具と 同じ", () => {
+見る("★危ない 表を、★数えられて いる", () => {
+  // ★★1つも 見つからない なら、★世の中では なく 道具が 壊れて います。
+  assert.ok(ABUNAI.length >= 2, "★紙から 数えられません: " + ABUNAI.join(","));
+  console.log("    ★列ごとの 渡し: " + ABUNAI.length + "表 … " + ABUNAI.join(", "));
+});
+
+見る("★較正 ── ★列ごとの 渡しを 見分ける", () => {
+  const 数え = (s) => {
+    const re = /grant\s+select\s*\([^)]*\)\s*\n?\s*on\s+public\.(\w+)/gi;
+    const 出 = []; let m;
+    while ((m = re.exec(s)) !== null) 出.push(m[1]);
+    return 出;
+  };
+  assert.deepStrictEqual(数え("grant select (id, name) on public.karibo to authenticated;"),
+    ["karibo"], "★列を 名指しした 渡しを 拾う");
+  assert.deepStrictEqual(数え("grant select on public.karibo to authenticated;"),
+    [], "★表ごとの 渡しは 拾わない");
+});
+
+見る("★道具は 台帳に 尋ねて いる（★紙の 記憶では ない）", () => {
   const 道具 = fs.readFileSync(path.join(ROOT, "tools", "star_select_check.py"), "utf8");
-  ABUNAI.forEach((t) => assert.ok(道具.includes(t), "★道具に ありません: " + t));
+  assert.ok(/information_schema\.column_privileges/.test(道具),
+    "★道具が 台帳に 尋ねて いません");
+  assert.ok(/ask_ledger\.py/.test(道具), "★道具が 台帳へ 行って いません");
 });
 
 console.log("\n★" + 数 + "つ 通りました。");
