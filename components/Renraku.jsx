@@ -123,6 +123,49 @@ export default function Renraku({
   });
   const shown = visibleMessages(messages, new Date().toISOString().slice(0, 10));
 
+  // ★★★入口（★裁定 その120・2026-09-21）。★一覧の **外** に 出します。
+  //
+  //   ★★★きょうまで、★この 2つは `list` の 中に ありました。
+  //     ★★`list` は「お知らせ 0件 かつ 門下 0件」の とき、★丸ごと 出して いません。
+  //     ★★★だから、★最初の 1件を 書き始める 口が ありません でした。
+  //       ★★画面には「＋ から 書けます」と 出て いて、★その ＋ が ありません。
+  //       ★★字と 実物が 食い違って います。★機能が 無いのと 同じ です。
+  //   ★★★「0件なら 節ごと 出さない」（★裁定 その73）は **中身** の 話 です。
+  //     ★★入口には 広げません。★入口は 残します。
+  const 入口 = (
+    <div className="space-y-2">
+    {/* ★★おしらせを 書く（★見本①）。
+        ★★書ける方にだけ 出します。★決めるのは lib/renraku.js です。
+          ★★押せるのに 何も 起きないものを 出さない、という 決めです。 */}
+    {onCompose && mayPost({ perms, isAnnouncement: true }) ? (
+      <button type="button" onClick={onCompose}
+        className="w-full"
+        style={{
+          minHeight: 48, borderRadius: 12, border: `1px solid ${C.line}`,
+          background: C.card, color: C.ink, fontSize: "0.90625rem"
+        }}>＋ おしらせを 書く</button>
+    ) : null}
+
+    {/* ★★★未送信（★見本 `P_misou`・お決め D82・2026-09-19）。
+         ★★書ける 方 だけ に 出します（★書けない 方に 下書きは ありません）。
+         ★★★渡されなければ 出しません（★押せない 札を 置きません）。 */}
+    {onGoMisou && mayPost({ perms, isAnnouncement: true }) ? (
+      <button type="button" onClick={onGoMisou}
+        className="w-full"
+        style={{
+          minHeight: 48, marginTop: 6, borderRadius: 12,
+          border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+          fontSize: "0.90625rem", textAlign: "left", padding: "0 14px"
+        }}>
+        {GO_MISOU_LABEL}
+        <span style={{ display: "block", fontSize: "0.78125rem", color: C.inkSoft }}>
+          {GO_MISOU_SUB}
+        </span>
+      </button>
+    ) : null}
+    </div>
+  );
+
   // ★★一覧（★決まりB：★名前と 最終更新だけ。★本文の 抜粋を 出しません）。
   const list = (
     <div className="space-y-2">
@@ -159,36 +202,6 @@ export default function Renraku({
           <p style={small}>{ANNOUNCE_OPEN_HINT}</p>
         </>
       ) : null}
-      {/* ★★おしらせを 書く（★見本①）。
-          ★★書ける方にだけ 出します。★決めるのは lib/renraku.js です。
-            ★★押せるのに 何も 起きないものを 出さない、という 決めです。 */}
-      {onCompose && mayPost({ perms, isAnnouncement: true }) ? (
-        <button type="button" onClick={onCompose}
-          className="w-full"
-          style={{
-            minHeight: 48, borderRadius: 12, border: `1px solid ${C.line}`,
-            background: C.card, color: C.ink, fontSize: "0.90625rem"
-          }}>＋ おしらせを 書く</button>
-      ) : null}
-
-      {/* ★★★未送信（★見本 `P_misou`・お決め D82・2026-09-19）。
-           ★★書ける 方 だけ に 出します（★書けない 方に 下書きは ありません）。
-           ★★★渡されなければ 出しません（★押せない 札を 置きません）。 */}
-      {onGoMisou && mayPost({ perms, isAnnouncement: true }) ? (
-        <button type="button" onClick={onGoMisou}
-          className="w-full"
-          style={{
-            minHeight: 48, marginTop: 6, borderRadius: 12,
-            border: `1px solid ${C.line}`, background: C.card, color: C.ink,
-            fontSize: "0.90625rem", textAlign: "left", padding: "0 14px"
-          }}>
-          {GO_MISOU_LABEL}
-          <span style={{ display: "block", fontSize: "0.78125rem", color: C.inkSoft }}>
-            {GO_MISOU_SUB}
-          </span>
-        </button>
-      ) : null}
-
       <p style={small}>{SECTION_MONKA}</p>
       {(studios || []).map((s) => {
         const on = openStudio === s.teacherId;
@@ -408,6 +421,9 @@ export default function Renraku({
       <div>
       {題}
       {上の帯}
+      {/* ★★★入口は いつも 出します（★裁定 その120・2026-09-21）。
+           ★★空でも 出します。★最初の 1件は、★空の ときに 書く もの です。 */}
+      {入口}
       {空っぽ}
       {空っぽ ? null : (
       <div style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
@@ -456,6 +472,8 @@ export default function Renraku({
     <div>
       {題}
       {上の帯}
+      {/* ★★★入口は いつも 出します（★裁定 その120・2026-09-21）。 */}
+      {入口}
       {空っぽ || list}
       {読んだ断り}
     </div>
