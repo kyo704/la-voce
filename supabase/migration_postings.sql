@@ -145,6 +145,14 @@ as $$
   join public.profiles pr on pr.id = p.owner_user_id
   where p.org_id = p_org_id
     and p.status = 'open'
+    -- ★★★自分の 募集は 返しません（★裁定 その123・2026-09-21）。
+    --   ★★見本は 2つの 節に 分けて います ──
+    --     ★「出ている 募集」…… ★応募する もの
+    --     ★「自分が 出した 募集」…… ★応募を 受ける もの
+    --   ★★性質が ちがいます。★返す 列も ちがいます。
+    --   ★★★画面で 絞りません。★絞り忘れると、
+    --     ★★「自分の 募集に 応募できる」姿が、★一瞬でも 作れて しまいます。
+    and p.owner_user_id <> auth.uid()
     and exists (
       select 1 from public.enrollments e
       where e.org_id = p.org_id
@@ -162,6 +170,50 @@ grant execute on function public.get_postings(uuid) to authenticated;
 comment on function public.get_postings(uuid) is
   '★募集の 一覧（★裁定 その122）。★在籍と 切れて いない ことで 絞ります。'
   '★時間・会場・合わせの 場所は 返しません（★裁定 その94 §4g never_show）。';
+
+-- ----------------------------------------------------------------------------
+-- ★自分が 出した 募集（★裁定 その123）。
+--
+--   ★★★こちらには `matching_visible()` を 通しません。
+--     ★★自分を 切る ことは ありません。★通す 意味が ありません。
+--   ★★門（`postings_select_own`）だけでも 引けます。
+--     ★★それでも 関数に するのは、★見本が「応募が #件 あります」を
+--       ★★出して いる から です。★数は 門だけでは 出せません。
+--
+--   ★★★いまは 数を 返して いません（★NOT_YET）。
+--     ★★`applications` の 表が まだ ありません。★数える もとが ありません。
+--     ★★★0 を 返しません。「応募が 0件 あります」は **嘘** です。
+--       ★★無い ものを、★在る ように 見せません。
+--     ★★★when（外す 条件）── ★`applications` を 作る とき。
+--       ★★そのとき `application_count integer` を この 返りに 足します。
+--       ★★画面の 呼び口は 変わりません。★列が 1つ 増える だけ です。
+-- ----------------------------------------------------------------------------
+create or replace function public.get_my_postings()
+returns table (
+  id uuid,
+  title text,
+  kind text,
+  days text[],
+  status text,
+  created_at timestamptz
+)
+language sql
+stable
+security definer
+set search_path = public, pg_temp
+as $$
+  select p.id, p.title, p.kind, p.days::text[], p.status, p.created_at
+  from public.postings p
+  where p.owner_user_id = auth.uid()
+  order by p.created_at desc
+$$;
+
+revoke all on function public.get_my_postings() from public, anon;
+grant execute on function public.get_my_postings() to authenticated;
+
+comment on function public.get_my_postings() is
+  '★自分が 出した 募集（★裁定 その123）。★matching_visible は 通しません。'
+  '★応募の 数は まだ 返しません（★applications が 無い ため）。';
 
 -- ============================================================================
 -- ★NOT_YET ── ★まだ 列に して いない もの

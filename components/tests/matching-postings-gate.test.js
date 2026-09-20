@@ -70,6 +70,9 @@ function main() {
   t(/p\.org_id = p_org_id/.test(関数), "★学校で 絞って いる");
   t(/public\.matching_visible\(auth\.uid\(\), p\.owner_user_id\)/.test(関数),
     "★切れて いない ことで 絞って いる");
+  // ★★★自分の 募集を 返さない（★裁定 その123・2026-09-21）。
+  //   ★★画面で 絞ると 絞り忘れます。★「自分の 募集に 応募できる」姿を 作りません。
+  t(/p\.owner_user_id <> auth\.uid\(\)/.test(関数), "★自分の 募集を 返さない（★裁定 その123）");
   t(/e\.student_id = auth\.uid\(\)/.test(関数),
     "★在籍は student_id で 見て いる（★enrollments に user_id は ありません）");
   t(/pr\.id = p\.owner_user_id/.test(関数),
@@ -81,6 +84,19 @@ function main() {
   // ★★`matching_visible` の execute は、★この 紙でも 渡しません（★裁定 その122 WHY_NOT_A）。
   t(!/grant execute on function public\.matching_visible/.test(sql),
     "★matching_visible の execute を 渡して いない");
+
+  console.log("=== 四の二 ★自分が 出した 募集（★裁定 その123） ===");
+  const 自分 = (sql.match(/create or replace function public\.get_my_postings[\s\S]*?\$\$;/) || [""])[0];
+  t(自分.length > 0, "get_my_postings が ある");
+  t(/security definer/.test(自分) && /set search_path = public, pg_temp/.test(自分),
+    "★security definer ＋ search_path 固定");
+  t(!/select\s+\*/i.test(自分), "★select * を 書いて いない");
+  t(/p\.owner_user_id = auth\.uid\(\)/.test(自分), "★自分の ものだけ");
+  // ★★こちらに `matching_visible` は 要りません。★自分を 切る ことは ありません。
+  t(!/matching_visible/.test(自分), "★matching_visible を 通して いない（★裁定 その123）");
+  // ★★★数を 0 で 埋めて いない こと。★「応募が 0件」は 嘘に なります。
+  t(!/application_count/.test(自分),
+    "★応募の 数を まだ 返して いない（★applications が 無い ため）");
 
   console.log("=== 五 ★画面が 直に 引いて いない（★裁定 その122） ===");
   const 見る = [];
