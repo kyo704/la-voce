@@ -388,7 +388,7 @@ import { RETENTION_LINES } from "@/lib/paymentRetention";
 //   ★次の レッスン ／ 近い 行事 ／ 先生からの 連絡。
 //   ★★どれも 読むだけ です。★v1 では 既読も 書きません。
 import {
-  LESSON_COLUMNS, EVENT_COLUMNS, MESSAGE_COLUMNS,
+  LESSON_COLUMNS, OPS_LESSON_COLUMNS, EVENT_COLUMNS, MESSAGE_COLUMNS,
   LESSON_FETCH_LIMIT, EVENT_SHOW_LIMIT, MESSAGE_SHOW_LIMIT,
   mergeLessons, lessonsInAttendingOrgs, nextLesson, upcomingEvents, recentMessages,
   eventDateLabel, eventMoved,
@@ -11921,12 +11921,16 @@ export default function VocalTracker({
       const いつ = new Date(`${slot.dateISO}T${String(時).padStart(2, "0")}:`
         + `${String(分).padStart(2, "0")}:00`);
       const 所 = (places || []).find((x) => x && x.name === placeName);
-      const 直し = { scheduled_at: いつ.toISOString() };
-      // ★★場所を 選んで いない ときは、★いまの まま です。★消しません。
-      if (所 && 所.id) 直し.place_id = 所.id;
-      const { data, error } = await supabase.from("lessons")
-        .update(直し).eq("id", lesson.id)
-        .select("id, scheduled_at, place_id");
+      // ★★★表を 直に 書きません（★2026-09-20）。
+      //   ★★`scheduled_at` を 列で 渡すと、★生徒 ご本人 も 自分の 時刻を
+      //     ★★変えられます（★`lessons_student_notice` が 自分の 行を 許します）。
+      //   ★★★だから 道を 通します。★門は 台帳の 側が 見ます。
+      //   ★★場所を 選んで いない ときは `null` を 渡します。★いまの ままに なります。
+      const { data, error } = await supabase.rpc("move_lesson", {
+        p_lesson_id: lesson.id,
+        p_scheduled_at: いつ.toISOString(),
+        p_place_id: 所 && 所.id ? 所.id : null
+      });
       if (error || !data || data.length === 0) throw error || new Error("0行でした");
       await supabase.from("overlap_notices").delete().eq("lesson_id", lesson.id);
       setKasaNotices((prev) => (prev || [])
@@ -11954,9 +11958,10 @@ export default function VocalTracker({
     setKasaBusy(true);
     try {
       const supabase = createClient();
-      const { data, error } = await supabase.from("lessons")
-        .update({ place_id: place.id }).eq("id", lesson.id)
-        .select("id, place_id");
+      // ★★★時刻は 渡しません（`null`）。★場所 だけ を 変えます。
+      const { data, error } = await supabase.rpc("move_lesson", {
+        p_lesson_id: lesson.id, p_scheduled_at: null, p_place_id: place.id
+      });
       if (error || !data || data.length === 0) throw error || new Error("0行でした");
       await supabase.from("overlap_notices").delete().eq("lesson_id", lesson.id);
       setKasaNotices((prev) => (prev || [])
@@ -12834,7 +12839,7 @@ export default function VocalTracker({
   // 指導者プラン実装仕様 §7: レッスン日程。先生・生徒どちらも見られる（teacher_notesとは違い秘匿しない）。
   async function fetchLessonsForLink(linkId) {
     const supabase = createClient();
-    const { data } = await supabase.from("lessons").select("*").eq("link_id", linkId).order("scheduled_at", { ascending: true });
+    const { data } = await supabase.from("lessons").select(OPS_LESSON_COLUMNS).eq("link_id", linkId).order("scheduled_at", { ascending: true });
     setStudentLessons(data || []);
   }
   const [myTeachingLessons, setMyTeachingLessons] = useState([]); // 先生として担当する全生徒のレッスンを統合したもの
@@ -12843,8 +12848,8 @@ export default function VocalTracker({
   async function fetchMyTeachingLessons() {
     const supabase = createClient();
     const [{ data: linkLessons }, { data: orgLessonsData }] = await Promise.all([
-      supabase.from("lessons").select("*, link:teacher_student_links!inner(teacher_id, student_id)").eq("link.teacher_id", userId).order("scheduled_at", { ascending: true }).limit(200),
-      supabase.from("lessons").select("*").eq("teacher_id", userId).order("scheduled_at", { ascending: true }).limit(200)
+      supabase.from("lessons").select(OPS_LESSON_COLUMNS + ", link:teacher_student_links!inner(teacher_id, student_id)").eq("link.teacher_id", userId).order("scheduled_at", { ascending: true }).limit(200),
+      supabase.from("lessons").select(OPS_LESSON_COLUMNS).eq("teacher_id", userId).order("scheduled_at", { ascending: true }).limit(200)
     ]);
     // 旧1:1連携のレッスンは、生徒のIDがlink.student_idの中に入っているので、扱いやすいよう正規化する。
     const normalizedLinkLessons = (linkLessons || []).map((l) => ({ ...l, student_id: l.student_id || (l.link && l.link.student_id) }));
@@ -14476,7 +14481,10 @@ export default function VocalTracker({
       supabase.from("memberships").select("*").eq("org_id", orgId),
       supabase.from("enrollments").select("*").eq("org_id", orgId).eq("status", "active"),
       supabase.from("assignments").select("*").eq("org_id", orgId).is("ended_at", null),
-      supabase.from("lessons").select("*").eq("org_id", orgId).order("scheduled_at", { ascending: true })
+      // ★★★`*` を 使いません（★2026-09-20）。★渡して いない 列が 混ざると
+      //   ★★要求ごと 落ち、★表が 空に なります（★lib/classroomShell.js の 註）。
+      supabase.from("lessons").select(OPS_LESSON_COLUMNS)
+        .eq("org_id", orgId).order("scheduled_at", { ascending: true })
     ]);
     setOrgMembers((prev) => ({ ...prev, [orgId]: members || [] }));
     // ★★役職も、★名簿と 一緒に 読みます（★2026-09-11）。
@@ -14739,8 +14747,8 @@ export default function VocalTracker({
   async function fetchMyAllLessons() {
     const supabase = createClient();
     const [{ data: linkLessons }, { data: orgLessonsData }] = await Promise.all([
-      supabase.from("lessons").select("*, link:teacher_student_links!inner(student_id, teacher_id)").eq("link.student_id", userId).order("scheduled_at", { ascending: true }).limit(100),
-      supabase.from("lessons").select("*").eq("student_id", userId).order("scheduled_at", { ascending: true }).limit(100)
+      supabase.from("lessons").select(OPS_LESSON_COLUMNS + ", link:teacher_student_links!inner(student_id, teacher_id)").eq("link.student_id", userId).order("scheduled_at", { ascending: true }).limit(100),
+      supabase.from("lessons").select(OPS_LESSON_COLUMNS).eq("student_id", userId).order("scheduled_at", { ascending: true }).limit(100)
     ]);
     // 旧1:1連携のレッスンは、先生のIDがlink.teacher_idの中に入っているので、
     // カレンダー・一覧の両方で扱いやすいよう、lessonオブジェクト自身にteacher_idとして持たせる。

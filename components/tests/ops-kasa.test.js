@@ -169,6 +169,43 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.ok(数え >= 3, "★0行でも 通って います: " + 書き + "／" + 数え);
   });
 
+  見る("⑩コマを 動かすのは 道を 通す（★列を 渡さない）", () => {
+    // ★★★`scheduled_at` を 列で 渡すと、★生徒 ご本人 も 自分の 時刻を 変えられます。
+    //   ★★`lessons_student_notice` が「自分の 行」を 許して いるからです。
+    assert.ok(/rpc\("move_lesson"/.test(vt), "★道を 通して いません");
+    const 中 = vt.slice(vt.indexOf("async function handleKasaMove"),
+      vt.indexOf("async function handleSetEnrollmentStatus"));
+    assert.ok(!/from\("lessons"\)\s*\n?\s*\.update/.test(中), "★表を 直に 書いて います");
+    const 紙 = readRaw("supabase", "migration_move_lesson.sql");
+    assert.ok(/security definer/.test(紙), "★道に なって いません");
+    assert.ok(/sched_all/.test(紙) && /sched_mine/.test(紙), "★門が ちがいます");
+    assert.ok(/revoke all on function public\.move_lesson[^\n]*from public, anon/.test(紙),
+      "★先に 取り上げて いません");
+    // ★★較正 ── ★時刻と 場所 いがい を 書いて いない こと。
+    const 体 = 紙.split("$$")[1] || "";
+    ["attendance", "student_id", "teacher_id", "org_id ="].forEach((語) =>
+      assert.ok(!new RegExp("set[\\s\\S]{0,120}" + 語).test(体), "★よその 列を 書いて います: " + 語));
+  });
+
+  見る("⑪レッスンの 列を 名ざしで 引く（★`*` を 使わない）", () => {
+    // ★★★2026-09-20 の 実機 ── ★日程の 表が いつも 空 でした。
+    //   ★★`lessons` は 列ごと の 渡し です。★渡して いない 列が 混ざると
+    //     ★★**要求ごと** 落ちます。★0行では なく、★`data` が null に なります。
+    //   ★★`place_id` `kind` を 足した 日から、★`select("*")` は 1度も 通って いません。
+    assert.ok(!/from\("lessons"\)\.select\("\*"/.test(vt), "★`*` で 引いて います");
+    assert.ok(/OPS_LESSON_COLUMNS/.test(vt), "★名ざしで 引いて いません");
+    const shell = readCode("lib", "classroomShell.js");
+    assert.ok(!/OPS_LESSON_COLUMNS[\s\S]{0,200}created_by/.test(shell),
+      "★使わない 列を 引いて います");
+    ["place_id", "kind"].forEach((列) =>
+      assert.ok(new RegExp(列).test(shell.slice(shell.indexOf("OPS_LESSON_COLUMNS"))),
+        "★足りない 列: " + 列));
+    // ★★渡し（grant）も 一緒に 足して ある こと。
+    const 渡し = readRaw("supabase", "migration_lessons_column_grant.sql");
+    assert.ok(/grant select \(place_id, kind\) on table public\.lessons to authenticated/
+      .test(渡し), "★渡しを 足して いません");
+  });
+
   見る("⑨しるしを 作らない（★読めない ときに 空を 埋めない）", () => {
     const 中 = vt.slice(vt.indexOf("async function fetchKasaNotices"),
       vt.indexOf("async function handleKasaMark"));
