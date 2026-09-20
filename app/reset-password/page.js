@@ -123,7 +123,9 @@ export default function ResetPasswordPage() {
         )}
 
         {ready === "ok" && status !== "done" && (
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          // ★★`method="post"`（★2026-09-20）。★仕掛けが 動く 前に 送られても、
+          //   ★★新しい 合言葉が 住所に 残りません。
+          <form method="post" onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <p style={{ fontSize: "0.8125rem", color: "#6b5d52", margin: 0 }}>{tr("lead")}</p>
             {/* ★★autocomplete="new-password" を外さないこと（訂正2 §4）。 */}
             <input required type="password" name="new-password" autoComplete="new-password" placeholder={tr("ph1")}

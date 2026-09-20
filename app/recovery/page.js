@@ -149,7 +149,8 @@ export default function RecoveryPage() {
       </p>
 
       {/* ★★本物の form にします。★端末が、アドレスを差し出してくれます。 */}
-      <form onSubmit={submit}>
+      {/* ★★`method="post"`（★2026-09-20）。★合言葉を 住所に 残しません。 */}
+      <form method="post" onSubmit={submit}>
         <p style={label}>いままでのメールアドレス</p>
         <input type="email" name="email" autoComplete="email" inputMode="email"
           value={oldEmail} onChange={(e) => setOldEmail(e.target.value)}

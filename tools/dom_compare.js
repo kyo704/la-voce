@@ -149,7 +149,7 @@ function calibrate() {
     console.error("★止まりました ── ★道具の 較正に 落ちました");
     process.exit(1);
   }
-  const 選 = process.argv.slice(2);
+  const 選 = process.argv.slice(2).filter((x) => !x.startsWith("--"));
   const 的 = MAP.screens.filter((s) => 選.length === 0 || 選.includes(s.key));
   const { chromium } = require(path.join(ROOT, "node_modules/playwright"));
   const b = await chromium.launch({ channel: "chrome" });
@@ -164,12 +164,27 @@ function calibrate() {
 
   // ── ★実機 ──
   const ap = await ctx.newPage();
-  const base = env.E2E_BASE_URL || "https://woolsong.app";
-  await ap.goto(base + "/login", { waitUntil: "domcontentloaded" });
+  // ★★★手元の 開発サーバも 見られます（★2026-09-20・坂本さんの お決め D112）。
+  //   ★★`node tools/dom_compare.js --local` ── ★http://localhost:3000
+  //   ★★★配備を 待たずに 測れます。★きょう、★印を 足しても 測れません でした。
+  //     ★★本番は「出た もの」、★手元は「いま 書いた もの」。★別の ものを 見ます。
+  //   ★★どちらを 見たかを、★報告の 頭に 必ず 書きます。★取り違えない ため です。
+  const ローカル = process.argv.includes("--local");
+  const base = ローカル ? (process.env.E2E_LOCAL_URL || "http://localhost:3000")
+    : (env.E2E_BASE_URL || "https://woolsong.app");
+  // ★★★手元の サーバは、★はじめの 1回だけ 組み立てに 時間が かかります。
+  //   ★★先に 開いて 温めて おきます。★待ち時間も 長めに します。
+  const 待ち = ローカル ? 180000 : 45000;
+  if (ローカル) {
+    await ap.goto(base + "/dashboard", { waitUntil: "domcontentloaded", timeout: 180000 })
+      .catch(() => {});
+    await ap.waitForTimeout(2000);
+  }
+  await ap.goto(base + "/login", { waitUntil: "domcontentloaded", timeout: 待ち });
   await ap.locator('input[type="email"]').first().fill(env.E2E_EMAIL);
   await ap.locator('input[type="password"]').first().fill(env.E2E_PASSWORD);
   await ap.locator('button[type="submit"], button:has-text("ログイン")').first().click();
-  await ap.waitForURL(/\/dashboard/, { timeout: 45000 });
+  await ap.waitForURL(/\/dashboard/, { timeout: 待ち });
   await ap.waitForTimeout(3000);
   for (let i = 0; i < 4; i++) {
     if (!(await ap.locator('[role="dialog"]').count())) break;
@@ -290,6 +305,9 @@ function calibrate() {
   L.append = (s) => L.push(s);
   L.push("# ★段3a ── ★見本と 実機の 骨組み くらべ\n");
   L.push("★この 紙は `tools/dom_compare.js` が 書きました。★手で 足して いません。");
+  L.push(`★見た 先 …… ${base}`
+    + `（${ローカル ? "★手元の 開発サーバ ── いま 書いた もの"
+      : "★本番 ── 出た もの"}）`);
   L.push("★道具の 較正 …… ○（★同じ もので 0件、★1つ 抜くと 1件、★並べ替えで 1件）\n");
   L.push(`★くらべた 画面 ${出.filter((x) => !x.err).length} ／ `
     + `★道が 無くて くらべて いない 画面 ${MAP.skip.length}\n`);
