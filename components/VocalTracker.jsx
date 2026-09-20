@@ -182,6 +182,9 @@ import OpsMonkaChange from "@/components/OpsMonkaChange";
 import OpsRetireTeacher from "@/components/OpsRetireTeacher";
 import OpsMada from "@/components/OpsMada";
 import OpsMisou from "@/components/OpsMisou";
+import OpsEvalItems from "@/components/OpsEvalItems";
+// ★★採点の 決めごとは lib が 持ちます（★裁定 その105）。
+import { FAILED_LINE as EVAL_FAILED } from "@/lib/evaluation";
 import GuardianAsk from "@/components/GuardianAsk";
 import GuardianWithdraw from "@/components/GuardianWithdraw";
 // ★★保護者の 同意の 字は lib が 持ちます（★裁定 その107）。
@@ -10468,6 +10471,8 @@ export default function VocalTracker({
     if (opsFixOn) void fetchOrgDetail(opsOrgId);
     void fetchRenrakuStudios(opsOrgId);
     void fetchRenraku(opsOrgId, null);
+    // ★★評価の 型（★裁定 その105・2026-09-20）。★門は 台帳が 見ます。
+    void fetchEvalItems(opsOrgId);
     // ★★★ご請求（★2026-09-19）。
     //   ★★きょうまで `fetchOrgDetail` の 中 だけ に ありました。
     //     ★★あれは 直しの 門（`opsFixOn`）の 中でしか 走りません。
@@ -12960,6 +12965,11 @@ export default function VocalTracker({
   // ★★★ご自分の 同意の 行（★2026-09-20・坂本さんの ご指摘）。
   //   ★★「まだ 押されて いない」ものを「取り消す」と 出さない ため です。
   const [guardianRows, setGuardianRows] = useState([]);
+  // ★★★評価の 型（★裁定 その105・2026-09-20）。
+  const [evalItems, setEvalItems] = useState([]);
+  const [evalCounts, setEvalCounts] = useState({});
+  const [evalBusy, setEvalBusy] = useState(false);
+  const [evalError, setEvalError] = useState("");
   const [opsAttendanceError, setOpsAttendanceError] = useState("");
   /**
    * ★その 教室の 運営に 入れるか（★入口の 門）。
@@ -13326,6 +13336,99 @@ export default function VocalTracker({
     const 表 = {};
     (data || []).forEach((r) => { 表[r.student_id] = r.free_count; });
     setMonkaFree(表);
+  }
+
+  /**
+   * ★評価の 型を 読みます（★裁定 その105 §Q3・2026-09-20）。
+   *
+   *   ★★決まりは「学校の 方は 読める・`saiten` が 直せる」です。
+   *   ★★点の 数も 一緒に 数えます（★型を 変えて よいかの 分かれ目）。
+   */
+  async function fetchEvalItems(orgId) {
+    if (!orgId) return;
+    const supabase = createClient();
+    const [i, s] = await Promise.all([
+      supabase.from("evaluation_items")
+        .select("id, name, max_points, step, note, in_use, ord")
+        .eq("org_id", orgId).order("ord", { ascending: true }),
+      supabase.from("evaluation_scores").select("item_id").eq("org_id", orgId)
+    ]);
+    if (i.error) console.error("★評価の型を 読めませんでした:", i.error);
+    if (s.error) console.error("★点の数を 読めませんでした:", s.error);
+    setEvalItems(i.error ? [] : (i.data || []));
+    const 表 = {};
+    (s.error ? [] : (s.data || [])).forEach((r) => {
+      表[r.item_id] = (表[r.item_id] || 0) + 1;
+    });
+    setEvalCounts(表);
+  }
+
+  /** ★型を 足す・直す（★点が 入った あとは 呼びません。★画面が 止めます）。 */
+  async function handleSaveEvalItem(orgId, id, form) {
+    setEvalError("");
+    setEvalBusy(true);
+    try {
+      const supabase = createClient();
+      const 中身 = {
+        org_id: orgId, name: form.name, max_points: form.max_points,
+        step: form.step, note: form.note
+      };
+      const q = id
+        ? supabase.from("evaluation_items").update(中身).eq("id", id).select("id")
+        : supabase.from("evaluation_items")
+          .insert({ ...中身, created_by: userId, ord: (evalItems || []).length })
+          .select("id");
+      const { data, error } = await q;
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      await fetchEvalItems(orgId);
+      return true;
+    } catch (e) {
+      console.error("★評価の型を 直せませんでした:", e);
+      setEvalError(EVAL_FAILED);
+      return false;
+    } finally {
+      setEvalBusy(false);
+    }
+  }
+
+  /** ★「使わない に する」／「もどす」。★点は 残ります。 */
+  async function handleSetEvalInUse(orgId, id, on) {
+    setEvalError("");
+    setEvalBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("evaluation_items")
+        .update({ in_use: on }).eq("id", id).select("id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      await fetchEvalItems(orgId);
+      return true;
+    } catch (e) {
+      console.error("★評価の型を 直せませんでした:", e);
+      setEvalError(EVAL_FAILED);
+      return false;
+    } finally {
+      setEvalBusy(false);
+    }
+  }
+
+  /** ★消す（★点も 消えます。★画面が 一度 お尋ねして います）。 */
+  async function handleDeleteEvalItem(orgId, id) {
+    setEvalError("");
+    setEvalBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from("evaluation_items")
+        .delete().eq("id", id).select("id");
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      await fetchEvalItems(orgId);
+      return true;
+    } catch (e) {
+      console.error("★評価の型を 消せませんでした:", e);
+      setEvalError(EVAL_FAILED);
+      return false;
+    } finally {
+      setEvalBusy(false);
+    }
   }
 
   /**
@@ -15799,6 +15902,22 @@ export default function VocalTracker({
                           error={divisionError}
                           onAdd={(row) => handleAddDivision(opsOrgId, row)}
                           onRemove={(row) => handleRemoveDivision(opsOrgId, row)} />
+                      ) : null,
+                      /* ★★★評価の 型（★見本 `stSaiten`・裁定 その105 §Q3）。
+                           ★★決めるのは 学校（`master` ／ `saiten`）です。
+                           ★★先生は 見るだけ です。 */
+                      saiten: canOps(gate, "master") || canOps(gate, "saiten") ? (
+                        <div style={{ marginTop: 16 }}>
+                          <OpsEvalItems
+                            items={evalItems}
+                            countOf={(it) => evalCounts[it.id] || 0}
+                            perms={gate}
+                            busy={evalBusy}
+                            error={evalError}
+                            onSave={(id, form) => handleSaveEvalItem(opsOrgId, id, form)}
+                            onSetInUse={(id, on) => handleSetEvalInUse(opsOrgId, id, on)}
+                            onDelete={(id) => handleDeleteEvalItem(opsOrgId, id)} />
+                        </div>
                       ) : null,
                       jugyo: maySeePresets(gate) ? (
                   <div style={{ marginTop: 16 }}>
