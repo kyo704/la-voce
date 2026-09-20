@@ -208,7 +208,10 @@ export default function OpsShell({ orgName, role, postName, myName,
             ★★★勝手に 移りません。★中身が 押された ときだけ です。
             ★★出て いない 帯には 移りません（★下の `tabs.some`）。
               ★★できことの 無い 帯に 移ると、★空の 画面が 出ます。 */}
-        <div className="space-y-3">
+        {/* ★★★`data-ops-body` …… ★骨組みを くらべる 道具の 目じるし（★段3a・2026-09-20）。
+             ★★帯や「もどる」を 混ぜずに、★中身だけ を 取り出す ため です。
+             ★★見た目は 変わりません。 */}
+        <div className="space-y-3" data-ops-body="1">
           {renderTab
             ? renderTab(cur, (key) => { if (tabs.some((t) => t.key === key)) setTab(key); })
             : children}
