@@ -85,6 +85,12 @@ def scan_sql():
       if not f.endswith(".sql"):
         continue
       rel = os.path.relpath(os.path.join(root, f), ROOT)
+      # ★★★道具が 作った 紙は 見ません（★2026-09-20）。
+      #   ★★`supabase/generated/` は、★本番の 姿を 写した もの です。
+      #   ★★私たちが 書いた 決めでは ありません。★数えると 二重に なります。
+      #     ★★実際、★写した 中に ある 読み道が「混ざって いる」に 入りました。
+      if "/generated/" in rel.replace("\\", "/"):
+        continue
       retired = "/retired/" in rel.replace("\\", "/")
       s = io.open(os.path.join(root, f), encoding="utf-8").read()
       for m in re.finditer(

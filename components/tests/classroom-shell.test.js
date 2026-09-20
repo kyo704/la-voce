@@ -146,7 +146,12 @@ if (missing.length) {
   const shell = blk;
   t(!/org_message_reads/.test(shell), "殻が org_message_reads に 触れて いない");
   const shellSrc = readCode("lib", "classroomShell.js");
-  t(!/insert|update|upsert|delete/.test(shellSrc), "この 一枚は 書く 道を 1つも 持たない");
+  // ★★★語を 数えて いました（★2026-09-20 に 落ちました）。
+  //   ★★`updated_at` という **列の 名** が `update` に 当たりました。
+  //   ★★書く 道では ありません。★引く 列の 名 です。
+  //   ★★★見るのは「書く **呼び出し**」です ── ★`.insert(` `.update(` など。
+  t(!/\.(insert|update|upsert|delete)\s*\(/.test(shellSrc),
+    "この 一枚は 書く 道を 1つも 持たない");
 
   console.log("\n④-2 ★★渡した 子が、★本当に 出て いること");
   // ★★★2026-09-15、★ここで つまずきました。

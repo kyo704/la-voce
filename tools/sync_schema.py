@@ -235,7 +235,10 @@ def main():
     L.extend(あと)
     L.append("")
 
-  p = ROOT / "supabase" / "sync_to_test.sql"
+  # ★★道具が 作った 紙は `generated/` に 置きます。
+  #   ★★ほかの 見張りが「私たちの 決め」と 取り違えない ため です。
+  (ROOT / "supabase" / "generated").mkdir(parents=True, exist_ok=True)
+  p = ROOT / "supabase" / "generated" / "sync_to_test.sql"
   p.write_text("\n".join(L) + "\n", encoding="utf-8")
   print(f"★足す 表 {len(足す表)} ／ ★足す 列 {足した列} ／ ★足す 読み道 {len(足す関)}")
   print("FILE:", p)
