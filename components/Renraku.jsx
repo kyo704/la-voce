@@ -116,7 +116,7 @@ export default function Renraku({
   const boxRef = useRef(null);
 
   const canWrite = mayPost({
-    role,
+    perms,
     isTeacher: isTeacherOf ? isTeacherOf(openStudio) : false,
     isMember: isMemberOf ? isMemberOf(openStudio) : false,
     isAnnouncement: false
@@ -162,7 +162,7 @@ export default function Renraku({
       {/* ★★おしらせを 書く（★見本①）。
           ★★書ける方にだけ 出します。★決めるのは lib/renraku.js です。
             ★★押せるのに 何も 起きないものを 出さない、という 決めです。 */}
-      {onCompose && mayPost({ role, isAnnouncement: true }) ? (
+      {onCompose && mayPost({ perms, isAnnouncement: true }) ? (
         <button type="button" onClick={onCompose}
           className="w-full"
           style={{
@@ -174,7 +174,7 @@ export default function Renraku({
       {/* ★★★未送信（★見本 `P_misou`・お決め D82・2026-09-19）。
            ★★書ける 方 だけ に 出します（★書けない 方に 下書きは ありません）。
            ★★★渡されなければ 出しません（★押せない 札を 置きません）。 */}
-      {onGoMisou && mayPost({ role, isAnnouncement: true }) ? (
+      {onGoMisou && mayPost({ perms, isAnnouncement: true }) ? (
         <button type="button" onClick={onGoMisou}
           className="w-full"
           style={{
@@ -372,7 +372,7 @@ export default function Renraku({
   const 空っぽ = isEmptyBoard(announcements, studios) ? (
     <div style={{ ...card, textAlign: "center", padding: "26px 15px" }}>
       <p style={{ fontSize: "0.96875rem", color: C.ink, margin: 0 }}>{EMPTY_HEAD}</p>
-      {onCompose && mayPost({ role, isAnnouncement: true }) ? (
+      {onCompose && mayPost({ perms, isAnnouncement: true }) ? (
         <p style={{ ...small, marginTop: 6 }}>{EMPTY_HOW}</p>
       ) : null}
     </div>

@@ -129,7 +129,8 @@ function t(cond, label) {
   t(R.EMPTY_HEAD.includes("ありません"), "何が 無いかを 書いて いる");
   t(R.EMPTY_HOW.includes("＋"), "何を すると 埋まるかを 書いて いる");
   // ★★★2行目は、★書ける 方に だけ。
-  t(/\{onCompose && mayPost\(\{ role, isAnnouncement: true \}\) \? \(\s*\n\s*<p style=\{\{ \.\.\.small, marginTop: 6 \}\}>\{EMPTY_HOW\}/.test(生),
+  // ★★2026-09-20、★`role` を `perms` に 替えました（★台帳 08-1e ①）。
+  t(/\{onCompose && mayPost\(\{ perms, isAnnouncement: true \}\) \? \(\s*\n\s*<p style=\{\{ \.\.\.small, marginTop: 6 \}\}>\{EMPTY_HOW\}/.test(生),
     "★2行目は 書ける 方に だけ 出す");
   // ★★★見本の 覚え書き は 出しません。
   t(!本文.includes("白紙に しません"), "★作り手への 覚えを 画面に 出して いない");

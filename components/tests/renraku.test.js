@@ -93,7 +93,15 @@ function eq(a, b, label) {
   eq(m.mayPost({ role: "admin", isTeacher: false, isMember: false }), false, "★admin も 書けない");
   eq(m.mayPost({ role: null, isTeacher: true }), true, "先生は 書ける");
   eq(m.mayPost({ role: null, isMember: true }), true, "門下の 学生は 書ける");
-  eq(m.mayPost({ role: "owner", isAnnouncement: true }), true, "★おしらせは owner が 書ける");
+  // ★★★2026-09-20、★できこと に 揃えました（★台帳 08-1e ①）。
+  //   ★★役職の 名では なく `renraku_all` で 見ます。
+  //   ★★学校が「広報」の 役職に 付けても 通る ように なりました。
+  eq(m.mayPost({ perms: ["renraku_all"], isAnnouncement: true }), true,
+    "★おしらせは `renraku_all` を 持つ 方が 書ける");
+  eq(m.mayPost({ perms: ["meibo"], isAnnouncement: true }), false,
+    "★持たない 方は 書けない");
+  eq(m.mayPost({ perms: null, isAnnouncement: true }), false,
+    "★役職が 無ければ 書けない");
   eq(m.mayPost({ role: null, isMember: true, isAnnouncement: true }), false, "★学生は おしらせを 書けない");
   // ★★★2026-09-18、★この 2つの 字を 外しました（★裁定 その88 Q1）。
   //   ★★出して いた 門が **役割の 名**（owner／admin）の まま でした。
@@ -142,8 +150,10 @@ function eq(a, b, label) {
     "★lib が 語を 探していない");
 
   console.log("\n=== ⑥ 開いた記録 ===");
-  eq(m.shouldLogRead({ role: "owner" }), true, "★運営が 開いたら 残す");
-  eq(m.shouldLogRead({ role: "admin" }), true, "★管理者も 残す");
+  // ★★★2026-09-20、★できこと に 揃えました（★台帳 08-1e ②）。
+  //   ★★残すのは「門下を 読む できこと」で 開いた とき です。
+  eq(m.shouldLogRead({ perms: ["monka_read"] }), true, "★`monka_read` で 開いたら 残す");
+  eq(m.shouldLogRead({ perms: ["renraku_all"] }), false, "★持たない 方は 残さない");
   eq(m.shouldLogRead({ role: null, isTeacher: true }), false, "★先生は 残さない（★自分の 門下）");
   eq(m.shouldLogRead({ role: null, isMember: true }), false, "★学生も 残さない");
   eq(m.shouldLogRead({ role: "owner", isTeacher: true }), false, "★自分の 門下なら 残さない");

@@ -198,7 +198,7 @@ import OpsKasaFix from "@/components/OpsKasaFix";
 import {
   AFTER_TELL, AFTER_CLOSE, AFTER_UNDO, lessonIdsOf as kasaLessonIds, moveTargets
 } from "@/lib/opsKasa";
-import { overlapsOf } from "@/lib/opsSchedule";
+import { overlapsOf, isScheduleTeacher } from "@/lib/opsSchedule";
 // ★★★「読めなかった」の 字は lib/readFail.js が 1つ 持ちます（★2026-09-20）。
 //   ★★検査4 が、★断りを 空の 一覧に 変えて いる ところを 13か所 数えました。
 import { rowsOf, readFailedLine } from "@/lib/readFail";
@@ -16239,7 +16239,10 @@ export default function VocalTracker({
             //     ★★★この 行を 次に 触る 日が 引き金 です。
             //       ★★`docs/ledgers/08-保留している決め.md` の 08-1c を
             //       ★★先に お読み ください。★直し方は `canOps` に 替える だけ です。
-            const SCHEDULE_ROLES = ["teacher", "owner", "admin"];
+            // ★★★2026-09-20、★できこと で 選ぶ ように しました（★台帳 08-1c）。
+            //   ★★もと … `const SCHEDULE_ROLES = ["teacher", "owner", "admin"];`
+            //   ★★決めは lib/opsSchedule.js の `isScheduleTeacher` が 持ちます。
+            const 日程に立つ = (mm) => isScheduleTeacher(permsOfMember(mm, opsPostsById));
             // ★★2026-09-13、★ここで 運営モードが 落ちて いました。
             //   ★実機の ご報告 ──「Cannot access 'l' before initialization」。
             //   ★★下の「日程」の 枝が、★この 並びを 使って います。
@@ -16546,7 +16549,7 @@ export default function VocalTracker({
               // ★★日程（★見本②⑥⑧⑨⑩）。★1つの日程を、3つの 見せ方で。
               //   ★★渡すのは 1つの 並びだけです。★見せ方は あちらが 決めます。
               const teacherList = opsMembers
-                .filter((mm) => SCHEDULE_ROLES.includes(mm.role))
+                .filter(日程に立つ)
                 .map((mm) => ({ id: mm.user_id }));
               const week = [];
               for (let i = 0; i < 7; i++) week.push(addDaysISO(opsDate, i - 3));
@@ -16633,7 +16636,7 @@ export default function VocalTracker({
                       setOpsAttendanceLesson(l);
                     }
                     : undefined}
-                  teacherCount={opsMembers.filter((mm) => SCHEDULE_ROLES.includes(mm.role)).length}
+                  teacherCount={opsMembers.filter(日程に立つ).length}
                   nameOf={(id) => orgDisplayName(id) || ""}
                   studentNameOf={(id) => orgDisplayName(id) || ""}
                   // ★★★節 4つ と 数の 札（★2026-09-19・★見本くらべ D1・D2）。
@@ -16846,7 +16849,7 @@ export default function VocalTracker({
                     void fetchRenraku(opsOrgId, tid);
                     void fetchRenrakuReads(tid);
                     // ★★運営の方が 開いた ときだけ 残します。
-                    if (shouldLogRead({ role, isTeacher: tid === userId, isMember: false })) {
+                    if (shouldLogRead({ perms: gate, isTeacher: tid === userId, isMember: false })) {
                       void logRenrakuRead(opsOrgId, tid, role);
                     }
                   }}
@@ -17118,7 +17121,7 @@ export default function VocalTracker({
                       // ★★当てる 先は、★門下を 持つ 方（★先生）です。
                       //   ★★`SCHEDULE_ROLES` と 同じ 並び を 使います。
                       teachers={(orgMembers[opsOrgId] || [])
-                        .filter((mm) => SCHEDULE_ROLES.includes(mm.role))
+                        .filter(日程に立つ)
                         .map((mm) => ({ id: mm.user_id }))}
                       perms={gate}
                       teacherNameOf={(id) => orgDisplayName(id) || ""}
