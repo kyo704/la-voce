@@ -172,5 +172,26 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     }
   });
 
+  見る("★先生の 予定の 見比べが、★ほんとうに 一致する", () => {
+    // ★★★2026-09-20 に 見つけました。★画面の 約束が 一度も はたらいて いません。
+    //   ★★`openSlots` は `${曜日}-${コマの番号}` で 見比べます。
+    //   ★★`get_my_busy_slots` は `period_id`（`my_periods.id`）を 返します。
+    //   ★★★`get_teacher_periods` が 番号を 返して いません でした。
+    //     ★★片方が いつも `undefined` で、★1度も 一致しません でした。
+    const fs = require("fs"), path = require("path");
+    const 蔵 = (名) => fs.readFileSync(
+      path.join(__dirname, "..", "..", "supabase", 名), "utf8");
+    const 新 = 蔵("migration_teacher_periods_id.sql");
+    assert.ok(/returns table \(id uuid,/.test(新), "★番号を 返して いません");
+    assert.ok(/select p\.id, p\.ord/.test(新), "★番号を 引いて いません");
+    // ★★較正 ── ★古い 紙は 番号を 返して いません（★見張りが 効いて いる 証）。
+    assert.ok(!/returns table \(id uuid,/.test(蔵("migration_teacher_periods.sql")),
+      "★較正が 効いて いません");
+    // ★★見比べる 2つが、★同じ ものを 指して いる こと。
+    const kumu = readCode("lib", "opsKumu.js");
+    assert.ok(/\$\{b\.weekday\}-\$\{b\.period_id\}/.test(kumu), "★予定の 鍵が ちがいます");
+    assert.ok(/\$\{di\}-\$\{p\.id\}/.test(kumu), "★コマの 鍵が ちがいます");
+  });
+
   console.log("\n★" + 数 + "つ 通りました。");
 })().catch((e) => { console.error("★止まりました ──", e.message); process.exit(1); });
