@@ -16302,8 +16302,12 @@ export default function VocalTracker({
                   ? { attendance: r.mark, attendance_at: at, attendance_by: userId }
                   : { attendance: null, attendance_at: null, attendance_by: null };
                 // ★★★`.select()` を 付けます。★0行に 当たっても 成功に 見えます。
-                const { data, error } = await supabase.from("lessons")
-                  .update(patch).eq("id", r.lesson.id).select("id");
+                // ★★★台帳の 道を 通します（★裁定 その115 Q1・2026-09-20）。
+                //   ★★列の 渡しを 取り上げました。★直には 書けません。
+                //   ★★門は 台帳が 見ます（`has_can(学校, 'shukketsu')`）。
+                const { data, error } = await supabase.rpc("mark_attendance", {
+                  p_lesson_id: r.lesson.id, p_status: r.mark || null
+                });
                 if (error || !data || data.length === 0) {
                   console.error("★出欠を つけられません でした:", { id: r.lesson.id, error });
                   setOpsAttendanceError("いま、つけられませんでした。");
@@ -16329,8 +16333,10 @@ export default function VocalTracker({
               const supabase = createClient();
               // ★★★`.select()` を 付けます。★0行に 当たっても 成功に 見えます。
               //   ★★2026-09-08、★まさに これで 静かに 壊れました。
-              const { data, error } = await supabase.from("lessons")
-                .update(patch).eq("id", lesson.id).select("id");
+              // ★★★台帳の 道を 通します（★裁定 その115 Q1・2026-09-20）。
+              const { data, error } = await supabase.rpc("mark_attendance", {
+                p_lesson_id: lesson.id, p_status: status || null
+              });
               if (error || !data || data.length === 0) {
                 console.error("★出欠を つけられません でした:", { id: lesson.id, error });
                 setOpsAttendanceError("いま、つけられませんでした。");

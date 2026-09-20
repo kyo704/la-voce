@@ -140,8 +140,13 @@ function t(cond, label) {
   t(親.includes("isBulk(同じコマ) && !opsAttendanceOne"), "2つ 以上 なら まとめて");
   t(親.includes("onOpenOne={(l) => setOpsAttendanceOne(l.id)}"), "★お名前を 押すと 1人へ");
   t(親.includes("const onOpsSaveBulk = async"), "まとめて 書く 道が ある");
-  t(/\.update\(patch\)\.eq\("id", r\.lesson\.id\)\.select\("id"\)/.test(親),
-    "★`.select()` が 付いて いる（★静かな 0行を 作らない）");
+  // ★★★2026-09-20、★台帳の 道を 通す ように しました（★裁定 その115 Q1）。
+  //   ★★列の 渡しを 取り上げた ので、★画面から 直には 書けません。
+  //   ★★見るのは「0行を 成功に して いない こと」です。★書き方では ありません。
+  t(/rpc\("mark_attendance", \{[\s\S]{0,120}p_lesson_id: r\.lesson\.id/.test(親),
+    "★台帳の 道を 通して いる");
+  t(/if \(error \|\| !data \|\| data\.length === 0\)/.test(親),
+    "★0行を 成功に して いない");
   // ★★★開く たびに、★前の「1人」を 持ち越さない こと。
   t((親.match(/setOpsAttendanceOne\(null\)/g) || []).length >= 4,
     "★開く／閉じる ときに 消して いる");

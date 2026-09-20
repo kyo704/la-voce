@@ -123,8 +123,10 @@ function ok(cond, 名) {
   const 手 = 本体.slice(本体.indexOf("const onOpsMark = async"),
     本体.indexOf("const onOpsMark = async") + 2000);
   ok(手.length > 100, "★つける 手を 切り出せた");
-  ok(/\.select\("id"\)/.test(手),
-    "つける ときに .select() を 付けて いる（★静かな 0行を 作らない）");
+  // ★★★2026-09-20、★台帳の 道を 通す ように しました（★裁定 その115 Q1）。
+  //   ★★門は 台帳が 見ます（`has_can(学校, 'shukketsu')`）。
+  //   ★★返りが 0行 なら、★通らなかった と いう こと です。
+  ok(/rpc\("mark_attendance"/.test(手), "★台帳の 道を 通して いる");
   ok(/if \(error \|\| !data \|\| data\.length === 0\)/.test(手),
     "★0行を 誤りとして 扱って いる");
   ok(/data\.length === 0/.test(本体), "0行なら 誤りに する");
