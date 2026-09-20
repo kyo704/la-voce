@@ -1,9 +1,23 @@
 {
   "extends": "next/core-web-vitals",
-  "env": { "browser": true, "es2022": true, "node": true },
-  "parserOptions": { "ecmaVersion": 2022, "sourceType": "module" },
+  "env": {
+    "browser": true,
+    "es2022": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module"
+  },
   "rules": {
-    "no-undef": "error"
+    "no-undef": "error",
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "CallExpression[callee.property.name='select'][arguments.0.value='*']",
+        "message": "★`select(\"*\")` を 使わないで ください。★列を 名ざしで 並べます（★lib/dbColumns.js）。★列ごとの 渡しの ある 表では、★`*` は 0行では なく **要求ごと** 落ちます（★2026-09-20・lessons と org_events）。★わざと 使う ときは、★その 行に わけを 書いて `// eslint-disable-next-line no-restricted-syntax` を 置いて ください。"
+      }
+    ]
   },
   "ignorePatterns": [
     "/VocalTracker.jsx",

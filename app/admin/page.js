@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { COLS_SUBSCRIPTIONS } from "@/lib/dbColumns";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { C } from "@/lib/tokens";
 import { getUserWithTimeout } from "@/lib/withTimeout";
@@ -65,7 +66,7 @@ export default async function AdminPage() {
     .from("profiles")
     .select("id, name, email, occupation, school, created_at, is_admin, is_tester, cohort, survey_day7_response, pwa_install_prompted_at, pwa_installed_at, onboarding_completed")
     .order("created_at", { ascending: false });
-  const { data: subs } = await admin.from("subscriptions").select("*");
+  const { data: subs } = await admin.from("subscriptions").select(COLS_SUBSCRIPTIONS);
 
   // ---- 確認済みかどうか（auth.users にしかありません） ----
   //   ★profiles には確認の状態がありません。email_confirmed_at は auth.users 側です。

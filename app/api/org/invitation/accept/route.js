@@ -1,3 +1,4 @@
+import { COLS_ORG_INVITATIONS } from "@/lib/dbColumns";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -53,7 +54,8 @@ export async function POST(request) {
 
   const { data: invitation, error: invError } = await admin
     .from("org_invitations")
-    .select("*")
+    // ★★列を 名ざしで 引きます（★裁定 その113 §5-1・2026-09-20）。
+    .select(COLS_ORG_INVITATIONS)
     .eq("code", code)
     .maybeSingle();
   if (invError) {

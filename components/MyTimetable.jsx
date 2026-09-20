@@ -8,6 +8,7 @@ import {
   ScreenHead, Card, Box, Li, Btn, Two, FieldLabel, Input, TextArea,
   Switch, Back, Warn, Note, Usu, EmptyBox, StateBlock
 } from "@/components/UiV2";
+import { COLS_MY_PERIODS, COLS_MY_TIMETABLE } from "@/lib/dbColumns";
 import {
   DAYS, TT_COPY, hhmm, periodsOf, isOwnPeriods,
   buildGrid, freeCount, cellLabel, DEFAULT_PERIODS
@@ -61,8 +62,8 @@ export default function MyTimetable({ userId, onBack }) {
     if (!supabase || !userId) return;
     setState("読み込み中");
     const [p, t] = await Promise.all([
-      supabase.from("my_periods").select("*").eq("user_id", userId).order("ord"),
-      supabase.from("my_timetable").select("*").eq("user_id", userId)
+      supabase.from("my_periods").select(COLS_MY_PERIODS).eq("user_id", userId).order("ord"),
+      supabase.from("my_timetable").select(COLS_MY_TIMETABLE).eq("user_id", userId)
     ]);
     if (p.error || t.error) { setState("失敗"); return; }
     setPeriods(p.data || []);

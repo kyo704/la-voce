@@ -1,3 +1,4 @@
+import { COLS_ENTRIES } from "@/lib/dbColumns";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -89,7 +90,8 @@ export async function POST() {
     // ★★ここに 来るのは、★紙が まだ 流れて いない ときだけ です。
     const legacy = await admin
       .from("entries")
-      .select("*")
+      // ★★列を 名ざしで 引きます（★裁定 その113 §5-1・2026-09-20）。
+      .select(COLS_ENTRIES)
       .eq("user_id", user.id);
     if (legacy.error) return NextResponse.json({ error: "いま、つながりません。" }, { status: 503 });
     rows = legacy.data;

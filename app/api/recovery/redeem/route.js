@@ -1,3 +1,4 @@
+import { COLS_RECOVERY_CODES } from "@/lib/dbColumns";
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { verifyRecoveryCode } from "@/lib/recoveryCodeServer";
@@ -108,7 +109,7 @@ export async function POST(request) {
   if (!user) return evenOut(NextResponse.json(SAME_ANSWER, { status: 200 }));
 
   const { data: row, error: rowErr } = await admin
-    .from("recovery_codes").select("*").eq("user_id", user.id).maybeSingle();
+    .from("recovery_codes").select(COLS_RECOVERY_CODES).eq("user_id", user.id).maybeSingle();
   if (rowErr) {
     console.error("★控えを読めませんでした:", rowErr.message);
     return evenOut(NextResponse.json(

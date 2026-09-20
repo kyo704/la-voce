@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { COLS_SUBSCRIPTIONS } from "@/lib/dbColumns";
 import { createClient } from "@/lib/supabase/server";
 import { isNativeApp } from "@/lib/isNativeApp";
 import { C } from "@/lib/tokens";
@@ -232,7 +233,8 @@ export default async function BillingPage() {
   // ここから下は REQUIRE_SUBSCRIPTION=true（有料化する場合）の従来ロジック
   const { data: sub } = await supabase
     .from("subscriptions")
-    .select("*")
+    // ★★列を 名ざしで 引きます（★裁定 その113 §5-1・2026-09-20）。
+    .select(COLS_SUBSCRIPTIONS)
     .eq("user_id", user.id)
     .single();
 

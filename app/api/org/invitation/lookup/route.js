@@ -42,6 +42,9 @@ export async function POST(request) {
 
   // ★select("*") にしています。列の名前を決め打ちすると、
   //   知らない列があったときに PostgREST が要求全体を弾きます（PGRST204）。
+  //   ★★ここは **管理の 客**（service role）です。★渡しの 決まりを 受けません。
+  //   ★★出す のは 学校の 名 だけ です（★下で 選んで います）。
+  // eslint-disable-next-line no-restricted-syntax -- ★上の 註の とおり。
   const { data: invitation, error } = await admin
     .from("org_invitations")
     .select("*")

@@ -50,7 +50,9 @@ console.log("\n=== ★書き出しが、解除ずみの行を履歴として使�
   // 書き出しは status で絞っていないこと（絞ると解除ずみが落ちます）
   const at = vt.indexOf("tables.share_history");
   const before = vt.slice(Math.max(0, at - 400), at);
-  assertTrue(/teacher_student_links"\)\.select\("\*"\)\.eq\("student_id", userId\)/.test(before),
+  // ★★2026-09-20、★列を 名ざしに しました（★裁定 その113 §5-1）。
+  assertTrue(/teacher_student_links"\)\s*\n?\s*\.select\(COLS_TEACHER_STUDENT_LINKS\)\s*\n?\s*\.eq\("student_id", userId\)/
+    .test(before),
     "★書き出しは status で絞らない（絞ると解除ずみの履歴が落ちる）");
 }
 

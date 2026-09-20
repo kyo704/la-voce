@@ -142,7 +142,10 @@ console.log("\n=== ★在籍の取得で、黙って消えないこと ===");
   //   → レッスンのタブも、ホームのカードも、黙って消えます。
   assertTrue(!/from\("enrollments"\)\.select\("\*, org:organizations/.test(src),
     "★在籍の取得に、埋め込みを使っていない");
-  assertTrue(/from\("enrollments"\)\.select\("\*"\)/.test(src), "素で取っている");
+  // ★★★2026-09-20、★列を 名ざしに しました（★裁定 その113 §5-1）。
+  //   ★★見るのは「埋め込みを 使って いない こと」です。★`*` かどうか では ありません。
+  assertTrue(/from\("enrollments"\)\.select\((COLS_ENROLLMENTS|"[^*"]*")\)/.test(src),
+    "素で取っている（列を 名ざし）");
   assertTrue(/★在籍を読めませんでした/.test(src), "★読めなかったら、記録に残す");
   assertTrue(/教室の名前を読めませんでした（在籍は読めています）/.test(src),
     "★名前が読めなくても、在籍は消えない");

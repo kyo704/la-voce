@@ -83,8 +83,13 @@ console.log("\n=== ★期限と使用済み ===");
 console.log("\n=== ★列名を決め打ちしない ===");
 {
   // 知らない列があると PostgREST は要求全体を弾く（PGRST204）
-  assertTrue(/from\("org_invitations"\)\s*\n?\s*\.select\("\*"\)/.test(accept),
-    "★org_invitations は select(\"*\")（列名を決め打ちしない）");
+  // ★★★2026-09-20、★列を 名ざしに しました（★裁定 その113 §5-1）。
+  //   ★★もとの わけ ──「知らない 列が あると 要求ごと 弾かれる」。
+  //   ★★★いまは `lib/dbColumns.js` が **台帳から** 作って います。
+  //     ★★知らない 列は 入りません。★足した ときは 作り直します。
+  //   ★★見るのは「名ざしで 引いて いる こと」です。
+  assertTrue(/from\("org_invitations"\)\s*\n?\s*(\/\/[^\n]*\n\s*)?\.select\(COLS_ORG_INVITATIONS\)/
+    .test(accept), "★org_invitations を 名ざしで 引いて いる");
 }
 
 console.log(`\n${failCount === 0 ? "✅ 全て通りました" : "❌ 失敗あり"}  成功:${passCount} 失敗:${failCount}`);

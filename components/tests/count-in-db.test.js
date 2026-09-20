@@ -71,7 +71,9 @@ t(/statsOk/.test(admin), "★取れたか どうかを 分けて 持って い�
 t(admin.includes("入力率を 数えられませんでした"), "★取れなかった と 画面に 書く");
 
 const uRpcAt = unlock.indexOf('admin.rpc("character_unlock_summary"');
-const uStarAt = unlock.indexOf('.select("*")');
+// ★★★2026-09-20、★`select("*")` を やめました（★裁定 その113 §5-1）。
+//   ★★見るのは「古い 道が **あと**に ある こと」です。★書き方では ありません。
+const uStarAt = unlock.indexOf('.from("entries")');
 t(uRpcAt > -1, "★character_unlock_summary を 呼んで いる");
 t(uRpcAt > -1 && uStarAt > -1 && uRpcAt < uStarAt, "★unlock も rpc が 先");
 t(/if \(!sumRow\) \{/.test(unlock), "★unlock の 古い 道も 門の 中だけ");

@@ -202,6 +202,15 @@ import { overlapsOf } from "@/lib/opsSchedule";
 // ★★★「読めなかった」の 字は lib/readFail.js が 1つ 持ちます（★2026-09-20）。
 //   ★★検査4 が、★断りを 空の 一覧に 変えて いる ところを 13か所 数えました。
 import { rowsOf, readFailedLine } from "@/lib/readFail";
+// ★★★引く 列は `lib/dbColumns.js`（★台帳から 作りました・裁定 その113 §5-1）。
+//   ★★`select("*")` は、★列ごとの 渡しの ある 表で 要求ごと 落ちます。
+import {
+  COLS_ENTRIES, COLS_QUESTIONNAIRE_RESPONSES, COLS_REPERTOIRE_TESSITURA,
+  COLS_ROLE_MASTER, COLS_PROJECT_MASTER, COLS_TEACHER_STUDENT_LINKS,
+  COLS_CHAPTER_STATE, COLS_ARTICLE_PROGRESS, COLS_ARTICLE_NOTES,
+  COLS_ORGANIZATIONS, COLS_ENROLLMENTS, COLS_ASSIGNMENTS, COLS_MEMBERSHIPS,
+  COLS_ORG_BILLING
+} from "@/lib/dbColumns";
 import {
   batchOf, mayUndo as mayUndoImport, undoBlockedLine
 } from "@/lib/rosterDrafts";
@@ -6262,7 +6271,7 @@ export default function VocalTracker({
       const supabase = createClient();
       const { data, error } = await runQueryWithAuthRetry(
         supabase,
-        () => supabase.from("entries").select("*").eq("user_id", userId),
+        () => supabase.from("entries").select(COLS_ENTRIES).eq("user_id", userId),
         "記録データの取得"
       );
       // ★失敗を黙って飲み込まないこと。以前はコンソールに出すだけだったので、
@@ -6333,7 +6342,8 @@ export default function VocalTracker({
       const supabase = createClient();
       const { data, error } = await runQueryWithAuthRetry(
         supabase,
-        () => supabase.from("questionnaire_responses").select("*").eq("user_id", userId).order("response_date", { ascending: true }),
+        () => supabase.from("questionnaire_responses").select(COLS_QUESTIONNAIRE_RESPONSES)
+          .eq("user_id", userId).order("response_date", { ascending: true }),
         "質問票の回答の取得"
       );
       if (error) {
@@ -6350,7 +6360,8 @@ export default function VocalTracker({
       const supabase = createClient();
       const { data, error } = await runQueryWithAuthRetry(
         supabase,
-        () => supabase.from("repertoire_tessitura").select("*").eq("user_id", userId),
+        () => supabase.from("repertoire_tessitura").select(COLS_REPERTOIRE_TESSITURA)
+          .eq("user_id", userId),
         "曲目のテッシトゥーラ登録の取得"
       );
       if (error) {
@@ -6386,7 +6397,7 @@ export default function VocalTracker({
     (async () => {
       const supabase = createClient();
       const { data, error } = await runQueryWithAuthRetry(
-        supabase, () => supabase.from("role_master").select("*").eq("user_id", userId), "役マスタの取得"
+        supabase, () => supabase.from("role_master").select(COLS_ROLE_MASTER).eq("user_id", userId), "役マスタの取得"
       );
       if (error) console.error("役マスタの読み込みに失敗しました:", error, "userId:", userId);
       if (mounted && data) {
@@ -6419,7 +6430,7 @@ export default function VocalTracker({
     (async () => {
       const supabase = createClient();
       const { data, error } = await runQueryWithAuthRetry(
-        supabase, () => supabase.from("project_master").select("*").eq("user_id", userId), "案件マスタの取得"
+        supabase, () => supabase.from("project_master").select(COLS_PROJECT_MASTER).eq("user_id", userId), "案件マスタの取得"
       );
       if (error) console.error("案件マスタの読み込みに失敗しました:", error, "userId:", userId);
       if (mounted && data) {
@@ -10889,6 +10900,9 @@ export default function VocalTracker({
       const supabase = createClient();
       const tables = {};
       for (const { table, orderBy } of EXPORTED_TABLES) {
+        // ★★★ご本人の 書き出し です。★**ぜんぶ** を お渡しします。
+        //   ★★列を 名ざしに すると、★足した 列が 漏れます（★lib/accountDeletion.js と 同じ）。
+        // eslint-disable-next-line no-restricted-syntax -- ★上の 註の とおり。
         let q = supabase.from(table).select("*").eq("user_id", userId);
         if (orderBy) q = q.order(orderBy, { ascending: true });
         const { data, error } = await q;
@@ -10903,7 +10917,8 @@ export default function VocalTracker({
       // 自分が先生として受け取っていた側は、生徒本人の情報なので含めない。
       // 相手を特定できる値は sanitizeShareHistory が落とす。
       const { data: shareRows } = await supabase
-        .from("teacher_student_links").select("*").eq("student_id", userId);
+        .from("teacher_student_links").select(COLS_TEACHER_STUDENT_LINKS)
+        .eq("student_id", userId);
       tables.share_history = sanitizeShareHistory(shareRows || []);
 
       const stamp = new Date().toISOString().slice(0, 10);
@@ -13068,9 +13083,9 @@ export default function VocalTracker({
     //     student が空になるだけです。画面は名前の代わりに職業を出すので、
     //     ★壊れたことに気づけません。だから名前で引く形に替えます。
     const { data: asTeacher } = await supabase.from("teacher_student_links")
-      .select("*").eq("teacher_id", userId).eq("status", "active");
+      .select(COLS_TEACHER_STUDENT_LINKS).eq("teacher_id", userId).eq("status", "active");
     const { data: asStudent } = await supabase.from("teacher_student_links")
-      .select("*").eq("student_id", userId).eq("status", "active");
+      .select(COLS_TEACHER_STUDENT_LINKS).eq("student_id", userId).eq("status", "active");
 
     // ★名前は関数から取ります。返る列は関数の側で決まります。
     let links = asTeacher || [];
@@ -13215,13 +13230,13 @@ export default function VocalTracker({
   // 職業別項目の再設計と学ぶ画面 §7: 学ぶ画面。章の開閉状態は保存し、次に開いたときも前回のままにする。
   async function fetchLearnState() {
     const supabase = createClient();
-    const { data: chapters } = await supabase.from("chapter_state").select("*").eq("user_id", userId);
+    const { data: chapters } = await supabase.from("chapter_state").select(COLS_CHAPTER_STATE).eq("user_id", userId);
     if (chapters) {
       const map = {};
       chapters.forEach((c) => { map[`${c.profession_key}:${c.chapter}`] = c.is_open; });
       setLearnOpenChapters(map);
     }
-    const { data: progress } = await supabase.from("article_progress").select("*").eq("user_id", userId);
+    const { data: progress } = await supabase.from("article_progress").select(COLS_ARTICLE_PROGRESS).eq("user_id", userId);
     if (progress) {
       const map = {};
       progress.forEach((p) => { if (p.read_at) map[p.article_id] = p.read_at; });
@@ -13333,7 +13348,7 @@ export default function VocalTracker({
   // §7.3: 記事メモ。ハイライトメモと記事メモの両方をこの1関数でまとめて扱う。
   async function fetchArticleNotes(articleId) {
     const supabase = createClient();
-    const { data } = await supabase.from("article_notes").select("*").eq("user_id", userId).eq("article_id", articleId).is("deleted_at", null).order("created_at", { ascending: true });
+    const { data } = await supabase.from("article_notes").select(COLS_ARTICLE_NOTES).eq("user_id", userId).eq("article_id", articleId).is("deleted_at", null).order("created_at", { ascending: true });
     setArticleNotes((prev) => ({ ...prev, [articleId]: data || [] }));
   }
   async function handleCreateArticleNote(articleId, kind, body, anchorText) {
@@ -13383,7 +13398,7 @@ export default function VocalTracker({
     // ★自分が作った教室のうち、自分の membership が無いものを拾います。
     //   organizations_select_own_created（created_by = auth.uid()）で読めます。
     const { data: created, error: createdError } = await supabase
-      .from("organizations").select("*").eq("created_by", userId);
+      .from("organizations").select(COLS_ORGANIZATIONS).eq("created_by", userId);
     if (createdError) {
       // ★黙って捨てないこと。読めなければ「壊れた教室は無い」ではなく
       //   「分からない」です。分からないときは、何も出しません。
@@ -13518,7 +13533,8 @@ export default function VocalTracker({
     //   → レッスンのタブも、ホームのカードも、黙って消えます。
     // ★だから、まず素で取ります。名前は、取れたら足します。
     const { data: enrollments, error: enrollError } = await supabase
-      .from("enrollments").select("*").eq("student_id", userId).eq("status", "active");
+      .from("enrollments").select(COLS_ENROLLMENTS)
+      .eq("student_id", userId).eq("status", "active");
     if (enrollError) {
       console.error("★在籍を読めませんでした:", enrollError);
     }
@@ -13542,7 +13558,7 @@ export default function VocalTracker({
       } else if (orgIds.length > 0) {
         console.warn(`★教室の名前を取れた数: ${(orgRows || []).length}/${orgIds.length}`);
       }
-      const { data: assignments } = await supabase.from("assignments").select("*").eq("student_id", userId).is("ended_at", null).in("org_id", enrollments.map((e) => e.org_id));
+      const { data: assignments } = await supabase.from("assignments").select(COLS_ASSIGNMENTS).eq("student_id", userId).is("ended_at", null).in("org_id", enrollments.map((e) => e.org_id));
       const map = {};
       (assignments || []).forEach((a) => { (map[a.org_id] = map[a.org_id] || []).push(a.teacher_id); });
       setMyAssignedTeachers(map);
@@ -13624,7 +13640,8 @@ export default function VocalTracker({
   async function fetchMyOrgAssignments(orgId) {
     const supabase = createClient();
     const { data, error } = await supabase.from("assignments")
-      .select("*").eq("org_id", orgId).eq("teacher_id", userId).is("ended_at", null);
+      .select(COLS_ASSIGNMENTS)
+      .eq("org_id", orgId).eq("teacher_id", userId).is("ended_at", null);
     if (error) {
       console.error("担当の生徒を読み込めませんでした:", error);
       return;
@@ -14812,9 +14829,9 @@ export default function VocalTracker({
     const supabase = createClient();
     const [{ data: members }, { data: enrollments }, { data: assignments },
       { data: lessons, error: lessonsError }] = await Promise.all([
-      supabase.from("memberships").select("*").eq("org_id", orgId),
-      supabase.from("enrollments").select("*").eq("org_id", orgId).eq("status", "active"),
-      supabase.from("assignments").select("*").eq("org_id", orgId).is("ended_at", null),
+      supabase.from("memberships").select(COLS_MEMBERSHIPS).eq("org_id", orgId),
+      supabase.from("enrollments").select(COLS_ENROLLMENTS).eq("org_id", orgId).eq("status", "active"),
+      supabase.from("assignments").select(COLS_ASSIGNMENTS).eq("org_id", orgId).is("ended_at", null),
       // ★★★`*` を 使いません（★2026-09-20）。★渡して いない 列が 混ざると
       //   ★★要求ごと 落ち、★表が 空に なります（★lib/classroomShell.js の 註）。
       supabase.from("lessons").select(OPS_LESSON_COLUMNS)
@@ -14858,7 +14875,7 @@ export default function VocalTracker({
     //   ★★いちばん 新しい 1行を 使います（★履歴の 表 です）。
     void (async () => {
       const { data: bill, error: billErr } = await supabase
-        .from("org_billing").select("*").eq("org_id", orgId)
+        .from("org_billing").select(COLS_ORG_BILLING).eq("org_id", orgId)
         .order("created_at", { ascending: false }).limit(1);
       if (billErr) console.error("お支払いを 読めませんでした:", billErr);
       setOrgBilling((prev) => ({ ...prev, [orgId]: (bill && bill[0]) || null }));

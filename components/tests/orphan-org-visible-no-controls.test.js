@@ -22,8 +22,9 @@ console.log("=== ★見える ===");
 {
   assertTrue(/const \[myOrphanOrgs, setMyOrphanOrgs\] = useState\(\[\]\)/.test(src),
     "作りかけの教室を持つ状態がある");
-  assertTrue(/\.from\("organizations"\)\.select\("\*"\)\.eq\("created_by", userId\)/.test(src),
-    "★created_by で拾っている（membership が無くても見つかる）");
+  // ★★2026-09-20、★列を 名ざしに しました（★裁定 その113 §5-1）。
+  assertTrue(/\.from\("organizations"\)\.select\(COLS_ORGANIZATIONS\)\.eq\("created_by", userId\)/
+    .test(src), "★created_by で拾っている（membership が無くても見つかる）");
   assertTrue(/myOrphanOrgs\.map\(/.test(src), "画面に出している");
 }
 

@@ -33,7 +33,8 @@ ok("日付の欄に、さかのぼれる下限が無い",
   && !/<input type="date"[^>]*\bmin=/.test(code));
 ok("保存は、選んだ日を書いている", /const built = buildFormData\(selectedDate, entries\)/.test(code));
 ok("記録の読み込みに、期間の絞り込みが無い",
-  /from\("entries"\)\.select\("\*"\)\.eq\("user_id", userId\)/.test(code));
+  // ★★2026-09-20、★列を 名ざしに しました（★裁定 その113 §5-1）。
+  /from\("entries"\)\.select\(COLS_ENTRIES\)\.eq\("user_id", userId\)/.test(code));
 // ★過去の日に、昨日の天気が勝手に入らないこと
 ok("過去の日には、天気を引き継がない", /realToday: realTodayDate/.test(code));
 
