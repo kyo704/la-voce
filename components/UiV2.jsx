@@ -450,7 +450,9 @@ export function FieldLabel({ children, htmlFor, style }) {
  */
 export function Wl({ children, style }) {
   return (
-    <div style={{
+    // ★★印 `wl`（★段3a 段階2・2026-09-20）。★見本にも `.wl` が 在ります。
+    //   ★★見た目は 変わりません。★較べる 道具が 注記だと 判る ように します。
+    <div className="wl" style={{
       background: C.bandWl, border: `1px solid ${C.line3}`, borderRadius: 12,
       padding: "9px 11px", ...TYPE.note, lineHeight: 1.75, marginBottom: 10, ...style
     }}>{children}</div>

@@ -897,7 +897,8 @@ export default function OpsRoster({
 
       {/* ★★★下の 但し書き（★見本の `.note`）。★字は lib が 持ちます。
            ★★1行目は 太字 です。★健康の 断り です。★減らしません。 */}
-      <p style={{ ...small, lineHeight: 1.9 }}>
+      {/* ★★印 `note`（★段3a 段階2・2026-09-20）。★見た目は 変わりません。 */}
+      <p className="note" style={{ ...small, lineHeight: 1.9 }}>
         {rosterNotes().map((t, i) => (
           <span key={t} style={{ display: "block" }}>
             {t === ROSTER_NOTE_BOLD ? <b style={{ color: C.ink }}>{t}</b> : t}

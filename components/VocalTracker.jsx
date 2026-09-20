@@ -25271,7 +25271,7 @@ export default function VocalTracker({
                       ★引き止めらしき ものは、★この 枚の［先にデータを書き出す］
                         だけ だから です ──「この画面の 1回だけ」。
                     ★★3枚の ままで よい、★という 裁定です（★㋗）。 */}
-                <div className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.85 }}>
+                <div className="text-xs note" style={{ color: C.inkSoft, lineHeight: 1.85 }}>
                   {NO_RETENTION_NOTE.map((line, i) => {
                     let rest = line;
                     const parts = [];
