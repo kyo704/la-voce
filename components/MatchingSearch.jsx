@@ -8,7 +8,7 @@ import {
   PF_HEAD, PF_DONE, PF_EMPTY, PF_GO_DONE, PF_GO_EMPTY,
   SECTION_OPEN, SECTION_MINE, SECTION_CUT,
   EMPTY_HEAD, EMPTY_SUB, EMPTY_NOTES,
-  GO_NEW, GO_NEW_MINE, GO_APPLIED, CUT_UNDO, CUT_EMPTY,
+  GO_NEW, GO_NEW_MINE, GO_APPLIED, CUT_UNDO, CUT_EMPTY, NO_ENROLL, NO_ENROLL_SUB,
   CUT_NOTES, CUT_NOTES_BOLD, NOTES,
   applicationWord, postingLine, portfolioState, SODAN_LINE
 } from "@/lib/matchingSearch";
@@ -46,7 +46,7 @@ function 太く(t, 太たち) {
 
 // ★★★2026-09-21、★9画面が ひととおり つながりました。
 export default function MatchingSearch({
-  postings = [], myPostings = [], cuts = [], portfolio,
+  postings = [], myPostings = [], cuts = [], portfolio, enrolled = true,
   onGoPortfolio, onNewPosting, onOpenPosting, onGoApplied, onOpenMine, onUndoCut,
   loadError = ""
 }) {
@@ -87,6 +87,16 @@ export default function MatchingSearch({
         </Card>
       ) : null}
 
+      {/* ★★★学校に 在籍して いない 方には、★できない ことを 先に お伝えします。
+           ★★空の 一覧と 押せる 札を 出して、★押させてから 断りません。
+           ★★「いま 出せませんでした」は 嘘に なります。★仕組みで できません。 */}
+      {!enrolled ? (
+        <Card>
+          <p style={{ ...TYPE.li, color: C.ink, margin: 0 }}>{NO_ENROLL}</p>
+          <p style={{ ...小, margin: `${rem(4)} 0 0` }}>{NO_ENROLL_SUB}</p>
+        </Card>
+      ) : null}
+
       <H3>{SECTION_OPEN}</H3>
       {loadError ? (
         <p style={{ ...小, color: C.curtain }}>{loadError}</p>
@@ -98,7 +108,7 @@ export default function MatchingSearch({
           </Card>
           {/* ★★★1件も 無い ときこそ、★出す 口を 残します（★裁定 その120）。
                ★★2026-09-21、★行き先が できたので 札に 戻しました。 */}
-          {onNewPosting ? (
+          {onNewPosting && enrolled ? (
             <Btn onClick={onNewPosting} style={{ marginTop: rem(10) }}>{GO_NEW}</Btn>
           ) : null}
           <Note>
@@ -169,7 +179,7 @@ export default function MatchingSearch({
       )}
 
       {/* ★★1件でも ある ときも、★出す 口を 置きます（★見本の「＋ 自分も 募集を 出す」）。 */}
-      {onNewPosting ? (
+      {onNewPosting && enrolled ? (
         <Btn ghost onClick={onNewPosting} style={{ marginTop: rem(9) }}>{GO_NEW_MINE}</Btn>
       ) : null}
 

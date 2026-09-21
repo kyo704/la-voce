@@ -42,7 +42,11 @@ function main() {
   //   ★★札を 外してから 比べないと、★同じ 字を「無い」と 報せます。
   const 見本素 = 見本.replace(/<[^>]+>/g, "").replace(/\\n|\+'|'\+/g, "");
   // ★★`NOT_YET` の 字は 見本に ありません。★こちらで 足した 断り です。
-  const 私の字 = (lib.match(/KIND_NOT_YET = Object\.freeze\(\{[\s\S]*?\}\)/) || [""])[0];
+  // ★★見本に 無い 字（★こちらで 足した 断り）は 突き合わせません。
+  //   ★★`NO_ENROLL` …… ★在籍が 無い ときの 断り（★2026-09-21）。
+  //     ★★見本には ありません。★見本は「在籍して いる 方」を 前提に して います。
+  const 私の字 = (lib.match(/KIND_NOT_YET = Object\.freeze\(\{[\s\S]*?\}\)/) || [""])[0]
+    + (lib.match(/NO_ENROLL[\s\S]*?NO_ENROLL_SUB = tx\("[^"]*"\);/) || [""])[0];
   [...lib.matchAll(/tx\("([^"{]+)"\)/g)].map((m) => m[1])
     .filter((s) => s.length >= 8 && !/\{n\}/.test(s) && 私の字.indexOf(s) < 0)
     .forEach((s) => t(見本素.indexOf(s) >= 0, `★見本に「${s.slice(0, 26)}…」が ある`));
@@ -77,6 +81,16 @@ function main() {
   t(/onNewPosting/.test(空), "★0件の ときも「募集を 出す」の 札が 出る");
   t(/GO_NEW/.test(空), "★字は lib から 取って いる");
   t(/EMPTY_NOTES/.test(空), "★0件の ときの 断りが 出る");
+
+  console.log("=== 五の二 ★在籍が 無い とき（★2026-09-21・実機で 分かりました） ===");
+  // ★★★空の 一覧と 押せる 札を 出して、★押させてから 断りません。
+  //   ★★「いま 出せませんでした」は 嘘に なります。★仕組みで できません。
+  t(/NO_ENROLL/.test(lib), "★在籍が 無い ときの 字が ある");
+  t(/在籍して いる 方が 使えます/.test(lib), "★できない ことを 先に 伝える");
+  t(/{!enrolled \?/.test(本体), "★画面が 出し分けて いる");
+  t(/onNewPosting && enrolled/.test(本体), "★在籍が 無ければ 出す 札を 出さない");
+  t((本体.match(/onNewPosting && enrolled/g) || []).length === 2,
+    "★0件の ときも、★1件でも ある ときも、★同じ 条件");
 
   console.log("=== 六 ★出さない ものを 出して いない（★§4g・§7） ===");
   ["start_time", "end_time", "venue", "place", "age", "grade", "enrollment_year"]

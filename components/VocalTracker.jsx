@@ -27345,6 +27345,7 @@ export default function VocalTracker({
                 {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && !cutTo && !matchOf && !answerFor && !applicantOf && !chooseFor && !appliedOpen && !applyTo && !postingOpen ? (
                   <div data-v2-matching="1">
                     <MatchingSearch
+                      enrolled={!!(matching && matching.orgId)}
                       onNewPosting={() => { setPostingOpen(true); setPostingError(""); }}
                       onOpenPosting={(p) => { void handleOpenPosting(p); }}
                       onGoApplied={() => { void handleOpenApplied(); }}
