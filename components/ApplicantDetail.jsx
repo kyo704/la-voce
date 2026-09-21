@@ -50,7 +50,9 @@ function 節({ head, items, render, note }) {
   );
 }
 
-export default function ApplicantDetail({ detail, onClose, onAnswer, loadError = "" }) {
+export default function ApplicantDetail({
+  detail, onClose, onAnswer, onDecide, busy, loadError = ""
+}) {
   if (!detail) {
     return (
       <div style={{ fontFamily: FONT_STACK }}>
@@ -141,6 +143,14 @@ export default function ApplicantDetail({ detail, onClose, onAnswer, loadError =
             </span>
           </Li>
         )} />
+
+      {/* ★★★決めると、★ほかの 応募は 閉じます（★見本の 断り）。
+           ★★負けた、とは 伝えません。★わけを 書きません。 */}
+      {onDecide ? (
+        <Btn disabled={busy} onClick={onDecide} style={{ marginTop: rem(10) }}>
+          {tx("この方に 決める")}
+        </Btn>
+      ) : null}
 
       <Note>
         {NOTES.map((t) => (

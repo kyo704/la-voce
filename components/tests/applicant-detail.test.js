@@ -65,10 +65,15 @@ async function main() {
   t(m.hostOf("https://www.youtube.com/watch?v=x") === "youtube.com", "★行き先の 名が 出る");
   t(m.hostOf("") === "", "★空でも 落ちない");
 
-  console.log("=== 四 ★A ★行き先の 無い 札を 置かない ===");
-  t(m.NOT_YET.some((x) => x.key === "decide"), "★「この方に 決める」は まだ");
-  t(!/この方に 決める.*onClick|onDecide/.test(jsx), "★押せる 札に して いない");
-  t(m.NOT_YET.every((x) => x.when && x.when.length > 0), "★どれにも 外す 条件が ある");
+  console.log("=== 四 ★A ★行き先の できた 札・まだの 札 ===");
+  // ★★★2026-09-21、★「成立後」の 画面が できました。
+  //   ★★だから「この方に 決める」は 押せる 札に なりました。
+  //   ★★「曲目を 答える」も 同じ 日に できました。
+  t(/onDecide/.test(jsx), "★「この方に 決める」は 押せる 札に なった");
+  t(/onAnswer && isAsking\(detail\)/.test(jsx), "★「曲目を 答える」は たずねられた ときだけ");
+  t(!m.NOT_YET.some((x) => x.key === "decide" || x.key === "answer"),
+    "★できた ものを 控えに 残して いない");
+  t(m.NOT_YET.every((x) => x.when && x.when.length > 0), "★残りは どれも 外す 条件つき");
 
   console.log("=== 五 ★A ★経歴の 分け方 ===");
   const r = m.splitCareer([
