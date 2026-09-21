@@ -190,13 +190,25 @@
 
 | | 何 | いまの 本番 |
 |---|---|---|
-| `subscription_items` | 1人が 複数の 月払いを 持てる 形 | ★表が **ありません**（`subscriptions` 49行・1人1行） |
+| `subscription_items` | 1人が 複数の 月払いを 持てる 形 | ★表が **ありません**。★`subscriptions` の 主キーは `user_id` …… ★**1人 1行 しか 持てません** |
 | `stripe_events` | `event_id` を 主キーに して 二重受けを 止める | ★表が **ありません**。★いま webhook は 二重受けを 止めて いません |
 | `assignments` の 一意の 索引 | `(org_id, teacher_id, student_id) where ended_at is null` | ★ありません（★28行） |
-| `org_billing` の 一意 | `(org_id)` | ★次に 見ます |
+| `org_billing` の 一意 | `(org_id)` | ★ありません（主キーは `id` だけ・★1行） |
 | 管理の 操作の 記録 | 誰が・いつ・何を | ★`post_change_log` と `org_post_perm_log` は あります |
 
 ★★`stripe_events` が 無い ことは、★★**いま すでに 効いて います**。
 　★Stripe は 届かなかった と 思うと 送り直します。★同じ 知らせを 2度 受けます。
 　★★いまは `upsert` で 上書きして いる ので 害が 小さい です。
 　★★★けれど「解約 → 再契約」の 順が 入れ替わると、★解約が 後から 効きます。
+
+### ★足りない 一意の 決まり（★2026-09-22 に 読みました）
+
+```
+subscriptions   PRIMARY KEY (user_id)     ★1人 1行。★複数の 月払いを 持てません
+org_billing     PRIMARY KEY (id) だけ     ★同じ 学校の 行を 2つ 作れます（★いま 1行）
+assignments     PRIMARY KEY (id) だけ     ★同じ 先生と 学生の 組を 2つ 作れます（★いま 28行）
+```
+
+★★`subscriptions` の 主キーが `user_id` である ことは、★裁定169 の
+　`subscription_items`（1人が 複数の 月払いを 持てる 形）が **要る 理由** そのもの です。
+　★★いまの 形では、★「ぜんぶ 月」と「しらべる 月」を 同時に 持てません。
