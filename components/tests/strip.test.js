@@ -35,21 +35,24 @@ async function main() {
   t(!new RegExp(語).test(m.stripSql(註S).code), "★① SQL の 註の 中は 出ない");
   t(new RegExp(語).test(m.stripSql(中S).code), "★② SQL の 中身は 出る");
 
-  console.log("=== 二 ★字（文字列）も 除く（★3度の 取り違えの もと） ===");
+  console.log("=== 二 ★字は **残します**（★裁定 その137） ===");
   const 字 = `const s = "${語}の 順に しません";\nconst c = ${語};\n`;
   const r = m.stripJs(字);
-  t((r.code.match(new RegExp(語, "g")) || []).length === 1,
-    "★字の 中の 1件だけ 消え、★中身の 1件は 残る");
+  t((r.code.match(new RegExp(語, "g")) || []).length === 2,
+    "★字の 中も 中身も、★どちらも 残る");
+  // ★★属性の 値も 残る こと（★裁定 その137 FINDING_1）。
+  t(/_blank/.test(m.stripJs('const a = <a target="_blank" />;').code),
+    "★属性の 値が 残る（★消すと 在っても 見えません）");
+
+  console.log("=== 三 ★SQL の 覚え書きだけ は 落とす（★3度目の 取り違え） ===");
   const 字S = `comment on function f() is '${語}';\nselect ${語} from t;`;
   const rs = m.stripSql(字S);
   t((rs.code.match(new RegExp(語, "g")) || []).length === 1,
-    "★SQL も 同じ（★comment on ... is の 中だけ 消える）");
-
-  console.log("=== 三 ★字を 残す 使い方（★画面の 字を 確かめる とき） ===");
-  t(new RegExp(語).test(m.stripJs(字, { strings: false }).code),
-    "★`{ strings:false }` なら 字は 残る");
-  t(!new RegExp(語).test(m.stripJs(註, { strings: false }).code),
-    "★それでも 註は 落ちる");
+    "★`comment on … is` の 中だけ 消える");
+  t(/select /.test(rs.code), "★中身は 残る");
+  // ★★ふつうの 字は SQL でも 残る こと。
+  t(/abc/.test(m.stripSql("insert into t (a) values ('abc');").code),
+    "★ふつうの 字は SQL でも 残る");
 
   console.log("=== 四 ★位置を 保つ（★行番号が ずれない） ===");
   const 長 = "// あ\n/* い\nう */\nconst x = 1;\n";
@@ -59,9 +62,11 @@ async function main() {
     "★中身の 位置が 動いて いない");
 
   console.log("=== 五 ★黙って 落とさない（★裁定 その124） ===");
-  const k = m.stripJs(字);
-  t(k.comments === 0 && k.strings === 1, "★消した 数を 返す");
-  t(/註 \d+件・字 \d+件/.test(m.strippedLine(k)), "★1行に して 出せる");
+  const k = m.stripJs(註);
+  t(k.comments === 1 && k.strings === 0, "★註の 数を 返す（★字は 数えません）");
+  t(/註 \d+件/.test(m.strippedLine(k)), "★1行に して 出せる");
+  const ks = m.stripSql("comment on table t is 'x';");
+  t(ks.strings === 1, "★覚え書きは 数える");
 
   console.log("=== 六 ★焼けた 形（★2026-09-11）を 繰り返さない ===");
   // ★★行コメントの 中の `/*` で、★本文が 消えない こと。

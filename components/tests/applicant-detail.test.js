@@ -54,14 +54,10 @@ async function main() {
   t(/if \(!items \|\| items\.length === 0\) return null;/.test(jsx), "★空の 節を 出さない");
 
   console.log("=== 三 ★録画は 外へ 出る（★§4f） ===");
-  // ★★★ここだけ B（字を 残す）です（★裁定 その136・2026-09-21）。
-  //   ★★`target="_blank"` の 中身は **字（文字列）** です。
-  //   ★★探して いるのは 振る舞い ですが、★証が 字の 中に あります。
-  //   ★★A（字ごと 落とす）で 見ると、★在っても 見えません。
-  //   ★★★裁定 その136 の 既定に 従います ──「迷ったら B」。
-  //     ★★B に して 誤検知が 出れば 気づきます。
-  //     ★★A に して 何も 出なければ、★気づきません。
-  const jsxCopy = stripComments(jsxRaw);
+  // ★★★裁定 その137 で、★字は いつも 残る ように なりました。
+  //   ★★だから `jsx`（A）で そのまま 見られます。
+  //   ★★この 1件が、★裁定135 → 136 → 137 の きっかけ でした。
+  const jsxCopy = jsx;
   t(/target="_blank"/.test(jsxCopy), "★外の 窓で 開く");
   t(/rel="noreferrer noopener"/.test(jsxCopy), "★元の 頁を 渡さない");
   t(!/<video|<iframe|ReactPlayer|youtube-nocookie/.test(jsx), "★この 中で 再生しない");
@@ -92,8 +88,10 @@ async function main() {
   const 語 = "kanrenNashi";
   t(!new RegExp(語).test(stripCode(`// ${語}\nconst a = 1;`)), "★① 註の 中は 出ない");
   t(new RegExp(語).test(stripCode(`const a = ${語};`)), "★② 中身は 出る");
-  t(!new RegExp(語).test(stripCode(`const a = "${語}";`)), "★字の 中も 出ない（★A なので）");
-  t(new RegExp(語).test(stripComments(`const a = "${語}";`)), "★B なら 字は 残る");
+  // ★★★裁定 その137（2026-09-21）── ★落とすのは 註 だけ です。
+  //   ★★字は 残します。★属性の 値（`target="_blank"`）も 消えません。
+  t(new RegExp(語).test(stripCode(`const a = "${語}";`)), "★字は 残る（★裁定 その137）");
+  t(/_blank/.test(stripCode('const a = <a target="_blank" />;')), "★属性の 値も 残る");
 
   console.log(`\n${pass} 通り ／ ${fail} 落ち`);
   if (fail > 0) process.exit(1);

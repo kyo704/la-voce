@@ -38,9 +38,13 @@ async function main() {
   console.log("  " + stripCounts(libRaw).line);
 
   console.log("=== 一 ★終わった わけを 出さない ===");
-  // ★★★2026-09-21、★仕組みに 直しました（★裁定 その135）。
-  //   ★★手で 断りを 切り出して いました。★字ごと 落とした もので 見ます。
-  t(!わけを言う(stripCode(libRaw)), "★lib が わけを 言って いない");
+  // ★★★裁定 その137（2026-09-21）で、★字は 落とさなく なりました。
+  //   ★★だから「わけを 書きません」と 言って いる **断りの 文 じたい** に 当たります。
+  //   ★★★探して いるのは「わけを **返して いるか**」です。★断りは 的では ありません。
+  //     ★★断りの かたまりを 除いてから 見ます。★除いた ことを ここに 書きます。
+  const 断り = (stripCode(libRaw).match(/NOTES = Object\.freeze\(\[[\s\S]*?\]\)/) || [""])[0];
+  t(断り.length > 0, "★断りの かたまりを 見つけられて いる");
+  t(!わけを言う(stripCode(libRaw).replace(断り, "")), "★lib が わけを 言って いない");
   t(!わけを言う(stripCode(readRaw("components", "AppliedList.jsx"))), "★画面も 言って いない");
   t(Object.keys(m.ENDED_WORDS).length === 2, "★終わり方は 2つ だけ");
   t(!/owner|chosen|winner/.test(sql.slice(sql.indexOf("case"), sql.indexOf("end,"))),
