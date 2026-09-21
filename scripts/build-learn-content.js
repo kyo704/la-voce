@@ -54,6 +54,7 @@ const mapProfessions = (list) =>
   (list || []).includes("*") ? "all" : (list || []).map((p) => PROF[p]).filter(Boolean);
 
 const HAS_PROSE = new Set(["new", "new_replacement"]);
+const removedList = [];
 const readMinutes = (text) => Math.max(1, Math.round((text || "").length / 400));
 
 const out = [];
@@ -80,7 +81,18 @@ function stripImplementerNote(body) {
   return text.slice(m.index + m[0].length).replace(/^\s+/, "");
 }
 
+// ★★★消した記事（★2026-09-21）。
+//   ★★`status: "removed"` の ものは 出しません。
+//     ★★本文は `articles.json` に 残して あります ── 戻す 日が 来たら 使えます。
+//     ★★消した わけ と 日 も、★同じ 行に 書いて あります。
+//   ★★★行ごと 消さない のは、★「なぜ 無いか」を 後から 読める ように する ため です。
+const REMOVED = new Set(["removed"]);
+
 src.articles.forEach((a) => {
+  if (REMOVED.has(a.status)) {
+    removedList.push(`${a.id}（${a.removed_why || "わけの 記載なし"}）`);
+    return;
+  }
   orderByChapter[a.chapter] = (orderByChapter[a.chapter] || 0) + 1;
   const order = orderByChapter[a.chapter];
   const professions = mapProfessions(a.professions);
@@ -115,7 +127,15 @@ src.articles.forEach((a) => {
 //   ★★`id` で 見ます。★名は 変わりますが、★id は 変わりません。
 const usedIds = new Set(out.map((a) => a.id));
 const usedTitles = new Set(out.map((a) => a.title));
-const kept = live.filter((a) => !usedIds.has(a.id) && !usedTitles.has(a.title));
+// ★★★消したと 決めた ものは、★ここでも 戻しません（★2026-09-21）。
+//   ★★この 並びは「本文を 失わない ため」に 在ります。★正しい 用心 です。
+//   ★★けれど いまは、★本文が `articles.json` に 残って います
+//     （`status: "removed"` と、★消した わけ と 日 つき）。
+//   ★★だから 戻さなくても 失われません。★戻すと、消せなく なります。
+const removedIds = new Set(
+  src.articles.filter((a) => REMOVED.has(a.status)).map((a) => a.id));
+const kept = live.filter((a) =>
+  !usedIds.has(a.id) && !usedTitles.has(a.title) && !removedIds.has(a.id));
 kept.forEach((a) => out.push(a));
 
 // ★★念のため、★出す 前に 数え直します。★同じ id が 2つ あれば 止めます。
@@ -192,6 +212,7 @@ unresolved.forEach((a) => console.log("   ", a.id, a.title, "／", a.status));
   const skipped = Object.keys(study.skipped || {});
   console.log("勉強パーツを入れた  :", withStudy, "本");
   console.log("  ★置かないと決めた:", skipped.length, "本", skipped.length ? `（${skipped.join(", ")}）` : "");
+  console.log("  ★消した記事      :", removedList.length, "本", removedList.length ? `（${removedList.join(" ／ ")}）` : "");
   // ★音楽家の商いは、原稿そのものが勉強パーツを持っている（shobai.json）。
   //   study.json を見に行かないので、ここでは数えない。
   const missing = out.filter((a) => !a.quizMode
