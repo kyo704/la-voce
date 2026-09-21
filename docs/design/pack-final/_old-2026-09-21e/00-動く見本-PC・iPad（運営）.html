@@ -3679,9 +3679,8 @@ var KATT={};   /* ★休み に した方だけ 持つ */
    ★列は「枠」。1人の 枠（役）／交代の 枠（A・B）／何人かの 枠（パート・声部・団体）
    ★何人かの 枠は、マスに 人数が 入る。人数が 枠の 人より 少ない ときは 降り番を 決める
    ★降り番を 決めていない 間は、全員を 呼ぶ（呼び漏れより 呼びすぎ に 倒す）                */
-/* ★裁定152（2026-09-21）で 訂正：第1群は オペラ・合唱の 2種類のみ。オーケストラ・ガラは 第2群へ */
-var KINDS=[['opera','オペラ・ミュージカル・演劇','場面 × 役',1],['orch','オーケストラ・吹奏楽','曲 × パート（人数）',0],
- ['choir','合唱','曲 × 声部',1],['gala','ガラ・発表会・フェス','演目（出番順）× 出演者・団体',0],
+var KINDS=[['opera','オペラ・ミュージカル・演劇','場面 × 役',1],['orch','オーケストラ・吹奏楽','曲 × パート（人数）',1],
+ ['choir','合唱','曲 × 声部',1],['gala','ガラ・発表会・フェス','演目（出番順）× 出演者・団体',1],
  ['chamber','室内楽・リサイタル','曲 × 奏者',0],['band','バンド・ライブ','セットリスト × メンバー',0],
  ['dance','ダンス','ナンバー × ダンサー',0],['other','そのほか','行と 列を 自分で 名付ける',0]];
 var KW={
@@ -3719,19 +3718,9 @@ function scLab(scs){return scs.map(function(i){var x=SCENES[i];return x?((x[0]||
 function lineOf(r){return kw().ab&&r.line?r.line+'キャスト':''}
 function lineBtn(v){return '<span class="pill sm'+(KS.line===v?' on':'')+'" onclick="KS.line=\''+v+'\';draw()">'+v+'</span>'}
 
-/* ══ ★変わったもの ── 裁定その152 R1 ══
-   ★知らせは 送らない。出演者の カレンダー（1人1つの 住所）に 数分で 入る。開いた ときに「変わったもの」に 見える
-   ★数は 出さない。取り消しても 出欠の 記録は 残る                                             */
-function chg(t){(curP().chg=curP().chg||[]).unshift([t,'10月2日（金）'])}
-function chgCard(){var L=curP().chg||[];
- return '<div class="card"><div class="h3" style="margin-top:0">変わったもの<span class="usu">　出演者の 公演の 画面にも 出ます</span></div>'
- +(L.length?L.slice(0,5).map(function(c){return '<div class="li plain"><span>'+c[0]+'</span><s>'+c[1]+'</s></div>'}).join('')
-   :'<div class="usu">まだ ありません</div>')
- +'<div class="usu" style="margin-top:8px"><b>知らせは 送りません</b>。呼んだ 方の カレンダーに <b>数分で</b> 入ります。</div></div>'}
 function P_koen(){
  var x=curP(),T=tierOf(x.cap)||[x.cap,0];
- var payLine=(x.school?'<div class="li plain"><span>料金</span><s>教室プランの 中（0円）　／　いま '+x.n+'人</s></div>'
-  :'<div class="li" onclick="push(\'公演の料金\')"><span>料金</span><s>'+x.cap+'人まで　'+(T[1]?'お支払い済み':'無料')+'　／　いま '+x.n+'人 ›</s></div>')
+ var payLine='<div class="li" onclick="push(\'公演の料金\')"><span>料金</span><s>'+x.cap+'人まで　'+(T[1]?'お支払い済み':'無料')+'　／　いま '+x.n+'人 ›</s></div>'
   +'<div class="li" onclick="push(\'公演の情報\')"><span>公演の 情報・使える 期限</span><s>'+(x.until?x.until+' まで':'—')+(x.expired?'（過ぎました）':'')+' ›</s></div>';
  if(!KEIKO.length){
   var st=[[ROLES.length,kw().cast+'を 決める','配役を決める'],[x.n>1,'出演者を 招く','出演者を招く'],[SCENES.length,kw().tbl+'を 作る','香盤表'],[0,'稽古を 組む','稽古を組む']];
@@ -3761,7 +3750,6 @@ function P_koen(){
  +'<div class="card" style="flex:1;min-width:250px"><div class="h3" style="margin-top:0">これからの 稽古</div>'
  +KEIKO.slice(1).map(function(r,i){return '<div class="li" onclick="push(\'稽古の中身\','+(i+1)+')"><span>'+r.d+'<div class="usu">'+r.k+'　'+scLab(r.sc)+'</div></span><s>'+(kw().ab?r.line:'')+' ›</s></div>'}).join('')
  +'</div></div>'
- +chgCard()
  +'<div class="card">'+payLine+'</div>'
  +'<div class="card"><div class="h3" style="margin-top:0">配った もの</div>'
  +HAIFU.map(function(h){return '<div class="li plain"><span>'+h[0]+'<div class="usu">'+h[2]+'</div></span><s>'+h[1]+'</s></div>'}).join('')+'</div>'
@@ -3784,8 +3772,8 @@ function P_kouban(){
  +SCENES.map(function(x,si){return '<tr class="click" onclick="S.ksr='+si+';S.ksc=null;S.kcell=null;draw()"'+(sr===si?' style="background:var(--band2)"':'')+'>'
    +'<td class="stick">'+rowLab(x,si)+(rowSub(x)?'<div class="usu">'+rowSub(x)+'</div>':'')+'</td><td class="num">'+x[4]+'</td>'
    +ROLES.map(function(r,ri){var on=x[3].indexOf(ri)>=0,isC=cel&&cel[0]===si&&cel[1]===ri;
-     var mark=on?(r[4]&&W.cnt&&r[4].length?cntOf(x,ri)+(cntOf(x,ri)<r[4].length&&offOf(x,ri).length<r[4].length-cntOf(x,ri)?'<span class="usu">＊</span>':''):'●'):(ed?'<span style="color:var(--line)">・</span>':'');
-     var act=ed?(r[4]&&W.cnt&&r[4].length?'S.kcell=['+si+','+ri+'];S.ksr=null;S.ksc=null;if(SCENES['+si+'][3].indexOf('+ri+')<0)SCENES['+si+'][3].push('+ri+');draw()'
+     var mark=on?(r[4]&&W.cnt?cntOf(x,ri)+(cntOf(x,ri)<r[4].length&&offOf(x,ri).length<r[4].length-cntOf(x,ri)?'<span class="usu">＊</span>':''):'●'):(ed?'<span style="color:var(--line)">・</span>':'');
+     var act=ed?(r[4]&&W.cnt?'S.kcell=['+si+','+ri+'];S.ksr=null;S.ksc=null;if(SCENES['+si+'][3].indexOf('+ri+')<0)SCENES['+si+'][3].push('+ri+');draw()'
         :'var a=SCENES['+si+'][3],p=a.indexOf('+ri+');if(p<0)a.push('+ri+');else a.splice(p,1);draw()'):'';
      return '<td style="text-align:center;font-size:15px;'+(ed?'cursor:pointer;':'')+((sc===ri||isC)?'background:var(--band2)':'')+'"'
       +(ed?' onclick="event.stopPropagation();'+act+'"':'')+'>'+mark+'</td>'}).join('')+'</tr>'}).join('')
@@ -3819,8 +3807,7 @@ function P_kouban(){
  +(W.ab?'<input class="inp" style="width:90px;margin:0" placeholder="1幕" id="nsA"><input class="inp" style="width:90px;margin:0" placeholder="1場" id="nsB">':'')
  +'<input class="inp" style="flex:1;min-width:160px;margin:0" placeholder="'+W.row+'の 名前" id="nsC">'
  +'<span class="btn g" style="margin:0" onclick="var e=$(\'#nsA\'),f=$(\'#nsB\');var a=e?(e.value||\'—\'):\'\',b=f?(f.value||\'\'):\'\',c=$(\'#nsC\').value||\'\';SCENES.push([a,b,c,[],10]);S.kedit=true;draw()">＋ '+W.row+'を 足す</span></div>'
- +'<div class="pills" style="margin-top:8px"><span class="pill">CSV から 読み込む</span><span class="pill">PDF に する</span>'
- +(WORKS[kind()]?'<span class="pill" onclick="tplSave()">自分の 雛形に 残す</span>':'')+'</div>'
+ +'<div class="pills" style="margin-top:8px"><span class="pill">CSV から 読み込む</span><span class="pill">PDF に する</span></div>'
  +'<div class="note">'+(W.ab?'ダブルキャストは、<b>色ではなく 列の 中で</b> 分けています。<br>':'')
  +(W.cnt?'<b>＊</b>は、人数が 決まって 降り番が まだの マスです。その間は 全員を 呼びます。<br>席の 順（プルト）は ここでは 作りません。<br>':'')
  +(W.order?'行の 順が <b>出番の 順</b>です。入りの 時刻と 転換は「当日の 進行」で 決めます。<br>':'')
@@ -3842,8 +3829,7 @@ function P_keikoKumu(){
  +'<div class="li plain"><span>日</span><s>10月17日（金）</s></div>'
  +'<div class="li plain"><span>時間</span><s>19:00〜21:30</s></div>'
  +'<div class="li plain"><span>種類</span><s>'+W.keiko.map(function(v){return '<span class="pill sm'+(KS.k===v?' on':'')+'" onclick="KS.k=\''+v+'\';draw()">'+v+'</span>'}).join(' ')+'</s></div>'
- +'<div class="li plain"><span>場所</span><s>'+(curP().school?'第3練習室':'○○稽古場 第1')+'</s></div>'
- +'<div class="li plain"><span>持ち物</span><s><input class="inp" style="margin:0;max-width:220px" placeholder="れい：楽譜・上履き" value="'+(KS.mot||'')+'" oninput="KS.mot=this.value"></s></div>'
+ +'<div class="li plain"><span>場所</span><s>○○稽古場 第1</s></div>'
  +'<div class="h3">'+W.row+'</div>'
  +SCENES.map(function(x,si){var on=KS.sc[si];
    return '<div class="li" onclick="if(KS.sc['+si+'])delete KS.sc['+si+'];else KS.sc['+si+']=1;draw()">'
@@ -3859,7 +3845,7 @@ function P_keikoKumu(){
  +'<div class="card" style="flex:1.2;min-width:280px">'
  +'<div class="h3" style="margin-top:0">呼ぶ方　'+need.length+'人</div>'
  +(need.length?need.map(function(p){var late=KS.late[p[0]];
-   return '<div class="li plain"><span>'+p[0]+(p[1]==='追加'?' <span class="pill sm">追加</span>':'')+(isKid(p[0])?' <span class="pill sm">子ども</span>':'')+((curP().school&&(curP().busy||{})[p[0]])?' <span class="pill sm">あいていない</span>':'')
+   return '<div class="li plain"><span>'+p[0]+(p[1]==='追加'?' <span class="pill sm">追加</span>':'')+(isKid(p[0])?' <span class="pill sm">子ども</span>':'')
     +'<div class="usu">'+(p[1]==='追加'?'香盤表に ない方':p[1])+'</div></span>'
     +'<s>集合 <b>'+(late?'18:00':'18:30')+'</b>'+(isKid(p[0])?'　解散 <b>'+KS.kidEnd+'</b>':'')+' '
     +'<span class="pill sm" onclick="KS.late[\''+p[0]+'\']=!KS.late[\''+p[0]+'\'];draw()">'+(late?'もどす':'早める')+'</span></s></div>'}).join('')
@@ -3869,10 +3855,6 @@ function P_keikoKumu(){
     +['19:30','20:00','21:30'].map(function(t){return '<span class="pill sm'+(KS.kidEnd===t?' on':'')+'" onclick="KS.kidEnd=\''+t+'\';draw()">'+t+'</span>'}).join(' ')+'</s></div>'
     +(after20(KS.kidEnd)?'<div class="warn" style="margin-top:8px">子どもの 方が 20時より 後まで 呼ばれています</div>':'')
    :'')
- +(function(){var x=curP();if(!x.school)return '';var b=need.filter(function(p){return (x.busy||{})[p[0]]});
-   return b.length?'<div class="warn" style="margin-top:8px">この 時間、<b>あいていない 方が '+b.length+'人</b> います：'+b.map(function(p){return p[0]}).join('・')
-     +'<br><span class="usu">授業か レッスンかは 出しません（ご本人の 画面には 出ます）。</span></div>'
-    :'<div class="usu" style="margin-top:8px">授業・レッスンと 重なる 方は いません。</div>'})()
  +'<div class="li" onclick="KS.add.push(\'稽古ピアニスト 高橋\');draw()"><span style="color:var(--enji)">＋ ほかの方を 足す</span><s>›</s></div>'
  +(curP().expired?'':'<div style="margin-top:12px"><span class="btn" onclick="keikoPut()">'+(S.keikoEd!=null?'直して 置く':'この 稽古を 置く')+'</span></div>')
  +'</div></div>'
@@ -3915,48 +3897,7 @@ function koenSteps(k){var L=['公演','配役','招く','香盤表'];
  return '<div style="display:flex;gap:6px;margin:0 0 14px;flex-wrap:wrap">'+L.map(function(v,i){
   var on=i===k,done=i<k;
   return '<span class="pill sm'+(on?' on':'')+'" style="'+(done?'color:var(--ink3)':'')+'">'+(i+1)+' '+v+'</span>'}).join('<span class="usu" style="align-self:center">›</span>')+'</div>'}
-var KN={t:'',w:'',f:'',to:'',hon:'',pl:'',k:'',tpl:''};
-
-/* ══ ★作品の 雛形 ── 裁定その152 R2（2026-09-21）══
-   ★作品を 選ぶと 表の 下書きが 出る。場面名・役名は 直せる。★10分で 公演が 立つ
-   ★雛形は「作品の 構造」（どの 場面に どの 役が 出るか）だけ。台本・楽譜は 入れない
-   ★利用者が 直した 表を、本人の 判断で 自分の 雛形に 残せる（公演の 使い回しとは 別。裁定144）
-   役：[名前, 声, 何人かの枠なら 1] ／ 行：[まとまり, 場, 題, 出る役, 分]                      */
-var WORKS={opera:[
- {id:'figaro',n:'モーツァルト「フィガロの結婚」',r:[['フィガロ','バス'],['スザンナ','ソプラノ'],['伯爵','バリトン'],['伯爵夫人','ソプラノ'],['ケルビーノ','メゾ'],['バジリオ','テノール'],['合唱','',1]],
-  sc:[['1幕','1場','部屋の寸法',[0,1],12],['1幕','2場','伯爵とケルビーノ',[1,4,2,5],18],['1幕','3場','もう飛ぶまいぞ',[0,4,6],8],['2幕','1場','伯爵夫人の部屋',[3,1,4],20],
-   ['2幕','2場','フィナーレ',[0,1,2,3,5],24],['3幕','1場','手紙の二重唱',[3,1],10],['3幕','2場','結婚式',[0,1,2,3,6],15],['4幕','1場','庭',[0,1,2,3,4,5],26]]},
- {id:'zauber',n:'モーツァルト「魔笛」',r:[['タミーノ','テノール'],['パミーナ','ソプラノ'],['パパゲーノ','バリトン'],['夜の女王','ソプラノ'],['ザラストロ','バス'],
-   ['モノスタトス','テノール'],['3人の侍女','',1],['3人の童子','',1],['パパゲーナ','ソプラノ'],['合唱','',1]],
-  sc:[['1幕','導入','大蛇と 3人の侍女',[0,6],8],['1幕','','おいらは鳥刺し',[2],4],['1幕','','なんと美しい絵姿',[0],4],['1幕','','夜の女王の 登場',[3,0],6],
-   ['1幕','','五重唱',[0,2,6],7],['1幕','フィナーレ','ザラストロの 国',[0,1,2,4,5,7,9],22],['2幕','','この聖なる殿堂では',[4,1],5],['2幕','','復讐の炎は',[3,1],4],
-   ['2幕','','ああ、私にはわかる',[1,0,2],5],['2幕','','パパゲーノと パパゲーナ',[2,8,7],6],['2幕','フィナーレ','試練と 結末',[0,1,2,3,4,5,6,7,8,9],20]]},
- {id:'carmen',n:'ビゼー「カルメン」',r:[['カルメン','メゾ'],['ドン・ホセ','テノール'],['ミカエラ','ソプラノ'],['エスカミーリョ','バリトン'],['スニガ','バス'],
-   ['フラスキータ・メルセデス','',1],['合唱','',1],['子どもの 合唱','',1]],
-  sc:[['1幕','','子どもたちの 行進',[7,6],3],['1幕','','ハバネラ',[0,6],5],['1幕','','ミカエラと ホセの 二重唱',[2,1],9],['1幕','','セギディーリャ',[0,1],5],
-   ['2幕','','ジプシーの歌',[0,5,6],5],['2幕','','闘牛士の歌',[3,0,5,4,6],6],['2幕','','花の歌',[1,0],5],['3幕','','カルタの 三重唱',[0,5],6],
-   ['3幕','','ミカエラの アリア',[2],6],['4幕','','行進と 合唱',[6,7,3,0],6],['4幕','','終曲',[0,1,6],10]]}],
- choir:[
- {id:'mozreq',n:'モーツァルト「レクイエム」',r:[['ソプラノ 独唱','ソプラノ'],['アルト 独唱','アルト'],['テノール 独唱','テノール'],['バス 独唱','バス'],
-   ['ソプラノ','',1],['アルト','',1],['テノール','',1],['バス','',1]],
-  sc:[['','','Introitus',[0,4,5,6,7],5],['','','Kyrie',[4,5,6,7],3],['','','Dies irae',[4,5,6,7],2],['','','Tuba mirum',[0,1,2,3],4],
-   ['','','Rex tremendae',[4,5,6,7],2],['','','Recordare',[0,1,2,3],6],['','','Confutatis',[4,5,6,7],3],['','','Lacrimosa',[4,5,6,7],3],
-   ['','','Domine Jesu',[0,1,2,3,4,5,6,7],4],['','','Hostias',[4,5,6,7],4],['','','Sanctus',[4,5,6,7],2],['','','Benedictus',[0,1,2,3,4,5,6,7],5],
-   ['','','Agnus Dei',[4,5,6,7],3],['','','Communio',[0,4,5,6,7],6]]}]};
-var MYTPL=[];   /* ★自分の 雛形（本人が 残した ものだけ）*/
-function tplFind(id){var a=(WORKS.opera||[]).concat(WORKS.choir||[],MYTPL);for(var i=0;i<a.length;i++)if(a[i].id===id)return a[i];return null}
-function tplRoles(t){return t.r.map(function(r){return r[2]?[r[0],r[1]||'','','',[]]:[r[0],r[1]||'','','']})}
-function tplScenes(t){return t.sc.map(function(x){return [x[0],x[1],x[2],x[3].slice(),x[4]]})}
-function tplList(k){var L=(WORKS[k]||[]).concat(MYTPL.filter(function(t){return t.k===k}));
- if(!L.length)return '';
- return '<div class="card" style="max-width:760px"><div class="h3" style="margin-top:0">作品から 下書きを 作る<span class="usu">　10分で 立ちます</span></div>'
- +L.map(function(t){var on=KN.tpl===t.id;
-   return '<div class="li" onclick="KN.tpl='+(on?'\'\'':'\''+t.id+'\'')+';if(!KN.w)KN.w=\''+t.n.replace(/'/g,'')+'\';draw()"><span>'+t.n+(t.mine?'　<span class="pill sm">あなたの 雛形</span>':'')
-    +'<div class="usu">'+t.r.length+'役 ／ '+t.sc.length+'場面</div></span><s>'+(on?'●':'')+'</s></div>'}).join('')
- +'<div class="usu" style="margin-top:8px">場面と 役の 一覧だけです（台本・楽譜は 入っていません）。<b>名前は あとで 直せます</b>。</div></div>'}
-function tplSave(){var x=curP();var id='my'+(MYTPL.length+1);
- MYTPL.push({id:id,k:x.kind,mine:1,n:PROD.title+' の 表',r:ROLES.map(function(r){return r[4]?[r[0],r[1],1]:[r[0],r[1]]}),
-  sc:SCENES.map(function(y){return [y[0],y[1],y[2],y[3].slice(),y[4]]})});toast('あなたの 雛形に 残しました（名前は 入りません）')}
+var KN={t:'',w:'',f:'',to:'',hon:'',pl:'',k:''};
 
 function P_koenNew(){
  if(!KN.k)return bk('行事')+'<h2>公演を 作る</h2>'+koenSteps(0)
@@ -3968,13 +3909,12 @@ function P_koenNew(){
  +'いくつもの 種類が 混ざる 公演は「ガラ・発表会・フェス」を 選んでください。<b>合唱団や バンドを 1つの 列</b>に できます。</div>';
  var W=KW[KN.k];
  return bk('行事')+'<h2>公演を 作る</h2>'+koenSteps(0)
- +'<div class="li" style="max-width:760px;margin-bottom:10px" onclick="KN.k=\'\';KN.tpl=\'\';draw()"><span>種類<div class="usu">'+kindName(KN.k)+'　／　'+W.tbl+'（'+W.row+' × '+W.col+'）</div></span><s>変える ›</s></div>'
- +tplList(KN.k)
+ +'<div class="li" style="max-width:760px;margin-bottom:10px" onclick="KN.k=\'\';draw()"><span>種類<div class="usu">'+kindName(KN.k)+'　／　'+W.tbl+'（'+W.row+' × '+W.col+'）</div></span><s>変える ›</s></div>'
  +'<div class="col2" style="align-items:flex-start"><div class="card" style="flex:1.4;min-width:300px">'
  +[['t','題名',W.ex[0]],['w','作品・曲目',W.ex[1]],['f','稽古の はじまり','れい：11月1日'],
    ['to','本番の 日','れい：3月14日（土）・15日（日）'],['pl','会場','れい：○○市民会館 大ホール']].map(function(x){
    return '<div class="fl">'+x[1]+'</div><input class="inp" placeholder="'+x[2]+'" value="'+(KN[x[0]]||'')+'" oninput="KN.'+x[0]+'=this.value">'}).join('')
- +'<div style="margin-top:14px"><span class="btn" onclick="koenCreate()">'+(KN.tpl?'下書きを 作って、'+W.tbl+'へ':'作って、'+W.cast+'へ')+'</span></div></div>'
+ +'<div style="margin-top:14px"><span class="btn" onclick="koenCreate()">作って、配役へ</span></div></div>'
  +'<div class="card" style="flex:1;min-width:250px"><div class="h3" style="margin-top:0">料金</div>'
  +'<div class="li plain"><span>作るのは</span><s>無料</s></div>'
  +'<div class="li plain"><span>15人まで</span><s>無料の まま</s></div>'
@@ -3987,10 +3927,8 @@ function koenCreate(){
  var t=(KN.t||'').trim(); if(!t){toast('題名を 入れてください');return}
  PRODS.push({p:{title:t,org:'○○音楽大学',from:KN.f||'—',to:'',hon:KN.to||'—',place:KN.pl||'—'},
   roles:[],scenes:[],keiko:[],haifu:[],n:1,cap:15,until:'',code:'',kind:KN.k||'opera',staff:[],tora:[]});
- var tp=KN.tpl?tplFind(KN.tpl):null; if(tp){PRODS[PRODS.length-1].roles=tplRoles(tp);PRODS[PRODS.length-1].scenes=tplScenes(tp)}
- useProd(PRODS.length-1); KN={t:'',w:'',f:'',to:'',hon:'',pl:'',k:'',tpl:''};
- S.stack=[];S.tab='行事';push('公演の運営');
- if(tp){push('香盤表');toast('下書きを 作りました。場面も 役も 直せます')}else{push('配役を決める');toast('作りました')}}
+ useProd(PRODS.length-1); KN={t:'',w:'',f:'',to:'',hon:'',pl:'',k:''};
+ S.stack=[];S.tab='行事';push('公演の運営');push('配役を決める');toast('作りました')}
 
 var NR={r:'',v:'',a:'',b:''};
 function P_haiyaku(){
@@ -4157,9 +4095,8 @@ function P_keikoOne(i){var r=KEIKO[i];if(!r)return bk('稽古の一覧')+'<div c
    +(isKid(p[0])?'　解散 <b>'+(r.kidEnd||r.t.split('〜')[1])+'</b>':'')+'</s></div>'}).join('')
  +'</div></div>'
  +(curP().expired?'':'<div style="margin-top:12px"><span class="btn g" onclick="S.keikoEd='+i+';KS.sc={};var k=KEIKO['+i+'];k.sc.forEach(function(j){KS.sc[j]=1});KS.line=k.line;KS.k=k.k;KS.only=k.only||{};push(\'稽古を組む\')">直す</span>　'
- +'<span class="btn g" onclick="askShow(\'取り消しますか\',\''+r.d+'　'+r.k+'\',\'呼んだ '+need.length+'人の きょうと 日程から 消えます。<br><b>お知らせは 送りません</b>。稽古場の LINE で 伝えてください。\',true,function(){chg(\''+r.d+'の '+r.k+'：取り消しました\');KEIKO.splice('+i+',1);pop();toast(\'取り消しました\')})">取り消す</span></div>')
- +'<div class="note">直すと、呼んだ方の 予定も そのまま 変わります。<b>カレンダーには 数分で</b> 入ります（お知らせは 送りません）。<br>'
- +'出演者の 公演の 画面の「変わったもの」にも 出ます。<br>'
+ +'<span class="btn g" onclick="askShow(\'取り消しますか\',\''+r.d+'　'+r.k+'\',\'呼んだ '+need.length+'人の きょうと 日程から 消えます。<br><b>お知らせは 送りません</b>。稽古場の LINE で 伝えてください。\',true,function(){KEIKO.splice('+i+',1);pop();toast(\'取り消しました\')})">取り消す</span></div>')
+ +'<div class="note">直すと、呼んだ方の 予定も そのまま 変わります（お知らせは 送りません。開いた ときに 見えます）。<br>'
  +'取り消しても、<b>その日の 出欠の 記録は 残ります</b>（つけていれば）。</div>'}
 
 function P_members(){var M=members(),x=curP();
@@ -4180,8 +4117,8 @@ function keikoPut(){var scs=Object.keys(KS.sc).map(Number).sort();
  var only=KS.only&&Object.keys(KS.only).length?KS.only:null;
  var r={d:'10月17日（金）',t:'19:00〜21:30',k:KS.k||kw().keiko[0],sc:scs,line:kw().ab?KS.line:'',pl:'○○稽古場 第1',only:only};
  if(needed(scs,r.line,only).some(function(p){return isKid(p[0])}))r.kidEnd=KS.kidEnd;
- if(S.keikoEd!=null){var o=KEIKO[S.keikoEd];r.d=o.d;r.t=o.t;r.k=o.k;r.pl=o.pl;r.mot=o.mot;KEIKO[S.keikoEd]=r;S.keikoEd=null;chg(r.d+'の '+r.k+'：'+kw().row+'が 変わりました');toast('直しました。呼んだ方の カレンダーに 数分で 入ります')}
- else{r.mot=KS.mot||'';KEIKO.push(r);chg(r.d+'の '+r.k+'：新しく 置きました');toast('置きました。呼んだ方の きょうと カレンダーに 入ります')}
+ if(S.keikoEd!=null){var o=KEIKO[S.keikoEd];r.d=o.d;r.t=o.t;r.k=o.k;r.pl=o.pl;KEIKO[S.keikoEd]=r;S.keikoEd=null;toast('直しました。呼んだ方の 予定も 変わります')}
+ else{KEIKO.push(r);toast('置きました。呼んだ方の きょうと 日程に 出ます')}
  KS.add=[];KS.only={};pop()}
 SC['稽古の一覧']=P_keikoList; SC['稽古の中身']=P_keikoOne; SC['出演者']=P_members;
 
@@ -4197,8 +4134,7 @@ STAFF.push(['照明','野村 まき'],['音響','石井 だい'],['衣裳・メ�
 PRODS[0].kind='opera'; PRODS[0].staff=STAFF; PRODS[0].tora=[];
 /* ★子どもが 出る 公演 ── 裁定その147。子どもの 枠は 呼び名だけ。緊急の 連絡先は 保護者が 任意で 入れる */
 ROLES.push(['合唱（子ども）','子ども','','',['はるちゃん','そうくん','ゆいちゃん']]); SCENES[6][3].push(ROLES.length-1);
-PRODS[0].kids=['はるちゃん','そうくん','ゆいちゃん'];
-PRODS[0].gakuya=[['楽屋 1','伯爵夫人・スザンナ・ケルビーノ'],['楽屋 2','フィガロ・伯爵・バジリオ'],['大楽屋','合唱'],['控室（保護者の 方も）','合唱（子ども）']]; PRODS[0].n=39;
+PRODS[0].kids=['はるちゃん','そうくん','ゆいちゃん']; PRODS[0].n=39;
 PRODS[0].tel={'はるちゃん':'090-0000-0000','そうくん':'080-0000-0000'};
 /* [いつ, 名前, 役割, 子ども]。★保護者には いつ・役割 だけを 返す（名前は 返さない）*/
 PRODS[0].telLog=[['10月3日（金）19:12','佐々木 りょう','舞台監督','はるちゃん']];
@@ -4226,7 +4162,6 @@ PRODS[0].tt={day:'2月22日（日）',brk:25,blocks:[['9:00','仕込み','照明
    {d:'2月1日（日）',t:'13:00〜17:00',k:'トゥッティ',sc:[0,1,2],line:'',pl:'○○公民館 ホール'}],
   haifu:[['乗り番表','12月1日','全員'],['練習予定（1〜3月）','12月1日','全員'],['当日の 進行表','2月28日','全員']],
   staff:[['指揮','高木 まさと'],['インスペクター','佐々木 りょう'],['ステージ','岡本 ゆう'],['楽器運搬','藤井 たける']],
-  gakuya:[['指揮者室','指揮'],['大楽屋 1','弦'],['大楽屋 2','管・打楽器']],
   tora:R[11][4].concat([R[9][4][3]]),n:56,cap:120,until:'4月7日',code:'ORC4H7TN',
   tt:{day:'3月8日（日）',brk:20,blocks:[['9:30','楽器 搬入','楽器運搬・ステージ'],['10:30','入り','出演者 全員'],
    ['11:00','ゲネプロ（ブラームス → モーツァルト）','出演者 全員・指揮'],['13:30','開場','受付'],['14:00','開演',''],['','終演',''],['','バラシ・搬出','楽器運搬・ステージ']]}});
@@ -4247,7 +4182,6 @@ PRODS[0].tt={day:'2月22日（日）',brk:25,blocks:[['9:00','仕込み','照明
   keiko:[{d:'10月25日（土）',t:'13:30〜15:30',k:'場当たり',sc:[0,1,2,3,4,5,6],line:'',pl:'○○市民会館 大ホール',kidEnd:'14:00'}],
   haifu:[['出番表','10月1日','全員'],['当日の 進行表','10月20日','全員']],
   staff:[['舞台監督','佐々木 りょう'],['照明','野村 まき'],['音響','石井 だい'],['受付','川口 みさ']],
-  gakuya:[['楽屋 1','ソプラノ・ピアノ'],['楽屋 2','弦楽四重奏'],['楽屋 3','テノール'],['大楽屋','コール○○・バンド The ○○'],['控室（保護者の 方も）','ピアノ（子ども）']],
   tora:[],support:[],kids:['ゆいちゃん'],tel:{},telLog:[],n:36,cap:40,until:'11月25日',code:'GLA8M3RQ',
   tt:{day:'10月26日（日）',brk:0,blocks:[['12:00','仕込み','照明・音響・舞台監督'],['13:00','場当たり（出番の 順に 1組ずつ）','出演者・舞台監督'],
    ['15:30','開場','受付'],['16:00','開演',''],['','終演',''],['','バラシ','照明・音響・舞台監督']]}});
@@ -4260,32 +4194,6 @@ function hm(t){var p=t.split(':');return (+p[0])*60+(+p[1])}
 function hmS(m){return Math.floor(m/60)+':'+String(m%60).padStart(2,'0')}
 function ttUp(i){var a=SCENES[i];SCENES[i]=SCENES[i-1];SCENES[i-1]=a;draw()}
 function ttTr(i,d){SCENES[i][8]=Math.max(0,(SCENES[i][8]||0)+d);draw()}
-(function(){var t=tplFind('zauber'),R=tplRoles(t),k=40;
- R.forEach(function(r){if(r[4]){var n=r[0]==='合唱'?12:3;r[4]=nms(k,n);k+=n}else{r[2]=nmk(k++);if(['タミーノ','パミーナ','パパゲーノ'].indexOf(r[0])>=0)r[3]=nmk(k++)}});
- var busy={};busy[R[0][2]]=1;busy[R[2][3]]=1;
- PRODS.push({kind:'opera',school:true,p:{title:'オペラ実習「魔笛」',org:'○○音楽大学 声楽科',from:'10月5日',to:'1月25日',hon:'1月24日（土）・25日（日）',place:'○○音楽大学 大ホール'},
-  roles:R,scenes:tplScenes(t),keiko:[{d:'10月8日（水）',t:'16:20〜19:00',k:'音楽稽古',sc:[5],line:'A',pl:'第3練習室',mot:'楽譜・鉛筆'}],
-  haifu:[['香盤表','10月1日','全員']],staff:[['指揮','高木 まさと'],['演出','岡本 ゆう']],tora:[],busy:busy,
-  n:36,cap:40,until:'2月24日',code:'MUS5Z2QA',chg:[['10月8日（水）の 音楽稽古：16:20 からに 変わりました','10月2日（金）']]});
-})();
-/* ★入りの 時刻：1人の 枠（ソリスト）は 早め（衣裳・メイク）、何人かの 枠は 全体、子どもは 遅め。ガラは 行ごとの 入り */
-function iriList(){var x=curP(),T=x.tt,base=null;if(!T)return '<div class="usu">まだ ありません</div>';
- T.blocks.forEach(function(b){if(!base&&b[1].indexOf('入り')===0)base=b[0]});
- var G={},first={};function put(t,n){if(first[n]!=null&&hm(first[n])<=hm(t))return;if(first[n]!=null){G[first[n]]=G[first[n]].filter(function(v){return v!==n})}first[n]=t;(G[t]=G[t]||[]).push(n)}
- if(kw().order)SCENES.forEach(function(sc){sc[3].forEach(function(r){var R=ROLES[r];if(!R)return;(R[4]?[R[0]]:[R[2]]).forEach(function(n){if(n&&sc[9])put(sc[9],n)})})});
- else{if(!base)return '<div class="usu">「入り」の 区切りが ありません</div>';
-  ROLES.forEach(function(R){if(R[4]){var k=R[4].filter(isKid);if(k.length)put(hmS(hm(base)+90),R[0]);else put(base,R[0]+'（'+R[4].length+'人）')}
-   else [R[2],R[3]].forEach(function(n){if(n)put(isKid(n)?hmS(hm(base)+90):/\d+人$/.test(n)?base:hmS(hm(base)-30),n)})})}
- var ks=Object.keys(G).filter(function(t){return G[t].length}).sort(function(a,b){return hm(a)-hm(b)});
- return ks.map(function(t){var L=G[t].filter(function(v,i,a){return a.indexOf(v)===i});
-  return '<div class="li plain"><span><b>'+t+'</b><div class="usu">'+L.join('・')+'</div></span><s></s></div>'}).join('')}
-function gakuyaList(){var x=curP(),L=x.gakuya;
- if(!L){L=[];var sol=ROLES.filter(function(r){return !r[4]&&!isKid(r[2])}).map(function(r){return r[0]}),grp=ROLES.filter(function(r){return r[4]});
-  if(sol.length)L.push(['楽屋 1',sol.slice(0,Math.ceil(sol.length/2)).join('・')]);
-  if(sol.length>1)L.push(['楽屋 2',sol.slice(Math.ceil(sol.length/2)).join('・')]);
-  grp.forEach(function(r,i){L.push([r[4].some(isKid)?'控室（保護者の 方も）':'大楽屋'+(grp.length>1?' '+(i+1):''),r[0]])});
-  var kd=ROLES.filter(function(r){return !r[4]&&isKid(r[2])});if(kd.length)L.push(['控室（保護者の 方も）',kd.map(function(r){return r[0]}).join('・')])}
- return L.map(function(g){return '<div class="li plain"><span>'+g[0]+'</span><s>'+g[1]+'</s></div>'}).join('')}
 function kidsOf(sc){var o=[];sc[3].forEach(function(r){var R=ROLES[r];if(!R)return;(R[4]||[R[2],R[3]]).forEach(function(n){if(n&&isKid(n))o.push(n)})});return o}
 function P_tt(){var x=curP(),W=kw(),T=x.tt,ed=!x.expired;
  if(!T)T=x.tt={day:PROD.hon,brk:20,blocks:[['10:00','仕込み','照明・音響・舞台'],['12:00','入り','出演者 全員'],['13:00','ゲネプロ','出演者 全員'],
@@ -4311,15 +4219,12 @@ function P_tt(){var x=curP(),W=kw(),T=x.tt,ed=!x.expired;
  return bk(PROD.title)+'<h2>当日の 進行</h2><div class="sub">'+T.day+'　'+PROD.place+(W.order?'　／　<b>行の 順が 出番の 順</b>です':'')+'</div>'+koenLock()
  +'<div class="col2" style="align-items:flex-start">'
  +'<div class="card" style="flex:1.5;min-width:300px"><div class="h3" style="margin-top:0">進行</div>'+rows+'</div>'
- +'<div style="flex:1;min-width:250px"><div class="card"><div class="h3" style="margin-top:0">入り（1人ずつ）</div>'+iriList()+'</div>'
- +'<div class="card"><div class="h3" style="margin-top:0">楽屋</div>'+gakuyaList()+'</div>'
- +'<div class="card"><div class="h3" style="margin-top:0">呼ぶ スタッフ</div>'
+ +'<div class="card" style="flex:1;min-width:250px"><div class="h3" style="margin-top:0">呼ぶ スタッフ</div>'
  +(STAFF.length?STAFF.map(function(s2){var h2=hit[s2[1]];return '<div class="li plain"><span>'+s2[1]+'<div class="usu">'+s2[0]+'</div></span>'
    +'<s>'+(h2?h2.join('<br>'):'<span class="usu">この 日は 呼んでいません</span>')+'</s></div>'}).join('')
   :'<div class="usu">まだ スタッフが いません</div>')
- +'</div></div></div>'
- +'<div class="pills" style="margin-top:10px"><span class="pill" onclick="toast(\'進行・入り・楽屋を 1枚に しました\')">PDF に する（舞台袖に 貼る）</span></div>'
- +'<div class="note"><b>出演者には、自分の 入りの 時刻と 出番と 楽屋だけ</b>が 見えます。ほかの方の 時刻は 見えません。<br>'
+ +'</div></div>'
+ +'<div class="note"><b>出演者には、自分の 入りの 時刻と 出番だけ</b>が 見えます。ほかの方の 時刻は 見えません。<br>'
  +'スタッフには、<b>自分が 呼ばれた 区切りだけ</b>が 見えます。<br>'
  +(W.order?'出番を 入れ替えると、あとの 時刻は すべて 計算し直します。転換の 分も ここで 決めます。<br>':'')
  +'終演の 時刻は、'+W.row+'の 長さ'+(W.order?'と 転換':'と 休憩')+'から 出しています。<br>'
@@ -4573,7 +4478,7 @@ var SPEC_NG=[
  ['同じ生徒の 重なりを 運営に 出す','出さない（よそに通っていることが 漏れる）'],
  ['行事の 出欠を 集める','集めない（レッスンの 出席は 残す）'],
  ['月謝の 残り回数を 生徒に 出す','数えても 出さない（「あと○回」に 化ける）'],
- ['カレンダー（ICS）に 体調・記録を 入れる','作らない。入るのは 予定だけ（1人1つの 住所・作り直せる。裁定139・152）'],
+ ['ICS の 購読URL（常時配信）','作らない。その場で 1回 落とす形だけ'],
  ['悲しい・困った顔の 羊','作らない'],
  ['羊の 自由配置','v1 では 作らない（座標の仕組みは 消さない）'],
  ['オーケストラの 席の 順（プルト）','作らない。乗り番と 人数だけ（裁定その148）'],

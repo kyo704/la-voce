@@ -3842,18 +3842,6 @@ var KPS={
 var KPW={opera:{tbl:'香盤表',row:'場面',mine:'自分の 出る 場面'},orch:{tbl:'乗り番表',row:'曲',mine:'乗り番'},gala:{tbl:'出番表',row:'演目',mine:'自分の 出番'}};
 var KP,KP_ROLES,KP_ME,KP_SC,KP_K,KP_H,KP_KIND='opera';
 function kpUse(k){var d=KPS[k];KP_KIND=k;KP=d.KP;KP_ROLES=d.R;KP_ME=d.ME;KP_SC=d.SC;KP_K=d.K;KP_H=d.H}
-/* ══ ★公演を A に ── 裁定その152 ══
-   R1 変わったもの（開いた ときに 見える。数は 出さない）／カレンダーに 数分で 入る
-   R3 本番の 日：入り・楽屋・本番の あと（自分だけの ふりかえり）
-   R4 授業・レッスンとの 重なりは、★本人の 画面にだけ 理由つきで 出る
-   R5 持ち物・場所（地図）・自分の 出る 場面（太字）。★自分の 出欠の 履歴は 出さない（裁定141）  */
-KPS.opera.KP.chg=[['10月5日（日）の 音楽稽古','13:00 からに 変わりました','9月30日'],['10月12日（日）の 立ち稽古','取り消しに なりました','9月29日']];
-KPS.opera.KP.gakuya='楽屋 2（フィガロ・伯爵・バジリオ）';
-KPS.opera.K[0][8]='楽譜・上履き'; KPS.opera.K[1][8]='楽譜・鉛筆'; KPS.opera.K[2][8]='楽譜・上履き・扇子';
-KPS.opera.K[2][7]='授業「イタリア語Ⅱ」（17:00〜18:30）';
-KPS.orch.KP.chg=[['2月1日（日）の トゥッティ','場所が ○○公民館 ホールに 変わりました','1月20日']];
-KPS.orch.KP.gakuya='大楽屋 2（管・打楽器）'; KPS.orch.K[0][8]='楽器・楽譜・譜面台'; KPS.orch.K[1][8]='楽器・楽譜';
-KPS.gala.KP.chg=[]; KPS.gala.KP.gakuya='楽屋 3'; KPS.gala.K[0][8]='楽譜・本番の 靴';
 kpUse('opera');
 function kpw(){return KPW[KP_KIND]}
 function kpIn(x){return x[3].indexOf(KP_ME)>=0&&!x[4]}
@@ -3873,10 +3861,7 @@ SC['公演']=function(){
  +'<div class="hd" style="padding-top:2px"><h2>'+KP.title+'</h2></div>'
  +'<div class="usu" style="margin-bottom:12px">'+KP.org+'　／　'+KP.role+'<br>本番 '+KP.hon+'　'+KP.place+'</div>'
 
- +((KP.chg||[]).length?'<div class="sh3" style="margin-top:0">変わったもの</div><div class="box">'
-   +KP.chg.map(function(c){return '<div class="li plain"><span>'+c[0]+'<div class="usu">'+c[1]+'</div></span><s>'+c[2]+'</s></div>'}).join('')+'</div>':'')
- +'<div class="box" style="margin-bottom:11px"><div class="li" onclick="push(\'カレンダーにつなぐ\')"><span>カレンダーに つなぐ<div class="usu">変わると 数分で 入ります</div></span><s>›</s></div></div>'
- +'<div class="sh3" style="'+((KP.chg||[]).length?'':'margin-top:0;')+'display:flex;justify-content:space-between;align-items:center">'
+ +'<div class="sh3" style="margin-top:0;display:flex;justify-content:space-between;align-items:center">'
  +'<span>'+(KP.all?'すべての 稽古':'呼ばれている 稽古')+'</span>'
  +'<span class="pill sm" onclick="KP.all=!KP.all;draw()">'+(KP.all?'自分の だけ':'全部 見る')+'</span></div>'
  +'<div class="box">'+list.map(function(r){var me=kpCalled(r);
@@ -3894,8 +3879,6 @@ SC['公演']=function(){
 
  +'<div class="sh3">本番の 日　'+KP.day+'</div><div class="box">'
  +'<div class="li plain"><span>あなたの 入り'+(KP.iriNote?'<div class="usu">'+KP.iriNote+'</div>':'')+'</span><s><b style="font-size:17px;color:var(--ink)">'+KP.iri+'</b></s></div>'
- +(KP.gakuya?'<div class="li plain"><span>楽屋</span><s>'+KP.gakuya+'</s></div>':'')
- +'<div class="li" onclick="push(\'本番のふりかえり\')"><span>本番の あと<div class="usu">あなただけの ふりかえり（ほかの 方には 見えません）</div></span><s>›</s></div>'
  +'</div>'
 
  +kidCalls()
@@ -4041,34 +4024,13 @@ SC['稽古']=function(i){var r=KP_K[i||0]||KP_K[0],me=kpCalled(r);
  +(me?'<div style="font-size:22px;font-weight:700">'+r[1]+' <span style="font-size:14px;font-weight:500">集合</span></div>'
    :'<div class="usu">この 稽古には 呼ばれていません</div>')
  +'<div class="usu" style="margin-top:6px">'+r[2]+'〜　'+r[3]+'</div>'
- +'<div style="margin-top:8px;font-size:14px">'+r[5]+'　<span class="pill sm" onclick="toast(\'地図の アプリで 開きます\')">地図</span></div>'
- +(r[8]?'<div class="usu" style="margin-top:8px">持ち物　<b style="color:var(--ink)">'+r[8]+'</b></div>':'')+'</div>'
- +(r[7]&&me?'<div class="warn" style="margin-top:11px">この 時間は、あなたの <b>'+r[7]+'</b> と 重なっています。<br>'
-   +'<span class="usu">これは あなたにしか 見えません。運営には「あいていない」とだけ 伝わります（理由は 伝わりません）。</span></div>':'')
+ +'<div style="margin-top:8px;font-size:14px">'+r[5]+'</div></div>'
  +'<div class="sh3">この 稽古の '+kpw().row+(r[6]?'<span class="usu">　'+r[6].map(function(c){return KP_ROLES[c]}).join('・')+'だけ</span>':'')+'</div><div class="box">'
  +r[4].map(function(j){var x=KP_SC[j],mine=kpIn(x);
    return '<div class="li plain"><span'+(mine?' style="font-weight:700"':'')+'>'+((x[0]||x[1])?x[0]+' '+x[1]+'　':'')+x[2]+'</span><s>'+(mine?'出ます':(x[4]&&x[3].indexOf(KP_ME)>=0?'降り番':''))+'</s></div>'}).join('')+'</div>'
  +(me&&myS.length?'':'')
  +'<div class="note">来られない ときは、<b>稽古場の LINE で</b> 伝えてください（ここには 連絡の 窓を 作っていません）。<br>'
- +'ほかの 方の 集合時刻は 見えません。<br>'
- +'休んだ 記録は 運営の ものです。<b>あなたの 画面に 出欠の 履歴は 出しません</b>。</div>'};
-
-/* ★カレンダーに つなぐ ── 裁定その139・152。1人1つの 住所。入るのは 予定だけ。★知らせは 送らない（鳴るのは カレンダー）*/
-var CAL_KEY='7Kq2mX9d';
-SC['カレンダーにつなぐ']=function(){
- return bk('公演')
- +'<div class="hd" style="padding-top:2px"><h2>カレンダーに つなぐ</h2></div>'
- +'<div class="usu" style="margin-bottom:10px">お使いの カレンダー（iPhone・Google など）に 1度 つなぐと、<b>稽古が 変わったら 数分で</b> 入ります。</div>'
- +'<div class="card" style="padding:15px 16px"><div class="usu">あなた だけの 住所</div>'
- +'<div style="font-family:monospace;font-size:14px;margin:6px 0 10px;word-break:break-all">webcal://woolsong.app/c/'+CAL_KEY+'</div>'
- +'<div class="two"><div class="btn g sm" onclick="toast(\'写しました\')">写す</div>'
- +'<div class="btn g sm" onclick="CAL_KEY=\'Qw4nT8zr\';draw();toast(\'作り直しました。前の 住所は もう 使えません\')">作り直す</div></div></div>'
- +'<div class="sh3">入るもの</div><div class="box">'
- +['呼ばれている 稽古（集合の 時刻・場所）','本番（入りの 時刻）','レッスン・授業（ご自分で 入れた もの）','子どもの 呼び出し（集合と 解散）'].map(function(t){
-   return '<div class="li plain"><span>'+t+'</span></div>'}).join('')+'</div>'
- +'<div class="note"><b>体調・記録・ノートは 1文字も 入りません</b>。<br>'
- +'Woolsong からは <b>知らせを 送りません</b>。鳴るのは あなたの カレンダーです。<br>'
- +'住所を ほかの 人に 渡すと、予定が 見えて しまいます。心配な ときは「作り直す」を 押してください。</div>'};
+ +'ほかの 方の 集合時刻は 見えません。</div>'};
 
 /* ══ ★ページの 形を 持つ ── 裁定その146（2026-09-21）══
    ★お試しは 15型すべて。★Woolsong で 1つ 選ぶ。★はじめの 14日は 何度でも 選び直せる
@@ -5254,23 +5216,6 @@ function tPub(K){return TBUSY[K]?'予定あり':''}
 function setBusy(K){if(putYotei(K,S.bn,S.bk))draw()}
 /* 先生ごとの コマ。空なら 学校の コマを そのまま 使います */
 var KOMA_MY={};
-/* ══ ★自分の コマを 学校ごとに ── 裁定その153（2026-09-21）══
-   ★1校・0校の 人には 何も 出さない（いまの まま）
-   ★2校以上：先頭に 学校の 札。1校ずつ。混ぜない（裁定140 と 同じ 形）
-   ★「どこにも 属さない」＝ org_id null。学校からは 見えない
-   ★学校を 決めていない コマ（移行で null に 残った もの）は、本人の この 画面にだけ 1行。知らせは 送らない
-   KOMA_BY：札ごとの 自分の コマ（'' は どこにも 属さない）。表示中の 札の ものを KOMA_MY[ME] に 置く */
-var KSEL='u';
-var KOMA_BY={'':[['1','10:00','10:45'],['2','10:50','11:35'],['3','13:00','13:45']]};
-var KOMA_CAN={u:1,m:0};          /* ★その 学校で koma_mine を 渡されて いるか */
-var KOMA_BASE={m:[['午前 1','10:00','10:45'],['午前 2','11:00','11:45'],['午後 1','14:00','14:45'],['午後 2','15:00','15:45']]};
-var KOMA_HIDE=false;             /* ★「このままで いい」（端末に 覚える）*/
-function komaSel(id){if(KOMA_MY[ME])KOMA_BY[KSEL]=KOMA_MY[ME];else delete KOMA_BY[KSEL];
- KSEL=id;if(KOMA_BY[id])KOMA_MY[ME]=KOMA_BY[id];else delete KOMA_MY[ME];PLACED={};draw()}
-function komaMove(to){var L=KSEL===''?KOMA_MY[ME]:KOMA_BY[''];if(!L)return;
- if(KSEL==='')delete KOMA_MY[ME];delete KOMA_BY[''];KOMA_BY[to]=L;KSEL='';komaSel(to);toast(orgOf(to).n+'の コマに しました')}
-function komaBack(){var L=KOMA_MY[ME];if(!L)return;if(KOMA_BY['']&&KOMA_BY[''].length){toast('どこにも 属さない に もう コマが あります');return}
- var f=KSEL;delete KOMA_MY[ME];delete KOMA_BY[f];KOMA_BY['']=L;KSEL=f;komaSel('');toast('どこにも 属さない に 戻しました')}
 function myKoma(){return KOMA_MY[ME]||MST.koma}
 function tmin(t){var p=String(t).split(':');return +p[0]*60+ +p[1]}
 function tstr(m){m=((m%1440)+1440)%1440;return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')}
@@ -6090,45 +6035,14 @@ SC['あなたの重なり']=function(){
  +'どこの 教室と 重なっているかも、先生には 届きません。<br>'
  +'理由も 届きません（「休みます」だけが 伝わります）。</div>'};
 SC['自分のコマ']=function(){
- var mine=KOMA_MY[ME],multi=ORGS.length>1,sel=multi?KSEL:'u',own=sel==='',can=own||!multi||KOMA_CAN[sel],base=sel==='u'||!multi?MST.koma:(KOMA_BASE[sel]||MST.koma);
- var orphan=multi&&!own&&KOMA_BY['']&&KOMA_BY[''].length&&!KOMA_HIDE;
- var tabs=multi?'<div style="display:flex;gap:6px;overflow-x:auto;margin:0 0 11px;padding-bottom:2px">'
-   +ORGS.map(function(o){return '<span class="pill sm'+(sel===o.id?' on':'')+'" style="flex:none" onclick="komaSel(\''+o.id+'\')">'+o.n+'</span>'}).join('')
-   +'<span class="pill sm'+(own?' on':'')+'" style="flex:none" onclick="komaSel(\'\')">どこにも 属さない</span></div>':'';
- var h=bk('設定')+'<div class="hd" style="padding-top:2px"><h2>自分の コマ</h2>'
- +'<span class="role">'+(own?'あなただけ':mine?'自分で 決めています':'学校の まま')+'</span></div>'+tabs
- +(orphan?'<div class="box" style="margin-bottom:11px"><div class="li" onclick="komaSel(\'\')"><span>学校を 決めていない コマが '+KOMA_BY[''].length+'つ あります'
-   +'<div class="usu">いまは どの 学校からも 見えません</div></span><s>見る ›</s></div></div>':'');
- if(own){
-  h+='<div class="warn"><b>どの 学校からも 見えません</b>。あなただけの コマです。<br>学校の 事務に 見せたい ときは、学校へ 移してください。</div>'
-  +'<div class="h3">自分の コマ</div>'
-  +(mine?'<div class="box">'+mine.map(function(k,i){
-     return '<div class="li" onclick="push(\'自分のコマの時間\','+i+')"><span>'+k[0]+'</span><s>'+k[1]+' 〜 '+k[2]+'　'+(tmin(k[2])-tmin(k[1]))+'分 ›　'
-     +'<span class="pill sm" onclick="event.stopPropagation();KOMA_MY[ME].splice('+i+',1);draw()">消す</span></s></div>'}).join('')+'</div>'
-     +'<div class="btn g" onclick="myKomaAdd()">＋ コマを 足す</div>'
-     +'<div class="h3">学校へ 移す</div><div class="box">'
-     +ORGS.map(function(o){var ok=KOMA_CAN[o.id],has=KOMA_BY[o.id]&&KOMA_BY[o.id].length;
-       return ok&&!has?'<div class="li" onclick="openSheet(\'コマを移す\',\''+o.id+'\')"><span>'+o.n+'へ 移す</span><s>›</s></div>'
-        :'<div class="li plain"><span class="usu">'+o.n+'</span><s class="usu">'+(ok?'もう 自分の コマが あります':'この 学校では 決められません')+'</s></div>'}).join('')+'</div>'
-     +'<div class="btn g" style="margin-top:8px" onclick="KOMA_HIDE=true;toast(\'このままに します\')">このままで いい</div>'
-   :'<div class="empty"><div class="t">ありません。</div><div class="s">学校に 属さない レッスン（ご自宅など）の コマを 作れます。</div></div>'
-    +'<div class="btn" style="margin-top:10px" onclick="KOMA_MY[ME]=[[\'1\',\'10:00\',\'10:45\']];draw()">自分の コマを 作る</div>')
-  +'<div class="note">ここに ある コマは <b>サーバに 置きますが、学校には 返しません</b>（org_id が 空）。<br>'
-  +'学校へ 移すと、<b>その 学校の 事務から 見えます</b>（直せません）。あとで ここへ 戻せます。<br>'
-  +'<b>学校から 別の 学校へ、直接は 移せません</b>。いったん ここへ 戻してから 移します。<br>'
-  +'「このままで いい」を 押すと、上の 1行は 出なく なります。<b>お知らせは 送りません</b>。</div>';
-  return h}
- if(multi&&!can)return h+'<div class="warn">'+orgOf(sel).n+'では、<b>自分の コマを 決める 役目が 渡されて いません</b>。<br>学校の 基本の ままです。</div>'
-  +'<div class="h3">学校の 基本</div><div class="box">'
-  +base.map(function(k){return '<div class="li" style="cursor:default"><span>'+k[0]+'</span><s>'+k[1]+' 〜 '+k[2]+'　'+(tmin(k[2])-tmin(k[1]))+'分</s></div>'}).join('')+'</div>'
-  +'<div class="note">役目（koma_mine）は 学校ごとです。<b>ほかの 学校で 渡されて いても、ここでは 書けません</b>。</div>';
- return h
- +(multi?'<div class="usu" style="margin-bottom:8px"><b>'+orgOf(sel).n+'</b>での コマです。ほかの 学校とは 混ぜません。</div>':'')
+ var mine=KOMA_MY[ME];
+ return bk('設定')+'<div class="hd" style="padding-top:2px"><h2>自分の コマ</h2>'
+ +'<span class="role">'+(mine?'自分で 決めています':'学校の まま')+'</span></div>'
  +'<div class="warn">学校の 基本は '+whoCan('koma')+' が 決めます。<br>'
  +'あなたは、その 中で <b>自分の レッスンの コマ</b>を 決められます。<br>'
  +'事務の 側は、これを <b>見るだけ</b>です。直せません。</div>'
  +'<div class="h3">学校の 基本</div><div class="box">'
- +base.map(function(k){return '<div class="li" style="cursor:default"><span>'+k[0]+'</span><s>'+k[1]+' 〜 '+k[2]+'　'+(tmin(k[2])-tmin(k[1]))+'分</s></div>'}).join('')+'</div>'
+ +MST.koma.map(function(k){return '<div class="li" style="cursor:default"><span>'+k[0]+'</span><s>'+k[1]+' 〜 '+k[2]+'　'+(tmin(k[2])-tmin(k[1]))+'分</s></div>'}).join('')+'</div>'
  +'<div class="h3">自分の コマ</div>'
  +(mine?'<div class="box">'+mine.map(function(k,i){
     return '<div class="li" onclick="push(\'自分のコマの時間\','+i+')"><span>'+k[0]+'</span>'
@@ -6137,21 +6051,14 @@ SC['自分のコマ']=function(){
    +'<div class="btn g" onclick="myKomaAdd()">＋ コマを 足す</div>'
    +'<div class="btn g" style="margin-top:8px" onclick="splitKoma()">一番下の コマを 2つに 割る</div>'
    +'<div class="btn g" style="margin-top:8px" onclick="delete KOMA_MY[ME];PLACED={};draw();toast(\'学校の 基本に 戻しました\')">学校の 基本に 戻す</div>'
-   +(multi?'<div class="btn g" style="margin-top:8px" onclick="komaBack()">どこにも 属さない に 戻す</div>':'')
   :'<div class="empty"><div class="t">いまは 学校の 基本の ままです。</div>'
    +'<div class="s">下の ボタンで、自分の コマを 作れます。<br>はじめは 学校の 基本を 写します。</div></div>'
-   +'<div class="btn" style="margin-top:10px" onclick="KOMA_MY[ME]=JSON.parse(JSON.stringify('+(sel==='u'||!multi?'MST.koma':'KOMA_BASE[\''+sel+'\']')+'));PLACED={};draw();toast(\'自分の コマを 作りました\')">自分の コマを 作る</div>')
+   +'<div class="btn" style="margin-top:10px" onclick="KOMA_MY[ME]=JSON.parse(JSON.stringify(MST.koma));PLACED={};draw();toast(\'自分の コマを 作りました\')">自分の コマを 作る</div>')
  +'<div class="note"><b>レッスンは 45分・30分・60分と、先生ごとに 違います。</b>だから 自分で 決められます。<br>'
  +'れい：学校の 90分を <b>45分 × 2</b>に 割る／10分 ずらす／昼を 長くする。<br>'
  +'学校の 基本を 変えても、<b>自分で 決めた コマは 動きません</b>（1回だけ 知らせが 来ます）。<br>'
  +'<b>「日程を 組む」の 表は、自分の コマで 出ます。</b><br>'
  +'事務の 側からは <b>見えますが、直せません</b>。</div>'};
-SH['コマを移す']=function(to){var o=orgOf(to),L=KOMA_MY[ME]||[];
- return '<div class="sh-t">'+o.n+'へ 移しますか</div>'
- +'<div class="card" style="padding:15px 16px;line-height:1.9">'+L.length+'つの コマを <b>'+o.n+'の コマ</b>に します。<br>'
- +'<b>'+o.n+'の 事務から 見えます</b>（直せません）。<br>ほかの 学校からは 見えません。</div>'
- +'<div class="btn" style="margin-top:12px" onclick="closeSheet();komaMove(\''+to+'\');draw()">移す</div>'
- +'<div class="btn g" style="margin-top:8px" onclick="closeSheet();draw()">やめる</div>'+shBtm()};
 SC['自分のコマの時間']=function(i){var k=KOMA_MY[ME][i];
  return bk('自分の コマ')+'<div class="hd" style="padding-top:2px"><h2>'+k[0]+'</h2></div>'
  +'<div class="fl">名前</div><input class="inp" value="'+k[0]+'" oninput="KOMA_MY[ME]['+i+'][0]=this.value">'
@@ -6192,7 +6099,7 @@ var SPEC_NG=[
  ['同じ生徒の 重なりを 運営に 出す','出さない（よそに通っていることが 漏れる）'],
  ['行事の 出欠を 集める','集めない（レッスンの 出席は 残す）'],
  ['月謝の 残り回数を 生徒に 出す','数えても 出さない（「あと○回」に 化ける）'],
- ['カレンダー（ICS）に 体調・記録を 入れる','作らない。入るのは 予定だけ（1人1つの 住所・作り直せる。裁定139・152）'],
+ ['ICS の 購読URL（常時配信）','作らない。その場で 1回 落とす形だけ'],
  ['悲しい・困った顔の 羊','作らない'],
  ['羊の 自由配置','v1 では 作らない（座標の仕組みは 消さない）']];
 var SPEC_WHERE=[
@@ -6223,8 +6130,7 @@ var SPEC_SRV=[
  ['出席','その レッスンの 担当者か、shukketsu を 持つ事務のみ'],
  ['役職を 変える','post を 持ち、かつ 自分が 持っている 全校権限しか 渡せない'],
  ['あて先の 引き継ぎ','2段階（申し出→承諾）。承諾まで 旧あて先で 引き落とす'],
- ['あて先の人の 役職を 外す','先に 引き継ぎを 求める。外すと 誰も 払えなくなる'],
- ['自分の コマの 学校（my_periods.org_id）','空 ⇄ 学校 だけ。学校から 別の 学校へ 直接は 変えない（トリガで 止める。裁定151・153）']];
+ ['あて先の人の 役職を 外す','先に 引き継ぎを 求める。外すと 誰も 払えなくなる']];
 var SPEC_UI=[
  ['押しても 上に 戻らない','描き直す前に 縦横の位置を 覚え、戻す。画面が変わった時だけ 上へ'],
  ['横に広い表','左端に 戻さない。scrollLeft も 覚える'],
