@@ -32,18 +32,46 @@ function main() {
   const libRaw = fs.readFileSync(path.join(ROOT, "lib", "matchingReport.js"), "utf-8");
   const lib = stripComments(libRaw);
   const jsx = stripComments(readRaw("components", "MatchingReport.jsx"));
-  const sqlR = stripComments(fs.readFileSync(path.join(ROOT, "supabase", "migration_matching_reports.sql"), "utf-8"));
+  // ★★★縛りは 2つの 紙に またがります（★2026-09-21）。
+  //   ★★もとの 紙（6つ）＋ 足した 紙（`chosakuken`・裁定157 T6）。
+  //   ★★1つ目 だけ 読むと、★足した ものが「台帳に 無い」と 出ます。
+  //   ★★★紙を 名ざしで 並べません。★`matching_reports_reason_check` を
+  //     ★書いて いる 紙を ぜんぶ 拾います（★次に 足す 人が ここを 直さずに 済みます）。
+  const sqlR = stripComments(fs.readdirSync(path.join(ROOT, "supabase"))
+    .filter((f) => f.endsWith(".sql"))
+    .map((f) => fs.readFileSync(path.join(ROOT, "supabase", f), "utf-8"))
+    .filter((t) => t.indexOf("matching_reports_reason_check") >= 0)
+    .join("\n"));
   const sqlC = stripComments(fs.readFileSync(path.join(ROOT, "supabase", "migration_reported_cut.sql"), "utf-8"));
   const 見本 = fs.readFileSync(path.join(ROOT, "docs/design/pack-final/00-動く見本-iPhoneで開く用.html"), "utf-8");
 
   console.log("=== 一 ★6つの わけ（★見本・画面・台帳 が 同じ） ===");
+  // ★★★2026-09-21、★6つ → **7つ**（★`chosakuken`・裁定157 T6）。
+  //   ★★数を 書き写すのを やめました。★lib と 台帳と 見本が **揃って いる**
+  //     ★ことだけ を 見ます。★次に 足す 人が この 数を 直さずに 済みます。
   const 鍵 = [...lib.matchAll(/key:\s*"(\w+)"/g)].map((m) => m[1]);
-  t(鍵.length === 6, `★lib に 6つ（いま ${鍵.length}）`);
+  t(鍵.length >= 6, `★lib に わけが ある（いま ${鍵.length}）`);
+  t(鍵[鍵.length - 1] === "sonohoka", "★「そのほか」が いちばん 下");
   鍵.forEach((k) => t(new RegExp(`'${k}'`).test(sqlR), `★台帳の 縛りに ${k} が ある`));
+
   // ★★見本の 字と、★lib の 字が 同じ こと。
   const 字 = [...lib.matchAll(/label:\s*tx\("([^"]+)"\)/g)].map((m) => m[1]);
-  t(字.length === 6, "★lib に 字が 6つ");
-  字.forEach((s) => t(見本.indexOf(s) >= 0, `★見本に「${s}」が ある`));
+  t(字.length === 鍵.length, "★鍵の 数と 字の 数が 同じ");
+  // ★★★見本に まだ 無い もの（★実装が 先に 進んで いる ところ）。
+  //   ★★裁定157 T6 は「通報の 種類に 足す」と 決めました。★見本の 更新は これから です。
+  //   ★★黙って 飛ばしません。★名ざしで 1つ だけ 許し、★数えて 出します。
+  //   ★★★外す 条件 …… ★見本に この 字が 入った 日。★そのとき この 並びを 空に します。
+  const 見本にまだ無い = ["著作権・実演家の 権利"];
+  字.forEach((s) => {
+    if (見本にまだ無い.indexOf(s) >= 0) {
+      console.log(`  ― ★見本に まだ ありません: 「${s}」（★裁定157 T6・実装が 先）`);
+      return;
+    }
+    t(見本.indexOf(s) >= 0, `★見本に「${s}」が ある`);
+  });
+  // ★★許した ものが 見本に 入ったら、★この 並びを 空に します。
+  見本にまだ無い.forEach((s) => t(見本.indexOf(s) < 0,
+    `★見本に「${s}」が 入りました。★\`見本にまだ無い\` から 外して ください`));
 
   console.log("=== 二 ★お名前を お伝えしない、が 先頭 近くに ===");
   t(/TOP_BOLD = tx\("お名前は、相手に お伝えしません。"\)/.test(lib),

@@ -23887,7 +23887,7 @@ export default function VocalTracker({
                               通っていないときは、数字を出さずに状態だけ伝えます。 */}
                           <p className="text-xs" style={{ color: C.inkSoft }}>
                             {!mayShowEffectNumbers(r)
-                              ? (effectStateOf(r) === EFFECT_WAITING ? "記録が増えると、判定を始められます。" : "はっきりした関係は見えませんでした。")
+                              ? (effectStateOf(r) === EFFECT_WAITING ? "記録が増えると、ここに 1文が 出ます。" : "はっきりした関係は見えませんでした。")
                               : r.key === "costume"
                                 ? `衣装の締め付けが強い日は、翌日の声が平均${Math.abs(r.g).toFixed(1)}段階${r.g < 0 ? "悪く" : "変わらず"}記録されています`
                                 : `会場の響きが響きにくい日は、翌日の声が平均${Math.abs(r.g).toFixed(1)}段階${r.g < 0 ? "悪く" : "変わらず"}記録されています`}
@@ -23977,7 +23977,7 @@ export default function VocalTracker({
                               通っていないときは、数字を出さずに状態だけ伝えます。 */}
                           <p className="text-xs" style={{ color: C.inkSoft }}>
                             {!mayShowEffectNumbers(r)
-                              ? (effectStateOf(r) === EFFECT_WAITING ? "記録が増えると、判定を始められます。" : "はっきりした関係は見えませんでした。")
+                              ? (effectStateOf(r) === EFFECT_WAITING ? "記録が増えると、ここに 1文が 出ます。" : "はっきりした関係は見えませんでした。")
                               : r.key === "monitor"
                                 ? `インイヤーの日は、ウェッジの日より翌日の声が平均${Math.abs(r.g).toFixed(1)}段階${r.g > 0 ? "良い" : "悪い"}`
                                 : r.key === "travel"

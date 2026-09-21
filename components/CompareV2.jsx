@@ -484,7 +484,7 @@ export default function CompareV2({ entries, dates, stacked, onStack }) {
           ● 書いた日　○ あとから 書いた日　- - - まんなか
         </div>
         <div style={{ ...TYPE.usual, marginTop: 5, lineHeight: 1.8 }}>
-          時間差を 変えても、<b>判定は「{(LAGS.find((l) => l.key === judging) || {}).label}」に 固定</b>です。ここは 見るだけ。
+          時間差を 変えても、<b>結果は「{(LAGS.find((l) => l.key === judging) || {}).label}」の 記録で 固定</b>です。ここは 見るだけ。
         </div>
       </Card>
 
@@ -543,7 +543,7 @@ export default function CompareV2({ entries, dates, stacked, onStack }) {
  */
 const NOTES = [
   "「あと◯日」を 出しません。この画面を 消しません。確率を 出しません。",
-  "あとから 書いた日は ○の 白抜き。判定からは 外します。",
+  "あとから 書いた日は ○の 白抜き。数えるときに 外します。",
   "1文は、3つの門（10日以上／差の大きさ／q）を 通ったときだけ 出ます。",
   "2番目から先の 結果は 出しません。止まった理由だけ 出します。"
 ];

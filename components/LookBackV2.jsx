@@ -73,7 +73,7 @@ function Bars({ title, rows, tint, entries, foot }) {
       {/* ★★凡例（★見本⑫）。★あとから書いた日が あるときだけ 出します。 */}
       {anyLater ? (
         <p style={{ ...small, marginTop: 8 }}>
-          ○は あとから書いた日です。目では見えますが、判定には 入れていません。
+          ○は あとから書いた日です。目では見えますが、数えるときには 入れていません。
         </p>
       ) : null}
     </Card>
