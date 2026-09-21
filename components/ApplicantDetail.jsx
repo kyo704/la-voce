@@ -2,9 +2,11 @@
 
 import { C } from "@/lib/tokens";
 import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
-import { ScreenHead, Card, Note, Btn, Li, H3 } from "@/components/UiV2";
+import { useState } from "react";
+import { ScreenHead, Card, Note, Btn, Li, H3, Ask } from "@/components/UiV2";
 import {
   HEADS, REC_GO, REP_NOTE, NOTES, NOTES_BOLDS, NOT_YET,
+  DECIDE, DECIDE_ASK, DECIDE_ASK_NOTE, DECIDE_OK,
   splitCareer, wordOf, isAsking, hostOf
 } from "@/lib/applicantDetail";
 import { tx } from "@/lib/t";
@@ -53,6 +55,7 @@ function 節({ head, items, render, note }) {
 export default function ApplicantDetail({
   detail, onClose, onAnswer, onDecide, busy, loadError = ""
 }) {
+  const [聞く, set聞く] = useState(false);
   if (!detail) {
     return (
       <div style={{ fontFamily: FONT_STACK }}>
@@ -147,9 +150,18 @@ export default function ApplicantDetail({
       {/* ★★★決めると、★ほかの 応募は 閉じます（★見本の 断り）。
            ★★負けた、とは 伝えません。★わけを 書きません。 */}
       {onDecide ? (
-        <Btn disabled={busy} onClick={onDecide} style={{ marginTop: rem(10) }}>
-          {tx("この方に 決める")}
+        <Btn disabled={busy} onClick={() => set聞く(true)} style={{ marginTop: rem(10) }}>
+          {DECIDE}
         </Btn>
+      ) : null}
+
+      {/* ★★★押すと 戻せません。★1度 お尋ねします（★2026-09-21）。
+           ★★`応募を 選ぶ` の「終わりにする」と 同じ 形 です。
+           ★★★`onDecide` を 呼ぶのは、★ここ 1か所 だけ です。 */}
+      {聞く ? (
+        <Ask title={DECIDE_ASK} note={DECIDE_ASK_NOTE} okLabel={DECIDE_OK}
+          onOk={() => { set聞く(false); if (onDecide) onDecide(); }}
+          onCancel={() => set聞く(false)} />
       ) : null}
 
       <Note>

@@ -70,6 +70,19 @@ async function main() {
   //   ★★だから「この方に 決める」は 押せる 札に なりました。
   //   ★★「曲目を 答える」も 同じ 日に できました。
   t(/onDecide/.test(jsx), "★「この方に 決める」は 押せる 札に なった");
+  // ★★★押すと 戻せません。★お尋ねを 1枚 挟んで います（★2026-09-21）。
+  //   ★★札は お尋ねを 開くだけ。★`onDecide` は お尋ねの「決める」から だけ。
+  t(/onClick=\{\(\) => set聞く\(true\)\}/.test(jsx), "★札は お尋ねを 開くだけ");
+  const 呼 = (jsx.match(/onDecide\(\)/g) || []).length;
+  t(呼 === 1, `★onDecide を 呼ぶのは 1か所 だけ（いま ${呼}）`);
+  const 枚 = (jsx.match(/<Ask[\s\S]{0,260}?\/>/) || [""])[0];
+  t(/onOk=\{\(\) => \{ set聞く\(false\); if \(onDecide\) onDecide\(\); \}\}/.test(枚),
+    "★お尋ねの「決める」からだけ 呼ぶ");
+  t(/onCancel=\{\(\) => set聞く\(false\)\}/.test(枚), "★やめると 何も 起きない");
+  t(/取り消せません/.test(m.DECIDE_ASK_NOTE), "★戻せない と 書いて ある");
+  t(/募集は 閉じます/.test(m.DECIDE_ASK_NOTE), "★何が 起きるかを 書いて ある");
+  t(/決まった わけを お伝えしません/.test(m.DECIDE_ASK_NOTE),
+    "★ほかの 方に わけが 伝わらない ことも 書いて ある");
   t(/onAnswer && isAsking\(detail\)/.test(jsx), "★「曲目を 答える」は たずねられた ときだけ");
   t(!m.NOT_YET.some((x) => x.key === "decide" || x.key === "answer"),
     "★できた ものを 控えに 残して いない");
