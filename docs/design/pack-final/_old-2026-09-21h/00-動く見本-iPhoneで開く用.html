@@ -634,8 +634,6 @@ function $(s){return document.querySelector(s)}
 function go(t){S.tab=t;S.stack=[];nav1();draw()}
 function goo(t){S.otab=t;S.stack=[];nav1();draw()}
 function push(s,a){S.stack.push({s:s,a:a});nav1();draw()}
-/* ★back() は 見本の 14か所で 呼ばれていたが 定義が 無かった（押しても 止まる）。pop() の 別名として 置く（2026-09-21）*/
-function back(){pop()}
 function pop(){S.stack.pop();nav1();draw()}
 function topOf(){return S.stack[S.stack.length-1]}
 function esc(s){return String(s).replace(/'/g,"\\'")}
@@ -944,14 +942,14 @@ function kuraberu(){
    return '<span class="pill sm '+(i===S.lag?'on':'')+'" onclick="S.lag='+i+';draw()">'+v+'</span>'}).join('')+'</div>'
  +dotplot(S.lag)
  +'<div class="usu">● 書いた日　○ あとから 書いた日　- - - まんなか</div>'
- +'<div class="usu" style="margin-top:5px">時間差を 変えても、<b>結果は「前の夜」の 記録で 固定</b>です。ここは 見るだけ。</div></div>';
+ +'<div class="usu" style="margin-top:5px">時間差を 変えても、<b>判定は「前の夜」に 固定</b>です。ここは 見るだけ。</div></div>';
  if(!S.dm.bun)h+='<div class="card" style="background:var(--band);border-color:var(--line3)"><div style="font-size:13.5px;line-height:1.75">まだ、はっきりした差は 見えていません。<br>'
   +'<span style="font-size:12.5px;color:var(--ink2)">出なかった日が 11日 たまりました。この形のまま 続けてください。</span></div></div>';
  h+='<div class="box"><div class="li" onclick="push(\'順番\')"><span>調べていることの 順番</span><s>5つ ›</s></div>'
   +'<div class="li"><span>初日だけで くらべる<br><span class="usu">本番が 続いた日を 1日目に そろえます</span></span>'
   +'<div class="sw '+(S.e3?'on':'')+'" onclick="event.stopPropagation();S.e3=S.e3?0:1;draw()"><i></i></div></div></div>';
  h+='<div class="note">「あと◯日」を 出しません。この画面を 消しません。確率を 出しません。<br>'
-  +'あとから 書いた日は ○の 白抜き。<b>数えるときに 外します</b>。<br>'
+  +'あとから 書いた日は ○の 白抜き。<b>判定からは 外します</b>。<br>'
   +'1文は、3つの門（10日以上／差の大きさ／q）を 通ったときだけ 出ます。<br>'
   +'2番目から先の 結果は 出しません。<b>止まった理由だけ</b> 出します。</div>';
  return h}
@@ -1675,6 +1673,7 @@ SC['Woolsong']=function(){   /* ★名前は「つたえる」（裁定155。製
  +'・いっしょに 演奏した 記録が、ずっと 残ります<br>'
  +'・募集の 下書きを しまっておけます</div></div>'
  +'<div class="box"><div class="li"><span>1年ぶん</span><s>3,600円（税込）</s></div></div>'
+ +'<div class="usu" style="margin:-4px 0 11px">ひと月あたり 300円です。</div>'
  +'<div class="wl"><b>さがす は、これからも 無料です。</b><br>'
  +'募集を 出すこと、応募すること、切ること、お知らせいただくこと。<br>'
  +'どれにも お金を いただきません。<br>'
@@ -3398,27 +3397,15 @@ SC['経歴']=function(){return bk('レパートリー')
 +'ここに 書いたことは、<b>伴奏さがしには 出ません</b>。別のものです。</div>'};
 
 
-/* ★録画は YouTube の 埋め込みだけ（裁定128・157）。動画を お預かりしない。
-   ★埋め込む 前に 4つ たずねる。★お答えは 記録しない（写真の 問いと 同じ 形）*/
-var REC_OK=[0,0,0,0];
-SC['録画を足す']=function(){var Q=['共演者（伴奏・合唱・オーケストラ）の 全員に、ネットに 載せることを 伝えて、了解を もらいましたか',
-  '会場（ホール・学校）の 撮影・公開の 決まりを 確かめましたか',
-  '著作権の 切れていない 外国の 作品（作曲・訳詞・編曲）が ある ときは、YouTube 側の 手続きは 済んでいますか（無ければ「済み」で かまいません）',
-  '有料の 公演・出演料の ある 公演なら、主催者の 許可を もらいましたか'];
- var all=REC_OK.every(function(v){return v});
- return bk('曲')
+SC['録画を足す']=function(){return bk('曲')
 +'<div class="hd" style="padding-top:2px"><h2>録画を 足す</h2></div>'
-+'<div class="h3" style="margin-top:0">YouTube の URL</div><input class="inp" value="https://youtu.be/xxxxxxxx">'
-+'<div class="usu" style="margin-top:-4px">YouTube の 限定公開か 公開の URL だけです。動画ファイルは 受け取りません</div>'
++'<div class="h3" style="margin-top:0">URL</div><input class="inp" value="https://youtu.be/xxxxxxxx">'
++'<div class="usu" style="margin-top:-4px">YouTube ／ Vimeo の 限定公開の URL</div>'
 +'<div class="h3">日付</div><input class="inp" value="2026年10月11日">'
 +'<div class="h3">場所</div><input class="inp" value="千葉文化会館">'
-+'<div class="sh3">載せる 前に</div><div class="box">'
-+Q.map(function(q,i){return '<div class="li" onclick="REC_OK['+i+']=REC_OK['+i+']?0:1;draw()"><span style="font-size:13.5px">'+q+'</span><s>'+(REC_OK[i]?'はい':'—')+'</s></div>'}).join('')+'</div>'
-+'<div class="btn'+(all?'':' g')+'" style="margin-top:12px'+(all?'':';opacity:.55')+'" onclick="'+(all?'REC_OK=[0,0,0,0];back();toast(\'足しました\')':'toast(\'4つとも 確かめてから 足せます\')')+'">足す</div>'
-+'<div class="note">動画そのものは お預かりしません。<b>URL だけ</b>です。<br>'
-+'曲・演奏・写っている 人・会場の 権利は、<b>載せる 方が ご自分で 確かめます</b>。上の 4つは その 手がかりです。<b>お答えは 記録しません</b>。<br>'
-+'権利を お持ちの 方から 申し立てが あったときは、この 録画の 表示を 止めます。<br>'
-+'限定公開に しておけば、URL を 知っている 人だけが 見られます。</div>'};
++'<div style="height:12px"></div><div class="btn">足す</div>'
++'<div class="note">動画そのものは お預かりしません。URL だけです。<br>'
++'限定公開に しておけば、URL を 知っている人だけが 見られます。</div>'};
 
 
 SC['採点']=function(a){
@@ -3739,7 +3726,7 @@ SC['プラン']=function(){   /* ★裁定155。個人が 最初に 見る 段�
  +'<div class="usu" style="margin-top:5px">'+(paid()?'次の お支払い　2026年10月9日':'お支払いは ありません')+'</div></div>'
  +'<div class="box">'
  +'<div class="li plain"><span><b>無料</b><div class="usu">記録・ふりかえる・ノート・ひつじ・さがす</div></span><s>0円</s></div>'
- +'<div class="li" onclick="toast(\'この見本では 買いません\')"><span><b>ぜんぶ</b><div class="usu">つたえる・しらべる・よそおいの 全部。年払いは 244点を お支払いの 日に</div></span><s>月980円<br>年12,800円<br><span class="usu">単品の 年額の 合計 14,200円</span></s></div>'
+ +'<div class="li" onclick="toast(\'この見本では 買いません\')"><span><b>ぜんぶ</b><div class="usu">つたえる・しらべる・よそおいの 全部。年払いは 244点を お支払いの 日に</div></span><s>月980円<br>年12,800円</s></div>'
  +(stu?'<div class="li" onclick="toast(\'この見本では 買いません\')"><span><b>学生</b><div class="usu">学校の 名簿に いる 方は、ぜんぶが 半額</div></span><s>月490円<br>年6,400円</s></div>':'')
  +'</div>'
  +(stu?'<div class="usu" style="margin:-4px 0 11px">学生の 値段は、<b>あなたが 同意した ときだけ</b> 在籍を 確かめて 決めます。学校には 伝わりません。</div>':'')
@@ -3747,7 +3734,6 @@ SC['プラン']=function(){   /* ★裁定155。個人が 最初に 見る 段�
  +[['つたえる','公開ページ・紙・英語','年3,600円','Woolsong'],['しらべる','声の 分析','月580円／年4,800円','調べる'],['よそおい','ひつじの 服','月580円／年5,800円','']].map(function(x){
    return '<div class="li"'+(x[3]?' onclick="push(\''+x[3]+'\')"':'')+'><span style="font-size:14px">'+x[0]+'<div class="usu">'+x[1]+'</div></span><s style="font-size:13px">'+x[2]+'</s></div>'}).join('')+'</div>'
  +(paid()?'<div class="btn g" style="margin-top:11px" onclick="S.dm.pay=0;draw();toast(\'やめました\')">やめる</div>':'')
- +'<div class="usu" style="margin:-4px 0 11px">日本に お住まいの 方 向けです。はじめの <b>14日は 0円</b>で ためせます（カード 不要・自動で 有料に なりません）。</div>'
  +'<div class="note">記録・受診用の 1枚・書き出しは、<b>ずっと 無料</b>です。さがす（マッチング）も 永久に 無料です。<br>'
  +'月払いは いつでも 止められます。止めても、その月の 終わりまで 使えます。<br>'
  +'年払いは 1回払いで、<b>自動では 更新しません</b>。途中で やめると、<b>残りの 月数ぶんを お返しします</b>（244点は 返品できません）。<br>'
@@ -6565,7 +6551,7 @@ function legend(){
  'ふりかえる':'<b>ふりかえる ── 4つ</b><ul>'
   +'<li><b>並べる</b>　14日／4週／3か月／<b>本番でそろえる</b>。3か月で 週ごとに 変わります</li>'
   +'<li><b>さかのぼる</b>　日を 押すと <b>前3日が 全項目 そのまま</b> 出ます</li>'
-  +'<li><b>くらべる</b>　時間差4種は 見るだけ／結果は 前の夜の 記録で 固定。<b>順番</b>（固定順序）と E3</li>'
+  +'<li><b>くらべる</b>　時間差4種は 見るだけ／判定は 前の夜に 固定。<b>順番</b>（固定順序）と E3</li>'
   +'<li><b>かぞえる</b>　下3行は <b>見せて 押せなくする</b>。押すと 調べるの 案内へ</li>'
   +'<li>デモの「1文が 出た」「静かにする期間」で、隠れた状態を 出せます</li></ul>',
  'ノート':'<b>ノート ── 4つは 書くことが 違います（9月10日 直し）</b><ul>'
