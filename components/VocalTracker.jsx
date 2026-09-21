@@ -13928,7 +13928,14 @@ export default function VocalTracker({
   // ---- 作業指示-教室プラン §B・C・E ----
   async function fetchMyOrgs() {
     const supabase = createClient();
-    const { data, error } = await supabase.from("memberships").select("*, org:organizations(*)").eq("user_id", userId);
+    // ★★★`select("*")` を やめました（★2026-09-21）。★列を 名ざします。
+    //   ★★渡しの 決まり（RLS）は **行** しか 隠しません。★列は 出て いきます。
+    //   ★★`organizations(*)` は `contract_owner_user_id` も 積んで いました。
+    //     ★★よその 方の id です。★この 一覧で 使って いません（★数えました）。
+    //   ★★名ざす 先は `lib/dbColumns.js` の 1か所 です。★ここで 決めません。
+    const { data, error } = await supabase.from("memberships")
+      .select(COLS_MEMBERSHIPS + ", org:organizations(" + COLS_ORGANIZATIONS + ")")
+      .eq("user_id", userId);
     if (error) console.error("教室の一覧を読めませんでした:", error);
     const mine = data || [];
     // ★★★2026-09-18（★A2 の あと始末）。★役職（できこと）も 一緒に 持ちます。

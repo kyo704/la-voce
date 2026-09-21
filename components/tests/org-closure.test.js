@@ -22,10 +22,25 @@ let passCount = 0, failCount = 0;
 function assertTrue(c, label) { if (c) { console.log(`  ✓ ${label}`); passCount++; } else { console.log(`  ✗ ${label}`); failCount++; } }
 
 const root = path.join(__dirname, "..", "..");
+// ★★★となりの 紙を 中に 入れて から 読みます。
+//   ★★`data:` で 読むので、★`./x.js` は そのままでは 解けません。
+//   ★★きょうまで `./supabaseErrors` **だけ** を 名ざしで 入れて いました。
+//     ★★`./orgContract.js` を 足した とき、★この 検査が 落ちました。
+//     ★★名ざしを やめます。★`./` で 始まる もの を ぜんぶ 入れます。
+//   ★★入れ子にも します（★入れた 紙が また 誰かを 呼びます）。
+function 埋める(abs, 見た) {
+  if (見た.has(abs)) return "";
+  見た.add(abs);
+  let src = fs.readFileSync(abs, "utf8");
+  return src.replace(/from "(\.\/[^"]+?)(\.js)?"/g, (m, 名) => {
+    const 先 = path.join(path.dirname(abs), 名 + ".js");
+    if (!fs.existsSync(先)) return m;
+    return 'from "data:text/javascript;base64,'
+      + Buffer.from(埋める(先, new Set(見た))).toString("base64") + '"';
+  });
+}
 async function load(rel) {
-  const src = fs.readFileSync(path.join(root, rel), "utf8")
-    .replace(/from "\.\/supabaseErrors(\.js)?"/g, 'from "data:text/javascript;base64,' +
-      Buffer.from(fs.readFileSync(path.join(root, "lib/supabaseErrors.js"), "utf8")).toString("base64") + '"');
+  const src = 埋める(path.join(root, rel), new Set());
   return import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
 }
 
@@ -266,17 +281,20 @@ function fakeClient(tables) {
     assertTrue(r.blocked[0].otherCount === 1, "生徒1人が数えられている");
   }
 
-  console.log("\n=== ★オーナーが抜けて、責任者だけが残る場合 ===");
+  console.log("\n=== ★契約者が抜けて、責任者だけが残る場合 ===");
   {
     // ★いまの規則では止めません（運営できる人は残るため）。
-    //   ですが「契約者」は居なくなります。★坂本さんの判断待ちです。
+    //   ですが「契約者」は居なくなります。★1行 知らせます。
+    // ★★★契約者は `organizations.contract_owner_user_id` です（★裁定 その116）。
+    //   ★★`memberships.role === "owner"` で 見て いました（★2026-09-21 に 直しました）。
     const c = fakeClient({
       memberships: [
         { org_id: "org-1", user_id: ME, role: "owner" },
         { org_id: "org-1", user_id: OTHER, role: "admin" }
       ],
       enrollments: [{ org_id: "org-1", student_id: "stu-1", status: "active" }],
-      organizations: [{ id: "org-1", name: "音楽学校A", created_by: ME }]
+      organizations: [{ id: "org-1", name: "音楽学校A", created_by: ME,
+        contract_owner_user_id: ME }]
     });
     const r = await oc.classifyOwnedOrgs(c, ME);
     assertTrue(r.blocked.length === 0, "★止めない（運営できる人は残る）");
@@ -284,6 +302,42 @@ function fakeClient(tables) {
     assertTrue(r.payer.length === 1, "★契約者が居なくなる教室として拾う");
     assertTrue(r.payer[0].name === "音楽学校A", "教室の名前が入っている");
     assertTrue(r.solo.length === 0, "教室を消しもしない");
+  }
+
+  console.log("\n=== ★役割の 名と 契約者が ずれて いる とき（★裁定 その116）===");
+  {
+    // ★★★これが、★直す まで 誤って いた ところ です。
+    //   ★★役割は admin。★でも 契約者は この 方 です。
+    //   ★★もとの 書き方（role === "owner"）では **知らせが 出ません** でした。
+    //     ★★学校が 黙って 支払う 人を 失います。
+    const c = fakeClient({
+      memberships: [
+        { org_id: "org-1", user_id: ME, role: "admin" },
+        { org_id: "org-1", user_id: OTHER, role: "owner" }
+      ],
+      enrollments: [{ org_id: "org-1", student_id: "stu-1", status: "active" }],
+      organizations: [{ id: "org-1", name: "音楽学校A", created_by: OTHER,
+        contract_owner_user_id: ME }]
+    });
+    const r = await oc.classifyOwnedOrgs(c, ME);
+    assertTrue(r.payer.length === 1, "★役割が admin でも、契約者なら 知らせる");
+  }
+
+  console.log("\n=== ★役割は owner だが、契約を 譲った あと ===");
+  {
+    // ★★反対の 側 です。★要らない 知らせを 出しません。
+    //   ★★2つ とも 見ないと、★片方だけ 直して 済ませて しまいます。
+    const c = fakeClient({
+      memberships: [
+        { org_id: "org-1", user_id: ME, role: "owner" },
+        { org_id: "org-1", user_id: OTHER, role: "admin" }
+      ],
+      enrollments: [{ org_id: "org-1", student_id: "stu-1", status: "active" }],
+      organizations: [{ id: "org-1", name: "音楽学校A", created_by: ME,
+        contract_owner_user_id: OTHER }]
+    });
+    const r = await oc.classifyOwnedOrgs(c, ME);
+    assertTrue(r.payer.length === 0, "★譲った あとは 知らせません");
   }
 
   console.log("\n=== ★契約者の知らせ：出す場面と、出さない場面 ===");

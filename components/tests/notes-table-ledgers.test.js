@@ -32,8 +32,12 @@ function t(cond, label) {
   //   ★★`accountDeletion` が 読む ように なった ため です。
   //   ★★写す 先に 無いと、★`ERR_MODULE_NOT_FOUND` で 落ちます。
   //     ★★仲間を 足したら、★ここにも 足す こと。
+  // ★★2026-09-21、★`orgContract` を 足しました。
+  //   ★★`orgClosure` が 契約者の 決めを そこから 借りる ように なった ため です
+  //     （★裁定 その116 ── ★契約者は 役割の 名では ありません）。
+  //   ★★★手で 並べる 一覧が 壊れるのは これで 2度目 です（→ ★台帳 08-10）。
   ["exportData", "accountDeletion", "orgClosure", "supabaseErrors",
-    "paymentRetention"].forEach((n) => {
+    "paymentRetention", "orgContract"].forEach((n) => {
     const src = fs.readFileSync(path.join(__dirname, "..", "..", "lib", n + ".js"), "utf8")
       .replace(/@\/lib\/([a-zA-Z]+)/g, "./$1.js");
     fs.writeFileSync(path.join(dir, n + ".js"), src);

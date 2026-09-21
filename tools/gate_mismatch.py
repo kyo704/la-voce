@@ -45,8 +45,18 @@ def main():
   出 = {"台帳の道": [], "台帳の決まり": [], "画面": [], "見ていないできこと": []}
 
   # ①読み道
-  for r in 尋ねる("select p.proname, "
-                 "replace(pg_get_functiondef(p.oid), chr(10), ' ') as d "
+  #   ★★★説明文を 先に 落とします（★裁定 その135・2026-09-21）。
+  #     ★★きょう、★この 道具が `create_org_event` を 挙げました。
+  #       ★★本番の 中身は `has_can(p_org_id, 'gyoji')` です。★直って います。
+  #       ★★挙がったのは、★**もと … `is_org_owner_or_admin`** と 書いた
+  #         ★説明の 行 でした。★自分の 説明で 落ちる ── ★4度目 の 形 です。
+  #     ★★★行の 終わりを 先に 潰して いた のも 誤り でした。
+  #       ★★`chr(10)` を 先に 消すと、★`--` が そこから 後ろ 全部 を
+  #         ★飲みます。★**本当の 門も 見えなく なります**（★見落とす 側）。
+  #       ★★だから ── ★① 説明を 落とす ★② それから 1行に します。
+  for r in 尋ねる("select p.proname, replace(regexp_replace(regexp_replace("
+                 "pg_get_functiondef(p.oid), '/\\*.*?\\*/', ' ', 'gs'), "
+                 "'--[^' || chr(10) || ']*', ' ', 'g'), chr(10), ' ') as d "
                  "from pg_proc p join pg_namespace n on n.oid=p.pronamespace "
                  "where n.nspname='public'"):
     d = r.get("d", "")
